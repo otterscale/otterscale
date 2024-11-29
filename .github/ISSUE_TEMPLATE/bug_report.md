@@ -1,5 +1,5 @@
 ---
-name: 🐛Bug report
+name: 🐛 Bug report
 about: Create a report to help us improve
 labels: 'bug'
 
@@ -21,5 +21,5 @@ labels: 'bug'
 <!-- Please provide relevant details about the environment where you experienced the bug.  -->
 <!-- This will help us understand the issue better and resolve it faster. -->
 
-- Go: 1.23.?
 - OpenHDC: 1.0.?
+- Go: 1.23.?
