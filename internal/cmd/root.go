@@ -1,8 +1,6 @@
 package cmd
 
-import (
-	"github.com/spf13/cobra"
-)
+import "github.com/spf13/cobra"
 
 func NewCmdRoot(version string) *cobra.Command {
 	cmd := &cobra.Command{
@@ -12,6 +10,7 @@ func NewCmdRoot(version string) *cobra.Command {
 		Version: version,
 	}
 	cmd.AddCommand(
+		NewCmdInit(),
 		NewCmdInspect(),
 		NewCmdSync(),
 	)
