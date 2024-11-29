@@ -1,38 +1,25 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
+labels: 'bug'
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Summary
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+<!-- Offer a concise summary of the issue in the title above. -->
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Reproduce
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+<!-- Are you able to reproduce this bug? If so, could you please provide the steps to do so? -->
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+1.
+2.
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+## Environment
 
-**Additional context**
-Add any other context about the problem here.
+<!-- Please provide relevant details about the environment where you experienced the bug.  -->
+<!-- This will help us understand the issue better and resolve it faster. -->
+
+- Go: 1.23.?
+- OpenHDC: 1.0.?
