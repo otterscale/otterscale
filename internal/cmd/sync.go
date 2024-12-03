@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/openhdc/openhdc/internal/connector"
+	"github.com/openhdc/openhdc/internal/client"
 	"github.com/openhdc/openhdc/internal/workload"
 	"github.com/spf13/cobra"
 )
@@ -21,55 +21,55 @@ func NewCmdSync() *cobra.Command {
 	return cmd
 }
 
-func sourcesToConnectors(ctx context.Context, sources []*workload.Source) ([]*connector.Connector, error) {
-	connectors := []*connector.Connector{}
+func sourcesToClients(ctx context.Context, sources []*workload.Source) ([]*client.Client, error) {
+	clients := []*client.Client{}
 	for _, source := range sources {
-		opts := []connector.Option{
-			connector.WithName(source.Name),
-			connector.WithVersion(source.Version),
-			connector.WithPath(source.Path),
+		opts := []client.Option{
+			client.WithName(source.Name),
+			client.WithVersion(source.Version),
+			client.WithPath(source.Path),
 		}
-		connector, err := connector.New(ctx, opts...)
+		client, err := client.New(ctx, opts...)
 		if err != nil {
 			return nil, err
 		}
-		connectors = append(connectors, connector)
+		clients = append(clients, client)
 	}
-	return connectors, nil
+	return clients, nil
 }
 
-func destinationsToConnectors(ctx context.Context, destinations []*workload.Destination) ([]*connector.Connector, error) {
-	connectors := []*connector.Connector{}
+func destinationsToClients(ctx context.Context, destinations []*workload.Destination) ([]*client.Client, error) {
+	clients := []*client.Client{}
 	for _, destination := range destinations {
-		opts := []connector.Option{
-			connector.WithName(destination.Name),
-			connector.WithVersion(destination.Version),
-			connector.WithPath(destination.Path),
+		opts := []client.Option{
+			client.WithName(destination.Name),
+			client.WithVersion(destination.Version),
+			client.WithPath(destination.Path),
 		}
-		connector, err := connector.New(ctx, opts...)
+		client, err := client.New(ctx, opts...)
 		if err != nil {
 			return nil, err
 		}
-		connectors = append(connectors, connector)
+		clients = append(clients, client)
 	}
-	return connectors, nil
+	return clients, nil
 }
 
-func transformersToConnectors(ctx context.Context, transformers []*workload.Transformer) ([]*connector.Connector, error) {
-	connectors := []*connector.Connector{}
+func transformersToClients(ctx context.Context, transformers []*workload.Transformer) ([]*client.Client, error) {
+	clients := []*client.Client{}
 	for _, transformer := range transformers {
-		opts := []connector.Option{
-			connector.WithName(transformer.Name),
-			connector.WithVersion(transformer.Version),
-			connector.WithPath(transformer.Path),
+		opts := []client.Option{
+			client.WithName(transformer.Name),
+			client.WithVersion(transformer.Version),
+			client.WithPath(transformer.Path),
 		}
-		connector, err := connector.New(ctx, opts...)
+		client, err := client.New(ctx, opts...)
 		if err != nil {
 			return nil, err
 		}
-		connectors = append(connectors, connector)
+		clients = append(clients, client)
 	}
-	return connectors, nil
+	return clients, nil
 }
 
 func sync(cmd *cobra.Command, args []string) error {
@@ -81,20 +81,20 @@ func sync(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// new source connectors
-	sources, err := sourcesToConnectors(ctx, reader.Sources)
+	// new source clients
+	sources, err := sourcesToClients(ctx, reader.Sources)
 	if err != nil {
 		return err
 	}
 
-	// new destination connectors
-	destinations, err := destinationsToConnectors(ctx, reader.Destinations)
+	// new destination clients
+	destinations, err := destinationsToClients(ctx, reader.Destinations)
 	if err != nil {
 		return err
 	}
 
-	// new transformer connectors
-	transformers, err := transformersToConnectors(ctx, reader.Transformers)
+	// new transformer clients
+	transformers, err := transformersToClients(ctx, reader.Transformers)
 	if err != nil {
 		return err
 	}
