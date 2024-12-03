@@ -2,11 +2,11 @@ package connector
 
 import (
 	pb "github.com/openhdc/openhdc/api/connector/v1"
-	"github.com/openhdc/openhdc/pkg/transport/grpc"
+	"github.com/openhdc/openhdc/pkg/transport"
 )
 
-func NewGrpcServer(a *Adapter) *grpc.Server {
-	srv := grpc.NewServer()
+func NewTransportServer(a *Adapter) *transport.Server {
+	srv := transport.NewServer()
 	pb.RegisterConnectorServer(srv, a)
 	return srv
 }

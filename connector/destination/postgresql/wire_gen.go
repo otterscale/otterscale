@@ -20,7 +20,7 @@ import (
 func wireApp() (*app.App, func(), error) {
 	destination, cleanup := newConnector()
 	adapter := connector.NewDestinationAdapter(destination)
-	server := connector.NewGrpcServer(adapter)
+	server := connector.NewTransportServer(adapter)
 	appApp := newApp(server)
 	return appApp, func() {
 		cleanup()
