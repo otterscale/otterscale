@@ -5,7 +5,7 @@ import (
 
 	"github.com/openhdc/openhdc/pkg/app"
 	"github.com/openhdc/openhdc/pkg/connector"
-	"github.com/openhdc/openhdc/pkg/transport/grpc"
+	"github.com/openhdc/openhdc/pkg/transport"
 
 	_ "go.uber.org/automaxprocs"
 )
@@ -13,10 +13,10 @@ import (
 var ProviderSet = wire.NewSet(
 	newConnector,
 	connector.NewDestinationAdapter,
-	connector.NewGrpcServer,
+	connector.NewTransportServer,
 )
 
-func newApp(srv *grpc.Server) *app.App {
+func newApp(srv *transport.Server) *app.App {
 	return app.New(
 		app.Servers(srv),
 	)
