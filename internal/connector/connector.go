@@ -18,11 +18,17 @@ const (
 )
 
 type Connector struct {
-	path   string
-	socket string
+	name    string
+	version string
+	path    string
+	socket  string
 	// wg     *sync.WaitGroup
 
 	Conn *grpc.ClientConn
+}
+
+func (c *Connector) Name() string {
+	return c.name
 }
 
 // TODO DOWNLOAD
@@ -82,19 +88,17 @@ func (c *Connector) Terminate() error {
 }
 
 func New(ctx context.Context, opts ...Option) (*Connector, error) {
-	f, err := os.CreateTemp("", "openhdc-*.sock")
-	if err != nil {
-		return nil, err
-	}
 	c := &Connector{
-		path:   "",
-		socket: f.Name(),
-		// wg:     &sync.WaitGroup{},
-		// removeSocket: func() error { return os.Remove(f.Name()) },
+		// wg: &sync.WaitGroup{},
 	}
 	for _, opt := range opts {
 		opt(c)
 	}
+	f, err := os.CreateTemp("", "openhdc-*.sock")
+	if err != nil {
+		return nil, err
+	}
+	c.socket = f.Name()
 	if err := c.download(ctx); err != nil {
 		return nil, err
 	}

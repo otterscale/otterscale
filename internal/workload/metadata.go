@@ -1,7 +1,9 @@
 package workload
 
 type Metadata struct {
-	Name string
+	Name    string `yaml:"name"`
+	Version string `yaml:"version"`
+	Path    string `yaml:"path"`
 }
 
 func (m *Metadata) Validate() error {

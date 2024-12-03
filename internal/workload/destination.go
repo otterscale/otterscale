@@ -1,7 +1,7 @@
 package workload
 
 type Destination struct {
-	*Metadata
+	Metadata `yaml:",inline"`
 }
 
 func (d *Destination) Validate() error {

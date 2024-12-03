@@ -1,7 +1,7 @@
 package workload
 
 type Source struct {
-	*Metadata
+	Metadata `yaml:",inline"`
 }
 
 func (s *Source) Validate() error {
