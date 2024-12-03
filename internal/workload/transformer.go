@@ -1,5 +1,9 @@
 package workload
 
 type Transformer struct {
-	*Metadata
+	Metadata `yaml:",inline"`
+}
+
+func (t *Transformer) Validate() error {
+	return nil
 }

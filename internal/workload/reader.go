@@ -10,9 +10,9 @@ import (
 )
 
 type Reader struct {
-	Sources      []*Source      `yaml:"sources"`
-	Destinations []*Destination `yaml:"destinations"`
-	Transformers []*Transformer `yaml:"transformers"`
+	Sources      []*Source
+	Destinations []*Destination
+	Transformers []*Transformer
 }
 
 func (r *Reader) readFile(path string) error {
@@ -26,7 +26,10 @@ func (r *Reader) readFile(path string) error {
 	}
 	switch w.Kind {
 	case KindSource:
-		source := w.Spec.(*Source)
+		source, err := w.Source()
+		if err != nil {
+			return err
+		}
 		if slices.ContainsFunc(r.Sources, func(s *Source) bool {
 			return s.Name == source.Name
 		}) {
@@ -39,7 +42,10 @@ func (r *Reader) readFile(path string) error {
 		return nil
 
 	case KindDestination:
-		destination := w.Spec.(*Destination)
+		destination, err := w.Destination()
+		if err != nil {
+			return err
+		}
 		if slices.ContainsFunc(r.Destinations, func(d *Destination) bool {
 			return d.Name == destination.Name
 		}) {
@@ -52,7 +58,10 @@ func (r *Reader) readFile(path string) error {
 		return nil
 
 	case KindTransformer:
-		transformer := w.Spec.(*Transformer)
+		transformer, err := w.Transformer()
+		if err != nil {
+			return err
+		}
 		if slices.ContainsFunc(r.Transformers, func(t *Transformer) bool {
 			return t.Name == transformer.Name
 		}) {
