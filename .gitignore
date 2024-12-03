@@ -11,7 +11,11 @@
 !README.md
 !LICENSE
 
+!Dockerfile
 !Makefile
+
+!.clang-format
+!.golangci.yml
 
 # ...even if they are in subdirectories
 !*/
