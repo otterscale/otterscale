@@ -10,11 +10,8 @@ import (
 
 	"github.com/avast/retry-go/v4"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-)
 
-const (
-	maxMsgSize = 100 * 1024 * 1024
+	"github.com/openhdc/openhdc/pkg/transport"
 )
 
 type Client struct {
@@ -47,17 +44,6 @@ func (c *Client) start(ctx context.Context) error {
 	return cmd.Start()
 }
 
-func (c *Client) connection() (*grpc.ClientConn, error) {
-	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithDefaultCallOptions(
-			grpc.MaxCallRecvMsgSize(maxMsgSize),
-			grpc.MaxCallSendMsgSize(maxMsgSize),
-		),
-	}
-	return grpc.NewClient(fmt.Sprintf("unix://%s", c.socket), opts...)
-}
-
 func (c *Client) exec(ctx context.Context) error {
 	return retry.Do(
 		func() error {
@@ -65,7 +51,10 @@ func (c *Client) exec(ctx context.Context) error {
 				return err
 			}
 			// c.wg.Add(1)
-			conn, err := c.connection()
+			conn, err := transport.NewClient(
+				transport.WithEndpoint(fmt.Sprintf("unix://%s", c.socket)),
+				transport.WithConnector(),
+			)
 			if err != nil {
 				return err
 			}
