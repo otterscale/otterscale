@@ -38,7 +38,7 @@ func (c *Client) download(_ context.Context) error {
 // TODO ERROR HANDLING
 
 func (c *Client) start(ctx context.Context) error {
-	args := []string{"serve", "--address", c.socket}
+	args := []string{"serve", "--network", "unix", "--address", c.socket}
 	cmd := exec.CommandContext(ctx, c.path, args...)
 	cmd.SysProcAttr = sysProcAttr()
 	return cmd.Start()
