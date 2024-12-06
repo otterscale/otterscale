@@ -15,6 +15,7 @@ var ErrNotSupported = errors.New("not supported")
 type Codec interface {
 	Encode(typ, val any) (arrow.Array, error)
 	Decode(arr arrow.Array, idx int) (any, error)
+	Append(builder array.Builder, val any) error
 }
 
 type DefaultCodec struct{}
@@ -133,4 +134,8 @@ func (DefaultCodec) Decode(arr arrow.Array, idx int) (any, error) { //nolint:fun
 		return a.Value(idx), nil
 	}
 	return nil, fmt.Errorf("type %T: %w", arr, ErrNotSupported)
+}
+
+func (DefaultCodec) Append(builder array.Builder, val any) error {
+	return builder.AppendValueFromString(format(val))
 }
