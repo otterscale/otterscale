@@ -21,7 +21,7 @@ import (
 
 func wireApp(arg []client.Option, arg2 []transport.ServerOption, arg3 []connector.Option) (*app.App, func(), error) {
 	codec := client.NewCodec()
-	adapter, err := client.New(arg...)
+	adapter, err := client.NewAdapter(arg...)
 	if err != nil {
 		return nil, nil, err
 	}
