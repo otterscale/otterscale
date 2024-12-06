@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/google/wire"
 
+	"github.com/openhdc/openhdc/connector/postgresql/client"
 	"github.com/openhdc/openhdc/pkg/app"
 	"github.com/openhdc/openhdc/pkg/connector"
 	"github.com/openhdc/openhdc/pkg/transport"
@@ -11,14 +12,14 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
-	newConnector,
-	connector.NewDestinationAdapter,
-	connector.NewTransportServer,
+	client.NewCodec,
+	client.New,
+	connector.New,
 )
 
-func newApp(srv *transport.Server) *app.App {
+func newApp(c *connector.Connector) *app.App {
 	return app.New(
-		app.Servers(srv),
+		app.Servers(c.Server),
 	)
 }
 
@@ -35,8 +36,17 @@ func main() {
 	// cfg := get.NewConfig(key)
 	// defer func() { _ = cfg.Close() }()
 
+	connectorOpts := []connector.Option{}
+
+	clientOpts := []client.Option{}
+
+	serverOpts := []transport.ServerOption{
+		transport.Network("unix"),
+		transport.Address(":0"),
+	}
+
 	// wire app
-	app, cleanup, err := wireApp()
+	app, cleanup, err := wireApp(clientOpts, serverOpts, connectorOpts)
 	if err != nil {
 		panic(err)
 	}
