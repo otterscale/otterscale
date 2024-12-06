@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+
 	"github.com/openhdc/openhdc/pkg/adapter"
 )
 
@@ -25,7 +26,7 @@ type Client struct {
 	pool       *pgxpool.Pool
 }
 
-func New(opts ...Option) (adapter.Adapter, error) {
+func NewAdapter(opts ...Option) (adapter.Adapter, error) {
 	c := &Client{
 		batchSize:      defaultBatchSize,
 		batchSizeBytes: defaultBatchSizeBytes,

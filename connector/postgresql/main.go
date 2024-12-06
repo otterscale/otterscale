@@ -13,7 +13,7 @@ import (
 
 var ProviderSet = wire.NewSet(
 	client.NewCodec,
-	client.New,
+	client.NewAdapter,
 	connector.New,
 )
 
@@ -36,14 +36,15 @@ func main() {
 	// cfg := get.NewConfig(key)
 	// defer func() { _ = cfg.Close() }()
 
-	connectorOpts := []connector.Option{}
-
+	// TODO: OPTIONS FROM FLAG
 	clientOpts := []client.Option{}
 
 	serverOpts := []transport.ServerOption{
 		transport.Network("unix"),
 		transport.Address(":0"),
 	}
+
+	connectorOpts := []connector.Option{}
 
 	// wire app
 	app, cleanup, err := wireApp(clientOpts, serverOpts, connectorOpts)

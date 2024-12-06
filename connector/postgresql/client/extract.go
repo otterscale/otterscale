@@ -48,7 +48,7 @@ func (c *Client) List(ctx context.Context, record chan<- arrow.Record) error {
 		for idx, val := range vals {
 			if err := codec.Append(b.Field(idx), val); err != nil {
 				fmt.Println(reflect.TypeOf(b.Field(idx)), reflect.TypeOf(val))
-				panic(err)
+				return err
 			}
 		}
 
