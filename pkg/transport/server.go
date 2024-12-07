@@ -35,6 +35,7 @@ func NewServer(opts ...ServerOption) *Server {
 	return s
 }
 
+// TODO: ctx
 func (s *Server) Start(ctx context.Context) error {
 	listener, err := net.Listen(s.network, s.address)
 	if err != nil {
@@ -44,6 +45,7 @@ func (s *Server) Start(ctx context.Context) error {
 	return s.Serve(listener)
 }
 
+// TODO: ctx
 func (s *Server) Stop(ctx context.Context) error {
 	s.healthServer.Shutdown()
 	s.GracefulStop()
