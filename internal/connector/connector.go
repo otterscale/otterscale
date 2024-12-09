@@ -2,6 +2,8 @@ package connector
 
 import (
 	"context"
+	"errors"
+	"io"
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"golang.org/x/sync/errgroup"
@@ -54,35 +56,59 @@ func (c *Connector) Close(ctx context.Context, _ *pb.CloseRequest) (*emptypb.Emp
 }
 
 func (c *Connector) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) error {
-	recs := make(chan arrow.Record)
+	msgs := make(chan arrow.Record)
+	defer close(msgs)
 	eg, ctx := errgroup.WithContext(stream.Context())
 	eg.Go(func() error {
-		defer close(recs)
-		return c.opts.source.Read(ctx, recs, WithTables(req.Tables), WithSkipTables(req.SkipTables))
+		return c.opts.source.Read(ctx, msgs, WithTables(req.Tables), WithSkipTables(req.SkipTables))
 	})
-	for rec := range recs {
-		recBytes, err := recordToBytes(rec)
-		if err != nil {
-			return err
+	eg.Go(func() error {
+		for msg := range msgs {
+			rec, err := FromRecord(msg)
+			if err != nil {
+				return err
+			}
+			res := &pb.PullResponse{
+				Record: rec,
+			}
+			// TODO: CHECK SIZE
+			// if proto.Size(res) > MaxMsgSize {
+			// 	continue
+			// }
+			if err := stream.Send(res); err != nil {
+				return err
+			}
 		}
-		res := &pb.PullResponse{
-			Record: recBytes,
-		}
-		// TODO: CHECK SIZE
-		// if proto.Size(res) > MaxMsgSize {
-		// 	continue
-		// }
-		if err := stream.Send(res); err != nil {
-			return err
-		}
-	}
+		return nil
+	})
 	return eg.Wait()
 }
 
 func (c *Connector) Push(stream pb.Connector_PushServer) error {
-	// ctx := stream.Context()
-	// return s.destination.Write(ctx)
-	return nil
+	msgs := make(chan arrow.Record)
+	defer close(msgs)
+	eg, ctx := errgroup.WithContext(stream.Context())
+	eg.Go(func() error {
+		return c.opts.destination.Write(ctx, msgs)
+	})
+	eg.Go(func() error {
+		for {
+			req, err := stream.Recv()
+			if err != nil {
+				if errors.Is(err, io.EOF) {
+					break
+				}
+				return err
+			}
+			rec, err := ToRecord(req.GetRecord())
+			if err != nil {
+				return err
+			}
+			msgs <- rec
+		}
+		return nil
+	})
+	return eg.Wait()
 }
 
 type Source interface {

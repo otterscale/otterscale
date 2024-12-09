@@ -24,6 +24,8 @@ message PullResponse {
   bytes record = 1;
 }
 
-message PushRequest {}
+message PushRequest {
+  bytes record = 1;
+}
 
 message PushResponse {}
