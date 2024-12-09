@@ -5,6 +5,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+// TODO: BETTER
+const maxMsgSize = 100 * 1024 * 1024
+
 type ClientOption func(*Client)
 
 func WithEndpoint(endpoint string) ClientOption {
