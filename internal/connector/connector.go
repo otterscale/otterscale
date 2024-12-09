@@ -16,6 +16,6 @@ type Connector interface {
 	codec.Codec
 
 	Read(ctx context.Context, rec chan<- arrow.Record, opts ...ReadOption) error
-	Write(ctx context.Context, rec chan<- arrow.Record, opts ...WriteOption) error
+	Write(ctx context.Context, rec <-chan arrow.Record, opts ...WriteOption) error
 	Close(ctx context.Context) error
 }
