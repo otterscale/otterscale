@@ -3,6 +3,8 @@ package connector
 import (
 	"context"
 
+	"github.com/apache/arrow-go/v18/arrow"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
@@ -52,13 +54,43 @@ func (c *Connector) Close(ctx context.Context, _ *pb.CloseRequest) (*emptypb.Emp
 }
 
 func (c *Connector) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) error {
-	// ctx := stream.Context()
-	// records := make(chan arrow.Record)
-	return nil
+	recs := make(chan arrow.Record)
+	eg, ctx := errgroup.WithContext(stream.Context())
+	eg.Go(func() error {
+		defer close(recs)
+		return c.opts.source.Read(ctx, recs, WithTables(req.Tables), WithSkipTables(req.SkipTables))
+	})
+	for rec := range recs {
+		recBytes, err := recordToBytes(rec)
+		if err != nil {
+			return err
+		}
+		res := &pb.PullResponse{
+			Record: recBytes,
+		}
+		// TODO: CHECK SIZE
+		// if proto.Size(res) > MaxMsgSize {
+		// 	continue
+		// }
+		if err := stream.Send(res); err != nil {
+			return err
+		}
+	}
+	return eg.Wait()
 }
 
 func (c *Connector) Push(stream pb.Connector_PushServer) error {
 	// ctx := stream.Context()
 	// return s.destination.Write(ctx)
 	return nil
+}
+
+type Source interface {
+	Read(ctx context.Context, record chan<- arrow.Record, opts ...ReadOption) error
+	Close(ctx context.Context) error
+}
+
+type Destination interface {
+	Write(ctx context.Context, record chan<- arrow.Record) error
+	Close(ctx context.Context) error
 }
