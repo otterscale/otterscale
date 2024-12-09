@@ -11,7 +11,7 @@ import (
 	"github.com/avast/retry-go/v4"
 	"google.golang.org/grpc"
 
-	"github.com/openhdc/openhdc/pkg/transport"
+	"github.com/openhdc/openhdc/internal/transport"
 )
 
 // TODO: COMBINE WITH CONNECTOR

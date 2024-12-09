@@ -8,7 +8,7 @@ import (
 	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/jackc/pgx/v5/pgtype"
 
-	"github.com/openhdc/openhdc/pkg/codec"
+	"github.com/openhdc/openhdc/internal/codec"
 )
 
 var _ codec.Codec = (*postgresqlCodec)(nil)

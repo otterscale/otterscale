@@ -1,6 +1,6 @@
 package connector
 
-import "github.com/openhdc/openhdc/pkg/transport"
+import "github.com/openhdc/openhdc/internal/transport"
 
 type Option func(*options)
 

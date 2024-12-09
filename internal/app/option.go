@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/openhdc/openhdc/pkg/transport"
+	"github.com/openhdc/openhdc/internal/transport"
 )
 
 type Option func(*options)
