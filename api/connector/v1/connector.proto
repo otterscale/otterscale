@@ -15,9 +15,14 @@ service Connector {
 
 message CloseRequest {}
 
-message PullRequest {}
+message PullRequest {
+  repeated string tables = 1;
+  repeated string skip_tables = 2;
+}
 
-message PullResponse {}
+message PullResponse {
+  bytes record = 1;
+}
 
 message PushRequest {}
 

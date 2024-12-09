@@ -34,3 +34,22 @@ func WithServerOptions(serverOpts []transport.ServerOption) Option {
 		o.serverOpts = serverOpts
 	}
 }
+
+type ReadOption func(*readOptions)
+
+type readOptions struct {
+	tables     []string
+	skipTables []string
+}
+
+func WithTables(tables []string) ReadOption {
+	return func(o *readOptions) {
+		o.tables = tables
+	}
+}
+
+func WithSkipTables(skipTables []string) ReadOption {
+	return func(o *readOptions) {
+		o.skipTables = skipTables
+	}
+}
