@@ -2,23 +2,19 @@ package client
 
 import (
 	"context"
-	"fmt"
-	"log/slog"
+	"net"
 	"os"
 	"os/exec"
-	"time"
 
-	"github.com/avast/retry-go/v4"
 	"google.golang.org/grpc"
-
-	"github.com/openhdc/openhdc/internal/transport"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-// TODO: COMBINE WITH CONNECTOR
+// TODO: BETTER
+const maxMsgSize = 100 * 1024 * 1024
 
 type Client struct {
-	opts   options
-	socket string
+	opts options
 	// wg     *sync.WaitGroup
 
 	Conn *grpc.ClientConn
@@ -29,19 +25,14 @@ func New(ctx context.Context, opts ...Option) (*Client, error) {
 	for _, opt := range opts {
 		opt(&o)
 	}
-	f, err := os.CreateTemp("", "openhdc-*.sock")
-	if err != nil {
-		return nil, err
-	}
 	c := &Client{
-		opts:   o,
-		socket: f.Name(),
+		opts: o,
 		// wg: &sync.WaitGroup{},
 	}
 	if err := c.download(ctx); err != nil {
 		return nil, err
 	}
-	if err := c.exec(ctx); err != nil {
+	if err := c.start(ctx); err != nil {
 		return nil, err
 	}
 	return c, nil
@@ -61,40 +52,42 @@ func (c *Client) download(_ context.Context) error {
 // TODO ERROR HANDLING
 
 func (c *Client) start(ctx context.Context) error {
-	args := []string{"serve", "--network", "unix", "--address", c.socket}
-	cmd := exec.CommandContext(ctx, c.opts.path, args...)
+	address, err := freeAddress()
+	if err != nil {
+		return err
+	}
+
+	c.Conn, err = grpc.NewClient(address,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(maxMsgSize),
+			grpc.MaxCallSendMsgSize(maxMsgSize),
+		))
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.CommandContext(ctx, c.opts.path, "--address", address)
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
+
 	cmd.SysProcAttr = sysProcAttr()
 	return cmd.Start()
 }
 
-func (c *Client) exec(ctx context.Context) error {
-	return retry.Do(
-		func() error {
-			if err := c.start(ctx); err != nil {
-				return err
-			}
-			// c.wg.Add(1)
-			conn, err := transport.NewClient(
-				transport.WithEndpoint(fmt.Sprintf("unix://%s", c.socket)),
-				transport.WithConnector(),
-			)
-			if err != nil {
-				return err
-			}
-			c.Conn = conn
-			return nil
-		},
-		retry.Attempts(3),
-		retry.Delay(time.Second),
-		retry.LastErrorOnly(true),
-		retry.OnRetry(func(n uint, err error) {
-			slog.Debug("failed to start connector", "error", err)
-		}),
-	)
+func (c *Client) Terminate() error {
+	return nil
 }
 
-func (c *Client) Terminate() error {
-	_ = os.RemoveAll(c.socket)
-
-	return nil
+func freeAddress() (string, error) {
+	addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
+	if err != nil {
+		return "", err
+	}
+	lis, err := net.ListenTCP("tcp", addr)
+	if err != nil {
+		return "", err
+	}
+	defer lis.Close()
+	return lis.Addr().String(), nil
 }
