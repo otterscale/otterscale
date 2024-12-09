@@ -1,35 +1,49 @@
 package client
 
-import "time"
+import (
+	"time"
 
-type Option func(*Client)
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+type Option func(*options)
+
+type options struct {
+	batchSize      int64
+	batchSizeBytes int64
+	batchTimeout   time.Duration
+	createIndex    bool
+
+	connString string
+	config     *pgxpool.Config
+}
 
 func WithBatchSize(batchSize int64) Option {
-	return func(c *Client) {
-		c.batchSize = batchSize
+	return func(o *options) {
+		o.batchSize = batchSize
 	}
 }
 
 func WithBatchSizeBytes(batchSizeBytes int64) Option {
-	return func(c *Client) {
-		c.batchSizeBytes = batchSizeBytes
+	return func(o *options) {
+		o.batchSizeBytes = batchSizeBytes
 	}
 }
 
 func WithBatchTimeout(batchTimeout time.Duration) Option {
-	return func(c *Client) {
-		c.batchTimeout = batchTimeout
+	return func(o *options) {
+		o.batchTimeout = batchTimeout
 	}
 }
 
 func WithCreateIndex(createIndex bool) Option {
-	return func(c *Client) {
-		c.createIndex = createIndex
+	return func(o *options) {
+		o.createIndex = createIndex
 	}
 }
 
 func WithConnConfig(connString string) Option {
-	return func(c *Client) {
-		c.connString = connString
+	return func(o *options) {
+		o.connString = connString
 	}
 }

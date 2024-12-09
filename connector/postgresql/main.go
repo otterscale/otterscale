@@ -19,7 +19,7 @@ var ProviderSet = wire.NewSet(
 
 func newApp(c *connector.Connector) *app.App {
 	return app.New(
-		app.Servers(c.Server),
+		app.Servers(c.Server()),
 	)
 }
 

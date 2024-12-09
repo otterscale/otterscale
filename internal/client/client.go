@@ -14,18 +14,41 @@ import (
 	"github.com/openhdc/openhdc/pkg/transport"
 )
 
+// TODO: COMBINE WITH CONNECTOR
+
 type Client struct {
-	name    string
-	version string
-	path    string
-	socket  string
+	opts   options
+	socket string
 	// wg     *sync.WaitGroup
 
 	Conn *grpc.ClientConn
 }
 
+func New(ctx context.Context, opts ...Option) (*Client, error) {
+	o := options{}
+	for _, opt := range opts {
+		opt(&o)
+	}
+	f, err := os.CreateTemp("", "openhdc-*.sock")
+	if err != nil {
+		return nil, err
+	}
+	c := &Client{
+		opts:   o,
+		socket: f.Name(),
+		// wg: &sync.WaitGroup{},
+	}
+	if err := c.download(ctx); err != nil {
+		return nil, err
+	}
+	if err := c.exec(ctx); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
 func (c *Client) Name() string {
-	return c.name
+	return c.opts.name
 }
 
 // TODO DOWNLOAD
@@ -39,7 +62,7 @@ func (c *Client) download(_ context.Context) error {
 
 func (c *Client) start(ctx context.Context) error {
 	args := []string{"serve", "--network", "unix", "--address", c.socket}
-	cmd := exec.CommandContext(ctx, c.path, args...)
+	cmd := exec.CommandContext(ctx, c.opts.path, args...)
 	cmd.SysProcAttr = sysProcAttr()
 	return cmd.Start()
 }
@@ -74,25 +97,4 @@ func (c *Client) Terminate() error {
 	_ = os.RemoveAll(c.socket)
 
 	return nil
-}
-
-func New(ctx context.Context, opts ...Option) (*Client, error) {
-	c := &Client{
-		// wg: &sync.WaitGroup{},
-	}
-	for _, opt := range opts {
-		opt(c)
-	}
-	f, err := os.CreateTemp("", "openhdc-*.sock")
-	if err != nil {
-		return nil, err
-	}
-	c.socket = f.Name()
-	if err := c.download(ctx); err != nil {
-		return nil, err
-	}
-	if err := c.exec(ctx); err != nil {
-		return nil, err
-	}
-	return c, nil
 }

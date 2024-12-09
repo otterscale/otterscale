@@ -15,37 +15,37 @@ var _ pb.ConnectorServer = (*Connector)(nil)
 type Connector struct {
 	pb.UnimplementedConnectorServer
 
-	codec       codec.Codec
-	adapter     adapter.Adapter
-	kind        Kind
-	source      Source
-	destination Destination
-	serverOpts  []transport.ServerOption
-
-	Server *transport.Server
+	opts    options
+	codec   codec.Codec
+	adapter adapter.Adapter
+	server  *transport.Server
 }
 
 func New(codec codec.Codec, adapter adapter.Adapter, opts ...Option) *Connector {
+	o := options{}
+	for _, opt := range opts {
+		opt(&o)
+	}
 	c := &Connector{
+		opts:    o,
 		codec:   codec,
 		adapter: adapter,
 	}
-	for _, opt := range opts {
-		opt(c)
-	}
-
-	c.Server = transport.NewServer(append(c.serverOpts, transport.Connector())...)
-	pb.RegisterConnectorServer(c.Server, c)
-
+	c.server = transport.NewServer(append(o.serverOpts, transport.Connector())...)
+	pb.RegisterConnectorServer(c.server, c)
 	return c
 }
 
+func (c *Connector) Server() *transport.Server {
+	return c.server
+}
+
 func (c *Connector) Close(ctx context.Context, _ *pb.CloseRequest) (*emptypb.Empty, error) {
-	if c.source != nil {
-		return &emptypb.Empty{}, c.source.Close(ctx)
+	if c.opts.source != nil {
+		return &emptypb.Empty{}, c.opts.source.Close(ctx)
 	}
-	if c.destination != nil {
-		return &emptypb.Empty{}, c.destination.Close(ctx)
+	if c.opts.destination != nil {
+		return &emptypb.Empty{}, c.opts.destination.Close(ctx)
 	}
 	return &emptypb.Empty{}, nil
 }
