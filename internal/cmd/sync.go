@@ -2,11 +2,16 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+
+	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"github.com/openhdc/openhdc/internal/client"
 	"github.com/openhdc/openhdc/internal/workload"
-	"github.com/spf13/cobra"
 )
 
 func NewCmdSync() *cobra.Command {
@@ -102,6 +107,29 @@ func sync(cmd *cobra.Command, args []string) error {
 	// start sync
 	for _, source := range sources {
 		fmt.Println(source.Name())
+
+		srcClient := pb.NewConnectorClient(source.Conn)
+
+		req := &pb.PullRequest{
+			Tables: []string{},
+		}
+
+		pull, err := srcClient.Pull(ctx, req, grpc.WaitForReady(true))
+		if err != nil {
+			return err
+		}
+
+		r, err := pull.Recv()
+		if err != nil {
+			if errors.Is(err, io.EOF) {
+				break
+			}
+			return err
+		}
+
+		rec := r.GetRecord()
+		fmt.Printf("%+v", string(rec))
+
 		for _, destination := range destinations {
 			fmt.Println(destination.Name())
 			for _, transformer := range transformers {
