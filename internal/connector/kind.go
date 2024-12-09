@@ -7,3 +7,14 @@ const (
 	KindSource
 	KindDestination
 )
+
+type WriteKind int
+
+const (
+	WriteKindUnspecified Kind = iota
+	WriteKindInsert
+	WriteKindUpdate
+	WriteKindUpsert
+	WriteKindDelete
+	WriteKindMigrate
+)

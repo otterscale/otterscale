@@ -4,22 +4,18 @@ import (
 	"github.com/google/wire"
 
 	"github.com/openhdc/openhdc/connector/postgresql/client"
+	"github.com/openhdc/openhdc/connector/postgresql/pgarrow"
 	"github.com/openhdc/openhdc/internal/app"
 	"github.com/openhdc/openhdc/internal/connector"
-	"github.com/openhdc/openhdc/internal/transport"
 
 	_ "go.uber.org/automaxprocs"
 )
 
-var ProviderSet = wire.NewSet(
-	client.NewCodec,
-	client.NewAdapter,
-	connector.New,
-)
+var ProviderSet = wire.NewSet(pgarrow.NewCodec, client.NewConnector, connector.NewService, connector.NewServer)
 
-func newApp(c *connector.Connector) *app.App {
+func newApp(srv *connector.Server) *app.App {
 	return app.New(
-		app.Servers(c.Server()),
+		app.WithServers(srv),
 	)
 }
 
@@ -39,15 +35,15 @@ func main() {
 	// TODO: OPTIONS FROM FLAG
 	clientOpts := []client.Option{}
 
-	serverOpts := []transport.ServerOption{
-		transport.Network("unix"),
-		transport.Address(":0"),
-	}
-
 	connectorOpts := []connector.Option{}
 
+	serverOpts := []connector.ServerOption{
+		connector.WithNetwork("unix"),
+		connector.WithAddress(":0"),
+	}
+
 	// wire app
-	app, cleanup, err := wireApp(clientOpts, serverOpts, connectorOpts)
+	app, cleanup, err := wireApp(clientOpts, connectorOpts, serverOpts)
 	if err != nil {
 		panic(err)
 	}

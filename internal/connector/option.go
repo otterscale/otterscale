@@ -60,3 +60,22 @@ func WithSkipTables(skipTables []string) ReadOption {
 		o.skipTables = skipTables
 	}
 }
+
+type WriteOption func(*writeOptions)
+
+type writeOptions struct {
+	kind  WriteKind
+	table string
+}
+
+func WithWriteKind(kind WriteKind) WriteOption {
+	return func(o *writeOptions) {
+		o.kind = kind
+	}
+}
+
+func WithTable(table string) WriteOption {
+	return func(o *writeOptions) {
+		o.table = table
+	}
+}

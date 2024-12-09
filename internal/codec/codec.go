@@ -1,16 +1,20 @@
 package codec
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/apache/arrow-go/v18/arrow/extensions"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-var ErrNotSupported = errors.New("not supported")
+var (
+	ErrNotImplemented = status.Errorf(codes.Unimplemented, "not implemented")
+	ErrNotSupported   = status.Errorf(codes.InvalidArgument, "not supported")
+)
 
 type Codec interface {
 	Encode(typ, val any) (arrow.Array, error)

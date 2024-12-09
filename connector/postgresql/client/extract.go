@@ -34,7 +34,6 @@ func (c *Client) List(ctx context.Context, record chan<- arrow.Record) error {
 
 	// FIXME: STUB
 	schema := &arrow.Schema{}
-	codec := NewCodec()
 
 	for rows.Next() {
 		vals, err := rows.Values()
@@ -46,7 +45,7 @@ func (c *Client) List(ctx context.Context, record chan<- arrow.Record) error {
 		defer b.Release()
 
 		for idx, val := range vals {
-			if err := codec.Append(b.Field(idx), val); err != nil {
+			if err := c.Append(b.Field(idx), val); err != nil {
 				fmt.Println(reflect.TypeOf(b.Field(idx)), reflect.TypeOf(val))
 				return err
 			}

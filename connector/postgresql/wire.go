@@ -8,9 +8,8 @@ import (
 	"github.com/openhdc/openhdc/connector/postgresql/client"
 	"github.com/openhdc/openhdc/internal/app"
 	"github.com/openhdc/openhdc/internal/connector"
-	"github.com/openhdc/openhdc/internal/transport"
 )
 
-func wireApp([]client.Option, []transport.ServerOption, []connector.Option) (*app.App, func(), error) {
+func wireApp([]client.Option, []connector.Option, []connector.ServerOption) (*app.App, func(), error) {
 	panic(wire.Build(newApp, ProviderSet))
 }
