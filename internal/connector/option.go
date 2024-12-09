@@ -1,14 +1,13 @@
 package connector
 
-import "github.com/openhdc/openhdc/internal/transport"
+import (
+	"google.golang.org/grpc"
+)
 
 type Option func(*options)
 
 type options struct {
-	kind        Kind
-	source      Source
-	destination Destination
-	serverOpts  []transport.ServerOption
+	kind Kind
 }
 
 func WithKind(kind Kind) Option {
@@ -17,21 +16,29 @@ func WithKind(kind Kind) Option {
 	}
 }
 
-func WithSource(source Source) Option {
-	return func(o *options) {
-		o.source = source
+type ServerOption func(*serverOptions)
+
+type serverOptions struct {
+	network  string
+	address  string
+	grpcOpts []grpc.ServerOption
+}
+
+func WithNetwork(network string) ServerOption {
+	return func(o *serverOptions) {
+		o.network = network
 	}
 }
 
-func WithDestination(destination Destination) Option {
-	return func(o *options) {
-		o.destination = destination
+func WithAddress(address string) ServerOption {
+	return func(o *serverOptions) {
+		o.address = address
 	}
 }
 
-func WithServerOptions(serverOpts []transport.ServerOption) Option {
-	return func(o *options) {
-		o.serverOpts = serverOpts
+func WithGrpcServerOptions(grpcOpts ...grpc.ServerOption) ServerOption {
+	return func(o *serverOptions) {
+		o.grpcOpts = append(o.grpcOpts, grpcOpts...)
 	}
 }
 

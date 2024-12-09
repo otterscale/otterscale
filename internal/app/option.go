@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/openhdc/openhdc/internal/transport"
+	"github.com/openhdc/openhdc/internal/connector"
 )
 
 type Option func(*options)
@@ -17,7 +17,7 @@ type options struct {
 	ctx     context.Context
 	sigs    []os.Signal
 	timeout time.Duration
-	servers []*transport.Server
+	servers []*connector.Server
 }
 
 func WithID(id string) Option {
@@ -50,13 +50,13 @@ func WithSignals(sigs ...os.Signal) Option {
 	}
 }
 
-func Timeout(timeout time.Duration) Option {
+func WithTimeout(timeout time.Duration) Option {
 	return func(o *options) {
 		o.timeout = timeout
 	}
 }
 
-func Servers(servers ...*transport.Server) Option {
+func WithServers(servers ...*connector.Server) Option {
 	return func(o *options) {
 		o.servers = servers
 	}
