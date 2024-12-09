@@ -3,11 +3,12 @@ package connector
 import (
 	"context"
 
-	pb "github.com/openhdc/openhdc/api/connector/v1"
-	"github.com/openhdc/openhdc/pkg/adapter"
-	"github.com/openhdc/openhdc/pkg/codec"
-	"github.com/openhdc/openhdc/pkg/transport"
 	"google.golang.org/protobuf/types/known/emptypb"
+
+	pb "github.com/openhdc/openhdc/api/connector/v1"
+	"github.com/openhdc/openhdc/internal/adapter"
+	"github.com/openhdc/openhdc/internal/codec"
+	"github.com/openhdc/openhdc/internal/transport"
 )
 
 var _ pb.ConnectorServer = (*Connector)(nil)

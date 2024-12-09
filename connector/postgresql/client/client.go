@@ -6,7 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/openhdc/openhdc/pkg/adapter"
+	"github.com/openhdc/openhdc/internal/adapter"
 )
 
 const (
