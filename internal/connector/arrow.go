@@ -6,9 +6,13 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/ipc"
 	"github.com/apache/arrow-go/v18/arrow/memory"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-func FromRecord(rec arrow.Record) ([]byte, error) {
+var ErrNotSupported = status.Errorf(codes.InvalidArgument, "not supported")
+
+func FromArrowRecord(rec arrow.Record) ([]byte, error) {
 	var buf bytes.Buffer
 	w := ipc.NewWriter(&buf, ipc.WithSchema(rec.Schema()), ipc.WithAllocator(memory.DefaultAllocator))
 	defer w.Close()
@@ -18,7 +22,7 @@ func FromRecord(rec arrow.Record) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func ToRecord(b []byte) (arrow.Record, error) {
+func ToArrowRecord(b []byte) (arrow.Record, error) {
 	r, err := ipc.NewReader(bytes.NewReader(b), ipc.WithAllocator(memory.DefaultAllocator))
 	if err != nil {
 		return nil, err

@@ -6,7 +6,8 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/openhdc/openhdc/internal/adapter"
+	"github.com/openhdc/openhdc/internal/codec"
+	"github.com/openhdc/openhdc/internal/connector"
 )
 
 const (
@@ -16,11 +17,13 @@ const (
 )
 
 type Client struct {
+	codec.Codec
 	opts options
+
 	pool *pgxpool.Pool
 }
 
-func NewAdapter(opts ...Option) (adapter.Adapter, error) {
+func NewConnector(codec codec.Codec, opts ...Option) (connector.Connector, error) {
 	o := options{
 		batchSize:      defaultBatchSize,
 		batchSizeBytes: defaultBatchSizeBytes,
@@ -46,8 +49,9 @@ func NewAdapter(opts ...Option) (adapter.Adapter, error) {
 	}
 
 	return &Client{
-		opts: o,
-		pool: pool,
+		Codec: codec,
+		opts:  o,
+		pool:  pool,
 	}, nil
 }
 
@@ -63,5 +67,10 @@ func (c *Client) TestConnection(ctx context.Context) error {
 		return err
 	}
 
+	return nil
+}
+
+func (c *Client) Close(ctx context.Context) error {
+	c.pool.Close()
 	return nil
 }

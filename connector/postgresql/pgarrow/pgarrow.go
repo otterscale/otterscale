@@ -1,4 +1,4 @@
-package client
+package pgarrow
 
 import (
 	"fmt"
@@ -11,17 +11,17 @@ import (
 	"github.com/openhdc/openhdc/internal/codec"
 )
 
-var _ codec.Codec = (*postgresqlCodec)(nil)
+var _ codec.Codec = (*Codec)(nil)
 
-type postgresqlCodec struct {
+type Codec struct {
 	codec.DefaultCodec
 }
 
 func NewCodec() codec.Codec {
-	return &postgresqlCodec{}
+	return &Codec{}
 }
 
-func (c *postgresqlCodec) newArray(dt arrow.DataType, val any) (arrow.Array, error) {
+func (c *Codec) newArray(dt arrow.DataType, val any) (arrow.Array, error) {
 	b := array.NewBuilder(memory.DefaultAllocator, dt)
 	defer b.Release()
 	if val != nil {
@@ -33,7 +33,7 @@ func (c *postgresqlCodec) newArray(dt arrow.DataType, val any) (arrow.Array, err
 }
 
 //nolint:gocyclo
-func (c *postgresqlCodec) Encode(typ, val any) (arrow.Array, error) {
+func (c *Codec) Encode(typ, val any) (arrow.Array, error) {
 	switch typ.(type) {
 	case *pgtype.ArrayCodec:
 	case pgtype.BitsCodec:

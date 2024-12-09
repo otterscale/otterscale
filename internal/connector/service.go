@@ -32,10 +32,7 @@ func NewService(c Connector, opts ...Option) *Service {
 }
 
 func (s *Service) Close(ctx context.Context, _ *pb.CloseRequest) (*emptypb.Empty, error) {
-	if s.connector != nil {
-		return &emptypb.Empty{}, s.connector.Close(ctx)
-	}
-	return &emptypb.Empty{}, nil
+	return &emptypb.Empty{}, s.connector.Close(ctx)
 }
 
 func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) error {
@@ -47,7 +44,7 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 	})
 	eg.Go(func() error {
 		for msg := range msgs {
-			rec, err := FromRecord(msg)
+			rec, err := FromArrowRecord(msg)
 			if err != nil {
 				return err
 			}
@@ -83,7 +80,7 @@ func (s *Service) Push(stream pb.Connector_PushServer) error {
 				}
 				return err
 			}
-			rec, err := ToRecord(req.GetRecord())
+			rec, err := ToArrowRecord(req.GetRecord())
 			if err != nil {
 				return err
 			}
