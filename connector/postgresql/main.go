@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+
 	"github.com/google/wire"
 
 	"github.com/openhdc/openhdc/connector/postgresql/client"
@@ -9,6 +11,11 @@ import (
 	"github.com/openhdc/openhdc/internal/connector"
 
 	_ "go.uber.org/automaxprocs"
+)
+
+var (
+	network = flag.String("network", "tcp", "")
+	address = flag.String("address", ":0", "")
 )
 
 var ProviderSet = wire.NewSet(pgarrow.NewCodec, client.NewConnector, connector.NewService, connector.NewServer)
@@ -20,6 +27,7 @@ func newApp(srv *connector.Server) *app.App {
 }
 
 func main() {
+	flag.Parse()
 	// // create zap logger
 	// zlog := zap.NewServiceZap(id, name, version, env, key, host, ip)
 	// logger := zap.NewLogger(zlog)
@@ -33,13 +41,15 @@ func main() {
 	// defer func() { _ = cfg.Close() }()
 
 	// TODO: OPTIONS FROM FLAG
-	clientOpts := []client.Option{}
+	clientOpts := []client.Option{
+		client.WithConnConfig(""),
+	}
 
 	connectorOpts := []connector.Option{}
 
 	serverOpts := []connector.ServerOption{
-		connector.WithNetwork("unix"),
-		connector.WithAddress(":0"),
+		connector.WithNetwork(*network),
+		connector.WithAddress(*address),
 	}
 
 	// wire app
