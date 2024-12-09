@@ -2,28 +2,35 @@ package connector
 
 import "github.com/openhdc/openhdc/pkg/transport"
 
-type Option func(*Connector)
+type Option func(*options)
+
+type options struct {
+	kind        Kind
+	source      Source
+	destination Destination
+	serverOpts  []transport.ServerOption
+}
 
 func WithKind(kind Kind) Option {
-	return func(c *Connector) {
-		c.kind = kind
+	return func(o *options) {
+		o.kind = kind
 	}
 }
 
 func WithSource(source Source) Option {
-	return func(c *Connector) {
-		c.source = source
+	return func(o *options) {
+		o.source = source
 	}
 }
 
 func WithDestination(destination Destination) Option {
-	return func(c *Connector) {
-		c.destination = destination
+	return func(o *options) {
+		o.destination = destination
 	}
 }
 
 func WithServerOptions(serverOpts []transport.ServerOption) Option {
-	return func(c *Connector) {
-		c.serverOpts = serverOpts
+	return func(o *options) {
+		o.serverOpts = serverOpts
 	}
 }

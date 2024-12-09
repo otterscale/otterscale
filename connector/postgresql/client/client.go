@@ -16,29 +16,23 @@ const (
 )
 
 type Client struct {
-	batchSize      int64
-	batchSizeBytes int64
-	batchTimeout   time.Duration
-	createIndex    bool
-
-	connString string
-	config     *pgxpool.Config
-	pool       *pgxpool.Pool
+	opts options
+	pool *pgxpool.Pool
 }
 
 func NewAdapter(opts ...Option) (adapter.Adapter, error) {
-	c := &Client{
+	o := options{
 		batchSize:      defaultBatchSize,
 		batchSizeBytes: defaultBatchSizeBytes,
 		batchTimeout:   defaultBatchTimeout,
 		createIndex:    true,
 	}
 	for _, opt := range opts {
-		opt(c)
+		opt(&o)
 	}
 
 	var err error
-	c.config, err = pgxpool.ParseConfig(c.connString)
+	o.config, err = pgxpool.ParseConfig(o.connString)
 	if err != nil {
 		return nil, err
 	}
@@ -46,12 +40,15 @@ func NewAdapter(opts ...Option) (adapter.Adapter, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	c.pool, err = pgxpool.NewWithConfig(ctx, c.config)
+	pool, err := pgxpool.NewWithConfig(ctx, o.config)
 	if err != nil {
 		return nil, err
 	}
 
-	return c, nil
+	return &Client{
+		opts: o,
+		pool: pool,
+	}, nil
 }
 
 func (c *Client) TestConnection(ctx context.Context) error {
