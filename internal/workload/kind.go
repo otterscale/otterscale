@@ -8,7 +8,8 @@ import (
 type Kind int
 
 const (
-	KindSource Kind = iota
+	KindUnspecified Kind = iota
+	KindSource
 	KindDestination
 	KindTransformer
 )
@@ -44,7 +45,7 @@ func (k *Kind) UnmarshalYAML(str []byte) error {
 func ParseKind(str string) (Kind, error) {
 	for key, val := range KindMap {
 		if val == str {
-			return Kind(key), nil
+			return key, nil
 		}
 	}
 	return Kind(0), fmt.Errorf("invalid kind %s", str)

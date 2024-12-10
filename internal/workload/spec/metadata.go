@@ -1,4 +1,4 @@
-package workload
+package spec
 
 type Metadata struct {
 	Name    string `yaml:"name"`
