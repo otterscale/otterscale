@@ -15,27 +15,18 @@ const maxMsgSize = 100 * 1024 * 1024
 
 type Client struct {
 	opts options
-	// wg     *sync.WaitGroup
 
 	Conn *grpc.ClientConn
 }
 
-func New(ctx context.Context, opts ...Option) (*Client, error) {
+func New(ctx context.Context, opts ...Option) *Client {
 	o := options{}
 	for _, opt := range opts {
 		opt(&o)
 	}
-	c := &Client{
+	return &Client{
 		opts: o,
-		// wg: &sync.WaitGroup{},
 	}
-	if err := c.download(ctx); err != nil {
-		return nil, err
-	}
-	if err := c.start(ctx); err != nil {
-		return nil, err
-	}
-	return c, nil
 }
 
 func (c *Client) Name() string {
@@ -44,14 +35,14 @@ func (c *Client) Name() string {
 
 // TODO DOWNLOAD
 
-func (c *Client) download(_ context.Context) error {
+func (c *Client) Download(_ context.Context) error {
 	return nil
 }
 
 // TODO READ LOG
 // TODO ERROR HANDLING
 
-func (c *Client) start(ctx context.Context) error {
+func (c *Client) Start(ctx context.Context) error {
 	address, err := freeAddress()
 	if err != nil {
 		return err
@@ -70,7 +61,6 @@ func (c *Client) start(ctx context.Context) error {
 	cmd := exec.CommandContext(ctx, c.opts.path, "--address", address)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-
 	cmd.SysProcAttr = sysProcAttr()
 	return cmd.Start()
 }

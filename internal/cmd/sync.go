@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -12,6 +13,7 @@ import (
 	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"github.com/openhdc/openhdc/internal/client"
 	"github.com/openhdc/openhdc/internal/workload"
+	"github.com/openhdc/openhdc/internal/workload/spec"
 )
 
 func NewCmdSync() *cobra.Command {
@@ -26,15 +28,10 @@ func NewCmdSync() *cobra.Command {
 	return cmd
 }
 
-func sourcesToClients(ctx context.Context, sources []*workload.Source) ([]*client.Client, error) {
+func sourcesToClients(ctx context.Context, sources []*spec.Source) ([]*client.Client, error) {
 	clients := []*client.Client{}
 	for _, source := range sources {
-		opts := []client.Option{
-			client.WithName(source.Name),
-			client.WithVersion(source.Version),
-			client.WithPath(source.Path),
-		}
-		client, err := client.New(ctx, opts...)
+		client, err := toClient(ctx, source)
 		if err != nil {
 			return nil, err
 		}
@@ -43,15 +40,10 @@ func sourcesToClients(ctx context.Context, sources []*workload.Source) ([]*clien
 	return clients, nil
 }
 
-func destinationsToClients(ctx context.Context, destinations []*workload.Destination) ([]*client.Client, error) {
+func destinationsToClients(ctx context.Context, destinations []*spec.Destination) ([]*client.Client, error) {
 	clients := []*client.Client{}
 	for _, destination := range destinations {
-		opts := []client.Option{
-			client.WithName(destination.Name),
-			client.WithVersion(destination.Version),
-			client.WithPath(destination.Path),
-		}
-		client, err := client.New(ctx, opts...)
+		client, err := toClient(ctx, destination)
 		if err != nil {
 			return nil, err
 		}
@@ -60,21 +52,32 @@ func destinationsToClients(ctx context.Context, destinations []*workload.Destina
 	return clients, nil
 }
 
-func transformersToClients(ctx context.Context, transformers []*workload.Transformer) ([]*client.Client, error) {
+func transformersToClients(ctx context.Context, transformers []*spec.Transformer) ([]*client.Client, error) {
 	clients := []*client.Client{}
 	for _, transformer := range transformers {
-		opts := []client.Option{
-			client.WithName(transformer.Name),
-			client.WithVersion(transformer.Version),
-			client.WithPath(transformer.Path),
-		}
-		client, err := client.New(ctx, opts...)
+		client, err := toClient(ctx, transformer)
 		if err != nil {
 			return nil, err
 		}
 		clients = append(clients, client)
 	}
 	return clients, nil
+}
+
+func toClient(ctx context.Context, s spec.Spec) (*client.Client, error) {
+	md := s.GetMetadata()
+	c := client.New(ctx,
+		client.WithName(md.Name),
+		client.WithVersion(md.Version),
+		client.WithPath(md.Path),
+	)
+	if err := c.Download(ctx); err != nil {
+		return nil, err
+	}
+	if err := c.Start(ctx); err != nil {
+		return nil, err
+	}
+	return c, nil
 }
 
 func sync(cmd *cobra.Command, args []string) error {
@@ -128,13 +131,29 @@ func sync(cmd *cobra.Command, args []string) error {
 		}
 
 		rec := r.GetRecord()
-		fmt.Printf("%+v", string(rec))
 
 		for _, destination := range destinations {
-			fmt.Println(destination.Name())
 			for _, transformer := range transformers {
 				fmt.Println(transformer.Name())
 			}
+
+			fmt.Println(destination.Name())
+			dstClient := pb.NewConnectorClient(destination.Conn)
+
+			rs, err := dstClient.Push(ctx, grpc.WaitForReady(true))
+			if err != nil {
+				return err
+			}
+
+			req1 := &pb.PushRequest{
+				Record: rec,
+			}
+
+			if err := rs.Send(req1); err != nil {
+				return err
+			}
+
+			time.Sleep(time.Second * 5)
 		}
 	}
 
