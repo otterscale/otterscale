@@ -13,10 +13,10 @@ func (c *Client) Write(ctx context.Context, rec <-chan arrow.Record, opts ...con
 	for {
 		select {
 		case msg, ok := <-rec:
+			fmt.Printf("[%v] %+v", ok, msg)
 			if !ok {
 				continue // ?
 			}
-			fmt.Printf("%+v", msg)
 		}
 	}
 	// fmt.Println(rec)
