@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -19,9 +20,10 @@ type App struct {
 
 func New(opts ...Option) *App {
 	o := options{
-		ctx:     context.Background(),
-		sigs:    []os.Signal{syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGKILL},
-		timeout: 10 * time.Second,
+		ctx:      context.Background(),
+		sigs:     []os.Signal{syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGKILL},
+		timeout:  10 * time.Second,
+		logLevel: slog.LevelDebug,
 	}
 	if id, err := uuid.NewUUID(); err == nil {
 		o.id = id.String()
@@ -29,7 +31,10 @@ func New(opts ...Option) *App {
 	for _, opt := range opts {
 		opt(&o)
 	}
-	// TODO: SLOG WITH TINT
+	// stderr: log
+	// stdout: fmt.Print*
+	handler := slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: o.logLevel})
+	slog.SetDefault(slog.New(handler))
 	ctx, cancel := context.WithCancel(o.ctx)
 	return &App{
 		ctx:    ctx,

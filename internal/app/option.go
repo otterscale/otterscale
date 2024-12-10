@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log/slog"
 	"os"
 	"time"
 
@@ -11,13 +12,14 @@ import (
 type Option func(*options)
 
 type options struct {
-	id      string
-	name    string
-	version string
-	ctx     context.Context
-	sigs    []os.Signal
-	timeout time.Duration
-	servers []*connector.Server
+	id       string
+	name     string
+	version  string
+	ctx      context.Context
+	sigs     []os.Signal
+	timeout  time.Duration
+	servers  []*connector.Server
+	logLevel slog.Leveler
 }
 
 func WithID(id string) Option {
@@ -59,5 +61,11 @@ func WithTimeout(timeout time.Duration) Option {
 func WithServers(servers ...*connector.Server) Option {
 	return func(o *options) {
 		o.servers = servers
+	}
+}
+
+func WithLogLevel(logLevel slog.Leveler) Option {
+	return func(o *options) {
+		o.logLevel = logLevel
 	}
 }
