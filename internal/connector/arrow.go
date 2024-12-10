@@ -28,5 +28,5 @@ func ToArrowRecord(b []byte) (arrow.Record, error) {
 		return nil, err
 	}
 	defer r.Release()
-	return r.Record(), nil
+	return r.Read()
 }
