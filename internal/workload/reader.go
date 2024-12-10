@@ -7,12 +7,14 @@ import (
 	"slices"
 
 	"github.com/goccy/go-yaml"
+
+	"github.com/openhdc/openhdc/internal/workload/spec"
 )
 
 type Reader struct {
-	Sources      []*Source
-	Destinations []*Destination
-	Transformers []*Transformer
+	Sources      []*spec.Source
+	Destinations []*spec.Destination
+	Transformers []*spec.Transformer
 }
 
 func (r *Reader) readFile(path string) error {
@@ -30,7 +32,7 @@ func (r *Reader) readFile(path string) error {
 		if err != nil {
 			return err
 		}
-		if slices.ContainsFunc(r.Sources, func(s *Source) bool {
+		if slices.ContainsFunc(r.Sources, func(s *spec.Source) bool {
 			return s.Name == source.Name
 		}) {
 			return fmt.Errorf("duplicate source name %s", source.Name)
@@ -46,7 +48,7 @@ func (r *Reader) readFile(path string) error {
 		if err != nil {
 			return err
 		}
-		if slices.ContainsFunc(r.Destinations, func(d *Destination) bool {
+		if slices.ContainsFunc(r.Destinations, func(d *spec.Destination) bool {
 			return d.Name == destination.Name
 		}) {
 			return fmt.Errorf("duplicate destination name %s", destination.Name)
@@ -62,7 +64,7 @@ func (r *Reader) readFile(path string) error {
 		if err != nil {
 			return err
 		}
-		if slices.ContainsFunc(r.Transformers, func(t *Transformer) bool {
+		if slices.ContainsFunc(r.Transformers, func(t *spec.Transformer) bool {
 			return t.Name == transformer.Name
 		}) {
 			return fmt.Errorf("duplicate transformer name %s", transformer.Name)
@@ -90,9 +92,9 @@ func (r *Reader) validate() error {
 
 func NewReader(paths []string) (*Reader, error) {
 	r := &Reader{
-		Sources:      []*Source{},
-		Destinations: []*Destination{},
-		Transformers: []*Transformer{},
+		Sources:      []*spec.Source{},
+		Destinations: []*spec.Destination{},
+		Transformers: []*spec.Transformer{},
 	}
 	for _, path := range paths {
 		if err := r.readFile(path); err != nil {
