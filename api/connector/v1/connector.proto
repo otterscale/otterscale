@@ -8,8 +8,15 @@ option go_package = "github.com/openhdc/openhdc/api/connector/v1;pb";
 
 service Connector {
   rpc Close(CloseRequest) returns (google.protobuf.Empty);
-  rpc Pull(PullRequest) returns (stream PullResponse);
-  rpc Push(stream PushRequest) returns (PushResponse);
+  rpc Pull(PullRequest) returns (stream Message);
+  rpc Push(stream Message) returns (google.protobuf.Empty);
+}
+
+enum Kind {
+  KIND_UNSPECIFIED = 0;
+  KIND_MIGRATE = 1;
+  KIND_INSERT = 2;
+  KIND_DELETE = 3;
 }
 
 message CloseRequest {}
@@ -20,12 +27,7 @@ message PullRequest {
   repeated string skip_tables = 3;
 }
 
-message PullResponse {
-  bytes record = 1;
+message Message {
+  Kind kind = 1;
+  bytes record = 2;
 }
-
-message PushRequest {
-  bytes record = 1;
-}
-
-message PushResponse {}

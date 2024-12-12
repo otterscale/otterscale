@@ -30,8 +30,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConnectorClient interface {
 	Close(ctx context.Context, in *CloseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Pull(ctx context.Context, in *PullRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PullResponse], error)
-	Push(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[PushRequest, PushResponse], error)
+	Pull(ctx context.Context, in *PullRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Message], error)
+	Push(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Message, emptypb.Empty], error)
 }
 
 type connectorClient struct {
@@ -52,13 +52,13 @@ func (c *connectorClient) Close(ctx context.Context, in *CloseRequest, opts ...g
 	return out, nil
 }
 
-func (c *connectorClient) Pull(ctx context.Context, in *PullRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[PullResponse], error) {
+func (c *connectorClient) Pull(ctx context.Context, in *PullRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Message], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &Connector_ServiceDesc.Streams[0], Connector_Pull_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[PullRequest, PullResponse]{ClientStream: stream}
+	x := &grpc.GenericClientStream[PullRequest, Message]{ClientStream: stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -69,28 +69,28 @@ func (c *connectorClient) Pull(ctx context.Context, in *PullRequest, opts ...grp
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Connector_PullClient = grpc.ServerStreamingClient[PullResponse]
+type Connector_PullClient = grpc.ServerStreamingClient[Message]
 
-func (c *connectorClient) Push(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[PushRequest, PushResponse], error) {
+func (c *connectorClient) Push(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Message, emptypb.Empty], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &Connector_ServiceDesc.Streams[1], Connector_Push_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[PushRequest, PushResponse]{ClientStream: stream}
+	x := &grpc.GenericClientStream[Message, emptypb.Empty]{ClientStream: stream}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Connector_PushClient = grpc.ClientStreamingClient[PushRequest, PushResponse]
+type Connector_PushClient = grpc.ClientStreamingClient[Message, emptypb.Empty]
 
 // ConnectorServer is the server API for Connector service.
 // All implementations must embed UnimplementedConnectorServer
 // for forward compatibility.
 type ConnectorServer interface {
 	Close(context.Context, *CloseRequest) (*emptypb.Empty, error)
-	Pull(*PullRequest, grpc.ServerStreamingServer[PullResponse]) error
-	Push(grpc.ClientStreamingServer[PushRequest, PushResponse]) error
+	Pull(*PullRequest, grpc.ServerStreamingServer[Message]) error
+	Push(grpc.ClientStreamingServer[Message, emptypb.Empty]) error
 	mustEmbedUnimplementedConnectorServer()
 }
 
@@ -104,10 +104,10 @@ type UnimplementedConnectorServer struct{}
 func (UnimplementedConnectorServer) Close(context.Context, *CloseRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Close not implemented")
 }
-func (UnimplementedConnectorServer) Pull(*PullRequest, grpc.ServerStreamingServer[PullResponse]) error {
+func (UnimplementedConnectorServer) Pull(*PullRequest, grpc.ServerStreamingServer[Message]) error {
 	return status.Errorf(codes.Unimplemented, "method Pull not implemented")
 }
-func (UnimplementedConnectorServer) Push(grpc.ClientStreamingServer[PushRequest, PushResponse]) error {
+func (UnimplementedConnectorServer) Push(grpc.ClientStreamingServer[Message, emptypb.Empty]) error {
 	return status.Errorf(codes.Unimplemented, "method Push not implemented")
 }
 func (UnimplementedConnectorServer) mustEmbedUnimplementedConnectorServer() {}
@@ -154,18 +154,18 @@ func _Connector_Pull_Handler(srv interface{}, stream grpc.ServerStream) error {
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ConnectorServer).Pull(m, &grpc.GenericServerStream[PullRequest, PullResponse]{ServerStream: stream})
+	return srv.(ConnectorServer).Pull(m, &grpc.GenericServerStream[PullRequest, Message]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Connector_PullServer = grpc.ServerStreamingServer[PullResponse]
+type Connector_PullServer = grpc.ServerStreamingServer[Message]
 
 func _Connector_Push_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ConnectorServer).Push(&grpc.GenericServerStream[PushRequest, PushResponse]{ServerStream: stream})
+	return srv.(ConnectorServer).Push(&grpc.GenericServerStream[Message, emptypb.Empty]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Connector_PushServer = grpc.ClientStreamingServer[PushRequest, PushResponse]
+type Connector_PushServer = grpc.ClientStreamingServer[Message, emptypb.Empty]
 
 // Connector_ServiceDesc is the grpc.ServiceDesc for Connector service.
 // It's only intended for direct use with grpc.RegisterService,

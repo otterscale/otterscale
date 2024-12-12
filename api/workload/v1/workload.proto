@@ -5,16 +5,21 @@ package openhdc.workload.v1;
 option go_package = "github.com/openhdc/openhdc/api/workload/v1;workload";
 
 enum Kind {
-  unspecified = 0;  // KIND_UNSPECIFIED
-  source = 1;       // KIND_SOURCE
-  destination = 2;  // KIND_DESTINATION
-  transformer = 3;  // KIND_TRANSFORMER
+  kind_unspecified = 0;
+  source = 1;
+  destination = 2;
+  transformer = 3;
+}
+
+enum WriteMode {
+  write_mode_unspecified = 0;
 }
 
 message Metadata {
   string name = 1;
   string version = 2;
   string path = 3;
+  WriteMode write_mode = 4;
 }
 
 message Internal {

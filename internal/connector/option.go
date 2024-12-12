@@ -1,16 +1,17 @@
 package connector
 
 import (
+	"github.com/openhdc/openhdc/api/workload/v1"
 	"google.golang.org/grpc"
 )
 
 type Option func(*options)
 
 type options struct {
-	kind Kind
+	kind workload.Kind
 }
 
-func WithKind(kind Kind) Option {
+func WithKind(kind workload.Kind) Option {
 	return func(o *options) {
 		o.kind = kind
 	}
@@ -71,15 +72,15 @@ func WithSkipTables(skipTables []string) ReadOption {
 type WriteOption func(*WriteOptions)
 
 type WriteOptions struct {
-	Kind WriteKind
+	// Kind WriteKind
 	// Table string
 }
 
-func WithWriteKind(kind WriteKind) WriteOption {
-	return func(o *WriteOptions) {
-		o.Kind = kind
-	}
-}
+// func WithWriteKind(kind WriteKind) WriteOption {
+// 	return func(o *WriteOptions) {
+// 		o.Kind = kind
+// 	}
+// }
 
 // func WithTable(table string) WriteOption {
 // 	return func(o *WriteOptions) {

@@ -4,15 +4,14 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/apache/arrow-go/v18/arrow"
-
+	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"github.com/openhdc/openhdc/internal/connector"
 )
 
-func (c *Client) Write(ctx context.Context, rec <-chan arrow.Record, opts connector.WriteOptions) error {
+func (c *Client) Write(ctx context.Context, msg <-chan *pb.Message, opts connector.WriteOptions) error {
 	for {
 		select {
-		case msg, ok := <-rec:
+		case msg, ok := <-msg:
 			fmt.Printf("[%v] %+v", ok, msg)
 			if !ok {
 				continue // ?
