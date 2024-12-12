@@ -2,18 +2,11 @@ package client
 
 import (
 	"context"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/openhdc/openhdc/internal/codec"
 	"github.com/openhdc/openhdc/internal/connector"
-)
-
-const (
-	defaultBatchSize      = 10000
-	defaultBatchSizeBytes = 100000000
-	defaultBatchTimeout   = 60 * time.Second
 )
 
 type Client struct {
@@ -25,12 +18,7 @@ type Client struct {
 }
 
 func NewConnector(codec codec.Codec, opts ...Option) (connector.Connector, error) {
-	o := options{
-		batchSize:      defaultBatchSize,
-		batchSizeBytes: defaultBatchSizeBytes,
-		batchTimeout:   defaultBatchTimeout,
-		createIndex:    true,
-	}
+	o := options{}
 	for _, opt := range opts {
 		opt(&o)
 	}

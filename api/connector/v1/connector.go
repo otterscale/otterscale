@@ -1,4 +1,4 @@
-package connector
+package pb
 
 import (
 	"bytes"
@@ -12,14 +12,15 @@ import (
 
 var ErrNotSupported = status.Errorf(codes.InvalidArgument, "not supported")
 
-func FromArrowRecord(rec arrow.Record) ([]byte, error) {
-	var buf bytes.Buffer
-	w := ipc.NewWriter(&buf, ipc.WithSchema(rec.Schema()), ipc.WithAllocator(memory.DefaultAllocator))
-	defer w.Close()
-	if err := w.Write(rec); err != nil {
+func NewMessage(kind Kind, rec arrow.Record) (*Message, error) {
+	b, err := FromArrowRecord(rec)
+	if err != nil {
 		return nil, err
 	}
-	return buf.Bytes(), nil
+	return &Message{
+		Kind:   kind,
+		Record: b,
+	}, nil
 }
 
 func ToArrowRecord(b []byte) (arrow.Record, error) {
@@ -29,4 +30,14 @@ func ToArrowRecord(b []byte) (arrow.Record, error) {
 	}
 	defer r.Release()
 	return r.Read()
+}
+
+func FromArrowRecord(rec arrow.Record) ([]byte, error) {
+	var buf bytes.Buffer
+	w := ipc.NewWriter(&buf, ipc.WithSchema(rec.Schema()), ipc.WithAllocator(memory.DefaultAllocator))
+	defer w.Close()
+	if err := w.Write(rec); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }

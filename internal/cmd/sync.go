@@ -104,8 +104,6 @@ func sync(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		rec := r.GetRecord()
-
 		for _, destination := range destinations {
 			for _, transformer := range transformers {
 				fmt.Println(transformer.Name())
@@ -119,11 +117,7 @@ func sync(cmd *cobra.Command, args []string) error {
 				return err
 			}
 
-			req1 := &pb.PushRequest{
-				Record: rec,
-			}
-
-			if err := rs.Send(req1); err != nil {
+			if err := rs.Send(r); err != nil {
 				return err
 			}
 

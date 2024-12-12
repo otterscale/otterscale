@@ -5,7 +5,6 @@ import (
 	"errors"
 	"io"
 
-	"github.com/apache/arrow-go/v18/arrow"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -36,7 +35,7 @@ func (s *Service) Close(ctx context.Context, _ *pb.CloseRequest) (*emptypb.Empty
 }
 
 func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) error {
-	msgs := make(chan arrow.Record)
+	msgs := make(chan *pb.Message)
 	defer close(msgs)
 	eg, ctx := errgroup.WithContext(stream.Context())
 	eg.Go(func() error {
@@ -53,18 +52,11 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 	})
 	eg.Go(func() error {
 		for msg := range msgs {
-			rec, err := FromArrowRecord(msg)
-			if err != nil {
-				return err
-			}
-			res := &pb.PullResponse{
-				Record: rec,
-			}
 			// TODO: CHECK SIZE
 			// if proto.Size(res) > MaxMsgSize {
 			// 	continue
 			// }
-			if err := stream.Send(res); err != nil {
+			if err := stream.Send(msg); err != nil {
 				return err
 			}
 		}
@@ -74,7 +66,7 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 }
 
 func (s *Service) Push(stream pb.Connector_PushServer) error {
-	msgs := make(chan arrow.Record)
+	msgs := make(chan *pb.Message)
 	defer close(msgs)
 	eg, ctx := errgroup.WithContext(stream.Context())
 	eg.Go(func() error {
@@ -87,18 +79,14 @@ func (s *Service) Push(stream pb.Connector_PushServer) error {
 	})
 	eg.Go(func() error {
 		for {
-			req, err := stream.Recv()
+			msg, err := stream.Recv()
 			if err != nil {
 				if errors.Is(err, io.EOF) {
 					break
 				}
 				return err
 			}
-			rec, err := ToArrowRecord(req.GetRecord())
-			if err != nil {
-				return err
-			}
-			msgs <- rec
+			msgs <- msg
 		}
 		return nil
 	})
