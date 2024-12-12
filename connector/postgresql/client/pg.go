@@ -24,7 +24,7 @@ type pgAttribute struct {
 }
 
 func pgClasses(ctx context.Context, pool *pgxpool.Pool, namespace string) ([]*pgClass, error) {
-	var sql = `select c.relname, c.oid
+	sql := `select c.relname, c.oid
 from pg_catalog.pg_namespace n
 left join pg_catalog.pg_class c on n.oid = c.relnamespace 
 where c.relkind = 'r' and n.nspname = $1
