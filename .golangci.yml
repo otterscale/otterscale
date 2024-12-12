@@ -32,6 +32,7 @@ linters-settings:
       - octalLiteral
       - whyNoLint
       - sloppyReassign
+      - builtinShadow
   gocyclo:
     min-complexity: 30
   goimports:
