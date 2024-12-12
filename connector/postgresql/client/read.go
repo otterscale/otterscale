@@ -3,10 +3,15 @@ package client
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
+	"reflect"
 	"slices"
+	"strings"
 
 	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/jackc/pgx/v5"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
@@ -40,10 +45,7 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts connecto
 		if skip(schema, opts.Tables, opts.SkipTables) {
 			continue
 		}
-		if err := c.migrate(schema, msg); err != nil {
-			return err
-		}
-		if err := c.insert(ctx, schema, msg); err != nil {
+		if err := c.read(ctx, schema, msg); err != nil {
 			return err
 		}
 	}
@@ -63,4 +65,54 @@ func skip(sch *arrow.Schema, tables, skipTables []string) bool {
 		return true
 	}
 	return false
+}
+
+func sanitize(str string) string {
+	return pgx.Identifier{str}.Sanitize()
+}
+
+func (c *Client) read(ctx context.Context, sch *arrow.Schema, msg chan<- *pb.Message) error {
+	builder := array.NewRecordBuilder(memory.DefaultAllocator, sch)
+
+	new, err := pb.NewMessage(pb.Kind_KIND_MIGRATE, builder.NewRecord())
+	if err != nil {
+		return err
+	}
+	msg <- new
+
+	tableName, _ := sch.Metadata().GetValue(metadata.KeySchemaTableName)
+	columnNames := []string{}
+	for _, field := range sch.Fields() {
+		columnNames = append(columnNames, sanitize(field.Name))
+	}
+
+	sql := fmt.Sprintf("select %s from %s limit 1", strings.Join(columnNames, ","), sanitize(tableName))
+	rows, err := c.pool.Query(ctx, sql)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		vals, err := rows.Values()
+		if err != nil {
+			return err
+		}
+
+		for idx, val := range vals {
+			if err := c.Append(builder.Field(idx), val); err != nil {
+				slog.Error("invalid append", "type of field", reflect.TypeOf(builder.Field(idx)), "type of value", reflect.TypeOf(val))
+				return err
+			}
+		}
+
+		// TODO: BATCH
+		new, err := pb.NewMessage(pb.Kind_KIND_INSERT, builder.NewRecord())
+		if err != nil {
+			return err
+		}
+		msg <- new
+	}
+
+	return rows.Err()
 }
