@@ -2,32 +2,89 @@ package client
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"log/slog"
 	"reflect"
+	"slices"
+	"strings"
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/apache/arrow-go/v18/arrow/memory"
+	"github.com/jackc/pgx/v5"
 
 	"github.com/openhdc/openhdc/internal/connector"
+	"github.com/openhdc/openhdc/internal/metadata"
 )
 
-var schemaSQL = ``
+func (c *Client) Read(ctx context.Context, rec chan<- arrow.Record, opts connector.ReadOptions) error {
+	tx, err := c.pool.BeginTx(ctx, pgx.TxOptions{
+		IsoLevel:   pgx.RepeatableRead,
+		AccessMode: pgx.ReadOnly,
+	})
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := tx.Rollback(ctx); err != nil {
+			if !errors.Is(err, pgx.ErrTxClosed) {
+				slog.Error("failed to rollback")
+			}
+		}
+	}()
 
-func (c *Client) Read(ctx context.Context, rec chan<- arrow.Record, opts ...connector.ReadOption) error {
-	sql := ""
+	tables, err := c.GetTables(ctx, opts.Namespace)
+	if err != nil {
+		return err
+	}
+
+	for _, table := range tables {
+		schema := table.Schema()
+		if skip(schema, opts.Tables, opts.SkipTables) {
+			continue
+		}
+		if err := c.read(ctx, schema, rec); err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit(ctx)
+}
+
+func skip(sch *arrow.Schema, tables, skipTables []string) bool {
+	tableName, ok := sch.Metadata().GetValue(metadata.KeySchemaTableName)
+	if !ok {
+		return true
+	}
+	if slices.Contains(skipTables, tableName) {
+		return true
+	}
+	if len(tables) > 0 && !slices.Contains(tables, tableName) {
+		return true
+	}
+	return false
+}
+
+func sanitize(str string) string {
+	return pgx.Identifier{str}.Sanitize()
+}
+
+func (c *Client) read(ctx context.Context, sch *arrow.Schema, rec chan<- arrow.Record) error {
+	builder := array.NewRecordBuilder(memory.DefaultAllocator, sch)
+
+	tableName, _ := sch.Metadata().GetValue(metadata.KeySchemaTableName)
+	columnNames := []string{}
+	for _, field := range sch.Fields() {
+		columnNames = append(columnNames, sanitize(field.Name))
+	}
+
+	sql := fmt.Sprintf("select %s from %s limit 1", strings.Join(columnNames, ","), sanitize(tableName))
 	rows, err := c.pool.Query(ctx, sql)
 	if err != nil {
 		return err
 	}
 	defer rows.Close()
-
-	// FIXME: STUB
-	t, err := c.GetTable(ctx, "test_case")
-	if err != nil {
-		return err
-	}
-	schema := t.Schema()
 
 	for rows.Next() {
 		vals, err := rows.Values()
@@ -35,20 +92,14 @@ func (c *Client) Read(ctx context.Context, rec chan<- arrow.Record, opts ...conn
 			return err
 		}
 
-		b := array.NewRecordBuilder(memory.DefaultAllocator, schema)
-		defer b.Release()
-
 		for idx, val := range vals {
-			if err := c.Append(b.Field(idx), val); err != nil {
-				slog.Error("invalid append", "type of field", reflect.TypeOf(b.Field(idx)), "type of value", reflect.TypeOf(val))
+			if err := c.Append(builder.Field(idx), val); err != nil {
+				slog.Error("invalid append", "type of field", reflect.TypeOf(builder.Field(idx)), "type of value", reflect.TypeOf(val))
 				return err
 			}
 		}
 
-		r := b.NewRecord()
-		defer r.Release()
-
-		rec <- r
+		rec <- builder.NewRecord()
 	}
 
 	return rows.Err()

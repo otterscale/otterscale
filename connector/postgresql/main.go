@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"time"
 
 	"github.com/google/wire"
 
@@ -14,11 +15,18 @@ import (
 )
 
 var (
+	kind    = flag.String("kind", "", "")
 	network = flag.String("network", "tcp", "")
 	address = flag.String("address", ":0", "")
+
+	batchSize      = flag.Int64("batch_size", 10000, "")
+	batchSizeBytes = flag.Int64("batch_size_bytes", 100000000, "")
+	batchTimeout   = flag.Duration("batch_timeout", 60*time.Second, "")
+	createIndex    = flag.Bool("create_index", true, "")
+	connString     = flag.String("connection_string", "", "")
 )
 
-var ProviderSet = wire.NewSet(pgarrow.NewCodec, client.NewConnector, connector.NewService, connector.NewServer)
+var ProviderSet = wire.NewSet(connector.NewServer, connector.NewService, client.NewConnector, pgarrow.NewCodec)
 
 func newApp(srv *connector.Server) *app.App {
 	return app.New(
@@ -28,28 +36,22 @@ func newApp(srv *connector.Server) *app.App {
 
 func main() {
 	flag.Parse()
-	// // create zap logger
-	// zlog := zap.NewServiceZap(id, name, version, env, key, host, ip)
-	// logger := zap.NewLogger(zlog)
-	// defer func() { _ = logger.Sync() }()
-
-	// // set global logger
-	// log.SetLogger(logger)
-
-	// // get config from consul
-	// cfg := get.NewConfig(key)
-	// defer func() { _ = cfg.Close() }()
-
-	// TODO: OPTIONS FROM FLAG
-	clientOpts := []client.Option{
-		client.WithConnConfig(""),
-	}
-
-	connectorOpts := []connector.Option{}
 
 	serverOpts := []connector.ServerOption{
 		connector.WithNetwork(*network),
 		connector.WithAddress(*address),
+	}
+
+	connectorOpts := []connector.Option{
+		connector.WithKind(connector.Kind(*kind)),
+	}
+
+	clientOpts := []client.Option{
+		client.WithBatchSize(*batchSize),
+		client.WithBatchSizeBytes(*batchSizeBytes),
+		client.WithBatchTimeout(*batchTimeout),
+		client.WithCreateIndex(*createIndex),
+		client.WithConnString(*connString),
 	}
 
 	// wire app

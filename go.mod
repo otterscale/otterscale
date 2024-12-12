@@ -4,6 +4,7 @@ go 1.23.4
 
 require (
 	github.com/apache/arrow-go/v18 v18.0.0
+	github.com/go-openapi/inflect v0.21.0
 	github.com/goccy/go-yaml v1.15.4
 	github.com/google/uuid v1.6.0
 	github.com/spf13/cobra v1.8.1

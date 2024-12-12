@@ -15,7 +15,7 @@ var ErrNotImplemented = status.Errorf(codes.Unimplemented, "not implemented")
 type Connector interface {
 	codec.Codec
 
-	Read(ctx context.Context, rec chan<- arrow.Record, opts ...ReadOption) error
-	Write(ctx context.Context, rec <-chan arrow.Record, opts ...WriteOption) error
+	Read(ctx context.Context, rec chan<- arrow.Record, opts ReadOptions) error
+	Write(ctx context.Context, rec <-chan arrow.Record, opts WriteOptions) error
 	Close(ctx context.Context) error
 }

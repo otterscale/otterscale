@@ -2,8 +2,6 @@ package client
 
 import (
 	"time"
-
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Option func(*options)
@@ -13,9 +11,7 @@ type options struct {
 	batchSizeBytes int64
 	batchTimeout   time.Duration
 	createIndex    bool
-
-	connString string
-	config     *pgxpool.Config
+	connString     string
 }
 
 func WithBatchSize(batchSize int64) Option {
@@ -42,7 +38,7 @@ func WithCreateIndex(createIndex bool) Option {
 	}
 }
 
-func WithConnConfig(connString string) Option {
+func WithConnString(connString string) Option {
 	return func(o *options) {
 		o.connString = connString
 	}

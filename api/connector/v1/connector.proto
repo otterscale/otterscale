@@ -3,7 +3,6 @@ syntax = "proto3";
 package openhdc.connector.v1;
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/openhdc/openhdc/api/connector/v1;pb";
 
@@ -16,8 +15,9 @@ service Connector {
 message CloseRequest {}
 
 message PullRequest {
-  repeated string tables = 1;
-  repeated string skip_tables = 2;
+  string namespace = 1;
+  repeated string tables = 2;
+  repeated string skip_tables = 3;
 }
 
 message PullResponse {
