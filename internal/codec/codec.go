@@ -141,5 +141,9 @@ func (DefaultCodec) Decode(arr arrow.Array, idx int) (any, error) { //nolint:fun
 }
 
 func (DefaultCodec) Append(builder array.Builder, val any) error {
+	if val == nil {
+		builder.AppendNull()
+		return nil
+	}
 	return builder.AppendValueFromString(format(val))
 }

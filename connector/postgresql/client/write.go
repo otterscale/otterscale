@@ -9,7 +9,7 @@ import (
 	"github.com/openhdc/openhdc/internal/connector"
 )
 
-func (c *Client) Write(ctx context.Context, rec <-chan arrow.Record, opts ...connector.WriteOption) error {
+func (c *Client) Write(ctx context.Context, rec <-chan arrow.Record, opts connector.WriteOptions) error {
 	for {
 		select {
 		case msg, ok := <-rec:

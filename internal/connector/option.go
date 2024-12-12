@@ -42,40 +42,47 @@ func WithGrpcServerOptions(grpcOpts ...grpc.ServerOption) ServerOption {
 	}
 }
 
-type ReadOption func(*readOptions)
+type ReadOption func(*ReadOptions)
 
-type readOptions struct {
-	tables     []string
-	skipTables []string
+type ReadOptions struct {
+	Namespace  string
+	Tables     []string
+	SkipTables []string
+}
+
+func WithNamespace(namespace string) ReadOption {
+	return func(o *ReadOptions) {
+		o.Namespace = namespace
+	}
 }
 
 func WithTables(tables []string) ReadOption {
-	return func(o *readOptions) {
-		o.tables = tables
+	return func(o *ReadOptions) {
+		o.Tables = tables
 	}
 }
 
 func WithSkipTables(skipTables []string) ReadOption {
-	return func(o *readOptions) {
-		o.skipTables = skipTables
+	return func(o *ReadOptions) {
+		o.SkipTables = skipTables
 	}
 }
 
-type WriteOption func(*writeOptions)
+type WriteOption func(*WriteOptions)
 
-type writeOptions struct {
-	kind  WriteKind
-	table string
+type WriteOptions struct {
+	Kind WriteKind
+	// Table string
 }
 
 func WithWriteKind(kind WriteKind) WriteOption {
-	return func(o *writeOptions) {
-		o.kind = kind
+	return func(o *WriteOptions) {
+		o.Kind = kind
 	}
 }
 
-func WithTable(table string) WriteOption {
-	return func(o *writeOptions) {
-		o.table = table
-	}
-}
+// func WithTable(table string) WriteOption {
+// 	return func(o *WriteOptions) {
+// 		o.Table = table
+// 	}
+// }

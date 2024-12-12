@@ -1,17 +1,17 @@
 package connector
 
-type Kind int
+type Kind string
 
 const (
-	KindUnspecified Kind = iota
-	KindSource
-	KindDestination
+	KindUnspecified Kind = ""
+	KindSource      Kind = "source"
+	KindDestination Kind = "destination"
 )
 
 type WriteKind int
 
 const (
-	WriteKindUnspecified Kind = iota
+	WriteKindUnspecified WriteKind = iota
 	WriteKindInsert
 	WriteKindUpdate
 	WriteKindUpsert

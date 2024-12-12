@@ -40,7 +40,16 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 	defer close(msgs)
 	eg, ctx := errgroup.WithContext(stream.Context())
 	eg.Go(func() error {
-		return s.connector.Read(ctx, msgs, WithTables(req.Tables), WithSkipTables(req.SkipTables))
+		// TODO: BETTER
+		opts := ReadOptions{}
+		for _, opt := range []ReadOption{
+			WithNamespace(req.Namespace),
+			WithTables(req.Tables),
+			WithSkipTables(req.SkipTables),
+		} {
+			opt(&opts)
+		}
+		return s.connector.Read(ctx, msgs, opts)
 	})
 	eg.Go(func() error {
 		for msg := range msgs {
@@ -69,7 +78,12 @@ func (s *Service) Push(stream pb.Connector_PushServer) error {
 	defer close(msgs)
 	eg, ctx := errgroup.WithContext(stream.Context())
 	eg.Go(func() error {
-		return s.connector.Write(ctx, msgs)
+		// TODO: BETTER
+		opts := WriteOptions{}
+		for _, opt := range []WriteOption{} {
+			opt(&opts)
+		}
+		return s.connector.Write(ctx, msgs, opts)
 	})
 	eg.Go(func() error {
 		for {

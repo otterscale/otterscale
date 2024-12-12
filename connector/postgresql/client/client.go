@@ -20,7 +20,8 @@ type Client struct {
 	codec.Codec
 	opts options
 
-	pool *pgxpool.Pool
+	config *pgxpool.Config
+	pool   *pgxpool.Pool
 }
 
 func NewConnector(codec codec.Codec, opts ...Option) (connector.Connector, error) {
@@ -35,7 +36,7 @@ func NewConnector(codec codec.Codec, opts ...Option) (connector.Connector, error
 	}
 
 	var err error
-	o.config, err = pgxpool.ParseConfig(o.connString)
+	config, err := pgxpool.ParseConfig(o.connString)
 	if err != nil {
 		return nil, err
 	}
@@ -43,15 +44,16 @@ func NewConnector(codec codec.Codec, opts ...Option) (connector.Connector, error
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	pool, err := pgxpool.NewWithConfig(ctx, o.config)
+	pool, err := pgxpool.NewWithConfig(ctx, config)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Client{
-		Codec: codec,
-		opts:  o,
-		pool:  pool,
+		Codec:  codec,
+		opts:   o,
+		config: config,
+		pool:   pool,
 	}, nil
 }
 
