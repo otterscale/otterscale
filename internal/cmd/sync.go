@@ -32,7 +32,11 @@ func newClients(ctx context.Context, wls []*workload.Workload) ([]*client.Client
 	for _, wl := range wls {
 		md := wl.Metadata
 		if md == nil {
-			return nil, fmt.Errorf("invalid metadata from %s", wl.Internal.FilePath)
+			return nil, fmt.Errorf("metadata is empty: %s", wl.Internal.FilePath)
+		}
+		spec := wl.Spec
+		if spec == nil {
+			return nil, fmt.Errorf("spec is empty: %s", wl.Internal.FilePath)
 		}
 		c := client.New(ctx,
 			client.WithName(md.Name),
@@ -42,7 +46,7 @@ func newClients(ctx context.Context, wls []*workload.Workload) ([]*client.Client
 		if err := c.Download(ctx); err != nil {
 			return nil, err
 		}
-		if err := c.Start(ctx); err != nil {
+		if err := c.Start(ctx, spec); err != nil {
 			return nil, err
 		}
 		cs = append(cs, c)
