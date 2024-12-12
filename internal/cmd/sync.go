@@ -11,9 +11,8 @@ import (
 	"google.golang.org/grpc"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
+	"github.com/openhdc/openhdc/api/workload/v1"
 	"github.com/openhdc/openhdc/internal/client"
-	"github.com/openhdc/openhdc/internal/workload"
-	"github.com/openhdc/openhdc/internal/workload/spec"
 )
 
 func NewCmdSync() *cobra.Command {
@@ -28,56 +27,27 @@ func NewCmdSync() *cobra.Command {
 	return cmd
 }
 
-func sourcesToClients(ctx context.Context, sources []*spec.Source) ([]*client.Client, error) {
-	clients := []*client.Client{}
-	for _, source := range sources {
-		client, err := toClient(ctx, source)
-		if err != nil {
+func newClients(ctx context.Context, wls []*workload.Workload) ([]*client.Client, error) {
+	cs := []*client.Client{}
+	for _, wl := range wls {
+		md := wl.Metadata
+		if md == nil {
+			return nil, fmt.Errorf("invalid metadata from %s", wl.Internal.FilePath)
+		}
+		c := client.New(ctx,
+			client.WithName(md.Name),
+			client.WithVersion(md.Version),
+			client.WithPath(md.Path),
+		)
+		if err := c.Download(ctx); err != nil {
 			return nil, err
 		}
-		clients = append(clients, client)
-	}
-	return clients, nil
-}
-
-func destinationsToClients(ctx context.Context, destinations []*spec.Destination) ([]*client.Client, error) {
-	clients := []*client.Client{}
-	for _, destination := range destinations {
-		client, err := toClient(ctx, destination)
-		if err != nil {
+		if err := c.Start(ctx); err != nil {
 			return nil, err
 		}
-		clients = append(clients, client)
+		cs = append(cs, c)
 	}
-	return clients, nil
-}
-
-func transformersToClients(ctx context.Context, transformers []*spec.Transformer) ([]*client.Client, error) {
-	clients := []*client.Client{}
-	for _, transformer := range transformers {
-		client, err := toClient(ctx, transformer)
-		if err != nil {
-			return nil, err
-		}
-		clients = append(clients, client)
-	}
-	return clients, nil
-}
-
-func toClient(ctx context.Context, s spec.Spec) (*client.Client, error) {
-	md := s.GetMetadata()
-	c := client.New(ctx,
-		client.WithName(md.Name),
-		client.WithVersion(md.Version),
-		client.WithPath(md.Path),
-	)
-	if err := c.Download(ctx); err != nil {
-		return nil, err
-	}
-	if err := c.Start(ctx); err != nil {
-		return nil, err
-	}
-	return c, nil
+	return cs, nil
 }
 
 func sync(cmd *cobra.Command, args []string) error {
@@ -90,19 +60,19 @@ func sync(cmd *cobra.Command, args []string) error {
 	}
 
 	// new source clients
-	sources, err := sourcesToClients(ctx, reader.Sources)
+	sources, err := newClients(ctx, reader.Sources)
 	if err != nil {
 		return err
 	}
 
 	// new destination clients
-	destinations, err := destinationsToClients(ctx, reader.Destinations)
+	destinations, err := newClients(ctx, reader.Destinations)
 	if err != nil {
 		return err
 	}
 
 	// new transformer clients
-	transformers, err := transformersToClients(ctx, reader.Transformers)
+	transformers, err := newClients(ctx, reader.Transformers)
 	if err != nil {
 		return err
 	}
