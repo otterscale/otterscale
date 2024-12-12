@@ -42,7 +42,7 @@ func (c *Client) Download(_ context.Context) error {
 // TODO READ LOG
 // TODO ERROR HANDLING
 
-func (c *Client) Start(ctx context.Context) error {
+func (c *Client) Start(ctx context.Context, spec map[string]string) error {
 	address, err := freeAddress()
 	if err != nil {
 		return err
@@ -58,7 +58,11 @@ func (c *Client) Start(ctx context.Context) error {
 		return err
 	}
 
-	cmd := exec.CommandContext(ctx, c.opts.path, "--address", address)
+	args := []string{"--address", address}
+	for k, v := range spec {
+		args = append(args, k, v)
+	}
+	cmd := exec.CommandContext(ctx, c.opts.path, args...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 	cmd.SysProcAttr = sysProcAttr()
