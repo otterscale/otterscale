@@ -55,8 +55,8 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts connecto
 }
 
 func skip(sch *arrow.Schema, tables, skipTables []string) bool {
-	tableName, ok := sch.Metadata().GetValue(metadata.KeySchemaTableName)
-	if !ok {
+	tableName, err := metadata.GetTableName(sch)
+	if err != nil {
 		return true
 	}
 	if slices.Contains(skipTables, tableName) {
@@ -81,7 +81,11 @@ func (c *Client) read(ctx context.Context, sch *arrow.Schema, msg chan<- *pb.Mes
 	}
 	msg <- new
 
-	tableName, _ := sch.Metadata().GetValue(metadata.KeySchemaTableName)
+	tableName, err := metadata.GetTableName(sch)
+	if err != nil {
+		return err
+	}
+
 	columnNames := []string{}
 	for _, field := range sch.Fields() {
 		columnNames = append(columnNames, sanitize(field.Name))

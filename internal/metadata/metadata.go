@@ -1,9 +1,43 @@
 package metadata
 
-import "github.com/go-openapi/inflect"
+import (
+	"errors"
+
+	"github.com/apache/arrow-go/v18/arrow"
+)
 
 var (
-	KeySchemaTableName   = inflect.Parameterize("table name")
-	KeyFieldIsPrimaryKey = inflect.Parameterize("is primary key")
-	KeyFieldIsUnique     = inflect.Parameterize("is unique")
+	keySchemaTableName   = "TABLE-NAME"
+	keyFieldIsPrimaryKey = "IS-PRIMARY-KEY"
+	keyFieldIsUnique     = "IS-UNIQUE"
 )
+
+func SetTableName(m map[string]string, v string) {
+	m[keySchemaTableName] = v
+}
+
+func GetTableName(s *arrow.Schema) (string, error) {
+	v, ok := s.Metadata().GetValue(keySchemaTableName)
+	if !ok {
+		return "", errors.New("table name not found")
+	}
+	return v, nil
+}
+
+func SetPrimaryKey(m map[string]string) {
+	m[keyFieldIsPrimaryKey] = "true"
+}
+
+func IsPrimaryKey(f *arrow.Field) bool {
+	_, ok := f.Metadata.GetValue(keyFieldIsPrimaryKey)
+	return ok
+}
+
+func SetUnique(m map[string]string) {
+	m[keyFieldIsUnique] = "true"
+}
+
+func IsUnique(f *arrow.Field) bool {
+	_, ok := f.Metadata.GetValue(keyFieldIsUnique)
+	return ok
+}
