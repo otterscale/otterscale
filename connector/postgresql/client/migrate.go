@@ -9,9 +9,8 @@ import (
 	"github.com/openhdc/openhdc/internal/metadata"
 )
 
-func getTable(tabs []arrow.Table, new string) (*arrow.Schema, bool) {
-	for _, tab := range tabs {
-		sch := tab.Schema()
+func getTable(schs []*arrow.Schema, new string) (*arrow.Schema, bool) {
+	for _, sch := range schs {
 		current, _ := metadata.GetTableName(sch)
 		if current == new {
 			return sch, true
@@ -62,23 +61,23 @@ func compareSchemata(cur, new *arrow.Schema) (add, del []arrow.Field, ok bool) {
 	return
 }
 
-func (c *Client) migrate(ctx context.Context, tabs []arrow.Table, sch *arrow.Schema) error {
-	tableName, err := metadata.GetTableName(sch)
+func (c *Client) migrate(ctx context.Context, schs []*arrow.Schema, new *arrow.Schema) error {
+	tableName, err := metadata.GetTableName(new)
 	if err != nil {
 		return err
 	}
-	cur, ok := getTable(tabs, tableName)
+	cur, ok := getTable(schs, tableName)
 	if !ok {
-		return createTableIfNotExists(ctx, c.pool, sch)
+		return createTableIfNotExists(ctx, c.pool, new)
 	}
-	add, del, ok := compareSchemata(cur, sch)
+	add, del, ok := compareSchemata(cur, new)
 	if !ok {
-		return renewTable(ctx, c.pool, sch)
+		return renewTable(ctx, c.pool, new)
 	}
 	if len(add) > 0 || len(del) > 0 {
-		if err := alterTable(ctx, c.pool, sch, add, del); err != nil {
+		if err := alterTable(ctx, c.pool, new, add, del); err != nil {
 			slog.Error(err.Error())
-			return renewTable(ctx, c.pool, sch)
+			return renewTable(ctx, c.pool, new)
 		}
 	}
 	return nil

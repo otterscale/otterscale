@@ -2,6 +2,7 @@ package pb
 
 import (
 	"bytes"
+	"errors"
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/ipc"
@@ -29,7 +30,12 @@ func ToArrowRecord(b []byte) (arrow.Record, error) {
 		return nil, err
 	}
 	defer r.Release()
-	return r.Read()
+	for r.Next() {
+		rec := r.Record()
+		rec.Retain()
+		return rec, nil
+	}
+	return nil, errors.New("record is empty")
 }
 
 func FromArrowRecord(rec arrow.Record) ([]byte, error) {
