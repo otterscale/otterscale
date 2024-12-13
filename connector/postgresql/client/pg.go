@@ -61,32 +61,17 @@ func createTableIfNotExists(ctx context.Context, pool *pgxpool.Pool, sch *arrow.
 
 	tableName += "_tmp"
 
-	columns := []string{}
+	css := []string{}
 	pks := []string{}
 	for _, field := range sch.Fields() {
-		name := sanitize(field.Name)
-
-		dataType, ok := field.Metadata.GetValue(metadata.KeyFieldDataType)
-		if !ok {
-			return fmt.Errorf("data type not found: %s", name)
+		cs, isPK, err := addColumnStatement(&field, false)
+		if err != nil {
+			return err
 		}
-
-		unique := ""
-		if _, ok := field.Metadata.GetValue(metadata.KeyFieldIsUnique); ok {
-			unique = "unique"
+		if isPK {
+			pks = append(pks, sanitize(field.Name))
 		}
-
-		null := ""
-		if !field.Nullable {
-			null = "not null"
-		}
-
-		column := fmt.Sprintf("%s %s %s %s", name, dataType, unique, null)
-		columns = append(columns, column)
-
-		if _, ok := field.Metadata.GetValue(metadata.KeyFieldIsPrimaryKey); ok {
-			pks = append(pks, name)
-		}
+		css = append(css, cs)
 	}
 
 	var b strings.Builder
@@ -94,7 +79,7 @@ func createTableIfNotExists(ctx context.Context, pool *pgxpool.Pool, sch *arrow.
 	b.WriteString(tableName)
 	b.WriteString(" (")
 
-	b.WriteString(strings.Join(columns, ", "))
+	b.WriteString(strings.Join(css, ", "))
 
 	if len(pks) > 0 {
 		b.WriteString(", constraint ")
@@ -127,4 +112,70 @@ func dropTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema) error
 		return err
 	}
 	return nil
+}
+
+func alterTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema, adds, dels []arrow.Field) error {
+	tableName, ok := sch.Metadata().GetValue(metadata.KeySchemaTableName)
+	if !ok {
+		return errors.New("table name not found")
+	}
+
+	tableName += "_tmp"
+
+	css := []string{}
+	for _, field := range adds {
+		cs, _, err := addColumnStatement(&field, true)
+		if err != nil {
+			return err
+		}
+		css = append(css, cs)
+	}
+	for _, field := range dels {
+		css = append(css, dropColumnStatement(&field))
+	}
+
+	var b strings.Builder
+	b.WriteString("alter table ")
+	b.WriteString(tableName)
+	b.WriteString(" ")
+	b.WriteString(strings.Join(css, ", "))
+
+	if _, err := pool.Exec(ctx, b.String()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func dropColumnStatement(f *arrow.Field) string {
+	return fmt.Sprintf("drop column %s", sanitize(f.Name))
+}
+
+func addColumnStatement(f *arrow.Field, prefix bool) (string, bool, error) {
+	name := sanitize(f.Name)
+
+	dataType, ok := f.Metadata.GetValue(metadata.KeyFieldDataType)
+	if !ok {
+		return "", false, fmt.Errorf("data type not found: %s", name)
+	}
+
+	unique := ""
+	if _, ok := f.Metadata.GetValue(metadata.KeyFieldIsUnique); ok {
+		unique = "unique"
+	}
+
+	null := ""
+	if !f.Nullable {
+		null = "not null"
+	}
+
+	// TODO: DEFAULT
+
+	cs := fmt.Sprintf("%s %s %s %s", name, dataType, unique, null)
+	if prefix {
+		cs = "add column " + cs
+	}
+
+	_, ok = f.Metadata.GetValue(metadata.KeyFieldIsPrimaryKey)
+
+	return cs, ok, nil
 }
