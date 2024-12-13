@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -55,9 +54,9 @@ order by a.attnum
 }
 
 func createTableIfNotExists(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema) error {
-	tableName, ok := sch.Metadata().GetValue(metadata.KeySchemaTableName)
-	if !ok {
-		return errors.New("table name not found")
+	tableName, err := metadata.GetTableName(sch)
+	if err != nil {
+		return err
 	}
 
 	tableName += "_tmp"
@@ -65,7 +64,7 @@ func createTableIfNotExists(ctx context.Context, pool *pgxpool.Pool, sch *arrow.
 	pks := []string{}
 	css := []string{}
 	for _, field := range sch.Fields() {
-		if pk, _ := field.Metadata.GetValue(metadata.KeyFieldIsPrimaryKey); pk != "" {
+		if metadata.IsPrimaryKey(&field) {
 			pks = append(pks, sanitize(field.Name))
 		}
 		css = append(css, addColumnStatement(&field, false))
@@ -96,9 +95,9 @@ func createTableIfNotExists(ctx context.Context, pool *pgxpool.Pool, sch *arrow.
 }
 
 func dropTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema) error {
-	tableName, ok := sch.Metadata().GetValue(metadata.KeySchemaTableName)
-	if !ok {
-		return errors.New("table name not found")
+	tableName, err := metadata.GetTableName(sch)
+	if err != nil {
+		return err
 	}
 
 	var b strings.Builder
@@ -112,9 +111,9 @@ func dropTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema) error
 }
 
 func alterTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema, adds, dels []arrow.Field) error {
-	tableName, ok := sch.Metadata().GetValue(metadata.KeySchemaTableName)
-	if !ok {
-		return errors.New("table name not found")
+	tableName, err := metadata.GetTableName(sch)
+	if err != nil {
+		return err
 	}
 
 	tableName += "_tmp"
@@ -147,7 +146,7 @@ func addColumnStatement(f *arrow.Field, prefix bool) string {
 	name := sanitize(f.Name)
 
 	unique := ""
-	if uq, _ := f.Metadata.GetValue(metadata.KeyFieldIsUnique); uq != "" {
+	if metadata.IsUnique(f) {
 		unique = "unique"
 	}
 

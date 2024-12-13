@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"github.com/apache/arrow-go/v18/arrow"
@@ -13,7 +12,7 @@ import (
 func getTable(tabs []arrow.Table, new string) (*arrow.Schema, bool) {
 	for _, tab := range tabs {
 		sch := tab.Schema()
-		current, _ := sch.Metadata().GetValue(metadata.KeySchemaTableName)
+		current, _ := metadata.GetTableName(sch)
 		if current == new {
 			return sch, true
 		}
@@ -22,11 +21,9 @@ func getTable(tabs []arrow.Table, new string) (*arrow.Schema, bool) {
 }
 
 func isKeyChanged(a, b *arrow.Field) bool {
-	apk, _ := a.Metadata.GetValue(metadata.KeyFieldIsPrimaryKey)
-	auq, _ := a.Metadata.GetValue(metadata.KeyFieldIsUnique)
-	bpk, _ := b.Metadata.GetValue(metadata.KeyFieldIsPrimaryKey)
-	buq, _ := b.Metadata.GetValue(metadata.KeyFieldIsUnique)
-	return a.Nullable != b.Nullable || apk != bpk || auq != buq
+	return a.Nullable != b.Nullable ||
+		metadata.IsPrimaryKey(a) != metadata.IsPrimaryKey(b) ||
+		metadata.IsUnique(a) != metadata.IsUnique(b)
 }
 
 func filterFields(as, bs []arrow.Field) ([]arrow.Field, bool) {
@@ -66,9 +63,9 @@ func compareSchemata(cur, new *arrow.Schema) (add, del []arrow.Field, ok bool) {
 }
 
 func (c *Client) migrate(ctx context.Context, tabs []arrow.Table, sch *arrow.Schema) error {
-	tableName, ok := sch.Metadata().GetValue(metadata.KeySchemaTableName)
-	if !ok {
-		return errors.New("table name not found")
+	tableName, err := metadata.GetTableName(sch)
+	if err != nil {
+		return err
 	}
 	cur, ok := getTable(tabs, tableName)
 	if !ok {

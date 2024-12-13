@@ -19,7 +19,7 @@ func (c *Client) Write(ctx context.Context, msg <-chan *pb.Message, opts connect
 	for {
 		msg, ok := <-msg
 		if !ok {
-			return errors.New("something wrong!")
+			return errors.New("something wrong")
 		}
 		rec, err := pb.ToArrowRecord(msg.Record)
 		if err != nil {
