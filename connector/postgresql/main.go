@@ -30,6 +30,7 @@ var (
 	batchTimeout   = flag.Duration("batch_timeout", defaultBatchTimeout, "")
 	createIndex    = flag.Bool("create_index", true, "")
 	connString     = flag.String("connection_string", "", "")
+	namespace      = flag.String("namespace", "", "")
 )
 
 var ProviderSet = wire.NewSet(connector.NewServer, connector.NewService, client.NewConnector)
@@ -58,6 +59,7 @@ func main() {
 		client.WithBatchTimeout(*batchTimeout),
 		client.WithCreateIndex(*createIndex),
 		client.WithConnString(*connString),
+		client.WithNamespace(*namespace),
 	}
 
 	// wire app
