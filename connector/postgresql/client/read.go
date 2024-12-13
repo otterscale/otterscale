@@ -46,6 +46,7 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts connecto
 			continue
 		}
 		if err := c.read(ctx, schema, msg); err != nil {
+			slog.Error(err.Error())
 			return err
 		}
 	}

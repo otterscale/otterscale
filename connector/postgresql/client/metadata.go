@@ -6,10 +6,8 @@ import (
 	"github.com/openhdc/openhdc/internal/metadata"
 )
 
-func toFieldMetadata(att *pgAttribute, dataType string) arrow.Metadata {
-	m := map[string]string{
-		metadata.KeyFieldDataType: dataType,
-	}
+func toFieldMetadata(att *pgAttribute) arrow.Metadata {
+	m := map[string]string{}
 	if att.ConType != nil && att.ConName != nil {
 		switch *att.ConType {
 		case 'p':

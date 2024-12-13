@@ -17,7 +17,7 @@ type Client struct {
 	pool   *pgxpool.Pool
 }
 
-func NewConnector(codec codec.Codec, opts ...Option) (connector.Connector, error) {
+func NewConnector(opts ...Option) (connector.Connector, error) {
 	o := options{}
 	for _, opt := range opts {
 		opt(&o)
@@ -38,7 +38,7 @@ func NewConnector(codec codec.Codec, opts ...Option) (connector.Connector, error
 	}
 
 	return &Client{
-		Codec:  codec,
+		Codec:  codec.DefaultCodec{},
 		opts:   o,
 		config: config,
 		pool:   pool,

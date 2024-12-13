@@ -8,7 +8,6 @@ import (
 
 	"github.com/openhdc/openhdc/api/workload/v1"
 	"github.com/openhdc/openhdc/connector/postgresql/client"
-	"github.com/openhdc/openhdc/connector/postgresql/pgarrow"
 	"github.com/openhdc/openhdc/internal/app"
 	"github.com/openhdc/openhdc/internal/connector"
 
@@ -33,7 +32,7 @@ var (
 	connString     = flag.String("connection_string", "", "")
 )
 
-var ProviderSet = wire.NewSet(connector.NewServer, connector.NewService, client.NewConnector, pgarrow.NewCodec)
+var ProviderSet = wire.NewSet(connector.NewServer, connector.NewService, client.NewConnector)
 
 func newApp(srv *connector.Server) *app.App {
 	return app.New(
