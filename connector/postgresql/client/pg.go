@@ -65,8 +65,7 @@ func createTableIfNotExists(ctx context.Context, pool *pgxpool.Pool, sch *arrow.
 	pks := []string{}
 	css := []string{}
 	for _, field := range sch.Fields() {
-		pk, _ := field.Metadata.GetValue(metadata.KeyFieldIsPrimaryKey)
-		if pk != "" {
+		if pk, _ := field.Metadata.GetValue(metadata.KeyFieldIsPrimaryKey); pk != "" {
 			pks = append(pks, sanitize(field.Name))
 		}
 		css = append(css, addColumnStatement(&field, false))
@@ -148,7 +147,7 @@ func addColumnStatement(f *arrow.Field, prefix bool) string {
 	name := sanitize(f.Name)
 
 	unique := ""
-	if _, ok := f.Metadata.GetValue(metadata.KeyFieldIsUnique); ok {
+	if uq, _ := f.Metadata.GetValue(metadata.KeyFieldIsUnique); uq != "" {
 		unique = "unique"
 	}
 

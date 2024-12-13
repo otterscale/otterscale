@@ -22,9 +22,8 @@ enum Kind {
 message CloseRequest {}
 
 message PullRequest {
-  string namespace = 1;
-  repeated string tables = 2;
-  repeated string skip_tables = 3;
+  repeated string tables = 1;
+  repeated string skip_tables = 2;
 }
 
 message Message {

@@ -12,6 +12,7 @@ type options struct {
 	batchTimeout   time.Duration
 	createIndex    bool
 	connString     string
+	namespace      string
 }
 
 func WithBatchSize(batchSize int64) Option {
@@ -41,5 +42,11 @@ func WithCreateIndex(createIndex bool) Option {
 func WithConnString(connString string) Option {
 	return func(o *options) {
 		o.connString = connString
+	}
+}
+
+func WithNamespace(namespace string) Option {
+	return func(o *options) {
+		o.namespace = namespace
 	}
 }

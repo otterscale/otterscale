@@ -35,7 +35,7 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts connecto
 		}
 	}()
 
-	tables, err := c.GetTables(ctx, opts.Namespace)
+	tables, err := c.GetTables(ctx, c.opts.namespace)
 	if err != nil {
 		return err
 	}

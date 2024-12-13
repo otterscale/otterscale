@@ -46,15 +46,8 @@ func WithGrpcServerOptions(grpcOpts ...grpc.ServerOption) ServerOption {
 type ReadOption func(*ReadOptions)
 
 type ReadOptions struct {
-	Namespace  string
 	Tables     []string
 	SkipTables []string
-}
-
-func WithNamespace(namespace string) ReadOption {
-	return func(o *ReadOptions) {
-		o.Namespace = namespace
-	}
 }
 
 func WithTables(tables []string) ReadOption {
