@@ -1,111 +1,90 @@
 package pgarrow
 
 import (
-	"fmt"
-
 	"github.com/apache/arrow-go/v18/arrow"
-	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/apache/arrow-go/v18/arrow/extensions"
-	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/jackc/pgx/v5/pgtype"
-
-	"github.com/openhdc/openhdc/internal/codec"
 )
 
-var _ codec.Codec = (*Codec)(nil)
+var typeMap = pgtype.NewMap()
 
-type Codec struct {
-	codec.DefaultCodec
-}
-
-func NewCodec() codec.Codec {
-	return &Codec{}
-}
-
-func (c *Codec) newArray(dt arrow.DataType, val any) (arrow.Array, error) {
-	b := array.NewBuilder(memory.DefaultAllocator, dt)
-	defer b.Release()
-	if val != nil {
-		if err := c.Append(b, val); err != nil {
-			return nil, err
-		}
+func ToForOID(oid uint32) arrow.DataType {
+	if t, ok := typeMap.TypeForOID(oid); ok {
+		return To(t.Name)
 	}
-	return b.NewArray(), nil
+	return arrow.BinaryTypes.String
 }
 
-//nolint:gocyclo,funlen
-func (c *Codec) Encode(typ, val any) (arrow.Array, error) {
-	switch typ.(type) {
-	case pgtype.BoolCodec:
-		return c.newArray(arrow.FixedWidthTypes.Boolean, val)
-
-	case pgtype.ByteaCodec:
-		return c.newArray(arrow.BinaryTypes.Binary, val)
-
-	case pgtype.DateCodec:
-		return c.newArray(arrow.FixedWidthTypes.Date32, val)
-
-	case pgtype.Float4Codec:
-		return c.newArray(arrow.PrimitiveTypes.Float32, val)
-
-	case pgtype.Float8Codec:
-		return c.newArray(arrow.PrimitiveTypes.Float64, val)
-
-	case pgtype.Int2Codec:
-		return c.newArray(arrow.PrimitiveTypes.Int16, val)
-
-	case pgtype.Int4Codec:
-		return c.newArray(arrow.PrimitiveTypes.Int32, val)
-
-	case pgtype.Int8Codec:
-		return c.newArray(arrow.PrimitiveTypes.Int64, val)
-
-	case *pgtype.JSONCodec, *pgtype.JSONBCodec:
-		typ, _ := extensions.NewJSONType(arrow.BinaryTypes.String)
-		return c.newArray(typ, val)
-
-	case pgtype.TextCodec, *pgtype.TextFormatOnlyCodec:
-		return c.newArray(arrow.BinaryTypes.String, val)
-
-	case pgtype.TimeCodec, *pgtype.TimestampCodec, *pgtype.TimestamptzCodec:
-		return c.newArray(arrow.FixedWidthTypes.Timestamp_us, val)
-
-	case pgtype.Uint32Codec:
-		return c.newArray(arrow.PrimitiveTypes.Uint32, val)
-
-	// FIXME: github.com/jackc/pgx/v5 v5.7.1.next
-	/*
-		case pgtype.Uint64Codec:
-			return c.newArray(arrow.PrimitiveTypes.Uint64, val)
-	*/
-
-	case pgtype.UUIDCodec:
-		return c.newArray(extensions.NewUUIDType(), val)
-
-	// TODO: complete
-	case *pgtype.ArrayCodec:
-	case pgtype.BitsCodec:
-	case pgtype.BoxCodec:
-	case pgtype.CircleCodec:
-	case pgtype.EnumCodec:
-	case pgtype.HstoreCodec:
-	case pgtype.InetCodec:
-	case pgtype.IntervalCodec:
-	case pgtype.LineCodec:
-	case pgtype.LsegCodec:
-	case pgtype.LtreeCodec:
-	case pgtype.MacaddrCodec:
-	case *pgtype.MultirangeCodec:
-	case pgtype.NumericCodec:
-	case pgtype.PathCodec:
-	case pgtype.PointCodec:
-	case pgtype.PolygonCodec:
-	case pgtype.QCharCodec:
-	case *pgtype.RangeCodec:
-	case pgtype.RecordCodec:
-	case pgtype.TIDCodec:
-	case *pgtype.XMLCodec:
+func To(typ string) arrow.DataType {
+	switch typ {
+	case "bytea":
+		return arrow.BinaryTypes.Binary
+	case "aclitem", "bpchar", "jsonpath", "name", "text", "unknown", "varchar", "xml":
+		return arrow.BinaryTypes.String
+	case "json", "jsonb":
+		return arrow.BinaryTypes.String
+	case "bool":
+		return arrow.FixedWidthTypes.Boolean
+	case "date":
+		return arrow.FixedWidthTypes.Date32
+	case "time":
+		return arrow.FixedWidthTypes.Time64ns
+	case "timestamp":
+		return &arrow.TimestampType{Unit: arrow.Microsecond, TimeZone: ""}
+	case "timestamptz":
+		return arrow.FixedWidthTypes.Timestamp_us
+	case "float4":
+		return arrow.PrimitiveTypes.Float32
+	case "float8":
+		return arrow.PrimitiveTypes.Float64
+	case "int2":
+		return arrow.PrimitiveTypes.Int16
+	case "int4":
+		return arrow.PrimitiveTypes.Int32
+	case "int8":
+		return arrow.PrimitiveTypes.Int64
+	case "cid", "oid", "xid":
+		return arrow.PrimitiveTypes.Uint32
+	case "xid8":
+		return arrow.PrimitiveTypes.Uint64
+	case "uuid":
+		return extensions.NewUUIDType()
 	}
+	return arrow.BinaryTypes.String
+}
 
-	return nil, fmt.Errorf("type %T: %w", typ, codec.ErrNotSupported)
+func From(typ arrow.DataType) string {
+	switch typ {
+	case arrow.BinaryTypes.Binary:
+		return "bytea"
+	case arrow.BinaryTypes.String:
+		return "text"
+	case arrow.FixedWidthTypes.Boolean:
+		return "bool"
+	case arrow.FixedWidthTypes.Date32:
+		return "date"
+	case arrow.FixedWidthTypes.Time64ns:
+		return "time"
+	case &arrow.TimestampType{Unit: arrow.Microsecond, TimeZone: ""}:
+		return "timestamp"
+	case arrow.FixedWidthTypes.Timestamp_us:
+		return "timestamptz"
+	case arrow.PrimitiveTypes.Float32:
+		return "float4"
+	case arrow.PrimitiveTypes.Float64:
+		return "float8"
+	case arrow.PrimitiveTypes.Int16:
+		return "int2"
+	case arrow.PrimitiveTypes.Int32:
+		return "int4"
+	case arrow.PrimitiveTypes.Int64:
+		return "int8"
+	case arrow.PrimitiveTypes.Uint32:
+		return "xid"
+	case arrow.PrimitiveTypes.Uint64:
+		return "xid8"
+	case extensions.NewUUIDType():
+		return "uuid"
+	}
+	return "text"
 }

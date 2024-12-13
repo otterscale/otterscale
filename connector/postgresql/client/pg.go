@@ -10,6 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/openhdc/openhdc/connector/postgresql/pgarrow"
 	"github.com/openhdc/openhdc/internal/metadata"
 )
 
@@ -61,17 +62,14 @@ func createTableIfNotExists(ctx context.Context, pool *pgxpool.Pool, sch *arrow.
 
 	tableName += "_tmp"
 
-	css := []string{}
 	pks := []string{}
+	css := []string{}
 	for _, field := range sch.Fields() {
-		cs, isPK, err := addColumnStatement(&field, false)
-		if err != nil {
-			return err
-		}
-		if isPK {
+		pk, _ := field.Metadata.GetValue(metadata.KeyFieldIsPrimaryKey)
+		if pk != "" {
 			pks = append(pks, sanitize(field.Name))
 		}
-		css = append(css, cs)
+		css = append(css, addColumnStatement(&field, false))
 	}
 
 	var b strings.Builder
@@ -124,11 +122,7 @@ func alterTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema, adds
 
 	css := []string{}
 	for _, field := range adds {
-		cs, _, err := addColumnStatement(&field, true)
-		if err != nil {
-			return err
-		}
-		css = append(css, cs)
+		css = append(css, addColumnStatement(&field, true))
 	}
 	for _, field := range dels {
 		css = append(css, dropColumnStatement(&field))
@@ -150,13 +144,8 @@ func dropColumnStatement(f *arrow.Field) string {
 	return fmt.Sprintf("drop column %s", sanitize(f.Name))
 }
 
-func addColumnStatement(f *arrow.Field, prefix bool) (string, bool, error) {
+func addColumnStatement(f *arrow.Field, prefix bool) string {
 	name := sanitize(f.Name)
-
-	dataType, ok := f.Metadata.GetValue(metadata.KeyFieldDataType)
-	if !ok {
-		return "", false, fmt.Errorf("data type not found: %s", name)
-	}
 
 	unique := ""
 	if _, ok := f.Metadata.GetValue(metadata.KeyFieldIsUnique); ok {
@@ -168,14 +157,17 @@ func addColumnStatement(f *arrow.Field, prefix bool) (string, bool, error) {
 		null = "not null"
 	}
 
-	// TODO: DEFAULT
-
-	cs := fmt.Sprintf("%s %s %s %s", name, dataType, unique, null)
+	cs := fmt.Sprintf("%s %s %s %s", name, pgarrow.From(f.Type), unique, null)
 	if prefix {
 		cs = "add column " + cs
 	}
 
-	_, ok = f.Metadata.GetValue(metadata.KeyFieldIsPrimaryKey)
+	return cs
+}
 
-	return cs, ok, nil
+func renewTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema) error {
+	if err := dropTable(ctx, pool, sch); err != nil {
+		return err
+	}
+	return createTableIfNotExists(ctx, pool, sch)
 }

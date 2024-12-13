@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"errors"
+	"log/slog"
 
 	"github.com/apache/arrow-go/v18/arrow"
 
@@ -75,13 +76,13 @@ func (c *Client) migrate(ctx context.Context, tabs []arrow.Table, sch *arrow.Sch
 	}
 	add, del, ok := compareSchemata(cur, sch)
 	if !ok {
-		if err := dropTable(ctx, c.pool, sch); err != nil {
-			return err
-		}
-		return createTableIfNotExists(ctx, c.pool, sch)
+		return renewTable(ctx, c.pool, sch)
 	}
 	if len(add) > 0 || len(del) > 0 {
-		return alterTable(ctx, c.pool, sch, add, del)
+		if err := alterTable(ctx, c.pool, sch, add, del); err != nil {
+			slog.Error(err.Error())
+			return renewTable(ctx, c.pool, sch)
+		}
 	}
 	return nil
 }

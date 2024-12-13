@@ -8,7 +8,6 @@ package main
 
 import (
 	"github.com/openhdc/openhdc/connector/postgresql/client"
-	"github.com/openhdc/openhdc/connector/postgresql/pgarrow"
 	"github.com/openhdc/openhdc/internal/app"
 	"github.com/openhdc/openhdc/internal/connector"
 )
@@ -20,8 +19,7 @@ import (
 // Injectors from wire.go:
 
 func wireApp(arg []client.Option, arg2 []connector.Option, arg3 []connector.ServerOption) (*app.App, func(), error) {
-	codec := pgarrow.NewCodec()
-	connectorConnector, err := client.NewConnector(codec, arg...)
+	connectorConnector, err := client.NewConnector(arg...)
 	if err != nil {
 		return nil, nil, err
 	}
