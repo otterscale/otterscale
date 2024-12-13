@@ -4,17 +4,16 @@ import (
 	"context"
 
 	"github.com/apache/arrow-go/v18/arrow"
-	"github.com/apache/arrow-go/v18/arrow/array"
 
 	"github.com/openhdc/openhdc/connector/postgresql/pgarrow"
 )
 
-func (c *Client) GetTables(ctx context.Context, namespace string) ([]arrow.Table, error) {
+func (c *Client) GetTables(ctx context.Context, namespace string) ([]*arrow.Schema, error) {
 	classes, err := pgClasses(ctx, c.pool, namespace)
 	if err != nil {
 		return nil, err
 	}
-	tables := []arrow.Table{}
+	schs := []*arrow.Schema{}
 	for _, class := range classes {
 		atts, err := pgAttributes(ctx, c.pool, class.OID)
 		if err != nil {
@@ -29,12 +28,7 @@ func (c *Client) GetTables(ctx context.Context, namespace string) ([]arrow.Table
 				Metadata: toFieldMetadata(att),
 			})
 		}
-		columns := []arrow.Column{}
-		for _, field := range fields {
-			columns = append(columns, *arrow.NewColumn(field, arrow.NewChunked(field.Type, nil)))
-		}
-		schema := arrow.NewSchema(fields, toSchemaMetadata(class.RelName))
-		tables = append(tables, array.NewTable(schema, columns, -1))
+		schs = append(schs, arrow.NewSchema(fields, toSchemaMetadata(class.RelName)))
 	}
-	return tables, nil
+	return schs, nil
 }

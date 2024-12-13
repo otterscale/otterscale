@@ -35,17 +35,16 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts connecto
 		}
 	}()
 
-	tables, err := c.GetTables(ctx, c.opts.namespace)
+	schs, err := c.GetTables(ctx, c.opts.namespace)
 	if err != nil {
 		return err
 	}
 
-	for _, table := range tables {
-		schema := table.Schema()
-		if skip(schema, opts.Tables, opts.SkipTables) {
+	for _, sch := range schs {
+		if skip(sch, opts.Tables, opts.SkipTables) {
 			continue
 		}
-		if err := c.read(ctx, schema, msg); err != nil {
+		if err := c.read(ctx, sch, msg); err != nil {
 			slog.Error(err.Error())
 			return err
 		}
@@ -105,7 +104,7 @@ func (c *Client) read(ctx context.Context, sch *arrow.Schema, msg chan<- *pb.Mes
 		}
 
 		for idx, val := range vals {
-			if err := c.Append(builder.Field(idx), val); err != nil {
+			if err := c.Encode(builder.Field(idx), val); err != nil {
 				slog.Error("invalid append", "type of field", reflect.TypeOf(builder.Field(idx)), "type of value", reflect.TypeOf(val))
 				return err
 			}
