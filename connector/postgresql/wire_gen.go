@@ -7,9 +7,8 @@
 package main
 
 import (
+	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/connector/postgresql/client"
-	"github.com/openhdc/openhdc/internal/app"
-	"github.com/openhdc/openhdc/internal/connector"
 )
 
 import (
@@ -18,14 +17,14 @@ import (
 
 // Injectors from wire.go:
 
-func wireApp(arg []client.Option, arg2 []connector.Option, arg3 []connector.ServerOption) (*app.App, func(), error) {
-	connectorConnector, err := client.NewConnector(arg...)
+func wireApp(arg []openhdc.ServerOption, arg2 []client.Option) (*openhdc.App, func(), error) {
+	connector, err := client.NewConnector(arg2...)
 	if err != nil {
 		return nil, nil, err
 	}
-	service := connector.NewService(connectorConnector, arg2...)
-	server := connector.NewServer(service, arg3...)
-	appApp := newApp(server)
-	return appApp, func() {
+	service := openhdc.NewService(connector)
+	server := openhdc.NewServer(service, arg...)
+	app := newApp(server)
+	return app, func() {
 	}, nil
 }

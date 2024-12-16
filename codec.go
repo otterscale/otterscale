@@ -1,4 +1,4 @@
-package codec
+package openhdc
 
 import (
 	"fmt"
@@ -7,13 +7,7 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/apache/arrow-go/v18/arrow/extensions"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-)
-
-var (
-	ErrNotImplemented = status.Errorf(codes.Unimplemented, "not implemented")
-	ErrNotSupported   = status.Errorf(codes.InvalidArgument, "not supported")
+	"github.com/google/uuid"
 )
 
 type Codec interface {
@@ -23,12 +17,22 @@ type Codec interface {
 
 type DefaultCodec struct{}
 
-func (DefaultCodec) Encode(builder array.Builder, val any) error {
+func (DefaultCodec) format(val any) string {
+	switch t := val.(type) {
+	case time.Time:
+		return t.Format(time.RFC3339Nano)
+	case [16]uint8:
+		return uuid.UUID(t).String()
+	}
+	return fmt.Sprintf("%v", val)
+}
+
+func (c DefaultCodec) Encode(builder array.Builder, val any) error {
 	if val == nil {
 		builder.AppendNull()
 		return nil
 	}
-	return builder.AppendValueFromString(format(val))
+	return builder.AppendValueFromString(c.format(val))
 }
 
 // Ref: https://github.com/apache/arrow-go/blob/main/arrow/datatype.go

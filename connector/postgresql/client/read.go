@@ -14,12 +14,12 @@ import (
 	"github.com/apache/arrow-go/v18/arrow/memory"
 	"github.com/jackc/pgx/v5"
 
+	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
-	"github.com/openhdc/openhdc/internal/connector"
-	"github.com/openhdc/openhdc/internal/metadata"
+	"github.com/openhdc/openhdc/metadata"
 )
 
-func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts connector.ReadOptions) error {
+func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.ReadOptions) error {
 	tx, err := c.pool.BeginTx(ctx, pgx.TxOptions{
 		IsoLevel:   pgx.RepeatableRead,
 		AccessMode: pgx.ReadOnly,

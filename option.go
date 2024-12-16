@@ -1,6 +1,11 @@
-package connector
+package openhdc
 
 import (
+	"context"
+	"log/slog"
+	"os"
+	"time"
+
 	"github.com/openhdc/openhdc/api/workload/v1"
 	"google.golang.org/grpc"
 )
@@ -8,7 +13,63 @@ import (
 type Option func(*options)
 
 type options struct {
-	kind workload.Kind
+	id       string
+	name     string
+	version  string
+	ctx      context.Context
+	sigs     []os.Signal
+	timeout  time.Duration
+	servers  []*Server
+	logLevel slog.Leveler
+	kind     workload.Kind
+}
+
+func WithID(id string) Option {
+	return func(o *options) {
+		o.id = id
+	}
+}
+
+func WithName(name string) Option {
+	return func(o *options) {
+		o.name = name
+	}
+}
+
+func WithVersion(version string) Option {
+	return func(o *options) {
+		o.version = version
+	}
+}
+
+func WithContext(ctx context.Context) Option {
+	return func(o *options) {
+		o.ctx = ctx
+	}
+}
+
+func WithSignals(sigs ...os.Signal) Option {
+	return func(o *options) {
+		o.sigs = sigs
+	}
+}
+
+func WithTimeout(timeout time.Duration) Option {
+	return func(o *options) {
+		o.timeout = timeout
+	}
+}
+
+func WithServers(servers ...*Server) Option {
+	return func(o *options) {
+		o.servers = servers
+	}
+}
+
+func WithLogLevel(logLevel slog.Leveler) Option {
+	return func(o *options) {
+		o.logLevel = logLevel
+	}
 }
 
 func WithKind(kind workload.Kind) Option {

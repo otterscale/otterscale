@@ -3,7 +3,7 @@ package client
 import (
 	"github.com/apache/arrow-go/v18/arrow"
 
-	"github.com/openhdc/openhdc/internal/metadata"
+	"github.com/openhdc/openhdc/metadata"
 )
 
 func toFieldMetadata(att *pgAttribute) arrow.Metadata {

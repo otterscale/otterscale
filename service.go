@@ -1,13 +1,14 @@
-package connector
+package openhdc
 
 import (
 	"context"
 	"errors"
 	"io"
 
-	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/types/known/emptypb"
+
+	pb "github.com/openhdc/openhdc/api/connector/v1"
 )
 
 var _ pb.ConnectorServer = (*Service)(nil)
@@ -15,17 +16,11 @@ var _ pb.ConnectorServer = (*Service)(nil)
 type Service struct {
 	pb.UnimplementedConnectorServer
 
-	opts      options
 	connector Connector
 }
 
-func NewService(c Connector, opts ...Option) *Service {
-	o := options{}
-	for _, opt := range opts {
-		opt(&o)
-	}
+func NewService(c Connector) *Service {
 	return &Service{
-		opts:      o,
 		connector: c,
 	}
 }

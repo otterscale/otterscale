@@ -6,7 +6,7 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/jackc/pgx/v5"
 
-	"github.com/openhdc/openhdc/internal/metadata"
+	"github.com/openhdc/openhdc/metadata"
 )
 
 func (c *Client) insert(ctx context.Context, rec arrow.Record) error {
