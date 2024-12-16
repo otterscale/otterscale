@@ -47,9 +47,9 @@ func (r *Reader) readFile(path string) error {
 	case Kind_source:
 		r.Sources = append(r.Sources, &w)
 	case Kind_destination:
-		r.Sources = append(r.Sources, &w)
+		r.Destinations = append(r.Destinations, &w)
 	case Kind_transformer:
-		r.Sources = append(r.Sources, &w)
+		r.Transformers = append(r.Transformers, &w)
 	default:
 		return fmt.Errorf("invalid kind %s", w.Kind)
 	}
