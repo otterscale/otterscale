@@ -6,8 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/openhdc/openhdc/api/workload/v1"
 	"google.golang.org/grpc"
+
+	"github.com/openhdc/openhdc/api/workload/v1"
 )
 
 type Option func(*options)
