@@ -1,11 +1,11 @@
-//go:build !windows
+//go:build windows
 
-package client
+package process
 
 import "syscall"
 
 func sysProcAttr() *syscall.SysProcAttr {
 	return &syscall.SysProcAttr{
-		Setpgid: true,
+		CreationFlags: syscall.CREATE_NEW_PROCESS_GROUP,
 	}
 }

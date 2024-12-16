@@ -1,18 +1,19 @@
-package cmd
+package cli
 
 import "github.com/spf13/cobra"
 
-func NewCmdInspect() *cobra.Command {
+func NewCmdInit() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "inspect",
+		Use:     "init",
 		Short:   "",
 		Long:    "",
 		Example: "",
 		Args:    cobra.MinimumNArgs(1),
+		RunE:    _init,
 	}
-	cmd.AddCommand(
-		NewCmdInspectConfig(),
-		NewCmdInspectConnection(),
-	)
 	return cmd
+}
+
+func _init(cmd *cobra.Command, args []string) error {
+	return nil
 }
