@@ -3,7 +3,6 @@ package connector
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"net"
 
 	"google.golang.org/grpc"
@@ -44,21 +43,24 @@ func NewServer(svc *Service, opts ...ServerOption) *Server {
 	}
 }
 
-// TODO: ctx
-func (s *Server) Start(ctx context.Context) error {
+func (s *Server) Start(_ context.Context) error {
 	lis, err := net.Listen(s.opts.network, s.opts.address)
 	if err != nil {
 		return err
 	}
-	slog.Debug(fmt.Sprintf("[gRPC] server listening on: %s", lis.Addr().String()))
+	fmt.Printf("[gRPC] server listening on: %s\n", lis.Addr().String())
 	s.healthServer.Resume()
 	return s.grpcServer.Serve(lis)
 }
 
-// TODO: ctx
 func (s *Server) Stop(ctx context.Context) error {
-	s.healthServer.Shutdown()
-	s.grpcServer.GracefulStop()
-	slog.Debug("[gRPC] server stopping")
+	fmt.Printf("[gRPC] server stopping\n")
+	ctx, cancel := context.WithCancel(ctx)
+	go func() {
+		s.grpcServer.GracefulStop()
+		cancel()
+	}()
+	<-ctx.Done()
+	s.grpcServer.Stop()
 	return nil
 }
