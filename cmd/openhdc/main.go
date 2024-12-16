@@ -6,18 +6,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/openhdc/openhdc/internal/cmd"
+	cmd "github.com/openhdc/openhdc/internal/cli"
 )
 
-var (
-	name    = "openhdc"
-	version = "devel"
-)
-
-var (
-// id      = uuid.New().String()
-// host, _ = os.Hostname()
-)
+var version = "devel"
 
 func main() {
 	// new logger

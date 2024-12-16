@@ -1,4 +1,4 @@
-package client
+package process
 
 import (
 	"context"
@@ -13,36 +13,36 @@ import (
 // TODO: BETTER
 const maxMsgSize = 100 * 1024 * 1024
 
-type Client struct {
+type Process struct {
 	opts options
 
 	Conn *grpc.ClientConn
 }
 
-func New(ctx context.Context, opts ...Option) *Client {
+func New(ctx context.Context, opts ...Option) *Process {
 	o := options{}
 	for _, opt := range opts {
 		opt(&o)
 	}
-	return &Client{
+	return &Process{
 		opts: o,
 	}
 }
 
-func (c *Client) Name() string {
+func (c *Process) Name() string {
 	return c.opts.name
 }
 
 // TODO DOWNLOAD
 
-func (c *Client) Download(_ context.Context) error {
+func (c *Process) Download(_ context.Context) error {
 	return nil
 }
 
 // TODO READ LOG
 // TODO ERROR HANDLING
 
-func (c *Client) Start(ctx context.Context, spec map[string]string) error {
+func (c *Process) Start(ctx context.Context, spec map[string]string) error {
 	address, err := freeAddress()
 	if err != nil {
 		return err
@@ -62,14 +62,14 @@ func (c *Client) Start(ctx context.Context, spec map[string]string) error {
 	for k, v := range spec {
 		args = append(args, k, v)
 	}
-	cmd := exec.CommandContext(ctx, c.opts.path, args...)
+	cmd := exec.CommandContext(ctx, c.opts.path, args...) //nolint:gosec
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 	cmd.SysProcAttr = sysProcAttr()
 	return cmd.Start()
 }
 
-func (c *Client) Terminate() error {
+func (c *Process) Terminate() error {
 	return nil
 }
 

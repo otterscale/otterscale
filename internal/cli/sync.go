@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"github.com/openhdc/openhdc/api/workload/v1"
-	"github.com/openhdc/openhdc/internal/client"
+	"github.com/openhdc/openhdc/internal/process"
 )
 
 func NewCmdSync() *cobra.Command {
@@ -27,8 +27,8 @@ func NewCmdSync() *cobra.Command {
 	return cmd
 }
 
-func newClients(ctx context.Context, wls []*workload.Workload) ([]*client.Client, error) {
-	cs := []*client.Client{}
+func newProcesses(ctx context.Context, wls []*workload.Workload) ([]*process.Process, error) {
+	ps := []*process.Process{}
 	for _, wl := range wls {
 		md := wl.Metadata
 		if md == nil {
@@ -38,20 +38,20 @@ func newClients(ctx context.Context, wls []*workload.Workload) ([]*client.Client
 		if spec == nil {
 			return nil, fmt.Errorf("spec is empty: %s", wl.Internal.FilePath)
 		}
-		c := client.New(ctx,
-			client.WithName(md.Name),
-			client.WithVersion(md.Version),
-			client.WithPath(md.Path),
+		p := process.New(ctx,
+			process.WithName(md.Name),
+			process.WithVersion(md.Version),
+			process.WithPath(md.Path),
 		)
-		if err := c.Download(ctx); err != nil {
+		if err := p.Download(ctx); err != nil {
 			return nil, err
 		}
-		if err := c.Start(ctx, spec); err != nil {
+		if err := p.Start(ctx, spec); err != nil {
 			return nil, err
 		}
-		cs = append(cs, c)
+		ps = append(ps, p)
 	}
-	return cs, nil
+	return ps, nil
 }
 
 func sync(cmd *cobra.Command, args []string) error {
@@ -64,19 +64,19 @@ func sync(cmd *cobra.Command, args []string) error {
 	}
 
 	// new source clients
-	sources, err := newClients(ctx, reader.Sources)
+	sources, err := newProcesses(ctx, reader.Sources)
 	if err != nil {
 		return err
 	}
 
 	// new destination clients
-	destinations, err := newClients(ctx, reader.Destinations)
+	destinations, err := newProcesses(ctx, reader.Destinations)
 	if err != nil {
 		return err
 	}
 
 	// new transformer clients
-	transformers, err := newClients(ctx, reader.Transformers)
+	transformers, err := newProcesses(ctx, reader.Transformers)
 	if err != nil {
 		return err
 	}
