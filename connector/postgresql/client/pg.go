@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/openhdc/openhdc/connector/postgresql/pgarrow"
-	"github.com/openhdc/openhdc/internal/metadata"
+	"github.com/openhdc/openhdc/metadata"
 )
 
 type pgClass struct {

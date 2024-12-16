@@ -5,19 +5,18 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/openhdc/openhdc/internal/codec"
-	"github.com/openhdc/openhdc/internal/connector"
+	"github.com/openhdc/openhdc"
 )
 
 type Client struct {
-	codec.Codec
+	openhdc.Codec
 	opts options
 
 	config *pgxpool.Config
 	pool   *pgxpool.Pool
 }
 
-func NewConnector(opts ...Option) (connector.Connector, error) {
+func NewConnector(opts ...Option) (openhdc.Connector, error) {
 	o := options{}
 	for _, opt := range opts {
 		opt(&o)
@@ -38,7 +37,7 @@ func NewConnector(opts ...Option) (connector.Connector, error) {
 	}
 
 	return &Client{
-		Codec:  codec.DefaultCodec{},
+		Codec:  openhdc.DefaultCodec{},
 		opts:   o,
 		config: config,
 		pool:   pool,

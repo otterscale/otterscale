@@ -1,4 +1,4 @@
-package app
+package openhdc
 
 import (
 	"context"
@@ -22,7 +22,7 @@ func New(opts ...Option) *App {
 	o := options{
 		ctx:      context.Background(),
 		sigs:     []os.Signal{syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGKILL},
-		timeout:  10 * time.Second,
+		timeout:  5 * time.Second,
 		logLevel: slog.LevelDebug,
 	}
 	if id, err := uuid.NewUUID(); err == nil {

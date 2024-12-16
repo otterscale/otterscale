@@ -6,10 +6,9 @@ import (
 
 	"github.com/google/wire"
 
+	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/api/workload/v1"
 	"github.com/openhdc/openhdc/connector/postgresql/client"
-	"github.com/openhdc/openhdc/internal/app"
-	"github.com/openhdc/openhdc/internal/connector"
 
 	_ "go.uber.org/automaxprocs"
 )
@@ -33,24 +32,21 @@ var (
 	namespace      = flag.String("namespace", "", "")
 )
 
-var ProviderSet = wire.NewSet(connector.NewServer, connector.NewService, client.NewConnector)
+var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector)
 
-func newApp(srv *connector.Server) *app.App {
-	return app.New(
-		app.WithServers(srv),
+func newApp(srv *openhdc.Server) *openhdc.App {
+	return openhdc.New(
+		openhdc.WithServers(srv),
+		openhdc.WithKind(workload.ParseKind(*kind)),
 	)
 }
 
 func main() {
 	flag.Parse()
 
-	serverOpts := []connector.ServerOption{
-		connector.WithNetwork(*network),
-		connector.WithAddress(*address),
-	}
-
-	connectorOpts := []connector.Option{
-		connector.WithKind(workload.ParseKind(*kind)),
+	serverOpts := []openhdc.ServerOption{
+		openhdc.WithNetwork(*network),
+		openhdc.WithAddress(*address),
 	}
 
 	clientOpts := []client.Option{
@@ -63,7 +59,7 @@ func main() {
 	}
 
 	// wire app
-	app, cleanup, err := wireApp(clientOpts, connectorOpts, serverOpts)
+	app, cleanup, err := wireApp(serverOpts, clientOpts)
 	if err != nil {
 		panic(err)
 	}

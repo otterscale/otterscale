@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
-	"github.com/openhdc/openhdc/internal/connector"
 )
 
-func (c *Client) Write(ctx context.Context, msg <-chan *pb.Message, opts connector.WriteOptions) error {
+func (c *Client) Write(ctx context.Context, msg <-chan *pb.Message, opts openhdc.WriteOptions) error {
 	tables, err := c.GetTables(ctx, c.opts.namespace)
 	if err != nil {
 		return err
