@@ -19,3 +19,5 @@
 
 # ...even if they are in subdirectories
 !*/
+
+exp/
