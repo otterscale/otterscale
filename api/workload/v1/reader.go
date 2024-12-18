@@ -40,10 +40,10 @@ func (r *Reader) readFile(path string) error {
 	if err := protoyaml.Unmarshal(data, &w); err != nil {
 		return err
 	}
-	w.Internal = &Internal{
-		FilePath: path,
-	}
-	switch w.Kind {
+	// set internal
+	w.SetInternal(Internal_builder{FilePath: &path}.Build())
+	// append
+	switch w.GetKind() {
 	case Kind_source:
 		r.Sources = append(r.Sources, &w)
 	case Kind_destination:
@@ -51,7 +51,7 @@ func (r *Reader) readFile(path string) error {
 	case Kind_transformer:
 		r.Transformers = append(r.Transformers, &w)
 	default:
-		return fmt.Errorf("invalid kind %s", w.Kind)
+		return fmt.Errorf("invalid kind %s", w.GetKind())
 	}
 	return nil
 }
