@@ -1,7 +1,10 @@
-syntax = "proto3";
+edition = "2023";
 
 package openhdc.workload.v1;
 
+import "google/protobuf/go_features.proto";
+
+option features.(pb.go).api_level = API_OPAQUE;
 option go_package = "github.com/openhdc/openhdc/api/workload/v1;workload";
 
 enum Kind {

@@ -18,10 +18,10 @@ func NewMessage(kind Kind, rec arrow.Record) (*Message, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Message{
-		Kind:   kind,
-		Record: b,
-	}, nil
+	m := &Message{}
+	m.SetKind(kind)
+	m.SetRecord(b)
+	return m, nil
 }
 
 func ToArrowRecord(b []byte) (arrow.Record, error) {
