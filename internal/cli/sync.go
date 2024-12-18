@@ -30,18 +30,18 @@ func NewCmdSync() *cobra.Command {
 func newProcesses(ctx context.Context, wls []*workload.Workload) ([]*process.Process, error) {
 	ps := []*process.Process{}
 	for _, wl := range wls {
-		md := wl.Metadata
+		md := wl.GetMetadata()
 		if md == nil {
-			return nil, fmt.Errorf("metadata is empty: %s", wl.Internal.FilePath)
+			return nil, fmt.Errorf("metadata is empty: %s", wl.GetInternal().GetFilePath())
 		}
-		spec := wl.Spec
+		spec := wl.GetSpec()
 		if spec == nil {
-			return nil, fmt.Errorf("spec is empty: %s", wl.Internal.FilePath)
+			return nil, fmt.Errorf("spec is empty: %s", wl.GetInternal().GetFilePath())
 		}
 		p := process.New(ctx,
-			process.WithName(md.Name),
-			process.WithVersion(md.Version),
-			process.WithPath(md.Path),
+			process.WithName(md.GetName()),
+			process.WithVersion(md.GetVersion()),
+			process.WithPath(md.GetPath()),
 		)
 		if err := p.Download(ctx); err != nil {
 			return nil, err
@@ -87,9 +87,8 @@ func sync(cmd *cobra.Command, args []string) error {
 
 		srcClient := pb.NewConnectorClient(source.Conn)
 
-		req := &pb.PullRequest{
-			Tables: []string{},
-		}
+		req := &pb.PullRequest{}
+		req.SetTables([]string{})
 
 		pull, err := srcClient.Pull(ctx, req, grpc.WaitForReady(true))
 		if err != nil {

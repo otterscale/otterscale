@@ -37,8 +37,8 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 		// TODO: BETTER
 		opts := ReadOptions{}
 		for _, opt := range []ReadOption{
-			WithTables(req.Tables),
-			WithSkipTables(req.SkipTables),
+			WithTables(req.GetTables()),
+			WithSkipTables(req.GetSkipTables()),
 		} {
 			opt(&opts)
 		}
