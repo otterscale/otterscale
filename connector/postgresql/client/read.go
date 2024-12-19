@@ -35,6 +35,10 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.
 		}
 	}()
 
+	if c.opts.namespace == "" {
+		return errors.New("namespace is empty")
+	}
+
 	schs, err := c.GetTables(ctx, c.opts.namespace)
 	if err != nil {
 		return err
@@ -44,8 +48,7 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.
 		if skip(sch, opts.Tables, opts.SkipTables) {
 			continue
 		}
-		if err := c.read(ctx, sch, msg); err != nil {
-			slog.Error(err.Error())
+		if err := c.read(ctx, tx, sch, msg); err != nil {
 			return err
 		}
 	}
@@ -71,7 +74,7 @@ func sanitize(str string) string {
 	return pgx.Identifier{str}.Sanitize()
 }
 
-func (c *Client) read(ctx context.Context, sch *arrow.Schema, msg chan<- *pb.Message) error {
+func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg chan<- *pb.Message) error {
 	builder := array.NewRecordBuilder(memory.DefaultAllocator, sch)
 
 	new, err := pb.NewMessage(pb.Kind_KIND_MIGRATE, builder.NewRecord())
@@ -91,7 +94,7 @@ func (c *Client) read(ctx context.Context, sch *arrow.Schema, msg chan<- *pb.Mes
 	}
 
 	sql := fmt.Sprintf("select %s from %s limit 1", strings.Join(columnNames, ","), sanitize(tableName))
-	rows, err := c.pool.Query(ctx, sql)
+	rows, err := tx.Query(ctx, sql)
 	if err != nil {
 		return err
 	}

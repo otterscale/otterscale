@@ -6,34 +6,48 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/jackc/pgx/v5"
+
 	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
 )
 
-func (c *Client) Write(ctx context.Context, msg <-chan *pb.Message, opts openhdc.WriteOptions) error {
+func (c *Client) Write(ctx context.Context, msgs <-chan *pb.Message, opts openhdc.WriteOptions) error {
+	if c.opts.namespace == "" {
+		return errors.New("namespace is empty")
+	}
 	tables, err := c.GetTables(ctx, c.opts.namespace)
 	if err != nil {
 		return err
 	}
-	// TODO: BATCH
-	for {
-		msg, ok := <-msg
-		if !ok {
-			return errors.New("something wrong")
+	tx, err := c.pool.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return err
+	}
+	if err := c.write(ctx, tx, tables, msgs); err != nil {
+		if rbErr := tx.Rollback(ctx); rbErr != nil {
+			slog.Error("failed to rollback")
 		}
+		return err
+	}
+	return tx.Commit(ctx)
+}
+
+func (c *Client) write(ctx context.Context, tx pgx.Tx, tables []*arrow.Schema, msgs <-chan *pb.Message) error {
+	// TODO: BATCH
+	for msg := range msgs {
 		rec, err := pb.ToArrowRecord(msg.GetRecord())
 		if err != nil {
 			return err
 		}
 		switch msg.GetKind() {
 		case pb.Kind_KIND_MIGRATE:
-			if err := c.migrate(ctx, tables, rec.Schema()); err != nil {
-				slog.Error(err.Error())
+			if err := migrate(ctx, tx, tables, rec.Schema()); err != nil {
 				return err
 			}
 		case pb.Kind_KIND_INSERT:
-			if err := c.insert(ctx, rec); err != nil {
-				slog.Error(err.Error())
+			if err := insert(ctx, tx, c.Codec, rec); err != nil {
 				return err
 			}
 		case pb.Kind_KIND_DELETE: // TODO: AFTER WRITE MODE
@@ -41,4 +55,5 @@ func (c *Client) Write(ctx context.Context, msg <-chan *pb.Message, opts openhdc
 			return fmt.Errorf("not supported kind %v", msg.GetKind())
 		}
 	}
+	return nil
 }

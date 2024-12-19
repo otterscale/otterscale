@@ -1,6 +1,8 @@
 package client
 
 import (
+	"strings"
+
 	"github.com/apache/arrow-go/v18/arrow"
 
 	"github.com/openhdc/openhdc/metadata"
@@ -8,11 +10,11 @@ import (
 
 func toFieldMetadata(att *pgAttribute) arrow.Metadata {
 	m := map[string]string{}
-	if att.ConType != nil && att.ConName != nil {
-		switch *att.ConType {
-		case 'p':
+	if att.ConTypes != nil {
+		if strings.Contains(*att.ConTypes, "p") {
 			metadata.SetPrimaryKey(m)
-		case 'u':
+		}
+		if strings.Contains(*att.ConTypes, "u") {
 			metadata.SetUnique(m)
 		}
 	}

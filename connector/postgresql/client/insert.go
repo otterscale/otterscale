@@ -6,10 +6,11 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/jackc/pgx/v5"
 
+	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/metadata"
 )
 
-func (c *Client) insert(ctx context.Context, rec arrow.Record) error {
+func insert(ctx context.Context, tx pgx.Tx, c openhdc.Codec, rec arrow.Record) error {
 	sch := rec.Schema()
 
 	tableName, err := metadata.GetTableName(sch)
@@ -35,6 +36,6 @@ func (c *Client) insert(ctx context.Context, rec arrow.Record) error {
 		rows = append(rows, row)
 	}
 
-	_, err = c.pool.CopyFrom(ctx, pgx.Identifier{tableName}, columnNames, pgx.CopyFromRows(rows))
+	_, err = tx.CopyFrom(ctx, pgx.Identifier{tableName}, columnNames, pgx.CopyFromRows(rows))
 	return err
 }
