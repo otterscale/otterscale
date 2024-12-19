@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"errors"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -22,16 +23,17 @@ func NewConnector(opts ...Option) (openhdc.Connector, error) {
 		opt(&o)
 	}
 
+	if o.connString == "" {
+		return nil, errors.New("connection string is empty")
+	}
+
 	var err error
 	config, err := pgxpool.ParseConfig(o.connString)
 	if err != nil {
 		return nil, err
 	}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	pool, err := pgxpool.NewWithConfig(ctx, config)
+	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
 		return nil, err
 	}

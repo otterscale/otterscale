@@ -6,6 +6,7 @@ type options struct {
 	name    string
 	version string
 	path    string
+	spec    map[string]string
 }
 
 func WithName(name string) Option {
@@ -23,5 +24,11 @@ func WithVersion(version string) Option {
 func WithPath(path string) Option {
 	return func(o *options) {
 		o.path = path
+	}
+}
+
+func WithSpec(spec map[string]string) Option {
+	return func(o *options) {
+		o.spec = spec
 	}
 }

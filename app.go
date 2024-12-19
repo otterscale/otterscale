@@ -22,7 +22,7 @@ func New(opts ...Option) *App {
 	o := options{
 		ctx:      context.Background(),
 		sigs:     []os.Signal{syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGKILL},
-		timeout:  5 * time.Second,
+		timeout:  2 * time.Second,
 		logLevel: slog.LevelDebug,
 	}
 	if id, err := uuid.NewUUID(); err == nil {
