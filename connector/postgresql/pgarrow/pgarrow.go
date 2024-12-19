@@ -54,36 +54,37 @@ func To(typ string) arrow.DataType {
 }
 
 func From(typ arrow.DataType) string {
-	switch typ {
-	case arrow.BinaryTypes.Binary:
+	switch v := typ.(type) {
+	case *arrow.BinaryType:
 		return "bytea"
-	case arrow.BinaryTypes.String:
+	case *arrow.StringType:
 		return "text"
-	case arrow.FixedWidthTypes.Boolean:
+	case *arrow.BooleanType:
 		return "bool"
-	case arrow.FixedWidthTypes.Date32:
+	case *arrow.Date32Type:
 		return "date"
-	case arrow.FixedWidthTypes.Time64ns:
+	case *arrow.Time64Type:
 		return "time"
-	case &arrow.TimestampType{Unit: arrow.Microsecond, TimeZone: ""}:
-		return "timestamp"
-	case arrow.FixedWidthTypes.Timestamp_us:
+	case *arrow.TimestampType:
+		if v.TimeZone == "" {
+			return "timestamp"
+		}
 		return "timestamptz"
-	case arrow.PrimitiveTypes.Float32:
+	case *arrow.Float32Type:
 		return "float4"
-	case arrow.PrimitiveTypes.Float64:
+	case *arrow.Float64Type:
 		return "float8"
-	case arrow.PrimitiveTypes.Int16:
+	case *arrow.Int16Type:
 		return "int2"
-	case arrow.PrimitiveTypes.Int32:
+	case *arrow.Int32Type:
 		return "int4"
-	case arrow.PrimitiveTypes.Int64:
+	case *arrow.Int64Type:
 		return "int8"
-	case arrow.PrimitiveTypes.Uint32:
+	case *arrow.Uint32Type:
 		return "xid"
-	case arrow.PrimitiveTypes.Uint64:
+	case *arrow.Uint64Type:
 		return "xid8"
-	case extensions.NewUUIDType():
+	case *extensions.UUIDType:
 		return "uuid"
 	}
 	return "text"

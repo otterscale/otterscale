@@ -2,9 +2,11 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"github.com/apache/arrow-go/v18/arrow"
+	"github.com/jackc/pgx/v5"
 
 	"github.com/openhdc/openhdc/metadata"
 )
@@ -61,24 +63,29 @@ func compareSchemata(cur, new *arrow.Schema) (add, del []arrow.Field, ok bool) {
 	return
 }
 
-func (c *Client) migrate(ctx context.Context, schs []*arrow.Schema, new *arrow.Schema) error {
+func migrate(ctx context.Context, tx pgx.Tx, schs []*arrow.Schema, new *arrow.Schema) error {
 	tableName, err := metadata.GetTableName(new)
 	if err != nil {
 		return err
 	}
 	cur, ok := getTable(schs, tableName)
 	if !ok {
-		return createTableIfNotExists(ctx, c.pool, new)
+		fmt.Printf("[migrate] create table %s\n", tableName)
+		return createTableIfNotExists(ctx, tx, new)
 	}
 	add, del, ok := compareSchemata(cur, new)
 	if !ok {
-		return renewTable(ctx, c.pool, new)
+		fmt.Printf("[migrate] renew table %s\n", tableName)
+		return renewTable(ctx, tx, new)
 	}
 	if len(add) > 0 || len(del) > 0 {
-		if err := alterTable(ctx, c.pool, new, add, del); err != nil {
+		fmt.Printf("[migrate] alter table %s: add %v del %v\n", tableName, add, del)
+		if err := alterTable(ctx, tx, new, add, del); err != nil {
 			slog.Error(err.Error())
-			return renewTable(ctx, c.pool, new)
+			fmt.Printf("[migrate] renew table %s\n", tableName)
+			return renewTable(ctx, tx, new)
 		}
 	}
+	fmt.Printf("[migrate] skip table %s\n", tableName)
 	return nil
 }

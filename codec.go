@@ -11,8 +11,8 @@ import (
 )
 
 type Codec interface {
-	Encode(builder array.Builder, val any) error  // Encode
-	Decode(arr arrow.Array, idx int) (any, error) // Decode
+	Encode(builder array.Builder, val any) error
+	Decode(arr arrow.Array, idx int) (any, error)
 }
 
 type DefaultCodec struct{}

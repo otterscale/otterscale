@@ -19,11 +19,11 @@ type pgClass struct {
 }
 
 type pgAttribute struct {
+	AttNum     string  `db:"attnum"`
 	AttName    string  `db:"attname"`
 	AttTypeID  uint32  `db:"atttypid"`
 	AttNotNull bool    `db:"attnotnull"`
-	ConType    *rune   `db:"contype"`
-	ConName    *string `db:"conname"`
+	ConTypes   *string `db:"contypes"`
 }
 
 func pgClasses(ctx context.Context, pool *pgxpool.Pool, namespace string) ([]*pgClass, error) {
@@ -40,10 +40,11 @@ where c.relkind = 'r' and n.nspname = $1
 }
 
 func pgAttributes(ctx context.Context, pool *pgxpool.Pool, attrelid uint32) ([]*pgAttribute, error) {
-	sql := `select a.attname, a.atttypid, a.attnotnull, c.contype, c.conname
+	sql := `select a.attnum, a.attname, a.atttypid, a.attnotnull, string_agg(c.contype, ',') contypes
 from pg_catalog.pg_attribute a
 left join pg_catalog.pg_constraint c on a.attrelid = c.conrelid and a.attnum = any(c.conkey)
 where not a.attisdropped and a.attnum > 0 and a.attrelid = $1
+group by a.attnum, a.attname, a.atttypid, a.attnotnull
 order by a.attnum
 `
 	rows, err := pool.Query(ctx, sql, attrelid)
@@ -53,13 +54,11 @@ order by a.attnum
 	return pgx.CollectRows(rows, pgx.RowToAddrOfStructByName[pgAttribute])
 }
 
-func createTableIfNotExists(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema) error {
+func createTableIfNotExists(ctx context.Context, tx pgx.Tx, sch *arrow.Schema) error {
 	tableName, err := metadata.GetTableName(sch)
 	if err != nil {
 		return err
 	}
-
-	tableName += "_tmp"
 
 	pks := []string{}
 	css := []string{}
@@ -88,13 +87,13 @@ func createTableIfNotExists(ctx context.Context, pool *pgxpool.Pool, sch *arrow.
 
 	b.WriteString(")")
 
-	if _, err := pool.Exec(ctx, b.String()); err != nil {
+	if _, err := tx.Exec(ctx, b.String()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func dropTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema) error {
+func dropTable(ctx context.Context, tx pgx.Tx, sch *arrow.Schema) error {
 	tableName, err := metadata.GetTableName(sch)
 	if err != nil {
 		return err
@@ -104,19 +103,17 @@ func dropTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema) error
 	b.WriteString("drop table ")
 	b.WriteString(tableName)
 
-	if _, err := pool.Exec(ctx, b.String()); err != nil {
+	if _, err := tx.Exec(ctx, b.String()); err != nil {
 		return err
 	}
 	return nil
 }
 
-func alterTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema, adds, dels []arrow.Field) error {
+func alterTable(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, adds, dels []arrow.Field) error {
 	tableName, err := metadata.GetTableName(sch)
 	if err != nil {
 		return err
 	}
-
-	tableName += "_tmp"
 
 	css := []string{}
 	for _, field := range adds {
@@ -132,7 +129,7 @@ func alterTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema, adds
 	b.WriteString(" ")
 	b.WriteString(strings.Join(css, ", "))
 
-	if _, err := pool.Exec(ctx, b.String()); err != nil {
+	if _, err := tx.Exec(ctx, b.String()); err != nil {
 		return err
 	}
 	return nil
@@ -163,9 +160,9 @@ func addColumnStatement(f *arrow.Field, prefix bool) string {
 	return cs
 }
 
-func renewTable(ctx context.Context, pool *pgxpool.Pool, sch *arrow.Schema) error {
-	if err := dropTable(ctx, pool, sch); err != nil {
+func renewTable(ctx context.Context, tx pgx.Tx, sch *arrow.Schema) error {
+	if err := dropTable(ctx, tx, sch); err != nil {
 		return err
 	}
-	return createTableIfNotExists(ctx, pool, sch)
+	return createTableIfNotExists(ctx, tx, sch)
 }
