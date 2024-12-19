@@ -33,6 +33,16 @@ func (c *Process) Name() string {
 	return c.opts.name
 }
 
+func (c *Process) Tables() []string {
+	// TODO: FROM WORKLOAD
+	return []string{}
+}
+
+func (c *Process) SkipTables() []string {
+	// TODO: FROM WORKLOAD
+	return []string{}
+}
+
 // TODO DOWNLOAD
 
 func (c *Process) Download(_ context.Context) error {
@@ -42,7 +52,7 @@ func (c *Process) Download(_ context.Context) error {
 // TODO READ LOG
 // TODO ERROR HANDLING
 
-func (c *Process) Start(ctx context.Context, spec map[string]string) error {
+func (c *Process) Start(ctx context.Context) error {
 	address, err := freeAddress()
 	if err != nil {
 		return err
@@ -59,8 +69,8 @@ func (c *Process) Start(ctx context.Context, spec map[string]string) error {
 	}
 
 	args := []string{"--address", address}
-	for k, v := range spec {
-		args = append(args, k, v)
+	for k, v := range c.opts.spec {
+		args = append(args, "--"+k, v)
 	}
 	cmd := exec.CommandContext(ctx, c.opts.path, args...) //nolint:gosec
 	cmd.Stderr = os.Stderr

@@ -3,9 +3,11 @@ package openhdc
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
@@ -31,25 +33,27 @@ func (s *Service) Close(ctx context.Context, _ *pb.CloseRequest) (*emptypb.Empty
 
 func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) error {
 	msgs := make(chan *pb.Message)
-	defer close(msgs)
 	eg, ctx := errgroup.WithContext(stream.Context())
+	// canceled by context
 	eg.Go(func() error {
-		// TODO: BETTER
-		opts := ReadOptions{}
-		for _, opt := range []ReadOption{
+		defer close(msgs)
+		o := ReadOptions{}
+		opts := []ReadOption{
 			WithTables(req.GetTables()),
 			WithSkipTables(req.GetSkipTables()),
-		} {
-			opt(&opts)
 		}
-		return s.connector.Read(ctx, msgs, opts)
+		for _, opt := range opts {
+			opt(&o)
+		}
+		return s.connector.Read(ctx, msgs, o)
 	})
+	// canceled by close channel
 	eg.Go(func() error {
 		for msg := range msgs {
-			// TODO: CHECK SIZE
-			// if proto.Size(res) > MaxMsgSize {
-			// 	continue
-			// }
+			if proto.Size(msg) > maxMsgSize {
+				fmt.Println("[pull] skip oversized message")
+				continue
+			}
 			if err := stream.Send(msg); err != nil {
 				return err
 			}
@@ -61,28 +65,33 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 
 func (s *Service) Push(stream pb.Connector_PushServer) error {
 	msgs := make(chan *pb.Message)
-	defer close(msgs)
 	eg, ctx := errgroup.WithContext(stream.Context())
+	// canceled by next recv
 	eg.Go(func() error {
-		// TODO: BETTER
-		opts := WriteOptions{}
-		for _, opt := range []WriteOption{} {
-			opt(&opts)
-		}
-		return s.connector.Write(ctx, msgs, opts)
-	})
-	eg.Go(func() error {
+		defer close(msgs)
 		for {
 			msg, err := stream.Recv()
+			if errors.Is(err, io.EOF) {
+				return stream.SendAndClose(&emptypb.Empty{})
+			}
 			if err != nil {
-				if errors.Is(err, io.EOF) {
-					break
-				}
 				return err
 			}
-			msgs <- msg
+			select {
+			case msgs <- msg:
+			case <-ctx.Done():
+				return nil
+			}
 		}
-		return nil
+	})
+	// canceled by close channel
+	eg.Go(func() error {
+		o := WriteOptions{}
+		opts := []WriteOption{}
+		for _, opt := range opts {
+			opt(&o)
+		}
+		return s.connector.Write(ctx, msgs, o)
 	})
 	return eg.Wait()
 }

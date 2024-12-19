@@ -5,10 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"time"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"github.com/openhdc/openhdc/api/workload/v1"
@@ -34,19 +35,16 @@ func newProcesses(ctx context.Context, wls []*workload.Workload) ([]*process.Pro
 		if md == nil {
 			return nil, fmt.Errorf("metadata is empty: %s", wl.GetInternal().GetFilePath())
 		}
-		spec := wl.GetSpec()
-		if spec == nil {
-			return nil, fmt.Errorf("spec is empty: %s", wl.GetInternal().GetFilePath())
-		}
 		p := process.New(ctx,
 			process.WithName(md.GetName()),
 			process.WithVersion(md.GetVersion()),
 			process.WithPath(md.GetPath()),
+			process.WithSpec(wl.GetSpec()),
 		)
 		if err := p.Download(ctx); err != nil {
 			return nil, err
 		}
-		if err := p.Start(ctx, spec); err != nil {
+		if err := p.Start(ctx); err != nil {
 			return nil, err
 		}
 		ps = append(ps, p)
@@ -75,54 +73,75 @@ func sync(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// new transformer clients
-	transformers, err := newProcesses(ctx, reader.Transformers)
-	if err != nil {
-		return err
+	eg, _ := errgroup.WithContext(ctx)
+
+	// pushes
+	pushes := []grpc.ClientStreamingClient[pb.Message, emptypb.Empty]{}
+	for _, destination := range destinations {
+		push, err := newPushClient(ctx, destination)
+		if err != nil {
+			return err
+		}
+		pushes = append(pushes, push)
+	}
+
+	// pulls
+	pulls := []grpc.ServerStreamingClient[pb.Message]{}
+	for _, source := range sources {
+		pull, err := newPullClient(ctx, source)
+		if err != nil {
+			return err
+		}
+		pulls = append(pulls, pull)
 	}
 
 	// start sync
-	for _, source := range sources {
-		fmt.Println(source.Name())
-
-		srcClient := pb.NewConnectorClient(source.Conn)
-
-		req := &pb.PullRequest{}
-		req.SetTables([]string{})
-
-		pull, err := srcClient.Pull(ctx, req, grpc.WaitForReady(true))
-		if err != nil {
+	for _, pull := range pulls {
+		eg.Go(func() error {
+			for {
+				msg, err := pull.Recv()
+				if errors.Is(err, io.EOF) {
+					break
+				}
+				if err != nil {
+					return err
+				}
+				for _, push := range pushes {
+					if err := push.Send(msg); err != nil {
+						if errors.Is(err, io.EOF) {
+							if _, err := push.CloseAndRecv(); err != nil {
+								return err
+							}
+						}
+						return err
+					}
+				}
+			}
+			return nil
+		})
+	}
+	if err := eg.Wait(); err != nil && !errors.Is(err, context.Canceled) {
+		return err
+	}
+	// all ok
+	for _, push := range pushes {
+		if _, err := push.CloseAndRecv(); err != nil {
 			return err
-		}
-
-		r, err := pull.Recv()
-		if err != nil {
-			if errors.Is(err, io.EOF) {
-				break
-			}
-			return err
-		}
-
-		for _, destination := range destinations {
-			for _, transformer := range transformers {
-				fmt.Println(transformer.Name())
-			}
-
-			fmt.Println(destination.Name())
-			dstClient := pb.NewConnectorClient(destination.Conn)
-
-			rs, err := dstClient.Push(ctx, grpc.WaitForReady(true))
-			if err != nil {
-				return err
-			}
-
-			if err := rs.Send(r); err != nil {
-				return err
-			}
-
-			time.Sleep(time.Second * 5)
 		}
 	}
-
 	return nil
+}
+
+func newPullClient(ctx context.Context, p *process.Process) (grpc.ServerStreamingClient[pb.Message], error) {
+	req := &pb.PullRequest{}
+	req.SetTables(p.Tables())
+	req.SetTables(p.SkipTables())
+
+	c := pb.NewConnectorClient(p.Conn)
+	return c.Pull(ctx, req, grpc.WaitForReady(true))
+}
+
+func newPushClient(ctx context.Context, p *process.Process) (grpc.ClientStreamingClient[pb.Message, emptypb.Empty], error) {
+	c := pb.NewConnectorClient(p.Conn)
+	return c.Push(ctx, grpc.WaitForReady(true))
 }

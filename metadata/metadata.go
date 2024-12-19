@@ -6,12 +6,6 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 )
 
-var (
-	keySchemaTableName   = "TABLE-NAME"
-	keyFieldIsPrimaryKey = "IS-PRIMARY-KEY"
-	keyFieldIsUnique     = "IS-UNIQUE"
-)
-
 func SetTableName(m map[string]string, v string) {
 	m[keySchemaTableName] = v
 }
