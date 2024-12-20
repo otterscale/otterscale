@@ -9,6 +9,6 @@ import (
 	"github.com/openhdc/openhdc/connector/csv/client"
 )
 
-func wireApp([]openhdc.ServerOption, []client.Option) (*app.App, func(), error) {
+func wireApp([]openhdc.ServerOption, []client.Option) (*openhdc.App, func(), error) {
 	panic(wire.Build(newApp, ProviderSet))
 }

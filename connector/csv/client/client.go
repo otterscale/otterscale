@@ -2,7 +2,7 @@ package client
 
 import (
 	"context"
-	"log/slog"
+	"errors"
 	"os"
 
 	"github.com/openhdc/openhdc"
@@ -21,9 +21,12 @@ func NewConnector(opts ...Option) (openhdc.Connector, error) {
 		opt(&o)
 	}
 
-	f, err := os.Open(o.path)
+	if o.filePath == "" {
+		return nil, errors.New("file path is empty")
+	}
+
+	f, err := os.Open(o.filePath)
 	if err != nil {
-		slog.Error(err.Error())
 		return nil, err
 	}
 
@@ -35,9 +38,5 @@ func NewConnector(opts ...Option) (openhdc.Connector, error) {
 }
 
 func (c *Client) Close(ctx context.Context) error {
-	if err := c.file.Close(); err != nil {
-		slog.Error(err.Error())
-		return err
-	}
-	return nil
+	return c.file.Close()
 }
