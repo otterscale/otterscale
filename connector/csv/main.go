@@ -17,23 +17,21 @@ const (
 	defaultBatchSize      = 10000
 	defaultBatchSizeBytes = 100000000
 	defaultBatchTimeout   = 60 * time.Second
-
-	defaultInfering = true
 )
 
 var (
-	kind    = flag.String("kind", "", "")
-	network = flag.String("network", "tcp", "")
-	address = flag.String("address", ":0", "")
+	kind    = flag.String("kind", "", "connector type, such as source or destination")
+	network = flag.String("network", "tcp", "network of grpc server")
+	address = flag.String("address", ":0", "address of grpc server")
 
-	batchSize      = flag.Int64("batch_size", defaultBatchSize, "")
-	batchSizeBytes = flag.Int64("batch_size_bytes", defaultBatchSizeBytes, "")
-	batchTimeout   = flag.Duration("batch_timeout", defaultBatchTimeout, "")
+	batchSize      = flag.Int64("batch_size", defaultBatchSize, "")            // TODO: USAGE
+	batchSizeBytes = flag.Int64("batch_size_bytes", defaultBatchSizeBytes, "") // TODO: USAGE
+	batchTimeout   = flag.Duration("batch_timeout", defaultBatchTimeout, "")   // TODO: USAGE
 
-	path      = flag.String("path", "", "")
-	tableName = flag.String("table_name", "csv_file", "")
+	filePath  = flag.String("file_path", "", "csv file path")
+	tableName = flag.String("table_name", "csv_file", "destination table name")
 
-	infering = flag.Bool("infering", defaultInfering, "")
+	infering = flag.Bool("infering", true, "")
 )
 
 var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector)
@@ -57,10 +55,8 @@ func main() {
 		client.WithBatchSize(*batchSize),
 		client.WithBatchSizeBytes(*batchSizeBytes),
 		client.WithBatchTimeout(*batchTimeout),
-
-		client.WithPath(*path),
+		client.WithFilePath(*filePath),
 		client.WithTableName(*tableName),
-
 		client.WithInfering(*infering),
 	}
 

@@ -10,11 +10,9 @@ type options struct {
 	batchSize      int64
 	batchSizeBytes int64
 	batchTimeout   time.Duration
-
-	path      string
-	tableName string
-
-	infering bool
+	filePath       string
+	tableName      string
+	infering       bool
 }
 
 func WithBatchSize(batchSize int64) Option {
@@ -35,9 +33,9 @@ func WithBatchTimeout(batchTimeout time.Duration) Option {
 	}
 }
 
-func WithPath(path string) Option {
+func WithFilePath(filePath string) Option {
 	return func(o *options) {
-		o.path = path
+		o.filePath = filePath
 	}
 }
 

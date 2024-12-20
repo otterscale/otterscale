@@ -2,7 +2,9 @@ package client
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 
 	"github.com/apache/arrow-go/v18/arrow"
@@ -14,22 +16,28 @@ import (
 
 func (c *Client) getHeadRows() (arrow.Record, error) {
 	rdr := csv.NewInferringReader(c.file, csv.WithChunk(1))
-	defer c.file.Seek(0, 0)
+	defer func() {
+		if _, err := c.file.Seek(0, io.SeekStart); err != nil {
+			slog.Error(err.Error())
+		}
+	}()
 
 	if !rdr.Next() {
 		return nil, fmt.Errorf("file is empty")
 	}
-	hdr := rdr.Record()
 
-	return hdr, nil
+	return rdr.Record(), nil
 }
 
 func (c *Client) getReader() (*csv.Reader, error) {
-	hdr, hRsErr := c.getHeadRows()
-
-	if err := c.validateFile(hRsErr); err != nil {
+	hdr, err := c.getHeadRows()
+	if errors.Is(err, io.EOF) {
+		return nil, fmt.Errorf("file %s is empty", c.opts.filePath)
+	}
+	if err != nil {
 		return nil, err
 	}
+
 	if err := c.validateHeader(hdr); err != nil {
 		return nil, err
 	}
@@ -41,15 +49,13 @@ func (c *Client) getReader() (*csv.Reader, error) {
 	flds := c.toSchemaFields(hdr)
 	mtd := c.toSchemaMetadata(c.opts.tableName)
 	sch := arrow.NewSchema(flds, mtd)
-	rdr := csv.NewReader(c.file, sch, opts...)
 
-	return rdr, rdr.Err()
+	return csv.NewReader(c.file, sch, opts...), nil
 }
 
 func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.ReadOptions) error {
 	rdr, err := c.getReader()
 	if err != nil {
-		slog.Error(err.Error())
 		return err
 	}
 	defer rdr.Release()
@@ -58,11 +64,10 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.
 	for rdr.Next() {
 		rcr := rdr.Record()
 
+		// send schema on first row
 		if !cndFlg {
 			new, err := pb.NewMessage(pb.Kind_KIND_MIGRATE, rcr)
-
 			if err != nil {
-				slog.Error(err.Error())
 				return err
 			}
 			msg <- new
@@ -72,15 +77,10 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.
 
 		new, err := pb.NewMessage(pb.Kind_KIND_INSERT, rcr)
 		if err != nil {
-			slog.Error(err.Error())
 			return err
 		}
 		msg <- new
 	}
 
-	if err := rdr.Err(); err != nil {
-		slog.Error(err.Error())
-		return err
-	}
-	return nil
+	return rdr.Err()
 }
