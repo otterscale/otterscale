@@ -8,6 +8,8 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	pb "github.com/openhdc/openhdc/api/connector/v1"
 )
 
 // TODO: BETTER
@@ -16,7 +18,7 @@ const maxMsgSize = 100 * 1024 * 1024
 type Process struct {
 	opts options
 
-	Conn *grpc.ClientConn
+	Client pb.ConnectorClient
 }
 
 func New(ctx context.Context, opts ...Option) *Process {
@@ -58,7 +60,7 @@ func (c *Process) Start(ctx context.Context) error {
 		return err
 	}
 
-	c.Conn, err = grpc.NewClient(address,
+	conn, err := grpc.NewClient(address,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultCallOptions(
 			grpc.MaxCallRecvMsgSize(maxMsgSize),
@@ -67,6 +69,8 @@ func (c *Process) Start(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+
+	c.Client = pb.NewConnectorClient(conn)
 
 	args := []string{"--address", address}
 	for k, v := range c.opts.spec {
