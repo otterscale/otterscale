@@ -73,9 +73,6 @@ func sync(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// new error group
-	eg, gctx := errgroup.WithContext(ctx)
-
 	// pulls
 	pulls := []grpc.ServerStreamingClient[pb.Message]{}
 	for _, src := range srcs {
@@ -83,7 +80,7 @@ func sync(cmd *cobra.Command, args []string) error {
 		req.SetTables(src.Tables())
 		req.SetTables(src.SkipTables())
 
-		pull, err := src.Client.Pull(gctx, req, grpc.WaitForReady(true))
+		pull, err := src.Client.Pull(ctx, req, grpc.WaitForReady(true))
 		if err != nil {
 			return err
 		}
@@ -93,12 +90,15 @@ func sync(cmd *cobra.Command, args []string) error {
 	// pushes
 	pushes := []grpc.ClientStreamingClient[pb.Message, emptypb.Empty]{}
 	for _, dst := range dsts {
-		push, err := dst.Client.Push(gctx, grpc.WaitForReady(true))
+		push, err := dst.Client.Push(ctx, grpc.WaitForReady(true))
 		if err != nil {
 			return err
 		}
 		pushes = append(pushes, push)
 	}
+
+	// new error group
+	eg, _ := errgroup.WithContext(ctx)
 
 	// start sync
 	for _, pull := range pulls {
@@ -106,18 +106,21 @@ func sync(cmd *cobra.Command, args []string) error {
 			for {
 				msg, err := pull.Recv()
 				if errors.Is(err, io.EOF) {
+					fmt.Println("[sync] read finished")
 					break
 				}
 				if err != nil {
 					return err
 				}
 				for _, push := range pushes {
-					if err := push.Send(msg); err != nil {
-						if errors.Is(err, io.EOF) {
-							if _, err := push.CloseAndRecv(); err != nil {
-								return err
-							}
+					err := push.Send(msg)
+					if errors.Is(err, io.EOF) {
+						fmt.Println("[sync] write error occurred")
+						if _, err := push.CloseAndRecv(); err != nil {
+							return err
 						}
+					}
+					if err != nil {
 						return err
 					}
 				}
@@ -127,7 +130,7 @@ func sync(cmd *cobra.Command, args []string) error {
 	}
 
 	// wait
-	if err := eg.Wait(); err != nil && !errors.Is(err, context.Canceled) {
+	if err := eg.Wait(); err != nil {
 		return err
 	}
 
