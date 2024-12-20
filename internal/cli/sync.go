@@ -56,43 +56,48 @@ func sync(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 
 	// convert args
-	reader, err := workload.NewReader(args)
+	r, err := workload.NewReader(args)
 	if err != nil {
 		return err
 	}
 
 	// new source clients
-	sources, err := newProcesses(ctx, reader.Sources)
+	srcs, err := newProcesses(ctx, r.Sources)
 	if err != nil {
 		return err
 	}
 
 	// new destination clients
-	destinations, err := newProcesses(ctx, reader.Destinations)
+	dsts, err := newProcesses(ctx, r.Destinations)
 	if err != nil {
 		return err
 	}
 
-	eg, _ := errgroup.WithContext(ctx)
-
-	// pushes
-	pushes := []grpc.ClientStreamingClient[pb.Message, emptypb.Empty]{}
-	for _, destination := range destinations {
-		push, err := newPushClient(ctx, destination)
-		if err != nil {
-			return err
-		}
-		pushes = append(pushes, push)
-	}
+	// new error group
+	eg, gctx := errgroup.WithContext(ctx)
 
 	// pulls
 	pulls := []grpc.ServerStreamingClient[pb.Message]{}
-	for _, source := range sources {
-		pull, err := newPullClient(ctx, source)
+	for _, src := range srcs {
+		req := &pb.PullRequest{}
+		req.SetTables(src.Tables())
+		req.SetTables(src.SkipTables())
+
+		pull, err := src.Client.Pull(gctx, req, grpc.WaitForReady(true))
 		if err != nil {
 			return err
 		}
 		pulls = append(pulls, pull)
+	}
+
+	// pushes
+	pushes := []grpc.ClientStreamingClient[pb.Message, emptypb.Empty]{}
+	for _, dst := range dsts {
+		push, err := dst.Client.Push(gctx, grpc.WaitForReady(true))
+		if err != nil {
+			return err
+		}
+		pushes = append(pushes, push)
 	}
 
 	// start sync
@@ -120,28 +125,25 @@ func sync(cmd *cobra.Command, args []string) error {
 			return nil
 		})
 	}
+
+	// wait
 	if err := eg.Wait(); err != nil && !errors.Is(err, context.Canceled) {
 		return err
 	}
+
 	// all ok
 	for _, push := range pushes {
 		if _, err := push.CloseAndRecv(); err != nil {
 			return err
 		}
 	}
+
+	// close
+	for _, p := range append(srcs, dsts...) {
+		if _, err := p.Client.Close(ctx, &pb.CloseRequest{}); err != nil {
+			return err
+		}
+	}
+
 	return nil
-}
-
-func newPullClient(ctx context.Context, p *process.Process) (grpc.ServerStreamingClient[pb.Message], error) {
-	req := &pb.PullRequest{}
-	req.SetTables(p.Tables())
-	req.SetTables(p.SkipTables())
-
-	c := pb.NewConnectorClient(p.Conn)
-	return c.Pull(ctx, req, grpc.WaitForReady(true))
-}
-
-func newPushClient(ctx context.Context, p *process.Process) (grpc.ClientStreamingClient[pb.Message, emptypb.Empty], error) {
-	c := pb.NewConnectorClient(p.Conn)
-	return c.Push(ctx, grpc.WaitForReady(true))
 }
