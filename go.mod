@@ -3,7 +3,7 @@ module github.com/openhdc/openhdc
 go 1.23.4
 
 require (
-	buf.build/go/protoyaml v0.3.0
+	buf.build/go/protoyaml v0.3.1
 	github.com/apache/arrow-go/v18 v18.0.0
 	github.com/google/uuid v1.6.0
 	github.com/spf13/cobra v1.8.1
@@ -13,7 +13,7 @@ require (
 )
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.35.2-20241127180247-a33202765966.1 // indirect
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.0-20241127180247-a33202765966.1 // indirect
 	cel.dev/expr v0.18.0 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
