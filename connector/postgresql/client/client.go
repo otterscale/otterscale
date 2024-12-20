@@ -28,12 +28,12 @@ func NewConnector(opts ...Option) (openhdc.Connector, error) {
 	}
 
 	var err error
-	config, err := pgxpool.ParseConfig(o.connString)
+	c, err := pgxpool.ParseConfig(o.connString)
 	if err != nil {
 		return nil, err
 	}
 
-	pool, err := pgxpool.NewWithConfig(context.Background(), config)
+	p, err := pgxpool.NewWithConfig(context.Background(), c)
 	if err != nil {
 		return nil, err
 	}
@@ -41,8 +41,8 @@ func NewConnector(opts ...Option) (openhdc.Connector, error) {
 	return &Client{
 		Codec:  openhdc.DefaultCodec{},
 		opts:   o,
-		config: config,
-		pool:   pool,
+		config: c,
+		pool:   p,
 	}, nil
 }
 

@@ -20,16 +20,18 @@ const (
 )
 
 var (
-	kind    = flag.String("kind", "", "")
-	network = flag.String("network", "tcp", "")
-	address = flag.String("address", ":0", "")
+	kind    = flag.String("kind", "", "connector type, such as source or destination")
+	network = flag.String("network", "tcp", "network of grpc server")
+	address = flag.String("address", ":0", "address of grpc server")
 
-	batchSize      = flag.Int64("batch_size", defaultBatchSize, "")
-	batchSizeBytes = flag.Int64("batch_size_bytes", defaultBatchSizeBytes, "")
-	batchTimeout   = flag.Duration("batch_timeout", defaultBatchTimeout, "")
-	createIndex    = flag.Bool("create_index", true, "")
-	connString     = flag.String("connection_string", "", "")
-	namespace      = flag.String("namespace", "", "")
+	batchSize      = flag.Int64("batch_size", defaultBatchSize, "")            // TODO: USAGE
+	batchSizeBytes = flag.Int64("batch_size_bytes", defaultBatchSizeBytes, "") // TODO: USAGE
+	batchTimeout   = flag.Duration("batch_timeout", defaultBatchTimeout, "")   // TODO: USAGE
+
+	connString = flag.String("connection_string", "", "connection string, such as 'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'")
+	namespace  = flag.String("namespace", "", "namespace of database, such as 'public'")
+
+	createIndex = flag.Bool("create_index", true, "") // TODO: USAGE
 )
 
 var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector)
