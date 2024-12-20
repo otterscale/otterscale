@@ -2,6 +2,7 @@ edition = "2023";
 
 package openhdc.workload.v1;
 
+import "google/protobuf/struct.proto";
 import "google/protobuf/go_features.proto";
 
 option features.(pb.go).api_level = API_OPAQUE;
@@ -32,6 +33,6 @@ message Internal {
 message Workload {
   Kind kind = 1;
   Metadata metadata = 2;
-  map<string, string> spec = 3;
+  google.protobuf.Struct spec = 3;
   Internal internal = 4;
 }

@@ -1,12 +1,16 @@
 package process
 
+import (
+	"google.golang.org/protobuf/types/known/structpb"
+)
+
 type Option func(*options)
 
 type options struct {
 	name    string
 	version string
 	path    string
-	spec    map[string]string
+	spec    *structpb.Struct
 }
 
 func WithName(name string) Option {
@@ -27,7 +31,7 @@ func WithPath(path string) Option {
 	}
 }
 
-func WithSpec(spec map[string]string) Option {
+func WithSpec(spec *structpb.Struct) Option {
 	return func(o *options) {
 		o.spec = spec
 	}
