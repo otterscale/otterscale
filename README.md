@@ -23,16 +23,15 @@ We preserves data privacy by localizing data and combining siloed information to
 
         ```sh
         git clone https://github.com/openhdc/openhdc.git
-        cd openhdc
         ```
     
-    2. Build the project:
+    2. Change directory and build:
 
         ```sh
-        make build
+        cd openhdc && make build
         ```
     
-    3. Run the server:
+    3. Run:
    
         ```sh
         ./bin/openhdc
