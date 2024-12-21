@@ -2,7 +2,7 @@
 
 OpenHDC (**Open** **H**ybrid **D**ata **C**enter) is an open-source project designed to provide a robust and local server solution for hybrid data sources. 
 
-It preserves data privacy by localizing data and combining siloed information to enhance traceability.
+We preserves data privacy by localizing data and combining siloed information to enhance traceability.
 
 ## ✨ Features
 
@@ -12,7 +12,7 @@ It preserves data privacy by localizing data and combining siloed information to
 
 ## 🍺 Build & Run
 
-1. Install by go install
+1. Install by `go install`
 
     ```sh
     go install github.com/openhdc/openhdc@latest
@@ -53,7 +53,9 @@ For detailed documentation, please visit [docs](/docs) directory.
 
 ## 🦮 Help
 
-If you need help, feel free to open an issue on GitHub or use the discussions feature to contact the maintainers. We'll do our best to assist you promptly.
+If you need help, feel free to open an issue on GitHub or use the discussions feature to contact the maintainers. 
+
+We'll do our best to assist you promptly.
 
 ## 📢 Roadmap
 - [ ] v0.0.1
