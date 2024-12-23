@@ -12,6 +12,7 @@ import (
 
 	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
+	"github.com/openhdc/openhdc/api/property/v1"
 )
 
 func (c *Client) getHeadRows() (arrow.Record, error) {
@@ -66,7 +67,7 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.
 
 		// send schema on first row
 		if !cndFlg {
-			new, err := pb.NewMessage(pb.Kind_KIND_MIGRATE, rcr)
+			new, err := pb.NewMessage(property.MessageKind_migrate, rcr)
 			if err != nil {
 				return err
 			}
@@ -75,7 +76,7 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.
 			cndFlg = true
 		}
 
-		new, err := pb.NewMessage(pb.Kind_KIND_INSERT, rcr)
+		new, err := pb.NewMessage(property.MessageKind_insert, rcr)
 		if err != nil {
 			return err
 		}

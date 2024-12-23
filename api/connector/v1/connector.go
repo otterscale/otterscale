@@ -9,11 +9,13 @@ import (
 	"github.com/apache/arrow-go/v18/arrow/memory"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/openhdc/openhdc/api/property/v1"
 )
 
 var ErrNotSupported = status.Errorf(codes.InvalidArgument, "not supported")
 
-func NewMessage(kind Kind, rec arrow.Record) (*Message, error) {
+func NewMessage(kind property.MessageKind, rec arrow.Record) (*Message, error) {
 	b, err := FromArrowRecord(rec)
 	if err != nil {
 		return nil, err

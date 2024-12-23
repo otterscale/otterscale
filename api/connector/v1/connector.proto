@@ -2,6 +2,7 @@ edition = "2023";
 
 package openhdc.connector.v1;
 
+import "api/property/v1/property.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/go_features.proto";
 
@@ -14,13 +15,6 @@ service Connector {
   rpc Push(stream Message) returns (google.protobuf.Empty);
 }
 
-enum Kind {
-  KIND_UNSPECIFIED = 0;
-  KIND_MIGRATE = 1;
-  KIND_INSERT = 2;
-  KIND_DELETE = 3;
-}
-
 message CloseRequest {}
 
 message PullRequest {
@@ -29,6 +23,6 @@ message PullRequest {
 }
 
 message Message {
-  Kind kind = 1;
+  openhdc.property.v1.MessageKind kind = 1;
   bytes record = 2;
 }

@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"buf.build/go/protoyaml"
+
+	"github.com/openhdc/openhdc/api/property/v1"
 )
 
 type Reader struct {
@@ -44,11 +46,11 @@ func (r *Reader) readFile(path string) error {
 	w.SetInternal(Internal_builder{FilePath: &path}.Build())
 	// append
 	switch w.GetKind() {
-	case Kind_source:
+	case property.WorkloadKind_source:
 		r.Sources = append(r.Sources, &w)
-	case Kind_destination:
+	case property.WorkloadKind_destination:
 		r.Destinations = append(r.Destinations, &w)
-	case Kind_transformer:
+	case property.WorkloadKind_transformer:
 		r.Transformers = append(r.Transformers, &w)
 	default:
 		return fmt.Errorf("invalid kind %s", w.GetKind())

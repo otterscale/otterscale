@@ -2,28 +2,18 @@ edition = "2023";
 
 package openhdc.workload.v1;
 
+import "api/property/v1/property.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/go_features.proto";
 
 option features.(pb.go).api_level = API_OPAQUE;
 option go_package = "github.com/openhdc/openhdc/api/workload/v1;workload";
 
-enum Kind {
-  kind_unspecified = 0;
-  source = 1;
-  destination = 2;
-  transformer = 3;
-}
-
-enum WriteMode {
-  write_mode_unspecified = 0;
-}
-
 message Metadata {
   string name = 1;
   string version = 2;
   string path = 3;
-  WriteMode write_mode = 4;
+  openhdc.property.v1.SyncMode sync_mode = 4;
 }
 
 message Internal {
@@ -31,7 +21,7 @@ message Internal {
 }
 
 message Workload {
-  Kind kind = 1;
+  openhdc.property.v1.WorkloadKind kind = 1;
   Metadata metadata = 2;
   google.protobuf.Struct spec = 3;
   Internal internal = 4;

@@ -13,6 +13,7 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
+	"github.com/openhdc/openhdc/api/property/v1"
 )
 
 // TODO: BETTER
@@ -58,11 +59,13 @@ func (c *Process) Download(_ context.Context) error {
 // TODO ERROR HANDLING
 
 func (c *Process) Start(ctx context.Context) error {
+	// get address
 	address, err := freeAddress()
 	if err != nil {
 		return err
 	}
 
+	// new grpc connection
 	conn, err := grpc.NewClient(address,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultCallOptions(
@@ -73,15 +76,15 @@ func (c *Process) Start(ctx context.Context) error {
 		return err
 	}
 
+	// new grpc client
 	c.Client = pb.NewConnectorClient(conn)
 
-	args := []string{"--address", address}
-	for key, val := range c.opts.spec.GetFields() {
-		v := toArgs(val)
-		if len(v) > 0 {
-			args = append(args, "--"+key, strings.Join(v, ","))
-		}
-	}
+	// prepare arguments
+	args := []string{}
+	args = append(args, addressToArgs(address)...)
+	args = append(args, syncModeToArgs(c.opts.syncMode)...)
+	args = append(args, fieldsToArgs(c.opts.spec.GetFields())...)
+
 	cmd := exec.CommandContext(ctx, c.opts.path, args...) //nolint:gosec
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
@@ -106,7 +109,18 @@ func freeAddress() (string, error) {
 	return lis.Addr().String(), nil
 }
 
-func toArgs(v *structpb.Value) []string {
+func addressToArgs(address string) []string {
+	return []string{"--address", address}
+}
+
+func syncModeToArgs(sm property.SyncMode) []string {
+	if sm == property.SyncMode_sync_mode_unspecified {
+		return nil
+	}
+	return []string{"--sync_mode", sm.String()}
+}
+
+func valueToArgs(v *structpb.Value) []string {
 	args := []string{}
 	switch v.GetKind().(type) {
 	case *structpb.Value_NullValue:
@@ -121,7 +135,18 @@ func toArgs(v *structpb.Value) []string {
 		// not support
 	case *structpb.Value_ListValue:
 		for _, v := range v.GetListValue().GetValues() {
-			args = append(args, toArgs(v)...)
+			args = append(args, valueToArgs(v)...)
+		}
+	}
+	return args
+}
+
+func fieldsToArgs(m map[string]*structpb.Value) []string {
+	args := []string{}
+	for key, val := range m {
+		v := valueToArgs(val)
+		if len(v) > 0 {
+			args = append(args, "--"+key, strings.Join(v, ","))
 		}
 	}
 	return args

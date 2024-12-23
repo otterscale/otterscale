@@ -9,11 +9,15 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/jackc/pgx/v5"
 
-	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
+	"github.com/openhdc/openhdc/api/property/v1"
 )
 
-func (c *Client) Write(ctx context.Context, msgs <-chan *pb.Message, opts openhdc.WriteOptions) error {
+func (c *Client) Write(ctx context.Context, msgs <-chan *pb.Message) error {
+	if c.opts.syncMode == property.SyncMode_sync_mode_unspecified {
+		slog.Warn("sync mode is unspecified, use full_overwrite")
+		c.opts.syncMode = property.SyncMode_full_overwrite
+	}
 	if c.opts.namespace == "" {
 		return errors.New("namespace is empty")
 	}
@@ -42,15 +46,15 @@ func (c *Client) write(ctx context.Context, tx pgx.Tx, tables []*arrow.Schema, m
 			return err
 		}
 		switch msg.GetKind() {
-		case pb.Kind_KIND_MIGRATE:
+		case property.MessageKind_migrate:
 			if err := migrate(ctx, tx, tables, rec.Schema()); err != nil {
 				return err
 			}
-		case pb.Kind_KIND_INSERT:
+		case property.MessageKind_insert:
 			if err := insert(ctx, tx, c.Codec, rec); err != nil {
 				return err
 			}
-		case pb.Kind_KIND_DELETE: // TODO: AFTER WRITE MODE
+		case property.MessageKind_delete: // TODO: AFTER WRITE MODE
 		default:
 			return fmt.Errorf("not supported kind %v", msg.GetKind())
 		}

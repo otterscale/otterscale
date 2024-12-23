@@ -1,16 +1,18 @@
 package process
 
 import (
+	"github.com/openhdc/openhdc/api/property/v1"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
 type Option func(*options)
 
 type options struct {
-	name    string
-	version string
-	path    string
-	spec    *structpb.Struct
+	name     string
+	version  string
+	path     string
+	syncMode property.SyncMode
+	spec     *structpb.Struct
 }
 
 func WithName(name string) Option {
@@ -28,6 +30,12 @@ func WithVersion(version string) Option {
 func WithPath(path string) Option {
 	return func(o *options) {
 		o.path = path
+	}
+}
+
+func WithSyncMode(syncMode property.SyncMode) Option {
+	return func(o *options) {
+		o.syncMode = syncMode
 	}
 }
 

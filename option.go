@@ -8,7 +8,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/openhdc/openhdc/api/workload/v1"
+	"github.com/openhdc/openhdc/api/property/v1"
 )
 
 type Option func(*options)
@@ -22,7 +22,7 @@ type options struct {
 	timeout  time.Duration
 	servers  []*Server
 	logLevel slog.Leveler
-	kind     workload.Kind
+	kind     property.WorkloadKind
 }
 
 func WithID(id string) Option {
@@ -73,7 +73,7 @@ func WithLogLevel(logLevel slog.Leveler) Option {
 	}
 }
 
-func WithKind(kind workload.Kind) Option {
+func WithKind(kind property.WorkloadKind) Option {
 	return func(o *options) {
 		o.kind = kind
 	}
@@ -123,22 +123,3 @@ func WithSkipTables(skipTables []string) ReadOption {
 		o.SkipTables = skipTables
 	}
 }
-
-type WriteOption func(*WriteOptions)
-
-type WriteOptions struct {
-	// Kind WriteKind
-	// Table string
-}
-
-// func WithWriteKind(kind WriteKind) WriteOption {
-// 	return func(o *WriteOptions) {
-// 		o.Kind = kind
-// 	}
-// }
-
-// func WithTable(table string) WriteOption {
-// 	return func(o *WriteOptions) {
-// 		o.Table = table
-// 	}
-// }

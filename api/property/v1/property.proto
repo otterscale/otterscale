@@ -1,0 +1,30 @@
+edition = "2023";
+
+package openhdc.property.v1;
+
+import "google/protobuf/go_features.proto";
+
+option features.(pb.go).api_level = API_OPAQUE;
+option go_package = "github.com/openhdc/openhdc/api/property/v1;property";
+
+enum MessageKind {
+  message_kind_unspecified = 0;
+  migrate = 1;
+  insert = 2;
+  delete = 3;
+}
+
+enum WorkloadKind {
+  workload_kind_unspecified = 0;
+  source = 1;
+  destination = 2;
+  transformer = 3;
+}
+
+enum SyncMode {
+  sync_mode_unspecified = 0;
+  full_overwrite = 1;
+  full_append = 2;
+  incremental_append = 3;
+  incremental_append_dedupe = 4;
+}
