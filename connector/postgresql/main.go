@@ -35,7 +35,7 @@ var (
 	createIndex = flag.Bool("create_index", true, "") // TODO: USAGE
 )
 
-var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector)
+var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector, client.NewWriter, openhdc.NewDefaultCodec)
 
 func newApp(srv *openhdc.Server) *openhdc.App {
 	return openhdc.New(

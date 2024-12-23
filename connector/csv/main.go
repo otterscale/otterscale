@@ -35,7 +35,7 @@ var (
 	infering = flag.Bool("infering", true, "")
 )
 
-var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector)
+var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector, openhdc.NewEmptyWriter, openhdc.NewDefaultCodec)
 
 func newApp(srv *openhdc.Server) *openhdc.App {
 	return openhdc.New(
