@@ -15,6 +15,10 @@ type Codec interface {
 	Decode(arr arrow.Array, idx int) (any, error)
 }
 
+func NewDefaultCodec() Codec {
+	return &DefaultCodec{}
+}
+
 type DefaultCodec struct{}
 
 func (DefaultCodec) format(val any) string {

@@ -11,13 +11,14 @@ import (
 
 type Client struct {
 	openhdc.Codec
+	openhdc.Writer
 	opts options
 
 	config *pgxpool.Config
 	pool   *pgxpool.Pool
 }
 
-func NewConnector(opts ...Option) (openhdc.Connector, error) {
+func NewConnector(c openhdc.Codec, w openhdc.Writer, opts ...Option) (openhdc.Connector, error) {
 	o := options{}
 	for _, opt := range opts {
 		opt(&o)
@@ -28,20 +29,21 @@ func NewConnector(opts ...Option) (openhdc.Connector, error) {
 	}
 
 	var err error
-	c, err := pgxpool.ParseConfig(o.connString)
+	f, err := pgxpool.ParseConfig(o.connString)
 	if err != nil {
 		return nil, err
 	}
 
-	p, err := pgxpool.NewWithConfig(context.Background(), c)
+	p, err := pgxpool.NewWithConfig(context.Background(), f)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Client{
 		Codec:  openhdc.DefaultCodec{},
+		Writer: w,
 		opts:   o,
-		config: c,
+		config: f,
 		pool:   p,
 	}, nil
 }
