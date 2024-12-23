@@ -2,17 +2,26 @@ package client
 
 import (
 	"time"
+
+	"github.com/openhdc/openhdc/api/property/v1"
 )
 
 type Option func(*options)
 
 type options struct {
+	syncMode       property.SyncMode
 	batchSize      int64
 	batchSizeBytes int64
 	batchTimeout   time.Duration
 	filePath       string
 	tableName      string
 	infering       bool
+}
+
+func WithSyncMode(syncMode property.SyncMode) Option {
+	return func(o *options) {
+		o.syncMode = syncMode
+	}
 }
 
 func WithBatchSize(batchSize int64) Option {

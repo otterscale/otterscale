@@ -86,12 +86,7 @@ func (s *Service) Push(stream pb.Connector_PushServer) error {
 	})
 	// canceled by close channel
 	eg.Go(func() error {
-		o := WriteOptions{}
-		opts := []WriteOption{}
-		for _, opt := range opts {
-			opt(&o)
-		}
-		return s.connector.Write(ctx, msgs, o)
+		return s.connector.Write(ctx, msgs)
 	})
 	return eg.Wait()
 }

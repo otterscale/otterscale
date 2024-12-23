@@ -39,6 +39,7 @@ func newProcesses(ctx context.Context, wls []*workload.Workload) ([]*process.Pro
 			process.WithName(md.GetName()),
 			process.WithVersion(md.GetVersion()),
 			process.WithPath(md.GetPath()),
+			process.WithSyncMode(md.GetSyncMode()),
 			process.WithSpec(wl.GetSpec()),
 		)
 		if err := p.Download(ctx); err != nil {

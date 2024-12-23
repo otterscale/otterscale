@@ -7,7 +7,7 @@ import (
 	"github.com/google/wire"
 
 	"github.com/openhdc/openhdc"
-	"github.com/openhdc/openhdc/api/workload/v1"
+	"github.com/openhdc/openhdc/api/property/v1"
 	"github.com/openhdc/openhdc/connector/postgresql/client"
 
 	_ "go.uber.org/automaxprocs"
@@ -24,6 +24,7 @@ var (
 	network = flag.String("network", "tcp", "network of grpc server")
 	address = flag.String("address", ":0", "address of grpc server")
 
+	syncMode       = flag.String("sync_mode", "", "sync mode, such as full_overwrite, full_append, incremental_append or incremental_append_dedupe")
 	batchSize      = flag.Int64("batch_size", defaultBatchSize, "")            // TODO: USAGE
 	batchSizeBytes = flag.Int64("batch_size_bytes", defaultBatchSizeBytes, "") // TODO: USAGE
 	batchTimeout   = flag.Duration("batch_timeout", defaultBatchTimeout, "")   // TODO: USAGE
@@ -39,7 +40,7 @@ var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewC
 func newApp(srv *openhdc.Server) *openhdc.App {
 	return openhdc.New(
 		openhdc.WithServers(srv),
-		openhdc.WithKind(workload.ParseKind(*kind)),
+		openhdc.WithKind(property.ParseWorkloadKind(*kind)),
 	)
 }
 
@@ -52,6 +53,7 @@ func main() {
 	}
 
 	clientOpts := []client.Option{
+		client.WithSyncMode(property.ParseSyncMode(*syncMode)),
 		client.WithBatchSize(*batchSize),
 		client.WithBatchSizeBytes(*batchSizeBytes),
 		client.WithBatchTimeout(*batchTimeout),

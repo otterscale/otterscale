@@ -16,6 +16,7 @@ import (
 
 	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
+	"github.com/openhdc/openhdc/api/property/v1"
 	"github.com/openhdc/openhdc/metadata"
 )
 
@@ -77,7 +78,7 @@ func sanitize(str string) string {
 func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg chan<- *pb.Message) error {
 	builder := array.NewRecordBuilder(memory.DefaultAllocator, sch)
 
-	new, err := pb.NewMessage(pb.Kind_KIND_MIGRATE, builder.NewRecord())
+	new, err := pb.NewMessage(property.MessageKind_migrate, builder.NewRecord())
 	if err != nil {
 		return err
 	}
@@ -114,7 +115,7 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 		}
 
 		// TODO: BATCH
-		new, err := pb.NewMessage(pb.Kind_KIND_INSERT, builder.NewRecord())
+		new, err := pb.NewMessage(property.MessageKind_insert, builder.NewRecord())
 		if err != nil {
 			return err
 		}
