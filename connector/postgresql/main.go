@@ -13,6 +13,8 @@ import (
 	_ "go.uber.org/automaxprocs"
 )
 
+const name = "postgresql"
+
 const (
 	defaultBatchSize      = 10000
 	defaultBatchSizeBytes = 100000000
@@ -20,22 +22,25 @@ const (
 )
 
 var (
+	// general
 	kind    = flag.String("kind", "", "connector type, such as source or destination")
 	network = flag.String("network", "tcp", "network of grpc server")
 	address = flag.String("address", ":0", "address of grpc server")
 
-	syncMode       = flag.String("sync_mode", "", "sync mode, such as full_overwrite, full_append, incremental_append or incremental_append_dedupe")
-	batchSize      = flag.Int64("batch_size", defaultBatchSize, "")            // TODO: USAGE
-	batchSizeBytes = flag.Int64("batch_size_bytes", defaultBatchSizeBytes, "") // TODO: USAGE
-	batchTimeout   = flag.Duration("batch_timeout", defaultBatchTimeout, "")   // TODO: USAGE
-
+	// read
+	syncMode   = flag.String("sync_mode", "", "sync mode, such as full_overwrite, full_append, incremental_append, incremental_append_dedupe")
+	cursor     = flag.String("cursor", "", "incremental cursor")
 	connString = flag.String("connection_string", "", "connection string, such as 'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'")
 	namespace  = flag.String("namespace", "", "namespace of database, such as 'public'")
 
-	createIndex = flag.Bool("create_index", true, "") // TODO: USAGE
+	// write
+	batchSize      = flag.Int64("batch_size", defaultBatchSize, "default batch size of rows is 10,000 if not specified")
+	batchSizeBytes = flag.Int64("batch_size_bytes", defaultBatchSizeBytes, "default batch size of bytes is 10,000,000 bytes if not specified")
+	batchTimeout   = flag.Duration("batch_timeout", defaultBatchTimeout, "default batch timeout is 60s if not specified")
+	createIndex    = flag.Bool("create_index", true, "create an index to improve performance")
 )
 
-var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector, client.NewWriter, openhdc.NewDefaultCodec)
+var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector, openhdc.NewDefaultCodec)
 
 func newApp(srv *openhdc.Server) *openhdc.App {
 	return openhdc.New(
@@ -53,13 +58,15 @@ func main() {
 	}
 
 	clientOpts := []client.Option{
+		client.WithName(name),
 		client.WithSyncMode(property.ParseSyncMode(*syncMode)),
+		client.WithCursor(*cursor),
+		client.WithConnString(*connString),
+		client.WithNamespace(*namespace),
 		client.WithBatchSize(*batchSize),
 		client.WithBatchSizeBytes(*batchSizeBytes),
 		client.WithBatchTimeout(*batchTimeout),
 		client.WithCreateIndex(*createIndex),
-		client.WithConnString(*connString),
-		client.WithNamespace(*namespace),
 	}
 
 	// wire app

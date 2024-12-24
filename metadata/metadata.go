@@ -27,6 +27,15 @@ func IsPrimaryKey(f *arrow.Field) bool {
 	return ok
 }
 
+func HasPrimaryKey(s *arrow.Schema) bool {
+	for _, f := range s.Fields() {
+		if IsPrimaryKey(&f) {
+			return true
+		}
+	}
+	return false
+}
+
 func SetUnique(m map[string]string) {
 	m[keyFieldIsUnique] = "true"
 }

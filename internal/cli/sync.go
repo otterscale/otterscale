@@ -36,10 +36,12 @@ func newProcesses(ctx context.Context, wls []*workload.Workload) ([]*process.Pro
 			return nil, fmt.Errorf("metadata is empty: %s", wl.GetInternal().GetFilePath())
 		}
 		p := process.New(ctx,
+			process.WithKind(wl.GetKind()),
 			process.WithName(md.GetName()),
 			process.WithVersion(md.GetVersion()),
 			process.WithPath(md.GetPath()),
 			process.WithSyncMode(md.GetSyncMode()),
+			process.WithCursor(md.GetCursor()),
 			process.WithSpec(wl.GetSpec()),
 		)
 		if err := p.Download(ctx); err != nil {

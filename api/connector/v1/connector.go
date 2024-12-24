@@ -3,19 +3,21 @@ package pb
 import (
 	"bytes"
 	"errors"
+	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/ipc"
 	"github.com/apache/arrow-go/v18/arrow/memory"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/openhdc/openhdc/api/property/v1"
 )
 
 var ErrNotSupported = status.Errorf(codes.InvalidArgument, "not supported")
 
-func NewMessage(kind property.MessageKind, rec arrow.Record) (*Message, error) {
+func NewMessage(kind property.MessageKind, rec arrow.Record, sourceName string, syncedAt time.Time) (*Message, error) {
 	b, err := FromArrowRecord(rec)
 	if err != nil {
 		return nil, err
@@ -23,6 +25,8 @@ func NewMessage(kind property.MessageKind, rec arrow.Record) (*Message, error) {
 	m := &Message{}
 	m.SetKind(kind)
 	m.SetRecord(b)
+	m.SetSourceName(sourceName)
+	m.SetSyncedAt(timestamppb.New(syncedAt))
 	return m, nil
 }
 
