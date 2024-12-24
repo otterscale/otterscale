@@ -19,8 +19,7 @@ import (
 
 func wireApp(arg []openhdc.ServerOption, arg2 []client.Option) (*openhdc.App, func(), error) {
 	codec := openhdc.NewDefaultCodec()
-	writer := openhdc.NewEmptyWriter()
-	connector, err := client.NewConnector(codec, writer, arg2...)
+	connector, err := client.NewConnector(codec, arg2...)
 	if err != nil {
 		return nil, nil, err
 	}

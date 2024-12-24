@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"buf.build/go/protoyaml"
 
@@ -66,4 +67,14 @@ func (r *Reader) validate() error {
 		return errors.New("require at least one destination")
 	}
 	return nil
+}
+
+func (r *Reader) String() string {
+	sb := strings.Builder{}
+	for _, w := range append(append(r.Sources, r.Destinations...), r.Transformers...) {
+		b, _ := protoyaml.Marshal(w)
+		sb.WriteString(string(b))
+		sb.WriteString("\n")
+	}
+	return sb.String()
 }

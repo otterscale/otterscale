@@ -4,11 +4,13 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/connector/postgresql/pgarrow"
 	"github.com/openhdc/openhdc/metadata"
 )
@@ -165,4 +167,126 @@ func renewTable(ctx context.Context, tx pgx.Tx, sch *arrow.Schema) error {
 		return err
 	}
 	return createTableIfNotExists(ctx, tx, sch)
+}
+
+func truncate(ctx context.Context, tx pgx.Tx, sch *arrow.Schema) error {
+	tableName, err := metadata.GetTableName(sch)
+	if err != nil {
+		return err
+	}
+
+	var b strings.Builder
+	b.WriteString("truncate table ")
+	b.WriteString(tableName)
+
+	if _, err := tx.Exec(ctx, b.String()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func delete(ctx context.Context, tx pgx.Tx, rec arrow.Record, syncedAt time.Time) error {
+	tableName, err := metadata.GetTableName(rec.Schema())
+	if err != nil {
+		return err
+	}
+
+	var b strings.Builder
+	b.WriteString("delete from ")
+	b.WriteString(tableName)
+	b.WriteString(" where _openhdc_synced_at < $1")
+
+	if _, err := tx.Exec(ctx, b.String(), syncedAt); err != nil {
+		return err
+	}
+	return nil
+}
+
+func insertStatement(rec arrow.Record, table string) string {
+	columns := []string{}
+	values := []string{}
+	for i, f := range rec.Schema().Fields() {
+		columns = append(columns, sanitize(f.Name))
+		values = append(values, fmt.Sprintf("$%d", i+1))
+	}
+
+	var b strings.Builder
+	b.WriteString("insert into ")
+	b.WriteString(table)
+	b.WriteString(" (")
+	b.WriteString(strings.Join(columns, ", "))
+	b.WriteString(") values (")
+	b.WriteString(strings.Join(values, ", "))
+	b.WriteString(")")
+
+	return b.String()
+}
+
+// auto combine as batch in transaction
+func insert(ctx context.Context, tx pgx.Tx, rec arrow.Record, c openhdc.Codec) error {
+	table, err := metadata.GetTableName(rec.Schema())
+	if err != nil {
+		return err
+	}
+	args := []any{}
+	for _, col := range rec.Columns() {
+		v, err := c.Decode(col, 0)
+		if err != nil {
+			return err
+		}
+		args = append(args, v)
+	}
+	if _, err := tx.Exec(ctx, insertStatement(rec, table), args...); err != nil {
+		return err
+	}
+	return nil
+}
+
+func upsertStatement(rec arrow.Record, table string, update bool) string {
+	var b strings.Builder
+	b.WriteString(insertStatement(rec, table))
+	if !update {
+		b.WriteString(" on conflict do nothing")
+		return b.String()
+	}
+	pks := []string{}
+	columns := []string{}
+	for _, f := range rec.Schema().Fields() {
+		if metadata.IsPrimaryKey(&f) {
+			pks = append(pks, sanitize(f.Name))
+			continue
+		}
+		columns = append(columns, fmt.Sprintf("%[1]s = excluded.%[1]s", sanitize(f.Name)))
+	}
+	b.WriteString(" on conflict (")
+	b.WriteString(strings.Join(pks, ", "))
+	b.WriteString(") do ")
+	if len(columns) == 0 {
+		b.WriteString("nothing")
+		return b.String()
+	}
+	b.WriteString("update set ")
+	b.WriteString(strings.Join(columns, ", "))
+	return b.String()
+}
+
+func upsert(ctx context.Context, tx pgx.Tx, rec arrow.Record, c openhdc.Codec, update bool) error {
+	table, err := metadata.GetTableName(rec.Schema())
+	if err != nil {
+		return err
+	}
+	args := []any{}
+	for _, col := range rec.Columns() {
+		v, err := c.Decode(col, 0)
+		if err != nil {
+			return err
+		}
+		args = append(args, v)
+	}
+	x := upsertStatement(rec, table, update)
+	fmt.Println(x)
+	if _, err := tx.Exec(ctx, x, args...); err != nil {
+		return err
+	}
+	return nil
 }

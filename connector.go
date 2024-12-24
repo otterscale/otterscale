@@ -8,7 +8,6 @@ import (
 
 type Connector interface {
 	Codec
-	Writer
 
 	Read(ctx context.Context, msgs chan<- *pb.Message, opts ReadOptions) error
 	Write(ctx context.Context, msgs <-chan *pb.Message) error

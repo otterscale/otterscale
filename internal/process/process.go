@@ -83,6 +83,7 @@ func (c *Process) Start(ctx context.Context) error {
 	args := []string{}
 	args = append(args, addressToArgs(address)...)
 	args = append(args, syncModeToArgs(c.opts.syncMode)...)
+	args = append(args, cursorToArgs(c.opts.cursor)...)
 	args = append(args, fieldsToArgs(c.opts.spec.GetFields())...)
 
 	cmd := exec.CommandContext(ctx, c.opts.path, args...) //nolint:gosec
@@ -113,11 +114,15 @@ func addressToArgs(address string) []string {
 	return []string{"--address", address}
 }
 
-func syncModeToArgs(sm property.SyncMode) []string {
-	if sm == property.SyncMode_sync_mode_unspecified {
-		return nil
+func syncModeToArgs(syncMode property.SyncMode) []string {
+	return []string{"--sync_mode", syncMode.String()}
+}
+
+func cursorToArgs(cursor string) []string {
+	if cursor == "" {
+		return []string{}
 	}
-	return []string{"--sync_mode", sm.String()}
+	return []string{"--cursor", cursor}
 }
 
 func valueToArgs(v *structpb.Value) []string {

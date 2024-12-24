@@ -9,18 +9,51 @@ import (
 type Option func(*options)
 
 type options struct {
+	name           string
 	syncMode       property.SyncMode
-	batchSize      int64
-	batchSizeBytes int64
-	batchTimeout   time.Duration
+	cursor         string
 	filePath       string
 	tableName      string
 	infering       bool
+	batchSize      int64
+	batchSizeBytes int64
+	batchTimeout   time.Duration
+	createIndex    bool
+}
+
+func WithName(name string) Option {
+	return func(o *options) {
+		o.name = name
+	}
 }
 
 func WithSyncMode(syncMode property.SyncMode) Option {
 	return func(o *options) {
 		o.syncMode = syncMode
+	}
+}
+
+func WithCursor(cursor string) Option {
+	return func(o *options) {
+		o.cursor = cursor
+	}
+}
+
+func WithFilePath(filePath string) Option {
+	return func(o *options) {
+		o.filePath = filePath
+	}
+}
+
+func WithTableName(tableName string) Option {
+	return func(o *options) {
+		o.tableName = tableName
+	}
+}
+
+func WithInfering(infering bool) Option {
+	return func(o *options) {
+		o.infering = infering
 	}
 }
 
@@ -42,20 +75,8 @@ func WithBatchTimeout(batchTimeout time.Duration) Option {
 	}
 }
 
-func WithFilePath(filePath string) Option {
+func WithCreateIndex(createIndex bool) Option {
 	return func(o *options) {
-		o.filePath = filePath
-	}
-}
-
-func WithTableName(tableName string) Option {
-	return func(o *options) {
-		o.tableName = tableName
-	}
-}
-
-func WithInfering(infering bool) Option {
-	return func(o *options) {
-		o.infering = infering
+		o.createIndex = createIndex
 	}
 }

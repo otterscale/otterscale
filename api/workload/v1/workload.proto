@@ -13,7 +13,8 @@ message Metadata {
   string name = 1;
   string version = 2;
   string path = 3;
-  openhdc.property.v1.SyncMode sync_mode = 4;
+  openhdc.property.v1.SyncMode sync_mode = 10;
+  string cursor = 11;
 }
 
 message Internal {

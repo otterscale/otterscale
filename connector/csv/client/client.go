@@ -10,13 +10,12 @@ import (
 
 type Client struct {
 	openhdc.Codec
-	openhdc.Writer
 	opts options
 
 	file *os.File
 }
 
-func NewConnector(c openhdc.Codec, w openhdc.Writer, opts ...Option) (openhdc.Connector, error) {
+func NewConnector(c openhdc.Codec, opts ...Option) (openhdc.Connector, error) {
 	o := options{}
 	for _, opt := range opts {
 		opt(&o)
@@ -32,10 +31,9 @@ func NewConnector(c openhdc.Codec, w openhdc.Writer, opts ...Option) (openhdc.Co
 	}
 
 	return &Client{
-		Codec:  c,
-		Writer: w,
-		opts:   o,
-		file:   f,
+		Codec: c,
+		opts:  o,
+		file:  f,
 	}, nil
 }
 
