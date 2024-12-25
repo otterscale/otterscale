@@ -13,7 +13,7 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
-	"github.com/openhdc/openhdc/api/property/v1"
+	"github.com/openhdc/openhdc/api/workload/v1"
 )
 
 // TODO: BETTER
@@ -35,22 +35,11 @@ func New(ctx context.Context, opts ...Option) *Process {
 	}
 }
 
-func (c *Process) Name() string {
-	return c.opts.name
-}
-
-func (c *Process) Tables() []string {
-	// TODO: FROM WORKLOAD
-	return []string{}
-}
-
-func (c *Process) SkipTables() []string {
-	// TODO: FROM WORKLOAD
-	return []string{}
+func (c *Process) Sync() *workload.Sync {
+	return c.opts.sync
 }
 
 // TODO DOWNLOAD
-
 func (c *Process) Download(_ context.Context) error {
 	return nil
 }
@@ -82,7 +71,6 @@ func (c *Process) Start(ctx context.Context) error {
 	// prepare arguments
 	args := []string{}
 	args = append(args, addressToArgs(address)...)
-	args = append(args, syncModeToArgs(c.opts.syncMode)...)
 	args = append(args, fieldsToArgs(c.opts.spec.GetFields())...)
 
 	cmd := exec.CommandContext(ctx, c.opts.path, args...) //nolint:gosec
@@ -111,13 +99,6 @@ func freeAddress() (string, error) {
 
 func addressToArgs(address string) []string {
 	return []string{"--address", address}
-}
-
-func syncModeToArgs(sm property.SyncMode) []string {
-	if sm == property.SyncMode_sync_mode_unspecified {
-		return nil
-	}
-	return []string{"--sync_mode", sm.String()}
 }
 
 func valueToArgs(v *structpb.Value) []string {

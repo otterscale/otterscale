@@ -2,25 +2,35 @@ package client
 
 import (
 	"time"
-
-	"github.com/openhdc/openhdc/api/property/v1"
 )
 
 type Option func(*options)
 
 type options struct {
-	syncMode       property.SyncMode
+	name           string
+	connString     string
+	namespace      string
 	batchSize      int64
 	batchSizeBytes int64
 	batchTimeout   time.Duration
 	createIndex    bool
-	connString     string
-	namespace      string
 }
 
-func WithSyncMode(syncMode property.SyncMode) Option {
+func WithName(name string) Option {
 	return func(o *options) {
-		o.syncMode = syncMode
+		o.name = name
+	}
+}
+
+func WithConnString(connString string) Option {
+	return func(o *options) {
+		o.connString = connString
+	}
+}
+
+func WithNamespace(namespace string) Option {
+	return func(o *options) {
+		o.namespace = namespace
 	}
 }
 
@@ -45,17 +55,5 @@ func WithBatchTimeout(batchTimeout time.Duration) Option {
 func WithCreateIndex(createIndex bool) Option {
 	return func(o *options) {
 		o.createIndex = createIndex
-	}
-}
-
-func WithConnString(connString string) Option {
-	return func(o *options) {
-		o.connString = connString
-	}
-}
-
-func WithNamespace(namespace string) Option {
-	return func(o *options) {
-		o.namespace = namespace
 	}
 }

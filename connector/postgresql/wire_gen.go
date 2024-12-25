@@ -18,7 +18,8 @@ import (
 // Injectors from wire.go:
 
 func wireApp(arg []openhdc.ServerOption, arg2 []client.Option) (*openhdc.App, func(), error) {
-	connector, err := client.NewConnector(arg2...)
+	codec := openhdc.NewDefaultCodec()
+	connector, err := client.NewConnector(codec, arg2...)
 	if err != nil {
 		return nil, nil, err
 	}

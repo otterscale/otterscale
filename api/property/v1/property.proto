@@ -9,9 +9,12 @@ option go_package = "github.com/openhdc/openhdc/api/property/v1;property";
 
 enum MessageKind {
   message_kind_unspecified = 0;
-  migrate = 1;
-  insert = 2;
-  delete = 3;
+  migrate = 10;
+  insert = 20;
+  upsert_update = 30;
+  upsert_nothing = 31;
+  delete_stale = 40;
+  delete_all = 41;
 }
 
 enum WorkloadKind {
@@ -22,9 +25,16 @@ enum WorkloadKind {
 }
 
 enum SyncMode {
-  sync_mode_unspecified = 0;
-  full_overwrite = 1;
-  full_append = 2;
-  incremental_append = 3;
-  incremental_append_dedupe = 4;
+  // Perform `upsert` based on primary key, deleting non-existent records.
+  // Otherwise, truncate and `insert` records.
+  full_overwrite = 0;  // default
+  // If a primary key exists, skip confliect records based on primary key.
+  // Otherwise, continue `insert` records.
+  full_append = 1;
+  // If a cursor exists without a primary key then `insert`.
+  // Otherwise, display an error and exit.
+  incremental_append = 2;
+  // If a cursor exists and has a primary key then `upsert`.
+  // Otherwise, display an error and exit.
+  incremental_append_dedupe = 3;
 }
