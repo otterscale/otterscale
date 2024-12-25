@@ -3,6 +3,7 @@ edition = "2023";
 package openhdc.connector.v1;
 
 import "api/property/v1/property.proto";
+import "api/workload/v1/workload.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/go_features.proto";
 import "google/protobuf/timestamp.proto";
@@ -19,8 +20,7 @@ service Connector {
 message CloseRequest {}
 
 message PullRequest {
-  repeated string tables = 1;
-  repeated string skip_tables = 2;
+  openhdc.workload.v1.Sync sync = 1;
 }
 
 message Message {

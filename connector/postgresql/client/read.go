@@ -18,6 +18,7 @@ import (
 	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"github.com/openhdc/openhdc/api/property/v1"
+	"github.com/openhdc/openhdc/api/workload/v1"
 	"github.com/openhdc/openhdc/metadata"
 )
 
@@ -47,10 +48,10 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.
 	}
 
 	for _, sch := range schs {
-		if skip(sch, opts.Tables, opts.SkipTables) {
+		if skip(sch, opts.Keys, opts.SkipKeys) {
 			continue
 		}
-		if err := c.read(ctx, tx, sch, msg); err != nil {
+		if err := c.read(ctx, tx, sch, msg, opts); err != nil {
 			return err
 		}
 	}
@@ -76,15 +77,9 @@ func sanitize(str string) string {
 	return pgx.Identifier{str}.Sanitize()
 }
 
-func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg chan<- *pb.Message) error {
+func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg chan<- *pb.Message, opts openhdc.ReadOptions) error {
 	// timestamp
 	syncedAt := time.Now().UTC().Truncate(time.Second)
-
-	// message kind
-	kind, err := getMessageKind(sch, c.opts.cursor, c.opts.syncMode)
-	if err != nil {
-		return err
-	}
 
 	// record builder
 	builder := array.NewRecordBuilder(memory.DefaultAllocator, sch)
@@ -96,8 +91,24 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 	}
 	msg <- new
 
+	// get table
+	tableName, err := metadata.GetTableName(sch)
+	if err != nil {
+		return err
+	}
+
+	// sync mode
+	syncMode := workload.GetSyncMode(opts.Options, tableName)
+	cursor := workload.GetSyncCursor(opts.Options, tableName)
+
+	// message kind
+	kind, err := getMessageKind(sch, syncMode, cursor)
+	if err != nil {
+		return err
+	}
+
 	// truncate
-	if deleteAll(sch, c.opts.syncMode) {
+	if deleteAll(sch, syncMode) {
 		new, err := pb.NewMessage(property.MessageKind_delete_all, builder.NewRecord(), c.opts.name, syncedAt)
 		if err != nil {
 			return err
@@ -105,19 +116,12 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 		msg <- new
 	}
 
-	// get table
-	tableName, err := metadata.GetTableName(sch)
-	if err != nil {
-		return err
-	}
-
-	// get columns
+	// get data
 	columnNames := []string{}
 	for _, field := range sch.Fields() {
 		columnNames = append(columnNames, sanitize(field.Name))
 	}
 
-	// get data
 	sql := fmt.Sprintf("select %s from %s limit 1", strings.Join(columnNames, ","), sanitize(tableName))
 	rows, err := tx.Query(ctx, sql)
 	if err != nil {
@@ -147,7 +151,7 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 	}
 
 	// delete not exists
-	if deleteStale(sch, c.opts.syncMode) {
+	if deleteStale(sch, syncMode) {
 		new, err := pb.NewMessage(property.MessageKind_delete_stale, builder.NewRecord(), c.opts.name, syncedAt)
 		if err != nil {
 			return err
@@ -158,7 +162,7 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 	return rows.Err()
 }
 
-func getMessageKind(sch *arrow.Schema, cursor string, syncMode property.SyncMode) (property.MessageKind, error) {
+func getMessageKind(sch *arrow.Schema, syncMode property.SyncMode, cursor string) (property.MessageKind, error) {
 	hasPrimaryKey := metadata.HasPrimaryKey(sch)
 	hasCursor := cursor != ""
 	switch syncMode {
