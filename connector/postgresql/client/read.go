@@ -77,6 +77,21 @@ func sanitize(str string) string {
 	return pgx.Identifier{str}.Sanitize()
 }
 
+func cursorsToWhere(syncMode property.SyncMode, cs []*workload.Sync_Option_Cursor) string {
+	supports := []property.SyncMode{property.SyncMode_incremental_append, property.SyncMode_incremental_append_dedupe}
+	if len(cs) == 0 || !slices.Contains(supports, syncMode) {
+		return ""
+	}
+	ws := []string{}
+	for _, c := range cs {
+		ws = append(ws, fmt.Sprintf("%s > '%s'", sanitize(c.GetField()), c.GetValue()))
+	}
+	b := strings.Builder{}
+	b.WriteString(" where ")
+	b.WriteString(strings.Join(ws, " and "))
+	return b.String()
+}
+
 func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg chan<- *pb.Message, opts openhdc.ReadOptions) error {
 	// timestamp
 	syncedAt := time.Now().UTC().Truncate(time.Second)
@@ -99,10 +114,10 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 
 	// sync mode
 	syncMode := workload.GetSyncMode(opts.Options, tableName)
-	cursor := workload.GetSyncCursor(opts.Options, tableName)
+	cursors := workload.GetSyncCursors(opts.Options, tableName)
 
 	// message kind
-	kind, err := getMessageKind(sch, syncMode, cursor)
+	kind, err := getMessageKind(sch, syncMode, cursors)
 	if err != nil {
 		return err
 	}
@@ -122,8 +137,15 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 		columnNames = append(columnNames, sanitize(field.Name))
 	}
 
-	sql := fmt.Sprintf("select %s from %s limit 1", strings.Join(columnNames, ","), sanitize(tableName))
-	rows, err := tx.Query(ctx, sql)
+	// query
+	b := strings.Builder{}
+	b.WriteString("select ")
+	b.WriteString(strings.Join(columnNames, ","))
+	b.WriteString(" from ")
+	b.WriteString(sanitize(tableName))
+	b.WriteString(cursorsToWhere(syncMode, cursors))
+	b.WriteString(" limit 1 ")
+	rows, err := tx.Query(ctx, b.String())
 	if err != nil {
 		return err
 	}
@@ -162,9 +184,9 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 	return rows.Err()
 }
 
-func getMessageKind(sch *arrow.Schema, syncMode property.SyncMode, cursor string) (property.MessageKind, error) {
+func getMessageKind(sch *arrow.Schema, syncMode property.SyncMode, cursors []*workload.Sync_Option_Cursor) (property.MessageKind, error) {
 	hasPrimaryKey := metadata.HasPrimaryKey(sch)
-	hasCursor := cursor != ""
+	hasCursor := len(cursors) > 0
 	switch syncMode {
 	case property.SyncMode_full_overwrite:
 		// upsert & delete

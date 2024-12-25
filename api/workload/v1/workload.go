@@ -14,14 +14,14 @@ func GetSyncMode(os []*Sync_Option, v string) property.SyncMode {
 	return 0
 }
 
-func GetSyncCursor(os []*Sync_Option, v string) string {
+func GetSyncCursors(os []*Sync_Option, v string) []*Sync_Option_Cursor {
 	if v == "" {
-		return ""
+		return nil
 	}
 	for _, o := range os {
 		if o.GetKey() == v {
-			return o.GetCursor()
+			return o.GetCursors()
 		}
 	}
-	return ""
+	return nil
 }

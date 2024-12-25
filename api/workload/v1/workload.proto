@@ -21,9 +21,13 @@ message Internal {
 
 message Sync {
   message Option {
+    message Cursor {
+      string field = 1;
+      string value = 2;
+    }
     string key = 1;
     openhdc.property.v1.SyncMode mode = 2;
-    string cursor = 3;
+    repeated Cursor cursors = 3;
   }
   repeated string keys = 1;
   repeated string skip_keys = 2;
