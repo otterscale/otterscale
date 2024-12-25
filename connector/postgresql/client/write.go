@@ -9,21 +9,10 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/jackc/pgx/v5"
 
+	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"github.com/openhdc/openhdc/api/property/v1"
 )
-
-// type Writer struct {
-// 	opts options
-// }
-
-// func NewWriter() openhdc.Writer {
-// 	return &Writer{}
-// }
-
-// func (w Writer) Write(ctx context.Context, msgs <-chan *pb.Message) error {
-// 	return openhdc.ErrNotImplemented
-// }
 
 func (c *Client) Write(ctx context.Context, msgs <-chan *pb.Message) error {
 	// check namespace
@@ -52,9 +41,9 @@ func (c *Client) Write(ctx context.Context, msgs <-chan *pb.Message) error {
 }
 
 func (c *Client) write(ctx context.Context, tx pgx.Tx, tables []*arrow.Schema, msgs <-chan *pb.Message) error {
-	// TODO: BATCH
 	for msg := range msgs {
-		rec, err := pb.ToArrowRecord(msg.GetRecord())
+		// TODO: BATCH
+		rec, err := openhdc.AppendBuiltinFieldsToRecord(msg)
 		if err != nil {
 			return err
 		}
@@ -76,9 +65,9 @@ func (c *Client) write(ctx context.Context, tx pgx.Tx, tables []*arrow.Schema, m
 				return err
 			}
 		case property.MessageKind_delete_stale:
-			// if err := delete(ctx, tx, rec, msg.GetSyncedAt().AsTime()); err != nil {
-			// 	return err
-			// }
+			if err := delete(ctx, tx, rec, msg.GetSyncedAt().AsTime()); err != nil {
+				return err
+			}
 		case property.MessageKind_delete_all:
 			if err := truncate(ctx, tx, rec.Schema()); err != nil {
 				return err

@@ -8,6 +8,7 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/jackc/pgx/v5"
 
+	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/metadata"
 )
 
@@ -21,48 +22,6 @@ func getTable(schs []*arrow.Schema, new string) (*arrow.Schema, bool) {
 	return nil, false
 }
 
-func isKeyChanged(a, b *arrow.Field) bool {
-	return a.Nullable != b.Nullable ||
-		metadata.IsPrimaryKey(a) != metadata.IsPrimaryKey(b) ||
-		metadata.IsUnique(a) != metadata.IsUnique(b)
-}
-
-func filterFields(as, bs []arrow.Field) ([]arrow.Field, bool) {
-	ret := []arrow.Field{}
-	for _, a := range as { // 1, 2, 3, 4, 5
-		ok := false
-		for _, b := range bs { // 1, 2, 4, 5
-			if a.Name != b.Name {
-				continue
-			}
-			if isKeyChanged(&a, &b) {
-				return nil, false
-			}
-			if a.Equal(b) {
-				ok = true
-				break
-			}
-		}
-		if !ok {
-			ret = append(ret, a)
-		}
-	}
-	return ret, true
-}
-
-// Only allow adding and deleting fields, but not modifying field names or data types.
-func compareSchemata(cur, new *arrow.Schema) (add, del []arrow.Field, ok bool) {
-	add, ok = filterFields(cur.Fields(), new.Fields())
-	if !ok {
-		return
-	}
-	del, ok = filterFields(new.Fields(), cur.Fields())
-	if !ok {
-		return
-	}
-	return
-}
-
 func migrate(ctx context.Context, tx pgx.Tx, schs []*arrow.Schema, new *arrow.Schema) error {
 	tableName, err := metadata.GetTableName(new)
 	if err != nil {
@@ -73,7 +32,7 @@ func migrate(ctx context.Context, tx pgx.Tx, schs []*arrow.Schema, new *arrow.Sc
 		fmt.Printf("[migrate] create table %s\n", tableName)
 		return createTableIfNotExists(ctx, tx, new)
 	}
-	add, del, ok := compareSchemata(cur, new)
+	add, del, ok := openhdc.CompareSchemata(cur, new)
 	if !ok {
 		fmt.Printf("[migrate] renew table %s\n", tableName)
 		return renewTable(ctx, tx, new)
