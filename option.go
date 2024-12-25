@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/openhdc/openhdc/api/property/v1"
+	"github.com/openhdc/openhdc/api/workload/v1"
 )
 
 type Option func(*options)
@@ -108,18 +109,25 @@ func WithGrpcServerOptions(grpcOpts ...grpc.ServerOption) ServerOption {
 type ReadOption func(*ReadOptions)
 
 type ReadOptions struct {
-	Tables     []string
-	SkipTables []string
+	Keys     []string
+	SkipKeys []string
+	Options  []*workload.Sync_Option
 }
 
-func WithTables(tables []string) ReadOption {
+func WithKeys(keys []string) ReadOption {
 	return func(o *ReadOptions) {
-		o.Tables = tables
+		o.Keys = keys
 	}
 }
 
-func WithSkipTables(skipTables []string) ReadOption {
+func WithSkipKeys(skipKeys []string) ReadOption {
 	return func(o *ReadOptions) {
-		o.SkipTables = skipTables
+		o.SkipKeys = skipKeys
+	}
+}
+
+func WithOptions(options []*workload.Sync_Option) ReadOption {
+	return func(o *ReadOptions) {
+		o.Options = options
 	}
 }

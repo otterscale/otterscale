@@ -6,6 +6,12 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 )
 
+const (
+	keySchemaTableName   = "TABLE-NAME"
+	keyFieldIsPrimaryKey = "IS-PRIMARY-KEY"
+	keyFieldIsUnique     = "IS-UNIQUE"
+)
+
 func SetTableName(m map[string]string, v string) {
 	m[keySchemaTableName] = v
 }
@@ -25,6 +31,15 @@ func SetPrimaryKey(m map[string]string) {
 func IsPrimaryKey(f *arrow.Field) bool {
 	_, ok := f.Metadata.GetValue(keyFieldIsPrimaryKey)
 	return ok
+}
+
+func HasPrimaryKey(s *arrow.Schema) bool {
+	for _, f := range s.Fields() {
+		if IsPrimaryKey(&f) {
+			return true
+		}
+	}
+	return false
 }
 
 func SetUnique(m map[string]string) {

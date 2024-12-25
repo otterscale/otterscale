@@ -38,12 +38,16 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 	eg.Go(func() error {
 		defer close(msgs)
 		o := ReadOptions{}
-		opts := []ReadOption{
-			WithTables(req.GetTables()),
-			WithSkipTables(req.GetSkipTables()),
-		}
-		for _, opt := range opts {
-			opt(&o)
+		if req.HasSync() {
+			sync := req.GetSync()
+			opts := []ReadOption{
+				WithKeys(sync.GetKeys()),
+				WithSkipKeys(sync.GetSkipKeys()),
+				WithOptions(sync.GetOptions()),
+			}
+			for _, opt := range opts {
+				opt(&o)
+			}
 		}
 		return s.connector.Read(ctx, msgs, o)
 	})

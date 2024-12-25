@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/csv"
@@ -55,6 +56,8 @@ func (c *Client) getReader() (*csv.Reader, error) {
 }
 
 func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.ReadOptions) error {
+	syncedAt := time.Now().UTC().Truncate(time.Second)
+
 	rdr, err := c.getReader()
 	if err != nil {
 		return err
@@ -67,7 +70,7 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.
 
 		// send schema on first row
 		if !cndFlg {
-			new, err := pb.NewMessage(property.MessageKind_migrate, rcr)
+			new, err := pb.NewMessage(property.MessageKind_migrate, rcr, c.opts.name, syncedAt)
 			if err != nil {
 				return err
 			}
@@ -76,7 +79,7 @@ func (c *Client) Read(ctx context.Context, msg chan<- *pb.Message, opts openhdc.
 			cndFlg = true
 		}
 
-		new, err := pb.NewMessage(property.MessageKind_insert, rcr)
+		new, err := pb.NewMessage(property.MessageKind_insert, rcr, c.opts.name, syncedAt)
 		if err != nil {
 			return err
 		}
