@@ -59,8 +59,6 @@ func main() {
 
 	clientOpts := []client.Option{
 		client.WithName(name),
-		client.WithSyncMode(property.ParseSyncMode(*syncMode)),
-		client.WithCursor(*cursor),
 		client.WithConnString(*connString),
 		client.WithNamespace(*namespace),
 		client.WithBatchSize(*batchSize),

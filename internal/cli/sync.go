@@ -40,8 +40,7 @@ func newProcesses(ctx context.Context, wls []*workload.Workload) ([]*process.Pro
 			process.WithName(md.GetName()),
 			process.WithVersion(md.GetVersion()),
 			process.WithPath(md.GetPath()),
-			process.WithSyncMode(md.GetSyncMode()),
-			process.WithCursor(md.GetCursor()),
+			process.WithSync(wl.GetSync()),
 			process.WithSpec(wl.GetSpec()),
 		)
 		if err := p.Download(ctx); err != nil {
@@ -80,8 +79,7 @@ func sync(cmd *cobra.Command, args []string) error {
 	pulls := []grpc.ServerStreamingClient[pb.Message]{}
 	for _, src := range srcs {
 		req := &pb.PullRequest{}
-		req.SetTables(src.Tables())
-		req.SetTables(src.SkipTables())
+		req.SetSync(src.Sync())
 
 		pull, err := src.Client.Pull(ctx, req, grpc.WaitForReady(true))
 		if err != nil {

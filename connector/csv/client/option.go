@@ -2,16 +2,12 @@ package client
 
 import (
 	"time"
-
-	"github.com/openhdc/openhdc/api/property/v1"
 )
 
 type Option func(*options)
 
 type options struct {
 	name           string
-	syncMode       property.SyncMode
-	cursor         string
 	filePath       string
 	tableName      string
 	infering       bool
@@ -24,18 +20,6 @@ type options struct {
 func WithName(name string) Option {
 	return func(o *options) {
 		o.name = name
-	}
-}
-
-func WithSyncMode(syncMode property.SyncMode) Option {
-	return func(o *options) {
-		o.syncMode = syncMode
-	}
-}
-
-func WithCursor(cursor string) Option {
-	return func(o *options) {
-		o.cursor = cursor
 	}
 }
 

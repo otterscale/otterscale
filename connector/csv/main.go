@@ -28,8 +28,6 @@ var (
 	address = flag.String("address", ":0", "address of grpc server")
 
 	// read
-	syncMode  = flag.String("sync_mode", "", "sync mode, such as full_overwrite, full_append, incremental_append, incremental_append_dedupe")
-	cursor    = flag.String("cursor", "", "incremental cursor")
 	filePath  = flag.String("file_path", "", "csv file path")
 	tableName = flag.String("table_name", "csv_file", "destination table name")
 	infering  = flag.Bool("infering", true, "")
@@ -60,8 +58,6 @@ func main() {
 
 	clientOpts := []client.Option{
 		client.WithName(name),
-		client.WithSyncMode(property.ParseSyncMode(*syncMode)),
-		client.WithCursor(*cursor),
 		client.WithFilePath(*filePath),
 		client.WithTableName(*tableName),
 		client.WithInfering(*infering),
