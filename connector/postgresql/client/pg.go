@@ -194,7 +194,9 @@ func delete(ctx context.Context, tx pgx.Tx, rec arrow.Record, syncedAt time.Time
 	var b strings.Builder
 	b.WriteString("delete from ")
 	b.WriteString(tableName)
-	b.WriteString(" where _openhdc_synced_at < $1")
+	b.WriteString(" where ")
+	b.WriteString(openhdc.BuiltinFieldSyncedAt)
+	b.WriteString(" < $1")
 
 	if _, err := tx.Exec(ctx, b.String(), syncedAt); err != nil {
 		return err
@@ -284,7 +286,6 @@ func upsert(ctx context.Context, tx pgx.Tx, rec arrow.Record, c openhdc.Codec, u
 		args = append(args, v)
 	}
 	x := upsertStatement(rec, table, update)
-	fmt.Println(x)
 	if _, err := tx.Exec(ctx, x, args...); err != nil {
 		return err
 	}
