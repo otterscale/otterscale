@@ -44,8 +44,8 @@ var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewC
 
 func newApp(srv *openhdc.Server) *openhdc.App {
 	return openhdc.New(
-		openhdc.WithServers(srv),
 		openhdc.WithKind(property.ParseWorkloadKind(*kind)),
+		openhdc.WithServers(srv),
 	)
 }
 

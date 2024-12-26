@@ -11,15 +11,17 @@ import (
 )
 
 type Codec interface {
-	Encode(builder array.Builder, val any) error
+	Encode(b array.Builder, val any) error
 	Decode(arr arrow.Array, idx int) (any, error)
 }
+
+type DefaultCodec struct{}
+
+var _ Codec = (*DefaultCodec)(nil)
 
 func NewDefaultCodec() Codec {
 	return &DefaultCodec{}
 }
-
-type DefaultCodec struct{}
 
 func (DefaultCodec) format(val any) string {
 	switch t := val.(type) {
@@ -31,15 +33,14 @@ func (DefaultCodec) format(val any) string {
 	return fmt.Sprintf("%v", val)
 }
 
-func (c DefaultCodec) Encode(builder array.Builder, val any) error {
+func (c DefaultCodec) Encode(b array.Builder, val any) error {
 	if val == nil {
-		builder.AppendNull()
+		b.AppendNull()
 		return nil
 	}
-	return builder.AppendValueFromString(c.format(val))
+	return b.AppendValueFromString(c.format(val))
 }
 
-// Ref: https://github.com/apache/arrow-go/blob/main/arrow/datatype.go
 func (DefaultCodec) Decode(arr arrow.Array, idx int) (any, error) { //nolint:funlen,gocyclo
 	switch a := arr.(type) {
 	case *array.Null:

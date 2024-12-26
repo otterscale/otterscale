@@ -8,6 +8,8 @@
 !go.sum
 !go.mod
 
+!*.proto
+
 !README.md
 !LICENSE
 
