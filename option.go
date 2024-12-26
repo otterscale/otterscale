@@ -109,9 +109,16 @@ func WithGrpcServerOptions(grpcOpts ...grpc.ServerOption) ServerOption {
 type ReadOption func(*ReadOptions)
 
 type ReadOptions struct {
-	Keys     []string
-	SkipKeys []string
-	Options  []*workload.Sync_Option
+	BatchSize int64
+	Keys      []string
+	SkipKeys  []string
+	Options   []*workload.Sync_Option
+}
+
+func WithBatchSize(batchSize int64) ReadOption {
+	return func(o *ReadOptions) {
+		o.BatchSize = batchSize
+	}
 }
 
 func WithKeys(keys []string) ReadOption {

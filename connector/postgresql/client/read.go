@@ -152,6 +152,7 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 	defer rows.Close()
 
 	// start
+	var count int64
 	for rows.Next() {
 		vals, err := rows.Values()
 		if err != nil {
@@ -165,6 +166,18 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 			}
 		}
 
+		count++
+		if count > opts.BatchSize {
+			new, err := pb.NewMessage(kind, builder.NewRecord(), c.opts.name, syncedAt)
+			if err != nil {
+				return err
+			}
+			msg <- new
+			count = 0
+		}
+	}
+
+	if count > 0 {
 		new, err := pb.NewMessage(kind, builder.NewRecord(), c.opts.name, syncedAt)
 		if err != nil {
 			return err

@@ -37,10 +37,13 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 	// canceled by context
 	eg.Go(func() error {
 		defer close(msgs)
-		o := ReadOptions{}
+		o := ReadOptions{
+			BatchSize: 1000,
+		}
 		if req.HasSync() {
 			sync := req.GetSync()
 			opts := []ReadOption{
+				WithBatchSize(sync.GetBatchSize()),
 				WithKeys(sync.GetKeys()),
 				WithSkipKeys(sync.GetSkipKeys()),
 				WithOptions(sync.GetOptions()),

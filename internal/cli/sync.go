@@ -5,13 +5,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"time"
 
+	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/cobra"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
+	"github.com/openhdc/openhdc/api/property/v1"
 	"github.com/openhdc/openhdc/api/workload/v1"
 	"github.com/openhdc/openhdc/internal/process"
 )
@@ -101,18 +104,30 @@ func sync(cmd *cobra.Command, args []string) error {
 	// new error group
 	eg, _ := errgroup.WithContext(ctx)
 
+	// record start time
+	startedAt := time.Now()
+
 	// start sync
 	for _, pull := range pulls {
 		eg.Go(func() error {
+			var bar *progressbar.ProgressBar
 			for {
 				msg, err := pull.Recv()
 				if errors.Is(err, io.EOF) {
+					_ = bar.Finish()
 					fmt.Println("[sync] read finished")
 					break
 				}
 				if err != nil {
 					return err
 				}
+				if msg.GetKind() == property.MessageKind_migrate {
+					if bar != nil {
+						_ = bar.Finish()
+					}
+					bar = progressbar.Default(-1, "Syncing")
+				}
+				_ = bar.Add(1)
 				for _, push := range pushes {
 					err := push.Send(msg)
 					if errors.Is(err, io.EOF) {
@@ -148,6 +163,8 @@ func sync(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	}
+
+	fmt.Println("[sync] finished in", time.Since(startedAt))
 
 	return nil
 }
