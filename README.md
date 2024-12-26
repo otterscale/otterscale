@@ -1,5 +1,11 @@
 # OpenHDC
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/openhdc/openhdc.svg)](https://pkg.go.dev/github.com/openhdc/openhdc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/openhdc/openhdc?style=flat-square)](https://goreportcard.com/report/github.com/openhdc/openhdc)
+[![GitHub Build Status](https://github.com/openhdc/openhdc/actions/workflows/go.yml/badge.svg?style=flat-square)](https://github.com/openhdc/openhdc/actions/workflows/go.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/openhdc/openhdc?style=flat-square)](https://github.com/openhdc/openhdc/releases)
+[![GitHub License](https://img.shields.io/github/license/openhdc/openhdc)](https://opensource.org/license/mpl-2-0)
+
 OpenHDC (**Open** **H**ybrid **D**ata **C**enter) is an open-source project designed to provide a robust and local server solution for hybrid data sources. 
 
 We preserves data privacy by localizing data and combining siloed information to enhance traceability.
