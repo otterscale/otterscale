@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -11,10 +12,16 @@ import (
 
 var version = "devel"
 
-func main() {
-	// start and wait for stop signal
+// start and wait for stop signal
+func run() error {
 	signals := []os.Signal{syscall.SIGINT, syscall.SIGQUIT, syscall.SIGKILL, syscall.SIGTERM}
 	ctx, stop := signal.NotifyContext(context.Background(), signals...)
 	defer stop()
-	_ = cli.NewCmdRoot(version).ExecuteContext(ctx)
+	return cli.NewCmdRoot(version).ExecuteContext(ctx)
+}
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
 }
