@@ -144,7 +144,6 @@ func (c *Client) read(ctx context.Context, tx pgx.Tx, sch *arrow.Schema, msg cha
 	b.WriteString(" from ")
 	b.WriteString(sanitize(tableName))
 	b.WriteString(cursorsToWhere(syncMode, cursors))
-	b.WriteString(" limit 1 ")
 	rows, err := tx.Query(ctx, b.String())
 	if err != nil {
 		return err
