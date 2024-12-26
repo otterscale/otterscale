@@ -26,9 +26,11 @@ func newSchema(rec arrow.Record) *arrow.Schema {
 
 func newColumns(rec arrow.Record, name string, syncedAt time.Time) []arrow.Array {
 	sb := array.NewStringBuilder(memory.DefaultAllocator)
-	sb.Append(name)
 	tb := array.NewTimestampBuilder(memory.DefaultAllocator, arrow.FixedWidthTypes.Timestamp_us.(*arrow.TimestampType))
-	tb.AppendTime(syncedAt)
+	for range rec.NumRows() {
+		sb.Append(name)
+		tb.AppendTime(syncedAt)
+	}
 	arrs := make([]arrow.Array, rec.NumCols())
 	copy(arrs, rec.Columns())
 	return append([]arrow.Array{

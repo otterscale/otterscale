@@ -230,18 +230,19 @@ func insert(ctx context.Context, tx pgx.Tx, rec arrow.Record, c openhdc.Codec) e
 	if err != nil {
 		return err
 	}
-	args := []any{}
-	for _, col := range rec.Columns() {
-		v, err := c.Decode(col, 0)
-		if err != nil {
-			return err
+	batch := &pgx.Batch{}
+	for row := range rec.NumRows() {
+		args := []any{}
+		for _, col := range rec.Columns() {
+			v, err := c.Decode(col, int(row))
+			if err != nil {
+				return err
+			}
+			args = append(args, v)
 		}
-		args = append(args, v)
+		batch.Queue(insertStatement(rec, table), args...)
 	}
-	if _, err := tx.Exec(ctx, insertStatement(rec, table), args...); err != nil {
-		return err
-	}
-	return nil
+	return tx.SendBatch(ctx, batch).Close()
 }
 
 func upsertStatement(rec arrow.Record, table string, update bool) string {
@@ -277,17 +278,17 @@ func upsert(ctx context.Context, tx pgx.Tx, rec arrow.Record, c openhdc.Codec, u
 	if err != nil {
 		return err
 	}
-	args := []any{}
-	for _, col := range rec.Columns() {
-		v, err := c.Decode(col, 0)
-		if err != nil {
-			return err
+	batch := &pgx.Batch{}
+	for row := range rec.NumRows() {
+		args := []any{}
+		for _, col := range rec.Columns() {
+			v, err := c.Decode(col, int(row))
+			if err != nil {
+				return err
+			}
+			args = append(args, v)
 		}
-		args = append(args, v)
+		batch.Queue(upsertStatement(rec, table, update), args...)
 	}
-	x := upsertStatement(rec, table, update)
-	if _, err := tx.Exec(ctx, x, args...); err != nil {
-		return err
-	}
-	return nil
+	return tx.SendBatch(ctx, batch).Close()
 }

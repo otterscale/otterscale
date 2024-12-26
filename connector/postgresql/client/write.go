@@ -42,7 +42,6 @@ func (c *Client) Write(ctx context.Context, msgs <-chan *pb.Message) error {
 
 func (c *Client) write(ctx context.Context, tx pgx.Tx, tables []*arrow.Schema, msgs <-chan *pb.Message) error {
 	for msg := range msgs {
-		// TODO: BATCH
 		rec, err := openhdc.AppendBuiltinFieldsToRecord(msg)
 		if err != nil {
 			return err
