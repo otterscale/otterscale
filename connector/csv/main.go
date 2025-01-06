@@ -13,7 +13,10 @@ import (
 	_ "go.uber.org/automaxprocs"
 )
 
-const name = "csv"
+const (
+	name    = "csv"
+	version = "devel"
+)
 
 const (
 	defaultBatchSize      = 10000
@@ -30,7 +33,7 @@ var (
 	// read
 	filePath  = flag.String("file_path", "", "csv file path")
 	tableName = flag.String("table_name", "csv_file", "destination table name")
-	infering  = flag.Bool("infering", true, "")
+	inferring = flag.Bool("inferring", true, "")
 
 	// write
 	batchSize      = flag.Int64("batch_size", defaultBatchSize, "default batch size of rows is 10,000 if not specified")
@@ -43,8 +46,10 @@ var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewC
 
 func newApp(srv *openhdc.Server) *openhdc.App {
 	return openhdc.New(
-		openhdc.WithServers(srv),
 		openhdc.WithKind(property.ParseWorkloadKind(*kind)),
+		openhdc.WithName(name),
+		openhdc.WithVersion(version),
+		openhdc.WithServers(srv),
 	)
 }
 
@@ -60,7 +65,7 @@ func main() {
 		client.WithName(name),
 		client.WithFilePath(*filePath),
 		client.WithTableName(*tableName),
-		client.WithInfering(*infering),
+		client.WithInferring(*inferring),
 		client.WithBatchSize(*batchSize),
 		client.WithBatchSizeBytes(*batchSizeBytes),
 		client.WithBatchTimeout(*batchTimeout),

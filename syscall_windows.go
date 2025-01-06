@@ -1,6 +1,6 @@
 //go:build windows
 
-package process
+package openhdc
 
 import "syscall"
 

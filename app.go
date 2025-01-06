@@ -10,49 +10,119 @@ import (
 
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
+
+	"github.com/openhdc/openhdc/api/property/v1"
+)
+
+const (
+	defaultStopTimeout = time.Second * 2
+	defaultLogLevel    = slog.LevelDebug
 )
 
 type App struct {
-	opts   options
+	opts appOptions
+
 	ctx    context.Context
 	cancel context.CancelFunc
 }
 
-func New(opts ...Option) *App {
-	o := options{
-		ctx:      context.Background(),
-		sigs:     []os.Signal{syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGKILL},
-		timeout:  2 * time.Second,
-		logLevel: slog.LevelDebug,
-	}
-	if id, err := uuid.NewUUID(); err == nil {
-		o.id = id.String()
-	}
-	for _, opt := range opts {
-		opt(&o)
-	}
-	// stderr: log
-	// stdout: fmt.Print*
-	handler := slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: o.logLevel})
-	slog.SetDefault(slog.New(handler))
-	ctx, cancel := context.WithCancel(o.ctx)
-	return &App{
-		ctx:    ctx,
-		cancel: cancel,
-		opts:   o,
+type appOptions struct {
+	id          string
+	ctx         context.Context
+	sigs        []os.Signal
+	stopTimeout time.Duration
+
+	kind    property.WorkloadKind
+	name    string
+	version string
+
+	servers []*Server
+
+	logLevel slog.Leveler
+}
+
+var defaultAppOptions = appOptions{
+	id:          uuid.NewString(),
+	ctx:         context.Background(),
+	sigs:        []os.Signal{syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGINT, syscall.SIGKILL},
+	stopTimeout: defaultStopTimeout,
+	logLevel:    defaultLogLevel,
+}
+
+type AppOption interface {
+	apply(*appOptions)
+}
+
+type funcAppOption struct {
+	f func(*appOptions)
+}
+
+var _ AppOption = (*funcAppOption)(nil)
+
+func (fro *funcAppOption) apply(ro *appOptions) {
+	fro.f(ro)
+}
+
+func newFuncAppOption(f func(*appOptions)) *funcAppOption {
+	return &funcAppOption{
+		f: f,
 	}
 }
 
-func (a *App) Run() error {
-	nctx, stop := signal.NotifyContext(a.ctx, a.opts.sigs...)
-	defer stop()
+func WithKind(k property.WorkloadKind) AppOption {
+	return newFuncAppOption(func(o *appOptions) {
+		o.kind = k
+	})
+}
 
-	eg, ctx := errgroup.WithContext(nctx)
+func WithName(n string) AppOption {
+	return newFuncAppOption(func(o *appOptions) {
+		o.name = n
+	})
+}
+
+func WithVersion(v string) AppOption {
+	return newFuncAppOption(func(o *appOptions) {
+		o.version = v
+	})
+}
+
+func WithServers(srvs ...*Server) AppOption {
+	return newFuncAppOption(func(o *appOptions) {
+		o.servers = srvs
+	})
+}
+
+func WithLogLevel(l slog.Leveler) AppOption {
+	return newFuncAppOption(func(o *appOptions) {
+		o.logLevel = l
+	})
+}
+
+func New(opt ...AppOption) *App {
+	opts := defaultAppOptions
+	for _, o := range opt {
+		o.apply(&opts)
+	}
+	ctx, cancel := context.WithCancel(opts.ctx)
+	a := &App{
+		ctx:    ctx,
+		cancel: cancel,
+		opts:   opts,
+	}
+	handler := slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: opts.logLevel})
+	slog.SetDefault(slog.New(handler))
+	return a
+}
+
+func (a *App) Run() error {
+	ctx, stop := signal.NotifyContext(a.ctx, a.opts.sigs...)
+	defer stop()
+	eg, ctx := errgroup.WithContext(ctx)
 	for _, server := range a.opts.servers {
-		// https://go.dev/blog/loopvar-preview
 		eg.Go(func() error {
 			<-ctx.Done()
-			sctx, cancel := context.WithTimeout(a.opts.ctx, a.opts.timeout)
+			sctx, cancel := context.WithTimeout(a.opts.ctx, a.opts.stopTimeout)
 			defer cancel()
 			return server.Stop(sctx)
 		})

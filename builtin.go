@@ -1,30 +1,68 @@
 package openhdc
 
 import (
+	"bytes"
+	"errors"
+	"slices"
 	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/ipc"
 	"github.com/apache/arrow-go/v18/arrow/memory"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
 )
 
 const (
-	BuiltinFieldName     = "_openhdc_name"
-	BuiltinFieldSyncedAt = "_openhdc_synced_at"
+	builtinFieldName     = "_openhdc_name"
+	builtinFieldSyncedAt = "_openhdc_synced_at"
 )
 
-func newSchema(rec arrow.Record) *arrow.Schema {
-	fs := append([]arrow.Field{
-		{Name: BuiltinFieldName, Type: arrow.BinaryTypes.String, Nullable: false},
-		{Name: BuiltinFieldSyncedAt, Type: arrow.FixedWidthTypes.Timestamp_us, Nullable: false},
-	}, rec.Schema().Fields()...)
-	md := rec.Schema().Metadata()
-	return arrow.NewSchema(fs, &md)
+func BuiltinFieldName() string {
+	return builtinFieldName
 }
 
-func newColumns(rec arrow.Record, name string, syncedAt time.Time) []arrow.Array {
+func BuiltinFieldSyncedAt() string {
+	return builtinFieldSyncedAt
+}
+
+func isBuiltinField(a *arrow.Field) bool {
+	return slices.Contains([]string{builtinFieldName, builtinFieldSyncedAt}, a.Name)
+}
+
+func toRecord(b []byte) (arrow.Record, error) {
+	r, err := ipc.NewReader(bytes.NewReader(b), ipc.WithAllocator(memory.DefaultAllocator))
+	if err != nil {
+		return nil, err
+	}
+	defer r.Release()
+	for r.Next() {
+		rec := r.Record()
+		rec.Retain()
+		return rec, nil
+	}
+	return nil, errors.New("record is empty")
+}
+
+func appendBuiltinFields(rec arrow.Record) *arrow.Schema {
+	fs := []arrow.Field{
+		{
+			Name:     builtinFieldName,
+			Type:     arrow.BinaryTypes.String,
+			Nullable: false,
+		},
+		{
+			Name:     builtinFieldSyncedAt,
+			Type:     arrow.FixedWidthTypes.Timestamp_us,
+			Nullable: false,
+		},
+	}
+	md := rec.Schema().Metadata()
+	return arrow.NewSchema(append(fs, rec.Schema().Fields()...), &md)
+}
+
+func appendBuiltinValues(rec arrow.Record, name string, syncedAt time.Time) []arrow.Array {
 	sb := array.NewStringBuilder(memory.DefaultAllocator)
 	tb := array.NewTimestampBuilder(memory.DefaultAllocator, arrow.FixedWidthTypes.Timestamp_us.(*arrow.TimestampType))
 	for range rec.NumRows() {
@@ -33,18 +71,15 @@ func newColumns(rec arrow.Record, name string, syncedAt time.Time) []arrow.Array
 	}
 	arrs := make([]arrow.Array, rec.NumCols())
 	copy(arrs, rec.Columns())
-	return append([]arrow.Array{
-		sb.NewArray(),
-		tb.NewArray(),
-	}, arrs...)
+	return append([]arrow.Array{sb.NewArray(), tb.NewArray()}, arrs...)
 }
 
 func AppendBuiltinFieldsToRecord(msg *pb.Message) (arrow.Record, error) {
-	rec, err := pb.ToArrowRecord(msg.GetRecord())
+	rec, err := toRecord(msg.GetRecord())
 	if err != nil {
 		return nil, err
 	}
-	sch := newSchema(rec)
-	cols := newColumns(rec, msg.GetSourceName(), msg.GetSyncedAt().AsTime())
-	return array.NewRecord(sch, cols, rec.NumRows()), nil
+	sch := appendBuiltinFields(rec)
+	arrs := appendBuiltinValues(rec, msg.GetSourceName(), msg.GetSyncedAt().AsTime())
+	return array.NewRecord(sch, arrs, rec.NumRows()), nil
 }
