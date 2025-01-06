@@ -63,7 +63,7 @@ func WithNetwork(n string) ServerOption {
 
 func WithAddress(n string) ServerOption {
 	return newFuncServerOption(func(o *serverOptions) {
-		o.network = n
+		o.address = n
 	})
 }
 
