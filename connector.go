@@ -9,7 +9,7 @@ import (
 type Connector interface {
 	Codec
 
-	Read(ctx context.Context, msgs chan<- *pb.Message, r *Reader) error
+	Read(ctx context.Context, msgs chan<- *pb.Message, rdr *Reader) error
 	Write(ctx context.Context, msgs <-chan *pb.Message) error
 	Close(ctx context.Context) error
 }

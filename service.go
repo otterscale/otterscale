@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"log/slog"
+	"time"
 
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/proto"
@@ -21,7 +22,7 @@ type Service struct {
 
 var _ pb.ConnectorServer = (*Service)(nil)
 
-func NewService(c Connector) pb.ConnectorServer {
+func NewService(c Connector) *Service {
 	return &Service{
 		connector: c,
 	}
@@ -35,10 +36,15 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 	msgs := make(chan *pb.Message)
 	eg, ctx := errgroup.WithContext(stream.Context())
 	eg.Go(func() error {
-		r := NewReader()
+		r := NewReader(
+			WithSourceName(""), // TODO
+			WithSyncedAt(time.Now().UTC().Truncate(time.Second)),
+		)
 		sync := req.GetSync()
 		if sync != nil {
 			r = NewReader(
+				WithSourceName(""),
+				WithSyncedAt(time.Now().UTC().Truncate(time.Second)),
 				WithBatchSize(sync.GetBatchSize()),
 				WithKeys(sync.GetKeys()...),
 				WithSkipKeys(sync.GetSkipKeys()...),

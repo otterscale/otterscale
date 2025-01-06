@@ -128,7 +128,7 @@ func (c *Client) Terminate() error {
 }
 
 func (c *Client) freePort() (string, error) {
-	lis, err := net.Listen("tcp", ":0")
+	lis, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		return "", err
 	}
