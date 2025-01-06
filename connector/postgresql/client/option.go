@@ -4,8 +4,6 @@ import (
 	"time"
 )
 
-type Option func(*options)
-
 type options struct {
 	name           string
 	connString     string
@@ -16,44 +14,66 @@ type options struct {
 	createIndex    bool
 }
 
-func WithName(name string) Option {
-	return func(o *options) {
-		o.name = name
+var defaultOptions = options{}
+
+type Option interface {
+	apply(*options)
+}
+
+type funcOption struct {
+	f func(*options)
+}
+
+var _ Option = (*funcOption)(nil)
+
+func (fro *funcOption) apply(ro *options) {
+	fro.f(ro)
+}
+
+func newFuncOption(f func(*options)) *funcOption {
+	return &funcOption{
+		f: f,
 	}
 }
 
-func WithConnString(connString string) Option {
-	return func(o *options) {
-		o.connString = connString
-	}
+func WithName(n string) Option {
+	return newFuncOption(func(o *options) {
+		o.name = n
+	})
 }
 
-func WithNamespace(namespace string) Option {
-	return func(o *options) {
-		o.namespace = namespace
-	}
+func WithConnString(c string) Option {
+	return newFuncOption(func(o *options) {
+		o.connString = c
+	})
 }
 
-func WithBatchSize(batchSize int64) Option {
-	return func(o *options) {
-		o.batchSize = batchSize
-	}
+func WithNamespace(n string) Option {
+	return newFuncOption(func(o *options) {
+		o.namespace = n
+	})
 }
 
-func WithBatchSizeBytes(batchSizeBytes int64) Option {
-	return func(o *options) {
-		o.batchSizeBytes = batchSizeBytes
-	}
+func WithBatchSize(s int64) Option {
+	return newFuncOption(func(o *options) {
+		o.batchSize = s
+	})
 }
 
-func WithBatchTimeout(batchTimeout time.Duration) Option {
-	return func(o *options) {
-		o.batchTimeout = batchTimeout
-	}
+func WithBatchSizeBytes(s int64) Option {
+	return newFuncOption(func(o *options) {
+		o.batchSizeBytes = s
+	})
 }
 
-func WithCreateIndex(createIndex bool) Option {
-	return func(o *options) {
-		o.createIndex = createIndex
-	}
+func WithBatchTimeout(t time.Duration) Option {
+	return newFuncOption(func(o *options) {
+		o.batchTimeout = t
+	})
+}
+
+func WithCreateIndex(b bool) Option {
+	return newFuncOption(func(o *options) {
+		o.createIndex = b
+	})
 }

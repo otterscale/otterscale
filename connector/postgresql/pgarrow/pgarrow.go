@@ -19,7 +19,7 @@ func To(typ string) arrow.DataType {
 	switch typ {
 	case "bytea":
 		return arrow.BinaryTypes.Binary
-	case "aclitem", "bpchar", "jsonpath", "name", "text", "unknown", "varchar", "xml":
+	case "aclitem", "bpchar", "jsonpath", "name", "text", "unknown", "varchar", "xml": //nolint:goconst
 		return arrow.BinaryTypes.String
 	case "json", "jsonb":
 		return arrow.BinaryTypes.String

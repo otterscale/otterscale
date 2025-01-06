@@ -1,11 +1,14 @@
 package openhdc
 
 import (
+	"bytes"
+	"errors"
 	"slices"
 	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/array"
+	"github.com/apache/arrow-go/v18/arrow/ipc"
 	"github.com/apache/arrow-go/v18/arrow/memory"
 
 	pb "github.com/openhdc/openhdc/api/connector/v1"
@@ -26,6 +29,20 @@ func BuiltinFieldSyncedAt() string {
 
 func isBuiltinField(a *arrow.Field) bool {
 	return slices.Contains([]string{builtinFieldName, builtinFieldSyncedAt}, a.Name)
+}
+
+func toRecord(b []byte) (arrow.Record, error) {
+	r, err := ipc.NewReader(bytes.NewReader(b), ipc.WithAllocator(memory.DefaultAllocator))
+	if err != nil {
+		return nil, err
+	}
+	defer r.Release()
+	for r.Next() {
+		rec := r.Record()
+		rec.Retain()
+		return rec, nil
+	}
+	return nil, errors.New("record is empty")
 }
 
 func appendBuiltinFields(rec arrow.Record) *arrow.Schema {
@@ -58,7 +75,7 @@ func appendBuiltinValues(rec arrow.Record, name string, syncedAt time.Time) []ar
 }
 
 func AppendBuiltinFieldsToRecord(msg *pb.Message) (arrow.Record, error) {
-	rec, err := pb.ToRecord(msg.GetRecord())
+	rec, err := toRecord(msg.GetRecord())
 	if err != nil {
 		return nil, err
 	}
