@@ -13,22 +13,20 @@ type Client struct {
 	openhdc.Codec
 	opts options
 
-	config *pgxpool.Config
-	pool   *pgxpool.Pool
+	pool *pgxpool.Pool
 }
 
-func NewConnector(c openhdc.Codec, opts ...Option) (openhdc.Connector, error) {
-	o := options{}
-	for _, opt := range opts {
-		opt(&o)
+func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
+	opts := defaultOptions
+	for _, o := range opt {
+		o.apply(&opts)
 	}
 
-	if o.connString == "" {
+	if opts.connString == "" {
 		return nil, errors.New("connection string is empty")
 	}
 
-	var err error
-	f, err := pgxpool.ParseConfig(o.connString)
+	f, err := pgxpool.ParseConfig(opts.connString)
 	if err != nil {
 		return nil, err
 	}
@@ -39,10 +37,9 @@ func NewConnector(c openhdc.Codec, opts ...Option) (openhdc.Connector, error) {
 	}
 
 	return &Client{
-		Codec:  c,
-		opts:   o,
-		config: f,
-		pool:   p,
+		Codec: c,
+		opts:  opts,
+		pool:  p,
 	}, nil
 }
 
@@ -52,13 +49,11 @@ func (c *Client) TestConnection(ctx context.Context) error {
 		return err
 	}
 	defer conn.Release()
+	return conn.Ping(ctx)
+}
 
-	err = conn.Ping(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
+func (c *Client) Name() string {
+	return c.opts.name
 }
 
 func (c *Client) Close(ctx context.Context) error {

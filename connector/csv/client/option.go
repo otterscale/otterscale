@@ -4,63 +4,83 @@ import (
 	"time"
 )
 
-type Option func(*options)
-
 type options struct {
 	name           string
 	filePath       string
 	tableName      string
-	infering       bool
+	inferring      bool
 	batchSize      int64
 	batchSizeBytes int64
 	batchTimeout   time.Duration
 	createIndex    bool
 }
 
-func WithName(name string) Option {
-	return func(o *options) {
-		o.name = name
+var defaultOptions = options{}
+
+type Option interface {
+	apply(*options)
+}
+
+type funcOption struct {
+	f func(*options)
+}
+
+var _ Option = (*funcOption)(nil)
+
+func (fro *funcOption) apply(ro *options) {
+	fro.f(ro)
+}
+
+func newFuncOption(f func(*options)) *funcOption {
+	return &funcOption{
+		f: f,
 	}
 }
 
-func WithFilePath(filePath string) Option {
-	return func(o *options) {
-		o.filePath = filePath
-	}
+func WithName(n string) Option {
+	return newFuncOption(func(o *options) {
+		o.name = n
+	})
 }
 
-func WithTableName(tableName string) Option {
-	return func(o *options) {
-		o.tableName = tableName
-	}
+func WithFilePath(f string) Option {
+	return newFuncOption(func(o *options) {
+		o.filePath = f
+	})
 }
 
-func WithInfering(infering bool) Option {
-	return func(o *options) {
-		o.infering = infering
-	}
+func WithTableName(t string) Option {
+	return newFuncOption(func(o *options) {
+		o.tableName = t
+	})
 }
 
-func WithBatchSize(batchSize int64) Option {
-	return func(o *options) {
-		o.batchSize = batchSize
-	}
+func WithInferring(b bool) Option {
+	return newFuncOption(func(o *options) {
+		o.inferring = b
+	})
 }
 
-func WithBatchSizeBytes(batchSizeBytes int64) Option {
-	return func(o *options) {
-		o.batchSizeBytes = batchSizeBytes
-	}
+func WithBatchSize(s int64) Option {
+	return newFuncOption(func(o *options) {
+		o.batchSize = s
+	})
 }
 
-func WithBatchTimeout(batchTimeout time.Duration) Option {
-	return func(o *options) {
-		o.batchTimeout = batchTimeout
-	}
+func WithBatchSizeBytes(s int64) Option {
+	return newFuncOption(func(o *options) {
+		o.batchSizeBytes = s
+	})
 }
 
-func WithCreateIndex(createIndex bool) Option {
-	return func(o *options) {
-		o.createIndex = createIndex
-	}
+func WithBatchTimeout(t time.Duration) Option {
+	return newFuncOption(func(o *options) {
+		o.batchTimeout = t
+	})
+}
+
+func WithCreateIndex(b bool) Option {
+	return newFuncOption(func(o *options) {
+		o.createIndex = b
+	})
 }

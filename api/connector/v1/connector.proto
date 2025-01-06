@@ -12,9 +12,16 @@ option features.(pb.go).api_level = API_OPAQUE;
 option go_package = "github.com/openhdc/openhdc/api/connector/v1;pb";
 
 service Connector {
+  rpc Name(NameRequest) returns (NameResponse);
   rpc Close(CloseRequest) returns (google.protobuf.Empty);
   rpc Pull(PullRequest) returns (stream Message);
   rpc Push(stream Message) returns (google.protobuf.Empty);
+}
+
+message NameRequest {}
+
+message NameResponse {
+  string name = 1;
 }
 
 message CloseRequest {}

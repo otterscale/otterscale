@@ -13,7 +13,10 @@ import (
 	_ "go.uber.org/automaxprocs"
 )
 
-const name = "postgresql"
+const (
+	name    = "postgresql"
+	version = "devel"
+)
 
 const (
 	defaultBatchSize      = 10000
@@ -28,8 +31,6 @@ var (
 	address = flag.String("address", ":0", "address of grpc server")
 
 	// read
-	syncMode   = flag.String("sync_mode", "", "sync mode, such as full_overwrite, full_append, incremental_append, incremental_append_dedupe")
-	cursor     = flag.String("cursor", "", "incremental cursor")
 	connString = flag.String("connection_string", "", "connection string, such as 'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'")
 	namespace  = flag.String("namespace", "", "namespace of database, such as 'public'")
 
@@ -44,8 +45,10 @@ var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewC
 
 func newApp(srv *openhdc.Server) *openhdc.App {
 	return openhdc.New(
-		openhdc.WithServers(srv),
 		openhdc.WithKind(property.ParseWorkloadKind(*kind)),
+		openhdc.WithName(name),
+		openhdc.WithVersion(version),
+		openhdc.WithServers(srv),
 	)
 }
 
