@@ -28,6 +28,11 @@ func NewService(c Connector) *Service {
 	}
 }
 
+func (s *Service) Name(ctx context.Context, req *pb.NameRequest) (*pb.NameResponse, error) {
+	name := s.connector.Name()
+	return pb.NameResponse_builder{Name: &name}.Build(), nil
+}
+
 func (s *Service) Close(ctx context.Context, _ *pb.CloseRequest) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, s.connector.Close(ctx)
 }
@@ -36,22 +41,20 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 	msgs := make(chan *pb.Message)
 	eg, ctx := errgroup.WithContext(stream.Context())
 	eg.Go(func() error {
-		r := NewReader(
-			WithSourceName(""), // TODO
+		opts := []ReadOption{
+			WithSourceName(s.connector.Name()),
 			WithSyncedAt(time.Now().UTC().Truncate(time.Second)),
-		)
+		}
 		sync := req.GetSync()
 		if sync != nil {
-			r = NewReader(
-				WithSourceName(""),
-				WithSyncedAt(time.Now().UTC().Truncate(time.Second)),
+			opts = append(opts,
 				WithBatchSize(sync.GetBatchSize()),
 				WithKeys(sync.GetKeys()...),
 				WithSkipKeys(sync.GetSkipKeys()...),
 				WithOptions(sync.GetOptions()...),
 			)
 		}
-		return s.read(ctx, msgs, r)
+		return s.read(ctx, msgs, NewReader(opts...))
 	})
 	eg.Go(func() error {
 		return s.send(msgs, stream)

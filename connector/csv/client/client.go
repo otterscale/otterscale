@@ -37,6 +37,10 @@ func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
 	}, nil
 }
 
+func (c *Client) Name() string {
+	return c.opts.name
+}
+
 func (c *Client) Close(ctx context.Context) error {
 	return c.file.Close()
 }
