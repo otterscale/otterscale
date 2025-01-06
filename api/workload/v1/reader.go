@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strings"
 
 	"buf.build/go/protoyaml"
 
@@ -12,19 +11,15 @@ import (
 )
 
 type Reader struct {
-	Sources      []*Workload
-	Destinations []*Workload
-	Transformers []*Workload
+	wls *Workloads
 }
 
-func NewReader(paths []string) (*Reader, error) {
+func NewReader(files []string) (*Reader, error) {
 	r := &Reader{
-		Sources:      []*Workload{},
-		Destinations: []*Workload{},
-		Transformers: []*Workload{},
+		wls: &Workloads{},
 	}
-	for _, path := range paths {
-		if err := r.readFile(path); err != nil {
+	for _, file := range files {
+		if err := r.readFile(file); err != nil {
 			return nil, err
 		}
 	}
@@ -34,8 +29,12 @@ func NewReader(paths []string) (*Reader, error) {
 	return r, nil
 }
 
-func (r *Reader) readFile(path string) error {
-	data, err := os.ReadFile(path)
+func (r *Reader) Workloads() *Workloads {
+	return r.wls
+}
+
+func (r *Reader) readFile(file string) error {
+	data, err := os.ReadFile(file)
 	if err != nil {
 		return err
 	}
@@ -43,16 +42,16 @@ func (r *Reader) readFile(path string) error {
 	if err := protoyaml.Unmarshal(data, &w); err != nil {
 		return err
 	}
-	// set internal
-	w.SetInternal(Internal_builder{FilePath: &path}.Build())
+	// set internal filepath
+	w.SetInternal(Internal_builder{FilePath: &file}.Build())
 	// append
 	switch w.GetKind() {
 	case property.WorkloadKind_source:
-		r.Sources = append(r.Sources, &w)
+		r.wls.AppendSources(&w)
 	case property.WorkloadKind_destination:
-		r.Destinations = append(r.Destinations, &w)
+		r.wls.AppendDestinations(&w)
 	case property.WorkloadKind_transformer:
-		r.Transformers = append(r.Transformers, &w)
+		r.wls.AppendTransformers(&w)
 	default:
 		return fmt.Errorf("invalid kind %s", w.GetKind())
 	}
@@ -60,21 +59,11 @@ func (r *Reader) readFile(path string) error {
 }
 
 func (r *Reader) validate() error {
-	if len(r.Sources) == 0 {
+	if len(r.wls.Sources()) == 0 {
 		return errors.New("require at least one source")
 	}
-	if len(r.Destinations) == 0 {
+	if len(r.wls.Destinations()) == 0 {
 		return errors.New("require at least one destination")
 	}
 	return nil
-}
-
-func (r *Reader) String() string {
-	sb := strings.Builder{}
-	for _, w := range append(append(r.Sources, r.Destinations...), r.Transformers...) {
-		b, _ := protoyaml.Marshal(w)
-		sb.WriteString(string(b))
-		sb.WriteString("\n")
-	}
-	return sb.String()
 }
