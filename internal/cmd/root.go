@@ -5,8 +5,8 @@ import "github.com/spf13/cobra"
 func NewCmdRoot(version string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:          "openhdc",
-		Short:        "openhdc short",
-		Long:         "openhdc long",
+		Short:        "",
+		Long:         "",
 		Version:      version,
 		SilenceUsage: true,
 	}

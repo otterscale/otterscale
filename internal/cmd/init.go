@@ -1,6 +1,10 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"log/slog"
+
+	"github.com/spf13/cobra"
+)
 
 func NewCmdInit() *cobra.Command {
 	cmd := &cobra.Command{
@@ -9,11 +13,12 @@ func NewCmdInit() *cobra.Command {
 		Long:    "",
 		Example: "",
 		Args:    cobra.MinimumNArgs(1),
-		RunE:    _init,
+		RunE:    cmdInit,
 	}
 	return cmd
 }
 
-func _init(cmd *cobra.Command, args []string) error {
+func cmdInit(cmd *cobra.Command, args []string) error {
+	slog.Warn("not implemented")
 	return nil
 }

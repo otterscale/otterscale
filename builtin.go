@@ -58,7 +58,7 @@ func appendBuiltinValues(rec arrow.Record, name string, syncedAt time.Time) []ar
 }
 
 func AppendBuiltinFieldsToRecord(msg *pb.Message) (arrow.Record, error) {
-	rec, err := pb.ToArrowRecord(msg.GetRecord())
+	rec, err := pb.ToRecord(msg.GetRecord())
 	if err != nil {
 		return nil, err
 	}

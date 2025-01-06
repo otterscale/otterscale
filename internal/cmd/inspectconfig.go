@@ -1,6 +1,10 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"log/slog"
+
+	"github.com/spf13/cobra"
+)
 
 func NewCmdInspectConfig() *cobra.Command {
 	cmd := &cobra.Command{
@@ -9,11 +13,12 @@ func NewCmdInspectConfig() *cobra.Command {
 		Long:    "",
 		Example: "",
 		Args:    cobra.MinimumNArgs(1),
-		RunE:    inspectConfig,
+		RunE:    cmdInspectConfig,
 	}
 	return cmd
 }
 
-func inspectConfig(cmd *cobra.Command, args []string) error {
+func cmdInspectConfig(cmd *cobra.Command, args []string) error {
+	slog.Warn("not implemented")
 	return nil
 }

@@ -27,38 +27,40 @@ func NewCmdSync() *cobra.Command {
 		Long:    "",
 		Example: "",
 		Args:    cobra.MinimumNArgs(1),
-		RunE:    sync,
+		RunE:    cmdSync,
 	}
 	return cmd
 }
 
-func sync(cmd *cobra.Command, args []string) error {
+func cmdSync(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 
-	// new workload
+	// workload
 	r, err := workload.NewReader(args)
 	if err != nil {
 		return err
 	}
 
-	// new clients
-	srcClients, err := newClients(ctx, r.Sources)
+	wls := r.Workloads()
+
+	// client
+	srcs, err := newClients(ctx, wls.Sources())
 	if err != nil {
 		return err
 	}
 
-	dstClients, err := newClients(ctx, r.Destinations)
+	dsts, err := newClients(ctx, wls.Destinations())
 	if err != nil {
 		return err
 	}
 
-	// new streamings
-	srcStreamings, err := newSrcStreamings(ctx, srcClients)
+	// streaming
+	pulls, err := newPulls(ctx, srcs)
 	if err != nil {
 		return err
 	}
 
-	dstStreamings, err := newDstStreamings(ctx, srcClients)
+	pushes, err := newPushes(ctx, dsts)
 	if err != nil {
 		return err
 	}
@@ -70,9 +72,9 @@ func sync(cmd *cobra.Command, args []string) error {
 	startedAt := time.Now()
 
 	// start sync
-	for _, src := range srcStreamings {
+	for _, pull := range pulls {
 		eg.Go(func() error {
-			return syncOneToAll(src, dstStreamings)
+			return syncOneToAll(pull, pushes)
 		})
 	}
 
@@ -82,14 +84,14 @@ func sync(cmd *cobra.Command, args []string) error {
 	}
 
 	// all ok
-	for _, dst := range dstStreamings {
-		if _, err := dst.CloseAndRecv(); err != nil {
+	for _, push := range pushes {
+		if _, err := push.CloseAndRecv(); err != nil {
 			return err
 		}
 	}
 
 	// close
-	for _, c := range append(srcClients, dstClients...) {
+	for _, c := range append(srcs, dsts...) {
 		if _, err := c.Close(ctx, &pb.CloseRequest{}); err != nil {
 			return err
 		}
@@ -120,13 +122,13 @@ func newClients(ctx context.Context, ws []*workload.Workload) ([]*openhdc.Client
 	return cs, nil
 }
 
-func newSrcStreamings(ctx context.Context, cs []*openhdc.Client) ([]grpc.ServerStreamingClient[pb.Message], error) {
+func newPulls(ctx context.Context, cs []*openhdc.Client) ([]grpc.ServerStreamingClient[pb.Message], error) {
 	ss := []grpc.ServerStreamingClient[pb.Message]{}
 	for _, c := range cs {
-		req := &pb.PullRequest{}
-		req.SetSync(c.Sync())
-
-		s, err := c.Pull(ctx, req, grpc.WaitForReady(true))
+		req := &pb.PullRequest_builder{
+			Sync: c.Sync(),
+		}
+		s, err := c.Pull(ctx, req.Build(), grpc.WaitForReady(true))
 		if err != nil {
 			return nil, err
 		}
@@ -135,7 +137,7 @@ func newSrcStreamings(ctx context.Context, cs []*openhdc.Client) ([]grpc.ServerS
 	return ss, nil
 }
 
-func newDstStreamings(ctx context.Context, cs []*openhdc.Client) ([]grpc.ClientStreamingClient[pb.Message, emptypb.Empty], error) {
+func newPushes(ctx context.Context, cs []*openhdc.Client) ([]grpc.ClientStreamingClient[pb.Message, emptypb.Empty], error) {
 	ss := []grpc.ClientStreamingClient[pb.Message, emptypb.Empty]{}
 	for _, c := range cs {
 		s, err := c.Push(ctx, grpc.WaitForReady(true))
@@ -147,10 +149,10 @@ func newDstStreamings(ctx context.Context, cs []*openhdc.Client) ([]grpc.ClientS
 	return ss, nil
 }
 
-func syncOneToAll(src grpc.ServerStreamingClient[pb.Message], dsts []grpc.ClientStreamingClient[pb.Message, emptypb.Empty]) error {
+func syncOneToAll(pull grpc.ServerStreamingClient[pb.Message], pushes []grpc.ClientStreamingClient[pb.Message, emptypb.Empty]) error {
 	var bar *progressbar.ProgressBar
 	for {
-		msg, err := src.Recv()
+		msg, err := pull.Recv()
 		if errors.Is(err, io.EOF) {
 			_ = bar.Finish()
 			slog.Info("[Sync] read finished")
@@ -166,11 +168,11 @@ func syncOneToAll(src grpc.ServerStreamingClient[pb.Message], dsts []grpc.Client
 			bar = progressbar.Default(-1, "Syncing")
 		}
 		_ = bar.Add(1)
-		for _, dst := range dsts {
-			err := dst.Send(msg)
+		for _, push := range pushes {
+			err := push.Send(msg)
 			if errors.Is(err, io.EOF) {
 				slog.Error("[Sync] write error occurred")
-				if _, err := dst.CloseAndRecv(); err != nil {
+				if _, err := push.CloseAndRecv(); err != nil {
 					return err
 				}
 			}
