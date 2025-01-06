@@ -20,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	Connector_Name_FullMethodName  = "/openhdc.connector.v1.Connector/Name"
 	Connector_Close_FullMethodName = "/openhdc.connector.v1.Connector/Close"
 	Connector_Pull_FullMethodName  = "/openhdc.connector.v1.Connector/Pull"
 	Connector_Push_FullMethodName  = "/openhdc.connector.v1.Connector/Push"
@@ -29,6 +30,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConnectorClient interface {
+	Name(ctx context.Context, in *NameRequest, opts ...grpc.CallOption) (*NameResponse, error)
 	Close(ctx context.Context, in *CloseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Pull(ctx context.Context, in *PullRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Message], error)
 	Push(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Message, emptypb.Empty], error)
@@ -40,6 +42,16 @@ type connectorClient struct {
 
 func NewConnectorClient(cc grpc.ClientConnInterface) ConnectorClient {
 	return &connectorClient{cc}
+}
+
+func (c *connectorClient) Name(ctx context.Context, in *NameRequest, opts ...grpc.CallOption) (*NameResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NameResponse)
+	err := c.cc.Invoke(ctx, Connector_Name_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *connectorClient) Close(ctx context.Context, in *CloseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
@@ -88,6 +100,7 @@ type Connector_PushClient = grpc.ClientStreamingClient[Message, emptypb.Empty]
 // All implementations must embed UnimplementedConnectorServer
 // for forward compatibility.
 type ConnectorServer interface {
+	Name(context.Context, *NameRequest) (*NameResponse, error)
 	Close(context.Context, *CloseRequest) (*emptypb.Empty, error)
 	Pull(*PullRequest, grpc.ServerStreamingServer[Message]) error
 	Push(grpc.ClientStreamingServer[Message, emptypb.Empty]) error
@@ -101,6 +114,9 @@ type ConnectorServer interface {
 // pointer dereference when methods are called.
 type UnimplementedConnectorServer struct{}
 
+func (UnimplementedConnectorServer) Name(context.Context, *NameRequest) (*NameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Name not implemented")
+}
 func (UnimplementedConnectorServer) Close(context.Context, *CloseRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Close not implemented")
 }
@@ -129,6 +145,24 @@ func RegisterConnectorServer(s grpc.ServiceRegistrar, srv ConnectorServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&Connector_ServiceDesc, srv)
+}
+
+func _Connector_Name_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectorServer).Name(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Connector_Name_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectorServer).Name(ctx, req.(*NameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Connector_Close_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -174,6 +208,10 @@ var Connector_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "openhdc.connector.v1.Connector",
 	HandlerType: (*ConnectorServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Name",
+			Handler:    _Connector_Name_Handler,
+		},
 		{
 			MethodName: "Close",
 			Handler:    _Connector_Close_Handler,

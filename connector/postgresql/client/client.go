@@ -52,6 +52,10 @@ func (c *Client) TestConnection(ctx context.Context) error {
 	return conn.Ping(ctx)
 }
 
+func (c *Client) Name() string {
+	return c.opts.name
+}
+
 func (c *Client) Close(ctx context.Context) error {
 	c.pool.Close()
 	return nil
