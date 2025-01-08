@@ -19,6 +19,8 @@
 !.clang-format
 !.golangci.yml
 
+!*.dart
+
 # ...even if they are in subdirectories
 !*/
 
