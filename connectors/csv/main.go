@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"time"
 
 	"github.com/openhdc/openhdc"
@@ -11,7 +12,7 @@ import (
 	_ "go.uber.org/automaxprocs"
 )
 
-const (
+var (
 	name    = "csv"
 	version = "devel"
 )
@@ -23,6 +24,9 @@ const (
 )
 
 var (
+	// print
+	printVersion = flag.Bool("v", false, "print version")
+
 	// general
 	kind    = flag.String("kind", "", "connector type, such as source or destination")
 	network = flag.String("network", "tcp", "network of grpc server")
@@ -52,6 +56,13 @@ func newApp(srv *openhdc.Server) *openhdc.App {
 func main() {
 	flag.Parse()
 
+	// version
+	if *printVersion {
+		fmt.Println(name, version)
+		return
+	}
+
+	// options
 	serverOpts := []openhdc.ServerOption{
 		openhdc.WithNetwork(*network),
 		openhdc.WithAddress(*address),

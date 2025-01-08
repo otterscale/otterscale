@@ -1,9 +1,10 @@
+VERSION=$(shell git describe --tags --always)
 PROTO_FILES=$(shell find api -name *.proto)
 
 .PHONY: build
 # build cli
 build:
-	mkdir -p ./bin && go build -o ./bin/ ./cmd/openhdc/...
+	mkdir -p ./bin && go build -ldflags "-w -X main.version=$(VERSION)" -o ./bin/ ./cmd/openhdc/...
 
 .PHONY: vet
 # examine code
