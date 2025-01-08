@@ -20,13 +20,13 @@ type Service struct {
 	connector Connector
 }
 
-var _ pb.ConnectorServer = (*Service)(nil)
-
 func NewService(c Connector) *Service {
 	return &Service{
 		connector: c,
 	}
 }
+
+var _ pb.ConnectorServer = (*Service)(nil)
 
 func (s *Service) Name(ctx context.Context, req *pb.NameRequest) (*pb.NameResponse, error) {
 	name := s.connector.Name()

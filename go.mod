@@ -6,8 +6,10 @@ require (
 	buf.build/go/protoyaml v0.3.1
 	github.com/apache/arrow-go/v18 v18.0.0
 	github.com/google/uuid v1.6.0
+	github.com/google/wire v0.6.0
 	github.com/schollz/progressbar/v3 v3.17.1
 	github.com/spf13/cobra v1.8.1
+	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/sync v0.10.0
 	google.golang.org/grpc v1.69.0
 	google.golang.org/protobuf v1.36.0
