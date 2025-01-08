@@ -30,8 +30,8 @@ class MyApp extends StatelessWidget with WatchItMixin {
       builder: (context, value, child) => MaterialApp(
         home: const MyHomePage(title: 'Flutter Demo Home Page'),
         title: 'OpenHDC',
-        theme: ThemeData.light(useMaterial3: true),
-        darkTheme: ThemeData.dark(useMaterial3: true),
+        theme: yaruLight,
+        darkTheme: yaruDark,
         themeMode: themeMode,
         debugShowCheckedModeBanner: false,
         scrollBehavior: const MaterialScrollBehavior().copyWith(
