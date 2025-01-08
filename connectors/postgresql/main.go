@@ -8,13 +8,13 @@ import (
 
 	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/api/property/v1"
-	"github.com/openhdc/openhdc/connector/csv/client"
+	"github.com/openhdc/openhdc/connectors/postgresql/client"
 
 	_ "go.uber.org/automaxprocs"
 )
 
 const (
-	name    = "csv"
+	name    = "postgresql"
 	version = "devel"
 )
 
@@ -31,9 +31,8 @@ var (
 	address = flag.String("address", ":0", "address of grpc server")
 
 	// read
-	filePath  = flag.String("file_path", "", "csv file path")
-	tableName = flag.String("table_name", "csv_file", "destination table name")
-	inferring = flag.Bool("inferring", true, "")
+	connString = flag.String("connection_string", "", "connection string, such as 'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'")
+	namespace  = flag.String("namespace", "", "namespace of database, such as 'public'")
 
 	// write
 	batchSize      = flag.Int64("batch_size", defaultBatchSize, "default batch size of rows is 10,000 if not specified")
@@ -63,9 +62,8 @@ func main() {
 
 	clientOpts := []client.Option{
 		client.WithName(name),
-		client.WithFilePath(*filePath),
-		client.WithTableName(*tableName),
-		client.WithInferring(*inferring),
+		client.WithConnString(*connString),
+		client.WithNamespace(*namespace),
 		client.WithBatchSize(*batchSize),
 		client.WithBatchSizeBytes(*batchSizeBytes),
 		client.WithBatchTimeout(*batchTimeout),

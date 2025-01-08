@@ -6,8 +6,8 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/openhdc/openhdc/connector/postgresql/client/pg"
-	"github.com/openhdc/openhdc/connector/postgresql/pgarrow"
+	"github.com/openhdc/openhdc/connectors/postgresql/client/pg"
+	"github.com/openhdc/openhdc/connectors/postgresql/pgarrow"
 	"github.com/openhdc/openhdc/metadata"
 )
 

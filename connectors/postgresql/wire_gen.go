@@ -8,7 +8,7 @@ package main
 
 import (
 	"github.com/openhdc/openhdc"
-	"github.com/openhdc/openhdc/connector/postgresql/client"
+	"github.com/openhdc/openhdc/connectors/postgresql/client"
 )
 
 import (

@@ -13,7 +13,7 @@ import (
 
 	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
-	"github.com/openhdc/openhdc/connector/postgresql/client/pg"
+	"github.com/openhdc/openhdc/connectors/postgresql/client/pg"
 )
 
 func (c *Client) Read(ctx context.Context, msgs chan<- *pb.Message, rdr *openhdc.Reader) error {

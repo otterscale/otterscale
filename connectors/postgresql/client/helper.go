@@ -9,7 +9,7 @@ import (
 
 	"github.com/openhdc/openhdc/api/property/v1"
 	"github.com/openhdc/openhdc/api/workload/v1"
-	"github.com/openhdc/openhdc/connector/postgresql/client/pg"
+	"github.com/openhdc/openhdc/connectors/postgresql/client/pg"
 	"github.com/openhdc/openhdc/metadata"
 )
 
