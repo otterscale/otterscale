@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"log/slog"
@@ -6,19 +6,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmdInspectConnection() *cobra.Command {
+func NewCmdInit() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "connection",
+		Use:     "init",
 		Short:   "",
 		Long:    "",
 		Example: "",
 		Args:    cobra.MinimumNArgs(1),
-		RunE:    cmdInspectConnection,
+		RunE:    cmdInit,
 	}
 	return cmd
 }
 
-func cmdInspectConnection(cmd *cobra.Command, args []string) error {
+func cmdInit(cmd *cobra.Command, args []string) error {
 	slog.Warn("not implemented")
 	return nil
 }
