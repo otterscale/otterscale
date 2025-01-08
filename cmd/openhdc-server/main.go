@@ -2,18 +2,23 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/openhdc/openhdc"
 
 	_ "go.uber.org/automaxprocs"
 )
 
-const (
+var (
 	name    = "openhdc-server"
 	version = "devel"
 )
 
 var (
+	// print
+	printVersion = flag.Bool("v", false, "print version")
+
+	// general
 	network = flag.String("network", "tcp", "network of grpc server")
 	address = flag.String("address", ":0", "address of grpc server")
 )
@@ -29,6 +34,13 @@ func newApp(srv *openhdc.Server) *openhdc.App {
 func main() {
 	flag.Parse()
 
+	// version
+	if *printVersion {
+		fmt.Println(name, version)
+		return
+	}
+
+	// options
 	serverOpts := []openhdc.ServerOption{
 		openhdc.WithNetwork(*network),
 		openhdc.WithAddress(*address),

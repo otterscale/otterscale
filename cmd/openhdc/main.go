@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"flag"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -10,9 +12,14 @@ import (
 	"github.com/openhdc/openhdc/internal/cli"
 )
 
-var version = "devel"
+var (
+	name    = "openhdc-cli"
+	version = "devel"
+)
 
-// start and wait for stop signal
+// print
+var printVersion = flag.Bool("v", false, "print version")
+
 func run() error {
 	signals := []os.Signal{syscall.SIGINT, syscall.SIGQUIT, syscall.SIGKILL, syscall.SIGTERM}
 	ctx, stop := signal.NotifyContext(context.Background(), signals...)
@@ -21,6 +28,15 @@ func run() error {
 }
 
 func main() {
+	flag.Parse()
+
+	// version
+	if *printVersion {
+		fmt.Println(name, version)
+		return
+	}
+
+	// start and wait for stop signal
 	if err := run(); err != nil {
 		log.Fatal(err)
 	}
