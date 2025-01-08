@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"log/slog"
@@ -6,19 +6,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCmdInit() *cobra.Command {
+func NewCmdInspectConfig() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "init",
+		Use:     "config",
 		Short:   "",
 		Long:    "",
 		Example: "",
 		Args:    cobra.MinimumNArgs(1),
-		RunE:    cmdInit,
+		RunE:    cmdInspectConfig,
 	}
 	return cmd
 }
 
-func cmdInit(cmd *cobra.Command, args []string) error {
+func cmdInspectConfig(cmd *cobra.Command, args []string) error {
 	slog.Warn("not implemented")
 	return nil
 }

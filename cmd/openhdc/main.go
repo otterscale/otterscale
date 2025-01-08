@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/openhdc/openhdc/internal/cmd"
+	"github.com/openhdc/openhdc/internal/cli"
 )
 
 var version = "devel"
@@ -17,7 +17,7 @@ func run() error {
 	signals := []os.Signal{syscall.SIGINT, syscall.SIGQUIT, syscall.SIGKILL, syscall.SIGTERM}
 	ctx, stop := signal.NotifyContext(context.Background(), signals...)
 	defer stop()
-	return cmd.NewCmdRoot(version).ExecuteContext(ctx)
+	return cli.NewCmdRoot(version).ExecuteContext(ctx)
 }
 
 func main() {
