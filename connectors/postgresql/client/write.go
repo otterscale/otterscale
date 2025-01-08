@@ -11,7 +11,7 @@ import (
 	"github.com/openhdc/openhdc"
 	pb "github.com/openhdc/openhdc/api/connector/v1"
 	"github.com/openhdc/openhdc/api/property/v1"
-	"github.com/openhdc/openhdc/connector/postgresql/client/pg"
+	"github.com/openhdc/openhdc/connectors/postgresql/client/pg"
 )
 
 func (c *Client) Write(ctx context.Context, msgs <-chan *pb.Message) error {

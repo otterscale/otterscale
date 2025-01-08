@@ -1,4 +1,4 @@
-module github.com/openhdc/openhdc/connector/csv
+module github.com/openhdc/openhdc/connectors/csv
 
 go 1.23.4
 

@@ -1,4 +1,4 @@
-module github.com/openhdc/openhdc/connector/postgresql
+module github.com/openhdc/openhdc/connectors/postgresql
 
 go 1.23.4
 
