@@ -4,8 +4,6 @@ import (
 	"flag"
 	"time"
 
-	"github.com/google/wire"
-
 	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/api/property/v1"
 	"github.com/openhdc/openhdc/connectors/postgresql/client"
@@ -40,8 +38,6 @@ var (
 	batchTimeout   = flag.Duration("batch_timeout", defaultBatchTimeout, "default batch timeout is 60s if not specified")
 	createIndex    = flag.Bool("create_index", true, "create an index to improve performance")
 )
-
-var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewConnector, openhdc.NewDefaultCodec)
 
 func newApp(srv *openhdc.Server) *openhdc.App {
 	return openhdc.New(

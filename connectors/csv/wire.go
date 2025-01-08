@@ -10,5 +10,5 @@ import (
 )
 
 func wireApp([]openhdc.ServerOption, []client.Option) (*openhdc.App, func(), error) {
-	panic(wire.Build(newApp, ProviderSet))
+	panic(wire.Build(newApp, openhdc.ProviderSet, client.ProviderSet))
 }
