@@ -2,13 +2,13 @@ module github.com/openhdc/openhdc/connector/postgresql
 
 go 1.23.4
 
-replace github.com/openhdc/openhdc v0.0.0-20241129065929-69142d07d680 => ../../../openhdc
+replace github.com/openhdc/openhdc v0.0.1 => ../../../openhdc
 
 require (
 	github.com/apache/arrow-go/v18 v18.0.0
 	github.com/google/wire v0.6.0
 	github.com/jackc/pgx/v5 v5.7.1
-	github.com/openhdc/openhdc v0.0.0-20241129065929-69142d07d680
+	github.com/openhdc/openhdc v0.0.1
 	go.uber.org/automaxprocs v1.6.0
 )
 
