@@ -73,7 +73,7 @@ func WithGrpcOptions(opts ...grpc.ServerOption) ServerOption {
 	})
 }
 
-func NewServer(svc *Service, opt ...ServerOption) *Server {
+func NewDefaultServer(opt ...ServerOption) *Server {
 	opts := defaultServerOptions
 	for _, o := range opt {
 		o.apply(&opts)
@@ -85,8 +85,17 @@ func NewServer(svc *Service, opt ...ServerOption) *Server {
 	}
 	grpc_health_v1.RegisterHealthServer(s.gs, s.hs)
 	reflection.Register(s.gs)
-	pb.RegisterConnectorServer(s.gs, svc)
 	return s
+}
+
+func NewServer(svc *Service, opt ...ServerOption) *Server {
+	srv := NewDefaultServer(opt...)
+	pb.RegisterConnectorServer(srv.gs, svc)
+	return srv
+}
+
+func (s *Server) GRPCServer() *grpc.Server {
+	return s.gs
 }
 
 func (s *Server) Start(_ context.Context) error {

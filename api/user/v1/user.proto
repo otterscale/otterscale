@@ -1,0 +1,18 @@
+edition = "2023";
+
+package openhdc.user.v1;
+
+import "google/protobuf/go_features.proto";
+
+option features.(pb.go).api_level = API_OPAQUE;
+option go_package = "github.com/openhdc/openhdc/api/user/v1;v1";
+
+service User {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+}
+
+message GetUserRequest {
+  int64 id = 1;
+}
+
+message GetUserResponse {}
