@@ -5,8 +5,12 @@ import (
 	"errors"
 	"os"
 
+	"github.com/google/wire"
+
 	"github.com/openhdc/openhdc"
 )
+
+var ProviderSet = wire.NewSet(NewConnector, openhdc.NewDefaultCodec)
 
 type Client struct {
 	openhdc.Codec
