@@ -21,17 +21,17 @@ type Client struct {
 	issueSchema *IssueSchema
 }
 
-func NewConnector(c openhdc.Codec, opts ...Option) (openhdc.Connector, error) {
-	o := options{}
-	for _, opt := range opts {
-		opt(&o)
+func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
+	opts := defaultOptions
+	for _, o := range opt {
+		o.apply(&opts)
 	}
 
-	if o.server == "" {
+	if opts.server == "" {
 		return nil, errors.New("server path is empty")
 	}
 
-	if o.token == "" && (o.username == "" || o.password == "") {
+	if opts.token == "" && (opts.username == "" || opts.password == "") {
 		return nil, errors.New("username, password or token is empty")
 	}
 
@@ -39,13 +39,13 @@ func NewConnector(c openhdc.Codec, opts ...Option) (openhdc.Connector, error) {
 	var jc *jira.Client
 	var err error
 	tr := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}} // For Phison jira test
-	if o.token != "" {
-		tp := jira.BearerAuthTransport{Token: o.token, Transport: tr}
-		jc, err = jira.NewClient(tp.Client(), o.server)
+	if opts.token != "" {
+		tp := jira.BearerAuthTransport{Token: opts.token, Transport: tr}
+		jc, err = jira.NewClient(tp.Client(), opts.server)
 
 	} else {
-		tp := jira.BasicAuthTransport{Username: o.username, Password: o.password, Transport: tr}
-		jc, err = jira.NewClient(tp.Client(), o.server)
+		tp := jira.BasicAuthTransport{Username: opts.username, Password: opts.password, Transport: tr}
+		jc, err = jira.NewClient(tp.Client(), opts.server)
 	}
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func NewConnector(c openhdc.Codec, opts ...Option) (openhdc.Connector, error) {
 
 	return &Client{
 		Codec:       c,
-		opts:        o,
+		opts:        opts,
 		jiraClient:  jc,
 		issueSchema: is,
 	}, nil

@@ -4,8 +4,6 @@ import (
 	"time"
 )
 
-type Option func(*options)
-
 type options struct {
 	name           string
 	server         string
@@ -20,68 +18,90 @@ type options struct {
 	createIndex    bool
 }
 
-func WithName(name string) Option {
-	return func(o *options) {
-		o.name = name
+var defaultOptions = options{}
+
+type Option interface {
+	apply(*options)
+}
+
+type funcOption struct {
+	f func(*options)
+}
+
+var _ Option = (*funcOption)(nil)
+
+func (fro *funcOption) apply(ro *options) {
+	fro.f(ro)
+}
+
+func newFuncOption(f func(*options)) *funcOption {
+	return &funcOption{
+		f: f,
 	}
 }
 
-func WithServer(server string) Option {
-	return func(o *options) {
-		o.server = server
-	}
+func WithName(t string) Option {
+	return newFuncOption(func(o *options) {
+		o.name = t
+	})
 }
 
-func WithUsername(username string) Option {
-	return func(o *options) {
-		o.username = username
-	}
+func WithServer(t string) Option {
+	return newFuncOption(func(o *options) {
+		o.server = t
+	})
 }
 
-func WithPassword(password string) Option {
-	return func(o *options) {
-		o.password = password
-	}
+func WithUsername(t string) Option {
+	return newFuncOption(func(o *options) {
+		o.username = t
+	})
 }
 
-func WithToken(token string) Option {
-	return func(o *options) {
-		o.token = token
-	}
+func WithPassword(t string) Option {
+	return newFuncOption(func(o *options) {
+		o.password = t
+	})
 }
 
-func WithProjects(projects []string) Option {
-	return func(o *options) {
-		o.projects = projects
-	}
+func WithToken(t string) Option {
+	return newFuncOption(func(o *options) {
+		o.token = t
+	})
 }
 
-func WithStartDate(startDate string) Option {
-	return func(o *options) {
-		o.startDate = startDate
-	}
+func WithProjects(tl []string) Option {
+	return newFuncOption(func(o *options) {
+		o.projects = tl
+	})
 }
 
-func WithBatchSize(batchSize int64) Option {
-	return func(o *options) {
-		o.batchSize = batchSize
-	}
+func WithStartDate(t string) Option {
+	return newFuncOption(func(o *options) {
+		o.startDate = t
+	})
 }
 
-func WithBatchSizeBytes(batchSizeBytes int64) Option {
-	return func(o *options) {
-		o.batchSizeBytes = batchSizeBytes
-	}
+func WithBatchSize(s int64) Option {
+	return newFuncOption(func(o *options) {
+		o.batchSize = s
+	})
 }
 
-func WithBatchTimeout(batchTimeout time.Duration) Option {
-	return func(o *options) {
-		o.batchTimeout = batchTimeout
-	}
+func WithBatchSizeBytes(s int64) Option {
+	return newFuncOption(func(o *options) {
+		o.batchSizeBytes = s
+	})
 }
 
-func WithCreateIndex(createIndex bool) Option {
-	return func(o *options) {
-		o.createIndex = createIndex
-	}
+func WithBatchTimeout(t time.Duration) Option {
+	return newFuncOption(func(o *options) {
+		o.batchTimeout = t
+	})
+}
+
+func WithCreateIndex(b bool) Option {
+	return newFuncOption(func(o *options) {
+		o.createIndex = b
+	})
 }
