@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"strings"
 	"time"
 
@@ -9,12 +10,15 @@ import (
 
 	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/api/property/v1"
-	"github.com/openhdc/openhdc/connector/jira/client"
+	"github.com/openhdc/openhdc/connectors/jira/client"
 
 	_ "go.uber.org/automaxprocs"
 )
 
-const name = "jira"
+var (
+	name    = "postgresql"
+	version = "devel"
+)
 
 const (
 	defaultBatchSize      = 10000
@@ -23,14 +27,13 @@ const (
 )
 
 var (
+	// print
+	printVersion = flag.Bool("v", false, "print version")
+
 	// general
 	kind    = flag.String("kind", "", "connector type, such as source or destination")
 	network = flag.String("network", "tcp", "network of grpc server")
 	address = flag.String("address", ":0", "address of grpc server")
-
-	// read
-	syncMode = flag.String("sync_mode", "", "sync mode, such as full_overwrite, full_append, incremental_append, incremental_append_dedupe")
-	cursor   = flag.String("cursor", "", "incremental cursor")
 
 	// Jira setting
 	server    = flag.String("server", "", "connection string, such as 'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'")
@@ -51,13 +54,21 @@ var ProviderSet = wire.NewSet(openhdc.NewServer, openhdc.NewService, client.NewC
 
 func newApp(srv *openhdc.Server) *openhdc.App {
 	return openhdc.New(
-		openhdc.WithServers(srv),
 		openhdc.WithKind(property.ParseWorkloadKind(*kind)),
+		openhdc.WithName(name),
+		openhdc.WithVersion(version),
+		openhdc.WithServers(srv),
 	)
 }
 
 func main() {
 	flag.Parse()
+
+	// version
+	if *printVersion {
+		fmt.Println(name, version)
+		return
+	}
 
 	serverOpts := []openhdc.ServerOption{
 		openhdc.WithNetwork(*network),
