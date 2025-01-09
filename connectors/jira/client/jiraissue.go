@@ -9,6 +9,8 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/apache/arrow-go/v18/arrow/memory"
+
+	"github.com/openhdc/openhdc/metadata"
 )
 
 type IssueSchema struct {
@@ -28,9 +30,16 @@ type IssueSchema struct {
 	updatedBuilder        *array.TimestampBuilder
 }
 
+func toSchemaMetadata(tableName string) *arrow.Metadata {
+	m := map[string]string{}
+	metadata.SetTableName(m, tableName)
+	md := arrow.MetadataFrom(m)
+	return &md
+}
+
 func NewIssueSchema() *IssueSchema {
 	// create schema
-	schs := arrow.NewSchema(
+	sch := arrow.NewSchema(
 		[]arrow.Field{
 			{Name: "expand", Type: arrow.BinaryTypes.String},
 			{Name: "id", Type: arrow.BinaryTypes.String},
@@ -45,11 +54,11 @@ func NewIssueSchema() *IssueSchema {
 			{Name: "projectKey", Type: arrow.BinaryTypes.String},
 			{Name: "created", Type: arrow.FixedWidthTypes.Timestamp_us},
 			{Name: "updated", Type: arrow.FixedWidthTypes.Timestamp_us},
-		}, nil,
+		}, toSchemaMetadata("jiraissue"),
 	)
 
 	// record builder
-	builder := array.NewRecordBuilder(memory.DefaultAllocator, schs)
+	builder := array.NewRecordBuilder(memory.DefaultAllocator, sch)
 
 	// append builder
 	expandBuilder := builder.Field(0).(*array.StringBuilder)
