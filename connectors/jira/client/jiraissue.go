@@ -9,8 +9,6 @@ import (
 	"github.com/apache/arrow-go/v18/arrow"
 	"github.com/apache/arrow-go/v18/arrow/array"
 	"github.com/apache/arrow-go/v18/arrow/memory"
-
-	"github.com/openhdc/openhdc/metadata"
 )
 
 type IssueSchema struct {
@@ -28,13 +26,6 @@ type IssueSchema struct {
 	projectKeyBuilder     *array.StringBuilder
 	createdBuilder        *array.TimestampBuilder
 	updatedBuilder        *array.TimestampBuilder
-}
-
-func toSchemaMetadata(tableName string) *arrow.Metadata {
-	m := map[string]string{}
-	metadata.SetTableName(m, tableName)
-	md := arrow.MetadataFrom(m)
-	return &md
 }
 
 func NewIssueSchema() *IssueSchema {
