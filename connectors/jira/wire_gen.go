@@ -8,7 +8,7 @@ package main
 
 import (
 	"github.com/openhdc/openhdc"
-	"github.com/openhdc/openhdc/connector/jira/client"
+	"github.com/openhdc/openhdc/connectors/jira/client"
 )
 
 import (
@@ -18,13 +18,14 @@ import (
 // Injectors from wire.go:
 
 func wireApp(arg []openhdc.ServerOption, arg2 []client.Option) (*openhdc.App, func(), error) {
-	connector, err := client.NewConnector(arg2...)
+	codec := openhdc.NewDefaultCodec()
+	connector, err := client.NewConnector(codec, arg2...)
 	if err != nil {
 		return nil, nil, err
 	}
 	service := openhdc.NewService(connector)
-	openhdcServer := openhdc.NewServer(service, arg...)
-	app := newApp(openhdcServer)
+	server := openhdc.NewServer(service, arg...)
+	app := newApp(server)
 	return app, func() {
 	}, nil
 }

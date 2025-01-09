@@ -1,4 +1,4 @@
-module github.com/openhdc/openhdc/connector/jira
+module github.com/openhdc/openhdc/connectors/jira
 
 go 1.23.4
 

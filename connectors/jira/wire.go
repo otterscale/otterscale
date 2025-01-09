@@ -6,9 +6,9 @@ package main
 import (
 	"github.com/google/wire"
 	"github.com/openhdc/openhdc"
-	"github.com/openhdc/openhdc/connector/jira/client"
+	"github.com/openhdc/openhdc/connectors/jira/client"
 )
 
 func wireApp([]openhdc.ServerOption, []client.Option) (*openhdc.App, func(), error) {
-	panic(wire.Build(newApp, ProviderSet))
+	panic(wire.Build(newApp, openhdc.ProviderSet, client.ProviderSet))
 }

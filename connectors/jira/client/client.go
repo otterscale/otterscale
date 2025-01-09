@@ -7,9 +7,11 @@ import (
 	"net/http"
 
 	jira "github.com/andygrunwald/go-jira"
-
+	"github.com/google/wire"
 	"github.com/openhdc/openhdc"
 )
+
+var ProviderSet = wire.NewSet(NewConnector, openhdc.NewDefaultCodec)
 
 type Client struct {
 	openhdc.Codec
