@@ -13,13 +13,22 @@ func (c *Client) Read(ctx context.Context, msgs chan<- *pb.Message, rdr *openhdc
 	var err error
 	for _, pj := range c.opts.projects {
 		// sync issues table
-		err = c.readIssue(pj, c.opts.startDate, msgs, rdr)
+		err = c.readIssues(pj, c.opts.startDate, msgs, rdr)
+		if err != nil {
+			return err
+		}
+
+		// sync issue fields table
+		err = c.readIssueFields(pj, c.opts.startDate, msgs, rdr)
+		if err != nil {
+			return err
+		}
 	}
 
 	return err
 }
 
-func (c *Client) readIssue(pj string, sd string, msgs chan<- *pb.Message, rdr *openhdc.Reader) error {
+func (c *Client) readIssues(pj string, sd string, msgs chan<- *pb.Message, rdr *openhdc.Reader) error {
 	// migration
 	if err := rdr.Send(pb.Migrate, msgs, c.issueSchema.Record()); err != nil {
 		return err
@@ -59,7 +68,7 @@ func (c *Client) readIssue(pj string, sd string, msgs chan<- *pb.Message, rdr *o
 			count++
 		}
 
-		// new message
+		// send message
 		if count >= rdr.BatchSize() {
 			if err := rdr.Send(pb.Insert, msgs, c.issueSchema.Record()); err != nil {
 				return err
@@ -80,6 +89,36 @@ func (c *Client) readIssue(pj string, sd string, msgs chan<- *pb.Message, rdr *o
 	if count > 0 {
 		if err := rdr.Send(pb.Insert, msgs, c.issueSchema.Record()); err != nil {
 			return err
+		}
+	}
+
+	return nil
+}
+
+func (c *Client) readIssueFields(pj string, sd string, msgs chan<- *pb.Message, rdr *openhdc.Reader) error {
+	//migration
+	if err := rdr.Send(pb.Migrate, msgs, c.issueFieldSchema.Record()); err != nil {
+		return err
+	}
+
+	// get issue fields
+	fields, _, err := c.jiraClient.Field.GetList()
+	if err != nil {
+		return err
+	}
+
+	// issue field schema
+	var count int64
+	for _, field := range fields {
+		c.issueFieldSchema.Append(&field)
+		count++
+
+		// send message
+		if count >= rdr.BatchSize() {
+			if err := rdr.Send(pb.Insert, msgs, c.issueFieldSchema.Record()); err != nil {
+				return err
+			}
+			count = 0
 		}
 	}
 
