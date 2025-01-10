@@ -1,8 +1,6 @@
 package client
 
 import (
-	"encoding/json"
-	"log"
 	"time"
 
 	jira "github.com/andygrunwald/go-jira"
@@ -45,7 +43,7 @@ func NewIssueSchema() *IssueSchema {
 			{Name: "projectKey", Type: arrow.BinaryTypes.String},
 			{Name: "created", Type: arrow.FixedWidthTypes.Timestamp_us},
 			{Name: "updated", Type: arrow.FixedWidthTypes.Timestamp_us},
-		}, toSchemaMetadata("jiraissue"),
+		}, toSchemaMetadata("issues"),
 	)
 
 	// record builder
@@ -81,19 +79,6 @@ func NewIssueSchema() *IssueSchema {
 		projectKeyBuilder:     projectKeyBuilder,
 		createdBuilder:        createdBuilder,
 		updatedBuilder:        updatedBuilder,
-	}
-}
-
-func builderAppendJson(fbuilder *array.StringBuilder, v any) {
-	if v != nil {
-		// convert Fields into JSON string
-		js, err := json.Marshal(v)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fbuilder.Append(string(js))
-	} else {
-		fbuilder.AppendNull()
 	}
 }
 
