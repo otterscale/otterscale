@@ -20,6 +20,7 @@ type Client struct {
 	jiraClient       *jira.Client
 	issueSchema      *IssueSchema
 	issueFieldSchema *IssueFieldSchema
+	projectSchema    *projectSchema
 }
 
 func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
@@ -55,6 +56,7 @@ func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
 	// create issue Schema
 	is := NewIssueSchema()
 	ifs := NewIssueFieldSchema()
+	ps := NewProjectSchema()
 
 	return &Client{
 		Codec:            c,
@@ -62,6 +64,7 @@ func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
 		jiraClient:       jc,
 		issueSchema:      is,
 		issueFieldSchema: ifs,
+		projectSchema:    ps,
 	}, nil
 }
 
