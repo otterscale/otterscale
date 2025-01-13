@@ -9,18 +9,21 @@ import (
 	jira "github.com/andygrunwald/go-jira"
 	"github.com/google/wire"
 	"github.com/openhdc/openhdc"
+	"github.com/openhdc/openhdc/connectors/jira/client/tables"
 )
 
 var ProviderSet = wire.NewSet(NewConnector, openhdc.NewDefaultCodec)
+
+// var ProviderSet = wire.NewSet(NewConnector, NewIssueCodec)
 
 type Client struct {
 	openhdc.Codec
 	opts options
 
 	jiraClient       *jira.Client
-	issueSchema      *IssueSchema
-	issueFieldSchema *IssueFieldSchema
-	projectSchema    *projectSchema
+	issueSchema      *tables.IssueSchema
+	issueFieldSchema *tables.IssueFieldSchema
+	projectSchema    *tables.ProjectSchema
 }
 
 func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
@@ -54,9 +57,9 @@ func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
 	}
 
 	// create issue Schema
-	is := NewIssueSchema()
-	ifs := NewIssueFieldSchema()
-	ps := NewProjectSchema()
+	is := tables.NewIssueSchema()
+	ifs := tables.NewIssueFieldSchema()
+	ps := tables.NewProjectSchema()
 
 	return &Client{
 		Codec:            c,

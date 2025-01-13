@@ -1,4 +1,4 @@
-package client
+package tables
 
 import (
 	jira "github.com/andygrunwald/go-jira"
@@ -7,7 +7,7 @@ import (
 	"github.com/apache/arrow-go/v18/arrow/memory"
 )
 
-type projectSchema struct {
+type ProjectSchema struct {
 	builder                *array.RecordBuilder
 	idBuilder              *array.StringBuilder
 	keyBuilder             *array.StringBuilder
@@ -28,7 +28,7 @@ type projectSchema struct {
 	projectcategoryBuilder *array.StringBuilder //Json
 }
 
-func NewProjectSchema() *projectSchema {
+func NewProjectSchema() *ProjectSchema {
 	// create schema
 	sch := arrow.NewSchema(
 		[]arrow.Field{
@@ -74,7 +74,7 @@ func NewProjectSchema() *projectSchema {
 	projecttypekeyBuilder := builder.Field(15).(*array.StringBuilder)
 	projectcategoryBuilder := builder.Field(16).(*array.StringBuilder)
 
-	return &projectSchema{
+	return &ProjectSchema{
 		builder:                builder,
 		idBuilder:              idBuilder,
 		keyBuilder:             keyBuilder,
@@ -96,7 +96,7 @@ func NewProjectSchema() *projectSchema {
 	}
 }
 
-func (i *projectSchema) Append(project *jira.Project, ProjectTypeKey string) {
+func (i *ProjectSchema) Append(project *jira.Project, ProjectTypeKey string) {
 	i.idBuilder.Append(project.ID)
 	i.keyBuilder.Append(project.Key)
 	i.urlBuilder.Append(project.URL)
@@ -116,6 +116,6 @@ func (i *projectSchema) Append(project *jira.Project, ProjectTypeKey string) {
 	builderAppendJson(i.projectcategoryBuilder, project.ProjectCategory)
 }
 
-func (i *projectSchema) Record() arrow.Record {
+func (i *ProjectSchema) Record() arrow.Record {
 	return i.builder.NewRecord()
 }
