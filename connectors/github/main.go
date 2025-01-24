@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	name    = "csv"
+	name    = "github"
 	version = "devel"
 )
 

@@ -5,9 +5,12 @@ go 1.23.4
 replace github.com/openhdc/openhdc v0.0.1 => ../../../openhdc
 
 require (
+	github.com/apache/arrow-go/v18 v18.1.0
+	github.com/google/go-github/v68 v68.0.0
 	github.com/google/wire v0.6.0
 	github.com/openhdc/openhdc v0.0.1
 	go.uber.org/automaxprocs v1.6.0
+	golang.org/x/oauth2 v0.23.0
 )
 
 require (
@@ -16,14 +19,12 @@ require (
 	cel.dev/expr v0.18.0 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
-	github.com/apache/arrow-go/v18 v18.1.0 // indirect
 	github.com/apache/thrift v0.21.0 // indirect
 	github.com/bufbuild/protovalidate-go v0.8.0 // indirect
 	github.com/goccy/go-json v0.10.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/cel-go v0.22.1 // indirect
 	github.com/google/flatbuffers v24.12.23+incompatible // indirect
-	github.com/google/go-github/v68 v68.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/asmfmt v1.3.2 // indirect
@@ -37,7 +38,6 @@ require (
 	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
 	golang.org/x/mod v0.22.0 // indirect
 	golang.org/x/net v0.34.0 // indirect
-	golang.org/x/oauth2 v0.23.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
