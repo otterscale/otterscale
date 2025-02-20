@@ -1,0 +1,15 @@
+<script>
+	import Icon from '@iconify/svelte';
+
+	import { Input } from '$lib/components/ui/input';
+</script>
+
+<form class="ml-auto flex-1 sm:flex-initial">
+	<div class="relative">
+		<Icon
+			icon="material-symbols:search-rounded"
+			class="absolute left-2 top-2 h-5 w-5 text-muted-foreground"
+		/>
+		<Input type="search" placeholder="Search" class="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]" />
+	</div>
+</form>
