@@ -6,7 +6,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/openhdc/openhdc?style=flat-square)](https://github.com/openhdc/openhdc/releases)
 [![GitHub License](https://img.shields.io/github/license/openhdc/openhdc)](https://opensource.org/license/mpl-2-0)
 
-OpenHDC (**Open** **H**ybrid **D**ata **C**enter) is an open-source project designed to provide a robust and local server solution for hybrid data sources. 
+OpenHDC (**Open** **H**ybrid **D**ata **C**enter) is an open-source project designed to provide a robust and local server solution for hybrid data sources.
 
 We preserves data privacy by localizing data and combining siloed information to enhance traceability.
 
@@ -30,19 +30,18 @@ We preserves data privacy by localizing data and combining siloed information to
         ```sh
         git clone https://github.com/openhdc/openhdc.git
         ```
-    
+
     2. Change directory and build:
 
         ```sh
         cd openhdc && make build
         ```
-    
+
     3. Run:
-   
+
         ```sh
         ./bin/openhdc
         ```
-    
 
 ## 🔨 Environment
 
@@ -58,15 +57,16 @@ For detailed documentation, please visit [docs](/docs) directory.
 
 ## 🦮 Help
 
-If you need help, feel free to open an issue on GitHub or use the discussions feature to contact the maintainers. 
+If you need help, feel free to open an issue on GitHub or use the discussions feature to contact the maintainers.
 
 We'll do our best to assist you promptly.
 
 ## 📢 Roadmap
+
 - [ ] v0.0.1
-    - [ ] Better error messages
-    - [ ] Improved naming conventions
-    - [ ] Enhanced application closing procedures
+  - [ ] Better error messages
+  - [ ] Improved naming conventions
+  - [ ] Enhanced application closing procedures
 
 ## ⛔ Rules
 
