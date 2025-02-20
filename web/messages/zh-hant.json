@@ -4,8 +4,8 @@
 	"nav_data_fabric": "資料經緯",
 	"nav_explore": "探索",
 	"nav_dashboard": "儀表板",
-	"nav_application": "應用",
-	"nav_integration": "整合",
-	"nav_dev_tool": "開發工具",
+	"nav_applications": "應用",
+	"nav_integrations": "整合",
+	"nav_dev_tools": "開發工具",
 	"hello_world": "Hello, {name} from zh-hant!"
 }
