@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	name    = "openhdc-server"
+	name    = "openhdc-service"
 	version = "devel"
 )
 
