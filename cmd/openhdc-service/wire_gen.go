@@ -8,10 +8,10 @@ package main
 
 import (
 	"github.com/openhdc/openhdc"
+	service2 "github.com/openhdc/openhdc/internal/service"
 	"github.com/openhdc/openhdc/internal/service/app"
 	"github.com/openhdc/openhdc/internal/service/domain/service"
 	"github.com/openhdc/openhdc/internal/service/infra/repo"
-	"github.com/openhdc/openhdc/internal/service/server"
 )
 
 import (
@@ -28,8 +28,8 @@ func wireApp(arg []openhdc.ServerOption) (*openhdc.App, func(), error) {
 	userRepo := repo.NewUserRepo(client)
 	userService := service.NewUserService(userRepo)
 	userApp := app.NewUserApp(userService)
-	openhdcServer := server.NewGRPCServer(arg, userApp)
-	openhdcApp := newApp(openhdcServer)
+	server := service2.NewGRPCServer(arg, userApp)
+	openhdcApp := newApp(server)
 	return openhdcApp, func() {
 		cleanup()
 	}, nil
