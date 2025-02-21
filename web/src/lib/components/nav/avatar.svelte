@@ -30,7 +30,7 @@
 {#if isValid}
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger asChild let:builder>
-			<Button builders={[builder]} variant="secondary" size="icon" class="h-8 w-8">
+			<Button builders={[builder]} variant="ghost" size="icon" class="h-8 w-8 rounded-full">
 				<Avatar.Root class="h-8 w-8">
 					<Avatar.Image src={record ? pb.files.getURL(record, record.avatar) : ''} />
 					<Avatar.Fallback>{getFallback()}</Avatar.Fallback>

@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button';
 	import pb from '$lib/pb';
+	import Icon from '@iconify/svelte';
 
 	function callback() {
 		const callbackParam = page.url.searchParams.get('callback');
@@ -19,4 +20,7 @@
 	}
 </script>
 
-<Button on:click={github}>Github</Button>
+<Button on:click={github}>
+	<Icon icon="ph:github-logo" class="h-5 w-5" />
+	Github
+</Button>
