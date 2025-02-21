@@ -2,13 +2,20 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import { SiteFooter, SiteHeader } from '$lib/components';
 	import pb from '$lib/pb';
 
 	onMount(() => {
 		if (!pb.authStore.isValid) {
-			goto('/account/login?callback=' + page.url.pathname);
+			goto('/login?callback=' + page.url.pathname);
 		}
 	});
 </script>
 
-<slot />
+<div class="relative flex min-h-screen flex-col bg-background" data-vaul-drawer-wrapper>
+	<SiteHeader />
+	<div class="flex-1">
+		<slot />
+	</div>
+	<SiteFooter />
+</div>

@@ -101,9 +101,10 @@
 		</Button>
 		<Button variant="outline" size="icon" class="bg-header">
 			<Icon icon="ph:notification" class="h-5 w-5" />
+			<!-- <Icon icon="ph:notification-fill" class="h-5 w-5" /> -->
 		</Button>
 	{:else}
-		<Button variant="outline" size="icon" class="bg-header" on:click={() => goto('/account/login')}>
+		<Button variant="outline" size="icon" class="bg-header" on:click={() => goto('/login')}>
 			<Icon icon="ph:sign-in" class="h-5 w-5" />
 		</Button>
 	{/if}

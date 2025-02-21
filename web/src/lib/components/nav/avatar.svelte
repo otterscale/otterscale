@@ -62,7 +62,7 @@
 				<DropdownMenu.Shortcut>⇧⌘U</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item on:click={() => goto('/account/logout')}>
+			<DropdownMenu.Item on:click={() => goto('/logout')}>
 				<Icon icon="ph:sign-in" class="h-4 w-4" />
 				<span class="pl-2">Sign out</span>
 				<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>
