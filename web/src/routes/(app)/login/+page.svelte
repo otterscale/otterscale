@@ -1,9 +1,17 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import Icon from '@iconify/svelte';
+
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button';
 	import pb from '$lib/pb';
-	import Icon from '@iconify/svelte';
+
+	onMount(() => {
+		if (pb.authStore.isValid) {
+			goto('/');
+		}
+	});
 
 	function callback() {
 		const callbackParam = page.url.searchParams.get('callback');
