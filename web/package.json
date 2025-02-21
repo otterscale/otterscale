@@ -63,6 +63,7 @@
 	"dependencies": {
 		"@iconify/svelte": "^4.2.0",
 		"@inlang/paraglide-sveltekit": "^0.15.5",
+		"pocketbase": "^0.25.1",
 		"svelte-radix": "^2.0.1"
 	},
 	"pnpm": {

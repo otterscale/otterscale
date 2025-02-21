@@ -2,8 +2,10 @@
 	import { SiteFooter, SiteHeader } from '$lib/components';
 </script>
 
-<SiteHeader />
-<div class="flex-1">
-	<slot />
+<div class="relative flex min-h-screen flex-col bg-background" data-vaul-drawer-wrapper>
+	<SiteHeader />
+	<div class="flex-1">
+		<slot />
+	</div>
+	<SiteFooter />
 </div>
-<SiteFooter />
