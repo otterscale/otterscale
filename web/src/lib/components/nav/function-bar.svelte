@@ -52,7 +52,7 @@
 <div class="flex justify-end space-x-2">
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger asChild let:builder>
-			<Button builders={[builder]} variant="outline" size="icon">
+			<Button builders={[builder]} variant="outline" size="icon" class="bg-header">
 				<Icon icon="ph:circles-three-plus" class="h-5 w-5" />
 			</Button>
 		</DropdownMenu.Trigger>
@@ -103,7 +103,7 @@
 			<Icon icon="ph:notification" class="h-5 w-5" />
 		</Button>
 	{:else}
-		<Button variant="outline" size="icon" on:click={() => goto('/account/login')}>
+		<Button variant="outline" size="icon" class="bg-header" on:click={() => goto('/account/login')}>
 			<Icon icon="ph:sign-in" class="h-5 w-5" />
 		</Button>
 	{/if}
