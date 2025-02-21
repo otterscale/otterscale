@@ -1,4 +1,11 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from es!"
+	"nav_tutorial": "Tutorial",
+	"nav_data_fabric": "Tejido de datos",
+	"nav_explore": "Explorar",
+	"nav_dashboard": "Tablero",
+	"nav_applications": "Aplicaciones",
+	"nav_integrations": "Integraciones",
+	"nav_dev_tools": "Herramientas de desarrollo",
+	"hello_world": "Hola, {name} desde es!"
 }

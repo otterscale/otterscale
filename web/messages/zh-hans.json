@@ -1,4 +1,11 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from zh-hans!"
+	"nav_tutorial": "教程",
+	"nav_data_fabric": "数据编织架构",
+	"nav_explore": "探索",
+	"nav_dashboard": "仪表板",
+	"nav_applications": "应用程序",
+	"nav_integrations": "集成",
+	"nav_dev_tools": "开发工具",
+	"hello_world": "你好，{name}，来自 zh-hans!"
 }

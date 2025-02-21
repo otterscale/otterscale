@@ -1,4 +1,11 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from jp!"
+	"nav_tutorial": "チュートリアル",
+	"nav_data_fabric": "データファブリック",
+	"nav_explore": "探索",
+	"nav_dashboard": "ダッシュボード",
+	"nav_applications": "アプリケーション",
+	"nav_integrations": "統合",
+	"nav_dev_tools": "開発ツール",
+	"hello_world": "こんにちは、{name}、jpから!"
 }

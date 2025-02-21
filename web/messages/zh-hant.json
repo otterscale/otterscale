@@ -7,5 +7,5 @@
 	"nav_applications": "應用",
 	"nav_integrations": "整合",
 	"nav_dev_tools": "開發工具",
-	"hello_world": "Hello, {name} from zh-hant!"
+	"hello_world": "你好，{name}，來自 zh-hant!"
 }

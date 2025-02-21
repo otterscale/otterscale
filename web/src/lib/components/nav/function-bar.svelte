@@ -3,8 +3,20 @@
 	import { mode, toggleMode } from 'mode-watcher';
 	import { toast } from 'svelte-sonner';
 
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
+
+	import type { AvailableLanguageTag } from '$lib/paraglide/runtime';
 	import { Button } from '$lib/components/ui/button';
+	import { i18n } from '$lib/i18n';
+
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+
+	function switchToLanguage(newLanguage: AvailableLanguageTag) {
+		const canonicalPath = i18n.route(page.url.pathname);
+		const localisedPath = i18n.resolveRoute(canonicalPath, newLanguage);
+		goto(localisedPath);
+	}
 
 	let favorited = false;
 	function toggleFavorite() {
@@ -16,6 +28,19 @@
 		favorited = false;
 		toast.error('Removed from favorites!');
 	}
+
+	let language = i18n.getLanguageFromUrl(page.url);
+	const languages = new Map([
+		['de' as AvailableLanguageTag, 'Deutsch'],
+		['en' as AvailableLanguageTag, 'English'],
+		['es' as AvailableLanguageTag, 'Español'],
+		['fr' as AvailableLanguageTag, 'Français'],
+		['it' as AvailableLanguageTag, 'Italiano'],
+		['jp' as AvailableLanguageTag, '日本語'],
+		['pt' as AvailableLanguageTag, 'Português'],
+		['zh-hans' as AvailableLanguageTag, '简体中文'],
+		['zh-hant' as AvailableLanguageTag, '繁體中文']
+	]);
 </script>
 
 <div class="flex justify-end space-x-2">
@@ -34,15 +59,16 @@
 				<DropdownMenu.Sub>
 					<DropdownMenu.SubTrigger>Language</DropdownMenu.SubTrigger>
 					<DropdownMenu.SubContent>
-						<DropdownMenu.Item>Deutsch</DropdownMenu.Item>
-						<DropdownMenu.Item>English</DropdownMenu.Item>
-						<DropdownMenu.Item>Español</DropdownMenu.Item>
-						<DropdownMenu.Item>Français</DropdownMenu.Item>
-						<DropdownMenu.Item>Italiano</DropdownMenu.Item>
-						<DropdownMenu.Item>日本語</DropdownMenu.Item>
-						<DropdownMenu.Item>Português</DropdownMenu.Item>
-						<DropdownMenu.Item>简体中文</DropdownMenu.Item>
-						<DropdownMenu.Item>繁體中文</DropdownMenu.Item>
+						<DropdownMenu.RadioGroup bind:value={language}>
+							{#each languages as language}
+								<DropdownMenu.RadioItem
+									value={language[0]}
+									on:click={() => switchToLanguage(language[0])}
+								>
+									{language[1]}
+								</DropdownMenu.RadioItem>
+							{/each}
+						</DropdownMenu.RadioGroup>
 					</DropdownMenu.SubContent>
 				</DropdownMenu.Sub>
 			</DropdownMenu.Group>
