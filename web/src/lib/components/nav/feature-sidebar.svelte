@@ -1,12 +1,11 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { siteConfig } from '$lib/config/site';
-	import { cn } from '$lib/utils';
-	import { features } from './features';
+
+	import Features from './features.svelte';
 </script>
 
 <Sheet.Root>
@@ -27,17 +26,7 @@
 				<Icon icon="line-md:chevron-double-right" class="h-8 w-8" />
 				<span class="sr-only">{siteConfig.name}</span>
 			</a>
-			{#each features as feature}
-				<a
-					href={feature.path}
-					class={cn(
-						'transition-colors hover:text-foreground',
-						page.url.pathname.startsWith(feature.path) ? 'text-foreground' : 'text-muted-foreground'
-					)}
-				>
-					<span>{feature.name}</span>
-				</a>
-			{/each}
+			<Features />
 		</nav>
 	</Sheet.Content>
 </Sheet.Root>
