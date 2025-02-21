@@ -6,7 +6,7 @@
 	import pb from '$lib/pb';
 
 	onMount(() => {
-		if (!pb.authStore.isValid) {
+		if (page.url.pathname != '/' && !pb.authStore.isValid) {
 			goto('/login?callback=' + page.url.pathname);
 		}
 	});
