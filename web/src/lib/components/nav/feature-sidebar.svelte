@@ -16,14 +16,14 @@
 			class="shrink-0 border-none shadow-none md:hidden"
 			builders={[builder]}
 		>
-			<Icon icon="line-md:chevron-double-right" class="h-8 w-8" />
+			<Icon icon="ph:polygon" class="h-8 w-8" />
 			<span class="sr-only">Toggle navigation menu</span>
 		</Button>
 	</Sheet.Trigger>
 	<Sheet.Content side="left">
 		<nav class="grid gap-4 whitespace-nowrap text-lg font-medium">
 			<a href="##" class="flex items-center gap-4 text-lg font-semibold">
-				<Icon icon="line-md:chevron-double-right" class="h-8 w-8" />
+				<Icon icon="ph:polygon" class="h-8 w-8" />
 				<span class="sr-only">{siteConfig.name}</span>
 			</a>
 			<Features />

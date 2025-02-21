@@ -52,18 +52,21 @@
 <div class="flex justify-end space-x-2">
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger asChild let:builder>
-			<Button builders={[builder]} class="w-14" variant="outline" size="icon">
-				<Icon icon="material-symbols:add-2-rounded" class="h-5 w-5" />
-				<Icon icon="material-symbols:arrow-drop-down-rounded" class="h-5 w-5" />
+			<Button builders={[builder]} variant="outline" size="icon">
+				<Icon icon="ph:circles-three-plus" class="h-5 w-5" />
 			</Button>
 		</DropdownMenu.Trigger>
-		<DropdownMenu.Content align="end">
+		<DropdownMenu.Content align="end" class="w-40">
 			<DropdownMenu.Item class="space-x-2" on:click={toggleMode}>
+				<Icon icon={$mode === 'light' ? 'ph:sun' : 'ph:moon'} class="h-4 w-4" />
 				<span>{$mode === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
 			</DropdownMenu.Item>
 			<DropdownMenu.Group>
 				<DropdownMenu.Sub>
-					<DropdownMenu.SubTrigger>{languages.get(language)}</DropdownMenu.SubTrigger>
+					<DropdownMenu.SubTrigger>
+						<Icon icon="ph:translate" class="h-4 w-4" />
+						<span class="pl-2">{languages.get(language)}</span>
+					</DropdownMenu.SubTrigger>
 					<DropdownMenu.SubContent>
 						<DropdownMenu.RadioGroup bind:value={language}>
 							{#each languages as language}
@@ -78,11 +81,12 @@
 					</DropdownMenu.SubContent>
 				</DropdownMenu.Sub>
 			</DropdownMenu.Group>
+			<DropdownMenu.Separator />
 			<DropdownMenu.Item
 				class="space-x-2"
 				on:click={() => window.open('https://openhdc.github.io', '_blank')}
 			>
-				<Icon icon="material-symbols:open-in-new" class="h-5 w-5" />
+				<Icon icon="ph:arrow-square-out" class="h-4 w-4" />
 				<span>Documentation</span>
 			</DropdownMenu.Item>
 		</DropdownMenu.Content>
@@ -90,25 +94,17 @@
 	{#if isValid}
 		<Button variant="outline" size="icon" class="bg-header" on:click={toggleFavorite}>
 			{#if favorited}
-				<Icon icon="material-symbols:favorite" class="h-5 w-5" />
+				<Icon icon="ph:heart-fill" class="h-5 w-5" />
 			{:else}
-				<Icon icon="material-symbols:favorite-outline" class="h-5 w-5" />
+				<Icon icon="ph:heart" class="h-5 w-5" />
 			{/if}
 		</Button>
 		<Button variant="outline" size="icon" class="bg-header">
-			<Icon icon="material-symbols:inbox-outline-rounded" class="h-5 w-5" />
+			<Icon icon="ph:notification" class="h-5 w-5" />
 		</Button>
 	{:else}
-		<Button
-			variant="outline"
-			size="icon"
-			class="h-9 w-20 border-none"
-			on:click={() => goto('/account/login')}
-		>
-			<span>Sign in</span>
-		</Button>
-		<Button variant="outline" size="icon" class="h-9 w-20" on:click={() => goto('/account/signup')}>
-			<span>Sign up</span>
+		<Button variant="outline" size="icon" on:click={() => goto('/account/login')}>
+			<Icon icon="ph:sign-in" class="h-5 w-5" />
 		</Button>
 	{/if}
 </div>
