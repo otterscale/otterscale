@@ -13,8 +13,6 @@
 <ModeWatcher />
 <Toaster />
 
-<div class="relative flex min-h-screen flex-col bg-background" data-vaul-drawer-wrapper>
-	<ParaglideJS {i18n}>
-		{@render children()}
-	</ParaglideJS>
-</div>
+<ParaglideJS {i18n}>
+	{@render children()}
+</ParaglideJS>

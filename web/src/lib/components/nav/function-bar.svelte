@@ -11,6 +11,12 @@
 	import { i18n } from '$lib/i18n';
 
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import pb from '$lib/pb';
+
+	let isValid = pb.authStore.isValid;
+	pb.authStore.onChange(() => {
+		isValid = pb.authStore.isValid;
+	});
 
 	function switchToLanguage(newLanguage: AvailableLanguageTag) {
 		const canonicalPath = i18n.route(page.url.pathname);
@@ -53,11 +59,11 @@
 		</DropdownMenu.Trigger>
 		<DropdownMenu.Content align="end">
 			<DropdownMenu.Item class="space-x-2" on:click={toggleMode}>
-				<span>{$mode === 'light' ? 'Use Dark Mode' : 'Use Light Mode'}</span>
+				<span>{$mode === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
 			</DropdownMenu.Item>
 			<DropdownMenu.Group>
 				<DropdownMenu.Sub>
-					<DropdownMenu.SubTrigger>Language</DropdownMenu.SubTrigger>
+					<DropdownMenu.SubTrigger>{languages.get(language)}</DropdownMenu.SubTrigger>
 					<DropdownMenu.SubContent>
 						<DropdownMenu.RadioGroup bind:value={language}>
 							{#each languages as language}
@@ -81,14 +87,28 @@
 			</DropdownMenu.Item>
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
-	<Button variant="outline" size="icon" class="bg-header" on:click={toggleFavorite}>
-		{#if favorited}
-			<Icon icon="material-symbols:favorite" class="h-5 w-5" />
-		{:else}
-			<Icon icon="material-symbols:favorite-outline" class="h-5 w-5" />
-		{/if}
-	</Button>
-	<Button variant="outline" size="icon" class="bg-header">
-		<Icon icon="material-symbols:inbox-outline-rounded" class="h-5 w-5" />
-	</Button>
+	{#if isValid}
+		<Button variant="outline" size="icon" class="bg-header" on:click={toggleFavorite}>
+			{#if favorited}
+				<Icon icon="material-symbols:favorite" class="h-5 w-5" />
+			{:else}
+				<Icon icon="material-symbols:favorite-outline" class="h-5 w-5" />
+			{/if}
+		</Button>
+		<Button variant="outline" size="icon" class="bg-header">
+			<Icon icon="material-symbols:inbox-outline-rounded" class="h-5 w-5" />
+		</Button>
+	{:else}
+		<Button
+			variant="outline"
+			size="icon"
+			class="h-9 w-20 border-none"
+			on:click={() => goto('/account/login')}
+		>
+			<span>Sign in</span>
+		</Button>
+		<Button variant="outline" size="icon" class="h-9 w-20" on:click={() => goto('/account/signup')}>
+			<span>Sign up</span>
+		</Button>
+	{/if}
 </div>

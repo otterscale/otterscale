@@ -14,6 +14,9 @@ importers:
       '@inlang/paraglide-sveltekit':
         specifier: ^0.15.5
         version: 0.15.5(@sveltejs/kit@2.17.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.20.2)(vite@6.1.1(@types/node@22.13.4)(jiti@1.21.7)(yaml@2.7.0)))(svelte@5.20.2)(vite@6.1.1(@types/node@22.13.4)(jiti@1.21.7)(yaml@2.7.0)))
+      pocketbase:
+        specifier: ^0.25.1
+        version: 0.25.1
       svelte-radix:
         specifier: ^2.0.1
         version: 2.0.1(svelte@5.20.2)
@@ -2142,6 +2145,9 @@ packages:
     resolution: {integrity: sha512-G8rwsOQJ63XG6BbKj2w5rHeavFjy5zynBA9zsJMMtBoe/Uf757oG12NXz6e6OirF7RCrTVAKFXbLmn1RbL7Qaw==}
     engines: {node: '>=18'}
     hasBin: true
+
+  pocketbase@0.25.1:
+    resolution: {integrity: sha512-2IH0KLI/qMNR/E17C7BGWX2FxW7Tead+igLHOWZ45P56v/NyVT18Jnmddeft+3qWWGL1Hog2F8bc4orWV/+Fcg==}
 
   postcss-import@15.1.0:
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
@@ -4966,6 +4972,8 @@ snapshots:
       playwright-core: 1.50.1
     optionalDependencies:
       fsevents: 2.3.2
+
+  pocketbase@0.25.1: {}
 
   postcss-import@15.1.0(postcss@8.5.3):
     dependencies:
