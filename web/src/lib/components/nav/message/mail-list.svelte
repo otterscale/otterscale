@@ -1,7 +1,14 @@
 <script lang="ts">
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { archiveMessage, deleteMessage, readMessage, type pbMessage } from '$lib/pb.js';
+	import {
+		archiveMessage,
+		deleteMessage,
+		readMessage,
+		unarchiveMessage,
+		unreadMessage,
+		type pbMessage
+	} from '$lib/pb.js';
 	import Icon from '@iconify/svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -66,30 +73,60 @@
 									</DropdownMenu.Trigger>
 									<DropdownMenu.Content>
 										<DropdownMenu.Group>
-											<DropdownMenu.Item
-												class="space-x-1"
-												on:click={async () => {
-													await readMessage(item.id);
-													item.isRead = true;
-													items = items;
-													toast.success('Message marked as read.');
-												}}
-											>
-												<Icon icon="ph:check-circle" class="h-5 w-5" />
-												<span>Read</span>
-											</DropdownMenu.Item>
-											<DropdownMenu.Item
-												class="space-x-1"
-												on:click={async () => {
-													await archiveMessage(item.id);
-													item.isArchived = true;
-													items = items;
-													toast.success('Message moved to archive.');
-												}}
-											>
-												<Icon icon="ph:archive-box" class="h-5 w-5" />
-												<span>Archive</span>
-											</DropdownMenu.Item>
+											{#if item.isRead}
+												<DropdownMenu.Item
+													class="space-x-1"
+													on:click={async () => {
+														await unreadMessage(item.id);
+														item.isRead = false;
+														items = items;
+														toast.success('Message marked as unread.');
+													}}
+												>
+													<Icon icon="ph:arrow-counter-clockwise" class="h-5 w-5" />
+													<span>Unread</span>
+												</DropdownMenu.Item>
+											{:else}
+												<DropdownMenu.Item
+													class="space-x-1"
+													on:click={async () => {
+														await readMessage(item.id);
+														item.isRead = true;
+														items = items;
+														toast.success('Message marked as read.');
+													}}
+												>
+													<Icon icon="ph:check-circle" class="h-5 w-5" />
+													<span>Read</span>
+												</DropdownMenu.Item>
+											{/if}
+											{#if item.isArchived}
+												<DropdownMenu.Item
+													class="space-x-1"
+													on:click={async () => {
+														await unarchiveMessage(item.id);
+														item.isArchived = false;
+														items = items;
+														toast.success('Message removed from archive.');
+													}}
+												>
+													<Icon icon="ph:box-arrow-up" class="h-5 w-5" />
+													<span>Unarchive</span>
+												</DropdownMenu.Item>
+											{:else}
+												<DropdownMenu.Item
+													class="space-x-1"
+													on:click={async () => {
+														await archiveMessage(item.id);
+														item.isArchived = true;
+														items = items;
+														toast.success('Message moved to archive.');
+													}}
+												>
+													<Icon icon="ph:box-arrow-down" class="h-5 w-5" />
+													<span>Archive</span>
+												</DropdownMenu.Item>
+											{/if}
 											<DropdownMenu.Item
 												class="space-x-1"
 												on:click={async () => {
