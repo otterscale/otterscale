@@ -14,6 +14,13 @@ if (pb.authStore.isValid && pb.authStore.record) {
             }
         });
 }
+
+export default pb;
+
+export function fetchMessages() {
+    return pb.collection('messages').getFullList();
+}
+
 export class Helper {
     static isObject(value: any) {
         return value !== null && typeof value === "object" && value.constructor === Object;
@@ -28,5 +35,3 @@ export class Helper {
         );
     }
 }
-
-export default pb;
