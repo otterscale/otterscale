@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
+import { page } from "$app/state";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -60,3 +61,23 @@ export const flyAndScale = (
 		easing: cubicOut
 	};
 };
+
+export function setCallback(url: string): string {
+	return `${url}?callback=${page.url.pathname}`;
+}
+
+export function getCallback(): string {
+	const callbackParam = page.url.searchParams.get('callback');
+	if (callbackParam) {
+		return callbackParam;
+	}
+	return '/';
+}
+
+export function appendCallback(url: string): string {
+	const callbackParam = page.url.searchParams.get('callback');
+	if (callbackParam) {
+		return `${url}?callback=${callbackParam}`;
+	}
+	return url;
+}

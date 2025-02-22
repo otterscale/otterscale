@@ -14,5 +14,19 @@ if (pb.authStore.isValid && pb.authStore.record) {
             }
         });
 }
+export class Helper {
+    static isObject(value: any) {
+        return value !== null && typeof value === "object" && value.constructor === Object;
+    }
+    static isEmpty(value: any) {
+        return (
+            (value === "") ||
+            (value === null) ||
+            (typeof value === "undefined") ||
+            (Array.isArray(value) && value.length === 0) ||
+            (Helper.isObject(value) && Object.keys(value).length === 0)
+        );
+    }
+}
 
 export default pb;
