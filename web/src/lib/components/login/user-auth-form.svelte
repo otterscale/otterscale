@@ -1,27 +1,38 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 
-	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { cn } from '$lib/utils.js';
-	import pb from '$lib/pb';
+	import pb, { Helper } from '$lib/pb';
 	import { onMount } from 'svelte';
+	import { ClientResponseError } from 'pocketbase';
+	import { toast } from 'svelte-sonner';
+	import { getCallback } from '$lib/utils';
 
-	let className: string | undefined | null = undefined;
-	export { className as class };
-
+	let email = '';
+	let password = '';
 	let isLoading = false;
-	async function onSubmit() {
-		isLoading = true;
 
-		setTimeout(() => {
+	async function onSubmit() {
+		try {
+			isLoading = true;
+			await pb.collection('users').authWithPassword(email, password);
+			goto(getCallback());
+		} catch (error) {
+			if (error instanceof ClientResponseError) {
+				if (!Helper.isEmpty(error.data.data)) {
+					toast.error(error.data.data.password.message);
+				} else {
+					toast.error(error.data.message);
+				}
+			}
+		} finally {
 			isLoading = false;
-		}, 3000);
+		}
 	}
 
 	onMount(async () => {
@@ -47,20 +58,16 @@
 		oauth2Map = oauth2Map;
 	}
 
-	function callback() {
-		const callbackParam = page.url.searchParams.get('callback');
-		if (callbackParam) {
-			goto(callbackParam);
-			return;
-		}
-		goto('/');
-	}
-
 	async function authWithOAuth2(provider: string) {
-		updateOAuth2MapLoading(provider, true);
-		await pb.collection('users').authWithOAuth2({ provider: provider });
-		updateOAuth2MapLoading(provider, false);
-		callback();
+		try {
+			updateOAuth2MapLoading(provider, true);
+			await pb.collection('users').authWithOAuth2({ provider: provider });
+			goto(getCallback());
+		} catch {
+			toast.error('Authentication failed. Please try again.');
+		} finally {
+			updateOAuth2MapLoading(provider, false);
+		}
 	}
 
 	interface OAuth2 {
@@ -79,7 +86,7 @@
 	]);
 </script>
 
-<div class={cn('grid gap-6', className)} {...$$restProps}>
+<div class="grid gap-6" {...$$restProps}>
 	<form on:submit|preventDefault={onSubmit}>
 		<div class="grid gap-2 space-y-2">
 			<div class="grid gap-1">
@@ -92,6 +99,19 @@
 					autocomplete="email"
 					autocorrect="off"
 					disabled={isLoading}
+					bind:value={email}
+				/>
+			</div>
+			<div class="grid gap-1">
+				<Label class="sr-only" for="password">Password</Label>
+				<Input
+					id="password"
+					placeholder="********"
+					type="password"
+					autocapitalize="none"
+					autocomplete="current-password"
+					disabled={isLoading}
+					bind:value={password}
 				/>
 			</div>
 			<Button type="submit" disabled={isLoading}>
@@ -114,10 +134,11 @@
 	<div class="flex justify-evenly space-x-2">
 		{#each oauth2Map as [provider, oauth2]}
 			<Tooltip.Root>
-				<Tooltip.Trigger
-					><Button
+				<Tooltip.Trigger>
+					<Button
 						variant="outline"
-						disabled={!oauth2.enabled}
+						class="disabled:pointer-events-auto disabled:cursor-not-allowed"
+						disabled={oauth2.loading || !oauth2.enabled}
 						on:click={() => authWithOAuth2(provider)}
 					>
 						{#if oauth2.loading}
@@ -128,7 +149,7 @@
 					</Button>
 				</Tooltip.Trigger>
 				<Tooltip.Content>
-					<p class={!oauth2.enabled ? 'line-through' : ''}>{oauth2.name}</p>
+					<p>{oauth2.name}</p>
 				</Tooltip.Content>
 			</Tooltip.Root>
 		{/each}

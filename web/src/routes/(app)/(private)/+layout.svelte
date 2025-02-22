@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import { SiteFooter, SiteHeader } from '$lib/components';
 	import pb from '$lib/pb';
+	import { setCallback } from '$lib/utils';
 
 	onMount(() => {
 		if (page.url.pathname == '/') {
@@ -13,7 +14,7 @@
 			return;
 		}
 		if (!pb.authStore.isValid) {
-			goto('/login?callback=' + page.url.pathname);
+			goto(setCallback('/login'));
 		}
 	});
 </script>
