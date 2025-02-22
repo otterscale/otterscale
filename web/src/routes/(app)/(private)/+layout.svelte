@@ -6,7 +6,13 @@
 	import pb from '$lib/pb';
 
 	onMount(() => {
-		if (page.url.pathname != '/' && !pb.authStore.isValid) {
+		if (page.url.pathname == '/') {
+			return;
+		}
+		if (page.url.pathname == '/logout') {
+			return;
+		}
+		if (!pb.authStore.isValid) {
 			goto('/login?callback=' + page.url.pathname);
 		}
 	});
