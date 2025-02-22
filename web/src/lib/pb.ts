@@ -35,3 +35,61 @@ export class Helper {
         );
     }
 }
+
+export interface pbMessage {
+    id: string;
+    userId: string;
+    senderId: string;
+    title: string;
+    content: string;
+    isRead: boolean;
+    isArchived: boolean;
+    isDeleted: boolean;
+    created: Date;
+    updated: Date;
+}
+
+export async function listMessages(): Promise<pbMessage[]> {
+    var msgs: pbMessage[] = [];
+    await pb.collection('messages').getList()
+        .then((res) => {
+            res.items.forEach((msg: any) => {
+                msgs.push({
+                    id: msg.id,
+                    userId: msg.user_id,
+                    senderId: msg.sender_id,
+                    title: msg.title,
+                    content: msg.content,
+                    isRead: msg.is_read,
+                    isArchived: msg.is_archived,
+                    isDeleted: msg.is_deleted,
+                    created: new Date(msg.created),
+                    updated: new Date(msg.updated)
+                });
+            });
+        })
+        .catch((err) => {
+            console.error('Failed to list messages:', err)
+        });
+    return msgs;
+}
+
+export async function readMessage(id: string) {
+    await pb.collection('messages').update(id, { is_read: true })
+        .catch((err) => {
+            console.error('Failed to read message:', err)
+        });
+}
+
+export async function archiveMessage(id: string) {
+    await pb.collection('messages').update(id, { is_archived: true })
+        .catch((err) => {
+            console.error('Failed to read message:', err)
+        });
+}
+export async function deleteMessage(id: string) {
+    await pb.collection('messages').update(id, { is_deleted: true })
+        .catch((err) => {
+            console.error('Failed to read message:', err)
+        });
+}
