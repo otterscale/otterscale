@@ -16,6 +16,8 @@
 		</Button>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end" class="w-40">
+		<DropdownMenu.Label>Shortcut</DropdownMenu.Label>
+		<DropdownMenu.Separator />
 		<Mode />
 		<I18n />
 		<DropdownMenu.Separator />
