@@ -18,7 +18,7 @@
 <Sheet.Root>
 	<Sheet.Trigger>
 		<Button variant="outline" size="icon" class="bg-header">
-			{#if msgs.filter((msg) => !msg.isRead)}
+			{#if msgs.filter((msg) => !msg.isRead).length > 0}
 				<Icon icon="ph:notification-fill" class="h-5 w-5" />
 			{:else}
 				<Icon icon="ph:notification" class="h-5 w-5" />
