@@ -81,12 +81,27 @@ export async function readMessage(id: string) {
         });
 }
 
+export async function unreadMessage(id: string) {
+    await pb.collection('messages').update(id, { is_read: false })
+        .catch((err) => {
+            console.error('Failed to read message:', err)
+        });
+}
+
 export async function archiveMessage(id: string) {
     await pb.collection('messages').update(id, { is_archived: true })
         .catch((err) => {
             console.error('Failed to read message:', err)
         });
 }
+
+export async function unarchiveMessage(id: string) {
+    await pb.collection('messages').update(id, { is_archived: false })
+        .catch((err) => {
+            console.error('Failed to read message:', err)
+        });
+}
+
 export async function deleteMessage(id: string) {
     await pb.collection('messages').update(id, { is_deleted: true })
         .catch((err) => {
