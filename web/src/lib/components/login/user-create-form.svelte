@@ -29,29 +29,29 @@
 			});
 			await pb.collection('users').authWithPassword(email, password);
 			goto(getCallback());
-		} catch (error) {
-			if (error instanceof ClientResponseError) {
-				console.error(error.data);
-				if (!Helper.isEmpty(error.data.data.passwordConfirm)) {
-					if (error.data.data.passwordConfirm.code === 'validation_values_mismatch') {
+		} catch (err) {
+			if (err instanceof ClientResponseError) {
+				console.error(err.data);
+				if (!Helper.isEmpty(err.data.data.passwordConfirm)) {
+					if (err.data.data.passwordConfirm.code === 'validation_values_mismatch') {
 						toast.error('Password confirmation does not match.');
 					} else {
-						toast.error(error.data.data.passwordConfirm.message);
+						toast.error(err.data.data.passwordConfirm.message);
 					}
-				} else if (!Helper.isEmpty(error.data.data.password)) {
-					if (error.data.data.password.code === 'validation_min_text_constraint') {
+				} else if (!Helper.isEmpty(err.data.data.password)) {
+					if (err.data.data.password.code === 'validation_min_text_constraint') {
 						toast.error('Password must be at least 8 characters.');
 					} else {
-						toast.error(error.data.data.password.message);
+						toast.error(err.data.data.password.message);
 					}
-				} else if (!Helper.isEmpty(error.data.data.email)) {
-					if (error.data.data.email.code === 'validation_not_unique') {
+				} else if (!Helper.isEmpty(err.data.data.email)) {
+					if (err.data.data.email.code === 'validation_not_unique') {
 						toast.error('Email already exists.');
 					} else {
-						toast.error(error.data.data.email.message);
+						toast.error(err.data.data.email.message);
 					}
 				} else {
-					toast.error(error.data.message);
+					toast.error(err.data.message);
 				}
 			}
 		} finally {

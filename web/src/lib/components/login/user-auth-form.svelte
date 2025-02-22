@@ -22,12 +22,12 @@
 			isLoading = true;
 			await pb.collection('users').authWithPassword(email, password);
 			goto(getCallback());
-		} catch (error) {
-			if (error instanceof ClientResponseError) {
-				if (!Helper.isEmpty(error.data.data)) {
-					toast.error(error.data.data.password.message);
+		} catch (err) {
+			if (err instanceof ClientResponseError) {
+				if (!Helper.isEmpty(err.data.data)) {
+					toast.error(err.data.data.password.message);
 				} else {
-					toast.error(error.data.message);
+					toast.error(err.data.message);
 				}
 			}
 		} finally {
