@@ -8,18 +8,18 @@
 
 	let { children } = $props();
 
+	let currentPage = page.url.pathname;
+
 	onMount(async () => {
 		await upsertVisit();
 	});
 
-	let currentPage = page.url.pathname;
-
 	$effect(() => {
 		if (currentPage !== page.url.pathname) {
 			(async () => await upsertVisit())();
+			currentPage = page.url.pathname;
 		}
-		currentPage = page.url.pathname;
-		if (currentPage == '/' || currentPage == '/logout') {
+		if (page.url.pathname == '/' || page.url.pathname == '/logout') {
 			return;
 		}
 		if (!pb.authStore.isValid) {
