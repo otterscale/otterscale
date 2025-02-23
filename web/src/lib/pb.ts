@@ -56,7 +56,18 @@ export async function listMessages(): Promise<pbMessage[]> {
     await pb.collection('messages').getFullList()
         .then((res) => {
             res.forEach((msg: any) => {
-                msgs.push(msg as pbMessage);
+                msgs.push({
+                    id: msg.id,
+                    userId: msg.user_id,
+                    senderId: msg.sender_id,
+                    title: msg.title,
+                    content: msg.content,
+                    isRead: msg.is_read,
+                    isArchived: msg.is_archived,
+                    isDeleted: msg.is_deleted,
+                    created: msg.created,
+                    updated: msg.updated
+                } as pbMessage);
             });
         })
         .catch((err) => {
@@ -114,7 +125,14 @@ export async function listFavorites(): Promise<pbFavorite[]> {
     await pb.collection('favorites').getFullList()
         .then((res) => {
             res.forEach((fav: any) => {
-                favs.push(fav as pbFavorite);
+                favs.push({
+                    id: fav.id,
+                    userId: fav.user_id,
+                    path: fav.path,
+                    name: fav.name,
+                    created: fav.created,
+                    updated: fav.updated,
+                } as pbFavorite);
             });
         })
         .catch((err) => {
@@ -197,7 +215,15 @@ export async function listVisits(): Promise<pbVisit[]> {
     await pb.collection('visits').getFullList()
         .then((res) => {
             res.forEach((visit: any) => {
-                visits.push(visit as pbVisit);
+                visits.push({
+                    id: visit.id,
+                    userId: visit.userId,
+                    path: visit.path,
+                    name: visit.name,
+                    visited: visit.visited,
+                    created: visit.created,
+                    updated: visit.updated,
+                } as pbVisit);
             });
         })
         .catch((err) => {
