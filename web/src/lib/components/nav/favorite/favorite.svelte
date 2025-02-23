@@ -39,7 +39,7 @@
 </script>
 
 <Tooltip.Root>
-	<Tooltip.Trigger>
+	<Tooltip.Trigger asChild>
 		<Button variant="outline" size="icon" class="bg-header" on:click={toggleFavorite}>
 			{#if favorited}
 				<Icon icon="ph:heart-fill" class="h-5 w-5" />
