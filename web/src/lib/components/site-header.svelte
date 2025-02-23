@@ -4,7 +4,7 @@
 	import { Avatar, FeatureBar, FeatureSidebar, FunctionBar, SearchBar } from '$lib/components/nav';
 </script>
 
-<header class="bg-header sticky top-0 z-50 flex h-16 items-center gap-4 border-b px-4 md:px-6">
+<header class="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-header px-4 md:px-6">
 	<FeatureBar />
 	<FeatureSidebar />
 	<div class="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">

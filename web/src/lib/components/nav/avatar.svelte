@@ -61,10 +61,10 @@
 				<DropdownMenu.Shortcut>⇧⌘U</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item on:click={() => goto('/recently')}>
+			<DropdownMenu.Item on:click={() => goto('/recents')}>
 				<Icon icon="ph:clock" class="h-4 w-4" />
-				<span class="pl-2">Visited</span>
-				<DropdownMenu.Shortcut>⇧⌘V</DropdownMenu.Shortcut>
+				<span class="pl-2">Recents</span>
+				<DropdownMenu.Shortcut>⇧⌘R</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item on:click={() => goto('/favorites')}>
 				<Icon icon="ph:clover" class="h-4 w-4" />

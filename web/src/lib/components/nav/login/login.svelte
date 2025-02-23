@@ -7,7 +7,7 @@
 </script>
 
 <Tooltip.Root>
-	<Tooltip.Trigger>
+	<Tooltip.Trigger asChild>
 		<Button variant="outline" size="icon" class="bg-header" on:click={() => goto('/login')}>
 			<Icon icon="ph:sign-in" class="h-5 w-5" />
 		</Button>
