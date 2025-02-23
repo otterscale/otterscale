@@ -1,0 +1,1 @@
+export { default as Preference } from "./preference.svelte";
