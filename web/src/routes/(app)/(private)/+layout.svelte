@@ -3,14 +3,23 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { SiteFooter, SiteHeader } from '$lib/components';
-	import pb from '$lib/pb';
+	import pb, { upsertVisit } from '$lib/pb';
 	import { setCallback } from '$lib/utils';
 
-	onMount(() => {
-		if (page.url.pathname == '/') {
-			return;
+	let { children } = $props();
+
+	onMount(async () => {
+		await upsertVisit();
+	});
+
+	let currentPage = page.url.pathname;
+
+	$effect(() => {
+		if (currentPage !== page.url.pathname) {
+			(async () => await upsertVisit())();
 		}
-		if (page.url.pathname == '/logout') {
+		currentPage = page.url.pathname;
+		if (currentPage == '/' || currentPage == '/logout') {
 			return;
 		}
 		if (!pb.authStore.isValid) {
@@ -22,7 +31,7 @@
 <div class="relative flex min-h-screen flex-col bg-background" data-vaul-drawer-wrapper>
 	<SiteHeader />
 	<div class="flex-1">
-		<slot />
+		{@render children()}
 	</div>
 	<SiteFooter />
 </div>
