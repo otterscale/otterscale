@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { pbFavorite } from '$lib/pb';
+	import type { pbVisit } from '$lib/pb';
 
-	export let items: pbFavorite[];
+	export let items: pbVisit[];
 
 	function features(): string[] {
 		return [
@@ -28,7 +28,7 @@
 	class="grid gap-3 text-sm text-muted-foreground"
 	data-x-chunk-container="chunk-container after:right-0"
 >
-	<a href="/favorites" class={active('#')}>All</a>
+	<a href="/recents" class={active('#')}>All</a>
 	{#each features() as feature}
 		<a href="#{feature}" class={active(feature)}>
 			{feature.charAt(0).toUpperCase() + feature.slice(1)}
