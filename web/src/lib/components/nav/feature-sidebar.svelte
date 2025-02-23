@@ -13,7 +13,7 @@
 		<Button
 			variant="outline"
 			size="icon"
-			class="shrink-0 border-none shadow-none md:hidden"
+			class="shrink-0 border-none bg-header shadow-none md:hidden"
 			builders={[builder]}
 		>
 			<Icon icon="ph:polygon" class="h-8 w-8" />
