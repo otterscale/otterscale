@@ -63,12 +63,12 @@
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item on:click={() => goto('/recently')}>
 				<Icon icon="ph:clock" class="h-4 w-4" />
-				<span class="pl-2">Recently</span>
-				<DropdownMenu.Shortcut>⇧⌘R</DropdownMenu.Shortcut>
+				<span class="pl-2">Visited</span>
+				<DropdownMenu.Shortcut>⇧⌘V</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item on:click={() => goto('/favorites')}>
 				<Icon icon="ph:clover" class="h-4 w-4" />
-				<span class="pl-2">Favorite</span>
+				<span class="pl-2">Favorites</span>
 				<DropdownMenu.Shortcut>⇧⌘F</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />

@@ -3,14 +3,23 @@
 	import Icon from '@iconify/svelte';
 	import { toast } from 'svelte-sonner';
 
+	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { addFavorite, deleteFavorite, isFavorite } from '$lib/pb';
 
-	let favorited = false;
+	let favorited = $state(false);
+	let currentPage = page.url.pathname;
 
 	onMount(async () => {
 		favorited = await isFavorite();
+	});
+
+	$effect(() => {
+		if (currentPage !== page.url.pathname) {
+			(async () => (favorited = await isFavorite()))();
+			currentPage = page.url.pathname;
+		}
 	});
 
 	async function add() {
