@@ -118,7 +118,7 @@ export async function listFavorites(): Promise<pbFavorite[]> {
             });
         })
         .catch((err) => {
-            console.error('Failed to list messages:', err)
+            console.error('Failed to list favorites:', err)
         });
     return favs;
 }
@@ -165,7 +165,7 @@ export interface pbVisit {
 
 async function addVisit() {
     if (pb.authStore.record) {
-        await pb.collection('visits').create({ user_id: pb.authStore.record.id, path: page.url.pathname, visited: new Date().toUTCString() })
+        await pb.collection('visits').create({ user_id: pb.authStore.record.id, path: page.url.pathname, name: document.title || 'Untitled', visited: new Date().toUTCString() })
             .catch((err) => {
                 console.error('Failed to insert visit:', err)
             });
@@ -190,4 +190,18 @@ export async function upsertVisit() {
     if (!exists) {
         await addVisit();
     }
+}
+
+export async function listVisits(): Promise<pbVisit[]> {
+    var visits: pbVisit[] = [];
+    await pb.collection('visits').getFullList()
+        .then((res) => {
+            res.forEach((visit: any) => {
+                visits.push(visit as pbVisit);
+            });
+        })
+        .catch((err) => {
+            console.error('Failed to list visits:', err)
+        });
+    return visits;
 }

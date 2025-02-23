@@ -2,12 +2,13 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import * as Card from '$lib/components/ui/card';
-	import type { pbFavorite } from '$lib/pb';
+	import type { pbVisit } from '$lib/pb';
 	import { formatTimeAgo } from '$lib/utils';
+	import Button from '../ui/button/button.svelte';
 
-	export let items: pbFavorite[];
+	export let items: pbVisit[];
 
-	function filter(): pbFavorite[] {
+	function filter(): pbVisit[] {
 		if (page.url.hash === '') {
 			return items;
 		}
@@ -31,7 +32,7 @@
 				<Card.Description class="text-xs">
 					{item.path}
 					·
-					{formatTimeAgo(item.created)}
+					{formatTimeAgo(item.visited)}
 				</Card.Description>
 			</Card.Header>
 		</Card.Root>
