@@ -6,6 +6,7 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { listMessages, type pbMessage } from '$lib/pb';
 	import MailList from './mail-list.svelte';
 
@@ -17,13 +18,20 @@
 
 <Sheet.Root>
 	<Sheet.Trigger>
-		<Button variant="outline" size="icon" class="bg-header">
-			{#if msgs.filter((msg) => !msg.isRead).length > 0}
-				<Icon icon="ph:notification-fill" class="h-5 w-5" />
-			{:else}
-				<Icon icon="ph:notification" class="h-5 w-5" />
-			{/if}
-		</Button>
+		<Tooltip.Root>
+			<Tooltip.Trigger>
+				<Button variant="outline" size="icon" class="bg-header">
+					{#if msgs.filter((msg) => !msg.isRead).length > 0}
+						<Icon icon="ph:notification-fill" class="h-5 w-5" />
+					{:else}
+						<Icon icon="ph:notification" class="h-5 w-5" />
+					{/if}
+				</Button>
+			</Tooltip.Trigger>
+			<Tooltip.Content>
+				<p>Inbox</p>
+			</Tooltip.Content>
+		</Tooltip.Root>
 	</Sheet.Trigger>
 	<Sheet.Content>
 		<Tabs.Root value="unread">

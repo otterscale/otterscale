@@ -61,6 +61,17 @@
 				<DropdownMenu.Shortcut>⇧⌘U</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
+			<DropdownMenu.Item on:click={() => goto('/recently')}>
+				<Icon icon="ph:clock" class="h-4 w-4" />
+				<span class="pl-2">Recently</span>
+				<DropdownMenu.Shortcut>⇧⌘R</DropdownMenu.Shortcut>
+			</DropdownMenu.Item>
+			<DropdownMenu.Item on:click={() => goto('/favorites')}>
+				<Icon icon="ph:clover" class="h-4 w-4" />
+				<span class="pl-2">Favorite</span>
+				<DropdownMenu.Shortcut>⇧⌘F</DropdownMenu.Shortcut>
+			</DropdownMenu.Item>
+			<DropdownMenu.Separator />
 			<DropdownMenu.Item on:click={() => goto('/logout')}>
 				<Icon icon="ph:sign-in" class="h-4 w-4" />
 				<span class="pl-2">Sign out</span>

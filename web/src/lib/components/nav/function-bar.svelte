@@ -4,7 +4,7 @@
 	import { Login } from './login';
 	import { Favorite } from './favorite';
 	import { Message } from './message';
-	import { Menu } from './menu';
+	import { Preference } from './preference';
 
 	let isValid = pb.authStore.isValid;
 	pb.authStore.onChange(() => {
@@ -13,7 +13,7 @@
 </script>
 
 <div class="flex justify-end space-x-2">
-	<Menu />
+	<Preference />
 	{#if isValid}
 		<Favorite />
 		<Message />
