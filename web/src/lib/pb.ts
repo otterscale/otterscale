@@ -52,9 +52,9 @@ export interface pbMessage {
 
 export async function listMessages(): Promise<pbMessage[]> {
     var msgs: pbMessage[] = [];
-    await pb.collection('messages').getList()
+    await pb.collection('messages').getFullList()
         .then((res) => {
-            res.items.forEach((msg: any) => {
+            res.forEach((msg: any) => {
                 msgs.push({
                     id: msg.id,
                     userId: msg.user_id,
@@ -85,28 +85,28 @@ export async function readMessage(id: string) {
 export async function unreadMessage(id: string) {
     await pb.collection('messages').update(id, { is_read: false })
         .catch((err) => {
-            console.error('Failed to read message:', err)
+            console.error('Failed to unread message:', err)
         });
 }
 
 export async function archiveMessage(id: string) {
     await pb.collection('messages').update(id, { is_archived: true })
         .catch((err) => {
-            console.error('Failed to read message:', err)
+            console.error('Failed to archive message:', err)
         });
 }
 
 export async function unarchiveMessage(id: string) {
     await pb.collection('messages').update(id, { is_archived: false })
         .catch((err) => {
-            console.error('Failed to read message:', err)
+            console.error('Failed to unarchive message:', err)
         });
 }
 
 export async function deleteMessage(id: string) {
     await pb.collection('messages').update(id, { is_deleted: true })
         .catch((err) => {
-            console.error('Failed to read message:', err)
+            console.error('Failed to delete message:', err)
         });
 }
 
@@ -120,8 +120,7 @@ export interface pbFavorite {
 
 export async function isFavorite(): Promise<boolean> {
     if (pb.authStore.record) {
-        return (await pb.collection('favorites').getList())
-            .items
+        return (await pb.collection('favorites').getFullList())
             .filter((fav: any) => fav.path == page.url.pathname).length > 0;
     }
     return false
@@ -131,21 +130,58 @@ export async function addFavorite() {
     if (pb.authStore.record) {
         await pb.collection('favorites').create({ user_id: pb.authStore.record.id, path: page.url.pathname })
             .catch((err) => {
-                console.error('Failed to read message:', err)
+                console.error('Failed to add favorite:', err)
             });
     }
 }
 
 export async function deleteFavorite() {
     if (pb.authStore.record) {
-        (await pb.collection('favorites').getList())
-            .items
+        (await pb.collection('favorites').getFullList())
             .filter((fav: any) => fav.path == page.url.pathname)
             .forEach(async (fav: any) => {
                 await pb.collection('favorites').delete(fav.id)
                     .catch((err) => {
-                        console.error('Failed to read message:', err)
+                        console.error('Failed to delete favorite:', err)
                     });
             });
+    }
+}
+
+export interface pbVisit {
+    id: string;
+    userId: string;
+    path: string;
+    visited: Date;
+    created: Date;
+    updated: Date;
+}
+
+async function addVisit() {
+    if (pb.authStore.record) {
+        await pb.collection('visits').create({ user_id: pb.authStore.record.id, path: page.url.pathname, visited: new Date().toUTCString() })
+            .catch((err) => {
+                console.error('Failed to insert visit:', err)
+            });
+    }
+}
+
+async function updateVisit(id: string) {
+    await pb.collection('visits').update(id, { visited: new Date().toUTCString() })
+        .catch((err) => {
+            console.error('Failed to update visit:', err)
+        });
+}
+
+export async function upsertVisit() {
+    var exists = false;
+    (await pb.collection('visits').getFullList())
+        .filter((v: any) => v.path == page.url.pathname)
+        .forEach(async (v: any) => {
+            exists = true;
+            await updateVisit(v.id);
+        })
+    if (!exists) {
+        await addVisit();
     }
 }
