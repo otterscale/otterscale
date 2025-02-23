@@ -134,7 +134,7 @@
 	<div class="flex justify-evenly space-x-2">
 		{#each oauth2Map as [provider, oauth2]}
 			<Tooltip.Root>
-				<Tooltip.Trigger>
+				<Tooltip.Trigger asChild>
 					<Button
 						variant="outline"
 						class="disabled:pointer-events-auto disabled:cursor-not-allowed"

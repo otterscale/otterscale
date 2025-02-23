@@ -5,11 +5,11 @@
 	import * as m from '$lib/paraglide/messages.js';
 
 	const features = [
-		{
-			path: '/tutorial',
-			name: m.nav_tutorial(),
-			enable: false
-		},
+		// {
+		// 	path: '/tutorial',
+		// 	name: m.nav_tutorial(),
+		// 	enable: false
+		// },
 		{
 			path: '/data-fabric',
 			name: m.nav_data_fabric(),

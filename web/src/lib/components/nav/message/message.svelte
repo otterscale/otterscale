@@ -19,7 +19,7 @@
 <Sheet.Root>
 	<Sheet.Trigger>
 		<Tooltip.Root>
-			<Tooltip.Trigger>
+			<Tooltip.Trigger asChild>
 				<Button variant="outline" size="icon" class="bg-header">
 					{#if msgs.filter((msg) => !msg.isRead).length > 0}
 						<Icon icon="ph:notification-fill" class="h-5 w-5" />

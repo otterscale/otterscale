@@ -10,25 +10,25 @@
 	import Doc from './doc.svelte';
 </script>
 
-<Tooltip.Root>
-	<Tooltip.Trigger>
-		<DropdownMenu.Root>
-			<DropdownMenu.Trigger asChild let:builder>
+<DropdownMenu.Root>
+	<DropdownMenu.Trigger asChild let:builder>
+		<Tooltip.Root>
+			<Tooltip.Trigger asChild>
 				<Button builders={[builder]} variant="outline" size="icon" class="bg-header">
 					<Icon icon="ph:circles-three-plus" class="h-5 w-5" />
 				</Button>
-			</DropdownMenu.Trigger>
-			<DropdownMenu.Content align="end" class="w-40">
-				<DropdownMenu.Label>Preference</DropdownMenu.Label>
-				<DropdownMenu.Separator />
-				<Mode />
-				<I18n />
-				<DropdownMenu.Separator />
-				<Doc />
-			</DropdownMenu.Content>
-		</DropdownMenu.Root>
-	</Tooltip.Trigger>
-	<Tooltip.Content>
-		<p>Preference</p>
-	</Tooltip.Content>
-</Tooltip.Root>
+			</Tooltip.Trigger>
+			<Tooltip.Content>
+				<p>Preference</p>
+			</Tooltip.Content>
+		</Tooltip.Root>
+	</DropdownMenu.Trigger>
+	<DropdownMenu.Content align="end" class="w-40">
+		<DropdownMenu.Label>Preference</DropdownMenu.Label>
+		<DropdownMenu.Separator />
+		<Mode />
+		<I18n />
+		<DropdownMenu.Separator />
+		<Doc />
+	</DropdownMenu.Content>
+</DropdownMenu.Root>
