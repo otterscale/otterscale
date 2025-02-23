@@ -1,19 +1,31 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Icon from '@iconify/svelte';
 	import { toast } from 'svelte-sonner';
 
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { addFavorite, deleteFavorite, isFavorite } from '$lib/pb';
 
 	let favorited = false;
-	function toggleFavorite() {
-		if (!favorited) {
-			favorited = true;
-			toast.success('Added to favorites!');
-			return;
-		}
-		favorited = false;
-		toast.error('Removed from favorites!');
+
+	onMount(async () => {
+		favorited = await isFavorite();
+	});
+
+	async function add() {
+		await addFavorite();
+		toast.success('Added to favorites!');
+	}
+
+	async function del() {
+		await deleteFavorite();
+		toast.success('Removed from favorites!');
+	}
+
+	async function toggleFavorite() {
+		favorited ? await del() : await add();
+		favorited = await isFavorite();
 	}
 </script>
 

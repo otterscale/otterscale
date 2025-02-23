@@ -1,3 +1,4 @@
+import { page } from '$app/state';
 import PocketBase from 'pocketbase';
 
 const pb = new PocketBase('http://127.0.0.1:8090');
@@ -107,4 +108,44 @@ export async function deleteMessage(id: string) {
         .catch((err) => {
             console.error('Failed to read message:', err)
         });
+}
+
+export interface pbFavorite {
+    id: string;
+    userId: string;
+    path: string;
+    created: Date;
+    updated: Date;
+}
+
+export async function isFavorite(): Promise<boolean> {
+    if (pb.authStore.record) {
+        return (await pb.collection('favorites').getList())
+            .items
+            .filter((fav: any) => fav.path == page.url.pathname).length > 0;
+    }
+    return false
+}
+
+export async function addFavorite() {
+    if (pb.authStore.record) {
+        await pb.collection('favorites').create({ user_id: pb.authStore.record.id, path: page.url.pathname })
+            .catch((err) => {
+                console.error('Failed to read message:', err)
+            });
+    }
+}
+
+export async function deleteFavorite() {
+    if (pb.authStore.record) {
+        (await pb.collection('favorites').getList())
+            .items
+            .filter((fav: any) => fav.path == page.url.pathname)
+            .forEach(async (fav: any) => {
+                await pb.collection('favorites').delete(fav.id)
+                    .catch((err) => {
+                        console.error('Failed to read message:', err)
+                    });
+            });
+    }
 }
