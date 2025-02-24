@@ -6,7 +6,7 @@
 	import { page } from '$app/state';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { addFavorite, deleteFavorite, isFavorite } from '$lib/pb';
+	import pb, { addFavorite, deleteFavorite, isFavorite } from '$lib/pb';
 	import { i18n } from '$lib/i18n';
 
 	let favorited = $state(false);
@@ -14,6 +14,12 @@
 
 	onMount(async () => {
 		favorited = await isFavorite();
+
+		pb.collection('favorites').subscribe('*', (r) => {
+			if (r.record.path === i18n.route(page.url.pathname)) {
+				favorited = r.action === 'create';
+			}
+		});
 	});
 
 	$effect(() => {
@@ -23,19 +29,10 @@
 		}
 	});
 
-	async function add() {
-		await addFavorite();
-		toast.success('Added to favorites!');
-	}
-
-	async function del() {
-		await deleteFavorite();
-		toast.success('Removed from favorites!');
-	}
-
 	async function toggleFavorite() {
-		favorited ? await del() : await add();
-		favorited = await isFavorite();
+		favorited
+			? await deleteFavorite().then(() => toast.success('Removed from favorites!'))
+			: await addFavorite().then(() => toast.success('Added to favorites!'));
 	}
 </script>
 

@@ -212,7 +212,7 @@ export async function addFavorite() {
 export async function deleteFavorite() {
     if (pb.authStore.record) {
         (await pb.collection('favorites').getFullList())
-            .filter((fav: any) => fav.path == page.url.pathname)
+            .filter((fav: any) => fav.path == i18n.route(page.url.pathname))
             .forEach(async (fav: any) => {
                 await pb.collection('favorites').delete(fav.id)
                     .catch((err) => {
@@ -234,7 +234,7 @@ export interface pbVisit {
 
 async function addVisit() {
     if (pb.authStore.record) {
-        await pb.collection('visits').create({ user_id: pb.authStore.record.id, path: page.url.pathname, name: document.title || 'Untitled', visited: new Date().toUTCString() })
+        await pb.collection('visits').create({ user_id: pb.authStore.record.id, path: i18n.route(page.url.pathname), name: document.title || 'Untitled', visited: new Date().toUTCString() })
             .catch((err) => {
                 console.error('Failed to insert visit:', err)
             });
@@ -251,7 +251,7 @@ async function updateVisit(id: string) {
 export async function upsertVisit() {
     var exists = false;
     (await pb.collection('visits').getFullList())
-        .filter((v: any) => v.path == page.url.pathname)
+        .filter((v: any) => v.path == i18n.route(page.url.pathname))
         .forEach(async (v: any) => {
             exists = true;
             await updateVisit(v.id);

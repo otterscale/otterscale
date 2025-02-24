@@ -14,7 +14,6 @@
 			countdown--;
 			if (countdown <= 0) {
 				clearInterval(timer);
-				console.log(i18n.resolveRoute('/'));
 				goto(i18n.resolveRoute('/'));
 			}
 		}, 1000);
