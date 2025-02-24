@@ -5,10 +5,14 @@
 	import { i18n } from '$lib/i18n';
 	import { Toaster } from '$lib/components/ui/sonner';
 
+	import { Metadata } from '$lib/components';
+
 	import '../app.css';
 
 	let { children } = $props();
 </script>
+
+<Metadata />
 
 <ModeWatcher />
 <Toaster />
