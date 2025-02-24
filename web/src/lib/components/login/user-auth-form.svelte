@@ -7,7 +7,14 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import pb, { Helper, welcomeMessage } from '$lib/pb';
+	import {
+		Helper,
+		listAuthMethods,
+		oauth2Auth,
+		passwordAuth,
+		setEmailVisible,
+		welcomeMessage
+	} from '$lib/pb';
 	import { onMount } from 'svelte';
 	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
@@ -21,10 +28,10 @@
 	async function onSubmit() {
 		try {
 			isLoading = true;
-			var m = await pb.collection('users').authWithPassword(email, password);
+			var m = await passwordAuth(email, password);
 			if (!m.record.emailVisibility) {
+				await setEmailVisible(m.record.id);
 				await welcomeMessage(m.record.id);
-				await pb.collection('users').update(m.record.id, { emailVisibility: true });
 			}
 			goto(i18n.resolveRoute(getCallback()));
 		} catch (err) {
@@ -41,9 +48,8 @@
 	}
 
 	onMount(async () => {
-		var authMethods = await pb.collection('users').listAuthMethods();
-		authMethods.oauth2.providers.forEach((provider) => {
-			updateOAuth2MapEnabled(provider.name, true);
+		(await listAuthMethods()).forEach((provider) => {
+			updateOAuth2MapEnabled(provider, true);
 		});
 	});
 
@@ -66,10 +72,10 @@
 	async function authWithOAuth2(provider: string) {
 		try {
 			updateOAuth2MapLoading(provider, true);
-			var m = await pb.collection('users').authWithOAuth2({ provider: provider });
+			var m = await oauth2Auth(provider);
 			if (!m.record.emailVisibility) {
+				await setEmailVisible(m.record.id);
 				await welcomeMessage(m.record.id);
-				await pb.collection('users').update(m.record.id, { emailVisibility: true });
 			}
 			goto(i18n.resolveRoute(getCallback()));
 		} catch {
