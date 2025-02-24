@@ -6,7 +6,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import pb, { Helper } from '$lib/pb';
+	import { createUser, Helper, passwordAuth, setEmailVisible, welcomeMessage } from '$lib/pb';
 	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
 	import { getCallback } from '$lib/utils';
@@ -22,13 +22,12 @@
 	async function onSubmit() {
 		try {
 			isLoading = true;
-			await pb.collection('users').create({
-				email,
-				password,
-				passwordConfirm,
-				name: `${firstName} ${lastName}`
-			});
-			await pb.collection('users').authWithPassword(email, password);
+			await createUser(email, password, passwordConfirm, `${firstName} ${lastName}`);
+			var m = await passwordAuth(email, password);
+			if (!m.record.emailVisibility) {
+				await setEmailVisible(m.record.id);
+				await welcomeMessage(m.record.id);
+			}
 			goto(i18n.resolveRoute(getCallback()));
 		} catch (err) {
 			if (err instanceof ClientResponseError) {

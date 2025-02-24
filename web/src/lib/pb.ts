@@ -1,5 +1,5 @@
 import { page } from '$app/state';
-import PocketBase from 'pocketbase';
+import PocketBase, { type RecordAuthResponse, type RecordModel } from 'pocketbase';
 import { siteConfig } from './config/site';
 import { i18n } from './i18n';
 
@@ -21,10 +21,6 @@ if (pb.authStore.isValid && pb.authStore.record) {
 
 export default pb;
 
-export function fetchMessages() {
-    return pb.collection('messages').getFullList();
-}
-
 export class Helper {
     static isObject(value: any) {
         return value !== null && typeof value === "object" && value.constructor === Object;
@@ -38,6 +34,42 @@ export class Helper {
             (Helper.isObject(value) && Object.keys(value).length === 0)
         );
     }
+}
+
+export async function listAuthMethods(): Promise<string[]> {
+    var providers: string[] = [];
+    await pb.collection('users').listAuthMethods().then((res) => {
+        if (res.oauth2.enabled) {
+            res.oauth2.providers.forEach((provider: any) => {
+                providers.push(provider.name);
+            });
+        }
+    }).catch((err) => {
+        console.error('Failed to list auth methods:', err)
+    });
+    return providers
+}
+export async function passwordAuth(email: string, password: string): Promise<RecordAuthResponse<RecordModel>> {
+    return await pb.collection('users').authWithPassword(email, password)
+}
+
+export async function oauth2Auth(provider: string): Promise<RecordAuthResponse<RecordModel>> {
+    return await pb.collection('users').authWithOAuth2({ provider: provider });
+}
+
+export async function setEmailVisible(userId: string) {
+    if (pb.authStore.record) {
+        await pb.collection('users').update(userId, { emailVisibility: true });
+    }
+}
+
+export async function createUser(email: string, password: string, passwordConfirm: string, name: string) {
+    await pb.collection('users').create({
+        email,
+        password,
+        passwordConfirm,
+        name,
+    });
 }
 
 export interface pbMessage {
