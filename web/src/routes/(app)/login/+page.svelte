@@ -4,12 +4,13 @@
 	import { goto } from '$app/navigation';
 	import { UserAuthForm } from '$lib/components/login';
 	import { Button } from '$lib/components/ui/button';
+	import { i18n } from '$lib/i18n';
 	import { appendCallback } from '$lib/utils';
 	import pb from '$lib/pb';
 
 	onMount(() => {
 		if (pb.authStore.isValid) {
-			goto('/');
+			goto(i18n.resolveRoute('/'));
 		}
 	});
 </script>

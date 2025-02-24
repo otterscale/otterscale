@@ -6,6 +6,7 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import pb from '$lib/pb';
+	import { i18n } from '$lib/i18n';
 
 	let isValid = pb.authStore.isValid;
 	let record = pb.authStore.record;
@@ -45,34 +46,34 @@
 				</div>
 				<DropdownMenu.Separator />
 			</DropdownMenu.Label>
-			<DropdownMenu.Item on:click={() => goto('/settings/profile')}>
+			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/settings#profile'))}>
 				<Icon icon="ph:user" class="h-4 w-4" />
 				<span class="pl-2">Profile</span>
 				<DropdownMenu.Shortcut>⇧⌘P</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
-			<DropdownMenu.Item on:click={() => goto('/settings/profile')}>
+			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/settings'))}>
 				<Icon icon="ph:gear" class="h-4 w-4" />
 				<span class="pl-2">Settings</span>
 				<DropdownMenu.Shortcut>⇧⌘S</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
-			<DropdownMenu.Item on:click={() => goto('/settings/profile')}>
+			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/settings#superuser'))}>
 				<Icon icon="ph:key" class="h-4 w-4" />
 				<span class="pl-2">Superuser</span>
 				<DropdownMenu.Shortcut>⇧⌘U</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item on:click={() => goto('/recents')}>
+			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/recents'))}>
 				<Icon icon="ph:clock" class="h-4 w-4" />
 				<span class="pl-2">Recents</span>
 				<DropdownMenu.Shortcut>⇧⌘R</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
-			<DropdownMenu.Item on:click={() => goto('/favorites')}>
+			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/favorites'))}>
 				<Icon icon="ph:clover" class="h-4 w-4" />
 				<span class="pl-2">Favorites</span>
 				<DropdownMenu.Shortcut>⇧⌘F</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
-			<DropdownMenu.Item on:click={() => goto('/logout')}>
+			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/logout'))}>
 				<Icon icon="ph:sign-in" class="h-4 w-4" />
 				<span class="pl-2">Sign out</span>
 				<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>

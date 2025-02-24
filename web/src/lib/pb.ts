@@ -1,8 +1,9 @@
 import { page } from '$app/state';
 import PocketBase from 'pocketbase';
 import { siteConfig } from './config/site';
+import { i18n } from './i18n';
 
-const pb = new PocketBase('http://127.0.0.1:8090');
+const pb = new PocketBase('http://192.168.43.102:8090');
 pb.autoCancellation(false);
 
 if (pb.authStore.isValid && pb.authStore.record) {
@@ -157,14 +158,14 @@ export async function listFavorites(): Promise<pbFavorite[]> {
 export async function isFavorite(): Promise<boolean> {
     if (pb.authStore.record) {
         return (await pb.collection('favorites').getFullList())
-            .filter((fav: any) => fav.path == page.url.pathname).length > 0;
+            .filter((fav: any) => fav.path == i18n.route(page.url.pathname)).length > 0;
     }
     return false
 }
 
 export async function addFavorite() {
     if (pb.authStore.record) {
-        await pb.collection('favorites').create({ user_id: pb.authStore.record.id, path: page.url.pathname, name: document.title || 'Untitled' })
+        await pb.collection('favorites').create({ user_id: pb.authStore.record.id, path: i18n.route(page.url.pathname), name: document.title || 'Untitled' })
             .catch((err) => {
                 console.error('Failed to add favorite:', err)
             });

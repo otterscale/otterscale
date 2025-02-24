@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { i18n } from '$lib/i18n';
 	import pb from '$lib/pb';
 
 	import { onMount } from 'svelte';
@@ -13,7 +14,8 @@
 			countdown--;
 			if (countdown <= 0) {
 				clearInterval(timer);
-				goto('/');
+				console.log(i18n.resolveRoute('/'));
+				goto(i18n.resolveRoute('/'));
 			}
 		}, 1000);
 

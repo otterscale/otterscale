@@ -5,25 +5,26 @@
 	import { SiteFooter, SiteHeader } from '$lib/components';
 	import pb, { upsertVisit } from '$lib/pb';
 	import { setCallback } from '$lib/utils';
+	import { i18n } from '$lib/i18n';
 
 	let { children } = $props();
 
-	let currentPage = page.url.pathname;
+	let currentPage = i18n.route(page.url.pathname);
 
 	onMount(async () => {
 		await upsertVisit();
 	});
 
 	$effect(() => {
-		if (currentPage !== page.url.pathname) {
+		if (currentPage !== i18n.route(page.url.pathname)) {
 			(async () => await upsertVisit())();
-			currentPage = page.url.pathname;
+			currentPage = i18n.route(page.url.pathname);
 		}
-		if (page.url.pathname == '/' || page.url.pathname == '/logout') {
+		if (i18n.route(page.url.pathname) == '/' || i18n.route(page.url.pathname) == '/logout') {
 			return;
 		}
 		if (!pb.authStore.isValid) {
-			goto(setCallback('/login'));
+			goto(setCallback(i18n.resolveRoute('/login')));
 		}
 	});
 </script>
