@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { page } from "$app/state";
+import * as m from '$lib/paraglide/messages.js';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -61,6 +62,27 @@ export const flyAndScale = (
 		easing: cubicOut
 	};
 };
+
+export function getFeatureTitle(path: string): string {
+	switch (path) {
+		case '/tutorial':
+			return m.nav_tutorial();
+		case '/data-fabric':
+			return m.nav_data_fabric();
+		case '/explore':
+			return m.nav_explore();
+		case '/dashboard':
+			return m.nav_dashboard();
+		case '/applications':
+			return m.nav_applications();
+		case '/integrations':
+			return m.nav_integrations();
+		case '/dev-tools':
+			return m.nav_dev_tools();
+		default:
+			return '';
+	}
+}
 
 export function setCallback(url: string): string {
 	return `${url}?callback=${page.url.pathname}`;
