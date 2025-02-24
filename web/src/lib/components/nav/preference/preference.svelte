@@ -4,6 +4,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as m from '$lib/paraglide/messages.js';
 
 	import Mode from './mode.svelte';
 	import I18n from './i18n.svelte';
@@ -19,12 +20,12 @@
 				</Button>
 			</Tooltip.Trigger>
 			<Tooltip.Content>
-				<p>Preference</p>
+				<p>{m.nav_preferences()}</p>
 			</Tooltip.Content>
 		</Tooltip.Root>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end" class="w-40">
-		<DropdownMenu.Label>Preference</DropdownMenu.Label>
+		<DropdownMenu.Label>{m.nav_preferences()}</DropdownMenu.Label>
 		<DropdownMenu.Separator />
 		<Mode />
 		<I18n />
