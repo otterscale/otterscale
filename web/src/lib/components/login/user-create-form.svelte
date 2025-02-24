@@ -10,6 +10,7 @@
 	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
 	import { getCallback } from '$lib/utils';
+	import { i18n } from '$lib/i18n';
 
 	let email = '';
 	let password = '';
@@ -28,7 +29,7 @@
 				name: `${firstName} ${lastName}`
 			});
 			await pb.collection('users').authWithPassword(email, password);
-			goto(getCallback());
+			goto(i18n.resolveRoute(getCallback()));
 		} catch (err) {
 			if (err instanceof ClientResponseError) {
 				console.error(err.data);

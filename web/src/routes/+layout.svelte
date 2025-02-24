@@ -8,6 +8,8 @@
 	import { Metadata } from '$lib/components';
 
 	import '../app.css';
+	import 'inter-ui/inter-variable.css';
+	import '@fontsource-variable/noto-sans-tc';
 
 	let { children } = $props();
 </script>

@@ -4,6 +4,7 @@ import { cubicOut } from "svelte/easing";
 import type { TransitionConfig } from "svelte/transition";
 import { page } from "$app/state";
 import * as m from '$lib/paraglide/messages.js';
+import { i18n } from "./i18n";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -85,7 +86,7 @@ export function getFeatureTitle(path: string): string {
 }
 
 export function setCallback(url: string): string {
-	return `${url}?callback=${page.url.pathname}`;
+	return `${url}?callback=${i18n.route(page.url.pathname)}`;
 }
 
 export function getCallback(): string {

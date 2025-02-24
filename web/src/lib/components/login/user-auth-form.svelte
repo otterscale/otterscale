@@ -12,6 +12,7 @@
 	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
 	import { getCallback } from '$lib/utils';
+	import { i18n } from '$lib/i18n';
 
 	let email = '';
 	let password = '';
@@ -25,7 +26,7 @@
 				await welcomeMessage(m.record.id);
 				await pb.collection('users').update(m.record.id, { emailVisibility: true });
 			}
-			goto(getCallback());
+			goto(i18n.resolveRoute(getCallback()));
 		} catch (err) {
 			if (err instanceof ClientResponseError) {
 				if (!Helper.isEmpty(err.data.data)) {
@@ -70,7 +71,7 @@
 				await welcomeMessage(m.record.id);
 				await pb.collection('users').update(m.record.id, { emailVisibility: true });
 			}
-			goto(getCallback());
+			goto(i18n.resolveRoute(getCallback()));
 		} catch {
 			toast.error('Authentication failed. Please try again.');
 		} finally {

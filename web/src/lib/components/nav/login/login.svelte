@@ -4,11 +4,17 @@
 	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { i18n } from '$lib/i18n';
 </script>
 
 <Tooltip.Root>
 	<Tooltip.Trigger asChild>
-		<Button variant="outline" size="icon" class="bg-header" on:click={() => goto('/login')}>
+		<Button
+			variant="outline"
+			size="icon"
+			class="bg-header"
+			on:click={() => goto(i18n.resolveRoute('/login'))}
+		>
 			<Icon icon="ph:sign-in" class="h-5 w-5" />
 		</Button>
 	</Tooltip.Trigger>

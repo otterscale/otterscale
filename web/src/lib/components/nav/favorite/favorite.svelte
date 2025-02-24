@@ -7,18 +7,19 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { addFavorite, deleteFavorite, isFavorite } from '$lib/pb';
+	import { i18n } from '$lib/i18n';
 
 	let favorited = $state(false);
-	let currentPage = page.url.pathname;
+	let currentPage = i18n.route(page.url.pathname);
 
 	onMount(async () => {
 		favorited = await isFavorite();
 	});
 
 	$effect(() => {
-		if (currentPage !== page.url.pathname) {
+		if (currentPage !== i18n.route(page.url.pathname)) {
 			(async () => (favorited = await isFavorite()))();
-			currentPage = page.url.pathname;
+			currentPage = i18n.route(page.url.pathname);
 		}
 	});
 

@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@fontsource-variable/noto-sans-tc':
+        specifier: ^5.1.1
+        version: 5.1.1
       '@iconify/svelte':
         specifier: ^4.2.0
         version: 4.2.0(svelte@5.20.2)
       '@inlang/paraglide-sveltekit':
         specifier: ^0.15.5
         version: 0.15.5(@sveltejs/kit@2.17.2(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.20.2)(vite@6.1.1(@types/node@22.13.4)(jiti@1.21.7)(yaml@2.7.0)))(svelte@5.20.2)(vite@6.1.1(@types/node@22.13.4)(jiti@1.21.7)(yaml@2.7.0)))
+      inter-ui:
+        specifier: ^4.1.0
+        version: 4.1.0
       pocketbase:
         specifier: ^0.25.1
         version: 0.25.1
@@ -414,6 +420,9 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@fontsource-variable/noto-sans-tc@5.1.1':
+    resolution: {integrity: sha512-hj381gYeKbPR/KYsjq4yTGke2looKSu/rJxtF3PSYhzP9zeqgK+MXdfUbmpeLriJMr69PkfFKlq77sNSdzPp1A==}
 
   '@gcornut/valibot-json-schema@0.31.0':
     resolution: {integrity: sha512-3xGptCurm23e7nuPQkdrE5rEs1FeTPHhAUsBuwwqG4/YeZLwJOoYZv+fmsppUEfo5y9lzUwNQrNqLS/q7HMc7g==}
@@ -1774,6 +1783,10 @@ packages:
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
+  inter-ui@4.1.0:
+    resolution: {integrity: sha512-lUJ5YLtpj7jWsrhTbN5w32MLOqISGFGOTMRNn+IGhLrbt67z5yvmBRoqpLCWLVlJ+l7kqnH6su4meEqvLMfAAA==}
+    engines: {node: '>=16.0.0'}
+
   is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
@@ -3062,6 +3075,8 @@ snapshots:
       '@floating-ui/utils': 0.2.9
 
   '@floating-ui/utils@0.2.9': {}
+
+  '@fontsource-variable/noto-sans-tc@5.1.1': {}
 
   '@gcornut/valibot-json-schema@0.31.0':
     dependencies:
@@ -4629,6 +4644,8 @@ snapshots:
   indent-string@4.0.0: {}
 
   inherits@2.0.4: {}
+
+  inter-ui@4.1.0: {}
 
   is-binary-path@2.1.0:
     dependencies:
