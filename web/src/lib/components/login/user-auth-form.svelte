@@ -7,7 +7,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import pb, { Helper } from '$lib/pb';
+	import pb, { Helper, welcomeMessage } from '$lib/pb';
 	import { onMount } from 'svelte';
 	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
@@ -20,7 +20,11 @@
 	async function onSubmit() {
 		try {
 			isLoading = true;
-			await pb.collection('users').authWithPassword(email, password);
+			var m = await pb.collection('users').authWithPassword(email, password);
+			if (!m.record.emailVisibility) {
+				await welcomeMessage(m.record.id);
+				await pb.collection('users').update(m.record.id, { emailVisibility: true });
+			}
 			goto(getCallback());
 		} catch (err) {
 			if (err instanceof ClientResponseError) {
@@ -61,7 +65,11 @@
 	async function authWithOAuth2(provider: string) {
 		try {
 			updateOAuth2MapLoading(provider, true);
-			await pb.collection('users').authWithOAuth2({ provider: provider });
+			var m = await pb.collection('users').authWithOAuth2({ provider: provider });
+			if (!m.record.emailVisibility) {
+				await welcomeMessage(m.record.id);
+				await pb.collection('users').update(m.record.id, { emailVisibility: true });
+			}
 			goto(getCallback());
 		} catch {
 			toast.error('Authentication failed. Please try again.');

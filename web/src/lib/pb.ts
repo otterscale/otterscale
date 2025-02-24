@@ -1,5 +1,6 @@
 import { page } from '$app/state';
 import PocketBase from 'pocketbase';
+import { siteConfig } from './config/site';
 
 const pb = new PocketBase('http://127.0.0.1:8090');
 pb.autoCancellation(false);
@@ -108,6 +109,18 @@ export async function deleteMessage(id: string) {
     await pb.collection('messages').update(id, { is_deleted: true })
         .catch((err) => {
             console.error('Failed to delete message:', err)
+        });
+}
+
+export async function welcomeMessage(userId: string) {
+    await pb.collection('messages').create({
+        user_id: userId,
+        sender_id: siteConfig.name,
+        title: 'Welcome to our platform!',
+        content: 'Your account has been created successfully. Enjoy your stay!',
+    })
+        .catch((err) => {
+            console.error('Failed to add message:', err)
         });
 }
 
