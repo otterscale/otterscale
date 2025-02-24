@@ -7,5 +7,19 @@
 	"nav_applications": "应用程序",
 	"nav_integrations": "集成",
 	"nav_dev_tools": "开发工具",
-	"hello_world": "你好，{name}，来自 zh-hans!"
+	"nav_search": "搜索",
+	"nav_preferences": "偏好",
+	"nav_preferences_light_mode": "浅色模式",
+	"nav_preferences_dark_mode": "深色模式",
+	"nav_preferences_documentation": "文档",
+	"inbox": "收件箱",
+	"inbox_unread": "未读",
+	"inbox_archived": "已归档",
+	"inbox_all": "全部",
+	"avatar_profile": "个人资料",
+	"avatar_settings": "设置",
+	"avatar_superuser": "超级用户",
+	"avatar_recents": "最近",
+	"avatar_favorites": "收藏",
+	"avatar_sign_out": "登出"
 }

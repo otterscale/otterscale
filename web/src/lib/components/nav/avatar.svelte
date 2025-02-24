@@ -5,6 +5,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import * as m from '$lib/paraglide/messages.js';
 	import pb from '$lib/pb';
 	import { i18n } from '$lib/i18n';
 
@@ -48,34 +49,34 @@
 			</DropdownMenu.Label>
 			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/settings#profile'))}>
 				<Icon icon="ph:user" class="h-4 w-4" />
-				<span class="pl-2">Profile</span>
+				<span class="pl-2">{m.avatar_profile()}</span>
 				<DropdownMenu.Shortcut>⇧⌘P</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/settings'))}>
 				<Icon icon="ph:gear" class="h-4 w-4" />
-				<span class="pl-2">Settings</span>
+				<span class="pl-2">{m.avatar_settings()}</span>
 				<DropdownMenu.Shortcut>⇧⌘S</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/settings#superuser'))}>
 				<Icon icon="ph:key" class="h-4 w-4" />
-				<span class="pl-2">Superuser</span>
+				<span class="pl-2">{m.avatar_superuser()}</span>
 				<DropdownMenu.Shortcut>⇧⌘U</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/recents'))}>
 				<Icon icon="ph:clock" class="h-4 w-4" />
-				<span class="pl-2">Recents</span>
+				<span class="pl-2">{m.avatar_recents()}</span>
 				<DropdownMenu.Shortcut>⇧⌘R</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/favorites'))}>
 				<Icon icon="ph:clover" class="h-4 w-4" />
-				<span class="pl-2">Favorites</span>
+				<span class="pl-2">{m.avatar_favorites()}</span>
 				<DropdownMenu.Shortcut>⇧⌘F</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item on:click={() => goto(i18n.resolveRoute('/logout'))}>
 				<Icon icon="ph:sign-in" class="h-4 w-4" />
-				<span class="pl-2">Sign out</span>
+				<span class="pl-2">{m.avatar_sign_out()}</span>
 				<DropdownMenu.Shortcut>⇧⌘Q</DropdownMenu.Shortcut>
 			</DropdownMenu.Item>
 		</DropdownMenu.Content>

@@ -7,7 +7,9 @@
 	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as m from '$lib/paraglide/messages.js';
 	import { listMessages, type pbMessage } from '$lib/pb';
+
 	import MailList from './mail-list.svelte';
 
 	let msgs: pbMessage[] = [];
@@ -29,18 +31,18 @@
 				</Button>
 			</Tooltip.Trigger>
 			<Tooltip.Content>
-				<p>Inbox</p>
+				<p>{m.inbox()}</p>
 			</Tooltip.Content>
 		</Tooltip.Root>
 	</Sheet.Trigger>
 	<Sheet.Content>
 		<Tabs.Root value="unread">
-			<h1 class="text-xl font-bold">Inbox</h1>
+			<h1 class="text-xl font-bold">{m.inbox()}</h1>
 			<div class="flex items-center py-4">
 				<Tabs.List class="grid w-full grid-cols-3">
-					<Tabs.Trigger value="unread">Unread</Tabs.Trigger>
-					<Tabs.Trigger value="archived">Archived</Tabs.Trigger>
-					<Tabs.Trigger value="all">All</Tabs.Trigger>
+					<Tabs.Trigger value="unread">{m.inbox_unread()}</Tabs.Trigger>
+					<Tabs.Trigger value="archived">{m.inbox_archived()}</Tabs.Trigger>
+					<Tabs.Trigger value="all">{m.inbox_all()}</Tabs.Trigger>
 				</Tabs.List>
 			</div>
 			<Separator />

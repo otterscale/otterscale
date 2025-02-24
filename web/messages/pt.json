@@ -7,5 +7,19 @@
 	"nav_applications": "Aplicações",
 	"nav_integrations": "Integrações",
 	"nav_dev_tools": "Ferramentas de Desenvolvimento",
-	"hello_world": "Olá, {name} de pt!"
+	"nav_search": "Pesquisar",
+	"nav_preferences": "Preferências",
+	"nav_preferences_light_mode": "Modo Claro",
+	"nav_preferences_dark_mode": "Modo Escuro",
+	"nav_preferences_documentation": "Documentação",
+	"inbox": "Caixa de Entrada",
+	"inbox_unread": "Não Lidos",
+	"inbox_archived": "Arquivados",
+	"inbox_all": "Todos",
+	"avatar_profile": "Perfil",
+	"avatar_settings": "Configurações",
+	"avatar_superuser": "Superusuário",
+	"avatar_recents": "Recentes",
+	"avatar_favorites": "Favoritos",
+	"avatar_sign_out": "Sair"
 }
