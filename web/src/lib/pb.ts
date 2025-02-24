@@ -59,7 +59,10 @@ export async function oauth2Auth(provider: string): Promise<RecordAuthResponse<R
 
 export async function setEmailVisible(userId: string) {
     if (pb.authStore.record) {
-        await pb.collection('users').update(userId, { emailVisibility: true });
+        await pb.collection('users').update(userId, { emailVisibility: true })
+            .catch((err) => {
+                console.error('Failed to set email visible:', err)
+            });;
     }
 }
 
@@ -69,6 +72,8 @@ export async function createUser(email: string, password: string, passwordConfir
         password,
         passwordConfirm,
         name,
+    }).catch((err) => {
+        console.error('Failed to create user:', err)
     });
 }
 
