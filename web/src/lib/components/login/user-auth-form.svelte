@@ -18,8 +18,9 @@
 	import { onMount } from 'svelte';
 	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
-	import { cn, getCallback } from '$lib/utils';
+	import { cn } from '$lib/utils';
 	import { i18n } from '$lib/i18n';
+	import { getCallback } from '$lib/callback';
 
 	let email = '';
 	let password = '';

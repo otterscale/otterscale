@@ -4,7 +4,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { i18n } from '$lib/i18n';
 	import type { pbFavorite } from '$lib/pb';
-	import { formatTimeAgo } from '$lib/utils';
+	import { formatTimeAgo } from '$lib/formatter';
 
 	export let items: pbFavorite[];
 
