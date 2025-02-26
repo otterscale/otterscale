@@ -27,19 +27,16 @@
 	}
 </script>
 
-<DropdownMenu.Group>
+<DropdownMenu.Group class="[&_svg]:size-4">
 	<DropdownMenu.Sub>
 		<DropdownMenu.SubTrigger>
-			<Icon icon="ph:translate" class="h-4 w-4" />
+			<Icon icon="ph:translate" />
 			<span class="pl-2">{languages.get(language)}</span>
 		</DropdownMenu.SubTrigger>
 		<DropdownMenu.SubContent>
 			<DropdownMenu.RadioGroup bind:value={language}>
 				{#each languages as language}
-					<DropdownMenu.RadioItem
-						value={language[0]}
-						on:click={() => switchToLanguage(language[0])}
-					>
+					<DropdownMenu.RadioItem value={language[0]} onclick={() => switchToLanguage(language[0])}>
 						{language[1]}
 					</DropdownMenu.RadioItem>
 				{/each}

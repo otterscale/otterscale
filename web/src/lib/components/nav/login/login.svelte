@@ -2,23 +2,22 @@
 	import Icon from '@iconify/svelte';
 
 	import { goto } from '$app/navigation';
-	import { Button } from '$lib/components/ui/button';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { i18n } from '$lib/i18n';
+	import { cn } from '$lib/utils';
 </script>
 
-<Tooltip.Root>
-	<Tooltip.Trigger asChild>
-		<Button
-			variant="outline"
-			size="icon"
-			class="bg-header"
-			on:click={() => goto(i18n.resolveRoute('/login'))}
+<Tooltip.Provider>
+	<Tooltip.Root>
+		<Tooltip.Trigger
+			class={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'bg-header [&_svg]:size-5')}
+			onclick={() => goto(i18n.resolveRoute('/login'))}
 		>
-			<Icon icon="ph:sign-in" class="h-5 w-5" />
-		</Button>
-	</Tooltip.Trigger>
-	<Tooltip.Content>
-		<p>Sign in</p>
-	</Tooltip.Content>
-</Tooltip.Root>
+			<Icon icon="ph:sign-in" />
+		</Tooltip.Trigger>
+		<Tooltip.Content>
+			<p>Sign in</p>
+		</Tooltip.Content>
+	</Tooltip.Root>
+</Tooltip.Provider>

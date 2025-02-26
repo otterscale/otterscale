@@ -3,7 +3,7 @@
 
 	import { goto } from '$app/navigation';
 
-	import { Button } from '$lib/components/ui/button';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Tooltip from '$lib/components/ui/tooltip';
@@ -18,7 +18,7 @@
 	import { onMount } from 'svelte';
 	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
-	import { getCallback } from '$lib/utils';
+	import { cn, getCallback } from '$lib/utils';
 	import { i18n } from '$lib/i18n';
 
 	let email = '';
@@ -129,9 +129,9 @@
 					bind:value={password}
 				/>
 			</div>
-			<Button type="submit" disabled={isLoading}>
+			<Button type="submit" disabled={isLoading} class="[&_svg]:size-5">
 				{#if isLoading}
-					<Icon icon="ph:spinner-gap" class="h-5 w-5 animate-spin" />
+					<Icon icon="ph:spinner-gap" class="animate-spin" />
 				{:else}
 					<p>Go</p>
 				{/if}
@@ -148,25 +148,27 @@
 	</div>
 	<div class="flex justify-evenly space-x-2">
 		{#each oauth2Map as [provider, oauth2]}
-			<Tooltip.Root>
-				<Tooltip.Trigger asChild>
-					<Button
-						variant="outline"
-						class="disabled:pointer-events-auto disabled:cursor-not-allowed"
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger
+						class={cn(
+							buttonVariants({ variant: 'outline' }),
+							'disabled:pointer-events-auto disabled:cursor-not-allowed [&_svg]:size-5'
+						)}
 						disabled={oauth2.loading || !oauth2.enabled}
-						on:click={() => authWithOAuth2(provider)}
+						onclick={() => authWithOAuth2(provider)}
 					>
 						{#if oauth2.loading}
-							<Icon icon="ph:spinner-gap" class="h-5 w-5 animate-spin" />
+							<Icon icon="ph:spinner-gap" class="animate-spin" />
 						{:else}
-							<Icon icon={oauth2.icon} class="strike h-5 w-5" />
+							<Icon icon={oauth2.icon} class="strike" />
 						{/if}
-					</Button>
-				</Tooltip.Trigger>
-				<Tooltip.Content>
-					<p>{oauth2.name}</p>
-				</Tooltip.Content>
-			</Tooltip.Root>
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						<p>{oauth2.name}</p>
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
 		{/each}
 	</div>
 </div>
