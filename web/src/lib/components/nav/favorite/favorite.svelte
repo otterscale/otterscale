@@ -4,10 +4,11 @@
 	import { toast } from 'svelte-sonner';
 
 	import { page } from '$app/state';
-	import { Button } from '$lib/components/ui/button';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import pb, { addFavorite, deleteFavorite, isFavorite } from '$lib/pb';
 	import { i18n } from '$lib/i18n';
+	import { cn } from '$lib/utils';
 
 	let favorited = $state(false);
 	let currentPage = i18n.route(page.url.pathname);
@@ -36,17 +37,20 @@
 	}
 </script>
 
-<Tooltip.Root>
-	<Tooltip.Trigger asChild>
-		<Button variant="outline" size="icon" class="bg-header" on:click={toggleFavorite}>
+<Tooltip.Provider>
+	<Tooltip.Root>
+		<Tooltip.Trigger
+			class={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'bg-header [&_svg]:size-5')}
+			onclick={toggleFavorite}
+		>
 			{#if favorited}
-				<Icon icon="ph:heart-fill" class="h-5 w-5" />
+				<Icon icon="ph:heart-fill" />
 			{:else}
-				<Icon icon="ph:heart" class="h-5 w-5" />
+				<Icon icon="ph:heart" />
 			{/if}
-		</Button>
-	</Tooltip.Trigger>
-	<Tooltip.Content>
-		<p>Favorite</p>
-	</Tooltip.Content>
-</Tooltip.Root>
+		</Tooltip.Trigger>
+		<Tooltip.Content>
+			<p>Favorite</p>
+		</Tooltip.Content>
+	</Tooltip.Root>
+</Tooltip.Provider>

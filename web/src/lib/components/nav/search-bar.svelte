@@ -6,8 +6,8 @@
 </script>
 
 <form class="ml-auto flex-1 sm:flex-initial">
-	<div class="relative">
-		<Icon icon="ph:magnifying-glass" class="absolute left-2 top-2 h-5 w-5 text-muted-foreground" />
+	<div class="relative [&_svg]:size-5">
+		<Icon icon="ph:magnifying-glass" class="absolute left-2 top-2 text-muted-foreground" />
 		<Input
 			type="search"
 			placeholder={m.nav_search()}

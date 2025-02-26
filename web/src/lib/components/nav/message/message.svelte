@@ -2,15 +2,15 @@
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
 
-	import { Button } from '$lib/components/ui/button';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as m from '$lib/paraglide/messages.js';
 	import { listMessages, type pbMessage } from '$lib/pb';
 
 	import MailList from './mail-list.svelte';
+	import { cn } from '$lib/utils';
 
 	let msgs: pbMessage[] = [];
 	onMount(async () => {
@@ -19,23 +19,16 @@
 </script>
 
 <Sheet.Root>
-	<Sheet.Trigger>
-		<Tooltip.Root>
-			<Tooltip.Trigger asChild>
-				<Button variant="outline" size="icon" class="bg-header">
-					{#if msgs.filter((msg) => !msg.isRead).length > 0}
-						<Icon icon="ph:notification-fill" class="h-5 w-5" />
-					{:else}
-						<Icon icon="ph:notification" class="h-5 w-5" />
-					{/if}
-				</Button>
-			</Tooltip.Trigger>
-			<Tooltip.Content>
-				<p>{m.inbox()}</p>
-			</Tooltip.Content>
-		</Tooltip.Root>
+	<Sheet.Trigger
+		class={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'bg-header [&_svg]:size-5')}
+	>
+		{#if msgs.filter((msg) => !msg.isRead).length > 0}
+			<Icon icon="ph:notification-fill" />
+		{:else}
+			<Icon icon="ph:notification" />
+		{/if}
 	</Sheet.Trigger>
-	<Sheet.Content>
+	<Sheet.Content class="rounded-l-[10px]">
 		<Tabs.Root value="unread">
 			<h1 class="text-xl font-bold">{m.inbox()}</h1>
 			<div class="flex items-center py-4">

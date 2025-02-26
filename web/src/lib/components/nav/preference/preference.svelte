@@ -1,35 +1,30 @@
 <script>
 	import Icon from '@iconify/svelte';
 
-	import { Button } from '$lib/components/ui/button';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as m from '$lib/paraglide/messages.js';
 
 	import Mode from './mode.svelte';
 	import I18n from './i18n.svelte';
 	import Doc from './doc.svelte';
+	import { cn } from '$lib/utils';
 </script>
 
 <DropdownMenu.Root>
-	<DropdownMenu.Trigger asChild let:builder>
-		<Tooltip.Root>
-			<Tooltip.Trigger asChild>
-				<Button builders={[builder]} variant="outline" size="icon" class="bg-header">
-					<Icon icon="ph:circles-three-plus" class="h-5 w-5" />
-				</Button>
-			</Tooltip.Trigger>
-			<Tooltip.Content>
-				<p>{m.nav_preferences()}</p>
-			</Tooltip.Content>
-		</Tooltip.Root>
+	<DropdownMenu.Trigger
+		class={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'bg-header [&_svg]:size-5')}
+	>
+		<Icon icon="ph:circles-three-plus" />
 	</DropdownMenu.Trigger>
-	<DropdownMenu.Content align="end" class="w-40">
-		<DropdownMenu.Label>{m.nav_preferences()}</DropdownMenu.Label>
-		<DropdownMenu.Separator />
-		<Mode />
-		<I18n />
-		<DropdownMenu.Separator />
-		<Doc />
+	<DropdownMenu.Content align="end">
+		<DropdownMenu.Group>
+			<DropdownMenu.GroupHeading>{m.nav_preferences()}</DropdownMenu.GroupHeading>
+			<DropdownMenu.Separator />
+			<Mode />
+			<I18n />
+			<DropdownMenu.Separator />
+			<Doc />
+		</DropdownMenu.Group>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>

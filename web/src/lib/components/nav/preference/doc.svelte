@@ -6,9 +6,9 @@
 </script>
 
 <DropdownMenu.Item
-	class="space-x-2"
-	on:click={() => window.open('https://openhdc.github.io', '_blank')}
+	class="space-x-2 [&_svg]:size-4"
+	onclick={() => window.open('https://openhdc.github.io', '_blank')}
 >
-	<Icon icon="ph:arrow-square-out" class="h-4 w-4" />
+	<Icon icon="ph:arrow-square-out" />
 	<span>{m.nav_preferences_documentation()}</span>
 </DropdownMenu.Item>

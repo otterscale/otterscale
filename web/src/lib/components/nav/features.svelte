@@ -27,7 +27,7 @@
 				: 'text-muted-foreground'
 		)}
 		disabled={!feature.enable}
-		on:click={() => goto(i18n.resolveRoute(feature.path))}
+		onclick={() => goto(i18n.resolveRoute(feature.path))}
 	>
 		<span>{getFeatureTitle(feature.path)}</span>
 	</Button>

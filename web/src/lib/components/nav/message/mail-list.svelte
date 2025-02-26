@@ -41,77 +41,77 @@
 									<span class="flex h-2 w-2 rounded-full bg-blue-600"></span>
 								{/if}
 							</div>
-							<div class="ml-auto text-xs">
+							<div class="ml-auto text-xs [&_svg]:size-5">
 								<DropdownMenu.Root>
 									<DropdownMenu.Trigger>
-										<Icon icon="ph:dots-three-vertical-bold" class="h-5 w-5" />
+										<Icon icon="ph:dots-three-vertical-bold" />
 									</DropdownMenu.Trigger>
 									<DropdownMenu.Content>
 										<DropdownMenu.Group>
 											{#if item.isRead}
 												<DropdownMenu.Item
 													class="space-x-1"
-													on:click={async () => {
+													onclick={async () => {
 														await unreadMessage(item.id);
 														item.isRead = false;
 														items = items;
 														toast.success('Message marked as unread.');
 													}}
 												>
-													<Icon icon="ph:arrow-counter-clockwise" class="h-5 w-5" />
+													<Icon icon="ph:arrow-counter-clockwise" />
 													<span>Unread</span>
 												</DropdownMenu.Item>
 											{:else}
 												<DropdownMenu.Item
 													class="space-x-1"
-													on:click={async () => {
+													onclick={async () => {
 														await readMessage(item.id);
 														item.isRead = true;
 														items = items;
 														toast.success('Message marked as read.');
 													}}
 												>
-													<Icon icon="ph:check-circle" class="h-5 w-5" />
+													<Icon icon="ph:check-circle" />
 													<span>Read</span>
 												</DropdownMenu.Item>
 											{/if}
 											{#if item.isArchived}
 												<DropdownMenu.Item
 													class="space-x-1"
-													on:click={async () => {
+													onclick={async () => {
 														await unarchiveMessage(item.id);
 														item.isArchived = false;
 														items = items;
 														toast.success('Message removed from archive.');
 													}}
 												>
-													<Icon icon="ph:box-arrow-up" class="h-5 w-5" />
+													<Icon icon="ph:box-arrow-up" />
 													<span>Unarchive</span>
 												</DropdownMenu.Item>
 											{:else}
 												<DropdownMenu.Item
 													class="space-x-1"
-													on:click={async () => {
+													onclick={async () => {
 														await archiveMessage(item.id);
 														item.isArchived = true;
 														items = items;
 														toast.success('Message moved to archive.');
 													}}
 												>
-													<Icon icon="ph:box-arrow-down" class="h-5 w-5" />
+													<Icon icon="ph:box-arrow-down" />
 													<span>Archive</span>
 												</DropdownMenu.Item>
 											{/if}
 											<DropdownMenu.Item
 												class="space-x-1"
-												on:click={async () => {
+												onclick={async () => {
 													await deleteMessage(item.id);
 													item.isDeleted = true;
 													items = items;
 													toast.success('Message deleted.');
 												}}
 											>
-												<Icon icon="ph:trash" class="h-5 w-5" />
+												<Icon icon="ph:trash" />
 												<span>Delete</span>
 											</DropdownMenu.Item>
 										</DropdownMenu.Group>
