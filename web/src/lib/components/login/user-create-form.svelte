@@ -9,7 +9,7 @@
 	import { createUser, Helper, passwordAuth, setEmailVisible, welcomeMessage } from '$lib/pb';
 	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
-	import { getCallback } from '$lib/utils';
+	import { getCallback } from '$lib/callback';
 	import { i18n } from '$lib/i18n';
 
 	let email = '';
