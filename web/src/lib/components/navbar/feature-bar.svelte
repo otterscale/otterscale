@@ -20,7 +20,7 @@
 		href="/"
 		class="relative flex aspect-square size-8 shrink-0 items-center justify-center gap-4 overflow-hidden rounded-lg bg-sidebar-primary text-lg font-semibold text-sidebar-primary-foreground [&_svg]:size-6"
 	>
-		<Icon icon="ph:polygon" />
+		<Icon icon="ph:graph" />
 		<span class="sr-only">{siteConfig.name}</span>
 	</a>
 	{#each features as feature}
