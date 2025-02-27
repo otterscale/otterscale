@@ -73,7 +73,7 @@
 				items: [
 					{
 						title: 'Browse',
-						url: '/data-fabric/browse'
+						url: '/data-fabric'
 					},
 					{
 						title: 'Configurations',
