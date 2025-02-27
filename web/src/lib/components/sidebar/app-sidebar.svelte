@@ -48,7 +48,7 @@
 			{
 				name: 'Default',
 				plan: 'Enterprise',
-				icon: 'ph:polygon',
+				icon: 'ph:graph',
 				color: '#4682B4'
 			},
 			{
@@ -68,7 +68,7 @@
 			{
 				title: featureTitle('/data-fabric'),
 				url: '#',
-				icon: 'ph:database',
+				icon: 'ph:tree-structure',
 				isActive: true,
 				items: [
 					{

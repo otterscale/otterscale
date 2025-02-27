@@ -20,10 +20,20 @@
 
 <Sheet.Root>
 	<Sheet.Trigger
-		class={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'bg-sidebar [&_svg]:size-5')}
+		class={cn(
+			buttonVariants({ variant: 'outline', size: 'icon' }),
+			'relative bg-sidebar [&_svg]:size-5'
+		)}
 	>
 		{#if msgs.filter((msg) => !msg.isRead).length > 0}
-			<Icon icon="ph:notification-fill" />
+			<span class="absolute right-1 top-1 flex size-2.5">
+				<span
+					class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
+				>
+				</span>
+				<span class="relative inline-flex size-2.5 rounded-full bg-blue-500"> </span>
+			</span>
+			<Icon icon="ph:tray" />
 		{:else}
 			<Icon icon="ph:notification" />
 		{/if}
