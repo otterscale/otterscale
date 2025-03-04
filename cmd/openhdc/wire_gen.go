@@ -7,20 +7,20 @@
 package main
 
 import (
-	"github.com/openhdc/openhdc"
 	service2 "github.com/openhdc/openhdc/internal/service"
 	"github.com/openhdc/openhdc/internal/service/app"
 	"github.com/openhdc/openhdc/internal/service/domain/service"
 	"github.com/openhdc/openhdc/internal/service/infra/repo"
+	"github.com/pocketbase/pocketbase"
 )
 
 import (
-	_ "go.uber.org/automaxprocs"
+	_ "github.com/openhdc/openhdc/internal/migrations"
 )
 
 // Injectors from wire.go:
 
-func wireApp(arg []openhdc.ServerOption) (*openhdc.App, func(), error) {
+func wireApp() (*pocketbase.PocketBase, func(), error) {
 	client, cleanup, err := repo.NewEntClient()
 	if err != nil {
 		return nil, nil, err
@@ -28,9 +28,9 @@ func wireApp(arg []openhdc.ServerOption) (*openhdc.App, func(), error) {
 	userRepo := repo.NewUserRepo(client)
 	userService := service.NewUserService(userRepo)
 	userApp := app.NewUserApp(userService)
-	server := service2.NewGRPCServer(arg, userApp)
-	openhdcApp := newApp(server)
-	return openhdcApp, func() {
+	v := service2.NewPocketBase(userApp)
+	pocketBase := newApp(v)
+	return pocketBase, func() {
 		cleanup()
 	}, nil
 }

@@ -12,17 +12,18 @@
 	import Icon from '@iconify/svelte';
 	import { toast } from 'svelte-sonner';
 	import { formatTimeAgo } from '$lib/formatter';
+	import { siteConfig } from '$lib/config/site';
 
 	export let type: number;
 	export let items: pbMessage[];
 
 	function ok(msg: pbMessage): boolean {
 		if (type === 0) {
-			return !msg.isRead && !msg.isArchived && !msg.isDeleted;
+			return !msg.read && !msg.archived && !msg.deleted;
 		} else if (type === 1) {
-			return msg.isArchived && !msg.isDeleted;
+			return msg.archived && !msg.deleted;
 		}
-		return !msg.isDeleted;
+		return !msg.deleted;
 	}
 </script>
 
@@ -36,8 +37,8 @@
 					<div class="flex w-full flex-col gap-1">
 						<div class="flex items-center">
 							<div class="flex items-center gap-2">
-								<div class="font-semibold">{item.senderId}</div>
-								{#if !item.isRead}
+								<div class="font-semibold">{item.from ?? siteConfig.title}</div>
+								{#if !item.read}
 									<span class="flex h-2 w-2 rounded-full bg-blue-600"></span>
 								{/if}
 							</div>
@@ -48,12 +49,12 @@
 									</DropdownMenu.Trigger>
 									<DropdownMenu.Content>
 										<DropdownMenu.Group>
-											{#if item.isRead}
+											{#if item.read}
 												<DropdownMenu.Item
 													class="space-x-1"
 													onclick={async () => {
 														await unreadMessage(item.id);
-														item.isRead = false;
+														item.read = false;
 														items = items;
 														toast.success('Message marked as unread.');
 													}}
@@ -66,7 +67,7 @@
 													class="space-x-1"
 													onclick={async () => {
 														await readMessage(item.id);
-														item.isRead = true;
+														item.read = true;
 														items = items;
 														toast.success('Message marked as read.');
 													}}
@@ -75,12 +76,12 @@
 													<span>Read</span>
 												</DropdownMenu.Item>
 											{/if}
-											{#if item.isArchived}
+											{#if item.archived}
 												<DropdownMenu.Item
 													class="space-x-1"
 													onclick={async () => {
 														await unarchiveMessage(item.id);
-														item.isArchived = false;
+														item.archived = false;
 														items = items;
 														toast.success('Message removed from archive.');
 													}}
@@ -93,7 +94,7 @@
 													class="space-x-1"
 													onclick={async () => {
 														await archiveMessage(item.id);
-														item.isArchived = true;
+														item.archived = true;
 														items = items;
 														toast.success('Message moved to archive.');
 													}}
@@ -106,7 +107,7 @@
 												class="space-x-1"
 												onclick={async () => {
 													await deleteMessage(item.id);
-													item.isDeleted = true;
+													item.deleted = true;
 													items = items;
 													toast.success('Message deleted.');
 												}}

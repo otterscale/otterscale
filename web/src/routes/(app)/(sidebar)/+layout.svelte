@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { SiteSidebar } from '$lib/components';
-	import pb, { upsertVisit } from '$lib/pb';
+	import pb, { upsertRecent } from '$lib/pb';
 	import { setCallback } from '$lib/callback';
 	import { i18n } from '$lib/i18n';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
@@ -19,12 +19,12 @@
 	let currentPage = i18n.route(page.url.pathname);
 
 	onMount(async () => {
-		await upsertVisit();
+		await upsertRecent();
 	});
 
 	$effect(() => {
 		if (currentPage !== i18n.route(page.url.pathname)) {
-			(async () => await upsertVisit())();
+			(async () => await upsertRecent())();
 			currentPage = i18n.route(page.url.pathname);
 		}
 		if (!pb.authStore.isValid) {
