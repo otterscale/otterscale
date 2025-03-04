@@ -2,19 +2,28 @@ package or
 
 import (
 	"context"
-	"database/sql"
+	"database/sql/driver"
 	"fmt"
 	"slices"
 	"strings"
 
 	"github.com/apache/arrow-go/v18/arrow"
+	go_ora "github.com/sijms/go-ora/v2"
 
 	"github.com/openhdc/openhdc/api/property/v1"
 	"github.com/openhdc/openhdc/api/workload/v1"
 )
 
-func (h *Helper) Select(ctx context.Context, tx *sql.Tx, mode property.SyncMode, curs []*workload.Sync_Option_Cursor) (*sql.Rows, error) {
-	return tx.QueryContext(ctx, selectStatement(h.tableName, h.sch, mode, curs))
+func (h *Helper) Select(ctx context.Context, pool *go_ora.Connection, mode property.SyncMode, curs []*workload.Sync_Option_Cursor) (driver.Rows, error) {
+	stmt := go_ora.NewStmt(selectStatement(h.tableName, h.sch, mode, curs), pool)
+	defer stmt.Close()
+
+	rows, err := stmt.Query(nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return rows, nil
 }
 
 func selectStatement(tableName string, sch *arrow.Schema, mode property.SyncMode, curs []*workload.Sync_Option_Cursor) string {

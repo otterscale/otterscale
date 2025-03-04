@@ -3,8 +3,9 @@ package client
 import (
 	"context"
 	"database/sql"
+	"database/sql/driver"
 	"errors"
-	"log"
+	"fmt"
 	"log/slog"
 	"reflect"
 
@@ -23,11 +24,12 @@ func (c *Client) Read(ctx context.Context, msgs chan<- *pb.Message, rdr *openhdc
 		return errors.New("namespace is empty")
 	}
 
+	if err := c.pool.OpenWithContext(ctx); err != nil {
+		return err
+	}
+
 	// new transaction
-	tx, err := c.pool.BeginTx(ctx, &sql.TxOptions{
-		Isolation: sql.LevelDefault,
-		ReadOnly:  false,
-	})
+	tx, err := c.pool.BeginTx(ctx, driver.TxOptions{})
 	if err != nil {
 		return err
 	}
@@ -50,7 +52,7 @@ func (c *Client) Read(ctx context.Context, msgs chan<- *pb.Message, rdr *openhdc
 		if skip(sch, rdr.Keys(), rdr.SkipKeys()) {
 			continue
 		}
-		if err := c.read(ctx, tx, sch, msgs, rdr); err != nil {
+		if err := c.read(ctx, sch, msgs, rdr); err != nil {
 			return err
 		}
 	}
@@ -58,7 +60,7 @@ func (c *Client) Read(ctx context.Context, msgs chan<- *pb.Message, rdr *openhdc
 	return tx.Commit()
 }
 
-func (c *Client) read(ctx context.Context, tx *sql.Tx, sch *arrow.Schema, msgs chan<- *pb.Message, rdr *openhdc.Reader) error {
+func (c *Client) read(ctx context.Context, sch *arrow.Schema, msgs chan<- *pb.Message, rdr *openhdc.Reader) error {
 	// record builder
 	b := array.NewRecordBuilder(memory.DefaultAllocator, sch)
 
@@ -91,41 +93,29 @@ func (c *Client) read(ctx context.Context, tx *sql.Tx, sch *arrow.Schema, msgs c
 	}
 
 	// query
-	rows, err := h.Select(ctx, tx, mode, curs)
+	rows, err := h.Select(ctx, c.pool, mode, curs)
 	if err != nil {
 		return err
 	}
 	defer rows.Close()
 
-	// columns
-	cols, err := rows.Columns()
-	if err != nil {
-		log.Fatalf("Failed to get columns: %v", err)
-	}
-
 	// start
 	var count int64
-	for rows.Next() {
+	vals := make([]driver.Value, len(rows.Columns()))
+	for {
 		// query
-		ptrs := make([]any, len(cols))
-		vals := make([]sql.NullString, len(cols))
-		for i := range vals {
-			ptrs[i] = &vals[i]
-		}
-
-		err := rows.Scan(ptrs...)
-		if err != nil {
-			log.Fatalf("Failed to scan row: %v", err)
+		if err := rows.Next(vals); err != nil {
+			break
 		}
 
 		// encode
 		for idx, val := range vals {
-			if err := c.Encode(b.Field(idx), val.String); err != nil {
-				slog.Error("invalid append", "type of field", reflect.TypeOf(b.Field(idx)), "type of value", reflect.TypeOf(val.String))
+			if err := c.Encode(b.Field(idx), val); err != nil {
+				slog.Error("invalid append", "type of field", reflect.TypeOf(b.Field(idx)), "type of value", reflect.TypeOf(val))
 				return err
 			}
 		}
-
+		fmt.Println(b.NewRecord())
 		// batch
 		count++
 		if count > rdr.BatchSize() {
@@ -150,5 +140,5 @@ func (c *Client) read(ctx context.Context, tx *sql.Tx, sch *arrow.Schema, msgs c
 		}
 	}
 
-	return rows.Err()
+	return err
 }

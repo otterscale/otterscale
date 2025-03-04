@@ -2,12 +2,10 @@ package client
 
 import (
 	"context"
-	"database/sql"
 	"errors"
-	"fmt"
-	"net/url"
 
 	"github.com/google/wire"
+	go_ora "github.com/sijms/go-ora/v2"
 
 	"github.com/openhdc/openhdc"
 )
@@ -18,7 +16,7 @@ type Client struct {
 	openhdc.Codec
 	opts options
 
-	pool *sql.DB
+	pool *go_ora.Connection
 }
 
 func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
@@ -31,13 +29,12 @@ func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
 		return nil, errors.New("connection string is empty")
 	}
 
-	u, err := url.Parse(opts.connString)
+	f, err := go_ora.ParseConfig(opts.connString)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(u.Scheme)
 
-	p, err := sql.Open(u.Scheme, opts.connString)
+	p, err := go_ora.NewConnection(opts.connString, f)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +47,7 @@ func NewConnector(c openhdc.Codec, opt ...Option) (openhdc.Connector, error) {
 }
 
 func (c *Client) TestConnection(ctx context.Context) error {
-	return c.pool.PingContext(ctx)
+	return c.pool.Ping(ctx)
 }
 
 func (c *Client) Name() string {

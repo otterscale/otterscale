@@ -9,7 +9,7 @@ import (
 
 	"github.com/openhdc/openhdc/api/property/v1"
 	"github.com/openhdc/openhdc/api/workload/v1"
-	pg "github.com/openhdc/openhdc/connectors/oracle/client/or"
+	"github.com/openhdc/openhdc/connectors/oracle/client/or"
 	"github.com/openhdc/openhdc/metadata"
 )
 
@@ -20,7 +20,7 @@ func toSchemaMetadata(tableName string) *arrow.Metadata {
 	return &md
 }
 
-func toFieldMetadata(att *pg.Attribute) arrow.Metadata {
+func toFieldMetadata(att *or.Attribute) arrow.Metadata {
 	m := map[string]string{}
 	if att.ConTypes != nil {
 		if strings.Contains(*att.ConTypes, "p") {

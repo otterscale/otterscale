@@ -1,7 +1,9 @@
 package openhdc
 
 import (
+	"encoding/base64"
 	"fmt"
+	"reflect"
 	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
@@ -27,9 +29,12 @@ func (DefaultCodec) format(val any) string {
 	switch t := val.(type) {
 	case time.Time:
 		return t.Format(time.RFC3339Nano)
+	case []uint8:
+		return base64.StdEncoding.EncodeToString(t)
 	case [16]uint8:
 		return uuid.UUID(t).String()
 	}
+	fmt.Println(val, reflect.TypeOf(val))
 	return fmt.Sprintf("%v", val)
 }
 
