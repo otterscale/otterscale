@@ -1,31 +1,17 @@
 <script lang="ts">
-	import { Button, buttonVariants } from '$lib/components/ui/button';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import * as Drawer from '$lib/components/ui/drawer';
-	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Accordion from '$lib/components/ui/accordion';
-	import { formatTimeAgo } from '$lib/formatter';
-	import pb from '$lib/pb';
-	import * as Table from '$lib/components/ui/table';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Input } from '$lib/components/ui/input';
-
 	import { useId } from 'bits-ui';
-
-	import CircleAlert from 'lucide-svelte/icons/circle-alert';
-	import * as Alert from '$lib/components/ui/alert/index.js';
-	import * as Carousel from '$lib/components/ui/carousel';
-	import * as Card from '$lib/components/ui/card';
-
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import Ellipsis from 'lucide-svelte/icons/ellipsis';
 	import { tick } from 'svelte';
-	import * as Command from '$lib/components/ui/command';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { Label } from '$lib/components/ui/label/index.js';
+	import { toast } from 'svelte-sonner';
+	import Icon from '@iconify/svelte';
 
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import * as Command from '$lib/components/ui/command';
+	import { Input } from '$lib/components/ui/input';
+	import * as Popover from '$lib/components/ui/popover';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+
+	//#region types
 	interface Parameter {
 		key: string;
 		name?: string;
@@ -39,10 +25,11 @@
 	}
 
 	let {
+		parent = $bindable(),
 		item
 	}: {
+		parent: boolean;
 		item: {
-			steps: boolean[];
 			connectors: {
 				name: string;
 				icon: string;
@@ -51,6 +38,10 @@
 			}[];
 		};
 	} = $props();
+
+	//#endregion
+
+	//#region parameters
 
 	let open = $state(false);
 	let value = $state('');
@@ -65,22 +56,28 @@
 
 	const triggerId = useId();
 
-	// TODO: BETTER
+	//endregion
+
+	//#region templates
+
 	const templates = $derived(item.connectors.find((s) => s.name === value)?.templates);
 
-	const triggerId1 = useId();
-	let open1 = $state(false);
-	let value1 = $state('');
-	const selected1 = $derived(
-		item.connectors.find((s) => s.name === value)?.templates?.find((s) => s.name === value1) ?? null
-	);
+	let templateOpen = $state(false);
+	let templateValue = $state('');
+	const templateSelected = $derived(templates?.find((s) => s.name === templateValue) ?? null);
 
-	function closeAndFocusTrigger1(triggerId: string) {
-		open1 = false;
+	function closeAndFocusTemplateTrigger(triggerId: string) {
+		templateOpen = false;
 		tick().then(() => {
 			document.getElementById(triggerId)?.focus();
 		});
 	}
+
+	const triggerTemplateId = useId();
+
+	//endregion
+
+	let confirm = $state(false);
 </script>
 
 <div class="w-full flex-col space-y-2">
@@ -102,7 +99,7 @@
 					})}
 					id={triggerId}
 				>
-					<div class="flex items-center gap-2">
+					<div class="flex items-center gap-2 text-foreground">
 						{#if selected}
 							<span>{selected.name}</span>
 						{:else}
@@ -138,7 +135,7 @@
 		{#each selected.parameters as p}
 			<fieldset class="items-center gap-6 rounded-lg border p-4">
 				<legend class="-ml-1 px-1 text-sm font-medium"> {p.name} </legend>
-				<Input type="text" id={p.key} value={p.value} />
+				<Input class="text-foreground" type="text" id={p.key} value={p.value} />
 				<p class="pt-2 text-sm text-muted-foreground">{p.description}</p>
 			</fieldset>
 		{/each}
@@ -154,17 +151,17 @@
 		</div>
 		<fieldset class="grid w-full gap-6 rounded-lg border p-4">
 			<legend class="-ml-1 px-1 text-sm font-medium"> Template </legend>
-			<Popover.Root bind:open={open1}>
+			<Popover.Root bind:open={templateOpen}>
 				<Popover.Trigger
 					class={buttonVariants({
 						variant: 'outline',
 						class: 'w-full'
 					})}
-					id={triggerId1}
+					id={triggerTemplateId}
 				>
-					<div class="flex items-center gap-2">
-						{#if selected1}
-							<span>{selected1.name}</span>
+					<div class="flex items-center gap-2 text-foreground">
+						{#if templateSelected}
+							<span>{templateSelected.name}</span>
 						{:else}
 							<span>+ Select</span>
 						{/if}
@@ -181,8 +178,15 @@
 										<Command.Item
 											value={template.name}
 											onSelect={() => {
-												value1 = template.name;
-												closeAndFocusTrigger1(triggerId1);
+												templateValue = template.name;
+												selected?.parameters.forEach((p) => {
+													templateSelected?.parameters.forEach((t) => {
+														if (p.key === t.key) {
+															p.value = t.value;
+														}
+													});
+												});
+												closeAndFocusTemplateTrigger(triggerTemplateId);
 											}}
 										>
 											{template.name}
@@ -196,19 +200,45 @@
 			</Popover.Root>
 		</fieldset>
 	{/if}
-	<div class="flex justify-around pt-4">
-		<Button
-			size="lg"
-			variant="outline"
-			onclick={() => {
-				// connectorOpens = [false, false, false, false];
-			}}>Back</Button
-		>
-		<Button
-			size="lg"
-			onclick={() => {
-				// connectorOpens = [false, true, false, false];
-			}}>Next</Button
-		>
+	<div class="flex justify-end pt-4">
+		<AlertDialog.Root bind:open={confirm}>
+			<AlertDialog.Trigger disabled={!selected} class={buttonVariants({})}>
+				Continue
+			</AlertDialog.Trigger>
+			<AlertDialog.Content class="space-y-2">
+				<AlertDialog.Header class="space-y-4">
+					<AlertDialog.Title>Please confirm the configuration</AlertDialog.Title>
+					<AlertDialog.Description class="space-y-2">
+						{#if selected}
+							<fieldset class="items-center gap-6 rounded-lg border p-4">
+								<legend class="-ml-1 px-1 text-sm font-medium"> New </legend>
+								<div class="flex items-center space-x-2 text-base text-foreground">
+									<Icon icon={selected.icon} class="size-8" />
+									<span>{selected.name}</span>
+								</div>
+							</fieldset>
+							{#each selected.parameters as p}
+								<fieldset class="items-center gap-6 rounded-lg border p-4">
+									<legend class="-ml-1 px-1 text-sm font-medium"> {p.name} </legend>
+									<p class="text-foreground">{p.value}</p>
+								</fieldset>
+							{/each}
+						{/if}
+					</AlertDialog.Description>
+				</AlertDialog.Header>
+				<AlertDialog.Footer>
+					<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+					<AlertDialog.Action
+						onclick={() => {
+							confirm = false;
+							parent = false;
+							toast.success('Created!');
+						}}
+					>
+						Create
+					</AlertDialog.Action>
+				</AlertDialog.Footer>
+			</AlertDialog.Content>
+		</AlertDialog.Root>
 	</div>
 </div>

@@ -1,31 +1,19 @@
 <script lang="ts">
-	import { Button, buttonVariants } from '$lib/components/ui/button';
-	import * as Drawer from '$lib/components/ui/drawer';
-	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Accordion from '$lib/components/ui/accordion';
-	import { formatTimeAgo } from '$lib/formatter';
-	import pb from '$lib/pb';
-	import * as Table from '$lib/components/ui/table';
-	import * as Dialog from '$lib/components/ui/dialog';
-
 	import { useId } from 'bits-ui';
-
-	import CircleAlert from 'lucide-svelte/icons/circle-alert';
-	import * as Alert from '$lib/components/ui/alert/index.js';
-	import * as Carousel from '$lib/components/ui/carousel';
-	import * as Card from '$lib/components/ui/card';
-
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import Ellipsis from 'lucide-svelte/icons/ellipsis';
 	import { tick } from 'svelte';
-	import * as Command from '$lib/components/ui/command';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { Label } from '$lib/components/ui/label/index.js';
+	import Icon from '@iconify/svelte';
+
+	import * as Accordion from '$lib/components/ui/accordion';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import * as Drawer from '$lib/components/ui/drawer';
+	import * as Table from '$lib/components/ui/table';
+	import * as Tabs from '$lib/components/ui/tabs';
+
 	import { FabricCreateOverview, FabricCreateSource } from '$lib/components/fabric';
-	import FabricCreateDestination from '$lib/components/fabric/fabric-create-destination.svelte';
-	import FabricCreateConnection from '$lib/components/fabric/fabric-create-connection.svelte';
+	import { formatTimeAgo } from '$lib/formatter';
+	import { cn } from '$lib/utils';
+	import pb from '$lib/pb';
 
 	let items = $state([
 		{
@@ -33,7 +21,6 @@
 			icon: 'ph:plug',
 			active: false,
 			set: {
-				steps: [false, false],
 				connectors: [
 					{
 						name: 'PostgreSQL',
@@ -47,7 +34,7 @@
 							},
 							{
 								key: 'namespace',
-								name: 'Name Space',
+								name: 'Namespace',
 								value: '',
 								description: `namespace of database, such as 'public'`
 							}
@@ -58,11 +45,12 @@
 								parameters: [
 									{
 										key: 'connection_string',
-										value: ''
+										value:
+											'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'
 									},
 									{
 										key: 'namespace',
-										value: ''
+										value: 'public'
 									}
 								]
 							}
@@ -265,7 +253,9 @@
 	</Drawer.Content>
 </Drawer.Root>
 
+{open}
 <Dialog.Root
+	bind:open
 	onOpenChange={(open) => {
 		if (!open) {
 			setTimeout(() => {
@@ -292,11 +282,7 @@
 			</Dialog.Title>
 			<Dialog.Description class="flex justify-center pt-4">
 				{#if items[0].active}
-					<FabricCreateSource item={items[0].set} />
-					<!-- {:else if items[1].active}
-					<FabricCreateDestination />
-				{:else if items[2].active}
-					<FabricCreateConnection /> -->
+					<FabricCreateSource bind:parent={open} item={items[0].set} />
 				{:else}
 					<FabricCreateOverview bind:items />
 				{/if}
