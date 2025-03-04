@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
 	import * as Carousel from '$lib/components/ui/carousel';
 	import * as Card from '$lib/components/ui/card';
 
@@ -29,7 +30,7 @@
 							</span>
 						</Card.Content>
 					</Card.Root>
-					<div class="pt-2 text-center text-sm text-muted-foreground">{item.name}</div>
+					<div class="text-foregroundf pt-2 text-center text-sm">{item.name}</div>
 				</div>
 			</Carousel.Item>
 		{/each}
