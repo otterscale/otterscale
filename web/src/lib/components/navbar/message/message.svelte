@@ -25,7 +25,7 @@
 			'relative bg-sidebar [&_svg]:size-5'
 		)}
 	>
-		{#if msgs.filter((msg) => !msg.isRead).length > 0}
+		{#if msgs.filter((msg) => !msg.read).length > 0}
 			<span class="absolute right-1 top-1 flex size-2.5">
 				<span
 					class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"

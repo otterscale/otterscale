@@ -1,43 +1,58 @@
 package main
 
 import (
-	"context"
-	"flag"
-	"fmt"
-	"log"
 	"os"
-	"os/signal"
-	"syscall"
+	"strings"
+
+	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 
 	"github.com/openhdc/openhdc/internal/cli"
+	_ "github.com/openhdc/openhdc/internal/migrations"
 )
 
-var (
-	name    = "openhdc-cli"
-	version = "devel"
-)
+var version = "devel"
 
-// print
-var printVersion = flag.Bool("v", false, "print version")
+func newApp(fns []func(se *core.ServeEvent) error) *pocketbase.PocketBase {
+	// initialize app
+	app := pocketbase.New()
 
-func run() error {
-	signals := []os.Signal{syscall.SIGINT, syscall.SIGQUIT, syscall.SIGKILL, syscall.SIGTERM}
-	ctx, stop := signal.NotifyContext(context.Background(), signals...)
-	defer stop()
-	return cli.NewCmdRoot(version).ExecuteContext(ctx)
+	// set version
+	app.RootCmd.Version = version
+
+	// set commands
+	app.RootCmd.AddCommand(
+		cli.NewCmdInit(),
+		cli.NewCmdInspect(),
+		cli.NewCmdSync(),
+	)
+
+	// set migration command
+	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
+	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
+		Automigrate: isGoRun,
+	})
+
+	// set functions
+	for _, fn := range fns {
+		app.OnServe().BindFunc(fn)
+		app.OnRecordAfterCreateSuccess()
+	}
+
+	return app
 }
 
 func main() {
-	flag.Parse()
-
-	// version
-	if *printVersion {
-		fmt.Println(name, version)
-		return
+	// wire app
+	app, cleanup, err := wireApp()
+	if err != nil {
+		panic(err)
 	}
+	defer cleanup()
 
 	// start and wait for stop signal
-	if err := run(); err != nil {
-		log.Fatal(err)
+	if err := app.Start(); err != nil {
+		panic(err)
 	}
 }

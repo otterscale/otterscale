@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { pbVisit } from '$lib/pb';
+	import type { pbRecent } from '$lib/pb';
 
-	export let items: pbVisit[];
+	export let items: pbRecent[];
 
 	function features(): string[] {
 		return [

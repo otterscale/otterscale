@@ -3,12 +3,12 @@
 	import { page } from '$app/state';
 	import * as Card from '$lib/components/ui/card';
 	import { i18n } from '$lib/i18n';
-	import type { pbVisit } from '$lib/pb';
+	import type { pbRecent } from '$lib/pb';
 	import { formatTimeAgo } from '$lib/formatter';
 
-	export let items: pbVisit[];
+	export let items: pbRecent[];
 
-	function filter(): pbVisit[] {
+	function filter(): pbRecent[] {
 		if (page.url.hash === '') {
 			return items;
 		}

@@ -2,11 +2,11 @@
 	import { onMount } from 'svelte';
 
 	import { RecentContent, RecentSidebar } from '$lib/components/recent';
-	import { listVisits, type pbVisit } from '$lib/pb';
+	import { listRecents, type pbRecent } from '$lib/pb';
 
-	let items: pbVisit[] = [];
+	let items: pbRecent[] = [];
 	onMount(async () => {
-		items = await listVisits();
+		items = await listRecents();
 	});
 </script>
 
