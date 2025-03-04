@@ -2,9 +2,9 @@ package client
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/apache/arrow-go/v18/arrow"
+	go_ora "github.com/sijms/go-ora/v2"
 
 	"github.com/openhdc/openhdc/connectors/oracle/client/or"
 	"github.com/openhdc/openhdc/connectors/oracle/orarrow"
@@ -23,7 +23,7 @@ func (ts Tables) Get(table string) (*arrow.Schema, bool) {
 	return nil, false
 }
 
-func newTables(ctx context.Context, pool *sql.DB) (Tables, error) {
+func newTables(ctx context.Context, pool *go_ora.Connection) (Tables, error) {
 	classes, err := or.Classes(ctx, pool)
 	if err != nil {
 		return nil, err

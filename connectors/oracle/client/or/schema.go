@@ -2,44 +2,42 @@ package or
 
 import (
 	"context"
-	"database/sql"
+	"database/sql/driver"
+
+	go_ora "github.com/sijms/go-ora/v2"
 )
 
 type Class struct {
 	RelName string `db:"relname"`
 }
 
-func readTables(ctx context.Context, pool *sql.DB) (*sql.Rows, error) {
+func Classes(ctx context.Context, pool *go_ora.Connection) ([]*Class, error) {
 	sql := `
-		SELECT TABLE_NAME FROM USER_TABLES
+	SELECT TABLE_NAME FROM USER_TABLES
 	`
-	rows, err := pool.QueryContext(ctx, sql)
+	stmt := go_ora.NewStmt(sql, pool)
+	defer stmt.Close()
+
+	rows, err := stmt.Query_(nil)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
-	return rows, nil
-}
+	var classes []*Class
+	for rows.Next_() {
+		var tableName string
 
-func Classes(ctx context.Context, pool *sql.DB) ([]*Class, error) {
-	var tables []*Class
-
-	rows, err := readTables(ctx, pool)
-	if err != nil {
-		return nil, err
-	}
-
-	for rows.Next() {
-		var table string
-
-		if err := rows.Scan(&table); err != nil {
-			return nil, err
+		if err := rows.Scan(&tableName); err != nil {
+			break
 		}
 
-		tables = append(tables, &Class{RelName: table})
+		class := &Class{RelName: tableName}
+
+		classes = append(classes, class)
 	}
 
-	return tables, nil
+	return classes, nil
 }
 
 type Attribute struct {
@@ -50,7 +48,7 @@ type Attribute struct {
 	ConTypes   *string `db:"contypes"`
 }
 
-func readColumns(ctx context.Context, pool *sql.DB, tableName string) (*sql.Rows, error) {
+func Attributes(ctx context.Context, pool *go_ora.Connection, tableName string) ([]*Attribute, error) {
 	sql := `
 		WITH CONS_TYPES AS (
 			SELECT
@@ -71,49 +69,44 @@ func readColumns(ctx context.Context, pool *sql.DB, tableName string) (*sql.Rows
 		WHERE
 			tc.TABLE_NAME = :1
 	`
-	rows, err := pool.QueryContext(ctx, sql, tableName)
+	stmt := go_ora.NewStmt(sql, pool)
+	defer stmt.Close()
+
+	rows, err := stmt.Query_([]driver.NamedValue{{Value: tableName}})
 	if err != nil {
 		return nil, err
 	}
-
-	return rows, nil
-}
-
-func Attributes(ctx context.Context, pool *sql.DB, tableName string) ([]*Attribute, error) {
-	var attributes []*Attribute
+	defer rows.Close()
 
 	oids, err := getTypeOIDs(pool, tableName)
 	if err != nil {
 		return nil, err
 	}
 
-	rows, err := readColumns(ctx, pool, tableName)
-	if err != nil {
-		return nil, err
-	}
-
-	for rows.Next() {
+	var attributes []*Attribute
+	for rows.Next_() {
 		var (
-			column_id        string
-			column_name      string
-			nullable         bool
-			constraint_types *string
+			columnID        string
+			columnName      string
+			isNullable      bool
+			constraintTypes *string
 		)
 
-		if err := rows.Scan(&column_id, &column_name, &nullable, &constraint_types); err != nil {
-			return nil, err
+		if err := rows.Scan(&columnID, &columnName, &isNullable, &constraintTypes); err != nil {
+			break
 		}
 
 		attribute := Attribute{
-			AttNum:     column_id,
-			AttName:    column_name,
-			AttTypeID:  oids[column_id],
-			AttNotNull: !nullable,
-			ConTypes:   constraint_types,
+			AttNum:     columnID,
+			AttName:    columnName,
+			AttTypeID:  oids[columnID],
+			AttNotNull: !isNullable,
+			ConTypes:   constraintTypes,
 		}
 
 		attributes = append(attributes, &attribute)
 	}
 
 	return attributes, nil
+
 }

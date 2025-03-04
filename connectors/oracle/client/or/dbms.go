@@ -2,7 +2,7 @@ package or
 
 import (
 	"context"
-	"database/sql"
+	"database/sql/driver"
 	"encoding/csv"
 	"fmt"
 	"strconv"
@@ -12,7 +12,7 @@ import (
 	go_ora "github.com/sijms/go-ora/v2"
 )
 
-func getOutputLines(pool *sql.DB, statement string) (string, error) {
+func getOutputLines(pool *go_ora.Connection, statement string) (string, error) {
 	var state int
 	var output string
 
@@ -20,11 +20,11 @@ func getOutputLines(pool *sql.DB, statement string) (string, error) {
 	defer cancel()
 
 	sql := `BEGIN DBMS_OUTPUT.ENABLE(:1); END;`
-	if _, err := pool.ExecContext(ctx, sql, 0x7FFF); err != nil {
+	if _, err := pool.ExecContext(ctx, sql, []driver.NamedValue{{Value: 0x7FFF}}); err != nil {
 		return "", err
 	}
 
-	if _, err := pool.ExecContext(ctx, statement); err != nil {
+	if _, err := pool.ExecContext(ctx, statement, nil); err != nil {
 		return "", err
 	}
 
@@ -45,14 +45,14 @@ func getOutputLines(pool *sql.DB, statement string) (string, error) {
 			:BUFFER := b;
 		END;
 	`
-	if _, err := pool.ExecContext(ctx, sql, 0x7FFF, go_ora.Out{Dest: &state}, go_ora.Out{Dest: &output, Size: 0x7FFF}); err != nil {
+	if _, err := pool.ExecContext(ctx, sql, []driver.NamedValue{{Value: 0x7FFF}, {Value: go_ora.Out{Dest: &state}}, {Value: go_ora.Out{Dest: &output, Size: 0x7FFF}}}); err != nil {
 		return "", err
 	}
 
 	return output, nil
 }
 
-func getTypeOIDs(pool *sql.DB, tableName string) (map[string]uint32, error) {
+func getTypeOIDs(pool *go_ora.Connection, tableName string) (map[string]uint32, error) {
 	oids := make(map[string]uint32)
 
 	statement := fmt.Sprintf(`
