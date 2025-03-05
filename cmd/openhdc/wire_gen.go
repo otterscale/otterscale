@@ -10,7 +10,7 @@ import (
 	service2 "github.com/openhdc/openhdc/internal/service"
 	"github.com/openhdc/openhdc/internal/service/app"
 	"github.com/openhdc/openhdc/internal/service/domain/service"
-	"github.com/openhdc/openhdc/internal/service/infra/repo"
+	"github.com/openhdc/openhdc/internal/service/infra/kube"
 	"github.com/pocketbase/pocketbase"
 )
 
@@ -20,17 +20,17 @@ import (
 
 // Injectors from wire.go:
 
-func wireApp() (*pocketbase.PocketBase, func(), error) {
-	client, cleanup, err := repo.NewEntClient()
+func wireApp(string2 string) (*pocketbase.PocketBase, func(), error) {
+	clientset, err := kube.NewClientset()
 	if err != nil {
 		return nil, nil, err
 	}
-	userRepo := repo.NewUserRepo(client)
-	userService := service.NewUserService(userRepo)
-	userApp := app.NewUserApp(userService)
-	v := service2.NewPocketBase(userApp)
-	pocketBase := newApp(v)
+	kubeNamespace := kube.NewNamespace(clientset)
+	kubeCronJob := kube.NewCronJob(clientset)
+	kubeJob := kube.NewJob(clientset)
+	kubeService := service.NewKubeService(kubeNamespace, kubeCronJob, kubeJob)
+	pipelineApp := app.NewPipelineApp(kubeService)
+	pocketBase := service2.NewPocketBase(string2, pipelineApp)
 	return pocketBase, func() {
-		cleanup()
 	}, nil
 }

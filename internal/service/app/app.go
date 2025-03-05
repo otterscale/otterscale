@@ -2,4 +2,6 @@ package app
 
 import "github.com/google/wire"
 
-var ProviderSet = wire.NewSet(NewUserApp)
+type empty struct{}
+
+var ProviderSet = wire.NewSet(NewPipelineApp)
