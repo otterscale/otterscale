@@ -1,19 +1,41 @@
 package service
 
 import (
-	"github.com/google/wire"
-	"github.com/pocketbase/pocketbase/core"
+	"os"
+	"strings"
 
+	"github.com/google/wire"
+	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+
+	"github.com/openhdc/openhdc/internal/cli"
 	"github.com/openhdc/openhdc/internal/service/app"
 )
 
 var ProviderSet = wire.NewSet(NewPocketBase)
 
-func NewPocketBase(ua *app.UserApp) []func(se *core.ServeEvent) error {
-	pb := []func(se *core.ServeEvent) error{
-		ua.Bind(),
-	}
-	return pb
-}
+func NewPocketBase(version string, pa *app.PipelineApp) *pocketbase.PocketBase {
+	// initialize app
+	app := pocketbase.New()
 
-// func bindRecordCrudApi(app core.App, rg *router.RouterGroup[*core.RequestEvent]) {
+	// set version
+	app.RootCmd.Version = version
+
+	// set commands
+	app.RootCmd.AddCommand(
+		cli.NewCmdInit(),
+		cli.NewCmdInspect(),
+		cli.NewCmdSync(),
+	)
+
+	// set migration command
+	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
+	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
+		Automigrate: isGoRun,
+	})
+
+	// bind functions
+	pa.Bind(app)
+
+	return app
+}

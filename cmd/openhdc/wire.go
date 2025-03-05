@@ -12,6 +12,6 @@ import (
 	"github.com/pocketbase/pocketbase"
 )
 
-func wireApp() (*pocketbase.PocketBase, func(), error) {
-	panic(wire.Build(newApp, service.ProviderSet, app.ProviderSet, domain.ProviderSet, infra.ProviderSet))
+func wireApp(string) (*pocketbase.PocketBase, func(), error) {
+	panic(wire.Build(service.ProviderSet, app.ProviderSet, domain.ProviderSet, infra.ProviderSet))
 }
