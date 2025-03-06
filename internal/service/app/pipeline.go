@@ -24,7 +24,6 @@ func (a *PipelineApp) Bind(app core.App) {
 	app.OnServe().BindFunc(a.onServe)
 	app.OnRecordCreateRequest("pipelines").BindFunc(a.onRecordCreateRequest)
 	app.OnRecordUpdateRequest("pipelines").BindFunc(a.onRecordUpdateRequest)
-	app.OnRecordDeleteRequest("pipelines").BindFunc(a.onRecordDeleteRequest)
 }
 
 func (a *PipelineApp) onServe(se *core.ServeEvent) error {
@@ -85,6 +84,7 @@ func (a *PipelineApp) onRecordUpdateRequest(e *core.RecordRequestEvent) error {
 	name := e.Record.GetString("name")
 	image := e.Record.GetString("image")
 	schedule := e.Record.GetString("schedule")
+	deleted := e.Record.GetBool("deleted")
 
 	if strings.ToLower(name) != name {
 		return e.BadRequestError("Name must be lowercase", nil)
@@ -96,22 +96,16 @@ func (a *PipelineApp) onRecordUpdateRequest(e *core.RecordRequestEvent) error {
 		return e.BadRequestError("Schedule must be provided", nil)
 	}
 
+	if deleted {
+		if err := a.svc.DeleteCronJob(ctx, name); err != nil {
+			return e.InternalServerError("Failed to delete cron job", err)
+		}
+
+		return e.Next()
+	}
+
 	if _, err := a.svc.UpdateCronJob(ctx, name, image, schedule); err != nil {
 		return e.InternalServerError("Failed to update cron job", err)
-	}
-
-	return e.Next()
-}
-
-func (a *PipelineApp) onRecordDeleteRequest(e *core.RecordRequestEvent) error {
-	ctx := e.Request.Context()
-	name := e.Record.GetString("name")
-
-	if strings.ToLower(name) != name {
-		return e.BadRequestError("Name must be lowercase", nil)
-	}
-	if err := a.svc.DeleteCronJob(ctx, name); err != nil {
-		return e.InternalServerError("Failed to delete cron job", err)
 	}
 
 	return e.Next()
