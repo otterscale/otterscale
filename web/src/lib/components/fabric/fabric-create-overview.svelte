@@ -4,8 +4,15 @@
 	import * as Carousel from '$lib/components/ui/carousel';
 	import * as Card from '$lib/components/ui/card';
 
-	let { items }: { items: { name: string; icon: string; active: boolean; steps: boolean[] }[] } =
-		$props();
+	let {
+		items = $bindable()
+	}: {
+		items: {
+			name: string;
+			icon: string;
+			active: boolean;
+		}[];
+	} = $props();
 </script>
 
 <Carousel.Root
