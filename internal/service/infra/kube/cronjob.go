@@ -29,7 +29,24 @@ func (r *cronJob) Get(ctx context.Context, name string) (*batchv1.CronJob, error
 }
 
 func (r *cronJob) Create(ctx context.Context, name, image, schedule string) (*batchv1.CronJob, error) {
-	cj := &batchv1.CronJob{
+	cj := r.to(name, image, schedule)
+	opts := metav1.CreateOptions{}
+	return r.client.BatchV1().CronJobs(ns).Create(ctx, cj, opts)
+}
+
+func (r *cronJob) Update(ctx context.Context, name, image, schedule string) (*batchv1.CronJob, error) {
+	cj := r.to(name, image, schedule)
+	opts := metav1.UpdateOptions{}
+	return r.client.BatchV1().CronJobs(ns).Update(ctx, cj, opts)
+}
+
+func (r *cronJob) Delete(ctx context.Context, name string) error {
+	opts := metav1.DeleteOptions{}
+	return r.client.BatchV1().CronJobs(ns).Delete(ctx, name, opts)
+}
+
+func (r *cronJob) to(name, image, schedule string) *batchv1.CronJob {
+	return &batchv1.CronJob{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 		},
@@ -62,6 +79,4 @@ func (r *cronJob) Create(ctx context.Context, name, image, schedule string) (*ba
 			},
 		},
 	}
-	opts := metav1.CreateOptions{}
-	return r.client.BatchV1().CronJobs(ns).Create(ctx, cj, opts)
 }
