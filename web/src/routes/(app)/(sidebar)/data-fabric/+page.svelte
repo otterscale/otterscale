@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { useId } from 'bits-ui';
-	import { tick } from 'svelte';
 	import Icon from '@iconify/svelte';
 
 	import * as Accordion from '$lib/components/ui/accordion';
@@ -10,147 +8,141 @@
 	import * as Table from '$lib/components/ui/table';
 	import * as Tabs from '$lib/components/ui/tabs';
 
-	import { FabricCreateOverview, FabricCreateSource } from '$lib/components/fabric';
+	import { FabricCreateOverview, FabricCreateConnector } from '$lib/components/fabric';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { cn } from '$lib/utils';
 	import pb from '$lib/pb';
+	import type { Connector } from '$lib/components/fabric/connector';
+	import FabricCreatePipeline from '$lib/components/fabric/fabric-create-pipeline.svelte';
+
+	let sources: Connector[] = [
+		{
+			name: 'PostgreSQL',
+			icon: 'logos:postgresql',
+			parameters: [
+				{
+					key: 'connection_string',
+					name: 'Connection String',
+					value: '',
+					description: `connection string, such as 'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'`
+				},
+				{
+					key: 'namespace',
+					name: 'Namespace',
+					value: '',
+					description: `namespace of database, such as 'public'`
+				}
+			],
+			templates: [
+				{
+					name: 'TEST',
+					parameters: [
+						{
+							key: 'connection_string',
+							value:
+								'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'
+						},
+						{
+							key: 'namespace',
+							value: 'public'
+						}
+					]
+				}
+			]
+		},
+		{
+			name: 'CSV',
+			icon: 'ph:file-csv',
+			parameters: [
+				{
+					key: 'file_path',
+					name: 'File Path',
+					value: '',
+					description: 'csv file path'
+				},
+				{
+					key: 'table_name',
+					name: 'Table Name',
+					value: '',
+					description: 'destination table name'
+				},
+				{
+					key: 'inferring',
+					name: 'Inferring',
+					value: '',
+					description: ''
+				}
+			]
+		}
+	];
+
+	let destinations: Connector[] = [
+		{
+			name: 'PostgreSQL',
+			icon: 'logos:postgresql',
+			parameters: [
+				{
+					key: 'connection_string',
+					name: 'Connection String',
+					value: '',
+					description: `connection string, such as 'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'`
+				},
+				{
+					key: 'namespace',
+					name: 'Namespace',
+					value: '',
+					description: `namespace of database, such as 'public'`
+				}
+			],
+			extraParameters: [
+				{
+					key: 'batch_size',
+					name: 'Batch Size',
+					value: '',
+					description: 'default batch size of rows is 10,000 if not specified'
+				},
+				{
+					key: 'batch_size_bytes',
+					name: 'Batch Size Bytes',
+					value: '',
+					description: 'default batch size of bytes is 10,000,000 bytes if not specified'
+				},
+				{
+					key: 'batch_timeout',
+					name: 'Batch Timeout',
+					value: '',
+					description: 'default batch timeout is 60s if not specified'
+				},
+				{
+					key: 'create_index',
+					name: 'Create Index',
+					value: 'true',
+					description: 'create an index to improve performance'
+				}
+			]
+		}
+	];
 
 	let items = $state([
 		{
 			name: 'Source',
 			icon: 'ph:plug',
-			active: false,
-			set: {
-				connectors: [
-					{
-						name: 'PostgreSQL',
-						icon: 'logos:postgresql',
-						parameters: [
-							{
-								key: 'connection_string',
-								name: 'Connection String',
-								value: '',
-								description: `connection string, such as 'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'`
-							},
-							{
-								key: 'namespace',
-								name: 'Namespace',
-								value: '',
-								description: `namespace of database, such as 'public'`
-							}
-						],
-						templates: [
-							{
-								name: 'TEST',
-								parameters: [
-									{
-										key: 'connection_string',
-										value:
-											'postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-ca&pool_max_conns=10'
-									},
-									{
-										key: 'namespace',
-										value: 'public'
-									}
-								]
-							}
-						]
-					},
-					{
-						name: 'CSV',
-						icon: 'ph:file-csv',
-						parameters: [
-							{
-								key: 'file_path',
-								name: 'File Path',
-								value: '',
-								description: 'csv file path'
-							},
-							{
-								key: 'table_name',
-								name: 'Table Name',
-								value: '',
-								description: 'destination table name'
-							},
-							{
-								key: 'inferring',
-								name: 'Inferring',
-								value: '',
-								description: ''
-							}
-						]
-					}
-				]
-			}
+			active: false
+		},
+		{
+			name: 'Destination',
+			icon: 'ph:plugs',
+			active: false
+		},
+		{
+			name: 'Pipeline',
+			icon: 'ph:plugs-connected',
+			active: false
 		}
-		// {
-		// 	name: 'Destination',
-		// 	icon: 'ph:plugs',
-		// 	active: false
-		// },
-		// {
-		// 	name: 'Connection',
-		// 	icon: 'ph:plugs-connected',
-		// 	active: false
-		// },
-		// {
-		// 	name: 'Transformer',
-		// 	icon: 'ph:tree-structure',
-		// 	active: false
-		// }
 	]);
-
-	let srcOpens: boolean[] = $state([false, false, false, false]);
-	let dstOpens: boolean[] = $state([false, false, false, false]);
-	let connectionOpens: boolean[] = $state([false, false, false, false]);
-	let connectorOpens: boolean[] = $state([false, false, false, false]);
 
 	let open = $state(false);
 	//
-
-	type Status = {
-		value: string;
-		label: string;
-	};
-
-	const statuses: Status[] = [
-		{
-			value: 'backlog',
-			label: 'Backlog'
-		},
-		{
-			value: 'todo',
-			label: 'Todo'
-		},
-		{
-			value: 'in progress',
-			label: 'In Progress'
-		},
-		{
-			value: 'done',
-			label: 'Done'
-		},
-		{
-			value: 'canceled',
-			label: 'Canceled'
-		}
-	];
-
-	let value = $state('');
-
-	const selectedStatus = $derived(statuses.find((s) => s.value === value) ?? null);
-
-	// We want to refocus the trigger button when the user selects
-	// an item from the list so users can continue navigating the
-	// rest of the form with the keyboard.
-	function closeAndFocusTrigger(triggerId: string) {
-		open = false;
-		tick().then(() => {
-			document.getElementById(triggerId)?.focus();
-		});
-	}
-
-	const triggerId = useId();
 </script>
 
 <Drawer.Root direction="right">
@@ -253,7 +245,6 @@
 	</Drawer.Content>
 </Drawer.Root>
 
-{open}
 <Dialog.Root
 	bind:open
 	onOpenChange={(open) => {
@@ -282,7 +273,11 @@
 			</Dialog.Title>
 			<Dialog.Description class="flex justify-center pt-4">
 				{#if items[0].active}
-					<FabricCreateSource bind:parent={open} item={items[0].set} />
+					<FabricCreateConnector bind:parent={open} connectors={sources} />
+				{:else if items[1].active}
+					<FabricCreateConnector bind:parent={open} connectors={destinations} />
+				{:else if items[2].active}
+					<FabricCreatePipeline bind:parent={open} {sources} {destinations} />
 				{:else}
 					<FabricCreateOverview bind:items />
 				{/if}

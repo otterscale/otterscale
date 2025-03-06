@@ -4,39 +4,21 @@
 	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 
+	import * as Accordion from '$lib/components/ui/accordion';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
 	import { Input } from '$lib/components/ui/input';
 	import * as Popover from '$lib/components/ui/popover';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-
-	//#region types
-	interface Parameter {
-		key: string;
-		name?: string;
-		value: string;
-		description?: string;
-	}
-
-	interface Template {
-		name: string;
-		parameters: Parameter[];
-	}
+	import type { Connector } from './connector';
 
 	let {
 		parent = $bindable(),
-		item
+		connectors
 	}: {
 		parent: boolean;
-		item: {
-			connectors: {
-				name: string;
-				icon: string;
-				parameters: Parameter[];
-				templates?: Template[];
-			}[];
-		};
+		connectors: Connector[];
 	} = $props();
 
 	//#endregion
@@ -45,7 +27,7 @@
 
 	let open = $state(false);
 	let value = $state('');
-	const selected = $derived(item.connectors.find((s) => s.name === value) ?? null);
+	const selected = $derived(connectors.find((s) => s.name === value) ?? null);
 
 	function closeAndFocusTrigger(triggerId: string) {
 		open = false;
@@ -60,7 +42,7 @@
 
 	//#region templates
 
-	const templates = $derived(item.connectors.find((s) => s.name === value)?.templates);
+	const templates = $derived(connectors.find((s) => s.name === value)?.templates);
 
 	let templateOpen = $state(false);
 	let templateValue = $state('');
@@ -103,7 +85,7 @@
 						{#if selected}
 							<span>{selected.name}</span>
 						{:else}
-							<span> + From </span>
+							<span> + Connector </span>
 						{/if}
 					</div>
 				</Popover.Trigger>
@@ -113,7 +95,7 @@
 						<Command.List>
 							<Command.Empty>No results found.</Command.Empty>
 							<Command.Group>
-								{#each item.connectors as connector}
+								{#each connectors as connector}
 									<Command.Item
 										value={connector.name}
 										onSelect={() => {
@@ -139,6 +121,19 @@
 				<p class="pt-2 text-sm text-muted-foreground">{p.description}</p>
 			</fieldset>
 		{/each}
+		{#if selected.extraParameters}
+			<Accordion.Root type="single">
+				{#each selected.extraParameters as p, i}
+					<Accordion.Item value="item-{i}">
+						<Accordion.Trigger>{p.name}</Accordion.Trigger>
+						<Accordion.Content>
+							<Input class="text-foreground" type="text" id={p.key} value={p.value} />
+							<p class="pt-2 text-sm text-muted-foreground">{p.description}</p>
+						</Accordion.Content>
+					</Accordion.Item>
+				{/each}
+			</Accordion.Root>
+		{/if}
 	{/if}
 	{#if templates && templates.length > 0}
 		<div class="relative">
