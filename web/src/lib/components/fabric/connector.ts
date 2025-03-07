@@ -1,4 +1,5 @@
 export interface Connector {
+    key: string;
     name: string;
     icon: string;
     parameters: {

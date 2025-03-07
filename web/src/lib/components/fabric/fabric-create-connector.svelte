@@ -4,6 +4,7 @@
 	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button';
@@ -15,13 +16,13 @@
 
 	let {
 		parent = $bindable(),
-		connectors
+		items
 	}: {
 		parent: boolean;
-		connectors: Connector[];
+		items: Connector[];
 	} = $props();
 
-	//#endregion
+	let connectors = $state<Connector[]>(items);
 
 	//#region parameters
 
@@ -63,8 +64,8 @@
 </script>
 
 <div class="w-full flex-col space-y-2">
-	<fieldset class="items-center gap-6 rounded-lg border p-4">
-		<legend class="-ml-1 px-1 text-sm font-medium"> New </legend>
+	<fieldset class="items-center rounded-lg border p-4">
+		<legend class="-ml-2 px-1 text-sm font-medium"> New </legend>
 		<div class="flex space-x-4">
 			<div class="flex-col">
 				{#if selected}
@@ -103,6 +104,7 @@
 											closeAndFocusTrigger(triggerId);
 										}}
 									>
+										<Icon icon={connector.icon} />
 										{connector.name}
 									</Command.Item>
 								{/each}
@@ -115,24 +117,37 @@
 	</fieldset>
 	{#if selected}
 		{#each selected.parameters as p}
-			<fieldset class="items-center gap-6 rounded-lg border p-4">
-				<legend class="-ml-1 px-1 text-sm font-medium"> {p.name} </legend>
-				<Input class="text-foreground" type="text" id={p.key} value={p.value} />
-				<p class="pt-2 text-sm text-muted-foreground">{p.description}</p>
+			<fieldset class="items-center rounded-lg border p-4">
+				<legend class="-ml-2 px-1 text-sm font-medium"> {p.name} </legend>
+				<Input
+					class="text-foreground placeholder:italic"
+					type="text"
+					id={p.key}
+					bind:value={p.value}
+					placeholder={p.description}
+				/>
 			</fieldset>
 		{/each}
 		{#if selected.extraParameters}
-			<Accordion.Root type="single">
-				{#each selected.extraParameters as p, i}
-					<Accordion.Item value="item-{i}">
-						<Accordion.Trigger>{p.name}</Accordion.Trigger>
-						<Accordion.Content>
-							<Input class="text-foreground" type="text" id={p.key} value={p.value} />
-							<p class="pt-2 text-sm text-muted-foreground">{p.description}</p>
-						</Accordion.Content>
-					</Accordion.Item>
-				{/each}
-			</Accordion.Root>
+			<fieldset class="items-center rounded-lg border p-4">
+				<legend class="-ml-2 px-1 text-sm font-medium"> Extra </legend>
+				<Accordion.Root type="single">
+					{#each selected.extraParameters as p, i}
+						<Accordion.Item class="border-none" value="item-{i}">
+							<Accordion.Trigger class="py-2">{p.name}</Accordion.Trigger>
+							<Accordion.Content>
+								<Input
+									class="text-foreground placeholder:italic"
+									type="text"
+									id={p.key}
+									bind:value={p.value}
+									placeholder={p.description}
+								/>
+							</Accordion.Content>
+						</Accordion.Item>
+					{/each}
+				</Accordion.Root>
+			</fieldset>
 		{/if}
 	{/if}
 	{#if templates && templates.length > 0}
@@ -144,7 +159,7 @@
 				<span class="bg-background px-2 text-muted-foreground"> Or continue with </span>
 			</div>
 		</div>
-		<fieldset class="grid w-full gap-6 rounded-lg border p-4">
+		<fieldset class="grid w-full gap-6 rounded-lg border p-6">
 			<legend class="-ml-1 px-1 text-sm font-medium"> Template </legend>
 			<Popover.Root bind:open={templateOpen}>
 				<Popover.Trigger
@@ -205,19 +220,37 @@
 					<AlertDialog.Title>Please confirm the configuration</AlertDialog.Title>
 					<AlertDialog.Description class="space-y-2">
 						{#if selected}
-							<fieldset class="items-center gap-6 rounded-lg border p-4">
+							<fieldset class="items-center gap-6 rounded-lg border p-3">
 								<legend class="-ml-1 px-1 text-sm font-medium"> New </legend>
-								<div class="flex items-center space-x-2 text-base text-foreground">
+								<div class="flex items-center space-x-2 text-sm text-foreground">
 									<Icon icon={selected.icon} class="size-8" />
 									<span>{selected.name}</span>
 								</div>
 							</fieldset>
 							{#each selected.parameters as p}
-								<fieldset class="items-center gap-6 rounded-lg border p-4">
+								<fieldset class="items-center gap-6 rounded-lg border p-3">
 									<legend class="-ml-1 px-1 text-sm font-medium"> {p.name} </legend>
-									<p class="text-foreground">{p.value}</p>
+									{#if p.value}
+										<p class="text-foreground">{p.value}</p>
+									{:else}
+										<p class="text-muted-foreground">(empty)</p>
+									{/if}
 								</fieldset>
 							{/each}
+							{#if selected.extraParameters}
+								<div class="grid grid-cols-2 gap-2">
+									{#each selected.extraParameters as p}
+										<fieldset class="items-center gap-6 rounded-lg border p-3">
+											<legend class="-ml-1 px-1 text-sm font-medium"> {p.name} </legend>
+											{#if p.value}
+												<p class="text-foreground">{p.value}</p>
+											{:else}
+												<p class="text-muted-foreground">(empty)</p>
+											{/if}
+										</fieldset>
+									{/each}
+								</div>
+							{/if}
 						{/if}
 					</AlertDialog.Description>
 				</AlertDialog.Header>

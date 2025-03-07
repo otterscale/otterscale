@@ -19,12 +19,12 @@
 	opts={{
 		align: 'center'
 	}}
-	class="w-full max-w-sm"
+	class="w-full max-w-xs md:max-w-md lg:max-w-lg"
 >
 	<Carousel.Content>
 		{#each items as item}
 			<Carousel.Item class="md:basis-1/2 lg:basis-1/3">
-				<div class="p-1">
+				<div class="space-y-4 p-2">
 					<Card.Root
 						class="hover:bg-accent"
 						onclick={() => {
@@ -37,7 +37,7 @@
 							</span>
 						</Card.Content>
 					</Card.Root>
-					<div class="text-foregroundf pt-2 text-center text-sm">{item.name}</div>
+					<div class="text-foregroundf text-center text-sm">{item.name}</div>
 				</div>
 			</Carousel.Item>
 		{/each}

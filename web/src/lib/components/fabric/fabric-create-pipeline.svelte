@@ -12,15 +12,20 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import type { Connector } from './connector';
+	import type { pbConnector } from '$lib/pb';
 
 	let {
 		parent = $bindable(),
 		sources,
-		destinations
+		destinations,
+		sourceConnectors,
+		destinationConnectors
 	}: {
 		parent: boolean;
-		sources: Connector[];
-		destinations: Connector[];
+		sources: pbConnector[];
+		destinations: pbConnector[];
+		sourceConnectors: Connector[];
+		destinationConnectors: Connector[];
 	} = $props();
 
 	//#endregion
@@ -60,85 +65,136 @@
 	//endregion
 
 	let confirm = $state(false);
+
+	function getIcon(connectors: Connector[], key: string): string {
+		return connectors.find((c) => c.key === key)?.icon ?? '';
+	}
 </script>
 
-<Popover.Root bind:open={srcOpen}>
-	<Popover.Trigger
-		class={buttonVariants({
-			variant: 'outline',
-			class: 'col-span-3 w-full'
-		})}
-		id={srcId}
-	>
-		<div class="flex items-center gap-2 text-foreground">
-			{#if srcSelected}
-				<span>{srcSelected.name}</span>
-			{:else}
-				<span> + From </span>
-			{/if}
+<div class="w-full flex-col space-y-2">
+	<fieldset class="grid w-full grid-cols-7 items-center gap-6 rounded-lg border p-4">
+		<legend class="-ml-1 px-1 text-sm font-medium"> New </legend>
+		<Popover.Root bind:open={srcOpen}>
+			<Popover.Trigger
+				class={buttonVariants({
+					variant: 'outline',
+					class: 'col-span-3 w-full'
+				})}
+				id={srcId}
+			>
+				<div class="flex items-center gap-2 text-foreground">
+					{#if srcSelected}
+						<span>{srcSelected.name}</span>
+					{:else}
+						<span> + From </span>
+					{/if}
+				</div>
+			</Popover.Trigger>
+			<Popover.Content class="p-0" align="start" side="right">
+				<Command.Root>
+					<Command.Input placeholder="Find..." />
+					<Command.List>
+						<Command.Empty>No results found.</Command.Empty>
+						<Command.Group>
+							{#each sources as source}
+								<Command.Item
+									value={source.name}
+									onSelect={() => {
+										srcValue = source.name;
+										closeAndFocusSourceTrigger(srcId);
+									}}
+								>
+									<Icon icon={getIcon(sourceConnectors, source.type)} />
+									{source.name}
+								</Command.Item>
+							{/each}
+						</Command.Group>
+					</Command.List>
+				</Command.Root>
+			</Popover.Content>
+		</Popover.Root>
+		<!-- <div class="animate-slide">123213</div> -->
+		<Icon icon="line-md:chevron-small-triple-right" class="size-8" />
+		<Popover.Root bind:open={dstOpen}>
+			<Popover.Trigger
+				class={buttonVariants({
+					variant: 'outline',
+					class: 'col-span-3 w-full'
+				})}
+				id={dstId}
+			>
+				<div class="flex items-center gap-2 text-foreground">
+					{#if dstSelected}
+						<span>{dstSelected.name}</span>
+					{:else}
+						<span> + To </span>
+					{/if}
+				</div>
+			</Popover.Trigger>
+			<Popover.Content class="p-0" align="start" side="right">
+				<Command.Root>
+					<Command.Input placeholder="Find..." />
+					<Command.List>
+						<Command.Empty>No results found.</Command.Empty>
+						<Command.Group>
+							{#each destinations as destination}
+								<Command.Item
+									value={destination.name}
+									onSelect={() => {
+										dstValue = destination.name;
+										closeAndFocusDestinationTrigger(dstId);
+									}}
+								>
+									<Icon icon={getIcon(destinationConnectors, destination.type)} />
+									{destination.name}
+								</Command.Item>
+							{/each}
+						</Command.Group>
+					</Command.List>
+				</Command.Root>
+			</Popover.Content>
+		</Popover.Root>
+	</fieldset>
+	{#if srcSelected}
+		<div>
+			<Icon icon={getIcon(sourceConnectors, srcSelected.type)} class="size-12 hover:scale-110" />
+			<span>{srcSelected.name}</span>
 		</div>
-	</Popover.Trigger>
-	<Popover.Content class="p-0" align="start" side="right">
-		<Command.Root>
-			<Command.Input placeholder="Find..." />
-			<Command.List>
-				<Command.Empty>No results found.</Command.Empty>
-				<Command.Group>
-					{#each sources as source}
-						<Command.Item
-							value={source.name}
-							onSelect={() => {
-								srcValue = source.name;
-								closeAndFocusSourceTrigger(srcId);
-							}}
-						>
-							{source.name}
-						</Command.Item>
-					{/each}
-				</Command.Group>
-			</Command.List>
-		</Command.Root>
-	</Popover.Content>
-</Popover.Root>
 
-<Popover.Root bind:open={dstOpen}>
-	<Popover.Trigger
-		class={buttonVariants({
-			variant: 'outline',
-			class: 'col-span-3 w-full'
-		})}
-		id={dstId}
-	>
-		<div class="flex items-center gap-2 text-foreground">
-			{#if dstSelected}
-				<span>{dstSelected.name}</span>
-			{:else}
-				<span> + To </span>
-			{/if}
-		</div>
-	</Popover.Trigger>
-	<Popover.Content class="p-0" align="start" side="right">
-		<Command.Root>
-			<Command.Input placeholder="Find..." />
-			<Command.List>
-				<Command.Empty>No results found.</Command.Empty>
-				<Command.Group>
-					{#each destinations as destination}
-						<Command.Item
-							value={destination.name}
-							onSelect={() => {
-								dstValue = destination.name;
-								closeAndFocusDestinationTrigger(dstId);
-							}}
-						>
-							{destination.name}
-						</Command.Item>
-					{/each}
-				</Command.Group>
-			</Command.List>
-		</Command.Root>
-	</Popover.Content>
-</Popover.Root>
+		{srcSelected.type}
+		{srcSelected.kind}
+		{srcSelected.id}
+		{srcSelected.name}
+		{srcSelected.image}
+		{srcSelected.created}
+		{srcSelected.enabled}
+		{srcSelected.updated}
+		{srcSelected.user}
+		{#if srcSelected.workload}
+			{srcSelected.workload.json}
+			{srcSelected.workload.user}
+			{srcSelected.workload.created}
+		{/if}
+	{/if}
+	{#if dstSelected}
+		{dstSelected}
+	{/if}
+	<div class="flex justify-around pt-4">
+		<!-- <Button
+			size="lg"
+			variant="outline"
+			onclick={() => {
+				// connectorOpens = [false, false, false, false];
+			}}>Back</Button
+		>
+		<Button
+			size="lg"
+			onclick={() => {
+				// connectorOpens = [false, true, false, false];
+			}}>Next</Button
+		> -->
+	</div>
+</div>
 
 <!-- <div class="w-full flex-col space-y-2">
 	<fieldset class="items-center gap-6 rounded-lg border p-4">
