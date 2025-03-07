@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 
 	import * as Accordion from '$lib/components/ui/accordion';
-	import { buttonVariants } from '$lib/components/ui/button';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Drawer from '$lib/components/ui/drawer';
 	import * as Table from '$lib/components/ui/table';
@@ -11,12 +11,14 @@
 	import { FabricCreateOverview, FabricCreateConnector } from '$lib/components/fabric';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { cn } from '$lib/utils';
-	import pb from '$lib/pb';
+	import pb, { listConnectors, type pbConnector } from '$lib/pb';
 	import type { Connector } from '$lib/components/fabric/connector';
 	import FabricCreatePipeline from '$lib/components/fabric/fabric-create-pipeline.svelte';
+	import { onMount } from 'svelte';
 
 	let sources: Connector[] = [
 		{
+			key: 'postgresql',
 			name: 'PostgreSQL',
 			icon: 'logos:postgresql',
 			parameters: [
@@ -51,6 +53,7 @@
 			]
 		},
 		{
+			key: 'csv',
 			name: 'CSV',
 			icon: 'ph:file-csv',
 			parameters: [
@@ -78,6 +81,7 @@
 
 	let destinations: Connector[] = [
 		{
+			key: 'postgresql',
 			name: 'PostgreSQL',
 			icon: 'logos:postgresql',
 			parameters: [
@@ -142,6 +146,14 @@
 	]);
 
 	let open = $state(false);
+
+	let pbSources: pbConnector[] = $state([]);
+	let pbDestinations: pbConnector[] = $state([]);
+
+	onMount(async () => {
+		pbSources = await listConnectors(`kind='source'`);
+		pbDestinations = await listConnectors(`kind='destination'`);
+	});
 	//
 </script>
 
@@ -245,6 +257,8 @@
 	</Drawer.Content>
 </Drawer.Root>
 
+{open}
+
 <Dialog.Root
 	bind:open
 	onOpenChange={(open) => {
@@ -256,28 +270,34 @@
 	}}
 >
 	<Dialog.Trigger class={buttonVariants({ variant: 'outline' })}>Create</Dialog.Trigger>
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>
+	<Dialog.Content class="max-w-2xl">
+		<Dialog.Header class="flex-col space-y-8 py-4">
+			<Dialog.Title class="flex">
 				{#each items as item}
 					{#if item.active}
-						<div class="flex items-center px-2">
-							<Icon icon="ph:plugs" class="size-8" />
+						<div class="flex items-center pl-2">
+							<Icon icon={item.icon} class="size-8" />
 							<div class="space-x-2 pl-2">{item.name}</div>
 						</div>
 					{/if}
 				{/each}
 				{#if items.filter((item) => item.active).length === 0}
-					<div class="flex items-center justify-center">What do you need?</div>
+					<div class="flex w-full items-center justify-center">What do you need?</div>
 				{/if}
 			</Dialog.Title>
-			<Dialog.Description class="flex justify-center pt-4">
+			<Dialog.Description class="flex w-full justify-center px-2">
 				{#if items[0].active}
-					<FabricCreateConnector bind:parent={open} connectors={sources} />
+					<FabricCreateConnector bind:parent={open} items={sources} />
 				{:else if items[1].active}
-					<FabricCreateConnector bind:parent={open} connectors={destinations} />
+					<FabricCreateConnector bind:parent={open} items={destinations} />
 				{:else if items[2].active}
-					<FabricCreatePipeline bind:parent={open} {sources} {destinations} />
+					<FabricCreatePipeline
+						bind:parent={open}
+						sources={pbSources}
+						destinations={pbDestinations}
+						sourceConnectors={sources}
+						destinationConnectors={destinations}
+					/>
 				{:else}
 					<FabricCreateOverview bind:items />
 				{/if}
@@ -285,3 +305,14 @@
 		</Dialog.Header>
 	</Dialog.Content>
 </Dialog.Root>
+
+<Button
+	onclick={async () => {
+		// var x = await listConnectors();
+		// console.log(x);
+
+		console.log(pbSources, pbDestinations);
+	}}
+>
+	TEST
+</Button>
