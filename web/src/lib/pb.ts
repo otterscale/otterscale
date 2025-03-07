@@ -300,9 +300,10 @@ export interface pbConnector {
 
 export async function listConnectors(filter: string): Promise<pbConnector[]> {
     var connectors: pbConnector[] = [];
-    await pb.collection('connectors').getFullList({ filter: filter, expand: "workloads_via_connector" })
+    await pb.collection('connectors').getFullList({ filter: filter, expand: "workloads_via_connector.user,user" })
         .then((res) => {
             res.forEach((rec: any) => {
+                var workload = rec.expand?.workloads_via_connector?.reduce((prev: any, curr: any) => (!prev || new Date(curr.created) > new Date(prev.created)) ? curr : prev, null);
                 connectors.push({
                     id: rec.id,
                     kind: rec.kind,
@@ -310,12 +311,14 @@ export async function listConnectors(filter: string): Promise<pbConnector[]> {
                     name: rec.name,
                     image: rec.image,
                     enabled: rec.enabled,
-                    user: rec.user,
+                    user: rec.expand?.user?.name,
                     created: rec.created,
                     updated: rec.updated,
-                    workload: rec.expand?.workloads_via_connector?.reduce((prev: any, curr: any) =>
-                        (!prev || new Date(curr.created) > new Date(prev.created)) ? curr : prev
-                        , null) ?? { user: '', json: '', created: new Date() }
+                    workload: {
+                        user: workload?.expand?.user?.name,
+                        json: workload?.json,
+                        created: workload?.created,
+                    }
                 } as pbConnector);
             });
         })
