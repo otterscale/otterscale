@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 
 	import * as Accordion from '$lib/components/ui/accordion';
-	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Drawer from '$lib/components/ui/drawer';
 	import * as Table from '$lib/components/ui/table';
@@ -257,8 +257,6 @@
 	</Drawer.Content>
 </Drawer.Root>
 
-{open}
-
 <Dialog.Root
 	bind:open
 	onOpenChange={(open) => {
@@ -305,14 +303,3 @@
 		</Dialog.Header>
 	</Dialog.Content>
 </Dialog.Root>
-
-<Button
-	onclick={async () => {
-		// var x = await listConnectors();
-		// console.log(x);
-
-		console.log(pbSources, pbDestinations);
-	}}
->
-	TEST
-</Button>
