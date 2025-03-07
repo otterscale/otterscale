@@ -4,15 +4,13 @@
 	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 
-	import * as Accordion from '$lib/components/ui/accordion';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
-	import { Input } from '$lib/components/ui/input';
 	import * as Popover from '$lib/components/ui/popover';
-	import { Skeleton } from '$lib/components/ui/skeleton';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import type { Connector } from './connector';
 	import type { pbConnector } from '$lib/pb';
+	import PipelineConnector from './pipeline_connector.svelte';
 
 	let {
 		parent = $bindable(),
@@ -71,15 +69,12 @@
 	}
 </script>
 
-<div class="w-full flex-col space-y-2">
-	<fieldset class="grid w-full grid-cols-7 items-center gap-6 rounded-lg border p-4">
-		<legend class="-ml-1 px-1 text-sm font-medium"> New </legend>
+<div class="w-full flex-col space-y-4">
+	<fieldset class="flex items-center rounded-lg border p-4">
+		<legend class="-ml-2 px-1 text-sm font-medium"> New </legend>
 		<Popover.Root bind:open={srcOpen}>
 			<Popover.Trigger
-				class={buttonVariants({
-					variant: 'outline',
-					class: 'col-span-3 w-full'
-				})}
+				class={buttonVariants({ variant: 'outline', class: 'flex w-full flex-auto' })}
 				id={srcId}
 			>
 				<div class="flex items-center gap-2 text-foreground">
@@ -113,14 +108,10 @@
 				</Command.Root>
 			</Popover.Content>
 		</Popover.Root>
-		<!-- <div class="animate-slide">123213</div> -->
-		<Icon icon="line-md:chevron-small-triple-right" class="size-8" />
+		<Icon icon="line-md:chevron-small-triple-right" class="size-10 flex-none animate-pulse" />
 		<Popover.Root bind:open={dstOpen}>
 			<Popover.Trigger
-				class={buttonVariants({
-					variant: 'outline',
-					class: 'col-span-3 w-full'
-				})}
+				class={buttonVariants({ variant: 'outline', class: 'flex w-full flex-auto' })}
 				id={dstId}
 			>
 				<div class="flex items-center gap-2 text-foreground">
@@ -155,204 +146,29 @@
 			</Popover.Content>
 		</Popover.Root>
 	</fieldset>
-	{#if srcSelected}
-		<div>
-			<Icon icon={getIcon(sourceConnectors, srcSelected.type)} class="size-12 hover:scale-110" />
-			<span>{srcSelected.name}</span>
-		</div>
 
-		{srcSelected.type}
-		{srcSelected.kind}
-		{srcSelected.id}
-		{srcSelected.name}
-		{srcSelected.image}
-		{srcSelected.created}
-		{srcSelected.enabled}
-		{srcSelected.updated}
-		{srcSelected.user}
-		{#if srcSelected.workload}
-			{srcSelected.workload.json}
-			{srcSelected.workload.user}
-			{srcSelected.workload.created}
-		{/if}
-	{/if}
-	{#if dstSelected}
-		{dstSelected}
-	{/if}
-	<div class="flex justify-around pt-4">
-		<!-- <Button
-			size="lg"
-			variant="outline"
-			onclick={() => {
-				// connectorOpens = [false, false, false, false];
-			}}>Back</Button
-		>
-		<Button
-			size="lg"
-			onclick={() => {
-				// connectorOpens = [false, true, false, false];
-			}}>Next</Button
-		> -->
-	</div>
-</div>
-
-<!-- <div class="w-full flex-col space-y-2">
-	<fieldset class="items-center gap-6 rounded-lg border p-4">
-		<legend class="-ml-1 px-1 text-sm font-medium"> New </legend>
-		<div class="flex space-x-4">
-			<div class="flex-col">
-				{#if selected}
-					<Icon icon={selected.icon} class="size-8" />
-				{:else}
-					<Skeleton class="size-8" />
-				{/if}
-			</div>
-			<Popover.Root bind:open>
-				<Popover.Trigger
-					class={buttonVariants({
-						variant: 'outline',
-						class: 'col-span-3 w-full'
-					})}
-					id={triggerId}
-				>
-					<div class="flex items-center gap-2 text-foreground">
-						{#if selected}
-							<span>{selected.name}</span>
-						{:else}
-							<span> + From </span>
-						{/if}
-					</div>
-				</Popover.Trigger>
-				<Popover.Content class="p-0" align="start" side="right">
-					<Command.Root>
-						<Command.Input placeholder="Find..." />
-						<Command.List>
-							<Command.Empty>No results found.</Command.Empty>
-							<Command.Group>
-								{#each connectors as connector}
-									<Command.Item
-										value={connector.name}
-										onSelect={() => {
-											value = connector.name;
-											closeAndFocusTrigger(triggerId);
-										}}
-									>
-										{connector.name}
-									</Command.Item>
-								{/each}
-							</Command.Group>
-						</Command.List>
-					</Command.Root>
-				</Popover.Content>
-			</Popover.Root>
-		</div>
-	</fieldset>
-	{#if selected}
-		{#each selected.parameters as p}
-			<fieldset class="items-center gap-6 rounded-lg border p-4">
-				<legend class="-ml-1 px-1 text-sm font-medium"> {p.name} </legend>
-				<Input class="text-foreground" type="text" id={p.key} value={p.value} />
-				<p class="pt-2 text-sm text-muted-foreground">{p.description}</p>
-			</fieldset>
-		{/each}
-		{#if selected.extraParameters}
-			<Accordion.Root type="single">
-				{#each selected.extraParameters as p, i}
-					<Accordion.Item value="item-{i}">
-						<Accordion.Trigger>{p.name}</Accordion.Trigger>
-						<Accordion.Content>
-							<Input class="text-foreground" type="text" id={p.key} value={p.value} />
-							<p class="pt-2 text-sm text-muted-foreground">{p.description}</p>
-						</Accordion.Content>
-					</Accordion.Item>
-				{/each}
-			</Accordion.Root>
-		{/if}
-	{/if}
-	{#if templates && templates.length > 0}
-		<div class="relative">
-			<div class="absolute inset-0 flex items-center">
-				<span class="w-full border-t"></span>
-			</div>
-			<div class="relative flex justify-center text-xs uppercase">
-				<span class="bg-background px-2 text-muted-foreground"> Or continue with </span>
-			</div>
-		</div>
-		<fieldset class="grid w-full gap-6 rounded-lg border p-4">
-			<legend class="-ml-1 px-1 text-sm font-medium"> Template </legend>
-			<Popover.Root bind:open={templateOpen}>
-				<Popover.Trigger
-					class={buttonVariants({
-						variant: 'outline',
-						class: 'w-full'
-					})}
-					id={triggerTemplateId}
-				>
-					<div class="flex items-center gap-2 text-foreground">
-						{#if templateSelected}
-							<span>{templateSelected.name}</span>
-						{:else}
-							<span>+ Select</span>
-						{/if}
-					</div>
-				</Popover.Trigger>
-				<Popover.Content class="p-0" align="start" side="right">
-					<Command.Root>
-						<Command.Input placeholder="Find..." />
-						<Command.List>
-							<Command.Empty>No results found.</Command.Empty>
-							<Command.Group>
-								{#if templates}
-									{#each templates as template}
-										<Command.Item
-											value={template.name}
-											onSelect={() => {
-												templateValue = template.name;
-												selected?.parameters.forEach((p) => {
-													templateSelected?.parameters.forEach((t) => {
-														if (p.key === t.key) {
-															p.value = t.value;
-														}
-													});
-												});
-												closeAndFocusTemplateTrigger(triggerTemplateId);
-											}}
-										>
-											{template.name}
-										</Command.Item>
-									{/each}
-								{/if}
-							</Command.Group>
-						</Command.List>
-					</Command.Root>
-				</Popover.Content>
-			</Popover.Root>
+	<div class="flex w-full space-x-4">
+		<fieldset class="flex w-full items-center rounded-lg border p-4">
+			<legend class="-ml-2 px-1 text-sm font-medium"> Source </legend>
+			<PipelineConnector connctors={sourceConnectors} selected={srcSelected} />
 		</fieldset>
-	{/if}
+
+		<fieldset class="flex w-full items-center rounded-lg border p-4">
+			<legend class="-ml-2 px-1 text-sm font-medium"> Destination </legend>
+			<PipelineConnector connctors={destinationConnectors} selected={dstSelected} />
+		</fieldset>
+	</div>
+
 	<div class="flex justify-end pt-4">
 		<AlertDialog.Root bind:open={confirm}>
-			<AlertDialog.Trigger disabled={!selected} class={buttonVariants({})}>
+			<AlertDialog.Trigger disabled={!srcSelected || !dstSelected} class={buttonVariants({})}>
 				Continue
 			</AlertDialog.Trigger>
 			<AlertDialog.Content class="space-y-2">
 				<AlertDialog.Header class="space-y-4">
-					<AlertDialog.Title>Please confirm the configuration</AlertDialog.Title>
+					<AlertDialog.Title>Confirm Pipeline Creation</AlertDialog.Title>
 					<AlertDialog.Description class="space-y-2">
-						{#if selected}
-							<fieldset class="items-center gap-6 rounded-lg border p-4">
-								<legend class="-ml-1 px-1 text-sm font-medium"> New </legend>
-								<div class="flex items-center space-x-2 text-base text-foreground">
-									<Icon icon={selected.icon} class="size-8" />
-									<span>{selected.name}</span>
-								</div>
-							</fieldset>
-							{#each selected.parameters as p}
-								<fieldset class="items-center gap-6 rounded-lg border p-4">
-									<legend class="-ml-1 px-1 text-sm font-medium"> {p.name} </legend>
-									<p class="text-foreground">{p.value}</p>
-								</fieldset>
-							{/each}
-						{/if}
+						Are you sure you want to create a data pipeline connecting "{srcSelected?.name}" to "{dstSelected?.name}"?
 					</AlertDialog.Description>
 				</AlertDialog.Header>
 				<AlertDialog.Footer>
@@ -370,4 +186,4 @@
 			</AlertDialog.Content>
 		</AlertDialog.Root>
 	</div>
-</div> -->
+</div>

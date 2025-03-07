@@ -4,7 +4,6 @@
 	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 
-	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button';

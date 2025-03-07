@@ -26,6 +26,9 @@ importers:
       pocketbase:
         specifier: ^0.25.1
         version: 0.25.1
+      yaml:
+        specifier: ^2.7.0
+        version: 2.7.0
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5

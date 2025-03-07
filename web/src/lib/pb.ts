@@ -281,7 +281,7 @@ export async function listRecents(): Promise<pbRecent[]> {
 
 export interface pbWorkload {
     user: string;
-    json: string;
+    json: object;
     created: Date;
 }
 
