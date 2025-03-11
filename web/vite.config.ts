@@ -4,6 +4,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+	envPrefix: 'OPENHDC',
 	plugins: [
 		sveltekit(),
 		paraglide({
@@ -11,7 +12,6 @@ export default defineConfig({
 			outdir: './src/lib/paraglide'
 		})
 	],
-
 	test: {
 		workspace: [
 			{
