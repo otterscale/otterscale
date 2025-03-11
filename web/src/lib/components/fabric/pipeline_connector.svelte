@@ -1,23 +1,17 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import type { Connector } from './connector';
 	import type { pbConnector } from '$lib/pb';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { stringify } from 'yaml';
+	import { connectorIcon } from '$lib/connector';
 
 	let {
-		selected,
-		connctors
+		selected
 	}: {
 		selected: pbConnector | null;
-		connctors: Connector[];
 	} = $props();
-
-	function getIcon(connectors: Connector[], key: string): string {
-		return connectors.find((c) => c.key === key)?.icon ?? '';
-	}
 </script>
 
 <div class="w-full flex-col items-center space-y-4">
@@ -25,7 +19,7 @@
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger class="flex w-full items-center justify-center hover:scale-105">
-					<Icon icon={getIcon(connctors, selected.type)} class="size-12" />
+					<Icon icon={connectorIcon(selected.type)} class="size-12" />
 					<div class="flex-col space-y-1 pl-4">
 						<div class="text-sm text-foreground">{selected.name}</div>
 						<div class="text-xs italic text-muted-foreground">{selected.id}</div>

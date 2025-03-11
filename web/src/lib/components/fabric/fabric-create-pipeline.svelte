@@ -8,22 +8,22 @@
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import type { Connector } from './connector';
 	import type { pbConnector } from '$lib/pb';
 	import PipelineConnector from './pipeline_connector.svelte';
+	import { connectorIcon } from '$lib/connector';
 
 	let {
 		parent = $bindable(),
 		sources,
 		destinations,
-		sourceConnectors,
-		destinationConnectors
+		source = $bindable(),
+		destination = $bindable()
 	}: {
 		parent: boolean;
-		sources: pbConnector[];
-		destinations: pbConnector[];
-		sourceConnectors: Connector[];
-		destinationConnectors: Connector[];
+		sources?: pbConnector[];
+		destinations?: pbConnector[];
+		source?: pbConnector;
+		destination?: pbConnector;
 	} = $props();
 
 	//#endregion
@@ -32,7 +32,7 @@
 
 	let srcOpen = $state(false);
 	let srcValue = $state('');
-	const srcSelected = $derived(sources?.find((s) => s.name === srcValue) ?? null);
+	const srcSelected = $derived(source ?? sources?.find((s) => s.name === srcValue) ?? null);
 
 	function closeAndFocusSourceTrigger(triggerId: string) {
 		srcOpen = false;
@@ -49,7 +49,9 @@
 
 	let dstOpen = $state(false);
 	let dstValue = $state('');
-	const dstSelected = $derived(destinations?.find((s) => s.name === dstValue) ?? null);
+	const dstSelected = $derived(
+		destination ?? destinations?.find((s) => s.name === dstValue) ?? null
+	);
 
 	function closeAndFocusDestinationTrigger(triggerId: string) {
 		dstOpen = false;
@@ -63,99 +65,97 @@
 	//endregion
 
 	let confirm = $state(false);
-
-	function getIcon(connectors: Connector[], key: string): string {
-		return connectors.find((c) => c.key === key)?.icon ?? '';
-	}
 </script>
 
 <div class="w-full flex-col space-y-4">
-	<fieldset class="flex items-center rounded-lg border p-4">
-		<legend class="-ml-2 px-1 text-sm font-medium"> New </legend>
-		<Popover.Root bind:open={srcOpen}>
-			<Popover.Trigger
-				class={buttonVariants({ variant: 'outline', class: 'flex w-full flex-auto' })}
-				id={srcId}
-			>
-				<div class="flex items-center gap-2 text-foreground">
-					{#if srcSelected}
-						<span>{srcSelected.name}</span>
-					{:else}
-						<span> + From </span>
-					{/if}
-				</div>
-			</Popover.Trigger>
-			<Popover.Content class="p-0" align="start" side="right">
-				<Command.Root>
-					<Command.Input placeholder="Find..." />
-					<Command.List>
-						<Command.Empty>No results found.</Command.Empty>
-						<Command.Group>
-							{#each sources as source}
-								<Command.Item
-									value={source.name}
-									onSelect={() => {
-										srcValue = source.name;
-										closeAndFocusSourceTrigger(srcId);
-									}}
-								>
-									<Icon icon={getIcon(sourceConnectors, source.type)} />
-									{source.name}
-								</Command.Item>
-							{/each}
-						</Command.Group>
-					</Command.List>
-				</Command.Root>
-			</Popover.Content>
-		</Popover.Root>
-		<Icon icon="line-md:chevron-small-triple-right" class="size-10 flex-none animate-pulse" />
-		<Popover.Root bind:open={dstOpen}>
-			<Popover.Trigger
-				class={buttonVariants({ variant: 'outline', class: 'flex w-full flex-auto' })}
-				id={dstId}
-			>
-				<div class="flex items-center gap-2 text-foreground">
-					{#if dstSelected}
-						<span>{dstSelected.name}</span>
-					{:else}
-						<span> + To </span>
-					{/if}
-				</div>
-			</Popover.Trigger>
-			<Popover.Content class="p-0" align="start" side="right">
-				<Command.Root>
-					<Command.Input placeholder="Find..." />
-					<Command.List>
-						<Command.Empty>No results found.</Command.Empty>
-						<Command.Group>
-							{#each destinations as destination}
-								<Command.Item
-									value={destination.name}
-									onSelect={() => {
-										dstValue = destination.name;
-										closeAndFocusDestinationTrigger(dstId);
-									}}
-								>
-									<Icon icon={getIcon(destinationConnectors, destination.type)} />
-									{destination.name}
-								</Command.Item>
-							{/each}
-						</Command.Group>
-					</Command.List>
-				</Command.Root>
-			</Popover.Content>
-		</Popover.Root>
-	</fieldset>
+	{#if sources && destinations}
+		<fieldset class="flex items-center rounded-lg border p-4">
+			<legend class="-ml-2 px-1 text-sm font-medium"> New </legend>
+			<Popover.Root bind:open={srcOpen}>
+				<Popover.Trigger
+					class={buttonVariants({ variant: 'outline', class: 'flex w-full flex-auto' })}
+					id={srcId}
+				>
+					<div class="flex items-center gap-2 text-foreground">
+						{#if srcSelected}
+							<span>{srcSelected.name}</span>
+						{:else}
+							<span> + From </span>
+						{/if}
+					</div>
+				</Popover.Trigger>
+				<Popover.Content class="p-0" align="start" side="right">
+					<Command.Root>
+						<Command.Input placeholder="Find..." />
+						<Command.List>
+							<Command.Empty>No results found.</Command.Empty>
+							<Command.Group>
+								{#each sources as source}
+									<Command.Item
+										value={source.name}
+										onSelect={() => {
+											srcValue = source.name;
+											closeAndFocusSourceTrigger(srcId);
+										}}
+									>
+										<Icon icon={connectorIcon(source.type)} />
+										{source.name}
+									</Command.Item>
+								{/each}
+							</Command.Group>
+						</Command.List>
+					</Command.Root>
+				</Popover.Content>
+			</Popover.Root>
+			<Icon icon="line-md:chevron-small-triple-right" class="size-10 flex-none animate-pulse" />
+			<Popover.Root bind:open={dstOpen}>
+				<Popover.Trigger
+					class={buttonVariants({ variant: 'outline', class: 'flex w-full flex-auto' })}
+					id={dstId}
+				>
+					<div class="flex items-center gap-2 text-foreground">
+						{#if dstSelected}
+							<span>{dstSelected.name}</span>
+						{:else}
+							<span> + To </span>
+						{/if}
+					</div>
+				</Popover.Trigger>
+				<Popover.Content class="p-0" align="start" side="right">
+					<Command.Root>
+						<Command.Input placeholder="Find..." />
+						<Command.List>
+							<Command.Empty>No results found.</Command.Empty>
+							<Command.Group>
+								{#each destinations as destination}
+									<Command.Item
+										value={destination.name}
+										onSelect={() => {
+											dstValue = destination.name;
+											closeAndFocusDestinationTrigger(dstId);
+										}}
+									>
+										<Icon icon={connectorIcon(destination.type)} />
+										{destination.name}
+									</Command.Item>
+								{/each}
+							</Command.Group>
+						</Command.List>
+					</Command.Root>
+				</Popover.Content>
+			</Popover.Root>
+		</fieldset>
+	{/if}
 
 	<div class="flex w-full space-x-4">
 		<fieldset class="flex w-full items-center rounded-lg border p-4">
 			<legend class="-ml-2 px-1 text-sm font-medium"> Source </legend>
-			<PipelineConnector connctors={sourceConnectors} selected={srcSelected} />
+			<PipelineConnector selected={srcSelected} />
 		</fieldset>
 
 		<fieldset class="flex w-full items-center rounded-lg border p-4">
 			<legend class="-ml-2 px-1 text-sm font-medium"> Destination </legend>
-			<PipelineConnector connctors={destinationConnectors} selected={dstSelected} />
+			<PipelineConnector selected={dstSelected} />
 		</fieldset>
 	</div>
 

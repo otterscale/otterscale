@@ -10,12 +10,18 @@
 		MiniMap,
 		type Node,
 		type Edge,
-		Position
+		Position,
+		Panel
 	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 	import { mode } from 'mode-watcher';
 	import ConnectorNode from './connector-node.svelte';
+	import ConnectorDrawer from './connector-drawer.svelte';
+	import CreateButton from './create-button.svelte';
+	import FabricCreatePipeline from './fabric-create-pipeline.svelte';
+	import type { pbConnector } from '$lib/pb';
+	import * as Dialog from '$lib/components/ui/dialog';
 
 	let {
 		nodes,
@@ -101,7 +107,7 @@
 		}
 		$nodeStore.forEach((node) => {
 			if (node.id === id) {
-				node.class = `bg-accent`;
+				node.class = `bg-accent/90`;
 				$nodeStore = $nodeStore;
 
 				// find edges
@@ -118,28 +124,61 @@
 			}
 		});
 	}
+
+	let isDrawerOpen = $state(Object.fromEntries(nodes.map((node) => [node.id, false])));
+	let isConnected = $state(false);
+	let source = $state<pbConnector>();
+	let destination = $state<pbConnector>();
 </script>
 
-<main class="h-[calc(100vh_-_theme(spacing.16))]">
-	<SvelteFlow
-		nodes={nodeStore}
-		edges={edgeStore}
-		{nodeTypes}
-		defaultEdgeOptions={{ animated: true }}
-		colorMode={$mode as ColorModeClass}
-		proOptions={{ hideAttribution: true }}
-		on:nodeclick={(event) => {
-			reset();
-			focus({ id: event.detail.node.id, isEdge: false, all: true });
-		}}
-		on:edgeclick={(event) => {
-			reset();
-			focus({ id: event.detail.edge.id, isEdge: true });
-		}}
-		on:paneclick={() => reset()}
-	>
-		<Background variant={BackgroundVariant.Dots} />
-		<Controls orientation="horizontal" />
-		<MiniMap pannable zoomable position="top-right" />
-	</SvelteFlow>
-</main>
+{#each nodes as node}
+	<drawer class="hidden">
+		<ConnectorDrawer {node} bind:open={isDrawerOpen[node.id]} />
+	</drawer>
+{/each}
+
+<Dialog.Root bind:open={isConnected}>
+	<Dialog.Content class="max-w-2xl">
+		<Dialog.Header class="flex-col space-y-8 py-4">
+			<Dialog.Title class="flex"></Dialog.Title>
+			<Dialog.Description class="flex w-full justify-center px-2">
+				<FabricCreatePipeline bind:parent={isConnected} bind:source bind:destination />
+			</Dialog.Description>
+		</Dialog.Header>
+	</Dialog.Content>
+</Dialog.Root>
+
+<SvelteFlow
+	nodes={nodeStore}
+	edges={edgeStore}
+	{nodeTypes}
+	defaultEdgeOptions={{ animated: true }}
+	colorMode={$mode as ColorModeClass}
+	proOptions={{ hideAttribution: true }}
+	on:nodeclick={(event) => {
+		reset();
+		focus({ id: event.detail.node.id, isEdge: false, all: true });
+		isDrawerOpen[event.detail.node.id] = true;
+	}}
+	on:edgeclick={(event) => {
+		reset();
+		focus({ id: event.detail.edge.id, isEdge: true });
+	}}
+	on:paneclick={() => reset()}
+	onconnect={(connection) => {
+		const sourceNode = $nodeStore.find((n) => n.id === connection.source);
+		const targetNode = $nodeStore.find((n) => n.id === connection.target);
+		if (sourceNode && targetNode) {
+			source = sourceNode.data as unknown as pbConnector;
+			destination = targetNode.data as unknown as pbConnector;
+			isConnected = true;
+		}
+	}}
+>
+	<Background variant={BackgroundVariant.Dots} />
+	<Controls orientation="horizontal" />
+	<MiniMap pannable zoomable position="bottom-right" />
+	<Panel position="top-right" class="px-6">
+		<CreateButton />
+	</Panel>
+</SvelteFlow>
