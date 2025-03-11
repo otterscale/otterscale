@@ -9,7 +9,7 @@
 	import { createUser, Helper, passwordAuth, setEmailVisible, welcomeMessage } from '$lib/pb';
 	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
-	import { getCallback } from '$lib/utils';
+	import { getCallback } from '$lib/callback';
 	import { i18n } from '$lib/i18n';
 
 	let email = '';
@@ -128,9 +128,9 @@
 					required
 				/>
 			</div>
-			<Button type="submit" disabled={isLoading}>
+			<Button type="submit" class="[&_svg]:size-5" disabled={isLoading}>
 				{#if isLoading}
-					<Icon icon="ph:spinner-gap" class="h-5 w-5 animate-spin" />
+					<Icon icon="ph:spinner-gap" class="animate-spin" />
 				{:else}
 					<p>Create an account</p>
 				{/if}

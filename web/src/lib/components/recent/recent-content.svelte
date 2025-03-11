@@ -3,13 +3,12 @@
 	import { page } from '$app/state';
 	import * as Card from '$lib/components/ui/card';
 	import { i18n } from '$lib/i18n';
-	import type { pbVisit } from '$lib/pb';
-	import { formatTimeAgo } from '$lib/utils';
-	import Button from '../ui/button/button.svelte';
+	import type { pbRecent } from '$lib/pb';
+	import { formatTimeAgo } from '$lib/formatter';
 
-	export let items: pbVisit[];
+	export let items: pbRecent[];
 
-	function filter(): pbVisit[] {
+	function filter(): pbRecent[] {
 		if (page.url.hash === '') {
 			return items;
 		}
@@ -24,7 +23,7 @@
 	{#each filter() as item}
 		<Card.Root
 			class="inline-flex whitespace-nowrap rounded-md shadow transition-colors hover:text-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-			on:click={() => goto(i18n.resolveRoute(item.path))}
+			onclick={() => goto(i18n.resolveRoute(item.path))}
 		>
 			<Card.Header class="pb-6">
 				<Card.Title>
