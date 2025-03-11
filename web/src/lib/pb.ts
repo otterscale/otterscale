@@ -36,6 +36,24 @@ export class Helper {
     }
 }
 
+export function avatarFallback(name: string): string {
+    if (name) {
+        const names = name.split(' ');
+        if (names.length >= 2) {
+            return (names[0][0] + names[1][0]).toUpperCase();
+        }
+    }
+    return 'NA';
+}
+
+export function avatarURL(avatar: string): string {
+    if (pb.authStore.record) {
+        return pb.files.getURL(pb.authStore.record, avatar);
+    }
+    return '';
+}
+
+
 export async function listAuthMethods(): Promise<string[]> {
     var providers: string[] = [];
     await pb.collection('users').listAuthMethods().then((res) => {
@@ -281,6 +299,7 @@ export async function listRecents(): Promise<pbRecent[]> {
 
 export interface pbWorkload {
     user: string;
+    avatar: string;
     json: object;
     created: Date;
 }
@@ -293,9 +312,32 @@ export interface pbConnector {
     image: boolean;
     enabled: boolean;
     user: string;
+    avatar: string;
     created: Date;
     updated: Date;
     workload: pbWorkload;
+}
+
+function toPbConnector(rec: any): pbConnector {
+    var workload = rec.expand?.workloads_via_connector?.reduce((prev: any, curr: any) => (!prev || new Date(curr.created) > new Date(prev.created)) ? curr : prev, null);
+    return {
+        id: rec.id,
+        kind: rec.kind,
+        type: rec.type,
+        name: rec.name,
+        image: rec.image,
+        enabled: rec.enabled,
+        user: rec.expand?.user?.name,
+        avatar: rec.expand?.user?.avatar,
+        created: rec.created,
+        updated: rec.updated,
+        workload: {
+            user: workload?.expand?.user?.name,
+            avatar: workload?.expand?.user?.avatar,
+            json: workload?.json,
+            created: workload?.created,
+        }
+    } as pbConnector
 }
 
 export async function listConnectors(filter: string): Promise<pbConnector[]> {
@@ -303,27 +345,49 @@ export async function listConnectors(filter: string): Promise<pbConnector[]> {
     await pb.collection('connectors').getFullList({ filter: filter, expand: "workloads_via_connector.user,user" })
         .then((res) => {
             res.forEach((rec: any) => {
-                var workload = rec.expand?.workloads_via_connector?.reduce((prev: any, curr: any) => (!prev || new Date(curr.created) > new Date(prev.created)) ? curr : prev, null);
-                connectors.push({
-                    id: rec.id,
-                    kind: rec.kind,
-                    type: rec.type,
-                    name: rec.name,
-                    image: rec.image,
-                    enabled: rec.enabled,
-                    user: rec.expand?.user?.name,
-                    created: rec.created,
-                    updated: rec.updated,
-                    workload: {
-                        user: workload?.expand?.user?.name,
-                        json: workload?.json,
-                        created: workload?.created,
-                    }
-                } as pbConnector);
+                connectors.push(toPbConnector(rec));
             });
         })
         .catch((err) => {
             console.error('Failed to list connectors:', err)
         });
     return connectors;
+}
+
+
+export interface pbPipeline {
+    id: string;
+    source: pbConnector;
+    destination: pbConnector;
+    schedule: string;
+    user: string;
+    avatar: string;
+    created: Date;
+    updated: Date;
+}
+
+export async function listPipelines(filter: string): Promise<pbPipeline[]> {
+    var pipelines: pbPipeline[] = [];
+    await pb.collection('pipelines').getFullList({ filter: filter, expand: "user,source,destination,source.user,destination.user,source.workloads_via_connector.user,destination.workloads_via_connector.user" })
+        .then((res) => {
+            res.forEach((rec: any) => {
+                if (rec.deleted) {
+                    return
+                }
+                pipelines.push({
+                    id: rec.id,
+                    source: toPbConnector(rec.expand?.source),
+                    destination: toPbConnector(rec.expand?.destination),
+                    schedule: rec.schedule,
+                    user: rec.expand?.user?.name,
+                    avatar: rec.expand?.user?.avatar,
+                    created: rec.created,
+                    updated: rec.updated,
+                } as pbPipeline)
+            });
+        })
+        .catch((err) => {
+            console.error('Failed to list pipelines:', err)
+        });
+    return pipelines;
 }
