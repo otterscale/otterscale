@@ -62,6 +62,7 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
+		"@dagrejs/dagre": "^1.1.4",
 		"@fontsource-variable/noto-sans-tc": "^5.1.1",
 		"@iconify/svelte": "^4.2.0",
 		"@inlang/paraglide-sveltekit": "^0.15.5",
