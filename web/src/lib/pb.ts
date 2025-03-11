@@ -1,9 +1,8 @@
 import { page } from '$app/state';
 import PocketBase, { type RecordAuthResponse, type RecordModel } from 'pocketbase';
-import { siteConfig } from './config/site';
 import { i18n } from './i18n';
 
-const pb = new PocketBase('http://192.168.43.102:8090');
+const pb = new PocketBase(import.meta.env.OPENHDC_BACKEND_URL);
 pb.autoCancellation(false);
 
 if (pb.authStore.isValid && pb.authStore.record) {
