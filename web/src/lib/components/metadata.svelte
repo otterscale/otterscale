@@ -2,14 +2,14 @@
 	import { page } from '$app/state';
 	import { siteConfig } from '$lib/config/site';
 	import { i18n } from '$lib/i18n';
-	import { getFeatureTitle } from '$lib/utils';
+	import { featureTitle } from './features';
 
 	const title = $derived.by(() => {
 		const canonicalPath = i18n.route(page.url.pathname);
 		if (canonicalPath === '/') {
 			return `${siteConfig.title} | ${siteConfig.description}`;
 		}
-		return `${getFeatureTitle(canonicalPath)} | ${siteConfig.title}`;
+		return `${featureTitle(canonicalPath)} | ${siteConfig.title}`;
 	});
 </script>
 

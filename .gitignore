@@ -27,3 +27,6 @@ exp/
 # Mac
 .DS_Store
 
+# Migration
+cmd/openhdc/migrations
+cmd/openhdc/pb_data

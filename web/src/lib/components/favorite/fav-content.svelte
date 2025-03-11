@@ -4,7 +4,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { i18n } from '$lib/i18n';
 	import type { pbFavorite } from '$lib/pb';
-	import { formatTimeAgo } from '$lib/utils';
+	import { formatTimeAgo } from '$lib/formatter';
 
 	export let items: pbFavorite[];
 
@@ -23,7 +23,7 @@
 	{#each filter() as item}
 		<Card.Root
 			class="inline-flex whitespace-nowrap rounded-md shadow transition-colors hover:text-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-			on:click={() => goto(i18n.resolveRoute(item.path))}
+			onclick={() => goto(i18n.resolveRoute(item.path))}
 		>
 			<Card.Header class="pb-6">
 				<Card.Title>
