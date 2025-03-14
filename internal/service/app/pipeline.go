@@ -29,24 +29,37 @@ func (a *PipelineApp) Bind(app core.App) {
 func (a *PipelineApp) onServe(se *core.ServeEvent) error {
 	g := se.Router.Group("/api/hdc/pipeline")
 
-	g.GET("/cron-job/{name}", func(e *core.RequestEvent) error {
-		cj, err := a.svc.GetCronJob(e.Request.Context(), e.Request.PathValue("name"))
+	g.GET("/{cluster}/{namespace}/cron-job/{name}", func(e *core.RequestEvent) error {
+		ctx := e.Request.Context()
+		cluster := e.Request.PathValue("cluster")
+		namespace := e.Request.PathValue("namespace")
+		name := e.Request.PathValue("name")
+		cj, err := a.svc.GetCronJob(ctx, cluster, namespace, name)
 		if err != nil {
 			return err
 		}
 		return e.JSON(http.StatusOK, cj)
 	})
 
-	g.GET("/cron-job/{name}/jobs", func(e *core.RequestEvent) error {
-		cj, err := a.svc.ListJobsFromCronJob(e.Request.Context(), e.Request.PathValue("name"))
+	g.GET("/{cluster}/{namespace}/cron-job/{name}/jobs", func(e *core.RequestEvent) error {
+		ctx := e.Request.Context()
+		cluster := e.Request.PathValue("cluster")
+		namespace := e.Request.PathValue("namespace")
+		name := e.Request.PathValue("name")
+		cj, err := a.svc.ListJobsFromCronJob(ctx, cluster, namespace, name)
 		if err != nil {
 			return err
 		}
 		return e.JSON(http.StatusOK, cj)
 	})
 
-	g.POST("/cron-job/{name}/job", func(e *core.RequestEvent) error {
-		j, err := a.svc.CreateJobFromCronJob(e.Request.Context(), e.Request.PathValue("name"), e.Auth.FieldsData()["name"].(string))
+	g.POST("/{cluster}/{namespace}/cron-job/{name}/job", func(e *core.RequestEvent) error {
+		ctx := e.Request.Context()
+		cluster := e.Request.PathValue("cluster")
+		namespace := e.Request.PathValue("namespace")
+		name := e.Request.PathValue("name")
+		createdBy := e.Auth.FieldsData()["name"].(string)
+		j, err := a.svc.CreateJobFromCronJob(ctx, cluster, namespace, name, createdBy)
 		if err != nil {
 			return err
 		}
@@ -58,6 +71,8 @@ func (a *PipelineApp) onServe(se *core.ServeEvent) error {
 
 func (a *PipelineApp) onRecordCreateRequest(e *core.RecordRequestEvent) error {
 	ctx := e.Request.Context()
+	cluster := e.Record.GetString("cluster")
+	namespace := e.Record.GetString("namespace")
 	name := e.Record.GetString("name")
 	image := e.Record.GetString("image")
 	schedule := e.Record.GetString("schedule")
@@ -72,7 +87,7 @@ func (a *PipelineApp) onRecordCreateRequest(e *core.RecordRequestEvent) error {
 		return e.BadRequestError("Schedule must be provided", nil)
 	}
 
-	if _, err := a.svc.CreateCronJob(ctx, name, image, schedule); err != nil {
+	if _, err := a.svc.CreateCronJob(ctx, cluster, namespace, name, image, schedule); err != nil {
 		return e.InternalServerError("Failed to create cron job", err)
 	}
 
@@ -81,6 +96,8 @@ func (a *PipelineApp) onRecordCreateRequest(e *core.RecordRequestEvent) error {
 
 func (a *PipelineApp) onRecordUpdateRequest(e *core.RecordRequestEvent) error {
 	ctx := e.Request.Context()
+	cluster := e.Record.GetString("cluster")
+	namespace := e.Record.GetString("namespace")
 	name := e.Record.GetString("name")
 	image := e.Record.GetString("image")
 	schedule := e.Record.GetString("schedule")
@@ -97,14 +114,14 @@ func (a *PipelineApp) onRecordUpdateRequest(e *core.RecordRequestEvent) error {
 	}
 
 	if deleted {
-		if err := a.svc.DeleteCronJob(ctx, name); err != nil {
+		if err := a.svc.DeleteCronJob(ctx, cluster, namespace, name); err != nil {
 			return e.InternalServerError("Failed to delete cron job", err)
 		}
 
 		return e.Next()
 	}
 
-	if _, err := a.svc.UpdateCronJob(ctx, name, image, schedule); err != nil {
+	if _, err := a.svc.UpdateCronJob(ctx, cluster, namespace, name, image, schedule); err != nil {
 		return e.InternalServerError("Failed to update cron job", err)
 	}
 

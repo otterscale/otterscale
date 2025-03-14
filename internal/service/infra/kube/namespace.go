@@ -5,34 +5,41 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 
 	"github.com/openhdc/openhdc/internal/service/domain/service"
 )
 
 type namespace struct {
-	client *kubernetes.Clientset
+	kubes Kubes
 }
 
-func NewNamespace(client *kubernetes.Clientset) service.KubeNamespace {
+func NewNamespace(kubes Kubes) service.KubeNamespace {
 	return &namespace{
-		client: client,
+		kubes: kubes,
 	}
 }
 
 var _ service.KubeNamespace = (*namespace)(nil)
 
-func (r *namespace) Get(ctx context.Context) (*corev1.Namespace, error) {
+func (r *namespace) Get(ctx context.Context, cluster, name string) (*corev1.Namespace, error) {
+	client, err := r.kubes.Get(cluster)
+	if err != nil {
+		return nil, err
+	}
 	opts := metav1.GetOptions{}
-	return r.client.CoreV1().Namespaces().Get(ctx, ns, opts)
+	return client.CoreV1().Namespaces().Get(ctx, name, opts)
 }
 
-func (r *namespace) Create(ctx context.Context) (*corev1.Namespace, error) {
-	ns := &corev1.Namespace{
+func (r *namespace) Create(ctx context.Context, cluster, name string) (*corev1.Namespace, error) {
+	client, err := r.kubes.Get(cluster)
+	if err != nil {
+		return nil, err
+	}
+	namespace := &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: ns,
+			Name: name,
 		},
 	}
 	opts := metav1.CreateOptions{}
-	return r.client.CoreV1().Namespaces().Create(ctx, ns, opts)
+	return client.CoreV1().Namespaces().Create(ctx, namespace, opts)
 }
