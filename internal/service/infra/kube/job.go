@@ -8,41 +8,52 @@ import (
 	"github.com/google/uuid"
 	batchv1 "k8s.io/api/batch/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 
 	"github.com/openhdc/openhdc/internal/service/domain/service"
 )
 
 type job struct {
-	client *kubernetes.Clientset
+	kubes Kubes
 }
 
-func NewJob(client *kubernetes.Clientset) service.KubeJob {
+func NewJob(kubes Kubes) service.KubeJob {
 	return &job{
-		client: client,
+		kubes: kubes,
 	}
 }
 
 var _ service.KubeJob = (*job)(nil)
 
-func (r *job) ListFromCronJob(ctx context.Context, cj *batchv1.CronJob) (*batchv1.JobList, error) {
-	opts := metav1.ListOptions{
-		LabelSelector: fmt.Sprintf("cronjob-name=%s", cj.Name),
+func (r *job) ListFromCronJob(ctx context.Context, cluster, namespace string, cronJob *batchv1.CronJob) (*batchv1.JobList, error) {
+	client, err := r.kubes.Get(cluster)
+	if err != nil {
+		return nil, err
 	}
-	return r.client.BatchV1().Jobs(ns).List(ctx, opts)
+	opts := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("cronjob-name=%s", cronJob.Name),
+	}
+	return client.BatchV1().Jobs(namespace).List(ctx, opts)
 }
 
-func (r *job) CreateFromCronJob(ctx context.Context, cj *batchv1.CronJob, createdBy string) (*batchv1.Job, error) {
-	j := &batchv1.Job{
+func (r *job) CreateFromCronJob(ctx context.Context, cluster, namespace string, cronJob *batchv1.CronJob, createdBy string) (*batchv1.Job, error) {
+	client, err := r.kubes.Get(cluster)
+	if err != nil {
+		return nil, err
+	}
+	job := r.toJob(cronJob, createdBy)
+	opts := metav1.CreateOptions{}
+	return client.BatchV1().Jobs(namespace).Create(ctx, job, opts)
+}
+
+func (r *job) toJob(cronJob *batchv1.CronJob, createdBy string) *batchv1.Job {
+	return &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: cj.Name + "-" + strings.Split(uuid.NewString(), "-")[0],
+			Name: cronJob.Name + "-" + strings.Split(uuid.NewString(), "-")[0],
 			Labels: map[string]string{
 				"created-by":   createdBy,
-				"cronjob-name": cj.Name,
+				"cronjob-name": cronJob.Name,
 			},
 		},
-		Spec: *cj.Spec.JobTemplate.Spec.DeepCopy(),
+		Spec: *cronJob.Spec.JobTemplate.Spec.DeepCopy(),
 	}
-	opts := metav1.CreateOptions{}
-	return r.client.BatchV1().Jobs(ns).Create(ctx, j, opts)
 }

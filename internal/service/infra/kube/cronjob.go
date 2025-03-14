@@ -6,54 +6,75 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
 
 	"github.com/openhdc/openhdc/internal/service/domain/service"
 )
 
+var (
+	ttlSecondsAfterFinished    int32 = 86400
+	successfulJobsHistoryLimit int32 = 5
+	failedJobsHistoryLimit     int32 = 3
+)
+
 type cronJob struct {
-	client *kubernetes.Clientset
+	kubes Kubes
 }
 
-func NewCronJob(client *kubernetes.Clientset) service.KubeCronJob {
+func NewCronJob(kubes Kubes) service.KubeCronJob {
 	return &cronJob{
-		client: client,
+		kubes: kubes,
 	}
 }
 
 var _ service.KubeCronJob = (*cronJob)(nil)
 
-func (r *cronJob) Get(ctx context.Context, name string) (*batchv1.CronJob, error) {
+func (r *cronJob) Get(ctx context.Context, cluster, namespace, name string) (*batchv1.CronJob, error) {
+	client, err := r.kubes.Get(cluster)
+	if err != nil {
+		return nil, err
+	}
 	opts := metav1.GetOptions{}
-	return r.client.BatchV1().CronJobs(ns).Get(ctx, name, opts)
+	return client.BatchV1().CronJobs(namespace).Get(ctx, name, opts)
 }
 
-func (r *cronJob) Create(ctx context.Context, name, image, schedule string) (*batchv1.CronJob, error) {
-	cj := r.to(name, image, schedule)
+func (r *cronJob) Create(ctx context.Context, cluster, namespace, name, image, schedule string) (*batchv1.CronJob, error) {
+	client, err := r.kubes.Get(cluster)
+	if err != nil {
+		return nil, err
+	}
+	cronJob := r.toCronJob(name, image, schedule)
 	opts := metav1.CreateOptions{}
-	return r.client.BatchV1().CronJobs(ns).Create(ctx, cj, opts)
+	return client.BatchV1().CronJobs(namespace).Create(ctx, cronJob, opts)
 }
 
-func (r *cronJob) Update(ctx context.Context, name, image, schedule string) (*batchv1.CronJob, error) {
-	cj := r.to(name, image, schedule)
+func (r *cronJob) Update(ctx context.Context, cluster, namespace, name, image, schedule string) (*batchv1.CronJob, error) {
+	client, err := r.kubes.Get(cluster)
+	if err != nil {
+		return nil, err
+	}
+	cronJob := r.toCronJob(name, image, schedule)
 	opts := metav1.UpdateOptions{}
-	return r.client.BatchV1().CronJobs(ns).Update(ctx, cj, opts)
+	return client.BatchV1().CronJobs(namespace).Update(ctx, cronJob, opts)
 }
 
-func (r *cronJob) Delete(ctx context.Context, name string) error {
+func (r *cronJob) Delete(ctx context.Context, cluster, namespace, name string) error {
+	client, err := r.kubes.Get(cluster)
+	if err != nil {
+		return err
+	}
 	opts := metav1.DeleteOptions{}
-	return r.client.BatchV1().CronJobs(ns).Delete(ctx, name, opts)
+	return client.BatchV1().CronJobs(namespace).Delete(ctx, name, opts)
 }
 
-func (r *cronJob) to(name, image, schedule string) *batchv1.CronJob {
+func (r *cronJob) toCronJob(name, image, schedule string) *batchv1.CronJob {
 	return &batchv1.CronJob{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 		},
 		Spec: batchv1.CronJobSpec{
 			Schedule:                   schedule,
-			SuccessfulJobsHistoryLimit: &succLimit,
-			FailedJobsHistoryLimit:     &failLimit,
+			SuccessfulJobsHistoryLimit: &successfulJobsHistoryLimit,
+			FailedJobsHistoryLimit:     &failedJobsHistoryLimit,
 			JobTemplate: batchv1.JobTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
@@ -61,7 +82,7 @@ func (r *cronJob) to(name, image, schedule string) *batchv1.CronJob {
 					},
 				},
 				Spec: batchv1.JobSpec{
-					TTLSecondsAfterFinished: &ttl,
+					TTLSecondsAfterFinished: &ttlSecondsAfterFinished,
 					Template: corev1.PodTemplateSpec{
 						Spec: corev1.PodSpec{
 							Containers: []corev1.Container{

@@ -21,14 +21,14 @@ import (
 // Injectors from wire.go:
 
 func wireApp(string2 string) (*pocketbase.PocketBase, func(), error) {
-	clientset, err := kube.NewClientset()
+	kubes, err := kube.NewKubes()
 	if err != nil {
 		return nil, nil, err
 	}
-	kubeNamespace := kube.NewNamespace(clientset)
-	kubeCronJob := kube.NewCronJob(clientset)
-	kubeJob := kube.NewJob(clientset)
-	kubeService := service.NewKubeService(kubeNamespace, kubeCronJob, kubeJob)
+	kubeCronJob := kube.NewCronJob(kubes)
+	kubeJob := kube.NewJob(kubes)
+	kubeNamespace := kube.NewNamespace(kubes)
+	kubeService := service.NewKubeService(kubeCronJob, kubeJob, kubeNamespace)
 	pipelineApp := app.NewPipelineApp(kubeService)
 	pocketBase := service2.NewPocketBase(string2, pipelineApp)
 	return pocketBase, func() {
