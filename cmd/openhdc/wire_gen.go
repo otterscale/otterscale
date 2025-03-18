@@ -10,7 +10,7 @@ import (
 	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/internal/app"
 	"github.com/openhdc/openhdc/internal/cmd"
-	"github.com/openhdc/openhdc/internal/data/kube"
+	"github.com/openhdc/openhdc/internal/data/repo"
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/spf13/cobra"
 )
@@ -18,15 +18,17 @@ import (
 // Injectors from wire.go:
 
 func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func(), error) {
-	kubes, err := kube.NewKubes()
+	connConfig, err := repo.NewConfig()
 	if err != nil {
 		return nil, nil, err
 	}
-	kubeCronJob := kube.NewCronJob(kubes)
-	kubeJob := kube.NewJob(kubes)
-	kubeNamespace := kube.NewNamespace(kubes)
-	kubeService := service.NewKubeService(kubeCronJob, kubeJob, kubeNamespace)
-	stackApp := app.NewStackApp(kubeService)
+	v, err := repo.New(connConfig)
+	if err != nil {
+		return nil, nil, err
+	}
+	userRepo := repo.NewUser(v)
+	stackService := service.NewStackService(userRepo)
+	stackApp := app.NewStackApp(stackService)
 	command := cmd.New(string2, stackApp)
 	return command, func() {
 	}, nil

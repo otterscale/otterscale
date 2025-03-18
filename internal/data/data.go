@@ -6,6 +6,7 @@ import (
 	"github.com/openhdc/openhdc/internal/data/juju"
 	"github.com/openhdc/openhdc/internal/data/kube"
 	"github.com/openhdc/openhdc/internal/data/maas"
+	"github.com/openhdc/openhdc/internal/data/repo"
 )
 
 var ProviderSet = wire.NewSet(
@@ -17,4 +18,7 @@ var ProviderSet = wire.NewSet(
 	kube.NewNamespace,
 	kube.NewCronJob,
 	kube.NewJob,
+	repo.NewConfig,
+	repo.New,
+	repo.NewUser,
 )

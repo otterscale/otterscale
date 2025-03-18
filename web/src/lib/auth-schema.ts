@@ -1,3 +1,14 @@
+/**
+ * Authentication schema for the application using Drizzle ORM.
+ * 
+ * This file defines the database schema for authentication-related tables
+ * including users, sessions, accounts, organizations, teams, and more.
+ * 
+ * @remarks
+ * When modifying this file, corresponding changes must be synchronized 
+ * with the Go/ent schema definitions.
+ */
+
 import { pgTable, text, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {

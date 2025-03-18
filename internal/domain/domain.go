@@ -6,4 +6,7 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
 
-var ProviderSet = wire.NewSet(service.NewKubeService)
+var ProviderSet = wire.NewSet(
+	service.NewKubeService,
+	service.NewStackService,
+)
