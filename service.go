@@ -15,7 +15,7 @@ import (
 )
 
 type Service struct {
-	pb.UnimplementedConnectorServer
+	pb.UnimplementedConnectorServiceServer
 
 	connector Connector
 }
@@ -26,7 +26,7 @@ func NewService(c Connector) *Service {
 	}
 }
 
-var _ pb.ConnectorServer = (*Service)(nil)
+var _ pb.ConnectorServiceServer = (*Service)(nil)
 
 func (s *Service) Name(ctx context.Context, req *pb.NameRequest) (*pb.NameResponse, error) {
 	name := s.connector.Name()
@@ -37,7 +37,7 @@ func (s *Service) Close(ctx context.Context, _ *pb.CloseRequest) (*emptypb.Empty
 	return &emptypb.Empty{}, s.connector.Close(ctx)
 }
 
-func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) error {
+func (s *Service) Pull(req *pb.PullRequest, stream pb.ConnectorService_PullServer) error {
 	msgs := make(chan *pb.Message)
 	eg, ctx := errgroup.WithContext(stream.Context())
 	eg.Go(func() error {
@@ -62,7 +62,7 @@ func (s *Service) Pull(req *pb.PullRequest, stream pb.Connector_PullServer) erro
 	return eg.Wait()
 }
 
-func (s *Service) Push(stream pb.Connector_PushServer) error {
+func (s *Service) Push(stream pb.ConnectorService_PushServer) error {
 	msgs := make(chan *pb.Message)
 	eg, ctx := errgroup.WithContext(stream.Context())
 	eg.Go(func() error {
@@ -81,7 +81,7 @@ func (s *Service) read(ctx context.Context, msgs chan *pb.Message, r *Reader) er
 }
 
 // canceled by close channel
-func (s *Service) send(msgs chan *pb.Message, stream pb.Connector_PullServer) error {
+func (s *Service) send(msgs chan *pb.Message, stream pb.ConnectorService_PullServer) error {
 	for msg := range msgs {
 		if proto.Size(msg) > defaultMaxMessageSize {
 			slog.Warn("[Send] skip oversized message")
@@ -95,7 +95,7 @@ func (s *Service) send(msgs chan *pb.Message, stream pb.Connector_PullServer) er
 }
 
 // canceled by next recv
-func (s *Service) receive(ctx context.Context, msgs chan *pb.Message, stream pb.Connector_PushServer) error {
+func (s *Service) receive(ctx context.Context, msgs chan *pb.Message, stream pb.ConnectorService_PushServer) error {
 	defer close(msgs)
 	for {
 		msg, err := stream.Recv()
