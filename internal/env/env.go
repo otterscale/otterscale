@@ -4,7 +4,8 @@ import "os"
 
 // Environment variables
 const (
-	OPENHDC_IN_CLUSTER = "OPENHDC_IN_CLUSTER" //nolint:stylecheck
+	OPENHDC_IN_CLUSTER        = "OPENHDC_IN_CLUSTER"        //nolint:stylecheck
+	OPENHDC_CONNECTION_STRING = "OPENHDC_CONNECTION_STRING" //nolint:stylecheck
 )
 
 // Environment variables for MAAS configuration

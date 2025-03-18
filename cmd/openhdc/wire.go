@@ -5,13 +5,14 @@ package main
 
 import (
 	"github.com/google/wire"
-	"github.com/openhdc/openhdc/internal/service"
-	"github.com/openhdc/openhdc/internal/service/app"
-	"github.com/openhdc/openhdc/internal/service/domain"
-	"github.com/openhdc/openhdc/internal/service/infra"
-	"github.com/pocketbase/pocketbase"
+	"github.com/openhdc/openhdc"
+	"github.com/openhdc/openhdc/internal/app"
+	"github.com/openhdc/openhdc/internal/cmd"
+	"github.com/openhdc/openhdc/internal/data"
+	"github.com/openhdc/openhdc/internal/domain"
+	"github.com/spf13/cobra"
 )
 
-func wireApp(string) (*pocketbase.PocketBase, func(), error) {
-	panic(wire.Build(service.ProviderSet, app.ProviderSet, domain.ProviderSet, infra.ProviderSet))
+func wireApp(string, []openhdc.ServerOption) (*cobra.Command, func(), error) {
+	panic(wire.Build(cmd.ProviderSet, app.ProviderSet, domain.ProviderSet, data.ProviderSet))
 }

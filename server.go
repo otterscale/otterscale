@@ -90,7 +90,7 @@ func NewDefaultServer(opt ...ServerOption) *Server {
 
 func NewServer(svc *Service, opt ...ServerOption) *Server {
 	srv := NewDefaultServer(opt...)
-	pb.RegisterConnectorServer(srv.gs, svc)
+	pb.RegisterConnectorServiceServer(srv.gs, svc)
 	return srv
 }
 
