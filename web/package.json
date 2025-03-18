@@ -62,12 +62,18 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
+		"@auth/drizzle-adapter": "^1.8.0",
 		"@dagrejs/dagre": "^1.1.4",
 		"@fontsource-variable/noto-sans-tc": "^5.1.1",
 		"@iconify/svelte": "^4.2.0",
 		"@inlang/paraglide-sveltekit": "^0.15.5",
+		"@types/pg": "^8.11.11",
 		"@xyflow/svelte": "^0.1.31",
+		"better-auth": "^1.2.4",
+		"dotenv": "^16.4.7",
+		"drizzle-orm": "^0.40.0",
 		"inter-ui": "^4.1.0",
+		"pg": "^8.14.0",
 		"pocketbase": "^0.25.1",
 		"yaml": "^2.7.0"
 	},

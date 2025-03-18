@@ -7,30 +7,29 @@
 package main
 
 import (
-	service2 "github.com/openhdc/openhdc/internal/service"
-	"github.com/openhdc/openhdc/internal/service/app"
-	"github.com/openhdc/openhdc/internal/service/domain/service"
-	"github.com/openhdc/openhdc/internal/service/infra/kube"
-	"github.com/pocketbase/pocketbase"
-)
-
-import (
-	_ "github.com/openhdc/openhdc/internal/migrations"
+	"github.com/openhdc/openhdc"
+	"github.com/openhdc/openhdc/internal/app"
+	"github.com/openhdc/openhdc/internal/cmd"
+	"github.com/openhdc/openhdc/internal/data/repo"
+	"github.com/openhdc/openhdc/internal/domain/service"
+	"github.com/spf13/cobra"
 )
 
 // Injectors from wire.go:
 
-func wireApp(string2 string) (*pocketbase.PocketBase, func(), error) {
-	kubes, err := kube.NewKubes()
+func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func(), error) {
+	connConfig, err := repo.NewConfig()
 	if err != nil {
 		return nil, nil, err
 	}
-	kubeCronJob := kube.NewCronJob(kubes)
-	kubeJob := kube.NewJob(kubes)
-	kubeNamespace := kube.NewNamespace(kubes)
-	kubeService := service.NewKubeService(kubeCronJob, kubeJob, kubeNamespace)
-	pipelineApp := app.NewPipelineApp(kubeService)
-	pocketBase := service2.NewPocketBase(string2, pipelineApp)
-	return pocketBase, func() {
+	v, err := repo.New(connConfig)
+	if err != nil {
+		return nil, nil, err
+	}
+	userRepo := repo.NewUser(v)
+	stackService := service.NewStackService(userRepo)
+	stackApp := app.NewStackApp(stackService)
+	command := cmd.New(string2, stackApp)
+	return command, func() {
 	}, nil
 }
