@@ -70,6 +70,7 @@
 		"@types/pg": "^8.11.11",
 		"@xyflow/svelte": "^0.1.31",
 		"better-auth": "^1.2.4",
+		"dotenv": "^16.4.7",
 		"drizzle-orm": "^0.40.0",
 		"inter-ui": "^4.1.0",
 		"pg": "^8.14.0",
