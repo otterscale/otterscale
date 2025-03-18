@@ -20,53 +20,53 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Connector_Name_FullMethodName  = "/openhdc.connector.v1.Connector/Name"
-	Connector_Close_FullMethodName = "/openhdc.connector.v1.Connector/Close"
-	Connector_Pull_FullMethodName  = "/openhdc.connector.v1.Connector/Pull"
-	Connector_Push_FullMethodName  = "/openhdc.connector.v1.Connector/Push"
+	ConnectorService_Name_FullMethodName  = "/openhdc.connector.v1.ConnectorService/Name"
+	ConnectorService_Close_FullMethodName = "/openhdc.connector.v1.ConnectorService/Close"
+	ConnectorService_Pull_FullMethodName  = "/openhdc.connector.v1.ConnectorService/Pull"
+	ConnectorService_Push_FullMethodName  = "/openhdc.connector.v1.ConnectorService/Push"
 )
 
-// ConnectorClient is the client API for Connector service.
+// ConnectorServiceClient is the client API for ConnectorService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ConnectorClient interface {
+type ConnectorServiceClient interface {
 	Name(ctx context.Context, in *NameRequest, opts ...grpc.CallOption) (*NameResponse, error)
 	Close(ctx context.Context, in *CloseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Pull(ctx context.Context, in *PullRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Message], error)
 	Push(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Message, emptypb.Empty], error)
 }
 
-type connectorClient struct {
+type connectorServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewConnectorClient(cc grpc.ClientConnInterface) ConnectorClient {
-	return &connectorClient{cc}
+func NewConnectorServiceClient(cc grpc.ClientConnInterface) ConnectorServiceClient {
+	return &connectorServiceClient{cc}
 }
 
-func (c *connectorClient) Name(ctx context.Context, in *NameRequest, opts ...grpc.CallOption) (*NameResponse, error) {
+func (c *connectorServiceClient) Name(ctx context.Context, in *NameRequest, opts ...grpc.CallOption) (*NameResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(NameResponse)
-	err := c.cc.Invoke(ctx, Connector_Name_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ConnectorService_Name_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *connectorClient) Close(ctx context.Context, in *CloseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *connectorServiceClient) Close(ctx context.Context, in *CloseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Connector_Close_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ConnectorService_Close_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *connectorClient) Pull(ctx context.Context, in *PullRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Message], error) {
+func (c *connectorServiceClient) Pull(ctx context.Context, in *PullRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Message], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &Connector_ServiceDesc.Streams[0], Connector_Pull_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &ConnectorService_ServiceDesc.Streams[0], ConnectorService_Pull_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,11 +81,11 @@ func (c *connectorClient) Pull(ctx context.Context, in *PullRequest, opts ...grp
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Connector_PullClient = grpc.ServerStreamingClient[Message]
+type ConnectorService_PullClient = grpc.ServerStreamingClient[Message]
 
-func (c *connectorClient) Push(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Message, emptypb.Empty], error) {
+func (c *connectorServiceClient) Push(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Message, emptypb.Empty], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &Connector_ServiceDesc.Streams[1], Connector_Push_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &ConnectorService_ServiceDesc.Streams[1], ConnectorService_Push_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,138 +94,138 @@ func (c *connectorClient) Push(ctx context.Context, opts ...grpc.CallOption) (gr
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Connector_PushClient = grpc.ClientStreamingClient[Message, emptypb.Empty]
+type ConnectorService_PushClient = grpc.ClientStreamingClient[Message, emptypb.Empty]
 
-// ConnectorServer is the server API for Connector service.
-// All implementations must embed UnimplementedConnectorServer
+// ConnectorServiceServer is the server API for ConnectorService service.
+// All implementations must embed UnimplementedConnectorServiceServer
 // for forward compatibility.
-type ConnectorServer interface {
+type ConnectorServiceServer interface {
 	Name(context.Context, *NameRequest) (*NameResponse, error)
 	Close(context.Context, *CloseRequest) (*emptypb.Empty, error)
 	Pull(*PullRequest, grpc.ServerStreamingServer[Message]) error
 	Push(grpc.ClientStreamingServer[Message, emptypb.Empty]) error
-	mustEmbedUnimplementedConnectorServer()
+	mustEmbedUnimplementedConnectorServiceServer()
 }
 
-// UnimplementedConnectorServer must be embedded to have
+// UnimplementedConnectorServiceServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedConnectorServer struct{}
+type UnimplementedConnectorServiceServer struct{}
 
-func (UnimplementedConnectorServer) Name(context.Context, *NameRequest) (*NameResponse, error) {
+func (UnimplementedConnectorServiceServer) Name(context.Context, *NameRequest) (*NameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Name not implemented")
 }
-func (UnimplementedConnectorServer) Close(context.Context, *CloseRequest) (*emptypb.Empty, error) {
+func (UnimplementedConnectorServiceServer) Close(context.Context, *CloseRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Close not implemented")
 }
-func (UnimplementedConnectorServer) Pull(*PullRequest, grpc.ServerStreamingServer[Message]) error {
+func (UnimplementedConnectorServiceServer) Pull(*PullRequest, grpc.ServerStreamingServer[Message]) error {
 	return status.Errorf(codes.Unimplemented, "method Pull not implemented")
 }
-func (UnimplementedConnectorServer) Push(grpc.ClientStreamingServer[Message, emptypb.Empty]) error {
+func (UnimplementedConnectorServiceServer) Push(grpc.ClientStreamingServer[Message, emptypb.Empty]) error {
 	return status.Errorf(codes.Unimplemented, "method Push not implemented")
 }
-func (UnimplementedConnectorServer) mustEmbedUnimplementedConnectorServer() {}
-func (UnimplementedConnectorServer) testEmbeddedByValue()                   {}
+func (UnimplementedConnectorServiceServer) mustEmbedUnimplementedConnectorServiceServer() {}
+func (UnimplementedConnectorServiceServer) testEmbeddedByValue()                          {}
 
-// UnsafeConnectorServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ConnectorServer will
+// UnsafeConnectorServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ConnectorServiceServer will
 // result in compilation errors.
-type UnsafeConnectorServer interface {
-	mustEmbedUnimplementedConnectorServer()
+type UnsafeConnectorServiceServer interface {
+	mustEmbedUnimplementedConnectorServiceServer()
 }
 
-func RegisterConnectorServer(s grpc.ServiceRegistrar, srv ConnectorServer) {
-	// If the following call pancis, it indicates UnimplementedConnectorServer was
+func RegisterConnectorServiceServer(s grpc.ServiceRegistrar, srv ConnectorServiceServer) {
+	// If the following call pancis, it indicates UnimplementedConnectorServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&Connector_ServiceDesc, srv)
+	s.RegisterService(&ConnectorService_ServiceDesc, srv)
 }
 
-func _Connector_Name_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ConnectorService_Name_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConnectorServer).Name(ctx, in)
+		return srv.(ConnectorServiceServer).Name(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Connector_Name_FullMethodName,
+		FullMethod: ConnectorService_Name_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConnectorServer).Name(ctx, req.(*NameRequest))
+		return srv.(ConnectorServiceServer).Name(ctx, req.(*NameRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Connector_Close_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ConnectorService_Close_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CloseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConnectorServer).Close(ctx, in)
+		return srv.(ConnectorServiceServer).Close(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Connector_Close_FullMethodName,
+		FullMethod: ConnectorService_Close_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConnectorServer).Close(ctx, req.(*CloseRequest))
+		return srv.(ConnectorServiceServer).Close(ctx, req.(*CloseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Connector_Pull_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _ConnectorService_Pull_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(PullRequest)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ConnectorServer).Pull(m, &grpc.GenericServerStream[PullRequest, Message]{ServerStream: stream})
+	return srv.(ConnectorServiceServer).Pull(m, &grpc.GenericServerStream[PullRequest, Message]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Connector_PullServer = grpc.ServerStreamingServer[Message]
+type ConnectorService_PullServer = grpc.ServerStreamingServer[Message]
 
-func _Connector_Push_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(ConnectorServer).Push(&grpc.GenericServerStream[Message, emptypb.Empty]{ServerStream: stream})
+func _ConnectorService_Push_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ConnectorServiceServer).Push(&grpc.GenericServerStream[Message, emptypb.Empty]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Connector_PushServer = grpc.ClientStreamingServer[Message, emptypb.Empty]
+type ConnectorService_PushServer = grpc.ClientStreamingServer[Message, emptypb.Empty]
 
-// Connector_ServiceDesc is the grpc.ServiceDesc for Connector service.
+// ConnectorService_ServiceDesc is the grpc.ServiceDesc for ConnectorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Connector_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "openhdc.connector.v1.Connector",
-	HandlerType: (*ConnectorServer)(nil),
+var ConnectorService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "openhdc.connector.v1.ConnectorService",
+	HandlerType: (*ConnectorServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Name",
-			Handler:    _Connector_Name_Handler,
+			Handler:    _ConnectorService_Name_Handler,
 		},
 		{
 			MethodName: "Close",
-			Handler:    _Connector_Close_Handler,
+			Handler:    _ConnectorService_Close_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "Pull",
-			Handler:       _Connector_Pull_Handler,
+			Handler:       _ConnectorService_Pull_Handler,
 			ServerStreams: true,
 		},
 		{
 			StreamName:    "Push",
-			Handler:       _Connector_Push_Handler,
+			Handler:       _ConnectorService_Push_Handler,
 			ClientStreams: true,
 		},
 	},

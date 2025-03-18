@@ -19,7 +19,7 @@ import (
 type Client struct {
 	opts options
 
-	pb.ConnectorClient
+	pb.ConnectorServiceClient
 }
 
 type options struct {
@@ -110,7 +110,7 @@ func (c *Client) Start(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	c.ConnectorClient = pb.NewConnectorClient(conn)
+	c.ConnectorServiceClient = pb.NewConnectorServiceClient(conn)
 
 	args := []string{"--address", target}
 	args = append(args, c.specToArgs(c.opts.spec)...)
