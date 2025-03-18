@@ -1,26 +1,26 @@
 package repo
 
 import (
+	"context"
 	gosql "database/sql"
-
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/stdlib"
+	"os"
+	"time"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/stdlib"
 
 	"github.com/openhdc/openhdc/internal/data/repo/ent"
 	"github.com/openhdc/openhdc/internal/env"
 )
 
+// Repo is an alias for the ent Client
 type Repo = ent.Client
 
-type Data struct {
-	db *ent.Client
-}
-
+// NewConfig creates a new PostgreSQL connection configuration
 func NewConfig() (*pgx.ConnConfig, error) {
-	cfg, err := pgx.ParseConfig(env.OPENHDC_CONNECTION_STRING)
+	cfg, err := pgx.ParseConfig(os.Getenv(env.OPENHDC_CONNECTION_STRING))
 	if err != nil {
 		return nil, err
 	}
@@ -28,11 +28,26 @@ func NewConfig() (*pgx.ConnConfig, error) {
 	return cfg, nil
 }
 
+// New creates a new repository client with the given configuration
 func New(cfg *pgx.ConnConfig) (*Repo, error) {
+	// Open database connection
 	db, err := gosql.Open("pgx", stdlib.RegisterConnConfig(cfg))
 	if err != nil {
 		return nil, err
 	}
+
+	// Create Ent client
 	drv := sql.OpenDB(dialect.Postgres, db)
-	return ent.NewClient(ent.Driver(drv)), nil
+	client := ent.NewClient(ent.Driver(drv))
+
+	// Initialize schema with timeout
+	const schemaTimeout = time.Minute
+	ctx, cancel := context.WithTimeout(context.Background(), schemaTimeout)
+	defer cancel()
+
+	if err := client.Schema.Create(ctx); err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }

@@ -8,11 +8,11 @@ import (
 type StackApp struct {
 	pb.UnimplementedStackServiceServer
 
-	ks *service.KubeService
+	svc *service.StackService
 }
 
-func NewStackApp(ks *service.KubeService) *StackApp {
+func NewStackApp(svc *service.StackService) *StackApp {
 	return &StackApp{
-		ks: ks,
+		svc: svc,
 	}
 }
