@@ -59,8 +59,16 @@ type MAASIPRange interface {
 	Update(ctx context.Context, id int, params *model.IPRangeParams) (*model.IPRange, error)
 }
 
-// MAASMachine represents machine operations (placeholder for future implementation)
+// MAASBootResource represents boot resource operations
+type MAASBootResource interface {
+	Import(ctx context.Context) error
+}
+
+// MAASMachine represents machine operations
 type MAASMachine interface {
+	PowerOn(ctx context.Context, systemID string, params *model.MachinePowerOnParams) (*model.Machine, error)
+	PowerOff(ctx context.Context, systemID string, params *model.MachinePowerOffParams) (*model.Machine, error)
+	Commission(ctx context.Context, systemID string, params *model.MachineCommissionParams) (*model.Machine, error)
 }
 
 // StackService coordinates operations across multiple MAAS resources
@@ -71,10 +79,12 @@ type StackService struct {
 	vlan              MAASVLAN
 	subnet            MAASSubnet
 	ipRange           MAASIPRange
+	bootResource      MAASBootResource
+	machine           MAASMachine
 }
 
 // NewStackService creates a new instance of StackService
-func NewStackService(server MAASServer, packageRepository MAASPackageRepository, fabric MAASFabric, vlan MAASVLAN, subnet MAASSubnet, ipRange MAASIPRange) *StackService {
+func NewStackService(server MAASServer, packageRepository MAASPackageRepository, fabric MAASFabric, vlan MAASVLAN, subnet MAASSubnet, ipRange MAASIPRange, bootResource MAASBootResource, machine MAASMachine) *StackService {
 	return &StackService{
 		server:            server,
 		packageRepository: packageRepository,
@@ -82,6 +92,8 @@ func NewStackService(server MAASServer, packageRepository MAASPackageRepository,
 		vlan:              vlan,
 		subnet:            subnet,
 		ipRange:           ipRange,
+		bootResource:      bootResource,
+		machine:           machine,
 	}
 }
 
@@ -250,6 +262,30 @@ func (s *StackService) UpdateSubnet(ctx context.Context, id int, params *model.S
 // UpdateIPRange updates IP range properties
 func (s *StackService) UpdateIPRange(ctx context.Context, id int, params *model.IPRangeParams) (*model.IPRange, error) {
 	return s.ipRange.Update(ctx, id, params)
+}
+
+// Boot resource operations
+
+// ImportBootResources triggers the import of boot resources
+func (s *StackService) ImportBootResources(ctx context.Context) error {
+	return s.bootResource.Import(ctx)
+}
+
+// Machine operations
+
+// PowerOnMachine powers on a machine identified by systemID
+func (s *StackService) PowerOnMachine(ctx context.Context, systemID string, params *model.MachinePowerOnParams) (*model.Machine, error) {
+	return s.machine.PowerOn(ctx, systemID, params)
+}
+
+// PowerOffMachine powers off a machine identified by systemID
+func (s *StackService) PowerOffMachine(ctx context.Context, systemID string, params *model.MachinePowerOffParams) (*model.Machine, error) {
+	return s.machine.PowerOff(ctx, systemID, params)
+}
+
+// CommissionMachine commissions a machine identified by systemID
+func (s *StackService) CommissionMachine(ctx context.Context, systemID string, params *model.MachineCommissionParams) (*model.Machine, error) {
+	return s.machine.Commission(ctx, systemID, params)
 }
 
 // Helper functions
