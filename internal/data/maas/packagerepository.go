@@ -1,0 +1,37 @@
+package maas
+
+import (
+	"context"
+
+	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/openhdc/internal/domain/service"
+)
+
+type packageRepository struct {
+	maas *MAAS
+}
+
+func NewPackageRepository(maas *MAAS) service.MAASPackageRepository {
+	return &packageRepository{
+		maas: maas,
+	}
+}
+
+var _ service.MAASPackageRepository = (*packageRepository)(nil)
+
+func (r *packageRepository) List(_ context.Context) ([]*model.PackageRepository, error) {
+	prs, err := r.maas.PackageRepositories.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	ret := make([]*model.PackageRepository, len(prs))
+	for i := range prs {
+		ret[i] = &prs[i]
+	}
+	return ret, nil
+}
+
+func (r *packageRepository) Update(_ context.Context, id int, params *model.PackageRepositoryParams) (*model.PackageRepository, error) {
+	return r.maas.PackageRepository.Update(id, params)
+}

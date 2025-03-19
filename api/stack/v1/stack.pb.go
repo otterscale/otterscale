@@ -4,12 +4,13 @@
 // 	protoc        v5.29.1
 // source: api/stack/v1/stack.proto
 
-package pb
+package v1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/gofeaturespb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 )
 
@@ -20,29 +21,1317 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type PackageRepository struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PackageRepository) Reset() {
+	*x = PackageRepository{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PackageRepository) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PackageRepository) ProtoMessage() {}
+
+func (x *PackageRepository) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type PackageRepository_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 PackageRepository_builder) Build() *PackageRepository {
+	m0 := &PackageRepository{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type Network struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Network) Reset() {
+	*x = Network{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Network) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Network) ProtoMessage() {}
+
+func (x *Network) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type Network_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 Network_builder) Build() *Network {
+	m0 := &Network{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type VLAN struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_DhcpOn      bool                   `protobuf:"varint,1,opt,name=dhcp_on,json=dhcpOn" json:"dhcp_on,omitempty"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *VLAN) Reset() {
+	*x = VLAN{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VLAN) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VLAN) ProtoMessage() {}
+
+func (x *VLAN) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *VLAN) GetDhcpOn() bool {
+	if x != nil {
+		return x.xxx_hidden_DhcpOn
+	}
+	return false
+}
+
+func (x *VLAN) SetDhcpOn(v bool) {
+	x.xxx_hidden_DhcpOn = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *VLAN) HasDhcpOn() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *VLAN) ClearDhcpOn() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_DhcpOn = false
+}
+
+type VLAN_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	DhcpOn *bool
+}
+
+func (b0 VLAN_builder) Build() *VLAN {
+	m0 := &VLAN{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.DhcpOn != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_DhcpOn = *b.DhcpOn
+	}
+	return m0
+}
+
+type Fabric struct {
+	state            protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Vlans *[]*VLAN               `protobuf:"bytes,1,rep,name=vlans" json:"vlans,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *Fabric) Reset() {
+	*x = Fabric{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Fabric) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Fabric) ProtoMessage() {}
+
+func (x *Fabric) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Fabric) GetVlans() []*VLAN {
+	if x != nil {
+		if x.xxx_hidden_Vlans != nil {
+			return *x.xxx_hidden_Vlans
+		}
+	}
+	return nil
+}
+
+func (x *Fabric) SetVlans(v []*VLAN) {
+	x.xxx_hidden_Vlans = &v
+}
+
+type Fabric_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Vlans []*VLAN
+}
+
+func (b0 Fabric_builder) Build() *Fabric {
+	m0 := &Fabric{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Vlans = &b.Vlans
+	return m0
+}
+
+type Subnet struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Subnet) Reset() {
+	*x = Subnet{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Subnet) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Subnet) ProtoMessage() {}
+
+func (x *Subnet) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type Subnet_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 Subnet_builder) Build() *Subnet {
+	m0 := &Subnet{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type Machine struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Machine) Reset() {
+	*x = Machine{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Machine) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Machine) ProtoMessage() {}
+
+func (x *Machine) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type Machine_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 Machine_builder) Build() *Machine {
+	m0 := &Machine{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type UpdateNTPServersRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_NtpServers  *string                `protobuf:"bytes,1,opt,name=ntp_servers,json=ntpServers" json:"ntp_servers,omitempty"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *UpdateNTPServersRequest) Reset() {
+	*x = UpdateNTPServersRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateNTPServersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateNTPServersRequest) ProtoMessage() {}
+
+func (x *UpdateNTPServersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *UpdateNTPServersRequest) GetNtpServers() string {
+	if x != nil {
+		if x.xxx_hidden_NtpServers != nil {
+			return *x.xxx_hidden_NtpServers
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateNTPServersRequest) SetNtpServers(v string) {
+	x.xxx_hidden_NtpServers = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *UpdateNTPServersRequest) HasNtpServers() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UpdateNTPServersRequest) ClearNtpServers() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_NtpServers = nil
+}
+
+type UpdateNTPServersRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	NtpServers *string
+}
+
+func (b0 UpdateNTPServersRequest_builder) Build() *UpdateNTPServersRequest {
+	m0 := &UpdateNTPServersRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.NtpServers != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_NtpServers = b.NtpServers
+	}
+	return m0
+}
+
+type UpdateNTPServersResponse struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_NtpServers  *string                `protobuf:"bytes,1,opt,name=ntp_servers,json=ntpServers" json:"ntp_servers,omitempty"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *UpdateNTPServersResponse) Reset() {
+	*x = UpdateNTPServersResponse{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateNTPServersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateNTPServersResponse) ProtoMessage() {}
+
+func (x *UpdateNTPServersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *UpdateNTPServersResponse) GetNtpServers() string {
+	if x != nil {
+		if x.xxx_hidden_NtpServers != nil {
+			return *x.xxx_hidden_NtpServers
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateNTPServersResponse) SetNtpServers(v string) {
+	x.xxx_hidden_NtpServers = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *UpdateNTPServersResponse) HasNtpServers() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UpdateNTPServersResponse) ClearNtpServers() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_NtpServers = nil
+}
+
+type UpdateNTPServersResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	NtpServers *string
+}
+
+func (b0 UpdateNTPServersResponse_builder) Build() *UpdateNTPServersResponse {
+	m0 := &UpdateNTPServersResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.NtpServers != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_NtpServers = b.NtpServers
+	}
+	return m0
+}
+
+type UpdatePackageRepositoryRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdatePackageRepositoryRequest) Reset() {
+	*x = UpdatePackageRepositoryRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdatePackageRepositoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdatePackageRepositoryRequest) ProtoMessage() {}
+
+func (x *UpdatePackageRepositoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type UpdatePackageRepositoryRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 UpdatePackageRepositoryRequest_builder) Build() *UpdatePackageRepositoryRequest {
+	m0 := &UpdatePackageRepositoryRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type ListPackageRepositoriesRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListPackageRepositoriesRequest) Reset() {
+	*x = ListPackageRepositoriesRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListPackageRepositoriesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListPackageRepositoriesRequest) ProtoMessage() {}
+
+func (x *ListPackageRepositoriesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type ListPackageRepositoriesRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 ListPackageRepositoriesRequest_builder) Build() *ListPackageRepositoriesRequest {
+	m0 := &ListPackageRepositoriesRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type ListPackageRepositoriesResponse struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListPackageRepositoriesResponse) Reset() {
+	*x = ListPackageRepositoriesResponse{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListPackageRepositoriesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListPackageRepositoriesResponse) ProtoMessage() {}
+
+func (x *ListPackageRepositoriesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type ListPackageRepositoriesResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 ListPackageRepositoriesResponse_builder) Build() *ListPackageRepositoriesResponse {
+	m0 := &ListPackageRepositoriesResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type ListNetworksRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListNetworksRequest) Reset() {
+	*x = ListNetworksRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListNetworksRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListNetworksRequest) ProtoMessage() {}
+
+func (x *ListNetworksRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type ListNetworksRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 ListNetworksRequest_builder) Build() *ListNetworksRequest {
+	m0 := &ListNetworksRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type ListNetworksResponse struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListNetworksResponse) Reset() {
+	*x = ListNetworksResponse{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListNetworksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListNetworksResponse) ProtoMessage() {}
+
+func (x *ListNetworksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type ListNetworksResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 ListNetworksResponse_builder) Build() *ListNetworksResponse {
+	m0 := &ListNetworksResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type CreateNetworkRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateNetworkRequest) Reset() {
+	*x = CreateNetworkRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateNetworkRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateNetworkRequest) ProtoMessage() {}
+
+func (x *CreateNetworkRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type CreateNetworkRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 CreateNetworkRequest_builder) Build() *CreateNetworkRequest {
+	m0 := &CreateNetworkRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type UpdateNetworkRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateNetworkRequest) Reset() {
+	*x = UpdateNetworkRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateNetworkRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateNetworkRequest) ProtoMessage() {}
+
+func (x *UpdateNetworkRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type UpdateNetworkRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 UpdateNetworkRequest_builder) Build() *UpdateNetworkRequest {
+	m0 := &UpdateNetworkRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type DeleteNetworkRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteNetworkRequest) Reset() {
+	*x = DeleteNetworkRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteNetworkRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteNetworkRequest) ProtoMessage() {}
+
+func (x *DeleteNetworkRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type DeleteNetworkRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 DeleteNetworkRequest_builder) Build() *DeleteNetworkRequest {
+	m0 := &DeleteNetworkRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type UpdateDHCPRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateDHCPRequest) Reset() {
+	*x = UpdateDHCPRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateDHCPRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateDHCPRequest) ProtoMessage() {}
+
+func (x *UpdateDHCPRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type UpdateDHCPRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 UpdateDHCPRequest_builder) Build() *UpdateDHCPRequest {
+	m0 := &UpdateDHCPRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type UpdateIPRangeRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateIPRangeRequest) Reset() {
+	*x = UpdateIPRangeRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateIPRangeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateIPRangeRequest) ProtoMessage() {}
+
+func (x *UpdateIPRangeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type UpdateIPRangeRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 UpdateIPRangeRequest_builder) Build() *UpdateIPRangeRequest {
+	m0 := &UpdateIPRangeRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type ImportBootResourcesRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImportBootResourcesRequest) Reset() {
+	*x = ImportBootResourcesRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImportBootResourcesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImportBootResourcesRequest) ProtoMessage() {}
+
+func (x *ImportBootResourcesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type ImportBootResourcesRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 ImportBootResourcesRequest_builder) Build() *ImportBootResourcesRequest {
+	m0 := &ImportBootResourcesRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type PowerOnMachineRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PowerOnMachineRequest) Reset() {
+	*x = PowerOnMachineRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PowerOnMachineRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PowerOnMachineRequest) ProtoMessage() {}
+
+func (x *PowerOnMachineRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type PowerOnMachineRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 PowerOnMachineRequest_builder) Build() *PowerOnMachineRequest {
+	m0 := &PowerOnMachineRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type PowerOffMachineRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PowerOffMachineRequest) Reset() {
+	*x = PowerOffMachineRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PowerOffMachineRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PowerOffMachineRequest) ProtoMessage() {}
+
+func (x *PowerOffMachineRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type PowerOffMachineRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 PowerOffMachineRequest_builder) Build() *PowerOffMachineRequest {
+	m0 := &PowerOffMachineRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type CommissionMachineRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommissionMachineRequest) Reset() {
+	*x = CommissionMachineRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommissionMachineRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommissionMachineRequest) ProtoMessage() {}
+
+func (x *CommissionMachineRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type CommissionMachineRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 CommissionMachineRequest_builder) Build() *CommissionMachineRequest {
+	m0 := &CommissionMachineRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type OverrideMachineFailedTestRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OverrideMachineFailedTestRequest) Reset() {
+	*x = OverrideMachineFailedTestRequest{}
+	mi := &file_api_stack_v1_stack_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OverrideMachineFailedTestRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OverrideMachineFailedTestRequest) ProtoMessage() {}
+
+func (x *OverrideMachineFailedTestRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_stack_v1_stack_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type OverrideMachineFailedTestRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 OverrideMachineFailedTestRequest_builder) Build() *OverrideMachineFailedTestRequest {
+	m0 := &OverrideMachineFailedTestRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
 var File_api_stack_v1_stack_proto protoreflect.FileDescriptor
 
 var file_api_stack_v1_stack_proto_rawDesc = []byte{
 	0x0a, 0x18, 0x61, 0x70, 0x69, 0x2f, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2f, 0x76, 0x31, 0x2f, 0x73,
 	0x74, 0x61, 0x63, 0x6b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x10, 0x6f, 0x70, 0x65, 0x6e,
-	0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x1a, 0x21, 0x67, 0x6f,
-	0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x67, 0x6f,
-	0x5f, 0x66, 0x65, 0x61, 0x74, 0x75, 0x72, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
-	0x0e, 0x0a, 0x0c, 0x53, 0x74, 0x61, 0x63, 0x6b, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x42,
-	0x34, 0x5a, 0x2a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x70,
-	0x65, 0x6e, 0x68, 0x64, 0x63, 0x2f, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2f, 0x61, 0x70,
-	0x69, 0x2f, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2f, 0x76, 0x31, 0x3b, 0x70, 0x62, 0x92, 0x03, 0x05,
-	0xd2, 0x3e, 0x02, 0x10, 0x03, 0x62, 0x08, 0x65, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x70,
-	0xe8, 0x07,
+	0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x1a, 0x1b, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x65, 0x6d,
+	0x70, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x21, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x67, 0x6f, 0x5f, 0x66, 0x65,
+	0x61, 0x74, 0x75, 0x72, 0x65, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x13, 0x0a, 0x11,
+	0x50, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72,
+	0x79, 0x22, 0x09, 0x0a, 0x07, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x22, 0x1f, 0x0a, 0x04,
+	0x56, 0x4c, 0x41, 0x4e, 0x12, 0x17, 0x0a, 0x07, 0x64, 0x68, 0x63, 0x70, 0x5f, 0x6f, 0x6e, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x64, 0x68, 0x63, 0x70, 0x4f, 0x6e, 0x22, 0x36, 0x0a,
+	0x06, 0x46, 0x61, 0x62, 0x72, 0x69, 0x63, 0x12, 0x2c, 0x0a, 0x05, 0x76, 0x6c, 0x61, 0x6e, 0x73,
+	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63,
+	0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x4c, 0x41, 0x4e, 0x52, 0x05,
+	0x76, 0x6c, 0x61, 0x6e, 0x73, 0x22, 0x08, 0x0a, 0x06, 0x53, 0x75, 0x62, 0x6e, 0x65, 0x74, 0x22,
+	0x09, 0x0a, 0x07, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x22, 0x3a, 0x0a, 0x17, 0x55, 0x70,
+	0x64, 0x61, 0x74, 0x65, 0x4e, 0x54, 0x50, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x6e, 0x74, 0x70, 0x5f, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x6e, 0x74, 0x70, 0x53,
+	0x65, 0x72, 0x76, 0x65, 0x72, 0x73, 0x22, 0x3b, 0x0a, 0x18, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x4e, 0x54, 0x50, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x6e, 0x74, 0x70, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x6e, 0x74, 0x70, 0x53, 0x65, 0x72, 0x76,
+	0x65, 0x72, 0x73, 0x22, 0x20, 0x0a, 0x1e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x63,
+	0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x79, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x20, 0x0a, 0x1e, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x61, 0x63,
+	0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x21, 0x0a, 0x1f, 0x4c, 0x69, 0x73, 0x74, 0x50,
+	0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x69,
+	0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x15, 0x0a, 0x13, 0x4c, 0x69,
+	0x73, 0x74, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x22, 0x16, 0x0a, 0x14, 0x4c, 0x69, 0x73, 0x74, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x16, 0x0a, 0x14, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x22, 0x16, 0x0a, 0x14, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e, 0x65, 0x74, 0x77, 0x6f,
+	0x72, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x16, 0x0a, 0x14, 0x44, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x22, 0x13, 0x0a, 0x11, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x44, 0x48, 0x43, 0x50, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x16, 0x0a, 0x14, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x49, 0x50, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x1c,
+	0x0a, 0x1a, 0x49, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x42, 0x6f, 0x6f, 0x74, 0x52, 0x65, 0x73, 0x6f,
+	0x75, 0x72, 0x63, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x17, 0x0a, 0x15,
+	0x50, 0x6f, 0x77, 0x65, 0x72, 0x4f, 0x6e, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x18, 0x0a, 0x16, 0x50, 0x6f, 0x77, 0x65, 0x72, 0x4f, 0x66,
+	0x66, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22,
+	0x1a, 0x0a, 0x18, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x4d, 0x61, 0x63,
+	0x68, 0x69, 0x6e, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x22, 0x0a, 0x20, 0x4f,
+	0x76, 0x65, 0x72, 0x72, 0x69, 0x64, 0x65, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x46, 0x61,
+	0x69, 0x6c, 0x65, 0x64, 0x54, 0x65, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x32,
+	0xb6, 0x0a, 0x0a, 0x0c, 0x53, 0x74, 0x61, 0x63, 0x6b, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x12, 0x69, 0x0a, 0x10, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e, 0x54, 0x50, 0x53, 0x65, 0x72,
+	0x76, 0x65, 0x72, 0x73, 0x12, 0x29, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73,
+	0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e, 0x54,
+	0x50, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x2a, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e,
+	0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e, 0x54, 0x50, 0x53, 0x65, 0x72, 0x76,
+	0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x7e, 0x0a, 0x17, 0x4c,
+	0x69, 0x73, 0x74, 0x50, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x12, 0x30, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63,
+	0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x50, 0x61,
+	0x63, 0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x69, 0x65,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x31, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68,
+	0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74,
+	0x50, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72,
+	0x69, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x72, 0x0a, 0x19, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f,
+	0x73, 0x69, 0x74, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x12, 0x30, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68,
+	0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61,
+	0x74, 0x65, 0x50, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x6f, 0x72, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x6f, 0x70, 0x65,
+	0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x61,
+	0x63, 0x6b, 0x61, 0x67, 0x65, 0x52, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x6f, 0x72, 0x79, 0x12,
+	0x5d, 0x0a, 0x0c, 0x4c, 0x69, 0x73, 0x74, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x12,
+	0x25, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e,
+	0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63,
+	0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x4e, 0x65,
+	0x74, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x52,
+	0x0a, 0x0d, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x12,
+	0x26, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e,
+	0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64,
+	0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x4e, 0x65, 0x74, 0x77, 0x6f,
+	0x72, 0x6b, 0x12, 0x52, 0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e, 0x65, 0x74, 0x77,
+	0x6f, 0x72, 0x6b, 0x12, 0x26, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74,
+	0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x4e, 0x65, 0x74,
+	0x77, 0x6f, 0x72, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x6f, 0x70,
+	0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x4e,
+	0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x12, 0x4f, 0x0a, 0x0d, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x12, 0x26, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64,
+	0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x4e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x12, 0x49, 0x0a, 0x0a, 0x55, 0x70, 0x64, 0x61, 0x74,
+	0x65, 0x44, 0x48, 0x43, 0x50, 0x12, 0x23, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e,
+	0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x44,
+	0x48, 0x43, 0x50, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x6f, 0x70, 0x65,
+	0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x4c,
+	0x41, 0x4e, 0x12, 0x51, 0x0a, 0x0d, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x49, 0x50, 0x52, 0x61,
+	0x6e, 0x67, 0x65, 0x12, 0x26, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74,
+	0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x49, 0x50, 0x52,
+	0x61, 0x6e, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x6f, 0x70,
+	0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x53,
+	0x75, 0x62, 0x6e, 0x65, 0x74, 0x12, 0x5b, 0x0a, 0x13, 0x49, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x42,
+	0x6f, 0x6f, 0x74, 0x52, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x12, 0x2c, 0x2e, 0x6f,
+	0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e,
+	0x49, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x42, 0x6f, 0x6f, 0x74, 0x52, 0x65, 0x73, 0x6f, 0x75, 0x72,
+	0x63, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f,
+	0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70,
+	0x74, 0x79, 0x12, 0x54, 0x0a, 0x0e, 0x50, 0x6f, 0x77, 0x65, 0x72, 0x4f, 0x6e, 0x4d, 0x61, 0x63,
+	0x68, 0x69, 0x6e, 0x65, 0x12, 0x27, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73,
+	0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x6f, 0x77, 0x65, 0x72, 0x4f, 0x6e, 0x4d,
+	0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e,
+	0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31,
+	0x2e, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x12, 0x56, 0x0a, 0x0f, 0x50, 0x6f, 0x77, 0x65,
+	0x72, 0x4f, 0x66, 0x66, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x12, 0x28, 0x2e, 0x6f, 0x70,
+	0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x50,
+	0x6f, 0x77, 0x65, 0x72, 0x4f, 0x66, 0x66, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e,
+	0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65,
+	0x12, 0x5a, 0x0a, 0x11, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x4d, 0x61,
+	0x63, 0x68, 0x69, 0x6e, 0x65, 0x12, 0x2a, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e,
+	0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x69, 0x73, 0x73,
+	0x69, 0x6f, 0x6e, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x19, 0x2e, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63,
+	0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x12, 0x6a, 0x0a, 0x19,
+	0x4f, 0x76, 0x65, 0x72, 0x72, 0x69, 0x64, 0x65, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x46,
+	0x61, 0x69, 0x6c, 0x65, 0x64, 0x54, 0x65, 0x73, 0x74, 0x12, 0x32, 0x2e, 0x6f, 0x70, 0x65, 0x6e,
+	0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x76, 0x65,
+	0x72, 0x72, 0x69, 0x64, 0x65, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x46, 0x61, 0x69, 0x6c,
+	0x65, 0x64, 0x54, 0x65, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e,
+	0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2e, 0x73, 0x74, 0x61, 0x63, 0x6b, 0x2e, 0x76, 0x31,
+	0x2e, 0x4d, 0x61, 0x63, 0x68, 0x69, 0x6e, 0x65, 0x42, 0x34, 0x5a, 0x2a, 0x67, 0x69, 0x74, 0x68,
+	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2f, 0x6f,
+	0x70, 0x65, 0x6e, 0x68, 0x64, 0x63, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x73, 0x74, 0x61, 0x63, 0x6b,
+	0x2f, 0x76, 0x31, 0x3b, 0x76, 0x31, 0x92, 0x03, 0x05, 0xd2, 0x3e, 0x02, 0x10, 0x03, 0x62, 0x08,
+	0x65, 0x64, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x70, 0xe8, 0x07,
 }
 
-var file_api_stack_v1_stack_proto_goTypes = []any{}
+var file_api_stack_v1_stack_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
+var file_api_stack_v1_stack_proto_goTypes = []any{
+	(*PackageRepository)(nil),                // 0: openhdc.stack.v1.PackageRepository
+	(*Network)(nil),                          // 1: openhdc.stack.v1.Network
+	(*VLAN)(nil),                             // 2: openhdc.stack.v1.VLAN
+	(*Fabric)(nil),                           // 3: openhdc.stack.v1.Fabric
+	(*Subnet)(nil),                           // 4: openhdc.stack.v1.Subnet
+	(*Machine)(nil),                          // 5: openhdc.stack.v1.Machine
+	(*UpdateNTPServersRequest)(nil),          // 6: openhdc.stack.v1.UpdateNTPServersRequest
+	(*UpdateNTPServersResponse)(nil),         // 7: openhdc.stack.v1.UpdateNTPServersResponse
+	(*UpdatePackageRepositoryRequest)(nil),   // 8: openhdc.stack.v1.UpdatePackageRepositoryRequest
+	(*ListPackageRepositoriesRequest)(nil),   // 9: openhdc.stack.v1.ListPackageRepositoriesRequest
+	(*ListPackageRepositoriesResponse)(nil),  // 10: openhdc.stack.v1.ListPackageRepositoriesResponse
+	(*ListNetworksRequest)(nil),              // 11: openhdc.stack.v1.ListNetworksRequest
+	(*ListNetworksResponse)(nil),             // 12: openhdc.stack.v1.ListNetworksResponse
+	(*CreateNetworkRequest)(nil),             // 13: openhdc.stack.v1.CreateNetworkRequest
+	(*UpdateNetworkRequest)(nil),             // 14: openhdc.stack.v1.UpdateNetworkRequest
+	(*DeleteNetworkRequest)(nil),             // 15: openhdc.stack.v1.DeleteNetworkRequest
+	(*UpdateDHCPRequest)(nil),                // 16: openhdc.stack.v1.UpdateDHCPRequest
+	(*UpdateIPRangeRequest)(nil),             // 17: openhdc.stack.v1.UpdateIPRangeRequest
+	(*ImportBootResourcesRequest)(nil),       // 18: openhdc.stack.v1.ImportBootResourcesRequest
+	(*PowerOnMachineRequest)(nil),            // 19: openhdc.stack.v1.PowerOnMachineRequest
+	(*PowerOffMachineRequest)(nil),           // 20: openhdc.stack.v1.PowerOffMachineRequest
+	(*CommissionMachineRequest)(nil),         // 21: openhdc.stack.v1.CommissionMachineRequest
+	(*OverrideMachineFailedTestRequest)(nil), // 22: openhdc.stack.v1.OverrideMachineFailedTestRequest
+	(*emptypb.Empty)(nil),                    // 23: google.protobuf.Empty
+}
 var file_api_stack_v1_stack_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2,  // 0: openhdc.stack.v1.Fabric.vlans:type_name -> openhdc.stack.v1.VLAN
+	6,  // 1: openhdc.stack.v1.StackService.UpdateNTPServers:input_type -> openhdc.stack.v1.UpdateNTPServersRequest
+	9,  // 2: openhdc.stack.v1.StackService.ListPackageRepositories:input_type -> openhdc.stack.v1.ListPackageRepositoriesRequest
+	8,  // 3: openhdc.stack.v1.StackService.UpdatePackageRepositories:input_type -> openhdc.stack.v1.UpdatePackageRepositoryRequest
+	11, // 4: openhdc.stack.v1.StackService.ListNetworks:input_type -> openhdc.stack.v1.ListNetworksRequest
+	13, // 5: openhdc.stack.v1.StackService.CreateNetwork:input_type -> openhdc.stack.v1.CreateNetworkRequest
+	14, // 6: openhdc.stack.v1.StackService.UpdateNetwork:input_type -> openhdc.stack.v1.UpdateNetworkRequest
+	15, // 7: openhdc.stack.v1.StackService.DeleteNetwork:input_type -> openhdc.stack.v1.DeleteNetworkRequest
+	16, // 8: openhdc.stack.v1.StackService.UpdateDHCP:input_type -> openhdc.stack.v1.UpdateDHCPRequest
+	17, // 9: openhdc.stack.v1.StackService.UpdateIPRange:input_type -> openhdc.stack.v1.UpdateIPRangeRequest
+	18, // 10: openhdc.stack.v1.StackService.ImportBootResources:input_type -> openhdc.stack.v1.ImportBootResourcesRequest
+	19, // 11: openhdc.stack.v1.StackService.PowerOnMachine:input_type -> openhdc.stack.v1.PowerOnMachineRequest
+	20, // 12: openhdc.stack.v1.StackService.PowerOffMachine:input_type -> openhdc.stack.v1.PowerOffMachineRequest
+	21, // 13: openhdc.stack.v1.StackService.CommissionMachine:input_type -> openhdc.stack.v1.CommissionMachineRequest
+	22, // 14: openhdc.stack.v1.StackService.OverrideMachineFailedTest:input_type -> openhdc.stack.v1.OverrideMachineFailedTestRequest
+	7,  // 15: openhdc.stack.v1.StackService.UpdateNTPServers:output_type -> openhdc.stack.v1.UpdateNTPServersResponse
+	10, // 16: openhdc.stack.v1.StackService.ListPackageRepositories:output_type -> openhdc.stack.v1.ListPackageRepositoriesResponse
+	0,  // 17: openhdc.stack.v1.StackService.UpdatePackageRepositories:output_type -> openhdc.stack.v1.PackageRepository
+	12, // 18: openhdc.stack.v1.StackService.ListNetworks:output_type -> openhdc.stack.v1.ListNetworksResponse
+	1,  // 19: openhdc.stack.v1.StackService.CreateNetwork:output_type -> openhdc.stack.v1.Network
+	1,  // 20: openhdc.stack.v1.StackService.UpdateNetwork:output_type -> openhdc.stack.v1.Network
+	23, // 21: openhdc.stack.v1.StackService.DeleteNetwork:output_type -> google.protobuf.Empty
+	2,  // 22: openhdc.stack.v1.StackService.UpdateDHCP:output_type -> openhdc.stack.v1.VLAN
+	4,  // 23: openhdc.stack.v1.StackService.UpdateIPRange:output_type -> openhdc.stack.v1.Subnet
+	23, // 24: openhdc.stack.v1.StackService.ImportBootResources:output_type -> google.protobuf.Empty
+	5,  // 25: openhdc.stack.v1.StackService.PowerOnMachine:output_type -> openhdc.stack.v1.Machine
+	5,  // 26: openhdc.stack.v1.StackService.PowerOffMachine:output_type -> openhdc.stack.v1.Machine
+	5,  // 27: openhdc.stack.v1.StackService.CommissionMachine:output_type -> openhdc.stack.v1.Machine
+	5,  // 28: openhdc.stack.v1.StackService.OverrideMachineFailedTest:output_type -> openhdc.stack.v1.Machine
+	15, // [15:29] is the sub-list for method output_type
+	1,  // [1:15] is the sub-list for method input_type
+	1,  // [1:1] is the sub-list for extension type_name
+	1,  // [1:1] is the sub-list for extension extendee
+	0,  // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_api_stack_v1_stack_proto_init() }
@@ -56,12 +1345,13 @@ func file_api_stack_v1_stack_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_stack_v1_stack_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   23,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_stack_v1_stack_proto_goTypes,
 		DependencyIndexes: file_api_stack_v1_stack_proto_depIdxs,
+		MessageInfos:      file_api_stack_v1_stack_proto_msgTypes,
 	}.Build()
 	File_api_stack_v1_stack_proto = out.File
 	file_api_stack_v1_stack_proto_rawDesc = nil
