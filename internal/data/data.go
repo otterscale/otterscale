@@ -12,6 +12,14 @@ import (
 var ProviderSet = wire.NewSet(
 	maas.NewConfig,
 	maas.New,
+	maas.NewBootResource,
+	maas.NewFabric,
+	maas.NewIPRange,
+	maas.NewMachine,
+	maas.NewPackageRepository,
+	maas.NewServer,
+	maas.NewSubnet,
+	maas.NewVLAN,
 	juju.NewConfig,
 	juju.New,
 	kube.NewKubes,
@@ -20,5 +28,4 @@ var ProviderSet = wire.NewSet(
 	kube.NewJob,
 	repo.NewConfig,
 	repo.New,
-	repo.NewUser,
 )

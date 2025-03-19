@@ -10,7 +10,7 @@ import (
 	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/internal/app"
 	"github.com/openhdc/openhdc/internal/cmd"
-	"github.com/openhdc/openhdc/internal/data/repo"
+	"github.com/openhdc/openhdc/internal/data/maas"
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/spf13/cobra"
 )
@@ -18,16 +18,20 @@ import (
 // Injectors from wire.go:
 
 func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func(), error) {
-	connConfig, err := repo.NewConfig()
+	config := maas.NewConfig()
+	v, err := maas.New(config)
 	if err != nil {
 		return nil, nil, err
 	}
-	v, err := repo.New(connConfig)
-	if err != nil {
-		return nil, nil, err
-	}
-	userRepo := repo.NewUser(v)
-	stackService := service.NewStackService(userRepo)
+	maasServer := maas.NewServer(v)
+	maasPackageRepository := maas.NewPackageRepository(v)
+	maasFabric := maas.NewFabric(v)
+	maasvlan := maas.NewVLAN(v)
+	maasSubnet := maas.NewSubnet(v)
+	maasipRange := maas.NewIPRange(v)
+	maasBootResource := maas.NewBootResource(v)
+	maasMachine := maas.NewMachine(v)
+	stackService := service.NewStackService(maasServer, maasPackageRepository, maasFabric, maasvlan, maasSubnet, maasipRange, maasBootResource, maasMachine)
 	stackApp := app.NewStackApp(stackService)
 	command := cmd.New(string2, stackApp)
 	return command, func() {
