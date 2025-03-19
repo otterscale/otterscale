@@ -24,6 +24,8 @@ type IPRangeParams = entity.IPRangeParams
 
 type Machine = entity.Machine
 
+type MachinesParams = entity.MachinesParams
+
 type MachinePowerOnParams = entity.MachinePowerOnParams
 
 type MachinePowerOffParams = entity.MachinePowerOffParams

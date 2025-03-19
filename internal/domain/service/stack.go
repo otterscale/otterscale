@@ -70,6 +70,7 @@ type MAASBootResource interface {
 
 // MAASMachine represents machine operations
 type MAASMachine interface {
+	List(ctx context.Context) ([]*model.Machine, error)
 	PowerOn(ctx context.Context, systemID string, params *model.MachinePowerOnParams) (*model.Machine, error)
 	PowerOff(ctx context.Context, systemID string, params *model.MachinePowerOffParams) (*model.Machine, error)
 	Commission(ctx context.Context, systemID string, params *model.MachineCommissionParams) (*model.Machine, error)
@@ -305,6 +306,25 @@ func (s *StackService) ImportBootResources(ctx context.Context) error {
 }
 
 // Machine operations
+
+// ListMachines returns all machines with their associated resources
+func (s *StackService) ListMachines(ctx context.Context, pageSize, pageToken int) ([]*model.Machine, string, error) {
+	ret, err := s.machine.List(ctx)
+	if err != nil {
+		return nil, "", err
+	}
+
+	sort.Slice(ret, func(i, j int) bool {
+		return ret[i].SystemID < ret[j].SystemID
+	})
+
+	nextPageToken := ""
+	if len(ret) == pageSize+1 {
+		nextPageToken = base64.StdEncoding.EncodeToString([]byte(ret[len(ret)-1].SystemID))
+		ret = ret[:len(ret)-1]
+	}
+	return ret, nextPageToken, nil
+}
 
 // PowerOnMachine powers on a machine identified by systemID
 func (s *StackService) PowerOnMachine(ctx context.Context, systemID string, params *model.MachinePowerOnParams) (*model.Machine, error) {

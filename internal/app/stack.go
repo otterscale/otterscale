@@ -164,6 +164,26 @@ func (a *StackApp) UpdateIPRange(ctx context.Context, req *v1.UpdateIPRangeReque
 	return toIPRange(r), nil
 }
 
+// ListMachines retrieves machines
+func (a *StackApp) ListMachines(ctx context.Context, req *v1.ListMachinesRequest) (*v1.ListMachinesResponse, error) {
+	pageSize, err := getPageSize(req.GetPageSize())
+	if err != nil {
+		return nil, err
+	}
+	pageToken, err := getPageToken(req.GetPageToken())
+	if err != nil {
+		return nil, err
+	}
+	ms, nextPageToken, err := a.svc.ListMachines(ctx, pageSize, pageToken)
+	if err != nil {
+		return nil, err
+	}
+	ret := &v1.ListMachinesResponse{}
+	ret.SetMachines(toMachines(ms))
+	ret.SetNextPageToken(nextPageToken)
+	return ret, nil
+}
+
 // Boot resource management
 func (a *StackApp) ImportBootResources(ctx context.Context, req *v1.ImportBootResourcesRequest) (*emptypb.Empty, error) {
 	if err := a.svc.ImportBootResources(ctx); err != nil {
@@ -216,7 +236,7 @@ func toPackageRepositories(prs []*model.PackageRepository) []*v1.PackageReposito
 
 func toPackageRepository(pr *model.PackageRepository) *v1.PackageRepository {
 	ret := &v1.PackageRepository{}
-	ret.SetId(int32(pr.ID))
+	ret.SetId(int32(pr.ID)) //nolint:gosec
 	ret.SetName(pr.Name)
 	ret.SetUrl(pr.URL)
 	ret.SetEnabled(pr.Enabled)
@@ -234,10 +254,11 @@ func toNetworks(ns []*model.Network) []*v1.Network {
 func toNetwork(n *model.Network) *v1.Network {
 	settings := make([]*v1.Network_Setting, len(n.Settings))
 	for i := range n.Settings {
+		s := n.Settings[i]
 		setting := &v1.Network_Setting{}
-		setting.SetVlan(toVLAN(n.Settings[i].VLAN))
-		setting.SetSubnet(toSubnet(n.Settings[i].Subnet))
-		setting.SetIpRange(toIPRange(n.Settings[i].IPRange))
+		setting.SetVlan(toVLAN(s.VLAN))
+		setting.SetSubnet(toSubnet(s.Subnet))
+		setting.SetIpRange(toIPRange(s.IPRange))
 		settings[i] = setting
 	}
 	ret := &v1.Network{}
@@ -248,17 +269,17 @@ func toNetwork(n *model.Network) *v1.Network {
 
 func toFabric(f *model.Fabric) *v1.Fabric {
 	ret := &v1.Fabric{}
-	ret.SetId(int32(f.ID))
+	ret.SetId(int32(f.ID)) //nolint:gosec
 	ret.SetName(f.Name)
 	return ret
 }
 
 func toVLAN(v *model.VLAN) *v1.VLAN {
 	ret := &v1.VLAN{}
-	ret.SetId(int32(v.ID))
-	ret.SetVid(int32(v.VID))
+	ret.SetId(int32(v.ID))   //nolint:gosec
+	ret.SetVid(int32(v.VID)) //nolint:gosec
 	ret.SetName(v.Name)
-	ret.SetMtu(int32(v.MTU))
+	ret.SetMtu(int32(v.MTU)) //nolint:gosec
 	ret.SetDescription(v.Description)
 	ret.SetDhcpOn(v.DHCPOn)
 	return ret
@@ -266,11 +287,11 @@ func toVLAN(v *model.VLAN) *v1.VLAN {
 
 func toSubnet(s *model.Subnet) *v1.Subnet {
 	dnsServers := make([]string, len(s.DNSServers))
-	for i := range s.DNSServers {
-		dnsServers[i] = s.DNSServers[i].String()
+	for i, dns := range s.DNSServers {
+		dnsServers[i] = dns.String()
 	}
 	ret := &v1.Subnet{}
-	ret.SetId(int32(s.ID))
+	ret.SetId(int32(s.ID)) //nolint:gosec
 	ret.SetName(s.Name)
 	ret.SetCidr(s.CIDR)
 	ret.SetGatewayIp(s.GatewayIP.String())
@@ -285,7 +306,7 @@ func toSubnet(s *model.Subnet) *v1.Subnet {
 
 func toIPRange(r *model.IPRange) *v1.IPRange {
 	ret := &v1.IPRange{}
-	ret.SetId(int32(r.ID))
+	ret.SetId(int32(r.ID)) //nolint:gosec
 	ret.SetStartIp(r.StartIP.String())
 	ret.SetEndIp(r.EndIP.String())
 	ret.SetType(r.Type)
@@ -293,8 +314,101 @@ func toIPRange(r *model.IPRange) *v1.IPRange {
 	return ret
 }
 
+func toMachines(ms []*model.Machine) []*v1.Machine {
+	ret := make([]*v1.Machine, len(ms))
+	for i := range ms {
+		ret[i] = toMachine(ms[i])
+	}
+	return ret
+}
+
+//nolint:funlen
 func toMachine(m *model.Machine) *v1.Machine {
-	return &v1.Machine{}
+	ipAddresses := make([]string, len(m.IPAddresses))
+	for i, ip := range m.IPAddresses {
+		ipAddresses[i] = ip.String()
+	}
+	numaNodes := make([]*v1.Machine_NUMANode, len(m.NUMANodeSet))
+	for i := range m.NUMANodeSet {
+		ns := &m.NUMANodeSet[i]
+		numaNode := &v1.Machine_NUMANode{}
+		numaNode.SetIndex(int32(ns.Index))      //nolint:gosec
+		numaNode.SetCores(int32(len(ns.Cores))) //nolint:gosec
+		numaNode.SetMemory(int64(ns.Memory))
+		numaNodes[i] = numaNode
+	}
+	blockDevices := make([]*v1.Machine_BlockDevice, len(m.BlockDeviceSet))
+	for i := range m.BlockDeviceSet {
+		bds := &m.BlockDeviceSet[i]
+		blockDevice := &v1.Machine_BlockDevice{}
+		blockDevice.SetBootDisk(bds.ID == m.BootDisk.ID)
+		blockDevice.SetName(bds.Name)
+		blockDevice.SetSerial(bds.Serial)
+		blockDevice.SetModel(bds.Model)
+		blockDevice.SetFirmwareVersion(bds.FirmwareVersion)
+		blockDevice.SetSize(bds.Size)
+		blockDevice.SetType(bds.Type)
+		blockDevice.SetTags(bds.Tags)
+		blockDevice.SetUsedFor(bds.UsedFor)
+		blockDevices[i] = blockDevice
+	}
+	networkInterfaces := make([]*v1.Machine_NetworkInterface, len(m.InterfaceSet))
+	for i := range m.InterfaceSet {
+		is := &m.InterfaceSet[i]
+		subnetName := ""
+		subnetID := 0
+		ipAdress := ""
+		for j := range is.Links {
+			link := &is.Links[j]
+			subnetName = link.Subnet.Name
+			subnetID = link.Subnet.ID
+			ipAdress = link.IPAddress
+			break
+		}
+		networkInterface := &v1.Machine_NetworkInterface{}
+		networkInterface.SetBootInterface(is.ID == m.BootInterface.ID)
+		networkInterface.SetName(is.Name)
+		networkInterface.SetMacAddress(is.MACAddress)
+		networkInterface.SetLinkConnected(is.LinkConnected)
+		networkInterface.SetLinkSpeed(int32(is.LinkSpeed))           //nolint:gosec
+		networkInterface.SetInterfaceSpeed(int32(is.InterfaceSpeed)) //nolint:gosec
+		networkInterface.SetType(is.Type)
+		networkInterface.SetFabricName(is.VLAN.Fabric)        //nolint:gosec
+		networkInterface.SetFabricId(int32(is.VLAN.FabricID)) //nolint:gosec
+		networkInterface.SetVlanName(is.VLAN.Name)
+		networkInterface.SetVlanId(int32(is.VLAN.ID)) //nolint:gosec
+		networkInterface.SetSubnetName(subnetName)
+		networkInterface.SetSubnetId(int32(subnetID)) //nolint:gosec
+		networkInterface.SetIpAddress(ipAdress)
+		networkInterface.SetDhcpOn(is.VLAN.DHCPOn)
+		networkInterfaces[i] = networkInterface
+	}
+	ret := &v1.Machine{}
+	ret.SetSystemId(m.SystemID)
+	ret.SetHardwareUuid(m.HardwareUUID)
+	ret.SetHostname(m.Hostname)
+	ret.SetFqdn(m.FQDN)
+	ret.SetTags(m.TagNames)
+	ret.SetDescription(m.Description)
+	ret.SetStatus(m.StatusName)
+	ret.SetPowerState(m.PowerState)
+	ret.SetPowerType(m.PowerType)
+	ret.SetOsystem(m.OSystem)
+	ret.SetDistroSeries(m.DistroSeries)
+	ret.SetHweKernel(m.HWEKernel)
+	ret.SetArchitecture(m.Architecture)
+	ret.SetCpuSpeed(int32(m.CPUSpeed)) //nolint:gosec
+	ret.SetCpuCount(int32(m.CPUCount)) //nolint:gosec
+	ret.SetMemory(m.Memory)
+	ret.SetStorage(m.Storage)
+	ret.SetIpAddresses(ipAddresses)
+	ret.SetWorkloadAnnotations(m.WorkloadAnnotations)
+	ret.SetHardwareInformation(m.HardwareInfo)
+	ret.SetBiosBootMethod(m.BiosBootMethod)
+	ret.SetNumaNodes(numaNodes)
+	ret.SetBlockDevices(blockDevices)
+	ret.SetNetworkInterfaces(networkInterfaces)
+	return ret
 }
 
 func boolToInt(b bool) int {

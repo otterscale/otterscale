@@ -25,6 +25,9 @@ service StackService {
   rpc UpdateSubnet(UpdateSubnetRequest) returns (Subnet);
   rpc UpdateIPRange(UpdateIPRangeRequest) returns (IPRange);
 
+  // Machine Management
+  rpc ListMachines(ListMachinesRequest) returns (ListMachinesResponse);
+
   // Machine Operations
   rpc ImportBootResources(ImportBootResourcesRequest) returns (google.protobuf.Empty);
   rpc PowerOnMachine(PowerOnMachineRequest) returns (Machine);
@@ -76,7 +79,65 @@ message Subnet {
   bool allow_dns_resolution = 10;
 }
 
-message Machine {}
+message Machine {
+  message NUMANode {
+    int32 index = 1;
+    int32 cores = 2;
+    int64 memory = 3;
+  }
+  message BlockDevice {
+    bool boot_disk = 1;
+    string name = 11;
+    string serial = 12;
+    string model = 21;
+    string firmware_version = 22;
+    int64 size = 31;
+    string type = 41;
+    repeated string tags = 51;
+    string used_for = 61;
+  }
+  message NetworkInterface {
+    bool boot_interface = 1;
+    string name = 11;
+    string mac_address = 12;
+    bool link_connected = 21;
+    int32 link_speed = 22;
+    int32 interface_speed = 23;
+    string type = 31;
+    string fabric_name = 41;
+    int32 fabric_id = 42;
+    string vlan_name = 43;
+    int32 vlan_id = 44;
+    string subnet_name = 51;
+    int32 subnet_id = 52;
+    string ip_address = 61;
+    bool dhcp_on = 71;
+  }
+  string system_id = 1;
+  string hardware_uuid = 101;
+  string hostname = 102;
+  string fqdn = 103;
+  repeated string tags = 104;
+  string description = 105;
+  string status = 201;
+  string power_state = 301;
+  string power_type = 302;
+  string osystem = 401;
+  string distro_series = 402;
+  string hwe_kernel = 403;
+  string architecture = 404;
+  int32 cpu_speed = 405;
+  int32 cpu_count = 406;
+  int64 memory = 407;
+  double storage = 408;
+  repeated string ip_addresses = 409;
+  map<string, string> workload_annotations = 501;
+  map<string, string> hardware_information = 601;
+  string bios_boot_method = 602;
+  repeated NUMANode numa_nodes = 701;
+  repeated BlockDevice block_devices = 801;
+  repeated NetworkInterface network_interfaces = 802;
+}
 
 message IPRange {
   int32 id = 1;
@@ -157,6 +218,16 @@ message UpdateIPRangeRequest {
   string start_ip = 2;
   string end_ip = 3;
   string comment = 4;
+}
+
+message ListMachinesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListMachinesResponse {
+  repeated Machine machines = 1;
+  string next_page_token = 2;
 }
 
 message ImportBootResourcesRequest {}
