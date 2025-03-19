@@ -10,26 +10,26 @@ option go_package = "github.com/openhdc/openhdc/api/stack/v1;v1";
 
 service StackService {
   // Global Configurations
-  rpc UpdateNTPServers(UpdateNTPServersRequest) returns (UpdateNTPServersResponse);
+  rpc UpdateNTPServers(UpdateNTPServersRequest) returns (google.protobuf.Empty);
 
   // Package Repository Management
   rpc ListPackageRepositories(ListPackageRepositoriesRequest) returns (ListPackageRepositoriesResponse);
-  rpc UpdatePackageRepositories(UpdatePackageRepositoryRequest) returns (PackageRepository);
+  rpc UpdatePackageRepositoryURL(UpdatePackageRepositoryURLRequest) returns (PackageRepository);
 
   // Network Management
   rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);
   rpc CreateNetwork(CreateNetworkRequest) returns (Network);
-  rpc UpdateNetwork(UpdateNetworkRequest) returns (Network);
   rpc DeleteNetwork(DeleteNetworkRequest) returns (google.protobuf.Empty);
-  rpc UpdateDHCP(UpdateDHCPRequest) returns (VLAN);
-  rpc UpdateIPRange(UpdateIPRangeRequest) returns (Subnet);
+  rpc UpdateFabric(UpdateFabricRequest) returns (Fabric);
+  rpc UpdateVLAN(UpdateVLANRequest) returns (VLAN);
+  rpc UpdateSubnet(UpdateSubnetRequest) returns (Subnet);
+  rpc UpdateIPRange(UpdateIPRangeRequest) returns (IPRange);
 
   // Machine Operations
   rpc ImportBootResources(ImportBootResourcesRequest) returns (google.protobuf.Empty);
   rpc PowerOnMachine(PowerOnMachineRequest) returns (Machine);
   rpc PowerOffMachine(PowerOffMachineRequest) returns (Machine);
   rpc CommissionMachine(CommissionMachineRequest) returns (Machine);
-  rpc OverrideMachineFailedTest(OverrideMachineFailedTestRequest) returns (Machine);
 }
 
 message PackageRepository {}
@@ -48,6 +48,8 @@ message Subnet {}
 
 message Machine {}
 
+message IPRange {}
+
 message UpdateNTPServersRequest {
   string ntp_servers = 1;
 }
@@ -56,32 +58,66 @@ message UpdateNTPServersResponse {
   string ntp_servers = 1;
 }
 
-message UpdatePackageRepositoryRequest {}
+message UpdatePackageRepositoryURLRequest {
+  int32 id = 1;
+  string url = 2;
+}
 
-message ListPackageRepositoriesRequest {}
+message ListPackageRepositoriesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
 
-message ListPackageRepositoriesResponse {}
+message ListPackageRepositoriesResponse {
+  repeated PackageRepository package_repositories = 1;
+  string next_page_token = 2;
+}
 
-message ListNetworksRequest {}
+message ListNetworksRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
 
-message ListNetworksResponse {}
+message ListNetworksResponse {
+  repeated Network networks = 1;
+  string next_page_token = 2;
+}
 
 message CreateNetworkRequest {}
 
 message UpdateNetworkRequest {}
 
-message DeleteNetworkRequest {}
+message DeleteNetworkRequest {
+  int32 id = 1;
+}
 
-message UpdateDHCPRequest {}
+message UpdateFabricRequest {
+  int32 id = 1;
+}
 
-message UpdateIPRangeRequest {}
+message UpdateVLANRequest {
+  int32 fabric_id = 1;
+  int32 vid = 2;
+}
+
+message UpdateSubnetRequest {
+  int32 id = 1;
+}
+
+message UpdateIPRangeRequest {
+  int32 id = 1;
+}
 
 message ImportBootResourcesRequest {}
 
-message PowerOnMachineRequest {}
+message PowerOnMachineRequest {
+  string system_id = 1;
+}
 
-message PowerOffMachineRequest {}
+message PowerOffMachineRequest {
+  string system_id = 1;
+}
 
-message CommissionMachineRequest {}
-
-message OverrideMachineFailedTestRequest {}
+message CommissionMachineRequest {
+  string system_id = 1;
+}
