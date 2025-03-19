@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
+	"sort"
+	"strconv"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
@@ -105,8 +108,22 @@ func (s *StackService) UpdateNTPServers(ctx context.Context, ntpServers string) 
 // Package repository operations
 
 // ListPackageRepositories returns all package repositories
-func (s *StackService) ListPackageRepositories(ctx context.Context) ([]*model.PackageRepository, error) {
-	return s.packageRepository.List(ctx)
+func (s *StackService) ListPackageRepositories(ctx context.Context, pageSize, pageToken int) ([]*model.PackageRepository, string, error) {
+	ret, err := s.packageRepository.List(ctx)
+	if err != nil {
+		return nil, "", err
+	}
+
+	sort.Slice(ret, func(i, j int) bool {
+		return ret[i].ID < ret[j].ID
+	})
+
+	nextPageToken := ""
+	if len(ret) == pageSize+1 {
+		nextPageToken = base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(ret[len(ret)-1].ID)))
+		ret = ret[:len(ret)-1]
+	}
+	return ret, nextPageToken, nil
 }
 
 // UpdatePackageRepositoryURL updates a package repository URL
@@ -121,33 +138,42 @@ func (s *StackService) UpdatePackageRepositoryURL(ctx context.Context, id int, u
 // Network operations
 
 // ListNetworks returns all networks with their associated resources
-func (s *StackService) ListNetworks(ctx context.Context) ([]*model.Network, error) {
+func (s *StackService) ListNetworks(ctx context.Context, pageSize, pageToken int) ([]*model.Network, string, error) {
 	// Get all required resources
 	subnets, err := s.subnet.List(ctx)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	ipRanges, err := s.ipRange.List(ctx)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	fabrics, err := s.fabric.List(ctx)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// Build mapping of VLANs to network settings
 	vlanToNetworkSetting := vlanToNetworkSettingMap(subnets, ipRanges)
 
 	// Convert fabrics to networks
-	networks := make([]*model.Network, len(fabrics))
+	ret := make([]*model.Network, len(fabrics))
 	for i, fabric := range fabrics {
-		networks[i] = toNetwork(fabric, vlanToNetworkSetting)
+		ret[i] = toNetwork(fabric, vlanToNetworkSetting)
 	}
 
-	return networks, nil
+	sort.Slice(ret, func(i, j int) bool {
+		return ret[i].ID < ret[j].ID
+	})
+
+	nextPageToken := ""
+	if len(ret) == pageSize+1 {
+		nextPageToken = base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(ret[len(ret)-1].ID)))
+		ret = ret[:len(ret)-1]
+	}
+	return ret, nextPageToken, nil
 }
 
 // CreateNetwork creates a new network with associated resources
