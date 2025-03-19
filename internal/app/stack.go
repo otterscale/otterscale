@@ -82,7 +82,20 @@ func (a *StackApp) ListNetworks(ctx context.Context, req *v1.ListNetworksRequest
 }
 
 func (a *StackApp) CreateNetwork(ctx context.Context, req *v1.CreateNetworkRequest) (*v1.Network, error) {
-	n, err := a.svc.CreateNetwork(ctx, &model.FabricParams{}, &model.SubnetParams{}, &model.IPRangeParams{})
+	fabricParams := &model.FabricParams{}
+	vlanParams := &model.VLANParams{
+		DHCPOn: req.GetDhcpOn(),
+	}
+	subnetParams := &model.SubnetParams{
+		CIDR:       req.GetCidr(),
+		GatewayIP:  req.GetGatewayIp(),
+		DNSServers: req.GetDnsServers(),
+	}
+	ipRangeParams := &model.IPRangeParams{
+		StartIP: req.GetStartIp(),
+		EndIP:   req.GetEndIp(),
+	}
+	n, err := a.svc.CreateNetwork(ctx, fabricParams, vlanParams, subnetParams, ipRangeParams)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +103,7 @@ func (a *StackApp) CreateNetwork(ctx context.Context, req *v1.CreateNetworkReque
 }
 
 func (a *StackApp) DeleteNetwork(ctx context.Context, req *v1.DeleteNetworkRequest) (*emptypb.Empty, error) {
-	if err := a.svc.DeleteNetwork(ctx, int(req.GetId())); err != nil {
+	if err := a.svc.DeleteNetwork(ctx, int(req.GetFabricId())); err != nil {
 		return nil, err
 	}
 	return &emptypb.Empty{}, nil
@@ -98,7 +111,10 @@ func (a *StackApp) DeleteNetwork(ctx context.Context, req *v1.DeleteNetworkReque
 
 // Network configuration functions
 func (a *StackApp) UpdateFabric(ctx context.Context, req *v1.UpdateFabricRequest) (*v1.Fabric, error) {
-	f, err := a.svc.UpdateFabric(ctx, int(req.GetId()), &model.FabricParams{})
+	params := &model.FabricParams{
+		Name: req.GetName(),
+	}
+	f, err := a.svc.UpdateFabric(ctx, int(req.GetId()), params)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +122,13 @@ func (a *StackApp) UpdateFabric(ctx context.Context, req *v1.UpdateFabricRequest
 }
 
 func (a *StackApp) UpdateVLAN(ctx context.Context, req *v1.UpdateVLANRequest) (*v1.VLAN, error) {
-	v, err := a.svc.UpdateVLAN(ctx, int(req.GetFabricId()), int(req.GetVid()), &model.VLANParams{})
+	params := &model.VLANParams{
+		Name:        req.GetName(),
+		MTU:         int(req.GetMtu()),
+		Description: req.GetDescription(),
+		DHCPOn:      req.GetDhcpOn(),
+	}
+	v, err := a.svc.UpdateVLAN(ctx, int(req.GetFabricId()), int(req.GetVid()), params)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +136,15 @@ func (a *StackApp) UpdateVLAN(ctx context.Context, req *v1.UpdateVLANRequest) (*
 }
 
 func (a *StackApp) UpdateSubnet(ctx context.Context, req *v1.UpdateSubnetRequest) (*v1.Subnet, error) {
-	s, err := a.svc.UpdateSubnet(ctx, int(req.GetId()), &model.SubnetParams{})
+	params := &model.SubnetParams{
+		Name:        req.GetName(),
+		CIDR:        req.GetCidr(),
+		GatewayIP:   req.GetGatewayIp(),
+		DNSServers:  req.GetDnsServers(),
+		Description: req.GetDescription(),
+		AllowDNS:    req.GetAllowDnsResolution(),
+	}
+	s, err := a.svc.UpdateSubnet(ctx, int(req.GetId()), params)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +152,12 @@ func (a *StackApp) UpdateSubnet(ctx context.Context, req *v1.UpdateSubnetRequest
 }
 
 func (a *StackApp) UpdateIPRange(ctx context.Context, req *v1.UpdateIPRangeRequest) (*v1.IPRange, error) {
-	r, err := a.svc.UpdateIPRange(ctx, int(req.GetId()), &model.IPRangeParams{})
+	params := &model.IPRangeParams{
+		StartIP: req.GetStartIp(),
+		EndIP:   req.GetEndIp(),
+		Comment: req.GetComment(),
+	}
+	r, err := a.svc.UpdateIPRange(ctx, int(req.GetId()), params)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +174,8 @@ func (a *StackApp) ImportBootResources(ctx context.Context, req *v1.ImportBootRe
 
 // Machine power management functions
 func (a *StackApp) PowerOnMachine(ctx context.Context, req *v1.PowerOnMachineRequest) (*v1.Machine, error) {
-	m, err := a.svc.PowerOnMachine(ctx, req.GetSystemId(), &model.MachinePowerOnParams{})
+	params := &model.MachinePowerOnParams{}
+	m, err := a.svc.PowerOnMachine(ctx, req.GetSystemId(), params)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +183,8 @@ func (a *StackApp) PowerOnMachine(ctx context.Context, req *v1.PowerOnMachineReq
 }
 
 func (a *StackApp) PowerOffMachine(ctx context.Context, req *v1.PowerOffMachineRequest) (*v1.Machine, error) {
-	m, err := a.svc.PowerOffMachine(ctx, req.GetSystemId(), &model.MachinePowerOffParams{})
+	params := &model.MachinePowerOffParams{}
+	m, err := a.svc.PowerOffMachine(ctx, req.GetSystemId(), params)
 	if err != nil {
 		return nil, err
 	}
@@ -156,7 +193,13 @@ func (a *StackApp) PowerOffMachine(ctx context.Context, req *v1.PowerOffMachineR
 
 // Machine provisioning functions
 func (a *StackApp) CommissionMachine(ctx context.Context, req *v1.CommissionMachineRequest) (*v1.Machine, error) {
-	m, err := a.svc.CommissionMachine(ctx, req.GetSystemId(), &model.MachineCommissionParams{})
+	params := &model.MachineCommissionParams{
+		EnableSSH:      boolToInt(req.GetEnableSsh()),
+		SkipBMCConfig:  boolToInt(req.GetSkipBmcConfig()),
+		SkipNetworking: boolToInt(req.GetSkipNetworking()),
+		SkipStorage:    boolToInt(req.GetSkipStorage()),
+	}
+	m, err := a.svc.CommissionMachine(ctx, req.GetSystemId(), params)
 	if err != nil {
 		return nil, err
 	}
@@ -172,7 +215,12 @@ func toPackageRepositories(prs []*model.PackageRepository) []*v1.PackageReposito
 }
 
 func toPackageRepository(pr *model.PackageRepository) *v1.PackageRepository {
-	return &v1.PackageRepository{}
+	ret := &v1.PackageRepository{}
+	ret.SetId(int32(pr.ID))
+	ret.SetName(pr.Name)
+	ret.SetUrl(pr.URL)
+	ret.SetEnabled(pr.Enabled)
+	return ret
 }
 
 func toNetworks(ns []*model.Network) []*v1.Network {
@@ -184,25 +232,74 @@ func toNetworks(ns []*model.Network) []*v1.Network {
 }
 
 func toNetwork(n *model.Network) *v1.Network {
-	return &v1.Network{}
+	settings := make([]*v1.Network_Setting, len(n.Settings))
+	for i := range n.Settings {
+		setting := &v1.Network_Setting{}
+		setting.SetVlan(toVLAN(n.Settings[i].VLAN))
+		setting.SetSubnet(toSubnet(n.Settings[i].Subnet))
+		setting.SetIpRange(toIPRange(n.Settings[i].IPRange))
+		settings[i] = setting
+	}
+	ret := &v1.Network{}
+	ret.SetFabric(toFabric(n.Fabric))
+	ret.SetSettings(settings)
+	return ret
 }
 
 func toFabric(f *model.Fabric) *v1.Fabric {
-	return &v1.Fabric{}
+	ret := &v1.Fabric{}
+	ret.SetId(int32(f.ID))
+	ret.SetName(f.Name)
+	return ret
 }
 
 func toVLAN(v *model.VLAN) *v1.VLAN {
-	return &v1.VLAN{}
+	ret := &v1.VLAN{}
+	ret.SetId(int32(v.ID))
+	ret.SetVid(int32(v.VID))
+	ret.SetName(v.Name)
+	ret.SetMtu(int32(v.MTU))
+	ret.SetDescription(v.Description)
+	ret.SetDhcpOn(v.DHCPOn)
+	return ret
 }
 
 func toSubnet(s *model.Subnet) *v1.Subnet {
-	return &v1.Subnet{}
+	dnsServers := make([]string, len(s.DNSServers))
+	for i := range s.DNSServers {
+		dnsServers[i] = s.DNSServers[i].String()
+	}
+	ret := &v1.Subnet{}
+	ret.SetId(int32(s.ID))
+	ret.SetName(s.Name)
+	ret.SetCidr(s.CIDR)
+	ret.SetGatewayIp(s.GatewayIP.String())
+	ret.SetDnsServers(dnsServers)
+	ret.SetDescription(s.Description)
+	ret.SetManagedAllocation(s.Managed)
+	ret.SetActiveDiscovery(s.ActiveDiscovery)
+	ret.SetAllowProxyAccess(s.AllowProxy)
+	ret.SetAllowDnsResolution(s.AllowDNS)
+	return ret
 }
 
 func toIPRange(r *model.IPRange) *v1.IPRange {
-	return &v1.IPRange{}
+	ret := &v1.IPRange{}
+	ret.SetId(int32(r.ID))
+	ret.SetStartIp(r.StartIP.String())
+	ret.SetEndIp(r.EndIP.String())
+	ret.SetType(r.Type)
+	ret.SetComment(r.Comment)
+	return ret
 }
 
 func toMachine(m *model.Machine) *v1.Machine {
 	return &v1.Machine{}
+}
+
+func boolToInt(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
 }

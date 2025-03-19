@@ -37,9 +37,6 @@ type NetworkSetting struct {
 }
 
 type Network struct {
-	ID          int
-	Name        string
-	ClassType   string
-	ResourceURI string
-	Settings    []*NetworkSetting
+	*Fabric
+	Settings []*NetworkSetting
 }

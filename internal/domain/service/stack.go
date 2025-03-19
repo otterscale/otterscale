@@ -6,6 +6,7 @@ import (
 	"errors"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
@@ -101,8 +102,8 @@ func NewStackService(server MAASServer, packageRepository MAASPackageRepository,
 }
 
 // UpdateNTPServers updates the NTP servers configuration
-func (s *StackService) UpdateNTPServers(ctx context.Context, ntpServers string) error {
-	return s.server.Update(ctx, "ntp_servers", ntpServers)
+func (s *StackService) UpdateNTPServers(ctx context.Context, ntpServers []string) error {
+	return s.server.Update(ctx, "ntp_servers", strings.Join(ntpServers, ","))
 }
 
 // Package repository operations
@@ -177,7 +178,7 @@ func (s *StackService) ListNetworks(ctx context.Context, pageSize, pageToken int
 }
 
 // CreateNetwork creates a new network with associated resources
-func (s *StackService) CreateNetwork(ctx context.Context, fabricParams *model.FabricParams, subnetParams *model.SubnetParams, ipRangeParams *model.IPRangeParams) (*model.Network, error) {
+func (s *StackService) CreateNetwork(ctx context.Context, fabricParams *model.FabricParams, vlanParams *model.VLANParams, subnetParams *model.SubnetParams, ipRangeParams *model.IPRangeParams) (*model.Network, error) {
 	// Create fabric first
 	fabric, err := s.fabric.Create(ctx, fabricParams)
 	if err != nil {
@@ -205,6 +206,12 @@ func (s *StackService) CreateNetwork(ctx context.Context, fabricParams *model.Fa
 	// Create IP range for the subnet
 	ipRangeParams.Subnet = subnet.Name
 	ipRange, err := s.ipRange.Create(ctx, ipRangeParams)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update DHCP On
+	vlan, err = s.vlan.Update(ctx, fabric.ID, vlan.VID, vlanParams)
 	if err != nil {
 		return nil, err
 	}
@@ -366,10 +373,7 @@ func toNetwork(fabric *model.Fabric, vlanToNetworkSetting map[int]*model.Network
 	}
 
 	return &model.Network{
-		ID:          fabric.ID,
-		Name:        fabric.Name,
-		ClassType:   fabric.ClassType,
-		ResourceURI: fabric.ResourceURI,
-		Settings:    settings,
+		Fabric:   fabric,
+		Settings: settings,
 	}
 }

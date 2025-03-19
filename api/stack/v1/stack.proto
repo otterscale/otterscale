@@ -32,30 +32,62 @@ service StackService {
   rpc CommissionMachine(CommissionMachineRequest) returns (Machine);
 }
 
-message PackageRepository {}
+message PackageRepository {
+  int32 id = 1;
+  string name = 2;
+  string url = 3;
+  bool enabled = 4;
+}
 
-message Network {}
+message Network {
+  message Setting {
+    VLAN vlan = 1;
+    Subnet subnet = 2;
+    IPRange ip_range = 3;
+  }
+  Fabric fabric = 1;
+  repeated Setting settings = 2;
+}
 
 message VLAN {
-  bool dhcp_on = 1;
+  int32 id = 1;
+  int32 vid = 2;
+  string name = 3;
+  int32 mtu = 4;
+  string description = 5;
+  bool dhcp_on = 6;
 }
 
 message Fabric {
-  repeated VLAN vlans = 1;
+  int32 id = 1;
+  string name = 2;
 }
 
-message Subnet {}
+message Subnet {
+  int32 id = 1;
+  string name = 2;
+  string cidr = 3;
+  string gateway_ip = 4;
+  repeated string dns_servers = 5;
+  string description = 6;
+  bool managed_allocation = 7;
+  bool active_discovery = 8;
+  bool allow_proxy_access = 9;
+  bool allow_dns_resolution = 10;
+}
 
 message Machine {}
 
-message IPRange {}
-
-message UpdateNTPServersRequest {
-  string ntp_servers = 1;
+message IPRange {
+  int32 id = 1;
+  string start_ip = 2;
+  string end_ip = 3;
+  string type = 4;
+  string comment = 5;
 }
 
-message UpdateNTPServersResponse {
-  string ntp_servers = 1;
+message UpdateNTPServersRequest {
+  repeated string ntp_servers = 1;
 }
 
 message UpdatePackageRepositoryURLRequest {
@@ -83,29 +115,48 @@ message ListNetworksResponse {
   string next_page_token = 2;
 }
 
-message CreateNetworkRequest {}
-
-message UpdateNetworkRequest {}
+message CreateNetworkRequest {
+  bool dhcp_on = 1;
+  string cidr = 11;
+  string gateway_ip = 12;
+  repeated string dns_servers = 13;
+  string start_ip = 21;
+  string end_ip = 22;
+}
 
 message DeleteNetworkRequest {
-  int32 id = 1;
+  int32 fabric_id = 1;
 }
 
 message UpdateFabricRequest {
   int32 id = 1;
+  string name = 2;
 }
 
 message UpdateVLANRequest {
   int32 fabric_id = 1;
   int32 vid = 2;
+  string name = 3;
+  int32 mtu = 4;
+  string description = 5;
+  bool dhcp_on = 6;
 }
 
 message UpdateSubnetRequest {
   int32 id = 1;
+  string name = 2;
+  string cidr = 3;
+  string gateway_ip = 4;
+  repeated string dns_servers = 5;
+  string description = 6;
+  bool allow_dns_resolution = 7;
 }
 
 message UpdateIPRangeRequest {
   int32 id = 1;
+  string start_ip = 2;
+  string end_ip = 3;
+  string comment = 4;
 }
 
 message ImportBootResourcesRequest {}
@@ -120,4 +171,8 @@ message PowerOffMachineRequest {
 
 message CommissionMachineRequest {
   string system_id = 1;
+  bool enable_ssh = 2;
+  bool skip_bmc_config = 3;
+  bool skip_networking = 4;
+  bool skip_storage = 5;
 }
