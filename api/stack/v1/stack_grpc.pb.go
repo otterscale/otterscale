@@ -4,10 +4,14 @@
 // - protoc             v5.29.1
 // source: api/stack/v1/stack.proto
 
-package pb
+package v1
 
 import (
+	context "context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -15,10 +19,45 @@ import (
 // Requires gRPC-Go v1.64.0 or later.
 const _ = grpc.SupportPackageIsVersion9
 
+const (
+	StackService_UpdateNTPServers_FullMethodName          = "/openhdc.stack.v1.StackService/UpdateNTPServers"
+	StackService_ListPackageRepositories_FullMethodName   = "/openhdc.stack.v1.StackService/ListPackageRepositories"
+	StackService_UpdatePackageRepositories_FullMethodName = "/openhdc.stack.v1.StackService/UpdatePackageRepositories"
+	StackService_ListNetworks_FullMethodName              = "/openhdc.stack.v1.StackService/ListNetworks"
+	StackService_CreateNetwork_FullMethodName             = "/openhdc.stack.v1.StackService/CreateNetwork"
+	StackService_UpdateNetwork_FullMethodName             = "/openhdc.stack.v1.StackService/UpdateNetwork"
+	StackService_DeleteNetwork_FullMethodName             = "/openhdc.stack.v1.StackService/DeleteNetwork"
+	StackService_UpdateDHCP_FullMethodName                = "/openhdc.stack.v1.StackService/UpdateDHCP"
+	StackService_UpdateIPRange_FullMethodName             = "/openhdc.stack.v1.StackService/UpdateIPRange"
+	StackService_ImportBootResources_FullMethodName       = "/openhdc.stack.v1.StackService/ImportBootResources"
+	StackService_PowerOnMachine_FullMethodName            = "/openhdc.stack.v1.StackService/PowerOnMachine"
+	StackService_PowerOffMachine_FullMethodName           = "/openhdc.stack.v1.StackService/PowerOffMachine"
+	StackService_CommissionMachine_FullMethodName         = "/openhdc.stack.v1.StackService/CommissionMachine"
+	StackService_OverrideMachineFailedTest_FullMethodName = "/openhdc.stack.v1.StackService/OverrideMachineFailedTest"
+)
+
 // StackServiceClient is the client API for StackService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StackServiceClient interface {
+	// Global Configurations
+	UpdateNTPServers(ctx context.Context, in *UpdateNTPServersRequest, opts ...grpc.CallOption) (*UpdateNTPServersResponse, error)
+	// Package Repository Management
+	ListPackageRepositories(ctx context.Context, in *ListPackageRepositoriesRequest, opts ...grpc.CallOption) (*ListPackageRepositoriesResponse, error)
+	UpdatePackageRepositories(ctx context.Context, in *UpdatePackageRepositoryRequest, opts ...grpc.CallOption) (*PackageRepository, error)
+	// Network Management
+	ListNetworks(ctx context.Context, in *ListNetworksRequest, opts ...grpc.CallOption) (*ListNetworksResponse, error)
+	CreateNetwork(ctx context.Context, in *CreateNetworkRequest, opts ...grpc.CallOption) (*Network, error)
+	UpdateNetwork(ctx context.Context, in *UpdateNetworkRequest, opts ...grpc.CallOption) (*Network, error)
+	DeleteNetwork(ctx context.Context, in *DeleteNetworkRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateDHCP(ctx context.Context, in *UpdateDHCPRequest, opts ...grpc.CallOption) (*VLAN, error)
+	UpdateIPRange(ctx context.Context, in *UpdateIPRangeRequest, opts ...grpc.CallOption) (*Subnet, error)
+	// Machine Operations
+	ImportBootResources(ctx context.Context, in *ImportBootResourcesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PowerOnMachine(ctx context.Context, in *PowerOnMachineRequest, opts ...grpc.CallOption) (*Machine, error)
+	PowerOffMachine(ctx context.Context, in *PowerOffMachineRequest, opts ...grpc.CallOption) (*Machine, error)
+	CommissionMachine(ctx context.Context, in *CommissionMachineRequest, opts ...grpc.CallOption) (*Machine, error)
+	OverrideMachineFailedTest(ctx context.Context, in *OverrideMachineFailedTestRequest, opts ...grpc.CallOption) (*Machine, error)
 }
 
 type stackServiceClient struct {
@@ -29,10 +68,168 @@ func NewStackServiceClient(cc grpc.ClientConnInterface) StackServiceClient {
 	return &stackServiceClient{cc}
 }
 
+func (c *stackServiceClient) UpdateNTPServers(ctx context.Context, in *UpdateNTPServersRequest, opts ...grpc.CallOption) (*UpdateNTPServersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateNTPServersResponse)
+	err := c.cc.Invoke(ctx, StackService_UpdateNTPServers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) ListPackageRepositories(ctx context.Context, in *ListPackageRepositoriesRequest, opts ...grpc.CallOption) (*ListPackageRepositoriesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListPackageRepositoriesResponse)
+	err := c.cc.Invoke(ctx, StackService_ListPackageRepositories_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) UpdatePackageRepositories(ctx context.Context, in *UpdatePackageRepositoryRequest, opts ...grpc.CallOption) (*PackageRepository, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PackageRepository)
+	err := c.cc.Invoke(ctx, StackService_UpdatePackageRepositories_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) ListNetworks(ctx context.Context, in *ListNetworksRequest, opts ...grpc.CallOption) (*ListNetworksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListNetworksResponse)
+	err := c.cc.Invoke(ctx, StackService_ListNetworks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) CreateNetwork(ctx context.Context, in *CreateNetworkRequest, opts ...grpc.CallOption) (*Network, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Network)
+	err := c.cc.Invoke(ctx, StackService_CreateNetwork_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) UpdateNetwork(ctx context.Context, in *UpdateNetworkRequest, opts ...grpc.CallOption) (*Network, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Network)
+	err := c.cc.Invoke(ctx, StackService_UpdateNetwork_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) DeleteNetwork(ctx context.Context, in *DeleteNetworkRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, StackService_DeleteNetwork_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) UpdateDHCP(ctx context.Context, in *UpdateDHCPRequest, opts ...grpc.CallOption) (*VLAN, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VLAN)
+	err := c.cc.Invoke(ctx, StackService_UpdateDHCP_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) UpdateIPRange(ctx context.Context, in *UpdateIPRangeRequest, opts ...grpc.CallOption) (*Subnet, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Subnet)
+	err := c.cc.Invoke(ctx, StackService_UpdateIPRange_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) ImportBootResources(ctx context.Context, in *ImportBootResourcesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, StackService_ImportBootResources_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) PowerOnMachine(ctx context.Context, in *PowerOnMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Machine)
+	err := c.cc.Invoke(ctx, StackService_PowerOnMachine_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) PowerOffMachine(ctx context.Context, in *PowerOffMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Machine)
+	err := c.cc.Invoke(ctx, StackService_PowerOffMachine_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) CommissionMachine(ctx context.Context, in *CommissionMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Machine)
+	err := c.cc.Invoke(ctx, StackService_CommissionMachine_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) OverrideMachineFailedTest(ctx context.Context, in *OverrideMachineFailedTestRequest, opts ...grpc.CallOption) (*Machine, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Machine)
+	err := c.cc.Invoke(ctx, StackService_OverrideMachineFailedTest_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StackServiceServer is the server API for StackService service.
 // All implementations must embed UnimplementedStackServiceServer
 // for forward compatibility.
 type StackServiceServer interface {
+	// Global Configurations
+	UpdateNTPServers(context.Context, *UpdateNTPServersRequest) (*UpdateNTPServersResponse, error)
+	// Package Repository Management
+	ListPackageRepositories(context.Context, *ListPackageRepositoriesRequest) (*ListPackageRepositoriesResponse, error)
+	UpdatePackageRepositories(context.Context, *UpdatePackageRepositoryRequest) (*PackageRepository, error)
+	// Network Management
+	ListNetworks(context.Context, *ListNetworksRequest) (*ListNetworksResponse, error)
+	CreateNetwork(context.Context, *CreateNetworkRequest) (*Network, error)
+	UpdateNetwork(context.Context, *UpdateNetworkRequest) (*Network, error)
+	DeleteNetwork(context.Context, *DeleteNetworkRequest) (*emptypb.Empty, error)
+	UpdateDHCP(context.Context, *UpdateDHCPRequest) (*VLAN, error)
+	UpdateIPRange(context.Context, *UpdateIPRangeRequest) (*Subnet, error)
+	// Machine Operations
+	ImportBootResources(context.Context, *ImportBootResourcesRequest) (*emptypb.Empty, error)
+	PowerOnMachine(context.Context, *PowerOnMachineRequest) (*Machine, error)
+	PowerOffMachine(context.Context, *PowerOffMachineRequest) (*Machine, error)
+	CommissionMachine(context.Context, *CommissionMachineRequest) (*Machine, error)
+	OverrideMachineFailedTest(context.Context, *OverrideMachineFailedTestRequest) (*Machine, error)
 	mustEmbedUnimplementedStackServiceServer()
 }
 
@@ -43,6 +240,48 @@ type StackServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedStackServiceServer struct{}
 
+func (UnimplementedStackServiceServer) UpdateNTPServers(context.Context, *UpdateNTPServersRequest) (*UpdateNTPServersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateNTPServers not implemented")
+}
+func (UnimplementedStackServiceServer) ListPackageRepositories(context.Context, *ListPackageRepositoriesRequest) (*ListPackageRepositoriesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPackageRepositories not implemented")
+}
+func (UnimplementedStackServiceServer) UpdatePackageRepositories(context.Context, *UpdatePackageRepositoryRequest) (*PackageRepository, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePackageRepositories not implemented")
+}
+func (UnimplementedStackServiceServer) ListNetworks(context.Context, *ListNetworksRequest) (*ListNetworksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListNetworks not implemented")
+}
+func (UnimplementedStackServiceServer) CreateNetwork(context.Context, *CreateNetworkRequest) (*Network, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNetwork not implemented")
+}
+func (UnimplementedStackServiceServer) UpdateNetwork(context.Context, *UpdateNetworkRequest) (*Network, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateNetwork not implemented")
+}
+func (UnimplementedStackServiceServer) DeleteNetwork(context.Context, *DeleteNetworkRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteNetwork not implemented")
+}
+func (UnimplementedStackServiceServer) UpdateDHCP(context.Context, *UpdateDHCPRequest) (*VLAN, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDHCP not implemented")
+}
+func (UnimplementedStackServiceServer) UpdateIPRange(context.Context, *UpdateIPRangeRequest) (*Subnet, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateIPRange not implemented")
+}
+func (UnimplementedStackServiceServer) ImportBootResources(context.Context, *ImportBootResourcesRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ImportBootResources not implemented")
+}
+func (UnimplementedStackServiceServer) PowerOnMachine(context.Context, *PowerOnMachineRequest) (*Machine, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PowerOnMachine not implemented")
+}
+func (UnimplementedStackServiceServer) PowerOffMachine(context.Context, *PowerOffMachineRequest) (*Machine, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PowerOffMachine not implemented")
+}
+func (UnimplementedStackServiceServer) CommissionMachine(context.Context, *CommissionMachineRequest) (*Machine, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommissionMachine not implemented")
+}
+func (UnimplementedStackServiceServer) OverrideMachineFailedTest(context.Context, *OverrideMachineFailedTestRequest) (*Machine, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OverrideMachineFailedTest not implemented")
+}
 func (UnimplementedStackServiceServer) mustEmbedUnimplementedStackServiceServer() {}
 func (UnimplementedStackServiceServer) testEmbeddedByValue()                      {}
 
@@ -64,13 +303,322 @@ func RegisterStackServiceServer(s grpc.ServiceRegistrar, srv StackServiceServer)
 	s.RegisterService(&StackService_ServiceDesc, srv)
 }
 
+func _StackService_UpdateNTPServers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateNTPServersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).UpdateNTPServers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_UpdateNTPServers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).UpdateNTPServers(ctx, req.(*UpdateNTPServersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_ListPackageRepositories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListPackageRepositoriesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).ListPackageRepositories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_ListPackageRepositories_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).ListPackageRepositories(ctx, req.(*ListPackageRepositoriesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_UpdatePackageRepositories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePackageRepositoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).UpdatePackageRepositories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_UpdatePackageRepositories_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).UpdatePackageRepositories(ctx, req.(*UpdatePackageRepositoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_ListNetworks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListNetworksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).ListNetworks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_ListNetworks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).ListNetworks(ctx, req.(*ListNetworksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_CreateNetwork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNetworkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).CreateNetwork(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_CreateNetwork_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).CreateNetwork(ctx, req.(*CreateNetworkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_UpdateNetwork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateNetworkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).UpdateNetwork(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_UpdateNetwork_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).UpdateNetwork(ctx, req.(*UpdateNetworkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_DeleteNetwork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteNetworkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).DeleteNetwork(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_DeleteNetwork_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).DeleteNetwork(ctx, req.(*DeleteNetworkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_UpdateDHCP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateDHCPRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).UpdateDHCP(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_UpdateDHCP_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).UpdateDHCP(ctx, req.(*UpdateDHCPRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_UpdateIPRange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateIPRangeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).UpdateIPRange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_UpdateIPRange_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).UpdateIPRange(ctx, req.(*UpdateIPRangeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_ImportBootResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImportBootResourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).ImportBootResources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_ImportBootResources_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).ImportBootResources(ctx, req.(*ImportBootResourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_PowerOnMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PowerOnMachineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).PowerOnMachine(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_PowerOnMachine_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).PowerOnMachine(ctx, req.(*PowerOnMachineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_PowerOffMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PowerOffMachineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).PowerOffMachine(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_PowerOffMachine_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).PowerOffMachine(ctx, req.(*PowerOffMachineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_CommissionMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommissionMachineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).CommissionMachine(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_CommissionMachine_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).CommissionMachine(ctx, req.(*CommissionMachineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_OverrideMachineFailedTest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OverrideMachineFailedTestRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).OverrideMachineFailedTest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_OverrideMachineFailedTest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).OverrideMachineFailedTest(ctx, req.(*OverrideMachineFailedTestRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StackService_ServiceDesc is the grpc.ServiceDesc for StackService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var StackService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "openhdc.stack.v1.StackService",
 	HandlerType: (*StackServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "api/stack/v1/stack.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "UpdateNTPServers",
+			Handler:    _StackService_UpdateNTPServers_Handler,
+		},
+		{
+			MethodName: "ListPackageRepositories",
+			Handler:    _StackService_ListPackageRepositories_Handler,
+		},
+		{
+			MethodName: "UpdatePackageRepositories",
+			Handler:    _StackService_UpdatePackageRepositories_Handler,
+		},
+		{
+			MethodName: "ListNetworks",
+			Handler:    _StackService_ListNetworks_Handler,
+		},
+		{
+			MethodName: "CreateNetwork",
+			Handler:    _StackService_CreateNetwork_Handler,
+		},
+		{
+			MethodName: "UpdateNetwork",
+			Handler:    _StackService_UpdateNetwork_Handler,
+		},
+		{
+			MethodName: "DeleteNetwork",
+			Handler:    _StackService_DeleteNetwork_Handler,
+		},
+		{
+			MethodName: "UpdateDHCP",
+			Handler:    _StackService_UpdateDHCP_Handler,
+		},
+		{
+			MethodName: "UpdateIPRange",
+			Handler:    _StackService_UpdateIPRange_Handler,
+		},
+		{
+			MethodName: "ImportBootResources",
+			Handler:    _StackService_ImportBootResources_Handler,
+		},
+		{
+			MethodName: "PowerOnMachine",
+			Handler:    _StackService_PowerOnMachine_Handler,
+		},
+		{
+			MethodName: "PowerOffMachine",
+			Handler:    _StackService_PowerOffMachine_Handler,
+		},
+		{
+			MethodName: "CommissionMachine",
+			Handler:    _StackService_CommissionMachine_Handler,
+		},
+		{
+			MethodName: "OverrideMachineFailedTest",
+			Handler:    _StackService_OverrideMachineFailedTest_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "api/stack/v1/stack.proto",
 }
