@@ -22,6 +22,14 @@ type IPRange = entity.IPRange
 
 type IPRangeParams = entity.IPRangeParams
 
+type Machine = entity.Machine
+
+type MachinePowerOnParams = entity.MachinePowerOnParams
+
+type MachinePowerOffParams = entity.MachinePowerOffParams
+
+type MachineCommissionParams = entity.MachineCommissionParams
+
 type NetworkSetting struct {
 	*VLAN
 	*Subnet
