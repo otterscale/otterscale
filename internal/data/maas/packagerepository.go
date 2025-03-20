@@ -3,7 +3,8 @@ package maas
 import (
 	"context"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/canonical/gomaasclient/entity"
+
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
 
@@ -19,19 +20,19 @@ func NewPackageRepository(maas *MAAS) service.MAASPackageRepository {
 
 var _ service.MAASPackageRepository = (*packageRepository)(nil)
 
-func (r *packageRepository) List(_ context.Context) ([]*model.PackageRepository, error) {
+func (r *packageRepository) List(_ context.Context) ([]*entity.PackageRepository, error) {
 	prs, err := r.maas.PackageRepositories.Get()
 	if err != nil {
 		return nil, err
 	}
 
-	ret := make([]*model.PackageRepository, len(prs))
+	ret := make([]*entity.PackageRepository, len(prs))
 	for i := range prs {
 		ret[i] = &prs[i]
 	}
 	return ret, nil
 }
 
-func (r *packageRepository) Update(_ context.Context, id int, params *model.PackageRepositoryParams) (*model.PackageRepository, error) {
+func (r *packageRepository) Update(_ context.Context, id int, params *entity.PackageRepositoryParams) (*entity.PackageRepository, error) {
 	return r.maas.PackageRepository.Update(id, params)
 }

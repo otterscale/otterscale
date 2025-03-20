@@ -53,6 +53,16 @@ func New(cfg *connector.SimpleConfig) (Juju, error) {
 	return sc.Connect(ctx)
 }
 
+// newConnection creates a new Juju connection with the specified model UUID
+func newConnection(modelUUID string) (Juju, error) {
+	cfg, err := NewConfig()
+	if err != nil {
+		return nil, err
+	}
+	cfg.ModelUUID = modelUUID
+	return New(cfg)
+}
+
 // loadCACert loads the CA certificate from a file
 func loadCACert(path string) (string, error) {
 	data, err := os.ReadFile(path)

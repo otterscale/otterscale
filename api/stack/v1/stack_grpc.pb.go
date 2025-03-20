@@ -20,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	StackService_ListNTPServers_FullMethodName             = "/openhdc.stack.v1.StackService/ListNTPServers"
 	StackService_UpdateNTPServers_FullMethodName           = "/openhdc.stack.v1.StackService/UpdateNTPServers"
 	StackService_ListPackageRepositories_FullMethodName    = "/openhdc.stack.v1.StackService/ListPackageRepositories"
 	StackService_UpdatePackageRepositoryURL_FullMethodName = "/openhdc.stack.v1.StackService/UpdatePackageRepositoryURL"
@@ -35,6 +36,7 @@ const (
 	StackService_PowerOnMachine_FullMethodName             = "/openhdc.stack.v1.StackService/PowerOnMachine"
 	StackService_PowerOffMachine_FullMethodName            = "/openhdc.stack.v1.StackService/PowerOffMachine"
 	StackService_CommissionMachine_FullMethodName          = "/openhdc.stack.v1.StackService/CommissionMachine"
+	StackService_ListModelConfigs_FullMethodName           = "/openhdc.stack.v1.StackService/ListModelConfigs"
 )
 
 // StackServiceClient is the client API for StackService service.
@@ -42,6 +44,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StackServiceClient interface {
 	// Global Configurations
+	ListNTPServers(ctx context.Context, in *ListNTPServersRequest, opts ...grpc.CallOption) (*ListNTPServersResponse, error)
 	UpdateNTPServers(ctx context.Context, in *UpdateNTPServersRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Package Repository Management
 	ListPackageRepositories(ctx context.Context, in *ListPackageRepositoriesRequest, opts ...grpc.CallOption) (*ListPackageRepositoriesResponse, error)
@@ -61,6 +64,8 @@ type StackServiceClient interface {
 	PowerOnMachine(ctx context.Context, in *PowerOnMachineRequest, opts ...grpc.CallOption) (*Machine, error)
 	PowerOffMachine(ctx context.Context, in *PowerOffMachineRequest, opts ...grpc.CallOption) (*Machine, error)
 	CommissionMachine(ctx context.Context, in *CommissionMachineRequest, opts ...grpc.CallOption) (*Machine, error)
+	// Model Operations
+	ListModelConfigs(ctx context.Context, in *ListModelConfigsRequest, opts ...grpc.CallOption) (*ListModelConfigsResponse, error)
 }
 
 type stackServiceClient struct {
@@ -69,6 +74,16 @@ type stackServiceClient struct {
 
 func NewStackServiceClient(cc grpc.ClientConnInterface) StackServiceClient {
 	return &stackServiceClient{cc}
+}
+
+func (c *stackServiceClient) ListNTPServers(ctx context.Context, in *ListNTPServersRequest, opts ...grpc.CallOption) (*ListNTPServersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListNTPServersResponse)
+	err := c.cc.Invoke(ctx, StackService_ListNTPServers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *stackServiceClient) UpdateNTPServers(ctx context.Context, in *UpdateNTPServersRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
@@ -221,11 +236,22 @@ func (c *stackServiceClient) CommissionMachine(ctx context.Context, in *Commissi
 	return out, nil
 }
 
+func (c *stackServiceClient) ListModelConfigs(ctx context.Context, in *ListModelConfigsRequest, opts ...grpc.CallOption) (*ListModelConfigsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListModelConfigsResponse)
+	err := c.cc.Invoke(ctx, StackService_ListModelConfigs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StackServiceServer is the server API for StackService service.
 // All implementations must embed UnimplementedStackServiceServer
 // for forward compatibility.
 type StackServiceServer interface {
 	// Global Configurations
+	ListNTPServers(context.Context, *ListNTPServersRequest) (*ListNTPServersResponse, error)
 	UpdateNTPServers(context.Context, *UpdateNTPServersRequest) (*emptypb.Empty, error)
 	// Package Repository Management
 	ListPackageRepositories(context.Context, *ListPackageRepositoriesRequest) (*ListPackageRepositoriesResponse, error)
@@ -245,6 +271,8 @@ type StackServiceServer interface {
 	PowerOnMachine(context.Context, *PowerOnMachineRequest) (*Machine, error)
 	PowerOffMachine(context.Context, *PowerOffMachineRequest) (*Machine, error)
 	CommissionMachine(context.Context, *CommissionMachineRequest) (*Machine, error)
+	// Model Operations
+	ListModelConfigs(context.Context, *ListModelConfigsRequest) (*ListModelConfigsResponse, error)
 	mustEmbedUnimplementedStackServiceServer()
 }
 
@@ -255,6 +283,9 @@ type StackServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedStackServiceServer struct{}
 
+func (UnimplementedStackServiceServer) ListNTPServers(context.Context, *ListNTPServersRequest) (*ListNTPServersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListNTPServers not implemented")
+}
 func (UnimplementedStackServiceServer) UpdateNTPServers(context.Context, *UpdateNTPServersRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateNTPServers not implemented")
 }
@@ -300,6 +331,9 @@ func (UnimplementedStackServiceServer) PowerOffMachine(context.Context, *PowerOf
 func (UnimplementedStackServiceServer) CommissionMachine(context.Context, *CommissionMachineRequest) (*Machine, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommissionMachine not implemented")
 }
+func (UnimplementedStackServiceServer) ListModelConfigs(context.Context, *ListModelConfigsRequest) (*ListModelConfigsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListModelConfigs not implemented")
+}
 func (UnimplementedStackServiceServer) mustEmbedUnimplementedStackServiceServer() {}
 func (UnimplementedStackServiceServer) testEmbeddedByValue()                      {}
 
@@ -319,6 +353,24 @@ func RegisterStackServiceServer(s grpc.ServiceRegistrar, srv StackServiceServer)
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&StackService_ServiceDesc, srv)
+}
+
+func _StackService_ListNTPServers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListNTPServersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).ListNTPServers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_ListNTPServers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).ListNTPServers(ctx, req.(*ListNTPServersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _StackService_UpdateNTPServers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -591,6 +643,24 @@ func _StackService_CommissionMachine_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StackService_ListModelConfigs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListModelConfigsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).ListModelConfigs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_ListModelConfigs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).ListModelConfigs(ctx, req.(*ListModelConfigsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StackService_ServiceDesc is the grpc.ServiceDesc for StackService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -598,6 +668,10 @@ var StackService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "openhdc.stack.v1.StackService",
 	HandlerType: (*StackServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListNTPServers",
+			Handler:    _StackService_ListNTPServers_Handler,
+		},
 		{
 			MethodName: "UpdateNTPServers",
 			Handler:    _StackService_UpdateNTPServers_Handler,
@@ -657,6 +731,10 @@ var StackService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CommissionMachine",
 			Handler:    _StackService_CommissionMachine_Handler,
+		},
+		{
+			MethodName: "ListModelConfigs",
+			Handler:    _StackService_ListModelConfigs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -3,7 +3,8 @@ package maas
 import (
 	"context"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/canonical/gomaasclient/entity"
+
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
 
@@ -19,6 +20,6 @@ func NewVLAN(maas *MAAS) service.MAASVLAN {
 
 var _ service.MAASVLAN = (*vlan)(nil)
 
-func (r *vlan) Update(_ context.Context, fabricID, vid int, params *model.VLANParams) (*model.VLAN, error) {
+func (r *vlan) Update(_ context.Context, fabricID, vid int, params *entity.VLANParams) (*entity.VLAN, error) {
 	return r.maas.VLAN.Update(fabricID, vid, params)
 }

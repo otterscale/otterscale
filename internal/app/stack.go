@@ -3,7 +3,10 @@ package app
 import (
 	"context"
 
+	"github.com/canonical/gomaasclient/entity"
+
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/structpb"
 
 	v1 "github.com/openhdc/openhdc/api/stack/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
@@ -23,6 +26,16 @@ func NewStackApp(svc *service.StackService) *StackApp {
 
 // Ensure StackApp implements the StackServiceServer interface
 var _ v1.StackServiceServer = (*StackApp)(nil)
+
+func (a *StackApp) ListNTPServers(ctx context.Context, req *v1.ListNTPServersRequest) (*v1.ListNTPServersResponse, error) {
+	ntpServers, err := a.svc.ListNTPServers(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret := &v1.ListNTPServersResponse{}
+	ret.SetNtpServers(ntpServers)
+	return ret, nil
+}
 
 // UpdateNTPServers updates NTP server configuration
 func (a *StackApp) UpdateNTPServers(ctx context.Context, req *v1.UpdateNTPServersRequest) (*emptypb.Empty, error) {
@@ -58,6 +71,17 @@ func (a *StackApp) UpdatePackageRepositoryURL(ctx context.Context, req *v1.Updat
 	if err != nil {
 		return nil, err
 	}
+	if !req.GetSkipJuju() {
+		ms, err := a.svc.ListModels(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, m := range ms {
+			if err := a.svc.SetModelConfigAPTMirror(ctx, m.UUID, req.GetUrl()); err != nil {
+				return nil, err
+			}
+		}
+	}
 	return toPackageRepository(pr), nil
 }
 
@@ -82,16 +106,16 @@ func (a *StackApp) ListNetworks(ctx context.Context, req *v1.ListNetworksRequest
 }
 
 func (a *StackApp) CreateNetwork(ctx context.Context, req *v1.CreateNetworkRequest) (*v1.Network, error) {
-	fabricParams := &model.FabricParams{}
-	vlanParams := &model.VLANParams{
+	fabricParams := &entity.FabricParams{}
+	vlanParams := &entity.VLANParams{
 		DHCPOn: req.GetDhcpOn(),
 	}
-	subnetParams := &model.SubnetParams{
+	subnetParams := &entity.SubnetParams{
 		CIDR:       req.GetCidr(),
 		GatewayIP:  req.GetGatewayIp(),
 		DNSServers: req.GetDnsServers(),
 	}
-	ipRangeParams := &model.IPRangeParams{
+	ipRangeParams := &entity.IPRangeParams{
 		StartIP: req.GetStartIp(),
 		EndIP:   req.GetEndIp(),
 	}
@@ -111,7 +135,7 @@ func (a *StackApp) DeleteNetwork(ctx context.Context, req *v1.DeleteNetworkReque
 
 // Network configuration functions
 func (a *StackApp) UpdateFabric(ctx context.Context, req *v1.UpdateFabricRequest) (*v1.Fabric, error) {
-	params := &model.FabricParams{
+	params := &entity.FabricParams{
 		Name: req.GetName(),
 	}
 	f, err := a.svc.UpdateFabric(ctx, int(req.GetId()), params)
@@ -122,7 +146,7 @@ func (a *StackApp) UpdateFabric(ctx context.Context, req *v1.UpdateFabricRequest
 }
 
 func (a *StackApp) UpdateVLAN(ctx context.Context, req *v1.UpdateVLANRequest) (*v1.VLAN, error) {
-	params := &model.VLANParams{
+	params := &entity.VLANParams{
 		Name:        req.GetName(),
 		MTU:         int(req.GetMtu()),
 		Description: req.GetDescription(),
@@ -136,7 +160,7 @@ func (a *StackApp) UpdateVLAN(ctx context.Context, req *v1.UpdateVLANRequest) (*
 }
 
 func (a *StackApp) UpdateSubnet(ctx context.Context, req *v1.UpdateSubnetRequest) (*v1.Subnet, error) {
-	params := &model.SubnetParams{
+	params := &entity.SubnetParams{
 		Name:        req.GetName(),
 		CIDR:        req.GetCidr(),
 		GatewayIP:   req.GetGatewayIp(),
@@ -152,7 +176,7 @@ func (a *StackApp) UpdateSubnet(ctx context.Context, req *v1.UpdateSubnetRequest
 }
 
 func (a *StackApp) UpdateIPRange(ctx context.Context, req *v1.UpdateIPRangeRequest) (*v1.IPRange, error) {
-	params := &model.IPRangeParams{
+	params := &entity.IPRangeParams{
 		StartIP: req.GetStartIp(),
 		EndIP:   req.GetEndIp(),
 		Comment: req.GetComment(),
@@ -194,7 +218,7 @@ func (a *StackApp) ImportBootResources(ctx context.Context, req *v1.ImportBootRe
 
 // Machine power management functions
 func (a *StackApp) PowerOnMachine(ctx context.Context, req *v1.PowerOnMachineRequest) (*v1.Machine, error) {
-	params := &model.MachinePowerOnParams{}
+	params := &entity.MachinePowerOnParams{}
 	m, err := a.svc.PowerOnMachine(ctx, req.GetSystemId(), params)
 	if err != nil {
 		return nil, err
@@ -203,7 +227,7 @@ func (a *StackApp) PowerOnMachine(ctx context.Context, req *v1.PowerOnMachineReq
 }
 
 func (a *StackApp) PowerOffMachine(ctx context.Context, req *v1.PowerOffMachineRequest) (*v1.Machine, error) {
-	params := &model.MachinePowerOffParams{}
+	params := &entity.MachinePowerOffParams{}
 	m, err := a.svc.PowerOffMachine(ctx, req.GetSystemId(), params)
 	if err != nil {
 		return nil, err
@@ -213,7 +237,7 @@ func (a *StackApp) PowerOffMachine(ctx context.Context, req *v1.PowerOffMachineR
 
 // Machine provisioning functions
 func (a *StackApp) CommissionMachine(ctx context.Context, req *v1.CommissionMachineRequest) (*v1.Machine, error) {
-	params := &model.MachineCommissionParams{
+	params := &entity.MachineCommissionParams{
 		EnableSSH:      boolToInt(req.GetEnableSsh()),
 		SkipBMCConfig:  boolToInt(req.GetSkipBmcConfig()),
 		SkipNetworking: boolToInt(req.GetSkipNetworking()),
@@ -226,7 +250,22 @@ func (a *StackApp) CommissionMachine(ctx context.Context, req *v1.CommissionMach
 	return toMachine(m), nil
 }
 
-func toPackageRepositories(prs []*model.PackageRepository) []*v1.PackageRepository {
+func (a *StackApp) ListModelConfigs(ctx context.Context, req *v1.ListModelConfigsRequest) (*v1.ListModelConfigsResponse, error) {
+	modelConfigs, err := a.svc.ListModelConfigs(ctx, req.GetUuid())
+	if err != nil {
+		return nil, err
+	}
+
+	configs, err := structpb.NewStruct(modelConfigs)
+	if err != nil {
+		return nil, err
+	}
+	ret := &v1.ListModelConfigsResponse{}
+	ret.SetConfigs(configs)
+	return ret, nil
+}
+
+func toPackageRepositories(prs []*entity.PackageRepository) []*v1.PackageRepository {
 	ret := make([]*v1.PackageRepository, len(prs))
 	for i := range prs {
 		ret[i] = toPackageRepository(prs[i])
@@ -234,7 +273,7 @@ func toPackageRepositories(prs []*model.PackageRepository) []*v1.PackageReposito
 	return ret
 }
 
-func toPackageRepository(pr *model.PackageRepository) *v1.PackageRepository {
+func toPackageRepository(pr *entity.PackageRepository) *v1.PackageRepository {
 	ret := &v1.PackageRepository{}
 	ret.SetId(int32(pr.ID)) //nolint:gosec
 	ret.SetName(pr.Name)
@@ -267,14 +306,14 @@ func toNetwork(n *model.Network) *v1.Network {
 	return ret
 }
 
-func toFabric(f *model.Fabric) *v1.Fabric {
+func toFabric(f *entity.Fabric) *v1.Fabric {
 	ret := &v1.Fabric{}
 	ret.SetId(int32(f.ID)) //nolint:gosec
 	ret.SetName(f.Name)
 	return ret
 }
 
-func toVLAN(v *model.VLAN) *v1.VLAN {
+func toVLAN(v *entity.VLAN) *v1.VLAN {
 	ret := &v1.VLAN{}
 	ret.SetId(int32(v.ID))   //nolint:gosec
 	ret.SetVid(int32(v.VID)) //nolint:gosec
@@ -285,7 +324,7 @@ func toVLAN(v *model.VLAN) *v1.VLAN {
 	return ret
 }
 
-func toSubnet(s *model.Subnet) *v1.Subnet {
+func toSubnet(s *entity.Subnet) *v1.Subnet {
 	dnsServers := make([]string, len(s.DNSServers))
 	for i, dns := range s.DNSServers {
 		dnsServers[i] = dns.String()
@@ -304,7 +343,7 @@ func toSubnet(s *model.Subnet) *v1.Subnet {
 	return ret
 }
 
-func toIPRange(r *model.IPRange) *v1.IPRange {
+func toIPRange(r *entity.IPRange) *v1.IPRange {
 	ret := &v1.IPRange{}
 	ret.SetId(int32(r.ID)) //nolint:gosec
 	ret.SetStartIp(r.StartIP.String())
@@ -314,7 +353,7 @@ func toIPRange(r *model.IPRange) *v1.IPRange {
 	return ret
 }
 
-func toMachines(ms []*model.Machine) []*v1.Machine {
+func toMachines(ms []*entity.Machine) []*v1.Machine {
 	ret := make([]*v1.Machine, len(ms))
 	for i := range ms {
 		ret[i] = toMachine(ms[i])
@@ -323,7 +362,7 @@ func toMachines(ms []*model.Machine) []*v1.Machine {
 }
 
 //nolint:funlen
-func toMachine(m *model.Machine) *v1.Machine {
+func toMachine(m *entity.Machine) *v1.Machine {
 	ipAddresses := make([]string, len(m.IPAddresses))
 	for i, ip := range m.IPAddresses {
 		ipAddresses[i] = ip.String()
@@ -373,7 +412,7 @@ func toMachine(m *model.Machine) *v1.Machine {
 		networkInterface.SetLinkSpeed(int32(is.LinkSpeed))           //nolint:gosec
 		networkInterface.SetInterfaceSpeed(int32(is.InterfaceSpeed)) //nolint:gosec
 		networkInterface.SetType(is.Type)
-		networkInterface.SetFabricName(is.VLAN.Fabric)        //nolint:gosec
+		networkInterface.SetFabricName(is.VLAN.Fabric)
 		networkInterface.SetFabricId(int32(is.VLAN.FabricID)) //nolint:gosec
 		networkInterface.SetVlanName(is.VLAN.Name)
 		networkInterface.SetVlanId(int32(is.VLAN.ID)) //nolint:gosec

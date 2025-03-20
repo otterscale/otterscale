@@ -22,6 +22,8 @@ var ProviderSet = wire.NewSet(
 	maas.NewVLAN,
 	juju.NewConfig,
 	juju.New,
+	juju.NewModel,
+	juju.NewModelConfig,
 	kube.NewKubes,
 	kube.NewNamespace,
 	kube.NewCronJob,
