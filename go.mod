@@ -86,6 +86,7 @@ require (
 	github.com/juju/idmclient/v2 v2.0.1 // indirect
 	github.com/juju/loggo v1.0.0 // indirect
 	github.com/juju/loggo/v2 v2.1.1-0.20240509163806-ebdeb290b961 // indirect
+	github.com/juju/lru v1.0.0 // indirect
 	github.com/juju/mgo/v2 v2.0.2 // indirect
 	github.com/juju/mgo/v3 v3.0.4 // indirect
 	github.com/juju/mutex/v2 v2.0.0 // indirect
@@ -95,6 +96,7 @@ require (
 	github.com/juju/proxy v1.0.0 // indirect
 	github.com/juju/retry v1.0.1 // indirect
 	github.com/juju/schema v1.2.0 // indirect
+	github.com/juju/txn/v3 v3.0.2 // indirect
 	github.com/juju/usso v1.0.1 // indirect
 	github.com/juju/utils/v3 v3.2.0 // indirect
 	github.com/juju/utils/v4 v4.0.2 // indirect
@@ -133,6 +135,7 @@ require (
 	github.com/vishvananda/netlink v1.3.0 // indirect
 	github.com/vishvananda/netns v0.0.5 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
+	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
