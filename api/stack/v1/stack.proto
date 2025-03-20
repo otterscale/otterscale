@@ -4,12 +4,14 @@ package openhdc.stack.v1;
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/go_features.proto";
+import "google/protobuf/struct.proto";
 
 option features.(pb.go).api_level = API_OPAQUE;
 option go_package = "github.com/openhdc/openhdc/api/stack/v1;v1";
 
 service StackService {
   // Global Configurations
+  rpc ListNTPServers(ListNTPServersRequest) returns (ListNTPServersResponse);
   rpc UpdateNTPServers(UpdateNTPServersRequest) returns (google.protobuf.Empty);
 
   // Package Repository Management
@@ -33,6 +35,9 @@ service StackService {
   rpc PowerOnMachine(PowerOnMachineRequest) returns (Machine);
   rpc PowerOffMachine(PowerOffMachineRequest) returns (Machine);
   rpc CommissionMachine(CommissionMachineRequest) returns (Machine);
+
+  // Model Operations
+  rpc ListModelConfigs(ListModelConfigsRequest) returns (ListModelConfigsResponse);
 }
 
 message PackageRepository {
@@ -147,6 +152,12 @@ message IPRange {
   string comment = 5;
 }
 
+message ListNTPServersRequest {}
+
+message ListNTPServersResponse {
+  repeated string ntp_servers = 1;
+}
+
 message UpdateNTPServersRequest {
   repeated string ntp_servers = 1;
 }
@@ -154,6 +165,7 @@ message UpdateNTPServersRequest {
 message UpdatePackageRepositoryURLRequest {
   int32 id = 1;
   string url = 2;
+  bool skip_juju = 3;
 }
 
 message ListPackageRepositoriesRequest {
@@ -246,4 +258,12 @@ message CommissionMachineRequest {
   bool skip_bmc_config = 3;
   bool skip_networking = 4;
   bool skip_storage = 5;
+}
+
+message ListModelConfigsRequest {
+  string uuid = 1;
+}
+
+message ListModelConfigsResponse {
+  google.protobuf.Struct configs = 1;
 }

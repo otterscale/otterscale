@@ -10,6 +10,7 @@ import (
 	"github.com/openhdc/openhdc"
 	"github.com/openhdc/openhdc/internal/app"
 	"github.com/openhdc/openhdc/internal/cmd"
+	"github.com/openhdc/openhdc/internal/data/juju"
 	"github.com/openhdc/openhdc/internal/data/maas"
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/spf13/cobra"
@@ -31,7 +32,17 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	maasipRange := maas.NewIPRange(v)
 	maasBootResource := maas.NewBootResource(v)
 	maasMachine := maas.NewMachine(v)
-	stackService := service.NewStackService(maasServer, maasPackageRepository, maasFabric, maasvlan, maasSubnet, maasipRange, maasBootResource, maasMachine)
+	simpleConfig, err := juju.NewConfig()
+	if err != nil {
+		return nil, nil, err
+	}
+	v2, err := juju.New(simpleConfig)
+	if err != nil {
+		return nil, nil, err
+	}
+	jujuModel := juju.NewModel(v2)
+	jujuModelConfig := juju.NewModelConfig()
+	stackService := service.NewStackService(maasServer, maasPackageRepository, maasFabric, maasvlan, maasSubnet, maasipRange, maasBootResource, maasMachine, jujuModel, jujuModelConfig)
 	stackApp := app.NewStackApp(stackService)
 	command := cmd.New(string2, stackApp)
 	return command, func() {
