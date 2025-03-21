@@ -63,6 +63,9 @@
 	},
 	"dependencies": {
 		"@auth/drizzle-adapter": "^1.8.0",
+		"@bufbuild/protobuf": "^2.2.5",
+		"@connectrpc/connect": "^2.0.2",
+		"@connectrpc/connect-web": "^2.0.2",
 		"@dagrejs/dagre": "^1.1.4",
 		"@fontsource-variable/noto-sans-tc": "^5.1.1",
 		"@iconify/svelte": "^4.2.0",

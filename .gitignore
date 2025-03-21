@@ -21,12 +21,11 @@ go.work.sum
 # env file
 .env
 
-# Exp folder
-exp/
-
 # Mac
 .DS_Store
 
-# Migration
-cmd/openhdc/migrations
-cmd/openhdc/pb_data
+# Temp folder
+tmp
+
+# Cert files
+*.crt

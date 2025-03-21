@@ -4,9 +4,7 @@ package openhdc.workload.v1;
 
 import "api/property/v1/property.proto";
 import "google/protobuf/struct.proto";
-import "google/protobuf/go_features.proto";
 
-option features.(pb.go).api_level = API_OPAQUE;
 option go_package = "github.com/openhdc/openhdc/api/workload/v1;workload";
 
 message Metadata {
