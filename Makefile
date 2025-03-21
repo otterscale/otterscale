@@ -29,8 +29,20 @@ lint:
 .PHONY: proto
 # generate *.pb.go
 proto:
-	protoc -I=. --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(PROTO_FILES)
-	protoc -I=. --go_out=paths=source_relative:. --connect-go_out=paths=source_relative:. $(WEB_PROTO_FILES)
+	protoc -I=. \
+		--go_out=paths=source_relative:. \
+		--go_opt=default_api_level=API_OPAQUE \
+		--go-grpc_out=paths=source_relative:. \
+		$(PROTO_FILES)
+	
+	mkdir -p web/src/gen
+	protoc -I=. \
+		--go_out=paths=source_relative:. \
+		--go_opt=default_api_level=API_OPAQUE \
+		--connect-go_out=paths=source_relative:. \
+		--es_out=web/src/gen \
+		--es_opt=target=ts \
+		$(WEB_PROTO_FILES)
 
 .PHONY: help
 # show help

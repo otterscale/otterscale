@@ -7,11 +7,20 @@
 
 	import { Metadata } from '$lib/components';
 
+	import { setContext } from 'svelte';
+	import { createConnectTransport } from '@connectrpc/connect-web';
+
 	import '../app.css';
 	import 'inter-ui/inter-variable.css';
 	import '@fontsource-variable/noto-sans-tc';
 
 	let { children } = $props();
+
+	const transport = createConnectTransport({
+		baseUrl: import.meta.env.OPENHDC_BACKEND_URL
+	});
+
+	setContext('transport', transport);
 </script>
 
 <Metadata />
