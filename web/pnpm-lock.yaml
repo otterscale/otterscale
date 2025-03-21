@@ -41,9 +41,6 @@ importers:
       better-auth:
         specifier: ^1.2.4
         version: 1.2.4(typescript@5.7.3)
-      dotenv:
-        specifier: ^16.4.7
-        version: 16.4.7
       drizzle-orm:
         specifier: ^0.40.0
         version: 0.40.0(@types/pg@8.11.11)(gel@2.0.1)(kysely@0.27.6)(pg@8.14.0)
@@ -1617,10 +1614,6 @@ packages:
 
   dom-accessibility-api@0.6.3:
     resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
-
-  dotenv@16.4.7:
-    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
-    engines: {node: '>=12'}
 
   drizzle-orm@0.40.0:
     resolution: {integrity: sha512-7ptk/HQiMSrEZHnAsSlBESXWj52VwgMmyTEfoNmpNN2ZXpcz13LwHfXTIghsAEud7Z5UJhDOp8U07ujcqme7wg==}
@@ -4908,8 +4901,6 @@ snapshots:
   dom-accessibility-api@0.5.16: {}
 
   dom-accessibility-api@0.6.3: {}
-
-  dotenv@16.4.7: {}
 
   drizzle-orm@0.40.0(@types/pg@8.11.11)(gel@2.0.1)(kysely@0.27.6)(pg@8.14.0):
     optionalDependencies:
