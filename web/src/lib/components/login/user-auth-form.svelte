@@ -114,15 +114,6 @@
 			}
 		],
 		[
-			'discord',
-			{
-				name: 'Discord',
-				icon: 'ph:discord-logo',
-				// enabled: auth.options.socialProviders.discord.clientId !== '',
-				loading: false
-			}
-		],
-		[
 			'facebook',
 			{
 				name: 'Facebook',
@@ -204,6 +195,22 @@
 			}
 		]
 	]);
+
+	function splitMap<K, V>(map: Map<K, V>): [Map<K, V>, Map<K, V>] {
+		const map1 = new Map<K, V>();
+		const map2 = new Map<K, V>();
+		const entries = Array.from(map.entries());
+
+		for (let i = 0; i < entries.length; i++) {
+			if (i < 5) {
+				map1.set(entries[i][0], entries[i][1]);
+			} else {
+				map2.set(entries[i][0], entries[i][1]);
+			}
+		}
+
+		return [map1, map2];
+	}
 </script>
 
 <div class="grid gap-6" {...$$restProps}>
@@ -251,29 +258,33 @@
 			<span class="bg-background text-muted-foreground px-2"> Or continue with </span>
 		</div>
 	</div>
-	<div class="flex justify-evenly space-x-2">
-		{#each oauth2Map as [provider, oauth2]}
-			<Tooltip.Provider>
-				<Tooltip.Root>
-					<Tooltip.Trigger
-						class={cn(
-							buttonVariants({ variant: 'outline' }),
-							'disabled:pointer-events-auto disabled:cursor-not-allowed [&_svg]:size-5'
-						)}
-						disabled={oauth2.loading}
-						onclick={() => authWithOAuth2(provider)}
-					>
-						{#if oauth2.loading}
-							<Icon icon="ph:spinner-gap" class="animate-spin" />
-						{:else}
-							<Icon icon={oauth2.icon} class="strike" />
-						{/if}
-					</Tooltip.Trigger>
-					<Tooltip.Content>
-						<p>{oauth2.name}</p>
-					</Tooltip.Content>
-				</Tooltip.Root>
-			</Tooltip.Provider>
+	<div class="flex-col space-y-2">
+		{#each splitMap(oauth2Map) as oauthRow}
+			<div class="flex justify-evenly space-x-2">
+				{#each oauthRow as [provider, oauth2]}
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger
+								class={cn(
+									buttonVariants({ variant: 'outline' }),
+									'disabled:pointer-events-auto disabled:cursor-not-allowed [&_svg]:size-5'
+								)}
+								disabled={oauth2.loading}
+								onclick={() => authWithOAuth2(provider)}
+							>
+								{#if oauth2.loading}
+									<Icon icon="ph:spinner-gap" class="animate-spin" />
+								{:else}
+									<Icon icon={oauth2.icon} class="strike" />
+								{/if}
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								<p>{oauth2.name}</p>
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+				{/each}
+			</div>
 		{/each}
 	</div>
 </div>

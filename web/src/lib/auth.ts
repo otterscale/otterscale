@@ -1,4 +1,3 @@
-import * as dotenv from 'dotenv';
 import { betterAuth } from "better-auth";
 import { admin, jwt, openAPI, organization } from "better-auth/plugins"
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -6,12 +5,37 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "./auth-schema"
 import pg from "pg";
 
-dotenv.config();
+import {
+    BETTER_AUTH_CONNECTION_STRING,
+    APPLE_CLIENT_ID,
+    APPLE_CLIENT_SECRET,
+    APPLE_APP_BUNDLE_IDENTIFIER,
+    FACEBOOK_CLIENT_ID,
+    FACEBOOK_CLIENT_SECRET,
+    GITHUB_CLIENT_ID,
+    GITHUB_CLIENT_SECRET,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    MICROSOFT_CLIENT_ID,
+    MICROSOFT_CLIENT_SECRET,
+    TIKTOK_CLIENT_ID,
+    TIKTOK_CLIENT_SECRET,
+    TIKTOK_CLIENT_KEY,
+    TWITTER_CLIENT_ID,
+    TWITTER_CLIENT_SECRET,
+    LINKEDIN_CLIENT_ID,
+    LINKEDIN_CLIENT_SECRET,
+    GITLAB_CLIENT_ID,
+    GITLAB_CLIENT_SECRET,
+    GITLAB_ISSUER,
+    REDDIT_CLIENT_ID,
+    REDDIT_CLIENT_SECRET,
+} from '$env/static/private';
 
 const { Pool } = pg;
 
 const pool = new Pool({
-    connectionString: process.env.BETTER_AUTH_CONNECTION_STRING,
+    connectionString: BETTER_AUTH_CONNECTION_STRING,
 })
 
 const db = drizzle({ client: pool });
@@ -25,53 +49,49 @@ export const auth = betterAuth({
     },
     socialProviders: {
         apple: {
-            clientId: process.env.APPLE_CLIENT_ID as string,
-            clientSecret: process.env.APPLE_CLIENT_SECRET as string,
-            appBundleIdentifier: process.env.APPLE_APP_BUNDLE_IDENTIFIER as string,
-        },
-        discord: {
-            clientId: process.env.DISCORD_CLIENT_ID as string,
-            clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
+            clientId: APPLE_CLIENT_ID,
+            clientSecret: APPLE_CLIENT_SECRET,
+            appBundleIdentifier: APPLE_APP_BUNDLE_IDENTIFIER,
         },
         facebook: {
-            clientId: process.env.FACEBOOK_CLIENT_ID as string,
-            clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
+            clientId: FACEBOOK_CLIENT_ID,
+            clientSecret: FACEBOOK_CLIENT_SECRET,
         },
         github: {
-            clientId: process.env.GITHUB_CLIENT_ID as string,
-            clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+            clientId: GITHUB_CLIENT_ID,
+            clientSecret: GITHUB_CLIENT_SECRET,
         },
         google: {
-            clientId: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            clientId: GOOGLE_CLIENT_ID,
+            clientSecret: GOOGLE_CLIENT_SECRET,
         },
         microsoft: {
-            clientId: process.env.MICROSOFT_CLIENT_ID as string,
-            clientSecret: process.env.MICROSOFT_CLIENT_SECRET as string,
+            clientId: MICROSOFT_CLIENT_ID,
+            clientSecret: MICROSOFT_CLIENT_SECRET,
             tenantId: 'common',
             requireSelectAccount: true
         },
         tiktok: {
-            clientId: process.env.TIKTOK_CLIENT_ID as string,
-            clientSecret: process.env.TIKTOK_CLIENT_SECRET as string,
-            clientKey: process.env.TIKTOK_CLIENT_KEY as string,
+            clientId: TIKTOK_CLIENT_ID,
+            clientSecret: TIKTOK_CLIENT_SECRET,
+            clientKey: TIKTOK_CLIENT_KEY,
         },
         twitter: {
-            clientId: process.env.TWITTER_CLIENT_ID as string,
-            clientSecret: process.env.TWITTER_CLIENT_SECRET as string,
+            clientId: TWITTER_CLIENT_ID,
+            clientSecret: TWITTER_CLIENT_SECRET,
         },
         linkedin: {
-            clientId: process.env.LINKEDIN_CLIENT_ID as string,
-            clientSecret: process.env.LINKEDIN_CLIENT_SECRET as string,
+            clientId: LINKEDIN_CLIENT_ID,
+            clientSecret: LINKEDIN_CLIENT_SECRET,
         },
         gitlab: {
-            clientId: process.env.GITLAB_CLIENT_ID as string,
-            clientSecret: process.env.GITLAB_CLIENT_SECRET as string,
-            issuer: process.env.GITLAB_ISSUER as string,
+            clientId: GITLAB_CLIENT_ID,
+            clientSecret: GITLAB_CLIENT_SECRET,
+            issuer: GITLAB_ISSUER,
         },
         reddit: {
-            clientId: process.env.REDDIT_CLIENT_ID as string,
-            clientSecret: process.env.REDDIT_CLIENT_SECRET as string,
+            clientId: REDDIT_CLIENT_ID,
+            clientSecret: REDDIT_CLIENT_SECRET,
         },
     },
     plugins: [

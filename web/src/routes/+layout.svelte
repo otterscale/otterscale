@@ -17,7 +17,7 @@
 	let { children } = $props();
 
 	const transport = createConnectTransport({
-		baseUrl: import.meta.env.OPENHDC_BACKEND_URL
+		baseUrl: import.meta.env.PUBLIC_API_URL
 	});
 
 	setContext('transport', transport);
