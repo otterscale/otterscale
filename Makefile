@@ -1,5 +1,6 @@
 VERSION=$(shell git describe --tags --always)
 PROTO_FILES=$(shell find api -name *.proto)
+WEB_PROTO_FILES=$(shell find api/stack -name *.proto)
 
 .PHONY: build
 # build cli
@@ -29,6 +30,7 @@ lint:
 # generate *.pb.go
 proto:
 	protoc -I=. --go_out=paths=source_relative:. --go-grpc_out=paths=source_relative:. $(PROTO_FILES)
+	protoc -I=. --go_out=paths=source_relative:. --connect-go_out=paths=source_relative:. $(WEB_PROTO_FILES)
 
 .PHONY: help
 # show help

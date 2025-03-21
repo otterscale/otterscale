@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"errors"
-	"fmt"
 	"log/slog"
 	"reflect"
 
@@ -115,7 +114,6 @@ func (c *Client) read(ctx context.Context, sch *arrow.Schema, msgs chan<- *pb.Me
 				return err
 			}
 		}
-		fmt.Println(b.NewRecord())
 		// batch
 		count++
 		if count > rdr.BatchSize() {
