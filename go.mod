@@ -4,6 +4,9 @@ go 1.24.1
 
 require (
 	buf.build/go/protoyaml v0.3.1
+	connectrpc.com/connect v1.18.1
+	connectrpc.com/grpchealth v1.3.0
+	connectrpc.com/grpcreflect v1.3.0
 	entgo.io/ent v0.14.3
 	github.com/apache/arrow-go/v18 v18.1.0
 	github.com/canonical/gomaasclient v0.8.0
@@ -11,8 +14,10 @@ require (
 	github.com/google/wire v0.6.0
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/juju/juju v0.0.0-20250312210508-2397a6a5c469
+	github.com/rs/cors v1.11.1
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/spf13/cobra v1.9.1
+	golang.org/x/net v0.35.0
 	golang.org/x/sync v0.11.0
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.5
@@ -142,7 +147,6 @@ require (
 	golang.org/x/crypto v0.35.0 // indirect
 	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac // indirect
 	golang.org/x/mod v0.23.0 // indirect
-	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/term v0.29.0 // indirect

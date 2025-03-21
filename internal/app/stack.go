@@ -3,19 +3,21 @@ package app
 import (
 	"context"
 
+	"connectrpc.com/connect"
 	"github.com/canonical/gomaasclient/entity"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/structpb"
 
 	v1 "github.com/openhdc/openhdc/api/stack/v1"
+	"github.com/openhdc/openhdc/api/stack/v1/v1connect"
 	"github.com/openhdc/openhdc/internal/domain/model"
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
 
 // StackApp implements the StackServiceServer interface
 type StackApp struct {
-	v1.UnimplementedStackServiceServer
+	v1connect.UnimplementedStackServiceHandler
 	svc *service.StackService
 }
 
@@ -25,33 +27,33 @@ func NewStackApp(svc *service.StackService) *StackApp {
 }
 
 // Ensure StackApp implements the StackServiceServer interface
-var _ v1.StackServiceServer = (*StackApp)(nil)
+var _ v1connect.StackServiceHandler = (*StackApp)(nil)
 
-func (a *StackApp) ListNTPServers(ctx context.Context, req *v1.ListNTPServersRequest) (*v1.ListNTPServersResponse, error) {
+func (a *StackApp) ListNTPServers(ctx context.Context, req *connect.Request[v1.ListNTPServersRequest]) (*connect.Response[v1.ListNTPServersResponse], error) {
 	ntpServers, err := a.svc.ListNTPServers(ctx)
 	if err != nil {
 		return nil, err
 	}
-	ret := &v1.ListNTPServersResponse{}
-	ret.SetNtpServers(ntpServers)
-	return ret, nil
+	res := &v1.ListNTPServersResponse{}
+	res.SetNtpServers(ntpServers)
+	return connect.NewResponse(res), nil
 }
 
 // UpdateNTPServers updates NTP server configuration
-func (a *StackApp) UpdateNTPServers(ctx context.Context, req *v1.UpdateNTPServersRequest) (*emptypb.Empty, error) {
-	if err := a.svc.UpdateNTPServers(ctx, req.GetNtpServers()); err != nil {
+func (a *StackApp) UpdateNTPServers(ctx context.Context, req *connect.Request[v1.UpdateNTPServersRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.UpdateNTPServers(ctx, req.Msg.GetNtpServers()); err != nil {
 		return nil, err
 	}
-	return &emptypb.Empty{}, nil
+	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 
 // ListPackageRepositories retrieves package repositories
-func (a *StackApp) ListPackageRepositories(ctx context.Context, req *v1.ListPackageRepositoriesRequest) (*v1.ListPackageRepositoriesResponse, error) {
-	pageSize, err := getPageSize(req.GetPageSize())
+func (a *StackApp) ListPackageRepositories(ctx context.Context, req *connect.Request[v1.ListPackageRepositoriesRequest]) (*connect.Response[v1.ListPackageRepositoriesResponse], error) {
+	pageSize, err := getPageSize(req.Msg.GetPageSize())
 	if err != nil {
 		return nil, err
 	}
-	pageToken, err := getPageToken(req.GetPageToken())
+	pageToken, err := getPageToken(req.Msg.GetPageToken())
 	if err != nil {
 		return nil, err
 	}
@@ -59,39 +61,39 @@ func (a *StackApp) ListPackageRepositories(ctx context.Context, req *v1.ListPack
 	if err != nil {
 		return nil, err
 	}
-	ret := &v1.ListPackageRepositoriesResponse{}
-	ret.SetPackageRepositories(toPackageRepositories(prs))
-	ret.SetNextPageToken(nextPageToken)
-	return ret, nil
+	res := &v1.ListPackageRepositoriesResponse{}
+	res.SetPackageRepositories(toPackageRepositories(prs))
+	res.SetNextPageToken(nextPageToken)
+	return connect.NewResponse(res), nil
 }
 
 // UpdatePackageRepositoryURL updates a package repository URL
-func (a *StackApp) UpdatePackageRepositoryURL(ctx context.Context, req *v1.UpdatePackageRepositoryURLRequest) (*v1.PackageRepository, error) {
-	pr, err := a.svc.UpdatePackageRepositoryURL(ctx, int(req.GetId()), req.GetUrl())
+func (a *StackApp) UpdatePackageRepositoryURL(ctx context.Context, req *connect.Request[v1.UpdatePackageRepositoryURLRequest]) (*connect.Response[v1.PackageRepository], error) {
+	pr, err := a.svc.UpdatePackageRepositoryURL(ctx, int(req.Msg.GetId()), req.Msg.GetUrl())
 	if err != nil {
 		return nil, err
 	}
-	if !req.GetSkipJuju() {
+	if !req.Msg.GetSkipJuju() {
 		ms, err := a.svc.ListModels(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, m := range ms {
-			if err := a.svc.SetModelConfigAPTMirror(ctx, m.UUID, req.GetUrl()); err != nil {
+			if err := a.svc.SetModelConfigAPTMirror(ctx, m.UUID, req.Msg.GetUrl()); err != nil {
 				return nil, err
 			}
 		}
 	}
-	return toPackageRepository(pr), nil
+	return connect.NewResponse(toPackageRepository(pr)), nil
 }
 
 // Network management functions
-func (a *StackApp) ListNetworks(ctx context.Context, req *v1.ListNetworksRequest) (*v1.ListNetworksResponse, error) {
-	pageSize, err := getPageSize(req.GetPageSize())
+func (a *StackApp) ListNetworks(ctx context.Context, req *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error) {
+	pageSize, err := getPageSize(req.Msg.GetPageSize())
 	if err != nil {
 		return nil, err
 	}
-	pageToken, err := getPageToken(req.GetPageToken())
+	pageToken, err := getPageToken(req.Msg.GetPageToken())
 	if err != nil {
 		return nil, err
 	}
@@ -99,102 +101,102 @@ func (a *StackApp) ListNetworks(ctx context.Context, req *v1.ListNetworksRequest
 	if err != nil {
 		return nil, err
 	}
-	ret := &v1.ListNetworksResponse{}
-	ret.SetNetworks(toNetworks(ns))
-	ret.SetNextPageToken(nextPageToken)
-	return ret, nil
+	res := &v1.ListNetworksResponse{}
+	res.SetNetworks(toNetworks(ns))
+	res.SetNextPageToken(nextPageToken)
+	return connect.NewResponse(res), nil
 }
 
-func (a *StackApp) CreateNetwork(ctx context.Context, req *v1.CreateNetworkRequest) (*v1.Network, error) {
+func (a *StackApp) CreateNetwork(ctx context.Context, req *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error) {
 	fabricParams := &entity.FabricParams{}
 	vlanParams := &entity.VLANParams{
-		DHCPOn: req.GetDhcpOn(),
+		DHCPOn: req.Msg.GetDhcpOn(),
 	}
 	subnetParams := &entity.SubnetParams{
-		CIDR:       req.GetCidr(),
-		GatewayIP:  req.GetGatewayIp(),
-		DNSServers: req.GetDnsServers(),
+		CIDR:       req.Msg.GetCidr(),
+		GatewayIP:  req.Msg.GetGatewayIp(),
+		DNSServers: req.Msg.GetDnsServers(),
 	}
 	ipRangeParams := &entity.IPRangeParams{
-		StartIP: req.GetStartIp(),
-		EndIP:   req.GetEndIp(),
+		StartIP: req.Msg.GetStartIp(),
+		EndIP:   req.Msg.GetEndIp(),
 	}
 	n, err := a.svc.CreateNetwork(ctx, fabricParams, vlanParams, subnetParams, ipRangeParams)
 	if err != nil {
 		return nil, err
 	}
-	return toNetwork(n), nil
+	return connect.NewResponse(toNetwork(n)), nil
 }
 
-func (a *StackApp) DeleteNetwork(ctx context.Context, req *v1.DeleteNetworkRequest) (*emptypb.Empty, error) {
-	if err := a.svc.DeleteNetwork(ctx, int(req.GetFabricId())); err != nil {
+func (a *StackApp) DeleteNetwork(ctx context.Context, req *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.DeleteNetwork(ctx, int(req.Msg.GetFabricId())); err != nil {
 		return nil, err
 	}
-	return &emptypb.Empty{}, nil
+	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 
 // Network configuration functions
-func (a *StackApp) UpdateFabric(ctx context.Context, req *v1.UpdateFabricRequest) (*v1.Fabric, error) {
+func (a *StackApp) UpdateFabric(ctx context.Context, req *connect.Request[v1.UpdateFabricRequest]) (*connect.Response[v1.Fabric], error) {
 	params := &entity.FabricParams{
-		Name: req.GetName(),
+		Name: req.Msg.GetName(),
 	}
-	f, err := a.svc.UpdateFabric(ctx, int(req.GetId()), params)
+	f, err := a.svc.UpdateFabric(ctx, int(req.Msg.GetId()), params)
 	if err != nil {
 		return nil, err
 	}
-	return toFabric(f), nil
+	return connect.NewResponse(toFabric(f)), nil
 }
 
-func (a *StackApp) UpdateVLAN(ctx context.Context, req *v1.UpdateVLANRequest) (*v1.VLAN, error) {
+func (a *StackApp) UpdateVLAN(ctx context.Context, req *connect.Request[v1.UpdateVLANRequest]) (*connect.Response[v1.VLAN], error) {
 	params := &entity.VLANParams{
-		Name:        req.GetName(),
-		MTU:         int(req.GetMtu()),
-		Description: req.GetDescription(),
-		DHCPOn:      req.GetDhcpOn(),
+		Name:        req.Msg.GetName(),
+		MTU:         int(req.Msg.GetMtu()),
+		Description: req.Msg.GetDescription(),
+		DHCPOn:      req.Msg.GetDhcpOn(),
 	}
-	v, err := a.svc.UpdateVLAN(ctx, int(req.GetFabricId()), int(req.GetVid()), params)
+	v, err := a.svc.UpdateVLAN(ctx, int(req.Msg.GetFabricId()), int(req.Msg.GetVid()), params)
 	if err != nil {
 		return nil, err
 	}
-	return toVLAN(v), nil
+	return connect.NewResponse(toVLAN(v)), nil
 }
 
-func (a *StackApp) UpdateSubnet(ctx context.Context, req *v1.UpdateSubnetRequest) (*v1.Subnet, error) {
+func (a *StackApp) UpdateSubnet(ctx context.Context, req *connect.Request[v1.UpdateSubnetRequest]) (*connect.Response[v1.Subnet], error) {
 	params := &entity.SubnetParams{
-		Name:        req.GetName(),
-		CIDR:        req.GetCidr(),
-		GatewayIP:   req.GetGatewayIp(),
-		DNSServers:  req.GetDnsServers(),
-		Description: req.GetDescription(),
-		AllowDNS:    req.GetAllowDnsResolution(),
+		Name:        req.Msg.GetName(),
+		CIDR:        req.Msg.GetCidr(),
+		GatewayIP:   req.Msg.GetGatewayIp(),
+		DNSServers:  req.Msg.GetDnsServers(),
+		Description: req.Msg.GetDescription(),
+		AllowDNS:    req.Msg.GetAllowDnsResolution(),
 	}
-	s, err := a.svc.UpdateSubnet(ctx, int(req.GetId()), params)
+	s, err := a.svc.UpdateSubnet(ctx, int(req.Msg.GetId()), params)
 	if err != nil {
 		return nil, err
 	}
-	return toSubnet(s), nil
+	return connect.NewResponse(toSubnet(s)), nil
 }
 
-func (a *StackApp) UpdateIPRange(ctx context.Context, req *v1.UpdateIPRangeRequest) (*v1.IPRange, error) {
+func (a *StackApp) UpdateIPRange(ctx context.Context, req *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.IPRange], error) {
 	params := &entity.IPRangeParams{
-		StartIP: req.GetStartIp(),
-		EndIP:   req.GetEndIp(),
-		Comment: req.GetComment(),
+		StartIP: req.Msg.GetStartIp(),
+		EndIP:   req.Msg.GetEndIp(),
+		Comment: req.Msg.GetComment(),
 	}
-	r, err := a.svc.UpdateIPRange(ctx, int(req.GetId()), params)
+	r, err := a.svc.UpdateIPRange(ctx, int(req.Msg.GetId()), params)
 	if err != nil {
 		return nil, err
 	}
-	return toIPRange(r), nil
+	return connect.NewResponse(toIPRange(r)), nil
 }
 
 // ListMachines retrieves machines
-func (a *StackApp) ListMachines(ctx context.Context, req *v1.ListMachinesRequest) (*v1.ListMachinesResponse, error) {
-	pageSize, err := getPageSize(req.GetPageSize())
+func (a *StackApp) ListMachines(ctx context.Context, req *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error) {
+	pageSize, err := getPageSize(req.Msg.GetPageSize())
 	if err != nil {
 		return nil, err
 	}
-	pageToken, err := getPageToken(req.GetPageToken())
+	pageToken, err := getPageToken(req.Msg.GetPageToken())
 	if err != nil {
 		return nil, err
 	}
@@ -202,56 +204,56 @@ func (a *StackApp) ListMachines(ctx context.Context, req *v1.ListMachinesRequest
 	if err != nil {
 		return nil, err
 	}
-	ret := &v1.ListMachinesResponse{}
-	ret.SetMachines(toMachines(ms))
-	ret.SetNextPageToken(nextPageToken)
-	return ret, nil
+	res := &v1.ListMachinesResponse{}
+	res.SetMachines(toMachines(ms))
+	res.SetNextPageToken(nextPageToken)
+	return connect.NewResponse(res), nil
 }
 
 // Boot resource management
-func (a *StackApp) ImportBootResources(ctx context.Context, req *v1.ImportBootResourcesRequest) (*emptypb.Empty, error) {
+func (a *StackApp) ImportBootResources(ctx context.Context, req *connect.Request[v1.ImportBootResourcesRequest]) (*connect.Response[emptypb.Empty], error) {
 	if err := a.svc.ImportBootResources(ctx); err != nil {
 		return nil, err
 	}
-	return &emptypb.Empty{}, nil
+	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 
 // Machine power management functions
-func (a *StackApp) PowerOnMachine(ctx context.Context, req *v1.PowerOnMachineRequest) (*v1.Machine, error) {
+func (a *StackApp) PowerOnMachine(ctx context.Context, req *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error) {
 	params := &entity.MachinePowerOnParams{}
-	m, err := a.svc.PowerOnMachine(ctx, req.GetSystemId(), params)
+	m, err := a.svc.PowerOnMachine(ctx, req.Msg.GetSystemId(), params)
 	if err != nil {
 		return nil, err
 	}
-	return toMachine(m), nil
+	return connect.NewResponse(toMachine(m)), nil
 }
 
-func (a *StackApp) PowerOffMachine(ctx context.Context, req *v1.PowerOffMachineRequest) (*v1.Machine, error) {
+func (a *StackApp) PowerOffMachine(ctx context.Context, req *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error) {
 	params := &entity.MachinePowerOffParams{}
-	m, err := a.svc.PowerOffMachine(ctx, req.GetSystemId(), params)
+	m, err := a.svc.PowerOffMachine(ctx, req.Msg.GetSystemId(), params)
 	if err != nil {
 		return nil, err
 	}
-	return toMachine(m), nil
+	return connect.NewResponse(toMachine(m)), nil
 }
 
 // Machine provisioning functions
-func (a *StackApp) CommissionMachine(ctx context.Context, req *v1.CommissionMachineRequest) (*v1.Machine, error) {
+func (a *StackApp) CommissionMachine(ctx context.Context, req *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error) {
 	params := &entity.MachineCommissionParams{
-		EnableSSH:      boolToInt(req.GetEnableSsh()),
-		SkipBMCConfig:  boolToInt(req.GetSkipBmcConfig()),
-		SkipNetworking: boolToInt(req.GetSkipNetworking()),
-		SkipStorage:    boolToInt(req.GetSkipStorage()),
+		EnableSSH:      boolToInt(req.Msg.GetEnableSsh()),
+		SkipBMCConfig:  boolToInt(req.Msg.GetSkipBmcConfig()),
+		SkipNetworking: boolToInt(req.Msg.GetSkipNetworking()),
+		SkipStorage:    boolToInt(req.Msg.GetSkipStorage()),
 	}
-	m, err := a.svc.CommissionMachine(ctx, req.GetSystemId(), params)
+	m, err := a.svc.CommissionMachine(ctx, req.Msg.GetSystemId(), params)
 	if err != nil {
 		return nil, err
 	}
-	return toMachine(m), nil
+	return connect.NewResponse(toMachine(m)), nil
 }
 
-func (a *StackApp) ListModelConfigs(ctx context.Context, req *v1.ListModelConfigsRequest) (*v1.ListModelConfigsResponse, error) {
-	modelConfigs, err := a.svc.ListModelConfigs(ctx, req.GetUuid())
+func (a *StackApp) ListModelConfigs(ctx context.Context, req *connect.Request[v1.ListModelConfigsRequest]) (*connect.Response[v1.ListModelConfigsResponse], error) {
+	modelConfigs, err := a.svc.ListModelConfigs(ctx, req.Msg.GetUuid())
 	if err != nil {
 		return nil, err
 	}
@@ -260,9 +262,9 @@ func (a *StackApp) ListModelConfigs(ctx context.Context, req *v1.ListModelConfig
 	if err != nil {
 		return nil, err
 	}
-	ret := &v1.ListModelConfigsResponse{}
-	ret.SetConfigs(configs)
-	return ret, nil
+	res := &v1.ListModelConfigsResponse{}
+	res.SetConfigs(configs)
+	return connect.NewResponse(res), nil
 }
 
 func toPackageRepositories(prs []*entity.PackageRepository) []*v1.PackageRepository {
@@ -295,9 +297,15 @@ func toNetwork(n *model.Network) *v1.Network {
 	for i := range n.Settings {
 		s := n.Settings[i]
 		setting := &v1.Network_Setting{}
-		setting.SetVlan(toVLAN(s.VLAN))
-		setting.SetSubnet(toSubnet(s.Subnet))
-		setting.SetIpRange(toIPRange(s.IPRange))
+		if s.VLAN != nil {
+			setting.SetVlan(toVLAN(s.VLAN))
+		}
+		if s.Subnet != nil {
+			setting.SetSubnet(toSubnet(s.Subnet))
+		}
+		if s.IPRange != nil {
+			setting.SetIpRange(toIPRange(s.IPRange))
+		}
 		settings[i] = setting
 	}
 	ret := &v1.Network{}

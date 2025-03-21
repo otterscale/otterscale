@@ -3,7 +3,6 @@ package openhdc
 import (
 	"encoding/base64"
 	"fmt"
-	"reflect"
 	"time"
 
 	"github.com/apache/arrow-go/v18/arrow"
@@ -34,7 +33,6 @@ func (DefaultCodec) format(val any) string {
 	case [16]uint8:
 		return uuid.UUID(t).String()
 	}
-	fmt.Println(val, reflect.TypeOf(val))
 	return fmt.Sprintf("%v", val)
 }
 
