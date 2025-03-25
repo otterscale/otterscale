@@ -168,7 +168,14 @@ message IPRange {
   string comment = 5;
 }
 
-message Model {}
+message Model {
+  string uuid = 1;
+  string name = 2;
+  int32 machine_count = 11;
+  int32 core_count = 12;
+  int32 application_count = 13;
+  int32 unit_count = 14;
+}
 
 message ModelConfig {}
 
