@@ -81,7 +81,7 @@ type JujuMachine interface {
 }
 
 type JujuModel interface {
-	List(ctx context.Context) ([]*model.Environment, error)
+	List(ctx context.Context) ([]*base.UserModelSummary, error)
 	Create(ctx context.Context, name string) (*base.ModelInfo, error)
 }
 
@@ -357,7 +357,7 @@ func (s *StackService) CommissionMachine(ctx context.Context, systemID string, p
 	return s.machine.Commission(ctx, systemID, params)
 }
 
-func (s *StackService) ListModels(ctx context.Context) ([]*model.Environment, error) {
+func (s *StackService) ListModels(ctx context.Context) ([]*base.UserModelSummary, error) {
 	return s.model.List(ctx)
 }
 

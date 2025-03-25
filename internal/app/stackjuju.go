@@ -6,6 +6,7 @@ import (
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/core/constraints"
@@ -13,7 +14,6 @@ import (
 	"github.com/juju/juju/rpc/params"
 
 	v1 "github.com/openhdc/openhdc/api/stack/v1"
-	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
 // AddMachines adds machines to the model based on the provided parameters
@@ -110,19 +110,27 @@ func (a *StackApp) DeleteApplication(ctx context.Context, req *connect.Request[v
 	return nil, nil
 }
 
-func (a *StackApp) UpdateApplicationUnits(ctx context.Context, req *connect.Request[v1.UpdateApplicationUnitsRequest]) (*connect.Response[v1.Application], error) {
+func (a *StackApp) UpdateApplication(ctx context.Context, req *connect.Request[v1.UpdateApplicationRequest]) (*connect.Response[v1.Application], error) {
 	return nil, nil
 }
 
-func (a *StackApp) UpdateApplicationRelation(ctx context.Context, req *connect.Request[v1.UpdateApplicationRelationRequest]) (*connect.Response[v1.Application], error) {
+func (a *StackApp) AddApplicationUnit(ctx context.Context, req *connect.Request[v1.AddApplicationUnitRequest]) (*connect.Response[v1.Application], error) {
 	return nil, nil
 }
 
-func (a *StackApp) UpdateApplicationConfig(ctx context.Context, req *connect.Request[v1.UpdateApplicationConfigRequest]) (*connect.Response[v1.Application], error) {
+func (a *StackApp) ExposeApplication(ctx context.Context, req *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[v1.Application], error) {
 	return nil, nil
 }
 
 func (a *StackApp) ListIntegrations(ctx context.Context, req *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error) {
+	return nil, nil
+}
+
+func (a *StackApp) CreateIntegration(ctx context.Context, req *connect.Request[v1.CreateIntegrationRequest]) (*connect.Response[v1.Integration], error) {
+	return nil, nil
+}
+
+func (a *StackApp) DeleteIntegration(ctx context.Context, req *connect.Request[v1.DeleteIntegrationRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, nil
 }
 
@@ -134,24 +142,32 @@ func (a *StackApp) RunAction(ctx context.Context, req *connect.Request[v1.RunAct
 	return nil, nil
 }
 
-func toModels(es []*model.Environment) []*v1.Model {
-	ret := make([]*v1.Model, len(es))
-	for i := range es {
-		ret[i] = toModel(es[i])
+func toModels(umss []*base.UserModelSummary) []*v1.Model {
+	ret := make([]*v1.Model, len(umss))
+	for i := range umss {
+		ret[i] = toModel(umss[i])
 	}
 	return ret
 }
 
-func toModel(m *model.Environment) *v1.Model {
+func toModel(m *base.UserModelSummary) *v1.Model {
 	ret := &v1.Model{}
-	ret.SetUuid(m.UserModel.UUID)
-	ret.SetName(m.UserModel.Name)
-	if len(m.Statuses) > 0 {
-		s := m.Statuses[0]
-		ret.SetMachineCount(int32(s.HostedMachineCount))   //nolint:gosec
-		ret.SetCoreCount(int32(s.CoreCount))               //nolint:gosec
-		ret.SetApplicationCount(int32(s.ApplicationCount)) //nolint:gosec
-		ret.SetUnitCount(int32(s.UnitCount))               //nolint:gosec
+	ret.SetUuid(m.UUID)
+	ret.SetName(m.Name)
+	ret.SetLife(string(m.Life))
+	ret.SetStatus(string(m.Status.Status))
+	if m.UserLastConnection != nil {
+		ret.SetUpdatedAt(timestamppb.New(*m.UserLastConnection))
+	}
+	for _, c := range m.Counts {
+		switch c.Entity {
+		case "machines":
+			ret.SetMachineCount(c.Count)
+		case "cores":
+			ret.SetCoreCount(c.Count)
+		case "units":
+			ret.SetUnitCount(c.Count)
+		}
 	}
 	return ret
 }
