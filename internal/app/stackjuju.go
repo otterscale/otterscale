@@ -143,9 +143,22 @@ func toModels(es []*model.Environment) []*v1.Model {
 }
 
 func toModel(m *model.Environment) *v1.Model {
-	return &v1.Model{}
+	ret := &v1.Model{}
+	ret.SetUuid(m.UserModel.UUID)
+	ret.SetName(m.UserModel.Name)
+	if len(m.Statuses) > 0 {
+		s := m.Statuses[0]
+		ret.SetMachineCount(int32(s.HostedMachineCount))   //nolint:gosec
+		ret.SetCoreCount(int32(s.CoreCount))               //nolint:gosec
+		ret.SetApplicationCount(int32(s.ApplicationCount)) //nolint:gosec
+		ret.SetUnitCount(int32(s.UnitCount))               //nolint:gosec
+	}
+	return ret
 }
 
 func modelInfoToModel(m *base.ModelInfo) *v1.Model {
-	return &v1.Model{}
+	ret := &v1.Model{}
+	ret.SetUuid(m.UUID)
+	ret.SetName(m.Name)
+	return ret
 }
