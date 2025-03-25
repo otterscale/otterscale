@@ -10,7 +10,6 @@ import (
 	"github.com/juju/juju/api/client/modelmanager"
 	"github.com/juju/names/v6"
 
-	md "github.com/openhdc/openhdc/internal/domain/model"
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/openhdc/openhdc/internal/env"
 )
@@ -27,25 +26,18 @@ func NewModel(juju Juju) service.JujuModel {
 
 var _ service.JujuModel = (*model)(nil)
 
-func (r *model) List(ctx context.Context) ([]*md.Environment, error) {
+func (r *model) List(ctx context.Context) ([]*base.UserModelSummary, error) {
 	client := modelmanager.NewClient(r.juju)
 	user := env.GetOrDefault(env.OPENHDC_JUJU_USERNAME, defaultUsername)
 
-	ums, err := client.ListModels(ctx, user)
+	umss, err := client.ListModelSummaries(ctx, user, true)
 	if err != nil {
 		return nil, err
 	}
 
-	ret := make([]*md.Environment, len(ums))
-	for i, um := range ums {
-		ms, err := client.ModelStatus(ctx, names.NewModelTag(um.UUID))
-		if err != nil {
-			return nil, err
-		}
-		ret[i] = &md.Environment{
-			UserModel: &um,
-			Statuses:  ms,
-		}
+	ret := make([]*base.UserModelSummary, len(umss))
+	for i, ums := range umss {
+		ret[i] = &ums
 	}
 
 	return ret, nil

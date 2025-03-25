@@ -101,21 +101,24 @@ const (
 	// StackServiceDeleteApplicationProcedure is the fully-qualified name of the StackService's
 	// DeleteApplication RPC.
 	StackServiceDeleteApplicationProcedure = "/openhdc.stack.v1.StackService/DeleteApplication"
-	// StackServiceUpdateApplicationUnitsProcedure is the fully-qualified name of the StackService's
-	// UpdateApplicationUnits RPC.
-	StackServiceUpdateApplicationUnitsProcedure = "/openhdc.stack.v1.StackService/UpdateApplicationUnits"
-	// StackServiceUpdateApplicationRelationProcedure is the fully-qualified name of the StackService's
-	// UpdateApplicationRelation RPC.
-	StackServiceUpdateApplicationRelationProcedure = "/openhdc.stack.v1.StackService/UpdateApplicationRelation"
-	// StackServiceUpdateApplicationConfigProcedure is the fully-qualified name of the StackService's
-	// UpdateApplicationConfig RPC.
-	StackServiceUpdateApplicationConfigProcedure = "/openhdc.stack.v1.StackService/UpdateApplicationConfig"
+	// StackServiceUpdateApplicationProcedure is the fully-qualified name of the StackService's
+	// UpdateApplication RPC.
+	StackServiceUpdateApplicationProcedure = "/openhdc.stack.v1.StackService/UpdateApplication"
+	// StackServiceAddApplicationUnitProcedure is the fully-qualified name of the StackService's
+	// AddApplicationUnit RPC.
+	StackServiceAddApplicationUnitProcedure = "/openhdc.stack.v1.StackService/AddApplicationUnit"
 	// StackServiceExposeApplicationProcedure is the fully-qualified name of the StackService's
 	// ExposeApplication RPC.
 	StackServiceExposeApplicationProcedure = "/openhdc.stack.v1.StackService/ExposeApplication"
 	// StackServiceListIntegrationsProcedure is the fully-qualified name of the StackService's
 	// ListIntegrations RPC.
 	StackServiceListIntegrationsProcedure = "/openhdc.stack.v1.StackService/ListIntegrations"
+	// StackServiceCreateIntegrationProcedure is the fully-qualified name of the StackService's
+	// CreateIntegration RPC.
+	StackServiceCreateIntegrationProcedure = "/openhdc.stack.v1.StackService/CreateIntegration"
+	// StackServiceDeleteIntegrationProcedure is the fully-qualified name of the StackService's
+	// DeleteIntegration RPC.
+	StackServiceDeleteIntegrationProcedure = "/openhdc.stack.v1.StackService/DeleteIntegration"
 	// StackServiceListActionsProcedure is the fully-qualified name of the StackService's ListActions
 	// RPC.
 	StackServiceListActionsProcedure = "/openhdc.stack.v1.StackService/ListActions"
@@ -155,12 +158,13 @@ type StackServiceClient interface {
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	CreateApplication(context.Context, *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error)
 	DeleteApplication(context.Context, *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error)
-	UpdateApplicationUnits(context.Context, *connect.Request[v1.UpdateApplicationUnitsRequest]) (*connect.Response[v1.Application], error)
-	UpdateApplicationRelation(context.Context, *connect.Request[v1.UpdateApplicationRelationRequest]) (*connect.Response[v1.Application], error)
-	UpdateApplicationConfig(context.Context, *connect.Request[v1.UpdateApplicationConfigRequest]) (*connect.Response[v1.Application], error)
+	UpdateApplication(context.Context, *connect.Request[v1.UpdateApplicationRequest]) (*connect.Response[v1.Application], error)
+	AddApplicationUnit(context.Context, *connect.Request[v1.AddApplicationUnitRequest]) (*connect.Response[v1.Application], error)
 	ExposeApplication(context.Context, *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[v1.Application], error)
 	// Integration Operations
 	ListIntegrations(context.Context, *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error)
+	CreateIntegration(context.Context, *connect.Request[v1.CreateIntegrationRequest]) (*connect.Response[v1.Integration], error)
+	DeleteIntegration(context.Context, *connect.Request[v1.DeleteIntegrationRequest]) (*connect.Response[emptypb.Empty], error)
 	// Action Operations
 	ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error)
 	RunAction(context.Context, *connect.Request[v1.RunActionRequest]) (*connect.Response[v1.Action], error)
@@ -315,22 +319,16 @@ func NewStackServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(stackServiceMethods.ByName("DeleteApplication")),
 			connect.WithClientOptions(opts...),
 		),
-		updateApplicationUnits: connect.NewClient[v1.UpdateApplicationUnitsRequest, v1.Application](
+		updateApplication: connect.NewClient[v1.UpdateApplicationRequest, v1.Application](
 			httpClient,
-			baseURL+StackServiceUpdateApplicationUnitsProcedure,
-			connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationUnits")),
+			baseURL+StackServiceUpdateApplicationProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("UpdateApplication")),
 			connect.WithClientOptions(opts...),
 		),
-		updateApplicationRelation: connect.NewClient[v1.UpdateApplicationRelationRequest, v1.Application](
+		addApplicationUnit: connect.NewClient[v1.AddApplicationUnitRequest, v1.Application](
 			httpClient,
-			baseURL+StackServiceUpdateApplicationRelationProcedure,
-			connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationRelation")),
-			connect.WithClientOptions(opts...),
-		),
-		updateApplicationConfig: connect.NewClient[v1.UpdateApplicationConfigRequest, v1.Application](
-			httpClient,
-			baseURL+StackServiceUpdateApplicationConfigProcedure,
-			connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationConfig")),
+			baseURL+StackServiceAddApplicationUnitProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("AddApplicationUnit")),
 			connect.WithClientOptions(opts...),
 		),
 		exposeApplication: connect.NewClient[v1.ExposeApplicationRequest, v1.Application](
@@ -343,6 +341,18 @@ func NewStackServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			httpClient,
 			baseURL+StackServiceListIntegrationsProcedure,
 			connect.WithSchema(stackServiceMethods.ByName("ListIntegrations")),
+			connect.WithClientOptions(opts...),
+		),
+		createIntegration: connect.NewClient[v1.CreateIntegrationRequest, v1.Integration](
+			httpClient,
+			baseURL+StackServiceCreateIntegrationProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("CreateIntegration")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteIntegration: connect.NewClient[v1.DeleteIntegrationRequest, emptypb.Empty](
+			httpClient,
+			baseURL+StackServiceDeleteIntegrationProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("DeleteIntegration")),
 			connect.WithClientOptions(opts...),
 		),
 		listActions: connect.NewClient[v1.ListActionsRequest, v1.ListActionsResponse](
@@ -385,11 +395,12 @@ type stackServiceClient struct {
 	listApplications           *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
 	createApplication          *connect.Client[v1.CreateApplicationRequest, v1.Application]
 	deleteApplication          *connect.Client[v1.DeleteApplicationRequest, emptypb.Empty]
-	updateApplicationUnits     *connect.Client[v1.UpdateApplicationUnitsRequest, v1.Application]
-	updateApplicationRelation  *connect.Client[v1.UpdateApplicationRelationRequest, v1.Application]
-	updateApplicationConfig    *connect.Client[v1.UpdateApplicationConfigRequest, v1.Application]
+	updateApplication          *connect.Client[v1.UpdateApplicationRequest, v1.Application]
+	addApplicationUnit         *connect.Client[v1.AddApplicationUnitRequest, v1.Application]
 	exposeApplication          *connect.Client[v1.ExposeApplicationRequest, v1.Application]
 	listIntegrations           *connect.Client[v1.ListIntegrationsRequest, v1.ListIntegrationsResponse]
+	createIntegration          *connect.Client[v1.CreateIntegrationRequest, v1.Integration]
+	deleteIntegration          *connect.Client[v1.DeleteIntegrationRequest, emptypb.Empty]
 	listActions                *connect.Client[v1.ListActionsRequest, v1.ListActionsResponse]
 	runAction                  *connect.Client[v1.RunActionRequest, v1.Action]
 }
@@ -509,19 +520,14 @@ func (c *stackServiceClient) DeleteApplication(ctx context.Context, req *connect
 	return c.deleteApplication.CallUnary(ctx, req)
 }
 
-// UpdateApplicationUnits calls openhdc.stack.v1.StackService.UpdateApplicationUnits.
-func (c *stackServiceClient) UpdateApplicationUnits(ctx context.Context, req *connect.Request[v1.UpdateApplicationUnitsRequest]) (*connect.Response[v1.Application], error) {
-	return c.updateApplicationUnits.CallUnary(ctx, req)
+// UpdateApplication calls openhdc.stack.v1.StackService.UpdateApplication.
+func (c *stackServiceClient) UpdateApplication(ctx context.Context, req *connect.Request[v1.UpdateApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return c.updateApplication.CallUnary(ctx, req)
 }
 
-// UpdateApplicationRelation calls openhdc.stack.v1.StackService.UpdateApplicationRelation.
-func (c *stackServiceClient) UpdateApplicationRelation(ctx context.Context, req *connect.Request[v1.UpdateApplicationRelationRequest]) (*connect.Response[v1.Application], error) {
-	return c.updateApplicationRelation.CallUnary(ctx, req)
-}
-
-// UpdateApplicationConfig calls openhdc.stack.v1.StackService.UpdateApplicationConfig.
-func (c *stackServiceClient) UpdateApplicationConfig(ctx context.Context, req *connect.Request[v1.UpdateApplicationConfigRequest]) (*connect.Response[v1.Application], error) {
-	return c.updateApplicationConfig.CallUnary(ctx, req)
+// AddApplicationUnit calls openhdc.stack.v1.StackService.AddApplicationUnit.
+func (c *stackServiceClient) AddApplicationUnit(ctx context.Context, req *connect.Request[v1.AddApplicationUnitRequest]) (*connect.Response[v1.Application], error) {
+	return c.addApplicationUnit.CallUnary(ctx, req)
 }
 
 // ExposeApplication calls openhdc.stack.v1.StackService.ExposeApplication.
@@ -532,6 +538,16 @@ func (c *stackServiceClient) ExposeApplication(ctx context.Context, req *connect
 // ListIntegrations calls openhdc.stack.v1.StackService.ListIntegrations.
 func (c *stackServiceClient) ListIntegrations(ctx context.Context, req *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error) {
 	return c.listIntegrations.CallUnary(ctx, req)
+}
+
+// CreateIntegration calls openhdc.stack.v1.StackService.CreateIntegration.
+func (c *stackServiceClient) CreateIntegration(ctx context.Context, req *connect.Request[v1.CreateIntegrationRequest]) (*connect.Response[v1.Integration], error) {
+	return c.createIntegration.CallUnary(ctx, req)
+}
+
+// DeleteIntegration calls openhdc.stack.v1.StackService.DeleteIntegration.
+func (c *stackServiceClient) DeleteIntegration(ctx context.Context, req *connect.Request[v1.DeleteIntegrationRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteIntegration.CallUnary(ctx, req)
 }
 
 // ListActions calls openhdc.stack.v1.StackService.ListActions.
@@ -576,12 +592,13 @@ type StackServiceHandler interface {
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	CreateApplication(context.Context, *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error)
 	DeleteApplication(context.Context, *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error)
-	UpdateApplicationUnits(context.Context, *connect.Request[v1.UpdateApplicationUnitsRequest]) (*connect.Response[v1.Application], error)
-	UpdateApplicationRelation(context.Context, *connect.Request[v1.UpdateApplicationRelationRequest]) (*connect.Response[v1.Application], error)
-	UpdateApplicationConfig(context.Context, *connect.Request[v1.UpdateApplicationConfigRequest]) (*connect.Response[v1.Application], error)
+	UpdateApplication(context.Context, *connect.Request[v1.UpdateApplicationRequest]) (*connect.Response[v1.Application], error)
+	AddApplicationUnit(context.Context, *connect.Request[v1.AddApplicationUnitRequest]) (*connect.Response[v1.Application], error)
 	ExposeApplication(context.Context, *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[v1.Application], error)
 	// Integration Operations
 	ListIntegrations(context.Context, *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error)
+	CreateIntegration(context.Context, *connect.Request[v1.CreateIntegrationRequest]) (*connect.Response[v1.Integration], error)
+	DeleteIntegration(context.Context, *connect.Request[v1.DeleteIntegrationRequest]) (*connect.Response[emptypb.Empty], error)
 	// Action Operations
 	ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error)
 	RunAction(context.Context, *connect.Request[v1.RunActionRequest]) (*connect.Response[v1.Action], error)
@@ -732,22 +749,16 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(stackServiceMethods.ByName("DeleteApplication")),
 		connect.WithHandlerOptions(opts...),
 	)
-	stackServiceUpdateApplicationUnitsHandler := connect.NewUnaryHandler(
-		StackServiceUpdateApplicationUnitsProcedure,
-		svc.UpdateApplicationUnits,
-		connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationUnits")),
+	stackServiceUpdateApplicationHandler := connect.NewUnaryHandler(
+		StackServiceUpdateApplicationProcedure,
+		svc.UpdateApplication,
+		connect.WithSchema(stackServiceMethods.ByName("UpdateApplication")),
 		connect.WithHandlerOptions(opts...),
 	)
-	stackServiceUpdateApplicationRelationHandler := connect.NewUnaryHandler(
-		StackServiceUpdateApplicationRelationProcedure,
-		svc.UpdateApplicationRelation,
-		connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationRelation")),
-		connect.WithHandlerOptions(opts...),
-	)
-	stackServiceUpdateApplicationConfigHandler := connect.NewUnaryHandler(
-		StackServiceUpdateApplicationConfigProcedure,
-		svc.UpdateApplicationConfig,
-		connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationConfig")),
+	stackServiceAddApplicationUnitHandler := connect.NewUnaryHandler(
+		StackServiceAddApplicationUnitProcedure,
+		svc.AddApplicationUnit,
+		connect.WithSchema(stackServiceMethods.ByName("AddApplicationUnit")),
 		connect.WithHandlerOptions(opts...),
 	)
 	stackServiceExposeApplicationHandler := connect.NewUnaryHandler(
@@ -760,6 +771,18 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 		StackServiceListIntegrationsProcedure,
 		svc.ListIntegrations,
 		connect.WithSchema(stackServiceMethods.ByName("ListIntegrations")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceCreateIntegrationHandler := connect.NewUnaryHandler(
+		StackServiceCreateIntegrationProcedure,
+		svc.CreateIntegration,
+		connect.WithSchema(stackServiceMethods.ByName("CreateIntegration")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceDeleteIntegrationHandler := connect.NewUnaryHandler(
+		StackServiceDeleteIntegrationProcedure,
+		svc.DeleteIntegration,
+		connect.WithSchema(stackServiceMethods.ByName("DeleteIntegration")),
 		connect.WithHandlerOptions(opts...),
 	)
 	stackServiceListActionsHandler := connect.NewUnaryHandler(
@@ -822,16 +845,18 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 			stackServiceCreateApplicationHandler.ServeHTTP(w, r)
 		case StackServiceDeleteApplicationProcedure:
 			stackServiceDeleteApplicationHandler.ServeHTTP(w, r)
-		case StackServiceUpdateApplicationUnitsProcedure:
-			stackServiceUpdateApplicationUnitsHandler.ServeHTTP(w, r)
-		case StackServiceUpdateApplicationRelationProcedure:
-			stackServiceUpdateApplicationRelationHandler.ServeHTTP(w, r)
-		case StackServiceUpdateApplicationConfigProcedure:
-			stackServiceUpdateApplicationConfigHandler.ServeHTTP(w, r)
+		case StackServiceUpdateApplicationProcedure:
+			stackServiceUpdateApplicationHandler.ServeHTTP(w, r)
+		case StackServiceAddApplicationUnitProcedure:
+			stackServiceAddApplicationUnitHandler.ServeHTTP(w, r)
 		case StackServiceExposeApplicationProcedure:
 			stackServiceExposeApplicationHandler.ServeHTTP(w, r)
 		case StackServiceListIntegrationsProcedure:
 			stackServiceListIntegrationsHandler.ServeHTTP(w, r)
+		case StackServiceCreateIntegrationProcedure:
+			stackServiceCreateIntegrationHandler.ServeHTTP(w, r)
+		case StackServiceDeleteIntegrationProcedure:
+			stackServiceDeleteIntegrationHandler.ServeHTTP(w, r)
 		case StackServiceListActionsProcedure:
 			stackServiceListActionsHandler.ServeHTTP(w, r)
 		case StackServiceRunActionProcedure:
@@ -937,16 +962,12 @@ func (UnimplementedStackServiceHandler) DeleteApplication(context.Context, *conn
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.DeleteApplication is not implemented"))
 }
 
-func (UnimplementedStackServiceHandler) UpdateApplicationUnits(context.Context, *connect.Request[v1.UpdateApplicationUnitsRequest]) (*connect.Response[v1.Application], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.UpdateApplicationUnits is not implemented"))
+func (UnimplementedStackServiceHandler) UpdateApplication(context.Context, *connect.Request[v1.UpdateApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.UpdateApplication is not implemented"))
 }
 
-func (UnimplementedStackServiceHandler) UpdateApplicationRelation(context.Context, *connect.Request[v1.UpdateApplicationRelationRequest]) (*connect.Response[v1.Application], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.UpdateApplicationRelation is not implemented"))
-}
-
-func (UnimplementedStackServiceHandler) UpdateApplicationConfig(context.Context, *connect.Request[v1.UpdateApplicationConfigRequest]) (*connect.Response[v1.Application], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.UpdateApplicationConfig is not implemented"))
+func (UnimplementedStackServiceHandler) AddApplicationUnit(context.Context, *connect.Request[v1.AddApplicationUnitRequest]) (*connect.Response[v1.Application], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.AddApplicationUnit is not implemented"))
 }
 
 func (UnimplementedStackServiceHandler) ExposeApplication(context.Context, *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[v1.Application], error) {
@@ -955,6 +976,14 @@ func (UnimplementedStackServiceHandler) ExposeApplication(context.Context, *conn
 
 func (UnimplementedStackServiceHandler) ListIntegrations(context.Context, *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ListIntegrations is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) CreateIntegration(context.Context, *connect.Request[v1.CreateIntegrationRequest]) (*connect.Response[v1.Integration], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.CreateIntegration is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) DeleteIntegration(context.Context, *connect.Request[v1.DeleteIntegrationRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.DeleteIntegration is not implemented"))
 }
 
 func (UnimplementedStackServiceHandler) ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error) {
