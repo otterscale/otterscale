@@ -2,14 +2,12 @@ package service
 
 import (
 	"context"
-	"encoding/base64"
 	"errors"
-	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/juju/juju/api/base"
+	"github.com/juju/juju/rpc/params"
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
@@ -78,8 +76,13 @@ type MAASMachine interface {
 	Commission(ctx context.Context, systemID string, params *entity.MachineCommissionParams) (*entity.Machine, error)
 }
 
+type JujuMachine interface {
+	AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) ([]params.AddMachinesResult, error)
+}
+
 type JujuModel interface {
-	List(ctx context.Context) ([]base.UserModel, error)
+	List(ctx context.Context) ([]*model.Environment, error)
+	Create(ctx context.Context, name string) (*base.ModelInfo, error)
 }
 
 type JujuModelConfig interface {
@@ -98,6 +101,7 @@ type StackService struct {
 	ipRange           MAASIPRange
 	bootResource      MAASBootResource
 	machine           MAASMachine
+	jujuMachine       JujuMachine
 	model             JujuModel
 	modelConfig       JujuModelConfig
 }
@@ -111,6 +115,7 @@ func NewStackService(
 	subnet MAASSubnet,
 	ipRange MAASIPRange,
 	bootResource MAASBootResource,
+	jujuMachine JujuMachine,
 	machine MAASMachine,
 	model JujuModel,
 	modelConfig JujuModelConfig,
@@ -123,6 +128,7 @@ func NewStackService(
 		subnet:            subnet,
 		ipRange:           ipRange,
 		bootResource:      bootResource,
+		jujuMachine:       jujuMachine,
 		machine:           machine,
 		model:             model,
 		modelConfig:       modelConfig,
@@ -145,22 +151,8 @@ func (s *StackService) UpdateNTPServers(ctx context.Context, ntpServers []string
 // Package repository operations
 
 // ListPackageRepositories returns all package repositories
-func (s *StackService) ListPackageRepositories(ctx context.Context, pageSize, pageToken int) ([]*entity.PackageRepository, string, error) {
-	ret, err := s.packageRepository.List(ctx)
-	if err != nil {
-		return nil, "", err
-	}
-
-	sort.Slice(ret, func(i, j int) bool {
-		return ret[i].ID < ret[j].ID
-	})
-
-	nextPageToken := ""
-	if len(ret) == pageSize+1 {
-		nextPageToken = base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(ret[len(ret)-1].ID)))
-		ret = ret[:len(ret)-1]
-	}
-	return ret, nextPageToken, nil
+func (s *StackService) ListPackageRepositories(ctx context.Context) ([]*entity.PackageRepository, error) {
+	return s.packageRepository.List(ctx)
 }
 
 // UpdatePackageRepositoryURL updates a package repository URL
@@ -175,16 +167,16 @@ func (s *StackService) UpdatePackageRepositoryURL(ctx context.Context, id int, u
 // Network operations
 
 // ListNetworks returns all networks with their associated resources
-func (s *StackService) ListNetworks(ctx context.Context, pageSize, pageToken int) ([]*model.Network, string, error) {
+func (s *StackService) ListNetworks(ctx context.Context) ([]*model.Network, error) {
 	// Get all required resources
 	subnets, err := s.subnet.List(ctx)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	ipRanges, err := s.ipRange.List(ctx)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	// Build mapping of VLANs to network settings
@@ -192,7 +184,7 @@ func (s *StackService) ListNetworks(ctx context.Context, pageSize, pageToken int
 
 	fabrics, err := s.fabric.List(ctx)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	// Convert fabrics to networks
@@ -201,16 +193,7 @@ func (s *StackService) ListNetworks(ctx context.Context, pageSize, pageToken int
 		ret[i] = toNetwork(fabric, vlanToNetworkSetting)
 	}
 
-	sort.Slice(ret, func(i, j int) bool {
-		return ret[i].ID < ret[j].ID
-	})
-
-	nextPageToken := ""
-	if len(ret) == pageSize+1 {
-		nextPageToken = base64.StdEncoding.EncodeToString([]byte(strconv.Itoa(ret[len(ret)-1].ID)))
-		ret = ret[:len(ret)-1]
-	}
-	return ret, nextPageToken, nil
+	return ret, nil
 }
 
 // CreateNetwork creates a new network with associated resources
@@ -343,22 +326,20 @@ func (s *StackService) ImportBootResources(ctx context.Context) error {
 // Machine operations
 
 // ListMachines returns all machines with their associated resources
-func (s *StackService) ListMachines(ctx context.Context, pageSize, pageToken int) ([]*entity.Machine, string, error) {
-	ret, err := s.machine.List(ctx)
+func (s *StackService) ListMachines(ctx context.Context) ([]*entity.Machine, error) {
+	return s.machine.List(ctx)
+}
+
+func (s *StackService) AddMachine(ctx context.Context, uuid string, params []params.AddMachineParams) ([]string, error) {
+	rs, err := s.jujuMachine.AddMachines(ctx, uuid, params)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
-
-	sort.Slice(ret, func(i, j int) bool {
-		return ret[i].SystemID < ret[j].SystemID
-	})
-
-	nextPageToken := ""
-	if len(ret) == pageSize+1 {
-		nextPageToken = base64.StdEncoding.EncodeToString([]byte(ret[len(ret)-1].SystemID))
-		ret = ret[:len(ret)-1]
+	machines := make([]string, len(rs))
+	for i, r := range rs {
+		machines[i] = r.Machine
 	}
-	return ret, nextPageToken, nil
+	return machines, nil
 }
 
 // PowerOnMachine powers on a machine identified by systemID
@@ -376,11 +357,15 @@ func (s *StackService) CommissionMachine(ctx context.Context, systemID string, p
 	return s.machine.Commission(ctx, systemID, params)
 }
 
-func (s *StackService) ListModels(ctx context.Context) ([]base.UserModel, error) {
+func (s *StackService) ListModels(ctx context.Context) ([]*model.Environment, error) {
 	return s.model.List(ctx)
 }
 
-func (s *StackService) ListModelConfigs(ctx context.Context, uuid string) (map[string]any, error) {
+func (s *StackService) CreateModel(ctx context.Context, name string) (*base.ModelInfo, error) {
+	return s.model.Create(ctx, name)
+}
+
+func (s *StackService) GetModelConfigs(ctx context.Context, uuid string) (map[string]any, error) {
 	return s.modelConfig.List(ctx, uuid)
 }
 

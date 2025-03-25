@@ -69,6 +69,9 @@ const (
 	// StackServiceListMachinesProcedure is the fully-qualified name of the StackService's ListMachines
 	// RPC.
 	StackServiceListMachinesProcedure = "/openhdc.stack.v1.StackService/ListMachines"
+	// StackServiceAddMachinesProcedure is the fully-qualified name of the StackService's AddMachines
+	// RPC.
+	StackServiceAddMachinesProcedure = "/openhdc.stack.v1.StackService/AddMachines"
 	// StackServiceImportBootResourcesProcedure is the fully-qualified name of the StackService's
 	// ImportBootResources RPC.
 	StackServiceImportBootResourcesProcedure = "/openhdc.stack.v1.StackService/ImportBootResources"
@@ -81,9 +84,43 @@ const (
 	// StackServiceCommissionMachineProcedure is the fully-qualified name of the StackService's
 	// CommissionMachine RPC.
 	StackServiceCommissionMachineProcedure = "/openhdc.stack.v1.StackService/CommissionMachine"
-	// StackServiceListModelConfigsProcedure is the fully-qualified name of the StackService's
-	// ListModelConfigs RPC.
-	StackServiceListModelConfigsProcedure = "/openhdc.stack.v1.StackService/ListModelConfigs"
+	// StackServiceListModelsProcedure is the fully-qualified name of the StackService's ListModels RPC.
+	StackServiceListModelsProcedure = "/openhdc.stack.v1.StackService/ListModels"
+	// StackServiceCreateModelProcedure is the fully-qualified name of the StackService's CreateModel
+	// RPC.
+	StackServiceCreateModelProcedure = "/openhdc.stack.v1.StackService/CreateModel"
+	// StackServiceGetModelConfigsProcedure is the fully-qualified name of the StackService's
+	// GetModelConfigs RPC.
+	StackServiceGetModelConfigsProcedure = "/openhdc.stack.v1.StackService/GetModelConfigs"
+	// StackServiceListApplicationsProcedure is the fully-qualified name of the StackService's
+	// ListApplications RPC.
+	StackServiceListApplicationsProcedure = "/openhdc.stack.v1.StackService/ListApplications"
+	// StackServiceCreateApplicationProcedure is the fully-qualified name of the StackService's
+	// CreateApplication RPC.
+	StackServiceCreateApplicationProcedure = "/openhdc.stack.v1.StackService/CreateApplication"
+	// StackServiceDeleteApplicationProcedure is the fully-qualified name of the StackService's
+	// DeleteApplication RPC.
+	StackServiceDeleteApplicationProcedure = "/openhdc.stack.v1.StackService/DeleteApplication"
+	// StackServiceUpdateApplicationUnitsProcedure is the fully-qualified name of the StackService's
+	// UpdateApplicationUnits RPC.
+	StackServiceUpdateApplicationUnitsProcedure = "/openhdc.stack.v1.StackService/UpdateApplicationUnits"
+	// StackServiceUpdateApplicationRelationProcedure is the fully-qualified name of the StackService's
+	// UpdateApplicationRelation RPC.
+	StackServiceUpdateApplicationRelationProcedure = "/openhdc.stack.v1.StackService/UpdateApplicationRelation"
+	// StackServiceUpdateApplicationConfigProcedure is the fully-qualified name of the StackService's
+	// UpdateApplicationConfig RPC.
+	StackServiceUpdateApplicationConfigProcedure = "/openhdc.stack.v1.StackService/UpdateApplicationConfig"
+	// StackServiceExposeApplicationProcedure is the fully-qualified name of the StackService's
+	// ExposeApplication RPC.
+	StackServiceExposeApplicationProcedure = "/openhdc.stack.v1.StackService/ExposeApplication"
+	// StackServiceListIntegrationsProcedure is the fully-qualified name of the StackService's
+	// ListIntegrations RPC.
+	StackServiceListIntegrationsProcedure = "/openhdc.stack.v1.StackService/ListIntegrations"
+	// StackServiceListActionsProcedure is the fully-qualified name of the StackService's ListActions
+	// RPC.
+	StackServiceListActionsProcedure = "/openhdc.stack.v1.StackService/ListActions"
+	// StackServiceRunActionProcedure is the fully-qualified name of the StackService's RunAction RPC.
+	StackServiceRunActionProcedure = "/openhdc.stack.v1.StackService/RunAction"
 )
 
 // StackServiceClient is a client for the openhdc.stack.v1.StackService service.
@@ -104,13 +141,29 @@ type StackServiceClient interface {
 	UpdateIPRange(context.Context, *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.IPRange], error)
 	// Machine Management
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
+	AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error)
 	// Machine Operations
 	ImportBootResources(context.Context, *connect.Request[v1.ImportBootResourcesRequest]) (*connect.Response[emptypb.Empty], error)
 	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error)
 	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
 	CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error)
 	// Model Operations
-	ListModelConfigs(context.Context, *connect.Request[v1.ListModelConfigsRequest]) (*connect.Response[v1.ListModelConfigsResponse], error)
+	ListModels(context.Context, *connect.Request[v1.ListModelsRequest]) (*connect.Response[v1.ListModelsResponse], error)
+	CreateModel(context.Context, *connect.Request[v1.CreateModelRequest]) (*connect.Response[v1.Model], error)
+	GetModelConfigs(context.Context, *connect.Request[v1.GetModelConfigsRequest]) (*connect.Response[v1.GetModelConfigsResponse], error)
+	// Application Operations
+	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
+	CreateApplication(context.Context, *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error)
+	DeleteApplication(context.Context, *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error)
+	UpdateApplicationUnits(context.Context, *connect.Request[v1.UpdateApplicationUnitsRequest]) (*connect.Response[v1.Application], error)
+	UpdateApplicationRelation(context.Context, *connect.Request[v1.UpdateApplicationRelationRequest]) (*connect.Response[v1.Application], error)
+	UpdateApplicationConfig(context.Context, *connect.Request[v1.UpdateApplicationConfigRequest]) (*connect.Response[v1.Application], error)
+	ExposeApplication(context.Context, *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[v1.Application], error)
+	// Integration Operations
+	ListIntegrations(context.Context, *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error)
+	// Action Operations
+	ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error)
+	RunAction(context.Context, *connect.Request[v1.RunActionRequest]) (*connect.Response[v1.Action], error)
 }
 
 // NewStackServiceClient constructs a client for the openhdc.stack.v1.StackService service. By
@@ -196,6 +249,12 @@ func NewStackServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(stackServiceMethods.ByName("ListMachines")),
 			connect.WithClientOptions(opts...),
 		),
+		addMachines: connect.NewClient[v1.AddMachinesRequest, v1.AddMachinesResponse](
+			httpClient,
+			baseURL+StackServiceAddMachinesProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("AddMachines")),
+			connect.WithClientOptions(opts...),
+		),
 		importBootResources: connect.NewClient[v1.ImportBootResourcesRequest, emptypb.Empty](
 			httpClient,
 			baseURL+StackServiceImportBootResourcesProcedure,
@@ -220,10 +279,82 @@ func NewStackServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(stackServiceMethods.ByName("CommissionMachine")),
 			connect.WithClientOptions(opts...),
 		),
-		listModelConfigs: connect.NewClient[v1.ListModelConfigsRequest, v1.ListModelConfigsResponse](
+		listModels: connect.NewClient[v1.ListModelsRequest, v1.ListModelsResponse](
 			httpClient,
-			baseURL+StackServiceListModelConfigsProcedure,
-			connect.WithSchema(stackServiceMethods.ByName("ListModelConfigs")),
+			baseURL+StackServiceListModelsProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("ListModels")),
+			connect.WithClientOptions(opts...),
+		),
+		createModel: connect.NewClient[v1.CreateModelRequest, v1.Model](
+			httpClient,
+			baseURL+StackServiceCreateModelProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("CreateModel")),
+			connect.WithClientOptions(opts...),
+		),
+		getModelConfigs: connect.NewClient[v1.GetModelConfigsRequest, v1.GetModelConfigsResponse](
+			httpClient,
+			baseURL+StackServiceGetModelConfigsProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("GetModelConfigs")),
+			connect.WithClientOptions(opts...),
+		),
+		listApplications: connect.NewClient[v1.ListApplicationsRequest, v1.ListApplicationsResponse](
+			httpClient,
+			baseURL+StackServiceListApplicationsProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("ListApplications")),
+			connect.WithClientOptions(opts...),
+		),
+		createApplication: connect.NewClient[v1.CreateApplicationRequest, v1.Application](
+			httpClient,
+			baseURL+StackServiceCreateApplicationProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("CreateApplication")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteApplication: connect.NewClient[v1.DeleteApplicationRequest, emptypb.Empty](
+			httpClient,
+			baseURL+StackServiceDeleteApplicationProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("DeleteApplication")),
+			connect.WithClientOptions(opts...),
+		),
+		updateApplicationUnits: connect.NewClient[v1.UpdateApplicationUnitsRequest, v1.Application](
+			httpClient,
+			baseURL+StackServiceUpdateApplicationUnitsProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationUnits")),
+			connect.WithClientOptions(opts...),
+		),
+		updateApplicationRelation: connect.NewClient[v1.UpdateApplicationRelationRequest, v1.Application](
+			httpClient,
+			baseURL+StackServiceUpdateApplicationRelationProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationRelation")),
+			connect.WithClientOptions(opts...),
+		),
+		updateApplicationConfig: connect.NewClient[v1.UpdateApplicationConfigRequest, v1.Application](
+			httpClient,
+			baseURL+StackServiceUpdateApplicationConfigProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationConfig")),
+			connect.WithClientOptions(opts...),
+		),
+		exposeApplication: connect.NewClient[v1.ExposeApplicationRequest, v1.Application](
+			httpClient,
+			baseURL+StackServiceExposeApplicationProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("ExposeApplication")),
+			connect.WithClientOptions(opts...),
+		),
+		listIntegrations: connect.NewClient[v1.ListIntegrationsRequest, v1.ListIntegrationsResponse](
+			httpClient,
+			baseURL+StackServiceListIntegrationsProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("ListIntegrations")),
+			connect.WithClientOptions(opts...),
+		),
+		listActions: connect.NewClient[v1.ListActionsRequest, v1.ListActionsResponse](
+			httpClient,
+			baseURL+StackServiceListActionsProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("ListActions")),
+			connect.WithClientOptions(opts...),
+		),
+		runAction: connect.NewClient[v1.RunActionRequest, v1.Action](
+			httpClient,
+			baseURL+StackServiceRunActionProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("RunAction")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -243,11 +374,24 @@ type stackServiceClient struct {
 	updateSubnet               *connect.Client[v1.UpdateSubnetRequest, v1.Subnet]
 	updateIPRange              *connect.Client[v1.UpdateIPRangeRequest, v1.IPRange]
 	listMachines               *connect.Client[v1.ListMachinesRequest, v1.ListMachinesResponse]
+	addMachines                *connect.Client[v1.AddMachinesRequest, v1.AddMachinesResponse]
 	importBootResources        *connect.Client[v1.ImportBootResourcesRequest, emptypb.Empty]
 	powerOnMachine             *connect.Client[v1.PowerOnMachineRequest, v1.Machine]
 	powerOffMachine            *connect.Client[v1.PowerOffMachineRequest, v1.Machine]
 	commissionMachine          *connect.Client[v1.CommissionMachineRequest, v1.Machine]
-	listModelConfigs           *connect.Client[v1.ListModelConfigsRequest, v1.ListModelConfigsResponse]
+	listModels                 *connect.Client[v1.ListModelsRequest, v1.ListModelsResponse]
+	createModel                *connect.Client[v1.CreateModelRequest, v1.Model]
+	getModelConfigs            *connect.Client[v1.GetModelConfigsRequest, v1.GetModelConfigsResponse]
+	listApplications           *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
+	createApplication          *connect.Client[v1.CreateApplicationRequest, v1.Application]
+	deleteApplication          *connect.Client[v1.DeleteApplicationRequest, emptypb.Empty]
+	updateApplicationUnits     *connect.Client[v1.UpdateApplicationUnitsRequest, v1.Application]
+	updateApplicationRelation  *connect.Client[v1.UpdateApplicationRelationRequest, v1.Application]
+	updateApplicationConfig    *connect.Client[v1.UpdateApplicationConfigRequest, v1.Application]
+	exposeApplication          *connect.Client[v1.ExposeApplicationRequest, v1.Application]
+	listIntegrations           *connect.Client[v1.ListIntegrationsRequest, v1.ListIntegrationsResponse]
+	listActions                *connect.Client[v1.ListActionsRequest, v1.ListActionsResponse]
+	runAction                  *connect.Client[v1.RunActionRequest, v1.Action]
 }
 
 // ListNTPServers calls openhdc.stack.v1.StackService.ListNTPServers.
@@ -310,6 +454,11 @@ func (c *stackServiceClient) ListMachines(ctx context.Context, req *connect.Requ
 	return c.listMachines.CallUnary(ctx, req)
 }
 
+// AddMachines calls openhdc.stack.v1.StackService.AddMachines.
+func (c *stackServiceClient) AddMachines(ctx context.Context, req *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error) {
+	return c.addMachines.CallUnary(ctx, req)
+}
+
 // ImportBootResources calls openhdc.stack.v1.StackService.ImportBootResources.
 func (c *stackServiceClient) ImportBootResources(ctx context.Context, req *connect.Request[v1.ImportBootResourcesRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.importBootResources.CallUnary(ctx, req)
@@ -330,9 +479,69 @@ func (c *stackServiceClient) CommissionMachine(ctx context.Context, req *connect
 	return c.commissionMachine.CallUnary(ctx, req)
 }
 
-// ListModelConfigs calls openhdc.stack.v1.StackService.ListModelConfigs.
-func (c *stackServiceClient) ListModelConfigs(ctx context.Context, req *connect.Request[v1.ListModelConfigsRequest]) (*connect.Response[v1.ListModelConfigsResponse], error) {
-	return c.listModelConfigs.CallUnary(ctx, req)
+// ListModels calls openhdc.stack.v1.StackService.ListModels.
+func (c *stackServiceClient) ListModels(ctx context.Context, req *connect.Request[v1.ListModelsRequest]) (*connect.Response[v1.ListModelsResponse], error) {
+	return c.listModels.CallUnary(ctx, req)
+}
+
+// CreateModel calls openhdc.stack.v1.StackService.CreateModel.
+func (c *stackServiceClient) CreateModel(ctx context.Context, req *connect.Request[v1.CreateModelRequest]) (*connect.Response[v1.Model], error) {
+	return c.createModel.CallUnary(ctx, req)
+}
+
+// GetModelConfigs calls openhdc.stack.v1.StackService.GetModelConfigs.
+func (c *stackServiceClient) GetModelConfigs(ctx context.Context, req *connect.Request[v1.GetModelConfigsRequest]) (*connect.Response[v1.GetModelConfigsResponse], error) {
+	return c.getModelConfigs.CallUnary(ctx, req)
+}
+
+// ListApplications calls openhdc.stack.v1.StackService.ListApplications.
+func (c *stackServiceClient) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
+	return c.listApplications.CallUnary(ctx, req)
+}
+
+// CreateApplication calls openhdc.stack.v1.StackService.CreateApplication.
+func (c *stackServiceClient) CreateApplication(ctx context.Context, req *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return c.createApplication.CallUnary(ctx, req)
+}
+
+// DeleteApplication calls openhdc.stack.v1.StackService.DeleteApplication.
+func (c *stackServiceClient) DeleteApplication(ctx context.Context, req *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteApplication.CallUnary(ctx, req)
+}
+
+// UpdateApplicationUnits calls openhdc.stack.v1.StackService.UpdateApplicationUnits.
+func (c *stackServiceClient) UpdateApplicationUnits(ctx context.Context, req *connect.Request[v1.UpdateApplicationUnitsRequest]) (*connect.Response[v1.Application], error) {
+	return c.updateApplicationUnits.CallUnary(ctx, req)
+}
+
+// UpdateApplicationRelation calls openhdc.stack.v1.StackService.UpdateApplicationRelation.
+func (c *stackServiceClient) UpdateApplicationRelation(ctx context.Context, req *connect.Request[v1.UpdateApplicationRelationRequest]) (*connect.Response[v1.Application], error) {
+	return c.updateApplicationRelation.CallUnary(ctx, req)
+}
+
+// UpdateApplicationConfig calls openhdc.stack.v1.StackService.UpdateApplicationConfig.
+func (c *stackServiceClient) UpdateApplicationConfig(ctx context.Context, req *connect.Request[v1.UpdateApplicationConfigRequest]) (*connect.Response[v1.Application], error) {
+	return c.updateApplicationConfig.CallUnary(ctx, req)
+}
+
+// ExposeApplication calls openhdc.stack.v1.StackService.ExposeApplication.
+func (c *stackServiceClient) ExposeApplication(ctx context.Context, req *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return c.exposeApplication.CallUnary(ctx, req)
+}
+
+// ListIntegrations calls openhdc.stack.v1.StackService.ListIntegrations.
+func (c *stackServiceClient) ListIntegrations(ctx context.Context, req *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error) {
+	return c.listIntegrations.CallUnary(ctx, req)
+}
+
+// ListActions calls openhdc.stack.v1.StackService.ListActions.
+func (c *stackServiceClient) ListActions(ctx context.Context, req *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error) {
+	return c.listActions.CallUnary(ctx, req)
+}
+
+// RunAction calls openhdc.stack.v1.StackService.RunAction.
+func (c *stackServiceClient) RunAction(ctx context.Context, req *connect.Request[v1.RunActionRequest]) (*connect.Response[v1.Action], error) {
+	return c.runAction.CallUnary(ctx, req)
 }
 
 // StackServiceHandler is an implementation of the openhdc.stack.v1.StackService service.
@@ -353,13 +562,29 @@ type StackServiceHandler interface {
 	UpdateIPRange(context.Context, *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.IPRange], error)
 	// Machine Management
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
+	AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error)
 	// Machine Operations
 	ImportBootResources(context.Context, *connect.Request[v1.ImportBootResourcesRequest]) (*connect.Response[emptypb.Empty], error)
 	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error)
 	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
 	CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error)
 	// Model Operations
-	ListModelConfigs(context.Context, *connect.Request[v1.ListModelConfigsRequest]) (*connect.Response[v1.ListModelConfigsResponse], error)
+	ListModels(context.Context, *connect.Request[v1.ListModelsRequest]) (*connect.Response[v1.ListModelsResponse], error)
+	CreateModel(context.Context, *connect.Request[v1.CreateModelRequest]) (*connect.Response[v1.Model], error)
+	GetModelConfigs(context.Context, *connect.Request[v1.GetModelConfigsRequest]) (*connect.Response[v1.GetModelConfigsResponse], error)
+	// Application Operations
+	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
+	CreateApplication(context.Context, *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error)
+	DeleteApplication(context.Context, *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error)
+	UpdateApplicationUnits(context.Context, *connect.Request[v1.UpdateApplicationUnitsRequest]) (*connect.Response[v1.Application], error)
+	UpdateApplicationRelation(context.Context, *connect.Request[v1.UpdateApplicationRelationRequest]) (*connect.Response[v1.Application], error)
+	UpdateApplicationConfig(context.Context, *connect.Request[v1.UpdateApplicationConfigRequest]) (*connect.Response[v1.Application], error)
+	ExposeApplication(context.Context, *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[v1.Application], error)
+	// Integration Operations
+	ListIntegrations(context.Context, *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error)
+	// Action Operations
+	ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error)
+	RunAction(context.Context, *connect.Request[v1.RunActionRequest]) (*connect.Response[v1.Action], error)
 }
 
 // NewStackServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -441,6 +666,12 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(stackServiceMethods.ByName("ListMachines")),
 		connect.WithHandlerOptions(opts...),
 	)
+	stackServiceAddMachinesHandler := connect.NewUnaryHandler(
+		StackServiceAddMachinesProcedure,
+		svc.AddMachines,
+		connect.WithSchema(stackServiceMethods.ByName("AddMachines")),
+		connect.WithHandlerOptions(opts...),
+	)
 	stackServiceImportBootResourcesHandler := connect.NewUnaryHandler(
 		StackServiceImportBootResourcesProcedure,
 		svc.ImportBootResources,
@@ -465,10 +696,82 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(stackServiceMethods.ByName("CommissionMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	stackServiceListModelConfigsHandler := connect.NewUnaryHandler(
-		StackServiceListModelConfigsProcedure,
-		svc.ListModelConfigs,
-		connect.WithSchema(stackServiceMethods.ByName("ListModelConfigs")),
+	stackServiceListModelsHandler := connect.NewUnaryHandler(
+		StackServiceListModelsProcedure,
+		svc.ListModels,
+		connect.WithSchema(stackServiceMethods.ByName("ListModels")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceCreateModelHandler := connect.NewUnaryHandler(
+		StackServiceCreateModelProcedure,
+		svc.CreateModel,
+		connect.WithSchema(stackServiceMethods.ByName("CreateModel")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceGetModelConfigsHandler := connect.NewUnaryHandler(
+		StackServiceGetModelConfigsProcedure,
+		svc.GetModelConfigs,
+		connect.WithSchema(stackServiceMethods.ByName("GetModelConfigs")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceListApplicationsHandler := connect.NewUnaryHandler(
+		StackServiceListApplicationsProcedure,
+		svc.ListApplications,
+		connect.WithSchema(stackServiceMethods.ByName("ListApplications")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceCreateApplicationHandler := connect.NewUnaryHandler(
+		StackServiceCreateApplicationProcedure,
+		svc.CreateApplication,
+		connect.WithSchema(stackServiceMethods.ByName("CreateApplication")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceDeleteApplicationHandler := connect.NewUnaryHandler(
+		StackServiceDeleteApplicationProcedure,
+		svc.DeleteApplication,
+		connect.WithSchema(stackServiceMethods.ByName("DeleteApplication")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceUpdateApplicationUnitsHandler := connect.NewUnaryHandler(
+		StackServiceUpdateApplicationUnitsProcedure,
+		svc.UpdateApplicationUnits,
+		connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationUnits")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceUpdateApplicationRelationHandler := connect.NewUnaryHandler(
+		StackServiceUpdateApplicationRelationProcedure,
+		svc.UpdateApplicationRelation,
+		connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationRelation")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceUpdateApplicationConfigHandler := connect.NewUnaryHandler(
+		StackServiceUpdateApplicationConfigProcedure,
+		svc.UpdateApplicationConfig,
+		connect.WithSchema(stackServiceMethods.ByName("UpdateApplicationConfig")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceExposeApplicationHandler := connect.NewUnaryHandler(
+		StackServiceExposeApplicationProcedure,
+		svc.ExposeApplication,
+		connect.WithSchema(stackServiceMethods.ByName("ExposeApplication")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceListIntegrationsHandler := connect.NewUnaryHandler(
+		StackServiceListIntegrationsProcedure,
+		svc.ListIntegrations,
+		connect.WithSchema(stackServiceMethods.ByName("ListIntegrations")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceListActionsHandler := connect.NewUnaryHandler(
+		StackServiceListActionsProcedure,
+		svc.ListActions,
+		connect.WithSchema(stackServiceMethods.ByName("ListActions")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceRunActionHandler := connect.NewUnaryHandler(
+		StackServiceRunActionProcedure,
+		svc.RunAction,
+		connect.WithSchema(stackServiceMethods.ByName("RunAction")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/openhdc.stack.v1.StackService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -497,6 +800,8 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 			stackServiceUpdateIPRangeHandler.ServeHTTP(w, r)
 		case StackServiceListMachinesProcedure:
 			stackServiceListMachinesHandler.ServeHTTP(w, r)
+		case StackServiceAddMachinesProcedure:
+			stackServiceAddMachinesHandler.ServeHTTP(w, r)
 		case StackServiceImportBootResourcesProcedure:
 			stackServiceImportBootResourcesHandler.ServeHTTP(w, r)
 		case StackServicePowerOnMachineProcedure:
@@ -505,8 +810,32 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 			stackServicePowerOffMachineHandler.ServeHTTP(w, r)
 		case StackServiceCommissionMachineProcedure:
 			stackServiceCommissionMachineHandler.ServeHTTP(w, r)
-		case StackServiceListModelConfigsProcedure:
-			stackServiceListModelConfigsHandler.ServeHTTP(w, r)
+		case StackServiceListModelsProcedure:
+			stackServiceListModelsHandler.ServeHTTP(w, r)
+		case StackServiceCreateModelProcedure:
+			stackServiceCreateModelHandler.ServeHTTP(w, r)
+		case StackServiceGetModelConfigsProcedure:
+			stackServiceGetModelConfigsHandler.ServeHTTP(w, r)
+		case StackServiceListApplicationsProcedure:
+			stackServiceListApplicationsHandler.ServeHTTP(w, r)
+		case StackServiceCreateApplicationProcedure:
+			stackServiceCreateApplicationHandler.ServeHTTP(w, r)
+		case StackServiceDeleteApplicationProcedure:
+			stackServiceDeleteApplicationHandler.ServeHTTP(w, r)
+		case StackServiceUpdateApplicationUnitsProcedure:
+			stackServiceUpdateApplicationUnitsHandler.ServeHTTP(w, r)
+		case StackServiceUpdateApplicationRelationProcedure:
+			stackServiceUpdateApplicationRelationHandler.ServeHTTP(w, r)
+		case StackServiceUpdateApplicationConfigProcedure:
+			stackServiceUpdateApplicationConfigHandler.ServeHTTP(w, r)
+		case StackServiceExposeApplicationProcedure:
+			stackServiceExposeApplicationHandler.ServeHTTP(w, r)
+		case StackServiceListIntegrationsProcedure:
+			stackServiceListIntegrationsHandler.ServeHTTP(w, r)
+		case StackServiceListActionsProcedure:
+			stackServiceListActionsHandler.ServeHTTP(w, r)
+		case StackServiceRunActionProcedure:
+			stackServiceRunActionHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -564,6 +893,10 @@ func (UnimplementedStackServiceHandler) ListMachines(context.Context, *connect.R
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ListMachines is not implemented"))
 }
 
+func (UnimplementedStackServiceHandler) AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.AddMachines is not implemented"))
+}
+
 func (UnimplementedStackServiceHandler) ImportBootResources(context.Context, *connect.Request[v1.ImportBootResourcesRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ImportBootResources is not implemented"))
 }
@@ -580,6 +913,54 @@ func (UnimplementedStackServiceHandler) CommissionMachine(context.Context, *conn
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.CommissionMachine is not implemented"))
 }
 
-func (UnimplementedStackServiceHandler) ListModelConfigs(context.Context, *connect.Request[v1.ListModelConfigsRequest]) (*connect.Response[v1.ListModelConfigsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ListModelConfigs is not implemented"))
+func (UnimplementedStackServiceHandler) ListModels(context.Context, *connect.Request[v1.ListModelsRequest]) (*connect.Response[v1.ListModelsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ListModels is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) CreateModel(context.Context, *connect.Request[v1.CreateModelRequest]) (*connect.Response[v1.Model], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.CreateModel is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) GetModelConfigs(context.Context, *connect.Request[v1.GetModelConfigsRequest]) (*connect.Response[v1.GetModelConfigsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.GetModelConfigs is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ListApplications is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) CreateApplication(context.Context, *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.CreateApplication is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) DeleteApplication(context.Context, *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.DeleteApplication is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) UpdateApplicationUnits(context.Context, *connect.Request[v1.UpdateApplicationUnitsRequest]) (*connect.Response[v1.Application], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.UpdateApplicationUnits is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) UpdateApplicationRelation(context.Context, *connect.Request[v1.UpdateApplicationRelationRequest]) (*connect.Response[v1.Application], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.UpdateApplicationRelation is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) UpdateApplicationConfig(context.Context, *connect.Request[v1.UpdateApplicationConfigRequest]) (*connect.Response[v1.Application], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.UpdateApplicationConfig is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) ExposeApplication(context.Context, *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ExposeApplication is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) ListIntegrations(context.Context, *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ListIntegrations is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ListActions is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) RunAction(context.Context, *connect.Request[v1.RunActionRequest]) (*connect.Response[v1.Action], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.RunAction is not implemented"))
 }

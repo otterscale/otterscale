@@ -5,14 +5,14 @@
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { EmptySchema } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_empty, file_google_protobuf_struct } from "@bufbuild/protobuf/wkt";
-import type { JsonObject, Message } from "@bufbuild/protobuf";
+import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file api/stack/v1/stack.proto.
  */
 export const file_api_stack_v1_stack: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvc3RhY2svdjEvc3RhY2sucHJvdG8SEG9wZW5oZGMuc3RhY2sudjEiSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCCLxAQoHTmV0d29yaxIoCgZmYWJyaWMYASABKAsyGC5vcGVuaGRjLnN0YWNrLnYxLkZhYnJpYxIzCghzZXR0aW5ncxgCIAMoCzIhLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yay5TZXR0aW5nGoYBCgdTZXR0aW5nEiQKBHZsYW4YASABKAsyFi5vcGVuaGRjLnN0YWNrLnYxLlZMQU4SKAoGc3VibmV0GAIgASgLMhgub3BlbmhkYy5zdGFjay52MS5TdWJuZXQSKwoIaXBfcmFuZ2UYAyABKAsyGS5vcGVuaGRjLnN0YWNrLnYxLklQUmFuZ2UiYAoEVkxBThIKCgJpZBgBIAEoBRILCgN2aWQYAiABKAUSDAoEbmFtZRgDIAEoCRILCgNtdHUYBCABKAUSEwoLZGVzY3JpcHRpb24YBSABKAkSDwoHZGhjcF9vbhgGIAEoCCIiCgZGYWJyaWMSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCSLeAQoGU3VibmV0EgoKAmlkGAEgASgFEgwKBG5hbWUYAiABKAkSDAoEY2lkchgDIAEoCRISCgpnYXRld2F5X2lwGAQgASgJEhMKC2Ruc19zZXJ2ZXJzGAUgAygJEhMKC2Rlc2NyaXB0aW9uGAYgASgJEhoKEm1hbmFnZWRfYWxsb2NhdGlvbhgHIAEoCBIYChBhY3RpdmVfZGlzY292ZXJ5GAggASgIEhoKEmFsbG93X3Byb3h5X2FjY2VzcxgJIAEoCBIcChRhbGxvd19kbnNfcmVzb2x1dGlvbhgKIAEoCCKACwoHTWFjaGluZRIRCglzeXN0ZW1faWQYASABKAkSFQoNaGFyZHdhcmVfdXVpZBhlIAEoCRIQCghob3N0bmFtZRhmIAEoCRIMCgRmcWRuGGcgASgJEgwKBHRhZ3MYaCADKAkSEwoLZGVzY3JpcHRpb24YaSABKAkSDwoGc3RhdHVzGMkBIAEoCRIUCgtwb3dlcl9zdGF0ZRitAiABKAkSEwoKcG93ZXJfdHlwZRiuAiABKAkSEAoHb3N5c3RlbRiRAyABKAkSFgoNZGlzdHJvX3NlcmllcxiSAyABKAkSEwoKaHdlX2tlcm5lbBiTAyABKAkSFQoMYXJjaGl0ZWN0dXJlGJQDIAEoCRISCgljcHVfc3BlZWQYlQMgASgFEhIKCWNwdV9jb3VudBiWAyABKAUSDwoGbWVtb3J5GJcDIAEoAxIQCgdzdG9yYWdlGJgDIAEoARIVCgxpcF9hZGRyZXNzZXMYmQMgAygJElEKFHdvcmtsb2FkX2Fubm90YXRpb25zGPUDIAMoCzIyLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5Xb3JrbG9hZEFubm90YXRpb25zRW50cnkSUQoUaGFyZHdhcmVfaW5mb3JtYXRpb24Y2QQgAygLMjIub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLkhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRIZChBiaW9zX2Jvb3RfbWV0aG9kGNoEIAEoCRI3CgpudW1hX25vZGVzGL0FIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5OVU1BTm9kZRI9Cg1ibG9ja19kZXZpY2VzGKEGIAMoCzIlLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5CbG9ja0RldmljZRJHChJuZXR3b3JrX2ludGVyZmFjZXMYogYgAygLMioub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLk5ldHdvcmtJbnRlcmZhY2UaOAoITlVNQU5vZGUSDQoFaW5kZXgYASABKAUSDQoFY29yZXMYAiABKAUSDgoGbWVtb3J5GAMgASgDGqMBCgtCbG9ja0RldmljZRIRCglib290X2Rpc2sYASABKAgSDAoEbmFtZRgLIAEoCRIOCgZzZXJpYWwYDCABKAkSDQoFbW9kZWwYFSABKAkSGAoQZmlybXdhcmVfdmVyc2lvbhgWIAEoCRIMCgRzaXplGB8gASgDEgwKBHR5cGUYKSABKAkSDAoEdGFncxgzIAMoCRIQCgh1c2VkX2Zvchg9IAEoCRq5AgoQTmV0d29ya0ludGVyZmFjZRIWCg5ib290X2ludGVyZmFjZRgBIAEoCBIMCgRuYW1lGAsgASgJEhMKC21hY19hZGRyZXNzGAwgASgJEhYKDmxpbmtfY29ubmVjdGVkGBUgASgIEhIKCmxpbmtfc3BlZWQYFiABKAUSFwoPaW50ZXJmYWNlX3NwZWVkGBcgASgFEgwKBHR5cGUYHyABKAkSEwoLZmFicmljX25hbWUYKSABKAkSEQoJZmFicmljX2lkGCogASgFEhEKCXZsYW5fbmFtZRgrIAEoCRIPCgd2bGFuX2lkGCwgASgFEhMKC3N1Ym5ldF9uYW1lGDMgASgJEhEKCXN1Ym5ldF9pZBg0IAEoBRISCgppcF9hZGRyZXNzGD0gASgJEg8KB2RoY3Bfb24YRyABKAgaOgoYV29ya2xvYWRBbm5vdGF0aW9uc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaOgoYSGFyZHdhcmVJbmZvcm1hdGlvbkVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiVgoHSVBSYW5nZRIKCgJpZBgBIAEoBRIQCghzdGFydF9pcBgCIAEoCRIOCgZlbmRfaXAYAyABKAkSDAoEdHlwZRgEIAEoCRIPCgdjb21tZW50GAUgASgJIhcKFUxpc3ROVFBTZXJ2ZXJzUmVxdWVzdCItChZMaXN0TlRQU2VydmVyc1Jlc3BvbnNlEhMKC250cF9zZXJ2ZXJzGAEgAygJIi4KF1VwZGF0ZU5UUFNlcnZlcnNSZXF1ZXN0EhMKC250cF9zZXJ2ZXJzGAEgAygJIk8KIVVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5VVJMUmVxdWVzdBIKCgJpZBgBIAEoBRILCgN1cmwYAiABKAkSEQoJc2tpcF9qdWp1GAMgASgIIkcKHkxpc3RQYWNrYWdlUmVwb3NpdG9yaWVzUmVxdWVzdBIRCglwYWdlX3NpemUYASABKAUSEgoKcGFnZV90b2tlbhgCIAEoCSJ9Ch9MaXN0UGFja2FnZVJlcG9zaXRvcmllc1Jlc3BvbnNlEkEKFHBhY2thZ2VfcmVwb3NpdG9yaWVzGAEgAygLMiMub3BlbmhkYy5zdGFjay52MS5QYWNrYWdlUmVwb3NpdG9yeRIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkiPAoTTGlzdE5ldHdvcmtzUmVxdWVzdBIRCglwYWdlX3NpemUYASABKAUSEgoKcGFnZV90b2tlbhgCIAEoCSJcChRMaXN0TmV0d29ya3NSZXNwb25zZRIrCghuZXR3b3JrcxgBIAMoCzIZLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yaxIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAkigAEKFENyZWF0ZU5ldHdvcmtSZXF1ZXN0Eg8KB2RoY3Bfb24YASABKAgSDAoEY2lkchgLIAEoCRISCgpnYXRld2F5X2lwGAwgASgJEhMKC2Ruc19zZXJ2ZXJzGA0gAygJEhAKCHN0YXJ0X2lwGBUgASgJEg4KBmVuZF9pcBgWIAEoCSIpChREZWxldGVOZXR3b3JrUmVxdWVzdBIRCglmYWJyaWNfaWQYASABKAUiLwoTVXBkYXRlRmFicmljUmVxdWVzdBIKCgJpZBgBIAEoBRIMCgRuYW1lGAIgASgJInQKEVVwZGF0ZVZMQU5SZXF1ZXN0EhEKCWZhYnJpY19pZBgBIAEoBRILCgN2aWQYAiABKAUSDAoEbmFtZRgDIAEoCRILCgNtdHUYBCABKAUSEwoLZGVzY3JpcHRpb24YBSABKAkSDwoHZGhjcF9vbhgGIAEoCCKZAQoTVXBkYXRlU3VibmV0UmVxdWVzdBIKCgJpZBgBIAEoBRIMCgRuYW1lGAIgASgJEgwKBGNpZHIYAyABKAkSEgoKZ2F0ZXdheV9pcBgEIAEoCRITCgtkbnNfc2VydmVycxgFIAMoCRITCgtkZXNjcmlwdGlvbhgGIAEoCRIcChRhbGxvd19kbnNfcmVzb2x1dGlvbhgHIAEoCCJVChRVcGRhdGVJUFJhbmdlUmVxdWVzdBIKCgJpZBgBIAEoBRIQCghzdGFydF9pcBgCIAEoCRIOCgZlbmRfaXAYAyABKAkSDwoHY29tbWVudBgEIAEoCSI8ChNMaXN0TWFjaGluZXNSZXF1ZXN0EhEKCXBhZ2Vfc2l6ZRgBIAEoBRISCgpwYWdlX3Rva2VuGAIgASgJIlwKFExpc3RNYWNoaW5lc1Jlc3BvbnNlEisKCG1hY2hpbmVzGAEgAygLMhkub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lEhcKD25leHRfcGFnZV90b2tlbhgCIAEoCSIcChpJbXBvcnRCb290UmVzb3VyY2VzUmVxdWVzdCIqChVQb3dlck9uTWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJIisKFlBvd2VyT2ZmTWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJIokBChhDb21taXNzaW9uTWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJEhIKCmVuYWJsZV9zc2gYAiABKAgSFwoPc2tpcF9ibWNfY29uZmlnGAMgASgIEhcKD3NraXBfbmV0d29ya2luZxgEIAEoCBIUCgxza2lwX3N0b3JhZ2UYBSABKAgiJwoXTGlzdE1vZGVsQ29uZmlnc1JlcXVlc3QSDAoEdXVpZBgBIAEoCSJEChhMaXN0TW9kZWxDb25maWdzUmVzcG9uc2USKAoHY29uZmlncxgBIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QyuAwKDFN0YWNrU2VydmljZRJjCg5MaXN0TlRQU2VydmVycxInLm9wZW5oZGMuc3RhY2sudjEuTGlzdE5UUFNlcnZlcnNSZXF1ZXN0Gigub3BlbmhkYy5zdGFjay52MS5MaXN0TlRQU2VydmVyc1Jlc3BvbnNlElUKEFVwZGF0ZU5UUFNlcnZlcnMSKS5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZU5UUFNlcnZlcnNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5En4KF0xpc3RQYWNrYWdlUmVwb3NpdG9yaWVzEjAub3BlbmhkYy5zdGFjay52MS5MaXN0UGFja2FnZVJlcG9zaXRvcmllc1JlcXVlc3QaMS5vcGVuaGRjLnN0YWNrLnYxLkxpc3RQYWNrYWdlUmVwb3NpdG9yaWVzUmVzcG9uc2USdgoaVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlVUkwSMy5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5VVJMUmVxdWVzdBojLm9wZW5oZGMuc3RhY2sudjEuUGFja2FnZVJlcG9zaXRvcnkSXQoMTGlzdE5ldHdvcmtzEiUub3BlbmhkYy5zdGFjay52MS5MaXN0TmV0d29ya3NSZXF1ZXN0GiYub3BlbmhkYy5zdGFjay52MS5MaXN0TmV0d29ya3NSZXNwb25zZRJSCg1DcmVhdGVOZXR3b3JrEiYub3BlbmhkYy5zdGFjay52MS5DcmVhdGVOZXR3b3JrUmVxdWVzdBoZLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yaxJPCg1EZWxldGVOZXR3b3JrEiYub3BlbmhkYy5zdGFjay52MS5EZWxldGVOZXR3b3JrUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJPCgxVcGRhdGVGYWJyaWMSJS5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZUZhYnJpY1JlcXVlc3QaGC5vcGVuaGRjLnN0YWNrLnYxLkZhYnJpYxJJCgpVcGRhdGVWTEFOEiMub3BlbmhkYy5zdGFjay52MS5VcGRhdGVWTEFOUmVxdWVzdBoWLm9wZW5oZGMuc3RhY2sudjEuVkxBThJPCgxVcGRhdGVTdWJuZXQSJS5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZVN1Ym5ldFJlcXVlc3QaGC5vcGVuaGRjLnN0YWNrLnYxLlN1Ym5ldBJSCg1VcGRhdGVJUFJhbmdlEiYub3BlbmhkYy5zdGFjay52MS5VcGRhdGVJUFJhbmdlUmVxdWVzdBoZLm9wZW5oZGMuc3RhY2sudjEuSVBSYW5nZRJdCgxMaXN0TWFjaGluZXMSJS5vcGVuaGRjLnN0YWNrLnYxLkxpc3RNYWNoaW5lc1JlcXVlc3QaJi5vcGVuaGRjLnN0YWNrLnYxLkxpc3RNYWNoaW5lc1Jlc3BvbnNlElsKE0ltcG9ydEJvb3RSZXNvdXJjZXMSLC5vcGVuaGRjLnN0YWNrLnYxLkltcG9ydEJvb3RSZXNvdXJjZXNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElQKDlBvd2VyT25NYWNoaW5lEicub3BlbmhkYy5zdGFjay52MS5Qb3dlck9uTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLnN0YWNrLnYxLk1hY2hpbmUSVgoPUG93ZXJPZmZNYWNoaW5lEigub3BlbmhkYy5zdGFjay52MS5Qb3dlck9mZk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lEloKEUNvbW1pc3Npb25NYWNoaW5lEioub3BlbmhkYy5zdGFjay52MS5Db21taXNzaW9uTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLnN0YWNrLnYxLk1hY2hpbmUSaQoQTGlzdE1vZGVsQ29uZmlncxIpLm9wZW5oZGMuc3RhY2sudjEuTGlzdE1vZGVsQ29uZmlnc1JlcXVlc3QaKi5vcGVuaGRjLnN0YWNrLnYxLkxpc3RNb2RlbENvbmZpZ3NSZXNwb25zZUIsWipnaXRodWIuY29tL29wZW5oZGMvb3BlbmhkYy9hcGkvc3RhY2svdjE7djFiCGVkaXRpb25zcOgH", [file_google_protobuf_empty, file_google_protobuf_struct]);
+  fileDesc("ChhhcGkvc3RhY2svdjEvc3RhY2sucHJvdG8SEG9wZW5oZGMuc3RhY2sudjEiSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCCLxAQoHTmV0d29yaxIoCgZmYWJyaWMYASABKAsyGC5vcGVuaGRjLnN0YWNrLnYxLkZhYnJpYxIzCghzZXR0aW5ncxgCIAMoCzIhLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yay5TZXR0aW5nGoYBCgdTZXR0aW5nEiQKBHZsYW4YASABKAsyFi5vcGVuaGRjLnN0YWNrLnYxLlZMQU4SKAoGc3VibmV0GAIgASgLMhgub3BlbmhkYy5zdGFjay52MS5TdWJuZXQSKwoIaXBfcmFuZ2UYAyABKAsyGS5vcGVuaGRjLnN0YWNrLnYxLklQUmFuZ2UiYAoEVkxBThIKCgJpZBgBIAEoBRILCgN2aWQYAiABKAUSDAoEbmFtZRgDIAEoCRILCgNtdHUYBCABKAUSEwoLZGVzY3JpcHRpb24YBSABKAkSDwoHZGhjcF9vbhgGIAEoCCIiCgZGYWJyaWMSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCSLeAQoGU3VibmV0EgoKAmlkGAEgASgFEgwKBG5hbWUYAiABKAkSDAoEY2lkchgDIAEoCRISCgpnYXRld2F5X2lwGAQgASgJEhMKC2Ruc19zZXJ2ZXJzGAUgAygJEhMKC2Rlc2NyaXB0aW9uGAYgASgJEhoKEm1hbmFnZWRfYWxsb2NhdGlvbhgHIAEoCBIYChBhY3RpdmVfZGlzY292ZXJ5GAggASgIEhoKEmFsbG93X3Byb3h5X2FjY2VzcxgJIAEoCBIcChRhbGxvd19kbnNfcmVzb2x1dGlvbhgKIAEoCCKACwoHTWFjaGluZRIRCglzeXN0ZW1faWQYASABKAkSFQoNaGFyZHdhcmVfdXVpZBhlIAEoCRIQCghob3N0bmFtZRhmIAEoCRIMCgRmcWRuGGcgASgJEgwKBHRhZ3MYaCADKAkSEwoLZGVzY3JpcHRpb24YaSABKAkSDwoGc3RhdHVzGMkBIAEoCRIUCgtwb3dlcl9zdGF0ZRitAiABKAkSEwoKcG93ZXJfdHlwZRiuAiABKAkSEAoHb3N5c3RlbRiRAyABKAkSFgoNZGlzdHJvX3NlcmllcxiSAyABKAkSEwoKaHdlX2tlcm5lbBiTAyABKAkSFQoMYXJjaGl0ZWN0dXJlGJQDIAEoCRISCgljcHVfc3BlZWQYlQMgASgFEhIKCWNwdV9jb3VudBiWAyABKAUSDwoGbWVtb3J5GJcDIAEoAxIQCgdzdG9yYWdlGJgDIAEoARIVCgxpcF9hZGRyZXNzZXMYmQMgAygJElEKFHdvcmtsb2FkX2Fubm90YXRpb25zGPUDIAMoCzIyLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5Xb3JrbG9hZEFubm90YXRpb25zRW50cnkSUQoUaGFyZHdhcmVfaW5mb3JtYXRpb24Y2QQgAygLMjIub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLkhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRIZChBiaW9zX2Jvb3RfbWV0aG9kGNoEIAEoCRI3CgpudW1hX25vZGVzGL0FIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5OVU1BTm9kZRI9Cg1ibG9ja19kZXZpY2VzGKEGIAMoCzIlLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5CbG9ja0RldmljZRJHChJuZXR3b3JrX2ludGVyZmFjZXMYogYgAygLMioub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLk5ldHdvcmtJbnRlcmZhY2UaOAoITlVNQU5vZGUSDQoFaW5kZXgYASABKAUSDQoFY29yZXMYAiABKAUSDgoGbWVtb3J5GAMgASgDGqMBCgtCbG9ja0RldmljZRIRCglib290X2Rpc2sYASABKAgSDAoEbmFtZRgLIAEoCRIOCgZzZXJpYWwYDCABKAkSDQoFbW9kZWwYFSABKAkSGAoQZmlybXdhcmVfdmVyc2lvbhgWIAEoCRIMCgRzaXplGB8gASgDEgwKBHR5cGUYKSABKAkSDAoEdGFncxgzIAMoCRIQCgh1c2VkX2Zvchg9IAEoCRq5AgoQTmV0d29ya0ludGVyZmFjZRIWCg5ib290X2ludGVyZmFjZRgBIAEoCBIMCgRuYW1lGAsgASgJEhMKC21hY19hZGRyZXNzGAwgASgJEhYKDmxpbmtfY29ubmVjdGVkGBUgASgIEhIKCmxpbmtfc3BlZWQYFiABKAUSFwoPaW50ZXJmYWNlX3NwZWVkGBcgASgFEgwKBHR5cGUYHyABKAkSEwoLZmFicmljX25hbWUYKSABKAkSEQoJZmFicmljX2lkGCogASgFEhEKCXZsYW5fbmFtZRgrIAEoCRIPCgd2bGFuX2lkGCwgASgFEhMKC3N1Ym5ldF9uYW1lGDMgASgJEhEKCXN1Ym5ldF9pZBg0IAEoBRISCgppcF9hZGRyZXNzGD0gASgJEg8KB2RoY3Bfb24YRyABKAgaOgoYV29ya2xvYWRBbm5vdGF0aW9uc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaOgoYSGFyZHdhcmVJbmZvcm1hdGlvbkVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiVgoHSVBSYW5nZRIKCgJpZBgBIAEoBRIQCghzdGFydF9pcBgCIAEoCRIOCgZlbmRfaXAYAyABKAkSDAoEdHlwZRgEIAEoCRIPCgdjb21tZW50GAUgASgJIgcKBU1vZGVsIg0KC01vZGVsQ29uZmlnIigKC0FwcGxpY2F0aW9uEhkKEW1hY2hpbmVfc3lzdGVtX2lkGAEgASgJIg0KC0ludGVncmF0aW9uIggKBkFjdGlvbiIXChVMaXN0TlRQU2VydmVyc1JlcXVlc3QiLQoWTGlzdE5UUFNlcnZlcnNSZXNwb25zZRITCgtudHBfc2VydmVycxgBIAMoCSIuChdVcGRhdGVOVFBTZXJ2ZXJzUmVxdWVzdBITCgtudHBfc2VydmVycxgBIAMoCSJPCiFVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVVSTFJlcXVlc3QSCgoCaWQYASABKAUSCwoDdXJsGAIgASgJEhEKCXNraXBfanVqdRgDIAEoCCIgCh5MaXN0UGFja2FnZVJlcG9zaXRvcmllc1JlcXVlc3QiZAofTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXNSZXNwb25zZRJBChRwYWNrYWdlX3JlcG9zaXRvcmllcxgBIAMoCzIjLm9wZW5oZGMuc3RhY2sudjEuUGFja2FnZVJlcG9zaXRvcnkiFQoTTGlzdE5ldHdvcmtzUmVxdWVzdCJDChRMaXN0TmV0d29ya3NSZXNwb25zZRIrCghuZXR3b3JrcxgBIAMoCzIZLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yayKAAQoUQ3JlYXRlTmV0d29ya1JlcXVlc3QSDwoHZGhjcF9vbhgBIAEoCBIMCgRjaWRyGAsgASgJEhIKCmdhdGV3YXlfaXAYDCABKAkSEwoLZG5zX3NlcnZlcnMYDSADKAkSEAoIc3RhcnRfaXAYFSABKAkSDgoGZW5kX2lwGBYgASgJIikKFERlbGV0ZU5ldHdvcmtSZXF1ZXN0EhEKCWZhYnJpY19pZBgBIAEoBSIvChNVcGRhdGVGYWJyaWNSZXF1ZXN0EgoKAmlkGAEgASgFEgwKBG5hbWUYAiABKAkidAoRVXBkYXRlVkxBTlJlcXVlc3QSEQoJZmFicmljX2lkGAEgASgFEgsKA3ZpZBgCIAEoBRIMCgRuYW1lGAMgASgJEgsKA210dRgEIAEoBRITCgtkZXNjcmlwdGlvbhgFIAEoCRIPCgdkaGNwX29uGAYgASgIIpkBChNVcGRhdGVTdWJuZXRSZXF1ZXN0EgoKAmlkGAEgASgFEgwKBG5hbWUYAiABKAkSDAoEY2lkchgDIAEoCRISCgpnYXRld2F5X2lwGAQgASgJEhMKC2Ruc19zZXJ2ZXJzGAUgAygJEhMKC2Rlc2NyaXB0aW9uGAYgASgJEhwKFGFsbG93X2Ruc19yZXNvbHV0aW9uGAcgASgIIlUKFFVwZGF0ZUlQUmFuZ2VSZXF1ZXN0EgoKAmlkGAEgASgFEhAKCHN0YXJ0X2lwGAIgASgJEg4KBmVuZF9pcBgDIAEoCRIPCgdjb21tZW50GAQgASgJIhUKE0xpc3RNYWNoaW5lc1JlcXVlc3QiQwoUTGlzdE1hY2hpbmVzUmVzcG9uc2USKwoIbWFjaGluZXMYASADKAsyGS5vcGVuaGRjLnN0YWNrLnYxLk1hY2hpbmUiqQIKEkFkZE1hY2hpbmVzUmVxdWVzdBISCgptb2RlbF91dWlkGAEgASgJEkIKCnBhcmFtZXRlcnMYAiADKAsyLi5vcGVuaGRjLnN0YWNrLnYxLkFkZE1hY2hpbmVzUmVxdWVzdC5QYXJhbWV0ZXIaVgoKQ29uc3RyYWludBIUCgxhcmNoaXRlY3R1cmUYASABKAkSEQoJY3B1X2NvcmVzGAIgASgEEhEKCW1lbW9yeV9tYhgDIAEoBBIMCgR0YWdzGAsgAygJGmMKCVBhcmFtZXRlchIRCglwbGFjZW1lbnQYASABKAkSQwoKY29uc3RyYWludBgCIAEoCzIvLm9wZW5oZGMuc3RhY2sudjEuQWRkTWFjaGluZXNSZXF1ZXN0LkNvbnN0cmFpbnQiJwoTQWRkTWFjaGluZXNSZXNwb25zZRIQCghtYWNoaW5lcxgBIAMoCSIcChpJbXBvcnRCb290UmVzb3VyY2VzUmVxdWVzdCIqChVQb3dlck9uTWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJIisKFlBvd2VyT2ZmTWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJIokBChhDb21taXNzaW9uTWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJEhIKCmVuYWJsZV9zc2gYAiABKAgSFwoPc2tpcF9ibWNfY29uZmlnGAMgASgIEhcKD3NraXBfbmV0d29ya2luZxgEIAEoCBIUCgxza2lwX3N0b3JhZ2UYBSABKAgiEwoRTGlzdE1vZGVsc1JlcXVlc3QiPQoSTGlzdE1vZGVsc1Jlc3BvbnNlEicKBm1vZGVscxgBIAMoCzIXLm9wZW5oZGMuc3RhY2sudjEuTW9kZWwiIgoSQ3JlYXRlTW9kZWxSZXF1ZXN0EgwKBG5hbWUYASABKAkiJgoWR2V0TW9kZWxDb25maWdzUmVxdWVzdBIMCgR1dWlkGAEgASgJIqIBChdHZXRNb2RlbENvbmZpZ3NSZXNwb25zZRJSCg1tb2RlbF9jb25maWdzGAEgAygLMjsub3BlbmhkYy5zdGFjay52MS5HZXRNb2RlbENvbmZpZ3NSZXNwb25zZS5Nb2RlbENvbmZpZ3NFbnRyeRozChFNb2RlbENvbmZpZ3NFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIhkKF0xpc3RBcHBsaWNhdGlvbnNSZXF1ZXN0Ik8KGExpc3RBcHBsaWNhdGlvbnNSZXNwb25zZRIzCgxhcHBsaWNhdGlvbnMYASADKAsyHS5vcGVuaGRjLnN0YWNrLnYxLkFwcGxpY2F0aW9uIhoKGENyZWF0ZUFwcGxpY2F0aW9uUmVxdWVzdCIaChhEZWxldGVBcHBsaWNhdGlvblJlcXVlc3QiHwodVXBkYXRlQXBwbGljYXRpb25Vbml0c1JlcXVlc3QiIgogVXBkYXRlQXBwbGljYXRpb25SZWxhdGlvblJlcXVlc3QiIAoeVXBkYXRlQXBwbGljYXRpb25Db25maWdSZXF1ZXN0IhoKGEV4cG9zZUFwcGxpY2F0aW9uUmVxdWVzdCIZChdMaXN0SW50ZWdyYXRpb25zUmVxdWVzdCJPChhMaXN0SW50ZWdyYXRpb25zUmVzcG9uc2USMwoMaW50ZWdyYXRpb25zGAEgAygLMh0ub3BlbmhkYy5zdGFjay52MS5JbnRlZ3JhdGlvbiIUChJMaXN0QWN0aW9uc1JlcXVlc3QiQAoTTGlzdEFjdGlvbnNSZXNwb25zZRIpCgdBY3Rpb25zGAEgAygLMhgub3BlbmhkYy5zdGFjay52MS5BY3Rpb24iEgoQUnVuQWN0aW9uUmVxdWVzdDKUFgoMU3RhY2tTZXJ2aWNlEmMKDkxpc3ROVFBTZXJ2ZXJzEicub3BlbmhkYy5zdGFjay52MS5MaXN0TlRQU2VydmVyc1JlcXVlc3QaKC5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROVFBTZXJ2ZXJzUmVzcG9uc2USVQoQVXBkYXRlTlRQU2VydmVycxIpLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlTlRQU2VydmVyc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSfgoXTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXMSMC5vcGVuaGRjLnN0YWNrLnYxLkxpc3RQYWNrYWdlUmVwb3NpdG9yaWVzUmVxdWVzdBoxLm9wZW5oZGMuc3RhY2sudjEuTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXNSZXNwb25zZRJ2ChpVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVVSTBIzLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlVUkxSZXF1ZXN0GiMub3BlbmhkYy5zdGFjay52MS5QYWNrYWdlUmVwb3NpdG9yeRJdCgxMaXN0TmV0d29ya3MSJS5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROZXR3b3Jrc1JlcXVlc3QaJi5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROZXR3b3Jrc1Jlc3BvbnNlElIKDUNyZWF0ZU5ldHdvcmsSJi5vcGVuaGRjLnN0YWNrLnYxLkNyZWF0ZU5ldHdvcmtSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5OZXR3b3JrEk8KDURlbGV0ZU5ldHdvcmsSJi5vcGVuaGRjLnN0YWNrLnYxLkRlbGV0ZU5ldHdvcmtSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Ek8KDFVwZGF0ZUZhYnJpYxIlLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlRmFicmljUmVxdWVzdBoYLm9wZW5oZGMuc3RhY2sudjEuRmFicmljEkkKClVwZGF0ZVZMQU4SIy5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZVZMQU5SZXF1ZXN0GhYub3BlbmhkYy5zdGFjay52MS5WTEFOEk8KDFVwZGF0ZVN1Ym5ldBIlLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlU3VibmV0UmVxdWVzdBoYLm9wZW5oZGMuc3RhY2sudjEuU3VibmV0ElIKDVVwZGF0ZUlQUmFuZ2USJi5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZUlQUmFuZ2VSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5JUFJhbmdlEl0KDExpc3RNYWNoaW5lcxIlLm9wZW5oZGMuc3RhY2sudjEuTGlzdE1hY2hpbmVzUmVxdWVzdBomLm9wZW5oZGMuc3RhY2sudjEuTGlzdE1hY2hpbmVzUmVzcG9uc2USWgoLQWRkTWFjaGluZXMSJC5vcGVuaGRjLnN0YWNrLnYxLkFkZE1hY2hpbmVzUmVxdWVzdBolLm9wZW5oZGMuc3RhY2sudjEuQWRkTWFjaGluZXNSZXNwb25zZRJbChNJbXBvcnRCb290UmVzb3VyY2VzEiwub3BlbmhkYy5zdGFjay52MS5JbXBvcnRCb290UmVzb3VyY2VzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJUCg5Qb3dlck9uTWFjaGluZRInLm9wZW5oZGMuc3RhY2sudjEuUG93ZXJPbk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lElYKD1Bvd2VyT2ZmTWFjaGluZRIoLm9wZW5oZGMuc3RhY2sudjEuUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBoZLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZRJaChFDb21taXNzaW9uTWFjaGluZRIqLm9wZW5oZGMuc3RhY2sudjEuQ29tbWlzc2lvbk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lElcKCkxpc3RNb2RlbHMSIy5vcGVuaGRjLnN0YWNrLnYxLkxpc3RNb2RlbHNSZXF1ZXN0GiQub3BlbmhkYy5zdGFjay52MS5MaXN0TW9kZWxzUmVzcG9uc2USTAoLQ3JlYXRlTW9kZWwSJC5vcGVuaGRjLnN0YWNrLnYxLkNyZWF0ZU1vZGVsUmVxdWVzdBoXLm9wZW5oZGMuc3RhY2sudjEuTW9kZWwSZgoPR2V0TW9kZWxDb25maWdzEigub3BlbmhkYy5zdGFjay52MS5HZXRNb2RlbENvbmZpZ3NSZXF1ZXN0Gikub3BlbmhkYy5zdGFjay52MS5HZXRNb2RlbENvbmZpZ3NSZXNwb25zZRJpChBMaXN0QXBwbGljYXRpb25zEikub3BlbmhkYy5zdGFjay52MS5MaXN0QXBwbGljYXRpb25zUmVxdWVzdBoqLm9wZW5oZGMuc3RhY2sudjEuTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlEl4KEUNyZWF0ZUFwcGxpY2F0aW9uEioub3BlbmhkYy5zdGFjay52MS5DcmVhdGVBcHBsaWNhdGlvblJlcXVlc3QaHS5vcGVuaGRjLnN0YWNrLnYxLkFwcGxpY2F0aW9uElcKEURlbGV0ZUFwcGxpY2F0aW9uEioub3BlbmhkYy5zdGFjay52MS5EZWxldGVBcHBsaWNhdGlvblJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSaAoWVXBkYXRlQXBwbGljYXRpb25Vbml0cxIvLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlQXBwbGljYXRpb25Vbml0c1JlcXVlc3QaHS5vcGVuaGRjLnN0YWNrLnYxLkFwcGxpY2F0aW9uEm4KGVVwZGF0ZUFwcGxpY2F0aW9uUmVsYXRpb24SMi5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZUFwcGxpY2F0aW9uUmVsYXRpb25SZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5BcHBsaWNhdGlvbhJqChdVcGRhdGVBcHBsaWNhdGlvbkNvbmZpZxIwLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlQXBwbGljYXRpb25Db25maWdSZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5BcHBsaWNhdGlvbhJeChFFeHBvc2VBcHBsaWNhdGlvbhIqLm9wZW5oZGMuc3RhY2sudjEuRXhwb3NlQXBwbGljYXRpb25SZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5BcHBsaWNhdGlvbhJpChBMaXN0SW50ZWdyYXRpb25zEikub3BlbmhkYy5zdGFjay52MS5MaXN0SW50ZWdyYXRpb25zUmVxdWVzdBoqLm9wZW5oZGMuc3RhY2sudjEuTGlzdEludGVncmF0aW9uc1Jlc3BvbnNlEloKC0xpc3RBY3Rpb25zEiQub3BlbmhkYy5zdGFjay52MS5MaXN0QWN0aW9uc1JlcXVlc3QaJS5vcGVuaGRjLnN0YWNrLnYxLkxpc3RBY3Rpb25zUmVzcG9uc2USSQoJUnVuQWN0aW9uEiIub3BlbmhkYy5zdGFjay52MS5SdW5BY3Rpb25SZXF1ZXN0Ghgub3BlbmhkYy5zdGFjay52MS5BY3Rpb25CLFoqZ2l0aHViLmNvbS9vcGVuaGRjL29wZW5oZGMvYXBpL3N0YWNrL3YxO3YxYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty]);
 
 /**
  * @generated from message openhdc.stack.v1.PackageRepository
@@ -562,6 +562,75 @@ export const IPRangeSchema: GenMessage<IPRange> = /*@__PURE__*/
   messageDesc(file_api_stack_v1_stack, 6);
 
 /**
+ * @generated from message openhdc.stack.v1.Model
+ */
+export type Model = Message<"openhdc.stack.v1.Model"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.Model.
+ * Use `create(ModelSchema)` to create a new message.
+ */
+export const ModelSchema: GenMessage<Model> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 7);
+
+/**
+ * @generated from message openhdc.stack.v1.ModelConfig
+ */
+export type ModelConfig = Message<"openhdc.stack.v1.ModelConfig"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ModelConfig.
+ * Use `create(ModelConfigSchema)` to create a new message.
+ */
+export const ModelConfigSchema: GenMessage<ModelConfig> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 8);
+
+/**
+ * @generated from message openhdc.stack.v1.Application
+ */
+export type Application = Message<"openhdc.stack.v1.Application"> & {
+  /**
+   * @generated from field: string machine_system_id = 1;
+   */
+  machineSystemId: string;
+};
+
+/**
+ * Describes the message openhdc.stack.v1.Application.
+ * Use `create(ApplicationSchema)` to create a new message.
+ */
+export const ApplicationSchema: GenMessage<Application> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 9);
+
+/**
+ * @generated from message openhdc.stack.v1.Integration
+ */
+export type Integration = Message<"openhdc.stack.v1.Integration"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.Integration.
+ * Use `create(IntegrationSchema)` to create a new message.
+ */
+export const IntegrationSchema: GenMessage<Integration> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 10);
+
+/**
+ * @generated from message openhdc.stack.v1.Action
+ */
+export type Action = Message<"openhdc.stack.v1.Action"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.Action.
+ * Use `create(ActionSchema)` to create a new message.
+ */
+export const ActionSchema: GenMessage<Action> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 11);
+
+/**
  * @generated from message openhdc.stack.v1.ListNTPServersRequest
  */
 export type ListNTPServersRequest = Message<"openhdc.stack.v1.ListNTPServersRequest"> & {
@@ -572,7 +641,7 @@ export type ListNTPServersRequest = Message<"openhdc.stack.v1.ListNTPServersRequ
  * Use `create(ListNTPServersRequestSchema)` to create a new message.
  */
 export const ListNTPServersRequestSchema: GenMessage<ListNTPServersRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 7);
+  messageDesc(file_api_stack_v1_stack, 12);
 
 /**
  * @generated from message openhdc.stack.v1.ListNTPServersResponse
@@ -589,7 +658,7 @@ export type ListNTPServersResponse = Message<"openhdc.stack.v1.ListNTPServersRes
  * Use `create(ListNTPServersResponseSchema)` to create a new message.
  */
 export const ListNTPServersResponseSchema: GenMessage<ListNTPServersResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 8);
+  messageDesc(file_api_stack_v1_stack, 13);
 
 /**
  * @generated from message openhdc.stack.v1.UpdateNTPServersRequest
@@ -606,7 +675,7 @@ export type UpdateNTPServersRequest = Message<"openhdc.stack.v1.UpdateNTPServers
  * Use `create(UpdateNTPServersRequestSchema)` to create a new message.
  */
 export const UpdateNTPServersRequestSchema: GenMessage<UpdateNTPServersRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 9);
+  messageDesc(file_api_stack_v1_stack, 14);
 
 /**
  * @generated from message openhdc.stack.v1.UpdatePackageRepositoryURLRequest
@@ -633,21 +702,12 @@ export type UpdatePackageRepositoryURLRequest = Message<"openhdc.stack.v1.Update
  * Use `create(UpdatePackageRepositoryURLRequestSchema)` to create a new message.
  */
 export const UpdatePackageRepositoryURLRequestSchema: GenMessage<UpdatePackageRepositoryURLRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 10);
+  messageDesc(file_api_stack_v1_stack, 15);
 
 /**
  * @generated from message openhdc.stack.v1.ListPackageRepositoriesRequest
  */
 export type ListPackageRepositoriesRequest = Message<"openhdc.stack.v1.ListPackageRepositoriesRequest"> & {
-  /**
-   * @generated from field: int32 page_size = 1;
-   */
-  pageSize: number;
-
-  /**
-   * @generated from field: string page_token = 2;
-   */
-  pageToken: string;
 };
 
 /**
@@ -655,7 +715,7 @@ export type ListPackageRepositoriesRequest = Message<"openhdc.stack.v1.ListPacka
  * Use `create(ListPackageRepositoriesRequestSchema)` to create a new message.
  */
 export const ListPackageRepositoriesRequestSchema: GenMessage<ListPackageRepositoriesRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 11);
+  messageDesc(file_api_stack_v1_stack, 16);
 
 /**
  * @generated from message openhdc.stack.v1.ListPackageRepositoriesResponse
@@ -665,11 +725,6 @@ export type ListPackageRepositoriesResponse = Message<"openhdc.stack.v1.ListPack
    * @generated from field: repeated openhdc.stack.v1.PackageRepository package_repositories = 1;
    */
   packageRepositories: PackageRepository[];
-
-  /**
-   * @generated from field: string next_page_token = 2;
-   */
-  nextPageToken: string;
 };
 
 /**
@@ -677,21 +732,12 @@ export type ListPackageRepositoriesResponse = Message<"openhdc.stack.v1.ListPack
  * Use `create(ListPackageRepositoriesResponseSchema)` to create a new message.
  */
 export const ListPackageRepositoriesResponseSchema: GenMessage<ListPackageRepositoriesResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 12);
+  messageDesc(file_api_stack_v1_stack, 17);
 
 /**
  * @generated from message openhdc.stack.v1.ListNetworksRequest
  */
 export type ListNetworksRequest = Message<"openhdc.stack.v1.ListNetworksRequest"> & {
-  /**
-   * @generated from field: int32 page_size = 1;
-   */
-  pageSize: number;
-
-  /**
-   * @generated from field: string page_token = 2;
-   */
-  pageToken: string;
 };
 
 /**
@@ -699,7 +745,7 @@ export type ListNetworksRequest = Message<"openhdc.stack.v1.ListNetworksRequest"
  * Use `create(ListNetworksRequestSchema)` to create a new message.
  */
 export const ListNetworksRequestSchema: GenMessage<ListNetworksRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 13);
+  messageDesc(file_api_stack_v1_stack, 18);
 
 /**
  * @generated from message openhdc.stack.v1.ListNetworksResponse
@@ -709,11 +755,6 @@ export type ListNetworksResponse = Message<"openhdc.stack.v1.ListNetworksRespons
    * @generated from field: repeated openhdc.stack.v1.Network networks = 1;
    */
   networks: Network[];
-
-  /**
-   * @generated from field: string next_page_token = 2;
-   */
-  nextPageToken: string;
 };
 
 /**
@@ -721,7 +762,7 @@ export type ListNetworksResponse = Message<"openhdc.stack.v1.ListNetworksRespons
  * Use `create(ListNetworksResponseSchema)` to create a new message.
  */
 export const ListNetworksResponseSchema: GenMessage<ListNetworksResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 14);
+  messageDesc(file_api_stack_v1_stack, 19);
 
 /**
  * @generated from message openhdc.stack.v1.CreateNetworkRequest
@@ -763,7 +804,7 @@ export type CreateNetworkRequest = Message<"openhdc.stack.v1.CreateNetworkReques
  * Use `create(CreateNetworkRequestSchema)` to create a new message.
  */
 export const CreateNetworkRequestSchema: GenMessage<CreateNetworkRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 15);
+  messageDesc(file_api_stack_v1_stack, 20);
 
 /**
  * @generated from message openhdc.stack.v1.DeleteNetworkRequest
@@ -780,7 +821,7 @@ export type DeleteNetworkRequest = Message<"openhdc.stack.v1.DeleteNetworkReques
  * Use `create(DeleteNetworkRequestSchema)` to create a new message.
  */
 export const DeleteNetworkRequestSchema: GenMessage<DeleteNetworkRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 16);
+  messageDesc(file_api_stack_v1_stack, 21);
 
 /**
  * @generated from message openhdc.stack.v1.UpdateFabricRequest
@@ -802,7 +843,7 @@ export type UpdateFabricRequest = Message<"openhdc.stack.v1.UpdateFabricRequest"
  * Use `create(UpdateFabricRequestSchema)` to create a new message.
  */
 export const UpdateFabricRequestSchema: GenMessage<UpdateFabricRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 17);
+  messageDesc(file_api_stack_v1_stack, 22);
 
 /**
  * @generated from message openhdc.stack.v1.UpdateVLANRequest
@@ -844,7 +885,7 @@ export type UpdateVLANRequest = Message<"openhdc.stack.v1.UpdateVLANRequest"> & 
  * Use `create(UpdateVLANRequestSchema)` to create a new message.
  */
 export const UpdateVLANRequestSchema: GenMessage<UpdateVLANRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 18);
+  messageDesc(file_api_stack_v1_stack, 23);
 
 /**
  * @generated from message openhdc.stack.v1.UpdateSubnetRequest
@@ -891,7 +932,7 @@ export type UpdateSubnetRequest = Message<"openhdc.stack.v1.UpdateSubnetRequest"
  * Use `create(UpdateSubnetRequestSchema)` to create a new message.
  */
 export const UpdateSubnetRequestSchema: GenMessage<UpdateSubnetRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 19);
+  messageDesc(file_api_stack_v1_stack, 24);
 
 /**
  * @generated from message openhdc.stack.v1.UpdateIPRangeRequest
@@ -923,21 +964,12 @@ export type UpdateIPRangeRequest = Message<"openhdc.stack.v1.UpdateIPRangeReques
  * Use `create(UpdateIPRangeRequestSchema)` to create a new message.
  */
 export const UpdateIPRangeRequestSchema: GenMessage<UpdateIPRangeRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 20);
+  messageDesc(file_api_stack_v1_stack, 25);
 
 /**
  * @generated from message openhdc.stack.v1.ListMachinesRequest
  */
 export type ListMachinesRequest = Message<"openhdc.stack.v1.ListMachinesRequest"> & {
-  /**
-   * @generated from field: int32 page_size = 1;
-   */
-  pageSize: number;
-
-  /**
-   * @generated from field: string page_token = 2;
-   */
-  pageToken: string;
 };
 
 /**
@@ -945,7 +977,7 @@ export type ListMachinesRequest = Message<"openhdc.stack.v1.ListMachinesRequest"
  * Use `create(ListMachinesRequestSchema)` to create a new message.
  */
 export const ListMachinesRequestSchema: GenMessage<ListMachinesRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 21);
+  messageDesc(file_api_stack_v1_stack, 26);
 
 /**
  * @generated from message openhdc.stack.v1.ListMachinesResponse
@@ -955,11 +987,6 @@ export type ListMachinesResponse = Message<"openhdc.stack.v1.ListMachinesRespons
    * @generated from field: repeated openhdc.stack.v1.Machine machines = 1;
    */
   machines: Machine[];
-
-  /**
-   * @generated from field: string next_page_token = 2;
-   */
-  nextPageToken: string;
 };
 
 /**
@@ -967,7 +994,100 @@ export type ListMachinesResponse = Message<"openhdc.stack.v1.ListMachinesRespons
  * Use `create(ListMachinesResponseSchema)` to create a new message.
  */
 export const ListMachinesResponseSchema: GenMessage<ListMachinesResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 22);
+  messageDesc(file_api_stack_v1_stack, 27);
+
+/**
+ * @generated from message openhdc.stack.v1.AddMachinesRequest
+ */
+export type AddMachinesRequest = Message<"openhdc.stack.v1.AddMachinesRequest"> & {
+  /**
+   * @generated from field: string model_uuid = 1;
+   */
+  modelUuid: string;
+
+  /**
+   * @generated from field: repeated openhdc.stack.v1.AddMachinesRequest.Parameter parameters = 2;
+   */
+  parameters: AddMachinesRequest_Parameter[];
+};
+
+/**
+ * Describes the message openhdc.stack.v1.AddMachinesRequest.
+ * Use `create(AddMachinesRequestSchema)` to create a new message.
+ */
+export const AddMachinesRequestSchema: GenMessage<AddMachinesRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 28);
+
+/**
+ * @generated from message openhdc.stack.v1.AddMachinesRequest.Constraint
+ */
+export type AddMachinesRequest_Constraint = Message<"openhdc.stack.v1.AddMachinesRequest.Constraint"> & {
+  /**
+   * @generated from field: string architecture = 1;
+   */
+  architecture: string;
+
+  /**
+   * @generated from field: uint64 cpu_cores = 2;
+   */
+  cpuCores: bigint;
+
+  /**
+   * @generated from field: uint64 memory_mb = 3;
+   */
+  memoryMb: bigint;
+
+  /**
+   * @generated from field: repeated string tags = 11;
+   */
+  tags: string[];
+};
+
+/**
+ * Describes the message openhdc.stack.v1.AddMachinesRequest.Constraint.
+ * Use `create(AddMachinesRequest_ConstraintSchema)` to create a new message.
+ */
+export const AddMachinesRequest_ConstraintSchema: GenMessage<AddMachinesRequest_Constraint> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 28, 0);
+
+/**
+ * @generated from message openhdc.stack.v1.AddMachinesRequest.Parameter
+ */
+export type AddMachinesRequest_Parameter = Message<"openhdc.stack.v1.AddMachinesRequest.Parameter"> & {
+  /**
+   * @generated from field: string placement = 1;
+   */
+  placement: string;
+
+  /**
+   * @generated from field: openhdc.stack.v1.AddMachinesRequest.Constraint constraint = 2;
+   */
+  constraint?: AddMachinesRequest_Constraint;
+};
+
+/**
+ * Describes the message openhdc.stack.v1.AddMachinesRequest.Parameter.
+ * Use `create(AddMachinesRequest_ParameterSchema)` to create a new message.
+ */
+export const AddMachinesRequest_ParameterSchema: GenMessage<AddMachinesRequest_Parameter> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 28, 1);
+
+/**
+ * @generated from message openhdc.stack.v1.AddMachinesResponse
+ */
+export type AddMachinesResponse = Message<"openhdc.stack.v1.AddMachinesResponse"> & {
+  /**
+   * @generated from field: repeated string machines = 1;
+   */
+  machines: string[];
+};
+
+/**
+ * Describes the message openhdc.stack.v1.AddMachinesResponse.
+ * Use `create(AddMachinesResponseSchema)` to create a new message.
+ */
+export const AddMachinesResponseSchema: GenMessage<AddMachinesResponse> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 29);
 
 /**
  * @generated from message openhdc.stack.v1.ImportBootResourcesRequest
@@ -980,7 +1100,7 @@ export type ImportBootResourcesRequest = Message<"openhdc.stack.v1.ImportBootRes
  * Use `create(ImportBootResourcesRequestSchema)` to create a new message.
  */
 export const ImportBootResourcesRequestSchema: GenMessage<ImportBootResourcesRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 23);
+  messageDesc(file_api_stack_v1_stack, 30);
 
 /**
  * @generated from message openhdc.stack.v1.PowerOnMachineRequest
@@ -997,7 +1117,7 @@ export type PowerOnMachineRequest = Message<"openhdc.stack.v1.PowerOnMachineRequ
  * Use `create(PowerOnMachineRequestSchema)` to create a new message.
  */
 export const PowerOnMachineRequestSchema: GenMessage<PowerOnMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 24);
+  messageDesc(file_api_stack_v1_stack, 31);
 
 /**
  * @generated from message openhdc.stack.v1.PowerOffMachineRequest
@@ -1014,7 +1134,7 @@ export type PowerOffMachineRequest = Message<"openhdc.stack.v1.PowerOffMachineRe
  * Use `create(PowerOffMachineRequestSchema)` to create a new message.
  */
 export const PowerOffMachineRequestSchema: GenMessage<PowerOffMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 25);
+  messageDesc(file_api_stack_v1_stack, 32);
 
 /**
  * @generated from message openhdc.stack.v1.CommissionMachineRequest
@@ -1051,12 +1171,59 @@ export type CommissionMachineRequest = Message<"openhdc.stack.v1.CommissionMachi
  * Use `create(CommissionMachineRequestSchema)` to create a new message.
  */
 export const CommissionMachineRequestSchema: GenMessage<CommissionMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 26);
+  messageDesc(file_api_stack_v1_stack, 33);
 
 /**
- * @generated from message openhdc.stack.v1.ListModelConfigsRequest
+ * @generated from message openhdc.stack.v1.ListModelsRequest
  */
-export type ListModelConfigsRequest = Message<"openhdc.stack.v1.ListModelConfigsRequest"> & {
+export type ListModelsRequest = Message<"openhdc.stack.v1.ListModelsRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ListModelsRequest.
+ * Use `create(ListModelsRequestSchema)` to create a new message.
+ */
+export const ListModelsRequestSchema: GenMessage<ListModelsRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 34);
+
+/**
+ * @generated from message openhdc.stack.v1.ListModelsResponse
+ */
+export type ListModelsResponse = Message<"openhdc.stack.v1.ListModelsResponse"> & {
+  /**
+   * @generated from field: repeated openhdc.stack.v1.Model models = 1;
+   */
+  models: Model[];
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ListModelsResponse.
+ * Use `create(ListModelsResponseSchema)` to create a new message.
+ */
+export const ListModelsResponseSchema: GenMessage<ListModelsResponse> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 35);
+
+/**
+ * @generated from message openhdc.stack.v1.CreateModelRequest
+ */
+export type CreateModelRequest = Message<"openhdc.stack.v1.CreateModelRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+};
+
+/**
+ * Describes the message openhdc.stack.v1.CreateModelRequest.
+ * Use `create(CreateModelRequestSchema)` to create a new message.
+ */
+export const CreateModelRequestSchema: GenMessage<CreateModelRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 36);
+
+/**
+ * @generated from message openhdc.stack.v1.GetModelConfigsRequest
+ */
+export type GetModelConfigsRequest = Message<"openhdc.stack.v1.GetModelConfigsRequest"> & {
   /**
    * @generated from field: string uuid = 1;
    */
@@ -1064,28 +1231,209 @@ export type ListModelConfigsRequest = Message<"openhdc.stack.v1.ListModelConfigs
 };
 
 /**
- * Describes the message openhdc.stack.v1.ListModelConfigsRequest.
- * Use `create(ListModelConfigsRequestSchema)` to create a new message.
+ * Describes the message openhdc.stack.v1.GetModelConfigsRequest.
+ * Use `create(GetModelConfigsRequestSchema)` to create a new message.
  */
-export const ListModelConfigsRequestSchema: GenMessage<ListModelConfigsRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 27);
+export const GetModelConfigsRequestSchema: GenMessage<GetModelConfigsRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 37);
 
 /**
- * @generated from message openhdc.stack.v1.ListModelConfigsResponse
+ * @generated from message openhdc.stack.v1.GetModelConfigsResponse
  */
-export type ListModelConfigsResponse = Message<"openhdc.stack.v1.ListModelConfigsResponse"> & {
+export type GetModelConfigsResponse = Message<"openhdc.stack.v1.GetModelConfigsResponse"> & {
   /**
-   * @generated from field: google.protobuf.Struct configs = 1;
+   * @generated from field: map<string, string> model_configs = 1;
    */
-  configs?: JsonObject;
+  modelConfigs: { [key: string]: string };
 };
 
 /**
- * Describes the message openhdc.stack.v1.ListModelConfigsResponse.
- * Use `create(ListModelConfigsResponseSchema)` to create a new message.
+ * Describes the message openhdc.stack.v1.GetModelConfigsResponse.
+ * Use `create(GetModelConfigsResponseSchema)` to create a new message.
  */
-export const ListModelConfigsResponseSchema: GenMessage<ListModelConfigsResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 28);
+export const GetModelConfigsResponseSchema: GenMessage<GetModelConfigsResponse> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 38);
+
+/**
+ * @generated from message openhdc.stack.v1.ListApplicationsRequest
+ */
+export type ListApplicationsRequest = Message<"openhdc.stack.v1.ListApplicationsRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ListApplicationsRequest.
+ * Use `create(ListApplicationsRequestSchema)` to create a new message.
+ */
+export const ListApplicationsRequestSchema: GenMessage<ListApplicationsRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 39);
+
+/**
+ * @generated from message openhdc.stack.v1.ListApplicationsResponse
+ */
+export type ListApplicationsResponse = Message<"openhdc.stack.v1.ListApplicationsResponse"> & {
+  /**
+   * @generated from field: repeated openhdc.stack.v1.Application applications = 1;
+   */
+  applications: Application[];
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ListApplicationsResponse.
+ * Use `create(ListApplicationsResponseSchema)` to create a new message.
+ */
+export const ListApplicationsResponseSchema: GenMessage<ListApplicationsResponse> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 40);
+
+/**
+ * @generated from message openhdc.stack.v1.CreateApplicationRequest
+ */
+export type CreateApplicationRequest = Message<"openhdc.stack.v1.CreateApplicationRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.CreateApplicationRequest.
+ * Use `create(CreateApplicationRequestSchema)` to create a new message.
+ */
+export const CreateApplicationRequestSchema: GenMessage<CreateApplicationRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 41);
+
+/**
+ * @generated from message openhdc.stack.v1.DeleteApplicationRequest
+ */
+export type DeleteApplicationRequest = Message<"openhdc.stack.v1.DeleteApplicationRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.DeleteApplicationRequest.
+ * Use `create(DeleteApplicationRequestSchema)` to create a new message.
+ */
+export const DeleteApplicationRequestSchema: GenMessage<DeleteApplicationRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 42);
+
+/**
+ * @generated from message openhdc.stack.v1.UpdateApplicationUnitsRequest
+ */
+export type UpdateApplicationUnitsRequest = Message<"openhdc.stack.v1.UpdateApplicationUnitsRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.UpdateApplicationUnitsRequest.
+ * Use `create(UpdateApplicationUnitsRequestSchema)` to create a new message.
+ */
+export const UpdateApplicationUnitsRequestSchema: GenMessage<UpdateApplicationUnitsRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 43);
+
+/**
+ * @generated from message openhdc.stack.v1.UpdateApplicationRelationRequest
+ */
+export type UpdateApplicationRelationRequest = Message<"openhdc.stack.v1.UpdateApplicationRelationRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.UpdateApplicationRelationRequest.
+ * Use `create(UpdateApplicationRelationRequestSchema)` to create a new message.
+ */
+export const UpdateApplicationRelationRequestSchema: GenMessage<UpdateApplicationRelationRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 44);
+
+/**
+ * @generated from message openhdc.stack.v1.UpdateApplicationConfigRequest
+ */
+export type UpdateApplicationConfigRequest = Message<"openhdc.stack.v1.UpdateApplicationConfigRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.UpdateApplicationConfigRequest.
+ * Use `create(UpdateApplicationConfigRequestSchema)` to create a new message.
+ */
+export const UpdateApplicationConfigRequestSchema: GenMessage<UpdateApplicationConfigRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 45);
+
+/**
+ * @generated from message openhdc.stack.v1.ExposeApplicationRequest
+ */
+export type ExposeApplicationRequest = Message<"openhdc.stack.v1.ExposeApplicationRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ExposeApplicationRequest.
+ * Use `create(ExposeApplicationRequestSchema)` to create a new message.
+ */
+export const ExposeApplicationRequestSchema: GenMessage<ExposeApplicationRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 46);
+
+/**
+ * @generated from message openhdc.stack.v1.ListIntegrationsRequest
+ */
+export type ListIntegrationsRequest = Message<"openhdc.stack.v1.ListIntegrationsRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ListIntegrationsRequest.
+ * Use `create(ListIntegrationsRequestSchema)` to create a new message.
+ */
+export const ListIntegrationsRequestSchema: GenMessage<ListIntegrationsRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 47);
+
+/**
+ * @generated from message openhdc.stack.v1.ListIntegrationsResponse
+ */
+export type ListIntegrationsResponse = Message<"openhdc.stack.v1.ListIntegrationsResponse"> & {
+  /**
+   * @generated from field: repeated openhdc.stack.v1.Integration integrations = 1;
+   */
+  integrations: Integration[];
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ListIntegrationsResponse.
+ * Use `create(ListIntegrationsResponseSchema)` to create a new message.
+ */
+export const ListIntegrationsResponseSchema: GenMessage<ListIntegrationsResponse> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 48);
+
+/**
+ * @generated from message openhdc.stack.v1.ListActionsRequest
+ */
+export type ListActionsRequest = Message<"openhdc.stack.v1.ListActionsRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ListActionsRequest.
+ * Use `create(ListActionsRequestSchema)` to create a new message.
+ */
+export const ListActionsRequestSchema: GenMessage<ListActionsRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 49);
+
+/**
+ * @generated from message openhdc.stack.v1.ListActionsResponse
+ */
+export type ListActionsResponse = Message<"openhdc.stack.v1.ListActionsResponse"> & {
+  /**
+   * @generated from field: repeated openhdc.stack.v1.Action Actions = 1;
+   */
+  Actions: Action[];
+};
+
+/**
+ * Describes the message openhdc.stack.v1.ListActionsResponse.
+ * Use `create(ListActionsResponseSchema)` to create a new message.
+ */
+export const ListActionsResponseSchema: GenMessage<ListActionsResponse> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 50);
+
+/**
+ * @generated from message openhdc.stack.v1.RunActionRequest
+ */
+export type RunActionRequest = Message<"openhdc.stack.v1.RunActionRequest"> & {
+};
+
+/**
+ * Describes the message openhdc.stack.v1.RunActionRequest.
+ * Use `create(RunActionRequestSchema)` to create a new message.
+ */
+export const RunActionRequestSchema: GenMessage<RunActionRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 51);
 
 /**
  * @generated from service openhdc.stack.v1.StackService
@@ -1196,6 +1544,14 @@ export const StackService: GenService<{
     output: typeof ListMachinesResponseSchema;
   },
   /**
+   * @generated from rpc openhdc.stack.v1.StackService.AddMachines
+   */
+  addMachines: {
+    methodKind: "unary";
+    input: typeof AddMachinesRequestSchema;
+    output: typeof AddMachinesResponseSchema;
+  },
+  /**
    * Machine Operations
    *
    * @generated from rpc openhdc.stack.v1.StackService.ImportBootResources
@@ -1232,12 +1588,114 @@ export const StackService: GenService<{
   /**
    * Model Operations
    *
-   * @generated from rpc openhdc.stack.v1.StackService.ListModelConfigs
+   * @generated from rpc openhdc.stack.v1.StackService.ListModels
    */
-  listModelConfigs: {
+  listModels: {
     methodKind: "unary";
-    input: typeof ListModelConfigsRequestSchema;
-    output: typeof ListModelConfigsResponseSchema;
+    input: typeof ListModelsRequestSchema;
+    output: typeof ListModelsResponseSchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.CreateModel
+   */
+  createModel: {
+    methodKind: "unary";
+    input: typeof CreateModelRequestSchema;
+    output: typeof ModelSchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.GetModelConfigs
+   */
+  getModelConfigs: {
+    methodKind: "unary";
+    input: typeof GetModelConfigsRequestSchema;
+    output: typeof GetModelConfigsResponseSchema;
+  },
+  /**
+   * Application Operations
+   *
+   * @generated from rpc openhdc.stack.v1.StackService.ListApplications
+   */
+  listApplications: {
+    methodKind: "unary";
+    input: typeof ListApplicationsRequestSchema;
+    output: typeof ListApplicationsResponseSchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.CreateApplication
+   */
+  createApplication: {
+    methodKind: "unary";
+    input: typeof CreateApplicationRequestSchema;
+    output: typeof ApplicationSchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.DeleteApplication
+   */
+  deleteApplication: {
+    methodKind: "unary";
+    input: typeof DeleteApplicationRequestSchema;
+    output: typeof EmptySchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.UpdateApplicationUnits
+   */
+  updateApplicationUnits: {
+    methodKind: "unary";
+    input: typeof UpdateApplicationUnitsRequestSchema;
+    output: typeof ApplicationSchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.UpdateApplicationRelation
+   */
+  updateApplicationRelation: {
+    methodKind: "unary";
+    input: typeof UpdateApplicationRelationRequestSchema;
+    output: typeof ApplicationSchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.UpdateApplicationConfig
+   */
+  updateApplicationConfig: {
+    methodKind: "unary";
+    input: typeof UpdateApplicationConfigRequestSchema;
+    output: typeof ApplicationSchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.ExposeApplication
+   */
+  exposeApplication: {
+    methodKind: "unary";
+    input: typeof ExposeApplicationRequestSchema;
+    output: typeof ApplicationSchema;
+  },
+  /**
+   * Integration Operations
+   *
+   * @generated from rpc openhdc.stack.v1.StackService.ListIntegrations
+   */
+  listIntegrations: {
+    methodKind: "unary";
+    input: typeof ListIntegrationsRequestSchema;
+    output: typeof ListIntegrationsResponseSchema;
+  },
+  /**
+   * Action Operations
+   *
+   * @generated from rpc openhdc.stack.v1.StackService.ListActions
+   */
+  listActions: {
+    methodKind: "unary";
+    input: typeof ListActionsRequestSchema;
+    output: typeof ListActionsResponseSchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.RunAction
+   */
+  runAction: {
+    methodKind: "unary";
+    input: typeof RunActionRequestSchema;
+    output: typeof ActionSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_stack_v1_stack, 0);

@@ -31,6 +31,7 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	maasSubnet := maas.NewSubnet(v)
 	maasipRange := maas.NewIPRange(v)
 	maasBootResource := maas.NewBootResource(v)
+	jujuMachine := juju.NewMachine()
 	maasMachine := maas.NewMachine(v)
 	simpleConfig, err := juju.NewConfig()
 	if err != nil {
@@ -42,7 +43,7 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	}
 	jujuModel := juju.NewModel(v2)
 	jujuModelConfig := juju.NewModelConfig()
-	stackService := service.NewStackService(maasServer, maasPackageRepository, maasFabric, maasvlan, maasSubnet, maasipRange, maasBootResource, maasMachine, jujuModel, jujuModelConfig)
+	stackService := service.NewStackService(maasServer, maasPackageRepository, maasFabric, maasvlan, maasSubnet, maasipRange, maasBootResource, jujuMachine, maasMachine, jujuModel, jujuModelConfig)
 	stackApp := app.NewStackApp(stackService)
 	command := cmd.New(string2, stackApp)
 	return command, func() {
