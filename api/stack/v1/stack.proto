@@ -3,7 +3,6 @@ edition = "2023";
 package openhdc.stack.v1;
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/struct.proto";
 
 option go_package = "github.com/openhdc/openhdc/api/stack/v1;v1";
 
@@ -27,6 +26,7 @@ service StackService {
 
   // Machine Management
   rpc ListMachines(ListMachinesRequest) returns (ListMachinesResponse);
+  rpc AddMachines(AddMachinesRequest) returns (AddMachinesResponse);
 
   // Machine Operations
   rpc ImportBootResources(ImportBootResourcesRequest) returns (google.protobuf.Empty);
@@ -35,7 +35,25 @@ service StackService {
   rpc CommissionMachine(CommissionMachineRequest) returns (Machine);
 
   // Model Operations
-  rpc ListModelConfigs(ListModelConfigsRequest) returns (ListModelConfigsResponse);
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse);
+  rpc CreateModel(CreateModelRequest) returns (Model);
+  rpc GetModelConfigs(GetModelConfigsRequest) returns (GetModelConfigsResponse);
+
+  // Application Operations
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
+  rpc CreateApplication(CreateApplicationRequest) returns (Application);
+  rpc DeleteApplication(DeleteApplicationRequest) returns (google.protobuf.Empty);
+  rpc UpdateApplicationUnits(UpdateApplicationUnitsRequest) returns (Application);
+  rpc UpdateApplicationRelation(UpdateApplicationRelationRequest) returns (Application);
+  rpc UpdateApplicationConfig(UpdateApplicationConfigRequest) returns (Application);
+  rpc ExposeApplication(ExposeApplicationRequest) returns (Application);
+
+  // Integration Operations
+  rpc ListIntegrations(ListIntegrationsRequest) returns (ListIntegrationsResponse);
+
+  // Action Operations
+  rpc ListActions(ListActionsRequest) returns (ListActionsResponse);
+  rpc RunAction(RunActionRequest) returns (Action);
 }
 
 message PackageRepository {
@@ -150,6 +168,18 @@ message IPRange {
   string comment = 5;
 }
 
+message Model {}
+
+message ModelConfig {}
+
+message Application {
+  string machine_system_id = 1;
+}
+
+message Integration {}
+
+message Action {}
+
 message ListNTPServersRequest {}
 
 message ListNTPServersResponse {
@@ -166,24 +196,16 @@ message UpdatePackageRepositoryURLRequest {
   bool skip_juju = 3;
 }
 
-message ListPackageRepositoriesRequest {
-  int32 page_size = 1;
-  string page_token = 2;
-}
+message ListPackageRepositoriesRequest {}
 
 message ListPackageRepositoriesResponse {
   repeated PackageRepository package_repositories = 1;
-  string next_page_token = 2;
 }
 
-message ListNetworksRequest {
-  int32 page_size = 1;
-  string page_token = 2;
-}
+message ListNetworksRequest {}
 
 message ListNetworksResponse {
   repeated Network networks = 1;
-  string next_page_token = 2;
 }
 
 message CreateNetworkRequest {
@@ -230,14 +252,29 @@ message UpdateIPRangeRequest {
   string comment = 4;
 }
 
-message ListMachinesRequest {
-  int32 page_size = 1;
-  string page_token = 2;
-}
+message ListMachinesRequest {}
 
 message ListMachinesResponse {
   repeated Machine machines = 1;
-  string next_page_token = 2;
+}
+
+message AddMachinesRequest {
+  message Constraint {
+    string architecture = 1;
+    uint64 cpu_cores = 2;
+    uint64 memory_mb = 3;
+    repeated string tags = 11;
+  }
+  message Parameter {
+    string placement = 1;
+    Constraint constraint = 2;
+  }
+  string model_uuid = 1;
+  repeated Parameter parameters = 2;
+}
+
+message AddMachinesResponse {
+  repeated string machines = 1;
 }
 
 message ImportBootResourcesRequest {}
@@ -258,10 +295,52 @@ message CommissionMachineRequest {
   bool skip_storage = 5;
 }
 
-message ListModelConfigsRequest {
+message ListModelsRequest {}
+
+message ListModelsResponse {
+  repeated Model models = 1;
+}
+
+message CreateModelRequest {
+  string name = 1;
+}
+
+message GetModelConfigsRequest {
   string uuid = 1;
 }
 
-message ListModelConfigsResponse {
-  google.protobuf.Struct configs = 1;
+message GetModelConfigsResponse {
+  map<string, string> model_configs = 1;
 }
+
+message ListApplicationsRequest {}
+
+message ListApplicationsResponse {
+  repeated Application applications = 1;
+}
+
+message CreateApplicationRequest {}
+
+message DeleteApplicationRequest {}
+
+message UpdateApplicationUnitsRequest {}
+
+message UpdateApplicationRelationRequest {}
+
+message UpdateApplicationConfigRequest {}
+
+message ExposeApplicationRequest {}
+
+message ListIntegrationsRequest {}
+
+message ListIntegrationsResponse {
+  repeated Integration integrations = 1;
+}
+
+message ListActionsRequest {}
+
+message ListActionsResponse {
+  repeated Action Actions = 1;
+}
+
+message RunActionRequest {}
