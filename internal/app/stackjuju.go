@@ -103,7 +103,13 @@ func (a *StackApp) GetModelConfigs(ctx context.Context, req *connect.Request[v1.
 }
 
 func (a *StackApp) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
-	return nil, nil
+	m, err := a.svc.ListApplications(ctx, req.Msg.GetModelUuid())
+	if err != nil {
+		return nil, err
+	}
+	res := &v1.ListApplicationsResponse{}
+	res.SetApplications(toApplications(m))
+	return connect.NewResponse(res), nil
 }
 
 func (a *StackApp) CreateApplication(ctx context.Context, req *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error) {
@@ -246,5 +252,68 @@ func toAction(name string, spec action.ActionSpec) *v1.Action {
 	ret.SetDescription(spec.Description)
 	v, _ := structpb.NewStruct(spec.Params)
 	ret.SetParameters(v)
+	return ret
+}
+
+func toApplications(m map[string]params.ApplicationStatus) []*v1.Application {
+	ret := []*v1.Application{}
+	for name := range m {
+		app := m[name]
+		ret = append(ret, toApplication(name, &app))
+	}
+	return ret
+}
+
+func toApplicationStatus(s *params.DetailedStatus) *v1.Application_Status {
+	ret := &v1.Application_Status{}
+	ret.SetStatus(s.Status)
+	ret.SetInfo(s.Info)
+	since := s.Since
+	if since != nil {
+		ret.SetCreatedAt(timestamppb.New(*since))
+	}
+	return ret
+}
+
+func toApplicationUnit(name string, s *params.UnitStatus) *v1.Application_Unit {
+	ret := &v1.Application_Unit{}
+	ret.SetName(name)
+	ret.SetVersion(s.WorkloadVersion)
+	ret.SetLeader(s.Leader)
+	ret.SetIpAddress(s.Address + s.PublicAddress)
+	ret.SetPorts(s.OpenedPorts)
+	ret.SetMachineId(s.Machine)
+	ret.SetAgentStatus(toApplicationStatus(&s.AgentStatus))
+	ret.SetWorkloadStatus(toApplicationStatus(&s.WorkloadStatus))
+	subordinates := []*v1.Application_Unit{}
+	for name := range s.Subordinates {
+		unit := s.Subordinates[name]
+		subordinates = append(subordinates, toApplicationUnit(name, &unit))
+	}
+	ret.SetSubordinates(subordinates)
+	return ret
+}
+
+func toApplication(name string, status *params.ApplicationStatus) *v1.Application {
+	units := []*v1.Application_Unit{}
+	for name := range status.Units {
+		unit := status.Units[name]
+		units = append(units, toApplicationUnit(name, &unit))
+	}
+
+	ret := &v1.Application{}
+	ret.SetName(name)
+	ret.SetVersion(status.WorkloadVersion)
+	ret.SetRevision(int64(status.CharmRev))
+	ret.SetStatus(status.Status.Status)
+	ret.SetInfo(status.Status.Info)
+
+	since := status.Status.Since
+	if since != nil {
+		ret.SetCreatedAt(timestamppb.New(*since))
+	}
+
+	ret.SetUnits(units)
+
 	return ret
 }
