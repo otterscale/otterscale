@@ -103,12 +103,16 @@ func (a *StackApp) GetModelConfigs(ctx context.Context, req *connect.Request[v1.
 }
 
 func (a *StackApp) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
-	m, err := a.svc.ListApplications(ctx, req.Msg.GetModelUuid())
+	as, err := a.svc.ListApplications(ctx, req.Msg.GetModelUuid())
+	if err != nil {
+		return nil, err
+	}
+	ms, err := a.svc.ListJujuMachines(ctx, req.Msg.GetModelUuid())
 	if err != nil {
 		return nil, err
 	}
 	res := &v1.ListApplicationsResponse{}
-	res.SetApplications(toApplications(m))
+	res.SetApplications(toApplications(as, ms))
 	return connect.NewResponse(res), nil
 }
 
@@ -255,11 +259,11 @@ func toAction(name string, spec action.ActionSpec) *v1.Action {
 	return ret
 }
 
-func toApplications(m map[string]params.ApplicationStatus) []*v1.Application {
+func toApplications(as map[string]params.ApplicationStatus, ms map[string]params.MachineStatus) []*v1.Application {
 	ret := []*v1.Application{}
-	for name := range m {
-		app := m[name]
-		ret = append(ret, toApplication(name, &app))
+	for name := range as {
+		app := as[name]
+		ret = append(ret, toApplication(name, &app, ms))
 	}
 	return ret
 }
@@ -275,30 +279,37 @@ func toApplicationStatus(s *params.DetailedStatus) *v1.Application_Status {
 	return ret
 }
 
-func toApplicationUnit(name string, s *params.UnitStatus) *v1.Application_Unit {
+func toApplicationUnit(name string, s *params.UnitStatus, ms map[string]params.MachineStatus) *v1.Application_Unit {
 	ret := &v1.Application_Unit{}
 	ret.SetName(name)
 	ret.SetVersion(s.WorkloadVersion)
 	ret.SetLeader(s.Leader)
 	ret.SetIpAddress(s.Address + s.PublicAddress)
 	ret.SetPorts(s.OpenedPorts)
-	ret.SetMachineId(s.Machine)
+
+	if m, ok := ms[s.Machine]; ok {
+		ret.SetMachineSystemId(m.InstanceId.String())
+	}
+
 	ret.SetAgentStatus(toApplicationStatus(&s.AgentStatus))
 	ret.SetWorkloadStatus(toApplicationStatus(&s.WorkloadStatus))
+
 	subordinates := []*v1.Application_Unit{}
 	for name := range s.Subordinates {
 		unit := s.Subordinates[name]
-		subordinates = append(subordinates, toApplicationUnit(name, &unit))
+		subordinates = append(subordinates, toApplicationUnit(name, &unit, ms))
 	}
+
 	ret.SetSubordinates(subordinates)
+
 	return ret
 }
 
-func toApplication(name string, status *params.ApplicationStatus) *v1.Application {
+func toApplication(name string, status *params.ApplicationStatus, ms map[string]params.MachineStatus) *v1.Application {
 	units := []*v1.Application_Unit{}
 	for name := range status.Units {
 		unit := status.Units[name]
-		units = append(units, toApplicationUnit(name, &unit))
+		units = append(units, toApplicationUnit(name, &unit, ms))
 	}
 
 	ret := &v1.Application{}
