@@ -400,6 +400,14 @@ func (s *StackService) SetModelConfigAPTMirror(ctx context.Context, uuid, value 
 	})
 }
 
+func (s *StackService) ListApplications(ctx context.Context, uuid string) (map[string]params.ApplicationStatus, error) {
+	status, err := s.client.Status(ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+	return status.Applications, nil
+}
+
 func (s *StackService) ListIntegrations(ctx context.Context, uuid string) ([]*params.RelationStatus, error) {
 	status, err := s.client.Status(ctx, uuid)
 	if err != nil {

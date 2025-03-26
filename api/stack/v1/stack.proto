@@ -182,10 +182,30 @@ message Model {
   int64 unit_count = 13;
 }
 
-message ModelConfig {}
-
 message Application {
-  string machine_system_id = 1;
+  message Status {
+    string status = 1;
+    string info = 2;
+    google.protobuf.Timestamp created_at = 3;
+  }
+  message Unit {
+    string name = 1;
+    string version = 2;
+    bool leader = 3;
+    string ip_address = 11;
+    repeated string ports = 12;
+    string machine_id = 21;
+    Status agent_status = 31;
+    Status workload_status = 42;
+    repeated Unit subordinates = 51;
+  }
+  string name = 1;
+  string version = 2;
+  int64 revision = 3;
+  string status = 11;
+  string info = 12;
+  google.protobuf.Timestamp created_at = 13;
+  repeated Unit units = 21;
 }
 
 message Integration {
@@ -335,7 +355,9 @@ message GetModelConfigsResponse {
   map<string, string> model_configs = 1;
 }
 
-message ListApplicationsRequest {}
+message ListApplicationsRequest {
+  string model_uuid = 1;
+}
 
 message ListApplicationsResponse {
   repeated Application applications = 1;
