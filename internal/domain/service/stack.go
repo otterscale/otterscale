@@ -7,6 +7,7 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/juju/juju/api/base"
+	"github.com/juju/juju/api/client/action"
 	"github.com/juju/juju/rpc/params"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
@@ -102,6 +103,10 @@ type JujuApplication interface {
 	DeleteRelation(ctx context.Context, uuid string, id int) error
 }
 
+type JujuAction interface {
+	List(ctx context.Context, uuid, appName string) (map[string]action.ActionSpec, error)
+}
+
 // StackService coordinates operations across multiple MAAS resources
 type StackService struct {
 	server            MAASServer
@@ -117,6 +122,7 @@ type StackService struct {
 	model             JujuModel
 	modelConfig       JujuModelConfig
 	application       JujuApplication
+	action            JujuAction
 }
 
 // NewStackService creates a new instance of StackService
@@ -134,6 +140,7 @@ func NewStackService(
 	model JujuModel,
 	modelConfig JujuModelConfig,
 	application JujuApplication,
+	action JujuAction,
 ) *StackService {
 	return &StackService{
 		server:            server,
@@ -149,6 +156,7 @@ func NewStackService(
 		model:             model,
 		modelConfig:       modelConfig,
 		application:       application,
+		action:            action,
 	}
 }
 
@@ -410,6 +418,10 @@ func (s *StackService) CreateIntegration(ctx context.Context, uuid string, endpo
 
 func (s *StackService) DeleteIntegration(ctx context.Context, uuid string, id int) error {
 	return s.application.DeleteRelation(ctx, uuid, id)
+}
+
+func (s *StackService) ListActions(ctx context.Context, uuid, appName string) (map[string]action.ActionSpec, error) {
+	return s.action.List(ctx, uuid, appName)
 }
 
 // Helper functions

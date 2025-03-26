@@ -2,6 +2,7 @@ edition = "2023";
 
 package openhdc.stack.v1;
 
+import "google/protobuf/struct.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -195,7 +196,11 @@ message Integration {
   string role = 5;
 }
 
-message Action {}
+message Action {
+  string name = 1;
+  string description = 2;
+  google.protobuf.Struct parameters = 3;
+}
 
 message ListNTPServersRequest {}
 
@@ -364,7 +369,10 @@ message DeleteIntegrationRequest {
   int32 id = 2;
 }
 
-message ListActionsRequest {}
+message ListActionsRequest {
+  string model_uuid = 1;
+  string application_name = 2;
+}
 
 message ListActionsResponse {
   repeated Action Actions = 1;

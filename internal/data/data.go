@@ -22,6 +22,7 @@ var ProviderSet = wire.NewSet(
 	maas.NewVLAN,
 	juju.NewConfig,
 	juju.New,
+	juju.NewAction,
 	juju.NewApplication,
 	juju.NewClient,
 	juju.NewMachine,

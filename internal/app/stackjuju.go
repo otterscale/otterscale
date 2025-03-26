@@ -5,10 +5,14 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/juju/juju/api/base"
+	"github.com/juju/juju/api/client/action"
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
@@ -148,11 +152,17 @@ func (a *StackApp) DeleteIntegration(ctx context.Context, req *connect.Request[v
 }
 
 func (a *StackApp) ListActions(ctx context.Context, req *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error) {
-	return nil, nil
+	m, err := a.svc.ListActions(ctx, req.Msg.GetModelUuid(), req.Msg.GetApplicationName())
+	if err != nil {
+		return nil, err
+	}
+	ret := &v1.ListActionsResponse{}
+	ret.SetActions(toActions(m))
+	return connect.NewResponse(ret), nil
 }
 
 func (a *StackApp) RunAction(ctx context.Context, req *connect.Request[v1.RunActionRequest]) (*connect.Response[v1.Action], error) {
-	return nil, nil
+	return nil, status.Error(codes.Unimplemented, "unimplemented")
 }
 
 func toModels(umss []*base.UserModelSummary) []*v1.Model {
@@ -201,37 +211,40 @@ func toIntegrations(rss []*params.RelationStatus) []*v1.Integration {
 }
 
 func toIntegration(rs *params.RelationStatus) *v1.Integration {
-	integration := &v1.Integration{}
-	integration.SetId(int64(rs.Id))
-	integration.SetInterface(rs.Interface)
+	ret := &v1.Integration{}
+	ret.SetId(int64(rs.Id))
+	ret.SetInterface(rs.Interface)
 
-	// Default values
-	provider := "-"
-	requirer := "-"
-	role := ""
-
-	// Process endpoints if available
 	if len(rs.Endpoints) > 0 {
-		provider = formatEndpoint(rs.Endpoints[0].ApplicationName, rs.Endpoints[0].Name)
-		role = rs.Endpoints[0].Role
+		ret.SetProvider(fmt.Sprintf("%s:%s", rs.Endpoints[0].ApplicationName, rs.Endpoints[0].Name))
+		ret.SetRole(rs.Endpoints[0].Role)
 
 		if len(rs.Endpoints) > 1 {
-			requirer = formatEndpoint(rs.Endpoints[1].ApplicationName, rs.Endpoints[1].Name)
+			ret.SetRequirer(fmt.Sprintf("%s:%s", rs.Endpoints[1].ApplicationName, rs.Endpoints[1].Name))
 		}
 	}
-
-	integration.SetProvider(provider)
-	integration.SetRequirer(requirer)
-	integration.SetRole(role)
-
-	return integration
+	return ret
 }
 
-// Helper function to format endpoint strings
-func formatEndpoint(appName, name string) string {
-	return fmt.Sprintf("%s:%s", appName, name)
-}
-
+// TODO: HOW
 func resultsToIntegration(arr *params.AddRelationResults) *v1.Integration {
-	return &v1.Integration{}
+	ret := &v1.Integration{}
+	return ret
+}
+
+func toActions(m map[string]action.ActionSpec) []*v1.Action {
+	ret := []*v1.Action{}
+	for k, v := range m {
+		ret = append(ret, toAction(k, v))
+	}
+	return ret
+}
+
+func toAction(name string, spec action.ActionSpec) *v1.Action {
+	ret := &v1.Action{}
+	ret.SetName(name)
+	ret.SetDescription(spec.Description)
+	v, _ := structpb.NewStruct(spec.Params)
+	ret.SetParameters(v)
+	return ret
 }
