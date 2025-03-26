@@ -35,7 +35,6 @@ func (r *subnet) List(ctx context.Context) ([]*entity.Subnet, error) {
 }
 
 func (r *subnet) Get(_ context.Context, id int) (*entity.Subnet, error) {
-	r.maas.Subnet.GetIPAddresses(id)
 	return r.maas.Subnet.Get(id)
 }
 
