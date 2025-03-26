@@ -32,6 +32,7 @@ const (
 	StackService_UpdateSubnet_FullMethodName               = "/openhdc.stack.v1.StackService/UpdateSubnet"
 	StackService_UpdateIPRange_FullMethodName              = "/openhdc.stack.v1.StackService/UpdateIPRange"
 	StackService_ListMachines_FullMethodName               = "/openhdc.stack.v1.StackService/ListMachines"
+	StackService_GetMachine_FullMethodName                 = "/openhdc.stack.v1.StackService/GetMachine"
 	StackService_AddMachines_FullMethodName                = "/openhdc.stack.v1.StackService/AddMachines"
 	StackService_ImportBootResources_FullMethodName        = "/openhdc.stack.v1.StackService/ImportBootResources"
 	StackService_PowerOnMachine_FullMethodName             = "/openhdc.stack.v1.StackService/PowerOnMachine"
@@ -73,6 +74,7 @@ type StackServiceClient interface {
 	UpdateIPRange(ctx context.Context, in *UpdateIPRangeRequest, opts ...grpc.CallOption) (*IPRange, error)
 	// Machine Management
 	ListMachines(ctx context.Context, in *ListMachinesRequest, opts ...grpc.CallOption) (*ListMachinesResponse, error)
+	GetMachine(ctx context.Context, in *GetMachineRequest, opts ...grpc.CallOption) (*Machine, error)
 	AddMachines(ctx context.Context, in *AddMachinesRequest, opts ...grpc.CallOption) (*AddMachinesResponse, error)
 	// Machine Operations
 	ImportBootResources(ctx context.Context, in *ImportBootResourcesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -221,6 +223,16 @@ func (c *stackServiceClient) ListMachines(ctx context.Context, in *ListMachinesR
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListMachinesResponse)
 	err := c.cc.Invoke(ctx, StackService_ListMachines_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) GetMachine(ctx context.Context, in *GetMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Machine)
+	err := c.cc.Invoke(ctx, StackService_GetMachine_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -437,6 +449,7 @@ type StackServiceServer interface {
 	UpdateIPRange(context.Context, *UpdateIPRangeRequest) (*IPRange, error)
 	// Machine Management
 	ListMachines(context.Context, *ListMachinesRequest) (*ListMachinesResponse, error)
+	GetMachine(context.Context, *GetMachineRequest) (*Machine, error)
 	AddMachines(context.Context, *AddMachinesRequest) (*AddMachinesResponse, error)
 	// Machine Operations
 	ImportBootResources(context.Context, *ImportBootResourcesRequest) (*emptypb.Empty, error)
@@ -506,6 +519,9 @@ func (UnimplementedStackServiceServer) UpdateIPRange(context.Context, *UpdateIPR
 }
 func (UnimplementedStackServiceServer) ListMachines(context.Context, *ListMachinesRequest) (*ListMachinesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListMachines not implemented")
+}
+func (UnimplementedStackServiceServer) GetMachine(context.Context, *GetMachineRequest) (*Machine, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMachine not implemented")
 }
 func (UnimplementedStackServiceServer) AddMachines(context.Context, *AddMachinesRequest) (*AddMachinesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddMachines not implemented")
@@ -797,6 +813,24 @@ func _StackService_ListMachines_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StackServiceServer).ListMachines(ctx, req.(*ListMachinesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_GetMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMachineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).GetMachine(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_GetMachine_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).GetMachine(ctx, req.(*GetMachineRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1197,6 +1231,10 @@ var StackService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListMachines",
 			Handler:    _StackService_ListMachines_Handler,
+		},
+		{
+			MethodName: "GetMachine",
+			Handler:    _StackService_GetMachine_Handler,
 		},
 		{
 			MethodName: "AddMachines",

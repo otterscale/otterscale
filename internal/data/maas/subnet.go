@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/canonical/gomaasclient/entity"
+	api "github.com/canonical/gomaasclient/entity/subnet"
 
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
@@ -34,6 +35,7 @@ func (r *subnet) List(ctx context.Context) ([]*entity.Subnet, error) {
 }
 
 func (r *subnet) Get(_ context.Context, id int) (*entity.Subnet, error) {
+	r.maas.Subnet.GetIPAddresses(id)
 	return r.maas.Subnet.Get(id)
 }
 
@@ -47,4 +49,20 @@ func (r *subnet) Update(_ context.Context, id int, params *entity.SubnetParams) 
 
 func (r *subnet) Delete(_ context.Context, id int) error {
 	return r.maas.Subnet.Delete(id)
+}
+
+func (r *subnet) GetIPAddresses(_ context.Context, id int) ([]api.IPAddress, error) {
+	return r.maas.Subnet.GetIPAddresses(id)
+}
+
+func (r *subnet) GetReservedIPRanges(_ context.Context, id int) ([]api.ReservedIPRange, error) {
+	return r.maas.Subnet.GetReservedIPRanges(id)
+}
+
+func (r *subnet) GetUnreservedIPRanges(_ context.Context, id int) ([]api.IPRange, error) {
+	return r.maas.Subnet.GetUnreservedIPRanges(id)
+}
+
+func (r *subnet) GetStatistics(_ context.Context, id int) (*api.Statistics, error) {
+	return r.maas.Subnet.GetStatistics(id)
 }

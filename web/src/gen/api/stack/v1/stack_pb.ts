@@ -12,7 +12,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file api/stack/v1/stack.proto.
  */
 export const file_api_stack_v1_stack: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvc3RhY2svdjEvc3RhY2sucHJvdG8SEG9wZW5oZGMuc3RhY2sudjEiSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCCLxAQoHTmV0d29yaxIoCgZmYWJyaWMYASABKAsyGC5vcGVuaGRjLnN0YWNrLnYxLkZhYnJpYxIzCghzZXR0aW5ncxgCIAMoCzIhLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yay5TZXR0aW5nGoYBCgdTZXR0aW5nEiQKBHZsYW4YASABKAsyFi5vcGVuaGRjLnN0YWNrLnYxLlZMQU4SKAoGc3VibmV0GAIgASgLMhgub3BlbmhkYy5zdGFjay52MS5TdWJuZXQSKwoIaXBfcmFuZ2UYAyABKAsyGS5vcGVuaGRjLnN0YWNrLnYxLklQUmFuZ2UiYAoEVkxBThIKCgJpZBgBIAEoAxILCgN2aWQYAiABKAMSDAoEbmFtZRgDIAEoCRILCgNtdHUYBCABKAMSEwoLZGVzY3JpcHRpb24YBSABKAkSDwoHZGhjcF9vbhgGIAEoCCIiCgZGYWJyaWMSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCSLeAQoGU3VibmV0EgoKAmlkGAEgASgDEgwKBG5hbWUYAiABKAkSDAoEY2lkchgDIAEoCRISCgpnYXRld2F5X2lwGAQgASgJEhMKC2Ruc19zZXJ2ZXJzGAUgAygJEhMKC2Rlc2NyaXB0aW9uGAYgASgJEhoKEm1hbmFnZWRfYWxsb2NhdGlvbhgHIAEoCBIYChBhY3RpdmVfZGlzY292ZXJ5GAggASgIEhoKEmFsbG93X3Byb3h5X2FjY2VzcxgJIAEoCBIcChRhbGxvd19kbnNfcmVzb2x1dGlvbhgKIAEoCCKACwoHTWFjaGluZRIRCglzeXN0ZW1faWQYASABKAkSFQoNaGFyZHdhcmVfdXVpZBhlIAEoCRIQCghob3N0bmFtZRhmIAEoCRIMCgRmcWRuGGcgASgJEgwKBHRhZ3MYaCADKAkSEwoLZGVzY3JpcHRpb24YaSABKAkSDwoGc3RhdHVzGMkBIAEoCRIUCgtwb3dlcl9zdGF0ZRitAiABKAkSEwoKcG93ZXJfdHlwZRiuAiABKAkSEAoHb3N5c3RlbRiRAyABKAkSFgoNZGlzdHJvX3NlcmllcxiSAyABKAkSEwoKaHdlX2tlcm5lbBiTAyABKAkSFQoMYXJjaGl0ZWN0dXJlGJQDIAEoCRISCgljcHVfc3BlZWQYlQMgASgDEhIKCWNwdV9jb3VudBiWAyABKAMSDwoGbWVtb3J5GJcDIAEoAxIQCgdzdG9yYWdlGJgDIAEoARIVCgxpcF9hZGRyZXNzZXMYmQMgAygJElEKFHdvcmtsb2FkX2Fubm90YXRpb25zGPUDIAMoCzIyLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5Xb3JrbG9hZEFubm90YXRpb25zRW50cnkSUQoUaGFyZHdhcmVfaW5mb3JtYXRpb24Y2QQgAygLMjIub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLkhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRIZChBiaW9zX2Jvb3RfbWV0aG9kGNoEIAEoCRI3CgpudW1hX25vZGVzGL0FIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5OVU1BTm9kZRI9Cg1ibG9ja19kZXZpY2VzGKEGIAMoCzIlLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5CbG9ja0RldmljZRJHChJuZXR3b3JrX2ludGVyZmFjZXMYogYgAygLMioub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLk5ldHdvcmtJbnRlcmZhY2UaOAoITlVNQU5vZGUSDQoFaW5kZXgYASABKAMSDQoFY29yZXMYAiABKAMSDgoGbWVtb3J5GAMgASgDGqMBCgtCbG9ja0RldmljZRIRCglib290X2Rpc2sYASABKAgSDAoEbmFtZRgLIAEoCRIOCgZzZXJpYWwYDCABKAkSDQoFbW9kZWwYFSABKAkSGAoQZmlybXdhcmVfdmVyc2lvbhgWIAEoCRIMCgRzaXplGB8gASgDEgwKBHR5cGUYKSABKAkSDAoEdGFncxgzIAMoCRIQCgh1c2VkX2Zvchg9IAEoCRq5AgoQTmV0d29ya0ludGVyZmFjZRIWCg5ib290X2ludGVyZmFjZRgBIAEoCBIMCgRuYW1lGAsgASgJEhMKC21hY19hZGRyZXNzGAwgASgJEhYKDmxpbmtfY29ubmVjdGVkGBUgASgIEhIKCmxpbmtfc3BlZWQYFiABKAMSFwoPaW50ZXJmYWNlX3NwZWVkGBcgASgDEgwKBHR5cGUYHyABKAkSEwoLZmFicmljX25hbWUYKSABKAkSEQoJZmFicmljX2lkGCogASgDEhEKCXZsYW5fbmFtZRgrIAEoCRIPCgd2bGFuX2lkGCwgASgDEhMKC3N1Ym5ldF9uYW1lGDMgASgJEhEKCXN1Ym5ldF9pZBg0IAEoAxISCgppcF9hZGRyZXNzGD0gASgJEg8KB2RoY3Bfb24YRyABKAgaOgoYV29ya2xvYWRBbm5vdGF0aW9uc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaOgoYSGFyZHdhcmVJbmZvcm1hdGlvbkVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiVgoHSVBSYW5nZRIKCgJpZBgBIAEoAxIQCghzdGFydF9pcBgCIAEoCRIOCgZlbmRfaXAYAyABKAkSDAoEdHlwZRgEIAEoCRIPCgdjb21tZW50GAUgASgJIrABCgVNb2RlbBIMCgR1dWlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEbGlmZRgDIAEoCRIOCgZzdGF0dXMYBCABKAkSLgoKdXBkYXRlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNbWFjaGluZV9jb3VudBgLIAEoAxISCgpjb3JlX2NvdW50GAwgASgDEhIKCnVuaXRfY291bnQYDSABKAMiwgQKC0FwcGxpY2F0aW9uEgwKBG5hbWUYASABKAkSDwoHdmVyc2lvbhgCIAEoCRIQCghyZXZpc2lvbhgDIAEoAxIOCgZzdGF0dXMYCyABKAkSDAoEaW5mbxgMIAEoCRIuCgpjcmVhdGVkX2F0GA0gASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIxCgV1bml0cxgVIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24uVW5pdBpWCgZTdGF0dXMSDgoGc3RhdHVzGAEgASgJEgwKBGluZm8YAiABKAkSLgoKY3JlYXRlZF9hdBgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaqAIKBFVuaXQSDAoEbmFtZRgBIAEoCRIPCgd2ZXJzaW9uGAIgASgJEg4KBmxlYWRlchgDIAEoCBISCgppcF9hZGRyZXNzGAQgASgJEg0KBXBvcnRzGAUgAygJEhkKEW1hY2hpbmVfc3lzdGVtX2lkGAsgASgJEjoKDGFnZW50X3N0YXR1cxgVIAEoCzIkLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24uU3RhdHVzEj0KD3dvcmtsb2FkX3N0YXR1cxgfIAEoCzIkLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24uU3RhdHVzEjgKDHN1Ym9yZGluYXRlcxgzIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24uVW5pdCJeCgtJbnRlZ3JhdGlvbhIKCgJpZBgBIAEoAxIQCghwcm92aWRlchgCIAEoCRIQCghyZXF1aXJlchgDIAEoCRIRCglpbnRlcmZhY2UYBCABKAkSDAoEcm9sZRgFIAEoCSJYCgZBY3Rpb24SDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIrCgpwYXJhbWV0ZXJzGAMgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCIXChVMaXN0TlRQU2VydmVyc1JlcXVlc3QiLQoWTGlzdE5UUFNlcnZlcnNSZXNwb25zZRITCgtudHBfc2VydmVycxgBIAMoCSIuChdVcGRhdGVOVFBTZXJ2ZXJzUmVxdWVzdBITCgtudHBfc2VydmVycxgBIAMoCSJPCiFVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVVSTFJlcXVlc3QSCgoCaWQYASABKAMSCwoDdXJsGAIgASgJEhEKCXNraXBfanVqdRgDIAEoCCIgCh5MaXN0UGFja2FnZVJlcG9zaXRvcmllc1JlcXVlc3QiZAofTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXNSZXNwb25zZRJBChRwYWNrYWdlX3JlcG9zaXRvcmllcxgBIAMoCzIjLm9wZW5oZGMuc3RhY2sudjEuUGFja2FnZVJlcG9zaXRvcnkiFQoTTGlzdE5ldHdvcmtzUmVxdWVzdCJDChRMaXN0TmV0d29ya3NSZXNwb25zZRIrCghuZXR3b3JrcxgBIAMoCzIZLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yayKAAQoUQ3JlYXRlTmV0d29ya1JlcXVlc3QSDwoHZGhjcF9vbhgBIAEoCBIMCgRjaWRyGAsgASgJEhIKCmdhdGV3YXlfaXAYDCABKAkSEwoLZG5zX3NlcnZlcnMYDSADKAkSEAoIc3RhcnRfaXAYFSABKAkSDgoGZW5kX2lwGBYgASgJIikKFERlbGV0ZU5ldHdvcmtSZXF1ZXN0EhEKCWZhYnJpY19pZBgBIAEoAyIvChNVcGRhdGVGYWJyaWNSZXF1ZXN0EgoKAmlkGAEgASgDEgwKBG5hbWUYAiABKAkidAoRVXBkYXRlVkxBTlJlcXVlc3QSEQoJZmFicmljX2lkGAEgASgDEgsKA3ZpZBgCIAEoAxIMCgRuYW1lGAMgASgJEgsKA210dRgEIAEoAxITCgtkZXNjcmlwdGlvbhgFIAEoCRIPCgdkaGNwX29uGAYgASgIIpkBChNVcGRhdGVTdWJuZXRSZXF1ZXN0EgoKAmlkGAEgASgDEgwKBG5hbWUYAiABKAkSDAoEY2lkchgDIAEoCRISCgpnYXRld2F5X2lwGAQgASgJEhMKC2Ruc19zZXJ2ZXJzGAUgAygJEhMKC2Rlc2NyaXB0aW9uGAYgASgJEhwKFGFsbG93X2Ruc19yZXNvbHV0aW9uGAcgASgIIlUKFFVwZGF0ZUlQUmFuZ2VSZXF1ZXN0EgoKAmlkGAEgASgDEhAKCHN0YXJ0X2lwGAIgASgJEg4KBmVuZF9pcBgDIAEoCRIPCgdjb21tZW50GAQgASgJIhUKE0xpc3RNYWNoaW5lc1JlcXVlc3QiQwoUTGlzdE1hY2hpbmVzUmVzcG9uc2USKwoIbWFjaGluZXMYASADKAsyGS5vcGVuaGRjLnN0YWNrLnYxLk1hY2hpbmUiqQIKEkFkZE1hY2hpbmVzUmVxdWVzdBISCgptb2RlbF91dWlkGAEgASgJEkIKCnBhcmFtZXRlcnMYAiADKAsyLi5vcGVuaGRjLnN0YWNrLnYxLkFkZE1hY2hpbmVzUmVxdWVzdC5QYXJhbWV0ZXIaVgoKQ29uc3RyYWludBIUCgxhcmNoaXRlY3R1cmUYASABKAkSEQoJY3B1X2NvcmVzGAIgASgEEhEKCW1lbW9yeV9tYhgDIAEoBBIMCgR0YWdzGAsgAygJGmMKCVBhcmFtZXRlchIRCglwbGFjZW1lbnQYASABKAkSQwoKY29uc3RyYWludBgCIAEoCzIvLm9wZW5oZGMuc3RhY2sudjEuQWRkTWFjaGluZXNSZXF1ZXN0LkNvbnN0cmFpbnQiJwoTQWRkTWFjaGluZXNSZXNwb25zZRIQCghtYWNoaW5lcxgBIAMoCSIcChpJbXBvcnRCb290UmVzb3VyY2VzUmVxdWVzdCIqChVQb3dlck9uTWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJIisKFlBvd2VyT2ZmTWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJIokBChhDb21taXNzaW9uTWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJEhIKCmVuYWJsZV9zc2gYAiABKAgSFwoPc2tpcF9ibWNfY29uZmlnGAMgASgIEhcKD3NraXBfbmV0d29ya2luZxgEIAEoCBIUCgxza2lwX3N0b3JhZ2UYBSABKAgiEwoRTGlzdE1vZGVsc1JlcXVlc3QiPQoSTGlzdE1vZGVsc1Jlc3BvbnNlEicKBm1vZGVscxgBIAMoCzIXLm9wZW5oZGMuc3RhY2sudjEuTW9kZWwiIgoSQ3JlYXRlTW9kZWxSZXF1ZXN0EgwKBG5hbWUYASABKAkiJgoWR2V0TW9kZWxDb25maWdzUmVxdWVzdBIMCgR1dWlkGAEgASgJIqIBChdHZXRNb2RlbENvbmZpZ3NSZXNwb25zZRJSCg1tb2RlbF9jb25maWdzGAEgAygLMjsub3BlbmhkYy5zdGFjay52MS5HZXRNb2RlbENvbmZpZ3NSZXNwb25zZS5Nb2RlbENvbmZpZ3NFbnRyeRozChFNb2RlbENvbmZpZ3NFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIi0KF0xpc3RBcHBsaWNhdGlvbnNSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkiTwoYTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlEjMKDGFwcGxpY2F0aW9ucxgBIAMoCzIdLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24iGgoYQ3JlYXRlQXBwbGljYXRpb25SZXF1ZXN0IhoKGERlbGV0ZUFwcGxpY2F0aW9uUmVxdWVzdCIaChhVcGRhdGVBcHBsaWNhdGlvblJlcXVlc3QiGwoZQWRkQXBwbGljYXRpb25Vbml0UmVxdWVzdCIaChhFeHBvc2VBcHBsaWNhdGlvblJlcXVlc3QiLQoXTGlzdEludGVncmF0aW9uc1JlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCSJPChhMaXN0SW50ZWdyYXRpb25zUmVzcG9uc2USMwoMaW50ZWdyYXRpb25zGAEgAygLMh0ub3BlbmhkYy5zdGFjay52MS5JbnRlZ3JhdGlvbiJBChhDcmVhdGVJbnRlZ3JhdGlvblJlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCRIRCgllbmRwb2ludHMYAiADKAkiOgoYRGVsZXRlSW50ZWdyYXRpb25SZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSCgoCaWQYAiABKAUiQgoSTGlzdEFjdGlvbnNSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSGAoQYXBwbGljYXRpb25fbmFtZRgCIAEoCSJAChNMaXN0QWN0aW9uc1Jlc3BvbnNlEikKB0FjdGlvbnMYASADKAsyGC5vcGVuaGRjLnN0YWNrLnYxLkFjdGlvbiISChBSdW5BY3Rpb25SZXF1ZXN0MskWCgxTdGFja1NlcnZpY2USYwoOTGlzdE5UUFNlcnZlcnMSJy5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROVFBTZXJ2ZXJzUmVxdWVzdBooLm9wZW5oZGMuc3RhY2sudjEuTGlzdE5UUFNlcnZlcnNSZXNwb25zZRJVChBVcGRhdGVOVFBTZXJ2ZXJzEikub3BlbmhkYy5zdGFjay52MS5VcGRhdGVOVFBTZXJ2ZXJzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJ+ChdMaXN0UGFja2FnZVJlcG9zaXRvcmllcxIwLm9wZW5oZGMuc3RhY2sudjEuTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXNSZXF1ZXN0GjEub3BlbmhkYy5zdGFjay52MS5MaXN0UGFja2FnZVJlcG9zaXRvcmllc1Jlc3BvbnNlEnYKGlVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5VVJMEjMub3BlbmhkYy5zdGFjay52MS5VcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVVSTFJlcXVlc3QaIy5vcGVuaGRjLnN0YWNrLnYxLlBhY2thZ2VSZXBvc2l0b3J5El0KDExpc3ROZXR3b3JrcxIlLm9wZW5oZGMuc3RhY2sudjEuTGlzdE5ldHdvcmtzUmVxdWVzdBomLm9wZW5oZGMuc3RhY2sudjEuTGlzdE5ldHdvcmtzUmVzcG9uc2USUgoNQ3JlYXRlTmV0d29yaxImLm9wZW5oZGMuc3RhY2sudjEuQ3JlYXRlTmV0d29ya1JlcXVlc3QaGS5vcGVuaGRjLnN0YWNrLnYxLk5ldHdvcmsSTwoNRGVsZXRlTmV0d29yaxImLm9wZW5oZGMuc3RhY2sudjEuRGVsZXRlTmV0d29ya1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSTwoMVXBkYXRlRmFicmljEiUub3BlbmhkYy5zdGFjay52MS5VcGRhdGVGYWJyaWNSZXF1ZXN0Ghgub3BlbmhkYy5zdGFjay52MS5GYWJyaWMSSQoKVXBkYXRlVkxBThIjLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlVkxBTlJlcXVlc3QaFi5vcGVuaGRjLnN0YWNrLnYxLlZMQU4STwoMVXBkYXRlU3VibmV0EiUub3BlbmhkYy5zdGFjay52MS5VcGRhdGVTdWJuZXRSZXF1ZXN0Ghgub3BlbmhkYy5zdGFjay52MS5TdWJuZXQSUgoNVXBkYXRlSVBSYW5nZRImLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlSVBSYW5nZVJlcXVlc3QaGS5vcGVuaGRjLnN0YWNrLnYxLklQUmFuZ2USXQoMTGlzdE1hY2hpbmVzEiUub3BlbmhkYy5zdGFjay52MS5MaXN0TWFjaGluZXNSZXF1ZXN0GiYub3BlbmhkYy5zdGFjay52MS5MaXN0TWFjaGluZXNSZXNwb25zZRJaCgtBZGRNYWNoaW5lcxIkLm9wZW5oZGMuc3RhY2sudjEuQWRkTWFjaGluZXNSZXF1ZXN0GiUub3BlbmhkYy5zdGFjay52MS5BZGRNYWNoaW5lc1Jlc3BvbnNlElsKE0ltcG9ydEJvb3RSZXNvdXJjZXMSLC5vcGVuaGRjLnN0YWNrLnYxLkltcG9ydEJvb3RSZXNvdXJjZXNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElQKDlBvd2VyT25NYWNoaW5lEicub3BlbmhkYy5zdGFjay52MS5Qb3dlck9uTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLnN0YWNrLnYxLk1hY2hpbmUSVgoPUG93ZXJPZmZNYWNoaW5lEigub3BlbmhkYy5zdGFjay52MS5Qb3dlck9mZk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lEloKEUNvbW1pc3Npb25NYWNoaW5lEioub3BlbmhkYy5zdGFjay52MS5Db21taXNzaW9uTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLnN0YWNrLnYxLk1hY2hpbmUSVwoKTGlzdE1vZGVscxIjLm9wZW5oZGMuc3RhY2sudjEuTGlzdE1vZGVsc1JlcXVlc3QaJC5vcGVuaGRjLnN0YWNrLnYxLkxpc3RNb2RlbHNSZXNwb25zZRJMCgtDcmVhdGVNb2RlbBIkLm9wZW5oZGMuc3RhY2sudjEuQ3JlYXRlTW9kZWxSZXF1ZXN0Ghcub3BlbmhkYy5zdGFjay52MS5Nb2RlbBJmCg9HZXRNb2RlbENvbmZpZ3MSKC5vcGVuaGRjLnN0YWNrLnYxLkdldE1vZGVsQ29uZmlnc1JlcXVlc3QaKS5vcGVuaGRjLnN0YWNrLnYxLkdldE1vZGVsQ29uZmlnc1Jlc3BvbnNlEmkKEExpc3RBcHBsaWNhdGlvbnMSKS5vcGVuaGRjLnN0YWNrLnYxLkxpc3RBcHBsaWNhdGlvbnNSZXF1ZXN0Gioub3BlbmhkYy5zdGFjay52MS5MaXN0QXBwbGljYXRpb25zUmVzcG9uc2USXgoRQ3JlYXRlQXBwbGljYXRpb24SKi5vcGVuaGRjLnN0YWNrLnYxLkNyZWF0ZUFwcGxpY2F0aW9uUmVxdWVzdBodLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24SVwoRRGVsZXRlQXBwbGljYXRpb24SKi5vcGVuaGRjLnN0YWNrLnYxLkRlbGV0ZUFwcGxpY2F0aW9uUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJeChFVcGRhdGVBcHBsaWNhdGlvbhIqLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlQXBwbGljYXRpb25SZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5BcHBsaWNhdGlvbhJgChJBZGRBcHBsaWNhdGlvblVuaXQSKy5vcGVuaGRjLnN0YWNrLnYxLkFkZEFwcGxpY2F0aW9uVW5pdFJlcXVlc3QaHS5vcGVuaGRjLnN0YWNrLnYxLkFwcGxpY2F0aW9uEl4KEUV4cG9zZUFwcGxpY2F0aW9uEioub3BlbmhkYy5zdGFjay52MS5FeHBvc2VBcHBsaWNhdGlvblJlcXVlc3QaHS5vcGVuaGRjLnN0YWNrLnYxLkFwcGxpY2F0aW9uEmkKEExpc3RJbnRlZ3JhdGlvbnMSKS5vcGVuaGRjLnN0YWNrLnYxLkxpc3RJbnRlZ3JhdGlvbnNSZXF1ZXN0Gioub3BlbmhkYy5zdGFjay52MS5MaXN0SW50ZWdyYXRpb25zUmVzcG9uc2USXgoRQ3JlYXRlSW50ZWdyYXRpb24SKi5vcGVuaGRjLnN0YWNrLnYxLkNyZWF0ZUludGVncmF0aW9uUmVxdWVzdBodLm9wZW5oZGMuc3RhY2sudjEuSW50ZWdyYXRpb24SVwoRRGVsZXRlSW50ZWdyYXRpb24SKi5vcGVuaGRjLnN0YWNrLnYxLkRlbGV0ZUludGVncmF0aW9uUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJaCgtMaXN0QWN0aW9ucxIkLm9wZW5oZGMuc3RhY2sudjEuTGlzdEFjdGlvbnNSZXF1ZXN0GiUub3BlbmhkYy5zdGFjay52MS5MaXN0QWN0aW9uc1Jlc3BvbnNlEkkKCVJ1bkFjdGlvbhIiLm9wZW5oZGMuc3RhY2sudjEuUnVuQWN0aW9uUmVxdWVzdBoYLm9wZW5oZGMuc3RhY2sudjEuQWN0aW9uQixaKmdpdGh1Yi5jb20vb3BlbmhkYy9vcGVuaGRjL2FwaS9zdGFjay92MTt2MWIIZWRpdGlvbnNw6Ac", [file_google_protobuf_struct, file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChhhcGkvc3RhY2svdjEvc3RhY2sucHJvdG8SEG9wZW5oZGMuc3RhY2sudjEiSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCCLDAQoHTmV0d29yaxIoCgZmYWJyaWMYASABKAsyGC5vcGVuaGRjLnN0YWNrLnYxLkZhYnJpYxIzCghzZXR0aW5ncxgCIAMoCzIhLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yay5TZXR0aW5nGlkKB1NldHRpbmcSJAoEdmxhbhgBIAEoCzIWLm9wZW5oZGMuc3RhY2sudjEuVkxBThIoCgZzdWJuZXQYAiABKAsyGC5vcGVuaGRjLnN0YWNrLnYxLlN1Ym5ldCJgCgRWTEFOEgoKAmlkGAEgASgDEgsKA3ZpZBgCIAEoAxIMCgRuYW1lGAMgASgJEgsKA210dRgEIAEoAxITCgtkZXNjcmlwdGlvbhgFIAEoCRIPCgdkaGNwX29uGAYgASgIIiIKBkZhYnJpYxIKCgJpZBgBIAEoAxIMCgRuYW1lGAIgASgJIrYFCgZTdWJuZXQSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRIMCgRjaWRyGAMgASgJEhIKCmdhdGV3YXlfaXAYBCABKAkSEwoLZG5zX3NlcnZlcnMYBSADKAkSEwoLZGVzY3JpcHRpb24YBiABKAkSGgoSbWFuYWdlZF9hbGxvY2F0aW9uGAcgASgIEhgKEGFjdGl2ZV9kaXNjb3ZlcnkYCCABKAgSGgoSYWxsb3dfcHJveHlfYWNjZXNzGAkgASgIEhwKFGFsbG93X2Ruc19yZXNvbHV0aW9uGAogASgIEjgKDGlwX2FkZHJlc3NlcxgLIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuU3VibmV0LklQQWRkcmVzcxJEChJyZXNlcnZlZF9pcF9yYW5nZXMYDCADKAsyKC5vcGVuaGRjLnN0YWNrLnYxLlN1Ym5ldC5SZXNlcnZlZElQUmFuZ2USNwoKc3RhdGlzdGljcxgNIAEoCzIjLm9wZW5oZGMuc3RhY2sudjEuU3VibmV0LlN0YXRpc3RpY3MaawoJSVBBZGRyZXNzEgwKBHR5cGUYASABKAkSCgoCaXAYAiABKAkSDAoEdXNlchgDIAEoCRIRCglzeXN0ZW1faWQYCyABKAkSEQoJbm9kZV90eXBlGAwgASgJEhAKCGhvc3RuYW1lGA0gASgJGk4KD1Jlc2VydmVkSVBSYW5nZRIQCghwdXJwb3NlcxgBIAMoCRINCgVzdGFydBgCIAEoCRILCgNlbmQYAyABKAkSDQoFY291bnQYBCABKAMaYAoKU3RhdGlzdGljcxIRCglhdmFpbGFibGUYASABKAMSDQoFdG90YWwYAiABKAMSFQoNdXNhZ2VfcGVyY2VudBgDIAEoCRIZChFhdmFpbGFibGVfcGVyY2VudBgEIAEoCSKACwoHTWFjaGluZRIRCglzeXN0ZW1faWQYASABKAkSFQoNaGFyZHdhcmVfdXVpZBhlIAEoCRIQCghob3N0bmFtZRhmIAEoCRIMCgRmcWRuGGcgASgJEgwKBHRhZ3MYaCADKAkSEwoLZGVzY3JpcHRpb24YaSABKAkSDwoGc3RhdHVzGMkBIAEoCRIUCgtwb3dlcl9zdGF0ZRitAiABKAkSEwoKcG93ZXJfdHlwZRiuAiABKAkSEAoHb3N5c3RlbRiRAyABKAkSFgoNZGlzdHJvX3NlcmllcxiSAyABKAkSEwoKaHdlX2tlcm5lbBiTAyABKAkSFQoMYXJjaGl0ZWN0dXJlGJQDIAEoCRISCgljcHVfc3BlZWQYlQMgASgDEhIKCWNwdV9jb3VudBiWAyABKAMSDwoGbWVtb3J5GJcDIAEoAxIQCgdzdG9yYWdlGJgDIAEoARIVCgxpcF9hZGRyZXNzZXMYmQMgAygJElEKFHdvcmtsb2FkX2Fubm90YXRpb25zGPUDIAMoCzIyLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5Xb3JrbG9hZEFubm90YXRpb25zRW50cnkSUQoUaGFyZHdhcmVfaW5mb3JtYXRpb24Y2QQgAygLMjIub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLkhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRIZChBiaW9zX2Jvb3RfbWV0aG9kGNoEIAEoCRI3CgpudW1hX25vZGVzGL0FIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5OVU1BTm9kZRI9Cg1ibG9ja19kZXZpY2VzGKEGIAMoCzIlLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5CbG9ja0RldmljZRJHChJuZXR3b3JrX2ludGVyZmFjZXMYogYgAygLMioub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLk5ldHdvcmtJbnRlcmZhY2UaOAoITlVNQU5vZGUSDQoFaW5kZXgYASABKAMSDQoFY29yZXMYAiABKAMSDgoGbWVtb3J5GAMgASgDGqMBCgtCbG9ja0RldmljZRIRCglib290X2Rpc2sYASABKAgSDAoEbmFtZRgLIAEoCRIOCgZzZXJpYWwYDCABKAkSDQoFbW9kZWwYFSABKAkSGAoQZmlybXdhcmVfdmVyc2lvbhgWIAEoCRIMCgRzaXplGB8gASgDEgwKBHR5cGUYKSABKAkSDAoEdGFncxgzIAMoCRIQCgh1c2VkX2Zvchg9IAEoCRq5AgoQTmV0d29ya0ludGVyZmFjZRIWCg5ib290X2ludGVyZmFjZRgBIAEoCBIMCgRuYW1lGAsgASgJEhMKC21hY19hZGRyZXNzGAwgASgJEhYKDmxpbmtfY29ubmVjdGVkGBUgASgIEhIKCmxpbmtfc3BlZWQYFiABKAMSFwoPaW50ZXJmYWNlX3NwZWVkGBcgASgDEgwKBHR5cGUYHyABKAkSEwoLZmFicmljX25hbWUYKSABKAkSEQoJZmFicmljX2lkGCogASgDEhEKCXZsYW5fbmFtZRgrIAEoCRIPCgd2bGFuX2lkGCwgASgDEhMKC3N1Ym5ldF9uYW1lGDMgASgJEhEKCXN1Ym5ldF9pZBg0IAEoAxISCgppcF9hZGRyZXNzGD0gASgJEg8KB2RoY3Bfb24YRyABKAgaOgoYV29ya2xvYWRBbm5vdGF0aW9uc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaOgoYSGFyZHdhcmVJbmZvcm1hdGlvbkVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiVgoHSVBSYW5nZRIKCgJpZBgBIAEoAxIQCghzdGFydF9pcBgCIAEoCRIOCgZlbmRfaXAYAyABKAkSDAoEdHlwZRgEIAEoCRIPCgdjb21tZW50GAUgASgJIrABCgVNb2RlbBIMCgR1dWlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEbGlmZRgDIAEoCRIOCgZzdGF0dXMYBCABKAkSLgoKdXBkYXRlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNbWFjaGluZV9jb3VudBgLIAEoAxISCgpjb3JlX2NvdW50GAwgASgDEhIKCnVuaXRfY291bnQYDSABKAMiwgQKC0FwcGxpY2F0aW9uEgwKBG5hbWUYASABKAkSDwoHdmVyc2lvbhgCIAEoCRIQCghyZXZpc2lvbhgDIAEoAxIOCgZzdGF0dXMYCyABKAkSDAoEaW5mbxgMIAEoCRIuCgpjcmVhdGVkX2F0GA0gASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIxCgV1bml0cxgVIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24uVW5pdBpWCgZTdGF0dXMSDgoGc3RhdHVzGAEgASgJEgwKBGluZm8YAiABKAkSLgoKY3JlYXRlZF9hdBgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaqAIKBFVuaXQSDAoEbmFtZRgBIAEoCRIPCgd2ZXJzaW9uGAIgASgJEg4KBmxlYWRlchgDIAEoCBISCgppcF9hZGRyZXNzGAQgASgJEg0KBXBvcnRzGAUgAygJEhkKEW1hY2hpbmVfc3lzdGVtX2lkGAsgASgJEjoKDGFnZW50X3N0YXR1cxgVIAEoCzIkLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24uU3RhdHVzEj0KD3dvcmtsb2FkX3N0YXR1cxgfIAEoCzIkLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24uU3RhdHVzEjgKDHN1Ym9yZGluYXRlcxgzIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24uVW5pdCJeCgtJbnRlZ3JhdGlvbhIKCgJpZBgBIAEoAxIQCghwcm92aWRlchgCIAEoCRIQCghyZXF1aXJlchgDIAEoCRIRCglpbnRlcmZhY2UYBCABKAkSDAoEcm9sZRgFIAEoCSJYCgZBY3Rpb24SDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIrCgpwYXJhbWV0ZXJzGAMgASgLMhcuZ29vZ2xlLnByb3RvYnVmLlN0cnVjdCIXChVMaXN0TlRQU2VydmVyc1JlcXVlc3QiLQoWTGlzdE5UUFNlcnZlcnNSZXNwb25zZRITCgtudHBfc2VydmVycxgBIAMoCSIuChdVcGRhdGVOVFBTZXJ2ZXJzUmVxdWVzdBITCgtudHBfc2VydmVycxgBIAMoCSJPCiFVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVVSTFJlcXVlc3QSCgoCaWQYASABKAMSCwoDdXJsGAIgASgJEhEKCXNraXBfanVqdRgDIAEoCCIgCh5MaXN0UGFja2FnZVJlcG9zaXRvcmllc1JlcXVlc3QiZAofTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXNSZXNwb25zZRJBChRwYWNrYWdlX3JlcG9zaXRvcmllcxgBIAMoCzIjLm9wZW5oZGMuc3RhY2sudjEuUGFja2FnZVJlcG9zaXRvcnkiFQoTTGlzdE5ldHdvcmtzUmVxdWVzdCJDChRMaXN0TmV0d29ya3NSZXNwb25zZRIrCghuZXR3b3JrcxgBIAMoCzIZLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yayKAAQoUQ3JlYXRlTmV0d29ya1JlcXVlc3QSDwoHZGhjcF9vbhgBIAEoCBIMCgRjaWRyGAsgASgJEhIKCmdhdGV3YXlfaXAYDCABKAkSEwoLZG5zX3NlcnZlcnMYDSADKAkSEAoIc3RhcnRfaXAYFSABKAkSDgoGZW5kX2lwGBYgASgJIikKFERlbGV0ZU5ldHdvcmtSZXF1ZXN0EhEKCWZhYnJpY19pZBgBIAEoAyIvChNVcGRhdGVGYWJyaWNSZXF1ZXN0EgoKAmlkGAEgASgDEgwKBG5hbWUYAiABKAkidAoRVXBkYXRlVkxBTlJlcXVlc3QSEQoJZmFicmljX2lkGAEgASgDEgsKA3ZpZBgCIAEoAxIMCgRuYW1lGAMgASgJEgsKA210dRgEIAEoAxITCgtkZXNjcmlwdGlvbhgFIAEoCRIPCgdkaGNwX29uGAYgASgIIpkBChNVcGRhdGVTdWJuZXRSZXF1ZXN0EgoKAmlkGAEgASgDEgwKBG5hbWUYAiABKAkSDAoEY2lkchgDIAEoCRISCgpnYXRld2F5X2lwGAQgASgJEhMKC2Ruc19zZXJ2ZXJzGAUgAygJEhMKC2Rlc2NyaXB0aW9uGAYgASgJEhwKFGFsbG93X2Ruc19yZXNvbHV0aW9uGAcgASgIIlUKFFVwZGF0ZUlQUmFuZ2VSZXF1ZXN0EgoKAmlkGAEgASgDEhAKCHN0YXJ0X2lwGAIgASgJEg4KBmVuZF9pcBgDIAEoCRIPCgdjb21tZW50GAQgASgJIhUKE0xpc3RNYWNoaW5lc1JlcXVlc3QiQwoUTGlzdE1hY2hpbmVzUmVzcG9uc2USKwoIbWFjaGluZXMYASADKAsyGS5vcGVuaGRjLnN0YWNrLnYxLk1hY2hpbmUiJgoRR2V0TWFjaGluZVJlcXVlc3QSEQoJc3lzdGVtX2lkGAEgASgJIqkCChJBZGRNYWNoaW5lc1JlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCRJCCgpwYXJhbWV0ZXJzGAIgAygLMi4ub3BlbmhkYy5zdGFjay52MS5BZGRNYWNoaW5lc1JlcXVlc3QuUGFyYW1ldGVyGlYKCkNvbnN0cmFpbnQSFAoMYXJjaGl0ZWN0dXJlGAEgASgJEhEKCWNwdV9jb3JlcxgCIAEoBBIRCgltZW1vcnlfbWIYAyABKAQSDAoEdGFncxgLIAMoCRpjCglQYXJhbWV0ZXISEQoJcGxhY2VtZW50GAEgASgJEkMKCmNvbnN0cmFpbnQYAiABKAsyLy5vcGVuaGRjLnN0YWNrLnYxLkFkZE1hY2hpbmVzUmVxdWVzdC5Db25zdHJhaW50IicKE0FkZE1hY2hpbmVzUmVzcG9uc2USEAoIbWFjaGluZXMYASADKAkiHAoaSW1wb3J0Qm9vdFJlc291cmNlc1JlcXVlc3QiKgoVUG93ZXJPbk1hY2hpbmVSZXF1ZXN0EhEKCXN5c3RlbV9pZBgBIAEoCSIrChZQb3dlck9mZk1hY2hpbmVSZXF1ZXN0EhEKCXN5c3RlbV9pZBgBIAEoCSKJAQoYQ29tbWlzc2lvbk1hY2hpbmVSZXF1ZXN0EhEKCXN5c3RlbV9pZBgBIAEoCRISCgplbmFibGVfc3NoGAIgASgIEhcKD3NraXBfYm1jX2NvbmZpZxgDIAEoCBIXCg9za2lwX25ldHdvcmtpbmcYBCABKAgSFAoMc2tpcF9zdG9yYWdlGAUgASgIIhMKEUxpc3RNb2RlbHNSZXF1ZXN0Ij0KEkxpc3RNb2RlbHNSZXNwb25zZRInCgZtb2RlbHMYASADKAsyFy5vcGVuaGRjLnN0YWNrLnYxLk1vZGVsIiIKEkNyZWF0ZU1vZGVsUmVxdWVzdBIMCgRuYW1lGAEgASgJIiYKFkdldE1vZGVsQ29uZmlnc1JlcXVlc3QSDAoEdXVpZBgBIAEoCSKiAQoXR2V0TW9kZWxDb25maWdzUmVzcG9uc2USUgoNbW9kZWxfY29uZmlncxgBIAMoCzI7Lm9wZW5oZGMuc3RhY2sudjEuR2V0TW9kZWxDb25maWdzUmVzcG9uc2UuTW9kZWxDb25maWdzRW50cnkaMwoRTW9kZWxDb25maWdzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASItChdMaXN0QXBwbGljYXRpb25zUmVxdWVzdBISCgptb2RlbF91dWlkGAEgASgJIk8KGExpc3RBcHBsaWNhdGlvbnNSZXNwb25zZRIzCgxhcHBsaWNhdGlvbnMYASADKAsyHS5vcGVuaGRjLnN0YWNrLnYxLkFwcGxpY2F0aW9uIhoKGENyZWF0ZUFwcGxpY2F0aW9uUmVxdWVzdCIaChhEZWxldGVBcHBsaWNhdGlvblJlcXVlc3QiGgoYVXBkYXRlQXBwbGljYXRpb25SZXF1ZXN0IhsKGUFkZEFwcGxpY2F0aW9uVW5pdFJlcXVlc3QiGgoYRXhwb3NlQXBwbGljYXRpb25SZXF1ZXN0Ii0KF0xpc3RJbnRlZ3JhdGlvbnNSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkiTwoYTGlzdEludGVncmF0aW9uc1Jlc3BvbnNlEjMKDGludGVncmF0aW9ucxgBIAMoCzIdLm9wZW5oZGMuc3RhY2sudjEuSW50ZWdyYXRpb24iQQoYQ3JlYXRlSW50ZWdyYXRpb25SZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSEQoJZW5kcG9pbnRzGAIgAygJIjoKGERlbGV0ZUludGVncmF0aW9uUmVxdWVzdBISCgptb2RlbF91dWlkGAEgASgJEgoKAmlkGAIgASgFIkIKEkxpc3RBY3Rpb25zUmVxdWVzdBISCgptb2RlbF91dWlkGAEgASgJEhgKEGFwcGxpY2F0aW9uX25hbWUYAiABKAkiQAoTTGlzdEFjdGlvbnNSZXNwb25zZRIpCgdBY3Rpb25zGAEgAygLMhgub3BlbmhkYy5zdGFjay52MS5BY3Rpb24iEgoQUnVuQWN0aW9uUmVxdWVzdDKXFwoMU3RhY2tTZXJ2aWNlEmMKDkxpc3ROVFBTZXJ2ZXJzEicub3BlbmhkYy5zdGFjay52MS5MaXN0TlRQU2VydmVyc1JlcXVlc3QaKC5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROVFBTZXJ2ZXJzUmVzcG9uc2USVQoQVXBkYXRlTlRQU2VydmVycxIpLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlTlRQU2VydmVyc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSfgoXTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXMSMC5vcGVuaGRjLnN0YWNrLnYxLkxpc3RQYWNrYWdlUmVwb3NpdG9yaWVzUmVxdWVzdBoxLm9wZW5oZGMuc3RhY2sudjEuTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXNSZXNwb25zZRJ2ChpVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVVSTBIzLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlVUkxSZXF1ZXN0GiMub3BlbmhkYy5zdGFjay52MS5QYWNrYWdlUmVwb3NpdG9yeRJdCgxMaXN0TmV0d29ya3MSJS5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROZXR3b3Jrc1JlcXVlc3QaJi5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROZXR3b3Jrc1Jlc3BvbnNlElIKDUNyZWF0ZU5ldHdvcmsSJi5vcGVuaGRjLnN0YWNrLnYxLkNyZWF0ZU5ldHdvcmtSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5OZXR3b3JrEk8KDURlbGV0ZU5ldHdvcmsSJi5vcGVuaGRjLnN0YWNrLnYxLkRlbGV0ZU5ldHdvcmtSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Ek8KDFVwZGF0ZUZhYnJpYxIlLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlRmFicmljUmVxdWVzdBoYLm9wZW5oZGMuc3RhY2sudjEuRmFicmljEkkKClVwZGF0ZVZMQU4SIy5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZVZMQU5SZXF1ZXN0GhYub3BlbmhkYy5zdGFjay52MS5WTEFOEk8KDFVwZGF0ZVN1Ym5ldBIlLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlU3VibmV0UmVxdWVzdBoYLm9wZW5oZGMuc3RhY2sudjEuU3VibmV0ElIKDVVwZGF0ZUlQUmFuZ2USJi5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZUlQUmFuZ2VSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5JUFJhbmdlEl0KDExpc3RNYWNoaW5lcxIlLm9wZW5oZGMuc3RhY2sudjEuTGlzdE1hY2hpbmVzUmVxdWVzdBomLm9wZW5oZGMuc3RhY2sudjEuTGlzdE1hY2hpbmVzUmVzcG9uc2USTAoKR2V0TWFjaGluZRIjLm9wZW5oZGMuc3RhY2sudjEuR2V0TWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLnN0YWNrLnYxLk1hY2hpbmUSWgoLQWRkTWFjaGluZXMSJC5vcGVuaGRjLnN0YWNrLnYxLkFkZE1hY2hpbmVzUmVxdWVzdBolLm9wZW5oZGMuc3RhY2sudjEuQWRkTWFjaGluZXNSZXNwb25zZRJbChNJbXBvcnRCb290UmVzb3VyY2VzEiwub3BlbmhkYy5zdGFjay52MS5JbXBvcnRCb290UmVzb3VyY2VzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJUCg5Qb3dlck9uTWFjaGluZRInLm9wZW5oZGMuc3RhY2sudjEuUG93ZXJPbk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lElYKD1Bvd2VyT2ZmTWFjaGluZRIoLm9wZW5oZGMuc3RhY2sudjEuUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBoZLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZRJaChFDb21taXNzaW9uTWFjaGluZRIqLm9wZW5oZGMuc3RhY2sudjEuQ29tbWlzc2lvbk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lElcKCkxpc3RNb2RlbHMSIy5vcGVuaGRjLnN0YWNrLnYxLkxpc3RNb2RlbHNSZXF1ZXN0GiQub3BlbmhkYy5zdGFjay52MS5MaXN0TW9kZWxzUmVzcG9uc2USTAoLQ3JlYXRlTW9kZWwSJC5vcGVuaGRjLnN0YWNrLnYxLkNyZWF0ZU1vZGVsUmVxdWVzdBoXLm9wZW5oZGMuc3RhY2sudjEuTW9kZWwSZgoPR2V0TW9kZWxDb25maWdzEigub3BlbmhkYy5zdGFjay52MS5HZXRNb2RlbENvbmZpZ3NSZXF1ZXN0Gikub3BlbmhkYy5zdGFjay52MS5HZXRNb2RlbENvbmZpZ3NSZXNwb25zZRJpChBMaXN0QXBwbGljYXRpb25zEikub3BlbmhkYy5zdGFjay52MS5MaXN0QXBwbGljYXRpb25zUmVxdWVzdBoqLm9wZW5oZGMuc3RhY2sudjEuTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlEl4KEUNyZWF0ZUFwcGxpY2F0aW9uEioub3BlbmhkYy5zdGFjay52MS5DcmVhdGVBcHBsaWNhdGlvblJlcXVlc3QaHS5vcGVuaGRjLnN0YWNrLnYxLkFwcGxpY2F0aW9uElcKEURlbGV0ZUFwcGxpY2F0aW9uEioub3BlbmhkYy5zdGFjay52MS5EZWxldGVBcHBsaWNhdGlvblJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSXgoRVXBkYXRlQXBwbGljYXRpb24SKi5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZUFwcGxpY2F0aW9uUmVxdWVzdBodLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24SYAoSQWRkQXBwbGljYXRpb25Vbml0Eisub3BlbmhkYy5zdGFjay52MS5BZGRBcHBsaWNhdGlvblVuaXRSZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5BcHBsaWNhdGlvbhJeChFFeHBvc2VBcHBsaWNhdGlvbhIqLm9wZW5oZGMuc3RhY2sudjEuRXhwb3NlQXBwbGljYXRpb25SZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5BcHBsaWNhdGlvbhJpChBMaXN0SW50ZWdyYXRpb25zEikub3BlbmhkYy5zdGFjay52MS5MaXN0SW50ZWdyYXRpb25zUmVxdWVzdBoqLm9wZW5oZGMuc3RhY2sudjEuTGlzdEludGVncmF0aW9uc1Jlc3BvbnNlEl4KEUNyZWF0ZUludGVncmF0aW9uEioub3BlbmhkYy5zdGFjay52MS5DcmVhdGVJbnRlZ3JhdGlvblJlcXVlc3QaHS5vcGVuaGRjLnN0YWNrLnYxLkludGVncmF0aW9uElcKEURlbGV0ZUludGVncmF0aW9uEioub3BlbmhkYy5zdGFjay52MS5EZWxldGVJbnRlZ3JhdGlvblJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSWgoLTGlzdEFjdGlvbnMSJC5vcGVuaGRjLnN0YWNrLnYxLkxpc3RBY3Rpb25zUmVxdWVzdBolLm9wZW5oZGMuc3RhY2sudjEuTGlzdEFjdGlvbnNSZXNwb25zZRJJCglSdW5BY3Rpb24SIi5vcGVuaGRjLnN0YWNrLnYxLlJ1bkFjdGlvblJlcXVlc3QaGC5vcGVuaGRjLnN0YWNrLnYxLkFjdGlvbkIsWipnaXRodWIuY29tL29wZW5oZGMvb3BlbmhkYy9hcGkvc3RhY2svdjE7djFiCGVkaXRpb25zcOgH", [file_google_protobuf_struct, file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message openhdc.stack.v1.PackageRepository
@@ -81,11 +81,6 @@ export type Network_Setting = Message<"openhdc.stack.v1.Network.Setting"> & {
    * @generated from field: openhdc.stack.v1.Subnet subnet = 2;
    */
   subnet?: Subnet;
-
-  /**
-   * @generated from field: openhdc.stack.v1.IPRange ip_range = 3;
-   */
-  ipRange?: IPRange;
 };
 
 /**
@@ -212,6 +207,21 @@ export type Subnet = Message<"openhdc.stack.v1.Subnet"> & {
    * @generated from field: bool allow_dns_resolution = 10;
    */
   allowDnsResolution: boolean;
+
+  /**
+   * @generated from field: repeated openhdc.stack.v1.Subnet.IPAddress ip_addresses = 11;
+   */
+  ipAddresses: Subnet_IPAddress[];
+
+  /**
+   * @generated from field: repeated openhdc.stack.v1.Subnet.ReservedIPRange reserved_ip_ranges = 12;
+   */
+  reservedIpRanges: Subnet_ReservedIPRange[];
+
+  /**
+   * @generated from field: openhdc.stack.v1.Subnet.Statistics statistics = 13;
+   */
+  statistics?: Subnet_Statistics;
 };
 
 /**
@@ -220,6 +230,112 @@ export type Subnet = Message<"openhdc.stack.v1.Subnet"> & {
  */
 export const SubnetSchema: GenMessage<Subnet> = /*@__PURE__*/
   messageDesc(file_api_stack_v1_stack, 4);
+
+/**
+ * @generated from message openhdc.stack.v1.Subnet.IPAddress
+ */
+export type Subnet_IPAddress = Message<"openhdc.stack.v1.Subnet.IPAddress"> & {
+  /**
+   * @generated from field: string type = 1;
+   */
+  type: string;
+
+  /**
+   * @generated from field: string ip = 2;
+   */
+  ip: string;
+
+  /**
+   * @generated from field: string user = 3;
+   */
+  user: string;
+
+  /**
+   * @generated from field: string system_id = 11;
+   */
+  systemId: string;
+
+  /**
+   * @generated from field: string node_type = 12;
+   */
+  nodeType: string;
+
+  /**
+   * @generated from field: string hostname = 13;
+   */
+  hostname: string;
+};
+
+/**
+ * Describes the message openhdc.stack.v1.Subnet.IPAddress.
+ * Use `create(Subnet_IPAddressSchema)` to create a new message.
+ */
+export const Subnet_IPAddressSchema: GenMessage<Subnet_IPAddress> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 4, 0);
+
+/**
+ * @generated from message openhdc.stack.v1.Subnet.ReservedIPRange
+ */
+export type Subnet_ReservedIPRange = Message<"openhdc.stack.v1.Subnet.ReservedIPRange"> & {
+  /**
+   * @generated from field: repeated string purposes = 1;
+   */
+  purposes: string[];
+
+  /**
+   * @generated from field: string start = 2;
+   */
+  start: string;
+
+  /**
+   * @generated from field: string end = 3;
+   */
+  end: string;
+
+  /**
+   * @generated from field: int64 count = 4;
+   */
+  count: bigint;
+};
+
+/**
+ * Describes the message openhdc.stack.v1.Subnet.ReservedIPRange.
+ * Use `create(Subnet_ReservedIPRangeSchema)` to create a new message.
+ */
+export const Subnet_ReservedIPRangeSchema: GenMessage<Subnet_ReservedIPRange> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 4, 1);
+
+/**
+ * @generated from message openhdc.stack.v1.Subnet.Statistics
+ */
+export type Subnet_Statistics = Message<"openhdc.stack.v1.Subnet.Statistics"> & {
+  /**
+   * @generated from field: int64 available = 1;
+   */
+  available: bigint;
+
+  /**
+   * @generated from field: int64 total = 2;
+   */
+  total: bigint;
+
+  /**
+   * @generated from field: string usage_percent = 3;
+   */
+  usagePercent: string;
+
+  /**
+   * @generated from field: string available_percent = 4;
+   */
+  availablePercent: string;
+};
+
+/**
+ * Describes the message openhdc.stack.v1.Subnet.Statistics.
+ * Use `create(Subnet_StatisticsSchema)` to create a new message.
+ */
+export const Subnet_StatisticsSchema: GenMessage<Subnet_Statistics> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 4, 2);
 
 /**
  * @generated from message openhdc.stack.v1.Machine
@@ -1175,6 +1291,23 @@ export const ListMachinesResponseSchema: GenMessage<ListMachinesResponse> = /*@_
   messageDesc(file_api_stack_v1_stack, 26);
 
 /**
+ * @generated from message openhdc.stack.v1.GetMachineRequest
+ */
+export type GetMachineRequest = Message<"openhdc.stack.v1.GetMachineRequest"> & {
+  /**
+   * @generated from field: string system_id = 1;
+   */
+  systemId: string;
+};
+
+/**
+ * Describes the message openhdc.stack.v1.GetMachineRequest.
+ * Use `create(GetMachineRequestSchema)` to create a new message.
+ */
+export const GetMachineRequestSchema: GenMessage<GetMachineRequest> = /*@__PURE__*/
+  messageDesc(file_api_stack_v1_stack, 27);
+
+/**
  * @generated from message openhdc.stack.v1.AddMachinesRequest
  */
 export type AddMachinesRequest = Message<"openhdc.stack.v1.AddMachinesRequest"> & {
@@ -1194,7 +1327,7 @@ export type AddMachinesRequest = Message<"openhdc.stack.v1.AddMachinesRequest"> 
  * Use `create(AddMachinesRequestSchema)` to create a new message.
  */
 export const AddMachinesRequestSchema: GenMessage<AddMachinesRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 27);
+  messageDesc(file_api_stack_v1_stack, 28);
 
 /**
  * @generated from message openhdc.stack.v1.AddMachinesRequest.Constraint
@@ -1226,7 +1359,7 @@ export type AddMachinesRequest_Constraint = Message<"openhdc.stack.v1.AddMachine
  * Use `create(AddMachinesRequest_ConstraintSchema)` to create a new message.
  */
 export const AddMachinesRequest_ConstraintSchema: GenMessage<AddMachinesRequest_Constraint> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 27, 0);
+  messageDesc(file_api_stack_v1_stack, 28, 0);
 
 /**
  * @generated from message openhdc.stack.v1.AddMachinesRequest.Parameter
@@ -1248,7 +1381,7 @@ export type AddMachinesRequest_Parameter = Message<"openhdc.stack.v1.AddMachines
  * Use `create(AddMachinesRequest_ParameterSchema)` to create a new message.
  */
 export const AddMachinesRequest_ParameterSchema: GenMessage<AddMachinesRequest_Parameter> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 27, 1);
+  messageDesc(file_api_stack_v1_stack, 28, 1);
 
 /**
  * @generated from message openhdc.stack.v1.AddMachinesResponse
@@ -1265,7 +1398,7 @@ export type AddMachinesResponse = Message<"openhdc.stack.v1.AddMachinesResponse"
  * Use `create(AddMachinesResponseSchema)` to create a new message.
  */
 export const AddMachinesResponseSchema: GenMessage<AddMachinesResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 28);
+  messageDesc(file_api_stack_v1_stack, 29);
 
 /**
  * @generated from message openhdc.stack.v1.ImportBootResourcesRequest
@@ -1278,7 +1411,7 @@ export type ImportBootResourcesRequest = Message<"openhdc.stack.v1.ImportBootRes
  * Use `create(ImportBootResourcesRequestSchema)` to create a new message.
  */
 export const ImportBootResourcesRequestSchema: GenMessage<ImportBootResourcesRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 29);
+  messageDesc(file_api_stack_v1_stack, 30);
 
 /**
  * @generated from message openhdc.stack.v1.PowerOnMachineRequest
@@ -1295,7 +1428,7 @@ export type PowerOnMachineRequest = Message<"openhdc.stack.v1.PowerOnMachineRequ
  * Use `create(PowerOnMachineRequestSchema)` to create a new message.
  */
 export const PowerOnMachineRequestSchema: GenMessage<PowerOnMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 30);
+  messageDesc(file_api_stack_v1_stack, 31);
 
 /**
  * @generated from message openhdc.stack.v1.PowerOffMachineRequest
@@ -1312,7 +1445,7 @@ export type PowerOffMachineRequest = Message<"openhdc.stack.v1.PowerOffMachineRe
  * Use `create(PowerOffMachineRequestSchema)` to create a new message.
  */
 export const PowerOffMachineRequestSchema: GenMessage<PowerOffMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 31);
+  messageDesc(file_api_stack_v1_stack, 32);
 
 /**
  * @generated from message openhdc.stack.v1.CommissionMachineRequest
@@ -1349,7 +1482,7 @@ export type CommissionMachineRequest = Message<"openhdc.stack.v1.CommissionMachi
  * Use `create(CommissionMachineRequestSchema)` to create a new message.
  */
 export const CommissionMachineRequestSchema: GenMessage<CommissionMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 32);
+  messageDesc(file_api_stack_v1_stack, 33);
 
 /**
  * @generated from message openhdc.stack.v1.ListModelsRequest
@@ -1362,7 +1495,7 @@ export type ListModelsRequest = Message<"openhdc.stack.v1.ListModelsRequest"> & 
  * Use `create(ListModelsRequestSchema)` to create a new message.
  */
 export const ListModelsRequestSchema: GenMessage<ListModelsRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 33);
+  messageDesc(file_api_stack_v1_stack, 34);
 
 /**
  * @generated from message openhdc.stack.v1.ListModelsResponse
@@ -1379,7 +1512,7 @@ export type ListModelsResponse = Message<"openhdc.stack.v1.ListModelsResponse"> 
  * Use `create(ListModelsResponseSchema)` to create a new message.
  */
 export const ListModelsResponseSchema: GenMessage<ListModelsResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 34);
+  messageDesc(file_api_stack_v1_stack, 35);
 
 /**
  * @generated from message openhdc.stack.v1.CreateModelRequest
@@ -1396,7 +1529,7 @@ export type CreateModelRequest = Message<"openhdc.stack.v1.CreateModelRequest"> 
  * Use `create(CreateModelRequestSchema)` to create a new message.
  */
 export const CreateModelRequestSchema: GenMessage<CreateModelRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 35);
+  messageDesc(file_api_stack_v1_stack, 36);
 
 /**
  * @generated from message openhdc.stack.v1.GetModelConfigsRequest
@@ -1413,7 +1546,7 @@ export type GetModelConfigsRequest = Message<"openhdc.stack.v1.GetModelConfigsRe
  * Use `create(GetModelConfigsRequestSchema)` to create a new message.
  */
 export const GetModelConfigsRequestSchema: GenMessage<GetModelConfigsRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 36);
+  messageDesc(file_api_stack_v1_stack, 37);
 
 /**
  * @generated from message openhdc.stack.v1.GetModelConfigsResponse
@@ -1430,7 +1563,7 @@ export type GetModelConfigsResponse = Message<"openhdc.stack.v1.GetModelConfigsR
  * Use `create(GetModelConfigsResponseSchema)` to create a new message.
  */
 export const GetModelConfigsResponseSchema: GenMessage<GetModelConfigsResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 37);
+  messageDesc(file_api_stack_v1_stack, 38);
 
 /**
  * @generated from message openhdc.stack.v1.ListApplicationsRequest
@@ -1447,7 +1580,7 @@ export type ListApplicationsRequest = Message<"openhdc.stack.v1.ListApplications
  * Use `create(ListApplicationsRequestSchema)` to create a new message.
  */
 export const ListApplicationsRequestSchema: GenMessage<ListApplicationsRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 38);
+  messageDesc(file_api_stack_v1_stack, 39);
 
 /**
  * @generated from message openhdc.stack.v1.ListApplicationsResponse
@@ -1464,7 +1597,7 @@ export type ListApplicationsResponse = Message<"openhdc.stack.v1.ListApplication
  * Use `create(ListApplicationsResponseSchema)` to create a new message.
  */
 export const ListApplicationsResponseSchema: GenMessage<ListApplicationsResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 39);
+  messageDesc(file_api_stack_v1_stack, 40);
 
 /**
  * @generated from message openhdc.stack.v1.CreateApplicationRequest
@@ -1477,7 +1610,7 @@ export type CreateApplicationRequest = Message<"openhdc.stack.v1.CreateApplicati
  * Use `create(CreateApplicationRequestSchema)` to create a new message.
  */
 export const CreateApplicationRequestSchema: GenMessage<CreateApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 40);
+  messageDesc(file_api_stack_v1_stack, 41);
 
 /**
  * @generated from message openhdc.stack.v1.DeleteApplicationRequest
@@ -1490,7 +1623,7 @@ export type DeleteApplicationRequest = Message<"openhdc.stack.v1.DeleteApplicati
  * Use `create(DeleteApplicationRequestSchema)` to create a new message.
  */
 export const DeleteApplicationRequestSchema: GenMessage<DeleteApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 41);
+  messageDesc(file_api_stack_v1_stack, 42);
 
 /**
  * @generated from message openhdc.stack.v1.UpdateApplicationRequest
@@ -1503,7 +1636,7 @@ export type UpdateApplicationRequest = Message<"openhdc.stack.v1.UpdateApplicati
  * Use `create(UpdateApplicationRequestSchema)` to create a new message.
  */
 export const UpdateApplicationRequestSchema: GenMessage<UpdateApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 42);
+  messageDesc(file_api_stack_v1_stack, 43);
 
 /**
  * @generated from message openhdc.stack.v1.AddApplicationUnitRequest
@@ -1516,7 +1649,7 @@ export type AddApplicationUnitRequest = Message<"openhdc.stack.v1.AddApplication
  * Use `create(AddApplicationUnitRequestSchema)` to create a new message.
  */
 export const AddApplicationUnitRequestSchema: GenMessage<AddApplicationUnitRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 43);
+  messageDesc(file_api_stack_v1_stack, 44);
 
 /**
  * @generated from message openhdc.stack.v1.ExposeApplicationRequest
@@ -1529,7 +1662,7 @@ export type ExposeApplicationRequest = Message<"openhdc.stack.v1.ExposeApplicati
  * Use `create(ExposeApplicationRequestSchema)` to create a new message.
  */
 export const ExposeApplicationRequestSchema: GenMessage<ExposeApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 44);
+  messageDesc(file_api_stack_v1_stack, 45);
 
 /**
  * @generated from message openhdc.stack.v1.ListIntegrationsRequest
@@ -1546,7 +1679,7 @@ export type ListIntegrationsRequest = Message<"openhdc.stack.v1.ListIntegrations
  * Use `create(ListIntegrationsRequestSchema)` to create a new message.
  */
 export const ListIntegrationsRequestSchema: GenMessage<ListIntegrationsRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 45);
+  messageDesc(file_api_stack_v1_stack, 46);
 
 /**
  * @generated from message openhdc.stack.v1.ListIntegrationsResponse
@@ -1563,7 +1696,7 @@ export type ListIntegrationsResponse = Message<"openhdc.stack.v1.ListIntegration
  * Use `create(ListIntegrationsResponseSchema)` to create a new message.
  */
 export const ListIntegrationsResponseSchema: GenMessage<ListIntegrationsResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 46);
+  messageDesc(file_api_stack_v1_stack, 47);
 
 /**
  * @generated from message openhdc.stack.v1.CreateIntegrationRequest
@@ -1585,7 +1718,7 @@ export type CreateIntegrationRequest = Message<"openhdc.stack.v1.CreateIntegrati
  * Use `create(CreateIntegrationRequestSchema)` to create a new message.
  */
 export const CreateIntegrationRequestSchema: GenMessage<CreateIntegrationRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 47);
+  messageDesc(file_api_stack_v1_stack, 48);
 
 /**
  * @generated from message openhdc.stack.v1.DeleteIntegrationRequest
@@ -1607,7 +1740,7 @@ export type DeleteIntegrationRequest = Message<"openhdc.stack.v1.DeleteIntegrati
  * Use `create(DeleteIntegrationRequestSchema)` to create a new message.
  */
 export const DeleteIntegrationRequestSchema: GenMessage<DeleteIntegrationRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 48);
+  messageDesc(file_api_stack_v1_stack, 49);
 
 /**
  * @generated from message openhdc.stack.v1.ListActionsRequest
@@ -1629,7 +1762,7 @@ export type ListActionsRequest = Message<"openhdc.stack.v1.ListActionsRequest"> 
  * Use `create(ListActionsRequestSchema)` to create a new message.
  */
 export const ListActionsRequestSchema: GenMessage<ListActionsRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 49);
+  messageDesc(file_api_stack_v1_stack, 50);
 
 /**
  * @generated from message openhdc.stack.v1.ListActionsResponse
@@ -1646,7 +1779,7 @@ export type ListActionsResponse = Message<"openhdc.stack.v1.ListActionsResponse"
  * Use `create(ListActionsResponseSchema)` to create a new message.
  */
 export const ListActionsResponseSchema: GenMessage<ListActionsResponse> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 50);
+  messageDesc(file_api_stack_v1_stack, 51);
 
 /**
  * @generated from message openhdc.stack.v1.RunActionRequest
@@ -1659,7 +1792,7 @@ export type RunActionRequest = Message<"openhdc.stack.v1.RunActionRequest"> & {
  * Use `create(RunActionRequestSchema)` to create a new message.
  */
 export const RunActionRequestSchema: GenMessage<RunActionRequest> = /*@__PURE__*/
-  messageDesc(file_api_stack_v1_stack, 51);
+  messageDesc(file_api_stack_v1_stack, 52);
 
 /**
  * @generated from service openhdc.stack.v1.StackService
@@ -1768,6 +1901,14 @@ export const StackService: GenService<{
     methodKind: "unary";
     input: typeof ListMachinesRequestSchema;
     output: typeof ListMachinesResponseSchema;
+  },
+  /**
+   * @generated from rpc openhdc.stack.v1.StackService.GetMachine
+   */
+  getMachine: {
+    methodKind: "unary";
+    input: typeof GetMachineRequestSchema;
+    output: typeof MachineSchema;
   },
   /**
    * @generated from rpc openhdc.stack.v1.StackService.AddMachines

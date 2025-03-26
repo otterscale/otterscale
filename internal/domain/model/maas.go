@@ -1,11 +1,20 @@
 package model
 
-import "github.com/canonical/gomaasclient/entity"
+import (
+	"github.com/canonical/gomaasclient/entity"
+	"github.com/canonical/gomaasclient/entity/subnet"
+)
+
+type NetworkSubnet struct {
+	*entity.Subnet
+	IPAddresses      []subnet.IPAddress
+	ReservedIPRanges []subnet.ReservedIPRange
+	Statistics       *subnet.Statistics
+}
 
 type NetworkSetting struct {
 	*entity.VLAN
-	*entity.Subnet
-	*entity.IPRange
+	Subnet *NetworkSubnet
 }
 
 type Network struct {

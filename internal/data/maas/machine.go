@@ -33,6 +33,10 @@ func (r *machine) List(ctx context.Context) ([]*entity.Machine, error) {
 	return ret, nil
 }
 
+func (r *machine) Get(ctx context.Context, systemID string) (*entity.Machine, error) {
+	return r.maas.Machine.Get(systemID)
+}
+
 func (r *machine) PowerOn(_ context.Context, systemID string, params *entity.MachinePowerOnParams) (*entity.Machine, error) {
 	return r.maas.Machine.PowerOn(systemID, params)
 }
