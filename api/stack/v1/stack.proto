@@ -28,6 +28,7 @@ service StackService {
 
   // Machine Management
   rpc ListMachines(ListMachinesRequest) returns (ListMachinesResponse);
+  rpc GetMachine(GetMachineRequest) returns (Machine);
   rpc AddMachines(AddMachinesRequest) returns (AddMachinesResponse);
 
   // Machine Operations
@@ -70,7 +71,6 @@ message Network {
   message Setting {
     VLAN vlan = 1;
     Subnet subnet = 2;
-    IPRange ip_range = 3;
   }
   Fabric fabric = 1;
   repeated Setting settings = 2;
@@ -91,6 +91,26 @@ message Fabric {
 }
 
 message Subnet {
+  message IPAddress {
+    string type = 1;
+    string ip = 2;
+    string user = 3;
+    string system_id = 11;
+    string node_type = 12;
+    string hostname = 13;
+  }
+  message ReservedIPRange {
+    repeated string purposes = 1;
+    string start = 2;
+    string end = 3;
+    int64 count = 4;
+  }
+  message Statistics {
+    int64 available = 1;
+    int64 total = 2;
+    string usage_percent = 3;
+    string available_percent = 4;
+  }
   int64 id = 1;
   string name = 2;
   string cidr = 3;
@@ -101,6 +121,9 @@ message Subnet {
   bool active_discovery = 8;
   bool allow_proxy_access = 9;
   bool allow_dns_resolution = 10;
+  repeated IPAddress ip_addresses = 11;
+  repeated ReservedIPRange reserved_ip_ranges = 12;
+  Statistics statistics = 13;
 }
 
 message Machine {
@@ -298,6 +321,10 @@ message ListMachinesRequest {}
 
 message ListMachinesResponse {
   repeated Machine machines = 1;
+}
+
+message GetMachineRequest {
+  string system_id = 1;
 }
 
 message AddMachinesRequest {

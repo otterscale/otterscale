@@ -69,6 +69,8 @@ const (
 	// StackServiceListMachinesProcedure is the fully-qualified name of the StackService's ListMachines
 	// RPC.
 	StackServiceListMachinesProcedure = "/openhdc.stack.v1.StackService/ListMachines"
+	// StackServiceGetMachineProcedure is the fully-qualified name of the StackService's GetMachine RPC.
+	StackServiceGetMachineProcedure = "/openhdc.stack.v1.StackService/GetMachine"
 	// StackServiceAddMachinesProcedure is the fully-qualified name of the StackService's AddMachines
 	// RPC.
 	StackServiceAddMachinesProcedure = "/openhdc.stack.v1.StackService/AddMachines"
@@ -144,6 +146,7 @@ type StackServiceClient interface {
 	UpdateIPRange(context.Context, *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.IPRange], error)
 	// Machine Management
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
+	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
 	AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error)
 	// Machine Operations
 	ImportBootResources(context.Context, *connect.Request[v1.ImportBootResourcesRequest]) (*connect.Response[emptypb.Empty], error)
@@ -251,6 +254,12 @@ func NewStackServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			httpClient,
 			baseURL+StackServiceListMachinesProcedure,
 			connect.WithSchema(stackServiceMethods.ByName("ListMachines")),
+			connect.WithClientOptions(opts...),
+		),
+		getMachine: connect.NewClient[v1.GetMachineRequest, v1.Machine](
+			httpClient,
+			baseURL+StackServiceGetMachineProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("GetMachine")),
 			connect.WithClientOptions(opts...),
 		),
 		addMachines: connect.NewClient[v1.AddMachinesRequest, v1.AddMachinesResponse](
@@ -384,6 +393,7 @@ type stackServiceClient struct {
 	updateSubnet               *connect.Client[v1.UpdateSubnetRequest, v1.Subnet]
 	updateIPRange              *connect.Client[v1.UpdateIPRangeRequest, v1.IPRange]
 	listMachines               *connect.Client[v1.ListMachinesRequest, v1.ListMachinesResponse]
+	getMachine                 *connect.Client[v1.GetMachineRequest, v1.Machine]
 	addMachines                *connect.Client[v1.AddMachinesRequest, v1.AddMachinesResponse]
 	importBootResources        *connect.Client[v1.ImportBootResourcesRequest, emptypb.Empty]
 	powerOnMachine             *connect.Client[v1.PowerOnMachineRequest, v1.Machine]
@@ -463,6 +473,11 @@ func (c *stackServiceClient) UpdateIPRange(ctx context.Context, req *connect.Req
 // ListMachines calls openhdc.stack.v1.StackService.ListMachines.
 func (c *stackServiceClient) ListMachines(ctx context.Context, req *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error) {
 	return c.listMachines.CallUnary(ctx, req)
+}
+
+// GetMachine calls openhdc.stack.v1.StackService.GetMachine.
+func (c *stackServiceClient) GetMachine(ctx context.Context, req *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error) {
+	return c.getMachine.CallUnary(ctx, req)
 }
 
 // AddMachines calls openhdc.stack.v1.StackService.AddMachines.
@@ -578,6 +593,7 @@ type StackServiceHandler interface {
 	UpdateIPRange(context.Context, *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.IPRange], error)
 	// Machine Management
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
+	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
 	AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error)
 	// Machine Operations
 	ImportBootResources(context.Context, *connect.Request[v1.ImportBootResourcesRequest]) (*connect.Response[emptypb.Empty], error)
@@ -681,6 +697,12 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 		StackServiceListMachinesProcedure,
 		svc.ListMachines,
 		connect.WithSchema(stackServiceMethods.ByName("ListMachines")),
+		connect.WithHandlerOptions(opts...),
+	)
+	stackServiceGetMachineHandler := connect.NewUnaryHandler(
+		StackServiceGetMachineProcedure,
+		svc.GetMachine,
+		connect.WithSchema(stackServiceMethods.ByName("GetMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
 	stackServiceAddMachinesHandler := connect.NewUnaryHandler(
@@ -823,6 +845,8 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 			stackServiceUpdateIPRangeHandler.ServeHTTP(w, r)
 		case StackServiceListMachinesProcedure:
 			stackServiceListMachinesHandler.ServeHTTP(w, r)
+		case StackServiceGetMachineProcedure:
+			stackServiceGetMachineHandler.ServeHTTP(w, r)
 		case StackServiceAddMachinesProcedure:
 			stackServiceAddMachinesHandler.ServeHTTP(w, r)
 		case StackServiceImportBootResourcesProcedure:
@@ -916,6 +940,10 @@ func (UnimplementedStackServiceHandler) UpdateIPRange(context.Context, *connect.
 
 func (UnimplementedStackServiceHandler) ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ListMachines is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.GetMachine is not implemented"))
 }
 
 func (UnimplementedStackServiceHandler) AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error) {

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/canonical/gomaasclient/entity"
+	"github.com/canonical/gomaasclient/entity/subnet"
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/action"
 	"github.com/juju/juju/rpc/params"
@@ -25,14 +26,6 @@ type MAASServer interface {
 type MAASPackageRepository interface {
 	List(ctx context.Context) ([]*entity.PackageRepository, error)
 	Update(ctx context.Context, id int, params *entity.PackageRepositoryParams) (*entity.PackageRepository, error)
-}
-
-// MAASNetworkingInterfaces groups all networking-related interfaces
-type MAASNetworking struct {
-	Fabric  MAASFabric
-	VLAN    MAASVLAN
-	Subnet  MAASSubnet
-	IPRange MAASIPRange
 }
 
 // MAASFabric represents fabric operations
@@ -56,11 +49,14 @@ type MAASSubnet interface {
 	Create(ctx context.Context, params *entity.SubnetParams) (*entity.Subnet, error)
 	Update(ctx context.Context, id int, params *entity.SubnetParams) (*entity.Subnet, error)
 	Delete(ctx context.Context, id int) error
+	GetIPAddresses(ctx context.Context, id int) ([]subnet.IPAddress, error)
+	GetReservedIPRanges(ctx context.Context, id int) ([]subnet.ReservedIPRange, error)
+	GetUnreservedIPRanges(ctx context.Context, id int) ([]subnet.IPRange, error)
+	GetStatistics(ctx context.Context, id int) (*subnet.Statistics, error)
 }
 
 // MAASIPRange represents IP range operations
 type MAASIPRange interface {
-	List(ctx context.Context) ([]*entity.IPRange, error)
 	Create(ctx context.Context, params *entity.IPRangeParams) (*entity.IPRange, error)
 	Update(ctx context.Context, id int, params *entity.IPRangeParams) (*entity.IPRange, error)
 }
@@ -73,6 +69,7 @@ type MAASBootResource interface {
 // MAASMachine represents machine operations
 type MAASMachine interface {
 	List(ctx context.Context) ([]*entity.Machine, error)
+	Get(ctx context.Context, systemID string) (*entity.Machine, error)
 	PowerOn(ctx context.Context, systemID string, params *entity.MachinePowerOnParams) (*entity.Machine, error)
 	PowerOff(ctx context.Context, systemID string, params *entity.MachinePowerOffParams) (*entity.Machine, error)
 	Commission(ctx context.Context, systemID string, params *entity.MachineCommissionParams) (*entity.Machine, error)
@@ -199,13 +196,10 @@ func (s *StackService) ListNetworks(ctx context.Context) ([]*model.Network, erro
 		return nil, err
 	}
 
-	ipRanges, err := s.ipRange.List(ctx)
+	networkSubnets, err := s.getNetworkSubnets(ctx, subnets...)
 	if err != nil {
 		return nil, err
 	}
-
-	// Build mapping of VLANs to network settings
-	vlanToNetworkSetting := vlanToNetworkSettingMap(subnets, ipRanges)
 
 	fabrics, err := s.fabric.List(ctx)
 	if err != nil {
@@ -215,7 +209,7 @@ func (s *StackService) ListNetworks(ctx context.Context) ([]*model.Network, erro
 	// Convert fabrics to networks
 	ret := make([]*model.Network, len(fabrics))
 	for i, fabric := range fabrics {
-		ret[i] = toNetwork(fabric, vlanToNetworkSetting)
+		ret[i] = toNetwork(fabric, networkSubnets)
 	}
 
 	return ret, nil
@@ -249,27 +243,21 @@ func (s *StackService) CreateNetwork(ctx context.Context, fabricParams *entity.F
 
 	// Create IP range for the subnet
 	ipRangeParams.Subnet = subnet.Name
-	ipRange, err := s.ipRange.Create(ctx, ipRangeParams)
-	if err != nil {
+	if _, err = s.ipRange.Create(ctx, ipRangeParams); err != nil {
 		return nil, err
 	}
 
 	// Update DHCP On
-	vlan, err = s.vlan.Update(ctx, fabric.ID, vlan.VID, vlanParams)
+	if _, err := s.vlan.Update(ctx, fabric.ID, vlan.VID, vlanParams); err != nil {
+		return nil, err
+	}
+
+	subnets, err := s.getNetworkSubnets(ctx, subnet)
 	if err != nil {
 		return nil, err
 	}
 
-	// Build network model from created resources
-	vlanToNetworkSetting := map[int]*model.NetworkSetting{
-		vlan.ID: {
-			VLAN:    vlan,
-			Subnet:  subnet,
-			IPRange: ipRange,
-		},
-	}
-
-	return toNetwork(fabric, vlanToNetworkSetting), nil
+	return toNetwork(fabric, subnets), nil
 }
 
 // DeleteNetwork deletes a network and all associated resources
@@ -285,38 +273,19 @@ func (s *StackService) DeleteNetwork(ctx context.Context, id int) error {
 		return s.fabric.Delete(ctx, id)
 	}
 
-	// Get network resources to identify what needs to be deleted
-	networkSettings, err := s.getNetworkSettings(ctx)
+	subnets, err := s.subnet.List(ctx)
 	if err != nil {
 		return err
 	}
 
-	// Delete all associated subnets first
-	for _, ns := range networkSettings {
-		if ns.Subnet != nil {
-			if err := s.subnet.Delete(ctx, ns.Subnet.ID); err != nil {
-				return err
-			}
+	for _, subnet := range subnets {
+		if err := s.subnet.Delete(ctx, subnet.ID); err != nil {
+			return err
 		}
 	}
 
 	// Finally delete the fabric
 	return s.fabric.Delete(ctx, id)
-}
-
-// getNetworkSettings retrieves network settings for a fabric
-func (s *StackService) getNetworkSettings(ctx context.Context) (map[int]*model.NetworkSetting, error) {
-	subnets, err := s.subnet.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	ipRanges, err := s.ipRange.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return vlanToNetworkSettingMap(subnets, ipRanges), nil
 }
 
 // Resource update operations
@@ -331,9 +300,13 @@ func (s *StackService) UpdateVLAN(ctx context.Context, fabricID, vid int, params
 	return s.vlan.Update(ctx, fabricID, vid, params)
 }
 
-// UpdateSubnet updates subnet properties
-func (s *StackService) UpdateSubnet(ctx context.Context, id int, params *entity.SubnetParams) (*entity.Subnet, error) {
-	return s.subnet.Update(ctx, id, params)
+// UpdateSubnet updates subnet properties and returns the updated subnet with associated information
+func (s *StackService) UpdateSubnet(ctx context.Context, id int, params *entity.SubnetParams) (*model.NetworkSubnet, error) {
+	subnet, err := s.subnet.Update(ctx, id, params)
+	if err != nil {
+		return nil, err
+	}
+	return s.getNetworkSubnet(ctx, subnet)
 }
 
 // UpdateIPRange updates IP range properties
@@ -353,6 +326,10 @@ func (s *StackService) ImportBootResources(ctx context.Context) error {
 // ListMachines returns all machines with their associated resources
 func (s *StackService) ListMachines(ctx context.Context) ([]*entity.Machine, error) {
 	return s.machine.List(ctx)
+}
+
+func (s *StackService) GetMachine(ctx context.Context, systemID string) (*entity.Machine, error) {
+	return s.machine.Get(ctx, systemID)
 }
 
 func (s *StackService) AddMachine(ctx context.Context, uuid string, params []params.AddMachineParams) ([]string, error) {
@@ -440,55 +417,53 @@ func (s *StackService) ListActions(ctx context.Context, uuid, appName string) (m
 	return s.action.List(ctx, uuid, appName)
 }
 
-// Helper functions
-
-// vlanToNetworkSettingMap creates a mapping of VLAN IDs to network settings
-func vlanToNetworkSettingMap(subnets []*entity.Subnet, ipRanges []*entity.IPRange) map[int]*model.NetworkSetting {
-	vlanToNetworkSetting := make(map[int]*model.NetworkSetting, len(subnets))
-
-	// Create subnet lookup by name for faster IPRange matching
-	subnetsByName := make(map[string]*entity.Subnet)
-	for i := range subnets {
-		subnetsByName[subnets[i].Name] = subnets[i]
+func (s *StackService) getNetworkSubnet(ctx context.Context, subnet *entity.Subnet) (*model.NetworkSubnet, error) {
+	ipAddresses, err := s.subnet.GetIPAddresses(ctx, subnet.ID)
+	if err != nil {
+		return nil, err
 	}
-
-	// Map IP ranges to subnets
-	ipRangeBySubnet := make(map[string]*entity.IPRange)
-	for i := range ipRanges {
-		if ipRanges[i].Subnet.Name != "" {
-			ipRangeBySubnet[ipRanges[i].Subnet.Name] = ipRanges[i]
-		}
+	reservedIPRanges, err := s.subnet.GetReservedIPRanges(ctx, subnet.ID)
+	if err != nil {
+		return nil, err
 	}
-
-	// Build the network settings map
-	for i := range subnets {
-		subnet := subnets[i]
-		vlan := &subnet.VLAN
-		ipRange := ipRangeBySubnet[subnet.Name]
-
-		vlanToNetworkSetting[vlan.ID] = &model.NetworkSetting{
-			VLAN:    vlan,
-			Subnet:  subnet,
-			IPRange: ipRange,
-		}
+	statistics, err := s.subnet.GetStatistics(ctx, subnet.ID)
+	if err != nil {
+		return nil, err
 	}
-
-	return vlanToNetworkSetting
+	return &model.NetworkSubnet{
+		Subnet:           subnet,
+		IPAddresses:      ipAddresses,
+		ReservedIPRanges: reservedIPRanges,
+		Statistics:       statistics,
+	}, nil
 }
 
+func (s *StackService) getNetworkSubnets(ctx context.Context, subnets ...*entity.Subnet) (map[int]*model.NetworkSubnet, error) {
+	ret := map[int]*model.NetworkSubnet{}
+	for _, subnet := range subnets {
+		ns, err := s.getNetworkSubnet(ctx, subnet)
+		if err != nil {
+			return nil, err
+		}
+		ret[subnet.VLAN.ID] = ns
+	}
+	return ret, nil
+}
+
+// Helper functions
+
 // toNetwork converts a fabric to a network object
-func toNetwork(fabric *entity.Fabric, vlanToNetworkSetting map[int]*model.NetworkSetting) *model.Network {
+func toNetwork(fabric *entity.Fabric, subnets map[int]*model.NetworkSubnet) *model.Network {
 	settings := make([]*model.NetworkSetting, 0, len(fabric.VLANs))
 
 	for i := range fabric.VLANs {
-		if setting, ok := vlanToNetworkSetting[fabric.VLANs[i].ID]; ok {
-			settings = append(settings, setting)
-			continue
-		}
-		// Add VLAN without subnet/IPRange
-		settings = append(settings, &model.NetworkSetting{
+		setting := &model.NetworkSetting{
 			VLAN: &fabric.VLANs[i],
-		})
+		}
+		if subnet, ok := subnets[fabric.VLANs[i].ID]; ok {
+			setting.Subnet = subnet
+		}
+		settings = append(settings, setting)
 	}
 
 	return &model.Network{

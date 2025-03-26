@@ -166,6 +166,14 @@ func (a *StackApp) ListMachines(ctx context.Context, req *connect.Request[v1.Lis
 	return connect.NewResponse(res), nil
 }
 
+func (a *StackApp) GetMachine(ctx context.Context, req *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error) {
+	m, err := a.svc.GetMachine(ctx, req.Msg.GetSystemId())
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(toMachine(m)), nil
+}
+
 // Boot resource management
 func (a *StackApp) ImportBootResources(ctx context.Context, req *connect.Request[v1.ImportBootResourcesRequest]) (*connect.Response[emptypb.Empty], error) {
 	if err := a.svc.ImportBootResources(ctx); err != nil {
@@ -244,9 +252,6 @@ func toNetwork(n *model.Network) *v1.Network {
 		if s.Subnet != nil {
 			setting.SetSubnet(toSubnet(s.Subnet))
 		}
-		if s.IPRange != nil {
-			setting.SetIpRange(toIPRange(s.IPRange))
-		}
 		settings[i] = setting
 	}
 	ret := &v1.Network{}
@@ -273,11 +278,36 @@ func toVLAN(v *entity.VLAN) *v1.VLAN {
 	return ret
 }
 
-func toSubnet(s *entity.Subnet) *v1.Subnet {
+func toSubnet(s *model.NetworkSubnet) *v1.Subnet {
 	dnsServers := make([]string, len(s.DNSServers))
 	for i, dns := range s.DNSServers {
 		dnsServers[i] = dns.String()
 	}
+	ipAddresses := []*v1.Subnet_IPAddress{}
+	for i := range s.IPAddresses {
+		ipAddress := &v1.Subnet_IPAddress{}
+		ipAddress.SetType(model.AllocType(s.IPAddresses[i].AllocType).String())
+		ipAddress.SetIp(s.IPAddresses[i].IP.String())
+		ipAddress.SetUser(s.IPAddresses[i].User)
+		ipAddress.SetSystemId(s.IPAddresses[i].NodeSummary.SystemID)
+		ipAddress.SetNodeType(model.NodeType(s.IPAddresses[i].NodeSummary.NodeType).String())
+		ipAddress.SetHostname(s.IPAddresses[i].NodeSummary.Hostname)
+		ipAddresses = append(ipAddresses, ipAddress)
+	}
+	reservedIPRanges := []*v1.Subnet_ReservedIPRange{}
+	for i := range s.ReservedIPRanges {
+		reservedIPRange := &v1.Subnet_ReservedIPRange{}
+		reservedIPRange.SetPurposes(s.ReservedIPRanges[i].Purpose)
+		reservedIPRange.SetStart(s.ReservedIPRanges[i].IPRange.Start.String())
+		reservedIPRange.SetEnd(s.ReservedIPRanges[i].IPRange.End.String())
+		reservedIPRange.SetCount(int64(s.ReservedIPRanges[i].IPRange.NumAddresses))
+		reservedIPRanges = append(reservedIPRanges, reservedIPRange)
+	}
+	statistics := &v1.Subnet_Statistics{}
+	statistics.SetAvailable(int64(s.Statistics.NumAvailable))
+	statistics.SetTotal(int64(s.Statistics.TotalAddresses))
+	statistics.SetUsagePercent(s.Statistics.UsageString)
+	statistics.SetAvailablePercent(s.Statistics.AvailableString)
 	ret := &v1.Subnet{}
 	ret.SetId(int64(s.ID))
 	ret.SetName(s.Name)
@@ -289,6 +319,9 @@ func toSubnet(s *entity.Subnet) *v1.Subnet {
 	ret.SetActiveDiscovery(s.ActiveDiscovery)
 	ret.SetAllowProxyAccess(s.AllowProxy)
 	ret.SetAllowDnsResolution(s.AllowDNS)
+	ret.SetIpAddresses(ipAddresses)
+	ret.SetReservedIpRanges(reservedIPRanges)
+	ret.SetStatistics(statistics)
 	return ret
 }
 
