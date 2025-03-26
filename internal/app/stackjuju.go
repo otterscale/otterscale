@@ -123,15 +123,28 @@ func (a *StackApp) ExposeApplication(ctx context.Context, req *connect.Request[v
 }
 
 func (a *StackApp) ListIntegrations(ctx context.Context, req *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error) {
-	return nil, nil
+	rss, err := a.svc.ListIntegrations(ctx, req.Msg.GetModelUuid())
+	if err != nil {
+		return nil, err
+	}
+	res := &v1.ListIntegrationsResponse{}
+	res.SetIntegrations(toIntegrations(rss))
+	return connect.NewResponse(res), nil
 }
 
 func (a *StackApp) CreateIntegration(ctx context.Context, req *connect.Request[v1.CreateIntegrationRequest]) (*connect.Response[v1.Integration], error) {
-	return nil, nil
+	arr, err := a.svc.CreateIntegration(ctx, req.Msg.GetModelUuid(), req.Msg.GetEndpoints())
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(resultsToIntegration(arr)), nil
 }
 
 func (a *StackApp) DeleteIntegration(ctx context.Context, req *connect.Request[v1.DeleteIntegrationRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, nil
+	if err := a.svc.DeleteIntegration(ctx, req.Msg.GetModelUuid(), int(req.Msg.GetId())); err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 
 func (a *StackApp) ListActions(ctx context.Context, req *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error) {
@@ -177,4 +190,48 @@ func modelInfoToModel(m *base.ModelInfo) *v1.Model {
 	ret.SetUuid(m.UUID)
 	ret.SetName(m.Name)
 	return ret
+}
+
+func toIntegrations(rss []*params.RelationStatus) []*v1.Integration {
+	ret := make([]*v1.Integration, len(rss))
+	for i := range rss {
+		ret[i] = toIntegration(rss[i])
+	}
+	return ret
+}
+
+func toIntegration(rs *params.RelationStatus) *v1.Integration {
+	integration := &v1.Integration{}
+	integration.SetId(int64(rs.Id))
+	integration.SetInterface(rs.Interface)
+
+	// Default values
+	provider := "-"
+	requirer := "-"
+	role := ""
+
+	// Process endpoints if available
+	if len(rs.Endpoints) > 0 {
+		provider = formatEndpoint(rs.Endpoints[0].ApplicationName, rs.Endpoints[0].Name)
+		role = rs.Endpoints[0].Role
+
+		if len(rs.Endpoints) > 1 {
+			requirer = formatEndpoint(rs.Endpoints[1].ApplicationName, rs.Endpoints[1].Name)
+		}
+	}
+
+	integration.SetProvider(provider)
+	integration.SetRequirer(requirer)
+	integration.SetRole(role)
+
+	return integration
+}
+
+// Helper function to format endpoint strings
+func formatEndpoint(appName, name string) string {
+	return fmt.Sprintf("%s:%s", appName, name)
+}
+
+func resultsToIntegration(arr *params.AddRelationResults) *v1.Integration {
+	return &v1.Integration{}
 }

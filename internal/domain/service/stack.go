@@ -8,6 +8,7 @@ import (
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/rpc/params"
+
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
@@ -76,6 +77,10 @@ type MAASMachine interface {
 	Commission(ctx context.Context, systemID string, params *entity.MachineCommissionParams) (*entity.Machine, error)
 }
 
+type JujuClient interface {
+	Status(ctx context.Context, uuid string) (*params.FullStatus, error)
+}
+
 type JujuMachine interface {
 	AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) ([]params.AddMachinesResult, error)
 }
@@ -91,6 +96,12 @@ type JujuModelConfig interface {
 	Unset(ctx context.Context, uuid string, keys ...string) error
 }
 
+type JujuApplication interface {
+	ResolveUnitErrors(ctx context.Context, uuid string, units []string) error
+	CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error)
+	DeleteRelation(ctx context.Context, uuid string, id int) error
+}
+
 // StackService coordinates operations across multiple MAAS resources
 type StackService struct {
 	server            MAASServer
@@ -100,10 +111,12 @@ type StackService struct {
 	subnet            MAASSubnet
 	ipRange           MAASIPRange
 	bootResource      MAASBootResource
+	client            JujuClient
 	machine           MAASMachine
 	jujuMachine       JujuMachine
 	model             JujuModel
 	modelConfig       JujuModelConfig
+	application       JujuApplication
 }
 
 // NewStackService creates a new instance of StackService
@@ -115,10 +128,12 @@ func NewStackService(
 	subnet MAASSubnet,
 	ipRange MAASIPRange,
 	bootResource MAASBootResource,
-	jujuMachine JujuMachine,
 	machine MAASMachine,
+	jujuMachine JujuMachine,
+	client JujuClient,
 	model JujuModel,
 	modelConfig JujuModelConfig,
+	application JujuApplication,
 ) *StackService {
 	return &StackService{
 		server:            server,
@@ -128,10 +143,12 @@ func NewStackService(
 		subnet:            subnet,
 		ipRange:           ipRange,
 		bootResource:      bootResource,
-		jujuMachine:       jujuMachine,
 		machine:           machine,
+		client:            client,
+		jujuMachine:       jujuMachine,
 		model:             model,
 		modelConfig:       modelConfig,
+		application:       application,
 	}
 }
 
@@ -373,6 +390,26 @@ func (s *StackService) SetModelConfigAPTMirror(ctx context.Context, uuid, value 
 	return s.modelConfig.Set(ctx, uuid, map[string]any{
 		"apt-mirror": value,
 	})
+}
+
+func (s *StackService) ListIntegrations(ctx context.Context, uuid string) ([]*params.RelationStatus, error) {
+	status, err := s.client.Status(ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+	ret := make([]*params.RelationStatus, len(status.Relations))
+	for i := range status.Relations {
+		ret[i] = &status.Relations[i]
+	}
+	return ret, nil
+}
+
+func (s *StackService) CreateIntegration(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error) {
+	return s.application.CreateRelation(ctx, uuid, endpoints)
+}
+
+func (s *StackService) DeleteIntegration(ctx context.Context, uuid string, id int) error {
+	return s.application.DeleteRelation(ctx, uuid, id)
 }
 
 // Helper functions

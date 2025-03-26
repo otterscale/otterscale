@@ -218,7 +218,7 @@ func toPackageRepositories(prs []*entity.PackageRepository) []*v1.PackageReposit
 
 func toPackageRepository(pr *entity.PackageRepository) *v1.PackageRepository {
 	ret := &v1.PackageRepository{}
-	ret.SetId(int32(pr.ID)) //nolint:gosec
+	ret.SetId(int64(pr.ID))
 	ret.SetName(pr.Name)
 	ret.SetUrl(pr.URL)
 	ret.SetEnabled(pr.Enabled)
@@ -257,17 +257,17 @@ func toNetwork(n *model.Network) *v1.Network {
 
 func toFabric(f *entity.Fabric) *v1.Fabric {
 	ret := &v1.Fabric{}
-	ret.SetId(int32(f.ID)) //nolint:gosec
+	ret.SetId(int64(f.ID))
 	ret.SetName(f.Name)
 	return ret
 }
 
 func toVLAN(v *entity.VLAN) *v1.VLAN {
 	ret := &v1.VLAN{}
-	ret.SetId(int32(v.ID))   //nolint:gosec
-	ret.SetVid(int32(v.VID)) //nolint:gosec
+	ret.SetId(int64(v.ID))
+	ret.SetVid(int64(v.VID))
 	ret.SetName(v.Name)
-	ret.SetMtu(int32(v.MTU)) //nolint:gosec
+	ret.SetMtu(int64(v.MTU))
 	ret.SetDescription(v.Description)
 	ret.SetDhcpOn(v.DHCPOn)
 	return ret
@@ -279,7 +279,7 @@ func toSubnet(s *entity.Subnet) *v1.Subnet {
 		dnsServers[i] = dns.String()
 	}
 	ret := &v1.Subnet{}
-	ret.SetId(int32(s.ID)) //nolint:gosec
+	ret.SetId(int64(s.ID))
 	ret.SetName(s.Name)
 	ret.SetCidr(s.CIDR)
 	ret.SetGatewayIp(s.GatewayIP.String())
@@ -294,7 +294,7 @@ func toSubnet(s *entity.Subnet) *v1.Subnet {
 
 func toIPRange(r *entity.IPRange) *v1.IPRange {
 	ret := &v1.IPRange{}
-	ret.SetId(int32(r.ID)) //nolint:gosec
+	ret.SetId(int64(r.ID))
 	ret.SetStartIp(r.StartIP.String())
 	ret.SetEndIp(r.EndIP.String())
 	ret.SetType(r.Type)
@@ -320,8 +320,8 @@ func toMachine(m *entity.Machine) *v1.Machine {
 	for i := range m.NUMANodeSet {
 		ns := &m.NUMANodeSet[i]
 		numaNode := &v1.Machine_NUMANode{}
-		numaNode.SetIndex(int32(ns.Index))      //nolint:gosec
-		numaNode.SetCores(int32(len(ns.Cores))) //nolint:gosec
+		numaNode.SetIndex(int64(ns.Index))
+		numaNode.SetCores(int64(len(ns.Cores)))
 		numaNode.SetMemory(int64(ns.Memory))
 		numaNodes[i] = numaNode
 	}
@@ -358,15 +358,15 @@ func toMachine(m *entity.Machine) *v1.Machine {
 		networkInterface.SetName(is.Name)
 		networkInterface.SetMacAddress(is.MACAddress)
 		networkInterface.SetLinkConnected(is.LinkConnected)
-		networkInterface.SetLinkSpeed(int32(is.LinkSpeed))           //nolint:gosec
-		networkInterface.SetInterfaceSpeed(int32(is.InterfaceSpeed)) //nolint:gosec
+		networkInterface.SetLinkSpeed(int64(is.LinkSpeed))
+		networkInterface.SetInterfaceSpeed(int64(is.InterfaceSpeed))
 		networkInterface.SetType(is.Type)
 		networkInterface.SetFabricName(is.VLAN.Fabric)
-		networkInterface.SetFabricId(int32(is.VLAN.FabricID)) //nolint:gosec
+		networkInterface.SetFabricId(int64(is.VLAN.FabricID))
 		networkInterface.SetVlanName(is.VLAN.Name)
-		networkInterface.SetVlanId(int32(is.VLAN.ID)) //nolint:gosec
+		networkInterface.SetVlanId(int64(is.VLAN.ID))
 		networkInterface.SetSubnetName(subnetName)
-		networkInterface.SetSubnetId(int32(subnetID)) //nolint:gosec
+		networkInterface.SetSubnetId(int64(subnetID))
 		networkInterface.SetIpAddress(ipAdress)
 		networkInterface.SetDhcpOn(is.VLAN.DHCPOn)
 		networkInterfaces[i] = networkInterface
@@ -385,8 +385,8 @@ func toMachine(m *entity.Machine) *v1.Machine {
 	ret.SetDistroSeries(m.DistroSeries)
 	ret.SetHweKernel(m.HWEKernel)
 	ret.SetArchitecture(m.Architecture)
-	ret.SetCpuSpeed(int32(m.CPUSpeed)) //nolint:gosec
-	ret.SetCpuCount(int32(m.CPUCount)) //nolint:gosec
+	ret.SetCpuSpeed(int64(m.CPUSpeed))
+	ret.SetCpuCount(int64(m.CPUCount))
 	ret.SetMemory(m.Memory)
 	ret.SetStorage(m.Storage)
 	ret.SetIpAddresses(ipAddresses)
