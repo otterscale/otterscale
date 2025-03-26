@@ -59,7 +59,7 @@ service StackService {
 }
 
 message PackageRepository {
-  int32 id = 1;
+  int64 id = 1;
   string name = 2;
   string url = 3;
   bool enabled = 4;
@@ -76,21 +76,21 @@ message Network {
 }
 
 message VLAN {
-  int32 id = 1;
-  int32 vid = 2;
+  int64 id = 1;
+  int64 vid = 2;
   string name = 3;
-  int32 mtu = 4;
+  int64 mtu = 4;
   string description = 5;
   bool dhcp_on = 6;
 }
 
 message Fabric {
-  int32 id = 1;
+  int64 id = 1;
   string name = 2;
 }
 
 message Subnet {
-  int32 id = 1;
+  int64 id = 1;
   string name = 2;
   string cidr = 3;
   string gateway_ip = 4;
@@ -104,8 +104,8 @@ message Subnet {
 
 message Machine {
   message NUMANode {
-    int32 index = 1;
-    int32 cores = 2;
+    int64 index = 1;
+    int64 cores = 2;
     int64 memory = 3;
   }
   message BlockDevice {
@@ -124,15 +124,15 @@ message Machine {
     string name = 11;
     string mac_address = 12;
     bool link_connected = 21;
-    int32 link_speed = 22;
-    int32 interface_speed = 23;
+    int64 link_speed = 22;
+    int64 interface_speed = 23;
     string type = 31;
     string fabric_name = 41;
-    int32 fabric_id = 42;
+    int64 fabric_id = 42;
     string vlan_name = 43;
-    int32 vlan_id = 44;
+    int64 vlan_id = 44;
     string subnet_name = 51;
-    int32 subnet_id = 52;
+    int64 subnet_id = 52;
     string ip_address = 61;
     bool dhcp_on = 71;
   }
@@ -149,8 +149,8 @@ message Machine {
   string distro_series = 402;
   string hwe_kernel = 403;
   string architecture = 404;
-  int32 cpu_speed = 405;
-  int32 cpu_count = 406;
+  int64 cpu_speed = 405;
+  int64 cpu_count = 406;
   int64 memory = 407;
   double storage = 408;
   repeated string ip_addresses = 409;
@@ -163,7 +163,7 @@ message Machine {
 }
 
 message IPRange {
-  int32 id = 1;
+  int64 id = 1;
   string start_ip = 2;
   string end_ip = 3;
   string type = 4;
@@ -187,7 +187,13 @@ message Application {
   string machine_system_id = 1;
 }
 
-message Integration {}
+message Integration {
+  int64 id = 1;
+  string provider = 2;
+  string requirer = 3;
+  string interface = 4;
+  string role = 5;
+}
 
 message Action {}
 
@@ -202,7 +208,7 @@ message UpdateNTPServersRequest {
 }
 
 message UpdatePackageRepositoryURLRequest {
-  int32 id = 1;
+  int64 id = 1;
   string url = 2;
   bool skip_juju = 3;
 }
@@ -229,25 +235,25 @@ message CreateNetworkRequest {
 }
 
 message DeleteNetworkRequest {
-  int32 fabric_id = 1;
+  int64 fabric_id = 1;
 }
 
 message UpdateFabricRequest {
-  int32 id = 1;
+  int64 id = 1;
   string name = 2;
 }
 
 message UpdateVLANRequest {
-  int32 fabric_id = 1;
-  int32 vid = 2;
+  int64 fabric_id = 1;
+  int64 vid = 2;
   string name = 3;
-  int32 mtu = 4;
+  int64 mtu = 4;
   string description = 5;
   bool dhcp_on = 6;
 }
 
 message UpdateSubnetRequest {
-  int32 id = 1;
+  int64 id = 1;
   string name = 2;
   string cidr = 3;
   string gateway_ip = 4;
@@ -257,7 +263,7 @@ message UpdateSubnetRequest {
 }
 
 message UpdateIPRangeRequest {
-  int32 id = 1;
+  int64 id = 1;
   string start_ip = 2;
   string end_ip = 3;
   string comment = 4;
@@ -340,15 +346,23 @@ message AddApplicationUnitRequest {}
 
 message ExposeApplicationRequest {}
 
-message ListIntegrationsRequest {}
+message ListIntegrationsRequest {
+  string model_uuid = 1;
+}
 
 message ListIntegrationsResponse {
   repeated Integration integrations = 1;
 }
 
-message CreateIntegrationRequest {}
+message CreateIntegrationRequest {
+  string model_uuid = 1;
+  repeated string endpoints = 2;
+}
 
-message DeleteIntegrationRequest {}
+message DeleteIntegrationRequest {
+  string model_uuid = 1;
+  int32 id = 2;
+}
 
 message ListActionsRequest {}
 

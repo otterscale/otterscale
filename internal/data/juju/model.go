@@ -36,8 +36,8 @@ func (r *model) List(ctx context.Context) ([]*base.UserModelSummary, error) {
 	}
 
 	ret := make([]*base.UserModelSummary, len(umss))
-	for i, ums := range umss {
-		ret[i] = &ums
+	for i := range umss {
+		ret[i] = &umss[i]
 	}
 
 	return ret, nil
@@ -81,13 +81,13 @@ func (r *model) getCloudInfo(ctx context.Context) (string, string, error) {
 	}
 
 	// Get the first cloud
-	for cloudName, c := range clouds {
-		if len(c.Regions) == 0 {
-			return "", "", fmt.Errorf("no regions found for cloud: %s", cloudName)
+	for tag := range clouds {
+		if len(clouds[tag].Regions) == 0 {
+			return "", "", fmt.Errorf("no regions found for cloud: %s", tag)
 		}
 
 		// Return the first region of the first cloud
-		return c.Name, c.Regions[0].Name, nil
+		return clouds[tag].Name, clouds[tag].Regions[0].Name, nil
 	}
 
 	return "", "", errors.New("unable to determine cloud and region")

@@ -12,16 +12,16 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/stack/v1/stack.proto.
  */
 export const file_api_stack_v1_stack: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvc3RhY2svdjEvc3RhY2sucHJvdG8SEG9wZW5oZGMuc3RhY2sudjEiSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCCLxAQoHTmV0d29yaxIoCgZmYWJyaWMYASABKAsyGC5vcGVuaGRjLnN0YWNrLnYxLkZhYnJpYxIzCghzZXR0aW5ncxgCIAMoCzIhLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yay5TZXR0aW5nGoYBCgdTZXR0aW5nEiQKBHZsYW4YASABKAsyFi5vcGVuaGRjLnN0YWNrLnYxLlZMQU4SKAoGc3VibmV0GAIgASgLMhgub3BlbmhkYy5zdGFjay52MS5TdWJuZXQSKwoIaXBfcmFuZ2UYAyABKAsyGS5vcGVuaGRjLnN0YWNrLnYxLklQUmFuZ2UiYAoEVkxBThIKCgJpZBgBIAEoBRILCgN2aWQYAiABKAUSDAoEbmFtZRgDIAEoCRILCgNtdHUYBCABKAUSEwoLZGVzY3JpcHRpb24YBSABKAkSDwoHZGhjcF9vbhgGIAEoCCIiCgZGYWJyaWMSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCSLeAQoGU3VibmV0EgoKAmlkGAEgASgFEgwKBG5hbWUYAiABKAkSDAoEY2lkchgDIAEoCRISCgpnYXRld2F5X2lwGAQgASgJEhMKC2Ruc19zZXJ2ZXJzGAUgAygJEhMKC2Rlc2NyaXB0aW9uGAYgASgJEhoKEm1hbmFnZWRfYWxsb2NhdGlvbhgHIAEoCBIYChBhY3RpdmVfZGlzY292ZXJ5GAggASgIEhoKEmFsbG93X3Byb3h5X2FjY2VzcxgJIAEoCBIcChRhbGxvd19kbnNfcmVzb2x1dGlvbhgKIAEoCCKACwoHTWFjaGluZRIRCglzeXN0ZW1faWQYASABKAkSFQoNaGFyZHdhcmVfdXVpZBhlIAEoCRIQCghob3N0bmFtZRhmIAEoCRIMCgRmcWRuGGcgASgJEgwKBHRhZ3MYaCADKAkSEwoLZGVzY3JpcHRpb24YaSABKAkSDwoGc3RhdHVzGMkBIAEoCRIUCgtwb3dlcl9zdGF0ZRitAiABKAkSEwoKcG93ZXJfdHlwZRiuAiABKAkSEAoHb3N5c3RlbRiRAyABKAkSFgoNZGlzdHJvX3NlcmllcxiSAyABKAkSEwoKaHdlX2tlcm5lbBiTAyABKAkSFQoMYXJjaGl0ZWN0dXJlGJQDIAEoCRISCgljcHVfc3BlZWQYlQMgASgFEhIKCWNwdV9jb3VudBiWAyABKAUSDwoGbWVtb3J5GJcDIAEoAxIQCgdzdG9yYWdlGJgDIAEoARIVCgxpcF9hZGRyZXNzZXMYmQMgAygJElEKFHdvcmtsb2FkX2Fubm90YXRpb25zGPUDIAMoCzIyLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5Xb3JrbG9hZEFubm90YXRpb25zRW50cnkSUQoUaGFyZHdhcmVfaW5mb3JtYXRpb24Y2QQgAygLMjIub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLkhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRIZChBiaW9zX2Jvb3RfbWV0aG9kGNoEIAEoCRI3CgpudW1hX25vZGVzGL0FIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5OVU1BTm9kZRI9Cg1ibG9ja19kZXZpY2VzGKEGIAMoCzIlLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5CbG9ja0RldmljZRJHChJuZXR3b3JrX2ludGVyZmFjZXMYogYgAygLMioub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLk5ldHdvcmtJbnRlcmZhY2UaOAoITlVNQU5vZGUSDQoFaW5kZXgYASABKAUSDQoFY29yZXMYAiABKAUSDgoGbWVtb3J5GAMgASgDGqMBCgtCbG9ja0RldmljZRIRCglib290X2Rpc2sYASABKAgSDAoEbmFtZRgLIAEoCRIOCgZzZXJpYWwYDCABKAkSDQoFbW9kZWwYFSABKAkSGAoQZmlybXdhcmVfdmVyc2lvbhgWIAEoCRIMCgRzaXplGB8gASgDEgwKBHR5cGUYKSABKAkSDAoEdGFncxgzIAMoCRIQCgh1c2VkX2Zvchg9IAEoCRq5AgoQTmV0d29ya0ludGVyZmFjZRIWCg5ib290X2ludGVyZmFjZRgBIAEoCBIMCgRuYW1lGAsgASgJEhMKC21hY19hZGRyZXNzGAwgASgJEhYKDmxpbmtfY29ubmVjdGVkGBUgASgIEhIKCmxpbmtfc3BlZWQYFiABKAUSFwoPaW50ZXJmYWNlX3NwZWVkGBcgASgFEgwKBHR5cGUYHyABKAkSEwoLZmFicmljX25hbWUYKSABKAkSEQoJZmFicmljX2lkGCogASgFEhEKCXZsYW5fbmFtZRgrIAEoCRIPCgd2bGFuX2lkGCwgASgFEhMKC3N1Ym5ldF9uYW1lGDMgASgJEhEKCXN1Ym5ldF9pZBg0IAEoBRISCgppcF9hZGRyZXNzGD0gASgJEg8KB2RoY3Bfb24YRyABKAgaOgoYV29ya2xvYWRBbm5vdGF0aW9uc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaOgoYSGFyZHdhcmVJbmZvcm1hdGlvbkVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiVgoHSVBSYW5nZRIKCgJpZBgBIAEoBRIQCghzdGFydF9pcBgCIAEoCRIOCgZlbmRfaXAYAyABKAkSDAoEdHlwZRgEIAEoCRIPCgdjb21tZW50GAUgASgJIrABCgVNb2RlbBIMCgR1dWlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEbGlmZRgDIAEoCRIOCgZzdGF0dXMYBCABKAkSLgoKdXBkYXRlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNbWFjaGluZV9jb3VudBgLIAEoAxISCgpjb3JlX2NvdW50GAwgASgDEhIKCnVuaXRfY291bnQYDSABKAMiDQoLTW9kZWxDb25maWciKAoLQXBwbGljYXRpb24SGQoRbWFjaGluZV9zeXN0ZW1faWQYASABKAkiDQoLSW50ZWdyYXRpb24iCAoGQWN0aW9uIhcKFUxpc3ROVFBTZXJ2ZXJzUmVxdWVzdCItChZMaXN0TlRQU2VydmVyc1Jlc3BvbnNlEhMKC250cF9zZXJ2ZXJzGAEgAygJIi4KF1VwZGF0ZU5UUFNlcnZlcnNSZXF1ZXN0EhMKC250cF9zZXJ2ZXJzGAEgAygJIk8KIVVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5VVJMUmVxdWVzdBIKCgJpZBgBIAEoBRILCgN1cmwYAiABKAkSEQoJc2tpcF9qdWp1GAMgASgIIiAKHkxpc3RQYWNrYWdlUmVwb3NpdG9yaWVzUmVxdWVzdCJkCh9MaXN0UGFja2FnZVJlcG9zaXRvcmllc1Jlc3BvbnNlEkEKFHBhY2thZ2VfcmVwb3NpdG9yaWVzGAEgAygLMiMub3BlbmhkYy5zdGFjay52MS5QYWNrYWdlUmVwb3NpdG9yeSIVChNMaXN0TmV0d29ya3NSZXF1ZXN0IkMKFExpc3ROZXR3b3Jrc1Jlc3BvbnNlEisKCG5ldHdvcmtzGAEgAygLMhkub3BlbmhkYy5zdGFjay52MS5OZXR3b3JrIoABChRDcmVhdGVOZXR3b3JrUmVxdWVzdBIPCgdkaGNwX29uGAEgASgIEgwKBGNpZHIYCyABKAkSEgoKZ2F0ZXdheV9pcBgMIAEoCRITCgtkbnNfc2VydmVycxgNIAMoCRIQCghzdGFydF9pcBgVIAEoCRIOCgZlbmRfaXAYFiABKAkiKQoURGVsZXRlTmV0d29ya1JlcXVlc3QSEQoJZmFicmljX2lkGAEgASgFIi8KE1VwZGF0ZUZhYnJpY1JlcXVlc3QSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCSJ0ChFVcGRhdGVWTEFOUmVxdWVzdBIRCglmYWJyaWNfaWQYASABKAUSCwoDdmlkGAIgASgFEgwKBG5hbWUYAyABKAkSCwoDbXR1GAQgASgFEhMKC2Rlc2NyaXB0aW9uGAUgASgJEg8KB2RoY3Bfb24YBiABKAgimQEKE1VwZGF0ZVN1Ym5ldFJlcXVlc3QSCgoCaWQYASABKAUSDAoEbmFtZRgCIAEoCRIMCgRjaWRyGAMgASgJEhIKCmdhdGV3YXlfaXAYBCABKAkSEwoLZG5zX3NlcnZlcnMYBSADKAkSEwoLZGVzY3JpcHRpb24YBiABKAkSHAoUYWxsb3dfZG5zX3Jlc29sdXRpb24YByABKAgiVQoUVXBkYXRlSVBSYW5nZVJlcXVlc3QSCgoCaWQYASABKAUSEAoIc3RhcnRfaXAYAiABKAkSDgoGZW5kX2lwGAMgASgJEg8KB2NvbW1lbnQYBCABKAkiFQoTTGlzdE1hY2hpbmVzUmVxdWVzdCJDChRMaXN0TWFjaGluZXNSZXNwb25zZRIrCghtYWNoaW5lcxgBIAMoCzIZLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZSKpAgoSQWRkTWFjaGluZXNSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSQgoKcGFyYW1ldGVycxgCIAMoCzIuLm9wZW5oZGMuc3RhY2sudjEuQWRkTWFjaGluZXNSZXF1ZXN0LlBhcmFtZXRlchpWCgpDb25zdHJhaW50EhQKDGFyY2hpdGVjdHVyZRgBIAEoCRIRCgljcHVfY29yZXMYAiABKAQSEQoJbWVtb3J5X21iGAMgASgEEgwKBHRhZ3MYCyADKAkaYwoJUGFyYW1ldGVyEhEKCXBsYWNlbWVudBgBIAEoCRJDCgpjb25zdHJhaW50GAIgASgLMi8ub3BlbmhkYy5zdGFjay52MS5BZGRNYWNoaW5lc1JlcXVlc3QuQ29uc3RyYWludCInChNBZGRNYWNoaW5lc1Jlc3BvbnNlEhAKCG1hY2hpbmVzGAEgAygJIhwKGkltcG9ydEJvb3RSZXNvdXJjZXNSZXF1ZXN0IioKFVBvd2VyT25NYWNoaW5lUmVxdWVzdBIRCglzeXN0ZW1faWQYASABKAkiKwoWUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBIRCglzeXN0ZW1faWQYASABKAkiiQEKGENvbW1pc3Npb25NYWNoaW5lUmVxdWVzdBIRCglzeXN0ZW1faWQYASABKAkSEgoKZW5hYmxlX3NzaBgCIAEoCBIXCg9za2lwX2JtY19jb25maWcYAyABKAgSFwoPc2tpcF9uZXR3b3JraW5nGAQgASgIEhQKDHNraXBfc3RvcmFnZRgFIAEoCCITChFMaXN0TW9kZWxzUmVxdWVzdCI9ChJMaXN0TW9kZWxzUmVzcG9uc2USJwoGbW9kZWxzGAEgAygLMhcub3BlbmhkYy5zdGFjay52MS5Nb2RlbCIiChJDcmVhdGVNb2RlbFJlcXVlc3QSDAoEbmFtZRgBIAEoCSImChZHZXRNb2RlbENvbmZpZ3NSZXF1ZXN0EgwKBHV1aWQYASABKAkiogEKF0dldE1vZGVsQ29uZmlnc1Jlc3BvbnNlElIKDW1vZGVsX2NvbmZpZ3MYASADKAsyOy5vcGVuaGRjLnN0YWNrLnYxLkdldE1vZGVsQ29uZmlnc1Jlc3BvbnNlLk1vZGVsQ29uZmlnc0VudHJ5GjMKEU1vZGVsQ29uZmlnc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiGQoXTGlzdEFwcGxpY2F0aW9uc1JlcXVlc3QiTwoYTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlEjMKDGFwcGxpY2F0aW9ucxgBIAMoCzIdLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24iGgoYQ3JlYXRlQXBwbGljYXRpb25SZXF1ZXN0IhoKGERlbGV0ZUFwcGxpY2F0aW9uUmVxdWVzdCIaChhVcGRhdGVBcHBsaWNhdGlvblJlcXVlc3QiGwoZQWRkQXBwbGljYXRpb25Vbml0UmVxdWVzdCIaChhFeHBvc2VBcHBsaWNhdGlvblJlcXVlc3QiGQoXTGlzdEludGVncmF0aW9uc1JlcXVlc3QiTwoYTGlzdEludGVncmF0aW9uc1Jlc3BvbnNlEjMKDGludGVncmF0aW9ucxgBIAMoCzIdLm9wZW5oZGMuc3RhY2sudjEuSW50ZWdyYXRpb24iGgoYQ3JlYXRlSW50ZWdyYXRpb25SZXF1ZXN0IhoKGERlbGV0ZUludGVncmF0aW9uUmVxdWVzdCIUChJMaXN0QWN0aW9uc1JlcXVlc3QiQAoTTGlzdEFjdGlvbnNSZXNwb25zZRIpCgdBY3Rpb25zGAEgAygLMhgub3BlbmhkYy5zdGFjay52MS5BY3Rpb24iEgoQUnVuQWN0aW9uUmVxdWVzdDLJFgoMU3RhY2tTZXJ2aWNlEmMKDkxpc3ROVFBTZXJ2ZXJzEicub3BlbmhkYy5zdGFjay52MS5MaXN0TlRQU2VydmVyc1JlcXVlc3QaKC5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROVFBTZXJ2ZXJzUmVzcG9uc2USVQoQVXBkYXRlTlRQU2VydmVycxIpLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlTlRQU2VydmVyc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSfgoXTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXMSMC5vcGVuaGRjLnN0YWNrLnYxLkxpc3RQYWNrYWdlUmVwb3NpdG9yaWVzUmVxdWVzdBoxLm9wZW5oZGMuc3RhY2sudjEuTGlzdFBhY2thZ2VSZXBvc2l0b3JpZXNSZXNwb25zZRJ2ChpVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVVSTBIzLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlVUkxSZXF1ZXN0GiMub3BlbmhkYy5zdGFjay52MS5QYWNrYWdlUmVwb3NpdG9yeRJdCgxMaXN0TmV0d29ya3MSJS5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROZXR3b3Jrc1JlcXVlc3QaJi5vcGVuaGRjLnN0YWNrLnYxLkxpc3ROZXR3b3Jrc1Jlc3BvbnNlElIKDUNyZWF0ZU5ldHdvcmsSJi5vcGVuaGRjLnN0YWNrLnYxLkNyZWF0ZU5ldHdvcmtSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5OZXR3b3JrEk8KDURlbGV0ZU5ldHdvcmsSJi5vcGVuaGRjLnN0YWNrLnYxLkRlbGV0ZU5ldHdvcmtSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Ek8KDFVwZGF0ZUZhYnJpYxIlLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlRmFicmljUmVxdWVzdBoYLm9wZW5oZGMuc3RhY2sudjEuRmFicmljEkkKClVwZGF0ZVZMQU4SIy5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZVZMQU5SZXF1ZXN0GhYub3BlbmhkYy5zdGFjay52MS5WTEFOEk8KDFVwZGF0ZVN1Ym5ldBIlLm9wZW5oZGMuc3RhY2sudjEuVXBkYXRlU3VibmV0UmVxdWVzdBoYLm9wZW5oZGMuc3RhY2sudjEuU3VibmV0ElIKDVVwZGF0ZUlQUmFuZ2USJi5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZUlQUmFuZ2VSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5JUFJhbmdlEl0KDExpc3RNYWNoaW5lcxIlLm9wZW5oZGMuc3RhY2sudjEuTGlzdE1hY2hpbmVzUmVxdWVzdBomLm9wZW5oZGMuc3RhY2sudjEuTGlzdE1hY2hpbmVzUmVzcG9uc2USWgoLQWRkTWFjaGluZXMSJC5vcGVuaGRjLnN0YWNrLnYxLkFkZE1hY2hpbmVzUmVxdWVzdBolLm9wZW5oZGMuc3RhY2sudjEuQWRkTWFjaGluZXNSZXNwb25zZRJbChNJbXBvcnRCb290UmVzb3VyY2VzEiwub3BlbmhkYy5zdGFjay52MS5JbXBvcnRCb290UmVzb3VyY2VzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJUCg5Qb3dlck9uTWFjaGluZRInLm9wZW5oZGMuc3RhY2sudjEuUG93ZXJPbk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lElYKD1Bvd2VyT2ZmTWFjaGluZRIoLm9wZW5oZGMuc3RhY2sudjEuUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBoZLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZRJaChFDb21taXNzaW9uTWFjaGluZRIqLm9wZW5oZGMuc3RhY2sudjEuQ29tbWlzc2lvbk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lElcKCkxpc3RNb2RlbHMSIy5vcGVuaGRjLnN0YWNrLnYxLkxpc3RNb2RlbHNSZXF1ZXN0GiQub3BlbmhkYy5zdGFjay52MS5MaXN0TW9kZWxzUmVzcG9uc2USTAoLQ3JlYXRlTW9kZWwSJC5vcGVuaGRjLnN0YWNrLnYxLkNyZWF0ZU1vZGVsUmVxdWVzdBoXLm9wZW5oZGMuc3RhY2sudjEuTW9kZWwSZgoPR2V0TW9kZWxDb25maWdzEigub3BlbmhkYy5zdGFjay52MS5HZXRNb2RlbENvbmZpZ3NSZXF1ZXN0Gikub3BlbmhkYy5zdGFjay52MS5HZXRNb2RlbENvbmZpZ3NSZXNwb25zZRJpChBMaXN0QXBwbGljYXRpb25zEikub3BlbmhkYy5zdGFjay52MS5MaXN0QXBwbGljYXRpb25zUmVxdWVzdBoqLm9wZW5oZGMuc3RhY2sudjEuTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlEl4KEUNyZWF0ZUFwcGxpY2F0aW9uEioub3BlbmhkYy5zdGFjay52MS5DcmVhdGVBcHBsaWNhdGlvblJlcXVlc3QaHS5vcGVuaGRjLnN0YWNrLnYxLkFwcGxpY2F0aW9uElcKEURlbGV0ZUFwcGxpY2F0aW9uEioub3BlbmhkYy5zdGFjay52MS5EZWxldGVBcHBsaWNhdGlvblJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSXgoRVXBkYXRlQXBwbGljYXRpb24SKi5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZUFwcGxpY2F0aW9uUmVxdWVzdBodLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24SYAoSQWRkQXBwbGljYXRpb25Vbml0Eisub3BlbmhkYy5zdGFjay52MS5BZGRBcHBsaWNhdGlvblVuaXRSZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5BcHBsaWNhdGlvbhJeChFFeHBvc2VBcHBsaWNhdGlvbhIqLm9wZW5oZGMuc3RhY2sudjEuRXhwb3NlQXBwbGljYXRpb25SZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5BcHBsaWNhdGlvbhJpChBMaXN0SW50ZWdyYXRpb25zEikub3BlbmhkYy5zdGFjay52MS5MaXN0SW50ZWdyYXRpb25zUmVxdWVzdBoqLm9wZW5oZGMuc3RhY2sudjEuTGlzdEludGVncmF0aW9uc1Jlc3BvbnNlEl4KEUNyZWF0ZUludGVncmF0aW9uEioub3BlbmhkYy5zdGFjay52MS5DcmVhdGVJbnRlZ3JhdGlvblJlcXVlc3QaHS5vcGVuaGRjLnN0YWNrLnYxLkludGVncmF0aW9uElcKEURlbGV0ZUludGVncmF0aW9uEioub3BlbmhkYy5zdGFjay52MS5EZWxldGVJbnRlZ3JhdGlvblJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSWgoLTGlzdEFjdGlvbnMSJC5vcGVuaGRjLnN0YWNrLnYxLkxpc3RBY3Rpb25zUmVxdWVzdBolLm9wZW5oZGMuc3RhY2sudjEuTGlzdEFjdGlvbnNSZXNwb25zZRJJCglSdW5BY3Rpb24SIi5vcGVuaGRjLnN0YWNrLnYxLlJ1bkFjdGlvblJlcXVlc3QaGC5vcGVuaGRjLnN0YWNrLnYxLkFjdGlvbkIsWipnaXRodWIuY29tL29wZW5oZGMvb3BlbmhkYy9hcGkvc3RhY2svdjE7djFiCGVkaXRpb25zcOgH", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChhhcGkvc3RhY2svdjEvc3RhY2sucHJvdG8SEG9wZW5oZGMuc3RhY2sudjEiSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCCLxAQoHTmV0d29yaxIoCgZmYWJyaWMYASABKAsyGC5vcGVuaGRjLnN0YWNrLnYxLkZhYnJpYxIzCghzZXR0aW5ncxgCIAMoCzIhLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yay5TZXR0aW5nGoYBCgdTZXR0aW5nEiQKBHZsYW4YASABKAsyFi5vcGVuaGRjLnN0YWNrLnYxLlZMQU4SKAoGc3VibmV0GAIgASgLMhgub3BlbmhkYy5zdGFjay52MS5TdWJuZXQSKwoIaXBfcmFuZ2UYAyABKAsyGS5vcGVuaGRjLnN0YWNrLnYxLklQUmFuZ2UiYAoEVkxBThIKCgJpZBgBIAEoAxILCgN2aWQYAiABKAMSDAoEbmFtZRgDIAEoCRILCgNtdHUYBCABKAMSEwoLZGVzY3JpcHRpb24YBSABKAkSDwoHZGhjcF9vbhgGIAEoCCIiCgZGYWJyaWMSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCSLeAQoGU3VibmV0EgoKAmlkGAEgASgDEgwKBG5hbWUYAiABKAkSDAoEY2lkchgDIAEoCRISCgpnYXRld2F5X2lwGAQgASgJEhMKC2Ruc19zZXJ2ZXJzGAUgAygJEhMKC2Rlc2NyaXB0aW9uGAYgASgJEhoKEm1hbmFnZWRfYWxsb2NhdGlvbhgHIAEoCBIYChBhY3RpdmVfZGlzY292ZXJ5GAggASgIEhoKEmFsbG93X3Byb3h5X2FjY2VzcxgJIAEoCBIcChRhbGxvd19kbnNfcmVzb2x1dGlvbhgKIAEoCCKACwoHTWFjaGluZRIRCglzeXN0ZW1faWQYASABKAkSFQoNaGFyZHdhcmVfdXVpZBhlIAEoCRIQCghob3N0bmFtZRhmIAEoCRIMCgRmcWRuGGcgASgJEgwKBHRhZ3MYaCADKAkSEwoLZGVzY3JpcHRpb24YaSABKAkSDwoGc3RhdHVzGMkBIAEoCRIUCgtwb3dlcl9zdGF0ZRitAiABKAkSEwoKcG93ZXJfdHlwZRiuAiABKAkSEAoHb3N5c3RlbRiRAyABKAkSFgoNZGlzdHJvX3NlcmllcxiSAyABKAkSEwoKaHdlX2tlcm5lbBiTAyABKAkSFQoMYXJjaGl0ZWN0dXJlGJQDIAEoCRISCgljcHVfc3BlZWQYlQMgASgDEhIKCWNwdV9jb3VudBiWAyABKAMSDwoGbWVtb3J5GJcDIAEoAxIQCgdzdG9yYWdlGJgDIAEoARIVCgxpcF9hZGRyZXNzZXMYmQMgAygJElEKFHdvcmtsb2FkX2Fubm90YXRpb25zGPUDIAMoCzIyLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5Xb3JrbG9hZEFubm90YXRpb25zRW50cnkSUQoUaGFyZHdhcmVfaW5mb3JtYXRpb24Y2QQgAygLMjIub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLkhhcmR3YXJlSW5mb3JtYXRpb25FbnRyeRIZChBiaW9zX2Jvb3RfbWV0aG9kGNoEIAEoCRI3CgpudW1hX25vZGVzGL0FIAMoCzIiLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5OVU1BTm9kZRI9Cg1ibG9ja19kZXZpY2VzGKEGIAMoCzIlLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZS5CbG9ja0RldmljZRJHChJuZXR3b3JrX2ludGVyZmFjZXMYogYgAygLMioub3BlbmhkYy5zdGFjay52MS5NYWNoaW5lLk5ldHdvcmtJbnRlcmZhY2UaOAoITlVNQU5vZGUSDQoFaW5kZXgYASABKAMSDQoFY29yZXMYAiABKAMSDgoGbWVtb3J5GAMgASgDGqMBCgtCbG9ja0RldmljZRIRCglib290X2Rpc2sYASABKAgSDAoEbmFtZRgLIAEoCRIOCgZzZXJpYWwYDCABKAkSDQoFbW9kZWwYFSABKAkSGAoQZmlybXdhcmVfdmVyc2lvbhgWIAEoCRIMCgRzaXplGB8gASgDEgwKBHR5cGUYKSABKAkSDAoEdGFncxgzIAMoCRIQCgh1c2VkX2Zvchg9IAEoCRq5AgoQTmV0d29ya0ludGVyZmFjZRIWCg5ib290X2ludGVyZmFjZRgBIAEoCBIMCgRuYW1lGAsgASgJEhMKC21hY19hZGRyZXNzGAwgASgJEhYKDmxpbmtfY29ubmVjdGVkGBUgASgIEhIKCmxpbmtfc3BlZWQYFiABKAMSFwoPaW50ZXJmYWNlX3NwZWVkGBcgASgDEgwKBHR5cGUYHyABKAkSEwoLZmFicmljX25hbWUYKSABKAkSEQoJZmFicmljX2lkGCogASgDEhEKCXZsYW5fbmFtZRgrIAEoCRIPCgd2bGFuX2lkGCwgASgDEhMKC3N1Ym5ldF9uYW1lGDMgASgJEhEKCXN1Ym5ldF9pZBg0IAEoAxISCgppcF9hZGRyZXNzGD0gASgJEg8KB2RoY3Bfb24YRyABKAgaOgoYV29ya2xvYWRBbm5vdGF0aW9uc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaOgoYSGFyZHdhcmVJbmZvcm1hdGlvbkVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiVgoHSVBSYW5nZRIKCgJpZBgBIAEoAxIQCghzdGFydF9pcBgCIAEoCRIOCgZlbmRfaXAYAyABKAkSDAoEdHlwZRgEIAEoCRIPCgdjb21tZW50GAUgASgJIrABCgVNb2RlbBIMCgR1dWlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEbGlmZRgDIAEoCRIOCgZzdGF0dXMYBCABKAkSLgoKdXBkYXRlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASFQoNbWFjaGluZV9jb3VudBgLIAEoAxISCgpjb3JlX2NvdW50GAwgASgDEhIKCnVuaXRfY291bnQYDSABKAMiDQoLTW9kZWxDb25maWciKAoLQXBwbGljYXRpb24SGQoRbWFjaGluZV9zeXN0ZW1faWQYASABKAkiXgoLSW50ZWdyYXRpb24SCgoCaWQYASABKAMSEAoIcHJvdmlkZXIYAiABKAkSEAoIcmVxdWlyZXIYAyABKAkSEQoJaW50ZXJmYWNlGAQgASgJEgwKBHJvbGUYBSABKAkiCAoGQWN0aW9uIhcKFUxpc3ROVFBTZXJ2ZXJzUmVxdWVzdCItChZMaXN0TlRQU2VydmVyc1Jlc3BvbnNlEhMKC250cF9zZXJ2ZXJzGAEgAygJIi4KF1VwZGF0ZU5UUFNlcnZlcnNSZXF1ZXN0EhMKC250cF9zZXJ2ZXJzGAEgAygJIk8KIVVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5VVJMUmVxdWVzdBIKCgJpZBgBIAEoAxILCgN1cmwYAiABKAkSEQoJc2tpcF9qdWp1GAMgASgIIiAKHkxpc3RQYWNrYWdlUmVwb3NpdG9yaWVzUmVxdWVzdCJkCh9MaXN0UGFja2FnZVJlcG9zaXRvcmllc1Jlc3BvbnNlEkEKFHBhY2thZ2VfcmVwb3NpdG9yaWVzGAEgAygLMiMub3BlbmhkYy5zdGFjay52MS5QYWNrYWdlUmVwb3NpdG9yeSIVChNMaXN0TmV0d29ya3NSZXF1ZXN0IkMKFExpc3ROZXR3b3Jrc1Jlc3BvbnNlEisKCG5ldHdvcmtzGAEgAygLMhkub3BlbmhkYy5zdGFjay52MS5OZXR3b3JrIoABChRDcmVhdGVOZXR3b3JrUmVxdWVzdBIPCgdkaGNwX29uGAEgASgIEgwKBGNpZHIYCyABKAkSEgoKZ2F0ZXdheV9pcBgMIAEoCRITCgtkbnNfc2VydmVycxgNIAMoCRIQCghzdGFydF9pcBgVIAEoCRIOCgZlbmRfaXAYFiABKAkiKQoURGVsZXRlTmV0d29ya1JlcXVlc3QSEQoJZmFicmljX2lkGAEgASgDIi8KE1VwZGF0ZUZhYnJpY1JlcXVlc3QSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCSJ0ChFVcGRhdGVWTEFOUmVxdWVzdBIRCglmYWJyaWNfaWQYASABKAMSCwoDdmlkGAIgASgDEgwKBG5hbWUYAyABKAkSCwoDbXR1GAQgASgDEhMKC2Rlc2NyaXB0aW9uGAUgASgJEg8KB2RoY3Bfb24YBiABKAgimQEKE1VwZGF0ZVN1Ym5ldFJlcXVlc3QSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRIMCgRjaWRyGAMgASgJEhIKCmdhdGV3YXlfaXAYBCABKAkSEwoLZG5zX3NlcnZlcnMYBSADKAkSEwoLZGVzY3JpcHRpb24YBiABKAkSHAoUYWxsb3dfZG5zX3Jlc29sdXRpb24YByABKAgiVQoUVXBkYXRlSVBSYW5nZVJlcXVlc3QSCgoCaWQYASABKAMSEAoIc3RhcnRfaXAYAiABKAkSDgoGZW5kX2lwGAMgASgJEg8KB2NvbW1lbnQYBCABKAkiFQoTTGlzdE1hY2hpbmVzUmVxdWVzdCJDChRMaXN0TWFjaGluZXNSZXNwb25zZRIrCghtYWNoaW5lcxgBIAMoCzIZLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZSKpAgoSQWRkTWFjaGluZXNSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSQgoKcGFyYW1ldGVycxgCIAMoCzIuLm9wZW5oZGMuc3RhY2sudjEuQWRkTWFjaGluZXNSZXF1ZXN0LlBhcmFtZXRlchpWCgpDb25zdHJhaW50EhQKDGFyY2hpdGVjdHVyZRgBIAEoCRIRCgljcHVfY29yZXMYAiABKAQSEQoJbWVtb3J5X21iGAMgASgEEgwKBHRhZ3MYCyADKAkaYwoJUGFyYW1ldGVyEhEKCXBsYWNlbWVudBgBIAEoCRJDCgpjb25zdHJhaW50GAIgASgLMi8ub3BlbmhkYy5zdGFjay52MS5BZGRNYWNoaW5lc1JlcXVlc3QuQ29uc3RyYWludCInChNBZGRNYWNoaW5lc1Jlc3BvbnNlEhAKCG1hY2hpbmVzGAEgAygJIhwKGkltcG9ydEJvb3RSZXNvdXJjZXNSZXF1ZXN0IioKFVBvd2VyT25NYWNoaW5lUmVxdWVzdBIRCglzeXN0ZW1faWQYASABKAkiKwoWUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBIRCglzeXN0ZW1faWQYASABKAkiiQEKGENvbW1pc3Npb25NYWNoaW5lUmVxdWVzdBIRCglzeXN0ZW1faWQYASABKAkSEgoKZW5hYmxlX3NzaBgCIAEoCBIXCg9za2lwX2JtY19jb25maWcYAyABKAgSFwoPc2tpcF9uZXR3b3JraW5nGAQgASgIEhQKDHNraXBfc3RvcmFnZRgFIAEoCCITChFMaXN0TW9kZWxzUmVxdWVzdCI9ChJMaXN0TW9kZWxzUmVzcG9uc2USJwoGbW9kZWxzGAEgAygLMhcub3BlbmhkYy5zdGFjay52MS5Nb2RlbCIiChJDcmVhdGVNb2RlbFJlcXVlc3QSDAoEbmFtZRgBIAEoCSImChZHZXRNb2RlbENvbmZpZ3NSZXF1ZXN0EgwKBHV1aWQYASABKAkiogEKF0dldE1vZGVsQ29uZmlnc1Jlc3BvbnNlElIKDW1vZGVsX2NvbmZpZ3MYASADKAsyOy5vcGVuaGRjLnN0YWNrLnYxLkdldE1vZGVsQ29uZmlnc1Jlc3BvbnNlLk1vZGVsQ29uZmlnc0VudHJ5GjMKEU1vZGVsQ29uZmlnc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiGQoXTGlzdEFwcGxpY2F0aW9uc1JlcXVlc3QiTwoYTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlEjMKDGFwcGxpY2F0aW9ucxgBIAMoCzIdLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24iGgoYQ3JlYXRlQXBwbGljYXRpb25SZXF1ZXN0IhoKGERlbGV0ZUFwcGxpY2F0aW9uUmVxdWVzdCIaChhVcGRhdGVBcHBsaWNhdGlvblJlcXVlc3QiGwoZQWRkQXBwbGljYXRpb25Vbml0UmVxdWVzdCIaChhFeHBvc2VBcHBsaWNhdGlvblJlcXVlc3QiLQoXTGlzdEludGVncmF0aW9uc1JlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCSJPChhMaXN0SW50ZWdyYXRpb25zUmVzcG9uc2USMwoMaW50ZWdyYXRpb25zGAEgAygLMh0ub3BlbmhkYy5zdGFjay52MS5JbnRlZ3JhdGlvbiJBChhDcmVhdGVJbnRlZ3JhdGlvblJlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCRIRCgllbmRwb2ludHMYAiADKAkiOgoYRGVsZXRlSW50ZWdyYXRpb25SZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSCgoCaWQYAiABKAUiFAoSTGlzdEFjdGlvbnNSZXF1ZXN0IkAKE0xpc3RBY3Rpb25zUmVzcG9uc2USKQoHQWN0aW9ucxgBIAMoCzIYLm9wZW5oZGMuc3RhY2sudjEuQWN0aW9uIhIKEFJ1bkFjdGlvblJlcXVlc3QyyRYKDFN0YWNrU2VydmljZRJjCg5MaXN0TlRQU2VydmVycxInLm9wZW5oZGMuc3RhY2sudjEuTGlzdE5UUFNlcnZlcnNSZXF1ZXN0Gigub3BlbmhkYy5zdGFjay52MS5MaXN0TlRQU2VydmVyc1Jlc3BvbnNlElUKEFVwZGF0ZU5UUFNlcnZlcnMSKS5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZU5UUFNlcnZlcnNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5En4KF0xpc3RQYWNrYWdlUmVwb3NpdG9yaWVzEjAub3BlbmhkYy5zdGFjay52MS5MaXN0UGFja2FnZVJlcG9zaXRvcmllc1JlcXVlc3QaMS5vcGVuaGRjLnN0YWNrLnYxLkxpc3RQYWNrYWdlUmVwb3NpdG9yaWVzUmVzcG9uc2USdgoaVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlVUkwSMy5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5VVJMUmVxdWVzdBojLm9wZW5oZGMuc3RhY2sudjEuUGFja2FnZVJlcG9zaXRvcnkSXQoMTGlzdE5ldHdvcmtzEiUub3BlbmhkYy5zdGFjay52MS5MaXN0TmV0d29ya3NSZXF1ZXN0GiYub3BlbmhkYy5zdGFjay52MS5MaXN0TmV0d29ya3NSZXNwb25zZRJSCg1DcmVhdGVOZXR3b3JrEiYub3BlbmhkYy5zdGFjay52MS5DcmVhdGVOZXR3b3JrUmVxdWVzdBoZLm9wZW5oZGMuc3RhY2sudjEuTmV0d29yaxJPCg1EZWxldGVOZXR3b3JrEiYub3BlbmhkYy5zdGFjay52MS5EZWxldGVOZXR3b3JrUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJPCgxVcGRhdGVGYWJyaWMSJS5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZUZhYnJpY1JlcXVlc3QaGC5vcGVuaGRjLnN0YWNrLnYxLkZhYnJpYxJJCgpVcGRhdGVWTEFOEiMub3BlbmhkYy5zdGFjay52MS5VcGRhdGVWTEFOUmVxdWVzdBoWLm9wZW5oZGMuc3RhY2sudjEuVkxBThJPCgxVcGRhdGVTdWJuZXQSJS5vcGVuaGRjLnN0YWNrLnYxLlVwZGF0ZVN1Ym5ldFJlcXVlc3QaGC5vcGVuaGRjLnN0YWNrLnYxLlN1Ym5ldBJSCg1VcGRhdGVJUFJhbmdlEiYub3BlbmhkYy5zdGFjay52MS5VcGRhdGVJUFJhbmdlUmVxdWVzdBoZLm9wZW5oZGMuc3RhY2sudjEuSVBSYW5nZRJdCgxMaXN0TWFjaGluZXMSJS5vcGVuaGRjLnN0YWNrLnYxLkxpc3RNYWNoaW5lc1JlcXVlc3QaJi5vcGVuaGRjLnN0YWNrLnYxLkxpc3RNYWNoaW5lc1Jlc3BvbnNlEloKC0FkZE1hY2hpbmVzEiQub3BlbmhkYy5zdGFjay52MS5BZGRNYWNoaW5lc1JlcXVlc3QaJS5vcGVuaGRjLnN0YWNrLnYxLkFkZE1hY2hpbmVzUmVzcG9uc2USWwoTSW1wb3J0Qm9vdFJlc291cmNlcxIsLm9wZW5oZGMuc3RhY2sudjEuSW1wb3J0Qm9vdFJlc291cmNlc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSVAoOUG93ZXJPbk1hY2hpbmUSJy5vcGVuaGRjLnN0YWNrLnYxLlBvd2VyT25NYWNoaW5lUmVxdWVzdBoZLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZRJWCg9Qb3dlck9mZk1hY2hpbmUSKC5vcGVuaGRjLnN0YWNrLnYxLlBvd2VyT2ZmTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLnN0YWNrLnYxLk1hY2hpbmUSWgoRQ29tbWlzc2lvbk1hY2hpbmUSKi5vcGVuaGRjLnN0YWNrLnYxLkNvbW1pc3Npb25NYWNoaW5lUmVxdWVzdBoZLm9wZW5oZGMuc3RhY2sudjEuTWFjaGluZRJXCgpMaXN0TW9kZWxzEiMub3BlbmhkYy5zdGFjay52MS5MaXN0TW9kZWxzUmVxdWVzdBokLm9wZW5oZGMuc3RhY2sudjEuTGlzdE1vZGVsc1Jlc3BvbnNlEkwKC0NyZWF0ZU1vZGVsEiQub3BlbmhkYy5zdGFjay52MS5DcmVhdGVNb2RlbFJlcXVlc3QaFy5vcGVuaGRjLnN0YWNrLnYxLk1vZGVsEmYKD0dldE1vZGVsQ29uZmlncxIoLm9wZW5oZGMuc3RhY2sudjEuR2V0TW9kZWxDb25maWdzUmVxdWVzdBopLm9wZW5oZGMuc3RhY2sudjEuR2V0TW9kZWxDb25maWdzUmVzcG9uc2USaQoQTGlzdEFwcGxpY2F0aW9ucxIpLm9wZW5oZGMuc3RhY2sudjEuTGlzdEFwcGxpY2F0aW9uc1JlcXVlc3QaKi5vcGVuaGRjLnN0YWNrLnYxLkxpc3RBcHBsaWNhdGlvbnNSZXNwb25zZRJeChFDcmVhdGVBcHBsaWNhdGlvbhIqLm9wZW5oZGMuc3RhY2sudjEuQ3JlYXRlQXBwbGljYXRpb25SZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5BcHBsaWNhdGlvbhJXChFEZWxldGVBcHBsaWNhdGlvbhIqLm9wZW5oZGMuc3RhY2sudjEuRGVsZXRlQXBwbGljYXRpb25SZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5El4KEVVwZGF0ZUFwcGxpY2F0aW9uEioub3BlbmhkYy5zdGFjay52MS5VcGRhdGVBcHBsaWNhdGlvblJlcXVlc3QaHS5vcGVuaGRjLnN0YWNrLnYxLkFwcGxpY2F0aW9uEmAKEkFkZEFwcGxpY2F0aW9uVW5pdBIrLm9wZW5oZGMuc3RhY2sudjEuQWRkQXBwbGljYXRpb25Vbml0UmVxdWVzdBodLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24SXgoRRXhwb3NlQXBwbGljYXRpb24SKi5vcGVuaGRjLnN0YWNrLnYxLkV4cG9zZUFwcGxpY2F0aW9uUmVxdWVzdBodLm9wZW5oZGMuc3RhY2sudjEuQXBwbGljYXRpb24SaQoQTGlzdEludGVncmF0aW9ucxIpLm9wZW5oZGMuc3RhY2sudjEuTGlzdEludGVncmF0aW9uc1JlcXVlc3QaKi5vcGVuaGRjLnN0YWNrLnYxLkxpc3RJbnRlZ3JhdGlvbnNSZXNwb25zZRJeChFDcmVhdGVJbnRlZ3JhdGlvbhIqLm9wZW5oZGMuc3RhY2sudjEuQ3JlYXRlSW50ZWdyYXRpb25SZXF1ZXN0Gh0ub3BlbmhkYy5zdGFjay52MS5JbnRlZ3JhdGlvbhJXChFEZWxldGVJbnRlZ3JhdGlvbhIqLm9wZW5oZGMuc3RhY2sudjEuRGVsZXRlSW50ZWdyYXRpb25SZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EloKC0xpc3RBY3Rpb25zEiQub3BlbmhkYy5zdGFjay52MS5MaXN0QWN0aW9uc1JlcXVlc3QaJS5vcGVuaGRjLnN0YWNrLnYxLkxpc3RBY3Rpb25zUmVzcG9uc2USSQoJUnVuQWN0aW9uEiIub3BlbmhkYy5zdGFjay52MS5SdW5BY3Rpb25SZXF1ZXN0Ghgub3BlbmhkYy5zdGFjay52MS5BY3Rpb25CLFoqZ2l0aHViLmNvbS9vcGVuaGRjL29wZW5oZGMvYXBpL3N0YWNrL3YxO3YxYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message openhdc.stack.v1.PackageRepository
  */
 export type PackageRepository = Message<"openhdc.stack.v1.PackageRepository"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string name = 2;
@@ -100,14 +100,14 @@ export const Network_SettingSchema: GenMessage<Network_Setting> = /*@__PURE__*/
  */
 export type VLAN = Message<"openhdc.stack.v1.VLAN"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
-   * @generated from field: int32 vid = 2;
+   * @generated from field: int64 vid = 2;
    */
-  vid: number;
+  vid: bigint;
 
   /**
    * @generated from field: string name = 3;
@@ -115,9 +115,9 @@ export type VLAN = Message<"openhdc.stack.v1.VLAN"> & {
   name: string;
 
   /**
-   * @generated from field: int32 mtu = 4;
+   * @generated from field: int64 mtu = 4;
    */
-  mtu: number;
+  mtu: bigint;
 
   /**
    * @generated from field: string description = 5;
@@ -142,9 +142,9 @@ export const VLANSchema: GenMessage<VLAN> = /*@__PURE__*/
  */
 export type Fabric = Message<"openhdc.stack.v1.Fabric"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string name = 2;
@@ -164,9 +164,9 @@ export const FabricSchema: GenMessage<Fabric> = /*@__PURE__*/
  */
 export type Subnet = Message<"openhdc.stack.v1.Subnet"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string name = 2;
@@ -291,14 +291,14 @@ export type Machine = Message<"openhdc.stack.v1.Machine"> & {
   architecture: string;
 
   /**
-   * @generated from field: int32 cpu_speed = 405;
+   * @generated from field: int64 cpu_speed = 405;
    */
-  cpuSpeed: number;
+  cpuSpeed: bigint;
 
   /**
-   * @generated from field: int32 cpu_count = 406;
+   * @generated from field: int64 cpu_count = 406;
    */
-  cpuCount: number;
+  cpuCount: bigint;
 
   /**
    * @generated from field: int64 memory = 407;
@@ -358,14 +358,14 @@ export const MachineSchema: GenMessage<Machine> = /*@__PURE__*/
  */
 export type Machine_NUMANode = Message<"openhdc.stack.v1.Machine.NUMANode"> & {
   /**
-   * @generated from field: int32 index = 1;
+   * @generated from field: int64 index = 1;
    */
-  index: number;
+  index: bigint;
 
   /**
-   * @generated from field: int32 cores = 2;
+   * @generated from field: int64 cores = 2;
    */
-  cores: number;
+  cores: bigint;
 
   /**
    * @generated from field: int64 memory = 3;
@@ -462,14 +462,14 @@ export type Machine_NetworkInterface = Message<"openhdc.stack.v1.Machine.Network
   linkConnected: boolean;
 
   /**
-   * @generated from field: int32 link_speed = 22;
+   * @generated from field: int64 link_speed = 22;
    */
-  linkSpeed: number;
+  linkSpeed: bigint;
 
   /**
-   * @generated from field: int32 interface_speed = 23;
+   * @generated from field: int64 interface_speed = 23;
    */
-  interfaceSpeed: number;
+  interfaceSpeed: bigint;
 
   /**
    * @generated from field: string type = 31;
@@ -482,9 +482,9 @@ export type Machine_NetworkInterface = Message<"openhdc.stack.v1.Machine.Network
   fabricName: string;
 
   /**
-   * @generated from field: int32 fabric_id = 42;
+   * @generated from field: int64 fabric_id = 42;
    */
-  fabricId: number;
+  fabricId: bigint;
 
   /**
    * @generated from field: string vlan_name = 43;
@@ -492,9 +492,9 @@ export type Machine_NetworkInterface = Message<"openhdc.stack.v1.Machine.Network
   vlanName: string;
 
   /**
-   * @generated from field: int32 vlan_id = 44;
+   * @generated from field: int64 vlan_id = 44;
    */
-  vlanId: number;
+  vlanId: bigint;
 
   /**
    * @generated from field: string subnet_name = 51;
@@ -502,9 +502,9 @@ export type Machine_NetworkInterface = Message<"openhdc.stack.v1.Machine.Network
   subnetName: string;
 
   /**
-   * @generated from field: int32 subnet_id = 52;
+   * @generated from field: int64 subnet_id = 52;
    */
-  subnetId: number;
+  subnetId: bigint;
 
   /**
    * @generated from field: string ip_address = 61;
@@ -529,9 +529,9 @@ export const Machine_NetworkInterfaceSchema: GenMessage<Machine_NetworkInterface
  */
 export type IPRange = Message<"openhdc.stack.v1.IPRange"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string start_ip = 2;
@@ -647,6 +647,30 @@ export const ApplicationSchema: GenMessage<Application> = /*@__PURE__*/
  * @generated from message openhdc.stack.v1.Integration
  */
 export type Integration = Message<"openhdc.stack.v1.Integration"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string provider = 2;
+   */
+  provider: string;
+
+  /**
+   * @generated from field: string requirer = 3;
+   */
+  requirer: string;
+
+  /**
+   * @generated from field: string interface = 4;
+   */
+  interface: string;
+
+  /**
+   * @generated from field: string role = 5;
+   */
+  role: string;
 };
 
 /**
@@ -721,9 +745,9 @@ export const UpdateNTPServersRequestSchema: GenMessage<UpdateNTPServersRequest> 
  */
 export type UpdatePackageRepositoryURLRequest = Message<"openhdc.stack.v1.UpdatePackageRepositoryURLRequest"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string url = 2;
@@ -850,9 +874,9 @@ export const CreateNetworkRequestSchema: GenMessage<CreateNetworkRequest> = /*@_
  */
 export type DeleteNetworkRequest = Message<"openhdc.stack.v1.DeleteNetworkRequest"> & {
   /**
-   * @generated from field: int32 fabric_id = 1;
+   * @generated from field: int64 fabric_id = 1;
    */
-  fabricId: number;
+  fabricId: bigint;
 };
 
 /**
@@ -867,9 +891,9 @@ export const DeleteNetworkRequestSchema: GenMessage<DeleteNetworkRequest> = /*@_
  */
 export type UpdateFabricRequest = Message<"openhdc.stack.v1.UpdateFabricRequest"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string name = 2;
@@ -889,14 +913,14 @@ export const UpdateFabricRequestSchema: GenMessage<UpdateFabricRequest> = /*@__P
  */
 export type UpdateVLANRequest = Message<"openhdc.stack.v1.UpdateVLANRequest"> & {
   /**
-   * @generated from field: int32 fabric_id = 1;
+   * @generated from field: int64 fabric_id = 1;
    */
-  fabricId: number;
+  fabricId: bigint;
 
   /**
-   * @generated from field: int32 vid = 2;
+   * @generated from field: int64 vid = 2;
    */
-  vid: number;
+  vid: bigint;
 
   /**
    * @generated from field: string name = 3;
@@ -904,9 +928,9 @@ export type UpdateVLANRequest = Message<"openhdc.stack.v1.UpdateVLANRequest"> & 
   name: string;
 
   /**
-   * @generated from field: int32 mtu = 4;
+   * @generated from field: int64 mtu = 4;
    */
-  mtu: number;
+  mtu: bigint;
 
   /**
    * @generated from field: string description = 5;
@@ -931,9 +955,9 @@ export const UpdateVLANRequestSchema: GenMessage<UpdateVLANRequest> = /*@__PURE_
  */
 export type UpdateSubnetRequest = Message<"openhdc.stack.v1.UpdateSubnetRequest"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string name = 2;
@@ -978,9 +1002,9 @@ export const UpdateSubnetRequestSchema: GenMessage<UpdateSubnetRequest> = /*@__P
  */
 export type UpdateIPRangeRequest = Message<"openhdc.stack.v1.UpdateIPRangeRequest"> & {
   /**
-   * @generated from field: int32 id = 1;
+   * @generated from field: int64 id = 1;
    */
-  id: number;
+  id: bigint;
 
   /**
    * @generated from field: string start_ip = 2;
@@ -1392,6 +1416,10 @@ export const ExposeApplicationRequestSchema: GenMessage<ExposeApplicationRequest
  * @generated from message openhdc.stack.v1.ListIntegrationsRequest
  */
 export type ListIntegrationsRequest = Message<"openhdc.stack.v1.ListIntegrationsRequest"> & {
+  /**
+   * @generated from field: string model_uuid = 1;
+   */
+  modelUuid: string;
 };
 
 /**
@@ -1422,6 +1450,15 @@ export const ListIntegrationsResponseSchema: GenMessage<ListIntegrationsResponse
  * @generated from message openhdc.stack.v1.CreateIntegrationRequest
  */
 export type CreateIntegrationRequest = Message<"openhdc.stack.v1.CreateIntegrationRequest"> & {
+  /**
+   * @generated from field: string model_uuid = 1;
+   */
+  modelUuid: string;
+
+  /**
+   * @generated from field: repeated string endpoints = 2;
+   */
+  endpoints: string[];
 };
 
 /**
@@ -1435,6 +1472,15 @@ export const CreateIntegrationRequestSchema: GenMessage<CreateIntegrationRequest
  * @generated from message openhdc.stack.v1.DeleteIntegrationRequest
  */
 export type DeleteIntegrationRequest = Message<"openhdc.stack.v1.DeleteIntegrationRequest"> & {
+  /**
+   * @generated from field: string model_uuid = 1;
+   */
+  modelUuid: string;
+
+  /**
+   * @generated from field: int32 id = 2;
+   */
+  id: number;
 };
 
 /**
