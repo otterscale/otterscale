@@ -294,13 +294,14 @@ func toSubnet(s *model.NetworkSubnet) *v1.Subnet {
 		ipAddress.SetHostname(s.IPAddresses[i].NodeSummary.Hostname)
 		ipAddresses = append(ipAddresses, ipAddress)
 	}
-	reservedIPRanges := []*v1.Subnet_ReservedIPRange{}
+	reservedIPRanges := []*v1.IPRange{}
 	for i := range s.ReservedIPRanges {
-		reservedIPRange := &v1.Subnet_ReservedIPRange{}
-		reservedIPRange.SetPurposes(s.ReservedIPRanges[i].Purpose)
-		reservedIPRange.SetStart(s.ReservedIPRanges[i].IPRange.Start.String())
-		reservedIPRange.SetEnd(s.ReservedIPRanges[i].IPRange.End.String())
-		reservedIPRange.SetCount(int64(s.ReservedIPRanges[i].IPRange.NumAddresses))
+		reservedIPRange := &v1.IPRange{}
+		reservedIPRange.SetId(int64(s.ReservedIPRanges[i].ID))
+		reservedIPRange.SetStartIp(s.ReservedIPRanges[i].StartIP.String())
+		reservedIPRange.SetEndIp(s.ReservedIPRanges[i].EndIP.String())
+		reservedIPRange.SetType(s.ReservedIPRanges[i].Type)
+		reservedIPRange.SetComment(s.ReservedIPRanges[i].Comment)
 		reservedIPRanges = append(reservedIPRanges, reservedIPRange)
 	}
 	statistics := &v1.Subnet_Statistics{}

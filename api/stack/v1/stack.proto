@@ -99,12 +99,6 @@ message Subnet {
     string node_type = 12;
     string hostname = 13;
   }
-  message ReservedIPRange {
-    repeated string purposes = 1;
-    string start = 2;
-    string end = 3;
-    int64 count = 4;
-  }
   message Statistics {
     int64 available = 1;
     int64 total = 2;
@@ -122,7 +116,7 @@ message Subnet {
   bool allow_proxy_access = 9;
   bool allow_dns_resolution = 10;
   repeated IPAddress ip_addresses = 11;
-  repeated ReservedIPRange reserved_ip_ranges = 12;
+  repeated IPRange reserved_ip_ranges = 12;
   Statistics statistics = 13;
 }
 
