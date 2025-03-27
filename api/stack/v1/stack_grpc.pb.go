@@ -40,13 +40,13 @@ const (
 	StackService_CommissionMachine_FullMethodName          = "/openhdc.stack.v1.StackService/CommissionMachine"
 	StackService_ListModels_FullMethodName                 = "/openhdc.stack.v1.StackService/ListModels"
 	StackService_CreateModel_FullMethodName                = "/openhdc.stack.v1.StackService/CreateModel"
-	StackService_GetModelConfigs_FullMethodName            = "/openhdc.stack.v1.StackService/GetModelConfigs"
+	StackService_GetModelConfig_FullMethodName             = "/openhdc.stack.v1.StackService/GetModelConfig"
 	StackService_ListApplications_FullMethodName           = "/openhdc.stack.v1.StackService/ListApplications"
 	StackService_CreateApplication_FullMethodName          = "/openhdc.stack.v1.StackService/CreateApplication"
-	StackService_DeleteApplication_FullMethodName          = "/openhdc.stack.v1.StackService/DeleteApplication"
 	StackService_UpdateApplication_FullMethodName          = "/openhdc.stack.v1.StackService/UpdateApplication"
-	StackService_AddApplicationUnit_FullMethodName         = "/openhdc.stack.v1.StackService/AddApplicationUnit"
+	StackService_DeleteApplication_FullMethodName          = "/openhdc.stack.v1.StackService/DeleteApplication"
 	StackService_ExposeApplication_FullMethodName          = "/openhdc.stack.v1.StackService/ExposeApplication"
+	StackService_AddApplicationsUnits_FullMethodName       = "/openhdc.stack.v1.StackService/AddApplicationsUnits"
 	StackService_ListIntegrations_FullMethodName           = "/openhdc.stack.v1.StackService/ListIntegrations"
 	StackService_CreateIntegration_FullMethodName          = "/openhdc.stack.v1.StackService/CreateIntegration"
 	StackService_DeleteIntegration_FullMethodName          = "/openhdc.stack.v1.StackService/DeleteIntegration"
@@ -84,14 +84,14 @@ type StackServiceClient interface {
 	// Model Operations
 	ListModels(ctx context.Context, in *ListModelsRequest, opts ...grpc.CallOption) (*ListModelsResponse, error)
 	CreateModel(ctx context.Context, in *CreateModelRequest, opts ...grpc.CallOption) (*Model, error)
-	GetModelConfigs(ctx context.Context, in *GetModelConfigsRequest, opts ...grpc.CallOption) (*GetModelConfigsResponse, error)
+	GetModelConfig(ctx context.Context, in *GetModelConfigRequest, opts ...grpc.CallOption) (*GetModelConfigResponse, error)
 	// Application Operations
 	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
 	CreateApplication(ctx context.Context, in *CreateApplicationRequest, opts ...grpc.CallOption) (*Application, error)
-	DeleteApplication(ctx context.Context, in *DeleteApplicationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateApplication(ctx context.Context, in *UpdateApplicationRequest, opts ...grpc.CallOption) (*Application, error)
-	AddApplicationUnit(ctx context.Context, in *AddApplicationUnitRequest, opts ...grpc.CallOption) (*Application, error)
-	ExposeApplication(ctx context.Context, in *ExposeApplicationRequest, opts ...grpc.CallOption) (*Application, error)
+	DeleteApplication(ctx context.Context, in *DeleteApplicationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ExposeApplication(ctx context.Context, in *ExposeApplicationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddApplicationsUnits(ctx context.Context, in *AddApplicationUnitsRequest, opts ...grpc.CallOption) (*AddApplicationUnitsResponse, error)
 	// Integration Operations
 	ListIntegrations(ctx context.Context, in *ListIntegrationsRequest, opts ...grpc.CallOption) (*ListIntegrationsResponse, error)
 	CreateIntegration(ctx context.Context, in *CreateIntegrationRequest, opts ...grpc.CallOption) (*Integration, error)
@@ -309,10 +309,10 @@ func (c *stackServiceClient) CreateModel(ctx context.Context, in *CreateModelReq
 	return out, nil
 }
 
-func (c *stackServiceClient) GetModelConfigs(ctx context.Context, in *GetModelConfigsRequest, opts ...grpc.CallOption) (*GetModelConfigsResponse, error) {
+func (c *stackServiceClient) GetModelConfig(ctx context.Context, in *GetModelConfigRequest, opts ...grpc.CallOption) (*GetModelConfigResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetModelConfigsResponse)
-	err := c.cc.Invoke(ctx, StackService_GetModelConfigs_FullMethodName, in, out, cOpts...)
+	out := new(GetModelConfigResponse)
+	err := c.cc.Invoke(ctx, StackService_GetModelConfig_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -339,16 +339,6 @@ func (c *stackServiceClient) CreateApplication(ctx context.Context, in *CreateAp
 	return out, nil
 }
 
-func (c *stackServiceClient) DeleteApplication(ctx context.Context, in *DeleteApplicationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, StackService_DeleteApplication_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *stackServiceClient) UpdateApplication(ctx context.Context, in *UpdateApplicationRequest, opts ...grpc.CallOption) (*Application, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Application)
@@ -359,20 +349,30 @@ func (c *stackServiceClient) UpdateApplication(ctx context.Context, in *UpdateAp
 	return out, nil
 }
 
-func (c *stackServiceClient) AddApplicationUnit(ctx context.Context, in *AddApplicationUnitRequest, opts ...grpc.CallOption) (*Application, error) {
+func (c *stackServiceClient) DeleteApplication(ctx context.Context, in *DeleteApplicationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Application)
-	err := c.cc.Invoke(ctx, StackService_AddApplicationUnit_FullMethodName, in, out, cOpts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, StackService_DeleteApplication_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stackServiceClient) ExposeApplication(ctx context.Context, in *ExposeApplicationRequest, opts ...grpc.CallOption) (*Application, error) {
+func (c *stackServiceClient) ExposeApplication(ctx context.Context, in *ExposeApplicationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Application)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, StackService_ExposeApplication_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stackServiceClient) AddApplicationsUnits(ctx context.Context, in *AddApplicationUnitsRequest, opts ...grpc.CallOption) (*AddApplicationUnitsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddApplicationUnitsResponse)
+	err := c.cc.Invoke(ctx, StackService_AddApplicationsUnits_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -459,14 +459,14 @@ type StackServiceServer interface {
 	// Model Operations
 	ListModels(context.Context, *ListModelsRequest) (*ListModelsResponse, error)
 	CreateModel(context.Context, *CreateModelRequest) (*Model, error)
-	GetModelConfigs(context.Context, *GetModelConfigsRequest) (*GetModelConfigsResponse, error)
+	GetModelConfig(context.Context, *GetModelConfigRequest) (*GetModelConfigResponse, error)
 	// Application Operations
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
 	CreateApplication(context.Context, *CreateApplicationRequest) (*Application, error)
-	DeleteApplication(context.Context, *DeleteApplicationRequest) (*emptypb.Empty, error)
 	UpdateApplication(context.Context, *UpdateApplicationRequest) (*Application, error)
-	AddApplicationUnit(context.Context, *AddApplicationUnitRequest) (*Application, error)
-	ExposeApplication(context.Context, *ExposeApplicationRequest) (*Application, error)
+	DeleteApplication(context.Context, *DeleteApplicationRequest) (*emptypb.Empty, error)
+	ExposeApplication(context.Context, *ExposeApplicationRequest) (*emptypb.Empty, error)
+	AddApplicationsUnits(context.Context, *AddApplicationUnitsRequest) (*AddApplicationUnitsResponse, error)
 	// Integration Operations
 	ListIntegrations(context.Context, *ListIntegrationsRequest) (*ListIntegrationsResponse, error)
 	CreateIntegration(context.Context, *CreateIntegrationRequest) (*Integration, error)
@@ -544,8 +544,8 @@ func (UnimplementedStackServiceServer) ListModels(context.Context, *ListModelsRe
 func (UnimplementedStackServiceServer) CreateModel(context.Context, *CreateModelRequest) (*Model, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateModel not implemented")
 }
-func (UnimplementedStackServiceServer) GetModelConfigs(context.Context, *GetModelConfigsRequest) (*GetModelConfigsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetModelConfigs not implemented")
+func (UnimplementedStackServiceServer) GetModelConfig(context.Context, *GetModelConfigRequest) (*GetModelConfigResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetModelConfig not implemented")
 }
 func (UnimplementedStackServiceServer) ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListApplications not implemented")
@@ -553,17 +553,17 @@ func (UnimplementedStackServiceServer) ListApplications(context.Context, *ListAp
 func (UnimplementedStackServiceServer) CreateApplication(context.Context, *CreateApplicationRequest) (*Application, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateApplication not implemented")
 }
-func (UnimplementedStackServiceServer) DeleteApplication(context.Context, *DeleteApplicationRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteApplication not implemented")
-}
 func (UnimplementedStackServiceServer) UpdateApplication(context.Context, *UpdateApplicationRequest) (*Application, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateApplication not implemented")
 }
-func (UnimplementedStackServiceServer) AddApplicationUnit(context.Context, *AddApplicationUnitRequest) (*Application, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddApplicationUnit not implemented")
+func (UnimplementedStackServiceServer) DeleteApplication(context.Context, *DeleteApplicationRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteApplication not implemented")
 }
-func (UnimplementedStackServiceServer) ExposeApplication(context.Context, *ExposeApplicationRequest) (*Application, error) {
+func (UnimplementedStackServiceServer) ExposeApplication(context.Context, *ExposeApplicationRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExposeApplication not implemented")
+}
+func (UnimplementedStackServiceServer) AddApplicationsUnits(context.Context, *AddApplicationUnitsRequest) (*AddApplicationUnitsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddApplicationsUnits not implemented")
 }
 func (UnimplementedStackServiceServer) ListIntegrations(context.Context, *ListIntegrationsRequest) (*ListIntegrationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListIntegrations not implemented")
@@ -961,20 +961,20 @@ func _StackService_CreateModel_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StackService_GetModelConfigs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetModelConfigsRequest)
+func _StackService_GetModelConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetModelConfigRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StackServiceServer).GetModelConfigs(ctx, in)
+		return srv.(StackServiceServer).GetModelConfig(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StackService_GetModelConfigs_FullMethodName,
+		FullMethod: StackService_GetModelConfig_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StackServiceServer).GetModelConfigs(ctx, req.(*GetModelConfigsRequest))
+		return srv.(StackServiceServer).GetModelConfig(ctx, req.(*GetModelConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1015,24 +1015,6 @@ func _StackService_CreateApplication_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StackService_DeleteApplication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteApplicationRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StackServiceServer).DeleteApplication(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StackService_DeleteApplication_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StackServiceServer).DeleteApplication(ctx, req.(*DeleteApplicationRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _StackService_UpdateApplication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateApplicationRequest)
 	if err := dec(in); err != nil {
@@ -1051,20 +1033,20 @@ func _StackService_UpdateApplication_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StackService_AddApplicationUnit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddApplicationUnitRequest)
+func _StackService_DeleteApplication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteApplicationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StackServiceServer).AddApplicationUnit(ctx, in)
+		return srv.(StackServiceServer).DeleteApplication(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StackService_AddApplicationUnit_FullMethodName,
+		FullMethod: StackService_DeleteApplication_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StackServiceServer).AddApplicationUnit(ctx, req.(*AddApplicationUnitRequest))
+		return srv.(StackServiceServer).DeleteApplication(ctx, req.(*DeleteApplicationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1083,6 +1065,24 @@ func _StackService_ExposeApplication_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StackServiceServer).ExposeApplication(ctx, req.(*ExposeApplicationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StackService_AddApplicationsUnits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddApplicationUnitsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StackServiceServer).AddApplicationsUnits(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StackService_AddApplicationsUnits_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StackServiceServer).AddApplicationsUnits(ctx, req.(*AddApplicationUnitsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1265,8 +1265,8 @@ var StackService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _StackService_CreateModel_Handler,
 		},
 		{
-			MethodName: "GetModelConfigs",
-			Handler:    _StackService_GetModelConfigs_Handler,
+			MethodName: "GetModelConfig",
+			Handler:    _StackService_GetModelConfig_Handler,
 		},
 		{
 			MethodName: "ListApplications",
@@ -1277,20 +1277,20 @@ var StackService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _StackService_CreateApplication_Handler,
 		},
 		{
-			MethodName: "DeleteApplication",
-			Handler:    _StackService_DeleteApplication_Handler,
-		},
-		{
 			MethodName: "UpdateApplication",
 			Handler:    _StackService_UpdateApplication_Handler,
 		},
 		{
-			MethodName: "AddApplicationUnit",
-			Handler:    _StackService_AddApplicationUnit_Handler,
+			MethodName: "DeleteApplication",
+			Handler:    _StackService_DeleteApplication_Handler,
 		},
 		{
 			MethodName: "ExposeApplication",
 			Handler:    _StackService_ExposeApplication_Handler,
+		},
+		{
+			MethodName: "AddApplicationsUnits",
+			Handler:    _StackService_AddApplicationsUnits_Handler,
 		},
 		{
 			MethodName: "ListIntegrations",
