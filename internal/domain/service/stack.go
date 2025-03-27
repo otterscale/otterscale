@@ -10,7 +10,11 @@ import (
 	"github.com/canonical/gomaasclient/entity/subnet"
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/action"
+	"github.com/juju/juju/core/constraints"
+	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
@@ -78,7 +82,7 @@ type MAASMachine interface {
 }
 
 type JujuClient interface {
-	Status(ctx context.Context, uuid string) (*params.FullStatus, error)
+	Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error)
 }
 
 type JujuMachine interface {
@@ -97,9 +101,15 @@ type JujuModelConfig interface {
 }
 
 type JujuApplication interface {
+	Create(ctx context.Context, uuid, charmName, appName, channel string, revision, number int, config map[string]string, constraint constraints.Value, placements []*instance.Placement, trust bool) error
+	Update(ctx context.Context, uuid, name string, config map[string]string) error
+	Delete(ctx context.Context, uuid, name string, destroyStorage, force bool) error
+	Expose(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error
+	AddUnits(ctx context.Context, uuid, name string, number int, placements []*instance.Placement) ([]string, error)
 	ResolveUnitErrors(ctx context.Context, uuid string, units []string) error
 	CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error)
 	DeleteRelation(ctx context.Context, uuid string, id int) error
+	GetConfigs(ctx context.Context, uuid string, name ...string) ([]map[string]interface{}, error)
 }
 
 type JujuAction interface {
@@ -369,7 +379,7 @@ func (s *StackService) CreateModel(ctx context.Context, name string) (*base.Mode
 	return s.model.Create(ctx, name)
 }
 
-func (s *StackService) GetModelConfigs(ctx context.Context, uuid string) (map[string]any, error) {
+func (s *StackService) GetModelConfig(ctx context.Context, uuid string) (map[string]any, error) {
 	return s.modelConfig.List(ctx, uuid)
 }
 
@@ -379,24 +389,108 @@ func (s *StackService) SetModelConfigAPTMirror(ctx context.Context, uuid, value 
 	})
 }
 
-func (s *StackService) ListApplications(ctx context.Context, uuid string) (map[string]params.ApplicationStatus, error) {
-	status, err := s.client.Status(ctx, uuid)
+func (s *StackService) JujuToMAASMachineID(ctx context.Context, uuid, jujuMachineID string) (string, error) {
+	ms, err := s.ListJujuMachines(ctx, uuid)
+	if err != nil {
+		return "", err
+	}
+	for i := range ms {
+		if ms[i].Id == jujuMachineID {
+			return ms[i].InstanceId.String(), nil
+		}
+	}
+	return "", status.Errorf(codes.NotFound, "juju machine '%s' not found", jujuMachineID)
+}
+
+func (s *StackService) MAASToJujuMachineID(ctx context.Context, uuid, maasMachineID string) (string, error) {
+	ms, err := s.ListJujuMachines(ctx, uuid)
+	if err != nil {
+		return "", err
+	}
+	for i := range ms {
+		if ms[i].InstanceId.String() == maasMachineID {
+			return ms[i].Id, nil
+		}
+	}
+	return "", status.Errorf(codes.NotFound, "maas machine '%s' not found", maasMachineID)
+}
+
+func (s *StackService) ListApplications(ctx context.Context, uuid string, filters ...string) (map[string]params.ApplicationStatus, error) {
+	patterns := []string{"application"}
+	if len(filters) == 0 {
+		patterns = append(patterns, "*")
+	}
+	status, err := s.client.Status(ctx, uuid, patterns)
 	if err != nil {
 		return nil, err
 	}
 	return status.Applications, nil
 }
 
-func (s *StackService) ListJujuMachines(ctx context.Context, uuid string) (map[string]params.MachineStatus, error) {
-	status, err := s.client.Status(ctx, uuid)
+func (s *StackService) ListJujuMachines(ctx context.Context, uuid string, filters ...string) (map[string]params.MachineStatus, error) {
+	patterns := []string{"machine"}
+	if len(filters) == 0 {
+		patterns = append(patterns, "*")
+	}
+	status, err := s.client.Status(ctx, uuid, patterns)
 	if err != nil {
 		return nil, err
 	}
 	return status.Machines, nil
 }
 
+func (s *StackService) ListApplicationConfigs(ctx context.Context, uuid string, appStatuses map[string]params.ApplicationStatus) ([]map[string]interface{}, error) {
+	names := []string{}
+	for name := range appStatuses {
+		names = append(names, name)
+	}
+	configs, err := s.application.GetConfigs(ctx, uuid, names...)
+	if err != nil {
+		return nil, err
+	}
+	return configs, nil
+}
+
+func (s *StackService) CreateApplication(ctx context.Context, uuid, charmName, appName, channel string, revision, number int, config map[string]string, constraint constraints.Value, placements []*instance.Placement, trust bool) (map[string]params.ApplicationStatus, error) {
+	if err := s.application.Create(ctx, uuid, charmName, appName, channel, revision, number, config, constraint, placements, trust); err != nil {
+		return nil, err
+	}
+	return s.ListApplications(ctx, uuid, appName)
+}
+
+func (s *StackService) UpdateApplication(ctx context.Context, uuid, name string, config map[string]string) (map[string]params.ApplicationStatus, error) {
+	if err := s.application.Update(ctx, uuid, name, config); err != nil {
+		return nil, err
+	}
+	return s.ListApplications(ctx, uuid, name)
+}
+
+func (s *StackService) DeleteApplication(ctx context.Context, uuid, name string, destroyStorage, force bool) error {
+	return s.application.Delete(ctx, uuid, name, destroyStorage, force)
+}
+
+func (s *StackService) ExposeApplication(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error {
+	return s.application.Expose(ctx, uuid, name, endpoints)
+}
+
+func (s *StackService) AddApplicationsUnits(ctx context.Context, uuid, name string, number int, placements []*instance.Placement) ([]params.MachineStatus, error) {
+	ids, err := s.application.AddUnits(ctx, uuid, name, number, placements)
+	if err != nil {
+		return nil, err
+	}
+	ms, err := s.ListJujuMachines(ctx, uuid, ids...)
+	if err != nil {
+		return nil, err
+	}
+	ret := []params.MachineStatus{}
+	for i := range ms {
+		ret = append(ret, ms[i])
+	}
+	return ret, nil
+}
+
 func (s *StackService) ListIntegrations(ctx context.Context, uuid string) ([]*params.RelationStatus, error) {
-	status, err := s.client.Status(ctx, uuid)
+	status, err := s.client.Status(ctx, uuid, nil)
 	if err != nil {
 		return nil, err
 	}

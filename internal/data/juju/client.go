@@ -17,10 +17,10 @@ func NewClient() service.JujuClient {
 
 var _ service.JujuClient = (*client)(nil)
 
-func (r *client) Status(ctx context.Context, uuid string) (*params.FullStatus, error) {
+func (r *client) Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error) {
 	conn, err := newConnection(uuid)
 	if err != nil {
 		return nil, err
 	}
-	return api.NewClient(conn, nil).Status(ctx, nil)
+	return api.NewClient(conn, nil).Status(ctx, &api.StatusArgs{Patterns: patterns})
 }

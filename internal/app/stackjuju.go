@@ -20,11 +20,27 @@ import (
 	v1 "github.com/openhdc/openhdc/api/stack/v1"
 )
 
-// AddMachines adds machines to the model based on the provided parameters
 func (a *StackApp) AddMachines(ctx context.Context, req *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error) {
-	machineParams := buildMachineParams(req.Msg.GetParameters())
+	uuid := req.Msg.GetModelUuid()
 
-	machines, err := a.svc.AddMachine(ctx, req.Msg.GetModelUuid(), machineParams)
+	factors := req.Msg.GetFactors()
+	machineParams := make([]params.AddMachineParams, 0, len(factors))
+	for i, f := range factors {
+		machineParam := params.AddMachineParams{}
+		if c := f.GetConstraint(); c != nil {
+			machineParam.Constraints = buildConstraints(c)
+		}
+		if p := f.GetPlacement(); p != nil {
+			placement, err := a.buildPlacement(ctx, uuid, p)
+			if err != nil {
+				return nil, err
+			}
+			machineParam.Placement = placement
+		}
+		machineParams[i] = machineParam
+	}
+
+	machines, err := a.svc.AddMachine(ctx, uuid, machineParams)
 	if err != nil {
 		return nil, err
 	}
@@ -32,42 +48,6 @@ func (a *StackApp) AddMachines(ctx context.Context, req *connect.Request[v1.AddM
 	res := &v1.AddMachinesResponse{}
 	res.SetMachines(machines)
 	return connect.NewResponse(res), nil
-}
-
-// buildMachineParams converts API machine parameters to Juju machine parameters
-func buildMachineParams(parameters []*v1.AddMachinesRequest_Parameter) []params.AddMachineParams {
-	machineParams := make([]params.AddMachineParams, 0, len(parameters))
-
-	for _, param := range parameters {
-		machineParam := params.AddMachineParams{
-			Placement: &instance.Placement{
-				Scope: param.GetPlacement(),
-			},
-		}
-
-		if constraint := param.GetConstraint(); constraint != nil {
-			machineParam.Constraints = buildConstraints(constraint)
-		}
-
-		machineParams = append(machineParams, machineParam)
-	}
-
-	return machineParams
-}
-
-// buildConstraints converts API constraints to Juju constraints
-func buildConstraints(c *v1.AddMachinesRequest_Constraint) constraints.Value {
-	arch := c.GetArchitecture()
-	cpuCores := c.GetCpuCores()
-	mem := c.GetMemoryMb()
-	tags := c.GetTags()
-
-	return constraints.Value{
-		Arch:     &arch,
-		CpuCores: &cpuCores,
-		Mem:      &mem,
-		Tags:     &tags,
-	}
 }
 
 func (a *StackApp) ListModels(ctx context.Context, req *connect.Request[v1.ListModelsRequest]) (*connect.Response[v1.ListModelsResponse], error) {
@@ -88,8 +68,8 @@ func (a *StackApp) CreateModel(ctx context.Context, req *connect.Request[v1.Crea
 	return connect.NewResponse(modelInfoToModel(mi)), nil
 }
 
-func (a *StackApp) GetModelConfigs(ctx context.Context, req *connect.Request[v1.GetModelConfigsRequest]) (*connect.Response[v1.GetModelConfigsResponse], error) {
-	modelConfigs, err := a.svc.GetModelConfigs(ctx, req.Msg.GetUuid())
+func (a *StackApp) GetModelConfig(ctx context.Context, req *connect.Request[v1.GetModelConfigRequest]) (*connect.Response[v1.GetModelConfigResponse], error) {
+	modelConfigs, err := a.svc.GetModelConfig(ctx, req.Msg.GetUuid())
 	if err != nil {
 		return nil, err
 	}
@@ -97,8 +77,8 @@ func (a *StackApp) GetModelConfigs(ctx context.Context, req *connect.Request[v1.
 	for k, v := range modelConfigs {
 		mc[k] = fmt.Sprintf("%v", v)
 	}
-	res := &v1.GetModelConfigsResponse{}
-	res.SetModelConfigs(mc)
+	res := &v1.GetModelConfigResponse{}
+	res.SetConfig(mc)
 	return connect.NewResponse(res), nil
 }
 
@@ -117,23 +97,68 @@ func (a *StackApp) ListApplications(ctx context.Context, req *connect.Request[v1
 }
 
 func (a *StackApp) CreateApplication(ctx context.Context, req *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error) {
-	return nil, nil
-}
-
-func (a *StackApp) DeleteApplication(ctx context.Context, req *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, nil
+	placements, err := a.buildPlacements(ctx, req.Msg.GetModelUuid(), req.Msg.GetPlacements())
+	if err != nil {
+		return nil, err
+	}
+	as, err := a.svc.CreateApplication(ctx, req.Msg.GetModelUuid(), req.Msg.GetCharmName(), req.Msg.GetName(), req.Msg.GetChannel(), int(req.Msg.GetRevision()), int(req.Msg.GetNumber()), req.Msg.GetConfig(), buildConstraints(req.Msg.GetConstraint()), placements, req.Msg.GetTrust())
+	if err != nil {
+		return nil, err
+	}
+	ms, err := a.svc.ListJujuMachines(ctx, req.Msg.GetModelUuid())
+	if err != nil {
+		return nil, err
+	}
+	apps := toApplications(as, ms)
+	if len(apps) == 1 {
+		return connect.NewResponse(apps[0]), nil
+	}
+	return nil, status.Error(codes.Internal, "something went wrong")
 }
 
 func (a *StackApp) UpdateApplication(ctx context.Context, req *connect.Request[v1.UpdateApplicationRequest]) (*connect.Response[v1.Application], error) {
-	return nil, nil
+	as, err := a.svc.UpdateApplication(ctx, req.Msg.GetModelUuid(), req.Msg.GetName(), req.Msg.GetConfig())
+	if err != nil {
+		return nil, err
+	}
+	ms, err := a.svc.ListJujuMachines(ctx, req.Msg.GetModelUuid())
+	if err != nil {
+		return nil, err
+	}
+	apps := toApplications(as, ms)
+	if len(apps) == 1 {
+		return connect.NewResponse(apps[0]), nil
+	}
+	return nil, status.Error(codes.Internal, "something went wrong")
 }
 
-func (a *StackApp) AddApplicationUnit(ctx context.Context, req *connect.Request[v1.AddApplicationUnitRequest]) (*connect.Response[v1.Application], error) {
-	return nil, nil
+func (a *StackApp) DeleteApplication(ctx context.Context, req *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.DeleteApplication(ctx, req.Msg.GetModelUuid(), req.Msg.GetName(), req.Msg.GetDestroyStorage(), req.Msg.GetForce()); err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 
-func (a *StackApp) ExposeApplication(ctx context.Context, req *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[v1.Application], error) {
-	return nil, nil
+func (a *StackApp) ExposeApplication(ctx context.Context, req *connect.Request[v1.ExposeApplicationRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.ExposeApplication(ctx, req.Msg.GetModelUuid(), req.Msg.GetName(), nil); err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&emptypb.Empty{}), nil
+}
+
+func (a *StackApp) AddApplicationUnits(ctx context.Context, req *connect.Request[v1.AddApplicationUnitsRequest]) (*connect.Response[v1.AddApplicationUnitsResponse], error) {
+	placements, err := a.buildPlacements(ctx, req.Msg.GetModelUuid(), req.Msg.GetPlacements())
+	if err != nil {
+		return nil, err
+	}
+	mss, err := a.svc.AddApplicationsUnits(ctx, req.Msg.GetModelUuid(), req.Msg.GetName(), int(req.Msg.GetNumber()), placements)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &v1.AddApplicationUnitsResponse{}
+	res.SetMachines(toAddApplicationUnitsMachines(mss))
+	return connect.NewResponse(res), nil
 }
 
 func (a *StackApp) ListIntegrations(ctx context.Context, req *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error) {
@@ -175,6 +200,43 @@ func (a *StackApp) RunAction(ctx context.Context, req *connect.Request[v1.RunAct
 	return nil, status.Error(codes.Unimplemented, "unimplemented")
 }
 
+func (a *StackApp) buildPlacements(ctx context.Context, uuid string, ps []*v1.Placement) ([]*instance.Placement, error) {
+	ret := make([]*instance.Placement, len(ps))
+	for i := range ps {
+		p, err := a.buildPlacement(ctx, uuid, ps[i])
+		if err != nil {
+			return nil, err
+		}
+		ret[i] = p
+	}
+	return ret, nil
+}
+
+func (a *StackApp) buildPlacement(ctx context.Context, uuid string, p *v1.Placement) (*instance.Placement, error) {
+	directive, err := a.svc.MAASToJujuMachineID(ctx, uuid, p.GetMachineSystemId())
+	if err != nil {
+		return nil, err
+	}
+	return &instance.Placement{
+		Scope:     p.GetScope(),
+		Directive: directive,
+	}, nil
+}
+
+func buildConstraints(c *v1.Constraint) constraints.Value {
+	arch := c.GetArchitecture()
+	cpuCores := c.GetCpuCores()
+	mem := c.GetMemoryMb()
+	tags := c.GetTags()
+
+	return constraints.Value{
+		Arch:     &arch,
+		CpuCores: &cpuCores,
+		Mem:      &mem,
+		Tags:     &tags,
+	}
+}
+
 func toModels(umss []*base.UserModelSummary) []*v1.Model {
 	ret := make([]*v1.Model, len(umss))
 	for i := range umss {
@@ -209,6 +271,21 @@ func modelInfoToModel(m *base.ModelInfo) *v1.Model {
 	ret := &v1.Model{}
 	ret.SetUuid(m.UUID)
 	ret.SetName(m.Name)
+	return ret
+}
+
+func toAddApplicationUnitsMachines(mss []params.MachineStatus) []*v1.AddApplicationUnitsResponse_Machine {
+	ret := make([]*v1.AddApplicationUnitsResponse_Machine, len(mss))
+	for i := range mss {
+		ret[i] = toAddApplicationUnitsMachine(mss[i])
+	}
+	return ret
+}
+
+func toAddApplicationUnitsMachine(ms params.MachineStatus) *v1.AddApplicationUnitsResponse_Machine {
+	ret := &v1.AddApplicationUnitsResponse_Machine{}
+	ret.SetSystemId(ms.InstanceId.String())
+	ret.SetHostname(ms.Hostname)
 	return ret
 }
 

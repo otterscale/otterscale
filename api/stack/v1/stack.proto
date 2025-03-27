@@ -40,15 +40,15 @@ service StackService {
   // Model Operations
   rpc ListModels(ListModelsRequest) returns (ListModelsResponse);
   rpc CreateModel(CreateModelRequest) returns (Model);
-  rpc GetModelConfigs(GetModelConfigsRequest) returns (GetModelConfigsResponse);
+  rpc GetModelConfig(GetModelConfigRequest) returns (GetModelConfigResponse);
 
   // Application Operations
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
   rpc CreateApplication(CreateApplicationRequest) returns (Application);
-  rpc DeleteApplication(DeleteApplicationRequest) returns (google.protobuf.Empty);
   rpc UpdateApplication(UpdateApplicationRequest) returns (Application);
-  rpc AddApplicationUnit(AddApplicationUnitRequest) returns (Application);
-  rpc ExposeApplication(ExposeApplicationRequest) returns (Application);
+  rpc DeleteApplication(DeleteApplicationRequest) returns (google.protobuf.Empty);
+  rpc ExposeApplication(ExposeApplicationRequest) returns (google.protobuf.Empty);
+  rpc AddApplicationsUnits(AddApplicationUnitsRequest) returns (AddApplicationUnitsResponse);
 
   // Integration Operations
   rpc ListIntegrations(ListIntegrationsRequest) returns (ListIntegrationsResponse);
@@ -199,6 +199,23 @@ message Model {
   int64 unit_count = 13;
 }
 
+message Placement {
+  string scope = 1;              // lxd, kvm
+  string machine_system_id = 2;  // directive
+}
+
+message Constraint {
+  string architecture = 1;
+  uint64 cpu_cores = 2;
+  uint64 memory_mb = 3;
+  repeated string tags = 11;
+}
+
+message Factor {
+  Placement placement = 1;
+  Constraint constraint = 2;
+}
+
 message Application {
   message Status {
     string status = 1;
@@ -223,6 +240,7 @@ message Application {
   string info = 12;
   google.protobuf.Timestamp created_at = 13;
   repeated Unit units = 21;
+  map<string, string> config = 31;  // TODO
 }
 
 message Integration {
@@ -322,18 +340,8 @@ message GetMachineRequest {
 }
 
 message AddMachinesRequest {
-  message Constraint {
-    string architecture = 1;
-    uint64 cpu_cores = 2;
-    uint64 memory_mb = 3;
-    repeated string tags = 11;
-  }
-  message Parameter {
-    string placement = 1;
-    Constraint constraint = 2;
-  }
   string model_uuid = 1;
-  repeated Parameter parameters = 2;
+  repeated Factor factors = 2;
 }
 
 message AddMachinesResponse {
@@ -368,12 +376,12 @@ message CreateModelRequest {
   string name = 1;
 }
 
-message GetModelConfigsRequest {
+message GetModelConfigRequest {
   string uuid = 1;
 }
 
-message GetModelConfigsResponse {
-  map<string, string> model_configs = 1;
+message GetModelConfigResponse {
+  map<string, string> config = 1;
 }
 
 message ListApplicationsRequest {
@@ -384,15 +392,51 @@ message ListApplicationsResponse {
   repeated Application applications = 1;
 }
 
-message CreateApplicationRequest {}
+message CreateApplicationRequest {
+  string model_uuid = 1;
+  string charm_name = 2;
+  string name = 3;
+  string channel = 4;
+  int64 revision = 5;
+  int64 number = 6;
+  map<string, string> config = 11;  // override
+  Constraint constraint = 21;
+  repeated Placement placements = 22;
+  bool trust = 31;
+}
 
-message DeleteApplicationRequest {}
+message UpdateApplicationRequest {
+  string model_uuid = 1;
+  string name = 2;
+  map<string, string> config = 11;
+}
 
-message UpdateApplicationRequest {}
+message DeleteApplicationRequest {
+  string model_uuid = 1;
+  string name = 2;
+  bool destroy_storage = 3;
+  bool force = 4;
+}
 
-message AddApplicationUnitRequest {}
+message ExposeApplicationRequest {
+  string model_uuid = 1;
+  string name = 2;
+}
 
-message ExposeApplicationRequest {}
+message AddApplicationUnitsRequest {
+  string model_uuid = 1;
+  string name = 2;
+  int64 number = 3;
+  repeated Placement placements = 11;
+}
+
+message AddApplicationUnitsResponse {
+  message Machine {
+    string system_id = 1;
+    string hostname = 2;
+  }
+  repeated Machine machines = 1;
+}
 
 message ListIntegrationsRequest {
   string model_uuid = 1;
