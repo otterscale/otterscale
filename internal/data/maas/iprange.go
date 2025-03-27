@@ -20,6 +20,19 @@ func NewIPRange(maas *MAAS) service.MAASIPRange {
 
 var _ service.MAASIPRange = (*ipRange)(nil)
 
+func (r *ipRange) List(_ context.Context) ([]*entity.IPRange, error) {
+	rs, err := r.maas.IPRanges.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	ret := make([]*entity.IPRange, len(rs))
+	for i := range rs {
+		ret[i] = &rs[i]
+	}
+	return ret, nil
+}
+
 func (r *ipRange) Create(_ context.Context, params *entity.IPRangeParams) (*entity.IPRange, error) {
 	return r.maas.IPRanges.Create(params)
 }

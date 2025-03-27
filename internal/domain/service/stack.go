@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"net"
 	"strings"
 
 	"github.com/canonical/gomaasclient/entity"
@@ -57,6 +58,7 @@ type MAASSubnet interface {
 
 // MAASIPRange represents IP range operations
 type MAASIPRange interface {
+	List(ctx context.Context) ([]*entity.IPRange, error)
 	Create(ctx context.Context, params *entity.IPRangeParams) (*entity.IPRange, error)
 	Update(ctx context.Context, id int, params *entity.IPRangeParams) (*entity.IPRange, error)
 }
@@ -422,9 +424,19 @@ func (s *StackService) getNetworkSubnet(ctx context.Context, subnet *entity.Subn
 	if err != nil {
 		return nil, err
 	}
-	reservedIPRanges, err := s.subnet.GetReservedIPRanges(ctx, subnet.ID)
+	ipRanges, err := s.ipRange.List(ctx)
 	if err != nil {
 		return nil, err
+	}
+	_, ipNet, err := net.ParseCIDR(subnet.CIDR)
+	if err != nil {
+		return nil, err
+	}
+	reservedIPRanges := []*entity.IPRange{}
+	for _, ipRange := range ipRanges {
+		if ipNet.Contains(ipRange.StartIP) && ipNet.Contains(ipRange.EndIP) {
+			reservedIPRanges = append(reservedIPRanges, ipRange)
+		}
 	}
 	statistics, err := s.subnet.GetStatistics(ctx, subnet.ID)
 	if err != nil {
