@@ -5,17 +5,16 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/emptypb"
-	"google.golang.org/protobuf/types/known/structpb"
-	"google.golang.org/protobuf/types/known/timestamppb"
-
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/action"
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	jujuyaml "gopkg.in/yaml.v2"
 
 	v1 "github.com/openhdc/openhdc/api/stack/v1"
 )
@@ -73,12 +72,12 @@ func (a *StackApp) GetModelConfig(ctx context.Context, req *connect.Request[v1.G
 	if err != nil {
 		return nil, err
 	}
-	config, err := structpb.NewStruct(mc)
+	configYAML, err := jujuyaml.Marshal(mc)
 	if err != nil {
 		return nil, err
 	}
 	res := &v1.GetModelConfigResponse{}
-	res.SetConfig(config)
+	res.SetConfigYaml(string(configYAML))
 	return connect.NewResponse(res), nil
 }
 
@@ -113,7 +112,6 @@ func (a *StackApp) GetApplication(ctx context.Context, req *connect.Request[v1.G
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(len(as))
 	apps := toApplications(as, ms, cs)
 	if len(apps) == 1 {
 		return connect.NewResponse(apps[0]), nil
@@ -364,8 +362,6 @@ func toAction(name string, spec action.ActionSpec) *v1.Action {
 	ret := &v1.Action{}
 	ret.SetName(name)
 	ret.SetDescription(spec.Description)
-	v, _ := structpb.NewStruct(spec.Params)
-	ret.SetParameters(v)
 	return ret
 }
 
@@ -436,8 +432,8 @@ func toApplication(name string, status *params.ApplicationStatus, ms map[string]
 
 	ret.SetUnits(units)
 
-	config, _ := structpb.NewStruct(c)
-	ret.SetConfig(config)
+	configYAML, _ := jujuyaml.Marshal(c)
+	ret.SetConfigYaml(string(configYAML))
 
 	return ret
 }
