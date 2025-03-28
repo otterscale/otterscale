@@ -97,6 +97,9 @@ const (
 	// StackServiceListApplicationsProcedure is the fully-qualified name of the StackService's
 	// ListApplications RPC.
 	StackServiceListApplicationsProcedure = "/openhdc.stack.v1.StackService/ListApplications"
+	// StackServiceGetApplicationProcedure is the fully-qualified name of the StackService's
+	// GetApplication RPC.
+	StackServiceGetApplicationProcedure = "/openhdc.stack.v1.StackService/GetApplication"
 	// StackServiceCreateApplicationProcedure is the fully-qualified name of the StackService's
 	// CreateApplication RPC.
 	StackServiceCreateApplicationProcedure = "/openhdc.stack.v1.StackService/CreateApplication"
@@ -159,6 +162,7 @@ type StackServiceClient interface {
 	GetModelConfig(context.Context, *connect.Request[v1.GetModelConfigRequest]) (*connect.Response[v1.GetModelConfigResponse], error)
 	// Application Operations
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
+	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
 	CreateApplication(context.Context, *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error)
 	UpdateApplication(context.Context, *connect.Request[v1.UpdateApplicationRequest]) (*connect.Response[v1.Application], error)
 	DeleteApplication(context.Context, *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error)
@@ -316,6 +320,12 @@ func NewStackServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(stackServiceMethods.ByName("ListApplications")),
 			connect.WithClientOptions(opts...),
 		),
+		getApplication: connect.NewClient[v1.GetApplicationRequest, v1.Application](
+			httpClient,
+			baseURL+StackServiceGetApplicationProcedure,
+			connect.WithSchema(stackServiceMethods.ByName("GetApplication")),
+			connect.WithClientOptions(opts...),
+		),
 		createApplication: connect.NewClient[v1.CreateApplicationRequest, v1.Application](
 			httpClient,
 			baseURL+StackServiceCreateApplicationProcedure,
@@ -403,6 +413,7 @@ type stackServiceClient struct {
 	createModel                *connect.Client[v1.CreateModelRequest, v1.Model]
 	getModelConfig             *connect.Client[v1.GetModelConfigRequest, v1.GetModelConfigResponse]
 	listApplications           *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
+	getApplication             *connect.Client[v1.GetApplicationRequest, v1.Application]
 	createApplication          *connect.Client[v1.CreateApplicationRequest, v1.Application]
 	updateApplication          *connect.Client[v1.UpdateApplicationRequest, v1.Application]
 	deleteApplication          *connect.Client[v1.DeleteApplicationRequest, emptypb.Empty]
@@ -525,6 +536,11 @@ func (c *stackServiceClient) ListApplications(ctx context.Context, req *connect.
 	return c.listApplications.CallUnary(ctx, req)
 }
 
+// GetApplication calls openhdc.stack.v1.StackService.GetApplication.
+func (c *stackServiceClient) GetApplication(ctx context.Context, req *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return c.getApplication.CallUnary(ctx, req)
+}
+
 // CreateApplication calls openhdc.stack.v1.StackService.CreateApplication.
 func (c *stackServiceClient) CreateApplication(ctx context.Context, req *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error) {
 	return c.createApplication.CallUnary(ctx, req)
@@ -606,6 +622,7 @@ type StackServiceHandler interface {
 	GetModelConfig(context.Context, *connect.Request[v1.GetModelConfigRequest]) (*connect.Response[v1.GetModelConfigResponse], error)
 	// Application Operations
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
+	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
 	CreateApplication(context.Context, *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error)
 	UpdateApplication(context.Context, *connect.Request[v1.UpdateApplicationRequest]) (*connect.Response[v1.Application], error)
 	DeleteApplication(context.Context, *connect.Request[v1.DeleteApplicationRequest]) (*connect.Response[emptypb.Empty], error)
@@ -759,6 +776,12 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(stackServiceMethods.ByName("ListApplications")),
 		connect.WithHandlerOptions(opts...),
 	)
+	stackServiceGetApplicationHandler := connect.NewUnaryHandler(
+		StackServiceGetApplicationProcedure,
+		svc.GetApplication,
+		connect.WithSchema(stackServiceMethods.ByName("GetApplication")),
+		connect.WithHandlerOptions(opts...),
+	)
 	stackServiceCreateApplicationHandler := connect.NewUnaryHandler(
 		StackServiceCreateApplicationProcedure,
 		svc.CreateApplication,
@@ -865,6 +888,8 @@ func NewStackServiceHandler(svc StackServiceHandler, opts ...connect.HandlerOpti
 			stackServiceGetModelConfigHandler.ServeHTTP(w, r)
 		case StackServiceListApplicationsProcedure:
 			stackServiceListApplicationsHandler.ServeHTTP(w, r)
+		case StackServiceGetApplicationProcedure:
+			stackServiceGetApplicationHandler.ServeHTTP(w, r)
 		case StackServiceCreateApplicationProcedure:
 			stackServiceCreateApplicationHandler.ServeHTTP(w, r)
 		case StackServiceUpdateApplicationProcedure:
@@ -980,6 +1005,10 @@ func (UnimplementedStackServiceHandler) GetModelConfig(context.Context, *connect
 
 func (UnimplementedStackServiceHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.ListApplications is not implemented"))
+}
+
+func (UnimplementedStackServiceHandler) GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.stack.v1.StackService.GetApplication is not implemented"))
 }
 
 func (UnimplementedStackServiceHandler) CreateApplication(context.Context, *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error) {

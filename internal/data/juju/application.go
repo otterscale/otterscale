@@ -128,10 +128,20 @@ func (r *application) DeleteRelation(ctx context.Context, uuid string, id int) e
 	return api.NewClient(conn).DestroyRelationId(ctx, id, nil, nil)
 }
 
-func (r *application) GetConfigs(ctx context.Context, uuid string, names ...string) ([]map[string]interface{}, error) {
+func (r *application) GetConfigs(ctx context.Context, uuid string, names ...string) (map[string]map[string]any, error) {
 	conn, err := newConnection(uuid)
 	if err != nil {
 		return nil, err
 	}
-	return api.NewClient(conn).GetConfig(ctx, names...)
+	// NOT WORKING: GetConfig(ctx, names...)
+	// WORKAROUND: Get(ctx, name).CharmConfig
+	ret := map[string]map[string]any{}
+	for _, name := range names {
+		app, err := api.NewClient(conn).Get(ctx, name)
+		if err != nil {
+			return nil, err
+		}
+		ret[name] = app.CharmConfig
+	}
+	return ret, nil
 }

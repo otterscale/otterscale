@@ -44,6 +44,7 @@ service StackService {
 
   // Application Operations
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
+  rpc GetApplication(GetApplicationRequest) returns (Application);
   rpc CreateApplication(CreateApplicationRequest) returns (Application);
   rpc UpdateApplication(UpdateApplicationRequest) returns (Application);
   rpc DeleteApplication(DeleteApplicationRequest) returns (google.protobuf.Empty);
@@ -240,7 +241,7 @@ message Application {
   string info = 12;
   google.protobuf.Timestamp created_at = 13;
   repeated Unit units = 21;
-  map<string, string> config = 31;  // TODO
+  google.protobuf.Struct config = 31;
 }
 
 message Integration {
@@ -381,7 +382,7 @@ message GetModelConfigRequest {
 }
 
 message GetModelConfigResponse {
-  map<string, string> config = 1;
+  google.protobuf.Struct config = 1;
 }
 
 message ListApplicationsRequest {
@@ -392,6 +393,11 @@ message ListApplicationsResponse {
   repeated Application applications = 1;
 }
 
+message GetApplicationRequest {
+  string model_uuid = 1;
+  string name = 2;
+}
+
 message CreateApplicationRequest {
   string model_uuid = 1;
   string charm_name = 2;
@@ -399,7 +405,7 @@ message CreateApplicationRequest {
   string channel = 4;
   int64 revision = 5;
   int64 number = 6;
-  map<string, string> config = 11;  // override
+  map<string, string> override_config = 11;
   Constraint constraint = 21;
   repeated Placement placements = 22;
   bool trust = 31;
@@ -408,7 +414,7 @@ message CreateApplicationRequest {
 message UpdateApplicationRequest {
   string model_uuid = 1;
   string name = 2;
-  map<string, string> config = 11;
+  map<string, string> override_config = 11;
 }
 
 message DeleteApplicationRequest {
