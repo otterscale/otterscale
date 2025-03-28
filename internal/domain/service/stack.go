@@ -109,7 +109,7 @@ type JujuApplication interface {
 	ResolveUnitErrors(ctx context.Context, uuid string, units []string) error
 	CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error)
 	DeleteRelation(ctx context.Context, uuid string, id int) error
-	GetConfigs(ctx context.Context, uuid string, name ...string) ([]map[string]interface{}, error)
+	GetConfigs(ctx context.Context, uuid string, name ...string) (map[string]map[string]any, error)
 }
 
 type JujuAction interface {
@@ -416,9 +416,9 @@ func (s *StackService) MAASToJujuMachineID(ctx context.Context, uuid, maasMachin
 }
 
 func (s *StackService) ListApplications(ctx context.Context, uuid string, filters ...string) (map[string]params.ApplicationStatus, error) {
-	patterns := []string{"application"}
-	if len(filters) == 0 {
-		patterns = append(patterns, "*")
+	patterns := []string{"application", "*"}
+	if len(filters) > 0 {
+		patterns = append(patterns[:1], filters...)
 	}
 	status, err := s.client.Status(ctx, uuid, patterns)
 	if err != nil {
@@ -428,9 +428,9 @@ func (s *StackService) ListApplications(ctx context.Context, uuid string, filter
 }
 
 func (s *StackService) ListJujuMachines(ctx context.Context, uuid string, filters ...string) (map[string]params.MachineStatus, error) {
-	patterns := []string{"machine"}
-	if len(filters) == 0 {
-		patterns = append(patterns, "*")
+	patterns := []string{"machine", "*"}
+	if len(filters) > 0 {
+		patterns = append(patterns[:1], filters...)
 	}
 	status, err := s.client.Status(ctx, uuid, patterns)
 	if err != nil {
@@ -439,7 +439,7 @@ func (s *StackService) ListJujuMachines(ctx context.Context, uuid string, filter
 	return status.Machines, nil
 }
 
-func (s *StackService) ListApplicationConfigs(ctx context.Context, uuid string, appStatuses map[string]params.ApplicationStatus) ([]map[string]interface{}, error) {
+func (s *StackService) ListApplicationConfigs(ctx context.Context, uuid string, appStatuses map[string]params.ApplicationStatus) (map[string]map[string]any, error) {
 	names := []string{}
 	for name := range appStatuses {
 		names = append(names, name)

@@ -69,16 +69,16 @@ func (a *StackApp) CreateModel(ctx context.Context, req *connect.Request[v1.Crea
 }
 
 func (a *StackApp) GetModelConfig(ctx context.Context, req *connect.Request[v1.GetModelConfigRequest]) (*connect.Response[v1.GetModelConfigResponse], error) {
-	modelConfigs, err := a.svc.GetModelConfig(ctx, req.Msg.GetUuid())
+	mc, err := a.svc.GetModelConfig(ctx, req.Msg.GetUuid())
 	if err != nil {
 		return nil, err
 	}
-	mc := map[string]string{}
-	for k, v := range modelConfigs {
-		mc[k] = fmt.Sprintf("%v", v)
+	config, err := structpb.NewStruct(mc)
+	if err != nil {
+		return nil, err
 	}
 	res := &v1.GetModelConfigResponse{}
-	res.SetConfig(mc)
+	res.SetConfig(config)
 	return connect.NewResponse(res), nil
 }
 
@@ -91,9 +91,34 @@ func (a *StackApp) ListApplications(ctx context.Context, req *connect.Request[v1
 	if err != nil {
 		return nil, err
 	}
+	cs, err := a.svc.ListApplicationConfigs(ctx, req.Msg.GetModelUuid(), as)
+	if err != nil {
+		return nil, err
+	}
 	res := &v1.ListApplicationsResponse{}
-	res.SetApplications(toApplications(as, ms))
+	res.SetApplications(toApplications(as, ms, cs))
 	return connect.NewResponse(res), nil
+}
+
+func (a *StackApp) GetApplication(ctx context.Context, req *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
+	as, err := a.svc.ListApplications(ctx, req.Msg.GetModelUuid(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	ms, err := a.svc.ListJujuMachines(ctx, req.Msg.GetModelUuid())
+	if err != nil {
+		return nil, err
+	}
+	cs, err := a.svc.ListApplicationConfigs(ctx, req.Msg.GetModelUuid(), as)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(len(as))
+	apps := toApplications(as, ms, cs)
+	if len(apps) == 1 {
+		return connect.NewResponse(apps[0]), nil
+	}
+	return nil, status.Error(codes.Internal, "something went wrong")
 }
 
 func (a *StackApp) CreateApplication(ctx context.Context, req *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error) {
@@ -101,7 +126,7 @@ func (a *StackApp) CreateApplication(ctx context.Context, req *connect.Request[v
 	if err != nil {
 		return nil, err
 	}
-	as, err := a.svc.CreateApplication(ctx, req.Msg.GetModelUuid(), req.Msg.GetCharmName(), req.Msg.GetName(), req.Msg.GetChannel(), int(req.Msg.GetRevision()), int(req.Msg.GetNumber()), req.Msg.GetConfig(), buildConstraints(req.Msg.GetConstraint()), placements, req.Msg.GetTrust())
+	as, err := a.svc.CreateApplication(ctx, req.Msg.GetModelUuid(), req.Msg.GetCharmName(), req.Msg.GetName(), req.Msg.GetChannel(), int(req.Msg.GetRevision()), int(req.Msg.GetNumber()), req.Msg.GetOverrideConfig(), buildConstraints(req.Msg.GetConstraint()), placements, req.Msg.GetTrust())
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +134,11 @@ func (a *StackApp) CreateApplication(ctx context.Context, req *connect.Request[v
 	if err != nil {
 		return nil, err
 	}
-	apps := toApplications(as, ms)
+	cs, err := a.svc.ListApplicationConfigs(ctx, req.Msg.GetModelUuid(), as)
+	if err != nil {
+		return nil, err
+	}
+	apps := toApplications(as, ms, cs)
 	if len(apps) == 1 {
 		return connect.NewResponse(apps[0]), nil
 	}
@@ -117,7 +146,7 @@ func (a *StackApp) CreateApplication(ctx context.Context, req *connect.Request[v
 }
 
 func (a *StackApp) UpdateApplication(ctx context.Context, req *connect.Request[v1.UpdateApplicationRequest]) (*connect.Response[v1.Application], error) {
-	as, err := a.svc.UpdateApplication(ctx, req.Msg.GetModelUuid(), req.Msg.GetName(), req.Msg.GetConfig())
+	as, err := a.svc.UpdateApplication(ctx, req.Msg.GetModelUuid(), req.Msg.GetName(), req.Msg.GetOverrideConfig())
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +154,11 @@ func (a *StackApp) UpdateApplication(ctx context.Context, req *connect.Request[v
 	if err != nil {
 		return nil, err
 	}
-	apps := toApplications(as, ms)
+	cs, err := a.svc.ListApplicationConfigs(ctx, req.Msg.GetModelUuid(), as)
+	if err != nil {
+		return nil, err
+	}
+	apps := toApplications(as, ms, cs)
 	if len(apps) == 1 {
 		return connect.NewResponse(apps[0]), nil
 	}
@@ -336,11 +369,11 @@ func toAction(name string, spec action.ActionSpec) *v1.Action {
 	return ret
 }
 
-func toApplications(as map[string]params.ApplicationStatus, ms map[string]params.MachineStatus) []*v1.Application {
+func toApplications(as map[string]params.ApplicationStatus, ms map[string]params.MachineStatus, cs map[string]map[string]any) []*v1.Application {
 	ret := []*v1.Application{}
 	for name := range as {
 		app := as[name]
-		ret = append(ret, toApplication(name, &app, ms))
+		ret = append(ret, toApplication(name, &app, ms, cs[name]))
 	}
 	return ret
 }
@@ -382,7 +415,7 @@ func toApplicationUnit(name string, s *params.UnitStatus, ms map[string]params.M
 	return ret
 }
 
-func toApplication(name string, status *params.ApplicationStatus, ms map[string]params.MachineStatus) *v1.Application {
+func toApplication(name string, status *params.ApplicationStatus, ms map[string]params.MachineStatus, c map[string]any) *v1.Application {
 	units := []*v1.Application_Unit{}
 	for name := range status.Units {
 		unit := status.Units[name]
@@ -402,6 +435,9 @@ func toApplication(name string, status *params.ApplicationStatus, ms map[string]
 	}
 
 	ret.SetUnits(units)
+
+	config, _ := structpb.NewStruct(c)
+	ret.SetConfig(config)
 
 	return ret
 }
