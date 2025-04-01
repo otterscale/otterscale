@@ -71,3 +71,10 @@ func loadCACert(path string) (string, error) {
 	}
 	return string(data), nil
 }
+
+func checkConnection(ctx context.Context, conn Juju) (Juju, error) {
+	if !conn.IsBroken(ctx) {
+		return conn, nil
+	}
+	return newConnection("")
+}

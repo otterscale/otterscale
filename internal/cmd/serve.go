@@ -11,11 +11,12 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
-	"github.com/openhdc/openhdc/api/stack/v1/v1connect"
+	kubev1 "github.com/openhdc/openhdc/api/kube/v1/v1connect"
+	stackv1 "github.com/openhdc/openhdc/api/stack/v1/v1connect"
 	"github.com/openhdc/openhdc/internal/app"
 )
 
-func NewCmdServe(sa *app.StackApp) *cobra.Command {
+func NewCmdServe(ka *app.KubeApp, sa *app.StackApp) *cobra.Command {
 	var address string
 
 	cmd := &cobra.Command{
@@ -24,9 +25,10 @@ func NewCmdServe(sa *app.StackApp) *cobra.Command {
 		Long:    "",
 		Example: "",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			services := []string{v1connect.StackServiceName}
+			services := []string{kubev1.KubeServiceName, stackv1.StackServiceName}
 			mux := http.NewServeMux()
-			mux.Handle(v1connect.NewStackServiceHandler(sa))
+			mux.Handle(kubev1.NewKubeServiceHandler(ka))
+			mux.Handle(stackv1.NewStackServiceHandler(sa))
 
 			checker := grpchealth.NewStaticChecker(services...)
 			mux.Handle(grpchealth.NewHandler(checker))

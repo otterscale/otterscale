@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-var ProviderSet = wire.NewSet(NewStackApp)
+var ProviderSet = wire.NewSet(NewKubeApp, NewStackApp)
 
 var (
 	defaultPageSize     = 200

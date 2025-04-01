@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"net"
+	"slices"
 	"strings"
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/canonical/gomaasclient/entity/subnet"
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/action"
+	"github.com/juju/juju/api/client/application"
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
@@ -110,6 +112,8 @@ type JujuApplication interface {
 	CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error)
 	DeleteRelation(ctx context.Context, uuid string, id int) error
 	GetConfigs(ctx context.Context, uuid string, name ...string) (map[string]map[string]any, error)
+	GetLeader(ctx context.Context, uuid, name string) (string, error)
+	GetUnitInfo(ctx context.Context, uuid, name string) (*application.UnitInfo, error)
 }
 
 type JujuAction interface {
@@ -424,7 +428,16 @@ func (s *StackService) ListApplications(ctx context.Context, uuid string, filter
 	if err != nil {
 		return nil, err
 	}
-	return status.Applications, nil
+	if len(filters) == 0 {
+		return status.Applications, nil
+	}
+	ret := make(map[string]params.ApplicationStatus)
+	for k := range status.Applications {
+		if slices.Contains(filters, k) {
+			ret[k] = status.Applications[k]
+		}
+	}
+	return ret, nil
 }
 
 func (s *StackService) ListJujuMachines(ctx context.Context, uuid string, filters ...string) (map[string]params.MachineStatus, error) {
