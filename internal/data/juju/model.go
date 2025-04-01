@@ -27,10 +27,14 @@ func NewModel(juju Juju) service.JujuModel {
 var _ service.JujuModel = (*model)(nil)
 
 func (r *model) List(ctx context.Context) ([]*base.UserModelSummary, error) {
-	client := modelmanager.NewClient(r.juju)
 	user := env.GetOrDefault(env.OPENHDC_JUJU_USERNAME, defaultUsername)
 
-	umss, err := client.ListModelSummaries(ctx, user, true)
+	conn, err := checkConnection(ctx, r.juju)
+	if err != nil {
+		return nil, err
+	}
+
+	umss, err := modelmanager.NewClient(conn).ListModelSummaries(ctx, user, true)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +57,11 @@ func (r *model) Create(ctx context.Context, name string) (*base.ModelInfo, error
 	}
 
 	// Create the model
-	mi, err := modelmanager.NewClient(r.juju).CreateModel(
+	conn, err := checkConnection(ctx, r.juju)
+	if err != nil {
+		return nil, err
+	}
+	mi, err := modelmanager.NewClient(conn).CreateModel(
 		ctx,
 		name,
 		owner,

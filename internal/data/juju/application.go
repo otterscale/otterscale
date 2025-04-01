@@ -2,11 +2,13 @@ package juju
 
 import (
 	"context"
+	"fmt"
 
 	api "github.com/juju/juju/api/client/application"
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
+	"github.com/juju/names/v6"
 
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
@@ -133,8 +135,6 @@ func (r *application) GetConfigs(ctx context.Context, uuid string, names ...stri
 	if err != nil {
 		return nil, err
 	}
-	// NOT WORKING: GetConfig(ctx, names...)
-	// WORKAROUND: Get(ctx, name).CharmConfig
 	ret := map[string]map[string]any{}
 	for _, name := range names {
 		app, err := api.NewClient(conn).Get(ctx, name)
@@ -144,4 +144,27 @@ func (r *application) GetConfigs(ctx context.Context, uuid string, names ...stri
 		ret[name] = app.CharmConfig
 	}
 	return ret, nil
+}
+
+func (r *application) GetLeader(ctx context.Context, uuid, name string) (string, error) {
+	conn, err := newConnection(uuid)
+	if err != nil {
+		return "", err
+	}
+	return api.NewClient(conn).Leader(ctx, name)
+}
+
+func (r *application) GetUnitInfo(ctx context.Context, uuid, name string) (*api.UnitInfo, error) {
+	conn, err := newConnection(uuid)
+	if err != nil {
+		return nil, err
+	}
+	uis, err := api.NewClient(conn).UnitsInfo(ctx, []names.UnitTag{names.NewUnitTag(name)})
+	if err != nil {
+		return nil, err
+	}
+	if len(uis) == 1 {
+		return &uis[0], nil
+	}
+	return nil, fmt.Errorf("unit info %q not found", name)
 }

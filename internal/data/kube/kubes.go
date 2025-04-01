@@ -1,7 +1,7 @@
 package kube
 
 import (
-	"errors"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -12,64 +12,45 @@ import (
 	"github.com/openhdc/openhdc/internal/env"
 )
 
-var ErrClusterNotFound = errors.New("cluster not found")
-
 // Kubes represents a map of named Kubernetes client connections
 type Kubes map[string]*kubernetes.Clientset
 
 // NewKubes creates a new Kubernetes clientset map.
-// If running in-cluster, it automatically adds the cluster client with key "f"
+// If running in-cluster, it automatically adds the cluster client with key "(empty)"
 func NewKubes() (Kubes, error) {
-	kb := make(Kubes)
-
+	k := make(Kubes)
 	if isInCluster() {
 		cfg, err := rest.InClusterConfig()
 		if err != nil {
 			return nil, err
 		}
-
-		cs, err := kubernetes.NewForConfig(cfg)
+		client, err := kubernetes.NewForConfig(cfg)
 		if err != nil {
 			return nil, err
 		}
-
-		kb["f"] = cs
+		k[""] = client
 	}
-
-	return kb, nil
+	return k, nil
 }
 
-// isInCluster returns true if the application should use in-cluster configuration.
+func (k Kubes) Add(cluster string, cfg *rest.Config) error {
+	client, err := kubernetes.NewForConfig(cfg)
+	if err != nil {
+		return err
+	}
+	k[cluster] = client
+	return nil
+}
+
+func (k Kubes) Get(cluster string) (*kubernetes.Clientset, error) {
+	if client, ok := k[cluster]; ok {
+		return client, nil
+	}
+	return nil, fmt.Errorf("kubernetes cluster %q not found", cluster)
+}
+
 func isInCluster() bool {
 	val := os.Getenv(env.OPENHDC_IN_CLUSTER)
 	inCluster, _ := strconv.ParseBool(strings.ToLower(val))
 	return inCluster
-}
-
-// Add creates and adds a new Kubernetes client to the map with the specified name
-func (k Kubes) Add(name, host, bearerToken string) error {
-	client, err := newClient(host, bearerToken)
-	if err != nil {
-		return err
-	}
-	k[name] = client
-	return nil
-}
-
-func (k Kubes) Get(name string) (*kubernetes.Clientset, error) {
-	if client, ok := k[name]; ok {
-		return client, nil
-	}
-	return nil, ErrClusterNotFound
-}
-
-// newClient creates a new Kubernetes clientset from the provided configuration.
-func newClient(host, bearerToken string) (*kubernetes.Clientset, error) {
-	return kubernetes.NewForConfig(&rest.Config{
-		Host:        host,
-		BearerToken: bearerToken,
-		TLSClientConfig: rest.TLSClientConfig{
-			Insecure: !strings.HasPrefix(host, "https"),
-		},
-	})
 }

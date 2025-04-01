@@ -11,6 +11,7 @@ import (
 	"github.com/openhdc/openhdc/internal/app"
 	"github.com/openhdc/openhdc/internal/cmd"
 	"github.com/openhdc/openhdc/internal/data/juju"
+	"github.com/openhdc/openhdc/internal/data/kube"
 	"github.com/openhdc/openhdc/internal/data/maas"
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/spf13/cobra"
@@ -19,6 +20,21 @@ import (
 // Injectors from wire.go:
 
 func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func(), error) {
+	kubes, err := kube.NewKubes()
+	if err != nil {
+		return nil, nil, err
+	}
+	kubeClient := kube.NewClient(kubes)
+	kubeCronJob := kube.NewCronJob(kubes)
+	kubeDeployment := kube.NewDeployment(kubes)
+	kubeJob := kube.NewJob(kubes)
+	kubeNamespace := kube.NewNamespace(kubes)
+	kubePersistentVolumeClaim := kube.NewPersistentVolumeClaim(kubes)
+	kubePod := kube.NewPod(kubes)
+	kubeSVC := kube.NewService(kubes)
+	jujuApplication := juju.NewApplication()
+	kubeService := service.NewKubeService(kubeClient, kubeCronJob, kubeDeployment, kubeJob, kubeNamespace, kubePersistentVolumeClaim, kubePod, kubeSVC, jujuApplication)
+	kubeApp := app.NewKubeApp(kubeService)
 	config := maas.NewConfig()
 	v, err := maas.New(config)
 	if err != nil {
@@ -44,11 +60,10 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	}
 	jujuModel := juju.NewModel(v2)
 	jujuModelConfig := juju.NewModelConfig()
-	jujuApplication := juju.NewApplication()
 	jujuAction := juju.NewAction()
 	stackService := service.NewStackService(maasServer, maasPackageRepository, maasFabric, maasvlan, maasSubnet, maasipRange, maasBootResource, maasMachine, jujuMachine, jujuClient, jujuModel, jujuModelConfig, jujuApplication, jujuAction)
 	stackApp := app.NewStackApp(stackService)
-	command := cmd.New(string2, stackApp)
+	command := cmd.New(string2, kubeApp, stackApp)
 	return command, func() {
 	}, nil
 }
