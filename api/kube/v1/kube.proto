@@ -35,11 +35,39 @@ message Release {
 message Repository {}
 
 message Application {
-  message Service {}
-  message Pod {}
-  message PVC {}
-  message PV {}
-  message StorageClass {}
+  message Service {
+    message Port {
+      int32 port = 1;
+      int32 node_port = 2;
+      string protocol = 3;
+      string target_port = 11;
+    }
+    string type = 1;
+    string cluster_ip = 2;
+    repeated Port ports = 11;
+  }
+  message Pod {
+    message Container {
+      string name = 1;
+      string image = 2;
+    }
+    string name = 1;
+    string status = 2;
+    string ready = 3;
+    string restarts = 4;
+  }
+  message PersistentVolumeClaim {
+    string status = 1;
+    repeated string access_modes = 2;
+    string capacity = 3;
+    string storage_class_name = 4;
+  }
+  message StorageClass {
+    string provisioner = 1;
+    string reclaimPolicy = 2;
+    string volume_binding_mode = 3;
+    map<string, string> parameters = 11;
+  }
   string name = 1;
   string namespace = 2;
   map<string, string> labels = 3;
@@ -49,7 +77,8 @@ message Application {
   string image_pull_policy = 32;
   Service service = 101;
   repeated Pod pods = 102;
-  PVC pvc = 103;
+  repeated PersistentVolumeClaim persistent_volume_claims = 103;
+  map<string, StorageClass> storage_class_map = 201;
 }
 
 message ListReleasesRequest {}
