@@ -42,43 +42,44 @@ message Application {
       string protocol = 3;
       string target_port = 11;
     }
-    string type = 1;
-    string cluster_ip = 2;
+    string name = 1;
+    string type = 2;
+    string cluster_ip = 3;
     repeated Port ports = 11;
   }
   message Pod {
-    message Container {
-      string name = 1;
-      string image = 2;
-    }
     string name = 1;
     string status = 2;
     string ready = 3;
     string restarts = 4;
   }
   message PersistentVolumeClaim {
-    string status = 1;
-    repeated string access_modes = 2;
-    string capacity = 3;
-    string storage_class_name = 4;
+    string name = 1;
+    string status = 2;
+    repeated string access_modes = 3;
+    string capacity = 4;
+    StorageClass storage_class = 11;
   }
   message StorageClass {
-    string provisioner = 1;
-    string reclaimPolicy = 2;
-    string volume_binding_mode = 3;
-    map<string, string> parameters = 11;
+    string name = 1;
+    string provisioner = 2;
+    string reclaim_policy = 3;
+    string volume_binding_mode = 4;
+    map<string, string> parameters = 5;
+  }
+  message Container {
+    string image_name = 1;
+    string image_pull_policy = 2;
   }
   string name = 1;
   string namespace = 2;
   map<string, string> labels = 3;
-  int32 replicas = 11;
-  string strategy_type = 21;
-  string image = 31;
-  string image_pull_policy = 32;
-  Service service = 101;
-  repeated Pod pods = 102;
-  repeated PersistentVolumeClaim persistent_volume_claims = 103;
-  map<string, StorageClass> storage_class_map = 201;
+  int32 replicas = 4;
+  string strategy_type = 5;
+  repeated Container containers = 11;
+  repeated PersistentVolumeClaim persistent_volume_claims = 21;
+  repeated Pod pods = 31;
+  repeated Service service = 41;
 }
 
 message ListReleasesRequest {}
