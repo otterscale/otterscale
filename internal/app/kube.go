@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -34,7 +35,7 @@ var _ v1connect.KubeServiceHandler = (*KubeApp)(nil)
 
 // ListApplications retrieves applications for a given model UUID and cluster name
 func (a *KubeApp) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
-	apps, err := a.svc.ListApplications(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName())
+	apps, err := a.svc.ListApplications(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName(), "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -43,38 +44,57 @@ func (a *KubeApp) ListApplications(ctx context.Context, req *connect.Request[v1.
 	return connect.NewResponse(res), nil
 }
 
+func (a *KubeApp) GetApplication(ctx context.Context, req *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
+	apps, err := a.svc.ListApplications(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	app, err := a.toApplication(&apps.Deployments[0], apps)
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(app), nil
+}
+
+func (a *KubeApp) toApplication(dpl *appsv1.Deployment, apps *model.Applications) (*v1.Application, error) {
+	selector, err := metav1.LabelSelectorAsSelector(dpl.Spec.Selector)
+	if err != nil {
+		return nil, err
+	}
+
+	pvcs := filterPersistentVolumeClaim(dpl.Spec.Template.Spec.Volumes, apps.PersistentVolumeClaims)
+	pods := filterPods(apps.Pods, selector)
+	svcs := filterServices(apps.Services, pods)
+	scm := toStorageClassMap(apps.StorageClasses)
+
+	ret := &v1.Application{}
+	ret.SetName(dpl.Name)
+	ret.SetNamespace(dpl.Namespace)
+	ret.SetLabels(dpl.Labels)
+
+	if replicas := dpl.Spec.Replicas; replicas != nil {
+		ret.SetReplicas(*replicas)
+	}
+
+	ret.SetStrategyType(string(dpl.Spec.Strategy.Type))
+	ret.SetContainers(toApplicationContainers(dpl.Spec.Template.Spec.Containers))
+	ret.SetPersistentVolumeClaims(toApplicationPersistentVolumeClaims(pvcs, scm))
+	ret.SetPods(toApplicationPods(pods))
+	ret.SetService(toApplicationServices(svcs))
+
+	return ret, nil
+}
+
 // toApplications converts domain model applications to API applications
 func (a *KubeApp) toApplications(apps *model.Applications) []*v1.Application {
 	ret := []*v1.Application{}
-	storageClassMap := toStorageClassMap(apps.StorageClasses)
-
 	for i := range apps.Deployments {
-		selector, err := metav1.LabelSelectorAsSelector(apps.Deployments[i].Spec.Selector)
+		app, err := a.toApplication(&apps.Deployments[i], apps)
 		if err != nil {
 			continue
 		}
-
-		pvcs := filterPersistentVolumeClaim(apps.Deployments[i].Spec.Template.Spec.Volumes, apps.PersistentVolumeClaims)
-		pods := filterPods(apps.Pods, selector)
-		services := filterServices(apps.Services, pods)
-
-		app := &v1.Application{}
-		app.SetName(apps.Deployments[i].Name)
-		app.SetNamespace(apps.Deployments[i].Namespace)
-		app.SetLabels(apps.Deployments[i].Labels)
-
-		if replicas := apps.Deployments[i].Spec.Replicas; replicas != nil {
-			app.SetReplicas(*replicas)
-		}
-
-		app.SetStrategyType(string(apps.Deployments[i].Spec.Strategy.Type))
-		app.SetContainers(toApplicationContainers(apps.Deployments[i].Spec.Template.Spec.Containers))
-		app.SetPersistentVolumeClaims(toApplicationPersistentVolumeClaims(pvcs, storageClassMap))
-		app.SetPods(toApplicationPods(pods))
-		app.SetService(toApplicationServices(services))
 		ret = append(ret, app)
 	}
-
 	return ret
 }
 

@@ -3,7 +3,6 @@ edition = "2023";
 package openhdc.kube.v1;
 
 import "google/protobuf/empty.proto";
-import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/openhdc/openhdc/api/kube/v1;v1";
 
@@ -23,6 +22,7 @@ service KubeService {
 
   // Native
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
+  rpc GetApplication(GetApplicationRequest) returns (Application);
 }
 
 message Release {
@@ -111,4 +111,11 @@ message ListApplicationsRequest {
 
 message ListApplicationsResponse {
   repeated Application applications = 1;
+}
+
+message GetApplicationRequest {
+  string model_uuid = 1;
+  string cluster_name = 2;
+  string namespace = 3;
+  string name = 4;
 }

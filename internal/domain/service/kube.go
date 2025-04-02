@@ -28,6 +28,7 @@ type KubeClient interface {
 // KubeApps handles deployment-related operations
 type KubeApps interface {
 	ListDeployments(ctx context.Context, cluster, namespace string) ([]appv1.Deployment, error)
+	GetDeployment(ctx context.Context, cluster, namespace, name string) (*appv1.Deployment, error)
 }
 
 // KubeBatch handles batch job operations
@@ -179,7 +180,7 @@ func extractClientTokenFromUnitInfo(unitInfo *application.UnitInfo) (string, err
 }
 
 // ListApplications retrieves all applications from the Kubernetes cluster
-func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster string) (*model.Applications, error) {
+func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, namespace, name string) (*model.Applications, error) {
 	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
 		return nil, err
 	}
@@ -188,15 +189,22 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster string
 	eg, ctx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
-		deployments, err := s.apps.ListDeployments(ctx, cluster, "")
+		if namespace == "" {
+			deployments, err := s.apps.ListDeployments(ctx, cluster, namespace)
+			if err == nil {
+				result.Deployments = deployments
+			}
+			return err
+		}
+		deployment, err := s.apps.GetDeployment(ctx, cluster, namespace, name)
 		if err == nil {
-			result.Deployments = deployments
+			result.Deployments = []appv1.Deployment{*deployment}
 		}
 		return err
 	})
 
 	eg.Go(func() error {
-		services, err := s.core.ListServices(ctx, cluster, "")
+		services, err := s.core.ListServices(ctx, cluster, namespace)
 		if err == nil {
 			result.Services = services
 		}
@@ -204,7 +212,7 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster string
 	})
 
 	eg.Go(func() error {
-		pods, err := s.core.ListPods(ctx, cluster, "")
+		pods, err := s.core.ListPods(ctx, cluster, namespace)
 		if err == nil {
 			result.Pods = pods
 		}
@@ -212,7 +220,7 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster string
 	})
 
 	eg.Go(func() error {
-		pvcs, err := s.core.ListPersistentVolumeClaims(ctx, cluster, "")
+		pvcs, err := s.core.ListPersistentVolumeClaims(ctx, cluster, namespace)
 		if err == nil {
 			result.PersistentVolumeClaims = pvcs
 		}
