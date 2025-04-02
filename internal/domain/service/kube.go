@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/juju/juju/api/client/application"
 	"golang.org/x/sync/errgroup"
 
 	appv1 "k8s.io/api/apps/v1"
@@ -15,18 +14,23 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
+	"github.com/juju/juju/api/client/application"
+
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
+// KubeClient manages Kubernetes client connections
 type KubeClient interface {
 	Get(cluster string) (*kubernetes.Clientset, error)
 	Add(cluster string, cfg *rest.Config) error
 }
 
+// KubeApps handles deployment-related operations
 type KubeApps interface {
 	ListDeployments(ctx context.Context, cluster, namespace string) ([]appv1.Deployment, error)
 }
 
+// KubeBatch handles batch job operations
 type KubeBatch interface {
 	GetCronJob(ctx context.Context, cluster, namespace, name string) (*batchv1.CronJob, error)
 	CreateCronJob(ctx context.Context, cluster, namespace, name, image, schedule string) (*batchv1.CronJob, error)
@@ -36,6 +40,7 @@ type KubeBatch interface {
 	CreateJobFromCronJob(ctx context.Context, cluster, namespace string, cronJob *batchv1.CronJob, createdBy string) (*batchv1.Job, error)
 }
 
+// KubeCore handles core Kubernetes resource operations
 type KubeCore interface {
 	GetNamespace(ctx context.Context, cluster, name string) (*corev1.Namespace, error)
 	CreateNamespace(ctx context.Context, cluster, name string) (*corev1.Namespace, error)
@@ -44,10 +49,12 @@ type KubeCore interface {
 	ListPersistentVolumeClaims(ctx context.Context, cluster, namespace string) ([]corev1.PersistentVolumeClaim, error)
 }
 
+// KubeStorage handles storage-related operations
 type KubeStorage interface {
 	ListStorageClasses(ctx context.Context, cluster string) ([]storagev1.StorageClass, error)
 }
 
+// KubeService orchestrates Kubernetes operations
 type KubeService struct {
 	client      KubeClient
 	apps        KubeApps
@@ -57,6 +64,7 @@ type KubeService struct {
 	application JujuApplication
 }
 
+// NewKubeService creates a new KubeService instance
 func NewKubeService(
 	client KubeClient,
 	apps KubeApps,
@@ -75,6 +83,7 @@ func NewKubeService(
 	}
 }
 
+// ensureClient ensures a Kubernetes client exists for the specified cluster
 func (s *KubeService) ensureClient(ctx context.Context, uuid, cluster string) error {
 	// Check if client already exists
 	if _, err := s.client.Get(cluster); err == nil {
@@ -90,6 +99,7 @@ func (s *KubeService) ensureClient(ctx context.Context, uuid, cluster string) er
 	return s.client.Add(cluster, cfg)
 }
 
+// newConfig creates a new Kubernetes client configuration
 func (s *KubeService) newConfig(ctx context.Context, uuid, name string) (*rest.Config, error) {
 	unit, err := s.application.GetLeader(ctx, uuid, name)
 	if err != nil {
@@ -120,8 +130,9 @@ func (s *KubeService) newConfig(ctx context.Context, uuid, name string) (*rest.C
 	}, nil
 }
 
+// extractEndpointFromUnitInfo extracts the API endpoint from unit info
 func extractEndpointFromUnitInfo(unitInfo *application.UnitInfo) (string, error) {
-	endpoints := []string{}
+	var endpoints []string
 
 	// Extract endpoints from relation data
 	for _, erd := range unitInfo.RelationData {
@@ -143,6 +154,7 @@ func extractEndpointFromUnitInfo(unitInfo *application.UnitInfo) (string, error)
 	return "", errors.New("endpoint not found")
 }
 
+// extractClientTokenFromUnitInfo extracts the client token from unit info
 func extractClientTokenFromUnitInfo(unitInfo *application.UnitInfo) (string, error) {
 	credentials := make(map[string]model.ControlPlaneCredential)
 
@@ -166,61 +178,58 @@ func extractClientTokenFromUnitInfo(unitInfo *application.UnitInfo) (string, err
 	return "", errors.New("token not found")
 }
 
+// ListApplications retrieves all applications from the Kubernetes cluster
 func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster string) (*model.Applications, error) {
 	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
 		return nil, err
 	}
-	var (
-		deployments            []appv1.Deployment
-		services               []corev1.Service
-		pods                   []corev1.Pod
-		persistentVolumeClaims []corev1.PersistentVolumeClaim
-		storageClasses         []storagev1.StorageClass
-	)
+
+	result := &model.Applications{}
 	eg, ctx := errgroup.WithContext(ctx)
+
 	eg.Go(func() error {
-		dpl, err := s.apps.ListDeployments(ctx, cluster, "")
+		deployments, err := s.apps.ListDeployments(ctx, cluster, "")
 		if err == nil {
-			deployments = dpl
+			result.Deployments = deployments
 		}
 		return err
 	})
+
 	eg.Go(func() error {
-		svc, err := s.core.ListServices(ctx, cluster, "")
+		services, err := s.core.ListServices(ctx, cluster, "")
 		if err == nil {
-			services = svc
+			result.Services = services
 		}
 		return err
 	})
+
 	eg.Go(func() error {
-		pod, err := s.core.ListPods(ctx, cluster, "")
+		pods, err := s.core.ListPods(ctx, cluster, "")
 		if err == nil {
-			pods = pod
+			result.Pods = pods
 		}
 		return err
 	})
+
 	eg.Go(func() error {
-		pvc, err := s.core.ListPersistentVolumeClaims(ctx, cluster, "")
+		pvcs, err := s.core.ListPersistentVolumeClaims(ctx, cluster, "")
 		if err == nil {
-			persistentVolumeClaims = pvc
+			result.PersistentVolumeClaims = pvcs
 		}
 		return err
 	})
+
 	eg.Go(func() error {
-		sc, err := s.storage.ListStorageClasses(ctx, cluster)
+		storageClasses, err := s.storage.ListStorageClasses(ctx, cluster)
 		if err == nil {
-			storageClasses = sc
+			result.StorageClasses = storageClasses
 		}
 		return err
 	})
+
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	return &model.Applications{
-		Deployments:            deployments,
-		Services:               services,
-		Pods:                   pods,
-		PersistentVolumeClaims: persistentVolumeClaims,
-		StorageClasses:         storageClasses,
-	}, nil
+
+	return result, nil
 }
