@@ -236,6 +236,7 @@ message Application {
   string name = 1;
   string version = 2;
   int64 revision = 3;
+  string charm_name = 4;
   string status = 11;
   string info = 12;
   google.protobuf.Timestamp created_at = 13;
