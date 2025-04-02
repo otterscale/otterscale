@@ -422,6 +422,7 @@ func toApplication(name string, status *params.ApplicationStatus, ms map[string]
 	ret.SetName(name)
 	ret.SetVersion(status.WorkloadVersion)
 	ret.SetRevision(int64(status.CharmRev))
+	ret.SetCharmName(status.Charm)
 	ret.SetStatus(status.Status.Status)
 	ret.SetInfo(status.Status.Info)
 
