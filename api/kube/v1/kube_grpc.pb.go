@@ -30,6 +30,7 @@ const (
 	KubeService_UpdateRepository_FullMethodName = "/openhdc.kube.v1.KubeService/UpdateRepository"
 	KubeService_DeleteRepository_FullMethodName = "/openhdc.kube.v1.KubeService/DeleteRepository"
 	KubeService_ListApplications_FullMethodName = "/openhdc.kube.v1.KubeService/ListApplications"
+	KubeService_GetApplication_FullMethodName   = "/openhdc.kube.v1.KubeService/GetApplication"
 )
 
 // KubeServiceClient is the client API for KubeService service.
@@ -49,6 +50,7 @@ type KubeServiceClient interface {
 	DeleteRepository(ctx context.Context, in *DeleteRepositoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Native
 	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
+	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error)
 }
 
 type kubeServiceClient struct {
@@ -159,6 +161,16 @@ func (c *kubeServiceClient) ListApplications(ctx context.Context, in *ListApplic
 	return out, nil
 }
 
+func (c *kubeServiceClient) GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Application)
+	err := c.cc.Invoke(ctx, KubeService_GetApplication_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // KubeServiceServer is the server API for KubeService service.
 // All implementations must embed UnimplementedKubeServiceServer
 // for forward compatibility.
@@ -176,6 +188,7 @@ type KubeServiceServer interface {
 	DeleteRepository(context.Context, *DeleteRepositoryRequest) (*emptypb.Empty, error)
 	// Native
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
+	GetApplication(context.Context, *GetApplicationRequest) (*Application, error)
 	mustEmbedUnimplementedKubeServiceServer()
 }
 
@@ -215,6 +228,9 @@ func (UnimplementedKubeServiceServer) DeleteRepository(context.Context, *DeleteR
 }
 func (UnimplementedKubeServiceServer) ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListApplications not implemented")
+}
+func (UnimplementedKubeServiceServer) GetApplication(context.Context, *GetApplicationRequest) (*Application, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetApplication not implemented")
 }
 func (UnimplementedKubeServiceServer) mustEmbedUnimplementedKubeServiceServer() {}
 func (UnimplementedKubeServiceServer) testEmbeddedByValue()                     {}
@@ -417,6 +433,24 @@ func _KubeService_ListApplications_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _KubeService_GetApplication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetApplicationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KubeServiceServer).GetApplication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KubeService_GetApplication_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KubeServiceServer).GetApplication(ctx, req.(*GetApplicationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // KubeService_ServiceDesc is the grpc.ServiceDesc for KubeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -463,6 +497,10 @@ var KubeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListApplications",
 			Handler:    _KubeService_ListApplications_Handler,
+		},
+		{
+			MethodName: "GetApplication",
+			Handler:    _KubeService_GetApplication_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

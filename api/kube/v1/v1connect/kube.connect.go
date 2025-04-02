@@ -64,6 +64,9 @@ const (
 	// KubeServiceListApplicationsProcedure is the fully-qualified name of the KubeService's
 	// ListApplications RPC.
 	KubeServiceListApplicationsProcedure = "/openhdc.kube.v1.KubeService/ListApplications"
+	// KubeServiceGetApplicationProcedure is the fully-qualified name of the KubeService's
+	// GetApplication RPC.
+	KubeServiceGetApplicationProcedure = "/openhdc.kube.v1.KubeService/GetApplication"
 )
 
 // KubeServiceClient is a client for the openhdc.kube.v1.KubeService service.
@@ -81,6 +84,7 @@ type KubeServiceClient interface {
 	DeleteRepository(context.Context, *connect.Request[v1.DeleteRepositoryRequest]) (*connect.Response[emptypb.Empty], error)
 	// Native
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
+	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
 }
 
 // NewKubeServiceClient constructs a client for the openhdc.kube.v1.KubeService service. By default,
@@ -154,6 +158,12 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(kubeServiceMethods.ByName("ListApplications")),
 			connect.WithClientOptions(opts...),
 		),
+		getApplication: connect.NewClient[v1.GetApplicationRequest, v1.Application](
+			httpClient,
+			baseURL+KubeServiceGetApplicationProcedure,
+			connect.WithSchema(kubeServiceMethods.ByName("GetApplication")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -169,6 +179,7 @@ type kubeServiceClient struct {
 	updateRepository *connect.Client[v1.UpdateRepositoryRequest, v1.Repository]
 	deleteRepository *connect.Client[v1.DeleteRepositoryRequest, emptypb.Empty]
 	listApplications *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
+	getApplication   *connect.Client[v1.GetApplicationRequest, v1.Application]
 }
 
 // ListReleases calls openhdc.kube.v1.KubeService.ListReleases.
@@ -221,6 +232,11 @@ func (c *kubeServiceClient) ListApplications(ctx context.Context, req *connect.R
 	return c.listApplications.CallUnary(ctx, req)
 }
 
+// GetApplication calls openhdc.kube.v1.KubeService.GetApplication.
+func (c *kubeServiceClient) GetApplication(ctx context.Context, req *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return c.getApplication.CallUnary(ctx, req)
+}
+
 // KubeServiceHandler is an implementation of the openhdc.kube.v1.KubeService service.
 type KubeServiceHandler interface {
 	// Helm Release
@@ -236,6 +252,7 @@ type KubeServiceHandler interface {
 	DeleteRepository(context.Context, *connect.Request[v1.DeleteRepositoryRequest]) (*connect.Response[emptypb.Empty], error)
 	// Native
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
+	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
 }
 
 // NewKubeServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -305,6 +322,12 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(kubeServiceMethods.ByName("ListApplications")),
 		connect.WithHandlerOptions(opts...),
 	)
+	kubeServiceGetApplicationHandler := connect.NewUnaryHandler(
+		KubeServiceGetApplicationProcedure,
+		svc.GetApplication,
+		connect.WithSchema(kubeServiceMethods.ByName("GetApplication")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/openhdc.kube.v1.KubeService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case KubeServiceListReleasesProcedure:
@@ -327,6 +350,8 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 			kubeServiceDeleteRepositoryHandler.ServeHTTP(w, r)
 		case KubeServiceListApplicationsProcedure:
 			kubeServiceListApplicationsHandler.ServeHTTP(w, r)
+		case KubeServiceGetApplicationProcedure:
+			kubeServiceGetApplicationHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -374,4 +399,8 @@ func (UnimplementedKubeServiceHandler) DeleteRepository(context.Context, *connec
 
 func (UnimplementedKubeServiceHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.ListApplications is not implemented"))
+}
+
+func (UnimplementedKubeServiceHandler) GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.GetApplication is not implemented"))
 }

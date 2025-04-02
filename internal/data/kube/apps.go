@@ -33,3 +33,12 @@ func (r *apps) ListDeployments(ctx context.Context, cluster, namespace string) (
 	}
 	return list.Items, nil
 }
+
+func (r *apps) GetDeployment(ctx context.Context, cluster, namespace, name string) (*v1.Deployment, error) {
+	client, err := r.kubes.Get(cluster)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.GetOptions{}
+	return client.AppsV1().Deployments(namespace).Get(ctx, name, opts)
+}
