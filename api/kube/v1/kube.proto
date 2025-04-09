@@ -3,6 +3,7 @@ edition = "2023";
 package openhdc.kube.v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/openhdc/openhdc/api/kube/v1;v1";
 
@@ -48,11 +49,19 @@ message Application {
     repeated Port ports = 11;
   }
   message Pod {
+    message Condition {
+      string type = 1;
+      string status = 2;
+      google.protobuf.Timestamp probed_at = 3;
+      google.protobuf.Timestamp transitioned_at = 4;
+      string reason = 5;
+      string message = 6;
+    }
     string name = 1;
-    string status = 2;
+    string phase = 2;
     string ready = 3;
     string restarts = 4;
-    string message = 5;
+    Condition last_condition = 11;
   }
   message PersistentVolumeClaim {
     string name = 1;

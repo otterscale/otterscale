@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
@@ -257,15 +258,28 @@ func toApplicationContainers(containers []corev1.Container) []*v1.Application_Co
 	return ret
 }
 
+func toApplicationPodLastCondition(conditions []corev1.PodCondition) *v1.Application_Pod_Condition {
+	idx := len(conditions) - 1
+	ret := &v1.Application_Pod_Condition{}
+	ret.SetType(string(conditions[idx].Type))
+	ret.SetStatus(string(conditions[idx].Status))
+	ret.SetProbedAt(timestamppb.New(conditions[idx].LastProbeTime.Time))
+	ret.SetTransitionedAt(timestamppb.New(conditions[idx].LastTransitionTime.Time))
+	ret.SetReason((conditions[idx].Reason))
+	ret.SetMessage((conditions[idx].Message))
+	return ret
+}
+
 // toApplicationPods converts k8s pods to application pods
 func toApplicationPods(pods []corev1.Pod) []*v1.Application_Pod {
 	ret := make([]*v1.Application_Pod, 0, len(pods))
 	for idx := range pods {
 		pod := &v1.Application_Pod{}
 		pod.SetName(pods[idx].Name)
-		pod.SetStatus(string(pods[idx].Status.Phase))
+		pod.SetPhase(string(pods[idx].Status.Phase))
 		pod.SetReady(containerStatusesReadyString(pods[idx].Status.ContainerStatuses))
 		pod.SetRestarts(containerStatusesRestartString(pods[idx].Status.ContainerStatuses))
+		pod.SetLastCondition(toApplicationPodLastCondition(pods[idx].Status.Conditions))
 		ret = append(ret, pod)
 	}
 	return ret
