@@ -19,74 +19,74 @@ var (
 )
 
 type batch struct {
-	kubes Kubes
+	kubeMap KubeMap
 }
 
-func NewBatch(kubes Kubes) service.KubeBatch {
+func NewBatch(kubeMap KubeMap) service.KubeBatch {
 	return &batch{
-		kubes: kubes,
+		kubeMap: kubeMap,
 	}
 }
 
 var _ service.KubeBatch = (*batch)(nil)
 
 func (r *batch) GetCronJob(ctx context.Context, cluster, namespace, name string) (*v1.CronJob, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.GetOptions{}
-	return client.BatchV1().CronJobs(namespace).Get(ctx, name, opts)
+	return clientset.BatchV1().CronJobs(namespace).Get(ctx, name, opts)
 }
 
 func (r *batch) CreateCronJob(ctx context.Context, cluster, namespace, name, image, schedule string) (*v1.CronJob, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	cronJob := toCronJob(name, image, schedule)
 	opts := metav1.CreateOptions{}
-	return client.BatchV1().CronJobs(namespace).Create(ctx, cronJob, opts)
+	return clientset.BatchV1().CronJobs(namespace).Create(ctx, cronJob, opts)
 }
 
 func (r *batch) UpdateCronJob(ctx context.Context, cluster, namespace, name, image, schedule string) (*v1.CronJob, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	cronJob := toCronJob(name, image, schedule)
 	opts := metav1.UpdateOptions{}
-	return client.BatchV1().CronJobs(namespace).Update(ctx, cronJob, opts)
+	return clientset.BatchV1().CronJobs(namespace).Update(ctx, cronJob, opts)
 }
 
 func (r *batch) DeleteCronJob(ctx context.Context, cluster, namespace, name string) error {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return err
 	}
 	opts := metav1.DeleteOptions{}
-	return client.BatchV1().CronJobs(namespace).Delete(ctx, name, opts)
+	return clientset.BatchV1().CronJobs(namespace).Delete(ctx, name, opts)
 }
 
 func (r *batch) ListJobsFromCronJob(ctx context.Context, cluster, namespace string, cronJob *v1.CronJob) (*v1.JobList, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("cronjob-name=%s", cronJob.Name),
 	}
-	return client.BatchV1().Jobs(namespace).List(ctx, opts)
+	return clientset.BatchV1().Jobs(namespace).List(ctx, opts)
 }
 
 func (r *batch) CreateJobFromCronJob(ctx context.Context, cluster, namespace string, cronJob *v1.CronJob, createdBy string) (*v1.Job, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	job := toJob(cronJob, createdBy)
 	opts := metav1.CreateOptions{}
-	return client.BatchV1().Jobs(namespace).Create(ctx, job, opts)
+	return clientset.BatchV1().Jobs(namespace).Create(ctx, job, opts)
 }
 
 // TODO: Container

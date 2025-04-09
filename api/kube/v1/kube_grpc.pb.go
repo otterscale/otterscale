@@ -21,8 +21,8 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	KubeService_ListReleases_FullMethodName     = "/openhdc.kube.v1.KubeService/ListReleases"
-	KubeService_CreateRelease_FullMethodName    = "/openhdc.kube.v1.KubeService/CreateRelease"
-	KubeService_DeleteRelease_FullMethodName    = "/openhdc.kube.v1.KubeService/DeleteRelease"
+	KubeService_InstallRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/InstallRelease"
+	KubeService_UninstallRelease_FullMethodName = "/openhdc.kube.v1.KubeService/UninstallRelease"
 	KubeService_UpgradeRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/UpgradeRelease"
 	KubeService_RollbackRelease_FullMethodName  = "/openhdc.kube.v1.KubeService/RollbackRelease"
 	KubeService_ListRepositories_FullMethodName = "/openhdc.kube.v1.KubeService/ListRepositories"
@@ -39,8 +39,8 @@ const (
 type KubeServiceClient interface {
 	// Helm Release
 	ListReleases(ctx context.Context, in *ListReleasesRequest, opts ...grpc.CallOption) (*ListReleasesResponse, error)
-	CreateRelease(ctx context.Context, in *CreateReleaseRequest, opts ...grpc.CallOption) (*Release, error)
-	DeleteRelease(ctx context.Context, in *DeleteReleaseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	InstallRelease(ctx context.Context, in *InstallReleaseRequest, opts ...grpc.CallOption) (*Release, error)
+	UninstallRelease(ctx context.Context, in *UninstallReleaseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpgradeRelease(ctx context.Context, in *UpgradeReleaseRequest, opts ...grpc.CallOption) (*Release, error)
 	RollbackRelease(ctx context.Context, in *RollbackReleaseRequest, opts ...grpc.CallOption) (*Release, error)
 	// Helm Repository
@@ -71,20 +71,20 @@ func (c *kubeServiceClient) ListReleases(ctx context.Context, in *ListReleasesRe
 	return out, nil
 }
 
-func (c *kubeServiceClient) CreateRelease(ctx context.Context, in *CreateReleaseRequest, opts ...grpc.CallOption) (*Release, error) {
+func (c *kubeServiceClient) InstallRelease(ctx context.Context, in *InstallReleaseRequest, opts ...grpc.CallOption) (*Release, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Release)
-	err := c.cc.Invoke(ctx, KubeService_CreateRelease_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, KubeService_InstallRelease_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *kubeServiceClient) DeleteRelease(ctx context.Context, in *DeleteReleaseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *kubeServiceClient) UninstallRelease(ctx context.Context, in *UninstallReleaseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, KubeService_DeleteRelease_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, KubeService_UninstallRelease_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -177,8 +177,8 @@ func (c *kubeServiceClient) GetApplication(ctx context.Context, in *GetApplicati
 type KubeServiceServer interface {
 	// Helm Release
 	ListReleases(context.Context, *ListReleasesRequest) (*ListReleasesResponse, error)
-	CreateRelease(context.Context, *CreateReleaseRequest) (*Release, error)
-	DeleteRelease(context.Context, *DeleteReleaseRequest) (*emptypb.Empty, error)
+	InstallRelease(context.Context, *InstallReleaseRequest) (*Release, error)
+	UninstallRelease(context.Context, *UninstallReleaseRequest) (*emptypb.Empty, error)
 	UpgradeRelease(context.Context, *UpgradeReleaseRequest) (*Release, error)
 	RollbackRelease(context.Context, *RollbackReleaseRequest) (*Release, error)
 	// Helm Repository
@@ -202,11 +202,11 @@ type UnimplementedKubeServiceServer struct{}
 func (UnimplementedKubeServiceServer) ListReleases(context.Context, *ListReleasesRequest) (*ListReleasesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListReleases not implemented")
 }
-func (UnimplementedKubeServiceServer) CreateRelease(context.Context, *CreateReleaseRequest) (*Release, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateRelease not implemented")
+func (UnimplementedKubeServiceServer) InstallRelease(context.Context, *InstallReleaseRequest) (*Release, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InstallRelease not implemented")
 }
-func (UnimplementedKubeServiceServer) DeleteRelease(context.Context, *DeleteReleaseRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteRelease not implemented")
+func (UnimplementedKubeServiceServer) UninstallRelease(context.Context, *UninstallReleaseRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UninstallRelease not implemented")
 }
 func (UnimplementedKubeServiceServer) UpgradeRelease(context.Context, *UpgradeReleaseRequest) (*Release, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpgradeRelease not implemented")
@@ -271,38 +271,38 @@ func _KubeService_ListReleases_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _KubeService_CreateRelease_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateReleaseRequest)
+func _KubeService_InstallRelease_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InstallReleaseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(KubeServiceServer).CreateRelease(ctx, in)
+		return srv.(KubeServiceServer).InstallRelease(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: KubeService_CreateRelease_FullMethodName,
+		FullMethod: KubeService_InstallRelease_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(KubeServiceServer).CreateRelease(ctx, req.(*CreateReleaseRequest))
+		return srv.(KubeServiceServer).InstallRelease(ctx, req.(*InstallReleaseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _KubeService_DeleteRelease_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteReleaseRequest)
+func _KubeService_UninstallRelease_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UninstallReleaseRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(KubeServiceServer).DeleteRelease(ctx, in)
+		return srv.(KubeServiceServer).UninstallRelease(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: KubeService_DeleteRelease_FullMethodName,
+		FullMethod: KubeService_UninstallRelease_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(KubeServiceServer).DeleteRelease(ctx, req.(*DeleteReleaseRequest))
+		return srv.(KubeServiceServer).UninstallRelease(ctx, req.(*UninstallReleaseRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -463,12 +463,12 @@ var KubeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _KubeService_ListReleases_Handler,
 		},
 		{
-			MethodName: "CreateRelease",
-			Handler:    _KubeService_CreateRelease_Handler,
+			MethodName: "InstallRelease",
+			Handler:    _KubeService_InstallRelease_Handler,
 		},
 		{
-			MethodName: "DeleteRelease",
-			Handler:    _KubeService_DeleteRelease_Handler,
+			MethodName: "UninstallRelease",
+			Handler:    _KubeService_UninstallRelease_Handler,
 		},
 		{
 			MethodName: "UpgradeRelease",

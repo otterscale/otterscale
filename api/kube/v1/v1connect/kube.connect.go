@@ -37,12 +37,12 @@ const (
 	// KubeServiceListReleasesProcedure is the fully-qualified name of the KubeService's ListReleases
 	// RPC.
 	KubeServiceListReleasesProcedure = "/openhdc.kube.v1.KubeService/ListReleases"
-	// KubeServiceCreateReleaseProcedure is the fully-qualified name of the KubeService's CreateRelease
-	// RPC.
-	KubeServiceCreateReleaseProcedure = "/openhdc.kube.v1.KubeService/CreateRelease"
-	// KubeServiceDeleteReleaseProcedure is the fully-qualified name of the KubeService's DeleteRelease
-	// RPC.
-	KubeServiceDeleteReleaseProcedure = "/openhdc.kube.v1.KubeService/DeleteRelease"
+	// KubeServiceInstallReleaseProcedure is the fully-qualified name of the KubeService's
+	// InstallRelease RPC.
+	KubeServiceInstallReleaseProcedure = "/openhdc.kube.v1.KubeService/InstallRelease"
+	// KubeServiceUninstallReleaseProcedure is the fully-qualified name of the KubeService's
+	// UninstallRelease RPC.
+	KubeServiceUninstallReleaseProcedure = "/openhdc.kube.v1.KubeService/UninstallRelease"
 	// KubeServiceUpgradeReleaseProcedure is the fully-qualified name of the KubeService's
 	// UpgradeRelease RPC.
 	KubeServiceUpgradeReleaseProcedure = "/openhdc.kube.v1.KubeService/UpgradeRelease"
@@ -73,8 +73,8 @@ const (
 type KubeServiceClient interface {
 	// Helm Release
 	ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error)
-	CreateRelease(context.Context, *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Release], error)
-	DeleteRelease(context.Context, *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error)
+	InstallRelease(context.Context, *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error)
+	UninstallRelease(context.Context, *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[emptypb.Empty], error)
 	UpgradeRelease(context.Context, *connect.Request[v1.UpgradeReleaseRequest]) (*connect.Response[v1.Release], error)
 	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[v1.Release], error)
 	// Helm Repository
@@ -104,16 +104,16 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(kubeServiceMethods.ByName("ListReleases")),
 			connect.WithClientOptions(opts...),
 		),
-		createRelease: connect.NewClient[v1.CreateReleaseRequest, v1.Release](
+		installRelease: connect.NewClient[v1.InstallReleaseRequest, v1.Release](
 			httpClient,
-			baseURL+KubeServiceCreateReleaseProcedure,
-			connect.WithSchema(kubeServiceMethods.ByName("CreateRelease")),
+			baseURL+KubeServiceInstallReleaseProcedure,
+			connect.WithSchema(kubeServiceMethods.ByName("InstallRelease")),
 			connect.WithClientOptions(opts...),
 		),
-		deleteRelease: connect.NewClient[v1.DeleteReleaseRequest, emptypb.Empty](
+		uninstallRelease: connect.NewClient[v1.UninstallReleaseRequest, emptypb.Empty](
 			httpClient,
-			baseURL+KubeServiceDeleteReleaseProcedure,
-			connect.WithSchema(kubeServiceMethods.ByName("DeleteRelease")),
+			baseURL+KubeServiceUninstallReleaseProcedure,
+			connect.WithSchema(kubeServiceMethods.ByName("UninstallRelease")),
 			connect.WithClientOptions(opts...),
 		),
 		upgradeRelease: connect.NewClient[v1.UpgradeReleaseRequest, v1.Release](
@@ -170,8 +170,8 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 // kubeServiceClient implements KubeServiceClient.
 type kubeServiceClient struct {
 	listReleases     *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
-	createRelease    *connect.Client[v1.CreateReleaseRequest, v1.Release]
-	deleteRelease    *connect.Client[v1.DeleteReleaseRequest, emptypb.Empty]
+	installRelease   *connect.Client[v1.InstallReleaseRequest, v1.Release]
+	uninstallRelease *connect.Client[v1.UninstallReleaseRequest, emptypb.Empty]
 	upgradeRelease   *connect.Client[v1.UpgradeReleaseRequest, v1.Release]
 	rollbackRelease  *connect.Client[v1.RollbackReleaseRequest, v1.Release]
 	listRepositories *connect.Client[v1.ListRepositoriesRequest, v1.ListRepositoriesResponse]
@@ -187,14 +187,14 @@ func (c *kubeServiceClient) ListReleases(ctx context.Context, req *connect.Reque
 	return c.listReleases.CallUnary(ctx, req)
 }
 
-// CreateRelease calls openhdc.kube.v1.KubeService.CreateRelease.
-func (c *kubeServiceClient) CreateRelease(ctx context.Context, req *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Release], error) {
-	return c.createRelease.CallUnary(ctx, req)
+// InstallRelease calls openhdc.kube.v1.KubeService.InstallRelease.
+func (c *kubeServiceClient) InstallRelease(ctx context.Context, req *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error) {
+	return c.installRelease.CallUnary(ctx, req)
 }
 
-// DeleteRelease calls openhdc.kube.v1.KubeService.DeleteRelease.
-func (c *kubeServiceClient) DeleteRelease(ctx context.Context, req *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteRelease.CallUnary(ctx, req)
+// UninstallRelease calls openhdc.kube.v1.KubeService.UninstallRelease.
+func (c *kubeServiceClient) UninstallRelease(ctx context.Context, req *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.uninstallRelease.CallUnary(ctx, req)
 }
 
 // UpgradeRelease calls openhdc.kube.v1.KubeService.UpgradeRelease.
@@ -241,8 +241,8 @@ func (c *kubeServiceClient) GetApplication(ctx context.Context, req *connect.Req
 type KubeServiceHandler interface {
 	// Helm Release
 	ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error)
-	CreateRelease(context.Context, *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Release], error)
-	DeleteRelease(context.Context, *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error)
+	InstallRelease(context.Context, *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error)
+	UninstallRelease(context.Context, *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[emptypb.Empty], error)
 	UpgradeRelease(context.Context, *connect.Request[v1.UpgradeReleaseRequest]) (*connect.Response[v1.Release], error)
 	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[v1.Release], error)
 	// Helm Repository
@@ -268,16 +268,16 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(kubeServiceMethods.ByName("ListReleases")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeServiceCreateReleaseHandler := connect.NewUnaryHandler(
-		KubeServiceCreateReleaseProcedure,
-		svc.CreateRelease,
-		connect.WithSchema(kubeServiceMethods.ByName("CreateRelease")),
+	kubeServiceInstallReleaseHandler := connect.NewUnaryHandler(
+		KubeServiceInstallReleaseProcedure,
+		svc.InstallRelease,
+		connect.WithSchema(kubeServiceMethods.ByName("InstallRelease")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeServiceDeleteReleaseHandler := connect.NewUnaryHandler(
-		KubeServiceDeleteReleaseProcedure,
-		svc.DeleteRelease,
-		connect.WithSchema(kubeServiceMethods.ByName("DeleteRelease")),
+	kubeServiceUninstallReleaseHandler := connect.NewUnaryHandler(
+		KubeServiceUninstallReleaseProcedure,
+		svc.UninstallRelease,
+		connect.WithSchema(kubeServiceMethods.ByName("UninstallRelease")),
 		connect.WithHandlerOptions(opts...),
 	)
 	kubeServiceUpgradeReleaseHandler := connect.NewUnaryHandler(
@@ -332,10 +332,10 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 		switch r.URL.Path {
 		case KubeServiceListReleasesProcedure:
 			kubeServiceListReleasesHandler.ServeHTTP(w, r)
-		case KubeServiceCreateReleaseProcedure:
-			kubeServiceCreateReleaseHandler.ServeHTTP(w, r)
-		case KubeServiceDeleteReleaseProcedure:
-			kubeServiceDeleteReleaseHandler.ServeHTTP(w, r)
+		case KubeServiceInstallReleaseProcedure:
+			kubeServiceInstallReleaseHandler.ServeHTTP(w, r)
+		case KubeServiceUninstallReleaseProcedure:
+			kubeServiceUninstallReleaseHandler.ServeHTTP(w, r)
 		case KubeServiceUpgradeReleaseProcedure:
 			kubeServiceUpgradeReleaseHandler.ServeHTTP(w, r)
 		case KubeServiceRollbackReleaseProcedure:
@@ -365,12 +365,12 @@ func (UnimplementedKubeServiceHandler) ListReleases(context.Context, *connect.Re
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.ListReleases is not implemented"))
 }
 
-func (UnimplementedKubeServiceHandler) CreateRelease(context.Context, *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Release], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.CreateRelease is not implemented"))
+func (UnimplementedKubeServiceHandler) InstallRelease(context.Context, *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.InstallRelease is not implemented"))
 }
 
-func (UnimplementedKubeServiceHandler) DeleteRelease(context.Context, *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.DeleteRelease is not implemented"))
+func (UnimplementedKubeServiceHandler) UninstallRelease(context.Context, *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.UninstallRelease is not implemented"))
 }
 
 func (UnimplementedKubeServiceHandler) UpgradeRelease(context.Context, *connect.Request[v1.UpgradeReleaseRequest]) (*connect.Response[v1.Release], error) {

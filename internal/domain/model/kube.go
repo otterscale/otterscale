@@ -1,7 +1,7 @@
 package model
 
 import (
-	appv1 "k8s.io/api/apps/v1"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -44,7 +44,9 @@ type ControlPlaneCredential struct {
 }
 
 type Applications struct {
-	Deployments            []appv1.Deployment
+	Deployments            []appsv1.Deployment
+	StatefulSets           []appsv1.StatefulSet
+	DaemonSets             []appsv1.DaemonSet
 	Services               []corev1.Service
 	Pods                   []corev1.Pod
 	PersistentVolumeClaims []corev1.PersistentVolumeClaim
