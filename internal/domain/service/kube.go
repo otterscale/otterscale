@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"net/http"
 
 	"golang.org/x/sync/errgroup"
 	"helm.sh/helm/v3/pkg/release"
@@ -12,6 +13,7 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/client-go/rest"
 
 	"github.com/juju/juju/api/client/application"
@@ -191,6 +193,11 @@ func extractClientTokenFromUnitInfo(unitInfo *application.UnitInfo) (string, err
 	return "", errors.New("token not found")
 }
 
+func (s *KubeService) isKeyNotFoundError(err error) bool {
+	statusErr, _ := err.(*apierrors.StatusError)
+	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
+}
+
 // ListApplications retrieves all applications from the Kubernetes cluster
 func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, namespace, name string) (*model.Applications, error) {
 	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
@@ -211,6 +218,8 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 		deployment, err := s.apps.GetDeployment(ctx, cluster, namespace, name)
 		if err == nil {
 			result.Deployments = []appsv1.Deployment{*deployment}
+		} else if s.isKeyNotFoundError(err) {
+			return nil
 		}
 		return err
 	})
@@ -226,6 +235,8 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 		statefulSet, err := s.apps.GetStatefulSet(ctx, cluster, namespace, name)
 		if err == nil {
 			result.StatefulSets = []appsv1.StatefulSet{*statefulSet}
+		} else if s.isKeyNotFoundError(err) {
+			return nil
 		}
 		return err
 	})
@@ -241,6 +252,8 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 		daemonSet, err := s.apps.GetDaemonSet(ctx, cluster, namespace, name)
 		if err == nil {
 			result.DaemonSets = []appsv1.DaemonSet{*daemonSet}
+		} else if s.isKeyNotFoundError(err) {
+			return nil
 		}
 		return err
 	})
