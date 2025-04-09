@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"slices"
 	"time"
 
 	"connectrpc.com/connect"
@@ -108,6 +109,8 @@ func (a *KubeApp) toApplication(s *metav1.LabelSelector, vs []corev1.Volume, app
 	if replicas != nil {
 		ret.SetReplicas(*replicas)
 	}
+
+	ret.SetHealthies(countHealthies(pods))
 
 	ret.SetContainers(toApplicationContainers(cs))
 	ret.SetPersistentVolumeClaims(toApplicationPersistentVolumeClaims(pvcs, scm))
@@ -242,6 +245,17 @@ func containerStatusesRestartString(statuses []corev1.ContainerStatus) string {
 		return fmt.Sprintf("%d", restart)
 	}
 	return fmt.Sprintf("%d (%s ago)", restart, duration.HumanDuration(time.Since(lastTerminatedAt.Time)))
+}
+
+func countHealthies(pods []corev1.Pod) int32 {
+	phases := []corev1.PodPhase{corev1.PodRunning, corev1.PodSucceeded}
+	count := int32(0)
+	for idx := range pods {
+		if slices.Contains(phases, pods[idx].Status.Phase) {
+			count++
+		}
+	}
+	return count
 }
 
 // Conversion functions

@@ -18,7 +18,6 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/model"
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/openhdc/openhdc/internal/env"
-	"github.com/pkg/errors"
 )
 
 type helm struct {
@@ -102,7 +101,7 @@ func (r *helm) chartNames(repoName string) []string {
 		return charts
 	}
 
-	if os.IsNotExist(errors.Cause(err)) {
+	if os.IsNotExist(err) {
 		// If there is no cached charts file, fallback to the full index file.
 		// This is much slower but can happen after the caching feature is first
 		// installed but before the user  does a 'helm repo update' to generate the
