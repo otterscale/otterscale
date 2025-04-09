@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 
@@ -19,6 +20,8 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/openhdc/openhdc/internal/env"
 )
+
+const searchMaxScore = 25
 
 type helm struct {
 	kubeMap   KubeMap
@@ -85,6 +88,24 @@ func (r *helm) UpdateRepositoryCharts(ctx context.Context, name string) (*model.
 		}, nil
 	}
 	return nil, fmt.Errorf("helm repo %q not found", name)
+}
+
+func (r *helm) ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error) {
+	rf, err := repo.LoadFile(r.settings.RepositoryConfig)
+	if err != nil {
+		return nil, err
+	}
+	ret := map[string]repo.ChartVersions{}
+	for _, re := range rf.Repositories {
+		path := filepath.Join(r.settings.RepositoryCache, helmpath.CacheIndexFile(re.Name))
+		idx, err := repo.LoadIndexFile(path)
+		if err != nil {
+			continue
+		}
+		idx.SortEntries()
+		maps.Copy(ret, idx.Entries)
+	}
+	return ret, nil
 }
 
 func (r *helm) chartNames(repoName string) []string {

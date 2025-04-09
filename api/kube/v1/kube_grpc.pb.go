@@ -27,6 +27,8 @@ const (
 	KubeService_RollbackRelease_FullMethodName        = "/openhdc.kube.v1.KubeService/RollbackRelease"
 	KubeService_ListRepositories_FullMethodName       = "/openhdc.kube.v1.KubeService/ListRepositories"
 	KubeService_UpdateRepositoryCharts_FullMethodName = "/openhdc.kube.v1.KubeService/UpdateRepositoryCharts"
+	KubeService_ListCharts_FullMethodName             = "/openhdc.kube.v1.KubeService/ListCharts"
+	KubeService_GetChart_FullMethodName               = "/openhdc.kube.v1.KubeService/GetChart"
 	KubeService_ListApplications_FullMethodName       = "/openhdc.kube.v1.KubeService/ListApplications"
 	KubeService_GetApplication_FullMethodName         = "/openhdc.kube.v1.KubeService/GetApplication"
 )
@@ -44,6 +46,9 @@ type KubeServiceClient interface {
 	// Helm Repository
 	ListRepositories(ctx context.Context, in *ListRepositoriesRequest, opts ...grpc.CallOption) (*ListRepositoriesResponse, error)
 	UpdateRepositoryCharts(ctx context.Context, in *UpdateRepositoryChartsRequest, opts ...grpc.CallOption) (*Repository, error)
+	// App Store
+	ListCharts(ctx context.Context, in *ListChartsRequest, opts ...grpc.CallOption) (*ListChartsResponse, error)
+	GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Chart, error)
 	// Native
 	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
 	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error)
@@ -127,6 +132,26 @@ func (c *kubeServiceClient) UpdateRepositoryCharts(ctx context.Context, in *Upda
 	return out, nil
 }
 
+func (c *kubeServiceClient) ListCharts(ctx context.Context, in *ListChartsRequest, opts ...grpc.CallOption) (*ListChartsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListChartsResponse)
+	err := c.cc.Invoke(ctx, KubeService_ListCharts_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *kubeServiceClient) GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Chart, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Chart)
+	err := c.cc.Invoke(ctx, KubeService_GetChart_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *kubeServiceClient) ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListApplicationsResponse)
@@ -160,6 +185,9 @@ type KubeServiceServer interface {
 	// Helm Repository
 	ListRepositories(context.Context, *ListRepositoriesRequest) (*ListRepositoriesResponse, error)
 	UpdateRepositoryCharts(context.Context, *UpdateRepositoryChartsRequest) (*Repository, error)
+	// App Store
+	ListCharts(context.Context, *ListChartsRequest) (*ListChartsResponse, error)
+	GetChart(context.Context, *GetChartRequest) (*Chart, error)
 	// Native
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
 	GetApplication(context.Context, *GetApplicationRequest) (*Application, error)
@@ -193,6 +221,12 @@ func (UnimplementedKubeServiceServer) ListRepositories(context.Context, *ListRep
 }
 func (UnimplementedKubeServiceServer) UpdateRepositoryCharts(context.Context, *UpdateRepositoryChartsRequest) (*Repository, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateRepositoryCharts not implemented")
+}
+func (UnimplementedKubeServiceServer) ListCharts(context.Context, *ListChartsRequest) (*ListChartsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCharts not implemented")
+}
+func (UnimplementedKubeServiceServer) GetChart(context.Context, *GetChartRequest) (*Chart, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChart not implemented")
 }
 func (UnimplementedKubeServiceServer) ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListApplications not implemented")
@@ -347,6 +381,42 @@ func _KubeService_UpdateRepositoryCharts_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _KubeService_ListCharts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListChartsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KubeServiceServer).ListCharts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KubeService_ListCharts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KubeServiceServer).ListCharts(ctx, req.(*ListChartsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _KubeService_GetChart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChartRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KubeServiceServer).GetChart(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KubeService_GetChart_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KubeServiceServer).GetChart(ctx, req.(*GetChartRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _KubeService_ListApplications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListApplicationsRequest)
 	if err := dec(in); err != nil {
@@ -417,6 +487,14 @@ var KubeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateRepositoryCharts",
 			Handler:    _KubeService_UpdateRepositoryCharts_Handler,
+		},
+		{
+			MethodName: "ListCharts",
+			Handler:    _KubeService_ListCharts_Handler,
+		},
+		{
+			MethodName: "GetChart",
+			Handler:    _KubeService_GetChart_Handler,
 		},
 		{
 			MethodName: "ListApplications",

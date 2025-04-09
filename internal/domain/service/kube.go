@@ -4,10 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"golang.org/x/sync/errgroup"
+
 	"helm.sh/helm/v3/pkg/release"
+	"helm.sh/helm/v3/pkg/repo"
 
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
@@ -66,6 +69,7 @@ type KubeHelm interface {
 	ListReleases(ctx context.Context, cluster, namespace string) ([]*release.Release, error)
 	ListRepositories(ctx context.Context) ([]*model.HelmRepo, error)
 	UpdateRepositoryCharts(ctx context.Context, name string) (*model.HelmRepo, error)
+	ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error)
 }
 
 // KubeService orchestrates Kubernetes operations
@@ -312,4 +316,22 @@ func (s *KubeService) ListRepositories(ctx context.Context) ([]*model.HelmRepo, 
 
 func (s *KubeService) UpdateRepositoryCharts(ctx context.Context, name string) (*model.HelmRepo, error) {
 	return s.helm.UpdateRepositoryCharts(ctx, name)
+}
+
+func (s *KubeService) ListCharts(ctx context.Context) (map[string]repo.ChartVersions, error) {
+	return s.helm.ListChartVersions(ctx)
+}
+
+func (s *KubeService) GetChart(ctx context.Context, name string) (repo.ChartVersions, error) {
+	m, err := s.helm.ListChartVersions(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for k, v := range m {
+		if k != name {
+			continue
+		}
+		return v, nil
+	}
+	return nil, fmt.Errorf("chart %q not found", name)
 }
