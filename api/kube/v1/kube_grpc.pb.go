@@ -20,17 +20,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	KubeService_ListReleases_FullMethodName     = "/openhdc.kube.v1.KubeService/ListReleases"
-	KubeService_InstallRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/InstallRelease"
-	KubeService_UninstallRelease_FullMethodName = "/openhdc.kube.v1.KubeService/UninstallRelease"
-	KubeService_UpgradeRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/UpgradeRelease"
-	KubeService_RollbackRelease_FullMethodName  = "/openhdc.kube.v1.KubeService/RollbackRelease"
-	KubeService_ListRepositories_FullMethodName = "/openhdc.kube.v1.KubeService/ListRepositories"
-	KubeService_CreateRepository_FullMethodName = "/openhdc.kube.v1.KubeService/CreateRepository"
-	KubeService_UpdateRepository_FullMethodName = "/openhdc.kube.v1.KubeService/UpdateRepository"
-	KubeService_DeleteRepository_FullMethodName = "/openhdc.kube.v1.KubeService/DeleteRepository"
-	KubeService_ListApplications_FullMethodName = "/openhdc.kube.v1.KubeService/ListApplications"
-	KubeService_GetApplication_FullMethodName   = "/openhdc.kube.v1.KubeService/GetApplication"
+	KubeService_ListReleases_FullMethodName           = "/openhdc.kube.v1.KubeService/ListReleases"
+	KubeService_InstallRelease_FullMethodName         = "/openhdc.kube.v1.KubeService/InstallRelease"
+	KubeService_UninstallRelease_FullMethodName       = "/openhdc.kube.v1.KubeService/UninstallRelease"
+	KubeService_UpgradeRelease_FullMethodName         = "/openhdc.kube.v1.KubeService/UpgradeRelease"
+	KubeService_RollbackRelease_FullMethodName        = "/openhdc.kube.v1.KubeService/RollbackRelease"
+	KubeService_ListRepositories_FullMethodName       = "/openhdc.kube.v1.KubeService/ListRepositories"
+	KubeService_UpdateRepositoryCharts_FullMethodName = "/openhdc.kube.v1.KubeService/UpdateRepositoryCharts"
+	KubeService_ListApplications_FullMethodName       = "/openhdc.kube.v1.KubeService/ListApplications"
+	KubeService_GetApplication_FullMethodName         = "/openhdc.kube.v1.KubeService/GetApplication"
 )
 
 // KubeServiceClient is the client API for KubeService service.
@@ -45,9 +43,7 @@ type KubeServiceClient interface {
 	RollbackRelease(ctx context.Context, in *RollbackReleaseRequest, opts ...grpc.CallOption) (*Release, error)
 	// Helm Repository
 	ListRepositories(ctx context.Context, in *ListRepositoriesRequest, opts ...grpc.CallOption) (*ListRepositoriesResponse, error)
-	CreateRepository(ctx context.Context, in *CreateRepositoryRequest, opts ...grpc.CallOption) (*Repository, error)
-	UpdateRepository(ctx context.Context, in *UpdateRepositoryRequest, opts ...grpc.CallOption) (*Repository, error)
-	DeleteRepository(ctx context.Context, in *DeleteRepositoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateRepositoryCharts(ctx context.Context, in *UpdateRepositoryChartsRequest, opts ...grpc.CallOption) (*Repository, error)
 	// Native
 	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
 	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error)
@@ -121,30 +117,10 @@ func (c *kubeServiceClient) ListRepositories(ctx context.Context, in *ListReposi
 	return out, nil
 }
 
-func (c *kubeServiceClient) CreateRepository(ctx context.Context, in *CreateRepositoryRequest, opts ...grpc.CallOption) (*Repository, error) {
+func (c *kubeServiceClient) UpdateRepositoryCharts(ctx context.Context, in *UpdateRepositoryChartsRequest, opts ...grpc.CallOption) (*Repository, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Repository)
-	err := c.cc.Invoke(ctx, KubeService_CreateRepository_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *kubeServiceClient) UpdateRepository(ctx context.Context, in *UpdateRepositoryRequest, opts ...grpc.CallOption) (*Repository, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Repository)
-	err := c.cc.Invoke(ctx, KubeService_UpdateRepository_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *kubeServiceClient) DeleteRepository(ctx context.Context, in *DeleteRepositoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, KubeService_DeleteRepository_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, KubeService_UpdateRepositoryCharts_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -183,9 +159,7 @@ type KubeServiceServer interface {
 	RollbackRelease(context.Context, *RollbackReleaseRequest) (*Release, error)
 	// Helm Repository
 	ListRepositories(context.Context, *ListRepositoriesRequest) (*ListRepositoriesResponse, error)
-	CreateRepository(context.Context, *CreateRepositoryRequest) (*Repository, error)
-	UpdateRepository(context.Context, *UpdateRepositoryRequest) (*Repository, error)
-	DeleteRepository(context.Context, *DeleteRepositoryRequest) (*emptypb.Empty, error)
+	UpdateRepositoryCharts(context.Context, *UpdateRepositoryChartsRequest) (*Repository, error)
 	// Native
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
 	GetApplication(context.Context, *GetApplicationRequest) (*Application, error)
@@ -217,14 +191,8 @@ func (UnimplementedKubeServiceServer) RollbackRelease(context.Context, *Rollback
 func (UnimplementedKubeServiceServer) ListRepositories(context.Context, *ListRepositoriesRequest) (*ListRepositoriesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListRepositories not implemented")
 }
-func (UnimplementedKubeServiceServer) CreateRepository(context.Context, *CreateRepositoryRequest) (*Repository, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateRepository not implemented")
-}
-func (UnimplementedKubeServiceServer) UpdateRepository(context.Context, *UpdateRepositoryRequest) (*Repository, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateRepository not implemented")
-}
-func (UnimplementedKubeServiceServer) DeleteRepository(context.Context, *DeleteRepositoryRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteRepository not implemented")
+func (UnimplementedKubeServiceServer) UpdateRepositoryCharts(context.Context, *UpdateRepositoryChartsRequest) (*Repository, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRepositoryCharts not implemented")
 }
 func (UnimplementedKubeServiceServer) ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListApplications not implemented")
@@ -361,56 +329,20 @@ func _KubeService_ListRepositories_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _KubeService_CreateRepository_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRepositoryRequest)
+func _KubeService_UpdateRepositoryCharts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRepositoryChartsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(KubeServiceServer).CreateRepository(ctx, in)
+		return srv.(KubeServiceServer).UpdateRepositoryCharts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: KubeService_CreateRepository_FullMethodName,
+		FullMethod: KubeService_UpdateRepositoryCharts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(KubeServiceServer).CreateRepository(ctx, req.(*CreateRepositoryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _KubeService_UpdateRepository_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateRepositoryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(KubeServiceServer).UpdateRepository(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: KubeService_UpdateRepository_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(KubeServiceServer).UpdateRepository(ctx, req.(*UpdateRepositoryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _KubeService_DeleteRepository_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteRepositoryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(KubeServiceServer).DeleteRepository(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: KubeService_DeleteRepository_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(KubeServiceServer).DeleteRepository(ctx, req.(*DeleteRepositoryRequest))
+		return srv.(KubeServiceServer).UpdateRepositoryCharts(ctx, req.(*UpdateRepositoryChartsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -483,16 +415,8 @@ var KubeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _KubeService_ListRepositories_Handler,
 		},
 		{
-			MethodName: "CreateRepository",
-			Handler:    _KubeService_CreateRepository_Handler,
-		},
-		{
-			MethodName: "UpdateRepository",
-			Handler:    _KubeService_UpdateRepository_Handler,
-		},
-		{
-			MethodName: "DeleteRepository",
-			Handler:    _KubeService_DeleteRepository_Handler,
+			MethodName: "UpdateRepositoryCharts",
+			Handler:    _KubeService_UpdateRepositoryCharts_Handler,
 		},
 		{
 			MethodName: "ListApplications",

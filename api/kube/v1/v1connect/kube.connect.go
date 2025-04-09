@@ -52,15 +52,9 @@ const (
 	// KubeServiceListRepositoriesProcedure is the fully-qualified name of the KubeService's
 	// ListRepositories RPC.
 	KubeServiceListRepositoriesProcedure = "/openhdc.kube.v1.KubeService/ListRepositories"
-	// KubeServiceCreateRepositoryProcedure is the fully-qualified name of the KubeService's
-	// CreateRepository RPC.
-	KubeServiceCreateRepositoryProcedure = "/openhdc.kube.v1.KubeService/CreateRepository"
-	// KubeServiceUpdateRepositoryProcedure is the fully-qualified name of the KubeService's
-	// UpdateRepository RPC.
-	KubeServiceUpdateRepositoryProcedure = "/openhdc.kube.v1.KubeService/UpdateRepository"
-	// KubeServiceDeleteRepositoryProcedure is the fully-qualified name of the KubeService's
-	// DeleteRepository RPC.
-	KubeServiceDeleteRepositoryProcedure = "/openhdc.kube.v1.KubeService/DeleteRepository"
+	// KubeServiceUpdateRepositoryChartsProcedure is the fully-qualified name of the KubeService's
+	// UpdateRepositoryCharts RPC.
+	KubeServiceUpdateRepositoryChartsProcedure = "/openhdc.kube.v1.KubeService/UpdateRepositoryCharts"
 	// KubeServiceListApplicationsProcedure is the fully-qualified name of the KubeService's
 	// ListApplications RPC.
 	KubeServiceListApplicationsProcedure = "/openhdc.kube.v1.KubeService/ListApplications"
@@ -79,9 +73,7 @@ type KubeServiceClient interface {
 	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[v1.Release], error)
 	// Helm Repository
 	ListRepositories(context.Context, *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error)
-	CreateRepository(context.Context, *connect.Request[v1.CreateRepositoryRequest]) (*connect.Response[v1.Repository], error)
-	UpdateRepository(context.Context, *connect.Request[v1.UpdateRepositoryRequest]) (*connect.Response[v1.Repository], error)
-	DeleteRepository(context.Context, *connect.Request[v1.DeleteRepositoryRequest]) (*connect.Response[emptypb.Empty], error)
+	UpdateRepositoryCharts(context.Context, *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error)
 	// Native
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -134,22 +126,10 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(kubeServiceMethods.ByName("ListRepositories")),
 			connect.WithClientOptions(opts...),
 		),
-		createRepository: connect.NewClient[v1.CreateRepositoryRequest, v1.Repository](
+		updateRepositoryCharts: connect.NewClient[v1.UpdateRepositoryChartsRequest, v1.Repository](
 			httpClient,
-			baseURL+KubeServiceCreateRepositoryProcedure,
-			connect.WithSchema(kubeServiceMethods.ByName("CreateRepository")),
-			connect.WithClientOptions(opts...),
-		),
-		updateRepository: connect.NewClient[v1.UpdateRepositoryRequest, v1.Repository](
-			httpClient,
-			baseURL+KubeServiceUpdateRepositoryProcedure,
-			connect.WithSchema(kubeServiceMethods.ByName("UpdateRepository")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteRepository: connect.NewClient[v1.DeleteRepositoryRequest, emptypb.Empty](
-			httpClient,
-			baseURL+KubeServiceDeleteRepositoryProcedure,
-			connect.WithSchema(kubeServiceMethods.ByName("DeleteRepository")),
+			baseURL+KubeServiceUpdateRepositoryChartsProcedure,
+			connect.WithSchema(kubeServiceMethods.ByName("UpdateRepositoryCharts")),
 			connect.WithClientOptions(opts...),
 		),
 		listApplications: connect.NewClient[v1.ListApplicationsRequest, v1.ListApplicationsResponse](
@@ -169,17 +149,15 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // kubeServiceClient implements KubeServiceClient.
 type kubeServiceClient struct {
-	listReleases     *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
-	installRelease   *connect.Client[v1.InstallReleaseRequest, v1.Release]
-	uninstallRelease *connect.Client[v1.UninstallReleaseRequest, emptypb.Empty]
-	upgradeRelease   *connect.Client[v1.UpgradeReleaseRequest, v1.Release]
-	rollbackRelease  *connect.Client[v1.RollbackReleaseRequest, v1.Release]
-	listRepositories *connect.Client[v1.ListRepositoriesRequest, v1.ListRepositoriesResponse]
-	createRepository *connect.Client[v1.CreateRepositoryRequest, v1.Repository]
-	updateRepository *connect.Client[v1.UpdateRepositoryRequest, v1.Repository]
-	deleteRepository *connect.Client[v1.DeleteRepositoryRequest, emptypb.Empty]
-	listApplications *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
-	getApplication   *connect.Client[v1.GetApplicationRequest, v1.Application]
+	listReleases           *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
+	installRelease         *connect.Client[v1.InstallReleaseRequest, v1.Release]
+	uninstallRelease       *connect.Client[v1.UninstallReleaseRequest, emptypb.Empty]
+	upgradeRelease         *connect.Client[v1.UpgradeReleaseRequest, v1.Release]
+	rollbackRelease        *connect.Client[v1.RollbackReleaseRequest, v1.Release]
+	listRepositories       *connect.Client[v1.ListRepositoriesRequest, v1.ListRepositoriesResponse]
+	updateRepositoryCharts *connect.Client[v1.UpdateRepositoryChartsRequest, v1.Repository]
+	listApplications       *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
+	getApplication         *connect.Client[v1.GetApplicationRequest, v1.Application]
 }
 
 // ListReleases calls openhdc.kube.v1.KubeService.ListReleases.
@@ -212,19 +190,9 @@ func (c *kubeServiceClient) ListRepositories(ctx context.Context, req *connect.R
 	return c.listRepositories.CallUnary(ctx, req)
 }
 
-// CreateRepository calls openhdc.kube.v1.KubeService.CreateRepository.
-func (c *kubeServiceClient) CreateRepository(ctx context.Context, req *connect.Request[v1.CreateRepositoryRequest]) (*connect.Response[v1.Repository], error) {
-	return c.createRepository.CallUnary(ctx, req)
-}
-
-// UpdateRepository calls openhdc.kube.v1.KubeService.UpdateRepository.
-func (c *kubeServiceClient) UpdateRepository(ctx context.Context, req *connect.Request[v1.UpdateRepositoryRequest]) (*connect.Response[v1.Repository], error) {
-	return c.updateRepository.CallUnary(ctx, req)
-}
-
-// DeleteRepository calls openhdc.kube.v1.KubeService.DeleteRepository.
-func (c *kubeServiceClient) DeleteRepository(ctx context.Context, req *connect.Request[v1.DeleteRepositoryRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteRepository.CallUnary(ctx, req)
+// UpdateRepositoryCharts calls openhdc.kube.v1.KubeService.UpdateRepositoryCharts.
+func (c *kubeServiceClient) UpdateRepositoryCharts(ctx context.Context, req *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error) {
+	return c.updateRepositoryCharts.CallUnary(ctx, req)
 }
 
 // ListApplications calls openhdc.kube.v1.KubeService.ListApplications.
@@ -247,9 +215,7 @@ type KubeServiceHandler interface {
 	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[v1.Release], error)
 	// Helm Repository
 	ListRepositories(context.Context, *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error)
-	CreateRepository(context.Context, *connect.Request[v1.CreateRepositoryRequest]) (*connect.Response[v1.Repository], error)
-	UpdateRepository(context.Context, *connect.Request[v1.UpdateRepositoryRequest]) (*connect.Response[v1.Repository], error)
-	DeleteRepository(context.Context, *connect.Request[v1.DeleteRepositoryRequest]) (*connect.Response[emptypb.Empty], error)
+	UpdateRepositoryCharts(context.Context, *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error)
 	// Native
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -298,22 +264,10 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(kubeServiceMethods.ByName("ListRepositories")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeServiceCreateRepositoryHandler := connect.NewUnaryHandler(
-		KubeServiceCreateRepositoryProcedure,
-		svc.CreateRepository,
-		connect.WithSchema(kubeServiceMethods.ByName("CreateRepository")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeServiceUpdateRepositoryHandler := connect.NewUnaryHandler(
-		KubeServiceUpdateRepositoryProcedure,
-		svc.UpdateRepository,
-		connect.WithSchema(kubeServiceMethods.ByName("UpdateRepository")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeServiceDeleteRepositoryHandler := connect.NewUnaryHandler(
-		KubeServiceDeleteRepositoryProcedure,
-		svc.DeleteRepository,
-		connect.WithSchema(kubeServiceMethods.ByName("DeleteRepository")),
+	kubeServiceUpdateRepositoryChartsHandler := connect.NewUnaryHandler(
+		KubeServiceUpdateRepositoryChartsProcedure,
+		svc.UpdateRepositoryCharts,
+		connect.WithSchema(kubeServiceMethods.ByName("UpdateRepositoryCharts")),
 		connect.WithHandlerOptions(opts...),
 	)
 	kubeServiceListApplicationsHandler := connect.NewUnaryHandler(
@@ -342,12 +296,8 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 			kubeServiceRollbackReleaseHandler.ServeHTTP(w, r)
 		case KubeServiceListRepositoriesProcedure:
 			kubeServiceListRepositoriesHandler.ServeHTTP(w, r)
-		case KubeServiceCreateRepositoryProcedure:
-			kubeServiceCreateRepositoryHandler.ServeHTTP(w, r)
-		case KubeServiceUpdateRepositoryProcedure:
-			kubeServiceUpdateRepositoryHandler.ServeHTTP(w, r)
-		case KubeServiceDeleteRepositoryProcedure:
-			kubeServiceDeleteRepositoryHandler.ServeHTTP(w, r)
+		case KubeServiceUpdateRepositoryChartsProcedure:
+			kubeServiceUpdateRepositoryChartsHandler.ServeHTTP(w, r)
 		case KubeServiceListApplicationsProcedure:
 			kubeServiceListApplicationsHandler.ServeHTTP(w, r)
 		case KubeServiceGetApplicationProcedure:
@@ -385,16 +335,8 @@ func (UnimplementedKubeServiceHandler) ListRepositories(context.Context, *connec
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.ListRepositories is not implemented"))
 }
 
-func (UnimplementedKubeServiceHandler) CreateRepository(context.Context, *connect.Request[v1.CreateRepositoryRequest]) (*connect.Response[v1.Repository], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.CreateRepository is not implemented"))
-}
-
-func (UnimplementedKubeServiceHandler) UpdateRepository(context.Context, *connect.Request[v1.UpdateRepositoryRequest]) (*connect.Response[v1.Repository], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.UpdateRepository is not implemented"))
-}
-
-func (UnimplementedKubeServiceHandler) DeleteRepository(context.Context, *connect.Request[v1.DeleteRepositoryRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.DeleteRepository is not implemented"))
+func (UnimplementedKubeServiceHandler) UpdateRepositoryCharts(context.Context, *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.UpdateRepositoryCharts is not implemented"))
 }
 
 func (UnimplementedKubeServiceHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {

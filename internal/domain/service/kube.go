@@ -64,6 +64,8 @@ type KubeStorage interface {
 // KubeHelm handles helm-related operations
 type KubeHelm interface {
 	ListReleases(ctx context.Context, cluster, namespace string) ([]*release.Release, error)
+	ListRepositories(ctx context.Context) ([]*model.HelmRepo, error)
+	UpdateRepositoryCharts(ctx context.Context, name string) (*model.HelmRepo, error)
 }
 
 // KubeService orchestrates Kubernetes operations
@@ -302,4 +304,12 @@ func (s *KubeService) ListReleases(ctx context.Context, uuid, cluster, namespace
 		return nil, err
 	}
 	return s.helm.ListReleases(ctx, cluster, namespace)
+}
+
+func (s *KubeService) ListRepositories(ctx context.Context) ([]*model.HelmRepo, error) {
+	return s.helm.ListRepositories(ctx)
+}
+
+func (s *KubeService) UpdateRepositoryCharts(ctx context.Context, name string) (*model.HelmRepo, error) {
+	return s.helm.UpdateRepositoryCharts(ctx, name)
 }
