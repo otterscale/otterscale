@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"helm.sh/helm/v3/pkg/action"
+	"helm.sh/helm/v3/pkg/registry"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -90,6 +91,16 @@ func (k KubeMap) GetHelmConfig(cluster, namespace string) (*action.Configuration
 	if err := config.Init(configFlags, namespace, os.Getenv("HELM_DRIVER"), log.Printf); err != nil {
 		return nil, err
 	}
+
+	opts := []registry.ClientOption{
+		registry.ClientOptEnableCache(true),
+	}
+	registryClient, err := registry.NewClient(opts...)
+	if err != nil {
+		return nil, err
+	}
+	config.RegistryClient = registryClient
+
 	return config, nil
 }
 

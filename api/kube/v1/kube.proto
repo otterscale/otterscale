@@ -19,6 +19,10 @@ service KubeService {
   rpc ListRepositories(ListRepositoriesRequest) returns (ListRepositoriesResponse);  // helm repo list
   rpc UpdateRepositoryCharts(UpdateRepositoryChartsRequest) returns (Repository);    // helm repo update
 
+  // App Store
+  rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);  // helm search repo
+  rpc GetChart(GetChartRequest) returns (Chart);                   // helm search repo
+
   // Native
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
   rpc GetApplication(GetApplicationRequest) returns (Application);
@@ -42,6 +46,35 @@ message Repository {
   bool insecure_skip_tls_verify = 8;
   bool pass_credentials_all = 9;
   repeated string chart_names = 11;
+}
+
+message Chart {
+  message Maintainer {
+    string name = 1;
+    string email = 2;
+    string url = 3;
+  }
+  message Dependency {
+    string name = 1;
+    string version = 2;
+    string condition = 4;
+  }
+  message Version {
+    string chart_version = 1;
+    string application_version = 2;
+    string chart_ref = 3;
+  }
+  string name = 1;
+  string icon = 2;
+  string description = 3;
+  bool deprecated = 4;
+  string tags = 5;
+  repeated string keywords = 6;
+  string home = 11;
+  repeated string sources = 12;
+  repeated Maintainer maintainers = 21;
+  repeated Dependency dependencies = 31;
+  repeated Version versions = 41;
 }
 
 message Application {
@@ -109,7 +142,10 @@ message ListReleasesRequest {
 
 message ListReleasesResponse {}
 
-message InstallReleaseRequest {}
+message InstallReleaseRequest {
+  string name = 1;
+  string chart_ref = 2;
+}
 
 message UninstallReleaseRequest {}
 
@@ -141,4 +177,14 @@ message GetApplicationRequest {
   string cluster_name = 2;
   string namespace = 3;
   string name = 4;
+}
+
+message ListChartsRequest {}
+
+message ListChartsResponse {
+  repeated Chart charts = 1;
+}
+
+message GetChartRequest {
+  string name = 1;
 }

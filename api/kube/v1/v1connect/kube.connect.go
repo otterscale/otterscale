@@ -55,6 +55,10 @@ const (
 	// KubeServiceUpdateRepositoryChartsProcedure is the fully-qualified name of the KubeService's
 	// UpdateRepositoryCharts RPC.
 	KubeServiceUpdateRepositoryChartsProcedure = "/openhdc.kube.v1.KubeService/UpdateRepositoryCharts"
+	// KubeServiceListChartsProcedure is the fully-qualified name of the KubeService's ListCharts RPC.
+	KubeServiceListChartsProcedure = "/openhdc.kube.v1.KubeService/ListCharts"
+	// KubeServiceGetChartProcedure is the fully-qualified name of the KubeService's GetChart RPC.
+	KubeServiceGetChartProcedure = "/openhdc.kube.v1.KubeService/GetChart"
 	// KubeServiceListApplicationsProcedure is the fully-qualified name of the KubeService's
 	// ListApplications RPC.
 	KubeServiceListApplicationsProcedure = "/openhdc.kube.v1.KubeService/ListApplications"
@@ -74,6 +78,9 @@ type KubeServiceClient interface {
 	// Helm Repository
 	ListRepositories(context.Context, *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error)
 	UpdateRepositoryCharts(context.Context, *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error)
+	// App Store
+	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
+	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error)
 	// Native
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -132,6 +139,18 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(kubeServiceMethods.ByName("UpdateRepositoryCharts")),
 			connect.WithClientOptions(opts...),
 		),
+		listCharts: connect.NewClient[v1.ListChartsRequest, v1.ListChartsResponse](
+			httpClient,
+			baseURL+KubeServiceListChartsProcedure,
+			connect.WithSchema(kubeServiceMethods.ByName("ListCharts")),
+			connect.WithClientOptions(opts...),
+		),
+		getChart: connect.NewClient[v1.GetChartRequest, v1.Chart](
+			httpClient,
+			baseURL+KubeServiceGetChartProcedure,
+			connect.WithSchema(kubeServiceMethods.ByName("GetChart")),
+			connect.WithClientOptions(opts...),
+		),
 		listApplications: connect.NewClient[v1.ListApplicationsRequest, v1.ListApplicationsResponse](
 			httpClient,
 			baseURL+KubeServiceListApplicationsProcedure,
@@ -156,6 +175,8 @@ type kubeServiceClient struct {
 	rollbackRelease        *connect.Client[v1.RollbackReleaseRequest, v1.Release]
 	listRepositories       *connect.Client[v1.ListRepositoriesRequest, v1.ListRepositoriesResponse]
 	updateRepositoryCharts *connect.Client[v1.UpdateRepositoryChartsRequest, v1.Repository]
+	listCharts             *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
+	getChart               *connect.Client[v1.GetChartRequest, v1.Chart]
 	listApplications       *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
 	getApplication         *connect.Client[v1.GetApplicationRequest, v1.Application]
 }
@@ -195,6 +216,16 @@ func (c *kubeServiceClient) UpdateRepositoryCharts(ctx context.Context, req *con
 	return c.updateRepositoryCharts.CallUnary(ctx, req)
 }
 
+// ListCharts calls openhdc.kube.v1.KubeService.ListCharts.
+func (c *kubeServiceClient) ListCharts(ctx context.Context, req *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
+	return c.listCharts.CallUnary(ctx, req)
+}
+
+// GetChart calls openhdc.kube.v1.KubeService.GetChart.
+func (c *kubeServiceClient) GetChart(ctx context.Context, req *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error) {
+	return c.getChart.CallUnary(ctx, req)
+}
+
 // ListApplications calls openhdc.kube.v1.KubeService.ListApplications.
 func (c *kubeServiceClient) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
 	return c.listApplications.CallUnary(ctx, req)
@@ -216,6 +247,9 @@ type KubeServiceHandler interface {
 	// Helm Repository
 	ListRepositories(context.Context, *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error)
 	UpdateRepositoryCharts(context.Context, *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error)
+	// App Store
+	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
+	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error)
 	// Native
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -270,6 +304,18 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(kubeServiceMethods.ByName("UpdateRepositoryCharts")),
 		connect.WithHandlerOptions(opts...),
 	)
+	kubeServiceListChartsHandler := connect.NewUnaryHandler(
+		KubeServiceListChartsProcedure,
+		svc.ListCharts,
+		connect.WithSchema(kubeServiceMethods.ByName("ListCharts")),
+		connect.WithHandlerOptions(opts...),
+	)
+	kubeServiceGetChartHandler := connect.NewUnaryHandler(
+		KubeServiceGetChartProcedure,
+		svc.GetChart,
+		connect.WithSchema(kubeServiceMethods.ByName("GetChart")),
+		connect.WithHandlerOptions(opts...),
+	)
 	kubeServiceListApplicationsHandler := connect.NewUnaryHandler(
 		KubeServiceListApplicationsProcedure,
 		svc.ListApplications,
@@ -298,6 +344,10 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 			kubeServiceListRepositoriesHandler.ServeHTTP(w, r)
 		case KubeServiceUpdateRepositoryChartsProcedure:
 			kubeServiceUpdateRepositoryChartsHandler.ServeHTTP(w, r)
+		case KubeServiceListChartsProcedure:
+			kubeServiceListChartsHandler.ServeHTTP(w, r)
+		case KubeServiceGetChartProcedure:
+			kubeServiceGetChartHandler.ServeHTTP(w, r)
 		case KubeServiceListApplicationsProcedure:
 			kubeServiceListApplicationsHandler.ServeHTTP(w, r)
 		case KubeServiceGetApplicationProcedure:
@@ -337,6 +387,14 @@ func (UnimplementedKubeServiceHandler) ListRepositories(context.Context, *connec
 
 func (UnimplementedKubeServiceHandler) UpdateRepositoryCharts(context.Context, *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.UpdateRepositoryCharts is not implemented"))
+}
+
+func (UnimplementedKubeServiceHandler) ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.ListCharts is not implemented"))
+}
+
+func (UnimplementedKubeServiceHandler) GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.GetChart is not implemented"))
 }
 
 func (UnimplementedKubeServiceHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
