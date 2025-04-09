@@ -23,6 +23,11 @@ const (
 	OPENHDC_JUJU_CACERT_PATH          = "OPENHDC_JUJU_CACERT_PATH"          //nolint:stylecheck
 )
 
+// Environment variables for Helm configuration
+const (
+	OPENHDC_HELM_REPOSITORY_CONFIG = "OPENHDC_HELM_REPOSITORY_CONFIG" //nolint:stylecheck
+)
+
 // GetOrDefault returns the value of the environment variable if set, otherwise returns the default value.
 func GetOrDefault(envVar, defaultValue string) string {
 	if value := os.Getenv(envVar); value != "" {

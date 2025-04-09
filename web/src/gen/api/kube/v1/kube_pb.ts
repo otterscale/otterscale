@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/kube/v1/kube.proto.
  */
 export const file_api_kube_v1_kube: GenFile = /*@__PURE__*/
-  fileDesc("ChZhcGkva3ViZS92MS9rdWJlLnByb3RvEg9vcGVuaGRjLmt1YmUudjEiCQoHUmVsZWFzZSIMCgpSZXBvc2l0b3J5IvoKCgtBcHBsaWNhdGlvbhIMCgR0eXBlGAEgASgJEgwKBG5hbWUYAiABKAkSEQoJbmFtZXNwYWNlGAMgASgJEjgKBmxhYmVscxgEIAMoCzIoLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbi5MYWJlbHNFbnRyeRIQCghyZXBsaWNhcxgFIAEoBRI6Cgpjb250YWluZXJzGAsgAygLMiYub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLkNvbnRhaW5lchJUChhwZXJzaXN0ZW50X3ZvbHVtZV9jbGFpbXMYFSADKAsyMi5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uUGVyc2lzdGVudFZvbHVtZUNsYWltEi4KBHBvZHMYHyADKAsyIC5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uUG9kEjUKB3NlcnZpY2UYKSADKAsyJC5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uU2VydmljZRrDAQoHU2VydmljZRIMCgRuYW1lGAEgASgJEgwKBHR5cGUYAiABKAkSEgoKY2x1c3Rlcl9pcBgDIAEoCRI4CgVwb3J0cxgLIAMoCzIpLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbi5TZXJ2aWNlLlBvcnQaTgoEUG9ydBIMCgRwb3J0GAEgASgFEhEKCW5vZGVfcG9ydBgCIAEoBRIQCghwcm90b2NvbBgDIAEoCRITCgt0YXJnZXRfcG9ydBgLIAEoCRq4AgoDUG9kEgwKBG5hbWUYASABKAkSDQoFcGhhc2UYAiABKAkSDQoFcmVhZHkYAyABKAkSEAoIcmVzdGFydHMYBCABKAkSQgoObGFzdF9jb25kaXRpb24YCyABKAsyKi5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uUG9kLkNvbmRpdGlvbhquAQoJQ29uZGl0aW9uEgwKBHR5cGUYASABKAkSDgoGc3RhdHVzGAIgASgJEi0KCXByb2JlZF9hdBgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMwoPdHJhbnNpdGlvbmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIOCgZyZWFzb24YBSABKAkSDwoHbWVzc2FnZRgGIAEoCRqfAQoVUGVyc2lzdGVudFZvbHVtZUNsYWltEgwKBG5hbWUYASABKAkSDgoGc3RhdHVzGAIgASgJEhQKDGFjY2Vzc19tb2RlcxgDIAMoCRIQCghjYXBhY2l0eRgEIAEoCRJACg1zdG9yYWdlX2NsYXNzGAsgASgLMikub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLlN0b3JhZ2VDbGFzcxroAQoMU3RvcmFnZUNsYXNzEgwKBG5hbWUYASABKAkSEwoLcHJvdmlzaW9uZXIYAiABKAkSFgoOcmVjbGFpbV9wb2xpY3kYAyABKAkSGwoTdm9sdW1lX2JpbmRpbmdfbW9kZRgEIAEoCRJNCgpwYXJhbWV0ZXJzGAUgAygLMjkub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLlN0b3JhZ2VDbGFzcy5QYXJhbWV0ZXJzRW50cnkaMQoPUGFyYW1ldGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaOgoJQ29udGFpbmVyEhIKCmltYWdlX25hbWUYASABKAkSGQoRaW1hZ2VfcHVsbF9wb2xpY3kYAiABKAkaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASI/ChNMaXN0UmVsZWFzZXNSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSFAoMY2x1c3Rlcl9uYW1lGAIgASgJIhYKFExpc3RSZWxlYXNlc1Jlc3BvbnNlIhcKFUluc3RhbGxSZWxlYXNlUmVxdWVzdCIZChdVbmluc3RhbGxSZWxlYXNlUmVxdWVzdCIXChVVcGdyYWRlUmVsZWFzZVJlcXVlc3QiGAoWUm9sbGJhY2tSZWxlYXNlUmVxdWVzdCIZChdMaXN0UmVwb3NpdG9yaWVzUmVxdWVzdCIaChhMaXN0UmVwb3NpdG9yaWVzUmVzcG9uc2UiGQoXQ3JlYXRlUmVwb3NpdG9yeVJlcXVlc3QiGQoXVXBkYXRlUmVwb3NpdG9yeVJlcXVlc3QiGQoXRGVsZXRlUmVwb3NpdG9yeVJlcXVlc3QiQwoXTGlzdEFwcGxpY2F0aW9uc1JlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCRIUCgxjbHVzdGVyX25hbWUYAiABKAkiTgoYTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlEjIKDGFwcGxpY2F0aW9ucxgBIAMoCzIcLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbiJiChVHZXRBcHBsaWNhdGlvblJlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCRIUCgxjbHVzdGVyX25hbWUYAiABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAky9AcKC0t1YmVTZXJ2aWNlElsKDExpc3RSZWxlYXNlcxIkLm9wZW5oZGMua3ViZS52MS5MaXN0UmVsZWFzZXNSZXF1ZXN0GiUub3BlbmhkYy5rdWJlLnYxLkxpc3RSZWxlYXNlc1Jlc3BvbnNlElIKDkluc3RhbGxSZWxlYXNlEiYub3BlbmhkYy5rdWJlLnYxLkluc3RhbGxSZWxlYXNlUmVxdWVzdBoYLm9wZW5oZGMua3ViZS52MS5SZWxlYXNlElQKEFVuaW5zdGFsbFJlbGVhc2USKC5vcGVuaGRjLmt1YmUudjEuVW5pbnN0YWxsUmVsZWFzZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSUgoOVXBncmFkZVJlbGVhc2USJi5vcGVuaGRjLmt1YmUudjEuVXBncmFkZVJlbGVhc2VSZXF1ZXN0Ghgub3BlbmhkYy5rdWJlLnYxLlJlbGVhc2USVAoPUm9sbGJhY2tSZWxlYXNlEicub3BlbmhkYy5rdWJlLnYxLlJvbGxiYWNrUmVsZWFzZVJlcXVlc3QaGC5vcGVuaGRjLmt1YmUudjEuUmVsZWFzZRJnChBMaXN0UmVwb3NpdG9yaWVzEigub3BlbmhkYy5rdWJlLnYxLkxpc3RSZXBvc2l0b3JpZXNSZXF1ZXN0Gikub3BlbmhkYy5rdWJlLnYxLkxpc3RSZXBvc2l0b3JpZXNSZXNwb25zZRJZChBDcmVhdGVSZXBvc2l0b3J5Eigub3BlbmhkYy5rdWJlLnYxLkNyZWF0ZVJlcG9zaXRvcnlSZXF1ZXN0Ghsub3BlbmhkYy5rdWJlLnYxLlJlcG9zaXRvcnkSWQoQVXBkYXRlUmVwb3NpdG9yeRIoLm9wZW5oZGMua3ViZS52MS5VcGRhdGVSZXBvc2l0b3J5UmVxdWVzdBobLm9wZW5oZGMua3ViZS52MS5SZXBvc2l0b3J5ElQKEERlbGV0ZVJlcG9zaXRvcnkSKC5vcGVuaGRjLmt1YmUudjEuRGVsZXRlUmVwb3NpdG9yeVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSZwoQTGlzdEFwcGxpY2F0aW9ucxIoLm9wZW5oZGMua3ViZS52MS5MaXN0QXBwbGljYXRpb25zUmVxdWVzdBopLm9wZW5oZGMua3ViZS52MS5MaXN0QXBwbGljYXRpb25zUmVzcG9uc2USVgoOR2V0QXBwbGljYXRpb24SJi5vcGVuaGRjLmt1YmUudjEuR2V0QXBwbGljYXRpb25SZXF1ZXN0Ghwub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uQitaKWdpdGh1Yi5jb20vb3BlbmhkYy9vcGVuaGRjL2FwaS9rdWJlL3YxO3YxYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChZhcGkva3ViZS92MS9rdWJlLnByb3RvEg9vcGVuaGRjLmt1YmUudjEiCQoHUmVsZWFzZSLWAQoKUmVwb3NpdG9yeRIMCgRuYW1lGAEgASgJEgsKA3VybBgCIAEoCRIQCgh1c2VybmFtZRgDIAEoCRIQCghwYXNzd29yZBgEIAEoCRIRCgljZXJ0X2ZpbGUYBSABKAkSEAoIa2V5X2ZpbGUYBiABKAkSDwoHY2FfZmlsZRgHIAEoCRIgChhpbnNlY3VyZV9za2lwX3Rsc192ZXJpZnkYCCABKAgSHAoUcGFzc19jcmVkZW50aWFsc19hbGwYCSABKAgSEwoLY2hhcnRfbmFtZXMYCyADKAki+goKC0FwcGxpY2F0aW9uEgwKBHR5cGUYASABKAkSDAoEbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSOAoGbGFiZWxzGAQgAygLMigub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLkxhYmVsc0VudHJ5EhAKCHJlcGxpY2FzGAUgASgFEjoKCmNvbnRhaW5lcnMYCyADKAsyJi5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uQ29udGFpbmVyElQKGHBlcnNpc3RlbnRfdm9sdW1lX2NsYWltcxgVIAMoCzIyLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbi5QZXJzaXN0ZW50Vm9sdW1lQ2xhaW0SLgoEcG9kcxgfIAMoCzIgLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbi5Qb2QSNQoHc2VydmljZRgpIAMoCzIkLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbi5TZXJ2aWNlGsMBCgdTZXJ2aWNlEgwKBG5hbWUYASABKAkSDAoEdHlwZRgCIAEoCRISCgpjbHVzdGVyX2lwGAMgASgJEjgKBXBvcnRzGAsgAygLMikub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLlNlcnZpY2UuUG9ydBpOCgRQb3J0EgwKBHBvcnQYASABKAUSEQoJbm9kZV9wb3J0GAIgASgFEhAKCHByb3RvY29sGAMgASgJEhMKC3RhcmdldF9wb3J0GAsgASgJGrgCCgNQb2QSDAoEbmFtZRgBIAEoCRINCgVwaGFzZRgCIAEoCRINCgVyZWFkeRgDIAEoCRIQCghyZXN0YXJ0cxgEIAEoCRJCCg5sYXN0X2NvbmRpdGlvbhgLIAEoCzIqLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbi5Qb2QuQ29uZGl0aW9uGq4BCglDb25kaXRpb24SDAoEdHlwZRgBIAEoCRIOCgZzdGF0dXMYAiABKAkSLQoJcHJvYmVkX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIzCg90cmFuc2l0aW9uZWRfYXQYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg4KBnJlYXNvbhgFIAEoCRIPCgdtZXNzYWdlGAYgASgJGp8BChVQZXJzaXN0ZW50Vm9sdW1lQ2xhaW0SDAoEbmFtZRgBIAEoCRIOCgZzdGF0dXMYAiABKAkSFAoMYWNjZXNzX21vZGVzGAMgAygJEhAKCGNhcGFjaXR5GAQgASgJEkAKDXN0b3JhZ2VfY2xhc3MYCyABKAsyKS5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uU3RvcmFnZUNsYXNzGugBCgxTdG9yYWdlQ2xhc3MSDAoEbmFtZRgBIAEoCRITCgtwcm92aXNpb25lchgCIAEoCRIWCg5yZWNsYWltX3BvbGljeRgDIAEoCRIbChN2b2x1bWVfYmluZGluZ19tb2RlGAQgASgJEk0KCnBhcmFtZXRlcnMYBSADKAsyOS5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uU3RvcmFnZUNsYXNzLlBhcmFtZXRlcnNFbnRyeRoxCg9QYXJhbWV0ZXJzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARo6CglDb250YWluZXISEgoKaW1hZ2VfbmFtZRgBIAEoCRIZChFpbWFnZV9wdWxsX3BvbGljeRgCIAEoCRotCgtMYWJlbHNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIj8KE0xpc3RSZWxlYXNlc1JlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCRIUCgxjbHVzdGVyX25hbWUYAiABKAkiFgoUTGlzdFJlbGVhc2VzUmVzcG9uc2UiFwoVSW5zdGFsbFJlbGVhc2VSZXF1ZXN0IhkKF1VuaW5zdGFsbFJlbGVhc2VSZXF1ZXN0IhcKFVVwZ3JhZGVSZWxlYXNlUmVxdWVzdCIYChZSb2xsYmFja1JlbGVhc2VSZXF1ZXN0IhkKF0xpc3RSZXBvc2l0b3JpZXNSZXF1ZXN0Ik0KGExpc3RSZXBvc2l0b3JpZXNSZXNwb25zZRIxCgxyZXBvc2l0b3JpZXMYASADKAsyGy5vcGVuaGRjLmt1YmUudjEuUmVwb3NpdG9yeSItCh1VcGRhdGVSZXBvc2l0b3J5Q2hhcnRzUmVxdWVzdBIMCgRuYW1lGAEgASgJIkMKF0xpc3RBcHBsaWNhdGlvbnNSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSFAoMY2x1c3Rlcl9uYW1lGAIgASgJIk4KGExpc3RBcHBsaWNhdGlvbnNSZXNwb25zZRIyCgxhcHBsaWNhdGlvbnMYASADKAsyHC5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24iYgoVR2V0QXBwbGljYXRpb25SZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSFAoMY2x1c3Rlcl9uYW1lGAIgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJMs8GCgtLdWJlU2VydmljZRJbCgxMaXN0UmVsZWFzZXMSJC5vcGVuaGRjLmt1YmUudjEuTGlzdFJlbGVhc2VzUmVxdWVzdBolLm9wZW5oZGMua3ViZS52MS5MaXN0UmVsZWFzZXNSZXNwb25zZRJSCg5JbnN0YWxsUmVsZWFzZRImLm9wZW5oZGMua3ViZS52MS5JbnN0YWxsUmVsZWFzZVJlcXVlc3QaGC5vcGVuaGRjLmt1YmUudjEuUmVsZWFzZRJUChBVbmluc3RhbGxSZWxlYXNlEigub3BlbmhkYy5rdWJlLnYxLlVuaW5zdGFsbFJlbGVhc2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElIKDlVwZ3JhZGVSZWxlYXNlEiYub3BlbmhkYy5rdWJlLnYxLlVwZ3JhZGVSZWxlYXNlUmVxdWVzdBoYLm9wZW5oZGMua3ViZS52MS5SZWxlYXNlElQKD1JvbGxiYWNrUmVsZWFzZRInLm9wZW5oZGMua3ViZS52MS5Sb2xsYmFja1JlbGVhc2VSZXF1ZXN0Ghgub3BlbmhkYy5rdWJlLnYxLlJlbGVhc2USZwoQTGlzdFJlcG9zaXRvcmllcxIoLm9wZW5oZGMua3ViZS52MS5MaXN0UmVwb3NpdG9yaWVzUmVxdWVzdBopLm9wZW5oZGMua3ViZS52MS5MaXN0UmVwb3NpdG9yaWVzUmVzcG9uc2USZQoWVXBkYXRlUmVwb3NpdG9yeUNoYXJ0cxIuLm9wZW5oZGMua3ViZS52MS5VcGRhdGVSZXBvc2l0b3J5Q2hhcnRzUmVxdWVzdBobLm9wZW5oZGMua3ViZS52MS5SZXBvc2l0b3J5EmcKEExpc3RBcHBsaWNhdGlvbnMSKC5vcGVuaGRjLmt1YmUudjEuTGlzdEFwcGxpY2F0aW9uc1JlcXVlc3QaKS5vcGVuaGRjLmt1YmUudjEuTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlElYKDkdldEFwcGxpY2F0aW9uEiYub3BlbmhkYy5rdWJlLnYxLkdldEFwcGxpY2F0aW9uUmVxdWVzdBocLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbkIrWilnaXRodWIuY29tL29wZW5oZGMvb3BlbmhkYy9hcGkva3ViZS92MTt2MWIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * ReleaseValues
@@ -36,6 +36,55 @@ export const ReleaseSchema: GenMessage<Release> = /*@__PURE__*/
  * @generated from message openhdc.kube.v1.Repository
  */
 export type Repository = Message<"openhdc.kube.v1.Repository"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string url = 2;
+   */
+  url: string;
+
+  /**
+   * @generated from field: string username = 3;
+   */
+  username: string;
+
+  /**
+   * @generated from field: string password = 4;
+   */
+  password: string;
+
+  /**
+   * @generated from field: string cert_file = 5;
+   */
+  certFile: string;
+
+  /**
+   * @generated from field: string key_file = 6;
+   */
+  keyFile: string;
+
+  /**
+   * @generated from field: string ca_file = 7;
+   */
+  caFile: string;
+
+  /**
+   * @generated from field: bool insecure_skip_tls_verify = 8;
+   */
+  insecureSkipTlsVerify: boolean;
+
+  /**
+   * @generated from field: bool pass_credentials_all = 9;
+   */
+  passCredentialsAll: boolean;
+
+  /**
+   * @generated from field: repeated string chart_names = 11;
+   */
+  chartNames: string[];
 };
 
 /**
@@ -445,6 +494,10 @@ export const ListRepositoriesRequestSchema: GenMessage<ListRepositoriesRequest> 
  * @generated from message openhdc.kube.v1.ListRepositoriesResponse
  */
 export type ListRepositoriesResponse = Message<"openhdc.kube.v1.ListRepositoriesResponse"> & {
+  /**
+   * @generated from field: repeated openhdc.kube.v1.Repository repositories = 1;
+   */
+  repositories: Repository[];
 };
 
 /**
@@ -455,43 +508,21 @@ export const ListRepositoriesResponseSchema: GenMessage<ListRepositoriesResponse
   messageDesc(file_api_kube_v1_kube, 10);
 
 /**
- * @generated from message openhdc.kube.v1.CreateRepositoryRequest
+ * @generated from message openhdc.kube.v1.UpdateRepositoryChartsRequest
  */
-export type CreateRepositoryRequest = Message<"openhdc.kube.v1.CreateRepositoryRequest"> & {
+export type UpdateRepositoryChartsRequest = Message<"openhdc.kube.v1.UpdateRepositoryChartsRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
 };
 
 /**
- * Describes the message openhdc.kube.v1.CreateRepositoryRequest.
- * Use `create(CreateRepositoryRequestSchema)` to create a new message.
+ * Describes the message openhdc.kube.v1.UpdateRepositoryChartsRequest.
+ * Use `create(UpdateRepositoryChartsRequestSchema)` to create a new message.
  */
-export const CreateRepositoryRequestSchema: GenMessage<CreateRepositoryRequest> = /*@__PURE__*/
+export const UpdateRepositoryChartsRequestSchema: GenMessage<UpdateRepositoryChartsRequest> = /*@__PURE__*/
   messageDesc(file_api_kube_v1_kube, 11);
-
-/**
- * @generated from message openhdc.kube.v1.UpdateRepositoryRequest
- */
-export type UpdateRepositoryRequest = Message<"openhdc.kube.v1.UpdateRepositoryRequest"> & {
-};
-
-/**
- * Describes the message openhdc.kube.v1.UpdateRepositoryRequest.
- * Use `create(UpdateRepositoryRequestSchema)` to create a new message.
- */
-export const UpdateRepositoryRequestSchema: GenMessage<UpdateRepositoryRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 12);
-
-/**
- * @generated from message openhdc.kube.v1.DeleteRepositoryRequest
- */
-export type DeleteRepositoryRequest = Message<"openhdc.kube.v1.DeleteRepositoryRequest"> & {
-};
-
-/**
- * Describes the message openhdc.kube.v1.DeleteRepositoryRequest.
- * Use `create(DeleteRepositoryRequestSchema)` to create a new message.
- */
-export const DeleteRepositoryRequestSchema: GenMessage<DeleteRepositoryRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 13);
 
 /**
  * @generated from message openhdc.kube.v1.ListApplicationsRequest
@@ -513,7 +544,7 @@ export type ListApplicationsRequest = Message<"openhdc.kube.v1.ListApplicationsR
  * Use `create(ListApplicationsRequestSchema)` to create a new message.
  */
 export const ListApplicationsRequestSchema: GenMessage<ListApplicationsRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 14);
+  messageDesc(file_api_kube_v1_kube, 12);
 
 /**
  * @generated from message openhdc.kube.v1.ListApplicationsResponse
@@ -530,7 +561,7 @@ export type ListApplicationsResponse = Message<"openhdc.kube.v1.ListApplications
  * Use `create(ListApplicationsResponseSchema)` to create a new message.
  */
 export const ListApplicationsResponseSchema: GenMessage<ListApplicationsResponse> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 15);
+  messageDesc(file_api_kube_v1_kube, 13);
 
 /**
  * @generated from message openhdc.kube.v1.GetApplicationRequest
@@ -562,7 +593,7 @@ export type GetApplicationRequest = Message<"openhdc.kube.v1.GetApplicationReque
  * Use `create(GetApplicationRequestSchema)` to create a new message.
  */
 export const GetApplicationRequestSchema: GenMessage<GetApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 16);
+  messageDesc(file_api_kube_v1_kube, 14);
 
 /**
  * @generated from service openhdc.kube.v1.KubeService
@@ -633,34 +664,14 @@ export const KubeService: GenService<{
     output: typeof ListRepositoriesResponseSchema;
   },
   /**
-   * helm repo add
-   *
-   * @generated from rpc openhdc.kube.v1.KubeService.CreateRepository
-   */
-  createRepository: {
-    methodKind: "unary";
-    input: typeof CreateRepositoryRequestSchema;
-    output: typeof RepositorySchema;
-  },
-  /**
    * helm repo update
    *
-   * @generated from rpc openhdc.kube.v1.KubeService.UpdateRepository
+   * @generated from rpc openhdc.kube.v1.KubeService.UpdateRepositoryCharts
    */
-  updateRepository: {
+  updateRepositoryCharts: {
     methodKind: "unary";
-    input: typeof UpdateRepositoryRequestSchema;
+    input: typeof UpdateRepositoryChartsRequestSchema;
     output: typeof RepositorySchema;
-  },
-  /**
-   * helm repo remove
-   *
-   * @generated from rpc openhdc.kube.v1.KubeService.DeleteRepository
-   */
-  deleteRepository: {
-    methodKind: "unary";
-    input: typeof DeleteRepositoryRequestSchema;
-    output: typeof EmptySchema;
   },
   /**
    * Native
