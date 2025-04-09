@@ -8,11 +8,11 @@ option go_package = "github.com/openhdc/openhdc/api/kube/v1;v1";
 
 service KubeService {
   // Helm Release
-  rpc ListReleases(ListReleasesRequest) returns (ListReleasesResponse);     // helm list
-  rpc CreateRelease(CreateReleaseRequest) returns (Release);                // helm install
-  rpc DeleteRelease(DeleteReleaseRequest) returns (google.protobuf.Empty);  // helm remove
-  rpc UpgradeRelease(UpgradeReleaseRequest) returns (Release);              // helm upgrade
-  rpc RollbackRelease(RollbackReleaseRequest) returns (Release);            // helm rollback
+  rpc ListReleases(ListReleasesRequest) returns (ListReleasesResponse);           // helm list
+  rpc InstallRelease(InstallReleaseRequest) returns (Release);                    // helm install
+  rpc UninstallRelease(UninstallReleaseRequest) returns (google.protobuf.Empty);  // helm uninstall
+  rpc UpgradeRelease(UpgradeReleaseRequest) returns (Release);                    // helm upgrade
+  rpc RollbackRelease(RollbackReleaseRequest) returns (Release);                  // helm rollback
 
   // Helm Repository
   rpc ListRepositories(ListRepositoriesRequest) returns (ListRepositoriesResponse);  // helm repo list
@@ -52,6 +52,7 @@ message Application {
     string status = 2;
     string ready = 3;
     string restarts = 4;
+    string message = 5;
   }
   message PersistentVolumeClaim {
     string name = 1;
@@ -71,24 +72,27 @@ message Application {
     string image_name = 1;
     string image_pull_policy = 2;
   }
-  string name = 1;
-  string namespace = 2;
-  map<string, string> labels = 3;
-  int32 replicas = 4;
-  string strategy_type = 5;
+  string type = 1;
+  string name = 2;
+  string namespace = 3;
+  map<string, string> labels = 4;
+  int32 replicas = 5;
   repeated Container containers = 11;
   repeated PersistentVolumeClaim persistent_volume_claims = 21;
   repeated Pod pods = 31;
   repeated Service service = 41;
 }
 
-message ListReleasesRequest {}
+message ListReleasesRequest {
+  string model_uuid = 1;
+  string cluster_name = 2;
+}
 
 message ListReleasesResponse {}
 
-message CreateReleaseRequest {}
+message InstallReleaseRequest {}
 
-message DeleteReleaseRequest {}
+message UninstallReleaseRequest {}
 
 message UpgradeReleaseRequest {}
 

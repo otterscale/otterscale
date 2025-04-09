@@ -10,24 +10,24 @@ import (
 )
 
 type storage struct {
-	kubes Kubes
+	kubeMap KubeMap
 }
 
-func NewStorage(kubes Kubes) service.KubeStorage {
+func NewStorage(kubeMap KubeMap) service.KubeStorage {
 	return &storage{
-		kubes: kubes,
+		kubeMap: kubeMap,
 	}
 }
 
 var _ service.KubeStorage = (*storage)(nil)
 
 func (r *storage) ListStorageClasses(ctx context.Context, cluster string) ([]v1.StorageClass, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.ListOptions{}
-	list, err := client.StorageV1().StorageClasses().List(ctx, opts)
+	list, err := clientset.StorageV1().StorageClasses().List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}

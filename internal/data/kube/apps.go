@@ -10,24 +10,24 @@ import (
 )
 
 type apps struct {
-	kubes Kubes
+	kubeMap KubeMap
 }
 
-func NewApps(kubes Kubes) service.KubeApps {
+func NewApps(kubeMap KubeMap) service.KubeApps {
 	return &apps{
-		kubes: kubes,
+		kubeMap: kubeMap,
 	}
 }
 
 var _ service.KubeApps = (*apps)(nil)
 
 func (r *apps) ListDeployments(ctx context.Context, cluster, namespace string) ([]v1.Deployment, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.ListOptions{}
-	list, err := client.AppsV1().Deployments(namespace).List(ctx, opts)
+	list, err := clientset.AppsV1().Deployments(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -35,10 +35,54 @@ func (r *apps) ListDeployments(ctx context.Context, cluster, namespace string) (
 }
 
 func (r *apps) GetDeployment(ctx context.Context, cluster, namespace, name string) (*v1.Deployment, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.GetOptions{}
-	return client.AppsV1().Deployments(namespace).Get(ctx, name, opts)
+	return clientset.AppsV1().Deployments(namespace).Get(ctx, name, opts)
+}
+
+func (r *apps) ListStatefulSets(ctx context.Context, cluster, namespace string) ([]v1.StatefulSet, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.ListOptions{}
+	list, err := clientset.AppsV1().StatefulSets(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
+func (r *apps) GetStatefulSet(ctx context.Context, cluster, namespace, name string) (*v1.StatefulSet, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.GetOptions{}
+	return clientset.AppsV1().StatefulSets(namespace).Get(ctx, name, opts)
+}
+
+func (r *apps) ListDaemonSets(ctx context.Context, cluster, namespace string) ([]v1.DaemonSet, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.ListOptions{}
+	list, err := clientset.AppsV1().DaemonSets(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
+func (r *apps) GetDaemonSet(ctx context.Context, cluster, namespace, name string) (*v1.DaemonSet, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.GetOptions{}
+	return clientset.AppsV1().DaemonSets(namespace).Get(ctx, name, opts)
 }

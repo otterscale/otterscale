@@ -10,28 +10,28 @@ import (
 )
 
 type core struct {
-	kubes Kubes
+	kubeMap KubeMap
 }
 
-func NewCore(kubes Kubes) service.KubeCore {
+func NewCore(kubeMap KubeMap) service.KubeCore {
 	return &core{
-		kubes: kubes,
+		kubeMap: kubeMap,
 	}
 }
 
 var _ service.KubeCore = (*core)(nil)
 
 func (r *core) GetNamespace(ctx context.Context, cluster, name string) (*v1.Namespace, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.GetOptions{}
-	return client.CoreV1().Namespaces().Get(ctx, name, opts)
+	return clientset.CoreV1().Namespaces().Get(ctx, name, opts)
 }
 
 func (r *core) CreateNamespace(ctx context.Context, cluster, name string) (*v1.Namespace, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
@@ -41,16 +41,16 @@ func (r *core) CreateNamespace(ctx context.Context, cluster, name string) (*v1.N
 		},
 	}
 	opts := metav1.CreateOptions{}
-	return client.CoreV1().Namespaces().Create(ctx, namespace, opts)
+	return clientset.CoreV1().Namespaces().Create(ctx, namespace, opts)
 }
 
 func (r *core) ListServices(ctx context.Context, cluster, namespace string) ([]v1.Service, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.ListOptions{}
-	list, err := client.CoreV1().Services(namespace).List(ctx, opts)
+	list, err := clientset.CoreV1().Services(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -58,12 +58,12 @@ func (r *core) ListServices(ctx context.Context, cluster, namespace string) ([]v
 }
 
 func (r *core) ListPods(ctx context.Context, cluster, namespace string) ([]v1.Pod, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.ListOptions{}
-	list, err := client.CoreV1().Pods(namespace).List(ctx, opts)
+	list, err := clientset.CoreV1().Pods(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -71,12 +71,12 @@ func (r *core) ListPods(ctx context.Context, cluster, namespace string) ([]v1.Po
 }
 
 func (r *core) ListPersistentVolumeClaims(ctx context.Context, cluster, namespace string) ([]v1.PersistentVolumeClaim, error) {
-	client, err := r.kubes.Get(cluster)
+	clientset, err := r.kubeMap.GetKubeClientset(cluster)
 	if err != nil {
 		return nil, err
 	}
 	opts := metav1.ListOptions{}
-	list, err := client.CoreV1().PersistentVolumeClaims(namespace).List(ctx, opts)
+	list, err := clientset.CoreV1().PersistentVolumeClaims(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}

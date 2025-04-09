@@ -6,12 +6,12 @@ import (
 	"errors"
 
 	"golang.org/x/sync/errgroup"
+	"helm.sh/helm/v3/pkg/release"
 
-	appv1 "k8s.io/api/apps/v1"
+	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
-	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
 	"github.com/juju/juju/api/client/application"
@@ -21,14 +21,18 @@ import (
 
 // KubeClient manages Kubernetes client connections
 type KubeClient interface {
-	Get(cluster string) (*kubernetes.Clientset, error)
+	Exists(cluster string) bool
 	Add(cluster string, cfg *rest.Config) error
 }
 
 // KubeApps handles deployment-related operations
 type KubeApps interface {
-	ListDeployments(ctx context.Context, cluster, namespace string) ([]appv1.Deployment, error)
-	GetDeployment(ctx context.Context, cluster, namespace, name string) (*appv1.Deployment, error)
+	ListDeployments(ctx context.Context, cluster, namespace string) ([]appsv1.Deployment, error)
+	GetDeployment(ctx context.Context, cluster, namespace, name string) (*appsv1.Deployment, error)
+	ListStatefulSets(ctx context.Context, cluster, namespace string) ([]appsv1.StatefulSet, error)
+	GetStatefulSet(ctx context.Context, cluster, namespace, name string) (*appsv1.StatefulSet, error)
+	ListDaemonSets(ctx context.Context, cluster, namespace string) ([]appsv1.DaemonSet, error)
+	GetDaemonSet(ctx context.Context, cluster, namespace, name string) (*appsv1.DaemonSet, error)
 }
 
 // KubeBatch handles batch job operations
@@ -55,6 +59,11 @@ type KubeStorage interface {
 	ListStorageClasses(ctx context.Context, cluster string) ([]storagev1.StorageClass, error)
 }
 
+// KubeHelm handles helm-related operations
+type KubeHelm interface {
+	ListReleases(ctx context.Context, cluster, namespace string) ([]*release.Release, error)
+}
+
 // KubeService orchestrates Kubernetes operations
 type KubeService struct {
 	client      KubeClient
@@ -62,6 +71,7 @@ type KubeService struct {
 	batch       KubeBatch
 	core        KubeCore
 	storage     KubeStorage
+	helm        KubeHelm
 	application JujuApplication
 }
 
@@ -72,6 +82,7 @@ func NewKubeService(
 	batch KubeBatch,
 	core KubeCore,
 	storage KubeStorage,
+	helm KubeHelm,
 	application JujuApplication,
 ) *KubeService {
 	return &KubeService{
@@ -80,6 +91,7 @@ func NewKubeService(
 		batch:       batch,
 		core:        core,
 		storage:     storage,
+		helm:        helm,
 		application: application,
 	}
 }
@@ -87,7 +99,7 @@ func NewKubeService(
 // ensureClient ensures a Kubernetes client exists for the specified cluster
 func (s *KubeService) ensureClient(ctx context.Context, uuid, cluster string) error {
 	// Check if client already exists
-	if _, err := s.client.Get(cluster); err == nil {
+	if ok := s.client.Exists(cluster); ok {
 		return nil // Client already exists
 	}
 
@@ -198,7 +210,37 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 		}
 		deployment, err := s.apps.GetDeployment(ctx, cluster, namespace, name)
 		if err == nil {
-			result.Deployments = []appv1.Deployment{*deployment}
+			result.Deployments = []appsv1.Deployment{*deployment}
+		}
+		return err
+	})
+
+	eg.Go(func() error {
+		if namespace == "" {
+			statefulSets, err := s.apps.ListStatefulSets(ctx, cluster, namespace)
+			if err == nil {
+				result.StatefulSets = statefulSets
+			}
+			return err
+		}
+		statefulSet, err := s.apps.GetStatefulSet(ctx, cluster, namespace, name)
+		if err == nil {
+			result.StatefulSets = []appsv1.StatefulSet{*statefulSet}
+		}
+		return err
+	})
+
+	eg.Go(func() error {
+		if namespace == "" {
+			daemonSets, err := s.apps.ListDaemonSets(ctx, cluster, namespace)
+			if err == nil {
+				result.DaemonSets = daemonSets
+			}
+			return err
+		}
+		daemonSet, err := s.apps.GetDaemonSet(ctx, cluster, namespace, name)
+		if err == nil {
+			result.DaemonSets = []appsv1.DaemonSet{*daemonSet}
 		}
 		return err
 	})
@@ -240,4 +282,11 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 	}
 
 	return result, nil
+}
+
+func (s *KubeService) ListReleases(ctx context.Context, uuid, cluster, namespace string) ([]*release.Release, error) {
+	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+		return nil, err
+	}
+	return s.helm.ListReleases(ctx, cluster, namespace)
 }

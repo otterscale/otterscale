@@ -20,17 +20,18 @@ import (
 // Injectors from wire.go:
 
 func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func(), error) {
-	kubes, err := kube.NewKubes()
+	kubeMap, err := kube.NewKubeMap()
 	if err != nil {
 		return nil, nil, err
 	}
-	kubeClient := kube.NewClient(kubes)
-	kubeApps := kube.NewApps(kubes)
-	kubeBatch := kube.NewBatch(kubes)
-	kubeCore := kube.NewCore(kubes)
-	kubeStorage := kube.NewStorage(kubes)
+	kubeClient := kube.NewClient(kubeMap)
+	kubeApps := kube.NewApps(kubeMap)
+	kubeBatch := kube.NewBatch(kubeMap)
+	kubeCore := kube.NewCore(kubeMap)
+	kubeStorage := kube.NewStorage(kubeMap)
+	kubeHelm := kube.NewHelm(kubeMap)
 	jujuApplication := juju.NewApplication()
-	kubeService := service.NewKubeService(kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, jujuApplication)
+	kubeService := service.NewKubeService(kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm, jujuApplication)
 	kubeApp := app.NewKubeApp(kubeService)
 	config := maas.NewConfig()
 	v, err := maas.New(config)
