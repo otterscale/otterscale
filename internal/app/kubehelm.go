@@ -2,30 +2,71 @@ package app
 
 import (
 	"context"
-	"fmt"
 
 	"connectrpc.com/connect"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"helm.sh/helm/v3/pkg/chart"
+	"helm.sh/helm/v3/pkg/release"
 	"helm.sh/helm/v3/pkg/repo"
+	"sigs.k8s.io/yaml"
 
 	v1 "github.com/openhdc/openhdc/api/kube/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
-func (a *KubeApp) ListReleases(ctx context.Context, req *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
-	rels, err := a.svc.ListReleases(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName(), "")
+func (a *KubeApp) InstallRelease(ctx context.Context, req *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error) {
+	values := map[string]any{}
+	if err := yaml.Unmarshal([]byte(req.Msg.GetValuesYaml()), &values); err != nil {
+		return nil, err
+	}
+	rel, err := a.svc.InstallRelease(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun(), req.Msg.GetChartRef(), values)
 	if err != nil {
 		return nil, err
 	}
-	for _, rel := range rels {
-		fmt.Println(rel.Name, rel.Namespace)
-	}
-	res := &v1.ListReleasesResponse{}
-	return connect.NewResponse(res), nil
+	return connect.NewResponse(a.toRelease(rel)), nil
 }
 
-func (a *KubeApp) ListRepositories(ctx context.Context, req *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error) {
-	repos, err := a.svc.ListRepositories(ctx)
+func (a *KubeApp) UninstallRelease(ctx context.Context, req *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[v1.Release], error) {
+	rel, err := a.svc.UninstallRelease(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun())
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(a.toRelease(rel)), nil
+}
+
+func (a *KubeApp) UpgradeRelease(ctx context.Context, req *connect.Request[v1.UpgradeReleaseRequest]) (*connect.Response[v1.Release], error) {
+	values := map[string]any{}
+	if err := yaml.Unmarshal([]byte(req.Msg.GetValuesYaml()), &values); err != nil {
+		return nil, err
+	}
+	rel, err := a.svc.UpgradeRelease(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun(), req.Msg.GetChartRef(), values)
+	if err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(a.toRelease(rel)), nil
+}
+
+func (a *KubeApp) RollbackRelease(ctx context.Context, req *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.RollbackRelease(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun()); err != nil {
+		return nil, err
+	}
+	return connect.NewResponse(&emptypb.Empty{}), nil
+}
+
+// func (a *KubeApp) ListReleases(ctx context.Context, req *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
+// 	rels, err := a.svc.ListReleases(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName(), "")
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	for _, rel := range rels {
+// 		fmt.Println(rel.Name, rel.Namespace)
+// 	}
+// 	res := &v1.ListReleasesResponse{}
+// 	return connect.NewResponse(res), nil
+// }
+
+func (a *KubeApp) ListRepositories(_ context.Context, req *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error) {
+	repos, err := a.svc.ListRepositories()
 	if err != nil {
 		return nil, err
 	}
@@ -34,16 +75,16 @@ func (a *KubeApp) ListRepositories(ctx context.Context, req *connect.Request[v1.
 	return connect.NewResponse(res), nil
 }
 
-func (a *KubeApp) UpdateRepositoryCharts(ctx context.Context, req *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error) {
-	repo, err := a.svc.UpdateRepositoryCharts(ctx, req.Msg.GetName())
+func (a *KubeApp) UpdateRepositoryCharts(_ context.Context, req *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error) {
+	repo, err := a.svc.UpdateRepositoryCharts(req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
 	return connect.NewResponse(a.toRepository(repo)), nil
 }
 
-func (a *KubeApp) ListCharts(ctx context.Context, req *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
-	m, err := a.svc.ListCharts(ctx)
+func (a *KubeApp) ListCharts(_ context.Context, req *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
+	m, err := a.svc.ListCharts()
 	if err != nil {
 		return nil, err
 	}
@@ -52,12 +93,11 @@ func (a *KubeApp) ListCharts(ctx context.Context, req *connect.Request[v1.ListCh
 	return connect.NewResponse(res), nil
 }
 
-func (a *KubeApp) GetChart(ctx context.Context, req *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error) {
-	cvs, err := a.svc.GetChart(ctx, req.Msg.GetName())
+func (a *KubeApp) GetChart(_ context.Context, req *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error) {
+	cvs, err := a.svc.GetChart(req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
-
 	return connect.NewResponse(a.toChart(cvs)), nil
 }
 
@@ -162,5 +202,13 @@ func (a *KubeApp) toChartVersion(cv *repo.ChartVersion) *v1.Chart_Version {
 	if len(cv.URLs) > 0 {
 		ret.SetChartRef(cv.URLs[0])
 	}
+	return ret
+}
+
+func (a *KubeApp) toRelease(rel *release.Release) *v1.Release {
+	ret := &v1.Release{}
+	ret.SetName(rel.Name)
+	ret.SetNamespace(rel.Namespace)
+	ret.SetRevision(int32(rel.Version)) //nolint:gosec
 	return ret
 }

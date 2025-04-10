@@ -12,17 +12,26 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/kube/v1/kube.proto.
  */
 export const file_api_kube_v1_kube: GenFile = /*@__PURE__*/
-  fileDesc("ChZhcGkva3ViZS92MS9rdWJlLnByb3RvEg9vcGVuaGRjLmt1YmUudjEiCQoHUmVsZWFzZSLWAQoKUmVwb3NpdG9yeRIMCgRuYW1lGAEgASgJEgsKA3VybBgCIAEoCRIQCgh1c2VybmFtZRgDIAEoCRIQCghwYXNzd29yZBgEIAEoCRIRCgljZXJ0X2ZpbGUYBSABKAkSEAoIa2V5X2ZpbGUYBiABKAkSDwoHY2FfZmlsZRgHIAEoCRIgChhpbnNlY3VyZV9za2lwX3Rsc192ZXJpZnkYCCABKAgSHAoUcGFzc19jcmVkZW50aWFsc19hbGwYCSABKAgSEwoLY2hhcnRfbmFtZXMYCyADKAki+AMKBUNoYXJ0EgwKBG5hbWUYASABKAkSDAoEaWNvbhgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRISCgpkZXByZWNhdGVkGAQgASgIEgwKBHRhZ3MYBSABKAkSEAoIa2V5d29yZHMYBiADKAkSDAoEaG9tZRgLIAEoCRIPCgdzb3VyY2VzGAwgAygJEjYKC21haW50YWluZXJzGBUgAygLMiEub3BlbmhkYy5rdWJlLnYxLkNoYXJ0Lk1haW50YWluZXISNwoMZGVwZW5kZW5jaWVzGB8gAygLMiEub3BlbmhkYy5rdWJlLnYxLkNoYXJ0LkRlcGVuZGVuY3kSMAoIdmVyc2lvbnMYKSADKAsyHi5vcGVuaGRjLmt1YmUudjEuQ2hhcnQuVmVyc2lvbho2CgpNYWludGFpbmVyEgwKBG5hbWUYASABKAkSDQoFZW1haWwYAiABKAkSCwoDdXJsGAMgASgJGj4KCkRlcGVuZGVuY3kSDAoEbmFtZRgBIAEoCRIPCgd2ZXJzaW9uGAIgASgJEhEKCWNvbmRpdGlvbhgEIAEoCRpQCgdWZXJzaW9uEhUKDWNoYXJ0X3ZlcnNpb24YASABKAkSGwoTYXBwbGljYXRpb25fdmVyc2lvbhgCIAEoCRIRCgljaGFydF9yZWYYAyABKAkijQsKC0FwcGxpY2F0aW9uEgwKBHR5cGUYASABKAkSDAoEbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSOAoGbGFiZWxzGAQgAygLMigub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLkxhYmVsc0VudHJ5EhAKCHJlcGxpY2FzGAUgASgFEhEKCWhlYWx0aGllcxgLIAEoBRI6Cgpjb250YWluZXJzGGUgAygLMiYub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLkNvbnRhaW5lchJUChhwZXJzaXN0ZW50X3ZvbHVtZV9jbGFpbXMYZiADKAsyMi5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uUGVyc2lzdGVudFZvbHVtZUNsYWltEi4KBHBvZHMYZyADKAsyIC5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uUG9kEjUKB3NlcnZpY2UYaCADKAsyJC5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uU2VydmljZRrDAQoHU2VydmljZRIMCgRuYW1lGAEgASgJEgwKBHR5cGUYAiABKAkSEgoKY2x1c3Rlcl9pcBgDIAEoCRI4CgVwb3J0cxgLIAMoCzIpLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbi5TZXJ2aWNlLlBvcnQaTgoEUG9ydBIMCgRwb3J0GAEgASgFEhEKCW5vZGVfcG9ydBgCIAEoBRIQCghwcm90b2NvbBgDIAEoCRITCgt0YXJnZXRfcG9ydBgLIAEoCRq4AgoDUG9kEgwKBG5hbWUYASABKAkSDQoFcGhhc2UYAiABKAkSDQoFcmVhZHkYAyABKAkSEAoIcmVzdGFydHMYBCABKAkSQgoObGFzdF9jb25kaXRpb24YCyABKAsyKi5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uUG9kLkNvbmRpdGlvbhquAQoJQ29uZGl0aW9uEgwKBHR5cGUYASABKAkSDgoGc3RhdHVzGAIgASgJEi0KCXByb2JlZF9hdBgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMwoPdHJhbnNpdGlvbmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIOCgZyZWFzb24YBSABKAkSDwoHbWVzc2FnZRgGIAEoCRqfAQoVUGVyc2lzdGVudFZvbHVtZUNsYWltEgwKBG5hbWUYASABKAkSDgoGc3RhdHVzGAIgASgJEhQKDGFjY2Vzc19tb2RlcxgDIAMoCRIQCghjYXBhY2l0eRgEIAEoCRJACg1zdG9yYWdlX2NsYXNzGAsgASgLMikub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLlN0b3JhZ2VDbGFzcxroAQoMU3RvcmFnZUNsYXNzEgwKBG5hbWUYASABKAkSEwoLcHJvdmlzaW9uZXIYAiABKAkSFgoOcmVjbGFpbV9wb2xpY3kYAyABKAkSGwoTdm9sdW1lX2JpbmRpbmdfbW9kZRgEIAEoCRJNCgpwYXJhbWV0ZXJzGAUgAygLMjkub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLlN0b3JhZ2VDbGFzcy5QYXJhbWV0ZXJzRW50cnkaMQoPUGFyYW1ldGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaOgoJQ29udGFpbmVyEhIKCmltYWdlX25hbWUYASABKAkSGQoRaW1hZ2VfcHVsbF9wb2xpY3kYAiABKAkaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASI/ChNMaXN0UmVsZWFzZXNSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSFAoMY2x1c3Rlcl9uYW1lGAIgASgJIhYKFExpc3RSZWxlYXNlc1Jlc3BvbnNlIjgKFUluc3RhbGxSZWxlYXNlUmVxdWVzdBIMCgRuYW1lGAEgASgJEhEKCWNoYXJ0X3JlZhgCIAEoCSIZChdVbmluc3RhbGxSZWxlYXNlUmVxdWVzdCIXChVVcGdyYWRlUmVsZWFzZVJlcXVlc3QiGAoWUm9sbGJhY2tSZWxlYXNlUmVxdWVzdCIZChdMaXN0UmVwb3NpdG9yaWVzUmVxdWVzdCJNChhMaXN0UmVwb3NpdG9yaWVzUmVzcG9uc2USMQoMcmVwb3NpdG9yaWVzGAEgAygLMhsub3BlbmhkYy5rdWJlLnYxLlJlcG9zaXRvcnkiLQodVXBkYXRlUmVwb3NpdG9yeUNoYXJ0c1JlcXVlc3QSDAoEbmFtZRgBIAEoCSJDChdMaXN0QXBwbGljYXRpb25zUmVxdWVzdBISCgptb2RlbF91dWlkGAEgASgJEhQKDGNsdXN0ZXJfbmFtZRgCIAEoCSJOChhMaXN0QXBwbGljYXRpb25zUmVzcG9uc2USMgoMYXBwbGljYXRpb25zGAEgAygLMhwub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uImIKFUdldEFwcGxpY2F0aW9uUmVxdWVzdBISCgptb2RlbF91dWlkGAEgASgJEhQKDGNsdXN0ZXJfbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCSITChFMaXN0Q2hhcnRzUmVxdWVzdCI8ChJMaXN0Q2hhcnRzUmVzcG9uc2USJgoGY2hhcnRzGAEgAygLMhYub3BlbmhkYy5rdWJlLnYxLkNoYXJ0Ih8KD0dldENoYXJ0UmVxdWVzdBIMCgRuYW1lGAEgASgJMuwHCgtLdWJlU2VydmljZRJbCgxMaXN0UmVsZWFzZXMSJC5vcGVuaGRjLmt1YmUudjEuTGlzdFJlbGVhc2VzUmVxdWVzdBolLm9wZW5oZGMua3ViZS52MS5MaXN0UmVsZWFzZXNSZXNwb25zZRJSCg5JbnN0YWxsUmVsZWFzZRImLm9wZW5oZGMua3ViZS52MS5JbnN0YWxsUmVsZWFzZVJlcXVlc3QaGC5vcGVuaGRjLmt1YmUudjEuUmVsZWFzZRJUChBVbmluc3RhbGxSZWxlYXNlEigub3BlbmhkYy5rdWJlLnYxLlVuaW5zdGFsbFJlbGVhc2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElIKDlVwZ3JhZGVSZWxlYXNlEiYub3BlbmhkYy5rdWJlLnYxLlVwZ3JhZGVSZWxlYXNlUmVxdWVzdBoYLm9wZW5oZGMua3ViZS52MS5SZWxlYXNlElQKD1JvbGxiYWNrUmVsZWFzZRInLm9wZW5oZGMua3ViZS52MS5Sb2xsYmFja1JlbGVhc2VSZXF1ZXN0Ghgub3BlbmhkYy5rdWJlLnYxLlJlbGVhc2USZwoQTGlzdFJlcG9zaXRvcmllcxIoLm9wZW5oZGMua3ViZS52MS5MaXN0UmVwb3NpdG9yaWVzUmVxdWVzdBopLm9wZW5oZGMua3ViZS52MS5MaXN0UmVwb3NpdG9yaWVzUmVzcG9uc2USZQoWVXBkYXRlUmVwb3NpdG9yeUNoYXJ0cxIuLm9wZW5oZGMua3ViZS52MS5VcGRhdGVSZXBvc2l0b3J5Q2hhcnRzUmVxdWVzdBobLm9wZW5oZGMua3ViZS52MS5SZXBvc2l0b3J5ElUKCkxpc3RDaGFydHMSIi5vcGVuaGRjLmt1YmUudjEuTGlzdENoYXJ0c1JlcXVlc3QaIy5vcGVuaGRjLmt1YmUudjEuTGlzdENoYXJ0c1Jlc3BvbnNlEkQKCEdldENoYXJ0EiAub3BlbmhkYy5rdWJlLnYxLkdldENoYXJ0UmVxdWVzdBoWLm9wZW5oZGMua3ViZS52MS5DaGFydBJnChBMaXN0QXBwbGljYXRpb25zEigub3BlbmhkYy5rdWJlLnYxLkxpc3RBcHBsaWNhdGlvbnNSZXF1ZXN0Gikub3BlbmhkYy5rdWJlLnYxLkxpc3RBcHBsaWNhdGlvbnNSZXNwb25zZRJWCg5HZXRBcHBsaWNhdGlvbhImLm9wZW5oZGMua3ViZS52MS5HZXRBcHBsaWNhdGlvblJlcXVlc3QaHC5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb25CK1opZ2l0aHViLmNvbS9vcGVuaGRjL29wZW5oZGMvYXBpL2t1YmUvdjE7djFiCGVkaXRpb25zcOgH", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChZhcGkva3ViZS92MS9rdWJlLnByb3RvEg9vcGVuaGRjLmt1YmUudjEiPAoHUmVsZWFzZRIMCgRuYW1lGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRIQCghyZXZpc2lvbhgDIAEoBSLWAQoKUmVwb3NpdG9yeRIMCgRuYW1lGAEgASgJEgsKA3VybBgCIAEoCRIQCgh1c2VybmFtZRgDIAEoCRIQCghwYXNzd29yZBgEIAEoCRIRCgljZXJ0X2ZpbGUYBSABKAkSEAoIa2V5X2ZpbGUYBiABKAkSDwoHY2FfZmlsZRgHIAEoCRIgChhpbnNlY3VyZV9za2lwX3Rsc192ZXJpZnkYCCABKAgSHAoUcGFzc19jcmVkZW50aWFsc19hbGwYCSABKAgSEwoLY2hhcnRfbmFtZXMYCyADKAkiggUKBUNoYXJ0EgwKBG5hbWUYASABKAkSDAoEaWNvbhgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRISCgpkZXByZWNhdGVkGAQgASgIEgwKBHRhZ3MYBSABKAkSEAoIa2V5d29yZHMYBiADKAkSDAoEaG9tZRgLIAEoCRIPCgdzb3VyY2VzGAwgAygJEjYKC21haW50YWluZXJzGBUgAygLMiEub3BlbmhkYy5rdWJlLnYxLkNoYXJ0Lk1haW50YWluZXISNwoMZGVwZW5kZW5jaWVzGB8gAygLMiEub3BlbmhkYy5rdWJlLnYxLkNoYXJ0LkRlcGVuZGVuY3kSMAoIdmVyc2lvbnMYKSADKAsyHi5vcGVuaGRjLmt1YmUudjEuQ2hhcnQuVmVyc2lvbhIbChNkZWZhdWx0X3ZhbHVlc195YW1sGDMgASgJEhEKCWluc3RhbGxlZBg9IAEoCBI5ChFpbnN0YWxsZWRfdmVyc2lvbhg+IAEoCzIeLm9wZW5oZGMua3ViZS52MS5DaGFydC5WZXJzaW9uEh0KFWluc3RhbGxlZF92YWx1ZXNfeWFtbBg/IAEoCRo2CgpNYWludGFpbmVyEgwKBG5hbWUYASABKAkSDQoFZW1haWwYAiABKAkSCwoDdXJsGAMgASgJGj4KCkRlcGVuZGVuY3kSDAoEbmFtZRgBIAEoCRIPCgd2ZXJzaW9uGAIgASgJEhEKCWNvbmRpdGlvbhgEIAEoCRpQCgdWZXJzaW9uEhUKDWNoYXJ0X3ZlcnNpb24YASABKAkSGwoTYXBwbGljYXRpb25fdmVyc2lvbhgCIAEoCRIRCgljaGFydF9yZWYYAyABKAkijQsKC0FwcGxpY2F0aW9uEgwKBHR5cGUYASABKAkSDAoEbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSOAoGbGFiZWxzGAQgAygLMigub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLkxhYmVsc0VudHJ5EhAKCHJlcGxpY2FzGAUgASgFEhEKCWhlYWx0aGllcxgLIAEoBRI6Cgpjb250YWluZXJzGGUgAygLMiYub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLkNvbnRhaW5lchJUChhwZXJzaXN0ZW50X3ZvbHVtZV9jbGFpbXMYZiADKAsyMi5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uUGVyc2lzdGVudFZvbHVtZUNsYWltEi4KBHBvZHMYZyADKAsyIC5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uUG9kEjUKB3NlcnZpY2UYaCADKAsyJC5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uU2VydmljZRrDAQoHU2VydmljZRIMCgRuYW1lGAEgASgJEgwKBHR5cGUYAiABKAkSEgoKY2x1c3Rlcl9pcBgDIAEoCRI4CgVwb3J0cxgLIAMoCzIpLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbi5TZXJ2aWNlLlBvcnQaTgoEUG9ydBIMCgRwb3J0GAEgASgFEhEKCW5vZGVfcG9ydBgCIAEoBRIQCghwcm90b2NvbBgDIAEoCRITCgt0YXJnZXRfcG9ydBgLIAEoCRq4AgoDUG9kEgwKBG5hbWUYASABKAkSDQoFcGhhc2UYAiABKAkSDQoFcmVhZHkYAyABKAkSEAoIcmVzdGFydHMYBCABKAkSQgoObGFzdF9jb25kaXRpb24YCyABKAsyKi5vcGVuaGRjLmt1YmUudjEuQXBwbGljYXRpb24uUG9kLkNvbmRpdGlvbhquAQoJQ29uZGl0aW9uEgwKBHR5cGUYASABKAkSDgoGc3RhdHVzGAIgASgJEi0KCXByb2JlZF9hdBgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMwoPdHJhbnNpdGlvbmVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIOCgZyZWFzb24YBSABKAkSDwoHbWVzc2FnZRgGIAEoCRqfAQoVUGVyc2lzdGVudFZvbHVtZUNsYWltEgwKBG5hbWUYASABKAkSDgoGc3RhdHVzGAIgASgJEhQKDGFjY2Vzc19tb2RlcxgDIAMoCRIQCghjYXBhY2l0eRgEIAEoCRJACg1zdG9yYWdlX2NsYXNzGAsgASgLMikub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLlN0b3JhZ2VDbGFzcxroAQoMU3RvcmFnZUNsYXNzEgwKBG5hbWUYASABKAkSEwoLcHJvdmlzaW9uZXIYAiABKAkSFgoOcmVjbGFpbV9wb2xpY3kYAyABKAkSGwoTdm9sdW1lX2JpbmRpbmdfbW9kZRgEIAEoCRJNCgpwYXJhbWV0ZXJzGAUgAygLMjkub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uLlN0b3JhZ2VDbGFzcy5QYXJhbWV0ZXJzRW50cnkaMQoPUGFyYW1ldGVyc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaOgoJQ29udGFpbmVyEhIKCmltYWdlX25hbWUYASABKAkSGQoRaW1hZ2VfcHVsbF9wb2xpY3kYAiABKAkaLQoLTGFiZWxzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASKbAQoVSW5zdGFsbFJlbGVhc2VSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSFAoMY2x1c3Rlcl9uYW1lGAIgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEg8KB2RyeV9ydW4YBSABKAgSEQoJY2hhcnRfcmVmGAsgASgJEhMKC3ZhbHVlc195YW1sGAwgASgJInUKF1VuaW5zdGFsbFJlbGVhc2VSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSFAoMY2x1c3Rlcl9uYW1lGAIgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEg8KB2RyeV9ydW4YBSABKAgimwEKFVVwZ3JhZGVSZWxlYXNlUmVxdWVzdBISCgptb2RlbF91dWlkGAEgASgJEhQKDGNsdXN0ZXJfbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSDAoEbmFtZRgEIAEoCRIPCgdkcnlfcnVuGAUgASgIEhEKCWNoYXJ0X3JlZhgLIAEoCRITCgt2YWx1ZXNfeWFtbBgMIAEoCSJ0ChZSb2xsYmFja1JlbGVhc2VSZXF1ZXN0EhIKCm1vZGVsX3V1aWQYASABKAkSFAoMY2x1c3Rlcl9uYW1lGAIgASgJEhEKCW5hbWVzcGFjZRgDIAEoCRIMCgRuYW1lGAQgASgJEg8KB2RyeV9ydW4YBSABKAgiGQoXTGlzdFJlcG9zaXRvcmllc1JlcXVlc3QiTQoYTGlzdFJlcG9zaXRvcmllc1Jlc3BvbnNlEjEKDHJlcG9zaXRvcmllcxgBIAMoCzIbLm9wZW5oZGMua3ViZS52MS5SZXBvc2l0b3J5Ii0KHVVwZGF0ZVJlcG9zaXRvcnlDaGFydHNSZXF1ZXN0EgwKBG5hbWUYASABKAkiQwoXTGlzdEFwcGxpY2F0aW9uc1JlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCRIUCgxjbHVzdGVyX25hbWUYAiABKAkiTgoYTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlEjIKDGFwcGxpY2F0aW9ucxgBIAMoCzIcLm9wZW5oZGMua3ViZS52MS5BcHBsaWNhdGlvbiJiChVHZXRBcHBsaWNhdGlvblJlcXVlc3QSEgoKbW9kZWxfdXVpZBgBIAEoCRIUCgxjbHVzdGVyX25hbWUYAiABKAkSEQoJbmFtZXNwYWNlGAMgASgJEgwKBG5hbWUYBCABKAkiEwoRTGlzdENoYXJ0c1JlcXVlc3QiPAoSTGlzdENoYXJ0c1Jlc3BvbnNlEiYKBmNoYXJ0cxgBIAMoCzIWLm9wZW5oZGMua3ViZS52MS5DaGFydCIfCg9HZXRDaGFydFJlcXVlc3QSDAoEbmFtZRgBIAEoCTKPBwoLS3ViZVNlcnZpY2USUgoOSW5zdGFsbFJlbGVhc2USJi5vcGVuaGRjLmt1YmUudjEuSW5zdGFsbFJlbGVhc2VSZXF1ZXN0Ghgub3BlbmhkYy5rdWJlLnYxLlJlbGVhc2USVgoQVW5pbnN0YWxsUmVsZWFzZRIoLm9wZW5oZGMua3ViZS52MS5Vbmluc3RhbGxSZWxlYXNlUmVxdWVzdBoYLm9wZW5oZGMua3ViZS52MS5SZWxlYXNlElIKDlVwZ3JhZGVSZWxlYXNlEiYub3BlbmhkYy5rdWJlLnYxLlVwZ3JhZGVSZWxlYXNlUmVxdWVzdBoYLm9wZW5oZGMua3ViZS52MS5SZWxlYXNlElIKD1JvbGxiYWNrUmVsZWFzZRInLm9wZW5oZGMua3ViZS52MS5Sb2xsYmFja1JlbGVhc2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmcKEExpc3RSZXBvc2l0b3JpZXMSKC5vcGVuaGRjLmt1YmUudjEuTGlzdFJlcG9zaXRvcmllc1JlcXVlc3QaKS5vcGVuaGRjLmt1YmUudjEuTGlzdFJlcG9zaXRvcmllc1Jlc3BvbnNlEmUKFlVwZGF0ZVJlcG9zaXRvcnlDaGFydHMSLi5vcGVuaGRjLmt1YmUudjEuVXBkYXRlUmVwb3NpdG9yeUNoYXJ0c1JlcXVlc3QaGy5vcGVuaGRjLmt1YmUudjEuUmVwb3NpdG9yeRJVCgpMaXN0Q2hhcnRzEiIub3BlbmhkYy5rdWJlLnYxLkxpc3RDaGFydHNSZXF1ZXN0GiMub3BlbmhkYy5rdWJlLnYxLkxpc3RDaGFydHNSZXNwb25zZRJECghHZXRDaGFydBIgLm9wZW5oZGMua3ViZS52MS5HZXRDaGFydFJlcXVlc3QaFi5vcGVuaGRjLmt1YmUudjEuQ2hhcnQSZwoQTGlzdEFwcGxpY2F0aW9ucxIoLm9wZW5oZGMua3ViZS52MS5MaXN0QXBwbGljYXRpb25zUmVxdWVzdBopLm9wZW5oZGMua3ViZS52MS5MaXN0QXBwbGljYXRpb25zUmVzcG9uc2USVgoOR2V0QXBwbGljYXRpb24SJi5vcGVuaGRjLmt1YmUudjEuR2V0QXBwbGljYXRpb25SZXF1ZXN0Ghwub3BlbmhkYy5rdWJlLnYxLkFwcGxpY2F0aW9uQitaKWdpdGh1Yi5jb20vb3BlbmhkYy9vcGVuaGRjL2FwaS9rdWJlL3YxO3YxYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
- * ReleaseValues
- * Providers
- * settings
- * history
- *
  * @generated from message openhdc.kube.v1.Release
  */
 export type Release = Message<"openhdc.kube.v1.Release"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string namespace = 2;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: int32 revision = 3;
+   */
+  revision: number;
 };
 
 /**
@@ -152,6 +161,26 @@ export type Chart = Message<"openhdc.kube.v1.Chart"> & {
    * @generated from field: repeated openhdc.kube.v1.Chart.Version versions = 41;
    */
   versions: Chart_Version[];
+
+  /**
+   * @generated from field: string default_values_yaml = 51;
+   */
+  defaultValuesYaml: string;
+
+  /**
+   * @generated from field: bool installed = 61;
+   */
+  installed: boolean;
+
+  /**
+   * @generated from field: openhdc.kube.v1.Chart.Version installed_version = 62;
+   */
+  installedVersion?: Chart_Version;
+
+  /**
+   * @generated from field: string installed_values_yaml = 63;
+   */
+  installedValuesYaml: string;
 };
 
 /**
@@ -544,9 +573,9 @@ export const Application_ContainerSchema: GenMessage<Application_Container> = /*
   messageDesc(file_api_kube_v1_kube, 3, 4);
 
 /**
- * @generated from message openhdc.kube.v1.ListReleasesRequest
+ * @generated from message openhdc.kube.v1.InstallReleaseRequest
  */
-export type ListReleasesRequest = Message<"openhdc.kube.v1.ListReleasesRequest"> & {
+export type InstallReleaseRequest = Message<"openhdc.kube.v1.InstallReleaseRequest"> & {
   /**
    * @generated from field: string model_uuid = 1;
    */
@@ -556,41 +585,31 @@ export type ListReleasesRequest = Message<"openhdc.kube.v1.ListReleasesRequest">
    * @generated from field: string cluster_name = 2;
    */
   clusterName: string;
-};
 
-/**
- * Describes the message openhdc.kube.v1.ListReleasesRequest.
- * Use `create(ListReleasesRequestSchema)` to create a new message.
- */
-export const ListReleasesRequestSchema: GenMessage<ListReleasesRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 4);
-
-/**
- * @generated from message openhdc.kube.v1.ListReleasesResponse
- */
-export type ListReleasesResponse = Message<"openhdc.kube.v1.ListReleasesResponse"> & {
-};
-
-/**
- * Describes the message openhdc.kube.v1.ListReleasesResponse.
- * Use `create(ListReleasesResponseSchema)` to create a new message.
- */
-export const ListReleasesResponseSchema: GenMessage<ListReleasesResponse> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 5);
-
-/**
- * @generated from message openhdc.kube.v1.InstallReleaseRequest
- */
-export type InstallReleaseRequest = Message<"openhdc.kube.v1.InstallReleaseRequest"> & {
   /**
-   * @generated from field: string name = 1;
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 4;
    */
   name: string;
 
   /**
-   * @generated from field: string chart_ref = 2;
+   * @generated from field: bool dry_run = 5;
+   */
+  dryRun: boolean;
+
+  /**
+   * @generated from field: string chart_ref = 11;
    */
   chartRef: string;
+
+  /**
+   * @generated from field: string values_yaml = 12;
+   */
+  valuesYaml: string;
 };
 
 /**
@@ -598,12 +617,36 @@ export type InstallReleaseRequest = Message<"openhdc.kube.v1.InstallReleaseReque
  * Use `create(InstallReleaseRequestSchema)` to create a new message.
  */
 export const InstallReleaseRequestSchema: GenMessage<InstallReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 6);
+  messageDesc(file_api_kube_v1_kube, 4);
 
 /**
  * @generated from message openhdc.kube.v1.UninstallReleaseRequest
  */
 export type UninstallReleaseRequest = Message<"openhdc.kube.v1.UninstallReleaseRequest"> & {
+  /**
+   * @generated from field: string model_uuid = 1;
+   */
+  modelUuid: string;
+
+  /**
+   * @generated from field: string cluster_name = 2;
+   */
+  clusterName: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 4;
+   */
+  name: string;
+
+  /**
+   * @generated from field: bool dry_run = 5;
+   */
+  dryRun: boolean;
 };
 
 /**
@@ -611,12 +654,46 @@ export type UninstallReleaseRequest = Message<"openhdc.kube.v1.UninstallReleaseR
  * Use `create(UninstallReleaseRequestSchema)` to create a new message.
  */
 export const UninstallReleaseRequestSchema: GenMessage<UninstallReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 7);
+  messageDesc(file_api_kube_v1_kube, 5);
 
 /**
  * @generated from message openhdc.kube.v1.UpgradeReleaseRequest
  */
 export type UpgradeReleaseRequest = Message<"openhdc.kube.v1.UpgradeReleaseRequest"> & {
+  /**
+   * @generated from field: string model_uuid = 1;
+   */
+  modelUuid: string;
+
+  /**
+   * @generated from field: string cluster_name = 2;
+   */
+  clusterName: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 4;
+   */
+  name: string;
+
+  /**
+   * @generated from field: bool dry_run = 5;
+   */
+  dryRun: boolean;
+
+  /**
+   * @generated from field: string chart_ref = 11;
+   */
+  chartRef: string;
+
+  /**
+   * @generated from field: string values_yaml = 12;
+   */
+  valuesYaml: string;
 };
 
 /**
@@ -624,12 +701,36 @@ export type UpgradeReleaseRequest = Message<"openhdc.kube.v1.UpgradeReleaseReque
  * Use `create(UpgradeReleaseRequestSchema)` to create a new message.
  */
 export const UpgradeReleaseRequestSchema: GenMessage<UpgradeReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 8);
+  messageDesc(file_api_kube_v1_kube, 6);
 
 /**
  * @generated from message openhdc.kube.v1.RollbackReleaseRequest
  */
 export type RollbackReleaseRequest = Message<"openhdc.kube.v1.RollbackReleaseRequest"> & {
+  /**
+   * @generated from field: string model_uuid = 1;
+   */
+  modelUuid: string;
+
+  /**
+   * @generated from field: string cluster_name = 2;
+   */
+  clusterName: string;
+
+  /**
+   * @generated from field: string namespace = 3;
+   */
+  namespace: string;
+
+  /**
+   * @generated from field: string name = 4;
+   */
+  name: string;
+
+  /**
+   * @generated from field: bool dry_run = 5;
+   */
+  dryRun: boolean;
 };
 
 /**
@@ -637,7 +738,7 @@ export type RollbackReleaseRequest = Message<"openhdc.kube.v1.RollbackReleaseReq
  * Use `create(RollbackReleaseRequestSchema)` to create a new message.
  */
 export const RollbackReleaseRequestSchema: GenMessage<RollbackReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 9);
+  messageDesc(file_api_kube_v1_kube, 7);
 
 /**
  * @generated from message openhdc.kube.v1.ListRepositoriesRequest
@@ -650,7 +751,7 @@ export type ListRepositoriesRequest = Message<"openhdc.kube.v1.ListRepositoriesR
  * Use `create(ListRepositoriesRequestSchema)` to create a new message.
  */
 export const ListRepositoriesRequestSchema: GenMessage<ListRepositoriesRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 10);
+  messageDesc(file_api_kube_v1_kube, 8);
 
 /**
  * @generated from message openhdc.kube.v1.ListRepositoriesResponse
@@ -667,7 +768,7 @@ export type ListRepositoriesResponse = Message<"openhdc.kube.v1.ListRepositories
  * Use `create(ListRepositoriesResponseSchema)` to create a new message.
  */
 export const ListRepositoriesResponseSchema: GenMessage<ListRepositoriesResponse> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 11);
+  messageDesc(file_api_kube_v1_kube, 9);
 
 /**
  * @generated from message openhdc.kube.v1.UpdateRepositoryChartsRequest
@@ -684,7 +785,7 @@ export type UpdateRepositoryChartsRequest = Message<"openhdc.kube.v1.UpdateRepos
  * Use `create(UpdateRepositoryChartsRequestSchema)` to create a new message.
  */
 export const UpdateRepositoryChartsRequestSchema: GenMessage<UpdateRepositoryChartsRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 12);
+  messageDesc(file_api_kube_v1_kube, 10);
 
 /**
  * @generated from message openhdc.kube.v1.ListApplicationsRequest
@@ -706,7 +807,7 @@ export type ListApplicationsRequest = Message<"openhdc.kube.v1.ListApplicationsR
  * Use `create(ListApplicationsRequestSchema)` to create a new message.
  */
 export const ListApplicationsRequestSchema: GenMessage<ListApplicationsRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 13);
+  messageDesc(file_api_kube_v1_kube, 11);
 
 /**
  * @generated from message openhdc.kube.v1.ListApplicationsResponse
@@ -723,7 +824,7 @@ export type ListApplicationsResponse = Message<"openhdc.kube.v1.ListApplications
  * Use `create(ListApplicationsResponseSchema)` to create a new message.
  */
 export const ListApplicationsResponseSchema: GenMessage<ListApplicationsResponse> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 14);
+  messageDesc(file_api_kube_v1_kube, 12);
 
 /**
  * @generated from message openhdc.kube.v1.GetApplicationRequest
@@ -755,7 +856,7 @@ export type GetApplicationRequest = Message<"openhdc.kube.v1.GetApplicationReque
  * Use `create(GetApplicationRequestSchema)` to create a new message.
  */
 export const GetApplicationRequestSchema: GenMessage<GetApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 15);
+  messageDesc(file_api_kube_v1_kube, 13);
 
 /**
  * @generated from message openhdc.kube.v1.ListChartsRequest
@@ -768,7 +869,7 @@ export type ListChartsRequest = Message<"openhdc.kube.v1.ListChartsRequest"> & {
  * Use `create(ListChartsRequestSchema)` to create a new message.
  */
 export const ListChartsRequestSchema: GenMessage<ListChartsRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 16);
+  messageDesc(file_api_kube_v1_kube, 14);
 
 /**
  * @generated from message openhdc.kube.v1.ListChartsResponse
@@ -785,7 +886,7 @@ export type ListChartsResponse = Message<"openhdc.kube.v1.ListChartsResponse"> &
  * Use `create(ListChartsResponseSchema)` to create a new message.
  */
 export const ListChartsResponseSchema: GenMessage<ListChartsResponse> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 17);
+  messageDesc(file_api_kube_v1_kube, 15);
 
 /**
  * @generated from message openhdc.kube.v1.GetChartRequest
@@ -802,7 +903,7 @@ export type GetChartRequest = Message<"openhdc.kube.v1.GetChartRequest"> & {
  * Use `create(GetChartRequestSchema)` to create a new message.
  */
 export const GetChartRequestSchema: GenMessage<GetChartRequest> = /*@__PURE__*/
-  messageDesc(file_api_kube_v1_kube, 18);
+  messageDesc(file_api_kube_v1_kube, 16);
 
 /**
  * @generated from service openhdc.kube.v1.KubeService
@@ -811,16 +912,6 @@ export const KubeService: GenService<{
   /**
    * Helm Release
    *
-   * helm list
-   *
-   * @generated from rpc openhdc.kube.v1.KubeService.ListReleases
-   */
-  listReleases: {
-    methodKind: "unary";
-    input: typeof ListReleasesRequestSchema;
-    output: typeof ListReleasesResponseSchema;
-  },
-  /**
    * helm install
    *
    * @generated from rpc openhdc.kube.v1.KubeService.InstallRelease
@@ -838,7 +929,7 @@ export const KubeService: GenService<{
   uninstallRelease: {
     methodKind: "unary";
     input: typeof UninstallReleaseRequestSchema;
-    output: typeof EmptySchema;
+    output: typeof ReleaseSchema;
   },
   /**
    * helm upgrade
@@ -858,7 +949,7 @@ export const KubeService: GenService<{
   rollbackRelease: {
     methodKind: "unary";
     input: typeof RollbackReleaseRequestSchema;
-    output: typeof ReleaseSchema;
+    output: typeof EmptySchema;
   },
   /**
    * Helm Repository

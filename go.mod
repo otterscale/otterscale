@@ -19,6 +19,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/juju/juju v0.0.0-20250408011917-ff0de670c36e
 	github.com/juju/names/v6 v6.0.0-20250318090139-ec8d71d906f5
+	github.com/moby/moby v28.0.4+incompatible
 	github.com/rs/cors v1.11.1
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/spf13/cobra v1.9.1
@@ -32,6 +33,7 @@ require (
 	k8s.io/apimachinery v0.32.3
 	k8s.io/cli-runtime v0.32.3
 	k8s.io/client-go v0.32.3
+	sigs.k8s.io/yaml v1.4.0
 )
 
 require (
@@ -245,5 +247,4 @@ require (
 	sigs.k8s.io/kustomize/api v0.18.0 // indirect
 	sigs.k8s.io/kustomize/kyaml v0.18.1 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.2 // indirect
-	sigs.k8s.io/yaml v1.4.0 // indirect
 )
