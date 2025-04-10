@@ -9,11 +9,10 @@ option go_package = "github.com/openhdc/openhdc/api/kube/v1;v1";
 
 service KubeService {
   // Helm Release
-  rpc ListReleases(ListReleasesRequest) returns (ListReleasesResponse);           // helm list
-  rpc InstallRelease(InstallReleaseRequest) returns (Release);                    // helm install
-  rpc UninstallRelease(UninstallReleaseRequest) returns (google.protobuf.Empty);  // helm uninstall
-  rpc UpgradeRelease(UpgradeReleaseRequest) returns (Release);                    // helm upgrade
-  rpc RollbackRelease(RollbackReleaseRequest) returns (Release);                  // helm rollback
+  rpc InstallRelease(InstallReleaseRequest) returns (Release);                  // helm install
+  rpc UninstallRelease(UninstallReleaseRequest) returns (Release);              // helm uninstall
+  rpc UpgradeRelease(UpgradeReleaseRequest) returns (Release);                  // helm upgrade
+  rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty);  // helm rollback
 
   // Helm Repository
   rpc ListRepositories(ListRepositoriesRequest) returns (ListRepositoriesResponse);  // helm repo list
@@ -29,10 +28,9 @@ service KubeService {
 }
 
 message Release {
-  // ReleaseValues
-  // Providers
-  // settings
-  // history
+  string name = 1;
+  string namespace = 2;
+  int32 revision = 3;
 }
 
 message Repository {
@@ -75,6 +73,10 @@ message Chart {
   repeated Maintainer maintainers = 21;
   repeated Dependency dependencies = 31;
   repeated Version versions = 41;
+  string default_values_yaml = 51;
+  bool installed = 61;
+  Version installed_version = 62;
+  string installed_values_yaml = 63;
 }
 
 message Application {
@@ -135,23 +137,41 @@ message Application {
   repeated Service service = 104;
 }
 
-message ListReleasesRequest {
+message InstallReleaseRequest {
   string model_uuid = 1;
   string cluster_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+  string chart_ref = 11;
+  string values_yaml = 12;
 }
 
-message ListReleasesResponse {}
-
-message InstallReleaseRequest {
-  string name = 1;
-  string chart_ref = 2;
+message UninstallReleaseRequest {
+  string model_uuid = 1;
+  string cluster_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
 }
 
-message UninstallReleaseRequest {}
+message UpgradeReleaseRequest {
+  string model_uuid = 1;
+  string cluster_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+  string chart_ref = 11;
+  string values_yaml = 12;
+}
 
-message UpgradeReleaseRequest {}
-
-message RollbackReleaseRequest {}
+message RollbackReleaseRequest {
+  string model_uuid = 1;
+  string cluster_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+}
 
 message ListRepositoriesRequest {}
 

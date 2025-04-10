@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"golang.org/x/sync/errgroup"
 
@@ -20,6 +21,7 @@ import (
 	"k8s.io/client-go/rest"
 
 	"github.com/juju/juju/api/client/application"
+	"github.com/moby/moby/pkg/namesgenerator"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
@@ -66,10 +68,14 @@ type KubeStorage interface {
 
 // KubeHelm handles helm-related operations
 type KubeHelm interface {
-	ListReleases(ctx context.Context, cluster, namespace string) ([]*release.Release, error)
-	ListRepositories(ctx context.Context) ([]*model.HelmRepo, error)
-	UpdateRepositoryCharts(ctx context.Context, name string) (*model.HelmRepo, error)
-	ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error)
+	ListReleases(cluster, namespace string) ([]*release.Release, error)
+	InstallRelease(cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
+	UninstallRelease(cluster, namespace, name string, dryRun bool) (*release.Release, error)
+	UpgradeRelease(cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
+	RollbackRelease(cluster, namespace, name string, dryRun bool) error
+	ListRepositories() ([]*model.HelmRepo, error)
+	UpdateRepositoryCharts(name string) (*model.HelmRepo, error)
+	ListChartVersions() (map[string]repo.ChartVersions, error)
 }
 
 // KubeService orchestrates Kubernetes operations
@@ -307,23 +313,54 @@ func (s *KubeService) ListReleases(ctx context.Context, uuid, cluster, namespace
 	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
 		return nil, err
 	}
-	return s.helm.ListReleases(ctx, cluster, namespace)
+	return s.helm.ListReleases(cluster, namespace)
 }
 
-func (s *KubeService) ListRepositories(ctx context.Context) ([]*model.HelmRepo, error) {
-	return s.helm.ListRepositories(ctx)
+func (s *KubeService) InstallRelease(ctx context.Context, uuid, cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+		return nil, err
+	}
+	if name == "" {
+		name = randomName()
+	}
+	return s.helm.InstallRelease(cluster, namespace, name, dryRun, chartRef, values)
 }
 
-func (s *KubeService) UpdateRepositoryCharts(ctx context.Context, name string) (*model.HelmRepo, error) {
-	return s.helm.UpdateRepositoryCharts(ctx, name)
+func (s *KubeService) UninstallRelease(ctx context.Context, uuid, cluster, namespace, name string, dryRun bool) (*release.Release, error) {
+	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+		return nil, err
+	}
+	return s.helm.UninstallRelease(cluster, namespace, name, dryRun)
 }
 
-func (s *KubeService) ListCharts(ctx context.Context) (map[string]repo.ChartVersions, error) {
-	return s.helm.ListChartVersions(ctx)
+func (s *KubeService) UpgradeRelease(ctx context.Context, uuid, cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+		return nil, err
+	}
+	return s.helm.UpgradeRelease(cluster, namespace, name, dryRun, chartRef, values)
 }
 
-func (s *KubeService) GetChart(ctx context.Context, name string) (repo.ChartVersions, error) {
-	m, err := s.helm.ListChartVersions(ctx)
+func (s *KubeService) RollbackRelease(ctx context.Context, uuid, cluster, namespace, name string, dryRun bool) error {
+	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+		return err
+	}
+	return s.helm.RollbackRelease(cluster, namespace, name, dryRun)
+}
+
+func (s *KubeService) ListRepositories() ([]*model.HelmRepo, error) {
+	return s.helm.ListRepositories()
+}
+
+func (s *KubeService) UpdateRepositoryCharts(name string) (*model.HelmRepo, error) {
+	return s.helm.UpdateRepositoryCharts(name)
+}
+
+func (s *KubeService) ListCharts() (map[string]repo.ChartVersions, error) {
+	return s.helm.ListChartVersions()
+}
+
+func (s *KubeService) GetChart(name string) (repo.ChartVersions, error) {
+	m, err := s.helm.ListChartVersions()
 	if err != nil {
 		return nil, err
 	}
@@ -334,4 +371,8 @@ func (s *KubeService) GetChart(ctx context.Context, name string) (repo.ChartVers
 		return v, nil
 	}
 	return nil, fmt.Errorf("chart %q not found", name)
+}
+
+func randomName() string {
+	return strings.ReplaceAll(namesgenerator.GetRandomName(0), "_", "-")
 }
