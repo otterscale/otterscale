@@ -205,6 +205,7 @@ func (a *KubeApp) toRelease(rel *model.Release) *v1.Release {
 	ret.SetName(rel.Name)
 	ret.SetNamespace(rel.Namespace)
 	ret.SetRevision(int32(rel.Version)) //nolint:gosec
+	ret.SetChartName(rel.Chart.Name())
 	ret.SetVersion(a.toChartVersion(rel.Chart.Metadata, nil))
 	return ret
 }
