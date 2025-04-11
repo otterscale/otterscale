@@ -92,14 +92,11 @@ func (k KubeMap) GetHelmConfig(key, namespace string) (*action.Configuration, er
 		return nil, err
 	}
 
-	opts := []registry.ClientOption{
-		registry.ClientOptEnableCache(true),
-	}
-	registryClient, err := registry.NewClient(opts...)
+	rc, err := newRegistryClient()
 	if err != nil {
 		return nil, err
 	}
-	config.RegistryClient = registryClient
+	config.RegistryClient = rc
 
 	return config, nil
 }
@@ -108,4 +105,11 @@ func isInCluster() bool {
 	val := os.Getenv(env.OPENHDC_IN_CLUSTER)
 	inCluster, _ := strconv.ParseBool(strings.ToLower(val))
 	return inCluster
+}
+
+func newRegistryClient() (*registry.Client, error) {
+	opts := []registry.ClientOption{
+		registry.ClientOptEnableCache(true),
+	}
+	return registry.NewClient(opts...)
 }

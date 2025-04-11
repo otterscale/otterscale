@@ -30,33 +30,33 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	kubeCore := kube.NewCore(kubeMap)
 	kubeStorage := kube.NewStorage(kubeMap)
 	kubeHelm := kube.NewHelm(kubeMap)
-	jujuApplication := juju.NewApplication()
-	kubeService := service.NewKubeService(kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm, jujuApplication)
-	kubeApp := app.NewKubeApp(kubeService)
-	config := maas.NewConfig()
-	v, err := maas.New(config)
-	if err != nil {
-		return nil, nil, err
-	}
-	maasServer := maas.NewServer(v)
-	maasPackageRepository := maas.NewPackageRepository(v)
-	maasFabric := maas.NewFabric(v)
-	maasvlan := maas.NewVLAN(v)
-	maasSubnet := maas.NewSubnet(v)
-	maasipRange := maas.NewIPRange(v)
-	maasBootResource := maas.NewBootResource(v)
-	maasMachine := maas.NewMachine(v)
-	jujuMachine := juju.NewMachine()
-	jujuClient := juju.NewClient()
 	simpleConfig, err := juju.NewConfig()
 	if err != nil {
 		return nil, nil, err
 	}
-	v2, err := juju.New(simpleConfig)
+	v, err := juju.New(simpleConfig)
 	if err != nil {
 		return nil, nil, err
 	}
-	jujuModel := juju.NewModel(v2)
+	jujuModel := juju.NewModel(v)
+	jujuClient := juju.NewClient()
+	jujuApplication := juju.NewApplication()
+	kubeService := service.NewKubeService(kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm, jujuModel, jujuClient, jujuApplication)
+	kubeApp := app.NewKubeApp(kubeService)
+	config := maas.NewConfig()
+	v2, err := maas.New(config)
+	if err != nil {
+		return nil, nil, err
+	}
+	maasServer := maas.NewServer(v2)
+	maasPackageRepository := maas.NewPackageRepository(v2)
+	maasFabric := maas.NewFabric(v2)
+	maasvlan := maas.NewVLAN(v2)
+	maasSubnet := maas.NewSubnet(v2)
+	maasipRange := maas.NewIPRange(v2)
+	maasBootResource := maas.NewBootResource(v2)
+	maasMachine := maas.NewMachine(v2)
+	jujuMachine := juju.NewMachine()
 	jujuModelConfig := juju.NewModelConfig()
 	jujuAction := juju.NewAction()
 	stackService := service.NewStackService(maasServer, maasPackageRepository, maasFabric, maasvlan, maasSubnet, maasipRange, maasBootResource, maasMachine, jujuMachine, jujuClient, jujuModel, jujuModelConfig, jujuApplication, jujuAction)

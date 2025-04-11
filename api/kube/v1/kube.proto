@@ -9,14 +9,16 @@ option go_package = "github.com/openhdc/openhdc/api/kube/v1;v1";
 
 service KubeService {
   // Helm Release
-  rpc InstallRelease(InstallReleaseRequest) returns (Release);                  // helm install
-  rpc UninstallRelease(UninstallReleaseRequest) returns (Release);              // helm uninstall
-  rpc UpgradeRelease(UpgradeReleaseRequest) returns (Release);                  // helm upgrade
-  rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty);  // helm rollback
+  rpc ListReleases(ListReleasesRequest) returns (ListReleasesResponse);
+  rpc InstallRelease(InstallReleaseRequest) returns (Release);
+  rpc UninstallRelease(UninstallReleaseRequest) returns (Release);
+  rpc UpgradeRelease(UpgradeReleaseRequest) returns (Release);
+  rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty);
 
   // App Store
   rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);
   rpc GetChart(GetChartRequest) returns (Chart);
+  rpc GetChartDefaultValues(GetChartDefaultValuesRequest) returns (GetChartDefaultValuesResponse);
 
   // Native
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
@@ -24,9 +26,13 @@ service KubeService {
 }
 
 message Release {
-  string name = 1;
-  string namespace = 2;
-  int32 revision = 3;
+  string model_name = 1;  // TODO
+  string model_uuid = 2;
+  string cluster_name = 3;
+  string namespace = 4;
+  string name = 5;
+  int32 revision = 6;
+  Chart.Version version = 11;
 }
 
 message Chart {
@@ -56,10 +62,6 @@ message Chart {
   repeated Maintainer maintainers = 21;
   repeated Dependency dependencies = 31;
   repeated Version versions = 41;
-  string default_values_yaml = 51;
-  bool installed = 61;
-  Version installed_version = 62;
-  string installed_values_yaml = 63;
 }
 
 message Application {
@@ -120,6 +122,12 @@ message Application {
   repeated Service service = 104;
 }
 
+message ListReleasesRequest {}
+
+message ListReleasesResponse {
+  repeated Release releases = 1;
+}
+
 message InstallReleaseRequest {
   string model_uuid = 1;
   string cluster_name = 2;
@@ -156,6 +164,24 @@ message RollbackReleaseRequest {
   bool dry_run = 5;
 }
 
+message GetChartDefaultValuesRequest {
+  string chart_ref = 1;
+}
+
+message GetChartDefaultValuesResponse {
+  string values_yaml = 1;
+}
+
+message ListChartsRequest {}
+
+message ListChartsResponse {
+  repeated Chart charts = 1;
+}
+
+message GetChartRequest {
+  string name = 1;
+}
+
 message ListApplicationsRequest {
   string model_uuid = 1;
   string cluster_name = 2;
@@ -170,14 +196,4 @@ message GetApplicationRequest {
   string cluster_name = 2;
   string namespace = 3;
   string name = 4;
-}
-
-message ListChartsRequest {}
-
-message ListChartsResponse {
-  repeated Chart charts = 1;
-}
-
-message GetChartRequest {
-  string name = 1;
 }
