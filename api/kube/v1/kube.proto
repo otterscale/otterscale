@@ -32,7 +32,8 @@ message Release {
   string namespace = 4;
   string name = 5;
   int32 revision = 6;
-  Chart.Version version = 11;
+  string chart_name = 11;
+  Chart.Version version = 12;
 }
 
 message Chart {
