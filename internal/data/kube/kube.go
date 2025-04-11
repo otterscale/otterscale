@@ -45,35 +45,35 @@ func NewKubeMap() (KubeMap, error) {
 	return k, nil
 }
 
-func (k KubeMap) Add(cluster string, config *rest.Config) error {
+func (k KubeMap) Add(key string, config *rest.Config) error {
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return err
 	}
-	k[cluster] = &kube{
+	k[key] = &kube{
 		Clientset: clientset,
 		Config:    config,
 	}
 	return nil
 }
 
-func (k KubeMap) get(cluster string) (*kube, error) {
-	if kube, ok := k[cluster]; ok {
+func (k KubeMap) get(key string) (*kube, error) {
+	if kube, ok := k[key]; ok {
 		return kube, nil
 	}
-	return nil, fmt.Errorf("kubernetes cluster %q not found", cluster)
+	return nil, fmt.Errorf("kubernetes cluster %q not found", key)
 }
 
-func (k KubeMap) GetKubeClientset(cluster string) (*kubernetes.Clientset, error) {
-	kube, err := k.get(cluster)
+func (k KubeMap) GetKubeClientset(key string) (*kubernetes.Clientset, error) {
+	kube, err := k.get(key)
 	if err != nil {
 		return nil, err
 	}
 	return kube.Clientset, nil
 }
 
-func (k KubeMap) GetHelmConfig(cluster, namespace string) (*action.Configuration, error) {
-	kube, err := k.get(cluster)
+func (k KubeMap) GetHelmConfig(key, namespace string) (*action.Configuration, error) {
+	kube, err := k.get(key)
 	if err != nil {
 		return nil, err
 	}

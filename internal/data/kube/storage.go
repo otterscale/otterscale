@@ -21,8 +21,8 @@ func NewStorage(kubeMap KubeMap) service.KubeStorage {
 
 var _ service.KubeStorage = (*storage)(nil)
 
-func (r *storage) ListStorageClasses(ctx context.Context, cluster string) ([]v1.StorageClass, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+func (r *storage) ListStorageClasses(ctx context.Context, key string) ([]v1.StorageClass, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(key)
 	if err != nil {
 		return nil, err
 	}
