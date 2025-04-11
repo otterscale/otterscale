@@ -18,11 +18,11 @@ func NewClient(kubeMap KubeMap) service.KubeClient {
 
 var _ service.KubeClient = (*client)(nil)
 
-func (r *client) Exists(cluster string) bool {
-	_, ok := r.kubeMap[cluster]
+func (r *client) Exists(key string) bool {
+	_, ok := r.kubeMap[key]
 	return ok
 }
 
-func (r *client) Add(cluster string, cfg *rest.Config) error {
-	return r.kubeMap.Add(cluster, cfg)
+func (r *client) Add(key string, cfg *rest.Config) error {
+	return r.kubeMap.Add(key, cfg)
 }

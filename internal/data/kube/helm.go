@@ -44,8 +44,8 @@ func NewHelm(kubeMap KubeMap) service.KubeHelm {
 
 var _ service.KubeHelm = (*helm)(nil)
 
-func (r *helm) ListReleases(cluster, namespace string) ([]*release.Release, error) {
-	config, err := r.kubeMap.GetHelmConfig(cluster, namespace)
+func (r *helm) ListReleases(key, namespace string) ([]*release.Release, error) {
+	config, err := r.kubeMap.GetHelmConfig(key, namespace)
 	if err != nil {
 		return nil, err
 	}
@@ -55,8 +55,8 @@ func (r *helm) ListReleases(cluster, namespace string) ([]*release.Release, erro
 	return client.Run()
 }
 
-func (r *helm) InstallRelease(cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
-	config, err := r.kubeMap.GetHelmConfig(cluster, namespace)
+func (r *helm) InstallRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+	config, err := r.kubeMap.GetHelmConfig(key, namespace)
 	if err != nil {
 		return nil, err
 	}
@@ -83,8 +83,8 @@ func (r *helm) InstallRelease(cluster, namespace, name string, dryRun bool, char
 	return client.Run(chart, values)
 }
 
-func (r *helm) UninstallRelease(cluster, namespace, name string, dryRun bool) (*release.Release, error) {
-	config, err := r.kubeMap.GetHelmConfig(cluster, namespace)
+func (r *helm) UninstallRelease(key, namespace, name string, dryRun bool) (*release.Release, error) {
+	config, err := r.kubeMap.GetHelmConfig(key, namespace)
 	if err != nil {
 		return nil, err
 	}
@@ -100,8 +100,8 @@ func (r *helm) UninstallRelease(cluster, namespace, name string, dryRun bool) (*
 	return res.Release, nil
 }
 
-func (r *helm) UpgradeRelease(cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
-	config, err := r.kubeMap.GetHelmConfig(cluster, namespace)
+func (r *helm) UpgradeRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+	config, err := r.kubeMap.GetHelmConfig(key, namespace)
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func (r *helm) UpgradeRelease(cluster, namespace, name string, dryRun bool, char
 	return client.Run(name, chart, values)
 }
 
-func (r *helm) RollbackRelease(cluster, namespace, name string, dryRun bool) error {
-	config, err := r.kubeMap.GetHelmConfig(cluster, namespace)
+func (r *helm) RollbackRelease(key, namespace, name string, dryRun bool) error {
+	config, err := r.kubeMap.GetHelmConfig(key, namespace)
 	if err != nil {
 		return err
 	}

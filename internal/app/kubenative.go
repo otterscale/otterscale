@@ -351,9 +351,9 @@ func toApplicationPersistentVolumeClaims(pvcs []corev1.PersistentVolumeClaim, st
 	for idx := range pvcs {
 		pvc := &v1.Application_PersistentVolumeClaim{}
 		pvc.SetName(pvcs[idx].Name)
-		pvc.SetStatus(pvcs[idx].Status.String())
+		pvc.SetStatus(string(pvcs[idx].Status.Phase))
 		pvc.SetAccessModes(accessModesToStrings(pvcs[idx].Spec.AccessModes))
-		pvc.SetCapacity(pvcs[idx].Spec.Resources.String())
+		pvc.SetCapacity(pvcs[idx].Spec.Resources.Requests.Storage().String())
 
 		if storageClassName := pvcs[idx].Spec.StorageClassName; storageClassName != nil {
 			if sc, ok := storageClassMap[*storageClassName]; ok {

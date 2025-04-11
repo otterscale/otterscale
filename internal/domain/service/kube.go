@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -28,51 +29,51 @@ import (
 
 // KubeClient manages Kubernetes client connections
 type KubeClient interface {
-	Exists(cluster string) bool
-	Add(cluster string, cfg *rest.Config) error
+	Exists(key string) bool
+	Add(key string, cfg *rest.Config) error
 }
 
 // KubeApps handles deployment-related operations
 type KubeApps interface {
-	ListDeployments(ctx context.Context, cluster, namespace string) ([]appsv1.Deployment, error)
-	GetDeployment(ctx context.Context, cluster, namespace, name string) (*appsv1.Deployment, error)
-	ListStatefulSets(ctx context.Context, cluster, namespace string) ([]appsv1.StatefulSet, error)
-	GetStatefulSet(ctx context.Context, cluster, namespace, name string) (*appsv1.StatefulSet, error)
-	ListDaemonSets(ctx context.Context, cluster, namespace string) ([]appsv1.DaemonSet, error)
-	GetDaemonSet(ctx context.Context, cluster, namespace, name string) (*appsv1.DaemonSet, error)
+	ListDeployments(ctx context.Context, key, namespace string) ([]appsv1.Deployment, error)
+	GetDeployment(ctx context.Context, key, namespace, name string) (*appsv1.Deployment, error)
+	ListStatefulSets(ctx context.Context, key, namespace string) ([]appsv1.StatefulSet, error)
+	GetStatefulSet(ctx context.Context, key, namespace, name string) (*appsv1.StatefulSet, error)
+	ListDaemonSets(ctx context.Context, key, namespace string) ([]appsv1.DaemonSet, error)
+	GetDaemonSet(ctx context.Context, key, namespace, name string) (*appsv1.DaemonSet, error)
 }
 
 // KubeBatch handles batch job operations
 type KubeBatch interface {
-	GetCronJob(ctx context.Context, cluster, namespace, name string) (*batchv1.CronJob, error)
-	CreateCronJob(ctx context.Context, cluster, namespace, name, image, schedule string) (*batchv1.CronJob, error)
-	UpdateCronJob(ctx context.Context, cluster, namespace, name, image, schedule string) (*batchv1.CronJob, error)
-	DeleteCronJob(ctx context.Context, cluster, namespace, name string) error
-	ListJobsFromCronJob(ctx context.Context, cluster, namespace string, cronJob *batchv1.CronJob) (*batchv1.JobList, error)
-	CreateJobFromCronJob(ctx context.Context, cluster, namespace string, cronJob *batchv1.CronJob, createdBy string) (*batchv1.Job, error)
+	GetCronJob(ctx context.Context, key, namespace, name string) (*batchv1.CronJob, error)
+	CreateCronJob(ctx context.Context, key, namespace, name, image, schedule string) (*batchv1.CronJob, error)
+	UpdateCronJob(ctx context.Context, key, namespace, name, image, schedule string) (*batchv1.CronJob, error)
+	DeleteCronJob(ctx context.Context, key, namespace, name string) error
+	ListJobsFromCronJob(ctx context.Context, key, namespace string, cronJob *batchv1.CronJob) (*batchv1.JobList, error)
+	CreateJobFromCronJob(ctx context.Context, key, namespace string, cronJob *batchv1.CronJob, createdBy string) (*batchv1.Job, error)
 }
 
 // KubeCore handles core Kubernetes resource operations
 type KubeCore interface {
-	GetNamespace(ctx context.Context, cluster, name string) (*corev1.Namespace, error)
-	CreateNamespace(ctx context.Context, cluster, name string) (*corev1.Namespace, error)
-	ListServices(ctx context.Context, cluster, namespace string) ([]corev1.Service, error)
-	ListPods(ctx context.Context, cluster, namespace string) ([]corev1.Pod, error)
-	ListPersistentVolumeClaims(ctx context.Context, cluster, namespace string) ([]corev1.PersistentVolumeClaim, error)
+	GetNamespace(ctx context.Context, key, name string) (*corev1.Namespace, error)
+	CreateNamespace(ctx context.Context, key, name string) (*corev1.Namespace, error)
+	ListServices(ctx context.Context, key, namespace string) ([]corev1.Service, error)
+	ListPods(ctx context.Context, key, namespace string) ([]corev1.Pod, error)
+	ListPersistentVolumeClaims(ctx context.Context, key, namespace string) ([]corev1.PersistentVolumeClaim, error)
 }
 
 // KubeStorage handles storage-related operations
 type KubeStorage interface {
-	ListStorageClasses(ctx context.Context, cluster string) ([]storagev1.StorageClass, error)
+	ListStorageClasses(ctx context.Context, key string) ([]storagev1.StorageClass, error)
 }
 
 // KubeHelm handles helm-related operations
 type KubeHelm interface {
-	ListReleases(cluster, namespace string) ([]*release.Release, error)
-	InstallRelease(cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
-	UninstallRelease(cluster, namespace, name string, dryRun bool) (*release.Release, error)
-	UpgradeRelease(cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
-	RollbackRelease(cluster, namespace, name string, dryRun bool) error
+	ListReleases(key, namespace string) ([]*release.Release, error)
+	InstallRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
+	UninstallRelease(key, namespace, name string, dryRun bool) (*release.Release, error)
+	UpgradeRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
+	RollbackRelease(key, namespace, name string, dryRun bool) error
 	ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error)
 }
 
@@ -109,19 +110,25 @@ func NewKubeService(
 }
 
 // ensureClient ensures a Kubernetes client exists for the specified cluster
-func (s *KubeService) ensureClient(ctx context.Context, uuid, cluster string) error {
+func (s *KubeService) ensureClient(ctx context.Context, uuid, cluster string) (string, error) {
+	key := kubeMapKey(uuid, cluster)
+
 	// Check if client already exists
-	if ok := s.client.Exists(cluster); ok {
-		return nil // Client already exists
+	if ok := s.client.Exists(key); ok {
+		return key, nil // Client already exists
 	}
 
 	// Create new client config
 	cfg, err := s.newConfig(ctx, uuid, cluster)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return s.client.Add(cluster, cfg)
+	if err := s.client.Add(key, cfg); err != nil {
+		return "", err
+	}
+
+	return key, nil
 }
 
 // newConfig creates a new Kubernetes client configuration
@@ -210,7 +217,8 @@ func (s *KubeService) isKeyNotFoundError(err error) bool {
 
 // ListApplications retrieves all applications from the Kubernetes cluster
 func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, namespace, name string) (*model.Applications, error) {
-	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+	key, err := s.ensureClient(ctx, uuid, cluster)
+	if err != nil {
 		return nil, err
 	}
 
@@ -219,13 +227,13 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 
 	eg.Go(func() error {
 		if namespace == "" {
-			deployments, err := s.apps.ListDeployments(ctx, cluster, namespace)
+			deployments, err := s.apps.ListDeployments(ctx, key, namespace)
 			if err == nil {
 				result.Deployments = deployments
 			}
 			return err
 		}
-		deployment, err := s.apps.GetDeployment(ctx, cluster, namespace, name)
+		deployment, err := s.apps.GetDeployment(ctx, key, namespace, name)
 		if err == nil {
 			result.Deployments = []appsv1.Deployment{*deployment}
 		} else if s.isKeyNotFoundError(err) {
@@ -236,13 +244,13 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 
 	eg.Go(func() error {
 		if namespace == "" {
-			statefulSets, err := s.apps.ListStatefulSets(ctx, cluster, namespace)
+			statefulSets, err := s.apps.ListStatefulSets(ctx, key, namespace)
 			if err == nil {
 				result.StatefulSets = statefulSets
 			}
 			return err
 		}
-		statefulSet, err := s.apps.GetStatefulSet(ctx, cluster, namespace, name)
+		statefulSet, err := s.apps.GetStatefulSet(ctx, key, namespace, name)
 		if err == nil {
 			result.StatefulSets = []appsv1.StatefulSet{*statefulSet}
 		} else if s.isKeyNotFoundError(err) {
@@ -253,13 +261,13 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 
 	eg.Go(func() error {
 		if namespace == "" {
-			daemonSets, err := s.apps.ListDaemonSets(ctx, cluster, namespace)
+			daemonSets, err := s.apps.ListDaemonSets(ctx, key, namespace)
 			if err == nil {
 				result.DaemonSets = daemonSets
 			}
 			return err
 		}
-		daemonSet, err := s.apps.GetDaemonSet(ctx, cluster, namespace, name)
+		daemonSet, err := s.apps.GetDaemonSet(ctx, key, namespace, name)
 		if err == nil {
 			result.DaemonSets = []appsv1.DaemonSet{*daemonSet}
 		} else if s.isKeyNotFoundError(err) {
@@ -269,7 +277,7 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 	})
 
 	eg.Go(func() error {
-		services, err := s.core.ListServices(ctx, cluster, namespace)
+		services, err := s.core.ListServices(ctx, key, namespace)
 		if err == nil {
 			result.Services = services
 		}
@@ -277,7 +285,7 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 	})
 
 	eg.Go(func() error {
-		pods, err := s.core.ListPods(ctx, cluster, namespace)
+		pods, err := s.core.ListPods(ctx, key, namespace)
 		if err == nil {
 			result.Pods = pods
 		}
@@ -285,7 +293,7 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 	})
 
 	eg.Go(func() error {
-		pvcs, err := s.core.ListPersistentVolumeClaims(ctx, cluster, namespace)
+		pvcs, err := s.core.ListPersistentVolumeClaims(ctx, key, namespace)
 		if err == nil {
 			result.PersistentVolumeClaims = pvcs
 		}
@@ -293,7 +301,7 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 	})
 
 	eg.Go(func() error {
-		storageClasses, err := s.storage.ListStorageClasses(ctx, cluster)
+		storageClasses, err := s.storage.ListStorageClasses(ctx, key)
 		if err == nil {
 			result.StorageClasses = storageClasses
 		}
@@ -308,41 +316,46 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 }
 
 func (s *KubeService) ListReleases(ctx context.Context, uuid, cluster, namespace string) ([]*release.Release, error) {
-	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+	key, err := s.ensureClient(ctx, uuid, cluster)
+	if err != nil {
 		return nil, err
 	}
-	return s.helm.ListReleases(cluster, namespace)
+	return s.helm.ListReleases(key, namespace)
 }
 
 func (s *KubeService) InstallRelease(ctx context.Context, uuid, cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
-	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+	key, err := s.ensureClient(ctx, uuid, cluster)
+	if err != nil {
 		return nil, err
 	}
 	if name == "" {
 		name = randomName()
 	}
-	return s.helm.InstallRelease(cluster, namespace, name, dryRun, chartRef, values)
+	return s.helm.InstallRelease(key, namespace, name, dryRun, chartRef, values)
 }
 
 func (s *KubeService) UninstallRelease(ctx context.Context, uuid, cluster, namespace, name string, dryRun bool) (*release.Release, error) {
-	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+	key, err := s.ensureClient(ctx, uuid, cluster)
+	if err != nil {
 		return nil, err
 	}
-	return s.helm.UninstallRelease(cluster, namespace, name, dryRun)
+	return s.helm.UninstallRelease(key, namespace, name, dryRun)
 }
 
 func (s *KubeService) UpgradeRelease(ctx context.Context, uuid, cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
-	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+	key, err := s.ensureClient(ctx, uuid, cluster)
+	if err != nil {
 		return nil, err
 	}
-	return s.helm.UpgradeRelease(cluster, namespace, name, dryRun, chartRef, values)
+	return s.helm.UpgradeRelease(key, namespace, name, dryRun, chartRef, values)
 }
 
 func (s *KubeService) RollbackRelease(ctx context.Context, uuid, cluster, namespace, name string, dryRun bool) error {
-	if err := s.ensureClient(ctx, uuid, cluster); err != nil {
+	key, err := s.ensureClient(ctx, uuid, cluster)
+	if err != nil {
 		return err
 	}
-	return s.helm.RollbackRelease(cluster, namespace, name, dryRun)
+	return s.helm.RollbackRelease(key, namespace, name, dryRun)
 }
 
 func (s *KubeService) ListCharts(ctx context.Context) (map[string]repo.ChartVersions, error) {
@@ -365,4 +378,11 @@ func (s *KubeService) GetChart(ctx context.Context, name string) (repo.ChartVers
 
 func randomName() string {
 	return strings.ReplaceAll(namesgenerator.GetRandomName(0), "_", "-")
+}
+
+func kubeMapKey(uuid, cluster string) string {
+	sha := sha256.New()
+	sha.Write([]byte(uuid))
+	sha.Write([]byte(cluster))
+	return string(sha.Sum(nil))
 }

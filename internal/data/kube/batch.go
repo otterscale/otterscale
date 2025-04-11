@@ -31,8 +31,8 @@ func NewBatch(kubeMap KubeMap) service.KubeBatch {
 
 var _ service.KubeBatch = (*batch)(nil)
 
-func (r *batch) GetCronJob(ctx context.Context, cluster, namespace, name string) (*v1.CronJob, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+func (r *batch) GetCronJob(ctx context.Context, key, namespace, name string) (*v1.CronJob, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(key)
 	if err != nil {
 		return nil, err
 	}
@@ -40,8 +40,8 @@ func (r *batch) GetCronJob(ctx context.Context, cluster, namespace, name string)
 	return clientset.BatchV1().CronJobs(namespace).Get(ctx, name, opts)
 }
 
-func (r *batch) CreateCronJob(ctx context.Context, cluster, namespace, name, image, schedule string) (*v1.CronJob, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+func (r *batch) CreateCronJob(ctx context.Context, key, namespace, name, image, schedule string) (*v1.CronJob, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(key)
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +50,8 @@ func (r *batch) CreateCronJob(ctx context.Context, cluster, namespace, name, ima
 	return clientset.BatchV1().CronJobs(namespace).Create(ctx, cronJob, opts)
 }
 
-func (r *batch) UpdateCronJob(ctx context.Context, cluster, namespace, name, image, schedule string) (*v1.CronJob, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+func (r *batch) UpdateCronJob(ctx context.Context, key, namespace, name, image, schedule string) (*v1.CronJob, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(key)
 	if err != nil {
 		return nil, err
 	}
@@ -60,8 +60,8 @@ func (r *batch) UpdateCronJob(ctx context.Context, cluster, namespace, name, ima
 	return clientset.BatchV1().CronJobs(namespace).Update(ctx, cronJob, opts)
 }
 
-func (r *batch) DeleteCronJob(ctx context.Context, cluster, namespace, name string) error {
-	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+func (r *batch) DeleteCronJob(ctx context.Context, key, namespace, name string) error {
+	clientset, err := r.kubeMap.GetKubeClientset(key)
 	if err != nil {
 		return err
 	}
@@ -69,8 +69,8 @@ func (r *batch) DeleteCronJob(ctx context.Context, cluster, namespace, name stri
 	return clientset.BatchV1().CronJobs(namespace).Delete(ctx, name, opts)
 }
 
-func (r *batch) ListJobsFromCronJob(ctx context.Context, cluster, namespace string, cronJob *v1.CronJob) (*v1.JobList, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+func (r *batch) ListJobsFromCronJob(ctx context.Context, key, namespace string, cronJob *v1.CronJob) (*v1.JobList, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(key)
 	if err != nil {
 		return nil, err
 	}
@@ -80,8 +80,8 @@ func (r *batch) ListJobsFromCronJob(ctx context.Context, cluster, namespace stri
 	return clientset.BatchV1().Jobs(namespace).List(ctx, opts)
 }
 
-func (r *batch) CreateJobFromCronJob(ctx context.Context, cluster, namespace string, cronJob *v1.CronJob, createdBy string) (*v1.Job, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(cluster)
+func (r *batch) CreateJobFromCronJob(ctx context.Context, key, namespace string, cronJob *v1.CronJob, createdBy string) (*v1.Job, error) {
+	clientset, err := r.kubeMap.GetKubeClientset(key)
 	if err != nil {
 		return nil, err
 	}
