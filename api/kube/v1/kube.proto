@@ -18,7 +18,7 @@ service KubeService {
   // App Store
   rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);
   rpc GetChart(GetChartRequest) returns (Chart);
-  rpc GetChartDefaultValues(GetChartDefaultValuesRequest) returns (GetChartDefaultValuesResponse);
+  rpc GetChartInfo(GetChartInfoRequest) returns (GetChartInfoResponse);
 
   // Native
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
@@ -165,12 +165,13 @@ message RollbackReleaseRequest {
   bool dry_run = 5;
 }
 
-message GetChartDefaultValuesRequest {
+message GetChartInfoRequest {
   string chart_ref = 1;
 }
 
-message GetChartDefaultValuesResponse {
-  string values_yaml = 1;
+message GetChartInfoResponse {
+  string values = 1;
+  string readme = 2;
 }
 
 message ListChartsRequest {}

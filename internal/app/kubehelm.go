@@ -98,13 +98,14 @@ func (a *KubeApp) GetChart(ctx context.Context, req *connect.Request[v1.GetChart
 	return connect.NewResponse(a.toChart(cvs)), nil
 }
 
-func (a *KubeApp) GetChartDefaultValues(ctx context.Context, req *connect.Request[v1.GetChartDefaultValuesRequest]) (*connect.Response[v1.GetChartDefaultValuesResponse], error) {
-	valuesYAML, err := a.svc.GetChartDefaulValuesYAML(req.Msg.GetChartRef())
+func (a *KubeApp) GetChartInfo(ctx context.Context, req *connect.Request[v1.GetChartInfoRequest]) (*connect.Response[v1.GetChartInfoResponse], error) {
+	values, readme, err := a.svc.GetChartInfo(req.Msg.GetChartRef())
 	if err != nil {
 		return nil, err
 	}
-	res := &v1.GetChartDefaultValuesResponse{}
-	res.SetValuesYaml(valuesYAML)
+	res := &v1.GetChartInfoResponse{}
+	res.SetValues(values)
+	res.SetReadme(readme)
 	return connect.NewResponse(res), nil
 }
 

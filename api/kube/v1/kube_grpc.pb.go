@@ -20,16 +20,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	KubeService_ListReleases_FullMethodName          = "/openhdc.kube.v1.KubeService/ListReleases"
-	KubeService_InstallRelease_FullMethodName        = "/openhdc.kube.v1.KubeService/InstallRelease"
-	KubeService_UninstallRelease_FullMethodName      = "/openhdc.kube.v1.KubeService/UninstallRelease"
-	KubeService_UpgradeRelease_FullMethodName        = "/openhdc.kube.v1.KubeService/UpgradeRelease"
-	KubeService_RollbackRelease_FullMethodName       = "/openhdc.kube.v1.KubeService/RollbackRelease"
-	KubeService_ListCharts_FullMethodName            = "/openhdc.kube.v1.KubeService/ListCharts"
-	KubeService_GetChart_FullMethodName              = "/openhdc.kube.v1.KubeService/GetChart"
-	KubeService_GetChartDefaultValues_FullMethodName = "/openhdc.kube.v1.KubeService/GetChartDefaultValues"
-	KubeService_ListApplications_FullMethodName      = "/openhdc.kube.v1.KubeService/ListApplications"
-	KubeService_GetApplication_FullMethodName        = "/openhdc.kube.v1.KubeService/GetApplication"
+	KubeService_ListReleases_FullMethodName     = "/openhdc.kube.v1.KubeService/ListReleases"
+	KubeService_InstallRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/InstallRelease"
+	KubeService_UninstallRelease_FullMethodName = "/openhdc.kube.v1.KubeService/UninstallRelease"
+	KubeService_UpgradeRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/UpgradeRelease"
+	KubeService_RollbackRelease_FullMethodName  = "/openhdc.kube.v1.KubeService/RollbackRelease"
+	KubeService_ListCharts_FullMethodName       = "/openhdc.kube.v1.KubeService/ListCharts"
+	KubeService_GetChart_FullMethodName         = "/openhdc.kube.v1.KubeService/GetChart"
+	KubeService_GetChartInfo_FullMethodName     = "/openhdc.kube.v1.KubeService/GetChartInfo"
+	KubeService_ListApplications_FullMethodName = "/openhdc.kube.v1.KubeService/ListApplications"
+	KubeService_GetApplication_FullMethodName   = "/openhdc.kube.v1.KubeService/GetApplication"
 )
 
 // KubeServiceClient is the client API for KubeService service.
@@ -45,7 +45,7 @@ type KubeServiceClient interface {
 	// App Store
 	ListCharts(ctx context.Context, in *ListChartsRequest, opts ...grpc.CallOption) (*ListChartsResponse, error)
 	GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Chart, error)
-	GetChartDefaultValues(ctx context.Context, in *GetChartDefaultValuesRequest, opts ...grpc.CallOption) (*GetChartDefaultValuesResponse, error)
+	GetChartInfo(ctx context.Context, in *GetChartInfoRequest, opts ...grpc.CallOption) (*GetChartInfoResponse, error)
 	// Native
 	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
 	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error)
@@ -129,10 +129,10 @@ func (c *kubeServiceClient) GetChart(ctx context.Context, in *GetChartRequest, o
 	return out, nil
 }
 
-func (c *kubeServiceClient) GetChartDefaultValues(ctx context.Context, in *GetChartDefaultValuesRequest, opts ...grpc.CallOption) (*GetChartDefaultValuesResponse, error) {
+func (c *kubeServiceClient) GetChartInfo(ctx context.Context, in *GetChartInfoRequest, opts ...grpc.CallOption) (*GetChartInfoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetChartDefaultValuesResponse)
-	err := c.cc.Invoke(ctx, KubeService_GetChartDefaultValues_FullMethodName, in, out, cOpts...)
+	out := new(GetChartInfoResponse)
+	err := c.cc.Invoke(ctx, KubeService_GetChartInfo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -172,7 +172,7 @@ type KubeServiceServer interface {
 	// App Store
 	ListCharts(context.Context, *ListChartsRequest) (*ListChartsResponse, error)
 	GetChart(context.Context, *GetChartRequest) (*Chart, error)
-	GetChartDefaultValues(context.Context, *GetChartDefaultValuesRequest) (*GetChartDefaultValuesResponse, error)
+	GetChartInfo(context.Context, *GetChartInfoRequest) (*GetChartInfoResponse, error)
 	// Native
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
 	GetApplication(context.Context, *GetApplicationRequest) (*Application, error)
@@ -207,8 +207,8 @@ func (UnimplementedKubeServiceServer) ListCharts(context.Context, *ListChartsReq
 func (UnimplementedKubeServiceServer) GetChart(context.Context, *GetChartRequest) (*Chart, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChart not implemented")
 }
-func (UnimplementedKubeServiceServer) GetChartDefaultValues(context.Context, *GetChartDefaultValuesRequest) (*GetChartDefaultValuesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetChartDefaultValues not implemented")
+func (UnimplementedKubeServiceServer) GetChartInfo(context.Context, *GetChartInfoRequest) (*GetChartInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChartInfo not implemented")
 }
 func (UnimplementedKubeServiceServer) ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListApplications not implemented")
@@ -363,20 +363,20 @@ func _KubeService_GetChart_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _KubeService_GetChartDefaultValues_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetChartDefaultValuesRequest)
+func _KubeService_GetChartInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChartInfoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(KubeServiceServer).GetChartDefaultValues(ctx, in)
+		return srv.(KubeServiceServer).GetChartInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: KubeService_GetChartDefaultValues_FullMethodName,
+		FullMethod: KubeService_GetChartInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(KubeServiceServer).GetChartDefaultValues(ctx, req.(*GetChartDefaultValuesRequest))
+		return srv.(KubeServiceServer).GetChartInfo(ctx, req.(*GetChartInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -453,8 +453,8 @@ var KubeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _KubeService_GetChart_Handler,
 		},
 		{
-			MethodName: "GetChartDefaultValues",
-			Handler:    _KubeService_GetChartDefaultValues_Handler,
+			MethodName: "GetChartInfo",
+			Handler:    _KubeService_GetChartInfo_Handler,
 		},
 		{
 			MethodName: "ListApplications",
