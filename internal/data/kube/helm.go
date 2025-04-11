@@ -135,13 +135,13 @@ func (r *helm) RollbackRelease(key, namespace, name string, dryRun bool) error {
 	return client.Run(name)
 }
 
-func (r *helm) GetChartDefaultValuesYAML(chartRef string) (string, error) {
+func (r *helm) GetChartInfo(chartRef string, format action.ShowOutputFormat) (string, error) {
 	rc, err := newRegistryClient()
 	if err != nil {
 		return "", err
 	}
 
-	client := action.NewShow(action.ShowAll)
+	client := action.NewShow(format)
 	client.SetRegistryClient(rc)
 
 	chartPath, err := client.ChartPathOptions.LocateChart(chartRef, r.settings)

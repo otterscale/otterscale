@@ -11,6 +11,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
+	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/release"
 	"helm.sh/helm/v3/pkg/repo"
 
@@ -74,7 +75,7 @@ type KubeHelm interface {
 	UninstallRelease(key, namespace, name string, dryRun bool) (*release.Release, error)
 	UpgradeRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
 	RollbackRelease(key, namespace, name string, dryRun bool) error
-	GetChartDefaultValuesYAML(chartRef string) (string, error)
+	GetChartInfo(chartRef string, format action.ShowOutputFormat) (string, error)
 	ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error)
 }
 
@@ -449,8 +450,26 @@ func (s *KubeService) GetChart(ctx context.Context, name string) (repo.ChartVers
 	return nil, fmt.Errorf("chart %q not found", name)
 }
 
-func (s *KubeService) GetChartDefaulValuesYAML(chartRef string) (string, error) {
-	return s.helm.GetChartDefaultValuesYAML(chartRef)
+func (s *KubeService) GetChartInfo(chartRef string) (values string, readme string, err error) {
+	eg, _ := errgroup.WithContext(context.Background())
+	eg.Go(func() error {
+		info, err := s.helm.GetChartInfo(chartRef, action.ShowValues)
+		if err == nil {
+			values = info
+		}
+		return err
+	})
+	eg.Go(func() error {
+		info, err := s.helm.GetChartInfo(chartRef, action.ShowReadme)
+		if err == nil {
+			readme = info
+		}
+		return err
+	})
+	if err := eg.Wait(); err != nil {
+		return "", "", err
+	}
+	return
 }
 
 func randomName() string {
