@@ -25,7 +25,7 @@ const (
 
 // Environment variables for Helm configuration
 const (
-	OPENHDC_HELM_REPOSITORY_CONFIG = "OPENHDC_HELM_REPOSITORY_CONFIG" //nolint:stylecheck
+	OPENHDC_HELM_REPOSITORY_URL = "OPENHDC_HELM_REPOSITORY_URL" //nolint:stylecheck
 )
 
 // GetOrDefault returns the value of the environment variable if set, otherwise returns the default value.

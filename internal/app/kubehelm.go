@@ -11,7 +11,6 @@ import (
 	"sigs.k8s.io/yaml"
 
 	v1 "github.com/openhdc/openhdc/api/kube/v1"
-	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
 func (a *KubeApp) InstallRelease(ctx context.Context, req *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error) {
@@ -53,38 +52,8 @@ func (a *KubeApp) RollbackRelease(ctx context.Context, req *connect.Request[v1.R
 	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 
-// func (a *KubeApp) ListReleases(ctx context.Context, req *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
-// 	rels, err := a.svc.ListReleases(ctx, req.Msg.GetModelUuid(), req.Msg.GetClusterName(), "")
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	for _, rel := range rels {
-// 		fmt.Println(rel.Name, rel.Namespace)
-// 	}
-// 	res := &v1.ListReleasesResponse{}
-// 	return connect.NewResponse(res), nil
-// }
-
-func (a *KubeApp) ListRepositories(_ context.Context, req *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error) {
-	repos, err := a.svc.ListRepositories()
-	if err != nil {
-		return nil, err
-	}
-	res := &v1.ListRepositoriesResponse{}
-	res.SetRepositories(a.toRepositories(repos))
-	return connect.NewResponse(res), nil
-}
-
-func (a *KubeApp) UpdateRepositoryCharts(_ context.Context, req *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error) {
-	repo, err := a.svc.UpdateRepositoryCharts(req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	return connect.NewResponse(a.toRepository(repo)), nil
-}
-
-func (a *KubeApp) ListCharts(_ context.Context, req *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
-	m, err := a.svc.ListCharts()
+func (a *KubeApp) ListCharts(ctx context.Context, req *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
+	m, err := a.svc.ListCharts(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -93,35 +62,12 @@ func (a *KubeApp) ListCharts(_ context.Context, req *connect.Request[v1.ListChar
 	return connect.NewResponse(res), nil
 }
 
-func (a *KubeApp) GetChart(_ context.Context, req *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error) {
-	cvs, err := a.svc.GetChart(req.Msg.GetName())
+func (a *KubeApp) GetChart(ctx context.Context, req *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error) {
+	cvs, err := a.svc.GetChart(ctx, req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
 	return connect.NewResponse(a.toChart(cvs)), nil
-}
-
-func (a *KubeApp) toRepositories(hrs []*model.HelmRepo) []*v1.Repository {
-	ret := []*v1.Repository{}
-	for idx := range hrs {
-		ret = append(ret, a.toRepository(hrs[idx]))
-	}
-	return ret
-}
-
-func (a *KubeApp) toRepository(hr *model.HelmRepo) *v1.Repository {
-	ret := &v1.Repository{}
-	ret.SetName(hr.Name)
-	ret.SetUrl(hr.URL)
-	ret.SetUsername(hr.Username)
-	ret.SetPassword(hr.Password)
-	ret.SetCertFile(hr.CertFile)
-	ret.SetKeyFile(hr.KeyFile)
-	ret.SetCaFile(hr.CAFile)
-	ret.SetInsecureSkipTlsVerify(hr.InsecureSkipTLSverify)
-	ret.SetPassCredentialsAll(hr.PassCredentialsAll)
-	ret.SetChartNames(hr.ChartNames)
-	return ret
 }
 
 func (a *KubeApp) toLatestCharts(m map[string]repo.ChartVersions) []*v1.Chart {

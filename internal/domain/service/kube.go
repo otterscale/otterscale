@@ -73,9 +73,7 @@ type KubeHelm interface {
 	UninstallRelease(cluster, namespace, name string, dryRun bool) (*release.Release, error)
 	UpgradeRelease(cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
 	RollbackRelease(cluster, namespace, name string, dryRun bool) error
-	ListRepositories() ([]*model.HelmRepo, error)
-	UpdateRepositoryCharts(name string) (*model.HelmRepo, error)
-	ListChartVersions() (map[string]repo.ChartVersions, error)
+	ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error)
 }
 
 // KubeService orchestrates Kubernetes operations
@@ -347,20 +345,12 @@ func (s *KubeService) RollbackRelease(ctx context.Context, uuid, cluster, namesp
 	return s.helm.RollbackRelease(cluster, namespace, name, dryRun)
 }
 
-func (s *KubeService) ListRepositories() ([]*model.HelmRepo, error) {
-	return s.helm.ListRepositories()
+func (s *KubeService) ListCharts(ctx context.Context) (map[string]repo.ChartVersions, error) {
+	return s.helm.ListChartVersions(ctx)
 }
 
-func (s *KubeService) UpdateRepositoryCharts(name string) (*model.HelmRepo, error) {
-	return s.helm.UpdateRepositoryCharts(name)
-}
-
-func (s *KubeService) ListCharts() (map[string]repo.ChartVersions, error) {
-	return s.helm.ListChartVersions()
-}
-
-func (s *KubeService) GetChart(name string) (repo.ChartVersions, error) {
-	m, err := s.helm.ListChartVersions()
+func (s *KubeService) GetChart(ctx context.Context, name string) (repo.ChartVersions, error) {
+	m, err := s.helm.ListChartVersions(ctx)
 	if err != nil {
 		return nil, err
 	}

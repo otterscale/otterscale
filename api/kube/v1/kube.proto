@@ -14,13 +14,9 @@ service KubeService {
   rpc UpgradeRelease(UpgradeReleaseRequest) returns (Release);                  // helm upgrade
   rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty);  // helm rollback
 
-  // Helm Repository
-  rpc ListRepositories(ListRepositoriesRequest) returns (ListRepositoriesResponse);  // helm repo list
-  rpc UpdateRepositoryCharts(UpdateRepositoryChartsRequest) returns (Repository);    // helm repo update
-
   // App Store
-  rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);  // helm search repo
-  rpc GetChart(GetChartRequest) returns (Chart);                   // helm search repo
+  rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);
+  rpc GetChart(GetChartRequest) returns (Chart);
 
   // Native
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
@@ -31,19 +27,6 @@ message Release {
   string name = 1;
   string namespace = 2;
   int32 revision = 3;
-}
-
-message Repository {
-  string name = 1;
-  string url = 2;
-  string username = 3;
-  string password = 4;
-  string cert_file = 5;
-  string key_file = 6;
-  string ca_file = 7;
-  bool insecure_skip_tls_verify = 8;
-  bool pass_credentials_all = 9;
-  repeated string chart_names = 11;
 }
 
 message Chart {
@@ -171,16 +154,6 @@ message RollbackReleaseRequest {
   string namespace = 3;
   string name = 4;
   bool dry_run = 5;
-}
-
-message ListRepositoriesRequest {}
-
-message ListRepositoriesResponse {
-  repeated Repository repositories = 1;
-}
-
-message UpdateRepositoryChartsRequest {
-  string name = 1;
 }
 
 message ListApplicationsRequest {

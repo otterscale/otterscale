@@ -46,12 +46,6 @@ const (
 	// KubeServiceRollbackReleaseProcedure is the fully-qualified name of the KubeService's
 	// RollbackRelease RPC.
 	KubeServiceRollbackReleaseProcedure = "/openhdc.kube.v1.KubeService/RollbackRelease"
-	// KubeServiceListRepositoriesProcedure is the fully-qualified name of the KubeService's
-	// ListRepositories RPC.
-	KubeServiceListRepositoriesProcedure = "/openhdc.kube.v1.KubeService/ListRepositories"
-	// KubeServiceUpdateRepositoryChartsProcedure is the fully-qualified name of the KubeService's
-	// UpdateRepositoryCharts RPC.
-	KubeServiceUpdateRepositoryChartsProcedure = "/openhdc.kube.v1.KubeService/UpdateRepositoryCharts"
 	// KubeServiceListChartsProcedure is the fully-qualified name of the KubeService's ListCharts RPC.
 	KubeServiceListChartsProcedure = "/openhdc.kube.v1.KubeService/ListCharts"
 	// KubeServiceGetChartProcedure is the fully-qualified name of the KubeService's GetChart RPC.
@@ -71,9 +65,6 @@ type KubeServiceClient interface {
 	UninstallRelease(context.Context, *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[v1.Release], error)
 	UpgradeRelease(context.Context, *connect.Request[v1.UpgradeReleaseRequest]) (*connect.Response[v1.Release], error)
 	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error)
-	// Helm Repository
-	ListRepositories(context.Context, *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error)
-	UpdateRepositoryCharts(context.Context, *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error)
 	// App Store
 	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
 	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error)
@@ -117,18 +108,6 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(kubeServiceMethods.ByName("RollbackRelease")),
 			connect.WithClientOptions(opts...),
 		),
-		listRepositories: connect.NewClient[v1.ListRepositoriesRequest, v1.ListRepositoriesResponse](
-			httpClient,
-			baseURL+KubeServiceListRepositoriesProcedure,
-			connect.WithSchema(kubeServiceMethods.ByName("ListRepositories")),
-			connect.WithClientOptions(opts...),
-		),
-		updateRepositoryCharts: connect.NewClient[v1.UpdateRepositoryChartsRequest, v1.Repository](
-			httpClient,
-			baseURL+KubeServiceUpdateRepositoryChartsProcedure,
-			connect.WithSchema(kubeServiceMethods.ByName("UpdateRepositoryCharts")),
-			connect.WithClientOptions(opts...),
-		),
 		listCharts: connect.NewClient[v1.ListChartsRequest, v1.ListChartsResponse](
 			httpClient,
 			baseURL+KubeServiceListChartsProcedure,
@@ -158,16 +137,14 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // kubeServiceClient implements KubeServiceClient.
 type kubeServiceClient struct {
-	installRelease         *connect.Client[v1.InstallReleaseRequest, v1.Release]
-	uninstallRelease       *connect.Client[v1.UninstallReleaseRequest, v1.Release]
-	upgradeRelease         *connect.Client[v1.UpgradeReleaseRequest, v1.Release]
-	rollbackRelease        *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
-	listRepositories       *connect.Client[v1.ListRepositoriesRequest, v1.ListRepositoriesResponse]
-	updateRepositoryCharts *connect.Client[v1.UpdateRepositoryChartsRequest, v1.Repository]
-	listCharts             *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
-	getChart               *connect.Client[v1.GetChartRequest, v1.Chart]
-	listApplications       *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
-	getApplication         *connect.Client[v1.GetApplicationRequest, v1.Application]
+	installRelease   *connect.Client[v1.InstallReleaseRequest, v1.Release]
+	uninstallRelease *connect.Client[v1.UninstallReleaseRequest, v1.Release]
+	upgradeRelease   *connect.Client[v1.UpgradeReleaseRequest, v1.Release]
+	rollbackRelease  *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
+	listCharts       *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
+	getChart         *connect.Client[v1.GetChartRequest, v1.Chart]
+	listApplications *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
+	getApplication   *connect.Client[v1.GetApplicationRequest, v1.Application]
 }
 
 // InstallRelease calls openhdc.kube.v1.KubeService.InstallRelease.
@@ -188,16 +165,6 @@ func (c *kubeServiceClient) UpgradeRelease(ctx context.Context, req *connect.Req
 // RollbackRelease calls openhdc.kube.v1.KubeService.RollbackRelease.
 func (c *kubeServiceClient) RollbackRelease(ctx context.Context, req *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.rollbackRelease.CallUnary(ctx, req)
-}
-
-// ListRepositories calls openhdc.kube.v1.KubeService.ListRepositories.
-func (c *kubeServiceClient) ListRepositories(ctx context.Context, req *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error) {
-	return c.listRepositories.CallUnary(ctx, req)
-}
-
-// UpdateRepositoryCharts calls openhdc.kube.v1.KubeService.UpdateRepositoryCharts.
-func (c *kubeServiceClient) UpdateRepositoryCharts(ctx context.Context, req *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error) {
-	return c.updateRepositoryCharts.CallUnary(ctx, req)
 }
 
 // ListCharts calls openhdc.kube.v1.KubeService.ListCharts.
@@ -227,9 +194,6 @@ type KubeServiceHandler interface {
 	UninstallRelease(context.Context, *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[v1.Release], error)
 	UpgradeRelease(context.Context, *connect.Request[v1.UpgradeReleaseRequest]) (*connect.Response[v1.Release], error)
 	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error)
-	// Helm Repository
-	ListRepositories(context.Context, *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error)
-	UpdateRepositoryCharts(context.Context, *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error)
 	// App Store
 	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
 	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error)
@@ -269,18 +233,6 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(kubeServiceMethods.ByName("RollbackRelease")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeServiceListRepositoriesHandler := connect.NewUnaryHandler(
-		KubeServiceListRepositoriesProcedure,
-		svc.ListRepositories,
-		connect.WithSchema(kubeServiceMethods.ByName("ListRepositories")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeServiceUpdateRepositoryChartsHandler := connect.NewUnaryHandler(
-		KubeServiceUpdateRepositoryChartsProcedure,
-		svc.UpdateRepositoryCharts,
-		connect.WithSchema(kubeServiceMethods.ByName("UpdateRepositoryCharts")),
-		connect.WithHandlerOptions(opts...),
-	)
 	kubeServiceListChartsHandler := connect.NewUnaryHandler(
 		KubeServiceListChartsProcedure,
 		svc.ListCharts,
@@ -315,10 +267,6 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 			kubeServiceUpgradeReleaseHandler.ServeHTTP(w, r)
 		case KubeServiceRollbackReleaseProcedure:
 			kubeServiceRollbackReleaseHandler.ServeHTTP(w, r)
-		case KubeServiceListRepositoriesProcedure:
-			kubeServiceListRepositoriesHandler.ServeHTTP(w, r)
-		case KubeServiceUpdateRepositoryChartsProcedure:
-			kubeServiceUpdateRepositoryChartsHandler.ServeHTTP(w, r)
 		case KubeServiceListChartsProcedure:
 			kubeServiceListChartsHandler.ServeHTTP(w, r)
 		case KubeServiceGetChartProcedure:
@@ -350,14 +298,6 @@ func (UnimplementedKubeServiceHandler) UpgradeRelease(context.Context, *connect.
 
 func (UnimplementedKubeServiceHandler) RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.RollbackRelease is not implemented"))
-}
-
-func (UnimplementedKubeServiceHandler) ListRepositories(context.Context, *connect.Request[v1.ListRepositoriesRequest]) (*connect.Response[v1.ListRepositoriesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.ListRepositories is not implemented"))
-}
-
-func (UnimplementedKubeServiceHandler) UpdateRepositoryCharts(context.Context, *connect.Request[v1.UpdateRepositoryChartsRequest]) (*connect.Response[v1.Repository], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.UpdateRepositoryCharts is not implemented"))
 }
 
 func (UnimplementedKubeServiceHandler) ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
