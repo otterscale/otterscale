@@ -1,12 +1,11 @@
 package kube
 
 import (
-	"bufio"
-	"bytes"
+	"context"
 	"fmt"
-	"maps"
-	"os"
-	"path/filepath"
+	"io"
+	"net/http"
+	"net/url"
 
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
@@ -14,25 +13,28 @@ import (
 	"helm.sh/helm/v3/pkg/cli"
 	"helm.sh/helm/v3/pkg/downloader"
 	"helm.sh/helm/v3/pkg/getter"
-	"helm.sh/helm/v3/pkg/helmpath"
 	"helm.sh/helm/v3/pkg/registry"
 	"helm.sh/helm/v3/pkg/release"
 	"helm.sh/helm/v3/pkg/repo"
+	"sigs.k8s.io/yaml"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/openhdc/openhdc/internal/env"
+)
+
+const (
+	defaultRepositoryURL = "http://chartmuseum:8080"
 )
 
 type helm struct {
 	kubeMap   KubeMap
 	settings  *cli.EnvSettings
 	providers getter.Providers
+	repoIndex *repo.IndexFile
 }
 
 func NewHelm(kubeMap KubeMap) service.KubeHelm {
 	settings := cli.New()
-	settings.RepositoryConfig = env.GetOrDefault(env.OPENHDC_HELM_REPOSITORY_CONFIG, helmpath.ConfigPath("repositories.yaml"))
 	return &helm{
 		kubeMap:   kubeMap,
 		settings:  settings,
@@ -131,61 +133,49 @@ func (r *helm) RollbackRelease(cluster, namespace, name string, dryRun bool) err
 	return client.Run(name)
 }
 
-func (r *helm) ListRepositories() ([]*model.HelmRepo, error) {
-	rf, err := repo.LoadFile(r.settings.RepositoryConfig)
-	if err != nil {
+func (r *helm) ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error) {
+	if err := r.fetchRepositoryIndex(ctx); err != nil {
 		return nil, err
 	}
-	ret := []*model.HelmRepo{}
-	for _, re := range rf.Repositories {
-		ret = append(ret, &model.HelmRepo{
-			Entry:      re,
-			ChartNames: r.chartNames(re.Name),
-		})
-	}
-	return ret, nil
+	r.repoIndex.SortEntries()
+	return r.repoIndex.Entries, nil
 }
 
-func (r *helm) UpdateRepositoryCharts(name string) (*model.HelmRepo, error) {
-	rf, err := repo.LoadFile(r.settings.RepositoryConfig)
-	if err != nil {
-		return nil, err
+// FIXME: WORKAROUND
+func (r *helm) fetchRepositoryIndex(ctx context.Context) error {
+	if r.repoIndex != nil {
+		return nil
 	}
-	for _, re := range rf.Repositories {
-		if re.Name != name {
-			continue
-		}
-		cr, err := repo.NewChartRepository(re, r.providers)
-		if err != nil {
-			return nil, err
-		}
-		if _, err := cr.DownloadIndexFile(); err != nil {
-			return nil, err
-		}
-		return &model.HelmRepo{
-			Entry:      re,
-			ChartNames: r.chartNames(re.Name),
-		}, nil
-	}
-	return nil, fmt.Errorf("helm repo %q not found", name)
-}
 
-func (r *helm) ListChartVersions() (map[string]repo.ChartVersions, error) {
-	rf, err := repo.LoadFile(r.settings.RepositoryConfig)
+	queryURL, err := url.ParseRequestURI(env.GetOrDefault(env.OPENHDC_HELM_REPOSITORY_URL, defaultRepositoryURL))
 	if err != nil {
-		return nil, err
+		return err
 	}
-	ret := map[string]repo.ChartVersions{}
-	for _, re := range rf.Repositories {
-		path := filepath.Join(r.settings.RepositoryCache, helmpath.CacheIndexFile(re.Name))
-		idx, err := repo.LoadIndexFile(path)
-		if err != nil {
-			continue
-		}
-		idx.SortEntries()
-		maps.Copy(ret, idx.Entries)
+	queryURL = queryURL.JoinPath("index.yaml")
+
+	url := queryURL.String()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
+	if err != nil {
+		return fmt.Errorf("fetch repository index from %q failed: %w", url, err)
 	}
-	return ret, nil
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("fetch repository index from %q failed: %w", url, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return fmt.Errorf("fetch repository index from %q failed: %d", url, resp.StatusCode)
+	}
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("fetch repository index from %q failed: %w", url, err)
+	}
+
+	r.repoIndex = new(repo.IndexFile)
+	return yaml.Unmarshal(data, r.repoIndex)
 }
 
 func (r *helm) chartInstall(chartPath string, dependencyUpdate bool, keyring string, rc *registry.Client) (*chart.Chart, error) {
@@ -220,36 +210,4 @@ func (r *helm) chartInstall(chartPath string, dependencyUpdate bool, keyring str
 		}
 	}
 	return chart, nil
-}
-
-func (r *helm) chartNames(repoName string) []string {
-	var charts []string
-
-	path := filepath.Join(r.settings.RepositoryCache, helmpath.CacheChartsFile(repoName))
-	content, err := os.ReadFile(path)
-	if err == nil {
-		scanner := bufio.NewScanner(bytes.NewReader(content))
-		for scanner.Scan() {
-			fullName := fmt.Sprintf("%s/%s", repoName, scanner.Text())
-			charts = append(charts, fullName)
-		}
-		return charts
-	}
-
-	if os.IsNotExist(err) {
-		// If there is no cached charts file, fallback to the full index file.
-		// This is much slower but can happen after the caching feature is first
-		// installed but before the user  does a 'helm repo update' to generate the
-		// first cached charts file.
-		path = filepath.Join(r.settings.RepositoryCache, helmpath.CacheIndexFile(repoName))
-		if indexFile, err := repo.LoadIndexFile(path); err == nil {
-			for name := range indexFile.Entries {
-				fullName := fmt.Sprintf("%s/%s", repoName, name)
-				charts = append(charts, fullName)
-			}
-			return charts
-		}
-	}
-
-	return []string{}
 }

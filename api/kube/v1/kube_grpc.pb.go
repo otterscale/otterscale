@@ -20,16 +20,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	KubeService_InstallRelease_FullMethodName         = "/openhdc.kube.v1.KubeService/InstallRelease"
-	KubeService_UninstallRelease_FullMethodName       = "/openhdc.kube.v1.KubeService/UninstallRelease"
-	KubeService_UpgradeRelease_FullMethodName         = "/openhdc.kube.v1.KubeService/UpgradeRelease"
-	KubeService_RollbackRelease_FullMethodName        = "/openhdc.kube.v1.KubeService/RollbackRelease"
-	KubeService_ListRepositories_FullMethodName       = "/openhdc.kube.v1.KubeService/ListRepositories"
-	KubeService_UpdateRepositoryCharts_FullMethodName = "/openhdc.kube.v1.KubeService/UpdateRepositoryCharts"
-	KubeService_ListCharts_FullMethodName             = "/openhdc.kube.v1.KubeService/ListCharts"
-	KubeService_GetChart_FullMethodName               = "/openhdc.kube.v1.KubeService/GetChart"
-	KubeService_ListApplications_FullMethodName       = "/openhdc.kube.v1.KubeService/ListApplications"
-	KubeService_GetApplication_FullMethodName         = "/openhdc.kube.v1.KubeService/GetApplication"
+	KubeService_InstallRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/InstallRelease"
+	KubeService_UninstallRelease_FullMethodName = "/openhdc.kube.v1.KubeService/UninstallRelease"
+	KubeService_UpgradeRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/UpgradeRelease"
+	KubeService_RollbackRelease_FullMethodName  = "/openhdc.kube.v1.KubeService/RollbackRelease"
+	KubeService_ListCharts_FullMethodName       = "/openhdc.kube.v1.KubeService/ListCharts"
+	KubeService_GetChart_FullMethodName         = "/openhdc.kube.v1.KubeService/GetChart"
+	KubeService_ListApplications_FullMethodName = "/openhdc.kube.v1.KubeService/ListApplications"
+	KubeService_GetApplication_FullMethodName   = "/openhdc.kube.v1.KubeService/GetApplication"
 )
 
 // KubeServiceClient is the client API for KubeService service.
@@ -41,9 +39,6 @@ type KubeServiceClient interface {
 	UninstallRelease(ctx context.Context, in *UninstallReleaseRequest, opts ...grpc.CallOption) (*Release, error)
 	UpgradeRelease(ctx context.Context, in *UpgradeReleaseRequest, opts ...grpc.CallOption) (*Release, error)
 	RollbackRelease(ctx context.Context, in *RollbackReleaseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Helm Repository
-	ListRepositories(ctx context.Context, in *ListRepositoriesRequest, opts ...grpc.CallOption) (*ListRepositoriesResponse, error)
-	UpdateRepositoryCharts(ctx context.Context, in *UpdateRepositoryChartsRequest, opts ...grpc.CallOption) (*Repository, error)
 	// App Store
 	ListCharts(ctx context.Context, in *ListChartsRequest, opts ...grpc.CallOption) (*ListChartsResponse, error)
 	GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Chart, error)
@@ -100,26 +95,6 @@ func (c *kubeServiceClient) RollbackRelease(ctx context.Context, in *RollbackRel
 	return out, nil
 }
 
-func (c *kubeServiceClient) ListRepositories(ctx context.Context, in *ListRepositoriesRequest, opts ...grpc.CallOption) (*ListRepositoriesResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListRepositoriesResponse)
-	err := c.cc.Invoke(ctx, KubeService_ListRepositories_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *kubeServiceClient) UpdateRepositoryCharts(ctx context.Context, in *UpdateRepositoryChartsRequest, opts ...grpc.CallOption) (*Repository, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Repository)
-	err := c.cc.Invoke(ctx, KubeService_UpdateRepositoryCharts_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *kubeServiceClient) ListCharts(ctx context.Context, in *ListChartsRequest, opts ...grpc.CallOption) (*ListChartsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListChartsResponse)
@@ -169,9 +144,6 @@ type KubeServiceServer interface {
 	UninstallRelease(context.Context, *UninstallReleaseRequest) (*Release, error)
 	UpgradeRelease(context.Context, *UpgradeReleaseRequest) (*Release, error)
 	RollbackRelease(context.Context, *RollbackReleaseRequest) (*emptypb.Empty, error)
-	// Helm Repository
-	ListRepositories(context.Context, *ListRepositoriesRequest) (*ListRepositoriesResponse, error)
-	UpdateRepositoryCharts(context.Context, *UpdateRepositoryChartsRequest) (*Repository, error)
 	// App Store
 	ListCharts(context.Context, *ListChartsRequest) (*ListChartsResponse, error)
 	GetChart(context.Context, *GetChartRequest) (*Chart, error)
@@ -199,12 +171,6 @@ func (UnimplementedKubeServiceServer) UpgradeRelease(context.Context, *UpgradeRe
 }
 func (UnimplementedKubeServiceServer) RollbackRelease(context.Context, *RollbackReleaseRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RollbackRelease not implemented")
-}
-func (UnimplementedKubeServiceServer) ListRepositories(context.Context, *ListRepositoriesRequest) (*ListRepositoriesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListRepositories not implemented")
-}
-func (UnimplementedKubeServiceServer) UpdateRepositoryCharts(context.Context, *UpdateRepositoryChartsRequest) (*Repository, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateRepositoryCharts not implemented")
 }
 func (UnimplementedKubeServiceServer) ListCharts(context.Context, *ListChartsRequest) (*ListChartsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCharts not implemented")
@@ -311,42 +277,6 @@ func _KubeService_RollbackRelease_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _KubeService_ListRepositories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListRepositoriesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(KubeServiceServer).ListRepositories(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: KubeService_ListRepositories_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(KubeServiceServer).ListRepositories(ctx, req.(*ListRepositoriesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _KubeService_UpdateRepositoryCharts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateRepositoryChartsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(KubeServiceServer).UpdateRepositoryCharts(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: KubeService_UpdateRepositoryCharts_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(KubeServiceServer).UpdateRepositoryCharts(ctx, req.(*UpdateRepositoryChartsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _KubeService_ListCharts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListChartsRequest)
 	if err := dec(in); err != nil {
@@ -441,14 +371,6 @@ var KubeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RollbackRelease",
 			Handler:    _KubeService_RollbackRelease_Handler,
-		},
-		{
-			MethodName: "ListRepositories",
-			Handler:    _KubeService_ListRepositories_Handler,
-		},
-		{
-			MethodName: "UpdateRepositoryCharts",
-			Handler:    _KubeService_UpdateRepositoryCharts_Handler,
 		},
 		{
 			MethodName: "ListCharts",
