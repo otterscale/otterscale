@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
@@ -27,10 +28,11 @@ const (
 )
 
 type helm struct {
-	kubeMap   KubeMap
-	settings  *cli.EnvSettings
-	providers getter.Providers
-	repoIndex *repo.IndexFile
+	kubeMap            KubeMap
+	settings           *cli.EnvSettings
+	providers          getter.Providers
+	repoIndex          *repo.IndexFile
+	repoIndexCacheTime time.Time
 }
 
 func NewHelm(kubeMap KubeMap) service.KubeHelm {
@@ -133,6 +135,23 @@ func (r *helm) RollbackRelease(key, namespace, name string, dryRun bool) error {
 	return client.Run(name)
 }
 
+func (r *helm) GetChartDefaultValuesYAML(chartRef string) (string, error) {
+	rc, err := newRegistryClient()
+	if err != nil {
+		return "", err
+	}
+
+	client := action.NewShow(action.ShowAll)
+	client.SetRegistryClient(rc)
+
+	chartPath, err := client.ChartPathOptions.LocateChart(chartRef, r.settings)
+	if err != nil {
+		return "", err
+	}
+
+	return client.Run(chartPath)
+}
+
 func (r *helm) ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error) {
 	if err := r.fetchRepositoryIndex(ctx); err != nil {
 		return nil, err
@@ -143,7 +162,7 @@ func (r *helm) ListChartVersions(ctx context.Context) (map[string]repo.ChartVers
 
 // FIXME: WORKAROUND
 func (r *helm) fetchRepositoryIndex(ctx context.Context) error {
-	if r.repoIndex != nil {
+	if r.repoIndex != nil && time.Since(r.repoIndexCacheTime) < time.Hour*24 {
 		return nil
 	}
 
@@ -175,7 +194,12 @@ func (r *helm) fetchRepositoryIndex(ctx context.Context) error {
 	}
 
 	r.repoIndex = new(repo.IndexFile)
-	return yaml.Unmarshal(data, r.repoIndex)
+	if err := yaml.Unmarshal(data, r.repoIndex); err != nil {
+		return err
+	}
+	r.repoIndexCacheTime = time.Now()
+
+	return nil
 }
 
 func (r *helm) chartInstall(chartPath string, dependencyUpdate bool, keyring string, rc *registry.Client) (*chart.Chart, error) {

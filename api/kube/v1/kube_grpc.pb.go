@@ -20,14 +20,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	KubeService_InstallRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/InstallRelease"
-	KubeService_UninstallRelease_FullMethodName = "/openhdc.kube.v1.KubeService/UninstallRelease"
-	KubeService_UpgradeRelease_FullMethodName   = "/openhdc.kube.v1.KubeService/UpgradeRelease"
-	KubeService_RollbackRelease_FullMethodName  = "/openhdc.kube.v1.KubeService/RollbackRelease"
-	KubeService_ListCharts_FullMethodName       = "/openhdc.kube.v1.KubeService/ListCharts"
-	KubeService_GetChart_FullMethodName         = "/openhdc.kube.v1.KubeService/GetChart"
-	KubeService_ListApplications_FullMethodName = "/openhdc.kube.v1.KubeService/ListApplications"
-	KubeService_GetApplication_FullMethodName   = "/openhdc.kube.v1.KubeService/GetApplication"
+	KubeService_ListReleases_FullMethodName          = "/openhdc.kube.v1.KubeService/ListReleases"
+	KubeService_InstallRelease_FullMethodName        = "/openhdc.kube.v1.KubeService/InstallRelease"
+	KubeService_UninstallRelease_FullMethodName      = "/openhdc.kube.v1.KubeService/UninstallRelease"
+	KubeService_UpgradeRelease_FullMethodName        = "/openhdc.kube.v1.KubeService/UpgradeRelease"
+	KubeService_RollbackRelease_FullMethodName       = "/openhdc.kube.v1.KubeService/RollbackRelease"
+	KubeService_ListCharts_FullMethodName            = "/openhdc.kube.v1.KubeService/ListCharts"
+	KubeService_GetChart_FullMethodName              = "/openhdc.kube.v1.KubeService/GetChart"
+	KubeService_GetChartDefaultValues_FullMethodName = "/openhdc.kube.v1.KubeService/GetChartDefaultValues"
+	KubeService_ListApplications_FullMethodName      = "/openhdc.kube.v1.KubeService/ListApplications"
+	KubeService_GetApplication_FullMethodName        = "/openhdc.kube.v1.KubeService/GetApplication"
 )
 
 // KubeServiceClient is the client API for KubeService service.
@@ -35,6 +37,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type KubeServiceClient interface {
 	// Helm Release
+	ListReleases(ctx context.Context, in *ListReleasesRequest, opts ...grpc.CallOption) (*ListReleasesResponse, error)
 	InstallRelease(ctx context.Context, in *InstallReleaseRequest, opts ...grpc.CallOption) (*Release, error)
 	UninstallRelease(ctx context.Context, in *UninstallReleaseRequest, opts ...grpc.CallOption) (*Release, error)
 	UpgradeRelease(ctx context.Context, in *UpgradeReleaseRequest, opts ...grpc.CallOption) (*Release, error)
@@ -42,6 +45,7 @@ type KubeServiceClient interface {
 	// App Store
 	ListCharts(ctx context.Context, in *ListChartsRequest, opts ...grpc.CallOption) (*ListChartsResponse, error)
 	GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Chart, error)
+	GetChartDefaultValues(ctx context.Context, in *GetChartDefaultValuesRequest, opts ...grpc.CallOption) (*GetChartDefaultValuesResponse, error)
 	// Native
 	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
 	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error)
@@ -53,6 +57,16 @@ type kubeServiceClient struct {
 
 func NewKubeServiceClient(cc grpc.ClientConnInterface) KubeServiceClient {
 	return &kubeServiceClient{cc}
+}
+
+func (c *kubeServiceClient) ListReleases(ctx context.Context, in *ListReleasesRequest, opts ...grpc.CallOption) (*ListReleasesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListReleasesResponse)
+	err := c.cc.Invoke(ctx, KubeService_ListReleases_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *kubeServiceClient) InstallRelease(ctx context.Context, in *InstallReleaseRequest, opts ...grpc.CallOption) (*Release, error) {
@@ -115,6 +129,16 @@ func (c *kubeServiceClient) GetChart(ctx context.Context, in *GetChartRequest, o
 	return out, nil
 }
 
+func (c *kubeServiceClient) GetChartDefaultValues(ctx context.Context, in *GetChartDefaultValuesRequest, opts ...grpc.CallOption) (*GetChartDefaultValuesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetChartDefaultValuesResponse)
+	err := c.cc.Invoke(ctx, KubeService_GetChartDefaultValues_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *kubeServiceClient) ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListApplicationsResponse)
@@ -140,6 +164,7 @@ func (c *kubeServiceClient) GetApplication(ctx context.Context, in *GetApplicati
 // for forward compatibility.
 type KubeServiceServer interface {
 	// Helm Release
+	ListReleases(context.Context, *ListReleasesRequest) (*ListReleasesResponse, error)
 	InstallRelease(context.Context, *InstallReleaseRequest) (*Release, error)
 	UninstallRelease(context.Context, *UninstallReleaseRequest) (*Release, error)
 	UpgradeRelease(context.Context, *UpgradeReleaseRequest) (*Release, error)
@@ -147,6 +172,7 @@ type KubeServiceServer interface {
 	// App Store
 	ListCharts(context.Context, *ListChartsRequest) (*ListChartsResponse, error)
 	GetChart(context.Context, *GetChartRequest) (*Chart, error)
+	GetChartDefaultValues(context.Context, *GetChartDefaultValuesRequest) (*GetChartDefaultValuesResponse, error)
 	// Native
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
 	GetApplication(context.Context, *GetApplicationRequest) (*Application, error)
@@ -160,6 +186,9 @@ type KubeServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedKubeServiceServer struct{}
 
+func (UnimplementedKubeServiceServer) ListReleases(context.Context, *ListReleasesRequest) (*ListReleasesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListReleases not implemented")
+}
 func (UnimplementedKubeServiceServer) InstallRelease(context.Context, *InstallReleaseRequest) (*Release, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InstallRelease not implemented")
 }
@@ -177,6 +206,9 @@ func (UnimplementedKubeServiceServer) ListCharts(context.Context, *ListChartsReq
 }
 func (UnimplementedKubeServiceServer) GetChart(context.Context, *GetChartRequest) (*Chart, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChart not implemented")
+}
+func (UnimplementedKubeServiceServer) GetChartDefaultValues(context.Context, *GetChartDefaultValuesRequest) (*GetChartDefaultValuesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChartDefaultValues not implemented")
 }
 func (UnimplementedKubeServiceServer) ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListApplications not implemented")
@@ -203,6 +235,24 @@ func RegisterKubeServiceServer(s grpc.ServiceRegistrar, srv KubeServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&KubeService_ServiceDesc, srv)
+}
+
+func _KubeService_ListReleases_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListReleasesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KubeServiceServer).ListReleases(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KubeService_ListReleases_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KubeServiceServer).ListReleases(ctx, req.(*ListReleasesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _KubeService_InstallRelease_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -313,6 +363,24 @@ func _KubeService_GetChart_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _KubeService_GetChartDefaultValues_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChartDefaultValuesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(KubeServiceServer).GetChartDefaultValues(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: KubeService_GetChartDefaultValues_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(KubeServiceServer).GetChartDefaultValues(ctx, req.(*GetChartDefaultValuesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _KubeService_ListApplications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListApplicationsRequest)
 	if err := dec(in); err != nil {
@@ -357,6 +425,10 @@ var KubeService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*KubeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "ListReleases",
+			Handler:    _KubeService_ListReleases_Handler,
+		},
+		{
 			MethodName: "InstallRelease",
 			Handler:    _KubeService_InstallRelease_Handler,
 		},
@@ -379,6 +451,10 @@ var KubeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetChart",
 			Handler:    _KubeService_GetChart_Handler,
+		},
+		{
+			MethodName: "GetChartDefaultValues",
+			Handler:    _KubeService_GetChartDefaultValues_Handler,
 		},
 		{
 			MethodName: "ListApplications",

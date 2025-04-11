@@ -6,12 +6,22 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"helm.sh/helm/v3/pkg/chart"
-	"helm.sh/helm/v3/pkg/release"
 	"helm.sh/helm/v3/pkg/repo"
 	"sigs.k8s.io/yaml"
 
 	v1 "github.com/openhdc/openhdc/api/kube/v1"
+	"github.com/openhdc/openhdc/internal/domain/model"
 )
+
+func (a *KubeApp) ListReleases(ctx context.Context, req *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
+	rels, err := a.svc.ListReleases(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := &v1.ListReleasesResponse{}
+	res.SetReleases(a.toReleases(rels))
+	return connect.NewResponse(res), nil
+}
 
 func (a *KubeApp) InstallRelease(ctx context.Context, req *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error) {
 	values := map[string]any{}
@@ -22,7 +32,13 @@ func (a *KubeApp) InstallRelease(ctx context.Context, req *connect.Request[v1.In
 	if err != nil {
 		return nil, err
 	}
-	return connect.NewResponse(a.toRelease(rel)), nil
+	res := a.toRelease(&model.Release{
+		ModelName:   "",                       //TODO: BETTER
+		ModelUUID:   req.Msg.GetModelUuid(),   //TODO: BETTER
+		ClusterName: req.Msg.GetClusterName(), //TODO: BETTER
+		Release:     rel,
+	})
+	return connect.NewResponse(res), nil
 }
 
 func (a *KubeApp) UninstallRelease(ctx context.Context, req *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[v1.Release], error) {
@@ -30,7 +46,13 @@ func (a *KubeApp) UninstallRelease(ctx context.Context, req *connect.Request[v1.
 	if err != nil {
 		return nil, err
 	}
-	return connect.NewResponse(a.toRelease(rel)), nil
+	res := a.toRelease(&model.Release{
+		ModelName:   "",                       //TODO: BETTER
+		ModelUUID:   req.Msg.GetModelUuid(),   //TODO: BETTER
+		ClusterName: req.Msg.GetClusterName(), //TODO: BETTER
+		Release:     rel,
+	})
+	return connect.NewResponse(res), nil
 }
 
 func (a *KubeApp) UpgradeRelease(ctx context.Context, req *connect.Request[v1.UpgradeReleaseRequest]) (*connect.Response[v1.Release], error) {
@@ -42,7 +64,13 @@ func (a *KubeApp) UpgradeRelease(ctx context.Context, req *connect.Request[v1.Up
 	if err != nil {
 		return nil, err
 	}
-	return connect.NewResponse(a.toRelease(rel)), nil
+	res := a.toRelease(&model.Release{
+		ModelName:   "",                       //TODO: BETTER
+		ModelUUID:   req.Msg.GetModelUuid(),   //TODO: BETTER
+		ClusterName: req.Msg.GetClusterName(), //TODO: BETTER
+		Release:     rel,
+	})
+	return connect.NewResponse(res), nil
 }
 
 func (a *KubeApp) RollbackRelease(ctx context.Context, req *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
@@ -53,12 +81,12 @@ func (a *KubeApp) RollbackRelease(ctx context.Context, req *connect.Request[v1.R
 }
 
 func (a *KubeApp) ListCharts(ctx context.Context, req *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
-	m, err := a.svc.ListCharts(ctx)
+	cvs, err := a.svc.ListCharts(ctx)
 	if err != nil {
 		return nil, err
 	}
 	res := &v1.ListChartsResponse{}
-	res.SetCharts(a.toLatestCharts(m))
+	res.SetCharts(a.toLatestCharts(cvs))
 	return connect.NewResponse(res), nil
 }
 
@@ -68,6 +96,16 @@ func (a *KubeApp) GetChart(ctx context.Context, req *connect.Request[v1.GetChart
 		return nil, err
 	}
 	return connect.NewResponse(a.toChart(cvs)), nil
+}
+
+func (a *KubeApp) GetChartDefaultValues(ctx context.Context, req *connect.Request[v1.GetChartDefaultValuesRequest]) (*connect.Response[v1.GetChartDefaultValuesResponse], error) {
+	valuesYAML, err := a.svc.GetChartDefaulValuesYAML(req.Msg.GetChartRef())
+	if err != nil {
+		return nil, err
+	}
+	res := &v1.GetChartDefaultValuesResponse{}
+	res.SetValuesYaml(valuesYAML)
+	return connect.NewResponse(res), nil
 }
 
 func (a *KubeApp) toLatestCharts(m map[string]repo.ChartVersions) []*v1.Chart {
@@ -136,25 +174,37 @@ func (a *KubeApp) toChartDependencies(ds []*chart.Dependency) []*v1.Chart_Depend
 func (a *KubeApp) toChartVersions(cvs ...*repo.ChartVersion) []*v1.Chart_Version {
 	ret := []*v1.Chart_Version{}
 	for _, cv := range cvs {
-		ret = append(ret, a.toChartVersion(cv))
+		ret = append(ret, a.toChartVersion(cv.Metadata, cv.URLs))
 	}
 	return ret
 }
 
-func (a *KubeApp) toChartVersion(cv *repo.ChartVersion) *v1.Chart_Version {
+func (a *KubeApp) toChartVersion(cv *chart.Metadata, urls []string) *v1.Chart_Version {
 	ret := &v1.Chart_Version{}
 	ret.SetChartVersion(cv.Version)
 	ret.SetApplicationVersion(cv.AppVersion)
-	if len(cv.URLs) > 0 {
-		ret.SetChartRef(cv.URLs[0])
+	if len(urls) > 0 {
+		ret.SetChartRef(urls[0])
 	}
 	return ret
 }
 
-func (a *KubeApp) toRelease(rel *release.Release) *v1.Release {
+func (a *KubeApp) toReleases(rels []*model.Release) []*v1.Release {
+	ret := []*v1.Release{}
+	for _, rel := range rels {
+		ret = append(ret, a.toRelease(rel))
+	}
+	return ret
+}
+
+func (a *KubeApp) toRelease(rel *model.Release) *v1.Release {
 	ret := &v1.Release{}
+	ret.SetModelName(rel.ModelName)
+	ret.SetModelUuid(rel.ModelUUID)
+	ret.SetClusterName(rel.ClusterName)
 	ret.SetName(rel.Name)
 	ret.SetNamespace(rel.Namespace)
 	ret.SetRevision(int32(rel.Version)) //nolint:gosec
+	ret.SetVersion(a.toChartVersion(rel.Chart.Metadata, nil))
 	return ret
 }

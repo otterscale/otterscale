@@ -74,6 +74,7 @@ type KubeHelm interface {
 	UninstallRelease(key, namespace, name string, dryRun bool) (*release.Release, error)
 	UpgradeRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
 	RollbackRelease(key, namespace, name string, dryRun bool) error
+	GetChartDefaultValuesYAML(chartRef string) (string, error)
 	ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error)
 }
 
@@ -85,6 +86,8 @@ type KubeService struct {
 	core        KubeCore
 	storage     KubeStorage
 	helm        KubeHelm
+	model       JujuModel
+	jujuClient  JujuClient
 	application JujuApplication
 }
 
@@ -96,6 +99,8 @@ func NewKubeService(
 	core KubeCore,
 	storage KubeStorage,
 	helm KubeHelm,
+	model JujuModel,
+	jujuClient JujuClient,
 	application JujuApplication,
 ) *KubeService {
 	return &KubeService{
@@ -105,6 +110,8 @@ func NewKubeService(
 		core:        core,
 		storage:     storage,
 		helm:        helm,
+		model:       model,
+		jujuClient:  jujuClient,
 		application: application,
 	}
 }
@@ -315,12 +322,78 @@ func (s *KubeService) ListApplications(ctx context.Context, uuid, cluster, names
 	return result, nil
 }
 
-func (s *KubeService) ListReleases(ctx context.Context, uuid, cluster, namespace string) ([]*release.Release, error) {
-	key, err := s.ensureClient(ctx, uuid, cluster)
+func (s *KubeService) ListReleases(ctx context.Context) ([]*model.Release, error) {
+	ms, err := s.model.List(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return s.helm.ListReleases(key, namespace)
+
+	type T struct{ name, uuid, cluster string }
+
+	eg1, egCtx := errgroup.WithContext(ctx)
+	results := make([][]T, len(ms))
+	for i, m := range ms {
+		eg1.Go(func() error {
+			status, err := s.jujuClient.Status(egCtx, m.UUID, []string{"application", "*"})
+			if err != nil {
+				return err
+			}
+			for name := range status.Applications {
+				if strings.Contains(status.Applications[name].Charm, "kubernetes-worker") {
+					results[i] = append(results[i], T{
+						name:    m.Name,
+						uuid:    m.UUID,
+						cluster: name,
+					})
+				}
+			}
+			return nil
+		})
+	}
+
+	if err := eg1.Wait(); err != nil {
+		return nil, err
+	}
+
+	rs := []T{}
+	for _, cs := range results {
+		rs = append(rs, cs...)
+	}
+
+	eg2, egCtx := errgroup.WithContext(ctx)
+	res := make([][]*model.Release, len(rs))
+	for i, r := range rs {
+		eg2.Go(func() error {
+			key, err := s.ensureClient(egCtx, r.uuid, r.cluster)
+			if err != nil {
+				return err
+			}
+			rels, err := s.helm.ListReleases(key, "")
+			if err != nil {
+				return err
+			}
+			for _, rel := range rels {
+				res[i] = append(res[i], &model.Release{
+					ModelName:   r.name,
+					ModelUUID:   r.uuid,
+					ClusterName: r.cluster,
+					Release:     rel,
+				})
+			}
+			return nil
+		})
+	}
+
+	if err := eg2.Wait(); err != nil {
+		return nil, err
+	}
+
+	ret := []*model.Release{}
+	for _, re := range res {
+		ret = append(ret, re...)
+	}
+
+	return ret, nil
 }
 
 func (s *KubeService) InstallRelease(ctx context.Context, uuid, cluster, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
@@ -374,6 +447,10 @@ func (s *KubeService) GetChart(ctx context.Context, name string) (repo.ChartVers
 		return v, nil
 	}
 	return nil, fmt.Errorf("chart %q not found", name)
+}
+
+func (s *KubeService) GetChartDefaulValuesYAML(chartRef string) (string, error) {
+	return s.helm.GetChartDefaultValuesYAML(chartRef)
 }
 
 func randomName() string {

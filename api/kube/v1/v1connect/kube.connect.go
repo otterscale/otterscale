@@ -34,6 +34,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// KubeServiceListReleasesProcedure is the fully-qualified name of the KubeService's ListReleases
+	// RPC.
+	KubeServiceListReleasesProcedure = "/openhdc.kube.v1.KubeService/ListReleases"
 	// KubeServiceInstallReleaseProcedure is the fully-qualified name of the KubeService's
 	// InstallRelease RPC.
 	KubeServiceInstallReleaseProcedure = "/openhdc.kube.v1.KubeService/InstallRelease"
@@ -50,6 +53,9 @@ const (
 	KubeServiceListChartsProcedure = "/openhdc.kube.v1.KubeService/ListCharts"
 	// KubeServiceGetChartProcedure is the fully-qualified name of the KubeService's GetChart RPC.
 	KubeServiceGetChartProcedure = "/openhdc.kube.v1.KubeService/GetChart"
+	// KubeServiceGetChartDefaultValuesProcedure is the fully-qualified name of the KubeService's
+	// GetChartDefaultValues RPC.
+	KubeServiceGetChartDefaultValuesProcedure = "/openhdc.kube.v1.KubeService/GetChartDefaultValues"
 	// KubeServiceListApplicationsProcedure is the fully-qualified name of the KubeService's
 	// ListApplications RPC.
 	KubeServiceListApplicationsProcedure = "/openhdc.kube.v1.KubeService/ListApplications"
@@ -61,6 +67,7 @@ const (
 // KubeServiceClient is a client for the openhdc.kube.v1.KubeService service.
 type KubeServiceClient interface {
 	// Helm Release
+	ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error)
 	InstallRelease(context.Context, *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error)
 	UninstallRelease(context.Context, *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[v1.Release], error)
 	UpgradeRelease(context.Context, *connect.Request[v1.UpgradeReleaseRequest]) (*connect.Response[v1.Release], error)
@@ -68,6 +75,7 @@ type KubeServiceClient interface {
 	// App Store
 	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
 	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error)
+	GetChartDefaultValues(context.Context, *connect.Request[v1.GetChartDefaultValuesRequest]) (*connect.Response[v1.GetChartDefaultValuesResponse], error)
 	// Native
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -84,6 +92,12 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 	baseURL = strings.TrimRight(baseURL, "/")
 	kubeServiceMethods := v1.File_api_kube_v1_kube_proto.Services().ByName("KubeService").Methods()
 	return &kubeServiceClient{
+		listReleases: connect.NewClient[v1.ListReleasesRequest, v1.ListReleasesResponse](
+			httpClient,
+			baseURL+KubeServiceListReleasesProcedure,
+			connect.WithSchema(kubeServiceMethods.ByName("ListReleases")),
+			connect.WithClientOptions(opts...),
+		),
 		installRelease: connect.NewClient[v1.InstallReleaseRequest, v1.Release](
 			httpClient,
 			baseURL+KubeServiceInstallReleaseProcedure,
@@ -120,6 +134,12 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(kubeServiceMethods.ByName("GetChart")),
 			connect.WithClientOptions(opts...),
 		),
+		getChartDefaultValues: connect.NewClient[v1.GetChartDefaultValuesRequest, v1.GetChartDefaultValuesResponse](
+			httpClient,
+			baseURL+KubeServiceGetChartDefaultValuesProcedure,
+			connect.WithSchema(kubeServiceMethods.ByName("GetChartDefaultValues")),
+			connect.WithClientOptions(opts...),
+		),
 		listApplications: connect.NewClient[v1.ListApplicationsRequest, v1.ListApplicationsResponse](
 			httpClient,
 			baseURL+KubeServiceListApplicationsProcedure,
@@ -137,14 +157,21 @@ func NewKubeServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // kubeServiceClient implements KubeServiceClient.
 type kubeServiceClient struct {
-	installRelease   *connect.Client[v1.InstallReleaseRequest, v1.Release]
-	uninstallRelease *connect.Client[v1.UninstallReleaseRequest, v1.Release]
-	upgradeRelease   *connect.Client[v1.UpgradeReleaseRequest, v1.Release]
-	rollbackRelease  *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
-	listCharts       *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
-	getChart         *connect.Client[v1.GetChartRequest, v1.Chart]
-	listApplications *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
-	getApplication   *connect.Client[v1.GetApplicationRequest, v1.Application]
+	listReleases          *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
+	installRelease        *connect.Client[v1.InstallReleaseRequest, v1.Release]
+	uninstallRelease      *connect.Client[v1.UninstallReleaseRequest, v1.Release]
+	upgradeRelease        *connect.Client[v1.UpgradeReleaseRequest, v1.Release]
+	rollbackRelease       *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
+	listCharts            *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
+	getChart              *connect.Client[v1.GetChartRequest, v1.Chart]
+	getChartDefaultValues *connect.Client[v1.GetChartDefaultValuesRequest, v1.GetChartDefaultValuesResponse]
+	listApplications      *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
+	getApplication        *connect.Client[v1.GetApplicationRequest, v1.Application]
+}
+
+// ListReleases calls openhdc.kube.v1.KubeService.ListReleases.
+func (c *kubeServiceClient) ListReleases(ctx context.Context, req *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
+	return c.listReleases.CallUnary(ctx, req)
 }
 
 // InstallRelease calls openhdc.kube.v1.KubeService.InstallRelease.
@@ -177,6 +204,11 @@ func (c *kubeServiceClient) GetChart(ctx context.Context, req *connect.Request[v
 	return c.getChart.CallUnary(ctx, req)
 }
 
+// GetChartDefaultValues calls openhdc.kube.v1.KubeService.GetChartDefaultValues.
+func (c *kubeServiceClient) GetChartDefaultValues(ctx context.Context, req *connect.Request[v1.GetChartDefaultValuesRequest]) (*connect.Response[v1.GetChartDefaultValuesResponse], error) {
+	return c.getChartDefaultValues.CallUnary(ctx, req)
+}
+
 // ListApplications calls openhdc.kube.v1.KubeService.ListApplications.
 func (c *kubeServiceClient) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
 	return c.listApplications.CallUnary(ctx, req)
@@ -190,6 +222,7 @@ func (c *kubeServiceClient) GetApplication(ctx context.Context, req *connect.Req
 // KubeServiceHandler is an implementation of the openhdc.kube.v1.KubeService service.
 type KubeServiceHandler interface {
 	// Helm Release
+	ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error)
 	InstallRelease(context.Context, *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error)
 	UninstallRelease(context.Context, *connect.Request[v1.UninstallReleaseRequest]) (*connect.Response[v1.Release], error)
 	UpgradeRelease(context.Context, *connect.Request[v1.UpgradeReleaseRequest]) (*connect.Response[v1.Release], error)
@@ -197,6 +230,7 @@ type KubeServiceHandler interface {
 	// App Store
 	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
 	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error)
+	GetChartDefaultValues(context.Context, *connect.Request[v1.GetChartDefaultValuesRequest]) (*connect.Response[v1.GetChartDefaultValuesResponse], error)
 	// Native
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -209,6 +243,12 @@ type KubeServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	kubeServiceMethods := v1.File_api_kube_v1_kube_proto.Services().ByName("KubeService").Methods()
+	kubeServiceListReleasesHandler := connect.NewUnaryHandler(
+		KubeServiceListReleasesProcedure,
+		svc.ListReleases,
+		connect.WithSchema(kubeServiceMethods.ByName("ListReleases")),
+		connect.WithHandlerOptions(opts...),
+	)
 	kubeServiceInstallReleaseHandler := connect.NewUnaryHandler(
 		KubeServiceInstallReleaseProcedure,
 		svc.InstallRelease,
@@ -245,6 +285,12 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(kubeServiceMethods.ByName("GetChart")),
 		connect.WithHandlerOptions(opts...),
 	)
+	kubeServiceGetChartDefaultValuesHandler := connect.NewUnaryHandler(
+		KubeServiceGetChartDefaultValuesProcedure,
+		svc.GetChartDefaultValues,
+		connect.WithSchema(kubeServiceMethods.ByName("GetChartDefaultValues")),
+		connect.WithHandlerOptions(opts...),
+	)
 	kubeServiceListApplicationsHandler := connect.NewUnaryHandler(
 		KubeServiceListApplicationsProcedure,
 		svc.ListApplications,
@@ -259,6 +305,8 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 	)
 	return "/openhdc.kube.v1.KubeService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case KubeServiceListReleasesProcedure:
+			kubeServiceListReleasesHandler.ServeHTTP(w, r)
 		case KubeServiceInstallReleaseProcedure:
 			kubeServiceInstallReleaseHandler.ServeHTTP(w, r)
 		case KubeServiceUninstallReleaseProcedure:
@@ -271,6 +319,8 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 			kubeServiceListChartsHandler.ServeHTTP(w, r)
 		case KubeServiceGetChartProcedure:
 			kubeServiceGetChartHandler.ServeHTTP(w, r)
+		case KubeServiceGetChartDefaultValuesProcedure:
+			kubeServiceGetChartDefaultValuesHandler.ServeHTTP(w, r)
 		case KubeServiceListApplicationsProcedure:
 			kubeServiceListApplicationsHandler.ServeHTTP(w, r)
 		case KubeServiceGetApplicationProcedure:
@@ -283,6 +333,10 @@ func NewKubeServiceHandler(svc KubeServiceHandler, opts ...connect.HandlerOption
 
 // UnimplementedKubeServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedKubeServiceHandler struct{}
+
+func (UnimplementedKubeServiceHandler) ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.ListReleases is not implemented"))
+}
 
 func (UnimplementedKubeServiceHandler) InstallRelease(context.Context, *connect.Request[v1.InstallReleaseRequest]) (*connect.Response[v1.Release], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.InstallRelease is not implemented"))
@@ -306,6 +360,10 @@ func (UnimplementedKubeServiceHandler) ListCharts(context.Context, *connect.Requ
 
 func (UnimplementedKubeServiceHandler) GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Chart], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.GetChart is not implemented"))
+}
+
+func (UnimplementedKubeServiceHandler) GetChartDefaultValues(context.Context, *connect.Request[v1.GetChartDefaultValuesRequest]) (*connect.Response[v1.GetChartDefaultValuesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.kube.v1.KubeService.GetChartDefaultValues is not implemented"))
 }
 
 func (UnimplementedKubeServiceHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {

@@ -308,12 +308,12 @@ func modelInfoToModel(m *base.ModelInfo) *v1.Model {
 func toAddApplicationUnitsMachines(mss []params.MachineStatus) []*v1.AddApplicationUnitsResponse_Machine {
 	ret := make([]*v1.AddApplicationUnitsResponse_Machine, len(mss))
 	for i := range mss {
-		ret[i] = toAddApplicationUnitsMachine(mss[i])
+		ret[i] = toAddApplicationUnitsMachine(&mss[i])
 	}
 	return ret
 }
 
-func toAddApplicationUnitsMachine(ms params.MachineStatus) *v1.AddApplicationUnitsResponse_Machine {
+func toAddApplicationUnitsMachine(ms *params.MachineStatus) *v1.AddApplicationUnitsResponse_Machine {
 	ret := &v1.AddApplicationUnitsResponse_Machine{}
 	ret.SetSystemId(ms.InstanceId.String())
 	ret.SetHostname(ms.Hostname)
