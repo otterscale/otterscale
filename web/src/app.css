@@ -32,6 +32,21 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* LayerChart */
+    --color-primary: 203, 83%, 60%;
+    --color-secondary: 335, 78%, 60%;
+    --color-accent: 56, 100%, 60%;
+    --color-neutral: 220, 21%, 14%;
+    --color-neutral-content: 197, 31%, 77%;
+    --color-surface-100: 220, 18%, 20%;
+    --color-surface-200: 220, 17%, 17%;
+    --color-surface-300: 219, 18%, 15%;
+    --color-surface-content: 197, 31%, 77%;
+    --color-info: 192, 48%, 52%;
+    --color-success: 291, 48%, 38%;
+    --color-warning: 25, 85%, 57%;
+    --color-danger: 4, 81%, 56%;
   }
 
   .dark {
