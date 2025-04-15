@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/openhdc/openhdc/internal/domain/service"
+
+	"github.com/canonical/gomaasclient/entity"
 )
 
 type bootResource struct {
@@ -17,6 +19,10 @@ func NewBootResource(maas *MAAS) service.MAASBootResource {
 }
 
 var _ service.MAASBootResource = (*bootResource)(nil)
+
+func (r *bootResource) List(_ context.Context) ([]entity.BootResource, error) {
+	return r.maas.BootResources.Get(&entity.BootResourcesReadParams{})
+}
 
 func (r *bootResource) Import(_ context.Context) error {
 	return r.maas.BootResources.Import()

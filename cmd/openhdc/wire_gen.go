@@ -61,7 +61,9 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	jujuAction := juju.NewAction()
 	stackService := service.NewStackService(maasServer, maasPackageRepository, maasFabric, maasvlan, maasSubnet, maasipRange, maasBootResource, maasMachine, jujuMachine, jujuClient, jujuModel, jujuModelConfig, jujuApplication, jujuAction)
 	stackApp := app.NewStackApp(stackService)
-	command := cmd.New(string2, kubeApp, stackApp)
+	nexusService := service.NewNexusService(maasServer, maasPackageRepository, maasBootResource)
+	nexusApp := app.NewNexusApp(nexusService)
+	command := cmd.New(string2, kubeApp, stackApp, nexusApp)
 	return command, func() {
 	}, nil
 }

@@ -9,4 +9,5 @@ import (
 var ProviderSet = wire.NewSet(
 	service.NewKubeService,
 	service.NewStackService,
+	service.NewNexusService,
 )
