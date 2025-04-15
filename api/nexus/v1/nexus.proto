@@ -5,14 +5,14 @@ package openhdc.nexus.v1;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/openhdc/openhdc/api/nexus/v1;v1";
+option go_package = "github.com/openhdc/openhdc/api/nexus/v1;pb";
 
 service Nexus {
   // Configuration
-  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);  // + SYNCED TIME
-  rpc UpdateNTPServers(UpdateNTPServersRequest) returns (Configuration.NTPServers);
+  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
+  rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer);
   rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository);
-  rpc UpdateBootResource(UpdateBootResourceRequest) returns (Configuration.BootResource);
+  rpc UpdateDefaultBootResource(UpdateDefaultBootResourceRequest) returns (Configuration.BootResource);
   rpc SyncBootResources(SyncBootResourcesRequest) returns (google.protobuf.Empty);
 
   // Network
@@ -63,9 +63,24 @@ service Nexus {
 }
 
 message Configuration {
-  message NTPServers {}
-  message PackageRepository {}
-  message BootResource {}
+  message NTPServer {
+    repeated string addresses = 1;
+  }
+  message PackageRepository {
+    int64 id = 1;
+    string name = 2;
+    string url = 3;
+    bool enabled = 4;
+  }
+  message BootResource {
+    string name = 2;
+    string architecture = 3;
+    string status = 4;
+    bool default = 11;
+  }
+  NTPServer ntp_server = 1;
+  repeated PackageRepository package_repositories = 2;
+  repeated BootResource boot_resources = 3;
 }
 
 message Network {
@@ -83,7 +98,7 @@ message Facility {
   message Action {}
 }
 
-message Application {
+message Application {  // + CREATE TIME
   message Release {
     message Chart {
       message Metadata {}
@@ -93,11 +108,11 @@ message Application {
 
 message GetConfigurationRequest {}
 
-message UpdateNTPServersRequest {}
+message UpdateNTPServerRequest {}
 
 message UpdatePackageRepositoryRequest {}
 
-message UpdateBootResourceRequest {}
+message UpdateDefaultBootResourceRequest {}
 
 message SyncBootResourcesRequest {}
 

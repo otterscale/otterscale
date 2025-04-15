@@ -9,7 +9,7 @@ import (
 
 var ProviderSet = wire.NewSet(New)
 
-func New(version string, ka *app.KubeApp, sa *app.StackApp) *cobra.Command {
+func New(version string, ka *app.KubeApp, sa *app.StackApp, na *app.NexusApp) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:          "openhdc",
 		Short:        "",
@@ -20,7 +20,7 @@ func New(version string, ka *app.KubeApp, sa *app.StackApp) *cobra.Command {
 	cmd.AddCommand(
 		NewCmdInit(),
 		NewCmdInspect(),
-		NewCmdServe(ka, sa),
+		NewCmdServe(ka, sa, na),
 		NewCmdSync(),
 	)
 	return cmd

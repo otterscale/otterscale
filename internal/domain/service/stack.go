@@ -71,6 +71,7 @@ type MAASIPRange interface {
 
 // MAASBootResource represents boot resource operations
 type MAASBootResource interface {
+	List(ctx context.Context) ([]entity.BootResource, error)
 	Import(ctx context.Context) error
 }
 
