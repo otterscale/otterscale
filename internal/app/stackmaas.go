@@ -12,6 +12,8 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
+const Unit = 1000
+
 func (a *StackApp) ListNTPServers(ctx context.Context, req *connect.Request[v1.ListNTPServersRequest]) (*connect.Response[v1.ListNTPServersResponse], error) {
 	ntpServers, err := a.svc.ListNTPServers(ctx)
 	if err != nil {
@@ -368,7 +370,7 @@ func toMachine(m *entity.Machine) *v1.Machine {
 		blockDevice.SetSerial(bds.Serial)
 		blockDevice.SetModel(bds.Model)
 		blockDevice.SetFirmwareVersion(bds.FirmwareVersion)
-		blockDevice.SetSize(bds.Size)
+		blockDevice.SetSize(bds.Size / Unit)
 		blockDevice.SetType(bds.Type)
 		blockDevice.SetTags(bds.Tags)
 		blockDevice.SetUsedFor(bds.UsedFor)
