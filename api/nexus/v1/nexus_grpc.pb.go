@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v6.30.1
-// source: api/nexus/nexus.proto
+// source: api/nexus/v1/nexus.proto
 
 package v1
 
@@ -1650,5 +1650,5 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/nexus/nexus.proto",
+	Metadata: "api/nexus/v1/nexus.proto",
 }
