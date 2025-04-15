@@ -72,6 +72,7 @@
 		"@connectrpc/connect-web": "^2.0.2",
 		"@dagrejs/dagre": "^1.1.4",
 		"@fontsource-variable/noto-sans-tc": "^5.1.1",
+		"@iconify-json/ph": "^1.2.2",
 		"@iconify/svelte": "^4.2.0",
 		"@inlang/paraglide-sveltekit": "^0.15.5",
 		"@types/pg": "^8.11.11",

@@ -10,9 +10,14 @@
 	import { setContext } from 'svelte';
 	import { createConnectTransport } from '@connectrpc/connect-web';
 
+	import { addCollection } from '@iconify/svelte';
+	import phIcons from '@iconify-json/ph/icons.json';
+
 	import '../app.css';
 	import 'inter-ui/inter-variable.css';
 	import '@fontsource-variable/noto-sans-tc';
+
+	addCollection(phIcons);
 
 	let { children } = $props();
 

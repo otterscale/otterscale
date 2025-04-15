@@ -22,6 +22,8 @@
 	import yaml from 'highlight.js/lib/languages/yaml';
 	import 'highlight.js/styles/github.css';
 
+	import Icon from '@iconify/svelte';
+
 	let md = $state(`# Hello world!
  - 1123
  - 1123
@@ -109,6 +111,11 @@
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
+
+<div class="text-muted-foreground flex h-full w-full items-center justify-center gap-2 text-sm">
+	<Icon icon="ph:spinner" class="size-8 animate-spin" />
+	Loading...
+</div>
 
 <style lang="postcss">
 	.markdown :global(h1) {
