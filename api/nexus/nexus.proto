@@ -1,0 +1,206 @@
+edition = "2023";
+
+package openhdc.nexus.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/openhdc/openhdc/api/nexus/v1;v1";
+
+service Nexus {
+  // Configuration
+  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);  // + SYNCED TIME
+  rpc UpdateNTPServers(UpdateNTPServersRequest) returns (Configuration.NTPServers);
+  rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository);
+  rpc UpdateBootResource(UpdateBootResourceRequest) returns (Configuration.BootResource);
+  rpc SyncBootResources(SyncBootResourcesRequest) returns (google.protobuf.Empty);
+
+  // Network
+  rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);
+  rpc CreateNetwork(CreateNetworkRequest) returns (Network);
+  rpc CreateIPRange(CreateIPRangeRequest) returns (Network.IPRange);
+  rpc DeleteNetwork(DeleteNetworkRequest) returns (google.protobuf.Empty);
+  rpc DeleteIPRange(DeleteIPRangeRequest) returns (google.protobuf.Empty);
+  rpc UpdateFabric(UpdateFabricRequest) returns (Network.Fabric);
+  rpc UpdateVLAN(UpdateVLANRequest) returns (Network.VLAN);
+  rpc UpdateSubnet(UpdateSubnetRequest) returns (Network.Subnet);
+  rpc UpdateIPRange(UpdateIPRangeRequest) returns (Network.IPRange);
+
+  // Machine
+  rpc ListMachines(ListMachinesRequest) returns (ListMachinesResponse);
+  rpc GetMachine(GetMachineRequest) returns (Machine);
+  rpc CreateMachine(CreateMachineRequest) returns (Machine);                        // juju add machine
+  rpc CommissionMachine(CommissionMachineRequest) returns (google.protobuf.Empty);  // maas commission machine
+  rpc PowerOnMachine(PowerOnMachineRequest) returns (google.protobuf.Empty);
+  rpc PowerOffMachine(PowerOffMachineRequest) returns (google.protobuf.Empty);
+
+  // Scope
+  rpc ListScopes(ListScopesRequest) returns (ListScopesResponse);
+  rpc CreateScope(CreateScopeRequest) returns (Scope);
+
+  // Facility
+  rpc ListFacilities(ListFacilitiesRequest) returns (ListFacilitiesResponse);
+  rpc GetFacility(GetFacilityRequest) returns (Facility);
+  rpc CreateFacility(CreateFacilityRequest) returns (Facility);
+  rpc UpdateFacility(UpdateFacilityRequest) returns (Facility);
+  rpc DeleteFacility(DeleteFacilityRequest) returns (google.protobuf.Empty);
+  rpc ExposeFacility(ExposeFacilityRequest) returns (google.protobuf.Empty);
+  rpc AddFacilityUnits(AddFacilityUnitsRequest) returns (google.protobuf.Empty);
+  rpc ListActions(ListActionsRequest) returns (ListActionsResponse);
+  rpc RunAction(RunActionRequest) returns (google.protobuf.Empty);
+
+  // Application
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
+  rpc GetApplication(GetApplicationRequest) returns (Application);
+  rpc ListReleases(ListReleasesRequest) returns (ListReleasesResponse);
+  rpc CreateRelease(CreateReleaseRequest) returns (Application.Release);
+  rpc UpdateRelease(UpdateReleaseRequest) returns (Application.Release);
+  rpc DeleteRelease(DeleteReleaseRequest) returns (google.protobuf.Empty);
+  rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty);
+  rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);
+  rpc GetChart(GetChartRequest) returns (Application.Release.Chart);
+  rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Release.Chart.Metadata);
+}
+
+message Configuration {
+  message NTPServers {}
+  message PackageRepository {}
+  message BootResource {}
+}
+
+message Network {
+  message IPRange {}
+  message Fabric {}
+  message VLAN {}
+  message Subnet {}
+}
+
+message Machine {}
+
+message Scope {}
+
+message Facility {
+  message Action {}
+}
+
+message Application {
+  message Release {
+    message Chart {
+      message Metadata {}
+    }
+  }
+}
+
+message GetConfigurationRequest {}
+
+message UpdateNTPServersRequest {}
+
+message UpdatePackageRepositoryRequest {}
+
+message UpdateBootResourceRequest {}
+
+message SyncBootResourcesRequest {}
+
+message ListNetworksRequest {}
+
+message ListNetworksResponse {
+  repeated Network networks = 1;
+}
+
+message CreateNetworkRequest {}
+
+message CreateIPRangeRequest {}
+
+message DeleteNetworkRequest {}
+
+message DeleteIPRangeRequest {}
+
+message UpdateFabricRequest {}
+
+message UpdateVLANRequest {}
+
+message UpdateSubnetRequest {}
+
+message UpdateIPRangeRequest {}
+
+message ListMachinesRequest {}
+
+message ListMachinesResponse {
+  repeated Machine machines = 1;
+}
+
+message GetMachineRequest {}
+
+message CreateMachineRequest {}
+
+message CommissionMachineRequest {}
+
+message PowerOnMachineRequest {}
+
+message PowerOffMachineRequest {}
+
+message ListScopesRequest {}
+
+message ListScopesResponse {
+  repeated Scope scopes = 1;
+}
+
+message CreateScopeRequest {}
+
+message ListFacilitiesRequest {}
+
+message ListFacilitiesResponse {
+  repeated Facility facilities = 1;
+}
+
+message GetFacilityRequest {}
+
+message CreateFacilityRequest {}
+
+message UpdateFacilityRequest {}
+
+message DeleteFacilityRequest {}
+
+message ExposeFacilityRequest {}
+
+message AddFacilityUnitsRequest {}
+
+message ListActionsRequest {}
+
+message ListActionsResponse {
+  repeated Facility.Action actions = 1;
+}
+
+message RunActionRequest {}
+
+message ListApplicationsRequest {}
+
+message ListApplicationsResponse {
+  repeated Application applications = 1;
+}
+
+message GetApplicationRequest {}
+
+message ListReleasesRequest {}
+
+message ListReleasesResponse {
+  repeated Application.Release releases = 1;
+}
+
+message CreateReleaseRequest {}
+
+message UpdateReleaseRequest {}
+
+message DeleteReleaseRequest {}
+
+message RollbackReleaseRequest {}
+
+message ListChartsRequest {}
+
+message ListChartsResponse {
+  repeated Application.Release.Chart charts = 1;
+}
+
+message GetChartRequest {}
+
+message GetChartMetadataRequest {}

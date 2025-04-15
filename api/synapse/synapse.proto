@@ -1,0 +1,10 @@
+edition = "2023";
+
+package openhdc.synapse.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/openhdc/openhdc/api/synapse/v1;v1";
+
+service Synapse {}
