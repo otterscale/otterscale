@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v6.30.1
-// source: api/synapse/synapse.proto
+// source: api/synapse/v1/synapse.proto
 
 package v1
 
@@ -72,5 +72,5 @@ var Synapse_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*SynapseServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},
-	Metadata:    "api/synapse/synapse.proto",
+	Metadata:    "api/synapse/v1/synapse.proto",
 }
