@@ -73,10 +73,11 @@ message Configuration {
     bool enabled = 4;
   }
   message BootResource {
-    string name = 2;
-    string architecture = 3;
-    string status = 4;
+    string name = 1;
+    string architecture = 2;
+    string status = 3;
     bool default = 11;
+    string distro_series = 12;
   }
   NTPServer ntp_server = 1;
   repeated PackageRepository package_repositories = 2;
@@ -108,11 +109,19 @@ message Application {  // + CREATE TIME
 
 message GetConfigurationRequest {}
 
-message UpdateNTPServerRequest {}
+message UpdateNTPServerRequest {
+  repeated string addresses = 1;
+}
 
-message UpdatePackageRepositoryRequest {}
+message UpdatePackageRepositoryRequest {
+  int64 id = 1;
+  string url = 2;
+  bool skip_juju = 3;
+}
 
-message UpdateDefaultBootResourceRequest {}
+message UpdateDefaultBootResourceRequest {
+  string distro_series = 1;
+}
 
 message SyncBootResourcesRequest {}
 

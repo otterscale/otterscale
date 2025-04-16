@@ -31,6 +31,33 @@ func (a *NexusApp) GetConfiguration(ctx context.Context, req *connect.Request[pb
 	return connect.NewResponse(res), nil
 }
 
+func (a *NexusApp) UpdateNTPServer(ctx context.Context, req *connect.Request[pb.UpdateNTPServerRequest]) (*connect.Response[pb.Configuration_NTPServer], error) {
+	ntpServers, err := a.svc.UpdateNTPServer(ctx, req.Msg.GetAddresses())
+	if err != nil {
+		return nil, err
+	}
+	res := toProtoNTPServer(ntpServers)
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) UpdatePackageRepository(ctx context.Context, req *connect.Request[pb.UpdatePackageRepositoryRequest]) (*connect.Response[pb.Configuration_PackageRepository], error) {
+	pr, err := a.svc.UpdatePackageRepository(ctx, int(req.Msg.GetId()), req.Msg.GetUrl(), req.Msg.GetSkipJuju())
+	if err != nil {
+		return nil, err
+	}
+	res := toProtoPackageRepository(pr)
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) UpdateDefaultBootResource(ctx context.Context, req *connect.Request[pb.UpdateDefaultBootResourceRequest]) (*connect.Response[pb.Configuration_BootResource], error) {
+	br, err := a.svc.UpdateDefaultBootResource(ctx, req.Msg.GetDistroSeries())
+	if err != nil {
+		return nil, err
+	}
+	res := toProtoBootResource(br)
+	return connect.NewResponse(res), nil
+}
+
 func toProtoNTPServer(addresses []string) *pb.Configuration_NTPServer {
 	ret := &pb.Configuration_NTPServer{}
 	ret.SetAddresses(addresses)
@@ -68,6 +95,7 @@ func toProtoBootResource(br *model.BootResource) *pb.Configuration_BootResource 
 	ret.SetArchitecture(br.Architecture)
 	ret.SetStatus(br.Status)
 	ret.SetDefault(br.Default)
+	ret.SetDistroSeries(br.DistroSeries)
 	return ret
 }
 
