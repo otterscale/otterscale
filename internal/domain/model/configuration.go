@@ -2,7 +2,10 @@ package model
 
 import "github.com/canonical/gomaasclient/entity"
 
-type PackageRepository = entity.PackageRepository
+type (
+	PackageRepository       = entity.PackageRepository
+	PackageRepositoryParams = entity.PackageRepositoryParams
+)
 
 type Configuration struct {
 	NTPServers          []string
@@ -15,4 +18,5 @@ type BootResource struct {
 	Architecture string
 	Status       string
 	Default      bool
+	DistroSeries string
 }
