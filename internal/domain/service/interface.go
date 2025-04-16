@@ -26,7 +26,7 @@ import (
 )
 
 type MAASServer interface {
-	Get(ctx context.Context, name string) (string, error)
+	Get(ctx context.Context, name string) ([]byte, error)
 	Update(ctx context.Context, name, value string) error
 }
 
@@ -68,6 +68,7 @@ type MAASIPRange interface {
 	List(ctx context.Context) ([]entity.IPRange, error)
 	Create(ctx context.Context, params *entity.IPRangeParams) (*entity.IPRange, error)
 	Update(ctx context.Context, id int, params *entity.IPRangeParams) (*entity.IPRange, error)
+	Delete(ctx context.Context, id int) error
 }
 
 type MAASMachine interface {

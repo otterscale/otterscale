@@ -31,3 +31,7 @@ func (r *ipRange) Create(_ context.Context, params *entity.IPRangeParams) (*enti
 func (r *ipRange) Update(_ context.Context, id int, params *entity.IPRangeParams) (*entity.IPRange, error) {
 	return r.maas.IPRange.Update(id, params)
 }
+
+func (r *ipRange) Delete(_ context.Context, id int) error {
+	return r.maas.IPRange.Delete(id)
+}
