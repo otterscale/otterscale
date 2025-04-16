@@ -18,12 +18,8 @@ func NewServer(maas *MAAS) service.MAASServer {
 
 var _ service.MAASServer = (*server)(nil)
 
-func (r *server) Get(_ context.Context, name string) (string, error) {
-	value, err := r.maas.MAASServer.Get(name)
-	if err != nil {
-		return "", err
-	}
-	return string(value), nil
+func (r *server) Get(_ context.Context, name string) ([]byte, error) {
+	return r.maas.MAASServer.Get(name)
 }
 
 func (r *server) Update(_ context.Context, name, value string) error {

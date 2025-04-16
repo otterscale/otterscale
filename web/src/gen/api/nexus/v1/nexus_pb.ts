@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/nexus/v1/nexus.proto.
  */
 export const file_api_nexus_v1_nexus: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvbmV4dXMvdjEvbmV4dXMucHJvdG8SEG9wZW5oZGMubmV4dXMudjEivgMKDUNvbmZpZ3VyYXRpb24SPQoKbnRwX3NlcnZlchgBIAEoCzIpLm9wZW5oZGMubmV4dXMudjEuQ29uZmlndXJhdGlvbi5OVFBTZXJ2ZXISTwoUcGFja2FnZV9yZXBvc2l0b3JpZXMYAiADKAsyMS5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uUGFja2FnZVJlcG9zaXRvcnkSRAoOYm9vdF9yZXNvdXJjZXMYAyADKAsyLC5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uQm9vdFJlc291cmNlGh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpqCgxCb290UmVzb3VyY2USDAoEbmFtZRgBIAEoCRIUCgxhcmNoaXRlY3R1cmUYAiABKAkSDgoGc3RhdHVzGAMgASgJEg8KB2RlZmF1bHQYCyABKAgSFQoNZGlzdHJvX3NlcmllcxgMIAEoCSIwCgdOZXR3b3JrGgkKB0lQUmFuZ2UaCAoGRmFicmljGgYKBFZMQU4aCAoGU3VibmV0IsENCgdNYWNoaW5lEhEKCXN5c3RlbV9pZBgBIAEoCRIVCg1oYXJkd2FyZV91dWlkGGUgASgJEhAKCGhvc3RuYW1lGGYgASgJEgwKBGZxZG4YZyABKAkSDAoEdGFncxhoIAMoCRITCgtkZXNjcmlwdGlvbhhpIAEoCRIPCgZzdGF0dXMYyQEgASgJEhQKC3Bvd2VyX3N0YXRlGK0CIAEoCRITCgpwb3dlcl90eXBlGK4CIAEoCRIQCgdvc3lzdGVtGJEDIAEoCRIWCg1kaXN0cm9fc2VyaWVzGJIDIAEoCRITCgpod2Vfa2VybmVsGJMDIAEoCRIVCgxhcmNoaXRlY3R1cmUYlAMgASgJEhIKCWNwdV9zcGVlZBiVAyABKAMSEgoJY3B1X2NvdW50GJYDIAEoAxISCgltZW1vcnlfbWIYlwMgASgDEhMKCnN0b3JhZ2VfbWIYmAMgASgBEhUKDGlwX2FkZHJlc3NlcxiZAyADKAkSUQoUd29ya2xvYWRfYW5ub3RhdGlvbnMY9QMgAygLMjIub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lLldvcmtsb2FkQW5ub3RhdGlvbnNFbnRyeRJRChRoYXJkd2FyZV9pbmZvcm1hdGlvbhjZBCADKAsyMi5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUuSGFyZHdhcmVJbmZvcm1hdGlvbkVudHJ5EhkKEGJpb3NfYm9vdF9tZXRob2QY2gQgASgJEjcKCm51bWFfbm9kZXMYvQUgAygLMiIub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lLk5VTUFOb2RlEj0KDWJsb2NrX2RldmljZXMYoQYgAygLMiUub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lLkJsb2NrRGV2aWNlEkcKEm5ldHdvcmtfaW50ZXJmYWNlcxiiBiADKAsyKi5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUuTmV0d29ya0ludGVyZmFjZRpYCglQbGFjZW1lbnQSDQoDbHhkGAEgASgISAASDQoDa3ZtGAIgASgISAASEQoHbWFjaGluZRgDIAEoCEgAEhIKCm1hY2hpbmVfaWQYCyABKAlCBgoEdHlwZRpWCgpDb25zdHJhaW50EhQKDGFyY2hpdGVjdHVyZRgBIAEoCRIRCgljcHVfY29yZXMYAiABKAQSEQoJbWVtb3J5X21iGAMgASgEEgwKBHRhZ3MYCyADKAkaegoGRmFjdG9yEjYKCXBsYWNlbWVudBgBIAEoCzIjLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZS5QbGFjZW1lbnQSOAoKY29uc3RyYWludBgCIAEoCzIkLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZS5Db25zdHJhaW50Gj8KCE5VTUFOb2RlEg0KBWluZGV4GAEgASgDEhEKCWNwdV9jb3JlcxgCIAEoAxIRCgltZW1vcnlfbWIYAyABKAMaqQEKC0Jsb2NrRGV2aWNlEhEKCWJvb3RfZGlzaxgBIAEoCBIMCgRuYW1lGAsgASgJEg4KBnNlcmlhbBgMIAEoCRINCgVtb2RlbBgVIAEoCRIYChBmaXJtd2FyZV92ZXJzaW9uGBYgASgJEhIKCnN0b3JhZ2VfbWIYHyABKAESDAoEdHlwZRgpIAEoCRIMCgR0YWdzGDMgAygJEhAKCHVzZWRfZm9yGD0gASgJGrkCChBOZXR3b3JrSW50ZXJmYWNlEhYKDmJvb3RfaW50ZXJmYWNlGAEgASgIEgwKBG5hbWUYCyABKAkSEwoLbWFjX2FkZHJlc3MYDCABKAkSFgoObGlua19jb25uZWN0ZWQYFSABKAgSEgoKbGlua19zcGVlZBgWIAEoAxIXCg9pbnRlcmZhY2Vfc3BlZWQYFyABKAMSDAoEdHlwZRgfIAEoCRITCgtmYWJyaWNfbmFtZRgpIAEoCRIRCglmYWJyaWNfaWQYKiABKAMSEQoJdmxhbl9uYW1lGCsgASgJEg8KB3ZsYW5faWQYLCABKAMSEwoLc3VibmV0X25hbWUYMyABKAkSEQoJc3VibmV0X2lkGDQgASgDEhIKCmlwX2FkZHJlc3MYPSABKAkSDwoHZGhjcF9vbhhHIAEoCBo6ChhXb3JrbG9hZEFubm90YXRpb25zRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARo6ChhIYXJkd2FyZUluZm9ybWF0aW9uRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASLTAQoFU2NvcGUSDAoEdXVpZBgBIAEoCRIMCgRuYW1lGAIgASgJEgwKBHR5cGUYAyABKAkSFQoNcHJvdmlkZXJfdHlwZRgEIAEoCRIMCgRsaWZlGAUgASgJEg4KBnN0YXR1cxgGIAEoCRIVCg1hZ2VudF92ZXJzaW9uGAcgASgJEhUKDWlzX2NvbnRyb2xsZXIYCCABKAgSFQoNbWFjaGluZV9jb3VudBgVIAEoAxISCgpjb3JlX2NvdW50GBYgASgDEhIKCnVuaXRfY291bnQYFyABKAMiFAoIRmFjaWxpdHkaCAoGQWN0aW9uIi0KC0FwcGxpY2F0aW9uGh4KB1JlbGVhc2UaEwoFQ2hhcnQaCgoITWV0YWRhdGEiGQoXR2V0Q29uZmlndXJhdGlvblJlcXVlc3QiKwoWVXBkYXRlTlRQU2VydmVyUmVxdWVzdBIRCglhZGRyZXNzZXMYASADKAkiTAoeVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlSZXF1ZXN0EgoKAmlkGAEgASgDEgsKA3VybBgCIAEoCRIRCglza2lwX2p1anUYAyABKAgiOQogVXBkYXRlRGVmYXVsdEJvb3RSZXNvdXJjZVJlcXVlc3QSFQoNZGlzdHJvX3NlcmllcxgBIAEoCSIaChhTeW5jQm9vdFJlc291cmNlc1JlcXVlc3QiFQoTTGlzdE5ldHdvcmtzUmVxdWVzdCJDChRMaXN0TmV0d29ya3NSZXNwb25zZRIrCghuZXR3b3JrcxgBIAMoCzIZLm9wZW5oZGMubmV4dXMudjEuTmV0d29yayIWChRDcmVhdGVOZXR3b3JrUmVxdWVzdCIWChRDcmVhdGVJUFJhbmdlUmVxdWVzdCIWChREZWxldGVOZXR3b3JrUmVxdWVzdCIWChREZWxldGVJUFJhbmdlUmVxdWVzdCIVChNVcGRhdGVGYWJyaWNSZXF1ZXN0IhMKEVVwZGF0ZVZMQU5SZXF1ZXN0IhUKE1VwZGF0ZVN1Ym5ldFJlcXVlc3QiFgoUVXBkYXRlSVBSYW5nZVJlcXVlc3QiFQoTTGlzdE1hY2hpbmVzUmVxdWVzdCJDChRMaXN0TWFjaGluZXNSZXNwb25zZRIrCghtYWNoaW5lcxgBIAMoCzIZLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZSIfChFHZXRNYWNoaW5lUmVxdWVzdBIKCgJpZBgBIAEoCSKCAQoYQ29tbWlzc2lvbk1hY2hpbmVSZXF1ZXN0EgoKAmlkGAEgASgJEhIKCmVuYWJsZV9zc2gYAiABKAgSFwoPc2tpcF9ibWNfY29uZmlnGAMgASgIEhcKD3NraXBfbmV0d29ya2luZxgEIAEoCBIUCgxza2lwX3N0b3JhZ2UYBSABKAgiNAoVUG93ZXJPbk1hY2hpbmVSZXF1ZXN0EgoKAmlkGAEgASgJEg8KB2NvbW1lbnQYAiABKAkiNQoWUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBIKCgJpZBgBIAEoCRIPCgdjb21tZW50GAIgASgJIlsKEkFkZE1hY2hpbmVzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEjEKB2ZhY3RvcnMYAiADKAsyIC5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUuRmFjdG9yIicKE0FkZE1hY2hpbmVzUmVzcG9uc2USEAoIbWFjaGluZXMYASADKAkiEwoRTGlzdFNjb3Blc1JlcXVlc3QiPQoSTGlzdFNjb3Blc1Jlc3BvbnNlEicKBnNjb3BlcxgBIAMoCzIXLm9wZW5oZGMubmV4dXMudjEuU2NvcGUiIgoSQ3JlYXRlU2NvcGVSZXF1ZXN0EgwKBG5hbWUYASABKAkiFwoVTGlzdEZhY2lsaXRpZXNSZXF1ZXN0IkgKFkxpc3RGYWNpbGl0aWVzUmVzcG9uc2USLgoKZmFjaWxpdGllcxgBIAMoCzIaLm9wZW5oZGMubmV4dXMudjEuRmFjaWxpdHkiFAoSR2V0RmFjaWxpdHlSZXF1ZXN0IhcKFUNyZWF0ZUZhY2lsaXR5UmVxdWVzdCIXChVVcGRhdGVGYWNpbGl0eVJlcXVlc3QiFwoVRGVsZXRlRmFjaWxpdHlSZXF1ZXN0IhcKFUV4cG9zZUZhY2lsaXR5UmVxdWVzdCIZChdBZGRGYWNpbGl0eVVuaXRzUmVxdWVzdCIUChJMaXN0QWN0aW9uc1JlcXVlc3QiSQoTTGlzdEFjdGlvbnNSZXNwb25zZRIyCgdhY3Rpb25zGAEgAygLMiEub3BlbmhkYy5uZXh1cy52MS5GYWNpbGl0eS5BY3Rpb24iEgoQUnVuQWN0aW9uUmVxdWVzdCIZChdMaXN0QXBwbGljYXRpb25zUmVxdWVzdCJPChhMaXN0QXBwbGljYXRpb25zUmVzcG9uc2USMwoMYXBwbGljYXRpb25zGAEgAygLMh0ub3BlbmhkYy5uZXh1cy52MS5BcHBsaWNhdGlvbiIXChVHZXRBcHBsaWNhdGlvblJlcXVlc3QiFQoTTGlzdFJlbGVhc2VzUmVxdWVzdCJPChRMaXN0UmVsZWFzZXNSZXNwb25zZRI3CghyZWxlYXNlcxgBIAMoCzIlLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZSIWChRDcmVhdGVSZWxlYXNlUmVxdWVzdCIWChRVcGRhdGVSZWxlYXNlUmVxdWVzdCIWChREZWxldGVSZWxlYXNlUmVxdWVzdCIYChZSb2xsYmFja1JlbGVhc2VSZXF1ZXN0IhMKEUxpc3RDaGFydHNSZXF1ZXN0IlEKEkxpc3RDaGFydHNSZXNwb25zZRI7CgZjaGFydHMYASADKAsyKy5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uLlJlbGVhc2UuQ2hhcnQiEQoPR2V0Q2hhcnRSZXF1ZXN0IhkKF0dldENoYXJ0TWV0YWRhdGFSZXF1ZXN0Mq0dCgVOZXh1cxJeChBHZXRDb25maWd1cmF0aW9uEikub3BlbmhkYy5uZXh1cy52MS5HZXRDb25maWd1cmF0aW9uUmVxdWVzdBofLm9wZW5oZGMubmV4dXMudjEuQ29uZmlndXJhdGlvbhJmCg9VcGRhdGVOVFBTZXJ2ZXISKC5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZU5UUFNlcnZlclJlcXVlc3QaKS5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uTlRQU2VydmVyEn4KF1VwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5EjAub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVJlcXVlc3QaMS5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uUGFja2FnZVJlcG9zaXRvcnkSfQoZVXBkYXRlRGVmYXVsdEJvb3RSZXNvdXJjZRIyLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlRGVmYXVsdEJvb3RSZXNvdXJjZVJlcXVlc3QaLC5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uQm9vdFJlc291cmNlElcKEVN5bmNCb290UmVzb3VyY2VzEioub3BlbmhkYy5uZXh1cy52MS5TeW5jQm9vdFJlc291cmNlc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSXQoMTGlzdE5ldHdvcmtzEiUub3BlbmhkYy5uZXh1cy52MS5MaXN0TmV0d29ya3NSZXF1ZXN0GiYub3BlbmhkYy5uZXh1cy52MS5MaXN0TmV0d29ya3NSZXNwb25zZRJSCg1DcmVhdGVOZXR3b3JrEiYub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVOZXR3b3JrUmVxdWVzdBoZLm9wZW5oZGMubmV4dXMudjEuTmV0d29yaxJaCg1DcmVhdGVJUFJhbmdlEiYub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVJUFJhbmdlUmVxdWVzdBohLm9wZW5oZGMubmV4dXMudjEuTmV0d29yay5JUFJhbmdlEk8KDURlbGV0ZU5ldHdvcmsSJi5vcGVuaGRjLm5leHVzLnYxLkRlbGV0ZU5ldHdvcmtSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Ek8KDURlbGV0ZUlQUmFuZ2USJi5vcGVuaGRjLm5leHVzLnYxLkRlbGV0ZUlQUmFuZ2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElcKDFVwZGF0ZUZhYnJpYxIlLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlRmFicmljUmVxdWVzdBogLm9wZW5oZGMubmV4dXMudjEuTmV0d29yay5GYWJyaWMSUQoKVXBkYXRlVkxBThIjLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlVkxBTlJlcXVlc3QaHi5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuVkxBThJXCgxVcGRhdGVTdWJuZXQSJS5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZVN1Ym5ldFJlcXVlc3QaIC5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuU3VibmV0EloKDVVwZGF0ZUlQUmFuZ2USJi5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZUlQUmFuZ2VSZXF1ZXN0GiEub3BlbmhkYy5uZXh1cy52MS5OZXR3b3JrLklQUmFuZ2USXQoMTGlzdE1hY2hpbmVzEiUub3BlbmhkYy5uZXh1cy52MS5MaXN0TWFjaGluZXNSZXF1ZXN0GiYub3BlbmhkYy5uZXh1cy52MS5MaXN0TWFjaGluZXNSZXNwb25zZRJMCgpHZXRNYWNoaW5lEiMub3BlbmhkYy5uZXh1cy52MS5HZXRNYWNoaW5lUmVxdWVzdBoZLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZRJaChFDb21taXNzaW9uTWFjaGluZRIqLm9wZW5oZGMubmV4dXMudjEuQ29tbWlzc2lvbk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lElQKDlBvd2VyT25NYWNoaW5lEicub3BlbmhkYy5uZXh1cy52MS5Qb3dlck9uTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUSVgoPUG93ZXJPZmZNYWNoaW5lEigub3BlbmhkYy5uZXh1cy52MS5Qb3dlck9mZk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lEloKC0FkZE1hY2hpbmVzEiQub3BlbmhkYy5uZXh1cy52MS5BZGRNYWNoaW5lc1JlcXVlc3QaJS5vcGVuaGRjLm5leHVzLnYxLkFkZE1hY2hpbmVzUmVzcG9uc2USVwoKTGlzdFNjb3BlcxIjLm9wZW5oZGMubmV4dXMudjEuTGlzdFNjb3Blc1JlcXVlc3QaJC5vcGVuaGRjLm5leHVzLnYxLkxpc3RTY29wZXNSZXNwb25zZRJMCgtDcmVhdGVTY29wZRIkLm9wZW5oZGMubmV4dXMudjEuQ3JlYXRlU2NvcGVSZXF1ZXN0Ghcub3BlbmhkYy5uZXh1cy52MS5TY29wZRJjCg5MaXN0RmFjaWxpdGllcxInLm9wZW5oZGMubmV4dXMudjEuTGlzdEZhY2lsaXRpZXNSZXF1ZXN0Gigub3BlbmhkYy5uZXh1cy52MS5MaXN0RmFjaWxpdGllc1Jlc3BvbnNlEk8KC0dldEZhY2lsaXR5EiQub3BlbmhkYy5uZXh1cy52MS5HZXRGYWNpbGl0eVJlcXVlc3QaGi5vcGVuaGRjLm5leHVzLnYxLkZhY2lsaXR5ElUKDkNyZWF0ZUZhY2lsaXR5Eicub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVGYWNpbGl0eVJlcXVlc3QaGi5vcGVuaGRjLm5leHVzLnYxLkZhY2lsaXR5ElUKDlVwZGF0ZUZhY2lsaXR5Eicub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVGYWNpbGl0eVJlcXVlc3QaGi5vcGVuaGRjLm5leHVzLnYxLkZhY2lsaXR5ElEKDkRlbGV0ZUZhY2lsaXR5Eicub3BlbmhkYy5uZXh1cy52MS5EZWxldGVGYWNpbGl0eVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSUQoORXhwb3NlRmFjaWxpdHkSJy5vcGVuaGRjLm5leHVzLnYxLkV4cG9zZUZhY2lsaXR5UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJVChBBZGRGYWNpbGl0eVVuaXRzEikub3BlbmhkYy5uZXh1cy52MS5BZGRGYWNpbGl0eVVuaXRzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJaCgtMaXN0QWN0aW9ucxIkLm9wZW5oZGMubmV4dXMudjEuTGlzdEFjdGlvbnNSZXF1ZXN0GiUub3BlbmhkYy5uZXh1cy52MS5MaXN0QWN0aW9uc1Jlc3BvbnNlEkcKCVJ1bkFjdGlvbhIiLm9wZW5oZGMubmV4dXMudjEuUnVuQWN0aW9uUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJpChBMaXN0QXBwbGljYXRpb25zEikub3BlbmhkYy5uZXh1cy52MS5MaXN0QXBwbGljYXRpb25zUmVxdWVzdBoqLm9wZW5oZGMubmV4dXMudjEuTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlElgKDkdldEFwcGxpY2F0aW9uEicub3BlbmhkYy5uZXh1cy52MS5HZXRBcHBsaWNhdGlvblJlcXVlc3QaHS5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uEl0KDExpc3RSZWxlYXNlcxIlLm9wZW5oZGMubmV4dXMudjEuTGlzdFJlbGVhc2VzUmVxdWVzdBomLm9wZW5oZGMubmV4dXMudjEuTGlzdFJlbGVhc2VzUmVzcG9uc2USXgoNQ3JlYXRlUmVsZWFzZRImLm9wZW5oZGMubmV4dXMudjEuQ3JlYXRlUmVsZWFzZVJlcXVlc3QaJS5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uLlJlbGVhc2USXgoNVXBkYXRlUmVsZWFzZRImLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlUmVsZWFzZVJlcXVlc3QaJS5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uLlJlbGVhc2USTwoNRGVsZXRlUmVsZWFzZRImLm9wZW5oZGMubmV4dXMudjEuRGVsZXRlUmVsZWFzZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSUwoPUm9sbGJhY2tSZWxlYXNlEigub3BlbmhkYy5uZXh1cy52MS5Sb2xsYmFja1JlbGVhc2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElcKCkxpc3RDaGFydHMSIy5vcGVuaGRjLm5leHVzLnYxLkxpc3RDaGFydHNSZXF1ZXN0GiQub3BlbmhkYy5uZXh1cy52MS5MaXN0Q2hhcnRzUmVzcG9uc2USWgoIR2V0Q2hhcnQSIS5vcGVuaGRjLm5leHVzLnYxLkdldENoYXJ0UmVxdWVzdBorLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZS5DaGFydBJzChBHZXRDaGFydE1ldGFkYXRhEikub3BlbmhkYy5uZXh1cy52MS5HZXRDaGFydE1ldGFkYXRhUmVxdWVzdBo0Lm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZS5DaGFydC5NZXRhZGF0YUIsWipnaXRodWIuY29tL29wZW5oZGMvb3BlbmhkYy9hcGkvbmV4dXMvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChhhcGkvbmV4dXMvdjEvbmV4dXMucHJvdG8SEG9wZW5oZGMubmV4dXMudjEivgMKDUNvbmZpZ3VyYXRpb24SPQoKbnRwX3NlcnZlchgBIAEoCzIpLm9wZW5oZGMubmV4dXMudjEuQ29uZmlndXJhdGlvbi5OVFBTZXJ2ZXISTwoUcGFja2FnZV9yZXBvc2l0b3JpZXMYAiADKAsyMS5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uUGFja2FnZVJlcG9zaXRvcnkSRAoOYm9vdF9yZXNvdXJjZXMYAyADKAsyLC5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uQm9vdFJlc291cmNlGh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpqCgxCb290UmVzb3VyY2USDAoEbmFtZRgBIAEoCRIUCgxhcmNoaXRlY3R1cmUYAiABKAkSDgoGc3RhdHVzGAMgASgJEg8KB2RlZmF1bHQYCyABKAgSFQoNZGlzdHJvX3NlcmllcxgMIAEoCSLUBwoHTmV0d29yaxIwCgZmYWJyaWMYASABKAsyIC5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuRmFicmljEiwKBHZsYW4YAiABKAsyHi5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuVkxBThIwCgZzdWJuZXQYAyABKAsyIC5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuU3VibmV0GmsKCUlQQWRkcmVzcxIMCgR0eXBlGAEgASgJEgoKAmlwGAIgASgJEgwKBHVzZXIYAyABKAkSEQoJc3lzdGVtX2lkGAsgASgJEhEKCW5vZGVfdHlwZRgMIAEoCRIQCghob3N0bmFtZRgNIAEoCRpWCgdJUFJhbmdlEgoKAmlkGAEgASgDEgwKBHR5cGUYAiABKAkSEAoIc3RhcnRfaXAYAyABKAkSDgoGZW5kX2lwGAQgASgJEg8KB2NvbW1lbnQYBSABKAkaYAoKU3RhdGlzdGljcxIRCglhdmFpbGFibGUYASABKAMSDQoFdG90YWwYAiABKAMSFQoNdXNhZ2VfcGVyY2VudBgDIAEoCRIZChFhdmFpbGFibGVfcGVyY2VudBgEIAEoCRoiCgZGYWJyaWMSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRpgCgRWTEFOEgoKAmlkGAEgASgDEgsKA3ZpZBgCIAEoAxIMCgRuYW1lGAMgASgJEgsKA210dRgEIAEoAxITCgtkZXNjcmlwdGlvbhgFIAEoCRIPCgdkaGNwX29uGAYgASgIGokDCgZTdWJuZXQSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRIMCgRjaWRyGAMgASgJEhIKCmdhdGV3YXlfaXAYBCABKAkSEwoLZG5zX3NlcnZlcnMYBSADKAkSEwoLZGVzY3JpcHRpb24YBiABKAkSGgoSbWFuYWdlZF9hbGxvY2F0aW9uGAcgASgIEhgKEGFjdGl2ZV9kaXNjb3ZlcnkYCCABKAgSGgoSYWxsb3dfcHJveHlfYWNjZXNzGAkgASgIEhwKFGFsbG93X2Ruc19yZXNvbHV0aW9uGAogASgIEjkKDGlwX2FkZHJlc3NlcxgLIAMoCzIjLm9wZW5oZGMubmV4dXMudjEuTmV0d29yay5JUEFkZHJlc3MSNAoJaXBfcmFuZ2VzGAwgAygLMiEub3BlbmhkYy5uZXh1cy52MS5OZXR3b3JrLklQUmFuZ2USOAoKc3RhdGlzdGljcxgNIAEoCzIkLm9wZW5oZGMubmV4dXMudjEuTmV0d29yay5TdGF0aXN0aWNzIsENCgdNYWNoaW5lEhEKCXN5c3RlbV9pZBgBIAEoCRIVCg1oYXJkd2FyZV91dWlkGGUgASgJEhAKCGhvc3RuYW1lGGYgASgJEgwKBGZxZG4YZyABKAkSDAoEdGFncxhoIAMoCRITCgtkZXNjcmlwdGlvbhhpIAEoCRIPCgZzdGF0dXMYyQEgASgJEhQKC3Bvd2VyX3N0YXRlGK0CIAEoCRITCgpwb3dlcl90eXBlGK4CIAEoCRIQCgdvc3lzdGVtGJEDIAEoCRIWCg1kaXN0cm9fc2VyaWVzGJIDIAEoCRITCgpod2Vfa2VybmVsGJMDIAEoCRIVCgxhcmNoaXRlY3R1cmUYlAMgASgJEhIKCWNwdV9zcGVlZBiVAyABKAMSEgoJY3B1X2NvdW50GJYDIAEoAxISCgltZW1vcnlfbWIYlwMgASgDEhMKCnN0b3JhZ2VfbWIYmAMgASgBEhUKDGlwX2FkZHJlc3NlcxiZAyADKAkSUQoUd29ya2xvYWRfYW5ub3RhdGlvbnMY9QMgAygLMjIub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lLldvcmtsb2FkQW5ub3RhdGlvbnNFbnRyeRJRChRoYXJkd2FyZV9pbmZvcm1hdGlvbhjZBCADKAsyMi5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUuSGFyZHdhcmVJbmZvcm1hdGlvbkVudHJ5EhkKEGJpb3NfYm9vdF9tZXRob2QY2gQgASgJEjcKCm51bWFfbm9kZXMYvQUgAygLMiIub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lLk5VTUFOb2RlEj0KDWJsb2NrX2RldmljZXMYoQYgAygLMiUub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lLkJsb2NrRGV2aWNlEkcKEm5ldHdvcmtfaW50ZXJmYWNlcxiiBiADKAsyKi5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUuTmV0d29ya0ludGVyZmFjZRpYCglQbGFjZW1lbnQSDQoDbHhkGAEgASgISAASDQoDa3ZtGAIgASgISAASEQoHbWFjaGluZRgDIAEoCEgAEhIKCm1hY2hpbmVfaWQYCyABKAlCBgoEdHlwZRpWCgpDb25zdHJhaW50EhQKDGFyY2hpdGVjdHVyZRgBIAEoCRIRCgljcHVfY29yZXMYAiABKAQSEQoJbWVtb3J5X21iGAMgASgEEgwKBHRhZ3MYCyADKAkaegoGRmFjdG9yEjYKCXBsYWNlbWVudBgBIAEoCzIjLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZS5QbGFjZW1lbnQSOAoKY29uc3RyYWludBgCIAEoCzIkLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZS5Db25zdHJhaW50Gj8KCE5VTUFOb2RlEg0KBWluZGV4GAEgASgDEhEKCWNwdV9jb3JlcxgCIAEoAxIRCgltZW1vcnlfbWIYAyABKAMaqQEKC0Jsb2NrRGV2aWNlEhEKCWJvb3RfZGlzaxgBIAEoCBIMCgRuYW1lGAsgASgJEg4KBnNlcmlhbBgMIAEoCRINCgVtb2RlbBgVIAEoCRIYChBmaXJtd2FyZV92ZXJzaW9uGBYgASgJEhIKCnN0b3JhZ2VfbWIYHyABKAESDAoEdHlwZRgpIAEoCRIMCgR0YWdzGDMgAygJEhAKCHVzZWRfZm9yGD0gASgJGrkCChBOZXR3b3JrSW50ZXJmYWNlEhYKDmJvb3RfaW50ZXJmYWNlGAEgASgIEgwKBG5hbWUYCyABKAkSEwoLbWFjX2FkZHJlc3MYDCABKAkSFgoObGlua19jb25uZWN0ZWQYFSABKAgSEgoKbGlua19zcGVlZBgWIAEoAxIXCg9pbnRlcmZhY2Vfc3BlZWQYFyABKAMSDAoEdHlwZRgfIAEoCRITCgtmYWJyaWNfbmFtZRgpIAEoCRIRCglmYWJyaWNfaWQYKiABKAMSEQoJdmxhbl9uYW1lGCsgASgJEg8KB3ZsYW5faWQYLCABKAMSEwoLc3VibmV0X25hbWUYMyABKAkSEQoJc3VibmV0X2lkGDQgASgDEhIKCmlwX2FkZHJlc3MYPSABKAkSDwoHZGhjcF9vbhhHIAEoCBo6ChhXb3JrbG9hZEFubm90YXRpb25zRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARo6ChhIYXJkd2FyZUluZm9ybWF0aW9uRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASLTAQoFU2NvcGUSDAoEdXVpZBgBIAEoCRIMCgRuYW1lGAIgASgJEgwKBHR5cGUYAyABKAkSFQoNcHJvdmlkZXJfdHlwZRgEIAEoCRIMCgRsaWZlGAUgASgJEg4KBnN0YXR1cxgGIAEoCRIVCg1hZ2VudF92ZXJzaW9uGAcgASgJEhUKDWlzX2NvbnRyb2xsZXIYCCABKAgSFQoNbWFjaGluZV9jb3VudBgVIAEoAxISCgpjb3JlX2NvdW50GBYgASgDEhIKCnVuaXRfY291bnQYFyABKAMiFAoIRmFjaWxpdHkaCAoGQWN0aW9uIi0KC0FwcGxpY2F0aW9uGh4KB1JlbGVhc2UaEwoFQ2hhcnQaCgoITWV0YWRhdGEiGQoXR2V0Q29uZmlndXJhdGlvblJlcXVlc3QiKwoWVXBkYXRlTlRQU2VydmVyUmVxdWVzdBIRCglhZGRyZXNzZXMYASADKAkiTAoeVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlSZXF1ZXN0EgoKAmlkGAEgASgDEgsKA3VybBgCIAEoCRIRCglza2lwX2p1anUYAyABKAgiOQogVXBkYXRlRGVmYXVsdEJvb3RSZXNvdXJjZVJlcXVlc3QSFQoNZGlzdHJvX3NlcmllcxgBIAEoCSIaChhTeW5jQm9vdFJlc291cmNlc1JlcXVlc3QiFQoTTGlzdE5ldHdvcmtzUmVxdWVzdCJDChRMaXN0TmV0d29ya3NSZXNwb25zZRIrCghuZXR3b3JrcxgBIAMoCzIZLm9wZW5oZGMubmV4dXMudjEuTmV0d29yayJeChRDcmVhdGVOZXR3b3JrUmVxdWVzdBIMCgRjaWRyGAEgASgJEhIKCmdhdGV3YXlfaXAYAiABKAkSEwoLZG5zX3NlcnZlcnMYAyADKAkSDwoHZGhjcF9vbhgLIAEoCCJcChRDcmVhdGVJUFJhbmdlUmVxdWVzdBIRCglzdWJuZXRfaWQYASABKAMSEAoIc3RhcnRfaXAYCyABKAkSDgoGZW5kX2lwGAwgASgJEg8KB2NvbW1lbnQYDSABKAkiIgoURGVsZXRlTmV0d29ya1JlcXVlc3QSCgoCaWQYASABKAMiIgoURGVsZXRlSVBSYW5nZVJlcXVlc3QSCgoCaWQYASABKAMiLwoTVXBkYXRlRmFicmljUmVxdWVzdBIKCgJpZBgBIAEoAxIMCgRuYW1lGAsgASgJInQKEVVwZGF0ZVZMQU5SZXF1ZXN0EhEKCWZhYnJpY19pZBgBIAEoAxILCgN2aWQYAiABKAMSDAoEbmFtZRgLIAEoCRILCgNtdHUYDCABKAMSEwoLZGVzY3JpcHRpb24YDSABKAkSDwoHZGhjcF9vbhgOIAEoCCKZAQoTVXBkYXRlU3VibmV0UmVxdWVzdBIKCgJpZBgBIAEoAxIMCgRuYW1lGAsgASgJEgwKBGNpZHIYDCABKAkSEgoKZ2F0ZXdheV9pcBgNIAEoCRITCgtkbnNfc2VydmVycxgOIAMoCRITCgtkZXNjcmlwdGlvbhgPIAEoCRIcChRhbGxvd19kbnNfcmVzb2x1dGlvbhgQIAEoCCJVChRVcGRhdGVJUFJhbmdlUmVxdWVzdBIKCgJpZBgBIAEoAxIQCghzdGFydF9pcBgLIAEoCRIOCgZlbmRfaXAYDCABKAkSDwoHY29tbWVudBgNIAEoCSIVChNMaXN0TWFjaGluZXNSZXF1ZXN0IkMKFExpc3RNYWNoaW5lc1Jlc3BvbnNlEisKCG1hY2hpbmVzGAEgAygLMhkub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lIh8KEUdldE1hY2hpbmVSZXF1ZXN0EgoKAmlkGAEgASgJIoIBChhDb21taXNzaW9uTWFjaGluZVJlcXVlc3QSCgoCaWQYASABKAkSEgoKZW5hYmxlX3NzaBgCIAEoCBIXCg9za2lwX2JtY19jb25maWcYAyABKAgSFwoPc2tpcF9uZXR3b3JraW5nGAQgASgIEhQKDHNraXBfc3RvcmFnZRgFIAEoCCI0ChVQb3dlck9uTWFjaGluZVJlcXVlc3QSCgoCaWQYASABKAkSDwoHY29tbWVudBgCIAEoCSI1ChZQb3dlck9mZk1hY2hpbmVSZXF1ZXN0EgoKAmlkGAEgASgJEg8KB2NvbW1lbnQYAiABKAkiWwoSQWRkTWFjaGluZXNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSMQoHZmFjdG9ycxgCIAMoCzIgLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZS5GYWN0b3IiJwoTQWRkTWFjaGluZXNSZXNwb25zZRIQCghtYWNoaW5lcxgBIAMoCSITChFMaXN0U2NvcGVzUmVxdWVzdCI9ChJMaXN0U2NvcGVzUmVzcG9uc2USJwoGc2NvcGVzGAEgAygLMhcub3BlbmhkYy5uZXh1cy52MS5TY29wZSIiChJDcmVhdGVTY29wZVJlcXVlc3QSDAoEbmFtZRgBIAEoCSIXChVMaXN0RmFjaWxpdGllc1JlcXVlc3QiSAoWTGlzdEZhY2lsaXRpZXNSZXNwb25zZRIuCgpmYWNpbGl0aWVzGAEgAygLMhoub3BlbmhkYy5uZXh1cy52MS5GYWNpbGl0eSIUChJHZXRGYWNpbGl0eVJlcXVlc3QiFwoVQ3JlYXRlRmFjaWxpdHlSZXF1ZXN0IhcKFVVwZGF0ZUZhY2lsaXR5UmVxdWVzdCIXChVEZWxldGVGYWNpbGl0eVJlcXVlc3QiFwoVRXhwb3NlRmFjaWxpdHlSZXF1ZXN0IhkKF0FkZEZhY2lsaXR5VW5pdHNSZXF1ZXN0IhQKEkxpc3RBY3Rpb25zUmVxdWVzdCJJChNMaXN0QWN0aW9uc1Jlc3BvbnNlEjIKB2FjdGlvbnMYASADKAsyIS5vcGVuaGRjLm5leHVzLnYxLkZhY2lsaXR5LkFjdGlvbiISChBSdW5BY3Rpb25SZXF1ZXN0IhkKF0xpc3RBcHBsaWNhdGlvbnNSZXF1ZXN0Ik8KGExpc3RBcHBsaWNhdGlvbnNSZXNwb25zZRIzCgxhcHBsaWNhdGlvbnMYASADKAsyHS5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uIhcKFUdldEFwcGxpY2F0aW9uUmVxdWVzdCIVChNMaXN0UmVsZWFzZXNSZXF1ZXN0Ik8KFExpc3RSZWxlYXNlc1Jlc3BvbnNlEjcKCHJlbGVhc2VzGAEgAygLMiUub3BlbmhkYy5uZXh1cy52MS5BcHBsaWNhdGlvbi5SZWxlYXNlIhYKFENyZWF0ZVJlbGVhc2VSZXF1ZXN0IhYKFFVwZGF0ZVJlbGVhc2VSZXF1ZXN0IhYKFERlbGV0ZVJlbGVhc2VSZXF1ZXN0IhgKFlJvbGxiYWNrUmVsZWFzZVJlcXVlc3QiEwoRTGlzdENoYXJ0c1JlcXVlc3QiUQoSTGlzdENoYXJ0c1Jlc3BvbnNlEjsKBmNoYXJ0cxgBIAMoCzIrLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZS5DaGFydCIRCg9HZXRDaGFydFJlcXVlc3QiGQoXR2V0Q2hhcnRNZXRhZGF0YVJlcXVlc3QyrR0KBU5leHVzEl4KEEdldENvbmZpZ3VyYXRpb24SKS5vcGVuaGRjLm5leHVzLnYxLkdldENvbmZpZ3VyYXRpb25SZXF1ZXN0Gh8ub3BlbmhkYy5uZXh1cy52MS5Db25maWd1cmF0aW9uEmYKD1VwZGF0ZU5UUFNlcnZlchIoLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlTlRQU2VydmVyUmVxdWVzdBopLm9wZW5oZGMubmV4dXMudjEuQ29uZmlndXJhdGlvbi5OVFBTZXJ2ZXISfgoXVXBkYXRlUGFja2FnZVJlcG9zaXRvcnkSMC5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5UmVxdWVzdBoxLm9wZW5oZGMubmV4dXMudjEuQ29uZmlndXJhdGlvbi5QYWNrYWdlUmVwb3NpdG9yeRJ9ChlVcGRhdGVEZWZhdWx0Qm9vdFJlc291cmNlEjIub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVEZWZhdWx0Qm9vdFJlc291cmNlUmVxdWVzdBosLm9wZW5oZGMubmV4dXMudjEuQ29uZmlndXJhdGlvbi5Cb290UmVzb3VyY2USVwoRU3luY0Jvb3RSZXNvdXJjZXMSKi5vcGVuaGRjLm5leHVzLnYxLlN5bmNCb290UmVzb3VyY2VzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJdCgxMaXN0TmV0d29ya3MSJS5vcGVuaGRjLm5leHVzLnYxLkxpc3ROZXR3b3Jrc1JlcXVlc3QaJi5vcGVuaGRjLm5leHVzLnYxLkxpc3ROZXR3b3Jrc1Jlc3BvbnNlElIKDUNyZWF0ZU5ldHdvcmsSJi5vcGVuaGRjLm5leHVzLnYxLkNyZWF0ZU5ldHdvcmtSZXF1ZXN0Ghkub3BlbmhkYy5uZXh1cy52MS5OZXR3b3JrEloKDUNyZWF0ZUlQUmFuZ2USJi5vcGVuaGRjLm5leHVzLnYxLkNyZWF0ZUlQUmFuZ2VSZXF1ZXN0GiEub3BlbmhkYy5uZXh1cy52MS5OZXR3b3JrLklQUmFuZ2USTwoNRGVsZXRlTmV0d29yaxImLm9wZW5oZGMubmV4dXMudjEuRGVsZXRlTmV0d29ya1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSTwoNRGVsZXRlSVBSYW5nZRImLm9wZW5oZGMubmV4dXMudjEuRGVsZXRlSVBSYW5nZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSVwoMVXBkYXRlRmFicmljEiUub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVGYWJyaWNSZXF1ZXN0GiAub3BlbmhkYy5uZXh1cy52MS5OZXR3b3JrLkZhYnJpYxJRCgpVcGRhdGVWTEFOEiMub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVWTEFOUmVxdWVzdBoeLm9wZW5oZGMubmV4dXMudjEuTmV0d29yay5WTEFOElcKDFVwZGF0ZVN1Ym5ldBIlLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlU3VibmV0UmVxdWVzdBogLm9wZW5oZGMubmV4dXMudjEuTmV0d29yay5TdWJuZXQSWgoNVXBkYXRlSVBSYW5nZRImLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlSVBSYW5nZVJlcXVlc3QaIS5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuSVBSYW5nZRJdCgxMaXN0TWFjaGluZXMSJS5vcGVuaGRjLm5leHVzLnYxLkxpc3RNYWNoaW5lc1JlcXVlc3QaJi5vcGVuaGRjLm5leHVzLnYxLkxpc3RNYWNoaW5lc1Jlc3BvbnNlEkwKCkdldE1hY2hpbmUSIy5vcGVuaGRjLm5leHVzLnYxLkdldE1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lEloKEUNvbW1pc3Npb25NYWNoaW5lEioub3BlbmhkYy5uZXh1cy52MS5Db21taXNzaW9uTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUSVAoOUG93ZXJPbk1hY2hpbmUSJy5vcGVuaGRjLm5leHVzLnYxLlBvd2VyT25NYWNoaW5lUmVxdWVzdBoZLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZRJWCg9Qb3dlck9mZk1hY2hpbmUSKC5vcGVuaGRjLm5leHVzLnYxLlBvd2VyT2ZmTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUSWgoLQWRkTWFjaGluZXMSJC5vcGVuaGRjLm5leHVzLnYxLkFkZE1hY2hpbmVzUmVxdWVzdBolLm9wZW5oZGMubmV4dXMudjEuQWRkTWFjaGluZXNSZXNwb25zZRJXCgpMaXN0U2NvcGVzEiMub3BlbmhkYy5uZXh1cy52MS5MaXN0U2NvcGVzUmVxdWVzdBokLm9wZW5oZGMubmV4dXMudjEuTGlzdFNjb3Blc1Jlc3BvbnNlEkwKC0NyZWF0ZVNjb3BlEiQub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVTY29wZVJlcXVlc3QaFy5vcGVuaGRjLm5leHVzLnYxLlNjb3BlEmMKDkxpc3RGYWNpbGl0aWVzEicub3BlbmhkYy5uZXh1cy52MS5MaXN0RmFjaWxpdGllc1JlcXVlc3QaKC5vcGVuaGRjLm5leHVzLnYxLkxpc3RGYWNpbGl0aWVzUmVzcG9uc2USTwoLR2V0RmFjaWxpdHkSJC5vcGVuaGRjLm5leHVzLnYxLkdldEZhY2lsaXR5UmVxdWVzdBoaLm9wZW5oZGMubmV4dXMudjEuRmFjaWxpdHkSVQoOQ3JlYXRlRmFjaWxpdHkSJy5vcGVuaGRjLm5leHVzLnYxLkNyZWF0ZUZhY2lsaXR5UmVxdWVzdBoaLm9wZW5oZGMubmV4dXMudjEuRmFjaWxpdHkSVQoOVXBkYXRlRmFjaWxpdHkSJy5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZUZhY2lsaXR5UmVxdWVzdBoaLm9wZW5oZGMubmV4dXMudjEuRmFjaWxpdHkSUQoORGVsZXRlRmFjaWxpdHkSJy5vcGVuaGRjLm5leHVzLnYxLkRlbGV0ZUZhY2lsaXR5UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJRCg5FeHBvc2VGYWNpbGl0eRInLm9wZW5oZGMubmV4dXMudjEuRXhwb3NlRmFjaWxpdHlSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElUKEEFkZEZhY2lsaXR5VW5pdHMSKS5vcGVuaGRjLm5leHVzLnYxLkFkZEZhY2lsaXR5VW5pdHNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EloKC0xpc3RBY3Rpb25zEiQub3BlbmhkYy5uZXh1cy52MS5MaXN0QWN0aW9uc1JlcXVlc3QaJS5vcGVuaGRjLm5leHVzLnYxLkxpc3RBY3Rpb25zUmVzcG9uc2USRwoJUnVuQWN0aW9uEiIub3BlbmhkYy5uZXh1cy52MS5SdW5BY3Rpb25SZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmkKEExpc3RBcHBsaWNhdGlvbnMSKS5vcGVuaGRjLm5leHVzLnYxLkxpc3RBcHBsaWNhdGlvbnNSZXF1ZXN0Gioub3BlbmhkYy5uZXh1cy52MS5MaXN0QXBwbGljYXRpb25zUmVzcG9uc2USWAoOR2V0QXBwbGljYXRpb24SJy5vcGVuaGRjLm5leHVzLnYxLkdldEFwcGxpY2F0aW9uUmVxdWVzdBodLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24SXQoMTGlzdFJlbGVhc2VzEiUub3BlbmhkYy5uZXh1cy52MS5MaXN0UmVsZWFzZXNSZXF1ZXN0GiYub3BlbmhkYy5uZXh1cy52MS5MaXN0UmVsZWFzZXNSZXNwb25zZRJeCg1DcmVhdGVSZWxlYXNlEiYub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVSZWxlYXNlUmVxdWVzdBolLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZRJeCg1VcGRhdGVSZWxlYXNlEiYub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVSZWxlYXNlUmVxdWVzdBolLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZRJPCg1EZWxldGVSZWxlYXNlEiYub3BlbmhkYy5uZXh1cy52MS5EZWxldGVSZWxlYXNlUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJTCg9Sb2xsYmFja1JlbGVhc2USKC5vcGVuaGRjLm5leHVzLnYxLlJvbGxiYWNrUmVsZWFzZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSVwoKTGlzdENoYXJ0cxIjLm9wZW5oZGMubmV4dXMudjEuTGlzdENoYXJ0c1JlcXVlc3QaJC5vcGVuaGRjLm5leHVzLnYxLkxpc3RDaGFydHNSZXNwb25zZRJaCghHZXRDaGFydBIhLm9wZW5oZGMubmV4dXMudjEuR2V0Q2hhcnRSZXF1ZXN0Gisub3BlbmhkYy5uZXh1cy52MS5BcHBsaWNhdGlvbi5SZWxlYXNlLkNoYXJ0EnMKEEdldENoYXJ0TWV0YWRhdGESKS5vcGVuaGRjLm5leHVzLnYxLkdldENoYXJ0TWV0YWRhdGFSZXF1ZXN0GjQub3BlbmhkYy5uZXh1cy52MS5BcHBsaWNhdGlvbi5SZWxlYXNlLkNoYXJ0Lk1ldGFkYXRhQixaKmdpdGh1Yi5jb20vb3BlbmhkYy9vcGVuaGRjL2FwaS9uZXh1cy92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message openhdc.nexus.v1.Configuration
@@ -131,6 +131,20 @@ export const Configuration_BootResourceSchema: GenMessage<Configuration_BootReso
  * @generated from message openhdc.nexus.v1.Network
  */
 export type Network = Message<"openhdc.nexus.v1.Network"> & {
+  /**
+   * @generated from field: openhdc.nexus.v1.Network.Fabric fabric = 1;
+   */
+  fabric?: Network_Fabric;
+
+  /**
+   * @generated from field: openhdc.nexus.v1.Network.VLAN vlan = 2;
+   */
+  vlan?: Network_VLAN;
+
+  /**
+   * @generated from field: openhdc.nexus.v1.Network.Subnet subnet = 3;
+   */
+  subnet?: Network_Subnet;
 };
 
 /**
@@ -141,9 +155,75 @@ export const NetworkSchema: GenMessage<Network> = /*@__PURE__*/
   messageDesc(file_api_nexus_v1_nexus, 1);
 
 /**
+ * @generated from message openhdc.nexus.v1.Network.IPAddress
+ */
+export type Network_IPAddress = Message<"openhdc.nexus.v1.Network.IPAddress"> & {
+  /**
+   * @generated from field: string type = 1;
+   */
+  type: string;
+
+  /**
+   * @generated from field: string ip = 2;
+   */
+  ip: string;
+
+  /**
+   * @generated from field: string user = 3;
+   */
+  user: string;
+
+  /**
+   * @generated from field: string system_id = 11;
+   */
+  systemId: string;
+
+  /**
+   * @generated from field: string node_type = 12;
+   */
+  nodeType: string;
+
+  /**
+   * @generated from field: string hostname = 13;
+   */
+  hostname: string;
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.Network.IPAddress.
+ * Use `create(Network_IPAddressSchema)` to create a new message.
+ */
+export const Network_IPAddressSchema: GenMessage<Network_IPAddress> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 1, 0);
+
+/**
  * @generated from message openhdc.nexus.v1.Network.IPRange
  */
 export type Network_IPRange = Message<"openhdc.nexus.v1.Network.IPRange"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string type = 2;
+   */
+  type: string;
+
+  /**
+   * @generated from field: string start_ip = 3;
+   */
+  startIp: string;
+
+  /**
+   * @generated from field: string end_ip = 4;
+   */
+  endIp: string;
+
+  /**
+   * @generated from field: string comment = 5;
+   */
+  comment: string;
 };
 
 /**
@@ -151,12 +231,53 @@ export type Network_IPRange = Message<"openhdc.nexus.v1.Network.IPRange"> & {
  * Use `create(Network_IPRangeSchema)` to create a new message.
  */
 export const Network_IPRangeSchema: GenMessage<Network_IPRange> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 1, 0);
+  messageDesc(file_api_nexus_v1_nexus, 1, 1);
+
+/**
+ * @generated from message openhdc.nexus.v1.Network.Statistics
+ */
+export type Network_Statistics = Message<"openhdc.nexus.v1.Network.Statistics"> & {
+  /**
+   * @generated from field: int64 available = 1;
+   */
+  available: bigint;
+
+  /**
+   * @generated from field: int64 total = 2;
+   */
+  total: bigint;
+
+  /**
+   * @generated from field: string usage_percent = 3;
+   */
+  usagePercent: string;
+
+  /**
+   * @generated from field: string available_percent = 4;
+   */
+  availablePercent: string;
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.Network.Statistics.
+ * Use `create(Network_StatisticsSchema)` to create a new message.
+ */
+export const Network_StatisticsSchema: GenMessage<Network_Statistics> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 1, 2);
 
 /**
  * @generated from message openhdc.nexus.v1.Network.Fabric
  */
 export type Network_Fabric = Message<"openhdc.nexus.v1.Network.Fabric"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
 };
 
 /**
@@ -164,12 +285,41 @@ export type Network_Fabric = Message<"openhdc.nexus.v1.Network.Fabric"> & {
  * Use `create(Network_FabricSchema)` to create a new message.
  */
 export const Network_FabricSchema: GenMessage<Network_Fabric> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 1, 1);
+  messageDesc(file_api_nexus_v1_nexus, 1, 3);
 
 /**
  * @generated from message openhdc.nexus.v1.Network.VLAN
  */
 export type Network_VLAN = Message<"openhdc.nexus.v1.Network.VLAN"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: int64 vid = 2;
+   */
+  vid: bigint;
+
+  /**
+   * @generated from field: string name = 3;
+   */
+  name: string;
+
+  /**
+   * @generated from field: int64 mtu = 4;
+   */
+  mtu: bigint;
+
+  /**
+   * @generated from field: string description = 5;
+   */
+  description: string;
+
+  /**
+   * @generated from field: bool dhcp_on = 6;
+   */
+  dhcpOn: boolean;
 };
 
 /**
@@ -177,12 +327,76 @@ export type Network_VLAN = Message<"openhdc.nexus.v1.Network.VLAN"> & {
  * Use `create(Network_VLANSchema)` to create a new message.
  */
 export const Network_VLANSchema: GenMessage<Network_VLAN> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 1, 2);
+  messageDesc(file_api_nexus_v1_nexus, 1, 4);
 
 /**
  * @generated from message openhdc.nexus.v1.Network.Subnet
  */
 export type Network_Subnet = Message<"openhdc.nexus.v1.Network.Subnet"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string cidr = 3;
+   */
+  cidr: string;
+
+  /**
+   * @generated from field: string gateway_ip = 4;
+   */
+  gatewayIp: string;
+
+  /**
+   * @generated from field: repeated string dns_servers = 5;
+   */
+  dnsServers: string[];
+
+  /**
+   * @generated from field: string description = 6;
+   */
+  description: string;
+
+  /**
+   * @generated from field: bool managed_allocation = 7;
+   */
+  managedAllocation: boolean;
+
+  /**
+   * @generated from field: bool active_discovery = 8;
+   */
+  activeDiscovery: boolean;
+
+  /**
+   * @generated from field: bool allow_proxy_access = 9;
+   */
+  allowProxyAccess: boolean;
+
+  /**
+   * @generated from field: bool allow_dns_resolution = 10;
+   */
+  allowDnsResolution: boolean;
+
+  /**
+   * @generated from field: repeated openhdc.nexus.v1.Network.IPAddress ip_addresses = 11;
+   */
+  ipAddresses: Network_IPAddress[];
+
+  /**
+   * @generated from field: repeated openhdc.nexus.v1.Network.IPRange ip_ranges = 12;
+   */
+  ipRanges: Network_IPRange[];
+
+  /**
+   * @generated from field: openhdc.nexus.v1.Network.Statistics statistics = 13;
+   */
+  statistics?: Network_Statistics;
 };
 
 /**
@@ -190,7 +404,7 @@ export type Network_Subnet = Message<"openhdc.nexus.v1.Network.Subnet"> & {
  * Use `create(Network_SubnetSchema)` to create a new message.
  */
 export const Network_SubnetSchema: GenMessage<Network_Subnet> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 1, 3);
+  messageDesc(file_api_nexus_v1_nexus, 1, 5);
 
 /**
  * @generated from message openhdc.nexus.v1.Machine
@@ -857,6 +1071,25 @@ export const ListNetworksResponseSchema: GenMessage<ListNetworksResponse> = /*@_
  * @generated from message openhdc.nexus.v1.CreateNetworkRequest
  */
 export type CreateNetworkRequest = Message<"openhdc.nexus.v1.CreateNetworkRequest"> & {
+  /**
+   * @generated from field: string cidr = 1;
+   */
+  cidr: string;
+
+  /**
+   * @generated from field: string gateway_ip = 2;
+   */
+  gatewayIp: string;
+
+  /**
+   * @generated from field: repeated string dns_servers = 3;
+   */
+  dnsServers: string[];
+
+  /**
+   * @generated from field: bool dhcp_on = 11;
+   */
+  dhcpOn: boolean;
 };
 
 /**
@@ -870,6 +1103,25 @@ export const CreateNetworkRequestSchema: GenMessage<CreateNetworkRequest> = /*@_
  * @generated from message openhdc.nexus.v1.CreateIPRangeRequest
  */
 export type CreateIPRangeRequest = Message<"openhdc.nexus.v1.CreateIPRangeRequest"> & {
+  /**
+   * @generated from field: int64 subnet_id = 1;
+   */
+  subnetId: bigint;
+
+  /**
+   * @generated from field: string start_ip = 11;
+   */
+  startIp: string;
+
+  /**
+   * @generated from field: string end_ip = 12;
+   */
+  endIp: string;
+
+  /**
+   * @generated from field: string comment = 13;
+   */
+  comment: string;
 };
 
 /**
@@ -883,6 +1135,10 @@ export const CreateIPRangeRequestSchema: GenMessage<CreateIPRangeRequest> = /*@_
  * @generated from message openhdc.nexus.v1.DeleteNetworkRequest
  */
 export type DeleteNetworkRequest = Message<"openhdc.nexus.v1.DeleteNetworkRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
 };
 
 /**
@@ -896,6 +1152,10 @@ export const DeleteNetworkRequestSchema: GenMessage<DeleteNetworkRequest> = /*@_
  * @generated from message openhdc.nexus.v1.DeleteIPRangeRequest
  */
 export type DeleteIPRangeRequest = Message<"openhdc.nexus.v1.DeleteIPRangeRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
 };
 
 /**
@@ -909,6 +1169,15 @@ export const DeleteIPRangeRequestSchema: GenMessage<DeleteIPRangeRequest> = /*@_
  * @generated from message openhdc.nexus.v1.UpdateFabricRequest
  */
 export type UpdateFabricRequest = Message<"openhdc.nexus.v1.UpdateFabricRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string name = 11;
+   */
+  name: string;
 };
 
 /**
@@ -922,6 +1191,35 @@ export const UpdateFabricRequestSchema: GenMessage<UpdateFabricRequest> = /*@__P
  * @generated from message openhdc.nexus.v1.UpdateVLANRequest
  */
 export type UpdateVLANRequest = Message<"openhdc.nexus.v1.UpdateVLANRequest"> & {
+  /**
+   * @generated from field: int64 fabric_id = 1;
+   */
+  fabricId: bigint;
+
+  /**
+   * @generated from field: int64 vid = 2;
+   */
+  vid: bigint;
+
+  /**
+   * @generated from field: string name = 11;
+   */
+  name: string;
+
+  /**
+   * @generated from field: int64 mtu = 12;
+   */
+  mtu: bigint;
+
+  /**
+   * @generated from field: string description = 13;
+   */
+  description: string;
+
+  /**
+   * @generated from field: bool dhcp_on = 14;
+   */
+  dhcpOn: boolean;
 };
 
 /**
@@ -935,6 +1233,40 @@ export const UpdateVLANRequestSchema: GenMessage<UpdateVLANRequest> = /*@__PURE_
  * @generated from message openhdc.nexus.v1.UpdateSubnetRequest
  */
 export type UpdateSubnetRequest = Message<"openhdc.nexus.v1.UpdateSubnetRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string name = 11;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string cidr = 12;
+   */
+  cidr: string;
+
+  /**
+   * @generated from field: string gateway_ip = 13;
+   */
+  gatewayIp: string;
+
+  /**
+   * @generated from field: repeated string dns_servers = 14;
+   */
+  dnsServers: string[];
+
+  /**
+   * @generated from field: string description = 15;
+   */
+  description: string;
+
+  /**
+   * @generated from field: bool allow_dns_resolution = 16;
+   */
+  allowDnsResolution: boolean;
 };
 
 /**
@@ -948,6 +1280,25 @@ export const UpdateSubnetRequestSchema: GenMessage<UpdateSubnetRequest> = /*@__P
  * @generated from message openhdc.nexus.v1.UpdateIPRangeRequest
  */
 export type UpdateIPRangeRequest = Message<"openhdc.nexus.v1.UpdateIPRangeRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string start_ip = 11;
+   */
+  startIp: string;
+
+  /**
+   * @generated from field: string end_ip = 12;
+   */
+  endIp: string;
+
+  /**
+   * @generated from field: string comment = 13;
+   */
+  comment: string;
 };
 
 /**

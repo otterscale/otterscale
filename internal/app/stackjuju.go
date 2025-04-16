@@ -19,68 +19,6 @@ import (
 	v1 "github.com/openhdc/openhdc/api/stack/v1"
 )
 
-func (a *StackApp) AddMachines(ctx context.Context, req *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error) {
-	uuid := req.Msg.GetModelUuid()
-
-	factors := req.Msg.GetFactors()
-	machineParams := make([]params.AddMachineParams, 0, len(factors))
-	for i, f := range factors {
-		machineParam := params.AddMachineParams{}
-		if c := f.GetConstraint(); c != nil {
-			machineParam.Constraints = buildConstraints(c)
-		}
-		if p := f.GetPlacement(); p != nil {
-			placement, err := a.buildPlacement(ctx, uuid, p)
-			if err != nil {
-				return nil, err
-			}
-			machineParam.Placement = placement
-		}
-		machineParams[i] = machineParam
-	}
-
-	machines, err := a.svc.AddMachine(ctx, uuid, machineParams)
-	if err != nil {
-		return nil, err
-	}
-
-	res := &v1.AddMachinesResponse{}
-	res.SetMachines(machines)
-	return connect.NewResponse(res), nil
-}
-
-func (a *StackApp) ListModels(ctx context.Context, req *connect.Request[v1.ListModelsRequest]) (*connect.Response[v1.ListModelsResponse], error) {
-	mds, err := a.svc.ListModels(ctx)
-	if err != nil {
-		return nil, err
-	}
-	res := &v1.ListModelsResponse{}
-	res.SetModels(toModels(mds))
-	return connect.NewResponse(res), nil
-}
-
-func (a *StackApp) CreateModel(ctx context.Context, req *connect.Request[v1.CreateModelRequest]) (*connect.Response[v1.Model], error) {
-	mi, err := a.svc.CreateModel(ctx, req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	return connect.NewResponse(modelInfoToModel(mi)), nil
-}
-
-func (a *StackApp) GetModelConfig(ctx context.Context, req *connect.Request[v1.GetModelConfigRequest]) (*connect.Response[v1.GetModelConfigResponse], error) {
-	mc, err := a.svc.GetModelConfig(ctx, req.Msg.GetUuid())
-	if err != nil {
-		return nil, err
-	}
-	configYAML, err := jujuyaml.Marshal(mc)
-	if err != nil {
-		return nil, err
-	}
-	res := &v1.GetModelConfigResponse{}
-	res.SetConfigYaml(string(configYAML))
-	return connect.NewResponse(res), nil
-}
-
 func (a *StackApp) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
 	as, err := a.svc.ListApplications(ctx, req.Msg.GetModelUuid())
 	if err != nil {
@@ -120,10 +58,11 @@ func (a *StackApp) GetApplication(ctx context.Context, req *connect.Request[v1.G
 }
 
 func (a *StackApp) CreateApplication(ctx context.Context, req *connect.Request[v1.CreateApplicationRequest]) (*connect.Response[v1.Application], error) {
-	placements, err := a.buildPlacements(ctx, req.Msg.GetModelUuid(), req.Msg.GetPlacements())
-	if err != nil {
-		return nil, err
-	}
+	// placements, err := a.buildPlacements(ctx, req.Msg.GetModelUuid(), req.Msg.GetPlacements())
+	// if err != nil {
+	// 	return nil, err
+	// }
+	placements := []instance.Placement{}
 	as, err := a.svc.CreateApplication(ctx, req.Msg.GetModelUuid(), req.Msg.GetCharmName(), req.Msg.GetName(), req.Msg.GetChannel(), int(req.Msg.GetRevision()), int(req.Msg.GetNumber()), req.Msg.GetOverrideConfig(), buildConstraints(req.Msg.GetConstraint()), placements, req.Msg.GetTrust())
 	if err != nil {
 		return nil, err
@@ -178,10 +117,11 @@ func (a *StackApp) ExposeApplication(ctx context.Context, req *connect.Request[v
 }
 
 func (a *StackApp) AddApplicationUnits(ctx context.Context, req *connect.Request[v1.AddApplicationUnitsRequest]) (*connect.Response[v1.AddApplicationUnitsResponse], error) {
-	placements, err := a.buildPlacements(ctx, req.Msg.GetModelUuid(), req.Msg.GetPlacements())
-	if err != nil {
-		return nil, err
-	}
+	// placements, err := a.buildPlacements(ctx, req.Msg.GetModelUuid(), req.Msg.GetPlacements())
+	// if err != nil {
+	// 	return nil, err
+	// }
+	placements := []instance.Placement{}
 	mss, err := a.svc.AddApplicationsUnits(ctx, req.Msg.GetModelUuid(), req.Msg.GetName(), int(req.Msg.GetNumber()), placements)
 	if err != nil {
 		return nil, err
@@ -190,31 +130,6 @@ func (a *StackApp) AddApplicationUnits(ctx context.Context, req *connect.Request
 	res := &v1.AddApplicationUnitsResponse{}
 	res.SetMachines(toAddApplicationUnitsMachines(mss))
 	return connect.NewResponse(res), nil
-}
-
-func (a *StackApp) ListIntegrations(ctx context.Context, req *connect.Request[v1.ListIntegrationsRequest]) (*connect.Response[v1.ListIntegrationsResponse], error) {
-	rss, err := a.svc.ListIntegrations(ctx, req.Msg.GetModelUuid())
-	if err != nil {
-		return nil, err
-	}
-	res := &v1.ListIntegrationsResponse{}
-	res.SetIntegrations(toIntegrations(rss))
-	return connect.NewResponse(res), nil
-}
-
-func (a *StackApp) CreateIntegration(ctx context.Context, req *connect.Request[v1.CreateIntegrationRequest]) (*connect.Response[v1.Integration], error) {
-	arr, err := a.svc.CreateIntegration(ctx, req.Msg.GetModelUuid(), req.Msg.GetEndpoints())
-	if err != nil {
-		return nil, err
-	}
-	return connect.NewResponse(resultsToIntegration(arr)), nil
-}
-
-func (a *StackApp) DeleteIntegration(ctx context.Context, req *connect.Request[v1.DeleteIntegrationRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.DeleteIntegration(ctx, req.Msg.GetModelUuid(), int(req.Msg.GetId())); err != nil {
-		return nil, err
-	}
-	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 
 func (a *StackApp) ListActions(ctx context.Context, req *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error) {
@@ -231,28 +146,28 @@ func (a *StackApp) RunAction(ctx context.Context, req *connect.Request[v1.RunAct
 	return nil, status.Error(codes.Unimplemented, "unimplemented")
 }
 
-func (a *StackApp) buildPlacements(ctx context.Context, uuid string, ps []*v1.Placement) ([]*instance.Placement, error) {
-	ret := make([]*instance.Placement, len(ps))
-	for i := range ps {
-		p, err := a.buildPlacement(ctx, uuid, ps[i])
-		if err != nil {
-			return nil, err
-		}
-		ret[i] = p
-	}
-	return ret, nil
-}
+// func (a *StackApp) buildPlacements(ctx context.Context, uuid string, ps []*v1.Placement) ([]*instance.Placement, error) {
+// 	ret := make([]*instance.Placement, len(ps))
+// 	for i := range ps {
+// 		p, err := a.buildPlacement(ctx, uuid, ps[i])
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		ret[i] = p
+// 	}
+// 	return ret, nil
+// }
 
-func (a *StackApp) buildPlacement(ctx context.Context, uuid string, p *v1.Placement) (*instance.Placement, error) {
-	directive, err := a.svc.MAASToJujuMachineID(ctx, uuid, p.GetMachineSystemId())
-	if err != nil {
-		return nil, err
-	}
-	return &instance.Placement{
-		Scope:     p.GetScope(),
-		Directive: directive,
-	}, nil
-}
+// func (a *StackApp) buildPlacement(ctx context.Context, uuid string, p *v1.Placement) (*instance.Placement, error) {
+// 	directive, err := a.svc.MAASToJujuMachineID(ctx, uuid, p.GetMachineSystemId())
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &instance.Placement{
+// 		Scope:     p.GetScope(),
+// 		Directive: directive,
+// 	}, nil
+// }
 
 func buildConstraints(c *v1.Constraint) constraints.Value {
 	arch := c.GetArchitecture()

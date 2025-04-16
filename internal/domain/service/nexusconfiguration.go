@@ -102,15 +102,15 @@ func (s *NexusService) SyncBootResources(ctx context.Context) error {
 }
 
 func (s *NexusService) listNTPServers(ctx context.Context) ([]string, error) {
-	cfg, err := s.server.Get(ctx, maasConfigNTPServers)
+	val, err := s.server.Get(ctx, maasConfigNTPServers)
 	if err != nil {
 		return nil, err
 	}
-	return strings.Split(removeQuotes(cfg), " "), nil
+	return strings.Split(removeQuotes(string(val)), " "), nil
 }
 
 func (s *NexusService) listBootResources(ctx context.Context) ([]model.BootResource, error) {
-	defaultDistro, err := s.server.Get(ctx, maasConfigDefaultDistroSeries)
+	val, err := s.server.Get(ctx, maasConfigDefaultDistroSeries)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func (s *NexusService) listBootResources(ctx context.Context) ([]model.BootResou
 		}
 		isDefault := false
 		if len(token) > 1 {
-			isDefault = token[1] == removeQuotes(defaultDistro)
+			isDefault = token[1] == removeQuotes(string(val))
 		}
 		arch := strings.Split(br.Architecture, "/")[0]
 		group := br.Name + arch
