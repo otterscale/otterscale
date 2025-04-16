@@ -9,8 +9,8 @@ type (
 
 type Configuration struct {
 	NTPServers          []string
-	PackageRepositories []*PackageRepository
-	BootResources       []*BootResource
+	PackageRepositories []PackageRepository
+	BootResources       []BootResource
 }
 
 type BootResource struct {

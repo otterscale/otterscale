@@ -68,14 +68,14 @@ const (
 	NexusListMachinesProcedure = "/openhdc.nexus.v1.Nexus/ListMachines"
 	// NexusGetMachineProcedure is the fully-qualified name of the Nexus's GetMachine RPC.
 	NexusGetMachineProcedure = "/openhdc.nexus.v1.Nexus/GetMachine"
-	// NexusCreateMachineProcedure is the fully-qualified name of the Nexus's CreateMachine RPC.
-	NexusCreateMachineProcedure = "/openhdc.nexus.v1.Nexus/CreateMachine"
 	// NexusCommissionMachineProcedure is the fully-qualified name of the Nexus's CommissionMachine RPC.
 	NexusCommissionMachineProcedure = "/openhdc.nexus.v1.Nexus/CommissionMachine"
 	// NexusPowerOnMachineProcedure is the fully-qualified name of the Nexus's PowerOnMachine RPC.
 	NexusPowerOnMachineProcedure = "/openhdc.nexus.v1.Nexus/PowerOnMachine"
 	// NexusPowerOffMachineProcedure is the fully-qualified name of the Nexus's PowerOffMachine RPC.
 	NexusPowerOffMachineProcedure = "/openhdc.nexus.v1.Nexus/PowerOffMachine"
+	// NexusAddMachinesProcedure is the fully-qualified name of the Nexus's AddMachines RPC.
+	NexusAddMachinesProcedure = "/openhdc.nexus.v1.Nexus/AddMachines"
 	// NexusListScopesProcedure is the fully-qualified name of the Nexus's ListScopes RPC.
 	NexusListScopesProcedure = "/openhdc.nexus.v1.Nexus/ListScopes"
 	// NexusCreateScopeProcedure is the fully-qualified name of the Nexus's CreateScope RPC.
@@ -141,10 +141,10 @@ type NexusClient interface {
 	// Machine
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
 	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
-	CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error)
-	CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[emptypb.Empty], error)
+	CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error)
+	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error)
+	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
+	AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error)
 	// Scope
 	ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error)
 	CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error)
@@ -278,28 +278,28 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("GetMachine")),
 			connect.WithClientOptions(opts...),
 		),
-		createMachine: connect.NewClient[v1.CreateMachineRequest, v1.Machine](
-			httpClient,
-			baseURL+NexusCreateMachineProcedure,
-			connect.WithSchema(nexusMethods.ByName("CreateMachine")),
-			connect.WithClientOptions(opts...),
-		),
-		commissionMachine: connect.NewClient[v1.CommissionMachineRequest, emptypb.Empty](
+		commissionMachine: connect.NewClient[v1.CommissionMachineRequest, v1.Machine](
 			httpClient,
 			baseURL+NexusCommissionMachineProcedure,
 			connect.WithSchema(nexusMethods.ByName("CommissionMachine")),
 			connect.WithClientOptions(opts...),
 		),
-		powerOnMachine: connect.NewClient[v1.PowerOnMachineRequest, emptypb.Empty](
+		powerOnMachine: connect.NewClient[v1.PowerOnMachineRequest, v1.Machine](
 			httpClient,
 			baseURL+NexusPowerOnMachineProcedure,
 			connect.WithSchema(nexusMethods.ByName("PowerOnMachine")),
 			connect.WithClientOptions(opts...),
 		),
-		powerOffMachine: connect.NewClient[v1.PowerOffMachineRequest, emptypb.Empty](
+		powerOffMachine: connect.NewClient[v1.PowerOffMachineRequest, v1.Machine](
 			httpClient,
 			baseURL+NexusPowerOffMachineProcedure,
 			connect.WithSchema(nexusMethods.ByName("PowerOffMachine")),
+			connect.WithClientOptions(opts...),
+		),
+		addMachines: connect.NewClient[v1.AddMachinesRequest, v1.AddMachinesResponse](
+			httpClient,
+			baseURL+NexusAddMachinesProcedure,
+			connect.WithSchema(nexusMethods.ByName("AddMachines")),
 			connect.WithClientOptions(opts...),
 		),
 		listScopes: connect.NewClient[v1.ListScopesRequest, v1.ListScopesResponse](
@@ -449,10 +449,10 @@ type nexusClient struct {
 	updateIPRange             *connect.Client[v1.UpdateIPRangeRequest, v1.Network_IPRange]
 	listMachines              *connect.Client[v1.ListMachinesRequest, v1.ListMachinesResponse]
 	getMachine                *connect.Client[v1.GetMachineRequest, v1.Machine]
-	createMachine             *connect.Client[v1.CreateMachineRequest, v1.Machine]
-	commissionMachine         *connect.Client[v1.CommissionMachineRequest, emptypb.Empty]
-	powerOnMachine            *connect.Client[v1.PowerOnMachineRequest, emptypb.Empty]
-	powerOffMachine           *connect.Client[v1.PowerOffMachineRequest, emptypb.Empty]
+	commissionMachine         *connect.Client[v1.CommissionMachineRequest, v1.Machine]
+	powerOnMachine            *connect.Client[v1.PowerOnMachineRequest, v1.Machine]
+	powerOffMachine           *connect.Client[v1.PowerOffMachineRequest, v1.Machine]
+	addMachines               *connect.Client[v1.AddMachinesRequest, v1.AddMachinesResponse]
 	listScopes                *connect.Client[v1.ListScopesRequest, v1.ListScopesResponse]
 	createScope               *connect.Client[v1.CreateScopeRequest, v1.Scope]
 	listFacilities            *connect.Client[v1.ListFacilitiesRequest, v1.ListFacilitiesResponse]
@@ -556,24 +556,24 @@ func (c *nexusClient) GetMachine(ctx context.Context, req *connect.Request[v1.Ge
 	return c.getMachine.CallUnary(ctx, req)
 }
 
-// CreateMachine calls openhdc.nexus.v1.Nexus.CreateMachine.
-func (c *nexusClient) CreateMachine(ctx context.Context, req *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return c.createMachine.CallUnary(ctx, req)
-}
-
 // CommissionMachine calls openhdc.nexus.v1.Nexus.CommissionMachine.
-func (c *nexusClient) CommissionMachine(ctx context.Context, req *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (c *nexusClient) CommissionMachine(ctx context.Context, req *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return c.commissionMachine.CallUnary(ctx, req)
 }
 
 // PowerOnMachine calls openhdc.nexus.v1.Nexus.PowerOnMachine.
-func (c *nexusClient) PowerOnMachine(ctx context.Context, req *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (c *nexusClient) PowerOnMachine(ctx context.Context, req *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return c.powerOnMachine.CallUnary(ctx, req)
 }
 
 // PowerOffMachine calls openhdc.nexus.v1.Nexus.PowerOffMachine.
-func (c *nexusClient) PowerOffMachine(ctx context.Context, req *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (c *nexusClient) PowerOffMachine(ctx context.Context, req *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return c.powerOffMachine.CallUnary(ctx, req)
+}
+
+// AddMachines calls openhdc.nexus.v1.Nexus.AddMachines.
+func (c *nexusClient) AddMachines(ctx context.Context, req *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error) {
+	return c.addMachines.CallUnary(ctx, req)
 }
 
 // ListScopes calls openhdc.nexus.v1.Nexus.ListScopes.
@@ -702,10 +702,10 @@ type NexusHandler interface {
 	// Machine
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
 	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
-	CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error)
-	CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[emptypb.Empty], error)
+	CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error)
+	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error)
+	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
+	AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error)
 	// Scope
 	ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error)
 	CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error)
@@ -835,12 +835,6 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("GetMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusCreateMachineHandler := connect.NewUnaryHandler(
-		NexusCreateMachineProcedure,
-		svc.CreateMachine,
-		connect.WithSchema(nexusMethods.ByName("CreateMachine")),
-		connect.WithHandlerOptions(opts...),
-	)
 	nexusCommissionMachineHandler := connect.NewUnaryHandler(
 		NexusCommissionMachineProcedure,
 		svc.CommissionMachine,
@@ -857,6 +851,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		NexusPowerOffMachineProcedure,
 		svc.PowerOffMachine,
 		connect.WithSchema(nexusMethods.ByName("PowerOffMachine")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusAddMachinesHandler := connect.NewUnaryHandler(
+		NexusAddMachinesProcedure,
+		svc.AddMachines,
+		connect.WithSchema(nexusMethods.ByName("AddMachines")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusListScopesHandler := connect.NewUnaryHandler(
@@ -1019,14 +1019,14 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusListMachinesHandler.ServeHTTP(w, r)
 		case NexusGetMachineProcedure:
 			nexusGetMachineHandler.ServeHTTP(w, r)
-		case NexusCreateMachineProcedure:
-			nexusCreateMachineHandler.ServeHTTP(w, r)
 		case NexusCommissionMachineProcedure:
 			nexusCommissionMachineHandler.ServeHTTP(w, r)
 		case NexusPowerOnMachineProcedure:
 			nexusPowerOnMachineHandler.ServeHTTP(w, r)
 		case NexusPowerOffMachineProcedure:
 			nexusPowerOffMachineHandler.ServeHTTP(w, r)
+		case NexusAddMachinesProcedure:
+			nexusAddMachinesHandler.ServeHTTP(w, r)
 		case NexusListScopesProcedure:
 			nexusListScopesHandler.ServeHTTP(w, r)
 		case NexusCreateScopeProcedure:
@@ -1142,20 +1142,20 @@ func (UnimplementedNexusHandler) GetMachine(context.Context, *connect.Request[v1
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetMachine is not implemented"))
 }
 
-func (UnimplementedNexusHandler) CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateMachine is not implemented"))
-}
-
-func (UnimplementedNexusHandler) CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedNexusHandler) CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CommissionMachine is not implemented"))
 }
 
-func (UnimplementedNexusHandler) PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedNexusHandler) PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.PowerOnMachine is not implemented"))
 }
 
-func (UnimplementedNexusHandler) PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedNexusHandler) PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.PowerOffMachine is not implemented"))
+}
+
+func (UnimplementedNexusHandler) AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddMachines is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error) {

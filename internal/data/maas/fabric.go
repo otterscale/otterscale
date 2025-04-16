@@ -20,17 +20,8 @@ func NewFabric(maas *MAAS) service.MAASFabric {
 
 var _ service.MAASFabric = (*fabric)(nil)
 
-func (r *fabric) List(ctx context.Context) ([]*entity.Fabric, error) {
-	fs, err := r.maas.Fabrics.Get()
-	if err != nil {
-		return nil, err
-	}
-
-	ret := make([]*entity.Fabric, len(fs))
-	for i := range fs {
-		ret[i] = &fs[i]
-	}
-	return ret, nil
+func (r *fabric) List(_ context.Context) ([]entity.Fabric, error) {
+	return r.maas.Fabrics.Get()
 }
 
 func (r *fabric) Get(_ context.Context, id int) (*entity.Fabric, error) {

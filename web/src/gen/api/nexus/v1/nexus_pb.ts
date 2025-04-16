@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/nexus/v1/nexus.proto.
  */
 export const file_api_nexus_v1_nexus: GenFile = /*@__PURE__*/
-  fileDesc("ChhhcGkvbmV4dXMvdjEvbmV4dXMucHJvdG8SEG9wZW5oZGMubmV4dXMudjEivgMKDUNvbmZpZ3VyYXRpb24SPQoKbnRwX3NlcnZlchgBIAEoCzIpLm9wZW5oZGMubmV4dXMudjEuQ29uZmlndXJhdGlvbi5OVFBTZXJ2ZXISTwoUcGFja2FnZV9yZXBvc2l0b3JpZXMYAiADKAsyMS5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uUGFja2FnZVJlcG9zaXRvcnkSRAoOYm9vdF9yZXNvdXJjZXMYAyADKAsyLC5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uQm9vdFJlc291cmNlGh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpqCgxCb290UmVzb3VyY2USDAoEbmFtZRgBIAEoCRIUCgxhcmNoaXRlY3R1cmUYAiABKAkSDgoGc3RhdHVzGAMgASgJEg8KB2RlZmF1bHQYCyABKAgSFQoNZGlzdHJvX3NlcmllcxgMIAEoCSIwCgdOZXR3b3JrGgkKB0lQUmFuZ2UaCAoGRmFicmljGgYKBFZMQU4aCAoGU3VibmV0IgkKB01hY2hpbmUi0wEKBVNjb3BlEgwKBHV1aWQYASABKAkSDAoEbmFtZRgCIAEoCRIMCgR0eXBlGAMgASgJEhUKDXByb3ZpZGVyX3R5cGUYBCABKAkSDAoEbGlmZRgFIAEoCRIOCgZzdGF0dXMYBiABKAkSFQoNYWdlbnRfdmVyc2lvbhgHIAEoCRIVCg1pc19jb250cm9sbGVyGAggASgIEhUKDW1hY2hpbmVfY291bnQYFSABKAMSEgoKY29yZV9jb3VudBgWIAEoAxISCgp1bml0X2NvdW50GBcgASgDIhQKCEZhY2lsaXR5GggKBkFjdGlvbiItCgtBcHBsaWNhdGlvbhoeCgdSZWxlYXNlGhMKBUNoYXJ0GgoKCE1ldGFkYXRhIhkKF0dldENvbmZpZ3VyYXRpb25SZXF1ZXN0IisKFlVwZGF0ZU5UUFNlcnZlclJlcXVlc3QSEQoJYWRkcmVzc2VzGAEgAygJIkwKHlVwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5UmVxdWVzdBIKCgJpZBgBIAEoAxILCgN1cmwYAiABKAkSEQoJc2tpcF9qdWp1GAMgASgIIjkKIFVwZGF0ZURlZmF1bHRCb290UmVzb3VyY2VSZXF1ZXN0EhUKDWRpc3Ryb19zZXJpZXMYASABKAkiGgoYU3luY0Jvb3RSZXNvdXJjZXNSZXF1ZXN0IhUKE0xpc3ROZXR3b3Jrc1JlcXVlc3QiQwoUTGlzdE5ldHdvcmtzUmVzcG9uc2USKwoIbmV0d29ya3MYASADKAsyGS5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsiFgoUQ3JlYXRlTmV0d29ya1JlcXVlc3QiFgoUQ3JlYXRlSVBSYW5nZVJlcXVlc3QiFgoURGVsZXRlTmV0d29ya1JlcXVlc3QiFgoURGVsZXRlSVBSYW5nZVJlcXVlc3QiFQoTVXBkYXRlRmFicmljUmVxdWVzdCITChFVcGRhdGVWTEFOUmVxdWVzdCIVChNVcGRhdGVTdWJuZXRSZXF1ZXN0IhYKFFVwZGF0ZUlQUmFuZ2VSZXF1ZXN0IhUKE0xpc3RNYWNoaW5lc1JlcXVlc3QiQwoUTGlzdE1hY2hpbmVzUmVzcG9uc2USKwoIbWFjaGluZXMYASADKAsyGS5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUiEwoRR2V0TWFjaGluZVJlcXVlc3QiFgoUQ3JlYXRlTWFjaGluZVJlcXVlc3QiGgoYQ29tbWlzc2lvbk1hY2hpbmVSZXF1ZXN0IhcKFVBvd2VyT25NYWNoaW5lUmVxdWVzdCIYChZQb3dlck9mZk1hY2hpbmVSZXF1ZXN0IhMKEUxpc3RTY29wZXNSZXF1ZXN0Ij0KEkxpc3RTY29wZXNSZXNwb25zZRInCgZzY29wZXMYASADKAsyFy5vcGVuaGRjLm5leHVzLnYxLlNjb3BlIiIKEkNyZWF0ZVNjb3BlUmVxdWVzdBIMCgRuYW1lGAEgASgJIhcKFUxpc3RGYWNpbGl0aWVzUmVxdWVzdCJIChZMaXN0RmFjaWxpdGllc1Jlc3BvbnNlEi4KCmZhY2lsaXRpZXMYASADKAsyGi5vcGVuaGRjLm5leHVzLnYxLkZhY2lsaXR5IhQKEkdldEZhY2lsaXR5UmVxdWVzdCIXChVDcmVhdGVGYWNpbGl0eVJlcXVlc3QiFwoVVXBkYXRlRmFjaWxpdHlSZXF1ZXN0IhcKFURlbGV0ZUZhY2lsaXR5UmVxdWVzdCIXChVFeHBvc2VGYWNpbGl0eVJlcXVlc3QiGQoXQWRkRmFjaWxpdHlVbml0c1JlcXVlc3QiFAoSTGlzdEFjdGlvbnNSZXF1ZXN0IkkKE0xpc3RBY3Rpb25zUmVzcG9uc2USMgoHYWN0aW9ucxgBIAMoCzIhLm9wZW5oZGMubmV4dXMudjEuRmFjaWxpdHkuQWN0aW9uIhIKEFJ1bkFjdGlvblJlcXVlc3QiGQoXTGlzdEFwcGxpY2F0aW9uc1JlcXVlc3QiTwoYTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlEjMKDGFwcGxpY2F0aW9ucxgBIAMoCzIdLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24iFwoVR2V0QXBwbGljYXRpb25SZXF1ZXN0IhUKE0xpc3RSZWxlYXNlc1JlcXVlc3QiTwoUTGlzdFJlbGVhc2VzUmVzcG9uc2USNwoIcmVsZWFzZXMYASADKAsyJS5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uLlJlbGVhc2UiFgoUQ3JlYXRlUmVsZWFzZVJlcXVlc3QiFgoUVXBkYXRlUmVsZWFzZVJlcXVlc3QiFgoURGVsZXRlUmVsZWFzZVJlcXVlc3QiGAoWUm9sbGJhY2tSZWxlYXNlUmVxdWVzdCITChFMaXN0Q2hhcnRzUmVxdWVzdCJRChJMaXN0Q2hhcnRzUmVzcG9uc2USOwoGY2hhcnRzGAEgAygLMisub3BlbmhkYy5uZXh1cy52MS5BcHBsaWNhdGlvbi5SZWxlYXNlLkNoYXJ0IhEKD0dldENoYXJ0UmVxdWVzdCIZChdHZXRDaGFydE1ldGFkYXRhUmVxdWVzdDKcHQoFTmV4dXMSXgoQR2V0Q29uZmlndXJhdGlvbhIpLm9wZW5oZGMubmV4dXMudjEuR2V0Q29uZmlndXJhdGlvblJlcXVlc3QaHy5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24SZgoPVXBkYXRlTlRQU2VydmVyEigub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVOVFBTZXJ2ZXJSZXF1ZXN0Gikub3BlbmhkYy5uZXh1cy52MS5Db25maWd1cmF0aW9uLk5UUFNlcnZlchJ+ChdVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeRIwLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlSZXF1ZXN0GjEub3BlbmhkYy5uZXh1cy52MS5Db25maWd1cmF0aW9uLlBhY2thZ2VSZXBvc2l0b3J5En0KGVVwZGF0ZURlZmF1bHRCb290UmVzb3VyY2USMi5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZURlZmF1bHRCb290UmVzb3VyY2VSZXF1ZXN0Giwub3BlbmhkYy5uZXh1cy52MS5Db25maWd1cmF0aW9uLkJvb3RSZXNvdXJjZRJXChFTeW5jQm9vdFJlc291cmNlcxIqLm9wZW5oZGMubmV4dXMudjEuU3luY0Jvb3RSZXNvdXJjZXNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5El0KDExpc3ROZXR3b3JrcxIlLm9wZW5oZGMubmV4dXMudjEuTGlzdE5ldHdvcmtzUmVxdWVzdBomLm9wZW5oZGMubmV4dXMudjEuTGlzdE5ldHdvcmtzUmVzcG9uc2USUgoNQ3JlYXRlTmV0d29yaxImLm9wZW5oZGMubmV4dXMudjEuQ3JlYXRlTmV0d29ya1JlcXVlc3QaGS5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsSWgoNQ3JlYXRlSVBSYW5nZRImLm9wZW5oZGMubmV4dXMudjEuQ3JlYXRlSVBSYW5nZVJlcXVlc3QaIS5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuSVBSYW5nZRJPCg1EZWxldGVOZXR3b3JrEiYub3BlbmhkYy5uZXh1cy52MS5EZWxldGVOZXR3b3JrUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJPCg1EZWxldGVJUFJhbmdlEiYub3BlbmhkYy5uZXh1cy52MS5EZWxldGVJUFJhbmdlUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJXCgxVcGRhdGVGYWJyaWMSJS5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZUZhYnJpY1JlcXVlc3QaIC5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuRmFicmljElEKClVwZGF0ZVZMQU4SIy5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZVZMQU5SZXF1ZXN0Gh4ub3BlbmhkYy5uZXh1cy52MS5OZXR3b3JrLlZMQU4SVwoMVXBkYXRlU3VibmV0EiUub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVTdWJuZXRSZXF1ZXN0GiAub3BlbmhkYy5uZXh1cy52MS5OZXR3b3JrLlN1Ym5ldBJaCg1VcGRhdGVJUFJhbmdlEiYub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVJUFJhbmdlUmVxdWVzdBohLm9wZW5oZGMubmV4dXMudjEuTmV0d29yay5JUFJhbmdlEl0KDExpc3RNYWNoaW5lcxIlLm9wZW5oZGMubmV4dXMudjEuTGlzdE1hY2hpbmVzUmVxdWVzdBomLm9wZW5oZGMubmV4dXMudjEuTGlzdE1hY2hpbmVzUmVzcG9uc2USTAoKR2V0TWFjaGluZRIjLm9wZW5oZGMubmV4dXMudjEuR2V0TWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUSUgoNQ3JlYXRlTWFjaGluZRImLm9wZW5oZGMubmV4dXMudjEuQ3JlYXRlTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUSVwoRQ29tbWlzc2lvbk1hY2hpbmUSKi5vcGVuaGRjLm5leHVzLnYxLkNvbW1pc3Npb25NYWNoaW5lUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJRCg5Qb3dlck9uTWFjaGluZRInLm9wZW5oZGMubmV4dXMudjEuUG93ZXJPbk1hY2hpbmVSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElMKD1Bvd2VyT2ZmTWFjaGluZRIoLm9wZW5oZGMubmV4dXMudjEuUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJXCgpMaXN0U2NvcGVzEiMub3BlbmhkYy5uZXh1cy52MS5MaXN0U2NvcGVzUmVxdWVzdBokLm9wZW5oZGMubmV4dXMudjEuTGlzdFNjb3Blc1Jlc3BvbnNlEkwKC0NyZWF0ZVNjb3BlEiQub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVTY29wZVJlcXVlc3QaFy5vcGVuaGRjLm5leHVzLnYxLlNjb3BlEmMKDkxpc3RGYWNpbGl0aWVzEicub3BlbmhkYy5uZXh1cy52MS5MaXN0RmFjaWxpdGllc1JlcXVlc3QaKC5vcGVuaGRjLm5leHVzLnYxLkxpc3RGYWNpbGl0aWVzUmVzcG9uc2USTwoLR2V0RmFjaWxpdHkSJC5vcGVuaGRjLm5leHVzLnYxLkdldEZhY2lsaXR5UmVxdWVzdBoaLm9wZW5oZGMubmV4dXMudjEuRmFjaWxpdHkSVQoOQ3JlYXRlRmFjaWxpdHkSJy5vcGVuaGRjLm5leHVzLnYxLkNyZWF0ZUZhY2lsaXR5UmVxdWVzdBoaLm9wZW5oZGMubmV4dXMudjEuRmFjaWxpdHkSVQoOVXBkYXRlRmFjaWxpdHkSJy5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZUZhY2lsaXR5UmVxdWVzdBoaLm9wZW5oZGMubmV4dXMudjEuRmFjaWxpdHkSUQoORGVsZXRlRmFjaWxpdHkSJy5vcGVuaGRjLm5leHVzLnYxLkRlbGV0ZUZhY2lsaXR5UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJRCg5FeHBvc2VGYWNpbGl0eRInLm9wZW5oZGMubmV4dXMudjEuRXhwb3NlRmFjaWxpdHlSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElUKEEFkZEZhY2lsaXR5VW5pdHMSKS5vcGVuaGRjLm5leHVzLnYxLkFkZEZhY2lsaXR5VW5pdHNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EloKC0xpc3RBY3Rpb25zEiQub3BlbmhkYy5uZXh1cy52MS5MaXN0QWN0aW9uc1JlcXVlc3QaJS5vcGVuaGRjLm5leHVzLnYxLkxpc3RBY3Rpb25zUmVzcG9uc2USRwoJUnVuQWN0aW9uEiIub3BlbmhkYy5uZXh1cy52MS5SdW5BY3Rpb25SZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmkKEExpc3RBcHBsaWNhdGlvbnMSKS5vcGVuaGRjLm5leHVzLnYxLkxpc3RBcHBsaWNhdGlvbnNSZXF1ZXN0Gioub3BlbmhkYy5uZXh1cy52MS5MaXN0QXBwbGljYXRpb25zUmVzcG9uc2USWAoOR2V0QXBwbGljYXRpb24SJy5vcGVuaGRjLm5leHVzLnYxLkdldEFwcGxpY2F0aW9uUmVxdWVzdBodLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24SXQoMTGlzdFJlbGVhc2VzEiUub3BlbmhkYy5uZXh1cy52MS5MaXN0UmVsZWFzZXNSZXF1ZXN0GiYub3BlbmhkYy5uZXh1cy52MS5MaXN0UmVsZWFzZXNSZXNwb25zZRJeCg1DcmVhdGVSZWxlYXNlEiYub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVSZWxlYXNlUmVxdWVzdBolLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZRJeCg1VcGRhdGVSZWxlYXNlEiYub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVSZWxlYXNlUmVxdWVzdBolLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZRJPCg1EZWxldGVSZWxlYXNlEiYub3BlbmhkYy5uZXh1cy52MS5EZWxldGVSZWxlYXNlUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJTCg9Sb2xsYmFja1JlbGVhc2USKC5vcGVuaGRjLm5leHVzLnYxLlJvbGxiYWNrUmVsZWFzZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSVwoKTGlzdENoYXJ0cxIjLm9wZW5oZGMubmV4dXMudjEuTGlzdENoYXJ0c1JlcXVlc3QaJC5vcGVuaGRjLm5leHVzLnYxLkxpc3RDaGFydHNSZXNwb25zZRJaCghHZXRDaGFydBIhLm9wZW5oZGMubmV4dXMudjEuR2V0Q2hhcnRSZXF1ZXN0Gisub3BlbmhkYy5uZXh1cy52MS5BcHBsaWNhdGlvbi5SZWxlYXNlLkNoYXJ0EnMKEEdldENoYXJ0TWV0YWRhdGESKS5vcGVuaGRjLm5leHVzLnYxLkdldENoYXJ0TWV0YWRhdGFSZXF1ZXN0GjQub3BlbmhkYy5uZXh1cy52MS5BcHBsaWNhdGlvbi5SZWxlYXNlLkNoYXJ0Lk1ldGFkYXRhQixaKmdpdGh1Yi5jb20vb3BlbmhkYy9vcGVuaGRjL2FwaS9uZXh1cy92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChhhcGkvbmV4dXMvdjEvbmV4dXMucHJvdG8SEG9wZW5oZGMubmV4dXMudjEivgMKDUNvbmZpZ3VyYXRpb24SPQoKbnRwX3NlcnZlchgBIAEoCzIpLm9wZW5oZGMubmV4dXMudjEuQ29uZmlndXJhdGlvbi5OVFBTZXJ2ZXISTwoUcGFja2FnZV9yZXBvc2l0b3JpZXMYAiADKAsyMS5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uUGFja2FnZVJlcG9zaXRvcnkSRAoOYm9vdF9yZXNvdXJjZXMYAyADKAsyLC5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uQm9vdFJlc291cmNlGh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpqCgxCb290UmVzb3VyY2USDAoEbmFtZRgBIAEoCRIUCgxhcmNoaXRlY3R1cmUYAiABKAkSDgoGc3RhdHVzGAMgASgJEg8KB2RlZmF1bHQYCyABKAgSFQoNZGlzdHJvX3NlcmllcxgMIAEoCSIwCgdOZXR3b3JrGgkKB0lQUmFuZ2UaCAoGRmFicmljGgYKBFZMQU4aCAoGU3VibmV0IsENCgdNYWNoaW5lEhEKCXN5c3RlbV9pZBgBIAEoCRIVCg1oYXJkd2FyZV91dWlkGGUgASgJEhAKCGhvc3RuYW1lGGYgASgJEgwKBGZxZG4YZyABKAkSDAoEdGFncxhoIAMoCRITCgtkZXNjcmlwdGlvbhhpIAEoCRIPCgZzdGF0dXMYyQEgASgJEhQKC3Bvd2VyX3N0YXRlGK0CIAEoCRITCgpwb3dlcl90eXBlGK4CIAEoCRIQCgdvc3lzdGVtGJEDIAEoCRIWCg1kaXN0cm9fc2VyaWVzGJIDIAEoCRITCgpod2Vfa2VybmVsGJMDIAEoCRIVCgxhcmNoaXRlY3R1cmUYlAMgASgJEhIKCWNwdV9zcGVlZBiVAyABKAMSEgoJY3B1X2NvdW50GJYDIAEoAxISCgltZW1vcnlfbWIYlwMgASgDEhMKCnN0b3JhZ2VfbWIYmAMgASgBEhUKDGlwX2FkZHJlc3NlcxiZAyADKAkSUQoUd29ya2xvYWRfYW5ub3RhdGlvbnMY9QMgAygLMjIub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lLldvcmtsb2FkQW5ub3RhdGlvbnNFbnRyeRJRChRoYXJkd2FyZV9pbmZvcm1hdGlvbhjZBCADKAsyMi5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUuSGFyZHdhcmVJbmZvcm1hdGlvbkVudHJ5EhkKEGJpb3NfYm9vdF9tZXRob2QY2gQgASgJEjcKCm51bWFfbm9kZXMYvQUgAygLMiIub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lLk5VTUFOb2RlEj0KDWJsb2NrX2RldmljZXMYoQYgAygLMiUub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lLkJsb2NrRGV2aWNlEkcKEm5ldHdvcmtfaW50ZXJmYWNlcxiiBiADKAsyKi5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUuTmV0d29ya0ludGVyZmFjZRpYCglQbGFjZW1lbnQSDQoDbHhkGAEgASgISAASDQoDa3ZtGAIgASgISAASEQoHbWFjaGluZRgDIAEoCEgAEhIKCm1hY2hpbmVfaWQYCyABKAlCBgoEdHlwZRpWCgpDb25zdHJhaW50EhQKDGFyY2hpdGVjdHVyZRgBIAEoCRIRCgljcHVfY29yZXMYAiABKAQSEQoJbWVtb3J5X21iGAMgASgEEgwKBHRhZ3MYCyADKAkaegoGRmFjdG9yEjYKCXBsYWNlbWVudBgBIAEoCzIjLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZS5QbGFjZW1lbnQSOAoKY29uc3RyYWludBgCIAEoCzIkLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZS5Db25zdHJhaW50Gj8KCE5VTUFOb2RlEg0KBWluZGV4GAEgASgDEhEKCWNwdV9jb3JlcxgCIAEoAxIRCgltZW1vcnlfbWIYAyABKAMaqQEKC0Jsb2NrRGV2aWNlEhEKCWJvb3RfZGlzaxgBIAEoCBIMCgRuYW1lGAsgASgJEg4KBnNlcmlhbBgMIAEoCRINCgVtb2RlbBgVIAEoCRIYChBmaXJtd2FyZV92ZXJzaW9uGBYgASgJEhIKCnN0b3JhZ2VfbWIYHyABKAESDAoEdHlwZRgpIAEoCRIMCgR0YWdzGDMgAygJEhAKCHVzZWRfZm9yGD0gASgJGrkCChBOZXR3b3JrSW50ZXJmYWNlEhYKDmJvb3RfaW50ZXJmYWNlGAEgASgIEgwKBG5hbWUYCyABKAkSEwoLbWFjX2FkZHJlc3MYDCABKAkSFgoObGlua19jb25uZWN0ZWQYFSABKAgSEgoKbGlua19zcGVlZBgWIAEoAxIXCg9pbnRlcmZhY2Vfc3BlZWQYFyABKAMSDAoEdHlwZRgfIAEoCRITCgtmYWJyaWNfbmFtZRgpIAEoCRIRCglmYWJyaWNfaWQYKiABKAMSEQoJdmxhbl9uYW1lGCsgASgJEg8KB3ZsYW5faWQYLCABKAMSEwoLc3VibmV0X25hbWUYMyABKAkSEQoJc3VibmV0X2lkGDQgASgDEhIKCmlwX2FkZHJlc3MYPSABKAkSDwoHZGhjcF9vbhhHIAEoCBo6ChhXb3JrbG9hZEFubm90YXRpb25zRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARo6ChhIYXJkd2FyZUluZm9ybWF0aW9uRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASLTAQoFU2NvcGUSDAoEdXVpZBgBIAEoCRIMCgRuYW1lGAIgASgJEgwKBHR5cGUYAyABKAkSFQoNcHJvdmlkZXJfdHlwZRgEIAEoCRIMCgRsaWZlGAUgASgJEg4KBnN0YXR1cxgGIAEoCRIVCg1hZ2VudF92ZXJzaW9uGAcgASgJEhUKDWlzX2NvbnRyb2xsZXIYCCABKAgSFQoNbWFjaGluZV9jb3VudBgVIAEoAxISCgpjb3JlX2NvdW50GBYgASgDEhIKCnVuaXRfY291bnQYFyABKAMiFAoIRmFjaWxpdHkaCAoGQWN0aW9uIi0KC0FwcGxpY2F0aW9uGh4KB1JlbGVhc2UaEwoFQ2hhcnQaCgoITWV0YWRhdGEiGQoXR2V0Q29uZmlndXJhdGlvblJlcXVlc3QiKwoWVXBkYXRlTlRQU2VydmVyUmVxdWVzdBIRCglhZGRyZXNzZXMYASADKAkiTAoeVXBkYXRlUGFja2FnZVJlcG9zaXRvcnlSZXF1ZXN0EgoKAmlkGAEgASgDEgsKA3VybBgCIAEoCRIRCglza2lwX2p1anUYAyABKAgiOQogVXBkYXRlRGVmYXVsdEJvb3RSZXNvdXJjZVJlcXVlc3QSFQoNZGlzdHJvX3NlcmllcxgBIAEoCSIaChhTeW5jQm9vdFJlc291cmNlc1JlcXVlc3QiFQoTTGlzdE5ldHdvcmtzUmVxdWVzdCJDChRMaXN0TmV0d29ya3NSZXNwb25zZRIrCghuZXR3b3JrcxgBIAMoCzIZLm9wZW5oZGMubmV4dXMudjEuTmV0d29yayIWChRDcmVhdGVOZXR3b3JrUmVxdWVzdCIWChRDcmVhdGVJUFJhbmdlUmVxdWVzdCIWChREZWxldGVOZXR3b3JrUmVxdWVzdCIWChREZWxldGVJUFJhbmdlUmVxdWVzdCIVChNVcGRhdGVGYWJyaWNSZXF1ZXN0IhMKEVVwZGF0ZVZMQU5SZXF1ZXN0IhUKE1VwZGF0ZVN1Ym5ldFJlcXVlc3QiFgoUVXBkYXRlSVBSYW5nZVJlcXVlc3QiFQoTTGlzdE1hY2hpbmVzUmVxdWVzdCJDChRMaXN0TWFjaGluZXNSZXNwb25zZRIrCghtYWNoaW5lcxgBIAMoCzIZLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZSIfChFHZXRNYWNoaW5lUmVxdWVzdBIKCgJpZBgBIAEoCSKCAQoYQ29tbWlzc2lvbk1hY2hpbmVSZXF1ZXN0EgoKAmlkGAEgASgJEhIKCmVuYWJsZV9zc2gYAiABKAgSFwoPc2tpcF9ibWNfY29uZmlnGAMgASgIEhcKD3NraXBfbmV0d29ya2luZxgEIAEoCBIUCgxza2lwX3N0b3JhZ2UYBSABKAgiNAoVUG93ZXJPbk1hY2hpbmVSZXF1ZXN0EgoKAmlkGAEgASgJEg8KB2NvbW1lbnQYAiABKAkiNQoWUG93ZXJPZmZNYWNoaW5lUmVxdWVzdBIKCgJpZBgBIAEoCRIPCgdjb21tZW50GAIgASgJIlsKEkFkZE1hY2hpbmVzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEjEKB2ZhY3RvcnMYAiADKAsyIC5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUuRmFjdG9yIicKE0FkZE1hY2hpbmVzUmVzcG9uc2USEAoIbWFjaGluZXMYASADKAkiEwoRTGlzdFNjb3Blc1JlcXVlc3QiPQoSTGlzdFNjb3Blc1Jlc3BvbnNlEicKBnNjb3BlcxgBIAMoCzIXLm9wZW5oZGMubmV4dXMudjEuU2NvcGUiIgoSQ3JlYXRlU2NvcGVSZXF1ZXN0EgwKBG5hbWUYASABKAkiFwoVTGlzdEZhY2lsaXRpZXNSZXF1ZXN0IkgKFkxpc3RGYWNpbGl0aWVzUmVzcG9uc2USLgoKZmFjaWxpdGllcxgBIAMoCzIaLm9wZW5oZGMubmV4dXMudjEuRmFjaWxpdHkiFAoSR2V0RmFjaWxpdHlSZXF1ZXN0IhcKFUNyZWF0ZUZhY2lsaXR5UmVxdWVzdCIXChVVcGRhdGVGYWNpbGl0eVJlcXVlc3QiFwoVRGVsZXRlRmFjaWxpdHlSZXF1ZXN0IhcKFUV4cG9zZUZhY2lsaXR5UmVxdWVzdCIZChdBZGRGYWNpbGl0eVVuaXRzUmVxdWVzdCIUChJMaXN0QWN0aW9uc1JlcXVlc3QiSQoTTGlzdEFjdGlvbnNSZXNwb25zZRIyCgdhY3Rpb25zGAEgAygLMiEub3BlbmhkYy5uZXh1cy52MS5GYWNpbGl0eS5BY3Rpb24iEgoQUnVuQWN0aW9uUmVxdWVzdCIZChdMaXN0QXBwbGljYXRpb25zUmVxdWVzdCJPChhMaXN0QXBwbGljYXRpb25zUmVzcG9uc2USMwoMYXBwbGljYXRpb25zGAEgAygLMh0ub3BlbmhkYy5uZXh1cy52MS5BcHBsaWNhdGlvbiIXChVHZXRBcHBsaWNhdGlvblJlcXVlc3QiFQoTTGlzdFJlbGVhc2VzUmVxdWVzdCJPChRMaXN0UmVsZWFzZXNSZXNwb25zZRI3CghyZWxlYXNlcxgBIAMoCzIlLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZSIWChRDcmVhdGVSZWxlYXNlUmVxdWVzdCIWChRVcGRhdGVSZWxlYXNlUmVxdWVzdCIWChREZWxldGVSZWxlYXNlUmVxdWVzdCIYChZSb2xsYmFja1JlbGVhc2VSZXF1ZXN0IhMKEUxpc3RDaGFydHNSZXF1ZXN0IlEKEkxpc3RDaGFydHNSZXNwb25zZRI7CgZjaGFydHMYASADKAsyKy5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uLlJlbGVhc2UuQ2hhcnQiEQoPR2V0Q2hhcnRSZXF1ZXN0IhkKF0dldENoYXJ0TWV0YWRhdGFSZXF1ZXN0Mq0dCgVOZXh1cxJeChBHZXRDb25maWd1cmF0aW9uEikub3BlbmhkYy5uZXh1cy52MS5HZXRDb25maWd1cmF0aW9uUmVxdWVzdBofLm9wZW5oZGMubmV4dXMudjEuQ29uZmlndXJhdGlvbhJmCg9VcGRhdGVOVFBTZXJ2ZXISKC5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZU5UUFNlcnZlclJlcXVlc3QaKS5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uTlRQU2VydmVyEn4KF1VwZGF0ZVBhY2thZ2VSZXBvc2l0b3J5EjAub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVJlcXVlc3QaMS5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uUGFja2FnZVJlcG9zaXRvcnkSfQoZVXBkYXRlRGVmYXVsdEJvb3RSZXNvdXJjZRIyLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlRGVmYXVsdEJvb3RSZXNvdXJjZVJlcXVlc3QaLC5vcGVuaGRjLm5leHVzLnYxLkNvbmZpZ3VyYXRpb24uQm9vdFJlc291cmNlElcKEVN5bmNCb290UmVzb3VyY2VzEioub3BlbmhkYy5uZXh1cy52MS5TeW5jQm9vdFJlc291cmNlc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSXQoMTGlzdE5ldHdvcmtzEiUub3BlbmhkYy5uZXh1cy52MS5MaXN0TmV0d29ya3NSZXF1ZXN0GiYub3BlbmhkYy5uZXh1cy52MS5MaXN0TmV0d29ya3NSZXNwb25zZRJSCg1DcmVhdGVOZXR3b3JrEiYub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVOZXR3b3JrUmVxdWVzdBoZLm9wZW5oZGMubmV4dXMudjEuTmV0d29yaxJaCg1DcmVhdGVJUFJhbmdlEiYub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVJUFJhbmdlUmVxdWVzdBohLm9wZW5oZGMubmV4dXMudjEuTmV0d29yay5JUFJhbmdlEk8KDURlbGV0ZU5ldHdvcmsSJi5vcGVuaGRjLm5leHVzLnYxLkRlbGV0ZU5ldHdvcmtSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5Ek8KDURlbGV0ZUlQUmFuZ2USJi5vcGVuaGRjLm5leHVzLnYxLkRlbGV0ZUlQUmFuZ2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElcKDFVwZGF0ZUZhYnJpYxIlLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlRmFicmljUmVxdWVzdBogLm9wZW5oZGMubmV4dXMudjEuTmV0d29yay5GYWJyaWMSUQoKVXBkYXRlVkxBThIjLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlVkxBTlJlcXVlc3QaHi5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuVkxBThJXCgxVcGRhdGVTdWJuZXQSJS5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZVN1Ym5ldFJlcXVlc3QaIC5vcGVuaGRjLm5leHVzLnYxLk5ldHdvcmsuU3VibmV0EloKDVVwZGF0ZUlQUmFuZ2USJi5vcGVuaGRjLm5leHVzLnYxLlVwZGF0ZUlQUmFuZ2VSZXF1ZXN0GiEub3BlbmhkYy5uZXh1cy52MS5OZXR3b3JrLklQUmFuZ2USXQoMTGlzdE1hY2hpbmVzEiUub3BlbmhkYy5uZXh1cy52MS5MaXN0TWFjaGluZXNSZXF1ZXN0GiYub3BlbmhkYy5uZXh1cy52MS5MaXN0TWFjaGluZXNSZXNwb25zZRJMCgpHZXRNYWNoaW5lEiMub3BlbmhkYy5uZXh1cy52MS5HZXRNYWNoaW5lUmVxdWVzdBoZLm9wZW5oZGMubmV4dXMudjEuTWFjaGluZRJaChFDb21taXNzaW9uTWFjaGluZRIqLm9wZW5oZGMubmV4dXMudjEuQ29tbWlzc2lvbk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lElQKDlBvd2VyT25NYWNoaW5lEicub3BlbmhkYy5uZXh1cy52MS5Qb3dlck9uTWFjaGluZVJlcXVlc3QaGS5vcGVuaGRjLm5leHVzLnYxLk1hY2hpbmUSVgoPUG93ZXJPZmZNYWNoaW5lEigub3BlbmhkYy5uZXh1cy52MS5Qb3dlck9mZk1hY2hpbmVSZXF1ZXN0Ghkub3BlbmhkYy5uZXh1cy52MS5NYWNoaW5lEloKC0FkZE1hY2hpbmVzEiQub3BlbmhkYy5uZXh1cy52MS5BZGRNYWNoaW5lc1JlcXVlc3QaJS5vcGVuaGRjLm5leHVzLnYxLkFkZE1hY2hpbmVzUmVzcG9uc2USVwoKTGlzdFNjb3BlcxIjLm9wZW5oZGMubmV4dXMudjEuTGlzdFNjb3Blc1JlcXVlc3QaJC5vcGVuaGRjLm5leHVzLnYxLkxpc3RTY29wZXNSZXNwb25zZRJMCgtDcmVhdGVTY29wZRIkLm9wZW5oZGMubmV4dXMudjEuQ3JlYXRlU2NvcGVSZXF1ZXN0Ghcub3BlbmhkYy5uZXh1cy52MS5TY29wZRJjCg5MaXN0RmFjaWxpdGllcxInLm9wZW5oZGMubmV4dXMudjEuTGlzdEZhY2lsaXRpZXNSZXF1ZXN0Gigub3BlbmhkYy5uZXh1cy52MS5MaXN0RmFjaWxpdGllc1Jlc3BvbnNlEk8KC0dldEZhY2lsaXR5EiQub3BlbmhkYy5uZXh1cy52MS5HZXRGYWNpbGl0eVJlcXVlc3QaGi5vcGVuaGRjLm5leHVzLnYxLkZhY2lsaXR5ElUKDkNyZWF0ZUZhY2lsaXR5Eicub3BlbmhkYy5uZXh1cy52MS5DcmVhdGVGYWNpbGl0eVJlcXVlc3QaGi5vcGVuaGRjLm5leHVzLnYxLkZhY2lsaXR5ElUKDlVwZGF0ZUZhY2lsaXR5Eicub3BlbmhkYy5uZXh1cy52MS5VcGRhdGVGYWNpbGl0eVJlcXVlc3QaGi5vcGVuaGRjLm5leHVzLnYxLkZhY2lsaXR5ElEKDkRlbGV0ZUZhY2lsaXR5Eicub3BlbmhkYy5uZXh1cy52MS5EZWxldGVGYWNpbGl0eVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSUQoORXhwb3NlRmFjaWxpdHkSJy5vcGVuaGRjLm5leHVzLnYxLkV4cG9zZUZhY2lsaXR5UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJVChBBZGRGYWNpbGl0eVVuaXRzEikub3BlbmhkYy5uZXh1cy52MS5BZGRGYWNpbGl0eVVuaXRzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJaCgtMaXN0QWN0aW9ucxIkLm9wZW5oZGMubmV4dXMudjEuTGlzdEFjdGlvbnNSZXF1ZXN0GiUub3BlbmhkYy5uZXh1cy52MS5MaXN0QWN0aW9uc1Jlc3BvbnNlEkcKCVJ1bkFjdGlvbhIiLm9wZW5oZGMubmV4dXMudjEuUnVuQWN0aW9uUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJpChBMaXN0QXBwbGljYXRpb25zEikub3BlbmhkYy5uZXh1cy52MS5MaXN0QXBwbGljYXRpb25zUmVxdWVzdBoqLm9wZW5oZGMubmV4dXMudjEuTGlzdEFwcGxpY2F0aW9uc1Jlc3BvbnNlElgKDkdldEFwcGxpY2F0aW9uEicub3BlbmhkYy5uZXh1cy52MS5HZXRBcHBsaWNhdGlvblJlcXVlc3QaHS5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uEl0KDExpc3RSZWxlYXNlcxIlLm9wZW5oZGMubmV4dXMudjEuTGlzdFJlbGVhc2VzUmVxdWVzdBomLm9wZW5oZGMubmV4dXMudjEuTGlzdFJlbGVhc2VzUmVzcG9uc2USXgoNQ3JlYXRlUmVsZWFzZRImLm9wZW5oZGMubmV4dXMudjEuQ3JlYXRlUmVsZWFzZVJlcXVlc3QaJS5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uLlJlbGVhc2USXgoNVXBkYXRlUmVsZWFzZRImLm9wZW5oZGMubmV4dXMudjEuVXBkYXRlUmVsZWFzZVJlcXVlc3QaJS5vcGVuaGRjLm5leHVzLnYxLkFwcGxpY2F0aW9uLlJlbGVhc2USTwoNRGVsZXRlUmVsZWFzZRImLm9wZW5oZGMubmV4dXMudjEuRGVsZXRlUmVsZWFzZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSUwoPUm9sbGJhY2tSZWxlYXNlEigub3BlbmhkYy5uZXh1cy52MS5Sb2xsYmFja1JlbGVhc2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElcKCkxpc3RDaGFydHMSIy5vcGVuaGRjLm5leHVzLnYxLkxpc3RDaGFydHNSZXF1ZXN0GiQub3BlbmhkYy5uZXh1cy52MS5MaXN0Q2hhcnRzUmVzcG9uc2USWgoIR2V0Q2hhcnQSIS5vcGVuaGRjLm5leHVzLnYxLkdldENoYXJ0UmVxdWVzdBorLm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZS5DaGFydBJzChBHZXRDaGFydE1ldGFkYXRhEikub3BlbmhkYy5uZXh1cy52MS5HZXRDaGFydE1ldGFkYXRhUmVxdWVzdBo0Lm9wZW5oZGMubmV4dXMudjEuQXBwbGljYXRpb24uUmVsZWFzZS5DaGFydC5NZXRhZGF0YUIsWipnaXRodWIuY29tL29wZW5oZGMvb3BlbmhkYy9hcGkvbmV4dXMvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message openhdc.nexus.v1.Configuration
@@ -196,6 +196,125 @@ export const Network_SubnetSchema: GenMessage<Network_Subnet> = /*@__PURE__*/
  * @generated from message openhdc.nexus.v1.Machine
  */
 export type Machine = Message<"openhdc.nexus.v1.Machine"> & {
+  /**
+   * @generated from field: string system_id = 1;
+   */
+  systemId: string;
+
+  /**
+   * @generated from field: string hardware_uuid = 101;
+   */
+  hardwareUuid: string;
+
+  /**
+   * @generated from field: string hostname = 102;
+   */
+  hostname: string;
+
+  /**
+   * @generated from field: string fqdn = 103;
+   */
+  fqdn: string;
+
+  /**
+   * @generated from field: repeated string tags = 104;
+   */
+  tags: string[];
+
+  /**
+   * @generated from field: string description = 105;
+   */
+  description: string;
+
+  /**
+   * @generated from field: string status = 201;
+   */
+  status: string;
+
+  /**
+   * @generated from field: string power_state = 301;
+   */
+  powerState: string;
+
+  /**
+   * @generated from field: string power_type = 302;
+   */
+  powerType: string;
+
+  /**
+   * @generated from field: string osystem = 401;
+   */
+  osystem: string;
+
+  /**
+   * @generated from field: string distro_series = 402;
+   */
+  distroSeries: string;
+
+  /**
+   * @generated from field: string hwe_kernel = 403;
+   */
+  hweKernel: string;
+
+  /**
+   * @generated from field: string architecture = 404;
+   */
+  architecture: string;
+
+  /**
+   * @generated from field: int64 cpu_speed = 405;
+   */
+  cpuSpeed: bigint;
+
+  /**
+   * @generated from field: int64 cpu_count = 406;
+   */
+  cpuCount: bigint;
+
+  /**
+   * @generated from field: int64 memory_mb = 407;
+   */
+  memoryMb: bigint;
+
+  /**
+   * @generated from field: double storage_mb = 408;
+   */
+  storageMb: number;
+
+  /**
+   * @generated from field: repeated string ip_addresses = 409;
+   */
+  ipAddresses: string[];
+
+  /**
+   * @generated from field: map<string, string> workload_annotations = 501;
+   */
+  workloadAnnotations: { [key: string]: string };
+
+  /**
+   * @generated from field: map<string, string> hardware_information = 601;
+   */
+  hardwareInformation: { [key: string]: string };
+
+  /**
+   * @generated from field: string bios_boot_method = 602;
+   */
+  biosBootMethod: string;
+
+  /**
+   * @generated from field: repeated openhdc.nexus.v1.Machine.NUMANode numa_nodes = 701;
+   */
+  numaNodes: Machine_NUMANode[];
+
+  /**
+   * @generated from field: repeated openhdc.nexus.v1.Machine.BlockDevice block_devices = 801;
+   */
+  blockDevices: Machine_BlockDevice[];
+
+  /**
+   * @generated from field: repeated openhdc.nexus.v1.Machine.NetworkInterface network_interfaces = 802;
+   */
+  networkInterfaces: Machine_NetworkInterface[];
 };
 
 /**
@@ -204,6 +323,271 @@ export type Machine = Message<"openhdc.nexus.v1.Machine"> & {
  */
 export const MachineSchema: GenMessage<Machine> = /*@__PURE__*/
   messageDesc(file_api_nexus_v1_nexus, 2);
+
+/**
+ * @generated from message openhdc.nexus.v1.Machine.Placement
+ */
+export type Machine_Placement = Message<"openhdc.nexus.v1.Machine.Placement"> & {
+  /**
+   * @generated from oneof openhdc.nexus.v1.Machine.Placement.type
+   */
+  type: {
+    /**
+     * @generated from field: bool lxd = 1;
+     */
+    value: boolean;
+    case: "lxd";
+  } | {
+    /**
+     * @generated from field: bool kvm = 2;
+     */
+    value: boolean;
+    case: "kvm";
+  } | {
+    /**
+     * @generated from field: bool machine = 3;
+     */
+    value: boolean;
+    case: "machine";
+  } | { case: undefined; value?: undefined };
+
+  /**
+   * @generated from field: string machine_id = 11;
+   */
+  machineId: string;
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.Machine.Placement.
+ * Use `create(Machine_PlacementSchema)` to create a new message.
+ */
+export const Machine_PlacementSchema: GenMessage<Machine_Placement> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 2, 0);
+
+/**
+ * @generated from message openhdc.nexus.v1.Machine.Constraint
+ */
+export type Machine_Constraint = Message<"openhdc.nexus.v1.Machine.Constraint"> & {
+  /**
+   * @generated from field: string architecture = 1;
+   */
+  architecture: string;
+
+  /**
+   * @generated from field: uint64 cpu_cores = 2;
+   */
+  cpuCores: bigint;
+
+  /**
+   * @generated from field: uint64 memory_mb = 3;
+   */
+  memoryMb: bigint;
+
+  /**
+   * @generated from field: repeated string tags = 11;
+   */
+  tags: string[];
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.Machine.Constraint.
+ * Use `create(Machine_ConstraintSchema)` to create a new message.
+ */
+export const Machine_ConstraintSchema: GenMessage<Machine_Constraint> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 2, 1);
+
+/**
+ * @generated from message openhdc.nexus.v1.Machine.Factor
+ */
+export type Machine_Factor = Message<"openhdc.nexus.v1.Machine.Factor"> & {
+  /**
+   * @generated from field: openhdc.nexus.v1.Machine.Placement placement = 1;
+   */
+  placement?: Machine_Placement;
+
+  /**
+   * @generated from field: openhdc.nexus.v1.Machine.Constraint constraint = 2;
+   */
+  constraint?: Machine_Constraint;
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.Machine.Factor.
+ * Use `create(Machine_FactorSchema)` to create a new message.
+ */
+export const Machine_FactorSchema: GenMessage<Machine_Factor> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 2, 2);
+
+/**
+ * @generated from message openhdc.nexus.v1.Machine.NUMANode
+ */
+export type Machine_NUMANode = Message<"openhdc.nexus.v1.Machine.NUMANode"> & {
+  /**
+   * @generated from field: int64 index = 1;
+   */
+  index: bigint;
+
+  /**
+   * @generated from field: int64 cpu_cores = 2;
+   */
+  cpuCores: bigint;
+
+  /**
+   * @generated from field: int64 memory_mb = 3;
+   */
+  memoryMb: bigint;
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.Machine.NUMANode.
+ * Use `create(Machine_NUMANodeSchema)` to create a new message.
+ */
+export const Machine_NUMANodeSchema: GenMessage<Machine_NUMANode> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 2, 3);
+
+/**
+ * @generated from message openhdc.nexus.v1.Machine.BlockDevice
+ */
+export type Machine_BlockDevice = Message<"openhdc.nexus.v1.Machine.BlockDevice"> & {
+  /**
+   * @generated from field: bool boot_disk = 1;
+   */
+  bootDisk: boolean;
+
+  /**
+   * @generated from field: string name = 11;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string serial = 12;
+   */
+  serial: string;
+
+  /**
+   * @generated from field: string model = 21;
+   */
+  model: string;
+
+  /**
+   * @generated from field: string firmware_version = 22;
+   */
+  firmwareVersion: string;
+
+  /**
+   * @generated from field: double storage_mb = 31;
+   */
+  storageMb: number;
+
+  /**
+   * @generated from field: string type = 41;
+   */
+  type: string;
+
+  /**
+   * @generated from field: repeated string tags = 51;
+   */
+  tags: string[];
+
+  /**
+   * @generated from field: string used_for = 61;
+   */
+  usedFor: string;
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.Machine.BlockDevice.
+ * Use `create(Machine_BlockDeviceSchema)` to create a new message.
+ */
+export const Machine_BlockDeviceSchema: GenMessage<Machine_BlockDevice> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 2, 4);
+
+/**
+ * @generated from message openhdc.nexus.v1.Machine.NetworkInterface
+ */
+export type Machine_NetworkInterface = Message<"openhdc.nexus.v1.Machine.NetworkInterface"> & {
+  /**
+   * @generated from field: bool boot_interface = 1;
+   */
+  bootInterface: boolean;
+
+  /**
+   * @generated from field: string name = 11;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string mac_address = 12;
+   */
+  macAddress: string;
+
+  /**
+   * @generated from field: bool link_connected = 21;
+   */
+  linkConnected: boolean;
+
+  /**
+   * @generated from field: int64 link_speed = 22;
+   */
+  linkSpeed: bigint;
+
+  /**
+   * @generated from field: int64 interface_speed = 23;
+   */
+  interfaceSpeed: bigint;
+
+  /**
+   * @generated from field: string type = 31;
+   */
+  type: string;
+
+  /**
+   * @generated from field: string fabric_name = 41;
+   */
+  fabricName: string;
+
+  /**
+   * @generated from field: int64 fabric_id = 42;
+   */
+  fabricId: bigint;
+
+  /**
+   * @generated from field: string vlan_name = 43;
+   */
+  vlanName: string;
+
+  /**
+   * @generated from field: int64 vlan_id = 44;
+   */
+  vlanId: bigint;
+
+  /**
+   * @generated from field: string subnet_name = 51;
+   */
+  subnetName: string;
+
+  /**
+   * @generated from field: int64 subnet_id = 52;
+   */
+  subnetId: bigint;
+
+  /**
+   * @generated from field: string ip_address = 61;
+   */
+  ipAddress: string;
+
+  /**
+   * @generated from field: bool dhcp_on = 71;
+   */
+  dhcpOn: boolean;
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.Machine.NetworkInterface.
+ * Use `create(Machine_NetworkInterfaceSchema)` to create a new message.
+ */
+export const Machine_NetworkInterfaceSchema: GenMessage<Machine_NetworkInterface> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 2, 5);
 
 /**
  * @generated from message openhdc.nexus.v1.Scope
@@ -607,6 +991,10 @@ export const ListMachinesResponseSchema: GenMessage<ListMachinesResponse> = /*@_
  * @generated from message openhdc.nexus.v1.GetMachineRequest
  */
 export type GetMachineRequest = Message<"openhdc.nexus.v1.GetMachineRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
 };
 
 /**
@@ -617,22 +1005,33 @@ export const GetMachineRequestSchema: GenMessage<GetMachineRequest> = /*@__PURE_
   messageDesc(file_api_nexus_v1_nexus, 23);
 
 /**
- * @generated from message openhdc.nexus.v1.CreateMachineRequest
- */
-export type CreateMachineRequest = Message<"openhdc.nexus.v1.CreateMachineRequest"> & {
-};
-
-/**
- * Describes the message openhdc.nexus.v1.CreateMachineRequest.
- * Use `create(CreateMachineRequestSchema)` to create a new message.
- */
-export const CreateMachineRequestSchema: GenMessage<CreateMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 24);
-
-/**
  * @generated from message openhdc.nexus.v1.CommissionMachineRequest
  */
 export type CommissionMachineRequest = Message<"openhdc.nexus.v1.CommissionMachineRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: bool enable_ssh = 2;
+   */
+  enableSsh: boolean;
+
+  /**
+   * @generated from field: bool skip_bmc_config = 3;
+   */
+  skipBmcConfig: boolean;
+
+  /**
+   * @generated from field: bool skip_networking = 4;
+   */
+  skipNetworking: boolean;
+
+  /**
+   * @generated from field: bool skip_storage = 5;
+   */
+  skipStorage: boolean;
 };
 
 /**
@@ -640,12 +1039,21 @@ export type CommissionMachineRequest = Message<"openhdc.nexus.v1.CommissionMachi
  * Use `create(CommissionMachineRequestSchema)` to create a new message.
  */
 export const CommissionMachineRequestSchema: GenMessage<CommissionMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 25);
+  messageDesc(file_api_nexus_v1_nexus, 24);
 
 /**
  * @generated from message openhdc.nexus.v1.PowerOnMachineRequest
  */
 export type PowerOnMachineRequest = Message<"openhdc.nexus.v1.PowerOnMachineRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string comment = 2;
+   */
+  comment: string;
 };
 
 /**
@@ -653,12 +1061,21 @@ export type PowerOnMachineRequest = Message<"openhdc.nexus.v1.PowerOnMachineRequ
  * Use `create(PowerOnMachineRequestSchema)` to create a new message.
  */
 export const PowerOnMachineRequestSchema: GenMessage<PowerOnMachineRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 26);
+  messageDesc(file_api_nexus_v1_nexus, 25);
 
 /**
  * @generated from message openhdc.nexus.v1.PowerOffMachineRequest
  */
 export type PowerOffMachineRequest = Message<"openhdc.nexus.v1.PowerOffMachineRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string comment = 2;
+   */
+  comment: string;
 };
 
 /**
@@ -666,7 +1083,46 @@ export type PowerOffMachineRequest = Message<"openhdc.nexus.v1.PowerOffMachineRe
  * Use `create(PowerOffMachineRequestSchema)` to create a new message.
  */
 export const PowerOffMachineRequestSchema: GenMessage<PowerOffMachineRequest> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 26);
+
+/**
+ * @generated from message openhdc.nexus.v1.AddMachinesRequest
+ */
+export type AddMachinesRequest = Message<"openhdc.nexus.v1.AddMachinesRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: repeated openhdc.nexus.v1.Machine.Factor factors = 2;
+   */
+  factors: Machine_Factor[];
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.AddMachinesRequest.
+ * Use `create(AddMachinesRequestSchema)` to create a new message.
+ */
+export const AddMachinesRequestSchema: GenMessage<AddMachinesRequest> = /*@__PURE__*/
   messageDesc(file_api_nexus_v1_nexus, 27);
+
+/**
+ * @generated from message openhdc.nexus.v1.AddMachinesResponse
+ */
+export type AddMachinesResponse = Message<"openhdc.nexus.v1.AddMachinesResponse"> & {
+  /**
+   * @generated from field: repeated string machines = 1;
+   */
+  machines: string[];
+};
+
+/**
+ * Describes the message openhdc.nexus.v1.AddMachinesResponse.
+ * Use `create(AddMachinesResponseSchema)` to create a new message.
+ */
+export const AddMachinesResponseSchema: GenMessage<AddMachinesResponse> = /*@__PURE__*/
+  messageDesc(file_api_nexus_v1_nexus, 28);
 
 /**
  * @generated from message openhdc.nexus.v1.ListScopesRequest
@@ -679,7 +1135,7 @@ export type ListScopesRequest = Message<"openhdc.nexus.v1.ListScopesRequest"> & 
  * Use `create(ListScopesRequestSchema)` to create a new message.
  */
 export const ListScopesRequestSchema: GenMessage<ListScopesRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 28);
+  messageDesc(file_api_nexus_v1_nexus, 29);
 
 /**
  * @generated from message openhdc.nexus.v1.ListScopesResponse
@@ -696,7 +1152,7 @@ export type ListScopesResponse = Message<"openhdc.nexus.v1.ListScopesResponse"> 
  * Use `create(ListScopesResponseSchema)` to create a new message.
  */
 export const ListScopesResponseSchema: GenMessage<ListScopesResponse> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 29);
+  messageDesc(file_api_nexus_v1_nexus, 30);
 
 /**
  * @generated from message openhdc.nexus.v1.CreateScopeRequest
@@ -713,7 +1169,7 @@ export type CreateScopeRequest = Message<"openhdc.nexus.v1.CreateScopeRequest"> 
  * Use `create(CreateScopeRequestSchema)` to create a new message.
  */
 export const CreateScopeRequestSchema: GenMessage<CreateScopeRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 30);
+  messageDesc(file_api_nexus_v1_nexus, 31);
 
 /**
  * @generated from message openhdc.nexus.v1.ListFacilitiesRequest
@@ -726,7 +1182,7 @@ export type ListFacilitiesRequest = Message<"openhdc.nexus.v1.ListFacilitiesRequ
  * Use `create(ListFacilitiesRequestSchema)` to create a new message.
  */
 export const ListFacilitiesRequestSchema: GenMessage<ListFacilitiesRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 31);
+  messageDesc(file_api_nexus_v1_nexus, 32);
 
 /**
  * @generated from message openhdc.nexus.v1.ListFacilitiesResponse
@@ -743,7 +1199,7 @@ export type ListFacilitiesResponse = Message<"openhdc.nexus.v1.ListFacilitiesRes
  * Use `create(ListFacilitiesResponseSchema)` to create a new message.
  */
 export const ListFacilitiesResponseSchema: GenMessage<ListFacilitiesResponse> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 32);
+  messageDesc(file_api_nexus_v1_nexus, 33);
 
 /**
  * @generated from message openhdc.nexus.v1.GetFacilityRequest
@@ -756,7 +1212,7 @@ export type GetFacilityRequest = Message<"openhdc.nexus.v1.GetFacilityRequest"> 
  * Use `create(GetFacilityRequestSchema)` to create a new message.
  */
 export const GetFacilityRequestSchema: GenMessage<GetFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 33);
+  messageDesc(file_api_nexus_v1_nexus, 34);
 
 /**
  * @generated from message openhdc.nexus.v1.CreateFacilityRequest
@@ -769,7 +1225,7 @@ export type CreateFacilityRequest = Message<"openhdc.nexus.v1.CreateFacilityRequ
  * Use `create(CreateFacilityRequestSchema)` to create a new message.
  */
 export const CreateFacilityRequestSchema: GenMessage<CreateFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 34);
+  messageDesc(file_api_nexus_v1_nexus, 35);
 
 /**
  * @generated from message openhdc.nexus.v1.UpdateFacilityRequest
@@ -782,7 +1238,7 @@ export type UpdateFacilityRequest = Message<"openhdc.nexus.v1.UpdateFacilityRequ
  * Use `create(UpdateFacilityRequestSchema)` to create a new message.
  */
 export const UpdateFacilityRequestSchema: GenMessage<UpdateFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 35);
+  messageDesc(file_api_nexus_v1_nexus, 36);
 
 /**
  * @generated from message openhdc.nexus.v1.DeleteFacilityRequest
@@ -795,7 +1251,7 @@ export type DeleteFacilityRequest = Message<"openhdc.nexus.v1.DeleteFacilityRequ
  * Use `create(DeleteFacilityRequestSchema)` to create a new message.
  */
 export const DeleteFacilityRequestSchema: GenMessage<DeleteFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 36);
+  messageDesc(file_api_nexus_v1_nexus, 37);
 
 /**
  * @generated from message openhdc.nexus.v1.ExposeFacilityRequest
@@ -808,7 +1264,7 @@ export type ExposeFacilityRequest = Message<"openhdc.nexus.v1.ExposeFacilityRequ
  * Use `create(ExposeFacilityRequestSchema)` to create a new message.
  */
 export const ExposeFacilityRequestSchema: GenMessage<ExposeFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 37);
+  messageDesc(file_api_nexus_v1_nexus, 38);
 
 /**
  * @generated from message openhdc.nexus.v1.AddFacilityUnitsRequest
@@ -821,7 +1277,7 @@ export type AddFacilityUnitsRequest = Message<"openhdc.nexus.v1.AddFacilityUnits
  * Use `create(AddFacilityUnitsRequestSchema)` to create a new message.
  */
 export const AddFacilityUnitsRequestSchema: GenMessage<AddFacilityUnitsRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 38);
+  messageDesc(file_api_nexus_v1_nexus, 39);
 
 /**
  * @generated from message openhdc.nexus.v1.ListActionsRequest
@@ -834,7 +1290,7 @@ export type ListActionsRequest = Message<"openhdc.nexus.v1.ListActionsRequest"> 
  * Use `create(ListActionsRequestSchema)` to create a new message.
  */
 export const ListActionsRequestSchema: GenMessage<ListActionsRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 39);
+  messageDesc(file_api_nexus_v1_nexus, 40);
 
 /**
  * @generated from message openhdc.nexus.v1.ListActionsResponse
@@ -851,7 +1307,7 @@ export type ListActionsResponse = Message<"openhdc.nexus.v1.ListActionsResponse"
  * Use `create(ListActionsResponseSchema)` to create a new message.
  */
 export const ListActionsResponseSchema: GenMessage<ListActionsResponse> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 40);
+  messageDesc(file_api_nexus_v1_nexus, 41);
 
 /**
  * @generated from message openhdc.nexus.v1.RunActionRequest
@@ -864,7 +1320,7 @@ export type RunActionRequest = Message<"openhdc.nexus.v1.RunActionRequest"> & {
  * Use `create(RunActionRequestSchema)` to create a new message.
  */
 export const RunActionRequestSchema: GenMessage<RunActionRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 41);
+  messageDesc(file_api_nexus_v1_nexus, 42);
 
 /**
  * @generated from message openhdc.nexus.v1.ListApplicationsRequest
@@ -877,7 +1333,7 @@ export type ListApplicationsRequest = Message<"openhdc.nexus.v1.ListApplications
  * Use `create(ListApplicationsRequestSchema)` to create a new message.
  */
 export const ListApplicationsRequestSchema: GenMessage<ListApplicationsRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 42);
+  messageDesc(file_api_nexus_v1_nexus, 43);
 
 /**
  * @generated from message openhdc.nexus.v1.ListApplicationsResponse
@@ -894,7 +1350,7 @@ export type ListApplicationsResponse = Message<"openhdc.nexus.v1.ListApplication
  * Use `create(ListApplicationsResponseSchema)` to create a new message.
  */
 export const ListApplicationsResponseSchema: GenMessage<ListApplicationsResponse> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 43);
+  messageDesc(file_api_nexus_v1_nexus, 44);
 
 /**
  * @generated from message openhdc.nexus.v1.GetApplicationRequest
@@ -907,7 +1363,7 @@ export type GetApplicationRequest = Message<"openhdc.nexus.v1.GetApplicationRequ
  * Use `create(GetApplicationRequestSchema)` to create a new message.
  */
 export const GetApplicationRequestSchema: GenMessage<GetApplicationRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 44);
+  messageDesc(file_api_nexus_v1_nexus, 45);
 
 /**
  * @generated from message openhdc.nexus.v1.ListReleasesRequest
@@ -920,7 +1376,7 @@ export type ListReleasesRequest = Message<"openhdc.nexus.v1.ListReleasesRequest"
  * Use `create(ListReleasesRequestSchema)` to create a new message.
  */
 export const ListReleasesRequestSchema: GenMessage<ListReleasesRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 45);
+  messageDesc(file_api_nexus_v1_nexus, 46);
 
 /**
  * @generated from message openhdc.nexus.v1.ListReleasesResponse
@@ -937,7 +1393,7 @@ export type ListReleasesResponse = Message<"openhdc.nexus.v1.ListReleasesRespons
  * Use `create(ListReleasesResponseSchema)` to create a new message.
  */
 export const ListReleasesResponseSchema: GenMessage<ListReleasesResponse> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 46);
+  messageDesc(file_api_nexus_v1_nexus, 47);
 
 /**
  * @generated from message openhdc.nexus.v1.CreateReleaseRequest
@@ -950,7 +1406,7 @@ export type CreateReleaseRequest = Message<"openhdc.nexus.v1.CreateReleaseReques
  * Use `create(CreateReleaseRequestSchema)` to create a new message.
  */
 export const CreateReleaseRequestSchema: GenMessage<CreateReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 47);
+  messageDesc(file_api_nexus_v1_nexus, 48);
 
 /**
  * @generated from message openhdc.nexus.v1.UpdateReleaseRequest
@@ -963,7 +1419,7 @@ export type UpdateReleaseRequest = Message<"openhdc.nexus.v1.UpdateReleaseReques
  * Use `create(UpdateReleaseRequestSchema)` to create a new message.
  */
 export const UpdateReleaseRequestSchema: GenMessage<UpdateReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 48);
+  messageDesc(file_api_nexus_v1_nexus, 49);
 
 /**
  * @generated from message openhdc.nexus.v1.DeleteReleaseRequest
@@ -976,7 +1432,7 @@ export type DeleteReleaseRequest = Message<"openhdc.nexus.v1.DeleteReleaseReques
  * Use `create(DeleteReleaseRequestSchema)` to create a new message.
  */
 export const DeleteReleaseRequestSchema: GenMessage<DeleteReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 49);
+  messageDesc(file_api_nexus_v1_nexus, 50);
 
 /**
  * @generated from message openhdc.nexus.v1.RollbackReleaseRequest
@@ -989,7 +1445,7 @@ export type RollbackReleaseRequest = Message<"openhdc.nexus.v1.RollbackReleaseRe
  * Use `create(RollbackReleaseRequestSchema)` to create a new message.
  */
 export const RollbackReleaseRequestSchema: GenMessage<RollbackReleaseRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 50);
+  messageDesc(file_api_nexus_v1_nexus, 51);
 
 /**
  * @generated from message openhdc.nexus.v1.ListChartsRequest
@@ -1002,7 +1458,7 @@ export type ListChartsRequest = Message<"openhdc.nexus.v1.ListChartsRequest"> & 
  * Use `create(ListChartsRequestSchema)` to create a new message.
  */
 export const ListChartsRequestSchema: GenMessage<ListChartsRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 51);
+  messageDesc(file_api_nexus_v1_nexus, 52);
 
 /**
  * @generated from message openhdc.nexus.v1.ListChartsResponse
@@ -1019,7 +1475,7 @@ export type ListChartsResponse = Message<"openhdc.nexus.v1.ListChartsResponse"> 
  * Use `create(ListChartsResponseSchema)` to create a new message.
  */
 export const ListChartsResponseSchema: GenMessage<ListChartsResponse> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 52);
+  messageDesc(file_api_nexus_v1_nexus, 53);
 
 /**
  * @generated from message openhdc.nexus.v1.GetChartRequest
@@ -1032,7 +1488,7 @@ export type GetChartRequest = Message<"openhdc.nexus.v1.GetChartRequest"> & {
  * Use `create(GetChartRequestSchema)` to create a new message.
  */
 export const GetChartRequestSchema: GenMessage<GetChartRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 53);
+  messageDesc(file_api_nexus_v1_nexus, 54);
 
 /**
  * @generated from message openhdc.nexus.v1.GetChartMetadataRequest
@@ -1045,7 +1501,7 @@ export type GetChartMetadataRequest = Message<"openhdc.nexus.v1.GetChartMetadata
  * Use `create(GetChartMetadataRequestSchema)` to create a new message.
  */
 export const GetChartMetadataRequestSchema: GenMessage<GetChartMetadataRequest> = /*@__PURE__*/
-  messageDesc(file_api_nexus_v1_nexus, 54);
+  messageDesc(file_api_nexus_v1_nexus, 55);
 
 /**
  * @generated from service openhdc.nexus.v1.Nexus
@@ -1186,24 +1642,12 @@ export const Nexus: GenService<{
     output: typeof MachineSchema;
   },
   /**
-   * juju add machine
-   *
-   * @generated from rpc openhdc.nexus.v1.Nexus.CreateMachine
-   */
-  createMachine: {
-    methodKind: "unary";
-    input: typeof CreateMachineRequestSchema;
-    output: typeof MachineSchema;
-  },
-  /**
-   * maas commission machine
-   *
    * @generated from rpc openhdc.nexus.v1.Nexus.CommissionMachine
    */
   commissionMachine: {
     methodKind: "unary";
     input: typeof CommissionMachineRequestSchema;
-    output: typeof EmptySchema;
+    output: typeof MachineSchema;
   },
   /**
    * @generated from rpc openhdc.nexus.v1.Nexus.PowerOnMachine
@@ -1211,7 +1655,7 @@ export const Nexus: GenService<{
   powerOnMachine: {
     methodKind: "unary";
     input: typeof PowerOnMachineRequestSchema;
-    output: typeof EmptySchema;
+    output: typeof MachineSchema;
   },
   /**
    * @generated from rpc openhdc.nexus.v1.Nexus.PowerOffMachine
@@ -1219,7 +1663,15 @@ export const Nexus: GenService<{
   powerOffMachine: {
     methodKind: "unary";
     input: typeof PowerOffMachineRequestSchema;
-    output: typeof EmptySchema;
+    output: typeof MachineSchema;
+  },
+  /**
+   * @generated from rpc openhdc.nexus.v1.Nexus.AddMachines
+   */
+  addMachines: {
+    methodKind: "unary";
+    input: typeof AddMachinesRequestSchema;
+    output: typeof AddMachinesResponseSchema;
   },
   /**
    * Scope

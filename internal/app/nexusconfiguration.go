@@ -51,10 +51,10 @@ func toProtoNTPServer(addresses []string) *pb.Configuration_NTPServer {
 	return ret
 }
 
-func toProtoPackageRepositories(prs []*model.PackageRepository) []*pb.Configuration_PackageRepository {
+func toProtoPackageRepositories(prs []model.PackageRepository) []*pb.Configuration_PackageRepository {
 	ret := []*pb.Configuration_PackageRepository{}
-	for _, pr := range prs {
-		ret = append(ret, toProtoPackageRepository(pr))
+	for i := range prs {
+		ret = append(ret, toProtoPackageRepository(&prs[i]))
 	}
 	return ret
 }
@@ -68,10 +68,10 @@ func toProtoPackageRepository(pr *model.PackageRepository) *pb.Configuration_Pac
 	return ret
 }
 
-func toProtoBootResources(brs []*model.BootResource) []*pb.Configuration_BootResource {
+func toProtoBootResources(brs []model.BootResource) []*pb.Configuration_BootResource {
 	ret := []*pb.Configuration_BootResource{}
-	for _, br := range brs {
-		ret = append(ret, toProtoBootResource(br))
+	for i := range brs {
+		ret = append(ret, toProtoBootResource(&brs[i]))
 	}
 	return ret
 }

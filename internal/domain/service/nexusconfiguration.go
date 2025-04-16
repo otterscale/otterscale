@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -90,9 +92,9 @@ func (s *NexusService) UpdateDefaultBootResource(ctx context.Context, distroSeri
 		if br.DistroSeries != distroSeries {
 			continue
 		}
-		return br, nil
+		return &br, nil
 	}
-	return nil, fmt.Errorf("distro series %q not found", distroSeries)
+	return nil, status.Errorf(codes.NotFound, "distro series %q not found", distroSeries)
 }
 
 func (s *NexusService) SyncBootResources(ctx context.Context) error {
@@ -107,7 +109,7 @@ func (s *NexusService) listNTPServers(ctx context.Context) ([]string, error) {
 	return strings.Split(removeQuotes(cfg), " "), nil
 }
 
-func (s *NexusService) listBootResources(ctx context.Context) ([]*model.BootResource, error) {
+func (s *NexusService) listBootResources(ctx context.Context) ([]model.BootResource, error) {
 	defaultDistro, err := s.server.Get(ctx, maasConfigDefaultDistroSeries)
 	if err != nil {
 		return nil, err
@@ -116,7 +118,7 @@ func (s *NexusService) listBootResources(ctx context.Context) ([]*model.BootReso
 	if err != nil {
 		return nil, err
 	}
-	brm := map[string]*model.BootResource{}
+	brm := map[string]model.BootResource{}
 	for _, br := range ebrs {
 		token := strings.Split(br.Name, "/")
 		if token[0] != defaultOSSystem {
@@ -128,7 +130,7 @@ func (s *NexusService) listBootResources(ctx context.Context) ([]*model.BootReso
 		}
 		arch := strings.Split(br.Architecture, "/")[0]
 		group := br.Name + arch
-		brm[group] = &model.BootResource{
+		brm[group] = model.BootResource{
 			Name:         ubuntuDistro(br.Name, br.Architecture),
 			Architecture: arch,
 			Status:       br.Type,
@@ -136,14 +138,14 @@ func (s *NexusService) listBootResources(ctx context.Context) ([]*model.BootReso
 			DistroSeries: ubuntuDistroSeries(br.Name),
 		}
 	}
-	brs := []*model.BootResource{}
+	brs := []model.BootResource{}
 	for _, br := range brm {
 		brs = append(brs, br)
 	}
 	return brs, nil
 }
 
-func (s *NexusService) listPackageRepositories(ctx context.Context) ([]*model.PackageRepository, error) {
+func (s *NexusService) listPackageRepositories(ctx context.Context) ([]model.PackageRepository, error) {
 	return s.packageRepository.List(ctx)
 }
 

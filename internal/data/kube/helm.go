@@ -46,7 +46,7 @@ func NewHelm(kubeMap KubeMap) service.KubeHelm {
 
 var _ service.KubeHelm = (*helm)(nil)
 
-func (r *helm) ListReleases(key, namespace string) ([]*release.Release, error) {
+func (r *helm) ListReleases(key, namespace string) ([]release.Release, error) {
 	config, err := r.kubeMap.GetHelmConfig(key, namespace)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,15 @@ func (r *helm) ListReleases(key, namespace string) ([]*release.Release, error) {
 
 	client := action.NewList(config)
 	client.Deployed = true
-	return client.Run()
+	rels, err := client.Run()
+	if err != nil {
+		return nil, err
+	}
+	rs := []release.Release{}
+	for _, rel := range rels {
+		rs = append(rs, *rel)
+	}
+	return rs, nil
 }
 
 func (r *helm) InstallRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {

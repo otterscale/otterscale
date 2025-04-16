@@ -8,7 +8,7 @@ import (
 type NetworkSubnet struct {
 	*entity.Subnet
 	IPAddresses      []subnet.IPAddress
-	ReservedIPRanges []*entity.IPRange
+	ReservedIPRanges []entity.IPRange
 	Statistics       *subnet.Statistics
 }
 

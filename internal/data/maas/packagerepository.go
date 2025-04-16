@@ -20,17 +20,8 @@ func NewPackageRepository(maas *MAAS) service.MAASPackageRepository {
 
 var _ service.MAASPackageRepository = (*packageRepository)(nil)
 
-func (r *packageRepository) List(_ context.Context) ([]*entity.PackageRepository, error) {
-	prs, err := r.maas.PackageRepositories.Get()
-	if err != nil {
-		return nil, err
-	}
-
-	ret := make([]*entity.PackageRepository, len(prs))
-	for i := range prs {
-		ret[i] = &prs[i]
-	}
-	return ret, nil
+func (r *packageRepository) List(_ context.Context) ([]entity.PackageRepository, error) {
+	return r.maas.PackageRepositories.Get()
 }
 
 func (r *packageRepository) Update(_ context.Context, id int, params *entity.PackageRepositoryParams) (*entity.PackageRepository, error) {

@@ -6,7 +6,7 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
-func (s *NexusService) ListScopes(ctx context.Context) ([]*model.Scope, error) {
+func (s *NexusService) ListScopes(ctx context.Context) ([]model.Scope, error) {
 	return s.scope.List(ctx)
 }
 

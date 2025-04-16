@@ -13,18 +13,27 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
 
-type application struct{}
+type application struct {
+	jujuMap JujuMap
+}
 
-func NewApplication() service.JujuApplication {
-	return &application{}
+func NewApplication(jujuMap JujuMap) service.JujuApplication {
+	return &application{
+		jujuMap: jujuMap,
+	}
 }
 
 var _ service.JujuApplication = (*application)(nil)
 
-func (r *application) Create(ctx context.Context, uuid, charmName, appName, channel string, revision, number int, config map[string]string, constraint constraints.Value, placements []*instance.Placement, trust bool) error {
-	conn, err := newConnection(uuid)
+func (r *application) Create(ctx context.Context, uuid, charmName, appName, channel string, revision, number int, config map[string]string, constraint constraints.Value, placements []instance.Placement, trust bool) error {
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return err
+	}
+
+	ps := []*instance.Placement{}
+	for _, p := range placements {
+		ps = append(ps, &p)
 	}
 
 	args := api.DeployFromRepositoryArg{
@@ -32,7 +41,7 @@ func (r *application) Create(ctx context.Context, uuid, charmName, appName, chan
 		ApplicationName: appName,
 		// ConfigYAML:      configYAML, // TODO: YAML
 		Cons:      constraint,
-		Placement: placements,
+		Placement: ps,
 		Trust:     trust,
 	}
 
@@ -58,7 +67,7 @@ func (r *application) Create(ctx context.Context, uuid, charmName, appName, chan
 }
 
 func (r *application) Update(ctx context.Context, uuid, name string, config map[string]string) error {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return err
 	}
@@ -66,7 +75,7 @@ func (r *application) Update(ctx context.Context, uuid, name string, config map[
 }
 
 func (r *application) Delete(ctx context.Context, uuid, name string, destroyStorage, force bool) error {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return err
 	}
@@ -87,27 +96,31 @@ func (r *application) Delete(ctx context.Context, uuid, name string, destroyStor
 }
 
 func (r *application) Expose(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return err
 	}
 	return api.NewClient(conn).Expose(ctx, name, endpoints)
 }
 
-func (r *application) AddUnits(ctx context.Context, uuid, name string, number int, placements []*instance.Placement) ([]string, error) {
-	conn, err := newConnection(uuid)
+func (r *application) AddUnits(ctx context.Context, uuid, name string, number int, placements []instance.Placement) ([]string, error) {
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return nil, err
+	}
+	ps := []*instance.Placement{}
+	for _, p := range placements {
+		ps = append(ps, &p)
 	}
 	return api.NewClient(conn).AddUnits(ctx, api.AddUnitsParams{
 		ApplicationName: name,
 		NumUnits:        number,
-		Placement:       placements,
+		Placement:       ps,
 	})
 }
 
 func (r *application) ResolveUnitErrors(ctx context.Context, uuid string, units []string) error {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return err
 	}
@@ -115,7 +128,7 @@ func (r *application) ResolveUnitErrors(ctx context.Context, uuid string, units 
 }
 
 func (r *application) CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error) {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +136,7 @@ func (r *application) CreateRelation(ctx context.Context, uuid string, endpoints
 }
 
 func (r *application) DeleteRelation(ctx context.Context, uuid string, id int) error {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return err
 	}
@@ -131,7 +144,7 @@ func (r *application) DeleteRelation(ctx context.Context, uuid string, id int) e
 }
 
 func (r *application) GetConfigs(ctx context.Context, uuid string, names ...string) (map[string]map[string]any, error) {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +160,7 @@ func (r *application) GetConfigs(ctx context.Context, uuid string, names ...stri
 }
 
 func (r *application) GetLeader(ctx context.Context, uuid, name string) (string, error) {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return "", err
 	}
@@ -155,7 +168,7 @@ func (r *application) GetLeader(ctx context.Context, uuid, name string) (string,
 }
 
 func (r *application) GetUnitInfo(ctx context.Context, uuid, name string) (*api.UnitInfo, error) {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return nil, err
 	}

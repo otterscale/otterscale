@@ -28,10 +28,10 @@ func (a *NexusApp) CreateScope(ctx context.Context, req *connect.Request[pb.Crea
 	return connect.NewResponse(res), nil
 }
 
-func toProtoScopes(ss []*model.Scope) []*pb.Scope {
+func toProtoScopes(ss []model.Scope) []*pb.Scope {
 	ret := []*pb.Scope{}
-	for _, s := range ss {
-		ret = append(ret, toProtoScope(s))
+	for i := range ss {
+		ret = append(ret, toProtoScope(&ss[i]))
 	}
 	return ret
 }

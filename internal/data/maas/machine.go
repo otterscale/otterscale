@@ -20,17 +20,8 @@ func NewMachine(maas *MAAS) service.MAASMachine {
 
 var _ service.MAASMachine = (*machine)(nil)
 
-func (r *machine) List(ctx context.Context) ([]*entity.Machine, error) {
-	ms, err := r.maas.Machines.Get(&entity.MachinesParams{})
-	if err != nil {
-		return nil, err
-	}
-
-	ret := make([]*entity.Machine, len(ms))
-	for i := range ms {
-		ret[i] = &ms[i]
-	}
-	return ret, nil
+func (r *machine) List(_ context.Context) ([]entity.Machine, error) {
+	return r.maas.Machines.Get(&entity.MachinesParams{})
 }
 
 func (r *machine) Get(ctx context.Context, systemID string) (*entity.Machine, error) {
