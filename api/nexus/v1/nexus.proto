@@ -89,7 +89,7 @@ message Network {
     string type = 1;
     string ip = 2;
     string user = 3;
-    string system_id = 11;
+    string machine_id = 11;
     string node_type = 12;
     string hostname = 13;
   }
@@ -190,7 +190,7 @@ message Machine {
     string ip_address = 61;
     bool dhcp_on = 71;
   }
-  string system_id = 1;
+  string id = 1;
   string hardware_uuid = 101;
   string hostname = 102;
   string fqdn = 103;

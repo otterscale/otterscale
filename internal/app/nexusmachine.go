@@ -79,7 +79,7 @@ func toProtoMachine(m *model.Machine) *pb.Machine {
 		ipAddresses[i] = ip.String()
 	}
 	ret := &pb.Machine{}
-	ret.SetSystemId(m.SystemID)
+	ret.SetId(m.SystemID)
 	ret.SetHardwareUuid(m.HardwareUUID)
 	ret.SetHostname(m.Hostname)
 	ret.SetFqdn(m.FQDN)

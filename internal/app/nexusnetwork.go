@@ -121,7 +121,7 @@ func toProtoIPAddress(ipa *model.IPAddress) *pb.Network_IPAddress {
 	ret.SetType(model.AllocType(ipa.AllocType).String())
 	ret.SetIp(ipa.IP.String())
 	ret.SetUser(ipa.User)
-	ret.SetSystemId(ipa.NodeSummary.SystemID)
+	ret.SetMachineId(ipa.NodeSummary.SystemID)
 	ret.SetNodeType(model.NodeType(ipa.NodeSummary.NodeType).String())
 	ret.SetHostname(ipa.NodeSummary.Hostname)
 	return ret
