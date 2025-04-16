@@ -29,10 +29,10 @@ service Nexus {
   // Machine
   rpc ListMachines(ListMachinesRequest) returns (ListMachinesResponse);
   rpc GetMachine(GetMachineRequest) returns (Machine);
-  rpc CreateMachine(CreateMachineRequest) returns (Machine);                        // juju add machine
-  rpc CommissionMachine(CommissionMachineRequest) returns (google.protobuf.Empty);  // maas commission machine
-  rpc PowerOnMachine(PowerOnMachineRequest) returns (google.protobuf.Empty);
-  rpc PowerOffMachine(PowerOffMachineRequest) returns (google.protobuf.Empty);
+  rpc CommissionMachine(CommissionMachineRequest) returns (Machine);
+  rpc PowerOnMachine(PowerOnMachineRequest) returns (Machine);
+  rpc PowerOffMachine(PowerOffMachineRequest) returns (Machine);
+  rpc AddMachines(AddMachinesRequest) returns (AddMachinesResponse);
 
   // Scope
   rpc ListScopes(ListScopesRequest) returns (ListScopesResponse);
@@ -91,7 +91,83 @@ message Network {
   message Subnet {}
 }
 
-message Machine {}
+message Machine {
+  message Placement {
+    oneof type {
+      bool lxd = 1;
+      bool kvm = 2;
+      bool machine = 3;
+    }
+    string machine_id = 11;
+  }
+  message Constraint {
+    string architecture = 1;
+    uint64 cpu_cores = 2;
+    uint64 memory_mb = 3;
+    repeated string tags = 11;
+  }
+  message Factor {
+    Placement placement = 1;
+    Constraint constraint = 2;
+  }
+  message NUMANode {
+    int64 index = 1;
+    int64 cpu_cores = 2;
+    int64 memory_mb = 3;
+  }
+  message BlockDevice {
+    bool boot_disk = 1;
+    string name = 11;
+    string serial = 12;
+    string model = 21;
+    string firmware_version = 22;
+    double storage_mb = 31;
+    string type = 41;
+    repeated string tags = 51;
+    string used_for = 61;
+  }
+  message NetworkInterface {
+    bool boot_interface = 1;
+    string name = 11;
+    string mac_address = 12;
+    bool link_connected = 21;
+    int64 link_speed = 22;
+    int64 interface_speed = 23;
+    string type = 31;
+    string fabric_name = 41;
+    int64 fabric_id = 42;
+    string vlan_name = 43;
+    int64 vlan_id = 44;
+    string subnet_name = 51;
+    int64 subnet_id = 52;
+    string ip_address = 61;
+    bool dhcp_on = 71;
+  }
+  string system_id = 1;
+  string hardware_uuid = 101;
+  string hostname = 102;
+  string fqdn = 103;
+  repeated string tags = 104;
+  string description = 105;
+  string status = 201;
+  string power_state = 301;
+  string power_type = 302;
+  string osystem = 401;
+  string distro_series = 402;
+  string hwe_kernel = 403;
+  string architecture = 404;
+  int64 cpu_speed = 405;
+  int64 cpu_count = 406;
+  int64 memory_mb = 407;
+  double storage_mb = 408;
+  repeated string ip_addresses = 409;
+  map<string, string> workload_annotations = 501;
+  map<string, string> hardware_information = 601;
+  string bios_boot_method = 602;
+  repeated NUMANode numa_nodes = 701;
+  repeated BlockDevice block_devices = 801;
+  repeated NetworkInterface network_interfaces = 802;
+}
 
 message Scope {
   string uuid = 1;
@@ -165,15 +241,36 @@ message ListMachinesResponse {
   repeated Machine machines = 1;
 }
 
-message GetMachineRequest {}
+message GetMachineRequest {
+  string id = 1;
+}
 
-message CreateMachineRequest {}
+message CommissionMachineRequest {
+  string id = 1;
+  bool enable_ssh = 2;
+  bool skip_bmc_config = 3;
+  bool skip_networking = 4;
+  bool skip_storage = 5;
+}
 
-message CommissionMachineRequest {}
+message PowerOnMachineRequest {
+  string id = 1;
+  string comment = 2;
+}
 
-message PowerOnMachineRequest {}
+message PowerOffMachineRequest {
+  string id = 1;
+  string comment = 2;
+}
 
-message PowerOffMachineRequest {}
+message AddMachinesRequest {
+  string scope_uuid = 1;
+  repeated Machine.Factor factors = 2;
+}
+
+message AddMachinesResponse {
+  repeated string machines = 1;
+}
 
 message ListScopesRequest {}
 

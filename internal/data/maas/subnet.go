@@ -21,17 +21,8 @@ func NewSubnet(maas *MAAS) service.MAASSubnet {
 
 var _ service.MAASSubnet = (*subnet)(nil)
 
-func (r *subnet) List(ctx context.Context) ([]*entity.Subnet, error) {
-	fs, err := r.maas.Subnets.Get()
-	if err != nil {
-		return nil, err
-	}
-
-	ret := make([]*entity.Subnet, len(fs))
-	for i := range fs {
-		ret[i] = &fs[i]
-	}
-	return ret, nil
+func (r *subnet) List(_ context.Context) ([]entity.Subnet, error) {
+	return r.maas.Subnets.Get()
 }
 
 func (r *subnet) Get(_ context.Context, id int) (*entity.Subnet, error) {

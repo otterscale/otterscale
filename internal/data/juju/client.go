@@ -9,16 +9,20 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
 
-type client struct{}
+type client struct {
+	jujuMap JujuMap
+}
 
-func NewClient() service.JujuClient {
-	return &client{}
+func NewClient(jujuMap JujuMap) service.JujuClient {
+	return &client{
+		jujuMap: jujuMap,
+	}
 }
 
 var _ service.JujuClient = (*client)(nil)
 
 func (r *client) Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error) {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return nil, err
 	}

@@ -16,9 +16,6 @@ import (
 	"helm.sh/helm/v3/pkg/repo"
 
 	appsv1 "k8s.io/api/apps/v1"
-	batchv1 "k8s.io/api/batch/v1"
-	corev1 "k8s.io/api/core/v1"
-	storagev1 "k8s.io/api/storage/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/client-go/rest"
 
@@ -27,57 +24,6 @@ import (
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
-
-// KubeClient manages Kubernetes client connections
-type KubeClient interface {
-	Exists(key string) bool
-	Add(key string, cfg *rest.Config) error
-}
-
-// KubeApps handles deployment-related operations
-type KubeApps interface {
-	ListDeployments(ctx context.Context, key, namespace string) ([]appsv1.Deployment, error)
-	GetDeployment(ctx context.Context, key, namespace, name string) (*appsv1.Deployment, error)
-	ListStatefulSets(ctx context.Context, key, namespace string) ([]appsv1.StatefulSet, error)
-	GetStatefulSet(ctx context.Context, key, namespace, name string) (*appsv1.StatefulSet, error)
-	ListDaemonSets(ctx context.Context, key, namespace string) ([]appsv1.DaemonSet, error)
-	GetDaemonSet(ctx context.Context, key, namespace, name string) (*appsv1.DaemonSet, error)
-}
-
-// KubeBatch handles batch job operations
-type KubeBatch interface {
-	GetCronJob(ctx context.Context, key, namespace, name string) (*batchv1.CronJob, error)
-	CreateCronJob(ctx context.Context, key, namespace, name, image, schedule string) (*batchv1.CronJob, error)
-	UpdateCronJob(ctx context.Context, key, namespace, name, image, schedule string) (*batchv1.CronJob, error)
-	DeleteCronJob(ctx context.Context, key, namespace, name string) error
-	ListJobsFromCronJob(ctx context.Context, key, namespace string, cronJob *batchv1.CronJob) (*batchv1.JobList, error)
-	CreateJobFromCronJob(ctx context.Context, key, namespace string, cronJob *batchv1.CronJob, createdBy string) (*batchv1.Job, error)
-}
-
-// KubeCore handles core Kubernetes resource operations
-type KubeCore interface {
-	GetNamespace(ctx context.Context, key, name string) (*corev1.Namespace, error)
-	CreateNamespace(ctx context.Context, key, name string) (*corev1.Namespace, error)
-	ListServices(ctx context.Context, key, namespace string) ([]corev1.Service, error)
-	ListPods(ctx context.Context, key, namespace string) ([]corev1.Pod, error)
-	ListPersistentVolumeClaims(ctx context.Context, key, namespace string) ([]corev1.PersistentVolumeClaim, error)
-}
-
-// KubeStorage handles storage-related operations
-type KubeStorage interface {
-	ListStorageClasses(ctx context.Context, key string) ([]storagev1.StorageClass, error)
-}
-
-// KubeHelm handles helm-related operations
-type KubeHelm interface {
-	ListReleases(key, namespace string) ([]*release.Release, error)
-	InstallRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
-	UninstallRelease(key, namespace, name string, dryRun bool) (*release.Release, error)
-	UpgradeRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
-	RollbackRelease(key, namespace, name string, dryRun bool) error
-	GetChartInfo(chartRef string, format action.ShowOutputFormat) (string, error)
-	ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error)
-}
 
 // KubeService orchestrates Kubernetes operations
 type KubeService struct {
@@ -378,7 +324,7 @@ func (s *KubeService) ListReleases(ctx context.Context) ([]*model.Release, error
 					ModelName:   r.name,
 					ModelUUID:   r.uuid,
 					ClusterName: r.cluster,
-					Release:     rel,
+					Release:     &rel,
 				})
 			}
 			return nil

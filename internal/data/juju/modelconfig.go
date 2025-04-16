@@ -8,24 +8,28 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
 
-type modelConfig struct{}
+type modelConfig struct {
+	jujuMap JujuMap
+}
 
-func NewModelConfig() service.JujuModelConfig {
-	return &modelConfig{}
+func NewModelConfig(jujuMap JujuMap) service.JujuModelConfig {
+	return &modelConfig{
+		jujuMap: jujuMap,
+	}
 }
 
 var _ service.JujuModelConfig = (*modelConfig)(nil)
 
-func (r *modelConfig) List(ctx context.Context, uuid string) (map[string]interface{}, error) {
-	conn, err := newConnection(uuid)
+func (r *modelConfig) List(ctx context.Context, uuid string) (map[string]any, error) {
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return nil, err
 	}
 	return modelconfig.NewClient(conn).ModelGet(ctx)
 }
 
-func (r *modelConfig) Set(ctx context.Context, uuid string, config map[string]interface{}) error {
-	conn, err := newConnection(uuid)
+func (r *modelConfig) Set(ctx context.Context, uuid string, config map[string]any) error {
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return err
 	}
@@ -33,7 +37,7 @@ func (r *modelConfig) Set(ctx context.Context, uuid string, config map[string]in
 }
 
 func (r *modelConfig) Unset(ctx context.Context, uuid string, keys ...string) error {
-	conn, err := newConnection(uuid)
+	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return err
 	}

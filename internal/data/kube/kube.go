@@ -26,7 +26,7 @@ type KubeMap map[string]*kube
 
 // NewKubes creates a new Kubernetes clientset map.
 // If running in-cluster, it automatically adds the cluster client with key "(empty)"
-func NewKubeMap() (KubeMap, error) {
+func NewMap() (KubeMap, error) {
 	k := make(map[string]*kube)
 	if isInCluster() {
 		config, err := rest.InClusterConfig()

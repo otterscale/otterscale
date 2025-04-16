@@ -8,10 +8,8 @@ import (
 	"strings"
 
 	"github.com/canonical/gomaasclient/entity"
-	"github.com/canonical/gomaasclient/entity/subnet"
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/action"
-	"github.com/juju/juju/api/client/application"
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
@@ -20,106 +18,6 @@ import (
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
-
-// MAAS API interfaces grouped by resource type
-
-// MAASServer represents MAAS server configuration operations
-type MAASServer interface {
-	Get(ctx context.Context, name string) (string, error)
-	Update(ctx context.Context, name, value string) error
-}
-
-// MAASPackageRepository represents package repository operations
-type MAASPackageRepository interface {
-	List(ctx context.Context) ([]*entity.PackageRepository, error)
-	Update(ctx context.Context, id int, params *entity.PackageRepositoryParams) (*entity.PackageRepository, error)
-}
-
-// MAASFabric represents fabric operations
-type MAASFabric interface {
-	List(ctx context.Context) ([]*entity.Fabric, error)
-	Get(ctx context.Context, id int) (*entity.Fabric, error)
-	Create(ctx context.Context, params *entity.FabricParams) (*entity.Fabric, error)
-	Update(ctx context.Context, id int, params *entity.FabricParams) (*entity.Fabric, error)
-	Delete(ctx context.Context, id int) error
-}
-
-// MAASVLAN represents VLAN operations
-type MAASVLAN interface {
-	Update(ctx context.Context, fabricID, vid int, params *entity.VLANParams) (*entity.VLAN, error)
-}
-
-// MAASSubnet represents subnet operations
-type MAASSubnet interface {
-	List(ctx context.Context) ([]*entity.Subnet, error)
-	Get(ctx context.Context, id int) (*entity.Subnet, error)
-	Create(ctx context.Context, params *entity.SubnetParams) (*entity.Subnet, error)
-	Update(ctx context.Context, id int, params *entity.SubnetParams) (*entity.Subnet, error)
-	Delete(ctx context.Context, id int) error
-	GetIPAddresses(ctx context.Context, id int) ([]subnet.IPAddress, error)
-	GetReservedIPRanges(ctx context.Context, id int) ([]subnet.ReservedIPRange, error)
-	GetUnreservedIPRanges(ctx context.Context, id int) ([]subnet.IPRange, error)
-	GetStatistics(ctx context.Context, id int) (*subnet.Statistics, error)
-}
-
-// MAASIPRange represents IP range operations
-type MAASIPRange interface {
-	List(ctx context.Context) ([]*entity.IPRange, error)
-	Create(ctx context.Context, params *entity.IPRangeParams) (*entity.IPRange, error)
-	Update(ctx context.Context, id int, params *entity.IPRangeParams) (*entity.IPRange, error)
-}
-
-// MAASBootResource represents boot resource operations
-type MAASBootResource interface {
-	List(ctx context.Context) ([]entity.BootResource, error)
-	Import(ctx context.Context) error
-}
-
-// MAASMachine represents machine operations
-type MAASMachine interface {
-	List(ctx context.Context) ([]*entity.Machine, error)
-	Get(ctx context.Context, systemID string) (*entity.Machine, error)
-	PowerOn(ctx context.Context, systemID string, params *entity.MachinePowerOnParams) (*entity.Machine, error)
-	PowerOff(ctx context.Context, systemID string, params *entity.MachinePowerOffParams) (*entity.Machine, error)
-	Commission(ctx context.Context, systemID string, params *entity.MachineCommissionParams) (*entity.Machine, error)
-}
-
-type JujuClient interface {
-	Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error)
-}
-
-type JujuMachine interface {
-	AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) ([]params.AddMachinesResult, error)
-}
-
-type JujuModel interface {
-	List(ctx context.Context) ([]*base.UserModelSummary, error)
-	Create(ctx context.Context, name string) (*base.ModelInfo, error)
-}
-
-type JujuModelConfig interface {
-	List(ctx context.Context, uuid string) (map[string]interface{}, error)
-	Set(ctx context.Context, uuid string, config map[string]interface{}) error
-	Unset(ctx context.Context, uuid string, keys ...string) error
-}
-
-type JujuApplication interface {
-	Create(ctx context.Context, uuid, charmName, appName, channel string, revision, number int, config map[string]string, constraint constraints.Value, placements []*instance.Placement, trust bool) error
-	Update(ctx context.Context, uuid, name string, config map[string]string) error
-	Delete(ctx context.Context, uuid, name string, destroyStorage, force bool) error
-	Expose(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error
-	AddUnits(ctx context.Context, uuid, name string, number int, placements []*instance.Placement) ([]string, error)
-	ResolveUnitErrors(ctx context.Context, uuid string, units []string) error
-	CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error)
-	DeleteRelation(ctx context.Context, uuid string, id int) error
-	GetConfigs(ctx context.Context, uuid string, name ...string) (map[string]map[string]any, error)
-	GetLeader(ctx context.Context, uuid, name string) (string, error)
-	GetUnitInfo(ctx context.Context, uuid, name string) (*application.UnitInfo, error)
-}
-
-type JujuAction interface {
-	List(ctx context.Context, uuid, appName string) (map[string]action.ActionSpec, error)
-}
 
 // StackService coordinates operations across multiple MAAS resources
 type StackService struct {
@@ -190,7 +88,7 @@ func (s *StackService) UpdateNTPServers(ctx context.Context, ntpServers []string
 // Package repository operations
 
 // ListPackageRepositories returns all package repositories
-func (s *StackService) ListPackageRepositories(ctx context.Context) ([]*entity.PackageRepository, error) {
+func (s *StackService) ListPackageRepositories(ctx context.Context) ([]entity.PackageRepository, error) {
 	return s.packageRepository.List(ctx)
 }
 
@@ -206,7 +104,7 @@ func (s *StackService) UpdatePackageRepositoryURL(ctx context.Context, id int, u
 // Network operations
 
 // ListNetworks returns all networks with their associated resources
-func (s *StackService) ListNetworks(ctx context.Context) ([]*model.Network, error) {
+func (s *StackService) ListNetworks(ctx context.Context) ([]model.Network, error) {
 	// Get all required resources
 	subnets, err := s.subnet.List(ctx)
 	if err != nil {
@@ -224,9 +122,9 @@ func (s *StackService) ListNetworks(ctx context.Context) ([]*model.Network, erro
 	}
 
 	// Convert fabrics to networks
-	ret := make([]*model.Network, len(fabrics))
+	ret := make([]model.Network, len(fabrics))
 	for i, fabric := range fabrics {
-		ret[i] = toNetwork(fabric, networkSubnets)
+		ret[i] = *toNetwork(&fabric, networkSubnets)
 	}
 
 	return ret, nil
@@ -269,7 +167,7 @@ func (s *StackService) CreateNetwork(ctx context.Context, fabricParams *entity.F
 		return nil, err
 	}
 
-	subnets, err := s.getNetworkSubnets(ctx, subnet)
+	subnets, err := s.getNetworkSubnets(ctx, *subnet)
 	if err != nil {
 		return nil, err
 	}
@@ -341,7 +239,7 @@ func (s *StackService) ImportBootResources(ctx context.Context) error {
 // Machine operations
 
 // ListMachines returns all machines with their associated resources
-func (s *StackService) ListMachines(ctx context.Context) ([]*entity.Machine, error) {
+func (s *StackService) ListMachines(ctx context.Context) ([]entity.Machine, error) {
 	return s.machine.List(ctx)
 }
 
@@ -376,7 +274,7 @@ func (s *StackService) CommissionMachine(ctx context.Context, systemID string, p
 	return s.machine.Commission(ctx, systemID, params)
 }
 
-func (s *StackService) ListModels(ctx context.Context) ([]*base.UserModelSummary, error) {
+func (s *StackService) ListModels(ctx context.Context) ([]base.UserModelSummary, error) {
 	return s.model.List(ctx)
 }
 
@@ -465,7 +363,7 @@ func (s *StackService) ListApplicationConfigs(ctx context.Context, uuid string, 
 	return configs, nil
 }
 
-func (s *StackService) CreateApplication(ctx context.Context, uuid, charmName, appName, channel string, revision, number int, config map[string]string, constraint constraints.Value, placements []*instance.Placement, trust bool) (map[string]params.ApplicationStatus, error) {
+func (s *StackService) CreateApplication(ctx context.Context, uuid, charmName, appName, channel string, revision, number int, config map[string]string, constraint constraints.Value, placements []instance.Placement, trust bool) (map[string]params.ApplicationStatus, error) {
 	if err := s.application.Create(ctx, uuid, charmName, appName, channel, revision, number, config, constraint, placements, trust); err != nil {
 		return nil, err
 	}
@@ -487,7 +385,7 @@ func (s *StackService) ExposeApplication(ctx context.Context, uuid, name string,
 	return s.application.Expose(ctx, uuid, name, endpoints)
 }
 
-func (s *StackService) AddApplicationsUnits(ctx context.Context, uuid, name string, number int, placements []*instance.Placement) ([]params.MachineStatus, error) {
+func (s *StackService) AddApplicationsUnits(ctx context.Context, uuid, name string, number int, placements []instance.Placement) ([]params.MachineStatus, error) {
 	ids, err := s.application.AddUnits(ctx, uuid, name, number, placements)
 	if err != nil {
 		return nil, err
@@ -540,7 +438,7 @@ func (s *StackService) getNetworkSubnet(ctx context.Context, subnet *entity.Subn
 	if err != nil {
 		return nil, err
 	}
-	reservedIPRanges := []*entity.IPRange{}
+	reservedIPRanges := []entity.IPRange{}
 	for _, ipRange := range ipRanges {
 		if ipNet.Contains(ipRange.StartIP) && ipNet.Contains(ipRange.EndIP) {
 			reservedIPRanges = append(reservedIPRanges, ipRange)
@@ -558,10 +456,10 @@ func (s *StackService) getNetworkSubnet(ctx context.Context, subnet *entity.Subn
 	}, nil
 }
 
-func (s *StackService) getNetworkSubnets(ctx context.Context, subnets ...*entity.Subnet) (map[int]*model.NetworkSubnet, error) {
+func (s *StackService) getNetworkSubnets(ctx context.Context, subnets ...entity.Subnet) (map[int]*model.NetworkSubnet, error) {
 	ret := map[int]*model.NetworkSubnet{}
 	for _, subnet := range subnets {
-		ns, err := s.getNetworkSubnet(ctx, subnet)
+		ns, err := s.getNetworkSubnet(ctx, &subnet)
 		if err != nil {
 			return nil, err
 		}

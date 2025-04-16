@@ -8,6 +8,7 @@ import (
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/cloud"
 	"github.com/juju/juju/api/client/modelmanager"
+	jujucloud "github.com/juju/juju/cloud"
 	"github.com/juju/names/v6"
 
 	"github.com/openhdc/openhdc/internal/domain/service"
@@ -15,56 +16,47 @@ import (
 )
 
 type model struct {
-	juju Juju
+	jujuMap JujuMap
+	user    string
 }
 
-func NewModel(juju Juju) service.JujuModel {
+func NewModel(jujuMap JujuMap) service.JujuModel {
 	return &model{
-		juju: juju,
+		jujuMap: jujuMap,
+		user:    env.GetOrDefault(env.OPENHDC_JUJU_USERNAME, defaultUsername),
 	}
 }
 
 var _ service.JujuModel = (*model)(nil)
 
-func (r *model) List(ctx context.Context) ([]*base.UserModelSummary, error) {
-	user := env.GetOrDefault(env.OPENHDC_JUJU_USERNAME, defaultUsername)
-
-	conn, err := checkConnection(ctx, r.juju)
+func (r *model) List(ctx context.Context) ([]base.UserModelSummary, error) {
+	conn, err := r.jujuMap.Get(ctx, "")
 	if err != nil {
 		return nil, err
 	}
-
-	umss, err := modelmanager.NewClient(conn).ListModelSummaries(ctx, user, true)
-	if err != nil {
-		return nil, err
-	}
-
-	ret := make([]*base.UserModelSummary, len(umss))
-	for i := range umss {
-		ret[i] = &umss[i]
-	}
-
-	return ret, nil
+	return modelmanager.NewClient(conn).ListModelSummaries(ctx, r.user, true)
 }
 
 func (r *model) Create(ctx context.Context, name string) (*base.ModelInfo, error) {
-	owner := env.GetOrDefault(env.OPENHDC_JUJU_USERNAME, defaultUsername)
-
-	// Get cloud information
-	cloudName, cloudRegion, err := r.getCloudInfo(ctx)
+	conn, err := r.jujuMap.Get(ctx, "")
 	if err != nil {
 		return nil, err
 	}
 
-	// Create the model
-	conn, err := checkConnection(ctx, r.juju)
+	clouds, err := cloud.NewClient(conn).Clouds(ctx)
 	if err != nil {
 		return nil, err
 	}
+
+	cloudName, cloudRegion, err := r.cloudInfo(clouds)
+	if err != nil {
+		return nil, err
+	}
+
 	mi, err := modelmanager.NewClient(conn).CreateModel(
 		ctx,
 		name,
-		owner,
+		r.user,
 		cloudName,
 		cloudRegion,
 		names.CloudCredentialTag{},
@@ -77,24 +69,15 @@ func (r *model) Create(ctx context.Context, name string) (*base.ModelInfo, error
 	return &mi, nil
 }
 
-// getCloudInfo fetches and returns the first available cloud name and region
-func (r *model) getCloudInfo(ctx context.Context) (string, string, error) {
-	clouds, err := cloud.NewClient(r.juju).Clouds(ctx)
-	if err != nil {
-		return "", "", err
-	}
-
+func (r *model) cloudInfo(clouds map[names.CloudTag]jujucloud.Cloud) (string, string, error) {
 	if len(clouds) == 0 {
-		return "", "", errors.New("no clouds found")
+		return "", "", errors.New("cloud not found")
 	}
 
-	// Get the first cloud
 	for tag := range clouds {
 		if len(clouds[tag].Regions) == 0 {
-			return "", "", fmt.Errorf("no regions found for cloud: %s", tag)
+			return "", "", fmt.Errorf("cloud %q region not found ", tag)
 		}
-
-		// Return the first region of the first cloud
 		return clouds[tag].Name, clouds[tag].Regions[0].Name, nil
 	}
 

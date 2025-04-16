@@ -36,10 +36,10 @@ const (
 	Nexus_UpdateIPRange_FullMethodName             = "/openhdc.nexus.v1.Nexus/UpdateIPRange"
 	Nexus_ListMachines_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListMachines"
 	Nexus_GetMachine_FullMethodName                = "/openhdc.nexus.v1.Nexus/GetMachine"
-	Nexus_CreateMachine_FullMethodName             = "/openhdc.nexus.v1.Nexus/CreateMachine"
 	Nexus_CommissionMachine_FullMethodName         = "/openhdc.nexus.v1.Nexus/CommissionMachine"
 	Nexus_PowerOnMachine_FullMethodName            = "/openhdc.nexus.v1.Nexus/PowerOnMachine"
 	Nexus_PowerOffMachine_FullMethodName           = "/openhdc.nexus.v1.Nexus/PowerOffMachine"
+	Nexus_AddMachines_FullMethodName               = "/openhdc.nexus.v1.Nexus/AddMachines"
 	Nexus_ListScopes_FullMethodName                = "/openhdc.nexus.v1.Nexus/ListScopes"
 	Nexus_CreateScope_FullMethodName               = "/openhdc.nexus.v1.Nexus/CreateScope"
 	Nexus_ListFacilities_FullMethodName            = "/openhdc.nexus.v1.Nexus/ListFacilities"
@@ -86,10 +86,10 @@ type NexusClient interface {
 	// Machine
 	ListMachines(ctx context.Context, in *ListMachinesRequest, opts ...grpc.CallOption) (*ListMachinesResponse, error)
 	GetMachine(ctx context.Context, in *GetMachineRequest, opts ...grpc.CallOption) (*Machine, error)
-	CreateMachine(ctx context.Context, in *CreateMachineRequest, opts ...grpc.CallOption) (*Machine, error)
-	CommissionMachine(ctx context.Context, in *CommissionMachineRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	PowerOnMachine(ctx context.Context, in *PowerOnMachineRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	PowerOffMachine(ctx context.Context, in *PowerOffMachineRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CommissionMachine(ctx context.Context, in *CommissionMachineRequest, opts ...grpc.CallOption) (*Machine, error)
+	PowerOnMachine(ctx context.Context, in *PowerOnMachineRequest, opts ...grpc.CallOption) (*Machine, error)
+	PowerOffMachine(ctx context.Context, in *PowerOffMachineRequest, opts ...grpc.CallOption) (*Machine, error)
+	AddMachines(ctx context.Context, in *AddMachinesRequest, opts ...grpc.CallOption) (*AddMachinesResponse, error)
 	// Scope
 	ListScopes(ctx context.Context, in *ListScopesRequest, opts ...grpc.CallOption) (*ListScopesResponse, error)
 	CreateScope(ctx context.Context, in *CreateScopeRequest, opts ...grpc.CallOption) (*Scope, error)
@@ -284,19 +284,9 @@ func (c *nexusClient) GetMachine(ctx context.Context, in *GetMachineRequest, opt
 	return out, nil
 }
 
-func (c *nexusClient) CreateMachine(ctx context.Context, in *CreateMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
+func (c *nexusClient) CommissionMachine(ctx context.Context, in *CommissionMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Machine)
-	err := c.cc.Invoke(ctx, Nexus_CreateMachine_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *nexusClient) CommissionMachine(ctx context.Context, in *CommissionMachineRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, Nexus_CommissionMachine_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -304,9 +294,9 @@ func (c *nexusClient) CommissionMachine(ctx context.Context, in *CommissionMachi
 	return out, nil
 }
 
-func (c *nexusClient) PowerOnMachine(ctx context.Context, in *PowerOnMachineRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *nexusClient) PowerOnMachine(ctx context.Context, in *PowerOnMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(Machine)
 	err := c.cc.Invoke(ctx, Nexus_PowerOnMachine_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -314,10 +304,20 @@ func (c *nexusClient) PowerOnMachine(ctx context.Context, in *PowerOnMachineRequ
 	return out, nil
 }
 
-func (c *nexusClient) PowerOffMachine(ctx context.Context, in *PowerOffMachineRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *nexusClient) PowerOffMachine(ctx context.Context, in *PowerOffMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(Machine)
 	err := c.cc.Invoke(ctx, Nexus_PowerOffMachine_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) AddMachines(ctx context.Context, in *AddMachinesRequest, opts ...grpc.CallOption) (*AddMachinesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddMachinesResponse)
+	err := c.cc.Invoke(ctx, Nexus_AddMachines_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -557,10 +557,10 @@ type NexusServer interface {
 	// Machine
 	ListMachines(context.Context, *ListMachinesRequest) (*ListMachinesResponse, error)
 	GetMachine(context.Context, *GetMachineRequest) (*Machine, error)
-	CreateMachine(context.Context, *CreateMachineRequest) (*Machine, error)
-	CommissionMachine(context.Context, *CommissionMachineRequest) (*emptypb.Empty, error)
-	PowerOnMachine(context.Context, *PowerOnMachineRequest) (*emptypb.Empty, error)
-	PowerOffMachine(context.Context, *PowerOffMachineRequest) (*emptypb.Empty, error)
+	CommissionMachine(context.Context, *CommissionMachineRequest) (*Machine, error)
+	PowerOnMachine(context.Context, *PowerOnMachineRequest) (*Machine, error)
+	PowerOffMachine(context.Context, *PowerOffMachineRequest) (*Machine, error)
+	AddMachines(context.Context, *AddMachinesRequest) (*AddMachinesResponse, error)
 	// Scope
 	ListScopes(context.Context, *ListScopesRequest) (*ListScopesResponse, error)
 	CreateScope(context.Context, *CreateScopeRequest) (*Scope, error)
@@ -643,17 +643,17 @@ func (UnimplementedNexusServer) ListMachines(context.Context, *ListMachinesReque
 func (UnimplementedNexusServer) GetMachine(context.Context, *GetMachineRequest) (*Machine, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMachine not implemented")
 }
-func (UnimplementedNexusServer) CreateMachine(context.Context, *CreateMachineRequest) (*Machine, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateMachine not implemented")
-}
-func (UnimplementedNexusServer) CommissionMachine(context.Context, *CommissionMachineRequest) (*emptypb.Empty, error) {
+func (UnimplementedNexusServer) CommissionMachine(context.Context, *CommissionMachineRequest) (*Machine, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommissionMachine not implemented")
 }
-func (UnimplementedNexusServer) PowerOnMachine(context.Context, *PowerOnMachineRequest) (*emptypb.Empty, error) {
+func (UnimplementedNexusServer) PowerOnMachine(context.Context, *PowerOnMachineRequest) (*Machine, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PowerOnMachine not implemented")
 }
-func (UnimplementedNexusServer) PowerOffMachine(context.Context, *PowerOffMachineRequest) (*emptypb.Empty, error) {
+func (UnimplementedNexusServer) PowerOffMachine(context.Context, *PowerOffMachineRequest) (*Machine, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PowerOffMachine not implemented")
+}
+func (UnimplementedNexusServer) AddMachines(context.Context, *AddMachinesRequest) (*AddMachinesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddMachines not implemented")
 }
 func (UnimplementedNexusServer) ListScopes(context.Context, *ListScopesRequest) (*ListScopesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListScopes not implemented")
@@ -1027,24 +1027,6 @@ func _Nexus_GetMachine_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Nexus_CreateMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateMachineRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NexusServer).CreateMachine(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Nexus_CreateMachine_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NexusServer).CreateMachine(ctx, req.(*CreateMachineRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Nexus_CommissionMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CommissionMachineRequest)
 	if err := dec(in); err != nil {
@@ -1095,6 +1077,24 @@ func _Nexus_PowerOffMachine_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NexusServer).PowerOffMachine(ctx, req.(*PowerOffMachineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_AddMachines_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddMachinesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).AddMachines(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_AddMachines_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).AddMachines(ctx, req.(*AddMachinesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1549,10 +1549,6 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Nexus_GetMachine_Handler,
 		},
 		{
-			MethodName: "CreateMachine",
-			Handler:    _Nexus_CreateMachine_Handler,
-		},
-		{
 			MethodName: "CommissionMachine",
 			Handler:    _Nexus_CommissionMachine_Handler,
 		},
@@ -1563,6 +1559,10 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PowerOffMachine",
 			Handler:    _Nexus_PowerOffMachine_Handler,
+		},
+		{
+			MethodName: "AddMachines",
+			Handler:    _Nexus_AddMachines_Handler,
 		},
 		{
 			MethodName: "ListScopes",
