@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"github.com/juju/juju/rpc/params"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
@@ -21,13 +19,13 @@ func (s *NexusService) GetMachine(ctx context.Context, id string) (*model.Machin
 func (s *NexusService) AddMachines(ctx context.Context, uuid string, factors []model.MachineFactor) ([]string, error) {
 	params := []model.MachineAddParams{}
 	for _, factor := range factors {
-		directive, err := s.maasToJujuMachine(ctx, uuid, factor.MachineID)
+		directives, err := s.maasToJujuMachineMap(ctx, uuid)
 		if err != nil {
 			return nil, err
 		}
 		params = append(params, model.MachineAddParams{
-			Placement:   toPlacement(&factor, directive),
-			Constraints: toConstraint(&factor),
+			Placement:   toPlacement(factor.MachinePlacement, directives[factor.MachineID]),
+			Constraints: toConstraint(factor.MachineConstraint),
 		})
 	}
 	results, err := s.machineManager.AddMachines(ctx, uuid, params)
@@ -73,29 +71,37 @@ func (s *NexusService) listJujuMachines(ctx context.Context, uuid string) (map[s
 	return status.Machines, nil
 }
 
-func (s *NexusService) maasToJujuMachine(ctx context.Context, uuid, machineID string) (string, error) {
-	if machineID == "" {
-		return "", nil
-	}
-	mss, err := s.listJujuMachines(ctx, uuid)
+func (s *NexusService) JujuToMAASMachineMap(ctx context.Context, uuid string) (map[string]string, error) {
+	msm, err := s.listJujuMachines(ctx, uuid)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	for i := range mss {
-		if mss[i].InstanceId.String() == machineID {
-			return mss[i].Id, nil
-		}
+	m := map[string]string{}
+	for key := range msm {
+		m[key] = msm[key].InstanceId.String()
 	}
-	return "", status.Errorf(codes.NotFound, "maas machine %q not found", machineID)
+	return m, nil
 }
 
-func toPlacement(f *model.MachineFactor, directive string) *model.Placement {
+func (s *NexusService) maasToJujuMachineMap(ctx context.Context, uuid string) (map[string]string, error) {
+	msm, err := s.listJujuMachines(ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+	m := map[string]string{}
+	for key := range msm {
+		m[msm[key].InstanceId.String()] = key
+	}
+	return m, nil
+}
+
+func toPlacement(p *model.MachinePlacement, directive string) *model.Placement {
 	pla := &model.Placement{}
-	if f.LXD {
+	if p.LXD {
 		pla.Scope = "lxd"
-	} else if f.KVM {
+	} else if p.KVM {
 		pla.Scope = "kvm"
-	} else if f.Machine {
+	} else if p.Machine {
 		pla.Scope = "#"
 		pla.Directive = directive
 	} else {
@@ -104,19 +110,19 @@ func toPlacement(f *model.MachineFactor, directive string) *model.Placement {
 	return pla
 }
 
-func toConstraint(f *model.MachineFactor) model.Constraint {
+func toConstraint(c *model.MachineConstraint) model.Constraint {
 	con := model.Constraint{}
-	if f.Architecture != "" {
-		con.Arch = &f.Architecture
+	if c.Architecture != "" {
+		con.Arch = &c.Architecture
 	}
-	if f.CPUCores > 0 {
-		con.CpuCores = &f.CPUCores
+	if c.CPUCores > 0 {
+		con.CpuCores = &c.CPUCores
 	}
-	if f.MemoryMB > 0 {
-		con.Mem = &f.MemoryMB
+	if c.MemoryMB > 0 {
+		con.Mem = &c.MemoryMB
 	}
-	if len(f.Tags) > 0 {
-		con.Tags = &f.Tags
+	if len(c.Tags) > 0 {
+		con.Tags = &c.Tags
 	}
 	return con
 }

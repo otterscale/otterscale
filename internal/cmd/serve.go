@@ -13,11 +13,10 @@ import (
 
 	kubev1 "github.com/openhdc/openhdc/api/kube/v1/v1connect"
 	nexusv1 "github.com/openhdc/openhdc/api/nexus/v1/pbconnect"
-	stackv1 "github.com/openhdc/openhdc/api/stack/v1/v1connect"
 	"github.com/openhdc/openhdc/internal/app"
 )
 
-func NewCmdServe(ka *app.KubeApp, sa *app.StackApp, na *app.NexusApp) *cobra.Command {
+func NewCmdServe(ka *app.KubeApp, na *app.NexusApp) *cobra.Command {
 	var address string
 
 	cmd := &cobra.Command{
@@ -28,10 +27,9 @@ func NewCmdServe(ka *app.KubeApp, sa *app.StackApp, na *app.NexusApp) *cobra.Com
 		RunE: func(cmd *cobra.Command, args []string) error {
 			mux := http.NewServeMux()
 			mux.Handle(kubev1.NewKubeServiceHandler(ka))
-			mux.Handle(stackv1.NewStackServiceHandler(sa))
 			mux.Handle(nexusv1.NewNexusHandler(na))
 
-			services := []string{kubev1.KubeServiceName, stackv1.StackServiceName, nexusv1.NexusName}
+			services := []string{kubev1.KubeServiceName, nexusv1.NexusName}
 
 			checker := grpchealth.NewStaticChecker(services...)
 			mux.Handle(grpchealth.NewHandler(checker))

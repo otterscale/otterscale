@@ -193,21 +193,37 @@ func toModelFactor(f *pb.Machine_Factor) *model.MachineFactor {
 	ret := &model.MachineFactor{}
 	p := f.GetPlacement()
 	if p != nil {
-		ret.MachinePlacement = &model.MachinePlacement{
-			LXD:       p.GetLxd(),
-			KVM:       p.GetKvm(),
-			Machine:   p.GetMachine(),
-			MachineID: p.GetMachineId(),
-		}
+		ret.MachinePlacement = toModelPlacement(p)
 	}
 	c := f.GetConstraint()
 	if c != nil {
-		ret.MachineConstraint = &model.MachineConstraint{
-			Architecture: c.GetArchitecture(),
-			CPUCores:     c.GetCpuCores(),
-			MemoryMB:     c.GetMemoryMb(),
-			Tags:         c.GetTags(),
-		}
+		ret.MachineConstraint = toModelConstraint(c)
 	}
 	return ret
+}
+
+func toModelPlacements(ps []*pb.Machine_Placement) []model.MachinePlacement {
+	ret := []model.MachinePlacement{}
+	for i := range ps {
+		ret = append(ret, *toModelPlacement(ps[i]))
+	}
+	return ret
+}
+
+func toModelPlacement(p *pb.Machine_Placement) *model.MachinePlacement {
+	return &model.MachinePlacement{
+		LXD:       p.GetLxd(),
+		KVM:       p.GetKvm(),
+		Machine:   p.GetMachine(),
+		MachineID: p.GetMachineId(),
+	}
+}
+
+func toModelConstraint(c *pb.Machine_Constraint) *model.MachineConstraint {
+	return &model.MachineConstraint{
+		Architecture: c.GetArchitecture(),
+		CPUCores:     c.GetCpuCores(),
+		MemoryMB:     c.GetMemoryMb(),
+		Tags:         c.GetTags(),
+	}
 }
