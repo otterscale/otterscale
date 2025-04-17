@@ -20,7 +20,7 @@ import (
 // Injectors from wire.go:
 
 func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func(), error) {
-	kubeMap, err := kube.NewMap()
+	kubeMap, err := kube.NewKubeMap()
 	if err != nil {
 		return nil, nil, err
 	}
@@ -29,8 +29,15 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	kubeBatch := kube.NewBatch(kubeMap)
 	kubeCore := kube.NewCore(kubeMap)
 	kubeStorage := kube.NewStorage(kubeMap)
-	kubeHelm := kube.NewHelm(kubeMap)
-	jujuMap, err := juju.NewMap()
+	helmMap, err := kube.NewHelmMap()
+	if err != nil {
+		return nil, nil, err
+	}
+	kubeHelm, err := kube.NewHelm(helmMap)
+	if err != nil {
+		return nil, nil, err
+	}
+	jujuMap, err := juju.NewJujuMap()
 	if err != nil {
 		return nil, nil, err
 	}
@@ -39,8 +46,7 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	jujuApplication := juju.NewApplication(jujuMap)
 	kubeService := service.NewKubeService(kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm, jujuModel, jujuClient, jujuApplication)
 	kubeApp := app.NewKubeApp(kubeService)
-	config := maas.NewConfig()
-	v, err := maas.New(config)
+	v, err := maas.New()
 	if err != nil {
 		return nil, nil, err
 	}
@@ -55,7 +61,7 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	jujuMachine := juju.NewMachine(jujuMap)
 	jujuModelConfig := juju.NewModelConfig(jujuMap)
 	jujuAction := juju.NewAction(jujuMap)
-	nexusService := service.NewNexusService(maasServer, maasPackageRepository, maasBootResource, maasFabric, maasvlan, maasSubnet, maasipRange, maasMachine, jujuClient, jujuMachine, jujuModel, jujuModelConfig, jujuApplication, jujuAction)
+	nexusService := service.NewNexusService(maasServer, maasPackageRepository, maasBootResource, maasFabric, maasvlan, maasSubnet, maasipRange, maasMachine, jujuClient, jujuMachine, jujuModel, jujuModelConfig, jujuApplication, jujuAction, kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm)
 	nexusApp := app.NewNexusApp(nexusService)
 	command := cmd.New(string2, kubeApp, nexusApp)
 	return command, func() {

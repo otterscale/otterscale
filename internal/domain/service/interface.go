@@ -117,46 +117,46 @@ type JujuAction interface {
 }
 
 type KubeClient interface {
-	Exists(key string) bool
-	Add(key string, cfg *rest.Config) error
+	Exists(uuid, facility string) bool
+	Set(uuid, facility string, config *rest.Config) error
 }
 
 type KubeApps interface {
-	ListDeployments(ctx context.Context, key, namespace string) ([]appsv1.Deployment, error)
-	GetDeployment(ctx context.Context, key, namespace, name string) (*appsv1.Deployment, error)
-	ListStatefulSets(ctx context.Context, key, namespace string) ([]appsv1.StatefulSet, error)
-	GetStatefulSet(ctx context.Context, key, namespace, name string) (*appsv1.StatefulSet, error)
-	ListDaemonSets(ctx context.Context, key, namespace string) ([]appsv1.DaemonSet, error)
-	GetDaemonSet(ctx context.Context, key, namespace, name string) (*appsv1.DaemonSet, error)
+	ListDeployments(ctx context.Context, uuid, facility, namespace string) ([]appsv1.Deployment, error)
+	GetDeployment(ctx context.Context, uuid, facility, namespace, name string) (*appsv1.Deployment, error)
+	ListStatefulSets(ctx context.Context, uuid, facility, namespace string) ([]appsv1.StatefulSet, error)
+	GetStatefulSet(ctx context.Context, uuid, facility, namespace, name string) (*appsv1.StatefulSet, error)
+	ListDaemonSets(ctx context.Context, uuid, facility, namespace string) ([]appsv1.DaemonSet, error)
+	GetDaemonSet(ctx context.Context, uuid, facility, namespace, name string) (*appsv1.DaemonSet, error)
 }
 
 type KubeBatch interface {
-	GetCronJob(ctx context.Context, key, namespace, name string) (*batchv1.CronJob, error)
-	CreateCronJob(ctx context.Context, key, namespace, name, image, schedule string) (*batchv1.CronJob, error)
-	UpdateCronJob(ctx context.Context, key, namespace, name, image, schedule string) (*batchv1.CronJob, error)
-	DeleteCronJob(ctx context.Context, key, namespace, name string) error
-	ListJobsFromCronJob(ctx context.Context, key, namespace string, cronJob *batchv1.CronJob) (*batchv1.JobList, error)
-	CreateJobFromCronJob(ctx context.Context, key, namespace string, cronJob *batchv1.CronJob, createdBy string) (*batchv1.Job, error)
+	GetCronJob(ctx context.Context, uuid, facility, namespace, name string) (*batchv1.CronJob, error)
+	CreateCronJob(ctx context.Context, uuid, facility, namespace, name, image, schedule string) (*batchv1.CronJob, error)
+	UpdateCronJob(ctx context.Context, uuid, facility, namespace, name, image, schedule string) (*batchv1.CronJob, error)
+	DeleteCronJob(ctx context.Context, uuid, facility, namespace, name string) error
+	ListJobsFromCronJob(ctx context.Context, uuid, facility, namespace string, cronJob *batchv1.CronJob) (*batchv1.JobList, error)
+	CreateJobFromCronJob(ctx context.Context, uuid, facility, namespace string, cronJob *batchv1.CronJob, createdBy string) (*batchv1.Job, error)
 }
 
 type KubeCore interface {
-	GetNamespace(ctx context.Context, key, name string) (*corev1.Namespace, error)
-	CreateNamespace(ctx context.Context, key, name string) (*corev1.Namespace, error)
-	ListServices(ctx context.Context, key, namespace string) ([]corev1.Service, error)
-	ListPods(ctx context.Context, key, namespace string) ([]corev1.Pod, error)
-	ListPersistentVolumeClaims(ctx context.Context, key, namespace string) ([]corev1.PersistentVolumeClaim, error)
+	GetNamespace(ctx context.Context, uuid, facility, name string) (*corev1.Namespace, error)
+	CreateNamespace(ctx context.Context, uuid, facility, name string) (*corev1.Namespace, error)
+	ListServices(ctx context.Context, uuid, facility, namespace string) ([]corev1.Service, error)
+	ListPods(ctx context.Context, uuid, facility, namespace string) ([]corev1.Pod, error)
+	ListPersistentVolumeClaims(ctx context.Context, uuid, facility, namespace string) ([]corev1.PersistentVolumeClaim, error)
 }
 
 type KubeStorage interface {
-	ListStorageClasses(ctx context.Context, key string) ([]storagev1.StorageClass, error)
+	ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error)
 }
 
 type KubeHelm interface {
-	ListReleases(key, namespace string) ([]release.Release, error)
-	InstallRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
-	UninstallRelease(key, namespace, name string, dryRun bool) (*release.Release, error)
-	UpgradeRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
-	RollbackRelease(key, namespace, name string, dryRun bool) error
-	GetChartInfo(chartRef string, format helmaction.ShowOutputFormat) (string, error)
+	ListReleases(uuid, facility, namespace string) ([]release.Release, error)
+	InstallRelease(uuid, facility, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
+	UninstallRelease(uuid, facility, namespace, name string, dryRun bool) (*release.Release, error)
+	UpgradeRelease(uuid, facility, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
+	RollbackRelease(uuid, facility, namespace, name string, dryRun bool) error
+	ShowChart(chartRef string, format helmaction.ShowOutputFormat) (string, error)
 	ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error)
 }

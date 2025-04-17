@@ -2,7 +2,9 @@ package juju
 
 import (
 	"context"
-	"fmt"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	api "github.com/juju/juju/api/client/application"
 	"github.com/juju/juju/core/constraints"
@@ -175,5 +177,5 @@ func (r *application) GetUnitInfo(ctx context.Context, uuid, name string) (*api.
 	if len(uis) == 1 {
 		return &uis[0], nil
 	}
-	return nil, fmt.Errorf("unit info %q not found", name)
+	return nil, status.Errorf(codes.NotFound, "unit info %q not found", name)
 }

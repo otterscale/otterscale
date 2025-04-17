@@ -15,9 +15,15 @@ type NexusService struct {
 	scopeConfig       JujuModelConfig
 	facility          JujuApplication
 	action            JujuAction
+	kubernetes        KubeClient
+	apps              KubeApps
+	batch             KubeBatch
+	core              KubeCore
+	storage           KubeStorage
+	helm              KubeHelm
 }
 
-func NewNexusService(server MAASServer, packageRepository MAASPackageRepository, bootResource MAASBootResource, fabric MAASFabric, vlan MAASVLAN, subnet MAASSubnet, ipRange MAASIPRange, machine MAASMachine, client JujuClient, machineManager JujuMachine, scope JujuModel, scopeConfig JujuModelConfig, facility JujuApplication, action JujuAction) *NexusService {
+func NewNexusService(server MAASServer, packageRepository MAASPackageRepository, bootResource MAASBootResource, fabric MAASFabric, vlan MAASVLAN, subnet MAASSubnet, ipRange MAASIPRange, machine MAASMachine, client JujuClient, machineManager JujuMachine, scope JujuModel, scopeConfig JujuModelConfig, facility JujuApplication, action JujuAction, kubernetes KubeClient, apps KubeApps, batch KubeBatch, core KubeCore, storage KubeStorage, helm KubeHelm) *NexusService {
 	return &NexusService{
 		server:            server,
 		packageRepository: packageRepository,
@@ -33,5 +39,11 @@ func NewNexusService(server MAASServer, packageRepository MAASPackageRepository,
 		scopeConfig:       scopeConfig,
 		facility:          facility,
 		action:            action,
+		kubernetes:        kubernetes,
+		apps:              apps,
+		batch:             batch,
+		core:              core,
+		storage:           storage,
+		helm:              helm,
 	}
 }

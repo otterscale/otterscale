@@ -8,6 +8,9 @@ import (
 	"net/url"
 	"time"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -17,6 +20,7 @@ import (
 	"helm.sh/helm/v3/pkg/registry"
 	"helm.sh/helm/v3/pkg/release"
 	"helm.sh/helm/v3/pkg/repo"
+
 	"sigs.k8s.io/yaml"
 
 	"github.com/openhdc/openhdc/internal/domain/service"
@@ -28,26 +32,37 @@ const (
 )
 
 type helm struct {
-	kubeMap            KubeMap
+	helmMap            HelmMap
 	settings           *cli.EnvSettings
 	providers          getter.Providers
+	registryClient     *registry.Client
 	repoIndex          *repo.IndexFile
 	repoIndexCacheTime time.Time
 }
 
-func NewHelm(kubeMap KubeMap) service.KubeHelm {
+func NewHelm(helmMap HelmMap) (service.KubeHelm, error) {
 	settings := cli.New()
-	return &helm{
-		kubeMap:   kubeMap,
-		settings:  settings,
-		providers: getter.All(settings),
+
+	opts := []registry.ClientOption{
+		registry.ClientOptEnableCache(true),
 	}
+	registryClient, err := registry.NewClient(opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	return &helm{
+		helmMap:        helmMap,
+		settings:       settings,
+		providers:      getter.All(settings),
+		registryClient: registryClient,
+	}, nil
 }
 
 var _ service.KubeHelm = (*helm)(nil)
 
-func (r *helm) ListReleases(key, namespace string) ([]release.Release, error) {
-	config, err := r.kubeMap.GetHelmConfig(key, namespace)
+func (r *helm) ListReleases(uuid, facility, namespace string) ([]release.Release, error) {
+	config, err := r.helmMap.get(uuid, facility, namespace, r.registryClient)
 	if err != nil {
 		return nil, err
 	}
@@ -58,6 +73,7 @@ func (r *helm) ListReleases(key, namespace string) ([]release.Release, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	rs := []release.Release{}
 	for _, rel := range rels {
 		rs = append(rs, *rel)
@@ -65,8 +81,12 @@ func (r *helm) ListReleases(key, namespace string) ([]release.Release, error) {
 	return rs, nil
 }
 
-func (r *helm) InstallRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
-	config, err := r.kubeMap.GetHelmConfig(key, namespace)
+func (r *helm) InstallRelease(uuid, facility, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+	if !action.ValidName.MatchString(name) {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid release name %q", name)
+	}
+
+	config, err := r.helmMap.get(uuid, facility, namespace, r.registryClient)
 	if err != nil {
 		return nil, err
 	}
@@ -75,10 +95,6 @@ func (r *helm) InstallRelease(key, namespace, name string, dryRun bool, chartRef
 	client.CreateNamespace = true
 	client.Namespace = namespace
 	client.DryRun = dryRun
-
-	if !action.ValidName.MatchString(name) {
-		return nil, fmt.Errorf("invalid release name %q", name)
-	}
 	client.ReleaseName = name
 
 	chartPath, err := client.ChartPathOptions.LocateChart(chartRef, r.settings)
@@ -93,8 +109,8 @@ func (r *helm) InstallRelease(key, namespace, name string, dryRun bool, chartRef
 	return client.Run(chart, values)
 }
 
-func (r *helm) UninstallRelease(key, namespace, name string, dryRun bool) (*release.Release, error) {
-	config, err := r.kubeMap.GetHelmConfig(key, namespace)
+func (r *helm) UninstallRelease(uuid, facility, namespace, name string, dryRun bool) (*release.Release, error) {
+	config, err := r.helmMap.get(uuid, facility, namespace, r.registryClient)
 	if err != nil {
 		return nil, err
 	}
@@ -110,8 +126,8 @@ func (r *helm) UninstallRelease(key, namespace, name string, dryRun bool) (*rele
 	return res.Release, nil
 }
 
-func (r *helm) UpgradeRelease(key, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
-	config, err := r.kubeMap.GetHelmConfig(key, namespace)
+func (r *helm) UpgradeRelease(uuid, facility, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+	config, err := r.helmMap.get(uuid, facility, namespace, r.registryClient)
 	if err != nil {
 		return nil, err
 	}
@@ -132,8 +148,8 @@ func (r *helm) UpgradeRelease(key, namespace, name string, dryRun bool, chartRef
 	return client.Run(name, chart, values)
 }
 
-func (r *helm) RollbackRelease(key, namespace, name string, dryRun bool) error {
-	config, err := r.kubeMap.GetHelmConfig(key, namespace)
+func (r *helm) RollbackRelease(uuid, facility, namespace, name string, dryRun bool) error {
+	config, err := r.helmMap.get(uuid, facility, namespace, r.registryClient)
 	if err != nil {
 		return err
 	}
@@ -143,20 +159,14 @@ func (r *helm) RollbackRelease(key, namespace, name string, dryRun bool) error {
 	return client.Run(name)
 }
 
-func (r *helm) GetChartInfo(chartRef string, format action.ShowOutputFormat) (string, error) {
-	rc, err := newRegistryClient()
-	if err != nil {
-		return "", err
-	}
-
+func (r *helm) ShowChart(chartRef string, format action.ShowOutputFormat) (string, error) {
 	client := action.NewShow(format)
-	client.SetRegistryClient(rc)
+	client.SetRegistryClient(r.registryClient)
 
 	chartPath, err := client.ChartPathOptions.LocateChart(chartRef, r.settings)
 	if err != nil {
 		return "", err
 	}
-
 	return client.Run(chartPath)
 }
 

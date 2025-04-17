@@ -21,8 +21,8 @@ func NewCore(kubeMap KubeMap) service.KubeCore {
 
 var _ service.KubeCore = (*core)(nil)
 
-func (r *core) GetNamespace(ctx context.Context, key, name string) (*v1.Namespace, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(key)
+func (r *core) GetNamespace(ctx context.Context, uuid, facility, name string) (*v1.Namespace, error) {
+	clientset, err := r.kubeMap.get(uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -30,8 +30,8 @@ func (r *core) GetNamespace(ctx context.Context, key, name string) (*v1.Namespac
 	return clientset.CoreV1().Namespaces().Get(ctx, name, opts)
 }
 
-func (r *core) CreateNamespace(ctx context.Context, key, name string) (*v1.Namespace, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(key)
+func (r *core) CreateNamespace(ctx context.Context, uuid, facility, name string) (*v1.Namespace, error) {
+	clientset, err := r.kubeMap.get(uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -44,8 +44,8 @@ func (r *core) CreateNamespace(ctx context.Context, key, name string) (*v1.Names
 	return clientset.CoreV1().Namespaces().Create(ctx, namespace, opts)
 }
 
-func (r *core) ListServices(ctx context.Context, key, namespace string) ([]v1.Service, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(key)
+func (r *core) ListServices(ctx context.Context, uuid, facility, namespace string) ([]v1.Service, error) {
+	clientset, err := r.kubeMap.get(uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +57,8 @@ func (r *core) ListServices(ctx context.Context, key, namespace string) ([]v1.Se
 	return list.Items, nil
 }
 
-func (r *core) ListPods(ctx context.Context, key, namespace string) ([]v1.Pod, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(key)
+func (r *core) ListPods(ctx context.Context, uuid, facility, namespace string) ([]v1.Pod, error) {
+	clientset, err := r.kubeMap.get(uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -70,8 +70,8 @@ func (r *core) ListPods(ctx context.Context, key, namespace string) ([]v1.Pod, e
 	return list.Items, nil
 }
 
-func (r *core) ListPersistentVolumeClaims(ctx context.Context, key, namespace string) ([]v1.PersistentVolumeClaim, error) {
-	clientset, err := r.kubeMap.GetKubeClientset(key)
+func (r *core) ListPersistentVolumeClaims(ctx context.Context, uuid, facility, namespace string) ([]v1.PersistentVolumeClaim, error) {
+	clientset, err := r.kubeMap.get(uuid, facility)
 	if err != nil {
 		return nil, err
 	}
