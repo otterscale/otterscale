@@ -1,115 +1,93 @@
 package kube
 
 import (
-	"fmt"
-	"log"
+	"crypto/sha256"
 	"os"
-	"strconv"
-	"strings"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/registry"
+
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-
-	"github.com/openhdc/openhdc/internal/env"
 )
 
-type kube struct {
-	*kubernetes.Clientset
-	*rest.Config
+type KubeMap map[string]*kubernetes.Clientset
+
+func NewKubeMap() (KubeMap, error) {
+	return map[string]*kubernetes.Clientset{}, nil
 }
 
-// Kubes represents a map of named Kubernetes client connections
-type KubeMap map[string]*kube
+func (m KubeMap) exists(uuid, facility string) bool {
+	key := key(uuid, facility)
+	_, ok := m[key]
+	return ok
+}
 
-// NewKubes creates a new Kubernetes clientset map.
-// If running in-cluster, it automatically adds the cluster client with key "(empty)"
-func NewMap() (KubeMap, error) {
-	k := make(map[string]*kube)
-	if isInCluster() {
-		config, err := rest.InClusterConfig()
-		if err != nil {
-			return nil, err
-		}
-		clientset, err := kubernetes.NewForConfig(config)
-		if err != nil {
-			return nil, err
-		}
-		k[""] = &kube{
-			Clientset: clientset,
-			Config:    config,
-		}
+func (m KubeMap) get(uuid, facility string) (*kubernetes.Clientset, error) {
+	key := key(uuid, facility)
+	if clientset, ok := m[key]; ok {
+		return clientset, nil
 	}
-	return k, nil
+	return nil, status.Errorf(codes.NotFound, "kubernetes %q in scope %q not found", facility, uuid)
 }
 
-func (k KubeMap) Add(key string, config *rest.Config) error {
+func (m KubeMap) set(uuid, facility string, config *rest.Config) error {
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return err
 	}
-	k[key] = &kube{
-		Clientset: clientset,
-		Config:    config,
-	}
+	key := key(uuid, facility)
+	m[key] = clientset
 	return nil
 }
 
-func (k KubeMap) get(key string) (*kube, error) {
-	if kube, ok := k[key]; ok {
-		return kube, nil
-	}
-	return nil, fmt.Errorf("kubernetes cluster %q not found", key)
+type HelmMap map[string]*genericclioptions.ConfigFlags
+
+func NewHelmMap() (HelmMap, error) {
+	return map[string]*genericclioptions.ConfigFlags{}, nil
 }
 
-func (k KubeMap) GetKubeClientset(key string) (*kubernetes.Clientset, error) {
-	kube, err := k.get(key)
-	if err != nil {
-		return nil, err
-	}
-	return kube.Clientset, nil
+func (m HelmMap) exists(uuid, facility string) bool {
+	key := key(uuid, facility)
+	_, ok := m[key]
+	return ok
 }
 
-func (k KubeMap) GetHelmConfig(key, namespace string) (*action.Configuration, error) {
-	kube, err := k.get(key)
-	if err != nil {
-		return nil, err
+func (m HelmMap) get(uuid, facility, namespace string, rc *registry.Client) (*action.Configuration, error) {
+	key := key(uuid, facility)
+	if getter, ok := m[key]; ok {
+		getter.Namespace = &namespace
+		config := new(action.Configuration)
+		if err := config.Init(getter, namespace, os.Getenv("HELM_DRIVER"), nil); err != nil {
+			return nil, err
+		}
+		config.RegistryClient = rc
+		return config, nil
 	}
-
-	configFlags := genericclioptions.NewConfigFlags(true)
-	configFlags.APIServer = &kube.Config.Host
-	configFlags.BearerToken = &kube.Config.BearerToken
-	configFlags.CAFile = &kube.Config.CAFile
-	configFlags.CertFile = &kube.Config.TLSClientConfig.CertFile
-	configFlags.KeyFile = &kube.Config.TLSClientConfig.KeyFile
-	configFlags.Insecure = &kube.Config.Insecure
-	configFlags.Namespace = &namespace
-
-	config := new(action.Configuration)
-	if err := config.Init(configFlags, namespace, os.Getenv("HELM_DRIVER"), log.Printf); err != nil {
-		return nil, err
-	}
-
-	rc, err := newRegistryClient()
-	if err != nil {
-		return nil, err
-	}
-	config.RegistryClient = rc
-
-	return config, nil
+	return nil, status.Errorf(codes.NotFound, "helm with kubernetes %q in scope %q not found", facility, uuid)
 }
 
-func isInCluster() bool {
-	val := os.Getenv(env.OPENHDC_IN_CLUSTER)
-	inCluster, _ := strconv.ParseBool(strings.ToLower(val))
-	return inCluster
+func (m HelmMap) set(uuid, facility string, config *rest.Config) error {
+	getter := genericclioptions.NewConfigFlags(true)
+	getter.APIServer = &config.Host
+	getter.BearerToken = &config.BearerToken
+	getter.CAFile = &config.CAFile
+	getter.CertFile = &config.TLSClientConfig.CertFile
+	getter.KeyFile = &config.TLSClientConfig.KeyFile
+	getter.Insecure = &config.Insecure
+
+	key := key(uuid, facility)
+	m[key] = getter
+	return nil
 }
 
-func newRegistryClient() (*registry.Client, error) {
-	opts := []registry.ClientOption{
-		registry.ClientOptEnableCache(true),
-	}
-	return registry.NewClient(opts...)
+func key(uuid, facility string) string {
+	sha := sha256.New()
+	sha.Write([]byte(uuid))
+	sha.Write([]byte(facility))
+	return string(sha.Sum(nil))
 }

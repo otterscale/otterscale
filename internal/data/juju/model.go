@@ -3,7 +3,9 @@ package juju
 import (
 	"context"
 	"errors"
-	"fmt"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/cloud"
@@ -71,12 +73,12 @@ func (r *model) Create(ctx context.Context, name string) (*base.ModelInfo, error
 
 func (r *model) cloudInfo(clouds map[names.CloudTag]jujucloud.Cloud) (name, region string, err error) {
 	if len(clouds) == 0 {
-		return "", "", errors.New("cloud not found")
+		return "", "", status.Error(codes.NotFound, "cloud not found")
 	}
 
 	for tag := range clouds {
 		if len(clouds[tag].Regions) == 0 {
-			return "", "", fmt.Errorf("cloud %q region not found ", tag)
+			return "", "", status.Errorf(codes.NotFound, "cloud %q not found", tag)
 		}
 		return clouds[tag].Name, clouds[tag].Regions[0].Name, nil
 	}

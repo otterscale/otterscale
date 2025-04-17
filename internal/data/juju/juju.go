@@ -19,7 +19,7 @@ const (
 
 type JujuMap map[string]api.Connection
 
-func New() (JujuMap, error) {
+func NewJujuMap() (JujuMap, error) {
 	return JujuMap{}, nil
 }
 
@@ -31,7 +31,7 @@ func (m JujuMap) Get(ctx context.Context, uuid string) (api.Connection, error) {
 		conn.Close()
 	}
 
-	conn, err := newJuju(uuid)
+	conn, err := newConnection(uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (m JujuMap) Get(ctx context.Context, uuid string) (api.Connection, error) {
 	return conn, nil
 }
 
-func newJuju(uuid string) (api.Connection, error) {
+func newConnection(uuid string) (api.Connection, error) {
 	cfg := &connector.SimpleConfig{
 		ModelUUID:           uuid,
 		ControllerAddresses: strings.Split(env.GetOrDefault(env.OPENHDC_JUJU_CONTROLLER_ADDRESSES, defaultControllerAddress), ","),

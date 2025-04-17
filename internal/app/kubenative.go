@@ -6,6 +6,9 @@ import (
 	"slices"
 	"time"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	appsv1 "k8s.io/api/apps/v1"
@@ -65,7 +68,7 @@ func (a *KubeApp) GetApplication(ctx context.Context, req *connect.Request[v1.Ge
 		return connect.NewResponse(app), nil
 	}
 
-	return nil, fmt.Errorf("application %s in namespace %s not found", req.Msg.GetName(), req.Msg.GetNamespace())
+	return nil, status.Errorf(codes.NotFound, "application %s in namespace %s not found", req.Msg.GetName(), req.Msg.GetNamespace())
 }
 
 // Helper functions for creating applications from different resource types

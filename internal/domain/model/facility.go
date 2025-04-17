@@ -2,12 +2,14 @@ package model
 
 import (
 	"github.com/juju/juju/api/client/action"
+	"github.com/juju/juju/api/client/application"
 	"github.com/juju/juju/rpc/params"
 )
 
 type (
 	DetailedStatus = params.DetailedStatus
 	UnitStatus     = params.UnitStatus
+	UnitInfo       = application.UnitInfo
 )
 
 type Facility struct {

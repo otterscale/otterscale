@@ -271,7 +271,41 @@ message Application {  // + CREATE TIME
         string values_yaml = 1;
         string readme_md = 2;
       }
+      message Maintainer {
+        string name = 1;
+        string email = 2;
+        string url = 3;
+      }
+      message Dependency {
+        string name = 1;
+        string version = 2;
+        string condition = 3;
+      }
+      message Version {
+        string chart_version = 1;
+        string chart_ref = 2;
+        string application_version = 3;
+      }
+      string name = 1;
+      string icon = 2;
+      string description = 3;
+      bool deprecated = 4;
+      string tags = 5;
+      repeated string keywords = 6;
+      string home = 11;
+      repeated string sources = 12;
+      repeated Maintainer maintainers = 21;
+      repeated Dependency dependencies = 31;
+      repeated Version versions = 41;
     }
+    string scope_name = 1;
+    string scope_uuid = 2;
+    string facility_name = 3;
+    string namespace = 4;
+    string name = 5;
+    int32 revision = 6;
+    string chart_name = 11;
+    Chart.Version version = 12;
   }
 }
 
@@ -470,13 +504,21 @@ message ListActionsResponse {
 
 message DoActionRequest {}
 
-message ListApplicationsRequest {}
+message ListApplicationsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
 
 message ListApplicationsResponse {
   repeated Application applications = 1;
 }
 
-message GetApplicationRequest {}
+message GetApplicationRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
 
 message ListReleasesRequest {}
 
@@ -484,13 +526,41 @@ message ListReleasesResponse {
   repeated Application.Release releases = 1;
 }
 
-message CreateReleaseRequest {}
+message CreateReleaseRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+  string chart_ref = 11;
+  string values_yaml = 12;
+}
 
-message UpdateReleaseRequest {}
+message UpdateReleaseRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+  string chart_ref = 11;
+  string values_yaml = 12;
+}
 
-message DeleteReleaseRequest {}
+message DeleteReleaseRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+}
 
-message RollbackReleaseRequest {}
+message RollbackReleaseRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+}
 
 message ListChartsRequest {}
 
@@ -498,6 +568,10 @@ message ListChartsResponse {
   repeated Application.Release.Chart charts = 1;
 }
 
-message GetChartRequest {}
+message GetChartRequest {
+  string name = 1;
+}
 
-message GetChartMetadataRequest {}
+message GetChartMetadataRequest {
+  string chart_ref = 1;
+}
