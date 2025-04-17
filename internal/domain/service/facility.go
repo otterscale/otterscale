@@ -60,7 +60,8 @@ func (s *NexusService) CreateFacility(ctx context.Context, uuid, name, configYAM
 	if err != nil {
 		return nil, err
 	}
-	if _, err := s.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, placements, toConstraint(mc), trust); err != nil {
+	constraint := toConstraint(mc)
+	if _, err := s.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, placements, &constraint, trust); err != nil {
 		return nil, err
 	}
 	return &model.Facility{}, nil

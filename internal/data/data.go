@@ -10,7 +10,6 @@ import (
 )
 
 var ProviderSet = wire.NewSet(
-	maas.NewConfig,
 	maas.New,
 	maas.NewBootResource,
 	maas.NewFabric,
@@ -20,7 +19,7 @@ var ProviderSet = wire.NewSet(
 	maas.NewServer,
 	maas.NewSubnet,
 	maas.NewVLAN,
-	juju.NewMap,
+	juju.New,
 	juju.NewAction,
 	juju.NewApplication,
 	juju.NewClient,

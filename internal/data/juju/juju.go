@@ -2,10 +2,9 @@ package juju
 
 import (
 	"context"
-	"time"
-
 	"os"
 	"strings"
+	"time"
 
 	"github.com/juju/juju/api"
 	"github.com/juju/juju/api/connector"
@@ -20,7 +19,7 @@ const (
 
 type JujuMap map[string]api.Connection
 
-func NewMap() (JujuMap, error) {
+func New() (JujuMap, error) {
 	return JujuMap{}, nil
 }
 

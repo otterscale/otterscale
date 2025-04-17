@@ -99,7 +99,7 @@ type JujuModelConfig interface {
 }
 
 type JujuApplication interface {
-	Create(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, placements []instance.Placement, constraint constraints.Value, trust bool) (*application.DeployInfo, error)
+	Create(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, placements []instance.Placement, constraint *constraints.Value, trust bool) (*application.DeployInfo, error)
 	Update(ctx context.Context, uuid, name string, configYAML string) error
 	Delete(ctx context.Context, uuid, name string, destroyStorage, force bool) error
 	Expose(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error
