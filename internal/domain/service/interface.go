@@ -99,15 +99,15 @@ type JujuModelConfig interface {
 }
 
 type JujuApplication interface {
-	Create(ctx context.Context, uuid, charmName, appName, channel string, revision, number int, config map[string]string, constraint constraints.Value, placements []instance.Placement, trust bool) error
-	Update(ctx context.Context, uuid, name string, config map[string]string) error
+	Create(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, placements []instance.Placement, constraint constraints.Value, trust bool) (*application.DeployInfo, error)
+	Update(ctx context.Context, uuid, name string, configYAML string) error
 	Delete(ctx context.Context, uuid, name string, destroyStorage, force bool) error
 	Expose(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error
 	AddUnits(ctx context.Context, uuid, name string, number int, placements []instance.Placement) ([]string, error)
 	ResolveUnitErrors(ctx context.Context, uuid string, units []string) error
 	CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error)
 	DeleteRelation(ctx context.Context, uuid string, id int) error
-	GetConfigs(ctx context.Context, uuid string, name ...string) (map[string]map[string]any, error)
+	GetConfig(ctx context.Context, uuid string, name string) (map[string]any, error)
 	GetLeader(ctx context.Context, uuid, name string) (string, error)
 	GetUnitInfo(ctx context.Context, uuid, name string) (*application.UnitInfo, error)
 }

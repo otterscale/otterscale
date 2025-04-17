@@ -41,13 +41,14 @@ service Nexus {
   // Facility
   rpc ListFacilities(ListFacilitiesRequest) returns (ListFacilitiesResponse);
   rpc GetFacility(GetFacilityRequest) returns (Facility);
+  rpc GetFacilityMetadata(GetFacilityMetadataRequest) returns (Facility.Metadata);
   rpc CreateFacility(CreateFacilityRequest) returns (Facility);
   rpc UpdateFacility(UpdateFacilityRequest) returns (Facility);
   rpc DeleteFacility(DeleteFacilityRequest) returns (google.protobuf.Empty);
   rpc ExposeFacility(ExposeFacilityRequest) returns (google.protobuf.Empty);
-  rpc AddFacilityUnits(AddFacilityUnitsRequest) returns (google.protobuf.Empty);
+  rpc AddFacilityUnits(AddFacilityUnitsRequest) returns (AddFacilityUnitsResponse);
   rpc ListActions(ListActionsRequest) returns (ListActionsResponse);
-  rpc RunAction(RunActionRequest) returns (google.protobuf.Empty);
+  rpc DoAction(DoActionRequest) returns (google.protobuf.Empty);
 
   // Application
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
@@ -231,13 +232,45 @@ message Scope {
 }
 
 message Facility {
-  message Action {}
+  message Metadata {
+    string config_yaml = 1;
+  }
+  message Action {
+    string name = 1;
+    string description = 2;
+  }
+  message Status {
+    string state = 1;
+    string details = 2;
+    google.protobuf.Timestamp created_at = 3;
+  }
+  message Unit {
+    string name = 1;
+    Status agent_status = 2;
+    Status workload_status = 3;
+    bool leader = 4;
+    string machine_id = 11;
+    string ip_address = 12;
+    repeated string ports = 13;
+    string charm_name = 21;
+    string version = 22;
+    repeated Unit subordinates = 31;
+  }
+  string name = 1;
+  Status status = 2;
+  string charm_name = 11;
+  string version = 12;
+  int64 revision = 13;
+  repeated Unit units = 21;
 }
 
 message Application {  // + CREATE TIME
   message Release {
     message Chart {
-      message Metadata {}
+      message Metadata {
+        string values_yaml = 1;
+        string readme_md = 2;
+      }
     }
   }
 }
@@ -366,31 +399,76 @@ message CreateScopeRequest {
   string name = 1;
 }
 
-message ListFacilitiesRequest {}
+message ListFacilitiesRequest {
+  string scope_uuid = 1;
+}
 
 message ListFacilitiesResponse {
   repeated Facility facilities = 1;
 }
 
-message GetFacilityRequest {}
+message GetFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+}
 
-message CreateFacilityRequest {}
+message GetFacilityMetadataRequest {
+  string scope_uuid = 1;
+  string name = 2;
+}
 
-message UpdateFacilityRequest {}
+message CreateFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+  string config_yaml = 11;
+  string charm_name = 21;
+  string channel = 22;
+  int64 revision = 23;
+  int64 number = 24;
+  repeated Machine.Placement placements = 31;
+  Machine.Constraint constraint = 32;
+  bool trust = 41;
+}
 
-message DeleteFacilityRequest {}
+message UpdateFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+  string config_yaml = 11;
+}
 
-message ExposeFacilityRequest {}
+message DeleteFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+  bool destroy_storage = 11;
+  bool force = 12;
+}
 
-message AddFacilityUnitsRequest {}
+message ExposeFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+}
 
-message ListActionsRequest {}
+message AddFacilityUnitsRequest {
+  string scope_uuid = 1;
+  string name = 2;
+  int64 number = 11;
+  repeated Machine.Placement placements = 21;
+}
+
+message AddFacilityUnitsResponse {
+  repeated string units = 1;
+}
+
+message ListActionsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
 
 message ListActionsResponse {
   repeated Facility.Action actions = 1;
 }
 
-message RunActionRequest {}
+message DoActionRequest {}
 
 message ListApplicationsRequest {}
 

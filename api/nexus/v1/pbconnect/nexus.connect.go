@@ -84,6 +84,9 @@ const (
 	NexusListFacilitiesProcedure = "/openhdc.nexus.v1.Nexus/ListFacilities"
 	// NexusGetFacilityProcedure is the fully-qualified name of the Nexus's GetFacility RPC.
 	NexusGetFacilityProcedure = "/openhdc.nexus.v1.Nexus/GetFacility"
+	// NexusGetFacilityMetadataProcedure is the fully-qualified name of the Nexus's GetFacilityMetadata
+	// RPC.
+	NexusGetFacilityMetadataProcedure = "/openhdc.nexus.v1.Nexus/GetFacilityMetadata"
 	// NexusCreateFacilityProcedure is the fully-qualified name of the Nexus's CreateFacility RPC.
 	NexusCreateFacilityProcedure = "/openhdc.nexus.v1.Nexus/CreateFacility"
 	// NexusUpdateFacilityProcedure is the fully-qualified name of the Nexus's UpdateFacility RPC.
@@ -96,8 +99,8 @@ const (
 	NexusAddFacilityUnitsProcedure = "/openhdc.nexus.v1.Nexus/AddFacilityUnits"
 	// NexusListActionsProcedure is the fully-qualified name of the Nexus's ListActions RPC.
 	NexusListActionsProcedure = "/openhdc.nexus.v1.Nexus/ListActions"
-	// NexusRunActionProcedure is the fully-qualified name of the Nexus's RunAction RPC.
-	NexusRunActionProcedure = "/openhdc.nexus.v1.Nexus/RunAction"
+	// NexusDoActionProcedure is the fully-qualified name of the Nexus's DoAction RPC.
+	NexusDoActionProcedure = "/openhdc.nexus.v1.Nexus/DoAction"
 	// NexusListApplicationsProcedure is the fully-qualified name of the Nexus's ListApplications RPC.
 	NexusListApplicationsProcedure = "/openhdc.nexus.v1.Nexus/ListApplications"
 	// NexusGetApplicationProcedure is the fully-qualified name of the Nexus's GetApplication RPC.
@@ -151,13 +154,14 @@ type NexusClient interface {
 	// Facility
 	ListFacilities(context.Context, *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error)
 	GetFacility(context.Context, *connect.Request[v1.GetFacilityRequest]) (*connect.Response[v1.Facility], error)
+	GetFacilityMetadata(context.Context, *connect.Request[v1.GetFacilityMetadataRequest]) (*connect.Response[v1.Facility_Metadata], error)
 	CreateFacility(context.Context, *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error)
 	UpdateFacility(context.Context, *connect.Request[v1.UpdateFacilityRequest]) (*connect.Response[v1.Facility], error)
 	DeleteFacility(context.Context, *connect.Request[v1.DeleteFacilityRequest]) (*connect.Response[emptypb.Empty], error)
 	ExposeFacility(context.Context, *connect.Request[v1.ExposeFacilityRequest]) (*connect.Response[emptypb.Empty], error)
-	AddFacilityUnits(context.Context, *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[emptypb.Empty], error)
+	AddFacilityUnits(context.Context, *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[v1.AddFacilityUnitsResponse], error)
 	ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error)
-	RunAction(context.Context, *connect.Request[v1.RunActionRequest]) (*connect.Response[emptypb.Empty], error)
+	DoAction(context.Context, *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error)
 	// Application
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -326,6 +330,12 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("GetFacility")),
 			connect.WithClientOptions(opts...),
 		),
+		getFacilityMetadata: connect.NewClient[v1.GetFacilityMetadataRequest, v1.Facility_Metadata](
+			httpClient,
+			baseURL+NexusGetFacilityMetadataProcedure,
+			connect.WithSchema(nexusMethods.ByName("GetFacilityMetadata")),
+			connect.WithClientOptions(opts...),
+		),
 		createFacility: connect.NewClient[v1.CreateFacilityRequest, v1.Facility](
 			httpClient,
 			baseURL+NexusCreateFacilityProcedure,
@@ -350,7 +360,7 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("ExposeFacility")),
 			connect.WithClientOptions(opts...),
 		),
-		addFacilityUnits: connect.NewClient[v1.AddFacilityUnitsRequest, emptypb.Empty](
+		addFacilityUnits: connect.NewClient[v1.AddFacilityUnitsRequest, v1.AddFacilityUnitsResponse](
 			httpClient,
 			baseURL+NexusAddFacilityUnitsProcedure,
 			connect.WithSchema(nexusMethods.ByName("AddFacilityUnits")),
@@ -362,10 +372,10 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("ListActions")),
 			connect.WithClientOptions(opts...),
 		),
-		runAction: connect.NewClient[v1.RunActionRequest, emptypb.Empty](
+		doAction: connect.NewClient[v1.DoActionRequest, emptypb.Empty](
 			httpClient,
-			baseURL+NexusRunActionProcedure,
-			connect.WithSchema(nexusMethods.ByName("RunAction")),
+			baseURL+NexusDoActionProcedure,
+			connect.WithSchema(nexusMethods.ByName("DoAction")),
 			connect.WithClientOptions(opts...),
 		),
 		listApplications: connect.NewClient[v1.ListApplicationsRequest, v1.ListApplicationsResponse](
@@ -457,13 +467,14 @@ type nexusClient struct {
 	createScope               *connect.Client[v1.CreateScopeRequest, v1.Scope]
 	listFacilities            *connect.Client[v1.ListFacilitiesRequest, v1.ListFacilitiesResponse]
 	getFacility               *connect.Client[v1.GetFacilityRequest, v1.Facility]
+	getFacilityMetadata       *connect.Client[v1.GetFacilityMetadataRequest, v1.Facility_Metadata]
 	createFacility            *connect.Client[v1.CreateFacilityRequest, v1.Facility]
 	updateFacility            *connect.Client[v1.UpdateFacilityRequest, v1.Facility]
 	deleteFacility            *connect.Client[v1.DeleteFacilityRequest, emptypb.Empty]
 	exposeFacility            *connect.Client[v1.ExposeFacilityRequest, emptypb.Empty]
-	addFacilityUnits          *connect.Client[v1.AddFacilityUnitsRequest, emptypb.Empty]
+	addFacilityUnits          *connect.Client[v1.AddFacilityUnitsRequest, v1.AddFacilityUnitsResponse]
 	listActions               *connect.Client[v1.ListActionsRequest, v1.ListActionsResponse]
-	runAction                 *connect.Client[v1.RunActionRequest, emptypb.Empty]
+	doAction                  *connect.Client[v1.DoActionRequest, emptypb.Empty]
 	listApplications          *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
 	getApplication            *connect.Client[v1.GetApplicationRequest, v1.Application]
 	listReleases              *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
@@ -596,6 +607,11 @@ func (c *nexusClient) GetFacility(ctx context.Context, req *connect.Request[v1.G
 	return c.getFacility.CallUnary(ctx, req)
 }
 
+// GetFacilityMetadata calls openhdc.nexus.v1.Nexus.GetFacilityMetadata.
+func (c *nexusClient) GetFacilityMetadata(ctx context.Context, req *connect.Request[v1.GetFacilityMetadataRequest]) (*connect.Response[v1.Facility_Metadata], error) {
+	return c.getFacilityMetadata.CallUnary(ctx, req)
+}
+
 // CreateFacility calls openhdc.nexus.v1.Nexus.CreateFacility.
 func (c *nexusClient) CreateFacility(ctx context.Context, req *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error) {
 	return c.createFacility.CallUnary(ctx, req)
@@ -617,7 +633,7 @@ func (c *nexusClient) ExposeFacility(ctx context.Context, req *connect.Request[v
 }
 
 // AddFacilityUnits calls openhdc.nexus.v1.Nexus.AddFacilityUnits.
-func (c *nexusClient) AddFacilityUnits(ctx context.Context, req *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+func (c *nexusClient) AddFacilityUnits(ctx context.Context, req *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[v1.AddFacilityUnitsResponse], error) {
 	return c.addFacilityUnits.CallUnary(ctx, req)
 }
 
@@ -626,9 +642,9 @@ func (c *nexusClient) ListActions(ctx context.Context, req *connect.Request[v1.L
 	return c.listActions.CallUnary(ctx, req)
 }
 
-// RunAction calls openhdc.nexus.v1.Nexus.RunAction.
-func (c *nexusClient) RunAction(ctx context.Context, req *connect.Request[v1.RunActionRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.runAction.CallUnary(ctx, req)
+// DoAction calls openhdc.nexus.v1.Nexus.DoAction.
+func (c *nexusClient) DoAction(ctx context.Context, req *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.doAction.CallUnary(ctx, req)
 }
 
 // ListApplications calls openhdc.nexus.v1.Nexus.ListApplications.
@@ -712,13 +728,14 @@ type NexusHandler interface {
 	// Facility
 	ListFacilities(context.Context, *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error)
 	GetFacility(context.Context, *connect.Request[v1.GetFacilityRequest]) (*connect.Response[v1.Facility], error)
+	GetFacilityMetadata(context.Context, *connect.Request[v1.GetFacilityMetadataRequest]) (*connect.Response[v1.Facility_Metadata], error)
 	CreateFacility(context.Context, *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error)
 	UpdateFacility(context.Context, *connect.Request[v1.UpdateFacilityRequest]) (*connect.Response[v1.Facility], error)
 	DeleteFacility(context.Context, *connect.Request[v1.DeleteFacilityRequest]) (*connect.Response[emptypb.Empty], error)
 	ExposeFacility(context.Context, *connect.Request[v1.ExposeFacilityRequest]) (*connect.Response[emptypb.Empty], error)
-	AddFacilityUnits(context.Context, *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[emptypb.Empty], error)
+	AddFacilityUnits(context.Context, *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[v1.AddFacilityUnitsResponse], error)
 	ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error)
-	RunAction(context.Context, *connect.Request[v1.RunActionRequest]) (*connect.Response[emptypb.Empty], error)
+	DoAction(context.Context, *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error)
 	// Application
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -883,6 +900,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("GetFacility")),
 		connect.WithHandlerOptions(opts...),
 	)
+	nexusGetFacilityMetadataHandler := connect.NewUnaryHandler(
+		NexusGetFacilityMetadataProcedure,
+		svc.GetFacilityMetadata,
+		connect.WithSchema(nexusMethods.ByName("GetFacilityMetadata")),
+		connect.WithHandlerOptions(opts...),
+	)
 	nexusCreateFacilityHandler := connect.NewUnaryHandler(
 		NexusCreateFacilityProcedure,
 		svc.CreateFacility,
@@ -919,10 +942,10 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("ListActions")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusRunActionHandler := connect.NewUnaryHandler(
-		NexusRunActionProcedure,
-		svc.RunAction,
-		connect.WithSchema(nexusMethods.ByName("RunAction")),
+	nexusDoActionHandler := connect.NewUnaryHandler(
+		NexusDoActionProcedure,
+		svc.DoAction,
+		connect.WithSchema(nexusMethods.ByName("DoAction")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusListApplicationsHandler := connect.NewUnaryHandler(
@@ -1035,6 +1058,8 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusListFacilitiesHandler.ServeHTTP(w, r)
 		case NexusGetFacilityProcedure:
 			nexusGetFacilityHandler.ServeHTTP(w, r)
+		case NexusGetFacilityMetadataProcedure:
+			nexusGetFacilityMetadataHandler.ServeHTTP(w, r)
 		case NexusCreateFacilityProcedure:
 			nexusCreateFacilityHandler.ServeHTTP(w, r)
 		case NexusUpdateFacilityProcedure:
@@ -1047,8 +1072,8 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusAddFacilityUnitsHandler.ServeHTTP(w, r)
 		case NexusListActionsProcedure:
 			nexusListActionsHandler.ServeHTTP(w, r)
-		case NexusRunActionProcedure:
-			nexusRunActionHandler.ServeHTTP(w, r)
+		case NexusDoActionProcedure:
+			nexusDoActionHandler.ServeHTTP(w, r)
 		case NexusListApplicationsProcedure:
 			nexusListApplicationsHandler.ServeHTTP(w, r)
 		case NexusGetApplicationProcedure:
@@ -1174,6 +1199,10 @@ func (UnimplementedNexusHandler) GetFacility(context.Context, *connect.Request[v
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetFacility is not implemented"))
 }
 
+func (UnimplementedNexusHandler) GetFacilityMetadata(context.Context, *connect.Request[v1.GetFacilityMetadataRequest]) (*connect.Response[v1.Facility_Metadata], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetFacilityMetadata is not implemented"))
+}
+
 func (UnimplementedNexusHandler) CreateFacility(context.Context, *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateFacility is not implemented"))
 }
@@ -1190,7 +1219,7 @@ func (UnimplementedNexusHandler) ExposeFacility(context.Context, *connect.Reques
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ExposeFacility is not implemented"))
 }
 
-func (UnimplementedNexusHandler) AddFacilityUnits(context.Context, *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedNexusHandler) AddFacilityUnits(context.Context, *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[v1.AddFacilityUnitsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddFacilityUnits is not implemented"))
 }
 
@@ -1198,8 +1227,8 @@ func (UnimplementedNexusHandler) ListActions(context.Context, *connect.Request[v
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListActions is not implemented"))
 }
 
-func (UnimplementedNexusHandler) RunAction(context.Context, *connect.Request[v1.RunActionRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.RunAction is not implemented"))
+func (UnimplementedNexusHandler) DoAction(context.Context, *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DoAction is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {

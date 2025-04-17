@@ -13,6 +13,8 @@ type NexusService struct {
 	machineManager    JujuMachine
 	scope             JujuModel
 	scopeConfig       JujuModelConfig
+	facility          JujuApplication
+	action            JujuAction
 }
 
 func NewNexusService(
@@ -28,6 +30,8 @@ func NewNexusService(
 	machineManager JujuMachine,
 	scope JujuModel,
 	scopeConfig JujuModelConfig,
+	facility JujuApplication,
+	action JujuAction,
 ) *NexusService {
 	return &NexusService{
 		server:            server,
@@ -42,5 +46,7 @@ func NewNexusService(
 		machineManager:    machineManager,
 		scope:             scope,
 		scopeConfig:       scopeConfig,
+		facility:          facility,
+		action:            action,
 	}
 }

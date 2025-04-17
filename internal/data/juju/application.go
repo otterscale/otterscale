@@ -25,10 +25,10 @@ func NewApplication(jujuMap JujuMap) service.JujuApplication {
 
 var _ service.JujuApplication = (*application)(nil)
 
-func (r *application) Create(ctx context.Context, uuid, charmName, appName, channel string, revision, number int, config map[string]string, constraint constraints.Value, placements []instance.Placement, trust bool) error {
+func (r *application) Create(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, placements []instance.Placement, constraint constraints.Value, trust bool) (*api.DeployInfo, error) {
 	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	ps := []*instance.Placement{}
@@ -38,11 +38,11 @@ func (r *application) Create(ctx context.Context, uuid, charmName, appName, chan
 
 	args := api.DeployFromRepositoryArg{
 		CharmName:       charmName,
-		ApplicationName: appName,
-		// ConfigYAML:      configYAML, // TODO: YAML
-		Cons:      constraint,
-		Placement: ps,
-		Trust:     trust,
+		ApplicationName: name,
+		ConfigYAML:      configYAML,
+		Cons:            constraint,
+		Placement:       ps,
+		Trust:           trust,
 	}
 
 	if channel != "" {
@@ -57,21 +57,21 @@ func (r *application) Create(ctx context.Context, uuid, charmName, appName, chan
 		args.NumUnits = &number
 	}
 
-	_, _, errs := api.NewClient(conn).DeployFromRepository(ctx, args)
+	di, _, errs := api.NewClient(conn).DeployFromRepository(ctx, args)
 	for _, err := range errs {
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	return &di, nil
 }
 
-func (r *application) Update(ctx context.Context, uuid, name string, config map[string]string) error {
+func (r *application) Update(ctx context.Context, uuid, name string, configYAML string) error {
 	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return err
 	}
-	return api.NewClient(conn).SetConfig(ctx, name, "", config)
+	return api.NewClient(conn).SetConfig(ctx, name, configYAML, nil)
 }
 
 func (r *application) Delete(ctx context.Context, uuid, name string, destroyStorage, force bool) error {
@@ -143,20 +143,16 @@ func (r *application) DeleteRelation(ctx context.Context, uuid string, id int) e
 	return api.NewClient(conn).DestroyRelationId(ctx, id, nil, nil)
 }
 
-func (r *application) GetConfigs(ctx context.Context, uuid string, names ...string) (map[string]map[string]any, error) {
+func (r *application) GetConfig(ctx context.Context, uuid string, name string) (map[string]any, error) {
 	conn, err := r.jujuMap.Get(ctx, uuid)
 	if err != nil {
 		return nil, err
 	}
-	ret := map[string]map[string]any{}
-	for _, name := range names {
-		app, err := api.NewClient(conn).Get(ctx, name)
-		if err != nil {
-			return nil, err
-		}
-		ret[name] = app.CharmConfig
+	app, err := api.NewClient(conn).Get(ctx, name)
+	if err != nil {
+		return nil, err
 	}
-	return ret, nil
+	return app.CharmConfig, nil
 }
 
 func (r *application) GetLeader(ctx context.Context, uuid, name string) (string, error) {

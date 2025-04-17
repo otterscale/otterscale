@@ -44,13 +44,14 @@ const (
 	Nexus_CreateScope_FullMethodName               = "/openhdc.nexus.v1.Nexus/CreateScope"
 	Nexus_ListFacilities_FullMethodName            = "/openhdc.nexus.v1.Nexus/ListFacilities"
 	Nexus_GetFacility_FullMethodName               = "/openhdc.nexus.v1.Nexus/GetFacility"
+	Nexus_GetFacilityMetadata_FullMethodName       = "/openhdc.nexus.v1.Nexus/GetFacilityMetadata"
 	Nexus_CreateFacility_FullMethodName            = "/openhdc.nexus.v1.Nexus/CreateFacility"
 	Nexus_UpdateFacility_FullMethodName            = "/openhdc.nexus.v1.Nexus/UpdateFacility"
 	Nexus_DeleteFacility_FullMethodName            = "/openhdc.nexus.v1.Nexus/DeleteFacility"
 	Nexus_ExposeFacility_FullMethodName            = "/openhdc.nexus.v1.Nexus/ExposeFacility"
 	Nexus_AddFacilityUnits_FullMethodName          = "/openhdc.nexus.v1.Nexus/AddFacilityUnits"
 	Nexus_ListActions_FullMethodName               = "/openhdc.nexus.v1.Nexus/ListActions"
-	Nexus_RunAction_FullMethodName                 = "/openhdc.nexus.v1.Nexus/RunAction"
+	Nexus_DoAction_FullMethodName                  = "/openhdc.nexus.v1.Nexus/DoAction"
 	Nexus_ListApplications_FullMethodName          = "/openhdc.nexus.v1.Nexus/ListApplications"
 	Nexus_GetApplication_FullMethodName            = "/openhdc.nexus.v1.Nexus/GetApplication"
 	Nexus_ListReleases_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListReleases"
@@ -96,13 +97,14 @@ type NexusClient interface {
 	// Facility
 	ListFacilities(ctx context.Context, in *ListFacilitiesRequest, opts ...grpc.CallOption) (*ListFacilitiesResponse, error)
 	GetFacility(ctx context.Context, in *GetFacilityRequest, opts ...grpc.CallOption) (*Facility, error)
+	GetFacilityMetadata(ctx context.Context, in *GetFacilityMetadataRequest, opts ...grpc.CallOption) (*Facility_Metadata, error)
 	CreateFacility(ctx context.Context, in *CreateFacilityRequest, opts ...grpc.CallOption) (*Facility, error)
 	UpdateFacility(ctx context.Context, in *UpdateFacilityRequest, opts ...grpc.CallOption) (*Facility, error)
 	DeleteFacility(ctx context.Context, in *DeleteFacilityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ExposeFacility(ctx context.Context, in *ExposeFacilityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	AddFacilityUnits(ctx context.Context, in *AddFacilityUnitsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddFacilityUnits(ctx context.Context, in *AddFacilityUnitsRequest, opts ...grpc.CallOption) (*AddFacilityUnitsResponse, error)
 	ListActions(ctx context.Context, in *ListActionsRequest, opts ...grpc.CallOption) (*ListActionsResponse, error)
-	RunAction(ctx context.Context, in *RunActionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DoAction(ctx context.Context, in *DoActionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Application
 	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
 	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error)
@@ -364,6 +366,16 @@ func (c *nexusClient) GetFacility(ctx context.Context, in *GetFacilityRequest, o
 	return out, nil
 }
 
+func (c *nexusClient) GetFacilityMetadata(ctx context.Context, in *GetFacilityMetadataRequest, opts ...grpc.CallOption) (*Facility_Metadata, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Facility_Metadata)
+	err := c.cc.Invoke(ctx, Nexus_GetFacilityMetadata_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *nexusClient) CreateFacility(ctx context.Context, in *CreateFacilityRequest, opts ...grpc.CallOption) (*Facility, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Facility)
@@ -404,9 +416,9 @@ func (c *nexusClient) ExposeFacility(ctx context.Context, in *ExposeFacilityRequ
 	return out, nil
 }
 
-func (c *nexusClient) AddFacilityUnits(ctx context.Context, in *AddFacilityUnitsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *nexusClient) AddFacilityUnits(ctx context.Context, in *AddFacilityUnitsRequest, opts ...grpc.CallOption) (*AddFacilityUnitsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(AddFacilityUnitsResponse)
 	err := c.cc.Invoke(ctx, Nexus_AddFacilityUnits_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -424,10 +436,10 @@ func (c *nexusClient) ListActions(ctx context.Context, in *ListActionsRequest, o
 	return out, nil
 }
 
-func (c *nexusClient) RunAction(ctx context.Context, in *RunActionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *nexusClient) DoAction(ctx context.Context, in *DoActionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Nexus_RunAction_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Nexus_DoAction_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -567,13 +579,14 @@ type NexusServer interface {
 	// Facility
 	ListFacilities(context.Context, *ListFacilitiesRequest) (*ListFacilitiesResponse, error)
 	GetFacility(context.Context, *GetFacilityRequest) (*Facility, error)
+	GetFacilityMetadata(context.Context, *GetFacilityMetadataRequest) (*Facility_Metadata, error)
 	CreateFacility(context.Context, *CreateFacilityRequest) (*Facility, error)
 	UpdateFacility(context.Context, *UpdateFacilityRequest) (*Facility, error)
 	DeleteFacility(context.Context, *DeleteFacilityRequest) (*emptypb.Empty, error)
 	ExposeFacility(context.Context, *ExposeFacilityRequest) (*emptypb.Empty, error)
-	AddFacilityUnits(context.Context, *AddFacilityUnitsRequest) (*emptypb.Empty, error)
+	AddFacilityUnits(context.Context, *AddFacilityUnitsRequest) (*AddFacilityUnitsResponse, error)
 	ListActions(context.Context, *ListActionsRequest) (*ListActionsResponse, error)
-	RunAction(context.Context, *RunActionRequest) (*emptypb.Empty, error)
+	DoAction(context.Context, *DoActionRequest) (*emptypb.Empty, error)
 	// Application
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
 	GetApplication(context.Context, *GetApplicationRequest) (*Application, error)
@@ -667,6 +680,9 @@ func (UnimplementedNexusServer) ListFacilities(context.Context, *ListFacilitiesR
 func (UnimplementedNexusServer) GetFacility(context.Context, *GetFacilityRequest) (*Facility, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFacility not implemented")
 }
+func (UnimplementedNexusServer) GetFacilityMetadata(context.Context, *GetFacilityMetadataRequest) (*Facility_Metadata, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFacilityMetadata not implemented")
+}
 func (UnimplementedNexusServer) CreateFacility(context.Context, *CreateFacilityRequest) (*Facility, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFacility not implemented")
 }
@@ -679,14 +695,14 @@ func (UnimplementedNexusServer) DeleteFacility(context.Context, *DeleteFacilityR
 func (UnimplementedNexusServer) ExposeFacility(context.Context, *ExposeFacilityRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExposeFacility not implemented")
 }
-func (UnimplementedNexusServer) AddFacilityUnits(context.Context, *AddFacilityUnitsRequest) (*emptypb.Empty, error) {
+func (UnimplementedNexusServer) AddFacilityUnits(context.Context, *AddFacilityUnitsRequest) (*AddFacilityUnitsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddFacilityUnits not implemented")
 }
 func (UnimplementedNexusServer) ListActions(context.Context, *ListActionsRequest) (*ListActionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListActions not implemented")
 }
-func (UnimplementedNexusServer) RunAction(context.Context, *RunActionRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RunAction not implemented")
+func (UnimplementedNexusServer) DoAction(context.Context, *DoActionRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DoAction not implemented")
 }
 func (UnimplementedNexusServer) ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListApplications not implemented")
@@ -1171,6 +1187,24 @@ func _Nexus_GetFacility_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Nexus_GetFacilityMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFacilityMetadataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).GetFacilityMetadata(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_GetFacilityMetadata_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).GetFacilityMetadata(ctx, req.(*GetFacilityMetadataRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Nexus_CreateFacility_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateFacilityRequest)
 	if err := dec(in); err != nil {
@@ -1279,20 +1313,20 @@ func _Nexus_ListActions_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Nexus_RunAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RunActionRequest)
+func _Nexus_DoAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DoActionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NexusServer).RunAction(ctx, in)
+		return srv.(NexusServer).DoAction(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Nexus_RunAction_FullMethodName,
+		FullMethod: Nexus_DoAction_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NexusServer).RunAction(ctx, req.(*RunActionRequest))
+		return srv.(NexusServer).DoAction(ctx, req.(*DoActionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1581,6 +1615,10 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Nexus_GetFacility_Handler,
 		},
 		{
+			MethodName: "GetFacilityMetadata",
+			Handler:    _Nexus_GetFacilityMetadata_Handler,
+		},
+		{
 			MethodName: "CreateFacility",
 			Handler:    _Nexus_CreateFacility_Handler,
 		},
@@ -1605,8 +1643,8 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Nexus_ListActions_Handler,
 		},
 		{
-			MethodName: "RunAction",
-			Handler:    _Nexus_RunAction_Handler,
+			MethodName: "DoAction",
+			Handler:    _Nexus_DoAction_Handler,
 		},
 		{
 			MethodName: "ListApplications",
