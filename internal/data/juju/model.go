@@ -69,7 +69,7 @@ func (r *model) Create(ctx context.Context, name string) (*base.ModelInfo, error
 	return &mi, nil
 }
 
-func (r *model) cloudInfo(clouds map[names.CloudTag]jujucloud.Cloud) (string, string, error) {
+func (r *model) cloudInfo(clouds map[names.CloudTag]jujucloud.Cloud) (name, region string, err error) {
 	if len(clouds) == 0 {
 		return "", "", errors.New("cloud not found")
 	}
