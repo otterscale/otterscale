@@ -3,11 +3,11 @@ package app
 import (
 	"context"
 
-	"connectrpc.com/connect"
-	"github.com/juju/juju/rpc/params"
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
+
+	"connectrpc.com/connect"
+	pb "github.com/openhdc/openhdc/api/nexus/v1"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
@@ -116,7 +116,7 @@ func (a *NexusApp) ListActions(ctx context.Context, req *connect.Request[pb.List
 // 	return connect.NewResponse(res), nil
 // }
 
-func toProtoFacilityStatus(s *params.DetailedStatus) *pb.Facility_Status {
+func toProtoFacilityStatus(s *model.DetailedStatus) *pb.Facility_Status {
 	ret := &pb.Facility_Status{}
 	ret.SetState(s.Status)
 	ret.SetDetails(s.Info)
@@ -127,7 +127,7 @@ func toProtoFacilityStatus(s *params.DetailedStatus) *pb.Facility_Status {
 	return ret
 }
 
-func toProtoFacilityUnits(usm map[string]params.UnitStatus, machineMap map[string]string) []*pb.Facility_Unit {
+func toProtoFacilityUnits(usm map[string]model.UnitStatus, machineMap map[string]string) []*pb.Facility_Unit {
 	ret := []*pb.Facility_Unit{}
 	for name := range usm {
 		status := usm[name]
@@ -136,7 +136,7 @@ func toProtoFacilityUnits(usm map[string]params.UnitStatus, machineMap map[strin
 	return ret
 }
 
-func toProtoFacilityUnit(name string, s *params.UnitStatus, machineMap map[string]string) *pb.Facility_Unit {
+func toProtoFacilityUnit(name string, s *model.UnitStatus, machineMap map[string]string) *pb.Facility_Unit {
 	ret := &pb.Facility_Unit{}
 	ret.SetName(name)
 	ret.SetAgentStatus(toProtoFacilityStatus(&s.AgentStatus))

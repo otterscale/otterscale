@@ -3,9 +3,10 @@ package app
 import (
 	"context"
 
+	"google.golang.org/protobuf/types/known/emptypb"
+
 	"connectrpc.com/connect"
 	pb "github.com/openhdc/openhdc/api/nexus/v1"
-	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )

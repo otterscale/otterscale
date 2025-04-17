@@ -55,7 +55,7 @@ func (s *NexusService) GetFacilityMetadata(ctx context.Context, uuid, name strin
 	}, nil
 }
 
-func (s *NexusService) CreateFacility(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, mps []model.MachinePlacement, mc *model.MachineConstraint, trust bool) (*model.Facility, error) {
+func (s *NexusService) CreateFacility(ctx context.Context, uuid, name, configYAML, charmName, channel string, revision, number int, mps []model.MachinePlacement, mc *model.MachineConstraint, trust bool) (*model.Facility, error) {
 	placements, err := s.toPlacements(ctx, uuid, mps)
 	if err != nil {
 		return nil, err
@@ -63,11 +63,10 @@ func (s *NexusService) CreateFacility(ctx context.Context, uuid, name string, co
 	if _, err := s.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, placements, toConstraint(mc), trust); err != nil {
 		return nil, err
 	}
-	//TODO: MAPPING
 	return &model.Facility{}, nil
 }
 
-func (s *NexusService) UpdateFacility(ctx context.Context, uuid, name string, configYAML string) (*model.Facility, error) {
+func (s *NexusService) UpdateFacility(ctx context.Context, uuid, name, configYAML string) (*model.Facility, error) {
 	if err := s.facility.Update(ctx, uuid, name, configYAML); err != nil {
 		return nil, err
 	}

@@ -3,8 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/juju/juju/rpc/params"
-
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
@@ -63,7 +61,7 @@ func (s *NexusService) PowerOffMachine(ctx context.Context, id, comment string) 
 	return s.machine.PowerOff(ctx, id, params)
 }
 
-func (s *NexusService) listJujuMachines(ctx context.Context, uuid string) (map[string]params.MachineStatus, error) {
+func (s *NexusService) listJujuMachines(ctx context.Context, uuid string) (map[string]model.MachineStatus, error) {
 	status, err := s.client.Status(ctx, uuid, []string{"machine", "*"})
 	if err != nil {
 		return nil, err

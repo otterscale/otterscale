@@ -7,9 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
 const (
@@ -65,8 +66,8 @@ func (s *NexusService) UpdatePackageRepository(ctx context.Context, id int, url 
 		if err != nil {
 			return nil, err
 		}
-		for _, ums := range umss {
-			if err := s.scopeConfig.Set(ctx, ums.UUID, cfg); err != nil {
+		for i := range umss {
+			if err := s.scopeConfig.Set(ctx, umss[i].UUID, cfg); err != nil {
 				return nil, err
 			}
 		}
