@@ -18,6 +18,7 @@ type (
 )
 
 type (
+	MachineStatus    = params.MachineStatus
 	MachineAddParams = params.AddMachineParams
 	Placement        = instance.Placement
 	Constraint       = constraints.Value

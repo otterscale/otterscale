@@ -17,22 +17,7 @@ type NexusService struct {
 	action            JujuAction
 }
 
-func NewNexusService(
-	server MAASServer,
-	packageRepository MAASPackageRepository,
-	bootResource MAASBootResource,
-	fabric MAASFabric,
-	vlan MAASVLAN,
-	subnet MAASSubnet,
-	ipRange MAASIPRange,
-	machine MAASMachine,
-	client JujuClient,
-	machineManager JujuMachine,
-	scope JujuModel,
-	scopeConfig JujuModelConfig,
-	facility JujuApplication,
-	action JujuAction,
-) *NexusService {
+func NewNexusService(server MAASServer, packageRepository MAASPackageRepository, bootResource MAASBootResource, fabric MAASFabric, vlan MAASVLAN, subnet MAASSubnet, ipRange MAASIPRange, machine MAASMachine, client JujuClient, machineManager JujuMachine, scope JujuModel, scopeConfig JujuModelConfig, facility JujuApplication, action JujuAction) *NexusService {
 	return &NexusService{
 		server:            server,
 		packageRepository: packageRepository,

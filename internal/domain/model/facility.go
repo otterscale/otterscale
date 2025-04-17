@@ -5,6 +5,11 @@ import (
 	"github.com/juju/juju/rpc/params"
 )
 
+type (
+	DetailedStatus = params.DetailedStatus
+	UnitStatus     = params.UnitStatus
+)
+
 type Facility struct {
 	Name   string
 	Status *params.ApplicationStatus
