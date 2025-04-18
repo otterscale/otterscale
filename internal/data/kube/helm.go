@@ -6,8 +6,10 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -36,7 +38,8 @@ type helm struct {
 	settings           *cli.EnvSettings
 	providers          getter.Providers
 	registryClient     *registry.Client
-	repoIndex          *repo.IndexFile
+	repoURLs           []string
+	repoIndexFiles     []*repo.IndexFile
 	repoIndexCacheTime time.Time
 }
 
@@ -56,6 +59,7 @@ func NewHelm(helmMap HelmMap) (service.KubeHelm, error) {
 		settings:       settings,
 		providers:      getter.All(settings),
 		registryClient: registryClient,
+		repoURLs:       strings.Split(env.GetOrDefault(env.OPENHDC_HELM_REPOSITORY_URLS, defaultRepositoryURL), ","),
 	}, nil
 }
 
@@ -170,54 +174,63 @@ func (r *helm) ShowChart(chartRef string, format action.ShowOutputFormat) (strin
 	return client.Run(chartPath)
 }
 
-func (r *helm) ListChartVersions(ctx context.Context) (map[string]repo.ChartVersions, error) {
-	if err := r.fetchRepositoryIndex(ctx); err != nil {
+func (r *helm) ListChartVersions(ctx context.Context) ([]*repo.IndexFile, error) {
+	if r.repoIndexFiles != nil && time.Since(r.repoIndexCacheTime) < time.Hour*24 {
+		return r.repoIndexFiles, nil
+	}
+	eg, ctx := errgroup.WithContext(ctx)
+	result := make([]*repo.IndexFile, len(r.repoURLs))
+	for idx, url := range r.repoURLs {
+		eg.Go(func() error {
+			f, err := r.fetchRepositoryIndex(ctx, url)
+			if err == nil {
+				f.SortEntries()
+				result[idx] = f
+			}
+			return err
+		})
+	}
+	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	r.repoIndex.SortEntries()
-	return r.repoIndex.Entries, nil
+	r.repoIndexFiles = result
+	r.repoIndexCacheTime = time.Now()
+	return r.repoIndexFiles, nil
 }
 
-// FIXME: WORKAROUND
-func (r *helm) fetchRepositoryIndex(ctx context.Context) error {
-	if r.repoIndex != nil && time.Since(r.repoIndexCacheTime) < time.Hour*24 {
-		return nil
-	}
-
-	queryURL, err := url.ParseRequestURI(env.GetOrDefault(env.OPENHDC_HELM_REPOSITORY_URL, defaultRepositoryURL))
+func (r *helm) fetchRepositoryIndex(ctx context.Context, repoURL string) (*repo.IndexFile, error) {
+	queryURL, err := url.ParseRequestURI(repoURL)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	queryURL = queryURL.JoinPath("index.yaml")
 
 	url := queryURL.String()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 	if err != nil {
-		return fmt.Errorf("fetch repository index from %q failed: %w", url, err)
+		return nil, fmt.Errorf("fetch repository index from %q failed: %w", url, err)
 	}
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("fetch repository index from %q failed: %w", url, err)
+		return nil, fmt.Errorf("fetch repository index from %q failed: %w", url, err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return fmt.Errorf("fetch repository index from %q failed: %d", url, resp.StatusCode)
+		return nil, fmt.Errorf("fetch repository index from %q failed: %d", url, resp.StatusCode)
 	}
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return fmt.Errorf("fetch repository index from %q failed: %w", url, err)
+		return nil, fmt.Errorf("fetch repository index from %q failed: %w", url, err)
 	}
 
-	r.repoIndex = new(repo.IndexFile)
-	if err := yaml.Unmarshal(data, r.repoIndex); err != nil {
-		return err
+	f := new(repo.IndexFile)
+	if err := yaml.Unmarshal(data, f); err != nil {
+		return nil, err
 	}
-	r.repoIndexCacheTime = time.Now()
-
-	return nil
+	return f, nil
 }
 
 func (r *helm) chartInstall(chartPath string, dependencyUpdate bool, keyring string, rc *registry.Client) (*chart.Chart, error) {
