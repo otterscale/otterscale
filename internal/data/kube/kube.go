@@ -3,6 +3,7 @@ package kube
 import (
 	"crypto/sha256"
 	"os"
+	"sync"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -15,22 +16,25 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-type KubeMap map[string]*kubernetes.Clientset
+// map[string]*kubernetes.Clientset
+type KubeMap struct {
+	*sync.Map
+}
 
 func NewKubeMap() (KubeMap, error) {
-	return map[string]*kubernetes.Clientset{}, nil
+	return KubeMap{&sync.Map{}}, nil
 }
 
 func (m KubeMap) exists(uuid, facility string) bool {
 	key := key(uuid, facility)
-	_, ok := m[key]
+	_, ok := m.Load(key)
 	return ok
 }
 
 func (m KubeMap) get(uuid, facility string) (*kubernetes.Clientset, error) {
 	key := key(uuid, facility)
-	if clientset, ok := m[key]; ok {
-		return clientset, nil
+	if v, ok := m.Load(key); ok {
+		return v.(*kubernetes.Clientset), nil
 	}
 	return nil, status.Errorf(codes.NotFound, "kubernetes %q in scope %q not found", facility, uuid)
 }
@@ -41,7 +45,7 @@ func (m KubeMap) set(uuid, facility string, config *rest.Config) error {
 		return err
 	}
 	key := key(uuid, facility)
-	m[key] = clientset
+	m.Store(key, clientset)
 	return nil
 }
 
