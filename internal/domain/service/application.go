@@ -272,33 +272,37 @@ func (s *NexusService) RollbackRelease(ctx context.Context, uuid, facility, name
 }
 
 func (s *NexusService) ListCharts(ctx context.Context) ([]model.Chart, error) {
-	cm, err := s.helm.ListChartVersions(ctx)
+	fs, err := s.helm.ListChartVersions(ctx)
 	if err != nil {
 		return nil, err
 	}
 	cs := []model.Chart{}
-	for name := range cm {
-		cs = append(cs, model.Chart{
-			Name:     name,
-			Versions: cm[name],
-		})
+	for _, f := range fs {
+		for key := range f.Entries {
+			cs = append(cs, model.Chart{
+				Name:     key,
+				Versions: f.Entries[key],
+			})
+		}
 	}
 	return cs, nil
 }
 
 func (s *NexusService) GetChart(ctx context.Context, name string) (*model.Chart, error) {
-	cm, err := s.helm.ListChartVersions(ctx)
+	fs, err := s.helm.ListChartVersions(ctx)
 	if err != nil {
 		return nil, err
 	}
-	for cname := range cm {
-		if cname != name {
-			continue
+	for _, f := range fs {
+		for key := range f.Entries {
+			if key != name {
+				continue
+			}
+			return &model.Chart{
+				Name:     key,
+				Versions: f.Entries[key],
+			}, nil
 		}
-		return &model.Chart{
-			Name:     cname,
-			Versions: cm[cname],
-		}, nil
 	}
 	return nil, status.Errorf(codes.NotFound, "chart %q not found", name)
 }
