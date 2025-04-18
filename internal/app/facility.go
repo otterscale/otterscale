@@ -7,8 +7,8 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"connectrpc.com/connect"
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
 
+	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
@@ -116,6 +116,35 @@ func (a *NexusApp) ListActions(ctx context.Context, req *connect.Request[pb.List
 // 	return connect.NewResponse(res), nil
 // }
 
+func (a *NexusApp) ListCharms(ctx context.Context, req *connect.Request[pb.ListCharmsRequest]) (*connect.Response[pb.ListCharmsResponse], error) {
+	cs, err := a.svc.ListCharms(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := &pb.ListCharmsResponse{}
+	res.SetCharms(toProtoCharms(cs))
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) GetCharm(ctx context.Context, req *connect.Request[pb.GetCharmRequest]) (*connect.Response[pb.Facility_Charm], error) {
+	c, err := a.svc.GetCharm(ctx, req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	res := toProtoCharm(c)
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) ListCharmArtifacts(ctx context.Context, req *connect.Request[pb.ListCharmArtifactsRequest]) (*connect.Response[pb.ListCharmArtifactsResponse], error) {
+	as, err := a.svc.ListArtifacts(ctx, req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	res := &pb.ListCharmArtifactsResponse{}
+	res.SetArtifacts(toProtoCharmArtifacts(as))
+	return connect.NewResponse(res), nil
+}
+
 func toProtoFacilityStatus(s *model.DetailedStatus) *pb.Facility_Status {
 	ret := &pb.Facility_Status{}
 	ret.SetState(s.Status)
@@ -188,5 +217,75 @@ func toProtoAction(a *model.Action) *pb.Facility_Action {
 	ret := &pb.Facility_Action{}
 	ret.SetName(a.Name)
 	ret.SetDescription(a.Spec.Description)
+	return ret
+}
+
+func toProtoCharms(cs []model.Charm) []*pb.Facility_Charm {
+	ret := []*pb.Facility_Charm{}
+	for i := range cs {
+		ret = append(ret, toProtoCharm(&cs[i]))
+	}
+	return ret
+}
+
+func toProtoCharm(c *model.Charm) *pb.Facility_Charm {
+	categories := []string{}
+	for _, ca := range c.Result.Categories {
+		categories = append(categories, ca.Name)
+	}
+	icon := ""
+	for _, m := range c.Result.Media {
+		icon = m.URL
+		break
+	}
+	ret := &pb.Facility_Charm{}
+	ret.SetId(c.ID)
+	ret.SetType(c.Type)
+	ret.SetName(c.Name)
+	ret.SetTitle(c.Result.Title)
+	ret.SetSummary(c.Result.Summary)
+	ret.SetIcon(icon)
+	ret.SetDescription(c.Result.Description)
+	ret.SetCategories(categories)
+	ret.SetDeployableOn(c.Result.DeployableOn)
+	ret.SetPublisher(c.Result.Publisher.DisplayName)
+	ret.SetLicense(c.Result.License)
+	ret.SetStoreUrl(c.Result.StoreURL)
+	ret.SetWebsite(c.Result.Website)
+	ret.SetDefaultArtifact(toProtoCharmArtifact(&c.DefaultArtifact))
+	return ret
+}
+
+func toProtoCharmBases(bs []model.CharmBase) []*pb.Facility_Charm_Base {
+	ret := []*pb.Facility_Charm_Base{}
+	for i := range bs {
+		ret = append(ret, toProtoCharmBase(&bs[i]))
+	}
+	return ret
+}
+
+func toProtoCharmBase(b *model.CharmBase) *pb.Facility_Charm_Base {
+	ret := &pb.Facility_Charm_Base{}
+	ret.SetName(b.Name)
+	ret.SetChannel(b.Channel)
+	ret.SetArchitecture(b.Architecture)
+	return ret
+}
+
+func toProtoCharmArtifacts(as []model.CharmArtifact) []*pb.Facility_Charm_Artifact {
+	ret := []*pb.Facility_Charm_Artifact{}
+	for i := range as {
+		ret = append(ret, toProtoCharmArtifact(&as[i]))
+	}
+	return ret
+}
+
+func toProtoCharmArtifact(r *model.CharmArtifact) *pb.Facility_Charm_Artifact {
+	ret := &pb.Facility_Charm_Artifact{}
+	ret.SetChannel(r.Channel.Name)
+	ret.SetRevision(int64(r.Revision.Revision))
+	ret.SetVersion(r.Revision.Version)
+	ret.SetBases(toProtoCharmBases(r.Revision.Bases))
+	ret.SetCreatedAt(timestamppb.New(r.Channel.ReleasedAt))
 	return ret
 }

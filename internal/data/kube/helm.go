@@ -3,8 +3,6 @@ package kube
 import (
 	"context"
 	"fmt"
-	"io"
-	"net/http"
 	"net/url"
 	"strings"
 	"time"
@@ -27,11 +25,10 @@ import (
 
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/openhdc/openhdc/internal/env"
+	"github.com/openhdc/openhdc/internal/utils"
 )
 
-const (
-	defaultRepositoryURL = "http://chartmuseum:8080"
-)
+const defaultRepositoryURL = "http://chartmuseum:8080"
 
 type helm struct {
 	helmMap            HelmMap
@@ -205,25 +202,9 @@ func (r *helm) fetchRepositoryIndex(ctx context.Context, repoURL string) (*repo.
 	}
 	queryURL = queryURL.JoinPath("index.yaml")
 
-	url := queryURL.String()
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
+	data, err := utils.Get(ctx, queryURL.String())
 	if err != nil {
-		return nil, fmt.Errorf("fetch repository index from %q failed: %w", url, err)
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("fetch repository index from %q failed: %w", url, err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("fetch repository index from %q failed: %d", url, resp.StatusCode)
-	}
-
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("fetch repository index from %q failed: %w", url, err)
+		return nil, err
 	}
 
 	f := new(repo.IndexFile)
