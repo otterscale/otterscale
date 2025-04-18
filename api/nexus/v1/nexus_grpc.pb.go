@@ -52,6 +52,9 @@ const (
 	Nexus_AddFacilityUnits_FullMethodName          = "/openhdc.nexus.v1.Nexus/AddFacilityUnits"
 	Nexus_ListActions_FullMethodName               = "/openhdc.nexus.v1.Nexus/ListActions"
 	Nexus_DoAction_FullMethodName                  = "/openhdc.nexus.v1.Nexus/DoAction"
+	Nexus_ListCharms_FullMethodName                = "/openhdc.nexus.v1.Nexus/ListCharms"
+	Nexus_GetCharm_FullMethodName                  = "/openhdc.nexus.v1.Nexus/GetCharm"
+	Nexus_ListCharmArtifacts_FullMethodName        = "/openhdc.nexus.v1.Nexus/ListCharmArtifacts"
 	Nexus_ListApplications_FullMethodName          = "/openhdc.nexus.v1.Nexus/ListApplications"
 	Nexus_GetApplication_FullMethodName            = "/openhdc.nexus.v1.Nexus/GetApplication"
 	Nexus_ListReleases_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListReleases"
@@ -105,6 +108,9 @@ type NexusClient interface {
 	AddFacilityUnits(ctx context.Context, in *AddFacilityUnitsRequest, opts ...grpc.CallOption) (*AddFacilityUnitsResponse, error)
 	ListActions(ctx context.Context, in *ListActionsRequest, opts ...grpc.CallOption) (*ListActionsResponse, error)
 	DoAction(ctx context.Context, in *DoActionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ListCharms(ctx context.Context, in *ListCharmsRequest, opts ...grpc.CallOption) (*ListCharmsResponse, error)
+	GetCharm(ctx context.Context, in *GetCharmRequest, opts ...grpc.CallOption) (*Facility_Charm, error)
+	ListCharmArtifacts(ctx context.Context, in *ListCharmArtifactsRequest, opts ...grpc.CallOption) (*ListCharmArtifactsResponse, error)
 	// Application
 	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
 	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error)
@@ -446,6 +452,36 @@ func (c *nexusClient) DoAction(ctx context.Context, in *DoActionRequest, opts ..
 	return out, nil
 }
 
+func (c *nexusClient) ListCharms(ctx context.Context, in *ListCharmsRequest, opts ...grpc.CallOption) (*ListCharmsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCharmsResponse)
+	err := c.cc.Invoke(ctx, Nexus_ListCharms_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) GetCharm(ctx context.Context, in *GetCharmRequest, opts ...grpc.CallOption) (*Facility_Charm, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Facility_Charm)
+	err := c.cc.Invoke(ctx, Nexus_GetCharm_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) ListCharmArtifacts(ctx context.Context, in *ListCharmArtifactsRequest, opts ...grpc.CallOption) (*ListCharmArtifactsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCharmArtifactsResponse)
+	err := c.cc.Invoke(ctx, Nexus_ListCharmArtifacts_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *nexusClient) ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListApplicationsResponse)
@@ -587,6 +623,9 @@ type NexusServer interface {
 	AddFacilityUnits(context.Context, *AddFacilityUnitsRequest) (*AddFacilityUnitsResponse, error)
 	ListActions(context.Context, *ListActionsRequest) (*ListActionsResponse, error)
 	DoAction(context.Context, *DoActionRequest) (*emptypb.Empty, error)
+	ListCharms(context.Context, *ListCharmsRequest) (*ListCharmsResponse, error)
+	GetCharm(context.Context, *GetCharmRequest) (*Facility_Charm, error)
+	ListCharmArtifacts(context.Context, *ListCharmArtifactsRequest) (*ListCharmArtifactsResponse, error)
 	// Application
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
 	GetApplication(context.Context, *GetApplicationRequest) (*Application, error)
@@ -703,6 +742,15 @@ func (UnimplementedNexusServer) ListActions(context.Context, *ListActionsRequest
 }
 func (UnimplementedNexusServer) DoAction(context.Context, *DoActionRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DoAction not implemented")
+}
+func (UnimplementedNexusServer) ListCharms(context.Context, *ListCharmsRequest) (*ListCharmsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCharms not implemented")
+}
+func (UnimplementedNexusServer) GetCharm(context.Context, *GetCharmRequest) (*Facility_Charm, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCharm not implemented")
+}
+func (UnimplementedNexusServer) ListCharmArtifacts(context.Context, *ListCharmArtifactsRequest) (*ListCharmArtifactsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCharmArtifacts not implemented")
 }
 func (UnimplementedNexusServer) ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListApplications not implemented")
@@ -1331,6 +1379,60 @@ func _Nexus_DoAction_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Nexus_ListCharms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCharmsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).ListCharms(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_ListCharms_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).ListCharms(ctx, req.(*ListCharmsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_GetCharm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCharmRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).GetCharm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_GetCharm_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).GetCharm(ctx, req.(*GetCharmRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_ListCharmArtifacts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCharmArtifactsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).ListCharmArtifacts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_ListCharmArtifacts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).ListCharmArtifacts(ctx, req.(*ListCharmArtifactsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Nexus_ListApplications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListApplicationsRequest)
 	if err := dec(in); err != nil {
@@ -1645,6 +1747,18 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DoAction",
 			Handler:    _Nexus_DoAction_Handler,
+		},
+		{
+			MethodName: "ListCharms",
+			Handler:    _Nexus_ListCharms_Handler,
+		},
+		{
+			MethodName: "GetCharm",
+			Handler:    _Nexus_GetCharm_Handler,
+		},
+		{
+			MethodName: "ListCharmArtifacts",
+			Handler:    _Nexus_ListCharmArtifacts_Handler,
 		},
 		{
 			MethodName: "ListApplications",

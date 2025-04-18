@@ -49,6 +49,9 @@ service Nexus {
   rpc AddFacilityUnits(AddFacilityUnitsRequest) returns (AddFacilityUnitsResponse);
   rpc ListActions(ListActionsRequest) returns (ListActionsResponse);
   rpc DoAction(DoActionRequest) returns (google.protobuf.Empty);
+  rpc ListCharms(ListCharmsRequest) returns (ListCharmsResponse);
+  rpc GetCharm(GetCharmRequest) returns (Facility.Charm);
+  rpc ListCharmArtifacts(ListCharmArtifactsRequest) returns (ListCharmArtifactsResponse);
 
   // Application
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
@@ -232,6 +235,34 @@ message Scope {
 }
 
 message Facility {
+  message Charm {
+    message Base {
+      string name = 1;
+      string channel = 2;
+      string architecture = 3;
+    }
+    message Artifact {
+      string channel = 1;
+      int64 revision = 2;
+      string version = 11;
+      repeated Base bases = 12;
+      google.protobuf.Timestamp created_at = 21;
+    }
+    string id = 1;
+    string type = 2;
+    string name = 3;
+    string title = 11;
+    string summary = 12;
+    string icon = 13;
+    string description = 14;
+    repeated string categories = 15;
+    repeated string deployable_on = 16;
+    string publisher = 17;
+    string license = 18;
+    string store_url = 21;
+    string website = 22;
+    Artifact default_artifact = 31;
+  }
   message Metadata {
     string config_yaml = 1;
   }
@@ -564,6 +595,24 @@ message ListActionsResponse {
 }
 
 message DoActionRequest {}
+
+message ListCharmsRequest {}
+
+message ListCharmsResponse {
+  repeated Facility.Charm charms = 1;
+}
+
+message GetCharmRequest {
+  string name = 1;
+}
+
+message ListCharmArtifactsRequest {
+  string name = 1;
+}
+
+message ListCharmArtifactsResponse {
+  repeated Facility.Charm.Artifact artifacts = 1;
+}
 
 message ListApplicationsRequest {
   string scope_uuid = 1;

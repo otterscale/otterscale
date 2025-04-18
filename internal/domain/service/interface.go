@@ -5,6 +5,7 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/canonical/gomaasclient/entity/subnet"
+	"github.com/openhdc/openhdc/internal/domain/model"
 
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/action"
@@ -114,6 +115,12 @@ type JujuApplication interface {
 
 type JujuAction interface {
 	List(ctx context.Context, uuid, appName string) (map[string]action.ActionSpec, error)
+}
+
+type JujuCharmHub interface {
+	List(ctx context.Context) ([]model.Charm, error)
+	Get(ctx context.Context, name string) (*model.Charm, error)
+	ListArtifacts(ctx context.Context, name string) ([]model.CharmArtifact, error)
 }
 
 type KubeClient interface {

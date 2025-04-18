@@ -101,6 +101,13 @@ const (
 	NexusListActionsProcedure = "/openhdc.nexus.v1.Nexus/ListActions"
 	// NexusDoActionProcedure is the fully-qualified name of the Nexus's DoAction RPC.
 	NexusDoActionProcedure = "/openhdc.nexus.v1.Nexus/DoAction"
+	// NexusListCharmsProcedure is the fully-qualified name of the Nexus's ListCharms RPC.
+	NexusListCharmsProcedure = "/openhdc.nexus.v1.Nexus/ListCharms"
+	// NexusGetCharmProcedure is the fully-qualified name of the Nexus's GetCharm RPC.
+	NexusGetCharmProcedure = "/openhdc.nexus.v1.Nexus/GetCharm"
+	// NexusListCharmArtifactsProcedure is the fully-qualified name of the Nexus's ListCharmArtifacts
+	// RPC.
+	NexusListCharmArtifactsProcedure = "/openhdc.nexus.v1.Nexus/ListCharmArtifacts"
 	// NexusListApplicationsProcedure is the fully-qualified name of the Nexus's ListApplications RPC.
 	NexusListApplicationsProcedure = "/openhdc.nexus.v1.Nexus/ListApplications"
 	// NexusGetApplicationProcedure is the fully-qualified name of the Nexus's GetApplication RPC.
@@ -162,6 +169,9 @@ type NexusClient interface {
 	AddFacilityUnits(context.Context, *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[v1.AddFacilityUnitsResponse], error)
 	ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error)
 	DoAction(context.Context, *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error)
+	ListCharms(context.Context, *connect.Request[v1.ListCharmsRequest]) (*connect.Response[v1.ListCharmsResponse], error)
+	GetCharm(context.Context, *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error)
+	ListCharmArtifacts(context.Context, *connect.Request[v1.ListCharmArtifactsRequest]) (*connect.Response[v1.ListCharmArtifactsResponse], error)
 	// Application
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -378,6 +388,24 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("DoAction")),
 			connect.WithClientOptions(opts...),
 		),
+		listCharms: connect.NewClient[v1.ListCharmsRequest, v1.ListCharmsResponse](
+			httpClient,
+			baseURL+NexusListCharmsProcedure,
+			connect.WithSchema(nexusMethods.ByName("ListCharms")),
+			connect.WithClientOptions(opts...),
+		),
+		getCharm: connect.NewClient[v1.GetCharmRequest, v1.Facility_Charm](
+			httpClient,
+			baseURL+NexusGetCharmProcedure,
+			connect.WithSchema(nexusMethods.ByName("GetCharm")),
+			connect.WithClientOptions(opts...),
+		),
+		listCharmArtifacts: connect.NewClient[v1.ListCharmArtifactsRequest, v1.ListCharmArtifactsResponse](
+			httpClient,
+			baseURL+NexusListCharmArtifactsProcedure,
+			connect.WithSchema(nexusMethods.ByName("ListCharmArtifacts")),
+			connect.WithClientOptions(opts...),
+		),
 		listApplications: connect.NewClient[v1.ListApplicationsRequest, v1.ListApplicationsResponse](
 			httpClient,
 			baseURL+NexusListApplicationsProcedure,
@@ -475,6 +503,9 @@ type nexusClient struct {
 	addFacilityUnits          *connect.Client[v1.AddFacilityUnitsRequest, v1.AddFacilityUnitsResponse]
 	listActions               *connect.Client[v1.ListActionsRequest, v1.ListActionsResponse]
 	doAction                  *connect.Client[v1.DoActionRequest, emptypb.Empty]
+	listCharms                *connect.Client[v1.ListCharmsRequest, v1.ListCharmsResponse]
+	getCharm                  *connect.Client[v1.GetCharmRequest, v1.Facility_Charm]
+	listCharmArtifacts        *connect.Client[v1.ListCharmArtifactsRequest, v1.ListCharmArtifactsResponse]
 	listApplications          *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
 	getApplication            *connect.Client[v1.GetApplicationRequest, v1.Application]
 	listReleases              *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
@@ -647,6 +678,21 @@ func (c *nexusClient) DoAction(ctx context.Context, req *connect.Request[v1.DoAc
 	return c.doAction.CallUnary(ctx, req)
 }
 
+// ListCharms calls openhdc.nexus.v1.Nexus.ListCharms.
+func (c *nexusClient) ListCharms(ctx context.Context, req *connect.Request[v1.ListCharmsRequest]) (*connect.Response[v1.ListCharmsResponse], error) {
+	return c.listCharms.CallUnary(ctx, req)
+}
+
+// GetCharm calls openhdc.nexus.v1.Nexus.GetCharm.
+func (c *nexusClient) GetCharm(ctx context.Context, req *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error) {
+	return c.getCharm.CallUnary(ctx, req)
+}
+
+// ListCharmArtifacts calls openhdc.nexus.v1.Nexus.ListCharmArtifacts.
+func (c *nexusClient) ListCharmArtifacts(ctx context.Context, req *connect.Request[v1.ListCharmArtifactsRequest]) (*connect.Response[v1.ListCharmArtifactsResponse], error) {
+	return c.listCharmArtifacts.CallUnary(ctx, req)
+}
+
 // ListApplications calls openhdc.nexus.v1.Nexus.ListApplications.
 func (c *nexusClient) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
 	return c.listApplications.CallUnary(ctx, req)
@@ -736,6 +782,9 @@ type NexusHandler interface {
 	AddFacilityUnits(context.Context, *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[v1.AddFacilityUnitsResponse], error)
 	ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error)
 	DoAction(context.Context, *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error)
+	ListCharms(context.Context, *connect.Request[v1.ListCharmsRequest]) (*connect.Response[v1.ListCharmsResponse], error)
+	GetCharm(context.Context, *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error)
+	ListCharmArtifacts(context.Context, *connect.Request[v1.ListCharmArtifactsRequest]) (*connect.Response[v1.ListCharmArtifactsResponse], error)
 	// Application
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
@@ -948,6 +997,24 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("DoAction")),
 		connect.WithHandlerOptions(opts...),
 	)
+	nexusListCharmsHandler := connect.NewUnaryHandler(
+		NexusListCharmsProcedure,
+		svc.ListCharms,
+		connect.WithSchema(nexusMethods.ByName("ListCharms")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusGetCharmHandler := connect.NewUnaryHandler(
+		NexusGetCharmProcedure,
+		svc.GetCharm,
+		connect.WithSchema(nexusMethods.ByName("GetCharm")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusListCharmArtifactsHandler := connect.NewUnaryHandler(
+		NexusListCharmArtifactsProcedure,
+		svc.ListCharmArtifacts,
+		connect.WithSchema(nexusMethods.ByName("ListCharmArtifacts")),
+		connect.WithHandlerOptions(opts...),
+	)
 	nexusListApplicationsHandler := connect.NewUnaryHandler(
 		NexusListApplicationsProcedure,
 		svc.ListApplications,
@@ -1074,6 +1141,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusListActionsHandler.ServeHTTP(w, r)
 		case NexusDoActionProcedure:
 			nexusDoActionHandler.ServeHTTP(w, r)
+		case NexusListCharmsProcedure:
+			nexusListCharmsHandler.ServeHTTP(w, r)
+		case NexusGetCharmProcedure:
+			nexusGetCharmHandler.ServeHTTP(w, r)
+		case NexusListCharmArtifactsProcedure:
+			nexusListCharmArtifactsHandler.ServeHTTP(w, r)
 		case NexusListApplicationsProcedure:
 			nexusListApplicationsHandler.ServeHTTP(w, r)
 		case NexusGetApplicationProcedure:
@@ -1229,6 +1302,18 @@ func (UnimplementedNexusHandler) ListActions(context.Context, *connect.Request[v
 
 func (UnimplementedNexusHandler) DoAction(context.Context, *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DoAction is not implemented"))
+}
+
+func (UnimplementedNexusHandler) ListCharms(context.Context, *connect.Request[v1.ListCharmsRequest]) (*connect.Response[v1.ListCharmsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListCharms is not implemented"))
+}
+
+func (UnimplementedNexusHandler) GetCharm(context.Context, *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetCharm is not implemented"))
+}
+
+func (UnimplementedNexusHandler) ListCharmArtifacts(context.Context, *connect.Request[v1.ListCharmArtifactsRequest]) (*connect.Response[v1.ListCharmArtifactsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListCharmArtifacts is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {

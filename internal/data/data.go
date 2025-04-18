@@ -22,6 +22,7 @@ var ProviderSet = wire.NewSet(
 	juju.NewJujuMap,
 	juju.NewAction,
 	juju.NewApplication,
+	juju.NewCharmHub,
 	juju.NewClient,
 	juju.NewMachine,
 	juju.NewModel,

@@ -105,6 +105,18 @@ func (s *NexusService) ListActions(ctx context.Context, uuid, appName string) ([
 	return as, nil
 }
 
+func (s *NexusService) ListCharms(ctx context.Context) ([]model.Charm, error) {
+	return s.charmhub.List(ctx)
+}
+
+func (s *NexusService) GetCharm(ctx context.Context, name string) (*model.Charm, error) {
+	return s.charmhub.Get(ctx, name)
+}
+
+func (s *NexusService) ListArtifacts(ctx context.Context, name string) ([]model.CharmArtifact, error) {
+	return s.charmhub.ListArtifacts(ctx, name)
+}
+
 func (s *NexusService) toPlacements(ctx context.Context, uuid string, mps []model.MachinePlacement) ([]model.Placement, error) {
 	ps := []model.Placement{}
 	for _, mp := range mps {
