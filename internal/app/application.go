@@ -141,6 +141,7 @@ func toProtoApplication(a *model.Application) *pb.Application {
 	ret.SetServices(toProtoServices(a.Services))
 	ret.SetPods(toProtoPods(a.Pods))
 	ret.SetPersistentVolumeClaims(toProtoPersistentVolumeClaims(a.PersistentVolumeClaims))
+	ret.SetCreatedAt(timestamppb.New(a.ObjectMeta.CreationTimestamp.Time))
 	return ret
 }
 
@@ -173,6 +174,7 @@ func toProtoService(s *corev1.Service) *pb.Application_Service {
 	ret.SetType(string(s.Spec.Type))
 	ret.SetClusterIp(s.Spec.ClusterIP)
 	ret.SetPorts(toProtoServicePorts(s.Spec.Ports))
+	ret.SetCreatedAt(timestamppb.New(s.CreationTimestamp.Time))
 	return ret
 }
 
