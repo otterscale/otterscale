@@ -1,6 +1,6 @@
 VERSION=$(shell git describe --tags --always)
 PROTO_FILES=$(shell find api -name *.proto)
-WEB_PROTO_FILES=$(shell find api/nexus api/kube api/stack -name *.proto)
+WEB_PROTO_FILES=$(shell find api/nexus -name *.proto)
 
 .PHONY: build
 # build cli

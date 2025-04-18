@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/moby/moby/pkg/namesgenerator"
 	"golang.org/x/sync/errgroup"
-	"gopkg.in/yaml.v3"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -21,8 +21,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/rest"
+	"sigs.k8s.io/yaml"
 
-	"github.com/moby/moby/pkg/namesgenerator"
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 

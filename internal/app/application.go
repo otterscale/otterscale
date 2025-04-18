@@ -2,13 +2,23 @@ package app
 
 import (
 	"context"
+	"fmt"
+	"slices"
+	"time"
 
 	"connectrpc.com/connect"
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/repo"
 
+	corev1 "k8s.io/api/core/v1"
+	storagev1 "k8s.io/api/storage/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/duration"
+
+	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
@@ -116,7 +126,141 @@ func toProtoApplications(as []model.Application) []*pb.Application {
 }
 
 func toProtoApplication(a *model.Application) *pb.Application {
+	replicas := int32(0)
+	if a.Replicas != nil {
+		replicas = *a.Replicas
+	}
 	ret := &pb.Application{}
+	ret.SetType(a.Type)
+	ret.SetName(a.Name)
+	ret.SetNamespace(a.Namespace)
+	ret.SetLabels(a.Labels)
+	ret.SetReplicas(replicas)
+	ret.SetHealthies(countHealthies(a.Pods))
+	ret.SetContainers(toProtoContainers(a.Containers))
+	ret.SetServices(toProtoServices(a.Services))
+	ret.SetPods(toProtoPods(a.Pods))
+	ret.SetPersistentVolumeClaims(toProtoPersistentVolumeClaims(a.PersistentVolumeClaims))
+	return ret
+}
+
+func toProtoContainers(cs []corev1.Container) []*pb.Application_Container {
+	ret := []*pb.Application_Container{}
+	for i := range cs {
+		ret = append(ret, toProtoContainer(&cs[i]))
+	}
+	return ret
+}
+
+func toProtoContainer(c *corev1.Container) *pb.Application_Container {
+	ret := &pb.Application_Container{}
+	ret.SetImageName(c.Image)
+	ret.SetImagePullPolicy(string(c.ImagePullPolicy))
+	return ret
+}
+
+func toProtoServices(ss []corev1.Service) []*pb.Application_Service {
+	ret := []*pb.Application_Service{}
+	for i := range ss {
+		ret = append(ret, toProtoService(&ss[i]))
+	}
+	return ret
+}
+
+func toProtoService(s *corev1.Service) *pb.Application_Service {
+	ret := &pb.Application_Service{}
+	ret.SetName(s.Name)
+	ret.SetType(string(s.Spec.Type))
+	ret.SetClusterIp(s.Spec.ClusterIP)
+	ret.SetPorts(toProtoServicePorts(s.Spec.Ports))
+	return ret
+}
+
+func toProtoServicePorts(ps []corev1.ServicePort) []*pb.Application_Service_Port {
+	ret := []*pb.Application_Service_Port{}
+	for i := range ps {
+		ret = append(ret, toProtoServicePort(&ps[i]))
+	}
+	return ret
+}
+
+func toProtoServicePort(p *corev1.ServicePort) *pb.Application_Service_Port {
+	ret := &pb.Application_Service_Port{}
+	ret.SetPort(p.Port)
+	ret.SetNodePort(p.NodePort)
+	ret.SetProtocol(string(p.Protocol))
+	ret.SetTargetPort(p.TargetPort.String())
+	return ret
+}
+
+func toProtoPods(ps []corev1.Pod) []*pb.Application_Pod {
+	ret := []*pb.Application_Pod{}
+	for i := range ps {
+		ret = append(ret, toProtoPod(&ps[i]))
+	}
+	return ret
+}
+
+func toProtoPod(p *corev1.Pod) *pb.Application_Pod {
+	ret := &pb.Application_Pod{}
+	ret.SetName(p.Name)
+	ret.SetPhase(string(p.Status.Phase))
+	ret.SetReady(containerStatusesReadyString(p.Status.ContainerStatuses))
+	ret.SetRestarts(containerStatusesRestartString(p.Status.ContainerStatuses))
+	ret.SetLastCondition(toProtoLastCondition(p.Status.Conditions))
+	ret.SetCreatedAt(timestamppb.New(p.CreationTimestamp.Time))
+	return ret
+}
+
+func toProtoLastCondition(cs []corev1.PodCondition) *pb.Application_Condition {
+	idx := len(cs) - 1
+	ret := &pb.Application_Condition{}
+	ret.SetType(string(cs[idx].Type))
+	ret.SetStatus(string(cs[idx].Status))
+	ret.SetReason((cs[idx].Reason))
+	ret.SetMessage((cs[idx].Message))
+	ret.SetProbedAt(timestamppb.New(cs[idx].LastProbeTime.Time))
+	ret.SetTransitionedAt(timestamppb.New(cs[idx].LastTransitionTime.Time))
+	return ret
+}
+
+func toProtoPersistentVolumeClaims(ps []model.PersistentVolumeClaim) []*pb.Application_PersistentVolumeClaim {
+	ret := []*pb.Application_PersistentVolumeClaim{}
+	for i := range ps {
+		ret = append(ret, toProtoPersistentVolumeClaim(&ps[i]))
+	}
+	return ret
+}
+
+func toProtoPersistentVolumeClaim(p *model.PersistentVolumeClaim) *pb.Application_PersistentVolumeClaim {
+	ret := &pb.Application_PersistentVolumeClaim{}
+	ret.SetName(p.PersistentVolumeClaim.Name)
+	ret.SetStatus(string(p.PersistentVolumeClaim.Status.Phase))
+	ret.SetAccessModes(accessModesToStrings(p.Spec.AccessModes))
+	ret.SetCapacity(p.Spec.Resources.Requests.Storage().String())
+	if p.StorageClass != nil {
+		ret.SetStorageClass(toProtoStorageClass(p.StorageClass))
+	}
+	ret.SetCreatedAt(timestamppb.New(p.PersistentVolumeClaim.CreationTimestamp.Time))
+	return ret
+}
+
+func toProtoStorageClass(sc *storagev1.StorageClass) *pb.Application_PersistentVolumeClaim_StorageClass {
+	reclaimPolicy := ""
+	if v := sc.ReclaimPolicy; v != nil {
+		reclaimPolicy = string(*v)
+	}
+	volumeBindingMode := ""
+	if v := sc.VolumeBindingMode; v != nil {
+		volumeBindingMode = string(*v)
+	}
+	ret := &pb.Application_PersistentVolumeClaim_StorageClass{}
+	ret.SetName(sc.Name)
+	ret.SetProvisioner(sc.Provisioner)
+	ret.SetReclaimPolicy(reclaimPolicy)
+	ret.SetVolumeBindingMode(volumeBindingMode)
+	ret.SetParameters(sc.Parameters)
+	ret.SetCreatedAt(timestamppb.New(sc.CreationTimestamp.Time))
 	return ret
 }
 
@@ -130,6 +274,19 @@ func toProtoReleases(rs []model.Release) []*pb.Application_Release {
 
 func toProtoRelease(r *model.Release) *pb.Application_Release {
 	ret := &pb.Application_Release{}
+	ret.SetScopeName(r.ScopeName)
+	ret.SetScopeUuid(r.ScopeUUID)
+	ret.SetFacilityName(r.FacilityName)
+	ret.SetNamespace(r.Namespace)
+	ret.SetName(r.Name)
+	ret.SetRevision(int32(r.Version)) //nolint:gosec
+	ret.SetChartName(r.Chart.Name())
+	ret.SetVersion(toProtoChartVersion(&repo.ChartVersion{
+		Metadata: &chart.Metadata{
+			Version:    r.Chart.Metadata.Version,
+			AppVersion: r.Chart.Metadata.AppVersion,
+		},
+	}))
 	return ret
 }
 
@@ -151,6 +308,7 @@ func toProtoChart(cmd *chart.Metadata, vs ...*repo.ChartVersion) *pb.Application
 	ret.SetDeprecated(cmd.Deprecated)
 	ret.SetTags(cmd.Tags)
 	ret.SetKeywords(cmd.Keywords)
+	ret.SetLicense(getChartLicense(cmd.Annotations))
 	ret.SetHome(cmd.Home)
 	ret.SetSources(cmd.Sources)
 	ret.SetMaintainers(toProtoChartMaintainers(cmd.Maintainers))
@@ -161,38 +319,50 @@ func toProtoChart(cmd *chart.Metadata, vs ...*repo.ChartVersion) *pb.Application
 
 func toProtoChartMaintainers(ms []*chart.Maintainer) []*pb.Application_Release_Chart_Maintainer {
 	ret := []*pb.Application_Release_Chart_Maintainer{}
-	for _, m := range ms {
-		maintainer := &pb.Application_Release_Chart_Maintainer{}
-		maintainer.SetName(m.Name)
-		maintainer.SetEmail(m.Email)
-		maintainer.SetUrl(m.URL)
-		ret = append(ret, maintainer)
+	for i := range ms {
+		ret = append(ret, toProtoChartMaintainer(ms[i]))
 	}
+	return ret
+}
+
+func toProtoChartMaintainer(m *chart.Maintainer) *pb.Application_Release_Chart_Maintainer {
+	ret := &pb.Application_Release_Chart_Maintainer{}
+	ret.SetName(m.Name)
+	ret.SetEmail(m.Email)
+	ret.SetUrl(m.URL)
 	return ret
 }
 
 func toProtoChartDependencies(ds []*chart.Dependency) []*pb.Application_Release_Chart_Dependency {
 	ret := []*pb.Application_Release_Chart_Dependency{}
-	for _, d := range ds {
-		dependency := &pb.Application_Release_Chart_Dependency{}
-		dependency.SetName(d.Name)
-		dependency.SetVersion(d.Version)
-		dependency.SetCondition(d.Condition)
-		ret = append(ret, dependency)
+	for i := range ds {
+		ret = append(ret, toProtoChartDependency(ds[i]))
 	}
+	return ret
+}
+
+func toProtoChartDependency(d *chart.Dependency) *pb.Application_Release_Chart_Dependency {
+	ret := &pb.Application_Release_Chart_Dependency{}
+	ret.SetName(d.Name)
+	ret.SetVersion(d.Version)
+	ret.SetCondition(d.Condition)
 	return ret
 }
 
 func toProtoChartVersions(vs ...*repo.ChartVersion) []*pb.Application_Release_Chart_Version {
 	ret := []*pb.Application_Release_Chart_Version{}
 	for _, v := range vs {
-		version := &pb.Application_Release_Chart_Version{}
-		version.SetChartVersion(v.Version)
-		version.SetApplicationVersion(v.AppVersion)
-		if len(v.URLs) > 0 {
-			version.SetChartRef(v.URLs[0])
-		}
-		ret = append(ret, version)
+		ret = append(ret, toProtoChartVersion(v))
+	}
+	return ret
+}
+
+func toProtoChartVersion(v *repo.ChartVersion) *pb.Application_Release_Chart_Version {
+	ret := &pb.Application_Release_Chart_Version{}
+	ret.SetChartVersion(v.Version)
+	ret.SetApplicationVersion(v.AppVersion)
+	if len(v.URLs) > 0 {
+		ret.SetChartRef(v.URLs[0])
 	}
 	return ret
 }
@@ -201,5 +371,59 @@ func toProtoChartMetadata(md *model.ChartMetadata) *pb.Application_Release_Chart
 	ret := &pb.Application_Release_Chart_Metadata{}
 	ret.SetValuesYaml(md.ValuesYAML)
 	ret.SetReadmeMd(md.ReadmeMD)
+	return ret
+}
+
+func getChartLicense(m map[string]string) string {
+	keys := []string{"license", "licenses"}
+	for _, key := range keys {
+		if v, ok := m[key]; ok {
+			return v
+		}
+	}
+	return ""
+}
+
+func containerStatusesReadyString(statuses []corev1.ContainerStatus) string {
+	ready := 0
+	for idx := range statuses {
+		if statuses[idx].Ready {
+			ready++
+		}
+	}
+	return fmt.Sprintf("%d/%d", ready, len(statuses))
+}
+
+func containerStatusesRestartString(statuses []corev1.ContainerStatus) string {
+	restart := int32(0)
+	var lastTerminatedAt metav1.Time
+	for idx := range statuses {
+		restart += statuses[idx].RestartCount
+		if statuses[idx].LastTerminationState.Terminated != nil {
+			lastTerminatedAt = statuses[idx].LastTerminationState.Terminated.FinishedAt
+		}
+	}
+	if lastTerminatedAt.IsZero() {
+		return fmt.Sprintf("%d", restart)
+	}
+	return fmt.Sprintf("%d (%s ago)", restart, duration.HumanDuration(time.Since(lastTerminatedAt.Time)))
+}
+
+func countHealthies(pods []corev1.Pod) int32 {
+	phases := []corev1.PodPhase{corev1.PodRunning, corev1.PodSucceeded}
+	count := int32(0)
+	for idx := range pods {
+		if slices.Contains(phases, pods[idx].Status.Phase) {
+			count++
+		}
+	}
+	return count
+}
+
+func accessModesToStrings(modes []corev1.PersistentVolumeAccessMode) []string {
+	ret := make([]string, len(modes))
+	for idx := range modes {
+		ret[idx] = string(modes[idx])
+	}
 	return ret
 }
