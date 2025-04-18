@@ -4,4 +4,4 @@ import (
 	"github.com/google/wire"
 )
 
-var ProviderSet = wire.NewSet(NewKubeApp, NewNexusApp)
+var ProviderSet = wire.NewSet(NewNexusApp)

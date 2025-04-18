@@ -20,32 +20,6 @@ import (
 // Injectors from wire.go:
 
 func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func(), error) {
-	kubeMap, err := kube.NewKubeMap()
-	if err != nil {
-		return nil, nil, err
-	}
-	kubeClient := kube.NewClient(kubeMap)
-	kubeApps := kube.NewApps(kubeMap)
-	kubeBatch := kube.NewBatch(kubeMap)
-	kubeCore := kube.NewCore(kubeMap)
-	kubeStorage := kube.NewStorage(kubeMap)
-	helmMap, err := kube.NewHelmMap()
-	if err != nil {
-		return nil, nil, err
-	}
-	kubeHelm, err := kube.NewHelm(helmMap)
-	if err != nil {
-		return nil, nil, err
-	}
-	jujuMap, err := juju.NewJujuMap()
-	if err != nil {
-		return nil, nil, err
-	}
-	jujuModel := juju.NewModel(jujuMap)
-	jujuClient := juju.NewClient(jujuMap)
-	jujuApplication := juju.NewApplication(jujuMap)
-	kubeService := service.NewKubeService(kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm, jujuModel, jujuClient, jujuApplication)
-	kubeApp := app.NewKubeApp(kubeService)
 	v, err := maas.New()
 	if err != nil {
 		return nil, nil, err
@@ -58,12 +32,36 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	maasSubnet := maas.NewSubnet(v)
 	maasipRange := maas.NewIPRange(v)
 	maasMachine := maas.NewMachine(v)
+	jujuMap, err := juju.NewJujuMap()
+	if err != nil {
+		return nil, nil, err
+	}
+	jujuClient := juju.NewClient(jujuMap)
 	jujuMachine := juju.NewMachine(jujuMap)
+	jujuModel := juju.NewModel(jujuMap)
 	jujuModelConfig := juju.NewModelConfig(jujuMap)
+	jujuApplication := juju.NewApplication(jujuMap)
 	jujuAction := juju.NewAction(jujuMap)
+	kubeMap, err := kube.NewKubeMap()
+	if err != nil {
+		return nil, nil, err
+	}
+	helmMap, err := kube.NewHelmMap()
+	if err != nil {
+		return nil, nil, err
+	}
+	kubeClient := kube.NewClient(kubeMap, helmMap)
+	kubeApps := kube.NewApps(kubeMap)
+	kubeBatch := kube.NewBatch(kubeMap)
+	kubeCore := kube.NewCore(kubeMap)
+	kubeStorage := kube.NewStorage(kubeMap)
+	kubeHelm, err := kube.NewHelm(helmMap)
+	if err != nil {
+		return nil, nil, err
+	}
 	nexusService := service.NewNexusService(maasServer, maasPackageRepository, maasBootResource, maasFabric, maasvlan, maasSubnet, maasipRange, maasMachine, jujuClient, jujuMachine, jujuModel, jujuModelConfig, jujuApplication, jujuAction, kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm)
 	nexusApp := app.NewNexusApp(nexusService)
-	command := cmd.New(string2, kubeApp, nexusApp)
+	command := cmd.New(string2, nexusApp)
 	return command, func() {
 	}, nil
 }
