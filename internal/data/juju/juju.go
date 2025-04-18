@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/juju/juju/api"
@@ -17,14 +18,18 @@ const (
 	defaultUsername          = "admin"
 )
 
-type JujuMap map[string]api.Connection
+// map[string]api.Connection
+type JujuMap struct {
+	*sync.Map
+}
 
 func NewJujuMap() (JujuMap, error) {
-	return JujuMap{}, nil
+	return JujuMap{&sync.Map{}}, nil
 }
 
 func (m JujuMap) Get(ctx context.Context, uuid string) (api.Connection, error) {
-	if conn, ok := m[uuid]; ok {
+	if v, ok := m.Load(uuid); ok {
+		conn := v.(api.Connection)
 		if !conn.IsBroken(ctx) {
 			return conn, nil
 		}
@@ -35,7 +40,7 @@ func (m JujuMap) Get(ctx context.Context, uuid string) (api.Connection, error) {
 	if err != nil {
 		return nil, err
 	}
-	m[uuid] = conn
+	m.Store(uuid, conn)
 
 	return conn, nil
 }
