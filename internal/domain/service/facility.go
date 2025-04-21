@@ -35,24 +35,21 @@ func (s *NexusService) GetFacility(ctx context.Context, uuid, name string) (*mod
 		if key != name {
 			continue
 		}
+		cfg, err := s.facility.GetConfig(ctx, uuid, name)
+		if err != nil {
+			return nil, err
+		}
+		configYAML, _ := jujuyaml.Marshal(cfg)
 		status := st.Applications[key]
 		return &model.Facility{
+			FacilityMetadata: &model.FacilityMetadata{
+				ConfigYAML: string(configYAML),
+			},
 			Name:   key,
 			Status: &status,
 		}, nil
 	}
 	return nil, status.Errorf(codes.NotFound, "facility %q not found", name)
-}
-
-func (s *NexusService) GetFacilityMetadata(ctx context.Context, uuid, name string) (*model.FacilityMetadata, error) {
-	cfg, err := s.facility.GetConfig(ctx, uuid, name)
-	if err != nil {
-		return nil, err
-	}
-	configYAML, _ := jujuyaml.Marshal(cfg)
-	return &model.FacilityMetadata{
-		ConfigYAML: string(configYAML),
-	}, nil
 }
 
 func (s *NexusService) CreateFacility(ctx context.Context, uuid, name, configYAML, charmName, channel string, revision, number int, mps []model.MachinePlacement, mc *model.MachineConstraint, trust bool) (*model.Facility, error) {

@@ -171,6 +171,17 @@ func (r *helm) ShowChart(chartRef string, format action.ShowOutputFormat) (strin
 	return client.Run(chartPath)
 }
 
+func (r *helm) GetValues(uuid, facility, namespace, name string) (map[string]any, error) {
+	config, err := r.helmMap.get(uuid, facility, namespace, r.registryClient)
+	if err != nil {
+		return nil, err
+	}
+
+	client := action.NewGetValues(config)
+	client.AllValues = true
+	return client.Run(name)
+}
+
 func (r *helm) ListChartVersions(ctx context.Context) ([]*repo.IndexFile, error) {
 	if r.repoIndexFiles != nil && time.Since(r.repoIndexCacheTime) < time.Hour*24 {
 		return r.repoIndexFiles, nil

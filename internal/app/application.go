@@ -37,6 +37,11 @@ func (a *NexusApp) GetApplication(ctx context.Context, req *connect.Request[pb.G
 	if err != nil {
 		return nil, err
 	}
+	md, err := a.svc.GetChartMetadataFromApplication(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), app)
+	if err != nil {
+		return nil, err
+	}
+	app.ChartMetadata = md
 	res := toProtoApplication(app)
 	return connect.NewResponse(res), nil
 }
@@ -95,7 +100,7 @@ func (a *NexusApp) ListCharts(ctx context.Context, req *connect.Request[pb.ListC
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) GetChart(ctx context.Context, req *connect.Request[pb.GetChartRequest]) (*connect.Response[pb.Application_Release_Chart], error) {
+func (a *NexusApp) GetChart(ctx context.Context, req *connect.Request[pb.GetChartRequest]) (*connect.Response[pb.Application_Chart], error) {
 	c, err := a.svc.GetChart(ctx, req.Msg.GetName())
 	if err != nil {
 		return nil, err
@@ -108,7 +113,7 @@ func (a *NexusApp) GetChart(ctx context.Context, req *connect.Request[pb.GetChar
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) GetChartMetadata(ctx context.Context, req *connect.Request[pb.GetChartMetadataRequest]) (*connect.Response[pb.Application_Release_Chart_Metadata], error) {
+func (a *NexusApp) GetChartMetadata(ctx context.Context, req *connect.Request[pb.GetChartMetadataRequest]) (*connect.Response[pb.Application_Chart_Metadata], error) {
 	md, err := a.svc.GetChartMetadata(ctx, req.Msg.GetChartRef())
 	if err != nil {
 		return nil, err
@@ -142,6 +147,9 @@ func toProtoApplication(a *model.Application) *pb.Application {
 	ret.SetPods(toProtoPods(a.Pods))
 	ret.SetPersistentVolumeClaims(toProtoPersistentVolumeClaims(a.PersistentVolumeClaims))
 	ret.SetCreatedAt(timestamppb.New(a.ObjectMeta.CreationTimestamp.Time))
+	if a.ChartMetadata != nil {
+		ret.SetMetadata(toProtoChartMetadata(a.ChartMetadata))
+	}
 	return ret
 }
 
@@ -292,8 +300,8 @@ func toProtoRelease(r *model.Release) *pb.Application_Release {
 	return ret
 }
 
-func toProtoCharts(cs []model.Chart) []*pb.Application_Release_Chart {
-	ret := []*pb.Application_Release_Chart{}
+func toProtoCharts(cs []model.Chart) []*pb.Application_Chart {
+	ret := []*pb.Application_Chart{}
 	for i := range cs {
 		if len(cs[i].Versions) > 0 {
 			ret = append(ret, toProtoChart(cs[i].Versions[0].Metadata, cs[i].Versions[0])) // latest only
@@ -302,8 +310,8 @@ func toProtoCharts(cs []model.Chart) []*pb.Application_Release_Chart {
 	return ret
 }
 
-func toProtoChart(cmd *chart.Metadata, vs ...*repo.ChartVersion) *pb.Application_Release_Chart {
-	ret := &pb.Application_Release_Chart{}
+func toProtoChart(cmd *chart.Metadata, vs ...*repo.ChartVersion) *pb.Application_Chart {
+	ret := &pb.Application_Chart{}
 	ret.SetName(cmd.Name)
 	ret.SetIcon(cmd.Icon)
 	ret.SetDescription(cmd.Description)
@@ -319,48 +327,48 @@ func toProtoChart(cmd *chart.Metadata, vs ...*repo.ChartVersion) *pb.Application
 	return ret
 }
 
-func toProtoChartMaintainers(ms []*chart.Maintainer) []*pb.Application_Release_Chart_Maintainer {
-	ret := []*pb.Application_Release_Chart_Maintainer{}
+func toProtoChartMaintainers(ms []*chart.Maintainer) []*pb.Application_Chart_Maintainer {
+	ret := []*pb.Application_Chart_Maintainer{}
 	for i := range ms {
 		ret = append(ret, toProtoChartMaintainer(ms[i]))
 	}
 	return ret
 }
 
-func toProtoChartMaintainer(m *chart.Maintainer) *pb.Application_Release_Chart_Maintainer {
-	ret := &pb.Application_Release_Chart_Maintainer{}
+func toProtoChartMaintainer(m *chart.Maintainer) *pb.Application_Chart_Maintainer {
+	ret := &pb.Application_Chart_Maintainer{}
 	ret.SetName(m.Name)
 	ret.SetEmail(m.Email)
 	ret.SetUrl(m.URL)
 	return ret
 }
 
-func toProtoChartDependencies(ds []*chart.Dependency) []*pb.Application_Release_Chart_Dependency {
-	ret := []*pb.Application_Release_Chart_Dependency{}
+func toProtoChartDependencies(ds []*chart.Dependency) []*pb.Application_Chart_Dependency {
+	ret := []*pb.Application_Chart_Dependency{}
 	for i := range ds {
 		ret = append(ret, toProtoChartDependency(ds[i]))
 	}
 	return ret
 }
 
-func toProtoChartDependency(d *chart.Dependency) *pb.Application_Release_Chart_Dependency {
-	ret := &pb.Application_Release_Chart_Dependency{}
+func toProtoChartDependency(d *chart.Dependency) *pb.Application_Chart_Dependency {
+	ret := &pb.Application_Chart_Dependency{}
 	ret.SetName(d.Name)
 	ret.SetVersion(d.Version)
 	ret.SetCondition(d.Condition)
 	return ret
 }
 
-func toProtoChartVersions(vs ...*repo.ChartVersion) []*pb.Application_Release_Chart_Version {
-	ret := []*pb.Application_Release_Chart_Version{}
+func toProtoChartVersions(vs ...*repo.ChartVersion) []*pb.Application_Chart_Version {
+	ret := []*pb.Application_Chart_Version{}
 	for _, v := range vs {
 		ret = append(ret, toProtoChartVersion(v))
 	}
 	return ret
 }
 
-func toProtoChartVersion(v *repo.ChartVersion) *pb.Application_Release_Chart_Version {
-	ret := &pb.Application_Release_Chart_Version{}
+func toProtoChartVersion(v *repo.ChartVersion) *pb.Application_Chart_Version {
+	ret := &pb.Application_Chart_Version{}
 	ret.SetChartVersion(v.Version)
 	ret.SetApplicationVersion(v.AppVersion)
 	if len(v.URLs) > 0 {
@@ -369,8 +377,8 @@ func toProtoChartVersion(v *repo.ChartVersion) *pb.Application_Release_Chart_Ver
 	return ret
 }
 
-func toProtoChartMetadata(md *model.ChartMetadata) *pb.Application_Release_Chart_Metadata {
-	ret := &pb.Application_Release_Chart_Metadata{}
+func toProtoChartMetadata(md *model.ChartMetadata) *pb.Application_Chart_Metadata {
+	ret := &pb.Application_Chart_Metadata{}
 	ret.SetValuesYaml(md.ValuesYAML)
 	ret.SetReadmeMd(md.ReadmeMD)
 	return ret

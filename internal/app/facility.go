@@ -38,15 +38,6 @@ func (a *NexusApp) GetFacility(ctx context.Context, req *connect.Request[pb.GetF
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) GetFacilityMetadata(ctx context.Context, req *connect.Request[pb.GetFacilityMetadataRequest]) (*connect.Response[pb.Facility_Metadata], error) {
-	md, err := a.svc.GetFacilityMetadata(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	res := toProtoFacilityMetadata(md)
-	return connect.NewResponse(res), nil
-}
-
 func (a *NexusApp) CreateFacility(ctx context.Context, req *connect.Request[pb.CreateFacilityRequest]) (*connect.Response[pb.Facility], error) {
 	f, err := a.svc.CreateFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), req.Msg.GetConfigYaml(), req.Msg.GetCharmName(), req.Msg.GetChannel(), int(req.Msg.GetRevision()), int(req.Msg.GetNumber()), toModelPlacements(req.Msg.GetPlacements()), toModelConstraint(req.Msg.GetConstraint()), req.Msg.GetTrust())
 	if err != nil {
@@ -195,11 +186,14 @@ func toProtoFacility(f *model.Facility, machineMap map[string]string) *pb.Facili
 	ret.SetVersion(f.Status.WorkloadVersion)
 	ret.SetRevision(int64(f.Status.CharmRev))
 	ret.SetUnits(toProtoFacilityUnits(f.Status.Units, machineMap))
+	if f.FacilityMetadata != nil {
+		ret.SetMetadata(toProtoFacilityMetadata(f.FacilityMetadata))
+	}
 	return ret
 }
 
-func toProtoFacilityMetadata(md *model.FacilityMetadata) *pb.Facility_Metadata {
-	ret := &pb.Facility_Metadata{}
+func toProtoFacilityMetadata(md *model.FacilityMetadata) *pb.Facility_Charm_Metadata {
+	ret := &pb.Facility_Charm_Metadata{}
 	ret.SetConfigYaml(md.ConfigYAML)
 	return ret
 }
