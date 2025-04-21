@@ -106,22 +106,25 @@ func (s *NexusService) ListApplications(ctx context.Context, uuid, facility stri
 	scm := toStorageClassMap(storageClasses)
 
 	apps := []model.Application{}
-	for _, d := range deployments {
-		app, err := toApplication(d.Spec.Selector, appTypeDeployment, d.Name, d.Namespace, d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+	for i := range deployments {
+		d := deployments[i]
+		app, err := toApplication(d.Spec.Selector, appTypeDeployment, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
 		if err != nil {
 			return nil, err
 		}
 		apps = append(apps, *app)
 	}
-	for _, d := range statefulSets {
-		app, err := toApplication(d.Spec.Selector, appTypeStatefulSet, d.Name, d.Namespace, d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+	for i := range statefulSets {
+		d := deployments[i]
+		app, err := toApplication(d.Spec.Selector, appTypeStatefulSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
 		if err != nil {
 			return nil, err
 		}
 		apps = append(apps, *app)
 	}
-	for _, d := range daemonSets {
-		app, err := toApplication(d.Spec.Selector, appTypeDaemonSet, d.Name, d.Namespace, d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+	for i := range daemonSets {
+		d := deployments[i]
+		app, err := toApplication(d.Spec.Selector, appTypeDaemonSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
 		if err != nil {
 			return nil, err
 		}
@@ -203,11 +206,11 @@ func (s *NexusService) GetApplication(ctx context.Context, uuid, facility, names
 	scm := toStorageClassMap(storageClasses)
 
 	if deployment != nil {
-		return toApplication(deployment.Spec.Selector, appTypeDeployment, deployment.Name, deployment.Namespace, deployment.ObjectMeta, deployment.Labels, deployment.Spec.Replicas, deployment.Spec.Template.Spec.Containers, deployment.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+		return toApplication(deployment.Spec.Selector, appTypeDeployment, deployment.Name, deployment.Namespace, &deployment.ObjectMeta, deployment.Labels, deployment.Spec.Replicas, deployment.Spec.Template.Spec.Containers, deployment.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
 	} else if statefulSet != nil {
-		return toApplication(statefulSet.Spec.Selector, appTypeDeployment, statefulSet.Name, statefulSet.Namespace, statefulSet.ObjectMeta, statefulSet.Labels, statefulSet.Spec.Replicas, statefulSet.Spec.Template.Spec.Containers, statefulSet.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+		return toApplication(statefulSet.Spec.Selector, appTypeDeployment, statefulSet.Name, statefulSet.Namespace, &statefulSet.ObjectMeta, statefulSet.Labels, statefulSet.Spec.Replicas, statefulSet.Spec.Template.Spec.Containers, statefulSet.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
 	} else if daemonSet != nil {
-		return toApplication(daemonSet.Spec.Selector, appTypeDeployment, daemonSet.Name, daemonSet.Namespace, daemonSet.ObjectMeta, daemonSet.Labels, nil, daemonSet.Spec.Template.Spec.Containers, daemonSet.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+		return toApplication(daemonSet.Spec.Selector, appTypeDeployment, daemonSet.Name, daemonSet.Namespace, &daemonSet.ObjectMeta, daemonSet.Labels, nil, daemonSet.Spec.Template.Spec.Containers, daemonSet.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
 	}
 
 	return nil, status.Errorf(codes.NotFound, "application %q in namespace %q not found", name, namespace)
@@ -346,8 +349,7 @@ func (s *NexusService) setKubernetesClient(ctx context.Context, uuid, facility s
 	if err != nil {
 		return err
 	}
-	s.kubernetes.Set(uuid, facility, cfg)
-	return nil
+	return s.kubernetes.Set(uuid, facility, cfg)
 }
 
 func (s *NexusService) listKubernetes(ctx context.Context) ([]model.Kubernetes, error) {
@@ -358,7 +360,8 @@ func (s *NexusService) listKubernetes(ctx context.Context) ([]model.Kubernetes, 
 
 	eg, ctx := errgroup.WithContext(ctx)
 	result := make([][]model.Kubernetes, len(scopes))
-	for idx, scope := range scopes {
+	for i := range scopes {
+		scope := scopes[i]
 		eg.Go(func() error {
 			fs, err := s.ListFacilities(ctx, scope.UUID)
 			if err != nil {
@@ -366,7 +369,7 @@ func (s *NexusService) listKubernetes(ctx context.Context) ([]model.Kubernetes, 
 			}
 			for i := range fs {
 				if strings.Contains(fs[i].Status.Charm, kubernetesCharmName) {
-					result[idx] = append(result[idx], model.Kubernetes{
+					result[i] = append(result[i], model.Kubernetes{
 						ScopeName:    scope.Name,
 						ScopeUUID:    scope.UUID,
 						FacilityName: fs[i].Name,
@@ -390,7 +393,8 @@ func (s *NexusService) listKubernetes(ctx context.Context) ([]model.Kubernetes, 
 func (s *NexusService) listReleases(ctx context.Context, ks []model.Kubernetes) ([]model.Release, error) {
 	eg, ctx := errgroup.WithContext(ctx)
 	result := make([][]model.Release, len(ks))
-	for idx, k := range ks {
+	for i := range ks {
+		k := ks[i]
 		eg.Go(func() error {
 			if err := s.setKubernetesClient(ctx, k.ScopeUUID, k.FacilityName); err != nil {
 				return err
@@ -400,7 +404,7 @@ func (s *NexusService) listReleases(ctx context.Context, ks []model.Kubernetes) 
 				return err
 			}
 			for _, rel := range rels {
-				result[idx] = append(result[idx], model.Release{
+				result[i] = append(result[i], model.Release{
 					ScopeName:    k.ScopeName,
 					ScopeUUID:    k.ScopeUUID,
 					FacilityName: k.FacilityName,
@@ -478,7 +482,7 @@ func extractClientToken(unitInfo *model.UnitInfo) (string, error) {
 	return "", errors.New("token not found")
 }
 
-func toApplication(ls *metav1.LabelSelector, appType, name, namespace string, objectMeta metav1.ObjectMeta, labels map[string]string, replicas *int32, containers []corev1.Container, vs []corev1.Volume, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
+func toApplication(ls *metav1.LabelSelector, appType, name, namespace string, objectMeta *metav1.ObjectMeta, labels map[string]string, replicas *int32, containers []corev1.Container, vs []corev1.Volume, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
 	selector, err := metav1.LabelSelectorAsSelector(ls)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create selector: %w", err)
@@ -509,9 +513,9 @@ func filterServices(svcs []corev1.Service, s labels.Selector) []corev1.Service {
 
 func filterPods(pods []corev1.Pod, s labels.Selector) []corev1.Pod {
 	ret := []corev1.Pod{}
-	for idx := range pods {
-		if s.Matches(labels.Set(pods[idx].Labels)) {
-			ret = append(ret, pods[idx])
+	for i := range pods {
+		if s.Matches(labels.Set(pods[i].Labels)) {
+			ret = append(ret, pods[i])
 		}
 	}
 	return ret
@@ -546,8 +550,8 @@ func filterPersistentVolumeClaim(pvcs []corev1.PersistentVolumeClaim, vs []corev
 
 func toStorageClassMap(scs []storagev1.StorageClass) map[string]storagev1.StorageClass {
 	ret := map[string]storagev1.StorageClass{}
-	for idx := range scs {
-		ret[scs[idx].Name] = scs[idx]
+	for i := range scs {
+		ret[scs[i].Name] = scs[i]
 	}
 	return ret
 }

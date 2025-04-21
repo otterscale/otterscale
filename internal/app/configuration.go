@@ -4,8 +4,9 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
+	"google.golang.org/protobuf/types/known/emptypb"
 
+	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
@@ -36,12 +37,48 @@ func (a *NexusApp) UpdatePackageRepository(ctx context.Context, req *connect.Req
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) UpdateDefaultBootResource(ctx context.Context, req *connect.Request[pb.UpdateDefaultBootResourceRequest]) (*connect.Response[pb.Configuration_BootResource], error) {
-	br, err := a.svc.UpdateDefaultBootResource(ctx, req.Msg.GetDistroSeries())
+func (a *NexusApp) CreateBootImage(ctx context.Context, req *connect.Request[pb.CreateBootImageRequest]) (*connect.Response[pb.Configuration_BootImage], error) {
+	bi, err := a.svc.CreateBootImage(ctx, req.Msg.GetDistroSeries(), req.Msg.GetArchitectures())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoBootResource(br)
+	res := toProtoBootImage(bi)
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) SetDefaultBootImage(ctx context.Context, req *connect.Request[pb.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.SetDefaultBootImage(ctx, req.Msg.GetDistroSeries()); err != nil {
+		return nil, err
+	}
+	res := &emptypb.Empty{}
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) ImportBootImages(ctx context.Context, req *connect.Request[pb.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.ImportBootImages(ctx); err != nil {
+		return nil, err
+	}
+	res := &emptypb.Empty{}
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) IsImportingBootImages(ctx context.Context, req *connect.Request[pb.IsImportingBootImagesRequest]) (*connect.Response[pb.IsImportingBootImagesResponse], error) {
+	isImporting, err := a.svc.IsImportingBootImages(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := &pb.IsImportingBootImagesResponse{}
+	res.SetImporting(isImporting)
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) ListBootImageSelections(ctx context.Context, req *connect.Request[pb.ListBootImageSelectionsRequest]) (*connect.Response[pb.ListBootImageSelectionsResponse], error) {
+	bims, err := a.svc.ListBootImageSelections(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := &pb.ListBootImageSelectionsResponse{}
+	res.SetBootImageSelections(toProtoBootImageSelections(bims))
 	return connect.NewResponse(res), nil
 }
 
@@ -68,21 +105,37 @@ func toProtoPackageRepository(pr *model.PackageRepository) *pb.Configuration_Pac
 	return ret
 }
 
-func toProtoBootResources(brs []model.BootResource) []*pb.Configuration_BootResource {
-	ret := []*pb.Configuration_BootResource{}
-	for i := range brs {
-		ret = append(ret, toProtoBootResource(&brs[i]))
+func toProtoBootImages(bis []model.BootImage) []*pb.Configuration_BootImage {
+	ret := []*pb.Configuration_BootImage{}
+	for i := range bis {
+		ret = append(ret, toProtoBootImage(&bis[i]))
 	}
 	return ret
 }
 
-func toProtoBootResource(br *model.BootResource) *pb.Configuration_BootResource {
-	ret := &pb.Configuration_BootResource{}
-	ret.SetName(br.Name)
-	ret.SetArchitecture(br.Architecture)
-	ret.SetStatus(br.Status)
-	ret.SetDefault(br.Default)
-	ret.SetDistroSeries(br.DistroSeries)
+func toProtoBootImage(bi *model.BootImage) *pb.Configuration_BootImage {
+	ret := &pb.Configuration_BootImage{}
+	ret.SetSource(bi.Source)
+	ret.SetDistroSeries(bi.DistroSeries)
+	ret.SetName(bi.Name)
+	ret.SetArchitectureStatusMap(bi.ArchitectureStatusMap)
+	ret.SetDefault(bi.Default)
+	return ret
+}
+
+func toProtoBootImageSelections(biss []model.BootImageSelection) []*pb.Configuration_BootImageSelection {
+	ret := []*pb.Configuration_BootImageSelection{}
+	for i := range biss {
+		ret = append(ret, toProtoBootImageSelection(&biss[i]))
+	}
+	return ret
+}
+
+func toProtoBootImageSelection(bis *model.BootImageSelection) *pb.Configuration_BootImageSelection {
+	ret := &pb.Configuration_BootImageSelection{}
+	ret.SetDistroSeries(bis.DistroSeries)
+	ret.SetName(bis.Name)
+	ret.SetArchitectures(bis.Architectures)
 	return ret
 }
 
@@ -90,6 +143,6 @@ func toProtoConfiguration(c *model.Configuration) *pb.Configuration {
 	ret := &pb.Configuration{}
 	ret.SetNtpServer(toProtoNTPServer(c.NTPServers))
 	ret.SetPackageRepositories(toProtoPackageRepositories(c.PackageRepositories))
-	ret.SetBootResources(toProtoBootResources(c.BootResources))
+	ret.SetBootImages(toProtoBootImages(c.BootImages))
 	return ret
 }

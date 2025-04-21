@@ -12,6 +12,8 @@ import (
 var ProviderSet = wire.NewSet(
 	maas.New,
 	maas.NewBootResource,
+	maas.NewBootSourceSelection,
+	maas.NewBootSource,
 	maas.NewFabric,
 	maas.NewIPRange,
 	maas.NewMachine,

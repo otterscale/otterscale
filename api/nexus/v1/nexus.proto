@@ -12,8 +12,11 @@ service Nexus {
   rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
   rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer);
   rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository);
-  rpc UpdateDefaultBootResource(UpdateDefaultBootResourceRequest) returns (Configuration.BootResource);
-  rpc SyncBootResources(SyncBootResourcesRequest) returns (google.protobuf.Empty);
+  rpc CreateBootImage(CreateBootImageRequest) returns (Configuration.BootImage);
+  rpc SetDefaultBootImage(SetDefaultBootImageRequest) returns (google.protobuf.Empty);
+  rpc ImportBootImages(ImportBootImagesRequest) returns (google.protobuf.Empty);
+  rpc IsImportingBootImages(IsImportingBootImagesRequest) returns (IsImportingBootImagesResponse);
+  rpc ListBootImageSelections(ListBootImageSelectionsRequest) returns (ListBootImageSelectionsResponse);
 
   // Network
   rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);
@@ -76,16 +79,21 @@ message Configuration {
     string url = 3;
     bool enabled = 4;
   }
-  message BootResource {
-    string name = 1;
-    string architecture = 2;
-    string status = 3;
+  message BootImageSelection {
+    string distro_series = 1;
+    string name = 2;
+    repeated string architectures = 3;
+  }
+  message BootImage {
+    string source = 1;
+    string distro_series = 2;
+    string name = 3;
+    map<string, string> architecture_status_map = 5;
     bool default = 11;
-    string distro_series = 12;
   }
   NTPServer ntp_server = 1;
   repeated PackageRepository package_repositories = 2;
-  repeated BootResource boot_resources = 3;
+  repeated BootImage boot_images = 3;
 }
 
 message Network {
@@ -228,7 +236,7 @@ message Scope {
   string life = 5;
   string status = 6;
   string agent_version = 7;
-  bool is_controller = 8;
+  bool controller = 8;
   int64 machine_count = 21;
   int64 core_count = 22;
   int64 unit_count = 23;
@@ -413,11 +421,28 @@ message UpdatePackageRepositoryRequest {
   bool skip_juju = 3;
 }
 
-message UpdateDefaultBootResourceRequest {
+message CreateBootImageRequest {
+  string distro_series = 1;
+  repeated string architectures = 2;
+}
+
+message SetDefaultBootImageRequest {
   string distro_series = 1;
 }
 
-message SyncBootResourcesRequest {}
+message ImportBootImagesRequest {}
+
+message IsImportingBootImagesRequest {}
+
+message IsImportingBootImagesResponse {
+  bool importing = 1;
+}
+
+message ListBootImageSelectionsRequest {}
+
+message ListBootImageSelectionsResponse {
+  repeated Configuration.BootImageSelection boot_image_selections = 1;
+}
 
 message ListNetworksRequest {}
 

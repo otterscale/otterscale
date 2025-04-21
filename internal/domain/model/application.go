@@ -18,7 +18,7 @@ type Application struct {
 	Type                   string
 	Name                   string
 	Namespace              string
-	ObjectMeta             metav1.ObjectMeta
+	ObjectMeta             *metav1.ObjectMeta
 	Labels                 map[string]string
 	Replicas               *int32
 	Containers             []corev1.Container

@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
 
+	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
@@ -45,7 +45,7 @@ func toProtoScope(s *model.Scope) *pb.Scope {
 	ret.SetLife(string(s.Life))
 	ret.SetStatus(string(s.Status.Status))
 	ret.SetAgentVersion(s.AgentVersion.String())
-	ret.SetIsController(s.IsController)
+	ret.SetController(s.IsController)
 	for _, c := range s.Counts {
 		switch c.Entity {
 		case "machines":

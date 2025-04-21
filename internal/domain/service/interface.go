@@ -5,7 +5,6 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/canonical/gomaasclient/entity/subnet"
-	"github.com/openhdc/openhdc/internal/domain/model"
 
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/action"
@@ -22,8 +21,9 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
-
 	"k8s.io/client-go/rest"
+
+	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
 type MAASServer interface {
@@ -39,6 +39,16 @@ type MAASPackageRepository interface {
 type MAASBootResource interface {
 	List(ctx context.Context) ([]entity.BootResource, error)
 	Import(ctx context.Context) error
+	IsImporting(ctx context.Context) (bool, error)
+}
+
+type MAASBootSource interface {
+	List(ctx context.Context) ([]entity.BootSource, error)
+}
+
+type MAASBootSourceSelection interface {
+	List(ctx context.Context, id int) ([]entity.BootSourceSelection, error)
+	CreateFromMAASIO(ctx context.Context, distroSeries string, architectures []string) (*entity.BootSourceSelection, error)
 }
 
 type MAASFabric interface {

@@ -177,12 +177,13 @@ func (r *helm) ListChartVersions(ctx context.Context) ([]*repo.IndexFile, error)
 	}
 	eg, ctx := errgroup.WithContext(ctx)
 	result := make([]*repo.IndexFile, len(r.repoURLs))
-	for idx, url := range r.repoURLs {
+	for i := range r.repoURLs {
+		url := r.repoURLs[i]
 		eg.Go(func() error {
 			f, err := r.fetchRepositoryIndex(ctx, url)
 			if err == nil {
 				f.SortEntries()
-				result[idx] = f
+				result[i] = f
 			}
 			return err
 		})

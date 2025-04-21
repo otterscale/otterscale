@@ -2,13 +2,7 @@ package service
 
 import (
 	"context"
-	"fmt"
-	"regexp"
-	"strconv"
 	"strings"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
@@ -21,16 +15,38 @@ const (
 	jujuConfigAPTMirror                 = "apt-mirror"
 )
 
-const (
-	defaultOSSystem = "ubuntu"
-)
+const defaultOSSystem = "ubuntu"
+
+var ubuntuDistroSeriesMap = map[string]model.BootImageSelection{
+	"xenial": {
+		DistroSeries:  "xenial",
+		Name:          "Ubuntu 16.04 LTS Xenial Xerus",
+		Architectures: []string{"amd64", "arm64", "armhf", "i386", "ppc64el", "s390x"},
+	},
+	"bionic": {
+		DistroSeries:  "bionic",
+		Name:          "Ubuntu 18.04 LTS Bionic Beaver",
+		Architectures: []string{"amd64", "arm64", "armhf", "i386", "ppc64el", "s390x"},
+	},
+	"focal": {
+		DistroSeries:  "focal",
+		Name:          "Ubuntu 20.04 LTS Focal Fossa",
+		Architectures: []string{"amd64", "arm64", "armhf", "ppc64el", "s390x"},
+	},
+	"jammy": {
+		DistroSeries:  "jammy",
+		Name:          "Ubuntu 22.04 LTS Jammy Jellyfish",
+		Architectures: []string{"amd64", "arm64", "armhf", "ppc64el", "s390x"},
+	},
+	"noble": {
+		DistroSeries:  "noble",
+		Name:          "Ubuntu 24.04 LTS Noble Numbat",
+		Architectures: []string{"amd64", "arm64", "armhf", "ppc64el", "s390x"},
+	},
+}
 
 func (s *NexusService) GetConfiguration(ctx context.Context) (*model.Configuration, error) {
 	ntpServers, err := s.listNTPServers(ctx)
-	if err != nil {
-		return nil, err
-	}
-	brs, err := s.listBootResources(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -38,10 +54,14 @@ func (s *NexusService) GetConfiguration(ctx context.Context) (*model.Configurati
 	if err != nil {
 		return nil, err
 	}
+	brs, err := s.listBootImages(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return &model.Configuration{
 		NTPServers:          ntpServers,
-		BootResources:       brs,
 		PackageRepositories: prs,
+		BootImages:          brs,
 	}, nil
 }
 
@@ -75,31 +95,49 @@ func (s *NexusService) UpdatePackageRepository(ctx context.Context, id int, url 
 	return pr, nil
 }
 
-func (s *NexusService) UpdateDefaultBootResource(ctx context.Context, distroSeries string) (*model.BootResource, error) {
-	if err := s.server.Update(ctx, maasConfigDefaultOSSystem, defaultOSSystem); err != nil {
-		return nil, err
+func (s *NexusService) CreateBootImage(ctx context.Context, distroSeries string, architectures []string) (*model.BootImage, error) {
+	if len(architectures) == 0 {
+		architectures = []string{"amd64"} // default
 	}
-	if err := s.server.Update(ctx, maasConfigDefaultDistroSeries, distroSeries); err != nil {
-		return nil, err
-	}
-	if err := s.server.Update(ctx, maasConfigCommissioningDistroSeries, distroSeries); err != nil {
-		return nil, err
-	}
-	brs, err := s.listBootResources(ctx)
+	bss, err := s.bootSourceSelection.CreateFromMAASIO(ctx, distroSeries, architectures)
 	if err != nil {
 		return nil, err
 	}
-	for _, br := range brs {
-		if br.DistroSeries != distroSeries {
-			continue
-		}
-		return &br, nil
+	m := map[string]string{}
+	for _, arch := range bss.Arches {
+		m[arch] = ""
 	}
-	return nil, status.Errorf(codes.NotFound, "distro series %q not found", distroSeries)
+	return &model.BootImage{
+		DistroSeries:          bss.Release,
+		Name:                  bss.OS,
+		ArchitectureStatusMap: m,
+	}, nil
 }
 
-func (s *NexusService) SyncBootResources(ctx context.Context) error {
+func (s *NexusService) SetDefaultBootImage(ctx context.Context, distroSeries string) error {
+	if err := s.server.Update(ctx, maasConfigDefaultOSSystem, defaultOSSystem); err != nil {
+		return err
+	}
+	if err := s.server.Update(ctx, maasConfigDefaultDistroSeries, distroSeries); err != nil {
+		return err
+	}
+	return s.server.Update(ctx, maasConfigCommissioningDistroSeries, distroSeries)
+}
+
+func (s *NexusService) ImportBootImages(ctx context.Context) error {
 	return s.bootResource.Import(ctx)
+}
+
+func (s *NexusService) IsImportingBootImages(ctx context.Context) (bool, error) {
+	return s.bootResource.IsImporting(ctx)
+}
+
+func (s *NexusService) ListBootImageSelections(ctx context.Context) ([]model.BootImageSelection, error) {
+	biss := []model.BootImageSelection{}
+	for distro := range ubuntuDistroSeriesMap {
+		biss = append(biss, ubuntuDistroSeriesMap[distro])
+	}
+	return biss, nil
 }
 
 func (s *NexusService) listNTPServers(ctx context.Context) ([]string, error) {
@@ -110,86 +148,56 @@ func (s *NexusService) listNTPServers(ctx context.Context) ([]string, error) {
 	return strings.Split(removeQuotes(string(val)), " "), nil
 }
 
-func (s *NexusService) listBootResources(ctx context.Context) ([]model.BootResource, error) {
-	val, err := s.server.Get(ctx, maasConfigDefaultDistroSeries)
-	if err != nil {
-		return nil, err
-	}
-	ebrs, err := s.bootResource.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	brm := map[string]model.BootResource{}
-	for _, br := range ebrs {
-		token := strings.Split(br.Name, "/")
-		if token[0] != defaultOSSystem {
-			continue
-		}
-		isDefault := false
-		if len(token) > 1 {
-			isDefault = token[1] == removeQuotes(string(val))
-		}
-		arch := strings.Split(br.Architecture, "/")[0]
-		group := br.Name + arch
-		brm[group] = model.BootResource{
-			Name:         ubuntuDistro(br.Name, br.Architecture),
-			Architecture: arch,
-			Status:       br.Type,
-			Default:      isDefault,
-			DistroSeries: ubuntuDistroSeries(br.Name),
-		}
-	}
-	brs := []model.BootResource{}
-	for _, br := range brm {
-		brs = append(brs, br)
-	}
-	return brs, nil
-}
-
 func (s *NexusService) listPackageRepositories(ctx context.Context) ([]model.PackageRepository, error) {
 	return s.packageRepository.List(ctx)
 }
 
-func ubuntuDistro(name, arch string) string {
-	distroSeries := ubuntuDistroSeries(name)
-	version := ubuntuVersion(arch)
-
-	suffix := ""
-	if isLTS(arch) {
-		suffix = " LTS"
-	}
-
-	return fmt.Sprintf("Ubuntu %s%s (%s)", version, suffix, distroSeries)
-}
-
-func ubuntuVersion(arch string) string {
-	re := regexp.MustCompile(`-(\d{2}\.\d{2})`)
-	match := re.FindStringSubmatch(arch)
-	if len(match) == 0 {
-		return ""
-	}
-	return match[1]
-}
-
-func ubuntuDistroSeries(name string) string {
-	token := strings.Split(name, "/")
-	if len(token) == 1 {
-		return name
-	}
-	return token[1]
-}
-
-func isLTS(arch string) bool {
-	token := strings.Split(ubuntuVersion(arch), ".")
-	if len(token) == 1 {
-		return false
-	}
-	minor := token[1]
-	main, err := strconv.Atoi(token[0])
+func (s *NexusService) listBootImages(ctx context.Context) ([]model.BootImage, error) {
+	val, err := s.server.Get(ctx, maasConfigDefaultDistroSeries)
 	if err != nil {
-		return false
+		return nil, err
 	}
-	return main%2 == 0 && minor == "04"
+	brs, err := s.bootResource.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	brm := map[string]map[string]string{}
+	for i := range brs {
+		token := strings.Split(brs[i].Name, "/")
+		if len(token) > 1 {
+			distro := token[1]
+			if _, ok := brm[distro]; !ok {
+				brm[distro] = map[string]string{}
+			}
+			brm[distro][brs[i].Architecture] = brs[i].Type
+		}
+	}
+	bss, err := s.bootSource.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	bis := []model.BootImage{}
+	for i := range bss {
+		brss, err := s.bootSourceSelection.List(ctx, bss[i].ID)
+		if err != nil {
+			return nil, err
+		}
+		for j := range brss {
+			distro := brss[j].Release
+			name := brss[j].Release
+			if ds, ok := ubuntuDistroSeriesMap[brss[j].Release]; ok {
+				name = ds.Name
+			}
+			bis = append(bis, model.BootImage{
+				Source:                bss[i].URL,
+				DistroSeries:          distro,
+				Name:                  name,
+				ArchitectureStatusMap: brm[distro],
+				Default:               distro == removeQuotes(string(val)),
+			})
+		}
+	}
+	return bis, nil
 }
 
 func removeQuotes(s string) string {

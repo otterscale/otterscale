@@ -10,13 +10,19 @@ type (
 type Configuration struct {
 	NTPServers          []string
 	PackageRepositories []PackageRepository
-	BootResources       []BootResource
+	BootImages          []BootImage
 }
 
-type BootResource struct {
-	Name         string
-	Architecture string
-	Status       string
-	Default      bool
-	DistroSeries string
+type BootImage struct {
+	Source                string
+	DistroSeries          string
+	Name                  string
+	ArchitectureStatusMap map[string]string
+	Default               bool
+}
+
+type BootImageSelection struct {
+	DistroSeries  string
+	Name          string
+	Architectures []string
 }
