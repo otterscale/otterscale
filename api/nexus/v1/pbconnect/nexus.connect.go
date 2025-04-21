@@ -41,11 +41,19 @@ const (
 	// NexusUpdatePackageRepositoryProcedure is the fully-qualified name of the Nexus's
 	// UpdatePackageRepository RPC.
 	NexusUpdatePackageRepositoryProcedure = "/openhdc.nexus.v1.Nexus/UpdatePackageRepository"
-	// NexusUpdateDefaultBootResourceProcedure is the fully-qualified name of the Nexus's
-	// UpdateDefaultBootResource RPC.
-	NexusUpdateDefaultBootResourceProcedure = "/openhdc.nexus.v1.Nexus/UpdateDefaultBootResource"
-	// NexusSyncBootResourcesProcedure is the fully-qualified name of the Nexus's SyncBootResources RPC.
-	NexusSyncBootResourcesProcedure = "/openhdc.nexus.v1.Nexus/SyncBootResources"
+	// NexusCreateBootImageProcedure is the fully-qualified name of the Nexus's CreateBootImage RPC.
+	NexusCreateBootImageProcedure = "/openhdc.nexus.v1.Nexus/CreateBootImage"
+	// NexusSetDefaultBootImageProcedure is the fully-qualified name of the Nexus's SetDefaultBootImage
+	// RPC.
+	NexusSetDefaultBootImageProcedure = "/openhdc.nexus.v1.Nexus/SetDefaultBootImage"
+	// NexusImportBootImagesProcedure is the fully-qualified name of the Nexus's ImportBootImages RPC.
+	NexusImportBootImagesProcedure = "/openhdc.nexus.v1.Nexus/ImportBootImages"
+	// NexusIsImportingBootImagesProcedure is the fully-qualified name of the Nexus's
+	// IsImportingBootImages RPC.
+	NexusIsImportingBootImagesProcedure = "/openhdc.nexus.v1.Nexus/IsImportingBootImages"
+	// NexusListBootImageSelectionsProcedure is the fully-qualified name of the Nexus's
+	// ListBootImageSelections RPC.
+	NexusListBootImageSelectionsProcedure = "/openhdc.nexus.v1.Nexus/ListBootImageSelections"
 	// NexusListNetworksProcedure is the fully-qualified name of the Nexus's ListNetworks RPC.
 	NexusListNetworksProcedure = "/openhdc.nexus.v1.Nexus/ListNetworks"
 	// NexusCreateNetworkProcedure is the fully-qualified name of the Nexus's CreateNetwork RPC.
@@ -136,8 +144,11 @@ type NexusClient interface {
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
 	UpdatePackageRepository(context.Context, *connect.Request[v1.UpdatePackageRepositoryRequest]) (*connect.Response[v1.Configuration_PackageRepository], error)
-	UpdateDefaultBootResource(context.Context, *connect.Request[v1.UpdateDefaultBootResourceRequest]) (*connect.Response[v1.Configuration_BootResource], error)
-	SyncBootResources(context.Context, *connect.Request[v1.SyncBootResourcesRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateBootImage(context.Context, *connect.Request[v1.CreateBootImageRequest]) (*connect.Response[v1.Configuration_BootImage], error)
+	SetDefaultBootImage(context.Context, *connect.Request[v1.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error)
+	ImportBootImages(context.Context, *connect.Request[v1.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error)
+	IsImportingBootImages(context.Context, *connect.Request[v1.IsImportingBootImagesRequest]) (*connect.Response[v1.IsImportingBootImagesResponse], error)
+	ListBootImageSelections(context.Context, *connect.Request[v1.ListBootImageSelectionsRequest]) (*connect.Response[v1.ListBootImageSelectionsResponse], error)
 	// Network
 	ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error)
 	CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error)
@@ -214,16 +225,34 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("UpdatePackageRepository")),
 			connect.WithClientOptions(opts...),
 		),
-		updateDefaultBootResource: connect.NewClient[v1.UpdateDefaultBootResourceRequest, v1.Configuration_BootResource](
+		createBootImage: connect.NewClient[v1.CreateBootImageRequest, v1.Configuration_BootImage](
 			httpClient,
-			baseURL+NexusUpdateDefaultBootResourceProcedure,
-			connect.WithSchema(nexusMethods.ByName("UpdateDefaultBootResource")),
+			baseURL+NexusCreateBootImageProcedure,
+			connect.WithSchema(nexusMethods.ByName("CreateBootImage")),
 			connect.WithClientOptions(opts...),
 		),
-		syncBootResources: connect.NewClient[v1.SyncBootResourcesRequest, emptypb.Empty](
+		setDefaultBootImage: connect.NewClient[v1.SetDefaultBootImageRequest, emptypb.Empty](
 			httpClient,
-			baseURL+NexusSyncBootResourcesProcedure,
-			connect.WithSchema(nexusMethods.ByName("SyncBootResources")),
+			baseURL+NexusSetDefaultBootImageProcedure,
+			connect.WithSchema(nexusMethods.ByName("SetDefaultBootImage")),
+			connect.WithClientOptions(opts...),
+		),
+		importBootImages: connect.NewClient[v1.ImportBootImagesRequest, emptypb.Empty](
+			httpClient,
+			baseURL+NexusImportBootImagesProcedure,
+			connect.WithSchema(nexusMethods.ByName("ImportBootImages")),
+			connect.WithClientOptions(opts...),
+		),
+		isImportingBootImages: connect.NewClient[v1.IsImportingBootImagesRequest, v1.IsImportingBootImagesResponse](
+			httpClient,
+			baseURL+NexusIsImportingBootImagesProcedure,
+			connect.WithSchema(nexusMethods.ByName("IsImportingBootImages")),
+			connect.WithClientOptions(opts...),
+		),
+		listBootImageSelections: connect.NewClient[v1.ListBootImageSelectionsRequest, v1.ListBootImageSelectionsResponse](
+			httpClient,
+			baseURL+NexusListBootImageSelectionsProcedure,
+			connect.WithSchema(nexusMethods.ByName("ListBootImageSelections")),
 			connect.WithClientOptions(opts...),
 		),
 		listNetworks: connect.NewClient[v1.ListNetworksRequest, v1.ListNetworksResponse](
@@ -471,51 +500,54 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 
 // nexusClient implements NexusClient.
 type nexusClient struct {
-	getConfiguration          *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
-	updateNTPServer           *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
-	updatePackageRepository   *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
-	updateDefaultBootResource *connect.Client[v1.UpdateDefaultBootResourceRequest, v1.Configuration_BootResource]
-	syncBootResources         *connect.Client[v1.SyncBootResourcesRequest, emptypb.Empty]
-	listNetworks              *connect.Client[v1.ListNetworksRequest, v1.ListNetworksResponse]
-	createNetwork             *connect.Client[v1.CreateNetworkRequest, v1.Network]
-	createIPRange             *connect.Client[v1.CreateIPRangeRequest, v1.Network_IPRange]
-	deleteNetwork             *connect.Client[v1.DeleteNetworkRequest, emptypb.Empty]
-	deleteIPRange             *connect.Client[v1.DeleteIPRangeRequest, emptypb.Empty]
-	updateFabric              *connect.Client[v1.UpdateFabricRequest, v1.Network_Fabric]
-	updateVLAN                *connect.Client[v1.UpdateVLANRequest, v1.Network_VLAN]
-	updateSubnet              *connect.Client[v1.UpdateSubnetRequest, v1.Network_Subnet]
-	updateIPRange             *connect.Client[v1.UpdateIPRangeRequest, v1.Network_IPRange]
-	listMachines              *connect.Client[v1.ListMachinesRequest, v1.ListMachinesResponse]
-	getMachine                *connect.Client[v1.GetMachineRequest, v1.Machine]
-	commissionMachine         *connect.Client[v1.CommissionMachineRequest, v1.Machine]
-	powerOnMachine            *connect.Client[v1.PowerOnMachineRequest, v1.Machine]
-	powerOffMachine           *connect.Client[v1.PowerOffMachineRequest, v1.Machine]
-	addMachines               *connect.Client[v1.AddMachinesRequest, v1.AddMachinesResponse]
-	listScopes                *connect.Client[v1.ListScopesRequest, v1.ListScopesResponse]
-	createScope               *connect.Client[v1.CreateScopeRequest, v1.Scope]
-	listFacilities            *connect.Client[v1.ListFacilitiesRequest, v1.ListFacilitiesResponse]
-	getFacility               *connect.Client[v1.GetFacilityRequest, v1.Facility]
-	getFacilityMetadata       *connect.Client[v1.GetFacilityMetadataRequest, v1.Facility_Metadata]
-	createFacility            *connect.Client[v1.CreateFacilityRequest, v1.Facility]
-	updateFacility            *connect.Client[v1.UpdateFacilityRequest, v1.Facility]
-	deleteFacility            *connect.Client[v1.DeleteFacilityRequest, emptypb.Empty]
-	exposeFacility            *connect.Client[v1.ExposeFacilityRequest, emptypb.Empty]
-	addFacilityUnits          *connect.Client[v1.AddFacilityUnitsRequest, v1.AddFacilityUnitsResponse]
-	listActions               *connect.Client[v1.ListActionsRequest, v1.ListActionsResponse]
-	doAction                  *connect.Client[v1.DoActionRequest, emptypb.Empty]
-	listCharms                *connect.Client[v1.ListCharmsRequest, v1.ListCharmsResponse]
-	getCharm                  *connect.Client[v1.GetCharmRequest, v1.Facility_Charm]
-	listCharmArtifacts        *connect.Client[v1.ListCharmArtifactsRequest, v1.ListCharmArtifactsResponse]
-	listApplications          *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
-	getApplication            *connect.Client[v1.GetApplicationRequest, v1.Application]
-	listReleases              *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
-	createRelease             *connect.Client[v1.CreateReleaseRequest, v1.Application_Release]
-	updateRelease             *connect.Client[v1.UpdateReleaseRequest, v1.Application_Release]
-	deleteRelease             *connect.Client[v1.DeleteReleaseRequest, emptypb.Empty]
-	rollbackRelease           *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
-	listCharts                *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
-	getChart                  *connect.Client[v1.GetChartRequest, v1.Application_Release_Chart]
-	getChartMetadata          *connect.Client[v1.GetChartMetadataRequest, v1.Application_Release_Chart_Metadata]
+	getConfiguration        *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
+	updateNTPServer         *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
+	updatePackageRepository *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
+	createBootImage         *connect.Client[v1.CreateBootImageRequest, v1.Configuration_BootImage]
+	setDefaultBootImage     *connect.Client[v1.SetDefaultBootImageRequest, emptypb.Empty]
+	importBootImages        *connect.Client[v1.ImportBootImagesRequest, emptypb.Empty]
+	isImportingBootImages   *connect.Client[v1.IsImportingBootImagesRequest, v1.IsImportingBootImagesResponse]
+	listBootImageSelections *connect.Client[v1.ListBootImageSelectionsRequest, v1.ListBootImageSelectionsResponse]
+	listNetworks            *connect.Client[v1.ListNetworksRequest, v1.ListNetworksResponse]
+	createNetwork           *connect.Client[v1.CreateNetworkRequest, v1.Network]
+	createIPRange           *connect.Client[v1.CreateIPRangeRequest, v1.Network_IPRange]
+	deleteNetwork           *connect.Client[v1.DeleteNetworkRequest, emptypb.Empty]
+	deleteIPRange           *connect.Client[v1.DeleteIPRangeRequest, emptypb.Empty]
+	updateFabric            *connect.Client[v1.UpdateFabricRequest, v1.Network_Fabric]
+	updateVLAN              *connect.Client[v1.UpdateVLANRequest, v1.Network_VLAN]
+	updateSubnet            *connect.Client[v1.UpdateSubnetRequest, v1.Network_Subnet]
+	updateIPRange           *connect.Client[v1.UpdateIPRangeRequest, v1.Network_IPRange]
+	listMachines            *connect.Client[v1.ListMachinesRequest, v1.ListMachinesResponse]
+	getMachine              *connect.Client[v1.GetMachineRequest, v1.Machine]
+	commissionMachine       *connect.Client[v1.CommissionMachineRequest, v1.Machine]
+	powerOnMachine          *connect.Client[v1.PowerOnMachineRequest, v1.Machine]
+	powerOffMachine         *connect.Client[v1.PowerOffMachineRequest, v1.Machine]
+	addMachines             *connect.Client[v1.AddMachinesRequest, v1.AddMachinesResponse]
+	listScopes              *connect.Client[v1.ListScopesRequest, v1.ListScopesResponse]
+	createScope             *connect.Client[v1.CreateScopeRequest, v1.Scope]
+	listFacilities          *connect.Client[v1.ListFacilitiesRequest, v1.ListFacilitiesResponse]
+	getFacility             *connect.Client[v1.GetFacilityRequest, v1.Facility]
+	getFacilityMetadata     *connect.Client[v1.GetFacilityMetadataRequest, v1.Facility_Metadata]
+	createFacility          *connect.Client[v1.CreateFacilityRequest, v1.Facility]
+	updateFacility          *connect.Client[v1.UpdateFacilityRequest, v1.Facility]
+	deleteFacility          *connect.Client[v1.DeleteFacilityRequest, emptypb.Empty]
+	exposeFacility          *connect.Client[v1.ExposeFacilityRequest, emptypb.Empty]
+	addFacilityUnits        *connect.Client[v1.AddFacilityUnitsRequest, v1.AddFacilityUnitsResponse]
+	listActions             *connect.Client[v1.ListActionsRequest, v1.ListActionsResponse]
+	doAction                *connect.Client[v1.DoActionRequest, emptypb.Empty]
+	listCharms              *connect.Client[v1.ListCharmsRequest, v1.ListCharmsResponse]
+	getCharm                *connect.Client[v1.GetCharmRequest, v1.Facility_Charm]
+	listCharmArtifacts      *connect.Client[v1.ListCharmArtifactsRequest, v1.ListCharmArtifactsResponse]
+	listApplications        *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
+	getApplication          *connect.Client[v1.GetApplicationRequest, v1.Application]
+	listReleases            *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
+	createRelease           *connect.Client[v1.CreateReleaseRequest, v1.Application_Release]
+	updateRelease           *connect.Client[v1.UpdateReleaseRequest, v1.Application_Release]
+	deleteRelease           *connect.Client[v1.DeleteReleaseRequest, emptypb.Empty]
+	rollbackRelease         *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
+	listCharts              *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
+	getChart                *connect.Client[v1.GetChartRequest, v1.Application_Release_Chart]
+	getChartMetadata        *connect.Client[v1.GetChartMetadataRequest, v1.Application_Release_Chart_Metadata]
 }
 
 // GetConfiguration calls openhdc.nexus.v1.Nexus.GetConfiguration.
@@ -533,14 +565,29 @@ func (c *nexusClient) UpdatePackageRepository(ctx context.Context, req *connect.
 	return c.updatePackageRepository.CallUnary(ctx, req)
 }
 
-// UpdateDefaultBootResource calls openhdc.nexus.v1.Nexus.UpdateDefaultBootResource.
-func (c *nexusClient) UpdateDefaultBootResource(ctx context.Context, req *connect.Request[v1.UpdateDefaultBootResourceRequest]) (*connect.Response[v1.Configuration_BootResource], error) {
-	return c.updateDefaultBootResource.CallUnary(ctx, req)
+// CreateBootImage calls openhdc.nexus.v1.Nexus.CreateBootImage.
+func (c *nexusClient) CreateBootImage(ctx context.Context, req *connect.Request[v1.CreateBootImageRequest]) (*connect.Response[v1.Configuration_BootImage], error) {
+	return c.createBootImage.CallUnary(ctx, req)
 }
 
-// SyncBootResources calls openhdc.nexus.v1.Nexus.SyncBootResources.
-func (c *nexusClient) SyncBootResources(ctx context.Context, req *connect.Request[v1.SyncBootResourcesRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.syncBootResources.CallUnary(ctx, req)
+// SetDefaultBootImage calls openhdc.nexus.v1.Nexus.SetDefaultBootImage.
+func (c *nexusClient) SetDefaultBootImage(ctx context.Context, req *connect.Request[v1.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.setDefaultBootImage.CallUnary(ctx, req)
+}
+
+// ImportBootImages calls openhdc.nexus.v1.Nexus.ImportBootImages.
+func (c *nexusClient) ImportBootImages(ctx context.Context, req *connect.Request[v1.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.importBootImages.CallUnary(ctx, req)
+}
+
+// IsImportingBootImages calls openhdc.nexus.v1.Nexus.IsImportingBootImages.
+func (c *nexusClient) IsImportingBootImages(ctx context.Context, req *connect.Request[v1.IsImportingBootImagesRequest]) (*connect.Response[v1.IsImportingBootImagesResponse], error) {
+	return c.isImportingBootImages.CallUnary(ctx, req)
+}
+
+// ListBootImageSelections calls openhdc.nexus.v1.Nexus.ListBootImageSelections.
+func (c *nexusClient) ListBootImageSelections(ctx context.Context, req *connect.Request[v1.ListBootImageSelectionsRequest]) (*connect.Response[v1.ListBootImageSelectionsResponse], error) {
+	return c.listBootImageSelections.CallUnary(ctx, req)
 }
 
 // ListNetworks calls openhdc.nexus.v1.Nexus.ListNetworks.
@@ -749,8 +796,11 @@ type NexusHandler interface {
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
 	UpdatePackageRepository(context.Context, *connect.Request[v1.UpdatePackageRepositoryRequest]) (*connect.Response[v1.Configuration_PackageRepository], error)
-	UpdateDefaultBootResource(context.Context, *connect.Request[v1.UpdateDefaultBootResourceRequest]) (*connect.Response[v1.Configuration_BootResource], error)
-	SyncBootResources(context.Context, *connect.Request[v1.SyncBootResourcesRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateBootImage(context.Context, *connect.Request[v1.CreateBootImageRequest]) (*connect.Response[v1.Configuration_BootImage], error)
+	SetDefaultBootImage(context.Context, *connect.Request[v1.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error)
+	ImportBootImages(context.Context, *connect.Request[v1.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error)
+	IsImportingBootImages(context.Context, *connect.Request[v1.IsImportingBootImagesRequest]) (*connect.Response[v1.IsImportingBootImagesResponse], error)
+	ListBootImageSelections(context.Context, *connect.Request[v1.ListBootImageSelectionsRequest]) (*connect.Response[v1.ListBootImageSelectionsResponse], error)
 	// Network
 	ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error)
 	CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error)
@@ -823,16 +873,34 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("UpdatePackageRepository")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusUpdateDefaultBootResourceHandler := connect.NewUnaryHandler(
-		NexusUpdateDefaultBootResourceProcedure,
-		svc.UpdateDefaultBootResource,
-		connect.WithSchema(nexusMethods.ByName("UpdateDefaultBootResource")),
+	nexusCreateBootImageHandler := connect.NewUnaryHandler(
+		NexusCreateBootImageProcedure,
+		svc.CreateBootImage,
+		connect.WithSchema(nexusMethods.ByName("CreateBootImage")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusSyncBootResourcesHandler := connect.NewUnaryHandler(
-		NexusSyncBootResourcesProcedure,
-		svc.SyncBootResources,
-		connect.WithSchema(nexusMethods.ByName("SyncBootResources")),
+	nexusSetDefaultBootImageHandler := connect.NewUnaryHandler(
+		NexusSetDefaultBootImageProcedure,
+		svc.SetDefaultBootImage,
+		connect.WithSchema(nexusMethods.ByName("SetDefaultBootImage")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusImportBootImagesHandler := connect.NewUnaryHandler(
+		NexusImportBootImagesProcedure,
+		svc.ImportBootImages,
+		connect.WithSchema(nexusMethods.ByName("ImportBootImages")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusIsImportingBootImagesHandler := connect.NewUnaryHandler(
+		NexusIsImportingBootImagesProcedure,
+		svc.IsImportingBootImages,
+		connect.WithSchema(nexusMethods.ByName("IsImportingBootImages")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusListBootImageSelectionsHandler := connect.NewUnaryHandler(
+		NexusListBootImageSelectionsProcedure,
+		svc.ListBootImageSelections,
+		connect.WithSchema(nexusMethods.ByName("ListBootImageSelections")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusListNetworksHandler := connect.NewUnaryHandler(
@@ -1083,10 +1151,16 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusUpdateNTPServerHandler.ServeHTTP(w, r)
 		case NexusUpdatePackageRepositoryProcedure:
 			nexusUpdatePackageRepositoryHandler.ServeHTTP(w, r)
-		case NexusUpdateDefaultBootResourceProcedure:
-			nexusUpdateDefaultBootResourceHandler.ServeHTTP(w, r)
-		case NexusSyncBootResourcesProcedure:
-			nexusSyncBootResourcesHandler.ServeHTTP(w, r)
+		case NexusCreateBootImageProcedure:
+			nexusCreateBootImageHandler.ServeHTTP(w, r)
+		case NexusSetDefaultBootImageProcedure:
+			nexusSetDefaultBootImageHandler.ServeHTTP(w, r)
+		case NexusImportBootImagesProcedure:
+			nexusImportBootImagesHandler.ServeHTTP(w, r)
+		case NexusIsImportingBootImagesProcedure:
+			nexusIsImportingBootImagesHandler.ServeHTTP(w, r)
+		case NexusListBootImageSelectionsProcedure:
+			nexusListBootImageSelectionsHandler.ServeHTTP(w, r)
 		case NexusListNetworksProcedure:
 			nexusListNetworksHandler.ServeHTTP(w, r)
 		case NexusCreateNetworkProcedure:
@@ -1188,12 +1262,24 @@ func (UnimplementedNexusHandler) UpdatePackageRepository(context.Context, *conne
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdatePackageRepository is not implemented"))
 }
 
-func (UnimplementedNexusHandler) UpdateDefaultBootResource(context.Context, *connect.Request[v1.UpdateDefaultBootResourceRequest]) (*connect.Response[v1.Configuration_BootResource], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdateDefaultBootResource is not implemented"))
+func (UnimplementedNexusHandler) CreateBootImage(context.Context, *connect.Request[v1.CreateBootImageRequest]) (*connect.Response[v1.Configuration_BootImage], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateBootImage is not implemented"))
 }
 
-func (UnimplementedNexusHandler) SyncBootResources(context.Context, *connect.Request[v1.SyncBootResourcesRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.SyncBootResources is not implemented"))
+func (UnimplementedNexusHandler) SetDefaultBootImage(context.Context, *connect.Request[v1.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.SetDefaultBootImage is not implemented"))
+}
+
+func (UnimplementedNexusHandler) ImportBootImages(context.Context, *connect.Request[v1.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ImportBootImages is not implemented"))
+}
+
+func (UnimplementedNexusHandler) IsImportingBootImages(context.Context, *connect.Request[v1.IsImportingBootImagesRequest]) (*connect.Response[v1.IsImportingBootImagesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.IsImportingBootImages is not implemented"))
+}
+
+func (UnimplementedNexusHandler) ListBootImageSelections(context.Context, *connect.Request[v1.ListBootImageSelectionsRequest]) (*connect.Response[v1.ListBootImageSelectionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListBootImageSelections is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error) {

@@ -215,14 +215,14 @@ func toProtoPod(p *corev1.Pod) *pb.Application_Pod {
 }
 
 func toProtoLastCondition(cs []corev1.PodCondition) *pb.Application_Condition {
-	idx := len(cs) - 1
+	i := len(cs) - 1
 	ret := &pb.Application_Condition{}
-	ret.SetType(string(cs[idx].Type))
-	ret.SetStatus(string(cs[idx].Status))
-	ret.SetReason((cs[idx].Reason))
-	ret.SetMessage((cs[idx].Message))
-	ret.SetProbedAt(timestamppb.New(cs[idx].LastProbeTime.Time))
-	ret.SetTransitionedAt(timestamppb.New(cs[idx].LastTransitionTime.Time))
+	ret.SetType(string(cs[i].Type))
+	ret.SetStatus(string(cs[i].Status))
+	ret.SetReason((cs[i].Reason))
+	ret.SetMessage((cs[i].Message))
+	ret.SetProbedAt(timestamppb.New(cs[i].LastProbeTime.Time))
+	ret.SetTransitionedAt(timestamppb.New(cs[i].LastTransitionTime.Time))
 	return ret
 }
 
@@ -388,8 +388,8 @@ func getChartLicense(m map[string]string) string {
 
 func containerStatusesReadyString(statuses []corev1.ContainerStatus) string {
 	ready := 0
-	for idx := range statuses {
-		if statuses[idx].Ready {
+	for i := range statuses {
+		if statuses[i].Ready {
 			ready++
 		}
 	}
@@ -399,10 +399,10 @@ func containerStatusesReadyString(statuses []corev1.ContainerStatus) string {
 func containerStatusesRestartString(statuses []corev1.ContainerStatus) string {
 	restart := int32(0)
 	var lastTerminatedAt metav1.Time
-	for idx := range statuses {
-		restart += statuses[idx].RestartCount
-		if statuses[idx].LastTerminationState.Terminated != nil {
-			lastTerminatedAt = statuses[idx].LastTerminationState.Terminated.FinishedAt
+	for i := range statuses {
+		restart += statuses[i].RestartCount
+		if statuses[i].LastTerminationState.Terminated != nil {
+			lastTerminatedAt = statuses[i].LastTerminationState.Terminated.FinishedAt
 		}
 	}
 	if lastTerminatedAt.IsZero() {
@@ -414,8 +414,8 @@ func containerStatusesRestartString(statuses []corev1.ContainerStatus) string {
 func countHealthies(pods []corev1.Pod) int32 {
 	phases := []corev1.PodPhase{corev1.PodRunning, corev1.PodSucceeded}
 	count := int32(0)
-	for idx := range pods {
-		if slices.Contains(phases, pods[idx].Status.Phase) {
+	for i := range pods {
+		if slices.Contains(phases, pods[i].Status.Phase) {
 			count++
 		}
 	}
@@ -424,8 +424,8 @@ func countHealthies(pods []corev1.Pod) int32 {
 
 func accessModesToStrings(modes []corev1.PersistentVolumeAccessMode) []string {
 	ret := make([]string, len(modes))
-	for idx := range modes {
-		ret[idx] = string(modes[idx])
+	for i := range modes {
+		ret[i] = string(modes[i])
 	}
 	return ret
 }

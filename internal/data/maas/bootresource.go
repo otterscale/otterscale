@@ -27,3 +27,7 @@ func (r *bootResource) List(_ context.Context) ([]entity.BootResource, error) {
 func (r *bootResource) Import(_ context.Context) error {
 	return r.maas.BootResources.Import()
 }
+
+func (r *bootResource) IsImporting(_ context.Context) (bool, error) {
+	return r.maas.BootResources.IsImporting()
+}

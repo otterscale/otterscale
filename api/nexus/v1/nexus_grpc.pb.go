@@ -20,51 +20,54 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Nexus_GetConfiguration_FullMethodName          = "/openhdc.nexus.v1.Nexus/GetConfiguration"
-	Nexus_UpdateNTPServer_FullMethodName           = "/openhdc.nexus.v1.Nexus/UpdateNTPServer"
-	Nexus_UpdatePackageRepository_FullMethodName   = "/openhdc.nexus.v1.Nexus/UpdatePackageRepository"
-	Nexus_UpdateDefaultBootResource_FullMethodName = "/openhdc.nexus.v1.Nexus/UpdateDefaultBootResource"
-	Nexus_SyncBootResources_FullMethodName         = "/openhdc.nexus.v1.Nexus/SyncBootResources"
-	Nexus_ListNetworks_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListNetworks"
-	Nexus_CreateNetwork_FullMethodName             = "/openhdc.nexus.v1.Nexus/CreateNetwork"
-	Nexus_CreateIPRange_FullMethodName             = "/openhdc.nexus.v1.Nexus/CreateIPRange"
-	Nexus_DeleteNetwork_FullMethodName             = "/openhdc.nexus.v1.Nexus/DeleteNetwork"
-	Nexus_DeleteIPRange_FullMethodName             = "/openhdc.nexus.v1.Nexus/DeleteIPRange"
-	Nexus_UpdateFabric_FullMethodName              = "/openhdc.nexus.v1.Nexus/UpdateFabric"
-	Nexus_UpdateVLAN_FullMethodName                = "/openhdc.nexus.v1.Nexus/UpdateVLAN"
-	Nexus_UpdateSubnet_FullMethodName              = "/openhdc.nexus.v1.Nexus/UpdateSubnet"
-	Nexus_UpdateIPRange_FullMethodName             = "/openhdc.nexus.v1.Nexus/UpdateIPRange"
-	Nexus_ListMachines_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListMachines"
-	Nexus_GetMachine_FullMethodName                = "/openhdc.nexus.v1.Nexus/GetMachine"
-	Nexus_CommissionMachine_FullMethodName         = "/openhdc.nexus.v1.Nexus/CommissionMachine"
-	Nexus_PowerOnMachine_FullMethodName            = "/openhdc.nexus.v1.Nexus/PowerOnMachine"
-	Nexus_PowerOffMachine_FullMethodName           = "/openhdc.nexus.v1.Nexus/PowerOffMachine"
-	Nexus_AddMachines_FullMethodName               = "/openhdc.nexus.v1.Nexus/AddMachines"
-	Nexus_ListScopes_FullMethodName                = "/openhdc.nexus.v1.Nexus/ListScopes"
-	Nexus_CreateScope_FullMethodName               = "/openhdc.nexus.v1.Nexus/CreateScope"
-	Nexus_ListFacilities_FullMethodName            = "/openhdc.nexus.v1.Nexus/ListFacilities"
-	Nexus_GetFacility_FullMethodName               = "/openhdc.nexus.v1.Nexus/GetFacility"
-	Nexus_GetFacilityMetadata_FullMethodName       = "/openhdc.nexus.v1.Nexus/GetFacilityMetadata"
-	Nexus_CreateFacility_FullMethodName            = "/openhdc.nexus.v1.Nexus/CreateFacility"
-	Nexus_UpdateFacility_FullMethodName            = "/openhdc.nexus.v1.Nexus/UpdateFacility"
-	Nexus_DeleteFacility_FullMethodName            = "/openhdc.nexus.v1.Nexus/DeleteFacility"
-	Nexus_ExposeFacility_FullMethodName            = "/openhdc.nexus.v1.Nexus/ExposeFacility"
-	Nexus_AddFacilityUnits_FullMethodName          = "/openhdc.nexus.v1.Nexus/AddFacilityUnits"
-	Nexus_ListActions_FullMethodName               = "/openhdc.nexus.v1.Nexus/ListActions"
-	Nexus_DoAction_FullMethodName                  = "/openhdc.nexus.v1.Nexus/DoAction"
-	Nexus_ListCharms_FullMethodName                = "/openhdc.nexus.v1.Nexus/ListCharms"
-	Nexus_GetCharm_FullMethodName                  = "/openhdc.nexus.v1.Nexus/GetCharm"
-	Nexus_ListCharmArtifacts_FullMethodName        = "/openhdc.nexus.v1.Nexus/ListCharmArtifacts"
-	Nexus_ListApplications_FullMethodName          = "/openhdc.nexus.v1.Nexus/ListApplications"
-	Nexus_GetApplication_FullMethodName            = "/openhdc.nexus.v1.Nexus/GetApplication"
-	Nexus_ListReleases_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListReleases"
-	Nexus_CreateRelease_FullMethodName             = "/openhdc.nexus.v1.Nexus/CreateRelease"
-	Nexus_UpdateRelease_FullMethodName             = "/openhdc.nexus.v1.Nexus/UpdateRelease"
-	Nexus_DeleteRelease_FullMethodName             = "/openhdc.nexus.v1.Nexus/DeleteRelease"
-	Nexus_RollbackRelease_FullMethodName           = "/openhdc.nexus.v1.Nexus/RollbackRelease"
-	Nexus_ListCharts_FullMethodName                = "/openhdc.nexus.v1.Nexus/ListCharts"
-	Nexus_GetChart_FullMethodName                  = "/openhdc.nexus.v1.Nexus/GetChart"
-	Nexus_GetChartMetadata_FullMethodName          = "/openhdc.nexus.v1.Nexus/GetChartMetadata"
+	Nexus_GetConfiguration_FullMethodName        = "/openhdc.nexus.v1.Nexus/GetConfiguration"
+	Nexus_UpdateNTPServer_FullMethodName         = "/openhdc.nexus.v1.Nexus/UpdateNTPServer"
+	Nexus_UpdatePackageRepository_FullMethodName = "/openhdc.nexus.v1.Nexus/UpdatePackageRepository"
+	Nexus_CreateBootImage_FullMethodName         = "/openhdc.nexus.v1.Nexus/CreateBootImage"
+	Nexus_SetDefaultBootImage_FullMethodName     = "/openhdc.nexus.v1.Nexus/SetDefaultBootImage"
+	Nexus_ImportBootImages_FullMethodName        = "/openhdc.nexus.v1.Nexus/ImportBootImages"
+	Nexus_IsImportingBootImages_FullMethodName   = "/openhdc.nexus.v1.Nexus/IsImportingBootImages"
+	Nexus_ListBootImageSelections_FullMethodName = "/openhdc.nexus.v1.Nexus/ListBootImageSelections"
+	Nexus_ListNetworks_FullMethodName            = "/openhdc.nexus.v1.Nexus/ListNetworks"
+	Nexus_CreateNetwork_FullMethodName           = "/openhdc.nexus.v1.Nexus/CreateNetwork"
+	Nexus_CreateIPRange_FullMethodName           = "/openhdc.nexus.v1.Nexus/CreateIPRange"
+	Nexus_DeleteNetwork_FullMethodName           = "/openhdc.nexus.v1.Nexus/DeleteNetwork"
+	Nexus_DeleteIPRange_FullMethodName           = "/openhdc.nexus.v1.Nexus/DeleteIPRange"
+	Nexus_UpdateFabric_FullMethodName            = "/openhdc.nexus.v1.Nexus/UpdateFabric"
+	Nexus_UpdateVLAN_FullMethodName              = "/openhdc.nexus.v1.Nexus/UpdateVLAN"
+	Nexus_UpdateSubnet_FullMethodName            = "/openhdc.nexus.v1.Nexus/UpdateSubnet"
+	Nexus_UpdateIPRange_FullMethodName           = "/openhdc.nexus.v1.Nexus/UpdateIPRange"
+	Nexus_ListMachines_FullMethodName            = "/openhdc.nexus.v1.Nexus/ListMachines"
+	Nexus_GetMachine_FullMethodName              = "/openhdc.nexus.v1.Nexus/GetMachine"
+	Nexus_CommissionMachine_FullMethodName       = "/openhdc.nexus.v1.Nexus/CommissionMachine"
+	Nexus_PowerOnMachine_FullMethodName          = "/openhdc.nexus.v1.Nexus/PowerOnMachine"
+	Nexus_PowerOffMachine_FullMethodName         = "/openhdc.nexus.v1.Nexus/PowerOffMachine"
+	Nexus_AddMachines_FullMethodName             = "/openhdc.nexus.v1.Nexus/AddMachines"
+	Nexus_ListScopes_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListScopes"
+	Nexus_CreateScope_FullMethodName             = "/openhdc.nexus.v1.Nexus/CreateScope"
+	Nexus_ListFacilities_FullMethodName          = "/openhdc.nexus.v1.Nexus/ListFacilities"
+	Nexus_GetFacility_FullMethodName             = "/openhdc.nexus.v1.Nexus/GetFacility"
+	Nexus_GetFacilityMetadata_FullMethodName     = "/openhdc.nexus.v1.Nexus/GetFacilityMetadata"
+	Nexus_CreateFacility_FullMethodName          = "/openhdc.nexus.v1.Nexus/CreateFacility"
+	Nexus_UpdateFacility_FullMethodName          = "/openhdc.nexus.v1.Nexus/UpdateFacility"
+	Nexus_DeleteFacility_FullMethodName          = "/openhdc.nexus.v1.Nexus/DeleteFacility"
+	Nexus_ExposeFacility_FullMethodName          = "/openhdc.nexus.v1.Nexus/ExposeFacility"
+	Nexus_AddFacilityUnits_FullMethodName        = "/openhdc.nexus.v1.Nexus/AddFacilityUnits"
+	Nexus_ListActions_FullMethodName             = "/openhdc.nexus.v1.Nexus/ListActions"
+	Nexus_DoAction_FullMethodName                = "/openhdc.nexus.v1.Nexus/DoAction"
+	Nexus_ListCharms_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListCharms"
+	Nexus_GetCharm_FullMethodName                = "/openhdc.nexus.v1.Nexus/GetCharm"
+	Nexus_ListCharmArtifacts_FullMethodName      = "/openhdc.nexus.v1.Nexus/ListCharmArtifacts"
+	Nexus_ListApplications_FullMethodName        = "/openhdc.nexus.v1.Nexus/ListApplications"
+	Nexus_GetApplication_FullMethodName          = "/openhdc.nexus.v1.Nexus/GetApplication"
+	Nexus_ListReleases_FullMethodName            = "/openhdc.nexus.v1.Nexus/ListReleases"
+	Nexus_CreateRelease_FullMethodName           = "/openhdc.nexus.v1.Nexus/CreateRelease"
+	Nexus_UpdateRelease_FullMethodName           = "/openhdc.nexus.v1.Nexus/UpdateRelease"
+	Nexus_DeleteRelease_FullMethodName           = "/openhdc.nexus.v1.Nexus/DeleteRelease"
+	Nexus_RollbackRelease_FullMethodName         = "/openhdc.nexus.v1.Nexus/RollbackRelease"
+	Nexus_ListCharts_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListCharts"
+	Nexus_GetChart_FullMethodName                = "/openhdc.nexus.v1.Nexus/GetChart"
+	Nexus_GetChartMetadata_FullMethodName        = "/openhdc.nexus.v1.Nexus/GetChartMetadata"
 )
 
 // NexusClient is the client API for Nexus service.
@@ -75,8 +78,11 @@ type NexusClient interface {
 	GetConfiguration(ctx context.Context, in *GetConfigurationRequest, opts ...grpc.CallOption) (*Configuration, error)
 	UpdateNTPServer(ctx context.Context, in *UpdateNTPServerRequest, opts ...grpc.CallOption) (*Configuration_NTPServer, error)
 	UpdatePackageRepository(ctx context.Context, in *UpdatePackageRepositoryRequest, opts ...grpc.CallOption) (*Configuration_PackageRepository, error)
-	UpdateDefaultBootResource(ctx context.Context, in *UpdateDefaultBootResourceRequest, opts ...grpc.CallOption) (*Configuration_BootResource, error)
-	SyncBootResources(ctx context.Context, in *SyncBootResourcesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateBootImage(ctx context.Context, in *CreateBootImageRequest, opts ...grpc.CallOption) (*Configuration_BootImage, error)
+	SetDefaultBootImage(ctx context.Context, in *SetDefaultBootImageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ImportBootImages(ctx context.Context, in *ImportBootImagesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	IsImportingBootImages(ctx context.Context, in *IsImportingBootImagesRequest, opts ...grpc.CallOption) (*IsImportingBootImagesResponse, error)
+	ListBootImageSelections(ctx context.Context, in *ListBootImageSelectionsRequest, opts ...grpc.CallOption) (*ListBootImageSelectionsResponse, error)
 	// Network
 	ListNetworks(ctx context.Context, in *ListNetworksRequest, opts ...grpc.CallOption) (*ListNetworksResponse, error)
 	CreateNetwork(ctx context.Context, in *CreateNetworkRequest, opts ...grpc.CallOption) (*Network, error)
@@ -162,20 +168,50 @@ func (c *nexusClient) UpdatePackageRepository(ctx context.Context, in *UpdatePac
 	return out, nil
 }
 
-func (c *nexusClient) UpdateDefaultBootResource(ctx context.Context, in *UpdateDefaultBootResourceRequest, opts ...grpc.CallOption) (*Configuration_BootResource, error) {
+func (c *nexusClient) CreateBootImage(ctx context.Context, in *CreateBootImageRequest, opts ...grpc.CallOption) (*Configuration_BootImage, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Configuration_BootResource)
-	err := c.cc.Invoke(ctx, Nexus_UpdateDefaultBootResource_FullMethodName, in, out, cOpts...)
+	out := new(Configuration_BootImage)
+	err := c.cc.Invoke(ctx, Nexus_CreateBootImage_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *nexusClient) SyncBootResources(ctx context.Context, in *SyncBootResourcesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *nexusClient) SetDefaultBootImage(ctx context.Context, in *SetDefaultBootImageRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Nexus_SyncBootResources_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Nexus_SetDefaultBootImage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) ImportBootImages(ctx context.Context, in *ImportBootImagesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Nexus_ImportBootImages_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) IsImportingBootImages(ctx context.Context, in *IsImportingBootImagesRequest, opts ...grpc.CallOption) (*IsImportingBootImagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(IsImportingBootImagesResponse)
+	err := c.cc.Invoke(ctx, Nexus_IsImportingBootImages_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) ListBootImageSelections(ctx context.Context, in *ListBootImageSelectionsRequest, opts ...grpc.CallOption) (*ListBootImageSelectionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListBootImageSelectionsResponse)
+	err := c.cc.Invoke(ctx, Nexus_ListBootImageSelections_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -590,8 +626,11 @@ type NexusServer interface {
 	GetConfiguration(context.Context, *GetConfigurationRequest) (*Configuration, error)
 	UpdateNTPServer(context.Context, *UpdateNTPServerRequest) (*Configuration_NTPServer, error)
 	UpdatePackageRepository(context.Context, *UpdatePackageRepositoryRequest) (*Configuration_PackageRepository, error)
-	UpdateDefaultBootResource(context.Context, *UpdateDefaultBootResourceRequest) (*Configuration_BootResource, error)
-	SyncBootResources(context.Context, *SyncBootResourcesRequest) (*emptypb.Empty, error)
+	CreateBootImage(context.Context, *CreateBootImageRequest) (*Configuration_BootImage, error)
+	SetDefaultBootImage(context.Context, *SetDefaultBootImageRequest) (*emptypb.Empty, error)
+	ImportBootImages(context.Context, *ImportBootImagesRequest) (*emptypb.Empty, error)
+	IsImportingBootImages(context.Context, *IsImportingBootImagesRequest) (*IsImportingBootImagesResponse, error)
+	ListBootImageSelections(context.Context, *ListBootImageSelectionsRequest) (*ListBootImageSelectionsResponse, error)
 	// Network
 	ListNetworks(context.Context, *ListNetworksRequest) (*ListNetworksResponse, error)
 	CreateNetwork(context.Context, *CreateNetworkRequest) (*Network, error)
@@ -656,11 +695,20 @@ func (UnimplementedNexusServer) UpdateNTPServer(context.Context, *UpdateNTPServe
 func (UnimplementedNexusServer) UpdatePackageRepository(context.Context, *UpdatePackageRepositoryRequest) (*Configuration_PackageRepository, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePackageRepository not implemented")
 }
-func (UnimplementedNexusServer) UpdateDefaultBootResource(context.Context, *UpdateDefaultBootResourceRequest) (*Configuration_BootResource, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDefaultBootResource not implemented")
+func (UnimplementedNexusServer) CreateBootImage(context.Context, *CreateBootImageRequest) (*Configuration_BootImage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBootImage not implemented")
 }
-func (UnimplementedNexusServer) SyncBootResources(context.Context, *SyncBootResourcesRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SyncBootResources not implemented")
+func (UnimplementedNexusServer) SetDefaultBootImage(context.Context, *SetDefaultBootImageRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetDefaultBootImage not implemented")
+}
+func (UnimplementedNexusServer) ImportBootImages(context.Context, *ImportBootImagesRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ImportBootImages not implemented")
+}
+func (UnimplementedNexusServer) IsImportingBootImages(context.Context, *IsImportingBootImagesRequest) (*IsImportingBootImagesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsImportingBootImages not implemented")
+}
+func (UnimplementedNexusServer) ListBootImageSelections(context.Context, *ListBootImageSelectionsRequest) (*ListBootImageSelectionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListBootImageSelections not implemented")
 }
 func (UnimplementedNexusServer) ListNetworks(context.Context, *ListNetworksRequest) (*ListNetworksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListNetworks not implemented")
@@ -857,38 +905,92 @@ func _Nexus_UpdatePackageRepository_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Nexus_UpdateDefaultBootResource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateDefaultBootResourceRequest)
+func _Nexus_CreateBootImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBootImageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NexusServer).UpdateDefaultBootResource(ctx, in)
+		return srv.(NexusServer).CreateBootImage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Nexus_UpdateDefaultBootResource_FullMethodName,
+		FullMethod: Nexus_CreateBootImage_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NexusServer).UpdateDefaultBootResource(ctx, req.(*UpdateDefaultBootResourceRequest))
+		return srv.(NexusServer).CreateBootImage(ctx, req.(*CreateBootImageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Nexus_SyncBootResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SyncBootResourcesRequest)
+func _Nexus_SetDefaultBootImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetDefaultBootImageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NexusServer).SyncBootResources(ctx, in)
+		return srv.(NexusServer).SetDefaultBootImage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Nexus_SyncBootResources_FullMethodName,
+		FullMethod: Nexus_SetDefaultBootImage_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NexusServer).SyncBootResources(ctx, req.(*SyncBootResourcesRequest))
+		return srv.(NexusServer).SetDefaultBootImage(ctx, req.(*SetDefaultBootImageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_ImportBootImages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImportBootImagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).ImportBootImages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_ImportBootImages_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).ImportBootImages(ctx, req.(*ImportBootImagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_IsImportingBootImages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsImportingBootImagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).IsImportingBootImages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_IsImportingBootImages_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).IsImportingBootImages(ctx, req.(*IsImportingBootImagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_ListBootImageSelections_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListBootImageSelectionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).ListBootImageSelections(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_ListBootImageSelections_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).ListBootImageSelections(ctx, req.(*ListBootImageSelectionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1633,12 +1735,24 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Nexus_UpdatePackageRepository_Handler,
 		},
 		{
-			MethodName: "UpdateDefaultBootResource",
-			Handler:    _Nexus_UpdateDefaultBootResource_Handler,
+			MethodName: "CreateBootImage",
+			Handler:    _Nexus_CreateBootImage_Handler,
 		},
 		{
-			MethodName: "SyncBootResources",
-			Handler:    _Nexus_SyncBootResources_Handler,
+			MethodName: "SetDefaultBootImage",
+			Handler:    _Nexus_SetDefaultBootImage_Handler,
+		},
+		{
+			MethodName: "ImportBootImages",
+			Handler:    _Nexus_ImportBootImages_Handler,
+		},
+		{
+			MethodName: "IsImportingBootImages",
+			Handler:    _Nexus_IsImportingBootImages_Handler,
+		},
+		{
+			MethodName: "ListBootImageSelections",
+			Handler:    _Nexus_ListBootImageSelections_Handler,
 		},
 		{
 			MethodName: "ListNetworks",

@@ -2,7 +2,6 @@ package app
 
 import (
 	"github.com/openhdc/openhdc/api/nexus/v1/pbconnect"
-
 	"github.com/openhdc/openhdc/internal/domain/service"
 )
 
