@@ -367,12 +367,13 @@ func (s *NexusService) listKubernetes(ctx context.Context) ([]model.Kubernetes, 
 			if err != nil {
 				return err
 			}
-			for i := range fs {
-				if strings.Contains(fs[i].Status.Charm, kubernetesCharmName) {
+			for j := range fs {
+				facility := fs[j]
+				if strings.Contains(facility.Status.Charm, kubernetesCharmName) {
 					result[i] = append(result[i], model.Kubernetes{
 						ScopeName:    scope.Name,
 						ScopeUUID:    scope.UUID,
-						FacilityName: fs[i].Name,
+						FacilityName: facility.Name,
 					})
 				}
 			}
