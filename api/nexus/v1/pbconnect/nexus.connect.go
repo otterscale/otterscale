@@ -92,9 +92,6 @@ const (
 	NexusListFacilitiesProcedure = "/openhdc.nexus.v1.Nexus/ListFacilities"
 	// NexusGetFacilityProcedure is the fully-qualified name of the Nexus's GetFacility RPC.
 	NexusGetFacilityProcedure = "/openhdc.nexus.v1.Nexus/GetFacility"
-	// NexusGetFacilityMetadataProcedure is the fully-qualified name of the Nexus's GetFacilityMetadata
-	// RPC.
-	NexusGetFacilityMetadataProcedure = "/openhdc.nexus.v1.Nexus/GetFacilityMetadata"
 	// NexusCreateFacilityProcedure is the fully-qualified name of the Nexus's CreateFacility RPC.
 	NexusCreateFacilityProcedure = "/openhdc.nexus.v1.Nexus/CreateFacility"
 	// NexusUpdateFacilityProcedure is the fully-qualified name of the Nexus's UpdateFacility RPC.
@@ -113,6 +110,8 @@ const (
 	NexusListCharmsProcedure = "/openhdc.nexus.v1.Nexus/ListCharms"
 	// NexusGetCharmProcedure is the fully-qualified name of the Nexus's GetCharm RPC.
 	NexusGetCharmProcedure = "/openhdc.nexus.v1.Nexus/GetCharm"
+	// NexusGetCharmMetadataProcedure is the fully-qualified name of the Nexus's GetCharmMetadata RPC.
+	NexusGetCharmMetadataProcedure = "/openhdc.nexus.v1.Nexus/GetCharmMetadata"
 	// NexusListCharmArtifactsProcedure is the fully-qualified name of the Nexus's ListCharmArtifacts
 	// RPC.
 	NexusListCharmArtifactsProcedure = "/openhdc.nexus.v1.Nexus/ListCharmArtifacts"
@@ -172,7 +171,6 @@ type NexusClient interface {
 	// Facility
 	ListFacilities(context.Context, *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error)
 	GetFacility(context.Context, *connect.Request[v1.GetFacilityRequest]) (*connect.Response[v1.Facility], error)
-	GetFacilityMetadata(context.Context, *connect.Request[v1.GetFacilityMetadataRequest]) (*connect.Response[v1.Facility_Metadata], error)
 	CreateFacility(context.Context, *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error)
 	UpdateFacility(context.Context, *connect.Request[v1.UpdateFacilityRequest]) (*connect.Response[v1.Facility], error)
 	DeleteFacility(context.Context, *connect.Request[v1.DeleteFacilityRequest]) (*connect.Response[emptypb.Empty], error)
@@ -182,6 +180,7 @@ type NexusClient interface {
 	DoAction(context.Context, *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error)
 	ListCharms(context.Context, *connect.Request[v1.ListCharmsRequest]) (*connect.Response[v1.ListCharmsResponse], error)
 	GetCharm(context.Context, *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error)
+	GetCharmMetadata(context.Context, *connect.Request[v1.GetCharmMetadataRequest]) (*connect.Response[v1.Facility_Charm_Metadata], error)
 	ListCharmArtifacts(context.Context, *connect.Request[v1.ListCharmArtifactsRequest]) (*connect.Response[v1.ListCharmArtifactsResponse], error)
 	// Application
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
@@ -192,8 +191,8 @@ type NexusClient interface {
 	DeleteRelease(context.Context, *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error)
 	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error)
 	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
-	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Release_Chart], error)
-	GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Release_Chart_Metadata], error)
+	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error)
+	GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error)
 }
 
 // NewNexusClient constructs a client for the openhdc.nexus.v1.Nexus service. By default, it uses
@@ -369,12 +368,6 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("GetFacility")),
 			connect.WithClientOptions(opts...),
 		),
-		getFacilityMetadata: connect.NewClient[v1.GetFacilityMetadataRequest, v1.Facility_Metadata](
-			httpClient,
-			baseURL+NexusGetFacilityMetadataProcedure,
-			connect.WithSchema(nexusMethods.ByName("GetFacilityMetadata")),
-			connect.WithClientOptions(opts...),
-		),
 		createFacility: connect.NewClient[v1.CreateFacilityRequest, v1.Facility](
 			httpClient,
 			baseURL+NexusCreateFacilityProcedure,
@@ -427,6 +420,12 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			httpClient,
 			baseURL+NexusGetCharmProcedure,
 			connect.WithSchema(nexusMethods.ByName("GetCharm")),
+			connect.WithClientOptions(opts...),
+		),
+		getCharmMetadata: connect.NewClient[v1.GetCharmMetadataRequest, v1.Facility_Charm_Metadata](
+			httpClient,
+			baseURL+NexusGetCharmMetadataProcedure,
+			connect.WithSchema(nexusMethods.ByName("GetCharmMetadata")),
 			connect.WithClientOptions(opts...),
 		),
 		listCharmArtifacts: connect.NewClient[v1.ListCharmArtifactsRequest, v1.ListCharmArtifactsResponse](
@@ -483,13 +482,13 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("ListCharts")),
 			connect.WithClientOptions(opts...),
 		),
-		getChart: connect.NewClient[v1.GetChartRequest, v1.Application_Release_Chart](
+		getChart: connect.NewClient[v1.GetChartRequest, v1.Application_Chart](
 			httpClient,
 			baseURL+NexusGetChartProcedure,
 			connect.WithSchema(nexusMethods.ByName("GetChart")),
 			connect.WithClientOptions(opts...),
 		),
-		getChartMetadata: connect.NewClient[v1.GetChartMetadataRequest, v1.Application_Release_Chart_Metadata](
+		getChartMetadata: connect.NewClient[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata](
 			httpClient,
 			baseURL+NexusGetChartMetadataProcedure,
 			connect.WithSchema(nexusMethods.ByName("GetChartMetadata")),
@@ -527,7 +526,6 @@ type nexusClient struct {
 	createScope             *connect.Client[v1.CreateScopeRequest, v1.Scope]
 	listFacilities          *connect.Client[v1.ListFacilitiesRequest, v1.ListFacilitiesResponse]
 	getFacility             *connect.Client[v1.GetFacilityRequest, v1.Facility]
-	getFacilityMetadata     *connect.Client[v1.GetFacilityMetadataRequest, v1.Facility_Metadata]
 	createFacility          *connect.Client[v1.CreateFacilityRequest, v1.Facility]
 	updateFacility          *connect.Client[v1.UpdateFacilityRequest, v1.Facility]
 	deleteFacility          *connect.Client[v1.DeleteFacilityRequest, emptypb.Empty]
@@ -537,6 +535,7 @@ type nexusClient struct {
 	doAction                *connect.Client[v1.DoActionRequest, emptypb.Empty]
 	listCharms              *connect.Client[v1.ListCharmsRequest, v1.ListCharmsResponse]
 	getCharm                *connect.Client[v1.GetCharmRequest, v1.Facility_Charm]
+	getCharmMetadata        *connect.Client[v1.GetCharmMetadataRequest, v1.Facility_Charm_Metadata]
 	listCharmArtifacts      *connect.Client[v1.ListCharmArtifactsRequest, v1.ListCharmArtifactsResponse]
 	listApplications        *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
 	getApplication          *connect.Client[v1.GetApplicationRequest, v1.Application]
@@ -546,8 +545,8 @@ type nexusClient struct {
 	deleteRelease           *connect.Client[v1.DeleteReleaseRequest, emptypb.Empty]
 	rollbackRelease         *connect.Client[v1.RollbackReleaseRequest, emptypb.Empty]
 	listCharts              *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
-	getChart                *connect.Client[v1.GetChartRequest, v1.Application_Release_Chart]
-	getChartMetadata        *connect.Client[v1.GetChartMetadataRequest, v1.Application_Release_Chart_Metadata]
+	getChart                *connect.Client[v1.GetChartRequest, v1.Application_Chart]
+	getChartMetadata        *connect.Client[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata]
 }
 
 // GetConfiguration calls openhdc.nexus.v1.Nexus.GetConfiguration.
@@ -685,11 +684,6 @@ func (c *nexusClient) GetFacility(ctx context.Context, req *connect.Request[v1.G
 	return c.getFacility.CallUnary(ctx, req)
 }
 
-// GetFacilityMetadata calls openhdc.nexus.v1.Nexus.GetFacilityMetadata.
-func (c *nexusClient) GetFacilityMetadata(ctx context.Context, req *connect.Request[v1.GetFacilityMetadataRequest]) (*connect.Response[v1.Facility_Metadata], error) {
-	return c.getFacilityMetadata.CallUnary(ctx, req)
-}
-
 // CreateFacility calls openhdc.nexus.v1.Nexus.CreateFacility.
 func (c *nexusClient) CreateFacility(ctx context.Context, req *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error) {
 	return c.createFacility.CallUnary(ctx, req)
@@ -733,6 +727,11 @@ func (c *nexusClient) ListCharms(ctx context.Context, req *connect.Request[v1.Li
 // GetCharm calls openhdc.nexus.v1.Nexus.GetCharm.
 func (c *nexusClient) GetCharm(ctx context.Context, req *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error) {
 	return c.getCharm.CallUnary(ctx, req)
+}
+
+// GetCharmMetadata calls openhdc.nexus.v1.Nexus.GetCharmMetadata.
+func (c *nexusClient) GetCharmMetadata(ctx context.Context, req *connect.Request[v1.GetCharmMetadataRequest]) (*connect.Response[v1.Facility_Charm_Metadata], error) {
+	return c.getCharmMetadata.CallUnary(ctx, req)
 }
 
 // ListCharmArtifacts calls openhdc.nexus.v1.Nexus.ListCharmArtifacts.
@@ -781,12 +780,12 @@ func (c *nexusClient) ListCharts(ctx context.Context, req *connect.Request[v1.Li
 }
 
 // GetChart calls openhdc.nexus.v1.Nexus.GetChart.
-func (c *nexusClient) GetChart(ctx context.Context, req *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Release_Chart], error) {
+func (c *nexusClient) GetChart(ctx context.Context, req *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error) {
 	return c.getChart.CallUnary(ctx, req)
 }
 
 // GetChartMetadata calls openhdc.nexus.v1.Nexus.GetChartMetadata.
-func (c *nexusClient) GetChartMetadata(ctx context.Context, req *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Release_Chart_Metadata], error) {
+func (c *nexusClient) GetChartMetadata(ctx context.Context, req *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error) {
 	return c.getChartMetadata.CallUnary(ctx, req)
 }
 
@@ -824,7 +823,6 @@ type NexusHandler interface {
 	// Facility
 	ListFacilities(context.Context, *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error)
 	GetFacility(context.Context, *connect.Request[v1.GetFacilityRequest]) (*connect.Response[v1.Facility], error)
-	GetFacilityMetadata(context.Context, *connect.Request[v1.GetFacilityMetadataRequest]) (*connect.Response[v1.Facility_Metadata], error)
 	CreateFacility(context.Context, *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error)
 	UpdateFacility(context.Context, *connect.Request[v1.UpdateFacilityRequest]) (*connect.Response[v1.Facility], error)
 	DeleteFacility(context.Context, *connect.Request[v1.DeleteFacilityRequest]) (*connect.Response[emptypb.Empty], error)
@@ -834,6 +832,7 @@ type NexusHandler interface {
 	DoAction(context.Context, *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error)
 	ListCharms(context.Context, *connect.Request[v1.ListCharmsRequest]) (*connect.Response[v1.ListCharmsResponse], error)
 	GetCharm(context.Context, *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error)
+	GetCharmMetadata(context.Context, *connect.Request[v1.GetCharmMetadataRequest]) (*connect.Response[v1.Facility_Charm_Metadata], error)
 	ListCharmArtifacts(context.Context, *connect.Request[v1.ListCharmArtifactsRequest]) (*connect.Response[v1.ListCharmArtifactsResponse], error)
 	// Application
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
@@ -844,8 +843,8 @@ type NexusHandler interface {
 	DeleteRelease(context.Context, *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error)
 	RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error)
 	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
-	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Release_Chart], error)
-	GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Release_Chart_Metadata], error)
+	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error)
+	GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error)
 }
 
 // NewNexusHandler builds an HTTP handler from the service implementation. It returns the path on
@@ -1017,12 +1016,6 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("GetFacility")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusGetFacilityMetadataHandler := connect.NewUnaryHandler(
-		NexusGetFacilityMetadataProcedure,
-		svc.GetFacilityMetadata,
-		connect.WithSchema(nexusMethods.ByName("GetFacilityMetadata")),
-		connect.WithHandlerOptions(opts...),
-	)
 	nexusCreateFacilityHandler := connect.NewUnaryHandler(
 		NexusCreateFacilityProcedure,
 		svc.CreateFacility,
@@ -1075,6 +1068,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		NexusGetCharmProcedure,
 		svc.GetCharm,
 		connect.WithSchema(nexusMethods.ByName("GetCharm")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusGetCharmMetadataHandler := connect.NewUnaryHandler(
+		NexusGetCharmMetadataProcedure,
+		svc.GetCharmMetadata,
+		connect.WithSchema(nexusMethods.ByName("GetCharmMetadata")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusListCharmArtifactsHandler := connect.NewUnaryHandler(
@@ -1199,8 +1198,6 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusListFacilitiesHandler.ServeHTTP(w, r)
 		case NexusGetFacilityProcedure:
 			nexusGetFacilityHandler.ServeHTTP(w, r)
-		case NexusGetFacilityMetadataProcedure:
-			nexusGetFacilityMetadataHandler.ServeHTTP(w, r)
 		case NexusCreateFacilityProcedure:
 			nexusCreateFacilityHandler.ServeHTTP(w, r)
 		case NexusUpdateFacilityProcedure:
@@ -1219,6 +1216,8 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusListCharmsHandler.ServeHTTP(w, r)
 		case NexusGetCharmProcedure:
 			nexusGetCharmHandler.ServeHTTP(w, r)
+		case NexusGetCharmMetadataProcedure:
+			nexusGetCharmMetadataHandler.ServeHTTP(w, r)
 		case NexusListCharmArtifactsProcedure:
 			nexusListCharmArtifactsHandler.ServeHTTP(w, r)
 		case NexusListApplicationsProcedure:
@@ -1358,10 +1357,6 @@ func (UnimplementedNexusHandler) GetFacility(context.Context, *connect.Request[v
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetFacility is not implemented"))
 }
 
-func (UnimplementedNexusHandler) GetFacilityMetadata(context.Context, *connect.Request[v1.GetFacilityMetadataRequest]) (*connect.Response[v1.Facility_Metadata], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetFacilityMetadata is not implemented"))
-}
-
 func (UnimplementedNexusHandler) CreateFacility(context.Context, *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateFacility is not implemented"))
 }
@@ -1396,6 +1391,10 @@ func (UnimplementedNexusHandler) ListCharms(context.Context, *connect.Request[v1
 
 func (UnimplementedNexusHandler) GetCharm(context.Context, *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetCharm is not implemented"))
+}
+
+func (UnimplementedNexusHandler) GetCharmMetadata(context.Context, *connect.Request[v1.GetCharmMetadataRequest]) (*connect.Response[v1.Facility_Charm_Metadata], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetCharmMetadata is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListCharmArtifacts(context.Context, *connect.Request[v1.ListCharmArtifactsRequest]) (*connect.Response[v1.ListCharmArtifactsResponse], error) {
@@ -1434,10 +1433,10 @@ func (UnimplementedNexusHandler) ListCharts(context.Context, *connect.Request[v1
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListCharts is not implemented"))
 }
 
-func (UnimplementedNexusHandler) GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Release_Chart], error) {
+func (UnimplementedNexusHandler) GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetChart is not implemented"))
 }
 
-func (UnimplementedNexusHandler) GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Release_Chart_Metadata], error) {
+func (UnimplementedNexusHandler) GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetChartMetadata is not implemented"))
 }

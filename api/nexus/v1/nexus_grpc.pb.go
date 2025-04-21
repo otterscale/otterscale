@@ -47,7 +47,6 @@ const (
 	Nexus_CreateScope_FullMethodName             = "/openhdc.nexus.v1.Nexus/CreateScope"
 	Nexus_ListFacilities_FullMethodName          = "/openhdc.nexus.v1.Nexus/ListFacilities"
 	Nexus_GetFacility_FullMethodName             = "/openhdc.nexus.v1.Nexus/GetFacility"
-	Nexus_GetFacilityMetadata_FullMethodName     = "/openhdc.nexus.v1.Nexus/GetFacilityMetadata"
 	Nexus_CreateFacility_FullMethodName          = "/openhdc.nexus.v1.Nexus/CreateFacility"
 	Nexus_UpdateFacility_FullMethodName          = "/openhdc.nexus.v1.Nexus/UpdateFacility"
 	Nexus_DeleteFacility_FullMethodName          = "/openhdc.nexus.v1.Nexus/DeleteFacility"
@@ -57,6 +56,7 @@ const (
 	Nexus_DoAction_FullMethodName                = "/openhdc.nexus.v1.Nexus/DoAction"
 	Nexus_ListCharms_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListCharms"
 	Nexus_GetCharm_FullMethodName                = "/openhdc.nexus.v1.Nexus/GetCharm"
+	Nexus_GetCharmMetadata_FullMethodName        = "/openhdc.nexus.v1.Nexus/GetCharmMetadata"
 	Nexus_ListCharmArtifacts_FullMethodName      = "/openhdc.nexus.v1.Nexus/ListCharmArtifacts"
 	Nexus_ListApplications_FullMethodName        = "/openhdc.nexus.v1.Nexus/ListApplications"
 	Nexus_GetApplication_FullMethodName          = "/openhdc.nexus.v1.Nexus/GetApplication"
@@ -106,7 +106,6 @@ type NexusClient interface {
 	// Facility
 	ListFacilities(ctx context.Context, in *ListFacilitiesRequest, opts ...grpc.CallOption) (*ListFacilitiesResponse, error)
 	GetFacility(ctx context.Context, in *GetFacilityRequest, opts ...grpc.CallOption) (*Facility, error)
-	GetFacilityMetadata(ctx context.Context, in *GetFacilityMetadataRequest, opts ...grpc.CallOption) (*Facility_Metadata, error)
 	CreateFacility(ctx context.Context, in *CreateFacilityRequest, opts ...grpc.CallOption) (*Facility, error)
 	UpdateFacility(ctx context.Context, in *UpdateFacilityRequest, opts ...grpc.CallOption) (*Facility, error)
 	DeleteFacility(ctx context.Context, in *DeleteFacilityRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -116,6 +115,7 @@ type NexusClient interface {
 	DoAction(ctx context.Context, in *DoActionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ListCharms(ctx context.Context, in *ListCharmsRequest, opts ...grpc.CallOption) (*ListCharmsResponse, error)
 	GetCharm(ctx context.Context, in *GetCharmRequest, opts ...grpc.CallOption) (*Facility_Charm, error)
+	GetCharmMetadata(ctx context.Context, in *GetCharmMetadataRequest, opts ...grpc.CallOption) (*Facility_Charm_Metadata, error)
 	ListCharmArtifacts(ctx context.Context, in *ListCharmArtifactsRequest, opts ...grpc.CallOption) (*ListCharmArtifactsResponse, error)
 	// Application
 	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
@@ -126,8 +126,8 @@ type NexusClient interface {
 	DeleteRelease(ctx context.Context, in *DeleteReleaseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RollbackRelease(ctx context.Context, in *RollbackReleaseRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ListCharts(ctx context.Context, in *ListChartsRequest, opts ...grpc.CallOption) (*ListChartsResponse, error)
-	GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Application_Release_Chart, error)
-	GetChartMetadata(ctx context.Context, in *GetChartMetadataRequest, opts ...grpc.CallOption) (*Application_Release_Chart_Metadata, error)
+	GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Application_Chart, error)
+	GetChartMetadata(ctx context.Context, in *GetChartMetadataRequest, opts ...grpc.CallOption) (*Application_Chart_Metadata, error)
 }
 
 type nexusClient struct {
@@ -408,16 +408,6 @@ func (c *nexusClient) GetFacility(ctx context.Context, in *GetFacilityRequest, o
 	return out, nil
 }
 
-func (c *nexusClient) GetFacilityMetadata(ctx context.Context, in *GetFacilityMetadataRequest, opts ...grpc.CallOption) (*Facility_Metadata, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Facility_Metadata)
-	err := c.cc.Invoke(ctx, Nexus_GetFacilityMetadata_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *nexusClient) CreateFacility(ctx context.Context, in *CreateFacilityRequest, opts ...grpc.CallOption) (*Facility, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Facility)
@@ -502,6 +492,16 @@ func (c *nexusClient) GetCharm(ctx context.Context, in *GetCharmRequest, opts ..
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Facility_Charm)
 	err := c.cc.Invoke(ctx, Nexus_GetCharm_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) GetCharmMetadata(ctx context.Context, in *GetCharmMetadataRequest, opts ...grpc.CallOption) (*Facility_Charm_Metadata, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Facility_Charm_Metadata)
+	err := c.cc.Invoke(ctx, Nexus_GetCharmMetadata_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -598,9 +598,9 @@ func (c *nexusClient) ListCharts(ctx context.Context, in *ListChartsRequest, opt
 	return out, nil
 }
 
-func (c *nexusClient) GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Application_Release_Chart, error) {
+func (c *nexusClient) GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Application_Chart, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Application_Release_Chart)
+	out := new(Application_Chart)
 	err := c.cc.Invoke(ctx, Nexus_GetChart_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -608,9 +608,9 @@ func (c *nexusClient) GetChart(ctx context.Context, in *GetChartRequest, opts ..
 	return out, nil
 }
 
-func (c *nexusClient) GetChartMetadata(ctx context.Context, in *GetChartMetadataRequest, opts ...grpc.CallOption) (*Application_Release_Chart_Metadata, error) {
+func (c *nexusClient) GetChartMetadata(ctx context.Context, in *GetChartMetadataRequest, opts ...grpc.CallOption) (*Application_Chart_Metadata, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Application_Release_Chart_Metadata)
+	out := new(Application_Chart_Metadata)
 	err := c.cc.Invoke(ctx, Nexus_GetChartMetadata_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -654,7 +654,6 @@ type NexusServer interface {
 	// Facility
 	ListFacilities(context.Context, *ListFacilitiesRequest) (*ListFacilitiesResponse, error)
 	GetFacility(context.Context, *GetFacilityRequest) (*Facility, error)
-	GetFacilityMetadata(context.Context, *GetFacilityMetadataRequest) (*Facility_Metadata, error)
 	CreateFacility(context.Context, *CreateFacilityRequest) (*Facility, error)
 	UpdateFacility(context.Context, *UpdateFacilityRequest) (*Facility, error)
 	DeleteFacility(context.Context, *DeleteFacilityRequest) (*emptypb.Empty, error)
@@ -664,6 +663,7 @@ type NexusServer interface {
 	DoAction(context.Context, *DoActionRequest) (*emptypb.Empty, error)
 	ListCharms(context.Context, *ListCharmsRequest) (*ListCharmsResponse, error)
 	GetCharm(context.Context, *GetCharmRequest) (*Facility_Charm, error)
+	GetCharmMetadata(context.Context, *GetCharmMetadataRequest) (*Facility_Charm_Metadata, error)
 	ListCharmArtifacts(context.Context, *ListCharmArtifactsRequest) (*ListCharmArtifactsResponse, error)
 	// Application
 	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
@@ -674,8 +674,8 @@ type NexusServer interface {
 	DeleteRelease(context.Context, *DeleteReleaseRequest) (*emptypb.Empty, error)
 	RollbackRelease(context.Context, *RollbackReleaseRequest) (*emptypb.Empty, error)
 	ListCharts(context.Context, *ListChartsRequest) (*ListChartsResponse, error)
-	GetChart(context.Context, *GetChartRequest) (*Application_Release_Chart, error)
-	GetChartMetadata(context.Context, *GetChartMetadataRequest) (*Application_Release_Chart_Metadata, error)
+	GetChart(context.Context, *GetChartRequest) (*Application_Chart, error)
+	GetChartMetadata(context.Context, *GetChartMetadataRequest) (*Application_Chart_Metadata, error)
 	mustEmbedUnimplementedNexusServer()
 }
 
@@ -767,9 +767,6 @@ func (UnimplementedNexusServer) ListFacilities(context.Context, *ListFacilitiesR
 func (UnimplementedNexusServer) GetFacility(context.Context, *GetFacilityRequest) (*Facility, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFacility not implemented")
 }
-func (UnimplementedNexusServer) GetFacilityMetadata(context.Context, *GetFacilityMetadataRequest) (*Facility_Metadata, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFacilityMetadata not implemented")
-}
 func (UnimplementedNexusServer) CreateFacility(context.Context, *CreateFacilityRequest) (*Facility, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFacility not implemented")
 }
@@ -796,6 +793,9 @@ func (UnimplementedNexusServer) ListCharms(context.Context, *ListCharmsRequest) 
 }
 func (UnimplementedNexusServer) GetCharm(context.Context, *GetCharmRequest) (*Facility_Charm, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCharm not implemented")
+}
+func (UnimplementedNexusServer) GetCharmMetadata(context.Context, *GetCharmMetadataRequest) (*Facility_Charm_Metadata, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCharmMetadata not implemented")
 }
 func (UnimplementedNexusServer) ListCharmArtifacts(context.Context, *ListCharmArtifactsRequest) (*ListCharmArtifactsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCharmArtifacts not implemented")
@@ -824,10 +824,10 @@ func (UnimplementedNexusServer) RollbackRelease(context.Context, *RollbackReleas
 func (UnimplementedNexusServer) ListCharts(context.Context, *ListChartsRequest) (*ListChartsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCharts not implemented")
 }
-func (UnimplementedNexusServer) GetChart(context.Context, *GetChartRequest) (*Application_Release_Chart, error) {
+func (UnimplementedNexusServer) GetChart(context.Context, *GetChartRequest) (*Application_Chart, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChart not implemented")
 }
-func (UnimplementedNexusServer) GetChartMetadata(context.Context, *GetChartMetadataRequest) (*Application_Release_Chart_Metadata, error) {
+func (UnimplementedNexusServer) GetChartMetadata(context.Context, *GetChartMetadataRequest) (*Application_Chart_Metadata, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChartMetadata not implemented")
 }
 func (UnimplementedNexusServer) mustEmbedUnimplementedNexusServer() {}
@@ -1337,24 +1337,6 @@ func _Nexus_GetFacility_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Nexus_GetFacilityMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetFacilityMetadataRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(NexusServer).GetFacilityMetadata(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Nexus_GetFacilityMetadata_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NexusServer).GetFacilityMetadata(ctx, req.(*GetFacilityMetadataRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Nexus_CreateFacility_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateFacilityRequest)
 	if err := dec(in); err != nil {
@@ -1513,6 +1495,24 @@ func _Nexus_GetCharm_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NexusServer).GetCharm(ctx, req.(*GetCharmRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_GetCharmMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCharmMetadataRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).GetCharmMetadata(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_GetCharmMetadata_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).GetCharmMetadata(ctx, req.(*GetCharmMetadataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1831,10 +1831,6 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Nexus_GetFacility_Handler,
 		},
 		{
-			MethodName: "GetFacilityMetadata",
-			Handler:    _Nexus_GetFacilityMetadata_Handler,
-		},
-		{
 			MethodName: "CreateFacility",
 			Handler:    _Nexus_CreateFacility_Handler,
 		},
@@ -1869,6 +1865,10 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCharm",
 			Handler:    _Nexus_GetCharm_Handler,
+		},
+		{
+			MethodName: "GetCharmMetadata",
+			Handler:    _Nexus_GetCharmMetadata_Handler,
 		},
 		{
 			MethodName: "ListCharmArtifacts",

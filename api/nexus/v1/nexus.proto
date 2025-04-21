@@ -4,6 +4,7 @@ package openhdc.nexus.v1;
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
 
 option go_package = "github.com/openhdc/openhdc/api/nexus/v1;pb";
 
@@ -44,7 +45,6 @@ service Nexus {
   // Facility
   rpc ListFacilities(ListFacilitiesRequest) returns (ListFacilitiesResponse);
   rpc GetFacility(GetFacilityRequest) returns (Facility);
-  rpc GetFacilityMetadata(GetFacilityMetadataRequest) returns (Facility.Metadata);
   rpc CreateFacility(CreateFacilityRequest) returns (Facility);
   rpc UpdateFacility(UpdateFacilityRequest) returns (Facility);
   rpc DeleteFacility(DeleteFacilityRequest) returns (google.protobuf.Empty);
@@ -54,6 +54,7 @@ service Nexus {
   rpc DoAction(DoActionRequest) returns (google.protobuf.Empty);
   rpc ListCharms(ListCharmsRequest) returns (ListCharmsResponse);
   rpc GetCharm(GetCharmRequest) returns (Facility.Charm);
+  rpc GetCharmMetadata(GetCharmMetadataRequest) returns (Facility.Charm.Metadata);
   rpc ListCharmArtifacts(ListCharmArtifactsRequest) returns (ListCharmArtifactsResponse);
 
   // Application
@@ -65,8 +66,8 @@ service Nexus {
   rpc DeleteRelease(DeleteReleaseRequest) returns (google.protobuf.Empty);
   rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty);
   rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);
-  rpc GetChart(GetChartRequest) returns (Application.Release.Chart);
-  rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Release.Chart.Metadata);
+  rpc GetChart(GetChartRequest) returns (Application.Chart);
+  rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Chart.Metadata);
 }
 
 message Configuration {
@@ -244,6 +245,10 @@ message Scope {
 
 message Facility {
   message Charm {
+    message Metadata {
+      string config_yaml = 1;
+      Customization customization = 11;  // create only
+    }
     message Base {
       string name = 1;
       string channel = 2;
@@ -271,9 +276,6 @@ message Facility {
     string website = 22;
     Artifact default_artifact = 31;
   }
-  message Metadata {
-    string config_yaml = 1;
-  }
   message Action {
     string name = 1;
     string description = 2;
@@ -300,44 +302,46 @@ message Facility {
   string charm_name = 11;
   string version = 12;
   int64 revision = 13;
-  repeated Unit units = 21;
+  Charm.Metadata metadata = 21;
+  repeated Unit units = 31;
 }
 
-message Application {  // + CREATE TIME
-  message Release {
-    message Chart {
-      message Metadata {
-        string values_yaml = 1;
-        string readme_md = 2;
-      }
-      message Maintainer {
-        string name = 1;
-        string email = 2;
-        string url = 3;
-      }
-      message Dependency {
-        string name = 1;
-        string version = 2;
-        string condition = 3;
-      }
-      message Version {
-        string chart_version = 1;
-        string chart_ref = 2;
-        string application_version = 3;
-      }
-      string name = 1;
-      string icon = 2;
-      string description = 3;
-      bool deprecated = 4;
-      string tags = 5;
-      repeated string keywords = 6;
-      string license = 7;
-      string home = 11;
-      repeated string sources = 12;
-      repeated Maintainer maintainers = 21;
-      repeated Dependency dependencies = 31;
-      repeated Version versions = 41;
+message Application {
+  message Chart {
+    message Metadata {
+      string values_yaml = 1;
+      string readme_md = 2;
+      Customization customization = 11;  // create only
     }
+    message Maintainer {
+      string name = 1;
+      string email = 2;
+      string url = 3;
+    }
+    message Dependency {
+      string name = 1;
+      string version = 2;
+      string condition = 3;
+    }
+    message Version {
+      string chart_version = 1;
+      string chart_ref = 2;
+      string application_version = 3;
+    }
+    string name = 1;
+    string icon = 2;
+    string description = 3;
+    bool deprecated = 4;
+    string tags = 5;
+    repeated string keywords = 6;
+    string license = 7;
+    string home = 11;
+    repeated string sources = 12;
+    repeated Maintainer maintainers = 21;
+    repeated Dependency dependencies = 31;
+    repeated Version versions = 41;
+  }
+  message Release {
     string scope_name = 1;
     string scope_uuid = 2;
     string facility_name = 3;
@@ -402,11 +406,19 @@ message Application {  // + CREATE TIME
   map<string, string> labels = 4;
   int32 replicas = 5;
   int32 healthies = 11;
-  repeated Container containers = 21;
+  Chart.Metadata metadata = 21;
+  repeated Container containers = 31;
   repeated Service services = 101;
   repeated Pod pods = 102;
   repeated PersistentVolumeClaim persistent_volume_claims = 103;
   google.protobuf.Timestamp created_at = 201;
+}
+
+message Customization {
+  string type = 1;
+  string name = 2;
+  string verison = 3;
+  google.protobuf.Struct values = 11;
 }
 
 message GetConfigurationRequest {}
@@ -563,11 +575,6 @@ message GetFacilityRequest {
   string name = 2;
 }
 
-message GetFacilityMetadataRequest {
-  string scope_uuid = 1;
-  string name = 2;
-}
-
 message CreateFacilityRequest {
   string scope_uuid = 1;
   string name = 2;
@@ -628,6 +635,10 @@ message ListCharmsResponse {
 }
 
 message GetCharmRequest {
+  string name = 1;
+}
+
+message GetCharmMetadataRequest {
   string name = 1;
 }
 
@@ -700,7 +711,7 @@ message RollbackReleaseRequest {
 message ListChartsRequest {}
 
 message ListChartsResponse {
-  repeated Application.Release.Chart charts = 1;
+  repeated Application.Chart charts = 1;
 }
 
 message GetChartRequest {

@@ -15,6 +15,7 @@ type PersistentVolumeClaim struct {
 }
 
 type Application struct {
+	*ChartMetadata
 	Type                   string
 	Name                   string
 	Namespace              string

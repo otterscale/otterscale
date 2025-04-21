@@ -14,7 +14,12 @@ type (
 	UnitInfo       = application.UnitInfo
 )
 
+type FacilityMetadata struct {
+	ConfigYAML string
+}
+
 type Facility struct {
+	*FacilityMetadata
 	Name   string
 	Status *params.ApplicationStatus
 }
@@ -22,10 +27,6 @@ type Facility struct {
 type Action struct {
 	Name string
 	Spec *action.ActionSpec
-}
-
-type FacilityMetadata struct {
-	ConfigYAML string
 }
 
 type Charm struct {

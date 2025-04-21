@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/moby/moby/pkg/namesgenerator"
@@ -18,6 +19,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/rest"
@@ -107,24 +109,21 @@ func (s *NexusService) ListApplications(ctx context.Context, uuid, facility stri
 
 	apps := []model.Application{}
 	for i := range deployments {
-		d := deployments[i]
-		app, err := toApplication(d.Spec.Selector, appTypeDeployment, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+		app, err := s.fromDeployment(&deployments[i], services, pods, persistentVolumeClaims, scm)
 		if err != nil {
 			return nil, err
 		}
 		apps = append(apps, *app)
 	}
 	for i := range statefulSets {
-		d := deployments[i]
-		app, err := toApplication(d.Spec.Selector, appTypeStatefulSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+		app, err := s.fromStatefulSet(&statefulSets[i], services, pods, persistentVolumeClaims, scm)
 		if err != nil {
 			return nil, err
 		}
 		apps = append(apps, *app)
 	}
 	for i := range daemonSets {
-		d := deployments[i]
-		app, err := toApplication(d.Spec.Selector, appTypeDaemonSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+		app, err := s.fromDaemonSet(&daemonSets[i], services, pods, persistentVolumeClaims, scm)
 		if err != nil {
 			return nil, err
 		}
@@ -154,6 +153,8 @@ func (s *NexusService) GetApplication(ctx context.Context, uuid, facility, names
 		v, err := s.apps.GetDeployment(ctx, uuid, facility, namespace, name)
 		if err == nil {
 			deployment = v
+		} else if isKeyNotFoundError(err) {
+			return nil
 		}
 		return err
 	})
@@ -161,6 +162,8 @@ func (s *NexusService) GetApplication(ctx context.Context, uuid, facility, names
 		v, err := s.apps.GetStatefulSet(ctx, uuid, facility, namespace, name)
 		if err == nil {
 			statefulSet = v
+		} else if isKeyNotFoundError(err) {
+			return nil
 		}
 		return err
 	})
@@ -168,6 +171,8 @@ func (s *NexusService) GetApplication(ctx context.Context, uuid, facility, names
 		v, err := s.apps.GetDaemonSet(ctx, uuid, facility, namespace, name)
 		if err == nil {
 			daemonSet = v
+		} else if isKeyNotFoundError(err) {
+			return nil
 		}
 		return err
 	})
@@ -206,14 +211,40 @@ func (s *NexusService) GetApplication(ctx context.Context, uuid, facility, names
 	scm := toStorageClassMap(storageClasses)
 
 	if deployment != nil {
-		return toApplication(deployment.Spec.Selector, appTypeDeployment, deployment.Name, deployment.Namespace, &deployment.ObjectMeta, deployment.Labels, deployment.Spec.Replicas, deployment.Spec.Template.Spec.Containers, deployment.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+		return s.fromDeployment(deployment, services, pods, persistentVolumeClaims, scm)
 	} else if statefulSet != nil {
-		return toApplication(statefulSet.Spec.Selector, appTypeDeployment, statefulSet.Name, statefulSet.Namespace, &statefulSet.ObjectMeta, statefulSet.Labels, statefulSet.Spec.Replicas, statefulSet.Spec.Template.Spec.Containers, statefulSet.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+		return s.fromStatefulSet(statefulSet, services, pods, persistentVolumeClaims, scm)
 	} else if daemonSet != nil {
-		return toApplication(daemonSet.Spec.Selector, appTypeDeployment, daemonSet.Name, daemonSet.Namespace, &daemonSet.ObjectMeta, daemonSet.Labels, nil, daemonSet.Spec.Template.Spec.Containers, daemonSet.Spec.Template.Spec.Volumes, services, pods, persistentVolumeClaims, scm)
+		return s.fromDaemonSet(daemonSet, services, pods, persistentVolumeClaims, scm)
 	}
-
 	return nil, status.Errorf(codes.NotFound, "application %q in namespace %q not found", name, namespace)
+}
+
+func (s *NexusService) GetChartMetadataFromApplication(ctx context.Context, uuid, facility string, app *model.Application) (*model.ChartMetadata, error) {
+	md := &model.ChartMetadata{}
+	eg, _ := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		if releaseName, ok := app.Labels["app.kubernetes.io/instance"]; ok {
+			v, err := s.helm.GetValues(uuid, facility, app.Namespace, releaseName)
+			if err == nil {
+				valuesYAML, _ := yaml.Marshal(v)
+				md.ValuesYAML = string(valuesYAML)
+			}
+			return err
+		}
+		return nil
+	})
+	eg.Go(func() error {
+		// v, err := s.helm.ShowChart(chartRef, action.ShowReadme)
+		// if err == nil {
+		// 	md.ReadmeMD = v
+		// }
+		return nil
+	})
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+	return md, nil
 }
 
 func (s *NexusService) ListReleases(ctx context.Context) ([]model.Release, error) {
@@ -426,6 +457,37 @@ func (s *NexusService) listReleases(ctx context.Context, ks []model.Kubernetes) 
 	return rs, nil
 }
 
+func (s *NexusService) fromDeployment(d *appsv1.Deployment, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
+	return toApplication(d.Spec.Selector, appTypeDeployment, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+}
+
+func (s *NexusService) fromStatefulSet(d *appsv1.StatefulSet, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
+	return toApplication(d.Spec.Selector, appTypeDeployment, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+}
+
+func (s *NexusService) fromDaemonSet(d *appsv1.DaemonSet, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
+	return toApplication(d.Spec.Selector, appTypeDeployment, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+}
+
+func toApplication(ls *metav1.LabelSelector, appType, name, namespace string, objectMeta *metav1.ObjectMeta, labels map[string]string, replicas *int32, containers []corev1.Container, vs []corev1.Volume, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
+	selector, err := metav1.LabelSelectorAsSelector(ls)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create selector: %w", err)
+	}
+	return &model.Application{
+		Type:                   appType,
+		Name:                   name,
+		Namespace:              namespace,
+		ObjectMeta:             objectMeta,
+		Labels:                 labels,
+		Replicas:               replicas,
+		Containers:             containers,
+		Services:               filterServices(svcs, selector),
+		Pods:                   filterPods(pods, selector),
+		PersistentVolumeClaims: filterPersistentVolumeClaim(pvcs, vs, scm),
+	}, nil
+}
+
 func newKubernetesConfig(unitInfo *model.UnitInfo) (*rest.Config, error) {
 	endpoint, err := extractEndpoint(unitInfo)
 	if err != nil {
@@ -481,25 +543,6 @@ func extractClientToken(unitInfo *model.UnitInfo) (string, error) {
 		return cred.ClientToken, nil
 	}
 	return "", errors.New("token not found")
-}
-
-func toApplication(ls *metav1.LabelSelector, appType, name, namespace string, objectMeta *metav1.ObjectMeta, labels map[string]string, replicas *int32, containers []corev1.Container, vs []corev1.Volume, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
-	selector, err := metav1.LabelSelectorAsSelector(ls)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create selector: %w", err)
-	}
-	return &model.Application{
-		Type:                   appType,
-		Name:                   name,
-		Namespace:              namespace,
-		ObjectMeta:             objectMeta,
-		Labels:                 labels,
-		Replicas:               replicas,
-		Containers:             containers,
-		Services:               filterServices(svcs, selector),
-		Pods:                   filterPods(pods, selector),
-		PersistentVolumeClaims: filterPersistentVolumeClaim(pvcs, vs, scm),
-	}, nil
 }
 
 func filterServices(svcs []corev1.Service, s labels.Selector) []corev1.Service {
@@ -559,4 +602,9 @@ func toStorageClassMap(scs []storagev1.StorageClass) map[string]storagev1.Storag
 
 func randomName() string {
 	return strings.ReplaceAll(namesgenerator.GetRandomName(0), "_", "-")
+}
+
+func isKeyNotFoundError(err error) bool {
+	statusErr, _ := err.(*k8serrors.StatusError)
+	return statusErr != nil && statusErr.Status().Code == http.StatusNotFound
 }

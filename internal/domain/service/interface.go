@@ -174,6 +174,7 @@ type KubeHelm interface {
 	UninstallRelease(uuid, facility, namespace, name string, dryRun bool) (*release.Release, error)
 	UpgradeRelease(uuid, facility, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
 	RollbackRelease(uuid, facility, namespace, name string, dryRun bool) error
+	GetValues(uuid, facility, namespace, name string) (map[string]any, error)
 	ShowChart(chartRef string, format helmaction.ShowOutputFormat) (string, error)
 	ListChartVersions(ctx context.Context) ([]*repo.IndexFile, error)
 }
