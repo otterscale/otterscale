@@ -9,6 +9,9 @@ import "google/protobuf/struct.proto";
 option go_package = "github.com/openhdc/openhdc/api/nexus/v1;pb";
 
 service Nexus {
+  // General
+  rpc VerifyEnvironment(VerifyEnvironmentRequest) returns (VerifyEnvironmentResponse);
+
   // Configuration
   rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
   rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer);
@@ -431,6 +434,27 @@ message Customization {
 message Tag {
   string name = 1;
   string comment = 2;
+}
+
+enum ErrorLevel {
+  ERRORLEVEL_INFO = 0;
+  ERRORLEVEL_LOW = 1;
+  ERRORLEVEL_MEDIUM = 2;
+  ERRORLEVEL_HIGH = 3;
+  ERRORLEVEL_CRITICAL = 4;
+}
+message Error {
+  string code = 1;
+  ErrorLevel level = 11;
+  string message = 12;
+  string details = 13;
+  string url = 21;
+}
+
+message VerifyEnvironmentRequest {}
+
+message VerifyEnvironmentResponse {
+  repeated Error errors = 1;
 }
 
 message GetConfigurationRequest {}
