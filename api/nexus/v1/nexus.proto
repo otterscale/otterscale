@@ -33,10 +33,11 @@ service Nexus {
   // Machine
   rpc ListMachines(ListMachinesRequest) returns (ListMachinesResponse);
   rpc GetMachine(GetMachineRequest) returns (Machine);
-  rpc CommissionMachine(CommissionMachineRequest) returns (Machine);
+  rpc CreateMachine(CreateMachineRequest) returns (Machine);
   rpc PowerOnMachine(PowerOnMachineRequest) returns (Machine);
   rpc PowerOffMachine(PowerOffMachineRequest) returns (Machine);
-  rpc AddMachines(AddMachinesRequest) returns (AddMachinesResponse);
+  rpc AddMachineTags(AddMachineTagsRequest) returns (google.protobuf.Empty);
+  rpc RemoveMachineTags(RemoveMachineTagsRequest) returns (google.protobuf.Empty);
 
   // Scope
   rpc ListScopes(ListScopesRequest) returns (ListScopesResponse);
@@ -68,6 +69,12 @@ service Nexus {
   rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);
   rpc GetChart(GetChartRequest) returns (Application.Chart);
   rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Chart.Metadata);
+
+  // Tag
+  rpc ListTags(ListTagsRequest) returns (ListTagsResponse);
+  rpc GetTag(GetTagRequest) returns (Tag);
+  rpc CreateTag(CreateTagRequest) returns (Tag);
+  rpc DeleteTag(DeleteTagRequest) returns (google.protobuf.Empty);
 }
 
 message Configuration {
@@ -421,6 +428,11 @@ message Customization {
   google.protobuf.Struct values = 11;
 }
 
+message Tag {
+  string name = 1;
+  string comment = 2;
+}
+
 message GetConfigurationRequest {}
 
 message UpdateNTPServerRequest {
@@ -525,12 +537,14 @@ message GetMachineRequest {
   string id = 1;
 }
 
-message CommissionMachineRequest {
+message CreateMachineRequest {
   string id = 1;
   bool enable_ssh = 2;
   bool skip_bmc_config = 3;
   bool skip_networking = 4;
   bool skip_storage = 5;
+  string scope_uuid = 11;
+  repeated string tags = 21;
 }
 
 message PowerOnMachineRequest {
@@ -543,13 +557,14 @@ message PowerOffMachineRequest {
   string comment = 2;
 }
 
-message AddMachinesRequest {
-  string scope_uuid = 1;
-  repeated Machine.Factor factors = 2;
+message AddMachineTagsRequest {
+  string id = 1;
+  repeated string tags = 2;
 }
 
-message AddMachinesResponse {
-  repeated string machines = 1;
+message RemoveMachineTagsRequest {
+  string id = 1;
+  repeated string tags = 2;
 }
 
 message ListScopesRequest {}
@@ -720,4 +735,23 @@ message GetChartRequest {
 
 message GetChartMetadataRequest {
   string chart_ref = 1;
+}
+
+message ListTagsRequest {}
+
+message ListTagsResponse {
+  repeated Tag tags = 1;
+}
+
+message GetTagRequest {
+  string name = 1;
+}
+
+message CreateTagRequest {
+  string name = 1;
+  string comment = 2;
+}
+
+message DeleteTagRequest {
+  string name = 1;
 }

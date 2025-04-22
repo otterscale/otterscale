@@ -90,6 +90,15 @@ type MAASMachine interface {
 	Commission(ctx context.Context, systemID string, params *entity.MachineCommissionParams) (*entity.Machine, error)
 }
 
+type MAASTag interface {
+	List(ctx context.Context) ([]entity.Tag, error)
+	Get(ctx context.Context, name string) (*entity.Tag, error)
+	Create(ctx context.Context, name, comment string) (*entity.Tag, error)
+	Delete(ctx context.Context, name string) error
+	AddMachines(ctx context.Context, name string, machineIDs []string) error
+	RemoveMachines(ctx context.Context, name string, machineIDs []string) error
+}
+
 type JujuMachine interface {
 	AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) ([]params.AddMachinesResult, error)
 }

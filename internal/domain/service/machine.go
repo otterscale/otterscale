@@ -14,6 +14,27 @@ func (s *NexusService) GetMachine(ctx context.Context, id string) (*model.Machin
 	return s.machine.Get(ctx, id)
 }
 
+func (s *NexusService) CreateMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool, uuid string, tags []string) (*model.Machine, error) {
+	if err := s.AddMachineTags(ctx, id, tags); err != nil {
+		return nil, err
+	}
+	commissionParams := &model.MachineCommissionParams{
+		EnableSSH:      boolToInt(enableSSH),
+		SkipBMCConfig:  boolToInt(skipBMCConfig),
+		SkipNetworking: boolToInt(skipNetworking),
+		SkipStorage:    boolToInt(skipStorage),
+	}
+	machine, err := s.machine.Commission(ctx, id, commissionParams)
+	if err != nil {
+		return nil, err
+	}
+	addMachineParams := []model.MachineAddParams{{Placement: &model.Placement{Directive: id}}}
+	if _, err := s.machineManager.AddMachines(ctx, uuid, addMachineParams); err != nil {
+		return nil, err
+	}
+	return machine, nil
+}
+
 func (s *NexusService) AddMachines(ctx context.Context, uuid string, factors []model.MachineFactor) ([]string, error) {
 	params := []model.MachineAddParams{}
 	for _, factor := range factors {
@@ -35,16 +56,6 @@ func (s *NexusService) AddMachines(ctx context.Context, uuid string, factors []m
 		machines[i] = r.Machine
 	}
 	return machines, nil
-}
-
-func (s *NexusService) CommissionMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool) (*model.Machine, error) {
-	params := &model.MachineCommissionParams{
-		EnableSSH:      boolToInt(enableSSH),
-		SkipBMCConfig:  boolToInt(skipBMCConfig),
-		SkipNetworking: boolToInt(skipNetworking),
-		SkipStorage:    boolToInt(skipStorage),
-	}
-	return s.machine.Commission(ctx, id, params)
 }
 
 func (s *NexusService) PowerOnMachine(ctx context.Context, id, comment string) (*model.Machine, error) {

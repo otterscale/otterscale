@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
@@ -28,8 +29,8 @@ func (a *NexusApp) GetMachine(ctx context.Context, req *connect.Request[pb.GetMa
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) CommissionMachine(ctx context.Context, req *connect.Request[pb.CommissionMachineRequest]) (*connect.Response[pb.Machine], error) {
-	m, err := a.svc.CommissionMachine(ctx, req.Msg.GetId(), req.Msg.GetEnableSsh(), req.Msg.GetSkipBmcConfig(), req.Msg.GetSkipNetworking(), req.Msg.GetSkipStorage())
+func (a *NexusApp) CreateMachine(ctx context.Context, req *connect.Request[pb.CreateMachineRequest]) (*connect.Response[pb.Machine], error) {
+	m, err := a.svc.CreateMachine(ctx, req.Msg.GetId(), req.Msg.GetEnableSsh(), req.Msg.GetSkipBmcConfig(), req.Msg.GetSkipNetworking(), req.Msg.GetSkipStorage(), req.Msg.GetScopeUuid(), req.Msg.GetTags())
 	if err != nil {
 		return nil, err
 	}
@@ -55,13 +56,19 @@ func (a *NexusApp) PowerOffMachine(ctx context.Context, req *connect.Request[pb.
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) AddMachines(ctx context.Context, req *connect.Request[pb.AddMachinesRequest]) (*connect.Response[pb.AddMachinesResponse], error) {
-	machines, err := a.svc.AddMachines(ctx, req.Msg.GetScopeUuid(), toModelFactors(req.Msg.GetFactors()))
-	if err != nil {
+func (a *NexusApp) AddMachineTags(ctx context.Context, req *connect.Request[pb.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.AddMachineTags(ctx, req.Msg.GetId(), req.Msg.GetTags()); err != nil {
 		return nil, err
 	}
-	res := &pb.AddMachinesResponse{}
-	res.SetMachines(machines)
+	res := &emptypb.Empty{}
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) RemoveMachineTags(ctx context.Context, req *connect.Request[pb.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.RemoveMachineTags(ctx, req.Msg.GetId(), req.Msg.GetTags()); err != nil {
+		return nil, err
+	}
+	res := &emptypb.Empty{}
 	return connect.NewResponse(res), nil
 }
 
