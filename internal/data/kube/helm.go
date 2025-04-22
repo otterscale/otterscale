@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -46,6 +47,12 @@ func NewHelm(helmMap HelmMap) (service.KubeHelm, error) {
 	opts := []registry.ClientOption{
 		registry.ClientOptEnableCache(true),
 	}
+	username := os.Getenv(env.OPENHDC_REGISTRY_USERNAME)
+	password := os.Getenv(env.OPENHDC_REGISTRY_PASSWORD)
+	if username != "" && password != "" {
+		opts = append(opts, registry.ClientOptBasicAuth(username, password))
+	}
+
 	registryClient, err := registry.NewClient(opts...)
 	if err != nil {
 		return nil, err
