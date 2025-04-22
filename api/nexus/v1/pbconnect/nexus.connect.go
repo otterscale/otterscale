@@ -76,14 +76,16 @@ const (
 	NexusListMachinesProcedure = "/openhdc.nexus.v1.Nexus/ListMachines"
 	// NexusGetMachineProcedure is the fully-qualified name of the Nexus's GetMachine RPC.
 	NexusGetMachineProcedure = "/openhdc.nexus.v1.Nexus/GetMachine"
-	// NexusCommissionMachineProcedure is the fully-qualified name of the Nexus's CommissionMachine RPC.
-	NexusCommissionMachineProcedure = "/openhdc.nexus.v1.Nexus/CommissionMachine"
+	// NexusCreateMachineProcedure is the fully-qualified name of the Nexus's CreateMachine RPC.
+	NexusCreateMachineProcedure = "/openhdc.nexus.v1.Nexus/CreateMachine"
 	// NexusPowerOnMachineProcedure is the fully-qualified name of the Nexus's PowerOnMachine RPC.
 	NexusPowerOnMachineProcedure = "/openhdc.nexus.v1.Nexus/PowerOnMachine"
 	// NexusPowerOffMachineProcedure is the fully-qualified name of the Nexus's PowerOffMachine RPC.
 	NexusPowerOffMachineProcedure = "/openhdc.nexus.v1.Nexus/PowerOffMachine"
-	// NexusAddMachinesProcedure is the fully-qualified name of the Nexus's AddMachines RPC.
-	NexusAddMachinesProcedure = "/openhdc.nexus.v1.Nexus/AddMachines"
+	// NexusAddMachineTagsProcedure is the fully-qualified name of the Nexus's AddMachineTags RPC.
+	NexusAddMachineTagsProcedure = "/openhdc.nexus.v1.Nexus/AddMachineTags"
+	// NexusRemoveMachineTagsProcedure is the fully-qualified name of the Nexus's RemoveMachineTags RPC.
+	NexusRemoveMachineTagsProcedure = "/openhdc.nexus.v1.Nexus/RemoveMachineTags"
 	// NexusListScopesProcedure is the fully-qualified name of the Nexus's ListScopes RPC.
 	NexusListScopesProcedure = "/openhdc.nexus.v1.Nexus/ListScopes"
 	// NexusCreateScopeProcedure is the fully-qualified name of the Nexus's CreateScope RPC.
@@ -135,6 +137,14 @@ const (
 	NexusGetChartProcedure = "/openhdc.nexus.v1.Nexus/GetChart"
 	// NexusGetChartMetadataProcedure is the fully-qualified name of the Nexus's GetChartMetadata RPC.
 	NexusGetChartMetadataProcedure = "/openhdc.nexus.v1.Nexus/GetChartMetadata"
+	// NexusListTagsProcedure is the fully-qualified name of the Nexus's ListTags RPC.
+	NexusListTagsProcedure = "/openhdc.nexus.v1.Nexus/ListTags"
+	// NexusGetTagProcedure is the fully-qualified name of the Nexus's GetTag RPC.
+	NexusGetTagProcedure = "/openhdc.nexus.v1.Nexus/GetTag"
+	// NexusCreateTagProcedure is the fully-qualified name of the Nexus's CreateTag RPC.
+	NexusCreateTagProcedure = "/openhdc.nexus.v1.Nexus/CreateTag"
+	// NexusDeleteTagProcedure is the fully-qualified name of the Nexus's DeleteTag RPC.
+	NexusDeleteTagProcedure = "/openhdc.nexus.v1.Nexus/DeleteTag"
 )
 
 // NexusClient is a client for the openhdc.nexus.v1.Nexus service.
@@ -161,10 +171,11 @@ type NexusClient interface {
 	// Machine
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
 	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
-	CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error)
+	CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error)
 	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error)
 	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
-	AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error)
+	AddMachineTags(context.Context, *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
+	RemoveMachineTags(context.Context, *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
 	// Scope
 	ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error)
 	CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error)
@@ -193,6 +204,11 @@ type NexusClient interface {
 	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
 	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error)
 	GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error)
+	// Tag
+	ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error)
+	GetTag(context.Context, *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error)
+	CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error)
+	DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewNexusClient constructs a client for the openhdc.nexus.v1.Nexus service. By default, it uses
@@ -320,10 +336,10 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("GetMachine")),
 			connect.WithClientOptions(opts...),
 		),
-		commissionMachine: connect.NewClient[v1.CommissionMachineRequest, v1.Machine](
+		createMachine: connect.NewClient[v1.CreateMachineRequest, v1.Machine](
 			httpClient,
-			baseURL+NexusCommissionMachineProcedure,
-			connect.WithSchema(nexusMethods.ByName("CommissionMachine")),
+			baseURL+NexusCreateMachineProcedure,
+			connect.WithSchema(nexusMethods.ByName("CreateMachine")),
 			connect.WithClientOptions(opts...),
 		),
 		powerOnMachine: connect.NewClient[v1.PowerOnMachineRequest, v1.Machine](
@@ -338,10 +354,16 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("PowerOffMachine")),
 			connect.WithClientOptions(opts...),
 		),
-		addMachines: connect.NewClient[v1.AddMachinesRequest, v1.AddMachinesResponse](
+		addMachineTags: connect.NewClient[v1.AddMachineTagsRequest, emptypb.Empty](
 			httpClient,
-			baseURL+NexusAddMachinesProcedure,
-			connect.WithSchema(nexusMethods.ByName("AddMachines")),
+			baseURL+NexusAddMachineTagsProcedure,
+			connect.WithSchema(nexusMethods.ByName("AddMachineTags")),
+			connect.WithClientOptions(opts...),
+		),
+		removeMachineTags: connect.NewClient[v1.RemoveMachineTagsRequest, emptypb.Empty](
+			httpClient,
+			baseURL+NexusRemoveMachineTagsProcedure,
+			connect.WithSchema(nexusMethods.ByName("RemoveMachineTags")),
 			connect.WithClientOptions(opts...),
 		),
 		listScopes: connect.NewClient[v1.ListScopesRequest, v1.ListScopesResponse](
@@ -494,6 +516,30 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("GetChartMetadata")),
 			connect.WithClientOptions(opts...),
 		),
+		listTags: connect.NewClient[v1.ListTagsRequest, v1.ListTagsResponse](
+			httpClient,
+			baseURL+NexusListTagsProcedure,
+			connect.WithSchema(nexusMethods.ByName("ListTags")),
+			connect.WithClientOptions(opts...),
+		),
+		getTag: connect.NewClient[v1.GetTagRequest, v1.Tag](
+			httpClient,
+			baseURL+NexusGetTagProcedure,
+			connect.WithSchema(nexusMethods.ByName("GetTag")),
+			connect.WithClientOptions(opts...),
+		),
+		createTag: connect.NewClient[v1.CreateTagRequest, v1.Tag](
+			httpClient,
+			baseURL+NexusCreateTagProcedure,
+			connect.WithSchema(nexusMethods.ByName("CreateTag")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteTag: connect.NewClient[v1.DeleteTagRequest, emptypb.Empty](
+			httpClient,
+			baseURL+NexusDeleteTagProcedure,
+			connect.WithSchema(nexusMethods.ByName("DeleteTag")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -518,10 +564,11 @@ type nexusClient struct {
 	updateIPRange           *connect.Client[v1.UpdateIPRangeRequest, v1.Network_IPRange]
 	listMachines            *connect.Client[v1.ListMachinesRequest, v1.ListMachinesResponse]
 	getMachine              *connect.Client[v1.GetMachineRequest, v1.Machine]
-	commissionMachine       *connect.Client[v1.CommissionMachineRequest, v1.Machine]
+	createMachine           *connect.Client[v1.CreateMachineRequest, v1.Machine]
 	powerOnMachine          *connect.Client[v1.PowerOnMachineRequest, v1.Machine]
 	powerOffMachine         *connect.Client[v1.PowerOffMachineRequest, v1.Machine]
-	addMachines             *connect.Client[v1.AddMachinesRequest, v1.AddMachinesResponse]
+	addMachineTags          *connect.Client[v1.AddMachineTagsRequest, emptypb.Empty]
+	removeMachineTags       *connect.Client[v1.RemoveMachineTagsRequest, emptypb.Empty]
 	listScopes              *connect.Client[v1.ListScopesRequest, v1.ListScopesResponse]
 	createScope             *connect.Client[v1.CreateScopeRequest, v1.Scope]
 	listFacilities          *connect.Client[v1.ListFacilitiesRequest, v1.ListFacilitiesResponse]
@@ -547,6 +594,10 @@ type nexusClient struct {
 	listCharts              *connect.Client[v1.ListChartsRequest, v1.ListChartsResponse]
 	getChart                *connect.Client[v1.GetChartRequest, v1.Application_Chart]
 	getChartMetadata        *connect.Client[v1.GetChartMetadataRequest, v1.Application_Chart_Metadata]
+	listTags                *connect.Client[v1.ListTagsRequest, v1.ListTagsResponse]
+	getTag                  *connect.Client[v1.GetTagRequest, v1.Tag]
+	createTag               *connect.Client[v1.CreateTagRequest, v1.Tag]
+	deleteTag               *connect.Client[v1.DeleteTagRequest, emptypb.Empty]
 }
 
 // GetConfiguration calls openhdc.nexus.v1.Nexus.GetConfiguration.
@@ -644,9 +695,9 @@ func (c *nexusClient) GetMachine(ctx context.Context, req *connect.Request[v1.Ge
 	return c.getMachine.CallUnary(ctx, req)
 }
 
-// CommissionMachine calls openhdc.nexus.v1.Nexus.CommissionMachine.
-func (c *nexusClient) CommissionMachine(ctx context.Context, req *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return c.commissionMachine.CallUnary(ctx, req)
+// CreateMachine calls openhdc.nexus.v1.Nexus.CreateMachine.
+func (c *nexusClient) CreateMachine(ctx context.Context, req *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
+	return c.createMachine.CallUnary(ctx, req)
 }
 
 // PowerOnMachine calls openhdc.nexus.v1.Nexus.PowerOnMachine.
@@ -659,9 +710,14 @@ func (c *nexusClient) PowerOffMachine(ctx context.Context, req *connect.Request[
 	return c.powerOffMachine.CallUnary(ctx, req)
 }
 
-// AddMachines calls openhdc.nexus.v1.Nexus.AddMachines.
-func (c *nexusClient) AddMachines(ctx context.Context, req *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error) {
-	return c.addMachines.CallUnary(ctx, req)
+// AddMachineTags calls openhdc.nexus.v1.Nexus.AddMachineTags.
+func (c *nexusClient) AddMachineTags(ctx context.Context, req *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.addMachineTags.CallUnary(ctx, req)
+}
+
+// RemoveMachineTags calls openhdc.nexus.v1.Nexus.RemoveMachineTags.
+func (c *nexusClient) RemoveMachineTags(ctx context.Context, req *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.removeMachineTags.CallUnary(ctx, req)
 }
 
 // ListScopes calls openhdc.nexus.v1.Nexus.ListScopes.
@@ -789,6 +845,26 @@ func (c *nexusClient) GetChartMetadata(ctx context.Context, req *connect.Request
 	return c.getChartMetadata.CallUnary(ctx, req)
 }
 
+// ListTags calls openhdc.nexus.v1.Nexus.ListTags.
+func (c *nexusClient) ListTags(ctx context.Context, req *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error) {
+	return c.listTags.CallUnary(ctx, req)
+}
+
+// GetTag calls openhdc.nexus.v1.Nexus.GetTag.
+func (c *nexusClient) GetTag(ctx context.Context, req *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error) {
+	return c.getTag.CallUnary(ctx, req)
+}
+
+// CreateTag calls openhdc.nexus.v1.Nexus.CreateTag.
+func (c *nexusClient) CreateTag(ctx context.Context, req *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error) {
+	return c.createTag.CallUnary(ctx, req)
+}
+
+// DeleteTag calls openhdc.nexus.v1.Nexus.DeleteTag.
+func (c *nexusClient) DeleteTag(ctx context.Context, req *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteTag.CallUnary(ctx, req)
+}
+
 // NexusHandler is an implementation of the openhdc.nexus.v1.Nexus service.
 type NexusHandler interface {
 	// Configuration
@@ -813,10 +889,11 @@ type NexusHandler interface {
 	// Machine
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
 	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
-	CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error)
+	CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error)
 	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error)
 	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
-	AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error)
+	AddMachineTags(context.Context, *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
+	RemoveMachineTags(context.Context, *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
 	// Scope
 	ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error)
 	CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error)
@@ -845,6 +922,11 @@ type NexusHandler interface {
 	ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error)
 	GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error)
 	GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error)
+	// Tag
+	ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error)
+	GetTag(context.Context, *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error)
+	CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error)
+	DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewNexusHandler builds an HTTP handler from the service implementation. It returns the path on
@@ -968,10 +1050,10 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("GetMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusCommissionMachineHandler := connect.NewUnaryHandler(
-		NexusCommissionMachineProcedure,
-		svc.CommissionMachine,
-		connect.WithSchema(nexusMethods.ByName("CommissionMachine")),
+	nexusCreateMachineHandler := connect.NewUnaryHandler(
+		NexusCreateMachineProcedure,
+		svc.CreateMachine,
+		connect.WithSchema(nexusMethods.ByName("CreateMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusPowerOnMachineHandler := connect.NewUnaryHandler(
@@ -986,10 +1068,16 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("PowerOffMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusAddMachinesHandler := connect.NewUnaryHandler(
-		NexusAddMachinesProcedure,
-		svc.AddMachines,
-		connect.WithSchema(nexusMethods.ByName("AddMachines")),
+	nexusAddMachineTagsHandler := connect.NewUnaryHandler(
+		NexusAddMachineTagsProcedure,
+		svc.AddMachineTags,
+		connect.WithSchema(nexusMethods.ByName("AddMachineTags")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusRemoveMachineTagsHandler := connect.NewUnaryHandler(
+		NexusRemoveMachineTagsProcedure,
+		svc.RemoveMachineTags,
+		connect.WithSchema(nexusMethods.ByName("RemoveMachineTags")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusListScopesHandler := connect.NewUnaryHandler(
@@ -1142,6 +1230,30 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("GetChartMetadata")),
 		connect.WithHandlerOptions(opts...),
 	)
+	nexusListTagsHandler := connect.NewUnaryHandler(
+		NexusListTagsProcedure,
+		svc.ListTags,
+		connect.WithSchema(nexusMethods.ByName("ListTags")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusGetTagHandler := connect.NewUnaryHandler(
+		NexusGetTagProcedure,
+		svc.GetTag,
+		connect.WithSchema(nexusMethods.ByName("GetTag")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusCreateTagHandler := connect.NewUnaryHandler(
+		NexusCreateTagProcedure,
+		svc.CreateTag,
+		connect.WithSchema(nexusMethods.ByName("CreateTag")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusDeleteTagHandler := connect.NewUnaryHandler(
+		NexusDeleteTagProcedure,
+		svc.DeleteTag,
+		connect.WithSchema(nexusMethods.ByName("DeleteTag")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/openhdc.nexus.v1.Nexus/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case NexusGetConfigurationProcedure:
@@ -1182,14 +1294,16 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusListMachinesHandler.ServeHTTP(w, r)
 		case NexusGetMachineProcedure:
 			nexusGetMachineHandler.ServeHTTP(w, r)
-		case NexusCommissionMachineProcedure:
-			nexusCommissionMachineHandler.ServeHTTP(w, r)
+		case NexusCreateMachineProcedure:
+			nexusCreateMachineHandler.ServeHTTP(w, r)
 		case NexusPowerOnMachineProcedure:
 			nexusPowerOnMachineHandler.ServeHTTP(w, r)
 		case NexusPowerOffMachineProcedure:
 			nexusPowerOffMachineHandler.ServeHTTP(w, r)
-		case NexusAddMachinesProcedure:
-			nexusAddMachinesHandler.ServeHTTP(w, r)
+		case NexusAddMachineTagsProcedure:
+			nexusAddMachineTagsHandler.ServeHTTP(w, r)
+		case NexusRemoveMachineTagsProcedure:
+			nexusRemoveMachineTagsHandler.ServeHTTP(w, r)
 		case NexusListScopesProcedure:
 			nexusListScopesHandler.ServeHTTP(w, r)
 		case NexusCreateScopeProcedure:
@@ -1240,6 +1354,14 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusGetChartHandler.ServeHTTP(w, r)
 		case NexusGetChartMetadataProcedure:
 			nexusGetChartMetadataHandler.ServeHTTP(w, r)
+		case NexusListTagsProcedure:
+			nexusListTagsHandler.ServeHTTP(w, r)
+		case NexusGetTagProcedure:
+			nexusGetTagHandler.ServeHTTP(w, r)
+		case NexusCreateTagProcedure:
+			nexusCreateTagHandler.ServeHTTP(w, r)
+		case NexusDeleteTagProcedure:
+			nexusDeleteTagHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1325,8 +1447,8 @@ func (UnimplementedNexusHandler) GetMachine(context.Context, *connect.Request[v1
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetMachine is not implemented"))
 }
 
-func (UnimplementedNexusHandler) CommissionMachine(context.Context, *connect.Request[v1.CommissionMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CommissionMachine is not implemented"))
+func (UnimplementedNexusHandler) CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateMachine is not implemented"))
 }
 
 func (UnimplementedNexusHandler) PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error) {
@@ -1337,8 +1459,12 @@ func (UnimplementedNexusHandler) PowerOffMachine(context.Context, *connect.Reque
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.PowerOffMachine is not implemented"))
 }
 
-func (UnimplementedNexusHandler) AddMachines(context.Context, *connect.Request[v1.AddMachinesRequest]) (*connect.Response[v1.AddMachinesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddMachines is not implemented"))
+func (UnimplementedNexusHandler) AddMachineTags(context.Context, *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddMachineTags is not implemented"))
+}
+
+func (UnimplementedNexusHandler) RemoveMachineTags(context.Context, *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.RemoveMachineTags is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error) {
@@ -1439,4 +1565,20 @@ func (UnimplementedNexusHandler) GetChart(context.Context, *connect.Request[v1.G
 
 func (UnimplementedNexusHandler) GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetChartMetadata is not implemented"))
+}
+
+func (UnimplementedNexusHandler) ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListTags is not implemented"))
+}
+
+func (UnimplementedNexusHandler) GetTag(context.Context, *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetTag is not implemented"))
+}
+
+func (UnimplementedNexusHandler) CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateTag is not implemented"))
+}
+
+func (UnimplementedNexusHandler) DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DeleteTag is not implemented"))
 }

@@ -20,6 +20,7 @@ var ProviderSet = wire.NewSet(
 	maas.NewPackageRepository,
 	maas.NewServer,
 	maas.NewSubnet,
+	maas.NewTag,
 	maas.NewVLAN,
 	juju.NewJujuMap,
 	juju.NewAction,

@@ -39,10 +39,11 @@ const (
 	Nexus_UpdateIPRange_FullMethodName           = "/openhdc.nexus.v1.Nexus/UpdateIPRange"
 	Nexus_ListMachines_FullMethodName            = "/openhdc.nexus.v1.Nexus/ListMachines"
 	Nexus_GetMachine_FullMethodName              = "/openhdc.nexus.v1.Nexus/GetMachine"
-	Nexus_CommissionMachine_FullMethodName       = "/openhdc.nexus.v1.Nexus/CommissionMachine"
+	Nexus_CreateMachine_FullMethodName           = "/openhdc.nexus.v1.Nexus/CreateMachine"
 	Nexus_PowerOnMachine_FullMethodName          = "/openhdc.nexus.v1.Nexus/PowerOnMachine"
 	Nexus_PowerOffMachine_FullMethodName         = "/openhdc.nexus.v1.Nexus/PowerOffMachine"
-	Nexus_AddMachines_FullMethodName             = "/openhdc.nexus.v1.Nexus/AddMachines"
+	Nexus_AddMachineTags_FullMethodName          = "/openhdc.nexus.v1.Nexus/AddMachineTags"
+	Nexus_RemoveMachineTags_FullMethodName       = "/openhdc.nexus.v1.Nexus/RemoveMachineTags"
 	Nexus_ListScopes_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListScopes"
 	Nexus_CreateScope_FullMethodName             = "/openhdc.nexus.v1.Nexus/CreateScope"
 	Nexus_ListFacilities_FullMethodName          = "/openhdc.nexus.v1.Nexus/ListFacilities"
@@ -68,6 +69,10 @@ const (
 	Nexus_ListCharts_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListCharts"
 	Nexus_GetChart_FullMethodName                = "/openhdc.nexus.v1.Nexus/GetChart"
 	Nexus_GetChartMetadata_FullMethodName        = "/openhdc.nexus.v1.Nexus/GetChartMetadata"
+	Nexus_ListTags_FullMethodName                = "/openhdc.nexus.v1.Nexus/ListTags"
+	Nexus_GetTag_FullMethodName                  = "/openhdc.nexus.v1.Nexus/GetTag"
+	Nexus_CreateTag_FullMethodName               = "/openhdc.nexus.v1.Nexus/CreateTag"
+	Nexus_DeleteTag_FullMethodName               = "/openhdc.nexus.v1.Nexus/DeleteTag"
 )
 
 // NexusClient is the client API for Nexus service.
@@ -96,10 +101,11 @@ type NexusClient interface {
 	// Machine
 	ListMachines(ctx context.Context, in *ListMachinesRequest, opts ...grpc.CallOption) (*ListMachinesResponse, error)
 	GetMachine(ctx context.Context, in *GetMachineRequest, opts ...grpc.CallOption) (*Machine, error)
-	CommissionMachine(ctx context.Context, in *CommissionMachineRequest, opts ...grpc.CallOption) (*Machine, error)
+	CreateMachine(ctx context.Context, in *CreateMachineRequest, opts ...grpc.CallOption) (*Machine, error)
 	PowerOnMachine(ctx context.Context, in *PowerOnMachineRequest, opts ...grpc.CallOption) (*Machine, error)
 	PowerOffMachine(ctx context.Context, in *PowerOffMachineRequest, opts ...grpc.CallOption) (*Machine, error)
-	AddMachines(ctx context.Context, in *AddMachinesRequest, opts ...grpc.CallOption) (*AddMachinesResponse, error)
+	AddMachineTags(ctx context.Context, in *AddMachineTagsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	RemoveMachineTags(ctx context.Context, in *RemoveMachineTagsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Scope
 	ListScopes(ctx context.Context, in *ListScopesRequest, opts ...grpc.CallOption) (*ListScopesResponse, error)
 	CreateScope(ctx context.Context, in *CreateScopeRequest, opts ...grpc.CallOption) (*Scope, error)
@@ -128,6 +134,11 @@ type NexusClient interface {
 	ListCharts(ctx context.Context, in *ListChartsRequest, opts ...grpc.CallOption) (*ListChartsResponse, error)
 	GetChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*Application_Chart, error)
 	GetChartMetadata(ctx context.Context, in *GetChartMetadataRequest, opts ...grpc.CallOption) (*Application_Chart_Metadata, error)
+	// Tag
+	ListTags(ctx context.Context, in *ListTagsRequest, opts ...grpc.CallOption) (*ListTagsResponse, error)
+	GetTag(ctx context.Context, in *GetTagRequest, opts ...grpc.CallOption) (*Tag, error)
+	CreateTag(ctx context.Context, in *CreateTagRequest, opts ...grpc.CallOption) (*Tag, error)
+	DeleteTag(ctx context.Context, in *DeleteTagRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type nexusClient struct {
@@ -328,10 +339,10 @@ func (c *nexusClient) GetMachine(ctx context.Context, in *GetMachineRequest, opt
 	return out, nil
 }
 
-func (c *nexusClient) CommissionMachine(ctx context.Context, in *CommissionMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
+func (c *nexusClient) CreateMachine(ctx context.Context, in *CreateMachineRequest, opts ...grpc.CallOption) (*Machine, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Machine)
-	err := c.cc.Invoke(ctx, Nexus_CommissionMachine_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Nexus_CreateMachine_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -358,10 +369,20 @@ func (c *nexusClient) PowerOffMachine(ctx context.Context, in *PowerOffMachineRe
 	return out, nil
 }
 
-func (c *nexusClient) AddMachines(ctx context.Context, in *AddMachinesRequest, opts ...grpc.CallOption) (*AddMachinesResponse, error) {
+func (c *nexusClient) AddMachineTags(ctx context.Context, in *AddMachineTagsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AddMachinesResponse)
-	err := c.cc.Invoke(ctx, Nexus_AddMachines_FullMethodName, in, out, cOpts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Nexus_AddMachineTags_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) RemoveMachineTags(ctx context.Context, in *RemoveMachineTagsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Nexus_RemoveMachineTags_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -618,6 +639,46 @@ func (c *nexusClient) GetChartMetadata(ctx context.Context, in *GetChartMetadata
 	return out, nil
 }
 
+func (c *nexusClient) ListTags(ctx context.Context, in *ListTagsRequest, opts ...grpc.CallOption) (*ListTagsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListTagsResponse)
+	err := c.cc.Invoke(ctx, Nexus_ListTags_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) GetTag(ctx context.Context, in *GetTagRequest, opts ...grpc.CallOption) (*Tag, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Tag)
+	err := c.cc.Invoke(ctx, Nexus_GetTag_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) CreateTag(ctx context.Context, in *CreateTagRequest, opts ...grpc.CallOption) (*Tag, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Tag)
+	err := c.cc.Invoke(ctx, Nexus_CreateTag_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) DeleteTag(ctx context.Context, in *DeleteTagRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Nexus_DeleteTag_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NexusServer is the server API for Nexus service.
 // All implementations must embed UnimplementedNexusServer
 // for forward compatibility.
@@ -644,10 +705,11 @@ type NexusServer interface {
 	// Machine
 	ListMachines(context.Context, *ListMachinesRequest) (*ListMachinesResponse, error)
 	GetMachine(context.Context, *GetMachineRequest) (*Machine, error)
-	CommissionMachine(context.Context, *CommissionMachineRequest) (*Machine, error)
+	CreateMachine(context.Context, *CreateMachineRequest) (*Machine, error)
 	PowerOnMachine(context.Context, *PowerOnMachineRequest) (*Machine, error)
 	PowerOffMachine(context.Context, *PowerOffMachineRequest) (*Machine, error)
-	AddMachines(context.Context, *AddMachinesRequest) (*AddMachinesResponse, error)
+	AddMachineTags(context.Context, *AddMachineTagsRequest) (*emptypb.Empty, error)
+	RemoveMachineTags(context.Context, *RemoveMachineTagsRequest) (*emptypb.Empty, error)
 	// Scope
 	ListScopes(context.Context, *ListScopesRequest) (*ListScopesResponse, error)
 	CreateScope(context.Context, *CreateScopeRequest) (*Scope, error)
@@ -676,6 +738,11 @@ type NexusServer interface {
 	ListCharts(context.Context, *ListChartsRequest) (*ListChartsResponse, error)
 	GetChart(context.Context, *GetChartRequest) (*Application_Chart, error)
 	GetChartMetadata(context.Context, *GetChartMetadataRequest) (*Application_Chart_Metadata, error)
+	// Tag
+	ListTags(context.Context, *ListTagsRequest) (*ListTagsResponse, error)
+	GetTag(context.Context, *GetTagRequest) (*Tag, error)
+	CreateTag(context.Context, *CreateTagRequest) (*Tag, error)
+	DeleteTag(context.Context, *DeleteTagRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedNexusServer()
 }
 
@@ -743,8 +810,8 @@ func (UnimplementedNexusServer) ListMachines(context.Context, *ListMachinesReque
 func (UnimplementedNexusServer) GetMachine(context.Context, *GetMachineRequest) (*Machine, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMachine not implemented")
 }
-func (UnimplementedNexusServer) CommissionMachine(context.Context, *CommissionMachineRequest) (*Machine, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CommissionMachine not implemented")
+func (UnimplementedNexusServer) CreateMachine(context.Context, *CreateMachineRequest) (*Machine, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMachine not implemented")
 }
 func (UnimplementedNexusServer) PowerOnMachine(context.Context, *PowerOnMachineRequest) (*Machine, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PowerOnMachine not implemented")
@@ -752,8 +819,11 @@ func (UnimplementedNexusServer) PowerOnMachine(context.Context, *PowerOnMachineR
 func (UnimplementedNexusServer) PowerOffMachine(context.Context, *PowerOffMachineRequest) (*Machine, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PowerOffMachine not implemented")
 }
-func (UnimplementedNexusServer) AddMachines(context.Context, *AddMachinesRequest) (*AddMachinesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddMachines not implemented")
+func (UnimplementedNexusServer) AddMachineTags(context.Context, *AddMachineTagsRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddMachineTags not implemented")
+}
+func (UnimplementedNexusServer) RemoveMachineTags(context.Context, *RemoveMachineTagsRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveMachineTags not implemented")
 }
 func (UnimplementedNexusServer) ListScopes(context.Context, *ListScopesRequest) (*ListScopesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListScopes not implemented")
@@ -829,6 +899,18 @@ func (UnimplementedNexusServer) GetChart(context.Context, *GetChartRequest) (*Ap
 }
 func (UnimplementedNexusServer) GetChartMetadata(context.Context, *GetChartMetadataRequest) (*Application_Chart_Metadata, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChartMetadata not implemented")
+}
+func (UnimplementedNexusServer) ListTags(context.Context, *ListTagsRequest) (*ListTagsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListTags not implemented")
+}
+func (UnimplementedNexusServer) GetTag(context.Context, *GetTagRequest) (*Tag, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTag not implemented")
+}
+func (UnimplementedNexusServer) CreateTag(context.Context, *CreateTagRequest) (*Tag, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTag not implemented")
+}
+func (UnimplementedNexusServer) DeleteTag(context.Context, *DeleteTagRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTag not implemented")
 }
 func (UnimplementedNexusServer) mustEmbedUnimplementedNexusServer() {}
 func (UnimplementedNexusServer) testEmbeddedByValue()               {}
@@ -1193,20 +1275,20 @@ func _Nexus_GetMachine_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Nexus_CommissionMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommissionMachineRequest)
+func _Nexus_CreateMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMachineRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NexusServer).CommissionMachine(ctx, in)
+		return srv.(NexusServer).CreateMachine(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Nexus_CommissionMachine_FullMethodName,
+		FullMethod: Nexus_CreateMachine_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NexusServer).CommissionMachine(ctx, req.(*CommissionMachineRequest))
+		return srv.(NexusServer).CreateMachine(ctx, req.(*CreateMachineRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1247,20 +1329,38 @@ func _Nexus_PowerOffMachine_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Nexus_AddMachines_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddMachinesRequest)
+func _Nexus_AddMachineTags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddMachineTagsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NexusServer).AddMachines(ctx, in)
+		return srv.(NexusServer).AddMachineTags(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Nexus_AddMachines_FullMethodName,
+		FullMethod: Nexus_AddMachineTags_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NexusServer).AddMachines(ctx, req.(*AddMachinesRequest))
+		return srv.(NexusServer).AddMachineTags(ctx, req.(*AddMachineTagsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_RemoveMachineTags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveMachineTagsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).RemoveMachineTags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_RemoveMachineTags_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).RemoveMachineTags(ctx, req.(*RemoveMachineTagsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1715,6 +1815,78 @@ func _Nexus_GetChartMetadata_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Nexus_ListTags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListTagsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).ListTags(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_ListTags_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).ListTags(ctx, req.(*ListTagsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_GetTag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTagRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).GetTag(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_GetTag_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).GetTag(ctx, req.(*GetTagRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_CreateTag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTagRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).CreateTag(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_CreateTag_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).CreateTag(ctx, req.(*CreateTagRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_DeleteTag_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTagRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).DeleteTag(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_DeleteTag_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).DeleteTag(ctx, req.(*DeleteTagRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Nexus_ServiceDesc is the grpc.ServiceDesc for Nexus service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1799,8 +1971,8 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Nexus_GetMachine_Handler,
 		},
 		{
-			MethodName: "CommissionMachine",
-			Handler:    _Nexus_CommissionMachine_Handler,
+			MethodName: "CreateMachine",
+			Handler:    _Nexus_CreateMachine_Handler,
 		},
 		{
 			MethodName: "PowerOnMachine",
@@ -1811,8 +1983,12 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Nexus_PowerOffMachine_Handler,
 		},
 		{
-			MethodName: "AddMachines",
-			Handler:    _Nexus_AddMachines_Handler,
+			MethodName: "AddMachineTags",
+			Handler:    _Nexus_AddMachineTags_Handler,
+		},
+		{
+			MethodName: "RemoveMachineTags",
+			Handler:    _Nexus_RemoveMachineTags_Handler,
 		},
 		{
 			MethodName: "ListScopes",
@@ -1913,6 +2089,22 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetChartMetadata",
 			Handler:    _Nexus_GetChartMetadata_Handler,
+		},
+		{
+			MethodName: "ListTags",
+			Handler:    _Nexus_ListTags_Handler,
+		},
+		{
+			MethodName: "GetTag",
+			Handler:    _Nexus_GetTag_Handler,
+		},
+		{
+			MethodName: "CreateTag",
+			Handler:    _Nexus_CreateTag_Handler,
+		},
+		{
+			MethodName: "DeleteTag",
+			Handler:    _Nexus_DeleteTag_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
