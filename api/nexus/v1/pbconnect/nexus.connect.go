@@ -34,6 +34,8 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// NexusVerifyEnvironmentProcedure is the fully-qualified name of the Nexus's VerifyEnvironment RPC.
+	NexusVerifyEnvironmentProcedure = "/openhdc.nexus.v1.Nexus/VerifyEnvironment"
 	// NexusGetConfigurationProcedure is the fully-qualified name of the Nexus's GetConfiguration RPC.
 	NexusGetConfigurationProcedure = "/openhdc.nexus.v1.Nexus/GetConfiguration"
 	// NexusUpdateNTPServerProcedure is the fully-qualified name of the Nexus's UpdateNTPServer RPC.
@@ -149,6 +151,8 @@ const (
 
 // NexusClient is a client for the openhdc.nexus.v1.Nexus service.
 type NexusClient interface {
+	// General
+	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -222,6 +226,12 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 	baseURL = strings.TrimRight(baseURL, "/")
 	nexusMethods := v1.File_api_nexus_v1_nexus_proto.Services().ByName("Nexus").Methods()
 	return &nexusClient{
+		verifyEnvironment: connect.NewClient[v1.VerifyEnvironmentRequest, v1.VerifyEnvironmentResponse](
+			httpClient,
+			baseURL+NexusVerifyEnvironmentProcedure,
+			connect.WithSchema(nexusMethods.ByName("VerifyEnvironment")),
+			connect.WithClientOptions(opts...),
+		),
 		getConfiguration: connect.NewClient[v1.GetConfigurationRequest, v1.Configuration](
 			httpClient,
 			baseURL+NexusGetConfigurationProcedure,
@@ -545,6 +555,7 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 
 // nexusClient implements NexusClient.
 type nexusClient struct {
+	verifyEnvironment       *connect.Client[v1.VerifyEnvironmentRequest, v1.VerifyEnvironmentResponse]
 	getConfiguration        *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
 	updateNTPServer         *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
 	updatePackageRepository *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
@@ -598,6 +609,11 @@ type nexusClient struct {
 	getTag                  *connect.Client[v1.GetTagRequest, v1.Tag]
 	createTag               *connect.Client[v1.CreateTagRequest, v1.Tag]
 	deleteTag               *connect.Client[v1.DeleteTagRequest, emptypb.Empty]
+}
+
+// VerifyEnvironment calls openhdc.nexus.v1.Nexus.VerifyEnvironment.
+func (c *nexusClient) VerifyEnvironment(ctx context.Context, req *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error) {
+	return c.verifyEnvironment.CallUnary(ctx, req)
 }
 
 // GetConfiguration calls openhdc.nexus.v1.Nexus.GetConfiguration.
@@ -867,6 +883,8 @@ func (c *nexusClient) DeleteTag(ctx context.Context, req *connect.Request[v1.Del
 
 // NexusHandler is an implementation of the openhdc.nexus.v1.Nexus service.
 type NexusHandler interface {
+	// General
+	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -936,6 +954,12 @@ type NexusHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	nexusMethods := v1.File_api_nexus_v1_nexus_proto.Services().ByName("Nexus").Methods()
+	nexusVerifyEnvironmentHandler := connect.NewUnaryHandler(
+		NexusVerifyEnvironmentProcedure,
+		svc.VerifyEnvironment,
+		connect.WithSchema(nexusMethods.ByName("VerifyEnvironment")),
+		connect.WithHandlerOptions(opts...),
+	)
 	nexusGetConfigurationHandler := connect.NewUnaryHandler(
 		NexusGetConfigurationProcedure,
 		svc.GetConfiguration,
@@ -1256,6 +1280,8 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 	)
 	return "/openhdc.nexus.v1.Nexus/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case NexusVerifyEnvironmentProcedure:
+			nexusVerifyEnvironmentHandler.ServeHTTP(w, r)
 		case NexusGetConfigurationProcedure:
 			nexusGetConfigurationHandler.ServeHTTP(w, r)
 		case NexusUpdateNTPServerProcedure:
@@ -1370,6 +1396,10 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 
 // UnimplementedNexusHandler returns CodeUnimplemented from all methods.
 type UnimplementedNexusHandler struct{}
+
+func (UnimplementedNexusHandler) VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.VerifyEnvironment is not implemented"))
+}
 
 func (UnimplementedNexusHandler) GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetConfiguration is not implemented"))

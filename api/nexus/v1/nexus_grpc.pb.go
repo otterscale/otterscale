@@ -20,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	Nexus_VerifyEnvironment_FullMethodName       = "/openhdc.nexus.v1.Nexus/VerifyEnvironment"
 	Nexus_GetConfiguration_FullMethodName        = "/openhdc.nexus.v1.Nexus/GetConfiguration"
 	Nexus_UpdateNTPServer_FullMethodName         = "/openhdc.nexus.v1.Nexus/UpdateNTPServer"
 	Nexus_UpdatePackageRepository_FullMethodName = "/openhdc.nexus.v1.Nexus/UpdatePackageRepository"
@@ -79,6 +80,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NexusClient interface {
+	// General
+	VerifyEnvironment(ctx context.Context, in *VerifyEnvironmentRequest, opts ...grpc.CallOption) (*VerifyEnvironmentResponse, error)
 	// Configuration
 	GetConfiguration(ctx context.Context, in *GetConfigurationRequest, opts ...grpc.CallOption) (*Configuration, error)
 	UpdateNTPServer(ctx context.Context, in *UpdateNTPServerRequest, opts ...grpc.CallOption) (*Configuration_NTPServer, error)
@@ -147,6 +150,16 @@ type nexusClient struct {
 
 func NewNexusClient(cc grpc.ClientConnInterface) NexusClient {
 	return &nexusClient{cc}
+}
+
+func (c *nexusClient) VerifyEnvironment(ctx context.Context, in *VerifyEnvironmentRequest, opts ...grpc.CallOption) (*VerifyEnvironmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyEnvironmentResponse)
+	err := c.cc.Invoke(ctx, Nexus_VerifyEnvironment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *nexusClient) GetConfiguration(ctx context.Context, in *GetConfigurationRequest, opts ...grpc.CallOption) (*Configuration, error) {
@@ -683,6 +696,8 @@ func (c *nexusClient) DeleteTag(ctx context.Context, in *DeleteTagRequest, opts 
 // All implementations must embed UnimplementedNexusServer
 // for forward compatibility.
 type NexusServer interface {
+	// General
+	VerifyEnvironment(context.Context, *VerifyEnvironmentRequest) (*VerifyEnvironmentResponse, error)
 	// Configuration
 	GetConfiguration(context.Context, *GetConfigurationRequest) (*Configuration, error)
 	UpdateNTPServer(context.Context, *UpdateNTPServerRequest) (*Configuration_NTPServer, error)
@@ -753,6 +768,9 @@ type NexusServer interface {
 // pointer dereference when methods are called.
 type UnimplementedNexusServer struct{}
 
+func (UnimplementedNexusServer) VerifyEnvironment(context.Context, *VerifyEnvironmentRequest) (*VerifyEnvironmentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyEnvironment not implemented")
+}
 func (UnimplementedNexusServer) GetConfiguration(context.Context, *GetConfigurationRequest) (*Configuration, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConfiguration not implemented")
 }
@@ -931,6 +949,24 @@ func RegisterNexusServer(s grpc.ServiceRegistrar, srv NexusServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&Nexus_ServiceDesc, srv)
+}
+
+func _Nexus_VerifyEnvironment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyEnvironmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).VerifyEnvironment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_VerifyEnvironment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).VerifyEnvironment(ctx, req.(*VerifyEnvironmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Nexus_GetConfiguration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1894,6 +1930,10 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "openhdc.nexus.v1.Nexus",
 	HandlerType: (*NexusServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "VerifyEnvironment",
+			Handler:    _Nexus_VerifyEnvironment_Handler,
+		},
 		{
 			MethodName: "GetConfiguration",
 			Handler:    _Nexus_GetConfiguration_Handler,
