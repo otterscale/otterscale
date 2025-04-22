@@ -8,6 +8,7 @@ import (
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/structpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"helm.sh/helm/v3/pkg/chart"
@@ -381,6 +382,16 @@ func toProtoChartMetadata(md *model.ChartMetadata) *pb.Application_Chart_Metadat
 	ret := &pb.Application_Chart_Metadata{}
 	ret.SetValuesYaml(md.ValuesYAML)
 	ret.SetReadmeMd(md.ReadmeMD)
+	ret.SetCustomization(toProtoCustomization(md.Customization))
+	return ret
+}
+
+func toProtoCustomization(c map[string]any) *pb.Customization {
+	ret := &pb.Customization{}
+	values, err := structpb.NewStruct(c)
+	if err == nil {
+		ret.SetValues(values)
+	}
 	return ret
 }
 
