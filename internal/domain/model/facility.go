@@ -14,6 +14,12 @@ type (
 	UnitInfo       = application.UnitInfo
 )
 
+type FacilityInfo struct {
+	ScopeName string
+	ScopeUUID string
+	Name      string
+}
+
 type FacilityMetadata struct {
 	ConfigYAML string
 }

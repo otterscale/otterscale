@@ -28,12 +28,6 @@ type Application struct {
 	PersistentVolumeClaims []PersistentVolumeClaim
 }
 
-type Kubernetes struct {
-	ScopeName    string
-	ScopeUUID    string
-	FacilityName string
-}
-
 type Release struct {
 	ScopeName    string
 	ScopeUUID    string
@@ -47,8 +41,9 @@ type Chart struct {
 }
 
 type ChartMetadata struct {
-	ReadmeMD   string
-	ValuesYAML string
+	ReadmeMD      string
+	ValuesYAML    string
+	Customization map[string]any
 }
 
 type ControlPlaneCredential struct {

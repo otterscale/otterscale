@@ -34,7 +34,10 @@ const (
 	appTypeDaemonSet   = "DaemonSet"
 )
 
-const kubernetesCharmName = "kubernetes-worker"
+const (
+	charmNameKubernetes = "kubernetes-worker"
+	charmNameCeph       = "ceph-osd"
+)
 
 func (s *NexusService) ListApplications(ctx context.Context, uuid, facility string) ([]model.Application, error) {
 	if err := s.setKubernetesClient(ctx, uuid, facility); err != nil {
@@ -248,11 +251,11 @@ func (s *NexusService) GetChartMetadataFromApplication(ctx context.Context, uuid
 }
 
 func (s *NexusService) ListReleases(ctx context.Context) ([]model.Release, error) {
-	ks, err := s.listKubernetes(ctx)
+	kubernetes, err := s.listFacilitiesAcrossScopes(ctx, charmNameKubernetes)
 	if err != nil {
 		return nil, err
 	}
-	return s.listReleases(ctx, ks)
+	return s.listReleases(ctx, kubernetes)
 }
 
 func (s *NexusService) CreateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*model.Release, error) {
@@ -383,63 +386,24 @@ func (s *NexusService) setKubernetesClient(ctx context.Context, uuid, facility s
 	return s.kubernetes.Set(uuid, facility, cfg)
 }
 
-func (s *NexusService) listKubernetes(ctx context.Context) ([]model.Kubernetes, error) {
-	scopes, err := s.scope.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-
+func (s *NexusService) listReleases(ctx context.Context, fis []model.FacilityInfo) ([]model.Release, error) {
 	eg, ctx := errgroup.WithContext(ctx)
-	result := make([][]model.Kubernetes, len(scopes))
-	for i := range scopes {
-		scope := scopes[i]
+	result := make([][]model.Release, len(fis))
+	for i := range fis {
+		fi := fis[i]
 		eg.Go(func() error {
-			fs, err := s.ListFacilities(ctx, scope.UUID)
-			if err != nil {
+			if err := s.setKubernetesClient(ctx, fi.ScopeUUID, fi.Name); err != nil {
 				return err
 			}
-			for j := range fs {
-				facility := fs[j]
-				if strings.Contains(facility.Status.Charm, kubernetesCharmName) {
-					result[i] = append(result[i], model.Kubernetes{
-						ScopeName:    scope.Name,
-						ScopeUUID:    scope.UUID,
-						FacilityName: facility.Name,
-					})
-				}
-			}
-			return nil
-		})
-	}
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-
-	ks := []model.Kubernetes{}
-	for _, k := range result {
-		ks = append(ks, k...)
-	}
-	return ks, nil
-}
-
-func (s *NexusService) listReleases(ctx context.Context, ks []model.Kubernetes) ([]model.Release, error) {
-	eg, ctx := errgroup.WithContext(ctx)
-	result := make([][]model.Release, len(ks))
-	for i := range ks {
-		k := ks[i]
-		eg.Go(func() error {
-			if err := s.setKubernetesClient(ctx, k.ScopeUUID, k.FacilityName); err != nil {
-				return err
-			}
-			rels, err := s.helm.ListReleases(k.ScopeUUID, k.FacilityName, "")
+			rels, err := s.helm.ListReleases(fi.ScopeUUID, fi.Name, "")
 			if err != nil {
 				return err
 			}
 			for _, rel := range rels {
 				result[i] = append(result[i], model.Release{
-					ScopeName:    k.ScopeName,
-					ScopeUUID:    k.ScopeUUID,
-					FacilityName: k.FacilityName,
+					ScopeName:    fi.ScopeName,
+					ScopeUUID:    fi.ScopeUUID,
+					FacilityName: fi.Name,
 					Release:      &rel,
 				})
 			}
@@ -462,11 +426,11 @@ func (s *NexusService) fromDeployment(d *appsv1.Deployment, svcs []corev1.Servic
 }
 
 func (s *NexusService) fromStatefulSet(d *appsv1.StatefulSet, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
-	return toApplication(d.Spec.Selector, appTypeDeployment, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+	return toApplication(d.Spec.Selector, appTypeStatefulSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, d.Spec.Replicas, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
 }
 
 func (s *NexusService) fromDaemonSet(d *appsv1.DaemonSet, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
-	return toApplication(d.Spec.Selector, appTypeDeployment, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
+	return toApplication(d.Spec.Selector, appTypeDaemonSet, d.Name, d.Namespace, &d.ObjectMeta, d.Labels, nil, d.Spec.Template.Spec.Containers, d.Spec.Template.Spec.Volumes, svcs, pods, pvcs, scm)
 }
 
 func toApplication(ls *metav1.LabelSelector, appType, name, namespace string, objectMeta *metav1.ObjectMeta, labels map[string]string, replicas *int32, containers []corev1.Container, vs []corev1.Volume, svcs []corev1.Service, pods []corev1.Pod, pvcs []corev1.PersistentVolumeClaim, scm map[string]storagev1.StorageClass) (*model.Application, error) {
