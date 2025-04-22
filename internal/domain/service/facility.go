@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"slices"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -103,7 +104,18 @@ func (s *NexusService) ListActions(ctx context.Context, uuid, appName string) ([
 }
 
 func (s *NexusService) ListCharms(ctx context.Context) ([]model.Charm, error) {
-	return s.charmhub.List(ctx)
+	charms, err := s.charmhub.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	filter := []model.Charm{}
+	for i := range charms {
+		if slices.Contains(charms[i].Result.DeployableOn, "kubernetes") {
+			continue
+		}
+		filter = append(filter, charms[i])
+	}
+	return filter, nil
 }
 
 func (s *NexusService) GetCharm(ctx context.Context, name string) (*model.Charm, error) {
