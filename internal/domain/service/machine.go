@@ -87,7 +87,7 @@ func (s *NexusService) JujuToMAASMachineMap(ctx context.Context, uuid string) (m
 	}
 	m := map[string]string{}
 	for key := range msm {
-		m[key] = msm[key].InstanceId.String()
+		m[key] = string(msm[key].InstanceId)
 	}
 	return m, nil
 }
@@ -99,7 +99,7 @@ func (s *NexusService) maasToJujuMachineMap(ctx context.Context, uuid string) (m
 	}
 	m := map[string]string{}
 	for key := range msm {
-		m[msm[key].InstanceId.String()] = key
+		m[string(msm[key].InstanceId)] = key
 	}
 	return m, nil
 }
