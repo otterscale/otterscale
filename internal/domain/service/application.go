@@ -238,6 +238,7 @@ func (s *NexusService) GetChartMetadataFromApplication(ctx context.Context, uuid
 		return nil
 	})
 	eg.Go(func() error {
+		// TODO: how can i get osi from here
 		// v, err := s.helm.ShowChart(chartRef, action.ShowReadme)
 		// if err == nil {
 		// 	md.ReadmeMD = v
@@ -383,7 +384,7 @@ func (s *NexusService) setKubernetesClient(ctx context.Context, uuid, facility s
 }
 
 func (s *NexusService) listReleases(ctx context.Context) ([]model.Release, error) {
-	kubernetes, err := s.ListKubernetes(ctx)
+	kubernetes, err := s.ListKuberneteses(ctx, "")
 	if err != nil {
 		return nil, err
 	}

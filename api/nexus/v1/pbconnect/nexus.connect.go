@@ -38,8 +38,12 @@ const (
 	NexusVerifyEnvironmentProcedure = "/openhdc.nexus.v1.Nexus/VerifyEnvironment"
 	// NexusListCephesProcedure is the fully-qualified name of the Nexus's ListCephes RPC.
 	NexusListCephesProcedure = "/openhdc.nexus.v1.Nexus/ListCephes"
-	// NexusListKubernetesProcedure is the fully-qualified name of the Nexus's ListKubernetes RPC.
-	NexusListKubernetesProcedure = "/openhdc.nexus.v1.Nexus/ListKubernetes"
+	// NexusCreateCephProcedure is the fully-qualified name of the Nexus's CreateCeph RPC.
+	NexusCreateCephProcedure = "/openhdc.nexus.v1.Nexus/CreateCeph"
+	// NexusListKubernetesesProcedure is the fully-qualified name of the Nexus's ListKuberneteses RPC.
+	NexusListKubernetesesProcedure = "/openhdc.nexus.v1.Nexus/ListKuberneteses"
+	// NexusCreateKubernetesProcedure is the fully-qualified name of the Nexus's CreateKubernetes RPC.
+	NexusCreateKubernetesProcedure = "/openhdc.nexus.v1.Nexus/CreateKubernetes"
 	// NexusGetConfigurationProcedure is the fully-qualified name of the Nexus's GetConfiguration RPC.
 	NexusGetConfigurationProcedure = "/openhdc.nexus.v1.Nexus/GetConfiguration"
 	// NexusUpdateNTPServerProcedure is the fully-qualified name of the Nexus's UpdateNTPServer RPC.
@@ -164,7 +168,9 @@ type NexusClient interface {
 	// General
 	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
 	ListCephes(context.Context, *connect.Request[v1.ListCephesRequest]) (*connect.Response[v1.ListCephesResponse], error)
-	ListKubernetes(context.Context, *connect.Request[v1.ListKubernetesRequest]) (*connect.Response[v1.ListKubernetesResponse], error)
+	CreateCeph(context.Context, *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error)
+	ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error)
+	CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -253,10 +259,22 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("ListCephes")),
 			connect.WithClientOptions(opts...),
 		),
-		listKubernetes: connect.NewClient[v1.ListKubernetesRequest, v1.ListKubernetesResponse](
+		createCeph: connect.NewClient[v1.CreateCephRequest, v1.Facility_Info](
 			httpClient,
-			baseURL+NexusListKubernetesProcedure,
-			connect.WithSchema(nexusMethods.ByName("ListKubernetes")),
+			baseURL+NexusCreateCephProcedure,
+			connect.WithSchema(nexusMethods.ByName("CreateCeph")),
+			connect.WithClientOptions(opts...),
+		),
+		listKuberneteses: connect.NewClient[v1.ListKubernetesesRequest, v1.ListKubernetesesResponse](
+			httpClient,
+			baseURL+NexusListKubernetesesProcedure,
+			connect.WithSchema(nexusMethods.ByName("ListKuberneteses")),
+			connect.WithClientOptions(opts...),
+		),
+		createKubernetes: connect.NewClient[v1.CreateKubernetesRequest, v1.Facility_Info](
+			httpClient,
+			baseURL+NexusCreateKubernetesProcedure,
+			connect.WithSchema(nexusMethods.ByName("CreateKubernetes")),
 			connect.WithClientOptions(opts...),
 		),
 		getConfiguration: connect.NewClient[v1.GetConfigurationRequest, v1.Configuration](
@@ -596,7 +614,9 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 type nexusClient struct {
 	verifyEnvironment       *connect.Client[v1.VerifyEnvironmentRequest, v1.VerifyEnvironmentResponse]
 	listCephes              *connect.Client[v1.ListCephesRequest, v1.ListCephesResponse]
-	listKubernetes          *connect.Client[v1.ListKubernetesRequest, v1.ListKubernetesResponse]
+	createCeph              *connect.Client[v1.CreateCephRequest, v1.Facility_Info]
+	listKuberneteses        *connect.Client[v1.ListKubernetesesRequest, v1.ListKubernetesesResponse]
+	createKubernetes        *connect.Client[v1.CreateKubernetesRequest, v1.Facility_Info]
 	getConfiguration        *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
 	updateNTPServer         *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
 	updatePackageRepository *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
@@ -664,9 +684,19 @@ func (c *nexusClient) ListCephes(ctx context.Context, req *connect.Request[v1.Li
 	return c.listCephes.CallUnary(ctx, req)
 }
 
-// ListKubernetes calls openhdc.nexus.v1.Nexus.ListKubernetes.
-func (c *nexusClient) ListKubernetes(ctx context.Context, req *connect.Request[v1.ListKubernetesRequest]) (*connect.Response[v1.ListKubernetesResponse], error) {
-	return c.listKubernetes.CallUnary(ctx, req)
+// CreateCeph calls openhdc.nexus.v1.Nexus.CreateCeph.
+func (c *nexusClient) CreateCeph(ctx context.Context, req *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error) {
+	return c.createCeph.CallUnary(ctx, req)
+}
+
+// ListKuberneteses calls openhdc.nexus.v1.Nexus.ListKuberneteses.
+func (c *nexusClient) ListKuberneteses(ctx context.Context, req *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error) {
+	return c.listKuberneteses.CallUnary(ctx, req)
+}
+
+// CreateKubernetes calls openhdc.nexus.v1.Nexus.CreateKubernetes.
+func (c *nexusClient) CreateKubernetes(ctx context.Context, req *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error) {
+	return c.createKubernetes.CallUnary(ctx, req)
 }
 
 // GetConfiguration calls openhdc.nexus.v1.Nexus.GetConfiguration.
@@ -949,7 +979,9 @@ type NexusHandler interface {
 	// General
 	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
 	ListCephes(context.Context, *connect.Request[v1.ListCephesRequest]) (*connect.Response[v1.ListCephesResponse], error)
-	ListKubernetes(context.Context, *connect.Request[v1.ListKubernetesRequest]) (*connect.Response[v1.ListKubernetesResponse], error)
+	CreateCeph(context.Context, *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error)
+	ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error)
+	CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -1034,10 +1066,22 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("ListCephes")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusListKubernetesHandler := connect.NewUnaryHandler(
-		NexusListKubernetesProcedure,
-		svc.ListKubernetes,
-		connect.WithSchema(nexusMethods.ByName("ListKubernetes")),
+	nexusCreateCephHandler := connect.NewUnaryHandler(
+		NexusCreateCephProcedure,
+		svc.CreateCeph,
+		connect.WithSchema(nexusMethods.ByName("CreateCeph")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusListKubernetesesHandler := connect.NewUnaryHandler(
+		NexusListKubernetesesProcedure,
+		svc.ListKuberneteses,
+		connect.WithSchema(nexusMethods.ByName("ListKuberneteses")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusCreateKubernetesHandler := connect.NewUnaryHandler(
+		NexusCreateKubernetesProcedure,
+		svc.CreateKubernetes,
+		connect.WithSchema(nexusMethods.ByName("CreateKubernetes")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusGetConfigurationHandler := connect.NewUnaryHandler(
@@ -1376,8 +1420,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusVerifyEnvironmentHandler.ServeHTTP(w, r)
 		case NexusListCephesProcedure:
 			nexusListCephesHandler.ServeHTTP(w, r)
-		case NexusListKubernetesProcedure:
-			nexusListKubernetesHandler.ServeHTTP(w, r)
+		case NexusCreateCephProcedure:
+			nexusCreateCephHandler.ServeHTTP(w, r)
+		case NexusListKubernetesesProcedure:
+			nexusListKubernetesesHandler.ServeHTTP(w, r)
+		case NexusCreateKubernetesProcedure:
+			nexusCreateKubernetesHandler.ServeHTTP(w, r)
 		case NexusGetConfigurationProcedure:
 			nexusGetConfigurationHandler.ServeHTTP(w, r)
 		case NexusUpdateNTPServerProcedure:
@@ -1505,8 +1553,16 @@ func (UnimplementedNexusHandler) ListCephes(context.Context, *connect.Request[v1
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListCephes is not implemented"))
 }
 
-func (UnimplementedNexusHandler) ListKubernetes(context.Context, *connect.Request[v1.ListKubernetesRequest]) (*connect.Response[v1.ListKubernetesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListKubernetes is not implemented"))
+func (UnimplementedNexusHandler) CreateCeph(context.Context, *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateCeph is not implemented"))
+}
+
+func (UnimplementedNexusHandler) ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListKuberneteses is not implemented"))
+}
+
+func (UnimplementedNexusHandler) CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateKubernetes is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error) {

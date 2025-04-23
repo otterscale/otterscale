@@ -58,12 +58,15 @@ func NewHelm(helmMap HelmMap) (service.KubeHelm, error) {
 		return nil, err
 	}
 
+	repoURLs := []string{"https://prometheus-community.github.io/helm-charts"}
+	repoURLs = append(repoURLs, strings.Split(env.GetOrDefault(env.OPENHDC_HELM_REPOSITORY_URLS, defaultRepositoryURL), ",")...)
+
 	return &helm{
 		helmMap:        helmMap,
 		settings:       settings,
 		providers:      getter.All(settings),
 		registryClient: registryClient,
-		repoURLs:       strings.Split(env.GetOrDefault(env.OPENHDC_HELM_REPOSITORY_URLS, defaultRepositoryURL), ","),
+		repoURLs:       repoURLs,
 	}, nil
 }
 

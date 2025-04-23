@@ -10,6 +10,39 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
+var (
+	kubernetesFacilityList = []struct {
+		app string
+		lxd bool
+	}{
+		{app: "calico", lxd: true},
+		{app: "containerd", lxd: true},
+		{app: "easyrsa", lxd: true},
+		{app: "etcd", lxd: true},
+		{app: "keepalived", lxd: true},
+		{app: "kubeapi-load-balancer", lxd: true},
+		{app: "kubernetes-control-plane", lxd: true},
+		{app: "kubernetes-worker", lxd: false},
+	}
+
+	kubernetesRelationList = [][]string{
+		{"calico:cni", "kubernetes-control-plane:cni"},
+		{"calico:etcd", "etcd:db"},
+		{"containerd:containerd", "kubernetes-control-plane:container-runtime"},
+		{"containerd:containerd", "kubernetes-worker:container-runtime"},
+		{"etcd:certificates", "easyrsa:client"},
+		{"keepalived:website", "kubeapi-load-balancer:apiserver"},
+		{"kubeapi-load-balancer:certificates", "easyrsa:client"},
+		{"kubernetes-control-plane:certificates", "easyrsa:client"},
+		{"kubernetes-control-plane:etcd", "etcd:db"},
+		{"kubernetes-control-plane:kube-control", "kubernetes-worker:kube-control"},
+		{"kubernetes-control-plane:kube-api-endpoint", "kubeapi-load-balancer:apiserver"},
+		{"kubernetes-control-plane:loadbalancer", "kubeapi-load-balancer:loadbalancer"},
+		{"kubernetes-worker:certificates", "easyrsa:client"},
+		{"kubernetes-worker:kube-api-endpoint", " kubeapi-load-balancer:website"},
+	}
+)
+
 func (s *NexusService) VerifyEnvironment(ctx context.Context) ([]model.Error, error) {
 	funcs := []func(context.Context) (*model.Error, error){}
 	funcs = append(funcs, s.isCephExists, s.isKubernetesExists)
@@ -34,8 +67,96 @@ func (s *NexusService) VerifyEnvironment(ctx context.Context) ([]model.Error, er
 	return slices.DeleteFunc(result, func(e model.Error) bool { return e.Code == "" }), nil
 }
 
+func (s *NexusService) ListCephes(ctx context.Context, uuid string) ([]model.FacilityInfo, error) {
+	fis, err := s.listFacilitiesAcrossScopes(ctx, charmNameCeph)
+	if err != nil {
+		return nil, err
+	}
+	filter := []model.FacilityInfo{}
+	for i := range fis {
+		if strings.Contains(fis[i].ScopeUUID, uuid) {
+			filter = append(filter, fis[i])
+		}
+	}
+	return filter, nil
+}
+
+func (s *NexusService) CreateCeph(ctx context.Context) (*model.FacilityInfo, error) {
+	return nil, nil
+}
+
+func (s *NexusService) ListKuberneteses(ctx context.Context, uuid string) ([]model.FacilityInfo, error) {
+	fis, err := s.listFacilitiesAcrossScopes(ctx, charmNameKubernetes)
+	if err != nil {
+		return nil, err
+	}
+	filter := []model.FacilityInfo{}
+	for i := range fis {
+		if strings.Contains(fis[i].ScopeUUID, uuid) {
+			filter = append(filter, fis[i])
+		}
+	}
+	return filter, nil
+}
+
+func (s *NexusService) CreateKubernetes(ctx context.Context) (*model.FacilityInfo, error) {
+	// lxd: easyrsa, etcd, lb, cp, containerd, calico, keepalived
+	// bare machine: worker
+	// helm: prometheus-stack
+	prefix := "abc"
+	prefix = prefix + "-"
+	// placements, err := s.toPlacements(ctx, uuid, mps)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// constraint := toConstraint(mc)
+	// if _, err := s.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, placements, &constraint, trust); err != nil {
+	// 	return nil, err
+	// }
+	return nil, nil
+}
+
+func (s *NexusService) AddKuberneteUnit(ctx context.Context, uuid, name string, number int, machine string, force bool) error {
+	// s.GetApplication(ctx, uuid)
+	if force {
+
+	}
+	// eg, ctx := errgroup.WithContext(ctx)
+	// eg.Go(func() error {
+	// 	_, err := s.facility.AddUnits(ctx, uuid, name)
+	// 	return err
+	// })
+	// return eg.Wait()
+
+	return nil
+}
+
+func (s *NexusService) appendPrefixToRelationList(prefix string, relationList [][]string) [][]string {
+	endpointList := [][]string{}
+	for _, relations := range relationList {
+		endpoints := []string{}
+		for _, relation := range relations {
+			endpoints = append(endpoints, (prefix + "-" + relation))
+		}
+		endpointList = append(endpointList, endpoints)
+	}
+	return endpointList
+}
+
+func (s *NexusService) createRelations(ctx context.Context, uuid string, prefix string, relationList [][]string) error {
+	endpointList := s.appendPrefixToRelationList(prefix, relationList)
+	eg, ctx := errgroup.WithContext(ctx)
+	for _, endpoints := range endpointList {
+		eg.Go(func() error {
+			_, err := s.facility.CreateRelation(ctx, uuid, endpoints)
+			return err
+		})
+	}
+	return eg.Wait()
+}
+
 func (s *NexusService) isCephExists(ctx context.Context) (*model.Error, error) {
-	cephes, err := s.ListCephes(ctx)
+	cephes, err := s.ListCephes(ctx, "")
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +167,7 @@ func (s *NexusService) isCephExists(ctx context.Context) (*model.Error, error) {
 }
 
 func (s *NexusService) isKubernetesExists(ctx context.Context) (*model.Error, error) {
-	kubernetes, err := s.ListKubernetes(ctx)
+	kubernetes, err := s.ListKuberneteses(ctx, "")
 	if err != nil {
 		return nil, err
 	}
