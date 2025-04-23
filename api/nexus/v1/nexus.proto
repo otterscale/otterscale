@@ -12,7 +12,9 @@ service Nexus {
   // General
   rpc VerifyEnvironment(VerifyEnvironmentRequest) returns (VerifyEnvironmentResponse);
   rpc ListCephes(ListCephesRequest) returns (ListCephesResponse);
-  rpc ListKubernetes(ListKubernetesRequest) returns (ListKubernetesResponse);
+  rpc CreateCeph(CreateCephRequest) returns (Facility.Info);
+  rpc ListKuberneteses(ListKubernetesesRequest) returns (ListKubernetesesResponse);
+  rpc CreateKubernetes(CreateKubernetesRequest) returns (Facility.Info);
 
   // Configuration
   rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
@@ -473,17 +475,25 @@ message VerifyEnvironmentResponse {
   repeated Error errors = 1;
 }
 
-message ListCephesRequest {}
+message ListCephesRequest {
+  string scope_uuid = 1;
+}
 
 message ListCephesResponse {
   repeated Facility.Info cephes = 1;
 }
 
-message ListKubernetesRequest {}
+message CreateCephRequest {}
 
-message ListKubernetesResponse {
-  repeated Facility.Info kubernetes = 1;
+message ListKubernetesesRequest {
+  string scope_uuid = 1;
 }
+
+message ListKubernetesesResponse {
+  repeated Facility.Info kuberneteses = 1;
+}
+
+message CreateKubernetesRequest {}
 
 message GetConfigurationRequest {}
 

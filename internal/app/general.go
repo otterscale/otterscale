@@ -20,7 +20,7 @@ func (a *NexusApp) VerifyEnvironment(ctx context.Context, req *connect.Request[p
 }
 
 func (a *NexusApp) ListCephes(ctx context.Context, req *connect.Request[pb.ListCephesRequest]) (*connect.Response[pb.ListCephesResponse], error) {
-	cephes, err := a.svc.ListCephes(ctx)
+	cephes, err := a.svc.ListCephes(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
@@ -29,13 +29,31 @@ func (a *NexusApp) ListCephes(ctx context.Context, req *connect.Request[pb.ListC
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) ListKubernetes(ctx context.Context, req *connect.Request[pb.ListKubernetesRequest]) (*connect.Response[pb.ListKubernetesResponse], error) {
-	kubernetes, err := a.svc.ListKubernetes(ctx)
+func (a *NexusApp) CreateCeph(ctx context.Context, req *connect.Request[pb.CreateCephRequest]) (*connect.Response[pb.Facility_Info], error) {
+	ceph, err := a.svc.CreateCeph(ctx)
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.ListKubernetesResponse{}
-	res.SetKubernetes(toProtoFacilityInfos(kubernetes))
+	res := toProtoFacilityInfo(ceph)
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) ListKuberneteses(ctx context.Context, req *connect.Request[pb.ListKubernetesesRequest]) (*connect.Response[pb.ListKubernetesesResponse], error) {
+	kuberneteses, err := a.svc.ListKuberneteses(ctx, req.Msg.GetScopeUuid())
+	if err != nil {
+		return nil, err
+	}
+	res := &pb.ListKubernetesesResponse{}
+	res.SetKuberneteses(toProtoFacilityInfos(kuberneteses))
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) CreateKubernetes(ctx context.Context, req *connect.Request[pb.CreateKubernetesRequest]) (*connect.Response[pb.Facility_Info], error) {
+	kubernetes, err := a.svc.CreateKubernetes(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := toProtoFacilityInfo(kubernetes)
 	return connect.NewResponse(res), nil
 }
 
@@ -50,7 +68,7 @@ func toProtoErrors(es []model.Error) []*pb.Error {
 func toProtoError(e *model.Error) *pb.Error {
 	ret := &pb.Error{}
 	ret.SetCode(e.Code)
-	ret.SetLevel(pb.ErrorLevel(e.Level))
+	ret.SetLevel(pb.ErrorLevel(e.Level)) //nolint:gosec
 	ret.SetMessage(e.Message)
 	ret.SetDetails(e.Details)
 	ret.SetUrl(e.URL)

@@ -112,7 +112,7 @@ func (s *NexusService) ListCharms(ctx context.Context) ([]model.Charm, error) {
 	}
 	filter := []model.Charm{}
 	for i := range charms {
-		if slices.Contains(charms[i].Result.DeployableOn, "kubernetes") {
+		if slices.Contains(charms[i].Result.DeployableOn, "kubernetes") || charms[i].Type != "charm" {
 			continue
 		}
 		filter = append(filter, charms[i])
@@ -180,12 +180,4 @@ func (s *NexusService) listFacilitiesAcrossScopes(ctx context.Context, name stri
 		fis = append(fis, k...)
 	}
 	return fis, nil
-}
-
-func (s *NexusService) ListCephes(ctx context.Context) ([]model.FacilityInfo, error) {
-	return s.listFacilitiesAcrossScopes(ctx, charmNameCeph)
-}
-
-func (s *NexusService) ListKubernetes(ctx context.Context) ([]model.FacilityInfo, error) {
-	return s.listFacilitiesAcrossScopes(ctx, charmNameKubernetes)
 }

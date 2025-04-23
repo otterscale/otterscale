@@ -3,12 +3,11 @@ package app
 import (
 	"context"
 	"os"
+	"slices"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
-
-	"slices"
 
 	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
