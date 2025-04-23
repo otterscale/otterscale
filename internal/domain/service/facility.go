@@ -181,3 +181,11 @@ func (s *NexusService) listFacilitiesAcrossScopes(ctx context.Context, name stri
 	}
 	return fis, nil
 }
+
+func (s *NexusService) listCephes(ctx context.Context) ([]model.FacilityInfo, error) {
+	return s.listFacilitiesAcrossScopes(ctx, charmNameCeph)
+}
+
+func (s *NexusService) listKubernetes(ctx context.Context) ([]model.FacilityInfo, error) {
+	return s.listFacilitiesAcrossScopes(ctx, charmNameKubernetes)
+}
