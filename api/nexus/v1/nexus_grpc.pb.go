@@ -21,6 +21,8 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Nexus_VerifyEnvironment_FullMethodName       = "/openhdc.nexus.v1.Nexus/VerifyEnvironment"
+	Nexus_ListCephes_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListCephes"
+	Nexus_ListKubernetes_FullMethodName          = "/openhdc.nexus.v1.Nexus/ListKubernetes"
 	Nexus_GetConfiguration_FullMethodName        = "/openhdc.nexus.v1.Nexus/GetConfiguration"
 	Nexus_UpdateNTPServer_FullMethodName         = "/openhdc.nexus.v1.Nexus/UpdateNTPServer"
 	Nexus_UpdatePackageRepository_FullMethodName = "/openhdc.nexus.v1.Nexus/UpdatePackageRepository"
@@ -74,6 +76,8 @@ const (
 	Nexus_GetTag_FullMethodName                  = "/openhdc.nexus.v1.Nexus/GetTag"
 	Nexus_CreateTag_FullMethodName               = "/openhdc.nexus.v1.Nexus/CreateTag"
 	Nexus_DeleteTag_FullMethodName               = "/openhdc.nexus.v1.Nexus/DeleteTag"
+	Nexus_ListStorageClasses_FullMethodName      = "/openhdc.nexus.v1.Nexus/ListStorageClasses"
+	Nexus_CreateStorageClass_FullMethodName      = "/openhdc.nexus.v1.Nexus/CreateStorageClass"
 )
 
 // NexusClient is the client API for Nexus service.
@@ -82,6 +86,8 @@ const (
 type NexusClient interface {
 	// General
 	VerifyEnvironment(ctx context.Context, in *VerifyEnvironmentRequest, opts ...grpc.CallOption) (*VerifyEnvironmentResponse, error)
+	ListCephes(ctx context.Context, in *ListCephesRequest, opts ...grpc.CallOption) (*ListCephesResponse, error)
+	ListKubernetes(ctx context.Context, in *ListKubernetesRequest, opts ...grpc.CallOption) (*ListKubernetesResponse, error)
 	// Configuration
 	GetConfiguration(ctx context.Context, in *GetConfigurationRequest, opts ...grpc.CallOption) (*Configuration, error)
 	UpdateNTPServer(ctx context.Context, in *UpdateNTPServerRequest, opts ...grpc.CallOption) (*Configuration_NTPServer, error)
@@ -142,6 +148,9 @@ type NexusClient interface {
 	GetTag(ctx context.Context, in *GetTagRequest, opts ...grpc.CallOption) (*Tag, error)
 	CreateTag(ctx context.Context, in *CreateTagRequest, opts ...grpc.CallOption) (*Tag, error)
 	DeleteTag(ctx context.Context, in *DeleteTagRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// StorageClass
+	ListStorageClasses(ctx context.Context, in *ListStorageClassesRequest, opts ...grpc.CallOption) (*ListStorageClassesResponse, error)
+	CreateStorageClass(ctx context.Context, in *CreateStorageClassRequest, opts ...grpc.CallOption) (*StorageClass, error)
 }
 
 type nexusClient struct {
@@ -156,6 +165,26 @@ func (c *nexusClient) VerifyEnvironment(ctx context.Context, in *VerifyEnvironme
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(VerifyEnvironmentResponse)
 	err := c.cc.Invoke(ctx, Nexus_VerifyEnvironment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) ListCephes(ctx context.Context, in *ListCephesRequest, opts ...grpc.CallOption) (*ListCephesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCephesResponse)
+	err := c.cc.Invoke(ctx, Nexus_ListCephes_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) ListKubernetes(ctx context.Context, in *ListKubernetesRequest, opts ...grpc.CallOption) (*ListKubernetesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListKubernetesResponse)
+	err := c.cc.Invoke(ctx, Nexus_ListKubernetes_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -692,12 +721,34 @@ func (c *nexusClient) DeleteTag(ctx context.Context, in *DeleteTagRequest, opts 
 	return out, nil
 }
 
+func (c *nexusClient) ListStorageClasses(ctx context.Context, in *ListStorageClassesRequest, opts ...grpc.CallOption) (*ListStorageClassesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListStorageClassesResponse)
+	err := c.cc.Invoke(ctx, Nexus_ListStorageClasses_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nexusClient) CreateStorageClass(ctx context.Context, in *CreateStorageClassRequest, opts ...grpc.CallOption) (*StorageClass, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StorageClass)
+	err := c.cc.Invoke(ctx, Nexus_CreateStorageClass_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NexusServer is the server API for Nexus service.
 // All implementations must embed UnimplementedNexusServer
 // for forward compatibility.
 type NexusServer interface {
 	// General
 	VerifyEnvironment(context.Context, *VerifyEnvironmentRequest) (*VerifyEnvironmentResponse, error)
+	ListCephes(context.Context, *ListCephesRequest) (*ListCephesResponse, error)
+	ListKubernetes(context.Context, *ListKubernetesRequest) (*ListKubernetesResponse, error)
 	// Configuration
 	GetConfiguration(context.Context, *GetConfigurationRequest) (*Configuration, error)
 	UpdateNTPServer(context.Context, *UpdateNTPServerRequest) (*Configuration_NTPServer, error)
@@ -758,6 +809,9 @@ type NexusServer interface {
 	GetTag(context.Context, *GetTagRequest) (*Tag, error)
 	CreateTag(context.Context, *CreateTagRequest) (*Tag, error)
 	DeleteTag(context.Context, *DeleteTagRequest) (*emptypb.Empty, error)
+	// StorageClass
+	ListStorageClasses(context.Context, *ListStorageClassesRequest) (*ListStorageClassesResponse, error)
+	CreateStorageClass(context.Context, *CreateStorageClassRequest) (*StorageClass, error)
 	mustEmbedUnimplementedNexusServer()
 }
 
@@ -770,6 +824,12 @@ type UnimplementedNexusServer struct{}
 
 func (UnimplementedNexusServer) VerifyEnvironment(context.Context, *VerifyEnvironmentRequest) (*VerifyEnvironmentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyEnvironment not implemented")
+}
+func (UnimplementedNexusServer) ListCephes(context.Context, *ListCephesRequest) (*ListCephesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCephes not implemented")
+}
+func (UnimplementedNexusServer) ListKubernetes(context.Context, *ListKubernetesRequest) (*ListKubernetesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListKubernetes not implemented")
 }
 func (UnimplementedNexusServer) GetConfiguration(context.Context, *GetConfigurationRequest) (*Configuration, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConfiguration not implemented")
@@ -930,6 +990,12 @@ func (UnimplementedNexusServer) CreateTag(context.Context, *CreateTagRequest) (*
 func (UnimplementedNexusServer) DeleteTag(context.Context, *DeleteTagRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTag not implemented")
 }
+func (UnimplementedNexusServer) ListStorageClasses(context.Context, *ListStorageClassesRequest) (*ListStorageClassesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListStorageClasses not implemented")
+}
+func (UnimplementedNexusServer) CreateStorageClass(context.Context, *CreateStorageClassRequest) (*StorageClass, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateStorageClass not implemented")
+}
 func (UnimplementedNexusServer) mustEmbedUnimplementedNexusServer() {}
 func (UnimplementedNexusServer) testEmbeddedByValue()               {}
 
@@ -965,6 +1031,42 @@ func _Nexus_VerifyEnvironment_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NexusServer).VerifyEnvironment(ctx, req.(*VerifyEnvironmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_ListCephes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCephesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).ListCephes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_ListCephes_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).ListCephes(ctx, req.(*ListCephesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_ListKubernetes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListKubernetesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).ListKubernetes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_ListKubernetes_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).ListKubernetes(ctx, req.(*ListKubernetesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1923,6 +2025,42 @@ func _Nexus_DeleteTag_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Nexus_ListStorageClasses_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListStorageClassesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).ListStorageClasses(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_ListStorageClasses_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).ListStorageClasses(ctx, req.(*ListStorageClassesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Nexus_CreateStorageClass_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateStorageClassRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).CreateStorageClass(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_CreateStorageClass_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).CreateStorageClass(ctx, req.(*CreateStorageClassRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Nexus_ServiceDesc is the grpc.ServiceDesc for Nexus service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1933,6 +2071,14 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyEnvironment",
 			Handler:    _Nexus_VerifyEnvironment_Handler,
+		},
+		{
+			MethodName: "ListCephes",
+			Handler:    _Nexus_ListCephes_Handler,
+		},
+		{
+			MethodName: "ListKubernetes",
+			Handler:    _Nexus_ListKubernetes_Handler,
 		},
 		{
 			MethodName: "GetConfiguration",
@@ -2145,6 +2291,14 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteTag",
 			Handler:    _Nexus_DeleteTag_Handler,
+		},
+		{
+			MethodName: "ListStorageClasses",
+			Handler:    _Nexus_ListStorageClasses_Handler,
+		},
+		{
+			MethodName: "CreateStorageClass",
+			Handler:    _Nexus_CreateStorageClass_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

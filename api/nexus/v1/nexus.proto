@@ -11,6 +11,8 @@ option go_package = "github.com/openhdc/openhdc/api/nexus/v1;pb";
 service Nexus {
   // General
   rpc VerifyEnvironment(VerifyEnvironmentRequest) returns (VerifyEnvironmentResponse);
+  rpc ListCephes(ListCephesRequest) returns (ListCephesResponse);
+  rpc ListKubernetes(ListKubernetesRequest) returns (ListKubernetesResponse);
 
   // Configuration
   rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
@@ -78,6 +80,10 @@ service Nexus {
   rpc GetTag(GetTagRequest) returns (Tag);
   rpc CreateTag(CreateTagRequest) returns (Tag);
   rpc DeleteTag(DeleteTagRequest) returns (google.protobuf.Empty);
+
+  // StorageClass
+  rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse);
+  rpc CreateStorageClass(CreateStorageClassRequest) returns (StorageClass);
 }
 
 message Configuration {
@@ -254,6 +260,11 @@ message Scope {
 }
 
 message Facility {
+  message Info {
+    string scope_uuid = 1;
+    string scope_name = 2;
+    string facility_name = 3;
+  }
   message Charm {
     message Metadata {
       string config_yaml = 1;
@@ -395,14 +406,6 @@ message Application {
     google.protobuf.Timestamp created_at = 201;
   }
   message PersistentVolumeClaim {
-    message StorageClass {
-      string name = 1;
-      string provisioner = 2;
-      string reclaim_policy = 3;
-      string volume_binding_mode = 4;
-      map<string, string> parameters = 5;
-      google.protobuf.Timestamp created_at = 201;
-    }
     string name = 1;
     string status = 2;
     repeated string access_modes = 3;
@@ -436,6 +439,15 @@ message Tag {
   string comment = 2;
 }
 
+message StorageClass {
+  string name = 1;
+  string provisioner = 2;
+  string reclaim_policy = 3;
+  string volume_binding_mode = 4;
+  map<string, string> parameters = 5;
+  google.protobuf.Timestamp created_at = 201;
+}
+
 enum ErrorLevel {
   ERRORLEVEL_INFO = 0;
   ERRORLEVEL_LOW = 1;
@@ -443,6 +455,7 @@ enum ErrorLevel {
   ERRORLEVEL_HIGH = 3;
   ERRORLEVEL_CRITICAL = 4;
 }
+
 message Error {
   string code = 1;
   ErrorLevel level = 11;
@@ -455,6 +468,18 @@ message VerifyEnvironmentRequest {}
 
 message VerifyEnvironmentResponse {
   repeated Error errors = 1;
+}
+
+message ListCephesRequest {}
+
+message ListCephesResponse {
+  repeated Facility.Info cephes = 1;
+}
+
+message ListKubernetesRequest {}
+
+message ListKubernetesResponse {
+  repeated Facility.Info kubernetes = 1;
 }
 
 message GetConfigurationRequest {}
@@ -778,4 +803,18 @@ message CreateTagRequest {
 
 message DeleteTagRequest {
   string name = 1;
+}
+
+message ListStorageClassesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListStorageClassesResponse {
+  repeated StorageClass storage_classes = 1;
+}
+
+message CreateStorageClassRequest {
+  Facility.Info kubernetes = 1;
+  Facility.Info ceph = 2;
 }

@@ -162,9 +162,9 @@ func (s *NexusService) listFacilitiesAcrossScopes(ctx context.Context, name stri
 				facility := fs[j]
 				if strings.Contains(facility.Status.Charm, name) {
 					result[i] = append(result[i], model.FacilityInfo{
-						ScopeName: scope.Name,
-						ScopeUUID: scope.UUID,
-						Name:      facility.Name,
+						ScopeUUID:    scope.UUID,
+						ScopeName:    scope.Name,
+						FacilityName: facility.Name,
 					})
 				}
 			}
@@ -182,10 +182,10 @@ func (s *NexusService) listFacilitiesAcrossScopes(ctx context.Context, name stri
 	return fis, nil
 }
 
-func (s *NexusService) listCephes(ctx context.Context) ([]model.FacilityInfo, error) {
+func (s *NexusService) ListCephes(ctx context.Context) ([]model.FacilityInfo, error) {
 	return s.listFacilitiesAcrossScopes(ctx, charmNameCeph)
 }
 
-func (s *NexusService) listKubernetes(ctx context.Context) ([]model.FacilityInfo, error) {
+func (s *NexusService) ListKubernetes(ctx context.Context) ([]model.FacilityInfo, error) {
 	return s.listFacilitiesAcrossScopes(ctx, charmNameKubernetes)
 }

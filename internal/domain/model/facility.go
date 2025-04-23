@@ -15,9 +15,9 @@ type (
 )
 
 type FacilityInfo struct {
-	ScopeName string
-	ScopeUUID string
-	Name      string
+	ScopeUUID    string
+	ScopeName    string
+	FacilityName string
 }
 
 type FacilityMetadata struct {
