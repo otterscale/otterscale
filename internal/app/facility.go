@@ -2,13 +2,17 @@ package app
 
 import (
 	"context"
+	"os"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	"slices"
+
 	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/openhdc/internal/env"
 )
 
 func (a *NexusApp) ListFacilities(ctx context.Context, req *connect.Request[pb.ListFacilitiesRequest]) (*connect.Response[pb.ListFacilitiesResponse], error) {
@@ -235,6 +239,7 @@ func toProtoCharm(c *model.Charm) *pb.Facility_Charm {
 	ret.SetId(c.ID)
 	ret.SetType(c.Type)
 	ret.SetName(c.Name)
+	ret.SetVerified(isVerified(c.Result.Publisher.DisplayName))
 	ret.SetTitle(c.Result.Title)
 	ret.SetSummary(c.Result.Summary)
 	ret.SetIcon(icon)
@@ -281,4 +286,12 @@ func toProtoCharmArtifact(r *model.CharmArtifact) *pb.Facility_Charm_Artifact {
 	ret.SetBases(toProtoCharmBases(r.Revision.Bases))
 	ret.SetCreatedAt(timestamppb.New(r.Channel.ReleasedAt))
 	return ret
+}
+
+func isVerified(values ...string) bool {
+	keyword := os.Getenv(env.OPENHDC_COMPANY_NAME)
+	if keyword == "" {
+		return false
+	}
+	return slices.Contains(values, keyword)
 }

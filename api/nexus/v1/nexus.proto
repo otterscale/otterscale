@@ -286,6 +286,7 @@ message Facility {
     string id = 1;
     string type = 2;
     string name = 3;
+    bool verified = 4;
     string title = 11;
     string summary = 12;
     string icon = 13;
@@ -357,6 +358,7 @@ message Application {
     string tags = 5;
     repeated string keywords = 6;
     string license = 7;
+    bool verified = 8;
     string home = 11;
     repeated string sources = 12;
     repeated Maintainer maintainers = 21;

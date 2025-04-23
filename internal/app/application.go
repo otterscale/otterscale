@@ -292,6 +292,13 @@ func toProtoCharts(cs []model.Chart) []*pb.Application_Chart {
 }
 
 func toProtoChart(cmd *chart.Metadata, vs ...*repo.ChartVersion) *pb.Application_Chart {
+	verified := false
+	for _, m := range cmd.Maintainers {
+		if isVerified(m.Name) {
+			verified = true
+			break
+		}
+	}
 	ret := &pb.Application_Chart{}
 	ret.SetName(cmd.Name)
 	ret.SetIcon(cmd.Icon)
@@ -300,6 +307,7 @@ func toProtoChart(cmd *chart.Metadata, vs ...*repo.ChartVersion) *pb.Application
 	ret.SetTags(cmd.Tags)
 	ret.SetKeywords(cmd.Keywords)
 	ret.SetLicense(getChartLicense(cmd.Annotations))
+	ret.SetVerified(verified)
 	ret.SetHome(cmd.Home)
 	ret.SetSources(cmd.Sources)
 	ret.SetMaintainers(toProtoChartMaintainers(cmd.Maintainers))
