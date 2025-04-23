@@ -226,6 +226,7 @@ message Machine {
   repeated string tags = 104;
   string description = 105;
   string status = 201;
+  string status_message = 202;
   string power_state = 301;
   string power_type = 302;
   string osystem = 401;

@@ -4,8 +4,11 @@ import (
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
+	"github.com/juju/juju/core/model"
 	"github.com/juju/juju/rpc/params"
 )
+
+const JobHostUnits = model.JobHostUnits
 
 type (
 	Machine                 = entity.Machine
@@ -22,6 +25,7 @@ type (
 	MachineAddParams = params.AddMachineParams
 	Placement        = instance.Placement
 	Constraint       = constraints.Value
+	MachineJob       = model.MachineJob
 )
 
 type MachinePlacement struct {

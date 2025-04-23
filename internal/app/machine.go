@@ -93,6 +93,7 @@ func toProtoMachine(m *model.Machine) *pb.Machine {
 	ret.SetTags(m.TagNames)
 	ret.SetDescription(m.Description)
 	ret.SetStatus(m.StatusName)
+	ret.SetStatusMessage(m.StatusMessage)
 	ret.SetPowerState(m.PowerState)
 	ret.SetPowerType(m.PowerType)
 	ret.SetOsystem(m.OSystem)

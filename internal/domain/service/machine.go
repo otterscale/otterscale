@@ -28,9 +28,18 @@ func (s *NexusService) CreateMachine(ctx context.Context, id string, enableSSH, 
 	if err != nil {
 		return nil, err
 	}
-	addMachineParams := []model.MachineAddParams{{Placement: &model.Placement{Directive: id}}}
-	if _, err := s.machineManager.AddMachines(ctx, uuid, addMachineParams); err != nil {
+	addMachineParams := []model.MachineAddParams{
+		{
+			Placement: &model.Placement{Scope: uuid, Directive: machine.Hostname},
+			Jobs:      []model.MachineJob{model.JobHostUnits},
+		},
+	}
+	results, err := s.machineManager.AddMachines(ctx, uuid, addMachineParams)
+	if err != nil {
 		return nil, err
+	}
+	if results[0].Error != nil {
+		return nil, results[0].Error
 	}
 	return machine, nil
 }
