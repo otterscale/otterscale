@@ -251,11 +251,7 @@ func (s *NexusService) GetChartMetadataFromApplication(ctx context.Context, uuid
 }
 
 func (s *NexusService) ListReleases(ctx context.Context) ([]model.Release, error) {
-	kubernetes, err := s.listFacilitiesAcrossScopes(ctx, charmNameKubernetes)
-	if err != nil {
-		return nil, err
-	}
-	return s.listReleases(ctx, kubernetes)
+	return s.listReleases(ctx)
 }
 
 func (s *NexusService) CreateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*model.Release, error) {
@@ -386,11 +382,15 @@ func (s *NexusService) setKubernetesClient(ctx context.Context, uuid, facility s
 	return s.kubernetes.Set(uuid, facility, cfg)
 }
 
-func (s *NexusService) listReleases(ctx context.Context, fis []model.FacilityInfo) ([]model.Release, error) {
+func (s *NexusService) listReleases(ctx context.Context) ([]model.Release, error) {
+	kubernetes, err := s.listKubernetes(ctx)
+	if err != nil {
+		return nil, err
+	}
 	eg, ctx := errgroup.WithContext(ctx)
-	result := make([][]model.Release, len(fis))
-	for i := range fis {
-		fi := fis[i]
+	result := make([][]model.Release, len(kubernetes))
+	for i := range kubernetes {
+		fi := kubernetes[i]
 		eg.Go(func() error {
 			if err := s.setKubernetesClient(ctx, fi.ScopeUUID, fi.Name); err != nil {
 				return err
