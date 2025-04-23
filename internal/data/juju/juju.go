@@ -1,11 +1,9 @@
 package juju
 
 import (
-	"context"
 	"os"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/juju/juju/api"
 	"github.com/juju/juju/api/connector"
@@ -27,10 +25,10 @@ func NewJujuMap() (JujuMap, error) {
 	return JujuMap{&sync.Map{}}, nil
 }
 
-func (m JujuMap) Get(ctx context.Context, uuid string) (api.Connection, error) {
+func (m JujuMap) Get(uuid string) (api.Connection, error) {
 	if v, ok := m.Load(uuid); ok {
 		conn := v.(api.Connection)
-		if !conn.IsBroken(ctx) {
+		if !conn.IsBroken() {
 			return conn, nil
 		}
 		conn.Close()
@@ -66,11 +64,7 @@ func newConnection(uuid string) (api.Connection, error) {
 		return nil, err
 	}
 
-	timeout := 5 * time.Second
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	defer cancel()
-
-	return sc.Connect(ctx)
+	return sc.Connect()
 }
 
 func loadCACert(path string) (string, error) {

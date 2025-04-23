@@ -21,10 +21,10 @@ func NewMachine(jujuMap JujuMap) service.JujuMachine {
 
 var _ service.JujuMachine = (*machine)(nil)
 
-func (r *machine) AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) ([]params.AddMachinesResult, error) {
-	conn, err := r.jujuMap.Get(ctx, uuid)
+func (r *machine) AddMachines(_ context.Context, uuid string, params []params.AddMachineParams) ([]params.AddMachinesResult, error) {
+	conn, err := r.jujuMap.Get(uuid)
 	if err != nil {
 		return nil, err
 	}
-	return machinemanager.NewClient(conn).AddMachines(ctx, params)
+	return machinemanager.NewClient(conn).AddMachines(params)
 }

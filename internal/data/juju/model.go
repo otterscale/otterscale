@@ -11,7 +11,7 @@ import (
 	"github.com/juju/juju/api/client/cloud"
 	"github.com/juju/juju/api/client/modelmanager"
 	jujucloud "github.com/juju/juju/cloud"
-	"github.com/juju/names/v6"
+	"github.com/juju/names/v5"
 
 	"github.com/openhdc/openhdc/internal/domain/service"
 	"github.com/openhdc/openhdc/internal/env"
@@ -31,21 +31,21 @@ func NewModel(jujuMap JujuMap) service.JujuModel {
 
 var _ service.JujuModel = (*model)(nil)
 
-func (r *model) List(ctx context.Context) ([]base.UserModelSummary, error) {
-	conn, err := r.jujuMap.Get(ctx, "")
+func (r *model) List(_ context.Context) ([]base.UserModelSummary, error) {
+	conn, err := r.jujuMap.Get("")
 	if err != nil {
 		return nil, err
 	}
-	return modelmanager.NewClient(conn).ListModelSummaries(ctx, r.user, true)
+	return modelmanager.NewClient(conn).ListModelSummaries(r.user, true)
 }
 
-func (r *model) Create(ctx context.Context, name string) (*base.ModelInfo, error) {
-	conn, err := r.jujuMap.Get(ctx, "")
+func (r *model) Create(_ context.Context, name string) (*base.ModelInfo, error) {
+	conn, err := r.jujuMap.Get("")
 	if err != nil {
 		return nil, err
 	}
 
-	clouds, err := cloud.NewClient(conn).Clouds(ctx)
+	clouds, err := cloud.NewClient(conn).Clouds()
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,6 @@ func (r *model) Create(ctx context.Context, name string) (*base.ModelInfo, error
 	}
 
 	mi, err := modelmanager.NewClient(conn).CreateModel(
-		ctx,
 		name,
 		r.user,
 		cloudName,

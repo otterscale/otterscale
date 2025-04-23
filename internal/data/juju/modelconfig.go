@@ -20,26 +20,26 @@ func NewModelConfig(jujuMap JujuMap) service.JujuModelConfig {
 
 var _ service.JujuModelConfig = (*modelConfig)(nil)
 
-func (r *modelConfig) List(ctx context.Context, uuid string) (map[string]any, error) {
-	conn, err := r.jujuMap.Get(ctx, uuid)
+func (r *modelConfig) List(_ context.Context, uuid string) (map[string]any, error) {
+	conn, err := r.jujuMap.Get(uuid)
 	if err != nil {
 		return nil, err
 	}
-	return modelconfig.NewClient(conn).ModelGet(ctx)
+	return modelconfig.NewClient(conn).ModelGet()
 }
 
-func (r *modelConfig) Set(ctx context.Context, uuid string, config map[string]any) error {
-	conn, err := r.jujuMap.Get(ctx, uuid)
+func (r *modelConfig) Set(_ context.Context, uuid string, config map[string]any) error {
+	conn, err := r.jujuMap.Get(uuid)
 	if err != nil {
 		return err
 	}
-	return modelconfig.NewClient(conn).ModelSet(ctx, config)
+	return modelconfig.NewClient(conn).ModelSet(config)
 }
 
-func (r *modelConfig) Unset(ctx context.Context, uuid string, keys ...string) error {
-	conn, err := r.jujuMap.Get(ctx, uuid)
+func (r *modelConfig) Unset(_ context.Context, uuid string, keys ...string) error {
+	conn, err := r.jujuMap.Get(uuid)
 	if err != nil {
 		return err
 	}
-	return modelconfig.NewClient(conn).ModelUnset(ctx, keys...)
+	return modelconfig.NewClient(conn).ModelUnset(keys...)
 }

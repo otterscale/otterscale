@@ -20,10 +20,10 @@ func NewAction(jujuMap JujuMap) service.JujuAction {
 
 var _ service.JujuAction = (*action)(nil)
 
-func (r *action) List(ctx context.Context, uuid, appName string) (map[string]api.ActionSpec, error) {
-	conn, err := r.jujuMap.Get(ctx, uuid)
+func (r *action) List(_ context.Context, uuid, appName string) (map[string]api.ActionSpec, error) {
+	conn, err := r.jujuMap.Get(uuid)
 	if err != nil {
 		return nil, err
 	}
-	return api.NewClient(conn).ApplicationCharmActions(ctx, appName)
+	return api.NewClient(conn).ApplicationCharmActions(appName)
 }
