@@ -24,7 +24,6 @@ func (a *NexusApp) ListCephes(ctx context.Context, req *connect.Request[pb.ListC
 	if err != nil {
 		return nil, err
 	}
-	a.svc.GetCephInfo(ctx, "1a675505-5618-4578-8350-b9fbc19ac78f", "ceph-osd")
 	res := &pb.ListCephesResponse{}
 	res.SetCephes(toProtoFacilityInfos(cephes))
 	return connect.NewResponse(res), nil
