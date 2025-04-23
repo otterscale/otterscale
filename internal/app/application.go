@@ -15,7 +15,6 @@ import (
 	"helm.sh/helm/v3/pkg/repo"
 
 	corev1 "k8s.io/api/core/v1"
-	storagev1 "k8s.io/api/storage/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/duration"
 
@@ -253,25 +252,6 @@ func toProtoPersistentVolumeClaim(p *model.PersistentVolumeClaim) *pb.Applicatio
 		ret.SetStorageClass(toProtoStorageClass(p.StorageClass))
 	}
 	ret.SetCreatedAt(timestamppb.New(p.PersistentVolumeClaim.CreationTimestamp.Time))
-	return ret
-}
-
-func toProtoStorageClass(sc *storagev1.StorageClass) *pb.Application_PersistentVolumeClaim_StorageClass {
-	reclaimPolicy := ""
-	if v := sc.ReclaimPolicy; v != nil {
-		reclaimPolicy = string(*v)
-	}
-	volumeBindingMode := ""
-	if v := sc.VolumeBindingMode; v != nil {
-		volumeBindingMode = string(*v)
-	}
-	ret := &pb.Application_PersistentVolumeClaim_StorageClass{}
-	ret.SetName(sc.Name)
-	ret.SetProvisioner(sc.Provisioner)
-	ret.SetReclaimPolicy(reclaimPolicy)
-	ret.SetVolumeBindingMode(volumeBindingMode)
-	ret.SetParameters(sc.Parameters)
-	ret.SetCreatedAt(timestamppb.New(sc.CreationTimestamp.Time))
 	return ret
 }
 

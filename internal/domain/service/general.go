@@ -35,7 +35,7 @@ func (s *NexusService) VerifyEnvironment(ctx context.Context) ([]model.Error, er
 }
 
 func (s *NexusService) isCephExists(ctx context.Context) (*model.Error, error) {
-	cephes, err := s.listCephes(ctx)
+	cephes, err := s.ListCephes(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (s *NexusService) isCephExists(ctx context.Context) (*model.Error, error) {
 }
 
 func (s *NexusService) isKubernetesExists(ctx context.Context) (*model.Error, error) {
-	kubernetes, err := s.listKubernetes(ctx)
+	kubernetes, err := s.ListKubernetes(ctx)
 	if err != nil {
 		return nil, err
 	}
