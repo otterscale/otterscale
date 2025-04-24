@@ -113,8 +113,8 @@ func (s *NexusService) CreateCeph(ctx context.Context, uuid, machineID, prefix s
 	return fi, nil
 }
 
-func (s *NexusService) AddCephUnit(ctx context.Context) error {
-	return nil
+func (s *NexusService) AddCephUnits(ctx context.Context, uuid, general string, number int, machineIDs []string) error {
+	return s.addGeneralFacilityUnits(ctx, uuid, general, number, machineIDs, cephFacilityList)
 }
 
 func (s *NexusService) ListKuberneteses(ctx context.Context, uuid string) ([]model.FacilityInfo, error) {
@@ -143,8 +143,13 @@ func (s *NexusService) CreateKubernetes(ctx context.Context, uuid, machineID, pr
 	return fi, nil
 }
 
-func (s *NexusService) AddKubernetesUnit(ctx context.Context) error {
-	return nil
+// TODO: force
+func (s *NexusService) AddKubernetesUnits(ctx context.Context, uuid, general string, number int, machineIDs []string, force bool) error {
+	count := 3
+	if !force && count > 3 {
+		return status.Errorf(codes.InvalidArgument, "cannot add more than 3 Kubernetes worker units without force flag")
+	}
+	return s.addGeneralFacilityUnits(ctx, uuid, general, number, machineIDs, kubernetesFacilityList)
 }
 
 func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineID, prefix, general string, facilityList []generalFacility) (*model.FacilityInfo, error) {
@@ -198,6 +203,37 @@ func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineI
 		ScopeName:    scopeName,
 		FacilityName: facilityName,
 	}, nil
+}
+
+func (s *NexusService) addGeneralFacilityUnits(ctx context.Context, uuid, general string, number int, machineIDs []string, facilityList []generalFacility) error {
+	slices.Sort(machineIDs)
+	directives := slices.Compact(machineIDs)
+	if len(directives) != number {
+		return status.Error(codes.InvalidArgument, "number of machines does not match requested number of units")
+	}
+
+	prefix := toGeneralFacilityPrefix(general)
+
+	eg, ctx := errgroup.WithContext(ctx)
+	for _, facility := range facilityList {
+		name := toGeneralFacilityName(prefix, facility.charmName)
+		lxd := facility.lxd
+
+		eg.Go(func() error {
+			placements := make([]instance.Placement, len(directives))
+			for i, directive := range directives {
+				placements[i] = instance.Placement{
+					Scope:     toPlacementScope(lxd),
+					Directive: directive,
+				}
+			}
+
+			_, err := s.facility.AddUnits(ctx, uuid, name, number, placements)
+			return err
+		})
+	}
+
+	return eg.Wait()
 }
 
 func (s *NexusService) getScopeName(ctx context.Context, uuid string) (string, error) {
@@ -270,4 +306,8 @@ func toPlacementScope(lxd bool) string {
 
 func toGeneralFacilityName(prefix, charmName string) string {
 	return prefix + "-" + charmName
+}
+
+func toGeneralFacilityPrefix(general string) string {
+	return strings.Split(general, "-")[0]
 }

@@ -23,10 +23,10 @@ const (
 	Nexus_VerifyEnvironment_FullMethodName       = "/openhdc.nexus.v1.Nexus/VerifyEnvironment"
 	Nexus_ListCephes_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListCephes"
 	Nexus_CreateCeph_FullMethodName              = "/openhdc.nexus.v1.Nexus/CreateCeph"
-	Nexus_AddCephUnit_FullMethodName             = "/openhdc.nexus.v1.Nexus/AddCephUnit"
+	Nexus_AddCephUnits_FullMethodName            = "/openhdc.nexus.v1.Nexus/AddCephUnits"
 	Nexus_ListKuberneteses_FullMethodName        = "/openhdc.nexus.v1.Nexus/ListKuberneteses"
 	Nexus_CreateKubernetes_FullMethodName        = "/openhdc.nexus.v1.Nexus/CreateKubernetes"
-	Nexus_AddKubernetesUnit_FullMethodName       = "/openhdc.nexus.v1.Nexus/AddKubernetesUnit"
+	Nexus_AddKubernetesUnits_FullMethodName      = "/openhdc.nexus.v1.Nexus/AddKubernetesUnits"
 	Nexus_GetConfiguration_FullMethodName        = "/openhdc.nexus.v1.Nexus/GetConfiguration"
 	Nexus_UpdateNTPServer_FullMethodName         = "/openhdc.nexus.v1.Nexus/UpdateNTPServer"
 	Nexus_UpdatePackageRepository_FullMethodName = "/openhdc.nexus.v1.Nexus/UpdatePackageRepository"
@@ -93,10 +93,10 @@ type NexusClient interface {
 	VerifyEnvironment(ctx context.Context, in *VerifyEnvironmentRequest, opts ...grpc.CallOption) (*VerifyEnvironmentResponse, error)
 	ListCephes(ctx context.Context, in *ListCephesRequest, opts ...grpc.CallOption) (*ListCephesResponse, error)
 	CreateCeph(ctx context.Context, in *CreateCephRequest, opts ...grpc.CallOption) (*Facility_Info, error)
-	AddCephUnit(ctx context.Context, in *AddCephUnitRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddCephUnits(ctx context.Context, in *AddCephUnitsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	ListKuberneteses(ctx context.Context, in *ListKubernetesesRequest, opts ...grpc.CallOption) (*ListKubernetesesResponse, error)
 	CreateKubernetes(ctx context.Context, in *CreateKubernetesRequest, opts ...grpc.CallOption) (*Facility_Info, error)
-	AddKubernetesUnit(ctx context.Context, in *AddKubernetesUnitRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddKubernetesUnits(ctx context.Context, in *AddKubernetesUnitsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Configuration
 	GetConfiguration(ctx context.Context, in *GetConfigurationRequest, opts ...grpc.CallOption) (*Configuration, error)
 	UpdateNTPServer(ctx context.Context, in *UpdateNTPServerRequest, opts ...grpc.CallOption) (*Configuration_NTPServer, error)
@@ -201,10 +201,10 @@ func (c *nexusClient) CreateCeph(ctx context.Context, in *CreateCephRequest, opt
 	return out, nil
 }
 
-func (c *nexusClient) AddCephUnit(ctx context.Context, in *AddCephUnitRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *nexusClient) AddCephUnits(ctx context.Context, in *AddCephUnitsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Nexus_AddCephUnit_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Nexus_AddCephUnits_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -231,10 +231,10 @@ func (c *nexusClient) CreateKubernetes(ctx context.Context, in *CreateKubernetes
 	return out, nil
 }
 
-func (c *nexusClient) AddKubernetesUnit(ctx context.Context, in *AddKubernetesUnitRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *nexusClient) AddKubernetesUnits(ctx context.Context, in *AddKubernetesUnitsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Nexus_AddKubernetesUnit_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Nexus_AddKubernetesUnits_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -809,10 +809,10 @@ type NexusServer interface {
 	VerifyEnvironment(context.Context, *VerifyEnvironmentRequest) (*VerifyEnvironmentResponse, error)
 	ListCephes(context.Context, *ListCephesRequest) (*ListCephesResponse, error)
 	CreateCeph(context.Context, *CreateCephRequest) (*Facility_Info, error)
-	AddCephUnit(context.Context, *AddCephUnitRequest) (*emptypb.Empty, error)
+	AddCephUnits(context.Context, *AddCephUnitsRequest) (*emptypb.Empty, error)
 	ListKuberneteses(context.Context, *ListKubernetesesRequest) (*ListKubernetesesResponse, error)
 	CreateKubernetes(context.Context, *CreateKubernetesRequest) (*Facility_Info, error)
-	AddKubernetesUnit(context.Context, *AddKubernetesUnitRequest) (*emptypb.Empty, error)
+	AddKubernetesUnits(context.Context, *AddKubernetesUnitsRequest) (*emptypb.Empty, error)
 	// Configuration
 	GetConfiguration(context.Context, *GetConfigurationRequest) (*Configuration, error)
 	UpdateNTPServer(context.Context, *UpdateNTPServerRequest) (*Configuration_NTPServer, error)
@@ -896,8 +896,8 @@ func (UnimplementedNexusServer) ListCephes(context.Context, *ListCephesRequest) 
 func (UnimplementedNexusServer) CreateCeph(context.Context, *CreateCephRequest) (*Facility_Info, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCeph not implemented")
 }
-func (UnimplementedNexusServer) AddCephUnit(context.Context, *AddCephUnitRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddCephUnit not implemented")
+func (UnimplementedNexusServer) AddCephUnits(context.Context, *AddCephUnitsRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddCephUnits not implemented")
 }
 func (UnimplementedNexusServer) ListKuberneteses(context.Context, *ListKubernetesesRequest) (*ListKubernetesesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListKuberneteses not implemented")
@@ -905,8 +905,8 @@ func (UnimplementedNexusServer) ListKuberneteses(context.Context, *ListKubernete
 func (UnimplementedNexusServer) CreateKubernetes(context.Context, *CreateKubernetesRequest) (*Facility_Info, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateKubernetes not implemented")
 }
-func (UnimplementedNexusServer) AddKubernetesUnit(context.Context, *AddKubernetesUnitRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddKubernetesUnit not implemented")
+func (UnimplementedNexusServer) AddKubernetesUnits(context.Context, *AddKubernetesUnitsRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddKubernetesUnits not implemented")
 }
 func (UnimplementedNexusServer) GetConfiguration(context.Context, *GetConfigurationRequest) (*Configuration, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetConfiguration not implemented")
@@ -1151,20 +1151,20 @@ func _Nexus_CreateCeph_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Nexus_AddCephUnit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddCephUnitRequest)
+func _Nexus_AddCephUnits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddCephUnitsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NexusServer).AddCephUnit(ctx, in)
+		return srv.(NexusServer).AddCephUnits(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Nexus_AddCephUnit_FullMethodName,
+		FullMethod: Nexus_AddCephUnits_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NexusServer).AddCephUnit(ctx, req.(*AddCephUnitRequest))
+		return srv.(NexusServer).AddCephUnits(ctx, req.(*AddCephUnitsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1205,20 +1205,20 @@ func _Nexus_CreateKubernetes_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Nexus_AddKubernetesUnit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddKubernetesUnitRequest)
+func _Nexus_AddKubernetesUnits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddKubernetesUnitsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NexusServer).AddKubernetesUnit(ctx, in)
+		return srv.(NexusServer).AddKubernetesUnits(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Nexus_AddKubernetesUnit_FullMethodName,
+		FullMethod: Nexus_AddKubernetesUnits_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NexusServer).AddKubernetesUnit(ctx, req.(*AddKubernetesUnitRequest))
+		return srv.(NexusServer).AddKubernetesUnits(ctx, req.(*AddKubernetesUnitsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2251,8 +2251,8 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Nexus_CreateCeph_Handler,
 		},
 		{
-			MethodName: "AddCephUnit",
-			Handler:    _Nexus_AddCephUnit_Handler,
+			MethodName: "AddCephUnits",
+			Handler:    _Nexus_AddCephUnits_Handler,
 		},
 		{
 			MethodName: "ListKuberneteses",
@@ -2263,8 +2263,8 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Nexus_CreateKubernetes_Handler,
 		},
 		{
-			MethodName: "AddKubernetesUnit",
-			Handler:    _Nexus_AddKubernetesUnit_Handler,
+			MethodName: "AddKubernetesUnits",
+			Handler:    _Nexus_AddKubernetesUnits_Handler,
 		},
 		{
 			MethodName: "GetConfiguration",
