@@ -6,23 +6,30 @@ import (
 	"strings"
 
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	"github.com/canonical/gomaasclient/entity/node"
+	"github.com/juju/juju/core/instance"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
+type generalFacility struct {
+	charmName string
+	lxd       bool
+}
+
 var (
-	kubernetesFacilityList = []struct {
-		app string
-		lxd bool
-	}{
-		{app: "calico", lxd: true},
-		{app: "containerd", lxd: true},
-		{app: "easyrsa", lxd: true},
-		{app: "etcd", lxd: true},
-		{app: "keepalived", lxd: true},
-		{app: "kubeapi-load-balancer", lxd: true},
-		{app: "kubernetes-control-plane", lxd: true},
-		{app: "kubernetes-worker", lxd: false},
+	kubernetesFacilityList = []generalFacility{
+		{charmName: "ch:calico", lxd: true},
+		{charmName: "ch:containerd", lxd: true},
+		{charmName: "ch:easyrsa", lxd: true},
+		{charmName: "ch:etcd", lxd: true},
+		{charmName: "ch:keepalived", lxd: true},
+		{charmName: "ch:kubeapi-load-balancer", lxd: true},
+		{charmName: "ch:kubernetes-control-plane", lxd: true},
+		{charmName: "ch:kubernetes-worker", lxd: false},
 	}
 
 	kubernetesRelationList = [][]string{
@@ -40,6 +47,19 @@ var (
 		{"kubernetes-control-plane:loadbalancer", "kubeapi-load-balancer:loadbalancer"},
 		{"kubernetes-worker:certificates", "easyrsa:client"},
 		{"kubernetes-worker:kube-api-endpoint", " kubeapi-load-balancer:website"},
+	}
+)
+
+var (
+	cephFacilityList = []generalFacility{
+		{charmName: "ch:ceph-fs", lxd: true},
+		{charmName: "ch:ceph-mon", lxd: true},
+		{charmName: "ch:ceph-osd", lxd: false},
+	}
+
+	cephRelationList = [][]string{
+		{"ceph-fs:ceph-mds", "ceph-mon:mds"},
+		{"ceph-osd:mon", "ceph-mon:osd"},
 	}
 )
 
@@ -81,8 +101,20 @@ func (s *NexusService) ListCephes(ctx context.Context, uuid string) ([]model.Fac
 	return filter, nil
 }
 
-func (s *NexusService) CreateCeph(ctx context.Context) (*model.FacilityInfo, error) {
-	return nil, nil
+// TODO: CONFIG
+func (s *NexusService) CreateCeph(ctx context.Context, uuid, machineID, prefix string) (*model.FacilityInfo, error) {
+	fi, err := s.createGeneralFacility(ctx, uuid, machineID, prefix, charmNameCeph, cephFacilityList)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.createGeneralRelations(ctx, uuid, prefix, cephRelationList); err != nil {
+		return nil, err
+	}
+	return fi, nil
+}
+
+func (s *NexusService) AddCephUnit(ctx context.Context) error {
+	return nil
 }
 
 func (s *NexusService) ListKuberneteses(ctx context.Context, uuid string) ([]model.FacilityInfo, error) {
@@ -99,52 +131,104 @@ func (s *NexusService) ListKuberneteses(ctx context.Context, uuid string) ([]mod
 	return filter, nil
 }
 
-func (s *NexusService) CreateKubernetes(ctx context.Context) (*model.FacilityInfo, error) {
-	// lxd: easyrsa, etcd, lb, cp, containerd, calico, keepalived
-	// bare machine: worker
-	// helm: prometheus-stack
-	prefix := "abc"
-	prefix = prefix + "-"
-	// placements, err := s.toPlacements(ctx, uuid, mps)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// constraint := toConstraint(mc)
-	// if _, err := s.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, placements, &constraint, trust); err != nil {
-	// 	return nil, err
-	// }
-	return nil, nil
+// TODO: CONFIG
+func (s *NexusService) CreateKubernetes(ctx context.Context, uuid, machineID, prefix string) (*model.FacilityInfo, error) {
+	fi, err := s.createGeneralFacility(ctx, uuid, machineID, prefix, charmNameKubernetes, kubernetesFacilityList)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.createGeneralRelations(ctx, uuid, prefix, kubernetesRelationList); err != nil {
+		return nil, err
+	}
+	return fi, nil
 }
 
-func (s *NexusService) AddKuberneteUnit(ctx context.Context, uuid, name string, number int, machine string, force bool) error {
-	// s.GetApplication(ctx, uuid)
-	if force {
-
-	}
-	// eg, ctx := errgroup.WithContext(ctx)
-	// eg.Go(func() error {
-	// 	_, err := s.facility.AddUnits(ctx, uuid, name)
-	// 	return err
-	// })
-	// return eg.Wait()
-
+func (s *NexusService) AddKubernetesUnit(ctx context.Context) error {
 	return nil
 }
 
-func (s *NexusService) appendPrefixToRelationList(prefix string, relationList [][]string) [][]string {
+func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineID, prefix, general string, facilityList []generalFacility) (*model.FacilityInfo, error) {
+	m, err := s.machine.Get(ctx, machineID)
+	if err != nil {
+		return nil, err
+	}
+	if m.Status != node.StatusDeployed {
+		return nil, status.Error(codes.InvalidArgument, "machine status is not deployed")
+	}
+
+	directive, err := getJujuMachineID(m.WorkloadAnnotations)
+	if err != nil {
+		return nil, err
+	}
+
+	base, err := s.imageBase(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var facilityName string
+	eg, ctx := errgroup.WithContext(ctx)
+	for _, facility := range facilityList {
+		name := toGeneralFacilityName(prefix, facility.charmName)
+
+		if facility.charmName == general {
+			facilityName = name
+		}
+
+		eg.Go(func() error {
+			placements := []instance.Placement{
+				{Scope: toPlacementScope(facility.lxd), Directive: directive},
+			}
+			_, err := s.facility.Create(ctx, uuid, name, "", facility.charmName, "", 0, 1, base, placements, nil, true)
+			return err
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+
+	scopeName, err := s.getScopeName(ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.FacilityInfo{
+		ScopeUUID:    uuid,
+		ScopeName:    scopeName,
+		FacilityName: facilityName,
+	}, nil
+}
+
+func (s *NexusService) getScopeName(ctx context.Context, uuid string) (string, error) {
+	scopes, err := s.scope.List(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	for i := range scopes {
+		if scopes[i].UUID == uuid {
+			return scopes[i].Name, nil
+		}
+	}
+
+	return "", nil
+}
+
+func appendPrefixToRelationList(prefix string, relationList [][]string) [][]string {
 	endpointList := [][]string{}
 	for _, relations := range relationList {
 		endpoints := []string{}
 		for _, relation := range relations {
-			endpoints = append(endpoints, (prefix + "-" + relation))
+			endpoints = append(endpoints, toGeneralFacilityName(prefix, relation))
 		}
 		endpointList = append(endpointList, endpoints)
 	}
 	return endpointList
 }
 
-func (s *NexusService) createRelations(ctx context.Context, uuid string, prefix string, relationList [][]string) error {
-	endpointList := s.appendPrefixToRelationList(prefix, relationList)
+func (s *NexusService) createGeneralRelations(ctx context.Context, uuid, prefix string, relationList [][]string) error {
+	endpointList := appendPrefixToRelationList(prefix, relationList)
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, endpoints := range endpointList {
 		eg.Go(func() error {
@@ -175,4 +259,15 @@ func (s *NexusService) isKubernetesExists(ctx context.Context) (*model.Error, er
 		return &model.ErrKubernetesNotFound, nil
 	}
 	return nil, nil
+}
+
+func toPlacementScope(lxd bool) string {
+	if lxd {
+		return "lxd"
+	}
+	return instance.MachineScope
+}
+
+func toGeneralFacilityName(prefix, charmName string) string {
+	return prefix + "-" + charmName
 }

@@ -11,9 +11,22 @@ func (s *NexusService) ListScopes(ctx context.Context) ([]model.Scope, error) {
 }
 
 func (s *NexusService) CreateScope(ctx context.Context, name string) (*model.Scope, error) {
+	sshKey, err := s.sshKey.Default(ctx)
+	if err != nil {
+		return nil, err
+	}
 	mi, err := s.scope.Create(ctx, name)
 	if err != nil {
 		return nil, err
+	}
+	results, err := s.keyManager.Add(ctx, mi.UUID, sshKey.Key)
+	if err != nil {
+		return nil, err
+	}
+	for _, result := range results {
+		if result.Error != nil {
+			return nil, result.Error
+		}
 	}
 	return &model.Scope{
 		Name:            mi.Name,

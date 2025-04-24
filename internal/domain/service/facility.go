@@ -56,12 +56,16 @@ func (s *NexusService) GetFacility(ctx context.Context, uuid, name string) (*mod
 }
 
 func (s *NexusService) CreateFacility(ctx context.Context, uuid, name, configYAML, charmName, channel string, revision, number int, mps []model.MachinePlacement, mc *model.MachineConstraint, trust bool) (*model.Facility, error) {
+	base, err := s.imageBase(ctx)
+	if err != nil {
+		return nil, err
+	}
 	placements, err := s.toPlacements(ctx, uuid, mps)
 	if err != nil {
 		return nil, err
 	}
 	constraint := toConstraint(mc)
-	if _, err := s.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, placements, &constraint, trust); err != nil {
+	if _, err := s.facility.Create(ctx, uuid, name, configYAML, charmName, channel, revision, number, base, placements, &constraint, trust); err != nil {
 		return nil, err
 	}
 	return &model.Facility{}, nil

@@ -38,6 +38,14 @@ func (a *NexusApp) CreateMachine(ctx context.Context, req *connect.Request[pb.Cr
 	return connect.NewResponse(res), nil
 }
 
+func (a *NexusApp) DeleteMachine(ctx context.Context, req *connect.Request[pb.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.DeleteMachine(ctx, req.Msg.GetId(), req.Msg.GetForce()); err != nil {
+		return nil, err
+	}
+	res := &emptypb.Empty{}
+	return connect.NewResponse(res), nil
+}
+
 func (a *NexusApp) PowerOnMachine(ctx context.Context, req *connect.Request[pb.PowerOnMachineRequest]) (*connect.Response[pb.Machine], error) {
 	m, err := a.svc.PowerOnMachine(ctx, req.Msg.GetId(), req.Msg.GetComment())
 	if err != nil {

@@ -13,8 +13,10 @@ service Nexus {
   rpc VerifyEnvironment(VerifyEnvironmentRequest) returns (VerifyEnvironmentResponse);
   rpc ListCephes(ListCephesRequest) returns (ListCephesResponse);
   rpc CreateCeph(CreateCephRequest) returns (Facility.Info);
+  rpc AddCephUnit(AddCephUnitRequest) returns (google.protobuf.Empty);
   rpc ListKuberneteses(ListKubernetesesRequest) returns (ListKubernetesesResponse);
   rpc CreateKubernetes(CreateKubernetesRequest) returns (Facility.Info);
+  rpc AddKubernetesUnit(AddKubernetesUnitRequest) returns (google.protobuf.Empty);
 
   // Configuration
   rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
@@ -41,6 +43,7 @@ service Nexus {
   rpc ListMachines(ListMachinesRequest) returns (ListMachinesResponse);
   rpc GetMachine(GetMachineRequest) returns (Machine);
   rpc CreateMachine(CreateMachineRequest) returns (Machine);
+  rpc DeleteMachine(DeleteMachineRequest) returns (google.protobuf.Empty);
   rpc PowerOnMachine(PowerOnMachineRequest) returns (Machine);
   rpc PowerOffMachine(PowerOffMachineRequest) returns (Machine);
   rpc AddMachineTags(AddMachineTagsRequest) returns (google.protobuf.Empty);
@@ -483,7 +486,13 @@ message ListCephesResponse {
   repeated Facility.Info cephes = 1;
 }
 
-message CreateCephRequest {}
+message CreateCephRequest {
+  string scope_uuid = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+}
+
+message AddCephUnitRequest {}
 
 message ListKubernetesesRequest {
   string scope_uuid = 1;
@@ -493,7 +502,13 @@ message ListKubernetesesResponse {
   repeated Facility.Info kuberneteses = 1;
 }
 
-message CreateKubernetesRequest {}
+message CreateKubernetesRequest {
+  string scope_uuid = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+}
+
+message AddKubernetesUnitRequest {}
 
 message GetConfigurationRequest {}
 
@@ -607,6 +622,11 @@ message CreateMachineRequest {
   bool skip_storage = 5;
   string scope_uuid = 11;
   repeated string tags = 21;
+}
+
+message DeleteMachineRequest {
+  string id = 1;
+  bool force = 2;
 }
 
 message PowerOnMachineRequest {

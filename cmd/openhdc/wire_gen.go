@@ -35,10 +35,12 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	maasipRange := maas.NewIPRange(v)
 	maasMachine := maas.NewMachine(v)
 	maasTag := maas.NewTag(v)
+	maassshKey := maas.NewSSHKey(v)
 	jujuMap, err := juju.NewJujuMap()
 	if err != nil {
 		return nil, nil, err
 	}
+	jujuKey := juju.NewKey(jujuMap)
 	jujuClient := juju.NewClient(jujuMap)
 	jujuMachine := juju.NewMachine(jujuMap)
 	jujuModel := juju.NewModel(jujuMap)
@@ -63,7 +65,7 @@ func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func()
 	if err != nil {
 		return nil, nil, err
 	}
-	nexusService := service.NewNexusService(maasServer, maasPackageRepository, maasBootResource, maasBootSource, maasBootSourceSelection, maasFabric, maasvlan, maasSubnet, maasipRange, maasMachine, maasTag, jujuClient, jujuMachine, jujuModel, jujuModelConfig, jujuApplication, jujuAction, jujuCharmHub, kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm)
+	nexusService := service.NewNexusService(maasServer, maasPackageRepository, maasBootResource, maasBootSource, maasBootSourceSelection, maasFabric, maasvlan, maasSubnet, maasipRange, maasMachine, maasTag, maassshKey, jujuKey, jujuClient, jujuMachine, jujuModel, jujuModelConfig, jujuApplication, jujuAction, jujuCharmHub, kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm)
 	nexusApp := app.NewNexusApp(nexusService)
 	command := cmd.New(string2, nexusApp)
 	return command, func() {
