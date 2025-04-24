@@ -143,11 +143,19 @@ func (s *NexusService) CreateKubernetes(ctx context.Context, uuid, machineID, pr
 	return fi, nil
 }
 
-// TODO: force
 func (s *NexusService) AddKubernetesUnits(ctx context.Context, uuid, general string, number int, machineIDs []string, force bool) error {
-	count := 3
-	if !force && count > 3 {
-		return status.Errorf(codes.InvalidArgument, "cannot add more than 3 Kubernetes worker units without force flag")
+	if !force {
+		st, err := s.client.Status(ctx, uuid, []string{"application", general})
+		if err != nil {
+			return err
+		}
+		app, ok := st.Applications[general]
+		if !ok {
+			return status.Errorf(codes.NotFound, "kubernetes facility %q not found", general)
+		}
+		if len(app.Units) > 3 {
+			return status.Errorf(codes.InvalidArgument, "cannot add more than 3 Kubernetes worker units without force flag")
+		}
 	}
 	return s.addGeneralFacilityUnits(ctx, uuid, general, number, machineIDs, kubernetesFacilityList)
 }
