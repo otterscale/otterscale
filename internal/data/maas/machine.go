@@ -28,6 +28,13 @@ func (r *machine) Get(ctx context.Context, systemID string) (*entity.Machine, er
 	return r.maas.Machine.Get(systemID)
 }
 
+func (r *machine) Release(ctx context.Context, systemID string, force bool) (*entity.Machine, error) {
+	params := &entity.MachineReleaseParams{
+		Force: force,
+	}
+	return r.maas.Machine.Release(systemID, params)
+}
+
 func (r *machine) PowerOn(_ context.Context, systemID string, params *entity.MachinePowerOnParams) (*entity.Machine, error) {
 	return r.maas.Machine.PowerOn(systemID, params)
 }

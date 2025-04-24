@@ -4,6 +4,8 @@ import (
 	"context"
 	"strings"
 
+	"github.com/juju/juju/core/base"
+
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
@@ -17,29 +19,29 @@ const (
 
 const defaultOSSystem = "ubuntu"
 
-var ubuntuDistroSeriesMap = map[string]model.BootImageSelection{
-	"xenial": {
-		DistroSeries:  "xenial",
+var ubuntuDistroSeriesMap = map[base.SeriesName]model.BootImageSelection{
+	base.Xenial: {
+		DistroSeries:  base.Xenial,
 		Name:          "Ubuntu 16.04 LTS Xenial Xerus",
 		Architectures: []string{"amd64", "arm64", "armhf", "i386", "ppc64el", "s390x"},
 	},
-	"bionic": {
-		DistroSeries:  "bionic",
+	base.Bionic: {
+		DistroSeries:  base.Bionic,
 		Name:          "Ubuntu 18.04 LTS Bionic Beaver",
 		Architectures: []string{"amd64", "arm64", "armhf", "i386", "ppc64el", "s390x"},
 	},
-	"focal": {
-		DistroSeries:  "focal",
+	base.Focal: {
+		DistroSeries:  base.Focal,
 		Name:          "Ubuntu 20.04 LTS Focal Fossa",
 		Architectures: []string{"amd64", "arm64", "armhf", "ppc64el", "s390x"},
 	},
-	"jammy": {
-		DistroSeries:  "jammy",
+	base.Jammy: {
+		DistroSeries:  base.Jammy,
 		Name:          "Ubuntu 22.04 LTS Jammy Jellyfish",
 		Architectures: []string{"amd64", "arm64", "armhf", "ppc64el", "s390x"},
 	},
-	"noble": {
-		DistroSeries:  "noble",
+	base.Noble: {
+		DistroSeries:  base.Noble,
 		Name:          "Ubuntu 24.04 LTS Noble Numbat",
 		Architectures: []string{"amd64", "arm64", "armhf", "ppc64el", "s390x"},
 	},
@@ -185,7 +187,7 @@ func (s *NexusService) listBootImages(ctx context.Context) ([]model.BootImage, e
 		for j := range brss {
 			distro := brss[j].Release
 			name := brss[j].Release
-			if ds, ok := ubuntuDistroSeriesMap[brss[j].Release]; ok {
+			if ds, ok := ubuntuDistroSeriesMap[base.SeriesName(brss[j].Release)]; ok {
 				name = ds.Name
 			}
 			bis = append(bis, model.BootImage{
@@ -198,6 +200,18 @@ func (s *NexusService) listBootImages(ctx context.Context) ([]model.BootImage, e
 		}
 	}
 	return bis, nil
+}
+
+func (s *NexusService) imageBase(ctx context.Context) (*base.Base, error) {
+	val, err := s.server.Get(ctx, maasConfigDefaultDistroSeries)
+	if err != nil {
+		return nil, err
+	}
+	b, err := base.GetBaseFromSeries(removeQuotes(string(val)))
+	if err != nil {
+		return nil, err
+	}
+	return &b, nil
 }
 
 func removeQuotes(s string) string {

@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	api "github.com/juju/juju/api/client/application"
+	"github.com/juju/juju/core/base"
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
@@ -27,23 +28,17 @@ func NewApplication(jujuMap JujuMap) service.JujuApplication {
 
 var _ service.JujuApplication = (*application)(nil)
 
-func (r *application) Create(_ context.Context, uuid, name, configYAML, charmName, channel string, revision, number int, placements []instance.Placement, constraint *constraints.Value, trust bool) (*api.DeployInfo, error) {
+func (r *application) Create(_ context.Context, uuid, name, configYAML, charmName, channel string, revision, number int, base *base.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*api.DeployInfo, error) {
 	conn, err := r.jujuMap.Get(uuid)
 	if err != nil {
 		return nil, err
 	}
 
-	ps := []*instance.Placement{}
-	for _, p := range placements {
-		ps = append(ps, &p)
-	}
-
 	args := api.DeployFromRepositoryArg{
-		CharmName:       charmName,
 		ApplicationName: name,
 		ConfigYAML:      configYAML,
-		Cons:            *constraint,
-		Placement:       ps,
+		CharmName:       charmName,
+		Base:            base,
 		Trust:           trust,
 	}
 
@@ -57,6 +52,14 @@ func (r *application) Create(_ context.Context, uuid, name, configYAML, charmNam
 
 	if number != 0 {
 		args.NumUnits = &number
+	}
+
+	for _, p := range placements {
+		args.Placement = append(args.Placement, &p)
+	}
+
+	if constraint != nil {
+		args.Cons = *constraint
 	}
 
 	di, _, errs := api.NewClient(conn).DeployFromRepository(args)

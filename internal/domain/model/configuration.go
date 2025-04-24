@@ -1,6 +1,9 @@
 package model
 
-import "github.com/canonical/gomaasclient/entity"
+import (
+	"github.com/canonical/gomaasclient/entity"
+	"github.com/juju/juju/core/base"
+)
 
 type (
 	PackageRepository       = entity.PackageRepository
@@ -22,7 +25,7 @@ type BootImage struct {
 }
 
 type BootImageSelection struct {
-	DistroSeries  string
+	DistroSeries  base.SeriesName
 	Name          string
 	Architectures []string
 }

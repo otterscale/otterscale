@@ -40,10 +40,14 @@ const (
 	NexusListCephesProcedure = "/openhdc.nexus.v1.Nexus/ListCephes"
 	// NexusCreateCephProcedure is the fully-qualified name of the Nexus's CreateCeph RPC.
 	NexusCreateCephProcedure = "/openhdc.nexus.v1.Nexus/CreateCeph"
+	// NexusAddCephUnitProcedure is the fully-qualified name of the Nexus's AddCephUnit RPC.
+	NexusAddCephUnitProcedure = "/openhdc.nexus.v1.Nexus/AddCephUnit"
 	// NexusListKubernetesesProcedure is the fully-qualified name of the Nexus's ListKuberneteses RPC.
 	NexusListKubernetesesProcedure = "/openhdc.nexus.v1.Nexus/ListKuberneteses"
 	// NexusCreateKubernetesProcedure is the fully-qualified name of the Nexus's CreateKubernetes RPC.
 	NexusCreateKubernetesProcedure = "/openhdc.nexus.v1.Nexus/CreateKubernetes"
+	// NexusAddKubernetesUnitProcedure is the fully-qualified name of the Nexus's AddKubernetesUnit RPC.
+	NexusAddKubernetesUnitProcedure = "/openhdc.nexus.v1.Nexus/AddKubernetesUnit"
 	// NexusGetConfigurationProcedure is the fully-qualified name of the Nexus's GetConfiguration RPC.
 	NexusGetConfigurationProcedure = "/openhdc.nexus.v1.Nexus/GetConfiguration"
 	// NexusUpdateNTPServerProcedure is the fully-qualified name of the Nexus's UpdateNTPServer RPC.
@@ -88,6 +92,8 @@ const (
 	NexusGetMachineProcedure = "/openhdc.nexus.v1.Nexus/GetMachine"
 	// NexusCreateMachineProcedure is the fully-qualified name of the Nexus's CreateMachine RPC.
 	NexusCreateMachineProcedure = "/openhdc.nexus.v1.Nexus/CreateMachine"
+	// NexusDeleteMachineProcedure is the fully-qualified name of the Nexus's DeleteMachine RPC.
+	NexusDeleteMachineProcedure = "/openhdc.nexus.v1.Nexus/DeleteMachine"
 	// NexusPowerOnMachineProcedure is the fully-qualified name of the Nexus's PowerOnMachine RPC.
 	NexusPowerOnMachineProcedure = "/openhdc.nexus.v1.Nexus/PowerOnMachine"
 	// NexusPowerOffMachineProcedure is the fully-qualified name of the Nexus's PowerOffMachine RPC.
@@ -169,8 +175,10 @@ type NexusClient interface {
 	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
 	ListCephes(context.Context, *connect.Request[v1.ListCephesRequest]) (*connect.Response[v1.ListCephesResponse], error)
 	CreateCeph(context.Context, *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error)
+	AddCephUnit(context.Context, *connect.Request[v1.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error)
 	ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error)
 	CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error)
+	AddKubernetesUnit(context.Context, *connect.Request[v1.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -194,6 +202,7 @@ type NexusClient interface {
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
 	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
 	CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error)
+	DeleteMachine(context.Context, *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error)
 	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
 	AddMachineTags(context.Context, *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
@@ -265,6 +274,12 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("CreateCeph")),
 			connect.WithClientOptions(opts...),
 		),
+		addCephUnit: connect.NewClient[v1.AddCephUnitRequest, emptypb.Empty](
+			httpClient,
+			baseURL+NexusAddCephUnitProcedure,
+			connect.WithSchema(nexusMethods.ByName("AddCephUnit")),
+			connect.WithClientOptions(opts...),
+		),
 		listKuberneteses: connect.NewClient[v1.ListKubernetesesRequest, v1.ListKubernetesesResponse](
 			httpClient,
 			baseURL+NexusListKubernetesesProcedure,
@@ -275,6 +290,12 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			httpClient,
 			baseURL+NexusCreateKubernetesProcedure,
 			connect.WithSchema(nexusMethods.ByName("CreateKubernetes")),
+			connect.WithClientOptions(opts...),
+		),
+		addKubernetesUnit: connect.NewClient[v1.AddKubernetesUnitRequest, emptypb.Empty](
+			httpClient,
+			baseURL+NexusAddKubernetesUnitProcedure,
+			connect.WithSchema(nexusMethods.ByName("AddKubernetesUnit")),
 			connect.WithClientOptions(opts...),
 		),
 		getConfiguration: connect.NewClient[v1.GetConfigurationRequest, v1.Configuration](
@@ -395,6 +416,12 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			httpClient,
 			baseURL+NexusCreateMachineProcedure,
 			connect.WithSchema(nexusMethods.ByName("CreateMachine")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteMachine: connect.NewClient[v1.DeleteMachineRequest, emptypb.Empty](
+			httpClient,
+			baseURL+NexusDeleteMachineProcedure,
+			connect.WithSchema(nexusMethods.ByName("DeleteMachine")),
 			connect.WithClientOptions(opts...),
 		),
 		powerOnMachine: connect.NewClient[v1.PowerOnMachineRequest, v1.Machine](
@@ -615,8 +642,10 @@ type nexusClient struct {
 	verifyEnvironment       *connect.Client[v1.VerifyEnvironmentRequest, v1.VerifyEnvironmentResponse]
 	listCephes              *connect.Client[v1.ListCephesRequest, v1.ListCephesResponse]
 	createCeph              *connect.Client[v1.CreateCephRequest, v1.Facility_Info]
+	addCephUnit             *connect.Client[v1.AddCephUnitRequest, emptypb.Empty]
 	listKuberneteses        *connect.Client[v1.ListKubernetesesRequest, v1.ListKubernetesesResponse]
 	createKubernetes        *connect.Client[v1.CreateKubernetesRequest, v1.Facility_Info]
+	addKubernetesUnit       *connect.Client[v1.AddKubernetesUnitRequest, emptypb.Empty]
 	getConfiguration        *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
 	updateNTPServer         *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
 	updatePackageRepository *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
@@ -637,6 +666,7 @@ type nexusClient struct {
 	listMachines            *connect.Client[v1.ListMachinesRequest, v1.ListMachinesResponse]
 	getMachine              *connect.Client[v1.GetMachineRequest, v1.Machine]
 	createMachine           *connect.Client[v1.CreateMachineRequest, v1.Machine]
+	deleteMachine           *connect.Client[v1.DeleteMachineRequest, emptypb.Empty]
 	powerOnMachine          *connect.Client[v1.PowerOnMachineRequest, v1.Machine]
 	powerOffMachine         *connect.Client[v1.PowerOffMachineRequest, v1.Machine]
 	addMachineTags          *connect.Client[v1.AddMachineTagsRequest, emptypb.Empty]
@@ -689,6 +719,11 @@ func (c *nexusClient) CreateCeph(ctx context.Context, req *connect.Request[v1.Cr
 	return c.createCeph.CallUnary(ctx, req)
 }
 
+// AddCephUnit calls openhdc.nexus.v1.Nexus.AddCephUnit.
+func (c *nexusClient) AddCephUnit(ctx context.Context, req *connect.Request[v1.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.addCephUnit.CallUnary(ctx, req)
+}
+
 // ListKuberneteses calls openhdc.nexus.v1.Nexus.ListKuberneteses.
 func (c *nexusClient) ListKuberneteses(ctx context.Context, req *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error) {
 	return c.listKuberneteses.CallUnary(ctx, req)
@@ -697,6 +732,11 @@ func (c *nexusClient) ListKuberneteses(ctx context.Context, req *connect.Request
 // CreateKubernetes calls openhdc.nexus.v1.Nexus.CreateKubernetes.
 func (c *nexusClient) CreateKubernetes(ctx context.Context, req *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error) {
 	return c.createKubernetes.CallUnary(ctx, req)
+}
+
+// AddKubernetesUnit calls openhdc.nexus.v1.Nexus.AddKubernetesUnit.
+func (c *nexusClient) AddKubernetesUnit(ctx context.Context, req *connect.Request[v1.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.addKubernetesUnit.CallUnary(ctx, req)
 }
 
 // GetConfiguration calls openhdc.nexus.v1.Nexus.GetConfiguration.
@@ -797,6 +837,11 @@ func (c *nexusClient) GetMachine(ctx context.Context, req *connect.Request[v1.Ge
 // CreateMachine calls openhdc.nexus.v1.Nexus.CreateMachine.
 func (c *nexusClient) CreateMachine(ctx context.Context, req *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return c.createMachine.CallUnary(ctx, req)
+}
+
+// DeleteMachine calls openhdc.nexus.v1.Nexus.DeleteMachine.
+func (c *nexusClient) DeleteMachine(ctx context.Context, req *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteMachine.CallUnary(ctx, req)
 }
 
 // PowerOnMachine calls openhdc.nexus.v1.Nexus.PowerOnMachine.
@@ -980,8 +1025,10 @@ type NexusHandler interface {
 	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
 	ListCephes(context.Context, *connect.Request[v1.ListCephesRequest]) (*connect.Response[v1.ListCephesResponse], error)
 	CreateCeph(context.Context, *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error)
+	AddCephUnit(context.Context, *connect.Request[v1.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error)
 	ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error)
 	CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error)
+	AddKubernetesUnit(context.Context, *connect.Request[v1.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -1005,6 +1052,7 @@ type NexusHandler interface {
 	ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error)
 	GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error)
 	CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error)
+	DeleteMachine(context.Context, *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error)
 	PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error)
 	AddMachineTags(context.Context, *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error)
@@ -1072,6 +1120,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("CreateCeph")),
 		connect.WithHandlerOptions(opts...),
 	)
+	nexusAddCephUnitHandler := connect.NewUnaryHandler(
+		NexusAddCephUnitProcedure,
+		svc.AddCephUnit,
+		connect.WithSchema(nexusMethods.ByName("AddCephUnit")),
+		connect.WithHandlerOptions(opts...),
+	)
 	nexusListKubernetesesHandler := connect.NewUnaryHandler(
 		NexusListKubernetesesProcedure,
 		svc.ListKuberneteses,
@@ -1082,6 +1136,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		NexusCreateKubernetesProcedure,
 		svc.CreateKubernetes,
 		connect.WithSchema(nexusMethods.ByName("CreateKubernetes")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusAddKubernetesUnitHandler := connect.NewUnaryHandler(
+		NexusAddKubernetesUnitProcedure,
+		svc.AddKubernetesUnit,
+		connect.WithSchema(nexusMethods.ByName("AddKubernetesUnit")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusGetConfigurationHandler := connect.NewUnaryHandler(
@@ -1202,6 +1262,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		NexusCreateMachineProcedure,
 		svc.CreateMachine,
 		connect.WithSchema(nexusMethods.ByName("CreateMachine")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusDeleteMachineHandler := connect.NewUnaryHandler(
+		NexusDeleteMachineProcedure,
+		svc.DeleteMachine,
+		connect.WithSchema(nexusMethods.ByName("DeleteMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusPowerOnMachineHandler := connect.NewUnaryHandler(
@@ -1422,10 +1488,14 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusListCephesHandler.ServeHTTP(w, r)
 		case NexusCreateCephProcedure:
 			nexusCreateCephHandler.ServeHTTP(w, r)
+		case NexusAddCephUnitProcedure:
+			nexusAddCephUnitHandler.ServeHTTP(w, r)
 		case NexusListKubernetesesProcedure:
 			nexusListKubernetesesHandler.ServeHTTP(w, r)
 		case NexusCreateKubernetesProcedure:
 			nexusCreateKubernetesHandler.ServeHTTP(w, r)
+		case NexusAddKubernetesUnitProcedure:
+			nexusAddKubernetesUnitHandler.ServeHTTP(w, r)
 		case NexusGetConfigurationProcedure:
 			nexusGetConfigurationHandler.ServeHTTP(w, r)
 		case NexusUpdateNTPServerProcedure:
@@ -1466,6 +1536,8 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusGetMachineHandler.ServeHTTP(w, r)
 		case NexusCreateMachineProcedure:
 			nexusCreateMachineHandler.ServeHTTP(w, r)
+		case NexusDeleteMachineProcedure:
+			nexusDeleteMachineHandler.ServeHTTP(w, r)
 		case NexusPowerOnMachineProcedure:
 			nexusPowerOnMachineHandler.ServeHTTP(w, r)
 		case NexusPowerOffMachineProcedure:
@@ -1557,12 +1629,20 @@ func (UnimplementedNexusHandler) CreateCeph(context.Context, *connect.Request[v1
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateCeph is not implemented"))
 }
 
+func (UnimplementedNexusHandler) AddCephUnit(context.Context, *connect.Request[v1.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddCephUnit is not implemented"))
+}
+
 func (UnimplementedNexusHandler) ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListKuberneteses is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateKubernetes is not implemented"))
+}
+
+func (UnimplementedNexusHandler) AddKubernetesUnit(context.Context, *connect.Request[v1.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddKubernetesUnit is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error) {
@@ -1643,6 +1723,10 @@ func (UnimplementedNexusHandler) GetMachine(context.Context, *connect.Request[v1
 
 func (UnimplementedNexusHandler) CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateMachine is not implemented"))
+}
+
+func (UnimplementedNexusHandler) DeleteMachine(context.Context, *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DeleteMachine is not implemented"))
 }
 
 func (UnimplementedNexusHandler) PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error) {

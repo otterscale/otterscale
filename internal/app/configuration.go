@@ -133,7 +133,7 @@ func toProtoBootImageSelections(biss []model.BootImageSelection) []*pb.Configura
 
 func toProtoBootImageSelection(bis *model.BootImageSelection) *pb.Configuration_BootImageSelection {
 	ret := &pb.Configuration_BootImageSelection{}
-	ret.SetDistroSeries(bis.DistroSeries)
+	ret.SetDistroSeries(bis.DistroSeries.String())
 	ret.SetName(bis.Name)
 	ret.SetArchitectures(bis.Architectures)
 	return ret

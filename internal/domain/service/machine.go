@@ -2,6 +2,13 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/canonical/gomaasclient/entity/node"
+	"github.com/juju/juju/rpc/params"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
@@ -18,6 +25,7 @@ func (s *NexusService) CreateMachine(ctx context.Context, id string, enableSSH, 
 	if err := s.AddMachineTags(ctx, id, tags); err != nil {
 		return nil, err
 	}
+
 	commissionParams := &model.MachineCommissionParams{
 		EnableSSH:      boolToInt(enableSSH),
 		SkipBMCConfig:  boolToInt(skipBMCConfig),
@@ -28,20 +36,65 @@ func (s *NexusService) CreateMachine(ctx context.Context, id string, enableSSH, 
 	if err != nil {
 		return nil, err
 	}
+
+	if err := s.waitForMachineReady(ctx, id); err != nil {
+		return nil, err
+	}
+
+	base, err := s.imageBase(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	os, channel := "", ""
+	if base != nil {
+		os = base.OS
+		channel = base.Channel.String()
+	}
+
 	addMachineParams := []model.MachineAddParams{
 		{
-			Placement: &model.Placement{Scope: uuid, Directive: machine.Hostname},
+			Placement: &model.Placement{Scope: uuid, Directive: machine.FQDN},
 			Jobs:      []model.MachineJob{model.JobHostUnits},
+			Base:      &params.Base{Name: os, Channel: channel},
 		},
 	}
 	results, err := s.machineManager.AddMachines(ctx, uuid, addMachineParams)
 	if err != nil {
 		return nil, err
 	}
-	if results[0].Error != nil {
-		return nil, results[0].Error
+	for _, result := range results {
+		if result.Error != nil {
+			return nil, result.Error
+		}
 	}
 	return machine, nil
+}
+
+func (s *NexusService) DeleteMachine(ctx context.Context, id string, force bool) error {
+	m, err := s.machine.Release(ctx, id, force)
+	if err != nil {
+		return err
+	}
+
+	uuid, err := getJujuModelUUID(m.WorkloadAnnotations)
+	if err != nil {
+		return err
+	}
+	machine, err := getJujuMachineID(m.WorkloadAnnotations)
+	if err != nil {
+		return err
+	}
+	results, err := s.machineManager.DestroyMachines(ctx, uuid, force, machine)
+	if err != nil {
+		return err
+	}
+	for _, result := range results {
+		if result.Error != nil {
+			return result.Error
+		}
+	}
+	return nil
 }
 
 func (s *NexusService) AddMachines(ctx context.Context, uuid string, factors []model.MachineFactor) ([]string, error) {
@@ -87,6 +140,40 @@ func (s *NexusService) listJujuMachines(ctx context.Context, uuid string) (map[s
 		return nil, err
 	}
 	return status.Machines, nil
+}
+
+func (s *NexusService) waitForMachineReady(ctx context.Context, id string) error {
+	const tickInterval = 10 * time.Second
+	const timeoutDuration = 10 * time.Minute
+
+	ticker := time.NewTicker(tickInterval)
+	defer ticker.Stop()
+
+	timeout := time.After(timeoutDuration)
+	for {
+		select {
+		case <-ticker.C:
+			machine, err := s.machine.Get(ctx, id)
+			if err != nil {
+				return err
+			}
+
+			if machine.Status == node.StatusReady {
+				break
+			}
+			continue
+
+		case <-timeout:
+			return fmt.Errorf("timeout waiting for machine %s to become ready", id)
+
+		case <-ctx.Done():
+			return ctx.Err()
+		}
+
+		break
+	}
+
+	return nil
 }
 
 func (s *NexusService) JujuToMAASMachineMap(ctx context.Context, uuid string) (map[string]string, error) {
@@ -150,4 +237,21 @@ func boolToInt(b bool) int {
 		return 1
 	}
 	return 0
+}
+
+func getJujuModelUUID(m map[string]string) (string, error) {
+	v, ok := m["juju-model-uuid"]
+	if !ok {
+		return "", errors.New("juju model uuid not found")
+	}
+	return v, nil
+}
+
+func getJujuMachineID(m map[string]string) (string, error) {
+	v, ok := m["juju-machine-id"]
+	if !ok {
+		return "", errors.New("juju machine uuid not found")
+	}
+	token := strings.Split(v, "-")
+	return token[len(token)-1], nil
 }

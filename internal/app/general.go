@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/openhdc/openhdc/api/nexus/v1"
 	"github.com/openhdc/openhdc/internal/domain/model"
@@ -30,11 +31,19 @@ func (a *NexusApp) ListCephes(ctx context.Context, req *connect.Request[pb.ListC
 }
 
 func (a *NexusApp) CreateCeph(ctx context.Context, req *connect.Request[pb.CreateCephRequest]) (*connect.Response[pb.Facility_Info], error) {
-	ceph, err := a.svc.CreateCeph(ctx)
+	ceph, err := a.svc.CreateCeph(ctx, req.Msg.GetScopeUuid(), req.Msg.GetMachineId(), req.Msg.GetPrefixName())
 	if err != nil {
 		return nil, err
 	}
 	res := toProtoFacilityInfo(ceph)
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) AddCephUnit(ctx context.Context, req *connect.Request[pb.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.AddCephUnit(ctx); err != nil {
+		return nil, err
+	}
+	res := &emptypb.Empty{}
 	return connect.NewResponse(res), nil
 }
 
@@ -49,11 +58,19 @@ func (a *NexusApp) ListKuberneteses(ctx context.Context, req *connect.Request[pb
 }
 
 func (a *NexusApp) CreateKubernetes(ctx context.Context, req *connect.Request[pb.CreateKubernetesRequest]) (*connect.Response[pb.Facility_Info], error) {
-	kubernetes, err := a.svc.CreateKubernetes(ctx)
+	kubernetes, err := a.svc.CreateKubernetes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetMachineId(), req.Msg.GetPrefixName())
 	if err != nil {
 		return nil, err
 	}
 	res := toProtoFacilityInfo(kubernetes)
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) AddKubernetesUnit(ctx context.Context, req *connect.Request[pb.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.AddKubernetesUnit(ctx); err != nil {
+		return nil, err
+	}
+	res := &emptypb.Empty{}
 	return connect.NewResponse(res), nil
 }
 

@@ -9,6 +9,7 @@ import (
 	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/api/client/action"
 	"github.com/juju/juju/api/client/application"
+	corebase "github.com/juju/juju/core/base"
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
@@ -85,6 +86,7 @@ type MAASIPRange interface {
 type MAASMachine interface {
 	List(ctx context.Context) ([]entity.Machine, error)
 	Get(ctx context.Context, systemID string) (*entity.Machine, error)
+	Release(ctx context.Context, systemID string, force bool) (*entity.Machine, error)
 	PowerOn(ctx context.Context, systemID string, params *entity.MachinePowerOnParams) (*entity.Machine, error)
 	PowerOff(ctx context.Context, systemID string, params *entity.MachinePowerOffParams) (*entity.Machine, error)
 	Commission(ctx context.Context, systemID string, params *entity.MachineCommissionParams) (*entity.Machine, error)
@@ -99,8 +101,17 @@ type MAASTag interface {
 	RemoveMachines(ctx context.Context, name string, machineIDs []string) error
 }
 
+type MAASSSHKey interface {
+	Default(ctx context.Context) (*entity.SSHKey, error)
+}
+
+type JujuKey interface {
+	Add(ctx context.Context, uuid, key string) ([]params.ErrorResult, error)
+}
+
 type JujuMachine interface {
 	AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) ([]params.AddMachinesResult, error)
+	DestroyMachines(_ context.Context, uuid string, force bool, machines ...string) ([]params.DestroyMachineResult, error)
 }
 
 type JujuClient interface {
@@ -119,7 +130,7 @@ type JujuModelConfig interface {
 }
 
 type JujuApplication interface {
-	Create(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, placements []instance.Placement, constraint *constraints.Value, trust bool) (*application.DeployInfo, error)
+	Create(ctx context.Context, uuid, name string, configYAML string, charmName, channel string, revision, number int, base *corebase.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*application.DeployInfo, error)
 	Update(ctx context.Context, uuid, name string, configYAML string) error
 	Delete(ctx context.Context, uuid, name string, destroyStorage, force bool) error
 	Expose(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error

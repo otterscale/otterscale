@@ -19,10 +19,18 @@ const (
 // map[string]api.Connection
 type JujuMap struct {
 	*sync.Map
+	ControllerAddresses []string
+	Username            string
+	Password            string
 }
 
 func NewJujuMap() (JujuMap, error) {
-	return JujuMap{&sync.Map{}}, nil
+	return JujuMap{
+		Map:                 &sync.Map{},
+		ControllerAddresses: strings.Split(env.GetOrDefault(env.OPENHDC_JUJU_CONTROLLER_ADDRESSES, defaultControllerAddress), ","),
+		Username:            env.GetOrDefault(env.OPENHDC_JUJU_USERNAME, defaultUsername),
+		Password:            env.GetOrDefault(env.OPENHDC_JUJU_PASSWORD, ""),
+	}, nil
 }
 
 func (m JujuMap) Get(uuid string) (api.Connection, error) {
@@ -34,7 +42,7 @@ func (m JujuMap) Get(uuid string) (api.Connection, error) {
 		conn.Close()
 	}
 
-	conn, err := newConnection(uuid)
+	conn, err := m.newConnection(uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -43,12 +51,12 @@ func (m JujuMap) Get(uuid string) (api.Connection, error) {
 	return conn, nil
 }
 
-func newConnection(uuid string) (api.Connection, error) {
+func (m JujuMap) newConnection(uuid string) (api.Connection, error) {
 	cfg := &connector.SimpleConfig{
 		ModelUUID:           uuid,
-		ControllerAddresses: strings.Split(env.GetOrDefault(env.OPENHDC_JUJU_CONTROLLER_ADDRESSES, defaultControllerAddress), ","),
-		Username:            env.GetOrDefault(env.OPENHDC_JUJU_USERNAME, defaultUsername),
-		Password:            env.GetOrDefault(env.OPENHDC_JUJU_PASSWORD, ""),
+		ControllerAddresses: m.ControllerAddresses,
+		Username:            m.Username,
+		Password:            m.Password,
 	}
 
 	if path := os.Getenv(env.OPENHDC_JUJU_CACERT_PATH); path != "" {
