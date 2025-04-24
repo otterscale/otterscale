@@ -40,14 +40,15 @@ const (
 	NexusListCephesProcedure = "/openhdc.nexus.v1.Nexus/ListCephes"
 	// NexusCreateCephProcedure is the fully-qualified name of the Nexus's CreateCeph RPC.
 	NexusCreateCephProcedure = "/openhdc.nexus.v1.Nexus/CreateCeph"
-	// NexusAddCephUnitProcedure is the fully-qualified name of the Nexus's AddCephUnit RPC.
-	NexusAddCephUnitProcedure = "/openhdc.nexus.v1.Nexus/AddCephUnit"
+	// NexusAddCephUnitsProcedure is the fully-qualified name of the Nexus's AddCephUnits RPC.
+	NexusAddCephUnitsProcedure = "/openhdc.nexus.v1.Nexus/AddCephUnits"
 	// NexusListKubernetesesProcedure is the fully-qualified name of the Nexus's ListKuberneteses RPC.
 	NexusListKubernetesesProcedure = "/openhdc.nexus.v1.Nexus/ListKuberneteses"
 	// NexusCreateKubernetesProcedure is the fully-qualified name of the Nexus's CreateKubernetes RPC.
 	NexusCreateKubernetesProcedure = "/openhdc.nexus.v1.Nexus/CreateKubernetes"
-	// NexusAddKubernetesUnitProcedure is the fully-qualified name of the Nexus's AddKubernetesUnit RPC.
-	NexusAddKubernetesUnitProcedure = "/openhdc.nexus.v1.Nexus/AddKubernetesUnit"
+	// NexusAddKubernetesUnitsProcedure is the fully-qualified name of the Nexus's AddKubernetesUnits
+	// RPC.
+	NexusAddKubernetesUnitsProcedure = "/openhdc.nexus.v1.Nexus/AddKubernetesUnits"
 	// NexusGetConfigurationProcedure is the fully-qualified name of the Nexus's GetConfiguration RPC.
 	NexusGetConfigurationProcedure = "/openhdc.nexus.v1.Nexus/GetConfiguration"
 	// NexusUpdateNTPServerProcedure is the fully-qualified name of the Nexus's UpdateNTPServer RPC.
@@ -175,10 +176,10 @@ type NexusClient interface {
 	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
 	ListCephes(context.Context, *connect.Request[v1.ListCephesRequest]) (*connect.Response[v1.ListCephesResponse], error)
 	CreateCeph(context.Context, *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error)
-	AddCephUnit(context.Context, *connect.Request[v1.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error)
+	AddCephUnits(context.Context, *connect.Request[v1.AddCephUnitsRequest]) (*connect.Response[emptypb.Empty], error)
 	ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error)
 	CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error)
-	AddKubernetesUnit(context.Context, *connect.Request[v1.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error)
+	AddKubernetesUnits(context.Context, *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -274,10 +275,10 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("CreateCeph")),
 			connect.WithClientOptions(opts...),
 		),
-		addCephUnit: connect.NewClient[v1.AddCephUnitRequest, emptypb.Empty](
+		addCephUnits: connect.NewClient[v1.AddCephUnitsRequest, emptypb.Empty](
 			httpClient,
-			baseURL+NexusAddCephUnitProcedure,
-			connect.WithSchema(nexusMethods.ByName("AddCephUnit")),
+			baseURL+NexusAddCephUnitsProcedure,
+			connect.WithSchema(nexusMethods.ByName("AddCephUnits")),
 			connect.WithClientOptions(opts...),
 		),
 		listKuberneteses: connect.NewClient[v1.ListKubernetesesRequest, v1.ListKubernetesesResponse](
@@ -292,10 +293,10 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("CreateKubernetes")),
 			connect.WithClientOptions(opts...),
 		),
-		addKubernetesUnit: connect.NewClient[v1.AddKubernetesUnitRequest, emptypb.Empty](
+		addKubernetesUnits: connect.NewClient[v1.AddKubernetesUnitsRequest, emptypb.Empty](
 			httpClient,
-			baseURL+NexusAddKubernetesUnitProcedure,
-			connect.WithSchema(nexusMethods.ByName("AddKubernetesUnit")),
+			baseURL+NexusAddKubernetesUnitsProcedure,
+			connect.WithSchema(nexusMethods.ByName("AddKubernetesUnits")),
 			connect.WithClientOptions(opts...),
 		),
 		getConfiguration: connect.NewClient[v1.GetConfigurationRequest, v1.Configuration](
@@ -642,10 +643,10 @@ type nexusClient struct {
 	verifyEnvironment       *connect.Client[v1.VerifyEnvironmentRequest, v1.VerifyEnvironmentResponse]
 	listCephes              *connect.Client[v1.ListCephesRequest, v1.ListCephesResponse]
 	createCeph              *connect.Client[v1.CreateCephRequest, v1.Facility_Info]
-	addCephUnit             *connect.Client[v1.AddCephUnitRequest, emptypb.Empty]
+	addCephUnits            *connect.Client[v1.AddCephUnitsRequest, emptypb.Empty]
 	listKuberneteses        *connect.Client[v1.ListKubernetesesRequest, v1.ListKubernetesesResponse]
 	createKubernetes        *connect.Client[v1.CreateKubernetesRequest, v1.Facility_Info]
-	addKubernetesUnit       *connect.Client[v1.AddKubernetesUnitRequest, emptypb.Empty]
+	addKubernetesUnits      *connect.Client[v1.AddKubernetesUnitsRequest, emptypb.Empty]
 	getConfiguration        *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
 	updateNTPServer         *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
 	updatePackageRepository *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
@@ -719,9 +720,9 @@ func (c *nexusClient) CreateCeph(ctx context.Context, req *connect.Request[v1.Cr
 	return c.createCeph.CallUnary(ctx, req)
 }
 
-// AddCephUnit calls openhdc.nexus.v1.Nexus.AddCephUnit.
-func (c *nexusClient) AddCephUnit(ctx context.Context, req *connect.Request[v1.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.addCephUnit.CallUnary(ctx, req)
+// AddCephUnits calls openhdc.nexus.v1.Nexus.AddCephUnits.
+func (c *nexusClient) AddCephUnits(ctx context.Context, req *connect.Request[v1.AddCephUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.addCephUnits.CallUnary(ctx, req)
 }
 
 // ListKuberneteses calls openhdc.nexus.v1.Nexus.ListKuberneteses.
@@ -734,9 +735,9 @@ func (c *nexusClient) CreateKubernetes(ctx context.Context, req *connect.Request
 	return c.createKubernetes.CallUnary(ctx, req)
 }
 
-// AddKubernetesUnit calls openhdc.nexus.v1.Nexus.AddKubernetesUnit.
-func (c *nexusClient) AddKubernetesUnit(ctx context.Context, req *connect.Request[v1.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.addKubernetesUnit.CallUnary(ctx, req)
+// AddKubernetesUnits calls openhdc.nexus.v1.Nexus.AddKubernetesUnits.
+func (c *nexusClient) AddKubernetesUnits(ctx context.Context, req *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.addKubernetesUnits.CallUnary(ctx, req)
 }
 
 // GetConfiguration calls openhdc.nexus.v1.Nexus.GetConfiguration.
@@ -1025,10 +1026,10 @@ type NexusHandler interface {
 	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
 	ListCephes(context.Context, *connect.Request[v1.ListCephesRequest]) (*connect.Response[v1.ListCephesResponse], error)
 	CreateCeph(context.Context, *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error)
-	AddCephUnit(context.Context, *connect.Request[v1.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error)
+	AddCephUnits(context.Context, *connect.Request[v1.AddCephUnitsRequest]) (*connect.Response[emptypb.Empty], error)
 	ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error)
 	CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error)
-	AddKubernetesUnit(context.Context, *connect.Request[v1.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error)
+	AddKubernetesUnits(context.Context, *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -1120,10 +1121,10 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("CreateCeph")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusAddCephUnitHandler := connect.NewUnaryHandler(
-		NexusAddCephUnitProcedure,
-		svc.AddCephUnit,
-		connect.WithSchema(nexusMethods.ByName("AddCephUnit")),
+	nexusAddCephUnitsHandler := connect.NewUnaryHandler(
+		NexusAddCephUnitsProcedure,
+		svc.AddCephUnits,
+		connect.WithSchema(nexusMethods.ByName("AddCephUnits")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusListKubernetesesHandler := connect.NewUnaryHandler(
@@ -1138,10 +1139,10 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("CreateKubernetes")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusAddKubernetesUnitHandler := connect.NewUnaryHandler(
-		NexusAddKubernetesUnitProcedure,
-		svc.AddKubernetesUnit,
-		connect.WithSchema(nexusMethods.ByName("AddKubernetesUnit")),
+	nexusAddKubernetesUnitsHandler := connect.NewUnaryHandler(
+		NexusAddKubernetesUnitsProcedure,
+		svc.AddKubernetesUnits,
+		connect.WithSchema(nexusMethods.ByName("AddKubernetesUnits")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusGetConfigurationHandler := connect.NewUnaryHandler(
@@ -1488,14 +1489,14 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusListCephesHandler.ServeHTTP(w, r)
 		case NexusCreateCephProcedure:
 			nexusCreateCephHandler.ServeHTTP(w, r)
-		case NexusAddCephUnitProcedure:
-			nexusAddCephUnitHandler.ServeHTTP(w, r)
+		case NexusAddCephUnitsProcedure:
+			nexusAddCephUnitsHandler.ServeHTTP(w, r)
 		case NexusListKubernetesesProcedure:
 			nexusListKubernetesesHandler.ServeHTTP(w, r)
 		case NexusCreateKubernetesProcedure:
 			nexusCreateKubernetesHandler.ServeHTTP(w, r)
-		case NexusAddKubernetesUnitProcedure:
-			nexusAddKubernetesUnitHandler.ServeHTTP(w, r)
+		case NexusAddKubernetesUnitsProcedure:
+			nexusAddKubernetesUnitsHandler.ServeHTTP(w, r)
 		case NexusGetConfigurationProcedure:
 			nexusGetConfigurationHandler.ServeHTTP(w, r)
 		case NexusUpdateNTPServerProcedure:
@@ -1629,8 +1630,8 @@ func (UnimplementedNexusHandler) CreateCeph(context.Context, *connect.Request[v1
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateCeph is not implemented"))
 }
 
-func (UnimplementedNexusHandler) AddCephUnit(context.Context, *connect.Request[v1.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddCephUnit is not implemented"))
+func (UnimplementedNexusHandler) AddCephUnits(context.Context, *connect.Request[v1.AddCephUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddCephUnits is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error) {
@@ -1641,8 +1642,8 @@ func (UnimplementedNexusHandler) CreateKubernetes(context.Context, *connect.Requ
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateKubernetes is not implemented"))
 }
 
-func (UnimplementedNexusHandler) AddKubernetesUnit(context.Context, *connect.Request[v1.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddKubernetesUnit is not implemented"))
+func (UnimplementedNexusHandler) AddKubernetesUnits(context.Context, *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddKubernetesUnits is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error) {

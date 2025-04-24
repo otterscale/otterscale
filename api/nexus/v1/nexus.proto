@@ -13,10 +13,10 @@ service Nexus {
   rpc VerifyEnvironment(VerifyEnvironmentRequest) returns (VerifyEnvironmentResponse);
   rpc ListCephes(ListCephesRequest) returns (ListCephesResponse);
   rpc CreateCeph(CreateCephRequest) returns (Facility.Info);
-  rpc AddCephUnit(AddCephUnitRequest) returns (google.protobuf.Empty);
+  rpc AddCephUnits(AddCephUnitsRequest) returns (google.protobuf.Empty);
   rpc ListKuberneteses(ListKubernetesesRequest) returns (ListKubernetesesResponse);
   rpc CreateKubernetes(CreateKubernetesRequest) returns (Facility.Info);
-  rpc AddKubernetesUnit(AddKubernetesUnitRequest) returns (google.protobuf.Empty);
+  rpc AddKubernetesUnits(AddKubernetesUnitsRequest) returns (google.protobuf.Empty);
 
   // Configuration
   rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
@@ -492,7 +492,12 @@ message CreateCephRequest {
   string prefix_name = 3;
 }
 
-message AddCephUnitRequest {}
+message AddCephUnitsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  int32 number = 3;
+  repeated string machine_ids = 4;
+}
 
 message ListKubernetesesRequest {
   string scope_uuid = 1;
@@ -508,7 +513,13 @@ message CreateKubernetesRequest {
   string prefix_name = 3;
 }
 
-message AddKubernetesUnitRequest {}
+message AddKubernetesUnitsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  int32 number = 3;
+  repeated string machine_ids = 4;
+  bool force = 11;
+}
 
 message GetConfigurationRequest {}
 

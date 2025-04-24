@@ -39,8 +39,8 @@ func (a *NexusApp) CreateCeph(ctx context.Context, req *connect.Request[pb.Creat
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) AddCephUnit(ctx context.Context, req *connect.Request[pb.AddCephUnitRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.AddCephUnit(ctx); err != nil {
+func (a *NexusApp) AddCephUnits(ctx context.Context, req *connect.Request[pb.AddCephUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.AddCephUnits(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), int(req.Msg.GetNumber()), req.Msg.GetMachineIds()); err != nil {
 		return nil, err
 	}
 	res := &emptypb.Empty{}
@@ -66,8 +66,8 @@ func (a *NexusApp) CreateKubernetes(ctx context.Context, req *connect.Request[pb
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) AddKubernetesUnit(ctx context.Context, req *connect.Request[pb.AddKubernetesUnitRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.AddKubernetesUnit(ctx); err != nil {
+func (a *NexusApp) AddKubernetesUnit(ctx context.Context, req *connect.Request[pb.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := a.svc.AddKubernetesUnits(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), int(req.Msg.GetNumber()), req.Msg.GetMachineIds(), req.Msg.GetForce()); err != nil {
 		return nil, err
 	}
 	res := &emptypb.Empty{}
