@@ -313,6 +313,9 @@ func toPlacementScope(lxd bool) string {
 }
 
 func toGeneralFacilityName(prefix, charmName string) string {
+	if strings.HasPrefix(charmName, "ch:") {
+		return prefix + "-" + strings.Split(charmName, ":")[1]
+	}
 	return prefix + "-" + charmName
 }
 
