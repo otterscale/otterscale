@@ -185,7 +185,7 @@ func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineI
 	for _, facility := range facilityList {
 		name := toGeneralFacilityName(prefix, facility.charmName)
 
-		if facility.charmName == general {
+		if facility.charmName == "ch:"+general {
 			facilityName = name
 		}
 
