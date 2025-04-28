@@ -27,6 +27,7 @@ func (s *NexusService) CreateMachine(ctx context.Context, id string, enableSSH, 
 	}
 
 	commissionParams := &model.MachineCommissionParams{
+		TestingScripts: "",
 		EnableSSH:      boolToInt(enableSSH),
 		SkipBMCConfig:  boolToInt(skipBMCConfig),
 		SkipNetworking: boolToInt(skipNetworking),
