@@ -2,6 +2,7 @@ package kube
 
 import (
 	"crypto/sha256"
+	"log"
 	"os"
 	"sync"
 
@@ -66,7 +67,7 @@ func (m HelmMap) get(uuid, facility, namespace string, rc *registry.Client) (*ac
 	if getter, ok := m[key]; ok {
 		getter.Namespace = &namespace
 		config := new(action.Configuration)
-		if err := config.Init(getter, namespace, os.Getenv("HELM_DRIVER"), nil); err != nil {
+		if err := config.Init(getter, namespace, os.Getenv("HELM_DRIVER"), log.Printf); err != nil {
 			return nil, err
 		}
 		config.RegistryClient = rc
