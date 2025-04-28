@@ -23,3 +23,21 @@ export function formatTimeAgo(date: Date) {
         duration /= division.amount;
     }
 }
+
+export function formatCapacity(capacity: number | bigint): { value: string, unit: string } {
+    const MB = Number(capacity)
+    const GB = MB / 1024;
+    const TB = GB / 1024;
+
+    if (TB >= 1) {
+        return { value: `${Math.round(TB * 100) / 100}`, unit: "TB" };
+    } else if (GB >= 1) {
+        return { value: `${Math.round(GB * 100) / 100}`, unit: "GB" };
+    } else {
+        return { value: `${Math.round(MB * 100) / 100}`, unit: "MB" };
+    }
+}
+
+export function formatBigNumber(number: Number | BigInt) {
+    return number.toLocaleString('en-US');
+}

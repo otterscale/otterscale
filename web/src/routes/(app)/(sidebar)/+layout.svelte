@@ -13,10 +13,15 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { AppSidebar } from '$lib/components/sidebar';
 	import { Avatar, FunctionBar, SearchBar } from '$lib/components/navbar';
+	import { capitalizeFirstLetter } from 'better-auth';
 
 	let { children } = $props();
 
 	let currentPage = i18n.route(page.url.pathname);
+
+	let breadcrumbs = $derived.by(() => {
+		return page.url.pathname.split('/').filter((e) => e);
+	});
 
 	onMount(async () => {
 		await upsertRecent();
@@ -44,13 +49,35 @@
 				<Separator orientation="vertical" class="mr-2 h-8" />
 				<Breadcrumb.Root>
 					<Breadcrumb.List>
-						<Breadcrumb.Item class="hidden md:block">
-							<Breadcrumb.Link href="#">Building Your Application</Breadcrumb.Link>
-						</Breadcrumb.Item>
-						<Breadcrumb.Separator class="hidden md:block" />
-						<Breadcrumb.Item>
-							<Breadcrumb.Page>Data Fetching</Breadcrumb.Page>
-						</Breadcrumb.Item>
+						{#if breadcrumbs.length > 0}
+							<Breadcrumb.Item class="hidden md:block">
+								<Breadcrumb.Link href={`/${breadcrumbs[0]}`}
+									>{capitalizeFirstLetter(breadcrumbs[0])}</Breadcrumb.Link
+								>
+							</Breadcrumb.Item>
+							{#if breadcrumbs.length == 2}
+								<Breadcrumb.Separator class="hidden md:block" />
+								<Breadcrumb.Link href={`/${breadcrumbs.join('/')}`}
+									>{capitalizeFirstLetter(breadcrumbs[breadcrumbs.length - 1])}</Breadcrumb.Link
+								>
+							{:else if breadcrumbs.length > 2}
+								<Breadcrumb.Item class="hidden md:block">
+									<span>...</span>
+								</Breadcrumb.Item>
+								<Breadcrumb.Separator class="hidden md:block" />
+								<Breadcrumb.Item class="hidden md:block">
+									<Breadcrumb.Link href={`/${breadcrumbs.slice(0, -1).join('/')}`}
+										>{breadcrumbs[breadcrumbs.length - 2]}</Breadcrumb.Link
+									>
+								</Breadcrumb.Item>
+								<Breadcrumb.Separator class="hidden md:block" />
+								<Breadcrumb.Item class="hidden md:block">
+									<Breadcrumb.Link href={`/${breadcrumbs.join('/')}`}
+										>{breadcrumbs[breadcrumbs.length - 1]}</Breadcrumb.Link
+									>
+								</Breadcrumb.Item>
+							{/if}
+						{/if}
 					</Breadcrumb.List>
 				</Breadcrumb.Root>
 			</div>

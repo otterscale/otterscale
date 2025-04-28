@@ -61,15 +61,17 @@
 </script>
 
 {#if $isLoading}
-	<div class="text-muted-foreground flex h-full w-full items-center justify-center gap-2 text-sm">
+	<div class="flex h-full w-full items-center justify-center gap-2 text-sm text-muted-foreground">
 		<Icon icon="ph:spinner" class="size-8 animate-spin" />
 		Loading...
 	</div>
 {:else}
-	<div class="bg-muted-foreground">
-		<div class="markdown-body">
-			<Markdown {plugins} md={'```yaml\n' + get(applicationStore)?.configYaml} />
-		</div>
+	<div class="markdown-body">
+		{#if $applicationStore?.configYaml}
+			<Markdown {plugins} md={'```yaml\n' + $applicationStore.configYaml + '```'} />
+		{:else}
+			<p class="text-muted-foreground">No configuration available</p>
+		{/if}
 	</div>
 	{#each $machinesStore as machine}
 		<p>{machine.fqdn}: {machine.tags}</p>
