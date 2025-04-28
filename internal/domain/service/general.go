@@ -34,19 +34,20 @@ var (
 
 	kubernetesRelationList = [][]string{
 		{"calico:cni", "kubernetes-control-plane:cni"},
+		{"calico:cni", "kubernetes-worker:cni"},
 		{"calico:etcd", "etcd:db"},
+		{"easyrsa:client", "etcd:certificates"},
+		{"easyrsa:client", "kubernetes-control-plane:certificates"},
+		{"easyrsa:client", "kubernetes-worker:certificates"},
+		{"easyrsa:client", "kubeapi-load-balancer:certificates"},
+		{"etcd:db", "kubernetes-control-plane:etcd"},
+		{"kubernetes-control-plane:kube-control", "kubernetes-worker:kube-control"},
+		{"kubernetes-control-plane:loadbalancer-external", "kubeapi-load-balancer:lb-consumers"},
+		{"kubernetes-control-plane:loadbalancer-internal", "kubeapi-load-balancer:lb-consumers"},
+		{"keepalived:juju-info", "kubeapi-load-balancer:juju-info"},
+		{"keepalived:website", "kubeapi-load-balancer:apiserver"},
 		{"containerd:containerd", "kubernetes-control-plane:container-runtime"},
 		{"containerd:containerd", "kubernetes-worker:container-runtime"},
-		{"etcd:certificates", "easyrsa:client"},
-		{"keepalived:website", "kubeapi-load-balancer:apiserver"},
-		{"kubeapi-load-balancer:certificates", "easyrsa:client"},
-		{"kubernetes-control-plane:certificates", "easyrsa:client"},
-		{"kubernetes-control-plane:etcd", "etcd:db"},
-		{"kubernetes-control-plane:kube-control", "kubernetes-worker:kube-control"},
-		{"kubernetes-control-plane:kube-api-endpoint", "kubeapi-load-balancer:apiserver"},
-		{"kubernetes-control-plane:loadbalancer", "kubeapi-load-balancer:loadbalancer"},
-		{"kubernetes-worker:certificates", "easyrsa:client"},
-		{"kubernetes-worker:kube-api-endpoint", " kubeapi-load-balancer:website"},
 	}
 )
 
