@@ -1,12 +1,13 @@
 <script lang="ts">
-	import Platform from './platform.svelte';
-	import Shortcut from './shortcut.svelte';
+	import Section from './section.svelte';
 	import Namespace from './namespace.svelte';
+	import Footer from './footer.svelte';
+	import { featureTitle } from '../features';
+	import type { Title } from '../ui/sheet';
+
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
-	import Footer from './footer.svelte';
 	import pb, { avatarFallback, avatarURL } from '$lib/pb';
-	import { featureTitle } from '../features';
 
 	const data = {
 		user: {
@@ -35,12 +36,11 @@
 				color: '#FFD700'
 			}
 		],
-		platforms: [
+		analysis: [
 			{
 				title: featureTitle('/data-fabric'),
 				url: '#',
 				icon: 'ph:tree-structure',
-				isActive: true,
 				items: [
 					{
 						title: 'Browse',
@@ -60,7 +60,6 @@
 				title: featureTitle('/dashboard'),
 				url: '#',
 				icon: 'ph:chart-line-up',
-				isActive: true,
 				items: [
 					{
 						title: 'My Data',
@@ -90,27 +89,79 @@
 						url: '#'
 					}
 				]
+			}
+		],
+		platforms: [
+			{
+				title: 'Monitor',
+				url: '/management',
+				icon: 'ph:gauge'
 			},
+			{
+				title: 'Orchestration',
+				url: '/orchestration',
+				icon: 'ph:tree-structure'
+			},
+			{
+				title: 'Management',
+				url: '#',
+				icon: 'ph:command',
+				isActive: true,
+				items: [
+					{
+						title: 'Model',
+						url: '#'
+					},
+					{
+						title: 'Application',
+						url: '/management/application'
+					},
+					{
+						title: 'Facility',
+						url: '/management/scope'
+					},
+					{
+						title: 'Machine',
+						url: '/management/machine'
+					},
+
+					{
+						title: 'General',
+						url: '/management/general'
+					}
+				]
+			},
+			{
+				title: 'Market',
+				url: '/market',
+				icon: 'ph:magnifying-glass'
+			}
+		],
+		general: [
 			{
 				title: 'Settings',
 				url: '#',
 				icon: 'ph:gear',
 				items: [
 					{
-						title: 'General',
-						url: '#'
-					},
-					{
-						title: 'Team',
-						url: '#'
+						title: 'Profile',
+						url: '/settings/profile'
 					},
 					{
 						title: 'Billing',
-						url: '#'
+						url: '/settings/billing'
 					},
 					{
-						title: 'Limits',
-						url: '#'
+						title: 'Appearance',
+						url: '/settings/appearance'
+					},
+					{
+						title: 'Notification',
+						url: '/settings/notification'
+					},
+					{
+						title: 'Advanced',
+						url: '/settings/advanced'
 					}
 				]
 			}
@@ -129,12 +180,12 @@
 		],
 		shortcuts: [
 			{
-				name: featureTitle('/favorites'),
+				title: featureTitle('/favorites'),
 				url: '/favorites',
 				icon: 'ph:clover'
 			},
 			{
-				name: featureTitle('/recents'),
+				title: featureTitle('/recents'),
 				url: '/recents',
 				icon: 'ph:clock'
 			}
@@ -153,8 +204,10 @@
 		<Namespace namespaces={data.namespaces} />
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<Shortcut items={data.shortcuts} />
-		<Platform items={data.platforms} />
+		<Section label="Shortcut" items={data.shortcuts} />
+		<!-- <Section label="Alanysis" items={data.analysis} /> -->
+		<Section label="Platform" items={data.platforms} />
+		<Section label="General" items={data.general} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<Sidebar.Separator />

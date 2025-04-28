@@ -1,0 +1,1 @@
+export { default as DoAction } from './do.svelte';

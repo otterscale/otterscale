@@ -2,7 +2,7 @@ import { page } from '$app/state';
 import PocketBase, { type RecordAuthResponse, type RecordModel } from 'pocketbase';
 import { i18n } from './i18n';
 
-const pb = new PocketBase(import.meta.env.OPENHDC_BACKEND_URL);
+const pb = new PocketBase("http://192.168.197.171:8090/");
 pb.autoCancellation(false);
 
 if (pb.authStore.isValid && pb.authStore.record) {
@@ -389,4 +389,37 @@ export async function listPipelines(filter: string): Promise<pbPipeline[]> {
             console.error('Failed to list pipelines:', err)
         });
     return pipelines;
+}
+
+export interface pbInstance {
+    id: string;
+    type: string;
+    name: string;
+    tags: string[]
+    neighbors: string[];
+    information: {},
+    created: Date;
+    updated: Date;
+}
+export async function listInstances(filter: string): Promise<pbInstance[]> {
+    var instances: pbInstance[] = [];
+    await pb.collection('nodes').getFullList({ filter: filter })
+        .then((res) => {
+            res.forEach((rec: any) => {
+                instances.push({
+                    id: rec.id,
+                    type: rec.type,
+                    name: rec.name,
+                    tags: rec.tags,
+                    neighbors: rec.neighbors,
+                    information: rec.information,
+                    created: rec.created,
+                    updated: rec.updated,
+                } as pbInstance)
+            });
+        })
+        .catch((err) => {
+            console.error('Failed to list nodes:', err)
+        });
+    return instances;
 }
