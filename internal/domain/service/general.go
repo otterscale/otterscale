@@ -2,13 +2,17 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"net"
 	"slices"
 	"strings"
 
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"gopkg.in/yaml.v2"
 
+	"github.com/canonical/gomaasclient/entity"
 	"github.com/canonical/gomaasclient/entity/node"
 	"github.com/juju/juju/core/instance"
 
@@ -119,9 +123,12 @@ func (s *NexusService) ListCephes(ctx context.Context, uuid string) ([]model.Fac
 	return filter, nil
 }
 
-// TODO: CONFIG
 func (s *NexusService) CreateCeph(ctx context.Context, uuid, machineID, prefix string) (*model.FacilityInfo, error) {
-	fi, err := s.createGeneralFacility(ctx, uuid, machineID, prefix, charmNameCeph, cephFacilityList)
+	configs, err := getCephConfig()
+	if err != nil {
+		return nil, err
+	}
+	fi, err := s.createGeneralFacility(ctx, uuid, machineID, prefix, charmNameCeph, cephFacilityList, configs)
 	if err != nil {
 		return nil, err
 	}
@@ -149,10 +156,55 @@ func (s *NexusService) ListKuberneteses(ctx context.Context, uuid string) ([]mod
 	return filter, nil
 }
 
-// TODO: CONFIG
-// allow-privileged=true
-func (s *NexusService) CreateKubernetes(ctx context.Context, uuid, machineID, prefix string) (*model.FacilityInfo, error) {
-	fi, err := s.createGeneralFacility(ctx, uuid, machineID, prefix, charmNameKubernetes, kubernetesFacilityList)
+func (s *NexusService) getAndReserveIP(ctx context.Context, machineID, comment string) (net.IP, error) {
+	machine, err := s.machine.Get(ctx, machineID)
+	if err != nil {
+		return nil, err
+	}
+	links := machine.BootInterface.Links
+	if len(links) == 0 {
+		return nil, status.Error(codes.InvalidArgument, "machine has no network links")
+	}
+	subnet := &links[0].Subnet
+	ip, err := s.getFreeIP(ctx, subnet)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := s.CreateIPRange(ctx, subnet.ID, ip.String(), ip.String(), comment); err != nil {
+		return nil, err
+	}
+	return ip, nil
+}
+
+func (s *NexusService) CreateKubernetes(ctx context.Context, uuid, machineID, prefix string, userLoadbalancerIPs []string, userKeepalivedVirtualIP, userCalicoCIDR string) (*model.FacilityInfo, error) {
+	kubernetesVIP := strings.Join(userLoadbalancerIPs, " ")
+	if kubernetesVIP == "" {
+		ip, err := s.getAndReserveIP(ctx, machineID, fmt.Sprintf("kubernetes load balancer IP for %s", prefix))
+		if err != nil {
+			return nil, err
+		}
+		kubernetesVIP = ip.String()
+	}
+
+	keepalivedVIP := userKeepalivedVirtualIP
+	if keepalivedVIP == "" {
+		ip, err := s.getAndReserveIP(ctx, machineID, fmt.Sprintf("keepalived virtual IP for %s", prefix))
+		if err != nil {
+			return nil, err
+		}
+		kubernetesVIP = ip.String()
+	}
+
+	calicoCIDR := userCalicoCIDR
+	if userCalicoCIDR == "" {
+		calicoCIDR = "192.168.0.0/16"
+	}
+
+	configs, err := getKubernetesConfig(kubernetesVIP, calicoCIDR, keepalivedVIP)
+	if err != nil {
+		return nil, err
+	}
+	fi, err := s.createGeneralFacility(ctx, uuid, machineID, prefix, charmNameKubernetes, kubernetesFacilityList, configs)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +231,7 @@ func (s *NexusService) AddKubernetesUnits(ctx context.Context, uuid, general str
 	return s.addGeneralFacilityUnits(ctx, uuid, general, number, machineIDs, kubernetesFacilityList)
 }
 
-func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineID, prefix, general string, facilityList []generalFacility) (*model.FacilityInfo, error) {
+func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineID, prefix, general string, facilityList []generalFacility, configs map[string]string) (*model.FacilityInfo, error) {
 	m, err := s.machine.Get(ctx, machineID)
 	if err != nil {
 		return nil, err
@@ -201,19 +253,18 @@ func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineI
 	var facilityName string
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, facility := range facilityList {
-		name := toGeneralFacilityName(prefix, facility.charmName)
-
-		if facility.charmName == "ch:"+general {
-			facilityName = name
-		}
-
 		eg.Go(func() error {
+			name := toGeneralFacilityName(prefix, facility.charmName)
+			config := configs[facility.charmName]
 			placements := []instance.Placement{
 				{Scope: toPlacementScope(facility.lxd), Directive: directive},
 			}
-			_, err := s.facility.Create(ctx, uuid, name, "", facility.charmName, "", 0, 1, base, placements, nil, true)
+			_, err := s.facility.Create(ctx, uuid, name, config, facility.charmName, "", 0, 1, base, placements, nil, true)
 			return err
 		})
+		if facility.charmName == "ch:"+general {
+			facilityName = toGeneralFacilityName(prefix, facility.charmName)
+		}
 	}
 
 	if err := eg.Wait(); err != nil {
@@ -243,10 +294,9 @@ func (s *NexusService) addGeneralFacilityUnits(ctx context.Context, uuid, genera
 
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, facility := range facilityList {
-		name := toGeneralFacilityName(prefix, facility.charmName)
-		lxd := facility.lxd
-
 		eg.Go(func() error {
+			name := toGeneralFacilityName(prefix, facility.charmName)
+			lxd := facility.lxd
 			placements := make([]instance.Placement, len(directives))
 			for i, directive := range directives {
 				placements[i] = instance.Placement{
@@ -254,7 +304,6 @@ func (s *NexusService) addGeneralFacilityUnits(ctx context.Context, uuid, genera
 					Directive: directive,
 				}
 			}
-
 			_, err := s.facility.AddUnits(ctx, uuid, name, number, placements)
 			return err
 		})
@@ -341,6 +390,78 @@ func (s *NexusService) isKubernetesExists(ctx context.Context) (*model.Error, er
 	return nil, nil
 }
 
+func (s *NexusService) getReservedIPs(ctx context.Context, cidr string) ([]uint32, error) {
+	_, ipNet, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return nil, err
+	}
+	ipRanges, err := s.ipRange.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	record := []uint32{}
+	for i := range ipRanges {
+		if ipNet.Contains(ipRanges[i].StartIP) && ipNet.Contains(ipRanges[i].EndIP) {
+			start := ipToUint32(ipRanges[i].StartIP)
+			end := ipToUint32(ipRanges[i].EndIP)
+			for i := start; i <= end; i++ {
+				record = append(record, i)
+			}
+		}
+	}
+	return record, nil
+}
+
+func (s *NexusService) getUsedIPs(ctx context.Context, subnetID int) ([]uint32, error) {
+	ipas, err := s.subnet.GetIPAddresses(ctx, subnetID)
+	if err != nil {
+		return nil, err
+	}
+	record := []uint32{}
+	for i := range ipas {
+		record = append(record, ipToUint32(ipas[i].IP))
+	}
+	return record, nil
+}
+
+func (s *NexusService) getFreeIP(ctx context.Context, subnet *entity.Subnet) (net.IP, error) {
+	skip := []uint32{}
+	used, err := s.getUsedIPs(ctx, subnet.ID)
+	if err != nil {
+		return nil, err
+	}
+	skip = append(skip, used...)
+
+	reserved, err := s.getReservedIPs(ctx, subnet.CIDR)
+	if err != nil {
+		return nil, err
+	}
+	skip = append(skip, reserved...)
+
+	_, ipNet, err := net.ParseCIDR(subnet.CIDR)
+	if err != nil {
+		return nil, err
+	}
+
+	ip := ipToUint32(ipNet.IP)
+	mask := ipToUint32(net.IP(ipNet.Mask))
+	network := ip & mask
+	broadcast := network | ^mask
+
+	next := false // get next to prevent time gap
+	for i := network + 1; i < broadcast; i++ {
+		if slices.Contains(skip, i) {
+			continue
+		}
+		if next {
+			return uint32ToIP(i), nil
+		}
+		next = true
+	}
+
+	return nil, status.Errorf(codes.ResourceExhausted, "no free IP found")
+}
+
 func toPlacementScope(lxd bool) string {
 	if lxd {
 		return "lxd"
@@ -357,4 +478,90 @@ func toGeneralFacilityName(prefix, charmName string) string {
 
 func toGeneralFacilityPrefix(general string) string {
 	return strings.Split(general, "-")[0]
+}
+
+func getKubernetesConfig(kubernetesVIP, calicoCIDR, keepalivedVIP string) (map[string]string, error) {
+	cp, err := yaml.Marshal(map[string]any{
+		"allow-privileged": true,
+		"extra_sans":       kubernetesVIP,
+		"loadbalancer-ips": kubernetesVIP,
+	})
+	if err != nil {
+		return nil, err
+	}
+	lb, err := yaml.Marshal(map[string]any{
+		"extra_sans":       kubernetesVIP,
+		"loadbalancer-ips": kubernetesVIP,
+	})
+	if err != nil {
+		return nil, err
+	}
+	calico, err := yaml.Marshal(map[string]any{
+		"ignore-loose-rpf": true,
+		"cidr":             calicoCIDR,
+	})
+	if err != nil {
+		return nil, err
+	}
+	containerd, err := yaml.Marshal(map[string]any{
+		"gpu_driver": "none",
+	})
+	if err != nil {
+		return nil, err
+	}
+	keepalived, err := yaml.Marshal(map[string]any{
+		"virtual_ip": keepalivedVIP,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return map[string]string{
+		"ch:kubernetes-control-plane": string(cp),
+		"ch:kubeapi-load-balancer":    string(lb),
+		"ch:calico":                   string(calico),
+		"ch:containerd":               string(containerd),
+		"ch:keepalived":               string(keepalived),
+	}, nil
+}
+func getCephConfig() (map[string]string, error) {
+	mon, err := yaml.Marshal(map[string]any{
+		"source":             "cloud:jammy-bobcat",
+		"monitor-count":      1, // TODO: BETTER
+		"expected-osd-count": 1, // TODO: BETTER
+		"config-flags":       "osd_pool_default_size 1, osd_pool_default_min_size 1, mon_allow_pool_size_one true",
+	})
+	if err != nil {
+		return nil, err
+	}
+	osd, err := yaml.Marshal(map[string]any{
+		"source": "cloud:jammy-bobcat",
+	})
+	if err != nil {
+		return nil, err
+	}
+	fs, err := yaml.Marshal(map[string]any{
+		"source": "cloud:jammy-bobcat",
+	})
+	if err != nil {
+		return nil, err
+	}
+	return map[string]string{
+		"ch:ceph-mon": string(mon),
+		"ch:ceph-osd": string(osd),
+		"ch:ceph-fs":  string(fs),
+	}, nil
+}
+
+func ipToUint32(ip net.IP) uint32 {
+	ip = ip.To4()
+	return uint32(ip[0])<<24 | uint32(ip[1])<<16 | uint32(ip[2])<<8 | uint32(ip[3])
+}
+
+func uint32ToIP(n uint32) net.IP {
+	return net.IP{
+		byte(n >> 24),
+		byte(n >> 16),
+		byte(n >> 8),
+		byte(n),
+	}
 }

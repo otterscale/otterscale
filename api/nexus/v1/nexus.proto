@@ -511,6 +511,9 @@ message CreateKubernetesRequest {
   string scope_uuid = 1;
   string machine_id = 2;
   string prefix_name = 3;
+  repeated string loadbalancer_ips = 11;
+  string keepalived_virtual_ip = 12;
+  string calico_cidr = 13;
 }
 
 message AddKubernetesUnitsRequest {
