@@ -1,9 +1,13 @@
 <script lang="ts">
+	import GetMachineStatus from './get-machine-status.svelte';
+	import * as Collapsible from '$lib/components/ui/collapsible';
+
 	// External dependencies
 	import Icon from '@iconify/svelte';
 	import { capitalizeFirstLetter } from 'better-auth';
 	import { toast } from 'svelte-sonner';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import { Label } from '$lib/components/ui/label';
 
 	// Internal UI components
 	import { Badge } from '$lib/components/ui/badge';
@@ -13,6 +17,7 @@
 	// Internal utilities and types
 	import { type Machine, type Network } from '$gen/api/nexus/v1/nexus_pb';
 	import { formatCapacity } from '$lib/formatter';
+
 	import { nodeIcon } from '$lib/node';
 
 	const nodeType = 'MAAS';
@@ -29,7 +34,7 @@
 	{@render Summary()}
 
 	<Tabs.Root value="workload_annotation">
-		<Tabs.List class={`grid w-fit grid-cols-4 rounded-sm`}>
+		<Tabs.List class="w-fit rounded-sm">
 			<Tabs.Trigger value="workload_annotation">Workload Annotation</Tabs.Trigger>
 			<Tabs.Trigger value="hardware_information">Hardware Information</Tabs.Trigger>
 			<Tabs.Trigger value="block_device">Block Devices</Tabs.Trigger>
@@ -38,7 +43,7 @@
 		<Tabs.Content value="workload_annotation" class="h-full">
 			{@render TabContent_WorkloadAnnotation()}
 		</Tabs.Content>
-		<Tabs.Content value="hardware_information">
+		<Tabs.Content value="hardware_information" class="p-2">
 			{@render TabContent_HardwareInformation()}
 		</Tabs.Content>
 		<Tabs.Content value="block_device">
@@ -80,28 +85,31 @@
 	{@const formattedStorage = formatCapacity(machine.storageMb / 1024)}
 	<div class="grid grid-cols-5 gap-3 *:border-none *:shadow-none">
 		<Card.Root>
-			<Card.Header>
+			<Card.Header class="h-10">
 				<Card.Title><div class="flex justify-between text-xs">POWER</div></Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<Card.Content class="h-20">
 				<div class="text-2xl">
 					{capitalizeFirstLetter(machine.powerState)}
 				</div>
 			</Card.Content>
 			<Card.Footer>
-				<div class="truncate text-xs font-light text-muted-foreground">
-					{machine.powerType}
-				</div>
+				<Badge variant="outline">
+					<div class="truncate font-light text-muted-foreground">
+						{machine.powerType}
+					</div>
+				</Badge>
 			</Card.Footer>
 		</Card.Root>
 		<Card.Root>
-			<Card.Header>
+			<Card.Header class="h-10">
 				<Card.Title><div class="flex justify-between text-xs">MACHINE STATUS</div></Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<Card.Content class="h-20">
 				<div class="text-2xl">
 					{machine.status}
 				</div>
+				<GetMachineStatus id={machine.id} />
 			</Card.Content>
 			<Card.Footer>
 				<div class="truncate text-xs font-light text-muted-foreground">
@@ -112,7 +120,7 @@
 			</Card.Footer>
 		</Card.Root>
 		<Card.Root>
-			<Card.Header>
+			<Card.Header class="h-10">
 				<Card.Title
 					><div class="flex justify-between text-xs">
 						CPU
@@ -122,7 +130,7 @@
 					</div>
 				</Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<Card.Content class="h-20">
 				<div class="text-2xl">
 					{machine.cpuCount} cores
 				</div>
@@ -134,31 +142,35 @@
 			</Card.Footer>
 		</Card.Root>
 		<Card.Root>
-			<Card.Header>
+			<Card.Header class="h-10">
 				<Card.Title><div class="flex justify-between text-xs">MEMORY</div></Card.Title>
 			</Card.Header>
-			<Card.Content>
-				<div class="text-2xl">
+			<Card.Content class="flex h-20 items-end gap-1">
+				<p class="text-4xl">
 					{formattedMemory.value}
+				</p>
+				<p class="text-2xl">
 					{formattedMemory.unit}
-				</div>
+				</p>
 			</Card.Content>
 		</Card.Root>
 		<Card.Root>
-			<Card.Header>
+			<Card.Header class="h-10">
 				<Card.Title><div class="flex justify-between text-xs">STORAGE</div></Card.Title>
 			</Card.Header>
-			<Card.Content>
-				<div class="text-2xl">
-					{formattedStorage.value}
-					{formattedStorage.unit}
+			<Card.Content class="h-20">
+				<div class="flex items-end gap-1">
+					<p class="text-4xl">
+						{formattedStorage.value}
+					</p>
+					<p class="text-2xl">
+						{formattedStorage.unit}
+					</p>
 				</div>
-			</Card.Content>
-			<Card.Footer>
-				<div class="truncate text-xs font-light text-muted-foreground">
+				<p class="truncate text-xs font-light text-muted-foreground">
 					over {machine.blockDevices.length} disks
-				</div>
-			</Card.Footer>
+				</p>
+			</Card.Content>
 		</Card.Root>
 	</div>
 {/snippet}
@@ -171,14 +183,14 @@
 	{:else}
 		<Table.Root>
 			<Table.Header>
-				<Table.Row>
-					<Table.Head>Juju Controller UUID</Table.Head>
-					<Table.Head>Juju Machine ID</Table.Head>
-					<Table.Head>Juju Model UUID</Table.Head>
+				<Table.Row class="*:text-xs *:font-light">
+					<Table.Head>JUJU CONTROLLER UUID</Table.Head>
+					<Table.Head>JUJU MACHINE ID</Table.Head>
+					<Table.Head>JUJU MODEL UUID</Table.Head>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				<Table.Row>
+				<Table.Row class="*:text-xs">
 					<Table.Cell>
 						{#if machine.workloadAnnotations['juju-controller-uuid']}
 							<Badge variant="outline">
@@ -193,13 +205,13 @@
 					</Table.Cell>
 					<Table.Cell>
 						{#if machine.workloadAnnotations['juju-model-uuid']}
-							<span class="flex items-center gap-1">
-								<a href={`/management/scope/${machine.workloadAnnotations['juju-model-uuid']}`}>
-									<Icon icon="ph:arrow-square-out" />
-								</a>
+							<span class="flex items-start gap-1">
 								<Badge variant="outline">
-									{machine.workloadAnnotations['juju-model-uuid']}
+									<a href={`/management/scope/${machine.workloadAnnotations['juju-model-uuid']}`}>
+										{machine.workloadAnnotations['juju-model-uuid']}
+									</a>
 								</Badge>
+								<Icon icon="ph:arrow-square-out" />
 							</span>
 						{/if}
 					</Table.Cell>
@@ -209,22 +221,26 @@
 	{/if}
 {/snippet}
 {#snippet TabContent_HardwareInformation()}
-	<div class="flex flex-col gap-1 [&>fieldset]:rounded-lg [&>fieldset]:border [&>fieldset]:p-3">
-		<fieldset>
-			<legend>System</legend>
+	<div class="grid gap-2">
+		<div>
+			<div class="flex items-center gap-1">
+				<Icon icon="ph:desktop" class="size-5" />
+				<Label class="text-base">System</Label>
+			</div>
+
 			<Table.Root>
 				<Table.Header>
-					<Table.Row>
-						<Table.Head>Vendor</Table.Head>
-						<Table.Head>Product</Table.Head>
-						<Table.Head>Version</Table.Head>
-						<Table.Head>Serial</Table.Head>
+					<Table.Row class="*:text-xs *:font-light">
+						<Table.Head>VENDOR</Table.Head>
+						<Table.Head>PRODUCT</Table.Head>
+						<Table.Head>VERSION</Table.Head>
+						<Table.Head>SERIAL</Table.Head>
 						<Table.Head>SKU</Table.Head>
-						<Table.Head>Family</Table.Head>
+						<Table.Head>FAMILY</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					<Table.Row>
+					<Table.Row class="*:text-xs">
 						<Table.Cell>{machine.hardwareInformation.system_vendor}</Table.Cell>
 						<Table.Cell>{machine.hardwareInformation.system_product}</Table.Cell>
 						<Table.Cell>{machine.hardwareInformation.system_version}</Table.Cell>
@@ -234,22 +250,26 @@
 					</Table.Row>
 				</Table.Body>
 			</Table.Root>
-		</fieldset>
-		<fieldset>
-			<legend>Mainboard</legend>
+		</div>
+		<div>
+			<div class="flex items-center gap-1">
+				<Icon icon="ph:circuitry" class="size-5" />
+				<Label class="text-base">Mainboard</Label>
+			</div>
+
 			<Table.Root>
 				<Table.Header>
-					<Table.Row>
-						<Table.Head>Vendor</Table.Head>
-						<Table.Head>Product</Table.Head>
-						<Table.Head>Firmware</Table.Head>
-						<Table.Head>Boot Mode</Table.Head>
-						<Table.Head>Version</Table.Head>
-						<Table.Head>Date</Table.Head>
+					<Table.Row class="*:text-xs *:font-light">
+						<Table.Head>VENDOR</Table.Head>
+						<Table.Head>PRODUCT</Table.Head>
+						<Table.Head>FIRMWARE</Table.Head>
+						<Table.Head>BOOT MODE</Table.Head>
+						<Table.Head>VERSION</Table.Head>
+						<Table.Head>DATE</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					<Table.Row>
+					<Table.Row class="*:text-xs">
 						<Table.Cell>{machine.hardwareInformation.mainboard_vendor}</Table.Cell>
 						<Table.Cell>{machine.hardwareInformation.mainboard_product}</Table.Cell>
 						<Table.Cell>{machine.hardwareInformation.mainboard_firmware_vendor}</Table.Cell>
@@ -259,20 +279,24 @@
 					</Table.Row>
 				</Table.Body>
 			</Table.Root>
-		</fieldset>
-		<fieldset>
-			<legend>Chassis</legend>
+		</div>
+		<div>
+			<div class="flex items-center gap-1">
+				<Icon icon="ph:computer-tower" class="size-5" />
+				<Label class="text-base">Chassis</Label>
+			</div>
+
 			<Table.Root>
 				<Table.Header>
-					<Table.Row>
-						<Table.Head>Vendor</Table.Head>
-						<Table.Head>Type</Table.Head>
-						<Table.Head>Version</Table.Head>
-						<Table.Head>Serial</Table.Head>
+					<Table.Row class="*:text-xs *:font-light">
+						<Table.Head>VENDOR</Table.Head>
+						<Table.Head>TYPE</Table.Head>
+						<Table.Head>VERSION</Table.Head>
+						<Table.Head>SERIAL</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					<Table.Row>
+					<Table.Row class="*:text-xs">
 						<Table.Cell>{machine.hardwareInformation.chassis_vendor}</Table.Cell>
 						<Table.Cell>{machine.hardwareInformation.chassis_type}</Table.Cell>
 						<Table.Cell>{machine.hardwareInformation.chassis_version}</Table.Cell>
@@ -280,26 +304,26 @@
 					</Table.Row>
 				</Table.Body>
 			</Table.Root>
-		</fieldset>
+		</div>
 	</div>
 {/snippet}
 {#snippet TabContent_BlockDevices()}
 	<Table.Root>
 		<Table.Header>
-			<Table.Row>
-				<Table.Head>Name</Table.Head>
-				<Table.Head>Model</Table.Head>
-				<Table.Head>Serial</Table.Head>
-				<Table.Head>Boot Disk</Table.Head>
-				<Table.Head>Firmware Version</Table.Head>
-				<Table.Head>Type</Table.Head>
-				<Table.Head>User For</Table.Head>
-				<Table.Head>Tags</Table.Head>
+			<Table.Row class="*:text-xs *:font-light">
+				<Table.Head>NAME</Table.Head>
+				<Table.Head>MODEL</Table.Head>
+				<Table.Head>SERIAL</Table.Head>
+				<Table.Head>BOOT DISK</Table.Head>
+				<Table.Head>FIRMWARE VERSION</Table.Head>
+				<Table.Head>TYPE</Table.Head>
+				<Table.Head>USER FOR</Table.Head>
+				<Table.Head>TAGS</Table.Head>
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
 			{#each machine.blockDevices as blockDevice}
-				<Table.Row>
+				<Table.Row class="*:text-xs">
 					<Table.Cell>{blockDevice.name}</Table.Cell>
 					<Table.Cell>{blockDevice.model}</Table.Cell>
 					<Table.Cell>{blockDevice.serial}</Table.Cell>
@@ -324,30 +348,22 @@
 {#snippet TabContent_Networks()}
 	<Table.Root>
 		<Table.Header>
-			<Table.Row>
+			<Table.Row class="*:text-xs *:font-light">
 				<Table.Head>
-					<div class="text-sm">
-						NAME
-						<div class="text-xs font-light text-muted-foreground">MAC Address</div>
-					</div>
+					NAME
+					<p class="text-muted-foreground">MAC Address</p>
 				</Table.Head>
 				<Table.Head>
-					<div class="text-sm">
-						IP ADDRESS
-						<div class="text-xs font-light text-muted-foreground">Subnet</div>
-					</div>
+					IP ADDRESS
+					<p class="text-muted-foreground">Subnet</p>
 				</Table.Head>
 				<Table.Head>
-					<div class="text-sm">
-						LINK SPEED
-						<div class="text-xs font-light text-muted-foreground">Link Connected</div>
-					</div>
+					LINK SPEED
+					<p class="text-muted-foreground">Link Connected</p>
 				</Table.Head>
 				<Table.Head>
-					<div class="text-sm">
-						FABRIC
-						<div class="text-xs font-light text-muted-foreground">VLAN</div>
-					</div>
+					FABRIC
+					<p class="text-muted-foreground">VLAN</p>
 				</Table.Head>
 				<Table.Head>TYPE</Table.Head>
 				<Table.Head>DHCP ON</Table.Head>
@@ -357,33 +373,31 @@
 		</Table.Header>
 		<Table.Body>
 			{#each machine.networkInterfaces as networkInterface}
-				<Table.Row>
+				<Table.Row class="*:text-xs">
 					<Table.Cell>
-						{networkInterface.name}
-						<div>
-							{networkInterface.macAddress}
-						</div>
+						<p>{networkInterface.name}</p>
+						<p>{networkInterface.macAddress}</p>
 					</Table.Cell>
 					<Table.Cell>
-						{networkInterface.ipAddress}
-						<div>
+						<p>
+							{networkInterface.ipAddress}
+						</p>
+						<p>
 							{networkInterface.subnetName}
-						</div>
+						</p>
 					</Table.Cell>
 					<Table.Cell>
-						{networkInterface.linkSpeed} Mbps
-						<div>
-							<Icon
-								icon={networkInterface.linkConnected ? 'ph:check-circle' : 'ph:x-circle'}
-								style="color: {networkInterface.linkConnected ? 'green' : 'red'}"
-							/>
-						</div>
+						<p>{networkInterface.linkSpeed} Mbps</p>
+						<Icon
+							icon={networkInterface.linkConnected ? 'ph:check-circle' : 'ph:x-circle'}
+							style="color: {networkInterface.linkConnected ? 'green' : 'red'}"
+						/>
 					</Table.Cell>
 					<Table.Cell>
-						{networkInterface.fabricName}
-						<div>
+						<p>{networkInterface.fabricName}</p>
+						<p>
 							{networkInterface.vlanName}
-						</div>
+						</p>
 					</Table.Cell>
 					<Table.Cell>{networkInterface.type}</Table.Cell>
 					<Table.Cell>

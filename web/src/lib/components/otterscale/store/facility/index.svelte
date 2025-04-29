@@ -59,7 +59,7 @@
 <main class="grid justify-between">
 	<div class="flex flex-col justify-between gap-2">
 		<div class="w-full">
-			<Search {charms} bind:searchTerm bind:activePage />
+			<Search charms={filteredCharms} bind:searchTerm bind:activePage />
 		</div>
 
 		<div class="flex gap-2 overflow-auto">
@@ -159,7 +159,7 @@
 	{@const Length = 1}
 	<span class="flex gap-2 overflow-hidden">
 		{#each badges.slice(0, Length) as keyword}
-			<Badge variant="secondary" class="text-xs">{keyword}</Badge>
+			<Badge variant="outline" class="text-xs">{keyword}</Badge>
 		{/each}
 		{#if badges.length > Length}
 			<Badge variant="outline" class="whitespace-nowrap">+{badges.length - Length}</Badge>

@@ -47,7 +47,7 @@
 		selectedChartReleases
 	}: {
 		selectedChart: Application_Chart;
-		selectedChartReleases: Application_Release[];
+		selectedChartReleases: Application_Release[] | undefined;
 	} = $props();
 
 	let mounted = $state(false);
@@ -84,16 +84,19 @@
 		<div
 			class={cn(
 				'grid max-h-[calc(77vh_-_theme(spacing.16))] gap-4 overflow-auto p-2',
-				cn('[&>fieldset]:border-l'),
+				cn('[&>fieldset]:p-2'),
 				cn(
-					'[&>fieldset>legend]:-ml-2 [&>fieldset>legend]:w-full [&>fieldset>legend]:p-2 [&>fieldset>legend]:text-sm [&>fieldset>legend]:font-extralight'
+					'[&>fieldset>legend]:w-full [&>fieldset>legend]:text-sm [&>fieldset>legend]:font-extralight'
 				),
-				cn('[&>fieldset>div]:px-4 [&>fieldset>div]:py-2')
+				cn('[&>fieldset>div]:p-2')
 			)}
 		>
 			{#if $chartStore.home}
 				<fieldset>
-					<legend>HOME</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:house" />
+						HOME
+					</legend>
 					<div>
 						<span class="flex items-start gap-1">
 							<a href={$chartStore.home} target="_blank" class="break-all text-xs font-light">
@@ -107,7 +110,11 @@
 
 			{#if $chartStore.sources && $chartStore.sources.length > 0}
 				<fieldset>
-					<legend>SOURCE</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:cloud" />
+						SOURCE
+					</legend>
+
 					<div class="grid gap-2">
 						{#each $chartStore.sources as source}
 							<span class="flex items-start gap-1">
@@ -123,7 +130,11 @@
 
 			{#if $chartStore.dependencies && $chartStore.dependencies.length > 0}
 				<fieldset>
-					<legend>DEPENDENCY</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:stack" />
+						DEPENDENCY
+					</legend>
+
 					<div class="grid gap-2">
 						{#each $chartStore.dependencies as dependency}
 							<span class="flex items-start gap-1">
@@ -139,7 +150,11 @@
 
 			{#if $chartStore.keywords && $chartStore.keywords.length > 0}
 				<fieldset>
-					<legend>KEYWORDS</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:tag" />
+						KEYWORD
+					</legend>
+
 					<div>
 						<span class="flex flex-wrap gap-1">
 							{#each $chartStore.keywords as keyword}
@@ -152,7 +167,11 @@
 
 			{#if $chartStore.tags && $chartStore.tags.length > 0}
 				<fieldset>
-					<legend>TAG</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:tag" />
+						TAG
+					</legend>
+
 					<div>
 						<span class="flex flex-wrap gap-1">
 							{#each $chartStore.tags as tag}
@@ -165,7 +184,10 @@
 
 			{#if $chartStore.maintainers && $chartStore.maintainers.length > 0}
 				<fieldset>
-					<legend>MAINTAINER</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:user" />
+						MAINTAINER
+					</legend>
 					<div>
 						<div class="flex flex-col gap-2">
 							{#each $chartStore.maintainers as maintainer}
@@ -192,7 +214,10 @@
 
 			{#if selectedChartReleases && selectedChartReleases.length > 0}
 				<fieldset class="border-none">
-					<legend>RELEASE</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:archive" />
+						RELEASE
+					</legend>
 					<div>
 						{@render ReadReleases(selectedChartReleases)}
 					</div>

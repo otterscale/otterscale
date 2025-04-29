@@ -73,7 +73,7 @@
 					onclick={() => {
 						isImportingBootImages = true;
 						client.importBootImages(importBootImageRequest).then((r) => {
-							toast.info(`Import boot images`);
+							toast.info(`Import boot images.`);
 						});
 						// toast.info(`Import boot images`);
 						console.log(importBootImageRequest);

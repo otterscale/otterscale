@@ -63,7 +63,7 @@
 
 		<div class="flex gap-2 overflow-auto">
 			<span class="h-[660px] w-[13vw] min-w-[13vw] overflow-visible">
-				<Filter {charts} bind:activePage bind:selectedKeywords />
+				<Filter charts={filteredCharts} bind:activePage bind:selectedKeywords />
 			</span>
 			<span
 				class={cn(
@@ -171,7 +171,7 @@
 	{@const Length = 1}
 	<span class="flex gap-2 overflow-hidden">
 		{#each badges.slice(0, Length) as keyword}
-			<Badge variant="secondary" class="text-xs">{keyword}</Badge>
+			<Badge variant="outline" class="text-xs">{keyword}</Badge>
 		{/each}
 		{#if badges.length > Length}
 			<Badge variant="outline" class="whitespace-nowrap">+{badges.length - Length}</Badge>

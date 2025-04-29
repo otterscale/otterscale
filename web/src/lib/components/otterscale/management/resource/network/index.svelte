@@ -192,12 +192,13 @@
 	)}
 	{@const Availability = (numberOfAvailableSubnet * 100) / numberOfSubnet || 0}
 	{@const rateOfDHCPOn = (numberOfDHCPOn * 100) / numberOfFabrics || 0}
+
 	<div class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
 		<Card.Root>
-			<Card.Header>
-				<Card.Title>Networks</Card.Title>
+			<Card.Header class="h-10">
+				<Card.Title>NETWORK</Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<Card.Content class="h-30">
 				<span class="flex items-end gap-1">
 					<p class="text-7xl">{numberOfFabrics}</p>
 					<p>fabrics</p>
@@ -217,10 +218,10 @@
 			</Card.Footer>
 		</Card.Root>
 		<Card.Root>
-			<Card.Header>
+			<Card.Header class="h-10">
 				<Card.Title>DHCP</Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<Card.Content class="h-30">
 				<p class="text-3xl">
 					{Math.round(rateOfDHCPOn)}%
 				</p>
@@ -233,10 +234,10 @@
 			</Card.Footer>
 		</Card.Root>
 		<Card.Root>
-			<Card.Header>
-				<Card.Title>Availability</Card.Title>
+			<Card.Header class="h-10">
+				<Card.Title>AVAILABILITY</Card.Title>
 			</Card.Header>
-			<Card.Content>
+			<Card.Content class="h-30">
 				<p class="text-3xl">
 					{Math.round(Availability)}%
 				</p>
@@ -269,22 +270,22 @@
 			</div>
 		</HoverCard.Trigger>
 		<HoverCard.Content>
-			<Table.Root>
-				<Table.Body class="text-xs">
+			<Table.Root class="*:whitespace-nowrap *:text-xs">
+				<Table.Body class="[&>tr>th]:text-right [&>tr>th]:font-light">
 					<Table.Row>
-						<Table.Cell>Name</Table.Cell>
+						<Table.Head>Name</Table.Head>
 						<Table.Cell>{vlan.name}</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>MTU</Table.Cell>
+						<Table.Head>MTU</Table.Head>
 						<Table.Cell>{vlan.mtu}</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>Description</Table.Cell>
+						<Table.Head>Description</Table.Head>
 						<Table.Cell>{vlan.description}</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>DHCP</Table.Cell>
+						<Table.Head>DHCP</Table.Head>
 						<Table.Cell>
 							{@render formatterBoolean(vlan.dhcpOn)}
 						</Table.Cell>
@@ -302,63 +303,63 @@
 				<Icon icon="ph:info" class="size-4 text-blue-800" />
 			</div>
 		</HoverCard.Trigger>
-		<HoverCard.Content>
-			<Table.Root>
-				<Table.Body class="text-xs">
+		<HoverCard.Content class="w-fit">
+			<Table.Root class="*:whitespace-nowrap *:text-xs">
+				<Table.Body class="[&>tr>th]:text-right [&>tr>th]:font-light">
 					<Table.Row>
-						<Table.Cell>Name</Table.Cell>
+						<Table.Head>Name</Table.Head>
 						<Table.Cell>
 							{subnet.name}
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>CIDR</Table.Cell>
+						<Table.Head>CIDR</Table.Head>
 						<Table.Cell>
 							{subnet.cidr}
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>Gateway IP</Table.Cell>
+						<Table.Head>Gateway IP</Table.Head>
 						<Table.Cell>
 							{subnet.gatewayIp}
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>DNS Servers</Table.Cell>
+						<Table.Head>DNS Servers</Table.Head>
 						<Table.Cell>
 							{#each subnet.dnsServers as dnsServer}
-								<Badge class="text-xs" variant="outline">
+								<Badge variant="outline">
 									{dnsServer}
 								</Badge>
 							{/each}
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>Description</Table.Cell>
+						<Table.Head>Description</Table.Head>
 						<Table.Cell>
 							{subnet.description}
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>Managed Allocation</Table.Cell>
+						<Table.Head>Managed Allocation</Table.Head>
 						<Table.Cell>
 							{@render formatterBoolean(subnet.managedAllocation)}
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>Active Discovery</Table.Cell>
+						<Table.Head>Active Discovery</Table.Head>
 						<Table.Cell>
 							{@render formatterBoolean(subnet.activeDiscovery)}
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>Allow Proxy Access</Table.Cell>
+						<Table.Head>Allow Proxy Access</Table.Head>
 						<Table.Cell>
 							{@render formatterBoolean(subnet.allowProxyAccess)}
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell>Allow DNS Resolution</Table.Cell>
+						<Table.Head>Allow DNS Resolution</Table.Head>
 						<Table.Cell>
 							{@render formatterBoolean(subnet.allowDnsResolution)}
 						</Table.Cell>
@@ -377,39 +378,43 @@
 					<Icon icon="ph:info" class="size-4 text-blue-800" />
 				</div>
 			</HoverCard.Trigger>
-			<HoverCard.Content class="max-h-[50vh] min-w-[38vw] max-w-[62vw] overflow-auto">
-				<Table.Root class="w-fit">
+			<HoverCard.Content class="max-h-[50vh] min-w-[50vw] overflow-auto">
+				<Table.Root class="w-full *:whitespace-nowrap *:text-xs">
 					<Table.Header>
-						<Table.Row>
-							<Table.Head class="whitespace-nowrap font-light"></Table.Head>
-							<Table.Head class="whitespace-nowrap font-light">IP</Table.Head>
-							<Table.Head class="whitespace-nowrap font-light">USER</Table.Head>
-							<Table.Head class="whitespace-nowrap font-light">NODE TYPE</Table.Head>
-							<Table.Head class="whitespace-nowrap font-light">TYPE</Table.Head>
-							<Table.Head class="whitespace-nowrap font-light">SYSTEM ID</Table.Head>
-							<Table.Head class="whitespace-nowrap font-light">HOSTNAME</Table.Head>
+						<Table.Row class="*:font-light">
+							<Table.Head></Table.Head>
+							<Table.Head>IP</Table.Head>
+							<Table.Head>User</Table.Head>
+							<Table.Head>Node Type</Table.Head>
+							<Table.Head>Type</Table.Head>
+							<Table.Head>System ID</Table.Head>
+							<Table.Head>Hostname</Table.Head>
 						</Table.Row>
 					</Table.Header>
-					<Table.Body class="text-xs">
+					<Table.Body>
 						{#each ipAddresses as ipAddress, index}
 							<Table.Row>
-								<Table.Cell class="whitespace-nowrap">{index + 1}</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">{ipAddress.ip}</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">
+								<Table.Cell>{index + 1}</Table.Cell>
+								<Table.Cell>{ipAddress.ip}</Table.Cell>
+								<Table.Cell>
 									{ipAddress.user}
 								</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">
-									{#if ipAddress.nodeType}
-										<Badge variant="outline">{ipAddress.nodeType}</Badge>
-									{/if}
+								<Table.Cell>
+									<span>
+										{#if ipAddress.nodeType}
+											<Badge variant="outline">{ipAddress.nodeType}</Badge>
+										{/if}
+									</span>
 								</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">
-									{#if ipAddress.type}
-										<Badge variant="outline">{ipAddress.type}</Badge>
-									{/if}
+								<Table.Cell>
+									<span>
+										{#if ipAddress.type}
+											<Badge variant="outline">{ipAddress.type}</Badge>
+										{/if}
+									</span>
 								</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">{ipAddress.ip}</Table.Cell>
-								<Table.Cell class="whitespace-nowrap">{ipAddress.hostname}</Table.Cell>
+								<Table.Cell>{ipAddress.ip}</Table.Cell>
+								<Table.Cell>{ipAddress.hostname}</Table.Cell>
 							</Table.Row>
 						{/each}
 					</Table.Body>

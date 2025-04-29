@@ -8,9 +8,11 @@
 	import { toast } from 'svelte-sonner';
 
 	let {
-		tag
+		tag,
+		tags = $bindable()
 	}: {
 		tag: Tag;
+		tags: Tag[];
 	} = $props();
 
 	const transport: Transport = getContext('transportNEW');
@@ -49,6 +51,7 @@
 				onclick={() => {
 					client.deleteTag(deleteTagRequest).then((r) => {
 						toast.info(`Delete ${deleteTagRequest.name}`);
+						client.listTags({}).then((r) => {tags = r.tags})
 					});
 					// toast.info(`Delete ${deleteTagRequest.name}`);
 					console.log(deleteTagRequest.name);

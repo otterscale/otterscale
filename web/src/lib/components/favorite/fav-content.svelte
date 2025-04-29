@@ -22,7 +22,7 @@
 <div class="grid gap-3">
 	{#each filter() as item}
 		<Card.Root
-			class="inline-flex whitespace-nowrap rounded-md shadow transition-colors hover:text-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+			class="inline-flex whitespace-nowrap rounded-md shadow transition-colors hover:cursor-pointer hover:text-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 			onclick={() => goto(i18n.resolveRoute(item.path))}
 		>
 			<Card.Header class="pb-6">

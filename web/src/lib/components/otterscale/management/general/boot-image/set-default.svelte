@@ -55,7 +55,7 @@
 			<AlertDialog.Action
 				onclick={() => {
 					client.setDefaultBootImage(setDefaultBootImageRequest).then((r) => {
-						toast.info(`Set ${setDefaultBootImageRequest.distroSeries} as default`);
+						toast.info(`Set ${setDefaultBootImageRequest.distroSeries} as default.`);
 					});
 					// toast.info(`Set ${setDefaultBootImageRequest.distroSeries} as default`);
 					console.log(setDefaultBootImageRequest);

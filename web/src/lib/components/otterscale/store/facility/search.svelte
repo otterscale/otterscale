@@ -44,9 +44,7 @@
 			searchTerm !== '' ? 'max-h-48' : 'max-h-0 p-0'
 		)}
 	>
-		{#each charmNames
-			.filter((n) => n.toLowerCase().includes(searchTerm.toLowerCase()))
-			.sort() as name}
+		{#each charmNames as name}
 			<Command.Item
 				value={name}
 				class="text-xs hover:cursor-pointer"

@@ -62,7 +62,11 @@
 
 	const DEFAULT_VERSION = chart.versions[0];
 	const DEFAULT_KUBERNETES = {} as Facility_Info;
-	const DEFAULT_REQUEST = { name: chart.name, dryRun: false } as CreateReleaseRequest;
+	const DEFAULT_REQUEST = {
+		name: chart.name,
+		valuesYaml: '',
+		dryRun: false
+	} as CreateReleaseRequest;
 
 	let createReleaseRequest = $state(DEFAULT_REQUEST);
 	let selectedVersion = $state(DEFAULT_VERSION);
@@ -201,9 +205,14 @@
 			<AlertDialog.Action
 				onclick={() => {
 					integrate();
-					client.createRelease(createReleaseRequest).then((r) => {
-						toast.info(`Create ${createReleaseRequest.name}.`);
-					});
+					client
+						.createRelease(createReleaseRequest)
+						.then((r) => {
+							toast.info(`Create ${createReleaseRequest.name}.`);
+						})
+						.catch((e) => {
+							toast.error(`Create ${createReleaseRequest.name} error:`, e);
+						});
 					// toast.info(`Create ${createReleaseRequest.name}.`);
 					console.log(createReleaseRequest);
 					reset();

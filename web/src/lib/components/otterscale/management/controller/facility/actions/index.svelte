@@ -8,7 +8,7 @@
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import { Nexus, type Facility_Action } from '$gen/api/nexus/v1/nexus_pb';
-	import { DoAction } from './index';
+	import DoAction from './do.svelte';
 
 	let {
 		scopeUuid,

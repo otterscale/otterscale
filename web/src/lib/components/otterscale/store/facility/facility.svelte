@@ -91,17 +91,20 @@
 
 		<div
 			class={cn(
-				'grid max-h-[calc(77vh_-_theme(spacing.16))] gap-4 overflow-auto p-2',
-				cn('[&>fieldset]:border-l'),
+				'grid max-h-[calc(70vh_-_theme(spacing.16))] gap-2 overflow-auto p-2',
+				cn('[&>fieldset]:p-2'),
 				cn(
-					'[&>fieldset>legend]:-ml-2 [&>fieldset>legend]:w-full [&>fieldset>legend]:p-2 [&>fieldset>legend]:text-sm [&>fieldset>legend]:font-extralight'
+					'[&>fieldset>legend]:w-full [&>fieldset>legend]:text-sm [&>fieldset>legend]:font-extralight'
 				),
-				cn('[&>fieldset>div]:px-4 [&>fieldset>div]:py-2')
+				cn('[&>fieldset>div]:p-2')
 			)}
 		>
 			{#if $charmStore.website}
 				<fieldset>
-					<legend>WEBSITE</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:house" />
+						WEBSITE
+					</legend>
 					<div>
 						<a href={$charmStore.website} target="_blank">
 							<span class="flex items-center gap-1">
@@ -115,7 +118,10 @@
 
 			{#if $charmStore.storeUrl}
 				<fieldset>
-					<legend>STORE</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:cloud" />
+						STORE
+					</legend>
 					<div>
 						<a href={$charmStore.storeUrl} target="_blank">
 							<span class="flex items-center gap-1">
@@ -129,7 +135,10 @@
 
 			{#if $charmStore.deployableOn && $charmStore.deployableOn.length > 0}
 				<fieldset>
-					<legend>DEPLOYABILITY</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:stack" />
+						DEPLOYABILITY
+					</legend>
 					<div>
 						<span class="flex flex-wrap gap-1">
 							{#each $charmStore.deployableOn as deployability}
@@ -142,7 +151,10 @@
 
 			{#if $charmStore.type}
 				<fieldset>
-					<legend>TYPE</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:tag" />
+						TYPE
+					</legend>
 					<div>
 						<Badge variant="outline" class="w-fit text-[13px]">{$charmStore.type}</Badge>
 					</div>
@@ -151,7 +163,10 @@
 
 			{#if $charmStore.categories && $charmStore.categories.length > 0}
 				<fieldset>
-					<legend>CATEGORY</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:tag" />
+						CATEGORY
+					</legend>
 					<div>
 						<span class="flex flex-wrap gap-1">
 							{#each $charmStore.categories as category}
@@ -164,7 +179,10 @@
 
 			{#if $charmStore.license}
 				<fieldset>
-					<legend>LICENSE</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:identification-badge" />
+						LICENSE
+					</legend>
 					<div>
 						<Badge variant="outline" class="w-fit text-[13px]">
 							{$charmStore.license}
@@ -175,7 +193,10 @@
 
 			{#if $charmStore.publisher}
 				<fieldset>
-					<legend>PUBLISHER</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:user" />
+						PUBLISHER
+					</legend>
 					<div>
 						<Badge variant="outline" class="w-fit text-[13px]">
 							{$charmStore.publisher}
@@ -186,7 +207,11 @@
 
 			{#if $artifactsStore && $artifactsStore.length > 0}
 				<fieldset class="border-none">
-					<legend>RELEASE</legend>
+					<legend class="flex items-center gap-1">
+						<Icon icon="ph:archive" />
+						RELEASE
+					</legend>
+
 					<div class="w-full overflow-x-auto">
 						{@render ReadRelease($artifactsStore)}
 					</div>

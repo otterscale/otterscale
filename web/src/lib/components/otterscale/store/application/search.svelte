@@ -43,9 +43,7 @@
 			searchTerm !== '' ? 'max-h-48' : 'max-h-0 p-0'
 		)}
 	>
-		{#each chartNames
-			.filter((n) => n.toLowerCase().includes(searchTerm.toLowerCase()))
-			.sort() as name}
+		{#each chartNames as name}
 			<Command.Item
 				value={name}
 				class="text-xs hover:cursor-pointer"

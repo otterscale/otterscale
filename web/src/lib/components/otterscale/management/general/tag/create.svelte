@@ -9,6 +9,8 @@
 	import { Nexus, type CreateTagRequest, type Tag } from '$gen/api/nexus/v1/nexus_pb';
 	import { toast } from 'svelte-sonner';
 
+	let { tags = $bindable() }: { tags: Tag[] } = $props();
+
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
 
@@ -37,12 +39,11 @@
 			<AlertDialog.Title>Add Tag</AlertDialog.Title>
 			<AlertDialog.Description>
 				<div class="flex flex-col gap-4 rounded-lg border p-4">
-					<div>
+					<div class="grid gap-2">
 						<Label>Name</Label>
 						<Input bind:value={createTagRequest.name} />
 					</div>
-
-					<div>
+					<div class="grid gap-2">
 						<Label>Comment</Label>
 						<Input bind:value={createTagRequest.comment} />
 					</div>
@@ -55,6 +56,9 @@
 				onclick={() => {
 					client.createTag(createTagRequest).then((r) => {
 						toast.info(`Create ${createTagRequest.name}`);
+						client.listTags({}).then((r) => {
+							tags = r.tags;
+						});
 					});
 					// console.log(createTagRequest);
 					toast.info(`Create ${createTagRequest.name}`);
