@@ -14,8 +14,10 @@
 	import { toast } from 'svelte-sonner';
 
 	let {
+		configuration = $bindable(),
 		packageRepository
 	}: {
+		configuration: Configuration;
 		packageRepository: Configuration_PackageRepository;
 	} = $props();
 
@@ -62,6 +64,9 @@
 				onclick={() => {
 					client.updatePackageRepository(updatePackageRepositoryRequest).then((r) => {
 						toast.info(`Update package repositories`);
+						client.getConfiguration({}).then((r) => {
+							configuration = r;
+						});
 					});
 					// toast.info(`Update package repositories`);
 					console.log(updatePackageRepositoryRequest);

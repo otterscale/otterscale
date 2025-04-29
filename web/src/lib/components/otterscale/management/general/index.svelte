@@ -4,9 +4,9 @@
 	import CreateBootImage from './boot-image/create.svelte';
 	import ImportBootImage from './boot-image/import.svelte';
 	import SetBootImageAsDefault from './boot-image/set-default.svelte';
-	import IsImportingBootImages from './boot-image/is-importing.svelte';
 	import CreateTag from './tag/create.svelte';
 	import DeleteTag from './tag/delete.svelte';
+
 	import Icon from '@iconify/svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table/index.js';
@@ -29,11 +29,15 @@
 	let isImportingBootImages = $state(false);
 </script>
 
-<div class="grid gap-2 p-4">
-	<fieldset class="grid items-center gap-2 rounded-lg border-none">
-		<legend class="w-full rounded-md bg-muted px-2 py-1 text-lg font-semibold">NTP Servers</legend>
-		<div class="flex justify-between">
-			<div class="flex flex-col justify-between gap-2 p-4">
+<div class="grid gap-4 p-4">
+	<fieldset>
+		<legend class="flex items-center gap-2 p-2 text-lg font-semibold">
+			<Icon icon="ph:network" class="size-5 sm:flex" />
+			NTP Servers
+		</legend>
+
+		<div class="flex justify-between rounded-lg p-4">
+			<div class="flex flex-col justify-between gap-2 p-2">
 				{#if configuration.ntpServer}
 					<span class="flex items-center gap-1">
 						{#if configuration.ntpServer.addresses}
@@ -53,11 +57,13 @@
 		</div>
 	</fieldset>
 
-	<fieldset class="grid items-center gap-2 rounded-lg border-none">
-		<legend class="w-full rounded-md bg-muted px-2 py-1 text-lg font-semibold"
-			>Package Repositories</legend
-		>
-		<div class="p-4">
+	<fieldset>
+		<legend class="flex items-center gap-2 p-2 text-lg font-semibold">
+			<Icon icon="ph:cloud" class="size-5 sm:flex" />
+			Package Repositories
+		</legend>
+
+		<div class="rounded-lg p-2">
 			<Table.Root>
 				<Table.Header>
 					<Table.Row class="*:text-xs *:font-light">
@@ -85,7 +91,7 @@
 								</span>
 							</Table.Cell>
 							<Table.Cell class="text-right">
-								<UpdatePackageRepository {packageRepository} />
+								<UpdatePackageRepository bind:configuration {packageRepository} />
 							</Table.Cell>
 						</Table.Row>
 					{/each}
@@ -94,16 +100,20 @@
 		</div>
 	</fieldset>
 
-	<fieldset class="grid items-center gap-2 rounded-lg border-none">
-		<legend class="w-full rounded-md bg-muted px-2 py-1 text-lg font-semibold">Boot Image</legend>
-		<span class="ml-auto flex p-2">
-			<CreateBootImage />
+	<fieldset>
+		<legend class="flex items-center gap-2 p-2 text-lg font-semibold">
+			<Icon icon="simple-icons:ubuntu" class="size-5 sm:flex" />
+			Boot Image
+		</legend>
 
-			{#key isImportingBootImages}
-				<ImportBootImage bind:isImportingBootImages />
-			{/key}
-		</span>
-		<div class="px-4">
+		<div class="rounded-lg p-2">
+			<span class="flex justify-end p-4">
+				<CreateBootImage bind:configuration />
+
+				{#key isImportingBootImages}
+					<ImportBootImage bind:isImportingBootImages />
+				{/key}
+			</span>
 			<Table.Root>
 				<Table.Header>
 					<Table.Row class="*:text-xs *:font-light">
@@ -148,12 +158,16 @@
 		</div>
 	</fieldset>
 
-	<fieldset class="grid items-center gap-2 rounded-lg border-none">
-		<legend class="w-full rounded-md bg-muted px-2 py-1 text-lg font-semibold">Tags</legend>
-		<div class="ml-auto p-2">
-			<CreateTag />
-		</div>
-		<div class="px-4">
+	<fieldset>
+		<legend class="flex items-center gap-2 p-2 text-lg font-semibold">
+			<Icon icon="ph:tag-simple" class="size-5 sm:flex" />
+			Tags
+		</legend>
+
+		<div class="rounded-lg p-2">
+			<div class="flex justify-end p-4">
+				<CreateTag bind:tags />
+			</div>
 			<Table.Root>
 				<Table.Header>
 					<Table.Row class="*:text-xs *:font-light">
@@ -163,17 +177,25 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each tags as tag}
-						<Table.Row class="border-none *:text-xs">
-							<Table.Cell>{tag.name}</Table.Cell>
-							<Table.Cell>{tag.comment || 'No comments available'}</Table.Cell>
-							<Table.Cell>
-								<span class="flex justify-end">
-									<DeleteTag {tag} />
-								</span>
-							</Table.Cell>
-						</Table.Row>
-					{/each}
+					{#key tags}
+						{#each tags as tag}
+							<Table.Row class="border-none *:text-xs">
+								<Table.Cell>{tag.name}</Table.Cell>
+								<Table.Cell>
+									{#if tag.comment}
+										<p>{tag.comment}</p>
+									{:else}
+										<p class="text-muted-foreground/50">No comments available.</p>
+									{/if}
+								</Table.Cell>
+								<Table.Cell>
+									<span class="flex justify-end">
+										<DeleteTag {tag} bind:tags />
+									</span>
+								</Table.Cell>
+							</Table.Row>
+						{/each}
+					{/key}
 				</Table.Body>
 			</Table.Root>
 		</div>
@@ -189,21 +211,31 @@
 				data-tooltip-target="architectures-{bootImage.name}"
 			/>
 		</HoverCard.Trigger>
-		<HoverCard.Content class="w-fit">
-			<Table.Root>
-				<Table.Body>
-					<Table.Row>
-						<Table.Head class="text-xs font-light">ARCHITECTURE</Table.Head>
-						<Table.Cell class="text-xs font-light">STATUS</Table.Cell>
-					</Table.Row>
-					{#each Object.entries(bootImage.architectureStatusMap) as [architecture, status]}
-						<Table.Row class="border-none">
-							<Table.Head class="whitespace-nowrap text-xs">{architecture}</Table.Head>
-							<Table.Cell class="text-right text-xs">{status}</Table.Cell>
+		<HoverCard.Content class="w-fit p-2">
+			{#if Object.keys(bootImage.architectureStatusMap).length == 0}
+				<p class="w-full p-2 text-center text-xs font-light text-muted-foreground">
+					No architectures available at the moment.
+				</p>
+			{:else}
+				<Table.Root>
+					<Table.Header>
+						<Table.Row class="*:text-[13px] *:font-light">
+							<Table.Head>ARCHITECTURE</Table.Head>
+							<Table.Cell class="text-center">STATUS</Table.Cell>
 						</Table.Row>
-					{/each}
-				</Table.Body>
-			</Table.Root>
+					</Table.Header>
+					<Table.Body>
+						{#each Object.entries(bootImage.architectureStatusMap) as [architecture, status]}
+							<Table.Row class="border-none *:whitespace-nowrap *:text-[13px]">
+								<Table.Cell>{architecture}</Table.Cell>
+								<Table.Cell class="text-center"
+									><Badge variant="outline">{status}</Badge></Table.Cell
+								>
+							</Table.Row>
+						{/each}
+					</Table.Body>
+				</Table.Root>
+			{/if}
 		</HoverCard.Content>
 	</HoverCard.Root>
 {/snippet}

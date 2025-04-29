@@ -47,7 +47,7 @@
 	let sortedGroupedKeywords = $derived(Object.entries(groupedKeywords).sort());
 </script>
 
-<main class="flex flex-col justify-between">
+<main class="flex flex-col justify-between bg-muted/50">
 	<Command.Root class="border">
 		<Command.Input
 			placeholder="Filter"
@@ -59,9 +59,15 @@
 			}}
 		/>
 		<div class="flex justify-between">
-			<Command.List dir="rtl" class="min-h-[600px] w-full overflow-y-auto">
+			{@render MiniMap()}
+			<Command.List class="min-h-[600px] w-full overflow-y-auto">
 				{#each sortedGroupedKeywords as [letter, keywords]}
-					<Command.Group dir="ltr" heading={letter} data-group={letter}>
+					<Command.Group
+						dir="ltr"
+						heading={letter}
+						data-group={letter}
+						class="m-1 rounded-lg border"
+					>
 						{#each keywords as keyword}
 							<Command.Item
 								value={keyword}
@@ -82,7 +88,6 @@
 					</Command.Group>
 				{/each}
 			</Command.List>
-			{@render MiniMap()}
 		</div>
 	</Command.Root>
 </main>

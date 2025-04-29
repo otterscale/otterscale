@@ -11,9 +11,12 @@
 	import { toast } from 'svelte-sonner';
 	import {
 		Nexus,
+		type Configuration,
 		type Configuration_BootImageSelection,
 		type CreateBootImageRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
+
+	let { configuration = $bindable() }: { configuration: Configuration } = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -145,7 +148,12 @@
 			<AlertDialog.Action
 				onclick={() => {
 					client.createBootImage(createBootImageRequest).then((r) => {
-						toast.info(`Create boot images`);
+						toast.info(
+							`Create boot images ${createBootImageRequest.distroSeries}: ${createBootImageRequest.architectures.join(', ')}.`
+						);
+						client.getConfiguration({}).then((r) => {
+							configuration = r;
+						});
 					});
 					// toast.info(`Create boot images`);
 					console.log(createBootImageRequest);

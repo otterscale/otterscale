@@ -19,8 +19,8 @@
 
 	function active(v: string): string {
 		return (v == '#' && page.url.hash === '') || page.url.hash === `#${v}`
-			? 'font-semibold text-primary'
-			: '';
+			? 'truncate font-semibold text-primary max-w-13'
+			: 'truncate max-w-13';
 	}
 </script>
 

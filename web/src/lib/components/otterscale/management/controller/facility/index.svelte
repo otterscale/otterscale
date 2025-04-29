@@ -97,6 +97,8 @@
 			case charmName.includes('keepalived'):
 			case charmName.includes('kubernetes-control-plane'):
 				return FACILITY_CATEGORYS.KUBERNETES;
+			case charmName.includes('ceph-mon'):
+				return FACILITY_CATEGORYS.CEPH;
 			default:
 				return FACILITY_CATEGORYS.OTHER;
 		}
@@ -106,8 +108,10 @@
 		switch (category) {
 			case FACILITY_CATEGORYS.KUBERNETES:
 				return 'logos:kubernetes';
+			case FACILITY_CATEGORYS.CEPH:
+				return 'simple-icons:ceph';
 			default:
-				return 'ph:circle-dashed';
+				return '';
 		}
 	}
 
@@ -205,7 +209,7 @@
 										<div>
 											<span class="flex items-center gap-1">
 												{facilityByCategory.name}
-												{#if facilityByCategory.charmName.includes('kubernetes-worker')}
+												{#if facilityByCategory.charmName.includes('kubernetes-control-plane')}
 													<a
 														href={`/management/scope/${scopeUuid}/facility/${facilityByCategory.name}`}
 														target="_blank"

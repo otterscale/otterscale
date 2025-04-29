@@ -14,7 +14,8 @@
 	import { writable } from 'svelte/store';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
-	import { CreateStorageClasses } from './index';
+	// import { CreateStorageClasses } from './index';
+	import CreateStorageClasses from './create-storage-classes.svelte';
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -75,9 +76,11 @@
 
 {#if !mounted}
 	<PageLoading />
+{:else if !$applicationsStore}
+	Error
 {:else if $applicationsStore.length == 0}
 	{@render NoApplicationHandler()}
-{:else}
+{:else if $applicationsStore.length > 0}
 	{@const types = new Set($applicationsStore.map((a) => a.type))}
 	{@const firstType = $applicationsStore[0].type}
 

@@ -7,7 +7,7 @@
 	let { scopes }: { scopes: Scope[] } = $props();
 
 	let scopeByName = $derived(Object.fromEntries(scopes.map((scope) => [scope.name, scope])));
-	let chosenScopeName = $state('prod');
+	let chosenScopeName = $state('controller');
 </script>
 
 <main class="p-4">

@@ -14,7 +14,7 @@
 		type UpdateNTPServerRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
 
-	let { configuration }: { configuration: Configuration } = $props();
+	let { configuration = $bindable() }: { configuration: Configuration } = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -92,6 +92,9 @@
 				onclick={() => {
 					client.updateNTPServer(updateNTPServerRequest).then((r) => {
 						toast.info(`Update NTP Servers`);
+						client.getConfiguration({}).then((r) => {
+							configuration = r;
+						});
 					});
 					// toast.info(`Update NTP Servers`);
 					console.log(updateNTPServerRequest);
