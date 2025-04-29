@@ -58,7 +58,7 @@ func (a *NexusApp) ListKuberneteses(ctx context.Context, req *connect.Request[pb
 }
 
 func (a *NexusApp) CreateKubernetes(ctx context.Context, req *connect.Request[pb.CreateKubernetesRequest]) (*connect.Response[pb.Facility_Info], error) {
-	kubernetes, err := a.svc.CreateKubernetes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetMachineId(), req.Msg.GetPrefixName())
+	kubernetes, err := a.svc.CreateKubernetes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetMachineId(), req.Msg.GetPrefixName(), req.Msg.GetLoadbalancerIps(), req.Msg.GetKeepalivedVirtualIp(), req.Msg.GetCalicoCidr())
 	if err != nil {
 		return nil, err
 	}

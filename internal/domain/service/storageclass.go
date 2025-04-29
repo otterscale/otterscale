@@ -35,7 +35,8 @@ func (s *NexusService) CreateStorageClass(ctx context.Context, kubernetes, ceph 
 		return nil, status.Errorf(codes.NotFound, "kubernetes %q machine %q not found", kubernetes.FacilityName, unit.Machine)
 	}
 
-	fi, err := s.createGeneralFacility(ctx, kubernetes.ScopeUUID, machineID, prefix, charmNameCephCSI, cephCSIFacilityList)
+	configs := map[string]string{}
+	fi, err := s.createGeneralFacility(ctx, kubernetes.ScopeUUID, machineID, prefix, charmNameCephCSI, cephCSIFacilityList, configs)
 	if err != nil {
 		return nil, err
 	}
