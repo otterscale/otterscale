@@ -20,8 +20,8 @@ import (
 )
 
 const (
-	charmNameKubernetes = "kubernetes-worker"
-	charmNameCeph       = "ceph-osd"
+	charmNameKubernetes = "kubernetes-control-plane"
+	charmNameCeph       = "ceph-mon"
 	charmNameCephCSI    = "ceph-csi"
 )
 

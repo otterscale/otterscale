@@ -363,11 +363,23 @@ func (s *NexusService) setKubernetesClient(ctx context.Context, uuid, facility s
 	if s.kubernetes.Exists(uuid, facility) {
 		return nil
 	}
-	unit, err := s.facility.GetLeader(ctx, uuid, facility)
+
+	// from kubernetes-control-plane
+	cpUnit, err := s.facility.GetLeader(ctx, uuid, facility)
 	if err != nil {
 		return err
 	}
-	unitInfo, err := s.facility.GetUnitInfo(ctx, uuid, unit)
+	cpUnitInfo, err := s.facility.GetUnitInfo(ctx, uuid, cpUnit)
+	if err != nil {
+		return err
+	}
+	kubeControl, err := extractKubeControl(cpUnitInfo)
+	if err != nil {
+		return err
+	}
+
+	// from kubernetes-worker
+	unitInfo, err := s.facility.GetUnitInfo(ctx, uuid, kubeControl)
 	if err != nil {
 		return err
 	}
@@ -465,6 +477,18 @@ func newKubernetesConfig(unitInfo *model.UnitInfo) (*rest.Config, error) {
 		},
 		BearerToken: clientToken,
 	}, nil
+}
+
+func extractKubeControl(unitInfo *model.UnitInfo) (string, error) {
+	for _, erd := range unitInfo.RelationData {
+		if erd.Endpoint != "kube-control" {
+			continue
+		}
+		for name := range erd.UnitRelationData {
+			return name, nil
+		}
+	}
+	return "", status.Error(codes.NotFound, "kube-control not found")
 }
 
 func extractEndpoint(unitInfo *model.UnitInfo) (string, error) {
