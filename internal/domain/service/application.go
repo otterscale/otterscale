@@ -34,11 +34,6 @@ const (
 	appTypeDaemonSet   = "DaemonSet"
 )
 
-const (
-	charmNameKubernetes = "kubernetes-worker"
-	charmNameCeph       = "ceph-osd"
-)
-
 func (s *NexusService) ListApplications(ctx context.Context, uuid, facility string) ([]model.Application, error) {
 	if err := s.setKubernetesClient(ctx, uuid, facility); err != nil {
 		return nil, err

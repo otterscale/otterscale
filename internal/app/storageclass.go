@@ -41,7 +41,7 @@ func (a *NexusApp) CreateStorageClass(ctx context.Context, req *connect.Request[
 		ScopeName:    c.GetScopeName(),
 		FacilityName: c.GetFacilityName(),
 	}
-	sc, err := a.svc.CreateStorageClass(ctx, kubernetes, ceph)
+	sc, err := a.svc.CreateStorageClass(ctx, kubernetes, ceph, req.Msg.GetPrefix())
 	if err != nil {
 		return nil, err
 	}

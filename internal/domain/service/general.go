@@ -15,6 +15,12 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
+const (
+	charmNameKubernetes = "kubernetes-worker"
+	charmNameCeph       = "ceph-osd"
+	charmNameCephCSI    = "ceph-csi"
+)
+
 type generalFacility struct {
 	charmName string
 	lxd       bool
@@ -64,6 +70,17 @@ var (
 	}
 )
 
+var (
+	cephCSIFacilityList = []generalFacility{
+		{charmName: "ch:ceph-csi", lxd: true},
+	}
+
+	cephCSIRelationList = [][]string{
+		{"ceph-csi", "ceph-mon"},
+		{"ceph-csi", "kubernetes-control-plane"},
+	}
+)
+
 func (s *NexusService) VerifyEnvironment(ctx context.Context) ([]model.Error, error) {
 	funcs := []func(context.Context) (*model.Error, error){}
 	funcs = append(funcs, s.isCephExists, s.isKubernetesExists)
@@ -108,7 +125,7 @@ func (s *NexusService) CreateCeph(ctx context.Context, uuid, machineID, prefix s
 	if err != nil {
 		return nil, err
 	}
-	if err := s.createGeneralRelations(ctx, uuid, prefix, cephRelationList); err != nil {
+	if err := s.createGeneralRelations(ctx, uuid, toEndpointList(prefix, cephRelationList)); err != nil {
 		return nil, err
 	}
 	return fi, nil
@@ -133,12 +150,13 @@ func (s *NexusService) ListKuberneteses(ctx context.Context, uuid string) ([]mod
 }
 
 // TODO: CONFIG
+// allow-privileged=true
 func (s *NexusService) CreateKubernetes(ctx context.Context, uuid, machineID, prefix string) (*model.FacilityInfo, error) {
 	fi, err := s.createGeneralFacility(ctx, uuid, machineID, prefix, charmNameKubernetes, kubernetesFacilityList)
 	if err != nil {
 		return nil, err
 	}
-	if err := s.createGeneralRelations(ctx, uuid, prefix, kubernetesRelationList); err != nil {
+	if err := s.createGeneralRelations(ctx, uuid, toEndpointList(prefix, kubernetesRelationList)); err != nil {
 		return nil, err
 	}
 	return fi, nil
@@ -260,7 +278,7 @@ func (s *NexusService) getScopeName(ctx context.Context, uuid string) (string, e
 	return "", nil
 }
 
-func appendPrefixToRelationList(prefix string, relationList [][]string) [][]string {
+func toEndpointList(prefix string, relationList [][]string) [][]string {
 	endpointList := [][]string{}
 	for _, relations := range relationList {
 		endpoints := []string{}
@@ -272,8 +290,25 @@ func appendPrefixToRelationList(prefix string, relationList [][]string) [][]stri
 	return endpointList
 }
 
-func (s *NexusService) createGeneralRelations(ctx context.Context, uuid, prefix string, relationList [][]string) error {
-	endpointList := appendPrefixToRelationList(prefix, relationList)
+func toCephCSIEndpointList(kubernetes, ceph *model.FacilityInfo, prefix string) [][]string {
+	endpointList := [][]string{}
+	for _, relations := range cephCSIRelationList {
+		endpoints := []string{}
+		for _, relation := range relations {
+			if relation == charmNameCephCSI {
+				endpoints = append(endpoints, toGeneralFacilityName(prefix, relation))
+			} else if relation == charmNameKubernetes {
+				endpoints = append(endpoints, kubernetes.FacilityName)
+			} else if relation == charmNameCeph {
+				endpoints = append(endpoints, ceph.FacilityName)
+			}
+		}
+		endpointList = append(endpointList, endpoints)
+	}
+	return endpointList
+}
+
+func (s *NexusService) createGeneralRelations(ctx context.Context, uuid string, endpointList [][]string) error {
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, endpoints := range endpointList {
 		eg.Go(func() error {
