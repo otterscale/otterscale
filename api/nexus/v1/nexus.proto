@@ -861,4 +861,5 @@ message ListStorageClassesResponse {
 message CreateStorageClassRequest {
   Facility.Info kubernetes = 1;
   Facility.Info ceph = 2;
+  string prefix = 3;
 }

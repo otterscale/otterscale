@@ -33,3 +33,12 @@ func (r *storage) ListStorageClasses(ctx context.Context, uuid, facility string)
 	}
 	return list.Items, nil
 }
+
+func (r *storage) GetStorageClass(ctx context.Context, uuid, facility, name string) (*v1.StorageClass, error) {
+	clientset, err := r.kubeMap.get(uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.GetOptions{}
+	return clientset.StorageV1().StorageClasses().Get(ctx, name, opts)
+}

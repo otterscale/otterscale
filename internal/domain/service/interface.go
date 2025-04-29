@@ -186,6 +186,7 @@ type KubeCore interface {
 
 type KubeStorage interface {
 	ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error)
+	GetStorageClass(ctx context.Context, uuid, facility, name string) (*storagev1.StorageClass, error)
 }
 
 type KubeHelm interface {
