@@ -87,7 +87,7 @@ var (
 
 func (s *NexusService) VerifyEnvironment(ctx context.Context) ([]model.Error, error) {
 	funcs := []func(context.Context) (*model.Error, error){}
-	funcs = append(funcs, s.isCephExists, s.isKubernetesExists)
+	funcs = append(funcs, s.isCephExists, s.isKubernetesExists, s.isDeployedMachineExists)
 
 	eg, ctx := errgroup.WithContext(ctx)
 	result := make([]model.Error, len(funcs))
@@ -380,14 +380,27 @@ func (s *NexusService) isCephExists(ctx context.Context) (*model.Error, error) {
 }
 
 func (s *NexusService) isKubernetesExists(ctx context.Context) (*model.Error, error) {
-	kubernetes, err := s.ListKuberneteses(ctx, "")
+	kuberneteses, err := s.ListKuberneteses(ctx, "")
 	if err != nil {
 		return nil, err
 	}
-	if len(kubernetes) == 0 {
+	if len(kuberneteses) == 0 {
 		return &model.ErrKubernetesNotFound, nil
 	}
 	return nil, nil
+}
+
+func (s *NexusService) isDeployedMachineExists(ctx context.Context) (*model.Error, error) {
+	machines, err := s.machine.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	for i := range machines {
+		if machines[i].Status == node.StatusDeployed {
+			return nil, nil
+		}
+	}
+	return &model.ErrNoMachinesDeployed, nil
 }
 
 func (s *NexusService) getReservedIPs(ctx context.Context, cidr string) ([]uint32, error) {

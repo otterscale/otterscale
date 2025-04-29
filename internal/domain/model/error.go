@@ -23,3 +23,11 @@ var ErrKubernetesNotFound = Error{
 	Details: "Please install and configure a Kubernetes cluster as your orchestration platform.",
 	URL:     "/docs/setup/kubernetes",
 }
+
+var ErrNoMachinesDeployed = Error{
+	Code:    "NO_MACHINES_DEPLOYED",
+	Level:   ErrorLevelCritical,
+	Message: "No machines have been deployed yet.",
+	Details: "There are currently no deployed machines in the system. Please deploy at least one machine to continue.",
+	URL:     "/docs/machines/deployment",
+}
