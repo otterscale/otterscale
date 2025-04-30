@@ -24,6 +24,13 @@ update_img_autosync() {
     fi
 }
 
+update_proxy() {
+    log "INFO" "Disable MAAS proxy."
+    if ! maas admin maas set-config name=enable_http_proxy value=false >"$TEMP_LOG" 2>&1; then
+        error_exit "Failed to disable automatic image sync."
+    fi
+}
+
 enter_dhcp_subnet() {
     while true; do
         read -p "Enter DHCP subnet in CIDR notation (e.g., $current_ip): " subnet

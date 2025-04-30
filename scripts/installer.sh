@@ -1,17 +1,18 @@
 #!/bin/bash
 
+export INSTALLER_DIR=$(dirname "$(readlink -f $0)")
+
 ## Source env
-for envfile in ./env/*.env; do
+for envfile in $INSTALLER_DIR/env/*.env; do
     source "$envfile"
 done
 
 ## Import script
-for file in ./scripts/*.sh; do
+for file in $INSTALLER_DIR/utils/*.sh; do
     source "$file"
 done
 
 ## LOG
-export INSTALLER_DIR=$(dirname "$(readlink -f $0)")
 export LOG=$INSTALLER_DIR/setup.log
 touch $LOG
 chmod 666 $LOG
@@ -55,8 +56,8 @@ main() {
     set_juju_config
     bootstrap_juju
 
-    ## OtterScale
-    #ottersacle_start
+    ## Install apt
+    install_openhdc
 
     ## cleanup
     trap cleanup EXIT

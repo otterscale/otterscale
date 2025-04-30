@@ -1,5 +1,3 @@
-# otterscale
-
 # Installation Steps
 
 1. **Run installer.sh with highest privileges**
