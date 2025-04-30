@@ -66,7 +66,7 @@ func (a *NexusApp) CreateKubernetes(ctx context.Context, req *connect.Request[pb
 	return connect.NewResponse(res), nil
 }
 
-func (a *NexusApp) AddKubernetesUnit(ctx context.Context, req *connect.Request[pb.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
+func (a *NexusApp) AddKubernetesUnits(ctx context.Context, req *connect.Request[pb.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
 	if err := a.svc.AddKubernetesUnits(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), int(req.Msg.GetNumber()), req.Msg.GetMachineIds(), req.Msg.GetForce()); err != nil {
 		return nil, err
 	}
