@@ -71,7 +71,7 @@
 
 {#if mounted}
 	<main class="grid gap-2">
-		<div class="rounded-lg bg-muted/50 p-4">
+		<div class="bg-muted/50 p-4">
 			<span class="flex items-start gap-2">
 				<Avatar.Root class="h-10 w-10">
 					<Avatar.Image src={$charmStore.icon} />
@@ -91,12 +91,12 @@
 
 		<div
 			class={cn(
-				'grid max-h-[calc(70vh_-_theme(spacing.16))] gap-2 overflow-auto p-2',
-				cn('[&>fieldset]:p-2'),
+				'grid max-h-[calc(77vh_-_theme(spacing.16))] gap-4 overflow-auto p-4',
+
 				cn(
 					'[&>fieldset>legend]:w-full [&>fieldset>legend]:text-sm [&>fieldset>legend]:font-extralight'
 				),
-				cn('[&>fieldset>div]:p-2')
+				cn('[&>fieldset>div]:py-2')
 			)}
 		>
 			{#if $charmStore.website}

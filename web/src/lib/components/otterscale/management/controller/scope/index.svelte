@@ -38,57 +38,54 @@
 	<div class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
 		{@render StatisticScopes(scopes)}
 	</div>
-	<span class="flex justify-end">
-		<CreateScope />
-	</span>
-	<Table.Root>
-		<Table.Header>
-			<Table.Row class="*:text-xs *:font-light">
-				<Table.Head>NAME</Table.Head>
-				<Table.Head>STATUS</Table.Head>
-				<Table.Head>LIFE</Table.Head>
-				<Table.Head>UNITS</Table.Head>
-				<Table.Head>CORES</Table.Head>
-				<Table.Head>MACHINES</Table.Head>
-			</Table.Row>
-		</Table.Header>
-		<Table.Body>
-			{#each scopes as scope}
-				<Table.Row>
-					<Table.Cell>
-						<div class="flex justify-between">
-							<span class="flex items-center gap-1">
-								{scope.name}
-								<a href={`/management/scope/${scope.uuid}`}>
-									<Icon icon="ph:arrow-square-out" />
-								</a>
-							</span>
-							<!-- {@render GetModelDetail(scope)} -->
-						</div>
-					</Table.Cell>
-
-					<Table.Cell>
-						<Badge variant="outline">
-							{scope.status}
-						</Badge>
-					</Table.Cell>
-					<Table.Cell>
-						<Badge variant="outline">
-							{scope.life}
-						</Badge>
-					</Table.Cell>
-					<Table.Cell>{scope.unitCount}</Table.Cell>
-					<Table.Cell>{scope.coreCount}</Table.Cell>
-					<Table.Cell>{scope.machineCount}</Table.Cell>
-					<Table.Cell>
-						<!-- {#if scope.updatedAt}
-						{formatTimeAgo(timestampDate(scope.updatedAt))}
-					{/if} -->
-					</Table.Cell>
+	<div class="p-4">
+		<span class="flex justify-end py-2">
+			<CreateScope />
+		</span>
+		<Table.Root>
+			<Table.Header class="bg-muted/50">
+				<Table.Row class="*:text-xs *:font-light">
+					<Table.Head>NAME</Table.Head>
+					<Table.Head>STATUS</Table.Head>
+					<Table.Head>LIFE</Table.Head>
+					<Table.Head class="text-end">UNITS</Table.Head>
+					<Table.Head class="text-end">CORES</Table.Head>
+					<Table.Head class="text-end">MACHINES</Table.Head>
 				</Table.Row>
-			{/each}
-		</Table.Body>
-	</Table.Root>
+			</Table.Header>
+			<Table.Body>
+				{#each scopes as scope}
+					<Table.Row>
+						<Table.Cell>
+							<div class="flex justify-between">
+								<span class="flex items-center gap-1">
+									{scope.name}
+									<a href={`/management/scope/${scope.uuid}`}>
+										<Icon icon="ph:arrow-square-out" />
+									</a>
+								</span>
+								<!-- {@render GetModelDetail(scope)} -->
+							</div>
+						</Table.Cell>
+
+						<Table.Cell>
+							<Badge variant="outline">
+								{scope.status}
+							</Badge>
+						</Table.Cell>
+						<Table.Cell>
+							<Badge variant="outline">
+								{scope.life}
+							</Badge>
+						</Table.Cell>
+						<Table.Cell class="text-end">{scope.unitCount}</Table.Cell>
+						<Table.Cell class="text-end">{scope.coreCount}</Table.Cell>
+						<Table.Cell class="text-end">{scope.machineCount}</Table.Cell>
+					</Table.Row>
+				{/each}
+			</Table.Body>
+		</Table.Root>
+	</div>
 </main>
 <!-- {#snippet GetModelDetail(scope: Scope)}
 	<DropdownMenu.Root>
@@ -130,7 +127,7 @@
 	{@const livability = (numberOfAliveFacilities * 100) / numberOfScopes || 0}
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Scope</Card.Title>
+			<Card.Title>SCOPE</Card.Title>
 		</Card.Header>
 		<Card.Content class="text-7xl">
 			{numberOfScopes}
@@ -138,7 +135,7 @@
 	</Card.Root>
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Available</Card.Title>
+			<Card.Title>AVAILABLE</Card.Title>
 		</Card.Header>
 		<Card.Content>
 			<p class="text-3xl">
@@ -164,7 +161,7 @@
 	</Card.Root>
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Livability</Card.Title>
+			<Card.Title>LIVABILITY</Card.Title>
 		</Card.Header>
 		<Card.Content>
 			<p class="text-3xl">

@@ -1,22 +1,20 @@
 <script lang="ts">
-	import GetMachineStatus from './get-machine-status.svelte';
+	import { page } from '$app/state';
+	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import * as Collapsible from '$lib/components/ui/collapsible';
-
-	// External dependencies
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { capitalizeFirstLetter } from 'better-auth';
 	import { toast } from 'svelte-sonner';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Label } from '$lib/components/ui/label';
-
-	// Internal UI components
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table';
 	import * as Tabs from '$lib/components/ui/tabs';
-
-	// Internal utilities and types
-	import { type Machine, type Network } from '$gen/api/nexus/v1/nexus_pb';
+	import { Nexus, type Machine, type Network } from '$gen/api/nexus/v1/nexus_pb';
 	import { formatCapacity } from '$lib/formatter';
+	import { getContext, onMount, onDestroy } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	import { nodeIcon } from '$lib/node';
 
@@ -27,6 +25,33 @@
 	}: {
 		machine: Machine;
 	} = $props();
+
+	const transport: Transport = getContext('transportNEW');
+	const client = createClient(Nexus, transport);
+	const machineStore = writable<Machine>();
+	async function refreshMachine() {
+		while (page.url.searchParams.get('interval')) {
+			await new Promise((resolve) => setTimeout(resolve, 1000 * Number(page.url.searchParams.get('interval'))));
+			console.log(`Refreshnig machine ${page.params.system_id}`);
+
+			try {
+				const response = await client.getMachine({ id: machine.id });
+				machineStore.set(response);
+
+				machine = $machineStore;
+			} catch (error) {
+				console.error('Error fetching machine:', error);
+			}
+		}
+	}
+
+	onMount(async () => {
+		try {
+			refreshMachine();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+	});
 </script>
 
 <div class="grid gap-3 space-y-3 p-3">
@@ -82,7 +107,7 @@
 
 {#snippet Summary()}
 	{@const formattedMemory = formatCapacity(machine.memoryMb)}
-	{@const formattedStorage = formatCapacity(machine.storageMb / 1024)}
+	{@const formattedStorage = formatCapacity(machine.storageMb)}
 	<div class="grid grid-cols-5 gap-3 *:border-none *:shadow-none">
 		<Card.Root>
 			<Card.Header class="h-10">
@@ -109,7 +134,19 @@
 				<div class="text-2xl">
 					{machine.status}
 				</div>
-				<GetMachineStatus id={machine.id} />
+				<span class="flex items-center gap-1">
+					{#if machine.status.toLowerCase() != 'deployed'}
+						<Icon icon="ph:spinner" class="animate-spin" />
+					{/if}
+					<HoverCard.Root>
+						<HoverCard.Trigger class="truncate">
+							{machine.statusMessage}
+						</HoverCard.Trigger>
+						<HoverCard.Content class="p-4 text-xs">
+							{machine.statusMessage}
+						</HoverCard.Content>
+					</HoverCard.Root>
+				</span>
 			</Card.Content>
 			<Card.Footer>
 				<div class="truncate text-xs font-light text-muted-foreground">
@@ -221,15 +258,14 @@
 	{/if}
 {/snippet}
 {#snippet TabContent_HardwareInformation()}
-	<div class="grid gap-2">
-		<div>
+	<div class="grid gap-4">
+		<div class="grid gap-2">
 			<div class="flex items-center gap-1">
 				<Icon icon="ph:desktop" class="size-5" />
 				<Label class="text-base">System</Label>
 			</div>
-
 			<Table.Root>
-				<Table.Header>
+				<Table.Header class="bg-muted/50">
 					<Table.Row class="*:text-xs *:font-light">
 						<Table.Head>VENDOR</Table.Head>
 						<Table.Head>PRODUCT</Table.Head>
@@ -251,14 +287,14 @@
 				</Table.Body>
 			</Table.Root>
 		</div>
-		<div>
+		<div class="grid gap-2">
 			<div class="flex items-center gap-1">
 				<Icon icon="ph:circuitry" class="size-5" />
 				<Label class="text-base">Mainboard</Label>
 			</div>
 
 			<Table.Root>
-				<Table.Header>
+				<Table.Header class="bg-muted/50">
 					<Table.Row class="*:text-xs *:font-light">
 						<Table.Head>VENDOR</Table.Head>
 						<Table.Head>PRODUCT</Table.Head>
@@ -280,14 +316,14 @@
 				</Table.Body>
 			</Table.Root>
 		</div>
-		<div>
+		<div class="grid gap-2">
 			<div class="flex items-center gap-1">
 				<Icon icon="ph:computer-tower" class="size-5" />
 				<Label class="text-base">Chassis</Label>
 			</div>
 
 			<Table.Root>
-				<Table.Header>
+				<Table.Header class="bg-muted/50">
 					<Table.Row class="*:text-xs *:font-light">
 						<Table.Head>VENDOR</Table.Head>
 						<Table.Head>TYPE</Table.Head>
@@ -348,7 +384,7 @@
 {#snippet TabContent_Networks()}
 	<Table.Root>
 		<Table.Header>
-			<Table.Row class="*:text-xs *:font-light">
+			<Table.Row class="*:text-xs *:font-light [&>th]:py-2 [&>th]:align-top">
 				<Table.Head>
 					NAME
 					<p class="text-muted-foreground">MAC Address</p>
@@ -373,7 +409,7 @@
 		</Table.Header>
 		<Table.Body>
 			{#each machine.networkInterfaces as networkInterface}
-				<Table.Row class="*:text-xs">
+				<Table.Row class="*:text-xs [&>td]:align-top">
 					<Table.Cell>
 						<p>{networkInterface.name}</p>
 						<p>{networkInterface.macAddress}</p>
@@ -400,7 +436,7 @@
 						</p>
 					</Table.Cell>
 					<Table.Cell>{networkInterface.type}</Table.Cell>
-					<Table.Cell>
+					<Table.Cell class="align-center">
 						<Icon
 							icon={networkInterface.dhcpOn ? 'ph:check' : 'ph:x'}
 							style="color: {networkInterface.dhcpOn ? 'green' : 'red'}"

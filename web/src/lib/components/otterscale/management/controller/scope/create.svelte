@@ -7,6 +7,7 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { Nexus, type CreateScopeRequest } from '$gen/api/nexus/v1/nexus_pb';
 	import { toast } from 'svelte-sonner';
+	import { Button } from '$lib/components/ui/button';
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -27,7 +28,9 @@
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger class="flex items-center gap-1">
-		<Icon icon="ph:plus" /> Scope
+		<Button variant="ghost" class="flex items-center gap-1">
+			<Icon icon="ph:plus" /> Scope
+		</Button>
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>

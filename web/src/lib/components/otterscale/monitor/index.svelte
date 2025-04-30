@@ -50,18 +50,6 @@
 		small: 100
 	};
 
-	errors = [
-		{
-			code: 'CEPH_NOT_FOUND'
-		} as Error,
-		{
-			code: 'KUBERNETES_NOT_FOUND'
-		} as Error,
-		{
-			code: 'PROMETHEUS_NOT_FOUND*'
-		} as Error,
-		{ code: 'OTHERS' } as Error
-	];
 	let data = $state(healthData);
 
 	function isCephError(error: Error) {

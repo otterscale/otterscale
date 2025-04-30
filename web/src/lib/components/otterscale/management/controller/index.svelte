@@ -34,7 +34,7 @@
 </main>
 
 {#snippet ChooseScope()}
-	<span class="flex items-center gap-1 text-xl">
+	<span class="m-2 flex items-center gap-1 text-xl">
 		Scope
 		<Select.Root type="single">
 			<Select.Trigger

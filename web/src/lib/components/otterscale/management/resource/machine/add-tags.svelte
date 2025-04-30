@@ -4,7 +4,7 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
-
+	import { writable } from 'svelte/store';
 	import {
 		Nexus,
 		type Machine,
@@ -12,19 +12,30 @@
 		type Tag
 	} from '$gen/api/nexus/v1/nexus_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	let {
 		machine,
-		tags
 	}: {
 		machine: Machine;
-		tags: Tag[];
 	} = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
+
+	const tagsStore = writable<Tag[]>();
+	const tagsLoading = writable(true);
+	async function fetchTags() {
+		try {
+			const response = await client.listTags({});
+			tagsStore.set(response.tags);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		} finally {
+			tagsLoading.set(false);
+		}
+	}
 
 	const DEFAULT_REQUEST = {
 		id: machine.id,
@@ -41,6 +52,14 @@
 	function close() {
 		open = false;
 	}
+	
+	onMount(async () => {
+		try {
+			await fetchTags();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+	});
 </script>
 
 <AlertDialog.Root bind:open>
@@ -67,7 +86,7 @@
 				<Select.Root type="multiple" bind:value={addMachineTagsRequest.tags}>
 					<Select.Trigger>Select</Select.Trigger>
 					<Select.Content class="w-fit">
-						{#each tags as tag}
+						{#each $tagsStore as tag}
 							<Select.Item
 								value={tag.name}
 								class="flex items-center gap-1"

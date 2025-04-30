@@ -65,7 +65,7 @@
 
 		<div class="rounded-lg p-2">
 			<Table.Root>
-				<Table.Header>
+				<Table.Header class="bg-muted/50">
 					<Table.Row class="*:text-xs *:font-light">
 						<Table.Head>NAME</Table.Head>
 						<Table.Head>URL</Table.Head>
@@ -115,7 +115,7 @@
 				{/key}
 			</span>
 			<Table.Root>
-				<Table.Header>
+				<Table.Header class="bg-muted/50">
 					<Table.Row class="*:text-xs *:font-light">
 						<Table.Head>NAME</Table.Head>
 						<Table.Head>SOURCE</Table.Head>
@@ -169,7 +169,7 @@
 				<CreateTag bind:tags />
 			</div>
 			<Table.Root>
-				<Table.Header>
+				<Table.Header class="bg-muted/50">
 					<Table.Row class="*:text-xs *:font-light">
 						<Table.Head>TAG</Table.Head>
 						<Table.Head>COMMENT</Table.Head>

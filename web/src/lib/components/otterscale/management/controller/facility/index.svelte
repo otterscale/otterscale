@@ -91,13 +91,12 @@
 	function getCategory(facility: Facility) {
 		const charmName = facility.charmName;
 		switch (true) {
+			case charmName.includes('kubernetes'):
 			case charmName.includes('kubeapi-load-balancer'):
-			case charmName.includes('kubernetes-worker'):
 			case charmName.includes('etcd'):
 			case charmName.includes('keepalived'):
-			case charmName.includes('kubernetes-control-plane'):
 				return FACILITY_CATEGORYS.KUBERNETES;
-			case charmName.includes('ceph-mon'):
+			case charmName.includes('ceph'):
 				return FACILITY_CATEGORYS.CEPH;
 			default:
 				return FACILITY_CATEGORYS.OTHER;
@@ -148,163 +147,168 @@
 	</Button>
 {/snippet}
 
-{#snippet AddBundleUnits(facilityCategory: string)}
+{#snippet AddBundleUnits(facilityCategory: string, masterFacility: Facility)}
 	{#if facilityCategory == FACILITY_CATEGORYS.KUBERNETES}
-		<AddKubernetesUnits {scopeUuid} ceph={{} as Facility} machines={$machinesStore} />
+		<AddKubernetesUnits {scopeUuid} kubernetes={masterFacility} machines={$machinesStore} />
 	{:else if facilityCategory == FACILITY_CATEGORYS.CEPH}
-		<AddCephUnits {scopeUuid} ceph={{} as Facility} machines={$machinesStore} />
+		<AddCephUnits {scopeUuid} ceph={masterFacility} machines={$machinesStore} />
 	{/if}
 {/snippet}
 
 <main>
 	{@render StatisticFacilities($facilitiesStore)}
 
-	<Table.Root>
-		<Table.Header>
-			<Table.Row class="*:text-sm *:font-light">
-				<Table.Head>
-					NAME
-					<p class="text-xs">VERSION</p>
-				</Table.Head>
-				<Table.Head>UNITS</Table.Head>
-				<Table.Head>STATUS</Table.Head>
-				<Table.Head>REVISION</Table.Head>
-				<Table.Head>CHARM NAME</Table.Head>
-				<Table.Head></Table.Head>
-				<Table.Head></Table.Head>
-			</Table.Row>
-		</Table.Header>
-		<Table.Body>
-			{#each Object.values(FACILITY_CATEGORYS) as facilityCategory}
-				{#if $facilitiesStore.some((a) => getCategory(a) === facilityCategory)}
-					<Table.Row class="border-none">
-						<Table.Cell colspan={8} class="rounded-lg bg-secondary">
-							<span class="flex items-center justify-between">
-								<span class="flex items-center gap-2">
-									<Icon icon={getLogoByCategory(facilityCategory)} class="size-7" />
-									<h1 class="text-start text-lg">{facilityCategory}</h1>
-								</span>
-								<span class="flex items-center gap-2">
-									{@render collapsibilityHandler(facilityCategory)}
-								</span>
-							</span>
-						</Table.Cell>
-					</Table.Row>
-
-					{#if collapsibleOpen[facilityCategory]}
-						<Table.Row class="border-none hover:bg-transparent">
-							<Table.Cell colspan={8}>
-								<span class="flex justify-end">
-									{@render AddBundleUnits(facilityCategory)}
+	<div class="p-4">
+		<Table.Root>
+			<Table.Header class="bg-muted/50">
+				<Table.Row class="*:text-xs *:font-light [&>th]:py-2 [&>th]:align-top">
+					<Table.Head>
+						NAME
+						<p>VERSION</p>
+					</Table.Head>
+					<Table.Head>UNITS</Table.Head>
+					<Table.Head>STATUS</Table.Head>
+					<Table.Head>REVISION</Table.Head>
+					<Table.Head>CHARM NAME</Table.Head>
+					<Table.Head></Table.Head>
+					<Table.Head></Table.Head>
+				</Table.Row>
+			</Table.Header>
+			<Table.Body>
+				{#each Object.values(FACILITY_CATEGORYS) as facilityCategory}
+					{#if $facilitiesStore.some((a) => getCategory(a) === facilityCategory)}
+						<Table.Row class="border-none">
+							<Table.Cell colspan={8} class="border-b hover:bg-transparent">
+								<span class="flex items-center justify-between">
+									<span class="flex items-center gap-1">
+										<Icon icon={getLogoByCategory(facilityCategory)} class="h-[23px] w-fit" />
+										<h1 class="text-start text-[23px]">{facilityCategory}</h1>
+									</span>
+									<span class="flex items-center gap-2">
+										{@render collapsibilityHandler(facilityCategory)}
+									</span>
 								</span>
 							</Table.Cell>
 						</Table.Row>
-						{@const facilitiesByCategory = $facilitiesStore.filter(
-							(a) => getCategory(a) === facilityCategory
-						)}
-						{#each facilitiesByCategory as facilityByCategory}
-							<Table.Row class="border-none">
-								<Table.Cell>
-									<span class="flex items-center gap-1">
-										<div>
-											<span class="flex items-center gap-1">
-												{facilityByCategory.name}
-												{#if facilityByCategory.charmName.includes('kubernetes-control-plane')}
-													<a
-														href={`/management/scope/${scopeUuid}/facility/${facilityByCategory.name}`}
-														target="_blank"
-													>
-														<Icon icon="ph:arrow-square-out" />
-													</a>
-												{/if}
-											</span>
-											{#if facilityByCategory.version}
-												<p class="text-xs font-light text-muted-foreground">
-													{facilityByCategory.version}
-												</p>
-											{/if}
-										</div>
-									</span>
-								</Table.Cell>
-								<Table.Cell>
-									<span class="flex items-center justify-between">
-										<div>
-											{#each facilityByCategory.units.sort( (previous, present) => previous.name.localeCompare(present.name) ) as unit}
-												<span class="flex items-center gap-1">
-													<Badge variant="outline">
-														{unit.name}
-													</Badge>
-													{@render ReadUnit(unit)}
-												</span>
-											{/each}
-										</div>
-										<DropdownMenu.Root>
-											<DropdownMenu.Trigger>
-												<Button variant="ghost">
-													<Icon icon="ph:dots-three-vertical" />
-												</Button>
-											</DropdownMenu.Trigger>
-											<DropdownMenu.Content>
-												<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-													<AddFacilityUnits
-														{scopeUuid}
-														{facilityByCategory}
-														machines={$machinesStore}
-													/>
-												</DropdownMenu.Item>
-											</DropdownMenu.Content>
-										</DropdownMenu.Root>
-									</span>
-								</Table.Cell>
-								<Table.Cell>
-									{#if facilityByCategory.status}
-										<span class="flex items-center gap-1">
-											<Badge variant="outline">
-												{facilityByCategory.status.state}
-											</Badge>
-											{@render ReadStatus(facilityByCategory.status)}
-										</span>
-									{/if}
-								</Table.Cell>
-								<Table.Cell>
-									{facilityByCategory.revision}
-								</Table.Cell>
-								<Table.Cell>
-									{facilityByCategory.charmName}
-								</Table.Cell>
-								<Table.Cell>
-									<div class="flex justify-end">
-										<ManagementFacilityActions {scopeUuid} facilityName={facilityByCategory.name} />
-									</div>
-								</Table.Cell>
 
-								<Table.Cell>
-									<div class="flex justify-end">
-										<DropdownMenu.Root>
-											<DropdownMenu.Trigger>
-												<Icon icon="ph:dots-three-vertical" />
-											</DropdownMenu.Trigger>
-											<DropdownMenu.Content>
-												<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-													<UpdateFacility {scopeUuid} {facilityByCategory} />
-												</DropdownMenu.Item>
-												<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-													<DeleteFacility {scopeUuid} {facilityByCategory} />
-												</DropdownMenu.Item>
-												<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-													<ExposeFacility {scopeUuid} {facilityByCategory} />
-												</DropdownMenu.Item>
-											</DropdownMenu.Content>
-										</DropdownMenu.Root>
-									</div>
+						{#if collapsibleOpen[facilityCategory]}
+							{@const facilitiesByCategory = $facilitiesStore.filter(
+								(a) => getCategory(a) === facilityCategory
+							)}
+							<Table.Row class="border-none hover:bg-transparent">
+								<Table.Cell colspan={8}>
+									<span class="flex justify-end">
+										{@render AddBundleUnits(facilityCategory, facilitiesByCategory[0])}
+									</span>
 								</Table.Cell>
 							</Table.Row>
-						{/each}
+							{#each facilitiesByCategory as facilityByCategory}
+								<Table.Row class="border-none">
+									<Table.Cell>
+										<span class="flex items-center gap-1">
+											<div>
+												<span class="flex items-center gap-1">
+													{facilityByCategory.name}
+													{#if facilityByCategory.charmName.includes('kubernetes-control-plane')}
+														<a
+															href={`/management/scope/${scopeUuid}/facility/${facilityByCategory.name}`}
+															target="_blank"
+														>
+															<Icon icon="ph:arrow-square-out" />
+														</a>
+													{/if}
+												</span>
+												{#if facilityByCategory.version}
+													<p class="text-xs font-light text-muted-foreground">
+														{facilityByCategory.version}
+													</p>
+												{/if}
+											</div>
+										</span>
+									</Table.Cell>
+									<Table.Cell>
+										<span class="flex items-center justify-between">
+											<div>
+												{#each facilityByCategory.units.sort( (previous, present) => previous.name.localeCompare(present.name) ) as unit}
+													<span class="flex items-center gap-1">
+														<Badge variant="outline">
+															{unit.name}
+														</Badge>
+														{@render ReadUnit(unit)}
+													</span>
+												{/each}
+											</div>
+											<DropdownMenu.Root>
+												<DropdownMenu.Trigger>
+													<Button variant="ghost">
+														<Icon icon="ph:dots-three-vertical" />
+													</Button>
+												</DropdownMenu.Trigger>
+												<DropdownMenu.Content>
+													<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+														<AddFacilityUnits
+															{scopeUuid}
+															{facilityByCategory}
+															machines={$machinesStore}
+														/>
+													</DropdownMenu.Item>
+												</DropdownMenu.Content>
+											</DropdownMenu.Root>
+										</span>
+									</Table.Cell>
+									<Table.Cell>
+										{#if facilityByCategory.status}
+											<span class="flex items-center gap-1">
+												<Badge variant="outline">
+													{facilityByCategory.status.state}
+												</Badge>
+												{@render ReadStatus(facilityByCategory.status)}
+											</span>
+										{/if}
+									</Table.Cell>
+									<Table.Cell>
+										{facilityByCategory.revision}
+									</Table.Cell>
+									<Table.Cell>
+										{facilityByCategory.charmName}
+									</Table.Cell>
+									<Table.Cell>
+										<div class="flex justify-end">
+											<ManagementFacilityActions
+												{scopeUuid}
+												facilityName={facilityByCategory.name}
+											/>
+										</div>
+									</Table.Cell>
+
+									<Table.Cell>
+										<div class="flex justify-end">
+											<DropdownMenu.Root>
+												<DropdownMenu.Trigger>
+													<Icon icon="ph:dots-three-vertical" />
+												</DropdownMenu.Trigger>
+												<DropdownMenu.Content>
+													<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+														<UpdateFacility {scopeUuid} {facilityByCategory} />
+													</DropdownMenu.Item>
+													<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+														<DeleteFacility {scopeUuid} {facilityByCategory} />
+													</DropdownMenu.Item>
+													<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+														<ExposeFacility {scopeUuid} {facilityByCategory} />
+													</DropdownMenu.Item>
+												</DropdownMenu.Content>
+											</DropdownMenu.Root>
+										</div>
+									</Table.Cell>
+								</Table.Row>
+							{/each}
+						{/if}
 					{/if}
-				{/if}
-			{/each}
-		</Table.Body>
-	</Table.Root>
+				{/each}
+			</Table.Body>
+		</Table.Root>
+	</div>
 </main>
 
 {#snippet StatisticFacilities(facilities: Facility[])}
@@ -316,7 +320,7 @@
 	<div class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>Facility</Card.Title>
+				<Card.Title>FACILITY</Card.Title>
 			</Card.Header>
 			<Card.Content class="text-7xl">
 				{numberOfApplications}
@@ -324,7 +328,7 @@
 		</Card.Root>
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>Health</Card.Title>
+				<Card.Title>HEALTH</Card.Title>
 			</Card.Header>
 			<Card.Content>
 				<p class="text-3xl">
@@ -358,14 +362,14 @@
 		</HoverCard.Trigger>
 		<HoverCard.Content class="min-w-max">
 			<Table.Root>
-				<Table.Body>
+				<Table.Body class="*:text-xs [&>tr>th]:text-right [&>tr>th]:font-light">
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">Name</Table.Cell>
-						<Table.Cell class="text-right">{unit.name}</Table.Cell>
+						<Table.Head>Name</Table.Head>
+						<Table.Cell>{unit.name}</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">Version</Table.Cell>
-						<Table.Cell class="text-right">
+						<Table.Head>Version</Table.Head>
+						<Table.Cell>
 							{#if unit.version}
 								<Badge variant="outline">
 									{unit.version}
@@ -374,25 +378,23 @@
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">Leader</Table.Cell>
-						<Table.Cell class="text-right">
-							<div class="flex justify-end">
-								<Icon
-									icon={unit.leader ? 'ph:circle' : 'ph:x'}
-									class={unit.leader ? 'text-blue-500' : 'text-red-500'}
-								/>
-							</div>
+						<Table.Head>Leader</Table.Head>
+						<Table.Cell>
+							<Icon
+								icon={unit.leader ? 'ph:circle' : 'ph:x'}
+								class={unit.leader ? 'text-blue-500' : 'text-red-500'}
+							/>
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">IP Address</Table.Cell>
-						<Table.Cell class="text-right">
+						<Table.Head>IP Address</Table.Head>
+						<Table.Cell>
 							{unit.ipAddress}
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">Ports</Table.Cell>
-						<Table.Cell class="text-right">
+						<Table.Head>Ports</Table.Head>
+						<Table.Cell>
 							{#each unit.ports as port}
 								<Badge variant="outline">
 									{port}
@@ -401,8 +403,8 @@
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">Agent</Table.Cell>
-						<Table.Cell class="text-right">
+						<Table.Head>Agent</Table.Head>
+						<Table.Cell>
 							{#if unit.agentStatus}
 								<Badge variant="outline">
 									{unit.agentStatus.state}
@@ -411,8 +413,8 @@
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">Workload</Table.Cell>
-						<Table.Cell class="text-right">
+						<Table.Head>Workload</Table.Head>
+						<Table.Cell>
 							{#if unit.workloadStatus}
 								<Badge variant="outline">
 									{unit.workloadStatus.state}
@@ -421,8 +423,8 @@
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">Machine</Table.Cell>
-						<Table.Cell class="flex justify-end">
+						<Table.Head>Machine</Table.Head>
+						<Table.Cell>
 							{#if unit.workloadStatus?.state == 'active' && unit.machineId}
 								<Badge variant="outline">
 									{unit.machineId}
@@ -437,8 +439,8 @@
 					</Table.Row>
 					{#if unit.subordinates.length > 0}
 						<Table.Row>
-							<Table.Cell class="text-xs font-light">Depending</Table.Cell>
-							<Table.Cell class="flex justify-end">
+							<Table.Head>Depending</Table.Head>
+							<Table.Cell>
 								{#each unit.subordinates as depending}
 									<span class="flex items-center gap-1">
 										<Badge variant="outline">
@@ -463,10 +465,10 @@
 		</HoverCard.Trigger>
 		<HoverCard.Content class="min-w-max">
 			<Table.Root>
-				<Table.Body>
+				<Table.Body class="*:text-xs [&>tr>th]:text-right [&>tr>th]:font-light">
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">State</Table.Cell>
-						<Table.Cell class="text-right">
+						<Table.Head>State</Table.Head>
+						<Table.Cell>
 							{#if status.state}
 								<Badge variant="outline">
 									{status.state}
@@ -475,12 +477,12 @@
 						</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">Details</Table.Cell>
-						<Table.Cell class="text-right">{status.details}</Table.Cell>
+						<Table.Head>Details</Table.Head>
+						<Table.Cell>{status.details}</Table.Cell>
 					</Table.Row>
 					<Table.Row>
-						<Table.Cell class="text-xs font-light">Create Time</Table.Cell>
-						<Table.Cell class="text-right">
+						<Table.Head>Create Time</Table.Head>
+						<Table.Cell>
 							{#if status.createdAt}
 								{status.createdAt.seconds}
 							{/if}

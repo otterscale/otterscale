@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import Icon from '@iconify/svelte';
-	import { writable } from 'svelte/store';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card/index.js';
@@ -9,17 +9,16 @@
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import { cn } from '$lib/utils';
-
 	import PowerOnMachine from './power-on.svelte';
 	import PowerOffMachine from './power-off.svelte';
 	import CreateMachine from './create.svelte';
 	import DeleteMachine from './delete.svelte';
 	import RemoveTags from './remove-tags.svelte';
 	import AddTags from './add-tags.svelte';
-
-	import { Nexus, type Machine, type Scope, type Tag } from '$gen/api/nexus/v1/nexus_pb';
+	import { Nexus, type Machine } from '$gen/api/nexus/v1/nexus_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
+
 	let {
 		machines
 	}: {
@@ -31,194 +30,185 @@
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
 
-	const scopesStore = writable<Scope[]>([]);
-	const scopesLoading = writable(true);
-	async function fetchScopes() {
-		try {
-			const response = await client.listScopes({});
-			scopesStore.set(response.scopes);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			scopesLoading.set(false);
+	async function refreshMachines() {
+		while (page.url.searchParams.get('interval')) {
+			await new Promise((resolve) => setTimeout(resolve, 1000 * Number(page.url.searchParams.get('interval'))));
+			console.log(`Refresh machines`);
+	
+			try {
+				const response = await client.listMachines({});
+				machines = response.machines;
+			} catch (error) {
+				console.error('Error refreshing:', error);
+			}
 		}
 	}
 
-	const tagsStore = writable<Tag[]>();
-	const tagsLoading = writable(true);
-	async function fetchTags() {
-		try {
-			const response = await client.listTags({});
-			tagsStore.set(response.tags);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			tagsLoading.set(false);
-		}
-	}
-
-	let mounted = false;
 	onMount(async () => {
 		try {
-			await fetchScopes();
-			await fetchTags();
+			refreshMachines();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
-
-		mounted = true;
 	});
 </script>
 
-<div class="space-y-3">
+<div>
 	{@render StatisticMachines()}
-	<Table.Root>
-		<Table.Header>
-			<Table.Row class="*:text-xs *:font-light">
-				<Table.Head class="align-top">
-					<div>FQDN</div>
-					<div>IP</div>
-				</Table.Head>
-				<Table.Head class="align-top">POWER</Table.Head>
-				<Table.Head class="align-top">TAGS</Table.Head>
-				<Table.Head class="align-top">STATUS</Table.Head>
-				<Table.Head class="text-right align-top">
-					<div>CORES</div>
-					<div>ARCH</div>
-				</Table.Head>
-				<Table.Head class="align-top">RAM</Table.Head>
-				<Table.Head class="align-top">DISKS</Table.Head>
-				<Table.Head class="text-end align-top">STORAGE</Table.Head>
-			</Table.Row>
-		</Table.Header>
-		<Table.Body>
-			{#each machines as machine}
-				<Table.Row>
-					<Table.Cell class="align-top">
-						<div class="flex items-center justify-between">
-							<div class="flex justify-between">
-								<span>
-									<a href={`/management/machine/${machine.id}`}>
-										<div class="flex items-center gap-1">
-											{machine.fqdn}
-											<Icon icon="ph:arrow-square-out" />
+	<div class="p-4">
+		<Table.Root>
+			<Table.Header class="bg-muted/50">
+				<Table.Row class="*:text-xs *:font-light [&>th]:py-2 [&>th]:align-top">
+					<Table.Head>
+						<div>FQDN</div>
+						<div>IP</div>
+					</Table.Head>
+					<Table.Head>POWER</Table.Head>
+					<Table.Head>TAGS</Table.Head>
+					<Table.Head>STATUS</Table.Head>
+					<Table.Head class="text-right ">
+						<div>CORES</div>
+						<div>ARCH</div>
+					</Table.Head>
+					<Table.Head class="text-end  ">RAM</Table.Head>
+					<Table.Head>DISKS</Table.Head>
+					<Table.Head class="text-end">STORAGE</Table.Head>
+				</Table.Row>
+			</Table.Header>
+			<Table.Body>
+				{#each machines as machine}
+					<Table.Row class="*:whitespace-nowrap *:truncate [&>td]:align-top">
+						<Table.Cell>
+							<div class="flex items-center justify-between">
+								<div class="flex justify-between">
+									<span>
+										<a href={`/management/machine/${machine.id}?interval=5`}>
+											<div class="flex items-center gap-1">
+												<p>{machine.fqdn}</p>
+												<Icon icon="ph:arrow-square-out" />
+											</div>
+										</a>
+										<div class={machineSubvalueContentClass}>
+											{machine.ipAddresses.join(', ')}
 										</div>
-									</a>
-									<div class={machineSubvalueContentClass}>
-										{machine.ipAddresses.join(', ')}
-									</div>
-								</span>
+									</span>
+								</div>
+								<DropdownMenu.Root>
+									<DropdownMenu.Trigger>
+										<Button variant="ghost">
+											<Icon icon="ph:dots-three-vertical" />
+										</Button>
+									</DropdownMenu.Trigger>
+									<DropdownMenu.Content>
+										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+											<CreateMachine {machine} />
+										</DropdownMenu.Item>
+										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+											<DeleteMachine {machine} />
+										</DropdownMenu.Item>
+									</DropdownMenu.Content>
+								</DropdownMenu.Root>
 							</div>
-							<DropdownMenu.Root>
-								<DropdownMenu.Trigger>
-									<Button variant="ghost">
-										<Icon icon="ph:dots-three-vertical" />
-									</Button>
-								</DropdownMenu.Trigger>
-								<DropdownMenu.Content>
-									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-										<CreateMachine {machine} />
-									</DropdownMenu.Item>
-									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-										<DeleteMachine {machine} />
-									</DropdownMenu.Item>
-								</DropdownMenu.Content>
-							</DropdownMenu.Root>
-						</div>
-					</Table.Cell>
-					<Table.Cell class="align-top">
-						<div class="flex items-center justify-between">
-							<div class="flex items-center gap-1">
-								<Icon
-									icon={machine.powerState === 'on' ? 'ph:power' : 'ph:power'}
-									class={machine.powerState === 'on' ? 'text-green-700' : 'text-red-700'}
-								/>
-								<div class="flex flex-col items-start">
-									<div>{machine.powerState}</div>
-									<div class={machineSubvalueContentClass}>{machine.powerType}</div>
+						</Table.Cell>
+						<Table.Cell>
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-1">
+									<Icon
+										icon={machine.powerState === 'on' ? 'ph:power' : 'ph:power'}
+										class={machine.powerState === 'on' ? 'text-green-700' : 'text-red-700'}
+									/>
+									<div class="flex flex-col items-start">
+										<div>{machine.powerState}</div>
+										<div class={machineSubvalueContentClass}>{machine.powerType}</div>
+									</div>
+								</div>
+								<DropdownMenu.Root>
+									<DropdownMenu.Trigger>
+										<Button variant="ghost">
+											<Icon icon="ph:dots-three-vertical" />
+										</Button>
+									</DropdownMenu.Trigger>
+									<DropdownMenu.Content>
+										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+											{#if machine.powerState.toLowerCase() === 'on'}
+												<PowerOffMachine {machine} />
+											{:else}
+												<PowerOnMachine {machine} />
+											{/if}
+										</DropdownMenu.Item>
+									</DropdownMenu.Content>
+								</DropdownMenu.Root>
+							</div>
+						</Table.Cell>
+						<Table.Cell>
+							<div class="flex items-center justify-between">
+								<div class="flex flex-wrap gap-1">
+									{#each machine.tags as tag}
+										<Badge variant="outline">
+											{tag}
+										</Badge>
+									{/each}
+								</div>
+								<DropdownMenu.Root>
+									<DropdownMenu.Trigger>
+										<Button variant="ghost">
+											<Icon icon="ph:dots-three-vertical" />
+										</Button>
+									</DropdownMenu.Trigger>
+									<DropdownMenu.Content>
+										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+											<AddTags {machine} />
+										</DropdownMenu.Item>
+										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+											<RemoveTags {machine} />
+										</DropdownMenu.Item>
+									</DropdownMenu.Content>
+								</DropdownMenu.Root>
+							</div>
+						</Table.Cell>
+						<Table.Cell>
+							<Badge variant="outline">
+								<span class="flex items-center gap-1">
+								{#if machine.status.toLocaleLowerCase() != 'deployed'}
+									<Icon icon="ph:spinner" class="animate-spin" />
+								{/if}
+								{machine.status}
+								</span>
+							</Badge>
+							<p class="text-xs font-light">
+								{`${machine.osystem} ${machine.hweKernel} ${machine.distroSeries}`}
+							</p>
+						</Table.Cell>
+						<Table.Cell>
+							<div class="text-right">
+								<div>{machine.cpuCount}</div>
+								<div class={machineSubvalueContentClass}>
+									{machine.architecture}
 								</div>
 							</div>
-							<DropdownMenu.Root>
-								<DropdownMenu.Trigger>
-									<Button variant="ghost">
-										<Icon icon="ph:dots-three-vertical" />
-									</Button>
-								</DropdownMenu.Trigger>
-								<DropdownMenu.Content>
-									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-										{#if machine.powerState.toLowerCase() === 'on'}
-											<PowerOffMachine {machine} />
-										{:else}
-											<PowerOnMachine {machine} />
-										{/if}
-									</DropdownMenu.Item>
-								</DropdownMenu.Content>
-							</DropdownMenu.Root>
-						</div>
-					</Table.Cell>
-					<Table.Cell class="align-top">
-						<div class="flex items-center justify-between">
-							<div class="flex gap-1">
-								{#each machine.tags as tag}
-									<Badge variant="outline">
-										{tag}
-									</Badge>
-								{/each}
+						</Table.Cell>
+						<Table.Cell>
+							<div class="flex items-end justify-end space-x-1">
+								<div>{formatCapacity(machine.memoryMb).value}</div>
+								<div class="text-xs font-extralight">
+									{formatCapacity(machine.memoryMb).unit}
+								</div>
 							</div>
-							<DropdownMenu.Root>
-								<DropdownMenu.Trigger>
-									<Button variant="ghost">
-										<Icon icon="ph:dots-three-vertical" />
-									</Button>
-								</DropdownMenu.Trigger>
-								<DropdownMenu.Content>
-									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-										<AddTags {machine} tags={$tagsStore} />
-									</DropdownMenu.Item>
-									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-										<RemoveTags {machine} />
-									</DropdownMenu.Item>
-								</DropdownMenu.Content>
-							</DropdownMenu.Root>
-						</div>
-					</Table.Cell>
-					<Table.Cell class="align-top">
-						<Badge variant="outline">
-							{machine.status}
-						</Badge>
-						<p class="text-xs font-light">
-							{`${machine.osystem} ${machine.hweKernel} ${machine.distroSeries}`}
-						</p>
-					</Table.Cell>
-					<Table.Cell class="align-top">
-						<div class="text-right">
-							<div>{machine.cpuCount}</div>
-							<div class={machineSubvalueContentClass}>
-								{machine.architecture}
+						</Table.Cell>
+						<Table.Cell class="text-center ">{machine.blockDevices.length}</Table.Cell>
+						<Table.Cell>
+							<div class="flex items-end justify-end space-x-1">
+								<div>{formatCapacity(machine.storageMb).value}</div>
+								<div class="text-xs font-extralight">
+									{formatCapacity(machine.storageMb).unit}
+								</div>
 							</div>
-						</div>
-					</Table.Cell>
-					<Table.Cell class="align-top">
-						<div class="flex items-end justify-end space-x-1">
-							<div>{formatCapacity(machine.memoryMb).value}</div>
-							<div class="text-xs font-extralight">
-								{formatCapacity(machine.memoryMb).unit}
-							</div>
-						</div>
-					</Table.Cell>
-					<Table.Cell class="text-center align-top">{machine.blockDevices.length}</Table.Cell>
-					<Table.Cell class="align-top">
-						<div class="flex items-end justify-end space-x-1">
-							<div>{formatCapacity(machine.storageMb).value}</div>
-							<div class="text-xs font-extralight">
-								{formatCapacity(machine.storageMb).unit}
-							</div>
-						</div>
-					</Table.Cell>
-				</Table.Row>
-			{/each}
-		</Table.Body>
-	</Table.Root>
+						</Table.Cell>
+					</Table.Row>
+				{/each}
+			</Table.Body>
+		</Table.Root>
+	</div>
 </div>
 
 {#snippet StatisticMachines()}
@@ -233,9 +223,9 @@
 			<Card.Footer>
 				<div class="flex flex-wrap gap-1">
 					{#each [...new Set(machines.map((m) => m.status))] as status}
-						<Badge variant="outline"
-							>{status}: {machines.filter((m) => m.status === status).length}</Badge
-						>
+						<Badge variant="outline">
+							{status}: {machines.filter((m) => m.status === status).length}
+						</Badge>
 					{/each}
 				</div>
 			</Card.Footer>

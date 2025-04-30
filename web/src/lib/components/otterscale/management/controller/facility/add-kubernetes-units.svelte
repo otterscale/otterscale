@@ -20,11 +20,11 @@
 
 	let {
 		scopeUuid,
-		ceph,
+		kubernetes,
 		machines
 	}: {
 		scopeUuid: string;
-		ceph: Facility;
+		kubernetes: Facility;
 		machines: Machine[];
 	} = $props();
 
@@ -34,7 +34,7 @@
 	const DEFAULT_MACHINES = [] as Machine[];
 	const DEFAULT_REQUEST = {
 		scopeUuid: scopeUuid,
-		facilityName: ceph.name,
+		facilityName: kubernetes.name,
 		machineIds: [] as string[],
 		force: false
 	} as AddKubernetesUnitsRequest;
@@ -62,7 +62,7 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>Add Units for {ceph.name}</AlertDialog.Title>
+			<AlertDialog.Title>Add Units for {kubernetes.name}</AlertDialog.Title>
 			<AlertDialog.Description>
 				<div class="grid max-h-[77vh] w-full gap-4 overflow-y-auto">
 					<fieldset class="grid items-center gap-3 rounded-lg border p-3">

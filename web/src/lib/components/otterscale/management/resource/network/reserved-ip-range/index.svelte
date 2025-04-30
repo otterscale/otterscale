@@ -25,7 +25,7 @@
 			<Icon icon="ph:arrow-square-out" class="size-4" />
 		</div>
 	</Sheet.Trigger>
-	<Sheet.Content class="w-fit min-w-[38vw] overflow-auto" side="right">
+	<Sheet.Content class="w-fit min-w-[50vw] overflow-auto" side="right">
 		<Sheet.Header>
 			<Sheet.Title>Reserved IP Ranges</Sheet.Title>
 			<div class="ml-auto">

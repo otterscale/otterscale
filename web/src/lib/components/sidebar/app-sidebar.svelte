@@ -122,7 +122,7 @@
 					},
 					{
 						title: 'Machine',
-						url: '/management/machine'
+						url: '/management/machine?interval=15'
 					},
 
 					{

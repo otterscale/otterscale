@@ -48,7 +48,7 @@
 </script>
 
 <main class="flex flex-col justify-between bg-muted/50">
-	<Command.Root class="border">
+	<Command.Root class="rounded-none border">
 		<Command.Input
 			placeholder="Filter"
 			bind:value={filterTerm}
@@ -62,12 +62,7 @@
 			{@render MiniMap()}
 			<Command.List class="min-h-[600px] w-full overflow-y-auto">
 				{#each sortedGroupedKeywords as [letter, keywords]}
-					<Command.Group
-						dir="ltr"
-						heading={letter}
-						data-group={letter}
-						class="m-1 rounded-lg border"
-					>
+					<Command.Group dir="ltr" heading={letter} data-group={letter} class="mx-1 border-b">
 						{#each keywords as keyword}
 							<Command.Item
 								value={keyword}
@@ -97,7 +92,7 @@
 		{#each sortedGroupedKeywords as [letter]}
 			<Button
 				variant="ghost"
-				class="h-fit w-4 rounded-full p-0 text-[10px] font-bold"
+				class="h-fit w-4 p-0 text-[10px] font-bold"
 				style="height: {100 / sortedGroupedKeywords.length}%"
 				onmouseover={() => {
 					document

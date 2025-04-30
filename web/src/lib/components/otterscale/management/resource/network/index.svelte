@@ -37,144 +37,146 @@
 	} = $props();
 </script>
 
-<div class="space-y-3">
+<div>
 	{@render StatisticNetworks()}
-	<span class="flex justify-end">
-		<CreateNetwork />
-	</span>
-	<Table.Root>
-		<Table.Header>
-			<Table.Row>
-				<Table.Head class="text-xs font-light">FABRIC</Table.Head>
-				<Table.Head class="text-xs font-light">VLAN</Table.Head>
-				<Table.Head class="text-xs font-light">DHCP</Table.Head>
-				<Table.Head class="text-xs font-light">SUBNET</Table.Head>
-				<Table.Head class="text-xs font-light">USED IP</Table.Head>
-				<Table.Head class="text-xs font-light">RESERVED IP RANGE</Table.Head>
-				<Table.Head class="text-xs font-light">AVAILABLE</Table.Head>
-			</Table.Row>
-		</Table.Header>
-		<Table.Body>
-			{#each networks as network}
-				<Table.Row>
-					{#if network.fabric}
-						<Table.Cell>
-							<div class="flex justify-between">
-								{network.fabric.name}
-								<DropdownMenu.Root>
-									<DropdownMenu.Trigger>
-										<Button variant="ghost">
-											<Icon icon="ph:dots-three-vertical" />
-										</Button>
-									</DropdownMenu.Trigger>
-									<DropdownMenu.Content>
-										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-											<UpdateFabric fabric={network.fabric} />
-										</DropdownMenu.Item>
-										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-											<DeleteNetwork fabric={network.fabric} />
-										</DropdownMenu.Item>
-									</DropdownMenu.Content>
-								</DropdownMenu.Root>
-							</div>
-						</Table.Cell>
-						<Table.Cell>
-							{#if network.vlan}
-								<span class="flex justify-between">
-									<span class="flex items-center gap-1">
-										{network.vlan.name}
-										{@render ReadVLAN(network.vlan)}
-									</span>
-									<DropdownMenu.Root>
-										<DropdownMenu.Trigger>
-											<Button variant="ghost">
-												<Icon icon="ph:dots-three-vertical" />
-											</Button>
-										</DropdownMenu.Trigger>
-										<DropdownMenu.Content>
-											<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-												<UpdateVLAN fabric={network.fabric} vlan={network.vlan} />
-											</DropdownMenu.Item>
-										</DropdownMenu.Content>
-									</DropdownMenu.Root>
-								</span>
-							{/if}
-						</Table.Cell>
-						<Table.Cell>
-							{#if network.vlan}
-								{@render formatterBoolean(network.vlan.dhcpOn)}
-							{/if}
-						</Table.Cell>
-						<Table.Cell>
-							{#if network.subnet}
-								<div class="flex justify-between">
-									<span class="flex items-center gap-1">
-										{network.subnet.name}
-										{@render ReadSubnet(network.subnet)}
-									</span>
-									<DropdownMenu.Root>
-										<DropdownMenu.Trigger>
-											<Button variant="ghost">
-												<Icon icon="ph:dots-three-vertical" />
-											</Button>
-										</DropdownMenu.Trigger>
-										<DropdownMenu.Content>
-											<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-												<UpdateSubnet subnet={network.subnet} />
-											</DropdownMenu.Item>
-										</DropdownMenu.Content>
-									</DropdownMenu.Root>
-								</div>
-							{/if}
-						</Table.Cell>
-						<Table.Cell>
-							{#if network.subnet}
-								<span class="flex items-center gap-1">
-									{network.subnet.ipAddresses.length}
-									{@render ReadUsedIP(network.subnet.ipAddresses)}
-								</span>
-							{/if}
-						</Table.Cell>
-						<Table.Cell>
-							{#if network.subnet}
-								<span class="flex items-center gap-1">
-									{network.subnet.ipRanges.length}
-									<ManagementNetworkSubnetReservedIPRanges subnet={network.subnet} />
-								</span>
-							{/if}
-						</Table.Cell>
-						<Table.Cell>
-							{#if network.subnet && network.subnet.statistics}
-								{@const availabilityBySubnet =
-									(Number(network.subnet.statistics.available) * 100) /
-									Number(network.subnet.statistics.total)}
-
-								<div class="flex justify-between">
-									<p>{network.subnet.statistics.availablePercent}</p>
-									<p class="text-xs font-extralight">
-										{formatNumber(network.subnet.statistics.available)}/{formatNumber(
-											network.subnet.statistics.total
-										)}
-									</p>
-								</div>
-								<Progress
-									max={100}
-									value={availabilityBySubnet}
-									class={`${
-										availabilityBySubnet > 62
-											? ' bg-green-50 *:bg-green-700'
-											: availabilityBySubnet > 38
-												? 'bg-yellow-50 *:bg-yellow-500'
-												: 'bg-red-50 *:bg-red-700'
-									}`}
-								/>
-							{/if}
-						</Table.Cell>
-					{/if}
+	<div class="p-4">
+		<div class="flex justify-end py-2">
+			<CreateNetwork />
+		</div>
+		<Table.Root>
+			<Table.Header class="bg-muted/50">
+				<Table.Row class="*:text-xs *:font-light [&>th]:py-2">
+					<Table.Head>FABRIC</Table.Head>
+					<Table.Head>VLAN</Table.Head>
+					<Table.Head>DHCP</Table.Head>
+					<Table.Head>SUBNET</Table.Head>
+					<Table.Head>USED IP</Table.Head>
+					<Table.Head>RESERVED IP RANGE</Table.Head>
+					<Table.Head>AVAILABLE</Table.Head>
 				</Table.Row>
-			{/each}
-		</Table.Body>
-	</Table.Root>
+			</Table.Header>
+			<Table.Body>
+				{#each networks as network}
+					<Table.Row>
+						{#if network.fabric}
+							<Table.Cell>
+								<div class="flex justify-between">
+									{network.fabric.name}
+									<DropdownMenu.Root>
+										<DropdownMenu.Trigger>
+											<Button variant="ghost">
+												<Icon icon="ph:dots-three-vertical" />
+											</Button>
+										</DropdownMenu.Trigger>
+										<DropdownMenu.Content>
+											<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+												<UpdateFabric fabric={network.fabric} />
+											</DropdownMenu.Item>
+											<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+												<DeleteNetwork fabric={network.fabric} />
+											</DropdownMenu.Item>
+										</DropdownMenu.Content>
+									</DropdownMenu.Root>
+								</div>
+							</Table.Cell>
+							<Table.Cell>
+								{#if network.vlan}
+									<span class="flex justify-between">
+										<span class="flex items-center gap-1">
+											{network.vlan.name}
+											{@render ReadVLAN(network.vlan)}
+										</span>
+										<DropdownMenu.Root>
+											<DropdownMenu.Trigger>
+												<Button variant="ghost">
+													<Icon icon="ph:dots-three-vertical" />
+												</Button>
+											</DropdownMenu.Trigger>
+											<DropdownMenu.Content>
+												<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+													<UpdateVLAN fabric={network.fabric} vlan={network.vlan} />
+												</DropdownMenu.Item>
+											</DropdownMenu.Content>
+										</DropdownMenu.Root>
+									</span>
+								{/if}
+							</Table.Cell>
+							<Table.Cell>
+								{#if network.vlan}
+									{@render formatterBoolean(network.vlan.dhcpOn)}
+								{/if}
+							</Table.Cell>
+							<Table.Cell>
+								{#if network.subnet}
+									<div class="flex justify-between">
+										<span class="flex items-center gap-1">
+											{network.subnet.name}
+											{@render ReadSubnet(network.subnet)}
+										</span>
+										<DropdownMenu.Root>
+											<DropdownMenu.Trigger>
+												<Button variant="ghost">
+													<Icon icon="ph:dots-three-vertical" />
+												</Button>
+											</DropdownMenu.Trigger>
+											<DropdownMenu.Content>
+												<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+													<UpdateSubnet subnet={network.subnet} />
+												</DropdownMenu.Item>
+											</DropdownMenu.Content>
+										</DropdownMenu.Root>
+									</div>
+								{/if}
+							</Table.Cell>
+							<Table.Cell>
+								{#if network.subnet}
+									<span class="flex items-center gap-1">
+										{network.subnet.ipAddresses.length}
+										{@render ReadUsedIP(network.subnet.ipAddresses)}
+									</span>
+								{/if}
+							</Table.Cell>
+							<Table.Cell>
+								{#if network.subnet}
+									<span class="flex items-center gap-1">
+										{network.subnet.ipRanges.length}
+										<ManagementNetworkSubnetReservedIPRanges subnet={network.subnet} />
+									</span>
+								{/if}
+							</Table.Cell>
+							<Table.Cell>
+								{#if network.subnet && network.subnet.statistics}
+									{@const availabilityBySubnet =
+										(Number(network.subnet.statistics.available) * 100) /
+										Number(network.subnet.statistics.total)}
+
+									<div class="flex justify-between">
+										<p>{network.subnet.statistics.availablePercent}</p>
+										<p class="text-xs font-extralight">
+											{formatNumber(network.subnet.statistics.available)}/{formatNumber(
+												network.subnet.statistics.total
+											)}
+										</p>
+									</div>
+									<Progress
+										max={100}
+										value={availabilityBySubnet}
+										class={`${
+											availabilityBySubnet > 62
+												? ' bg-green-50 *:bg-green-700'
+												: availabilityBySubnet > 38
+													? 'bg-yellow-50 *:bg-yellow-500'
+													: 'bg-red-50 *:bg-red-700'
+										}`}
+									/>
+								{/if}
+							</Table.Cell>
+						{/if}
+					</Table.Row>
+				{/each}
+			</Table.Body>
+		</Table.Root>
+	</div>
 </div>
 
 {#snippet StatisticNetworks()}

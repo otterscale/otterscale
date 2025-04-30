@@ -104,9 +104,9 @@
 				)}
 				<Tabs.Content value={type}>
 					{@render Statistics(type, sortedApplicationsByType)}
-					<div class="grid gap-2">
+					<div class="grid gap-2 p-4">
 						<Table.Root>
-							<Table.Header>
+							<Table.Header class="bg-muted/50">
 								<Table.Row class="*:text-xs *:font-light">
 									<Table.Head>NAME</Table.Head>
 									<Table.Head>NAMESPACE</Table.Head>
@@ -122,14 +122,14 @@
 								{#each sortedApplicationsByType as application}
 									<Table.Row class="*:text-sm">
 										<Table.Cell>
-											<span class="flex items-center gap-1">
-												<a
-													href={`/management/scope/${scopeUuid}/facility/${facilityName}/namespace/${application.namespace}/application/${application.name}`}
-												>
+											<a
+												href={`/management/scope/${scopeUuid}/facility/${facilityName}/namespace/${application.namespace}/application/${application.name}`}
+											>
+												<span class="flex items-center gap-1">
 													{application.name}
-												</a>
-												<Icon icon="ph:arrow-square-out" />
-											</span>
+													<Icon icon="ph:arrow-square-out" />
+												</span>
+											</a>
 										</Table.Cell>
 										<Table.Cell>
 											<Badge variant="outline">{application.namespace}</Badge>
@@ -174,15 +174,15 @@
 				<div class="flex justify-end p-2">
 					<CreateStorageClasses {scopeUuid} />
 				</div>
-				<div class="grid gap-2">
+				<div class="grid gap-2 p-4">
 					<Table.Root>
-						<Table.Header>
+						<Table.Header class="bg-muted/50">
 							<Table.Row class="*:text-xs *:font-light">
 								<Table.Head>NAME</Table.Head>
 								<Table.Head>PROVISIONER</Table.Head>
 								<Table.Head>RECLAIM POLICY</Table.Head>
 								<Table.Head>VOLUME BINDING MODE</Table.Head>
-								<Table.Head>Configuration</Table.Head>
+								<Table.Head>CONFIGURATION</Table.Head>
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
@@ -193,27 +193,29 @@
 									<Table.Cell>{storageClass.reclaimPolicy}</Table.Cell>
 									<Table.Cell>{storageClass.volumeBindingMode}</Table.Cell>
 									<Table.Cell>
-										<div class="flex justify-start">
-											<HoverCard.Root>
-												<HoverCard.Trigger>
-													<Button variant="ghost" size="icon" class="h-6 w-6">
-														<Icon icon="ph:info" class="size-4" />
-													</Button>
-												</HoverCard.Trigger>
-												<HoverCard.Content class="w-fit">
-													<Table.Root>
-														<Table.Body>
-															{#each Object.entries(storageClass.parameters) as [key, value]}
-																<Table.Row class="border-none *:text-xs">
-																	<Table.Head class="text-right font-light">{key}</Table.Head>
-																	<Table.Cell class="font-base">{value}</Table.Cell>
-																</Table.Row>
-															{/each}
-														</Table.Body>
-													</Table.Root>
-												</HoverCard.Content>
-											</HoverCard.Root>
-										</div>
+										{#if Object.keys(storageClass.parameters).length > 0}
+											<div class="flex justify-start">
+												<HoverCard.Root>
+													<HoverCard.Trigger>
+														<Button variant="ghost" size="icon" class="h-6 w-6">
+															<Icon icon="ph:info" class="size-4" />
+														</Button>
+													</HoverCard.Trigger>
+													<HoverCard.Content class="max-h-[50vh] w-fit">
+														<Table.Root>
+															<Table.Body>
+																{#each Object.entries(storageClass.parameters) as [key, value]}
+																	<Table.Row class="border-none *:text-xs">
+																		<Table.Head class="text-right font-light">{key}</Table.Head>
+																		<Table.Cell class="font-base">{value}</Table.Cell>
+																	</Table.Row>
+																{/each}
+															</Table.Body>
+														</Table.Root>
+													</HoverCard.Content>
+												</HoverCard.Root>
+											</div>
+										{/if}
 									</Table.Cell>
 								</Table.Row>
 							{/each}
@@ -254,7 +256,7 @@
 	<div class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>Application</Card.Title>
+				<Card.Title>APPLICATION</Card.Title>
 			</Card.Header>
 			<Card.Content class="text-7xl">
 				{$applicationsStore.filter((a) => a.type === type).length}
@@ -262,7 +264,7 @@
 		</Card.Root>
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>Health</Card.Title>
+				<Card.Title>HEALTH</Card.Title>
 			</Card.Header>
 			<Card.Content>
 				<p class="text-3xl">
