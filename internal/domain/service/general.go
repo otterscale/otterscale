@@ -25,21 +25,26 @@ const (
 	charmNameCephCSI    = "ceph-csi"
 )
 
+const (
+	defaultStorage = "ceph-ext4"
+)
+
 type generalFacility struct {
-	charmName string
-	lxd       bool
+	charmName   string
+	lxd         bool
+	subordinate bool
 }
 
 var (
 	kubernetesFacilityList = []generalFacility{
-		{charmName: "ch:calico", lxd: true},
-		{charmName: "ch:containerd", lxd: true},
+		{charmName: "ch:calico", lxd: true, subordinate: true},
+		{charmName: "ch:containerd", lxd: true, subordinate: true},
 		{charmName: "ch:easyrsa", lxd: true},
 		{charmName: "ch:etcd", lxd: true},
-		{charmName: "ch:keepalived", lxd: true},
+		{charmName: "ch:keepalived", lxd: true, subordinate: true},
 		{charmName: "ch:kubeapi-load-balancer", lxd: true},
 		{charmName: "ch:kubernetes-control-plane", lxd: true},
-		{charmName: "ch:kubernetes-worker", lxd: false},
+		{charmName: "ch:kubernetes-worker"},
 	}
 
 	kubernetesRelationList = [][]string{
@@ -227,17 +232,22 @@ func (s *NexusService) AddKubernetesUnits(ctx context.Context, uuid, general str
 }
 
 func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineID, prefix, general string, facilityList []generalFacility, configs map[string]string) (*model.FacilityInfo, error) {
-	m, err := s.machine.Get(ctx, machineID)
-	if err != nil {
-		return nil, err
-	}
-	if m.Status != node.StatusDeployed {
-		return nil, status.Error(codes.InvalidArgument, "machine status is not deployed")
-	}
+	var directive string
 
-	directive, err := getJujuMachineID(m.WorkloadAnnotations)
-	if err != nil {
-		return nil, err
+	if machineID != "" {
+		m, err := s.machine.Get(ctx, machineID)
+		if err != nil {
+			return nil, err
+		}
+		if m.Status != node.StatusDeployed {
+			return nil, status.Error(codes.InvalidArgument, "machine status is not deployed")
+		}
+
+		machineID, err := getJujuMachineID(m.WorkloadAnnotations)
+		if err != nil {
+			return nil, err
+		}
+		directive = machineID
 	}
 
 	base, err := s.imageBase(ctx)
@@ -251,8 +261,12 @@ func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineI
 		eg.Go(func() error {
 			name := toGeneralFacilityName(prefix, facility.charmName)
 			config := configs[facility.charmName]
-			placements := []instance.Placement{
-				{Scope: toPlacementScope(facility.lxd), Directive: directive},
+			placements := []instance.Placement{}
+			if directive != "" {
+				placements = append(placements, instance.Placement{
+					Scope:     toPlacementScope(facility.lxd),
+					Directive: directive,
+				})
 			}
 			_, err := s.facility.Create(ctx, uuid, name, config, facility.charmName, "", 0, 1, base, placements, nil, true)
 			return err
@@ -279,8 +293,25 @@ func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineI
 }
 
 func (s *NexusService) addGeneralFacilityUnits(ctx context.Context, uuid, general string, number int, machineIDs []string, facilityList []generalFacility) error {
-	slices.Sort(machineIDs)
-	directives := slices.Compact(machineIDs)
+	directives := []string{}
+	for _, machineID := range machineIDs {
+		m, err := s.machine.Get(ctx, machineID)
+		if err != nil {
+			return err
+		}
+		if m.Status != node.StatusDeployed {
+			return status.Errorf(codes.InvalidArgument, "machine %q status is not deployed", machineID)
+		}
+		directive, err := getJujuMachineID(m.WorkloadAnnotations)
+		if err != nil {
+			return err
+		}
+		directives = append(directives, directive)
+	}
+
+	slices.Sort(directives)
+	directives = slices.Compact(directives)
+
 	if len(directives) != number {
 		return status.Error(codes.InvalidArgument, "number of machines does not match requested number of units")
 	}
@@ -289,6 +320,9 @@ func (s *NexusService) addGeneralFacilityUnits(ctx context.Context, uuid, genera
 
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, facility := range facilityList {
+		if facility.subordinate {
+			continue
+		}
 		eg.Go(func() error {
 			name := toGeneralFacilityName(prefix, facility.charmName)
 			lxd := facility.lxd
@@ -543,6 +577,26 @@ func getCephConfigs(prefix, osdDevices string, development bool) (map[string]str
 	}
 	if development {
 		configs["ceph-mon"]["config-flags"] = `{ "global": {"osd_pool_default_size": 1, "osd_pool_default_min_size": 1, "mon_allow_pool_size_one": true} }`
+	}
+
+	result := make(map[string]string)
+	for name, config := range configs {
+		key := toGeneralFacilityName(prefix, name)
+		yamlData, err := yaml.Marshal(map[string]any{key: config})
+		if err != nil {
+			return nil, err
+		}
+		result["ch:"+name] = string(yamlData)
+	}
+
+	return result, nil
+}
+
+func getCephCSIConfigs(prefix string) (map[string]string, error) {
+	configs := map[string]map[string]any{
+		"ceph-csi": {
+			"default-storage": defaultStorage,
+		},
 	}
 
 	result := make(map[string]string)
