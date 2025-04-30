@@ -490,6 +490,8 @@ message CreateCephRequest {
   string scope_uuid = 1;
   string machine_id = 2;
   string prefix_name = 3;
+  repeated string osd_devices = 11;
+  bool development = 21;
 }
 
 message AddCephUnitsRequest {

@@ -31,7 +31,7 @@ func (a *NexusApp) ListCephes(ctx context.Context, req *connect.Request[pb.ListC
 }
 
 func (a *NexusApp) CreateCeph(ctx context.Context, req *connect.Request[pb.CreateCephRequest]) (*connect.Response[pb.Facility_Info], error) {
-	ceph, err := a.svc.CreateCeph(ctx, req.Msg.GetScopeUuid(), req.Msg.GetMachineId(), req.Msg.GetPrefixName())
+	ceph, err := a.svc.CreateCeph(ctx, req.Msg.GetScopeUuid(), req.Msg.GetMachineId(), req.Msg.GetPrefixName(), req.Msg.GetOsdDevices(), req.Msg.GetDevelopment())
 	if err != nil {
 		return nil, err
 	}

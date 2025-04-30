@@ -123,8 +123,12 @@ func (s *NexusService) ListCephes(ctx context.Context, uuid string) ([]model.Fac
 	return filter, nil
 }
 
-func (s *NexusService) CreateCeph(ctx context.Context, uuid, machineID, prefix string) (*model.FacilityInfo, error) {
-	configs, err := getCephConfigs(prefix)
+func (s *NexusService) CreateCeph(ctx context.Context, uuid, machineID, prefix string, userOSDDevices []string, development bool) (*model.FacilityInfo, error) {
+	osdDevices := strings.Join(userOSDDevices, " ")
+	if osdDevices == "" {
+		return nil, status.Error(codes.InvalidArgument, "no OSD devices provided")
+	}
+	configs, err := getCephConfigs(prefix, osdDevices, development)
 	if err != nil {
 		return nil, err
 	}
@@ -520,20 +524,25 @@ func getKubernetesConfigs(prefix, vips, cidr string) (map[string]string, error) 
 	return result, nil
 }
 
-func getCephConfigs(prefix string) (map[string]string, error) {
+func getCephConfigs(prefix, osdDevices string, development bool) (map[string]string, error) {
+	count := 2
+	if development {
+		count = 1
+	}
 	configs := map[string]map[string]any{
 		"ceph-mon": {
-			"source":             "cloud:jammy-bobcat",
-			"monitor-count":      1, // TODO: BETTER
-			"expected-osd-count": 1, // TODO: BETTER
-			"config-flags":       "osd_pool_default_size 1, osd_pool_default_min_size 1, mon_allow_pool_size_one true",
+			"monitor-count":      count,
+			"expected-osd-count": count,
 		},
 		"ceph-osd": {
-			"source": "cloud:jammy-bobcat",
+			"osd-devices": osdDevices,
 		},
 		"ceph-fs": {
-			"source": "cloud:jammy-bobcat",
+			"ceph-osd-replication-count": count,
 		},
+	}
+	if development {
+		configs["ceph-mon"]["config-flags"] = `{ "global": {"osd_pool_default_size": 1, "osd_pool_default_min_size": 1, "mon_allow_pool_size_one": true} }`
 	}
 
 	result := make(map[string]string)
