@@ -124,7 +124,7 @@ func (s *NexusService) ListCephes(ctx context.Context, uuid string) ([]model.Fac
 }
 
 func (s *NexusService) CreateCeph(ctx context.Context, uuid, machineID, prefix string) (*model.FacilityInfo, error) {
-	configs, err := getCephConfig()
+	configs, err := getCephConfigs(prefix)
 	if err != nil {
 		return nil, err
 	}
@@ -176,31 +176,22 @@ func (s *NexusService) getAndReserveIP(ctx context.Context, machineID, comment s
 	return ip, nil
 }
 
-func (s *NexusService) CreateKubernetes(ctx context.Context, uuid, machineID, prefix string, userLoadbalancerIPs []string, userKeepalivedVirtualIP, userCalicoCIDR string) (*model.FacilityInfo, error) {
-	kubernetesVIP := strings.Join(userLoadbalancerIPs, " ")
-	if kubernetesVIP == "" {
+func (s *NexusService) CreateKubernetes(ctx context.Context, uuid, machineID, prefix string, userVirtualIPs []string, userCalicoCIDR string) (*model.FacilityInfo, error) {
+	vips := strings.Join(userVirtualIPs, " ")
+	if vips == "" {
 		ip, err := s.getAndReserveIP(ctx, machineID, fmt.Sprintf("kubernetes load balancer IP for %s", prefix))
 		if err != nil {
 			return nil, err
 		}
-		kubernetesVIP = ip.String()
+		vips = ip.String()
 	}
 
-	keepalivedVIP := userKeepalivedVirtualIP
-	if keepalivedVIP == "" {
-		ip, err := s.getAndReserveIP(ctx, machineID, fmt.Sprintf("keepalived virtual IP for %s", prefix))
-		if err != nil {
-			return nil, err
-		}
-		kubernetesVIP = ip.String()
+	cidr := userCalicoCIDR
+	if cidr == "" {
+		cidr = "192.168.0.0/16"
 	}
 
-	calicoCIDR := userCalicoCIDR
-	if userCalicoCIDR == "" {
-		calicoCIDR = "192.168.0.0/16"
-	}
-
-	configs, err := getKubernetesConfig(kubernetesVIP, calicoCIDR, keepalivedVIP)
+	configs, err := getKubernetesConfigs(prefix, vips, cidr)
 	if err != nil {
 		return nil, err
 	}
@@ -493,76 +484,69 @@ func toGeneralFacilityPrefix(general string) string {
 	return strings.Split(general, "-")[0]
 }
 
-func getKubernetesConfig(kubernetesVIP, calicoCIDR, keepalivedVIP string) (map[string]string, error) {
-	cp, err := yaml.Marshal(map[string]any{
-		"allow-privileged": true,
-		"extra_sans":       kubernetesVIP,
-		"loadbalancer-ips": kubernetesVIP,
-	})
-	if err != nil {
-		return nil, err
+func getKubernetesConfigs(prefix, vips, cidr string) (map[string]string, error) {
+	configs := map[string]map[string]any{
+		"kubernetes-control-plane": {
+			"allow-privileged": "true",
+			"extra_sans":       vips,
+			"loadbalancer-ips": vips,
+		},
+		"kubeapi-load-balancer": {
+			"extra_sans":       vips,
+			"loadbalancer-ips": vips,
+		},
+		"calico": {
+			"ignore-loose-rpf": "true",
+			"cidr":             cidr,
+		},
+		"containerd": {
+			"gpu_driver": "none",
+		},
+		"keepalived": {
+			"virtual_ip": strings.Split(vips, " ")[0],
+		},
 	}
-	lb, err := yaml.Marshal(map[string]any{
-		"extra_sans":       kubernetesVIP,
-		"loadbalancer-ips": kubernetesVIP,
-	})
-	if err != nil {
-		return nil, err
+
+	result := make(map[string]string)
+	for name, config := range configs {
+		key := toGeneralFacilityName(prefix, name)
+		yamlData, err := yaml.Marshal(map[string]any{key: config})
+		if err != nil {
+			return nil, err
+		}
+		result["ch:"+name] = string(yamlData)
 	}
-	calico, err := yaml.Marshal(map[string]any{
-		"ignore-loose-rpf": true,
-		"cidr":             calicoCIDR,
-	})
-	if err != nil {
-		return nil, err
-	}
-	containerd, err := yaml.Marshal(map[string]any{
-		"gpu_driver": "none",
-	})
-	if err != nil {
-		return nil, err
-	}
-	keepalived, err := yaml.Marshal(map[string]any{
-		"virtual_ip": keepalivedVIP,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return map[string]string{
-		"ch:kubernetes-control-plane": string(cp),
-		"ch:kubeapi-load-balancer":    string(lb),
-		"ch:calico":                   string(calico),
-		"ch:containerd":               string(containerd),
-		"ch:keepalived":               string(keepalived),
-	}, nil
+
+	return result, nil
 }
-func getCephConfig() (map[string]string, error) {
-	mon, err := yaml.Marshal(map[string]any{
-		"source":             "cloud:jammy-bobcat",
-		"monitor-count":      1, // TODO: BETTER
-		"expected-osd-count": 1, // TODO: BETTER
-		"config-flags":       "osd_pool_default_size 1, osd_pool_default_min_size 1, mon_allow_pool_size_one true",
-	})
-	if err != nil {
-		return nil, err
+
+func getCephConfigs(prefix string) (map[string]string, error) {
+	configs := map[string]map[string]any{
+		"ceph-mon": {
+			"source":             "cloud:jammy-bobcat",
+			"monitor-count":      1, // TODO: BETTER
+			"expected-osd-count": 1, // TODO: BETTER
+			"config-flags":       "osd_pool_default_size 1, osd_pool_default_min_size 1, mon_allow_pool_size_one true",
+		},
+		"ceph-osd": {
+			"source": "cloud:jammy-bobcat",
+		},
+		"ceph-fs": {
+			"source": "cloud:jammy-bobcat",
+		},
 	}
-	osd, err := yaml.Marshal(map[string]any{
-		"source": "cloud:jammy-bobcat",
-	})
-	if err != nil {
-		return nil, err
+
+	result := make(map[string]string)
+	for name, config := range configs {
+		key := toGeneralFacilityName(prefix, name)
+		yamlData, err := yaml.Marshal(map[string]any{key: config})
+		if err != nil {
+			return nil, err
+		}
+		result["ch:"+name] = string(yamlData)
 	}
-	fs, err := yaml.Marshal(map[string]any{
-		"source": "cloud:jammy-bobcat",
-	})
-	if err != nil {
-		return nil, err
-	}
-	return map[string]string{
-		"ch:ceph-mon": string(mon),
-		"ch:ceph-osd": string(osd),
-		"ch:ceph-fs":  string(fs),
-	}, nil
+
+	return result, nil
 }
 
 func ipToUint32(ip net.IP) uint32 {
