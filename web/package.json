@@ -29,6 +29,7 @@
 		"@tailwindcss/typography": "^0.5.16",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/svelte": "^5.2.4",
+		"@types/better-sqlite3": "^7.6.13",
 		"@types/d3-array": "^3.2.1",
 		"@types/d3-scale": "^4.0.9",
 		"@types/d3-shape": "^3.1.7",
@@ -66,7 +67,6 @@
 		"zod": "^3.24.2"
 	},
 	"dependencies": {
-		"@auth/drizzle-adapter": "^1.8.0",
 		"@bufbuild/protobuf": "^2.2.5",
 		"@connectrpc/connect": "^2.0.2",
 		"@connectrpc/connect-web": "^2.0.2",
@@ -75,18 +75,16 @@
 		"@iconify-json/ph": "^1.2.2",
 		"@iconify/svelte": "^4.2.0",
 		"@inlang/paraglide-sveltekit": "^0.15.5",
-		"@types/pg": "^8.11.11",
 		"@xyflow/svelte": "^0.1.31",
 		"better-auth": "^1.2.4",
+		"better-sqlite3": "^11.9.1",
 		"d3-array": "^3.2.4",
 		"d3-scale": "^4.0.2",
 		"d3-shape": "^3.2.0",
 		"date-fns": "^4.1.0",
-		"drizzle-orm": "^0.40.0",
 		"highlight.js": "^11.11.1",
 		"inter-ui": "^4.1.0",
 		"layerchart": "^1.0.8",
-		"pg": "^8.14.0",
 		"pocketbase": "^0.25.1",
 		"rehype-highlight": "^7.0.2",
 		"svelte-exmarkdown": "^5.0.0",
@@ -94,6 +92,7 @@
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
+			"better-sqlite3",
 			"esbuild"
 		]
 	}
