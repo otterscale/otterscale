@@ -16,12 +16,14 @@
 	let activeTab = $state(page.url.hash ? page.url.hash : '#machine');
 </script>
 
-<main class="p-4">
+<main>
 	<Tabs.Root value={activeTab}>
-		<Tabs.List class="grid w-fit grid-cols-2 rounded-sm">
-			<Tabs.Trigger value="#machine" class="flex items-center gap-1">MACHINE</Tabs.Trigger>
-			<Tabs.Trigger value="#network">NETWORK</Tabs.Trigger>
-		</Tabs.List>
+		<div class="p-4">
+			<Tabs.List class="grid w-fit grid-cols-2 rounded-sm">
+				<Tabs.Trigger value="#machine" class="flex items-center gap-1">MACHINE</Tabs.Trigger>
+				<Tabs.Trigger value="#network">NETWORK</Tabs.Trigger>
+			</Tabs.List>
+		</div>
 		<Tabs.Content value="#machine">
 			<ListMachines {machines} />
 		</Tabs.Content>

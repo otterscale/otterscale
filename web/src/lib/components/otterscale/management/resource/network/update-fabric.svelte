@@ -46,9 +46,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.updateFabric(updateFabricRequest).then((r) => {
-						toast.info(`Update ${fabric.name}`);
-					});
+					client
+						.updateFabric(updateFabricRequest)
+						.then((r) => {
+							toast.info(`Update ${fabric.name}`);
+						})
+						.catch((e) => {
+							toast.error(`Update ${fabric.name} fail`);
+						});
 					// toast.info(`Update ${fabric.name}`);
 					console.log(updateFabricRequest);
 					reset();

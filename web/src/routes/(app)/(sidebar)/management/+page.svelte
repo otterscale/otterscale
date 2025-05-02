@@ -4,6 +4,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { Monitor } from '$lib/components/otterscale/index';
+	import { PageLoading } from '$lib/components/otterscale/ui/index';
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -20,6 +21,7 @@
 			errorsLoading.set(false);
 		}
 	}
+
 	// const machinesStore = writable<Machine[]>([]);
 	// const machinesLoading = writable(true);
 	// async function fetchMachines() {
@@ -37,6 +39,11 @@
 	onMount(async () => {
 		try {
 			await fetchScopes();
+			errorsStore.set([
+				{ code: 'CEPH_NOT_FOUND' } as Error,
+				{ code: 'KUBERNETES_NOT_FOUND' } as Error,
+				{ code: 'PROMETHEUS_NOT_FOUND' } as Error
+			]);
 			// await fetchMachines();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
@@ -46,4 +53,8 @@
 	});
 </script>
 
-<Monitor errors={$errorsStore} />
+{#if mounted}
+	<Monitor errors={$errorsStore} />
+{:else}
+	<PageLoading />
+{/if}

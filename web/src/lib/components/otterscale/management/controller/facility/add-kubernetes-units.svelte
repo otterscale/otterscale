@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
@@ -17,19 +17,31 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import { writable } from 'svelte/store';
 
 	let {
 		scopeUuid,
-		kubernetes,
-		machines
+		kubernetes
 	}: {
 		scopeUuid: string;
 		kubernetes: Facility;
-		machines: Machine[];
 	} = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
+
+	const machinesStore = writable<Machine[]>([]);
+	const machinesLoading = writable(true);
+	async function fetchMachines() {
+		try {
+			const response = await client.listMachines({});
+			machinesStore.set(response.machines);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		} finally {
+			machinesLoading.set(false);
+		}
+	}
 
 	const DEFAULT_MACHINES = [] as Machine[];
 	const DEFAULT_REQUEST = {
@@ -51,6 +63,18 @@
 	function close() {
 		open = false;
 	}
+
+	let mounted = false;
+	onMount(async () => {
+		try {
+			await fetchMachines();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+			23;
+		}
+
+		mounted = true;
+	});
 </script>
 
 <AlertDialog.Root bind:open>
@@ -80,7 +104,7 @@
 						<Select.Root type="multiple" bind:value={addKubernetesUnitsRequest.machineIds}>
 							<Select.Trigger>Select</Select.Trigger>
 							<Select.Content class="max-h-[230px] overflow-y-auto" sideOffset={7}>
-								{#each machines as machine}
+								{#each $machinesStore as machine}
 									<Select.Item
 										value={machine.id}
 										onclick={() => {
@@ -109,11 +133,15 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.addKubernetesUnits(addKubernetesUnitsRequest).then((r) => {
-						toast.info(`Add units for ${addKubernetesUnitsRequest.facilityName}`);
-					});
+					client
+						.addKubernetesUnits(addKubernetesUnitsRequest)
+						.then((r) => {
+							toast.info(`Add units for ${addKubernetesUnitsRequest.facilityName}`);
+						})
+						.catch((e) => {
+							toast.error(`Add units for ${addKubernetesUnitsRequest.facilityName} fail`);
+						});
 					// console.log(addKubernetesUnitsRequest);
-					toast.info(`Add units for ${addKubernetesUnitsRequest.facilityName}`);
 					reset();
 					close();
 				}}

@@ -27,11 +27,32 @@
 			applicationIsLoading.set(false);
 		}
 	}
+	async function refreshApplication() {
+		while (page.url.searchParams.get('intervals')) {
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
+			);
+			console.log(`Refresh application`);
+
+			try {
+				const response = await client.getApplication({
+					scopeUuid: page.params.scope_uuid,
+					facilityName: page.params.facility_name,
+					namespace: page.params.namespace,
+					name: page.params.application_name
+				});
+				applicationStore.set(response);
+			} catch (error) {
+				console.error('Error fetching machine:', error);
+			}
+		}
+	}
 
 	let mounted = false;
 	onMount(async () => {
 		try {
 			await fetchApplications();
+			refreshApplication();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

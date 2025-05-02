@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
@@ -16,19 +16,31 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import { writable } from 'svelte/store';
 
 	let {
 		scopeUuid,
-		ceph,
-		machines
+		ceph
 	}: {
 		scopeUuid: string;
 		ceph: Facility;
-		machines: Machine[];
 	} = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
+
+	const machinesStore = writable<Machine[]>([]);
+	const machinesLoading = writable(true);
+	async function fetchMachines() {
+		try {
+			const response = await client.listMachines({});
+			machinesStore.set(response.machines);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		} finally {
+			machinesLoading.set(false);
+		}
+	}
 
 	const DEFAULT_MACHINES = [] as Machine[];
 	const DEFAULT_REQUEST = {
@@ -49,6 +61,17 @@
 	function close() {
 		open = false;
 	}
+
+	let mounted = false;
+	onMount(async () => {
+		try {
+			await fetchMachines();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+
+		mounted = true;
+	});
 </script>
 
 <AlertDialog.Root bind:open>
@@ -78,7 +101,7 @@
 						<Select.Root type="multiple" bind:value={addCephUnitsRequest.machineIds}>
 							<Select.Trigger>Select</Select.Trigger>
 							<Select.Content class="max-h-[230px] overflow-y-auto" sideOffset={7}>
-								{#each machines as machine}
+								{#each $machinesStore as machine}
 									<Select.Item
 										value={machine.id}
 										onclick={() => {
@@ -102,9 +125,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.addCephUnits(addCephUnitsRequest).then((r) => {
-						toast.info(`Add units for ${addCephUnitsRequest.facilityName}`);
-					});
+					client
+						.addCephUnits(addCephUnitsRequest)
+						.then((r) => {
+							toast.info(`Add units for ${addCephUnitsRequest.facilityName}`);
+						})
+						.catch((e) => {
+							toast.error(`Add units for ${addCephUnitsRequest.facilityName} fail`);
+						});
 					// console.log(addCephUnitsRequest);
 					toast.info(`Add units for ${addCephUnitsRequest.facilityName}`);
 					reset();

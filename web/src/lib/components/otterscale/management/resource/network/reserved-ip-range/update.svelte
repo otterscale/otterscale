@@ -78,9 +78,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.updateIPRange(updateIPRangeRequest).then((r) => {
-						toast.info(`Update ip range ${ipRange.startIp} - ${ipRange.endIp}`);
-					});
+					client
+						.updateIPRange(updateIPRangeRequest)
+						.then((r) => {
+							toast.info(`Update ip range ${ipRange.startIp} - ${ipRange.endIp}`);
+						})
+						.catch((e) => {
+							toast.info(`Update ip range ${ipRange.startIp} - ${ipRange.endIp} fail`);
+						});
 					// toast.info(`Update ip range ${ipRange.startIp} - ${ipRange.endIp}`);
 					console.log(updateIPRangeRequest);
 					reset();

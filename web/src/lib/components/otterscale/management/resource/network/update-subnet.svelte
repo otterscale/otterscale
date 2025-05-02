@@ -114,9 +114,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.updateSubnet(updateSubnetRequest).then((r) => {
-						toast.info(`Update ${subnet.cidr}`);
-					});
+					client
+						.updateSubnet(updateSubnetRequest)
+						.then((r) => {
+							toast.info(`Update ${subnet.cidr}`);
+						})
+						.catch((e) => {
+							toast.error(`Update ${subnet.cidr} fail`);
+						});
 					// toast.info(`Update ${subnet.cidr}`);
 					console.log(updateSubnetRequest);
 					reset();

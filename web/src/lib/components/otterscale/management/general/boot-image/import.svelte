@@ -72,10 +72,14 @@
 				<AlertDialog.Action
 					onclick={() => {
 						isImportingBootImages = true;
-						client.importBootImages(importBootImageRequest).then((r) => {
-							toast.info(`Import boot images.`);
-						});
-						// toast.info(`Import boot images`);
+						client
+							.importBootImages(importBootImageRequest)
+							.then((r) => {
+								toast.info(`Import boot images`);
+							})
+							.catch((e) => {
+								toast.error(`Import boot images fail`);
+							});
 						console.log(importBootImageRequest);
 						reset();
 						close();

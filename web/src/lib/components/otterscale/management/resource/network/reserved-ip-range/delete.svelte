@@ -51,9 +51,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.deleteIPRange(deleteIPRangeRequest).then((r) => {
-						toast.info(`Delete ip range ${ipRange.startIp} - ${ipRange.endIp}`);
-					});
+					client
+						.deleteIPRange(deleteIPRangeRequest)
+						.then((r) => {
+							toast.info(`Delete ip range ${ipRange.startIp} - ${ipRange.endIp}`);
+						})
+						.catch((e) => {
+							toast.info(`Delete ip range ${ipRange.startIp} - ${ipRange.endIp} fail`);
+						});
 					// toast.info(`Delete ip range ${ipRange.startIp} - ${ipRange.endIp}`);
 					console.log(deleteIPRangeRequest);
 					reset();

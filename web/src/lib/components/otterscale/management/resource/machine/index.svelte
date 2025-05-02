@@ -31,10 +31,12 @@
 	const client = createClient(Nexus, transport);
 
 	async function refreshMachines() {
-		while (page.url.searchParams.get('interval')) {
-			await new Promise((resolve) => setTimeout(resolve, 1000 * Number(page.url.searchParams.get('interval'))));
+		while (page.url.searchParams.get('intervals')) {
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
+			);
 			console.log(`Refresh machines`);
-	
+
 			try {
 				const response = await client.listMachines({});
 				machines = response.machines;
@@ -77,12 +79,12 @@
 			</Table.Header>
 			<Table.Body>
 				{#each machines as machine}
-					<Table.Row class="*:whitespace-nowrap *:truncate [&>td]:align-top">
+					<Table.Row class="*:truncate *:whitespace-nowrap [&>td]:align-top">
 						<Table.Cell>
 							<div class="flex items-center justify-between">
 								<div class="flex justify-between">
 									<span>
-										<a href={`/management/machine/${machine.id}?interval=5`}>
+										<a href={`/management/machine/${machine.id}?s=5`}>
 											<div class="flex items-center gap-1">
 												<p>{machine.fqdn}</p>
 												<Icon icon="ph:arrow-square-out" />
@@ -169,10 +171,10 @@
 						<Table.Cell>
 							<Badge variant="outline">
 								<span class="flex items-center gap-1">
-								{#if machine.status.toLocaleLowerCase() != 'deployed'}
-									<Icon icon="ph:spinner" class="animate-spin" />
-								{/if}
-								{machine.status}
+									{#if machine.status.toLocaleLowerCase() != 'deployed'}
+										<Icon icon="ph:spinner" class="animate-spin" />
+									{/if}
+									{machine.status}
 								</span>
 							</Badge>
 							<p class="text-xs font-light">

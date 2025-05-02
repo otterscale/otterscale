@@ -14,11 +14,8 @@
 	import { writable } from 'svelte/store';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
-	// import { CreateStorageClasses } from './index';
+	import { page } from '$app/state';
 	import CreateStorageClasses from './create-storage-classes.svelte';
-
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
 
 	let {
 		scopeUuid,
@@ -27,6 +24,9 @@
 		scopeUuid: string;
 		facilityName: string;
 	} = $props();
+
+	const transport: Transport = getContext('transportNEW');
+	const client = createClient(Nexus, transport);
 
 	const applicationsStore = writable<Application[]>();
 	const applicationsIsLoading = writable(true);
@@ -42,6 +42,25 @@
 			console.error('Error fetching machine:', error);
 		} finally {
 			applicationsIsLoading.set(false);
+		}
+	}
+	async function refreshApplications() {
+		while (page.url.searchParams.get('intervals')) {
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
+			);
+			console.log(`Refresh applications`);
+
+			try {
+				const response = await client.listApplications({
+					scopeUuid: scopeUuid,
+					facilityName: facilityName
+				});
+
+				applicationsStore.set(response.applications);
+			} catch (error) {
+				console.error('Error fetching machine:', error);
+			}
 		}
 	}
 
@@ -60,12 +79,32 @@
 			storageClassesLoading.set(false);
 		}
 	}
+	async function refreshStorageClasses() {
+		while (page.url.searchParams.get('intervals')) {
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
+			);
+			console.log(`Refresh storage classes`);
+
+			try {
+				const response = await client.listStorageClasses({
+					scopeUuid: scopeUuid,
+					facilityName: facilityName
+				});
+				storageClassesStore.set(response.storageClasses);
+			} catch (error) {
+				console.error('Error fetching:', error);
+			}
+		}
+	}
 
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
 			await fetchApplications();
 			await fetchStorageClasses();
+			refreshApplications();
+			refreshStorageClasses();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -84,19 +123,21 @@
 	{@const types = new Set($applicationsStore.map((a) => a.type))}
 	{@const firstType = $applicationsStore[0].type}
 
-	<div class="py-2">
+	<div class="-mt-2">
 		<Tabs.Root value={firstType}>
-			<Tabs.List>
-				{#each [...types] as type}
-					<Tabs.Trigger value={type} class="flex items-start gap-1">
-						{type}
-						{@render Notification(type)}
+			<div class="px-4">
+				<Tabs.List>
+					{#each [...types] as type}
+						<Tabs.Trigger value={type} class="flex items-start gap-1">
+							{type}
+							{@render Notification(type)}
+						</Tabs.Trigger>
+					{/each}
+					<Tabs.Trigger value="storage_classes" class="flex items-start gap-1">
+						Storage Classes
 					</Tabs.Trigger>
-				{/each}
-				<Tabs.Trigger value="storage_classes" class="flex items-start gap-1">
-					Storage Classes
-				</Tabs.Trigger>
-			</Tabs.List>
+				</Tabs.List>
+			</div>
 			{#each [...types] as type}
 				{@const applicationsByType = $applicationsStore.filter((a) => a.type === type)}
 				{@const sortedApplicationsByType = applicationsByType.sort((previous, present) =>
@@ -104,6 +145,7 @@
 				)}
 				<Tabs.Content value={type}>
 					{@render Statistics(type, sortedApplicationsByType)}
+
 					<div class="grid gap-2 p-4">
 						<Table.Root>
 							<Table.Header class="bg-muted/50">
@@ -123,7 +165,7 @@
 									<Table.Row class="*:text-sm">
 										<Table.Cell>
 											<a
-												href={`/management/scope/${scopeUuid}/facility/${facilityName}/namespace/${application.namespace}/application/${application.name}`}
+												href={`/management/scope/${scopeUuid}/facility/${facilityName}/namespace/${application.namespace}/application/${application.name}?intervals=15`}
 											>
 												<span class="flex items-center gap-1">
 													{application.name}
@@ -171,10 +213,10 @@
 				</Tabs.Content>
 			{/each}
 			<Tabs.Content value="storage_classes">
-				<div class="flex justify-end p-2">
-					<CreateStorageClasses {scopeUuid} />
-				</div>
 				<div class="grid gap-2 p-4">
+					<div class="flex justify-end py-2">
+						<CreateStorageClasses {scopeUuid} />
+					</div>
 					<Table.Root>
 						<Table.Header class="bg-muted/50">
 							<Table.Row class="*:text-xs *:font-light">

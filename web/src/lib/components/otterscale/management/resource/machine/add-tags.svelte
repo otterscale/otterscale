@@ -5,6 +5,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { writable } from 'svelte/store';
+	import { Input } from '$lib/components/ui/input';
 	import {
 		Nexus,
 		type Machine,
@@ -16,7 +17,7 @@
 	import { toast } from 'svelte-sonner';
 
 	let {
-		machine,
+		machine
 	}: {
 		machine: Machine;
 	} = $props();
@@ -52,7 +53,10 @@
 	function close() {
 		open = false;
 	}
-	
+
+	let newTags = $state([] as string[]);
+	let newTag = $state('');
+
 	onMount(async () => {
 		try {
 			await fetchTags();
@@ -105,6 +109,14 @@
 								{/if}
 							</Select.Item>
 						{/each}
+						<!-- <Select.Item
+							value={''}
+							onclick={() => {
+								toast.info('new tag');
+							}}
+						>
+							New Tag
+						</Select.Item> -->
 					</Select.Content>
 				</Select.Root>
 			</AlertDialog.Description>
@@ -113,9 +125,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.addMachineTags(addMachineTagsRequest).then((r) => {
-						toast.info(`Add tags ${addMachineTagsRequest.tags.join(', ')}`);
-					});
+					client
+						.addMachineTags(addMachineTagsRequest)
+						.then((r) => {
+							toast.info(`Add tags ${addMachineTagsRequest.tags.join(', ')}`);
+						})
+						.catch((e) => {
+							toast.error(`Add tags ${addMachineTagsRequest.tags.join(', ')} fail`);
+						});
 					// toast.info(`Add tags ${addMachineTagsRequest.tags.join(', ')}`);
 					console.log(addMachineTagsRequest);
 					reset();

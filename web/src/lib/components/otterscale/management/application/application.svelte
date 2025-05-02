@@ -54,9 +54,11 @@
 							</Table.Root>
 						</HoverCard.Content>
 					</HoverCard.Root>
-					<Badge variant="outline" class="overflow-hidden text-ellipsis whitespace-nowrap"
-						>{container.imageName}</Badge
-					>
+					<Badge variant="outline">
+						<!-- <p class=" overflow-visible whitespace-nowrap text-[13px]"> -->
+						{container.imageName}
+						<!-- </p> -->
+					</Badge>
 				</span>
 			{/each}
 		</Card.Footer>

@@ -60,9 +60,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.deleteMachine(deleteMachineRequest).then((r) => {
-						toast.info(`Delete ${machine.fqdn}`);
-					});
+					client
+						.deleteMachine(deleteMachineRequest)
+						.then((r) => {
+							toast.info(`Delete ${machine.fqdn}`);
+						})
+						.catch((e) => {
+							toast.error(`Delete ${machine.fqdn} fail`);
+						});
 					// toast.info(`Delete ${machine.fqdn}`);
 					console.log(deleteMachineRequest);
 					reset();

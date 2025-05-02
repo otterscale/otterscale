@@ -49,9 +49,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.deleteNetwork(deleteNetworkRequest).then((r) => {
-						toast.info(`Delete ${fabric.name}`);
-					});
+					client
+						.deleteNetwork(deleteNetworkRequest)
+						.then((r) => {
+							toast.info(`Delete ${fabric.name}`);
+						})
+						.catch((e) => {
+							toast.error(`Delete ${fabric.name} fail`);
+						});
 					// toast.info(`Delete ${fabric.name}`);
 					console.log(deleteNetworkRequest);
 					reset();

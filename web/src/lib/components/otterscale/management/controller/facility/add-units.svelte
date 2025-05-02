@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import {
 		Nexus,
 		type AddFacilityUnitsRequest,
@@ -16,19 +16,31 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import { writable } from 'svelte/store';
 
 	let {
 		scopeUuid,
-		facilityByCategory,
-		machines
+		facilityByCategory
 	}: {
 		scopeUuid: string;
 		facilityByCategory: Facility;
-		machines: Machine[];
 	} = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
+
+	const machinesStore = writable<Machine[]>([]);
+	const machinesLoading = writable(true);
+	async function fetchMachines() {
+		try {
+			const response = await client.listMachines({});
+			machinesStore.set(response.machines);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		} finally {
+			machinesLoading.set(false);
+		}
+	}
 
 	const DEFAULT_PLACEMENTS = [] as Machine_Placement[];
 	const DEFAULT_REQUEST = {
@@ -49,6 +61,17 @@
 	function close() {
 		open = false;
 	}
+
+	let mounted = false;
+	onMount(async () => {
+		try {
+			await fetchMachines();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+
+		mounted = true;
+	});
 </script>
 
 <AlertDialog.Root bind:open>
@@ -71,7 +94,7 @@
 								</Button>
 							</DropdownMenu.Trigger>
 							<DropdownMenu.Content align="end" class="max-h-[300px] overflow-auto">
-								{#each machines as machine}
+								{#each $machinesStore as machine}
 									<DropdownMenu.Sub>
 										<DropdownMenu.SubTrigger>{machine.fqdn}</DropdownMenu.SubTrigger>
 										<DropdownMenu.SubContent>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import CreateNetwork from './create.svelte';
 	import DeleteNetwork from './delete.svelte';
 	import UpdateFabric from './update-fabric.svelte';
@@ -13,14 +14,15 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import { writable } from 'svelte/store';
-
+	import { getContext, onMount } from 'svelte';
 	import { formatBigNumber as formatNumber } from '$lib/formatter';
 
 	import { ManagementNetworkSubnetReservedIPRanges } from '$lib/components/otterscale/index';
 
 	import {
+		Nexus,
 		type Network,
 		type Network_Subnet,
 		type Network_VLAN,
@@ -28,13 +30,44 @@
 		type Scope,
 		type Tag
 	} from '$gen/api/nexus/v1/nexus_pb';
-	import { onMount } from 'svelte';
 
 	let {
 		networks
 	}: {
 		networks: Network[];
 	} = $props();
+
+	const transport: Transport = getContext('transportNEW');
+	const client = createClient(Nexus, transport);
+
+	const networksStore = writable<Network[]>([]);
+	const networksLoading = writable(true);
+	async function refreshNetworks() {
+		while (page.url.searchParams.get('intervals')) {
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
+			);
+			console.log(`Refresh networks`);
+
+			try {
+				const response = await client.listNetworks({});
+				networksStore.set(response.networks);
+			} catch (error) {
+				console.error('Error fetching:', error);
+			}
+		}
+	}
+
+	let mounted = false;
+	onMount(async () => {
+		try {
+			refreshNetworks();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+
+		mounted = true;
+	});
 </script>
 
 <div>
@@ -60,7 +93,7 @@
 					<Table.Row>
 						{#if network.fabric}
 							<Table.Cell>
-								<div class="flex justify-between">
+								<div class="flex items-center justify-between">
 									{network.fabric.name}
 									<DropdownMenu.Root>
 										<DropdownMenu.Trigger>

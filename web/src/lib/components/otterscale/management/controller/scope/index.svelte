@@ -1,37 +1,45 @@
 <script lang="ts">
 	import CreateScope from './create.svelte';
-
+	import { page } from '$app/state';
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import Icon from '@iconify/svelte';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card/index.js';
-	import { Input } from '$lib/components/ui/input';
-	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import { formatTimeAgo } from '$lib/formatter';
-	import { toast } from 'svelte-sonner';
 	import { getContext, onMount } from 'svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Nexus, type CreateScopeRequest, type Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import { Nexus, type Scope } from '$gen/api/nexus/v1/nexus_pb';
 	import * as Table from '$lib/components/ui/table';
-
-	let createScopeRequest = $state({} as CreateScopeRequest);
-	function resetCreateScopeRequest() {
-		createScopeRequest = {} as CreateScopeRequest;
-	}
-	let createScopeConfirm = $state(false);
+	import { writable } from 'svelte/store';
 
 	let { scopes }: { scopes: Scope[] } = $props();
 
-	let isScopeConfigurationOpen = $state(
-		Object.fromEntries(scopes.map((scope) => [scope.uuid, false]))
-	);
-
 	const transport: Transport = getContext('transportNEW');
-
 	const client = createClient(Nexus, transport);
+
+	const scopesStore = writable<Scope[]>([]);
+	async function refreshScopes() {
+		while (page.url.searchParams.get('intervals')) {
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
+			);
+			console.log(`Refresh scopes`);
+
+			try {
+				const response = await client.listScopes({});
+				scopesStore.set(response.scopes);
+			} catch (error) {
+				console.error('Error fetching:', error);
+			}
+		}
+	}
+
+	onMount(async () => {
+		try {
+			refreshScopes();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+	});
 </script>
 
 <main>

@@ -46,7 +46,7 @@
 							<div class="flex h-full w-full items-center justify-center">
 								<div
 									class={cn(
-										`h-[calc(${chartHeight.large}px*1.732)] w-[calc(${chartHeight.large}px*1.732)]`
+										`h-[${Math.round(chartHeight.large * 1.732)}px] w-[${Math.round(chartHeight.large * 1.732)}px]`
 									)}
 								>
 									<Chart>
@@ -94,7 +94,7 @@
 								<div class="flex h-full w-full items-center justify-center">
 									<div
 										class={cn(
-											`h-[calc(${chartHeight.small}px*1.732)] w-[calc(${chartHeight.small}px*1.732)]`
+											`h-[${Math.round(chartHeight.small * 1.732)}px] w-[${Math.round(chartHeight.small * 1.732)}px]`
 										)}
 									>
 										<Chart>

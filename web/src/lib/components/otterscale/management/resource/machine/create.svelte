@@ -163,9 +163,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.createMachine(createMachineRequest).then((r) => {
-						toast.info(`Create ${machine.fqdn}`);
-					});
+					client
+						.createMachine(createMachineRequest)
+						.then((r) => {
+							toast.info(`Create ${machine.fqdn}`);
+						})
+						.catch((e) => {
+							toast.error(`Create ${machine.fqdn} fail`);
+						});
 					// toast.info(`Create ${machine.fqdn}`);
 					console.log(createMachineRequest);
 					reset();

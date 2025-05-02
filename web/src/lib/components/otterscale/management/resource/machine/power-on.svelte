@@ -53,9 +53,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.powerOnMachine(powerOnMachineRequest).then((r) => {
-						toast.info(`Power ${machine.fqdn}`);
-					});
+					client
+						.powerOnMachine(powerOnMachineRequest)
+						.then((r) => {
+							toast.info(`Turn on ${machine.fqdn}`);
+						})
+						.catch((e) => {
+							toast.error(`Fail to turn on ${machine.fqdn}`);
+						});
 					// toast.info(`Power ${machine.fqdn}`);
 					console.log(powerOnMachineRequest);
 					reset();

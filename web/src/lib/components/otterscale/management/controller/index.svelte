@@ -10,20 +10,22 @@
 	let chosenScopeName = $state('controller');
 </script>
 
-<main class="p-4">
+<main>
 	<Tabs.Root value="facility" class="w-full">
-		<Tabs.List>
-			<Tabs.Trigger value="facility">FACILITY</Tabs.Trigger>
-			<Tabs.Trigger value="scope">SCOPE</Tabs.Trigger>
-		</Tabs.List>
+		<div class="flex items-center justify-between p-4">
+			<Tabs.List>
+				<Tabs.Trigger value="facility">FACILITY</Tabs.Trigger>
+				<Tabs.Trigger value="scope">SCOPE</Tabs.Trigger>
+			</Tabs.List>
+		</div>
 		<Tabs.Content value="facility">
-			<div class="grid gap-2">
+			<div class="-mt-4 px-4">
 				{@render ChooseScope()}
-				{#key chosenScopeName}
-					<ManagementFacilities scopeUuid={scopeByName[chosenScopeName].uuid} />
-				{/key}
-				<div></div>
 			</div>
+
+			{#key chosenScopeName}
+				<ManagementFacilities scopeUuid={scopeByName[chosenScopeName].uuid} />
+			{/key}
 		</Tabs.Content>
 		<Tabs.Content value="scope">
 			<div class="grid gap-2">
@@ -34,13 +36,11 @@
 </main>
 
 {#snippet ChooseScope()}
-	<span class="m-2 flex items-center gap-1 text-xl">
+	<span class="flex items-center gap-2">
 		Scope
 		<Select.Root type="single">
-			<Select.Trigger
-				class="rounded-background border-0 border-b bg-muted focus:ring-0 focus:ring-offset-0"
-			>
-				<h1 class=" text-xl">{chosenScopeName}</h1>
+			<Select.Trigger class="border-0 border-b bg-muted focus:ring-0 focus:ring-offset-0">
+				{chosenScopeName}
 			</Select.Trigger>
 			<Select.Content>
 				{#each scopes as model}

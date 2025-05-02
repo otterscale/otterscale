@@ -15,14 +15,12 @@
 	let defaultKubernetes = $state(kuberneteses[0] as Facility_Info);
 </script>
 
-<div class="grid gap-2 p-4">
-	<span class="flex items-center gap-1 text-xl">
+<div class="grid gap-2">
+	<span class="flex items-center gap-2 p-4">
 		Kubernetes
 		<Select.Root type="single">
-			<Select.Trigger
-				class="rounded-background border-0 border-b bg-muted focus:ring-0 focus:ring-offset-0"
-			>
-				<h1 class="text-lg">{getIdentifier(defaultKubernetes)}</h1>
+			<Select.Trigger class="border-0 border-b bg-muted focus:ring-0 focus:ring-offset-0">
+				{getIdentifier(defaultKubernetes)}
 			</Select.Trigger>
 			<Select.Content>
 				{#each kuberneteses as kubernetes}

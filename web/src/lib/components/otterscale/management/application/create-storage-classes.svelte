@@ -121,6 +121,7 @@
 										value={selection}
 										onclick={() => {
 											defaultKubernetes = kubernetes;
+											createStorageClassRequest.kubernetes = kubernetes;
 										}}
 									>
 										{getIdentifier(kubernetes)}
@@ -146,6 +147,7 @@
 										value={selection}
 										onclick={() => {
 											defaultCeph = ceph;
+											createStorageClassRequest.ceph = ceph;
 										}}
 									>
 										{getIdentifier(ceph)}
@@ -157,15 +159,25 @@
 						</Select.Content>
 					</Select.Root>
 				</span>
+
+				<span class="grid w-full items-center gap-2">
+					<Label>Prefix</Label>
+					<Input class="w-full" bind:value={createStorageClassRequest.prefix} />
+				</span>
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.createStorageClass(createStorageClassRequest).then((r) => {
-						toast.info(`Create Storage Classes`);
-					});
+					client
+						.createStorageClass(createStorageClassRequest)
+						.then((r) => {
+							toast.info(`Create storage classes`);
+						})
+						.catch((e) => {
+							toast.error(`Create storage classes fail`);
+						});
 					// toast.info(`Create Storage Classes`);
 					console.log(createStorageClassRequest);
 					reset();

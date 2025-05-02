@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { Badge } from '$lib/components/ui/badge';
+	import Icon from '@iconify/svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { toast } from 'svelte-sonner';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
@@ -45,7 +47,7 @@
 		}
 	}
 
-	const DEFAULT_REQUEST = {} as CreateKubernetesRequest;
+	const DEFAULT_REQUEST = { virtualIps: [] as string[] } as CreateKubernetesRequest;
 
 	let createKubernetesRequest = $state(DEFAULT_REQUEST);
 	let selectedScopeName = $state('');
@@ -105,6 +107,7 @@
 						</Select.Content>
 					</Select.Root>
 				</div>
+
 				<div class="grid w-full items-center gap-2">
 					<Label>Machine</Label>
 					<Select.Root type="single" bind:value={createKubernetesRequest.machineId}>
@@ -127,9 +130,48 @@
 						</Select.Content>
 					</Select.Root>
 				</div>
+
 				<div class="grid w-full items-center gap-2">
 					<Label>Prefix</Label>
 					<Input class="w-full" bind:value={createKubernetesRequest.prefixName} />
+				</div>
+
+				<div class="grid w-full items-center gap-2">
+					<Label>Virtual IPs</Label>
+					<span class="flex flex-wrap items-center gap-2">
+						{#each createKubernetesRequest.virtualIps as ip}
+							<Badge
+								variant="secondary"
+								class="flex gap-1 text-sm hover:cursor-pointer"
+								onclick={() => {
+									createKubernetesRequest.virtualIps = createKubernetesRequest.virtualIps.filter(
+										(_, i) => i !== createKubernetesRequest.virtualIps.indexOf(ip)
+									);
+								}}
+							>
+								{ip}
+								<Icon icon="ph:x" class="h-3 w-3" />
+							</Badge>
+						{/each}
+					</span>
+					<div class="flex w-full items-center justify-between gap-2">
+						<Input
+							onkeydown={(e) => {
+								if (e.key === 'Enter') {
+									createKubernetesRequest.virtualIps = [
+										...createKubernetesRequest.virtualIps,
+										e.currentTarget.value
+									];
+									e.currentTarget.value = '';
+								}
+							}}
+						/>
+					</div>
+				</div>
+
+				<div class="grid w-full items-center gap-2">
+					<Label>Calico CIDR</Label>
+					<Input class="w-full" bind:value={createKubernetesRequest.calicoCidr} />
 				</div>
 			</AlertDialog.Description>
 		</AlertDialog.Header>
@@ -137,10 +179,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.createKubernetes(createKubernetesRequest).then((r) => {
-						toast.info(`Create Kubernetes ${createKubernetesRequest.scopeUuid}`);
-					});
-					// toast.info(`Create Kubernetes ${createKubernetesRequest.scopeUuid}`);
+					client
+						.createKubernetes(createKubernetesRequest)
+						.then((r) => {
+							toast.info(`Create Kubernetes ${createKubernetesRequest.scopeUuid}`);
+						})
+						.catch((e) => {
+							toast.error(`Create Kubernetes ${createKubernetesRequest.scopeUuid} fail`);
+						});
 					console.log(createKubernetesRequest);
 					reset();
 					close();

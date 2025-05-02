@@ -76,9 +76,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.updateVLAN(updateVLANRequest).then((r) => {
-						toast.info(`Update ${vlan.name}`);
-					});
+					client
+						.updateVLAN(updateVLANRequest)
+						.then((r) => {
+							toast.info(`Update ${vlan.name}`);
+						})
+						.catch((e) => {
+							toast.error(`Update ${vlan.name} fail`);
+						});
 					// toast.info(`Update ${vlan.name}`);
 					console.log(updateVLANRequest);
 					reset();

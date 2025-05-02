@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
+	import { Badge } from '$lib/components/ui/badge';
+	import Icon from '@iconify/svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { toast } from 'svelte-sonner';
+	import { Switch } from '$lib/components/ui/switch/index.js';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Button } from '$lib/components/ui/button';
 	import { onMount } from 'svelte';
@@ -45,7 +48,7 @@
 		}
 	}
 
-	const DEFAULT_REQUEST = {} as CreateCephRequest;
+	const DEFAULT_REQUEST = { osdDevices: [] as string[], development: true } as CreateCephRequest;
 
 	let createCephRequest = $state(DEFAULT_REQUEST);
 	let selectedScopeName = $state('');
@@ -131,17 +134,59 @@
 					<Label>Prefix</Label>
 					<Input class="w-full" bind:value={createCephRequest.prefixName} />
 				</div>
+
+				<div class="grid w-full items-center gap-2">
+					<Label>OSD Devices</Label>
+					<span class="flex flex-wrap items-center gap-2">
+						{#each createCephRequest.osdDevices as device}
+							<Badge
+								variant="secondary"
+								class="flex gap-1 text-sm hover:cursor-pointer"
+								onclick={() => {
+									createCephRequest.osdDevices = createCephRequest.osdDevices.filter(
+										(_, i) => i !== createCephRequest.osdDevices.indexOf(device)
+									);
+								}}
+							>
+								{device}
+								<Icon icon="ph:x" class="h-3 w-3" />
+							</Badge>
+						{/each}
+					</span>
+					<div class="flex w-full items-center justify-between gap-2">
+						<Input
+							onkeydown={(e) => {
+								if (e.key === 'Enter') {
+									createCephRequest.osdDevices = [
+										...createCephRequest.osdDevices,
+										e.currentTarget.value
+									];
+									e.currentTarget.value = '';
+								}
+							}}
+						/>
+					</div>
+				</div>
+
+				<div class="flex items-center justify-between gap-2">
+					<Label>Development</Label>
+					<Switch bind:checked={createCephRequest.development} />
+				</div>
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.createCeph(createCephRequest).then((r) => {
-						toast.info(`Create Ceph to ${createCephRequest.scopeUuid}`);
-					});
-					// console.log(createCephRequest);
-					toast.info(`Create Ceph to ${createCephRequest.scopeUuid}`);
+					client
+						.createCeph(createCephRequest)
+						.then((r) => {
+							toast.info(`Create Ceph to ${createCephRequest.scopeUuid}`);
+						})
+						.catch((e) => {
+							toast.error(`Create Ceph to ${createCephRequest.scopeUuid} fail`);
+						});
+					console.log(createCephRequest);
 					reset();
 					close();
 				}}

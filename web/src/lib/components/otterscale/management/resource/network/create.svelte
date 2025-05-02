@@ -90,9 +90,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.createNetwork(createNetworkRequest).then((r) => {
-						toast.info(`Create ${createNetworkRequest.cidr}`);
-					});
+					client
+						.createNetwork(createNetworkRequest)
+						.then((r) => {
+							toast.info(`Create ${createNetworkRequest.cidr}`);
+						})
+						.catch((e) => {
+							toast.error(`Create ${createNetworkRequest.cidr} fail`);
+						});
 					// toast.info(`Create ${createNetworkRequest.cidr}`);
 					console.log(createNetworkRequest);
 					reset();

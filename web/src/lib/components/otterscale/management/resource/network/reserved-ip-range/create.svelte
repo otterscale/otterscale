@@ -44,10 +44,10 @@
 				<div class="grid gap-3"></div>
 				<fieldset class="grid items-center gap-3 rounded-lg border p-3">
 					<legend class="text-sm font-semibold">Basic Settings</legend>
-					<div>
+					<!-- <div>
 						<Label>Subnet ID</Label>
 						<Input bind:value={createIPRangeRequest.subnetId} />
-					</div>
+					</div> -->
 					<div>
 						<Label>Start IP</Label>
 						<Input bind:value={createIPRangeRequest.startIp} />
@@ -71,9 +71,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.createIPRange(createIPRangeRequest).then((r) => {
-						toast.info(`Create reserved ip range to ${subnet.cidr}`);
-					});
+					client
+						.createIPRange(createIPRangeRequest)
+						.then((r) => {
+							toast.info(`Create reserved ip range to ${subnet.cidr}`);
+						})
+						.catch((e) => {
+							toast.error(`Create reserved ip range to ${subnet.cidr} fail`);
+						});
 					// toast.info(`Create reserved ip range to ${subnet.cidr}`);
 					console.log(createIPRangeRequest);
 					reset();

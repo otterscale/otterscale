@@ -44,9 +44,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.createScope(createScopeRequest).then((r) => {
-						toast.info(`Create ${createScopeRequest.name}`);
-					});
+					client
+						.createScope(createScopeRequest)
+						.then((r) => {
+							toast.info(`Create ${createScopeRequest.name}`);
+						})
+						.catch((e) => {
+							toast.error(`Create ${createScopeRequest.name} fail`);
+						});
 					// toast.info(`Create ${createScopeRequest.name}`);
 					console.log(createScopeRequest);
 					reset();

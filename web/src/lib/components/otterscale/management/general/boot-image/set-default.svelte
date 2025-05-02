@@ -54,10 +54,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.setDefaultBootImage(setDefaultBootImageRequest).then((r) => {
-						toast.info(`Set ${setDefaultBootImageRequest.distroSeries} as default.`);
-					});
-					// toast.info(`Set ${setDefaultBootImageRequest.distroSeries} as default`);
+					client
+						.setDefaultBootImage(setDefaultBootImageRequest)
+						.then((r) => {
+							toast.info(`Set ${setDefaultBootImageRequest.distroSeries} as default.`);
+						})
+						.catch((e) => {
+							toast.info(`Fail to set ${setDefaultBootImageRequest.distroSeries} as default.`);
+						});
 					console.log(setDefaultBootImageRequest);
 					reset();
 					close();

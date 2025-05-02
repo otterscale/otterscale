@@ -31,13 +31,13 @@
 
 <div class="grid gap-4 p-4">
 	<fieldset>
-		<legend class="flex items-center gap-2 p-2 text-lg font-semibold">
+		<legend class="flex items-center gap-2 text-lg font-semibold">
 			<Icon icon="ph:network" class="size-5 sm:flex" />
 			NTP Servers
 		</legend>
 
-		<div class="flex justify-between rounded-lg p-4">
-			<div class="flex flex-col justify-between gap-2 p-2">
+		<div class="flex justify-between rounded-lg py-2">
+			<div class="flex flex-col justify-between gap-2 p-4">
 				{#if configuration.ntpServer}
 					<span class="flex items-center gap-1">
 						{#if configuration.ntpServer.addresses}
@@ -53,17 +53,20 @@
 					make use of MAAS's DHCP services.
 				</p>
 			</div>
-			<UpdateNTPServer {configuration} />
+
+			<span>
+				<UpdateNTPServer {configuration} />
+			</span>
 		</div>
 	</fieldset>
 
 	<fieldset>
-		<legend class="flex items-center gap-2 p-2 text-lg font-semibold">
+		<legend class="flex items-center gap-2 text-lg font-semibold">
 			<Icon icon="ph:cloud" class="size-5 sm:flex" />
 			Package Repositories
 		</legend>
 
-		<div class="rounded-lg p-2">
+		<div class="rounded-lg py-2">
 			<Table.Root>
 				<Table.Header class="bg-muted/50">
 					<Table.Row class="*:text-xs *:font-light">
@@ -101,13 +104,13 @@
 	</fieldset>
 
 	<fieldset>
-		<legend class="flex items-center gap-2 p-2 text-lg font-semibold">
+		<legend class="flex items-center gap-2 text-lg font-semibold">
 			<Icon icon="simple-icons:ubuntu" class="size-5 sm:flex" />
 			Boot Image
 		</legend>
 
-		<div class="rounded-lg p-2">
-			<span class="flex justify-end p-4">
+		<div class="rounded-lg py-2">
+			<span class="flex justify-end py-2">
 				<CreateBootImage bind:configuration />
 
 				{#key isImportingBootImages}
@@ -159,13 +162,13 @@
 	</fieldset>
 
 	<fieldset>
-		<legend class="flex items-center gap-2 p-2 text-lg font-semibold">
+		<legend class="flex items-center gap-2 text-lg font-semibold">
 			<Icon icon="ph:tag-simple" class="size-5 sm:flex" />
 			Tags
 		</legend>
 
-		<div class="rounded-lg p-2">
-			<div class="flex justify-end p-4">
+		<div class="rounded-lg py-2">
+			<div class="flex justify-end py-2">
 				<CreateTag bind:tags />
 			</div>
 			<Table.Root>

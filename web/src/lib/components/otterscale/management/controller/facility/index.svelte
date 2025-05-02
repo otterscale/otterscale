@@ -1,17 +1,15 @@
 <script lang="ts">
 	import AddFacilityUnits from './add-units.svelte';
-
 	import UpdateFacility from './update.svelte';
 	import DeleteFacility from './delete.svelte';
 	import ExposeFacility from './expose.svelte';
 	import AddCephUnits from './add-ceph-units.svelte';
 	import AddKubernetesUnits from './add-kubernetes-units.svelte';
-
+	import { page } from '$app/state';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Card from '$lib/components/ui/card';
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import * as Tabs from '$lib/components/ui/tabs';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -19,31 +17,17 @@
 
 	import {
 		Nexus,
-		type Machine_Placement,
-		type AddFacilityUnitsRequest,
-		type CreateFacilityRequest,
-		type DeleteFacilityRequest,
 		type Facility,
 		type Facility_Status,
 		type Facility_Unit,
-		type Machine,
-		type Machine_Constraint,
-		type UpdateFacilityRequest
+		type Machine
 	} from '$gen/api/nexus/v1/nexus_pb';
 
 	import Icon from '@iconify/svelte';
 
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as Popover from '$lib/components/ui/popover';
-	import * as Select from '$lib/components/ui/select/index.js';
-	import { Switch } from '$lib/components/ui/switch/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-
-	import { toast } from 'svelte-sonner';
 
 	let {
 		scopeUuid
@@ -69,16 +53,21 @@
 		}
 	}
 
-	const machinesStore = writable<Machine[]>([]);
-	const machinesLoading = writable(true);
-	async function fetchMachines() {
-		try {
-			const response = await client.listMachines({});
-			machinesStore.set(response.machines);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			machinesLoading.set(false);
+	async function refreshFacilties() {
+		while (page.url.searchParams.get('intervals')) {
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
+			);
+			console.log(`Refresh facilities`);
+
+			try {
+				const response = await client.listFacilities({
+					scopeUuid: scopeUuid
+				});
+				facilitiesStore.set(response.facilities);
+			} catch (error) {
+				console.error('Error fetching:', error);
+			}
 		}
 	}
 
@@ -128,7 +117,7 @@
 	onMount(async () => {
 		try {
 			await fetchFacilities();
-			await fetchMachines();
+			refreshFacilties();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -149,9 +138,9 @@
 
 {#snippet AddBundleUnits(facilityCategory: string, masterFacility: Facility)}
 	{#if facilityCategory == FACILITY_CATEGORYS.KUBERNETES}
-		<AddKubernetesUnits {scopeUuid} kubernetes={masterFacility} machines={$machinesStore} />
+		<AddKubernetesUnits {scopeUuid} kubernetes={masterFacility} />
 	{:else if facilityCategory == FACILITY_CATEGORYS.CEPH}
-		<AddCephUnits {scopeUuid} ceph={masterFacility} machines={$machinesStore} />
+		<AddCephUnits {scopeUuid} ceph={masterFacility} />
 	{/if}
 {/snippet}
 
@@ -246,11 +235,7 @@
 												</DropdownMenu.Trigger>
 												<DropdownMenu.Content>
 													<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-														<AddFacilityUnits
-															{scopeUuid}
-															{facilityByCategory}
-															machines={$machinesStore}
-														/>
+														<AddFacilityUnits {scopeUuid} {facilityByCategory} />
 													</DropdownMenu.Item>
 												</DropdownMenu.Content>
 											</DropdownMenu.Root>

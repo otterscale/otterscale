@@ -147,15 +147,19 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.createBootImage(createBootImageRequest).then((r) => {
-						toast.info(
-							`Create boot images ${createBootImageRequest.distroSeries}: ${createBootImageRequest.architectures.join(', ')}.`
-						);
-						client.getConfiguration({}).then((r) => {
-							configuration = r;
+					client
+						.createBootImage(createBootImageRequest)
+						.then((r) => {
+							toast.info(
+								`Create boot images ${createBootImageRequest.distroSeries}: ${createBootImageRequest.architectures.join(', ')}`
+							);
+							client.getConfiguration({}).then((r) => {
+								configuration = r;
+							});
+						})
+						.catch((e) => {
+							`Create boot images fail`;
 						});
-					});
-					// toast.info(`Create boot images`);
 					console.log(createBootImageRequest);
 					reset();
 					close();

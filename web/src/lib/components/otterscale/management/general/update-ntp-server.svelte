@@ -90,13 +90,17 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.updateNTPServer(updateNTPServerRequest).then((r) => {
-						toast.info(`Update NTP Servers`);
-						client.getConfiguration({}).then((r) => {
-							configuration = r;
+					client
+						.updateNTPServer(updateNTPServerRequest)
+						.then((r) => {
+							toast.info(`Update NTP Servers`);
+							client.getConfiguration({}).then((r) => {
+								configuration = r;
+							});
+						})
+						.catch((e) => {
+							toast.info(`Update NTP Servers fail`);
 						});
-					});
-					// toast.info(`Update NTP Servers`);
 					console.log(updateNTPServerRequest);
 					reset();
 					close();

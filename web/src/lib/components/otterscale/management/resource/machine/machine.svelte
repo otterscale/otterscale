@@ -28,11 +28,14 @@
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
+
 	const machineStore = writable<Machine>();
 	async function refreshMachine() {
 		while (page.url.searchParams.get('interval')) {
-			await new Promise((resolve) => setTimeout(resolve, 1000 * Number(page.url.searchParams.get('interval'))));
-			console.log(`Refreshnig machine ${page.params.system_id}`);
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
+			);
+			console.log(`Refresh machine ${page.params.system_id}`);
 
 			try {
 				const response = await client.getMachine({ id: machine.id });

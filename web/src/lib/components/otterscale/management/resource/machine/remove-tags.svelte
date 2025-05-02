@@ -68,9 +68,14 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.removeMachineTags(removeMachineTagsRequest).then((r) => {
-						toast.info(`Remove tags ${removeMachineTagsRequest.tags.join(', ')}`);
-					});
+					client
+						.removeMachineTags(removeMachineTagsRequest)
+						.then((r) => {
+							toast.info(`Remove tags ${removeMachineTagsRequest.tags.join(', ')}`);
+						})
+						.catch((e) => {
+							toast.error(`Remove tags ${removeMachineTagsRequest.tags.join(', ')} fail`);
+						});
 					// console.log(removeMachineTagsRequest);
 					toast.info(`Remove tags ${removeMachineTagsRequest.tags.join(', ')}`);
 					reset();

@@ -8,6 +8,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import {
 		Nexus,
+		type Configuration,
 		type Configuration_PackageRepository,
 		type UpdatePackageRepositoryRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
@@ -62,12 +63,17 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.updatePackageRepository(updatePackageRepositoryRequest).then((r) => {
-						toast.info(`Update package repositories`);
-						client.getConfiguration({}).then((r) => {
-							configuration = r;
+					client
+						.updatePackageRepository(updatePackageRepositoryRequest)
+						.then((r) => {
+							toast.info(`Update package repositories`);
+							client.getConfiguration({}).then((r) => {
+								configuration = r;
+							});
+						})
+						.catch((e) => {
+							toast.error(`Update package repositories fail`);
 						});
-					});
 					// toast.info(`Update package repositories`);
 					console.log(updatePackageRepositoryRequest);
 					reset();
