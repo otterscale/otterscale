@@ -1,8 +1,8 @@
 import { page } from "$app/state";
 import { i18n } from "./i18n";
 
-export function setCallback(url: string): string {
-	return `${url}?callback=${i18n.route(page.url.pathname)}`;
+export function setCallback(to: string, from: string): string {
+	return `${i18n.resolveRoute(to)}?callback=${i18n.route(from)}`;
 }
 
 export function getCallback(): string {

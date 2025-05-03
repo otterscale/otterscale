@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import { i18n } from '$lib/i18n';
 	import { authClient } from '$lib/auth-client';
 
@@ -8,7 +8,13 @@
 	let countdown = 3;
 
 	onMount(() => {
-		authClient.signOut();
+		authClient.signOut({
+			fetchOptions: {
+				async onSuccess() {
+					await invalidate('app:user');
+				}
+			}
+		});
 
 		const timer = setInterval(() => {
 			countdown--;

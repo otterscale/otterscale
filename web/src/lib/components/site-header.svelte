@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { User } from 'better-auth';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import {
 		Avatar,
@@ -8,6 +9,8 @@
 		SearchBar
 	} from '$lib/components/navbar';
 	import { features } from './features';
+
+	export let user: User;
 </script>
 
 <header class="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-sidebar px-4">
@@ -16,7 +19,7 @@
 	<div class="flex gap-4 md:ml-auto md:gap-2 lg:gap-4">
 		<SearchBar />
 		<Separator orientation="vertical" />
-		<FunctionBar />
+		<FunctionBar {user} />
 	</div>
-	<Avatar />
+	<Avatar {user} />
 </header>

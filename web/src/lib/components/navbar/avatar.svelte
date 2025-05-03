@@ -1,25 +1,25 @@
 <script lang="ts">
+	import type { User } from 'better-auth';
 	import Icon from '@iconify/svelte';
 	import { goto } from '$app/navigation';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as m from '$lib/paraglide/messages.js';
-	import { authClient } from '$lib/auth-client';
 	import { i18n } from '$lib/i18n';
 	import { cn } from '$lib/utils';
 
-	const session = authClient.useSession();
+	export let user: User;
 </script>
 
-{#if $session.data}
+{#if user}
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger
 			class={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'h-8 w-8 rounded-full')}
 		>
 			<Avatar.Root class="h-8 w-8">
-				<Avatar.Image src={$session.data?.user.image} />
-				<Avatar.Fallback>{$session.data?.user.name[0]}</Avatar.Fallback>
+				<Avatar.Image src={user.image} />
+				<Avatar.Fallback>{user.name[0]}</Avatar.Fallback>
 				<span class="sr-only">Toggle user menu</span>
 			</Avatar.Root>
 		</DropdownMenu.Trigger>
@@ -27,13 +27,13 @@
 			<DropdownMenu.Label class="p-0 font-normal">
 				<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 					<Avatar.Root class="h-8 w-8">
-						<Avatar.Image src={$session.data?.user.image} />
-						<Avatar.Fallback>{$session.data?.user.name[0]}</Avatar.Fallback>
+						<Avatar.Image src={user.image} />
+						<Avatar.Fallback>{user.name[0]}</Avatar.Fallback>
 						<span class="sr-only">Toggle user menu</span>
 					</Avatar.Root>
 					<div class="grid flex-1 text-left text-sm leading-tight">
-						<span class="truncate font-semibold"> {$session.data?.user.name}</span>
-						<span class="truncate text-xs"> {$session.data?.user.email}</span>
+						<span class="truncate font-semibold"> {user.name}</span>
+						<span class="truncate text-xs"> {user.email}</span>
 					</div>
 				</div>
 			</DropdownMenu.Label>

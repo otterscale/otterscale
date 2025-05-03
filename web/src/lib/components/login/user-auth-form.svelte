@@ -10,6 +10,7 @@
 	import { getCallback } from '$lib/callback';
 	import { signIn } from '$lib/auth-client';
 	import { writable } from 'svelte/store';
+	import { invalidate } from '$app/navigation';
 
 	const email = writable('');
 	const password = writable('');
@@ -72,8 +73,9 @@
 				callbackURL: i18n.resolveRoute(getCallback())
 			},
 			{
-				onSuccess(data) {
+				async onSuccess() {
 					// TODO: welcome message
+					await invalidate('app:user');
 					toast.success('Logged in successfully!');
 				},
 				onError(context) {

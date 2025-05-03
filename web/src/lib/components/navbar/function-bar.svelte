@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { authClient } from '$lib/auth-client';
+	import type { User } from 'better-auth';
 	import { Login } from './login';
 	import { Favorite } from './favorite';
 	import { Message } from './message';
 	import { Preference } from './preference';
 
-	const session = authClient.useSession();
+	export let user: User;
 </script>
 
 <div class="flex justify-end space-x-2">
 	<Preference />
-	{#if $session.data}
+	{#if user}
 		<Favorite />
 		<Message />
 	{:else}

@@ -1,30 +1,21 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { setCallback } from '$lib/callback';
-	import { i18n } from '$lib/i18n';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { AppSidebar } from '$lib/components/sidebar';
 	import { Avatar, FunctionBar, SearchBar } from '$lib/components/navbar';
 	import { capitalizeFirstLetter } from 'better-auth';
-	import { authClient } from '$lib/auth-client';
+	import type { PageData } from '../../$types';
+	import type { Snippet } from 'svelte';
 
-	let { children } = $props();
+	let { data, children }: { data: PageData; children: Snippet<[]> } = $props();
 
 	let breadcrumbs = $derived.by(() => {
 		return page.url.pathname.split('/').filter((e) => e);
 	});
 
 	// TODO: recently visited pages
-
-	$effect(() => {
-		const session = authClient.useSession();
-		if (!!session) {
-			goto(setCallback(i18n.resolveRoute('/login')));
-		}
-	});
 </script>
 
 <Sidebar.Provider>
@@ -73,9 +64,9 @@
 			<div class="flex gap-4 md:ml-auto md:gap-2 lg:gap-4">
 				<SearchBar />
 				<Separator orientation="vertical" />
-				<FunctionBar />
+				<FunctionBar user={data.user} />
 			</div>
-			<Avatar />
+			<Avatar user={data.user} />
 		</header>
 		<div class="relative flex flex-col bg-background">
 			<div class="flex-1">

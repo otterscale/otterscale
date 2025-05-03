@@ -7,7 +7,7 @@
 	import { i18n } from '$lib/i18n';
 	import { signUp } from '$lib/auth-client';
 	import { writable } from 'svelte/store';
-	import { goto } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 
 	const firstName = writable('');
 	const lastName = writable('');
@@ -29,7 +29,8 @@
 			password: $password,
 			name: `${$firstName} ${$lastName}`,
 			fetchOptions: {
-				onSuccess() {
+				async onSuccess() {
+					await invalidate('app:user');
 					toast.success('Account created successfully! Please sign in to continue.');
 					goto(i18n.resolveRoute('/'));
 				},
