@@ -3,27 +3,9 @@
 	import { page } from '$app/state';
 	import { ParaglideJS } from '@inlang/paraglide-sveltekit';
 
-	import pb from '$lib/pb';
-	import { goto } from '$app/navigation';
-	import { setCallback } from '$lib/callback';
 	let { children } = $props();
 
 	let items = ['Profile', 'Billing', 'Appearance', 'Notification', 'Advanced'];
-
-	import { onMount } from 'svelte';
-	// import { getLogin } from '$lib/utils';
-
-	// const { isLogin } = getLogin();
-	// onMount(() => {
-	// 	if (!$isLogin) {
-	// 		window.location.href = '/account/login';
-	// 	}
-	// });
-	$effect(() => {
-		if (!pb.authStore.isValid) {
-			goto(setCallback(i18n.resolveRoute('/login')));
-		}
-	});
 </script>
 
 <main

@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { i18n } from '$lib/i18n';
-	import pb from '$lib/pb';
+	import { authClient } from '$lib/auth-client';
 
 	import { onMount } from 'svelte';
 
 	let countdown = 3;
 
 	onMount(() => {
-		pb.authStore.clear();
+		authClient.signOut();
 
 		const timer = setInterval(() => {
 			countdown--;

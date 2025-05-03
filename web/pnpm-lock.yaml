@@ -62,9 +62,6 @@ importers:
       layerchart:
         specifier: ^1.0.8
         version: 1.0.8(svelte@5.20.2)(typescript@5.7.3)
-      pocketbase:
-        specifier: ^0.25.1
-        version: 0.25.1
       rehype-highlight:
         specifier: ^7.0.2
         version: 7.0.2
@@ -2792,9 +2789,6 @@ packages:
     resolution: {integrity: sha512-G8rwsOQJ63XG6BbKj2w5rHeavFjy5zynBA9zsJMMtBoe/Uf757oG12NXz6e6OirF7RCrTVAKFXbLmn1RbL7Qaw==}
     engines: {node: '>=18'}
     hasBin: true
-
-  pocketbase@0.25.1:
-    resolution: {integrity: sha512-2IH0KLI/qMNR/E17C7BGWX2FxW7Tead+igLHOWZ45P56v/NyVT18Jnmddeft+3qWWGL1Hog2F8bc4orWV/+Fcg==}
 
   postcss-import@15.1.0:
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
@@ -6592,8 +6586,6 @@ snapshots:
       playwright-core: 1.50.1
     optionalDependencies:
       fsevents: 2.3.2
-
-  pocketbase@0.25.1: {}
 
   postcss-import@15.1.0(postcss@8.5.3):
     dependencies:

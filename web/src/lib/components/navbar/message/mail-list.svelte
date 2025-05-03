@@ -1,23 +1,16 @@
 <script lang="ts">
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import {
-		archiveMessage,
-		deleteMessage,
-		readMessage,
-		unarchiveMessage,
-		unreadMessage,
-		type pbMessage
-	} from '$lib/pb.js';
+	import { type message } from '$lib/models.js';
 	import Icon from '@iconify/svelte';
 	import { toast } from 'svelte-sonner';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { siteConfig } from '$lib/config/site';
 
 	export let type: number;
-	export let items: pbMessage[];
+	export let items: message[];
 
-	function ok(msg: pbMessage): boolean {
+	function ok(msg: message): boolean {
 		if (type === 0) {
 			return !msg.read && !msg.archived && !msg.deleted;
 		} else if (type === 1) {
@@ -53,7 +46,7 @@
 												<DropdownMenu.Item
 													class="space-x-1"
 													onclick={async () => {
-														await unreadMessage(item.id);
+														// await unreadMessage(item.id);
 														item.read = false;
 														items = items;
 														toast.success('Message marked as unread.');
@@ -66,7 +59,7 @@
 												<DropdownMenu.Item
 													class="space-x-1"
 													onclick={async () => {
-														await readMessage(item.id);
+														// await readMessage(item.id);
 														item.read = true;
 														items = items;
 														toast.success('Message marked as read.');
@@ -80,7 +73,7 @@
 												<DropdownMenu.Item
 													class="space-x-1"
 													onclick={async () => {
-														await unarchiveMessage(item.id);
+														// await unarchiveMessage(item.id);
 														item.archived = false;
 														items = items;
 														toast.success('Message removed from archive.');
@@ -93,7 +86,7 @@
 												<DropdownMenu.Item
 													class="space-x-1"
 													onclick={async () => {
-														await archiveMessage(item.id);
+														// await archiveMessage(item.id);
 														item.archived = true;
 														items = items;
 														toast.success('Message moved to archive.');
@@ -106,7 +99,7 @@
 											<DropdownMenu.Item
 												class="space-x-1"
 												onclick={async () => {
-													await deleteMessage(item.id);
+													// await deleteMessage(item.id);
 													item.deleted = true;
 													items = items;
 													toast.success('Message deleted.');

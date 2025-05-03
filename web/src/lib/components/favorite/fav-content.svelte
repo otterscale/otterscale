@@ -3,12 +3,12 @@
 	import { page } from '$app/state';
 	import * as Card from '$lib/components/ui/card';
 	import { i18n } from '$lib/i18n';
-	import type { pbFavorite } from '$lib/pb';
+	import type { favorite } from '$lib/models';
 	import { formatTimeAgo } from '$lib/formatter';
 
-	export let items: pbFavorite[];
+	export let items: favorite[];
 
-	function filter(): pbFavorite[] {
+	function filter(): favorite[] {
 		if (page.url.hash === '') {
 			return items;
 		}

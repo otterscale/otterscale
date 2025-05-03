@@ -4,7 +4,7 @@
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 
-	import { listInstances, type pbInstance } from '$lib/pb';
+	import { type instance } from '$lib/models';
 	import {
 		CreateOverview,
 		CreateApplication,
@@ -36,14 +36,14 @@
 
 	let open = $state(false);
 
-	let pbMachines: pbInstance[] = $state([]);
-	let pbClusters: pbInstance[] = $state([]);
-	let pbApplications: pbInstance[] = $state([]);
+	let pbMachines: instance[] = $state([]);
+	let pbClusters: instance[] = $state([]);
+	let pbApplications: instance[] = $state([]);
 
 	onMount(async () => {
-		pbMachines = await listInstances(`type='MAAS'`);
-		pbClusters = await listInstances(`type='JUJU'`);
-		pbApplications = await listInstances(`type='kubernetes'`);
+		// pbMachines = await listInstances(`type='MAAS'`);
+		// pbClusters = await listInstances(`type='JUJU'`);
+		// pbApplications = await listInstances(`type='kubernetes'`);
 	});
 	//
 </script>

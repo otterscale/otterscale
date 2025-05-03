@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { pbFavorite } from '$lib/pb';
+	import type { favorite } from '$lib/models';
 
-	export let items: pbFavorite[];
+	export let items: favorite[];
 
 	function features(): string[] {
 		return [

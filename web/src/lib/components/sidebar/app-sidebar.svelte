@@ -7,15 +7,8 @@
 
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
-	import pb, { avatarFallback, avatarURL } from '$lib/pb';
 
 	const data = {
-		user: {
-			name: pb.authStore.record?.name,
-			email: pb.authStore.record?.email,
-			avatar: avatarURL(pb.authStore.record?.avatar),
-			fallback: avatarFallback(pb.authStore.record?.name)
-		},
 		namespaces: [
 			{
 				name: 'Default',

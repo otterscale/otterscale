@@ -1,18 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
-	import { goto } from '$app/navigation';
 	import { UserAuthForm } from '$lib/components/login';
 	import { Button } from '$lib/components/ui/button';
-	import { i18n } from '$lib/i18n';
 	import { appendCallback } from '$lib/callback';
-	import pb from '$lib/pb';
-
-	onMount(() => {
-		if (pb.authStore.isValid) {
-			goto(i18n.resolveRoute('/'));
-		}
-	});
 </script>
 
 <div

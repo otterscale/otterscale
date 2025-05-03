@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import type { pbRecent } from '$lib/pb';
+	import type { recent } from '$lib/models';
 
-	export let items: pbRecent[];
+	export let items: recent[];
 
 	function features(): string[] {
 		return [

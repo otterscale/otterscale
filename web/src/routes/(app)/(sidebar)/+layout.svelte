@@ -1,38 +1,27 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { SiteSidebar } from '$lib/components';
-	import pb, { upsertRecent } from '$lib/pb';
 	import { setCallback } from '$lib/callback';
 	import { i18n } from '$lib/i18n';
-	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
-	import * as Drawer from '$lib/components/ui/drawer';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { AppSidebar } from '$lib/components/sidebar';
 	import { Avatar, FunctionBar, SearchBar } from '$lib/components/navbar';
 	import { capitalizeFirstLetter } from 'better-auth';
+	import { authClient } from '$lib/auth-client';
 
 	let { children } = $props();
-
-	let currentPage = i18n.route(page.url.pathname);
 
 	let breadcrumbs = $derived.by(() => {
 		return page.url.pathname.split('/').filter((e) => e);
 	});
 
-	onMount(async () => {
-		await upsertRecent();
-	});
+	// TODO: recently visited pages
 
 	$effect(() => {
-		if (currentPage !== i18n.route(page.url.pathname)) {
-			(async () => await upsertRecent())();
-			currentPage = i18n.route(page.url.pathname);
-		}
-		if (!pb.authStore.isValid) {
+		const session = authClient.useSession();
+		if (!!session) {
 			goto(setCallback(i18n.resolveRoute('/login')));
 		}
 	});

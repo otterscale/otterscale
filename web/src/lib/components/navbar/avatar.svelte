@@ -1,42 +1,25 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-
 	import { goto } from '$app/navigation';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as m from '$lib/paraglide/messages.js';
-	import pb from '$lib/pb';
+	import { authClient } from '$lib/auth-client';
 	import { i18n } from '$lib/i18n';
 	import { cn } from '$lib/utils';
 
-	let isValid = pb.authStore.isValid;
-	let record = pb.authStore.record;
-
-	pb.authStore.onChange((_, r) => {
-		isValid = pb.authStore.isValid;
-		record = r;
-	});
-
-	function getFallback(): string {
-		if (record) {
-			const names = record.name.split(' ');
-			if (names.length >= 2) {
-				return (names[0][0] + names[1][0]).toUpperCase();
-			}
-		}
-		return 'NA';
-	}
+	const session = authClient.useSession();
 </script>
 
-{#if isValid}
+{#if $session.data}
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger
 			class={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'h-8 w-8 rounded-full')}
 		>
 			<Avatar.Root class="h-8 w-8">
-				<Avatar.Image src={record ? pb.files.getURL(record, record.avatar) : ''} />
-				<Avatar.Fallback>{getFallback()}</Avatar.Fallback>
+				<Avatar.Image src={$session.data?.user.image} />
+				<Avatar.Fallback>{$session.data?.user.name[0]}</Avatar.Fallback>
 				<span class="sr-only">Toggle user menu</span>
 			</Avatar.Root>
 		</DropdownMenu.Trigger>
@@ -44,13 +27,13 @@
 			<DropdownMenu.Label class="p-0 font-normal">
 				<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 					<Avatar.Root class="h-8 w-8">
-						<Avatar.Image src={record ? pb.files.getURL(record, record.avatar) : ''} />
-						<Avatar.Fallback>{getFallback()}</Avatar.Fallback>
+						<Avatar.Image src={$session.data?.user.image} />
+						<Avatar.Fallback>{$session.data?.user.name[0]}</Avatar.Fallback>
 						<span class="sr-only">Toggle user menu</span>
 					</Avatar.Root>
 					<div class="grid flex-1 text-left text-sm leading-tight">
-						<span class="truncate font-semibold">{record?.name}</span>
-						<span class="truncate text-xs">{record?.email}</span>
+						<span class="truncate font-semibold"> {$session.data?.user.name}</span>
+						<span class="truncate text-xs"> {$session.data?.user.email}</span>
 					</div>
 				</div>
 			</DropdownMenu.Label>
@@ -72,18 +55,6 @@
 					<DropdownMenu.Shortcut>⇧⌘U</DropdownMenu.Shortcut>
 				</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<!-- <DropdownMenu.Item onclick={() => goto(i18n.resolveRoute('/recents'))}>
-					<Icon icon="ph:clock" />
-					<span class="pl-2">{m.avatar_recents()}</span>
-					<DropdownMenu.Shortcut>⇧⌘R</DropdownMenu.Shortcut>
-				</DropdownMenu.Item>
-				<DropdownMenu.Separator />
-				<DropdownMenu.Item onclick={() => goto(i18n.resolveRoute('/favorites'))}>
-					<Icon icon="ph:clover" />
-					<span class="pl-2">{m.avatar_favorites()}</span>
-					<DropdownMenu.Shortcut>⇧⌘F</DropdownMenu.Shortcut>
-				</DropdownMenu.Item>
-				<DropdownMenu.Separator /> -->
 				<DropdownMenu.Item onclick={() => goto(i18n.resolveRoute('/logout'))}>
 					<Icon icon="ph:sign-in" />
 					<span class="pl-2">{m.avatar_sign_out()}</span>

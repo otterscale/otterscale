@@ -1,20 +1,16 @@
 <script lang="ts">
-	import pb from '$lib/pb';
-
+	import { authClient } from '$lib/auth-client';
 	import { Login } from './login';
 	import { Favorite } from './favorite';
 	import { Message } from './message';
 	import { Preference } from './preference';
 
-	let isValid = pb.authStore.isValid;
-	pb.authStore.onChange(() => {
-		isValid = pb.authStore.isValid;
-	});
+	const session = authClient.useSession();
 </script>
 
 <div class="flex justify-end space-x-2">
 	<Preference />
-	{#if isValid}
+	{#if $session.data}
 		<Favorite />
 		<Message />
 	{:else}

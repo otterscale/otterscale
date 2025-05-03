@@ -2,11 +2,33 @@
 	import { onMount } from 'svelte';
 
 	import { FavContent, FavSidebar } from '$lib/components/favorite';
-	import { listFavorites, type pbFavorite } from '$lib/pb';
+	import { type favorite } from '$lib/models';
 
-	let items: pbFavorite[] = [];
+	let items: favorite[] = [];
 	onMount(async () => {
-		items = await listFavorites();
+		items = [
+			{
+				id: '1',
+				path: '/dashboard',
+				name: 'Dashboard Overview',
+				created: new Date(Date.now() - 24 * 60 * 60 * 1000),
+				updated: new Date()
+			},
+			{
+				id: '2',
+				path: '/settings',
+				name: 'User Settings',
+				created: new Date(Date.now() - 24 * 60 * 60 * 1000 * 2),
+				updated: new Date()
+			},
+			{
+				id: '3',
+				name: 'Reports',
+				path: '/reports',
+				created: new Date(Date.now() - 24 * 60 * 60 * 1000 * 2),
+				updated: new Date()
+			}
+		];
 	});
 </script>
 

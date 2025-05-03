@@ -7,14 +7,26 @@
 	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as m from '$lib/paraglide/messages.js';
-	import { listMessages, type pbMessage } from '$lib/pb';
+	import { type message } from '$lib/models';
 
 	import MailList from './mail-list.svelte';
 	import { cn } from '$lib/utils';
 
-	let msgs: pbMessage[] = [];
+	let msgs: message[] = [];
 	onMount(async () => {
-		msgs = await listMessages();
+		msgs = [
+			{
+				id: '1',
+				from: 'OtterScale',
+				title: 'Welcome to our platform!',
+				content: 'Your account has been created successfully. Enjoy your stay!',
+				read: false,
+				archived: false,
+				deleted: false,
+				created: new Date(),
+				updated: new Date()
+			}
+		];
 	});
 </script>
 

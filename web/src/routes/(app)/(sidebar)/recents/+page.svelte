@@ -2,11 +2,36 @@
 	import { onMount } from 'svelte';
 
 	import { RecentContent, RecentSidebar } from '$lib/components/recent';
-	import { listRecents, type pbRecent } from '$lib/pb';
+	import { type recent } from '$lib/models';
 
-	let items: pbRecent[] = [];
+	let items: recent[] = [];
 	onMount(async () => {
-		items = await listRecents();
+		items = [
+			{
+				id: '1',
+				path: '/dashboard',
+				name: 'Dashboard Overview',
+				visited: new Date(Date.now() - 24 * 60 * 60 * 1000),
+				created: new Date(Date.now() - 24 * 60 * 60 * 1000),
+				updated: new Date()
+			},
+			{
+				id: '2',
+				path: '/settings',
+				name: 'User Settings',
+				visited: new Date(Date.now() - 24 * 60 * 60 * 1000 * 2),
+				created: new Date(Date.now() - 24 * 60 * 60 * 1000 * 2),
+				updated: new Date()
+			},
+			{
+				id: '3',
+				name: 'Reports',
+				path: '/reports',
+				visited: new Date(Date.now() - 24 * 60 * 60 * 1000 * 2),
+				created: new Date(Date.now() - 24 * 60 * 60 * 1000 * 2),
+				updated: new Date()
+			}
+		];
 	});
 </script>
 

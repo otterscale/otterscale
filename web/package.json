@@ -85,7 +85,6 @@
 		"highlight.js": "^11.11.1",
 		"inter-ui": "^4.1.0",
 		"layerchart": "^1.0.8",
-		"pocketbase": "^0.25.1",
 		"rehype-highlight": "^7.0.2",
 		"svelte-exmarkdown": "^5.0.0",
 		"yaml": "^2.7.0"
