@@ -1,52 +1,41 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-
-	import { goto } from '$app/navigation';
-
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import {
-		Helper,
-		listAuthMethods,
-		oauth2Auth,
-		passwordAuth,
-		setEmailVisible,
-		welcomeMessage
-	} from '$lib/pb';
-	import { onMount } from 'svelte';
-	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
 	import { cn } from '$lib/utils';
 	import { i18n } from '$lib/i18n';
 	import { getCallback } from '$lib/callback';
-	import { authClient } from '$lib/auth-client';
+	import { signIn } from '$lib/auth-client';
+	import { writable } from 'svelte/store';
 
-	let email = '';
-	let password = '';
-	let isLoading = false;
+	const email = writable('');
+	const password = writable('');
+	const loading = writable(false);
 
 	async function onSubmit() {
-		try {
-			isLoading = true;
-			var m = await passwordAuth(email, password);
-			if (!m.record.emailVisibility) {
-				await setEmailVisible(m.record.id);
-				await welcomeMessage(m.record.id);
-			}
-			goto(i18n.resolveRoute(getCallback()));
-		} catch (err) {
-			if (err instanceof ClientResponseError) {
-				if (!Helper.isEmpty(err.data.data)) {
-					toast.error(err.data.data.password.message);
-				} else {
-					toast.error(err.data.message);
+		loading.set(true);
+
+		await signIn.email(
+			{
+				email: $email,
+				password: $password,
+				callbackURL: i18n.resolveRoute(getCallback())
+			},
+			{
+				async onSuccess(context) {
+					// TODO: welcome message
+					toast.success('Logged in successfully!');
+				},
+				onError(context) {
+					toast.error(context.error.message);
 				}
 			}
-		} finally {
-			isLoading = false;
-		}
+		);
+
+		loading.set(false);
 	}
 
 	function updateOAuth2MapLoading(provider: string, loading: boolean) {
@@ -58,42 +47,42 @@
 	}
 
 	async function authWithOAuth2(provider: string) {
-		try {
-			updateOAuth2MapLoading(provider, true);
-			const data = await authClient.signIn.social({
+		updateOAuth2MapLoading(provider, true);
+
+		await signIn.social(
+			{
 				provider: provider as
 					| 'apple'
 					| 'discord'
 					| 'facebook'
 					| 'github'
-					| 'gitlab'
 					| 'google'
-					| 'linkedin'
 					| 'microsoft'
-					| 'reddit'
-					| 'tiktok'
-					| 'twitter'
 					| 'spotify'
 					| 'twitch'
+					| 'twitter'
 					| 'dropbox'
+					| 'linkedin'
+					| 'gitlab'
+					| 'tiktok'
+					| 'reddit'
 					| 'roblox'
 					| 'vk'
-					| 'kick'
-			});
-			if (data.error) {
-				throw new Error(data.error.message);
+					| 'kick',
+				callbackURL: i18n.resolveRoute(getCallback()) + '/123'
+			},
+			{
+				onSuccess(data) {
+					// TODO: welcome message
+					toast.success('Logged in successfully!');
+				},
+				onError(context) {
+					toast.error(context.error.message);
+				}
 			}
-			// var m = await oauth2Auth(provider);
-			// if (!m.record.emailVisibility) {
-			// 	await setEmailVisible(m.record.id);
-			// 	await welcomeMessage(m.record.id);
-			// }
-			// goto(i18n.resolveRoute(getCallback()));
-		} catch {
-			toast.error('Authentication failed. Please try again.');
-		} finally {
-			updateOAuth2MapLoading(provider, false);
-		}
+		);
+
+		updateOAuth2MapLoading(provider, false);
 	}
 
 	interface OAuth2 {
@@ -109,7 +98,6 @@
 			{
 				name: 'Apple',
 				icon: 'ph:apple-logo',
-				// enabled: auth.options.socialProviders.apple.clientId !== '',
 				loading: false
 			}
 		],
@@ -118,7 +106,6 @@
 			{
 				name: 'Facebook',
 				icon: 'ph:facebook-logo',
-				// enabled: auth.options.socialProviders.facebook.clientId !== '',
 				loading: false
 			}
 		],
@@ -127,16 +114,6 @@
 			{
 				name: 'GitHub',
 				icon: 'ph:github-logo',
-				// enabled: auth.options.socialProviders.github.clientId !== '',
-				loading: false
-			}
-		],
-		[
-			'gitlab',
-			{
-				name: 'GitLab',
-				icon: 'ph:gitlab-logo',
-				// enabled: auth.options.socialProviders.gitlab.clientId !== '',
 				loading: false
 			}
 		],
@@ -145,43 +122,6 @@
 			{
 				name: 'Google',
 				icon: 'ph:google-logo',
-				// enabled: auth.options.socialProviders.google.clientId !== '',
-				loading: false
-			}
-		],
-		[
-			'linkedin',
-			{
-				name: 'LinkedIn',
-				icon: 'ph:linkedin-logo',
-				// enabled: auth.options.socialProviders.linkedin.clientId !== '',
-				loading: false
-			}
-		],
-		[
-			'microsoft',
-			{
-				name: 'Microsoft',
-				icon: 'ph:windows-logo',
-				// enabled: auth.options.socialProviders.microsoft.clientId !== '',
-				loading: false
-			}
-		],
-		[
-			'reddit',
-			{
-				name: 'Reddit',
-				icon: 'ph:reddit-logo',
-				// enabled: auth.options.socialProviders.reddit.clientId !== '',
-				loading: false
-			}
-		],
-		[
-			'tiktok',
-			{
-				name: 'TikTok',
-				icon: 'ph:tiktok-logo',
-				// enabled: auth.options.socialProviders.tiktok.clientId !== '',
 				loading: false
 			}
 		],
@@ -190,7 +130,6 @@
 			{
 				name: 'X',
 				icon: 'ph:x-logo',
-				// enabled: auth.options.socialProviders.twitter.clientId !== '',
 				loading: false
 			}
 		]
@@ -225,8 +164,8 @@
 					autocapitalize="none"
 					autocomplete="email"
 					autocorrect="off"
-					disabled={isLoading}
-					bind:value={email}
+					disabled={$loading}
+					bind:value={$email}
 				/>
 			</div>
 			<div class="grid gap-1">
@@ -237,12 +176,12 @@
 					type="password"
 					autocapitalize="none"
 					autocomplete="current-password"
-					disabled={isLoading}
-					bind:value={password}
+					disabled={$loading}
+					bind:value={$password}
 				/>
 			</div>
-			<Button type="submit" disabled={isLoading} class="[&_svg]:size-5">
-				{#if isLoading}
+			<Button type="submit" disabled={$loading} class="[&_svg]:size-5">
+				{#if $loading}
 					<Icon icon="ph:spinner-gap" class="animate-spin" />
 				{:else}
 					<p>Go</p>

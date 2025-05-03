@@ -1,63 +1,45 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-
-	import { goto } from '$app/navigation';
-
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { createUser, Helper, passwordAuth, setEmailVisible, welcomeMessage } from '$lib/pb';
-	import { ClientResponseError } from 'pocketbase';
 	import { toast } from 'svelte-sonner';
-	import { getCallback } from '$lib/callback';
 	import { i18n } from '$lib/i18n';
+	import { signUp } from '$lib/auth-client';
+	import { writable } from 'svelte/store';
+	import { goto } from '$app/navigation';
 
-	let email = '';
-	let password = '';
-	let passwordConfirm = '';
-	let firstName = '';
-	let lastName = '';
-	let isLoading = false;
+	const firstName = writable('');
+	const lastName = writable('');
+	const email = writable('');
+	const password = writable('');
+	const passwordConfirm = writable('');
+	const loading = writable(false);
 
 	async function onSubmit() {
-		try {
-			isLoading = true;
-			await createUser(email, password, passwordConfirm, `${firstName} ${lastName}`);
-			var m = await passwordAuth(email, password);
-			if (!m.record.emailVisibility) {
-				await setEmailVisible(m.record.id);
-				await welcomeMessage(m.record.id);
-			}
-			goto(i18n.resolveRoute(getCallback()));
-		} catch (err) {
-			if (err instanceof ClientResponseError) {
-				console.error(err.data);
-				if (!Helper.isEmpty(err.data.data.passwordConfirm)) {
-					if (err.data.data.passwordConfirm.code === 'validation_values_mismatch') {
-						toast.error('Password confirmation does not match.');
-					} else {
-						toast.error(err.data.data.passwordConfirm.message);
-					}
-				} else if (!Helper.isEmpty(err.data.data.password)) {
-					if (err.data.data.password.code === 'validation_min_text_constraint') {
-						toast.error('Password must be at least 8 characters.');
-					} else {
-						toast.error(err.data.data.password.message);
-					}
-				} else if (!Helper.isEmpty(err.data.data.email)) {
-					if (err.data.data.email.code === 'validation_not_unique') {
-						toast.error('Email already exists.');
-					} else {
-						toast.error(err.data.data.email.message);
-					}
-				} else {
-					toast.error(err.data.message);
+		if ($password !== $passwordConfirm) {
+			toast.error('Password confirmation does not match.');
+			return;
+		}
+
+		loading.set(true);
+
+		await signUp.email({
+			email: $email,
+			password: $password,
+			name: `${$firstName} ${$lastName}`,
+			fetchOptions: {
+				onSuccess() {
+					toast.success('Account created successfully! Please sign in to continue.');
+					goto(i18n.resolveRoute('/'));
+				},
+				onError(context) {
+					toast.error(context.error.message);
 				}
 			}
-		} finally {
-			isLoading = false;
-		}
-		return false;
+		});
+
+		loading.set(false);
 	}
 </script>
 
@@ -71,8 +53,8 @@
 						id="first-name"
 						placeholder="Max"
 						autocomplete="given-name"
-						disabled={isLoading}
-						bind:value={firstName}
+						disabled={$loading}
+						bind:value={$firstName}
 						required
 					/>
 				</div>
@@ -82,8 +64,8 @@
 						id="last-name"
 						placeholder="Robinson"
 						autocomplete="family-name"
-						disabled={isLoading}
-						bind:value={lastName}
+						disabled={$loading}
+						bind:value={$lastName}
 						required
 					/>
 				</div>
@@ -97,8 +79,8 @@
 					autocapitalize="none"
 					autocomplete="email"
 					autocorrect="off"
-					disabled={isLoading}
-					bind:value={email}
+					disabled={$loading}
+					bind:value={$email}
 					required
 				/>
 			</div>
@@ -110,8 +92,8 @@
 					type="password"
 					autocapitalize="none"
 					autocomplete="current-password"
-					disabled={isLoading}
-					bind:value={password}
+					disabled={$loading}
+					bind:value={$password}
 					required
 				/>
 			</div>
@@ -123,13 +105,13 @@
 					type="password"
 					autocapitalize="none"
 					autocomplete="current-password"
-					disabled={isLoading}
-					bind:value={passwordConfirm}
+					disabled={$loading}
+					bind:value={$passwordConfirm}
 					required
 				/>
 			</div>
-			<Button type="submit" class="[&_svg]:size-5" disabled={isLoading}>
-				{#if isLoading}
+			<Button type="submit" class="[&_svg]:size-5" disabled={$loading}>
+				{#if $loading}
 					<Icon icon="ph:spinner-gap" class="animate-spin" />
 				{:else}
 					<p>Create an account</p>
