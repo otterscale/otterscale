@@ -69,7 +69,7 @@
 					| 'roblox'
 					| 'vk'
 					| 'kick',
-				callbackURL: i18n.resolveRoute(getCallback()) + '/123'
+				callbackURL: i18n.resolveRoute(getCallback())
 			},
 			{
 				onSuccess(data) {
@@ -78,11 +78,10 @@
 				},
 				onError(context) {
 					toast.error(context.error.message);
+					updateOAuth2MapLoading(provider, false);
 				}
 			}
 		);
-
-		updateOAuth2MapLoading(provider, false);
 	}
 
 	interface OAuth2 {
