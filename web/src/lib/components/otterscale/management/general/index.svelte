@@ -55,7 +55,7 @@
 			</div>
 
 			<span>
-				<UpdateNTPServer {configuration} />
+				<UpdateNTPServer bind:configuration />
 			</span>
 		</div>
 	</fieldset>
@@ -151,7 +151,7 @@
 							</Table.Cell>
 							<Table.Cell>
 								<span class="flex justify-end">
-									<SetBootImageAsDefault {bootImage} />
+									<SetBootImageAsDefault {bootImage} bind:configuration />
 								</span>
 							</Table.Cell>
 						</Table.Row>

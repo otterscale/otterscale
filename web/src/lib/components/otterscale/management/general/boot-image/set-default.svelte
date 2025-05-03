@@ -6,15 +6,18 @@
 	import { Button } from '$lib/components/ui/button';
 	import {
 		Nexus,
+		type Configuration,
 		type Configuration_BootImage,
 		type SetDefaultBootImageRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
 	import { toast } from 'svelte-sonner';
 
 	let {
-		bootImage
+		bootImage,
+		configuration = $bindable()
 	}: {
 		bootImage: Configuration_BootImage;
+		configuration: Configuration;
 	} = $props();
 
 	const transport: Transport = getContext('transportNEW');
@@ -58,6 +61,9 @@
 						.setDefaultBootImage(setDefaultBootImageRequest)
 						.then((r) => {
 							toast.info(`Set ${setDefaultBootImageRequest.distroSeries} as default.`);
+							client.getConfiguration({}).then((r) => {
+								configuration = r;
+							});
 						})
 						.catch((e) => {
 							toast.info(`Fail to set ${setDefaultBootImageRequest.distroSeries} as default.`);
