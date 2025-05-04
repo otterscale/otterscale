@@ -80,7 +80,7 @@
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger class="p-4">
-		<Button variant="destructive">Install</Button>
+		<Button>Deploy</Button>
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>

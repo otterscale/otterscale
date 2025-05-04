@@ -13,10 +13,12 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { Button } from '$lib/components/ui/button';
+	import * as Alert from '$lib/components/ui/alert/index.js';
 
 	import PrometheusError from './error/prometheus.svelte';
 	import KubernetesError from './error/kubernetes.svelte';
 	import CephError from './error/ceph.svelte';
+	import Icon from '@iconify/svelte';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
@@ -63,10 +65,15 @@
 	}
 </script>
 
-<main class="flex h-[calc(100vh_-_theme(spacing.16))] justify-between gap-4 border p-4">
+<main class="flex h-[calc(100vh_-_theme(spacing.16))] justify-between gap-4 p-4">
 	{#if errors.some((e) => isCephError(e) || isKubernetesError(e))}
-		<div class="flex w-full justify-center">
-			<span class="flex justify-between">
+		<div class="flex w-full flex-col items-center">
+			<Alert.Root>
+				<Icon icon="material-symbols:warning-rounded" class="h-6 w-6" />
+				<Alert.Title>Tip</Alert.Title>
+				<Alert.Description>foo</Alert.Description>
+			</Alert.Root>
+			<span class="flex h-full w-full items-center justify-evenly">
 				{#each errors as error}
 					{#if isCephError(error)}
 						<CephError />
