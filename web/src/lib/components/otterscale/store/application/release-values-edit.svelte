@@ -6,13 +6,13 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Resizable from '$lib/components/ui/resizable';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
-
+	import { Badge } from '$lib/components/ui/badge';
 	import { Nexus, type Application_Chart_Metadata } from '$gen/api/nexus/v1/nexus_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { get, writable } from 'svelte/store';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-
+	import * as Select from '$lib/components/ui/select/index.js';
 	import Monaco from 'svelte-monaco';
 
 	import type { Plugin } from 'svelte-exmarkdown';
@@ -67,9 +67,10 @@
 
 	let open = $state(false);
 
-	let basicRequest = {
-		nodePort: ''
-	};
+	let basicRequest = $state({
+		nodePort: '',
+		storageClasses: []
+	});
 
 	onMount(async () => {
 		try {
@@ -123,10 +124,28 @@
 						<Tabs.Trigger value="advance">Advance</Tabs.Trigger>
 					</Tabs.List>
 					<Tabs.Content value="basic" class="">
-						<div class="grid h-full max-h-[calc(70vh_-_40px)] gap-2 overflow-auto p-4">
-							<span>
+						<div class="grid h-full max-h-[calc(70vh_-_40px)] gap-4 overflow-auto p-4">
+							<span class="grid gap-2">
 								<Label>Node Port</Label>
 								<Input bind:value={basicRequest.nodePort} />
+							</span>
+							<span class="grid gap-2">
+								<Label>Default Storage Classes</Label>
+								<div class="flex flex-wrap items-center gap-2">
+									{#each basicRequest.storageClasses as item}
+										<Badge variant="secondary">{item}</Badge>
+									{/each}
+								</div>
+								<Select.Root type="multiple" bind:value={basicRequest.storageClasses}>
+									<Select.Trigger>Select</Select.Trigger>
+									<Select.Content>
+										{#each ['ceph-ext4', 'ceph-xfs'] as item}
+											<Select.Item value={item}>
+												{item}
+											</Select.Item>
+										{/each}
+									</Select.Content>
+								</Select.Root>
 							</span>
 						</div>
 					</Tabs.Content>
