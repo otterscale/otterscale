@@ -472,7 +472,9 @@ message Error {
   string url = 21;
 }
 
-message VerifyEnvironmentRequest {}
+message VerifyEnvironmentRequest {
+  string scope_uuid = 1;
+}
 
 message VerifyEnvironmentResponse {
   repeated Error errors = 1;

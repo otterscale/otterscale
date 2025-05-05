@@ -14,7 +14,7 @@ func (a *NexusApp) VerifyEnvironment(ctx context.Context, req *connect.Request[p
 	if err := a.svc.CreateDefaultScope(ctx); err != nil {
 		return nil, err
 	}
-	es, err := a.svc.VerifyEnvironment(ctx)
+	es, err := a.svc.VerifyEnvironment(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}

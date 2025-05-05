@@ -31,3 +31,9 @@ var ErrNoMachinesDeployed = Error{
 	Details: "There are currently no deployed machines in the system. Please deploy at least one machine to continue.",
 	URL:     "/docs/machines/deployment",
 }
+
+const (
+	ErrCephStatusMessageCode       = "CEPH_STATUS_MESSAGE"
+	ErrCephCSIStatusMessageCode    = "CEPH_CSI_STATUS_MESSAGE"
+	ErrKubernetesStatusMessageCode = "KUBERNETES_STATUS_MESSAGE"
+)

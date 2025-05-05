@@ -15,6 +15,7 @@ import (
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/canonical/gomaasclient/entity/node"
 	"github.com/juju/juju/core/instance"
+	jujustatus "github.com/juju/juju/core/status"
 
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
@@ -90,17 +91,23 @@ var (
 	}
 )
 
-func (s *NexusService) VerifyEnvironment(ctx context.Context) ([]model.Error, error) {
-	funcs := []func(context.Context) (*model.Error, error){}
-	funcs = append(funcs, s.isCephExists, s.isKubernetesExists, s.isDeployedMachineExists)
+func (s *NexusService) VerifyEnvironment(ctx context.Context, scopeUUID string) ([]model.Error, error) {
+	funcs := []func(context.Context, string) ([]model.Error, error){
+		s.isCephExists,
+		s.isKubernetesExists,
+		s.isDeployedMachineExists,
+		s.listCephStatusMessage,
+		s.listCephCSIStatusMessage,
+		s.listKubernetesStatusMessage,
+	}
 
 	eg, ctx := errgroup.WithContext(ctx)
-	result := make([]model.Error, len(funcs))
+	result := make([][]model.Error, len(funcs))
 	for i := range funcs {
 		eg.Go(func() error {
-			e, err := funcs[i](ctx)
-			if err == nil && e != nil {
-				result[i] = *e
+			es, err := funcs[i](ctx, scopeUUID)
+			if err == nil && es != nil {
+				result[i] = es
 			}
 			return err
 		})
@@ -108,24 +115,18 @@ func (s *NexusService) VerifyEnvironment(ctx context.Context) ([]model.Error, er
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	slices.SortFunc(result, func(e1, e2 model.Error) int {
+	errs := []model.Error{}
+	for i := range result {
+		errs = append(errs, result[i]...)
+	}
+	slices.SortFunc(errs, func(e1, e2 model.Error) int {
 		return strings.Compare(e1.Code, e2.Code)
 	})
-	return slices.DeleteFunc(result, func(e model.Error) bool { return e.Code == "" }), nil
+	return slices.DeleteFunc(errs, func(e model.Error) bool { return e.Code == "" }), nil
 }
 
 func (s *NexusService) ListCephes(ctx context.Context, uuid string) ([]model.FacilityInfo, error) {
-	fis, err := s.listFacilitiesAcrossScopes(ctx, charmNameCeph)
-	if err != nil {
-		return nil, err
-	}
-	filter := []model.FacilityInfo{}
-	for i := range fis {
-		if strings.Contains(fis[i].ScopeUUID, uuid) {
-			filter = append(filter, fis[i])
-		}
-	}
-	return filter, nil
+	return s.listGeneralFacilities(ctx, uuid, charmNameCeph)
 }
 
 func (s *NexusService) CreateCeph(ctx context.Context, uuid, machineID, prefix string, userOSDDevices []string, development bool) (*model.FacilityInfo, error) {
@@ -152,17 +153,7 @@ func (s *NexusService) AddCephUnits(ctx context.Context, uuid, general string, n
 }
 
 func (s *NexusService) ListKuberneteses(ctx context.Context, uuid string) ([]model.FacilityInfo, error) {
-	fis, err := s.listFacilitiesAcrossScopes(ctx, charmNameKubernetes)
-	if err != nil {
-		return nil, err
-	}
-	filter := []model.FacilityInfo{}
-	for i := range fis {
-		if strings.Contains(fis[i].ScopeUUID, uuid) {
-			filter = append(filter, fis[i])
-		}
-	}
-	return filter, nil
+	return s.listGeneralFacilities(ctx, uuid, charmNameKubernetes)
 }
 
 func (s *NexusService) getAndReserveIP(ctx context.Context, machineID, comment string) (net.IP, error) {
@@ -397,30 +388,30 @@ func (s *NexusService) createGeneralRelations(ctx context.Context, uuid string, 
 	return eg.Wait()
 }
 
-func (s *NexusService) isCephExists(ctx context.Context) (*model.Error, error) {
-	cephes, err := s.ListCephes(ctx, "")
+func (s *NexusService) isCephExists(ctx context.Context, scopeUUID string) ([]model.Error, error) {
+	cephes, err := s.ListCephes(ctx, scopeUUID)
 	if err != nil {
 		return nil, err
 	}
 	if len(cephes) == 0 {
-		return &model.ErrCephNotFound, nil
+		return []model.Error{model.ErrCephNotFound}, nil
 	}
 	return nil, nil
 }
 
-func (s *NexusService) isKubernetesExists(ctx context.Context) (*model.Error, error) {
-	kuberneteses, err := s.ListKuberneteses(ctx, "")
+func (s *NexusService) isKubernetesExists(ctx context.Context, scopeUUID string) ([]model.Error, error) {
+	kuberneteses, err := s.ListKuberneteses(ctx, scopeUUID)
 	if err != nil {
 		return nil, err
 	}
 	if len(kuberneteses) == 0 {
-		return &model.ErrKubernetesNotFound, nil
+		return []model.Error{model.ErrKubernetesNotFound}, nil
 	}
 	return nil, nil
 }
 
-func (s *NexusService) isDeployedMachineExists(ctx context.Context) (*model.Error, error) {
-	machines, err := s.machine.List(ctx)
+func (s *NexusService) isDeployedMachineExists(ctx context.Context, scopeUUID string) ([]model.Error, error) {
+	machines, err := s.ListMachines(ctx, scopeUUID)
 	if err != nil {
 		return nil, err
 	}
@@ -429,7 +420,65 @@ func (s *NexusService) isDeployedMachineExists(ctx context.Context) (*model.Erro
 			return nil, nil
 		}
 	}
-	return &model.ErrNoMachinesDeployed, nil
+	return []model.Error{model.ErrNoMachinesDeployed}, nil
+}
+
+func (s *NexusService) listCephStatusMessage(ctx context.Context, scopeUUID string) ([]model.Error, error) {
+	return s.listStatusMessage(ctx, scopeUUID, cephFacilityList, model.ErrCephStatusMessageCode)
+}
+
+func (s *NexusService) listCephCSIStatusMessage(ctx context.Context, scopeUUID string) ([]model.Error, error) {
+	return s.listStatusMessage(ctx, scopeUUID, cephCSIFacilityList, model.ErrCephCSIStatusMessageCode)
+}
+
+func (s *NexusService) listKubernetesStatusMessage(ctx context.Context, scopeUUID string) ([]model.Error, error) {
+	return s.listStatusMessage(ctx, scopeUUID, kubernetesFacilityList, model.ErrKubernetesStatusMessageCode)
+}
+
+func (s *NexusService) listStatusMessage(ctx context.Context, scopeUUID string, facilityList []generalFacility, code string) ([]model.Error, error) {
+	fs, err := s.ListFacilities(ctx, scopeUUID)
+	if err != nil {
+		return nil, err
+	}
+	errs := []model.Error{}
+	for i := range fs {
+		s := fs[i].Status
+		if s == nil {
+			continue
+		}
+		ok := false
+		for j := range facilityList {
+			cleanCharmName := strings.ReplaceAll(s.Charm, "ch:", "")
+			cleanFacilityCharmName := strings.ReplaceAll(facilityList[j].charmName, "ch:", "")
+			if strings.Contains(cleanCharmName, cleanFacilityCharmName) {
+				ok = true
+				break
+			}
+		}
+		if !ok {
+			continue
+		}
+		for name := range s.Units {
+			level := model.ErrorLevelInfo
+			switch s.Units[name].WorkloadStatus.Status {
+			case jujustatus.Maintenance.String():
+				level = model.ErrorLevelLow
+			case jujustatus.Unknown.String(), jujustatus.Waiting.String():
+				level = model.ErrorLevelMedium
+			case jujustatus.Blocked.String():
+				level = model.ErrorLevelHigh
+			case jujustatus.Unset.String(), jujustatus.Terminated.String(), jujustatus.Active.String():
+				continue
+			}
+			errs = append(errs, model.Error{
+				Code:    code,
+				Level:   level,
+				Message: fmt.Sprintf("[%s] %s", s.Units[name].WorkloadStatus.Status, fs[i].Name),
+				Details: fmt.Sprintf("%s - %s", name, s.Units[name].WorkloadStatus.Info),
+			})
+		}
+	}
+	return errs, nil
 }
 
 func (s *NexusService) getReservedIPs(ctx context.Context, cidr string) ([]uint32, error) {

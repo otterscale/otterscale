@@ -5,7 +5,6 @@ import (
 	"slices"
 	"strings"
 
-	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	jujuyaml "gopkg.in/yaml.v2"
@@ -147,41 +146,24 @@ func (s *NexusService) toPlacements(ctx context.Context, uuid string, mps []mode
 	return ps, nil
 }
 
-func (s *NexusService) listFacilitiesAcrossScopes(ctx context.Context, name string) ([]model.FacilityInfo, error) {
-	scopes, err := s.scope.List(ctx)
+func (s *NexusService) listGeneralFacilities(ctx context.Context, scopeUUID, charmName string) ([]model.FacilityInfo, error) {
+	scopeName, err := s.getScopeName(ctx, scopeUUID)
 	if err != nil {
 		return nil, err
 	}
-
-	eg, ctx := errgroup.WithContext(ctx)
-	result := make([][]model.FacilityInfo, len(scopes))
-	for i := range scopes {
-		scope := scopes[i]
-		eg.Go(func() error {
-			fs, err := s.ListFacilities(ctx, scope.UUID)
-			if err != nil {
-				return err
-			}
-			for j := range fs {
-				facility := fs[j]
-				if strings.Contains(facility.Status.Charm, name) {
-					result[i] = append(result[i], model.FacilityInfo{
-						ScopeUUID:    scope.UUID,
-						ScopeName:    scope.Name,
-						FacilityName: facility.Name,
-					})
-				}
-			}
-			return nil
-		})
-	}
-	if err := eg.Wait(); err != nil {
+	fs, err := s.ListFacilities(ctx, scopeUUID)
+	if err != nil {
 		return nil, err
 	}
-
 	fis := []model.FacilityInfo{}
-	for _, k := range result {
-		fis = append(fis, k...)
+	for i := range fs {
+		if strings.Contains(fs[i].Status.Charm, charmName) {
+			fis = append(fis, model.FacilityInfo{
+				ScopeUUID:    scopeUUID,
+				ScopeName:    scopeName,
+				FacilityName: fs[i].Name,
+			})
+		}
 	}
 	return fis, nil
 }
