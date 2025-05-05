@@ -64,47 +64,11 @@
 		}
 	}
 
-	const storageClassesStore = writable<StorageClass[]>([]);
-	const storageClassesLoading = writable(true);
-	async function fetchStorageClasses() {
-		try {
-			const response = await client.listStorageClasses({
-				scopeUuid: scopeUuid,
-				facilityName: facilityName
-			});
-			storageClassesStore.set(response.storageClasses);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			storageClassesLoading.set(false);
-		}
-	}
-	async function refreshStorageClasses() {
-		while (page.url.searchParams.get('intervals')) {
-			await new Promise((resolve) =>
-				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
-			);
-			console.log(`Refresh storage classes`);
-
-			try {
-				const response = await client.listStorageClasses({
-					scopeUuid: scopeUuid,
-					facilityName: facilityName
-				});
-				storageClassesStore.set(response.storageClasses);
-			} catch (error) {
-				console.error('Error fetching:', error);
-			}
-		}
-	}
-
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
 			await fetchApplications();
-			await fetchStorageClasses();
 			refreshApplications();
-			refreshStorageClasses();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -133,9 +97,6 @@
 							{@render Notification(type)}
 						</Tabs.Trigger>
 					{/each}
-					<Tabs.Trigger value="storage_classes" class="flex items-start gap-1">
-						Storage Classes
-					</Tabs.Trigger>
 				</Tabs.List>
 			</div>
 			{#each [...types] as type}
@@ -212,59 +173,6 @@
 					</div>
 				</Tabs.Content>
 			{/each}
-			<Tabs.Content value="storage_classes">
-				<div class="grid gap-2 p-4">
-					<div class="flex justify-end py-2">
-						<CreateStorageClasses {scopeUuid} />
-					</div>
-					<Table.Root>
-						<Table.Header class="bg-muted/50">
-							<Table.Row class="*:text-xs *:font-light">
-								<Table.Head>NAME</Table.Head>
-								<Table.Head>PROVISIONER</Table.Head>
-								<Table.Head>RECLAIM POLICY</Table.Head>
-								<Table.Head>VOLUME BINDING MODE</Table.Head>
-								<Table.Head>CONFIGURATION</Table.Head>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							{#each $storageClassesStore as storageClass}
-								<Table.Row class="*:text-sm">
-									<Table.Cell>{storageClass.name}</Table.Cell>
-									<Table.Cell>{storageClass.provisioner}</Table.Cell>
-									<Table.Cell>{storageClass.reclaimPolicy}</Table.Cell>
-									<Table.Cell>{storageClass.volumeBindingMode}</Table.Cell>
-									<Table.Cell>
-										{#if Object.keys(storageClass.parameters).length > 0}
-											<div class="flex justify-start">
-												<HoverCard.Root>
-													<HoverCard.Trigger>
-														<Button variant="ghost" size="icon" class="h-6 w-6">
-															<Icon icon="ph:info" class="size-4" />
-														</Button>
-													</HoverCard.Trigger>
-													<HoverCard.Content class="max-h-[50vh] w-fit">
-														<Table.Root>
-															<Table.Body>
-																{#each Object.entries(storageClass.parameters) as [key, value]}
-																	<Table.Row class="border-none *:text-xs">
-																		<Table.Head class="text-right font-light">{key}</Table.Head>
-																		<Table.Cell class="font-base">{value}</Table.Cell>
-																	</Table.Row>
-																{/each}
-															</Table.Body>
-														</Table.Root>
-													</HoverCard.Content>
-												</HoverCard.Root>
-											</div>
-										{/if}
-									</Table.Cell>
-								</Table.Row>
-							{/each}
-						</Table.Body>
-					</Table.Root>
-				</div>
-			</Tabs.Content>
 		</Tabs.Root>
 	</div>
 {/if}
@@ -294,6 +202,14 @@
 		(a, application) => a + application.healthies,
 		0
 	)}
+	{@const numberOfPodsByType = applicationsByType.reduce(
+		(a, application) => a + application.pods.length,
+		0
+	)}
+	{@const numberOfServicesByType = applicationsByType.reduce(
+		(a, application) => a + application.services.length,
+		0
+	)}
 	{@const healthByType = (numberOfHealthApplicationsByType * 100) / numberOApplicationsByType || 0}
 	<div class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
 		<Card.Root>
@@ -302,6 +218,22 @@
 			</Card.Header>
 			<Card.Content class="text-7xl">
 				{$applicationsStore.filter((a) => a.type === type).length}
+			</Card.Content>
+		</Card.Root>
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>SERVICE</Card.Title>
+			</Card.Header>
+			<Card.Content class="text-7xl">
+				{numberOfServicesByType}
+			</Card.Content>
+		</Card.Root>
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>POD</Card.Title>
+			</Card.Header>
+			<Card.Content class="text-7xl">
+				{numberOfPodsByType}
 			</Card.Content>
 		</Card.Root>
 		<Card.Root>
