@@ -33,11 +33,10 @@ EOF
 # Enhanced LXD initialization
 init_lxd() {
     lxd_file=$INSTALLER_DIR/lxd-config.yaml
-    rm -f $lxd_file
     generate_lxd_config
 
     log "INFO" "Initializing LXD with bridge $bridge..."
-    if ! cat $lxd_file | lxd init --preseed >"$TEMP_LOG" 2>&1; then
+    if ! cat $lxd_file | lxd init --preseed >$TEMP_LOG 2>&1; then
         error_exit "LXD initialization failed."
     fi
     log "INFO" "LXD initialized successfully"

@@ -13,6 +13,7 @@ for file in $INSTALLER_DIR/utils/*.sh; do
 done
 
 ## LOG
+export TEMP_LOG=$(mktemp)
 export LOG=$INSTALLER_DIR/setup.log
 touch $LOG
 chmod 666 $LOG
@@ -25,7 +26,8 @@ main() {
     ask_proxy
 
     ## Package install
-    install_packages
+    apt_update
+    apt_install $APT_PACKAGES
     install_snaps
 
     ## Host network
@@ -42,6 +44,7 @@ main() {
     ## MAAS configure
     update_dns
     update_img_autosync
+    update_proxy
     download_maas_img
     enable_maas_dhcp
 
@@ -56,8 +59,15 @@ main() {
     set_juju_config
     bootstrap_juju
 
-    ## Install apt
-    install_openhdc
+    ## Create default model
+    create_scope
+
+    ## Install otterscale
+    local deb_file=$(ls $INSTALLER_DIR/packages/ | grep deb | head -n 1)
+    apt_install $INSTALLER_DIR/packages/$deb_file
+    start_service "ottersacle"
+    enable_service "ottersacle"
+    log "INFO" "OtterScale has been launched, you can access via http://localhost:5090"
 
     ## cleanup
     trap cleanup EXIT

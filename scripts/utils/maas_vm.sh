@@ -70,6 +70,8 @@ wait_commissioning() {
             break
         elif [ "$status" == "Failed commissioning" ]; then
             error_exit "Failed commissioning machine $machineID."
+        elif [ "$status" == "Failed testing" ]; then
+            error_exit "Failed testing machine $machineID."
         fi
         sleep 10
     done

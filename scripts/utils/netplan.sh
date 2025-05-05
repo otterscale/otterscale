@@ -32,13 +32,12 @@ select_bridge() {
 backup_netplan() {
     NETPLAN_FILE=$(ls /etc/netplan/*.yaml | head -n1)
     if [ -z "$NETPLAN_FILE" ]; then
-        error_exit "No netplan configuration found"
+        touch "$NETPLAN_FILE"
     else
+        log "INFO" "Backed up network config to ${NETPLAN_FILE}.backup"
         cp "$NETPLAN_FILE" "${NETPLAN_FILE}.backup"
     fi
-    log "INFO" "Backed up network config to ${NETPLAN_FILE}.backup"
 }
-
 
 select_interfaces() {
     interfaces=($(ip -o link show | awk -F': ' '{print $2}' | grep -v 'lo'))
@@ -95,18 +94,6 @@ EOF
     chmod 600 /etc/netplan/*.yaml
 }
 
-apply_netplan() {
-    log "INFO" "Stop and disable service NetworkManager."
-    systemctl stop NetworkManager >/dev/null 2>&1
-    systemctl disable NetworkManager >/dev/null 2>&1
-
-    log "INFO" "Start and enable service systemd-networkd."
-    systemctl restart systemd-networkd >/dev/null 2>&1
-    systemctl enable systemd-networkd >/dev/null 2>&1
-
-    netplan apply || error_exit "Failed to apply netplan configuration"
-}
-
 get_current_dns() {
     local interface=$1
     current_dns=$(resolvectl -i $interface | grep "Current DNS Server" | awk '{print $4}')
@@ -143,8 +130,15 @@ create_new_bridge() {
     get_current_gw $selected_iface
     log "INFO" "Creating bridge $bridge_name with interface $selected_iface..."
     log "INFO" "Using existing IP: $current_ip, Gateway: $current_gateway, DNS: $current_dns"
+
     create_netplan
-    apply_netplan
+
+    stop_service "NetworkManager"
+    disable_service "NetworkManager"
+    start_service "systemd-networkd"
+    enable_service "systemd-networkd"
+
+    netplan apply || error_exit "Failed to apply netplan configuration"
 
     bridge="$bridge_name"
     BRIDGE_IP=$(echo "$current_ip" | cut -d'/' -f1)

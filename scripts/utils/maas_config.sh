@@ -18,16 +18,16 @@ update_dns() {
 }
 
 update_img_autosync() {
-    log "INFO" "Disable MAAS image automatic sync."
+    log "INFO" "Update MAAS image automatic sync."
     if ! maas admin maas set-config name=boot_images_auto_import value=false >"$TEMP_LOG" 2>&1; then
         error_exit "Failed to disable automatic image sync."
     fi
 }
 
 update_proxy() {
-    log "INFO" "Disable MAAS proxy."
+    log "INFO" "Update MAAS Proxy."
     if ! maas admin maas set-config name=enable_http_proxy value=false >"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to disable automatic image sync."
+        error_exit "Failed to update MAAS Proxy."
     fi
 }
 
