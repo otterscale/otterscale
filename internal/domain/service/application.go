@@ -391,7 +391,7 @@ func (s *NexusService) setKubernetesClient(ctx context.Context, uuid, facility s
 }
 
 func (s *NexusService) listReleases(ctx context.Context) ([]model.Release, error) {
-	kubernetes, err := s.ListKuberneteses(ctx, "")
+	kubernetes, err := s.listFacilitiesAcrossScopes(ctx, charmNameKubernetes)
 	if err != nil {
 		return nil, err
 	}
@@ -401,11 +401,11 @@ func (s *NexusService) listReleases(ctx context.Context) ([]model.Release, error
 		fi := kubernetes[i]
 		eg.Go(func() error {
 			if err := s.setKubernetesClient(ctx, fi.ScopeUUID, fi.FacilityName); err != nil {
-				return err
+				return nil // pass
 			}
 			rels, err := s.helm.ListReleases(fi.ScopeUUID, fi.FacilityName, "")
 			if err != nil {
-				return err
+				return nil // pass
 			}
 			for _, rel := range rels {
 				result[i] = append(result[i], model.Release{

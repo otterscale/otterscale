@@ -62,12 +62,12 @@
 		</div>
 
 		<div class="flex gap-2 overflow-auto">
-			<span class="h-[660px] w-[13vw] min-w-[13vw] overflow-visible">
+			<span class="overflow-visible">
 				<Filter charts={filteredCharts} bind:activePage bind:selectedKeywords />
 			</span>
 			<span
 				class={cn(
-					'grid h-[660px] w-full items-start justify-start gap-x-2',
+					'grid w-full items-start justify-start gap-x-2',
 					`grid-cols-${STORE_ITEMS_PER_ROW} grid-rows-${STORE_ROWS_PER_PAGE}`
 				)}
 			>
@@ -78,7 +78,7 @@
 						</AlertDialog.Trigger>
 						<AlertDialog.Content
 							class={cn(
-								'flex h-full flex-col justify-between',
+								'flex flex-col justify-between',
 								releasesFromChart.has(filteredChart.name) ? 'min-w-[62vw]' : 'min-w-[38vw]'
 							)}
 						>
@@ -106,39 +106,43 @@
 </main>
 
 {#snippet ChartCard(filteredChart: Application_Chart)}
-	<Card.Root
-		class={cn(
-			'duration-230 flex h-[320px] flex-col justify-between transition-transform hover:bg-muted'
-		)}
-	>
-		<Card.Header class="h-[calc(320px*0.6*0.6*0.6)]">
-			<Card.Title class="items-between flex gap-2">
-				<Avatar.Root class="h-10 w-10">
+	<Card.Root class={cn('flex-col transition-transform hover:bg-muted')}>
+		<Card.Header>
+			<Card.Title class="flex items-center gap-2 space-x-2">
+				<Avatar.Root class="h-12 w-12">
 					<Avatar.Image src={filteredChart.icon} />
 					<Avatar.Fallback>
-						<Skeleton class="size-10" />
+						<Skeleton class="size-12" />
 					</Avatar.Fallback>
 				</Avatar.Root>
-				<span class="min-w-0 flex-1">
-					<p class="truncate text-left text-base">{filteredChart.name}</p>
-					<span class="flex gap-1 overflow-x-auto text-muted-foreground">
+				<span class="flex-col space-y-1">
+					<p class="truncate text-left text-base">
+						{filteredChart.name
+							.split('-')
+							.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+							.join(' ')}
+					</p>
+					<span class="flex text-muted-foreground">
 						{#each filteredChart.versions as version}
 							<p class="text-xs font-light">{version.applicationVersion}</p>
 						{/each}
 					</span>
 				</span>
 			</Card.Title>
-			<Card.Description>
-				{@render TruncatedBadges(filteredChart.keywords)}
-			</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<p class="p-4 text-left text-xs font-light">
+			<p class="text-left text-sm">
 				{@render TruncatedText(filteredChart.description)}
 			</p>
 		</Card.Content>
-		<Card.Footer class="h-[calc(320px*0.6*0.6*0.6*0.6)]">
-			{@render TruncatedBadges(filteredChart.maintainers.map((m) => m.name))}
+		<Card.Footer class="space-x-2">
+			{#if filteredChart.deprecated}
+				<Badge variant="destructive">deprecated</Badge>
+			{/if}
+			{#if releasesFromChart.has(filteredChart.name)}
+				<Badge>Installed</Badge>
+			{/if}
+			{@render TruncatedBadges(filteredChart.keywords)}
 		</Card.Footer>
 	</Card.Root>
 {/snippet}
@@ -169,9 +173,9 @@
 
 {#snippet TruncatedBadges(badges: string[])}
 	{@const Length = 1}
-	<span class="flex gap-2 overflow-hidden">
+	<span class="flex space-x-2 overflow-hidden">
 		{#each badges.slice(0, Length) as keyword}
-			<Badge variant="outline" class="text-xs">{keyword}</Badge>
+			<Badge variant="outline">{keyword}</Badge>
 		{/each}
 		{#if badges.length > Length}
 			<Badge variant="outline" class="whitespace-nowrap">+{badges.length - Length}</Badge>

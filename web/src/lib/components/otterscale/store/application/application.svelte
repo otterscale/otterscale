@@ -6,6 +6,7 @@
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Table from '$lib/components/ui/table';
+	import * as Tabs from '$lib/components/ui/tabs/index';
 
 	import { ReleaseDelete, ReleaseRollback, ReleaseUpdate } from '$lib/components/otterscale/index';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
@@ -63,167 +64,174 @@
 </script>
 
 {#if mounted}
-	<main class="grid gap-2">
-		<div class="bg-muted/50 p-4">
-			<span class="flex items-start gap-2">
-				<Avatar.Root class="h-10 w-10">
+	<main class="gap-2">
+		<div class="p-4">
+			<span class="flex items-center gap-2 space-x-2">
+				<Avatar.Root class="h-12 w-12">
 					<Avatar.Image src={$chartStore.icon} />
 					<Avatar.Fallback>
-						<Skeleton class="size-8 rounded-full" />
+						<Skeleton class="size-12 rounded-full" />
 					</Avatar.Fallback>
 				</Avatar.Root>
-				<span>
-					<h1 class="text-lg">{$chartStore.name}</h1>
-					<p class="justify-around hyphens-auto text-xs font-extralight">
+				<span class="space-y-1">
+					<h1 class="text-lg">
+						{$chartStore.name
+							.split('-')
+							.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+							.join(' ')}
+					</h1>
+					<p class="text-sm text-muted-foreground">
 						{$chartStore.description}
 					</p>
 				</span>
 			</span>
 		</div>
+		<Tabs.Root value="info">
+			<Tabs.List>
+				<Tabs.Trigger value="info">Info</Tabs.Trigger>
+				<Tabs.Trigger value="release" disabled={!selectedChartReleases}>Release</Tabs.Trigger>
+			</Tabs.List>
+			<Tabs.Content value="info">
+				<div
+					class={cn(
+						'grid max-h-[calc(77vh_-_theme(spacing.16))] gap-4 overflow-auto p-4',
 
-		<div
-			class={cn(
-				'grid max-h-[calc(77vh_-_theme(spacing.16))] gap-4 overflow-auto p-4',
-
-				cn(
-					'[&>fieldset>legend]:w-full [&>fieldset>legend]:text-sm [&>fieldset>legend]:font-extralight'
-				),
-				cn('[&>fieldset>div]:py-2')
-			)}
-		>
-			{#if $chartStore.home}
-				<fieldset>
-					<legend class="flex items-center gap-1">
-						<Icon icon="ph:house" />
-						HOME
-					</legend>
-					<div>
-						<span class="flex items-start gap-1">
-							<a href={$chartStore.home} target="_blank" class="break-all text-xs font-light">
-								{$chartStore.home}
-							</a>
-							<Icon icon="ph:arrow-square-out" />
-						</span>
-					</div>
-				</fieldset>
-			{/if}
-
-			{#if $chartStore.sources && $chartStore.sources.length > 0}
-				<fieldset>
-					<legend class="flex items-center gap-1">
-						<Icon icon="ph:cloud" />
-						SOURCE
-					</legend>
-
-					<div class="grid gap-2">
-						{#each $chartStore.sources as source}
-							<span class="flex items-start gap-1">
-								<a href={source} target="_blank" class="break-all text-xs font-light">
-									{source}
-								</a>
-								<Icon icon="ph:arrow-square-out" />
-							</span>
-						{/each}
-					</div>
-				</fieldset>
-			{/if}
-
-			{#if $chartStore.dependencies && $chartStore.dependencies.length > 0}
-				<fieldset>
-					<legend class="flex items-center gap-1">
-						<Icon icon="ph:stack" />
-						DEPENDENCY
-					</legend>
-
-					<div class="grid gap-2">
-						{#each $chartStore.dependencies as dependency}
-							<span class="flex items-start gap-1">
-								<Badge variant="outline" class="w-fit text-[13px]">
-									{dependency.name}: {dependency.version}
-								</Badge>
-								{@render ReadDependency(dependency)}
-							</span>
-						{/each}
-					</div>
-				</fieldset>
-			{/if}
-
-			{#if $chartStore.keywords && $chartStore.keywords.length > 0}
-				<fieldset>
-					<legend class="flex items-center gap-1">
-						<Icon icon="ph:tag" />
-						KEYWORD
-					</legend>
-
-					<div>
-						<span class="flex flex-wrap gap-1">
-							{#each $chartStore.keywords as keyword}
-								<Badge variant="secondary" class="text-[13px]">{keyword}</Badge>
-							{/each}
-						</span>
-					</div>
-				</fieldset>
-			{/if}
-
-			{#if $chartStore.tags && $chartStore.tags.length > 0}
-				<fieldset>
-					<legend class="flex items-center gap-1">
-						<Icon icon="ph:tag" />
-						TAG
-					</legend>
-
-					<div>
-						<span class="flex flex-wrap gap-1">
-							{#each $chartStore.tags as tag}
-								<Badge variant="secondary" class="w-fit text-[13px]">{tag}</Badge>
-							{/each}
-						</span>
-					</div>
-				</fieldset>
-			{/if}
-
-			{#if $chartStore.maintainers && $chartStore.maintainers.length > 0}
-				<fieldset>
-					<legend class="flex items-center gap-1">
-						<Icon icon="ph:user" />
-						MAINTAINER
-					</legend>
-					<div>
-						<div class="flex flex-col gap-2">
-							{#each $chartStore.maintainers as maintainer}
+						cn(
+							'[&>fieldset>legend]:w-full [&>fieldset>legend]:text-sm [&>fieldset>legend]:font-extralight'
+						),
+						cn('[&>fieldset>div]:py-2')
+					)}
+				>
+					{#if $chartStore.home}
+						<fieldset>
+							<legend class="flex items-center gap-1">
+								<Icon icon="ph:house" />
+								HOME
+							</legend>
+							<div>
 								<span class="flex items-start gap-1">
-									<a href={maintainer.url} target="_blank">
-										<Badge variant="outline" class="flex w-fit gap-2 text-[13px]">
-											<p>{maintainer.name}</p>
-											{#if maintainer.email}
-												<p class="flex items-center gap-1 text-xs font-light text-muted-foreground">
-													<Icon icon="ph:envelope-simple" />
-													{maintainer.email}
-												</p>
-											{/if}
-										</Badge>
+									<a href={$chartStore.home} target="_blank" class="break-all text-xs font-light">
+										{$chartStore.home}
 									</a>
-
 									<Icon icon="ph:arrow-square-out" />
 								</span>
-							{/each}
-						</div>
-					</div>
-				</fieldset>
-			{/if}
+							</div>
+						</fieldset>
+					{/if}
 
-			{#if selectedChartReleases && selectedChartReleases.length > 0}
-				<fieldset class="border-none">
-					<legend class="flex items-center gap-1">
-						<Icon icon="ph:archive" />
-						RELEASE
-					</legend>
-					<div>
-						{@render ReadReleases(selectedChartReleases)}
-					</div>
-				</fieldset>
-			{/if}
-		</div>
+					{#if $chartStore.sources && $chartStore.sources.length > 0}
+						<fieldset>
+							<legend class="flex items-center gap-1">
+								<Icon icon="ph:cloud" />
+								SOURCE
+							</legend>
+
+							<div class="grid gap-2">
+								{#each $chartStore.sources as source}
+									<span class="flex items-start gap-1">
+										<a href={source} target="_blank" class="break-all text-xs font-light">
+											{source}
+										</a>
+										<Icon icon="ph:arrow-square-out" />
+									</span>
+								{/each}
+							</div>
+						</fieldset>
+					{/if}
+
+					{#if $chartStore.dependencies && $chartStore.dependencies.length > 0}
+						<fieldset>
+							<legend class="flex items-center gap-1">
+								<Icon icon="ph:stack" />
+								DEPENDENCY
+							</legend>
+
+							<div class="grid gap-2">
+								{#each $chartStore.dependencies as dependency}
+									<span class="flex items-start gap-1">
+										<Badge variant="outline" class="w-fit text-[13px]">
+											{dependency.name}: {dependency.version}
+										</Badge>
+										{@render ReadDependency(dependency)}
+									</span>
+								{/each}
+							</div>
+						</fieldset>
+					{/if}
+
+					{#if $chartStore.keywords && $chartStore.keywords.length > 0}
+						<fieldset>
+							<legend class="flex items-center gap-1">
+								<Icon icon="ph:tag" />
+								KEYWORD
+							</legend>
+
+							<div>
+								<span class="flex flex-wrap gap-1">
+									{#each $chartStore.keywords as keyword}
+										<Badge variant="secondary" class="text-[13px]">{keyword}</Badge>
+									{/each}
+								</span>
+							</div>
+						</fieldset>
+					{/if}
+
+					{#if $chartStore.tags && $chartStore.tags.length > 0}
+						<fieldset>
+							<legend class="flex items-center gap-1">
+								<Icon icon="ph:tag" />
+								TAG
+							</legend>
+
+							<div>
+								<span class="flex flex-wrap gap-1">
+									{#each $chartStore.tags as tag}
+										<Badge variant="secondary" class="w-fit text-[13px]">{tag}</Badge>
+									{/each}
+								</span>
+							</div>
+						</fieldset>
+					{/if}
+
+					{#if $chartStore.maintainers && $chartStore.maintainers.length > 0}
+						<fieldset>
+							<legend class="flex items-center gap-1">
+								<Icon icon="ph:user" />
+								MAINTAINER
+							</legend>
+							<div>
+								<div class="flex flex-col gap-2">
+									{#each $chartStore.maintainers as maintainer}
+										<span class="flex items-start gap-1">
+											<a href={maintainer.url} target="_blank">
+												<Badge variant="outline" class="flex w-fit gap-2 text-[13px]">
+													<p>{maintainer.name}</p>
+													{#if maintainer.email}
+														<p
+															class="flex items-center gap-1 text-xs font-light text-muted-foreground"
+														>
+															<Icon icon="ph:envelope-simple" />
+															{maintainer.email}
+														</p>
+													{/if}
+												</Badge>
+											</a>
+
+											<Icon icon="ph:arrow-square-out" />
+										</span>
+									{/each}
+								</div>
+							</div>
+						</fieldset>
+					{/if}
+				</div>
+			</Tabs.Content>
+			<Tabs.Content value="release">
+				{#if selectedChartReleases && selectedChartReleases.length > 0}
+					{@render ReadReleases(selectedChartReleases)}
+				{/if}
+			</Tabs.Content>
+		</Tabs.Root>
 	</main>
 {:else}
 	<ComponentLoading />
@@ -274,7 +282,6 @@
 					<Table.Head>REVISION</Table.Head>
 					<Table.Head>APPLICATION</Table.Head>
 					<Table.Head>CHART</Table.Head>
-					<Table.Head class="text-right">REFERENCE</Table.Head>
 					<Table.Head></Table.Head>
 				</Table.Row>
 			</Table.Header>
@@ -294,11 +301,6 @@
 						<Table.Cell>
 							{#if release.version}
 								<Badge variant="outline" class="w-fit">{release.version.chartVersion}</Badge>
-							{/if}
-						</Table.Cell>
-						<Table.Cell class="max-w-[150px] truncate">
-							{#if release.version?.chartRef}
-								{release.version.chartRef}
 							{/if}
 						</Table.Cell>
 						<Table.Cell>

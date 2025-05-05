@@ -8,10 +8,10 @@ export interface Feature {
 
 export const features: Feature[] = [
     { path: '/tutorial', enable: false, visible: false },
-    { path: '/data-fabric', enable: true, visible: true },
+    { path: '/data-fabric', enable: false, visible: true },
     { path: '/explore', enable: false, visible: true },
     { path: '/dashboard', enable: true, visible: true },
-    { path: '/applications', enable: true, visible: true },
+    { path: '/applications', enable: false, visible: true },
     { path: '/integrations', enable: false, visible: true },
     { path: '/dev-tools', enable: false, visible: false }
 ];
