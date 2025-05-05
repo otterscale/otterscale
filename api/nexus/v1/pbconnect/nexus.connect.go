@@ -107,6 +107,9 @@ const (
 	NexusListScopesProcedure = "/openhdc.nexus.v1.Nexus/ListScopes"
 	// NexusCreateScopeProcedure is the fully-qualified name of the Nexus's CreateScope RPC.
 	NexusCreateScopeProcedure = "/openhdc.nexus.v1.Nexus/CreateScope"
+	// NexusCreateDefaultScopeProcedure is the fully-qualified name of the Nexus's CreateDefaultScope
+	// RPC.
+	NexusCreateDefaultScopeProcedure = "/openhdc.nexus.v1.Nexus/CreateDefaultScope"
 	// NexusListFacilitiesProcedure is the fully-qualified name of the Nexus's ListFacilities RPC.
 	NexusListFacilitiesProcedure = "/openhdc.nexus.v1.Nexus/ListFacilities"
 	// NexusGetFacilityProcedure is the fully-qualified name of the Nexus's GetFacility RPC.
@@ -211,6 +214,7 @@ type NexusClient interface {
 	// Scope
 	ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error)
 	CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error)
+	CreateDefaultScope(context.Context, *connect.Request[v1.CreateDefaultScopeRequest]) (*connect.Response[v1.Scope], error)
 	// Facility
 	ListFacilities(context.Context, *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error)
 	GetFacility(context.Context, *connect.Request[v1.GetFacilityRequest]) (*connect.Response[v1.Facility], error)
@@ -461,6 +465,12 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("CreateScope")),
 			connect.WithClientOptions(opts...),
 		),
+		createDefaultScope: connect.NewClient[v1.CreateDefaultScopeRequest, v1.Scope](
+			httpClient,
+			baseURL+NexusCreateDefaultScopeProcedure,
+			connect.WithSchema(nexusMethods.ByName("CreateDefaultScope")),
+			connect.WithClientOptions(opts...),
+		),
 		listFacilities: connect.NewClient[v1.ListFacilitiesRequest, v1.ListFacilitiesResponse](
 			httpClient,
 			baseURL+NexusListFacilitiesProcedure,
@@ -674,6 +684,7 @@ type nexusClient struct {
 	removeMachineTags       *connect.Client[v1.RemoveMachineTagsRequest, emptypb.Empty]
 	listScopes              *connect.Client[v1.ListScopesRequest, v1.ListScopesResponse]
 	createScope             *connect.Client[v1.CreateScopeRequest, v1.Scope]
+	createDefaultScope      *connect.Client[v1.CreateDefaultScopeRequest, v1.Scope]
 	listFacilities          *connect.Client[v1.ListFacilitiesRequest, v1.ListFacilitiesResponse]
 	getFacility             *connect.Client[v1.GetFacilityRequest, v1.Facility]
 	createFacility          *connect.Client[v1.CreateFacilityRequest, v1.Facility]
@@ -875,6 +886,11 @@ func (c *nexusClient) CreateScope(ctx context.Context, req *connect.Request[v1.C
 	return c.createScope.CallUnary(ctx, req)
 }
 
+// CreateDefaultScope calls openhdc.nexus.v1.Nexus.CreateDefaultScope.
+func (c *nexusClient) CreateDefaultScope(ctx context.Context, req *connect.Request[v1.CreateDefaultScopeRequest]) (*connect.Response[v1.Scope], error) {
+	return c.createDefaultScope.CallUnary(ctx, req)
+}
+
 // ListFacilities calls openhdc.nexus.v1.Nexus.ListFacilities.
 func (c *nexusClient) ListFacilities(ctx context.Context, req *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error) {
 	return c.listFacilities.CallUnary(ctx, req)
@@ -1061,6 +1077,7 @@ type NexusHandler interface {
 	// Scope
 	ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error)
 	CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error)
+	CreateDefaultScope(context.Context, *connect.Request[v1.CreateDefaultScopeRequest]) (*connect.Response[v1.Scope], error)
 	// Facility
 	ListFacilities(context.Context, *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error)
 	GetFacility(context.Context, *connect.Request[v1.GetFacilityRequest]) (*connect.Response[v1.Facility], error)
@@ -1307,6 +1324,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("CreateScope")),
 		connect.WithHandlerOptions(opts...),
 	)
+	nexusCreateDefaultScopeHandler := connect.NewUnaryHandler(
+		NexusCreateDefaultScopeProcedure,
+		svc.CreateDefaultScope,
+		connect.WithSchema(nexusMethods.ByName("CreateDefaultScope")),
+		connect.WithHandlerOptions(opts...),
+	)
 	nexusListFacilitiesHandler := connect.NewUnaryHandler(
 		NexusListFacilitiesProcedure,
 		svc.ListFacilities,
@@ -1551,6 +1574,8 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusListScopesHandler.ServeHTTP(w, r)
 		case NexusCreateScopeProcedure:
 			nexusCreateScopeHandler.ServeHTTP(w, r)
+		case NexusCreateDefaultScopeProcedure:
+			nexusCreateDefaultScopeHandler.ServeHTTP(w, r)
 		case NexusListFacilitiesProcedure:
 			nexusListFacilitiesHandler.ServeHTTP(w, r)
 		case NexusGetFacilityProcedure:
@@ -1752,6 +1777,10 @@ func (UnimplementedNexusHandler) ListScopes(context.Context, *connect.Request[v1
 
 func (UnimplementedNexusHandler) CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateScope is not implemented"))
+}
+
+func (UnimplementedNexusHandler) CreateDefaultScope(context.Context, *connect.Request[v1.CreateDefaultScopeRequest]) (*connect.Response[v1.Scope], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateDefaultScope is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListFacilities(context.Context, *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error) {

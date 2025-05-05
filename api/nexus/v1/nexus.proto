@@ -52,6 +52,7 @@ service Nexus {
   // Scope
   rpc ListScopes(ListScopesRequest) returns (ListScopesResponse);
   rpc CreateScope(CreateScopeRequest) returns (Scope);
+  rpc CreateDefaultScope(CreateDefaultScopeRequest) returns (Scope);
 
   // Facility
   rpc ListFacilities(ListFacilitiesRequest) returns (ListFacilitiesResponse);
@@ -678,6 +679,8 @@ message ListScopesResponse {
 message CreateScopeRequest {
   string name = 1;
 }
+
+message CreateDefaultScopeRequest {}
 
 message ListFacilitiesRequest {
   string scope_uuid = 1;

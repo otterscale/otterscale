@@ -28,6 +28,15 @@ func (a *NexusApp) CreateScope(ctx context.Context, req *connect.Request[pb.Crea
 	return connect.NewResponse(res), nil
 }
 
+func (a *NexusApp) CreateDefaultScope(ctx context.Context, req *connect.Request[pb.CreateDefaultScopeRequest]) (*connect.Response[pb.Scope], error) {
+	s, err := a.svc.CreateDefaultScope(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := toProtoScope(s)
+	return connect.NewResponse(res), nil
+}
+
 func toProtoScopes(ss []model.Scope) []*pb.Scope {
 	ret := []*pb.Scope{}
 	for i := range ss {

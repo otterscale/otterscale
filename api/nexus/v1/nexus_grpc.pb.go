@@ -54,6 +54,7 @@ const (
 	Nexus_RemoveMachineTags_FullMethodName       = "/openhdc.nexus.v1.Nexus/RemoveMachineTags"
 	Nexus_ListScopes_FullMethodName              = "/openhdc.nexus.v1.Nexus/ListScopes"
 	Nexus_CreateScope_FullMethodName             = "/openhdc.nexus.v1.Nexus/CreateScope"
+	Nexus_CreateDefaultScope_FullMethodName      = "/openhdc.nexus.v1.Nexus/CreateDefaultScope"
 	Nexus_ListFacilities_FullMethodName          = "/openhdc.nexus.v1.Nexus/ListFacilities"
 	Nexus_GetFacility_FullMethodName             = "/openhdc.nexus.v1.Nexus/GetFacility"
 	Nexus_CreateFacility_FullMethodName          = "/openhdc.nexus.v1.Nexus/CreateFacility"
@@ -128,6 +129,7 @@ type NexusClient interface {
 	// Scope
 	ListScopes(ctx context.Context, in *ListScopesRequest, opts ...grpc.CallOption) (*ListScopesResponse, error)
 	CreateScope(ctx context.Context, in *CreateScopeRequest, opts ...grpc.CallOption) (*Scope, error)
+	CreateDefaultScope(ctx context.Context, in *CreateDefaultScopeRequest, opts ...grpc.CallOption) (*Scope, error)
 	// Facility
 	ListFacilities(ctx context.Context, in *ListFacilitiesRequest, opts ...grpc.CallOption) (*ListFacilitiesResponse, error)
 	GetFacility(ctx context.Context, in *GetFacilityRequest, opts ...grpc.CallOption) (*Facility, error)
@@ -511,6 +513,16 @@ func (c *nexusClient) CreateScope(ctx context.Context, in *CreateScopeRequest, o
 	return out, nil
 }
 
+func (c *nexusClient) CreateDefaultScope(ctx context.Context, in *CreateDefaultScopeRequest, opts ...grpc.CallOption) (*Scope, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Scope)
+	err := c.cc.Invoke(ctx, Nexus_CreateDefaultScope_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *nexusClient) ListFacilities(ctx context.Context, in *ListFacilitiesRequest, opts ...grpc.CallOption) (*ListFacilitiesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListFacilitiesResponse)
@@ -844,6 +856,7 @@ type NexusServer interface {
 	// Scope
 	ListScopes(context.Context, *ListScopesRequest) (*ListScopesResponse, error)
 	CreateScope(context.Context, *CreateScopeRequest) (*Scope, error)
+	CreateDefaultScope(context.Context, *CreateDefaultScopeRequest) (*Scope, error)
 	// Facility
 	ListFacilities(context.Context, *ListFacilitiesRequest) (*ListFacilitiesResponse, error)
 	GetFacility(context.Context, *GetFacilityRequest) (*Facility, error)
@@ -988,6 +1001,9 @@ func (UnimplementedNexusServer) ListScopes(context.Context, *ListScopesRequest) 
 }
 func (UnimplementedNexusServer) CreateScope(context.Context, *CreateScopeRequest) (*Scope, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateScope not implemented")
+}
+func (UnimplementedNexusServer) CreateDefaultScope(context.Context, *CreateDefaultScopeRequest) (*Scope, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateDefaultScope not implemented")
 }
 func (UnimplementedNexusServer) ListFacilities(context.Context, *ListFacilitiesRequest) (*ListFacilitiesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListFacilities not implemented")
@@ -1709,6 +1725,24 @@ func _Nexus_CreateScope_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Nexus_CreateDefaultScope_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateDefaultScopeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NexusServer).CreateDefaultScope(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Nexus_CreateDefaultScope_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NexusServer).CreateDefaultScope(ctx, req.(*CreateDefaultScopeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Nexus_ListFacilities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListFacilitiesRequest)
 	if err := dec(in); err != nil {
@@ -2373,6 +2407,10 @@ var Nexus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateScope",
 			Handler:    _Nexus_CreateScope_Handler,
+		},
+		{
+			MethodName: "CreateDefaultScope",
+			Handler:    _Nexus_CreateDefaultScope_Handler,
 		},
 		{
 			MethodName: "ListFacilities",

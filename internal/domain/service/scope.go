@@ -47,18 +47,6 @@ func (s *NexusService) CreateScope(ctx context.Context, name string) (*model.Sco
 	}, nil
 }
 
-func (s *NexusService) CreateDefaultScope(ctx context.Context) error {
-	scopes, err := s.scope.List(ctx)
-	if err != nil {
-		return err
-	}
-	for i := range scopes {
-		if scopes[i].Name == defaultScopeName {
-			return nil
-		}
-	}
-	if _, err := s.CreateScope(ctx, defaultScopeName); err != nil {
-		return nil
-	}
-	return nil
+func (s *NexusService) CreateDefaultScope(ctx context.Context) (*model.Scope, error) {
+	return s.CreateScope(ctx, defaultScopeName)
 }
