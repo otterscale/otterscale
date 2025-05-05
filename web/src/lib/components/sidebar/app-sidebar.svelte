@@ -87,7 +87,7 @@
 		platforms: [
 			{
 				title: 'Monitor',
-				url: '/management',
+				url: '/management?intervals=30',
 				icon: 'ph:gauge'
 			},
 			{

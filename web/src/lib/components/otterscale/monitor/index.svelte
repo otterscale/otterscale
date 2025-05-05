@@ -81,8 +81,8 @@
 		}
 	}
 	async function refreshErrors(scopeUuid: string) {
-		while (true) {
-			await new Promise((resolve) => setTimeout(resolve, 1000 * 30));
+		while (page.url.searchParams.get('intervals')) {
+			await new Promise((resolve) => setTimeout(resolve, Number(page.url.searchParams.get('intervals')))));
 
 			try {
 				const response = await client.verifyEnvironment({ scopeUuid: scopeUuid });
@@ -95,7 +95,7 @@
 
 	const currentInformationStore = writable<Error>();
 	async function iterateInformations() {
-		while (true) {
+		while (page.url.searchParams.get('intervals')) {
 			for (const error of $errorsStore.filter((e) => Number(e.level) <= 3)) {
 				currentInformationStore.set(error);
 				await new Promise((resolve) => setTimeout(resolve, 1000 * 1));
