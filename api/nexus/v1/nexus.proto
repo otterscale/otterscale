@@ -620,7 +620,9 @@ message UpdateIPRangeRequest {
   string comment = 13;
 }
 
-message ListMachinesRequest {}
+message ListMachinesRequest {
+  string scope_uuid = 1;
+}
 
 message ListMachinesResponse {
   repeated Machine machines = 1;

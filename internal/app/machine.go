@@ -11,7 +11,7 @@ import (
 )
 
 func (a *NexusApp) ListMachines(ctx context.Context, req *connect.Request[pb.ListMachinesRequest]) (*connect.Response[pb.ListMachinesResponse], error) {
-	ms, err := a.svc.ListMachines(ctx)
+	ms, err := a.svc.ListMachines(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}

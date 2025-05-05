@@ -13,8 +13,22 @@ import (
 	"github.com/openhdc/openhdc/internal/domain/model"
 )
 
-func (s *NexusService) ListMachines(ctx context.Context) ([]model.Machine, error) {
-	return s.machine.List(ctx)
+func (s *NexusService) ListMachines(ctx context.Context, scopeUUID string) ([]model.Machine, error) {
+	ms, err := s.machine.List(ctx)
+	if err != nil {
+		return nil, err
+	}
+	machines := []model.Machine{}
+	for i := range ms {
+		uuid, err := getJujuModelUUID(ms[i].WorkloadAnnotations)
+		if err != nil {
+			continue
+		}
+		if strings.Contains(uuid, scopeUUID) { // empty
+			machines = append(machines, ms[i])
+		}
+	}
+	return machines, nil
 }
 
 func (s *NexusService) GetMachine(ctx context.Context, id string) (*model.Machine, error) {
