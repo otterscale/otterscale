@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { ManagementMachines } from '$lib/components/otterscale';
+	import { ManagementNetworks } from '$lib/components/otterscale';
 	import { Nexus, type Machine, type Network } from '$gen/api/nexus/v1/nexus_pb';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -49,7 +49,7 @@
 </script>
 
 {#if mounted}
-	<ManagementMachines machines={$machinesStore} />
+	<ManagementNetworks networks={$networksStore} />
 {:else}
 	<PageLoading />
 {/if}

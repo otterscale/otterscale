@@ -2,22 +2,19 @@
 	import { page } from '$app/state';
 	import Icon from '@iconify/svelte';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import { cn } from '$lib/utils';
-	import PowerOnMachine from './power-on.svelte';
 	import PowerOffMachine from './power-off.svelte';
 	import CreateMachine from './create.svelte';
 	import DeleteMachine from './delete.svelte';
-	import RemoveTags from './remove-tags.svelte';
-	import AddTags from './add-tags.svelte';
-	import { Nexus, type Machine } from '$gen/api/nexus/v1/nexus_pb';
+	import { Nexus, type Machine, type Tag } from '$gen/api/nexus/v1/nexus_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	let {
 		machines
@@ -29,6 +26,16 @@
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
+
+	const tagStore = writable<Tag[]>();
+	async function listTags() {
+		try {
+			const response = await client.listTags({});
+			tagStore.set(response.tags);
+		} catch (error) {
+			console.error('Error fetching tags:', error);
+		}
+	}
 
 	async function refreshMachines() {
 		while (page.url.searchParams.get('intervals')) {
@@ -48,6 +55,7 @@
 
 	onMount(async () => {
 		try {
+			listTags();
 			refreshMachines();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
@@ -66,7 +74,6 @@
 						<div>IP</div>
 					</Table.Head>
 					<Table.Head>POWER</Table.Head>
-					<Table.Head>TAGS</Table.Head>
 					<Table.Head>STATUS</Table.Head>
 					<Table.Head class="text-right ">
 						<div>CORES</div>
@@ -81,91 +88,30 @@
 				{#each machines as machine}
 					<Table.Row class="*:truncate *:whitespace-nowrap [&>td]:align-top">
 						<Table.Cell>
-							<div class="flex items-center justify-between">
-								<div class="flex justify-between">
-									<span>
-										<a href={`/management/machine/${machine.id}?s=5`}>
-											<div class="flex items-center gap-1">
-												<p>{machine.fqdn}</p>
-												<Icon icon="ph:arrow-square-out" />
-											</div>
-										</a>
-										<div class={machineSubvalueContentClass}>
-											{machine.ipAddresses.join(', ')}
+							<div class="flex justify-between">
+								<span>
+									<a href={`/management/machine/${machine.id}?intervals=5`}>
+										<div class="flex items-center gap-1">
+											<p>{machine.fqdn}</p>
+											<Icon icon="ph:arrow-square-out" />
 										</div>
-									</span>
-								</div>
-								<DropdownMenu.Root>
-									<DropdownMenu.Trigger>
-										<Button variant="ghost">
-											<Icon icon="ph:dots-three-vertical" />
-										</Button>
-									</DropdownMenu.Trigger>
-									<DropdownMenu.Content>
-										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-											<CreateMachine {machine} />
-										</DropdownMenu.Item>
-										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-											<DeleteMachine {machine} />
-										</DropdownMenu.Item>
-									</DropdownMenu.Content>
-								</DropdownMenu.Root>
-							</div>
-						</Table.Cell>
-						<Table.Cell>
-							<div class="flex items-center justify-between">
-								<div class="flex items-center gap-1">
-									<Icon
-										icon={machine.powerState === 'on' ? 'ph:power' : 'ph:power'}
-										class={machine.powerState === 'on' ? 'text-green-700' : 'text-red-700'}
-									/>
-									<div class="flex flex-col items-start">
-										<div>{machine.powerState}</div>
-										<div class={machineSubvalueContentClass}>{machine.powerType}</div>
+									</a>
+									<div class={machineSubvalueContentClass}>
+										{machine.ipAddresses.join(', ')}
 									</div>
-								</div>
-								<DropdownMenu.Root>
-									<DropdownMenu.Trigger>
-										<Button variant="ghost">
-											<Icon icon="ph:dots-three-vertical" />
-										</Button>
-									</DropdownMenu.Trigger>
-									<DropdownMenu.Content>
-										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-											{#if machine.powerState.toLowerCase() === 'on'}
-												<PowerOffMachine {machine} />
-											{:else}
-												<PowerOnMachine {machine} />
-											{/if}
-										</DropdownMenu.Item>
-									</DropdownMenu.Content>
-								</DropdownMenu.Root>
+								</span>
 							</div>
 						</Table.Cell>
 						<Table.Cell>
-							<div class="flex items-center justify-between">
-								<div class="flex flex-wrap gap-1">
-									{#each machine.tags as tag}
-										<Badge variant="outline">
-											{tag}
-										</Badge>
-									{/each}
+							<div class="flex items-center gap-1">
+								<Icon
+									icon={machine.powerState === 'on' ? 'ph:power' : 'ph:power'}
+									class={machine.powerState === 'on' ? 'text-green-700' : 'text-red-700'}
+								/>
+								<div class="flex flex-col items-start">
+									<div>{machine.powerState}</div>
+									<div class={machineSubvalueContentClass}>{machine.powerType}</div>
 								</div>
-								<DropdownMenu.Root>
-									<DropdownMenu.Trigger>
-										<Button variant="ghost">
-											<Icon icon="ph:dots-three-vertical" />
-										</Button>
-									</DropdownMenu.Trigger>
-									<DropdownMenu.Content>
-										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-											<AddTags {machine} />
-										</DropdownMenu.Item>
-										<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-											<RemoveTags {machine} />
-										</DropdownMenu.Item>
-									</DropdownMenu.Content>
-								</DropdownMenu.Root>
 							</div>
 						</Table.Cell>
 						<Table.Cell>
@@ -206,6 +152,48 @@
 								</div>
 							</div>
 						</Table.Cell>
+						<Table.Cell>
+							<DropdownMenu.Root>
+								<DropdownMenu.Trigger>
+									<Icon icon="ph:dots-three" class="size-6" />
+								</DropdownMenu.Trigger>
+								<DropdownMenu.Content>
+									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+										<CreateMachine
+											{machine}
+											disabled={!!machine.workloadAnnotations['juju-model-uuid']}
+										/>
+									</DropdownMenu.Item>
+									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+										<DeleteMachine
+											{machine}
+											disabled={!machine.workloadAnnotations['juju-model-uuid']}
+										/>
+									</DropdownMenu.Item>
+									<DropdownMenu.Separator />
+									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+										<PowerOffMachine
+											{machine}
+											disabled={machine.powerState.toLowerCase() !== 'on'}
+										/>
+									</DropdownMenu.Item>
+									<DropdownMenu.Separator />
+									<DropdownMenu.Sub>
+										<DropdownMenu.SubTrigger><Icon icon="ph:tag" /> Tag</DropdownMenu.SubTrigger>
+										<DropdownMenu.SubContent>
+											{#each $tagStore as tag}
+												<DropdownMenu.CheckboxItem
+													checked={machine.tags.includes(tag.name)}
+													class="capitalize"
+												>
+													{tag.name}
+												</DropdownMenu.CheckboxItem>
+											{/each}
+										</DropdownMenu.SubContent>
+									</DropdownMenu.Sub>
+								</DropdownMenu.Content>
+							</DropdownMenu.Root>
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>
@@ -214,23 +202,21 @@
 </div>
 
 {#snippet StatisticMachines()}
-	<span class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
+	<span class="grid grid-cols-4 gap-4">
 		<Card.Root class="h-full">
 			<Card.Header class="h-10">
 				<Card.Title>MACHINE</Card.Title>
 			</Card.Header>
 			<Card.Content class="h-30">
-				<p class="text-7xl">{machines.length}</p>
-			</Card.Content>
-			<Card.Footer>
-				<div class="flex flex-wrap gap-1">
+				<p class="text-6xl">{machines.length}</p>
+				<div class="flex flex-wrap gap-2 pt-2">
 					{#each [...new Set(machines.map((m) => m.status))] as status}
 						<Badge variant="outline">
 							{status}: {machines.filter((m) => m.status === status).length}
 						</Badge>
 					{/each}
 				</div>
-			</Card.Footer>
+			</Card.Content>
 		</Card.Root>
 		<Card.Root>
 			<Card.Header class="h-10">
@@ -245,7 +231,7 @@
 					<span class="text-3xl font-extralight">
 						{formatCapacity(machines.reduce((acc, machine) => acc + machine.storageMb, 0)).unit}
 					</span>
-					<p class="text-xs text-muted-foreground">
+					<p class="pt-2 text-xs text-muted-foreground">
 						over {machines.reduce((acc, machine) => acc + machine.blockDevices.length, 0)} disks
 					</p>
 				</div>

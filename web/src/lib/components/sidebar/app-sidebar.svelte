@@ -117,7 +117,10 @@
 						title: 'Machine',
 						url: '/management/machine?intervals=15'
 					},
-
+					{
+						title: 'Network',
+						url: '/management/network'
+					},
 					{
 						title: 'General',
 						url: '/management/general'

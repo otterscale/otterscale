@@ -9,9 +9,11 @@
 	import { getContext } from 'svelte';
 
 	let {
-		machine
+		machine,
+		disabled
 	}: {
 		machine: Machine;
+		disabled: boolean;
 	} = $props();
 
 	const transport: Transport = getContext('transportNEW');
@@ -32,7 +34,10 @@
 </script>
 
 <AlertDialog.Root bind:open>
-	<AlertDialog.Trigger class="flex items-center gap-1">
+	<AlertDialog.Trigger
+		class="flex items-center gap-1 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground"
+		{disabled}
+	>
 		<Icon icon="ph:power" />
 		Power Off
 	</AlertDialog.Trigger>

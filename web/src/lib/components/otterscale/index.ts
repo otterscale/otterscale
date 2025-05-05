@@ -14,7 +14,8 @@ export { default as ManagementFacilities } from './management/controller/facilit
 export { default as ManagementFacilityActions } from './management/controller/facility/actions/index.svelte';
 // export { default as ManagementScopeConfiguration } from './management/scope-configuration.svelte';
 
-export { default as ManagementMachines } from './management/resource/index.svelte';
+export { default as ManagementNetworks } from './management/resource/network/index.svelte';
+export { default as ManagementMachines } from './management/resource/machine/index.svelte';
 export { default as ManagementMachine } from './management/resource/machine/machine.svelte';
 export { default as ManagementNetworkSubnetReservedIPRanges } from './management/resource/network/reserved-ip-range/index.svelte';
 

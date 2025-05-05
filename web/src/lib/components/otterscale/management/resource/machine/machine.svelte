@@ -7,6 +7,7 @@
 	import { capitalizeFirstLetter } from 'better-auth';
 	import { toast } from 'svelte-sonner';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table';
@@ -58,98 +59,92 @@
 </script>
 
 <div class="grid gap-3 space-y-3 p-3">
-	{@render Identifier()}
 	{@render Summary()}
 
-	<Tabs.Root value="workload_annotation">
-		<Tabs.List class="w-fit rounded-sm">
-			<Tabs.Trigger value="workload_annotation">Workload Annotation</Tabs.Trigger>
-			<Tabs.Trigger value="hardware_information">Hardware Information</Tabs.Trigger>
-			<Tabs.Trigger value="block_device">Block Devices</Tabs.Trigger>
-			<Tabs.Trigger value="network">Networks</Tabs.Trigger>
-		</Tabs.List>
-		<Tabs.Content value="workload_annotation" class="h-full">
-			{@render TabContent_WorkloadAnnotation()}
-		</Tabs.Content>
-		<Tabs.Content value="hardware_information" class="p-2">
-			{@render TabContent_HardwareInformation()}
-		</Tabs.Content>
-		<Tabs.Content value="block_device">
-			{@render TabContent_BlockDevices()}
-		</Tabs.Content>
-		<Tabs.Content value="network">
-			{@render TabContent_Networks()}
-		</Tabs.Content>
+	<Tabs.Root value="hardware_information">
+		<div class="flex justify-between">
+			<Tabs.List class="w-fit rounded-sm">
+				<Tabs.Trigger value="hardware_information">Hardware Information</Tabs.Trigger>
+				<Tabs.Trigger value="block_device">Block Devices</Tabs.Trigger>
+				<Tabs.Trigger value="network">Networks</Tabs.Trigger>
+			</Tabs.List>
+			{#if machine.workloadAnnotations && machine.workloadAnnotations['juju-model-uuid']}
+				<Button href="/facility?scope={machine.workloadAnnotations['juju-model-uuid']}">
+					Facility
+					<Icon icon="ph:arrow-right" />
+				</Button>
+			{/if}
+		</div>
+		<div>
+			<Tabs.Content value="hardware_information" class="p-2">
+				{@render TabContent_HardwareInformation()}
+			</Tabs.Content>
+			<Tabs.Content value="block_device">
+				{@render TabContent_BlockDevices()}
+			</Tabs.Content>
+			<Tabs.Content value="network">
+				{@render TabContent_Networks()}
+			</Tabs.Content>
+		</div>
 	</Tabs.Root>
 </div>
-
-{#snippet Identifier()}
-	<div class="flex items-center">
-		<div class="items-between flex space-x-1">
-			<Icon icon={nodeIcon(nodeType)} class="h-full w-36" />
-			<div class="flex flex-col justify-between">
-				<div class="flex flex-col p-1">
-					<div class="font-base text-xl">{machine.fqdn}</div>
-					<div class="flex text-base text-muted-foreground">
-						{machine.id}
-					</div>
-				</div>
-				<p>{machine.description}</p>
-				<div class="flex flex-wrap gap-1">
-					{#each machine.tags as tag}
-						<Badge variant="outline" class="text-muted-foreground">
-							<Icon icon="ph:tag" class="size-5 sm:flex" />
-							<span class="pl-1 text-sm">{tag}</span>
-						</Badge>
-					{/each}
-				</div>
-			</div>
-		</div>
-	</div>
-{/snippet}
 
 {#snippet Summary()}
 	{@const formattedMemory = formatCapacity(machine.memoryMb)}
 	{@const formattedStorage = formatCapacity(machine.storageMb)}
-	<div class="grid grid-cols-5 gap-3 *:border-none *:shadow-none">
+	<div class="grid grid-cols-5 gap-3">
 		<Card.Root>
 			<Card.Header class="h-10">
-				<Card.Title><div class="flex justify-between text-xs">POWER</div></Card.Title>
+				<Card.Title>
+					<div class="flex justify-between text-xs">
+						MACHINE
+						<div class="font-light text-muted-foreground">
+							{machine.id}
+						</div>
+					</div>
+				</Card.Title>
 			</Card.Header>
 			<Card.Content class="h-20">
 				<div class="text-2xl">
-					{capitalizeFirstLetter(machine.powerState)}
+					{machine.fqdn}
 				</div>
 			</Card.Content>
 			<Card.Footer>
-				<Badge variant="outline">
-					<div class="truncate font-light text-muted-foreground">
-						{machine.powerType}
-					</div>
-				</Badge>
+				<span class="flex items-center gap-1">
+					{#if machine.status.toLowerCase() === 'commissioning' || machine.status.toLowerCase() === 'deploying' || machine.status.toLowerCase() === 'disk_erasing' || machine.status.toLowerCase() === 'entering_rescue_mode' || machine.status.toLowerCase() === 'exiting_rescue_mode' || machine.status.toLowerCase() === 'releasing' || machine.status.toLowerCase() === 'testing'}
+						<Icon icon="ph:spinner" class="animate-spin" />
+					{/if}
+					{#if machine.statusMessage !== 'Deployed'}
+						{machine.statusMessage}
+					{/if}
+				</span>
+				<div class="flex flex-wrap gap-1">
+					{#if machine.powerType !== ''}
+						<Badge variant="outline">{machine.powerType}</Badge>
+					{/if}
+					{#each machine.tags as tag}
+						<Badge variant="outline" class="text-muted-foreground">{tag}</Badge>
+					{/each}
+				</div>
 			</Card.Footer>
 		</Card.Root>
 		<Card.Root>
 			<Card.Header class="h-10">
-				<Card.Title><div class="flex justify-between text-xs">MACHINE STATUS</div></Card.Title>
+				<Card.Title
+					><div class="flex justify-between text-xs">
+						STATUS
+						{#if machine.powerState === 'on'}
+							<Badge>Power On</Badge>
+						{:else}
+							<Badge variant="destructive">Power Off</Badge>
+						{/if}
+					</div></Card.Title
+				>
 			</Card.Header>
 			<Card.Content class="h-20">
 				<div class="text-2xl">
 					{machine.status}
 				</div>
-				<span class="flex items-center gap-1">
-					{#if machine.status.toLowerCase() != 'deployed'}
-						<Icon icon="ph:spinner" class="animate-spin" />
-					{/if}
-					<HoverCard.Root>
-						<HoverCard.Trigger class="truncate">
-							{machine.statusMessage}
-						</HoverCard.Trigger>
-						<HoverCard.Content class="p-4 text-xs">
-							{machine.statusMessage}
-						</HoverCard.Content>
-					</HoverCard.Root>
-				</span>
 			</Card.Content>
 			<Card.Footer>
 				<div class="truncate text-xs font-light text-muted-foreground">
@@ -198,7 +193,7 @@
 			<Card.Header class="h-10">
 				<Card.Title><div class="flex justify-between text-xs">STORAGE</div></Card.Title>
 			</Card.Header>
-			<Card.Content class="h-20">
+			<Card.Content class="h-20 space-y-1">
 				<div class="flex items-end gap-1">
 					<p class="text-4xl">
 						{formattedStorage.value}
@@ -215,51 +210,6 @@
 	</div>
 {/snippet}
 
-{#snippet TabContent_WorkloadAnnotation()}
-	{#if Object.keys(machine.workloadAnnotations).length == 0}
-		<p class="flex h-full flex-col items-center justify-center text-muted-foreground">
-			There is no workload annotations.
-		</p>
-	{:else}
-		<Table.Root>
-			<Table.Header>
-				<Table.Row class="*:text-xs *:font-light">
-					<Table.Head>JUJU CONTROLLER UUID</Table.Head>
-					<Table.Head>JUJU MACHINE ID</Table.Head>
-					<Table.Head>JUJU MODEL UUID</Table.Head>
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				<Table.Row class="*:text-xs">
-					<Table.Cell>
-						{#if machine.workloadAnnotations['juju-controller-uuid']}
-							<Badge variant="outline">
-								{machine.workloadAnnotations['juju-controller-uuid']}
-							</Badge>
-						{/if}
-					</Table.Cell>
-					<Table.Cell>
-						{#if machine.workloadAnnotations['juju-machine-id']}
-							{machine.workloadAnnotations['juju-machine-id']}
-						{/if}
-					</Table.Cell>
-					<Table.Cell>
-						{#if machine.workloadAnnotations['juju-model-uuid']}
-							<span class="flex items-start gap-1">
-								<Badge variant="outline">
-									<a href={`/management/scope/${machine.workloadAnnotations['juju-model-uuid']}`}>
-										{machine.workloadAnnotations['juju-model-uuid']}
-									</a>
-								</Badge>
-								<Icon icon="ph:arrow-square-out" />
-							</span>
-						{/if}
-					</Table.Cell>
-				</Table.Row>
-			</Table.Body>
-		</Table.Root>
-	{/if}
-{/snippet}
 {#snippet TabContent_HardwareInformation()}
 	<div class="grid gap-4">
 		<div class="grid gap-2">

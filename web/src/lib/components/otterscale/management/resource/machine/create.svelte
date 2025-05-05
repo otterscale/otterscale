@@ -18,9 +18,11 @@
 	import { getContext, onMount } from 'svelte';
 
 	let {
-		machine
+		machine,
+		disabled
 	}: {
 		machine: Machine;
+		disabled: boolean;
 	} = $props();
 
 	const transport: Transport = getContext('transportNEW');
@@ -67,9 +69,9 @@
 	const DEFAULT_REQUEST = {
 		id: machine.id,
 		enableSsh: true,
-		skipBmcConfig: true,
-		skipNetworking: true,
-		skipStorage: true,
+		skipBmcConfig: false,
+		skipNetworking: false,
+		skipStorage: false,
 		tags: [] as string[]
 	} as CreateMachineRequest;
 
@@ -86,7 +88,10 @@
 </script>
 
 <AlertDialog.Root bind:open>
-	<AlertDialog.Trigger class="flex items-center gap-1">
+	<AlertDialog.Trigger
+		class="flex items-center gap-1  disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground"
+		{disabled}
+	>
 		<Icon icon="ph:compass" />
 		Add Machine
 	</AlertDialog.Trigger>

@@ -69,7 +69,7 @@
 			<Avatar user={data.user} />
 		</header>
 		<div class="relative flex flex-col bg-background">
-			<div class="flex-1">
+			<div class="flex-1 p-6">
 				{@render children()}
 			</div>
 		</div>
