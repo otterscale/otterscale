@@ -82,7 +82,9 @@
 	}
 	async function refreshErrors(scopeUuid: string) {
 		while (page.url.searchParams.get('intervals')) {
-			await new Promise((resolve) => setTimeout(resolve, Number(page.url.searchParams.get('intervals')))));
+			await new Promise((resolve) =>
+				setTimeout(resolve, Number(page.url.searchParams.get('intervals')))
+			);
 
 			try {
 				const response = await client.verifyEnvironment({ scopeUuid: scopeUuid });
