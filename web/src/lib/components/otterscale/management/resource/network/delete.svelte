@@ -6,12 +6,14 @@
 	import {
 		Nexus,
 		type DeleteNetworkRequest,
+		type Network,
 		type Network_Fabric
 	} from '$gen/api/nexus/v1/nexus_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 
-	let { fabric }: { fabric: Network_Fabric } = $props();
+	let { networks = $bindable(), fabric }: { networks: Network[]; fabric: Network_Fabric } =
+		$props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -53,6 +55,9 @@
 						.deleteNetwork(deleteNetworkRequest)
 						.then((r) => {
 							toast.info(`Delete ${fabric.name} success`);
+							client.listNetworks({}).then((r) => {
+								networks = r.networks;
+							});
 						})
 						.catch((e) => {
 							toast.error(`Fail to delete ${fabric.name}: ${e.toString()}`);

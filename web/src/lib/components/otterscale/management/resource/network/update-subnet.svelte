@@ -5,12 +5,18 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch/index.js';
-	import { Nexus, type Network_Subnet, type UpdateSubnetRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		Nexus,
+		type Network,
+		type Network_Subnet,
+		type UpdateSubnetRequest
+	} from '$gen/api/nexus/v1/nexus_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
-	let { subnet }: { subnet: Network_Subnet } = $props();
+	let { networks = $bindable(), subnet }: { networks: Network[]; subnet: Network_Subnet } =
+		$props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -118,6 +124,9 @@
 						.updateSubnet(updateSubnetRequest)
 						.then((r) => {
 							toast.info(`Update ${r.cidr} success`);
+							client.listNetworks({}).then((r) => {
+								networks = r.networks;
+							});
 						})
 						.catch((e) => {
 							toast.error(`Fail to update ${subnet.cidr}: ${e.toString()}`);

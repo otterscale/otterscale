@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
+	import CreateScope from './scope/create.svelte';
 	import { type Scope } from '$gen/api/nexus/v1/nexus_pb';
 	import { ManagementScopes, ManagementFacilities } from '$lib/components/otterscale/index';
 
@@ -11,7 +12,17 @@
 </script>
 
 <main>
-	<Tabs.Root value="facility" class="w-full">
+	<div class="p-4">
+		<div class="flex items-center justify-between gap-2">
+			{@render ChooseScope()}
+			<CreateScope bind:scopes/>
+		</div>
+	</div>
+
+	{#key chosenScopeName}
+		<ManagementFacilities scopeUuid={scopeByName[chosenScopeName].uuid} />
+	{/key}
+	<!-- <Tabs.Root value="facility" class="w-full">
 		<div class="flex items-center justify-between p-4">
 			<Tabs.List>
 				<Tabs.Trigger value="facility">FACILITY</Tabs.Trigger>
@@ -32,7 +43,7 @@
 				<ManagementScopes {scopes} />
 			</div>
 		</Tabs.Content>
-	</Tabs.Root>
+	</Tabs.Root> -->
 </main>
 
 {#snippet ChooseScope()}

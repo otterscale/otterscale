@@ -44,9 +44,11 @@
 	}
 
 	let {
+		releases = $bindable(),
 		selectedChart,
 		selectedChartReleases
 	}: {
+		releases: Application_Release[];
 		selectedChart: Application_Chart;
 		selectedChartReleases: Application_Release[] | undefined;
 	} = $props();
@@ -314,19 +316,19 @@
 									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
 										<span class="flex items-center gap-1">
 											<Icon icon="ph:arrow-clockwise" />
-											<ReleaseUpdate {release} valuesYaml={''} />
+											<ReleaseUpdate bind:releases {release} valuesYaml={''} />
 										</span>
 									</DropdownMenu.Item>
 									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
 										<span class="flex items-center gap-1">
 											<Icon icon="ph:arrow-counter-clockwise" />
-											<ReleaseRollback {release} />
+											<ReleaseRollback bind:releases {release} />
 										</span>
 									</DropdownMenu.Item>
 									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
 										<span class="flex items-center gap-1">
 											<Icon icon="ph:trash" />
-											<ReleaseDelete {release} />
+											<ReleaseDelete bind:releases {release} />
 										</span>
 									</DropdownMenu.Item>
 								</DropdownMenu.Content>

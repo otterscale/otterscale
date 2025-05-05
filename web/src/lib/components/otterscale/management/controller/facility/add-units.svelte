@@ -20,7 +20,7 @@
 
 	let {
 		scopeUuid,
-		facilityByCategory
+		facilityByCategory = $bindable()
 	}: {
 		scopeUuid: string;
 		facilityByCategory: Facility;
@@ -149,11 +149,20 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.addFacilityUnits(addFacilityUnitsRequest).then((r) => {
-						toast.info(`Add units to ${addFacilityUnitsRequest.name}`);
-					});
-					// console.log(addFacilityUnitsRequest);
-					toast.info(`Add units to ${addFacilityUnitsRequest.name}`);
+					console.log(addFacilityUnitsRequest);
+					client
+						.addFacilityUnits(addFacilityUnitsRequest)
+						.then((r) => {
+							toast.info(`Add units to ${addFacilityUnitsRequest.name}`);
+							client
+								.getFacility({ scopeUuid: scopeUuid, name: facilityByCategory.name })
+								.then((r) => {
+									facilityByCategory = r;
+								});
+						})
+						.catch((e) => {
+							toast.error(`Fail to add units to ${addFacilityUnitsRequest.name}: ${e.toString()}`);
+						});
 					reset();
 					close();
 				}}

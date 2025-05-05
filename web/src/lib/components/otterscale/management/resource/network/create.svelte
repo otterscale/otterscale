@@ -7,9 +7,11 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { toast } from 'svelte-sonner';
-	import { Nexus, type CreateNetworkRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import { Nexus, type CreateNetworkRequest, type Network } from '$gen/api/nexus/v1/nexus_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
+
+	let { networks = $bindable() }: { networks: Network[] } = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -94,6 +96,9 @@
 						.createNetwork(createNetworkRequest)
 						.then((r) => {
 							toast.info(`Create ${createNetworkRequest.cidr} success`);
+							client.listNetworks({}).then((r) => {
+								networks = r.networks;
+							});
 						})
 						.catch((e) => {
 							toast.error(`Fail to create ${createNetworkRequest.cidr}: ${e.toString()}`);

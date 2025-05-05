@@ -12,8 +12,10 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 
 	let {
+		releases = $bindable(),
 		release
 	}: {
+		releases: Application_Release[];
 		release: Application_Release;
 	} = $props();
 
@@ -60,11 +62,18 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.deleteRelease(deleteReleaseRequest).then((r) => {
-						toast.info(`Delete ${deleteReleaseRequest.name}`);
-					});
-					// toast.info(`Delete ${deleteReleaseRequest.name}`);
-					reset();
+					client
+						.deleteRelease(deleteReleaseRequest)
+						.then((r) => {
+							toast.info(`Delete ${deleteReleaseRequest.name}`);
+							client.listReleases({}).then((r) => {
+								releases = r.releases;
+							});
+						})
+						.catch((e) => {
+							toast.error(`Fail to delete ${deleteReleaseRequest.name}: ${e.toString()}`);
+						});
+
 					close();
 				}}>Confirm</AlertDialog.Action
 			>

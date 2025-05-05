@@ -74,7 +74,7 @@
 	{@render StatisticNetworks()}
 	<div class="p-4">
 		<div class="flex justify-end py-2">
-			<CreateNetwork />
+			<CreateNetwork bind:networks />
 		</div>
 		<Table.Root>
 			<Table.Header class="bg-muted/50">
@@ -103,10 +103,10 @@
 										</DropdownMenu.Trigger>
 										<DropdownMenu.Content>
 											<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-												<UpdateFabric fabric={network.fabric} />
+												<UpdateFabric bind:networks fabric={network.fabric} />
 											</DropdownMenu.Item>
 											<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-												<DeleteNetwork fabric={network.fabric} />
+												<DeleteNetwork bind:networks fabric={network.fabric} />
 											</DropdownMenu.Item>
 										</DropdownMenu.Content>
 									</DropdownMenu.Root>
@@ -127,7 +127,7 @@
 											</DropdownMenu.Trigger>
 											<DropdownMenu.Content>
 												<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-													<UpdateVLAN fabric={network.fabric} vlan={network.vlan} />
+													<UpdateVLAN bind:networks fabric={network.fabric} vlan={network.vlan} />
 												</DropdownMenu.Item>
 											</DropdownMenu.Content>
 										</DropdownMenu.Root>
@@ -154,7 +154,7 @@
 											</DropdownMenu.Trigger>
 											<DropdownMenu.Content>
 												<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-													<UpdateSubnet subnet={network.subnet} />
+													<UpdateSubnet bind:networks subnet={network.subnet} />
 												</DropdownMenu.Item>
 											</DropdownMenu.Content>
 										</DropdownMenu.Root>

@@ -7,6 +7,7 @@
 	import {
 		Nexus,
 		type Application_Chart,
+		type Application_Release,
 		type CreateReleaseRequest,
 		type Facility_Info
 	} from '$gen/api/nexus/v1/nexus_pb';
@@ -19,8 +20,10 @@
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 
 	let {
+		releases = $bindable(),
 		chart
 	}: {
+		releases: Application_Release[];
 		chart: Application_Chart;
 	} = $props();
 
@@ -209,6 +212,9 @@
 						.createRelease(createReleaseRequest)
 						.then((r) => {
 							toast.info(`Create ${r.name} success`);
+							client.listReleases({}).then((r) => {
+								releases = r.releases;
+							});
 						})
 						.catch((e) => {
 							toast.error(`Fail to create ${createReleaseRequest.name}: ${e.toString()}`);

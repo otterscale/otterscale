@@ -10,9 +10,11 @@
 	import { getContext } from 'svelte';
 
 	let {
+		machines = $bindable(),
 		machine,
 		disabled
 	}: {
+		machines: Machine[];
 		machine: Machine;
 		disabled: boolean;
 	} = $props();
@@ -69,6 +71,9 @@
 						.deleteMachine(deleteMachineRequest)
 						.then((r) => {
 							toast.info(`Delete ${machine.fqdn} success`);
+							client.listMachines({}).then((r) => {
+								machines = r.machines;
+							});
 						})
 						.catch((e) => {
 							toast.error(`Fail to delete ${machine.fqdn}: ${e.toString()}`);

@@ -18,9 +18,11 @@
 	import { getContext, onMount } from 'svelte';
 
 	let {
+		machines = $bindable(),
 		machine,
 		disabled
 	}: {
+		machines: Machine[];
 		machine: Machine;
 		disabled: boolean;
 	} = $props();
@@ -172,6 +174,9 @@
 						.createMachine(createMachineRequest)
 						.then((r) => {
 							toast.info(`Create ${r.fqdn} success`);
+							client.listMachines({}).then((r) => {
+								machines = r.machines;
+							});
 						})
 						.catch((e) => {
 							toast.error(`Fail to create ${machine.fqdn}: ${e.toString()}`);

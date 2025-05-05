@@ -9,7 +9,7 @@
 	import { getContext } from 'svelte';
 
 	let {
-		machine,
+		machine = $bindable(),
 		disabled
 	}: {
 		machine: Machine;
@@ -62,12 +62,13 @@
 						.powerOffMachine(powerOffMachineRequest)
 						.then((r) => {
 							toast.info(`Turn off ${machine.fqdn}`);
+							client.getMachine({ id: machine.id }).then((r) => {
+								machine = r;
+							});
 						})
 						.catch((e) => {
 							toast.info(`Fail to turn off ${machine.fqdn}`);
 						});
-					// toast.info(`Power ${machine.fqdn}`);
-					console.log(powerOffMachineRequest);
 					reset();
 					close();
 				}}

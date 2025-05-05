@@ -9,12 +9,17 @@
 		Nexus,
 		type Network_Fabric,
 		type UpdateVLANRequest,
-		type Network_VLAN
+		type Network_VLAN,
+		type Network
 	} from '$gen/api/nexus/v1/nexus_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 
-	let { fabric, vlan }: { fabric: Network_Fabric; vlan: Network_VLAN } = $props();
+	let {
+		networks = $bindable(),
+		fabric,
+		vlan
+	}: { networks: Network[]; fabric: Network_Fabric; vlan: Network_VLAN } = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -80,6 +85,9 @@
 						.updateVLAN(updateVLANRequest)
 						.then((r) => {
 							toast.info(`Update ${r.name} success`);
+							client.listNetworks({}).then((r) => {
+								networks = r.networks;
+							});
 						})
 						.catch((e) => {
 							toast.error(`Fail to update ${vlan.name}: ${e.toString()}`);

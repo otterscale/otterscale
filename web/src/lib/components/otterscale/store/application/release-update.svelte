@@ -14,9 +14,11 @@
 	import { ReleaseValuesEdit } from '$lib/components/otterscale/index';
 
 	let {
+		releases = $bindable(),
 		release,
 		valuesYaml
 	}: {
+		releases: Application_Release[];
 		release: Application_Release;
 		valuesYaml: string;
 	} = $props();
@@ -97,11 +99,18 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.updateRelease(updateReleaseRequest).then((r) => {
-						toast.info(`Update ${updateReleaseRequest.name}.`);
-					});
-					// toast.info(`Update ${updateReleaseRequest.name}.`);
-					console.log(updateReleaseRequest);
+					client
+						.updateRelease(updateReleaseRequest)
+						.then((r) => {
+							toast.info(`Update ${updateReleaseRequest.name}.`);
+							client.listReleases({}).then((r) => {
+								releases = r.releases;
+							});
+						})
+						.catch((e) => {
+							toast.error(`Fail to update ${updateReleaseRequest.name}: ${e.toString()}`);
+						});
+
 					reset();
 					close();
 				}}>Confirm</AlertDialog.Action

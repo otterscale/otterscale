@@ -85,7 +85,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each machines as machine}
+				{#each machines as machine, index}
 					<Table.Row class="*:truncate *:whitespace-nowrap [&>td]:align-top">
 						<Table.Cell>
 							<div class="flex justify-between">
@@ -160,12 +160,14 @@
 								<DropdownMenu.Content>
 									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
 										<CreateMachine
+											bind:machines
 											{machine}
 											disabled={!!machine.workloadAnnotations['juju-model-uuid']}
 										/>
 									</DropdownMenu.Item>
 									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
 										<DeleteMachine
+											bind:machines
 											{machine}
 											disabled={!machine.workloadAnnotations['juju-model-uuid']}
 										/>
@@ -173,7 +175,7 @@
 									<DropdownMenu.Separator />
 									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
 										<PowerOffMachine
-											{machine}
+											bind:machine={machines[index]}
 											disabled={machine.powerState.toLowerCase() !== 'on'}
 										/>
 									</DropdownMenu.Item>

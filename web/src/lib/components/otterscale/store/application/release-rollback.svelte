@@ -12,8 +12,10 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 
 	let {
+		releases = $bindable(),
 		release
 	}: {
+		releases: Application_Release[];
 		release: Application_Release;
 	} = $props();
 
@@ -61,11 +63,17 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client.rollbackRelease(rollbackReleaseRequest).then((r) => {
-						toast.info(`Rollback ${rollbackReleaseRequest.name}`);
-					});
-					// toast.info(`Rollback ${rollbackReleaseRequest.name}`);
-					console.log(rollbackReleaseRequest);
+					client
+						.rollbackRelease(rollbackReleaseRequest)
+						.then((r) => {
+							toast.info(`Rollback ${rollbackReleaseRequest.name}`);
+							client.listReleases({}).then((r) => {
+								releases = r.releases;
+							});
+						})
+						.catch((e) => {
+							toast.error(`Fail to rollback ${rollbackReleaseRequest.name}: ${e.toString()}`);
+						});
 					reset();
 					close();
 				}}>Confirm</AlertDialog.Action

@@ -5,9 +5,11 @@
 	import { Input } from '$lib/components/ui/input';
 	import { getContext } from 'svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Nexus, type CreateScopeRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import { Nexus, type CreateScopeRequest, type Scope } from '$gen/api/nexus/v1/nexus_pb';
 	import { toast } from 'svelte-sonner';
 	import { Button } from '$lib/components/ui/button';
+
+	let { scopes = $bindable() }: { scopes: Scope[] } = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -48,6 +50,9 @@
 						.createScope(createScopeRequest)
 						.then((r) => {
 							toast.info(`Create ${r.name} success`);
+							client.listScopes({}).then((r) => {
+								scopes = r.scopes;
+							});
 						})
 						.catch((e) => {
 							toast.error(`Fail to create ${createScopeRequest.name}: ${e.toString()}`);

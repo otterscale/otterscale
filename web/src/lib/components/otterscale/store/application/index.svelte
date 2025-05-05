@@ -84,13 +84,14 @@
 						>
 							<div class="flex h-full flex-col justify-between">
 								<StoreApplication
+									bind:releases
 									selectedChart={filteredChart}
 									selectedChartReleases={releasesFromChart.get(filteredChart.name)}
 								/>
 								<AlertDialog.Footer>
 									<AlertDialog.Cancel class="mr-auto">Close</AlertDialog.Cancel>
 									<AlertDialog.Action>
-										<ReleaseCreate chart={filteredChart} />
+										<ReleaseCreate bind:releases chart={filteredChart} />
 									</AlertDialog.Action>
 								</AlertDialog.Footer>
 							</div>

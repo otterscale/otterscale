@@ -199,7 +199,7 @@
 									</span>
 								</Table.Cell>
 							</Table.Row>
-							{#each facilitiesByCategory as facilityByCategory}
+							{#each facilitiesByCategory as facilityByCategory, index}
 								<Table.Row class="border-none">
 									<Table.Cell>
 										<span class="flex items-center gap-1">
@@ -243,7 +243,10 @@
 												</DropdownMenu.Trigger>
 												<DropdownMenu.Content>
 													<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-														<AddFacilityUnits {scopeUuid} {facilityByCategory} />
+														<AddFacilityUnits
+															{scopeUuid}
+															bind:facilityByCategory={facilitiesByCategory[index]}
+														/>
 													</DropdownMenu.Item>
 												</DropdownMenu.Content>
 											</DropdownMenu.Root>
