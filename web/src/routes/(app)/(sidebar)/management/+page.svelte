@@ -1,26 +1,38 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Nexus, type Error } from '$gen/api/nexus/v1/nexus_pb';
+	import { Nexus, type Error, type Scope } from '$gen/api/nexus/v1/nexus_pb';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { Monitor } from '$lib/components/otterscale/index';
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
+	import * as Select from '$lib/components/ui/select/index.js';
+	import { Label } from '$lib/components/ui/label';
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
 
-	const errorsStore = writable<Error[]>([]);
-	const errorsLoading = writable(true);
+	const scopesStore = writable<Scope[]>([]);
+	const scopesLoading = writable(true);
 	async function fetchScopes() {
 		try {
-			const response = await client.verifyEnvironment({});
-			errorsStore.set(response.errors);
+			const response = await client.listScopes({});
+			scopesStore.set(response.scopes);
 		} catch (error) {
 			console.error('Error fetching:', error);
 		} finally {
-			errorsLoading.set(false);
+			scopesLoading.set(false);
 		}
 	}
+	async function createDefaultScope() {
+		try {
+			await client.createDefaultScope({});
+		} catch (error) {
+			console.error('Error creating:', error);
+		}
+	}
+	let selectedScope = $state({} as Scope | undefined);
+
+	// const errorsStore = writable<Error[]>([]);
 
 	// const machinesStore = writable<Machine[]>([]);
 	// const machinesLoading = writable(true);
@@ -35,15 +47,20 @@
 	// 	}
 	// }
 
-	let mounted = false;
+	let mounted = $state(false);
 	onMount(async () => {
 		try {
 			await fetchScopes();
-			errorsStore.set([
-				{ code: 'CEPH_NOT_FOUND' } as Error,
-				{ code: 'KUBERNETES_NOT_FOUND' } as Error,
-				{ code: 'PROMETHEUS_NOT_FOUND' } as Error
-			]);
+			if ($scopesStore.length === 0) {
+				await createDefaultScope();
+				await fetchScopes();
+			}
+			selectedScope = $scopesStore.find((s) => s.name === 'default');
+			// errorsStore.set([
+			// 	{ code: 'CEPH_NOT_FOUND' } as Error,
+			// 	{ code: 'KUBERNETES_NOT_FOUND' } as Error,
+			// 	{ code: 'PROMETHEUS_NOT_FOUND' } as Error
+			// ]);
 			// await fetchMachines();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
@@ -54,7 +71,45 @@
 </script>
 
 {#if mounted}
-	<Monitor errors={$errorsStore} />
+	{@render SelectScope()}
+	{#key selectedScope}
+		{#if selectedScope}
+			<Monitor scope={selectedScope} />
+		{/if}
+	{/key}
 {:else}
 	<PageLoading />
 {/if}
+
+{#snippet SelectScope()}
+	<div class="ml-auto flex items-center gap-2 p-4">
+		<Label for="scope">Scope</Label>
+		{#if $scopesLoading}
+			<p>Loading scopes...</p>
+		{:else}
+			<Select.Root type="single">
+				<Select.Trigger class="w-fit">
+					{#if selectedScope}
+						{selectedScope.name}
+					{:else}
+						Select
+					{/if}
+				</Select.Trigger>
+				<Select.Content>
+					{#if $scopesStore.length > 0}
+						{#each $scopesStore as scope}
+							<Select.Item
+								value={scope.uuid}
+								onclick={() => {
+									selectedScope = scope;
+								}}
+							>
+								{scope.name}
+							</Select.Item>
+						{/each}
+					{/if}
+				</Select.Content>
+			</Select.Root>
+		{/if}
+	</div>
+{/snippet}
