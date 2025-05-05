@@ -49,13 +49,11 @@
 					client
 						.updateFabric(updateFabricRequest)
 						.then((r) => {
-							toast.info(`Update ${fabric.name}`);
+							toast.info(`Update ${r.name} success`);
 						})
 						.catch((e) => {
-							toast.error(`Update ${fabric.name} fail`);
+							toast.error(`Fail to update ${fabric.name}: ${e.toString()}`);
 						});
-					// toast.info(`Update ${fabric.name}`);
-					console.log(updateFabricRequest);
 					reset();
 					close();
 				}}

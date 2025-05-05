@@ -66,16 +66,15 @@
 					client
 						.updatePackageRepository(updatePackageRepositoryRequest)
 						.then((r) => {
-							toast.info(`Update package repositories`);
+							toast.info(`Update package repositories success`);
 							client.getConfiguration({}).then((r) => {
 								configuration = r;
 							});
 						})
 						.catch((e) => {
-							toast.error(`Update package repositories fail`);
+							toast.error(`Fail to update package repositories: ${e.toString()}`);
 						});
-					// toast.info(`Update package repositories`);
-					console.log(updatePackageRepositoryRequest);
+
 					reset();
 					close();
 				}}

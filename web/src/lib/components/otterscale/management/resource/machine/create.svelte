@@ -171,13 +171,11 @@
 					client
 						.createMachine(createMachineRequest)
 						.then((r) => {
-							toast.info(`Create ${machine.fqdn}`);
+							toast.info(`Create ${r.fqdn} success`);
 						})
 						.catch((e) => {
-							toast.error(`Create ${machine.fqdn} fail`);
+							toast.error(`Fail to create ${machine.fqdn}: ${e.toString()}`);
 						});
-					// toast.info(`Create ${machine.fqdn}`);
-					console.log(createMachineRequest);
 					reset();
 					close();
 				}}

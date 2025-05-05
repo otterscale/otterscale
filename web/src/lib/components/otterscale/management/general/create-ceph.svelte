@@ -181,12 +181,12 @@
 					client
 						.createCeph(createCephRequest)
 						.then((r) => {
-							toast.info(`Create Ceph to ${createCephRequest.scopeUuid}`);
+							toast.info(`Create Ceph ${r.facilityName} to ${r.scopeName} success`);
 						})
 						.catch((e) => {
-							toast.error(`Create Ceph to ${createCephRequest.scopeUuid} fail`);
+							toast.error(`Fail to create Ceph: ${e.toString()}`);
 						});
-					console.log(createCephRequest);
+
 					reset();
 					close();
 				}}

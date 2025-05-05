@@ -47,13 +47,12 @@
 					client
 						.createScope(createScopeRequest)
 						.then((r) => {
-							toast.info(`Create ${createScopeRequest.name}`);
+							toast.info(`Create ${r.name} success`);
 						})
 						.catch((e) => {
-							toast.error(`Create ${createScopeRequest.name} fail`);
+							toast.error(`Fail to create ${createScopeRequest.name}: ${e.toString()}`);
 						});
-					// toast.info(`Create ${createScopeRequest.name}`);
-					console.log(createScopeRequest);
+
 					reset();
 					close();
 				}}

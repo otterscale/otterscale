@@ -117,13 +117,11 @@
 					client
 						.updateSubnet(updateSubnetRequest)
 						.then((r) => {
-							toast.info(`Update ${subnet.cidr}`);
+							toast.info(`Update ${r.cidr} success`);
 						})
 						.catch((e) => {
-							toast.error(`Update ${subnet.cidr} fail`);
+							toast.error(`Fail to update ${subnet.cidr}: ${e.toString()}`);
 						});
-					// toast.info(`Update ${subnet.cidr}`);
-					console.log(updateSubnetRequest);
 					reset();
 					close();
 				}}

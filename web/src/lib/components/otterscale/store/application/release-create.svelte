@@ -208,13 +208,11 @@
 					client
 						.createRelease(createReleaseRequest)
 						.then((r) => {
-							toast.info(`Create ${createReleaseRequest.name}.`);
+							toast.info(`Create ${r.name} success`);
 						})
 						.catch((e) => {
-							toast.error(`Create ${createReleaseRequest.name} error:`, e);
+							toast.error(`Fail to create ${createReleaseRequest.name}: ${e.toString()}`);
 						});
-					// toast.info(`Create ${createReleaseRequest.name}.`);
-					console.log(createReleaseRequest);
 					reset();
 					close();
 				}}>Confirm</AlertDialog.Action

@@ -68,13 +68,11 @@
 					client
 						.deleteMachine(deleteMachineRequest)
 						.then((r) => {
-							toast.info(`Delete ${machine.fqdn}`);
+							toast.info(`Delete ${machine.fqdn} success`);
 						})
 						.catch((e) => {
-							toast.error(`Delete ${machine.fqdn} fail`);
+							toast.error(`Fail to delete ${machine.fqdn}: ${e.toString()}`);
 						});
-					// toast.info(`Delete ${machine.fqdn}`);
-					console.log(deleteMachineRequest);
 					reset();
 					close();
 				}}

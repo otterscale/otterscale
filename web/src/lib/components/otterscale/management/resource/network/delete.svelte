@@ -52,13 +52,11 @@
 					client
 						.deleteNetwork(deleteNetworkRequest)
 						.then((r) => {
-							toast.info(`Delete ${fabric.name}`);
+							toast.info(`Delete ${fabric.name} success`);
 						})
 						.catch((e) => {
-							toast.error(`Delete ${fabric.name} fail`);
+							toast.error(`Fail to delete ${fabric.name}: ${e.toString()}`);
 						});
-					// toast.info(`Delete ${fabric.name}`);
-					console.log(deleteNetworkRequest);
 					reset();
 					close();
 				}}

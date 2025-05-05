@@ -74,13 +74,11 @@
 					client
 						.createIPRange(createIPRangeRequest)
 						.then((r) => {
-							toast.info(`Create reserved ip range to ${subnet.cidr}`);
+							toast.info(`Create reserved ip range to ${subnet.cidr} success`);
 						})
 						.catch((e) => {
-							toast.error(`Create reserved ip range to ${subnet.cidr} fail`);
+							toast.error(`Fail to create reserved ip range to ${subnet.cidr}: ${e.toString()}`);
 						});
-					// toast.info(`Create reserved ip range to ${subnet.cidr}`);
-					console.log(createIPRangeRequest);
 					reset();
 					close();
 				}}

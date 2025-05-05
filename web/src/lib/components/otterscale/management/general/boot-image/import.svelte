@@ -78,12 +78,11 @@
 						client
 							.importBootImages(importBootImageRequest)
 							.then((r) => {
-								toast.info(`Import boot images`);
+								toast.info(`Import boot images success`);
 							})
 							.catch((e) => {
-								toast.error(`Import boot images fail`);
+								toast.error(`Fail to import boot images: ${e.toString()}`);
 							});
-						console.log(importBootImageRequest);
 						reset();
 						close();
 					}}

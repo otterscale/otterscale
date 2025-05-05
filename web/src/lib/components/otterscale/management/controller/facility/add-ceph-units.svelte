@@ -128,13 +128,14 @@
 					client
 						.addCephUnits(addCephUnitsRequest)
 						.then((r) => {
-							toast.info(`Add units for ${addCephUnitsRequest.facilityName}`);
+							toast.info(`Add units for ${addCephUnitsRequest.facilityName} success`);
 						})
 						.catch((e) => {
-							toast.error(`Add units for ${addCephUnitsRequest.facilityName} fail`);
+							toast.error(
+								`Fail to add units for ${addCephUnitsRequest.facilityName}: ${e.toString()}`
+							);
 						});
-					// console.log(addCephUnitsRequest);
-					toast.info(`Add units for ${addCephUnitsRequest.facilityName}`);
+
 					reset();
 					close();
 				}}

@@ -79,13 +79,11 @@
 					client
 						.updateVLAN(updateVLANRequest)
 						.then((r) => {
-							toast.info(`Update ${vlan.name}`);
+							toast.info(`Update ${r.name} success`);
 						})
 						.catch((e) => {
-							toast.error(`Update ${vlan.name} fail`);
+							toast.error(`Fail to update ${vlan.name}: ${e.toString()}`);
 						});
-					// toast.info(`Update ${vlan.name}`);
-					console.log(updateVLANRequest);
 					reset();
 					close();
 				}}

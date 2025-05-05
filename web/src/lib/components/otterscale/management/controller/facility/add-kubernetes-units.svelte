@@ -136,12 +136,13 @@
 					client
 						.addKubernetesUnits(addKubernetesUnitsRequest)
 						.then((r) => {
-							toast.info(`Add units for ${addKubernetesUnitsRequest.facilityName}`);
+							toast.info(`Add units for ${addKubernetesUnitsRequest.facilityName} success`);
 						})
 						.catch((e) => {
-							toast.error(`Add units for ${addKubernetesUnitsRequest.facilityName} fail`);
+							toast.error(
+								`Fail to add units for ${addKubernetesUnitsRequest.facilityName}: ${e.toString()}`
+							);
 						});
-					// console.log(addKubernetesUnitsRequest);
 					reset();
 					close();
 				}}

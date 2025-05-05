@@ -93,13 +93,11 @@
 					client
 						.createNetwork(createNetworkRequest)
 						.then((r) => {
-							toast.info(`Create ${createNetworkRequest.cidr}`);
+							toast.info(`Create ${createNetworkRequest.cidr} success`);
 						})
 						.catch((e) => {
-							toast.error(`Create ${createNetworkRequest.cidr} fail`);
+							toast.error(`Fail to create ${createNetworkRequest.cidr}: ${e.toString()}`);
 						});
-					// toast.info(`Create ${createNetworkRequest.cidr}`);
-					console.log(createNetworkRequest);
 					reset();
 					close();
 				}}

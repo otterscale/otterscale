@@ -56,13 +56,11 @@
 					client
 						.powerOnMachine(powerOnMachineRequest)
 						.then((r) => {
-							toast.info(`Turn on ${machine.fqdn}`);
+							toast.info(`Turn on ${r.fqdn} success`);
 						})
 						.catch((e) => {
-							toast.error(`Fail to turn on ${machine.fqdn}`);
+							toast.error(`Fail to turn on ${machine.fqdn}: ${e.toString()}`);
 						});
-					// toast.info(`Power ${machine.fqdn}`);
-					console.log(powerOnMachineRequest);
 					reset();
 					close();
 				}}
