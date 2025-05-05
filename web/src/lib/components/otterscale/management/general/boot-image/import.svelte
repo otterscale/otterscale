@@ -6,6 +6,7 @@
 	import { Nexus, type ImportBootImagesRequest } from '$gen/api/nexus/v1/nexus_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { toast } from 'svelte-sonner';
+	import { onMount } from 'svelte';
 
 	let {
 		isImportingBootImages = $bindable()
@@ -29,7 +30,7 @@
 	}
 
 	async function fetchIsImportingBootImages() {
-		await new Promise((resolve) => setTimeout(resolve, 3000));
+		await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 5 seconds between checks
 
 		while (true) {
 			const response = await client.isImportingBootImages({});
@@ -43,13 +44,15 @@
 			}
 		}
 	}
+
+	onMount(() => {});
 </script>
 
 {#if isImportingBootImages == true}
 	{#await fetchIsImportingBootImages()}
 		<span class="flex items-center gap-2 text-sm text-muted-foreground">
 			<Icon icon="ph:spinner" class="size-5 animate-spin" />
-			Importing...
+			Importing
 		</span>
 	{/await}
 {:else}

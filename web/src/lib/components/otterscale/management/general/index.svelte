@@ -6,7 +6,9 @@
 	import SetBootImageAsDefault from './boot-image/set-default.svelte';
 	import CreateTag from './tag/create.svelte';
 	import DeleteTag from './tag/delete.svelte';
-
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext } from 'svelte';
+	import { Nexus, type ImportBootImagesRequest } from '$gen/api/nexus/v1/nexus_pb';
 	import Icon from '@iconify/svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table/index.js';
@@ -26,7 +28,8 @@
 		tags: Tag[];
 	} = $props();
 
-	let isImportingBootImages = $state(false);
+	const transport: Transport = getContext('transportNEW');
+	const client = createClient(Nexus, transport);
 </script>
 
 <div class="grid gap-4 p-4">
@@ -113,9 +116,14 @@
 			<span class="flex justify-end py-2">
 				<CreateBootImage bind:configuration />
 
-				{#key isImportingBootImages}
-					<ImportBootImage bind:isImportingBootImages />
-				{/key}
+				{#await client.isImportingBootImages({})}
+					<span class="flex items-center gap-2 text-sm text-muted-foreground">
+						<Icon icon="ph:spinner" class="size-5 animate-spin" />
+						Checking
+					</span>
+				{:then response}
+					<ImportBootImage isImportingBootImages={response.importing} />
+				{/await}
 			</span>
 			<Table.Root>
 				<Table.Header class="bg-muted/50">
