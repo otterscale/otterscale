@@ -133,7 +133,7 @@
 {#if !mounted}
 	<PageLoading />
 {:else}
-	<main class="grid h-[calc(100vh_-_theme(spacing.16))] p-4">
+	<main class="grid h-[calc(100vh_-_theme(spacing.16))]">
 		{#if $errorsStore.some((e) => isCephError(e) || isKubernetesError(e))}
 			<div class="flex w-full flex-col items-center gap-4">
 				{#if scope}

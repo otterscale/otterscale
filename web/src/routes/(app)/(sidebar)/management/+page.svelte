@@ -71,18 +71,20 @@
 </script>
 
 {#if mounted}
-	{@render SelectScope()}
-	{#key selectedScope}
-		{#if selectedScope}
-			<Monitor scope={selectedScope} />
-		{/if}
-	{/key}
+	<div class="flex flex-col gap-2">
+		{@render SelectScope()}
+		{#key selectedScope}
+			{#if selectedScope}
+				<Monitor scope={selectedScope} />
+			{/if}
+		{/key}
+	</div>
 {:else}
 	<PageLoading />
 {/if}
 
 {#snippet SelectScope()}
-	<div class="ml-auto flex items-center gap-2 p-4">
+	<div class="ml-auto flex items-center gap-2">
 		<Label for="scope">Scope</Label>
 		{#if $scopesLoading}
 			<p>Loading scopes...</p>
