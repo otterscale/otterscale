@@ -11,6 +11,9 @@ import (
 )
 
 func (a *NexusApp) VerifyEnvironment(ctx context.Context, req *connect.Request[pb.VerifyEnvironmentRequest]) (*connect.Response[pb.VerifyEnvironmentResponse], error) {
+	if err := a.svc.CreateDefaultScope(ctx); err != nil {
+		return nil, err
+	}
 	es, err := a.svc.VerifyEnvironment(ctx)
 	if err != nil {
 		return nil, err
