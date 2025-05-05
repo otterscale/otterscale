@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -18,17 +19,10 @@ func (s *NexusService) ListMachines(ctx context.Context, scopeUUID string) ([]mo
 	if err != nil {
 		return nil, err
 	}
-	machines := []model.Machine{}
-	for i := range ms {
-		uuid, err := getJujuModelUUID(ms[i].WorkloadAnnotations)
-		if err != nil {
-			continue
-		}
-		if strings.Contains(uuid, scopeUUID) { // empty
-			machines = append(machines, ms[i])
-		}
-	}
-	return machines, nil
+	return slices.DeleteFunc(ms, func(m model.Machine) bool {
+		modelUUID, _ := getJujuModelUUID(m.WorkloadAnnotations)
+		return !strings.Contains(modelUUID, scopeUUID) // empty
+	}), nil
 }
 
 func (s *NexusService) GetMachine(ctx context.Context, id string) (*model.Machine, error) {

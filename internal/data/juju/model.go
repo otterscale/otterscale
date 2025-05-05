@@ -3,6 +3,7 @@ package juju
 import (
 	"context"
 	"errors"
+	"slices"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -36,7 +37,13 @@ func (r *model) List(_ context.Context) ([]base.UserModelSummary, error) {
 	if err != nil {
 		return nil, err
 	}
-	return modelmanager.NewClient(conn).ListModelSummaries(r.user, true)
+	ms, err := modelmanager.NewClient(conn).ListModelSummaries(r.user, true)
+	if err != nil {
+		return nil, err
+	}
+	return slices.DeleteFunc(ms, func(ums base.UserModelSummary) bool {
+		return ums.Name == "controller"
+	}), nil
 }
 
 func (r *model) Create(_ context.Context, name string) (*base.ModelInfo, error) {
