@@ -21,5 +21,22 @@
 	"avatar_superuser": "Superuser",
 	"avatar_recents": "Recents",
 	"avatar_favorites": "Favorites",
-	"avatar_sign_out": "Sign out"
+	"avatar_sign_out": "Sign out",
+	"dashboard": "Dashboard",
+	"orchestration": "Orchestration",
+	"management": "Management",
+	"model": "Model",
+	"application": "Application",
+	"facility": "Facility",
+	"machine": "Machine",
+	"network": "Network",
+	"configuration": "Configuration",
+	"store": "Store",
+	"settings": "Settings",
+	"support": "Support",
+	"about": "About",
+	"shortcut": "Shortcut",
+	"platform": "Platform",
+	"general": "General",
+	"machines": "Machines"
 }

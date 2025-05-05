@@ -15,6 +15,8 @@
 	let defaultKubernetes = $state(kuberneteses[0] as Facility_Info);
 </script>
 
+<ManagementApplications />
+<!-- 
 <div class="grid gap-2">
 	<span class="flex items-center gap-2 p-4">
 		Kubernetes
@@ -43,4 +45,4 @@
 			facilityName={defaultKubernetes.facilityName}
 		/>
 	{/key}
-</div>
+</div> -->

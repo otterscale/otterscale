@@ -30,7 +30,7 @@
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger class="flex items-center gap-1">
-		<Button variant="ghost" class="flex items-center gap-1">
+		<Button>
 			<Icon icon="ph:plus" /> Scope
 		</Button>
 	</AlertDialog.Trigger>

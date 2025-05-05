@@ -8,11 +8,15 @@
 	import { capitalizeFirstLetter } from 'better-auth';
 	import type { PageData } from '../../$types';
 	import type { Snippet } from 'svelte';
+	import { i18n } from '$lib/i18n';
 
 	let { data, children }: { data: PageData; children: Snippet<[]> } = $props();
 
 	let breadcrumbs = $derived.by(() => {
-		return page.url.pathname.split('/').filter((e) => e);
+		return i18n
+			.route(page.url.pathname)
+			.split('/')
+			.filter((e) => e);
 	});
 
 	// TODO: recently visited pages

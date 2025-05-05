@@ -9,41 +9,91 @@
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
 	import Icon from '@iconify/svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Nexus, type Application, type StorageClass } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		Nexus,
+		type Application,
+		type Facility_Info,
+		type Scope,
+		type StorageClass
+	} from '$gen/api/nexus/v1/nexus_pb';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { page } from '$app/state';
 	import CreateStorageClasses from './create-storage-classes.svelte';
+	import {
+		ManagementKubernetesComboBox,
+		ManagementScopeComboBox
+	} from '$lib/components/otterscale/index';
 
-	let {
-		scopeUuid,
-		facilityName
-	}: {
-		scopeUuid: string;
-		facilityName: string;
-	} = $props();
+	let scopeUuid = $state('');
+	let facilityName = $state('');
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
 
-	const applicationsStore = writable<Application[]>();
+	const scopesStore = writable<Scope[]>([]);
+	const scopesLoading = writable(true);
+	async function fetchScopes() {
+		try {
+			const response = await client.listScopes({});
+			scopesStore.set(response.scopes);
+
+			let defaultScope = response.scopes.find((s) => s.name === 'default');
+			if (defaultScope) {
+				scopeUuid = defaultScope.uuid;
+			}
+		} catch (error) {
+			console.error('Error fetching:', error);
+		} finally {
+			scopesLoading.set(false);
+		}
+	}
+
+	const kubernetesesStore = writable<Facility_Info[]>();
+	async function fetchKuberneteses() {
+		try {
+			const response = await client.listKuberneteses({
+				scopeUuid: scopeUuid
+			});
+
+			kubernetesesStore.set(response.kuberneteses);
+
+			let defaultKubernetes = response.kuberneteses.find((s) => s.scopeUuid === scopeUuid);
+			if (defaultKubernetes) {
+				facilityName = defaultKubernetes.facilityName;
+			}
+		} catch (error) {
+			console.error('Error fetching kubernetes:', error);
+		}
+	}
+
+	const applicationsStore = writable<Application[]>([]);
 	const applicationsIsLoading = writable(true);
 	async function fetchApplications() {
 		try {
+			if (facilityName === '') {
+				throw new Error('facilityName is empty');
+			}
 			const response = await client.listApplications({
 				scopeUuid: scopeUuid,
 				facilityName: facilityName
 			});
 
 			applicationsStore.set(response.applications);
+
+			if (response.applications && response.applications[0]) {
+				selectedValue = response.applications[0].type;
+			}
 		} catch (error) {
-			console.error('Error fetching machine:', error);
+			applicationsStore.set([]);
+			console.error('Error fetching applications:', error);
 		} finally {
 			applicationsIsLoading.set(false);
 		}
 	}
+
 	async function refreshApplications() {
 		while (page.url.searchParams.get('intervals')) {
 			await new Promise((resolve) =>
@@ -59,15 +109,53 @@
 
 				applicationsStore.set(response.applications);
 			} catch (error) {
-				console.error('Error fetching machine:', error);
+				console.error('Error fetching applications:', error);
 			}
 		}
 	}
 
+	const storageClassesStore = writable<StorageClass[]>([]);
+	const storageClassesLoading = writable(true);
+	async function fetchStorageClasses() {
+		try {
+			const response = await client.listStorageClasses({
+				scopeUuid: scopeUuid,
+				facilityName: facilityName
+			});
+			storageClassesStore.set(response.storageClasses);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		} finally {
+			storageClassesLoading.set(false);
+		}
+	}
+	async function refreshStorageClasses() {
+		while (page.url.searchParams.get('intervals')) {
+			await new Promise((resolve) =>
+				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
+			);
+			console.log(`Refresh storage classes`);
+
+			try {
+				const response = await client.listStorageClasses({
+					scopeUuid: scopeUuid,
+					facilityName: facilityName
+				});
+				storageClassesStore.set(response.storageClasses);
+			} catch (error) {
+				console.error('Error fetching:', error);
+			}
+		}
+	}
+
+	let selectedValue = $state('');
+
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
-			await fetchApplications();
+			await fetchScopes()
+				.then(async () => await fetchKuberneteses())
+				.then(async () => await fetchApplications());
 			refreshApplications();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
@@ -75,38 +163,54 @@
 
 		mounted = true;
 	});
+
+	async function handleChange() {
+		await fetchKuberneteses().then(async () => await fetchApplications());
+	}
 </script>
 
 {#if !mounted}
 	<PageLoading />
-{:else if !$applicationsStore}
-	Error
-{:else if $applicationsStore.length == 0}
-	{@render NoApplicationHandler()}
-{:else if $applicationsStore.length > 0}
-	{@const types = new Set($applicationsStore.map((a) => a.type))}
-	{@const firstType = $applicationsStore[0].type}
+	<!-- {:else if facilityName === ''} -->
+	<!-- {@render NoApplicationHandler()} -->
+{:else}
+	{@const applicationsByType = $applicationsStore.filter((a) => a.type === selectedValue)}
+	{@const sortedApplicationsByType = applicationsByType.sort((previous, present) =>
+		previous.namespace.localeCompare(present.namespace)
+	)}
+	{@render Statistics(selectedValue, sortedApplicationsByType)}
 
-	<div class="-mt-2">
-		<Tabs.Root value={firstType}>
-			<div class="px-4">
-				<Tabs.List>
-					{#each [...types] as type}
-						<Tabs.Trigger value={type} class="flex items-start gap-1">
-							{type}
-							{@render Notification(type)}
-						</Tabs.Trigger>
-					{/each}
-				</Tabs.List>
+	{@const types = new Set($applicationsStore.map((a) => a.type))}
+	<div class="py-2">
+		<Tabs.Root bind:value={selectedValue}>
+			<div class="flex justify-between">
+				<div>
+					{#if $applicationsStore.length > 0}
+						<Tabs.List>
+							{#each [...types] as type}
+								<Tabs.Trigger value={type} class="flex items-start gap-1">
+									{type}
+									{@render Notification(type)}
+								</Tabs.Trigger>
+							{/each}
+						</Tabs.List>
+					{/if}
+				</div>
+				<ManagementScopeComboBox
+					scopes={$scopesStore}
+					bind:selected={scopeUuid}
+					onSelect={handleChange}
+				/>
 			</div>
+			{#if $applicationsStore.length === 0}
+				{@render NoApplicationHandler()}
+			{/if}
 			{#each [...types] as type}
 				{@const applicationsByType = $applicationsStore.filter((a) => a.type === type)}
 				{@const sortedApplicationsByType = applicationsByType.sort((previous, present) =>
 					previous.namespace.localeCompare(present.namespace)
 				)}
 				<Tabs.Content value={type}>
-					{@render Statistics(type, sortedApplicationsByType)}
-
 					<div class="grid gap-2 p-4">
 						<Table.Root>
 							<Table.Header class="bg-muted/50">
@@ -126,7 +230,7 @@
 									<Table.Row class="*:text-sm">
 										<Table.Cell>
 											<a
-												href={`/management/scope/${scopeUuid}/facility/${facilityName}/namespace/${application.namespace}/application/${application.name}?intervals=15`}
+												href={`/management/facility/${facilityName}/namespace/${application.namespace}/application/${application.name}?scope=${scopeUuid}&intervals=15`}
 											>
 												<span class="flex items-center gap-1">
 													{application.name}
@@ -211,7 +315,7 @@
 		0
 	)}
 	{@const healthByType = (numberOfHealthApplicationsByType * 100) / numberOApplicationsByType || 0}
-	<div class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
+	<div class="grid grid-cols-4 gap-3">
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>APPLICATION</Card.Title>
@@ -266,10 +370,8 @@
 {/snippet}
 
 {#snippet NoApplicationHandler()}
-	<div class="py-2">
-		<Alert.Root
-			class="absolute z-10 flex w-[calc(100vw_-_theme(spacing.72))] justify-between bg-blue-50 opacity-90"
-		>
+	<div class="py-4">
+		<Alert.Root class="flex justify-between bg-blue-50 opacity-90">
 			<span class="flex items-center gap-2">
 				<Icon icon="ph:info" class="size-10" />
 				<span>
@@ -281,50 +383,5 @@
 			</span>
 			<Button variant="outline" class="text-sm">Go to Store</Button>
 		</Alert.Root>
-		<Tabs.Root>
-			<Tabs.List class="flex justify-start gap-2 bg-transparent">
-				{#each Array(3) as _}
-					<Skeleton class="h-6 w-32 rounded-lg" />
-				{/each}
-			</Tabs.List>
-			<div class="mt-4">
-				<div class="mb-4 grid grid-cols-4 gap-3">
-					{#each Array(3) as _}
-						<Card.Root class="border-none shadow-none">
-							<Card.Header>
-								<Skeleton class="h-6 w-24" />
-							</Card.Header>
-							<Card.Content>
-								<Skeleton class="h-16 w-full" />
-							</Card.Content>
-						</Card.Root>
-					{/each}
-				</div>
-				<div class="grid gap-2">
-					<Table.Root>
-						<Table.Header>
-							<Table.Row>
-								{#each Array(5) as _}
-									<Table.Head>
-										<Skeleton class="h-4 w-20" />
-									</Table.Head>
-								{/each}
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							{#each Array(9) as _}
-								<Table.Row>
-									{#each Array(8) as _}
-										<Table.Cell>
-											<Skeleton class="h-4 w-full" />
-										</Table.Cell>
-									{/each}
-								</Table.Row>
-							{/each}
-						</Table.Body>
-					</Table.Root>
-				</div>
-			</div>
-		</Tabs.Root>
 	</div>
 {/snippet}

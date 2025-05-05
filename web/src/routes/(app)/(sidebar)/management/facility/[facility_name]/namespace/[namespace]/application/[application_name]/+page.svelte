@@ -15,7 +15,7 @@
 	async function fetchApplications() {
 		try {
 			const response = await client.getApplication({
-				scopeUuid: page.params.scope_uuid,
+				scopeUuid: page.url.searchParams.get('scope') || '',
 				facilityName: page.params.facility_name,
 				namespace: page.params.namespace,
 				name: page.params.application_name
@@ -36,7 +36,7 @@
 
 			try {
 				const response = await client.getApplication({
-					scopeUuid: page.params.scope_uuid,
+					scopeUuid: page.url.searchParams.get('scope') || '',
 					facilityName: page.params.facility_name,
 					namespace: page.params.namespace,
 					name: page.params.application_name

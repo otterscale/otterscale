@@ -40,8 +40,8 @@ export function createDateSeries<TKey extends string>(options: {
 }
 
 export const healthRawData = [
-    { type: 'error', namespace: 'prod/kubernetes-worker', total: (55 + 3 + 50), unhealth: (0), link: '/management/scope/2b28ecdc-51c7-4c50-8b39-ddeab98ddc14/facility/kubernetes-worker' },
-    { type: 'error', namespace: 'dev/kubernetes-worker', total: (32 + 31 + 15), unhealth: (30), link: '/management/scope/db23d197-9178-4202-874c-b9374bc9987e/facility/kubernetes-worker' }
+    { type: 'error', namespace: 'prod/kubernetes-worker', total: (55 + 3 + 50), unhealth: (0), link: '/management/facility/kubernetes-worker?scope=2b28ecdc-51c7-4c50-8b39-ddeab98ddc14' },
+    { type: 'error', namespace: 'dev/kubernetes-worker', total: (32 + 31 + 15), unhealth: (30), link: '/management/facility/kubernetes-worker?scope=db23d197-9178-4202-874c-b9374bc9987e' }
 ]
 
 export const latencies = createDateSeries({

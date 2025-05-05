@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import Section from './section.svelte';
 	import Namespace from './namespace.svelte';
 	import Footer from './footer.svelte';
@@ -86,56 +87,56 @@
 		],
 		platforms: [
 			{
-				title: 'Monitor',
+				title: m.dashboard(),
 				url: '/management?intervals=30',
 				icon: 'ph:gauge'
 			},
 			{
-				title: 'Orchestration',
+				title: m.orchestration(),
 				url: '/orchestration',
 				icon: 'ph:tree-structure'
 			},
 			{
-				title: 'Management',
+				title: m.management(),
 				url: '#',
 				icon: 'ph:command',
 				isActive: true,
 				items: [
 					{
-						title: 'Model',
-						url: '#'
+						title: m.model(),
+						url: '/'
 					},
 					{
-						title: 'Application',
+						title: m.application(),
 						url: '/management/application'
 					},
 					{
-						title: 'Facility',
-						url: '/management/scope'
+						title: m.facility(),
+						url: '/management/facility'
 					},
 					{
-						title: 'Machine',
+						title: m.machine(),
 						url: '/management/machine?intervals=15'
 					},
 					{
-						title: 'Network',
+						title: m.network(),
 						url: '/management/network'
 					},
 					{
-						title: 'General',
+						title: m.configuration(),
 						url: '/management/general'
 					}
 				]
 			},
 			{
-				title: 'Market',
+				title: m.store(),
 				url: '/market',
 				icon: 'ph:magnifying-glass'
 			}
 		],
 		general: [
 			{
-				title: 'Settings',
+				title: m.settings(),
 				url: '#',
 				icon: 'ph:gear',
 				items: [
@@ -164,12 +165,12 @@
 		],
 		footers: [
 			{
-				title: 'Support',
+				title: m.support(),
 				url: 'https://openhdc.github.io',
 				icon: 'ph:lifebuoy'
 			},
 			{
-				title: 'About',
+				title: m.about(),
 				url: '/about',
 				icon: 'ph:info'
 			}
@@ -200,10 +201,10 @@
 		<Namespace namespaces={data.namespaces} />
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<Section label="Shortcut" items={data.shortcuts} />
+		<Section label={m.shortcut()} items={data.shortcuts} />
 		<!-- <Section label="Alanysis" items={data.analysis} /> -->
-		<Section label="Platform" items={data.platforms} />
-		<Section label="General" items={data.general} />
+		<Section label={m.platform()} items={data.platforms} />
+		<Section label={m.general()} items={data.general} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<Sidebar.Separator />

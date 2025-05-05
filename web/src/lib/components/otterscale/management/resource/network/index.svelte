@@ -228,7 +228,7 @@
 	{@const Availability = (numberOfAvailableSubnet * 100) / numberOfSubnet || 0}
 	{@const rateOfDHCPOn = (numberOfDHCPOn * 100) / numberOfFabrics || 0}
 
-	<div class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
+	<div class="grid grid-cols-4 gap-3">
 		<Card.Root>
 			<Card.Header class="h-10">
 				<Card.Title>NETWORK</Card.Title>

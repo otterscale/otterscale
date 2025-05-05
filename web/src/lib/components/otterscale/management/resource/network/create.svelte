@@ -32,7 +32,7 @@
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger>
-		<Button variant="ghost" class="flex items-center gap-1">
+		<Button class="flex items-center gap-1">
 			<Icon icon="ph:plus" /> Network
 		</Button>
 	</AlertDialog.Trigger>

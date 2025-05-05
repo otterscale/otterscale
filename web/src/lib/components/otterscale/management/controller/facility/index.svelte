@@ -13,14 +13,19 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { ManagementFacilityActions } from '$lib/components/otterscale/index';
+	import {
+		ManagementScopeComboBox,
+		ManagementScopeCreate,
+		ManagementFacilityActions
+	} from '$lib/components/otterscale/index';
 
 	import {
 		Nexus,
 		type Facility,
+		type Facility_Info,
 		type Facility_Status,
 		type Facility_Unit,
-		type Machine
+		type Scope
 	} from '$gen/api/nexus/v1/nexus_pb';
 
 	import Icon from '@iconify/svelte';
@@ -29,14 +34,41 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table/index.js';
 
-	let {
-		scopeUuid
-	}: {
-		scopeUuid: string;
-	} = $props();
+	let scopeUuid = $state('');
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
+
+	const kubernetesesStore = writable<Facility_Info[]>([]);
+	async function fetchKuberneteses() {
+		try {
+			console.log('r', scopeUuid);
+			const response = await client.listKuberneteses({
+				scopeUuid: scopeUuid
+			});
+			kubernetesesStore.set(response.kuberneteses);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		}
+	}
+
+	const scopesStore = writable<Scope[]>([]);
+	const scopesLoading = writable(true);
+	async function fetchScopes() {
+		try {
+			const response = await client.listScopes({});
+			scopesStore.set(response.scopes);
+
+			let defaultScope = response.scopes.find((s) => s.name === 'default');
+			if (defaultScope) {
+				scopeUuid = defaultScope.uuid;
+			}
+		} catch (error) {
+			console.error('Error fetching:', error);
+		} finally {
+			scopesLoading.set(false);
+		}
+	}
 
 	const facilitiesStore = writable<Facility[]>([]);
 	const facilitiesLoading = writable(true);
@@ -113,9 +145,10 @@
 		)
 	);
 
-	let mounted = false;
+	let mounted = $state(false);
 	onMount(async () => {
 		try {
+			fetchScopes();
 			await fetchFacilities();
 			refreshFacilties();
 		} catch (error) {
@@ -124,6 +157,11 @@
 
 		mounted = true;
 	});
+
+	async function handleChange() {
+		await fetchFacilities();
+		await fetchKuberneteses();
+	}
 </script>
 
 {#snippet collapsibilityHandler(facilityCategory: string)}
@@ -154,6 +192,24 @@
 
 <main>
 	{@render StatisticFacilities($facilitiesStore)}
+
+	<div class="flex justify-end space-x-2 py-4">
+		{#if mounted}
+			{@const selected = $kubernetesesStore.find((k) => k.scopeUuid === scopeUuid)}
+			{#if selected}
+				<Button href="/management/facility/{selected.facilityName}?scope={selected.scopeUuid}">
+					Facility
+					<Icon icon="ph:arrow-right" />
+				</Button>
+			{/if}
+		{/if}
+		<ManagementScopeCreate />
+		<ManagementScopeComboBox
+			scopes={$scopesStore}
+			bind:selected={scopeUuid}
+			onSelect={handleChange}
+		/>
+	</div>
 
 	<div class="p-4">
 		<Table.Root>
@@ -208,7 +264,7 @@
 													{facilityByCategory.name}
 													{#if facilityByCategory.charmName.includes('kubernetes-control-plane')}
 														<a
-															href={`/management/scope/${scopeUuid}/facility/${facilityByCategory.name}`}
+															href={`/management/facility/${facilityByCategory.name}?scope=${scopeUuid}`}
 															target="_blank"
 														>
 															<Icon icon="ph:arrow-square-out" />
@@ -313,7 +369,7 @@
 		a.status ? a.status.state === 'active' : false
 	).length}
 	{@const health = (numberOfHealthApplications * 100) / numberOfApplications || 0}
-	<div class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
+	<div class="grid grid-cols-4 gap-4">
 		<Card.Root>
 			<Card.Header>
 				<Card.Title>FACILITY</Card.Title>

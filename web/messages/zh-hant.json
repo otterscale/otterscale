@@ -21,5 +21,22 @@
 	"avatar_superuser": "超級使用者",
 	"avatar_recents": "最近項目",
 	"avatar_favorites": "我的最愛",
-	"avatar_sign_out": "登出"
+	"avatar_sign_out": "登出",
+	"dashboard": "儀表板",
+	"orchestration": "編排",
+	"management": "管理",
+	"model": "模型",
+	"application": "應用程式",
+	"facility": "設施",
+	"machine": "機器",
+	"network": "網路",
+	"configuration": "組態",
+	"store": "商店",
+	"settings": "設定",
+	"support": "支援",
+	"about": "關於",
+	"shortcut": "捷徑",
+	"platform": "平台",
+	"general": "一般",
+	"machines": "機器"
 }

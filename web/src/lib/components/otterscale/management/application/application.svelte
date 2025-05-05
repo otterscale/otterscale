@@ -198,7 +198,7 @@
 		</Alert.Root>
 	{/if}
 	{@render Identifier()}
-	<div class="grid grid-cols-4 gap-3 *:border-none *:shadow-none">
+	<div class="grid grid-cols-4 gap-3">
 		{@render StatisticApplication(application)}
 	</div>
 

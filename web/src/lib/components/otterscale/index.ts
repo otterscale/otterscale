@@ -9,10 +9,12 @@ export { default as OrchestrationFlow } from "./orchestration.svelte";
 export { default as ManagementGeneral } from './management/general/index.svelte';
 
 export { default as ManagementFacilityController } from './management/controller/index.svelte';
+export { default as ManagementScopeCreate } from './management/controller/scope/create.svelte';
 export { default as ManagementScopes } from './management/controller/scope/index.svelte';
+export { default as ManagementScopeComboBox } from './management/controller/scope/combobox.svelte';
 export { default as ManagementFacilities } from './management/controller/facility/index.svelte';
 export { default as ManagementFacilityActions } from './management/controller/facility/actions/index.svelte';
-// export { default as ManagementScopeConfiguration } from './management/scope-configuration.svelte';
+export { default as ManagementKubernetesComboBox } from './management/controller/facility/combobox.svelte';
 
 export { default as ManagementNetworks } from './management/resource/network/index.svelte';
 export { default as ManagementMachines } from './management/resource/machine/index.svelte';

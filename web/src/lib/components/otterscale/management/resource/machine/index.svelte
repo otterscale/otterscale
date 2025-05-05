@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
 	import { page } from '$app/state';
 	import Icon from '@iconify/svelte';
 	import { Badge } from '$lib/components/ui/badge';
@@ -28,7 +29,7 @@
 	const client = createClient(Nexus, transport);
 
 	const tagStore = writable<Tag[]>();
-	async function listTags() {
+	async function fetchTags() {
 		try {
 			const response = await client.listTags({});
 			tagStore.set(response.tags);
@@ -55,7 +56,7 @@
 
 	onMount(async () => {
 		try {
-			listTags();
+			await fetchTags();
 			refreshMachines();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
@@ -207,7 +208,7 @@
 	<span class="grid grid-cols-4 gap-4">
 		<Card.Root class="h-full">
 			<Card.Header class="h-10">
-				<Card.Title>MACHINE</Card.Title>
+				<Card.Title>{m.machines()}</Card.Title>
 			</Card.Header>
 			<Card.Content class="h-30">
 				<p class="text-6xl">{machines.length}</p>
