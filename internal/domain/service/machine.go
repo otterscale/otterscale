@@ -73,18 +73,17 @@ func (s *NexusService) CreateMachine(ctx context.Context, id string, enableSSH, 
 }
 
 func (s *NexusService) DeleteMachine(ctx context.Context, id string, force bool) error {
+	// maas
 	m, err := s.machine.Release(ctx, id, force)
 	if err != nil {
 		return err
 	}
 
-	uuid, err := getJujuModelUUID(m.WorkloadAnnotations)
-	if err != nil {
-		return err
-	}
-	machine, err := getJujuMachineID(m.WorkloadAnnotations)
-	if err != nil {
-		return err
+	// juju
+	uuid, _ := getJujuModelUUID(m.WorkloadAnnotations)
+	machine, _ := getJujuMachineID(m.WorkloadAnnotations)
+	if uuid == "" || machine == "" {
+		return nil
 	}
 	results, err := s.machineManager.DestroyMachines(ctx, uuid, force, machine)
 	if err != nil {
