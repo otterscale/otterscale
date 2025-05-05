@@ -136,11 +136,19 @@
 	</Button>
 {/snippet}
 
-{#snippet AddBundleUnits(facilityCategory: string, masterFacility: Facility)}
+{#snippet AddBundleUnits(facilityCategory: string, facilities: Facility[])}
 	{#if facilityCategory == FACILITY_CATEGORYS.KUBERNETES}
-		<AddKubernetesUnits {scopeUuid} kubernetes={masterFacility} />
+		{@const masterKubernetes = facilities.find((f) =>
+			f.charmName.includes('kubernetes-control-plane')
+		)}
+		{#if masterKubernetes}
+			<AddKubernetesUnits {scopeUuid} kubernetes={masterKubernetes} />
+		{/if}
 	{:else if facilityCategory == FACILITY_CATEGORYS.CEPH}
-		<AddCephUnits {scopeUuid} ceph={masterFacility} />
+		{@const masterCeph = facilities.find((f) => f.charmName.includes('ceph-mon'))}
+		{#if masterCeph}
+			<AddCephUnits {scopeUuid} ceph={masterCeph} />
+		{/if}
 	{/if}
 {/snippet}
 
@@ -187,7 +195,7 @@
 							<Table.Row class="border-none hover:bg-transparent">
 								<Table.Cell colspan={8}>
 									<span class="flex justify-end">
-										{@render AddBundleUnits(facilityCategory, facilitiesByCategory[0])}
+										{@render AddBundleUnits(facilityCategory, facilitiesByCategory)}
 									</span>
 								</Table.Cell>
 							</Table.Row>

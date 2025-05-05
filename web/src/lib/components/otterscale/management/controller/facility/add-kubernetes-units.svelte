@@ -125,6 +125,13 @@
 							<Label class="text-sm font-medium">Force</Label>
 							<Switch bind:checked={addKubernetesUnitsRequest.force} />
 						</div>
+						<div class="flex flex-col gap-2 rounded-lg bg-muted p-2">
+							<p class="text-sm">Note that more than 3 units will slow down High Availability</p>
+							<p class="text-xs font-light text-muted-foreground">
+								To add additional worker nodes, scroll down to find the worker section and click the
+								"Add Unit" button.
+							</p>
+						</div>
 					</fieldset>
 				</div>
 			</AlertDialog.Description>
