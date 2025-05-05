@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -15,7 +16,8 @@
 		Nexus,
 		type CreateKubernetesRequest,
 		type Scope,
-		type Machine
+		type Machine,
+		type CreateCephRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
 
 	const transport: Transport = getContext('transportNEW');
@@ -34,29 +36,68 @@
 		}
 	}
 
-	const machinesStore = writable<Machine[]>([]);
-	const machinesLoading = writable(true);
-	async function fetchMachines() {
+	async function fetchMachines(scopeUuid: string) {
 		try {
-			const response = await client.listMachines({});
-			machinesStore.set(response.machines);
+			const response = await client.listMachines({ scopeUuid: scopeUuid });
+			return response.machines;
 		} catch (error) {
 			console.error('Error fetching:', error);
-		} finally {
-			machinesLoading.set(false);
 		}
 	}
 
-	const DEFAULT_REQUEST = { virtualIps: [] as string[] } as CreateKubernetesRequest;
+	async function fetchOSDDevices(machineId: string) {
+		try {
+			const response = await client.getMachine({ id: machineId });
+			return response.blockDevices
+				.filter((device) => !device.bootDisk)
+				.map((device) => `/dev/${device.name}`);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		}
+	}
 
-	let createKubernetesRequest = $state(DEFAULT_REQUEST);
-	let selectedScopeName = $state('');
-	let selectedMachineFQDN = $state('');
+	const DEFAULT_CREATE_CEPH_REQUEST = {
+		osdDevices: [] as string[],
+		development: true
+	} as CreateCephRequest;
+	const DEFAULT_CREATE_KUBERNETES_REQUEST = {
+		virtualIps: [] as string[]
+	} as CreateKubernetesRequest;
+	const DEFAULT_SCOPE = {} as Scope;
+	const DEFAULT_NACHINE = {} as Machine;
+	const DEFAULT_PREFIX = '';
+
+	let createCephRequest = $state(DEFAULT_CREATE_CEPH_REQUEST);
+	let createKubernetesRequest = $state(DEFAULT_CREATE_KUBERNETES_REQUEST);
+	let selectedScope = $state(DEFAULT_SCOPE);
+	let selectedMachine = $state(DEFAULT_NACHINE);
+	let inputedPrefix = $state(DEFAULT_PREFIX);
+
+	function integrate() {
+		createCephRequest.scopeUuid = selectedScope.uuid;
+		createCephRequest.machineId = selectedMachine.id;
+		createCephRequest.prefixName = inputedPrefix;
+
+		createKubernetesRequest.scopeUuid = selectedScope.uuid;
+		createKubernetesRequest.machineId = selectedMachine.id;
+		createKubernetesRequest.prefixName = inputedPrefix;
+	}
 
 	function reset() {
-		createKubernetesRequest = DEFAULT_REQUEST;
-		selectedScopeName = '';
-		selectedMachineFQDN = '';
+		createKubernetesRequest = DEFAULT_CREATE_KUBERNETES_REQUEST;
+		createCephRequest = DEFAULT_CREATE_CEPH_REQUEST;
+		resetSeletedScope();
+		resetSeletedMachine();
+		resetSeletedOSDDevices();
+	}
+	function resetSeletedScope() {
+		selectedScope = DEFAULT_SCOPE;
+	}
+	function resetSeletedMachine() {
+		selectedMachine = DEFAULT_NACHINE;
+	}
+	function resetSeletedOSDDevices() {
+		createCephRequest.osdDevices = [] as string[];
 	}
 
 	let open = $state(false);
@@ -68,7 +109,6 @@
 	onMount(async () => {
 		try {
 			await fetchScopes();
-			await fetchMachines();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -86,10 +126,15 @@
 			<AlertDialog.Title>Create Kubernetes</AlertDialog.Title>
 			<AlertDialog.Description class="flex flex-col gap-4">
 				<div class="grid w-full items-center gap-2">
+					<Label>Prefix</Label>
+					<Input class="w-full" bind:value={inputedPrefix} />
+				</div>
+
+				<div class="grid w-full items-center gap-2">
 					<Label>Scope</Label>
-					<Select.Root type="single" bind:value={createKubernetesRequest.scopeUuid}>
+					<Select.Root type="single">
 						<Select.Trigger class="w-full">
-							{selectedScopeName || 'Select'}
+							{selectedScope.name || 'Select'}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Group>
@@ -97,7 +142,9 @@
 									<Select.Item
 										value={scope.uuid}
 										onclick={() => {
-											selectedScopeName = scope.name;
+											selectedScope = scope;
+											resetSeletedMachine();
+											resetSeletedOSDDevices();
 										}}
 									>
 										{scope.name}
@@ -110,30 +157,92 @@
 
 				<div class="grid w-full items-center gap-2">
 					<Label>Machine</Label>
-					<Select.Root type="single" bind:value={createKubernetesRequest.machineId}>
-						<Select.Trigger class="w-full">
-							{selectedMachineFQDN || 'Select'}
-						</Select.Trigger>
-						<Select.Content>
-							<Select.Group>
-								{#each $machinesStore as machine}
-									<Select.Item
-										value={machine.id}
-										onclick={() => {
-											selectedMachineFQDN = machine.fqdn;
-										}}
-									>
-										{machine.fqdn}
-									</Select.Item>
-								{/each}
-							</Select.Group>
-						</Select.Content>
-					</Select.Root>
+					{#if !selectedScope.uuid}
+						<p class="w-full rounded-lg bg-muted/30 p-2 text-center text-muted-foreground">
+							Select a scope
+						</p>
+					{:else}
+						{#await fetchMachines(selectedScope.uuid)}
+							Loading
+						{:then machines}
+							{#if machines && machines.length == 0}
+								<p class="w-full rounded-lg bg-muted/30 p-2 text-center text-muted-foreground">
+									There is no machine
+								</p>
+							{:else if machines && machines.length > 0}
+								<Select.Root type="single">
+									<Select.Trigger class="w-full">
+										{selectedMachine.fqdn || 'Select'}
+									</Select.Trigger>
+									<Select.Content>
+										<Select.Group>
+											{#each machines as machine}
+												<Select.Item
+													value={machine.id}
+													onclick={() => {
+														selectedMachine = machine;
+														resetSeletedOSDDevices();
+													}}
+												>
+													{machine.fqdn}
+												</Select.Item>
+											{/each}
+										</Select.Group>
+									</Select.Content>
+								</Select.Root>
+							{/if}
+						{/await}
+					{/if}
 				</div>
 
 				<div class="grid w-full items-center gap-2">
-					<Label>Prefix</Label>
-					<Input class="w-full" bind:value={createKubernetesRequest.prefixName} />
+					<Label>OSD Devices</Label>
+
+					<span class="flex flex-wrap items-center gap-2">
+						{#each createCephRequest.osdDevices as device}
+							<Badge variant="secondary" class="flex w-fit gap-1 text-sm hover:cursor-pointer">
+								{device}
+							</Badge>
+						{/each}
+						{#if !selectedMachine.id}
+							<p class="w-full rounded-lg bg-muted/30 p-2 text-center text-muted-foreground">
+								Select a machine
+							</p>
+						{:else}
+							{#await fetchOSDDevices(selectedMachine.id)}
+								Loading...
+							{:then osdDevices}
+								{#if osdDevices && osdDevices.length == 0}
+									<p class="w-full rounded-lg bg-muted/30 p-2 text-center text-muted-foreground">
+										There is no device
+									</p>
+								{:else if osdDevices && osdDevices.length > 0}
+									<Select.Root type="multiple" bind:value={createCephRequest.osdDevices}>
+										<Select.Trigger>Select</Select.Trigger>
+										<Select.Content>
+											{#each osdDevices as device}
+												<Select.Item value={device}>
+													{device}
+												</Select.Item>
+											{/each}
+										</Select.Content>
+									</Select.Root>
+								{/if}
+							{/await}
+						{/if}
+					</span>
+				</div>
+
+				<div class="flex items-center justify-between gap-2">
+					<Label>Development</Label>
+					<Switch bind:checked={createCephRequest.development} />
+				</div>
+				<div class="grid gap-2 rounded-lg bg-muted/50 p-4">
+					<p class="text-sm text-muted-foreground">Single Node mode when development is true.</p>
+					<p class="text-xs font-light">
+						Note that High Availability (HA) is not available in single node mode since Ceph-mon is
+						configured for a single node and CephFS functionality is not implemented.
+					</p>
 				</div>
 
 				<div class="grid w-full items-center gap-2">
@@ -165,6 +274,14 @@
 									e.currentTarget.value = '';
 								}
 							}}
+							onblur={(e) => {
+								createKubernetesRequest.virtualIps = [
+									...createKubernetesRequest.virtualIps,
+									e.currentTarget.value
+								];
+								e.currentTarget.value = '';
+							}}
+							placeholder="Press Enter to Add Virtual IP"
 						/>
 					</div>
 				</div>
@@ -179,15 +296,32 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					integrate();
+
+					createCephRequest.machineId = 'pseudo';
+					createKubernetesRequest.machineId = 'pseudo';
+
+					console.log(createCephRequest);
+					console.log(createKubernetesRequest);
+
+					client
+						.createCeph(createCephRequest)
+						.then((r) => {
+							toast.info(`Create Ceph ${r.facilityName} to ${r.scopeUuid} success`);
+						})
+						.catch((e) => {
+							// toast.error(e);
+							toast.error(`Fail to create Ceph: ${e.toString()}`);
+						});
 					client
 						.createKubernetes(createKubernetesRequest)
 						.then((r) => {
-							toast.info(`Create Kubernetes ${createKubernetesRequest.scopeUuid}`);
+							toast.info(`Create Kubernetes ${r.facilityName} to ${r.scopeUuid} success`);
 						})
 						.catch((e) => {
-							toast.error(`Create Kubernetes ${createKubernetesRequest.scopeUuid} fail`);
+							toast.error(`Fail to create Kubernetes: ${e.toString()}`);
 						});
-					console.log(createKubernetesRequest);
+
 					reset();
 					close();
 				}}
