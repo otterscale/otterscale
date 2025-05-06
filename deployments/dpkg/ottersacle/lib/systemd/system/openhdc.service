@@ -1,0 +1,19 @@
+[Unit]
+Description=OtterSacle Service
+
+[Service]
+Type=simple
+User=root
+Group=root
+EnvironmentFile=/etc/ottersacle/ottersacle.conf
+ExecStart=/usr/bin/openhdc serve --address ":5059"
+Restart=on-failure
+RestartSec=5
+StandardError=syslog
+SyslogIdentifier=ottersacle
+
+StartLimit=1
+StartLimitIntervalSec=60
+
+[Install]
+WantedBy=multi-user.target

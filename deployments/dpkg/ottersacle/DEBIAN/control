@@ -1,0 +1,14 @@
+Package: ottersacle
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends: bash, jq
+Maintainer: 
+  - Liyuanou48
+  - kuoshin
+  - Chung-Hsuan Tsai
+  - ZhangEnYao
+  - Georage Wu
+  - Terry Wu <terrywu25@gmail.com>
+Description: OtterScale
