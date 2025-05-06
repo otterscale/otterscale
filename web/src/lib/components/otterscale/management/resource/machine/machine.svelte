@@ -16,8 +16,7 @@
 	import { formatCapacity } from '$lib/formatter';
 	import { getContext, onMount, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
-
-	import { nodeIcon } from '$lib/node';
+	import * as Alert from '$lib/components/ui/alert/index.js';
 
 	const nodeType = 'MAAS';
 
@@ -32,7 +31,7 @@
 
 	const machineStore = writable<Machine>();
 	async function refreshMachine() {
-		while (page.url.searchParams.get('interval')) {
+		while (page.url.searchParams.get('intervals')) {
 			await new Promise((resolve) =>
 				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
 			);
@@ -58,7 +57,15 @@
 	});
 </script>
 
-<div class="grid gap-3 space-y-3 p-3">
+<div class="grid gap-3 space-y-3">
+	{#if machine.statusMessage !== 'Deployed'}
+		<Alert.Root>
+			<Icon icon="ph:spinner" class="size-4 animate-spin" />
+			<Alert.Title>{machine.status}</Alert.Title>
+			<Alert.Description>{machine.statusMessage}</Alert.Description>
+		</Alert.Root>
+	{/if}
+
 	{@render Summary()}
 
 	<Tabs.Root value="hardware_information">
@@ -69,9 +76,9 @@
 				<Tabs.Trigger value="network">Networks</Tabs.Trigger>
 			</Tabs.List>
 			{#if machine.workloadAnnotations && machine.workloadAnnotations['juju-model-uuid']}
-				<Button href="/facility?scope={machine.workloadAnnotations['juju-model-uuid']}">
+				<Button href="/management/facility?scope={machine.workloadAnnotations['juju-model-uuid']}">
+					<Icon icon="ph:rocket-launch" />
 					Facility
-					<Icon icon="ph:arrow-right" />
 				</Button>
 			{/if}
 		</div>
@@ -110,14 +117,6 @@
 				</div>
 			</Card.Content>
 			<Card.Footer>
-				<span class="flex items-center gap-1">
-					{#if machine.status.toLowerCase() === 'commissioning' || machine.status.toLowerCase() === 'deploying' || machine.status.toLowerCase() === 'disk_erasing' || machine.status.toLowerCase() === 'entering_rescue_mode' || machine.status.toLowerCase() === 'exiting_rescue_mode' || machine.status.toLowerCase() === 'releasing' || machine.status.toLowerCase() === 'testing'}
-						<Icon icon="ph:spinner" class="animate-spin" />
-					{/if}
-					{#if machine.statusMessage !== 'Deployed'}
-						{machine.statusMessage}
-					{/if}
-				</span>
 				<div class="flex flex-wrap gap-1">
 					{#if machine.powerType !== ''}
 						<Badge variant="outline">{machine.powerType}</Badge>

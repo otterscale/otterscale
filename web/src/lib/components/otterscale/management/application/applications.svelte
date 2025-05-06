@@ -26,6 +26,7 @@
 		ManagementKubernetesComboBox,
 		ManagementScopeComboBox
 	} from '$lib/components/otterscale/index';
+	import { goto } from '$app/navigation';
 
 	let scopeUuid = $state('');
 	let facilityName = $state('');
@@ -381,7 +382,7 @@
 					>
 				</span>
 			</span>
-			<Button variant="outline" class="text-sm">Go to Store</Button>
+			<Button variant="outline" class="text-sm" onclick={() => goto('/market')}>Go to Store</Button>
 		</Alert.Root>
 	</div>
 {/snippet}

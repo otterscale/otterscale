@@ -17,6 +17,7 @@ service Nexus {
   rpc ListKuberneteses(ListKubernetesesRequest) returns (ListKubernetesesResponse);
   rpc CreateKubernetes(CreateKubernetesRequest) returns (Facility.Info);
   rpc AddKubernetesUnits(AddKubernetesUnitsRequest) returns (google.protobuf.Empty);
+  rpc SetCephCSI(SetCephCSIRequest) returns (google.protobuf.Empty);
 
   // Configuration
   rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
@@ -89,7 +90,6 @@ service Nexus {
 
   // StorageClass
   rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse);
-  rpc CreateStorageClass(CreateStorageClassRequest) returns (StorageClass);
 }
 
 message Configuration {
@@ -529,6 +529,12 @@ message AddKubernetesUnitsRequest {
   bool force = 11;
 }
 
+message SetCephCSIRequest {
+  Facility.Info kubernetes = 1;
+  Facility.Info ceph = 2;
+  string prefix = 3;
+}
+
 message GetConfigurationRequest {}
 
 message UpdateNTPServerRequest {
@@ -800,6 +806,7 @@ message CreateReleaseRequest {
   bool dry_run = 5;
   string chart_ref = 11;
   string values_yaml = 12;
+  map<string, string> values_map = 13;
 }
 
 message UpdateReleaseRequest {
@@ -868,10 +875,4 @@ message ListStorageClassesRequest {
 
 message ListStorageClassesResponse {
   repeated StorageClass storage_classes = 1;
-}
-
-message CreateStorageClassRequest {
-  Facility.Info kubernetes = 1;
-  Facility.Info ceph = 2;
-  string prefix = 3;
 }

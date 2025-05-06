@@ -117,15 +117,19 @@
 						</Table.Cell>
 						<Table.Cell>
 							<Badge variant="outline">
-								<span class="flex items-center gap-1">
-									{#if machine.status.toLocaleLowerCase() != 'deployed'}
-										<Icon icon="ph:spinner" class="animate-spin" />
-									{/if}
-									{machine.status}
-								</span>
+								{machine.status}
 							</Badge>
 							<p class="text-xs font-light">
-								{`${machine.osystem} ${machine.hweKernel} ${machine.distroSeries}`}
+								{#if machine.statusMessage != 'Deployed'}
+									<span class="flex items-center gap-1">
+										{#if machine.status.toLowerCase() === 'commissioning' || machine.status.toLowerCase() === 'deploying' || machine.status.toLowerCase() === 'disk_erasing' || machine.status.toLowerCase() === 'entering_rescue_mode' || machine.status.toLowerCase() === 'exiting_rescue_mode' || machine.status.toLowerCase() === 'releasing' || machine.status.toLowerCase() === 'testing'}
+											<Icon icon="ph:spinner" class="animate-spin" />
+										{/if}
+										{machine.statusMessage}
+									</span>
+								{:else}
+									{`${machine.osystem} ${machine.hweKernel} ${machine.distroSeries}`}
+								{/if}
 							</p>
 						</Table.Cell>
 						<Table.Cell>

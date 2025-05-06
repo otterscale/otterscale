@@ -57,7 +57,7 @@ func (a *NexusApp) ListReleases(ctx context.Context, req *connect.Request[pb.Lis
 }
 
 func (a *NexusApp) CreateRelease(ctx context.Context, req *connect.Request[pb.CreateReleaseRequest]) (*connect.Response[pb.Application_Release], error) {
-	r, err := a.svc.CreateRelease(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun(), req.Msg.GetChartRef(), req.Msg.GetValuesYaml())
+	r, err := a.svc.CreateRelease(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetDryRun(), req.Msg.GetChartRef(), req.Msg.GetValuesYaml(), req.Msg.GetValuesMap())
 	if err != nil {
 		return nil, err
 	}

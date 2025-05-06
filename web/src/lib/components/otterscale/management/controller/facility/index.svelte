@@ -34,7 +34,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table/index.js';
 
-	let scopeUuid = $state('');
+	let scopeUuid = $state(page.url.searchParams.get('scope') || '');
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -42,7 +42,6 @@
 	const kubernetesesStore = writable<Facility_Info[]>([]);
 	async function fetchKuberneteses() {
 		try {
-			console.log('r', scopeUuid);
 			const response = await client.listKuberneteses({
 				scopeUuid: scopeUuid
 			});
@@ -148,7 +147,8 @@
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
-			fetchScopes();
+			await fetchScopes();
+			await fetchKuberneteses();
 			await fetchFacilities();
 			refreshFacilties();
 		} catch (error) {
@@ -198,12 +198,12 @@
 			{@const selected = $kubernetesesStore.find((k) => k.scopeUuid === scopeUuid)}
 			{#if selected}
 				<Button href="/management/facility/{selected.facilityName}?scope={selected.scopeUuid}">
-					Facility
-					<Icon icon="ph:arrow-right" />
+					<Icon icon="ph:rocket-launch" />
+					Applications
 				</Button>
 			{/if}
 		{/if}
-		<ManagementScopeCreate />
+		<ManagementScopeCreate scopes={$scopesStore} />
 		<ManagementScopeComboBox
 			scopes={$scopesStore}
 			bind:selected={scopeUuid}

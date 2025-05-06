@@ -18,6 +18,7 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { ReleaseValuesEdit } from '$lib/components/otterscale/index';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
+	import { valuesMapList } from './dataset';
 
 	let {
 		releases = $bindable(),
@@ -68,6 +69,7 @@
 	const DEFAULT_REQUEST = {
 		name: chart.name,
 		valuesYaml: '',
+		valuesMap: valuesMapList[chart.name],
 		dryRun: false
 	} as CreateReleaseRequest;
 
@@ -113,9 +115,9 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Description>
+			<AlertDialog.Description class="space-y-2">
 				<fieldset class="items-center rounded-lg border p-4">
-					<legend class="text-lg">Basic</legend>
+					<legend class="text-sm">Basic</legend>
 					<div class="grid gap-2">
 						<span class="flex items-center justify-between gap-2">
 							<Label>Version</Label>
@@ -191,13 +193,14 @@
 					</div>
 				</fieldset>
 				<fieldset class="items-center rounded-lg border p-3">
-					<legend class="text-lg">Advance</legend>
+					<legend class="text-sm">Advance</legend>
 
 					<span class="flex items-center justify-between">
 						<Label>Configuration</Label>
 						<ReleaseValuesEdit
 							chartRef={selectedVersion.chartRef}
 							bind:valuesYaml={createReleaseRequest.valuesYaml}
+							bind:valuesMap={createReleaseRequest.valuesMap}
 						/>
 					</span>
 				</fieldset>

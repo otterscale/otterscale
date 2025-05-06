@@ -49,6 +49,8 @@ const (
 	// NexusAddKubernetesUnitsProcedure is the fully-qualified name of the Nexus's AddKubernetesUnits
 	// RPC.
 	NexusAddKubernetesUnitsProcedure = "/openhdc.nexus.v1.Nexus/AddKubernetesUnits"
+	// NexusSetCephCSIProcedure is the fully-qualified name of the Nexus's SetCephCSI RPC.
+	NexusSetCephCSIProcedure = "/openhdc.nexus.v1.Nexus/SetCephCSI"
 	// NexusGetConfigurationProcedure is the fully-qualified name of the Nexus's GetConfiguration RPC.
 	NexusGetConfigurationProcedure = "/openhdc.nexus.v1.Nexus/GetConfiguration"
 	// NexusUpdateNTPServerProcedure is the fully-qualified name of the Nexus's UpdateNTPServer RPC.
@@ -168,9 +170,6 @@ const (
 	// NexusListStorageClassesProcedure is the fully-qualified name of the Nexus's ListStorageClasses
 	// RPC.
 	NexusListStorageClassesProcedure = "/openhdc.nexus.v1.Nexus/ListStorageClasses"
-	// NexusCreateStorageClassProcedure is the fully-qualified name of the Nexus's CreateStorageClass
-	// RPC.
-	NexusCreateStorageClassProcedure = "/openhdc.nexus.v1.Nexus/CreateStorageClass"
 )
 
 // NexusClient is a client for the openhdc.nexus.v1.Nexus service.
@@ -183,6 +182,7 @@ type NexusClient interface {
 	ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error)
 	CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error)
 	AddKubernetesUnits(context.Context, *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error)
+	SetCephCSI(context.Context, *connect.Request[v1.SetCephCSIRequest]) (*connect.Response[emptypb.Empty], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -247,7 +247,6 @@ type NexusClient interface {
 	DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error)
 	// StorageClass
 	ListStorageClasses(context.Context, *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error)
-	CreateStorageClass(context.Context, *connect.Request[v1.CreateStorageClassRequest]) (*connect.Response[v1.StorageClass], error)
 }
 
 // NewNexusClient constructs a client for the openhdc.nexus.v1.Nexus service. By default, it uses
@@ -301,6 +300,12 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			httpClient,
 			baseURL+NexusAddKubernetesUnitsProcedure,
 			connect.WithSchema(nexusMethods.ByName("AddKubernetesUnits")),
+			connect.WithClientOptions(opts...),
+		),
+		setCephCSI: connect.NewClient[v1.SetCephCSIRequest, emptypb.Empty](
+			httpClient,
+			baseURL+NexusSetCephCSIProcedure,
+			connect.WithSchema(nexusMethods.ByName("SetCephCSI")),
 			connect.WithClientOptions(opts...),
 		),
 		getConfiguration: connect.NewClient[v1.GetConfigurationRequest, v1.Configuration](
@@ -639,12 +644,6 @@ func NewNexusClient(httpClient connect.HTTPClient, baseURL string, opts ...conne
 			connect.WithSchema(nexusMethods.ByName("ListStorageClasses")),
 			connect.WithClientOptions(opts...),
 		),
-		createStorageClass: connect.NewClient[v1.CreateStorageClassRequest, v1.StorageClass](
-			httpClient,
-			baseURL+NexusCreateStorageClassProcedure,
-			connect.WithSchema(nexusMethods.ByName("CreateStorageClass")),
-			connect.WithClientOptions(opts...),
-		),
 	}
 }
 
@@ -657,6 +656,7 @@ type nexusClient struct {
 	listKuberneteses        *connect.Client[v1.ListKubernetesesRequest, v1.ListKubernetesesResponse]
 	createKubernetes        *connect.Client[v1.CreateKubernetesRequest, v1.Facility_Info]
 	addKubernetesUnits      *connect.Client[v1.AddKubernetesUnitsRequest, emptypb.Empty]
+	setCephCSI              *connect.Client[v1.SetCephCSIRequest, emptypb.Empty]
 	getConfiguration        *connect.Client[v1.GetConfigurationRequest, v1.Configuration]
 	updateNTPServer         *connect.Client[v1.UpdateNTPServerRequest, v1.Configuration_NTPServer]
 	updatePackageRepository *connect.Client[v1.UpdatePackageRepositoryRequest, v1.Configuration_PackageRepository]
@@ -713,7 +713,6 @@ type nexusClient struct {
 	createTag               *connect.Client[v1.CreateTagRequest, v1.Tag]
 	deleteTag               *connect.Client[v1.DeleteTagRequest, emptypb.Empty]
 	listStorageClasses      *connect.Client[v1.ListStorageClassesRequest, v1.ListStorageClassesResponse]
-	createStorageClass      *connect.Client[v1.CreateStorageClassRequest, v1.StorageClass]
 }
 
 // VerifyEnvironment calls openhdc.nexus.v1.Nexus.VerifyEnvironment.
@@ -749,6 +748,11 @@ func (c *nexusClient) CreateKubernetes(ctx context.Context, req *connect.Request
 // AddKubernetesUnits calls openhdc.nexus.v1.Nexus.AddKubernetesUnits.
 func (c *nexusClient) AddKubernetesUnits(ctx context.Context, req *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.addKubernetesUnits.CallUnary(ctx, req)
+}
+
+// SetCephCSI calls openhdc.nexus.v1.Nexus.SetCephCSI.
+func (c *nexusClient) SetCephCSI(ctx context.Context, req *connect.Request[v1.SetCephCSIRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.setCephCSI.CallUnary(ctx, req)
 }
 
 // GetConfiguration calls openhdc.nexus.v1.Nexus.GetConfiguration.
@@ -1031,11 +1035,6 @@ func (c *nexusClient) ListStorageClasses(ctx context.Context, req *connect.Reque
 	return c.listStorageClasses.CallUnary(ctx, req)
 }
 
-// CreateStorageClass calls openhdc.nexus.v1.Nexus.CreateStorageClass.
-func (c *nexusClient) CreateStorageClass(ctx context.Context, req *connect.Request[v1.CreateStorageClassRequest]) (*connect.Response[v1.StorageClass], error) {
-	return c.createStorageClass.CallUnary(ctx, req)
-}
-
 // NexusHandler is an implementation of the openhdc.nexus.v1.Nexus service.
 type NexusHandler interface {
 	// General
@@ -1046,6 +1045,7 @@ type NexusHandler interface {
 	ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error)
 	CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error)
 	AddKubernetesUnits(context.Context, *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error)
+	SetCephCSI(context.Context, *connect.Request[v1.SetCephCSIRequest]) (*connect.Response[emptypb.Empty], error)
 	// Configuration
 	GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error)
 	UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error)
@@ -1110,7 +1110,6 @@ type NexusHandler interface {
 	DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error)
 	// StorageClass
 	ListStorageClasses(context.Context, *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error)
-	CreateStorageClass(context.Context, *connect.Request[v1.CreateStorageClassRequest]) (*connect.Response[v1.StorageClass], error)
 }
 
 // NewNexusHandler builds an HTTP handler from the service implementation. It returns the path on
@@ -1160,6 +1159,12 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		NexusAddKubernetesUnitsProcedure,
 		svc.AddKubernetesUnits,
 		connect.WithSchema(nexusMethods.ByName("AddKubernetesUnits")),
+		connect.WithHandlerOptions(opts...),
+	)
+	nexusSetCephCSIHandler := connect.NewUnaryHandler(
+		NexusSetCephCSIProcedure,
+		svc.SetCephCSI,
+		connect.WithSchema(nexusMethods.ByName("SetCephCSI")),
 		connect.WithHandlerOptions(opts...),
 	)
 	nexusGetConfigurationHandler := connect.NewUnaryHandler(
@@ -1498,12 +1503,6 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("ListStorageClasses")),
 		connect.WithHandlerOptions(opts...),
 	)
-	nexusCreateStorageClassHandler := connect.NewUnaryHandler(
-		NexusCreateStorageClassProcedure,
-		svc.CreateStorageClass,
-		connect.WithSchema(nexusMethods.ByName("CreateStorageClass")),
-		connect.WithHandlerOptions(opts...),
-	)
 	return "/openhdc.nexus.v1.Nexus/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case NexusVerifyEnvironmentProcedure:
@@ -1520,6 +1519,8 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusCreateKubernetesHandler.ServeHTTP(w, r)
 		case NexusAddKubernetesUnitsProcedure:
 			nexusAddKubernetesUnitsHandler.ServeHTTP(w, r)
+		case NexusSetCephCSIProcedure:
+			nexusSetCephCSIHandler.ServeHTTP(w, r)
 		case NexusGetConfigurationProcedure:
 			nexusGetConfigurationHandler.ServeHTTP(w, r)
 		case NexusUpdateNTPServerProcedure:
@@ -1632,8 +1633,6 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 			nexusDeleteTagHandler.ServeHTTP(w, r)
 		case NexusListStorageClassesProcedure:
 			nexusListStorageClassesHandler.ServeHTTP(w, r)
-		case NexusCreateStorageClassProcedure:
-			nexusCreateStorageClassHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1669,6 +1668,10 @@ func (UnimplementedNexusHandler) CreateKubernetes(context.Context, *connect.Requ
 
 func (UnimplementedNexusHandler) AddKubernetesUnits(context.Context, *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddKubernetesUnits is not implemented"))
+}
+
+func (UnimplementedNexusHandler) SetCephCSI(context.Context, *connect.Request[v1.SetCephCSIRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.SetCephCSI is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error) {
@@ -1893,8 +1896,4 @@ func (UnimplementedNexusHandler) DeleteTag(context.Context, *connect.Request[v1.
 
 func (UnimplementedNexusHandler) ListStorageClasses(context.Context, *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListStorageClasses is not implemented"))
-}
-
-func (UnimplementedNexusHandler) CreateStorageClass(context.Context, *connect.Request[v1.CreateStorageClassRequest]) (*connect.Response[v1.StorageClass], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateStorageClass is not implemented"))
 }

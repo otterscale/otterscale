@@ -88,7 +88,7 @@
 		platforms: [
 			{
 				title: m.dashboard(),
-				url: '/management?intervals=30',
+				url: '/dashboard?intervals=30',
 				icon: 'ph:gauge'
 			},
 			{
@@ -112,7 +112,7 @@
 					},
 					{
 						title: m.facility(),
-						url: '/management/facility'
+						url: '/management/facility?intervals=15'
 					},
 					{
 						title: m.machine(),

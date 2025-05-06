@@ -24,6 +24,7 @@
 
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
+	import { goto } from '$app/navigation';
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -329,6 +330,17 @@
 										<span class="flex items-center gap-1">
 											<Icon icon="ph:trash" />
 											<ReleaseDelete bind:releases {release} />
+										</span>
+									</DropdownMenu.Item>
+									<DropdownMenu.Separator />
+									<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
+										<span class="flex items-center gap-1">
+											<Icon icon="ph:rocket-launch" />
+											<Button
+												variant="ghost"
+												onclick={() => goto(`/management/facility?scope=${release.scopeUuid}`)}
+												>Facility
+											</Button>
 										</span>
 									</DropdownMenu.Item>
 								</DropdownMenu.Content>

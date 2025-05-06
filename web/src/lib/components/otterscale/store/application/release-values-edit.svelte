@@ -12,7 +12,6 @@
 	import { getContext, onMount } from 'svelte';
 	import { get, writable } from 'svelte/store';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import * as Select from '$lib/components/ui/select/index.js';
 	import Monaco from 'svelte-monaco';
 
 	import type { Plugin } from 'svelte-exmarkdown';
@@ -25,13 +24,16 @@
 	import shell from 'highlight.js/lib/languages/shell';
 	import yaml from 'highlight.js/lib/languages/yaml';
 	import 'highlight.js/styles/github.css';
+	import Unstruct from './unstruct.svelte';
 
 	let {
 		chartRef,
-		valuesYaml = $bindable()
+		valuesYaml = $bindable(),
+		valuesMap = $bindable()
 	}: {
 		chartRef: string;
 		valuesYaml: string;
+		valuesMap: { [key: string]: string };
 	} = $props();
 
 	const transport: Transport = getContext('transportNEW');
@@ -82,10 +84,6 @@
 	});
 </script>
 
-<div class="markdown-body">
-	<Markdown {md} {plugins} />
-</div>
-
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger class={buttonVariants({ variant: 'outline' })}>View/Edit</AlertDialog.Trigger
 	>
@@ -118,42 +116,25 @@
 			</Resizable.Pane>
 			<Resizable.Handle withHandle />
 			<Resizable.Pane defaultSize={50} class="h-[70vh]">
-				<Tabs.Root value="basic" class="p-2">
+				<Tabs.Root
+					value={!valuesMap || Object.keys(valuesMap).length === 0 ? 'advance' : 'basic'}
+					class="p-2"
+				>
 					<Tabs.List class="h-[40px] w-fit">
-						<Tabs.Trigger value="basic">Basic</Tabs.Trigger>
+						<Tabs.Trigger value="basic" disabled={!valuesMap || Object.keys(valuesMap).length === 0}
+							>Basic</Tabs.Trigger
+						>
 						<Tabs.Trigger value="advance">Advance</Tabs.Trigger>
 					</Tabs.List>
 					<Tabs.Content value="basic" class="">
 						<div class="grid h-full max-h-[calc(70vh_-_40px)] gap-4 overflow-auto p-4">
-							<span class="grid gap-2">
-								<Label>Node Port</Label>
-								<Input bind:value={basicRequest.nodePort} />
-							</span>
-							<span class="grid gap-2">
-								<Label>Default Storage Classes</Label>
-								<div class="flex flex-wrap items-center gap-2">
-									{#each basicRequest.storageClasses as item}
-										<Badge variant="secondary">{item}</Badge>
-									{/each}
-								</div>
-								<Select.Root type="multiple" bind:value={basicRequest.storageClasses}>
-									<Select.Trigger>Select</Select.Trigger>
-									<Select.Content>
-										{#each ['ceph-ext4', 'ceph-xfs'] as item}
-											<Select.Item value={item}>
-												{item}
-											</Select.Item>
-										{/each}
-									</Select.Content>
-								</Select.Root>
-							</span>
+							<Unstruct bind:data={valuesMap} />
 						</div>
 					</Tabs.Content>
 					<Tabs.Content value="advance" class="h-[70vh]">
 						<Monaco
 							options={{ language: 'yaml', automaticLayout: true }}
 							theme="vs-dark"
-							on:ready={(event) => console.log(event.detail)}
 							bind:value={values}
 						/>
 					</Tabs.Content>

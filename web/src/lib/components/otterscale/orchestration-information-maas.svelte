@@ -128,7 +128,7 @@
 				</AlertDialog.Trigger>
 				<AlertDialog.Content>
 					<AlertDialog.Header>
-						<AlertDialog.Title>Commision {machine.fqdn}</AlertDialog.Title>
+						<AlertDialog.Title>Commission {machine.fqdn}</AlertDialog.Title>
 						<AlertDialog.Description>
 							<fieldset class="grid gap-4 py-4">
 								<div class="flex items-center space-x-2">

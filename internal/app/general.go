@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/openhdc/openhdc/api/nexus/v1"
@@ -68,6 +70,32 @@ func (a *NexusApp) CreateKubernetes(ctx context.Context, req *connect.Request[pb
 
 func (a *NexusApp) AddKubernetesUnits(ctx context.Context, req *connect.Request[pb.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
 	if err := a.svc.AddKubernetesUnits(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), int(req.Msg.GetNumber()), req.Msg.GetMachineIds(), req.Msg.GetForce()); err != nil {
+		return nil, err
+	}
+	res := &emptypb.Empty{}
+	return connect.NewResponse(res), nil
+}
+
+func (a *NexusApp) SetCephCSI(ctx context.Context, req *connect.Request[pb.SetCephCSIRequest]) (*connect.Response[emptypb.Empty], error) {
+	k := req.Msg.GetKubernetes()
+	if k == nil {
+		return nil, status.Error(codes.InvalidArgument, "kubernetes is empty")
+	}
+	c := req.Msg.GetCeph()
+	if c == nil {
+		return nil, status.Error(codes.InvalidArgument, "ceph is empty")
+	}
+	kubernetes := &model.FacilityInfo{
+		ScopeUUID:    k.GetScopeUuid(),
+		ScopeName:    k.GetScopeName(),
+		FacilityName: k.GetFacilityName(),
+	}
+	ceph := &model.FacilityInfo{
+		ScopeUUID:    c.GetScopeUuid(),
+		ScopeName:    c.GetScopeName(),
+		FacilityName: c.GetFacilityName(),
+	}
+	if err := a.svc.SetCephCSI(ctx, kubernetes, ceph, req.Msg.GetPrefix()); err != nil {
 		return nil, err
 	}
 	res := &emptypb.Empty{}

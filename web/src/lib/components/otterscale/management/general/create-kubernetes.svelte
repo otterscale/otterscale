@@ -19,7 +19,7 @@
 		type Machine,
 		type CreateCephRequest,
 		type Facility_Info,
-		type CreateStorageClassRequest
+		type SetCephCSIRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
 
 	const transport: Transport = getContext('transportNEW');
@@ -86,15 +86,16 @@
 		createKubernetesRequest.prefixName = inputedPrefix;
 	}
 
-	function getCreateStorageClassesRequest(ceph: Facility_Info, kubernetes: Facility_Info) {
+	function getSetCephCSIRequest(ceph: Facility_Info, kubernetes: Facility_Info) {
 		return {
 			ceph: ceph,
 			kubernetes: kubernetes,
 			prefix: inputedPrefix
-		} as CreateStorageClassRequest;
+		} as SetCephCSIRequest;
 	}
 
 	function reset() {
+		inputedPrefix = '';
 		createKubernetesRequest = DEFAULT_CREATE_KUBERNETES_REQUEST;
 		createCephRequest = DEFAULT_CREATE_CEPH_REQUEST;
 		resetSeletedScope();
@@ -309,52 +310,32 @@
 				onclick={() => {
 					integrate();
 
-					let createdCeph = {} as Facility_Info | undefined;
-					let createdKubernetes = {} as Facility_Info | undefined;
-
 					client
 						.createCeph(createCephRequest)
-						.then((r) => {
-							createdCeph = {
-								scopeUuid: r.scopeUuid,
-								scopeName: r.scopeName,
-								facilityName: r.facilityName
-							} as Facility_Info;
-							toast.info(`Create Ceph ${r.facilityName} to ${r.scopeUuid} success`);
+						.then(async (cr) => {
+							await client
+								.createKubernetes(createKubernetesRequest)
+								.then(async (kr) => {
+									await client
+										.setCephCSI(getSetCephCSIRequest(cr, kr))
+										.then(() => {
+											toast.info(`Create '${kr.facilityName}' & '${cr.facilityName}' success`);
+										})
+										.catch((e) => {
+											toast.error(`Fail to create storage classes: ${e.toString()}`);
+										});
+								})
+								.catch((e) => {
+									toast.error(`Fail to create Kubernetes: ${e.toString()}`);
+								});
 						})
 						.catch((e) => {
 							toast.error(`Fail to create Ceph: ${e.toString()}`);
-						});
-					client
-						.createKubernetes(createKubernetesRequest)
-						.then((r) => {
-							createdKubernetes = {
-								scopeUuid: r.scopeUuid,
-								scopeName: r.scopeName,
-								facilityName: r.facilityName
-							} as Facility_Info;
-							toast.info(`Create Kubernetes ${r.facilityName} to ${r.scopeUuid} success`);
 						})
-						.catch((e) => {
-							toast.error(`Fail to create Kubernetes: ${e.toString()}`);
+						.finally(() => {
+							reset();
 						});
 
-					if (createdCeph && createdKubernetes) {
-						const createStorageClassesRequest = getCreateStorageClassesRequest(
-							createdCeph,
-							createdKubernetes
-						);
-						client
-							.createStorageClass(createStorageClassesRequest)
-							.then((r) => {
-								toast.info(`Create storage classes ${r.name} success`);
-							})
-							.catch((e) => {
-								toast.error(`Fail to create storage classes: ${e.toString()}`);
-							});
-					}
-
-					reset();
 					close();
 				}}
 			>

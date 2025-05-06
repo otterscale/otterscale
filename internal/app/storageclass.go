@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/openhdc/openhdc/api/nexus/v1"
@@ -19,33 +17,6 @@ func (a *NexusApp) ListStorageClasses(ctx context.Context, req *connect.Request[
 	}
 	res := &pb.ListStorageClassesResponse{}
 	res.SetStorageClasses(toProtoStorageClasses(scs))
-	return connect.NewResponse(res), nil
-}
-
-func (a *NexusApp) CreateStorageClass(ctx context.Context, req *connect.Request[pb.CreateStorageClassRequest]) (*connect.Response[pb.StorageClass], error) {
-	k := req.Msg.GetKubernetes()
-	if k == nil {
-		return nil, status.Error(codes.InvalidArgument, "kubernetes is empty")
-	}
-	c := req.Msg.GetCeph()
-	if c == nil {
-		return nil, status.Error(codes.InvalidArgument, "ceph is empty")
-	}
-	kubernetes := &model.FacilityInfo{
-		ScopeUUID:    k.GetScopeUuid(),
-		ScopeName:    k.GetScopeName(),
-		FacilityName: k.GetFacilityName(),
-	}
-	ceph := &model.FacilityInfo{
-		ScopeUUID:    c.GetScopeUuid(),
-		ScopeName:    c.GetScopeName(),
-		FacilityName: c.GetFacilityName(),
-	}
-	sc, err := a.svc.CreateStorageClass(ctx, kubernetes, ceph, req.Msg.GetPrefix())
-	if err != nil {
-		return nil, err
-	}
-	res := toProtoStorageClass(sc)
 	return connect.NewResponse(res), nil
 }
 

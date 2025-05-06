@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"helm.sh/helm/v3/pkg/action"
+	"helm.sh/helm/v3/pkg/strvals"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -250,11 +251,24 @@ func (s *NexusService) ListReleases(ctx context.Context) ([]model.Release, error
 	return s.listReleases(ctx)
 }
 
-func (s *NexusService) CreateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*model.Release, error) {
+func (s *NexusService) CreateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*model.Release, error) {
+	// advanced
 	values := map[string]any{}
 	if err := yaml.Unmarshal([]byte(valuesYAML), &values); err != nil {
 		return nil, err
 	}
+
+	// basic
+	vals := []string{}
+	for k, v := range valuesMap {
+		if v != "" {
+			vals = append(vals, fmt.Sprintf("%s=%s", k, v))
+		}
+	}
+	if err := strvals.ParseInto(strings.Join(vals, ","), values); err != nil {
+		return nil, err
+	}
+
 	if err := s.setKubernetesClient(ctx, uuid, facility); err != nil {
 		return nil, err
 	}

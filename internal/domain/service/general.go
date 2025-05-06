@@ -222,6 +222,20 @@ func (s *NexusService) AddKubernetesUnits(ctx context.Context, uuid, general str
 	return s.addGeneralFacilityUnits(ctx, uuid, general, number, machineIDs, kubernetesFacilityList)
 }
 
+func (s *NexusService) SetCephCSI(ctx context.Context, kubernetes, ceph *model.FacilityInfo, prefix string) error {
+	if kubernetes.ScopeUUID != ceph.ScopeUUID {
+		return status.Error(codes.Unimplemented, "cross-model integration between facilities is not yet supported")
+	}
+	configs, err := getCephCSIConfigs(prefix)
+	if err != nil {
+		return err
+	}
+	if _, err := s.createGeneralFacility(ctx, kubernetes.ScopeUUID, "", prefix, charmNameCephCSI, cephCSIFacilityList, configs); err != nil {
+		return err
+	}
+	return s.createGeneralRelations(ctx, kubernetes.ScopeUUID, toCephCSIEndpointList(kubernetes, ceph, prefix))
+}
+
 func (s *NexusService) createGeneralFacility(ctx context.Context, uuid, machineID, prefix, general string, facilityList []generalFacility, configs map[string]string) (*model.FacilityInfo, error) {
 	var directive string
 
@@ -458,25 +472,23 @@ func (s *NexusService) listStatusMessage(ctx context.Context, scopeUUID string, 
 		if !ok {
 			continue
 		}
-		for name := range s.Units {
-			level := model.ErrorLevelInfo
-			switch s.Units[name].WorkloadStatus.Status {
-			case jujustatus.Maintenance.String():
-				level = model.ErrorLevelLow
-			case jujustatus.Unknown.String(), jujustatus.Waiting.String():
-				level = model.ErrorLevelMedium
-			case jujustatus.Blocked.String():
-				level = model.ErrorLevelHigh
-			case jujustatus.Unset.String(), jujustatus.Terminated.String(), jujustatus.Active.String():
-				continue
-			}
-			errs = append(errs, model.Error{
-				Code:    code,
-				Level:   level,
-				Message: fmt.Sprintf("[%s] %s", s.Units[name].WorkloadStatus.Status, fs[i].Name),
-				Details: fmt.Sprintf("%s - %s", name, s.Units[name].WorkloadStatus.Info),
-			})
+		level := model.ErrorLevelInfo
+		switch s.Status.Status {
+		case jujustatus.Maintenance.String():
+			level = model.ErrorLevelLow
+		case jujustatus.Unknown.String(), jujustatus.Waiting.String():
+			level = model.ErrorLevelMedium
+		case jujustatus.Blocked.String():
+			level = model.ErrorLevelHigh
+		case jujustatus.Unset.String(), jujustatus.Terminated.String(), jujustatus.Active.String():
+			continue
 		}
+		errs = append(errs, model.Error{
+			Code:    code,
+			Level:   level,
+			Message: fmt.Sprintf("[%s] %s", s.Status.Status, fs[i].Name),
+			Details: s.Status.Info,
+		})
 	}
 	return errs, nil
 }
