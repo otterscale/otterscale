@@ -67,7 +67,7 @@
 	const DEFAULT_VERSION = chart.versions[0];
 	const DEFAULT_KUBERNETES = {} as Facility_Info;
 	const DEFAULT_REQUEST = {
-		name: chart.name,
+		name: '',
 		valuesYaml: '',
 		valuesMap: valuesMapList[chart.name],
 		dryRun: false

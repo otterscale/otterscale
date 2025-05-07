@@ -3,13 +3,13 @@
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 
-	import Icon from '@iconify/svelte';
+	import Icon, { iconExists } from '@iconify/svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table';
 	import * as Card from '$lib/components/ui/card';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Button } from '$lib/components/ui/button';
-	import { goto } from '$app/navigation';
+	import { fuzzLogosIcon } from '$lib/icon';
 
 	let {
 		application
@@ -341,7 +341,10 @@
 
 {#snippet Identifier()}
 	<span class="flex gap-4">
-		<Icon icon="logos:kubernetes" class="h-full w-32" />
+		<Icon
+			icon={fuzzLogosIcon(application.labels['app.kubernetes.io/name'], 'fluent-emoji-flat:otter')}
+			class="h-full w-24"
+		/>
 		<div class="w-full flex-col justify-between">
 			<div class="flex justify-between">
 				<div class="flex-col space-y-2">

@@ -12,12 +12,14 @@
 
 	import { addCollection } from '@iconify/svelte';
 	import phIcons from '@iconify-json/ph/icons.json';
+	import logosIcons from '@iconify-json/logos/icons.json';
 
 	import '../app.css';
 	import 'inter-ui/inter-variable.css';
 	import '@fontsource-variable/noto-sans-tc';
 
 	addCollection(phIcons);
+	addCollection(logosIcons);
 
 	let { children } = $props();
 
