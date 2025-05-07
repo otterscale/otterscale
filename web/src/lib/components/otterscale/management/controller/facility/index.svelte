@@ -245,9 +245,9 @@
 						</Table.Row>
 
 						{#if collapsibleOpen[facilityCategory]}
-							{@const facilitiesByCategory = $facilitiesStore.filter(
-								(a) => getCategory(a) === facilityCategory
-							)}
+							{@const facilitiesByCategory = $facilitiesStore
+								.filter((a) => getCategory(a) === facilityCategory)
+								.sort((previous, present) => previous.name.localeCompare(present.name))}
 							<Table.Row class="border-none hover:bg-transparent">
 								<Table.Cell colspan={8}>
 									<span class="flex justify-end">

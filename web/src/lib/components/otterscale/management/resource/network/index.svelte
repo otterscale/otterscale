@@ -89,7 +89,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each networks as network}
+				{#each networks.sort((previous, prevent) => (previous.fabric?.name ?? '').localeCompare(prevent.fabric?.name ?? '')) as network}
 					<Table.Row>
 						{#if network.fabric}
 							<Table.Cell>

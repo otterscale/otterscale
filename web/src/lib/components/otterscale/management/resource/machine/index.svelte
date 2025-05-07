@@ -86,7 +86,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each machines as machine, index}
+				{#each machines.sort( (previous, present) => previous.fqdn.localeCompare(present.fqdn) ) as machine, index}
 					<Table.Row class="*:truncate *:whitespace-nowrap [&>td]:align-top">
 						<Table.Cell>
 							<div class="flex justify-between">
