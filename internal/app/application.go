@@ -27,8 +27,12 @@ func (a *NexusApp) ListApplications(ctx context.Context, req *connect.Request[pb
 	if err != nil {
 		return nil, err
 	}
+	publicAddress, err := a.svc.GetPublicAddress(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
 	res := &pb.ListApplicationsResponse{}
-	res.SetApplications(toProtoApplications(as))
+	res.SetApplications(toProtoApplications(as, publicAddress))
 	return connect.NewResponse(res), nil
 }
 
@@ -42,7 +46,11 @@ func (a *NexusApp) GetApplication(ctx context.Context, req *connect.Request[pb.G
 		return nil, err
 	}
 	app.ChartMetadata = md
-	res := toProtoApplication(app)
+	publicAddress, err := a.svc.GetPublicAddress(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	res := toProtoApplication(app, publicAddress)
 	return connect.NewResponse(res), nil
 }
 
@@ -122,15 +130,15 @@ func (a *NexusApp) GetChartMetadata(ctx context.Context, req *connect.Request[pb
 	return connect.NewResponse(res), nil
 }
 
-func toProtoApplications(as []model.Application) []*pb.Application {
+func toProtoApplications(as []model.Application, publicAddress string) []*pb.Application {
 	ret := []*pb.Application{}
 	for i := range as {
-		ret = append(ret, toProtoApplication(&as[i]))
+		ret = append(ret, toProtoApplication(&as[i], publicAddress))
 	}
 	return ret
 }
 
-func toProtoApplication(a *model.Application) *pb.Application {
+func toProtoApplication(a *model.Application, publicAddress string) *pb.Application {
 	replicas := int32(0)
 	if a.Replicas != nil {
 		replicas = *a.Replicas
@@ -147,6 +155,7 @@ func toProtoApplication(a *model.Application) *pb.Application {
 	ret.SetPods(toProtoPods(a.Pods))
 	ret.SetPersistentVolumeClaims(toProtoPersistentVolumeClaims(a.PersistentVolumeClaims))
 	ret.SetCreatedAt(timestamppb.New(a.ObjectMeta.CreationTimestamp.Time))
+	ret.SetPublicAddress(publicAddress)
 	if a.ChartMetadata != nil {
 		ret.SetMetadata(toProtoChartMetadata(a.ChartMetadata))
 	}

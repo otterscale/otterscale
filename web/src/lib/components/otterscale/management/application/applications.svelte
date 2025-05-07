@@ -192,6 +192,7 @@
 									<Table.Head class="text-right">REPLICAS</Table.Head>
 									<Table.Head class="text-right">CONTAINERS</Table.Head>
 									<Table.Head class="text-right">VOLUMES</Table.Head>
+									<Table.Head>NODEPORT</Table.Head>
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
@@ -210,6 +211,7 @@
 										<Table.Cell>
 											<Badge variant="outline">{application.namespace}</Badge>
 										</Table.Cell>
+
 										<Table.Cell>
 											{#if application.pods.length > 0}
 												{@const healthByApplication = Math.round(
@@ -239,6 +241,22 @@
 										<Table.Cell class="text-right"
 											>{application.persistentVolumeClaims.length}</Table.Cell
 										>
+										<Table.Cell>
+											{#each application.services as service}
+												{#each service.ports as port}
+													{#if port.nodePort > 0}
+														<Button
+															variant="ghost"
+															target="_blank"
+															href={`http://${application.publicAddress}:${port.nodePort}`}
+														>
+															{port.targetPort}
+															<Icon icon="ph:arrow-square-out" />
+														</Button>
+													{/if}
+												{/each}
+											{/each}
+										</Table.Cell>
 									</Table.Row>
 								{/each}
 							</Table.Body>

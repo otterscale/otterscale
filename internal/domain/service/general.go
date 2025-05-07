@@ -222,11 +222,11 @@ func (s *NexusService) AddKubernetesUnits(ctx context.Context, uuid, general str
 	return s.addGeneralFacilityUnits(ctx, uuid, general, number, machineIDs, kubernetesFacilityList)
 }
 
-func (s *NexusService) SetCephCSI(ctx context.Context, kubernetes, ceph *model.FacilityInfo, prefix string) error {
+func (s *NexusService) SetCephCSI(ctx context.Context, kubernetes, ceph *model.FacilityInfo, prefix string, development bool) error {
 	if kubernetes.ScopeUUID != ceph.ScopeUUID {
 		return status.Error(codes.Unimplemented, "cross-model integration between facilities is not yet supported")
 	}
-	configs, err := getCephCSIConfigs(prefix)
+	configs, err := getCephCSIConfigs(prefix, development)
 	if err != nil {
 		return err
 	}
@@ -653,10 +653,15 @@ func getCephConfigs(prefix, osdDevices string, development bool) (map[string]str
 	return result, nil
 }
 
-func getCephCSIConfigs(prefix string) (map[string]string, error) {
+func getCephCSIConfigs(prefix string, development bool) (map[string]string, error) {
+	count := 3
+	if development {
+		count = 1
+	}
 	configs := map[string]map[string]any{
 		"ceph-csi": {
-			"default-storage": defaultStorage,
+			"default-storage":      defaultStorage,
+			"provisioner-replicas": count,
 		},
 	}
 

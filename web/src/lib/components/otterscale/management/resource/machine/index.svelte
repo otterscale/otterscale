@@ -212,7 +212,7 @@
 	<span class="grid grid-cols-4 gap-4">
 		<Card.Root class="h-full">
 			<Card.Header class="h-10">
-				<Card.Title>{m.machines()}</Card.Title>
+				<Card.Title>MACHINE</Card.Title>
 			</Card.Header>
 			<Card.Content class="h-30">
 				<p class="text-6xl">{machines.length}</p>

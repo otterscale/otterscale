@@ -8,6 +8,8 @@
 	import * as Table from '$lib/components/ui/table';
 	import * as Card from '$lib/components/ui/card';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
+	import { Button } from '$lib/components/ui/button';
+	import { goto } from '$app/navigation';
 
 	let {
 		application
@@ -338,23 +340,40 @@
 </div>
 
 {#snippet Identifier()}
-	<span class="flex gap-3">
-		<Icon icon="logos:kubernetes" class="h-full w-48" />
-		<div class="flex flex-col justify-between">
-			<div>
-				<p class="text-xl">{application.namespace}/{application.name}</p>
-				<Badge variant="outline">{application.type}</Badge>
+	<span class="flex gap-4">
+		<Icon icon="logos:kubernetes" class="h-full w-32" />
+		<div class="w-full flex-col justify-between">
+			<div class="flex justify-between">
+				<div class="flex-col space-y-2">
+					<p class="text-xl">{application.namespace}/{application.name}</p>
+					<Badge variant="outline">{application.type}</Badge>
+					<span class="flex flex-wrap gap-1">
+						{#each Object.entries(application.labels) as [key, value]}
+							<Badge
+								variant="secondary"
+								class="h-fit w-fit text-ellipsis whitespace-nowrap text-xs tracking-tight"
+							>
+								{key}: {value}
+							</Badge>
+						{/each}
+					</span>
+				</div>
+				<div class="flex space-x-2">
+					{#each application.services as service}
+						{#each service.ports as port}
+							{#if port.nodePort > 0}
+								<Button
+									target="_blank"
+									href={`http://${application.publicAddress}:${port.nodePort}`}
+								>
+									{port.targetPort}
+									<Icon icon="ph:arrow-square-out" />
+								</Button>
+							{/if}
+						{/each}
+					{/each}
+				</div>
 			</div>
-			<span class="flex flex-wrap gap-1">
-				{#each Object.entries(application.labels) as [key, value]}
-					<Badge
-						variant="secondary"
-						class="h-fit w-fit text-ellipsis whitespace-nowrap text-xs tracking-tight"
-					>
-						{key}: {value}
-					</Badge>
-				{/each}
-			</span>
 		</div>
 	</span>
 {/snippet}

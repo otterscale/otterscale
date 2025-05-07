@@ -95,7 +95,7 @@ func (a *NexusApp) SetCephCSI(ctx context.Context, req *connect.Request[pb.SetCe
 		ScopeName:    c.GetScopeName(),
 		FacilityName: c.GetFacilityName(),
 	}
-	if err := a.svc.SetCephCSI(ctx, kubernetes, ceph, req.Msg.GetPrefix()); err != nil {
+	if err := a.svc.SetCephCSI(ctx, kubernetes, ceph, req.Msg.GetPrefix(), req.Msg.GetDevelopment()); err != nil {
 		return nil, err
 	}
 	res := &emptypb.Empty{}

@@ -86,11 +86,16 @@
 		createKubernetesRequest.prefixName = inputedPrefix;
 	}
 
-	function getSetCephCSIRequest(ceph: Facility_Info, kubernetes: Facility_Info) {
+	function getSetCephCSIRequest(
+		ceph: Facility_Info,
+		kubernetes: Facility_Info,
+		development: boolean
+	) {
 		return {
 			ceph: ceph,
 			kubernetes: kubernetes,
-			prefix: inputedPrefix
+			prefix: inputedPrefix,
+			development: development
 		} as SetCephCSIRequest;
 	}
 
@@ -318,7 +323,7 @@
 								.createKubernetes(createKubernetesRequest)
 								.then(async (kr) => {
 									await client
-										.setCephCSI(getSetCephCSIRequest(cr, kr))
+										.setCephCSI(getSetCephCSIRequest(cr, kr, createCephRequest.development))
 										.then(() => {
 											toast.success(`Create '${kr.facilityName}' & '${cr.facilityName}' success`);
 										})

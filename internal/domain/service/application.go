@@ -35,6 +35,18 @@ const (
 	appTypeDaemonSet   = "DaemonSet"
 )
 
+func (s *NexusService) GetPublicAddress(ctx context.Context, uuid, facility string) (string, error) {
+	cpUnit, err := s.facility.GetLeader(ctx, uuid, facility)
+	if err != nil {
+		return "", err
+	}
+	cpUnitInfo, err := s.facility.GetUnitInfo(ctx, uuid, cpUnit)
+	if err != nil {
+		return "", err
+	}
+	return cpUnitInfo.PublicAddress, nil
+}
+
 func (s *NexusService) ListApplications(ctx context.Context, uuid, facility string) ([]model.Application, error) {
 	if err := s.setKubernetesClient(ctx, uuid, facility); err != nil {
 		return nil, err
@@ -468,9 +480,9 @@ func toApplication(ls *metav1.LabelSelector, appType, name, namespace string, ob
 		Labels:                 labels,
 		Replicas:               replicas,
 		Containers:             containers,
-		Services:               filterServices(svcs, selector),
-		Pods:                   filterPods(pods, selector),
-		PersistentVolumeClaims: filterPersistentVolumeClaim(pvcs, vs, scm),
+		Services:               filterServices(svcs, namespace, selector),
+		Pods:                   filterPods(pods, namespace, selector),
+		PersistentVolumeClaims: filterPersistentVolumeClaim(pvcs, vs, namespace, scm),
 	}, nil
 }
 
@@ -543,48 +555,52 @@ func extractClientToken(unitInfo *model.UnitInfo) (string, error) {
 	return "", errors.New("token not found")
 }
 
-func filterServices(svcs []corev1.Service, s labels.Selector) []corev1.Service {
+func filterServices(svcs []corev1.Service, namespace string, s labels.Selector) []corev1.Service {
 	ret := []corev1.Service{}
 	for i := range svcs {
-		if s.Matches(labels.Set(svcs[i].Spec.Selector)) {
+		if svcs[i].Namespace == namespace && s.Matches(labels.Set(svcs[i].Spec.Selector)) {
 			ret = append(ret, svcs[i])
 		}
 	}
 	return ret
 }
 
-func filterPods(pods []corev1.Pod, s labels.Selector) []corev1.Pod {
+func filterPods(pods []corev1.Pod, namespace string, s labels.Selector) []corev1.Pod {
 	ret := []corev1.Pod{}
 	for i := range pods {
-		if s.Matches(labels.Set(pods[i].Labels)) {
+		if pods[i].Namespace == namespace && s.Matches(labels.Set(pods[i].Labels)) {
 			ret = append(ret, pods[i])
 		}
 	}
 	return ret
 }
 
-func filterPersistentVolumeClaim(pvcs []corev1.PersistentVolumeClaim, vs []corev1.Volume, scm map[string]storagev1.StorageClass) []model.PersistentVolumeClaim {
+func filterPersistentVolumeClaim(pvcs []corev1.PersistentVolumeClaim, vs []corev1.Volume, namespace string, scm map[string]storagev1.StorageClass) []model.PersistentVolumeClaim {
 	ret := []model.PersistentVolumeClaim{}
 	for i := range vs {
 		if vs[i].PersistentVolumeClaim == nil {
 			continue
 		}
 		for j := range pvcs {
-			if vs[i].PersistentVolumeClaim.ClaimName == pvcs[j].Name {
-				if name := pvcs[j].Spec.StorageClassName; name != nil {
-					if sc, ok := scm[*name]; ok {
-						ret = append(ret, model.PersistentVolumeClaim{
-							PersistentVolumeClaim: &pvcs[j],
-							StorageClass:          &sc,
-						})
-						continue
-					}
-				}
-				ret = append(ret, model.PersistentVolumeClaim{
-					PersistentVolumeClaim: &pvcs[j],
-				})
-				break
+			if vs[i].PersistentVolumeClaim.ClaimName != pvcs[j].Name {
+				continue
 			}
+			if pvcs[j].Namespace != namespace {
+				continue
+			}
+			if name := pvcs[j].Spec.StorageClassName; name != nil {
+				if sc, ok := scm[*name]; ok {
+					ret = append(ret, model.PersistentVolumeClaim{
+						PersistentVolumeClaim: &pvcs[j],
+						StorageClass:          &sc,
+					})
+					continue
+				}
+			}
+			ret = append(ret, model.PersistentVolumeClaim{
+				PersistentVolumeClaim: &pvcs[j],
+			})
+			break
 		}
 	}
 	return ret
