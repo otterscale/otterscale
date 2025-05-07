@@ -13,6 +13,7 @@
 	import Paging from './paging.svelte';
 	import Search from './search.svelte';
 	import Filter from './filter.svelte';
+	import { fuzzLogosIcon } from '$lib/icon';
 
 	let {
 		releases,
@@ -114,7 +115,10 @@
 				<Avatar.Root class="h-12 w-12">
 					<Avatar.Image src={filteredChart.icon} />
 					<Avatar.Fallback>
-						<Skeleton class="size-12" />
+						<Icon
+							icon={fuzzLogosIcon(filteredChart.name, 'fluent-emoji-flat:otter')}
+							class="size-12"
+						/>
 					</Avatar.Fallback>
 				</Avatar.Root>
 				<span class="flex-col space-y-1">

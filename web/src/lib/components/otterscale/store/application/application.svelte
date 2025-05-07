@@ -25,6 +25,7 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { goto } from '$app/navigation';
+	import { fuzzLogosIcon } from '$lib/icon';
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -73,7 +74,10 @@
 				<Avatar.Root class="h-12 w-12">
 					<Avatar.Image src={$chartStore.icon} />
 					<Avatar.Fallback>
-						<Skeleton class="size-12 rounded-full" />
+						<Icon
+							icon={fuzzLogosIcon($chartStore.name, 'fluent-emoji-flat:otter')}
+							class="size-12"
+						/>
 					</Avatar.Fallback>
 				</Avatar.Root>
 				<span class="space-y-1">

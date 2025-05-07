@@ -16,6 +16,8 @@
 	import Search from './search.svelte';
 
 	import type { Facility_Charm, Facility } from '$gen/api/nexus/v1/nexus_pb';
+	import { fuzzLogosIcon } from '$lib/icon';
+	import Icon from '@iconify/svelte';
 
 	let {
 		charms,
@@ -115,7 +117,10 @@
 				<Avatar.Root class="h-10 w-10">
 					<Avatar.Image src={filteredCharm.icon} />
 					<Avatar.Fallback>
-						<Skeleton class="size-10" />
+						<Icon
+							icon={fuzzLogosIcon(filteredCharm.name, 'fluent-emoji-flat:otter')}
+							class="size-8"
+						/>
 					</Avatar.Fallback>
 				</Avatar.Root>
 				<span class="min-w-0 flex-1">
