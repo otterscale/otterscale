@@ -16,6 +16,7 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Button } from '$lib/components/ui/button';
 	import { Progress } from '$lib/components/ui/progress/index.js';
+	import { toast } from 'svelte-sonner';
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -65,6 +66,9 @@
 			console.error('Error during initial data load:', error);
 		}
 
+		toast.warning('Work In Progress', {
+			description: 'This LLM management page is still under development.'
+		});
 		mounted = true;
 	});
 </script>
