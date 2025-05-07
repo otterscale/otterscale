@@ -12,7 +12,10 @@ storage_pools:
   name: default
   driver: zfs
 profiles:
-- config: {}
+- name: default
+  config:
+    boot.autostart: "true"
+    boot.autostart: "5"
   description: ""
   devices:
     eth0:
@@ -24,7 +27,6 @@ profiles:
       path: /
       pool: default
       type: disk
-  name: default
 projects: []
 cluster: null
 EOF

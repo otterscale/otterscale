@@ -69,24 +69,6 @@ start_import() {
     done
 }
 
-update_commissioning_img() {
-    if ! maas admin maas set-config name=commissioning_distro_series value=jammy >"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to change commissioning image to jammy."
-    fi
-}
-
-update_distro_series() {
-    if ! maas admin maas set-config name=default_distro_series value=jammy >"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to change default distro image to jammy."
-    fi
-}
-
-update_default_osystem() {
-    if ! maas admin maas set-config name=default_osystem value=ubuntu >"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to change default operation system to ubuntu."
-    fi
-}
-
 download_maas_img() {
     log "INFO" "Configuring MAAS boot sources..."
 
@@ -99,8 +81,8 @@ download_maas_img() {
     fi
 
     start_import
-    update_commissioning_img
-    update_distro_series
-    update_default_osystem
+    set_config "commissioning_distro_series" "jammy"
+    set_config "default_distro_series" "jammy"
+    set_config "default_osystem" "ubuntu"
     log "INFO" "MAAS images downloaded successfully"
 }

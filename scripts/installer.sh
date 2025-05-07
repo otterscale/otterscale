@@ -43,8 +43,7 @@ main() {
 
     ## MAAS configure
     update_dns
-    update_img_autosync
-    update_proxy
+    update_config
     download_maas_img
     enable_maas_dhcp
 
@@ -67,7 +66,7 @@ main() {
     apt_install $INSTALLER_DIR/packages/$deb_file
     start_service "ottersacle"
     enable_service "ottersacle"
-    log "INFO" "OtterScale has been launched, you can access via http://localhost:5090"
+    log "INFO" "OtterScale has been launched, install finished."
 
     ## cleanup
     trap cleanup EXIT

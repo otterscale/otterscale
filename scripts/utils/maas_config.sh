@@ -12,23 +12,23 @@ update_dns() {
         dns_value="$maas_current_dns $dns_value"
     fi
 
-    if ! maas admin maas set-config name=upstream_dns value="$dns_value" >"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to update dns to MAAS."
+    set_config "upstream_dns" "$dns_value"
+}
+
+set_config() {
+    local name=$1
+    local value=$2
+    if ! maas admin maas set-config name=$name value=$value >"$TEMP_LOG" 2>&1; then
+        error_exit "Failed to set config $name to $value."
     fi
 }
 
-update_img_autosync() {
-    log "INFO" "Update MAAS image automatic sync."
-    if ! maas admin maas set-config name=boot_images_auto_import value=false >"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to disable automatic image sync."
-    fi
-}
-
-update_proxy() {
-    log "INFO" "Update MAAS Proxy."
-    if ! maas admin maas set-config name=enable_http_proxy value=false >"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to update MAAS Proxy."
-    fi
+update_config() {
+    set_config "boot_images_auto_import" "false"
+    set_config "enable_http_proxy" "false"
+    set_config "enable_analytics" "false"
+    set_config "network_discovery" "disabled"
+    set_config "release_notifications" "false"
 }
 
 enter_dhcp_subnet() {
