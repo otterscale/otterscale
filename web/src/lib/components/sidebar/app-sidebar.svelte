@@ -104,7 +104,7 @@
 				items: [
 					{
 						title: m.model(),
-						url: '/'
+						url: '/management/llm'
 					},
 					{
 						title: m.application(),
