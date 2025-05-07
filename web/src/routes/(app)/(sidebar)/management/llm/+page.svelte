@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { llmData, createDateSeries, type LLMModel } from './dataset';
 	import { formatBigNumber as formatNumber } from '$lib/formatter';
 	import * as Pagination from '$lib/components/ui/pagination/index.js';
@@ -16,7 +17,7 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Button } from '$lib/components/ui/button';
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { toast } from 'svelte-sonner';
+	import Icon from '@iconify/svelte';
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -66,9 +67,6 @@
 			console.error('Error during initial data load:', error);
 		}
 
-		toast.warning('Work In Progress', {
-			description: 'This LLM management page is still under development.'
-		});
 		mounted = true;
 	});
 </script>
@@ -108,9 +106,17 @@
 		<Card.Footer class="flex flex-col items-start"></Card.Footer>
 	</Card.Root>
 {/snippet}
-<div class="grid grid-cols-4 gap-3">
-	{@render Statistic()}
+<div class="flex-col space-y-4">
+	<Alert.Root variant="destructive">
+		<Icon icon="ph:warning-diamond" class="size-5" />
+		<Alert.Title>Work In Progress</Alert.Title>
+		<Alert.Description>This LLM management page is still under development.</Alert.Description>
+	</Alert.Root>
+	<div class="grid grid-cols-4 gap-3">
+		{@render Statistic()}
+	</div>
 </div>
+
 <div class="flex items-center justify-between">
 	<span>
 		<Input type="text" placeholder="Search models..." />
