@@ -57,6 +57,7 @@
 	import Icon from '@iconify/svelte';
 	import { Nexus, type Scope, type Error } from '$gen/api/nexus/v1/nexus_pb';
 	import { goto } from '$app/navigation';
+	import { MessageIterator } from '$lib/components/otterscale/ui/index';
 
 	let { scope }: { scope: Scope } = $props();
 
@@ -149,24 +150,24 @@
 	{/if}
 	{#if $errorsStore && $errorsStore.length > 0}
 		{@const criticalErrors = $errorsStore.filter((e) => Number(e.level) > 3)}
+		{@const level3Errors = $errorsStore.filter((e) => Number(e.level) === 3)}
+		{@const level2Errors = $errorsStore.filter((e) => Number(e.level) === 2)}
+		{@const level1Errors = $errorsStore.filter((e) => Number(e.level) === 1)}
 		{#each criticalErrors as error}
 			<Alert.Root variant="destructive">
-				<Icon icon="material-symbols:warning-rounded" class="size-6" />
+				<Icon icon="material-symbols:warning-rounded" class="size-7" />
 				<Alert.Title class="text-sm">{error.message}</Alert.Title>
 				<Alert.Description class="text-xs text-destructive">{error.details}</Alert.Description>
 			</Alert.Root>
 		{/each}
-		{#if $currentInformationStore}
-			<Alert.Root>
-				<Icon icon="ph:info" class="size-6" />
-				<Alert.Title class="flex items-center justify-between gap-2">
-					<p class="text-sm">{$currentInformationStore.message}</p>
-					<p class="text-sm">{$errorsStore.length} messages</p>
-				</Alert.Title>
-				<Alert.Description class="text-xs">
-					{$currentInformationStore.details}
-				</Alert.Description>
-			</Alert.Root>
+		{#if level3Errors && level3Errors.length > 0}
+			<MessageIterator data={level3Errors} duration={2000} />
+		{/if}
+		{#if level2Errors && level2Errors.length > 0}
+			<MessageIterator data={level2Errors} duration={2000} />
+		{/if}
+		{#if level1Errors && level1Errors.length > 0}
+			<MessageIterator data={level1Errors} duration={2000} />
 		{/if}
 	{/if}
 	{#if $errorsStore.some((e) => isCephError(e) || isKubernetesError(e))}
