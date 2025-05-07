@@ -26,20 +26,18 @@
 
 	let data = $state(healthData);
 
-	import * as Collapsible from '$lib/components/ui/collapsible';
+	import Autoplay from 'embla-carousel-autoplay';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Carousel from '$lib/components/ui/carousel/index.js';
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
-	import * as Select from '$lib/components/ui/select/index.js';
-	import { Label } from '$lib/components/ui/label';
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { cn } from '$lib/utils';
 	import { healthRawData } from './dataset';
 	import { group } from 'd3-array';
 	import { AreaChart, Svg, Group, Arc, Chart, Text } from 'layerchart';
-	import { sum } from 'd3-array';
 	import { Badge } from '$lib/components/ui/badge';
 	import { latencies, storages, inputOutputs, usages, currentUsage } from './dataset';
-	import * as Card from '$lib/components/ui/card';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { Button } from '$lib/components/ui/button';
@@ -47,17 +45,12 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import LLMError from './error/llm.svelte';
 	import PrometheusError from './error/prometheus.svelte';
 	import KubernetesError from './error/kubernetes.svelte';
 	import CephError from './error/ceph.svelte';
 	import Icon from '@iconify/svelte';
-	import {
-		Nexus,
-		type Scope,
-		type Error,
-		type Facility_Info,
-		type Application
-	} from '$gen/api/nexus/v1/nexus_pb';
+	import { Nexus, type Scope, type Error, type Application } from '$gen/api/nexus/v1/nexus_pb';
 	import { goto } from '$app/navigation';
 	import { MessageIterator } from '$lib/components/otterscale/ui/index';
 
@@ -172,11 +165,13 @@
 		{@const level2Errors = $errorsStore.filter((e) => Number(e.level) === 2)}
 		{@const level1Errors = $errorsStore.filter((e) => Number(e.level) === 1)}
 		{#each criticalErrors as error}
-			<Alert.Root variant="destructive">
-				<Icon icon="material-symbols:warning-rounded" class="size-7" />
-				<Alert.Title class="text-sm">{error.message}</Alert.Title>
-				<Alert.Description class="text-xs text-destructive">{error.details}</Alert.Description>
-			</Alert.Root>
+			{#if !isCephError(error) && !isKubernetesError(error) && !isMachineError(error)}
+				<Alert.Root variant="destructive">
+					<Icon icon="material-symbols:warning-rounded" class="size-7" />
+					<Alert.Title class="text-sm">{error.message}</Alert.Title>
+					<Alert.Description class="text-xs text-destructive">{error.details}</Alert.Description>
+				</Alert.Root>
+			{/if}
 		{/each}
 		{#if level3Errors && level3Errors.length > 0}
 			<MessageIterator data={level3Errors} duration={2000} />
@@ -188,18 +183,41 @@
 			<MessageIterator data={level1Errors} duration={2000} />
 		{/if}
 	{/if}
-	{#if $errorsStore.some((e) => isCephError(e) || isKubernetesError(e))}
-		<div class="flex h-full w-full flex-col items-center gap-4">
-			<span class="flex h-full w-full items-center justify-evenly">
-				{#each $errorsStore as error}
-					{#if isCephError(error)}
-						<CephError />
-					{/if}
-					{#if isKubernetesError(error)}
-						<KubernetesError />
-					{/if}
-				{/each}
-			</span>
+	{#if $errorsStore.some((e) => isCephError(e))}
+		<div class="flex h-full items-center justify-center">
+			<Carousel.Root
+				plugins={[
+					Autoplay({
+						delay: 3000
+					})
+				]}
+				opts={{
+					align: 'start'
+				}}
+				class="w-full max-w-6xl"
+			>
+				<Carousel.Content>
+					<Carousel.Item class="md:basis-1/2 lg:basis-1/3">
+						<div class="p-1">
+							<CephError />
+						</div>
+					</Carousel.Item>
+					<Carousel.Item class="md:basis-1/2 lg:basis-1/3">
+						<div class="p-1">
+							<KubernetesError />
+						</div>
+					</Carousel.Item>
+					{#each Array(5) as _, i (i)}
+						<Carousel.Item class="md:basis-1/2 lg:basis-1/3">
+							<div class="p-1">
+								<LLMError />
+							</div>
+						</Carousel.Item>
+					{/each}
+				</Carousel.Content>
+				<Carousel.Previous />
+				<Carousel.Next />
+			</Carousel.Root>
 		</div>
 	{:else if $errorsStore.some((e) => isPrometheusError(e))}
 		<PrometheusError />

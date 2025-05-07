@@ -1,21 +1,25 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Card from '$lib/components/ui/card';
 	import CreateCeph from '$lib/components/otterscale/management/general/create-ceph.svelte';
 </script>
 
-<!-- 
-//TODO: add hover
-Ceph provides reliable and scalable storage for your cluster. Install it to enable persistent storage features.
--->
-
-<Card.Root class="h-min w-[350px]">
-	<Card.Header class="flex flex-col items-center justify-center">
-		<Icon icon="simple-icons:ceph" class="h-24 w-24 p-2" style="color: #f0424d" />
-		<Card.Title>Ceph Storage</Card.Title>
-		<Card.Description>Deploy Distributed Cluster</Card.Description>
-	</Card.Header>
-	<Card.Footer class="flex items-center justify-center">
-		<CreateCeph />
-	</Card.Footer>
+<Card.Root>
+	<Card.Content class="flex aspect-square items-center justify-center">
+		<div class="flex-col items-center justify-center space-y-2">
+			<div class="flex items-center justify-center space-x-2">
+				<Icon icon="simple-icons:ceph" class="size-24 p-2" style="color: #f0424d" />
+				<div class="flex-col space-y-1">
+					<p class="text-xl font-semibold leading-none tracking-tight">Ceph</p>
+					<p class="text-xl font-semibold leading-none tracking-tight">Storage</p>
+				</div>
+			</div>
+			<div class="flex items-center justify-center">
+				<p class="text-sm text-muted-foreground">Deploy Your Distributed Storage Cluster</p>
+			</div>
+			<div class="flex items-center justify-center pt-6">
+				<CreateCeph />
+			</div>
+		</div>
+	</Card.Content>
 </Card.Root>

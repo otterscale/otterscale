@@ -79,7 +79,7 @@
 </script>
 
 <AlertDialog.Root bind:open>
-	<AlertDialog.Trigger class="p-4">
+	<AlertDialog.Trigger>
 		<Button>Deploy</Button>
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>

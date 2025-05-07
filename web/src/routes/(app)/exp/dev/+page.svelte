@@ -1,20 +1,35 @@
 <script lang="ts">
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import Autoplay from 'embla-carousel-autoplay';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Carousel from '$lib/components/ui/carousel/index.js';
 </script>
 
-<AlertDialog.Root>
-	<AlertDialog.Trigger>Open</AlertDialog.Trigger>
-	<AlertDialog.Content interactOutsideBehavior="close">
-		<AlertDialog.Header>
-			<AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
-			<AlertDialog.Description>
-				This action cannot be undone. This will permanently delete your account and remove your data
-				from our servers.
-			</AlertDialog.Description>
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action>Continue</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+<div class="flex items-center justify-center">
+	<Carousel.Root
+		plugins={[
+			Autoplay({
+				delay: 3000
+			})
+		]}
+		opts={{
+			align: 'start'
+		}}
+		class="w-full max-w-sm"
+	>
+		<Carousel.Content>
+			{#each Array(5) as _, i (i)}
+				<Carousel.Item class="md:basis-1/2 lg:basis-1/3">
+					<div class="p-1">
+						<Card.Root>
+							<Card.Content class="flex aspect-square items-center justify-center p-6">
+								<span class="text-3xl font-semibold">{i + 1}</span>
+							</Card.Content>
+						</Card.Root>
+					</div>
+				</Carousel.Item>
+			{/each}
+		</Carousel.Content>
+		<Carousel.Previous />
+		<Carousel.Next />
+	</Carousel.Root>
+</div>
