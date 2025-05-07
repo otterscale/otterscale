@@ -5,7 +5,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { toast } from 'svelte-sonner';
 	import { Nexus, type Machine, type PowerOffMachineRequest } from '$gen/api/nexus/v1/nexus_pb';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 
 	let {
@@ -58,18 +58,24 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					client
-						.powerOffMachine(powerOffMachineRequest)
-						.then((r) => {
-							toast.success(`Turn off ${machine.fqdn}`);
+					toast.promise(() => client.powerOffMachine(powerOffMachineRequest), {
+						loading: 'Loading...',
+						success: (r) => {
 							client.getMachine({ id: machine.id }).then((r) => {
 								machine = r;
 							});
-						})
-						.catch((e) => {
-							toast.error(`Fail to turn off ${machine.fqdn}`);
-						});
+							return `Turn off ${machine.fqdn}`;
+						},
+						error: (e) => {
+							let msg = `Fail to turn off ${machine.fqdn}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
+
 					reset();
 					close();
 				}}

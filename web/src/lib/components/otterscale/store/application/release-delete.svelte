@@ -7,7 +7,7 @@
 		type Application_Release,
 		type DeleteReleaseRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 
@@ -62,18 +62,23 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					client
-						.deleteRelease(deleteReleaseRequest)
-						.then((r) => {
-							toast.success(`Delete ${deleteReleaseRequest.name}`);
+					toast.promise(() => client.deleteRelease(deleteReleaseRequest), {
+						loading: 'Loading...',
+						success: (r) => {
 							client.listReleases({}).then((r) => {
 								releases = r.releases;
 							});
-						})
-						.catch((e) => {
-							toast.error(`Fail to delete ${deleteReleaseRequest.name}: ${e.toString()}`);
-						});
+							return `Delete ${deleteReleaseRequest.name}`;
+						},
+						error: (e) => {
+							let msg = `Fail to delete ${deleteReleaseRequest.name}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
 
 					close();
 				}}>Confirm</AlertDialog.Action

@@ -8,7 +8,7 @@
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { toast } from 'svelte-sonner';
 	import { Nexus, type CreateNetworkRequest, type Network } from '$gen/api/nexus/v1/nexus_pb';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 
 	let { networks = $bindable() }: { networks: Network[] } = $props();
@@ -92,18 +92,24 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					client
-						.createNetwork(createNetworkRequest)
-						.then((r) => {
-							toast.success(`Create ${createNetworkRequest.cidr} success`);
+					toast.promise(() => client.createNetwork(createNetworkRequest), {
+						loading: 'Loading...',
+						success: (r) => {
 							client.listNetworks({}).then((r) => {
 								networks = r.networks;
 							});
-						})
-						.catch((e) => {
-							toast.error(`Fail to create ${createNetworkRequest.cidr}: ${e.toString()}`);
-						});
+							return `Create ${createNetworkRequest.cidr} success`;
+						},
+						error: (e) => {
+							let msg = `Fail to create ${createNetworkRequest.cidr}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
+
 					reset();
 					close();
 				}}

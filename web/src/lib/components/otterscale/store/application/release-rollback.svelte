@@ -7,7 +7,7 @@
 		type Application_Release,
 		type RollbackReleaseRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 
@@ -63,18 +63,24 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					client
-						.rollbackRelease(rollbackReleaseRequest)
-						.then((r) => {
-							toast.success(`Rollback ${rollbackReleaseRequest.name}`);
+					toast.promise(() => client.rollbackRelease(rollbackReleaseRequest), {
+						loading: 'Loading...',
+						success: (r) => {
 							client.listReleases({}).then((r) => {
 								releases = r.releases;
 							});
-						})
-						.catch((e) => {
-							toast.error(`Fail to rollback ${rollbackReleaseRequest.name}: ${e.toString()}`);
-						});
+							return `Rollback ${rollbackReleaseRequest.name}`;
+						},
+						error: (e) => {
+							let msg = `Fail to rollback ${rollbackReleaseRequest.name}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
+
 					reset();
 					close();
 				}}>Confirm</AlertDialog.Action

@@ -6,7 +6,7 @@
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { toast } from 'svelte-sonner';
 	import { Nexus, type Machine, type DeleteMachineRequest } from '$gen/api/nexus/v1/nexus_pb';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 
 	let {
@@ -67,18 +67,24 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					client
-						.deleteMachine(deleteMachineRequest)
-						.then((r) => {
-							toast.success(`Delete ${machine.fqdn} success`);
+					toast.promise(() => client.deleteMachine(deleteMachineRequest), {
+						loading: 'Loading...',
+						success: (r) => {
 							client.listMachines({}).then((r) => {
 								machines = r.machines;
 							});
-						})
-						.catch((e) => {
-							toast.error(`Fail to delete ${machine.fqdn}: ${e.toString()}`);
-						});
+							return `Delete ${machine.fqdn} success`;
+						},
+						error: (e) => {
+							let msg = `Fail to delete ${machine.fqdn}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
+
 					reset();
 					close();
 				}}

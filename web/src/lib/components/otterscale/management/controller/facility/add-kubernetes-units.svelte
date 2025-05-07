@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { Badge } from '$lib/components/ui/badge';
@@ -140,17 +140,21 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					client
-						.addKubernetesUnits(addKubernetesUnitsRequest)
-						.then((r) => {
-							toast.success(`Add units for ${addKubernetesUnitsRequest.facilityName} success`);
-						})
-						.catch((e) => {
-							toast.error(
-								`Fail to add units for ${addKubernetesUnitsRequest.facilityName}: ${e.toString()}`
-							);
-						});
+					toast.promise(() => client.addKubernetesUnits(addKubernetesUnitsRequest), {
+						loading: 'Loading...',
+						success: (r) => {
+							return `Add units for ${addKubernetesUnitsRequest.facilityName} success`;
+						},
+						error: (e) => {
+							let msg = `Fail to add units for ${addKubernetesUnitsRequest.facilityName}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
+
 					reset();
 					close();
 				}}

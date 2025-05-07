@@ -14,7 +14,7 @@
 		type Machine_Placement,
 		type Tag
 	} from '$gen/api/nexus/v1/nexus_pb';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 
 	let {
@@ -170,18 +170,24 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					client
-						.createMachine(createMachineRequest)
-						.then((r) => {
-							toast.success(`Create ${r.fqdn} success`);
+					toast.promise(() => client.createMachine(createMachineRequest), {
+						loading: 'Loading...',
+						success: (r) => {
 							client.listMachines({}).then((r) => {
 								machines = r.machines;
 							});
-						})
-						.catch((e) => {
-							toast.error(`Fail to create ${machine.fqdn}: ${e.toString()}`);
-						});
+							return `Create ${r.fqdn} success`;
+						},
+						error: (e) => {
+							let msg = `Fail to create ${machine.fqdn}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
+
 					reset();
 					close();
 				}}

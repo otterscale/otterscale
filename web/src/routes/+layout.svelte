@@ -37,7 +37,7 @@
 <Metadata />
 
 <ModeWatcher />
-<Toaster richColors duration={12000} />
+<Toaster closeButton richColors />
 
 <ParaglideJS {i18n}>
 	{@render children()}

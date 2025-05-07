@@ -8,7 +8,7 @@
 		type Application_Release,
 		type UpdateReleaseRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { ReleaseValuesEdit } from '$lib/components/otterscale/index';
@@ -99,18 +99,23 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					client
-						.updateRelease(updateReleaseRequest)
-						.then((r) => {
-							toast.success(`Update ${updateReleaseRequest.name}.`);
+					toast.promise(() => client.updateRelease(updateReleaseRequest), {
+						loading: 'Loading...',
+						success: (r) => {
 							client.listReleases({}).then((r) => {
 								releases = r.releases;
 							});
-						})
-						.catch((e) => {
-							toast.error(`Fail to update ${updateReleaseRequest.name}: ${e.toString()}`);
-						});
+							return `Update ${r.name} success`;
+						},
+						error: (e) => {
+							let msg = `Fail to update ${updateReleaseRequest.name}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
 
 					reset();
 					close();

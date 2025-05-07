@@ -11,7 +11,7 @@
 		type CreateReleaseRequest,
 		type Facility_Info
 	} from '$gen/api/nexus/v1/nexus_pb';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { writable } from 'svelte/store';
@@ -113,7 +113,7 @@
 			<ComponentLoading />
 		{/if}
 	</AlertDialog.Trigger>
-	<AlertDialog.Content>
+	<AlertDialog.Content interactOutsideBehavior="close">
 		<AlertDialog.Header>
 			<AlertDialog.Description class="space-y-2">
 				<fieldset class="items-center rounded-lg border p-4">
@@ -210,19 +210,26 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
 					integrate();
-					client
-						.createRelease(createReleaseRequest)
-						.then((r) => {
-							toast.success(`Create ${r.name} success`);
+
+					toast.promise(() => client.createRelease(createReleaseRequest), {
+						loading: 'Loading...',
+						success: (r) => {
 							client.listReleases({}).then((r) => {
 								releases = r.releases;
 							});
-						})
-						.catch((e) => {
-							toast.error(`Fail to create ${createReleaseRequest.name}: ${e.toString()}`);
-						});
+							return `Create ${r.name} success`;
+						},
+						error: (e) => {
+							let msg = `Fail to create ${createReleaseRequest.name}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
+
 					reset();
 					close();
 				}}>Confirm</AlertDialog.Action

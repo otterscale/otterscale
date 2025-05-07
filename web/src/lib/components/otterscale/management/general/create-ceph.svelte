@@ -3,7 +3,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { toast } from 'svelte-sonner';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
@@ -178,15 +178,20 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					client
-						.createCeph(createCephRequest)
-						.then((r) => {
-							toast.success(`Create Ceph ${r.facilityName} to ${r.scopeName} success`);
-						})
-						.catch((e) => {
-							toast.error(`Fail to create Ceph: ${e.toString()}`);
-						});
+					toast.promise(() => client.createCeph(createCephRequest), {
+						loading: 'Loading...',
+						success: (r) => {
+							return `Create Ceph ${r.facilityName} to ${r.scopeName} success`;
+						},
+						error: (e) => {
+							let msg = `Fail to create Ceph`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
 
 					reset();
 					close();

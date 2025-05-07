@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { Button } from '$lib/components/ui/button';
 	import { getContext } from 'svelte';
 	import { Nexus, type ImportBootImagesRequest } from '$gen/api/nexus/v1/nexus_pb';
@@ -74,16 +74,22 @@
 				<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 				<AlertDialog.Action
 					onclick={() => {
-						toast.loading('Loading...');
 						isImportingBootImages = true;
-						client
-							.importBootImages(importBootImageRequest)
-							.then((r) => {
-								toast.success(`Import boot images success`);
-							})
-							.catch((e) => {
-								toast.error(`Fail to import boot images: ${e.toString()}`);
-							});
+						toast.promise(() => client.importBootImages(importBootImageRequest), {
+							loading: 'Loading...',
+							success: (r) => {
+								return `Import boot images success`;
+							},
+							error: (e) => {
+								let msg = `Fail to import boot images`;
+								toast.error(msg, {
+									description: (e as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY
+								});
+								return msg;
+							}
+						});
+
 						reset();
 						close();
 					}}

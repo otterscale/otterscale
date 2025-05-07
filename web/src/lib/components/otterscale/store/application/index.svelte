@@ -77,6 +77,7 @@
 							{@render ChartCard(filteredChart)}
 						</AlertDialog.Trigger>
 						<AlertDialog.Content
+							interactOutsideBehavior="close"
 							class={cn(
 								'flex flex-col justify-between',
 								releasesFromChart.has(filteredChart.name) ? 'min-w-[62vw]' : 'min-w-[38vw]'

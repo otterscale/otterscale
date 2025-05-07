@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import {
 		Nexus,
@@ -149,21 +149,26 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.loading('Loading...');
-					console.log(addFacilityUnitsRequest);
-					client
-						.addFacilityUnits(addFacilityUnitsRequest)
-						.then((r) => {
-							toast.success(`Add units to ${addFacilityUnitsRequest.name}`);
+					toast.promise(() => client.addFacilityUnits(addFacilityUnitsRequest), {
+						loading: 'Loading...',
+						success: (r) => {
 							client
 								.getFacility({ scopeUuid: scopeUuid, name: facilityByCategory.name })
 								.then((r) => {
 									facilityByCategory = r;
 								});
-						})
-						.catch((e) => {
-							toast.error(`Fail to add units to ${addFacilityUnitsRequest.name}: ${e.toString()}`);
-						});
+							return `Add units for ${addFacilityUnitsRequest.name} success`;
+						},
+						error: (e) => {
+							let msg = `Fail to add units for ${addFacilityUnitsRequest.name}`;
+							toast.error(msg, {
+								description: (e as ConnectError).message.toString(),
+								duration: Number.POSITIVE_INFINITY
+							});
+							return msg;
+						}
+					});
+
 					reset();
 					close();
 				}}
