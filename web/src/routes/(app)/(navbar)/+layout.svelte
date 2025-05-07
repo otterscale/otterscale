@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { SiteFooter, SiteHeader } from '$lib/components';
 	import type { Snippet } from 'svelte';
-	import type { PageData } from '../../$types';
+	import type { PageData } from './$types';
 
 	let { data, children }: { data: PageData; children: Snippet<[]> } = $props();
 </script>
