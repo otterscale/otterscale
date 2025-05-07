@@ -50,10 +50,8 @@
 			<AlertDialog.Action
 				onclick={() => {
 					client.doAction(doActionRequest).then((r) => {
-						toast.info(`Conduct ${action.name}`);
+						toast.success(`Conduct ${action.name}`);
 					});
-					console.log(doActionRequest);
-					toast.info(`Conduct ${action.name}`);
 					reset();
 					close();
 				}}

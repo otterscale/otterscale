@@ -140,10 +140,11 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					client
 						.addKubernetesUnits(addKubernetesUnitsRequest)
 						.then((r) => {
-							toast.info(`Add units for ${addKubernetesUnitsRequest.facilityName} success`);
+							toast.success(`Add units for ${addKubernetesUnitsRequest.facilityName} success`);
 						})
 						.catch((e) => {
 							toast.error(

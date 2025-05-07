@@ -84,7 +84,7 @@
 					client
 						.updateVLAN(updateVLANRequest)
 						.then((r) => {
-							toast.info(`Update ${r.name} success`);
+							toast.success(`Update ${r.name} success`);
 							client.listNetworks({}).then((r) => {
 								networks = r.networks;
 							});

@@ -346,9 +346,8 @@
 			<AlertDialog.Action
 				onclick={() => {
 					client.createFacility(createFacilityRequest).then((r) => {
-						toast.info(`Create ${createFacilityRequest.name}.`);
+						toast.success(`Create ${createFacilityRequest.name}.`);
 					});
-					// toast.info(`Create ${createFacilityRequest.name}.`);
 					console.log(createFacilityRequest);
 					reset();
 					close();

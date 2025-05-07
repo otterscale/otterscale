@@ -99,10 +99,11 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					client
 						.updateRelease(updateReleaseRequest)
 						.then((r) => {
-							toast.info(`Update ${updateReleaseRequest.name}.`);
+							toast.success(`Update ${updateReleaseRequest.name}.`);
 							client.listReleases({}).then((r) => {
 								releases = r.releases;
 							});

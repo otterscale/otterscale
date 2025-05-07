@@ -64,10 +64,8 @@
 			<AlertDialog.Action
 				onclick={() => {
 					client.updateFacility(updateFacilityRequest).then((r) => {
-						toast.info(`Update ${updateFacilityRequest.name}`);
+						toast.success(`Update ${updateFacilityRequest.name}`);
 					});
-					// console.log(updateFacilityRequest);
-					toast.info(`Update ${updateFacilityRequest.name}`);
 					reset();
 					close();
 				}}

@@ -66,7 +66,7 @@
 					client
 						.updatePackageRepository(updatePackageRepositoryRequest)
 						.then((r) => {
-							toast.info(`Update package repositories success`);
+							toast.success(`Update package repositories success`);
 							client.getConfiguration({}).then((r) => {
 								configuration = r;
 							});

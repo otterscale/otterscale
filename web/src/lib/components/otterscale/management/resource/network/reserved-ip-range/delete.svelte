@@ -54,12 +54,11 @@
 					client
 						.deleteIPRange(deleteIPRangeRequest)
 						.then((r) => {
-							toast.info(`Delete ip range ${ipRange.startIp} - ${ipRange.endIp}`);
+							toast.success(`Delete ip range ${ipRange.startIp} - ${ipRange.endIp}`);
 						})
 						.catch((e) => {
-							toast.info(`Delete ip range ${ipRange.startIp} - ${ipRange.endIp} fail`);
+							toast.error(`Delete ip range ${ipRange.startIp} - ${ipRange.endIp} fail`);
 						});
-					// toast.info(`Delete ip range ${ipRange.startIp} - ${ipRange.endIp}`);
 					console.log(deleteIPRangeRequest);
 					reset();
 					close();

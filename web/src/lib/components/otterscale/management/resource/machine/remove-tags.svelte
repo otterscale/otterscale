@@ -71,13 +71,11 @@
 					client
 						.removeMachineTags(removeMachineTagsRequest)
 						.then((r) => {
-							toast.info(`Remove tags ${removeMachineTagsRequest.tags.join(', ')}`);
+							toast.success(`Remove tags ${removeMachineTagsRequest.tags.join(', ')}`);
 						})
 						.catch((e) => {
 							toast.error(`Remove tags ${removeMachineTagsRequest.tags.join(', ')} fail`);
 						});
-					// console.log(removeMachineTagsRequest);
-					toast.info(`Remove tags ${removeMachineTagsRequest.tags.join(', ')}`);
 					reset();
 					close();
 				}}

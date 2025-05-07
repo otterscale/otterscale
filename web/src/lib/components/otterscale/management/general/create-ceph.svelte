@@ -178,10 +178,11 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					client
 						.createCeph(createCephRequest)
 						.then((r) => {
-							toast.info(`Create Ceph ${r.facilityName} to ${r.scopeName} success`);
+							toast.success(`Create Ceph ${r.facilityName} to ${r.scopeName} success`);
 						})
 						.catch((e) => {
 							toast.error(`Fail to create Ceph: ${e.toString()}`);

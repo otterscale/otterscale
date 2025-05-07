@@ -50,11 +50,11 @@
 			<AlertDialog.Action
 				onclick={() => {
 					client.deleteTag(deleteTagRequest).then((r) => {
-						toast.info(`Delete ${deleteTagRequest.name}`);
-						client.listTags({}).then((r) => {tags = r.tags})
+						toast.success(`Delete ${deleteTagRequest.name}`);
+						client.listTags({}).then((r) => {
+							tags = r.tags;
+						});
 					});
-					// toast.info(`Delete ${deleteTagRequest.name}`);
-					console.log(deleteTagRequest.name);
 					reset();
 					close();
 				}}

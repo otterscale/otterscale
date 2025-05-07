@@ -170,10 +170,11 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					client
 						.createMachine(createMachineRequest)
 						.then((r) => {
-							toast.info(`Create ${r.fqdn} success`);
+							toast.success(`Create ${r.fqdn} success`);
 							client.listMachines({}).then((r) => {
 								machines = r.machines;
 							});

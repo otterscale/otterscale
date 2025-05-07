@@ -109,14 +109,6 @@
 								{/if}
 							</Select.Item>
 						{/each}
-						<!-- <Select.Item
-							value={''}
-							onclick={() => {
-								toast.info('new tag');
-							}}
-						>
-							New Tag
-						</Select.Item> -->
 					</Select.Content>
 				</Select.Root>
 			</AlertDialog.Description>
@@ -128,13 +120,11 @@
 					client
 						.addMachineTags(addMachineTagsRequest)
 						.then((r) => {
-							toast.info(`Add tags ${addMachineTagsRequest.tags.join(', ')}`);
+							toast.success(`Add tags ${addMachineTagsRequest.tags.join(', ')}`);
 						})
 						.catch((e) => {
 							toast.error(`Add tags ${addMachineTagsRequest.tags.join(', ')} fail`);
 						});
-					// toast.info(`Add tags ${addMachineTagsRequest.tags.join(', ')}`);
-					console.log(addMachineTagsRequest);
 					reset();
 					close();
 				}}

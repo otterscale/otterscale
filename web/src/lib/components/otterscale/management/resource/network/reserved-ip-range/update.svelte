@@ -81,12 +81,11 @@
 					client
 						.updateIPRange(updateIPRangeRequest)
 						.then((r) => {
-							toast.info(`Update ip range ${ipRange.startIp} - ${ipRange.endIp}`);
+							toast.success(`Update ip range ${ipRange.startIp} - ${ipRange.endIp}`);
 						})
 						.catch((e) => {
-							toast.info(`Update ip range ${ipRange.startIp} - ${ipRange.endIp} fail`);
+							toast.error(`Update ip range ${ipRange.startIp} - ${ipRange.endIp} fail`);
 						});
-					// toast.info(`Update ip range ${ipRange.startIp} - ${ipRange.endIp}`);
 					console.log(updateIPRangeRequest);
 					reset();
 					close();

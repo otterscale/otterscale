@@ -150,7 +150,7 @@
 					client
 						.createBootImage(createBootImageRequest)
 						.then((r) => {
-							toast.info(
+							toast.success(
 								`Create boot images ${createBootImageRequest.distroSeries}: ${createBootImageRequest.architectures.join(', ')}`
 							);
 							client.getConfiguration({}).then((r) => {

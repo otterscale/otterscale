@@ -21,7 +21,6 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { page } from '$app/state';
-	import CreateStorageClasses from './create-storage-classes.svelte';
 	import {
 		ManagementKubernetesComboBox,
 		ManagementScopeComboBox

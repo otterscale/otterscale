@@ -92,10 +92,11 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					client
 						.createNetwork(createNetworkRequest)
 						.then((r) => {
-							toast.info(`Create ${createNetworkRequest.cidr} success`);
+							toast.success(`Create ${createNetworkRequest.cidr} success`);
 							client.listNetworks({}).then((r) => {
 								networks = r.networks;
 							});

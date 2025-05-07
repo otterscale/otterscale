@@ -74,11 +74,12 @@
 				<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 				<AlertDialog.Action
 					onclick={() => {
+						toast.loading('Loading...');
 						isImportingBootImages = true;
 						client
 							.importBootImages(importBootImageRequest)
 							.then((r) => {
-								toast.info(`Import boot images success`);
+								toast.success(`Import boot images success`);
 							})
 							.catch((e) => {
 								toast.error(`Fail to import boot images: ${e.toString()}`);

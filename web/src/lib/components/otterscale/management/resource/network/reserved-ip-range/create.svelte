@@ -74,7 +74,7 @@
 					client
 						.createIPRange(createIPRangeRequest)
 						.then((r) => {
-							toast.info(`Create reserved ip range to ${subnet.cidr} success`);
+							toast.success(`Create reserved ip range to ${subnet.cidr} success`);
 						})
 						.catch((e) => {
 							toast.error(`Fail to create reserved ip range to ${subnet.cidr}: ${e.toString()}`);

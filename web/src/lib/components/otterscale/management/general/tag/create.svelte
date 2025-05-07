@@ -55,13 +55,11 @@
 			<AlertDialog.Action
 				onclick={() => {
 					client.createTag(createTagRequest).then((r) => {
-						toast.info(`Create ${createTagRequest.name}`);
+						toast.success(`Create ${createTagRequest.name}`);
 						client.listTags({}).then((r) => {
 							tags = r.tags;
 						});
 					});
-					// console.log(createTagRequest);
-					toast.info(`Create ${createTagRequest.name}`);
 					reset();
 					close();
 				}}

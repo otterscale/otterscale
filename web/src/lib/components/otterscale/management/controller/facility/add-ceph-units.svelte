@@ -125,10 +125,11 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					client
 						.addCephUnits(addCephUnitsRequest)
 						.then((r) => {
-							toast.info(`Add units for ${addCephUnitsRequest.facilityName} success`);
+							toast.success(`Add units for ${addCephUnitsRequest.facilityName} success`);
 						})
 						.catch((e) => {
 							toast.error(

@@ -63,10 +63,11 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					client
 						.rollbackRelease(rollbackReleaseRequest)
 						.then((r) => {
-							toast.info(`Rollback ${rollbackReleaseRequest.name}`);
+							toast.success(`Rollback ${rollbackReleaseRequest.name}`);
 							client.listReleases({}).then((r) => {
 								releases = r.releases;
 							});

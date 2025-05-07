@@ -123,7 +123,7 @@
 					client
 						.updateSubnet(updateSubnetRequest)
 						.then((r) => {
-							toast.info(`Update ${r.cidr} success`);
+							toast.success(`Update ${r.cidr} success`);
 							client.listNetworks({}).then((r) => {
 								networks = r.networks;
 							});

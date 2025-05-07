@@ -49,7 +49,7 @@
 					client
 						.createScope(createScopeRequest)
 						.then((r) => {
-							toast.info(`Create ${r.name} success`);
+							toast.success(`Create ${r.name} success`);
 							client.listScopes({}).then((r) => {
 								scopes = r.scopes;
 							});

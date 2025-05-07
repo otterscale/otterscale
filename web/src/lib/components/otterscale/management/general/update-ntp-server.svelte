@@ -93,13 +93,13 @@
 					client
 						.updateNTPServer(updateNTPServerRequest)
 						.then((r) => {
-							toast.info(`Update NTP Servers`);
+							toast.success(`Update NTP Servers`);
 							client.getConfiguration({}).then((r) => {
 								configuration = r;
 							});
 						})
 						.catch((e) => {
-							toast.info(`Update NTP Servers fail`);
+							toast.error(`Update NTP Servers fail`);
 						});
 					console.log(updateNTPServerRequest);
 					reset();

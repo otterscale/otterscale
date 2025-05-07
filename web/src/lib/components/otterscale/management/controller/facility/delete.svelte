@@ -68,10 +68,8 @@
 			<AlertDialog.Action
 				onclick={() => {
 					client.deleteFacility(deleteFacilityRequest).then((r) => {
-						toast.info(`Delete ${deleteFacilityRequest.name}`);
+						toast.success(`Delete ${deleteFacilityRequest.name}`);
 					});
-					// console.log(deleteFacilityRequest);
-					toast.info(`Delete ${deleteFacilityRequest.name}`);
 					reset();
 					close();
 				}}

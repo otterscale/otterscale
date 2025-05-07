@@ -50,10 +50,8 @@
 			<AlertDialog.Action
 				onclick={() => {
 					client.exposeFacility(exposeFacilityRequest).then((r) => {
-						toast.info(`Expose ${exposeFacilityRequest.name}`);
+						toast.success(`Expose ${exposeFacilityRequest.name}`);
 					});
-					// console.log(exposeFacilityRequest);
-					toast.info(`Expose ${exposeFacilityRequest.name}`);
 					reset();
 					close();
 				}}

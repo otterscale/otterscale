@@ -149,11 +149,12 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					console.log(addFacilityUnitsRequest);
 					client
 						.addFacilityUnits(addFacilityUnitsRequest)
 						.then((r) => {
-							toast.info(`Add units to ${addFacilityUnitsRequest.name}`);
+							toast.success(`Add units to ${addFacilityUnitsRequest.name}`);
 							client
 								.getFacility({ scopeUuid: scopeUuid, name: facilityByCategory.name })
 								.then((r) => {

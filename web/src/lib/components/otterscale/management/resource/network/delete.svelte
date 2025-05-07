@@ -51,10 +51,11 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					client
 						.deleteNetwork(deleteNetworkRequest)
 						.then((r) => {
-							toast.info(`Delete ${fabric.name} success`);
+							toast.success(`Delete ${fabric.name} success`);
 							client.listNetworks({}).then((r) => {
 								networks = r.networks;
 							});

@@ -60,13 +60,13 @@
 					client
 						.setDefaultBootImage(setDefaultBootImageRequest)
 						.then((r) => {
-							toast.info(`Set ${setDefaultBootImageRequest.distroSeries} as default.`);
+							toast.success(`Set ${setDefaultBootImageRequest.distroSeries} as default.`);
 							client.getConfiguration({}).then((r) => {
 								configuration = r;
 							});
 						})
 						.catch((e) => {
-							toast.info(`Fail to set ${setDefaultBootImageRequest.distroSeries} as default.`);
+							toast.error(`Fail to set ${setDefaultBootImageRequest.distroSeries} as default.`);
 						});
 					console.log(setDefaultBootImageRequest);
 					reset();

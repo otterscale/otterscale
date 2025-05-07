@@ -308,6 +308,7 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
+					toast.loading('Loading...');
 					integrate();
 
 					client
@@ -319,7 +320,7 @@
 									await client
 										.setCephCSI(getSetCephCSIRequest(cr, kr))
 										.then(() => {
-											toast.info(`Create '${kr.facilityName}' & '${cr.facilityName}' success`);
+											toast.success(`Create '${kr.facilityName}' & '${cr.facilityName}' success`);
 										})
 										.catch((e) => {
 											toast.error(`Fail to create storage classes: ${e.toString()}`);
