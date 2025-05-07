@@ -33,17 +33,19 @@
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
 
+	async function setDefaultScope() {
+		client.listScopes({}).then((r) => {
+			const defaultScopeUuid = r.scopes.find((s) => s.name === 'default')?.uuid;
+			scopeUuid = page.url.searchParams.get('scope') ?? defaultScopeUuid ?? '';
+		});
+	}
+
 	const scopesStore = writable<Scope[]>([]);
 	const scopesLoading = writable(true);
 	async function fetchScopes() {
 		try {
 			const response = await client.listScopes({});
 			scopesStore.set(response.scopes);
-
-			let defaultScope = response.scopes.find((s) => s.name === 'default');
-			if (defaultScope) {
-				scopeUuid = defaultScope.uuid;
-			}
 		} catch (error) {
 			console.error('Error fetching:', error);
 		} finally {
@@ -114,45 +116,12 @@
 		}
 	}
 
-	const storageClassesStore = writable<StorageClass[]>([]);
-	const storageClassesLoading = writable(true);
-	async function fetchStorageClasses() {
-		try {
-			const response = await client.listStorageClasses({
-				scopeUuid: scopeUuid,
-				facilityName: facilityName
-			});
-			storageClassesStore.set(response.storageClasses);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			storageClassesLoading.set(false);
-		}
-	}
-	async function refreshStorageClasses() {
-		while (page.url.searchParams.get('intervals')) {
-			await new Promise((resolve) =>
-				setTimeout(resolve, 1000 * Number(page.url.searchParams.get('intervals')))
-			);
-			console.log(`Refresh storage classes`);
-
-			try {
-				const response = await client.listStorageClasses({
-					scopeUuid: scopeUuid,
-					facilityName: facilityName
-				});
-				storageClassesStore.set(response.storageClasses);
-			} catch (error) {
-				console.error('Error fetching:', error);
-			}
-		}
-	}
-
 	let selectedValue = $state('');
 
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
+			await setDefaultScope();
 			await fetchScopes()
 				.then(async () => await fetchKuberneteses())
 				.then(async () => await fetchApplications());

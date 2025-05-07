@@ -21,10 +21,6 @@
 		}
 	}
 
-	const chartHeight = {
-		large: 150,
-		small: 100
-	};
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
 
@@ -55,7 +51,13 @@
 	import KubernetesError from './error/kubernetes.svelte';
 	import CephError from './error/ceph.svelte';
 	import Icon from '@iconify/svelte';
-	import { Nexus, type Scope, type Error } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		Nexus,
+		type Scope,
+		type Error,
+		type Facility_Info,
+		type Application
+	} from '$gen/api/nexus/v1/nexus_pb';
 	import { goto } from '$app/navigation';
 	import { MessageIterator } from '$lib/components/otterscale/ui/index';
 
@@ -91,15 +93,30 @@
 		}
 	}
 
-	const currentInformationStore = writable<Error>();
-	async function iterateInformations() {
-		while (page.url.searchParams.get('intervals')) {
-			for (const error of $errorsStore.filter((e) => Number(e.level) <= 3)) {
-				currentInformationStore.set(error);
-				await new Promise((resolve) => setTimeout(resolve, 1000 * 1));
+	const applications = [] as Application[];
+	async function fetchApplicationsOverKuberneteses(scopeUuid: string) {
+		try {
+			const responseKubernetes = await client.listKuberneteses({
+				scopeUuid: scopeUuid
+			});
+			for (const kubernetes of responseKubernetes.kuberneteses) {
+				try {
+					const responseApplications = await client.listApplications({
+						scopeUuid: kubernetes.scopeUuid,
+						facilityName: kubernetes.facilityName
+					});
+					responseApplications.applications.flat().forEach((application) => {
+						applications.push(application);
+					});
+				} catch (error) {
+					console.error(
+						`Error fetching applications for kubernetes ${kubernetes.facilityName}:`,
+						error
+					);
+				}
 			}
-
-			await new Promise((resolve) => setTimeout(resolve, 1000 * 1));
+		} catch (error) {
+			console.error('Error fetching:', error);
 		}
 	}
 
@@ -120,9 +137,10 @@
 	onMount(async () => {
 		try {
 			await fetchErrors(scope.uuid);
+			await fetchApplicationsOverKuberneteses(scope.uuid);
+
 			mounted = true;
 			refreshErrors(scope.uuid);
-			iterateInformations();
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -186,6 +204,15 @@
 	{:else if $errorsStore.some((e) => isPrometheusError(e))}
 		<PrometheusError />
 	{:else}
+		{@const numberOfUnhealthPods = applications.reduce(
+			(a, application) =>
+				a + (application.pods.filter((pod) => pod.phase !== 'Running').length || 0),
+			0
+		)}
+		{@const numberOfPods = applications.reduce(
+			(a, application) => a + (application.pods.length || 0),
+			0
+		)}
 		<Tabs.Root value="overview" class="w-full">
 			<Tabs.List class="w-fit">
 				<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
@@ -199,37 +226,40 @@
 							<Card.Header>
 								<Card.Title class="flex justify-between">
 									<h1 class="text-3xl">Health</h1>
-									<DropdownMenu.Root>
-										<DropdownMenu.Trigger>
-											<Button variant="ghost" class="flex items-start gap-2">
-												<p>Alert</p>
-												<Badge
-													variant="destructive"
-													class="flex h-4 w-4 justify-center rounded-full p-0 text-[12px] font-light"
-												>
-													{data.filter((h) => h.unhealth).length}
-												</Badge>
-											</Button>
-										</DropdownMenu.Trigger>
-										<DropdownMenu.Content>
-											{#each data.filter((h) => h.unhealth).sort((h) => h.unhealth) as healthDatum}
-												<DropdownMenu.Item>
-													<a
-														href={healthDatum.link}
-														class="flex w-full items-start justify-center gap-2"
+									{#if numberOfUnhealthPods > 0}
+										<DropdownMenu.Root>
+											<DropdownMenu.Trigger>
+												<Button variant="ghost" class="flex items-start gap-2">
+													<p>Alert</p>
+													<Badge
+														variant="destructive"
+														class="flex h-4 w-4 justify-center rounded-full p-0 text-[12px] font-light"
 													>
-														<Badge
-															variant="destructive"
-															class="flex h-4 w-4 justify-center rounded-full p-0 text-[12px] font-light"
+														{numberOfUnhealthPods}
+													</Badge>
+												</Button>
+											</DropdownMenu.Trigger>
+											<DropdownMenu.Content>
+												{#each applications.filter( (a) => a.pods?.some((pod) => pod.phase !== 'Running') ) as application}
+													<DropdownMenu.Item>
+														<a
+															href={`management/application?scope=${scope.uuid}`}
+															target="_blank"
+															class="flex w-full items-start gap-2"
 														>
-															{healthDatum.unhealth}
-														</Badge>
-														{healthDatum.namespace}
-													</a>
-												</DropdownMenu.Item>
-											{/each}
-										</DropdownMenu.Content>
-									</DropdownMenu.Root>
+															<Badge
+																variant="destructive"
+																class="flex h-4 w-4 justify-center rounded-full p-0 text-[12px] font-light"
+															>
+																{application.pods?.filter((pod) => pod.phase !== 'Running').length}
+															</Badge>
+															{scope.name}/{application.namespace}
+														</a>
+													</DropdownMenu.Item>
+												{/each}
+											</DropdownMenu.Content>
+										</DropdownMenu.Root>
+									{/if}
 								</Card.Title>
 								<Card.Description>
 									<span class="text-sm font-light">Ratio of non-running pods over all pods</span>
@@ -237,18 +267,14 @@
 							</Card.Header>
 							<Card.Content>
 								<div class="flex h-full w-full items-center justify-center">
-									<div
-										class={cn(
-											`h-[${Math.round(chartHeight.large * 1.732)}px] w-[${Math.round(chartHeight.large * 1.732)}px]`
-										)}
-									>
+									<div class={cn(`h-[260px] w-[260px]`)}>
 										<Chart>
 											<Svg center>
-												<Group y={chartHeight.large / 4}>
+												<Group y={150 / 4}>
 													<Arc
-														value={(sum(data, (h) => h.unhealth) * 100) / sum(data, (h) => h.total)}
+														value={numberOfPods ? (numberOfUnhealthPods * 100) / numberOfPods : 0}
 														domain={[0, 100]}
-														outerRadius={chartHeight.large}
+														outerRadius={150}
 														innerRadius={-13}
 														cornerRadius={13}
 														range={[-120, 120]}
@@ -280,18 +306,14 @@
 							</Card.Header>
 							<Card.Content>
 								<div class="flex h-full w-full items-center justify-center">
-									<div
-										class={cn(
-											`h-[${Math.round(chartHeight.large * 1.732)}px] w-[${Math.round(chartHeight.large * 1.732)}px]`
-										)}
-									>
+									<div class={cn(`h-[260px] w-[260px]`)}>
 										<Chart>
 											<Svg center>
-												<Group y={chartHeight.large / 4}>
+												<Group y={150 / 4}>
 													<Arc
 														value={Math.round((storages.used * 100) / storages.capacity)}
 														domain={[0, 100]}
-														outerRadius={chartHeight.large}
+														outerRadius={150}
 														innerRadius={-13}
 														cornerRadius={13}
 														range={[-120, 120]}
@@ -338,18 +360,14 @@
 								</Card.Header>
 								<Card.Content>
 									<div class="flex h-full w-full items-center justify-center">
-										<div
-											class={cn(
-												`h-[${Math.round(chartHeight.small * 1.732)}px] w-[${Math.round(chartHeight.small * 1.732)}px]`
-											)}
-										>
+										<div class={cn(`h-[173px] w-[173px]`)}>
 											<Chart>
 												<Svg center>
-													<Group y={chartHeight.small / 4}>
+													<Group y={100 / 4}>
 														<Arc
 															value={currentUsage.CPU}
 															domain={[0, 100]}
-															outerRadius={chartHeight.small}
+															outerRadius={100}
 															innerRadius={-13}
 															cornerRadius={13}
 															range={[-120, 120]}
@@ -382,18 +400,14 @@
 								</Card.Header>
 								<Card.Content>
 									<div class="flex h-full w-full items-center justify-center">
-										<div
-											class={cn(
-												`h-[${Math.round(chartHeight.small * 1.732)}px] w-[${Math.round(chartHeight.small * 1.732)}px]`
-											)}
-										>
+										<div class={cn(`h-[173px] w-[173px]`)}>
 											<Chart>
 												<Svg center>
-													<Group y={chartHeight.small / 4}>
+													<Group y={100 / 4}>
 														<Arc
 															value={currentUsage.GPU}
 															domain={[0, 100]}
-															outerRadius={chartHeight.small}
+															outerRadius={100}
 															innerRadius={-13}
 															cornerRadius={13}
 															range={[-120, 120]}
@@ -426,19 +440,15 @@
 								</Card.Header>
 								<Card.Content>
 									<div class="flex h-full w-full items-center justify-center">
-										<div
-											class={cn(
-												`h-[${Math.round(chartHeight.small * 1.732)}px] w-[${Math.round(chartHeight.small * 1.732)}px]`
-											)}
-										>
+										<div class={cn(`h-[173px] w-[173px]`)}>
 											<Chart>
 												<Svg center>
-													<Group y={chartHeight.small / 4}>
+													<Group y={100 / 4}>
 														<Arc
 															value={(currentUsage.memory.usage * 100) /
 																currentUsage.memory.capacity}
 															domain={[0, 100]}
-															outerRadius={chartHeight.small}
+															outerRadius={100}
 															innerRadius={-13}
 															cornerRadius={13}
 															range={[-120, 120]}
