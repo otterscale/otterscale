@@ -26,6 +26,7 @@
 		ManagementScopeComboBox
 	} from '$lib/components/otterscale/index';
 	import { goto } from '$app/navigation';
+	import { toast } from 'svelte-sonner';
 
 	let scopeUuid = $state('');
 	let facilityName = $state('');
@@ -335,7 +336,7 @@
 				<p class="text-3xl">
 					{Math.round(healthByType)}%
 				</p>
-				<p class="text-xs text-muted-foreground">
+				<p class="text-muted-foreground text-xs">
 					{numberOfHealthApplicationsByType} Running over {numberOApplicationsByType} pods
 				</p>
 			</Card.Content>
@@ -368,7 +369,19 @@
 					>
 				</span>
 			</span>
-			<Button variant="outline" class="text-sm" onclick={() => goto('/market')}>Go to Store</Button>
+			<Button
+				variant="outline"
+				class="text-sm"
+				href="/market"
+				onclick={() =>
+					toast.info(`Back to Application`, {
+						duration: Number.POSITIVE_INFINITY,
+						action: {
+							label: 'Go',
+							onClick: () => goto(`/management/application?scope=${scopeUuid}&intervals=30`)
+						}
+					})}>Go to Store</Button
+			>
 		</Alert.Root>
 	</div>
 {/snippet}
