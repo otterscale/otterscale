@@ -123,7 +123,7 @@ bootstrap_juju() {
 }
 
 create_scope() {
-    if ! execute_juju_command "$username" "juju models --format=json | jq '.\"models\" | select(.[].\"short-name\"==\"default\")'" "check default model"
+    if ! execute_juju_command "$username" "juju models --format=json | jq '.\"models\" | select(.[].\"short-name\"==\"default\")'" "check default model"; then
         execute_juju_command "$username" "juju create-model default" "create default model"
     fi
 }

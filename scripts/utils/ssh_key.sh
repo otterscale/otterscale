@@ -18,8 +18,7 @@ find_first_non_user() {
 
 generate_ssh_key() {
     if [ ! -f "/home/$username/.ssh/id_rsa" ]; then
-        mkdir -p "/home/$username/.ssh"
-        if ! su "$username" -c 'ssh-keygen -q -t rsa -N "" -f "$HOME/.ssh/id_rsa" >"$LOG" 2>&1'; then
+        if ! su "$username" -c 'mkdir -p "HOME/.ssh; ssh-keygen -q -t rsa -N "" -f "$HOME/.ssh/id_rsa" >"$LOG" 2>&1'; then
             error_exit "SSH key generation failed."
         fi
     fi

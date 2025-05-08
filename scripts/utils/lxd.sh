@@ -15,7 +15,6 @@ profiles:
 - name: default
   config:
     boot.autostart: "true"
-    boot.autostart: "5"
   description: ""
   devices:
     eth0:

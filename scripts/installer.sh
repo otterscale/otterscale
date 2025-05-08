@@ -27,7 +27,7 @@ main() {
 
     ## Package install
     apt_update
-    apt_install $APT_PACKAGES
+    apt_install "$APT_PACKAGES"
     install_snaps
 
     ## Host network
