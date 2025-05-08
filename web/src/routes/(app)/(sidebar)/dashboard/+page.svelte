@@ -7,6 +7,7 @@
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Label } from '$lib/components/ui/label';
+	import { page } from '$app/state';
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -55,7 +56,13 @@
 				await createDefaultScope();
 				await fetchScopes();
 			}
-			selectedScope = $scopesStore.find((s) => s.name === 'default');
+
+			let scope = page.url.searchParams.get('scope');
+			if (scope) {
+				selectedScope = $scopesStore.find((s) => s.name === scope);
+			} else {
+				selectedScope = $scopesStore.find((s) => s.name === 'default');
+			}
 			// errorsStore.set([
 			// 	{ code: 'CEPH_NOT_FOUND' } as Error,
 			// 	{ code: 'KUBERNETES_NOT_FOUND' } as Error,

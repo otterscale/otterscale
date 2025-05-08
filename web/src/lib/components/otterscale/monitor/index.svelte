@@ -53,6 +53,7 @@
 	import { Nexus, type Scope, type Error, type Application } from '$gen/api/nexus/v1/nexus_pb';
 	import { goto } from '$app/navigation';
 	import { MessageIterator } from '$lib/components/otterscale/ui/index';
+	import { toast } from 'svelte-sonner';
 
 	let { scope }: { scope: Scope } = $props();
 
@@ -154,8 +155,18 @@
 					</Alert.Description>
 				</span>
 			</span>
-			<Button variant="outline" class="text-sm" onclick={() => goto('/management/machine')}
-				>Go to Machines</Button
+			<Button
+				variant="outline"
+				class="text-sm"
+				href="/management/machine"
+				onclick={() =>
+					toast.info(`Back to Dashboard '${scope.name}'`, {
+						duration: Number.POSITIVE_INFINITY,
+						action: {
+							label: 'Go',
+							onClick: () => goto(`/dashboard?scope=${scope.name}&intervals=30`)
+						}
+					})}>Go to Machines</Button
 			>
 		</Alert.Root>
 	{/if}
