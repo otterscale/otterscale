@@ -136,6 +136,11 @@
 		],
 		general: [
 			{
+				title: m.home(),
+				url: '/',
+				icon: 'ph:house'
+			},
+			{
 				title: m.settings(),
 				url: '#',
 				icon: 'ph:gear',
@@ -201,10 +206,10 @@
 		<Namespace namespaces={data.namespaces} />
 	</Sidebar.Header>
 	<Sidebar.Content>
+		<Section label={m.general()} items={data.general} />
 		<Section label={m.shortcut()} items={data.shortcuts} />
 		<!-- <Section label="Alanysis" items={data.analysis} /> -->
 		<Section label={m.platform()} items={data.platforms} />
-		<Section label={m.general()} items={data.general} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<Sidebar.Separator />
