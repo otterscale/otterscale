@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -47,6 +48,8 @@ func NewCmdServe(na *app.NexusApp) *cobra.Command {
 				WriteTimeout:      5 * time.Minute,
 				MaxHeaderBytes:    8 * 1024, // 8KiB
 			}
+
+			log.Printf("Server starting on %s\n", address)
 			return srv.ListenAndServe()
 		},
 	}
