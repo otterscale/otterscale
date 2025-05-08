@@ -9,7 +9,7 @@
 	import { toast } from 'svelte-sonner';
 	import { Button } from '$lib/components/ui/button';
 
-	let { scopes = $bindable() }: { scopes: Scope[] } = $props();
+	let { label = false, scopes = $bindable() }: { label: boolean; scopes: Scope[] } = $props();
 
 	const transport: Transport = getContext('transportNEW');
 	const client = createClient(Nexus, transport);
@@ -31,7 +31,8 @@
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger class="flex items-center gap-1">
 		<Button>
-			<Icon icon="ph:plus" /> Scope
+			<Icon icon="ph:plus" />
+			{#if label}Scope{/if}
 		</Button>
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>

@@ -22,8 +22,9 @@
 					</div>
 				</div>
 			</div>
-			<div class="flex items-center justify-center">
-				<p class="text-sm text-muted-foreground">Deploy Your Container Platform and Storage</p>
+			<div class="flex-col text-center">
+				<p class="text-sm text-muted-foreground">Deploy Your LLM and Container Platform</p>
+				<p class="text-sm text-muted-foreground">with Storage</p>
 			</div>
 			<div class="flex items-center justify-center pt-6">
 				<Button disabled={true}>Deploy</Button>

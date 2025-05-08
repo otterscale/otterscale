@@ -48,7 +48,7 @@
 	</div>
 	<div class="p-4">
 		<span class="flex justify-end py-2">
-			<CreateScope />
+			<CreateScope label={true} bind:scopes />
 		</span>
 		<Table.Root>
 			<Table.Header class="bg-muted/50">

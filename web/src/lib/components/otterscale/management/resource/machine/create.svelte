@@ -16,6 +16,7 @@
 	} from '$gen/api/nexus/v1/nexus_pb';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
+	import { ManagementScopeCreate } from '$lib/components/otterscale';
 
 	let {
 		machines = $bindable(),
@@ -104,18 +105,21 @@
 				<div class="flex flex-col gap-3">
 					<fieldset class="grid items-center gap-3 rounded-lg border p-3">
 						<legent>Scope</legent>
-						<Select.Root type="single" bind:value={createMachineRequest.scopeUuid}>
-							<Select.Trigger>
-								{createMachineRequest.scopeUuid ? createMachineRequest.scopeUuid : 'Select'}
-							</Select.Trigger>
-							<Select.Content class="w-fit">
-								{#each $scopesStore as scope}
-									<Select.Item value={scope.uuid}>
-										{scope.name}
-									</Select.Item>
-								{/each}
-							</Select.Content>
-						</Select.Root>
+						<div class="flex space-x-2">
+							<Select.Root type="single" bind:value={createMachineRequest.scopeUuid}>
+								<Select.Trigger>
+									{createMachineRequest.scopeUuid ? createMachineRequest.scopeUuid : 'Select'}
+								</Select.Trigger>
+								<Select.Content class="w-fit">
+									{#each $scopesStore as scope}
+										<Select.Item value={scope.uuid}>
+											{scope.name}
+										</Select.Item>
+									{/each}
+								</Select.Content>
+							</Select.Root>
+							<ManagementScopeCreate label={false} bind:scopes={$scopesStore} />
+						</div>
 					</fieldset>
 
 					<fieldset class="grid items-center gap-3 rounded-lg border p-3">

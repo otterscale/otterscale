@@ -15,12 +15,12 @@
 	<div class="p-4">
 		<div class="flex items-center justify-between gap-2">
 			{@render ChooseScope()}
-			<CreateScope bind:scopes/>
+			<CreateScope label={true} bind:scopes />
 		</div>
 	</div>
 
 	{#key chosenScopeName}
-		<ManagementFacilities scopeUuid={scopeByName[chosenScopeName].uuid} />
+		<ManagementFacilities />
 	{/key}
 	<!-- <Tabs.Root value="facility" class="w-full">
 		<div class="flex items-center justify-between p-4">

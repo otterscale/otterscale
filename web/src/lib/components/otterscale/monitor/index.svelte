@@ -184,7 +184,7 @@
 		{/if}
 	{/if}
 	{#if $errorsStore.some((e) => isCephError(e))}
-		<div class="flex h-full items-center justify-center">
+		<div class="flex min-h-[calc(100vh_-_theme(spacing.64))] items-center justify-center">
 			<Carousel.Root
 				plugins={[
 					Autoplay({
