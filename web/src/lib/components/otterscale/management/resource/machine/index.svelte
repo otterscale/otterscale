@@ -83,6 +83,7 @@
 					<Table.Head class="text-end  ">RAM</Table.Head>
 					<Table.Head>DISKS</Table.Head>
 					<Table.Head class="text-end">STORAGE</Table.Head>
+					<Table.Head>SCOPE</Table.Head>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
@@ -158,6 +159,11 @@
 							</div>
 						</Table.Cell>
 						<Table.Cell>
+							{machine.workloadAnnotations['juju-machine-id']
+								? machine.workloadAnnotations['juju-machine-id'].split('-machine-')[0]
+								: ''}
+						</Table.Cell>
+						<Table.Cell>
 							<DropdownMenu.Root>
 								<DropdownMenu.Trigger>
 									<Icon icon="ph:dots-three" class="size-6" />
@@ -174,7 +180,8 @@
 										<DeleteMachine
 											bind:machines
 											{machine}
-											disabled={!machine.workloadAnnotations['juju-model-uuid']}
+											disabled={!!machine.workloadAnnotations['juju-is-controller'] ||
+												!machine.workloadAnnotations['juju-model-uuid']}
 										/>
 									</DropdownMenu.Item>
 									<DropdownMenu.Separator />
