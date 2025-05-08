@@ -203,7 +203,7 @@
 				</Button>
 			{/if}
 		{/if}
-		<ManagementScopeCreate scopes={$scopesStore} />
+		<ManagementScopeCreate label={true} scopes={$scopesStore} />
 		<ManagementScopeComboBox
 			scopes={$scopesStore}
 			bind:selected={scopeUuid}
