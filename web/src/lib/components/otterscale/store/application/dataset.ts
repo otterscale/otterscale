@@ -13,4 +13,10 @@ export const valuesMapList: Record<string, { [key: string]: string }> = {
         "service.type": "NodePort",
         "service.nodePorts.grafana": "32001",
     },
+    "code-server-go": {
+        "codeServer.password": "password"
+    },
+    "code-server-python": {
+        "codeServer.password": "password"
+    },
 };
