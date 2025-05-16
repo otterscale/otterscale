@@ -3,7 +3,6 @@ package kube
 import (
 	"crypto/sha256"
 	"log"
-	"os"
 	"sync"
 
 	"google.golang.org/grpc/codes"
@@ -17,7 +16,6 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-// map[string]*kubernetes.Clientset
 type KubeMap struct {
 	*sync.Map
 }
@@ -50,24 +48,35 @@ func (m KubeMap) set(uuid, facility string, config *rest.Config) error {
 	return nil
 }
 
-type HelmMap map[string]*genericclioptions.ConfigFlags
+type HelmMap struct {
+	*sync.Map
+}
 
 func NewHelmMap() (HelmMap, error) {
-	return map[string]*genericclioptions.ConfigFlags{}, nil
+	return HelmMap{&sync.Map{}}, nil
 }
 
 func (m HelmMap) exists(uuid, facility string) bool {
 	key := key(uuid, facility)
-	_, ok := m[key]
+	_, ok := m.Load(key)
 	return ok
 }
 
 func (m HelmMap) get(uuid, facility, namespace string, rc *registry.Client) (*action.Configuration, error) {
 	key := key(uuid, facility)
-	if getter, ok := m[key]; ok {
+	if v, ok := m.Load(key); ok {
+		restConfig := v.(*rest.Config)
+		getter := genericclioptions.NewConfigFlags(true)
+		getter.APIServer = &restConfig.Host
+		getter.BearerToken = &restConfig.BearerToken
+		getter.CAFile = &restConfig.CAFile
+		getter.CertFile = &restConfig.TLSClientConfig.CertFile
+		getter.KeyFile = &restConfig.TLSClientConfig.KeyFile
+		getter.Insecure = &restConfig.Insecure
 		getter.Namespace = &namespace
+
 		config := new(action.Configuration)
-		if err := config.Init(getter, namespace, os.Getenv("HELM_DRIVER"), log.Printf); err != nil {
+		if err := config.Init(getter, namespace, "", log.Printf); err != nil {
 			return nil, err
 		}
 		config.RegistryClient = rc
@@ -77,16 +86,8 @@ func (m HelmMap) get(uuid, facility, namespace string, rc *registry.Client) (*ac
 }
 
 func (m HelmMap) set(uuid, facility string, config *rest.Config) error {
-	getter := genericclioptions.NewConfigFlags(true)
-	getter.APIServer = &config.Host
-	getter.BearerToken = &config.BearerToken
-	getter.CAFile = &config.CAFile
-	getter.CertFile = &config.TLSClientConfig.CertFile
-	getter.KeyFile = &config.TLSClientConfig.KeyFile
-	getter.Insecure = &config.Insecure
-
 	key := key(uuid, facility)
-	m[key] = getter
+	m.Store(key, config)
 	return nil
 }
 
