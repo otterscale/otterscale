@@ -188,7 +188,7 @@ func (s *NexusService) CreateKubernetes(ctx context.Context, uuid, machineID, pr
 
 	cidr := userCalicoCIDR
 	if cidr == "" {
-		cidr = "192.168.0.0/16"
+		cidr = "198.19.0.0/16"
 	}
 
 	configs, err := getKubernetesConfigs(prefix, vips, cidr)
