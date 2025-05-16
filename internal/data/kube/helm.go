@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -58,7 +59,7 @@ func NewHelm(helmMap HelmMap) (service.KubeHelm, error) {
 		return nil, err
 	}
 
-	repoURLs := []string{"https://prometheus-community.github.io/helm-charts"}
+	repoURLs := []string{}
 	repoURLs = append(repoURLs, strings.Split(env.GetOrDefault(env.OPENHDC_HELM_REPOSITORY_URLS, defaultRepositoryURL), ",")...)
 
 	return &helm{
@@ -218,15 +219,31 @@ func (r *helm) ListChartVersions(ctx context.Context) ([]*repo.IndexFile, error)
 }
 
 func (r *helm) fetchRepositoryIndex(ctx context.Context, repoURL string) (*repo.IndexFile, error) {
-	queryURL, err := url.ParseRequestURI(repoURL)
-	if err != nil {
-		return nil, err
-	}
-	queryURL = queryURL.JoinPath("index.yaml")
+	var data []byte
 
-	data, err := utils.Get(ctx, queryURL.String())
-	if err != nil {
-		return nil, err
+	if strings.HasPrefix(repoURL, "http") {
+		queryURL, err := url.ParseRequestURI(repoURL)
+		if err != nil {
+			return nil, err
+		}
+		queryURL = queryURL.JoinPath("index.yaml")
+
+		data, err = utils.Get(ctx, queryURL.String())
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		path, err := filepath.Abs(repoURL)
+		if err != nil {
+			return nil, err
+		}
+
+		path = filepath.Join(path, "index.yaml")
+
+		data, err = os.ReadFile(path)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	f := new(repo.IndexFile)
