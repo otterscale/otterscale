@@ -12,6 +12,7 @@ import (
 	"github.com/juju/juju/api/client/cloud"
 	"github.com/juju/juju/api/client/modelmanager"
 	jujucloud "github.com/juju/juju/cloud"
+	jujustatus "github.com/juju/juju/core/status"
 	"github.com/juju/names/v5"
 
 	"github.com/openhdc/openhdc/internal/domain/service"
@@ -42,7 +43,7 @@ func (r *model) List(_ context.Context) ([]base.UserModelSummary, error) {
 		return nil, err
 	}
 	return slices.DeleteFunc(ms, func(ums base.UserModelSummary) bool {
-		return ums.Name == "controller"
+		return ums.Name == "controller" || !jujustatus.ValidModelStatus(ums.Status.Status)
 	}), nil
 }
 
