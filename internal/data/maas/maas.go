@@ -3,7 +3,7 @@ package maas
 import (
 	"github.com/canonical/gomaasclient/client"
 
-	"github.com/openhdc/openhdc/internal/env"
+	"github.com/openhdc/otterscale/internal/env"
 )
 
 type MAAS = client.Client

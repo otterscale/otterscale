@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/predicate"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/verification"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/predicate"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/verification"
 )
 
 // VerificationUpdate is the builder for updating Verification entities.

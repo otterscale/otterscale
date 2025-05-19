@@ -25,9 +25,9 @@ import (
 
 	"sigs.k8s.io/yaml"
 
-	"github.com/openhdc/openhdc/internal/domain/service"
-	"github.com/openhdc/openhdc/internal/env"
-	"github.com/openhdc/openhdc/internal/utils"
+	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/env"
+	"github.com/openhdc/otterscale/internal/utils"
 )
 
 const defaultRepositoryURL = "http://chartmuseum:8080"

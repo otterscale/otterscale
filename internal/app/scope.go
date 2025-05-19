@@ -5,8 +5,8 @@ import (
 
 	"connectrpc.com/connect"
 
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
-	"github.com/openhdc/openhdc/internal/domain/model"
+	pb "github.com/openhdc/otterscale/api/nexus/v1"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 func (a *NexusApp) ListScopes(ctx context.Context, req *connect.Request[pb.ListScopesRequest]) (*connect.Response[pb.ListScopesResponse], error) {

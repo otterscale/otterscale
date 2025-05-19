@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 const defaultScopeName = "default"

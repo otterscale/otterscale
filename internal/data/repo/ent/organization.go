@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/organization"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/organization"
 )
 
 // Organization is the model entity for the Organization schema.

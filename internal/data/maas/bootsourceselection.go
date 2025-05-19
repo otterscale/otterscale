@@ -3,7 +3,7 @@ package maas
 import (
 	"context"
 
-	"github.com/openhdc/openhdc/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/domain/service"
 
 	"github.com/canonical/gomaasclient/entity"
 )

@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/organization"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/predicate"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/team"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/organization"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/predicate"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/team"
 )
 
 // TeamQuery is the builder for querying Team entities.

@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 func (s *NexusService) ListStorageClasses(ctx context.Context, uuid, facility string) ([]model.StorageClass, error) {

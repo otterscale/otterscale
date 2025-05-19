@@ -6,7 +6,7 @@ import (
 
 	"github.com/juju/juju/core/base"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 const (

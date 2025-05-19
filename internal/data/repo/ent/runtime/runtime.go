@@ -2,7 +2,7 @@
 
 package runtime
 
-// The schema-stitching logic is generated in github.com/openhdc/openhdc/internal/data/repo/ent/runtime.go
+// The schema-stitching logic is generated in github.com/openhdc/otterscale/internal/data/repo/ent/runtime.go
 
 const (
 	Version = "v0.14.4"                                         // Version of ent codegen.

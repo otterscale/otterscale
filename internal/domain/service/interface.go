@@ -24,7 +24,7 @@ import (
 	storagev1 "k8s.io/api/storage/v1"
 	"k8s.io/client-go/rest"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 type MAASServer interface {

@@ -40,7 +40,7 @@
 				<Icon icon="ph:cursor-click" />
 				<p class="px-2">Get Started</p>
 			</Button>
-			<Button size="lg" variant="outline" target="_blank" href="https://github.com/openhdc/openhdc">
+			<Button size="lg" variant="outline" target="_blank" href="https://github.com/openhdc/otterscale">
 				<Icon icon="akar-icons:github-fill" />
 				<p class="px-2">GitHub</p>
 			</Button>

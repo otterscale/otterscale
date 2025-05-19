@@ -3,7 +3,7 @@ package kube
 import (
 	"k8s.io/client-go/rest"
 
-	"github.com/openhdc/openhdc/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/domain/service"
 )
 
 type client struct {

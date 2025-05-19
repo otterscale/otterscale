@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/openhdc/openhdc/internal/data/repo/ent"
+	"github.com/openhdc/otterscale/internal/data/repo/ent"
 )
 
 // The AccountFunc type is an adapter to allow the use of ordinary

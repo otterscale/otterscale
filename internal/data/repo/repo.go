@@ -11,8 +11,8 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib"
 
-	"github.com/openhdc/openhdc/internal/data/repo/ent"
-	"github.com/openhdc/openhdc/internal/env"
+	"github.com/openhdc/otterscale/internal/data/repo/ent"
+	"github.com/openhdc/otterscale/internal/env"
 )
 
 // Repo is an alias for the ent Client

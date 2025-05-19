@@ -9,10 +9,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	md "github.com/openhdc/openhdc/internal/domain/model"
-	"github.com/openhdc/openhdc/internal/domain/service"
-	"github.com/openhdc/openhdc/internal/env"
-	"github.com/openhdc/openhdc/internal/utils"
+	md "github.com/openhdc/otterscale/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/env"
+	"github.com/openhdc/otterscale/internal/utils"
 )
 
 const defaultCharmHubAPIURL = "https://api.charmhub.io"

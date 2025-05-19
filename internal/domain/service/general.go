@@ -17,7 +17,7 @@ import (
 	"github.com/juju/juju/core/instance"
 	jujustatus "github.com/juju/juju/core/status"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 const (

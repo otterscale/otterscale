@@ -1,6 +1,6 @@
 export const siteConfig = {
-    name: "openhdc",
-    title: "OpenHDC",
+    name: "otterscale",
+    title: "OtterScale",
     description: "Empower your data center with hybrid solutions",
 };
 

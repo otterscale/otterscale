@@ -6,7 +6,7 @@ import (
 	"github.com/canonical/gomaasclient/entity"
 	api "github.com/canonical/gomaasclient/entity/subnet"
 
-	"github.com/openhdc/openhdc/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/domain/service"
 )
 
 type subnet struct {

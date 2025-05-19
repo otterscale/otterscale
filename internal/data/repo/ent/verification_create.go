@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/verification"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/verification"
 )
 
 // VerificationCreate is the builder for creating a Verification entity.

@@ -11,7 +11,7 @@ import (
 	"github.com/canonical/gomaasclient/entity/node"
 	"github.com/juju/juju/rpc/params"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 func (s *NexusService) ListMachines(ctx context.Context, scopeUUID string) ([]model.Machine, error) {

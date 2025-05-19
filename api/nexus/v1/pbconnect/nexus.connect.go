@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/openhdc/openhdc/api/nexus/v1"
+	v1 "github.com/openhdc/otterscale/api/nexus/v1"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"
@@ -23,7 +23,7 @@ const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// NexusName is the fully-qualified name of the Nexus service.
-	NexusName = "openhdc.nexus.v1.Nexus"
+	NexusName = "otterscale.nexus.v1.Nexus"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -35,144 +35,144 @@ const (
 // period.
 const (
 	// NexusVerifyEnvironmentProcedure is the fully-qualified name of the Nexus's VerifyEnvironment RPC.
-	NexusVerifyEnvironmentProcedure = "/openhdc.nexus.v1.Nexus/VerifyEnvironment"
+	NexusVerifyEnvironmentProcedure = "/otterscale.nexus.v1.Nexus/VerifyEnvironment"
 	// NexusListCephesProcedure is the fully-qualified name of the Nexus's ListCephes RPC.
-	NexusListCephesProcedure = "/openhdc.nexus.v1.Nexus/ListCephes"
+	NexusListCephesProcedure = "/otterscale.nexus.v1.Nexus/ListCephes"
 	// NexusCreateCephProcedure is the fully-qualified name of the Nexus's CreateCeph RPC.
-	NexusCreateCephProcedure = "/openhdc.nexus.v1.Nexus/CreateCeph"
+	NexusCreateCephProcedure = "/otterscale.nexus.v1.Nexus/CreateCeph"
 	// NexusAddCephUnitsProcedure is the fully-qualified name of the Nexus's AddCephUnits RPC.
-	NexusAddCephUnitsProcedure = "/openhdc.nexus.v1.Nexus/AddCephUnits"
+	NexusAddCephUnitsProcedure = "/otterscale.nexus.v1.Nexus/AddCephUnits"
 	// NexusListKubernetesesProcedure is the fully-qualified name of the Nexus's ListKuberneteses RPC.
-	NexusListKubernetesesProcedure = "/openhdc.nexus.v1.Nexus/ListKuberneteses"
+	NexusListKubernetesesProcedure = "/otterscale.nexus.v1.Nexus/ListKuberneteses"
 	// NexusCreateKubernetesProcedure is the fully-qualified name of the Nexus's CreateKubernetes RPC.
-	NexusCreateKubernetesProcedure = "/openhdc.nexus.v1.Nexus/CreateKubernetes"
+	NexusCreateKubernetesProcedure = "/otterscale.nexus.v1.Nexus/CreateKubernetes"
 	// NexusAddKubernetesUnitsProcedure is the fully-qualified name of the Nexus's AddKubernetesUnits
 	// RPC.
-	NexusAddKubernetesUnitsProcedure = "/openhdc.nexus.v1.Nexus/AddKubernetesUnits"
+	NexusAddKubernetesUnitsProcedure = "/otterscale.nexus.v1.Nexus/AddKubernetesUnits"
 	// NexusSetCephCSIProcedure is the fully-qualified name of the Nexus's SetCephCSI RPC.
-	NexusSetCephCSIProcedure = "/openhdc.nexus.v1.Nexus/SetCephCSI"
+	NexusSetCephCSIProcedure = "/otterscale.nexus.v1.Nexus/SetCephCSI"
 	// NexusGetConfigurationProcedure is the fully-qualified name of the Nexus's GetConfiguration RPC.
-	NexusGetConfigurationProcedure = "/openhdc.nexus.v1.Nexus/GetConfiguration"
+	NexusGetConfigurationProcedure = "/otterscale.nexus.v1.Nexus/GetConfiguration"
 	// NexusUpdateNTPServerProcedure is the fully-qualified name of the Nexus's UpdateNTPServer RPC.
-	NexusUpdateNTPServerProcedure = "/openhdc.nexus.v1.Nexus/UpdateNTPServer"
+	NexusUpdateNTPServerProcedure = "/otterscale.nexus.v1.Nexus/UpdateNTPServer"
 	// NexusUpdatePackageRepositoryProcedure is the fully-qualified name of the Nexus's
 	// UpdatePackageRepository RPC.
-	NexusUpdatePackageRepositoryProcedure = "/openhdc.nexus.v1.Nexus/UpdatePackageRepository"
+	NexusUpdatePackageRepositoryProcedure = "/otterscale.nexus.v1.Nexus/UpdatePackageRepository"
 	// NexusCreateBootImageProcedure is the fully-qualified name of the Nexus's CreateBootImage RPC.
-	NexusCreateBootImageProcedure = "/openhdc.nexus.v1.Nexus/CreateBootImage"
+	NexusCreateBootImageProcedure = "/otterscale.nexus.v1.Nexus/CreateBootImage"
 	// NexusSetDefaultBootImageProcedure is the fully-qualified name of the Nexus's SetDefaultBootImage
 	// RPC.
-	NexusSetDefaultBootImageProcedure = "/openhdc.nexus.v1.Nexus/SetDefaultBootImage"
+	NexusSetDefaultBootImageProcedure = "/otterscale.nexus.v1.Nexus/SetDefaultBootImage"
 	// NexusImportBootImagesProcedure is the fully-qualified name of the Nexus's ImportBootImages RPC.
-	NexusImportBootImagesProcedure = "/openhdc.nexus.v1.Nexus/ImportBootImages"
+	NexusImportBootImagesProcedure = "/otterscale.nexus.v1.Nexus/ImportBootImages"
 	// NexusIsImportingBootImagesProcedure is the fully-qualified name of the Nexus's
 	// IsImportingBootImages RPC.
-	NexusIsImportingBootImagesProcedure = "/openhdc.nexus.v1.Nexus/IsImportingBootImages"
+	NexusIsImportingBootImagesProcedure = "/otterscale.nexus.v1.Nexus/IsImportingBootImages"
 	// NexusListBootImageSelectionsProcedure is the fully-qualified name of the Nexus's
 	// ListBootImageSelections RPC.
-	NexusListBootImageSelectionsProcedure = "/openhdc.nexus.v1.Nexus/ListBootImageSelections"
+	NexusListBootImageSelectionsProcedure = "/otterscale.nexus.v1.Nexus/ListBootImageSelections"
 	// NexusListNetworksProcedure is the fully-qualified name of the Nexus's ListNetworks RPC.
-	NexusListNetworksProcedure = "/openhdc.nexus.v1.Nexus/ListNetworks"
+	NexusListNetworksProcedure = "/otterscale.nexus.v1.Nexus/ListNetworks"
 	// NexusCreateNetworkProcedure is the fully-qualified name of the Nexus's CreateNetwork RPC.
-	NexusCreateNetworkProcedure = "/openhdc.nexus.v1.Nexus/CreateNetwork"
+	NexusCreateNetworkProcedure = "/otterscale.nexus.v1.Nexus/CreateNetwork"
 	// NexusCreateIPRangeProcedure is the fully-qualified name of the Nexus's CreateIPRange RPC.
-	NexusCreateIPRangeProcedure = "/openhdc.nexus.v1.Nexus/CreateIPRange"
+	NexusCreateIPRangeProcedure = "/otterscale.nexus.v1.Nexus/CreateIPRange"
 	// NexusDeleteNetworkProcedure is the fully-qualified name of the Nexus's DeleteNetwork RPC.
-	NexusDeleteNetworkProcedure = "/openhdc.nexus.v1.Nexus/DeleteNetwork"
+	NexusDeleteNetworkProcedure = "/otterscale.nexus.v1.Nexus/DeleteNetwork"
 	// NexusDeleteIPRangeProcedure is the fully-qualified name of the Nexus's DeleteIPRange RPC.
-	NexusDeleteIPRangeProcedure = "/openhdc.nexus.v1.Nexus/DeleteIPRange"
+	NexusDeleteIPRangeProcedure = "/otterscale.nexus.v1.Nexus/DeleteIPRange"
 	// NexusUpdateFabricProcedure is the fully-qualified name of the Nexus's UpdateFabric RPC.
-	NexusUpdateFabricProcedure = "/openhdc.nexus.v1.Nexus/UpdateFabric"
+	NexusUpdateFabricProcedure = "/otterscale.nexus.v1.Nexus/UpdateFabric"
 	// NexusUpdateVLANProcedure is the fully-qualified name of the Nexus's UpdateVLAN RPC.
-	NexusUpdateVLANProcedure = "/openhdc.nexus.v1.Nexus/UpdateVLAN"
+	NexusUpdateVLANProcedure = "/otterscale.nexus.v1.Nexus/UpdateVLAN"
 	// NexusUpdateSubnetProcedure is the fully-qualified name of the Nexus's UpdateSubnet RPC.
-	NexusUpdateSubnetProcedure = "/openhdc.nexus.v1.Nexus/UpdateSubnet"
+	NexusUpdateSubnetProcedure = "/otterscale.nexus.v1.Nexus/UpdateSubnet"
 	// NexusUpdateIPRangeProcedure is the fully-qualified name of the Nexus's UpdateIPRange RPC.
-	NexusUpdateIPRangeProcedure = "/openhdc.nexus.v1.Nexus/UpdateIPRange"
+	NexusUpdateIPRangeProcedure = "/otterscale.nexus.v1.Nexus/UpdateIPRange"
 	// NexusListMachinesProcedure is the fully-qualified name of the Nexus's ListMachines RPC.
-	NexusListMachinesProcedure = "/openhdc.nexus.v1.Nexus/ListMachines"
+	NexusListMachinesProcedure = "/otterscale.nexus.v1.Nexus/ListMachines"
 	// NexusGetMachineProcedure is the fully-qualified name of the Nexus's GetMachine RPC.
-	NexusGetMachineProcedure = "/openhdc.nexus.v1.Nexus/GetMachine"
+	NexusGetMachineProcedure = "/otterscale.nexus.v1.Nexus/GetMachine"
 	// NexusCreateMachineProcedure is the fully-qualified name of the Nexus's CreateMachine RPC.
-	NexusCreateMachineProcedure = "/openhdc.nexus.v1.Nexus/CreateMachine"
+	NexusCreateMachineProcedure = "/otterscale.nexus.v1.Nexus/CreateMachine"
 	// NexusDeleteMachineProcedure is the fully-qualified name of the Nexus's DeleteMachine RPC.
-	NexusDeleteMachineProcedure = "/openhdc.nexus.v1.Nexus/DeleteMachine"
+	NexusDeleteMachineProcedure = "/otterscale.nexus.v1.Nexus/DeleteMachine"
 	// NexusPowerOnMachineProcedure is the fully-qualified name of the Nexus's PowerOnMachine RPC.
-	NexusPowerOnMachineProcedure = "/openhdc.nexus.v1.Nexus/PowerOnMachine"
+	NexusPowerOnMachineProcedure = "/otterscale.nexus.v1.Nexus/PowerOnMachine"
 	// NexusPowerOffMachineProcedure is the fully-qualified name of the Nexus's PowerOffMachine RPC.
-	NexusPowerOffMachineProcedure = "/openhdc.nexus.v1.Nexus/PowerOffMachine"
+	NexusPowerOffMachineProcedure = "/otterscale.nexus.v1.Nexus/PowerOffMachine"
 	// NexusAddMachineTagsProcedure is the fully-qualified name of the Nexus's AddMachineTags RPC.
-	NexusAddMachineTagsProcedure = "/openhdc.nexus.v1.Nexus/AddMachineTags"
+	NexusAddMachineTagsProcedure = "/otterscale.nexus.v1.Nexus/AddMachineTags"
 	// NexusRemoveMachineTagsProcedure is the fully-qualified name of the Nexus's RemoveMachineTags RPC.
-	NexusRemoveMachineTagsProcedure = "/openhdc.nexus.v1.Nexus/RemoveMachineTags"
+	NexusRemoveMachineTagsProcedure = "/otterscale.nexus.v1.Nexus/RemoveMachineTags"
 	// NexusListScopesProcedure is the fully-qualified name of the Nexus's ListScopes RPC.
-	NexusListScopesProcedure = "/openhdc.nexus.v1.Nexus/ListScopes"
+	NexusListScopesProcedure = "/otterscale.nexus.v1.Nexus/ListScopes"
 	// NexusCreateScopeProcedure is the fully-qualified name of the Nexus's CreateScope RPC.
-	NexusCreateScopeProcedure = "/openhdc.nexus.v1.Nexus/CreateScope"
+	NexusCreateScopeProcedure = "/otterscale.nexus.v1.Nexus/CreateScope"
 	// NexusCreateDefaultScopeProcedure is the fully-qualified name of the Nexus's CreateDefaultScope
 	// RPC.
-	NexusCreateDefaultScopeProcedure = "/openhdc.nexus.v1.Nexus/CreateDefaultScope"
+	NexusCreateDefaultScopeProcedure = "/otterscale.nexus.v1.Nexus/CreateDefaultScope"
 	// NexusListFacilitiesProcedure is the fully-qualified name of the Nexus's ListFacilities RPC.
-	NexusListFacilitiesProcedure = "/openhdc.nexus.v1.Nexus/ListFacilities"
+	NexusListFacilitiesProcedure = "/otterscale.nexus.v1.Nexus/ListFacilities"
 	// NexusGetFacilityProcedure is the fully-qualified name of the Nexus's GetFacility RPC.
-	NexusGetFacilityProcedure = "/openhdc.nexus.v1.Nexus/GetFacility"
+	NexusGetFacilityProcedure = "/otterscale.nexus.v1.Nexus/GetFacility"
 	// NexusCreateFacilityProcedure is the fully-qualified name of the Nexus's CreateFacility RPC.
-	NexusCreateFacilityProcedure = "/openhdc.nexus.v1.Nexus/CreateFacility"
+	NexusCreateFacilityProcedure = "/otterscale.nexus.v1.Nexus/CreateFacility"
 	// NexusUpdateFacilityProcedure is the fully-qualified name of the Nexus's UpdateFacility RPC.
-	NexusUpdateFacilityProcedure = "/openhdc.nexus.v1.Nexus/UpdateFacility"
+	NexusUpdateFacilityProcedure = "/otterscale.nexus.v1.Nexus/UpdateFacility"
 	// NexusDeleteFacilityProcedure is the fully-qualified name of the Nexus's DeleteFacility RPC.
-	NexusDeleteFacilityProcedure = "/openhdc.nexus.v1.Nexus/DeleteFacility"
+	NexusDeleteFacilityProcedure = "/otterscale.nexus.v1.Nexus/DeleteFacility"
 	// NexusExposeFacilityProcedure is the fully-qualified name of the Nexus's ExposeFacility RPC.
-	NexusExposeFacilityProcedure = "/openhdc.nexus.v1.Nexus/ExposeFacility"
+	NexusExposeFacilityProcedure = "/otterscale.nexus.v1.Nexus/ExposeFacility"
 	// NexusAddFacilityUnitsProcedure is the fully-qualified name of the Nexus's AddFacilityUnits RPC.
-	NexusAddFacilityUnitsProcedure = "/openhdc.nexus.v1.Nexus/AddFacilityUnits"
+	NexusAddFacilityUnitsProcedure = "/otterscale.nexus.v1.Nexus/AddFacilityUnits"
 	// NexusListActionsProcedure is the fully-qualified name of the Nexus's ListActions RPC.
-	NexusListActionsProcedure = "/openhdc.nexus.v1.Nexus/ListActions"
+	NexusListActionsProcedure = "/otterscale.nexus.v1.Nexus/ListActions"
 	// NexusDoActionProcedure is the fully-qualified name of the Nexus's DoAction RPC.
-	NexusDoActionProcedure = "/openhdc.nexus.v1.Nexus/DoAction"
+	NexusDoActionProcedure = "/otterscale.nexus.v1.Nexus/DoAction"
 	// NexusListCharmsProcedure is the fully-qualified name of the Nexus's ListCharms RPC.
-	NexusListCharmsProcedure = "/openhdc.nexus.v1.Nexus/ListCharms"
+	NexusListCharmsProcedure = "/otterscale.nexus.v1.Nexus/ListCharms"
 	// NexusGetCharmProcedure is the fully-qualified name of the Nexus's GetCharm RPC.
-	NexusGetCharmProcedure = "/openhdc.nexus.v1.Nexus/GetCharm"
+	NexusGetCharmProcedure = "/otterscale.nexus.v1.Nexus/GetCharm"
 	// NexusGetCharmMetadataProcedure is the fully-qualified name of the Nexus's GetCharmMetadata RPC.
-	NexusGetCharmMetadataProcedure = "/openhdc.nexus.v1.Nexus/GetCharmMetadata"
+	NexusGetCharmMetadataProcedure = "/otterscale.nexus.v1.Nexus/GetCharmMetadata"
 	// NexusListCharmArtifactsProcedure is the fully-qualified name of the Nexus's ListCharmArtifacts
 	// RPC.
-	NexusListCharmArtifactsProcedure = "/openhdc.nexus.v1.Nexus/ListCharmArtifacts"
+	NexusListCharmArtifactsProcedure = "/otterscale.nexus.v1.Nexus/ListCharmArtifacts"
 	// NexusListApplicationsProcedure is the fully-qualified name of the Nexus's ListApplications RPC.
-	NexusListApplicationsProcedure = "/openhdc.nexus.v1.Nexus/ListApplications"
+	NexusListApplicationsProcedure = "/otterscale.nexus.v1.Nexus/ListApplications"
 	// NexusGetApplicationProcedure is the fully-qualified name of the Nexus's GetApplication RPC.
-	NexusGetApplicationProcedure = "/openhdc.nexus.v1.Nexus/GetApplication"
+	NexusGetApplicationProcedure = "/otterscale.nexus.v1.Nexus/GetApplication"
 	// NexusListReleasesProcedure is the fully-qualified name of the Nexus's ListReleases RPC.
-	NexusListReleasesProcedure = "/openhdc.nexus.v1.Nexus/ListReleases"
+	NexusListReleasesProcedure = "/otterscale.nexus.v1.Nexus/ListReleases"
 	// NexusCreateReleaseProcedure is the fully-qualified name of the Nexus's CreateRelease RPC.
-	NexusCreateReleaseProcedure = "/openhdc.nexus.v1.Nexus/CreateRelease"
+	NexusCreateReleaseProcedure = "/otterscale.nexus.v1.Nexus/CreateRelease"
 	// NexusUpdateReleaseProcedure is the fully-qualified name of the Nexus's UpdateRelease RPC.
-	NexusUpdateReleaseProcedure = "/openhdc.nexus.v1.Nexus/UpdateRelease"
+	NexusUpdateReleaseProcedure = "/otterscale.nexus.v1.Nexus/UpdateRelease"
 	// NexusDeleteReleaseProcedure is the fully-qualified name of the Nexus's DeleteRelease RPC.
-	NexusDeleteReleaseProcedure = "/openhdc.nexus.v1.Nexus/DeleteRelease"
+	NexusDeleteReleaseProcedure = "/otterscale.nexus.v1.Nexus/DeleteRelease"
 	// NexusRollbackReleaseProcedure is the fully-qualified name of the Nexus's RollbackRelease RPC.
-	NexusRollbackReleaseProcedure = "/openhdc.nexus.v1.Nexus/RollbackRelease"
+	NexusRollbackReleaseProcedure = "/otterscale.nexus.v1.Nexus/RollbackRelease"
 	// NexusListChartsProcedure is the fully-qualified name of the Nexus's ListCharts RPC.
-	NexusListChartsProcedure = "/openhdc.nexus.v1.Nexus/ListCharts"
+	NexusListChartsProcedure = "/otterscale.nexus.v1.Nexus/ListCharts"
 	// NexusGetChartProcedure is the fully-qualified name of the Nexus's GetChart RPC.
-	NexusGetChartProcedure = "/openhdc.nexus.v1.Nexus/GetChart"
+	NexusGetChartProcedure = "/otterscale.nexus.v1.Nexus/GetChart"
 	// NexusGetChartMetadataProcedure is the fully-qualified name of the Nexus's GetChartMetadata RPC.
-	NexusGetChartMetadataProcedure = "/openhdc.nexus.v1.Nexus/GetChartMetadata"
+	NexusGetChartMetadataProcedure = "/otterscale.nexus.v1.Nexus/GetChartMetadata"
 	// NexusListTagsProcedure is the fully-qualified name of the Nexus's ListTags RPC.
-	NexusListTagsProcedure = "/openhdc.nexus.v1.Nexus/ListTags"
+	NexusListTagsProcedure = "/otterscale.nexus.v1.Nexus/ListTags"
 	// NexusGetTagProcedure is the fully-qualified name of the Nexus's GetTag RPC.
-	NexusGetTagProcedure = "/openhdc.nexus.v1.Nexus/GetTag"
+	NexusGetTagProcedure = "/otterscale.nexus.v1.Nexus/GetTag"
 	// NexusCreateTagProcedure is the fully-qualified name of the Nexus's CreateTag RPC.
-	NexusCreateTagProcedure = "/openhdc.nexus.v1.Nexus/CreateTag"
+	NexusCreateTagProcedure = "/otterscale.nexus.v1.Nexus/CreateTag"
 	// NexusDeleteTagProcedure is the fully-qualified name of the Nexus's DeleteTag RPC.
-	NexusDeleteTagProcedure = "/openhdc.nexus.v1.Nexus/DeleteTag"
+	NexusDeleteTagProcedure = "/otterscale.nexus.v1.Nexus/DeleteTag"
 	// NexusListStorageClassesProcedure is the fully-qualified name of the Nexus's ListStorageClasses
 	// RPC.
-	NexusListStorageClassesProcedure = "/openhdc.nexus.v1.Nexus/ListStorageClasses"
+	NexusListStorageClassesProcedure = "/otterscale.nexus.v1.Nexus/ListStorageClasses"
 )
 
-// NexusClient is a client for the openhdc.nexus.v1.Nexus service.
+// NexusClient is a client for the otterscale.nexus.v1.Nexus service.
 type NexusClient interface {
 	// General
 	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
@@ -249,7 +249,7 @@ type NexusClient interface {
 	ListStorageClasses(context.Context, *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error)
 }
 
-// NewNexusClient constructs a client for the openhdc.nexus.v1.Nexus service. By default, it uses
+// NewNexusClient constructs a client for the otterscale.nexus.v1.Nexus service. By default, it uses
 // the Connect protocol with the binary Protobuf Codec, asks for gzipped responses, and sends
 // uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the connect.WithGRPC() or
 // connect.WithGRPCWeb() options.
@@ -715,327 +715,327 @@ type nexusClient struct {
 	listStorageClasses      *connect.Client[v1.ListStorageClassesRequest, v1.ListStorageClassesResponse]
 }
 
-// VerifyEnvironment calls openhdc.nexus.v1.Nexus.VerifyEnvironment.
+// VerifyEnvironment calls otterscale.nexus.v1.Nexus.VerifyEnvironment.
 func (c *nexusClient) VerifyEnvironment(ctx context.Context, req *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error) {
 	return c.verifyEnvironment.CallUnary(ctx, req)
 }
 
-// ListCephes calls openhdc.nexus.v1.Nexus.ListCephes.
+// ListCephes calls otterscale.nexus.v1.Nexus.ListCephes.
 func (c *nexusClient) ListCephes(ctx context.Context, req *connect.Request[v1.ListCephesRequest]) (*connect.Response[v1.ListCephesResponse], error) {
 	return c.listCephes.CallUnary(ctx, req)
 }
 
-// CreateCeph calls openhdc.nexus.v1.Nexus.CreateCeph.
+// CreateCeph calls otterscale.nexus.v1.Nexus.CreateCeph.
 func (c *nexusClient) CreateCeph(ctx context.Context, req *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error) {
 	return c.createCeph.CallUnary(ctx, req)
 }
 
-// AddCephUnits calls openhdc.nexus.v1.Nexus.AddCephUnits.
+// AddCephUnits calls otterscale.nexus.v1.Nexus.AddCephUnits.
 func (c *nexusClient) AddCephUnits(ctx context.Context, req *connect.Request[v1.AddCephUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.addCephUnits.CallUnary(ctx, req)
 }
 
-// ListKuberneteses calls openhdc.nexus.v1.Nexus.ListKuberneteses.
+// ListKuberneteses calls otterscale.nexus.v1.Nexus.ListKuberneteses.
 func (c *nexusClient) ListKuberneteses(ctx context.Context, req *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error) {
 	return c.listKuberneteses.CallUnary(ctx, req)
 }
 
-// CreateKubernetes calls openhdc.nexus.v1.Nexus.CreateKubernetes.
+// CreateKubernetes calls otterscale.nexus.v1.Nexus.CreateKubernetes.
 func (c *nexusClient) CreateKubernetes(ctx context.Context, req *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error) {
 	return c.createKubernetes.CallUnary(ctx, req)
 }
 
-// AddKubernetesUnits calls openhdc.nexus.v1.Nexus.AddKubernetesUnits.
+// AddKubernetesUnits calls otterscale.nexus.v1.Nexus.AddKubernetesUnits.
 func (c *nexusClient) AddKubernetesUnits(ctx context.Context, req *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.addKubernetesUnits.CallUnary(ctx, req)
 }
 
-// SetCephCSI calls openhdc.nexus.v1.Nexus.SetCephCSI.
+// SetCephCSI calls otterscale.nexus.v1.Nexus.SetCephCSI.
 func (c *nexusClient) SetCephCSI(ctx context.Context, req *connect.Request[v1.SetCephCSIRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.setCephCSI.CallUnary(ctx, req)
 }
 
-// GetConfiguration calls openhdc.nexus.v1.Nexus.GetConfiguration.
+// GetConfiguration calls otterscale.nexus.v1.Nexus.GetConfiguration.
 func (c *nexusClient) GetConfiguration(ctx context.Context, req *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error) {
 	return c.getConfiguration.CallUnary(ctx, req)
 }
 
-// UpdateNTPServer calls openhdc.nexus.v1.Nexus.UpdateNTPServer.
+// UpdateNTPServer calls otterscale.nexus.v1.Nexus.UpdateNTPServer.
 func (c *nexusClient) UpdateNTPServer(ctx context.Context, req *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error) {
 	return c.updateNTPServer.CallUnary(ctx, req)
 }
 
-// UpdatePackageRepository calls openhdc.nexus.v1.Nexus.UpdatePackageRepository.
+// UpdatePackageRepository calls otterscale.nexus.v1.Nexus.UpdatePackageRepository.
 func (c *nexusClient) UpdatePackageRepository(ctx context.Context, req *connect.Request[v1.UpdatePackageRepositoryRequest]) (*connect.Response[v1.Configuration_PackageRepository], error) {
 	return c.updatePackageRepository.CallUnary(ctx, req)
 }
 
-// CreateBootImage calls openhdc.nexus.v1.Nexus.CreateBootImage.
+// CreateBootImage calls otterscale.nexus.v1.Nexus.CreateBootImage.
 func (c *nexusClient) CreateBootImage(ctx context.Context, req *connect.Request[v1.CreateBootImageRequest]) (*connect.Response[v1.Configuration_BootImage], error) {
 	return c.createBootImage.CallUnary(ctx, req)
 }
 
-// SetDefaultBootImage calls openhdc.nexus.v1.Nexus.SetDefaultBootImage.
+// SetDefaultBootImage calls otterscale.nexus.v1.Nexus.SetDefaultBootImage.
 func (c *nexusClient) SetDefaultBootImage(ctx context.Context, req *connect.Request[v1.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.setDefaultBootImage.CallUnary(ctx, req)
 }
 
-// ImportBootImages calls openhdc.nexus.v1.Nexus.ImportBootImages.
+// ImportBootImages calls otterscale.nexus.v1.Nexus.ImportBootImages.
 func (c *nexusClient) ImportBootImages(ctx context.Context, req *connect.Request[v1.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.importBootImages.CallUnary(ctx, req)
 }
 
-// IsImportingBootImages calls openhdc.nexus.v1.Nexus.IsImportingBootImages.
+// IsImportingBootImages calls otterscale.nexus.v1.Nexus.IsImportingBootImages.
 func (c *nexusClient) IsImportingBootImages(ctx context.Context, req *connect.Request[v1.IsImportingBootImagesRequest]) (*connect.Response[v1.IsImportingBootImagesResponse], error) {
 	return c.isImportingBootImages.CallUnary(ctx, req)
 }
 
-// ListBootImageSelections calls openhdc.nexus.v1.Nexus.ListBootImageSelections.
+// ListBootImageSelections calls otterscale.nexus.v1.Nexus.ListBootImageSelections.
 func (c *nexusClient) ListBootImageSelections(ctx context.Context, req *connect.Request[v1.ListBootImageSelectionsRequest]) (*connect.Response[v1.ListBootImageSelectionsResponse], error) {
 	return c.listBootImageSelections.CallUnary(ctx, req)
 }
 
-// ListNetworks calls openhdc.nexus.v1.Nexus.ListNetworks.
+// ListNetworks calls otterscale.nexus.v1.Nexus.ListNetworks.
 func (c *nexusClient) ListNetworks(ctx context.Context, req *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error) {
 	return c.listNetworks.CallUnary(ctx, req)
 }
 
-// CreateNetwork calls openhdc.nexus.v1.Nexus.CreateNetwork.
+// CreateNetwork calls otterscale.nexus.v1.Nexus.CreateNetwork.
 func (c *nexusClient) CreateNetwork(ctx context.Context, req *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error) {
 	return c.createNetwork.CallUnary(ctx, req)
 }
 
-// CreateIPRange calls openhdc.nexus.v1.Nexus.CreateIPRange.
+// CreateIPRange calls otterscale.nexus.v1.Nexus.CreateIPRange.
 func (c *nexusClient) CreateIPRange(ctx context.Context, req *connect.Request[v1.CreateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error) {
 	return c.createIPRange.CallUnary(ctx, req)
 }
 
-// DeleteNetwork calls openhdc.nexus.v1.Nexus.DeleteNetwork.
+// DeleteNetwork calls otterscale.nexus.v1.Nexus.DeleteNetwork.
 func (c *nexusClient) DeleteNetwork(ctx context.Context, req *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteNetwork.CallUnary(ctx, req)
 }
 
-// DeleteIPRange calls openhdc.nexus.v1.Nexus.DeleteIPRange.
+// DeleteIPRange calls otterscale.nexus.v1.Nexus.DeleteIPRange.
 func (c *nexusClient) DeleteIPRange(ctx context.Context, req *connect.Request[v1.DeleteIPRangeRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteIPRange.CallUnary(ctx, req)
 }
 
-// UpdateFabric calls openhdc.nexus.v1.Nexus.UpdateFabric.
+// UpdateFabric calls otterscale.nexus.v1.Nexus.UpdateFabric.
 func (c *nexusClient) UpdateFabric(ctx context.Context, req *connect.Request[v1.UpdateFabricRequest]) (*connect.Response[v1.Network_Fabric], error) {
 	return c.updateFabric.CallUnary(ctx, req)
 }
 
-// UpdateVLAN calls openhdc.nexus.v1.Nexus.UpdateVLAN.
+// UpdateVLAN calls otterscale.nexus.v1.Nexus.UpdateVLAN.
 func (c *nexusClient) UpdateVLAN(ctx context.Context, req *connect.Request[v1.UpdateVLANRequest]) (*connect.Response[v1.Network_VLAN], error) {
 	return c.updateVLAN.CallUnary(ctx, req)
 }
 
-// UpdateSubnet calls openhdc.nexus.v1.Nexus.UpdateSubnet.
+// UpdateSubnet calls otterscale.nexus.v1.Nexus.UpdateSubnet.
 func (c *nexusClient) UpdateSubnet(ctx context.Context, req *connect.Request[v1.UpdateSubnetRequest]) (*connect.Response[v1.Network_Subnet], error) {
 	return c.updateSubnet.CallUnary(ctx, req)
 }
 
-// UpdateIPRange calls openhdc.nexus.v1.Nexus.UpdateIPRange.
+// UpdateIPRange calls otterscale.nexus.v1.Nexus.UpdateIPRange.
 func (c *nexusClient) UpdateIPRange(ctx context.Context, req *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error) {
 	return c.updateIPRange.CallUnary(ctx, req)
 }
 
-// ListMachines calls openhdc.nexus.v1.Nexus.ListMachines.
+// ListMachines calls otterscale.nexus.v1.Nexus.ListMachines.
 func (c *nexusClient) ListMachines(ctx context.Context, req *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error) {
 	return c.listMachines.CallUnary(ctx, req)
 }
 
-// GetMachine calls openhdc.nexus.v1.Nexus.GetMachine.
+// GetMachine calls otterscale.nexus.v1.Nexus.GetMachine.
 func (c *nexusClient) GetMachine(ctx context.Context, req *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return c.getMachine.CallUnary(ctx, req)
 }
 
-// CreateMachine calls openhdc.nexus.v1.Nexus.CreateMachine.
+// CreateMachine calls otterscale.nexus.v1.Nexus.CreateMachine.
 func (c *nexusClient) CreateMachine(ctx context.Context, req *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return c.createMachine.CallUnary(ctx, req)
 }
 
-// DeleteMachine calls openhdc.nexus.v1.Nexus.DeleteMachine.
+// DeleteMachine calls otterscale.nexus.v1.Nexus.DeleteMachine.
 func (c *nexusClient) DeleteMachine(ctx context.Context, req *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteMachine.CallUnary(ctx, req)
 }
 
-// PowerOnMachine calls openhdc.nexus.v1.Nexus.PowerOnMachine.
+// PowerOnMachine calls otterscale.nexus.v1.Nexus.PowerOnMachine.
 func (c *nexusClient) PowerOnMachine(ctx context.Context, req *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return c.powerOnMachine.CallUnary(ctx, req)
 }
 
-// PowerOffMachine calls openhdc.nexus.v1.Nexus.PowerOffMachine.
+// PowerOffMachine calls otterscale.nexus.v1.Nexus.PowerOffMachine.
 func (c *nexusClient) PowerOffMachine(ctx context.Context, req *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error) {
 	return c.powerOffMachine.CallUnary(ctx, req)
 }
 
-// AddMachineTags calls openhdc.nexus.v1.Nexus.AddMachineTags.
+// AddMachineTags calls otterscale.nexus.v1.Nexus.AddMachineTags.
 func (c *nexusClient) AddMachineTags(ctx context.Context, req *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.addMachineTags.CallUnary(ctx, req)
 }
 
-// RemoveMachineTags calls openhdc.nexus.v1.Nexus.RemoveMachineTags.
+// RemoveMachineTags calls otterscale.nexus.v1.Nexus.RemoveMachineTags.
 func (c *nexusClient) RemoveMachineTags(ctx context.Context, req *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.removeMachineTags.CallUnary(ctx, req)
 }
 
-// ListScopes calls openhdc.nexus.v1.Nexus.ListScopes.
+// ListScopes calls otterscale.nexus.v1.Nexus.ListScopes.
 func (c *nexusClient) ListScopes(ctx context.Context, req *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error) {
 	return c.listScopes.CallUnary(ctx, req)
 }
 
-// CreateScope calls openhdc.nexus.v1.Nexus.CreateScope.
+// CreateScope calls otterscale.nexus.v1.Nexus.CreateScope.
 func (c *nexusClient) CreateScope(ctx context.Context, req *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error) {
 	return c.createScope.CallUnary(ctx, req)
 }
 
-// CreateDefaultScope calls openhdc.nexus.v1.Nexus.CreateDefaultScope.
+// CreateDefaultScope calls otterscale.nexus.v1.Nexus.CreateDefaultScope.
 func (c *nexusClient) CreateDefaultScope(ctx context.Context, req *connect.Request[v1.CreateDefaultScopeRequest]) (*connect.Response[v1.Scope], error) {
 	return c.createDefaultScope.CallUnary(ctx, req)
 }
 
-// ListFacilities calls openhdc.nexus.v1.Nexus.ListFacilities.
+// ListFacilities calls otterscale.nexus.v1.Nexus.ListFacilities.
 func (c *nexusClient) ListFacilities(ctx context.Context, req *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error) {
 	return c.listFacilities.CallUnary(ctx, req)
 }
 
-// GetFacility calls openhdc.nexus.v1.Nexus.GetFacility.
+// GetFacility calls otterscale.nexus.v1.Nexus.GetFacility.
 func (c *nexusClient) GetFacility(ctx context.Context, req *connect.Request[v1.GetFacilityRequest]) (*connect.Response[v1.Facility], error) {
 	return c.getFacility.CallUnary(ctx, req)
 }
 
-// CreateFacility calls openhdc.nexus.v1.Nexus.CreateFacility.
+// CreateFacility calls otterscale.nexus.v1.Nexus.CreateFacility.
 func (c *nexusClient) CreateFacility(ctx context.Context, req *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error) {
 	return c.createFacility.CallUnary(ctx, req)
 }
 
-// UpdateFacility calls openhdc.nexus.v1.Nexus.UpdateFacility.
+// UpdateFacility calls otterscale.nexus.v1.Nexus.UpdateFacility.
 func (c *nexusClient) UpdateFacility(ctx context.Context, req *connect.Request[v1.UpdateFacilityRequest]) (*connect.Response[v1.Facility], error) {
 	return c.updateFacility.CallUnary(ctx, req)
 }
 
-// DeleteFacility calls openhdc.nexus.v1.Nexus.DeleteFacility.
+// DeleteFacility calls otterscale.nexus.v1.Nexus.DeleteFacility.
 func (c *nexusClient) DeleteFacility(ctx context.Context, req *connect.Request[v1.DeleteFacilityRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteFacility.CallUnary(ctx, req)
 }
 
-// ExposeFacility calls openhdc.nexus.v1.Nexus.ExposeFacility.
+// ExposeFacility calls otterscale.nexus.v1.Nexus.ExposeFacility.
 func (c *nexusClient) ExposeFacility(ctx context.Context, req *connect.Request[v1.ExposeFacilityRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.exposeFacility.CallUnary(ctx, req)
 }
 
-// AddFacilityUnits calls openhdc.nexus.v1.Nexus.AddFacilityUnits.
+// AddFacilityUnits calls otterscale.nexus.v1.Nexus.AddFacilityUnits.
 func (c *nexusClient) AddFacilityUnits(ctx context.Context, req *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[v1.AddFacilityUnitsResponse], error) {
 	return c.addFacilityUnits.CallUnary(ctx, req)
 }
 
-// ListActions calls openhdc.nexus.v1.Nexus.ListActions.
+// ListActions calls otterscale.nexus.v1.Nexus.ListActions.
 func (c *nexusClient) ListActions(ctx context.Context, req *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error) {
 	return c.listActions.CallUnary(ctx, req)
 }
 
-// DoAction calls openhdc.nexus.v1.Nexus.DoAction.
+// DoAction calls otterscale.nexus.v1.Nexus.DoAction.
 func (c *nexusClient) DoAction(ctx context.Context, req *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.doAction.CallUnary(ctx, req)
 }
 
-// ListCharms calls openhdc.nexus.v1.Nexus.ListCharms.
+// ListCharms calls otterscale.nexus.v1.Nexus.ListCharms.
 func (c *nexusClient) ListCharms(ctx context.Context, req *connect.Request[v1.ListCharmsRequest]) (*connect.Response[v1.ListCharmsResponse], error) {
 	return c.listCharms.CallUnary(ctx, req)
 }
 
-// GetCharm calls openhdc.nexus.v1.Nexus.GetCharm.
+// GetCharm calls otterscale.nexus.v1.Nexus.GetCharm.
 func (c *nexusClient) GetCharm(ctx context.Context, req *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error) {
 	return c.getCharm.CallUnary(ctx, req)
 }
 
-// GetCharmMetadata calls openhdc.nexus.v1.Nexus.GetCharmMetadata.
+// GetCharmMetadata calls otterscale.nexus.v1.Nexus.GetCharmMetadata.
 func (c *nexusClient) GetCharmMetadata(ctx context.Context, req *connect.Request[v1.GetCharmMetadataRequest]) (*connect.Response[v1.Facility_Charm_Metadata], error) {
 	return c.getCharmMetadata.CallUnary(ctx, req)
 }
 
-// ListCharmArtifacts calls openhdc.nexus.v1.Nexus.ListCharmArtifacts.
+// ListCharmArtifacts calls otterscale.nexus.v1.Nexus.ListCharmArtifacts.
 func (c *nexusClient) ListCharmArtifacts(ctx context.Context, req *connect.Request[v1.ListCharmArtifactsRequest]) (*connect.Response[v1.ListCharmArtifactsResponse], error) {
 	return c.listCharmArtifacts.CallUnary(ctx, req)
 }
 
-// ListApplications calls openhdc.nexus.v1.Nexus.ListApplications.
+// ListApplications calls otterscale.nexus.v1.Nexus.ListApplications.
 func (c *nexusClient) ListApplications(ctx context.Context, req *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
 	return c.listApplications.CallUnary(ctx, req)
 }
 
-// GetApplication calls openhdc.nexus.v1.Nexus.GetApplication.
+// GetApplication calls otterscale.nexus.v1.Nexus.GetApplication.
 func (c *nexusClient) GetApplication(ctx context.Context, req *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
 	return c.getApplication.CallUnary(ctx, req)
 }
 
-// ListReleases calls openhdc.nexus.v1.Nexus.ListReleases.
+// ListReleases calls otterscale.nexus.v1.Nexus.ListReleases.
 func (c *nexusClient) ListReleases(ctx context.Context, req *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
 	return c.listReleases.CallUnary(ctx, req)
 }
 
-// CreateRelease calls openhdc.nexus.v1.Nexus.CreateRelease.
+// CreateRelease calls otterscale.nexus.v1.Nexus.CreateRelease.
 func (c *nexusClient) CreateRelease(ctx context.Context, req *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Application_Release], error) {
 	return c.createRelease.CallUnary(ctx, req)
 }
 
-// UpdateRelease calls openhdc.nexus.v1.Nexus.UpdateRelease.
+// UpdateRelease calls otterscale.nexus.v1.Nexus.UpdateRelease.
 func (c *nexusClient) UpdateRelease(ctx context.Context, req *connect.Request[v1.UpdateReleaseRequest]) (*connect.Response[v1.Application_Release], error) {
 	return c.updateRelease.CallUnary(ctx, req)
 }
 
-// DeleteRelease calls openhdc.nexus.v1.Nexus.DeleteRelease.
+// DeleteRelease calls otterscale.nexus.v1.Nexus.DeleteRelease.
 func (c *nexusClient) DeleteRelease(ctx context.Context, req *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteRelease.CallUnary(ctx, req)
 }
 
-// RollbackRelease calls openhdc.nexus.v1.Nexus.RollbackRelease.
+// RollbackRelease calls otterscale.nexus.v1.Nexus.RollbackRelease.
 func (c *nexusClient) RollbackRelease(ctx context.Context, req *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.rollbackRelease.CallUnary(ctx, req)
 }
 
-// ListCharts calls openhdc.nexus.v1.Nexus.ListCharts.
+// ListCharts calls otterscale.nexus.v1.Nexus.ListCharts.
 func (c *nexusClient) ListCharts(ctx context.Context, req *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
 	return c.listCharts.CallUnary(ctx, req)
 }
 
-// GetChart calls openhdc.nexus.v1.Nexus.GetChart.
+// GetChart calls otterscale.nexus.v1.Nexus.GetChart.
 func (c *nexusClient) GetChart(ctx context.Context, req *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error) {
 	return c.getChart.CallUnary(ctx, req)
 }
 
-// GetChartMetadata calls openhdc.nexus.v1.Nexus.GetChartMetadata.
+// GetChartMetadata calls otterscale.nexus.v1.Nexus.GetChartMetadata.
 func (c *nexusClient) GetChartMetadata(ctx context.Context, req *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error) {
 	return c.getChartMetadata.CallUnary(ctx, req)
 }
 
-// ListTags calls openhdc.nexus.v1.Nexus.ListTags.
+// ListTags calls otterscale.nexus.v1.Nexus.ListTags.
 func (c *nexusClient) ListTags(ctx context.Context, req *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error) {
 	return c.listTags.CallUnary(ctx, req)
 }
 
-// GetTag calls openhdc.nexus.v1.Nexus.GetTag.
+// GetTag calls otterscale.nexus.v1.Nexus.GetTag.
 func (c *nexusClient) GetTag(ctx context.Context, req *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error) {
 	return c.getTag.CallUnary(ctx, req)
 }
 
-// CreateTag calls openhdc.nexus.v1.Nexus.CreateTag.
+// CreateTag calls otterscale.nexus.v1.Nexus.CreateTag.
 func (c *nexusClient) CreateTag(ctx context.Context, req *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error) {
 	return c.createTag.CallUnary(ctx, req)
 }
 
-// DeleteTag calls openhdc.nexus.v1.Nexus.DeleteTag.
+// DeleteTag calls otterscale.nexus.v1.Nexus.DeleteTag.
 func (c *nexusClient) DeleteTag(ctx context.Context, req *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteTag.CallUnary(ctx, req)
 }
 
-// ListStorageClasses calls openhdc.nexus.v1.Nexus.ListStorageClasses.
+// ListStorageClasses calls otterscale.nexus.v1.Nexus.ListStorageClasses.
 func (c *nexusClient) ListStorageClasses(ctx context.Context, req *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error) {
 	return c.listStorageClasses.CallUnary(ctx, req)
 }
 
-// NexusHandler is an implementation of the openhdc.nexus.v1.Nexus service.
+// NexusHandler is an implementation of the otterscale.nexus.v1.Nexus service.
 type NexusHandler interface {
 	// General
 	VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error)
@@ -1503,7 +1503,7 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 		connect.WithSchema(nexusMethods.ByName("ListStorageClasses")),
 		connect.WithHandlerOptions(opts...),
 	)
-	return "/openhdc.nexus.v1.Nexus/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return "/otterscale.nexus.v1.Nexus/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case NexusVerifyEnvironmentProcedure:
 			nexusVerifyEnvironmentHandler.ServeHTTP(w, r)
@@ -1643,257 +1643,257 @@ func NewNexusHandler(svc NexusHandler, opts ...connect.HandlerOption) (string, h
 type UnimplementedNexusHandler struct{}
 
 func (UnimplementedNexusHandler) VerifyEnvironment(context.Context, *connect.Request[v1.VerifyEnvironmentRequest]) (*connect.Response[v1.VerifyEnvironmentResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.VerifyEnvironment is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.VerifyEnvironment is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListCephes(context.Context, *connect.Request[v1.ListCephesRequest]) (*connect.Response[v1.ListCephesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListCephes is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListCephes is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateCeph(context.Context, *connect.Request[v1.CreateCephRequest]) (*connect.Response[v1.Facility_Info], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateCeph is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateCeph is not implemented"))
 }
 
 func (UnimplementedNexusHandler) AddCephUnits(context.Context, *connect.Request[v1.AddCephUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddCephUnits is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.AddCephUnits is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListKuberneteses(context.Context, *connect.Request[v1.ListKubernetesesRequest]) (*connect.Response[v1.ListKubernetesesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListKuberneteses is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListKuberneteses is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateKubernetes(context.Context, *connect.Request[v1.CreateKubernetesRequest]) (*connect.Response[v1.Facility_Info], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateKubernetes is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateKubernetes is not implemented"))
 }
 
 func (UnimplementedNexusHandler) AddKubernetesUnits(context.Context, *connect.Request[v1.AddKubernetesUnitsRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddKubernetesUnits is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.AddKubernetesUnits is not implemented"))
 }
 
 func (UnimplementedNexusHandler) SetCephCSI(context.Context, *connect.Request[v1.SetCephCSIRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.SetCephCSI is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.SetCephCSI is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetConfiguration(context.Context, *connect.Request[v1.GetConfigurationRequest]) (*connect.Response[v1.Configuration], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetConfiguration is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.GetConfiguration is not implemented"))
 }
 
 func (UnimplementedNexusHandler) UpdateNTPServer(context.Context, *connect.Request[v1.UpdateNTPServerRequest]) (*connect.Response[v1.Configuration_NTPServer], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdateNTPServer is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.UpdateNTPServer is not implemented"))
 }
 
 func (UnimplementedNexusHandler) UpdatePackageRepository(context.Context, *connect.Request[v1.UpdatePackageRepositoryRequest]) (*connect.Response[v1.Configuration_PackageRepository], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdatePackageRepository is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.UpdatePackageRepository is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateBootImage(context.Context, *connect.Request[v1.CreateBootImageRequest]) (*connect.Response[v1.Configuration_BootImage], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateBootImage is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateBootImage is not implemented"))
 }
 
 func (UnimplementedNexusHandler) SetDefaultBootImage(context.Context, *connect.Request[v1.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.SetDefaultBootImage is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.SetDefaultBootImage is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ImportBootImages(context.Context, *connect.Request[v1.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ImportBootImages is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ImportBootImages is not implemented"))
 }
 
 func (UnimplementedNexusHandler) IsImportingBootImages(context.Context, *connect.Request[v1.IsImportingBootImagesRequest]) (*connect.Response[v1.IsImportingBootImagesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.IsImportingBootImages is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.IsImportingBootImages is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListBootImageSelections(context.Context, *connect.Request[v1.ListBootImageSelectionsRequest]) (*connect.Response[v1.ListBootImageSelectionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListBootImageSelections is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListBootImageSelections is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListNetworks is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListNetworks is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateNetwork is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateNetwork is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateIPRange(context.Context, *connect.Request[v1.CreateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateIPRange is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateIPRange is not implemented"))
 }
 
 func (UnimplementedNexusHandler) DeleteNetwork(context.Context, *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DeleteNetwork is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.DeleteNetwork is not implemented"))
 }
 
 func (UnimplementedNexusHandler) DeleteIPRange(context.Context, *connect.Request[v1.DeleteIPRangeRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DeleteIPRange is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.DeleteIPRange is not implemented"))
 }
 
 func (UnimplementedNexusHandler) UpdateFabric(context.Context, *connect.Request[v1.UpdateFabricRequest]) (*connect.Response[v1.Network_Fabric], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdateFabric is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.UpdateFabric is not implemented"))
 }
 
 func (UnimplementedNexusHandler) UpdateVLAN(context.Context, *connect.Request[v1.UpdateVLANRequest]) (*connect.Response[v1.Network_VLAN], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdateVLAN is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.UpdateVLAN is not implemented"))
 }
 
 func (UnimplementedNexusHandler) UpdateSubnet(context.Context, *connect.Request[v1.UpdateSubnetRequest]) (*connect.Response[v1.Network_Subnet], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdateSubnet is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.UpdateSubnet is not implemented"))
 }
 
 func (UnimplementedNexusHandler) UpdateIPRange(context.Context, *connect.Request[v1.UpdateIPRangeRequest]) (*connect.Response[v1.Network_IPRange], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdateIPRange is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.UpdateIPRange is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListMachines(context.Context, *connect.Request[v1.ListMachinesRequest]) (*connect.Response[v1.ListMachinesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListMachines is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListMachines is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetMachine(context.Context, *connect.Request[v1.GetMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetMachine is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.GetMachine is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateMachine(context.Context, *connect.Request[v1.CreateMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateMachine is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateMachine is not implemented"))
 }
 
 func (UnimplementedNexusHandler) DeleteMachine(context.Context, *connect.Request[v1.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DeleteMachine is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.DeleteMachine is not implemented"))
 }
 
 func (UnimplementedNexusHandler) PowerOnMachine(context.Context, *connect.Request[v1.PowerOnMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.PowerOnMachine is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.PowerOnMachine is not implemented"))
 }
 
 func (UnimplementedNexusHandler) PowerOffMachine(context.Context, *connect.Request[v1.PowerOffMachineRequest]) (*connect.Response[v1.Machine], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.PowerOffMachine is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.PowerOffMachine is not implemented"))
 }
 
 func (UnimplementedNexusHandler) AddMachineTags(context.Context, *connect.Request[v1.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddMachineTags is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.AddMachineTags is not implemented"))
 }
 
 func (UnimplementedNexusHandler) RemoveMachineTags(context.Context, *connect.Request[v1.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.RemoveMachineTags is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.RemoveMachineTags is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListScopes(context.Context, *connect.Request[v1.ListScopesRequest]) (*connect.Response[v1.ListScopesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListScopes is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListScopes is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateScope(context.Context, *connect.Request[v1.CreateScopeRequest]) (*connect.Response[v1.Scope], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateScope is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateScope is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateDefaultScope(context.Context, *connect.Request[v1.CreateDefaultScopeRequest]) (*connect.Response[v1.Scope], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateDefaultScope is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateDefaultScope is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListFacilities(context.Context, *connect.Request[v1.ListFacilitiesRequest]) (*connect.Response[v1.ListFacilitiesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListFacilities is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListFacilities is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetFacility(context.Context, *connect.Request[v1.GetFacilityRequest]) (*connect.Response[v1.Facility], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetFacility is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.GetFacility is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateFacility(context.Context, *connect.Request[v1.CreateFacilityRequest]) (*connect.Response[v1.Facility], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateFacility is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateFacility is not implemented"))
 }
 
 func (UnimplementedNexusHandler) UpdateFacility(context.Context, *connect.Request[v1.UpdateFacilityRequest]) (*connect.Response[v1.Facility], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdateFacility is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.UpdateFacility is not implemented"))
 }
 
 func (UnimplementedNexusHandler) DeleteFacility(context.Context, *connect.Request[v1.DeleteFacilityRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DeleteFacility is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.DeleteFacility is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ExposeFacility(context.Context, *connect.Request[v1.ExposeFacilityRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ExposeFacility is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ExposeFacility is not implemented"))
 }
 
 func (UnimplementedNexusHandler) AddFacilityUnits(context.Context, *connect.Request[v1.AddFacilityUnitsRequest]) (*connect.Response[v1.AddFacilityUnitsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.AddFacilityUnits is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.AddFacilityUnits is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListActions(context.Context, *connect.Request[v1.ListActionsRequest]) (*connect.Response[v1.ListActionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListActions is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListActions is not implemented"))
 }
 
 func (UnimplementedNexusHandler) DoAction(context.Context, *connect.Request[v1.DoActionRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DoAction is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.DoAction is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListCharms(context.Context, *connect.Request[v1.ListCharmsRequest]) (*connect.Response[v1.ListCharmsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListCharms is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListCharms is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetCharm(context.Context, *connect.Request[v1.GetCharmRequest]) (*connect.Response[v1.Facility_Charm], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetCharm is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.GetCharm is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetCharmMetadata(context.Context, *connect.Request[v1.GetCharmMetadataRequest]) (*connect.Response[v1.Facility_Charm_Metadata], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetCharmMetadata is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.GetCharmMetadata is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListCharmArtifacts(context.Context, *connect.Request[v1.ListCharmArtifactsRequest]) (*connect.Response[v1.ListCharmArtifactsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListCharmArtifacts is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListCharmArtifacts is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListApplications is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListApplications is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetApplication is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.GetApplication is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListReleases is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListReleases is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateRelease(context.Context, *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Application_Release], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateRelease is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateRelease is not implemented"))
 }
 
 func (UnimplementedNexusHandler) UpdateRelease(context.Context, *connect.Request[v1.UpdateReleaseRequest]) (*connect.Response[v1.Application_Release], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.UpdateRelease is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.UpdateRelease is not implemented"))
 }
 
 func (UnimplementedNexusHandler) DeleteRelease(context.Context, *connect.Request[v1.DeleteReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DeleteRelease is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.DeleteRelease is not implemented"))
 }
 
 func (UnimplementedNexusHandler) RollbackRelease(context.Context, *connect.Request[v1.RollbackReleaseRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.RollbackRelease is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.RollbackRelease is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListCharts(context.Context, *connect.Request[v1.ListChartsRequest]) (*connect.Response[v1.ListChartsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListCharts is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListCharts is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetChart(context.Context, *connect.Request[v1.GetChartRequest]) (*connect.Response[v1.Application_Chart], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetChart is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.GetChart is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetChartMetadata(context.Context, *connect.Request[v1.GetChartMetadataRequest]) (*connect.Response[v1.Application_Chart_Metadata], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetChartMetadata is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.GetChartMetadata is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListTags is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListTags is not implemented"))
 }
 
 func (UnimplementedNexusHandler) GetTag(context.Context, *connect.Request[v1.GetTagRequest]) (*connect.Response[v1.Tag], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.GetTag is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.GetTag is not implemented"))
 }
 
 func (UnimplementedNexusHandler) CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.Tag], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.CreateTag is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.CreateTag is not implemented"))
 }
 
 func (UnimplementedNexusHandler) DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.DeleteTag is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.DeleteTag is not implemented"))
 }
 
 func (UnimplementedNexusHandler) ListStorageClasses(context.Context, *connect.Request[v1.ListStorageClassesRequest]) (*connect.Response[v1.ListStorageClassesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("openhdc.nexus.v1.Nexus.ListStorageClasses is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.nexus.v1.Nexus.ListStorageClasses is not implemented"))
 }

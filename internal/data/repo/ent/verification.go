@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/verification"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/verification"
 )
 
 // Verification is the model entity for the Verification schema.

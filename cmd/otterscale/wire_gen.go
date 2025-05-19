@@ -7,19 +7,18 @@
 package main
 
 import (
-	"github.com/openhdc/openhdc"
-	"github.com/openhdc/openhdc/internal/app"
-	"github.com/openhdc/openhdc/internal/cmd"
-	"github.com/openhdc/openhdc/internal/data/juju"
-	"github.com/openhdc/openhdc/internal/data/kube"
-	"github.com/openhdc/openhdc/internal/data/maas"
-	"github.com/openhdc/openhdc/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/app"
+	"github.com/openhdc/otterscale/internal/cmd"
+	"github.com/openhdc/otterscale/internal/data/juju"
+	"github.com/openhdc/otterscale/internal/data/kube"
+	"github.com/openhdc/otterscale/internal/data/maas"
+	"github.com/openhdc/otterscale/internal/domain/service"
 	"github.com/spf13/cobra"
 )
 
 // Injectors from wire.go:
 
-func wireApp(string2 string, arg []openhdc.ServerOption) (*cobra.Command, func(), error) {
+func wireApp(string2 string) (*cobra.Command, func(), error) {
 	v, err := maas.New()
 	if err != nil {
 		return nil, nil, err

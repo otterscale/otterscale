@@ -10,11 +10,11 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/account"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/invitation"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/member"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/session"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/user"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/account"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/invitation"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/member"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/session"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/user"
 )
 
 // UserCreate is the builder for creating a User entity.

@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/jwks"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/jwks"
 )
 
 // JWKSCreate is the builder for creating a JWKS entity.

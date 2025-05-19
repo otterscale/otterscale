@@ -9,9 +9,9 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
-	"github.com/openhdc/openhdc/internal/domain/model"
-	"github.com/openhdc/openhdc/internal/env"
+	pb "github.com/openhdc/otterscale/api/nexus/v1"
+	"github.com/openhdc/otterscale/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/env"
 )
 
 func (a *NexusApp) ListFacilities(ctx context.Context, req *connect.Request[pb.ListFacilitiesRequest]) (*connect.Response[pb.ListFacilitiesResponse], error) {

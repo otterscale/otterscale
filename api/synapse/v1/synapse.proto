@@ -1,7 +1,7 @@
 edition = "2023";
 
-package openhdc.synapse.v1;
+package otterscale.synapse.v1;
 
-option go_package = "github.com/openhdc/openhdc/api/synapse/v1;v1";
+option go_package = "github.com/openhdc/otterscale/api/synapse/v1;v1";
 
 service Synapse {}

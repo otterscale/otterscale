@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/account"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/predicate"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/account"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/predicate"
 )
 
 // AccountDelete is the builder for deleting a Account entity.

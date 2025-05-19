@@ -5,7 +5,7 @@ import (
 
 	api "github.com/juju/juju/api/client/action"
 
-	"github.com/openhdc/openhdc/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/domain/service"
 )
 
 type action struct {
