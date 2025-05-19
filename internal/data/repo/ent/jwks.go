@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/jwks"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/jwks"
 )
 
 // JWKS is the model entity for the JWKS schema.

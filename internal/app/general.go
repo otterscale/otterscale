@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
-	"github.com/openhdc/openhdc/internal/domain/model"
+	pb "github.com/openhdc/otterscale/api/nexus/v1"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 func (a *NexusApp) VerifyEnvironment(ctx context.Context, req *connect.Request[pb.VerifyEnvironmentRequest]) (*connect.Response[pb.VerifyEnvironmentResponse], error) {

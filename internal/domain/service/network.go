@@ -5,7 +5,7 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 func (s *NexusService) ListNetworks(ctx context.Context) ([]model.Network, error) {

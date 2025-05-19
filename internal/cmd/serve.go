@@ -12,8 +12,8 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
-	nexusv1 "github.com/openhdc/openhdc/api/nexus/v1/pbconnect"
-	"github.com/openhdc/openhdc/internal/app"
+	nexusv1 "github.com/openhdc/otterscale/api/nexus/v1/pbconnect"
+	"github.com/openhdc/otterscale/internal/app"
 )
 
 func NewCmdServe(na *app.NexusApp) *cobra.Command {

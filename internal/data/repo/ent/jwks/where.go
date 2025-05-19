@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/predicate"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

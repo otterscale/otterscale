@@ -3,9 +3,9 @@ package repo
 // import (
 // 	"context"
 
-// 	"github.com/openhdc/openhdc/internal/data/repo/ent"
-// 	"github.com/openhdc/openhdc/internal/domain/model"
-// 	"github.com/openhdc/openhdc/internal/domain/service"
+// 	"github.com/openhdc/otterscale/internal/data/repo/ent"
+// 	"github.com/openhdc/otterscale/internal/domain/model"
+// 	"github.com/openhdc/otterscale/internal/domain/service"
 // )
 
 // type userRepo struct {

@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/openhdc/openhdc/api/nexus/v1/pbconnect"
-	"github.com/openhdc/openhdc/internal/domain/service"
+	"github.com/openhdc/otterscale/api/nexus/v1/pbconnect"
+	"github.com/openhdc/otterscale/internal/domain/service"
 )
 
 type NexusApp struct {

@@ -68,7 +68,7 @@ func RegisterSynapseServer(s grpc.ServiceRegistrar, srv SynapseServer) {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Synapse_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "openhdc.synapse.v1.Synapse",
+	ServiceName: "otterscale.synapse.v1.Synapse",
 	HandlerType: (*SynapseServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams:     []grpc.StreamDesc{},

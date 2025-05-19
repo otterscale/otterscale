@@ -8,7 +8,7 @@ import (
 	"github.com/juju/juju/api"
 	"github.com/juju/juju/api/connector"
 
-	"github.com/openhdc/openhdc/internal/env"
+	"github.com/openhdc/otterscale/internal/env"
 )
 
 const (

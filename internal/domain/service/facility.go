@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 	jujuyaml "gopkg.in/yaml.v2"
 
-	"github.com/openhdc/openhdc/internal/domain/model"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 func (s *NexusService) ListFacilities(ctx context.Context, uuid string) ([]model.Facility, error) {

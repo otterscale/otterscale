@@ -9,8 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/session"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/user"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/session"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/user"
 )
 
 // Session is the model entity for the Session schema.

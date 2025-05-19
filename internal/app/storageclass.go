@@ -6,8 +6,8 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
-	"github.com/openhdc/openhdc/internal/domain/model"
+	pb "github.com/openhdc/otterscale/api/nexus/v1"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 func (a *NexusApp) ListStorageClasses(ctx context.Context, req *connect.Request[pb.ListStorageClassesRequest]) (*connect.Response[pb.ListStorageClassesResponse], error) {

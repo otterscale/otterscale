@@ -9,10 +9,10 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/invitation"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/member"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/organization"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/team"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/invitation"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/member"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/organization"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/team"
 )
 
 // OrganizationCreate is the builder for creating a Organization entity.

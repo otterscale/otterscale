@@ -11,16 +11,16 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/account"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/invitation"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/jwks"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/member"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/organization"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/predicate"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/session"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/team"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/user"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/verification"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/account"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/invitation"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/jwks"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/member"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/organization"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/predicate"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/session"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/team"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/user"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/verification"
 )
 
 const (

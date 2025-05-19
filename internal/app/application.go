@@ -18,8 +18,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/duration"
 
-	pb "github.com/openhdc/openhdc/api/nexus/v1"
-	"github.com/openhdc/openhdc/internal/domain/model"
+	pb "github.com/openhdc/otterscale/api/nexus/v1"
+	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 func (a *NexusApp) ListApplications(ctx context.Context, req *connect.Request[pb.ListApplicationsRequest]) (*connect.Response[pb.ListApplicationsResponse], error) {

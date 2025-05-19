@@ -15,8 +15,8 @@ import (
 	jujustatus "github.com/juju/juju/core/status"
 	"github.com/juju/names/v5"
 
-	"github.com/openhdc/openhdc/internal/domain/service"
-	"github.com/openhdc/openhdc/internal/env"
+	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/env"
 )
 
 type model struct {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 
-	"github.com/openhdc/openhdc/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/domain/service"
 )
 
 type machine struct {

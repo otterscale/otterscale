@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/openhdc/openhdc/internal/data/repo/ent"
+	"github.com/openhdc/otterscale/internal/data/repo/ent"
 	// required by schema hooks.
-	_ "github.com/openhdc/openhdc/internal/data/repo/ent/runtime"
+	_ "github.com/openhdc/otterscale/internal/data/repo/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/migrate"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/migrate"
 )
 
 type (

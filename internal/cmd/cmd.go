@@ -4,7 +4,7 @@ import (
 	"github.com/google/wire"
 	"github.com/spf13/cobra"
 
-	"github.com/openhdc/openhdc/internal/app"
+	"github.com/openhdc/otterscale/internal/app"
 )
 
 var ProviderSet = wire.NewSet(New)
@@ -19,9 +19,7 @@ func New(version string, na *app.NexusApp) *cobra.Command {
 	}
 	cmd.AddCommand(
 		NewCmdInit(),
-		NewCmdInspect(),
 		NewCmdServe(na),
-		NewCmdSync(),
 	)
 	return cmd
 }

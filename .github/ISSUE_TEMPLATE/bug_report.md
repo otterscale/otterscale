@@ -23,5 +23,5 @@ assignees: ''
 <!-- Please provide relevant details about the environment where you experienced the bug.  -->
 <!-- This will help us understand the issue better and resolve it faster. -->
 
-- OpenHDC: 1.0.?
+- OtterScale: 1.0.?
 - Go: 1.23.?

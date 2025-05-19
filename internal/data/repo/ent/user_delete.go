@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/predicate"
-	"github.com/openhdc/openhdc/internal/data/repo/ent/user"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/predicate"
+	"github.com/openhdc/otterscale/internal/data/repo/ent/user"
 )
 
 // UserDelete is the builder for deleting a User entity.
