@@ -65,6 +65,9 @@ importers:
       layerchart:
         specifier: ^1.0.8
         version: 1.0.8(svelte@5.20.2)(typescript@5.7.3)
+      prometheus-query:
+        specifier: ^3.5.0
+        version: 3.5.0
       rehype-highlight:
         specifier: ^7.0.2
         version: 7.0.2
@@ -1381,6 +1384,9 @@ packages:
 
   axios@1.7.9:
     resolution: {integrity: sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==}
+
+  axios@1.9.0:
+    resolution: {integrity: sha512-re4CqKTJaURpzbLHtIi6XpDv20/CnpXOtjRY5/CU32L8gU8ek9UIivcfvSWvmKEngmVbrUtPpdDwWDWL7DNHvg==}
 
   axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
@@ -2962,6 +2968,9 @@ packages:
   prismjs@1.29.0:
     resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
     engines: {node: '>=6'}
+
+  prometheus-query@3.5.0:
+    resolution: {integrity: sha512-fCXja0DuBE6q/N7cV8aQUvDvCVYDbfJhQMxRkJDv/IZgTuzEjOC/jb5qcFfRrQXpIsdMyVphZ2CX8l1dZXKlSw==}
 
   property-expr@2.0.6:
     resolution: {integrity: sha512-SVtmxhRE/CGkn3eZY1T6pC8Nln6Fr/lu1mKSgRud0eC73whjGfoAogbn78LkD8aFL0zz3bAFerKSnOl7NlErBA==}
@@ -5016,6 +5025,14 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
+  axios@1.9.0:
+    dependencies:
+      follow-redirects: 1.15.9
+      form-data: 4.0.2
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
   axobject-query@4.1.0: {}
 
   bail@2.0.2: {}
@@ -6711,6 +6728,12 @@ snapshots:
   prism-svelte@0.4.7: {}
 
   prismjs@1.29.0: {}
+
+  prometheus-query@3.5.0:
+    dependencies:
+      axios: 1.9.0
+    transitivePeerDependencies:
+      - debug
 
   property-expr@2.0.6:
     optional: true
