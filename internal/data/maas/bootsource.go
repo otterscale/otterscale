@@ -21,5 +21,9 @@ func NewBootSource(maas *MAAS) service.MAASBootSource {
 var _ service.MAASBootSource = (*bootSource)(nil)
 
 func (r *bootSource) List(_ context.Context) ([]entity.BootSource, error) {
-	return r.maas.BootSources.Get()
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.BootSources.Get()
 }

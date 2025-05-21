@@ -21,13 +21,25 @@ func NewBootResource(maas *MAAS) service.MAASBootResource {
 var _ service.MAASBootResource = (*bootResource)(nil)
 
 func (r *bootResource) List(_ context.Context) ([]entity.BootResource, error) {
-	return r.maas.BootResources.Get(&entity.BootResourcesReadParams{})
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.BootResources.Get(nil)
 }
 
 func (r *bootResource) Import(_ context.Context) error {
-	return r.maas.BootResources.Import()
+	client, err := r.maas.client()
+	if err != nil {
+		return err
+	}
+	return client.BootResources.Import()
 }
 
 func (r *bootResource) IsImporting(_ context.Context) (bool, error) {
-	return r.maas.BootResources.IsImporting()
+	client, err := r.maas.client()
+	if err != nil {
+		return false, err
+	}
+	return client.BootResources.IsImporting()
 }

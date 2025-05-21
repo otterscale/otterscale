@@ -21,21 +21,41 @@ func NewFabric(maas *MAAS) service.MAASFabric {
 var _ service.MAASFabric = (*fabric)(nil)
 
 func (r *fabric) List(_ context.Context) ([]entity.Fabric, error) {
-	return r.maas.Fabrics.Get()
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.Fabrics.Get()
 }
 
 func (r *fabric) Get(_ context.Context, id int) (*entity.Fabric, error) {
-	return r.maas.Fabric.Get(id)
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.Fabric.Get(id)
 }
 
 func (r *fabric) Create(_ context.Context, params *entity.FabricParams) (*entity.Fabric, error) {
-	return r.maas.Fabrics.Create(params)
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.Fabrics.Create(params)
 }
 
 func (r *fabric) Update(_ context.Context, id int, params *entity.FabricParams) (*entity.Fabric, error) {
-	return r.maas.Fabric.Update(id, params)
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.Fabric.Update(id, params)
 }
 
 func (r *fabric) Delete(_ context.Context, id int) error {
-	return r.maas.Fabric.Delete(id)
+	client, err := r.maas.client()
+	if err != nil {
+		return err
+	}
+	return client.Fabric.Delete(id)
 }

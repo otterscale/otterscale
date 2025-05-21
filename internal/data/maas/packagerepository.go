@@ -21,9 +21,17 @@ func NewPackageRepository(maas *MAAS) service.MAASPackageRepository {
 var _ service.MAASPackageRepository = (*packageRepository)(nil)
 
 func (r *packageRepository) List(_ context.Context) ([]entity.PackageRepository, error) {
-	return r.maas.PackageRepositories.Get()
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.PackageRepositories.Get()
 }
 
 func (r *packageRepository) Update(_ context.Context, id int, params *entity.PackageRepositoryParams) (*entity.PackageRepository, error) {
-	return r.maas.PackageRepository.Update(id, params)
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.PackageRepository.Update(id, params)
 }

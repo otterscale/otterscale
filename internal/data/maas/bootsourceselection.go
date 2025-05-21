@@ -8,8 +8,6 @@ import (
 	"github.com/canonical/gomaasclient/entity"
 )
 
-const maasIOBootSourceID = 1
-
 type bootSourceSelection struct {
 	maas *MAAS
 }
@@ -23,15 +21,17 @@ func NewBootSourceSelection(maas *MAAS) service.MAASBootSourceSelection {
 var _ service.MAASBootSourceSelection = (*bootSourceSelection)(nil)
 
 func (r *bootSourceSelection) List(_ context.Context, id int) ([]entity.BootSourceSelection, error) {
-	return r.maas.BootSourceSelections.Get(id)
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.BootSourceSelections.Get(id)
 }
 
-func (r *bootSourceSelection) CreateFromMAASIO(_ context.Context, distroSeries string, architectures []string) (*entity.BootSourceSelection, error) {
-	return r.maas.BootSourceSelections.Create(maasIOBootSourceID, &entity.BootSourceSelectionParams{
-		OS:        "ubuntu",
-		Release:   distroSeries,
-		Arches:    architectures,
-		Subarches: []string{"*"},
-		Labels:    []string{"*"},
-	})
+func (r *bootSourceSelection) Create(_ context.Context, bootSourceID int, params *entity.BootSourceSelectionParams) (*entity.BootSourceSelection, error) {
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.BootSourceSelections.Create(bootSourceID, params)
 }

@@ -21,5 +21,9 @@ func NewVLAN(maas *MAAS) service.MAASVLAN {
 var _ service.MAASVLAN = (*vlan)(nil)
 
 func (r *vlan) Update(_ context.Context, fabricID, vid int, params *entity.VLANParams) (*entity.VLAN, error) {
-	return r.maas.VLAN.Update(fabricID, vid, params)
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.VLAN.Update(fabricID, vid, params)
 }

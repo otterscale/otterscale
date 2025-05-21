@@ -2,7 +2,6 @@ package maas
 
 import (
 	"context"
-	"errors"
 
 	"github.com/canonical/gomaasclient/entity"
 
@@ -21,13 +20,10 @@ func NewSSHKey(maas *MAAS) service.MAASSSHKey {
 
 var _ service.MAASSSHKey = (*sshKey)(nil)
 
-func (r *sshKey) Default(_ context.Context) (*entity.SSHKey, error) {
-	keys, err := r.maas.SSHKeys.Get()
+func (r *sshKey) List(_ context.Context) ([]entity.SSHKey, error) {
+	client, err := r.maas.client()
 	if err != nil {
 		return nil, err
 	}
-	for _, key := range keys {
-		return &key, nil
-	}
-	return nil, errors.New("default ssh key not found")
+	return client.SSHKeys.Get()
 }
