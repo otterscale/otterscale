@@ -1,3 +1,3 @@
-[submodule "internal/domain/enterprise"]
-	path = internal/domain/enterprise
+[submodule ".enterprise"]
+	path = .enterprise
 	url = https://github.com/openhdc/otterscale-enterprise.git
