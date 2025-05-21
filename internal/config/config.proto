@@ -1,0 +1,28 @@
+edition = "2023";
+
+package otterscale.config.v1;
+
+option go_package = "github.com/openhdc/otterscale/internal/config/v1;config";
+
+message MAAS {
+  string url = 1;
+  string key = 2;
+  string version = 3;
+}
+
+message Juju {
+  repeated string controller_addresses = 1;
+  string username = 2;
+  string password = 3;
+  string ca_cert = 4;
+}
+
+message Kube {
+  repeated string helm_repository_urls = 1;
+}
+
+message Config {
+  MAAS maas = 1;
+  Juju juju = 2;
+  Kube kube = 3;
+}
