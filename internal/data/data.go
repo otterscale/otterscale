@@ -6,7 +6,6 @@ import (
 	"github.com/openhdc/otterscale/internal/data/juju"
 	"github.com/openhdc/otterscale/internal/data/kube"
 	"github.com/openhdc/otterscale/internal/data/maas"
-	"github.com/openhdc/otterscale/internal/data/repo"
 )
 
 var ProviderSet = wire.NewSet(
@@ -40,6 +39,4 @@ var ProviderSet = wire.NewSet(
 	kube.NewCore,
 	kube.NewStorage,
 	kube.NewHelm,
-	repo.NewConfig,
-	repo.New,
 )
