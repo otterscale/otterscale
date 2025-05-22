@@ -15,6 +15,9 @@ message Juju {
   string username = 2;
   string password = 3;
   string ca_cert = 4;
+  string cloud_name = 11;
+  string cloud_region = 12;
+  string charmhub_api_url = 21;
 }
 
 message Kube {
