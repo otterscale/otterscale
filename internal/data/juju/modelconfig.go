@@ -25,7 +25,6 @@ func (r *modelConfig) List(_ context.Context, uuid string) (map[string]any, erro
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).ModelGet()
 }
@@ -35,7 +34,6 @@ func (r *modelConfig) Set(_ context.Context, uuid string, config map[string]any)
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).ModelSet(config)
 }
@@ -45,7 +43,6 @@ func (r *modelConfig) Unset(_ context.Context, uuid string, keys ...string) erro
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).ModelUnset(keys...)
 }

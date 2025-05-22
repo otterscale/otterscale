@@ -26,7 +26,6 @@ func (r *client) Status(_ context.Context, uuid string, patterns []string) (*par
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn, nil).Status(&api.StatusArgs{Patterns: patterns})
 }

@@ -1,6 +1,8 @@
 package juju
 
 import (
+	"sync"
+
 	"github.com/juju/juju/api"
 	"github.com/juju/juju/api/connector"
 
@@ -8,7 +10,8 @@ import (
 )
 
 type Juju struct {
-	conf *config.Config
+	conf        *config.Config
+	connections sync.Map
 }
 
 func New(conf *config.Config) *Juju {
@@ -18,6 +21,14 @@ func New(conf *config.Config) *Juju {
 }
 
 func (m *Juju) connection(uuid string) (api.Connection, error) {
+	if v, ok := m.connections.Load(uuid); ok {
+		conn := v.(api.Connection)
+		if !conn.IsBroken() {
+			return conn, nil
+		}
+		conn.Close()
+	}
+
 	juju := m.conf.GetJuju()
 	opts := connector.SimpleConfig{
 		ModelUUID:           uuid,
@@ -30,7 +41,14 @@ func (m *Juju) connection(uuid string) (api.Connection, error) {
 	if err != nil {
 		return nil, err
 	}
-	return sc.Connect()
+	conn, err := sc.Connect()
+	if err != nil {
+		return nil, err
+	}
+
+	m.connections.Store(uuid, conn)
+
+	return conn, nil
 }
 
 func (m *Juju) username() string {

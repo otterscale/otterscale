@@ -25,7 +25,6 @@ func (r *action) List(_ context.Context, uuid, appName string) (map[string]api.A
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).ApplicationCharmActions(appName)
 }

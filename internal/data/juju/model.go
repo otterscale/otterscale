@@ -29,7 +29,6 @@ func (r *model) List(_ context.Context) ([]base.UserModelSummary, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	models, err := api.NewClient(conn).ListModelSummaries(r.juju.username(), true)
 	if err != nil {
@@ -43,7 +42,6 @@ func (r *model) Create(_ context.Context, name string) (*base.ModelInfo, error) 
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	cloudCredential := names.CloudCredentialTag{}
 	model, err := api.NewClient(conn).CreateModel(name, r.juju.username(), r.juju.cloudName(), r.juju.cloudRegion(), cloudCredential, nil)

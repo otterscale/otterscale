@@ -26,7 +26,6 @@ func (r *key) Add(_ context.Context, uuid, key string) ([]params.ErrorResult, er
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).AddKeys(r.juju.username(), key)
 }

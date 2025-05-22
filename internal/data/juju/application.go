@@ -34,7 +34,6 @@ func (r *application) Create(_ context.Context, uuid, name, configYAML, charmNam
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	args := api.DeployFromRepositoryArg{
 		ApplicationName: name,
@@ -78,7 +77,6 @@ func (r *application) Update(_ context.Context, uuid, name, configYAML string) e
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).SetConfig("", name, configYAML, nil)
 }
@@ -89,7 +87,6 @@ func (r *application) Delete(_ context.Context, uuid, name string, destroyStorag
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
 
 	results, err := api.NewClient(conn).DestroyApplications(api.DestroyApplicationsParams{
 		Applications:   []string{name},
@@ -112,7 +109,6 @@ func (r *application) Expose(_ context.Context, uuid, name string, endpoints map
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).Expose(name, endpoints)
 }
@@ -122,7 +118,6 @@ func (r *application) AddUnits(_ context.Context, uuid, name string, number int,
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	params := api.AddUnitsParams{
 		ApplicationName: name,
@@ -139,7 +134,6 @@ func (r *application) ResolveUnitErrors(_ context.Context, uuid string, units []
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).ResolveUnitErrors(units, true, true)
 }
@@ -149,7 +143,6 @@ func (r *application) CreateRelation(_ context.Context, uuid string, endpoints [
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).AddRelation(endpoints, nil)
 }
@@ -159,7 +152,6 @@ func (r *application) DeleteRelation(_ context.Context, uuid string, id int) err
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).DestroyRelationId(id, nil, nil)
 }
@@ -169,7 +161,6 @@ func (r *application) GetConfig(_ context.Context, uuid, name string) (map[strin
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	app, err := api.NewClient(conn).Get("", name)
 	if err != nil {
@@ -183,7 +174,6 @@ func (r *application) GetLeader(_ context.Context, uuid, name string) (string, e
 	if err != nil {
 		return "", err
 	}
-	defer conn.Close()
 
 	return api.NewClient(conn).Leader(name)
 }
@@ -193,7 +183,6 @@ func (r *application) GetUnitInfo(_ context.Context, uuid, name string) (*api.Un
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	tag := names.NewUnitTag(name)
 	units, err := api.NewClient(conn).UnitsInfo([]names.UnitTag{tag})
