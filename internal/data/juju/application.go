@@ -77,7 +77,6 @@ func (r *application) Update(_ context.Context, uuid, name, configYAML string) e
 	if err != nil {
 		return err
 	}
-
 	return api.NewClient(conn).SetConfig("", name, configYAML, nil)
 }
 
@@ -109,7 +108,6 @@ func (r *application) Expose(_ context.Context, uuid, name string, endpoints map
 	if err != nil {
 		return err
 	}
-
 	return api.NewClient(conn).Expose(name, endpoints)
 }
 
@@ -134,7 +132,6 @@ func (r *application) ResolveUnitErrors(_ context.Context, uuid string, units []
 	if err != nil {
 		return err
 	}
-
 	return api.NewClient(conn).ResolveUnitErrors(units, true, true)
 }
 
@@ -143,7 +140,6 @@ func (r *application) CreateRelation(_ context.Context, uuid string, endpoints [
 	if err != nil {
 		return nil, err
 	}
-
 	return api.NewClient(conn).AddRelation(endpoints, nil)
 }
 
@@ -152,7 +148,6 @@ func (r *application) DeleteRelation(_ context.Context, uuid string, id int) err
 	if err != nil {
 		return err
 	}
-
 	return api.NewClient(conn).DestroyRelationId(id, nil, nil)
 }
 
@@ -174,7 +169,6 @@ func (r *application) GetLeader(_ context.Context, uuid, name string) (string, e
 	if err != nil {
 		return "", err
 	}
-
 	return api.NewClient(conn).Leader(name)
 }
 

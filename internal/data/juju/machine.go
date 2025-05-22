@@ -27,7 +27,6 @@ func (r *machine) AddMachines(_ context.Context, uuid string, params []params.Ad
 	if err != nil {
 		return nil, err
 	}
-
 	return api.NewClient(conn).AddMachines(params)
 }
 
@@ -36,6 +35,5 @@ func (r *machine) DestroyMachines(_ context.Context, uuid string, force, keep, d
 	if err != nil {
 		return nil, err
 	}
-
 	return api.NewClient(conn).DestroyMachinesWithParams(force, keep, dryRun, maxWait, machines...)
 }

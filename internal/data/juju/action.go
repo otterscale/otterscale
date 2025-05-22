@@ -25,6 +25,5 @@ func (r *action) List(_ context.Context, uuid, appName string) (map[string]api.A
 	if err != nil {
 		return nil, err
 	}
-
 	return api.NewClient(conn).ApplicationCharmActions(appName)
 }
