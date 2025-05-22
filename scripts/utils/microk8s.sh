@@ -35,8 +35,6 @@ extend_microk8s_cert() {
     local SNAP_DATA="/var/snap/microk8s/current"
     local OPENSSL_CONF="/snap/microk8s/current/etc/ssl/openssl.cnf"
 
-    microk8s kubectl get nodes >/dev/null 2>&1
-
     if ! ${SNAP}/usr/bin/openssl req -new -sha256 -key ${SNAP_DATA}/certs/server.key -out ${SNAP_DATA}/certs/server.csr -config ${SNAP_DATA}/certs/csr.conf >"$TEMP_LOG" 2>&1; then
         error_exit "Failed extend microk8s certificate (out server.csr)."
     fi
