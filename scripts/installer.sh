@@ -42,8 +42,8 @@ main() {
     set_sshkey
 
     ## MAAS configure
-    update_dns
-    update_config
+    update_maas_dns
+    update_maas_config
     download_maas_img
     enable_maas_dhcp
 
@@ -61,12 +61,14 @@ main() {
     ## Create default model
     create_scope
 
-    ## Install otterscale
-    local deb_file=$(ls $INSTALLER_DIR/packages/ | grep deb | head -n 1)
-    apt_install $INSTALLER_DIR/packages/$deb_file
-    start_service "ottersacle"
-    enable_service "ottersacle"
-    log "INFO" "OtterScale has been launched, install finished."
+    ## Config microk8s
+    update_microk8s_config
+    enable_microk8s_option
+    extend_microk8s_cert
+
+    ## Add juju-k8s
+    juju_add_k8s
+    juju_config_k8s
 
     ## cleanup
     trap cleanup EXIT

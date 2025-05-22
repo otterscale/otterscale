@@ -35,3 +35,20 @@ disable_service() {
         error_exit "Failed disable service $serviceName"
     fi
 }
+
+# Cleanup on exit
+cleanup() {
+    echo "Cleaning up temporary files..."
+    rm -f "$TEMP_LOG"
+}
+
+execute_non_user_cmd() {
+    local username="$1"
+    local command="$2"
+    local description="$3"
+    if ! su "$username" -c "${command} >$LOG 2>&1"; then
+        log "WARN" "Failed to $description, check $LOG for details."
+        return 1
+    fi
+    return 0
+}

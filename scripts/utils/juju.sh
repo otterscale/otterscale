@@ -1,16 +1,5 @@
 #!/bin/bash
 
-execute_juju_command() {
-    local username="$1"
-    local command="$2"
-    local description="$3"
-    if ! su "$username" -c "${command} >$LOG 2>&1"; then
-        log "WARN" "Failed to $description, check $LOG for details."
-	return 1
-    fi
-    return 0
-}
-
 generate_clouds_yaml() {
     su "$username" -c 'cat > $JUJU_CLOUD <<EOF
 clouds:
@@ -38,15 +27,15 @@ juju_clouds() {
     ## If cloud exist, try use update
     if su "$username" -c 'juju clouds 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
         log "WARN" "Cloud already exists, updating configuration..."
-        if ! execute_juju_command "$username" "juju update-cloud maas-cloud -f $JUJU_CLOUD" "update cloud"; then
+        if ! execute_non_user_cmd "$username" "juju update-cloud maas-cloud -f $JUJU_CLOUD" "update cloud"; then
             log "WARN" "Failed to update cloud, removing and recreating..."
-            execute_juju_command "$username" "juju remove-cloud maas-cloud || true" "remove cloud"
-            if ! execute_juju_command "$username" "juju add-cloud maas-cloud $JUJU_CLOUD" "add cloud"; then
+            execute_non_user_cmd "$username" "juju remove-cloud maas-cloud || true" "remove cloud"
+            if ! execute_non_user_cmd "$username" "juju add-cloud maas-cloud $JUJU_CLOUD" "add cloud"; then
                 error_exit "Failed to add Juju cloud."
             fi
         fi
     else
-        if ! execute_juju_command "$username" "juju add-cloud maas-cloud $JUJU_CLOUD" "add cloud"; then
+        if ! execute_non_user_cmd "$username" "juju add-cloud maas-cloud $JUJU_CLOUD" "add cloud"; then
             error_exit "Failed to add Juju cloud."
         fi
     fi
@@ -56,15 +45,15 @@ juju_credentials() {
     ## If credential exist, try use update
     if su "$username" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
         log "WARN" "Credential already exists, updating..."
-        if ! execute_juju_command "$username" "juju update-credential maas-cloud maas-cloud-credential -f $JUJU_CREDENTIAL" "update credential"; then
+        if ! execute_non_user_cmd "$username" "juju update-credential maas-cloud maas-cloud-credential -f $JUJU_CREDENTIAL" "update credential"; then
             log "WARN" "Failed to update credential, removing and recreating..."
-            execute_juju_command "$username" "juju remove-credential maas-cloud maas-cloud-credential || true" "remove credential"
-            if ! execute_juju_command "$username" "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"; then
+            execute_non_user_cmd "$username" "juju remove-credential maas-cloud maas-cloud-credential || true" "remove credential"
+            if ! execute_non_user_cmd "$username" "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"; then
                 error_exit "Failed to add Juju credentials."
             fi
         fi
     else
-        if ! execute_juju_command "$username" "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"; then
+        if ! execute_non_user_cmd "$username" "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"; then
             error_exit "Failed to add Juju credentials."
         fi
     fi
@@ -113,7 +102,7 @@ bootstrap_juju() {
 	bootstrap_config="$bootstrap_config --config https-proxy=$https_proxy --config snap-https-proxy=$https_proxy"
     fi
 
-    if ! execute_juju_command "$username" "$bootstrap_cmd $bootstrap_config $bootstrap_machine --debug" "juju bootstrap"; then
+    if ! execute_non_user_cmd "$username" "$bootstrap_cmd $bootstrap_config $bootstrap_machine --debug" "juju bootstrap"; then
         error_exit "Juju bootstrap with proxy failed."
     else
         unset http_proxy
@@ -123,7 +112,27 @@ bootstrap_juju() {
 }
 
 create_scope() {
-    if ! execute_juju_command "$username" "juju models --format=json | jq '.\"models\" | select(.[].\"short-name\"==\"default\")'" "check default model"; then
-        execute_juju_command "$username" "juju create-model default" "create default model"
+    if ! execute_non_user_cmd "$username" "juju models --format=json | jq '.\"models\" | select(.[].\"short-name\"==\"default\")'" "check default model"; then
+        execute_non_user_cmd "$username" "juju create-model default" "create default model"
     fi
+}
+
+# JuJu K8S
+juju_add_k8s() {
+    if ! execute_non_user_cmd "$username" "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" "execute juju add-k8s"; then
+        error_exit "Failed execute juju add-k8s"
+    fi
+
+    if ! execute_non_user_cmd "$username" "juju add-model cos cos-k8s --debug" "execute juju add-model"; then
+        error_exit "Failed execute juju add-model"
+    fi
+
+    if ! execute_non_user_cmd "$username" "juju deploy cos-lite --trust --debug" "juju deploy cos-lite"; then
+        error_exit "Failed execute juju deploy cos-lite"
+    fi
+}
+
+juju_config_k8s() {
+    execute_non_user_cmd "$username" "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
+    execute_non_user_cmd "$username" "juju config prometheus maximum_retention_size=60% --debug" "update max retention size to 60%"
 }

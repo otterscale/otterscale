@@ -3,11 +3,12 @@
 retry_snap_install() {
     local snap="$1"
     local max_retries="$2"
+    local option="$3"
     local retries=0
 
     while [ $retries -lt $max_retries ]; do
         log "INFO" "Installing snap $snap... (Attempt $((retries+1)))"
-        if snap install $snap >"$TEMP_LOG" 2>&1; then
+        if snap install $snap $option >"$TEMP_LOG" 2>&1; then
             break
         else
             log "WARN" "Failed to install snap $snap. Retrying... (Attempt $((retries+1)))"
@@ -47,7 +48,14 @@ install_snaps() {
             log "INFO" "Snap $snap is already installed. Skipping..."
             continue
         fi
-        retry_snap_install "$snap" "$MAX_RETRIES"
+
+	if [[ "$snap" == "lxd" ]]; then
+            retry_snap_install "$snap" "$MAX_RETRIES" "--channel=5.0/stable"
+        elif [[ "$snap" == "microk8s" ]]; then
+            retry_snap_install "$snap" "$MAX_RETRIES" "--classic --channel=1.32"
+        else
+            retry_snap_install "$snap" "$MAX_RETRIES" ""
+	fi
     done
 
     retry_snap_refresh "lxd" "5.0/stable" "$MAX_RETRIES"

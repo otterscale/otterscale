@@ -49,19 +49,12 @@ check_ip_range() {
         $((0xFF << (32 - mask) & 0xFF)))
 
     # Check if start_ip and end_ip are in the network
-    if is_ip_in_network $start_ip $network $mask_dotted; then
-        log "INFO" "Start IP $start_ip is in the network $subnet"
-        return 0
-    else
+    if ! is_ip_in_network $start_ip $network $mask_dotted; then
         log "WARN" "Start IP $start_ip is not in the network $subnet"
         return 1
     fi
 
-    if is_ip_in_network $end_ip $network $mask_dotted; then
-        log "INFO" "End IP $end_ip is in the network $subnet"
-        return 0
-    else
-        log "WARN" "End IP $end_ip is not in the network $subnet"
+    if ! is_ip_in_network $end_ip $network $mask_dotted; then
         return 1
     fi
 
