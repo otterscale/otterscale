@@ -2,6 +2,7 @@ package maas
 
 import (
 	"context"
+	"strings"
 
 	"github.com/openhdc/otterscale/internal/domain/service"
 )
@@ -18,12 +19,16 @@ func NewServer(maas *MAAS) service.MAASServer {
 
 var _ service.MAASServer = (*server)(nil)
 
-func (r *server) Get(_ context.Context, name string) ([]byte, error) {
+func (r *server) Get(_ context.Context, name string) (string, error) {
 	client, err := r.maas.client()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return client.MAASServer.Get(name)
+	data, err := client.MAASServer.Get(name)
+	if err != nil {
+		return "", err
+	}
+	return strings.ReplaceAll(string(data), `"`, ``), nil
 }
 
 func (r *server) Update(_ context.Context, name, value string) error {
