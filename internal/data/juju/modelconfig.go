@@ -3,43 +3,49 @@ package juju
 import (
 	"context"
 
-	"github.com/juju/juju/api/client/modelconfig"
+	api "github.com/juju/juju/api/client/modelconfig"
 
 	"github.com/openhdc/otterscale/internal/domain/service"
 )
 
 type modelConfig struct {
-	jujuMap JujuMap
+	juju *Juju
 }
 
-func NewModelConfig(jujuMap JujuMap) service.JujuModelConfig {
+func NewModelConfig(juju *Juju) service.JujuModelConfig {
 	return &modelConfig{
-		jujuMap: jujuMap,
+		juju: juju,
 	}
 }
 
 var _ service.JujuModelConfig = (*modelConfig)(nil)
 
 func (r *modelConfig) List(_ context.Context, uuid string) (map[string]any, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
-	return modelconfig.NewClient(conn).ModelGet()
+	defer conn.Close()
+
+	return api.NewClient(conn).ModelGet()
 }
 
 func (r *modelConfig) Set(_ context.Context, uuid string, config map[string]any) error {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return err
 	}
-	return modelconfig.NewClient(conn).ModelSet(config)
+	defer conn.Close()
+
+	return api.NewClient(conn).ModelSet(config)
 }
 
 func (r *modelConfig) Unset(_ context.Context, uuid string, keys ...string) error {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return err
 	}
-	return modelconfig.NewClient(conn).ModelUnset(keys...)
+	defer conn.Close()
+
+	return api.NewClient(conn).ModelUnset(keys...)
 }

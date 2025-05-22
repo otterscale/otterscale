@@ -10,21 +10,23 @@ import (
 )
 
 type client struct {
-	jujuMap JujuMap
+	juju *Juju
 }
 
-func NewClient(jujuMap JujuMap) service.JujuClient {
+func NewClient(juju *Juju) service.JujuClient {
 	return &client{
-		jujuMap: jujuMap,
+		juju: juju,
 	}
 }
 
 var _ service.JujuClient = (*client)(nil)
 
 func (r *client) Status(_ context.Context, uuid string, patterns []string) (*params.FullStatus, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
+	defer conn.Close()
+
 	return api.NewClient(conn, nil).Status(&api.StatusArgs{Patterns: patterns})
 }

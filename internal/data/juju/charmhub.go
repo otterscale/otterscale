@@ -4,74 +4,50 @@ import (
 	"context"
 	"encoding/json"
 	"net/url"
-	"time"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	md "github.com/openhdc/otterscale/internal/domain/model"
+	biz "github.com/openhdc/otterscale/internal/domain/model"
 	"github.com/openhdc/otterscale/internal/domain/service"
-	"github.com/openhdc/otterscale/internal/env"
 	"github.com/openhdc/otterscale/internal/utils"
 )
 
-const defaultCharmHubAPIURL = "https://api.charmhub.io"
-
-type charmHub struct {
-	apiURL          string
-	charms          []md.Charm
-	charmsCacheTime time.Time
+type charmhub struct {
+	juju *Juju
 }
 
-func NewCharmHub() service.JujuCharmHub {
-	return &charmHub{
-		apiURL: env.GetOrDefault(env.OPENHDC_CHARMHUB_API_URL, defaultCharmHubAPIURL),
+func NewCharmHub(juju *Juju) service.JujuCharmhub {
+	return &charmhub{
+		juju: juju,
 	}
 }
 
-var _ service.JujuCharmHub = (*charmHub)(nil)
+var _ service.JujuCharmhub = (*charmhub)(nil)
 
-func (r *charmHub) List(ctx context.Context) ([]md.Charm, error) {
-	if r.charms != nil && time.Since(r.charmsCacheTime) < time.Hour*24 {
-		return r.charms, nil
-	}
-	cs, err := r.find(ctx, "")
+func (r *charmhub) List(ctx context.Context) ([]biz.Charm, error) {
+	return r.find(ctx, "")
+}
+
+func (r *charmhub) Get(ctx context.Context, name string) (*biz.Charm, error) {
+	charms, err := r.find(ctx, name)
 	if err != nil {
 		return nil, err
 	}
-	r.charms = cs
-	r.charmsCacheTime = time.Now()
-	return cs, nil
-}
-
-func (r *charmHub) Get(ctx context.Context, name string) (*md.Charm, error) {
-	if r.charms != nil && time.Since(r.charmsCacheTime) < time.Hour*24 {
-		for i := range r.charms {
-			if r.charms[i].Name != name {
-				continue
-			}
-			return &r.charms[i], nil
+	for i := range charms {
+		if charms[i].Name == name {
+			return &charms[i], nil
 		}
-	}
-	cs, err := r.find(ctx, name)
-	if err != nil {
-		return nil, err
-	}
-	for i := range cs {
-		if cs[i].Name != name {
-			continue
-		}
-		return &cs[i], nil
 	}
 	return nil, status.Errorf(codes.NotFound, "charm name %q not found", name)
 }
 
-func (r *charmHub) ListArtifacts(ctx context.Context, name string) ([]md.CharmArtifact, error) {
+func (r *charmhub) ListArtifacts(ctx context.Context, name string) ([]biz.CharmArtifact, error) {
 	return r.info(ctx, name)
 }
 
-func (r *charmHub) find(ctx context.Context, name string) ([]md.Charm, error) {
-	queryURL, err := url.ParseRequestURI(r.apiURL)
+func (r *charmhub) find(ctx context.Context, name string) ([]biz.Charm, error) {
+	queryURL, err := url.ParseRequestURI(r.juju.charmhubAPIURL())
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +66,7 @@ func (r *charmHub) find(ctx context.Context, name string) ([]md.Charm, error) {
 	}
 
 	type response struct {
-		Results []md.Charm `json:"results"`
+		Results []biz.Charm `json:"results"`
 	}
 	resp := new(response)
 	if err := json.Unmarshal(data, resp); err != nil {
@@ -99,8 +75,8 @@ func (r *charmHub) find(ctx context.Context, name string) ([]md.Charm, error) {
 	return resp.Results, nil
 }
 
-func (r *charmHub) info(ctx context.Context, name string) ([]md.CharmArtifact, error) {
-	queryURL, err := url.ParseRequestURI(r.apiURL)
+func (r *charmhub) info(ctx context.Context, name string) ([]biz.CharmArtifact, error) {
+	queryURL, err := url.ParseRequestURI(r.juju.charmhubAPIURL())
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +91,7 @@ func (r *charmHub) info(ctx context.Context, name string) ([]md.CharmArtifact, e
 		return nil, err
 	}
 
-	resp := new(md.Charm)
+	resp := new(biz.Charm)
 	if err := json.Unmarshal(data, resp); err != nil {
 		return nil, err
 	}

@@ -11,8 +11,8 @@ import (
 var ProviderSet = wire.NewSet(
 	maas.New,
 	maas.NewBootResource,
-	maas.NewBootSourceSelection,
 	maas.NewBootSource,
+	maas.NewBootSourceSelection,
 	maas.NewFabric,
 	maas.NewIPRange,
 	maas.NewMachine,
@@ -22,7 +22,7 @@ var ProviderSet = wire.NewSet(
 	maas.NewSubnet,
 	maas.NewTag,
 	maas.NewVLAN,
-	juju.NewJujuMap,
+	juju.New,
 	juju.NewAction,
 	juju.NewApplication,
 	juju.NewCharmHub,

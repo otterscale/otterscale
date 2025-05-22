@@ -9,21 +9,23 @@ import (
 )
 
 type action struct {
-	jujuMap JujuMap
+	juju *Juju
 }
 
-func NewAction(jujuMap JujuMap) service.JujuAction {
+func NewAction(juju *Juju) service.JujuAction {
 	return &action{
-		jujuMap: jujuMap,
+		juju: juju,
 	}
 }
 
 var _ service.JujuAction = (*action)(nil)
 
 func (r *action) List(_ context.Context, uuid, appName string) (map[string]api.ActionSpec, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
+	defer conn.Close()
+
 	return api.NewClient(conn).ApplicationCharmActions(appName)
 }

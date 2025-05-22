@@ -4,37 +4,40 @@ import (
 	"context"
 	"time"
 
-	"github.com/juju/juju/api/client/machinemanager"
+	api "github.com/juju/juju/api/client/machinemanager"
 	"github.com/juju/juju/rpc/params"
 
 	"github.com/openhdc/otterscale/internal/domain/service"
 )
 
 type machine struct {
-	jujuMap JujuMap
+	juju *Juju
 }
 
-func NewMachine(jujuMap JujuMap) service.JujuMachine {
+func NewMachine(juju *Juju) service.JujuMachine {
 	return &machine{
-		jujuMap: jujuMap,
+		juju: juju,
 	}
 }
 
 var _ service.JujuMachine = (*machine)(nil)
 
 func (r *machine) AddMachines(_ context.Context, uuid string, params []params.AddMachineParams) ([]params.AddMachinesResult, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
-	return machinemanager.NewClient(conn).AddMachines(params)
+	defer conn.Close()
+
+	return api.NewClient(conn).AddMachines(params)
 }
 
-func (r *machine) DestroyMachines(_ context.Context, uuid string, force bool, machines ...string) ([]params.DestroyMachineResult, error) {
-	conn, err := r.jujuMap.Get(uuid)
+func (r *machine) DestroyMachines(_ context.Context, uuid string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) ([]params.DestroyMachineResult, error) {
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
-	nowait := 0 * time.Second
-	return machinemanager.NewClient(conn).DestroyMachinesWithParams(force, false, false, &nowait, machines...)
+	defer conn.Close()
+
+	return api.NewClient(conn).DestroyMachinesWithParams(force, keep, dryRun, maxWait, machines...)
 }
