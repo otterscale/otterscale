@@ -15,7 +15,7 @@ update_microk8s_config() {
 
 enable_microk8s_option() {
     local IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
-    if microk8s status --wait-ready &> /dev/null; then
+    if microk8s status --wait-ready >/dev/null 2>&1; then
         log "INFO" "microk8s is ready."
         microk8s config > "$kubefolder/config"
         chown "$username":"$username" "$kubefolder/config"
@@ -35,19 +35,21 @@ extend_microk8s_cert() {
     local SNAP_DATA="/var/snap/microk8s/current"
     local OPENSSL_CONF="/snap/microk8s/current/etc/ssl/openssl.cnf"
 
-    if ! ${SNAP}/usr/bin/openssl req -new -sha256 -key ${SNAP_DATA}/certs/server.key -out ${SNAP_DATA}/certs/server.csr -config ${SNAP_DATA}/certs/csr.conf.template >"$TEMP_LOG" 2>&1; then
+    microk8s kubectl get nodes >/dev/null 2>&1
+
+    if ! ${SNAP}/usr/bin/openssl req -new -sha256 -key ${SNAP_DATA}/certs/server.key -out ${SNAP_DATA}/certs/server.csr -config ${SNAP_DATA}/certs/csr.conf >"$TEMP_LOG" 2>&1; then
         error_exit "Failed extend microk8s certificate (out server.csr)."
     fi
 
-    if ! ${SNAP}/usr/bin/openssl x509 -req -sha256 -in ${SNAP_DATA}/certs/server.csr -CA ${SNAP_DATA}/certs/ca.crt -CAkey ${SNAP_DATA}/certs/ca.key -CAcreateserial -out ${SNAP_DATA}/certs/server.crt -days 3650 -extensions v3_ext -extfile ${SNAP_DATA}/certs/csr.conf.template >"$TEMP_LOG" 2>&1; then
+    if ! ${SNAP}/usr/bin/openssl x509 -req -sha256 -in ${SNAP_DATA}/certs/server.csr -CA ${SNAP_DATA}/certs/ca.crt -CAkey ${SNAP_DATA}/certs/ca.key -CAcreateserial -out ${SNAP_DATA}/certs/server.crt -days 3650 -extensions v3_ext -extfile ${SNAP_DATA}/certs/csr.conf >"$TEMP_LOG" 2>&1; then
         error_exit "Failed extend microk8s certificate (out server.crt)."
     fi
 
-    if ! ${SNAP}/usr/bin/openssl req -new -sha256 -key ${SNAP_DATA}/certs/front-proxy-client.key -out ${SNAP_DATA}/certs/front-proxy-client.csr -config <(sed '/^prompt = no/d' ${SNAP_DATA}/certs/csr.conf.template) -subj "/CN=front-proxy-client" >"$TEMP_LOG" 2>&1; then
+    if ! ${SNAP}/usr/bin/openssl req -new -sha256 -key ${SNAP_DATA}/certs/front-proxy-client.key -out ${SNAP_DATA}/certs/front-proxy-client.csr -config <(sed '/^prompt = no/d' ${SNAP_DATA}/certs/csr.conf) -subj "/CN=front-proxy-client" >"$TEMP_LOG" 2>&1; then
         error_exit "Failed extend microk8s certificate (out front-proxy-client.csr)."
     fi
 
-    if ! ${SNAP}/usr/bin/openssl x509 -req -sha256 -in ${SNAP_DATA}/certs/front-proxy-client.csr -CA ${SNAP_DATA}/certs/front-proxy-ca.crt -CAkey ${SNAP_DATA}/certs/front-proxy-ca.key -CAcreateserial -out ${SNAP_DATA}/certs/front-proxy-client.crt -days 3650 -extensions v3_ext -extfile ${SNAP_DATA}/certs/csr.conf.template >"$TEMP_LOG" 2>&1; then
+    if ! ${SNAP}/usr/bin/openssl x509 -req -sha256 -in ${SNAP_DATA}/certs/front-proxy-client.csr -CA ${SNAP_DATA}/certs/front-proxy-ca.crt -CAkey ${SNAP_DATA}/certs/front-proxy-ca.key -CAcreateserial -out ${SNAP_DATA}/certs/front-proxy-client.crt -days 3650 -extensions v3_ext -extfile ${SNAP_DATA}/certs/csr.conf >"$TEMP_LOG" 2>&1; then
         error_exit "Failed extend microk8s certificate out front-proxy-client.crt)."
     fi
 }

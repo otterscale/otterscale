@@ -64,7 +64,7 @@ main() {
     ## Config microk8s
     update_microk8s_config
     enable_microk8s_option
-    #extend_microk8s_cert
+    extend_microk8s_cert
 
     ## Add juju-k8s
     juju_add_k8s
