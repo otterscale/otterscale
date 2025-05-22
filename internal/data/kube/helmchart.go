@@ -38,7 +38,7 @@ func NewHelmChart(kube *Kube) (service.KubeHelmChart, error) {
 
 var _ service.KubeHelm = (*helm)(nil)
 
-func (r *helmChart) ListCharts(ctx context.Context) ([]*repo.IndexFile, error) {
+func (r *helmChart) List(ctx context.Context) ([]*repo.IndexFile, error) {
 	urls := r.kube.helmRepoURLs()
 	eg, ctx := errgroup.WithContext(ctx)
 	result := make([]*repo.IndexFile, len(urls))
@@ -71,7 +71,7 @@ func (r *helmChart) ListCharts(ctx context.Context) ([]*repo.IndexFile, error) {
 	return result, nil
 }
 
-func (r *helmChart) GetChart(chartRef string, format action.ShowOutputFormat) (string, error) {
+func (r *helmChart) Show(chartRef string, format action.ShowOutputFormat) (string, error) {
 	client := action.NewShow(format)
 	client.SetRegistryClient(r.kube.registryClient)
 
