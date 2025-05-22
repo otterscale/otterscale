@@ -112,6 +112,7 @@ bootstrap_juju() {
 }
 
 create_scope() {
+    log "INFO" "Check juju scope"
     if ! execute_non_user_cmd "$username" "juju models --format=json | jq '.\"models\" | select(.[].\"short-name\"==\"default\")'" "check default model"; then
         execute_non_user_cmd "$username" "juju create-model default" "create default model"
     fi
@@ -119,20 +120,24 @@ create_scope() {
 
 # JuJu K8S
 juju_add_k8s() {
+    log "INFO" "Juju add-k8s to maas-cloud-controller"
     if ! execute_non_user_cmd "$username" "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" "execute juju add-k8s"; then
         error_exit "Failed execute juju add-k8s"
     fi
 
+    log "INFO" "Juju add-model cos"
     if ! execute_non_user_cmd "$username" "juju add-model cos cos-k8s --debug" "execute juju add-model"; then
         error_exit "Failed execute juju add-model"
     fi
 
+    log "INFO" "Juju deploy cos-lite"
     if ! execute_non_user_cmd "$username" "juju deploy cos-lite --trust --debug" "juju deploy cos-lite"; then
         error_exit "Failed execute juju deploy cos-lite"
     fi
 }
 
 juju_config_k8s() {
+    log "INFO" "Juju config prometheus"
     execute_non_user_cmd "$username" "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
     execute_non_user_cmd "$username" "juju config prometheus maximum_retention_size=60% --debug" "update max retention size to 60%"
 }
