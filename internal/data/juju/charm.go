@@ -13,23 +13,23 @@ import (
 	"github.com/openhdc/otterscale/internal/utils"
 )
 
-type charmhub struct {
+type charm struct {
 	juju *Juju
 }
 
-func NewCharmHub(juju *Juju) service.JujuCharmhub {
-	return &charmhub{
+func NewCharm(juju *Juju) service.JujuCharm {
+	return &charm{
 		juju: juju,
 	}
 }
 
-var _ service.JujuCharmhub = (*charmhub)(nil)
+var _ service.JujuCharm = (*charm)(nil)
 
-func (r *charmhub) List(ctx context.Context) ([]biz.Charm, error) {
+func (r *charm) List(ctx context.Context) ([]biz.Charm, error) {
 	return r.find(ctx, "")
 }
 
-func (r *charmhub) Get(ctx context.Context, name string) (*biz.Charm, error) {
+func (r *charm) Get(ctx context.Context, name string) (*biz.Charm, error) {
 	charms, err := r.find(ctx, name)
 	if err != nil {
 		return nil, err
@@ -42,11 +42,11 @@ func (r *charmhub) Get(ctx context.Context, name string) (*biz.Charm, error) {
 	return nil, status.Errorf(codes.NotFound, "charm name %q not found", name)
 }
 
-func (r *charmhub) ListArtifacts(ctx context.Context, name string) ([]biz.CharmArtifact, error) {
+func (r *charm) ListArtifacts(ctx context.Context, name string) ([]biz.CharmArtifact, error) {
 	return r.info(ctx, name)
 }
 
-func (r *charmhub) find(ctx context.Context, name string) ([]biz.Charm, error) {
+func (r *charm) find(ctx context.Context, name string) ([]biz.Charm, error) {
 	queryURL, err := url.ParseRequestURI(r.juju.charmhubAPIURL())
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func (r *charmhub) find(ctx context.Context, name string) ([]biz.Charm, error) {
 	return resp.Results, nil
 }
 
-func (r *charmhub) info(ctx context.Context, name string) ([]biz.CharmArtifact, error) {
+func (r *charm) info(ctx context.Context, name string) ([]biz.CharmArtifact, error) {
 	queryURL, err := url.ParseRequestURI(r.juju.charmhubAPIURL())
 	if err != nil {
 		return nil, err

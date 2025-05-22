@@ -20,15 +20,7 @@ func New(conf *config.Config) *Juju {
 	}
 }
 
-func (m *Juju) connection(uuid string) (api.Connection, error) {
-	if v, ok := m.connections.Load(uuid); ok {
-		conn := v.(api.Connection)
-		if !conn.IsBroken() {
-			return conn, nil
-		}
-		conn.Close()
-	}
-
+func (m *Juju) newConnection(uuid string) (api.Connection, error) {
 	juju := m.conf.GetJuju()
 	opts := connector.SimpleConfig{
 		ModelUUID:           uuid,
@@ -41,7 +33,19 @@ func (m *Juju) connection(uuid string) (api.Connection, error) {
 	if err != nil {
 		return nil, err
 	}
-	conn, err := sc.Connect()
+	return sc.Connect()
+}
+
+func (m *Juju) connection(uuid string) (api.Connection, error) {
+	if v, ok := m.connections.Load(uuid); ok {
+		conn := v.(api.Connection)
+		if !conn.IsBroken() {
+			return conn, nil
+		}
+		conn.Close()
+	}
+
+	conn, err := m.newConnection(uuid)
 	if err != nil {
 		return nil, err
 	}
