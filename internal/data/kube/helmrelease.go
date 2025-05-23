@@ -16,22 +16,22 @@ import (
 	"helm.sh/helm/v3/pkg/getter"
 	"helm.sh/helm/v3/pkg/release"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	oscore "github.com/openhdc/otterscale/internal/core"
 )
 
-type helm struct {
+type helmRelease struct {
 	kube *Kube
 }
 
-func NewHelm(kube *Kube) (service.KubeHelm, error) {
-	return &helm{
+func NewHelmRelease(kube *Kube) (oscore.ReleaseRepo, error) {
+	return &helmRelease{
 		kube: kube,
 	}, nil
 }
 
-var _ service.KubeHelm = (*helm)(nil)
+var _ oscore.ReleaseRepo = (*helmRelease)(nil)
 
-func (r *helm) ListReleases(restConfig *rest.Config, namespace string) ([]release.Release, error) {
+func (r *helmRelease) List(restConfig *rest.Config, namespace string) ([]release.Release, error) {
 	config, err := r.config(restConfig, namespace)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (r *helm) ListReleases(restConfig *rest.Config, namespace string) ([]releas
 	return result, nil
 }
 
-func (r *helm) InstallRelease(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
 	if !action.ValidName.MatchString(name) {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid release name %q", name)
 	}
@@ -67,6 +67,10 @@ func (r *helm) InstallRelease(restConfig *rest.Config, namespace, name string, d
 	client.Namespace = namespace
 	client.DryRun = dryRun
 	client.ReleaseName = name
+	client.Labels = map[string]string{
+		"app.otterscale.io/release-name": name,
+		"app.otterscale.io/chart-ref":    chartRef,
+	}
 
 	chartPath, err := client.ChartPathOptions.LocateChart(chartRef, r.kube.envSettings)
 	if err != nil {
@@ -80,7 +84,7 @@ func (r *helm) InstallRelease(restConfig *rest.Config, namespace, name string, d
 	return client.Run(chart, values)
 }
 
-func (r *helm) UninstallRelease(restConfig *rest.Config, namespace, name string, dryRun bool) (*release.Release, error) {
+func (r *helmRelease) Uninstall(restConfig *rest.Config, namespace, name string, dryRun bool) (*release.Release, error) {
 	config, err := r.config(restConfig, namespace)
 	if err != nil {
 		return nil, err
@@ -97,7 +101,7 @@ func (r *helm) UninstallRelease(restConfig *rest.Config, namespace, name string,
 	return res.Release, nil
 }
 
-func (r *helm) UpgradeRelease(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
+func (r *helmRelease) Upgrade(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
 	config, err := r.config(restConfig, namespace)
 	if err != nil {
 		return nil, err
@@ -119,7 +123,7 @@ func (r *helm) UpgradeRelease(restConfig *rest.Config, namespace, name string, d
 	return client.Run(name, chart, values)
 }
 
-func (r *helm) RollbackRelease(restConfig *rest.Config, namespace, name string, dryRun bool) error {
+func (r *helmRelease) Rollback(restConfig *rest.Config, namespace, name string, dryRun bool) error {
 	config, err := r.config(restConfig, namespace)
 	if err != nil {
 		return err
@@ -130,7 +134,7 @@ func (r *helm) RollbackRelease(restConfig *rest.Config, namespace, name string, 
 	return client.Run(name)
 }
 
-func (r *helm) GetValues(restConfig *rest.Config, namespace, name string) (map[string]any, error) {
+func (r *helmRelease) GetValues(restConfig *rest.Config, namespace, name string) (map[string]any, error) {
 	config, err := r.config(restConfig, namespace)
 	if err != nil {
 		return nil, err
@@ -141,7 +145,7 @@ func (r *helm) GetValues(restConfig *rest.Config, namespace, name string) (map[s
 	return client.Run(name)
 }
 
-func (r *helm) chartInstall(chartPath string, dependencyUpdate bool, keyring string) (*chart.Chart, error) {
+func (r *helmRelease) chartInstall(chartPath string, dependencyUpdate bool, keyring string) (*chart.Chart, error) {
 	chart, err := loader.Load(chartPath)
 	if err != nil {
 		return nil, err
@@ -177,7 +181,7 @@ func (r *helm) chartInstall(chartPath string, dependencyUpdate bool, keyring str
 	return chart, nil
 }
 
-func (r *helm) config(restConfig *rest.Config, namespace string) (*action.Configuration, error) {
+func (r *helmRelease) config(restConfig *rest.Config, namespace string) (*action.Configuration, error) {
 	getter := genericclioptions.NewConfigFlags(true)
 	getter.APIServer = &restConfig.Host
 	getter.BearerToken = &restConfig.BearerToken

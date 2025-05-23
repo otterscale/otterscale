@@ -16,7 +16,7 @@ import (
 
 	"sigs.k8s.io/yaml"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	oscore "github.com/openhdc/otterscale/internal/core"
 	"github.com/openhdc/otterscale/internal/utils"
 )
 
@@ -30,22 +30,22 @@ type helmChart struct {
 	repoIndexCache sync.Map
 }
 
-func NewHelmChart(kube *Kube) (service.KubeHelmChart, error) {
+func NewHelmChart(kube *Kube) (oscore.ChartRepo, error) {
 	return &helmChart{
 		kube: kube,
 	}, nil
 }
 
-var _ service.KubeHelm = (*helm)(nil)
+var _ oscore.ChartRepo = (*helmChart)(nil)
 
-func (r *helmChart) List(ctx context.Context) ([]*repo.IndexFile, error) {
+func (r *helmChart) List(ctx context.Context) ([]oscore.Chart, error) {
 	urls := r.kube.helmRepoURLs()
 	eg, ctx := errgroup.WithContext(ctx)
 	result := make([]*repo.IndexFile, len(urls))
 	for i := range urls {
-		url := urls[i]
+		i := i // fixed on go 1.22
 		eg.Go(func() error {
-			v, ok := r.repoIndexCache.Load(url)
+			v, ok := r.repoIndexCache.Load(urls[i])
 			if ok {
 				helmRepo := v.(*helmRepo)
 				if time.Since(helmRepo.lastFetch) < time.Hour*2 {
@@ -53,10 +53,10 @@ func (r *helmChart) List(ctx context.Context) ([]*repo.IndexFile, error) {
 					return nil
 				}
 			}
-			indexFile, err := r.fetchRepoIndex(ctx, url)
+			indexFile, err := r.fetchRepoIndex(ctx, urls[i])
 			if err == nil {
 				indexFile.SortEntries()
-				r.repoIndexCache.Store(url, &helmRepo{
+				r.repoIndexCache.Store(urls[i], &helmRepo{
 					indexFile: indexFile,
 					lastFetch: time.Now(),
 				})
@@ -68,7 +68,17 @@ func (r *helmChart) List(ctx context.Context) ([]*repo.IndexFile, error) {
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	return result, nil
+
+	charts := []oscore.Chart{}
+	for i := range result {
+		for name := range result[i].Entries {
+			charts = append(charts, oscore.Chart{
+				Name:     name,
+				Versions: result[i].Entries[name],
+			})
+		}
+	}
+	return charts, nil
 }
 
 func (r *helmChart) Show(chartRef string, format action.ShowOutputFormat) (string, error) {

@@ -3,26 +3,25 @@ package kube
 import (
 	"context"
 
-	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	oscore "github.com/openhdc/otterscale/internal/core"
 )
 
 type core struct {
 	kube *Kube
 }
 
-func NewCore(kube *Kube) service.KubeCore {
+func NewCore(kube *Kube) oscore.KubeCoreRepo {
 	return &core{
 		kube: kube,
 	}
 }
 
-var _ service.KubeCore = (*core)(nil)
+var _ oscore.KubeCoreRepo = (*core)(nil)
 
-func (r *core) ListServices(ctx context.Context, config *rest.Config, namespace string) ([]v1.Service, error) {
+func (r *core) ListServices(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Service, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -36,7 +35,7 @@ func (r *core) ListServices(ctx context.Context, config *rest.Config, namespace 
 	return list.Items, nil
 }
 
-func (r *core) ListPods(ctx context.Context, config *rest.Config, namespace string) ([]v1.Pod, error) {
+func (r *core) ListPods(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Pod, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -50,7 +49,7 @@ func (r *core) ListPods(ctx context.Context, config *rest.Config, namespace stri
 	return list.Items, nil
 }
 
-func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]v1.PersistentVolumeClaim, error) {
+func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]oscore.PersistentVolumeClaim, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err

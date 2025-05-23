@@ -3,26 +3,25 @@ package kube
 import (
 	"context"
 
-	v1 "k8s.io/api/storage/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	oscore "github.com/openhdc/otterscale/internal/core"
 )
 
 type storage struct {
 	kube *Kube
 }
 
-func NewStorage(kube *Kube) service.KubeStorage {
+func NewStorage(kube *Kube) oscore.KubeStorageRepo {
 	return &storage{
 		kube: kube,
 	}
 }
 
-var _ service.KubeStorage = (*storage)(nil)
+var _ oscore.KubeStorageRepo = (*storage)(nil)
 
-func (r *storage) ListStorageClasses(ctx context.Context, config *rest.Config) ([]v1.StorageClass, error) {
+func (r *storage) ListStorageClasses(ctx context.Context, config *rest.Config) ([]oscore.StorageClass, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -36,7 +35,7 @@ func (r *storage) ListStorageClasses(ctx context.Context, config *rest.Config) (
 	return list.Items, nil
 }
 
-func (r *storage) GetStorageClass(ctx context.Context, config *rest.Config, name string) (*v1.StorageClass, error) {
+func (r *storage) GetStorageClass(ctx context.Context, config *rest.Config, name string) (*oscore.StorageClass, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err

@@ -3,26 +3,25 @@ package kube
 import (
 	"context"
 
-	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	oscore "github.com/openhdc/otterscale/internal/core"
 )
 
 type apps struct {
 	kube *Kube
 }
 
-func NewApps(kube *Kube) service.KubeApps {
+func NewApps(kube *Kube) oscore.KubeAppsRepo {
 	return &apps{
 		kube: kube,
 	}
 }
 
-var _ service.KubeApps = (*apps)(nil)
+var _ oscore.KubeAppsRepo = (*apps)(nil)
 
-func (r *apps) ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]v1.Deployment, error) {
+func (r *apps) ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Deployment, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -36,7 +35,7 @@ func (r *apps) ListDeployments(ctx context.Context, config *rest.Config, namespa
 	return list.Items, nil
 }
 
-func (r *apps) GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*v1.Deployment, error) {
+func (r *apps) GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.Deployment, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -46,7 +45,7 @@ func (r *apps) GetDeployment(ctx context.Context, config *rest.Config, namespace
 	return clientset.AppsV1().Deployments(namespace).Get(ctx, name, opts)
 }
 
-func (r *apps) ListStatefulSets(ctx context.Context, config *rest.Config, namespace string) ([]v1.StatefulSet, error) {
+func (r *apps) ListStatefulSets(ctx context.Context, config *rest.Config, namespace string) ([]oscore.StatefulSet, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -60,7 +59,7 @@ func (r *apps) ListStatefulSets(ctx context.Context, config *rest.Config, namesp
 	return list.Items, nil
 }
 
-func (r *apps) GetStatefulSet(ctx context.Context, config *rest.Config, namespace, name string) (*v1.StatefulSet, error) {
+func (r *apps) GetStatefulSet(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.StatefulSet, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -70,7 +69,7 @@ func (r *apps) GetStatefulSet(ctx context.Context, config *rest.Config, namespac
 	return clientset.AppsV1().StatefulSets(namespace).Get(ctx, name, opts)
 }
 
-func (r *apps) ListDaemonSets(ctx context.Context, config *rest.Config, namespace string) ([]v1.DaemonSet, error) {
+func (r *apps) ListDaemonSets(ctx context.Context, config *rest.Config, namespace string) ([]oscore.DaemonSet, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -84,7 +83,7 @@ func (r *apps) ListDaemonSets(ctx context.Context, config *rest.Config, namespac
 	return list.Items, nil
 }
 
-func (r *apps) GetDaemonSet(ctx context.Context, config *rest.Config, namespace, name string) (*v1.DaemonSet, error) {
+func (r *apps) GetDaemonSet(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.DaemonSet, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
