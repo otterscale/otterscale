@@ -1,4 +1,4 @@
-package app
+package service
 
 import (
 	"context"
@@ -6,81 +6,85 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/openhdc/otterscale/api/nexus/v1"
-	"github.com/openhdc/otterscale/internal/domain/model"
+	pb "github.com/openhdc/otterscale/api/machine/v1"
+	"github.com/openhdc/otterscale/api/machine/v1/pbconnect"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
-func (a *NexusApp) ListMachines(ctx context.Context, req *connect.Request[pb.ListMachinesRequest]) (*connect.Response[pb.ListMachinesResponse], error) {
-	ms, err := a.svc.ListMachines(ctx, req.Msg.GetScopeUuid())
+type MachineService struct {
+	pbconnect.UnimplementedMachineServiceHandler
+
+	uc *core.MachineUseCase
+}
+
+func NewMachineService(uc *core.MachineUseCase) *MachineService {
+	return &MachineService{uc: uc}
+}
+
+var _ pbconnect.MachineServiceHandler = (*MachineService)(nil)
+
+func (s *MachineService) ListMachines(ctx context.Context, req *connect.Request[pb.ListMachinesRequest]) (*connect.Response[pb.ListMachinesResponse], error) {
+	machines, err := s.uc.ListMachines(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.ListMachinesResponse{}
-	res.SetMachines(toProtoMachines(ms))
-	return connect.NewResponse(res), nil
+	resp := &pb.ListMachinesResponse{}
+	resp.SetMachines(toProtoMachines(machines))
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) GetMachine(ctx context.Context, req *connect.Request[pb.GetMachineRequest]) (*connect.Response[pb.Machine], error) {
-	m, err := a.svc.GetMachine(ctx, req.Msg.GetId())
+func (s *MachineService) GetMachine(ctx context.Context, req *connect.Request[pb.GetMachineRequest]) (*connect.Response[pb.Machine], error) {
+	machine, err := s.uc.GetMachine(ctx, req.Msg.GetId())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoMachine(m)
-	return connect.NewResponse(res), nil
+	resp := toProtoMachine(machine)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) CreateMachine(ctx context.Context, req *connect.Request[pb.CreateMachineRequest]) (*connect.Response[pb.Machine], error) {
-	m, err := a.svc.CreateMachine(ctx, req.Msg.GetId(), req.Msg.GetEnableSsh(), req.Msg.GetSkipBmcConfig(), req.Msg.GetSkipNetworking(), req.Msg.GetSkipStorage(), req.Msg.GetScopeUuid(), req.Msg.GetTags())
+func (s *MachineService) CreateMachine(ctx context.Context, req *connect.Request[pb.CreateMachineRequest]) (*connect.Response[pb.Machine], error) {
+	machine, err := s.uc.CreateMachine(ctx, req.Msg.GetId(), req.Msg.GetEnableSsh(), req.Msg.GetSkipBmcConfig(), req.Msg.GetSkipNetworking(), req.Msg.GetSkipStorage(), req.Msg.GetScopeUuid(), req.Msg.GetTags())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoMachine(m)
-	return connect.NewResponse(res), nil
+	resp := toProtoMachine(machine)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) DeleteMachine(ctx context.Context, req *connect.Request[pb.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.DeleteMachine(ctx, req.Msg.GetId(), req.Msg.GetForce()); err != nil {
+func (s *MachineService) DeleteMachine(ctx context.Context, req *connect.Request[pb.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteMachine(ctx, req.Msg.GetId(), req.Msg.GetForce()); err != nil {
 		return nil, err
 	}
-	res := &emptypb.Empty{}
-	return connect.NewResponse(res), nil
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) PowerOnMachine(ctx context.Context, req *connect.Request[pb.PowerOnMachineRequest]) (*connect.Response[pb.Machine], error) {
-	m, err := a.svc.PowerOnMachine(ctx, req.Msg.GetId(), req.Msg.GetComment())
+func (s *MachineService) PowerOffMachine(ctx context.Context, req *connect.Request[pb.PowerOffMachineRequest]) (*connect.Response[pb.Machine], error) {
+	machine, err := s.uc.PowerOffMachine(ctx, req.Msg.GetId(), req.Msg.GetComment())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoMachine(m)
-	return connect.NewResponse(res), nil
+	resp := toProtoMachine(machine)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) PowerOffMachine(ctx context.Context, req *connect.Request[pb.PowerOffMachineRequest]) (*connect.Response[pb.Machine], error) {
-	m, err := a.svc.PowerOffMachine(ctx, req.Msg.GetId(), req.Msg.GetComment())
-	if err != nil {
+func (s *MachineService) AddMachineTags(ctx context.Context, req *connect.Request[pb.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.AddMachineTags(ctx, req.Msg.GetId(), req.Msg.GetTags()); err != nil {
 		return nil, err
 	}
-	res := toProtoMachine(m)
-	return connect.NewResponse(res), nil
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) AddMachineTags(ctx context.Context, req *connect.Request[pb.AddMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.AddMachineTags(ctx, req.Msg.GetId(), req.Msg.GetTags()); err != nil {
+func (s *MachineService) RemoveMachineTags(ctx context.Context, req *connect.Request[pb.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.RemoveMachineTags(ctx, req.Msg.GetId(), req.Msg.GetTags()); err != nil {
 		return nil, err
 	}
-	res := &emptypb.Empty{}
-	return connect.NewResponse(res), nil
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) RemoveMachineTags(ctx context.Context, req *connect.Request[pb.RemoveMachineTagsRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.RemoveMachineTags(ctx, req.Msg.GetId(), req.Msg.GetTags()); err != nil {
-		return nil, err
-	}
-	res := &emptypb.Empty{}
-	return connect.NewResponse(res), nil
-}
-
-func toProtoMachines(ms []model.Machine) []*pb.Machine {
+func toProtoMachines(ms []core.Machine) []*pb.Machine {
 	ret := []*pb.Machine{}
 	for i := range ms {
 		ret = append(ret, toProtoMachine(&ms[i]))
@@ -88,7 +92,7 @@ func toProtoMachines(ms []model.Machine) []*pb.Machine {
 	return ret
 }
 
-func toProtoMachine(m *model.Machine) *pb.Machine {
+func toProtoMachine(m *core.Machine) *pb.Machine {
 	ipAddresses := make([]string, len(m.IPAddresses))
 	for i, ip := range m.IPAddresses {
 		ipAddresses[i] = ip.String()
@@ -122,7 +126,7 @@ func toProtoMachine(m *model.Machine) *pb.Machine {
 	return ret
 }
 
-func toProtoNUMANodes(ns []model.NUMANode) []*pb.Machine_NUMANode {
+func toProtoNUMANodes(ns []core.NUMANode) []*pb.Machine_NUMANode {
 	ret := []*pb.Machine_NUMANode{}
 	for i := range ns {
 		ret = append(ret, toProtoNUMANode(&ns[i]))
@@ -130,7 +134,7 @@ func toProtoNUMANodes(ns []model.NUMANode) []*pb.Machine_NUMANode {
 	return ret
 }
 
-func toProtoNUMANode(n *model.NUMANode) *pb.Machine_NUMANode {
+func toProtoNUMANode(n *core.NUMANode) *pb.Machine_NUMANode {
 	ret := &pb.Machine_NUMANode{}
 	ret.SetIndex(int64(n.Index))
 	ret.SetCpuCores(int64(len(n.Cores)))
@@ -138,7 +142,7 @@ func toProtoNUMANode(n *model.NUMANode) *pb.Machine_NUMANode {
 	return ret
 }
 
-func toProtoBlockDevices(bds []model.BlockDevice, bootDiskID int) []*pb.Machine_BlockDevice {
+func toProtoBlockDevices(bds []core.BlockDevice, bootDiskID int) []*pb.Machine_BlockDevice {
 	ret := []*pb.Machine_BlockDevice{}
 	for i := range bds {
 		ret = append(ret, toProtoBlockDevice(&bds[i], bootDiskID))
@@ -146,7 +150,7 @@ func toProtoBlockDevices(bds []model.BlockDevice, bootDiskID int) []*pb.Machine_
 	return ret
 }
 
-func toProtoBlockDevice(bd *model.BlockDevice, bootDiskID int) *pb.Machine_BlockDevice {
+func toProtoBlockDevice(bd *core.BlockDevice, bootDiskID int) *pb.Machine_BlockDevice {
 	ret := &pb.Machine_BlockDevice{}
 	ret.SetBootDisk(bd.ID == bootDiskID)
 	ret.SetName(bd.Name)
@@ -160,7 +164,7 @@ func toProtoBlockDevice(bd *model.BlockDevice, bootDiskID int) *pb.Machine_Block
 	return ret
 }
 
-func toProtoNetworkInterfaces(nis []model.NetworkInterface, bootInterfaceID int) []*pb.Machine_NetworkInterface {
+func toProtoNetworkInterfaces(nis []core.NetworkInterface, bootInterfaceID int) []*pb.Machine_NetworkInterface {
 	ret := []*pb.Machine_NetworkInterface{}
 	for i := range nis {
 		ret = append(ret, toProtoNetworkInterface(&nis[i], bootInterfaceID))
@@ -168,7 +172,7 @@ func toProtoNetworkInterfaces(nis []model.NetworkInterface, bootInterfaceID int)
 	return ret
 }
 
-func toProtoNetworkInterface(ni *model.NetworkInterface, bootInterfaceID int) *pb.Machine_NetworkInterface {
+func toProtoNetworkInterface(ni *core.NetworkInterface, bootInterfaceID int) *pb.Machine_NetworkInterface {
 	subnetName := ""
 	subnetID := 0
 	ipAdress := ""
@@ -195,51 +199,4 @@ func toProtoNetworkInterface(ni *model.NetworkInterface, bootInterfaceID int) *p
 	ret.SetIpAddress(ipAdress)
 	ret.SetDhcpOn(ni.VLAN.DHCPOn)
 	return ret
-}
-
-func toModelFactors(fs []*pb.Machine_Factor) []model.MachineFactor {
-	ret := []model.MachineFactor{}
-	for i := range fs {
-		ret = append(ret, *toModelFactor(fs[i]))
-	}
-	return ret
-}
-
-func toModelFactor(f *pb.Machine_Factor) *model.MachineFactor {
-	ret := &model.MachineFactor{}
-	p := f.GetPlacement()
-	if p != nil {
-		ret.MachinePlacement = toModelPlacement(p)
-	}
-	c := f.GetConstraint()
-	if c != nil {
-		ret.MachineConstraint = toModelConstraint(c)
-	}
-	return ret
-}
-
-func toModelPlacements(ps []*pb.Machine_Placement) []model.MachinePlacement {
-	ret := []model.MachinePlacement{}
-	for i := range ps {
-		ret = append(ret, *toModelPlacement(ps[i]))
-	}
-	return ret
-}
-
-func toModelPlacement(p *pb.Machine_Placement) *model.MachinePlacement {
-	return &model.MachinePlacement{
-		LXD:       p.GetLxd(),
-		KVM:       p.GetKvm(),
-		Machine:   p.GetMachine(),
-		MachineID: p.GetMachineId(),
-	}
-}
-
-func toModelConstraint(c *pb.Machine_Constraint) *model.MachineConstraint {
-	return &model.MachineConstraint{
-		Architecture: c.GetArchitecture(),
-		CPUCores:     c.GetCpuCores(),
-		MemoryMB:     c.GetMemoryMb(),
-		Tags:         c.GetTags(),
-	}
 }

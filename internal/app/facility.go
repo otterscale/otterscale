@@ -1,144 +1,148 @@
-package app
+package service
 
 import (
 	"context"
-	"os"
-	"slices"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "github.com/openhdc/otterscale/api/nexus/v1"
-	"github.com/openhdc/otterscale/internal/domain/model"
-	"github.com/openhdc/otterscale/internal/env"
+	pb "github.com/openhdc/otterscale/api/facility/v1"
+	"github.com/openhdc/otterscale/api/facility/v1/pbconnect"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
-func (a *NexusApp) ListFacilities(ctx context.Context, req *connect.Request[pb.ListFacilitiesRequest]) (*connect.Response[pb.ListFacilitiesResponse], error) {
-	fs, err := a.svc.ListFacilities(ctx, req.Msg.GetScopeUuid())
-	if err != nil {
-		return nil, err
-	}
-	machineMap, err := a.svc.JujuToMAASMachineMap(ctx, req.Msg.GetScopeUuid())
-	if err != nil {
-		return nil, err
-	}
-	res := &pb.ListFacilitiesResponse{}
-	res.SetFacilities(toProtoFacilities(fs, machineMap))
-	return connect.NewResponse(res), nil
+type FacilityService struct {
+	pbconnect.UnimplementedFacilityServiceHandler
+
+	uc *core.FacilityUseCase
 }
 
-func (a *NexusApp) GetFacility(ctx context.Context, req *connect.Request[pb.GetFacilityRequest]) (*connect.Response[pb.Facility], error) {
-	f, err := a.svc.GetFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	machineMap, err := a.svc.JujuToMAASMachineMap(ctx, req.Msg.GetScopeUuid())
-	if err != nil {
-		return nil, err
-	}
-	res := toProtoFacility(f, machineMap)
-	return connect.NewResponse(res), nil
+func NewFacilityService(uc *core.FacilityUseCase) *FacilityService {
+	return &FacilityService{uc: uc}
 }
 
-func (a *NexusApp) CreateFacility(ctx context.Context, req *connect.Request[pb.CreateFacilityRequest]) (*connect.Response[pb.Facility], error) {
-	f, err := a.svc.CreateFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), req.Msg.GetConfigYaml(), req.Msg.GetCharmName(), req.Msg.GetChannel(), int(req.Msg.GetRevision()), int(req.Msg.GetNumber()), toModelPlacements(req.Msg.GetPlacements()), toModelConstraint(req.Msg.GetConstraint()), req.Msg.GetTrust())
+var _ pbconnect.FacilityServiceHandler = (*FacilityService)(nil)
+
+func (s *FacilityService) ListFacilities(ctx context.Context, req *connect.Request[pb.ListFacilitiesRequest]) (*connect.Response[pb.ListFacilitiesResponse], error) {
+	facilities, err := s.uc.ListFacilities(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := a.svc.JujuToMAASMachineMap(ctx, req.Msg.GetScopeUuid())
+	machineMap, err := s.uc.JujuToMAASMachineMap(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoFacility(f, machineMap)
-	return connect.NewResponse(res), nil
+	resp := &pb.ListFacilitiesResponse{}
+	resp.SetFacilities(toProtoFacilities(facilities, machineMap))
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) UpdateFacility(ctx context.Context, req *connect.Request[pb.UpdateFacilityRequest]) (*connect.Response[pb.Facility], error) {
-	f, err := a.svc.UpdateFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), req.Msg.GetConfigYaml())
+func (s *FacilityService) GetFacility(ctx context.Context, req *connect.Request[pb.GetFacilityRequest]) (*connect.Response[pb.Facility], error) {
+	facility, err := s.uc.GetFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
-	machineMap, err := a.svc.JujuToMAASMachineMap(ctx, req.Msg.GetScopeUuid())
+	machineMap, err := s.uc.JujuToMAASMachineMap(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoFacility(f, machineMap)
-	return connect.NewResponse(res), nil
+	resp := toProtoFacility(facility, machineMap)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) DeleteFacility(ctx context.Context, req *connect.Request[pb.DeleteFacilityRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.DeleteFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), req.Msg.GetDestroyStorage(), req.Msg.GetForce()); err != nil {
-		return nil, err
-	}
-	res := &emptypb.Empty{}
-	return connect.NewResponse(res), nil
-}
-
-func (a *NexusApp) ExposeFacility(ctx context.Context, req *connect.Request[pb.ExposeFacilityRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.ExposeFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName()); err != nil {
-		return nil, err
-	}
-	res := &emptypb.Empty{}
-	return connect.NewResponse(res), nil
-}
-
-func (a *NexusApp) AddFacilityUnits(ctx context.Context, req *connect.Request[pb.AddFacilityUnitsRequest]) (*connect.Response[pb.AddFacilityUnitsResponse], error) {
-	units, err := a.svc.AddFacilityUnits(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), int(req.Msg.GetNumber()), toModelPlacements(req.Msg.GetPlacements()))
+func (s *FacilityService) CreateFacility(ctx context.Context, req *connect.Request[pb.CreateFacilityRequest]) (*connect.Response[pb.Facility], error) {
+	facility, err := s.uc.CreateFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), req.Msg.GetConfigYaml(), req.Msg.GetCharmName(), req.Msg.GetChannel(), int(req.Msg.GetRevision()), int(req.Msg.GetNumber()), toModelPlacements(req.Msg.GetPlacements()), toModelConstraint(req.Msg.GetConstraint()), req.Msg.GetTrust())
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.AddFacilityUnitsResponse{}
-	res.SetUnits(units)
-	return connect.NewResponse(res), nil
-}
-
-func (a *NexusApp) ListActions(ctx context.Context, req *connect.Request[pb.ListActionsRequest]) (*connect.Response[pb.ListActionsResponse], error) {
-	as, err := a.svc.ListActions(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	machineMap, err := s.uc.JujuToMAASMachineMap(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.ListActionsResponse{}
-	res.SetActions(toProtoActions(as))
-	return connect.NewResponse(res), nil
+	resp := toProtoFacility(facility, machineMap)
+	return connect.NewResponse(resp), nil
 }
 
-// TODO: Unimplemented
-// func (a *NexusApp) DoAction(ctx context.Context, req *connect.Request[pb.DoActionRequest]) (*connect.Response[emptypb.Empty], error) {
-// 	res := &emptypb.Empty{}
-// 	return connect.NewResponse(res), nil
-// }
-
-func (a *NexusApp) ListCharms(ctx context.Context, req *connect.Request[pb.ListCharmsRequest]) (*connect.Response[pb.ListCharmsResponse], error) {
-	cs, err := a.svc.ListCharms(ctx)
+func (s *FacilityService) UpdateFacility(ctx context.Context, req *connect.Request[pb.UpdateFacilityRequest]) (*connect.Response[pb.Facility], error) {
+	facility, err := s.uc.UpdateFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), req.Msg.GetConfigYaml())
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.ListCharmsResponse{}
-	res.SetCharms(toProtoCharms(cs))
-	return connect.NewResponse(res), nil
-}
-
-func (a *NexusApp) GetCharm(ctx context.Context, req *connect.Request[pb.GetCharmRequest]) (*connect.Response[pb.Facility_Charm], error) {
-	c, err := a.svc.GetCharm(ctx, req.Msg.GetName())
+	machineMap, err := s.uc.JujuToMAASMachineMap(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoCharm(c)
-	return connect.NewResponse(res), nil
+	resp := toProtoFacility(facility, machineMap)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) ListCharmArtifacts(ctx context.Context, req *connect.Request[pb.ListCharmArtifactsRequest]) (*connect.Response[pb.ListCharmArtifactsResponse], error) {
-	as, err := a.svc.ListArtifacts(ctx, req.Msg.GetName())
+func (s *FacilityService) DeleteFacility(ctx context.Context, req *connect.Request[pb.DeleteFacilityRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), req.Msg.GetDestroyStorage(), req.Msg.GetForce()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *FacilityService) ExposeFacility(ctx context.Context, req *connect.Request[pb.ExposeFacilityRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.ExposeFacility(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *FacilityService) AddFacilityUnits(ctx context.Context, req *connect.Request[pb.AddFacilityUnitsRequest]) (*connect.Response[pb.AddFacilityUnitsResponse], error) {
+	units, err := s.uc.AddFacilityUnits(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), int(req.Msg.GetNumber()), toModelPlacements(req.Msg.GetPlacements()))
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.ListCharmArtifactsResponse{}
-	res.SetArtifacts(toProtoCharmArtifacts(as))
-	return connect.NewResponse(res), nil
+	resp := &pb.AddFacilityUnitsResponse{}
+	resp.SetUnits(units)
+	return connect.NewResponse(resp), nil
 }
 
-func toProtoFacilityStatus(s *model.DetailedStatus) *pb.Facility_Status {
+func (s *FacilityService) ListActions(ctx context.Context, req *connect.Request[pb.ListActionsRequest]) (*connect.Response[pb.ListActionsResponse], error) {
+	actions, err := s.uc.ListActions(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListActionsResponse{}
+	resp.SetActions(toProtoActions(actions))
+	return connect.NewResponse(resp), nil
+}
+
+func (s *FacilityService) ListCharms(ctx context.Context, req *connect.Request[pb.ListCharmsRequest]) (*connect.Response[pb.ListCharmsResponse], error) {
+	charms, err := s.uc.ListCharms(ctx)
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListCharmsResponse{}
+	resp.SetCharms(toProtoCharms(charms))
+	return connect.NewResponse(resp), nil
+}
+
+func (s *FacilityService) GetCharm(ctx context.Context, req *connect.Request[pb.GetCharmRequest]) (*connect.Response[pb.Facility_Charm], error) {
+	charm, err := s.uc.GetCharm(ctx, req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoCharm(charm)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *FacilityService) ListCharmArtifacts(ctx context.Context, req *connect.Request[pb.ListCharmArtifactsRequest]) (*connect.Response[pb.ListCharmArtifactsResponse], error) {
+	artifacts, err := s.uc.ListArtifacts(ctx, req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListCharmArtifactsResponse{}
+	resp.SetArtifacts(toProtoCharmArtifacts(artifacts))
+	return connect.NewResponse(resp), nil
+}
+
+func toProtoFacilityStatus(s *core.DetailedStatus) *pb.Facility_Status {
 	ret := &pb.Facility_Status{}
 	ret.SetState(s.Status)
 	ret.SetDetails(s.Info)
@@ -149,7 +153,7 @@ func toProtoFacilityStatus(s *model.DetailedStatus) *pb.Facility_Status {
 	return ret
 }
 
-func toProtoFacilityUnits(usm map[string]model.UnitStatus, machineMap map[string]string) []*pb.Facility_Unit {
+func toProtoFacilityUnits(usm map[string]core.UnitStatus, machineMap map[string]string) []*pb.Facility_Unit {
 	ret := []*pb.Facility_Unit{}
 	for name := range usm {
 		status := usm[name]
@@ -158,7 +162,7 @@ func toProtoFacilityUnits(usm map[string]model.UnitStatus, machineMap map[string
 	return ret
 }
 
-func toProtoFacilityUnit(name string, s *model.UnitStatus, machineMap map[string]string) *pb.Facility_Unit {
+func toProtoFacilityUnit(name string, s *core.UnitStatus, machineMap map[string]string) *pb.Facility_Unit {
 	ret := &pb.Facility_Unit{}
 	ret.SetName(name)
 	ret.SetAgentStatus(toProtoFacilityStatus(&s.AgentStatus))
@@ -173,7 +177,7 @@ func toProtoFacilityUnit(name string, s *model.UnitStatus, machineMap map[string
 	return ret
 }
 
-func toProtoFacilities(fs []model.Facility, machineMap map[string]string) []*pb.Facility {
+func toProtoFacilities(fs []core.Facility, machineMap map[string]string) []*pb.Facility {
 	ret := []*pb.Facility{}
 	for i := range fs {
 		ret = append(ret, toProtoFacility(&fs[i], machineMap))
@@ -181,7 +185,7 @@ func toProtoFacilities(fs []model.Facility, machineMap map[string]string) []*pb.
 	return ret
 }
 
-func toProtoFacility(f *model.Facility, machineMap map[string]string) *pb.Facility {
+func toProtoFacility(f *core.Facility, machineMap map[string]string) *pb.Facility {
 	ret := &pb.Facility{}
 	ret.SetName(f.Name)
 	ret.SetStatus(toProtoFacilityStatus(&f.Status.Status))
@@ -189,19 +193,19 @@ func toProtoFacility(f *model.Facility, machineMap map[string]string) *pb.Facili
 	ret.SetVersion(f.Status.WorkloadVersion)
 	ret.SetRevision(int64(f.Status.CharmRev))
 	ret.SetUnits(toProtoFacilityUnits(f.Status.Units, machineMap))
-	if f.FacilityMetadata != nil {
-		ret.SetMetadata(toProtoFacilityMetadata(f.FacilityMetadata))
+	if f.Metadata != nil {
+		ret.SetMetadata(toProtoFacilityMetadata(f.Metadata))
 	}
 	return ret
 }
 
-func toProtoFacilityMetadata(md *model.FacilityMetadata) *pb.Facility_Charm_Metadata {
+func toProtoFacilityMetadata(md *core.FacilityMetadata) *pb.Facility_Charm_Metadata {
 	ret := &pb.Facility_Charm_Metadata{}
 	ret.SetConfigYaml(md.ConfigYAML)
 	return ret
 }
 
-func toProtoActions(as []model.Action) []*pb.Facility_Action {
+func toProtoActions(as []core.Action) []*pb.Facility_Action {
 	ret := []*pb.Facility_Action{}
 	for i := range as {
 		ret = append(ret, toProtoAction(&as[i]))
@@ -209,14 +213,14 @@ func toProtoActions(as []model.Action) []*pb.Facility_Action {
 	return ret
 }
 
-func toProtoAction(a *model.Action) *pb.Facility_Action {
+func toProtoAction(a *core.Action) *pb.Facility_Action {
 	ret := &pb.Facility_Action{}
 	ret.SetName(a.Name)
 	ret.SetDescription(a.Spec.Description)
 	return ret
 }
 
-func toProtoCharms(cs []model.Charm) []*pb.Facility_Charm {
+func toProtoCharms(cs []core.Charm) []*pb.Facility_Charm {
 	ret := []*pb.Facility_Charm{}
 	for i := range cs {
 		ret = append(ret, toProtoCharm(&cs[i]))
@@ -224,7 +228,7 @@ func toProtoCharms(cs []model.Charm) []*pb.Facility_Charm {
 	return ret
 }
 
-func toProtoCharm(c *model.Charm) *pb.Facility_Charm {
+func toProtoCharm(c *core.Charm) *pb.Facility_Charm {
 	categories := []string{}
 	for _, ca := range c.Result.Categories {
 		categories = append(categories, ca.Name)
@@ -238,7 +242,7 @@ func toProtoCharm(c *model.Charm) *pb.Facility_Charm {
 	ret.SetId(c.ID)
 	ret.SetType(c.Type)
 	ret.SetName(c.Name)
-	ret.SetVerified(isVerified(c.Result.Publisher.DisplayName))
+	ret.SetVerified(false) // TODO: custom
 	ret.SetTitle(c.Result.Title)
 	ret.SetSummary(c.Result.Summary)
 	ret.SetIcon(icon)
@@ -253,7 +257,7 @@ func toProtoCharm(c *model.Charm) *pb.Facility_Charm {
 	return ret
 }
 
-func toProtoCharmBases(bs []model.CharmBase) []*pb.Facility_Charm_Base {
+func toProtoCharmBases(bs []core.CharmBase) []*pb.Facility_Charm_Base {
 	ret := []*pb.Facility_Charm_Base{}
 	for i := range bs {
 		ret = append(ret, toProtoCharmBase(&bs[i]))
@@ -261,7 +265,7 @@ func toProtoCharmBases(bs []model.CharmBase) []*pb.Facility_Charm_Base {
 	return ret
 }
 
-func toProtoCharmBase(b *model.CharmBase) *pb.Facility_Charm_Base {
+func toProtoCharmBase(b *core.CharmBase) *pb.Facility_Charm_Base {
 	ret := &pb.Facility_Charm_Base{}
 	ret.SetName(b.Name)
 	ret.SetChannel(b.Channel)
@@ -269,7 +273,7 @@ func toProtoCharmBase(b *model.CharmBase) *pb.Facility_Charm_Base {
 	return ret
 }
 
-func toProtoCharmArtifacts(as []model.CharmArtifact) []*pb.Facility_Charm_Artifact {
+func toProtoCharmArtifacts(as []core.CharmArtifact) []*pb.Facility_Charm_Artifact {
 	ret := []*pb.Facility_Charm_Artifact{}
 	for i := range as {
 		ret = append(ret, toProtoCharmArtifact(&as[i]))
@@ -277,7 +281,7 @@ func toProtoCharmArtifacts(as []model.CharmArtifact) []*pb.Facility_Charm_Artifa
 	return ret
 }
 
-func toProtoCharmArtifact(r *model.CharmArtifact) *pb.Facility_Charm_Artifact {
+func toProtoCharmArtifact(r *core.CharmArtifact) *pb.Facility_Charm_Artifact {
 	ret := &pb.Facility_Charm_Artifact{}
 	ret.SetChannel(r.Channel.Name)
 	ret.SetRevision(int64(r.Revision.Revision))
@@ -287,10 +291,28 @@ func toProtoCharmArtifact(r *model.CharmArtifact) *pb.Facility_Charm_Artifact {
 	return ret
 }
 
-func isVerified(values ...string) bool {
-	keyword := os.Getenv(env.OPENHDC_COMPANY_NAME)
-	if keyword == "" {
-		return false
+func toModelPlacements(ps []*pb.Placement) []core.MachinePlacement {
+	ret := []core.MachinePlacement{}
+	for i := range ps {
+		ret = append(ret, *toModelPlacement(ps[i]))
 	}
-	return slices.Contains(values, keyword)
+	return ret
+}
+
+func toModelPlacement(p *pb.Placement) *core.MachinePlacement {
+	return &core.MachinePlacement{
+		LXD:       p.GetLxd(),
+		KVM:       p.GetKvm(),
+		Machine:   p.GetMachine(),
+		MachineID: p.GetMachineId(),
+	}
+}
+
+func toModelConstraint(c *pb.Constraint) *core.MachineConstraint {
+	return &core.MachineConstraint{
+		Architecture: c.GetArchitecture(),
+		CPUCores:     c.GetCpuCores(),
+		MemoryMB:     c.GetMemoryMb(),
+		Tags:         c.GetTags(),
+	}
 }

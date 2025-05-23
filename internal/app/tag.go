@@ -1,4 +1,4 @@
-package app
+package service
 
 import (
 	"context"
@@ -6,47 +6,60 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/openhdc/otterscale/api/nexus/v1"
-	"github.com/openhdc/otterscale/internal/domain/model"
+	pb "github.com/openhdc/otterscale/api/tag/v1"
+	"github.com/openhdc/otterscale/api/tag/v1/pbconnect"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
-func (a *NexusApp) ListTags(ctx context.Context, req *connect.Request[pb.ListTagsRequest]) (*connect.Response[pb.ListTagsResponse], error) {
-	ts, err := a.svc.ListTags(ctx)
+type TagService struct {
+	pbconnect.UnimplementedTagServiceHandler
+
+	uc *core.TagUseCase
+}
+
+func NewTagService(uc *core.TagUseCase) *TagService {
+	return &TagService{uc: uc}
+}
+
+var _ pbconnect.TagServiceHandler = (*TagService)(nil)
+
+func (s *TagService) ListTags(ctx context.Context, req *connect.Request[pb.ListTagsRequest]) (*connect.Response[pb.ListTagsResponse], error) {
+	tags, err := s.uc.ListTags(ctx)
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.ListTagsResponse{}
-	res.SetTags(toProtoTags(ts))
-	return connect.NewResponse(res), nil
+	resp := &pb.ListTagsResponse{}
+	resp.SetTags(toProtoTags(tags))
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) GetTag(ctx context.Context, req *connect.Request[pb.GetTagRequest]) (*connect.Response[pb.Tag], error) {
-	t, err := a.svc.GetTag(ctx, req.Msg.GetName())
+func (s *TagService) GetTag(ctx context.Context, req *connect.Request[pb.GetTagRequest]) (*connect.Response[pb.Tag], error) {
+	tag, err := s.uc.GetTag(ctx, req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoTag(t)
-	return connect.NewResponse(res), nil
+	resp := toProtoTag(tag)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) CreateTag(ctx context.Context, req *connect.Request[pb.CreateTagRequest]) (*connect.Response[pb.Tag], error) {
-	t, err := a.svc.CreateTag(ctx, req.Msg.GetName(), req.Msg.GetComment())
+func (s *TagService) CreateTag(ctx context.Context, req *connect.Request[pb.CreateTagRequest]) (*connect.Response[pb.Tag], error) {
+	tag, err := s.uc.CreateTag(ctx, req.Msg.GetName(), req.Msg.GetComment())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoTag(t)
-	return connect.NewResponse(res), nil
+	resp := toProtoTag(tag)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) DeleteTag(ctx context.Context, req *connect.Request[pb.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.DeleteTag(ctx, req.Msg.GetName()); err != nil {
+func (s *TagService) DeleteTag(ctx context.Context, req *connect.Request[pb.DeleteTagRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteTag(ctx, req.Msg.GetName()); err != nil {
 		return nil, err
 	}
-	res := &emptypb.Empty{}
-	return connect.NewResponse(res), nil
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
 }
 
-func toProtoTags(ts []model.Tag) []*pb.Tag {
+func toProtoTags(ts []core.Tag) []*pb.Tag {
 	ret := []*pb.Tag{}
 	for i := range ts {
 		ret = append(ret, toProtoTag(&ts[i]))
@@ -54,7 +67,7 @@ func toProtoTags(ts []model.Tag) []*pb.Tag {
 	return ret
 }
 
-func toProtoTag(t *model.Tag) *pb.Tag {
+func toProtoTag(t *core.Tag) *pb.Tag {
 	ret := &pb.Tag{}
 	ret.SetName(t.Name)
 	ret.SetComment(t.Comment)
