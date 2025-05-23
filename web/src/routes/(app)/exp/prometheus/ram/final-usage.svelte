@@ -1,0 +1,61 @@
+<script lang="ts">
+	import { PrometheusDriver } from 'prometheus-query';
+	import { Arc, Svg, Group, Chart, Text } from 'layerchart';
+	import { cn } from '$lib/utils';
+	import { metricColor, metricBackgroundColor } from '..';
+	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
+
+	let {
+		client,
+		juju_model_uuid,
+		instance
+	}: { client: PrometheusDriver; juju_model_uuid: string; instance: string } = $props();
+
+	const query = $derived(
+		`
+		1
+		-
+		(
+			(node_memory_MemAvailable_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"})
+			/
+			node_memory_MemTotal_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+		)
+		`
+	);
+</script>
+
+{#await client.instantQuery(query)}
+	<ComponentLoading />
+{:then response}
+	{@const cpuUsage = response.result[0].value.value}
+	<div class="flex h-full w-full items-center justify-center">
+		<div class={cn(`h-[173px] w-[173px]`)}>
+			<Chart>
+				<Svg center>
+					<Group y={100 / 4}>
+						<Arc
+							value={cpuUsage * 100}
+							domain={[0, 100]}
+							outerRadius={100}
+							innerRadius={-13}
+							cornerRadius={13}
+							range={[-120, 120]}
+							class={metricColor(cpuUsage * 100)}
+							track={{ class: metricBackgroundColor(cpuUsage * 100) }}
+							let:value
+						>
+							<Text
+								value={`${value.toFixed(2)}%`}
+								textAnchor="middle"
+								verticalAnchor="middle"
+								class="text-xl tabular-nums"
+							/>
+						</Arc>
+					</Group>
+				</Svg>
+			</Chart>
+		</div>
+	</div>
+{:catch error}
+	Error
+{/await}
