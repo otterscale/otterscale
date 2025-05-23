@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"net"
 	"net/http"
 	"time"
 
@@ -12,12 +13,19 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
-	nexusv1 "github.com/openhdc/otterscale/api/nexus/v1/pbconnect"
+	applicationv1 "github.com/openhdc/otterscale/api/application/v1/pbconnect"
+	configurationv1 "github.com/openhdc/otterscale/api/configuration/v1/pbconnect"
+	facilityv1 "github.com/openhdc/otterscale/api/facility/v1/pbconnect"
+	generalv1 "github.com/openhdc/otterscale/api/general/v1/pbconnect"
+	machinev1 "github.com/openhdc/otterscale/api/machine/v1/pbconnect"
+	networkv1 "github.com/openhdc/otterscale/api/network/v1/pbconnect"
+	scopev1 "github.com/openhdc/otterscale/api/scope/v1/pbconnect"
+	tagv1 "github.com/openhdc/otterscale/api/tag/v1/pbconnect"
 	"github.com/openhdc/otterscale/internal/app"
 )
 
-func NewCmdServe(na *app.NexusApp) *cobra.Command {
-	var address string
+func NewCmdServe(app *app.ApplicationService, config *app.ConfigurationService, facility *app.FacilityService, general *app.GeneralService, machine *app.MachineService, network *app.NetworkService, scope *app.ScopeService, tag *app.TagService) *cobra.Command {
+	var address, configPath string
 
 	cmd := &cobra.Command{
 		Use:     "serve",
@@ -26,9 +34,25 @@ func NewCmdServe(na *app.NexusApp) *cobra.Command {
 		Example: "",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			mux := http.NewServeMux()
-			mux.Handle(nexusv1.NewNexusHandler(na))
+			mux.Handle(applicationv1.NewApplicationServiceHandler(app))
+			mux.Handle(configurationv1.NewConfigurationServiceHandler(config))
+			mux.Handle(facilityv1.NewFacilityServiceHandler(facility))
+			mux.Handle(generalv1.NewGeneralServiceHandler(general))
+			mux.Handle(machinev1.NewMachineServiceHandler(machine))
+			mux.Handle(networkv1.NewNetworkServiceHandler(network))
+			mux.Handle(scopev1.NewScopeServiceHandler(scope))
+			mux.Handle(tagv1.NewTagServiceHandler(tag))
 
-			services := []string{nexusv1.NexusName}
+			services := []string{
+				applicationv1.ApplicationServiceName,
+				configurationv1.ConfigurationServiceName,
+				facilityv1.FacilityServiceName,
+				generalv1.GeneralServiceName,
+				machinev1.MachineServiceName,
+				networkv1.NetworkServiceName,
+				scopev1.ScopeServiceName,
+				tagv1.TagServiceName,
+			}
 
 			checker := grpchealth.NewStaticChecker(services...)
 			mux.Handle(grpchealth.NewHandler(checker))
@@ -49,8 +73,13 @@ func NewCmdServe(na *app.NexusApp) *cobra.Command {
 				MaxHeaderBytes:    8 * 1024, // 8KiB
 			}
 
-			log.Printf("Server starting on %s\n", address)
-			return srv.ListenAndServe()
+			listener, err := net.Listen("tcp", address)
+			if err != nil {
+				return err
+			}
+
+			log.Printf("Server starting on %s\n", listener.Addr().String())
+			return srv.Serve(listener)
 		},
 	}
 
@@ -59,6 +88,13 @@ func NewCmdServe(na *app.NexusApp) *cobra.Command {
 		"address",
 		":0",
 		"address of grpc server",
+	)
+
+	cmd.PersistentFlags().StringVar(
+		&configPath,
+		"config",
+		"./otterscale.yaml",
+		"path of config",
 	)
 
 	return cmd
