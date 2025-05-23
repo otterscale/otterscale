@@ -17,7 +17,12 @@ import (
 
 const JobHostUnits = model.JobHostUnits
 
-type Machine = entity.Machine
+type (
+	Machine          = entity.Machine
+	NUMANode         = entity.NUMANode
+	BlockDevice      = entity.BlockDevice
+	NetworkInterface = entity.NetworkInterface
+)
 
 type MachinePlacement struct {
 	LXD       bool
@@ -48,7 +53,7 @@ type MachineRepo interface {
 
 type MachineManagerRepo interface {
 	AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) error
-	DestroyMachines(ctx context.Context, uuid string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) ([]params.DestroyMachineResult, error)
+	DestroyMachines(ctx context.Context, uuid string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) error
 }
 
 type ServerRepo interface {
@@ -156,16 +161,26 @@ func (uc *MachineUseCase) PowerOffMachine(ctx context.Context, id, comment strin
 	return uc.machine.PowerOff(ctx, id, params)
 }
 
-func (uc *MachineUseCase) JujuToMAASMachineMap(ctx context.Context, uuid string) (map[string]string, error) {
-	status, err := uc.client.Status(ctx, uuid, []string{"machine", "*"})
-	if err != nil {
-		return nil, err
+func (uc *MachineUseCase) AddMachineTags(ctx context.Context, id string, tags []string) error {
+	eg, ctx := errgroup.WithContext(ctx)
+	for _, tag := range tags {
+		tag := tag // fixed on go 1.22
+		eg.Go(func() error {
+			return uc.tag.AddMachines(ctx, tag, []string{id})
+		})
 	}
-	m := map[string]string{}
-	for name := range status.Machines {
-		m[name] = string(status.Machines[name].InstanceId)
+	return eg.Wait()
+}
+
+func (uc *MachineUseCase) RemoveMachineTags(ctx context.Context, id string, tags []string) error {
+	eg, ctx := errgroup.WithContext(ctx)
+	for _, tag := range tags {
+		tag := tag // fixed on go 1.22
+		eg.Go(func() error {
+			return uc.tag.RemoveMachines(ctx, tag, []string{id})
+		})
 	}
-	return m, nil
+	return eg.Wait()
 }
 
 func (uc *MachineUseCase) filterMachines(machines []Machine, scopeUUID string) []Machine {

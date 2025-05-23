@@ -20,6 +20,8 @@ import (
 type (
 	ActionSpec     = action.ActionSpec
 	FacilityStatus = params.ApplicationStatus
+	UnitStatus     = params.UnitStatus
+	DetailedStatus = params.DetailedStatus
 )
 
 type FacilityInfo struct {
@@ -33,14 +35,14 @@ type FacilityMetadata struct {
 }
 
 type Facility struct {
-	Name string
-	*FacilityMetadata
-	*FacilityStatus
+	Name     string
+	Metadata *FacilityMetadata
+	Status   *FacilityStatus
 }
 
 type Action struct {
 	Name string
-	*ActionSpec
+	Spec *ActionSpec
 }
 
 type Charm struct {
@@ -118,7 +120,7 @@ type FacilityRepo interface {
 	Expose(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error
 	AddUnits(ctx context.Context, uuid, name string, number int, placements []instance.Placement) ([]string, error)
 	ResolveUnitErrors(ctx context.Context, uuid string, units []string) error
-	CreateRelation(ctx context.Context, uuid string, endpoints []string) error
+	CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error)
 	DeleteRelation(ctx context.Context, uuid string, id int) error
 	GetConfig(ctx context.Context, uuid string, name string) (map[string]any, error)
 	GetLeader(ctx context.Context, uuid, name string) (string, error)
@@ -126,7 +128,7 @@ type FacilityRepo interface {
 }
 
 type ActionRepo interface {
-	List(ctx context.Context, uuid, appName string) (map[string]action.ActionSpec, error)
+	List(ctx context.Context, uuid, appName string) (map[string]ActionSpec, error)
 }
 
 type CharmRepo interface {
@@ -165,8 +167,8 @@ func (uc *FacilityUseCase) ListFacilities(ctx context.Context, uuid string) ([]F
 	for appName := range s.Applications {
 		appStatus := s.Applications[appName]
 		facilities = append(facilities, Facility{
-			Name:           appName,
-			FacilityStatus: &appStatus,
+			Name:   appName,
+			Status: &appStatus,
 		})
 	}
 	return facilities, nil
@@ -193,9 +195,9 @@ func (uc *FacilityUseCase) GetFacility(ctx context.Context, uuid, name string) (
 	}
 
 	return &Facility{
-		Name:             name,
-		FacilityMetadata: &metadata,
-		FacilityStatus:   &app,
+		Name:     name,
+		Metadata: &metadata,
+		Status:   &app,
 	}, nil
 }
 
@@ -250,8 +252,8 @@ func (uc *FacilityUseCase) ListActions(ctx context.Context, uuid, appName string
 	results := []Action{}
 	for name, spec := range actions {
 		results = append(results, Action{
-			Name:       name,
-			ActionSpec: &spec,
+			Name: name,
+			Spec: &spec,
 		})
 	}
 	return results, nil
@@ -271,6 +273,18 @@ func (uc *FacilityUseCase) GetCharm(ctx context.Context, name string) (*Charm, e
 
 func (uc *FacilityUseCase) ListArtifacts(ctx context.Context, name string) ([]CharmArtifact, error) {
 	return uc.charm.ListArtifacts(ctx, name)
+}
+
+func (uc *FacilityUseCase) JujuToMAASMachineMap(ctx context.Context, uuid string) (map[string]string, error) {
+	status, err := uc.client.Status(ctx, uuid, []string{"machine", "*"})
+	if err != nil {
+		return nil, err
+	}
+	m := map[string]string{}
+	for name := range status.Machines {
+		m[name] = string(status.Machines[name].InstanceId)
+	}
+	return m, nil
 }
 
 func (uc *FacilityUseCase) toPlacements(ctx context.Context, uuid string, mps []MachinePlacement) ([]instance.Placement, error) {

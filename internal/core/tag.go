@@ -3,8 +3,6 @@ package core
 import (
 	"context"
 
-	"golang.org/x/sync/errgroup"
-
 	"github.com/canonical/gomaasclient/entity"
 )
 
@@ -43,26 +41,4 @@ func (uc *TagUseCase) CreateTag(ctx context.Context, name, comment string) (*Tag
 
 func (uc *TagUseCase) DeleteTag(ctx context.Context, name string) error {
 	return uc.tag.Delete(ctx, name)
-}
-
-func (uc *TagUseCase) AddMachineTags(ctx context.Context, id string, tags []string) error {
-	eg, ctx := errgroup.WithContext(ctx)
-	for _, tag := range tags {
-		tag := tag // fixed on go 1.22
-		eg.Go(func() error {
-			return uc.tag.AddMachines(ctx, tag, []string{id})
-		})
-	}
-	return eg.Wait()
-}
-
-func (uc *TagUseCase) RemoveMachineTags(ctx context.Context, id string, tags []string) error {
-	eg, ctx := errgroup.WithContext(ctx)
-	for _, tag := range tags {
-		tag := tag // fixed on go 1.22
-		eg.Go(func() error {
-			return uc.tag.RemoveMachines(ctx, tag, []string{id})
-		})
-	}
-	return eg.Wait()
 }

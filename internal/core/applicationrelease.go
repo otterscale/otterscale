@@ -23,10 +23,10 @@ type Release struct {
 }
 
 type ReleaseRepo interface {
-	List(config *rest.Config, namespace string) ([]Release, error)
-	Install(config *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*Release, error)
-	Uninstall(config *rest.Config, namespace, name string, dryRun bool) (*Release, error)
-	Upgrade(config *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*Release, error)
+	List(config *rest.Config, namespace string) ([]release.Release, error)
+	Install(config *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
+	Uninstall(config *rest.Config, namespace, name string, dryRun bool) (*release.Release, error)
+	Upgrade(config *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error)
 	Rollback(config *rest.Config, namespace, name string, dryRun bool) error
 	GetValues(config *rest.Config, namespace, name string) (map[string]any, error)
 }
@@ -51,7 +51,7 @@ func (uc *ApplicationUseCase) ListReleases(ctx context.Context) ([]Release, erro
 					ScopeName:    kuberneteses[i].ScopeName,
 					ScopeUUID:    kuberneteses[i].ScopeUUID,
 					FacilityName: kuberneteses[i].FacilityName,
-					Release:      release.Release,
+					Release:      &release,
 				})
 			}
 			return nil
@@ -78,7 +78,11 @@ func (uc *ApplicationUseCase) CreateRelease(ctx context.Context, uuid, facility,
 	if err != nil {
 		return nil, err
 	}
-	return uc.release.Install(config, namespace, getReleaseName(name), dryRun, chartRef, values)
+	release, err := uc.release.Install(config, namespace, getReleaseName(name), dryRun, chartRef, values)
+	if err != nil {
+		return nil, err
+	}
+	return &Release{Release: release}, nil
 }
 
 func (uc *ApplicationUseCase) UpdateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
@@ -91,7 +95,11 @@ func (uc *ApplicationUseCase) UpdateRelease(ctx context.Context, uuid, facility,
 	if err != nil {
 		return nil, err
 	}
-	return uc.release.Upgrade(config, namespace, name, dryRun, chartRef, values)
+	release, err := uc.release.Upgrade(config, namespace, name, dryRun, chartRef, values)
+	if err != nil {
+		return nil, err
+	}
+	return &Release{Release: release}, nil
 }
 
 func (uc *ApplicationUseCase) DeleteRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {

@@ -13,13 +13,16 @@ type Scope = base.UserModelSummary
 type ScopeRepo interface {
 	List(ctx context.Context) ([]Scope, error)
 	Create(ctx context.Context, name string) (*Scope, error)
-	AddSSHKey(ctx context.Context, uuid, sshKey string) error
 }
 
 type ScopeConfigRepo interface {
 	List(ctx context.Context, uuid string) (map[string]any, error)
 	Set(ctx context.Context, uuid string, config map[string]any) error
 	Unset(ctx context.Context, uuid string, keys ...string) error
+}
+
+type KeyRepo interface {
+	Add(ctx context.Context, uuid, key string) error
 }
 
 type SSHKey = entity.SSHKey
@@ -30,12 +33,14 @@ type SSHKeyRepo interface {
 
 type ScopeUseCase struct {
 	scope  ScopeRepo
+	key    KeyRepo
 	sshKey SSHKeyRepo
 }
 
-func NewScopeUseCase(scope ScopeRepo, sshKey SSHKeyRepo) *ScopeUseCase {
+func NewScopeUseCase(scope ScopeRepo, key KeyRepo, sshKey SSHKeyRepo) *ScopeUseCase {
 	return &ScopeUseCase{
 		scope:  scope,
+		key:    key,
 		sshKey: sshKey,
 	}
 }
@@ -53,7 +58,7 @@ func (uc *ScopeUseCase) CreateScope(ctx context.Context, name string) (*Scope, e
 	if err != nil {
 		return nil, err
 	}
-	if err := uc.scope.AddSSHKey(ctx, scope.UUID, sshKey); err != nil {
+	if err := uc.key.Add(ctx, scope.UUID, sshKey); err != nil {
 		return nil, err
 	}
 	return scope, nil
