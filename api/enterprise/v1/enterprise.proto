@@ -1,0 +1,13 @@
+edition = "2023";
+
+package otterscale.enterprise.v1;
+
+option go_package = "github.com/openhdc/otterscale/api/enterprise/v1;pb";
+
+service EnterpriseService {
+  rpc Check(CheckRequest) returns (CheckResponse);
+}
+
+message CheckRequest {}
+
+message CheckResponse {}

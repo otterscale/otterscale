@@ -1,0 +1,80 @@
+edition = "2023";
+
+package otterscale.configuration.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/configuration/v1;pb";
+
+service ConfigurationService {
+  rpc GetConfiguration(GetConfigurationRequest) returns (Configuration);
+  rpc UpdateNTPServer(UpdateNTPServerRequest) returns (Configuration.NTPServer);
+  rpc UpdatePackageRepository(UpdatePackageRepositoryRequest) returns (Configuration.PackageRepository);
+  rpc CreateBootImage(CreateBootImageRequest) returns (Configuration.BootImage);
+  rpc SetDefaultBootImage(SetDefaultBootImageRequest) returns (google.protobuf.Empty);
+  rpc ImportBootImages(ImportBootImagesRequest) returns (google.protobuf.Empty);
+  rpc IsImportingBootImages(IsImportingBootImagesRequest) returns (IsImportingBootImagesResponse);
+  rpc ListBootImageSelections(ListBootImageSelectionsRequest) returns (ListBootImageSelectionsResponse);
+}
+
+message Configuration {
+  message NTPServer {
+    repeated string addresses = 1;
+  }
+  message PackageRepository {
+    int64 id = 1;
+    string name = 2;
+    string url = 3;
+    bool enabled = 4;
+  }
+  message BootImageSelection {
+    string distro_series = 1;
+    string name = 2;
+    repeated string architectures = 3;
+  }
+  message BootImage {
+    string source = 1;
+    string distro_series = 2;
+    string name = 3;
+    map<string, string> architecture_status_map = 5;
+    bool default = 11;
+  }
+  NTPServer ntp_server = 1;
+  repeated PackageRepository package_repositories = 2;
+  repeated BootImage boot_images = 3;
+}
+
+message GetConfigurationRequest {}
+
+message UpdateNTPServerRequest {
+  repeated string addresses = 1;
+}
+
+message UpdatePackageRepositoryRequest {
+  int64 id = 1;
+  string url = 2;
+  bool skip_juju = 3;
+}
+
+message CreateBootImageRequest {
+  string distro_series = 1;
+  repeated string architectures = 2;
+}
+
+message SetDefaultBootImageRequest {
+  string distro_series = 1;
+}
+
+message ImportBootImagesRequest {}
+
+message IsImportingBootImagesRequest {}
+
+message IsImportingBootImagesResponse {
+  bool importing = 1;
+}
+
+message ListBootImageSelectionsRequest {}
+
+message ListBootImageSelectionsResponse {
+  repeated Configuration.BootImageSelection boot_image_selections = 1;
+}

@@ -1,0 +1,103 @@
+edition = "2023";
+
+package otterscale.general.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/general/v1;pb";
+
+service GeneralService {
+  rpc VerifyEnvironment(VerifyEnvironmentRequest) returns (VerifyEnvironmentResponse);
+  rpc ListCephes(ListCephesRequest) returns (ListCephesResponse);
+  rpc CreateCeph(CreateCephRequest) returns (General);
+  rpc AddCephUnits(AddCephUnitsRequest) returns (google.protobuf.Empty);
+  rpc ListKuberneteses(ListKubernetesesRequest) returns (ListKubernetesesResponse);
+  rpc CreateKubernetes(CreateKubernetesRequest) returns (General);
+  rpc AddKubernetesUnits(AddKubernetesUnitsRequest) returns (google.protobuf.Empty);
+  rpc SetCephCSI(SetCephCSIRequest) returns (google.protobuf.Empty);
+}
+
+message General {
+  string scope_uuid = 1;
+  string scope_name = 2;
+  string facility_name = 3;
+}
+
+enum ErrorLevel {
+  ERRORLEVEL_INFO = 0;
+  ERRORLEVEL_LOW = 1;
+  ERRORLEVEL_MEDIUM = 2;
+  ERRORLEVEL_HIGH = 3;
+  ERRORLEVEL_CRITICAL = 4;
+}
+
+message Error {
+  string code = 1;
+  ErrorLevel level = 11;
+  string message = 12;
+  string details = 13;
+  string url = 21;
+}
+
+message VerifyEnvironmentRequest {
+  string scope_uuid = 1;
+}
+
+message VerifyEnvironmentResponse {
+  repeated Error errors = 1;
+}
+
+message ListCephesRequest {
+  string scope_uuid = 1;
+}
+
+message ListCephesResponse {
+  repeated General cephes = 1;
+}
+
+message CreateCephRequest {
+  string scope_uuid = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string osd_devices = 11;
+  bool development = 21;
+}
+
+message AddCephUnitsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  int32 number = 3;
+  repeated string machine_ids = 4;
+}
+
+message ListKubernetesesRequest {
+  string scope_uuid = 1;
+}
+
+message ListKubernetesesResponse {
+  repeated General kuberneteses = 1;
+}
+
+message CreateKubernetesRequest {
+  string scope_uuid = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string virtual_ips = 11;
+  reserved 12;
+  string calico_cidr = 13;
+}
+
+message AddKubernetesUnitsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  int32 number = 3;
+  repeated string machine_ids = 4;
+  bool force = 11;
+}
+
+message SetCephCSIRequest {
+  General kubernetes = 1;
+  General ceph = 2;
+  string prefix = 3;
+  bool development = 11;
+}
