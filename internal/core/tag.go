@@ -48,6 +48,7 @@ func (uc *TagUseCase) DeleteTag(ctx context.Context, name string) error {
 func (uc *TagUseCase) AddMachineTags(ctx context.Context, id string, tags []string) error {
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, tag := range tags {
+		tag := tag // fixed on go 1.22
 		eg.Go(func() error {
 			return uc.tag.AddMachines(ctx, tag, []string{id})
 		})
@@ -58,6 +59,7 @@ func (uc *TagUseCase) AddMachineTags(ctx context.Context, id string, tags []stri
 func (uc *TagUseCase) RemoveMachineTags(ctx context.Context, id string, tags []string) error {
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, tag := range tags {
+		tag := tag // fixed on go 1.22
 		eg.Go(func() error {
 			return uc.tag.RemoveMachines(ctx, tag, []string{id})
 		})

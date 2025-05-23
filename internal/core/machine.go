@@ -113,6 +113,7 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSS
 	// tag
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, tag := range tags {
+		tag := tag // fixed on go 1.22
 		eg.Go(func() error {
 			return uc.tag.AddMachines(ctx, tag, []string{id})
 		})
