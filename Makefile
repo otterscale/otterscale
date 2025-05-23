@@ -1,6 +1,5 @@
 VERSION=$(shell git describe --tags --always)
 PROTO_FILES=$(shell find api -name *.proto)
-WEB_PROTO_FILES=$(shell find api/nexus -name *.proto)
 
 .PHONY: build
 # build cli
@@ -29,12 +28,6 @@ lint:
 .PHONY: proto
 # generate *.pb.go
 proto:
-	protoc -I=. \
-		--go_out=paths=source_relative:. \
-		--go_opt=default_api_level=API_OPAQUE \
-		--go-grpc_out=paths=source_relative:. \
-		$(PROTO_FILES)
-	
 	mkdir -p web/src/gen
 	protoc -I=. \
 		--go_out=paths=source_relative:. \
@@ -42,7 +35,12 @@ proto:
 		--connect-go_out=paths=source_relative:. \
 		--es_out=web/src/gen \
 		--es_opt=target=ts \
-		$(WEB_PROTO_FILES)
+		$(PROTO_FILES)
+
+	protoc -I=. \
+		--go_out=paths=source_relative:. \
+		--go_opt=default_api_level=API_OPAQUE \
+		internal/config/configset.proto
 
 .PHONY: help
 # show help
