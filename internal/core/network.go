@@ -7,63 +7,56 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/canonical/gomaasclient/entity/subnet"
-	"github.com/openhdc/otterscale/internal/domain/model"
 )
 
 type (
 	Fabric            = entity.Fabric
-	FabricParams      = entity.FabricParams
 	VLAN              = entity.VLAN
-	VLANParams        = entity.VLANParams
 	Subnet            = entity.Subnet
-	SubnetParams      = entity.SubnetParams
 	IPRange           = entity.IPRange
-	IPRangeParams     = entity.IPRangeParams
 	IPAddress         = subnet.IPAddress
 	NetworkStatistics = subnet.Statistics
 )
 
 type Network struct {
-	*entity.Fabric
-	*entity.VLAN
+	*Fabric
+	*VLAN
 	Subnet *NetworkSubnet
 }
 
 type NetworkSubnet struct {
 	*Subnet
-	*subnet.Statistics
-	IPAddresses []subnet.IPAddress
-	IPRanges    []entity.IPRange
+	Statistics  *NetworkStatistics
+	IPAddresses []IPAddress
+	IPRanges    []IPRange
 }
 
 type FabricRepo interface {
-	List(ctx context.Context) ([]entity.Fabric, error)
-	Get(ctx context.Context, id int) (*entity.Fabric, error)
-	Create(ctx context.Context, params *entity.FabricParams) (*entity.Fabric, error)
-	Update(ctx context.Context, id int, params *entity.FabricParams) (*entity.Fabric, error)
+	List(ctx context.Context) ([]Fabric, error)
+	Get(ctx context.Context, id int) (*Fabric, error)
+	Create(ctx context.Context, params *entity.FabricParams) (*Fabric, error)
+	Update(ctx context.Context, id int, params *entity.FabricParams) (*Fabric, error)
 	Delete(ctx context.Context, id int) error
 }
 
 type VLANRepo interface {
-	Update(ctx context.Context, fabricID, vid int, params *entity.VLANParams) (*entity.VLAN, error)
+	Update(ctx context.Context, fabricID, vid int, params *entity.VLANParams) (*VLAN, error)
 }
 
 type SubnetRepo interface {
-	List(ctx context.Context) ([]entity.Subnet, error)
-	Get(ctx context.Context, id int) (*entity.Subnet, error)
-	Create(ctx context.Context, params *entity.SubnetParams) (*entity.Subnet, error)
-	Update(ctx context.Context, id int, params *entity.SubnetParams) (*entity.Subnet, error)
+	List(ctx context.Context) ([]Subnet, error)
+	Get(ctx context.Context, id int) (*Subnet, error)
+	Create(ctx context.Context, params *entity.SubnetParams) (*Subnet, error)
+	Update(ctx context.Context, id int, params *entity.SubnetParams) (*Subnet, error)
 	Delete(ctx context.Context, id int) error
-	GetIPAddresses(ctx context.Context, id int) ([]subnet.IPAddress, error)
-	GetReservedIPRanges(ctx context.Context, id int) ([]subnet.ReservedIPRange, error)
-	GetUnreservedIPRanges(ctx context.Context, id int) ([]subnet.IPRange, error)
-	GetStatistics(ctx context.Context, id int) (*subnet.Statistics, error)
+	GetIPAddresses(ctx context.Context, id int) ([]IPAddress, error)
+	GetStatistics(ctx context.Context, id int) (*NetworkStatistics, error)
 }
 
 type IPRangeRepo interface {
-	List(ctx context.Context) ([]entity.IPRange, error)
-	Create(ctx context.Context, params *entity.IPRangeParams) (*entity.IPRange, error)
-	Update(ctx context.Context, id int, params *entity.IPRangeParams) (*entity.IPRange, error)
+	List(ctx context.Context) ([]IPRange, error)
+	Create(ctx context.Context, params *entity.IPRangeParams) (*IPRange, error)
+	Update(ctx context.Context, id int, params *entity.IPRangeParams) (*IPRange, error)
 	Delete(ctx context.Context, id int) error
 }
 
@@ -83,13 +76,13 @@ func NewNetworkUseCase(fabric FabricRepo, vlan VLANRepo, subnet SubnetRepo, ipRa
 	}
 }
 
-func (uc *NetworkUseCase) ListNetworks(ctx context.Context) ([]model.Network, error) {
+func (uc *NetworkUseCase) ListNetworks(ctx context.Context) ([]Network, error) {
 	subnets, err := uc.subnet.List(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	networkSubnets := make([]model.NetworkSubnet, len(subnets))
+	networkSubnets := make([]NetworkSubnet, len(subnets))
 	for i := range subnets {
 		ns, err := uc.getNetworkSubnet(ctx, &subnets[i])
 		if err != nil {
@@ -103,7 +96,7 @@ func (uc *NetworkUseCase) ListNetworks(ctx context.Context) ([]model.Network, er
 		return nil, err
 	}
 
-	networks := []model.Network{}
+	networks := []Network{}
 	for i := range fabrics {
 		for j := range fabrics[i].VLANs {
 			exist := false
@@ -111,7 +104,7 @@ func (uc *NetworkUseCase) ListNetworks(ctx context.Context) ([]model.Network, er
 				if networkSubnets[k].VLAN.ID != fabrics[i].VLANs[j].ID { // not only one
 					continue
 				}
-				networks = append(networks, model.Network{
+				networks = append(networks, Network{
 					Fabric: &fabrics[i],
 					VLAN:   &fabrics[i].VLANs[j],
 					Subnet: &networkSubnets[k],
@@ -119,7 +112,7 @@ func (uc *NetworkUseCase) ListNetworks(ctx context.Context) ([]model.Network, er
 				exist = true
 			}
 			if !exist {
-				networks = append(networks, model.Network{
+				networks = append(networks, Network{
 					Fabric: &fabrics[i],
 					VLAN:   &fabrics[i].VLANs[j],
 				})
@@ -129,8 +122,8 @@ func (uc *NetworkUseCase) ListNetworks(ctx context.Context) ([]model.Network, er
 	return networks, nil
 }
 
-func (uc *NetworkUseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dnsServers []string, dhcpOn bool) (*model.Network, error) {
-	fabricParams := &model.FabricParams{}
+func (uc *NetworkUseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP string, dnsServers []string, dhcpOn bool) (*Network, error) {
+	fabricParams := &entity.FabricParams{}
 	fabric, err := uc.fabric.Create(ctx, fabricParams)
 	if err != nil {
 		return nil, err
@@ -138,7 +131,7 @@ func (uc *NetworkUseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP str
 
 	vlan := fabric.VLANs[0]
 
-	subnetParams := &model.SubnetParams{
+	subnetParams := &entity.SubnetParams{
 		CIDR:       cidr,
 		GatewayIP:  gatewayIP,
 		DNSServers: dnsServers,
@@ -151,7 +144,7 @@ func (uc *NetworkUseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP str
 	}
 
 	if dhcpOn {
-		vlanParams := &model.VLANParams{}
+		vlanParams := &entity.VLANParams{}
 		if _, err := uc.vlan.Update(ctx, fabric.ID, vlan.VID, vlanParams); err != nil {
 			return nil, err
 		}
@@ -162,15 +155,15 @@ func (uc *NetworkUseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP str
 		return nil, err
 	}
 
-	return &model.Network{
+	return &Network{
 		Fabric: fabric,
 		VLAN:   &vlan,
 		Subnet: networkSubnet,
 	}, nil
 }
 
-func (uc *NetworkUseCase) CreateIPRange(ctx context.Context, subnetID int, startIP, endIP, comment string) (*model.IPRange, error) {
-	params := &model.IPRangeParams{
+func (uc *NetworkUseCase) CreateIPRange(ctx context.Context, subnetID int, startIP, endIP, comment string) (*IPRange, error) {
+	params := &entity.IPRangeParams{
 		Type:    "reserved",
 		Subnet:  strconv.Itoa(subnetID),
 		StartIP: startIP,
@@ -213,15 +206,15 @@ func (uc *NetworkUseCase) DeleteIPRange(ctx context.Context, id int) error {
 	return uc.ipRange.Delete(ctx, id)
 }
 
-func (uc *NetworkUseCase) UpdateFabric(ctx context.Context, id int, name string) (*model.Fabric, error) {
-	params := &model.FabricParams{
+func (uc *NetworkUseCase) UpdateFabric(ctx context.Context, id int, name string) (*Fabric, error) {
+	params := &entity.FabricParams{
 		Name: name,
 	}
 	return uc.fabric.Update(ctx, id, params)
 }
 
-func (uc *NetworkUseCase) UpdateVLAN(ctx context.Context, fabricID, vid int, name string, mtu int, description string, dhcpOn bool) (*model.VLAN, error) {
-	params := &model.VLANParams{
+func (uc *NetworkUseCase) UpdateVLAN(ctx context.Context, fabricID, vid int, name string, mtu int, description string, dhcpOn bool) (*VLAN, error) {
+	params := &entity.VLANParams{
 		Name:        name,
 		MTU:         mtu,
 		Description: description,
@@ -230,8 +223,8 @@ func (uc *NetworkUseCase) UpdateVLAN(ctx context.Context, fabricID, vid int, nam
 	return uc.vlan.Update(ctx, fabricID, vid, params)
 }
 
-func (uc *NetworkUseCase) UpdateSubnet(ctx context.Context, id int, name, cidr, gatewayIP string, dnsServers []string, description string, allowDNSResolution bool) (*model.NetworkSubnet, error) {
-	params := &model.SubnetParams{
+func (uc *NetworkUseCase) UpdateSubnet(ctx context.Context, id int, name, cidr, gatewayIP string, dnsServers []string, description string, allowDNSResolution bool) (*NetworkSubnet, error) {
+	params := &entity.SubnetParams{
 		Name:        name,
 		CIDR:        cidr,
 		GatewayIP:   gatewayIP,
@@ -246,8 +239,8 @@ func (uc *NetworkUseCase) UpdateSubnet(ctx context.Context, id int, name, cidr, 
 	return uc.getNetworkSubnet(ctx, subnet)
 }
 
-func (uc *NetworkUseCase) UpdateIPRange(ctx context.Context, id int, startIP, endIP, comment string) (*model.IPRange, error) {
-	params := &model.IPRangeParams{
+func (uc *NetworkUseCase) UpdateIPRange(ctx context.Context, id int, startIP, endIP, comment string) (*IPRange, error) {
+	params := &entity.IPRangeParams{
 		StartIP: startIP,
 		EndIP:   endIP,
 		Comment: comment,
@@ -255,7 +248,7 @@ func (uc *NetworkUseCase) UpdateIPRange(ctx context.Context, id int, startIP, en
 	return uc.ipRange.Update(ctx, id, params)
 }
 
-func (uc *NetworkUseCase) getNetworkSubnet(ctx context.Context, subnet *model.Subnet) (*model.NetworkSubnet, error) {
+func (uc *NetworkUseCase) getNetworkSubnet(ctx context.Context, subnet *Subnet) (*NetworkSubnet, error) {
 	statistics, err := uc.subnet.GetStatistics(ctx, subnet.ID)
 	if err != nil {
 		return nil, err
@@ -272,13 +265,13 @@ func (uc *NetworkUseCase) getNetworkSubnet(ctx context.Context, subnet *model.Su
 	if err != nil {
 		return nil, err
 	}
-	ipRanges := []model.IPRange{}
+	ipRanges := []IPRange{}
 	for i := range allIPRanges {
 		if ipNet.Contains(allIPRanges[i].StartIP) && ipNet.Contains(allIPRanges[i].EndIP) {
 			ipRanges = append(ipRanges, allIPRanges[i])
 		}
 	}
-	return &model.NetworkSubnet{
+	return &NetworkSubnet{
 		Subnet:      subnet,
 		Statistics:  statistics,
 		IPAddresses: ipAddresses,

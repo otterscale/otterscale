@@ -7,6 +7,8 @@ import (
 	"sync"
 
 	"github.com/juju/juju/core/base"
+	"github.com/juju/juju/core/constraints"
+	"github.com/juju/juju/core/instance"
 )
 
 var kubeConfigMap sync.Map
@@ -43,8 +45,8 @@ func getJujuMachineID(m map[string]string) (string, error) {
 	return token[len(token)-1], nil
 }
 
-func toPlacement(p *MachinePlacement, directive string) *Placement {
-	placement := &Placement{}
+func toPlacement(p *MachinePlacement, directive string) *instance.Placement {
+	placement := &instance.Placement{}
 	if p.LXD {
 		placement.Scope = "lxd"
 	} else if p.KVM {
@@ -58,8 +60,8 @@ func toPlacement(p *MachinePlacement, directive string) *Placement {
 	return placement
 }
 
-func toConstraint(c *MachineConstraint) Constraint {
-	constraint := Constraint{}
+func toConstraint(c *MachineConstraint) constraints.Value {
+	constraint := constraints.Value{}
 	if c.Architecture != "" {
 		constraint.Arch = &c.Architecture
 	}

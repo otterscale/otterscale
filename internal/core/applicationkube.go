@@ -19,26 +19,39 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-type PersistentVolumeClaim struct {
-	*corev1.PersistentVolumeClaim
-	*storagev1.StorageClass
+type (
+	Deployment  = appsv1.Deployment
+	StatefulSet = appsv1.StatefulSet
+	DaemonSet   = appsv1.DaemonSet
+)
+
+type (
+	Container             = corev1.Container
+	Service               = corev1.Service
+	Pod                   = corev1.Pod
+	PersistentVolumeClaim = corev1.PersistentVolumeClaim
+)
+
+type StorageClass = storagev1.StorageClass
+
+type Storage struct {
+	*PersistentVolumeClaim
+	*StorageClass
 }
 
 type Application struct {
 	*ChartMetadata
-	Type                   string
-	Name                   string
-	Namespace              string
-	ObjectMeta             *metav1.ObjectMeta
-	Labels                 map[string]string
-	Replicas               *int32
-	Containers             []corev1.Container
-	Services               []corev1.Service
-	Pods                   []corev1.Pod
-	PersistentVolumeClaims []PersistentVolumeClaim
+	Type       string
+	Name       string
+	Namespace  string
+	ObjectMeta *metav1.ObjectMeta
+	Labels     map[string]string
+	Replicas   *int32
+	Containers []Container
+	Services   []Service
+	Pods       []Pod
+	Storages   []Storage
 }
-
-type StorageClass = storagev1.StorageClass
 
 type ControlPlaneCredential struct {
 	ClientToken  string `json:"client_token"`
@@ -48,18 +61,18 @@ type ControlPlaneCredential struct {
 }
 
 type KubeAppsRepo interface {
-	ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]appsv1.Deployment, error)
-	GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*appsv1.Deployment, error)
-	ListStatefulSets(ctx context.Context, config *rest.Config, namespace string) ([]appsv1.StatefulSet, error)
-	GetStatefulSet(ctx context.Context, config *rest.Config, namespace, name string) (*appsv1.StatefulSet, error)
-	ListDaemonSets(ctx context.Context, config *rest.Config, namespace string) ([]appsv1.DaemonSet, error)
-	GetDaemonSet(ctx context.Context, config *rest.Config, namespace, name string) (*appsv1.DaemonSet, error)
+	ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]Deployment, error)
+	GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*Deployment, error)
+	ListStatefulSets(ctx context.Context, config *rest.Config, namespace string) ([]StatefulSet, error)
+	GetStatefulSet(ctx context.Context, config *rest.Config, namespace, name string) (*StatefulSet, error)
+	ListDaemonSets(ctx context.Context, config *rest.Config, namespace string) ([]DaemonSet, error)
+	GetDaemonSet(ctx context.Context, config *rest.Config, namespace, name string) (*DaemonSet, error)
 }
 
 type KubeCoreRepo interface {
-	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]corev1.Service, error)
-	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]corev1.Pod, error)
-	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]corev1.PersistentVolumeClaim, error)
+	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
+	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
+	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
 }
 
 type KubeStorageRepo interface {
@@ -252,7 +265,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 	return nil, status.Errorf(codes.NotFound, "application %q in namespace %q not found", name, namespace)
 }
 
-func (uc *ApplicationUseCase) ListStorageClasses(ctx context.Context, uuid, facility string) ([]StorageClass, error) {
+func (uc *ApplicationUseCase) ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error) {
 	config, err := uc.config(ctx, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -278,16 +291,16 @@ func (uc *ApplicationUseCase) toApplication(ls *metav1.LabelSelector, appType, n
 		return nil, fmt.Errorf("failed to create selector: %w", err)
 	}
 	return &Application{
-		Type:                   appType,
-		Name:                   name,
-		Namespace:              namespace,
-		ObjectMeta:             objectMeta,
-		Labels:                 labels,
-		Replicas:               replicas,
-		Containers:             containers,
-		Services:               filterServices(svcs, namespace, selector),
-		Pods:                   filterPods(pods, namespace, selector),
-		PersistentVolumeClaims: filterPersistentVolumeClaim(pvcs, vs, namespace, scm),
+		Type:       appType,
+		Name:       name,
+		Namespace:  namespace,
+		ObjectMeta: objectMeta,
+		Labels:     labels,
+		Replicas:   replicas,
+		Containers: containers,
+		Services:   filterServices(svcs, namespace, selector),
+		Pods:       filterPods(pods, namespace, selector),
+		Storages:   filterStorages(pvcs, vs, namespace, scm),
 	}, nil
 }
 
@@ -311,8 +324,8 @@ func filterPods(pods []corev1.Pod, namespace string, s labels.Selector) []corev1
 	return ret
 }
 
-func filterPersistentVolumeClaim(pvcs []corev1.PersistentVolumeClaim, vs []corev1.Volume, namespace string, scm map[string]storagev1.StorageClass) []PersistentVolumeClaim {
-	ret := []PersistentVolumeClaim{}
+func filterStorages(pvcs []corev1.PersistentVolumeClaim, vs []corev1.Volume, namespace string, scm map[string]storagev1.StorageClass) []Storage {
+	ret := []Storage{}
 	for i := range vs {
 		if vs[i].PersistentVolumeClaim == nil {
 			continue
@@ -326,14 +339,14 @@ func filterPersistentVolumeClaim(pvcs []corev1.PersistentVolumeClaim, vs []corev
 			}
 			if name := pvcs[j].Spec.StorageClassName; name != nil {
 				if sc, ok := scm[*name]; ok {
-					ret = append(ret, PersistentVolumeClaim{
+					ret = append(ret, Storage{
 						PersistentVolumeClaim: &pvcs[j],
 						StorageClass:          &sc,
 					})
 					continue
 				}
 			}
-			ret = append(ret, PersistentVolumeClaim{
+			ret = append(ret, Storage{
 				PersistentVolumeClaim: &pvcs[j],
 			})
 			break

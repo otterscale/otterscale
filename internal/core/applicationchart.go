@@ -26,7 +26,7 @@ type ChartMetadata struct {
 }
 
 type ChartRepo interface {
-	List(ctx context.Context) ([]repo.IndexFile, error)
+	List(ctx context.Context) ([]Chart, error)
 	Show(chartRef string, format action.ShowOutputFormat) (string, error)
 }
 
@@ -65,37 +65,22 @@ func (uc *ApplicationUseCase) GetChartMetadataFromApplication(ctx context.Contex
 }
 
 func (uc *ApplicationUseCase) ListCharts(ctx context.Context) ([]Chart, error) {
-	indice, err := uc.chart.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	charts := []Chart{}
-	for i := range indice {
-		for name := range indice[i].Entries {
-			charts = append(charts, Chart{
-				Name:     name,
-				Versions: indice[i].Entries[name],
-			})
-		}
-	}
-	return charts, nil
+	return uc.chart.List(ctx)
 }
 
 func (uc *ApplicationUseCase) GetChart(ctx context.Context, chartName string) (*Chart, error) {
-	indice, err := uc.chart.List(ctx)
+	charts, err := uc.chart.List(ctx)
 	if err != nil {
 		return nil, err
 	}
-	for i := range indice {
-		for name := range indice[i].Entries {
-			if name != chartName {
-				continue
-			}
-			return &Chart{
-				Name:     name,
-				Versions: indice[i].Entries[name],
-			}, nil
+	for i := range charts {
+		if charts[i].Name != chartName {
+			continue
 		}
+		return &Chart{
+			Name:     charts[i].Name,
+			Versions: charts[i].Versions,
+		}, nil
 	}
 	return nil, status.Errorf(codes.NotFound, "chart %q not found", chartName)
 }

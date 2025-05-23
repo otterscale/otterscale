@@ -6,6 +6,7 @@ import (
 	"errors"
 	"sync"
 
+	"github.com/juju/juju/api/client/application"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -110,7 +111,7 @@ func (uc *ApplicationUseCase) newConfig(ctx context.Context, uuid, name string) 
 	}, nil
 }
 
-func extractWorkerUnitName(unitInfo *UnitInfo) (string, error) {
+func extractWorkerUnitName(unitInfo *application.UnitInfo) (string, error) {
 	for _, erd := range unitInfo.RelationData {
 		if erd.Endpoint != "kube-control" {
 			continue
@@ -122,7 +123,7 @@ func extractWorkerUnitName(unitInfo *UnitInfo) (string, error) {
 	return "", status.Error(codes.NotFound, "kube-control not found")
 }
 
-func extractEndpoint(unitInfo *UnitInfo) (string, error) {
+func extractEndpoint(unitInfo *application.UnitInfo) (string, error) {
 	var endpoints []string
 	for _, erd := range unitInfo.RelationData {
 		for _, rd := range erd.UnitRelationData {
@@ -141,7 +142,7 @@ func extractEndpoint(unitInfo *UnitInfo) (string, error) {
 	return "", status.Error(codes.NotFound, "endpoint not found")
 }
 
-func extractClientToken(unitInfo *UnitInfo) (string, error) {
+func extractClientToken(unitInfo *application.UnitInfo) (string, error) {
 	credentials := make(map[string]ControlPlaneCredential)
 	for _, erd := range unitInfo.RelationData {
 		for _, rd := range erd.UnitRelationData {

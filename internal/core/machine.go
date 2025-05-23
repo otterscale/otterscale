@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"slices"
 	"strings"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/canonical/gomaasclient/entity/node"
-	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/core/model"
 	"github.com/juju/juju/rpc/params"
@@ -19,23 +17,7 @@ import (
 
 const JobHostUnits = model.JobHostUnits
 
-type (
-	Machine                 = entity.Machine
-	MachineCommissionParams = entity.MachineCommissionParams
-	MachinePowerOnParams    = entity.MachinePowerOnParams
-	MachinePowerOffParams   = entity.MachinePowerOffParams
-	NUMANode                = entity.NUMANode
-	BlockDevice             = entity.BlockDevice
-	NetworkInterface        = entity.NetworkInterface
-)
-
-type (
-	MachineStatus    = params.MachineStatus
-	MachineAddParams = params.AddMachineParams
-	Placement        = instance.Placement
-	Constraint       = constraints.Value
-	MachineJob       = model.MachineJob
-)
+type Machine = entity.Machine
 
 type MachinePlacement struct {
 	LXD       bool
@@ -57,16 +39,15 @@ type MachineFactor struct {
 }
 
 type MachineRepo interface {
-	List(ctx context.Context) ([]entity.Machine, error)
-	Get(ctx context.Context, systemID string) (*entity.Machine, error)
-	Release(ctx context.Context, systemID string, params *entity.MachineReleaseParams) (*entity.Machine, error)
-	PowerOn(ctx context.Context, systemID string, params *entity.MachinePowerOnParams) (*entity.Machine, error)
-	PowerOff(ctx context.Context, systemID string, params *entity.MachinePowerOffParams) (*entity.Machine, error)
-	Commission(ctx context.Context, systemID string, params *entity.MachineCommissionParams) (*entity.Machine, error)
+	List(ctx context.Context) ([]Machine, error)
+	Get(ctx context.Context, systemID string) (*Machine, error)
+	Release(ctx context.Context, systemID string, params *entity.MachineReleaseParams) (*Machine, error)
+	PowerOff(ctx context.Context, systemID string, params *entity.MachinePowerOffParams) (*Machine, error)
+	Commission(ctx context.Context, systemID string, params *entity.MachineCommissionParams) (*Machine, error)
 }
 
 type MachineManagerRepo interface {
-	AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) ([]params.AddMachinesResult, error)
+	AddMachines(ctx context.Context, uuid string, params []params.AddMachineParams) error
 	DestroyMachines(ctx context.Context, uuid string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) ([]params.DestroyMachineResult, error)
 }
 
@@ -123,7 +104,7 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSS
 	}
 
 	// commission
-	commissionParams := &MachineCommissionParams{
+	commissionParams := &entity.MachineCommissionParams{
 		TestingScripts: "",
 		EnableSSH:      boolToInt(enableSSH),
 		SkipBMCConfig:  boolToInt(skipBMCConfig),
@@ -145,23 +126,14 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSS
 	if err != nil {
 		return nil, err
 	}
-	addMachineParams := []MachineAddParams{
+	addMachineParams := []params.AddMachineParams{
 		{
-			Placement: &Placement{Scope: uuid, Directive: machine.FQDN},
-			Jobs:      []MachineJob{JobHostUnits},
+			Placement: &instance.Placement{Scope: uuid, Directive: machine.FQDN},
+			Jobs:      []model.MachineJob{JobHostUnits},
 			Base:      &params.Base{Name: base.OS, Channel: base.Channel.String()},
 		},
 	}
-	results, err := uc.machineManager.AddMachines(ctx, uuid, addMachineParams)
-	if err != nil {
-		return nil, err
-	}
-	errs := []error{}
-	for _, result := range results {
-		errs = append(errs, result.Error)
-	}
-	err = errors.Join(errs...)
-	if err != nil {
+	if err := uc.machineManager.AddMachines(ctx, uuid, addMachineParams); err != nil {
 		return nil, err
 	}
 
@@ -178,7 +150,7 @@ func (uc *MachineUseCase) DeleteMachine(ctx context.Context, id string, force bo
 }
 
 func (uc *MachineUseCase) PowerOffMachine(ctx context.Context, id, comment string) (*Machine, error) {
-	params := &MachinePowerOffParams{
+	params := &entity.MachinePowerOffParams{
 		Comment: comment,
 	}
 	return uc.machine.PowerOff(ctx, id, params)

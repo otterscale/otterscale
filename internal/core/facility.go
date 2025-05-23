@@ -18,9 +18,8 @@ import (
 )
 
 type (
-	DetailedStatus = params.DetailedStatus
-	UnitStatus     = params.UnitStatus
-	UnitInfo       = application.UnitInfo
+	ActionSpec     = action.ActionSpec
+	FacilityStatus = params.ApplicationStatus
 )
 
 type FacilityInfo struct {
@@ -34,14 +33,14 @@ type FacilityMetadata struct {
 }
 
 type Facility struct {
+	Name string
 	*FacilityMetadata
-	Name   string
-	Status *params.ApplicationStatus
+	*FacilityStatus
 }
 
 type Action struct {
 	Name string
-	Spec *action.ActionSpec
+	*ActionSpec
 }
 
 type Charm struct {
@@ -119,7 +118,7 @@ type FacilityRepo interface {
 	Expose(ctx context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error
 	AddUnits(ctx context.Context, uuid, name string, number int, placements []instance.Placement) ([]string, error)
 	ResolveUnitErrors(ctx context.Context, uuid string, units []string) error
-	CreateRelation(ctx context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error)
+	CreateRelation(ctx context.Context, uuid string, endpoints []string) error
 	DeleteRelation(ctx context.Context, uuid string, id int) error
 	GetConfig(ctx context.Context, uuid string, name string) (map[string]any, error)
 	GetLeader(ctx context.Context, uuid, name string) (string, error)
@@ -166,8 +165,8 @@ func (uc *FacilityUseCase) ListFacilities(ctx context.Context, uuid string) ([]F
 	for appName := range s.Applications {
 		appStatus := s.Applications[appName]
 		facilities = append(facilities, Facility{
-			Name:   appName,
-			Status: &appStatus,
+			Name:           appName,
+			FacilityStatus: &appStatus,
 		})
 	}
 	return facilities, nil
@@ -189,13 +188,14 @@ func (uc *FacilityUseCase) GetFacility(ctx context.Context, uuid, name string) (
 		return nil, err
 	}
 	configYAML, _ := jujuyaml.Marshal(config)
+	metadata := FacilityMetadata{
+		ConfigYAML: string(configYAML),
+	}
 
 	return &Facility{
-		FacilityMetadata: &FacilityMetadata{
-			ConfigYAML: string(configYAML),
-		},
-		Name:   name,
-		Status: &app,
+		Name:             name,
+		FacilityMetadata: &metadata,
+		FacilityStatus:   &app,
 	}, nil
 }
 
@@ -250,8 +250,8 @@ func (uc *FacilityUseCase) ListActions(ctx context.Context, uuid, appName string
 	results := []Action{}
 	for name, spec := range actions {
 		results = append(results, Action{
-			Name: name,
-			Spec: &spec,
+			Name:       name,
+			ActionSpec: &spec,
 		})
 	}
 	return results, nil
@@ -273,8 +273,8 @@ func (uc *FacilityUseCase) ListArtifacts(ctx context.Context, name string) ([]Ch
 	return uc.charm.ListArtifacts(ctx, name)
 }
 
-func (uc *FacilityUseCase) toPlacements(ctx context.Context, uuid string, mps []MachinePlacement) ([]Placement, error) {
-	placements := []Placement{}
+func (uc *FacilityUseCase) toPlacements(ctx context.Context, uuid string, mps []MachinePlacement) ([]instance.Placement, error) {
+	placements := []instance.Placement{}
 	for _, mp := range mps {
 		machine, err := uc.machine.Get(ctx, mp.MachineID)
 		if err != nil {

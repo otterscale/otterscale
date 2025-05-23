@@ -36,10 +36,7 @@ var ubuntuDistroSeriesMap = map[base.SeriesName]BootImageSelection{
 	},
 }
 
-type (
-	PackageRepository       = entity.PackageRepository
-	PackageRepositoryParams = entity.PackageRepositoryParams
-)
+type PackageRepository = entity.PackageRepository
 
 type Configuration struct {
 	NTPServers          []string
@@ -77,8 +74,8 @@ type BootSourceSelectionRepo interface {
 }
 
 type PackageRepositoryRepo interface {
-	List(ctx context.Context) ([]entity.PackageRepository, error)
-	Update(ctx context.Context, id int, params *entity.PackageRepositoryParams) (*entity.PackageRepository, error)
+	List(ctx context.Context) ([]PackageRepository, error)
+	Update(ctx context.Context, id int, params *entity.PackageRepositoryParams) (*PackageRepository, error)
 }
 
 type ConfigurationUseCase struct {
@@ -131,7 +128,7 @@ func (uc *ConfigurationUseCase) UpdateNTPServer(ctx context.Context, addresses [
 }
 
 func (uc *ConfigurationUseCase) UpdatePackageRepository(ctx context.Context, id int, url string, skipJuju bool) (*PackageRepository, error) {
-	params := &PackageRepositoryParams{
+	params := &entity.PackageRepositoryParams{
 		URL: url,
 	}
 	packageRepository, err := uc.packageRepository.Update(ctx, id, params)

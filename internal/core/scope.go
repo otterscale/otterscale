@@ -25,7 +25,7 @@ type ScopeConfigRepo interface {
 type SSHKey = entity.SSHKey
 
 type SSHKeyRepo interface {
-	List(ctx context.Context) ([]entity.SSHKey, error)
+	List(ctx context.Context) ([]SSHKey, error)
 }
 
 type ScopeUseCase struct {
