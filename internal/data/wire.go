@@ -34,7 +34,7 @@ var ProviderSet = wire.NewSet(
 	kube.New,
 	kube.NewApps,
 	kube.NewCore,
-	kube.NewHelm,
+	kube.NewHelmRelease,
 	kube.NewHelmChart,
 	kube.NewStorage,
 )
