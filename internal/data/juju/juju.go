@@ -10,11 +10,11 @@ import (
 )
 
 type Juju struct {
-	conf        *config.Config
+	conf        *config.ConfigSet
 	connections sync.Map
 }
 
-func New(conf *config.Config) *Juju {
+func New(conf *config.ConfigSet) *Juju {
 	return &Juju{
 		conf: conf,
 	}

@@ -12,14 +12,14 @@ import (
 )
 
 type Kube struct {
-	conf       *config.Config
+	conf       *config.ConfigSet
 	clientsets *sync.Map
 
 	envSettings    *cli.EnvSettings
 	registryClient *registry.Client
 }
 
-func New(conf *config.Config) (*Kube, error) {
+func New(conf *config.ConfigSet) (*Kube, error) {
 	opts := []registry.ClientOption{
 		registry.ClientOptEnableCache(true),
 	}
