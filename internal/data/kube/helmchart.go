@@ -106,7 +106,7 @@ func (r *helmChart) fetchRepoIndexFromWeb(ctx context.Context, repoURL string) (
 	}
 	queryURL = queryURL.JoinPath("index.yaml")
 
-	data, err := utils.Get(ctx, queryURL.String())
+	data, err := utils.HTTPGet(ctx, queryURL.String())
 	if err != nil {
 		return nil, err
 	}

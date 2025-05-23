@@ -5,20 +5,20 @@ import (
 
 	api "github.com/juju/juju/api/client/modelconfig"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type modelConfig struct {
 	juju *Juju
 }
 
-func NewModelConfig(juju *Juju) service.JujuModelConfig {
+func NewModelConfig(juju *Juju) core.ScopeConfigRepo {
 	return &modelConfig{
 		juju: juju,
 	}
 }
 
-var _ service.JujuModelConfig = (*modelConfig)(nil)
+var _ core.ScopeConfigRepo = (*modelConfig)(nil)
 
 func (r *modelConfig) List(_ context.Context, uuid string) (map[string]any, error) {
 	conn, err := r.juju.connection(uuid)

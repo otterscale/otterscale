@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func Get(ctx context.Context, url string) ([]byte, error) {
+func HTTPGet(ctx context.Context, url string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return nil, fmt.Errorf("get %q failed: %w", url, err)

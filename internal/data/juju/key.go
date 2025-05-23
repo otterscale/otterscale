@@ -2,29 +2,38 @@ package juju
 
 import (
 	"context"
+	"errors"
 
 	api "github.com/juju/juju/api/client/keymanager"
-	"github.com/juju/juju/rpc/params"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type key struct {
 	juju *Juju
 }
 
-func NewKey(juju *Juju) service.JujuKey {
+func NewKey(juju *Juju) core.KeyRepo {
 	return &key{
 		juju: juju,
 	}
 }
 
-var _ service.JujuKey = (*key)(nil)
+var _ core.KeyRepo = (*key)(nil)
 
-func (r *key) Add(_ context.Context, uuid, key string) ([]params.ErrorResult, error) {
+func (r *key) Add(_ context.Context, uuid, key string) error {
 	conn, err := r.juju.connection(uuid)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return api.NewClient(conn).AddKeys(r.juju.username(), key)
+
+	results, err := api.NewClient(conn).AddKeys(r.juju.username(), key)
+	if err != nil {
+		return err
+	}
+	errs := []error{}
+	for _, result := range results {
+		errs = append(errs, result.Error)
+	}
+	return errors.Join(errs...)
 }

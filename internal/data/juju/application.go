@@ -14,20 +14,20 @@ import (
 	"github.com/juju/juju/rpc/params"
 	"github.com/juju/names/v5"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type application struct {
 	juju *Juju
 }
 
-func NewApplication(juju *Juju) service.JujuApplication {
+func NewApplication(juju *Juju) core.FacilityRepo {
 	return &application{
 		juju: juju,
 	}
 }
 
-var _ service.JujuApplication = (*application)(nil)
+var _ core.FacilityRepo = (*application)(nil)
 
 func (r *application) Create(_ context.Context, uuid, name, configYAML, charmName, channel string, revision, number int, base *base.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*api.DeployInfo, error) {
 	conn, err := r.juju.connection(uuid)

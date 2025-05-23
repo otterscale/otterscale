@@ -9,22 +9,22 @@ import (
 	"github.com/juju/juju/core/status"
 	"github.com/juju/names/v5"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type model struct {
 	juju *Juju
 }
 
-func NewModel(juju *Juju) service.JujuModel {
+func NewModel(juju *Juju) core.ScopeRepo {
 	return &model{
 		juju: juju,
 	}
 }
 
-var _ service.JujuModel = (*model)(nil)
+var _ core.ScopeRepo = (*model)(nil)
 
-func (r *model) List(_ context.Context) ([]base.UserModelSummary, error) {
+func (r *model) List(_ context.Context) ([]core.Scope, error) {
 	conn, err := r.juju.connection("")
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (r *model) List(_ context.Context) ([]base.UserModelSummary, error) {
 	return r.filterValidModels(models), nil
 }
 
-func (r *model) Create(_ context.Context, name string) (*base.ModelInfo, error) {
+func (r *model) Create(_ context.Context, name string) (*core.Scope, error) {
 	conn, err := r.juju.connection("")
 	if err != nil {
 		return nil, err
@@ -48,10 +48,19 @@ func (r *model) Create(_ context.Context, name string) (*base.ModelInfo, error) 
 	if err != nil {
 		return nil, err
 	}
-	return &model, nil
+	return &core.Scope{
+		UUID:         model.UUID,
+		Name:         model.Name,
+		Type:         model.Type,
+		ProviderType: model.ProviderType,
+		Life:         model.Life,
+		Status:       model.Status,
+		AgentVersion: model.AgentVersion,
+		IsController: model.IsController,
+	}, nil
 }
 
-func (r *model) filterValidModels(models []base.UserModelSummary) []base.UserModelSummary {
+func (r *model) filterValidModels(models []base.UserModelSummary) []core.Scope {
 	return slices.DeleteFunc(models, func(model base.UserModelSummary) bool {
 		return model.Name == "controller" || !status.ValidModelStatus(model.Status.Status)
 	})

@@ -8,8 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	biz "github.com/openhdc/otterscale/internal/domain/model"
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 	"github.com/openhdc/otterscale/internal/utils"
 )
 
@@ -17,19 +16,19 @@ type charm struct {
 	juju *Juju
 }
 
-func NewCharm(juju *Juju) service.JujuCharm {
+func NewCharm(juju *Juju) core.CharmRepo {
 	return &charm{
 		juju: juju,
 	}
 }
 
-var _ service.JujuCharm = (*charm)(nil)
+var _ core.CharmRepo = (*charm)(nil)
 
-func (r *charm) List(ctx context.Context) ([]biz.Charm, error) {
+func (r *charm) List(ctx context.Context) ([]core.Charm, error) {
 	return r.find(ctx, "")
 }
 
-func (r *charm) Get(ctx context.Context, name string) (*biz.Charm, error) {
+func (r *charm) Get(ctx context.Context, name string) (*core.Charm, error) {
 	charms, err := r.find(ctx, name)
 	if err != nil {
 		return nil, err
@@ -42,11 +41,11 @@ func (r *charm) Get(ctx context.Context, name string) (*biz.Charm, error) {
 	return nil, status.Errorf(codes.NotFound, "charm name %q not found", name)
 }
 
-func (r *charm) ListArtifacts(ctx context.Context, name string) ([]biz.CharmArtifact, error) {
+func (r *charm) ListArtifacts(ctx context.Context, name string) ([]core.CharmArtifact, error) {
 	return r.info(ctx, name)
 }
 
-func (r *charm) find(ctx context.Context, name string) ([]biz.Charm, error) {
+func (r *charm) find(ctx context.Context, name string) ([]core.Charm, error) {
 	queryURL, err := url.ParseRequestURI(r.juju.charmhubAPIURL())
 	if err != nil {
 		return nil, err
@@ -60,13 +59,13 @@ func (r *charm) find(ctx context.Context, name string) ([]biz.Charm, error) {
 	}
 	queryURL.RawQuery = queryParams.Encode()
 
-	data, err := utils.Get(ctx, queryURL.String())
+	data, err := utils.HTTPGet(ctx, queryURL.String())
 	if err != nil {
 		return nil, err
 	}
 
 	type response struct {
-		Results []biz.Charm `json:"results"`
+		Results []core.Charm `json:"results"`
 	}
 	resp := new(response)
 	if err := json.Unmarshal(data, resp); err != nil {
@@ -75,7 +74,7 @@ func (r *charm) find(ctx context.Context, name string) ([]biz.Charm, error) {
 	return resp.Results, nil
 }
 
-func (r *charm) info(ctx context.Context, name string) ([]biz.CharmArtifact, error) {
+func (r *charm) info(ctx context.Context, name string) ([]core.CharmArtifact, error) {
 	queryURL, err := url.ParseRequestURI(r.juju.charmhubAPIURL())
 	if err != nil {
 		return nil, err
@@ -86,12 +85,12 @@ func (r *charm) info(ctx context.Context, name string) ([]biz.CharmArtifact, err
 	queryParams.Set("fields", "channel-map")
 	queryURL.RawQuery = queryParams.Encode()
 
-	data, err := utils.Get(ctx, queryURL.String())
+	data, err := utils.HTTPGet(ctx, queryURL.String())
 	if err != nil {
 		return nil, err
 	}
 
-	resp := new(biz.Charm)
+	resp := new(core.Charm)
 	if err := json.Unmarshal(data, resp); err != nil {
 		return nil, err
 	}

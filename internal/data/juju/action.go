@@ -5,22 +5,22 @@ import (
 
 	api "github.com/juju/juju/api/client/action"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type action struct {
 	juju *Juju
 }
 
-func NewAction(juju *Juju) service.JujuAction {
+func NewAction(juju *Juju) core.ActionRepo {
 	return &action{
 		juju: juju,
 	}
 }
 
-var _ service.JujuAction = (*action)(nil)
+var _ core.ActionRepo = (*action)(nil)
 
-func (r *action) List(_ context.Context, uuid, appName string) (map[string]api.ActionSpec, error) {
+func (r *action) List(_ context.Context, uuid, appName string) (map[string]core.ActionSpec, error) {
 	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err

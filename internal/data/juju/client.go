@@ -6,20 +6,20 @@ import (
 	api "github.com/juju/juju/api/client/client"
 	"github.com/juju/juju/rpc/params"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type client struct {
 	juju *Juju
 }
 
-func NewClient(juju *Juju) service.JujuClient {
+func NewClient(juju *Juju) core.ClientRepo {
 	return &client{
 		juju: juju,
 	}
 }
 
-var _ service.JujuClient = (*client)(nil)
+var _ core.ClientRepo = (*client)(nil)
 
 func (r *client) Status(_ context.Context, uuid string, patterns []string) (*params.FullStatus, error) {
 	conn, err := r.juju.connection(uuid)
