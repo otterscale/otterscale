@@ -5,22 +5,22 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type tag struct {
 	maas *MAAS
 }
 
-func NewTag(maas *MAAS) service.MAASTag {
+func NewTag(maas *MAAS) core.TagRepo {
 	return &tag{
 		maas: maas,
 	}
 }
 
-var _ service.MAASTag = (*tag)(nil)
+var _ core.TagRepo = (*tag)(nil)
 
-func (r *tag) List(_ context.Context) ([]entity.Tag, error) {
+func (r *tag) List(_ context.Context) ([]core.Tag, error) {
 	client, err := r.maas.client()
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (r *tag) List(_ context.Context) ([]entity.Tag, error) {
 	return client.Tags.Get()
 }
 
-func (r *tag) Get(_ context.Context, name string) (*entity.Tag, error) {
+func (r *tag) Get(_ context.Context, name string) (*core.Tag, error) {
 	client, err := r.maas.client()
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (r *tag) Get(_ context.Context, name string) (*entity.Tag, error) {
 	return client.Tag.Get(name)
 }
 
-func (r *tag) Create(_ context.Context, name, comment string) (*entity.Tag, error) {
+func (r *tag) Create(_ context.Context, name, comment string) (*core.Tag, error) {
 	client, err := r.maas.client()
 	if err != nil {
 		return nil, err

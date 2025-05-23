@@ -3,24 +3,22 @@ package maas
 import (
 	"context"
 
-	"github.com/canonical/gomaasclient/entity"
-
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type sshKey struct {
 	maas *MAAS
 }
 
-func NewSSHKey(maas *MAAS) service.MAASSSHKey {
+func NewSSHKey(maas *MAAS) core.SSHKeyRepo {
 	return &sshKey{
 		maas: maas,
 	}
 }
 
-var _ service.MAASSSHKey = (*sshKey)(nil)
+var _ core.SSHKeyRepo = (*sshKey)(nil)
 
-func (r *sshKey) List(_ context.Context) ([]entity.SSHKey, error) {
+func (r *sshKey) List(_ context.Context) ([]core.SSHKey, error) {
 	client, err := r.maas.client()
 	if err != nil {
 		return nil, err

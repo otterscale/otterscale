@@ -4,20 +4,20 @@ import (
 	"context"
 	"strings"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type server struct {
 	maas *MAAS
 }
 
-func NewServer(maas *MAAS) service.MAASServer {
+func NewServer(maas *MAAS) core.ServerRepo {
 	return &server{
 		maas: maas,
 	}
 }
 
-var _ service.MAASServer = (*server)(nil)
+var _ core.ServerRepo = (*server)(nil)
 
 func (r *server) Get(_ context.Context, name string) (string, error) {
 	client, err := r.maas.client()

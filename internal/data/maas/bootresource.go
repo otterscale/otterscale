@@ -3,22 +3,22 @@ package maas
 import (
 	"context"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
-
 	"github.com/canonical/gomaasclient/entity"
+
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type bootResource struct {
 	maas *MAAS
 }
 
-func NewBootResource(maas *MAAS) service.MAASBootResource {
+func NewBootResource(maas *MAAS) core.BootResourceRepo {
 	return &bootResource{
 		maas: maas,
 	}
 }
 
-var _ service.MAASBootResource = (*bootResource)(nil)
+var _ core.BootResourceRepo = (*bootResource)(nil)
 
 func (r *bootResource) List(_ context.Context) ([]entity.BootResource, error) {
 	client, err := r.maas.client()
