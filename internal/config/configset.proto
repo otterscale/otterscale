@@ -24,7 +24,7 @@ message Kube {
   repeated string helm_repository_urls = 1;
 }
 
-message Config {
+message ConfigSet {
   MAAS maas = 1;
   Juju juju = 2;
   Kube kube = 3;

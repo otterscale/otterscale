@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.31.0
-// source: internal/config/config.proto
+// source: internal/config/configset.proto
 
 package config
 
@@ -33,7 +33,7 @@ type MAAS struct {
 
 func (x *MAAS) Reset() {
 	*x = MAAS{}
-	mi := &file_internal_config_config_proto_msgTypes[0]
+	mi := &file_internal_config_configset_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -45,7 +45,7 @@ func (x *MAAS) String() string {
 func (*MAAS) ProtoMessage() {}
 
 func (x *MAAS) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_config_config_proto_msgTypes[0]
+	mi := &file_internal_config_configset_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -181,7 +181,7 @@ type Juju struct {
 
 func (x *Juju) Reset() {
 	*x = Juju{}
-	mi := &file_internal_config_config_proto_msgTypes[1]
+	mi := &file_internal_config_configset_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -193,7 +193,7 @@ func (x *Juju) String() string {
 func (*Juju) ProtoMessage() {}
 
 func (x *Juju) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_config_config_proto_msgTypes[1]
+	mi := &file_internal_config_configset_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -430,7 +430,7 @@ type Kube struct {
 
 func (x *Kube) Reset() {
 	*x = Kube{}
-	mi := &file_internal_config_config_proto_msgTypes[2]
+	mi := &file_internal_config_configset_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -442,7 +442,7 @@ func (x *Kube) String() string {
 func (*Kube) ProtoMessage() {}
 
 func (x *Kube) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_config_config_proto_msgTypes[2]
+	mi := &file_internal_config_configset_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -478,7 +478,7 @@ func (b0 Kube_builder) Build() *Kube {
 	return m0
 }
 
-type Config struct {
+type ConfigSet struct {
 	state           protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Maas *MAAS                  `protobuf:"bytes,1,opt,name=maas"`
 	xxx_hidden_Juju *Juju                  `protobuf:"bytes,2,opt,name=juju"`
@@ -487,21 +487,21 @@ type Config struct {
 	sizeCache       protoimpl.SizeCache
 }
 
-func (x *Config) Reset() {
-	*x = Config{}
-	mi := &file_internal_config_config_proto_msgTypes[3]
+func (x *ConfigSet) Reset() {
+	*x = ConfigSet{}
+	mi := &file_internal_config_configset_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Config) String() string {
+func (x *ConfigSet) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Config) ProtoMessage() {}
+func (*ConfigSet) ProtoMessage() {}
 
-func (x *Config) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_config_config_proto_msgTypes[3]
+func (x *ConfigSet) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_config_configset_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -512,73 +512,73 @@ func (x *Config) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Config) GetMaas() *MAAS {
+func (x *ConfigSet) GetMaas() *MAAS {
 	if x != nil {
 		return x.xxx_hidden_Maas
 	}
 	return nil
 }
 
-func (x *Config) GetJuju() *Juju {
+func (x *ConfigSet) GetJuju() *Juju {
 	if x != nil {
 		return x.xxx_hidden_Juju
 	}
 	return nil
 }
 
-func (x *Config) GetKube() *Kube {
+func (x *ConfigSet) GetKube() *Kube {
 	if x != nil {
 		return x.xxx_hidden_Kube
 	}
 	return nil
 }
 
-func (x *Config) SetMaas(v *MAAS) {
+func (x *ConfigSet) SetMaas(v *MAAS) {
 	x.xxx_hidden_Maas = v
 }
 
-func (x *Config) SetJuju(v *Juju) {
+func (x *ConfigSet) SetJuju(v *Juju) {
 	x.xxx_hidden_Juju = v
 }
 
-func (x *Config) SetKube(v *Kube) {
+func (x *ConfigSet) SetKube(v *Kube) {
 	x.xxx_hidden_Kube = v
 }
 
-func (x *Config) HasMaas() bool {
+func (x *ConfigSet) HasMaas() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Maas != nil
 }
 
-func (x *Config) HasJuju() bool {
+func (x *ConfigSet) HasJuju() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Juju != nil
 }
 
-func (x *Config) HasKube() bool {
+func (x *ConfigSet) HasKube() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Kube != nil
 }
 
-func (x *Config) ClearMaas() {
+func (x *ConfigSet) ClearMaas() {
 	x.xxx_hidden_Maas = nil
 }
 
-func (x *Config) ClearJuju() {
+func (x *ConfigSet) ClearJuju() {
 	x.xxx_hidden_Juju = nil
 }
 
-func (x *Config) ClearKube() {
+func (x *ConfigSet) ClearKube() {
 	x.xxx_hidden_Kube = nil
 }
 
-type Config_builder struct {
+type ConfigSet_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Maas *MAAS
@@ -586,8 +586,8 @@ type Config_builder struct {
 	Kube *Kube
 }
 
-func (b0 Config_builder) Build() *Config {
-	m0 := &Config{}
+func (b0 ConfigSet_builder) Build() *ConfigSet {
+	m0 := &ConfigSet{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Maas = b.Maas
@@ -596,11 +596,11 @@ func (b0 Config_builder) Build() *Config {
 	return m0
 }
 
-var File_internal_config_config_proto protoreflect.FileDescriptor
+var File_internal_config_configset_proto protoreflect.FileDescriptor
 
-const file_internal_config_config_proto_rawDesc = "" +
+const file_internal_config_configset_proto_rawDesc = "" +
 	"\n" +
-	"\x1cinternal/config/config.proto\x12\x14otterscale.config.v1\"D\n" +
+	"\x1finternal/config/configset.proto\x12\x14otterscale.config.v1\"D\n" +
 	"\x04MAAS\x12\x10\n" +
 	"\x03url\x18\x01 \x01(\tR\x03url\x12\x10\n" +
 	"\x03key\x18\x02 \x01(\tR\x03key\x12\x18\n" +
@@ -615,23 +615,23 @@ const file_internal_config_config_proto_rawDesc = "" +
 	"\fcloud_region\x18\f \x01(\tR\vcloudRegion\x12(\n" +
 	"\x10charmhub_api_url\x18\x15 \x01(\tR\x0echarmhubApiUrl\"8\n" +
 	"\x04Kube\x120\n" +
-	"\x14helm_repository_urls\x18\x01 \x03(\tR\x12helmRepositoryUrls\"\x98\x01\n" +
-	"\x06Config\x12.\n" +
+	"\x14helm_repository_urls\x18\x01 \x03(\tR\x12helmRepositoryUrls\"\x9b\x01\n" +
+	"\tConfigSet\x12.\n" +
 	"\x04maas\x18\x01 \x01(\v2\x1a.otterscale.config.v1.MAASR\x04maas\x12.\n" +
 	"\x04juju\x18\x02 \x01(\v2\x1a.otterscale.config.v1.JujuR\x04juju\x12.\n" +
 	"\x04kube\x18\x03 \x01(\v2\x1a.otterscale.config.v1.KubeR\x04kubeB9Z7github.com/openhdc/otterscale/internal/config/v1;configb\beditionsp\xe8\a"
 
-var file_internal_config_config_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-var file_internal_config_config_proto_goTypes = []any{
-	(*MAAS)(nil),   // 0: otterscale.config.v1.MAAS
-	(*Juju)(nil),   // 1: otterscale.config.v1.Juju
-	(*Kube)(nil),   // 2: otterscale.config.v1.Kube
-	(*Config)(nil), // 3: otterscale.config.v1.Config
+var file_internal_config_configset_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_internal_config_configset_proto_goTypes = []any{
+	(*MAAS)(nil),      // 0: otterscale.config.v1.MAAS
+	(*Juju)(nil),      // 1: otterscale.config.v1.Juju
+	(*Kube)(nil),      // 2: otterscale.config.v1.Kube
+	(*ConfigSet)(nil), // 3: otterscale.config.v1.ConfigSet
 }
-var file_internal_config_config_proto_depIdxs = []int32{
-	0, // 0: otterscale.config.v1.Config.maas:type_name -> otterscale.config.v1.MAAS
-	1, // 1: otterscale.config.v1.Config.juju:type_name -> otterscale.config.v1.Juju
-	2, // 2: otterscale.config.v1.Config.kube:type_name -> otterscale.config.v1.Kube
+var file_internal_config_configset_proto_depIdxs = []int32{
+	0, // 0: otterscale.config.v1.ConfigSet.maas:type_name -> otterscale.config.v1.MAAS
+	1, // 1: otterscale.config.v1.ConfigSet.juju:type_name -> otterscale.config.v1.Juju
+	2, // 2: otterscale.config.v1.ConfigSet.kube:type_name -> otterscale.config.v1.Kube
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -639,26 +639,26 @@ var file_internal_config_config_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_internal_config_config_proto_init() }
-func file_internal_config_config_proto_init() {
-	if File_internal_config_config_proto != nil {
+func init() { file_internal_config_configset_proto_init() }
+func file_internal_config_configset_proto_init() {
+	if File_internal_config_configset_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_config_config_proto_rawDesc), len(file_internal_config_config_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_config_configset_proto_rawDesc), len(file_internal_config_configset_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_internal_config_config_proto_goTypes,
-		DependencyIndexes: file_internal_config_config_proto_depIdxs,
-		MessageInfos:      file_internal_config_config_proto_msgTypes,
+		GoTypes:           file_internal_config_configset_proto_goTypes,
+		DependencyIndexes: file_internal_config_configset_proto_depIdxs,
+		MessageInfos:      file_internal_config_configset_proto_msgTypes,
 	}.Build()
-	File_internal_config_config_proto = out.File
-	file_internal_config_config_proto_goTypes = nil
-	file_internal_config_config_proto_depIdxs = nil
+	File_internal_config_configset_proto = out.File
+	file_internal_config_configset_proto_goTypes = nil
+	file_internal_config_configset_proto_depIdxs = nil
 }
