@@ -1,4 +1,4 @@
-package service
+package app
 
 import (
 	"github.com/openhdc/otterscale/api/general/v1/pbconnect"
