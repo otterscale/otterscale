@@ -1,0 +1,13 @@
+edition = "2023";
+
+package otterscale.license.v1;
+
+option go_package = "github.com/openhdc/otterscale/api/license/v1;pb";
+
+service LicenseService {
+  rpc Enterprise(Ping) returns (Pong);
+}
+
+message Ping {}
+
+message Pong {}
