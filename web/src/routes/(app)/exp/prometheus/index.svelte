@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
+	import ScopePicker from './utils/scope-picker.svelte';
 	import InstancePicker from './utils/instance-picker.svelte';
 
 	import QuickUptime from './uptime/quick-metric.svelte';
@@ -13,70 +14,67 @@
 	import QuickRootFS from './root-fs/quick-metric.svelte';
 
 	import NetworkTrafficBasic from './network/traffic-basic.svelte';
+	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
 
 	let {
 		client,
-		juju_model_uuid,
+		scopes,
 		instances
-	}: { client: PrometheusDriver; juju_model_uuid: string; instances: string[] } = $props();
+	}: { client: PrometheusDriver; scopes: Scope[]; instances: string[] } = $props();
 
+	let selectedScope = $state(scopes[1]);
 	let selectedInstance = $state(instances[0]);
 </script>
 
-<main class="grid gap-4 p-4">
-	<span class="ml-auto flex items-center gap-2">
+<main class="no-user-select grid gap-4 p-4">
+	<div class="mr-auto flex items-center gap-2">
+		<ScopePicker bind:selectedScope {scopes} />
 		<InstancePicker bind:selectedInstance {instances} />
-	</span>
-
-	<p class="text-xl font-bold">Quick Metric</p>
-	<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
-		<span class="col-span-1">
-			{#key selectedInstance}
-				<QuickUptime {client} {juju_model_uuid} instance={selectedInstance} />
-			{/key}
-		</span>
-		<span class="col-span-1">
-			{#key selectedInstance}
-				<QuickCPU {client} {juju_model_uuid} instance={selectedInstance} />
-			{/key}
-		</span>
-		<span class="col-span-1">
-			{#key selectedInstance}
-				<QuickRAM {client} {juju_model_uuid} instance={selectedInstance} />
-			{/key}
-		</span>
-		<span class="col-span-1">
-			{#key selectedInstance}
-				<QuickSWAP {client} {juju_model_uuid} instance={selectedInstance} />
-			{/key}
-		</span>
-		<span class="col-span-1">
-			{#key selectedInstance}
-				<QuickRootFS {client} {juju_model_uuid} instance={selectedInstance} />
-			{/key}
-		</span>
 	</div>
-	<p class="text-xl font-bold">Basic Metric</p>
-	<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-		<span class="col-span-1">
-			{#key selectedInstance}
-				<BasicCPU {client} {juju_model_uuid} instance={selectedInstance} />
-			{/key}
-		</span>
-		<span class="col-span-1">
-			{#key selectedInstance}
-				<BasicRAM {client} {juju_model_uuid} instance={selectedInstance} />
-			{/key}
-		</span>
-		<span class="col-span-1">
-			{#key selectedInstance}
-				<BasicSWAP {client} {juju_model_uuid} instance={selectedInstance} />
-			{/key}
-		</span>
-		<span class="col-span-1">
-			{#key selectedInstance}
-				<NetworkTrafficBasic {client} {juju_model_uuid} instance={selectedInstance} />
-			{/key}
-		</span>
-	</div>
+	{#key selectedScope}
+		{#key selectedInstance}
+			<p class="text-xl font-bold">Quick Metric</p>
+			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
+				<span class="col-span-1">
+					<QuickUptime {client} scope={selectedScope} instance={selectedInstance} />
+				</span>
+				<span class="col-span-1">
+					<QuickCPU {client} scope={selectedScope} instance={selectedInstance} />
+				</span>
+				<span class="col-span-1">
+					<QuickRAM {client} scope={selectedScope} instance={selectedInstance} />
+				</span>
+				<span class="col-span-1">
+					<QuickSWAP {client} scope={selectedScope} instance={selectedInstance} />
+				</span>
+				<span class="col-span-1">
+					<QuickRootFS {client} scope={selectedScope} instance={selectedInstance} />
+				</span>
+			</div>
+			<p class="text-xl font-bold">Basic Metric</p>
+			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+				<span class="col-span-1">
+					<BasicCPU {client} scope={selectedScope} instance={selectedInstance} />
+				</span>
+				<span class="col-span-1">
+					<BasicRAM {client} scope={selectedScope} instance={selectedInstance} />
+				</span>
+				<span class="col-span-1">
+					<BasicSWAP {client} scope={selectedScope} instance={selectedInstance} />
+				</span>
+				<span class="col-span-1">
+					<NetworkTrafficBasic {client} scope={selectedScope} instance={selectedInstance} />
+				</span>
+			</div>
+		{/key}
+	{/key}
 </main>
+
+<style>
+	.no-user-select {
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+	}
+</style>

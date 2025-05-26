@@ -6,12 +6,13 @@
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import FinalUsage from './final-usage.svelte';
 	import Cores from './cores.svelte';
+	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
 
 	let {
 		client,
-		juju_model_uuid,
+		scope: scope,
 		instance
-	}: { client: PrometheusDriver; juju_model_uuid: string; instance: string } = $props();
+	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
 </script>
 
 <Card.Root class="col-span-1 h-full w-full border-none bg-muted/40 shadow-none">
@@ -30,11 +31,11 @@
 			</HoverCard.Root>
 		</Card.Title>
 		<Card.Description>
-			<Cores {client} {juju_model_uuid} {instance} />
+			<Cores {client} {scope} {instance} />
 		</Card.Description>
 	</Card.Header>
 	<Card.Content class="h-[200px]">
-		<FinalUsage {client} {juju_model_uuid} {instance} />
+		<FinalUsage {client} {scope} {instance} />
 	</Card.Content>
 	<Card.Footer></Card.Footer>
 </Card.Root>
