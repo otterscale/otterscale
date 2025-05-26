@@ -9,15 +9,17 @@
 	import { Button } from '$lib/components/ui/button';
 	import { integrateSerieses } from '..';
 	import { formatNetworkIO } from '$lib/formatter';
+	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import NoData from '../utils/empty.svelte';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
 
 	let {
 		client,
-		juju_model_uuid,
+		scope: scope,
 		instance: instance
-	}: { client: PrometheusDriver; juju_model_uuid: string; instance: string } = $props();
+	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
 	const now = new Date().getTime();
 
 	const offset = 1 * 60 * 60;
@@ -29,7 +31,7 @@
 	const receiveQuery = $derived(
 		`
 		irate(
-			node_network_receive_bytes_total{device="lo",instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}[4m]
+			node_network_receive_bytes_total{device="lo",instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]
 		)
 		*
 		8
@@ -39,7 +41,7 @@
 	const transmitQuery = $derived(
 		`
 		irate(
-			node_network_transmit_bytes_total{device="lo",instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}[4m]
+			node_network_transmit_bytes_total{device="lo",instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]
 		)
 		*
 		8
@@ -91,8 +93,6 @@
 				serieses.set(k, value);
 			});
 
-			console.log(receiveQuery);
-
 			mounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
@@ -101,6 +101,8 @@
 </script>
 
 {#if mounted}
+	{@const data = integrateSerieses(serieses)}
+
 	<Card.Root class="col-span-1 h-full w-full border-none shadow-none">
 		<Card.Header class="h-[100px]">
 			<Card.Title class="flex">
@@ -119,36 +121,40 @@
 			<Card.Description></Card.Description>
 		</Card.Header>
 		<Card.Content class="h-[200px]">
-			<div class="h-[200px] w-full resize overflow-visible">
-				<AreaChart
-					data={integrateSerieses(serieses)}
-					x="time"
-					series={keys.map((k, i) => ({
-						key: k,
-						color: colors[i]
-					}))}
-					legend={{
-						classes: { root: '-mb-[50px] w-full overflow-auto' }
-					}}
-					props={{
-						tooltip: {
-							root: { class: 'bg-white/60 p-3 rounded shadow-lg max-h-[50vh] overflow-auto' },
-							header: { class: 'font-light' },
-							item: {
-								format: (v) => {
-									const capacity = formatNetworkIO(v);
-									return `${capacity.value} ${capacity.unit}`;
+			{#if data.length === 0}
+				<NoData type="area" />
+			{:else}
+				<div class="h-[200px] w-full resize overflow-visible">
+					<AreaChart
+						{data}
+						x="time"
+						series={keys.map((k, i) => ({
+							key: k,
+							color: colors[i]
+						}))}
+						legend={{
+							classes: { root: '-mb-[50px] w-full overflow-auto' }
+						}}
+						props={{
+							tooltip: {
+								root: { class: 'bg-white/60 p-3 rounded shadow-lg max-h-[50vh] overflow-auto' },
+								header: { class: 'font-light' },
+								item: {
+									format: (v) => {
+										const capacity = formatNetworkIO(v);
+										return `${capacity.value} ${capacity.unit}`;
+									}
 								}
+							},
+							yAxis: {
+								format: (v) => `${(v / 1024 / 1024).toFixed(0)} Mb/s`
 							}
-						},
-						yAxis: {
-							format: (v) => `${(v / 1024 / 1024).toFixed(0)} Mb/s`
-						}
-					}}
-					{renderContext}
-					{debug}
-				/>
-			</div>
+						}}
+						{renderContext}
+						{debug}
+					/>
+				</div>
+			{/if}
 		</Card.Content>
 		<Card.Footer class="h-[150px]"></Card.Footer>
 	</Card.Root>

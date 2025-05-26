@@ -4,24 +4,26 @@
 	import { cn } from '$lib/utils';
 	import { metricColor, metricBackgroundColor } from '..';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
+	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import NoData from '../utils/empty.svelte';
 
 	let {
 		client,
-		juju_model_uuid,
+		scope: scope,
 		instance
-	}: { client: PrometheusDriver; juju_model_uuid: string; instance: string } = $props();
+	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
 
 	const query = $derived(
 		`
 		(
 			sum by (instance) (
 			irate(
-				node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}",mode!="idle"}[6m]
+				node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}",mode!="idle"}[6m]
 			)
 			)
 		/ on (instance) group_left ()
 			sum by (instance) (
-			(irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}[6m]))
+			(irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[6m]))
 			)
 		)
 		`
@@ -31,35 +33,40 @@
 {#await client.instantQuery(query)}
 	<ComponentLoading />
 {:then response}
-	{@const cpuUsage = response.result[0].value.value}
-	<div class="flex h-full w-full items-center justify-center">
-		<div class={cn(`h-[173px] w-[173px]`)}>
-			<Chart>
-				<Svg center>
-					<Group y={100 / 4}>
-						<Arc
-							value={cpuUsage * 100}
-							domain={[0, 100]}
-							outerRadius={100}
-							innerRadius={-13}
-							cornerRadius={13}
-							range={[-120, 120]}
-							class={metricColor(cpuUsage * 100)}
-							track={{ class: metricBackgroundColor(cpuUsage * 100) }}
-							let:value
-						>
-							<Text
-								value={`${value.toFixed(2)}%`}
-								textAnchor="middle"
-								verticalAnchor="middle"
-								class="text-xl tabular-nums"
-							/>
-						</Arc>
-					</Group>
-				</Svg>
-			</Chart>
+	{@const result = response.result}
+	{#if result.length === 0}
+		<NoData type="gauge" />
+	{:else}
+		{@const cpuUsage = result[0].value.value}
+		<div class="flex h-full w-full items-center justify-center">
+			<div class={cn(`h-[173px] w-[173px]`)}>
+				<Chart>
+					<Svg center>
+						<Group y={100 / 4}>
+							<Arc
+								value={cpuUsage * 100}
+								domain={[0, 100]}
+								outerRadius={100}
+								innerRadius={-13}
+								cornerRadius={13}
+								range={[-120, 120]}
+								class={metricColor(cpuUsage * 100)}
+								track={{ class: metricBackgroundColor(cpuUsage * 100) }}
+								let:value
+							>
+								<Text
+									value={`${value.toFixed(2)}%`}
+									textAnchor="middle"
+									verticalAnchor="middle"
+									class="text-xl tabular-nums"
+								/>
+							</Arc>
+						</Group>
+					</Svg>
+				</Chart>
+			</div>
 		</div>
-	</div>
+	{/if}
 {:catch error}
 	Error
 {/await}

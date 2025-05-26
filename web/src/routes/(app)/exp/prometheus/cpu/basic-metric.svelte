@@ -8,15 +8,17 @@
 	import { integrateSerieses } from '../index';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Button } from '$lib/components/ui/button';
+	import NoData from '../utils/empty.svelte';
+	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
 
 	let {
 		client,
-		juju_model_uuid,
+		scope: scope,
 		instance: instance
-	}: { client: PrometheusDriver; juju_model_uuid: string; instance: string } = $props();
+	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
 	const now = new Date().getTime();
 
 	const offset = 1 * 60 * 60;
@@ -29,12 +31,12 @@
 		`
         sum by (instance) (
             irate(
-            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}",mode="system"}[4m]
+            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}",mode="system"}[4m]
             )
         )
         / on (instance) group_left ()
         sum by (instance) (
-            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}[4m]))
+            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]))
         )
 		`
 	);
@@ -42,12 +44,12 @@
 		`
         sum by (instance) (
             irate(
-            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}",mode="user"}[4m]
+            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}",mode="user"}[4m]
             )
         )
         / on (instance) group_left ()
         sum by (instance) (
-            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}[4m]))
+            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]))
         )
 		`
 	);
@@ -55,12 +57,12 @@
 		`
         sum by (instance) (
             irate(
-            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}",mode="iowait"}[4m]
+            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}",mode="iowait"}[4m]
             )
         )
         / on (instance) group_left ()
         sum by (instance) (
-            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}[4m]))
+            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]))
         )
 		`
 	);
@@ -68,12 +70,12 @@
 		`
         sum by (instance) (
             irate(
-            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}",mode=~".*irq"}[4m]
+            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}",mode=~".*irq"}[4m]
             )
         )
         / on (instance) group_left ()
         sum by (instance) (
-            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}[4m]))
+            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]))
         )
 		`
 	);
@@ -81,12 +83,12 @@
 		`
         sum by (instance) (
             irate(
-            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}",mode="idle"}[4m]
+            node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}",mode="idle"}[4m]
             )
         )
         / on (instance) group_left ()
         sum by (instance) (
-            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}[4m]))
+            (irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]))
         )
 		`
 	);
@@ -94,12 +96,12 @@
 		`
 		sum by (instance) (
 			irate(
-			node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}",mode!="idle",mode!="iowait",mode!="irq",mode!="softirq",mode!="system",mode!="user"}[4m]
+			node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}",mode!="idle",mode!="iowait",mode!="irq",mode!="softirq",mode!="system",mode!="user"}[4m]
 			)
 		)
 		/ on (instance) group_left ()
 		sum by (instance) (
-			(irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}[4m]))
+			(irate(node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]))
 		)
 		`
 	);
@@ -154,6 +156,8 @@
 </script>
 
 {#if mounted}
+	{@const data = integrateSerieses(serieses)}
+
 	<Card.Root class="col-span-1 h-full w-full border-none shadow-none">
 		<Card.Header class="h-[100px]">
 			<Card.Title class="flex">
@@ -172,34 +176,38 @@
 			<Card.Description></Card.Description>
 		</Card.Header>
 		<Card.Content class="h-[200px]">
-			<div class="h-[200px] w-full resize overflow-visible">
-				<AreaChart
-					data={integrateSerieses(serieses)}
-					x="time"
-					yDomain={[0, 1]}
-					series={[
-						{ key: 'system', color: 'hsl(var(--color-primary))' },
-						{ key: 'user', color: 'hsl(var(--color-secondary))' },
-						{ key: 'iowait', color: 'hsl(var(--color-info))' },
-						{ key: 'irqs', color: 'hsl(var(--color-success))' },
-						{ key: 'idle', color: 'hsl(var(--color-warning))' },
-						{ key: 'other', color: 'hsl(var(--color-danger))' }
-					]}
-					legend={{
-						classes: { root: '-mb-[50px] w-full overflow-auto' }
-					}}
-					props={{
-						yAxis: { format: 'percent' },
-						tooltip: {
-							root: { class: 'bg-white/60 p-3 rounded shadow-lg' },
-							header: { class: 'font-light' },
-							item: { format: 'percent' }
-						}
-					}}
-					{renderContext}
-					{debug}
-				/>
-			</div>
+			{#if data.length === 0}
+				<NoData type="area" />
+			{:else}
+				<div class="h-[200px] w-full resize overflow-visible">
+					<AreaChart
+						{data}
+						x="time"
+						yDomain={[0, 1]}
+						series={[
+							{ key: 'system', color: 'hsl(var(--color-primary))' },
+							{ key: 'user', color: 'hsl(var(--color-secondary))' },
+							{ key: 'iowait', color: 'hsl(var(--color-info))' },
+							{ key: 'irqs', color: 'hsl(var(--color-success))' },
+							{ key: 'idle', color: 'hsl(var(--color-warning))' },
+							{ key: 'other', color: 'hsl(var(--color-danger))' }
+						]}
+						legend={{
+							classes: { root: '-mb-[50px] w-full overflow-auto' }
+						}}
+						props={{
+							yAxis: { format: 'percent' },
+							tooltip: {
+								root: { class: 'bg-white/60 p-3 rounded shadow-lg' },
+								header: { class: 'font-light' },
+								item: { format: 'percent' }
+							}
+						}}
+						{renderContext}
+						{debug}
+					/>
+				</div>
+			{/if}
 		</Card.Content>
 		<Card.Footer class="h-[150px]"></Card.Footer>
 	</Card.Root>

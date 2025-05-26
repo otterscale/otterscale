@@ -6,12 +6,13 @@
 	import { Button } from '$lib/components/ui/button';
 
 	import Uptime from './uptime.svelte';
+	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
 
 	let {
 		client,
-		juju_model_uuid,
+		scope: scope,
 		instance
-	}: { client: PrometheusDriver; juju_model_uuid: string; instance: string } = $props();
+	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
 </script>
 
 <Card.Root class="col-span-1 w-full border-none bg-muted/40 shadow-none">
@@ -32,7 +33,7 @@
 		<Card.Description></Card.Description>
 	</Card.Header>
 	<Card.Content class="h-[200px]">
-		<Uptime {client} {juju_model_uuid} {instance} />
+		<Uptime {client} {scope} {instance} />
 	</Card.Content>
 	<Card.Footer></Card.Footer>
 </Card.Root>

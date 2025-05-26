@@ -9,15 +9,17 @@
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Button } from '$lib/components/ui/button';
+	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import NoData from '../utils/empty.svelte';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
 
 	let {
 		client,
-		juju_model_uuid,
+		scope: scope,
 		instance: instance
-	}: { client: PrometheusDriver; juju_model_uuid: string; instance: string } = $props();
+	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
 	const now = new Date().getTime();
 
 	const offset = 1 * 60 * 60;
@@ -28,36 +30,36 @@
 
 	const totalQuery = $derived(
 		`
-		node_memory_MemTotal_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+		node_memory_MemTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 	const usedQuery = $derived(
 		`
-			node_memory_MemTotal_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+			node_memory_MemTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		-
-			node_memory_MemFree_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+			node_memory_MemFree_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		-
 		(
-				node_memory_Cached_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+				node_memory_Cached_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 			+
-				node_memory_Buffers_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+				node_memory_Buffers_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 			+
-			node_memory_SReclaimable_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+			node_memory_SReclaimable_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		)
 		`
 	);
 	const cacheAndBufferQuery = $derived(
 		`
-			node_memory_Cached_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+			node_memory_Cached_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		+
-			node_memory_Buffers_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+			node_memory_Buffers_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		+
-		node_memory_SReclaimable_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+		node_memory_SReclaimable_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 	const freeQuery = $derived(
 		`
-		node_memory_MemFree_bytes{instance="${instance}",juju_model_uuid=~"${juju_model_uuid}"}
+		node_memory_MemFree_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 
@@ -105,6 +107,8 @@
 </script>
 
 {#if mounted}
+	{@const data = integrateSerieses(serieses)}
+
 	<Card.Root class="col-span-1 h-full w-full border-none shadow-none">
 		<Card.Header class="h-[100px]">
 			<Card.Title class="flex">
@@ -123,38 +127,42 @@
 			<Card.Description></Card.Description>
 		</Card.Header>
 		<Card.Content class="h-[200px]">
-			<div class="h-[200px] w-full resize overflow-visible">
-				<AreaChart
-					data={integrateSerieses(serieses)}
-					x="time"
-					series={[
-						{ key: 'total', color: 'hsl(var(--color-primary))' },
-						{ key: 'used', color: 'hsl(var(--color-secondary))' },
-						{ key: 'cacheAndBuffer', label: 'cache + buffer', color: 'hsl(var(--color-info))' },
-						{ key: 'free', color: 'hsl(var(--color-success))' }
-					]}
-					legend={{
-						classes: { root: '-mb-[50px] w-full overflow-auto' }
-					}}
-					props={{
-						tooltip: {
-							root: { class: 'bg-white/60 p-3 rounded shadow-lg' },
-							header: { class: 'font-light' },
-							item: {
-								format: (v) => {
-									const capacity = formatCapacity(v / 1024 / 1024);
-									return `${capacity.value} ${capacity.unit}`;
+			{#if data.length === 0}
+				<NoData type="area" />
+			{:else}
+				<div class="h-[200px] w-full resize overflow-visible">
+					<AreaChart
+						{data}
+						x="time"
+						series={[
+							{ key: 'total', color: 'hsl(var(--color-primary))' },
+							{ key: 'used', color: 'hsl(var(--color-secondary))' },
+							{ key: 'cacheAndBuffer', label: 'cache + buffer', color: 'hsl(var(--color-info))' },
+							{ key: 'free', color: 'hsl(var(--color-success))' }
+						]}
+						legend={{
+							classes: { root: '-mb-[50px] w-full overflow-auto' }
+						}}
+						props={{
+							tooltip: {
+								root: { class: 'bg-white/60 p-3 rounded shadow-lg' },
+								header: { class: 'font-light' },
+								item: {
+									format: (v) => {
+										const capacity = formatCapacity(v / 1024 / 1024);
+										return `${capacity.value} ${capacity.unit}`;
+									}
 								}
+							},
+							yAxis: {
+								format: (v) => `${(v / 1024 / 1024 / 1024).toFixed(0)} GiB`
 							}
-						},
-						yAxis: {
-							format: (v) => `${(v / 1024 / 1024 / 1024).toFixed(0)} GiB`
-						}
-					}}
-					{renderContext}
-					{debug}
-				/>
-			</div>
+						}}
+						{renderContext}
+						{debug}
+					/>
+				</div>
+			{/if}
 		</Card.Content>
 		<Card.Footer class="h-[150px]"></Card.Footer>
 	</Card.Root>
