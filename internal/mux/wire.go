@@ -1,4 +1,4 @@
-package cmd
+package mux
 
 import (
 	"github.com/google/wire"

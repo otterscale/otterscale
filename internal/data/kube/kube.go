@@ -12,14 +12,14 @@ import (
 )
 
 type Kube struct {
-	conf       *config.ConfigSet
+	configSet  *config.ConfigSet
 	clientsets *sync.Map
 
 	envSettings    *cli.EnvSettings
 	registryClient *registry.Client
 }
 
-func New(conf *config.ConfigSet) (*Kube, error) {
+func New(conf *config.Config) (*Kube, error) {
 	opts := []registry.ClientOption{
 		registry.ClientOptEnableCache(true),
 	}
@@ -28,14 +28,14 @@ func New(conf *config.ConfigSet) (*Kube, error) {
 		return nil, err
 	}
 	return &Kube{
-		conf:           conf,
+		configSet:      conf.ConfigSet,
 		envSettings:    cli.New(),
 		registryClient: registryClient,
 	}, nil
 }
 
 func (m *Kube) helmRepoURLs() []string {
-	kube := m.conf.GetKube()
+	kube := m.configSet.GetKube()
 	if kube != nil {
 		return kube.GetHelmRepositoryUrls()
 	}

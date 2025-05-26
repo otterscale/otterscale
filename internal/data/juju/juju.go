@@ -10,18 +10,18 @@ import (
 )
 
 type Juju struct {
-	conf        *config.ConfigSet
+	configSet   *config.ConfigSet
 	connections sync.Map
 }
 
-func New(conf *config.ConfigSet) *Juju {
+func New(conf *config.Config) *Juju {
 	return &Juju{
-		conf: conf,
+		configSet: conf.ConfigSet,
 	}
 }
 
 func (m *Juju) newConnection(uuid string) (api.Connection, error) {
-	juju := m.conf.GetJuju()
+	juju := m.configSet.GetJuju()
 	opts := connector.SimpleConfig{
 		ModelUUID:           uuid,
 		ControllerAddresses: juju.GetControllerAddresses(),
@@ -56,7 +56,7 @@ func (m *Juju) connection(uuid string) (api.Connection, error) {
 }
 
 func (m *Juju) username() string {
-	juju := m.conf.GetJuju()
+	juju := m.configSet.GetJuju()
 	if juju != nil {
 		return juju.GetUsername()
 	}
@@ -64,7 +64,7 @@ func (m *Juju) username() string {
 }
 
 func (m *Juju) cloudName() string {
-	juju := m.conf.GetJuju()
+	juju := m.configSet.GetJuju()
 	if juju != nil {
 		return juju.GetCloudName()
 	}
@@ -72,7 +72,7 @@ func (m *Juju) cloudName() string {
 }
 
 func (m *Juju) cloudRegion() string {
-	juju := m.conf.GetJuju()
+	juju := m.configSet.GetJuju()
 	if juju != nil {
 		return juju.GetCloudRegion()
 	}
@@ -80,7 +80,7 @@ func (m *Juju) cloudRegion() string {
 }
 
 func (m *Juju) charmhubAPIURL() string {
-	juju := m.conf.GetJuju()
+	juju := m.configSet.GetJuju()
 	if juju != nil {
 		return juju.GetCharmhubApiUrl()
 	}

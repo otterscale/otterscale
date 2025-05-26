@@ -2,7 +2,7 @@ package kube
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -192,7 +192,7 @@ func (r *helmRelease) config(restConfig *rest.Config, namespace string) (*action
 	getter.Namespace = &namespace
 
 	config := new(action.Configuration)
-	if err := config.Init(getter, namespace, "", log.Printf); err != nil {
+	if err := config.Init(getter, namespace, "", slog.Debug); err != nil {
 		return nil, err
 	}
 	config.RegistryClient = r.kube.registryClient
