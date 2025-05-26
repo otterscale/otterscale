@@ -1,0 +1,53 @@
+edition = "2023";
+
+package otterscale.environment.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/environment/v1;pb";
+
+service EnvironmentService {
+  rpc CheckHealthy(CheckHealthyRequest) returns (CheckHealthyResponse);
+  rpc WatchStatuses(WatchStatusesRequest) returns (stream WatchStatusesResponse);
+  rpc UpdateStatus(UpdateStatusRequest) returns (google.protobuf.Empty);
+  rpc UpdateConfig(UpdateConfigRequest) returns (google.protobuf.Empty);
+  rpc UpdateConfigHelmRepositories(UpdateConfigHelmRepositoriesRequest) returns (google.protobuf.Empty);
+}
+
+message CheckHealthyRequest {}
+
+message CheckHealthyResponse {
+  enum Result {
+    UNSPECIFIED = 0;
+    NOT_INSTALLED = 1;
+  }
+  Result result = 1;
+}
+
+message WatchStatusesRequest {}
+
+message WatchStatusesResponse {
+  string phase = 1;
+  string message = 2;
+}
+
+message UpdateStatusRequest {
+  string phase = 1;
+  string message = 2;
+}
+
+message UpdateConfigRequest {
+  string maas_url = 1;
+  string maas_key = 2;
+  string maas_version = 3;
+  repeated string juju_controller_addresses = 11;
+  string juju_username = 12;
+  string juju_password = 13;
+  string juju_ca_cert = 14;
+  string juju_cloud_name = 21;
+  string juju_cloud_region = 22;
+}
+
+message UpdateConfigHelmRepositoriesRequest {
+  repeated string helm_repository_urls = 1;
+}
