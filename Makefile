@@ -42,6 +42,13 @@ proto:
 		--go_opt=default_api_level=API_OPAQUE \
 		internal/config/configset.proto
 
+.PHONY: add-enterprise-dev
+# add enterprise extension for development
+add-enterprise-dev:
+	git submodule add -f https://github.com/openhdc/otterscale-enterprise.git .enterprise
+	git restore --staged .gitmodules .enterprise
+	rm .gitmodules
+
 .PHONY: help
 # show help
 help:
