@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"connectrpc.com/connect"
 	"golang.org/x/sync/errgroup"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -262,7 +260,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 	} else if daemonSet != nil {
 		return uc.fromDaemonSet(daemonSet, services, pods, persistentVolumeClaims, storageClassMap)
 	}
-	return nil, status.Errorf(codes.NotFound, "application %q in namespace %q not found", name, namespace)
+	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("application %q in namespace %q not found", name, namespace))
 }
 
 func (uc *ApplicationUseCase) ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error) {

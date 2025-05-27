@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"connectrpc.com/connect"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/client-go/rest"
 
@@ -54,7 +53,7 @@ func (r *helmRelease) List(restConfig *rest.Config, namespace string) ([]release
 
 func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, dryRun bool, chartRef string, values map[string]any) (*release.Release, error) {
 	if !action.ValidName.MatchString(name) {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid release name %q", name)
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid release name %q", name))
 	}
 
 	config, err := r.config(restConfig, namespace)

@@ -3,10 +3,9 @@ package juju
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
+	"connectrpc.com/connect"
 	api "github.com/juju/juju/api/client/application"
 	"github.com/juju/juju/core/base"
 	"github.com/juju/juju/core/constraints"
@@ -189,5 +188,5 @@ func (r *application) GetUnitInfo(_ context.Context, uuid, name string) (*api.Un
 			return &units[i], nil
 		}
 	}
-	return nil, status.Errorf(codes.NotFound, "unit info %q not found", name)
+	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("unit info %q not found", name))
 }

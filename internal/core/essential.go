@@ -2,18 +2,18 @@ package core
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"slices"
 	"strconv"
 	"strings"
 
+	"connectrpc.com/connect"
 	"github.com/canonical/gomaasclient/entity/node"
 	"github.com/juju/juju/core/instance"
 	jujustatus "github.com/juju/juju/core/status"
 	"github.com/juju/juju/rpc/params"
 	"golang.org/x/sync/errgroup"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	jujuyaml "gopkg.in/yaml.v2"
 )
 
@@ -158,7 +158,7 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 	// check
 	osdDevices := strings.Join(userOSDDevices, " ")
 	if osdDevices == "" {
-		return status.Error(codes.InvalidArgument, "no OSD devices provided")
+		return connect.NewError(connect.CodeInvalidArgument, errors.New("no OSD devices provided"))
 	}
 
 	// default
@@ -425,7 +425,7 @@ func getDirective(ctx context.Context, machineRepo MachineRepo, machineID string
 		return "", err
 	}
 	if machine.Status != node.StatusDeployed {
-		return "", status.Error(codes.InvalidArgument, "machine status is not deployed")
+		return "", connect.NewError(connect.CodeInvalidArgument, errors.New("machine status is not deployed"))
 	}
 	return getJujuMachineID(machine.WorkloadAnnotations)
 }
