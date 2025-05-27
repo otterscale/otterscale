@@ -29,8 +29,11 @@ func newCmd(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 }
 
 func main() {
+	// options
+	grpcHelper := true
+
 	// wire cmd
-	cmd, cleanup, err := wireCmd()
+	cmd, cleanup, err := wireCmd(grpcHelper)
 	if err != nil {
 		panic(err)
 	}

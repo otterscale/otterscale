@@ -23,7 +23,7 @@ import (
 
 // Injectors from wire.go:
 
-func wireCmd() (*cobra.Command, func(), error) {
+func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	configConfig, cleanup, err := config.New()
 	if err != nil {
 		return nil, nil, err
@@ -86,7 +86,7 @@ func wireCmd() (*cobra.Command, func(), error) {
 	scopeService := app.NewScopeService(scopeUseCase)
 	tagUseCase := core.NewTagUseCase(tagRepo)
 	tagService := app.NewTagService(tagUseCase)
-	serveMux := mux.New(applicationService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, scopeService, tagService)
+	serveMux := mux.New(bool2, applicationService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, scopeService, tagService)
 	command := newCmd(configConfig, serveMux)
 	return command, func() {
 		cleanup()

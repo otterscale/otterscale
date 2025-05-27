@@ -15,15 +15,15 @@ import (
 const charmKubernetes = "kubernetes-control-plane"
 
 var (
-	kubernetesCharms = []essentialCharm{
-		{name: "ch:calico", lxd: true, subordinate: true},
-		{name: "ch:containerd", lxd: true, subordinate: true},
-		{name: "ch:easyrsa", lxd: true},
-		{name: "ch:etcd", lxd: true},
-		{name: "ch:keepalived", lxd: true, subordinate: true},
-		{name: "ch:kubeapi-load-balancer", lxd: true},
-		{name: "ch:kubernetes-control-plane", lxd: true},
-		{name: "ch:kubernetes-worker"},
+	kubernetesCharms = []EssentialCharm{
+		{Name: "ch:calico", LXD: true, Subordinate: true},
+		{Name: "ch:containerd", LXD: true, Subordinate: true},
+		{Name: "ch:easyrsa", LXD: true},
+		{Name: "ch:etcd", LXD: true},
+		{Name: "ch:keepalived", LXD: true, Subordinate: true},
+		{Name: "ch:kubeapi-load-balancer", LXD: true},
+		{Name: "ch:kubernetes-control-plane", LXD: true},
+		{Name: "ch:kubernetes-worker"},
 	}
 
 	kubernetesRelations = [][]string{
@@ -50,6 +50,10 @@ func CreateKubernetes(ctx context.Context, serverRepo ServerRepo, machineRepo Ma
 		return err
 	}
 	return createEssentialRelations(ctx, facilityRepo, uuid, toEndpointList(prefix, kubernetesRelations))
+}
+
+func GetKubernetesCharms() []EssentialCharm {
+	return kubernetesCharms
 }
 
 func newKubernetesConfigs(prefix, vips, cidr string) (map[string]string, error) {

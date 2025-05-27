@@ -18,7 +18,19 @@ import (
 	"github.com/openhdc/otterscale/internal/app"
 )
 
-func New(app *app.ApplicationService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
+var Services = []string{
+	applicationv1.ApplicationServiceName,
+	configurationv1.ConfigurationServiceName,
+	environmentv1.EnvironmentServiceName,
+	facilityv1.FacilityServiceName,
+	essentialv1.EssentialServiceName,
+	machinev1.MachineServiceName,
+	networkv1.NetworkServiceName,
+	scopev1.ScopeServiceName,
+	tagv1.TagServiceName,
+}
+
+func New(helper bool, app *app.ApplicationService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle(applicationv1.NewApplicationServiceHandler(app))
 	mux.Handle(configurationv1.NewConfigurationServiceHandler(config))
@@ -30,24 +42,15 @@ func New(app *app.ApplicationService, config *app.ConfigurationService, environm
 	mux.Handle(scopev1.NewScopeServiceHandler(scope))
 	mux.Handle(tagv1.NewTagServiceHandler(tag))
 
-	services := []string{
-		applicationv1.ApplicationServiceName,
-		configurationv1.ConfigurationServiceName,
-		environmentv1.EnvironmentServiceName,
-		facilityv1.FacilityServiceName,
-		essentialv1.EssentialServiceName,
-		machinev1.MachineServiceName,
-		networkv1.NetworkServiceName,
-		scopev1.ScopeServiceName,
-		tagv1.TagServiceName,
+	if helper {
+		// health
+		checker := grpchealth.NewStaticChecker(Services...)
+		mux.Handle(grpchealth.NewHandler(checker))
+
+		// reflect
+		reflector := grpcreflect.NewStaticReflector(Services...)
+		mux.Handle(grpcreflect.NewHandlerV1(reflector))
+		mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 	}
-
-	checker := grpchealth.NewStaticChecker(services...)
-	mux.Handle(grpchealth.NewHandler(checker))
-
-	reflector := grpcreflect.NewStaticReflector(services...)
-	mux.Handle(grpcreflect.NewHandlerV1(reflector))
-	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
-
 	return mux
 }
