@@ -11,7 +11,7 @@ require (
 	connectrpc.com/connect v1.18.1
 	connectrpc.com/grpchealth v1.3.0
 	connectrpc.com/grpcreflect v1.3.0
-	github.com/canonical/gomaasclient v0.8.0
+	github.com/canonical/gomaasclient v0.12.0
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/google/wire v0.6.0
 	github.com/juju/juju v0.0.0-20250408011917-ff0de670c36e
