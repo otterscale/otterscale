@@ -19,7 +19,8 @@ message CheckHealthyRequest {}
 message CheckHealthyResponse {
   enum Result {
     UNSPECIFIED = 0;
-    NOT_INSTALLED = 1;
+    OK = 11;
+    NOT_INSTALLED = 21;
   }
   Result result = 1;
 }
@@ -49,5 +50,5 @@ message UpdateConfigRequest {
 }
 
 message UpdateConfigHelmRepositoriesRequest {
-  repeated string helm_repository_urls = 1;
+  repeated string urls = 1;
 }

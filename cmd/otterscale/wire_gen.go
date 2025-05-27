@@ -61,6 +61,8 @@ func wireCmd() (*cobra.Command, func(), error) {
 	packageRepositoryRepo := maas.NewPackageRepository(maasMAAS)
 	configurationUseCase := core.NewConfigurationUseCase(serverRepo, scopeRepo, scopeConfigRepo, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo)
 	configurationService := app.NewConfigurationService(configurationUseCase)
+	environmentUseCase := core.NewEnvironmentUseCase(configConfig)
+	environmentService := app.NewEnvironmentService(environmentUseCase)
 	actionRepo := juju.NewAction(jujuJuju)
 	charmRepo := juju.NewCharm(jujuJuju)
 	machineRepo := maas.NewMachine(maasMAAS)
@@ -84,7 +86,7 @@ func wireCmd() (*cobra.Command, func(), error) {
 	scopeService := app.NewScopeService(scopeUseCase)
 	tagUseCase := core.NewTagUseCase(tagRepo)
 	tagService := app.NewTagService(tagUseCase)
-	serveMux := mux.New(applicationService, configurationService, facilityService, essentialService, machineService, networkService, scopeService, tagService)
+	serveMux := mux.New(applicationService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, scopeService, tagService)
 	command := newCmd(configConfig, serveMux)
 	return command, func() {
 		cleanup()

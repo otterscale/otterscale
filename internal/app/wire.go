@@ -7,6 +7,7 @@ import (
 var ProviderSet = wire.NewSet(
 	NewApplicationService,
 	NewConfigurationService,
+	NewEnvironmentService,
 	NewFacilityService,
 	NewEssentialService,
 	NewMachineService,

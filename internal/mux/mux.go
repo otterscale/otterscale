@@ -8,6 +8,7 @@ import (
 
 	applicationv1 "github.com/openhdc/otterscale/api/application/v1/pbconnect"
 	configurationv1 "github.com/openhdc/otterscale/api/configuration/v1/pbconnect"
+	environmentv1 "github.com/openhdc/otterscale/api/environment/v1/pbconnect"
 	essentialv1 "github.com/openhdc/otterscale/api/essential/v1/pbconnect"
 	facilityv1 "github.com/openhdc/otterscale/api/facility/v1/pbconnect"
 	machinev1 "github.com/openhdc/otterscale/api/machine/v1/pbconnect"
@@ -17,10 +18,11 @@ import (
 	"github.com/openhdc/otterscale/internal/app"
 )
 
-func New(app *app.ApplicationService, config *app.ConfigurationService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
+func New(app *app.ApplicationService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle(applicationv1.NewApplicationServiceHandler(app))
 	mux.Handle(configurationv1.NewConfigurationServiceHandler(config))
+	mux.Handle(environmentv1.NewEnvironmentServiceHandler(environment))
 	mux.Handle(facilityv1.NewFacilityServiceHandler(facility))
 	mux.Handle(essentialv1.NewEssentialServiceHandler(essential))
 	mux.Handle(machinev1.NewMachineServiceHandler(machine))
@@ -31,6 +33,7 @@ func New(app *app.ApplicationService, config *app.ConfigurationService, facility
 	services := []string{
 		applicationv1.ApplicationServiceName,
 		configurationv1.ConfigurationServiceName,
+		environmentv1.EnvironmentServiceName,
 		facilityv1.FacilityServiceName,
 		essentialv1.EssentialServiceName,
 		machinev1.MachineServiceName,

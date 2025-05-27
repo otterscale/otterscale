@@ -25,18 +25,21 @@ type CheckHealthyResponse_Result int32
 
 const (
 	CheckHealthyResponse_UNSPECIFIED   CheckHealthyResponse_Result = 0
-	CheckHealthyResponse_NOT_INSTALLED CheckHealthyResponse_Result = 1
+	CheckHealthyResponse_OK            CheckHealthyResponse_Result = 11
+	CheckHealthyResponse_NOT_INSTALLED CheckHealthyResponse_Result = 21
 )
 
 // Enum value maps for CheckHealthyResponse_Result.
 var (
 	CheckHealthyResponse_Result_name = map[int32]string{
-		0: "UNSPECIFIED",
-		1: "NOT_INSTALLED",
+		0:  "UNSPECIFIED",
+		11: "OK",
+		21: "NOT_INSTALLED",
 	}
 	CheckHealthyResponse_Result_value = map[string]int32{
 		"UNSPECIFIED":   0,
-		"NOT_INSTALLED": 1,
+		"OK":            11,
+		"NOT_INSTALLED": 21,
 	}
 )
 
@@ -771,10 +774,10 @@ func (b0 UpdateConfigRequest_builder) Build() *UpdateConfigRequest {
 }
 
 type UpdateConfigHelmRepositoriesRequest struct {
-	state                         protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_HelmRepositoryUrls []string               `protobuf:"bytes,1,rep,name=helm_repository_urls,json=helmRepositoryUrls"`
-	unknownFields                 protoimpl.UnknownFields
-	sizeCache                     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Urls []string               `protobuf:"bytes,1,rep,name=urls"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *UpdateConfigHelmRepositoriesRequest) Reset() {
@@ -802,28 +805,28 @@ func (x *UpdateConfigHelmRepositoriesRequest) ProtoReflect() protoreflect.Messag
 	return mi.MessageOf(x)
 }
 
-func (x *UpdateConfigHelmRepositoriesRequest) GetHelmRepositoryUrls() []string {
+func (x *UpdateConfigHelmRepositoriesRequest) GetUrls() []string {
 	if x != nil {
-		return x.xxx_hidden_HelmRepositoryUrls
+		return x.xxx_hidden_Urls
 	}
 	return nil
 }
 
-func (x *UpdateConfigHelmRepositoriesRequest) SetHelmRepositoryUrls(v []string) {
-	x.xxx_hidden_HelmRepositoryUrls = v
+func (x *UpdateConfigHelmRepositoriesRequest) SetUrls(v []string) {
+	x.xxx_hidden_Urls = v
 }
 
 type UpdateConfigHelmRepositoriesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	HelmRepositoryUrls []string
+	Urls []string
 }
 
 func (b0 UpdateConfigHelmRepositoriesRequest_builder) Build() *UpdateConfigHelmRepositoriesRequest {
 	m0 := &UpdateConfigHelmRepositoriesRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_HelmRepositoryUrls = b.HelmRepositoryUrls
+	x.xxx_hidden_Urls = b.Urls
 	return m0
 }
 
@@ -832,12 +835,13 @@ var File_api_environment_v1_environment_proto protoreflect.FileDescriptor
 const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\n" +
 	"$api/environment/v1/environment.proto\x12\x19otterscale.environment.v1\x1a\x1bgoogle/protobuf/empty.proto\"\x15\n" +
-	"\x13CheckHealthyRequest\"\x94\x01\n" +
+	"\x13CheckHealthyRequest\"\x9c\x01\n" +
 	"\x14CheckHealthyResponse\x12N\n" +
-	"\x06result\x18\x01 \x01(\x0e26.otterscale.environment.v1.CheckHealthyResponse.ResultR\x06result\",\n" +
+	"\x06result\x18\x01 \x01(\x0e26.otterscale.environment.v1.CheckHealthyResponse.ResultR\x06result\"4\n" +
 	"\x06Result\x12\x0f\n" +
-	"\vUNSPECIFIED\x10\x00\x12\x11\n" +
-	"\rNOT_INSTALLED\x10\x01\"\x16\n" +
+	"\vUNSPECIFIED\x10\x00\x12\x06\n" +
+	"\x02OK\x10\v\x12\x11\n" +
+	"\rNOT_INSTALLED\x10\x15\"\x16\n" +
 	"\x14WatchStatusesRequest\"G\n" +
 	"\x15WatchStatusesResponse\x12\x14\n" +
 	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
@@ -855,9 +859,9 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\fjuju_ca_cert\x18\x0e \x01(\tR\n" +
 	"jujuCaCert\x12&\n" +
 	"\x0fjuju_cloud_name\x18\x15 \x01(\tR\rjujuCloudName\x12*\n" +
-	"\x11juju_cloud_region\x18\x16 \x01(\tR\x0fjujuCloudRegion\"W\n" +
-	"#UpdateConfigHelmRepositoriesRequest\x120\n" +
-	"\x14helm_repository_urls\x18\x01 \x03(\tR\x12helmRepositoryUrls2\xa3\x04\n" +
+	"\x11juju_cloud_region\x18\x16 \x01(\tR\x0fjujuCloudRegion\"9\n" +
+	"#UpdateConfigHelmRepositoriesRequest\x12\x12\n" +
+	"\x04urls\x18\x01 \x03(\tR\x04urls2\xa3\x04\n" +
 	"\x12EnvironmentService\x12o\n" +
 	"\fCheckHealthy\x12..otterscale.environment.v1.CheckHealthyRequest\x1a/.otterscale.environment.v1.CheckHealthyResponse\x12t\n" +
 	"\rWatchStatuses\x12/.otterscale.environment.v1.WatchStatusesRequest\x1a0.otterscale.environment.v1.WatchStatusesResponse0\x01\x12V\n" +

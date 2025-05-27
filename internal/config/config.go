@@ -43,6 +43,14 @@ func (c *Config) Close() error {
 	return c.watcher.Close()
 }
 
+func (c *Config) Override(set *ConfigSet) error {
+	data, err := protoyaml.Marshal(set)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(c.path, data, 0600)
+}
+
 func (c *Config) scan() error {
 	data, err := os.ReadFile(c.path)
 	if err != nil {
