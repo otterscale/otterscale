@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v6.31.0
-// source: api/license/v1/license.proto
+// source: api/premium/v1/premium.proto
 
 package pb
 
@@ -28,7 +28,7 @@ type Ping struct {
 
 func (x *Ping) Reset() {
 	*x = Ping{}
-	mi := &file_api_license_v1_license_proto_msgTypes[0]
+	mi := &file_api_premium_v1_premium_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -40,7 +40,7 @@ func (x *Ping) String() string {
 func (*Ping) ProtoMessage() {}
 
 func (x *Ping) ProtoReflect() protoreflect.Message {
-	mi := &file_api_license_v1_license_proto_msgTypes[0]
+	mi := &file_api_premium_v1_premium_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -71,7 +71,7 @@ type Pong struct {
 
 func (x *Pong) Reset() {
 	*x = Pong{}
-	mi := &file_api_license_v1_license_proto_msgTypes[1]
+	mi := &file_api_premium_v1_premium_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -83,7 +83,7 @@ func (x *Pong) String() string {
 func (*Pong) ProtoMessage() {}
 
 func (x *Pong) ProtoReflect() protoreflect.Message {
-	mi := &file_api_license_v1_license_proto_msgTypes[1]
+	mi := &file_api_premium_v1_premium_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -106,25 +106,25 @@ func (b0 Pong_builder) Build() *Pong {
 	return m0
 }
 
-var File_api_license_v1_license_proto protoreflect.FileDescriptor
+var File_api_premium_v1_premium_proto protoreflect.FileDescriptor
 
-const file_api_license_v1_license_proto_rawDesc = "" +
+const file_api_premium_v1_premium_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/license/v1/license.proto\x12\x15otterscale.license.v1\"\x06\n" +
+	"\x1capi/premium/v1/premium.proto\x12\x15otterscale.premium.v1\"\x06\n" +
 	"\x04Ping\"\x06\n" +
 	"\x04Pong2X\n" +
-	"\x0eLicenseService\x12F\n" +
+	"\x0ePremiumService\x12F\n" +
 	"\n" +
-	"Enterprise\x12\x1b.otterscale.license.v1.Ping\x1a\x1b.otterscale.license.v1.PongB1Z/github.com/openhdc/otterscale/api/license/v1;pbb\beditionsp\xe8\a"
+	"Enterprise\x12\x1b.otterscale.premium.v1.Ping\x1a\x1b.otterscale.premium.v1.PongB1Z/github.com/openhdc/otterscale/api/premium/v1;pbb\beditionsp\xe8\a"
 
-var file_api_license_v1_license_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_api_license_v1_license_proto_goTypes = []any{
-	(*Ping)(nil), // 0: otterscale.license.v1.Ping
-	(*Pong)(nil), // 1: otterscale.license.v1.Pong
+var file_api_premium_v1_premium_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_premium_v1_premium_proto_goTypes = []any{
+	(*Ping)(nil), // 0: otterscale.premium.v1.Ping
+	(*Pong)(nil), // 1: otterscale.premium.v1.Pong
 }
-var file_api_license_v1_license_proto_depIdxs = []int32{
-	0, // 0: otterscale.license.v1.LicenseService.Enterprise:input_type -> otterscale.license.v1.Ping
-	1, // 1: otterscale.license.v1.LicenseService.Enterprise:output_type -> otterscale.license.v1.Pong
+var file_api_premium_v1_premium_proto_depIdxs = []int32{
+	0, // 0: otterscale.premium.v1.PremiumService.Enterprise:input_type -> otterscale.premium.v1.Ping
+	1, // 1: otterscale.premium.v1.PremiumService.Enterprise:output_type -> otterscale.premium.v1.Pong
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -132,26 +132,26 @@ var file_api_license_v1_license_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_api_license_v1_license_proto_init() }
-func file_api_license_v1_license_proto_init() {
-	if File_api_license_v1_license_proto != nil {
+func init() { file_api_premium_v1_premium_proto_init() }
+func file_api_premium_v1_premium_proto_init() {
+	if File_api_premium_v1_premium_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_license_v1_license_proto_rawDesc), len(file_api_license_v1_license_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_premium_v1_premium_proto_rawDesc), len(file_api_premium_v1_premium_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_api_license_v1_license_proto_goTypes,
-		DependencyIndexes: file_api_license_v1_license_proto_depIdxs,
-		MessageInfos:      file_api_license_v1_license_proto_msgTypes,
+		GoTypes:           file_api_premium_v1_premium_proto_goTypes,
+		DependencyIndexes: file_api_premium_v1_premium_proto_depIdxs,
+		MessageInfos:      file_api_premium_v1_premium_proto_msgTypes,
 	}.Build()
-	File_api_license_v1_license_proto = out.File
-	file_api_license_v1_license_proto_goTypes = nil
-	file_api_license_v1_license_proto_depIdxs = nil
+	File_api_premium_v1_premium_proto = out.File
+	file_api_premium_v1_premium_proto_goTypes = nil
+	file_api_premium_v1_premium_proto_depIdxs = nil
 }
