@@ -36,7 +36,7 @@ func (s *EnvironmentService) CheckHealthy(ctx context.Context, req *connect.Requ
 }
 
 func (s *EnvironmentService) WatchStatuses(ctx context.Context, req *connect.Request[pb.WatchStatusesRequest], stream *connect.ServerStream[pb.WatchStatusesResponse]) error {
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(10 * time.Second) //nolint:mnd
 	defer ticker.Stop()
 
 	// Send initial status immediately

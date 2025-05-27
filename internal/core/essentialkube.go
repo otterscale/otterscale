@@ -195,9 +195,9 @@ func ipToUint32(ip net.IP) uint32 {
 
 func uint32ToIP(n uint32) net.IP {
 	return net.IP{
-		byte(n >> 24),
-		byte(n >> 16),
-		byte(n >> 8),
+		byte(n >> 24), //nolint:mnd
+		byte(n >> 16), //nolint:mnd
+		byte(n >> 8),  //nolint:mnd
 		byte(n),
 	}
 }

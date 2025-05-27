@@ -201,7 +201,7 @@ func (uc *FacilityUseCase) CreateFacility(ctx context.Context, uuid, name, confi
 		return nil, err
 	}
 
-	placements, err := uc.toPlacements(ctx, uuid, mps)
+	placements, err := uc.toPlacements(ctx, mps)
 	if err != nil {
 		return nil, err
 	}
@@ -230,7 +230,7 @@ func (uc *FacilityUseCase) ExposeFacility(ctx context.Context, uuid, name string
 }
 
 func (uc *FacilityUseCase) AddFacilityUnits(ctx context.Context, uuid, name string, number int, mps []MachinePlacement) ([]string, error) {
-	placements, err := uc.toPlacements(ctx, uuid, mps)
+	placements, err := uc.toPlacements(ctx, mps)
 	if err != nil {
 		return nil, err
 	}
@@ -281,7 +281,7 @@ func (uc *FacilityUseCase) JujuToMAASMachineMap(ctx context.Context, uuid string
 	return m, nil
 }
 
-func (uc *FacilityUseCase) toPlacements(ctx context.Context, uuid string, mps []MachinePlacement) ([]instance.Placement, error) {
+func (uc *FacilityUseCase) toPlacements(ctx context.Context, mps []MachinePlacement) ([]instance.Placement, error) {
 	placements := []instance.Placement{}
 	for _, mp := range mps {
 		machine, err := uc.machine.Get(ctx, mp.MachineID)

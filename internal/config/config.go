@@ -9,6 +9,8 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+const filePerm600 os.FileMode = 0o600
+
 type Config struct {
 	ConfigSet *ConfigSet
 
@@ -48,7 +50,7 @@ func (c *Config) Override(set *ConfigSet) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(c.path, data, 0600)
+	return os.WriteFile(c.path, data, filePerm600)
 }
 
 func (c *Config) scan() error {
@@ -139,5 +141,5 @@ func createDefaultFile(path string) error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(path, data, 0600)
+	return os.WriteFile(path, data, filePerm600)
 }

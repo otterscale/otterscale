@@ -43,7 +43,6 @@ func (r *helmChart) List(ctx context.Context) ([]oscore.Chart, error) {
 	eg, ctx := errgroup.WithContext(ctx)
 	result := make([]*repo.IndexFile, len(urls))
 	for i := range urls {
-		i := i // fixed on go 1.22
 		eg.Go(func() error {
 			v, ok := r.repoIndexCache.Load(urls[i])
 			if ok {
@@ -96,7 +95,7 @@ func (r *helmChart) fetchRepoIndex(ctx context.Context, url string) (*repo.Index
 	if strings.HasPrefix(url, "http") {
 		return r.fetchRepoIndexFromWeb(ctx, url)
 	}
-	return r.fetchRepoIndexFromFile(ctx, url)
+	return r.fetchRepoIndexFromFile(url)
 }
 
 func (r *helmChart) fetchRepoIndexFromWeb(ctx context.Context, repoURL string) (*repo.IndexFile, error) {
@@ -118,7 +117,7 @@ func (r *helmChart) fetchRepoIndexFromWeb(ctx context.Context, repoURL string) (
 	return f, nil
 }
 
-func (r *helmChart) fetchRepoIndexFromFile(ctx context.Context, path string) (*repo.IndexFile, error) {
+func (r *helmChart) fetchRepoIndexFromFile(path string) (*repo.IndexFile, error) {
 	path, err := filepath.Abs(path)
 	if err != nil {
 		return nil, err

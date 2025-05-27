@@ -42,10 +42,6 @@ func (m *Kube) helmRepoURLs() []string {
 	return nil
 }
 
-func (m *Kube) key(uuid, name string) string {
-	return uuid + "/" + name
-}
-
 func (m *Kube) clientset(config *rest.Config) (*kubernetes.Clientset, error) {
 	if v, ok := m.clientsets.Load(config.Host); ok {
 		return v.(*kubernetes.Clientset), nil
