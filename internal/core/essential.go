@@ -64,7 +64,7 @@ func NewEssentialUseCase(scope ScopeRepo, facility FacilityRepo, machine Machine
 	}
 }
 
-func (uc *EssentialUseCase) IsMachineDeployed(ctx context.Context, uuid string) (string, bool, error) {
+func (uc *EssentialUseCase) IsMachineDeployed(ctx context.Context, uuid string) (message string, ok bool, err error) {
 	machines, err := uc.machine.List(ctx)
 	if err != nil {
 		return "", false, err
@@ -100,7 +100,7 @@ func (uc *EssentialUseCase) ListStatuses(ctx context.Context, uuid string) ([]Es
 
 	statuses := []EssentialStatus{}
 	for name := range s.Applications {
-		ok := isEssentialCharm(s.Applications[name], charms)
+		ok := isEssentialCharm(s.Applications, name, charms)
 		if !ok {
 			continue
 		}
@@ -294,8 +294,8 @@ func formatEssentialCharm(name string) string {
 	return strings.TrimPrefix(name, "ch:")
 }
 
-func isEssentialCharm(appStatus params.ApplicationStatus, charms []EssentialCharm) bool {
-	appCharm, ok := formatAppCharm(appStatus.Charm)
+func isEssentialCharm(statusMap map[string]params.ApplicationStatus, name string, charms []EssentialCharm) bool {
+	appCharm, ok := formatAppCharm(statusMap[name].Charm)
 	if !ok {
 		return false
 	}
@@ -320,7 +320,6 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 	eg, ctx := errgroup.WithContext(ctx)
 	result := make([]Essential, len(scopes))
 	for i := range scopes {
-		i := i // fixed on go 1.22
 		eg.Go(func() error {
 			s, err := clientRepo.Status(ctx, scopes[i].UUID, []string{"application", "*"})
 			if err != nil {
@@ -376,7 +375,6 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, charm := range charms {
-		charm := charm // fixed on go 1.22
 		eg.Go(func() error {
 			name := toEssentialName(prefix, charm.Name)
 			placements := []instance.Placement{}
@@ -394,7 +392,6 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 func createEssentialRelations(ctx context.Context, facilityRepo FacilityRepo, uuid string, endpointList [][]string) error {
 	eg, ctx := errgroup.WithContext(ctx)
 	for _, endpoints := range endpointList {
-		endpoints := endpoints // fixed on go 1.22
 		eg.Go(func() error {
 			_, err := facilityRepo.CreateRelation(ctx, uuid, endpoints)
 			return err

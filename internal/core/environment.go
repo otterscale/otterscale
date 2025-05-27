@@ -4,9 +4,10 @@ import (
 	"context"
 	"sync"
 
-	"github.com/openhdc/otterscale/internal/config"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/openhdc/otterscale/internal/config"
 )
 
 type EnvironmentStatus struct {
@@ -25,6 +26,7 @@ func NewEnvironmentUseCase(conf *config.Config) *EnvironmentUseCase {
 	}
 }
 
+//nolint:mnd
 func (uc *EnvironmentUseCase) CheckHealthy(ctx context.Context) (int32, error) {
 	maas := uc.conf.ConfigSet.GetMaas()
 	if maas.GetKey() == "::" {

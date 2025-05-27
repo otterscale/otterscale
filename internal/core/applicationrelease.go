@@ -39,7 +39,6 @@ func (uc *ApplicationUseCase) ListReleases(ctx context.Context) ([]Release, erro
 	eg, ctx := errgroup.WithContext(ctx)
 	result := make([][]Release, len(kuberneteses))
 	for i := range kuberneteses {
-		i := i // fixed on go 1.22
 		eg.Go(func() error {
 			config, err := uc.config(ctx, kuberneteses[i].ScopeUUID, kuberneteses[i].Name)
 			if err != nil {

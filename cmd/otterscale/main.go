@@ -3,11 +3,12 @@ package main
 import (
 	"net/http"
 
-	oscmd "github.com/openhdc/otterscale/internal/cmd"
-	"github.com/openhdc/otterscale/internal/config"
 	"github.com/spf13/cobra"
 
 	_ "go.uber.org/automaxprocs"
+
+	oscmd "github.com/openhdc/otterscale/internal/cmd"
+	"github.com/openhdc/otterscale/internal/config"
 )
 
 var version = "devel"

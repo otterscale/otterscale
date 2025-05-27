@@ -4,14 +4,11 @@ import (
 	"context"
 	"errors"
 	"strings"
-	"sync"
 
 	"github.com/juju/juju/core/base"
 	"github.com/juju/juju/core/constraints"
 	"github.com/juju/juju/core/instance"
 )
-
-var kubeConfigMap sync.Map
 
 func boolToInt(b bool) int {
 	if b {
