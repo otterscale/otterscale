@@ -11,6 +11,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
 	import NoData from '../utils/empty.svelte';
+	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
@@ -18,15 +19,11 @@
 	let {
 		client,
 		scope: scope,
-		instance: instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
-	const now = new Date().getTime();
+		instance: instance,
+		timeRange
+	}: { client: PrometheusDriver; scope: Scope; instance: string; timeRange: TimeRange } = $props();
 
-	const offset = 1 * 60 * 60;
 	const step = 1 * 60;
-
-	const start = now - offset * 1000;
-	const end = now;
 
 	const totalQuery = $derived(
 		`
@@ -67,7 +64,12 @@
 		try {
 			let sampleSpace = [] as SampleValue[];
 
-			const response = await client.rangeQuery(query, start, end, step);
+			const response = await client.rangeQuery(
+				query,
+				timeRange.start.getTime(),
+				timeRange.end.getTime(),
+				step
+			);
 			response.result.forEach((series) => {
 				series.values.forEach((sampleValue: SampleValue) => {
 					sampleSpace.push(sampleValue);
