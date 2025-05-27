@@ -692,6 +692,10 @@ type MockMAASMachineMockRecorder struct {
 	mock *MockMAASMachine
 }
 
+func (mr *MockMAASMachineMockRecorder) AddMachineTags(matcher gomock.Matcher, s string, param3 gomock.Matcher) {
+	panic("unimplemented")
+}
+
 // NewMockMAASMachine creates a new mock instance.
 func NewMockMAASMachine(ctrl *gomock.Controller) *MockMAASMachine {
 	mock := &MockMAASMachine{ctrl: ctrl}
@@ -993,6 +997,10 @@ type MockJujuMachine struct {
 // MockJujuMachineMockRecorder is the mock recorder for MockJujuMachine.
 type MockJujuMachineMockRecorder struct {
 	mock *MockJujuMachine
+}
+
+func (mr *MockJujuMachineMockRecorder) JujuToMAASMachineMap(matcher gomock.Matcher, uuid string) {
+	panic("unimplemented")
 }
 
 // NewMockJujuMachine creates a new mock instance.

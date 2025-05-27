@@ -3,236 +3,222 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"testing"
 
-	// Implement the JujuModel interface's Create method signature
-	// (assuming JujuModel expects *base.ModelInfo, error)
 	"github.com/canonical/gomaasclient/entity"
-	jujuBase "github.com/juju/juju/api/base"
+	"github.com/juju/juju/api/base"
 	"github.com/juju/juju/rpc/params"
-	model "github.com/openhdc/otterscale/internal/domain/model"
-	"github.com/stretchr/testify/assert"
+	mocks "github.com/openhdc/otterscale/internal/domain/service/mocks"
+	"go.uber.org/mock/gomock"
 )
 
-// Mock implementations for dependencies
+func TestListScopes(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-type mockScopeRepo struct {
-	ListFn   func(ctx context.Context) ([]model.Scope, error)
-	CreateFn func(ctx context.Context, name string) (*jujuBase.ModelInfo, error)
-}
-
-// Keep the List method as is for model.Scope
-func (m *mockScopeRepo) List(ctx context.Context) ([]model.Scope, error) {
-	return m.ListFn(ctx)
-}
-
-// Add a Create method that matches the JujuModel interface
-func (m *mockScopeRepo) Create(ctx context.Context, name string) (*jujuBase.ModelInfo, error) {
-	return m.CreateFn(ctx, name)
-}
-
-func (m *mockScopeRepo) CreateModel(ctx context.Context, name string) (*jujuBase.ModelInfo, error) {
-	// Provide a dummy implementation for testing
-	return &jujuBase.ModelInfo{Name: name}, nil
-}
-
-type mockSSHKeyRepo struct {
-	DefaultFn func(ctx context.Context) (*entity.SSHKey, error)
-}
-
-func (m *mockSSHKeyRepo) Default(ctx context.Context) (*entity.SSHKey, error) {
-	return m.DefaultFn(ctx)
-}
-
-type mockKeyManager struct {
-	AddFn func(ctx context.Context, uuid string, key string) ([]params.ErrorResult, error)
-}
-
-func (m *mockKeyManager) Add(ctx context.Context, uuid string, key string) ([]params.ErrorResult, error) {
-	return m.AddFn(ctx, uuid, key)
-}
-
-// NexusService with mock dependencies
-func newTestNexusService(
-	scopeRepo *mockScopeRepo,
-	sshKeyRepo *mockSSHKeyRepo,
-	keyManager *mockKeyManager,
-) *NexusService {
-	return &NexusService{
-		scope:      scopeRepo,
-		sshKey:     sshKeyRepo,
-		keyManager: keyManager,
-	}
-}
-
-func TestListScopes_Success(t *testing.T) {
-	expected := []model.Scope{{Name: "test", UUID: "uuid1"}}
-	svc := newTestNexusService(
-		&mockScopeRepo{
-			ListFn: func(ctx context.Context) ([]model.Scope, error) {
-				return expected, nil
-			},
-		},
-		nil, nil,
-	)
-	got, err := svc.ListScopes(context.Background())
-	assert.NoError(t, err)
-	assert.Equal(t, expected, got)
-}
-
-func TestListScopes_Error(t *testing.T) {
-	svc := newTestNexusService(
-		&mockScopeRepo{
-			ListFn: func(ctx context.Context) ([]model.Scope, error) {
-				return nil, errors.New("list error")
-			},
-		},
-		nil, nil,
-	)
-	got, err := svc.ListScopes(context.Background())
-	assert.Error(t, err)
-	assert.Nil(t, got)
-}
-
-func TestCreateScope_Success(t *testing.T) {
-	scopeModel := &jujuBase.ModelInfo{
-		Name: "scope1", UUID: "uuid1", Type: "type1",
-	}
-	sshKey := &entity.SSHKey{Key: "ssh-rsa AAA..."}
-	svc := newTestNexusService(
-		&mockScopeRepo{
-			CreateFn: func(ctx context.Context, name string) (*jujuBase.ModelInfo, error) {
-				return scopeModel, nil
-			},
-		},
-		&mockSSHKeyRepo{
-			DefaultFn: func(ctx context.Context) (*entity.SSHKey, error) {
-				return sshKey, nil
-			},
-		},
-		&mockKeyManager{
-			AddFn: func(ctx context.Context, uuid string, key string) ([]params.ErrorResult, error) {
-				return []params.ErrorResult{{Error: nil}}, nil
-			},
-		},
-	)
-	got, err := svc.CreateScope(context.Background(), "scope1")
-	assert.NoError(t, err)
-	assert.Equal(t, scopeModel.Name, got.Name)
-	assert.Equal(t, scopeModel.UUID, got.UUID)
-}
-
-func TestCreateScope_SSHKeyError(t *testing.T) {
-	svc := newTestNexusService(
-		nil,
-		&mockSSHKeyRepo{
-			DefaultFn: func(ctx context.Context) (*entity.SSHKey, error) {
-				return nil, errors.New("ssh error")
-			},
-		},
-		nil,
-	)
-	got, err := svc.CreateScope(context.Background(), "scope1")
-	assert.Error(t, err)
-	assert.Nil(t, got)
-}
-
-func TestCreateScope_CreateError(t *testing.T) {
-	sshKey := &entity.SSHKey{Key: "ssh-rsa AAA..."}
-	svc := newTestNexusService(
-		&mockScopeRepo{
-			CreateFn: func(ctx context.Context, name string) (*jujuBase.ModelInfo, error) {
-				return nil, errors.New("create error")
-			},
-		},
-		&mockSSHKeyRepo{
-			DefaultFn: func(ctx context.Context) (*entity.SSHKey, error) {
-				return sshKey, nil
-			},
-		},
-		nil,
-	)
-	got, err := svc.CreateScope(context.Background(), "scope1")
-	assert.Error(t, err)
-	assert.Nil(t, got)
-}
-
-func TestCreateScope_KeyManagerAddError(t *testing.T) {
-	scopeModel := &jujuBase.ModelInfo{Name: "scope1", UUID: "uuid1"}
-	sshKey := &entity.SSHKey{Key: "ssh-rsa AAA..."}
-	svc := newTestNexusService(
-		&mockScopeRepo{
-			CreateFn: func(ctx context.Context, name string) (*jujuBase.ModelInfo, error) {
-				return scopeModel, nil
-			},
-		},
-		&mockSSHKeyRepo{
-			DefaultFn: func(ctx context.Context) (*entity.SSHKey, error) {
-				return sshKey, nil
-			},
-		},
-		&mockKeyManager{
-			AddFn: func(ctx context.Context, uuid string, key string) ([]params.ErrorResult, error) {
-				return nil, errors.New("add error")
-			},
-		},
-	)
-	got, err := svc.CreateScope(context.Background(), "scope1")
-	assert.Error(t, err)
-	assert.Nil(t, got)
-}
-
-func TestCreateScope_KeyAddResultError(t *testing.T) {
-	scopeModel := &jujuBase.ModelInfo{Name: "scope1", UUID: "uuid1"}
-	sshKey := &entity.SSHKey{Key: "ssh-rsa AAA..."}
-	svc := newTestNexusService(
-		&mockScopeRepo{
-			CreateFn: func(ctx context.Context, name string) (*jujuBase.ModelInfo, error) {
-				return scopeModel, nil
-			},
-		},
-		&mockSSHKeyRepo{
-			DefaultFn: func(ctx context.Context) (*entity.SSHKey, error) {
-				return sshKey, nil
-			},
-		},
-		&mockKeyManager{
-			AddFn: func(ctx context.Context, uuid string, key string) ([]params.ErrorResult, error) {
-				return []params.ErrorResult{{Error: nil}}, nil
-			},
-		},
-	)
-	got, err := svc.CreateScope(context.Background(), "scope1")
-	fmt.Printf("\ngot:%v, \nerr:%v, \nt:%v\n", got, err, t)
-	// assert.Error(t, err)
-	// assert.Nil(t, got)
-}
-
-func TestCreateDefaultScope_CallsCreateScope(t *testing.T) {
-	called := false
-
-	mockScopeRepo := &mockScopeRepo{
-		CreateFn: func(ctx context.Context, name string) (*jujuBase.ModelInfo, error) {
-			called = true
-			assert.Equal(t, defaultScopeName, name)
-			return &jujuBase.ModelInfo{Name: name}, nil
-		},
-	}
-	mockSSHKeyRepo := &mockSSHKeyRepo{
-		DefaultFn: func(ctx context.Context) (*entity.SSHKey, error) {
-			return &entity.SSHKey{Key: "ssh-rsa AAA..."}, nil
-		},
-	}
-	mockKeyManager := &mockKeyManager{
-		AddFn: func(ctx context.Context, uuid string, key string) ([]params.ErrorResult, error) {
-			return []params.ErrorResult{{Error: nil}}, nil
-		},
+	mockJujuModel := mocks.NewMockJujuModel(ctrl)
+	s := &NexusService{
+		scope: mockJujuModel,
 	}
 
-	svc := newTestNexusService(mockScopeRepo, mockSSHKeyRepo, mockKeyManager)
-	got, err := svc.CreateDefaultScope(context.Background())
-	assert.NoError(t, err)
-	assert.True(t, called)
-	assert.Equal(t, defaultScopeName, got.Name)
+	ctx := context.Background()
+	expectedScopes := []base.UserModelSummary{
+		{Name: "scope1"},
+		{Name: "scope2"},
+	}
+	mockJujuModel.EXPECT().List(ctx).Return(expectedScopes, nil)
+
+	scopes, err := s.ListScopes(ctx)
+	if err != nil {
+		t.Errorf("ListScopes failed: %v", err)
+	}
+	if len(scopes) != len(expectedScopes) {
+		t.Errorf("expected %d scopes, got %d", len(expectedScopes), len(scopes))
+	}
+	for i, scope := range scopes {
+		if scope.Name != expectedScopes[i].Name {
+			t.Errorf("expected scope name %s, got %s", expectedScopes[i].Name, scope.Name)
+		}
+	}
+}
+func TestCreateScope(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	var errMock = errors.New("mock error")
+
+	mockSSHKey := mocks.NewMockMAASSSHKey(ctrl)
+	mockJujuModel := mocks.NewMockJujuModel(ctrl)
+	mockJujuKey := mocks.NewMockJujuKey(ctrl)
+	s := &NexusService{
+		sshKey:     mockSSHKey,
+		scope:      mockJujuModel,
+		keyManager: mockJujuKey,
+	}
+
+	ctx := context.Background()
+	scopeName := "test-scope"
+	sshKey := &entity.SSHKey{Key: "test-key"}
+	modelInfo := &base.ModelInfo{
+		Name:            scopeName,
+		UUID:            "test-uuid",
+		Type:            "test-type",
+		ControllerUUID:  "test-controller-uuid",
+		IsController:    true,
+		ProviderType:    "test-provider-type",
+		Cloud:           "test-cloud",
+		CloudRegion:     "test-cloud-region",
+		CloudCredential: "test-cloud-credential",
+		Owner:           "test-owner",
+		Life:            "test-life",
+		// Status:          "test-status",
+		// AgentVersion:    "test-agent-version",
+	}
+	t.Run("CreateScope", func(t *testing.T) {
+		mockSSHKey.EXPECT().Default(ctx).Return(sshKey, nil)
+		mockJujuModel.EXPECT().Create(ctx, scopeName).Return(modelInfo, nil)
+		mockJujuKey.EXPECT().Add(ctx, modelInfo.UUID, sshKey.Key).Return([]params.ErrorResult{}, nil)
+
+		scope, err := s.CreateScope(ctx, scopeName)
+		if err != nil {
+			t.Errorf("CreateScope failed: %v", err)
+		}
+		if scope.Name != scopeName {
+			t.Errorf("expected scope name %s, got %s", scopeName, scope.Name)
+		}
+		if scope.UUID != modelInfo.UUID {
+			t.Errorf("expected scope UUID %s, got %s", modelInfo.UUID, scope.UUID)
+		}
+	})
+	t.Run("CreateScopeWithError", func(t *testing.T) {
+		mockSSHKey.EXPECT().Default(ctx).Return(nil, errMock)
+		// mockJujuModel.EXPECT().Create(ctx, scopeName).Return(nil, errMock)
+
+		scope, err := s.CreateScope(ctx, scopeName)
+		if err == nil {
+			t.Error("expected error but got nil")
+		}
+		if scope != nil {
+			t.Errorf("expected nil scope, got %v", scope)
+		}
+	})
+	t.Run("CreateScopeWithKeyError", func(t *testing.T) {
+		mockSSHKey.EXPECT().Default(ctx).Return(sshKey, nil)
+		mockJujuModel.EXPECT().Create(ctx, scopeName).Return(modelInfo, nil)
+		mockJujuKey.EXPECT().Add(ctx, modelInfo.UUID, sshKey.Key).Return([]params.ErrorResult{{Error: &params.Error{Message: errMock.Error()}}}, nil)
+
+		scope, err := s.CreateScope(ctx, scopeName)
+		if err == nil {
+			t.Error("expected error but got nil")
+		}
+		if scope != nil {
+			t.Errorf("expected nil scope, got %v", scope)
+		}
+	})
+
+	t.Run("CreateScopeWithModelError", func(t *testing.T) {
+		mockSSHKey.EXPECT().Default(ctx).Return(sshKey, nil)
+		mockJujuModel.EXPECT().Create(ctx, scopeName).Return(nil, errMock)
+
+		scope, err := s.CreateScope(ctx, scopeName)
+		if err == nil {
+			t.Error("expected error but got nil")
+		}
+		if scope != nil {
+			t.Errorf("expected nil scope, got %v", scope)
+		}
+	})
+	t.Run("CreateScopeWithKeyError", func(t *testing.T) { // This is the duplicated test case name, the fix is applied here
+		mockSSHKey.EXPECT().Default(ctx).Return(sshKey, nil)
+		mockJujuModel.EXPECT().Create(ctx, scopeName).Return(modelInfo, nil)
+		mockJujuKey.EXPECT().Add(ctx, modelInfo.UUID, sshKey.Key).Return([]params.ErrorResult{{Error: &params.Error{Message: errMock.Error()}}}, nil)
+
+		scope, err := s.CreateScope(ctx, scopeName)
+		if err == nil {
+			t.Error("expected error but got nil")
+		}
+		if scope != nil {
+			t.Errorf("expected nil scope, got %v", scope)
+		}
+	})
+	t.Run("CreateScopeWithEmptyName", func(t *testing.T) {
+		scopeName = ""
+		mockSSHKey.EXPECT().Default(ctx).Return(sshKey, nil)
+		mockJujuModel.EXPECT().Create(ctx, scopeName).Return(modelInfo, nil)
+		mockJujuKey.EXPECT().Add(ctx, modelInfo.UUID, sshKey.Key).Return([]params.ErrorResult{}, nil)
+
+		scope, err := s.CreateScope(ctx, scopeName)
+		if err != nil {
+			t.Errorf("CreateScope failed with empty name: %v", err)
+		}
+		if scope.Name != "" {
+			t.Errorf("expected empty scope name, got %s", scope.Name)
+		}
+	})
+	t.Run("CreateScopeWithEmptyUUID", func(t *testing.T) {
+		scopeName = "test-scope-empty-uuid"
+		sshKey = &entity.SSHKey{Key: "test-key-empty-uuid"}
+		modelInfo = &base.ModelInfo{
+			Name:            scopeName,
+			UUID:            "",
+			Type:            "test-type",
+			ControllerUUID:  "test-controller-uuid",
+			IsController:    true,
+			ProviderType:    "test-provider-type",
+			Cloud:           "test-cloud",
+			CloudRegion:     "test-cloud-region",
+			CloudCredential: "test-cloud-credential",
+			Owner:           "test-owner",
+			Life:            "test-life",
+		}
+
+		mockSSHKey.EXPECT().Default(ctx).Return(sshKey, nil)
+		mockJujuModel.EXPECT().Create(ctx, scopeName).Return(modelInfo, nil)
+		mockJujuKey.EXPECT().Add(ctx, modelInfo.UUID, sshKey.Key).Return([]params.ErrorResult{}, nil)
+
+		scope, err := s.CreateScope(ctx, scopeName)
+		if err != nil {
+			t.Errorf("CreateScope failed with empty UUID: %v", err)
+		}
+		if scope.UUID != "" {
+			t.Errorf("expected empty scope UUID, got %s", scope.UUID)
+		}
+	})
+}
+
+func TestCreateDefaultScope(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockSSHKey := mocks.NewMockMAASSSHKey(ctrl)
+	mockJujuModel := mocks.NewMockJujuModel(ctrl)
+	mockJujuKey := mocks.NewMockJujuKey(ctrl)
+	s := &NexusService{
+		sshKey:     mockSSHKey,
+		scope:      mockJujuModel,
+		keyManager: mockJujuKey,
+	}
+
+	ctx := context.Background()
+	sshKey := &entity.SSHKey{Key: "test-key"}
+	modelInfo := &base.ModelInfo{
+		Name: defaultScopeName,
+		UUID: "test-uuid",
+	}
+
+	mockSSHKey.EXPECT().Default(ctx).Return(sshKey, nil)
+	mockJujuModel.EXPECT().Create(ctx, defaultScopeName).Return(modelInfo, nil)
+	mockJujuKey.EXPECT().Add(ctx, modelInfo.UUID, sshKey.Key).Return([]params.ErrorResult{}, nil)
+
+	scope, err := s.CreateDefaultScope(ctx)
+
+	if err != nil {
+		t.Errorf("CreateDefaultScope failed: %v", err)
+	}
+	if scope.Name != defaultScopeName {
+		t.Errorf("expected scope name %s, got %s", defaultScopeName, scope.Name)
+	}
+	if scope.UUID != modelInfo.UUID {
+		t.Errorf("expected scope UUID %s, got %s", modelInfo.UUID, scope.UUID)
+	}
 }

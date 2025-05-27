@@ -4,574 +4,763 @@ import (
 	"context"
 	"errors"
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/juju/juju/api/base"
 	"github.com/openhdc/otterscale/internal/domain/model"
+	mocks "github.com/openhdc/otterscale/internal/domain/service/mocks"
+	"go.uber.org/mock/gomock"
 )
 
-// --- Mocks ---
+func TestNexusService_GetConfiguration(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-type mockServer struct {
-	getFn    func(ctx context.Context, key string) ([]byte, error)
-	updateFn func(ctx context.Context, key string, value string) error
-}
+	mockServer := mocks.NewMockMAASServer(ctrl)
+	mockPackageRepo := mocks.NewMockMAASPackageRepository(ctrl)
+	mockBootResource := mocks.NewMockMAASBootResource(ctrl)
+	mockBootSource := mocks.NewMockMAASBootSource(ctrl)
+	mockBootSourceSelection := mocks.NewMockMAASBootSourceSelection(ctrl)
 
-func (m *mockServer) Get(ctx context.Context, key string) ([]byte, error) {
-	return m.getFn(ctx, key)
-}
-func (m *mockServer) Update(ctx context.Context, key string, value string) error {
-	return m.updateFn(ctx, key, value)
-}
-
-type mockPackageRepository struct {
-	listFn   func(ctx context.Context) ([]model.PackageRepository, error)
-	updateFn func(ctx context.Context, id int, params *model.PackageRepositoryParams) (*model.PackageRepository, error)
-}
-
-func (m *mockPackageRepository) List(ctx context.Context) ([]model.PackageRepository, error) {
-	return m.listFn(ctx)
-}
-func (m *mockPackageRepository) Update(ctx context.Context, id int, params *model.PackageRepositoryParams) (*model.PackageRepository, error) {
-	return m.updateFn(ctx, id, params)
-}
-
-type mockBootResource struct {
-	listFn        func(ctx context.Context) ([]model.BootImage, error)
-	importFn      func(ctx context.Context) error
-	isImportingFn func(ctx context.Context) (bool, error)
-}
-
-func (m *mockBootResource) List(ctx context.Context) ([]entity.BootResource, error) {
-	bootImages, err := m.listFn(ctx)
-	if err != nil {
-		return nil, err
+	s := &NexusService{
+		server:              mockServer,
+		packageRepository:   mockPackageRepo,
+		bootResource:        mockBootResource,
+		bootSource:          mockBootSource,
+		bootSourceSelection: mockBootSourceSelection,
 	}
-	bootResources := make([]entity.BootResource, len(bootImages))
-	for i, img := range bootImages {
-		bootResources[i] = entity.BootResource{
-			Name: img.Name,
-			// Add more field mappings if needed
+
+	ctx := context.Background()
+
+	mockServer.EXPECT().Get(ctx, maasConfigNTPServers).Return([]byte(`"ntp1.example.com ntp2.example.com"`), nil)
+	mockPackageRepo.EXPECT().List(ctx).Return([]entity.PackageRepository{{URL: "http://repo1.example.com/"}}, nil)
+	mockBootResource.EXPECT().List(ctx).Return([]entity.BootResource{}, nil)
+	mockBootSource.EXPECT().List(ctx).Return([]entity.BootSource{}, nil)
+	mockBootSourceSelection.EXPECT().List(ctx, gomock.Any()).Return([]entity.BootSourceSelection{}, nil).AnyTimes()
+	mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"jammy"`), nil)
+
+	cfg, err := s.GetConfiguration(ctx)
+	if err != nil {
+		t.Fatalf("GetConfiguration failed: %v", err)
+	}
+
+	expectedNTPServers := []string{"ntp1.example.com", "ntp2.example.com"}
+	if !reflect.DeepEqual(cfg.NTPServers, expectedNTPServers) { // 使用 cfg 變數
+		t.Errorf("NTPServers mismatch: expected %v, got %v", expectedNTPServers, cfg.NTPServers)
+	}
+
+	expectedPackageRepo := []model.PackageRepository{{URL: "http://repo1.example.com/"}}
+	if !reflect.DeepEqual(cfg.PackageRepositories, expectedPackageRepo) { // 使用 cfg 變數
+		t.Errorf("PackageRepositories mismatch: expected %v, got %v", expectedPackageRepo, cfg.PackageRepositories)
+	}
+
+	//  新增 BootImages 的斷言，即使它是空的，也要驗證
+	if len(cfg.BootImages) != 0 { // 使用 cfg 變數
+		t.Errorf("BootImages mismatch: expected empty slice, got %v", cfg.BootImages)
+	}
+}
+func TestUpdateNTPServer(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockServer := mocks.NewMockMAASServer(ctrl)
+	s := &NexusService{server: mockServer}
+	ctx := context.Background()
+	addresses := []string{"ntp3.example.com", "ntp4.example.com"}
+
+	t.Run("success", func(t *testing.T) {
+		mockServer.EXPECT().Update(ctx, maasConfigNTPServers, "ntp3.example.com ntp4.example.com").Return(nil)
+		mockServer.EXPECT().Get(ctx, maasConfigNTPServers).Return([]byte(`"ntp3.example.com ntp4.example.com"`), nil)
+
+		updatedAddresses, err := s.UpdateNTPServer(ctx, addresses)
+		if err != nil {
+			t.Fatalf("UpdateNTPServer failed: %v", err)
 		}
-	}
-	return bootResources, nil
-}
-func (m *mockBootResource) Import(ctx context.Context) error {
-	return m.importFn(ctx)
-}
-func (m *mockBootResource) IsImporting(ctx context.Context) (bool, error) {
-	return m.isImportingFn(ctx)
+		if !reflect.DeepEqual(updatedAddresses, addresses) {
+			t.Errorf("expected addresses %v, got %v", addresses, updatedAddresses)
+		}
+	})
+
+	t.Run("update error", func(t *testing.T) {
+		mockServer.EXPECT().Update(ctx, maasConfigNTPServers, "ntp3.example.com ntp4.example.com").Return(errors.New("update failed"))
+
+		_, err := s.UpdateNTPServer(ctx, addresses)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "update failed" {
+			t.Errorf("expected 'update failed', got %v", err)
+		}
+	})
+
+	t.Run("list after update error", func(t *testing.T) {
+		mockServer.EXPECT().Update(ctx, maasConfigNTPServers, "ntp3.example.com ntp4.example.com").Return(nil)
+		mockServer.EXPECT().Get(ctx, maasConfigNTPServers).Return(nil, errors.New("list failed"))
+
+		_, err := s.UpdateNTPServer(ctx, addresses)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "list failed" {
+			t.Errorf("expected 'list failed', got %v", err)
+		}
+	})
 }
 
-type mockBootSource struct {
-	listFn func(ctx context.Context) ([]entity.BootSource, error)
+func TestCreateBootImage(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockBootSourceSelection := mocks.NewMockMAASBootSourceSelection(ctrl)
+	s := &NexusService{bootSourceSelection: mockBootSourceSelection}
+	ctx := context.Background()
+	distroSeries := "jammy"
+	architectures := []string{"amd64", "arm64"}
+
+	t.Run("success", func(t *testing.T) {
+		mockBootSourceSelection.EXPECT().CreateFromMAASIO(ctx, distroSeries, architectures).Return(&entity.BootSourceSelection{}, nil)
+		_, err := s.CreateBootImage(ctx, distroSeries, architectures)
+		if err != nil {
+			t.Fatalf("CreateBootImage failed: %v", err)
+		}
+	})
+
+	t.Run("create error", func(t *testing.T) {
+		mockBootSourceSelection.EXPECT().CreateFromMAASIO(ctx, distroSeries, architectures).Return(nil, errors.New("create failed"))
+		_, err := s.CreateBootImage(ctx, distroSeries, architectures)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "create failed" {
+			t.Errorf("expected 'create failed', got %v", err)
+		}
+	})
+}
+func TestSetDefaultBootImage(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockServer := mocks.NewMockMAASServer(ctrl)
+	s := &NexusService{server: mockServer}
+	ctx := context.Background()
+	distroSeries := "jammy"
+
+	t.Run("success", func(t *testing.T) {
+		mockServer.EXPECT().Update(ctx, maasConfigDefaultOSSystem, defaultOSSystem).Return(nil)
+		mockServer.EXPECT().Update(ctx, maasConfigDefaultDistroSeries, distroSeries).Return(nil)
+		mockServer.EXPECT().Update(ctx, maasConfigCommissioningDistroSeries, distroSeries).Return(nil)
+
+		if err := s.SetDefaultBootImage(ctx, distroSeries); err != nil {
+			t.Fatalf("SetDefaultBootImage failed: %v", err)
+		}
+	})
+
+	t.Run("error updating default os system", func(t *testing.T) {
+		mockServer.EXPECT().Update(ctx, maasConfigDefaultOSSystem, defaultOSSystem).Return(errors.New("os system update error"))
+		// No other mocks should be called
+
+		err := s.SetDefaultBootImage(ctx, distroSeries)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "os system update error" {
+			t.Errorf("expected 'os system update error', got %v", err)
+		}
+	})
+
+	t.Run("error updating default distro series", func(t *testing.T) {
+		mockServer.EXPECT().Update(ctx, maasConfigDefaultOSSystem, defaultOSSystem).Return(nil)
+		mockServer.EXPECT().Update(ctx, maasConfigDefaultDistroSeries, distroSeries).Return(errors.New("distro series update error"))
+		// No other mocks should be called
+
+		err := s.SetDefaultBootImage(ctx, distroSeries)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "distro series update error" {
+			t.Errorf("expected 'distro series update error', got %v", err)
+		}
+	})
+
+	t.Run("error updating commissioning distro series", func(t *testing.T) {
+		mockServer.EXPECT().Update(ctx, maasConfigDefaultOSSystem, defaultOSSystem).Return(nil)
+		mockServer.EXPECT().Update(ctx, maasConfigDefaultDistroSeries, distroSeries).Return(nil)
+		mockServer.EXPECT().Update(ctx, maasConfigCommissioningDistroSeries, distroSeries).Return(errors.New("commissioning update error"))
+
+		err := s.SetDefaultBootImage(ctx, distroSeries)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "commissioning update error" {
+			t.Errorf("expected 'commissioning update error', got %v", err)
+		}
+	})
 }
 
-func (m *mockBootSource) List(ctx context.Context) ([]entity.BootSource, error) {
-	return m.listFn(ctx)
-}
+func TestUpdatePackageRepository(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-type mockBootSourceSelection struct {
-	createFn func(ctx context.Context, distro string, arch []string) (*entity.BootSourceSelection, error)
-	listFn   func(ctx context.Context, id int) ([]entity.BootSourceSelection, error)
-}
+	mockRepo := mocks.NewMockMAASPackageRepository(ctrl)
+	s := &NexusService{packageRepository: mockRepo}
+	ctx := context.Background()
+	id := 1
+	url := "http://newrepo.example.com/"
+	skipJuju := true // skipJuju is not used by the service method, but kept for consistency if it was intended for other layers
 
-func (m *mockBootSourceSelection) CreateFromMAASIO(ctx context.Context, distro string, arch []string) (*entity.BootSourceSelection, error) {
-	return m.createFn(ctx, distro, arch)
-}
-func (m *mockBootSourceSelection) List(ctx context.Context, id int) ([]entity.BootSourceSelection, error) {
-	return m.listFn(ctx, id)
-}
+	t.Run("success", func(t *testing.T) {
+		expectedRepo := &entity.PackageRepository{
+			ID:   id,
+			URL:  url,
+			Name: "newrepo.example.com", // Assuming name is derived or set
+		}
+		mockRepo.EXPECT().Update(ctx, id, &entity.PackageRepositoryParams{URL: url}).Return(expectedRepo, nil)
 
-type mockScope struct {
-	listFn   func(ctx context.Context) ([]base.UserModelSummary, error)
-	createFn func(ctx context.Context, name string) (*base.ModelInfo, error)
-}
+		repo, err := s.UpdatePackageRepository(ctx, id, url, skipJuju)
+		if err != nil {
+			t.Fatalf("UpdatePackageRepository failed: %v", err)
+		}
+		if repo == nil {
+			t.Fatal("expected repository, got nil")
+		}
+		if repo.ID != expectedRepo.ID {
+			t.Errorf("expected ID %d, got %d", expectedRepo.ID, repo.ID)
+		}
+		if repo.URL != expectedRepo.URL {
+			t.Errorf("expected URL %s, got %s", expectedRepo.URL, repo.URL)
+		}
+		if repo.Name != expectedRepo.Name {
+			t.Errorf("expected Name %s, got %s", expectedRepo.Name, repo.Name)
+		}
+	})
 
-func (m *mockScope) List(ctx context.Context) ([]base.UserModelSummary, error) {
-	return m.listFn(ctx)
-}
+	t.Run("update error", func(t *testing.T) {
+		expectedErr := errors.New("update failed")
+		mockRepo.EXPECT().Update(ctx, id, &entity.PackageRepositoryParams{URL: url}).Return(nil, expectedErr)
 
-func (m *mockScope) Create(ctx context.Context, name string) (*base.ModelInfo, error) {
-	if m.createFn != nil {
-		return m.createFn(ctx, name)
-	}
-	return nil, nil
-}
+		_, err := s.UpdatePackageRepository(ctx, id, url, skipJuju)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if !errors.Is(err, expectedErr) {
+			t.Errorf("expected error %v, got %v", expectedErr, err)
+		}
+	})
+	t.Run("update error with nil repository", func(t *testing.T) {
+		expectedErr := errors.New("update failed")
+		mockRepo.EXPECT().Update(ctx, id, &entity.PackageRepositoryParams{URL: url}).Return(nil, expectedErr)
 
-type mockScopeConfig struct {
-	setFn   func(ctx context.Context, uuid string, cfg map[string]any) error
-	listFn  func(ctx context.Context, uuid string) (map[string]any, error)
-	unsetFn func(ctx context.Context, uuid string, keys ...string) error
-}
+		repo, err := s.UpdatePackageRepository(ctx, id, url, skipJuju)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if !errors.Is(err, expectedErr) {
+			t.Errorf("expected error %v, got %v", expectedErr, err)
+		}
+		if repo != nil {
+			t.Fatal("expected nil repository, got non-nil")
+		}
+	})
+	t.Run("update error with empty URL", func(t *testing.T) {
+		id := 1
+		url := "" // Empty URL
+		skipJuju := true
 
-func (m *mockScopeConfig) Set(ctx context.Context, uuid string, cfg map[string]any) error {
-	return m.setFn(ctx, uuid, cfg)
-}
+		expectedErr := errors.New("URL cannot be empty")
+		mockRepo.EXPECT().Update(ctx, id, &entity.PackageRepositoryParams{URL: url}).Return(nil, expectedErr)
 
-func (m *mockScopeConfig) List(ctx context.Context, uuid string) (map[string]any, error) {
-	if m.listFn != nil {
-		return m.listFn(ctx, uuid)
-	}
-	return map[string]any{}, nil
-}
+		_, err := s.UpdatePackageRepository(ctx, id, url, skipJuju)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if !errors.Is(err, expectedErr) {
+			t.Errorf("expected error %v, got %v", expectedErr, err)
+		}
+	})
+	t.Run("success with juju update", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
 
-func (m *mockScopeConfig) Unset(ctx context.Context, uuid string, keys ...string) error {
-	if m.unsetFn != nil {
-		return m.unsetFn(ctx, uuid, keys...)
-	}
-	return nil
-}
+		mockRepo := mocks.NewMockMAASPackageRepository(ctrl)
+		mockScope := mocks.NewMockJujuModel(ctrl)             // Changed from NewMockMAASScope
+		mockScopeConfig := mocks.NewMockJujuModelConfig(ctrl) // Changed from NewMockMAASScopeConfig
 
-// --- NexusService factory for tests ---
+		s := &NexusService{
+			packageRepository: mockRepo,
+			scope:             mockScope,
+			scopeConfig:       mockScopeConfig,
+		}
+		ctx := context.Background()
+		id := 1
+		url := "http://newrepo.example.com/"
+		skipJuju := false // Test this path
 
-// newTestNexusServiceConfiguration creates and returns a new NexusService instance with mock dependencies for testing purposes.
-func newTestNexusServiceConfiguration() *NexusService {
-	return &NexusService{
-		server:              &mockServer{},
-		packageRepository:   &mockPackageRepository{},
-		bootResource:        &mockBootResource{},
-		bootSource:          &mockBootSource{},
-		bootSourceSelection: &mockBootSourceSelection{},
-		scope:               &mockScope{},
-		scopeConfig:         &mockScopeConfig{},
-	}
-}
+		expectedRepoEntity := &entity.PackageRepository{
+			ID:   id,
+			URL:  url,
+			Name: "newrepo.example.com",
+		}
+		mockRepo.EXPECT().Update(ctx, id, &entity.PackageRepositoryParams{URL: url}).Return(expectedRepoEntity, nil)
 
-// --- Tests ---
+		scopes := []base.UserModelSummary{ // Changed from model.UserMAASScope
+			{UUID: "uuid1", Name: "scope1"},
+			{UUID: "uuid2", Name: "scope2"},
+		}
+		mockScope.EXPECT().List(ctx).Return(scopes, nil)
 
-func TestRemoveQuotes(t *testing.T) {
-	s := `"quoted"`
-	want := "quoted"
-	got := removeQuotes(s)
-	if got != want {
-		t.Errorf("removeQuotes(%q) = %q, want %q", s, got, want)
-	}
-}
+		expectedJujuConfig := map[string]any{jujuConfigAPTMirror: url}
+		mockScopeConfig.EXPECT().Set(ctx, scopes[0].UUID, expectedJujuConfig).Return(nil)
+		mockScopeConfig.EXPECT().Set(ctx, scopes[1].UUID, expectedJujuConfig).Return(nil)
 
-func TestListNTPServers_Success(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return []byte(`"ntp1 ntp2"`), nil
-		},
-	}
-	got, err := ns.listNTPServers(context.Background())
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	want := []string{"ntp1", "ntp2"}
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %v, want %v", got, want)
-	}
-}
+		repo, err := s.UpdatePackageRepository(ctx, id, url, skipJuju)
+		if err != nil {
+			t.Fatalf("UpdatePackageRepository failed: %v", err)
+		}
+		if repo == nil {
+			t.Fatal("expected repository, got nil")
+		}
+		if repo.ID != expectedRepoEntity.ID {
+			t.Errorf("expected ID %d, got %d", expectedRepoEntity.ID, repo.ID)
+		}
+		if repo.URL != expectedRepoEntity.URL {
+			t.Errorf("expected URL %s, got %s", expectedRepoEntity.URL, repo.URL)
+		}
+	})
 
-func TestListNTPServers_Error(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return nil, errors.New("fail")
-		},
-	}
-	_, err := ns.listNTPServers(context.Background())
-	if err == nil {
-		t.Error("expected error, got nil")
-	}
-}
+	t.Run("error listing scopes during juju update", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
 
-func TestUpdateNTPServer_Success(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	called := false
-	ns.server = &mockServer{
-		updateFn: func(ctx context.Context, key, value string) error {
-			called = true
-			if key != maasConfigNTPServers {
-				t.Errorf("unexpected key: %s", key)
-			}
-			if value != "ntp1 ntp2" {
-				t.Errorf("unexpected value: %s", value)
-			}
-			return nil
-		},
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return []byte(`"ntp1 ntp2"`), nil
-		},
-	}
-	got, err := ns.UpdateNTPServer(context.Background(), []string{"ntp1", "ntp2"})
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if !called {
-		t.Error("expected update to be called")
-	}
-	if !reflect.DeepEqual(got, []string{"ntp1", "ntp2"}) {
-		t.Errorf("got %v, want %v", got, []string{"ntp1", "ntp2"})
-	}
-}
+		mockRepo := mocks.NewMockMAASPackageRepository(ctrl)
+		mockScope := mocks.NewMockJujuModel(ctrl) // Changed from NewMockMAASScope
+		// mockScopeConfig is not strictly needed here as the error happens before its use
 
-func TestUpdateNTPServer_UpdateError(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		updateFn: func(ctx context.Context, key, value string) error {
-			return errors.New("fail")
-		},
-	}
-	_, err := ns.UpdateNTPServer(context.Background(), []string{"ntp1"})
-	if err == nil {
-		t.Error("expected error, got nil")
-	}
-}
+		s := &NexusService{
+			packageRepository: mockRepo,
+			scope:             mockScope,
+			// scopeConfig: mockScopeConfig,
+		}
+		ctx := context.Background()
+		id := 1
+		url := "http://newrepo.example.com/"
+		skipJuju := false
 
-func TestUpdatePackageRepository_Success(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.packageRepository = &mockPackageRepository{
-		updateFn: func(ctx context.Context, id int, params *model.PackageRepositoryParams) (*model.PackageRepository, error) {
-			return &model.PackageRepository{ID: id, URL: params.URL}, nil
-		},
-	}
-	ns.scope = &mockScope{
-		listFn: func(ctx context.Context) ([]base.UserModelSummary, error) {
-			return []model.Scope{{UUID: "uuid1"}}, nil
-		},
-	}
-	ns.scopeConfig = &mockScopeConfig{
-		setFn: func(ctx context.Context, uuid string, cfg map[string]any) error {
-			if uuid != "uuid1" {
-				t.Errorf("unexpected uuid: %s", uuid)
-			}
-			if cfg[jujuConfigAPTMirror] != "http://repo" {
-				t.Errorf("unexpected cfg: %v", cfg)
-			}
-			return nil
-		},
-	}
-	pr, err := ns.UpdatePackageRepository(context.Background(), 1, "http://repo", false)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if pr.ID != 1 || pr.URL != "http://repo" {
-		t.Errorf("unexpected result: %+v", pr)
-	}
-}
+		expectedRepoEntity := &entity.PackageRepository{
+			ID:   id,
+			URL:  url,
+			Name: "newrepo.example.com",
+		}
+		mockRepo.EXPECT().Update(ctx, id, &entity.PackageRepositoryParams{URL: url}).Return(expectedRepoEntity, nil)
 
-func TestUpdatePackageRepository_SkipJuju(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.packageRepository = &mockPackageRepository{
-		updateFn: func(ctx context.Context, id int, params *model.PackageRepositoryParams) (*model.PackageRepository, error) {
-			return &model.PackageRepository{ID: id, URL: params.URL}, nil
-		},
-	}
-	pr, err := ns.UpdatePackageRepository(context.Background(), 2, "http://repo2", true)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if pr.ID != 2 || pr.URL != "http://repo2" {
-		t.Errorf("unexpected result: %+v", pr)
-	}
-}
+		expectedErr := errors.New("scope list error")
+		mockScope.EXPECT().List(ctx).Return(nil, expectedErr)
 
-func TestCreateBootImage_DefaultArch(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.bootSourceSelection = &mockBootSourceSelection{
-		createFn: func(ctx context.Context, distro string, arch []string) (*entity.BootSourceSelection, error) {
-			if distro != "focal" {
-				t.Errorf("unexpected distro: %s", distro)
-			}
-			if !reflect.DeepEqual(arch, []string{"amd64"}) {
-				t.Errorf("unexpected arch: %v", arch)
-			}
-			return &entity.BootSourceSelection{
-				Release: "focal",
-				OS:      "Ubuntu",
-				Arches:  []string{"amd64", "arm64"},
-			}, nil
-		},
-	}
-	img, err := ns.CreateBootImage(context.Background(), "focal", nil)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if img.DistroSeries != "focal" || img.Name != "Ubuntu" {
-		t.Errorf("unexpected image: %+v", img)
-	}
-	if len(img.ArchitectureStatusMap) != 2 {
-		t.Errorf("unexpected arch map: %+v", img.ArchitectureStatusMap)
-	}
-}
+		_, err := s.UpdatePackageRepository(ctx, id, url, skipJuju)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if !errors.Is(err, expectedErr) {
+			t.Errorf("expected error %v, got %v", expectedErr, err)
+		}
+	})
 
-func TestSetDefaultBootImage_Success(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	calls := []string{}
-	ns.server = &mockServer{
-		updateFn: func(ctx context.Context, key, value string) error {
-			calls = append(calls, key+":"+value)
-			return nil
-		},
-	}
-	err := ns.SetDefaultBootImage(context.Background(), "focal")
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(calls) != 3 {
-		t.Errorf("expected 3 updates, got %d", len(calls))
-	}
-}
+	t.Run("error setting scope config during juju update", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
 
-func TestSetDefaultBootImage_Error(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		updateFn: func(ctx context.Context, key, value string) error {
-			return errors.New("fail")
-		},
-	}
-	err := ns.SetDefaultBootImage(context.Background(), "focal")
-	if err == nil {
-		t.Error("expected error, got nil")
-	}
+		mockRepo := mocks.NewMockMAASPackageRepository(ctrl)
+		mockScope := mocks.NewMockJujuModel(ctrl)             // Changed from NewMockMAASScope
+		mockScopeConfig := mocks.NewMockJujuModelConfig(ctrl) // Changed from NewMockMAASScopeConfig
+
+		s := &NexusService{
+			packageRepository: mockRepo,
+			scope:             mockScope,
+			scopeConfig:       mockScopeConfig,
+		}
+		ctx := context.Background()
+		id := 1
+		url := "http://newrepo.example.com/"
+		skipJuju := false
+
+		expectedRepoEntity := &entity.PackageRepository{
+			ID:   id,
+			URL:  url,
+			Name: "newrepo.example.com",
+		}
+		mockRepo.EXPECT().Update(ctx, id, &entity.PackageRepositoryParams{URL: url}).Return(expectedRepoEntity, nil)
+
+		scopes := []base.UserModelSummary{ // Changed from model.UserMAASScope
+			{UUID: "uuid1", Name: "scope1"},
+		}
+		mockScope.EXPECT().List(ctx).Return(scopes, nil)
+
+		expectedJujuConfig := map[string]any{jujuConfigAPTMirror: url}
+		expectedErr := errors.New("scope config set error")
+		mockScopeConfig.EXPECT().Set(ctx, scopes[0].UUID, expectedJujuConfig).Return(expectedErr)
+
+		_, err := s.UpdatePackageRepository(ctx, id, url, skipJuju)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if !errors.Is(err, expectedErr) {
+			t.Errorf("expected error %v, got %v", expectedErr, err)
+		}
+	})
 }
 
 func TestImportBootImages(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	called := false
-	ns.bootResource = &mockBootResource{
-		importFn: func(ctx context.Context) error {
-			called = true
-			return nil
-		},
-	}
-	err := ns.ImportBootImages(context.Background())
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if !called {
-		t.Error("expected import to be called")
-	}
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockBootResource := mocks.NewMockMAASBootResource(ctrl)
+	s := &NexusService{bootResource: mockBootResource}
+	ctx := context.Background()
+
+	t.Run("success", func(t *testing.T) {
+		mockBootResource.EXPECT().Import(ctx).Return(nil)
+		if err := s.ImportBootImages(ctx); err != nil {
+			t.Fatalf("ImportBootImages failed: %v", err)
+		}
+	})
+
+	t.Run("import error", func(t *testing.T) {
+		mockBootResource.EXPECT().Import(ctx).Return(errors.New("import failed"))
+		if err := s.ImportBootImages(ctx); err == nil {
+			t.Fatal("expected error, got nil")
+		}
+	})
 }
 
 func TestIsImportingBootImages(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.bootResource = &mockBootResource{
-		isImportingFn: func(ctx context.Context) (bool, error) {
-			return true, nil
-		},
-	}
-	val, err := ns.IsImportingBootImages(context.Background())
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if !val {
-		t.Error("expected true")
-	}
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockBootResource := mocks.NewMockMAASBootResource(ctrl)
+	s := &NexusService{bootResource: mockBootResource}
+	ctx := context.Background()
+
+	t.Run("is importing", func(t *testing.T) {
+		mockBootResource.EXPECT().IsImporting(ctx).Return(true, nil)
+		importing, err := s.IsImportingBootImages(ctx)
+		if err != nil {
+			t.Fatalf("IsImportingBootImages failed: %v", err)
+		}
+		if !importing {
+			t.Errorf("IsImportingBootImages expected true, got false")
+		}
+	})
+
+	t.Run("not importing", func(t *testing.T) {
+		mockBootResource.EXPECT().IsImporting(ctx).Return(false, nil)
+		importing, err := s.IsImportingBootImages(ctx)
+		if err != nil {
+			t.Fatalf("IsImportingBootImages failed: %v", err)
+		}
+		if importing {
+			t.Errorf("IsImportingBootImages expected false, got true")
+		}
+	})
+
+	t.Run("is importing error", func(t *testing.T) {
+		mockBootResource.EXPECT().IsImporting(ctx).Return(false, errors.New("is importing error"))
+		_, err := s.IsImportingBootImages(ctx)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "is importing error" {
+			t.Errorf("expected 'is importing error', got %v", err)
+		}
+	})
 }
 
 func TestListBootImageSelections(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	got, err := ns.ListBootImageSelections(context.Background())
+	s := &NexusService{} // This function does not have external dependencies on mocks for this method
+	ctx := context.Background()
+
+	selections, err := s.ListBootImageSelections(ctx)
 	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
+		t.Fatalf("ListBootImageSelections failed: %v", err)
 	}
-	if len(got) != len(ubuntuDistroSeriesMap) {
-		t.Errorf("expected %d, got %d", len(ubuntuDistroSeriesMap), len(got))
+
+	// Check if the number of selections matches the number of entries in ubuntuDistroSeriesMap
+	if len(selections) != len(ubuntuDistroSeriesMap) {
+		t.Errorf("Expected %d selections, got %d. Selections: %+v", len(ubuntuDistroSeriesMap), len(selections), selections)
+	}
+
+	// Verify that each entry in ubuntuDistroSeriesMap is present in the selections
+	for series, expected := range ubuntuDistroSeriesMap {
+		found := false
+		for _, actual := range selections {
+			if actual.DistroSeries == series {
+				// Compare the actual selection with the expected model.BootImageSelection
+				// The 'expected' variable from the map is already of type model.BootImageSelection.
+				if !reflect.DeepEqual(actual, expected) {
+					t.Errorf("Mismatch for DistroSeries %s:\nExpected: %+v\nActual:   %+v",
+						series, expected, actual)
+				}
+				found = true
+				break
+			}
+		}
+		if !found {
+			t.Errorf("Expected selection for DistroSeries %s not found in results: %+v", series, selections)
+		}
+	}
+
+	// Optional: Verify that there are no unexpected selections in the results
+	// This is implicitly covered if len(selections) == len(ubuntuDistroSeriesMap)
+	// and all expected items are found. However, an explicit check can be added for robustness.
+	for _, actual := range selections {
+		if _, ok := ubuntuDistroSeriesMap[actual.DistroSeries]; !ok {
+			t.Errorf("Found unexpected selection in results: %+v", actual)
+		}
 	}
 }
 
-func TestListPackageRepositories(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.packageRepository = &mockPackageRepository{
-		listFn: func(ctx context.Context) ([]model.PackageRepository, error) {
-			return []model.PackageRepository{{ID: 1, URL: "http://repo"}}, nil
-		},
-	}
-	got, err := ns.listPackageRepositories(context.Background())
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(got) != 1 || got[0].ID != 1 {
-		t.Errorf("unexpected result: %+v", got)
-	}
-}
+func TestNexusService_listBootImages(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-func TestImageBase_Success(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return []byte(`"focal"`), nil
-		},
-	}
-	b, err := ns.imageBase(context.Background())
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if b.OS != "focal" {
-		t.Errorf("unexpected base: %+v", b)
-	}
-}
+	mockServer := mocks.NewMockMAASServer(ctrl)
+	mockBootResource := mocks.NewMockMAASBootResource(ctrl)
+	mockBootSource := mocks.NewMockMAASBootSource(ctrl)
+	mockBootSourceSelection := mocks.NewMockMAASBootSourceSelection(ctrl)
 
-func TestImageBase_Error(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return nil, errors.New("fail")
-		},
+	s := &NexusService{
+		server:              mockServer,
+		bootResource:        mockBootResource,
+		bootSource:          mockBootSource,
+		bootSourceSelection: mockBootSourceSelection,
 	}
-	_, err := ns.imageBase(context.Background())
-	if err == nil {
-		t.Error("expected error, got nil")
-	}
-}
+	ctx := context.Background()
 
-func TestListBootImages_Error(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return nil, errors.New("fail")
-		},
-	}
-	_, err := ns.listBootImages(context.Background())
-	if err == nil {
-		t.Error("expected error, got nil")
-	}
-}
+	t.Run("success with data", func(t *testing.T) {
+		defaultSeries := "focal"
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"`+defaultSeries+`"`), nil)
+		mockBootResource.EXPECT().List(ctx).Return([]entity.BootResource{
+			{Name: "ubuntu/focal", Architecture: "amd64", Type: "Synced"},
+			{Name: "ubuntu/focal", Architecture: "arm64", Type: "Synced"},
+			{Name: "ubuntu/jammy", Architecture: "amd64", Type: "Synced"},
+		}, nil)
+		mockBootSource.EXPECT().List(ctx).Return([]entity.BootSource{
+			{ID: 1, URL: "http://images.maas.io/ephemeral-v3/daily/"},
+		}, nil)
+		mockBootSourceSelection.EXPECT().List(ctx, 1).Return([]entity.BootSourceSelection{
+			{Release: "focal", OS: "ubuntu", Arches: []string{"amd64", "arm64"}},
+			{Release: "jammy", OS: "ubuntu", Arches: []string{"amd64"}},
+		}, nil)
 
-func TestListBootImages_Success(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return []byte(`"focal"`), nil
-		},
-	}
-	ns.bootResource = &mockBootResource{
-		listFn: func(ctx context.Context) ([]model.BootImage, error) {
-			return []model.BootImage{
-				{Name: "boot/focal/amd64", ArchitectureStatusMap: map[string]string{"amd64": "true"}},
-			}, nil
-		},
-	}
-	ns.bootSource = &mockBootSource{
-		listFn: func(ctx context.Context) ([]entity.BootSource, error) {
-			return []entity.BootSource{{ID: 1, URL: "src1"}}, nil
-		},
-	}
-	ns.bootSourceSelection = &mockBootSourceSelection{
-		listFn: func(ctx context.Context, id int) ([]entity.BootSourceSelection, error) {
-			return []entity.BootSourceSelection{
-				{Release: "focal"},
-			}, nil
-		},
-	}
-	got, err := ns.listBootImages(context.Background())
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(got) == 0 {
-		t.Error("expected boot images")
-	}
-	if !got[0].Default {
-		t.Error("expected default to be true")
-	}
-	if !strings.Contains(got[0].Source, "src1") {
-		t.Errorf("unexpected source: %s", got[0].Source)
-	}
-}
+		images, err := s.listBootImages(ctx)
+		if err != nil {
+			t.Fatalf("listBootImages failed: %v", err)
+		}
 
-func TestGetConfiguration_Success(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return []byte(`"ntp1 ntp2"`), nil
-		},
-	}
-	ns.packageRepository = &mockPackageRepository{
-		listFn: func(ctx context.Context) ([]model.PackageRepository, error) {
-			return []model.PackageRepository{{ID: 1, URL: "http://repo"}}, nil
-		},
-	}
-	ns.bootResource = &mockBootResource{
-		listFn: func(ctx context.Context) ([]model.BootImage, error) {
-			return []model.BootImage{{DistroSeries: "focal", Name: "Ubuntu"}}, nil
-		},
-	}
-	ns.bootSource = &mockBootSource{
-		listFn: func(ctx context.Context) ([]entity.BootSource, error) {
-			return []entity.BootSource{
-				{ID: 1, URL: "http://boot-source"},
-			}, nil
-		},
-	}
-	ns.bootSourceSelection = &mockBootSourceSelection{
-		listFn: func(ctx context.Context, id int) ([]entity.BootSourceSelection, error) {
-			return []entity.BootSourceSelection{
-				{Release: "focal"},
-			}, nil
-		},
-	}
-	got, err := ns.GetConfiguration(context.Background())
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if !reflect.DeepEqual(got.NTPServers, []string{"ntp1", "ntp2"}) {
-		t.Errorf("unexpected NTPServers: %v", got.NTPServers)
-	}
-	if len(got.PackageRepositories) != 1 || got.PackageRepositories[0].ID != 1 {
-		t.Errorf("unexpected PackageRepositories: %v", got.PackageRepositories)
-	}
-	if len(got.BootImages) != 1 || got.BootImages[0].DistroSeries != "focal" {
-		t.Errorf("unexpected BootImages: %v", got.BootImages)
-	}
-}
+		if len(images) != 2 {
+			t.Fatalf("expected 2 images, got %d: %+v", len(images), images)
+		}
 
-func TestGetConfiguration_NTPError(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return nil, errors.New("fail ntp")
-		},
-	}
-	_, err := ns.GetConfiguration(context.Background())
-	if err == nil || !strings.Contains(err.Error(), "fail ntp") {
-		t.Errorf("expected ntp error, got %v", err)
-	}
-}
+		focalImageFound := false
+		jammyImageFound := false
+		for _, img := range images {
+			if img.DistroSeries == "focal" {
+				focalImageFound = true
+				if img.Name != ubuntuDistroSeriesMap["focal"].Name {
+					t.Errorf("expected focal name %s, got %s", ubuntuDistroSeriesMap["focal"].Name, img.Name)
+				}
+				if !img.Default {
+					t.Error("expected focal to be default")
+				}
+				if len(img.ArchitectureStatusMap) != 2 {
+					t.Errorf("expected 2 architectures for focal, got %d", len(img.ArchitectureStatusMap))
+				}
+				if _, ok := img.ArchitectureStatusMap["amd64"]; !ok {
+					t.Error("expected amd64 for focal")
+				}
+				if _, ok := img.ArchitectureStatusMap["arm64"]; !ok {
+					t.Error("expected arm64 for focal")
+				}
+			}
+			if img.DistroSeries == "jammy" {
+				jammyImageFound = true
+				if img.Name != ubuntuDistroSeriesMap["jammy"].Name {
+					t.Errorf("expected jammy name %s, got %s", ubuntuDistroSeriesMap["jammy"].Name, img.Name)
+				}
+				if img.Default {
+					t.Error("expected jammy not to be default")
+				}
+				if len(img.ArchitectureStatusMap) != 1 {
+					t.Errorf("expected 1 architecture for jammy, got %d", len(img.ArchitectureStatusMap))
+				}
+				if _, ok := img.ArchitectureStatusMap["amd64"]; !ok {
+					t.Error("expected amd64 for jammy")
+				}
+			}
+		}
+		if !focalImageFound {
+			t.Error("focal image not found")
+		}
+		if !jammyImageFound {
+			t.Error("jammy image not found")
+		}
+	})
 
-func TestGetConfiguration_PackageRepoError(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return []byte(`"ntp1"`), nil
-		},
-	}
-	ns.packageRepository = &mockPackageRepository{
-		listFn: func(ctx context.Context) ([]model.PackageRepository, error) {
-			return nil, errors.New("fail repo")
-		},
-	}
-	_, err := ns.GetConfiguration(context.Background())
-	if err == nil || !strings.Contains(err.Error(), "fail repo") {
-		t.Errorf("expected repo error, got %v", err)
-	}
-}
+	t.Run("error getting default distro series", func(t *testing.T) {
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return(nil, errors.New("server get error"))
+		// Other mocks should not be called
 
-func TestGetConfiguration_BootImagesError(t *testing.T) {
-	ns := newTestNexusServiceConfiguration()
-	ns.server = &mockServer{
-		getFn: func(ctx context.Context, key string) ([]byte, error) {
-			return []byte(`"ntp1"`), nil
-		},
-	}
-	ns.packageRepository = &mockPackageRepository{
-		listFn: func(ctx context.Context) ([]model.PackageRepository, error) {
-			return []model.PackageRepository{}, nil
-		},
-	}
-	ns.bootResource = &mockBootResource{
-		listFn: func(ctx context.Context) ([]model.BootImage, error) {
-			return nil, errors.New("fail boot")
-		},
-	}
-	_, err := ns.GetConfiguration(context.Background())
-	if err == nil || !strings.Contains(err.Error(), "fail boot") {
-		t.Errorf("expected boot error, got %v", err)
-	}
+		_, err := s.listBootImages(ctx)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "server get error" {
+			t.Errorf("expected 'server get error', got %v", err)
+		}
+	})
+
+	t.Run("error listing boot resources", func(t *testing.T) {
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"focal"`), nil)
+		mockBootResource.EXPECT().List(ctx).Return(nil, errors.New("boot resource error"))
+		// Other mocks should not be called
+
+		_, err := s.listBootImages(ctx)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "boot resource error" {
+			t.Errorf("expected 'boot resource error', got %v", err)
+		}
+	})
+
+	t.Run("error listing boot sources", func(t *testing.T) {
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"focal"`), nil)
+		mockBootResource.EXPECT().List(ctx).Return([]entity.BootResource{}, nil)
+		mockBootSource.EXPECT().List(ctx).Return(nil, errors.New("boot source error"))
+		// Other mocks should not be called
+
+		_, err := s.listBootImages(ctx)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "boot source error" {
+			t.Errorf("expected 'boot source error', got %v", err)
+		}
+	})
+
+	t.Run("error listing boot source selections", func(t *testing.T) {
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"focal"`), nil)
+		mockBootResource.EXPECT().List(ctx).Return([]entity.BootResource{}, nil)
+		mockBootSource.EXPECT().List(ctx).Return([]entity.BootSource{{ID: 1}}, nil)
+		mockBootSourceSelection.EXPECT().List(ctx, 1).Return(nil, errors.New("bss error"))
+
+		_, err := s.listBootImages(ctx)
+		if err == nil {
+			t.Fatal("expected error, got nil")
+		}
+		if err.Error() != "bss error" {
+			t.Errorf("expected 'bss error', got %v", err)
+		}
+	})
+
+	t.Run("empty boot resources", func(t *testing.T) {
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"focal"`), nil)
+		mockBootResource.EXPECT().List(ctx).Return([]entity.BootResource{}, nil) // Empty
+		mockBootSource.EXPECT().List(ctx).Return([]entity.BootSource{{ID: 1}}, nil)
+		mockBootSourceSelection.EXPECT().List(ctx, 1).Return([]entity.BootSourceSelection{
+			{Release: "focal", OS: "ubuntu", Arches: []string{"amd64"}},
+		}, nil)
+
+		images, err := s.listBootImages(ctx)
+		if err != nil {
+			t.Fatalf("listBootImages failed: %v", err)
+		}
+		if len(images) != 1 {
+			t.Fatalf("expected 1 image, got %d", len(images))
+		}
+		if len(images[0].ArchitectureStatusMap) != 0 { // No matching boot resources
+			t.Errorf("expected 0 architectures, got %d", len(images[0].ArchitectureStatusMap))
+		}
+	})
+
+	t.Run("empty boot sources", func(t *testing.T) {
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"focal"`), nil)
+		mockBootResource.EXPECT().List(ctx).Return([]entity.BootResource{}, nil)
+		mockBootSource.EXPECT().List(ctx).Return([]entity.BootSource{}, nil) // Empty
+		// bootSourceSelection.List should not be called
+
+		images, err := s.listBootImages(ctx)
+		if err != nil {
+			t.Fatalf("listBootImages failed: %v", err)
+		}
+		if len(images) != 0 {
+			t.Fatalf("expected 0 images, got %d", len(images))
+		}
+	})
+
+	t.Run("boot resource name without slash", func(t *testing.T) {
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"focal"`), nil)
+		mockBootResource.EXPECT().List(ctx).Return([]entity.BootResource{
+			{Name: "focal-custom", Architecture: "amd64"}, // No slash
+		}, nil)
+		mockBootSource.EXPECT().List(ctx).Return([]entity.BootSource{{ID: 1}}, nil)
+		mockBootSourceSelection.EXPECT().List(ctx, 1).Return([]entity.BootSourceSelection{
+			{Release: "focal", OS: "ubuntu", Arches: []string{"amd64"}},
+		}, nil)
+
+		images, err := s.listBootImages(ctx)
+		if err != nil {
+			t.Fatalf("listBootImages failed: %v", err)
+		}
+		if len(images) != 1 {
+			t.Fatalf("expected 1 image, got %d", len(images))
+		}
+		// The architecture map will be empty because "focal-custom" won't match "focal" key in brm
+		if len(images[0].ArchitectureStatusMap) != 0 {
+			t.Errorf("expected 0 architectures due to name mismatch, got %d: %+v", len(images[0].ArchitectureStatusMap), images[0].ArchitectureStatusMap)
+		}
+	})
+
+	t.Run("boot source selection list returns empty", func(t *testing.T) {
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"focal"`), nil)
+		mockBootResource.EXPECT().List(ctx).Return([]entity.BootResource{}, nil)
+		mockBootSource.EXPECT().List(ctx).Return([]entity.BootSource{{ID: 1}}, nil)
+		mockBootSourceSelection.EXPECT().List(ctx, 1).Return([]entity.BootSourceSelection{}, nil) // Empty
+
+		images, err := s.listBootImages(ctx)
+		if err != nil {
+			t.Fatalf("listBootImages failed: %v", err)
+		}
+		if len(images) != 0 {
+			t.Fatalf("expected 0 images, got %d", len(images))
+		}
+	})
+
+	t.Run("distro series not in ubuntuDistroSeriesMap", func(t *testing.T) {
+		customSeries := "mycustomos"
+		mockServer.EXPECT().Get(ctx, maasConfigDefaultDistroSeries).Return([]byte(`"`+customSeries+`"`), nil)
+		mockBootResource.EXPECT().List(ctx).Return([]entity.BootResource{
+			{Name: "vendor/" + customSeries, Architecture: "amd64", Type: "Synced"},
+		}, nil)
+		mockBootSource.EXPECT().List(ctx).Return([]entity.BootSource{{ID: 1}}, nil)
+		mockBootSourceSelection.EXPECT().List(ctx, 1).Return([]entity.BootSourceSelection{
+			{Release: customSeries, OS: "vendor", Arches: []string{"amd64"}},
+		}, nil)
+
+		images, err := s.listBootImages(ctx)
+		if err != nil {
+			t.Fatalf("listBootImages failed: %v", err)
+		}
+		if len(images) != 1 {
+			t.Fatalf("expected 1 image, got %d", len(images))
+		}
+		if images[0].Name != customSeries { // Should use brss[j].Release as Name
+			t.Errorf("expected name %s, got %s", customSeries, images[0].Name)
+		}
+		if !images[0].Default {
+			t.Error("expected customSeries to be default")
+		}
+		if _, ok := images[0].ArchitectureStatusMap["amd64"]; !ok {
+			t.Error("expected amd64 for customSeries")
+		}
+	})
 }
