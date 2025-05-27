@@ -1,40 +1,43 @@
 package juju
 
 import (
-	"os"
-	"strings"
 	"sync"
 
 	"github.com/juju/juju/api"
 	"github.com/juju/juju/api/connector"
 
-	"github.com/openhdc/otterscale/internal/env"
+	"github.com/openhdc/otterscale/internal/config"
 )
 
-const (
-	defaultControllerAddress = "localhost:17070"
-	defaultUsername          = "admin"
-)
-
-// map[string]api.Connection
-type JujuMap struct {
-	*sync.Map
-	ControllerAddresses []string
-	Username            string
-	Password            string
+type Juju struct {
+	configSet   *config.ConfigSet
+	connections sync.Map
 }
 
-func NewJujuMap() (JujuMap, error) {
-	return JujuMap{
-		Map:                 &sync.Map{},
-		ControllerAddresses: strings.Split(env.GetOrDefault(env.OPENHDC_JUJU_CONTROLLER_ADDRESSES, defaultControllerAddress), ","),
-		Username:            env.GetOrDefault(env.OPENHDC_JUJU_USERNAME, defaultUsername),
-		Password:            env.GetOrDefault(env.OPENHDC_JUJU_PASSWORD, ""),
-	}, nil
+func New(conf *config.Config) *Juju {
+	return &Juju{
+		configSet: conf.ConfigSet,
+	}
 }
 
-func (m JujuMap) Get(uuid string) (api.Connection, error) {
-	if v, ok := m.Load(uuid); ok {
+func (m *Juju) newConnection(uuid string) (api.Connection, error) {
+	juju := m.configSet.GetJuju()
+	opts := connector.SimpleConfig{
+		ModelUUID:           uuid,
+		ControllerAddresses: juju.GetControllerAddresses(),
+		Username:            juju.GetUsername(),
+		Password:            juju.GetPassword(),
+		CACert:              juju.GetCaCert(),
+	}
+	sc, err := connector.NewSimple(opts)
+	if err != nil {
+		return nil, err
+	}
+	return sc.Connect()
+}
+
+func (m *Juju) connection(uuid string) (api.Connection, error) {
+	if v, ok := m.connections.Load(uuid); ok {
 		conn := v.(api.Connection)
 		if !conn.IsBroken() {
 			return conn, nil
@@ -46,39 +49,40 @@ func (m JujuMap) Get(uuid string) (api.Connection, error) {
 	if err != nil {
 		return nil, err
 	}
-	m.Store(uuid, conn)
+
+	m.connections.Store(uuid, conn)
 
 	return conn, nil
 }
 
-func (m JujuMap) newConnection(uuid string) (api.Connection, error) {
-	cfg := &connector.SimpleConfig{
-		ModelUUID:           uuid,
-		ControllerAddresses: m.ControllerAddresses,
-		Username:            m.Username,
-		Password:            m.Password,
+func (m *Juju) username() string {
+	juju := m.configSet.GetJuju()
+	if juju != nil {
+		return juju.GetUsername()
 	}
-
-	if path := os.Getenv(env.OPENHDC_JUJU_CACERT_PATH); path != "" {
-		caCert, err := loadCACert(path)
-		if err != nil {
-			return nil, err
-		}
-		cfg.CACert = caCert
-	}
-
-	sc, err := connector.NewSimple(*cfg)
-	if err != nil {
-		return nil, err
-	}
-
-	return sc.Connect()
+	return ""
 }
 
-func loadCACert(path string) (string, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return "", err
+func (m *Juju) cloudName() string {
+	juju := m.configSet.GetJuju()
+	if juju != nil {
+		return juju.GetCloudName()
 	}
-	return string(data), nil
+	return ""
+}
+
+func (m *Juju) cloudRegion() string {
+	juju := m.configSet.GetJuju()
+	if juju != nil {
+		return juju.GetCloudRegion()
+	}
+	return ""
+}
+
+func (m *Juju) charmhubAPIURL() string {
+	juju := m.configSet.GetJuju()
+	if juju != nil {
+		return juju.GetCharmhubApiUrl()
+	}
+	return ""
 }

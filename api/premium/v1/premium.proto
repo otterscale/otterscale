@@ -1,0 +1,13 @@
+edition = "2023";
+
+package otterscale.premium.v1;
+
+option go_package = "github.com/openhdc/otterscale/api/premium/v1;pb";
+
+service PremiumService {
+  rpc Enterprise(Ping) returns (Pong);
+}
+
+message Ping {}
+
+message Pong {}

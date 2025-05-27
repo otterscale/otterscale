@@ -1,0 +1,222 @@
+edition = "2023";
+
+package otterscale.application.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/application/v1;pb";
+
+service ApplicationService {
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
+  rpc GetApplication(GetApplicationRequest) returns (Application);
+  rpc ListReleases(ListReleasesRequest) returns (ListReleasesResponse);
+  rpc CreateRelease(CreateReleaseRequest) returns (Application.Release);
+  rpc UpdateRelease(UpdateReleaseRequest) returns (Application.Release);
+  rpc DeleteRelease(DeleteReleaseRequest) returns (google.protobuf.Empty);
+  rpc RollbackRelease(RollbackReleaseRequest) returns (google.protobuf.Empty);
+  rpc ListCharts(ListChartsRequest) returns (ListChartsResponse);
+  rpc GetChart(GetChartRequest) returns (Application.Chart);
+  rpc GetChartMetadata(GetChartMetadataRequest) returns (Application.Chart.Metadata);
+  rpc ListStorageClasses(ListStorageClassesRequest) returns (ListStorageClassesResponse);
+}
+
+message Application {
+  message Chart {
+    message Customization {
+      string type = 1;
+      string name = 2;
+      string verison = 3;
+      google.protobuf.Struct values = 11;
+    }
+    message Metadata {
+      string values_yaml = 1;
+      string readme_md = 2;
+      Application.Chart.Customization customization = 11;  // create only
+    }
+    message Maintainer {
+      string name = 1;
+      string email = 2;
+      string url = 3;
+    }
+    message Dependency {
+      string name = 1;
+      string version = 2;
+      string condition = 3;
+    }
+    message Version {
+      string chart_version = 1;
+      string chart_ref = 2;
+      string application_version = 3;
+    }
+    string name = 1;
+    string icon = 2;
+    string description = 3;
+    bool deprecated = 4;
+    string tags = 5;
+    repeated string keywords = 6;
+    string license = 7;
+    bool verified = 8;
+    string home = 11;
+    repeated string sources = 12;
+    repeated Maintainer maintainers = 21;
+    repeated Dependency dependencies = 31;
+    repeated Version versions = 41;
+  }
+  message Release {
+    string scope_name = 1;
+    string scope_uuid = 2;
+    string facility_name = 3;
+    string namespace = 4;
+    string name = 5;
+    int32 revision = 6;
+    string chart_name = 11;
+    Chart.Version version = 12;
+  }
+  message Condition {
+    string type = 1;
+    string status = 2;
+    string reason = 3;
+    string message = 4;
+    google.protobuf.Timestamp probed_at = 201;
+    google.protobuf.Timestamp transitioned_at = 202;
+  }
+  message Container {
+    string image_name = 1;
+    string image_pull_policy = 2;
+  }
+  message Service {
+    message Port {
+      int32 port = 1;
+      int32 node_port = 2;
+      string protocol = 3;
+      string target_port = 11;
+    }
+    string name = 1;
+    string type = 2;
+    string cluster_ip = 3;
+    repeated Port ports = 11;
+    google.protobuf.Timestamp created_at = 201;
+  }
+  message Pod {
+    string name = 1;
+    string phase = 2;
+    string ready = 3;
+    string restarts = 4;
+    Condition last_condition = 11;
+    google.protobuf.Timestamp created_at = 201;
+  }
+  message PersistentVolumeClaim {
+    string name = 1;
+    string status = 2;
+    repeated string access_modes = 3;
+    string capacity = 4;
+    StorageClass storage_class = 11;
+    google.protobuf.Timestamp created_at = 201;
+  }
+  string type = 1;
+  string name = 2;
+  string namespace = 3;
+  map<string, string> labels = 4;
+  int32 replicas = 5;
+  int32 healthies = 11;
+  Chart.Metadata metadata = 21;
+  repeated Container containers = 31;
+  repeated Service services = 101;
+  repeated Pod pods = 102;
+  repeated PersistentVolumeClaim persistent_volume_claims = 103;
+  google.protobuf.Timestamp created_at = 201;
+  string public_address = 301;
+}
+
+message StorageClass {
+  string name = 1;
+  string provisioner = 2;
+  string reclaim_policy = 3;
+  string volume_binding_mode = 4;
+  map<string, string> parameters = 5;
+  google.protobuf.Timestamp created_at = 201;
+}
+
+message ListApplicationsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListApplicationsResponse {
+  repeated Application applications = 1;
+}
+
+message GetApplicationRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+}
+
+message ListReleasesRequest {}
+
+message ListReleasesResponse {
+  repeated Application.Release releases = 1;
+}
+
+message CreateReleaseRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+  string chart_ref = 11;
+  string values_yaml = 12;
+  map<string, string> values_map = 13;
+}
+
+message UpdateReleaseRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+  string chart_ref = 11;
+  string values_yaml = 12;
+}
+
+message DeleteReleaseRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+}
+
+message RollbackReleaseRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string name = 4;
+  bool dry_run = 5;
+}
+
+message ListChartsRequest {}
+
+message ListChartsResponse {
+  repeated Application.Chart charts = 1;
+}
+
+message GetChartRequest {
+  string name = 1;
+}
+
+message GetChartMetadataRequest {
+  string chart_ref = 1;
+}
+
+message ListStorageClassesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListStorageClassesResponse {
+  repeated StorageClass storage_classes = 1;
+}

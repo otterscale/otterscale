@@ -3,29 +3,30 @@ package kube
 import (
 	"context"
 
-	v1 "k8s.io/api/storage/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/rest"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	oscore "github.com/openhdc/otterscale/internal/core"
 )
 
 type storage struct {
-	kubeMap KubeMap
+	kube *Kube
 }
 
-func NewStorage(kubeMap KubeMap) service.KubeStorage {
+func NewStorage(kube *Kube) oscore.KubeStorageRepo {
 	return &storage{
-		kubeMap: kubeMap,
+		kube: kube,
 	}
 }
 
-var _ service.KubeStorage = (*storage)(nil)
+var _ oscore.KubeStorageRepo = (*storage)(nil)
 
-func (r *storage) ListStorageClasses(ctx context.Context, uuid, facility string) ([]v1.StorageClass, error) {
-	clientset, err := r.kubeMap.get(uuid, facility)
+func (r *storage) ListStorageClasses(ctx context.Context, config *rest.Config) ([]oscore.StorageClass, error) {
+	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
+
 	opts := metav1.ListOptions{}
 	list, err := clientset.StorageV1().StorageClasses().List(ctx, opts)
 	if err != nil {
@@ -34,11 +35,12 @@ func (r *storage) ListStorageClasses(ctx context.Context, uuid, facility string)
 	return list.Items, nil
 }
 
-func (r *storage) GetStorageClass(ctx context.Context, uuid, facility, name string) (*v1.StorageClass, error) {
-	clientset, err := r.kubeMap.get(uuid, facility)
+func (r *storage) GetStorageClass(ctx context.Context, config *rest.Config, name string) (*oscore.StorageClass, error) {
+	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
+
 	opts := metav1.GetOptions{}
 	return clientset.StorageV1().StorageClasses().Get(ctx, name, opts)
 }

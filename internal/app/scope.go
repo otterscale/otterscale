@@ -5,39 +5,43 @@ import (
 
 	"connectrpc.com/connect"
 
-	pb "github.com/openhdc/otterscale/api/nexus/v1"
-	"github.com/openhdc/otterscale/internal/domain/model"
+	pb "github.com/openhdc/otterscale/api/scope/v1"
+	"github.com/openhdc/otterscale/api/scope/v1/pbconnect"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
-func (a *NexusApp) ListScopes(ctx context.Context, req *connect.Request[pb.ListScopesRequest]) (*connect.Response[pb.ListScopesResponse], error) {
-	ss, err := a.svc.ListScopes(ctx)
+type ScopeService struct {
+	pbconnect.UnimplementedScopeServiceHandler
+
+	uc *core.ScopeUseCase
+}
+
+func NewScopeService(uc *core.ScopeUseCase) *ScopeService {
+	return &ScopeService{uc: uc}
+}
+
+var _ pbconnect.ScopeServiceHandler = (*ScopeService)(nil)
+
+func (s *ScopeService) ListScopes(ctx context.Context, req *connect.Request[pb.ListScopesRequest]) (*connect.Response[pb.ListScopesResponse], error) {
+	scopes, err := s.uc.ListScopes(ctx)
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.ListScopesResponse{}
-	res.SetScopes(toProtoScopes(ss))
-	return connect.NewResponse(res), nil
+	resp := &pb.ListScopesResponse{}
+	resp.SetScopes(toProtoScopes(scopes))
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) CreateScope(ctx context.Context, req *connect.Request[pb.CreateScopeRequest]) (*connect.Response[pb.Scope], error) {
-	s, err := a.svc.CreateScope(ctx, req.Msg.GetName())
+func (s *ScopeService) CreateScope(ctx context.Context, req *connect.Request[pb.CreateScopeRequest]) (*connect.Response[pb.Scope], error) {
+	scope, err := s.uc.CreateScope(ctx, req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoScope(s)
-	return connect.NewResponse(res), nil
+	resp := toProtoScope(scope)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) CreateDefaultScope(ctx context.Context, req *connect.Request[pb.CreateDefaultScopeRequest]) (*connect.Response[pb.Scope], error) {
-	s, err := a.svc.CreateDefaultScope(ctx)
-	if err != nil {
-		return nil, err
-	}
-	res := toProtoScope(s)
-	return connect.NewResponse(res), nil
-}
-
-func toProtoScopes(ss []model.Scope) []*pb.Scope {
+func toProtoScopes(ss []core.Scope) []*pb.Scope {
 	ret := []*pb.Scope{}
 	for i := range ss {
 		ret = append(ret, toProtoScope(&ss[i]))
@@ -45,7 +49,7 @@ func toProtoScopes(ss []model.Scope) []*pb.Scope {
 	return ret
 }
 
-func toProtoScope(s *model.Scope) *pb.Scope {
+func toProtoScope(s *core.Scope) *pb.Scope {
 	ret := &pb.Scope{}
 	ret.SetUuid(s.UUID)
 	ret.SetName(s.Name)

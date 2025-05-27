@@ -1,0 +1,99 @@
+edition = "2023";
+
+package otterscale.essential.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/essential/v1;pb";
+
+service EssentialService {
+  rpc IsMachineDeployed(IsMachineDeployedRequest) returns (IsMachineDeployedResponse);
+  rpc ListStatuses(ListStatusesRequest) returns (ListStatusesResponse);
+  rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse);
+  rpc CreateSingleNode(CreateSingleNodeRequest) returns (google.protobuf.Empty);
+  rpc CreateHighAvailabilityCluster(CreateHighAvailabilityClusterRequest) returns (google.protobuf.Empty);
+  rpc AddUnits(AddUnitsRequest) returns (google.protobuf.Empty);
+}
+
+message Essential {
+  enum Type {
+    UNSPECIFIED = 0;
+    KUBERNETES = 1;
+    CEPH = 2;
+  }
+  message Unit {
+    string name = 1;
+    string directive = 2;
+  }
+  Type type = 1;
+  string name = 2;
+  string scope_uuid = 11;
+  string scope_name = 12;
+  repeated Unit units = 21;
+}
+
+message Status {
+  enum Level {
+    INFO = 0;
+    LOW = 1;
+    MEDIUM = 2;
+    HIGH = 3;
+    CRITICAL = 4;
+  }
+  Level level = 1;
+  string message = 2;
+  string details = 3;
+}
+
+message IsMachineDeployedRequest {
+  string scope_uuid = 1;
+}
+
+message IsMachineDeployedResponse {
+  bool deployed = 1;
+  string message = 2;
+}
+
+message ListStatusesRequest {
+  string scope_uuid = 1;
+}
+
+message ListStatusesResponse {
+  repeated Status Statuses = 1;
+}
+
+message ListEssentialsRequest {
+  Essential.Type type = 1;
+  string scope_uuid = 2;
+}
+
+message ListEssentialsResponse {
+  repeated Essential essentials = 1;
+}
+
+message CreateSingleNodeRequest {
+  string scope_uuid = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string virtual_ips = 11;
+  string calico_cidr = 12;
+  repeated string osd_devices = 21;
+}
+
+message CreateHighAvailabilityClusterRequest {
+  string scope_uuid = 1;
+  string machine_id = 2;
+  string prefix_name = 3;
+  repeated string virtual_ips = 11;
+  string calico_cidr = 12;
+  repeated string osd_devices = 21;
+}
+
+message AddUnitsRequest {
+  Essential.Type type = 1;
+  string scope_uuid = 2;
+  string name = 3;
+  int32 number = 4;
+  repeated string machine_ids = 5;
+  bool force = 11;
+}

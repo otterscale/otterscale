@@ -5,44 +5,57 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type machine struct {
 	maas *MAAS
 }
 
-func NewMachine(maas *MAAS) service.MAASMachine {
+func NewMachine(maas *MAAS) core.MachineRepo {
 	return &machine{
 		maas: maas,
 	}
 }
 
-var _ service.MAASMachine = (*machine)(nil)
+var _ core.MachineRepo = (*machine)(nil)
 
 func (r *machine) List(_ context.Context) ([]entity.Machine, error) {
-	return r.maas.Machines.Get(&entity.MachinesParams{})
-}
-
-func (r *machine) Get(ctx context.Context, systemID string) (*entity.Machine, error) {
-	return r.maas.Machine.Get(systemID)
-}
-
-func (r *machine) Release(ctx context.Context, systemID string, force bool) (*entity.Machine, error) {
-	params := &entity.MachineReleaseParams{
-		Force: force,
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
 	}
-	return r.maas.Machine.Release(systemID, params)
+	return client.Machines.Get(&entity.MachinesParams{})
 }
 
-func (r *machine) PowerOn(_ context.Context, systemID string, params *entity.MachinePowerOnParams) (*entity.Machine, error) {
-	return r.maas.Machine.PowerOn(systemID, params)
+func (r *machine) Get(ctx context.Context, systemID string) (*core.Machine, error) {
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.Machine.Get(systemID)
 }
 
-func (r *machine) PowerOff(_ context.Context, systemID string, params *entity.MachinePowerOffParams) (*entity.Machine, error) {
-	return r.maas.Machine.PowerOff(systemID, params)
+func (r *machine) Release(ctx context.Context, systemID string, params *entity.MachineReleaseParams) (*core.Machine, error) {
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.Machine.Release(systemID, params)
 }
 
-func (r *machine) Commission(_ context.Context, systemID string, params *entity.MachineCommissionParams) (*entity.Machine, error) {
-	return r.maas.Machine.Commission(systemID, params)
+func (r *machine) PowerOff(_ context.Context, systemID string, params *entity.MachinePowerOffParams) (*core.Machine, error) {
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.Machine.PowerOff(systemID, params)
+}
+
+func (r *machine) Commission(_ context.Context, systemID string, params *entity.MachineCommissionParams) (*core.Machine, error) {
+	client, err := r.maas.client()
+	if err != nil {
+		return nil, err
+	}
+	return client.Machine.Commission(systemID, params)
 }

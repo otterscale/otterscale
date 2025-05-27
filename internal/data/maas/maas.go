@@ -3,20 +3,20 @@ package maas
 import (
 	"github.com/canonical/gomaasclient/client"
 
-	"github.com/openhdc/otterscale/internal/env"
+	"github.com/openhdc/otterscale/internal/config"
 )
 
-type MAAS = client.Client
+type MAAS struct {
+	configset *config.ConfigSet
+}
 
-const (
-	defaultURL     = "http://localhost:5240/MAAS/"
-	defaultKey     = "http://localhost:5240/MAAS/"
-	defaultVersion = "2.0"
-)
+func New(conf *config.Config) *MAAS {
+	return &MAAS{
+		configset: conf.ConfigSet,
+	}
+}
 
-func New() (*MAAS, error) {
-	url := env.GetOrDefault(env.OPENHDC_MAAS_API_URL, defaultURL)
-	key := env.GetOrDefault(env.OPENHDC_MAAS_API_KEY, "::")
-	version := env.GetOrDefault(env.OPENHDC_MAAS_API_VERSION, defaultVersion)
-	return client.GetClient(url, key, version)
+func (m *MAAS) client() (*client.Client, error) {
+	maas := m.configset.GetMaas()
+	return client.GetClient(maas.GetUrl(), maas.GetKey(), maas.GetVersion())
 }

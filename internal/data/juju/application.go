@@ -2,6 +2,7 @@ package juju
 
 import (
 	"context"
+	"errors"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -13,23 +14,23 @@ import (
 	"github.com/juju/juju/rpc/params"
 	"github.com/juju/names/v5"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
 type application struct {
-	jujuMap JujuMap
+	juju *Juju
 }
 
-func NewApplication(jujuMap JujuMap) service.JujuApplication {
+func NewApplication(juju *Juju) core.FacilityRepo {
 	return &application{
-		jujuMap: jujuMap,
+		juju: juju,
 	}
 }
 
-var _ service.JujuApplication = (*application)(nil)
+var _ core.FacilityRepo = (*application)(nil)
 
 func (r *application) Create(_ context.Context, uuid, name, configYAML, charmName, channel string, revision, number int, base *base.Base, placements []instance.Placement, constraint *constraints.Value, trust bool) (*api.DeployInfo, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -62,29 +63,31 @@ func (r *application) Create(_ context.Context, uuid, name, configYAML, charmNam
 		args.Cons = *constraint
 	}
 
-	di, _, errs := api.NewClient(conn).DeployFromRepository(args)
-	for _, err := range errs {
-		if err != nil {
-			return nil, err
-		}
+	result, _, errs := api.NewClient(conn).DeployFromRepository(args)
+	err = errors.Join(errs...)
+	if err != nil {
+		return nil, err
 	}
-	return &di, nil
+	return &result, nil
 }
 
+// Note: This function has not been tested.
 func (r *application) Update(_ context.Context, uuid, name, configYAML string) error {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return err
 	}
 	return api.NewClient(conn).SetConfig("", name, configYAML, nil)
 }
 
+// Note: This function has not been tested.
 func (r *application) Delete(_ context.Context, uuid, name string, destroyStorage, force bool) error {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return err
 	}
-	dars, err := api.NewClient(conn).DestroyApplications(api.DestroyApplicationsParams{
+
+	results, err := api.NewClient(conn).DestroyApplications(api.DestroyApplicationsParams{
 		Applications:   []string{name},
 		DestroyStorage: destroyStorage,
 		Force:          force,
@@ -92,16 +95,16 @@ func (r *application) Delete(_ context.Context, uuid, name string, destroyStorag
 	if err != nil {
 		return err
 	}
-	for _, dar := range dars {
-		if dar.Error != nil {
-			return dar.Error
-		}
+
+	errs := []error{}
+	for _, result := range results {
+		errs = append(errs, result.Error)
 	}
-	return nil
+	return errors.Join(errs...)
 }
 
 func (r *application) Expose(_ context.Context, uuid, name string, endpoints map[string]params.ExposedEndpoint) error {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return err
 	}
@@ -109,23 +112,23 @@ func (r *application) Expose(_ context.Context, uuid, name string, endpoints map
 }
 
 func (r *application) AddUnits(_ context.Context, uuid, name string, number int, placements []instance.Placement) ([]string, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
-	ps := []*instance.Placement{}
-	for _, p := range placements {
-		ps = append(ps, &p)
-	}
-	return api.NewClient(conn).AddUnits(api.AddUnitsParams{
+
+	params := api.AddUnitsParams{
 		ApplicationName: name,
 		NumUnits:        number,
-		Placement:       ps,
-	})
+	}
+	for _, placement := range placements {
+		params.Placement = append(params.Placement, &placement)
+	}
+	return api.NewClient(conn).AddUnits(params)
 }
 
 func (r *application) ResolveUnitErrors(_ context.Context, uuid string, units []string) error {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return err
 	}
@@ -133,7 +136,7 @@ func (r *application) ResolveUnitErrors(_ context.Context, uuid string, units []
 }
 
 func (r *application) CreateRelation(_ context.Context, uuid string, endpoints []string) (*params.AddRelationResults, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +144,7 @@ func (r *application) CreateRelation(_ context.Context, uuid string, endpoints [
 }
 
 func (r *application) DeleteRelation(_ context.Context, uuid string, id int) error {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return err
 	}
@@ -149,10 +152,11 @@ func (r *application) DeleteRelation(_ context.Context, uuid string, id int) err
 }
 
 func (r *application) GetConfig(_ context.Context, uuid, name string) (map[string]any, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
+
 	app, err := api.NewClient(conn).Get("", name)
 	if err != nil {
 		return nil, err
@@ -161,7 +165,7 @@ func (r *application) GetConfig(_ context.Context, uuid, name string) (map[strin
 }
 
 func (r *application) GetLeader(_ context.Context, uuid, name string) (string, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return "", err
 	}
@@ -169,16 +173,21 @@ func (r *application) GetLeader(_ context.Context, uuid, name string) (string, e
 }
 
 func (r *application) GetUnitInfo(_ context.Context, uuid, name string) (*api.UnitInfo, error) {
-	conn, err := r.jujuMap.Get(uuid)
+	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return nil, err
 	}
-	uis, err := api.NewClient(conn).UnitsInfo([]names.UnitTag{names.NewUnitTag(name)})
+
+	tag := names.NewUnitTag(name)
+	units, err := api.NewClient(conn).UnitsInfo([]names.UnitTag{tag})
 	if err != nil {
 		return nil, err
 	}
-	if len(uis) == 1 {
-		return &uis[0], nil
+
+	for i := range units {
+		if units[i].Tag == tag.String() {
+			return &units[i], nil
+		}
 	}
 	return nil, status.Errorf(codes.NotFound, "unit info %q not found", name)
 }

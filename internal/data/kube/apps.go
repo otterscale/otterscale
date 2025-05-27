@@ -3,29 +3,30 @@ package kube
 import (
 	"context"
 
-	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/rest"
 
-	"github.com/openhdc/otterscale/internal/domain/service"
+	oscore "github.com/openhdc/otterscale/internal/core"
 )
 
 type apps struct {
-	kubeMap KubeMap
+	kube *Kube
 }
 
-func NewApps(kubeMap KubeMap) service.KubeApps {
+func NewApps(kube *Kube) oscore.KubeAppsRepo {
 	return &apps{
-		kubeMap: kubeMap,
+		kube: kube,
 	}
 }
 
-var _ service.KubeApps = (*apps)(nil)
+var _ oscore.KubeAppsRepo = (*apps)(nil)
 
-func (r *apps) ListDeployments(ctx context.Context, uuid, facility, namespace string) ([]v1.Deployment, error) {
-	clientset, err := r.kubeMap.get(uuid, facility)
+func (r *apps) ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Deployment, error) {
+	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
+
 	opts := metav1.ListOptions{}
 	list, err := clientset.AppsV1().Deployments(namespace).List(ctx, opts)
 	if err != nil {
@@ -34,20 +35,22 @@ func (r *apps) ListDeployments(ctx context.Context, uuid, facility, namespace st
 	return list.Items, nil
 }
 
-func (r *apps) GetDeployment(ctx context.Context, uuid, facility, namespace, name string) (*v1.Deployment, error) {
-	clientset, err := r.kubeMap.get(uuid, facility)
+func (r *apps) GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.Deployment, error) {
+	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
+
 	opts := metav1.GetOptions{}
 	return clientset.AppsV1().Deployments(namespace).Get(ctx, name, opts)
 }
 
-func (r *apps) ListStatefulSets(ctx context.Context, uuid, facility, namespace string) ([]v1.StatefulSet, error) {
-	clientset, err := r.kubeMap.get(uuid, facility)
+func (r *apps) ListStatefulSets(ctx context.Context, config *rest.Config, namespace string) ([]oscore.StatefulSet, error) {
+	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
+
 	opts := metav1.ListOptions{}
 	list, err := clientset.AppsV1().StatefulSets(namespace).List(ctx, opts)
 	if err != nil {
@@ -56,20 +59,22 @@ func (r *apps) ListStatefulSets(ctx context.Context, uuid, facility, namespace s
 	return list.Items, nil
 }
 
-func (r *apps) GetStatefulSet(ctx context.Context, uuid, facility, namespace, name string) (*v1.StatefulSet, error) {
-	clientset, err := r.kubeMap.get(uuid, facility)
+func (r *apps) GetStatefulSet(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.StatefulSet, error) {
+	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
+
 	opts := metav1.GetOptions{}
 	return clientset.AppsV1().StatefulSets(namespace).Get(ctx, name, opts)
 }
 
-func (r *apps) ListDaemonSets(ctx context.Context, uuid, facility, namespace string) ([]v1.DaemonSet, error) {
-	clientset, err := r.kubeMap.get(uuid, facility)
+func (r *apps) ListDaemonSets(ctx context.Context, config *rest.Config, namespace string) ([]oscore.DaemonSet, error) {
+	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
+
 	opts := metav1.ListOptions{}
 	list, err := clientset.AppsV1().DaemonSets(namespace).List(ctx, opts)
 	if err != nil {
@@ -78,11 +83,12 @@ func (r *apps) ListDaemonSets(ctx context.Context, uuid, facility, namespace str
 	return list.Items, nil
 }
 
-func (r *apps) GetDaemonSet(ctx context.Context, uuid, facility, namespace, name string) (*v1.DaemonSet, error) {
-	clientset, err := r.kubeMap.get(uuid, facility)
+func (r *apps) GetDaemonSet(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.DaemonSet, error) {
+	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
+
 	opts := metav1.GetOptions{}
 	return clientset.AppsV1().DaemonSets(namespace).Get(ctx, name, opts)
 }

@@ -8,65 +8,87 @@ package main
 
 import (
 	"github.com/openhdc/otterscale/internal/app"
-	"github.com/openhdc/otterscale/internal/cmd"
+	"github.com/openhdc/otterscale/internal/config"
+	"github.com/openhdc/otterscale/internal/core"
 	"github.com/openhdc/otterscale/internal/data/juju"
 	"github.com/openhdc/otterscale/internal/data/kube"
 	"github.com/openhdc/otterscale/internal/data/maas"
-	"github.com/openhdc/otterscale/internal/domain/service"
+	"github.com/openhdc/otterscale/internal/mux"
 	"github.com/spf13/cobra"
+)
+
+import (
+	_ "go.uber.org/automaxprocs"
 )
 
 // Injectors from wire.go:
 
-func wireApp(string2 string) (*cobra.Command, func(), error) {
-	v, err := maas.New()
+func wireCmd() (*cobra.Command, func(), error) {
+	configConfig, cleanup, err := config.New()
 	if err != nil {
 		return nil, nil, err
 	}
-	maasServer := maas.NewServer(v)
-	maasPackageRepository := maas.NewPackageRepository(v)
-	maasBootResource := maas.NewBootResource(v)
-	maasBootSource := maas.NewBootSource(v)
-	maasBootSourceSelection := maas.NewBootSourceSelection(v)
-	maasFabric := maas.NewFabric(v)
-	maasvlan := maas.NewVLAN(v)
-	maasSubnet := maas.NewSubnet(v)
-	maasipRange := maas.NewIPRange(v)
-	maasMachine := maas.NewMachine(v)
-	maasTag := maas.NewTag(v)
-	maassshKey := maas.NewSSHKey(v)
-	jujuMap, err := juju.NewJujuMap()
+	kubeKube, err := kube.New(configConfig)
 	if err != nil {
+		cleanup()
 		return nil, nil, err
 	}
-	jujuKey := juju.NewKey(jujuMap)
-	jujuClient := juju.NewClient(jujuMap)
-	jujuMachine := juju.NewMachine(jujuMap)
-	jujuModel := juju.NewModel(jujuMap)
-	jujuModelConfig := juju.NewModelConfig(jujuMap)
-	jujuApplication := juju.NewApplication(jujuMap)
-	jujuAction := juju.NewAction(jujuMap)
-	jujuCharmHub := juju.NewCharmHub()
-	kubeMap, err := kube.NewKubeMap()
+	kubeAppsRepo := kube.NewApps(kubeKube)
+	kubeCoreRepo := kube.NewCore(kubeKube)
+	kubeStorageRepo := kube.NewStorage(kubeKube)
+	chartRepo, err := kube.NewHelmChart(kubeKube)
 	if err != nil {
+		cleanup()
 		return nil, nil, err
 	}
-	helmMap, err := kube.NewHelmMap()
+	releaseRepo, err := kube.NewHelmRelease(kubeKube)
 	if err != nil {
+		cleanup()
 		return nil, nil, err
 	}
-	kubeClient := kube.NewClient(kubeMap, helmMap)
-	kubeApps := kube.NewApps(kubeMap)
-	kubeBatch := kube.NewBatch(kubeMap)
-	kubeCore := kube.NewCore(kubeMap)
-	kubeStorage := kube.NewStorage(kubeMap)
-	kubeHelm, err := kube.NewHelm(helmMap)
-	if err != nil {
-		return nil, nil, err
-	}
-	nexusService := service.NewNexusService(maasServer, maasPackageRepository, maasBootResource, maasBootSource, maasBootSourceSelection, maasFabric, maasvlan, maasSubnet, maasipRange, maasMachine, maasTag, maassshKey, jujuKey, jujuClient, jujuMachine, jujuModel, jujuModelConfig, jujuApplication, jujuAction, jujuCharmHub, kubeClient, kubeApps, kubeBatch, kubeCore, kubeStorage, kubeHelm)
-	nexusApp := app.NewNexusApp(nexusService)
-	command := cmd.New(string2, nexusApp)
+	jujuJuju := juju.New(configConfig)
+	facilityRepo := juju.NewApplication(jujuJuju)
+	scopeRepo := juju.NewModel(jujuJuju)
+	clientRepo := juju.NewClient(jujuJuju)
+	applicationUseCase := core.NewApplicationUseCase(kubeAppsRepo, kubeCoreRepo, kubeStorageRepo, chartRepo, releaseRepo, facilityRepo, scopeRepo, clientRepo)
+	applicationService := app.NewApplicationService(applicationUseCase)
+	maasMAAS := maas.New(configConfig)
+	serverRepo := maas.NewServer(maasMAAS)
+	scopeConfigRepo := juju.NewModelConfig(jujuJuju)
+	bootResourceRepo := maas.NewBootResource(maasMAAS)
+	bootSourceRepo := maas.NewBootSource(maasMAAS)
+	bootSourceSelectionRepo := maas.NewBootSourceSelection(maasMAAS)
+	packageRepositoryRepo := maas.NewPackageRepository(maasMAAS)
+	configurationUseCase := core.NewConfigurationUseCase(serverRepo, scopeRepo, scopeConfigRepo, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo)
+	configurationService := app.NewConfigurationService(configurationUseCase)
+	environmentUseCase := core.NewEnvironmentUseCase(configConfig)
+	environmentService := app.NewEnvironmentService(environmentUseCase)
+	actionRepo := juju.NewAction(jujuJuju)
+	charmRepo := juju.NewCharm(jujuJuju)
+	machineRepo := maas.NewMachine(maasMAAS)
+	facilityUseCase := core.NewFacilityUseCase(facilityRepo, serverRepo, clientRepo, actionRepo, charmRepo, machineRepo)
+	facilityService := app.NewFacilityService(facilityUseCase)
+	subnetRepo := maas.NewSubnet(maasMAAS)
+	ipRangeRepo := maas.NewIPRange(maasMAAS)
+	essentialUseCase := core.NewEssentialUseCase(scopeRepo, facilityRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo)
+	essentialService := app.NewEssentialService(essentialUseCase)
+	machineManagerRepo := juju.NewMachine(jujuJuju)
+	tagRepo := maas.NewTag(maasMAAS)
+	machineUseCase := core.NewMachineUseCase(machineRepo, machineManagerRepo, serverRepo, clientRepo, tagRepo)
+	machineService := app.NewMachineService(machineUseCase)
+	fabricRepo := maas.NewFabric(maasMAAS)
+	vlanRepo := maas.NewVLAN(maasMAAS)
+	networkUseCase := core.NewNetworkUseCase(fabricRepo, vlanRepo, subnetRepo, ipRangeRepo)
+	networkService := app.NewNetworkService(networkUseCase)
+	keyRepo := juju.NewKey(jujuJuju)
+	sshKeyRepo := maas.NewSSHKey(maasMAAS)
+	scopeUseCase := core.NewScopeUseCase(scopeRepo, keyRepo, sshKeyRepo)
+	scopeService := app.NewScopeService(scopeUseCase)
+	tagUseCase := core.NewTagUseCase(tagRepo)
+	tagService := app.NewTagService(tagUseCase)
+	serveMux := mux.New(applicationService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, scopeService, tagService)
+	command := newCmd(configConfig, serveMux)
 	return command, func() {
+		cleanup()
 	}, nil
 }

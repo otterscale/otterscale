@@ -29,3 +29,9 @@ tmp
 
 # Cert files
 *.crt
+
+# Yaml
+*.yaml
+
+# bin folder
+bin/

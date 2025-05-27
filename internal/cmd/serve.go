@@ -1,41 +1,32 @@
 package cmd
 
 import (
-	"log"
+	"log/slog"
+	"net"
 	"net/http"
 	"time"
 
-	"connectrpc.com/grpchealth"
-	"connectrpc.com/grpcreflect"
 	"github.com/rs/cors"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
-	nexusv1 "github.com/openhdc/otterscale/api/nexus/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/app"
+	"github.com/openhdc/otterscale/internal/config"
 )
 
-func NewCmdServe(na *app.NexusApp) *cobra.Command {
-	var address string
+func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
+	var address, configPath string
 
 	cmd := &cobra.Command{
 		Use:     "serve",
-		Short:   "",
-		Long:    "",
-		Example: "",
+		Short:   "Start the OtterScale API server",
+		Long:    "Start the OtterScale API server that provides gRPC and HTTP endpoints for all services",
+		Example: "otterscale serve --address=:8080",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			mux := http.NewServeMux()
-			mux.Handle(nexusv1.NewNexusHandler(na))
-
-			services := []string{nexusv1.NexusName}
-
-			checker := grpchealth.NewStaticChecker(services...)
-			mux.Handle(grpchealth.NewHandler(checker))
-
-			reflector := grpcreflect.NewStaticReflector(services...)
-			mux.Handle(grpcreflect.NewHandlerV1(reflector))
-			mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+			slog.Info("Loading configuration file", "path", configPath)
+			if err := conf.Load(configPath); err != nil {
+				return err
+			}
 
 			srv := &http.Server{
 				Addr: address,
@@ -49,16 +40,30 @@ func NewCmdServe(na *app.NexusApp) *cobra.Command {
 				MaxHeaderBytes:    8 * 1024, // 8KiB
 			}
 
-			log.Printf("Server starting on %s\n", address)
-			return srv.ListenAndServe()
+			listener, err := net.Listen("tcp", address)
+			if err != nil {
+				return err
+			}
+
+			slog.Info("Server starting on", "address", listener.Addr().String())
+			return srv.Serve(listener)
 		},
 	}
 
-	cmd.PersistentFlags().StringVar(
+	cmd.Flags().StringVarP(
 		&address,
 		"address",
+		"a",
 		":0",
-		"address of grpc server",
+		"address of service",
+	)
+
+	cmd.Flags().StringVarP(
+		&configPath,
+		"config",
+		"c",
+		"otterscale.yaml",
+		"config path",
 	)
 
 	return cmd

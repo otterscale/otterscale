@@ -1,0 +1,38 @@
+edition = "2023";
+
+package otterscale.tag.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/tag/v1;pb";
+
+service TagService {
+  rpc ListTags(ListTagsRequest) returns (ListTagsResponse);
+  rpc GetTag(GetTagRequest) returns (Tag);
+  rpc CreateTag(CreateTagRequest) returns (Tag);
+  rpc DeleteTag(DeleteTagRequest) returns (google.protobuf.Empty);
+}
+
+message Tag {
+  string name = 1;
+  string comment = 2;
+}
+
+message ListTagsRequest {}
+
+message ListTagsResponse {
+  repeated Tag tags = 1;
+}
+
+message GetTagRequest {
+  string name = 1;
+}
+
+message CreateTagRequest {
+  string name = 1;
+  string comment = 2;
+}
+
+message DeleteTagRequest {
+  string name = 1;
+}

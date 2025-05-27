@@ -6,80 +6,93 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/openhdc/otterscale/api/nexus/v1"
-	"github.com/openhdc/otterscale/internal/domain/model"
+	pb "github.com/openhdc/otterscale/api/configuration/v1"
+	"github.com/openhdc/otterscale/api/configuration/v1/pbconnect"
+	"github.com/openhdc/otterscale/internal/core"
 )
 
-func (a *NexusApp) GetConfiguration(ctx context.Context, req *connect.Request[pb.GetConfigurationRequest]) (*connect.Response[pb.Configuration], error) {
-	cfg, err := a.svc.GetConfiguration(ctx)
+type ConfigurationService struct {
+	pbconnect.UnimplementedConfigurationServiceHandler
+
+	uc *core.ConfigurationUseCase
+}
+
+func NewConfigurationService(uc *core.ConfigurationUseCase) *ConfigurationService {
+	return &ConfigurationService{uc: uc}
+}
+
+var _ pbconnect.ConfigurationServiceHandler = (*ConfigurationService)(nil)
+
+func (s *ConfigurationService) GetConfiguration(ctx context.Context, req *connect.Request[pb.GetConfigurationRequest]) (*connect.Response[pb.Configuration], error) {
+	config, err := s.uc.GetConfiguration(ctx)
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoConfiguration(cfg)
-	return connect.NewResponse(res), nil
+	resp := toProtoConfiguration(config)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) UpdateNTPServer(ctx context.Context, req *connect.Request[pb.UpdateNTPServerRequest]) (*connect.Response[pb.Configuration_NTPServer], error) {
-	ntpServers, err := a.svc.UpdateNTPServer(ctx, req.Msg.GetAddresses())
+func (s *ConfigurationService) UpdateNTPServer(ctx context.Context, req *connect.Request[pb.UpdateNTPServerRequest]) (*connect.Response[pb.Configuration_NTPServer], error) {
+	ntpServers, err := s.uc.UpdateNTPServer(ctx, req.Msg.GetAddresses())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoNTPServer(ntpServers)
-	return connect.NewResponse(res), nil
+	resp := toProtoNTPServer(ntpServers)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) UpdatePackageRepository(ctx context.Context, req *connect.Request[pb.UpdatePackageRepositoryRequest]) (*connect.Response[pb.Configuration_PackageRepository], error) {
-	pr, err := a.svc.UpdatePackageRepository(ctx, int(req.Msg.GetId()), req.Msg.GetUrl(), req.Msg.GetSkipJuju())
+func (s *ConfigurationService) UpdatePackageRepository(ctx context.Context, req *connect.Request[pb.UpdatePackageRepositoryRequest]) (*connect.Response[pb.Configuration_PackageRepository], error) {
+	repo, err := s.uc.UpdatePackageRepository(ctx, int(req.Msg.GetId()), req.Msg.GetUrl(), req.Msg.GetSkipJuju())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoPackageRepository(pr)
-	return connect.NewResponse(res), nil
+	resp := toProtoPackageRepository(repo)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) CreateBootImage(ctx context.Context, req *connect.Request[pb.CreateBootImageRequest]) (*connect.Response[pb.Configuration_BootImage], error) {
-	bi, err := a.svc.CreateBootImage(ctx, req.Msg.GetDistroSeries(), req.Msg.GetArchitectures())
+func (s *ConfigurationService) CreateBootImage(ctx context.Context, req *connect.Request[pb.CreateBootImageRequest]) (*connect.Response[pb.Configuration_BootImage], error) {
+	image, err := s.uc.CreateBootImage(ctx, req.Msg.GetDistroSeries(), req.Msg.GetArchitectures())
 	if err != nil {
 		return nil, err
 	}
-	res := toProtoBootImage(bi)
-	return connect.NewResponse(res), nil
+	resp := toProtoBootImage(image)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) SetDefaultBootImage(ctx context.Context, req *connect.Request[pb.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.SetDefaultBootImage(ctx, req.Msg.GetDistroSeries()); err != nil {
+func (s *ConfigurationService) SetDefaultBootImage(ctx context.Context, req *connect.Request[pb.SetDefaultBootImageRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.SetDefaultBootImage(ctx, req.Msg.GetDistroSeries()); err != nil {
 		return nil, err
 	}
-	res := &emptypb.Empty{}
-	return connect.NewResponse(res), nil
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) ImportBootImages(ctx context.Context, req *connect.Request[pb.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := a.svc.ImportBootImages(ctx); err != nil {
+func (s *ConfigurationService) ImportBootImages(ctx context.Context, req *connect.Request[pb.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.ImportBootImages(ctx); err != nil {
 		return nil, err
 	}
-	res := &emptypb.Empty{}
-	return connect.NewResponse(res), nil
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) IsImportingBootImages(ctx context.Context, req *connect.Request[pb.IsImportingBootImagesRequest]) (*connect.Response[pb.IsImportingBootImagesResponse], error) {
-	isImporting, err := a.svc.IsImportingBootImages(ctx)
+func (s *ConfigurationService) IsImportingBootImages(ctx context.Context, req *connect.Request[pb.IsImportingBootImagesRequest]) (*connect.Response[pb.IsImportingBootImagesResponse], error) {
+	isImporting, err := s.uc.IsImportingBootImages(ctx)
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.IsImportingBootImagesResponse{}
-	res.SetImporting(isImporting)
-	return connect.NewResponse(res), nil
+	resp := &pb.IsImportingBootImagesResponse{}
+	resp.SetImporting(isImporting)
+	return connect.NewResponse(resp), nil
 }
 
-func (a *NexusApp) ListBootImageSelections(ctx context.Context, req *connect.Request[pb.ListBootImageSelectionsRequest]) (*connect.Response[pb.ListBootImageSelectionsResponse], error) {
-	bims, err := a.svc.ListBootImageSelections(ctx)
+func (s *ConfigurationService) ListBootImageSelections(ctx context.Context, req *connect.Request[pb.ListBootImageSelectionsRequest]) (*connect.Response[pb.ListBootImageSelectionsResponse], error) {
+	selections, err := s.uc.ListBootImageSelections(ctx)
 	if err != nil {
 		return nil, err
 	}
-	res := &pb.ListBootImageSelectionsResponse{}
-	res.SetBootImageSelections(toProtoBootImageSelections(bims))
-	return connect.NewResponse(res), nil
+	resp := &pb.ListBootImageSelectionsResponse{}
+	resp.SetBootImageSelections(toProtoBootImageSelections(selections))
+	return connect.NewResponse(resp), nil
 }
 
 func toProtoNTPServer(addresses []string) *pb.Configuration_NTPServer {
@@ -88,7 +101,7 @@ func toProtoNTPServer(addresses []string) *pb.Configuration_NTPServer {
 	return ret
 }
 
-func toProtoPackageRepositories(prs []model.PackageRepository) []*pb.Configuration_PackageRepository {
+func toProtoPackageRepositories(prs []core.PackageRepository) []*pb.Configuration_PackageRepository {
 	ret := []*pb.Configuration_PackageRepository{}
 	for i := range prs {
 		ret = append(ret, toProtoPackageRepository(&prs[i]))
@@ -96,7 +109,7 @@ func toProtoPackageRepositories(prs []model.PackageRepository) []*pb.Configurati
 	return ret
 }
 
-func toProtoPackageRepository(pr *model.PackageRepository) *pb.Configuration_PackageRepository {
+func toProtoPackageRepository(pr *core.PackageRepository) *pb.Configuration_PackageRepository {
 	ret := &pb.Configuration_PackageRepository{}
 	ret.SetId(int64(pr.ID))
 	ret.SetName(pr.Name)
@@ -105,7 +118,7 @@ func toProtoPackageRepository(pr *model.PackageRepository) *pb.Configuration_Pac
 	return ret
 }
 
-func toProtoBootImages(bis []model.BootImage) []*pb.Configuration_BootImage {
+func toProtoBootImages(bis []core.BootImage) []*pb.Configuration_BootImage {
 	ret := []*pb.Configuration_BootImage{}
 	for i := range bis {
 		ret = append(ret, toProtoBootImage(&bis[i]))
@@ -113,7 +126,7 @@ func toProtoBootImages(bis []model.BootImage) []*pb.Configuration_BootImage {
 	return ret
 }
 
-func toProtoBootImage(bi *model.BootImage) *pb.Configuration_BootImage {
+func toProtoBootImage(bi *core.BootImage) *pb.Configuration_BootImage {
 	ret := &pb.Configuration_BootImage{}
 	ret.SetSource(bi.Source)
 	ret.SetDistroSeries(bi.DistroSeries)
@@ -123,7 +136,7 @@ func toProtoBootImage(bi *model.BootImage) *pb.Configuration_BootImage {
 	return ret
 }
 
-func toProtoBootImageSelections(biss []model.BootImageSelection) []*pb.Configuration_BootImageSelection {
+func toProtoBootImageSelections(biss []core.BootImageSelection) []*pb.Configuration_BootImageSelection {
 	ret := []*pb.Configuration_BootImageSelection{}
 	for i := range biss {
 		ret = append(ret, toProtoBootImageSelection(&biss[i]))
@@ -131,7 +144,7 @@ func toProtoBootImageSelections(biss []model.BootImageSelection) []*pb.Configura
 	return ret
 }
 
-func toProtoBootImageSelection(bis *model.BootImageSelection) *pb.Configuration_BootImageSelection {
+func toProtoBootImageSelection(bis *core.BootImageSelection) *pb.Configuration_BootImageSelection {
 	ret := &pb.Configuration_BootImageSelection{}
 	ret.SetDistroSeries(bis.DistroSeries.String())
 	ret.SetName(bis.Name)
@@ -139,7 +152,7 @@ func toProtoBootImageSelection(bis *model.BootImageSelection) *pb.Configuration_
 	return ret
 }
 
-func toProtoConfiguration(c *model.Configuration) *pb.Configuration {
+func toProtoConfiguration(c *core.Configuration) *pb.Configuration {
 	ret := &pb.Configuration{}
 	ret.SetNtpServer(toProtoNTPServer(c.NTPServers))
 	ret.SetPackageRepositories(toProtoPackageRepositories(c.PackageRepositories))

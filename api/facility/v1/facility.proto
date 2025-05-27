@@ -1,0 +1,195 @@
+edition = "2023";
+
+package otterscale.facility.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/facility/v1;pb";
+
+service FacilityService {
+  rpc ListFacilities(ListFacilitiesRequest) returns (ListFacilitiesResponse);
+  rpc GetFacility(GetFacilityRequest) returns (Facility);
+  rpc CreateFacility(CreateFacilityRequest) returns (Facility);
+  rpc UpdateFacility(UpdateFacilityRequest) returns (Facility);
+  rpc DeleteFacility(DeleteFacilityRequest) returns (google.protobuf.Empty);
+  rpc ExposeFacility(ExposeFacilityRequest) returns (google.protobuf.Empty);
+  rpc AddFacilityUnits(AddFacilityUnitsRequest) returns (AddFacilityUnitsResponse);
+  rpc ListActions(ListActionsRequest) returns (ListActionsResponse);
+  rpc DoAction(DoActionRequest) returns (google.protobuf.Empty);
+  rpc ListCharms(ListCharmsRequest) returns (ListCharmsResponse);
+  rpc GetCharm(GetCharmRequest) returns (Facility.Charm);
+  rpc GetCharmMetadata(GetCharmMetadataRequest) returns (Facility.Charm.Metadata);
+  rpc ListCharmArtifacts(ListCharmArtifactsRequest) returns (ListCharmArtifactsResponse);
+}
+
+message Facility {
+  message Charm {
+    message Metadata {
+      string config_yaml = 1;
+    }
+    message Base {
+      string name = 1;
+      string channel = 2;
+      string architecture = 3;
+    }
+    message Artifact {
+      string channel = 1;
+      int64 revision = 2;
+      string version = 11;
+      repeated Base bases = 12;
+      google.protobuf.Timestamp created_at = 21;
+    }
+    string id = 1;
+    string type = 2;
+    string name = 3;
+    bool verified = 4;
+    string title = 11;
+    string summary = 12;
+    string icon = 13;
+    string description = 14;
+    repeated string categories = 15;
+    repeated string deployable_on = 16;
+    string publisher = 17;
+    string license = 18;
+    string store_url = 21;
+    string website = 22;
+    Artifact default_artifact = 31;
+  }
+  message Action {
+    string name = 1;
+    string description = 2;
+  }
+  message Status {
+    string state = 1;
+    string details = 2;
+    google.protobuf.Timestamp created_at = 3;
+  }
+  message Unit {
+    string name = 1;
+    Status agent_status = 2;
+    Status workload_status = 3;
+    bool leader = 4;
+    string machine_id = 11;
+    string ip_address = 12;
+    repeated string ports = 13;
+    string charm_name = 21;
+    string version = 22;
+    repeated Unit subordinates = 31;
+  }
+  string name = 1;
+  Status status = 2;
+  string charm_name = 11;
+  string version = 12;
+  int64 revision = 13;
+  Charm.Metadata metadata = 21;
+  repeated Unit units = 31;
+}
+
+message Placement {
+  oneof type {
+    bool lxd = 1;
+    bool kvm = 2;
+    bool machine = 3;
+  }
+  string machine_id = 11;
+}
+message Constraint {
+  string architecture = 1;
+  uint64 cpu_cores = 2;
+  uint64 memory_mb = 3;
+  repeated string tags = 11;
+}
+
+message Tag {
+  string name = 1;
+  string comment = 2;
+}
+
+message ListFacilitiesRequest {
+  string scope_uuid = 1;
+}
+
+message ListFacilitiesResponse {
+  repeated Facility facilities = 1;
+}
+
+message GetFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+}
+
+message CreateFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+  string config_yaml = 11;
+  string charm_name = 21;
+  string channel = 22;
+  int64 revision = 23;
+  int64 number = 24;
+  repeated Placement placements = 31;
+  Constraint constraint = 32;
+  bool trust = 41;
+}
+
+message UpdateFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+  string config_yaml = 11;
+}
+
+message DeleteFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+  bool destroy_storage = 11;
+  bool force = 12;
+}
+
+message ExposeFacilityRequest {
+  string scope_uuid = 1;
+  string name = 2;
+}
+
+message AddFacilityUnitsRequest {
+  string scope_uuid = 1;
+  string name = 2;
+  int64 number = 11;
+  repeated Placement placements = 21;
+}
+
+message AddFacilityUnitsResponse {
+  repeated string units = 1;
+}
+
+message ListActionsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListActionsResponse {
+  repeated Facility.Action actions = 1;
+}
+
+message DoActionRequest {}
+
+message ListCharmsRequest {}
+
+message ListCharmsResponse {
+  repeated Facility.Charm charms = 1;
+}
+
+message GetCharmRequest {
+  string name = 1;
+}
+
+message GetCharmMetadataRequest {
+  string name = 1;
+}
+
+message ListCharmArtifactsRequest {
+  string name = 1;
+}
+
+message ListCharmArtifactsResponse {
+  repeated Facility.Charm.Artifact artifacts = 1;
+}
