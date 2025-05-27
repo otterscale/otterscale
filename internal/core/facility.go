@@ -2,11 +2,11 @@ package core
 
 import (
 	"context"
+	"fmt"
 	"slices"
 	"time"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"connectrpc.com/connect"
 	jujuyaml "gopkg.in/yaml.v2"
 
 	"github.com/juju/juju/api/client/action"
@@ -176,7 +176,7 @@ func (uc *FacilityUseCase) GetFacility(ctx context.Context, uuid, name string) (
 
 	app, ok := s.Applications[name]
 	if !ok {
-		return nil, status.Errorf(codes.NotFound, "facility %q not found", name)
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("facility %q not found", name))
 	}
 
 	config, err := uc.facility.GetConfig(ctx, uuid, name)

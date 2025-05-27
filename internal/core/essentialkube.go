@@ -2,14 +2,14 @@ package core
 
 import (
 	"context"
+	"errors"
 	"net"
 	"slices"
 	"strconv"
 	"strings"
 
+	"connectrpc.com/connect"
 	"github.com/canonical/gomaasclient/entity"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 const charmKubernetes = "kubernetes-control-plane"
@@ -92,7 +92,7 @@ func GetAndReserveIP(ctx context.Context, machineRepo MachineRepo, subnetRepo Su
 	}
 	links := machine.BootInterface.Links
 	if len(links) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "machine has no network links")
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("machine has no network links"))
 	}
 	subnet := &links[0].Subnet
 	ip, err := getFreeIP(ctx, subnetRepo, ipRangeRepo, subnet)
@@ -140,7 +140,7 @@ func getFreeIP(ctx context.Context, subnetRepo SubnetRepo, ipRangeRepo IPRangeRe
 		next = true
 	}
 
-	return nil, status.Errorf(codes.ResourceExhausted, "no free IP found")
+	return nil, connect.NewError(connect.CodeResourceExhausted, errors.New("no free IP found"))
 }
 
 func getUsedIPs(ctx context.Context, subnetRepo SubnetRepo, subnetID int) ([]uint32, error) {

@@ -2,10 +2,10 @@ package core
 
 import (
 	"context"
+	"errors"
 	"sync"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	"connectrpc.com/connect"
 
 	"github.com/openhdc/otterscale/internal/config"
 )
@@ -40,7 +40,7 @@ func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) (*EnvironmentStatu
 	if ok {
 		return v.(*EnvironmentStatus), nil
 	}
-	return nil, status.Error(codes.NotFound, "status not found")
+	return nil, connect.NewError(connect.CodeNotFound, errors.New("status not found"))
 }
 
 func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message string) {

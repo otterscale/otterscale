@@ -6,9 +6,8 @@ import (
 	"errors"
 	"sync"
 
+	"connectrpc.com/connect"
 	"github.com/juju/juju/api/client/application"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"k8s.io/client-go/rest"
 )
@@ -120,7 +119,7 @@ func extractWorkerUnitName(unitInfo *application.UnitInfo) (string, error) {
 			return name, nil
 		}
 	}
-	return "", status.Error(codes.NotFound, "kube-control not found")
+	return "", connect.NewError(connect.CodeNotFound, errors.New("kube-control not found"))
 }
 
 func extractEndpoint(unitInfo *application.UnitInfo) (string, error) {
@@ -139,7 +138,7 @@ func extractEndpoint(unitInfo *application.UnitInfo) (string, error) {
 	if len(endpoints) > 0 {
 		return endpoints[0], nil
 	}
-	return "", status.Error(codes.NotFound, "endpoint not found")
+	return "", connect.NewError(connect.CodeNotFound, errors.New("endpoint not found"))
 }
 
 func extractClientToken(unitInfo *application.UnitInfo) (string, error) {

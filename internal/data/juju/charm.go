@@ -3,11 +3,10 @@ package juju
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/url"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
+	"connectrpc.com/connect"
 	"github.com/openhdc/otterscale/internal/core"
 	"github.com/openhdc/otterscale/internal/utils"
 )
@@ -38,7 +37,7 @@ func (r *charm) Get(ctx context.Context, name string) (*core.Charm, error) {
 			return &charms[i], nil
 		}
 	}
-	return nil, status.Errorf(codes.NotFound, "charm name %q not found", name)
+	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("charm name %q not found", name))
 }
 
 func (r *charm) ListArtifacts(ctx context.Context, name string) ([]core.CharmArtifact, error) {

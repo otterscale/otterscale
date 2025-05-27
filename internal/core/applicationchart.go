@@ -2,11 +2,10 @@ package core
 
 import (
 	"context"
+	"fmt"
 
+	"connectrpc.com/connect"
 	"golang.org/x/sync/errgroup"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/repo"
@@ -82,7 +81,7 @@ func (uc *ApplicationUseCase) GetChart(ctx context.Context, chartName string) (*
 			Versions: charts[i].Versions,
 		}, nil
 	}
-	return nil, status.Errorf(codes.NotFound, "chart %q not found", chartName)
+	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("chart %q not found", chartName))
 }
 
 func (uc *ApplicationUseCase) GetChartMetadata(ctx context.Context, chartRef string) (*ChartMetadata, error) {
