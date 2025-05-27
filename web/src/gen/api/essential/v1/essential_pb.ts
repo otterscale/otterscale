@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/essential/v1/essential.proto.
  */
 export const file_api_essential_v1_essential: GenFile = /*@__PURE__*/
-  fileDesc("CiBhcGkvZXNzZW50aWFsL3YxL2Vzc2VudGlhbC5wcm90bxIXb3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEikwMKCUVzc2VudGlhbBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSDAoEbmFtZRgCIAEoCRISCgpzY29wZV91dWlkGAsgASgJEhIKCnNjb3BlX25hbWUYDCABKAkSNgoFdW5pdHMYFSADKAsyJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVW5pdBqtAQoEVW5pdBI6CgR0eXBlGAEgASgOMiwub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlVuaXQuVHlwZRIMCgRuYW1lGAIgASgJEhIKCm1hY2hpbmVfaWQYAyABKAkiRwoEVHlwZRIPCgtVTlNQRUNJRklFRBAAEhAKDENPTlRST0xQTEFORRABEgoKBldPUktFUhACEgcKA01PThADEgcKA09TRBAEIjEKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIOCgpLVUJFUk5FVEVTEAESCAoEQ0VQSBACIhoKGElzTWFjaGluZURlcGxveWVkUmVxdWVzdCIVChNMaXN0U3RhdHVzZXNSZXF1ZXN0IrwBChRMaXN0U3RhdHVzZXNSZXNwb25zZRJCCgVsZXZlbBgBIAEoDjIzLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkxpc3RTdGF0dXNlc1Jlc3BvbnNlLkxldmVsEg8KB21lc3NhZ2UYAiABKAkSDwoHZGV0YWlscxgDIAEoCSI+CgVMZXZlbBIICgRJTkZPEAASBwoDTE9XEAESCgoGTUVESVVNEAISCAoESElHSBADEgwKCENSSVRJQ0FMEAQiYgoVTGlzdEVzc2VudGlhbHNSZXF1ZXN0EjUKBHR5cGUYASABKA4yJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVHlwZRISCgpzY29wZV91dWlkGAIgASgJIlAKFkxpc3RFc3NlbnRpYWxzUmVzcG9uc2USNgoKZXNzZW50aWFscxgBIAMoCzIiLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkVzc2VudGlhbCKVAQoXQ3JlYXRlU2luZ2xlTm9kZVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRISCgptYWNoaW5lX2lkGAIgASgJEhMKC3ByZWZpeF9uYW1lGAMgASgJEhMKC3ZpcnR1YWxfaXBzGAsgAygJEhMKC2NhbGljb19jaWRyGAwgASgJEhMKC29zZF9kZXZpY2VzGBUgAygJIqIBCiRDcmVhdGVIaWdoQXZhaWxhYmlsaXR5Q2x1c3RlclJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRISCgptYWNoaW5lX2lkGAIgASgJEhMKC3ByZWZpeF9uYW1lGAMgASgJEhMKC3ZpcnR1YWxfaXBzGAsgAygJEhMKC2NhbGljb19jaWRyGAwgASgJEhMKC29zZF9kZXZpY2VzGBUgAygJIp4BCg9BZGRVbml0c1JlcXVlc3QSNQoEdHlwZRgBIAEoDjInLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkVzc2VudGlhbC5UeXBlEhIKCnNjb3BlX3V1aWQYAiABKAkSDAoEbmFtZRgDIAEoCRIOCgZudW1iZXIYBCABKAUSEwoLbWFjaGluZV9pZHMYBSADKAkSDQoFZm9yY2UYCyABKAgyjwUKEEVzc2VudGlhbFNlcnZpY2USXgoRSXNNYWNoaW5lRGVwbG95ZWQSMS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Jc01hY2hpbmVEZXBsb3llZFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSawoMTGlzdFN0YXR1c2VzEiwub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdFN0YXR1c2VzUmVxdWVzdBotLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkxpc3RTdGF0dXNlc1Jlc3BvbnNlEnEKDkxpc3RFc3NlbnRpYWxzEi4ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEVzc2VudGlhbHNSZXF1ZXN0Gi8ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEVzc2VudGlhbHNSZXNwb25zZRJoChBDcmVhdGVTaW5nbGVOb2RlEjAub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuQ3JlYXRlU2luZ2xlTm9kZVJlcXVlc3QaIi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwSggEKHUNyZWF0ZUhpZ2hBdmFpbGFiaWxpdHlDbHVzdGVyEj0ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuQ3JlYXRlSGlnaEF2YWlsYWJpbGl0eUNsdXN0ZXJSZXF1ZXN0GiIub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsEkwKCEFkZFVuaXRzEigub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuQWRkVW5pdHNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5QjNaMWdpdGh1Yi5jb20vb3BlbmhkYy9vdHRlcnNjYWxlL2FwaS9lc3NlbnRpYWwvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty]);
+  fileDesc("CiBhcGkvZXNzZW50aWFsL3YxL2Vzc2VudGlhbC5wcm90bxIXb3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEijAIKCUVzc2VudGlhbBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSDAoEbmFtZRgCIAEoCRISCgpzY29wZV91dWlkGAsgASgJEhIKCnNjb3BlX25hbWUYDCABKAkSNgoFdW5pdHMYFSADKAsyJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVW5pdBonCgRVbml0EgwKBG5hbWUYASABKAkSEQoJZGlyZWN0aXZlGAIgASgJIjEKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIOCgpLVUJFUk5FVEVTEAESCAoEQ0VQSBACIqABCgZTdGF0dXMSNAoFbGV2ZWwYASABKA4yJS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5TdGF0dXMuTGV2ZWwSDwoHbWVzc2FnZRgCIAEoCRIPCgdkZXRhaWxzGAMgASgJIj4KBUxldmVsEggKBElORk8QABIHCgNMT1cQARIKCgZNRURJVU0QAhIICgRISUdIEAMSDAoIQ1JJVElDQUwQBCIuChhJc01hY2hpbmVEZXBsb3llZFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCSI+ChlJc01hY2hpbmVEZXBsb3llZFJlc3BvbnNlEhAKCGRlcGxveWVkGAEgASgIEg8KB21lc3NhZ2UYAiABKAkiKQoTTGlzdFN0YXR1c2VzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJIkkKFExpc3RTdGF0dXNlc1Jlc3BvbnNlEjEKCFN0YXR1c2VzGAEgAygLMh8ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuU3RhdHVzImIKFUxpc3RFc3NlbnRpYWxzUmVxdWVzdBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSEgoKc2NvcGVfdXVpZBgCIAEoCSJQChZMaXN0RXNzZW50aWFsc1Jlc3BvbnNlEjYKCmVzc2VudGlhbHMYASADKAsyIi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwilQEKF0NyZWF0ZVNpbmdsZU5vZGVSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSEgoKbWFjaGluZV9pZBgCIAEoCRITCgtwcmVmaXhfbmFtZRgDIAEoCRITCgt2aXJ0dWFsX2lwcxgLIAMoCRITCgtjYWxpY29fY2lkchgMIAEoCRITCgtvc2RfZGV2aWNlcxgVIAMoCSKiAQokQ3JlYXRlSGlnaEF2YWlsYWJpbGl0eUNsdXN0ZXJSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSEgoKbWFjaGluZV9pZBgCIAEoCRITCgtwcmVmaXhfbmFtZRgDIAEoCRITCgt2aXJ0dWFsX2lwcxgLIAMoCRITCgtjYWxpY29fY2lkchgMIAEoCRITCgtvc2RfZGV2aWNlcxgVIAMoCSKeAQoPQWRkVW5pdHNSZXF1ZXN0EjUKBHR5cGUYASABKA4yJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVHlwZRISCgpzY29wZV91dWlkGAIgASgJEgwKBG5hbWUYAyABKAkSDgoGbnVtYmVyGAQgASgFEhMKC21hY2hpbmVfaWRzGAUgAygJEg0KBWZvcmNlGAsgASgIMpIFChBFc3NlbnRpYWxTZXJ2aWNlEnoKEUlzTWFjaGluZURlcGxveWVkEjEub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuSXNNYWNoaW5lRGVwbG95ZWRSZXF1ZXN0GjIub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuSXNNYWNoaW5lRGVwbG95ZWRSZXNwb25zZRJrCgxMaXN0U3RhdHVzZXMSLC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0U3RhdHVzZXNSZXF1ZXN0Gi0ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdFN0YXR1c2VzUmVzcG9uc2UScQoOTGlzdEVzc2VudGlhbHMSLi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0RXNzZW50aWFsc1JlcXVlc3QaLy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0RXNzZW50aWFsc1Jlc3BvbnNlElwKEENyZWF0ZVNpbmdsZU5vZGUSMC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5DcmVhdGVTaW5nbGVOb2RlUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJ2Ch1DcmVhdGVIaWdoQXZhaWxhYmlsaXR5Q2x1c3RlchI9Lm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkNyZWF0ZUhpZ2hBdmFpbGFiaWxpdHlDbHVzdGVyUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJMCghBZGRVbml0cxIoLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkFkZFVuaXRzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUIzWjFnaXRodWIuY29tL29wZW5oZGMvb3R0ZXJzY2FsZS9hcGkvZXNzZW50aWFsL3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty]);
 
 /**
  * @generated from message otterscale.essential.v1.Essential
@@ -56,19 +56,14 @@ export const EssentialSchema: GenMessage<Essential> = /*@__PURE__*/
  */
 export type Essential_Unit = Message<"otterscale.essential.v1.Essential.Unit"> & {
   /**
-   * @generated from field: otterscale.essential.v1.Essential.Unit.Type type = 1;
-   */
-  type: Essential_Unit_Type;
-
-  /**
-   * @generated from field: string name = 2;
+   * @generated from field: string name = 1;
    */
   name: string;
 
   /**
-   * @generated from field: string machine_id = 3;
+   * @generated from field: string directive = 2;
    */
-  machineId: string;
+  directive: string;
 };
 
 /**
@@ -77,42 +72,6 @@ export type Essential_Unit = Message<"otterscale.essential.v1.Essential.Unit"> &
  */
 export const Essential_UnitSchema: GenMessage<Essential_Unit> = /*@__PURE__*/
   messageDesc(file_api_essential_v1_essential, 0, 0);
-
-/**
- * @generated from enum otterscale.essential.v1.Essential.Unit.Type
- */
-export enum Essential_Unit_Type {
-  /**
-   * @generated from enum value: UNSPECIFIED = 0;
-   */
-  UNSPECIFIED = 0,
-
-  /**
-   * @generated from enum value: CONTROLPLANE = 1;
-   */
-  CONTROLPLANE = 1,
-
-  /**
-   * @generated from enum value: WORKER = 2;
-   */
-  WORKER = 2,
-
-  /**
-   * @generated from enum value: MON = 3;
-   */
-  MON = 3,
-
-  /**
-   * @generated from enum value: OSD = 4;
-   */
-  OSD = 4,
-}
-
-/**
- * Describes the enum otterscale.essential.v1.Essential.Unit.Type.
- */
-export const Essential_Unit_TypeSchema: GenEnum<Essential_Unit_Type> = /*@__PURE__*/
-  enumDesc(file_api_essential_v1_essential, 0, 0, 0);
 
 /**
  * @generated from enum otterscale.essential.v1.Essential.Type
@@ -141,39 +100,13 @@ export const Essential_TypeSchema: GenEnum<Essential_Type> = /*@__PURE__*/
   enumDesc(file_api_essential_v1_essential, 0, 0);
 
 /**
- * @generated from message otterscale.essential.v1.IsMachineDeployedRequest
+ * @generated from message otterscale.essential.v1.Status
  */
-export type IsMachineDeployedRequest = Message<"otterscale.essential.v1.IsMachineDeployedRequest"> & {
-};
-
-/**
- * Describes the message otterscale.essential.v1.IsMachineDeployedRequest.
- * Use `create(IsMachineDeployedRequestSchema)` to create a new message.
- */
-export const IsMachineDeployedRequestSchema: GenMessage<IsMachineDeployedRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 1);
-
-/**
- * @generated from message otterscale.essential.v1.ListStatusesRequest
- */
-export type ListStatusesRequest = Message<"otterscale.essential.v1.ListStatusesRequest"> & {
-};
-
-/**
- * Describes the message otterscale.essential.v1.ListStatusesRequest.
- * Use `create(ListStatusesRequestSchema)` to create a new message.
- */
-export const ListStatusesRequestSchema: GenMessage<ListStatusesRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 2);
-
-/**
- * @generated from message otterscale.essential.v1.ListStatusesResponse
- */
-export type ListStatusesResponse = Message<"otterscale.essential.v1.ListStatusesResponse"> & {
+export type Status = Message<"otterscale.essential.v1.Status"> & {
   /**
-   * @generated from field: otterscale.essential.v1.ListStatusesResponse.Level level = 1;
+   * @generated from field: otterscale.essential.v1.Status.Level level = 1;
    */
-  level: ListStatusesResponse_Level;
+  level: Status_Level;
 
   /**
    * @generated from field: string message = 2;
@@ -187,16 +120,16 @@ export type ListStatusesResponse = Message<"otterscale.essential.v1.ListStatuses
 };
 
 /**
- * Describes the message otterscale.essential.v1.ListStatusesResponse.
- * Use `create(ListStatusesResponseSchema)` to create a new message.
+ * Describes the message otterscale.essential.v1.Status.
+ * Use `create(StatusSchema)` to create a new message.
  */
-export const ListStatusesResponseSchema: GenMessage<ListStatusesResponse> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 3);
+export const StatusSchema: GenMessage<Status> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 1);
 
 /**
- * @generated from enum otterscale.essential.v1.ListStatusesResponse.Level
+ * @generated from enum otterscale.essential.v1.Status.Level
  */
-export enum ListStatusesResponse_Level {
+export enum Status_Level {
   /**
    * @generated from enum value: INFO = 0;
    */
@@ -224,10 +157,83 @@ export enum ListStatusesResponse_Level {
 }
 
 /**
- * Describes the enum otterscale.essential.v1.ListStatusesResponse.Level.
+ * Describes the enum otterscale.essential.v1.Status.Level.
  */
-export const ListStatusesResponse_LevelSchema: GenEnum<ListStatusesResponse_Level> = /*@__PURE__*/
-  enumDesc(file_api_essential_v1_essential, 3, 0);
+export const Status_LevelSchema: GenEnum<Status_Level> = /*@__PURE__*/
+  enumDesc(file_api_essential_v1_essential, 1, 0);
+
+/**
+ * @generated from message otterscale.essential.v1.IsMachineDeployedRequest
+ */
+export type IsMachineDeployedRequest = Message<"otterscale.essential.v1.IsMachineDeployedRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+};
+
+/**
+ * Describes the message otterscale.essential.v1.IsMachineDeployedRequest.
+ * Use `create(IsMachineDeployedRequestSchema)` to create a new message.
+ */
+export const IsMachineDeployedRequestSchema: GenMessage<IsMachineDeployedRequest> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 2);
+
+/**
+ * @generated from message otterscale.essential.v1.IsMachineDeployedResponse
+ */
+export type IsMachineDeployedResponse = Message<"otterscale.essential.v1.IsMachineDeployedResponse"> & {
+  /**
+   * @generated from field: bool deployed = 1;
+   */
+  deployed: boolean;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message otterscale.essential.v1.IsMachineDeployedResponse.
+ * Use `create(IsMachineDeployedResponseSchema)` to create a new message.
+ */
+export const IsMachineDeployedResponseSchema: GenMessage<IsMachineDeployedResponse> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 3);
+
+/**
+ * @generated from message otterscale.essential.v1.ListStatusesRequest
+ */
+export type ListStatusesRequest = Message<"otterscale.essential.v1.ListStatusesRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+};
+
+/**
+ * Describes the message otterscale.essential.v1.ListStatusesRequest.
+ * Use `create(ListStatusesRequestSchema)` to create a new message.
+ */
+export const ListStatusesRequestSchema: GenMessage<ListStatusesRequest> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 4);
+
+/**
+ * @generated from message otterscale.essential.v1.ListStatusesResponse
+ */
+export type ListStatusesResponse = Message<"otterscale.essential.v1.ListStatusesResponse"> & {
+  /**
+   * @generated from field: repeated otterscale.essential.v1.Status Statuses = 1;
+   */
+  Statuses: Status[];
+};
+
+/**
+ * Describes the message otterscale.essential.v1.ListStatusesResponse.
+ * Use `create(ListStatusesResponseSchema)` to create a new message.
+ */
+export const ListStatusesResponseSchema: GenMessage<ListStatusesResponse> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 5);
 
 /**
  * @generated from message otterscale.essential.v1.ListEssentialsRequest
@@ -249,7 +255,7 @@ export type ListEssentialsRequest = Message<"otterscale.essential.v1.ListEssenti
  * Use `create(ListEssentialsRequestSchema)` to create a new message.
  */
 export const ListEssentialsRequestSchema: GenMessage<ListEssentialsRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 4);
+  messageDesc(file_api_essential_v1_essential, 6);
 
 /**
  * @generated from message otterscale.essential.v1.ListEssentialsResponse
@@ -266,7 +272,7 @@ export type ListEssentialsResponse = Message<"otterscale.essential.v1.ListEssent
  * Use `create(ListEssentialsResponseSchema)` to create a new message.
  */
 export const ListEssentialsResponseSchema: GenMessage<ListEssentialsResponse> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 5);
+  messageDesc(file_api_essential_v1_essential, 7);
 
 /**
  * @generated from message otterscale.essential.v1.CreateSingleNodeRequest
@@ -308,7 +314,7 @@ export type CreateSingleNodeRequest = Message<"otterscale.essential.v1.CreateSin
  * Use `create(CreateSingleNodeRequestSchema)` to create a new message.
  */
 export const CreateSingleNodeRequestSchema: GenMessage<CreateSingleNodeRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 6);
+  messageDesc(file_api_essential_v1_essential, 8);
 
 /**
  * @generated from message otterscale.essential.v1.CreateHighAvailabilityClusterRequest
@@ -350,7 +356,7 @@ export type CreateHighAvailabilityClusterRequest = Message<"otterscale.essential
  * Use `create(CreateHighAvailabilityClusterRequestSchema)` to create a new message.
  */
 export const CreateHighAvailabilityClusterRequestSchema: GenMessage<CreateHighAvailabilityClusterRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 7);
+  messageDesc(file_api_essential_v1_essential, 9);
 
 /**
  * @generated from message otterscale.essential.v1.AddUnitsRequest
@@ -392,7 +398,7 @@ export type AddUnitsRequest = Message<"otterscale.essential.v1.AddUnitsRequest">
  * Use `create(AddUnitsRequestSchema)` to create a new message.
  */
 export const AddUnitsRequestSchema: GenMessage<AddUnitsRequest> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 8);
+  messageDesc(file_api_essential_v1_essential, 10);
 
 /**
  * @generated from service otterscale.essential.v1.EssentialService
@@ -404,7 +410,7 @@ export const EssentialService: GenService<{
   isMachineDeployed: {
     methodKind: "unary";
     input: typeof IsMachineDeployedRequestSchema;
-    output: typeof EmptySchema;
+    output: typeof IsMachineDeployedResponseSchema;
   },
   /**
    * @generated from rpc otterscale.essential.v1.EssentialService.ListStatuses
@@ -428,7 +434,7 @@ export const EssentialService: GenService<{
   createSingleNode: {
     methodKind: "unary";
     input: typeof CreateSingleNodeRequestSchema;
-    output: typeof EssentialSchema;
+    output: typeof EmptySchema;
   },
   /**
    * @generated from rpc otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster
@@ -436,7 +442,7 @@ export const EssentialService: GenService<{
   createHighAvailabilityCluster: {
     methodKind: "unary";
     input: typeof CreateHighAvailabilityClusterRequestSchema;
-    output: typeof EssentialSchema;
+    output: typeof EmptySchema;
   },
   /**
    * @generated from rpc otterscale.essential.v1.EssentialService.AddUnits
