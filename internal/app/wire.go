@@ -8,7 +8,7 @@ var ProviderSet = wire.NewSet(
 	NewApplicationService,
 	NewConfigurationService,
 	NewFacilityService,
-	NewGeneralService,
+	NewEssentialService,
 	NewMachineService,
 	NewNetworkService,
 	NewScopeService,

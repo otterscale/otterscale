@@ -8,8 +8,8 @@ import (
 
 	applicationv1 "github.com/openhdc/otterscale/api/application/v1/pbconnect"
 	configurationv1 "github.com/openhdc/otterscale/api/configuration/v1/pbconnect"
+	essentialv1 "github.com/openhdc/otterscale/api/essential/v1/pbconnect"
 	facilityv1 "github.com/openhdc/otterscale/api/facility/v1/pbconnect"
-	generalv1 "github.com/openhdc/otterscale/api/general/v1/pbconnect"
 	machinev1 "github.com/openhdc/otterscale/api/machine/v1/pbconnect"
 	networkv1 "github.com/openhdc/otterscale/api/network/v1/pbconnect"
 	scopev1 "github.com/openhdc/otterscale/api/scope/v1/pbconnect"
@@ -17,12 +17,12 @@ import (
 	"github.com/openhdc/otterscale/internal/app"
 )
 
-func New(app *app.ApplicationService, config *app.ConfigurationService, facility *app.FacilityService, general *app.GeneralService, machine *app.MachineService, network *app.NetworkService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
+func New(app *app.ApplicationService, config *app.ConfigurationService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle(applicationv1.NewApplicationServiceHandler(app))
 	mux.Handle(configurationv1.NewConfigurationServiceHandler(config))
 	mux.Handle(facilityv1.NewFacilityServiceHandler(facility))
-	mux.Handle(generalv1.NewGeneralServiceHandler(general))
+	mux.Handle(essentialv1.NewEssentialServiceHandler(essential))
 	mux.Handle(machinev1.NewMachineServiceHandler(machine))
 	mux.Handle(networkv1.NewNetworkServiceHandler(network))
 	mux.Handle(scopev1.NewScopeServiceHandler(scope))
@@ -32,7 +32,7 @@ func New(app *app.ApplicationService, config *app.ConfigurationService, facility
 		applicationv1.ApplicationServiceName,
 		configurationv1.ConfigurationServiceName,
 		facilityv1.FacilityServiceName,
-		generalv1.GeneralServiceName,
+		essentialv1.EssentialServiceName,
 		machinev1.MachineServiceName,
 		networkv1.NetworkServiceName,
 		scopev1.ScopeServiceName,

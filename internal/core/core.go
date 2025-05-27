@@ -46,14 +46,15 @@ func getJujuMachineID(m map[string]string) (string, error) {
 }
 
 func toPlacement(p *MachinePlacement, directive string) *instance.Placement {
-	placement := &instance.Placement{}
+	placement := &instance.Placement{
+		Directive: directive,
+	}
 	if p.LXD {
 		placement.Scope = "lxd"
 	} else if p.KVM {
 		placement.Scope = "kvm"
 	} else if p.Machine {
 		placement.Scope = "#"
-		placement.Directive = directive
 	} else {
 		return nil
 	}

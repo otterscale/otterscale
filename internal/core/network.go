@@ -163,14 +163,7 @@ func (uc *NetworkUseCase) CreateNetwork(ctx context.Context, cidr, gatewayIP str
 }
 
 func (uc *NetworkUseCase) CreateIPRange(ctx context.Context, subnetID int, startIP, endIP, comment string) (*IPRange, error) {
-	params := &entity.IPRangeParams{
-		Type:    "reserved",
-		Subnet:  strconv.Itoa(subnetID),
-		StartIP: startIP,
-		EndIP:   endIP,
-		Comment: comment,
-	}
-	return uc.ipRange.Create(ctx, params)
+	return createIPRange(ctx, uc.ipRange, subnetID, startIP, endIP, comment)
 }
 
 func (uc *NetworkUseCase) DeleteNetwork(ctx context.Context, id int) error {

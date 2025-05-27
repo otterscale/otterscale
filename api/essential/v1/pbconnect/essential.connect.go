@@ -56,11 +56,11 @@ const (
 
 // EssentialServiceClient is a client for the otterscale.essential.v1.EssentialService service.
 type EssentialServiceClient interface {
-	IsMachineDeployed(context.Context, *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[emptypb.Empty], error)
+	IsMachineDeployed(context.Context, *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[v1.IsMachineDeployedResponse], error)
 	ListStatuses(context.Context, *connect.Request[v1.ListStatusesRequest]) (*connect.Response[v1.ListStatusesResponse], error)
 	ListEssentials(context.Context, *connect.Request[v1.ListEssentialsRequest]) (*connect.Response[v1.ListEssentialsResponse], error)
-	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[v1.Essential], error)
-	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[v1.Essential], error)
+	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error)
 	AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
@@ -75,7 +75,7 @@ func NewEssentialServiceClient(httpClient connect.HTTPClient, baseURL string, op
 	baseURL = strings.TrimRight(baseURL, "/")
 	essentialServiceMethods := v1.File_api_essential_v1_essential_proto.Services().ByName("EssentialService").Methods()
 	return &essentialServiceClient{
-		isMachineDeployed: connect.NewClient[v1.IsMachineDeployedRequest, emptypb.Empty](
+		isMachineDeployed: connect.NewClient[v1.IsMachineDeployedRequest, v1.IsMachineDeployedResponse](
 			httpClient,
 			baseURL+EssentialServiceIsMachineDeployedProcedure,
 			connect.WithSchema(essentialServiceMethods.ByName("IsMachineDeployed")),
@@ -93,13 +93,13 @@ func NewEssentialServiceClient(httpClient connect.HTTPClient, baseURL string, op
 			connect.WithSchema(essentialServiceMethods.ByName("ListEssentials")),
 			connect.WithClientOptions(opts...),
 		),
-		createSingleNode: connect.NewClient[v1.CreateSingleNodeRequest, v1.Essential](
+		createSingleNode: connect.NewClient[v1.CreateSingleNodeRequest, emptypb.Empty](
 			httpClient,
 			baseURL+EssentialServiceCreateSingleNodeProcedure,
 			connect.WithSchema(essentialServiceMethods.ByName("CreateSingleNode")),
 			connect.WithClientOptions(opts...),
 		),
-		createHighAvailabilityCluster: connect.NewClient[v1.CreateHighAvailabilityClusterRequest, v1.Essential](
+		createHighAvailabilityCluster: connect.NewClient[v1.CreateHighAvailabilityClusterRequest, emptypb.Empty](
 			httpClient,
 			baseURL+EssentialServiceCreateHighAvailabilityClusterProcedure,
 			connect.WithSchema(essentialServiceMethods.ByName("CreateHighAvailabilityCluster")),
@@ -116,16 +116,16 @@ func NewEssentialServiceClient(httpClient connect.HTTPClient, baseURL string, op
 
 // essentialServiceClient implements EssentialServiceClient.
 type essentialServiceClient struct {
-	isMachineDeployed             *connect.Client[v1.IsMachineDeployedRequest, emptypb.Empty]
+	isMachineDeployed             *connect.Client[v1.IsMachineDeployedRequest, v1.IsMachineDeployedResponse]
 	listStatuses                  *connect.Client[v1.ListStatusesRequest, v1.ListStatusesResponse]
 	listEssentials                *connect.Client[v1.ListEssentialsRequest, v1.ListEssentialsResponse]
-	createSingleNode              *connect.Client[v1.CreateSingleNodeRequest, v1.Essential]
-	createHighAvailabilityCluster *connect.Client[v1.CreateHighAvailabilityClusterRequest, v1.Essential]
+	createSingleNode              *connect.Client[v1.CreateSingleNodeRequest, emptypb.Empty]
+	createHighAvailabilityCluster *connect.Client[v1.CreateHighAvailabilityClusterRequest, emptypb.Empty]
 	addUnits                      *connect.Client[v1.AddUnitsRequest, emptypb.Empty]
 }
 
 // IsMachineDeployed calls otterscale.essential.v1.EssentialService.IsMachineDeployed.
-func (c *essentialServiceClient) IsMachineDeployed(ctx context.Context, req *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[emptypb.Empty], error) {
+func (c *essentialServiceClient) IsMachineDeployed(ctx context.Context, req *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[v1.IsMachineDeployedResponse], error) {
 	return c.isMachineDeployed.CallUnary(ctx, req)
 }
 
@@ -140,13 +140,13 @@ func (c *essentialServiceClient) ListEssentials(ctx context.Context, req *connec
 }
 
 // CreateSingleNode calls otterscale.essential.v1.EssentialService.CreateSingleNode.
-func (c *essentialServiceClient) CreateSingleNode(ctx context.Context, req *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[v1.Essential], error) {
+func (c *essentialServiceClient) CreateSingleNode(ctx context.Context, req *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.createSingleNode.CallUnary(ctx, req)
 }
 
 // CreateHighAvailabilityCluster calls
 // otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster.
-func (c *essentialServiceClient) CreateHighAvailabilityCluster(ctx context.Context, req *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[v1.Essential], error) {
+func (c *essentialServiceClient) CreateHighAvailabilityCluster(ctx context.Context, req *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.createHighAvailabilityCluster.CallUnary(ctx, req)
 }
 
@@ -158,11 +158,11 @@ func (c *essentialServiceClient) AddUnits(ctx context.Context, req *connect.Requ
 // EssentialServiceHandler is an implementation of the otterscale.essential.v1.EssentialService
 // service.
 type EssentialServiceHandler interface {
-	IsMachineDeployed(context.Context, *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[emptypb.Empty], error)
+	IsMachineDeployed(context.Context, *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[v1.IsMachineDeployedResponse], error)
 	ListStatuses(context.Context, *connect.Request[v1.ListStatusesRequest]) (*connect.Response[v1.ListStatusesResponse], error)
 	ListEssentials(context.Context, *connect.Request[v1.ListEssentialsRequest]) (*connect.Response[v1.ListEssentialsResponse], error)
-	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[v1.Essential], error)
-	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[v1.Essential], error)
+	CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error)
 	AddUnits(context.Context, *connect.Request[v1.AddUnitsRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
@@ -232,7 +232,7 @@ func NewEssentialServiceHandler(svc EssentialServiceHandler, opts ...connect.Han
 // UnimplementedEssentialServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedEssentialServiceHandler struct{}
 
-func (UnimplementedEssentialServiceHandler) IsMachineDeployed(context.Context, *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[emptypb.Empty], error) {
+func (UnimplementedEssentialServiceHandler) IsMachineDeployed(context.Context, *connect.Request[v1.IsMachineDeployedRequest]) (*connect.Response[v1.IsMachineDeployedResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.IsMachineDeployed is not implemented"))
 }
 
@@ -244,11 +244,11 @@ func (UnimplementedEssentialServiceHandler) ListEssentials(context.Context, *con
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.ListEssentials is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[v1.Essential], error) {
+func (UnimplementedEssentialServiceHandler) CreateSingleNode(context.Context, *connect.Request[v1.CreateSingleNodeRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.CreateSingleNode is not implemented"))
 }
 
-func (UnimplementedEssentialServiceHandler) CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[v1.Essential], error) {
+func (UnimplementedEssentialServiceHandler) CreateHighAvailabilityCluster(context.Context, *connect.Request[v1.CreateHighAvailabilityClusterRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster is not implemented"))
 }
 

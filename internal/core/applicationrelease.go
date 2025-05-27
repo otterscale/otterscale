@@ -32,7 +32,7 @@ type ReleaseRepo interface {
 }
 
 func (uc *ApplicationUseCase) ListReleases(ctx context.Context) ([]Release, error) {
-	kuberneteses, err := uc.listAllKuberneteses(ctx)
+	kuberneteses, err := listKuberneteses(ctx, uc.scope, uc.client, "")
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (uc *ApplicationUseCase) ListReleases(ctx context.Context) ([]Release, erro
 	for i := range kuberneteses {
 		i := i // fixed on go 1.22
 		eg.Go(func() error {
-			config, err := uc.config(ctx, kuberneteses[i].ScopeUUID, kuberneteses[i].FacilityName)
+			config, err := uc.config(ctx, kuberneteses[i].ScopeUUID, kuberneteses[i].Name)
 			if err != nil {
 				return err
 			}
@@ -50,7 +50,7 @@ func (uc *ApplicationUseCase) ListReleases(ctx context.Context) ([]Release, erro
 				result[i] = append(result[i], Release{
 					ScopeName:    kuberneteses[i].ScopeName,
 					ScopeUUID:    kuberneteses[i].ScopeUUID,
-					FacilityName: kuberneteses[i].FacilityName,
+					FacilityName: kuberneteses[i].Name,
 					Release:      &release,
 				})
 			}
@@ -117,41 +117,6 @@ func (uc *ApplicationUseCase) RollbackRelease(ctx context.Context, uuid, facilit
 		return err
 	}
 	return uc.release.Rollback(config, namespace, name, dryRun)
-}
-
-func (uc *ApplicationUseCase) listAllKuberneteses(ctx context.Context) ([]FacilityInfo, error) {
-	scopes, err := uc.scope.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	eg, ctx := errgroup.WithContext(ctx)
-	result := make([]FacilityInfo, len(scopes))
-	for i := range scopes {
-		i := i // fixed on go 1.22
-		eg.Go(func() error {
-			s, err := uc.client.Status(ctx, scopes[i].UUID, []string{"application", "*"})
-			if err != nil {
-				return err
-			}
-			for name := range s.Applications {
-				if !strings.Contains(s.Applications[name].Charm, charmNameKubernetes) {
-					continue
-				}
-				result[i] = FacilityInfo{
-					ScopeUUID:    scopes[i].UUID,
-					ScopeName:    scopes[i].Name,
-					FacilityName: name,
-				}
-				break
-			}
-			return nil
-		})
-	}
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-	return result, nil
 }
 
 func getReleaseName(name string) string {

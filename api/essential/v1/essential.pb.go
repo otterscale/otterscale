@@ -65,76 +65,26 @@ func (x Essential_Type) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-type Essential_Unit_Type int32
+type Status_Level int32
 
 const (
-	Essential_Unit_UNSPECIFIED  Essential_Unit_Type = 0
-	Essential_Unit_CONTROLPLANE Essential_Unit_Type = 1
-	Essential_Unit_WORKER       Essential_Unit_Type = 2
-	Essential_Unit_MON          Essential_Unit_Type = 3
-	Essential_Unit_OSD          Essential_Unit_Type = 4
+	Status_INFO     Status_Level = 0
+	Status_LOW      Status_Level = 1
+	Status_MEDIUM   Status_Level = 2
+	Status_HIGH     Status_Level = 3
+	Status_CRITICAL Status_Level = 4
 )
 
-// Enum value maps for Essential_Unit_Type.
+// Enum value maps for Status_Level.
 var (
-	Essential_Unit_Type_name = map[int32]string{
-		0: "UNSPECIFIED",
-		1: "CONTROLPLANE",
-		2: "WORKER",
-		3: "MON",
-		4: "OSD",
-	}
-	Essential_Unit_Type_value = map[string]int32{
-		"UNSPECIFIED":  0,
-		"CONTROLPLANE": 1,
-		"WORKER":       2,
-		"MON":          3,
-		"OSD":          4,
-	}
-)
-
-func (x Essential_Unit_Type) Enum() *Essential_Unit_Type {
-	p := new(Essential_Unit_Type)
-	*p = x
-	return p
-}
-
-func (x Essential_Unit_Type) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Essential_Unit_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_essential_v1_essential_proto_enumTypes[1].Descriptor()
-}
-
-func (Essential_Unit_Type) Type() protoreflect.EnumType {
-	return &file_api_essential_v1_essential_proto_enumTypes[1]
-}
-
-func (x Essential_Unit_Type) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-type ListStatusesResponse_Level int32
-
-const (
-	ListStatusesResponse_INFO     ListStatusesResponse_Level = 0
-	ListStatusesResponse_LOW      ListStatusesResponse_Level = 1
-	ListStatusesResponse_MEDIUM   ListStatusesResponse_Level = 2
-	ListStatusesResponse_HIGH     ListStatusesResponse_Level = 3
-	ListStatusesResponse_CRITICAL ListStatusesResponse_Level = 4
-)
-
-// Enum value maps for ListStatusesResponse_Level.
-var (
-	ListStatusesResponse_Level_name = map[int32]string{
+	Status_Level_name = map[int32]string{
 		0: "INFO",
 		1: "LOW",
 		2: "MEDIUM",
 		3: "HIGH",
 		4: "CRITICAL",
 	}
-	ListStatusesResponse_Level_value = map[string]int32{
+	Status_Level_value = map[string]int32{
 		"INFO":     0,
 		"LOW":      1,
 		"MEDIUM":   2,
@@ -143,25 +93,25 @@ var (
 	}
 )
 
-func (x ListStatusesResponse_Level) Enum() *ListStatusesResponse_Level {
-	p := new(ListStatusesResponse_Level)
+func (x Status_Level) Enum() *Status_Level {
+	p := new(Status_Level)
 	*p = x
 	return p
 }
 
-func (x ListStatusesResponse_Level) String() string {
+func (x Status_Level) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (ListStatusesResponse_Level) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_essential_v1_essential_proto_enumTypes[2].Descriptor()
+func (Status_Level) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_essential_v1_essential_proto_enumTypes[1].Descriptor()
 }
 
-func (ListStatusesResponse_Level) Type() protoreflect.EnumType {
-	return &file_api_essential_v1_essential_proto_enumTypes[2]
+func (Status_Level) Type() protoreflect.EnumType {
+	return &file_api_essential_v1_essential_proto_enumTypes[1]
 }
 
-func (x ListStatusesResponse_Level) Number() protoreflect.EnumNumber {
+func (x Status_Level) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
@@ -357,118 +307,32 @@ func (b0 Essential_builder) Build() *Essential {
 	return m0
 }
 
-type IsMachineDeployedRequest struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *IsMachineDeployedRequest) Reset() {
-	*x = IsMachineDeployedRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *IsMachineDeployedRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*IsMachineDeployedRequest) ProtoMessage() {}
-
-func (x *IsMachineDeployedRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-type IsMachineDeployedRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-}
-
-func (b0 IsMachineDeployedRequest_builder) Build() *IsMachineDeployedRequest {
-	m0 := &IsMachineDeployedRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	return m0
-}
-
-type ListStatusesRequest struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListStatusesRequest) Reset() {
-	*x = ListStatusesRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListStatusesRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListStatusesRequest) ProtoMessage() {}
-
-func (x *ListStatusesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-type ListStatusesRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-}
-
-func (b0 ListStatusesRequest_builder) Build() *ListStatusesRequest {
-	m0 := &ListStatusesRequest{}
-	b, x := &b0, m0
-	_, _ = b, x
-	return m0
-}
-
-type ListStatusesResponse struct {
-	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
-	xxx_hidden_Level       ListStatusesResponse_Level `protobuf:"varint,1,opt,name=level,enum=otterscale.essential.v1.ListStatusesResponse_Level"`
-	xxx_hidden_Message     *string                    `protobuf:"bytes,2,opt,name=message"`
-	xxx_hidden_Details     *string                    `protobuf:"bytes,3,opt,name=details"`
+type Status struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Level       Status_Level           `protobuf:"varint,1,opt,name=level,enum=otterscale.essential.v1.Status_Level"`
+	xxx_hidden_Message     *string                `protobuf:"bytes,2,opt,name=message"`
+	xxx_hidden_Details     *string                `protobuf:"bytes,3,opt,name=details"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *ListStatusesResponse) Reset() {
-	*x = ListStatusesResponse{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[3]
+func (x *Status) Reset() {
+	*x = Status{}
+	mi := &file_api_essential_v1_essential_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListStatusesResponse) String() string {
+func (x *Status) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListStatusesResponse) ProtoMessage() {}
+func (*Status) ProtoMessage() {}
 
-func (x *ListStatusesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[3]
+func (x *Status) ProtoReflect() protoreflect.Message {
+	mi := &file_api_essential_v1_essential_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -479,16 +343,16 @@ func (x *ListStatusesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListStatusesResponse) GetLevel() ListStatusesResponse_Level {
+func (x *Status) GetLevel() Status_Level {
 	if x != nil {
 		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
 			return x.xxx_hidden_Level
 		}
 	}
-	return ListStatusesResponse_INFO
+	return Status_INFO
 }
 
-func (x *ListStatusesResponse) GetMessage() string {
+func (x *Status) GetMessage() string {
 	if x != nil {
 		if x.xxx_hidden_Message != nil {
 			return *x.xxx_hidden_Message
@@ -498,7 +362,7 @@ func (x *ListStatusesResponse) GetMessage() string {
 	return ""
 }
 
-func (x *ListStatusesResponse) GetDetails() string {
+func (x *Status) GetDetails() string {
 	if x != nil {
 		if x.xxx_hidden_Details != nil {
 			return *x.xxx_hidden_Details
@@ -508,67 +372,67 @@ func (x *ListStatusesResponse) GetDetails() string {
 	return ""
 }
 
-func (x *ListStatusesResponse) SetLevel(v ListStatusesResponse_Level) {
+func (x *Status) SetLevel(v Status_Level) {
 	x.xxx_hidden_Level = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *ListStatusesResponse) SetMessage(v string) {
+func (x *Status) SetMessage(v string) {
 	x.xxx_hidden_Message = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *ListStatusesResponse) SetDetails(v string) {
+func (x *Status) SetDetails(v string) {
 	x.xxx_hidden_Details = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *ListStatusesResponse) HasLevel() bool {
+func (x *Status) HasLevel() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListStatusesResponse) HasMessage() bool {
+func (x *Status) HasMessage() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListStatusesResponse) HasDetails() bool {
+func (x *Status) HasDetails() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *ListStatusesResponse) ClearLevel() {
+func (x *Status) ClearLevel() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Level = ListStatusesResponse_INFO
+	x.xxx_hidden_Level = Status_INFO
 }
 
-func (x *ListStatusesResponse) ClearMessage() {
+func (x *Status) ClearMessage() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Message = nil
 }
 
-func (x *ListStatusesResponse) ClearDetails() {
+func (x *Status) ClearDetails() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Details = nil
 }
 
-type ListStatusesResponse_builder struct {
+type Status_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Level   *ListStatusesResponse_Level
+	Level   *Status_Level
 	Message *string
 	Details *string
 }
 
-func (b0 ListStatusesResponse_builder) Build() *ListStatusesResponse {
-	m0 := &ListStatusesResponse{}
+func (b0 Status_builder) Build() *Status {
+	m0 := &Status{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Level != nil {
@@ -586,6 +450,329 @@ func (b0 ListStatusesResponse_builder) Build() *ListStatusesResponse {
 	return m0
 }
 
+type IsMachineDeployedRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *IsMachineDeployedRequest) Reset() {
+	*x = IsMachineDeployedRequest{}
+	mi := &file_api_essential_v1_essential_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsMachineDeployedRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsMachineDeployedRequest) ProtoMessage() {}
+
+func (x *IsMachineDeployedRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_essential_v1_essential_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *IsMachineDeployedRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *IsMachineDeployedRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *IsMachineDeployedRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *IsMachineDeployedRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+type IsMachineDeployedRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid *string
+}
+
+func (b0 IsMachineDeployedRequest_builder) Build() *IsMachineDeployedRequest {
+	m0 := &IsMachineDeployedRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	return m0
+}
+
+type IsMachineDeployedResponse struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Deployed    bool                   `protobuf:"varint,1,opt,name=deployed"`
+	xxx_hidden_Message     *string                `protobuf:"bytes,2,opt,name=message"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *IsMachineDeployedResponse) Reset() {
+	*x = IsMachineDeployedResponse{}
+	mi := &file_api_essential_v1_essential_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsMachineDeployedResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsMachineDeployedResponse) ProtoMessage() {}
+
+func (x *IsMachineDeployedResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_essential_v1_essential_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *IsMachineDeployedResponse) GetDeployed() bool {
+	if x != nil {
+		return x.xxx_hidden_Deployed
+	}
+	return false
+}
+
+func (x *IsMachineDeployedResponse) GetMessage() string {
+	if x != nil {
+		if x.xxx_hidden_Message != nil {
+			return *x.xxx_hidden_Message
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *IsMachineDeployedResponse) SetDeployed(v bool) {
+	x.xxx_hidden_Deployed = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *IsMachineDeployedResponse) SetMessage(v string) {
+	x.xxx_hidden_Message = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *IsMachineDeployedResponse) HasDeployed() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *IsMachineDeployedResponse) HasMessage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *IsMachineDeployedResponse) ClearDeployed() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Deployed = false
+}
+
+func (x *IsMachineDeployedResponse) ClearMessage() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Message = nil
+}
+
+type IsMachineDeployedResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Deployed *bool
+	Message  *string
+}
+
+func (b0 IsMachineDeployedResponse_builder) Build() *IsMachineDeployedResponse {
+	m0 := &IsMachineDeployedResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Deployed != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Deployed = *b.Deployed
+	}
+	if b.Message != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Message = b.Message
+	}
+	return m0
+}
+
+type ListStatusesRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ListStatusesRequest) Reset() {
+	*x = ListStatusesRequest{}
+	mi := &file_api_essential_v1_essential_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListStatusesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListStatusesRequest) ProtoMessage() {}
+
+func (x *ListStatusesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_essential_v1_essential_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListStatusesRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListStatusesRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *ListStatusesRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ListStatusesRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+type ListStatusesRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid *string
+}
+
+func (b0 ListStatusesRequest_builder) Build() *ListStatusesRequest {
+	m0 := &ListStatusesRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	return m0
+}
+
+type ListStatusesResponse struct {
+	state               protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Statuses *[]*Status             `protobuf:"bytes,1,rep,name=Statuses"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *ListStatusesResponse) Reset() {
+	*x = ListStatusesResponse{}
+	mi := &file_api_essential_v1_essential_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListStatusesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListStatusesResponse) ProtoMessage() {}
+
+func (x *ListStatusesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_essential_v1_essential_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ListStatusesResponse) GetStatuses() []*Status {
+	if x != nil {
+		if x.xxx_hidden_Statuses != nil {
+			return *x.xxx_hidden_Statuses
+		}
+	}
+	return nil
+}
+
+func (x *ListStatusesResponse) SetStatuses(v []*Status) {
+	x.xxx_hidden_Statuses = &v
+}
+
+type ListStatusesResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Statuses []*Status
+}
+
+func (b0 ListStatusesResponse_builder) Build() *ListStatusesResponse {
+	m0 := &ListStatusesResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Statuses = &b.Statuses
+	return m0
+}
+
 type ListEssentialsRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Type        Essential_Type         `protobuf:"varint,1,opt,name=type,enum=otterscale.essential.v1.Essential_Type"`
@@ -598,7 +785,7 @@ type ListEssentialsRequest struct {
 
 func (x *ListEssentialsRequest) Reset() {
 	*x = ListEssentialsRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[4]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -610,7 +797,7 @@ func (x *ListEssentialsRequest) String() string {
 func (*ListEssentialsRequest) ProtoMessage() {}
 
 func (x *ListEssentialsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[4]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -705,7 +892,7 @@ type ListEssentialsResponse struct {
 
 func (x *ListEssentialsResponse) Reset() {
 	*x = ListEssentialsResponse{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[5]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -717,7 +904,7 @@ func (x *ListEssentialsResponse) String() string {
 func (*ListEssentialsResponse) ProtoMessage() {}
 
 func (x *ListEssentialsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[5]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -771,7 +958,7 @@ type CreateSingleNodeRequest struct {
 
 func (x *CreateSingleNodeRequest) Reset() {
 	*x = CreateSingleNodeRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[6]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -783,7 +970,7 @@ func (x *CreateSingleNodeRequest) String() string {
 func (*CreateSingleNodeRequest) ProtoMessage() {}
 
 func (x *CreateSingleNodeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[6]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -976,7 +1163,7 @@ type CreateHighAvailabilityClusterRequest struct {
 
 func (x *CreateHighAvailabilityClusterRequest) Reset() {
 	*x = CreateHighAvailabilityClusterRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[7]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -988,7 +1175,7 @@ func (x *CreateHighAvailabilityClusterRequest) String() string {
 func (*CreateHighAvailabilityClusterRequest) ProtoMessage() {}
 
 func (x *CreateHighAvailabilityClusterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[7]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1181,7 +1368,7 @@ type AddUnitsRequest struct {
 
 func (x *AddUnitsRequest) Reset() {
 	*x = AddUnitsRequest{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[8]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1193,7 +1380,7 @@ func (x *AddUnitsRequest) String() string {
 func (*AddUnitsRequest) ProtoMessage() {}
 
 func (x *AddUnitsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[8]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1384,9 +1571,8 @@ func (b0 AddUnitsRequest_builder) Build() *AddUnitsRequest {
 
 type Essential_Unit struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Type        Essential_Unit_Type    `protobuf:"varint,1,opt,name=type,enum=otterscale.essential.v1.Essential_Unit_Type"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_MachineId   *string                `protobuf:"bytes,3,opt,name=machine_id,json=machineId"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Directive   *string                `protobuf:"bytes,2,opt,name=directive"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1395,7 +1581,7 @@ type Essential_Unit struct {
 
 func (x *Essential_Unit) Reset() {
 	*x = Essential_Unit{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[9]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1407,7 +1593,7 @@ func (x *Essential_Unit) String() string {
 func (*Essential_Unit) ProtoMessage() {}
 
 func (x *Essential_Unit) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[9]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1416,15 +1602,6 @@ func (x *Essential_Unit) ProtoReflect() protoreflect.Message {
 		return ms
 	}
 	return mi.MessageOf(x)
-}
-
-func (x *Essential_Unit) GetType() Essential_Unit_Type {
-	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
-			return x.xxx_hidden_Type
-		}
-	}
-	return Essential_Unit_UNSPECIFIED
 }
 
 func (x *Essential_Unit) GetName() string {
@@ -1437,90 +1614,68 @@ func (x *Essential_Unit) GetName() string {
 	return ""
 }
 
-func (x *Essential_Unit) GetMachineId() string {
+func (x *Essential_Unit) GetDirective() string {
 	if x != nil {
-		if x.xxx_hidden_MachineId != nil {
-			return *x.xxx_hidden_MachineId
+		if x.xxx_hidden_Directive != nil {
+			return *x.xxx_hidden_Directive
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *Essential_Unit) SetType(v Essential_Unit_Type) {
-	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
 func (x *Essential_Unit) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *Essential_Unit) SetMachineId(v string) {
-	x.xxx_hidden_MachineId = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
-}
-
-func (x *Essential_Unit) HasType() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+func (x *Essential_Unit) SetDirective(v string) {
+	x.xxx_hidden_Directive = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *Essential_Unit) HasName() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Essential_Unit) HasMachineId() bool {
+func (x *Essential_Unit) HasDirective() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *Essential_Unit) ClearType() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Type = Essential_Unit_UNSPECIFIED
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *Essential_Unit) ClearName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
 }
 
-func (x *Essential_Unit) ClearMachineId() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_MachineId = nil
+func (x *Essential_Unit) ClearDirective() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Directive = nil
 }
 
 type Essential_Unit_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type      *Essential_Unit_Type
 	Name      *string
-	MachineId *string
+	Directive *string
 }
 
 func (b0 Essential_Unit_builder) Build() *Essential_Unit {
 	m0 := &Essential_Unit{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
-		x.xxx_hidden_Type = *b.Type
-	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.MachineId != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
-		x.xxx_hidden_MachineId = b.MachineId
+	if b.Directive != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Directive = b.Directive
 	}
 	return m0
 }
@@ -1529,7 +1684,7 @@ var File_api_essential_v1_essential_proto protoreflect.FileDescriptor
 
 const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\n" +
-	" api/essential/v1/essential.proto\x12\x17otterscale.essential.v1\x1a\x1bgoogle/protobuf/empty.proto\"\xd3\x03\n" +
+	" api/essential/v1/essential.proto\x12\x17otterscale.essential.v1\x1a\x1bgoogle/protobuf/empty.proto\"\xc6\x02\n" +
 	"\tEssential\x12;\n" +
 	"\x04type\x18\x01 \x01(\x0e2'.otterscale.essential.v1.Essential.TypeR\x04type\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
@@ -1537,28 +1692,17 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"scope_uuid\x18\v \x01(\tR\tscopeUuid\x12\x1d\n" +
 	"\n" +
 	"scope_name\x18\f \x01(\tR\tscopeName\x12=\n" +
-	"\x05units\x18\x15 \x03(\v2'.otterscale.essential.v1.Essential.UnitR\x05units\x1a\xc4\x01\n" +
-	"\x04Unit\x12@\n" +
-	"\x04type\x18\x01 \x01(\x0e2,.otterscale.essential.v1.Essential.Unit.TypeR\x04type\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
-	"\n" +
-	"machine_id\x18\x03 \x01(\tR\tmachineId\"G\n" +
-	"\x04Type\x12\x0f\n" +
-	"\vUNSPECIFIED\x10\x00\x12\x10\n" +
-	"\fCONTROLPLANE\x10\x01\x12\n" +
-	"\n" +
-	"\x06WORKER\x10\x02\x12\a\n" +
-	"\x03MON\x10\x03\x12\a\n" +
-	"\x03OSD\x10\x04\"1\n" +
+	"\x05units\x18\x15 \x03(\v2'.otterscale.essential.v1.Essential.UnitR\x05units\x1a8\n" +
+	"\x04Unit\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
+	"\tdirective\x18\x02 \x01(\tR\tdirective\"1\n" +
 	"\x04Type\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\x0e\n" +
 	"\n" +
 	"KUBERNETES\x10\x01\x12\b\n" +
-	"\x04CEPH\x10\x02\"\x1a\n" +
-	"\x18IsMachineDeployedRequest\"\x15\n" +
-	"\x13ListStatusesRequest\"\xd5\x01\n" +
-	"\x14ListStatusesResponse\x12I\n" +
-	"\x05level\x18\x01 \x01(\x0e23.otterscale.essential.v1.ListStatusesResponse.LevelR\x05level\x12\x18\n" +
+	"\x04CEPH\x10\x02\"\xb9\x01\n" +
+	"\x06Status\x12;\n" +
+	"\x05level\x18\x01 \x01(\x0e2%.otterscale.essential.v1.Status.LevelR\x05level\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x18\n" +
 	"\adetails\x18\x03 \x01(\tR\adetails\">\n" +
 	"\x05Level\x12\b\n" +
@@ -1567,7 +1711,18 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\n" +
 	"\x06MEDIUM\x10\x02\x12\b\n" +
 	"\x04HIGH\x10\x03\x12\f\n" +
-	"\bCRITICAL\x10\x04\"s\n" +
+	"\bCRITICAL\x10\x04\"9\n" +
+	"\x18IsMachineDeployedRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\"Q\n" +
+	"\x19IsMachineDeployedResponse\x12\x1a\n" +
+	"\bdeployed\x18\x01 \x01(\bR\bdeployed\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"4\n" +
+	"\x13ListStatusesRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\"S\n" +
+	"\x14ListStatusesResponse\x12;\n" +
+	"\bStatuses\x18\x01 \x03(\v2\x1f.otterscale.essential.v1.StatusR\bStatuses\"s\n" +
 	"\x15ListEssentialsRequest\x12;\n" +
 	"\x04type\x18\x01 \x01(\x0e2'.otterscale.essential.v1.Essential.TypeR\x04type\x12\x1d\n" +
 	"\n" +
@@ -1610,53 +1765,54 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\x06number\x18\x04 \x01(\x05R\x06number\x12\x1f\n" +
 	"\vmachine_ids\x18\x05 \x03(\tR\n" +
 	"machineIds\x12\x14\n" +
-	"\x05force\x18\v \x01(\bR\x05force2\x8f\x05\n" +
-	"\x10EssentialService\x12^\n" +
-	"\x11IsMachineDeployed\x121.otterscale.essential.v1.IsMachineDeployedRequest\x1a\x16.google.protobuf.Empty\x12k\n" +
+	"\x05force\x18\v \x01(\bR\x05force2\x92\x05\n" +
+	"\x10EssentialService\x12z\n" +
+	"\x11IsMachineDeployed\x121.otterscale.essential.v1.IsMachineDeployedRequest\x1a2.otterscale.essential.v1.IsMachineDeployedResponse\x12k\n" +
 	"\fListStatuses\x12,.otterscale.essential.v1.ListStatusesRequest\x1a-.otterscale.essential.v1.ListStatusesResponse\x12q\n" +
-	"\x0eListEssentials\x12..otterscale.essential.v1.ListEssentialsRequest\x1a/.otterscale.essential.v1.ListEssentialsResponse\x12h\n" +
-	"\x10CreateSingleNode\x120.otterscale.essential.v1.CreateSingleNodeRequest\x1a\".otterscale.essential.v1.Essential\x12\x82\x01\n" +
-	"\x1dCreateHighAvailabilityCluster\x12=.otterscale.essential.v1.CreateHighAvailabilityClusterRequest\x1a\".otterscale.essential.v1.Essential\x12L\n" +
+	"\x0eListEssentials\x12..otterscale.essential.v1.ListEssentialsRequest\x1a/.otterscale.essential.v1.ListEssentialsResponse\x12\\\n" +
+	"\x10CreateSingleNode\x120.otterscale.essential.v1.CreateSingleNodeRequest\x1a\x16.google.protobuf.Empty\x12v\n" +
+	"\x1dCreateHighAvailabilityCluster\x12=.otterscale.essential.v1.CreateHighAvailabilityClusterRequest\x1a\x16.google.protobuf.Empty\x12L\n" +
 	"\bAddUnits\x12(.otterscale.essential.v1.AddUnitsRequest\x1a\x16.google.protobuf.EmptyB3Z1github.com/openhdc/otterscale/api/essential/v1;pbb\beditionsp\xe8\a"
 
-var file_api_essential_v1_essential_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_api_essential_v1_essential_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_api_essential_v1_essential_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_api_essential_v1_essential_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_api_essential_v1_essential_proto_goTypes = []any{
 	(Essential_Type)(0),                          // 0: otterscale.essential.v1.Essential.Type
-	(Essential_Unit_Type)(0),                     // 1: otterscale.essential.v1.Essential.Unit.Type
-	(ListStatusesResponse_Level)(0),              // 2: otterscale.essential.v1.ListStatusesResponse.Level
-	(*Essential)(nil),                            // 3: otterscale.essential.v1.Essential
+	(Status_Level)(0),                            // 1: otterscale.essential.v1.Status.Level
+	(*Essential)(nil),                            // 2: otterscale.essential.v1.Essential
+	(*Status)(nil),                               // 3: otterscale.essential.v1.Status
 	(*IsMachineDeployedRequest)(nil),             // 4: otterscale.essential.v1.IsMachineDeployedRequest
-	(*ListStatusesRequest)(nil),                  // 5: otterscale.essential.v1.ListStatusesRequest
-	(*ListStatusesResponse)(nil),                 // 6: otterscale.essential.v1.ListStatusesResponse
-	(*ListEssentialsRequest)(nil),                // 7: otterscale.essential.v1.ListEssentialsRequest
-	(*ListEssentialsResponse)(nil),               // 8: otterscale.essential.v1.ListEssentialsResponse
-	(*CreateSingleNodeRequest)(nil),              // 9: otterscale.essential.v1.CreateSingleNodeRequest
-	(*CreateHighAvailabilityClusterRequest)(nil), // 10: otterscale.essential.v1.CreateHighAvailabilityClusterRequest
-	(*AddUnitsRequest)(nil),                      // 11: otterscale.essential.v1.AddUnitsRequest
-	(*Essential_Unit)(nil),                       // 12: otterscale.essential.v1.Essential.Unit
-	(*emptypb.Empty)(nil),                        // 13: google.protobuf.Empty
+	(*IsMachineDeployedResponse)(nil),            // 5: otterscale.essential.v1.IsMachineDeployedResponse
+	(*ListStatusesRequest)(nil),                  // 6: otterscale.essential.v1.ListStatusesRequest
+	(*ListStatusesResponse)(nil),                 // 7: otterscale.essential.v1.ListStatusesResponse
+	(*ListEssentialsRequest)(nil),                // 8: otterscale.essential.v1.ListEssentialsRequest
+	(*ListEssentialsResponse)(nil),               // 9: otterscale.essential.v1.ListEssentialsResponse
+	(*CreateSingleNodeRequest)(nil),              // 10: otterscale.essential.v1.CreateSingleNodeRequest
+	(*CreateHighAvailabilityClusterRequest)(nil), // 11: otterscale.essential.v1.CreateHighAvailabilityClusterRequest
+	(*AddUnitsRequest)(nil),                      // 12: otterscale.essential.v1.AddUnitsRequest
+	(*Essential_Unit)(nil),                       // 13: otterscale.essential.v1.Essential.Unit
+	(*emptypb.Empty)(nil),                        // 14: google.protobuf.Empty
 }
 var file_api_essential_v1_essential_proto_depIdxs = []int32{
 	0,  // 0: otterscale.essential.v1.Essential.type:type_name -> otterscale.essential.v1.Essential.Type
-	12, // 1: otterscale.essential.v1.Essential.units:type_name -> otterscale.essential.v1.Essential.Unit
-	2,  // 2: otterscale.essential.v1.ListStatusesResponse.level:type_name -> otterscale.essential.v1.ListStatusesResponse.Level
-	0,  // 3: otterscale.essential.v1.ListEssentialsRequest.type:type_name -> otterscale.essential.v1.Essential.Type
-	3,  // 4: otterscale.essential.v1.ListEssentialsResponse.essentials:type_name -> otterscale.essential.v1.Essential
-	0,  // 5: otterscale.essential.v1.AddUnitsRequest.type:type_name -> otterscale.essential.v1.Essential.Type
-	1,  // 6: otterscale.essential.v1.Essential.Unit.type:type_name -> otterscale.essential.v1.Essential.Unit.Type
+	13, // 1: otterscale.essential.v1.Essential.units:type_name -> otterscale.essential.v1.Essential.Unit
+	1,  // 2: otterscale.essential.v1.Status.level:type_name -> otterscale.essential.v1.Status.Level
+	3,  // 3: otterscale.essential.v1.ListStatusesResponse.Statuses:type_name -> otterscale.essential.v1.Status
+	0,  // 4: otterscale.essential.v1.ListEssentialsRequest.type:type_name -> otterscale.essential.v1.Essential.Type
+	2,  // 5: otterscale.essential.v1.ListEssentialsResponse.essentials:type_name -> otterscale.essential.v1.Essential
+	0,  // 6: otterscale.essential.v1.AddUnitsRequest.type:type_name -> otterscale.essential.v1.Essential.Type
 	4,  // 7: otterscale.essential.v1.EssentialService.IsMachineDeployed:input_type -> otterscale.essential.v1.IsMachineDeployedRequest
-	5,  // 8: otterscale.essential.v1.EssentialService.ListStatuses:input_type -> otterscale.essential.v1.ListStatusesRequest
-	7,  // 9: otterscale.essential.v1.EssentialService.ListEssentials:input_type -> otterscale.essential.v1.ListEssentialsRequest
-	9,  // 10: otterscale.essential.v1.EssentialService.CreateSingleNode:input_type -> otterscale.essential.v1.CreateSingleNodeRequest
-	10, // 11: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:input_type -> otterscale.essential.v1.CreateHighAvailabilityClusterRequest
-	11, // 12: otterscale.essential.v1.EssentialService.AddUnits:input_type -> otterscale.essential.v1.AddUnitsRequest
-	13, // 13: otterscale.essential.v1.EssentialService.IsMachineDeployed:output_type -> google.protobuf.Empty
-	6,  // 14: otterscale.essential.v1.EssentialService.ListStatuses:output_type -> otterscale.essential.v1.ListStatusesResponse
-	8,  // 15: otterscale.essential.v1.EssentialService.ListEssentials:output_type -> otterscale.essential.v1.ListEssentialsResponse
-	3,  // 16: otterscale.essential.v1.EssentialService.CreateSingleNode:output_type -> otterscale.essential.v1.Essential
-	3,  // 17: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:output_type -> otterscale.essential.v1.Essential
-	13, // 18: otterscale.essential.v1.EssentialService.AddUnits:output_type -> google.protobuf.Empty
+	6,  // 8: otterscale.essential.v1.EssentialService.ListStatuses:input_type -> otterscale.essential.v1.ListStatusesRequest
+	8,  // 9: otterscale.essential.v1.EssentialService.ListEssentials:input_type -> otterscale.essential.v1.ListEssentialsRequest
+	10, // 10: otterscale.essential.v1.EssentialService.CreateSingleNode:input_type -> otterscale.essential.v1.CreateSingleNodeRequest
+	11, // 11: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:input_type -> otterscale.essential.v1.CreateHighAvailabilityClusterRequest
+	12, // 12: otterscale.essential.v1.EssentialService.AddUnits:input_type -> otterscale.essential.v1.AddUnitsRequest
+	5,  // 13: otterscale.essential.v1.EssentialService.IsMachineDeployed:output_type -> otterscale.essential.v1.IsMachineDeployedResponse
+	7,  // 14: otterscale.essential.v1.EssentialService.ListStatuses:output_type -> otterscale.essential.v1.ListStatusesResponse
+	9,  // 15: otterscale.essential.v1.EssentialService.ListEssentials:output_type -> otterscale.essential.v1.ListEssentialsResponse
+	14, // 16: otterscale.essential.v1.EssentialService.CreateSingleNode:output_type -> google.protobuf.Empty
+	14, // 17: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:output_type -> google.protobuf.Empty
+	14, // 18: otterscale.essential.v1.EssentialService.AddUnits:output_type -> google.protobuf.Empty
 	13, // [13:19] is the sub-list for method output_type
 	7,  // [7:13] is the sub-list for method input_type
 	7,  // [7:7] is the sub-list for extension type_name
@@ -1674,8 +1830,8 @@ func file_api_essential_v1_essential_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_essential_v1_essential_proto_rawDesc), len(file_api_essential_v1_essential_proto_rawDesc)),
-			NumEnums:      3,
-			NumMessages:   10,
+			NumEnums:      2,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

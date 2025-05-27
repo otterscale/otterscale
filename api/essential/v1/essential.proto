@@ -7,11 +7,11 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/openhdc/otterscale/api/essential/v1;pb";
 
 service EssentialService {
-  rpc IsMachineDeployed(IsMachineDeployedRequest) returns (google.protobuf.Empty);
+  rpc IsMachineDeployed(IsMachineDeployedRequest) returns (IsMachineDeployedResponse);
   rpc ListStatuses(ListStatusesRequest) returns (ListStatusesResponse);
   rpc ListEssentials(ListEssentialsRequest) returns (ListEssentialsResponse);
-  rpc CreateSingleNode(CreateSingleNodeRequest) returns (Essential);
-  rpc CreateHighAvailabilityCluster(CreateHighAvailabilityClusterRequest) returns (Essential);
+  rpc CreateSingleNode(CreateSingleNodeRequest) returns (google.protobuf.Empty);
+  rpc CreateHighAvailabilityCluster(CreateHighAvailabilityClusterRequest) returns (google.protobuf.Empty);
   rpc AddUnits(AddUnitsRequest) returns (google.protobuf.Empty);
 }
 
@@ -22,16 +22,8 @@ message Essential {
     CEPH = 2;
   }
   message Unit {
-    enum Type {
-      UNSPECIFIED = 0;
-      CONTROLPLANE = 1;
-      WORKER = 2;
-      MON = 3;
-      OSD = 4;
-    }
-    Type type = 1;
-    string name = 2;
-    string machine_id = 3;
+    string name = 1;
+    string directive = 2;
   }
   Type type = 1;
   string name = 2;
@@ -40,11 +32,7 @@ message Essential {
   repeated Unit units = 21;
 }
 
-message IsMachineDeployedRequest {}
-
-message ListStatusesRequest {}
-
-message ListStatusesResponse {
+message Status {
   enum Level {
     INFO = 0;
     LOW = 1;
@@ -55,6 +43,23 @@ message ListStatusesResponse {
   Level level = 1;
   string message = 2;
   string details = 3;
+}
+
+message IsMachineDeployedRequest {
+  string scope_uuid = 1;
+}
+
+message IsMachineDeployedResponse {
+  bool deployed = 1;
+  string message = 2;
+}
+
+message ListStatusesRequest {
+  string scope_uuid = 1;
+}
+
+message ListStatusesResponse {
+  repeated Status Statuses = 1;
 }
 
 message ListEssentialsRequest {

@@ -24,12 +24,6 @@ type (
 	DetailedStatus = params.DetailedStatus
 )
 
-type FacilityInfo struct {
-	ScopeUUID    string
-	ScopeName    string
-	FacilityName string
-}
-
 type FacilityMetadata struct {
 	ConfigYAML string
 }
@@ -311,25 +305,3 @@ func (uc *FacilityUseCase) filterCharms(charms []Charm) []Charm {
 		return slices.Contains(charm.Result.DeployableOn, "kubernetes") || charm.Type != "charm"
 	})
 }
-
-// func (uc *FacilityUseCase) listGeneralFacilities(ctx context.Context, scopeUUID, charmName string) ([]FacilityInfo, error) {
-// 	scopeName, err := s.getScopeName(ctx, scopeUUID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	fs, err := s.ListFacilities(ctx, scopeUUID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	fis := []FacilityInfo{}
-// 	for i := range fs {
-// 		if strings.Contains(fs[i].Status.Charm, charmName) {
-// 			fis = append(fis, FacilityInfo{
-// 				ScopeUUID:    scopeUUID,
-// 				ScopeName:    scopeName,
-// 				FacilityName: fs[i].Name,
-// 			})
-// 		}
-// 	}
-// 	return fis, nil
-// }
