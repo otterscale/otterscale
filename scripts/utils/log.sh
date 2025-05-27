@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Cleanup on exit
-cleanup() {
-    echo "Cleaning up temporary files..."
-    rm -f "$TEMP_LOG"
-}
-
 # Enhanced logging functions
 log() {
     local level=$1

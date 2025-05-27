@@ -1,8 +1,8 @@
 #!/bin/bash
 
-update_dns() {
+update_maas_dns() {
     get_current_dns $bridge
-    local dns_value=$current_dns
+    local dns_value="$current_dns"
     local maas_current_dns=$(maas admin maas get-config name=upstream_dns | jq -r)
 
     log "INFO" "Update $dns_value to maas dns."
@@ -23,7 +23,7 @@ set_config() {
     fi
 }
 
-update_config() {
+update_maas_config() {
     set_config "boot_images_auto_import" "false"
     set_config "enable_http_proxy" "false"
     set_config "enable_analytics" "false"
