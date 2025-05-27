@@ -17,12 +17,6 @@ import (
 	jujuyaml "gopkg.in/yaml.v2"
 )
 
-type essentialCharm struct {
-	name        string
-	lxd         bool
-	subordinate bool
-}
-
 type Essential struct {
 	Type      int32
 	Name      string
@@ -40,6 +34,12 @@ type EssentialStatus struct {
 	Level   int32
 	Message string
 	Details string
+}
+
+type EssentialCharm struct {
+	Name        string
+	LXD         bool
+	Subordinate bool
 }
 
 type EssentialUseCase struct {
@@ -93,7 +93,7 @@ func (uc *EssentialUseCase) ListStatuses(ctx context.Context, uuid string) ([]Es
 		return nil, err
 	}
 
-	charms := []essentialCharm{}
+	charms := []EssentialCharm{}
 	charms = append(charms, kubernetesCharms...)
 	charms = append(charms, cephCharms...)
 	charms = append(charms, cephCSICharms...)
@@ -242,6 +242,39 @@ func (uc *EssentialUseCase) getMachineStatusMessage(machines []Machine) string {
 	return message
 }
 
+func NewCharmConfigs(prefix string, configs map[string]map[string]any) (map[string]string, error) {
+	result := make(map[string]string)
+	for name, config := range configs {
+		key := toEssentialName(prefix, name)
+		value, err := jujuyaml.Marshal(map[string]any{key: config})
+		if err != nil {
+			return nil, err
+		}
+		result["ch:"+name] = string(value)
+	}
+	return result, nil
+}
+
+func GetDirectives(ctx context.Context, machineRepo MachineRepo, machineIDs ...string) ([]string, error) {
+	directives := []string{}
+	for _, id := range machineIDs {
+		directive, err := getDirective(ctx, machineRepo, id)
+		if err != nil {
+			return nil, err
+		}
+		directives = append(directives, directive)
+	}
+	return directives, nil
+}
+
+func ToEssentialName(prefix, charm string) string {
+	return toEssentialName(prefix, charm)
+}
+
+func ToPlacement(lxd bool, directive string) *instance.Placement {
+	return toPlacement(&MachinePlacement{LXD: lxd}, directive)
+}
+
 // ch:amd64/kubernetes-control-plane-567 -> kubernetes-control-plane
 func formatAppCharm(name string) (string, bool) {
 	t := strings.Split(name, "/")
@@ -261,13 +294,13 @@ func formatEssentialCharm(name string) string {
 	return strings.TrimPrefix(name, "ch:")
 }
 
-func isEssentialCharm(appStatus params.ApplicationStatus, charms []essentialCharm) bool {
+func isEssentialCharm(appStatus params.ApplicationStatus, charms []EssentialCharm) bool {
 	appCharm, ok := formatAppCharm(appStatus.Charm)
 	if !ok {
 		return false
 	}
 	for _, charm := range charms {
-		essCharm := formatEssentialCharm(charm.name)
+		essCharm := formatEssentialCharm(charm.Name)
 		if appCharm == essCharm {
 			return true
 		}
@@ -324,17 +357,13 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 	}), nil
 }
 
-func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, uuid, machineID, prefix string, charms []essentialCharm, configs map[string]string) error {
-	directive := ""
+func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, uuid, machineID, prefix string, charms []EssentialCharm, configs map[string]string) error {
+	var (
+		directive string
+		err       error
+	)
 	if machineID != "" {
-		machine, err := machineRepo.Get(ctx, machineID)
-		if err != nil {
-			return err
-		}
-		if machine.Status != node.StatusDeployed {
-			return status.Error(codes.InvalidArgument, "machine status is not deployed")
-		}
-		directive, err = getJujuMachineID(machine.WorkloadAnnotations)
+		directive, err = getDirective(ctx, machineRepo, machineID)
 		if err != nil {
 			return err
 		}
@@ -349,13 +378,13 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 	for _, charm := range charms {
 		charm := charm // fixed on go 1.22
 		eg.Go(func() error {
-			name := toEssentialName(prefix, charm.name)
+			name := toEssentialName(prefix, charm.Name)
 			placements := []instance.Placement{}
 			if directive != "" {
-				placement := toPlacement(&MachinePlacement{LXD: charm.lxd}, directive)
+				placement := toPlacement(&MachinePlacement{LXD: charm.LXD}, directive)
 				placements = append(placements, *placement)
 			}
-			_, err := facilityRepo.Create(ctx, uuid, name, configs[charm.name], charm.name, "", 0, 1, &base, placements, nil, true)
+			_, err := facilityRepo.Create(ctx, uuid, name, configs[charm.Name], charm.Name, "", 0, 1, &base, placements, nil, true)
 			return err
 		})
 	}
@@ -393,15 +422,13 @@ func toEndpointList(prefix string, relationList [][]string) [][]string {
 	return endpointList
 }
 
-func NewCharmConfigs(prefix string, configs map[string]map[string]any) (map[string]string, error) {
-	result := make(map[string]string)
-	for name, config := range configs {
-		key := toEssentialName(prefix, name)
-		value, err := jujuyaml.Marshal(map[string]any{key: config})
-		if err != nil {
-			return nil, err
-		}
-		result["ch:"+name] = string(value)
+func getDirective(ctx context.Context, machineRepo MachineRepo, machineID string) (string, error) {
+	machine, err := machineRepo.Get(ctx, machineID)
+	if err != nil {
+		return "", err
 	}
-	return result, nil
+	if machine.Status != node.StatusDeployed {
+		return "", status.Error(codes.InvalidArgument, "machine status is not deployed")
+	}
+	return getJujuMachineID(machine.WorkloadAnnotations)
 }

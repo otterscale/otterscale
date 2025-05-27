@@ -10,10 +10,10 @@ const (
 )
 
 var (
-	cephCharms = []essentialCharm{
-		{name: "ch:ceph-fs", lxd: true},
-		{name: "ch:ceph-mon", lxd: true},
-		{name: "ch:ceph-osd", lxd: false},
+	cephCharms = []EssentialCharm{
+		{Name: "ch:ceph-fs", LXD: true},
+		{Name: "ch:ceph-mon", LXD: true},
+		{Name: "ch:ceph-osd", LXD: false},
 	}
 
 	cephRelations = [][]string{
@@ -21,8 +21,8 @@ var (
 		{"ceph-osd:mon", "ceph-mon:osd"},
 	}
 
-	cephCSICharms = []essentialCharm{
-		{name: "ch:ceph-csi", lxd: true},
+	cephCSICharms = []EssentialCharm{
+		{Name: "ch:ceph-csi", LXD: true},
 	}
 
 	cephCSIRelations = [][]string{
@@ -43,6 +43,10 @@ func CreateCephCSI(ctx context.Context, serverRepo ServerRepo, machineRepo Machi
 		return err
 	}
 	return createEssentialRelations(ctx, facilityRepo, uuid, toEndpointList(prefix, cephCSIRelations))
+}
+
+func GetCephCharms() []EssentialCharm {
+	return cephCharms
 }
 
 func newCephConfigs(prefix, osdDevices string) (map[string]string, error) {

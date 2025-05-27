@@ -13,6 +13,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func wireCmd() (*cobra.Command, func(), error) {
+func wireCmd(bool) (*cobra.Command, func(), error) {
 	panic(wire.Build(newCmd, mux.ProviderSet, app.ProviderSet, core.ProviderSet, data.ProviderSet, config.ProviderSet))
 }
