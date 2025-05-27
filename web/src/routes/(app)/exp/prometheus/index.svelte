@@ -1,14 +1,7 @@
-<script lang="ts" module>
-	import { getLocalTimeZone, today } from '@internationalized/date';
-
-	const DEFAULT_DURATION = 7;
-	const DEFAULT_END_POINT = today(getLocalTimeZone());
-	const DEFAULT_START_POINT = DEFAULT_END_POINT.subtract({ days: DEFAULT_DURATION });
-</script>
-
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
+	import { getLocalTimeZone, today, now } from '@internationalized/date';
 	import ScopePicker from './utils/scope-picker.svelte';
 	import InstancePicker from './utils/instance-picker.svelte';
 	import { DateTimestampPicker } from '$lib/components/custom/date-timestamp-range-picker';
@@ -33,10 +26,10 @@
 	}: { client: PrometheusDriver; scopes: Scope[]; instances: string[] } = $props();
 
 	let selectedTimeRange = $state({
-		start: DEFAULT_START_POINT.toDate(getLocalTimeZone()),
-		end: DEFAULT_END_POINT.toDate(getLocalTimeZone())
+		start: today(getLocalTimeZone()).toDate(getLocalTimeZone()),
+		end: now(getLocalTimeZone()).toDate()
 	} as TimeRange);
-	let selectedScope = $state(scopes[1]);
+	let selectedScope = $state(scopes[0]);
 	let selectedInstance = $state(instances[0]);
 </script>
 
@@ -66,26 +59,43 @@
 					<QuickRootFS {client} scope={selectedScope} instance={selectedInstance} />
 				</span>
 			</div>
-			<p class="text-xl font-bold">Basic Metric</p>
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-				<span class="col-span-1">
-					<BasicCPU
-						{client}
-						scope={selectedScope}
-						instance={selectedInstance}
-						timeRange={selectedTimeRange}
-					/>
-				</span>
-				<span class="col-span-1">
-					<BasicRAM {client} scope={selectedScope} instance={selectedInstance} timeRange={selectedTimeRange}/>
-				</span>
-				<span class="col-span-1">
-					<BasicSWAP {client} scope={selectedScope} instance={selectedInstance} timeRange={selectedTimeRange}/>
-				</span>
-				<span class="col-span-1">
-					<NetworkTrafficBasic {client} scope={selectedScope} instance={selectedInstance} timeRange={selectedTimeRange}/>
-				</span>
-			</div>
+			{#key selectedTimeRange}
+				<p class="text-xl font-bold">Basic Metric</p>
+				<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+					<span class="col-span-1">
+						<BasicCPU
+							{client}
+							scope={selectedScope}
+							instance={selectedInstance}
+							timeRange={selectedTimeRange}
+						/>
+					</span>
+					<span class="col-span-1">
+						<BasicRAM
+							{client}
+							scope={selectedScope}
+							instance={selectedInstance}
+							timeRange={selectedTimeRange}
+						/>
+					</span>
+					<span class="col-span-1">
+						<BasicSWAP
+							{client}
+							scope={selectedScope}
+							instance={selectedInstance}
+							timeRange={selectedTimeRange}
+						/>
+					</span>
+					<span class="col-span-1">
+						<NetworkTrafficBasic
+							{client}
+							scope={selectedScope}
+							instance={selectedInstance}
+							timeRange={selectedTimeRange}
+						/>
+					</span>
+				</div>
+			{/key}
 		{/key}
 	{/key}
 </main>

@@ -4,7 +4,6 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Icon from '@iconify/svelte';
-	import { getLocalTimeZone, today } from '@internationalized/date';
 	import { DialogStateController } from '../utils.svelte';
 	import { RangeDatePicker } from './range-date-picker';
 	import { RangeDateTimePicker } from './range-datetime-picker';
@@ -12,19 +11,17 @@
 	import { TimestampPicker } from './timestamp-picker';
 	import { type TimeRange } from './index';
 
-	let { value = $bindable() }: { value: TimeRange } = $props();
-
 	let controller = $state(new DialogStateController(false));
 
-	const duration = 7;
-	const defaultEnd = today(getLocalTimeZone());
-	const defaultStart = defaultEnd.subtract({ days: duration });
+	let { value = $bindable() }: { value: TimeRange } = $props();
 
-	let start = $state(defaultStart.toDate(getLocalTimeZone()));
-	let end = $state(defaultEnd.toDate(getLocalTimeZone()));
+	let start = $state(value.start);
+	let end = $state(value.end);
 	function setValue() {
-		value.start = start;
-		value.end = end;
+		value = {
+			start: start,
+			end: end
+		} as TimeRange;
 	}
 </script>
 
