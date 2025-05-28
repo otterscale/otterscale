@@ -6,7 +6,7 @@
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import FinalUsage from './final-usage.svelte';
 	import Cores from './cores.svelte';
-	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
 	let {
 		client,

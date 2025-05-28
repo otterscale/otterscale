@@ -15,7 +15,7 @@
 	import { default as OSDHosts } from './osd/hosts/index.svelte';
 	import { default as OSDPhysicalIOPS } from './osd/io/index.svelte';
 
-	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
 	let {
 		client,

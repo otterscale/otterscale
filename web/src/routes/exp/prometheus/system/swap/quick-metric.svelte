@@ -6,7 +6,7 @@
 	import Memory from './memory.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Button } from '$lib/components/ui/button';
-	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
 	let {
 		client,
