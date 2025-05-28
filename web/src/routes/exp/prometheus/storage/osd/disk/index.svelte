@@ -4,8 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
-	import Consumed from './consumed.svelte';
-	import LogicalStored from './logical-stored.svelte';
+	import Utilization from './uitilization.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 
@@ -15,7 +14,7 @@
 <Card.Root class="col-span-1 h-full w-full border-none bg-muted/40 shadow-none">
 	<Card.Header class="h-[150px]">
 		<Card.Title class="flex">
-			<h1 class="text-nowrap text-3xl">Capacity</h1>
+			<h1 class="text-nowrap text-3xl">Disk</h1>
 			<HoverCard.Root>
 				<HoverCard.Trigger>
 					<Button variant="ghost" size="icon" class="hover:bg-muted">
@@ -26,29 +25,16 @@
 					class="flex w-fit max-w-[38w] flex-col gap-2 text-xs text-muted-foreground"
 				>
 					<div class="flex items-center gap-2">
-						<Badge variant="outline" class="w-fit">total</Badge>
-						<p>Total raw capacity available to the cluster</p>
-					</div>
-					<div class="flex items-center gap-2">
-						<Badge variant="outline" class="w-fit">consumed</Badge>
-						<p>
-							Total raw capacity consumed by user data and associated overheads (metadata +
-							redundancy)
-						</p>
-					</div>
-					<div class="flex items-center gap-2">
-						<Badge variant="outline" class="w-fit">logical stored</Badge>
-						<p>Total of client data stored in the cluster</p>
+						<Badge variant="outline" class="w-fit">average disk utilization</Badge>
+						<p>Average Disk utilization for all OSD data devices (i.e. excludes journal/WAL)</p>
 					</div>
 				</HoverCard.Content>
 			</HoverCard.Root>
 		</Card.Title>
-		<Card.Description>
-			<LogicalStored {client} {scope} />
-		</Card.Description>
+		<Card.Description></Card.Description>
 	</Card.Header>
-	<Card.Content class="h-[200px]">
-		<Consumed {client} {scope} />
+	<Card.Content class="h-[150px]">
+		<Utilization {client} {scope} />
 	</Card.Content>
 	<Card.Footer></Card.Footer>
 </Card.Root>

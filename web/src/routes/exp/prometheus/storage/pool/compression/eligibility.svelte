@@ -25,14 +25,15 @@
 {#await client.instantQuery(query)}
 	<ComponentLoading />
 {:then response}
-	{@const result = response.result}
-	{#if result.length === 0}
+	{@const results = response.result}
+	{#if results.length === 0}
 		<span class="flex w-full flex-wrap items-center justify-center gap-2">
 			<NoData class="w-fit" />
 			<Badge variant="outline" class="w-fit">eligibility</Badge>
 		</span>
 	{:else}
-		{@const value = result[0].value.value}
+		{@const [result] = results}
+		{@const value = result.value.value}
 		{@const eligibility = formatCapacity(value / 1024 / 1024)}
 		<span class="flex flex-wrap items-end gap-2">
 			<p class="text-xl">{eligibility.value} {eligibility.unit}</p>

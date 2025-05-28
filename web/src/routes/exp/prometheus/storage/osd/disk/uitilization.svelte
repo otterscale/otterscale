@@ -3,14 +3,25 @@
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../../utils/empty.svelte';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
 
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		sum(ceph_pool_compress_under_bytes{juju_model_uuid=~"${scope.uuid}"} > 0)
-		/
-		sum(ceph_pool_compress_bytes_used{juju_model_uuid=~"${scope.uuid}"} > 0)
+		avg(
+			(
+				(rate(node_disk_io_time_ms{juju_model_uuid=~"${scope.uuid}"}[4m]) / 1000)
+			or
+				(rate(node_disk_io_time_seconds_total{juju_model_uuid=~"${scope.uuid}"}[4m]))
+			)
+		* on (device) group_left (ceph_daemon)
+			label_replace(
+			ceph_disk_occupation_human{juju_model_uuid=~"${scope.uuid}"},
+			"device",
+			"$1",
+			"device",
+			"/dev/(.*)"
+			)
+		)
 		`
 	);
 </script>
@@ -20,17 +31,12 @@
 {:then response}
 	{@const results = response.result}
 	{#if results.length === 0}
-		<span class="flex w-full flex-wrap items-center justify-center gap-2">
-			<NoData class="w-fit" />
-			<Badge variant="outline" class="w-fit">factor</Badge>
-		</span>
+		<NoData />
 	{:else}
 		{@const [result] = results}
-		{@const factor = result.value.value}
-		<span class="flex flex-wrap items-end gap-2">
-			<p class="text-3xl">{factor}</p>
-			<Badge variant="outline" class="w-fit">factor</Badge>
-		</span>
+		{@const value = result.value.value}
+		{@const utilization = value * 100}
+		<p class="text-5xl">{utilization.toFixed(2)}%</p>
 	{/if}
 {:catch error}
 	Error

@@ -4,21 +4,21 @@ import { SampleValue } from 'prometheus-query';
 export function metricColor(metric: number) {
     switch (true) {
         case metric > 62:
-            return 'fill-red-800';
+            return 'fill-red-800 dark:fill-red-800';
         case metric > 38:
-            return 'fill-yellow-500';
+            return 'fill-yellow-600 dark:fill-yellow-700';
         default:
-            return 'fill-green-800';
+            return 'fill-green-800 dark:fill-green-900';
     }
 }
 export function metricBackgroundColor(metric: number) {
     switch (true) {
         case metric > 62:
-            return 'fill-red-50';
+            return 'fill-muted dark:fill-muted-foreground';
         case metric > 38:
-            return 'fill-yellow-50';
+            return 'fill-muted dark:fill-muted-foreground';
         default:
-            return 'fill-green-50';
+            return 'fill-muted dark:fill-muted-foreground';
     }
 }
 

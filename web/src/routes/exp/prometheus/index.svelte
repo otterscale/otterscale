@@ -22,13 +22,13 @@
 			<Tabs.Trigger value="storage">Storage</Tabs.Trigger>
 			<Tabs.Trigger value="application">Application</Tabs.Trigger>
 		</Tabs.List>
-		<Tabs.Content value="system">
+		<Tabs.Content value="system" class="p-4">
 			<System {client} {scopes} {instances} />
 		</Tabs.Content>
-		<Tabs.Content value="storage">
+		<Tabs.Content value="storage" class="p-4">
 			<Storage {client} {scopes} {instances} />
 		</Tabs.Content>
-		<Tabs.Content value="application"></Tabs.Content>
+		<Tabs.Content value="application" class="p-4"></Tabs.Content>
 	</Tabs.Root>
 </main>
 

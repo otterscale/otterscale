@@ -29,37 +29,35 @@
 {#await client.instantQuery(query)}
 	<ComponentLoading />
 {:then response}
-	{@const result = response.result}
-	{#if result.length === 0}
+	{@const results = response.result}
+	{#if results.length === 0}
 		<NoData type="gauge" />
 	{:else}
-		{@const cpuUsage = result[0].value.value}
+		{@const [result] = results}
+		{@const usage = result.value.value}
+		{@const radius = 100}
+		{@const border = radius * 2}
 		<div class="flex h-full w-full items-center justify-center">
-			<div class={cn(`h-[173px] w-[173px]`)}>
+			<div class={cn(`h-[${border}px] w-[${border}px]`)}>
 				<Chart>
 					<Svg center>
-						<Group y={100 / 4}>
+						<Group>
 							<Arc
-								value={cpuUsage * 100}
+								value={usage * 100}
 								domain={[0, 100]}
 								outerRadius={100}
 								innerRadius={-13}
 								cornerRadius={13}
 								range={[-120, 120]}
-								class={metricColor(cpuUsage * 100)}
-								track={{ class: metricBackgroundColor(cpuUsage * 100) }}
-								let:value
-							>
-								<Text
-									value={`${value.toFixed(2)}%`}
-									textAnchor="middle"
-									verticalAnchor="middle"
-									class="text-xl tabular-nums"
-								/>
-							</Arc>
+								class={metricColor(usage * 100)}
+								track={{ class: metricBackgroundColor(usage * 100) }}
+							/>
 						</Group>
 					</Svg>
 				</Chart>
+			</div>
+			<div class="absolute">
+				<p class="text-xl">{`${usage.toFixed(2)}%`}</p>
 			</div>
 		</div>
 	{/if}
