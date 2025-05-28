@@ -9,7 +9,7 @@
 	let { selectedScope = $bindable(), scopes }: { selectedScope: Scope; scopes: Scope[] } = $props();
 </script>
 
-<span class="ml-auto flex items-center gap-2">
+<span class="flex items-center gap-2">
 	<p class="flex h-8 items-center rounded-lg bg-muted p-4">Scope</p>
 	<Popover.Root>
 		<Popover.Trigger>

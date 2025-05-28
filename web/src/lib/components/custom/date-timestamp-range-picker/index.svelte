@@ -15,73 +15,83 @@
 
 	let { value = $bindable() }: { value: TimeRange } = $props();
 
-	let start = $state(value.start);
-	let end = $state(value.end);
+	const DEFAULT_START = value.start;
+	const DEFAULT_END = value.end;
+
+	let start = $state(DEFAULT_START);
+	let end = $state(DEFAULT_END);
+
 	function setValue() {
 		value = {
 			start: start,
 			end: end
 		} as TimeRange;
 	}
+	function resetValue() {
+		start = DEFAULT_START;
+		end = DEFAULT_END;
+	}
 </script>
 
-<p class="flex h-8 items-center rounded-lg bg-muted p-4">Time Interval</p>
-<AlertDialog.Root bind:open={controller.state}>
-	<AlertDialog.Trigger>
-		<Button variant="outline" class="hover:cursor-pointer">
-			<Icon icon="ph:calendar" />
-		</Button>
-	</AlertDialog.Trigger>
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<div class="flex flex-col items-center justify-between gap-2 rounded-lg bg-muted p-4">
-				<div class="flex w-full items-center justify-between gap-2">
-					<Badge variant="outline">Start</Badge>
-					<div class="**:font-mono flex items-center gap-2 rounded-md px-2">
-						{#key start}
-							<DatePicker bind:value={start} />
-						{/key}
-						{#key start}
-							<TimestampPicker bind:value={start} />
-						{/key}
+<span class="flex items-center gap-2">
+	<p class="flex h-8 items-center rounded-lg bg-muted p-4">Range</p>
+	<AlertDialog.Root bind:open={controller.state}>
+		<AlertDialog.Trigger>
+			<Button variant="outline" class="hover:cursor-pointer">
+				<Icon icon="ph:calendar" />
+			</Button>
+		</AlertDialog.Trigger>
+		<AlertDialog.Content>
+			<AlertDialog.Header>
+				<div class="flex flex-col items-center justify-between gap-2 rounded-lg bg-muted p-4">
+					<div class="flex w-full items-center justify-between gap-2">
+						<Badge variant="outline">Start</Badge>
+						<div class="**:font-mono flex items-center gap-2 rounded-md px-2">
+							{#key start}
+								<DatePicker bind:value={start} />
+							{/key}
+							{#key start}
+								<TimestampPicker bind:value={start} />
+							{/key}
+						</div>
+					</div>
+					<div class="flex w-full items-center justify-between gap-2">
+						<Badge>End</Badge>
+						<div class="**:font-mono flex items-center gap-2 rounded-md px-2">
+							{#key end}
+								<DatePicker bind:value={end} />
+							{/key}
+							{#key end}
+								<TimestampPicker bind:value={end} />
+							{/key}
+						</div>
 					</div>
 				</div>
-				<div class="flex w-full items-center justify-between gap-2">
-					<Badge>End</Badge>
-					<div class="**:font-mono flex items-center gap-2 rounded-md px-2">
+			</AlertDialog.Header>
+			<div class="flex justify-between gap-4">
+				<div class="w-fit">
+					{#key start}
 						{#key end}
-							<DatePicker bind:value={end} />
+							<RangeDatePicker bind:start bind:end />
 						{/key}
-						{#key end}
-							<TimestampPicker bind:value={end} />
-						{/key}
-					</div>
-				</div>
-			</div>
-		</AlertDialog.Header>
-		<div class="flex justify-between gap-4">
-			<div class="w-fit">
-				{#key start}
-					{#key end}
-						<RangeDatePicker bind:start bind:end />
 					{/key}
-				{/key}
+				</div>
+				<div class="border-l text-muted-foreground"></div>
+				<div class="w-fit">
+					<RangeDateTimePicker bind:start bind:end />
+				</div>
 			</div>
-			<div class="border-l text-muted-foreground"></div>
-			<div class="w-fit">
-				<RangeDateTimePicker bind:start bind:end />
-			</div>
-		</div>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action
-				onclick={() => {
-					controller.close();
-					setValue();
-				}}
-			>
-				Confirm
-			</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+			<AlertDialog.Footer>
+				<AlertDialog.Cancel onclick={resetValue}>Cancel</AlertDialog.Cancel>
+				<AlertDialog.Action
+					onclick={() => {
+						controller.close();
+						setValue();
+					}}
+				>
+					Confirm
+				</AlertDialog.Action>
+			</AlertDialog.Footer>
+		</AlertDialog.Content>
+	</AlertDialog.Root>
+</span>

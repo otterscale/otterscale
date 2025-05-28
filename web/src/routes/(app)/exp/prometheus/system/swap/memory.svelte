@@ -3,7 +3,7 @@
 	import { formatCapacity } from '$lib/formatter';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
-	import NoData from '../utils/empty.svelte';
+	import NoData from '../../utils/empty.svelte';
 
 	let {
 		client,
@@ -12,7 +12,7 @@
 	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
 	const query = $derived(
 		`
-		node_memory_MemTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+		node_memory_SwapTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 </script>

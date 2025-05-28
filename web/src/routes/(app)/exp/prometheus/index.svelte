@@ -1,22 +1,11 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 
-	import { getLocalTimeZone, today, now } from '@internationalized/date';
-	import ScopePicker from './utils/scope-picker.svelte';
-	import InstancePicker from './utils/instance-picker.svelte';
-	import { DateTimestampPicker } from '$lib/components/custom/date-timestamp-range-picker';
-	import { type TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
+	import * as Tabs from '$lib/components/custom/tabs';
 
-	import QuickUptime from './uptime/quick-metric.svelte';
-	import QuickCPU from './cpu/quick-metric.svelte';
-	import BasicCPU from './cpu/basic-metric.svelte';
-	import BasicRAM from './ram/basic-metric.svelte';
-	import QuickRAM from './ram/quick-metric.svelte';
-	import QuickSWAP from './swap/quick-metric.svelte';
-	import BasicSWAP from './swap/basic-metric.svelte';
-	import QuickRootFS from './root-fs/quick-metric.svelte';
+	import { System } from './system';
+	import { Storage } from './storage';
 
-	import NetworkTrafficBasic from './network/traffic-basic.svelte';
 	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
 
 	let {
@@ -24,80 +13,23 @@
 		scopes,
 		instances
 	}: { client: PrometheusDriver; scopes: Scope[]; instances: string[] } = $props();
-
-	let selectedTimeRange = $state({
-		start: today(getLocalTimeZone()).toDate(getLocalTimeZone()),
-		end: now(getLocalTimeZone()).toDate()
-	} as TimeRange);
-	let selectedScope = $state(scopes[0]);
-	let selectedInstance = $state(instances[0]);
 </script>
 
 <main class="no-user-select grid gap-4 p-4">
-	<div class="mr-auto flex items-center gap-2">
-		<ScopePicker bind:selectedScope {scopes} />
-		<InstancePicker bind:selectedInstance {instances} />
-		<DateTimestampPicker bind:value={selectedTimeRange} />
-	</div>
-	{#key selectedScope}
-		{#key selectedInstance}
-			<p class="text-xl font-bold">Quick Metric</p>
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
-				<span class="col-span-1">
-					<QuickUptime {client} scope={selectedScope} instance={selectedInstance} />
-				</span>
-				<span class="col-span-1">
-					<QuickCPU {client} scope={selectedScope} instance={selectedInstance} />
-				</span>
-				<span class="col-span-1">
-					<QuickRAM {client} scope={selectedScope} instance={selectedInstance} />
-				</span>
-				<span class="col-span-1">
-					<QuickSWAP {client} scope={selectedScope} instance={selectedInstance} />
-				</span>
-				<span class="col-span-1">
-					<QuickRootFS {client} scope={selectedScope} instance={selectedInstance} />
-				</span>
-			</div>
-			{#key selectedTimeRange}
-				<p class="text-xl font-bold">Basic Metric</p>
-				<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-					<span class="col-span-1">
-						<BasicCPU
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-					<span class="col-span-1">
-						<BasicRAM
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-					<span class="col-span-1">
-						<BasicSWAP
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-					<span class="col-span-1">
-						<NetworkTrafficBasic
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-				</div>
-			{/key}
-		{/key}
-	{/key}
+	<Tabs.Root value="storage">
+		<Tabs.List>
+			<Tabs.Trigger value="system">System</Tabs.Trigger>
+			<Tabs.Trigger value="storage">Storage</Tabs.Trigger>
+			<Tabs.Trigger value="application">Application</Tabs.Trigger>
+		</Tabs.List>
+		<Tabs.Content value="system">
+			<System {client} {scopes} {instances} />
+		</Tabs.Content>
+		<Tabs.Content value="storage">
+			<Storage {client} {scopes} {instances} />
+		</Tabs.Content>
+		<Tabs.Content value="application"></Tabs.Content>
+	</Tabs.Root>
 </main>
 
 <style>
