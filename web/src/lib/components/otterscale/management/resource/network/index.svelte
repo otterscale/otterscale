@@ -22,14 +22,12 @@
 	import { ManagementNetworkSubnetReservedIPRanges } from '$lib/components/otterscale/index';
 
 	import {
-		Nexus,
+		NetworkService,
 		type Network,
 		type Network_Subnet,
 		type Network_VLAN,
-		type Network_IPAddress,
-		type Scope,
-		type Tag
-	} from '$gen/api/nexus/v1/nexus_pb';
+		type Network_IPAddress
+	} from '$gen/api/network/v1/network_pb';
 
 	let {
 		networks
@@ -37,8 +35,8 @@
 		networks: Network[];
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(NetworkService, transport);
 
 	const networksStore = writable<Network[]>([]);
 	const networksLoading = writable(true);
@@ -89,7 +87,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each networks.sort((previous, prevent) => (previous.fabric?.name ?? '').localeCompare(prevent.fabric?.name ?? '')) as network}
+				{#each networks.sort( (previous, prevent) => (previous.fabric?.name ?? '').localeCompare(prevent.fabric?.name ?? '') ) as network}
 					<Table.Row>
 						{#if network.fabric}
 							<Table.Cell>

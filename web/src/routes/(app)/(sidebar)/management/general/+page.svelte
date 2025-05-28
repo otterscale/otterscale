@@ -4,23 +4,23 @@
 	import { ManagementGeneral } from '$lib/components/otterscale';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { TagService, type Tag } from '$gen/api/tag/v1/tag_pb';
 	import {
-		Nexus,
-		type Configuration,
-		type Configuration_BootImageSelection,
-		type Tag
-	} from '$gen/api/nexus/v1/nexus_pb';
+		ConfigurationService,
+		type Configuration
+	} from '$gen/api/configuration/v1/configuration_pb';
 
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const tagClient = createClient(TagService, transport);
+	const configurationClient = createClient(ConfigurationService, transport);
 
 	const configurationStore = writable<Configuration>();
 	const configurationLoading = writable(true);
 	async function fetchConfiguration() {
 		try {
-			const response = await client.getConfiguration({});
+			const response = await configurationClient.getConfiguration({});
 			configurationStore.set(response);
 		} catch (error) {
 			console.error('Error fetching:', error);
@@ -33,7 +33,7 @@
 	const tagsLoading = writable(true);
 	async function fetchTags() {
 		try {
-			const response = await client.listTags({});
+			const response = await tagClient.listTags({});
 			tagsStore.set(response.tags);
 		} catch (error) {
 			console.error('Error fetching:', error);

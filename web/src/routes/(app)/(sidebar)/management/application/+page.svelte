@@ -1,19 +1,25 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Nexus, type Facility_Info, type Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import { ScopeService, type Scope } from '$gen/api/scope/v1/scope_pb';
+	import {
+		Essential_Type,
+		EssentialService,
+		type Essential
+	} from '$gen/api/essential/v1/essential_pb';
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
 	import { ManagementApplicationController } from '$lib/components/otterscale/index';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const scopeClient = createClient(ScopeService, transport);
+	const essentialClient = createClient(EssentialService, transport);
 
 	const scopesStore = writable<Scope[]>([]);
 	const scopesLoading = writable(true);
 	async function fetchScopes() {
 		try {
-			const response = await client.listScopes({});
+			const response = await scopeClient.listScopes({});
 			scopesStore.set(response.scopes);
 		} catch (error) {
 			console.error('Error fetching:', error);
@@ -22,14 +28,15 @@
 		}
 	}
 
-	const kubernetesestore = writable<Facility_Info[]>();
+	const kubernetesestore = writable<Essential[]>();
 	const kubernetesesLoading = writable(true);
 	async function fetchKuberneteses(scopeUuid: string) {
 		try {
-			const response = await client.listKuberneteses({
+			const response = await essentialClient.listEssentials({
+				type: Essential_Type.KUBERNETES,
 				scopeUuid: scopeUuid
 			});
-			kubernetesestore.set(response.kuberneteses);
+			kubernetesestore.set(response.essentials);
 		} catch (error) {
 			console.error('Error fetching:', error);
 		} finally {
@@ -37,7 +44,7 @@
 		}
 	}
 
-	let kuberneteses = [] as Facility_Info[];
+	let kuberneteses = [] as Essential[];
 
 	let mounted = false;
 	onMount(async () => {

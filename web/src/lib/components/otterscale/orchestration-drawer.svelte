@@ -1,4 +1,6 @@
-<script lang="ts">
+DEPRECATED
+
+<!-- <script lang="ts">
 	// External dependencies
 	import type { Node } from '@xyflow/svelte';
 
@@ -29,4 +31,4 @@
 			<OrchestrationInformationJUJU model={node.data as Model} />
 		{/if}
 	</Drawer.Content>
-</Drawer.Root>
+</Drawer.Root> -->

@@ -4,7 +4,11 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import { Nexus, type Facility, type ExposeFacilityRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		FacilityService,
+		type Facility,
+		type ExposeFacilityRequest
+	} from '$gen/api/facility/v1/facility_pb';
 
 	let {
 		scopeUuid,
@@ -14,8 +18,8 @@
 		facilityByCategory: Facility;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(FacilityService, transport);
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: scopeUuid,

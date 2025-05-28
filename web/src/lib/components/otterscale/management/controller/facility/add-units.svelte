@@ -1,4 +1,6 @@
-<script lang="ts">
+NEW BOOTSTRAP FLOW
+
+<!-- <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
@@ -26,7 +28,7 @@
 		facilityByCategory: Facility;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const machinesStore = writable<Machine[]>([]);
@@ -177,4 +179,4 @@
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
-</AlertDialog.Root>
+</AlertDialog.Root> -->

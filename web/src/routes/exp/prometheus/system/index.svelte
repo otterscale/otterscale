@@ -19,7 +19,7 @@
 	import { default as QuickRootFS } from './root-fs/quick-metric.svelte';
 	import { default as NetworkTrafficBasic } from './network/traffic-basic.svelte';
 
-	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
 	let {
 		client,

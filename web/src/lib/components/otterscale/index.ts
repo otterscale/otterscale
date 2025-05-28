@@ -36,10 +36,6 @@ export { default as ReleaseRollback } from './store/application/release-rollback
 export { default as ReleaseDelete } from './store/application/release-delete.svelte';
 export { default as ReleaseValuesEdit } from './store/application/release-values-edit.svelte';
 
-export { default as StoreFacilities } from './store/facility/index.svelte';
-export { default as StoreFacility } from './store/facility/facility.svelte';
-export { default as FacilityCreate } from './store/facility/create.svelte';
-
 export { default as Monitor } from './monitor/index.svelte';
 
 export { DiscreteArrayInput } from './ui';

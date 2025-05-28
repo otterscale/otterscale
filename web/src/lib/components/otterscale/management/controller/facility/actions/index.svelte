@@ -7,7 +7,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
-	import { Nexus, type Facility_Action } from '$gen/api/nexus/v1/nexus_pb';
+	import { FacilityService, type Facility_Action } from '$gen/api/facility/v1/facility_pb';
 	import DoAction from './do.svelte';
 
 	let {
@@ -18,8 +18,8 @@
 		facilityName: string;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(FacilityService, transport);
 
 	const actionsStore = writable<Facility_Action[]>([]);
 	const actionsLoading = writable(true);

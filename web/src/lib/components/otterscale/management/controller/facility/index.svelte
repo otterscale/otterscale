@@ -19,14 +19,18 @@
 		ManagementFacilityActions
 	} from '$lib/components/otterscale/index';
 
+	import { ScopeService, type Scope } from '$gen/api/scope/v1/scope_pb';
 	import {
-		Nexus,
+		Essential_Type,
+		EssentialService,
+		type Essential
+	} from '$gen/api/essential/v1/essential_pb';
+	import {
+		FacilityService,
 		type Facility,
-		type Facility_Info,
 		type Facility_Status,
-		type Facility_Unit,
-		type Scope
-	} from '$gen/api/nexus/v1/nexus_pb';
+		type Facility_Unit
+	} from '$gen/api/facility/v1/facility_pb';
 
 	import Icon from '@iconify/svelte';
 
@@ -36,16 +40,19 @@
 
 	let scopeUuid = $state(page.url.searchParams.get('scope') || '');
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const scopeClient = createClient(ScopeService, transport);
+	const essentialClient = createClient(EssentialService, transport);
+	const facilityClient = createClient(FacilityService, transport);
 
-	const kubernetesesStore = writable<Facility_Info[]>([]);
+	const kubernetesesStore = writable<Essential[]>([]);
 	async function fetchKuberneteses() {
 		try {
-			const response = await client.listKuberneteses({
+			const response = await essentialClient.listEssentials({
+				type: Essential_Type.KUBERNETES,
 				scopeUuid: scopeUuid
 			});
-			kubernetesesStore.set(response.kuberneteses);
+			kubernetesesStore.set(response.essentials);
 		} catch (error) {
 			console.error('Error fetching:', error);
 		}
@@ -55,7 +62,7 @@
 	const scopesLoading = writable(true);
 	async function fetchScopes() {
 		try {
-			const response = await client.listScopes({});
+			const response = await scopeClient.listScopes({});
 			scopesStore.set(response.scopes);
 
 			let defaultScope = response.scopes.find((s) => s.name === 'default');
@@ -73,7 +80,7 @@
 	const facilitiesLoading = writable(true);
 	async function fetchFacilities() {
 		try {
-			const response = await client.listFacilities({
+			const response = await facilityClient.listFacilities({
 				scopeUuid: scopeUuid
 			});
 			facilitiesStore.set(response.facilities);
@@ -92,7 +99,7 @@
 			console.log(`Refresh facilities`);
 
 			try {
-				const response = await client.listFacilities({
+				const response = await facilityClient.listFacilities({
 					scopeUuid: scopeUuid
 				});
 				facilitiesStore.set(response.facilities);
@@ -180,12 +187,12 @@
 			f.charmName.includes('kubernetes-control-plane')
 		)}
 		{#if masterKubernetes}
-			<AddKubernetesUnits {scopeUuid} kubernetes={masterKubernetes} />
+			<AddKubernetesUnits />
 		{/if}
 	{:else if facilityCategory == FACILITY_CATEGORYS.CEPH}
 		{@const masterCeph = facilities.find((f) => f.charmName.includes('ceph-mon'))}
 		{#if masterCeph}
-			<AddCephUnits {scopeUuid} ceph={masterCeph} />
+			<AddCephUnits />
 		{/if}
 	{/if}
 {/snippet}
@@ -197,7 +204,7 @@
 		{#if mounted}
 			{@const selected = $kubernetesesStore.find((k) => k.scopeUuid === scopeUuid)}
 			{#if selected}
-				<Button href="/management/facility/{selected.facilityName}?scope={selected.scopeUuid}">
+				<Button href="/management/facility/{selected.name}?scope={selected.scopeUuid}">
 					<Icon icon="ph:rocket-launch" />
 					Applications
 				</Button>
@@ -299,10 +306,7 @@
 												</DropdownMenu.Trigger>
 												<DropdownMenu.Content>
 													<DropdownMenu.Item onSelect={(e) => e.preventDefault()}>
-														<AddFacilityUnits
-															{scopeUuid}
-															bind:facilityByCategory={facilitiesByCategory[index]}
-														/>
+														<AddFacilityUnits />
 													</DropdownMenu.Item>
 												</DropdownMenu.Content>
 											</DropdownMenu.Root>

@@ -10,16 +10,16 @@
 	import { Label } from '$lib/components/ui/label';
 	import { toast } from 'svelte-sonner';
 	import {
-		Nexus,
+		ConfigurationService,
 		type Configuration,
 		type Configuration_BootImageSelection,
 		type CreateBootImageRequest
-	} from '$gen/api/nexus/v1/nexus_pb';
+	} from '$gen/api/configuration/v1/configuration_pb';
 
 	let { configuration = $bindable() }: { configuration: Configuration } = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(ConfigurationService, transport);
 
 	const bootImageSelectionsStore = writable<Configuration_BootImageSelection[]>([]);
 	const bootImageSelectionsLoading = writable(true);

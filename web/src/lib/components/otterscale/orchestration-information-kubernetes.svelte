@@ -1,4 +1,6 @@
-<script lang="ts">
+DEPRECATED
+
+<!-- <script lang="ts">
 	// External dependencies
 	import Icon from '@iconify/svelte';
 	import { capitalizeFirstLetter } from 'better-auth';
@@ -157,4 +159,4 @@
 			</Card.Root>
 		{/if}
 	{/if}
-</div>
+</div> -->

@@ -3,12 +3,12 @@
 	import { ManagementMachine } from '$lib/components/otterscale/index';
 	import Icon from '@iconify/svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Nexus, type Machine, type Network } from '$gen/api/nexus/v1/nexus_pb';
+	import { MachineService, type Machine } from '$gen/api/machine/v1/machine_pb';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(MachineService, transport);
 
 	const machineStore = writable<Machine>();
 	const machineIsLoading = writable(true);

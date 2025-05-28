@@ -3,10 +3,10 @@
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { Label } from '$lib/components/ui/label';
 	import {
-		Nexus,
+		ApplicationService,
 		type Application_Release,
 		type RollbackReleaseRequest
-	} from '$gen/api/nexus/v1/nexus_pb';
+	} from '$gen/api/application/v1/application_pb';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
@@ -19,8 +19,8 @@
 		release: Application_Release;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(ApplicationService, transport);
 
 	const DEFAULT_REQUEST = {
 		dryRun: false,

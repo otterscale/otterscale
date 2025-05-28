@@ -7,14 +7,18 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { toast } from 'svelte-sonner';
-	import { Nexus, type CreateNetworkRequest, type Network } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		NetworkService,
+		type CreateNetworkRequest,
+		type Network
+	} from '$gen/api/network/v1/network_pb';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 
 	let { networks = $bindable() }: { networks: Network[] } = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(NetworkService, transport);
 
 	const DEFAULT_REQUEST = { dhcpOn: true, dnsServers: [] as string[] } as CreateNetworkRequest;
 

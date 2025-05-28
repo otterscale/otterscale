@@ -7,11 +7,12 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import {
-		Nexus,
+		ConfigurationService,
 		type Configuration,
 		type Configuration_PackageRepository,
 		type UpdatePackageRepositoryRequest
-	} from '$gen/api/nexus/v1/nexus_pb';
+	} from '$gen/api/configuration/v1/configuration_pb';
+
 	import { toast } from 'svelte-sonner';
 
 	let {
@@ -22,8 +23,8 @@
 		packageRepository: Configuration_PackageRepository;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(ConfigurationService, transport);
 
 	const DEFAULT_REQUEST = {
 		id: packageRepository.id,

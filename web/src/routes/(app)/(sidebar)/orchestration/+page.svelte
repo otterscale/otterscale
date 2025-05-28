@@ -1,4 +1,6 @@
-<script lang="ts">
+DEPRECATED
+
+<!-- <script lang="ts">
 	import '@xyflow/svelte/dist/style.css';
 	import { type Edge, type Node } from '@xyflow/svelte';
 	import Icon from '@iconify/svelte';
@@ -166,4 +168,4 @@
 			Loading...
 		</div>
 	{/if}
-</main>
+</main> -->

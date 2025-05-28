@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { StackService, type Machine, type Application } from '$gen/api/stack/v1/stack_pb';
 	import { getContext, onMount } from 'svelte';
 	import Icon from '@iconify/svelte';
 	import { get, writable } from 'svelte/store';
@@ -12,6 +11,7 @@
 
 	import yaml from 'highlight.js/lib/languages/yaml';
 	import 'highlight.js/styles/github.css';
+	import { MachineService, type Machine } from '$gen/api/machine/v1/machine_pb';
 
 	const plugins: Plugin[] = [
 		{
@@ -21,11 +21,10 @@
 
 	// Get the transport out of context
 	const transport: Transport = getContext('transport');
-	const client = createClient(StackService, transport);
+	const client = createClient(MachineService, transport);
 
 	// Create a store for machines
 	const machinesStore = writable<Machine[]>([]);
-	const applicationStore = writable<Application>();
 	const isLoading = writable(true);
 
 	// Extract this to a separate function for better organization
@@ -40,23 +39,8 @@
 		}
 	}
 
-	async function getApplication() {
-		try {
-			const application = await client.getApplication({
-				modelUuid: '5dcb4647-0618-461d-85ca-02660fbd53d4',
-				name: 'mysql'
-			});
-			applicationStore.set(application);
-		} catch (error) {
-			console.error('Error fetching machines:', error);
-		} finally {
-			isLoading.set(false);
-		}
-	}
-
 	onMount(() => {
 		fetchMachines();
-		getApplication();
 	});
 </script>
 
@@ -66,13 +50,6 @@
 		Loading...
 	</div>
 {:else}
-	<div class="markdown-body">
-		{#if $applicationStore?.configYaml}
-			<Markdown {plugins} md={'```yaml\n' + $applicationStore.configYaml + '```'} />
-		{:else}
-			<p class="text-muted-foreground">No configuration available</p>
-		{/if}
-	</div>
 	{#each $machinesStore as machine}
 		<p>{machine.fqdn}: {machine.tags}</p>
 	{/each}

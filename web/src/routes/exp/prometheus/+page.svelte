@@ -4,7 +4,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import PageLoading from '$lib/components/otterscale/ui/page-loading.svelte';
-	import { Nexus, type Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import { ScopeService, type Scope } from '$gen/api/scope/v1/scope_pb';
 
 	const juju_model_uuid = 'b62d195e-3905-4960-85ee-7673f71eb21e';
 	const prometheus = new PrometheusDriver({
@@ -12,13 +12,13 @@
 		baseURL: '/api/v1'
 	});
 
-	const transport: Transport = getContext('transportNEW');
-	const nexus = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(ScopeService, transport);
 
 	let scopes: Scope[] = $state([]);
 	async function fetchScopes() {
 		// try {
-		// 	const response = await nexus.listScopes({});
+		// 	const response = await client.listScopes({});
 		// 	scopes = response.scopes;
 		// } catch (error) {
 		// 	console.error('Error fetching:', error);

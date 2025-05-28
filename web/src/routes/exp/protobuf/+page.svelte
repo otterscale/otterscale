@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Nexus, type Application_Chart_Metadata } from '$gen/api/nexus/v1/nexus_pb';
 	import { getContext, onMount } from 'svelte';
 	import { get, writable } from 'svelte/store';
 	import { Switch } from '$lib/components/ui/switch/index.js';
@@ -8,9 +7,13 @@
 	import { Unstruct } from '$lib/components/otterscale/ui/index';
 	import type { JsonObject } from '@bufbuild/protobuf';
 	import Display from './display.svelte';
+	import {
+		ApplicationService,
+		type Application_Chart_Metadata
+	} from '$gen/api/application/v1/application_pb';
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(ApplicationService, transport);
 
 	const Metadata = writable<Application_Chart_Metadata>();
 	const isLoading = writable(true);

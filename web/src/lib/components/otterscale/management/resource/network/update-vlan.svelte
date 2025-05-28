@@ -6,12 +6,12 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import {
-		Nexus,
+		NetworkService,
 		type Network_Fabric,
 		type UpdateVLANRequest,
 		type Network_VLAN,
 		type Network
-	} from '$gen/api/nexus/v1/nexus_pb';
+	} from '$gen/api/network/v1/network_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 
@@ -21,8 +21,8 @@
 		vlan
 	}: { networks: Network[]; fabric: Network_Fabric; vlan: Network_VLAN } = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(NetworkService, transport);
 
 	const DEFAULT_REQUEST = {
 		fabricId: fabric.id,

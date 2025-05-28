@@ -9,7 +9,10 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { StoreApplication, ReleaseCreate } from '$lib/components/otterscale/index';
 	import { STORE_ITEMS_PER_ROW, STORE_ROWS_PER_PAGE } from '$lib/components/otterscale/index';
-	import type { Application_Chart, Application_Release } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		type Application_Chart,
+		type Application_Release
+	} from '$gen/api/application/v1/application_pb';
 	import Paging from './paging.svelte';
 	import Search from './search.svelte';
 	import Filter from './filter.svelte';

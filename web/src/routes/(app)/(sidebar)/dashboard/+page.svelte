@@ -1,4 +1,6 @@
-<script lang="ts">
+NEW BOOTSTRAP FLOW
+
+<!-- <script lang="ts">
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { Nexus, type Error, type Scope } from '$gen/api/nexus/v1/nexus_pb';
 	import { getContext, onMount } from 'svelte';
@@ -9,7 +11,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { page } from '$app/state';
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const scopesStore = writable<Scope[]>([]);
@@ -123,4 +125,4 @@
 			</Select.Root>
 		{/if}
 	</div>
-{/snippet}
+{/snippet} -->
