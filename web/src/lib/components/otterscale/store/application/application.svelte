@@ -12,11 +12,11 @@
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 
 	import {
-		Nexus,
+		ApplicationService,
 		type Application_Chart,
 		type Application_Chart_Dependency,
 		type Application_Release
-	} from '$gen/api/nexus/v1/nexus_pb';
+	} from '$gen/api/application/v1/application_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 
 	import { getContext, onMount } from 'svelte';
@@ -28,7 +28,7 @@
 	import { fuzzLogosIcon } from '$lib/icon';
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(ApplicationService, transport);
 
 	const chartStore = writable<Application_Chart>();
 	const chartLoading = writable(true);

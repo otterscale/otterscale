@@ -3,7 +3,10 @@
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { Button } from '$lib/components/ui/button';
 	import { getContext } from 'svelte';
-	import { Nexus, type ImportBootImagesRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		ConfigurationService,
+		type ImportBootImagesRequest
+	} from '$gen/api/configuration/v1/configuration_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { toast } from 'svelte-sonner';
 	import { onMount } from 'svelte';
@@ -15,7 +18,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(ConfigurationService, transport);
 
 	const DEFAULT_REQUEST = {} as ImportBootImagesRequest;
 	let importBootImageRequest = $state(DEFAULT_REQUEST);

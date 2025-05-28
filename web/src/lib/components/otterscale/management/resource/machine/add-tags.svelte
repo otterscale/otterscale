@@ -7,11 +7,11 @@
 	import { writable } from 'svelte/store';
 	import { Input } from '$lib/components/ui/input';
 	import {
-		Nexus,
+		MachineService,
 		type Machine,
-		type AddMachineTagsRequest,
-		type Tag
-	} from '$gen/api/nexus/v1/nexus_pb';
+		type AddMachineTagsRequest
+	} from '$gen/api/machine/v1/machine_pb';
+	import { TagService, type Tag } from '$gen/api/tag/v1/tag_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
@@ -23,13 +23,14 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const tagClient = createClient(TagService, transport);
+	const machineClient = createClient(MachineService, transport);
 
 	const tagsStore = writable<Tag[]>();
 	const tagsLoading = writable(true);
 	async function fetchTags() {
 		try {
-			const response = await client.listTags({});
+			const response = await tagClient.listTags({});
 			tagsStore.set(response.tags);
 		} catch (error) {
 			console.error('Error fetching:', error);
@@ -117,7 +118,7 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					client
+					machineClient
 						.addMachineTags(addMachineTagsRequest)
 						.then((r) => {
 							toast.success(`Add tags ${addMachineTagsRequest.tags.join(', ')}`);

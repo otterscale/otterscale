@@ -2,7 +2,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { Nexus } from '$gen/api/nexus/v1/nexus_pb';
+	import { ConfigurationService } from '$gen/api/configuration/v1/configuration_pb';
 
 	let {
 		isImportingBootImages = $bindable()
@@ -11,7 +11,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(ConfigurationService, transport);
 
 	async function fetchIsImportingBootImages(isImportingBootImages: boolean) {
 		while (true) {

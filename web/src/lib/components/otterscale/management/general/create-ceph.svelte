@@ -1,4 +1,6 @@
-<script lang="ts">
+NEW BOOTSTRAP FLOW
+
+<!-- <script lang="ts">
 	import { getContext } from 'svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
@@ -201,4 +203,4 @@
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
-</AlertDialog.Root>
+</AlertDialog.Root> -->

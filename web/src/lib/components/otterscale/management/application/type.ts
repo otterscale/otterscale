@@ -1,4 +1,5 @@
-import type { Facility, Scope } from '$gen/api/nexus/v1/nexus_pb';
+import { type Scope } from '$gen/api/scope/v1/scope_pb';
+import { type Facility } from '$gen/api/facility/v1/facility_pb';
 
 export interface Kubernetes {
     scope: Scope;

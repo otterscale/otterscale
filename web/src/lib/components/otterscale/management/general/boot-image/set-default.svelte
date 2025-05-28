@@ -5,11 +5,11 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Button } from '$lib/components/ui/button';
 	import {
-		Nexus,
+		ConfigurationService,
 		type Configuration,
 		type Configuration_BootImage,
 		type SetDefaultBootImageRequest
-	} from '$gen/api/nexus/v1/nexus_pb';
+	} from '$gen/api/configuration/v1/configuration_pb';
 	import { toast } from 'svelte-sonner';
 
 	let {
@@ -21,7 +21,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(ConfigurationService, transport);
 
 	const DEFAULT_REQUEST = {
 		distroSeries: bootImage.distroSeries

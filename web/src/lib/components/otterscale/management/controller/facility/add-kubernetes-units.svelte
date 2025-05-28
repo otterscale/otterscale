@@ -1,4 +1,6 @@
-<script lang="ts">
+NEW BOOTSTRAP FLOW
+
+<!-- <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -163,4 +165,4 @@
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
-</AlertDialog.Root>
+</AlertDialog.Root> -->

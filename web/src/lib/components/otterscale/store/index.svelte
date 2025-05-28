@@ -1,14 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { StoreApplications, StoreFacilities } from '$lib/components/otterscale/index';
+	import { StoreApplications } from '$lib/components/otterscale/index';
 	import Claim from './claim.svelte';
-	import type {
-		Application_Chart,
-		Application_Release,
-		Facility_Charm,
-		Facility
-	} from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		type Application_Chart,
+		type Application_Release
+	} from '$gen/api/application/v1/application_pb';
+	import {
+		FacilityService,
+		type Facility,
+		type Facility_Charm
+	} from '$gen/api/facility/v1/facility_pb';
 
 	let {
 		charts,
@@ -35,8 +38,8 @@
 		<Tabs.Content value="#application">
 			<StoreApplications {charts} {releases} />
 		</Tabs.Content>
-		<Tabs.Content value="#facility">
+		<!-- <Tabs.Content value="#facility">
 			<StoreFacilities {charms} {facilities} />
-		</Tabs.Content>
+		</Tabs.Content> -->
 	</Tabs.Root>
 </div>

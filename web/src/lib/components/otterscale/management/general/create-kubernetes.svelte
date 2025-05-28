@@ -1,4 +1,6 @@
-<script lang="ts">
+NEW BOOTSTRAP FLOW
+
+<!-- <script lang="ts">
 	import { getContext } from 'svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Switch } from '$lib/components/ui/switch/index.js';
@@ -349,4 +351,4 @@
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
-</AlertDialog.Root>
+</AlertDialog.Root> -->

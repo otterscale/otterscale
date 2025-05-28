@@ -6,7 +6,11 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { Nexus, type Facility, type UpdateFacilityRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		FacilityService,
+		type Facility,
+		type UpdateFacilityRequest
+	} from '$gen/api/facility/v1/facility_pb';
 
 	let {
 		scopeUuid,
@@ -17,7 +21,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(FacilityService, transport);
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: scopeUuid,

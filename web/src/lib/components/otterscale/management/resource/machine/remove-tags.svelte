@@ -3,7 +3,12 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Nexus, type Machine, type RemoveMachineTagsRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		MachineService,
+		type Machine,
+		type RemoveMachineTagsRequest
+	} from '$gen/api/machine/v1/machine_pb';
+	import { TagService, type Tag } from '$gen/api/tag/v1/tag_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
@@ -15,7 +20,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(MachineService, transport);
 
 	const DEFAULT_REQUEST = {
 		id: machine.id,

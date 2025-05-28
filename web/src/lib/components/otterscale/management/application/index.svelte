@@ -1,18 +1,18 @@
 <script lang="ts">
-	import { type Facility_Info } from '$gen/api/nexus/v1/nexus_pb';
+	import { type Essential } from '$gen/api/essential/v1/essential_pb';
 	import { ManagementApplications } from '$lib/components/otterscale/index';
 	import * as Select from '$lib/components/ui/select/index.js';
 
-	let { kuberneteses }: { kuberneteses: Facility_Info[] } = $props();
+	let { kuberneteses }: { kuberneteses: Essential[] } = $props();
 
-	function getKey(kubernetes: Facility_Info) {
-		return kubernetes.scopeUuid + kubernetes.facilityName;
+	function getKey(kubernetes: Essential) {
+		return kubernetes.scopeUuid + kubernetes.name;
 	}
-	function getIdentifier(kubernetes: Facility_Info) {
-		return [kubernetes.scopeName, kubernetes.facilityName].join('/');
+	function getIdentifier(kubernetes: Essential) {
+		return [kubernetes.scopeName, kubernetes.name].join('/');
 	}
 
-	let defaultKubernetes = $state(kuberneteses[0] as Facility_Info);
+	let defaultKubernetes = $state(kuberneteses[0] as Essential);
 </script>
 
 <ManagementApplications />

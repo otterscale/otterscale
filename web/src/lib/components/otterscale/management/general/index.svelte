@@ -8,17 +8,17 @@
 	import DeleteTag from './tag/delete.svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
-	import { Nexus, type ImportBootImagesRequest } from '$gen/api/nexus/v1/nexus_pb';
 	import Icon from '@iconify/svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 
+	import { type Tag } from '$gen/api/tag/v1/tag_pb';
 	import {
+		ConfigurationService,
 		type Configuration,
-		type Configuration_BootImage,
-		type Tag
-	} from '$gen/api/nexus/v1/nexus_pb';
+		type Configuration_BootImage
+	} from '$gen/api/configuration/v1/configuration_pb';
 
 	let {
 		configuration,
@@ -29,7 +29,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(ConfigurationService, transport);
 </script>
 
 <div class="grid gap-4 p-4">

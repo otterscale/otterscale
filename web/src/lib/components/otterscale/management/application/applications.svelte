@@ -9,13 +9,13 @@
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
 	import Icon from '@iconify/svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ScopeService, type Scope } from '$gen/api/scope/v1/scope_pb';
 	import {
-		Nexus,
-		type Application,
-		type Facility_Info,
-		type Scope,
-		type StorageClass
-	} from '$gen/api/nexus/v1/nexus_pb';
+		Essential_Type,
+		EssentialService,
+		type Essential
+	} from '$gen/api/essential/v1/essential_pb';
+	import { ApplicationService, type Application } from '$gen/api/application/v1/application_pb';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { Skeleton } from '$lib/components/ui/skeleton';
@@ -32,10 +32,12 @@
 	let facilityName = $state('');
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const scopeClient = createClient(ScopeService, transport);
+	const essentialClient = createClient(EssentialService, transport);
+	const applicationClient = createClient(ApplicationService, transport);
 
 	async function setDefaultScope() {
-		client.listScopes({}).then((r) => {
+		scopeClient.listScopes({}).then((r) => {
 			const defaultScopeUuid = r.scopes.find((s) => s.name === 'default')?.uuid;
 			scopeUuid = page.url.searchParams.get('scope') ?? defaultScopeUuid ?? '';
 		});
@@ -45,7 +47,7 @@
 	const scopesLoading = writable(true);
 	async function fetchScopes() {
 		try {
-			const response = await client.listScopes({});
+			const response = await scopeClient.listScopes({});
 			scopesStore.set(response.scopes);
 		} catch (error) {
 			console.error('Error fetching:', error);
@@ -54,18 +56,19 @@
 		}
 	}
 
-	const kubernetesesStore = writable<Facility_Info[]>();
+	const kubernetesesStore = writable<Essential[]>();
 	async function fetchKuberneteses() {
 		try {
-			const response = await client.listKuberneteses({
+			const response = await essentialClient.listEssentials({
+				type: Essential_Type.KUBERNETES,
 				scopeUuid: scopeUuid
 			});
 
-			kubernetesesStore.set(response.kuberneteses);
+			kubernetesesStore.set(response.essentials);
 
-			let defaultKubernetes = response.kuberneteses.find((s) => s.scopeUuid === scopeUuid);
+			let defaultKubernetes = response.essentials.find((s) => s.scopeUuid === scopeUuid);
 			if (defaultKubernetes) {
-				facilityName = defaultKubernetes.facilityName;
+				facilityName = defaultKubernetes.name;
 			}
 		} catch (error) {
 			console.error('Error fetching kubernetes:', error);
@@ -79,7 +82,7 @@
 			if (facilityName === '') {
 				throw new Error('facilityName is empty');
 			}
-			const response = await client.listApplications({
+			const response = await applicationClient.listApplications({
 				scopeUuid: scopeUuid,
 				facilityName: facilityName
 			});
@@ -105,7 +108,7 @@
 			console.log(`Refresh applications`);
 
 			try {
-				const response = await client.listApplications({
+				const response = await applicationClient.listApplications({
 					scopeUuid: scopeUuid,
 					facilityName: facilityName
 				});

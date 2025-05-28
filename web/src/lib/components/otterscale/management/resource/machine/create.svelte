@@ -7,13 +7,12 @@
 	import { toast } from 'svelte-sonner';
 	import { writable } from 'svelte/store';
 	import {
-		Nexus,
-		type CreateMachineRequest,
-		type Scope,
+		MachineService,
 		type Machine,
-		type Machine_Placement,
-		type Tag
-	} from '$gen/api/nexus/v1/nexus_pb';
+		type CreateMachineRequest
+	} from '$gen/api/machine/v1/machine_pb';
+	import { ScopeService, type Scope } from '$gen/api/scope/v1/scope_pb';
+	import { TagService, type Tag } from '$gen/api/tag/v1/tag_pb';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { ManagementScopeCreate } from '$lib/components/otterscale';
@@ -29,13 +28,15 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const scopeClient = createClient(ScopeService, transport);
+	const tagClient = createClient(TagService, transport);
+	const machineClient = createClient(MachineService, transport);
 
 	const scopesStore = writable<Scope[]>([]);
 	const scopesLoading = writable(true);
 	async function fetchScopes() {
 		try {
-			const response = await client.listScopes({});
+			const response = await scopeClient.listScopes({});
 			scopesStore.set(response.scopes);
 		} catch (error) {
 			console.error('Error fetching:', error);
@@ -48,7 +49,7 @@
 	const tagsLoading = writable(true);
 	async function fetchTags() {
 		try {
-			const response = await client.listTags({});
+			const response = await tagClient.listTags({});
 			tagsStore.set(response.tags);
 		} catch (error) {
 			console.error('Error fetching:', error);
@@ -174,10 +175,10 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.promise(() => client.createMachine(createMachineRequest), {
+					toast.promise(() => machineClient.createMachine(createMachineRequest), {
 						loading: 'Loading...',
 						success: (r) => {
-							client.listMachines({}).then((r) => {
+							machineClient.listMachines({}).then((r) => {
 								machines = r.machines;
 							});
 							return `Create ${r.fqdn} success`;

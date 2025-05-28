@@ -12,7 +12,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Table from '$lib/components/ui/table';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { Nexus, type Machine, type Network } from '$gen/api/nexus/v1/nexus_pb';
+	import { MachineService, type Machine } from '$gen/api/machine/v1/machine_pb';
 	import { formatCapacity } from '$lib/formatter';
 	import { getContext, onMount, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -27,7 +27,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(MachineService, transport);
 
 	const machineStore = writable<Machine>();
 	async function refreshMachine() {

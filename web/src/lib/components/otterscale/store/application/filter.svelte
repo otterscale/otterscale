@@ -2,7 +2,7 @@
 	import { cn } from '$lib/utils';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
-	import type { Application_Chart } from '$gen/api/nexus/v1/nexus_pb';
+	import { type Application_Chart } from '$gen/api/application/v1/application_pb';
 
 	let {
 		charts,

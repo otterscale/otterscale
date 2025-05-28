@@ -2,12 +2,12 @@
 	import Icon from '@iconify/svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { ManagementFacilityController } from '$lib/components/otterscale';
-	import { Nexus, type Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import { ScopeService, type Scope } from '$gen/api/scope/v1/scope_pb';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(ScopeService, transport);
 
 	const scopesStore = writable<Scope[]>([]);
 	const scopesLoading = writable(true);

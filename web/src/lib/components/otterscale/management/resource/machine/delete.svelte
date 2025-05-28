@@ -5,7 +5,11 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { toast } from 'svelte-sonner';
-	import { Nexus, type Machine, type DeleteMachineRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		MachineService,
+		type Machine,
+		type DeleteMachineRequest
+	} from '$gen/api/machine/v1/machine_pb';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 
@@ -20,7 +24,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(MachineService, transport);
 
 	const DEFAULT_REQUEST = {
 		id: machine.id,

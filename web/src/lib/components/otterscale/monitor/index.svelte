@@ -1,4 +1,6 @@
-<script lang="ts">
+NEW BOOTSTRAP FLOW
+
+<!-- <script lang="ts">
 	const healthData = group(healthRawData, (d) => d.type).get('error') ?? [];
 	function metricColor(metric: number) {
 		switch (true) {
@@ -606,4 +608,4 @@
 			</Tabs.Content>
 		</Tabs.Root>
 	{/if}
-{/if}
+{/if} -->

@@ -5,12 +5,17 @@
 	import { toast } from 'svelte-sonner';
 	import { Label } from '$lib/components/ui/label';
 	import {
-		Nexus,
+		Essential_Type,
+		EssentialService,
+		type Essential
+	} from '$gen/api/essential/v1/essential_pb';
+	import { ScopeService } from '$gen/api/scope/v1/scope_pb';
+	import {
+		ApplicationService,
 		type Application_Chart,
 		type Application_Release,
-		type CreateReleaseRequest,
-		type Facility_Info
-	} from '$gen/api/nexus/v1/nexus_pb';
+		type CreateReleaseRequest
+	} from '$gen/api/application/v1/application_pb';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
@@ -29,13 +34,15 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const applicationClient = createClient(ApplicationService, transport);
+	const scopeClient = createClient(ScopeService, transport);
+	const essentialClient = createClient(EssentialService, transport);
 
 	const chartStore = writable<Application_Chart>();
 	const chartLoading = writable(true);
 	async function fetchChart(chartName: string) {
 		try {
-			const response = await client.getChart({
+			const response = await applicationClient.getChart({
 				name: chartName
 			});
 			chartStore.set(response);
@@ -46,16 +53,16 @@
 		}
 	}
 
-	const kubernetesesStore = writable<Facility_Info[]>([]);
+	const kubernetesesStore = writable<Essential[]>([]);
 	const kubernetesesLoading = writable(true);
 	async function fetchKuberneteses() {
 		try {
-			const scopes = await client.listScopes({});
+			const scopes = await scopeClient.listScopes({});
 			const kubernetesesPromises = scopes.scopes.map((scope) =>
-				client.listKuberneteses({ scopeUuid: scope.uuid })
+				essentialClient.listEssentials({ type: Essential_Type.KUBERNETES, scopeUuid: scope.uuid })
 			);
 			const responses = await Promise.all(kubernetesesPromises);
-			const allKuberneteses = responses.flatMap((response) => response.kuberneteses);
+			const allKuberneteses = responses.flatMap((response) => response.essentials);
 			kubernetesesStore.set(allKuberneteses);
 		} catch (error) {
 			console.error('Error fetching:', error);
@@ -65,7 +72,7 @@
 	}
 
 	const DEFAULT_VERSION = chart.versions[0];
-	const DEFAULT_KUBERNETES = {} as Facility_Info;
+	const DEFAULT_KUBERNETES = {} as Essential;
 	const DEFAULT_REQUEST = {
 		name: '',
 		valuesYaml: '',
@@ -151,8 +158,8 @@
 							<Label>Kubernetes</Label>
 							<Select.Root type="single">
 								<Select.Trigger class="w-fit">
-									{selectedKubernetes.scopeUuid && selectedKubernetes.facilityName
-										? `${selectedKubernetes.scopeName}/${selectedKubernetes.facilityName}`
+									{selectedKubernetes.scopeUuid && selectedKubernetes.name
+										? `${selectedKubernetes.scopeName}/${selectedKubernetes.name}`
 										: 'Select'}
 								</Select.Trigger>
 								<Select.Content>
@@ -162,11 +169,11 @@
 												onclick={() => {
 													selectedKubernetes = kubernetes;
 													createReleaseRequest.scopeUuid = kubernetes.scopeUuid;
-													createReleaseRequest.facilityName = kubernetes.facilityName;
+													createReleaseRequest.facilityName = kubernetes.name;
 												}}
-												value={`${kubernetes.scopeName}/${kubernetes.facilityName}`}
+												value={`${kubernetes.scopeName}/${kubernetes.name}`}
 											>
-												{`${kubernetes.scopeName}/${kubernetes.facilityName}`}
+												{`${kubernetes.scopeName}/${kubernetes.name}`}
 											</Select.Item>
 										{/each}
 									</Select.Group>
@@ -212,10 +219,10 @@
 				onclick={() => {
 					integrate();
 
-					toast.promise(() => client.createRelease(createReleaseRequest), {
+					toast.promise(() => applicationClient.createRelease(createReleaseRequest), {
 						loading: 'Loading...',
 						success: (r) => {
-							client.listReleases({}).then((r) => {
+							applicationClient.listReleases({}).then((r) => {
 								releases = r.releases;
 							});
 							return `Create ${r.name} success`;

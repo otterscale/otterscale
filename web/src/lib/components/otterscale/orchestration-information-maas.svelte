@@ -1,4 +1,6 @@
-<script lang="ts">
+DEPRECATED
+
+<!-- <script lang="ts">
 	// External dependencies
 	import Icon from '@iconify/svelte';
 	import { capitalizeFirstLetter } from 'better-auth';
@@ -252,29 +254,6 @@
 							</Table.Body>
 						</Table.Root>
 					</CardDictionary>
-
-					<!-- <Card.Root class="col-span-2">
-				<Card.Header class="text-text-base">
-					<Card.Title>NUMA NODES</Card.Title>
-				</Card.Header>
-				<Card.Content class="grid flex-grow gap-3 text-xl">
-					{#each machine.numaNodes as numaNode}
-						<p class="text-sm">Node {numaNode['index']}</p>
-						<Table.Root>
-							<Table.Body class="text-xs">
-								<Table.Row>
-									<Table.Cell>CPU cores</Table.Cell>
-									<Table.Cell>{numaNode['cores']}</Table.Cell>
-								</Table.Row>
-								<Table.Row>
-									<Table.Cell>Memory</Table.Cell>
-									<Table.Cell>{Math.round(Number(numaNode['memory']) / 1024)} GiB</Table.Cell>
-								</Table.Row>
-							</Table.Body>
-						</Table.Root>
-					{/each}
-				</Card.Content>
-			</Card.Root> -->
 				</div>
 			</div>
 		</Tabs.Content>
@@ -459,4 +438,4 @@
 			</CardDictionary>
 		</Tabs.Content>
 	</Tabs.Root>
-</div>
+</div> -->

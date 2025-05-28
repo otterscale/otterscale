@@ -5,11 +5,11 @@
 	import { Label } from '$lib/components/ui/label';
 	import { toast } from 'svelte-sonner';
 	import {
-		Nexus,
+		NetworkService,
 		type UpdateFabricRequest,
 		type Network_Fabric,
 		type Network
-	} from '$gen/api/nexus/v1/nexus_pb';
+	} from '$gen/api/network/v1/network_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 
@@ -17,7 +17,7 @@
 		$props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(NetworkService, transport);
 
 	const DEFAULT_REQUEST = { id: fabric.id, name: fabric.name } as UpdateFabricRequest;
 

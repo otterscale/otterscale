@@ -6,13 +6,13 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { Nexus, type CreateTagRequest, type Tag } from '$gen/api/nexus/v1/nexus_pb';
+	import { TagService, type Tag, type CreateTagRequest } from '$gen/api/tag/v1/tag_pb';
 	import { toast } from 'svelte-sonner';
 
 	let { tags = $bindable() }: { tags: Tag[] } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(TagService, transport);
 
 	const DEFAULT_REQUEST = {} as CreateTagRequest;
 

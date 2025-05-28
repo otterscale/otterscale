@@ -4,7 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Button } from '$lib/components/ui/button';
-	import { Nexus, type Tag, type DeleteTagRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import { TagService, type Tag, type DeleteTagRequest } from '$gen/api/tag/v1/tag_pb';
 	import { toast } from 'svelte-sonner';
 
 	let {
@@ -16,7 +16,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const client = createClient(TagService, transport);
 
 	const DEFAULT_REQUEST = { name: tag.name } as DeleteTagRequest;
 

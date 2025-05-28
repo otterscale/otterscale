@@ -1,16 +1,19 @@
-<script lang="ts">
+NEW BOOTSTRAP FLOW
+
+<!-- <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { Badge } from '$lib/components/ui/badge';
+	import { MachineService, type Machine } from '$gen/api/machine/v1/machine_pb';
+	import { type Facility } from '$gen/api/facility/v1/facility_pb';
 	import {
-		Nexus,
-		type AddCephUnitsRequest,
-		type Facility,
-		type Machine
-	} from '$gen/api/nexus/v1/nexus_pb';
+		EssentialService,
+		type AddUnitsRequest,
+		type Essential
+	} from '$gen/api/essential/v1/essential_pb';
 
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { Input } from '$lib/components/ui/input';
@@ -27,13 +30,14 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const machineClient = createClient(MachineService, transport);
+	const essentialClient = createClient(EssentialService, transport);
 
 	const machinesStore = writable<Machine[]>([]);
 	const machinesLoading = writable(true);
 	async function fetchMachines() {
 		try {
-			const response = await client.listMachines({});
+			const response = await machineClient.listMachines({});
 			machinesStore.set(response.machines);
 		} catch (error) {
 			console.error('Error fetching:', error);
@@ -45,9 +49,9 @@
 	const DEFAULT_MACHINES = [] as Machine[];
 	const DEFAULT_REQUEST = {
 		scopeUuid: scopeUuid,
-		facilityName: ceph.name,
+		name: ceph.name,
 		machineIds: [] as string[]
-	} as AddCephUnitsRequest;
+	} as AddUnitsRequest;
 
 	let addCephUnitsRequest = $state(DEFAULT_REQUEST);
 	let selectedMachines = $state(DEFAULT_MACHINES);
@@ -125,13 +129,13 @@
 			<AlertDialog.Cancel onclick={reset} class="mr-auto">Cancel</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
-					toast.promise(() => client.addCephUnits(addCephUnitsRequest), {
+					toast.promise(() => essentialClient.addUnits(addCephUnitsRequest), {
 						loading: 'Loading...',
 						success: (r) => {
-							return `Add units for ${addCephUnitsRequest.facilityName} success`;
+							return `Add units for ${addCephUnitsRequest.name} success`;
 						},
 						error: (e) => {
-							let msg = `Fail to add units for ${addCephUnitsRequest.facilityName}`;
+							let msg = `Fail to add units for ${addCephUnitsRequest.name}`;
 							toast.error(msg, {
 								description: (e as ConnectError).message.toString(),
 								duration: Number.POSITIVE_INFINITY
@@ -148,4 +152,4 @@
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
-</AlertDialog.Root>
+</AlertDialog.Root> -->

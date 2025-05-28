@@ -12,7 +12,8 @@
 	import PowerOffMachine from './power-off.svelte';
 	import CreateMachine from './create.svelte';
 	import DeleteMachine from './delete.svelte';
-	import { Nexus, type Machine, type Tag } from '$gen/api/nexus/v1/nexus_pb';
+	import { MachineService, type Machine } from '$gen/api/machine/v1/machine_pb';
+	import { TagService, type Tag } from '$gen/api/tag/v1/tag_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -26,12 +27,13 @@
 	const machineSubvalueContentClass = cn('text-xs font-extralight');
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(Nexus, transport);
+	const machineClient = createClient(MachineService, transport);
+	const tagClient = createClient(TagService, transport);
 
 	const tagStore = writable<Tag[]>();
 	async function fetchTags() {
 		try {
-			const response = await client.listTags({});
+			const response = await tagClient.listTags({});
 			tagStore.set(response.tags);
 		} catch (error) {
 			console.error('Error fetching tags:', error);
@@ -46,7 +48,7 @@
 			console.log(`Refresh machines`);
 
 			try {
-				const response = await client.listMachines({});
+				const response = await machineClient.listMachines({});
 				machines = response.machines;
 			} catch (error) {
 				console.error('Error refreshing:', error);

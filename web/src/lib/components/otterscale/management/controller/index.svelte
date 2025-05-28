@@ -2,7 +2,7 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import CreateScope from './scope/create.svelte';
-	import { type Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import { type Scope } from '$gen/api/scope/v1/scope_pb';
 	import { ManagementScopes, ManagementFacilities } from '$lib/components/otterscale/index';
 
 	let { scopes }: { scopes: Scope[] } = $props();

@@ -10,7 +10,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table/index.js';
 
-	import { type Network_Subnet } from '$gen/api/nexus/v1/nexus_pb';
+	import { type Network_Subnet } from '$gen/api/network/v1/network_pb';
 
 	let {
 		subnet
