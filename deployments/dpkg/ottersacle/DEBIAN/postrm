@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -e
-
-rm -f /etc/ottersacle/juju.crt
-rm -f /etc/ottersacle/ottersacle.conf
-
-exit 0

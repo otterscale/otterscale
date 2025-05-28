@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -e
-
-# Stop and disable service before removal
-systemctl stop ottersacle.service 2>/dev/null || true
-systemctl disable ottersacle.service 2>/dev/null || true
-
-exit 0
