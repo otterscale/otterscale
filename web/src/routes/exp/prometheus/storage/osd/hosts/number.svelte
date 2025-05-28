@@ -3,8 +3,6 @@
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../../utils/empty.svelte';
-	import { formatCapacity } from '$lib/formatter';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
 
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
@@ -17,11 +15,12 @@
 {#await client.instantQuery(query)}
 	<ComponentLoading />
 {:then response}
-	{@const result = response.result}
-	{#if result.length === 0}
+	{@const results = response.result}
+	{#if results.length === 0}
 		<NoData />
 	{:else}
-		{@const number = result[0].value.value}
+		{@const [result] = results}
+		{@const number = result.value.value}
 		<p class="text-5xl">{number}</p>
 	{/if}
 {:catch error}
