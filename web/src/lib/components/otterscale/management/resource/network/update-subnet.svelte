@@ -6,11 +6,11 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import {
-		Nexus,
+		NetworkService,
 		type Network,
 		type Network_Subnet,
 		type UpdateSubnetRequest
-	} from '$gen/api/nexus/v1/nexus_pb';
+	} from '$gen/api/network/v1/network_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
@@ -18,8 +18,8 @@
 	let { networks = $bindable(), subnet }: { networks: Network[]; subnet: Network_Subnet } =
 		$props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(NetworkService, transport);
 
 	const DEFAULT_REQUEST = {
 		id: subnet.id,

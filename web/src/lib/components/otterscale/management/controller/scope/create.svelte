@@ -5,14 +5,14 @@
 	import { Input } from '$lib/components/ui/input';
 	import { getContext } from 'svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Nexus, type CreateScopeRequest, type Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import { ScopeService, type Scope, type CreateScopeRequest } from '$gen/api/scope/v1/scope_pb';
 	import { toast } from 'svelte-sonner';
 	import { Button } from '$lib/components/ui/button';
 
 	let { label = false, scopes = $bindable() }: { label: boolean; scopes: Scope[] } = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(ScopeService, transport);
 
 	const DEFAULT_REQUEST = {} as CreateScopeRequest;
 

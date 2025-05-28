@@ -5,20 +5,19 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
-	import type { Facility_Info } from '$gen/api/nexus/v1/nexus_pb';
+	import { type Essential } from '$gen/api/essential/v1/essential_pb';
 
 	let {
 		kuberneteses,
 		selected = $bindable(),
 		onSelect
-	}: { kuberneteses: Facility_Info[]; selected: string; onSelect: () => {} } = $props();
+	}: { kuberneteses: Essential[]; selected: string; onSelect: () => {} } = $props();
 
 	let open = $state(false);
 	let triggerRef = $state<HTMLButtonElement>(null!);
 
 	const selectedValue = $derived(
-		kuberneteses.find((f) => f.scopeUuid + '/' + f.facilityName === selected)?.facilityName ??
-			'Select a kubernetes'
+		kuberneteses.find((f) => f.scopeUuid + '/' + f.name === selected)?.name ?? 'Select a kubernetes'
 	);
 
 	// We want to refocus the trigger button when the user selects
@@ -55,18 +54,18 @@
 				<Command.Group value="kubernetes">
 					{#each kuberneteses as k}
 						<Command.Item
-							value={k.scopeUuid + '/' + k.facilityName}
+							value={k.scopeUuid + '/' + k.name}
 							onSelect={() => {
-								selected = k.scopeUuid + '/' + k.facilityName;
+								selected = k.scopeUuid + '/' + k.name;
 								closeAndFocusTrigger();
 								onSelect();
 							}}
 						>
 							<Icon
 								icon="ph:check"
-								class={cn(selected !== k.scopeUuid + '/' + k.facilityName && 'text-transparent')}
+								class={cn(selected !== k.scopeUuid + '/' + k.name && 'text-transparent')}
 							/>
-							{k.facilityName}
+							{k.name}
 						</Command.Item>
 					{/each}
 				</Command.Group>

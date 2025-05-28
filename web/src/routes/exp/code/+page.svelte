@@ -4,7 +4,6 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Resizable from '$lib/components/ui/resizable';
 
-	import { KubeService } from '$gen/api/kube/v1/kube_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { get, writable } from 'svelte/store';
@@ -23,6 +22,7 @@
 	import 'highlight.js/styles/github.css';
 
 	import Icon from '@iconify/svelte';
+	import { ApplicationService } from '$gen/api/application/v1/application_pb';
 
 	let md = $state(`# Hello world!
  - 1123
@@ -40,7 +40,7 @@
 
 	// Get the transport out of context
 	const transport: Transport = getContext('transport');
-	const client = createClient(KubeService, transport);
+	const client = createClient(ApplicationService, transport);
 
 	let isLoading = $state(true);
 
@@ -49,12 +49,12 @@
 
 	onMount(async () => {
 		await client
-			.getChartInfo({
+			.getChartMetadata({
 				chartRef: 'oci://registry-1.docker.io/bitnamicharts/nginx:19.0.1'
 			})
 			.then((res) => {
-				values = res.values;
-				readme = res.readme;
+				values = res.valuesYaml;
+				readme = res.readmeMd;
 			})
 			.finally(() => {
 				isLoading = false;
@@ -112,7 +112,7 @@
 	</Dialog.Content>
 </Dialog.Root>
 
-<div class="text-muted-foreground flex h-full w-full items-center justify-center gap-2 text-sm">
+<div class="flex h-full w-full items-center justify-center gap-2 text-sm text-muted-foreground">
 	<Icon icon="ph:spinner" class="size-8 animate-spin" />
 	Loading...
 </div>

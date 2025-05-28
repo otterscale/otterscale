@@ -4,7 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
-	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
 	let { selectedScope = $bindable(), scopes }: { selectedScope: Scope; scopes: Scope[] } = $props();
 </script>

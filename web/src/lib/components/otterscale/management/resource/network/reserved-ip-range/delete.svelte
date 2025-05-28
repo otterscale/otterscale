@@ -6,10 +6,10 @@
 	import { toast } from 'svelte-sonner';
 
 	import {
-		Nexus,
+		NetworkService,
 		type DeleteIPRangeRequest,
 		type Network_IPRange
-	} from '$gen/api/nexus/v1/nexus_pb';
+	} from '$gen/api/network/v1/network_pb';
 
 	let {
 		ipRange
@@ -17,8 +17,8 @@
 		ipRange: Network_IPRange;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(NetworkService, transport);
 
 	const DEFAULT_REQUEST = { id: ipRange.id } as DeleteIPRangeRequest;
 

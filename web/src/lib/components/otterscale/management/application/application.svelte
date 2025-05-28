@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Application } from '$gen/api/nexus/v1/nexus_pb';
+	import { type Application } from '$gen/api/application/v1/application_pb';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 

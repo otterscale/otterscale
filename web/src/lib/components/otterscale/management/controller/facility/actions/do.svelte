@@ -6,12 +6,16 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Button } from '$lib/components/ui/button';
 
-	import { Nexus, type Facility_Action, type DoActionRequest } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		FacilityService,
+		type Facility_Action,
+		type DoActionRequest
+	} from '$gen/api/facility/v1/facility_pb';
 
 	let { action }: { action: Facility_Action } = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(FacilityService, transport);
 
 	const DEFAULT_REQUEST = {} as DoActionRequest;
 	let doActionRequest = $state(DEFAULT_REQUEST);

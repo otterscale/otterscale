@@ -6,7 +6,7 @@
 	import { System } from './system';
 	import { Storage } from './storage';
 
-	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
 	let {
 		client,

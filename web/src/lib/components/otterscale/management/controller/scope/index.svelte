@@ -7,14 +7,14 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { getContext, onMount } from 'svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { Nexus, type Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import { ScopeService, type Scope } from '$gen/api/scope/v1/scope_pb';
 	import * as Table from '$lib/components/ui/table';
 	import { writable } from 'svelte/store';
 
 	let { scopes }: { scopes: Scope[] } = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(ScopeService, transport);
 
 	const scopesStore = writable<Scope[]>([]);
 	async function refreshScopes() {

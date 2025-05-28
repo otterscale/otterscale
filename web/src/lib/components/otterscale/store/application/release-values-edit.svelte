@@ -7,7 +7,10 @@
 	import * as Resizable from '$lib/components/ui/resizable';
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Nexus, type Application_Chart_Metadata } from '$gen/api/nexus/v1/nexus_pb';
+	import {
+		ApplicationService,
+		type Application_Chart_Metadata
+	} from '$gen/api/application/v1/application_pb';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { get, writable } from 'svelte/store';
@@ -36,8 +39,8 @@
 		valuesMap: { [key: string]: string };
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(ApplicationService, transport);
 
 	const chartMetadataStore = writable<Application_Chart_Metadata>();
 	const chartMetadataLoading = writable(true);

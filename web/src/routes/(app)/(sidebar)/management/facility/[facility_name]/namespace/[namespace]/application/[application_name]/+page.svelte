@@ -5,10 +5,10 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { Nexus, type Application } from '$gen/api/nexus/v1/nexus_pb';
+	import { ApplicationService, type Application } from '$gen/api/application/v1/application_pb';
 
-	const transport: Transport = getContext('transportNEW');
-	const client = createClient(Nexus, transport);
+	const transport: Transport = getContext('transport');
+	const client = createClient(ApplicationService, transport);
 
 	const applicationStore = writable<Application>();
 	const applicationIsLoading = writable(true);

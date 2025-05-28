@@ -5,7 +5,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import Number from './number.svelte';
-	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();

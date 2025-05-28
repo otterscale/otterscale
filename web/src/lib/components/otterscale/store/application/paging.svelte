@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Pagination from '$lib/components/ui/pagination/index.js';
 	import { STORE_ITEMS_PER_ROW, STORE_ROWS_PER_PAGE } from '$lib/components/otterscale/index';
-	import type { Application_Chart } from '$gen/api/nexus/v1/nexus_pb';
+	import { type Application_Chart } from '$gen/api/application/v1/application_pb';
 
 	let {
 		filteredCharts = $bindable(),

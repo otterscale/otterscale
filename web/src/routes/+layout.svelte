@@ -28,12 +28,6 @@
 	});
 
 	setContext('transport', transport);
-
-	const transportNEW = createConnectTransport({
-		baseUrl: import.meta.env.PUBLIC_API_URL_NEW
-	});
-
-	setContext('transportNEW', transportNEW);
 </script>
 
 <Metadata />

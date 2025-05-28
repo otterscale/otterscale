@@ -1,4 +1,6 @@
-<script lang="ts">
+NEW BOOTSTRAP FLOW
+
+<!-- <script lang="ts">
 	import { getContext } from 'svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
@@ -19,7 +21,7 @@
 		type Machine
 	} from '$gen/api/nexus/v1/nexus_pb';
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const scopesStore = writable<Scope[]>([]);
@@ -201,4 +203,4 @@
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
-</AlertDialog.Root>
+</AlertDialog.Root> -->
