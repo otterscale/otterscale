@@ -6,7 +6,7 @@
 	import { AppSidebar } from '$lib/components/sidebar';
 	import { Avatar, FunctionBar, SearchBar } from '$lib/components/navbar';
 	import { capitalizeFirstLetter } from 'better-auth';
-	import type { PageData } from '../../$types';
+	import type { PageData } from './$types';
 	import type { Snippet } from 'svelte';
 	import { i18n } from '$lib/i18n';
 
