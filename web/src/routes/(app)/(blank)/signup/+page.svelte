@@ -1,33 +1,33 @@
 <script lang="ts">
-	import { UserCreateForm } from '$lib/components/login';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import { Button } from '$lib/components/ui/button';
+	import { SignupForm } from '$lib/components/login';
 	import { appendCallback } from '$lib/callback';
 </script>
 
-<div
-	class="container relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0"
->
-	<div class="relative hidden h-full flex-col bg-muted p-10 dark:border-r lg:flex">
-		<img
-			src="/images/placeholder.svg"
-			alt="placeholder"
-			class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.6] dark:grayscale"
-		/>
-		<div class="relative z-20 flex items-center text-lg font-medium">
-			<img src="/images/phison.svg" alt="phison" class="w-28" />
-		</div>
+<div class="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+	<div class="flex w-full max-w-sm flex-col items-center gap-6">
+		<Avatar.Root class="size-24 shadow-xl">
+			<Avatar.Image src="/images/otterscale.jpeg" alt="@shadcn" />
+			<Avatar.Fallback>OS</Avatar.Fallback>
+		</Avatar.Root>
+		<SignupForm />
 	</div>
-	<div class="p-8">
-		<div class="mx-auto flex w-full flex-col items-center justify-center space-y-6">
-			<div class="flex flex-col space-y-2 text-center">
-				<h1 class="text-2xl font-semibold tracking-tight">Sign Up</h1>
-				<p class="text-sm text-muted-foreground">Enter your information to create an account</p>
-			</div>
-			<UserCreateForm />
-			<div class="text-center text-sm text-muted-foreground">
-				Already have an account?
-				<a href={appendCallback('/login')} class="underline"> Sign in </a>
-			</div>
-		</div>
+	<div class="space-y-1 text-center text-xs text-muted-foreground">
+		<p>By continuing, you agree to our</p>
+		<p>
+			<a href="/terms" class="underline underline-offset-4 hover:text-primary">
+				Terms of Service
+			</a>
+			and
+			<a href="/privacy" class="underline underline-offset-4 hover:text-primary">
+				Privacy Policy
+			</a>
+			.
+		</p>
 	</div>
+</div>
+
+<div class="absolute right-4 top-4 flex md:right-8 md:top-8">
+	<Button href={appendCallback('/login')} variant="ghost">Login</Button>
 </div>
