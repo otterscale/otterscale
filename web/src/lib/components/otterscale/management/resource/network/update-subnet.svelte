@@ -18,7 +18,7 @@
 	let { networks = $bindable(), subnet }: { networks: Network[]; subnet: Network_Subnet } =
 		$props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const DEFAULT_REQUEST = {

@@ -18,7 +18,7 @@
 
 	let { configuration = $bindable() }: { configuration: Configuration } = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const bootImageSelectionsStore = writable<Configuration_BootImageSelection[]>([]);

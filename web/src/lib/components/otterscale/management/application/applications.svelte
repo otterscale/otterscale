@@ -31,7 +31,7 @@
 	let scopeUuid = $state('');
 	let facilityName = $state('');
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	async function setDefaultScope() {
@@ -336,7 +336,7 @@
 				<p class="text-3xl">
 					{Math.round(healthByType)}%
 				</p>
-				<p class="text-muted-foreground text-xs">
+				<p class="text-xs text-muted-foreground">
 					{numberOfHealthApplicationsByType} Running over {numberOApplicationsByType} pods
 				</p>
 			</Card.Content>

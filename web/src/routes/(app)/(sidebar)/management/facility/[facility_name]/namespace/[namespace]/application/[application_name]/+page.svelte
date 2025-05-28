@@ -7,7 +7,7 @@
 	import { writable } from 'svelte/store';
 	import { Nexus, type Application } from '$gen/api/nexus/v1/nexus_pb';
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const applicationStore = writable<Application>();

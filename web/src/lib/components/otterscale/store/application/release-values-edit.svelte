@@ -36,7 +36,7 @@
 		valuesMap: { [key: string]: string };
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const chartMetadataStore = writable<Application_Chart_Metadata>();

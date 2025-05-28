@@ -16,7 +16,7 @@
 	let { networks = $bindable(), fabric }: { networks: Network[]; fabric: Network_Fabric } =
 		$props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const DEFAULT_REQUEST = { id: fabric.id, name: fabric.name } as UpdateFabricRequest;

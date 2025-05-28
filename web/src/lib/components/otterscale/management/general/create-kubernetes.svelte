@@ -22,7 +22,7 @@
 		type SetCephCSIRequest
 	} from '$gen/api/nexus/v1/nexus_pb';
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const scopesStore = writable<Scope[]>([]);

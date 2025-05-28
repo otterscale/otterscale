@@ -36,7 +36,7 @@
 
 	let scopeUuid = $state(page.url.searchParams.get('scope') || '');
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const kubernetesesStore = writable<Facility_Info[]>([]);

@@ -11,7 +11,7 @@
 
 	let { label = false, scopes = $bindable() }: { label: boolean; scopes: Scope[] } = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const DEFAULT_REQUEST = {} as CreateScopeRequest;

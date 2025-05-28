@@ -27,7 +27,7 @@
 	import { goto } from '$app/navigation';
 	import { fuzzLogosIcon } from '$lib/icon';
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const chartStore = writable<Application_Chart>();

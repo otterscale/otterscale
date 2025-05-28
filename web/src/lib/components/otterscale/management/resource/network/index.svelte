@@ -37,7 +37,7 @@
 		networks: Network[];
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const networksStore = writable<Network[]>([]);
@@ -89,7 +89,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each networks.sort((previous, prevent) => (previous.fabric?.name ?? '').localeCompare(prevent.fabric?.name ?? '')) as network}
+				{#each networks.sort( (previous, prevent) => (previous.fabric?.name ?? '').localeCompare(prevent.fabric?.name ?? '') ) as network}
 					<Table.Row>
 						{#if network.fabric}
 							<Table.Cell>

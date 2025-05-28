@@ -9,7 +9,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { page } from '$app/state';
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const scopesStore = writable<Scope[]>([]);

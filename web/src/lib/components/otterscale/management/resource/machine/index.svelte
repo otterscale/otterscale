@@ -25,7 +25,7 @@
 
 	const machineSubvalueContentClass = cn('text-xs font-extralight');
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const tagStore = writable<Tag[]>();

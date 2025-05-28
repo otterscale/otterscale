@@ -23,7 +23,7 @@
 		// selectedChartReleases: Application_Release[] | undefined;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const artifactsStore = writable<Facility_Charm_Artifact[]>([]);

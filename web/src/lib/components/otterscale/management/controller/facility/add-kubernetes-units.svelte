@@ -27,7 +27,7 @@
 		kubernetes: Facility;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const machinesStore = writable<Machine[]>([]);

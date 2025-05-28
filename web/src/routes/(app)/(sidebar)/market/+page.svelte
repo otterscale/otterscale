@@ -16,7 +16,7 @@
 	import { Store } from '$lib/components/otterscale/index';
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const chartsStore = writable<Application_Chart[]>([]);

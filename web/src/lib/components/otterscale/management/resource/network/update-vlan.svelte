@@ -21,7 +21,7 @@
 		vlan
 	}: { networks: Network[]; fabric: Network_Fabric; vlan: Network_VLAN } = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const DEFAULT_REQUEST = {

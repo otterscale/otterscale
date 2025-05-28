@@ -24,7 +24,7 @@
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const scopesStore = writable<Scope[]>([]);

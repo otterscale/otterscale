@@ -5,7 +5,7 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
-	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
 	let {
 		scopes,

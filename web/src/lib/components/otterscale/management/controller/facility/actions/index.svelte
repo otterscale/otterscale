@@ -18,7 +18,7 @@
 		facilityName: string;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const actionsStore = writable<Facility_Action[]>([]);

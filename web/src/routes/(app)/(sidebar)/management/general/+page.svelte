@@ -13,7 +13,7 @@
 
 	import { PageLoading } from '$lib/components/otterscale/ui/index';
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const configurationStore = writable<Configuration>();

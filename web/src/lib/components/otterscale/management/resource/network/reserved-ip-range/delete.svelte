@@ -17,7 +17,7 @@
 		ipRange: Network_IPRange;
 	} = $props();
 
-	const transport: Transport = getContext('transportNEW');
+	const transport: Transport = getContext('transport');
 	const client = createClient(Nexus, transport);
 
 	const DEFAULT_REQUEST = { id: ipRange.id } as DeleteIPRangeRequest;
