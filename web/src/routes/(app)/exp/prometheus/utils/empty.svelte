@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { cn } from '$lib/utils.js';
 	import { curveCatmullRom } from 'd3-shape';
 	import { AreaChart, Arc, Svg, Group, Chart, Text } from 'layerchart';
 
@@ -7,14 +8,17 @@
 
 	const content = 'No Data';
 
-	let { type = 'text' }: { type?: 'text' | 'gauge' | 'area' | null | undefined } = $props();
+	let {
+		type = 'text',
+		class: className
+	}: { type?: 'text' | 'gauge' | 'area' | null | undefined; class?: string } = $props();
 </script>
 
 {#if type === 'text'}
-	<p class="flex h-full w-full items-center justify-center">{content}</p>
+	<p class={cn('flex h-full w-full items-center justify-center', className)}>{content}</p>
 {:else if type === 'gauge'}
 	{@const data = Math.random() * 100}
-	<div class="flex h-full w-full items-center justify-center">
+	<div class={cn('flex h-full w-full items-center justify-center', className)}>
 		<div class="h-[173px] w-[173px]">
 			<Chart>
 				<Svg center>
@@ -41,7 +45,7 @@
 		x: index + 1,
 		y: Math.random()
 	}))}
-	<div class="relative h-full w-full">
+	<div class={cn('relative h-full w-full', className)}>
 		<div class="absolute inset-0">
 			<AreaChart
 				{data}

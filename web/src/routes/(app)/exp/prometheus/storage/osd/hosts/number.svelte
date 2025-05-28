@@ -1,18 +1,15 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
-	import { formatCapacity } from '$lib/formatter';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
-	import NoData from '../utils/empty.svelte';
+	import NoData from '../../../utils/empty.svelte';
+	import { formatCapacity } from '$lib/formatter';
+	import Badge from '$lib/components/ui/badge/badge.svelte';
 
-	let {
-		client,
-		scope: scope,
-		instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		node_memory_SwapTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+        count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})
 		`
 	);
 </script>
@@ -24,9 +21,8 @@
 	{#if result.length === 0}
 		<NoData />
 	{:else}
-		{@const memory = result[0].value.value}
-		{@const capacity = formatCapacity(memory / 1024 / 1024)}
-		<p class="text-3xl">{capacity.value} {capacity.unit}</p>
+		{@const number = result[0].value.value}
+		<p class="text-5xl">{number}</p>
 	{/if}
 {:catch error}
 	Error

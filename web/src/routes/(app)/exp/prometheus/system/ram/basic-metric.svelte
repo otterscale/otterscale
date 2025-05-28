@@ -4,13 +4,13 @@
 	import * as Card from '$lib/components/ui/card';
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
-	import { integrateSerieses } from '../index';
+	import { integrateSerieses } from '../..';
 	import { formatCapacity } from '$lib/formatter';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Button } from '$lib/components/ui/button';
 	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
-	import NoData from '../utils/empty.svelte';
+	import NoData from '../../utils/empty.svelte';
 	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';

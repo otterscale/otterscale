@@ -2,10 +2,10 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { Arc, Svg, Group, Chart, Text } from 'layerchart';
 	import { cn } from '$lib/utils';
-	import { metricColor, metricBackgroundColor } from '..';
+	import { metricColor, metricBackgroundColor } from '../..';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
-	import NoData from '../utils/empty.svelte';
+	import NoData from '../../utils/empty.svelte';
 
 	let {
 		client,
@@ -18,11 +18,9 @@
 		1
 		-
 		(
-			(
-				node_filesystem_avail_bytes{fstype!="rootfs",instance="${instance}",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
-			)
+			(node_memory_MemAvailable_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"})
 			/
-			node_filesystem_size_bytes{fstype!="rootfs",instance="${instance}",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
+			node_memory_MemTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		)
 		`
 	);
@@ -35,25 +33,25 @@
 	{#if result.length === 0}
 		<NoData type="gauge" />
 	{:else}
-		{@const rawSwapUsage = result[0].value.value}
+		{@const cpuUsage = result[0].value.value}
 		<div class="flex h-full w-full items-center justify-center">
 			<div class={cn(`h-[173px] w-[173px]`)}>
 				<Chart>
 					<Svg center>
 						<Group y={100 / 4}>
 							<Arc
-								value={rawSwapUsage * 100}
+								value={cpuUsage * 100}
 								domain={[0, 100]}
 								outerRadius={100}
 								innerRadius={-13}
 								cornerRadius={13}
 								range={[-120, 120]}
-								class={metricColor(rawSwapUsage * 100)}
-								track={{ class: metricBackgroundColor(rawSwapUsage * 100) }}
+								class={metricColor(cpuUsage * 100)}
+								track={{ class: metricBackgroundColor(cpuUsage * 100) }}
 								let:value
 							>
 								<Text
-									value={!isNaN(value) ? `${value.toFixed(2)}%` : 'NaN'}
+									value={`${value.toFixed(2)}%`}
 									textAnchor="middle"
 									verticalAnchor="middle"
 									class="text-xl tabular-nums"

@@ -2,18 +2,14 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
-	import NoData from '../utils/empty.svelte';
+	import NoData from '../../../utils/empty.svelte';
+	import { formatCapacity } from '$lib/formatter';
+	import Badge from '$lib/components/ui/badge/badge.svelte';
 
-	let {
-		client,
-		scope: scope,
-		instance: instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		count(
-		count by (cpu) (node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}"})
-		)
+		count(ceph_pool_metadata{juju_model_uuid=~"${scope.uuid}"})
 		`
 	);
 </script>
@@ -25,8 +21,8 @@
 	{#if result.length === 0}
 		<NoData />
 	{:else}
-		{@const cores = result[0].value.value}
-		<p class="text-3xl">{cores} Cores</p>
+		{@const number = result[0].value.value}
+		<p class="text-5xl">{number}</p>
 	{/if}
 {:catch error}
 	Error

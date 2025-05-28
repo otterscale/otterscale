@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { AreaChart, Svg, Axis, Points, Highlight } from 'layerchart';
+	import { AreaChart } from 'layerchart';
 	import * as Card from '$lib/components/ui/card';
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
+	import { integrateSerieses } from '../..';
+	import { formatCapacity } from '$lib/formatter';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Button } from '$lib/components/ui/button';
-	import { integrateSerieses } from '..';
-	import { formatNetworkIO } from '$lib/formatter';
 	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
-	import NoData from '../utils/empty.svelte';
+	import NoData from '../../utils/empty.svelte';
 	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
@@ -25,31 +25,19 @@
 
 	const step = 1 * 60;
 
-	const receiveQuery = $derived(
+	const usedQuery = $derived(
 		`
-		irate(
-			node_network_receive_bytes_total{device="lo",instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]
+		(
+			node_memory_SwapTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+		-
+			node_memory_SwapFree_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
 		)
-		*
-		8
 		`
 	);
-
-	const transmitQuery = $derived(
-		`
-		irate(
-			node_network_transmit_bytes_total{device="lo",instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]
-		)
-		*
-		8
-		`
-	);
-
-	let sampleSpaces = $state(new Map<Record<string, string>, SampleValue[]>());
 
 	async function fetch(query: string) {
 		try {
-			sampleSpaces.clear();
+			let sampleSpace = [] as SampleValue[];
 
 			const response = await client.rangeQuery(
 				query,
@@ -58,42 +46,26 @@
 				step
 			);
 			response.result.forEach((series) => {
-				const label = series.metric.labels;
-
-				if (!sampleSpaces.has(label)) {
-					sampleSpaces.set(label, []);
-				}
-
 				series.values.forEach((sampleValue: SampleValue) => {
-					sampleSpaces.get(label)?.push(sampleValue);
+					sampleSpace.push(sampleValue);
 				});
 			});
 
-			return sampleSpaces;
+			sampleSpace.sort((p, n) => p.time.getTime() - n.time.getTime());
+
+			return sampleSpace;
 		} catch (error) {
 			console.error('Error fetching:', error);
 		}
 	}
 
 	let serieses: Map<string, SampleValue[] | undefined> = $state(new Map());
-	let keys: string[] = $state([]);
-	const colors = ['hsl(var(--color-primary))', 'hsl(var(--color-secondary))'];
 
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
-			const receiveResponse = await fetch(receiveQuery);
-			receiveResponse?.forEach((value: SampleValue[], key: Record<string, string>) => {
-				const k = `receive ${key.device}`;
-				keys.push(k);
-				serieses.set(k, value);
-			});
-			const transmitResponse = await fetch(transmitQuery);
-			transmitResponse?.forEach((value: SampleValue[], key: Record<string, string>) => {
-				const k = `transmit ${key.device}`;
-				keys.push(k);
-				serieses.set(k, value);
-			});
+			const usedResponse = await fetch(usedQuery);
+			serieses.set('used', usedResponse);
 
 			mounted = true;
 		} catch (error) {
@@ -108,7 +80,7 @@
 	<Card.Root class="col-span-1 h-full w-full border-none shadow-none">
 		<Card.Header class="h-[100px]">
 			<Card.Title class="flex">
-				<h1 class="text-3xl">Network Traffic</h1>
+				<h1 class="text-3xl">SWAP</h1>
 				<HoverCard.Root>
 					<HoverCard.Trigger>
 						<Button variant="ghost" size="icon" class="hover:bg-muted">
@@ -116,7 +88,7 @@
 						</Button>
 					</HoverCard.Trigger>
 					<HoverCard.Content class="w-fit max-w-[38w] text-xs text-muted-foreground">
-						Basic Network Information per Interface
+						Basic Memory Information
 					</HoverCard.Content>
 				</HoverCard.Root>
 			</Card.Title>
@@ -130,26 +102,23 @@
 					<AreaChart
 						{data}
 						x="time"
-						series={keys.map((k, i) => ({
-							key: k,
-							color: colors[i]
-						}))}
+						series={[{ key: 'used', color: 'hsl(var(--color-primary))' }]}
 						legend={{
 							classes: { root: '-mb-[50px] w-full overflow-auto' }
 						}}
 						props={{
 							tooltip: {
-								root: { class: 'bg-white/60 p-3 rounded shadow-lg max-h-[50vh] overflow-auto' },
+								root: { class: 'bg-white/60 p-3 rounded shadow-lg' },
 								header: { class: 'font-light' },
 								item: {
 									format: (v) => {
-										const capacity = formatNetworkIO(v);
+										const capacity = formatCapacity(v / 1024 / 1024);
 										return `${capacity.value} ${capacity.unit}`;
 									}
 								}
 							},
 							yAxis: {
-								format: (v) => `${(v / 1024 / 1024).toFixed(0)} Mb/s`
+								format: (v) => `${(v / 1024 / 1024 / 1024).toFixed(0)} GiB`
 							}
 						}}
 						{renderContext}

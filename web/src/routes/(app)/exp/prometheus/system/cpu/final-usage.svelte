@@ -2,10 +2,10 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { Arc, Svg, Group, Chart, Text } from 'layerchart';
 	import { cn } from '$lib/utils';
-	import { metricColor, metricBackgroundColor } from '..';
+	import { metricColor, metricBackgroundColor } from '../..';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/nexus/v1/nexus_pb';
-	import NoData from '../utils/empty.svelte';
+	import NoData from '../../utils/empty.svelte';
 
 	let {
 		client,
