@@ -142,14 +142,14 @@
 								root: { class: 'bg-white/60 p-3 rounded shadow-lg max-h-[50vh] overflow-auto' },
 								header: { class: 'font-light' },
 								item: {
-									format: (v) => {
+									format: (v: number) => {
 										const capacity = formatNetworkIO(v);
 										return `${capacity.value} ${capacity.unit}`;
 									}
 								}
 							},
 							yAxis: {
-								format: (v) => `${(v / 1024 / 1024).toFixed(0)} Mb/s`
+								format: (v: number) => `${(v / 1024 / 1024).toFixed(0)} Mb/s`
 							}
 						}}
 						{renderContext}

@@ -111,14 +111,14 @@
 								root: { class: 'bg-white/60 p-3 rounded shadow-lg' },
 								header: { class: 'font-light' },
 								item: {
-									format: (v) => {
+									format: (v: number) => {
 										const capacity = formatCapacity(v / 1024 / 1024);
 										return `${capacity.value} ${capacity.unit}`;
 									}
 								}
 							},
 							yAxis: {
-								format: (v) => `${(v / 1024 / 1024 / 1024).toFixed(0)} GiB`
+								format: (v: number) => `${(v / 1024 / 1024 / 1024).toFixed(0)} GiB`
 							}
 						}}
 						{renderContext}
