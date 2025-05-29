@@ -1,4 +1,4 @@
-import { SampleValue } from 'prometheus-query';
+import { PrometheusDriver, InstantVector, SampleValue } from 'prometheus-query';
 
 
 export function metricColor(metric: number) {
@@ -19,6 +19,22 @@ export function metricBackgroundColor(metric: number) {
             return 'fill-muted dark:fill-muted-foreground';
         default:
             return 'fill-muted dark:fill-muted-foreground';
+    }
+}
+
+export async function fetchInstance(client: PrometheusDriver, query: string): Promise<InstantVector | undefined | null> {
+    try {
+        const response = await client.instantQuery(query);
+        const results = response.result;
+
+        if (results.length === 0) {
+            return undefined;
+        }
+
+        const [result] = results;
+        return result;
+    } catch (error) {
+        console.error('Error fetching:', error);
     }
 }
 

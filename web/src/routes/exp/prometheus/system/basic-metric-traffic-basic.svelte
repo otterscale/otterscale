@@ -7,7 +7,7 @@
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Button } from '$lib/components/ui/button';
-	import { integrateSerieses } from '..';
+	import { integrateSerieses } from '../utils';
 	import { formatNetworkIO } from '$lib/formatter';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../utils/empty.svelte';

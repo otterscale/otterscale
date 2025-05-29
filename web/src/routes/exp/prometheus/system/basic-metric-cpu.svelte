@@ -5,7 +5,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
-	import { integrateSerieses } from '..';
+	import { integrateSerieses } from '../utils';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Button } from '$lib/components/ui/button';
 	import NoData from '../utils/empty.svelte';

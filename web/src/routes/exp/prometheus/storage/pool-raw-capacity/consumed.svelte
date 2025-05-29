@@ -7,7 +7,7 @@
 
 	import { formatCapacity } from '$lib/formatter';
 	import { onMount } from 'svelte';
-	import { metricBackgroundColor, metricColor } from '../..';
+	import { metricBackgroundColor, metricColor, fetchInstance } from '../../utils';
 	import { cn } from '$lib/utils';
 
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
@@ -23,30 +23,14 @@
 		`
 	);
 
-	async function fetch(query: string): Promise<InstantVector | undefined | null> {
-		try {
-			const response = await client.instantQuery(query);
-			const results = response.result;
-
-			if (results.length === 0) {
-				return undefined;
-			}
-
-			const [result] = results;
-			return result;
-		} catch (error) {
-			console.error('Error fetching:', error);
-		}
-	}
-
 	let totalResponse: InstantVector | undefined | null = $state();
 	let consumedResponse: InstantVector | undefined | null = $state();
 
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
-			totalResponse = await fetch(totalQuery);
-			consumedResponse = await fetch(consumedQuery);
+			totalResponse = await fetchInstance(client, totalQuery);
+			consumedResponse = await fetchInstance(client, consumedQuery);
 
 			mounted = true;
 		} catch (error) {
