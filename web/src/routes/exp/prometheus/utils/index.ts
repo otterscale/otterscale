@@ -1,4 +1,6 @@
 import { PrometheusDriver, InstantVector, SampleValue } from 'prometheus-query';
+import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
+
 
 
 export function metricColor(metric: number) {
@@ -33,6 +35,30 @@ export async function fetchInstance(client: PrometheusDriver, query: string): Pr
 
         const [result] = results;
         return result;
+    } catch (error) {
+        console.error('Error fetching:', error);
+    }
+}
+
+export async function fetchRange(client: PrometheusDriver, timeRange: TimeRange, step: number, query: string) {
+    try {
+        let sampleSpace = [] as SampleValue[];
+
+        const response = await client.rangeQuery(
+            query,
+            timeRange.start.getTime(),
+            timeRange.end.getTime(),
+            step
+        );
+        response.result.forEach((series) => {
+            series.values.forEach((sampleValue: SampleValue) => {
+                sampleSpace.push(sampleValue);
+            });
+        });
+
+        sampleSpace.sort((p, n) => p.time.getTime() - n.time.getTime());
+
+        return sampleSpace;
     } catch (error) {
         console.error('Error fetching:', error);
     }
