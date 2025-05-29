@@ -103,12 +103,3 @@
 		{/key}
 	{/key}
 </div>
-
-<style>
-	.no-user-select {
-		user-select: none;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-	}
-</style>
