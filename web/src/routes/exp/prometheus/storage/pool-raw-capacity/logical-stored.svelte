@@ -19,10 +19,7 @@
 {:then response}
 	{@const results = response.result}
 	{#if results.length === 0}
-		<span class="flex w-full flex-wrap items-center justify-center gap-2">
-			<NoData class="w-fit" />
-			<Badge variant="outline" class="w-fit">logical stored</Badge>
-		</span>
+		<NoData />
 	{:else}
 		{@const [result] = results}
 		{@const value = result.value.value}

@@ -27,7 +27,7 @@
 	import { default as OSDRAMUtilization } from './osd-ram/index.svelte';
 	import { default as OSDCapacity } from './osd-capacity/index.svelte';
 	import { default as OSDDiskUtilization } from './osd-disk/index.svelte';
-	import { default as OSDPhysicalIOPS } from './osd-physical-io/index.svelte';
+	import { default as OSDPhysicalIOPS } from './osd-physical-iops/index.svelte';
 	import { default as OSDNetworkLoad } from './osd-network/index.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
