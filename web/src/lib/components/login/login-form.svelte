@@ -202,5 +202,6 @@
 				</div>
 			</div>
 		</Card.Content>
+		<Card.Footer></Card.Footer>
 	</Card.Root>
 </div>

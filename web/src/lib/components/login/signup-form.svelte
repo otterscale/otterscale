@@ -134,5 +134,6 @@
 				</div>
 			</form>
 		</Card.Content>
+		<Card.Footer></Card.Footer>
 	</Card.Root>
 </div>
