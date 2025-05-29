@@ -60,20 +60,24 @@ export function formatCapacity(capacity: number | bigint): { value: string, unit
     }
 }
 
-export function formatNetworkIO(bytes: number | bigint): { value: string, unit: string } {
+export function formatNetworkIO(bytes: number | bigint): { value: number, unit: string } {
     const B = Number(bytes);
     const KB = B / 1024;
     const MB = KB / 1024;
     const GB = MB / 1024;
+    const TB = GB / 1024;
 
-    if (GB >= 1) {
-        return { value: `${Math.round(GB * 100) / 100}`, unit: "GB/s" };
+
+    if (TB >= 1) {
+        return { value: Math.round(TB * 100) / 100, unit: "TB/s" };
+    } else if (GB >= 1) {
+        return { value: Math.round(GB * 100) / 100, unit: "GB/s" };
     } else if (MB >= 1) {
-        return { value: `${Math.round(MB * 100) / 100}`, unit: "MB/s" };
+        return { value: Math.round(MB * 100) / 100, unit: "MB/s" };
     } else if (KB >= 1) {
-        return { value: `${Math.round(KB * 100) / 100}`, unit: "KB/s" };
+        return { value: Math.round(KB * 100) / 100, unit: "KB/s" };
     } else {
-        return { value: `${Math.round(B * 100) / 100}`, unit: "B/s" };
+        return { value: Math.round(B * 100) / 100, unit: "B/s" };
     }
 }
 

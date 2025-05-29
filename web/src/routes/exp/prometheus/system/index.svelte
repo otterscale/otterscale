@@ -50,6 +50,8 @@
 				<span class="col-span-1">
 					<QuickUptime {client} scope={selectedScope} instance={selectedInstance} />
 				</span>
+			</div>
+			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 				<span class="col-span-1">
 					<QuickCPU {client} scope={selectedScope} instance={selectedInstance} />
 				</span>
@@ -103,12 +105,3 @@
 		{/key}
 	{/key}
 </div>
-
-<style>
-	.no-user-select {
-		user-select: none;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-	}
-</style>

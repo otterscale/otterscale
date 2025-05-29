@@ -2,7 +2,7 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { Arc, Svg, Group, Chart, Text } from 'layerchart';
 	import { cn } from '$lib/utils';
-	import { metricColor, metricBackgroundColor } from '../..';
+	import { metricColor, metricBackgroundColor } from '../../utils';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../utils/empty.svelte';

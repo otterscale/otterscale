@@ -4,7 +4,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
-	import { integrateSerieses } from '..';
+	import { integrateSerieses } from '../utils';
 	import { formatCapacity } from '$lib/formatter';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
@@ -111,14 +111,14 @@
 								root: { class: 'bg-white/60 p-3 rounded shadow-lg' },
 								header: { class: 'font-light' },
 								item: {
-									format: (v) => {
+									format: (v: number) => {
 										const capacity = formatCapacity(v / 1024 / 1024);
 										return `${capacity.value} ${capacity.unit}`;
 									}
 								}
 							},
 							yAxis: {
-								format: (v) => `${(v / 1024 / 1024 / 1024).toFixed(0)} GiB`
+								format: (v: number) => `${(v / 1024 / 1024 / 1024).toFixed(0)} GiB`
 							}
 						}}
 						{renderContext}

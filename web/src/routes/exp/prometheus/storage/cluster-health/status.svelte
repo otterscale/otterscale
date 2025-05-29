@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	const healthMap: Record<string, string> = {
-		0: 'HEALTH',
-		1: 'WARN',
+		0: 'HEALTHY',
+		1: 'WARNING',
 		2: 'ERROR'
 	};
 	const healthColorMap: Record<string, string> = {
@@ -35,7 +35,9 @@
 	{:else}
 		{@const [result] = results}
 		{@const health = String(result.value.value)}
-		<p class={cn('text-5xl', healthColorMap[health])}>{healthMap[health]}</p>
+		<p class={cn('overflow-hidden text-4xl font-bold', healthColorMap[health])}>
+			{healthMap[health]}
+		</p>
 	{/if}
 {:catch error}
 	Error

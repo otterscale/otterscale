@@ -14,23 +14,23 @@
 
 	const totalQuery = $derived(
 		`
-		sum(ceph_osd_stat_bytes{juju_model_uuid=~"${scope.uuid}"})
+		ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
-	const consumedQuery = $derived(
+	const usedQuery = $derived(
 		`
-		sum(ceph_pool_bytes_used{juju_model_uuid=~"${scope.uuid}"})
+		ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 
 	let totalResponse: InstantVector | undefined | null = $state();
-	let consumedResponse: InstantVector | undefined | null = $state();
+	let usedResponse: InstantVector | undefined | null = $state();
 
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
 			totalResponse = await fetchInstance(client, totalQuery);
-			consumedResponse = await fetchInstance(client, consumedQuery);
+			usedResponse = await fetchInstance(client, usedQuery);
 
 			mounted = true;
 		} catch (error) {
@@ -41,12 +41,12 @@
 
 {#if !mounted}
 	<ComponentLoading />
-{:else if !totalResponse || !consumedResponse}
+{:else if !totalResponse || !usedResponse}
 	<NoData />
 {:else}
 	{@const total = formatCapacity(totalResponse.value.value / 1024 / 1024)}
-	{@const consumed = formatCapacity(consumedResponse.value.value / 1024 / 1024)}
-	{@const value = (consumedResponse.value.value / totalResponse.value.value) * 100}
+	{@const used = formatCapacity(usedResponse.value.value / 1024 / 1024)}
+	{@const value = (usedResponse.value.value / totalResponse.value.value) * 100}
 	{@const radius = 100}
 	{@const border = radius * 2}
 	<div class="flex h-full w-full items-center justify-center">
@@ -73,7 +73,7 @@
 		</div>
 		<div class="absolute">
 			<p class="mt-10 text-xs font-extralight">
-				{`${consumed.value}${consumed.unit} / ${total.value}${total.unit}`}
+				{`${used.value}${used.unit} / ${total.value}${total.unit}`}
 			</p>
 		</div>
 	</div>

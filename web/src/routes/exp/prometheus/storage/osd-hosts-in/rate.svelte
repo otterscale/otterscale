@@ -1,36 +1,33 @@
 <script lang="ts">
-	import { PrometheusDriver, InstantVector } from 'prometheus-query';
+	import { InstantVector, PrometheusDriver } from 'prometheus-query';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../utils/empty.svelte';
-	import { Arc, Svg, Group, Chart, Text } from 'layerchart';
-
-	import { formatCapacity } from '$lib/formatter';
 	import { onMount } from 'svelte';
-	import { metricBackgroundColor, metricColor, fetchInstance } from '../../utils';
+	import { fetchInstance, metricBackgroundColor, metricColor } from '../../utils';
 	import { cn } from '$lib/utils';
+	import { Arc, Chart, Group, Svg } from 'layerchart';
 
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
-
 	const totalQuery = $derived(
 		`
-		sum(ceph_osd_stat_bytes{juju_model_uuid=~"${scope.uuid}"})
+        count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})
 		`
 	);
-	const consumedQuery = $derived(
+	const inQuery = $derived(
 		`
-		sum(ceph_pool_bytes_used{juju_model_uuid=~"${scope.uuid}"})
+        sum(ceph_osd_in{juju_model_uuid=~"${scope.uuid}"})
 		`
 	);
 
 	let totalResponse: InstantVector | undefined | null = $state();
-	let consumedResponse: InstantVector | undefined | null = $state();
+	let inResponse: InstantVector | undefined | null = $state();
 
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
 			totalResponse = await fetchInstance(client, totalQuery);
-			consumedResponse = await fetchInstance(client, consumedQuery);
+			inResponse = await fetchInstance(client, inQuery);
 
 			mounted = true;
 		} catch (error) {
@@ -41,12 +38,13 @@
 
 {#if !mounted}
 	<ComponentLoading />
-{:else if !totalResponse || !consumedResponse}
+{:else if !totalResponse || !inResponse}
 	<NoData />
 {:else}
-	{@const total = formatCapacity(totalResponse.value.value / 1024 / 1024)}
-	{@const consumed = formatCapacity(consumedResponse.value.value / 1024 / 1024)}
-	{@const value = (consumedResponse.value.value / totalResponse.value.value) * 100}
+	{@const totalNumber = Number(totalResponse.value.value)}
+	{@const inNumber = Number(inResponse.value.value)}
+	{@const value = (inNumber * 100) / totalNumber}
+	{@const reversedValue = 100 - value}
 	{@const radius = 100}
 	{@const border = radius * 2}
 	<div class="flex h-full w-full items-center justify-center">
@@ -61,8 +59,8 @@
 							innerRadius={-13}
 							cornerRadius={13}
 							range={[-120, 120]}
-							class={metricColor(value)}
-							track={{ class: metricBackgroundColor(value) }}
+							class={metricColor(reversedValue)}
+							track={{ class: metricBackgroundColor(reversedValue) }}
 						/>
 					</Group>
 				</Svg>
@@ -73,7 +71,7 @@
 		</div>
 		<div class="absolute">
 			<p class="mt-10 text-xs font-extralight">
-				{`${consumed.value}${consumed.unit} / ${total.value}${total.unit}`}
+				{inNumber} / {totalNumber}
 			</p>
 		</div>
 	</div>

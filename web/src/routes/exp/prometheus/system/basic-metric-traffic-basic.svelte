@@ -7,7 +7,7 @@
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { Button } from '$lib/components/ui/button';
-	import { integrateSerieses } from '..';
+	import { integrateSerieses } from '../utils';
 	import { formatNetworkIO } from '$lib/formatter';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../utils/empty.svelte';
@@ -142,14 +142,14 @@
 								root: { class: 'bg-white/60 p-3 rounded shadow-lg max-h-[50vh] overflow-auto' },
 								header: { class: 'font-light' },
 								item: {
-									format: (v) => {
+									format: (v: number) => {
 										const capacity = formatNetworkIO(v);
 										return `${capacity.value} ${capacity.unit}`;
 									}
 								}
 							},
 							yAxis: {
-								format: (v) => `${(v / 1024 / 1024).toFixed(0)} Mb/s`
+								format: (v: number) => `${(v / 1024 / 1024).toFixed(0)} Mb/s`
 							}
 						}}
 						{renderContext}
