@@ -3,7 +3,6 @@
 	import * as Card from '$lib/components/ui/card';
 	import Number from './number.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
 
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>

@@ -50,11 +50,23 @@
 				<ClusterHealthStatus {client} scope={selectedScope} />
 			</span>
 		</div>
+		<p class="text-xl font-bold">Cluster</p>
+		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+			<span class="col-span-1">
+				<ClusterHealthStatus {client} scope={selectedScope} />
+			</span>
+		</div>
 		<p class="text-xl font-bold">Pool</p>
 		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 			<span class="col-span-1">
 				<PoolMeta {client} scope={selectedScope} />
 			</span>
+			<span class="col-span-1">
+				<PoolRawCapacity {client} scope={selectedScope} />
+			</span>
+		</div>
+		<p class="text-xl font-bold">OSD Host</p>
+		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 			<span class="col-span-1">
 				<PoolRawCapacity {client} scope={selectedScope} />
 			</span>
@@ -71,10 +83,20 @@
 				<OSDRAMUtilization {client} scope={selectedScope} />
 			</span>
 			<span class="col-span-1">
+				<OSDCPUBusy {client} scope={selectedScope} />
+			</span>
+			<span class="col-span-1">
+				<OSDRAMUtilization {client} scope={selectedScope} />
+			</span>
+			<span class="col-span-1">
+				<OSDDiskUtilization {client} scope={selectedScope} />
 				<OSDDiskUtilization {client} scope={selectedScope} />
 			</span>
 			<span class="col-span-1">
 				<OSDPhysicalIOPS {client} scope={selectedScope} />
+			</span>
+			<span class="col-span-1">
+				<OSDNetworkLoad {client} scope={selectedScope} />
 			</span>
 			<span class="col-span-1">
 				<OSDNetworkLoad {client} scope={selectedScope} />
