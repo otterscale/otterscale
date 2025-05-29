@@ -12,7 +12,7 @@ import (
 )
 
 type Kube struct {
-	configSet  *config.ConfigSet
+	conf       *config.Config
 	clientsets *sync.Map
 
 	envSettings    *cli.EnvSettings
@@ -28,18 +28,14 @@ func New(conf *config.Config) (*Kube, error) {
 		return nil, err
 	}
 	return &Kube{
-		configSet:      conf.ConfigSet,
+		conf:           conf,
 		envSettings:    cli.New(),
 		registryClient: registryClient,
 	}, nil
 }
 
 func (m *Kube) helmRepoURLs() []string {
-	kube := m.configSet.GetKube()
-	if kube != nil {
-		return kube.GetHelmRepositoryUrls()
-	}
-	return nil
+	return m.conf.Kube.HelmRepositoryURLs
 }
 
 func (m *Kube) clientset(config *rest.Config) (*kubernetes.Clientset, error) {
