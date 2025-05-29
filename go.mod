@@ -12,16 +12,16 @@ require (
 	connectrpc.com/grpcreflect v1.3.0
 	github.com/canonical/gomaasclient v0.8.0
 	github.com/fsnotify/fsnotify v1.9.0
+	github.com/go-faker/faker/v4 v4.6.1
 	github.com/goccy/go-yaml v1.17.1
 	github.com/google/wire v0.6.0
 	github.com/juju/juju v0.0.0-20250408011917-ff0de670c36e
 	github.com/juju/names/v5 v5.0.0
-	github.com/moby/moby v28.0.4+incompatible
 	github.com/rs/cors v1.11.1
 	github.com/spf13/cobra v1.9.1
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/net v0.38.0
-	golang.org/x/sync v0.12.0
+	golang.org/x/sync v0.13.0
 	google.golang.org/protobuf v1.36.6
 	gopkg.in/yaml.v2 v2.4.0
 	helm.sh/helm/v3 v3.17.2
@@ -194,7 +194,7 @@ require (
 	golang.org/x/oauth2 v0.28.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/term v0.30.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/text v0.24.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250224174004-546df14abb99 // indirect
 	google.golang.org/grpc v1.71.0 // indirect
