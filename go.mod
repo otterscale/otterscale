@@ -10,7 +10,7 @@ require (
 	connectrpc.com/connect v1.18.1
 	connectrpc.com/grpchealth v1.3.0
 	connectrpc.com/grpcreflect v1.3.0
-	github.com/canonical/gomaasclient v0.8.0
+	github.com/canonical/gomaasclient v0.13.0
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/go-faker/faker/v4 v4.6.1
 	github.com/goccy/go-yaml v1.17.1
