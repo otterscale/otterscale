@@ -1,27 +1,14 @@
-<script lang="ts" module>
-	const healthMap: Record<string, string> = {
-		0: 'HEALTHY',
-		1: 'WARNING',
-		2: 'ERROR'
-	};
-	const healthColorMap: Record<string, string> = {
-		0: 'text-green-900 dark:text-green-800',
-		1: 'text-yellow-900 dark:text-yellow-800',
-		2: 'text-red-900 dark:text-red-800'
-	};
-</script>
-
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../utils/empty.svelte';
-	import { cn } from '$lib/utils';
+	import { formatNetworkIO } from '$lib/formatter';
 
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		ceph_health_status{juju_model_uuid=~"${scope.uuid}"}
+		sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[4m]))
 		`
 	);
 </script>
@@ -34,10 +21,8 @@
 		<NoData />
 	{:else}
 		{@const [result] = results}
-		{@const health = String(result.value.value)}
-		<p class={cn('overflow-hidden text-4xl font-bold', healthColorMap[health])}>
-			{healthMap[health]}
-		</p>
+		{@const iops = result.value.value}
+		<p class="text-5xl">{iops.toFixed(1)} ops/s</p>
 	{/if}
 {:catch error}
 	Error

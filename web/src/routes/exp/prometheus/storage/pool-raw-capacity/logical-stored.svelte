@@ -27,9 +27,9 @@
 		{@const [result] = results}
 		{@const value = result.value.value}
 		{@const capacity = formatCapacity(value / 1024 / 1024)}
-		<span class="flex flex-wrap items-end gap-2">
-			<p class="text-xl">{capacity.value} {capacity.unit}</p>
-			<Badge variant="outline" class="w-fit">logical stored</Badge>
+		<span class="flex gap-2">
+			<p class="whitespace-nowrap text-base">{capacity.value} {capacity.unit}</p>
+			<Badge variant="outline" class="w-fit">logical</Badge>
 		</span>
 	{/if}
 {:catch error}

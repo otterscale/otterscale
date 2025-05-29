@@ -4,8 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
-	import Consumed from './consumed.svelte';
-	import LogicalStored from './logical-stored.svelte';
+	import Consumed from './used.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 
@@ -17,7 +16,6 @@
 		<Card.Title>
 			<div class="flex">
 				<h1 class="overflow-hidden whitespace-nowrap text-3xl">Capacity</h1>
-
 				<HoverCard.Root>
 					<HoverCard.Trigger>
 						<Button variant="ghost" size="icon" class="hover:bg-muted">
@@ -45,14 +43,12 @@
 					</HoverCard.Content>
 				</HoverCard.Root>
 			</div>
-			<Badge>Consumed</Badge>
+			<Badge>Used</Badge>
 		</Card.Title>
 		<Card.Description></Card.Description>
 	</Card.Header>
 	<Card.Content class="h-[200px]">
 		<Consumed {client} {scope} />
 	</Card.Content>
-	<Card.Footer>
-		<LogicalStored {client} {scope} />
-	</Card.Footer>
+	<Card.Footer></Card.Footer>
 </Card.Root>
