@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log"
 	"log/slog"
 	"net"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/rs/cors"
 	"github.com/spf13/cobra"
+	"go.uber.org/automaxprocs/maxprocs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
@@ -23,6 +25,11 @@ func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 		Long:    "Start the OtterScale API server that provides gRPC and HTTP endpoints for all services",
 		Example: "otterscale serve --address=:8080",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			_, err := maxprocs.Set(maxprocs.Logger(log.Printf))
+			if err != nil {
+				slog.Error("Error setting GOMAXPROCS", "err", err)
+			}
+
 			slog.Info("Loading configuration file", "path", configPath)
 			if err := conf.Load(configPath); err != nil {
 				return err

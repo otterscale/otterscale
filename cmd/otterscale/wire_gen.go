@@ -17,10 +17,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-import (
-	_ "go.uber.org/automaxprocs"
-)
-
 // Injectors from wire.go:
 
 func wireCmd(bool2 bool) (*cobra.Command, func(), error) {

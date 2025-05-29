@@ -1,11 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/spf13/cobra"
-
-	_ "go.uber.org/automaxprocs"
 
 	oscmd "github.com/openhdc/otterscale/internal/cmd"
 	"github.com/openhdc/otterscale/internal/config"
@@ -29,19 +29,24 @@ func newCmd(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 	return cmd
 }
 
-func main() {
+func run() error {
 	// options
 	grpcHelper := true
 
 	// wire cmd
 	cmd, cleanup, err := wireCmd(grpcHelper)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer cleanup()
 
 	// start and wait for stop signal
-	if err := cmd.Execute(); err != nil {
-		panic(err)
+	return cmd.Execute()
+}
+
+func main() {
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 }
