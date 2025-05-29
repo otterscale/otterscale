@@ -7,16 +7,16 @@ import (
 )
 
 type MAAS struct {
-	configset *config.ConfigSet
+	conf *config.Config
 }
 
 func New(conf *config.Config) *MAAS {
 	return &MAAS{
-		configset: conf.ConfigSet,
+		conf: conf,
 	}
 }
 
 func (m *MAAS) client() (*client.Client, error) {
-	maas := m.configset.GetMaas()
-	return client.GetClient(maas.GetUrl(), maas.GetKey(), maas.GetVersion())
+	maas := m.conf.MAAS
+	return client.GetClient(maas.URL, maas.Key, maas.Version)
 }

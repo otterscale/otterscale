@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/moby/moby/pkg/namesgenerator"
+	"github.com/go-faker/faker/v4"
 	"golang.org/x/sync/errgroup"
 
 	"helm.sh/helm/v3/pkg/release"
@@ -122,7 +122,7 @@ func getReleaseName(name string) string {
 	if name != "" {
 		return name
 	}
-	return strings.ReplaceAll(namesgenerator.GetRandomName(0), "_", "-")
+	return strings.ToLower(faker.FirstName() + "-" + faker.Username())
 }
 
 func toReleaseValues(valuesYAML string, valuesMap map[string]string) (map[string]any, error) {

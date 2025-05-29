@@ -5,14 +5,36 @@ import (
 	"log/slog"
 	"os"
 
-	"buf.build/go/protoyaml"
 	"github.com/fsnotify/fsnotify"
+	"github.com/goccy/go-yaml"
 )
 
 const filePerm600 os.FileMode = 0o600
 
+type MAAS struct {
+	URL     string `yaml:"url"`
+	Key     string `yaml:"key"`
+	Version string `yaml:"version"`
+}
+
+type Juju struct {
+	ControllerAddresses []string `yaml:"controller_addresses"`
+	Username            string   `yaml:"username"`
+	Password            string   `yaml:"password"`
+	CACert              string   `yaml:"ca_cert"`
+	CloudName           string   `yaml:"cloud_name"`
+	CloudRegion         string   `yaml:"cloud_region"`
+	CharmhubAPIURL      string   `yaml:"charmhub_api_url"`
+}
+
+type Kube struct {
+	HelmRepositoryURLs []string `yaml:"helm_repository_urls"`
+}
+
 type Config struct {
-	ConfigSet *ConfigSet
+	MAAS MAAS `yaml:"maas"`
+	Juju Juju `yaml:"juju"`
+	Kube Kube `yaml:"kube"`
 
 	watcher *fsnotify.Watcher
 	path    string
@@ -24,8 +46,7 @@ func New() (*Config, func(), error) {
 		return nil, nil, err
 	}
 	conf := &Config{
-		ConfigSet: &ConfigSet{},
-		watcher:   watcher,
+		watcher: watcher,
 	}
 	return conf, func() { conf.Close() }, nil
 }
@@ -45,8 +66,8 @@ func (c *Config) Close() error {
 	return c.watcher.Close()
 }
 
-func (c *Config) Override(set *ConfigSet) error {
-	data, err := protoyaml.Marshal(set)
+func (c *Config) Override(config *Config) error {
+	data, err := yaml.Marshal(config)
 	if err != nil {
 		return err
 	}
@@ -58,7 +79,7 @@ func (c *Config) scan() error {
 	if err != nil {
 		return err
 	}
-	if err := protoyaml.Unmarshal(data, c.ConfigSet); err != nil {
+	if err := yaml.Unmarshal(data, c); err != nil {
 		return err
 	}
 	return nil
@@ -108,36 +129,32 @@ func InitFile(path string) error {
 	return fmt.Errorf("file already exists: %s", path)
 }
 
-func defaultConfigSet() *ConfigSet {
-	maas := &MAAS{}
-	maas.SetUrl("http://localhost:5240/MAAS/")
-	maas.SetKey("::")
-	maas.SetVersion("2.0")
-
-	juju := &Juju{}
-	juju.SetControllerAddresses([]string{"localhost:17070"})
-	juju.SetUsername("admin")
-	juju.SetPassword("password")
-	juju.SetCaCert(`-----BEGIN CERTIFICATE-----
+func defaultConfig() *Config {
+	return &Config{
+		MAAS: MAAS{
+			URL:     "http://localhost:5240/MAAS/",
+			Key:     "::",
+			Version: "2.0",
+		},
+		Juju: Juju{
+			ControllerAddresses: []string{"localhost:17070"},
+			Username:            "admin",
+			Password:            "password",
+			CACert: `-----BEGIN CERTIFICATE-----
 ...
------END CERTIFICATE-----`)
-	juju.SetCloudName("maas-cloud")
-	juju.SetCloudRegion("default")
-	juju.SetCharmhubApiUrl("https://api.charmhub.io")
-
-	kube := &Kube{}
-	kube.SetHelmRepositoryUrls([]string{"http://chartmuseum:8080"})
-
-	pb := &ConfigSet{}
-	pb.SetMaas(maas)
-	pb.SetJuju(juju)
-	pb.SetKube(kube)
-
-	return pb
+-----END CERTIFICATE-----`,
+			CloudName:      "maas-cloud",
+			CloudRegion:    "default",
+			CharmhubAPIURL: "https://api.charmhub.io",
+		},
+		Kube: Kube{
+			HelmRepositoryURLs: []string{"http://chartmuseum:8080"},
+		},
+	}
 }
 
 func createDefaultFile(path string) error {
-	data, err := protoyaml.Marshal(defaultConfigSet())
+	data, err := yaml.Marshal(defaultConfig())
 	if err != nil {
 		return err
 	}

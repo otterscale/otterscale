@@ -28,8 +28,7 @@ func NewEnvironmentUseCase(conf *config.Config) *EnvironmentUseCase {
 
 //nolint:mnd
 func (uc *EnvironmentUseCase) CheckHealthy(ctx context.Context) (int32, error) {
-	maas := uc.conf.ConfigSet.GetMaas()
-	if maas.GetKey() == "::" {
+	if uc.conf.MAAS.Key == "::" {
 		return 21, nil // NOT_INSTALLED
 	}
 	return 11, nil // OK
@@ -50,12 +49,11 @@ func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message st
 	})
 }
 
-func (uc *EnvironmentUseCase) UpdateConfig(ctx context.Context, set *config.ConfigSet) error {
-	return uc.conf.Override(set)
+func (uc *EnvironmentUseCase) UpdateConfig(ctx context.Context, conf *config.Config) error {
+	return uc.conf.Override(conf)
 }
 
 func (uc *EnvironmentUseCase) UpdateConfigHelmRepos(ctx context.Context, urls []string) error {
-	kube := uc.conf.ConfigSet.GetKube()
-	kube.SetHelmRepositoryUrls(urls)
-	return uc.conf.Override(uc.conf.ConfigSet)
+	uc.conf.Kube.HelmRepositoryURLs = urls
+	return uc.conf.Override(uc.conf)
 }

@@ -64,7 +64,7 @@ func (s *EnvironmentService) UpdateStatus(ctx context.Context, req *connect.Requ
 }
 
 func (s *EnvironmentService) UpdateConfig(ctx context.Context, req *connect.Request[pb.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.UpdateConfig(ctx, toConfigSet(req.Msg)); err != nil {
+	if err := s.uc.UpdateConfig(ctx, toConfig(req.Msg)); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -90,23 +90,20 @@ func (s *EnvironmentService) sendStatus(ctx context.Context, stream *connect.Ser
 	return stream.Send(resp)
 }
 
-func toConfigSet(req *pb.UpdateConfigRequest) *config.ConfigSet {
-	maas := &config.MAAS{}
-	maas.SetUrl(req.GetMaasUrl())
-	maas.SetKey(req.GetMaasKey())
-	maas.SetVersion(req.GetMaasVersion())
-
-	juju := &config.Juju{}
-	juju.SetControllerAddresses(req.GetJujuControllerAddresses())
-	juju.SetUsername(req.GetJujuUsername())
-	juju.SetPassword(req.GetJujuPassword())
-	juju.SetCaCert(req.GetJujuCaCert())
-	juju.SetCloudName(req.GetJujuCloudName())
-	juju.SetCloudRegion(req.GetJujuCloudRegion())
-
-	set := &config.ConfigSet{}
-	set.SetMaas(maas)
-	set.SetJuju(juju)
-
-	return set
+func toConfig(req *pb.UpdateConfigRequest) *config.Config {
+	return &config.Config{
+		MAAS: config.MAAS{
+			URL:     req.GetMaasUrl(),
+			Key:     req.GetMaasKey(),
+			Version: req.GetMaasVersion(),
+		},
+		Juju: config.Juju{
+			ControllerAddresses: req.GetJujuControllerAddresses(),
+			Username:            req.GetJujuUsername(),
+			Password:            req.GetJujuPassword(),
+			CACert:              req.GetJujuCaCert(),
+			CloudName:           req.GetJujuCloudName(),
+			CloudRegion:         req.GetJujuCloudRegion(),
+		},
+	}
 }
