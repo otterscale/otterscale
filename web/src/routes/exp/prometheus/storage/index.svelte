@@ -10,16 +10,16 @@
 		type TimeRange
 	} from '$lib/components/custom/date-timestamp-range-picker';
 
-	import { default as ClusterHealthStatus } from './cluster/health/index.svelte';
-	import { default as PoolMeta } from './pool/meta/index.svelte';
-	import { default as PoolRawCapacity } from './pool/raw-capacity/index.svelte';
-	import { default as PoolCompression } from './pool/compression/index.svelte';
-	import { default as OSDHosts } from './osd/hosts/index.svelte';
-	import { default as OSDCPUBusy } from './osd/cpu/index.svelte';
-	import { default as OSDRAMUtilization } from './osd/ram/index.svelte';
-	import { default as OSDDiskUtilization } from './osd/disk/index.svelte';
-	import { default as OSDPhysicalIOPS } from './osd/physical-io/index.svelte';
-	import { default as OSDNetworkLoad } from './osd/network/index.svelte';
+	import { default as ClusterHealthStatus } from './cluster-health/index.svelte';
+	import { default as PoolMeta } from './pool-meta/index.svelte';
+	import { default as PoolRawCapacity } from './pool-raw-capacity/index.svelte';
+	import { default as PoolCompression } from './pool-compression/index.svelte';
+	import { default as OSDHosts } from './osd-hosts/index.svelte';
+	import { default as OSDCPUBusy } from './osd-cpu/index.svelte';
+	import { default as OSDRAMUtilization } from './osd-ram/index.svelte';
+	import { default as OSDDiskUtilization } from './osd-disk/index.svelte';
+	import { default as OSDPhysicalIOPS } from './osd-physical-io/index.svelte';
+	import { default as OSDNetworkLoad } from './osd-network/index.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
 	let {

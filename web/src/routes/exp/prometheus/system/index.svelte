@@ -9,15 +9,15 @@
 		type TimeRange
 	} from '$lib/components/custom/date-timestamp-range-picker';
 
-	import { default as QuickUptime } from './uptime/quick-metric.svelte';
-	import { default as QuickCPU } from './cpu/quick-metric.svelte';
-	import { default as BasicCPU } from './cpu/basic-metric.svelte';
-	import { default as BasicRAM } from './ram/basic-metric.svelte';
-	import { default as QuickRAM } from './ram/quick-metric.svelte';
-	import { default as QuickSWAP } from './swap/quick-metric.svelte';
-	import { default as BasicSWAP } from './swap/basic-metric.svelte';
-	import { default as QuickRootFS } from './root-fs/quick-metric.svelte';
-	import { default as NetworkTrafficBasic } from './network/traffic-basic.svelte';
+	import { default as QuickUptime } from './quick-metric-uptime/index.svelte';
+	import { default as QuickCPU } from './quick-metric-cpu/index.svelte';
+	import { default as QuickRAM } from './quick-metric-ram/index.svelte';
+	import { default as QuickSWAP } from './quick-metric-swap/index.svelte';
+	import { default as QuickRootFS } from './quick-metric-root-fs/index.svelte';
+	import { default as BasicCPU } from './basic-metric-cpu.svelte';
+	import { default as BasicRAM } from './basic-metric-ram.svelte';
+	import { default as BasicSWAP } from './basic-metric-swap.svelte';
+	import { default as BasicNetworkTrafficBasic } from './basic-metric-traffic-basic.svelte';
 
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
@@ -91,7 +91,7 @@
 						/>
 					</span>
 					<span class="col-span-1">
-						<NetworkTrafficBasic
+						<BasicNetworkTrafficBasic
 							{client}
 							scope={selectedScope}
 							instance={selectedInstance}
