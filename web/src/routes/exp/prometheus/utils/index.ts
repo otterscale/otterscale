@@ -1,5 +1,6 @@
-import { PrometheusDriver, InstantVector, SampleValue } from 'prometheus-query';
+import { PrometheusDriver, InstantVector, SampleValue, Metric } from 'prometheus-query';
 import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
+export type SampleSpace = SampleValue[];
 
 export function metricColor(metric: number) {
     switch (true) {
@@ -48,6 +49,7 @@ export async function fetchRange(client: PrometheusDriver, timeRange: TimeRange,
             timeRange.end.getTime(),
             step
         );
+        console.log(response.result)
         response.result.forEach((series) => {
             series.values.forEach((sampleValue: SampleValue) => {
                 sampleSpace.push(sampleValue);
@@ -57,6 +59,34 @@ export async function fetchRange(client: PrometheusDriver, timeRange: TimeRange,
         sampleSpace.sort((p, n) => p.time.getTime() - n.time.getTime());
 
         return sampleSpace;
+    } catch (error) {
+        console.error('Error fetching:', error);
+    }
+}
+
+export async function fetchBatchRange(client: PrometheusDriver, timeRange: TimeRange, step: number, query: string) {
+    try {
+        let sampleSpaces = new Map<Metric, SampleSpace>();
+
+        const response = await client.rangeQuery(
+            query,
+            timeRange.start.getTime(),
+            timeRange.end.getTime(),
+            step
+        );
+
+        response.result.forEach((series) => {
+            let sampleSpace = [] as SampleValue[];
+
+            series.values.forEach((sampleValue: SampleValue) => {
+                sampleSpace.push(sampleValue);
+            });
+            sampleSpace.sort((p, n) => p.time.getTime() - n.time.getTime());
+
+            sampleSpaces.set(series.metric, sampleSpace)
+        });
+
+        return sampleSpaces;
     } catch (error) {
         console.error('Error fetching:', error);
     }

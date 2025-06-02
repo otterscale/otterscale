@@ -26,7 +26,7 @@
 		</div>
 	{/snippet}
 	{#snippet description()}
-		<Badge>Used</Badge>
+		<p class="text-xl">OSD</p>
 	{/snippet}
 	{#snippet content()}
 		<Consumed {client} {scope} />

@@ -8,7 +8,6 @@
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 	import { fetchRange } from '../utils';
-	import { formatNetworkIO } from '$lib/formatter';
 	import * as Template from '../utils/templates';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
@@ -22,14 +21,20 @@
 
 	const step = 1 * 60;
 
-	const writeQuery = $derived(
+	const degradedQuery = $derived(
 		`
-		sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))
+		sum(ceph_pg_degraded{juju_model_uuid=~"${scope.uuid}"})
 		`
 	);
-	const readQuery = $derived(
+	const staleQuery = $derived(
 		`
-		sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))
+		sum(ceph_pg_stale{jjuju_model_uuid=~"${scope.uuid}"})
+		`
+	);
+	const undersizedQuery = $derived(
+		`
+		sum(ceph_pg_undersized{juju_model_uuid=~"${scope.uuid}"})
+
 		`
 	);
 
@@ -38,11 +43,14 @@
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
-			const writeResponse = await fetchRange(client, timeRange, step, writeQuery);
-			serieses.set('write', writeResponse);
+			const degradedResponse = await fetchRange(client, timeRange, step, degradedQuery);
+			serieses.set('degraded', degradedResponse);
 
-			const readResponse = await fetchRange(client, timeRange, step, readQuery);
-			serieses.set('read', readResponse);
+			const staleResponse = await fetchRange(client, timeRange, step, staleQuery);
+			serieses.set('stale', staleResponse);
+
+			const undersizedResponse = await fetchRange(client, timeRange, step, undersizedQuery);
+			serieses.set('undersized', undersizedResponse);
 
 			mounted = true;
 		} catch (error) {
@@ -53,7 +61,7 @@
 
 {#if mounted}
 	{@const data = integrateSerieses(serieses)}
-	<Template.Area title="Throughput">
+	<Template.Area title="Stuck PGs">
 		{#snippet content()}
 			{#if data.length === 0}
 				<NoData type="area" />
@@ -63,28 +71,17 @@
 						{data}
 						x="time"
 						series={[
-							{ key: 'write', color: 'hsl(var(--color-primary))' },
-							{ key: 'read', color: 'hsl(var(--color-secondary))' }
+							{ key: 'degraded', color: 'hsl(var(--color-primary))' },
+							{ key: 'stale', color: 'hsl(var(--color-secondary))' },
+							{ key: 'undersized', color: 'hsl(var--color-neutral))' }
 						]}
 						legend={{
 							classes: { root: '-mb-[50px] w-full overflow-auto' }
 						}}
 						props={{
-							yAxis: {
-								format: (v: number) => {
-									const throughput = formatNetworkIO(v);
-									return `${throughput.value} ${throughput.unit}`;
-								}
-							},
 							tooltip: {
 								root: { class: 'bg-white/60 p-3 rounded shadow-lg' },
-								header: { class: 'font-light' },
-								item: {
-									format: (v: number) => {
-										const throughput = formatNetworkIO(v);
-										return `${throughput.value} ${throughput.unit}`;
-									}
-								}
+								header: { class: 'font-light' }
 							}
 						}}
 						{renderContext}

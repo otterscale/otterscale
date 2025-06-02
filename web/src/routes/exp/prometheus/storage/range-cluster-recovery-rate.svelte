@@ -22,14 +22,9 @@
 
 	const step = 1 * 60;
 
-	const writeQuery = $derived(
+	const recoveryQuery = $derived(
 		`
-		sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))
-		`
-	);
-	const readQuery = $derived(
-		`
-		sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))
+		sum(irate(ceph_osd_recovery_ops{juju_model_uuid=~"${scope.uuid}"}[5m]))
 		`
 	);
 
@@ -38,11 +33,8 @@
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
-			const writeResponse = await fetchRange(client, timeRange, step, writeQuery);
-			serieses.set('write', writeResponse);
-
-			const readResponse = await fetchRange(client, timeRange, step, readQuery);
-			serieses.set('read', readResponse);
+			const recoveryResponse = await fetchRange(client, timeRange, step, recoveryQuery);
+			serieses.set('recovery', recoveryResponse);
 
 			mounted = true;
 		} catch (error) {
@@ -53,7 +45,7 @@
 
 {#if mounted}
 	{@const data = integrateSerieses(serieses)}
-	<Template.Area title="Throughput">
+	<Template.Area title="Recovery">
 		{#snippet content()}
 			{#if data.length === 0}
 				<NoData type="area" />
@@ -62,10 +54,7 @@
 					<AreaChart
 						{data}
 						x="time"
-						series={[
-							{ key: 'write', color: 'hsl(var(--color-primary))' },
-							{ key: 'read', color: 'hsl(var(--color-secondary))' }
-						]}
+						series={[{ key: 'recovery', color: 'hsl(var(--color-primary))' }]}
 						legend={{
 							classes: { root: '-mb-[50px] w-full overflow-auto' }
 						}}

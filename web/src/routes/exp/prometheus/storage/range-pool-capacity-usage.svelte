@@ -7,8 +7,8 @@
 	import NoData from '../utils/empty.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
-	import { fetchRange } from '../utils';
-	import { formatNetworkIO } from '$lib/formatter';
+	import { fetchBatchRange } from '../utils';
+	import { formatCapacity } from '$lib/formatter';
 	import * as Template from '../utils/templates';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
@@ -22,14 +22,11 @@
 
 	const step = 1 * 60;
 
-	const writeQuery = $derived(
+	const query = $derived(
 		`
-		sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))
-		`
-	);
-	const readQuery = $derived(
-		`
-		sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))
+		ceph_pool_bytes_used{juju_model_uuid=~"${scope.uuid}"}
+		* on (pool_id) group_right ()
+		ceph_pool_metadata{juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 
@@ -38,11 +35,14 @@
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
-			const writeResponse = await fetchRange(client, timeRange, step, writeQuery);
-			serieses.set('write', writeResponse);
+			const batchResponses = await fetchBatchRange(client, timeRange, step, query);
 
-			const readResponse = await fetchRange(client, timeRange, step, readQuery);
-			serieses.set('read', readResponse);
+			if (batchResponses) {
+				for (const [metric, smapleSpace] of batchResponses) {
+					const labels = metric.labels as { name: string };
+					serieses.set(labels.name, smapleSpace);
+				}
+			}
 
 			mounted = true;
 		} catch (error) {
@@ -53,7 +53,15 @@
 
 {#if mounted}
 	{@const data = integrateSerieses(serieses)}
-	<Template.Area title="Throughput">
+	<Template.Area title="Capacity">
+		{#snippet hint()}
+			<p>
+				Historical view of capacity usage, to help identify growth and trends in pool consumption
+			</p>
+		{/snippet}
+		{#snippet description()}
+			<p class="text-xl">Pool</p>
+		{/snippet}
 		{#snippet content()}
 			{#if data.length === 0}
 				<NoData type="area" />
@@ -62,18 +70,20 @@
 					<AreaChart
 						{data}
 						x="time"
-						series={[
-							{ key: 'write', color: 'hsl(var(--color-primary))' },
-							{ key: 'read', color: 'hsl(var(--color-secondary))' }
-						]}
+						series={Array.from(serieses.keys()).map((key) => {
+							return {
+								key: key,
+								color: `hsl(${Math.random() * 360}, 60%, 40%)`
+							};
+						})}
 						legend={{
 							classes: { root: '-mb-[50px] w-full overflow-auto' }
 						}}
 						props={{
 							yAxis: {
 								format: (v: number) => {
-									const throughput = formatNetworkIO(v);
-									return `${throughput.value} ${throughput.unit}`;
+									const capacity = formatCapacity(v / 1024 / 1024);
+									return `${capacity.value} ${capacity.unit}`;
 								}
 							},
 							tooltip: {
@@ -81,8 +91,8 @@
 								header: { class: 'font-light' },
 								item: {
 									format: (v: number) => {
-										const throughput = formatNetworkIO(v);
-										return `${throughput.value} ${throughput.unit}`;
+										const capacity = formatCapacity(v / 1024 / 1024);
+										return `${capacity.value} ${capacity.unit}`;
 									}
 								}
 							}

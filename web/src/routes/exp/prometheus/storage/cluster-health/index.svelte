@@ -7,7 +7,7 @@
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>
 
-<Template.Metric title="Health">
+<Template.Metric title="Cluster Health">
 	{#snippet content()}
 		<Status {client} {scope} />
 	{/snippet}

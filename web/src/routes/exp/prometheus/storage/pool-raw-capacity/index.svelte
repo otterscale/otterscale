@@ -1,9 +1,5 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
-	import * as Card from '$lib/components/ui/card';
-	import Icon from '@iconify/svelte';
-	import { Button } from '$lib/components/ui/button';
-	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import Consumed from './consumed.svelte';
 	import LogicalStored from './logical-stored.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
@@ -13,7 +9,7 @@
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>
 
-<Template.Metric title="Capacity">
+<Template.Metric title="Raw Capacity">
 	{#snippet hint()}
 		<div class="flex flex-col gap-2">
 			<div class="flex items-center gap-2">
@@ -33,7 +29,7 @@
 		</div>
 	{/snippet}
 	{#snippet description()}
-		<Badge>Consumed</Badge>
+		<p class="text-xl">Pool</p>
 	{/snippet}
 	{#snippet content()}
 		<Consumed {client} {scope} />

@@ -28,6 +28,8 @@
 	import { default as PoolMeta } from './pool-meta/index.svelte';
 
 	import { default as PoolRawCapacity } from './pool-raw-capacity/index.svelte';
+	import { default as RangePoolCapacityUsage } from './range-pool-capacity-usage.svelte';
+	import { default as RangePoolRawCapacityUsage } from './range-pool-raw-capacity-usage.svelte';
 
 	import { default as PoolCompression } from './pool-compression/index.svelte';
 
@@ -50,6 +52,9 @@
 	import { default as RangeOSDLatency } from './range-osd-latency.svelte';
 
 	import { default as RangePlacementGroupStates } from './range-placement-group-states.svelte';
+	import { default as RangeStuckPlacementGroups } from './range-stuck-placement-groups.svelte';
+
+	import { default as RangeClusterRecoveryRate } from './range-cluster-recovery-rate.svelte';
 
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
@@ -76,19 +81,32 @@
 	</div>
 	{#key selectedScope}
 		{#key selectedTimeRange}
-			<p class="text-xl font-bold">Cluster</p>
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-				<span class="col-span-1">
+			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+				<span class="sm:col-span-1 md:col-span-2 lg:col-span-1">
 					<ClusterHealthStatus {client} scope={selectedScope} />
 				</span>
 				<span class="col-span-1">
-					<ClusterCapacity {client} scope={selectedScope} />
+					<OSDHosts {client} scope={selectedScope} />
 				</span>
 				<span class="col-span-1">
+					<PoolMeta {client} scope={selectedScope} />
+				</span>
+			</div>
+			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+				<span class="col-span-1">
+					<OSDHostsIn {client} scope={selectedScope} />
+				</span>
+				<span class="col-span-1">
+					<OSDHostsUp {client} scope={selectedScope} />
+				</span>
+				<span class="col-span-1 md:col-span-2 lg:col-span-1">
 					<ClusterMonitor {client} scope={selectedScope} />
 				</span>
 			</div>
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2">
+			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
+				<span class="col-span-1">
+					<ClusterCapacity {client} scope={selectedScope} />
+				</span>
 				<span class="col-span-1">
 					<RangeClusterCapacity {client} scope={selectedScope} timeRange={selectedTimeRange} />
 				</span>
@@ -100,43 +118,22 @@
 				<span class="col-span-1">
 					<ClusterReadThroughput {client} scope={selectedScope} />
 				</span>
+				<span class="sm:col-span-1 md:col-span-2 lg:col-span-2">
+					<RangeClusterThroughput {client} scope={selectedScope} timeRange={selectedTimeRange} />
+				</span>
+			</div>
+			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 				<span class="col-span-1">
 					<ClusterWriteIOPS {client} scope={selectedScope} />
 				</span>
 				<span class="col-span-1">
 					<ClusterReadIOPS {client} scope={selectedScope} />
 				</span>
-			</div>
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2">
-				<span class="col-span-1">
-					<RangeClusterThroughput {client} scope={selectedScope} timeRange={selectedTimeRange} />
-				</span>
-				<span class="col-span-1">
+				<span class="sm:col-span-1 md:col-span-2 lg:col-span-2">
 					<RangeClusterIOPS {client} scope={selectedScope} timeRange={selectedTimeRange} />
 				</span>
 			</div>
 
-			<p class="text-xl font-bold">Pool</p>
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-				<span class="col-span-1">
-					<PoolMeta {client} scope={selectedScope} />
-				</span>
-				<span class="col-span-1">
-					<PoolRawCapacity {client} scope={selectedScope} />
-				</span>
-			</div>
-			<p class="text-xl font-bold">OSD Host</p>
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-				<span class="col-span-1">
-					<OSDHosts {client} scope={selectedScope} />
-				</span>
-				<span class="col-span-1">
-					<OSDHostsIn {client} scope={selectedScope} />
-				</span>
-				<span class="col-span-1">
-					<OSDHostsUp {client} scope={selectedScope} />
-				</span>
-			</div>
 			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 				<span class="col-span-1">
 					<OSDCPUBusy {client} scope={selectedScope} />
@@ -148,7 +145,7 @@
 					<OSDDiskUtilization {client} scope={selectedScope} />
 				</span>
 				<span class="col-span-1">
-					<OSDCapacity {client} scope={selectedScope} />
+					<OSDNetworkLoad {client} scope={selectedScope} />
 				</span>
 			</div>
 			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2">
@@ -156,16 +153,15 @@
 					<RangeOSDLatency {client} scope={selectedScope} timeRange={selectedTimeRange} />
 				</span>
 				<span class="col-span-1">
-					<RangePlacementGroupStates {client} scope={selectedScope} timeRange={selectedTimeRange} />
+					<RangeClusterRecoveryRate {client} scope={selectedScope} timeRange={selectedTimeRange} />
 				</span>
 			</div>
-
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2">
 				<span class="col-span-1">
-					<OSDPhysicalIOPS {client} scope={selectedScope} />
+					<RangePlacementGroupStates {client} scope={selectedScope} timeRange={selectedTimeRange} />
 				</span>
 				<span class="col-span-1">
-					<OSDNetworkLoad {client} scope={selectedScope} />
+					<RangeStuckPlacementGroups {client} scope={selectedScope} timeRange={selectedTimeRange} />
 				</span>
 			</div>
 		{/key}
