@@ -12,7 +12,7 @@
 
 <Template.Metric title="Up">
 	{#snippet description()}
-		<Badge>Hosts</Badge>
+		<p class="text-xl">Hosts</p>
 	{/snippet}
 	{#snippet content()}
 		<Rate {client} {scope} />

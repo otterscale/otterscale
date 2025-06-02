@@ -2,17 +2,12 @@
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { AreaChart } from 'layerchart';
-	import * as Card from '$lib/components/ui/card';
-	import Icon from '@iconify/svelte';
 	import { onMount } from 'svelte';
 	import { integrateSerieses } from '../utils';
-	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
-	import { Button } from '$lib/components/ui/button';
 	import NoData from '../utils/empty.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 	import { fetchRange } from '../utils';
-	import { formatCapacity, formatNetworkIO } from '$lib/formatter';
 	import * as Template from '../utils/templates';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
@@ -91,8 +86,6 @@
 			const downResponse = await fetchRange(client, timeRange, step, downQuery);
 			serieses.set('down', downResponse);
 
-			console.log(serieses);
-
 			mounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
@@ -102,7 +95,7 @@
 
 {#if mounted}
 	{@const data = integrateSerieses(serieses)}
-	<Template.Area title="Placement Group States">
+	<Template.Area title="PG States">
 		{#snippet content()}
 			{#if data.length === 0}
 				<NoData type="area" />

@@ -9,9 +9,9 @@
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>
 
-<Template.Metric title="Monitor">
+<Template.Metric title="Up">
 	{#snippet description()}
-		<Badge>Monitor</Badge>
+		<p class="text-xl">Monitors</p>
 	{/snippet}
 	{#snippet content()}
 		<Rate {client} {scope} />

@@ -23,7 +23,7 @@
 	} = $props();
 </script>
 
-<Card.Root class="h-full w-full border-none shadow-none">
+<Card.Root class="bg-muted/40 h-full w-full border-none shadow-none">
 	<Card.Header class="h-[100px]">
 		<Card.Title class="flex items-start space-x-2">
 			<h1 class="whitespace-nowrap text-3xl">{title}</h1>
@@ -33,7 +33,7 @@
 						<Tooltip.Trigger class={cn(buttonVariants({ variant: 'ghost', size: 'icon' }))}>
 							<Icon icon="ph:info" />
 						</Tooltip.Trigger>
-						<Tooltip.Content class="bg-popover">
+						<Tooltip.Content class="bg-popover text-popover-foreground border p-2 shadow">
 							{@render hint()}
 						</Tooltip.Content>
 					</Tooltip.Root>
