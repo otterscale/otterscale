@@ -1,21 +1,14 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
-	import * as Card from '$lib/components/ui/card';
 	import Number from './number.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
+	import * as Template from '../../utils/templates';
 
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>
 
-<Card.Root class="col-span-1 h-full w-full border-none bg-muted/40 shadow-none">
-	<Card.Header class="h-[150px]">
-		<Card.Title class="flex">
-			<h1 class="text-nowrap text-3xl">Hosts</h1>
-		</Card.Title>
-		<Card.Description></Card.Description>
-	</Card.Header>
-	<Card.Content class="h-[150px]">
+<Template.Metric title="Hosts">
+	{#snippet content()}
 		<Number {client} {scope} />
-	</Card.Content>
-	<Card.Footer></Card.Footer>
-</Card.Root>
+	{/snippet}
+</Template.Metric>

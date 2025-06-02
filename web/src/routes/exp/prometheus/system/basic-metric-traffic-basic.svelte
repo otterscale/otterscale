@@ -12,6 +12,7 @@
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../utils/empty.svelte';
 	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
+	import * as Template from '../utils/templates';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
@@ -104,25 +105,11 @@
 
 {#if mounted}
 	{@const data = integrateSerieses(serieses)}
-
-	<Card.Root class="col-span-1 h-full w-full border-none shadow-none">
-		<Card.Header class="h-[100px]">
-			<Card.Title class="flex">
-				<h1 class="text-3xl">Network Traffic</h1>
-				<HoverCard.Root>
-					<HoverCard.Trigger>
-						<Button variant="ghost" size="icon" class="hover:bg-muted">
-							<Icon icon="ph:info" />
-						</Button>
-					</HoverCard.Trigger>
-					<HoverCard.Content class="w-fit max-w-[38w] text-xs text-muted-foreground">
-						Basic Network Information per Interface
-					</HoverCard.Content>
-				</HoverCard.Root>
-			</Card.Title>
-			<Card.Description></Card.Description>
-		</Card.Header>
-		<Card.Content class="h-[200px]">
+	<Template.Area title="Network Traffic">
+		{#snippet hint()}
+			<p>Basic Network Information per Interface</p>
+		{/snippet}
+		{#snippet content()}
 			{#if data.length === 0}
 				<NoData type="area" />
 			{:else}
@@ -157,9 +144,8 @@
 					/>
 				</div>
 			{/if}
-		</Card.Content>
-		<Card.Footer class="h-[150px]"></Card.Footer>
-	</Card.Root>
+		{/snippet}
+	</Template.Area>
 {:else}
 	<ComponentLoading />
 {/if}

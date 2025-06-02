@@ -1,8 +1,6 @@
 import { PrometheusDriver, InstantVector, SampleValue } from 'prometheus-query';
 import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 
-
-
 export function metricColor(metric: number) {
     switch (true) {
         case metric > 62:
