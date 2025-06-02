@@ -13,6 +13,7 @@
 	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 	import { fetchRange } from '../utils';
 	import { formatCapacity, formatNetworkIO } from '$lib/formatter';
+	import * as Template from '../utils/templates';
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
@@ -58,15 +59,8 @@
 
 {#if mounted}
 	{@const data = integrateSerieses(serieses)}
-
-	<Card.Root class="col-span-1 h-full w-full border-none shadow-none">
-		<Card.Header class="h-[100px]">
-			<Card.Title class="flex">
-				<h1 class="text-3xl">Latency</h1>
-			</Card.Title>
-			<Card.Description></Card.Description>
-		</Card.Header>
-		<Card.Content class="h-[200px]">
+	<Template.Area title="Latency">
+		{#snippet content()}
 			{#if data.length === 0}
 				<NoData type="area" />
 			{:else}
@@ -102,9 +96,8 @@
 					/>
 				</div>
 			{/if}
-		</Card.Content>
-		<Card.Footer class="h-[150px]"></Card.Footer>
-	</Card.Root>
+		{/snippet}
+	</Template.Area>
 {:else}
 	<ComponentLoading />
 {/if}

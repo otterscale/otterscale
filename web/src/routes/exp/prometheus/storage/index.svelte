@@ -168,44 +168,6 @@
 					<OSDNetworkLoad {client} scope={selectedScope} />
 				</span>
 			</div>
-
-			<!-- {#key selectedTimeRange}
-				<p class="text-xl font-bold">Basic Metric</p>
-				<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2">
-					<span class="col-span-1">
-						<BasicCPU
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-					<span class="col-span-1">
-						<BasicRAM
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-					<span class="col-span-1">
-						<BasicSWAP
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-					<span class="col-span-1">
-						<NetworkTrafficBasic
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-				</div>
-			{/key} -->
 		{/key}
 	{/key}
 </div>

@@ -1,26 +1,22 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
-	import * as Card from '$lib/components/ui/card';
 	import OutNumber from './out-number.svelte';
 	import Rate from './rate.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import * as Template from '../../utils/templates';
 
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>
 
-<Card.Root class="col-span-1 h-full w-full border-none bg-muted/40 shadow-none">
-	<Card.Header class="h-[150px]">
-		<Card.Title>
-			<h1 class="text-nowrap text-3xl">In</h1>
-			<Badge>Hosts</Badge>
-		</Card.Title>
-		<Card.Description></Card.Description>
-	</Card.Header>
-	<Card.Content class="h-[200px]">
+<Template.Metric title="In">
+	{#snippet description()}
+		<Badge>Hosts</Badge>
+	{/snippet}
+	{#snippet content()}
 		<Rate {client} {scope} />
-	</Card.Content>
-	<Card.Footer>
+	{/snippet}
+	{#snippet footer()}
 		<OutNumber {client} {scope} />
-	</Card.Footer>
-</Card.Root>
+	{/snippet}
+</Template.Metric>
