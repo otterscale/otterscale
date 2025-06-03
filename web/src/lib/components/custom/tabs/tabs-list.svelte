@@ -9,6 +9,6 @@
 <Tabs.List
 	bind:ref
 	data-slot="tabs-list"
-	class={cn('flex w-full justify-start rounded-none border-b bg-transparent', className)}
+	class={cn('flex w-full items-end justify-start rounded-none border-b bg-transparent', className)}
 	{...restProps}
 />

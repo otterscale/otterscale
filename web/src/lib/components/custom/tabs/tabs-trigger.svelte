@@ -14,7 +14,7 @@
 	bind:ref
 	data-slot="tabs-trigger"
 	class={cn(
-		'data-[state=active]:border-b-muted-foreground mt-2 w-fit rounded-none hover:cursor-pointer data-[state=active]:border-b data-[state=active]:shadow-none',
+		'data-[state=active]:border-b-muted-foreground -mb-[6px] w-fit rounded-none hover:cursor-pointer data-[state=active]:border-b data-[state=active]:shadow-none',
 		className
 	)}
 	{...restProps}
