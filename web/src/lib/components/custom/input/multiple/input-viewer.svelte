@@ -7,7 +7,8 @@
 	import { typeToIcon, ValuesManager, InputManager } from './utils.svelte';
 
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
-	import { cn, type WithElementRef } from '$lib/utils';
+	import { cn } from '$lib/utils';
+	import type { WithElementRef } from 'bits-ui';
 
 	let {
 		ref = $bindable(null),

@@ -14,7 +14,8 @@
 	import { Input } from '$lib/components/ui/input';
 
 	import type { HTMLInputAttributes } from 'svelte/elements';
-	import { cn, type WithElementRef } from '$lib/utils.js';
+	import { cn } from '$lib/utils.js';
+	import type { WithElementRef } from 'bits-ui';
 
 	type Props = WithElementRef<Omit<HTMLInputAttributes, 'type'> & { type?: 'password' }>;
 
@@ -25,7 +26,6 @@
 		...restProps
 	}: Props = $props();
 
-	const { files, ...restProperties } = restProps;
 	const passwordManager = new PasswordManager();
 </script>
 
@@ -39,7 +39,7 @@
 		class={cn(UNFOCUS_INPUT_CLASSNAME, className)}
 		type={passwordManager.isVisible ? 'text' : 'password'}
 		bind:value
-		{...restProperties}
+		{...restProps}
 	/>
 	<button
 		type="button"

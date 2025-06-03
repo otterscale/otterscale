@@ -1,3 +1,5 @@
+import { z, type ZodFirstPartySchemaTypes } from 'zod';
+
 const BORDER_INPUT_CLASSNAME = 'flex items-center rounded-md border shadow';
 const UNFOCUS_INPUT_CLASSNAME = 'border-none shadow-none focus-visible:ring-0 bg-transparent';
 
@@ -28,10 +30,31 @@ class PasswordManager {
     }
 }
 
+type InputValidatorResponse = {
+    valid: boolean;
+    errors: z.ZodIssue[]
+}
+class InputValidator {
+    schema: ZodFirstPartySchemaTypes
+
+    constructor(schema: ZodFirstPartySchemaTypes) {
+        this.schema = schema
+    }
+
+    validate(input: any) {
+        const result = this.schema.safeParse(input)
+        if (result.success) return { valid: true, errors: [] }
+        return { valid: false, errors: result.error.errors }
+    }
+}
+
 export {
     BORDER_INPUT_CLASSNAME,
     UNFOCUS_INPUT_CLASSNAME,
     typeToIcon,
     //
     PasswordManager,
+    //
+    type InputValidatorResponse,
+    InputValidator
 }

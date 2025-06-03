@@ -5,7 +5,8 @@
 	import type { InputType } from './types';
 
 	import type { HTMLInputAttributes } from 'svelte/elements';
-	import { cn, type WithElementRef } from '$lib/utils.js';
+	import { cn } from '$lib/utils.js';
+	import type { WithElementRef } from 'bits-ui';
 
 	type Props = WithElementRef<Omit<HTMLInputAttributes, 'value' | 'type'> & { type?: InputType }>;
 
@@ -17,7 +18,6 @@
 		...restProps
 	}: Props & {} = $props();
 
-	const { files, ...restProperties } = restProps;
 	const inputManager: InputManager = getContext('InputManager');
 	const valuesManager: ValuesManager = getContext('ValuesManager');
 </script>
@@ -37,7 +37,7 @@
 					onkeydown?.(e);
 				}
 			}}
-			{...restProperties}
+			{...restProps}
 		/>
 	{:else}
 		<Input.General
@@ -53,7 +53,7 @@
 					onkeydown?.(e);
 				}
 			}}
-			{...restProperties}
+			{...restProps}
 		/>
 	{/if}
 </div>

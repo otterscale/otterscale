@@ -10,9 +10,10 @@
 	import { cn } from '$lib/utils';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button';
-	import * as Form from '$lib/components/custom/form';
+	import * as CustomForm from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { z } from 'zod';
+
 	const options1: SingleSelect.OptionType[] = [
 		{ value: 'moon', label: 'Moon', icon: 'ph:moon' },
 		{
@@ -131,7 +132,7 @@
 		}
 	];
 
-	let value1: any = $state(1);
+	let value1: any = $state(null);
 	let value2: any = $state(2);
 	let value3: any = $state(3);
 	let value4: any = $state(4);
@@ -145,8 +146,34 @@
 	const stateController = new DialogStateController(false);
 </script>
 
-{z.string().safeParse(value1).success}
-<AlertDialog.Root bind:open={stateController.state}>
+<div class="grid gap-2 p-2">
+	<SingleInput.Boolean required bind:value={value1} />
+	<MultipleInput.Root type="text" bind:values={value6} id="multiple-input">
+		<MultipleInput.Viewer />
+		<MultipleInput.Controller>
+			<MultipleInput.Input />
+			<MultipleInput.Add />
+			<MultipleInput.Clear />
+		</MultipleInput.Controller>
+	</MultipleInput.Root>
+</div>
+<div>
+	<dv> 1 </dv>
+	<div>
+		{typeof value1}: {value1}
+	</div>
+	<div class="bg-muted h-2 w-full"></div>
+	<dv> 6 </dv>
+	<div>
+		{#each value6 as value}
+			<span class="p-2">
+				{typeof value}: {value}
+			</span>
+		{/each}
+	</div>
+</div>
+
+<!-- <AlertDialog.Root bind:open={stateController.state}>
 	<AlertDialog.Trigger class={cn('hover:cursor-pointer', buttonVariants({ variant: 'outline' }))}
 		>Trigger</AlertDialog.Trigger
 	>
@@ -565,4 +592,4 @@
 			</span>
 		{/each}
 	</div>
-</div>
+</div> -->

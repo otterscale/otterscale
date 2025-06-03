@@ -3,8 +3,9 @@
 	import { InputManager, ValuesManager } from './utils.svelte';
 	import type { InputType } from './types';
 
-	import { cn, type WithElementRef } from '$lib/utils.js';
+	import { cn } from '$lib/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import type { WithElementRef } from 'bits-ui';
 
 	let {
 		ref = $bindable(null),
