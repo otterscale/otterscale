@@ -14,11 +14,11 @@
 
 <AlertDialog.Footer
 	bind:ref
-	data-slot="alert-dialog-footer"
+	data-slot="alert-dialog-actions-group"
 	class={cn('w-full', className)}
 	{...restProps}
 >
-	<div class="flex w-full items-center justify-between gap-2">
+	<div class="flex items-center justify-end gap-2">
 		{@render children?.()}
 	</div>
 </AlertDialog.Footer>

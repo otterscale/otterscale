@@ -34,7 +34,7 @@
 </script>
 
 <span class="flex items-center gap-2">
-	<p class="flex h-8 items-center rounded-lg bg-muted p-4">Range</p>
+	<p class="bg-muted flex h-8 items-center rounded-lg p-4">Range</p>
 	<AlertDialog.Root bind:open={controller.state}>
 		<AlertDialog.Trigger>
 			<Button variant="outline" class="hover:cursor-pointer">
@@ -43,7 +43,7 @@
 		</AlertDialog.Trigger>
 		<AlertDialog.Content>
 			<AlertDialog.Header>
-				<div class="flex flex-col items-center justify-between gap-2 rounded-lg bg-muted p-4">
+				<div class="bg-muted flex flex-col items-center justify-between gap-2 rounded-lg p-4">
 					<div class="flex w-full items-center justify-between gap-2">
 						<Badge variant="outline">Start</Badge>
 						<div class="**:font-mono flex items-center gap-2 rounded-md px-2">
@@ -76,7 +76,7 @@
 						{/key}
 					{/key}
 				</div>
-				<div class="border-l text-muted-foreground"></div>
+				<div class="text-muted-foreground border-l"></div>
 				<div class="w-fit">
 					<RangeDateTimePicker bind:start bind:end />
 				</div>
