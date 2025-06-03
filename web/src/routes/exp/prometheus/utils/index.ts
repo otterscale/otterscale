@@ -49,7 +49,7 @@ export async function fetchRange(client: PrometheusDriver, timeRange: TimeRange,
             timeRange.end.getTime(),
             step
         );
-        console.log(response.result)
+
         response.result.forEach((series) => {
             series.values.forEach((sampleValue: SampleValue) => {
                 sampleSpace.push(sampleValue);
