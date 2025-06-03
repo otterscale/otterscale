@@ -23,7 +23,7 @@
 	} = $props();
 </script>
 
-<Card.Root class="bg-muted/40 h-full w-full border-none shadow-none">
+<Card.Root class="bg-muted/40 h-full w-full text-nowrap border-none shadow-none">
 	<Card.Header class="h-[100px]">
 		<Card.Title class="flex items-start space-x-2">
 			<h1 class="whitespace-nowrap text-3xl">{title}</h1>
@@ -44,10 +44,10 @@
 			{@render description?.()}
 		</Card.Description>
 	</Card.Header>
-	<Card.Content class="h-[150px]">
+	<Card.Content class="h-[300px]">
 		{@render content()}
 	</Card.Content>
-	<Card.Footer class="h-[150px]">
+	<Card.Footer>
 		{@render footer?.()}
 	</Card.Footer>
 </Card.Root>

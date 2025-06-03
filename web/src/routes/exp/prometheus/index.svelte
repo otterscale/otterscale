@@ -5,6 +5,7 @@
 
 	import { System } from './system';
 	import { Storage } from './storage';
+	import { Application } from './application';
 
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
@@ -16,19 +17,21 @@
 </script>
 
 <main class="no-user-select grid gap-4 p-4">
-	<Tabs.Root value="storage">
+	<Tabs.Root value="storage" class="[&_.prometheus-content]:p-4">
 		<Tabs.List>
 			<Tabs.Trigger value="system">System</Tabs.Trigger>
 			<Tabs.Trigger value="storage">Storage</Tabs.Trigger>
 			<Tabs.Trigger value="application">Application</Tabs.Trigger>
 		</Tabs.List>
-		<Tabs.Content value="system" class="p-4">
+		<Tabs.Content value="system" class="prometheus-content">
 			<System {client} {scopes} {instances} />
 		</Tabs.Content>
-		<Tabs.Content value="storage" class="p-4">
+		<Tabs.Content value="storage" class="prometheus-content">
 			<Storage {client} {scopes} {instances} />
 		</Tabs.Content>
-		<Tabs.Content value="application" class="p-4"></Tabs.Content>
+		<Tabs.Content value="application" class="prometheus-content">
+			<Application {client} {scopes} {instances} />
+		</Tabs.Content>
 	</Tabs.Root>
 </main>
 

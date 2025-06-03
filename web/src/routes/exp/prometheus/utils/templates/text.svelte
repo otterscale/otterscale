@@ -23,7 +23,7 @@
 	} = $props();
 </script>
 
-<Card.Root class={cn('bg-muted/40 h-full w-full border-none shadow-none', className)}>
+<Card.Root class={cn('bg-muted/40 h-full w-full truncate border-none shadow-none', className)}>
 	<Card.Header class="h-[100px]">
 		<Card.Title class="flex items-start space-x-2">
 			<h1 class="whitespace-nowrap text-3xl">{title}</h1>
