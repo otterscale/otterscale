@@ -2,11 +2,11 @@ import type { OptionType, AncestralOptionType, valueSetterType } from './types';
 
 
 class OptionManager {
-    selectedAncestralOption: AncestralOptionType;
+    selectedAncestralOption: AncestralOptionType = $state({} as AncestralOptionType);
     valueSetter: valueSetterType;
 
     constructor(selectedAncestralOption: AncestralOptionType, valueSetter: valueSetterType) {
-        this.selectedAncestralOption = $state(selectedAncestralOption)
+        this.selectedAncestralOption = selectedAncestralOption
         this.valueSetter = valueSetter;
     }
 

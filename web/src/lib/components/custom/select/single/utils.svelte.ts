@@ -1,11 +1,11 @@
 import type { OptionType, valueSetterType } from './types';
 
 class OptionManager {
-    selectedOption: OptionType;
+    selectedOption: OptionType = $state({} as OptionType);
     valueSetter: valueSetterType;
 
     constructor(selectedOption: OptionType, valueSetter: valueSetterType) {
-        this.selectedOption = $state(selectedOption ?? {} as OptionType);
+        this.selectedOption = selectedOption ?? {} as OptionType;
         this.valueSetter = valueSetter
     }
 

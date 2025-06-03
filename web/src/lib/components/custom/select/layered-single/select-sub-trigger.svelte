@@ -2,7 +2,6 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
-	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 	import { cn } from '$lib/utils.js';
 
 	let {
@@ -21,7 +20,7 @@
 	data-slot="seelct-sub-trigger"
 	data-inset={inset}
 	class={cn(
-		'hover:bg-accent hover:text-accent-foreground cursor-pointer rounded-sm select-none',
+		'hover:bg-accent hover:text-accent-foreground cursor-pointer select-none rounded-sm',
 		className
 	)}
 	{...restProps}

@@ -4,12 +4,12 @@ class OptionManager {
     visibility = 1
     options: OptionType[];
 
-    selectedAncestralOptions: AncestralOptionType[];
+    selectedAncestralOptions: AncestralOptionType[] = $state([] as AncestralOptionType[]);
     valuesSetter: valuesSetterType;
 
     constructor(options: OptionType[], selectedAncestralOptions: AncestralOptionType[], valuesSetter: valuesSetterType) {
         this.options = options;
-        this.selectedAncestralOptions = $state(selectedAncestralOptions);
+        this.selectedAncestralOptions = selectedAncestralOptions;
         this.valuesSetter = valuesSetter;
     }
 

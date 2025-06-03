@@ -5,8 +5,9 @@
 
 	import * as Command from '$lib/components/ui/command';
 
-	import { cn, type WithElementRef } from '$lib/utils.js';
+	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
+	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	let {

@@ -45,7 +45,7 @@
 </script>
 
 {#if $isLoading}
-	<div class="flex h-full w-full items-center justify-center gap-2 text-sm text-muted-foreground">
+	<div class="text-muted-foreground flex h-full w-full items-center justify-center gap-2 text-sm">
 		<Icon icon="ph:spinner" class="size-8 animate-spin" />
 		Loading...
 	</div>

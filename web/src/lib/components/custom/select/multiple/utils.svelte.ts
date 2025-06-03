@@ -3,12 +3,12 @@ import type { OptionType, valuesSetterType } from './types';
 class OptionManager {
     visibility = 1;
     options: OptionType[];
-    selectedOptions: OptionType[];
+    selectedOptions: OptionType[] = $state([] as OptionType[]);
     valuesSetter: valuesSetterType;
 
     constructor(options: OptionType[], selectedOptions: OptionType[], valuesSetter: valuesSetterType) {
         this.options = options;
-        this.selectedOptions = $state(selectedOptions)
+        this.selectedOptions = selectedOptions
         this.valuesSetter = valuesSetter;
     }
 

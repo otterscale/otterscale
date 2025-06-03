@@ -33,7 +33,7 @@
 				{href}
 				bind:ref
 				data-slot="input-viewer"
-				class={cn('flex h-6 items-center gap-1', className)}
+				class={cn('flex h-6 items-center gap-2', className)}
 				{...restProps}
 				{variant}
 			>
@@ -44,13 +44,14 @@
 				<Button
 					class="size-3 cursor-pointer"
 					aria-label="Remove"
-					variant="destructive"
+					size="icon"
+					variant="ghost"
 					{disabled}
 					onclick={(e) => {
 						valuesManager.remove(value);
 					}}
 				>
-					<Icon icon="ph:x" class="size-3" />
+					<Icon icon="ph:x-circle" class="size-3" />
 				</Button>
 			</Badge>
 		{/each}

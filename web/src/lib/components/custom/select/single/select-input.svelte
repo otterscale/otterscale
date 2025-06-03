@@ -2,7 +2,6 @@
 	import * as Command from '$lib/components/ui/command';
 
 	import { Command as CommandPrimitive } from 'bits-ui';
-	import SearchIcon from '@lucide/svelte/icons/search';
 	import { cn } from '$lib/utils.js';
 
 	let {

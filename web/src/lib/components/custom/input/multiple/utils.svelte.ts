@@ -15,11 +15,11 @@ class InputManager {
 }
 
 class ValuesManager {
-    values: any[];
+    values: any[] = $state([] as any[]);
     valuesSetter: valueSetterType;
 
     constructor(values: any[], valuesSetter: valueSetterType) {
-        this.values = $state(values)
+        this.values = values
         this.valuesSetter = valuesSetter
     }
 
