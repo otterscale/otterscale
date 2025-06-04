@@ -1,4 +1,5 @@
 import { z, type ZodFirstPartySchemaTypes } from 'zod';
+import type { valueSetterType } from './types'
 
 const BORDER_INPUT_CLASSNAME = 'flex items-center rounded-md border shadow';
 const UNFOCUS_INPUT_CLASSNAME = 'border-none shadow-none focus-visible:ring-0 bg-transparent';
@@ -11,7 +12,7 @@ const typeToIcon: Record<string, string> = {
     url: 'ph:link',
     email: 'ph:mailbox',
     tel: 'ph:phone',
-    boolean: 'ph:check',
+    boolean: 'ph:toggle-left',
     text: 'ph:textbox',
     number: 'ph:list-numbers',
     search: 'ph:magnifying-glass',
@@ -31,7 +32,7 @@ class PasswordManager {
 }
 
 type InputValidatorResponse = {
-    valid: boolean;
+    isValid: boolean;
     errors: z.ZodIssue[]
 }
 class InputValidator {
@@ -43,8 +44,8 @@ class InputValidator {
 
     validate(input: any) {
         const result = this.schema.safeParse(input)
-        if (result.success) return { valid: true, errors: [] }
-        return { valid: false, errors: result.error.errors }
+        if (result.success) return { isValid: true, errors: [] } as InputValidatorResponse
+        return { isValid: false, errors: result.error.errors } as InputValidatorResponse
     }
 }
 

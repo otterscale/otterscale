@@ -18,13 +18,12 @@ class ValuesManager {
     values: any[] = $state([] as any[]);
     valuesSetter: valueSetterType;
 
-    constructor(values: any[], valuesSetter: valueSetterType) {
-        this.values = values
+    constructor(initialValues: any, valuesSetter: valueSetterType) {
+        this.values = Array.isArray(initialValues) ? initialValues : [initialValues]
         this.valuesSetter = valuesSetter
     }
 
     append(value: any) {
-        console.log(typeof value);
         if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
             return;
         }

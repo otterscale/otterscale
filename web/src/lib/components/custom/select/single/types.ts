@@ -1,5 +1,5 @@
 type OptionType = {
-    value: string;
+    value: any;
     label: string;
     icon?: string;
 };

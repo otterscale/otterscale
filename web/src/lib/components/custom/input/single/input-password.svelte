@@ -1,7 +1,3 @@
-<script lang="ts" module>
-	const type = 'password';
-</script>
-
 <script lang="ts">
 	import {
 		BORDER_INPUT_CLASSNAME,
@@ -9,6 +5,7 @@
 		typeToIcon,
 		PasswordManager
 	} from './utils.svelte';
+	import InputRequired from './input-required.svelte';
 
 	import Icon from '@iconify/svelte';
 	import { Input } from '$lib/components/ui/input';
@@ -17,21 +14,24 @@
 	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 
-	type Props = WithElementRef<Omit<HTMLInputAttributes, 'type'> & { type?: 'password' }>;
-
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
+		required,
 		class: className,
 		...restProps
-	}: Props = $props();
+	}: WithElementRef<Exclude<HTMLInputAttributes, 'type'>> & { type?: 'password' } = $props();
 
 	const passwordManager = new PasswordManager();
+	const isNotFilled = $derived(required && !value);
 </script>
 
+{#if isNotFilled}
+	<InputRequired {isNotFilled} />
+{/if}
 <div class={cn(BORDER_INPUT_CLASSNAME)}>
 	<span class="pl-3">
-		<Icon icon={typeToIcon[type]} />
+		<Icon icon={typeToIcon['password']} />
 	</span>
 	<Input
 		bind:ref

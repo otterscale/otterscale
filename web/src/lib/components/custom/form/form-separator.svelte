@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { cn, type WithElementRef } from '$lib/utils.js';
-	import { Line } from 'layerchart';
+	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	let {
@@ -15,7 +14,7 @@
 	<div class="flex w-full items-center bg-transparent px-2 text-sm">
 		{#if children}
 			{@render Separator()}
-			<span class="text-muted-foreground/40 px-1 text-center whitespace-pre-wrap">
+			<span class="text-muted-foreground/40 whitespace-pre-wrap px-1 text-center">
 				{@render children()}
 			</span>
 			{@render Separator()}

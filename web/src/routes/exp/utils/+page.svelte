@@ -10,9 +10,8 @@
 	import { cn } from '$lib/utils';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button';
-	import * as CustomForm from '$lib/components/custom/form';
+	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { z } from 'zod';
 
 	const options1: SingleSelect.OptionType[] = [
 		{ value: 'moon', label: 'Moon', icon: 'ph:moon' },
@@ -131,49 +130,36 @@
 			]
 		}
 	];
+	type Values = {
+		value1: any;
+		value2: any;
+		value3: any;
+		value4: any;
+		value5: any;
+		value6: any[];
+		value7: any;
+		value8: any[];
+		value9: any;
+		value0: any[];
+	};
 
-	let value1: any = $state(null);
-	let value2: any = $state(2);
-	let value3: any = $state(3);
-	let value4: any = $state(4);
-	let value5: any = $state(5);
-	let value6: any = $state([6]);
-	let value7: any = $state(7);
-	let value8: any = $state([8]);
-	let value9: any = $state(9);
-	let value0: any = $state([0]);
+	let values: Values = $state({} as Values);
+	function reset() {
+		values = {} as Values;
+	}
+
+	function ListenInputs(...values: any[]) {
+		return values.some((value) => {
+			if (value) {
+				return true;
+			}
+		});
+	}
 
 	const stateController = new DialogStateController(false);
 </script>
 
-<div class="grid gap-2 p-2">
-	<SingleInput.Boolean required bind:value={value1} />
-	<MultipleInput.Root type="text" bind:values={value6} id="multiple-input">
-		<MultipleInput.Viewer />
-		<MultipleInput.Controller>
-			<MultipleInput.Input />
-			<MultipleInput.Add />
-			<MultipleInput.Clear />
-		</MultipleInput.Controller>
-	</MultipleInput.Root>
-</div>
-<div>
-	<dv> 1 </dv>
-	<div>
-		{typeof value1}: {value1}
-	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 6 </dv>
-	<div>
-		{#each value6 as value}
-			<span class="p-2">
-				{typeof value}: {value}
-			</span>
-		{/each}
-	</div>
-</div>
-
-<!-- <AlertDialog.Root bind:open={stateController.state}>
+<AlertDialog.Root bind:open={stateController.state}>
 	<AlertDialog.Trigger class={cn('hover:cursor-pointer', buttonVariants({ variant: 'outline' }))}
 		>Trigger</AlertDialog.Trigger
 	>
@@ -182,7 +168,9 @@
 			>Header</AlertDialog.Header
 		>
 		<Form.Root>
-			<Form.Fieldset>
+			<Form.Fieldset
+				disabled={ListenInputs(values.value7, values.value8, values.value9, values.value0)}
+			>
 				<Form.Legend>Fieldset I</Form.Legend>
 				<Form.Description>
 					This is a long description for the form fieldset. It provides detailed information about
@@ -196,7 +184,9 @@
 							about the purpose and usage of this field.
 						{/snippet}
 					</Form.Label>
-					<SingleInput.General type="text" id="single-input" bind:value={value1} />
+					{#key values}
+						<SingleInput.General type="text" id="single-input" bind:value={values.value1} />
+					{/key}
 					<Form.Help>
 						This is a help text for Field I. Please enter the required information.
 					</Form.Help>
@@ -209,7 +199,9 @@
 							required.
 						{/snippet}
 					</Form.Label>
-					<SingleInput.General type="number" id="single-input" bind:value={value2} />
+					{#key values}
+						<SingleInput.General type="number" id="single-input" bind:value={values.value2} />
+					{/key}
 					<Form.Help>This is a help text for Field II. Please enter a valid number.</Form.Help>
 				</Form.Field>
 			</Form.Fieldset>
@@ -221,7 +213,9 @@
 				</Form.Description>
 				<Form.Field>
 					<Label for="single-input">Field III</Label>
-					<SingleInput.Boolean id="single-input" bind:value={value3} />
+					{#key values}
+						<SingleInput.Boolean id="single-input" bind:value={values.value3} />
+					{/key}
 					<Form.Help>
 						Enable this option if you want to activate Field III. This is a help text for the
 						boolean input.
@@ -229,12 +223,16 @@
 				</Form.Field>
 				<Form.Field>
 					<Label for="single-input">Field IV</Label>
-					<SingleInput.Password id="single-input" bind:value={value4} />
+					{#key values}
+						<SingleInput.Password id="single-input" bind:value={values.value4} />
+					{/key}
 					<Form.Help>Please enter your password. Make sure it is strong and secure.</Form.Help>
 				</Form.Field>
 				<Form.Field>
 					<Label for="single-input">Field V</Label>
-					<SingleInput.Color id="single-input" bind:value={value5} />
+					{#key values}
+						<SingleInput.Color id="single-input" bind:value={values.value5} />
+					{/key}
 					<Form.Help>Select your favorite color using the color picker above.</Form.Help>
 				</Form.Field>
 			</Form.Fieldset>
@@ -246,14 +244,16 @@
 				</Form.Description>
 				<Form.Field>
 					<Label for="multiple-input">Field VI</Label>
-					<MultipleInput.Root type="number" bind:values={value6} id="multiple-input">
-						<MultipleInput.Viewer />
-						<MultipleInput.Controller>
-							<MultipleInput.Input />
-							<MultipleInput.Add />
-							<MultipleInput.Clear />
-						</MultipleInput.Controller>
-					</MultipleInput.Root>
+					{#key values}
+						<MultipleInput.Root type="number" bind:values={values.value6} id="multiple-input">
+							<MultipleInput.Viewer />
+							<MultipleInput.Controller>
+								<MultipleInput.Input />
+								<MultipleInput.Add />
+								<MultipleInput.Clear />
+							</MultipleInput.Controller>
+						</MultipleInput.Root>
+					{/key}
 					<Form.Help>
 						This is a help text for Field VI. You can add multiple numbers, view them, or clear the
 						list as needed.
@@ -263,7 +263,7 @@
 
 			<Form.Separator>Or</Form.Separator>
 
-			<Form.Fieldset>
+			<Form.Fieldset disabled={ListenInputs(values.value1, values.value2, values.value3)}>
 				<Form.Legend>Fieldset IV</Form.Legend>
 				<Form.Description>
 					This section demonstrates various select components, including single, multiple, and
@@ -271,65 +271,69 @@
 				</Form.Description>
 				<Form.Field>
 					<Label for="single-select">Field VII</Label>
-					<SingleSelect.Root bind:value={value7}>
-						<SingleSelect.Trigger />
-						<SingleSelect.Content>
-							<SingleSelect.Options>
-								<SingleSelect.Input />
-								<SingleSelect.List>
-									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
-									<SingleSelect.Group>
-										{#each options1 as option}
-											<SingleSelect.Item {option}>
-												<Icon
-													icon={option.icon ? option.icon : 'ph:empty'}
-													class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
-												/>
-												{option.label}
-												<SingleSelect.Check {option} />
-											</SingleSelect.Item>
-										{/each}
-									</SingleSelect.Group>
-								</SingleSelect.List>
-							</SingleSelect.Options>
-						</SingleSelect.Content>
-					</SingleSelect.Root>
+					{#key values}
+						<SingleSelect.Root bind:value={values.value7}>
+							<SingleSelect.Trigger />
+							<SingleSelect.Content>
+								<SingleSelect.Options>
+									<SingleSelect.Input />
+									<SingleSelect.List>
+										<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+										<SingleSelect.Group>
+											{#each options1 as option}
+												<SingleSelect.Item {option}>
+													<Icon
+														icon={option.icon ? option.icon : 'ph:empty'}
+														class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+													/>
+													{option.label}
+													<SingleSelect.Check {option} />
+												</SingleSelect.Item>
+											{/each}
+										</SingleSelect.Group>
+									</SingleSelect.List>
+								</SingleSelect.Options>
+							</SingleSelect.Content>
+						</SingleSelect.Root>
+					{/key}
 					<Form.Help>
 						Please select an option from the dropdown above. This is a help text for Field VII.
 					</Form.Help>
 				</Form.Field>
 				<Form.Field>
 					<Label for="single-select">Field VIII</Label>
-					<MultipleSelect.Root bind:value={value8} options={options2}>
-						<MultipleSelect.Viewer />
-						<MultipleSelect.Controller>
-							<MultipleSelect.Trigger />
-							<MultipleSelect.Content>
-								<MultipleSelect.Options>
-									<MultipleSelect.Input />
-									<MultipleSelect.List>
-										<MultipleSelect.Empty>No results found.</MultipleSelect.Empty>
-										<MultipleSelect.Group>
-											{#each options2 as option}
-												<MultipleSelect.Item {option}>
-													<Icon
-														icon={option.icon ? option.icon : 'ph:empty'}
-														class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
-													/>
-													{option.label}
-													<MultipleSelect.Check {option} />
-												</MultipleSelect.Item>
-											{/each}
-										</MultipleSelect.Group>
-									</MultipleSelect.List>
-									<MultipleSelect.Actions>
-										<MultipleSelect.ActionAll>All</MultipleSelect.ActionAll>
-										<MultipleSelect.ActionClear>Clear</MultipleSelect.ActionClear>
-									</MultipleSelect.Actions>
-								</MultipleSelect.Options>
-							</MultipleSelect.Content>
-						</MultipleSelect.Controller>
-					</MultipleSelect.Root>
+					{#key values}
+						<MultipleSelect.Root bind:value={values.value8} options={options2}>
+							<MultipleSelect.Viewer />
+							<MultipleSelect.Controller>
+								<MultipleSelect.Trigger />
+								<MultipleSelect.Content>
+									<MultipleSelect.Options>
+										<MultipleSelect.Input />
+										<MultipleSelect.List>
+											<MultipleSelect.Empty>No results found.</MultipleSelect.Empty>
+											<MultipleSelect.Group>
+												{#each options2 as option}
+													<MultipleSelect.Item {option}>
+														<Icon
+															icon={option.icon ? option.icon : 'ph:empty'}
+															class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+														/>
+														{option.label}
+														<MultipleSelect.Check {option} />
+													</MultipleSelect.Item>
+												{/each}
+											</MultipleSelect.Group>
+										</MultipleSelect.List>
+										<MultipleSelect.Actions>
+											<MultipleSelect.ActionAll>All</MultipleSelect.ActionAll>
+											<MultipleSelect.ActionClear>Clear</MultipleSelect.ActionClear>
+										</MultipleSelect.Actions>
+									</MultipleSelect.Options>
+								</MultipleSelect.Content>
+							</MultipleSelect.Controller>
+						</MultipleSelect.Root>
+					{/key}
 					<Form.Help>
 						You can select multiple options from the dropdown above. This is a help text for Field
 						VIII.
@@ -337,47 +341,16 @@
 				</Form.Field>
 				<Form.Field>
 					<Label for="single-select">Field IX</Label>
-					<LayeredSingleSelect.Root bind:value={value9}>
-						<LayeredSingleSelect.Trigger />
-						<LayeredSingleSelect.Content>
-							<LayeredSingleSelect.Group>
-								{#each options3 as option}
-									{#if option.subOptions && option.subOptions.length > 0}
-										{@render LayeredSingleSelectChildren(0, option.subOptions, option, [option])}
-									{:else}
-										<LayeredSingleSelect.Item {option}>
-											<Icon
-												icon={option.icon && option.icon ? option.icon : 'ph:empty'}
-												class={cn('size-5', option.icon && option.icon ? 'visibale' : 'invisible')}
-											/>
-											{option.label}
-											<LayeredSingleSelect.Check {option} />
-										</LayeredSingleSelect.Item>
-									{/if}
-								{/each}
-							</LayeredSingleSelect.Group>
-						</LayeredSingleSelect.Content>
-					</LayeredSingleSelect.Root>
-					<Form.Help>
-						Please select a nested option from the layered select above. This is a help text for
-						Field IX.
-					</Form.Help>
-				</Form.Field>
-				<Form.Field>
-					<Label for="single-select">Field X</Label>
-					<LayeredMultipleSelect.Root bind:value={value0} options={options4}>
-						<LayeredMultipleSelect.Viewer />
-						<LayeredMultipleSelect.Controller>
-							<LayeredMultipleSelect.Trigger />
-							<LayeredMultipleSelect.Content>
-								<LayeredMultipleSelect.Group>
-									{#each options4 as option}
+					{#key values}
+						<LayeredSingleSelect.Root bind:value={values.value9}>
+							<LayeredSingleSelect.Trigger />
+							<LayeredSingleSelect.Content>
+								<LayeredSingleSelect.Group>
+									{#each options3 as option}
 										{#if option.subOptions && option.subOptions.length > 0}
-											{@render LayeredMultipleSelectChildren(0, option.subOptions, option, [
-												option
-											])}
+											{@render LayeredSingleSelectChildren(0, option.subOptions, option, [option])}
 										{:else}
-											<LayeredMultipleSelect.Item {option}>
+											<LayeredSingleSelect.Item {option}>
 												<Icon
 													icon={option.icon && option.icon ? option.icon : 'ph:empty'}
 													class={cn(
@@ -386,18 +359,56 @@
 													)}
 												/>
 												{option.label}
-												<LayeredMultipleSelect.Check {option} />
-											</LayeredMultipleSelect.Item>
+												<LayeredSingleSelect.Check {option} />
+											</LayeredSingleSelect.Item>
 										{/if}
 									{/each}
-								</LayeredMultipleSelect.Group>
-								<LayeredMultipleSelect.Actions>
-									<LayeredMultipleSelect.ActionAll>All</LayeredMultipleSelect.ActionAll>
-									<LayeredMultipleSelect.ActionClear>Clear</LayeredMultipleSelect.ActionClear>
-								</LayeredMultipleSelect.Actions>
-							</LayeredMultipleSelect.Content>
-						</LayeredMultipleSelect.Controller>
-					</LayeredMultipleSelect.Root>
+								</LayeredSingleSelect.Group>
+							</LayeredSingleSelect.Content>
+						</LayeredSingleSelect.Root>
+					{/key}
+					<Form.Help>
+						Please select a nested option from the layered select above. This is a help text for
+						Field IX.
+					</Form.Help>
+				</Form.Field>
+				<Form.Field>
+					<Label for="single-select">Field X</Label>
+					{#key values}
+						<LayeredMultipleSelect.Root bind:value={values.value0} options={options4}>
+							<LayeredMultipleSelect.Viewer />
+							<LayeredMultipleSelect.Controller>
+								<LayeredMultipleSelect.Trigger />
+								<LayeredMultipleSelect.Content>
+									<LayeredMultipleSelect.Group>
+										{#each options4 as option}
+											{#if option.subOptions && option.subOptions.length > 0}
+												{@render LayeredMultipleSelectChildren(0, option.subOptions, option, [
+													option
+												])}
+											{:else}
+												<LayeredMultipleSelect.Item {option}>
+													<Icon
+														icon={option.icon && option.icon ? option.icon : 'ph:empty'}
+														class={cn(
+															'size-5',
+															option.icon && option.icon ? 'visibale' : 'invisible'
+														)}
+													/>
+													{option.label}
+													<LayeredMultipleSelect.Check {option} />
+												</LayeredMultipleSelect.Item>
+											{/if}
+										{/each}
+									</LayeredMultipleSelect.Group>
+									<LayeredMultipleSelect.Actions>
+										<LayeredMultipleSelect.ActionAll>All</LayeredMultipleSelect.ActionAll>
+										<LayeredMultipleSelect.ActionClear>Clear</LayeredMultipleSelect.ActionClear>
+									</LayeredMultipleSelect.Actions>
+								</LayeredMultipleSelect.Content>
+							</LayeredMultipleSelect.Controller>
+						</LayeredMultipleSelect.Root>
+					{/key}
 					<Form.Help>
 						You can select multiple nested options from the layered select above. This is a help
 						text for Field X.
@@ -406,16 +417,9 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
-				<AlertDialog.Action
-					onclick={() => {
-						console.log('Action clicked');
-						stateController.close();
-					}}
-				>
-					Action
-				</AlertDialog.Action>
+				<AlertDialog.Action actionVariant="secondary" onclick={reset}>Reset</AlertDialog.Action>
 				<AlertDialog.Actions>
 					<AlertDialog.ActionGroup>
 						<AlertDialog.ActionGroupHeading>Group</AlertDialog.ActionGroupHeading>
@@ -525,71 +529,70 @@
 		</LayeredMultipleSelect.SubContent>
 	</LayeredMultipleSelect.Sub>
 {/snippet}
-
 <div>
-	<dv> 1 </dv>
+	<dv>1</dv>
 	<div>
-		{typeof value1}: {value1}
+		{typeof values.value1}: {values.value1}
 	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 2 </dv>
+
+	<dv>2</dv>
 	<div>
-		{typeof value2}: {value2}
+		{typeof values.value2}: {values.value2}
 	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 3 </dv>
+
+	<dv>3</dv>
 	<div>
-		{typeof value3}: {value3}
+		{typeof values.value3}: {values.value3}
 	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 4 </dv>
+
+	<dv>4</dv>
 	<div>
-		{typeof value4}: {value4}
+		{typeof values.value4}: {values.value4}
 	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 5 </dv>
+
+	<dv>5</dv>
 	<div>
-		{typeof value5}: {value5}
+		{typeof values.value5}: {values.value5}
 	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 6 </dv>
+
+	<dv>6</dv>
 	<div>
-		{#each value6 as value}
-			<span class="p-2">
+		{#each values.value6 as value}
+			<div>
 				{typeof value}: {value}
-			</span>
+			</div>
 		{/each}
 	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 7 </dv>
+
+	<dv>7</dv>
 	<div>
-		{typeof value7}: {value7}
+		{typeof values.value7}: {values.value7}
 	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 8 </dv>
+
+	<dv>8</dv>
 	<div>
-		{#each value8 as value}
-			<span class="p-2">
+		{#each values.value8 as value}
+			<div>
 				{value}
-			</span>
+			</div>
 		{/each}
 	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 9 </dv>
+
+	<dv>9</dv>
 	<div>
-		{#each value9 as component}
-			<span class="p-2">{component}</span>
+		{#each values.value9 as component}
+			<span>{component}</span>
 		{/each}
 	</div>
-	<div class="bg-muted h-2 w-full"></div>
-	<dv> 10 </dv>
+
+	<dv>10</dv>
 	<div>
-		{#each value0 as value}
-			<span>
+		{#each values.value0 as value}
+			<div class="space-x-1">
 				{#each value as v}
-					<span class="p-2">{v}</span>
+					<span>{v}</span>
 				{/each}
-			</span>
+			</div>
 		{/each}
 	</div>
-</div> -->
+</div>

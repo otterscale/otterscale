@@ -30,31 +30,33 @@
 {#if valuesManager.values.length > 0}
 	<div class="flex flex-wrap gap-1">
 		{#each valuesManager.values as value}
-			<Badge
-				{href}
-				bind:ref
-				data-slot="input-viewer"
-				class={cn('flex h-6 items-center gap-2', className)}
-				{...restProps}
-				{variant}
-			>
-				<span class="flex items-center gap-1">
-					<Icon icon={typeToIcon[inputManager.type]} />
-					{value}
-				</span>
-				<Button
-					class="size-3 cursor-pointer"
-					aria-label="Remove"
-					size="icon"
-					variant="ghost"
-					{disabled}
-					onclick={(e) => {
-						valuesManager.remove(value);
-					}}
+			{#if !(value == undefined || value == null)}
+				<Badge
+					{href}
+					bind:ref
+					data-slot="input-viewer"
+					class={cn('flex h-6 items-center gap-2', className)}
+					{...restProps}
+					{variant}
 				>
-					<Icon icon="ph:x-circle" class="size-3" />
-				</Button>
-			</Badge>
+					<span class="flex items-center gap-1">
+						<Icon icon={typeToIcon[inputManager.type]} />
+						{value}
+					</span>
+					<Button
+						class="size-3 cursor-pointer"
+						aria-label="Remove"
+						size="icon"
+						variant="ghost"
+						{disabled}
+						onclick={(e) => {
+							valuesManager.remove(value);
+						}}
+					>
+						<Icon icon="ph:x-circle" class="size-3" />
+					</Button>
+				</Badge>
+			{/if}
 		{/each}
 	</div>
 {/if}

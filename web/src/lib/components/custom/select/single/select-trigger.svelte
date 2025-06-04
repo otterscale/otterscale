@@ -27,7 +27,9 @@
 	class={cn('cursor-pointer', buttonVariants({ variant: variant }), className)}
 	{...restProps}
 >
-	{#if optionManager.selectedOption.value}
+	{#if children}
+		{@render children?.()}
+	{:else if optionManager.selectedOption.label}
 		<div class={cn('flex items-center gap-1 rounded-sm p-1 font-normal')}>
 			<Icon
 				icon={optionManager.selectedOption.icon ?? 'ph:empty'}
@@ -35,8 +37,6 @@
 			/>
 			{optionManager.selectedOption.label}
 		</div>
-	{:else if children}
-		{@render children?.()}
 	{:else}
 		Select
 	{/if}

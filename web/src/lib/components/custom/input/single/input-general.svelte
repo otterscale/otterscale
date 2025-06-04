@@ -1,20 +1,19 @@
 <script lang="ts">
 	import { BORDER_INPUT_CLASSNAME, UNFOCUS_INPUT_CLASSNAME, typeToIcon } from './utils.svelte';
+	import InputRequired from './input-required.svelte';
+	import InputValidation from './input-validation.svelte';
 
 	import Icon from '@iconify/svelte';
 	import { Input } from '$lib/components/ui/input';
 	import type { ZodFirstPartySchemaTypes } from 'zod';
 	import { InputValidator } from './utils.svelte';
+	import type { InputType } from './types';
 
-	import type { HTMLInputAttributes, HTMLInputTypeAttribute } from 'svelte/elements';
+	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 
-	type Props = WithElementRef<
-		Omit<HTMLInputAttributes, 'type'> & {
-			type?: Exclude<HTMLInputTypeAttribute, 'file' | 'password'>;
-		}
-	>;
+	type Props = WithElementRef<Omit<HTMLInputAttributes, 'type'> & { type?: InputType }>;
 
 	let {
 		ref = $bindable(null),
@@ -25,40 +24,12 @@
 		class: className,
 		...restProps
 	}: Props & { schema?: ZodFirstPartySchemaTypes } = $props();
+
+	const isNotFilled = $derived(required && !value);
 </script>
 
-{#if schema}
-	{@const validator = new InputValidator(schema)}
-	{@const validation = validator.validate(value)}
-	{@const requirementError = required && !value}
-	{@const inputError = value && !validation.valid}
-	{@const controllerClassName = requirementError || inputError ? 'ring-destructive ring-1' : ''}
-
-	{@render Controller(controllerClassName)}
-	<div class="transition-all duration-500">
-		{#if requirementError}
-			<div class="animate-in fade-in flex items-center gap-1">
-				<Icon icon="ph:asterisk" class="text-destructive size-2" />
-				<p class="text-destructive text-xs">Required</p>
-			</div>
-		{/if}
-		{#if inputError}
-			<div class="animate-in fade-in flex items-center gap-2">
-				{#each validation.errors as error}
-					<span class="flex items-center gap-1">
-						<Icon icon="ph:warning" class="text-destructive" />
-						<p class="text-destructive text-xs">{error.message}</p>
-					</span>
-				{/each}
-			</div>
-		{/if}
-	</div>
-{:else}
-	{@render Controller()}
-{/if}
-
-{#snippet Controller(controllerClassName: string = '')}
-	<div class={cn(BORDER_INPUT_CLASSNAME, controllerClassName, className)}>
+{#snippet Controller(classNames: string[])}
+	<div class={cn(...classNames, className)}>
 		{#if type}
 			<span class="pl-3">
 				<Icon icon={typeToIcon[type]} />
@@ -74,3 +45,23 @@
 		/>
 	</div>
 {/snippet}
+
+{#if isNotFilled}
+	<InputRequired {isNotFilled} />
+{/if}
+{#if schema}
+	{@const validator = new InputValidator(schema)}
+	{@const validation = validator.validate(value)}
+
+	{@const isInvalid = value && !validation.isValid}
+
+	{@render Controller([
+		BORDER_INPUT_CLASSNAME,
+		isNotFilled || isInvalid ? 'ring-destructive ring-1' : ''
+	])}
+	{#if isInvalid}
+		<InputValidation {isInvalid} errors={validation.errors} />
+	{/if}
+{:else}
+	{@render Controller([BORDER_INPUT_CLASSNAME])}
+{/if}
