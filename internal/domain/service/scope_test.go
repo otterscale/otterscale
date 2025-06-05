@@ -71,8 +71,6 @@ func TestCreateScope(t *testing.T) {
 		CloudCredential: "test-cloud-credential",
 		Owner:           "test-owner",
 		Life:            "test-life",
-		// Status:          "test-status",
-		// AgentVersion:    "test-agent-version",
 	}
 	t.Run("CreateScope", func(t *testing.T) {
 		mockSSHKey.EXPECT().Default(ctx).Return(sshKey, nil)
@@ -143,6 +141,22 @@ func TestCreateScope(t *testing.T) {
 	})
 	t.Run("CreateScopeWithEmptyName", func(t *testing.T) {
 		scopeName = ""
+		sshKey = &entity.SSHKey{Key: "test-key"}
+		// Return a modelInfo with empty Name to match the expectation
+		modelInfo = &base.ModelInfo{
+			Name:            "",
+			UUID:            "test-uuid",
+			Type:            "test-type",
+			ControllerUUID:  "test-controller-uuid",
+			IsController:    true,
+			ProviderType:    "test-provider-type",
+			Cloud:           "test-cloud",
+			CloudRegion:     "test-cloud-region",
+			CloudCredential: "test-cloud-credential",
+			Owner:           "test-owner",
+			Life:            "test-life",
+		}
+
 		mockSSHKey.EXPECT().Default(ctx).Return(sshKey, nil)
 		mockJujuModel.EXPECT().Create(ctx, scopeName).Return(modelInfo, nil)
 		mockJujuKey.EXPECT().Add(ctx, modelInfo.UUID, sshKey.Key).Return([]params.ErrorResult{}, nil)

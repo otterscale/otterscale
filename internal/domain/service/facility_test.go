@@ -9,21 +9,12 @@ import (
 
 	"github.com/juju/juju/api/client/action"
 
-	// "github.com/juju/juju/api/client/application"
-	// corebase "github.com/juju/juju/core/base"
-
-	// "github.com/juju/juju/core/constraints"
-	// "github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
 	"go.uber.org/mock/gomock"
 	jujuyaml "gopkg.in/yaml.v2"
 
 	"github.com/openhdc/otterscale/internal/domain/model"
 	mocks "github.com/openhdc/otterscale/internal/domain/service/mocks"
-	// Import for base.SeriesUbuntu to be recognized by mockgen if it were used directly in interfaces,
-	// but for tests, we usually mock the direct dependencies.
-	// _ "github.com/juju/juju/core/base"
-	// _ "github.com/canonical/gomaasclient/entity" // For entity types if needed directly
 )
 
 func TestNexusService_ListFacilities(t *testing.T) {
@@ -144,10 +135,6 @@ func TestNexusService_GetFacility(t *testing.T) {
 	})
 }
 
-func TestNexusService_CreateFacility(t *testing.T) {
-
-}
-
 func TestNexusService_UpdateFacility(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -253,10 +240,6 @@ func TestNexusService_ExposeFacility(t *testing.T) {
 			t.Fatalf("expected error %v, got %v", errExpected, err)
 		}
 	})
-}
-
-func TestNexusService_AddFacilityUnits(t *testing.T) {
-
 }
 
 func TestNexusService_ListActions(t *testing.T) {
@@ -397,29 +380,68 @@ func TestNexusService_ListArtifacts(t *testing.T) {
 	})
 }
 
-// Helper to convert model.MachineConstraint to constraints.Value for mocking
-// This is a simplified version. A more complete one would handle all fields.
-// func toMockConstraint(mc *model.MachineConstraint) *constraints.Value {
-// 	if mc == nil {
-// 		return nil
-// 	}
-// 	cons := constraints.Value{}
-// 	if mc.CPUCores != 0 {
-// 		cores := uint64(mc.CPUCores)
-// 		cons.CpuCores = &cores
-// 	}
-// 	// Add other constraint conversions as needed for tests
-// 	return &cons
-// }
+func TestNexusService_AddFacilityUnits(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-// // Helper to convert model.MachinePlacement to instance.Placement for mocking
-// // This is a simplified version.
-// func toMockPlacement(mp *model.MachinePlacement, directive string) *instance.Placement {
-// 	if mp == nil {
-// 		return nil
-// 	}
-// 	return &instance.Placement{
-// 		Scope:     mp.MachineID,
-// 		Directive: directive, // Directive comes from maasToJujuMachineMap
-// 	}
-// }
+	mockJujuApp := mocks.NewMockJujuApplication(ctrl)
+	s := NewNexusService(nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, mockJujuApp, nil, nil, nil, nil, nil, nil, nil, nil)
+	ctx := context.Background()
+	uuid := "test-uuid"
+	name := "test-facility"
+	units := 3
+	t.Run("success", func(t *testing.T) {
+		mockJujuApp.EXPECT().AddUnits(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]string{"unit-0", "unit-1", "unit-2"}, nil)
+		result, err := s.AddFacilityUnits(ctx, uuid, name, units, nil)
+		if err != nil {
+			t.Fatalf("AddFacilityUnits() unexpected error: %v", err)
+		}
+		if len(result) != units {
+			t.Errorf("expected %d units, got %d", units, len(result))
+		}
+	})
+
+	t.Run("error_add_units", func(t *testing.T) {
+		mockJujuApp.EXPECT().AddUnits(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, errExpected)
+		_, err := s.AddFacilityUnits(ctx, uuid, name, units, nil)
+		if !errors.Is(err, errExpected) {
+			t.Fatalf("expected error %v, got %v", errExpected, err)
+		}
+	})
+}
+func TestNexusService_CreateFacility(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockFacility := mocks.NewMockJujuApplication(ctrl)
+	mockServer := mocks.NewMockMAASServer(ctrl)
+	mockBootResource := mocks.NewMockMAASBootResource(ctrl)
+	mockBootSource := mocks.NewMockMAASBootSource(ctrl)
+	mockBootSourceSelection := mocks.NewMockMAASBootSourceSelection(ctrl)
+	s := NewNexusService(
+		mockServer, nil, mockBootResource, mockBootSource, mockBootSourceSelection,
+		nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, mockFacility,
+		nil, nil, nil, nil, nil, nil, nil, nil,
+	)
+
+	ctx := context.Background()
+	uuid := "test-uuid"
+	name := "test-facility"
+	configYAML := "key: value"
+	charmName := "test-charm"
+	channel := "stable"
+	revision := 1
+	number := 2
+	mps := []model.MachinePlacement{}
+	mc := &model.MachineConstraint{}
+	trust := true
+
+	t.Run("error_image_base", func(t *testing.T) {
+		mockServer.EXPECT().Get(gomock.Any(), "default_distro_series").Return(nil, errExpected)
+		_, err := s.CreateFacility(ctx, uuid, name, configYAML, charmName, channel, revision, number, mps, mc, trust)
+		if !errors.Is(err, errExpected) {
+			t.Fatalf("expected error %v, got %v", errExpected, err)
+		}
+	})
+
+}

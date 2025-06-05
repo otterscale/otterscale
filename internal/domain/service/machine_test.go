@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -499,4 +501,53 @@ func TestPowerOffMachine_Success(t *testing.T) {
 	if machine.PowerState != "off" { // Check the power state
 		t.Errorf("expected power state 'off', got '%s'", machine.PowerState)
 	}
+}
+func TestNexusService_JujuToMAASMachineMap(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockClient := mocks.NewMockJujuClient(ctrl)
+	s := &NexusService{
+		client: mockClient,
+	}
+
+	ctx := context.Background()
+	uuid := "test-uuid"
+
+	t.Run("success", func(t *testing.T) {
+		// Simulate Juju status with two machines
+		status := map[string]model.MachineStatus{
+			"0": {InstanceId: "maas-0"},
+			"1": {InstanceId: "maas-1"},
+		}
+		mockClient.EXPECT().Status(ctx, uuid, []string{"machine", "*"}).Return(&params.FullStatus{Machines: status}, nil)
+
+		result, err := s.JujuToMAASMachineMap(ctx, uuid)
+		if err != nil {
+			t.Fatalf("JujuToMAASMachineMap() error = %v, want nil", err)
+		}
+		expected := map[string]string{"0": "maas-0", "1": "maas-1"}
+		if !reflect.DeepEqual(result, expected) {
+			t.Errorf("JujuToMAASMachineMap() = %v, want %v", result, expected)
+		}
+	})
+
+	t.Run("status error", func(t *testing.T) {
+		mockClient.EXPECT().Status(ctx, uuid, []string{"machine", "*"}).Return(nil, errors.New("status error"))
+		_, err := s.JujuToMAASMachineMap(ctx, uuid)
+		if err == nil || !strings.Contains(err.Error(), "status error") {
+			t.Errorf("expected status error, got %v", err)
+		}
+	})
+
+	t.Run("empty result", func(t *testing.T) {
+		mockClient.EXPECT().Status(ctx, uuid, []string{"machine", "*"}).Return(&params.FullStatus{Machines: map[string]model.MachineStatus{}}, nil)
+		result, err := s.JujuToMAASMachineMap(ctx, uuid)
+		if err != nil {
+			t.Fatalf("JujuToMAASMachineMap() error = %v, want nil", err)
+		}
+		if len(result) != 0 {
+			t.Errorf("expected empty map, got %v", result)
+		}
+	})
 }

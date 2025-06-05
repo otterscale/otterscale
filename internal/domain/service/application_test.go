@@ -122,7 +122,6 @@ func TestNexusService_ListApplications(t *testing.T) {
 		if len(apps) != 3 { // Expecting 1 deployment, 1 statefulset, 1 daemonset
 			t.Fatalf("Expected 3 applications, got %d", len(apps))
 		}
-		// Add more specific assertions about the content of 'apps'
 	})
 
 	t.Run("error_set_kubernetes_client", func(t *testing.T) {
@@ -201,7 +200,6 @@ func TestNexusService_GetApplication(t *testing.T) {
 		if app.Namespace != appNamespace {
 			t.Errorf("Expected app namespace %s, got %s", appNamespace, app.Namespace)
 		}
-		// Add more specific assertions about the content of 'app'
 	})
 
 	t.Run("error_set_kubernetes_client", func(t *testing.T) {
@@ -214,6 +212,33 @@ func TestNexusService_GetApplication(t *testing.T) {
 		_, err := s.GetApplication(ctx, uuid, facilityName, appNamespace, appName)
 		if err == nil {
 			t.Fatal("GetApplication() expected error from setKubernetesClient, got nil")
+		}
+	})
+	t.Run("application_not_found", func(t *testing.T) {
+		appNamespace := "ns1"
+		appName := "test-app"
+
+		// Mock for setKubernetesClient
+		mockKubeClient.EXPECT().Exists(uuid, facilityName).Return(true) // Assume client already exists for simplicity
+
+		// Mocks for Get... calls - expecting not found errors
+		mockKubeApps.EXPECT().GetDeployment(gomock.Any(), uuid, facilityName, appNamespace, appName).Return(nil, k8serrors.NewNotFound(appsv1.Resource("deployment"), appName))
+		mockKubeApps.EXPECT().GetStatefulSet(gomock.Any(), uuid, facilityName, appNamespace, appName).Return(nil, k8serrors.NewNotFound(appsv1.Resource("statefulset"), appName))
+		mockKubeApps.EXPECT().GetDaemonSet(gomock.Any(), uuid, facilityName, appNamespace, appName).Return(nil, k8serrors.NewNotFound(appsv1.Resource("daemonset"), appName))
+
+		// Add these mocks to satisfy context.Background.WithCancel calls in GetApplication
+		mockKubeCore.EXPECT().ListServices(gomock.Any(), uuid, facilityName, appNamespace).Return([]corev1.Service{}, nil)
+		mockKubeCore.EXPECT().ListPods(gomock.Any(), uuid, facilityName, appNamespace).Return([]corev1.Pod{}, nil)
+		mockKubeCore.EXPECT().ListPersistentVolumeClaims(gomock.Any(), uuid, facilityName, appNamespace).Return([]corev1.PersistentVolumeClaim{}, nil)
+		mockKubeStorage.EXPECT().ListStorageClasses(gomock.Any(), uuid, facilityName).Return([]storagev1.StorageClass{}, nil)
+
+		_, err := s.GetApplication(ctx, uuid, facilityName, appNamespace, appName)
+		if err == nil {
+			t.Fatal("GetApplication() expected error for application not found, got nil")
+		}
+		// Accept both k8serrors.IsNotFound and gRPC NotFound errors
+		if !k8serrors.IsNotFound(err) && !strings.Contains(err.Error(), "code = NotFound") {
+			t.Errorf("Expected NotFound error, got %v", err)
 		}
 	})
 }
@@ -236,151 +261,6 @@ func TestNexusService_ListReleases(t *testing.T) {
 		helm:       mockKubeHelm,
 	}
 
-	// ctx := context.Background()
-	// scopeUUID := "test-scope-uuid"
-	// scopeName := "test-scope-name"
-	// k8sFacilityName := "k8s-facility"
-
-	// t.Run("success", func(t *testing.T) {
-	// 	// 1. Mock for s.listFacilitiesAcrossScopes -> s.scope.List()
-	// 	mockScope.EXPECT().List(ctx).Return([]base.UserModelSummary{{UUID: scopeUUID, Name: scopeName}}, nil)
-
-	// 	// 2. Mock for s.listFacilitiesAcrossScopes -> s.ListFacilities -> s.client.Status()
-	// 	mockClient.EXPECT().Status(ctx, scopeUUID, gomock.Nil()).Return(&params.FullStatus{
-	// 		Applications: map[string]params.ApplicationStatus{
-	// 			k8sFacilityName: {Charm: charmNameKubernetes, Status: &params.StatusInfo{Current: "active"}},
-	// 			"other-app":     {Charm: "some-other-charm", Status: &params.StatusInfo{Current: "active"}},
-	// 		},
-	// 	}, nil)
-
-	// 	// 3. Mocks for s.setKubernetesClient for the k8sFacilityName (assuming client needs to be set up)
-	// 	mockKubeClient.EXPECT().Exists(scopeUUID, k8sFacilityName).Return(false)
-	// 	leaderUnitName := k8sFacilityName + "/0"
-	// 	kubeControlUnitName := "kubernetes-control-plane/0" // Example
-
-	// 	mockJujuApplication.EXPECT().GetLeader(ctx, scopeUUID, k8sFacilityName).Return(leaderUnitName, nil)
-	// 	mockJujuApplication.EXPECT().GetUnitInfo(ctx, scopeUUID, leaderUnitName).Return(
-	// 		&model.UnitInfo{RelationData: []model.UnitRelationData{{Endpoint: "kube-control", UnitRelationData: map[string]model.UnitData{kubeControlUnitName: {}}}}}, nil)
-	// 	mockJujuApplication.EXPECT().GetUnitInfo(ctx, scopeUUID, kubeControlUnitName).Return(
-	// 		&model.UnitInfo{RelationData: []model.UnitRelationData{{UnitRelationData: map[string]model.UnitData{"related/0": {UnitData: map[string]interface{}{
-	// 			"api-endpoints": `["https://10.0.0.1:6443"]`,
-	// 			"creds":         `{"user1":{"client_token":"token123"}}`,
-	// 		}}}}}}, nil)
-	// 	mockKubeClient.EXPECT().Set(scopeUUID, k8sFacilityName, gomock.Any()).Return(nil)
-
-	// 	// 4. Mock for s.helm.ListReleases
-	// 	expectedHelmReleases := []*release.Release{{Name: "release1"}}
-	// 	mockKubeHelm.EXPECT().ListReleases(scopeUUID, k8sFacilityName, "").Return(expectedHelmReleases, nil)
-
-	// 	releases, err := s.ListReleases(ctx)
-	// 	if err != nil {
-	// 		t.Fatalf("ListReleases() unexpected error: %v", err)
-	// 	}
-
-	// 	if len(releases) != 1 {
-	// 		t.Fatalf("Expected 1 release, got %d. Releases: %+v", len(releases), releases)
-	// 	}
-	// 	if releases[0].Release.Name != "release1" {
-	// 		t.Errorf("Expected release name 'release1', got %s", releases[0].Name)
-	// 	}
-	// 	if releases[0].ScopeUUID != scopeUUID {
-	// 		t.Errorf("Expected scope UUID %s, got %s", scopeUUID, releases[0].ScopeUUID)
-	// 	}
-	// 	if releases[0].FacilityName != k8sFacilityName {
-	// 		t.Errorf("Expected facility name %s, got %s", k8sFacilityName, releases[0].FacilityName)
-	// 	}
-	// })
-
-	// t.Run("error_listing_scopes", func(t *testing.T) {
-	// 	mockScope.EXPECT().List(ctx).Return(nil, errExpected)
-	// 	_, err := s.ListReleases(ctx)
-	// 	if err == nil {
-	// 		t.Fatal("expected error from scope.List, got nil")
-	// 	}
-	// })
-
-	// t.Run("error_client_status", func(t *testing.T) {
-	// 	mockScope.EXPECT().List(ctx).Return([]base.UserModelSummary{{UUID: scopeUUID, Name: scopeName}}, nil)
-	// 	mockClient.EXPECT().Status(ctx, scopeUUID, gomock.Nil()).Return(nil, errExpected)
-	// 	_, err := s.ListReleases(ctx)
-	// 	if err == nil {
-	// 		t.Fatal("expected error from client.Status, got nil")
-	// 	}
-	// })
-
-	// t.Run("error_set_kubernetes_client", func(t *testing.T) {
-	// 	mockScope.EXPECT().List(ctx).Return([]base.UserModelSummary{{UUID: scopeUUID, Name: scopeName}}, nil)
-	// 	mockClient.EXPECT().Status(ctx, scopeUUID, gomock.Nil()).Return(&params.FullStatus{
-	// 		Applications: map[string]params.ApplicationStatus{
-	// 			k8sFacilityName: {Charm: charmNameKubernetes, Status: &params.StatusInfo{Current: "active"}},
-	// 		},
-	// 	}, nil)
-	// 	mockKubeClient.EXPECT().Exists(scopeUUID, k8sFacilityName).Return(false)
-	// 	mockJujuApplication.EXPECT().GetLeader(ctx, scopeUUID, k8sFacilityName).Return("", errExpected) // Error here
-
-	// 	_, err := s.ListReleases(ctx)
-	// 	if err == nil {
-	// 		t.Fatal("expected error from setKubernetesClient, got nil")
-	// 	}
-	// })
-
-	// t.Run("error_helm_list_releases", func(t *testing.T) {
-	// 	mockScope.EXPECT().List(ctx).Return([]base.UserModelSummary{{UUID: scopeUUID, Name: scopeName}}, nil)
-	// 	mockClient.EXPECT().Status(ctx, scopeUUID, gomock.Nil()).Return(&params.FullStatus{
-	// 		Applications: map[string]params.ApplicationStatus{
-	// 			k8sFacilityName: {Charm: charmNameKubernetes, Status: &params.StatusInfo{Current: "active"}},
-	// 		},
-	// 	}, nil)
-	// 	mockKubeClient.EXPECT().Exists(scopeUUID, k8sFacilityName).Return(true) // Assume client exists
-	// 	mockKubeHelm.EXPECT().ListReleases(scopeUUID, k8sFacilityName, "").Return(nil, errExpected)
-
-	// 	_, err := s.ListReleases(ctx)
-	// 	if err == nil {
-	// 		t.Fatal("expected error from helm.ListReleases, got nil")
-	// 	}
-	// })
-	// t.Run("success", func(t *testing.T) {
-	// 	ctx := context.Background()
-	// 	scopeUUID := "uuid1"
-	// 	modelName := "model1"
-	// 	k8sFacilityName := "facility1"
-	// 	const localCharmNameKubernetes = "kubernetes"
-
-	// 	mockScope.EXPECT().List(ctx).Return([]base.UserModelSummary{{UUID: scopeUUID, Name: modelName}}, nil)
-
-	// 	mockClient.EXPECT().Status(ctx, scopeUUID, gomock.Nil()).Return(&params.FullStatus{
-	// 		Applications: map[string]params.ApplicationStatus{
-	// 			k8sFacilityName: {Charm: localCharmNameKubernetes, Status: params.DetailedStatus{Status: "active"}},
-	// 		},
-	// 	}, nil)
-
-	// 	mockKubeClient.EXPECT().Exists(scopeUUID, k8sFacilityName).Return(true) // Simplified, was Return(true, nil) - Exists returns bool
-
-	// 	expectedHelmReleases := []release.Release{ // KubeHelm.ListReleases returns []release.Release
-	// 		{Name: "release1"},
-	// 	}
-	// 	mockKubeHelm.EXPECT().ListReleases(scopeUUID, k8sFacilityName, "").Return(expectedHelmReleases, nil)
-
-	// 	releases, err := s.ListReleases(ctx)
-	// 	if err != nil {
-	// 		t.Fatalf("unexpected error: %v", err)
-	// 	}
-
-	// 	if len(releases) != 1 {
-	// 		t.Fatalf("unexpected number of releases: got %d, want %d", len(releases), 1)
-	// 	}
-
-	// 	if releases[0].Release.Name != expectedHelmReleases[0].Name {
-	// 		t.Fatalf("unexpected release name: got %s, want %s", releases[0].Release.Name, expectedHelmReleases[0].Name)
-	// 	}
-	// 	if releases[0].ScopeUUID != scopeUUID {
-	// 		t.Errorf("Expected scope UUID %s, got %s", scopeUUID, releases[0].ScopeUUID)
-	// 	}
-	// 	if releases[0].FacilityName != k8sFacilityName {
-	// 		t.Errorf("Expected facility name %s, got %s", k8sFacilityName, releases[0].FacilityName)
-	// 	}
-	// })
-
 	t.Run("error_listing_scopes", func(t *testing.T) {
 		ctx := context.Background()
 		mockScope.EXPECT().List(ctx).Return(nil, errExpected)
@@ -391,19 +271,6 @@ func TestNexusService_ListReleases(t *testing.T) {
 		}
 	})
 
-	// t.Run("error_client_status", func(t *testing.T) {
-	// 	ctx := context.Background()
-	// 	scopeUUID := "uuid1"
-	// 	modelName := "model1"
-
-	// 	mockScope.EXPECT().List(ctx).Return([]base.UserModelSummary{{UUID: scopeUUID, Name: modelName}}, nil)
-	// 	mockClient.EXPECT().Status(ctx, scopeUUID, gomock.Nil()).Return(nil, errExpected)
-
-	// 	_, err := s.ListReleases(ctx)
-	// 	if err == nil {
-	// 		t.Fatal("expected error, got nil")
-	// 	}
-	// })
 }
 func TestNexusService_CreateRelease(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -503,69 +370,6 @@ func TestNexusService_CreateRelease(t *testing.T) {
 	})
 }
 
-// func TestNexusService_CreateRelease(t *testing.T) {
-// 	ctrl := gomock.NewController(t)
-// 	defer ctrl.Finish()
-
-// 	mockJujuApplication := mocks.NewMockJujuApplication(ctrl)
-// 	mockKubeClient := mocks.NewMockKubeClient(ctrl)
-// 	mockKubeHelm := mocks.NewMockKubeHelm(ctrl)
-// 	s := &NexusService{
-// 		facility:   mockJujuApplication,
-// 		kubernetes: mockKubeClient,
-// 		helm:       mockKubeHelm,
-// 	}
-
-// 	ctx := context.Background()
-// 	uuid := "test-uuid"
-// 	facility := "test-facility"
-// 	namespace := "test-namespace"
-// 	name := "test-release"
-// 	dryRun := false
-// 	chartRef := "test-chart"
-// 	valuesYAML := "name: value"
-// 	valuesMap := map[string]string{"key": "value"}
-
-// 	t.Run("success", func(t *testing.T) {
-// 		// Mocks for setKubernetesClient
-// 		mockKubeClient.EXPECT().Exists(uuid, facility).Return(true) // Assume client exists
-
-// 		expectedRelease := &release.Release{Name: name}
-// 		// Construct expected values map after strvals.ParseInto
-// 		expectedValuesForHelm := map[string]any{"name": "value", "key": "value"}
-
-// 		mockKubeHelm.EXPECT().InstallRelease(uuid, facility, namespace, name, dryRun, chartRef, expectedValuesForHelm).Return(expectedRelease, nil)
-
-// 		rel, err := s.CreateRelease(ctx, uuid, facility, namespace, name, dryRun, chartRef, valuesYAML, valuesMap)
-// 		if err != nil {
-// 			t.Fatalf("unexpected error: %v", err)
-// 		}
-// 		if rel.Release.Name != expectedRelease.Name {
-// 			t.Errorf("expected release name %q, got %q", expectedRelease.Name, rel.Release.Name)
-// 		}
-// 	})
-
-// 	t.Run("error_set_kubernetes_client", func(t *testing.T) {
-// 		mockKubeClient.EXPECT().Exists(uuid, facility).Return(false) // Client doesn't exist
-// 		mockJujuApplication.EXPECT().GetLeader(gomock.Any(), uuid, facility).Return("", errExpected)
-
-// 		_, err := s.CreateRelease(ctx, uuid, facility, namespace, name, dryRun, chartRef, valuesYAML, valuesMap)
-// 		if err == nil {
-// 			t.Fatal("expected error, got nil")
-// 		}
-// 	})
-
-// 	t.Run("error_install_release", func(t *testing.T) {
-// 		mockKubeClient.EXPECT().Exists(uuid, facility).Return(true)
-// 		expectedValuesForHelm := map[string]any{"name": "value", "key": "value"}
-// 		mockKubeHelm.EXPECT().InstallRelease(uuid, facility, namespace, name, dryRun, chartRef, expectedValuesForHelm).Return(nil, errExpected)
-
-//			_, err := s.CreateRelease(ctx, uuid, facility, namespace, name, dryRun, chartRef, valuesYAML, valuesMap)
-//			if err == nil {
-//				t.Fatal("expected error, got nil")
-//			}
-//		})
-//	}
 func TestNexusService_UpdateRelease(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -640,67 +444,6 @@ func TestNexusService_UpdateRelease(t *testing.T) {
 	})
 }
 
-// func TestNexusService_UpdateRelease(t *testing.T) {
-// 	ctrl := gomock.NewController(t)
-// 	defer ctrl.Finish()
-
-// 	mockJujuApplication := mocks.NewMockJujuApplication(ctrl)
-// 	mockKubeClient := mocks.NewMockKubeClient(ctrl)
-// 	mockKubeHelm := mocks.NewMockKubeHelm(ctrl)
-// 	s := &NexusService{
-// 		facility:   mockJujuApplication,
-// 		kubernetes: mockKubeClient,
-// 		helm:       mockKubeHelm,
-// 	}
-
-// 	ctx := context.Background()
-// 	uuid := "test-uuid"
-// 	facility := "test-facility"
-// 	namespace := "test-namespace"
-// 	name := "test-release"
-// 	dryRun := false
-// 	valuesYAML := "name: value"
-// 	valuesMap := map[string]string{"key": "value"}
-
-// 	t.Run("success", func(t *testing.T) {
-// 		// Mocks for setKubernetesClient
-// 		mockKubeClient.EXPECT().Exists(uuid, facility).Return(true) // Assume client exists
-
-// 		expectedRelease := &release.Release{Name: name}
-// 		expectedValuesForHelm := map[string]any{"name": "value", "key": "value"}
-
-// 		mockKubeHelm.EXPECT().UpgradeRelease(uuid, facility, namespace, name, dryRun, expectedValuesForHelm).Return(expectedRelease, nil)
-
-// 		rel, err := s.UpdateRelease(ctx, uuid, facility, namespace, name, dryRun, valuesYAML, valuesMap)
-// 		if err != nil {
-// 			t.Fatalf("unexpected error: %v", err)
-// 		}
-// 		if rel.Release.Name != expectedRelease.Name {
-// 			t.Errorf("expected release name %q, got %q", expectedRelease.Name, rel.Release.Name)
-// 		}
-// 	})
-
-// 	t.Run("error_set_kubernetes_client", func(t *testing.T) {
-// 		mockKubeClient.EXPECT().Exists(uuid, facility).Return(false) // Client doesn't exist
-// 		mockJujuApplication.EXPECT().GetLeader(gomock.Any(), uuid, facility).Return("", errExpected)
-
-// 		_, err := s.UpdateRelease(ctx, uuid, facility, namespace, name, dryRun, valuesYAML, valuesMap)
-// 		if err == nil {
-// 			t.Fatal("expected error, got nil")
-// 		}
-// 	})
-
-// 	t.Run("error_upgrade_release", func(t *testing.T) {
-// 		mockKubeClient.EXPECT().Exists(uuid, facility).Return(true)
-// 		expectedValuesForHelm := map[string]any{"name": "value", "key": "value"}
-// 		mockKubeHelm.EXPECT().UpgradeRelease(uuid, facility, namespace, name, dryRun, expectedValuesForHelm).Return(nil, errExpected)
-// 		_, err := s.UpdateRelease(ctx, uuid, facility, namespace, name, dryRun, valuesYAML, valuesMap)
-// 		if err == nil {
-// 			t.Fatal("expected error, got nil")
-// 		}
-// 	})
-// }
-
 func TestNexusService_GetChartMetadataFromApplication(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -756,24 +499,6 @@ func TestNexusService_GetChartMetadataFromApplication(t *testing.T) {
 	})
 
 }
-
-// func TestNexusService_GetChart(t *testing.T) {
-// 	ctrl := gomock.NewController(t)
-// 	defer ctrl.Finish()
-// 	mockHelm := mocks.NewMockKubeHelm(ctrl)
-// 	s := &NexusService{helm: mockHelm}
-
-// 	ctx := context.Background()
-
-// 	t.Run("error listing chart versions", func(t *testing.T) {
-// 		mockHelm.EXPECT().ListChartVersions(ctx).Return(nil, errExpected)
-// 		_, err := s.GetChart(ctx, "test-chart")
-
-// 		if err == nil {
-// 			t.Fatal("expected error, got nil")
-// 		}
-// 	})
-// }
 
 func TestNexusService_fromDeployment(t *testing.T) {
 	deployment := createMockDeployment("test-deployment", "test-namespace")
@@ -1345,74 +1070,8 @@ func TestNexusService_GetChartMetadata(t *testing.T) {
 			t.Errorf("expected readme MD %q, got %q", expectedReadmeMD, md.ReadmeMD)
 		}
 	})
-
-	// t.Run("error_show_values", func(t *testing.T) {
-	// 	mockHelm.EXPECT().ShowChart(chartRef, action.ShowValues).Return("", errExpected)
-	// 	// The ShowReadme call will also be made by the errgroup.
-	// 	mockHelm.EXPECT().ShowChart(chartRef, action.ShowReadme).Return(expectedReadmeMD, nil)
-
-	// 	md, err := s.GetChartMetadata(ctx, chartRef)
-	// 	if !errors.Is(err, errExpected) {
-	// 		t.Fatalf("expected error %v, got %v", errExpected, err)
-	// 	}
-	// 	if md == nil {
-	// 		t.Fatalf("expected non-nil metadata even on error, got nil")
-	// 	}
-	// 	// ValuesYAML should be empty because its fetch failed.
-	// 	if md.ValuesYAML != "" {
-	// 		t.Errorf("expected ValuesYAML to be empty, got %q", md.ValuesYAML)
-	// 	}
-	// 	// ReadmeMD should be populated as its fetch succeeded.
-	// 	if md.ReadmeMD != expectedReadmeMD {
-	// 		t.Errorf("expected ReadmeMD %q, got %q", expectedReadmeMD, md.ReadmeMD)
-	// 	}
-	// })
-
-	// t.Run("error_show_readme", func(t *testing.T) {
-	// 	// The ShowValues call will also be made by the errgroup.
-	// 	mockHelm.EXPECT().ShowChart(chartRef, action.ShowValues).Return(expectedValuesYAML, nil)
-	// 	mockHelm.EXPECT().ShowChart(chartRef, action.ShowReadme).Return("", errExpected)
-
-	// 	md, err := s.GetChartMetadata(ctx, chartRef)
-	// 	if !errors.Is(err, errExpected) {
-	// 		t.Fatalf("expected error %v, got %v", errExpected, err) // Line 1335
-	// 	}
-	// 	if md == nil {
-	// 		t.Fatalf("expected non-nil metadata even on error, got nil")
-	// 	}
-	// 	// ValuesYAML should be populated as its fetch succeeded.
-	// 	if md.ValuesYAML != expectedValuesYAML {
-	// 		t.Errorf("expected ValuesYAML %q, got %q", expectedValuesYAML, md.ValuesYAML)
-	// 	}
-	// 	// ReadmeMD should be empty because its fetch failed.
-	// 	if md.ReadmeMD != "" {
-	// 		t.Errorf("expected ReadmeMD to be empty, got %q", md.ReadmeMD)
-	// 	}
-	// })
-
-	// t.Run("partial_success_readme_fails", func(t *testing.T) {
-	// 	// This test is effectively the same as "error_show_readme".
-	// 	// ShowValues succeeds, ShowReadme fails.
-	// 	mockHelm.EXPECT().ShowChart(chartRef, action.ShowValues).Return(expectedValuesYAML, nil) // Line 1340
-	// 	mockHelm.EXPECT().ShowChart(chartRef, action.ShowReadme).Return("", errExpected)         // Line 1341
-
-	// 	md, err := s.GetChartMetadata(ctx, chartRef)
-	// 	if !errors.Is(err, errExpected) { // Line 1345
-	// 		t.Fatalf("expected error %v, got %v", errExpected, err)
-	// 	}
-	// 	if md == nil {
-	// 		t.Fatalf("expected non-nil metadata even on error, got nil")
-	// 	}
-	// 	// ValuesYAML should be populated as its fetch succeeded.
-	// 	if md.ValuesYAML != expectedValuesYAML {
-	// 		t.Errorf("expected ValuesYAML to be populated with %q, got %q", expectedValuesYAML, md.ValuesYAML)
-	// 	}
-	// 	// ReadmeMD should be empty because its fetch failed.
-	// 	if md.ReadmeMD != "" {
-	// 		t.Errorf("expected ReadmeMD to be empty, got %q", md.ReadmeMD)
-	// 	}
-	// })
 }
+
 func TestNexusService_GetChart(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
