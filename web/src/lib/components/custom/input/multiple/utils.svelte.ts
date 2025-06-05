@@ -24,7 +24,7 @@ class ValuesManager {
     }
 
     append(value: any) {
-        if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
+        if (value === undefined || value === null || String(value).trim() === '') {
             return;
         }
         if (this.values.includes(value)) return;

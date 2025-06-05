@@ -3,7 +3,7 @@
 
 	import { setContext } from 'svelte';
 	import { OptionManager } from './utils.svelte';
-	import type { AncestralOptionType } from './types';
+	import type { OptionType } from './types';
 
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 
@@ -11,22 +11,21 @@
 		open = $bindable(false),
 		value = $bindable(),
 		children,
-		selectedAncestralOption,
+		options,
 		...restProps
 	}: DropdownMenuPrimitive.RootProps & {
 		value: any;
-		selectedAncestralOption?: AncestralOptionType;
+		options: OptionType[];
 	} = $props();
 
-	setContext(
-		'OptionManager',
-		new OptionManager(
-			selectedAncestralOption ?? ({} as AncestralOptionType),
-			(ancestralOption: AncestralOptionType) => {
-				value = ancestralOption.map((component) => component.value);
-			}
-		)
-	);
+	const setter = (newValue: any) => {
+		value = newValue;
+	};
+	const getter = () => {
+		return value;
+	};
+
+	setContext('OptionManager', new OptionManager(options, setter, getter));
 </script>
 
 <DropdownMenu.Root {open} {...restProps}>

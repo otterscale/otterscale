@@ -7,10 +7,12 @@ type OptionType = {
 
 type AncestralOptionType = OptionType[];
 
-type valueSetterType = (ancestralOption: AncestralOptionType) => void
+type valueSetterType = (newVamue: any) => void
+type valueGetterType = () => any
 
 export type {
     OptionType,
     AncestralOptionType,
-    valueSetterType
+    valueSetterType,
+    valueGetterType
 }

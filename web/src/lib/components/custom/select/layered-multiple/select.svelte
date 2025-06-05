@@ -15,25 +15,20 @@
 		class: className,
 		children,
 		options,
-		selectedAncestralOptions,
 		...restProps
 	}: DropdownMenuPrimitive.RootProps & {
 		class?: string;
 		value: any[];
 		options: OptionType[];
-		selectedAncestralOptions?: AncestralOptionType[];
 	} = $props();
 
-	setContext(
-		'OptionManager',
-		new OptionManager(
-			options,
-			selectedAncestralOptions ?? ([] as AncestralOptionType[]),
-			(options: AncestralOptionType[]) => {
-				value = options.map((option) => option.map((component) => component.value));
-			}
-		)
-	);
+	const setter = (newValues: any[]) => {
+		value = newValues;
+	};
+	const getter = () => {
+		return value ?? [];
+	};
+	setContext('OptionManager', new OptionManager(options, setter, getter));
 </script>
 
 <DropdownMenu.Root {open} {...restProps}>

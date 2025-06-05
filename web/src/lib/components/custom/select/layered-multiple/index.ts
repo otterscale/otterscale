@@ -37,8 +37,8 @@ export {
     SubTrigger,
     SubContent,
     //
-    type OptionType as Option,
-    type AncestralOptionType as AncestralOption,
+    type OptionType,
+    type AncestralOptionType,
     //
     OptionManager
 

@@ -1,5 +1,4 @@
 import { z, type ZodFirstPartySchemaTypes } from 'zod';
-import type { valueSetterType } from './types'
 
 const BORDER_INPUT_CLASSNAME = 'flex items-center rounded-md border shadow';
 const UNFOCUS_INPUT_CLASSNAME = 'border-none shadow-none focus-visible:ring-0 bg-transparent';

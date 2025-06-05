@@ -1,6 +1,6 @@
 import type { OptionType, AncestralOptionType } from './types'
 
-import { OptionManager } from './utils.svelte'
+import { OptionManager, getAncestralOptionsMap, getAllAncestralOptions } from './utils.svelte'
 
 import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 import Root from './select.svelte';
@@ -36,5 +36,7 @@ export {
     type OptionType,
     type AncestralOptionType,
     //
-    OptionManager
+    OptionManager,
+    getAncestralOptionsMap,
+    getAllAncestralOptions
 };

@@ -1,20 +1,29 @@
-import type { OptionType, AncestralOptionType, valuesSetterType } from './types';
+import type { OptionType, AncestralOptionType, valuesSetterType, valuesGetterType } from './types';
+import { getAncestralOptionsMap, getAllAncestralOptions } from '../layered-single/index'
 
 class OptionManager {
     visibility = 1
+
     options: OptionType[];
+    ancestralOptionsMap: Record<string, OptionType[]>
 
-    selectedAncestralOptions: AncestralOptionType[] = $state([] as AncestralOptionType[]);
     valuesSetter: valuesSetterType;
+    valuesGetter: valuesGetterType;
 
-    constructor(options: OptionType[], selectedAncestralOptions: AncestralOptionType[], valuesSetter: valuesSetterType) {
+    constructor(options: OptionType[], valuesSetter: valuesSetterType, valuesGetter: valuesGetterType) {
+        this.ancestralOptionsMap = getAncestralOptionsMap(options);
+
         this.options = options;
-        this.selectedAncestralOptions = selectedAncestralOptions;
         this.valuesSetter = valuesSetter;
+        this.valuesGetter = valuesGetter;
     }
 
     get isSomeAncestralOptionsSelected(): boolean {
-        return Array.isArray(this.selectedAncestralOptions) && this.selectedAncestralOptions.length > 0;
+        return this.valuesGetter().length > 0;
+    }
+
+    get selectedAncestralOptions(): AncestralOptionType[] {
+        return this.valuesGetter().map((value) => (this.ancestralOptionsMap[JSON.stringify(value)]))
     }
 
     hasSubOptions(option: OptionType): boolean {
@@ -28,50 +37,33 @@ class OptionManager {
     }
 
     isOptionSelected(option: OptionType, parents: OptionType[]): boolean {
-        const selectedAncestralOption: AncestralOptionType = [...parents, option]
-        return this.selectedAncestralOptions.some(
-            (o) => JSON.stringify(o) === JSON.stringify(selectedAncestralOption)
+        return this.valuesGetter().some(
+            (value) => {
+                return JSON.stringify(value) === JSON.stringify([...parents.map((parent) => (parent.value)), option.value])
+            }
         );
     }
 
     handleSelect(option: OptionType, parents: OptionType[]) {
-        const selectedAncestralOption: AncestralOptionType = [...parents, option];
+        const values = this.valuesGetter()
+        const candidateValue: any[] = [...parents.map((parent) => (parent.value)), option.value]
 
-        if (Array.isArray(this.selectedAncestralOptions) && this.isOptionSelected(option, parents)) {
-            this.selectedAncestralOptions = this.selectedAncestralOptions.filter((o) => JSON.stringify(o) !== JSON.stringify(selectedAncestralOption));
+        if (this.isOptionSelected(option, parents)) {
+            this.valuesSetter(values.filter((v) => {
+                return JSON.stringify(v) !== JSON.stringify(candidateValue)
+            }));
         } else {
-            this.selectedAncestralOptions = [
-                ...this.selectedAncestralOptions,
-                selectedAncestralOption
-            ];
+            this.valuesSetter([...values, candidateValue])
         }
-
-        this.valuesSetter(this.selectedAncestralOptions);
     }
 
     all() {
-        const getAllAncestralOptions = (
-            options: OptionType[],
-            parents: OptionType[] = []
-        ): AncestralOptionType[] => {
-            return options.flatMap(option => {
-                const ancestorOption = [...parents, option];
-
-                if (this.hasSubOptions(option)) {
-                    return getAllAncestralOptions(option.subOptions!, [...parents, option]);
-                } else {
-                    return [ancestorOption];
-                }
-            });
-        };
-
-        this.selectedAncestralOptions = getAllAncestralOptions(this.options);
-        this.valuesSetter(this.selectedAncestralOptions);
+        const all = getAllAncestralOptions(this.options).map((ancestralOption) => (ancestralOption.map((option) => (option.value))))
+        this.valuesSetter(all);
     }
 
     clear() {
-        this.selectedAncestralOptions = [];
-        this.valuesSetter(this.selectedAncestralOptions);
+        this.valuesSetter([]);
     }
 }
 

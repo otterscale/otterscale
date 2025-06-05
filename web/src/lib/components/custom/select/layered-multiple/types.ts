@@ -7,11 +7,13 @@ type OptionType = {
 
 type AncestralOptionType = OptionType[];
 
-type valuesSetterType = (ancestralOptions: AncestralOptionType[]) => void
+type valuesSetterType = (newValues: any[]) => void
+type valuesGetterType = () => any[]
 
 
 export type {
     OptionType,
     AncestralOptionType,
-    valuesSetterType
+    valuesSetterType,
+    valuesGetterType
 }
