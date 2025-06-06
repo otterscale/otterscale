@@ -22,12 +22,13 @@
 		selectedOptions?: OptionType[];
 	} = $props();
 
-	setContext(
-		'OptionManager',
-		new OptionManager(options, selectedOptions ?? ([] as OptionType[]), (options: OptionType[]) => {
-			value = options.map((option) => option.value);
-		})
-	);
+	const setter = (newValues: any[]) => {
+		value = newValues;
+	};
+	const getter = () => {
+		return Array.isArray(value) ? value : value ? [value] : [];
+	};
+	setContext('OptionManager', new OptionManager(options, setter, getter));
 </script>
 
 <Popover.Root {open} {...restProps}>

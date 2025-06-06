@@ -5,7 +5,6 @@
 		typeToIcon,
 		PasswordManager
 	} from './utils.svelte';
-	import InputRequired from './input-required.svelte';
 
 	import Icon from '@iconify/svelte';
 	import { Input } from '$lib/components/ui/input';
@@ -26,17 +25,19 @@
 	const isNotFilled = $derived(required && !value);
 </script>
 
-{#if isNotFilled}
-	<InputRequired {isNotFilled} />
-{/if}
-<div class={cn(BORDER_INPUT_CLASSNAME)}>
+<div class={cn(BORDER_INPUT_CLASSNAME, isNotFilled ? 'ring-destructive ring-1' : '')}>
 	<span class="pl-3">
 		<Icon icon={typeToIcon['password']} />
 	</span>
 	<Input
 		bind:ref
 		data-slot="input-password"
-		class={cn(UNFOCUS_INPUT_CLASSNAME, className)}
+		placeholder={isNotFilled ? 'Required' : ''}
+		class={cn(
+			UNFOCUS_INPUT_CLASSNAME,
+			isNotFilled ? 'placeholder:text-destructive/60 placeholder:text-xs' : '',
+			className
+		)}
 		type={passwordManager.isVisible ? 'text' : 'password'}
 		bind:value
 		{...restProps}

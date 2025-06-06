@@ -15,11 +15,7 @@
 <fieldset
 	bind:this={ref}
 	data-slot="form-fieldset"
-	class={cn(
-		'space-y-4 rounded-md border px-4 pb-4',
-		restProps.disabled ? 'bg-muted/40' : '',
-		className
-	)}
+	class={cn('space-y-4 rounded-md border p-4', restProps.disabled ? 'bg-muted/40' : '', className)}
 	{...restProps}
 >
 	{#if restProps.disabled}

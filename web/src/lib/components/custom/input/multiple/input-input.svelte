@@ -8,7 +8,7 @@
 	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 
-	type Props = WithElementRef<Omit<HTMLInputAttributes, 'value' | 'type'> & { type?: InputType }>;
+	type Props = WithElementRef<Omit<HTMLInputAttributes, 'value' | 'type'>>;
 
 	let {
 		ref = $bindable(null),
@@ -16,7 +16,7 @@
 		onkeydown,
 		onblur,
 		...restProps
-	}: Props & {} = $props();
+	}: Props = $props();
 
 	const inputManager: InputManager = getContext('InputManager');
 	const valuesManager: ValuesManager = getContext('ValuesManager');
@@ -27,7 +27,6 @@
 		<Input.Color
 			bind:ref
 			data-slot="input-input"
-			type={inputManager.type}
 			bind:value={inputManager.input}
 			class={cn('w-full', className)}
 			onkeydown={(e) => {

@@ -19,7 +19,7 @@ class ValuesManager {
     valuesSetter: valueSetterType;
 
     constructor(initialValues: any, valuesSetter: valueSetterType) {
-        this.values = Array.isArray(initialValues) ? initialValues : [initialValues]
+        this.values = Array.isArray(initialValues) ? initialValues : initialValues ? [initialValues] : []
         this.valuesSetter = valuesSetter
     }
 

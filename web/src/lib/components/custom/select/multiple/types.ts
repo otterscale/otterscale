@@ -4,9 +4,11 @@ type OptionType = {
     icon?: string;
 };
 
-type valuesSetterType = (options: OptionType[]) => void
+type valuesSetterType = (options: any[]) => void
+type valuesGetterType = () => any[]
 
 export type {
     OptionType,
-    valuesSetterType
+    valuesSetterType,
+    valuesGetterType
 }

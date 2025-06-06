@@ -6,6 +6,7 @@ import {
     Empty,
     List,
     Item,
+    ItemInformation,
     Shortcut,
     Close
 } from '../single'
@@ -35,6 +36,7 @@ export {
     Empty,
     List,
     Item,
+    ItemInformation,
     Check,
     Shortcut,
     Actions,

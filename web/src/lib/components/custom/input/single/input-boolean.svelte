@@ -4,7 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import InputRequired from './input-required.svelte';
 	import InputValidation from './input-validation.svelte';
-	import { z, type ZodFirstPartySchemaTypes } from 'zod';
+	import { z } from 'zod';
 	import { InputValidator } from './utils.svelte';
 	import { Switch as SwitchPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
@@ -53,7 +53,7 @@
 			{:else if checked === false}
 				<Badge variant="outline">False</Badge>
 			{:else if checked === null || checked === undefined}
-				<Badge variant="secondary">null</Badge>
+				<Badge variant="destructive">Required</Badge>
 			{:else}
 				<Badge variant="destructive">Invalid</Badge>
 			{/if}

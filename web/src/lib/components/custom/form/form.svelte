@@ -14,7 +14,7 @@
 <form
 	bind:this={ref}
 	data-slot="form-root"
-	class={cn('flex h-[77vh] flex-col gap-4 overflow-auto rounded-md', className)}
+	class={cn('flex max-h-[77vh] flex-col gap-4 overflow-auto rounded-md', className)}
 	{...restProps}
 >
 	{@render children?.()}

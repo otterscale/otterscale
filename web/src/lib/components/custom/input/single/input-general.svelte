@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { BORDER_INPUT_CLASSNAME, UNFOCUS_INPUT_CLASSNAME, typeToIcon } from './utils.svelte';
-	import InputRequired from './input-required.svelte';
 	import InputValidation from './input-validation.svelte';
+	import { getContext, hasContext } from 'svelte';
 
 	import Icon from '@iconify/svelte';
 	import { Input } from '$lib/components/ui/input';
@@ -32,13 +32,17 @@
 	<div class={cn(...classNames, className)}>
 		{#if type}
 			<span class="pl-3">
-				<Icon icon={typeToIcon[type]} />
+				<Icon icon={hasContext('icon') ? getContext('icon') : typeToIcon[type]} />
 			</span>
 		{/if}
 		<Input
 			bind:ref
 			data-slot="input-general"
-			class={cn(UNFOCUS_INPUT_CLASSNAME)}
+			placeholder={isNotFilled ? 'Required' : ''}
+			class={cn(
+				UNFOCUS_INPUT_CLASSNAME,
+				isNotFilled ? 'placeholder:text-destructive/60 placeholder:text-xs' : ''
+			)}
 			{type}
 			bind:value
 			{...restProps}
@@ -46,9 +50,6 @@
 	</div>
 {/snippet}
 
-{#if isNotFilled}
-	<InputRequired {isNotFilled} />
-{/if}
 {#if schema}
 	{@const validator = new InputValidator(schema)}
 	{@const validation = validator.validate(value)}
@@ -63,5 +64,5 @@
 		<InputValidation {isInvalid} errors={validation.errors} />
 	{/if}
 {:else}
-	{@render Controller([BORDER_INPUT_CLASSNAME])}
+	{@render Controller([BORDER_INPUT_CLASSNAME, isNotFilled ? 'ring-destructive ring-1' : ''])}
 {/if}

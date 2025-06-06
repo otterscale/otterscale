@@ -6,17 +6,20 @@
 	import { cn } from '$lib/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { WithElementRef } from 'bits-ui';
+	import type { string } from 'zod';
 
 	let {
 		ref = $bindable(null),
 		class: className,
 		values = $bindable(),
 		type,
+		contextData,
 		children,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		values: any[];
 		type: InputType;
+		contextData?: Record<string, any>;
 	} = $props();
 
 	setContext('InputManager', new InputManager(type));
@@ -26,6 +29,11 @@
 			values = newValues;
 		})
 	);
+	if (contextData) {
+		for (const key in contextData) {
+			setContext(key, contextData[key]);
+		}
+	}
 </script>
 
 <div

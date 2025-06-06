@@ -12,9 +12,9 @@ import Input from './select-input.svelte'
 import Empty from './select-empty.svelte'
 import List from './select-list.svelte'
 import Item from './select-item.svelte'
+import ItemInformation from './select-item-information.svelte'
 import Check from './select-check.svelte'
 import Shortcut from './select-shortcut.svelte'
-// const Root = PopoverPrimitive.Root;
 const Close = PopoverPrimitive.Close;
 
 export {
@@ -27,6 +27,7 @@ export {
     Empty,
     List,
     Item,
+    ItemInformation,
     Shortcut,
     Check,
     Close,

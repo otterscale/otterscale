@@ -1,42 +1,50 @@
-import type { OptionType, valuesSetterType } from './types';
+import type { OptionType, valuesSetterType, valuesGetterType } from './types';
 
 class OptionManager {
     visibility = 1;
     options: OptionType[];
-    selectedOptions: OptionType[] = $state([] as OptionType[]);
-    valuesSetter: valuesSetterType;
 
-    constructor(options: OptionType[], selectedOptions: OptionType[], valuesSetter: valuesSetterType) {
+    valuesSetter: valuesSetterType;
+    valuesGetter: valuesGetterType;
+
+    constructor(
+        options: OptionType[],
+        valuesSetter: valuesSetterType,
+        valuesGetter: valuesGetterType
+    ) {
         this.options = options;
-        this.selectedOptions = selectedOptions
         this.valuesSetter = valuesSetter;
+        this.valuesGetter = valuesGetter
     }
 
-    get isSomeOptionsSelected() {
-        return Array.isArray(this.selectedOptions) && this.selectedOptions.length > 0;
+    get selectedOptions(): OptionType[] {
+        return this.options.filter((option) => (this.valuesGetter().includes(option.value)))
+    }
+
+    get isSomeOptionsSelected(): boolean {
+        return this.valuesGetter().length > 0;
     }
 
     isOptionSelected(option: OptionType): boolean {
-        return this.selectedOptions.map((o) => o.value).includes(option.value);
+        return this.valuesGetter().includes(option.value);
     }
 
     handleSelect(option: OptionType) {
-        if (Array.isArray(this.selectedOptions) && this.isOptionSelected(option)) {
-            this.selectedOptions = this.selectedOptions.filter((o) => o.value !== option.value);
+        if (this.isOptionSelected(option)) {
+            this.valuesSetter(this.valuesGetter().filter((o) => o.value !== option.value));
         } else {
-            this.selectedOptions = [...this.selectedOptions, option];
+            this.valuesSetter([...this.valuesGetter(), option.value]);
         }
-        this.valuesSetter(this.selectedOptions);
     }
 
     all() {
-        this.selectedOptions = [...this.options];
-        this.valuesSetter(this.selectedOptions);
+        this.valuesSetter(
+            this.options.map((option) => (option.value))
+        );
     }
 
     clear() {
-        this.selectedOptions = [];
-        this.valuesSetter(this.selectedOptions);
+        this.valuesSetter([]);
     }
 }
 

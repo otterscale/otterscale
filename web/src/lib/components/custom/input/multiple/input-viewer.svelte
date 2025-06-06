@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
+	import { getContext, hasContext } from 'svelte';
 	import Icon from '@iconify/svelte';
 	import { Badge, type BadgeVariant } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -35,12 +35,12 @@
 					{href}
 					bind:ref
 					data-slot="input-viewer"
-					class={cn('flex h-6 items-center gap-2', className)}
+					class={cn('flex h-6 items-center gap-3', className)}
 					{...restProps}
 					{variant}
 				>
 					<span class="flex items-center gap-1">
-						<Icon icon={typeToIcon[inputManager.type]} />
+						<Icon icon={hasContext('icon') ? getContext('icon') : typeToIcon[inputManager.type]} />
 						{value}
 					</span>
 					<Button
@@ -53,7 +53,7 @@
 							valuesManager.remove(value);
 						}}
 					>
-						<Icon icon="ph:x-circle" class="size-3" />
+						<Icon icon="ph:x-circle" class="text-muted-foreground" />
 					</Button>
 				</Badge>
 			{/if}
