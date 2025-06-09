@@ -63,7 +63,7 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label for="filesystem-placement">Placement</Form.Label>
-					<SingleSelect.Root bind:value={request.placement}>
+					<SingleSelect.Root options={placements} bind:value={request.placement}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>

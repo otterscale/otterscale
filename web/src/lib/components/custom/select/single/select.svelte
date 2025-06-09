@@ -10,19 +10,23 @@
 		open = $bindable(false),
 		value = $bindable(),
 		children,
-		selectedOption,
+		options,
+		required,
 		...restProps
 	}: PopoverPrimitive.RootProps & {
+		options: OptionType[];
 		value: any;
-		selectedOption?: OptionType;
+		required?: boolean;
 	} = $props();
 
-	setContext(
-		'OptionManager',
-		new OptionManager(selectedOption ?? ({} as OptionType), (o: OptionType) => {
-			value = o.value;
-		})
-	);
+	const setter = (o: OptionType) => {
+		value = o.value;
+	};
+	const getter = () => {
+		return value ?? '';
+	};
+	setContext('OptionManager', new OptionManager(options, setter, getter));
+	setContext('required', required);
 </script>
 
 <Popover.Root {open} {...restProps}>

@@ -19,25 +19,55 @@
 	} = $props();
 
 	const optionManager: OptionManager = getContext('OptionManager');
+	const required: Boolean = getContext('required');
 </script>
 
-<Popover.Trigger
-	bind:ref
-	data-slot="select-trigger"
-	class={cn('cursor-pointer', buttonVariants({ variant: variant }), className)}
-	{...restProps}
->
-	{#if children}
-		{@render children?.()}
-	{:else if optionManager.selectedOption.label}
-		<div class={cn('flex items-center gap-1 rounded-sm p-1 font-normal')}>
-			<Icon
-				icon={optionManager.selectedOption.icon ?? 'ph:empty'}
-				class={cn('size-4', optionManager.selectedOption ? 'visibale' : 'hidden')}
-			/>
-			{optionManager.selectedOption.label}
-		</div>
-	{:else}
-		Select
-	{/if}
-</Popover.Trigger>
+{#if required}
+	{@const isNull = required && !optionManager.selectedOption.value}
+	<Popover.Trigger
+		bind:ref
+		data-slot="select-trigger"
+		class={cn(
+			'cursor-pointer',
+			buttonVariants({ variant: variant }),
+			isNull ? 'ring-destructive ring-1' : '',
+			className
+		)}
+		{...restProps}
+	>
+		{#if children}
+			{@render children?.()}
+		{:else if optionManager.selectedOption.label}
+			<div class={cn('flex items-center gap-1 rounded-sm p-1 font-normal')}>
+				<Icon
+					icon={optionManager.selectedOption.icon ?? 'ph:empty'}
+					class={cn('size-4', optionManager.selectedOption ? 'visibale' : 'hidden')}
+				/>
+				{optionManager.selectedOption.label}
+			</div>
+		{:else}
+			<p class=" text-destructive text-xs">Required</p>
+		{/if}
+	</Popover.Trigger>
+{:else}
+	<Popover.Trigger
+		bind:ref
+		data-slot="select-trigger"
+		class={cn('cursor-pointer', buttonVariants({ variant: variant }), className)}
+		{...restProps}
+	>
+		{#if children}
+			{@render children?.()}
+		{:else if optionManager.selectedOption.label}
+			<div class={cn('flex items-center gap-1 rounded-sm p-1 font-normal')}>
+				<Icon
+					icon={optionManager.selectedOption.icon ?? 'ph:empty'}
+					class={cn('size-4', optionManager.selectedOption ? 'visibale' : 'hidden')}
+				/>
+				{optionManager.selectedOption.label}
+			</div>
+		{:else}
+			Select
+		{/if}
+	</Popover.Trigger>
+{/if}
