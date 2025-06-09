@@ -47,6 +47,7 @@ message UpdateConfigRequest {
   string juju_ca_cert = 14;
   string juju_cloud_name = 21;
   string juju_cloud_region = 22;
+  string juju_charmhub_api_url = 23;
 }
 
 message UpdateConfigHelmRepositoriesRequest {

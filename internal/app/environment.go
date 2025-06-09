@@ -104,6 +104,7 @@ func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 			CACert:              req.GetJujuCaCert(),
 			CloudName:           req.GetJujuCloudName(),
 			CloudRegion:         req.GetJujuCloudRegion(),
+			CharmhubAPIURL:      req.GetJujuCharmhubApiUrl(),
 		},
 	}
 }

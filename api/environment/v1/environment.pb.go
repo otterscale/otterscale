@@ -461,6 +461,7 @@ type UpdateConfigRequest struct {
 	xxx_hidden_JujuCaCert              *string                `protobuf:"bytes,14,opt,name=juju_ca_cert,json=jujuCaCert"`
 	xxx_hidden_JujuCloudName           *string                `protobuf:"bytes,21,opt,name=juju_cloud_name,json=jujuCloudName"`
 	xxx_hidden_JujuCloudRegion         *string                `protobuf:"bytes,22,opt,name=juju_cloud_region,json=jujuCloudRegion"`
+	xxx_hidden_JujuCharmhubApiUrl      *string                `protobuf:"bytes,23,opt,name=juju_charmhub_api_url,json=jujuCharmhubApiUrl"`
 	XXX_raceDetectHookData             protoimpl.RaceDetectHookData
 	XXX_presence                       [1]uint32
 	unknownFields                      protoimpl.UnknownFields
@@ -579,19 +580,29 @@ func (x *UpdateConfigRequest) GetJujuCloudRegion() string {
 	return ""
 }
 
+func (x *UpdateConfigRequest) GetJujuCharmhubApiUrl() string {
+	if x != nil {
+		if x.xxx_hidden_JujuCharmhubApiUrl != nil {
+			return *x.xxx_hidden_JujuCharmhubApiUrl
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *UpdateConfigRequest) SetMaasUrl(v string) {
 	x.xxx_hidden_MaasUrl = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
 }
 
 func (x *UpdateConfigRequest) SetMaasKey(v string) {
 	x.xxx_hidden_MaasKey = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 10)
 }
 
 func (x *UpdateConfigRequest) SetMaasVersion(v string) {
 	x.xxx_hidden_MaasVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 10)
 }
 
 func (x *UpdateConfigRequest) SetJujuControllerAddresses(v []string) {
@@ -600,27 +611,32 @@ func (x *UpdateConfigRequest) SetJujuControllerAddresses(v []string) {
 
 func (x *UpdateConfigRequest) SetJujuUsername(v string) {
 	x.xxx_hidden_JujuUsername = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
 }
 
 func (x *UpdateConfigRequest) SetJujuPassword(v string) {
 	x.xxx_hidden_JujuPassword = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
 }
 
 func (x *UpdateConfigRequest) SetJujuCaCert(v string) {
 	x.xxx_hidden_JujuCaCert = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
 }
 
 func (x *UpdateConfigRequest) SetJujuCloudName(v string) {
 	x.xxx_hidden_JujuCloudName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 10)
 }
 
 func (x *UpdateConfigRequest) SetJujuCloudRegion(v string) {
 	x.xxx_hidden_JujuCloudRegion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 10)
+}
+
+func (x *UpdateConfigRequest) SetJujuCharmhubApiUrl(v string) {
+	x.xxx_hidden_JujuCharmhubApiUrl = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 10)
 }
 
 func (x *UpdateConfigRequest) HasMaasUrl() bool {
@@ -679,6 +695,13 @@ func (x *UpdateConfigRequest) HasJujuCloudRegion() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
+func (x *UpdateConfigRequest) HasJujuCharmhubApiUrl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
+}
+
 func (x *UpdateConfigRequest) ClearMaasUrl() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_MaasUrl = nil
@@ -719,6 +742,11 @@ func (x *UpdateConfigRequest) ClearJujuCloudRegion() {
 	x.xxx_hidden_JujuCloudRegion = nil
 }
 
+func (x *UpdateConfigRequest) ClearJujuCharmhubApiUrl() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
+	x.xxx_hidden_JujuCharmhubApiUrl = nil
+}
+
 type UpdateConfigRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -731,6 +759,7 @@ type UpdateConfigRequest_builder struct {
 	JujuCaCert              *string
 	JujuCloudName           *string
 	JujuCloudRegion         *string
+	JujuCharmhubApiUrl      *string
 }
 
 func (b0 UpdateConfigRequest_builder) Build() *UpdateConfigRequest {
@@ -738,37 +767,41 @@ func (b0 UpdateConfigRequest_builder) Build() *UpdateConfigRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.MaasUrl != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
 		x.xxx_hidden_MaasUrl = b.MaasUrl
 	}
 	if b.MaasKey != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 10)
 		x.xxx_hidden_MaasKey = b.MaasKey
 	}
 	if b.MaasVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 10)
 		x.xxx_hidden_MaasVersion = b.MaasVersion
 	}
 	x.xxx_hidden_JujuControllerAddresses = b.JujuControllerAddresses
 	if b.JujuUsername != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 10)
 		x.xxx_hidden_JujuUsername = b.JujuUsername
 	}
 	if b.JujuPassword != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 10)
 		x.xxx_hidden_JujuPassword = b.JujuPassword
 	}
 	if b.JujuCaCert != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 10)
 		x.xxx_hidden_JujuCaCert = b.JujuCaCert
 	}
 	if b.JujuCloudName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 10)
 		x.xxx_hidden_JujuCloudName = b.JujuCloudName
 	}
 	if b.JujuCloudRegion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 10)
 		x.xxx_hidden_JujuCloudRegion = b.JujuCloudRegion
+	}
+	if b.JujuCharmhubApiUrl != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 10)
+		x.xxx_hidden_JujuCharmhubApiUrl = b.JujuCharmhubApiUrl
 	}
 	return m0
 }
@@ -848,7 +881,7 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"E\n" +
 	"\x13UpdateStatusRequest\x12\x14\n" +
 	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\xea\x02\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\x9d\x03\n" +
 	"\x13UpdateConfigRequest\x12\x19\n" +
 	"\bmaas_url\x18\x01 \x01(\tR\amaasUrl\x12\x19\n" +
 	"\bmaas_key\x18\x02 \x01(\tR\amaasKey\x12!\n" +
@@ -859,7 +892,8 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\fjuju_ca_cert\x18\x0e \x01(\tR\n" +
 	"jujuCaCert\x12&\n" +
 	"\x0fjuju_cloud_name\x18\x15 \x01(\tR\rjujuCloudName\x12*\n" +
-	"\x11juju_cloud_region\x18\x16 \x01(\tR\x0fjujuCloudRegion\"9\n" +
+	"\x11juju_cloud_region\x18\x16 \x01(\tR\x0fjujuCloudRegion\x121\n" +
+	"\x15juju_charmhub_api_url\x18\x17 \x01(\tR\x12jujuCharmhubApiUrl\"9\n" +
 	"#UpdateConfigHelmRepositoriesRequest\x12\x12\n" +
 	"\x04urls\x18\x01 \x03(\tR\x04urls2\xa3\x04\n" +
 	"\x12EnvironmentService\x12o\n" +
