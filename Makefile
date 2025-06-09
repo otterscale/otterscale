@@ -37,11 +37,6 @@ proto:
 		--es_opt=target=ts \
 		$(PROTO_FILES)
 
-	protoc -I=. \
-		--go_out=paths=source_relative:. \
-		--go_opt=default_api_level=API_OPAQUE \
-		internal/config/configset.proto
-
 .PHONY: help
 # show help
 help:

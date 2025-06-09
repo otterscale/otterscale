@@ -50,7 +50,9 @@ func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message st
 }
 
 func (uc *EnvironmentUseCase) UpdateConfig(ctx context.Context, conf *config.Config) error {
-	return uc.conf.Override(conf)
+	uc.conf.MAAS = conf.MAAS
+	uc.conf.Juju = conf.Juju
+	return uc.conf.Override(uc.conf)
 }
 
 func (uc *EnvironmentUseCase) UpdateConfigHelmRepos(ctx context.Context, urls []string) error {
