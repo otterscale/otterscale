@@ -1,0 +1,27 @@
+<script lang="ts">
+	import * as Popover from '$lib/components/ui/popover';
+
+	import { cn } from '$lib/utils.js';
+	import { Popover as PopoverPrimitive } from 'bits-ui';
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		sideOffset = 4,
+		align = 'center',
+		side = 'bottom',
+		...restProps
+	}: PopoverPrimitive.ContentProps & {
+		portalProps?: PopoverPrimitive.PortalProps;
+	} = $props();
+</script>
+
+<Popover.Content
+	bind:ref
+	data-slot="select-content"
+	{sideOffset}
+	{align}
+	{side}
+	class={cn('w-fit p-0', className)}
+	{...restProps}
+/>

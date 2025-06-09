@@ -1,8 +1,9 @@
 <script lang="ts">
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 
-	import { cn, type WithElementRef } from '$lib/utils.js';
+	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import { cn } from '$lib/utils.js';
 
 	let {
 		ref = $bindable(null),
@@ -18,7 +19,7 @@
 	class={cn('w-full', className)}
 	{...restProps}
 >
-	<div class="flex w-full items-center justify-between">
+	<div class="flex w-full items-center justify-between gap-2">
 		{@render children?.()}
 	</div>
 </AlertDialog.Footer>

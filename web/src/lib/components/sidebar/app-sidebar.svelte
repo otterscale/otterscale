@@ -115,6 +115,10 @@
 						url: '/management/facility?intervals=15'
 					},
 					{
+						title: 'Storage',
+						url: '/management/storage?intervals=15'
+					},
+					{
 						title: m.machine(),
 						url: '/management/machine?intervals=15'
 					},

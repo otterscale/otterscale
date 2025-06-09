@@ -1,5 +1,6 @@
 import { Root, Title, Portal, Header, Trigger, Overlay, Content, Description } from "$lib/components/ui/alert-dialog/index.js";
 import Actions from "./alert-dialog-actions.svelte";
+import ActionsGroup from "./alert-dialog-actions-group.svelte";
 import ActionItem from "./alert-dialog-action-item.svelte";
 import ActionShortcut from "./alert-dialog-action-shortcut.svelte";
 import ActionGroup from "./alert-dialog-action-group.svelte";
@@ -16,6 +17,7 @@ export {
 	ActionGroup,
 	ActionGroupHeading,
 	Actions,
+	ActionsGroup,
 	Action,
 	Cancel,
 	Portal,
