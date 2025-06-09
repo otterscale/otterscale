@@ -14,28 +14,17 @@
 
 ## 🍺 Build & Run
 
-- Build
+- Build & Navigate to Binary Directory
 
     ```sh
-    make build
+    make build && cd bin
     ```
 
-- Help
+- Quick Start
 
     ```sh
-    cd bin && ./otterscale
-    ```
-
-- Init
-
-    ```sh
-    cd bin && ./otterscale init otterscale.yaml
-    ```
-
-- Serve
-
-    ```sh
-    cd bin && ./otterscale serve --address ":8299" --config otterscale.yaml
+    ./otterscale init otterscale.yaml
+    ./otterscale serve --address :8299 --config otterscale.yaml
     ```
 
 ## 🔨 Development
