@@ -19,8 +19,8 @@
 		required?: boolean;
 	} = $props();
 
-	const setter = (o: OptionType) => {
-		value = o.value;
+	const setter = (newValue: any) => {
+		value = newValue;
 	};
 	const getter = () => {
 		return value ?? '';
