@@ -3,20 +3,42 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/openhdc/otterscale.svg)](https://pkg.go.dev/github.com/openhdc/otterscale)
 [![Go Report Card](https://goreportcard.com/badge/github.com/openhdc/otterscale?style=flat-square)](https://goreportcard.com/report/github.com/openhdc/otterscale)
 [![GitHub Build Status](https://github.com/openhdc/otterscale/actions/workflows/go.yml/badge.svg?style=flat-square)](https://github.com/openhdc/otterscale/actions/workflows/go.yml)
-[![GitHub Release](https://img.shields.io/github/v/release/openhdc/openhdc?style=flat-square)](https://github.com/openhdc/otterscale/releases)
-[![GitHub License](https://img.shields.io/github/license/openhdc/openhdc)](https://opensource.org/license/mpl-2-0)
+[![GitHub Release](https://img.shields.io/github/v/release/openhdc/otterscale?style=flat-square)](https://github.com/openhdc/otterscale/releases)
+[![GitHub License](https://img.shields.io/github/license/openhdc/otterscale?style=flat-square)](https://opensource.org/license/agpl-v3)
 
--
+- ***WIP***
 
 ## ✨ Features
 
--
+- ***WIP***
 
 ## 🍺 Build & Run
 
--
+- Build
 
-## 🔨 Environment
+    ```sh
+    make build
+    ```
+
+- Help
+
+    ```sh
+    cd bin && ./otterscale
+    ```
+
+- Init
+
+    ```sh
+    cd bin && ./otterscale init otterscale.yaml
+    ```
+
+- Serve
+
+    ```sh
+    cd bin && ./otterscale serve --address ":8299" --config otterscale.yaml
+    ```
+
+## 🔨 Development
 
 Ensure you have the following environment setup:
 
@@ -36,7 +58,12 @@ We'll do our best to assist you promptly.
 
 ## 📢 Roadmap
 
--
+- [ ] [v1.0.0](https://github.com/openhdc/otterscale/milestone/1)
+  - [x] MAAS
+  - [x] Juju
+  - [x] Kubernetes
+  - [x] Ceph
+  - [ ] BIST
 
 ## ⛔ Rules
 
