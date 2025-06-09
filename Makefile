@@ -4,7 +4,7 @@ PROTO_FILES=$(shell find api -name *.proto)
 .PHONY: build
 # build cli
 build:
-	mkdir -p ./bin && go build -ldflags "-w -X main.version=$(VERSION)" -o ./bin/ ./cmd/otterscale/...
+	mkdir -p ./bin && go build -ldflags "-w -s -X main.version=$(VERSION)" -o ./bin/ ./cmd/otterscale/...
 
 .PHONY: vet
 # examine code
