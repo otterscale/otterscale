@@ -12,15 +12,15 @@
 
 - ***WIP***
 
-## 🍺 Build & Run
+## 🍺 Quick Start
 
-- Build & Navigate to Binary Directory
+- Download the [latest release](https://github.com/openhdc/otterscale/releases/latest) or compile from source
 
     ```sh
     make build && cd bin
     ```
 
-- Quick Start
+- Initialize configuration and launch server
 
     ```sh
     ./otterscale init otterscale.yaml
