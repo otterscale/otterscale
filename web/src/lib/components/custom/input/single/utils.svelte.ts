@@ -1,6 +1,6 @@
 import { z, type ZodFirstPartySchemaTypes } from 'zod';
 
-const BORDER_INPUT_CLASSNAME = 'flex items-center rounded-md border shadow';
+const BORDER_INPUT_CLASSNAME = 'flex items-center rounded-md border shadow-sm';
 const UNFOCUS_INPUT_CLASSNAME = 'border-none shadow-none focus-visible:ring-0 bg-transparent';
 
 const typeToIcon: Record<string, string> = {

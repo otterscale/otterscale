@@ -6,7 +6,7 @@ type OptionType = {
     enabled?: boolean;
 };
 
-type valueSetterType = (option: OptionType) => void;
+type valueSetterType = (value: any) => void;
 type valueGetterType = () => any;
 
 export type {
