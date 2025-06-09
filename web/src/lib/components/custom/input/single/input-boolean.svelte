@@ -31,9 +31,6 @@
 	const isNotFilled = $derived(required && (checked === null || checked == undefined));
 </script>
 
-{#if isNotFilled}
-	<InputRequired {isNotFilled} />
-{/if}
 <div class="flex items-center gap-2">
 	<div
 		class={cn(
@@ -48,40 +45,57 @@
 				<Icon icon={typeToIcon['boolean']} />
 			</span>
 
-			{#if checked === true}
-				<Badge variant="default">True</Badge>
-			{:else if checked === false}
-				<Badge variant="outline">False</Badge>
-			{:else if checked === null || checked === undefined}
-				<Badge variant="destructive">Required</Badge>
-			{:else}
-				<Badge variant="destructive">Invalid</Badge>
-			{/if}
-
-			{#if descriptor}
-				<p class="text-muted-foreground text-xs">{descriptor(checked)}</p>
-			{/if}
-		</span>
-
-		<span class={cn('mr-3 flex cursor-pointer items-center gap-1')}>
 			{#if required}
-				{#if checked === undefined}
-					<Switch.Root
-						bind:ref
-						bind:checked={proxyChecked}
-						data-slot="input-boolean"
-						{...restProps}
-						onCheckedChange={() => {
-							checked = proxyChecked;
-						}}
-					/>
+				{@const isValid = checked === true || checked === false}
+				{@const isNull = checked === null || checked === undefined}
+				{#if isValid}
+					{#if descriptor}
+						<p class="text-muted-foreground text-xs">{descriptor(checked)}</p>
+					{:else if checked === true}
+						<Badge variant="default">True</Badge>
+					{:else if checked === false}
+						<Badge variant="outline">False</Badge>
+					{/if}
+				{:else if isNull}
+					<Badge variant="destructive">Required</Badge>
 				{:else}
-					<Switch.Root bind:ref bind:checked data-slot="input-boolean" {...restProps} />
+					<Badge variant="destructive">Invalid</Badge>
+				{/if}
+			{:else if !required}
+				{@const isValid =
+					checked === true || checked === false || checked === null || checked === undefined}
+				{#if isValid}
+					{#if descriptor}
+						<p class="text-muted-foreground text-xs">{descriptor(checked)}</p>
+					{:else if checked === true}
+						<Badge variant="default">True</Badge>
+					{:else if checked === false}
+						<Badge variant="outline">False</Badge>
+					{:else if checked === null || checked === undefined}
+						<Badge variant="secondary">Null</Badge>
+					{/if}
+				{:else}
+					<Badge variant="destructive">Invalid</Badge>
 				{/if}
 			{/if}
 		</span>
 	</div>
-	{#if !required}
+
+	{#if required}
+		{#if checked === undefined}
+			<Switch.Root
+				bind:ref
+				bind:checked={proxyChecked}
+				data-slot="input-boolean"
+				{...restProps}
+				onCheckedChange={() => {
+					checked = proxyChecked;
+				}}
+			/>
+		{:else}
+			<Switch.Root bind:ref bind:checked data-slot="input-boolean" {...restProps} />
+		{/if}
+	{:else}
 		{@const options: SingleSelect.OptionType[] = [
 				{ value: null, label: 'Null', icon: 'ph:empty' },
 				{
@@ -95,7 +109,7 @@
 					icon: 'ph:check'
 				}
 			]}
-		<SingleSelect.Root bind:value={checked}>
+		<SingleSelect.Root {options} bind:value={checked}>
 			<SingleSelect.Trigger class="h-9">Select</SingleSelect.Trigger>
 			<SingleSelect.Content>
 				<SingleSelect.Options>

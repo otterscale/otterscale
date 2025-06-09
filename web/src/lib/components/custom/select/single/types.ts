@@ -7,8 +7,10 @@ type OptionType = {
 };
 
 type valueSetterType = (option: OptionType) => void;
+type valueGetterType = () => any;
 
 export type {
     OptionType,
     valueSetterType,
+    valueGetterType,
 }

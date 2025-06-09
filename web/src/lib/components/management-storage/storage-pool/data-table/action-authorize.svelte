@@ -8,7 +8,7 @@
 	import { cn } from '$lib/utils';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import type { Row } from '@tanstack/table-core';
-	import type { FileSystem } from './types';
+	import type { Pool } from './types';
 
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
