@@ -4,7 +4,7 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { Application } from './application';
 	import { Storage } from './storage';
-	import { System } from './system';
+	import { System } from './overall';
 </script>
 
 <script lang="ts">
@@ -14,11 +14,11 @@
 <main class="no-user-select grid gap-4 p-4">
 	<Tabs.Root value="storage">
 		<Tabs.List>
-			<Tabs.Trigger class="text-xl" value="system">System</Tabs.Trigger>
+			<Tabs.Trigger class="text-xl" value="overall">Overall</Tabs.Trigger>
 			<Tabs.Trigger class="text-xl" value="storage">Storage</Tabs.Trigger>
 			<Tabs.Trigger class="text-xl" value="application">Application</Tabs.Trigger>
 		</Tabs.List>
-		<Tabs.Content value="system">
+		<Tabs.Content value="overall">
 			<System {client} {scopes} />
 		</Tabs.Content>
 		<Tabs.Content value="storage">

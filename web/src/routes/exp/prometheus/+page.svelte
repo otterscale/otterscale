@@ -34,7 +34,6 @@
 	onMount(async () => {
 		try {
 			await fetchJujuModelUuids();
-			console.log(scopes);
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
