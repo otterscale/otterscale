@@ -16,44 +16,43 @@
 	let {
 		client,
 		scope: scope,
-		instance: instance,
 		timeRange
-	}: { client: PrometheusDriver; scope: Scope; instance: string; timeRange: TimeRange } = $props();
+	}: { client: PrometheusDriver; scope: Scope; timeRange: TimeRange } = $props();
 
 	const step = 1 * 60;
 
 	const totalQuery = $derived(
 		`
-		node_memory_MemTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+		node_memory_MemTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 	const usedQuery = $derived(
 		`
-			node_memory_MemTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+			node_memory_MemTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
 		-
-			node_memory_MemFree_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+			node_memory_MemFree_bytes{juju_model_uuid=~"${scope.uuid}"}
 		-
 		(
-				node_memory_Cached_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+				node_memory_Cached_bytes{juju_model_uuid=~"${scope.uuid}"}
 			+
-				node_memory_Buffers_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+				node_memory_Buffers_bytes{juju_model_uuid=~"${scope.uuid}"}
 			+
-			node_memory_SReclaimable_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+			node_memory_SReclaimable_bytes{juju_model_uuid=~"${scope.uuid}"}
 		)
 		`
 	);
 	const cacheAndBufferQuery = $derived(
 		`
-			node_memory_Cached_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+			node_memory_Cached_bytes{juju_model_uuid=~"${scope.uuid}"}
 		+
-			node_memory_Buffers_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+			node_memory_Buffers_bytes{juju_model_uuid=~"${scope.uuid}"}
 		+
-		node_memory_SReclaimable_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+		node_memory_SReclaimable_bytes{juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 	const freeQuery = $derived(
 		`
-		node_memory_MemFree_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+		node_memory_MemFree_bytes{juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 

@@ -4,11 +4,7 @@
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../utils/empty.svelte';
 
-	let {
-		client,
-		scope: scope,
-		instance: instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
 		sum(kubelet_node_name{job="kubelet",juju_model_uuid=~"${scope.uuid}",metrics_path="/metrics"})

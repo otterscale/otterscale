@@ -16,9 +16,8 @@
 	let {
 		client,
 		scope: scope,
-		instance: instance,
 		timeRange
-	}: { client: PrometheusDriver; scope: Scope; instance: string; timeRange: TimeRange } = $props();
+	}: { client: PrometheusDriver; scope: Scope; timeRange: TimeRange } = $props();
 
 	const step = 1 * 60;
 

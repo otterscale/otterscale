@@ -7,11 +7,7 @@
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../utils/empty.svelte';
 
-	let {
-		client,
-		scope: scope,
-		instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	const query = $derived(
 		`
@@ -19,10 +15,10 @@
 		-
 		(
 			(
-				node_filesystem_avail_bytes{fstype!="rootfs",instance="${instance}",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
+				node_filesystem_avail_bytes{fstype!="rootfs",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
 			)
 			/
-			node_filesystem_size_bytes{fstype!="rootfs",instance="${instance}",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
+			node_filesystem_size_bytes{fstype!="rootfs",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
 		)
 		`
 	);
@@ -36,7 +32,7 @@
 		<NoData type="gauge" />
 	{:else}
 		{@const [result] = results}
-		{@const usage = result.value.value}
+		{@const usage = result.value.value * 100}
 		{@const radius = 100}
 		{@const border = radius * 2}
 		<div class="flex h-full w-full items-center justify-center">
@@ -45,14 +41,14 @@
 					<Svg center>
 						<Group>
 							<Arc
-								value={usage * 100}
+								value={usage}
 								domain={[0, 100]}
 								outerRadius={100}
 								innerRadius={-13}
 								cornerRadius={13}
 								range={[-120, 120]}
-								class={metricColor(usage * 100)}
-								track={{ class: metricBackgroundColor(usage * 100) }}
+								class={metricColor(usage)}
+								track={{ class: metricBackgroundColor(usage) }}
 							/>
 						</Group>
 					</Svg>

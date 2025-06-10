@@ -58,18 +58,13 @@
 
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
-	let {
-		client,
-		scopes,
-		instances
-	}: { client: PrometheusDriver; scopes: Scope[]; instances: string[] } = $props();
+	let { client, scopes }: { client: PrometheusDriver; scopes: Scope[] } = $props();
 
 	let selectedTimeRange = $state({
 		start: today(getLocalTimeZone()).toDate(getLocalTimeZone()),
 		end: now(getLocalTimeZone()).toDate()
 	} as TimeRange);
 	let selectedScope = $state(scopes[0]);
-	let selectedInstance = $state(instances[0]);
 </script>
 
 <div class="flex flex-col gap-4">

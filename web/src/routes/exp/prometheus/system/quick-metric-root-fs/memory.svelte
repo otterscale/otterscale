@@ -5,14 +5,10 @@
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../utils/empty.svelte';
 
-	let {
-		client,
-		scope: scope,
-		instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		node_filesystem_size_bytes{fstype!="rootfs",instance="${instance}",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
+		node_filesystem_size_bytes{fstype!="rootfs",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
 		`
 	);
 </script>

@@ -21,87 +21,57 @@
 
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 
-	let {
-		client,
-		scopes,
-		instances
-	}: { client: PrometheusDriver; scopes: Scope[]; instances: string[] } = $props();
+	let { client, scopes }: { client: PrometheusDriver; scopes: Scope[] } = $props();
 
 	let selectedTimeRange = $state({
 		start: today(getLocalTimeZone()).toDate(getLocalTimeZone()),
 		end: now(getLocalTimeZone()).toDate()
 	} as TimeRange);
 	let selectedScope = $state(scopes[0]);
-	let selectedInstance = $state(instances[0]);
 </script>
 
 <div class="flex flex-col gap-4">
 	<div class="mr-auto flex flex-wrap items-center gap-2">
 		<ScopePicker bind:selectedScope {scopes} />
-		<InstancePicker bind:selectedInstance {instances} />
 	</div>
 	<div class="mr-auto flex flex-wrap items-center gap-2">
 		<DateTimestampPicker bind:value={selectedTimeRange} />
 	</div>
 	{#key selectedScope}
-		{#key selectedInstance}
-			<p class="text-xl font-bold">Quick Metric</p>
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+			<span class="col-span-1">
+				<QuickUptime {client} scope={selectedScope} />
+			</span>
+		</div>
+		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+			<span class="col-span-1">
+				<QuickCPU {client} scope={selectedScope} />
+			</span>
+			<span class="col-span-1">
+				<QuickRAM {client} scope={selectedScope} />
+			</span>
+			<span class="col-span-1">
+				<QuickSWAP {client} scope={selectedScope} />
+			</span>
+			<span class="col-span-1">
+				<QuickRootFS {client} scope={selectedScope} />
+			</span>
+		</div>
+		{#key selectedTimeRange}
+			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2">
 				<span class="col-span-1">
-					<QuickUptime {client} scope={selectedScope} instance={selectedInstance} />
+					<BasicCPU {client} scope={selectedScope} timeRange={selectedTimeRange} />
+				</span>
+				<span class="col-span-1">
+					<BasicRAM {client} scope={selectedScope} timeRange={selectedTimeRange} />
+				</span>
+				<span class="col-span-1">
+					<BasicSWAP {client} scope={selectedScope} timeRange={selectedTimeRange} />
+				</span>
+				<span class="col-span-1">
+					<BasicNetworkTrafficBasic {client} scope={selectedScope} timeRange={selectedTimeRange} />
 				</span>
 			</div>
-			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-				<span class="col-span-1">
-					<QuickCPU {client} scope={selectedScope} instance={selectedInstance} />
-				</span>
-				<span class="col-span-1">
-					<QuickRAM {client} scope={selectedScope} instance={selectedInstance} />
-				</span>
-				<span class="col-span-1">
-					<QuickSWAP {client} scope={selectedScope} instance={selectedInstance} />
-				</span>
-				<span class="col-span-1">
-					<QuickRootFS {client} scope={selectedScope} instance={selectedInstance} />
-				</span>
-			</div>
-			{#key selectedTimeRange}
-				<p class="text-xl font-bold">Basic Metric</p>
-				<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2">
-					<span class="col-span-1">
-						<BasicCPU
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-					<span class="col-span-1">
-						<BasicRAM
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-					<span class="col-span-1">
-						<BasicSWAP
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-					<span class="col-span-1">
-						<BasicNetworkTrafficBasic
-							{client}
-							scope={selectedScope}
-							instance={selectedInstance}
-							timeRange={selectedTimeRange}
-						/>
-					</span>
-				</div>
-			{/key}
 		{/key}
 	{/key}
 </div>
