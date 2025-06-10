@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"connectrpc.com/connect"
+
 	"github.com/openhdc/otterscale/internal/core"
 	"github.com/openhdc/otterscale/internal/utils"
 )
