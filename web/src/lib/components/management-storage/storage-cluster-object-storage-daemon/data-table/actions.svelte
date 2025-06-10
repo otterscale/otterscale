@@ -5,9 +5,9 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 
 	import ActionEdit from './action-edit.svelte';
-	import type { Pool } from './types';
+	import type { OSD } from './types';
 
-	let { pool }: { pool: Pool } = $props();
+	let { osd }: { osd: OSD } = $props();
 </script>
 
 <DropdownMenu.Root>
@@ -25,7 +25,7 @@
 			<DropdownMenu.Label class="label">Actions</DropdownMenu.Label>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
-				<ActionEdit {pool} />
+				<ActionEdit {osd} />
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>

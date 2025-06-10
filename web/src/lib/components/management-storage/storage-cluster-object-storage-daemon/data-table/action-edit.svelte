@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -19,9 +19,7 @@
 		profiles,
 		type Request
 	} from '../create.svelte';
-	import type { Pool } from './types';
-
-	let { pool }: { pool: Pool } = $props();
+	
 
 	const DEFAULT_REQUEST = { name: pool.name } as Request;
 	let request: Request = $state(DEFAULT_REQUEST);
@@ -356,6 +354,67 @@
 				<Form.Help>
 					Leave it blank or specify 0 to disable this quota. A valid quota should be greater than 0.
 				</Form.Help>
+			</Form.Fieldset>
+		</Form.Root>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
+			<AlertDialog.ActionsGroup>
+				<AlertDialog.Action
+					onclick={() => {
+						console.log(request);
+					}}
+				>
+					Create
+				</AlertDialog.Action>
+			</AlertDialog.ActionsGroup>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root> -->
+
+<script lang="ts" module>
+	import * as AlertDialog from '$lib/components/custom/alert-dialog';
+	import * as Form from '$lib/components/custom/form';
+	import { Single as SingleInput } from '$lib/components/custom/input';
+	import {
+		Multiple as MultipleSelect,
+		Single as SingleSelect
+	} from '$lib/components/custom/select';
+	import { DialogStateController } from '$lib/components/custom/utils.svelte';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import { cn } from '$lib/utils';
+	import Icon from '@iconify/svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import { deployments, type Request } from '../create.svelte';
+</script>
+
+<script lang="ts">
+	import type { OSD } from './types';
+
+	let { osd }: { osd: OSD } = $props();
+	const DEFAULT_REQUEST = {} as Request;
+	let request: Request = $state(DEFAULT_REQUEST);
+	function reset() {
+		request = DEFAULT_REQUEST;
+	}
+
+	const stateController = new DialogStateController(false);
+</script>
+
+<AlertDialog.Root bind:open={stateController.state}>
+	<AlertDialog.Trigger class={cn('flex h-full w-full items-center gap-2')}>
+		<Icon icon="ph:pencil" />
+		Edit
+	</AlertDialog.Trigger>
+	<AlertDialog.Content>
+		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
+			Edit
+		</AlertDialog.Header>
+		<Form.Root>
+			<Form.Fieldset>
+				<Form.Field>
+					<Form.Label for="osd-device-class">Device Class</Form.Label>
+					<SingleInput.General required type="text" bind:value={request.deviceClass} />
+				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>

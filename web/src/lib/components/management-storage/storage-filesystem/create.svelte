@@ -7,6 +7,7 @@
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
+	import { writable, type Writable } from 'svelte/store';
 
 	type Request = {
 		name: string;
@@ -15,7 +16,7 @@
 		labels: string[];
 	};
 
-	const placements: SingleSelect.OptionType[] = [
+	const placements: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'host',
 			label: 'Host',
@@ -26,7 +27,7 @@
 			label: 'Label',
 			icon: 'ph:tag'
 		}
-	];
+	]);
 
 	const DEFAULT_REQUEST = {} as Request;
 	let request: Request = $state(DEFAULT_REQUEST);
@@ -39,7 +40,7 @@
 
 <AlertDialog.Root bind:open={stateController.state}>
 	<div class="flex justify-end">
-		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'ghost' }))}>
+		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'default' }))}>
 			<div class="flex items-center gap-2">
 				<Icon icon="ph:plus" />
 				<p class="text-base">Create</p>
@@ -71,7 +72,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each placements as placement}
+										{#each $placements as placement}
 											<SingleSelect.Item option={placement}>
 												<Icon
 													icon={placement.icon ? placement.icon : 'ph:empty'}

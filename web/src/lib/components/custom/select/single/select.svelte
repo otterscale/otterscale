@@ -3,18 +3,18 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { OptionManager } from './utils.svelte';
 	import type { OptionType } from './types';
-
+	import type { Writable } from 'svelte/store';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 
 	let {
 		open = $bindable(false),
 		value = $bindable(),
 		children,
-		options,
+		options = $bindable(),
 		required,
 		...restProps
 	}: PopoverPrimitive.RootProps & {
-		options: OptionType[];
+		options: Writable<OptionType[]>;
 		value: any;
 		required?: boolean;
 	} = $props();
@@ -25,7 +25,8 @@
 	const getter = () => {
 		return value ?? '';
 	};
-	setContext('OptionManager', new OptionManager(options, setter, getter));
+	setContext('options', options);
+	setContext('OptionManager', new OptionManager($options, setter, getter));
 	setContext('required', required);
 </script>
 
