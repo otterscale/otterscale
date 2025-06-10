@@ -1,18 +1,16 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
-	import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
-	import {
-		Single as SingleSelect,
-		Multiple as MultipleSelect
-	} from '$lib/components/custom/select';
-	import { cn } from '$lib/utils';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import type { Row } from '@tanstack/table-core';
-	import type { FileSystem } from './types';
-
 	import * as Form from '$lib/components/custom/form';
+	import { Single as SingleInput } from '$lib/components/custom/input';
+	import {
+		Multiple as MultipleSelect,
+		Single as SingleSelect
+	} from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { cn } from '$lib/utils';
+	import Icon from '@iconify/svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import type { FileSystem } from './types';
 
 	type Request = {
 		userId: string;
@@ -20,7 +18,7 @@
 		permissions: string[];
 	};
 
-	const permissions: SingleSelect.OptionType[] = [
+	const permissions: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'read',
 			label: 'Read',
@@ -55,7 +53,7 @@
 			information: 'Safety measure to prevent scenarios such as accidental sudo rm -rf /path',
 			enabled: false
 		}
-	];
+	]);
 
 	const DEFAULT_REQUEST = { permissions: ['write', 'root_squash'] } as Request;
 	let request: Request = $state(DEFAULT_REQUEST);
@@ -110,7 +108,7 @@
 									<MultipleSelect.List>
 										<MultipleSelect.Empty>No results found.</MultipleSelect.Empty>
 										<MultipleSelect.Group>
-											{#each permissions as permission}
+											{#each $permissions as permission}
 												<MultipleSelect.Item option={permission} disabled={!permission.enabled}>
 													<Icon
 														icon={permission.icon ? permission.icon : 'ph:empty'}

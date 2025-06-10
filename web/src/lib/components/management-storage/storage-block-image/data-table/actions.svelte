@@ -1,13 +1,12 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
-
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-
+	import Icon from '@iconify/svelte';
+	import type { BlockImage } from './types';
 	import ActionEdit from './action-edit.svelte';
-	import type { Pool } from './types';
+	import ActionCopy from './action-copy.svelte';
 
-	let { pool }: { pool: Pool } = $props();
+	let { blockImage }: { blockImage: BlockImage } = $props();
 </script>
 
 <DropdownMenu.Root>
@@ -25,7 +24,10 @@
 			<DropdownMenu.Label class="label">Actions</DropdownMenu.Label>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
-				<ActionEdit {pool} />
+				<ActionEdit {blockImage} />
+			</DropdownMenu.Item>
+			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
+				<ActionCopy {blockImage} />
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>

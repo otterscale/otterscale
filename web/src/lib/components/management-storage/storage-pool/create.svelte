@@ -1,40 +1,18 @@
-<script lang="ts">
-	import Icon from '@iconify/svelte';
-	import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
-	import {
-		Single as SingleSelect,
-		Multiple as MultipleSelect
-	} from '$lib/components/custom/select';
-	import { cn } from '$lib/utils';
+<script lang="ts" module>
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Form from '$lib/components/custom/form';
+	import { Single as SingleInput } from '$lib/components/custom/input';
+	import {
+		Multiple as MultipleSelect,
+		Single as SingleSelect
+	} from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { Legend } from 'formsnap';
-	import { number } from 'zod';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import { cn } from '$lib/utils';
+	import Icon from '@iconify/svelte';
+	import { writable, type Writable } from 'svelte/store';
 
-	type Request = {
-		name: string;
-		poolType: string;
-		pgAutoScale: string;
-		flags: boolean;
-		applications: string[];
-		placementGroups: number;
-
-		erasureCodeProfile: string;
-		crushRuleset: string[];
-
-		mode: string;
-		algorithm: string;
-		minimumBlobSize: string;
-		maximumBlobSize: string;
-		ratio: number;
-
-		maxBytes: string;
-		maxObjects: number;
-	};
-
-	const poolTypes: SingleSelect.OptionType[] = [
+	export const poolTypes: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'erasure',
 			label: 'Erasure',
@@ -45,9 +23,8 @@
 			label: 'Replicated',
 			icon: 'ph:copy-simple'
 		}
-	];
-
-	const PGAutoscales: SingleSelect.OptionType[] = [
+	]);
+	export const PGAutoscales: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'on',
 			label: 'ON',
@@ -63,17 +40,15 @@
 			label: 'WARN',
 			icon: 'ph:warning-circle'
 		}
-	];
-
-	const profiles: SingleSelect.OptionType[] = [
+	]);
+	export const profiles: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'default',
 			label: 'Default',
 			icon: 'ph:squares-four'
 		}
-	];
-
-	const applications: SingleSelect.OptionType[] = [
+	]);
+	export const applications: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'cephfs',
 			label: 'Ceph File System',
@@ -89,9 +64,8 @@
 			label: 'RADOS Gateway',
 			icon: 'ph:squares-four'
 		}
-	];
-
-	const modes: SingleSelect.OptionType[] = [
+	]);
+	export const modes: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'none',
 			label: 'None',
@@ -112,9 +86,8 @@
 			label: 'Force',
 			icon: 'ph:list'
 		}
-	];
-
-	const algorithms: SingleSelect.OptionType[] = [
+	]);
+	export const algorithms: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'snappy',
 			label: 'Snappy',
@@ -135,8 +108,31 @@
 			label: 'LZ4',
 			icon: 'ph:math-operations'
 		}
-	];
+	]);
+	export type Request = {
+		name: string;
+		poolType: string;
+		pgAutoScale: string;
+		flags: boolean;
+		replicatedSize: number;
+		applications: string[];
+		placementGroups: number;
 
+		erasureCodeProfile: string;
+		crushRuleset: string[];
+
+		mode: string;
+		algorithm: string;
+		minimumBlobSize: string;
+		maximumBlobSize: string;
+		ratio: number;
+
+		maxBytes: string;
+		maxObjects: number;
+	};
+</script>
+
+<script lang="ts">
 	const DEFAULT_REQUEST = {} as Request;
 	let request: Request = $state(DEFAULT_REQUEST);
 	function reset() {
@@ -148,7 +144,7 @@
 
 <AlertDialog.Root bind:open={stateController.state}>
 	<div class="flex justify-end">
-		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'ghost' }))}>
+		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'default' }))}>
 			<div class="flex items-center gap-2">
 				<Icon icon="ph:plus" />
 				<p class="text-base">Create</p>
@@ -176,7 +172,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each poolTypes as type}
+										{#each $poolTypes as type}
 											<SingleSelect.Item option={type}>
 												<Icon
 													icon={type.icon ? type.icon : 'ph:empty'}
@@ -203,7 +199,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each PGAutoscales as autoscale}
+										{#each $PGAutoscales as autoscale}
 											<SingleSelect.Item option={autoscale} class="text-xs">
 												<Icon
 													icon={autoscale.icon ? autoscale.icon : 'ph:empty'}
@@ -219,7 +215,28 @@
 						</SingleSelect.Content>
 					</SingleSelect.Root>
 				</Form.Field>
-				{#if request.pgAutoScale === 'off'}
+
+				{#if request.poolType === 'erasure'}
+					<Form.Field>
+						<Form.Label for="pool-flags">Flags</Form.Label>
+						<SingleInput.Boolean
+							required
+							id="pool-flags"
+							descriptor={(value) => {
+								if (value === true) {
+									return 'EC Overwrites';
+								} else if (value === false) {
+									return 'EC Not Overwrites';
+								} else {
+									return 'Undetermined';
+								}
+							}}
+							bind:value={request.flags}
+						/>
+					</Form.Field>
+				{/if}
+
+				{#if request.pgAutoScale !== 'on'}
 					<Form.Field>
 						<Form.Label for="pool-placement-groups">Placement Groups</Form.Label>
 						<SingleInput.General
@@ -231,23 +248,21 @@
 					</Form.Field>
 				{/if}
 
-				<Form.Field>
-					<Form.Label for="pool-flags">Flags</Form.Label>
-					<SingleInput.Boolean
-						required
-						id="pool-flags"
-						descriptor={(value) => {
-							if (value === true) {
-								return 'EC Overwrites';
-							} else if (value === false) {
-								return 'EC Not Overwrites';
-							} else {
-								return 'Undetermined';
-							}
-						}}
-						bind:value={request.flags}
-					/>
-				</Form.Field>
+				{#if request.poolType === 'replicated'}
+					<Form.Field>
+						<Form.Label for="pool-replicated-size">Replcated Size</Form.Label>
+						<SingleInput.General
+							required
+							type="number"
+							id="pool-replicated-size"
+							bind:value={request.replicatedSize}
+						/>
+					</Form.Field>
+					<Form.Help>
+						A size of 1 will not create a replication of the object. The 'Replicated size' includes
+						the object itself.
+					</Form.Help>
+				{/if}
 
 				<Form.Field>
 					<Form.Label for="pool-applications">Applications</Form.Label>
@@ -257,11 +272,55 @@
 							<MultipleSelect.Trigger />
 							<MultipleSelect.Content>
 								<MultipleSelect.Options>
-									<MultipleSelect.Input />
+									<MultipleSelect.Input>
+										{#snippet addition({ accessor })}
+											<AlertDialog.Root>
+												<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'outline' }))}>
+													<div class="gap- flex items-center">
+														<Icon icon="ph:plus" />
+														<p class="text-xs">Add</p>
+													</div>
+												</AlertDialog.Trigger>
+												<AlertDialog.Content>
+													<AlertDialog.Header
+														class="flex items-center justify-center text-xl font-bold"
+													>
+														Create Application
+													</AlertDialog.Header>
+													<Form.Root>
+														<Form.Fieldset>
+															<Form.Field>
+																<Form.Label>Name</Form.Label>
+																<SingleInput.General required bind:value={accessor.input} />
+															</Form.Field>
+														</Form.Fieldset>
+													</Form.Root>
+													<AlertDialog.Footer>
+														<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+														<AlertDialog.Action
+															onclick={() => {
+																applications.update((current) => [
+																	...current,
+																	{
+																		value: accessor.input,
+																		label: accessor.input,
+																		icon: 'ph:squares-four'
+																	} as MultipleSelect.OptionType
+																]);
+																accessor.input = '';
+															}}
+														>
+															Confirm
+														</AlertDialog.Action>
+													</AlertDialog.Footer>
+												</AlertDialog.Content>
+											</AlertDialog.Root>
+										{/snippet}
+									</MultipleSelect.Input>
 									<MultipleSelect.List>
 										<MultipleSelect.Empty>No results found.</MultipleSelect.Empty>
 										<MultipleSelect.Group>
-											{#each applications as application}
+											{#each $applications as application}
 												<MultipleSelect.Item option={application}>
 													<Icon
 														icon={application.icon ? application.icon : 'ph:empty'}
@@ -284,53 +343,70 @@
 				</Form.Field>
 			</Form.Fieldset>
 
-			<Form.Fieldset>
-				<Form.Legend>Crush</Form.Legend>
+			{#if request.poolType}
+				<Form.Fieldset>
+					<Form.Legend>Crush</Form.Legend>
 
-				<Form.Field>
-					<Form.Label for="pool-erasure-code-profile">Erasure Code Profile</Form.Label>
-					<SingleSelect.Root options={profiles} bind:value={request.erasureCodeProfile}>
-						<SingleSelect.Trigger />
-						<SingleSelect.Content>
-							<SingleSelect.Options>
-								<SingleSelect.Input />
-								<SingleSelect.List>
-									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
-									<SingleSelect.Group>
-										{#each profiles as profile}
-											<SingleSelect.Item option={profile}>
-												<Icon
-													icon={profile.icon ? profile.icon : 'ph:empty'}
-													class={cn('size-5', profile.icon ? 'visibale' : 'invisible')}
-												/>
-												{profile.label}
-												<SingleSelect.Check option={profile} />
-											</SingleSelect.Item>
-										{/each}
-									</SingleSelect.Group>
-								</SingleSelect.List>
-							</SingleSelect.Options>
-						</SingleSelect.Content>
-					</SingleSelect.Root>
-				</Form.Field>
-
-				<Form.Field>
-					<Form.Label for="pool-crush-ruleset">Crush Ruleset</Form.Label>
-					<MultipleInput.Root
-						type="text"
-						bind:values={request.crushRuleset}
-						id="pool-crush-ruleset"
-						contextData={{ icon: 'ph:ruler' }}
-					>
-						<MultipleInput.Viewer />
-						<MultipleInput.Controller>
-							<MultipleInput.Input />
-							<MultipleInput.Add />
-							<MultipleInput.Clear />
-						</MultipleInput.Controller>
-					</MultipleInput.Root>
-				</Form.Field>
-			</Form.Fieldset>
+					{#if request.poolType === 'erasure'}
+						<Form.Field>
+							<Form.Label for="pool-erasure-code-profile">Erasure Code Profile</Form.Label>
+							<SingleSelect.Root options={profiles} bind:value={request.erasureCodeProfile}>
+								<SingleSelect.Trigger />
+								<SingleSelect.Content>
+									<SingleSelect.Options>
+										<SingleSelect.Input />
+										<SingleSelect.List>
+											<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+											<SingleSelect.Group>
+												{#each $profiles as profile}
+													<SingleSelect.Item option={profile}>
+														<Icon
+															icon={profile.icon ? profile.icon : 'ph:empty'}
+															class={cn('size-5', profile.icon ? 'visibale' : 'invisible')}
+														/>
+														{profile.label}
+														<SingleSelect.Check option={profile} />
+													</SingleSelect.Item>
+												{/each}
+											</SingleSelect.Group>
+										</SingleSelect.List>
+									</SingleSelect.Options>
+								</SingleSelect.Content>
+							</SingleSelect.Root>
+						</Form.Field>
+					{/if}
+					<Form.Field>
+						<Form.Label for="pool-crush-ruleset">Crush Ruleset</Form.Label>
+						{#if request.poolType === 'erasure'}
+							<Form.Help>A new crush ruleset will be implicitly created.</Form.Help>
+						{:else if request.poolType === 'replicated'}
+							<SingleSelect.Root options={profiles} bind:value={request.erasureCodeProfile}>
+								<SingleSelect.Trigger />
+								<SingleSelect.Content>
+									<SingleSelect.Options>
+										<SingleSelect.Input />
+										<SingleSelect.List>
+											<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+											<SingleSelect.Group>
+												{#each $profiles as profile}
+													<SingleSelect.Item option={profile}>
+														<Icon
+															icon={profile.icon ? profile.icon : 'ph:empty'}
+															class={cn('size-5', profile.icon ? 'visibale' : 'invisible')}
+														/>
+														{profile.label}
+														<SingleSelect.Check option={profile} />
+													</SingleSelect.Item>
+												{/each}
+											</SingleSelect.Group>
+										</SingleSelect.List>
+									</SingleSelect.Options>
+								</SingleSelect.Content>
+							</SingleSelect.Root>
+						{/if}
+					</Form.Field>
+				</Form.Fieldset>
+			{/if}
 
 			<Form.Fieldset>
 				<Form.Legend>Compression</Form.Legend>
@@ -345,7 +421,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each modes as mode}
+										{#each $modes as mode}
 											<SingleSelect.Item option={mode}>
 												<Icon
 													icon={mode.icon ? mode.icon : 'ph:empty'}
@@ -373,7 +449,7 @@
 									<SingleSelect.List>
 										<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 										<SingleSelect.Group>
-											{#each algorithms as algorithm}
+											{#each $algorithms as algorithm}
 												<SingleSelect.Item option={algorithm}>
 													<Icon
 														icon={algorithm.icon ? algorithm.icon : 'ph:empty'}

@@ -31,8 +31,6 @@
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionAuthorize {fileSystem} />
 			</DropdownMenu.Item>
-			<!-- <DropdownMenu.Item class="action"><Icon icon="ph:pencil" />Attach</DropdownMenu.Item> -->
-			<!-- <DropdownMenu.Item class="action"><Icon icon="ph:trash" />Remove</DropdownMenu.Item> -->
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>
 </DropdownMenu.Root>

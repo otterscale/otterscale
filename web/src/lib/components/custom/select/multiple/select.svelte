@@ -3,7 +3,7 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { OptionManager } from './utils.svelte';
 	import type { OptionType } from './types';
-
+	import type { Writable } from 'svelte/store';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils';
 
@@ -12,13 +12,13 @@
 		class: className,
 		value = $bindable(),
 		children,
-		options,
+		options = $bindable(),
 		selectedOptions,
 		...restProps
 	}: PopoverPrimitive.RootProps & {
 		class?: string;
 		value: any[];
-		options: OptionType[];
+		options: Writable<OptionType[]>;
 		selectedOptions?: OptionType[];
 	} = $props();
 
@@ -28,7 +28,8 @@
 	const getter = () => {
 		return Array.isArray(value) ? value : value ? [value] : [];
 	};
-	setContext('OptionManager', new OptionManager(options, setter, getter));
+	setContext('options', options);
+	setContext('OptionManager', new OptionManager($options, setter, getter));
 </script>
 
 <Popover.Root {open} {...restProps}>
