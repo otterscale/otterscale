@@ -38,7 +38,6 @@
 	</div>
 	{#key selectedScope}
 		{#key selectedTimeRange}
-			<p class="text-xl font-bold">Status</p>
 			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-3">
 				<span class="col-span-1">
 					<KubeletRunning {client} scope={selectedScope} />

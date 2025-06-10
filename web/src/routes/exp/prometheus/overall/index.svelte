@@ -1,25 +1,21 @@
 <script lang="ts">
-	import { PrometheusDriver } from 'prometheus-query';
-	import { getLocalTimeZone, today, now } from '@internationalized/date';
-
-	import ScopePicker from '../utils/scope-picker.svelte';
-	import InstancePicker from '../utils/instance-picker.svelte';
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import {
 		DateTimestampPicker,
 		type TimeRange
 	} from '$lib/components/custom/date-timestamp-range-picker';
-
-	import { default as QuickUptime } from './quick-metric-uptime/index.svelte';
-	import { default as QuickCPU } from './quick-metric-cpu/index.svelte';
-	import { default as QuickRAM } from './quick-metric-ram/index.svelte';
-	import { default as QuickSWAP } from './quick-metric-swap/index.svelte';
-	import { default as QuickRootFS } from './quick-metric-root-fs/index.svelte';
+	import { getLocalTimeZone, now, today } from '@internationalized/date';
+	import { PrometheusDriver } from 'prometheus-query';
+	import ScopePicker from '../utils/scope-picker.svelte';
 	import { default as BasicCPU } from './basic-metric-cpu.svelte';
 	import { default as BasicRAM } from './basic-metric-ram.svelte';
 	import { default as BasicSWAP } from './basic-metric-swap.svelte';
 	import { default as BasicNetworkTrafficBasic } from './basic-metric-traffic-basic.svelte';
-
-	import type { Scope } from '$gen/api/scope/v1/scope_pb';
+	import { default as QuickCPU } from './quick-metric-cpu/index.svelte';
+	import { default as QuickRAM } from './quick-metric-ram/index.svelte';
+	import { default as QuickRootFS } from './quick-metric-root-fs/index.svelte';
+	import { default as QuickSWAP } from './quick-metric-swap/index.svelte';
+	import { default as QuickUptime } from './quick-metric-uptime/index.svelte';
 
 	let { client, scopes }: { client: PrometheusDriver; scopes: Scope[] } = $props();
 
