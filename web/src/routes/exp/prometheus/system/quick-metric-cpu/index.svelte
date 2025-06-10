@@ -5,11 +5,7 @@
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import * as Template from '../../utils/templates';
 
-	let {
-		client,
-		scope: scope,
-		instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>
 
 <Template.Metric title="CPU">
@@ -17,9 +13,9 @@
 		<p>Busy State of all CPU Cores</p>
 	{/snippet}
 	{#snippet description()}
-		<Cores {client} {scope} {instance} />
+		<Cores {client} {scope} />
 	{/snippet}
 	{#snippet content()}
-		<FinalUsage {client} {scope} {instance} />
+		<FinalUsage {client} {scope} />
 	{/snippet}
 </Template.Metric>

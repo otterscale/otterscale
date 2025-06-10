@@ -4,11 +4,7 @@
 	import Uptime from './uptime.svelte';
 	import * as Template from '../../utils/templates';
 
-	let {
-		client,
-		scope: scope,
-		instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>
 
 <Template.Text title="Uptime">
@@ -16,6 +12,6 @@
 		<p>System Uptime</p>
 	{/snippet}
 	{#snippet content()}
-		<Uptime {client} {scope} {instance} />
+		<Uptime {client} {scope} />
 	{/snippet}
 </Template.Text>

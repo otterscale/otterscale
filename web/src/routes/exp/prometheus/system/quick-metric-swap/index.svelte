@@ -5,11 +5,7 @@
 	import Memory from './memory.svelte';
 	import * as Template from '../../utils/templates';
 
-	let {
-		client,
-		scope: scope,
-		instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>
 
 <Template.Metric title="SWAP">
@@ -17,9 +13,9 @@
 		<p>Used Swap</p>
 	{/snippet}
 	{#snippet description()}
-		<Memory {client} {scope} {instance} />
+		<Memory {client} {scope} />
 	{/snippet}
 	{#snippet content()}
-		<FinalUsage {client} {scope} {instance} />
+		<FinalUsage {client} {scope} />
 	{/snippet}
 </Template.Metric>

@@ -20,29 +20,20 @@
 	let {
 		client,
 		scope: scope,
-		instance: instance,
 		timeRange
-	}: { client: PrometheusDriver; scope: Scope; instance: string; timeRange: TimeRange } = $props();
+	}: { client: PrometheusDriver; scope: Scope; timeRange: TimeRange } = $props();
 
 	const step = 1 * 60;
 
 	const receiveQuery = $derived(
 		`
-		irate(
-			node_network_receive_bytes_total{device="lo",instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]
-		)
-		*
-		8
+		sum(irate(node_network_receive_bytes_total{device="lo",juju_model_uuid=~"${scope.uuid}"}[4m])) * 8
 		`
 	);
 
 	const transmitQuery = $derived(
 		`
-		irate(
-			node_network_transmit_bytes_total{device="lo",instance="${instance}",juju_model_uuid=~"${scope.uuid}"}[4m]
-		)
-		*
-		8
+		sum(irate(node_network_transmit_bytes_total{device="lo",juju_model_uuid=~"${scope.uuid}"}[4m])) * 8
 		`
 	);
 
@@ -85,13 +76,13 @@
 		try {
 			const receiveResponse = await fetch(receiveQuery);
 			receiveResponse?.forEach((value: SampleValue[], key: Record<string, string>) => {
-				const k = `receive ${key.device}`;
+				const k = `receive`;
 				keys.push(k);
 				serieses.set(k, value);
 			});
 			const transmitResponse = await fetch(transmitQuery);
 			transmitResponse?.forEach((value: SampleValue[], key: Record<string, string>) => {
-				const k = `transmit ${key.device}`;
+				const k = `transmit`;
 				keys.push(k);
 				serieses.set(k, value);
 			});

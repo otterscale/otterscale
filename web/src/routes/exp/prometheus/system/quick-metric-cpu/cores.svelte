@@ -4,15 +4,11 @@
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../utils/empty.svelte';
 
-	let {
-		client,
-		scope: scope,
-		instance: instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
 		count(
-		count by (cpu) (node_cpu_seconds_total{instance="${instance}",juju_model_uuid=~"${scope.uuid}"})
+		count by (cpu) (node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"})
 		)
 		`
 	);

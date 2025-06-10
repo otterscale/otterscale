@@ -16,18 +16,17 @@
 	let {
 		client,
 		scope: scope,
-		instance: instance,
 		timeRange
-	}: { client: PrometheusDriver; scope: Scope; instance: string; timeRange: TimeRange } = $props();
+	}: { client: PrometheusDriver; scope: Scope; timeRange: TimeRange } = $props();
 
 	const step = 1 * 60;
 
 	const usedQuery = $derived(
 		`
 		(
-			node_memory_SwapTotal_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+			node_memory_SwapTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
 		-
-			node_memory_SwapFree_bytes{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+			node_memory_SwapFree_bytes{juju_model_uuid=~"${scope.uuid}"}
 		)
 		`
 	);

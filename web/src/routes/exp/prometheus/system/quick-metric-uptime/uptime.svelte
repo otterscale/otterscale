@@ -5,16 +5,12 @@
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import NoData from '../../utils/empty.svelte';
 
-	let {
-		client,
-		scope: scope,
-		instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		node_time_seconds{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+		node_time_seconds{juju_model_uuid=~"${scope.uuid}"}
 		-
-		node_boot_time_seconds{instance="${instance}",juju_model_uuid=~"${scope.uuid}"}
+		node_boot_time_seconds{juju_model_uuid=~"${scope.uuid}"}
 		`
 	);
 </script>
@@ -28,10 +24,8 @@
 	{:else}
 		{@const uptime = result[0].value.value}
 		{@const duration = formatDuration(uptime)}
-		<span class="flex items-end gap-2">
-			<p class="text-6xl">{duration.value.toPrecision(2)}</p>
-			<p class="text-4xl">{duration.unit}</p>
-		</span>
+		<p class="text-6xl">{duration.value.toPrecision(2)}</p>
+		<p class="text-4xl">{duration.unit}</p>
 	{/if}
 {:catch error}
 	Error

@@ -7,8 +7,7 @@
 	let {
 		client,
 		scope: scope,
-		instance
-	}: { client: PrometheusDriver; scope: Scope; instance: string } = $props();
+	}: { client: PrometheusDriver; scope: Scope} = $props();
 </script>
 
 <Template.Text title="UP">
@@ -16,6 +15,6 @@
 		<p>ETCD</p>
 	{/snippet}
 	{#snippet content()}
-		<Number {client} {scope} {instance} />
+		<Number {client} {scope} />
 	{/snippet}
 </Template.Text>
