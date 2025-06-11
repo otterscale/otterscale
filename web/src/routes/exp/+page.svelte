@@ -1,56 +1,66 @@
 <script lang="ts">
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onMount } from 'svelte';
-	import Icon from '@iconify/svelte';
-	import { get, writable } from 'svelte/store';
-
-	import type { Plugin } from 'svelte-exmarkdown';
-	import Markdown from 'svelte-exmarkdown';
-
-	import rehypeHighlight from 'rehype-highlight';
-
-	import yaml from 'highlight.js/lib/languages/yaml';
-	import 'highlight.js/styles/github.css';
-	import { MachineService, type Machine } from '$gen/api/machine/v1/machine_pb';
-
-	const plugins: Plugin[] = [
-		{
-			rehypePlugin: [rehypeHighlight, { ignoreMissing: true, languages: { yaml } }]
+	import Unstruct from '$lib/components/custom/unstruct.svelte';
+	const data = {
+		level1: {
+			temperature: 25.5,
+			sensors: [
+				{ type: 'temperature', id: 'temp_1', values: [45, 48, 50] },
+				{ type: 'temperature', id: 'temp_2', values: [45, 48, 50] },
+				{ type: 'humidity', id: 'humidity_1', values: [45, 48, 50] },
+				{ type: 'pressure', id: 'pressure_1', values: [45, 48, 50] }
+			],
+			systemStatus: {
+				rack1: {
+					powerStatus: true,
+					units: [
+						{ name: 'storage_1', status: { online: true, mode: 'normal' } },
+						{ name: 'server_1', status: { online: true, mode: 'normal' } },
+						{ name: 'network_1', status: { online: true, mode: 'normal' } }
+					],
+					monitoring: {
+						lastCheck: 'operational',
+						details: {
+							timestamp: new Date('2000-11-8'),
+							operator: { id: 'OP123', clearance: 'admin' }
+						}
+					}
+				},
+				rack2: [
+					{ id: 'SRV01', status: 'running', specs: { cores: 32, services: ['web', 'db'] } },
+					{ id: 'SRV02', status: 'maintenance', specs: { cores: 64, services: ['cache', 'queue'] } }
+				]
+			}
+		},
+		level2: {
+			operational: true,
+			devices: [
+				{ type: 'switch', id: 'switch_1', status: 'active' },
+				{ type: 'firewall', id: 'firewall_1', status: 'active' },
+				{ type: 'router', id: 'router_1', status: 'active' }
+			],
+			network: {
+				connected: true,
+				configuration: {
+					topology: 'mesh',
+					protocols: ['BGP', 'OSPF', 'VLAN'],
+					security: {
+						encryption: 'AES256',
+						maxAttempts: 3,
+						policies: {
+							enabled: true,
+							rules: ['IDS', 'IPS']
+						}
+					}
+				}
+			},
+			metrics: {
+				performance: [
+					{ period: '2023-Q1', stats: { uptime: 99.9, incidents: 2 } },
+					{ period: '2023-Q2', stats: { uptime: 99.95, incidents: 1 } }
+				]
+			}
 		}
-	];
-
-	// Get the transport out of context
-	const transport: Transport = getContext('transport');
-	const client = createClient(MachineService, transport);
-
-	// Create a store for machines
-	const machinesStore = writable<Machine[]>([]);
-	const isLoading = writable(true);
-
-	// Extract this to a separate function for better organization
-	async function fetchMachines() {
-		try {
-			const response = await client.listMachines({});
-			machinesStore.set(response.machines);
-		} catch (error) {
-			console.error('Error fetching machines:', error);
-		} finally {
-			isLoading.set(false);
-		}
-	}
-
-	onMount(() => {
-		fetchMachines();
-	});
+	};
 </script>
 
-{#if $isLoading}
-	<div class="text-muted-foreground flex h-full w-full items-center justify-center gap-2 text-sm">
-		<Icon icon="ph:spinner" class="size-8 animate-spin" />
-		Loading...
-	</div>
-{:else}
-	{#each $machinesStore as machine}
-		<p>{machine.fqdn}: {machine.tags}</p>
-	{/each}
-{/if}
+<Unstruct {data} orientation="horizontal" />
