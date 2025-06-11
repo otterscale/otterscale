@@ -1,6 +1,7 @@
 <script lang="ts" generics="TData, TValue">
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
+	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
 	import RangeFilter from '$lib/components/custom/data-table/data-table-filters/range-filter.svelte';
 
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
@@ -102,9 +103,9 @@
 	<div class="flex items-center justify-between gap-2">
 		<FuzzyFilter columnId="host" {table} />
 		<div class="flex items-center justify-between gap-2">
-			<PointFilter columnId="status" {table} />
+			<ArrayPointFilter columnId="status" {table} />
 			<PointFilter columnId="deviceClass" alias="Device Class" {table} />
-			<PointFilter columnId="flags" {table} />
+			<ArrayPointFilter columnId="flags" {table} />
 			<ColumnViewer {table} />
 		</div>
 	</div>

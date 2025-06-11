@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import * as Progress from '$lib/components/custom/progress';
 
 	import type { Row } from '@tanstack/table-core';
 	import type { Pool } from './types';
@@ -47,5 +48,9 @@
 {/snippet}
 
 {#snippet usage(row: Row<Pool>)}
-	{row.original.usage}
+	<Progress.Root numerator={row.original.usage} denominator={100}>
+		{#snippet ratio({ numerator, denominator })}
+			{(numerator * 100) / denominator}%
+		{/snippet}
+	</Progress.Root>
 {/snippet}

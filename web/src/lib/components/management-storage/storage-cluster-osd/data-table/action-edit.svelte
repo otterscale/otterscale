@@ -375,16 +375,10 @@
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import {
-		Multiple as MultipleSelect,
-		Single as SingleSelect
-	} from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import { writable, type Writable } from 'svelte/store';
-	import { deployments, type Request } from '../create.svelte';
+	import { type Request } from '../create.svelte';
 </script>
 
 <script lang="ts">

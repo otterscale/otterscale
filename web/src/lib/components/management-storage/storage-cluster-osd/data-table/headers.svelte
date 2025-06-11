@@ -28,56 +28,56 @@
 {/snippet}
 
 {#snippet id(column: Column<OSD>)}
-	<div class="flex items-center gap-1">
+	<div class="flex items-center justify-between gap-1">
 		<p class="text-xs font-light">ID</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
 
 {#snippet host(column: Column<OSD>)}
-	<div class="flex items-center gap-1">
+	<div class="flex items-center justify-between gap-1">
 		<p class="text-xs font-light">HOST</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
 
 {#snippet status(column: Column<OSD>)}
-	<div class="flex items-center gap-1">
+	<div class="flex items-center justify-between gap-1">
 		<p class="text-xs font-light">STATUS</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
 
 {#snippet deviceClass(column: Column<OSD>)}
-	<div class="flex items-center gap-1">
+	<div class="flex items-center justify-between gap-1">
 		<p class="text-xs font-light">DEVICE CLASS</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
 
 {#snippet pgs(column: Column<OSD>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">PLACEMENT GROUP</p>
+	<div class="flex items-center justify-between gap-1">
 		<Sorter {column} />
+		<p class="text-xs font-light">PLACEMENT GROUP</p>
 	</div>
 {/snippet}
 
 {#snippet size(column: Column<OSD>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">SIZE</p>
+	<div class="flex items-center justify-between gap-1">
 		<Sorter {column} />
+		<p class="text-xs font-light">SIZE</p>
 	</div>
 {/snippet}
 
 {#snippet flags(column: Column<OSD>)}
-	<div class="flex items-center gap-1">
+	<div class="flex items-center justify-between gap-1">
 		<p class="text-xs font-light">FLAG</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
 
 {#snippet usage(column: Column<OSD>)}
-	<div class="flex items-center gap-1">
+	<div class="flex items-center justify-between gap-1">
 		<p class="text-xs font-light">USAGE</p>
 		<Sorter {column} />
 	</div>

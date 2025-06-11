@@ -1,9 +1,10 @@
 <script lang="ts" module>
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-
+	import * as Progress from '$lib/components/custom/progress';
 	import type { Row } from '@tanstack/table-core';
 	import type { OSD } from './types';
 	import { Badge } from '$lib/components/ui/badge';
+	import { formatCapacity } from '$lib/formatter';
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -52,11 +53,15 @@
 {/snippet}
 
 {#snippet pgs(row: Row<OSD>)}
-	{row.original.pgs}
+	<span class="flex justify-end">{row.original.pgs}</span>
 {/snippet}
 
 {#snippet size(row: Row<OSD>)}
-	{row.original.size}
+	{@const size = formatCapacity(row.original.size)}
+	<span class="flex items-center justify-end gap-1">
+		{size.value}
+		{size.unit}
+	</span>
 {/snippet}
 
 {#snippet flags(row: Row<OSD>)}
@@ -70,5 +75,9 @@
 {/snippet}
 
 {#snippet usage(row: Row<OSD>)}
-	{row.original.usage}
+	<Progress.Root numerator={row.original.usage} denominator={100}>
+		{#snippet ratio({ numerator, denominator })}
+			{(numerator * 100) / denominator}%
+		{/snippet}
+	</Progress.Root>
 {/snippet}

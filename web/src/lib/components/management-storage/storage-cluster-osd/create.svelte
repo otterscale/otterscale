@@ -31,6 +31,7 @@
 	]);
 
 	export type Request = {
+		id: number;
 		deployment: string;
 		encryption: boolean;
 		deviceClass: string;

@@ -9,10 +9,9 @@
 		name: name,
 		pool: pool,
 		namespace: namespace,
-		size: size,
+		// size: size,
 		usage: usage,
 		objects: objects,
-		objectSize: objectSize,
 		parent: parent,
 		mirroring: mirroring,
 		nextScheduledSnapshot: nextScheduledSnapshot
@@ -50,13 +49,6 @@
 	</div>
 {/snippet}
 
-{#snippet size(column: Column<BlockImage>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">SIZE</p>
-		<Sorter {column} />
-	</div>
-{/snippet}
-
 {#snippet usage(column: Column<BlockImage>)}
 	<div class="flex items-center gap-1">
 		<p class="text-xs font-light">USAGE</p>
@@ -66,15 +58,11 @@
 
 {#snippet objects(column: Column<BlockImage>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">OBJECTS</p>
 		<Sorter {column} />
-	</div>
-{/snippet}
-
-{#snippet objectSize(column: Column<BlockImage>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">OBJECTSIZE</p>
-		<Sorter {column} />
+		<div class="flex flex-col items-end text-xs font-light">
+			OBJECTS
+			<p class="font-extralight">SIZE</p>
+		</div>
 	</div>
 {/snippet}
 

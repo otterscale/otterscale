@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" module>
 	import Icon from '@iconify/svelte';
 	import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
@@ -9,7 +9,7 @@
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { writable, type Writable } from 'svelte/store';
 
-	type Request = {
+	export type Request = {
 		name: string;
 		placement: any;
 		hosts: string[];
@@ -28,7 +28,9 @@
 			icon: 'ph:tag'
 		}
 	]);
+</script>
 
+<script lang="ts">
 	const DEFAULT_REQUEST = {} as Request;
 	let request: Request = $state(DEFAULT_REQUEST);
 	function reset() {

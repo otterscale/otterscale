@@ -47,15 +47,6 @@ const columns: ColumnDef<BlockImage>[] = [
         },
     },
     {
-        accessorKey: "size",
-        header: ({ column }) => {
-            return renderSnippet(headers.size, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.size, row);
-        },
-    },
-    {
         accessorKey: "usage",
         header: ({ column }) => {
             return renderSnippet(headers.usage, column)
@@ -72,15 +63,6 @@ const columns: ColumnDef<BlockImage>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.objects, row);
-        },
-    },
-    {
-        accessorKey: "objectSize",
-        header: ({ column }) => {
-            return renderSnippet(headers.objectSize, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.objectSize, row);
         },
     },
     {
