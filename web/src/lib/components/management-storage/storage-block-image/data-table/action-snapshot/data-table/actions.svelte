@@ -2,13 +2,12 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import Icon from '@iconify/svelte';
-	import type { BlockImage } from './types';
+	import type { BlockImageSnapshot } from './types';
 	import ActionEdit from './action-edit.svelte';
 	import ActionCopy from './action-copy.svelte';
 	import ActionDelete from './action-delete.svelte';
-	import { ActionSnapshot } from './action-snapshot';
 
-	let { blockImage }: { blockImage: BlockImage } = $props();
+	let { blockImagesnapshot }: { blockImagesnapshot: BlockImageSnapshot } = $props();
 </script>
 
 <DropdownMenu.Root>
@@ -26,17 +25,14 @@
 			<DropdownMenu.Label class="label text-center">Actions</DropdownMenu.Label>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
-				<ActionEdit {blockImage} />
+				<ActionEdit {blockImagesnapshot} />
 			</DropdownMenu.Item>
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
-				<ActionCopy {blockImage} />
-			</DropdownMenu.Item>
-			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
-				<ActionSnapshot />
+				<ActionCopy {blockImagesnapshot} />
 			</DropdownMenu.Item>
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
-				<ActionDelete {blockImage} />
+				<ActionDelete {blockImagesnapshot} />
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>
