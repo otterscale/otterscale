@@ -11,7 +11,7 @@ import (
 
 var (
 	commonCharms = []EssentialCharm{
-		{Name: "ch:ceph-csi", LXD: true},
+		{Name: "ch:ceph-csi", LXD: false},
 		{Name: "ch:grafana-agent", LXD: false},
 		{Name: "ch:hardware-observer", LXD: false},
 	}
