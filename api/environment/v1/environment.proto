@@ -41,10 +41,11 @@ message UpdateConfigRequest {
   string maas_url = 1;
   string maas_key = 2;
   string maas_version = 3;
-  repeated string juju_controller_addresses = 11;
-  string juju_username = 12;
-  string juju_password = 13;
-  string juju_ca_cert = 14;
+  string juju_controller = 11;
+  repeated string juju_controller_addresses = 12;
+  string juju_username = 13;
+  string juju_password = 14;
+  string juju_ca_cert = 15;
   string juju_cloud_name = 21;
   string juju_cloud_region = 22;
   string juju_charmhub_api_url = 23;

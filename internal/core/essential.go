@@ -15,6 +15,8 @@ import (
 	"github.com/juju/juju/rpc/params"
 	"golang.org/x/sync/errgroup"
 	jujuyaml "gopkg.in/yaml.v2"
+
+	"github.com/openhdc/otterscale/internal/config"
 )
 
 type Essential struct {
@@ -43,24 +45,28 @@ type EssentialCharm struct {
 }
 
 type EssentialUseCase struct {
-	scope    ScopeRepo
-	facility FacilityRepo
-	machine  MachineRepo
-	subnet   SubnetRepo
-	ipRange  IPRangeRepo
-	server   ServerRepo
-	client   ClientRepo
+	conf           *config.Config
+	scope          ScopeRepo
+	facility       FacilityRepo
+	facilityOffers FacilityOffersRepo
+	machine        MachineRepo
+	subnet         SubnetRepo
+	ipRange        IPRangeRepo
+	server         ServerRepo
+	client         ClientRepo
 }
 
-func NewEssentialUseCase(scope ScopeRepo, facility FacilityRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo) *EssentialUseCase {
+func NewEssentialUseCase(conf *config.Config, scope ScopeRepo, facility FacilityRepo, facilityOffers FacilityOffersRepo, machine MachineRepo, subnet SubnetRepo, ipRange IPRangeRepo, server ServerRepo, client ClientRepo) *EssentialUseCase {
 	return &EssentialUseCase{
-		scope:    scope,
-		facility: facility,
-		machine:  machine,
-		subnet:   subnet,
-		ipRange:  ipRange,
-		server:   server,
-		client:   client,
+		conf:           conf,
+		scope:          scope,
+		facility:       facility,
+		facilityOffers: facilityOffers,
+		machine:        machine,
+		subnet:         subnet,
+		ipRange:        ipRange,
+		server:         server,
+		client:         client,
 	}
 }
 
@@ -96,7 +102,7 @@ func (uc *EssentialUseCase) ListStatuses(ctx context.Context, uuid string) ([]Es
 	charms := []EssentialCharm{}
 	charms = append(charms, kubernetesCharms...)
 	charms = append(charms, cephCharms...)
-	charms = append(charms, cephCSICharms...)
+	charms = append(charms, commonCharms...)
 
 	statuses := []EssentialStatus{}
 	for name := range s.Applications {
@@ -187,7 +193,7 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 		return err
 	}
 
-	cephCSIConfig, err := newCephCSIConfigs(prefix)
+	commonConfigs, err := newCommonConfigs(prefix)
 	if err != nil {
 		return err
 	}
@@ -199,7 +205,7 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 	if err := CreateKubernetes(ctx, uc.server, uc.machine, uc.facility, uuid, machineID, prefix, kubeConfigs); err != nil {
 		return err
 	}
-	if err := CreateCephCSI(ctx, uc.server, uc.machine, uc.facility, uuid, prefix, cephCSIConfig); err != nil {
+	if err := CreateCommon(ctx, uc.server, uc.machine, uc.facility, uc.facilityOffers, uc.conf, uuid, prefix, commonConfigs); err != nil {
 		return err
 	}
 	return nil

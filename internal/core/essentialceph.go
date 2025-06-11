@@ -4,30 +4,21 @@ import (
 	"context"
 )
 
-const (
-	charmCeph    = "ceph-mon"
-	charmCephCSI = "ceph-csi"
-)
+const charmCeph = "ceph-mon"
 
 var (
 	cephCharms = []EssentialCharm{
 		{Name: "ch:ceph-fs", LXD: true},
 		{Name: "ch:ceph-mon", LXD: true},
 		{Name: "ch:ceph-osd", LXD: false},
+		{Name: "ch:ceph-dashboard", LXD: false},
 	}
 
 	cephRelations = [][]string{
 		{"ceph-fs:ceph-mds", "ceph-mon:mds"},
 		{"ceph-osd:mon", "ceph-mon:osd"},
-	}
-
-	cephCSICharms = []EssentialCharm{
-		{Name: "ch:ceph-csi", LXD: true},
-	}
-
-	cephCSIRelations = [][]string{
-		{"ceph-csi", "ceph-mon"},
-		{"ceph-csi", "kubernetes-control-plane"},
+		{"ceph-dashboard:dashboard", "ceph-mon:dashboard"},
+		{"easyrsa:client", "ceph-dashboard:certificates"},
 	}
 )
 
@@ -36,13 +27,6 @@ func CreateCeph(ctx context.Context, serverRepo ServerRepo, machineRepo MachineR
 		return err
 	}
 	return createEssentialRelations(ctx, facilityRepo, uuid, toEndpointList(prefix, cephRelations))
-}
-
-func CreateCephCSI(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, uuid, prefix string, configs map[string]string) error {
-	if err := createEssential(ctx, serverRepo, machineRepo, facilityRepo, uuid, "", prefix, cephCSICharms, configs); err != nil {
-		return err
-	}
-	return createEssentialRelations(ctx, facilityRepo, uuid, toEndpointList(prefix, cephCSIRelations))
 }
 
 func GetCephCharms() []EssentialCharm {
@@ -61,16 +45,6 @@ func newCephConfigs(prefix, osdDevices string) (map[string]string, error) {
 		},
 		"ceph-fs": {
 			"ceph-osd-replication-count": 1,
-		},
-	}
-	return NewCharmConfigs(prefix, configs)
-}
-
-func newCephCSIConfigs(prefix string) (map[string]string, error) {
-	configs := map[string]map[string]any{
-		"ceph-csi": {
-			"default-storage":      "ceph-ext4",
-			"provisioner-replicas": 1,
 		},
 	}
 	return NewCharmConfigs(prefix, configs)
