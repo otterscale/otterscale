@@ -98,6 +98,7 @@ func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 			Version: req.GetMaasVersion(),
 		},
 		Juju: config.Juju{
+			Controller:          req.GetJujuController(),
 			ControllerAddresses: req.GetJujuControllerAddresses(),
 			Username:            req.GetJujuUsername(),
 			Password:            req.GetJujuPassword(),

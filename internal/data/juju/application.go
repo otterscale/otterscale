@@ -9,6 +9,7 @@ import (
 	api "github.com/juju/juju/api/client/application"
 	"github.com/juju/juju/core/base"
 	"github.com/juju/juju/core/constraints"
+	"github.com/juju/juju/core/crossmodel"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
 	"github.com/juju/names/v5"
@@ -189,4 +190,13 @@ func (r *application) GetUnitInfo(_ context.Context, uuid, name string) (*api.Un
 		}
 	}
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("unit info %q not found", name))
+}
+
+func (r *application) Consume(ctx context.Context, uuid string, args crossmodel.ConsumeApplicationArgs) error {
+	conn, err := r.juju.connection(uuid)
+	if err != nil {
+		return err
+	}
+	_, err = api.NewClient(conn).Consume(args)
+	return err
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/juju/juju/api/client/application"
 	corebase "github.com/juju/juju/core/base"
 	"github.com/juju/juju/core/constraints"
+	"github.com/juju/juju/core/crossmodel"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/rpc/params"
 )
@@ -119,6 +120,11 @@ type FacilityRepo interface {
 	GetConfig(ctx context.Context, uuid string, name string) (map[string]any, error)
 	GetLeader(ctx context.Context, uuid, name string) (string, error)
 	GetUnitInfo(ctx context.Context, uuid, name string) (*application.UnitInfo, error)
+	Consume(ctx context.Context, uuid string, args crossmodel.ConsumeApplicationArgs) error
+}
+
+type FacilityOffersRepo interface {
+	GetConsumeDetails(ctx context.Context, url string) (params.ConsumeOfferDetails, error)
 }
 
 type ActionRepo interface {

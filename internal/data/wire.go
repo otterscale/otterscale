@@ -25,6 +25,7 @@ var ProviderSet = wire.NewSet(
 	juju.New,
 	juju.NewAction,
 	juju.NewApplication,
+	juju.NewApplicationOffers,
 	juju.NewCharm,
 	juju.NewClient,
 	juju.NewKey,

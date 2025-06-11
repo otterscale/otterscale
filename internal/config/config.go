@@ -18,6 +18,7 @@ type MAAS struct {
 }
 
 type Juju struct {
+	Controller          string   `yaml:"controller"`
 	ControllerAddresses []string `yaml:"controller_addresses"`
 	Username            string   `yaml:"username"`
 	Password            string   `yaml:"password"`
