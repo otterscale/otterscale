@@ -5,6 +5,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 
 	import ActionEdit from './action-edit.svelte';
+	import ActionDelete from './action-delete.svelte';
 	import type { Pool } from './types';
 
 	let { pool }: { pool: Pool } = $props();
@@ -26,6 +27,10 @@
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionEdit {pool} />
+			</DropdownMenu.Item>
+			<DropdownMenu.Separator />
+			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
+				<ActionDelete {pool} />
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>

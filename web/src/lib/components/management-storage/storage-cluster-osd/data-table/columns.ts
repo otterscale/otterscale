@@ -45,6 +45,7 @@ const columns: ColumnDef<OSD>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.status, row);
         },
+        filterFn: "arrIncludesSome"
     },
     {
         accessorKey: "deviceClass",
@@ -81,6 +82,7 @@ const columns: ColumnDef<OSD>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.flags, row);
         },
+        filterFn: "arrIncludesSome"
     },
     {
         accessorKey: "usage",

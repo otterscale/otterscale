@@ -13,7 +13,7 @@ const data: BlockImage[] = [
             usage: Math.round(Math.random() * 100),
             objects: Math.round(Math.random() * 128),
             objectSize: Math.round(Math.random() * 1024),
-            parent: '-',
+            parent: '',
             mirroring: Math.random() > 0.5 ? 'enabled' : 'disabled',
             nextScheduledSnapshot: ''
         })

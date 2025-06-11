@@ -1,9 +1,8 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
-
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-
+	import Icon from '@iconify/svelte';
+	import ActionDelete from './action-delete.svelte';
 	import ActionEdit from './action-edit.svelte';
 	import type { OSD } from './types';
 
@@ -26,6 +25,10 @@
 			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionEdit {osd} />
+			</DropdownMenu.Item>
+			<DropdownMenu.Separator />
+			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
+				<ActionDelete {osd} />
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>

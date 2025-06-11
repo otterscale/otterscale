@@ -6,6 +6,7 @@
 
 	import ActionEdit from './action-edit.svelte';
 	import ActionAuthorize from './action-authorize.svelte';
+	import ActionDelete from './action-delete.svelte';
 	import type { FileSystem } from './types';
 
 	let { fileSystem }: { fileSystem: FileSystem } = $props();
@@ -30,6 +31,10 @@
 			</DropdownMenu.Item>
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionAuthorize {fileSystem} />
+			</DropdownMenu.Item>
+			<DropdownMenu.Separator />
+			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
+				<ActionDelete {fileSystem} />
 			</DropdownMenu.Item>
 		</DropdownMenu.Group>
 	</DropdownMenu.Content>
