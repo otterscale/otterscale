@@ -87,7 +87,7 @@ func consumeRemoteOffer(ctx context.Context, facilityRepo FacilityRepo, facility
 	if consumeDetails.ControllerInfo != nil {
 		controllerTag, err := names.ParseControllerTag(consumeDetails.ControllerInfo.ControllerTag)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		args.ControllerInfo = &crossmodel.ControllerInfo{
 			ControllerTag: controllerTag,
