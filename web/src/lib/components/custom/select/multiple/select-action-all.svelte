@@ -1,11 +1,12 @@
 <script lang="ts" module>
 	import { Button, buttonVariants, type ButtonProps } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
+	import { getContext } from 'svelte';
 </script>
 
 <script lang="ts">
-	import { getContext } from 'svelte';
 	import type { OptionManager } from './utils.svelte';
+
 	let {
 		ref = $bindable(null),
 		class: className,

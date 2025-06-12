@@ -13,6 +13,7 @@
 		value = $bindable(),
 		children,
 		options = $bindable(),
+		required,
 		selectedOptions,
 		...restProps
 	}: PopoverPrimitive.RootProps & {
@@ -20,6 +21,7 @@
 		value: any[];
 		options: Writable<OptionType[]>;
 		selectedOptions?: OptionType[];
+		required?: boolean;
 	} = $props();
 
 	const setter = (newValues: any[]) => {
@@ -30,6 +32,7 @@
 	};
 	setContext('options', options);
 	setContext('OptionManager', new OptionManager($options, setter, getter));
+	setContext('required', required);
 </script>
 
 <Popover.Root {open} {...restProps}>

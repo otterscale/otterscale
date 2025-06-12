@@ -1,10 +1,12 @@
-<script lang="ts">
-	import { z } from 'zod';
-	import { cn } from '$lib/utils.js';
-	import type { HTMLAttributes } from 'svelte/elements';
-	import type { WithElementRef } from 'bits-ui';
+<script lang="ts" module>
 	import { Badge } from '$lib/components/ui/badge';
+	import { cn } from '$lib/utils.js';
+	import type { WithElementRef } from 'bits-ui';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import { z } from 'zod';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

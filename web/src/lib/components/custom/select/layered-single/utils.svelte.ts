@@ -1,4 +1,4 @@
-import type { OptionType, AncestralOptionType, valueSetterType, valueGetterType } from './types';
+import type { AncestralOptionType, OptionType, valueGetterType, valueSetterType } from './types';
 
 const getAllAncestralOptions = (
     options: OptionType[],
@@ -67,7 +67,5 @@ class OptionManager {
 }
 
 export {
-    getAncestralOptionsMap,
-    getAllAncestralOptions,
-    OptionManager
-}
+    getAllAncestralOptions, getAncestralOptionsMap, OptionManager
+};

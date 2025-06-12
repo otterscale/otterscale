@@ -1,10 +1,13 @@
-<script lang="ts">
+<script lang="ts" module>
 	import * as Command from '$lib/components/ui/command';
-	import { Command as CommandPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
-	import type { Writable } from 'svelte/store';
-	import type { OptionType } from './types';
+	import { Command as CommandPrimitive } from 'bits-ui';
 	import { getContext, type Snippet } from 'svelte';
+	import type { Writable } from 'svelte/store';
+</script>
+
+<script lang="ts">
+	import type { OptionType } from './types';
 
 	let {
 		ref = $bindable(null),

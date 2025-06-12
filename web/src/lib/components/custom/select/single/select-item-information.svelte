@@ -1,11 +1,11 @@
-<script lang="ts">
-	import { buttonVariants } from '$lib/components/ui/button';
+<script lang="ts" module>
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import Icon from '@iconify/svelte';
-
-	import { Tooltip as TooltipPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
+	import Icon from '@iconify/svelte';
+	import { Tooltip as TooltipPrimitive } from 'bits-ui';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

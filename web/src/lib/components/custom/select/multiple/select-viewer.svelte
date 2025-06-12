@@ -1,12 +1,14 @@
-<script lang="ts">
-	import { getContext } from 'svelte';
-	import type { OptionManager } from './utils.svelte';
+<script lang="ts" module>
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import Icon from '@iconify/svelte';
-
 	import { cn } from '$lib/utils.js';
+	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
+	import { getContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+</script>
+
+<script lang="ts">
+	import type { OptionManager } from './utils.svelte';
 
 	let {
 		ref = $bindable(null),

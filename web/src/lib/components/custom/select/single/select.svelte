@@ -1,10 +1,13 @@
-<script lang="ts">
-	import { setContext } from 'svelte';
+<script lang="ts" module>
 	import * as Popover from '$lib/components/ui/popover';
-	import { OptionManager } from './utils.svelte';
-	import type { OptionType } from './types';
-	import type { Writable } from 'svelte/store';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
+	import { setContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
+</script>
+
+<script lang="ts">
+	import type { OptionType } from './types';
+	import { OptionManager } from './utils.svelte';
 
 	let {
 		open = $bindable(false),

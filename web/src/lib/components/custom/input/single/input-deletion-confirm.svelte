@@ -2,10 +2,10 @@
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { z } from 'zod';
-	import General from './input-general.svelte';
 </script>
 
 <script lang="ts">
+	import General from './input-general.svelte';
 	type Props = WithElementRef<Omit<HTMLInputAttributes, 'type'>>;
 
 	let {

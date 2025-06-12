@@ -1,16 +1,18 @@
-<script lang="ts">
-	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
-	import * as Popover from '$lib/components/ui/popover';
-	import Icon from '@iconify/svelte';
-	import type { OptionType } from './types';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
-	import * as HoverCard from '$lib/components/ui/hover-card';
+<script lang="ts" module>
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import { getContext } from 'svelte';
-	import type { OptionManager } from './utils.svelte';
-
+	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
+	import * as HoverCard from '$lib/components/ui/hover-card';
+	import * as Popover from '$lib/components/ui/popover';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { cn } from '$lib/utils.js';
+	import Icon from '@iconify/svelte';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
+	import { getContext } from 'svelte';
+</script>
+
+<script lang="ts">
+	import type { OptionType } from './types';
+	import type { OptionManager } from './utils.svelte';
 
 	let {
 		ref = $bindable(null),
@@ -24,21 +26,30 @@
 	} = $props();
 
 	const optionManager: OptionManager = getContext('OptionManager');
+	const required: Boolean = getContext('required');
+	const isNull = $derived(required && !optionManager.isSomeOptionsSelected);
 </script>
 
 <Popover.Trigger
 	bind:ref
 	data-slot="select-trigger"
-	class={cn('w-full cursor-pointer', buttonVariants({ variant: variant }), className)}
+	class={cn(
+		'w-full cursor-pointer',
+		buttonVariants({ variant: variant }),
+		required && isNull ? 'ring-destructive ring-1' : 'ring-1',
+		className
+	)}
 	{...restProps}
 >
 	{#if children}
 		{@render children?.()}
-	{:else}
-		Select
-	{/if}
-	{#if optionManager.isSomeOptionsSelected}
+	{:else if required && isNull}
+		<p class=" text-destructive text-xs">Required</p>
+	{:else if optionManager.isSomeOptionsSelected}
+		<p>Select</p>
+
 		<Separator orientation="vertical" />
+
 		<div class="flex gap-1">
 			{#if optionManager.selectedOptions.length > optionManager.visibility}
 				<HoverCard.Root>
@@ -53,6 +64,8 @@
 				{@render ShowOptions(optionManager.selectedOptions)}
 			{/if}
 		</div>
+	{:else}
+		Select
 	{/if}
 </Popover.Trigger>
 
@@ -86,7 +99,7 @@
 				icon={option.icon ? option.icon : 'ph:empty'}
 				class={cn('size-3', option.icon ? 'visibale' : 'invisible')}
 			/>
-			<p class="text-xs select-none">{option.label}</p>
+			<p class="select-none text-xs">{option.label}</p>
 		</span>
 	{/each}
 {/snippet}

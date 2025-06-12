@@ -1,17 +1,18 @@
-<script lang="ts">
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-
-	import { getContext } from 'svelte';
+<script lang="ts" module>
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import * as HoverCard from '$lib/components/ui/hover-card';
-	import Icon from '@iconify/svelte';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
-	import { OptionManager } from './utils.svelte';
-	import type { AncestralOptionType } from './types';
-
-	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import * as HoverCard from '$lib/components/ui/hover-card';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { cn } from '$lib/utils';
+	import Icon from '@iconify/svelte';
+	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+	import { getContext } from 'svelte';
+</script>
+
+<script lang="ts">
+	import type { AncestralOptionType } from './types';
+	import { OptionManager } from './utils.svelte';
 
 	let {
 		ref = $bindable(null),
@@ -20,20 +21,25 @@
 	}: DropdownMenuPrimitive.TriggerProps & {} = $props();
 
 	const optionManager: OptionManager = getContext('OptionManager');
+	const required: Boolean = getContext('required');
+
+	const isNull = $derived(required && !optionManager.isSomeAncestralOptionsSelected);
 </script>
 
 <DropdownMenu.Trigger
 	bind:ref
 	data-slot="select-trigger"
-	class={cn('w-full cursor-pointer', buttonVariants({ variant: 'outline' }))}
+	class={cn(
+		'w-full cursor-pointer',
+		buttonVariants({ variant: 'outline' }),
+		required && isNull ? 'ring-destructive ring-1' : 'ring-1'
+	)}
 	{...restProps}
 >
 	{#if children}
 		{@render children?.()}
-	{:else}
-		Select
-	{/if}
-	{#if optionManager.isSomeAncestralOptionsSelected}
+	{:else if optionManager.isSomeAncestralOptionsSelected}
+		<p>Select</p>
 		<Separator orientation="vertical" />
 		<div class="flex gap-1">
 			{#if optionManager.selectedAncestralOptions.length > optionManager.visibility}
@@ -49,6 +55,10 @@
 				{@render ShowOptions(optionManager.selectedAncestralOptions)}
 			{/if}
 		</div>
+	{:else if required && isNull}
+		<p class=" text-destructive text-xs">Required</p>
+	{:else}
+		Select
 	{/if}
 </DropdownMenu.Trigger>
 
