@@ -1,12 +1,13 @@
-<script lang="ts">
-	import { getContext } from 'svelte';
-	import * as Input from '../single';
-	import { InputManager, ValuesManager } from './utils.svelte';
-	import type { InputType } from './types';
-
-	import type { HTMLInputAttributes } from 'svelte/elements';
+<script lang="ts" module>
 	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
+	import { getContext } from 'svelte';
+	import type { HTMLInputAttributes } from 'svelte/elements';
+</script>
+
+<script lang="ts">
+	import * as Input from '../single';
+	import { InputManager, ValuesManager } from './utils.svelte';
 
 	type Props = WithElementRef<Omit<HTMLInputAttributes, 'value' | 'type'>>;
 

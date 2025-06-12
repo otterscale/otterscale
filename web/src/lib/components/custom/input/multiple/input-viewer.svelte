@@ -1,14 +1,15 @@
-<script lang="ts">
-	import { getContext, hasContext } from 'svelte';
-	import Icon from '@iconify/svelte';
+<script lang="ts" module>
 	import { Badge, type BadgeVariant } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
-
-	import { typeToIcon, ValuesManager, InputManager } from './utils.svelte';
-
-	import type { HTMLAnchorAttributes } from 'svelte/elements';
 	import { cn } from '$lib/utils';
+	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
+	import { getContext, hasContext } from 'svelte';
+	import type { HTMLAnchorAttributes } from 'svelte/elements';
+</script>
+
+<script lang="ts">
+	import { InputManager, typeToIcon, ValuesManager } from './utils.svelte';
 
 	let {
 		ref = $bindable(null),

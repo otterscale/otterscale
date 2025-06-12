@@ -1,10 +1,11 @@
-<script lang="ts">
+<script lang="ts" module>
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-
 	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

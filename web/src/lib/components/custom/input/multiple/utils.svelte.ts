@@ -1,5 +1,5 @@
 import { typeToIcon } from "../single";
-import type { InputType, valueSetterType } from './types'
+import type { InputType, valueSetterType } from './types';
 
 class InputManager {
     input: any = $state();
@@ -44,8 +44,5 @@ class ValuesManager {
 }
 
 export {
-    typeToIcon,
-    //
-    InputManager,
-    ValuesManager,
-}
+    InputManager, typeToIcon, ValuesManager
+};

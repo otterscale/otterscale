@@ -4,16 +4,10 @@ type OptionType = {
     icon?: string;
     subOptions?: OptionType[];
 };
-
 type AncestralOptionType = OptionType[];
-
 type valuesSetterType = (newValues: any[]) => void
 type valuesGetterType = () => any[]
 
-
 export type {
-    OptionType,
-    AncestralOptionType,
-    valuesSetterType,
-    valuesGetterType
-}
+    AncestralOptionType, OptionType, valuesGetterType, valuesSetterType
+};

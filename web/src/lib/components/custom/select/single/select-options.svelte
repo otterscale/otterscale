@@ -1,9 +1,10 @@
-<script lang="ts">
+<script lang="ts" module>
 	import * as Command from '$lib/components/ui/command';
-
-	import { Command as CommandPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
+	import { Command as CommandPrimitive } from 'bits-ui';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		value = $bindable(''),

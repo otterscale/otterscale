@@ -1,4 +1,4 @@
-import type { OptionType, valueSetterType, valueGetterType } from './types';
+import type { OptionType, valueGetterType, valueSetterType } from './types';
 
 class OptionManager {
     options: OptionType[];
@@ -22,4 +22,4 @@ class OptionManager {
 
 export {
     OptionManager
-}
+};

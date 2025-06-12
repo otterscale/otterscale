@@ -2,7 +2,8 @@ import { z, type ZodFirstPartySchemaTypes } from 'zod';
 
 const BORDER_INPUT_CLASSNAME = 'flex items-center rounded-md border shadow-sm';
 const UNFOCUS_INPUT_CLASSNAME = 'border-none shadow-none focus-visible:ring-0 bg-transparent';
-
+const RING_INVALID_INPUT_CLASSNAME = 'ring-destructive ring-1'
+const RING_VALID_INPUT_CLASSNAME = 'ring-1'
 const typeToIcon: Record<string, string> = {
     color: 'ph:palette',
     'datetime-local': 'ph:clock',
@@ -49,12 +50,9 @@ class InputValidator {
 }
 
 export {
-    BORDER_INPUT_CLASSNAME,
-    UNFOCUS_INPUT_CLASSNAME,
-    typeToIcon,
-    //
-    PasswordManager,
-    //
-    type InputValidatorResponse,
-    InputValidator
-}
+    BORDER_INPUT_CLASSNAME, InputValidator, PasswordManager, RING_INVALID_INPUT_CLASSNAME, RING_VALID_INPUT_CLASSNAME, typeToIcon, UNFOCUS_INPUT_CLASSNAME
+};
+export type {
+    InputValidatorResponse
+};
+

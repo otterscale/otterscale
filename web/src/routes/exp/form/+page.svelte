@@ -12,8 +12,10 @@
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
+	import { z } from 'zod';
+	import { writable, type Writable } from 'svelte/store';
 
-	const options1: SingleSelect.OptionType[] = [
+	let options1: Writable<SingleSelect.OptionType[]> = writable([
 		{ value: 'moon', label: 'Moon', icon: 'ph:moon' },
 		{
 			value: 'star',
@@ -25,8 +27,8 @@
 			label: 'Sun',
 			icon: 'ph:sun'
 		}
-	];
-	const options2: MultipleSelect.OptionType[] = [
+	]);
+	let options2: Writable<MultipleSelect.OptionType[]> = writable([
 		{ value: 'moon', label: 'Moon', icon: 'ph:moon' },
 		{
 			value: 'star',
@@ -73,8 +75,8 @@
 			label: 'Nebula',
 			icon: 'ph:cloud-fog'
 		}
-	];
-	const options3: LayeredSingleSelect.OptionType[] = [
+	]);
+	let options3: LayeredSingleSelect.OptionType[] = [
 		{ value: 'moon', label: 'Moon', icon: 'ph:moon' },
 		{
 			value: 'star',
@@ -144,9 +146,7 @@
 		value0: any[];
 	};
 
-	let values: Values = $state({
-		value0: [['moon'], ['star'], ['sun', 'sunrise']]
-	} as Values);
+	let values: Values = $state({} as Values);
 
 	function reset() {
 		values = {} as Values;
@@ -172,9 +172,7 @@
 			>Header</AlertDialog.Header
 		>
 		<Form.Root>
-			<Form.Fieldset
-				disabled={ListenInputs(values.value7, values.value8, values.value9, values.value0)}
-			>
+			<Form.Fieldset>
 				<Form.Legend>Fieldset I</Form.Legend>
 				<Form.Description>
 					This is a long description for the form fieldset. It provides detailed information about
@@ -188,7 +186,13 @@
 							about the purpose and usage of this field.
 						{/snippet}
 					</Form.Label>
-					<SingleInput.General type="text" id="single-input" bind:value={values.value1} />
+					<SingleInput.General
+						required
+						schema={z.string().min(3)}
+						type="text"
+						id="single-input"
+						bind:value={values.value1}
+					/>
 					<Form.Help>
 						This is a help text for Field I. Please enter the required information.
 					</Form.Help>
@@ -201,7 +205,12 @@
 							required.
 						{/snippet}
 					</Form.Label>
-					<SingleInput.General type="number" id="single-input" bind:value={values.value2} />
+					<SingleInput.General
+						required
+						type="number"
+						id="single-input"
+						bind:value={values.value2}
+					/>
 					<Form.Help>This is a help text for Field II. Please enter a valid number.</Form.Help>
 				</Form.Field>
 			</Form.Fieldset>
@@ -213,7 +222,7 @@
 				</Form.Description>
 				<Form.Field>
 					<Label for="single-input">Field III</Label>
-					<SingleInput.Boolean id="single-input" bind:value={values.value3} />
+					<SingleInput.Boolean required id="single-input" bind:value={values.value3} />
 					<Form.Help>
 						Enable this option if you want to activate Field III. This is a help text for the
 						boolean input.
@@ -221,7 +230,7 @@
 				</Form.Field>
 				<Form.Field>
 					<Label for="single-input">Field IV</Label>
-					<SingleInput.Password id="single-input" bind:value={values.value4} />
+					<SingleInput.Password required id="single-input" bind:value={values.value4} />
 					<Form.Help>Please enter your password. Make sure it is strong and secure.</Form.Help>
 				</Form.Field>
 				<Form.Field>
@@ -241,7 +250,7 @@
 					<MultipleInput.Root type="number" bind:values={values.value6} id="multiple-input">
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
-							<MultipleInput.Input />
+							<MultipleInput.Input required />
 							<MultipleInput.Add />
 							<MultipleInput.Clear />
 						</MultipleInput.Controller>
@@ -263,14 +272,7 @@
 				</Form.Description>
 				<Form.Field>
 					<Label for="single-select">Field VII</Label>
-					<SingleSelect.Root
-						bind:value={values.value7}
-						selectedOption={{
-							value: 'sun',
-							label: 'Sun',
-							icon: 'ph:sun'
-						}}
-					>
+					<SingleSelect.Root bind:options={options1} bind:value={values.value7} required>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
@@ -278,7 +280,7 @@
 								<SingleSelect.List>
 									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 									<SingleSelect.Group>
-										{#each options1 as option}
+										{#each $options1 as option}
 											<SingleSelect.Item {option}>
 												<Icon
 													icon={option.icon ? option.icon : 'ph:empty'}
@@ -299,18 +301,7 @@
 				</Form.Field>
 				<Form.Field>
 					<Label for="single-select">Field VIII</Label>
-					<MultipleSelect.Root
-						bind:value={values.value8}
-						selectedOptions={[
-							{ value: 'moon', label: 'Moon', icon: 'ph:moon' },
-							{
-								value: 'star',
-								label: 'Star',
-								icon: 'ph:star'
-							}
-						]}
-						options={options2}
-					>
+					<MultipleSelect.Root bind:options={options2} bind:value={values.value8} required>
 						<MultipleSelect.Viewer />
 						<MultipleSelect.Controller>
 							<MultipleSelect.Trigger />
@@ -320,7 +311,7 @@
 									<MultipleSelect.List>
 										<MultipleSelect.Empty>No results found.</MultipleSelect.Empty>
 										<MultipleSelect.Group>
-											{#each options2 as option}
+											{#each $options2 as option}
 												<MultipleSelect.Item {option}>
 													<Icon
 														icon={option.icon ? option.icon : 'ph:empty'}
@@ -347,7 +338,7 @@
 				</Form.Field>
 				<Form.Field>
 					<Label for="single-select">Field IX</Label>
-					<LayeredSingleSelect.Root bind:value={values.value9} options={options3}>
+					<LayeredSingleSelect.Root bind:value={values.value9} options={options3} required>
 						<LayeredSingleSelect.Trigger />
 						<LayeredSingleSelect.Content>
 							<LayeredSingleSelect.Group>
@@ -418,7 +409,7 @@
 				</Form.Field>
 				<Form.Field>
 					<Label for="single-select">Field X</Label>
-					<LayeredMultipleSelect.Root bind:value={values.value0} options={options4}>
+					<LayeredMultipleSelect.Root bind:value={values.value0} options={options4} required>
 						<LayeredMultipleSelect.Viewer />
 						<LayeredMultipleSelect.Controller>
 							<LayeredMultipleSelect.Trigger />

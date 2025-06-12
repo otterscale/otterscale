@@ -1,5 +1,5 @@
-import type { OptionType, AncestralOptionType, valuesSetterType, valuesGetterType } from './types';
-import { getAncestralOptionsMap, getAllAncestralOptions } from '../layered-single/index'
+import { getAllAncestralOptions, getAncestralOptionsMap } from '../layered-single/index';
+import type { AncestralOptionType, OptionType, valuesGetterType, valuesSetterType } from './types';
 
 class OptionManager {
     visibility = 1
@@ -69,4 +69,4 @@ class OptionManager {
 
 export {
     OptionManager
-}
+};

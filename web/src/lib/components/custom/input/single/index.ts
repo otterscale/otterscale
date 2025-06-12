@@ -1,23 +1,15 @@
+import { default as Boolean } from './input-boolean.svelte';
+import { default as Color } from './input-color.svelte';
+import { default as DeletionConfirm } from './input-deletion-confirm.svelte';
+import { default as General } from './input-general.svelte';
+import { default as Password } from './input-password.svelte';
 import type { InputType } from './types';
-
-import { typeToIcon, PasswordManager } from './utils.svelte';
-
-import { default as InputGeneral } from './input-general.svelte';
-import { default as InputPassword } from './input-password.svelte';
-import { default as InputColor } from './input-color.svelte';
-import { default as InputBoolean } from './input-boolean.svelte';
-import { default as InputDeletionConfirm } from './input-deletion-confirm.svelte';
+import { PasswordManager, typeToIcon } from './utils.svelte';
 
 export {
-    type InputType,
-    //
-    typeToIcon,
-    //
-    PasswordManager,
-    //
-    InputGeneral as General,
-    InputPassword as Password,
-    InputColor as Color,
-    InputBoolean as Boolean,
-    InputDeletionConfirm as DeletionConfirm
+    Boolean, Color, DeletionConfirm, General, Password, PasswordManager, typeToIcon
 };
+export type {
+    InputType
+};
+

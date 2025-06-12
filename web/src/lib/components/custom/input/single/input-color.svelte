@@ -1,16 +1,23 @@
-<script lang="ts">
-	import { BORDER_INPUT_CLASSNAME, UNFOCUS_INPUT_CLASSNAME, typeToIcon } from './utils.svelte';
-
-	import Icon from '@iconify/svelte';
-	import { Input } from '$lib/components/ui/input';
-	import { z, type ZodFirstPartySchemaTypes } from 'zod';
-	import { InputValidator } from './utils.svelte';
-	import InputValidation from './input-validation.svelte';
-
-	import type { HTMLInputAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils.js';
-	import type { WithElementRef } from 'bits-ui';
+<script lang="ts" module>
 	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import { Input } from '$lib/components/ui/input';
+	import { cn } from '$lib/utils.js';
+	import Icon from '@iconify/svelte';
+	import type { WithElementRef } from 'bits-ui';
+	import type { HTMLInputAttributes } from 'svelte/elements';
+	import { z, type ZodFirstPartySchemaTypes } from 'zod';
+</script>
+
+<script lang="ts">
+	import InputValidation from './input-validation.svelte';
+	import {
+		BORDER_INPUT_CLASSNAME,
+		InputValidator,
+		RING_INVALID_INPUT_CLASSNAME,
+		RING_VALID_INPUT_CLASSNAME,
+		typeToIcon,
+		UNFOCUS_INPUT_CLASSNAME
+	} from './utils.svelte';
 
 	let {
 		ref = $bindable(null),
@@ -24,14 +31,13 @@
 
 	const validator = new InputValidator(schema);
 	const validation = $derived(validator.validate(value));
-
 	const isInvalid = $derived(value && !validation.isValid);
 </script>
 
 <div
 	class={cn(
 		BORDER_INPUT_CLASSNAME,
-		isInvalid ? 'ring-destructive ring-1' : '',
+		isInvalid ? RING_INVALID_INPUT_CLASSNAME : RING_VALID_INPUT_CLASSNAME,
 		'h-10 justify-between',
 		className
 	)}
@@ -42,6 +48,7 @@
 		</span>
 		<Badge variant="outline">{value}</Badge>
 	</span>
+
 	<Input
 		bind:ref
 		data-slot="input-color"
@@ -51,6 +58,7 @@
 		{...restProps}
 	/>
 </div>
+
 <div class="transition-all duration-500">
 	<InputValidation {isInvalid} errors={validation.errors} />
 </div>

@@ -13,6 +13,5 @@ type InputType =
 type valueSetterType = (values: any[]) => void
 
 export type {
-    InputType,
-    valueSetterType
-}
+    InputType, valueSetterType
+};

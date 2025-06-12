@@ -1,9 +1,10 @@
-<script lang="ts">
+<script lang="ts" module>
 	import * as Popover from '$lib/components/ui/popover';
-
 	import { cn } from '$lib/utils.js';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

@@ -1,4 +1,4 @@
-import type { OptionType, valuesSetterType, valuesGetterType } from './types';
+import type { OptionType, valuesGetterType, valuesSetterType } from './types';
 
 class OptionManager {
     visibility = 1;
@@ -50,4 +50,4 @@ class OptionManager {
 
 export {
     OptionManager
-}
+};
