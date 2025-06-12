@@ -14,9 +14,9 @@
 <span class="flex items-center gap-1">
 	<Icon icon="ph:calendar-blank" class="size-6" />
 	<Popover.Root>
-		<Popover.Trigger
-			><Button variant="outline" class="bg-transparent">{date}</Button></Popover.Trigger
-		>
+		<Popover.Trigger>
+			<Button variant="outline" class="bg-transparent font-mono">{date}</Button>
+		</Popover.Trigger>
 		<Popover.Content class="w-fit p-0">
 			<Calendar
 				bind:value={date}

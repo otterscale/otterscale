@@ -1,2 +1,2 @@
-export { default as TimestampPicker } from './timestamp-picker.svelte';
+export { default as TimeStampPicker } from './timestamp-picker.svelte';
 
