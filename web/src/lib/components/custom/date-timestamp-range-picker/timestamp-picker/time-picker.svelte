@@ -108,7 +108,7 @@
 	id={id || picker}
 	name={name || picker}
 	class={cn(
-		'h-9 w-9 p-2 text-center text-xs tabular-nums caret-transparent outline-0 [&::-webkit-inner-spin-button]:appearance-none',
+		'h-9 w-9 p-2 text-center font-mono text-xs tabular-nums caret-transparent outline-0 [&::-webkit-inner-spin-button]:appearance-none',
 		className
 	)}
 	value={value || calculatedValue}
