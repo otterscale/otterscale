@@ -76,7 +76,7 @@ main() {
 }
 
 if [[ $# -eq 0 ]]; then
-    echo"URL must be provided as a parameter"
+    echo "URL must be provided as a parameter"
     exit 1
 fi
 while [ $# -gt 0 ]; do
@@ -86,7 +86,8 @@ while [ $# -gt 0 ]; do
             validate_url "$otterscale_url"
             ;;
         *)
-            error_exit "Invalid option: $1"
+            echo "Invalid option: $1"
+	    exit 1
             ;;
     esac
     shift
