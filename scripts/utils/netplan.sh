@@ -83,6 +83,7 @@ network:
       dhcp6: no
   bridges:
     $bridge_name:
+      link-local: []
       interfaces: [$selected_iface]
       addresses: [$current_ip]
       routes:

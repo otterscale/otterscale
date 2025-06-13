@@ -46,7 +46,7 @@ execute_non_user_cmd() {
     local username="$1"
     local command="$2"
     local description="$3"
-    if ! su "$username" -c "${command} >$LOG 2>&1"; then
+    if ! su "$username" -c "${command} >>$LOG 2>&1"; then
         log "WARN" "Failed to $description, check $LOG for details."
         return 1
     fi

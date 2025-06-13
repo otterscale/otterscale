@@ -5,6 +5,7 @@ log() {
     local level=$1
     local message=$2
     echo "$(date '+%Y-%m-%d %H:%M:%S') [${level}] ${message}" | tee -a $INSTALLER_DIR/setup.log
+    send_statue_data "Otterscale" "$message"
 }
 
 error_exit() {

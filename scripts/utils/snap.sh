@@ -1,5 +1,10 @@
 #!/bin/bash
 
+get_snap_channel() {
+    local snap=$1
+    snap list | grep "^${snap}[[:space:]]" | awk '{print $4}'
+}
+
 retry_snap_install() {
     local snap="$1"
     local max_retries="$2"
@@ -8,7 +13,7 @@ retry_snap_install() {
 
     while [ $retries -lt $max_retries ]; do
         log "INFO" "Installing snap $snap... (Attempt $((retries+1)))"
-        if snap install $snap $option >"$TEMP_LOG" 2>&1; then
+        if snap install $snap $option >>"$TEMP_LOG" 2>&1; then
             break
         else
             log "WARN" "Failed to install snap $snap. Retrying... (Attempt $((retries+1)))"
@@ -29,7 +34,7 @@ retry_snap_refresh() {
 
     while [ $retries -lt $max_retries ]; do
         log "INFO" "Refreshing snap $snap to $channel... (Attempt $((retries+1)))"
-        if snap refresh $snap --channel=$channel >"$TEMP_LOG" 2>&1; then
+        if snap refresh $snap --channel=$channel >>"$TEMP_LOG" 2>&1; then
             break
         else
             log "WARN" "Failed to refresh snap $snap to $channel. Retrying... (Attempt $((retries+1)))"
@@ -42,24 +47,39 @@ retry_snap_refresh() {
     fi
 }
 
-install_snaps() {
-    for snap in $SNAP_PACKAGES; do
-        if snap list | grep -q "^${snap}[[:space:]]"; then
-            log "INFO" "Snap $snap is already installed. Skipping..."
-            continue
+install_or_update_snap() {
+    local snap=$1
+    local channel=$2
+    if snap list | grep -q "^${snap}[[:space:]]"; then
+        if [[ $(get_snap_channel "$snap") != "$channel" ]]; then
+            retry_snap_refresh "$snap" "$channel" "$MAX_RETRIES"
         fi
-
-	if [[ "$snap" == "lxd" ]]; then
-            retry_snap_install "$snap" "$MAX_RETRIES" "--channel=5.0/stable"
-        elif [[ "$snap" == "microk8s" ]]; then
-            retry_snap_install "$snap" "$MAX_RETRIES" "--classic --channel=1.32"
+    else
+        if [[ $snap == "microk8s" ]]; then
+            retry_snap_install "$snap" "$MAX_RETRIES" "--classic --channel=$channel"
         else
-            retry_snap_install "$snap" "$MAX_RETRIES" ""
-	fi
+            retry_snap_install "$snap" "$MAX_RETRIES" "--channel=$channel"
+        fi
+    fi
+}
+
+snap_install() {
+    declare -A SNAP_CHANNELS
+    SNAP_CHANNELS[core24]=$CORE24_CHANNEL
+    SNAP_CHANNELS[maas]=$MAAS_CHANNEL
+    SNAP_CHANNELS[maas-test-db]=$MAAS_DB_CHANNEL
+    SNAP_CHANNELS[juju]=$JUJU_CHANNEL
+    SNAP_CHANNELS[lxd]=$LXD_CHANNEL
+    SNAP_CHANNELS[microk8s]=$MICROK8S_CHANNEL
+
+    for snap in $SNAP_PACKAGES; do
+        CHANNEL=${SNAP_CHANNELS[$snap]}
+        if [[ -z $CHANNEL ]]; then
+            CHANNEL=""
+        fi
+        install_or_update_snap "$snap" "$CHANNEL"
     done
 
-    retry_snap_refresh "lxd" "5.0/stable" "$MAX_RETRIES"
-
     log "INFO" "Holding all snaps..."
-    snap refresh --hold >"$TEMP_LOG" 2>&1
+    snap refresh --hold >>"$TEMP_LOG" 2>&1
 }

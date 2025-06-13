@@ -18,7 +18,7 @@ update_maas_dns() {
 set_config() {
     local name=$1
     local value=$2
-    if ! maas admin maas set-config name=$name value=$value >"$TEMP_LOG" 2>&1; then
+    if ! maas admin maas set-config name=$name value=$value >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to set config $name to $value."
     fi
 }
@@ -72,7 +72,7 @@ update_fabric_dns() {
         dns_value="$fabric_dns $dns_value"
     fi
 
-    if ! maas admin subnet update "$subnet" dns_servers="$dns_value" >"$TEMP_LOG" 2>&1; then
+    if ! maas admin subnet update "$subnet" dns_servers="$dns_value" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to update dns to fabric."
     fi
 }
@@ -89,7 +89,7 @@ get_fabric() {
 
 create_dhcp_iprange() {
     log "INFO" "Creating DHCP IP range..."
-    if ! maas admin ipranges create type=dynamic start_ip=$start_ip end_ip=$end_ip >"$TEMP_LOG" 2>&1; then
+    if ! maas admin ipranges create type=dynamic start_ip=$start_ip end_ip=$end_ip >>"$TEMP_LOG" 2>&1; then
         log "WARN" "Please confirm if address is within subnet $subnet, or maybe it already exist."
         error_exit "Failed to create DHCP range."
     fi
@@ -97,7 +97,7 @@ create_dhcp_iprange() {
 
 update_dhcp_config() {
     log "INFO" "Enabling DHCP on VLAN..."
-    if ! maas admin vlan update $FABRIC_ID $VLAN_TAG dhcp_on=True primary_rack=$PRIMARY_RACK >"$TEMP_LOG" 2>&1; then
+    if ! maas admin vlan update $FABRIC_ID $VLAN_TAG dhcp_on=True primary_rack=$PRIMARY_RACK >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to enable DHCP."
     fi
 }

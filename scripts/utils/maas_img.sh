@@ -10,7 +10,7 @@ update_boot_source(){
     if [ "$source_count" -gt 1 ]; then
         log "INFO" "Removing duplicate boot sources..."
         for id in $(echo "$sources" | jq -r '.[].id' | tail -n +2); do
-            if ! maas admin boot-source delete "$id" >"$TEMP_LOG" 2>&1; then
+            if ! maas admin boot-source delete "$id" >>"$TEMP_LOG" 2>&1; then
                 error_exit "Failed to remove boot source $id."
             fi
         done
@@ -22,7 +22,7 @@ update_boot_source(){
         release=jammy \
         arches=amd64 \
         subarches="*" \
-        labels="*" >"$TEMP_LOG" 2>&1; then
+        labels="*" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to update boot source."
     fi
 }
@@ -32,7 +32,7 @@ create_boot_source() {
     log "INFO" "Creating new boot source for Ubuntu Jammy (22.04) amd64..."
     if ! maas admin boot-sources create \
         url="http://images.maas.io/ephemeral-v3/stable/" \
-        keyring_filename="/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg" >"$TEMP_LOG" 2>&1; then
+        keyring_filename="/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to create boot source."
     fi
 
@@ -44,17 +44,17 @@ create_boot_source() {
         release=jammy \
         arches=amd64 \
         subarches="*" \
-        labels="*" >"$TEMP_LOG" 2>&1; then
+        labels="*" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to create boot source selection."
     fi
 }
 
 start_import() {
     log "INFO" "Starting image download..."
-    maas admin boot-resources stop-import >"$TEMP_LOG" 2>&1
+    maas admin boot-resources stop-import >>"$TEMP_LOG" 2>&1
     sleep 10
 
-    if ! maas admin boot-resources import >"$TEMP_LOG" 2>&1; then
+    if ! maas admin boot-resources import >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to start image download."
     fi
     sleep 10

@@ -12,7 +12,7 @@ init_maas() {
     if ! maas init region+rack \
         --database-uri maas-test-db:/// \
         --maas-url "http://$BRIDGE_IP:5240/MAAS" \
-        >"$TEMP_LOG" 2>&1; then
+        >>"$TEMP_LOG" 2>&1; then
         error_exit "MAAS initialization failed."
     fi
     log "INFO" "MAAS initialized successfully"
@@ -30,7 +30,7 @@ create_maas_admin() {
             --username "$MAAS_ADMIN_USER" \
             --password "$MAAS_ADMIN_PASS" \
             --email "$MAAS_ADMIN_EMAIL" \
-            >"$TEMP_LOG" 2>&1; then
+            >>"$TEMP_LOG" 2>&1; then
             error_exit "Failed to create MAAS admin user."
         fi
     fi
@@ -40,14 +40,10 @@ login_maas() {
     log "INFO" "Attempting to login maas..."
     local retries=0
 
-    ## proxy will cause maas login failed
-    del_proxy
-
     APIKEY=$(maas apikey --username "$MAAS_ADMIN_USER")
     while [ $retries -lt $MAX_RETRIES ]; do
-        if maas login admin "http://localhost:5240/MAAS/" "$APIKEY" >"$TEMP_LOG" 2>&1; then
+        if maas login admin "http://localhost:5240/MAAS/" "$APIKEY" >>"$TEMP_LOG" 2>&1; then
             log "INFO" "MAAS login successfully"
-            add_proxy
             break
         else
             log "WARN" "Failed to login to MAAS, retry in 10 secs. (Attempt $((retries+1)))"
