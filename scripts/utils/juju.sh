@@ -104,12 +104,19 @@ bootstrap_juju() {
 
 create_scope() {
     log "INFO" "Create juju default scope"
-    execute_non_user_cmd "$username" "juju create-model default" "create default model"
+    if ! execute_non_user_cmd "$username" "juju add-model default" "create default model"; then
+        error_exit "Failed create juju default model"
+    fi
 }
 
 cross_scope() {
-    execute_non_user_cmd "$username" "juju offer grafana:grafana-dashboard grafana-dashboard" "JuJu offer grafana-dashboard"
-    execute_non_user_cmd "$username" "juju offer prometheus:receive-remote-write prometheus-receive-remote-write" "JuJu offer prometheus-receive-remote-write"
+    if ! execute_non_user_cmd "$username" "juju offer grafana:grafana-dashboard grafana-dashboard" "JuJu offer grafana-dashboard"; then
+        error_exit "Failed execute juju offer grafana-dashboard"
+    fi
+
+    if ! execute_non_user_cmd "$username" "juju offer prometheus:receive-remote-write prometheus-receive-remote-write" "JuJu offer prometheus-receive-remote-write"; then
+        error_exit "Failed execute juju offer prometheus-receive-remote-write"
+    fi
 }
 
 # JuJu K8S
