@@ -76,7 +76,8 @@ main() {
 }
 
 if [[ $# -eq 0 ]]; then
-    error_exit "URL must be provided as a parameter"
+    echo"URL must be provided as a parameter"
+    exit 1
 fi
 while [ $# -gt 0 ]; do
     case $1 in
