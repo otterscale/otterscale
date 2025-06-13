@@ -4,10 +4,10 @@ send_request() {
     local url_path=$1
     local data=$2
 
-    #echo curl -s --header "$header" --data "$data" "$otterscale_url$url_path"
     response=$(curl -s --header "Content-Type: application/json" --data "$data" "$otterscale_url$url_path")
     if [[ "$?" != 0 ]]; then
-        error_exit "Failed execute curl, $otterscale_url$url_path"
+        trap cleanup EXIT
+        exit 1
     fi
 }
 
