@@ -3,9 +3,12 @@ package core
 import (
 	"context"
 	"errors"
+	"fmt"
 	"sync"
+	"time"
 
 	"github.com/juju/juju/api/client/action"
+	"github.com/juju/juju/state"
 	"gopkg.in/ini.v1"
 )
 
@@ -45,7 +48,7 @@ func (uc *StorageUseCase) config(ctx context.Context, uuid, name string) (*Stora
 		return nil, err
 	}
 
-	uc.configs.Store(uuid, config)
+	uc.configs.Store(key, config)
 
 	return config, nil
 }
@@ -56,52 +59,70 @@ func (uc *StorageUseCase) newConfig(ctx context.Context, uuid, name string) (*St
 	if err != nil {
 		return nil, err
 	}
-
-	// stdout
-	ops, err := uc.action.ListOperations(ctx, uuid, leader, "juju-exec")
+	id, err := uc.action.Run(ctx, uuid, leader, cephConfigCommand)
 	if err != nil {
 		return nil, err
 	}
-	return uc.getCephMonCommandOutput(ctx, uuid, ops)
+	result, err := uc.waitForActionCompleted(ctx, uuid, id)
+	if err != nil {
+		return nil, err
+	}
+	return uc.extractStorageConfig(result)
 }
 
-func (uc *StorageUseCase) getCephMonCommandOutput(ctx context.Context, uuid string, ops []action.Operation) (*StorageConfig, error) {
-	for i := range ops {
-		for j := range ops[i].Actions {
-			if ops[i].Actions[j].Action.Parameters["command"] != cephConfigCommand {
-				continue
-			}
-			results, err := uc.action.ListResults(ctx, uuid, ops[i].Actions[j].Action.ID)
+func (uc *StorageUseCase) waitForActionCompleted(ctx context.Context, uuid, id string) (*action.ActionResult, error) {
+	const tickInterval = time.Second
+	const timeoutDuration = 5 * time.Second
+
+	ticker := time.NewTicker(tickInterval)
+	defer ticker.Stop()
+
+	timeout := time.After(timeoutDuration)
+	for {
+		select {
+		case <-ticker.C:
+			result, err := uc.action.GetResult(ctx, uuid, id)
 			if err != nil {
 				return nil, err
 			}
-			for k := range results {
-				stdout, ok := results[k].Output["stdout"]
-				if !ok {
-					continue
-				}
-				config, err := uc.extractStorageConfig([]byte(stdout.(string)))
-				if err != nil {
-					continue
-				}
-				if config.FSID == "" || config.MonHost == "" || config.Key == "" {
-					continue
-				}
-				return config, nil
+			if result.Status == string(state.ActionCompleted) {
+				return result, nil
 			}
+			continue
+
+		case <-timeout:
+			return nil, fmt.Errorf("timeout waiting for action %s to become completed", id)
+
+		case <-ctx.Done():
+			return nil, ctx.Err()
 		}
 	}
-	return nil, errors.New("ceph mon command output not found")
 }
 
-func (uc *StorageUseCase) extractStorageConfig(stdout []byte) (*StorageConfig, error) {
-	file, err := ini.Load(stdout)
+func (uc *StorageUseCase) extractStorageConfig(result *action.ActionResult) (*StorageConfig, error) {
+	stdout, ok := result.Output["stdout"]
+	if !ok {
+		return nil, errors.New("ceph mon stdout not found")
+	}
+	file, err := ini.Load([]byte(stdout.(string)))
 	if err != nil {
 		return nil, err
 	}
+	fsID := file.Section("global").Key("fsid").String()
+	if fsID == "" {
+		return nil, errors.New("ceph mon stdout fsid not found")
+	}
+	monHost := file.Section("global").Key("mon_host").String()
+	if monHost == "" {
+		return nil, errors.New("ceph mon stdout mon_host not found")
+	}
+	key := file.Section("client.admin").Key("key").String()
+	if key == "" {
+		return nil, errors.New("ceph mon stdout key not found")
+	}
 	return &StorageConfig{
-		FSID:    file.Section("global").Key("fsid").String(),
-		MonHost: file.Section("global").Key("mon_host").String(),
-		Key:     file.Section("client.admin").Key("key").String(),
+		FSID:    fsID,
+		MonHost: monHost,
+		Key:     key,
 	}, nil
 }
