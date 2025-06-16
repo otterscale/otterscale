@@ -12,15 +12,12 @@ var (
 		{Name: "ch:ceph-mon", Channel: "squid/stable", LXD: true},
 		{Name: "ch:ceph-osd", Channel: "squid/stable", LXD: false},
 		{Name: "ch:ceph-nfs", Channel: "squid/stable", LXD: true},
-		{Name: "ch:ceph-dashboard", Channel: "squid/stable", Subordinate: true},
 	}
 
 	cephRelations = [][]string{
 		{"ceph-fs:ceph-mds", "ceph-mon:mds"},
 		{"ceph-osd:mon", "ceph-mon:osd"},
 		{"ceph-nfs:ceph-client", "ceph-mon:client"},
-		{"ceph-dashboard:dashboard", "ceph-mon:dashboard"},
-		{"easyrsa:client", "ceph-dashboard:certificates"},
 	}
 )
 
