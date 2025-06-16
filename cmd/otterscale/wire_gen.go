@@ -10,6 +10,7 @@ import (
 	"github.com/openhdc/otterscale/internal/app"
 	"github.com/openhdc/otterscale/internal/config"
 	"github.com/openhdc/otterscale/internal/core"
+	"github.com/openhdc/otterscale/internal/data/ceph"
 	"github.com/openhdc/otterscale/internal/data/juju"
 	"github.com/openhdc/otterscale/internal/data/kube"
 	"github.com/openhdc/otterscale/internal/data/maas"
@@ -77,13 +78,17 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	vlanRepo := maas.NewVLAN(maasMAAS)
 	networkUseCase := core.NewNetworkUseCase(fabricRepo, vlanRepo, subnetRepo, ipRangeRepo)
 	networkService := app.NewNetworkService(networkUseCase)
+	cephCeph := ceph.New()
+	cephPoolRepo := ceph.NewPool(cephCeph)
+	storageUseCase := core.NewStorageUseCase(actionRepo, facilityRepo, cephPoolRepo)
+	storageService := app.NewStorageService(storageUseCase)
 	keyRepo := juju.NewKey(jujuJuju)
 	sshKeyRepo := maas.NewSSHKey(maasMAAS)
 	scopeUseCase := core.NewScopeUseCase(scopeRepo, keyRepo, sshKeyRepo)
 	scopeService := app.NewScopeService(scopeUseCase)
 	tagUseCase := core.NewTagUseCase(tagRepo)
 	tagService := app.NewTagService(tagUseCase)
-	serveMux := mux.New(bool2, applicationService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, scopeService, tagService)
+	serveMux := mux.New(bool2, applicationService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, storageService, scopeService, tagService)
 	command := newCmd(configConfig, serveMux)
 	return command, func() {
 		cleanup()

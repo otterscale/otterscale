@@ -14,6 +14,7 @@ import (
 	machinev1 "github.com/openhdc/otterscale/api/machine/v1/pbconnect"
 	networkv1 "github.com/openhdc/otterscale/api/network/v1/pbconnect"
 	scopev1 "github.com/openhdc/otterscale/api/scope/v1/pbconnect"
+	storagev1 "github.com/openhdc/otterscale/api/storage/v1/pbconnect"
 	tagv1 "github.com/openhdc/otterscale/api/tag/v1/pbconnect"
 	"github.com/openhdc/otterscale/internal/app"
 )
@@ -27,10 +28,11 @@ var Services = []string{
 	machinev1.MachineServiceName,
 	networkv1.NetworkServiceName,
 	scopev1.ScopeServiceName,
+	storagev1.StorageServiceName,
 	tagv1.TagServiceName,
 }
 
-func New(helper bool, app *app.ApplicationService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
+func New(helper bool, app *app.ApplicationService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle(applicationv1.NewApplicationServiceHandler(app))
 	mux.Handle(configurationv1.NewConfigurationServiceHandler(config))
@@ -39,6 +41,7 @@ func New(helper bool, app *app.ApplicationService, config *app.ConfigurationServ
 	mux.Handle(essentialv1.NewEssentialServiceHandler(essential))
 	mux.Handle(machinev1.NewMachineServiceHandler(machine))
 	mux.Handle(networkv1.NewNetworkServiceHandler(network))
+	mux.Handle(storagev1.NewStorageServiceHandler(storage))
 	mux.Handle(scopev1.NewScopeServiceHandler(scope))
 	mux.Handle(tagv1.NewTagServiceHandler(tag))
 

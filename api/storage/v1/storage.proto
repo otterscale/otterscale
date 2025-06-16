@@ -1,0 +1,38 @@
+edition = "2023";
+
+package otterscale.storage.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/storage/v1;pb";
+
+service StorageService {
+  rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
+  rpc CreatePool(CreatePoolRequest) returns (Pool);
+  rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
+}
+
+message Pool {
+  string name = 1;
+}
+
+message ListPoolsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListPoolsResponse {
+  repeated Pool pools = 1;
+}
+
+message CreatePoolRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+}
+
+message DeletePoolRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+}

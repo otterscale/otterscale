@@ -129,6 +129,9 @@ type FacilityOffersRepo interface {
 
 type ActionRepo interface {
 	List(ctx context.Context, uuid, appName string) (map[string]ActionSpec, error)
+	ListResults(ctx context.Context, uuid, id string) ([]action.ActionResult, error)
+	ListOperations(ctx context.Context, uuid, unitName, actionName string) ([]action.Operation, error)
+	Run(ctx context.Context, uuid, unitName, command string) ([]action.ActionResult, error)
 }
 
 type CharmRepo interface {
