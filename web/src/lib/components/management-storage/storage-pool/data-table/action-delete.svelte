@@ -4,7 +4,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import Icon from '@iconify/svelte';
-	import { type Request } from '../create.svelte';
+	import { type Request } from './create.svelte';
 	import type { Pool } from './types';
 </script>
 

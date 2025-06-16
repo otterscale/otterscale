@@ -6,7 +6,7 @@
 
 	const selected = $derived(table.getFilteredSelectedRowModel().rows.length);
 	const filtered = $derived(table.getFilteredRowModel().rows.length);
-	const rows = $derived(data.length);
+	const rows = $derived(table.getCoreRowModel().rows.length);
 </script>
 
 <span class=" flex flex-wrap gap-1">

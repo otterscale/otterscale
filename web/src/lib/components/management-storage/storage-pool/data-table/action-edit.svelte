@@ -18,7 +18,7 @@
 		poolTypes,
 		profiles,
 		type Request
-	} from '../create.svelte';
+	} from './create.svelte';
 	import type { Pool } from './types';
 
 	let { pool }: { pool: Pool } = $props();

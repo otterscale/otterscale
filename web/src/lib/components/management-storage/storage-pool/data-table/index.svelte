@@ -1,4 +1,6 @@
 <script lang="ts" generics="TData, TValue">
+	import Create from './create.svelte';
+
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import RangeFilter from '$lib/components/custom/data-table/data-table-filters/range-filter.svelte';
@@ -13,7 +15,7 @@
 	import { columns } from './columns';
 	import { data } from './data';
 
-	import Actions from './actions.svelte';
+	import Statistics from './statistics.svelte';
 
 	import {
 		type ColumnDef,
@@ -100,10 +102,12 @@
 	});
 </script>
 
+<Statistics {table}/>
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between gap-2">
-		<FuzzyFilter columnId="name" {table} />
+		<Create />
 		<div class="flex items-center justify-between gap-2">
+			<FuzzyFilter columnId="name" {table} />
 			<PointFilter columnId="dataProtection" alias="Data Protection" {table} />
 			<PointFilter columnId="applications" {table} />
 			<PointFilter columnId="PGStatus" alias="Status" {table} />

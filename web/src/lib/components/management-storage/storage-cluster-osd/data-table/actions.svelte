@@ -4,6 +4,7 @@
 	import Icon from '@iconify/svelte';
 	import ActionDelete from './action-delete.svelte';
 	import ActionEdit from './action-edit.svelte';
+	import { ActionViewDevice } from './action-view-device';
 	import type { OSD } from './types';
 
 	let { osd }: { osd: OSD } = $props();
@@ -21,12 +22,14 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="[&_.action]:cursor-pointer [&_.action]:text-xs [&_.label]:text-xs">
 		<DropdownMenu.Group>
+			<DropdownMenu.Label class="label">View</DropdownMenu.Label>
+			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
+				<ActionViewDevice />
+			</DropdownMenu.Item>
 			<DropdownMenu.Label class="label">Actions</DropdownMenu.Label>
-			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionEdit {osd} />
 			</DropdownMenu.Item>
-			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionDelete {osd} />
 			</DropdownMenu.Item>

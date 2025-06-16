@@ -13,7 +13,9 @@
 	import { columns } from './columns';
 	import { data } from './data';
 
-	import Actions from './actions.svelte';
+	import Create from './create.svelte';
+
+	import Statistics from './statistics.svelte';
 
 	import {
 		type ColumnDef,
@@ -100,10 +102,12 @@
 	});
 </script>
 
+<Statistics {table} />
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between gap-2">
-		<FuzzyFilter columnId="name" {table} />
+		<Create />
 		<div class="flex items-center justify-between gap-2">
+			<FuzzyFilter columnId="name" {table} />
 			<PointFilter columnId="permission" {table} />
 			<ColumnViewer {table} />
 		</div>

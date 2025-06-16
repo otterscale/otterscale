@@ -7,6 +7,7 @@
 	import ActionEdit from './action-edit.svelte';
 	import ActionAuthorize from './action-authorize.svelte';
 	import ActionDelete from './action-delete.svelte';
+	import { ActionSubvolume } from './action-subvolume';
 	import type { FileSystem } from './types';
 
 	let { fileSystem }: { fileSystem: FileSystem } = $props();
@@ -24,15 +25,17 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="[&_.action]:cursor-pointer [&_.action]:text-xs [&_.label]:text-xs">
 		<DropdownMenu.Group>
+			<DropdownMenu.Label class="label">Views</DropdownMenu.Label>
+			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
+				<ActionSubvolume />
+			</DropdownMenu.Item>
 			<DropdownMenu.Label class="label">Actions</DropdownMenu.Label>
-			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionEdit {fileSystem} />
 			</DropdownMenu.Item>
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionAuthorize {fileSystem} />
 			</DropdownMenu.Item>
-			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionDelete {fileSystem} />
 			</DropdownMenu.Item>
