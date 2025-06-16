@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/juju/juju/api/client/action"
-	"github.com/juju/juju/state"
 	"gopkg.in/ini.v1"
 )
 
@@ -85,7 +84,7 @@ func (uc *StorageUseCase) waitForActionCompleted(ctx context.Context, uuid, id s
 			if err != nil {
 				return nil, err
 			}
-			if result.Status == string(state.ActionCompleted) {
+			if result.Status == "completed" { // state.ActionCompleted
 				return result, nil
 			}
 			continue
