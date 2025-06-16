@@ -2,6 +2,7 @@ package juju
 
 import (
 	"context"
+	"fmt"
 
 	api "github.com/juju/juju/api/client/action"
 
@@ -28,34 +29,10 @@ func (r *action) List(_ context.Context, uuid, appName string) (map[string]core.
 	return api.NewClient(conn).ApplicationCharmActions(appName)
 }
 
-func (r *action) ListResults(_ context.Context, uuid, id string) ([]api.ActionResult, error) {
+func (r *action) Run(_ context.Context, uuid, unitName, command string) (string, error) {
 	conn, err := r.juju.connection(uuid)
 	if err != nil {
-		return nil, err
-	}
-	return api.NewClient(conn).Actions([]string{id})
-}
-
-func (r *action) ListOperations(_ context.Context, uuid, unitName, actionName string) ([]api.Operation, error) {
-	conn, err := r.juju.connection(uuid)
-	if err != nil {
-		return nil, err
-	}
-	args := api.OperationQueryArgs{
-		Units:       []string{unitName},
-		ActionNames: []string{actionName},
-	}
-	ops, err := api.NewClient(conn).ListOperations(args)
-	if err != nil {
-		return nil, err
-	}
-	return ops.Operations, nil
-}
-
-func (r *action) Run(_ context.Context, uuid, unitName, command string) ([]api.ActionResult, error) {
-	conn, err := r.juju.connection(uuid)
-	if err != nil {
-		return nil, err
+		return "", err
 	}
 	parallel := true
 	args := api.RunParams{
@@ -65,7 +42,25 @@ func (r *action) Run(_ context.Context, uuid, unitName, command string) ([]api.A
 	}
 	enqueued, err := api.NewClient(conn).Run(args)
 	if err != nil {
+		return "", err
+	}
+	if len(enqueued.Actions) == 0 || enqueued.Actions[0].Action == nil {
+		return "", fmt.Errorf("failed to run action %s on %s", command, unitName)
+	}
+	return enqueued.Actions[0].Action.ID, nil
+}
+
+func (r *action) GetResult(_ context.Context, uuid, id string) (*api.ActionResult, error) {
+	conn, err := r.juju.connection(uuid)
+	if err != nil {
 		return nil, err
 	}
-	return enqueued.Actions, nil
+	results, err := api.NewClient(conn).Actions([]string{id})
+	if err != nil {
+		return nil, err
+	}
+	if len(results) == 0 || results[0].Action == nil {
+		return nil, fmt.Errorf("failed to get action result %q", id)
+	}
+	return &results[0], nil
 }
