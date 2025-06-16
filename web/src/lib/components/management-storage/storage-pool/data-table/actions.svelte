@@ -24,11 +24,9 @@
 	<DropdownMenu.Content class="[&_.action]:cursor-pointer [&_.action]:text-xs [&_.label]:text-xs">
 		<DropdownMenu.Group>
 			<DropdownMenu.Label class="label">Actions</DropdownMenu.Label>
-			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionEdit {pool} />
 			</DropdownMenu.Item>
-			<DropdownMenu.Separator />
 			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
 				<ActionDelete {pool} />
 			</DropdownMenu.Item>

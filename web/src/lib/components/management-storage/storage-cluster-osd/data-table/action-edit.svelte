@@ -378,7 +378,7 @@
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import { type Request } from '../create.svelte';
+	import { type Request } from './create.svelte';
 </script>
 
 <script lang="ts">
