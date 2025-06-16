@@ -202,9 +202,8 @@ func (uc *MachineUseCase) waitForMachineReady(ctx context.Context, id string) er
 			if err != nil {
 				return err
 			}
-
 			if machine.Status == node.StatusReady {
-				break
+				return nil
 			}
 			continue
 
@@ -214,9 +213,5 @@ func (uc *MachineUseCase) waitForMachineReady(ctx context.Context, id string) er
 		case <-ctx.Done():
 			return ctx.Err()
 		}
-
-		break
 	}
-
-	return nil
 }
