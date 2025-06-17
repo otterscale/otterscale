@@ -10,6 +10,7 @@
 	import { default as CPUAverage } from './basic-metric-cpu-average.svelte';
 	import { default as CPUCoreProcessor } from './basic-metric-cpu-core.svelte';
 	import { default as BasicDisk } from './basic-metric-disk.svelte';
+	import { default as DiskIOTime } from './basic-metric-disk-io-time.svelte'
 	import { default as NetworkReceived } from './basic-metric-network-received.svelte';
 	import { default as NetworkTransmitted } from './basic-metric-network-transmitted.svelte';
 	import { default as BasicRAM } from './basic-metric-ram.svelte';
@@ -68,6 +69,9 @@
 				</span>
 				<span class="col-span-1">
 					<BasicDisk {client} scope={selectedScope} timeRange={selectedTimeRange} />
+				</span>
+				<span class="col-span-1">
+					<DiskIOTime {client} scope={selectedScope} timeRange={selectedTimeRange} />
 				</span>
 				<span class="col-span-1">
 					<NetworkReceived {client} scope={selectedScope} timeRange={selectedTimeRange} />
