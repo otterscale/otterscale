@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+
+
 const DIVISIONS = [
     { amount: 60, name: 'seconds' },
     { amount: 60, name: 'minutes' },
@@ -84,3 +87,7 @@ export function formatNetworkIO(bytes: number | bigint): { value: number, unit: 
 export function formatBigNumber(number: Number | BigInt) {
     return number.toLocaleString('en-US');
 }
+
+export const formatTime = (v: Date | number): string => {
+    return dayjs(v).format('HH:mm');
+};

@@ -90,6 +90,9 @@ importers:
       '@internationalized/date':
         specifier: ^3.7.0
         version: 3.7.0
+      '@layerstack/utils':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@playwright/test':
         specifier: ^1.49.1
         version: 1.50.1
@@ -138,6 +141,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       embla-carousel-autoplay:
         specifier: ^8.6.0
         version: 8.6.0(embla-carousel@8.6.0)
@@ -688,6 +694,9 @@ packages:
 
   '@layerstack/utils@1.0.0':
     resolution: {integrity: sha512-kIH8lo4MEzPGtdxQRacy8RsSVhMQwe62ckuev62xQDE5QcUJ4wB9EMaRWaQK8CfEOpUERGPgkMPMbMqPhdp0gw==}
+
+  '@layerstack/utils@1.0.1':
+    resolution: {integrity: sha512-sWP9b+SFMkJYMZyYFI01aLxbg2ZUrix6Tv+BCDmeOrcLNxtWFsMYAomMhALzTMHbb+Vis/ua5vXhpdNXEw8a2Q==}
 
   '@levischuck/tiny-cbor@0.2.11':
     resolution: {integrity: sha512-llBRm4dT4Z89aRsm6u2oEZ8tfwL/2l6BwpZ7JcyieouniDECM5AqNgr/y08zalEIvW3RSK4upYyybDcmjXqAow==}
@@ -4206,7 +4215,7 @@ snapshots:
 
   '@layerstack/tailwind@1.0.0':
     dependencies:
-      '@layerstack/utils': 1.0.0
+      '@layerstack/utils': 1.0.1
       clsx: 2.1.1
       culori: 4.0.1
       d3-array: 3.2.4
@@ -4218,6 +4227,12 @@ snapshots:
       - ts-node
 
   '@layerstack/utils@1.0.0':
+    dependencies:
+      d3-array: 3.2.4
+      date-fns: 4.1.0
+      lodash-es: 4.17.21
+
+  '@layerstack/utils@1.0.1':
     dependencies:
       d3-array: 3.2.4
       date-fns: 4.1.0
@@ -5402,8 +5417,7 @@ snapshots:
 
   date-fns@4.1.0: {}
 
-  dayjs@1.11.13:
-    optional: true
+  dayjs@1.11.13: {}
 
   debug@4.4.0:
     dependencies:
@@ -6052,7 +6066,7 @@ snapshots:
       '@layerstack/svelte-actions': 1.0.0
       '@layerstack/svelte-stores': 1.0.1
       '@layerstack/tailwind': 1.0.0
-      '@layerstack/utils': 1.0.0
+      '@layerstack/utils': 1.0.1
       d3-array: 3.2.4
       d3-color: 3.1.0
       d3-delaunay: 6.0.4

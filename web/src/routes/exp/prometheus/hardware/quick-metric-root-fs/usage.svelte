@@ -1,0 +1,64 @@
+<script lang="ts">
+	import type { Scope } from '$gen/api/scope/v1/scope_pb';
+	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
+	import { cn } from '$lib/utils';
+	import { Arc, Chart, Group, Svg } from 'layerchart';
+	import { PrometheusDriver } from 'prometheus-query';
+	import { metricBackgroundColor, metricColor } from '../../utils';
+	import NoData from '../../utils/empty.svelte';
+
+	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
+
+	const query = $derived(
+		`
+		1
+		-
+		(
+			(
+				node_filesystem_avail_bytes{fstype!="rootfs",instance="juju-1eb21e-0-lxd-1",mountpoint="/"}
+			)
+			/
+			node_filesystem_size_bytes{fstype!="rootfs",instance="juju-1eb21e-0-lxd-1",mountpoint="/"}
+		)
+		`
+	);
+</script>
+
+{#await client.instantQuery(query)}
+	<ComponentLoading />
+{:then response}
+	{@const results = response.result}
+	{#if results.length === 0}
+		<NoData type="gauge" />
+	{:else}
+		{@const [result] = results}
+		{@const usage = result.value.value * 100}
+		{@const radius = 100}
+		{@const border = radius * 2}
+		<div class="flex h-full w-full items-center justify-center">
+			<div class={cn(`h-[${border}px] w-[${border}px]`)}>
+				<Chart>
+					<Svg center>
+						<Group>
+							<Arc
+								value={usage}
+								domain={[0, 100]}
+								outerRadius={100}
+								innerRadius={-13}
+								cornerRadius={13}
+								range={[-120, 120]}
+								class={metricColor(usage)}
+								track={{ class: metricBackgroundColor(usage) }}
+							/>
+						</Group>
+					</Svg>
+				</Chart>
+			</div>
+			<div class="absolute">
+				<p class="text-xl">{!isNaN(usage) ? `${usage.toFixed(2)}%` : 'NaN'}</p>
+			</div>
+		</div>
+	{/if}
+{:catch error}
+	Error
+{/await}
