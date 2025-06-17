@@ -5,6 +5,7 @@
 	import { Application } from './application';
 	import { Storage } from './storage';
 	import { System } from './overall';
+	import { Hardware } from './hardware';
 </script>
 
 <script lang="ts">
@@ -17,6 +18,7 @@
 			<Tabs.Trigger class="text-xl" value="overall">Overall</Tabs.Trigger>
 			<Tabs.Trigger class="text-xl" value="storage">Storage</Tabs.Trigger>
 			<Tabs.Trigger class="text-xl" value="application">Application</Tabs.Trigger>
+			<Tabs.Trigger class="text-xl" value="hardware">Hardware</Tabs.Trigger>
 		</Tabs.List>
 		<Tabs.Content value="overall">
 			<System {client} {scopes} />
@@ -26,6 +28,9 @@
 		</Tabs.Content>
 		<Tabs.Content value="application">
 			<Application {client} {scopes} />
+		</Tabs.Content>
+		<Tabs.Content value="hardware">
+			<Hardware {client} {scopes} />
 		</Tabs.Content>
 	</Tabs.Root>
 </main>

@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+
+
 const DIVISIONS = [
     { amount: 60, name: 'seconds' },
     { amount: 60, name: 'minutes' },
@@ -84,3 +87,23 @@ export function formatNetworkIO(bytes: number | bigint): { value: number, unit: 
 export function formatBigNumber(number: Number | BigInt) {
     return number.toLocaleString('en-US');
 }
+
+export const formatTime = (v: Date | number): string => {
+    return dayjs(v).format('HH:mm');
+};
+
+export function formatLatency(second: number): { value: string, unit: string } {
+    const millisecond = second * 1000;
+    const microsecond = millisecond * 1000;
+    const nanosecond = microsecond * 1000;
+
+    if (second >= 1) {
+        return { value: `${second}`, unit: "s" };
+    } else if (millisecond >= 1) {
+        return { value: `${millisecond}`, unit: "ms" };
+    } else if (microsecond >= 1) {
+        return { value: `${microsecond}`, unit: "us" };
+    } else {
+        return { value: `${nanosecond}`, unit: "ns" };
+    }
+};
