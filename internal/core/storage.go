@@ -22,16 +22,20 @@ type StorageConfig struct {
 type StorageUseCase struct {
 	action   ActionRepo
 	facility FacilityRepo
-	pool     CephPoolRepo
+	cluster  CephClusterRepo
+	rbd      CephRBDRepo
+	fs       CephFSRepo
 
 	configs sync.Map
 }
 
-func NewStorageUseCase(action ActionRepo, facility FacilityRepo, pool CephPoolRepo) *StorageUseCase {
+func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClusterRepo, rbd CephRBDRepo, fs CephFSRepo) *StorageUseCase {
 	return &StorageUseCase{
 		action:   action,
 		facility: facility,
-		pool:     pool,
+		cluster:  cluster,
+		rbd:      rbd,
+		fs:       fs,
 	}
 }
 
