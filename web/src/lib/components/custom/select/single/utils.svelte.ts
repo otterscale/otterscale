@@ -1,7 +1,7 @@
 import type { OptionType, valueGetterType, valueSetterType } from './types';
 
 class OptionManager {
-    options: OptionType[];
+    options = $state([] as OptionType[]);
     valueSetter: valueSetterType;
     valueGetter: valueGetterType;
 
@@ -9,6 +9,10 @@ class OptionManager {
         this.options = options;
         this.valueSetter = valueSetter
         this.valueGetter = valueGetter
+    }
+
+    updateOptions(newOptions: OptionType[]) {
+        this.options = newOptions
     }
 
     get selectedOption(): OptionType {

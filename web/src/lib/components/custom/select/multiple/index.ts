@@ -1,6 +1,7 @@
 import {
-    Close, Content, Empty, Group, Input, Item, ItemInformation, List, Options, Shortcut
+    Close, Content, Empty, Group, Item, ItemInformation, List, Options, Shortcut
 } from '../single';
+import Input from './select-input.svelte';
 import ActionAll from './select-action-all.svelte';
 import ActionClear from './select-action-clear.svelte';
 import Action from './select-action.svelte';

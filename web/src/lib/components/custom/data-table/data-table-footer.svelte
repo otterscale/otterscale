@@ -2,7 +2,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import type { Table } from '@tanstack/table-core';
 
-	let { table, data }: { table: Table<TData>; data: TData[] } = $props();
+	let { table }: { table: Table<TData> } = $props();
 
 	const selected = $derived(table.getFilteredSelectedRowModel().rows.length);
 	const filtered = $derived(table.getFilteredRowModel().rows.length);

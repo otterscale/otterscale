@@ -2,7 +2,7 @@ import type { OptionType, valuesGetterType, valuesSetterType } from './types';
 
 class OptionManager {
     visibility = 1;
-    options: OptionType[];
+    options = $state([] as OptionType[]);
 
     valuesSetter: valuesSetterType;
     valuesGetter: valuesGetterType;
@@ -15,6 +15,10 @@ class OptionManager {
         this.options = options;
         this.valuesSetter = valuesSetter;
         this.valuesGetter = valuesGetter
+    }
+
+    updateOptions(newOptions: OptionType[]) {
+        this.options = newOptions
     }
 
     get selectedOptions(): OptionType[] {
@@ -31,7 +35,7 @@ class OptionManager {
 
     handleSelect(option: OptionType) {
         if (this.isOptionSelected(option)) {
-            this.valuesSetter(this.valuesGetter().filter((o) => o.value !== option.value));
+            this.valuesSetter(this.valuesGetter().filter((o) => o !== option.value));
         } else {
             this.valuesSetter([...this.valuesGetter(), option.value]);
         }

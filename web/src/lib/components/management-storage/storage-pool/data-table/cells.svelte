@@ -1,10 +1,9 @@
 <script lang="ts" module>
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import * as Progress from '$lib/components/custom/progress';
-
+	import { Badge } from '$lib/components/ui/badge';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Row } from '@tanstack/table-core';
 	import type { Pool } from './types';
-	import { Badge } from '$lib/components/ui/badge';
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -26,9 +25,7 @@
 {/snippet}
 
 {#snippet name(row: Row<Pool>)}
-	<p>
-		{row.original.name}
-	</p>
+	{row.original.name}
 {/snippet}
 
 {#snippet dataProtection(row: Row<Pool>)}

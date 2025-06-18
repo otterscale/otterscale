@@ -2,6 +2,7 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Select from '$lib/components/ui/select';
 	import * as Switch from '$lib/components/ui/switch';
+	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { Switch as SwitchPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
@@ -25,9 +26,11 @@
 		required,
 		value: checked = $bindable(undefined),
 		descriptor,
+		format = 'switch',
 		...restProps
 	}: WithoutChildrenOrChild<SwitchPrimitive.RootProps> & {
 		descriptor?: (v: any) => string;
+		format?: 'switch' | 'checkbox';
 	} = $props();
 
 	let proxyChecked = $state(false);
@@ -93,6 +96,7 @@
 		class={cn(
 			BORDER_INPUT_CLASSNAME,
 			isNotFilled ? RING_INVALID_INPUT_CLASSNAME : RING_VALID_INPUT_CLASSNAME,
+			format === 'checkbox' ? 'bg-muted border-none shadow-none ring-0' : '',
 			'w-full justify-between',
 			className
 		)}

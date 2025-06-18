@@ -1,5 +1,5 @@
-import { default as StoragePool } from './index.svelte'
+import { default as Pool } from './index.svelte'
 
 export {
-    StoragePool
+    Pool
 }

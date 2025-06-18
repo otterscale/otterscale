@@ -3,6 +3,7 @@
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
 	import type { Table, Column } from '@tanstack/table-core';
 	import type { Pool } from './types';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 
 	export const headers = {
 		_row_picker: _row_picker,
@@ -23,38 +24,47 @@
 		aria-label="Select all"
 	/>
 {/snippet}
-
 {#snippet name(column: Column<Pool>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">NAME</p>
-		<Sorter {column} />
-	</div>
+	<Layout.Header>
+		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
 {#snippet dataProtection(column: Column<Pool>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">DATA PROTECTION</p>
-		<Sorter {column} />
-	</div>
+	<Layout.Header>
+		<Layout.HeaderViewer>DATA PROTECTION</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
 {#snippet applications(column: Column<Pool>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">APPLICATIONS</p>
-		<Sorter {column} />
-	</div>
+	<Layout.Header>
+		<Layout.HeaderViewer>APPLICATIONS</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
 {#snippet PGStatus(column: Column<Pool>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">PG STATUS</p>
-		<Sorter {column} />
-	</div>
+	<Layout.Header>
+		<Layout.HeaderViewer>PG STATUS</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
 {#snippet usage(column: Column<Pool>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">USAGE</p>
-		<Sorter {column} />
-	</div>
+	<Layout.Header>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+	</Layout.Header>
 {/snippet}

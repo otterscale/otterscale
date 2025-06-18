@@ -1,12 +1,10 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
-	import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
-	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import { cn } from '$lib/utils';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Form from '$lib/components/custom/form';
+	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
+	import { cn } from '$lib/utils';
+	import Icon from '@iconify/svelte';
 	import type { FileSystem } from './types';
 
 	type Request = {
