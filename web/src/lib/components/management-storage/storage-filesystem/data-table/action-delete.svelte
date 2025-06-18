@@ -6,7 +6,6 @@
 	import Icon from '@iconify/svelte';
 	import { type Request } from './create.svelte';
 	import type { FileSystem } from './types';
-	import { z } from 'zod';
 </script>
 
 <script lang="ts">

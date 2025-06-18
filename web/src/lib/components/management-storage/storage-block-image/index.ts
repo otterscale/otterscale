@@ -1,5 +1,5 @@
-import { default as StorageBlockImage } from './index.svelte'
+import { default as BlockImage } from './index.svelte'
 
 export {
-    StorageBlockImage
+    BlockImage
 }

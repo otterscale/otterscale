@@ -1,11 +1,9 @@
+import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
-import { renderSnippet, renderComponent } from "$lib/components/ui/data-table/index.js";
-
-import { type FileSystem } from './types'
 import DataTableActions from "./actions.svelte";
-
-import { headers } from './headers.svelte'
-import { cells } from './cells.svelte'
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
+import { type FileSystem } from './types';
 
 const columns: ColumnDef<FileSystem>[] = [
     {
@@ -67,4 +65,4 @@ const columns: ColumnDef<FileSystem>[] = [
 
 export {
     columns
-}
+};

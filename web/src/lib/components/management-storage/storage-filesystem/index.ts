@@ -1,5 +1,5 @@
-import { default as StorageFileSystem } from './index.svelte'
+import { default as FileSystem } from './index.svelte'
 
 export {
-    StorageFileSystem
+    FileSystem
 }

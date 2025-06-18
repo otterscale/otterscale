@@ -6,7 +6,7 @@
 	let { column }: { column: Column<TData> } = $props();
 </script>
 
-<Button variant="ghost" onclick={column.getToggleSortingHandler()}>
+<Button data-slot="data-table-sorter" variant="ghost" onclick={column.getToggleSortingHandler()}>
 	{#if column.getIsSorted() == 'asc'}
 		<Icon icon="ph:sort-ascending" />
 	{:else if column.getIsSorted() == 'desc'}

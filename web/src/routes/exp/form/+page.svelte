@@ -161,12 +161,19 @@
 	}
 
 	const stateController = new DialogStateController(false);
+
+	import * as Enterprise from '$lib/components/custom/enterprise/index';
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<AlertDialog.Trigger class={cn('hover:cursor-pointer', buttonVariants({ variant: 'outline' }))}
-		>Trigger</AlertDialog.Trigger
-	>
+	<Enterprise.Hint>
+		<AlertDialog.Trigger
+			disabled={!Enterprise.enabled}
+			class={cn('hover:cursor-pointer', buttonVariants({ variant: 'outline' }))}
+		>
+			Trigger
+		</AlertDialog.Trigger>
+	</Enterprise.Hint>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold"
 			>Header</AlertDialog.Header

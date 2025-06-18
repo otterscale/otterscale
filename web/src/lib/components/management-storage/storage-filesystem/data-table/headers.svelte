@@ -1,7 +1,8 @@
 <script lang="ts" module>
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
-	import type { Table, Column } from '@tanstack/table-core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import type { Column, Table } from '@tanstack/table-core';
 	import type { FileSystem } from './types';
 
 	export const headers = {
@@ -24,26 +25,34 @@
 {/snippet}
 
 {#snippet name(column: Column<FileSystem>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">NAME</p>
-		<Sorter {column} />
-	</div>
+	<Layout.Header>
+		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
 {#snippet enabled(column: Column<FileSystem>)}
-	<p class="text-end text-xs font-light">ENABLED</p>
+	<Layout.Header>
+		<Layout.HeaderViewer>ENABLED</Layout.HeaderViewer>
+	</Layout.Header>
 {/snippet}
 
 {#snippet permission(column: Column<FileSystem>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">PERMISSION</p>
-		<Sorter {column} />
-	</div>
+	<Layout.Header>
+		<Layout.HeaderViewer>PERMISSION</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
 {#snippet createTime(column: Column<FileSystem>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">CREATE TIME</p>
-		<Sorter {column} />
-	</div>
+	<Layout.Header>
+		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
