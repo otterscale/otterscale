@@ -45,17 +45,19 @@ type StorageUseCase struct {
 	cluster  CephClusterRepo
 	rbd      CephRBDRepo
 	fs       CephFSRepo
+	rgw      CephRGWRepo
 
 	configs sync.Map
 }
 
-func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClusterRepo, rbd CephRBDRepo, fs CephFSRepo) *StorageUseCase {
+func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClusterRepo, rbd CephRBDRepo, fs CephFSRepo, rgw CephRGWRepo) *StorageUseCase {
 	return &StorageUseCase{
 		action:   action,
 		facility: facility,
 		cluster:  cluster,
 		rbd:      rbd,
 		fs:       fs,
+		rgw:      rgw,
 	}
 }
 
@@ -99,17 +101,18 @@ func (uc *StorageUseCase) newConfig(ctx context.Context, uuid, name string) (*St
 		if err != nil {
 			return err
 		}
-		endpoint = info.PublicAddress
+		endpoint = fmt.Sprintf("http://%s", info.PublicAddress)
 		return nil
 	})
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
 
-	var (
-		cephConfig *StorageCephConfig
-		rgwConfig  *StorageRGWConfig
-	)
+	var cephConfig *StorageCephConfig
+	rgwConfig := &StorageRGWConfig{
+		Endpoint: endpoint,
+	}
+
 	eg, egctx = errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		result, err := uc.runAction(egctx, uuid, leader, cephConfigCommand)
@@ -140,8 +143,8 @@ func (uc *StorageUseCase) newConfig(ctx context.Context, uuid, name string) (*St
 		if err != nil {
 			return err
 		}
-		rgwConfig = config
-		rgwConfig.Endpoint = endpoint
+		rgwConfig.AccessKey = config.AccessKey
+		rgwConfig.SecretKey = config.SecretKey
 		return nil
 	})
 	if err := eg.Wait(); err != nil {

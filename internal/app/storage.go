@@ -109,15 +109,15 @@ func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *connect.R
 	return connect.NewResponse(resp), nil
 }
 
-// func (s *StorageService) ListBuckets(ctx context.Context, req *connect.Request[pb.ListBucketsRequest]) (*connect.Response[pb.ListBucketsResponse], error) {
-// 	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	resp := &pb.ListPoolsResponse{}
-// 	resp.SetPools(toProtoPools(pools))
-// 	return connect.NewResponse(resp), nil
-// }
+func (s *StorageService) ListBuckets(ctx context.Context, req *connect.Request[pb.ListBucketsRequest]) (*connect.Response[pb.ListBucketsResponse], error) {
+	buckets, err := s.uc.ListBuckets(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListBucketsResponse{}
+	resp.SetBuckets(toProtoBuckets(buckets))
+	return connect.NewResponse(resp), nil
+}
 
 // func (s *StorageService) ListRoles(ctx context.Context, req *connect.Request[pb.ListRolesRequest]) (*connect.Response[pb.ListRolesResponse], error) {
 // 	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
@@ -129,15 +129,15 @@ func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *connect.R
 // 	return connect.NewResponse(resp), nil
 // }
 
-// func (s *StorageService) ListUsers(ctx context.Context, req *connect.Request[pb.ListUsersRequest]) (*connect.Response[pb.ListUsersResponse], error) {
-// 	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	resp := &pb.ListPoolsResponse{}
-// 	resp.SetPools(toProtoPools(pools))
-// 	return connect.NewResponse(resp), nil
-// }
+func (s *StorageService) ListUsers(ctx context.Context, req *connect.Request[pb.ListUsersRequest]) (*connect.Response[pb.ListUsersResponse], error) {
+	users, err := s.uc.ListUsers(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListUsersResponse{}
+	resp.SetUsers(toProtoUsers(users))
+	return connect.NewResponse(resp), nil
+}
 
 // func (s *StorageService) ListAccessKeys(ctx context.Context, req *connect.Request[pb.ListAccessKeysRequest]) (*connect.Response[pb.ListAccessKeysResponse], error) {
 // 	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
@@ -267,7 +267,7 @@ func toProtoSubvolumeGroup(s *core.SubvolumeGroup) *pb.SubvolumeGroup {
 	return ret
 }
 
-func toProtoBuckets(bs []core.Bucket) []*pb.Bucket {
+func toProtoBuckets(bs []core.RGWBucket) []*pb.Bucket {
 	ret := []*pb.Bucket{}
 	for i := range bs {
 		ret = append(ret, toProtoBucket(&bs[i]))
@@ -275,13 +275,13 @@ func toProtoBuckets(bs []core.Bucket) []*pb.Bucket {
 	return ret
 }
 
-func toProtoBucket(b *core.Bucket) *pb.Bucket {
+func toProtoBucket(b *core.RGWBucket) *pb.Bucket {
 	ret := &pb.Bucket{}
-	ret.SetName(b.Name)
+	ret.SetName(b.Bucket)
 	return ret
 }
 
-func toProtoRoles(rs []core.Role) []*pb.Role {
+func toProtoRoles(rs []core.RGWRole) []*pb.Role {
 	ret := []*pb.Role{}
 	for i := range rs {
 		ret = append(ret, toProtoRole(&rs[i]))
@@ -289,13 +289,13 @@ func toProtoRoles(rs []core.Role) []*pb.Role {
 	return ret
 }
 
-func toProtoRole(r *core.Role) *pb.Role {
+func toProtoRole(r *core.RGWRole) *pb.Role {
 	ret := &pb.Role{}
 	ret.SetName(r.Name)
 	return ret
 }
 
-func toProtoUsers(us []core.User) []*pb.User {
+func toProtoUsers(us []core.RGWUser) []*pb.User {
 	ret := []*pb.User{}
 	for i := range us {
 		ret = append(ret, toProtoUser(&us[i]))
@@ -303,13 +303,13 @@ func toProtoUsers(us []core.User) []*pb.User {
 	return ret
 }
 
-func toProtoUser(u *core.User) *pb.User {
+func toProtoUser(u *core.RGWUser) *pb.User {
 	ret := &pb.User{}
 	ret.SetName(u.Name)
 	return ret
 }
 
-func toProtoAccessKeys(as []core.AccessKey) []*pb.AccessKey {
+func toProtoAccessKeys(as []core.RGWAccessKey) []*pb.AccessKey {
 	ret := []*pb.AccessKey{}
 	for i := range as {
 		ret = append(ret, toProtoAccessKey(&as[i]))
@@ -317,7 +317,7 @@ func toProtoAccessKeys(as []core.AccessKey) []*pb.AccessKey {
 	return ret
 }
 
-func toProtoAccessKey(a *core.AccessKey) *pb.AccessKey {
+func toProtoAccessKey(a *core.RGWAccessKey) *pb.AccessKey {
 	ret := &pb.AccessKey{}
 	ret.SetName(a.Name)
 	return ret

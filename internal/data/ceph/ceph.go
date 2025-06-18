@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/ceph/go-ceph/rados"
+	"github.com/ceph/go-ceph/rgw/admin"
 
 	"github.com/openhdc/otterscale/internal/config"
 	"github.com/openhdc/otterscale/internal/core"
@@ -14,6 +15,7 @@ import (
 type Ceph struct {
 	conf        *config.Config
 	connections sync.Map
+	clients     sync.Map
 }
 
 func New(conf *config.Config) *Ceph {
@@ -31,7 +33,7 @@ func (m *Ceph) newConnection(config *core.StorageConfig) (*rados.Conn, error) {
 	if err := conn.SetConfigOption("fsid", config.FSID); err != nil {
 		return nil, err
 	}
-	if err := conn.SetConfigOption("mon_host", config.MonHost); err != nil {
+	if err := conn.SetConfigOption("mon_host", config.MONHost); err != nil {
 		return nil, err
 	}
 	if err := conn.SetConfigOption("key", config.Key); err != nil {
@@ -71,4 +73,20 @@ func (m *Ceph) connection(config *core.StorageConfig) (*rados.Conn, error) {
 	m.connections.Store(config.FSID, conn)
 
 	return conn, nil
+}
+
+func (m *Ceph) client(config *core.StorageConfig) (*admin.API, error) {
+	if v, ok := m.clients.Load(config.FSID); ok {
+		client := v.(*admin.API)
+		return client, nil
+	}
+
+	client, err := admin.New(config.Endpoint, config.AccessKey, config.SecretKey, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	m.clients.Store(config.FSID, client)
+
+	return client, nil
 }

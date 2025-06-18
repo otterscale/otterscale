@@ -42,5 +42,6 @@ var ProviderSet = wire.NewSet(
 	ceph.New,
 	ceph.NewCluster,
 	ceph.NewRBD,
+	ceph.NewRGW,
 	ceph.NewFS,
 )
