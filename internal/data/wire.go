@@ -40,5 +40,7 @@ var ProviderSet = wire.NewSet(
 	kube.NewHelmChart,
 	kube.NewStorage,
 	ceph.New,
-	ceph.NewPool,
+	ceph.NewCluster,
+	ceph.NewRBD,
+	ceph.NewFS,
 )

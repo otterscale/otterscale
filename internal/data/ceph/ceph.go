@@ -1,19 +1,25 @@
 package ceph
 
 import (
+	"strconv"
 	"sync"
+	"time"
 
 	"github.com/ceph/go-ceph/rados"
 
+	"github.com/openhdc/otterscale/internal/config"
 	"github.com/openhdc/otterscale/internal/core"
 )
 
 type Ceph struct {
+	conf        *config.Config
 	connections sync.Map
 }
 
-func New() *Ceph {
-	return &Ceph{}
+func New(conf *config.Config) *Ceph {
+	return &Ceph{
+		conf: conf,
+	}
 }
 
 func (m *Ceph) newConnection(config *core.StorageConfig) (*rados.Conn, error) {
@@ -29,6 +35,18 @@ func (m *Ceph) newConnection(config *core.StorageConfig) (*rados.Conn, error) {
 		return nil, err
 	}
 	if err := conn.SetConfigOption("key", config.Key); err != nil {
+		return nil, err
+	}
+
+	radosTimeout := time.Second * 3
+	if m.conf.Ceph.RadosTimeout > 0 {
+		radosTimeout = m.conf.Ceph.RadosTimeout
+	}
+	timeout := strconv.FormatFloat(radosTimeout.Seconds(), 'f', -1, 64)
+	if err = conn.SetConfigOption("rados_mon_op_timeout", timeout); err != nil {
+		return nil, err
+	}
+	if err = conn.SetConfigOption("rados_osd_op_timeout", timeout); err != nil {
 		return nil, err
 	}
 
