@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/goccy/go-yaml"
@@ -32,10 +33,15 @@ type Kube struct {
 	HelmRepositoryURLs []string `yaml:"helm_repository_urls"`
 }
 
+type Ceph struct {
+	RadosTimeout time.Duration `yaml:"rados_timeout"`
+}
+
 type Config struct {
 	MAAS MAAS `yaml:"maas"`
 	Juju Juju `yaml:"juju"`
 	Kube Kube `yaml:"kube"`
+	Ceph Ceph `yaml:"ceph"`
 
 	watcher *fsnotify.Watcher
 	path    string
