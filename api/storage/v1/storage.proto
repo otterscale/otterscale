@@ -7,12 +7,85 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/openhdc/otterscale/api/storage/v1;pb";
 
 service StorageService {
+  // Cluster
   rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
-  rpc CreatePool(CreatePoolRequest) returns (Pool);
-  rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
+  // rpc CreatePool(CreatePoolRequest) returns (Pool);
+  // rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
+
+  rpc ListMONs(ListMONsRequest) returns (ListMONsResponse);
+  rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse);
+  rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse);
+
+  // RBD
+  rpc ListImages(ListImagesRequest) returns (ListImagesResponse);
+
+  // CephFS
+  rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse);
+  rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse);
+  rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse);  // empty is also a group
+  // rpc ListExports(ListExportsRequest) returns (ListExportsResponse);
+  // rpc ListExports(ListSMBExportsRequest) returns (ListSMBExportsResponse);
+
+  // RGW
+  rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse);
+  rpc ListRoles(ListRolesRequest) returns (ListRolesResponse);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  rpc ListAccessKeys(ListAccessKeysRequest) returns (ListAccessKeysResponse);
+
+  // Snapshot
+  rpc ListSnapshots(ListSnapshotsRequest) returns (ListSnapshotsResponse);
+  rpc ListSnapshotSchedules(ListSnapshotSchedulesRequest) returns (ListSnapshotSchedulesResponse);
 }
 
 message Pool {
+  string name = 1;
+}
+
+message MON {
+  string name = 1;
+}
+
+message OSD {
+  string name = 1;
+}
+
+message Image {
+  string name = 1;
+}
+
+message Volume {
+  string name = 1;
+}
+
+message Subvolume {
+  string name = 1;
+}
+
+message SubvolumeGroup {
+  string name = 1;
+}
+
+message Bucket {
+  string name = 1;
+}
+
+message Role {
+  string name = 1;
+}
+
+message User {
+  string name = 1;
+}
+
+message AccessKey {
+  string name = 1;
+}
+
+message Snapshot {
+  string name = 1;
+}
+
+message SnapshotSchedule {
   string name = 1;
 }
 
@@ -25,14 +98,131 @@ message ListPoolsResponse {
   repeated Pool pools = 1;
 }
 
-message CreatePoolRequest {
+// message CreatePoolRequest {
+//   string scope_uuid = 1;
+//   string facility_name = 2;
+//   string name = 3;
+// }
+
+// message DeletePoolRequest {
+//   string scope_uuid = 1;
+//   string facility_name = 2;
+//   string name = 3;
+// }
+
+message ListMONsRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  string name = 3;
 }
 
-message DeletePoolRequest {
+message ListMONsResponse {
+  repeated MON mons = 1;
+}
+
+message ListOSDsRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  string name = 3;
+}
+
+message ListOSDsResponse {
+  repeated OSD osds = 1;
+}
+
+message DoSMARTRequest {
+  string type = 1;
+}
+
+message DoSMARTResponse {}
+
+message ListImagesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListImagesResponse {
+  repeated Image images = 1;
+}
+
+message ListVolumesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListVolumesResponse {
+  repeated Volume volumes = 1;
+}
+
+message ListSubvolumesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume = 3;
+  string group = 4;
+}
+
+message ListSubvolumesResponse {
+  repeated Subvolume subvolumes = 1;
+}
+
+message ListSubvolumeGroupsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume = 3;
+}
+
+message ListSubvolumeGroupsResponse {
+  repeated SubvolumeGroup subvolume_groups = 1;
+}
+
+message ListBucketsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListBucketsResponse {
+  repeated Bucket buckets = 1;
+}
+
+message ListRolesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListRolesResponse {
+  repeated Role roles = 1;
+}
+
+message ListUsersRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+}
+
+message ListAccessKeysRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListAccessKeysResponse {
+  repeated AccessKey access_keys = 1;
+}
+
+message ListSnapshotsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListSnapshotsResponse {
+  repeated Snapshot snapshots = 1;
+}
+
+message ListSnapshotSchedulesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListSnapshotSchedulesResponse {
+  repeated SnapshotSchedule snapshot_schedules = 1;
 }

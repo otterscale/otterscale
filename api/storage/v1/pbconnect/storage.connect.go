@@ -9,7 +9,6 @@ import (
 	context "context"
 	errors "errors"
 	v1 "github.com/openhdc/otterscale/api/storage/v1"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"
 )
@@ -37,19 +36,65 @@ const (
 	// StorageServiceListPoolsProcedure is the fully-qualified name of the StorageService's ListPools
 	// RPC.
 	StorageServiceListPoolsProcedure = "/otterscale.storage.v1.StorageService/ListPools"
-	// StorageServiceCreatePoolProcedure is the fully-qualified name of the StorageService's CreatePool
+	// StorageServiceListMONsProcedure is the fully-qualified name of the StorageService's ListMONs RPC.
+	StorageServiceListMONsProcedure = "/otterscale.storage.v1.StorageService/ListMONs"
+	// StorageServiceListOSDsProcedure is the fully-qualified name of the StorageService's ListOSDs RPC.
+	StorageServiceListOSDsProcedure = "/otterscale.storage.v1.StorageService/ListOSDs"
+	// StorageServiceDoSMARTProcedure is the fully-qualified name of the StorageService's DoSMART RPC.
+	StorageServiceDoSMARTProcedure = "/otterscale.storage.v1.StorageService/DoSMART"
+	// StorageServiceListImagesProcedure is the fully-qualified name of the StorageService's ListImages
 	// RPC.
-	StorageServiceCreatePoolProcedure = "/otterscale.storage.v1.StorageService/CreatePool"
-	// StorageServiceDeletePoolProcedure is the fully-qualified name of the StorageService's DeletePool
+	StorageServiceListImagesProcedure = "/otterscale.storage.v1.StorageService/ListImages"
+	// StorageServiceListVolumesProcedure is the fully-qualified name of the StorageService's
+	// ListVolumes RPC.
+	StorageServiceListVolumesProcedure = "/otterscale.storage.v1.StorageService/ListVolumes"
+	// StorageServiceListSubvolumesProcedure is the fully-qualified name of the StorageService's
+	// ListSubvolumes RPC.
+	StorageServiceListSubvolumesProcedure = "/otterscale.storage.v1.StorageService/ListSubvolumes"
+	// StorageServiceListSubvolumeGroupsProcedure is the fully-qualified name of the StorageService's
+	// ListSubvolumeGroups RPC.
+	StorageServiceListSubvolumeGroupsProcedure = "/otterscale.storage.v1.StorageService/ListSubvolumeGroups"
+	// StorageServiceListBucketsProcedure is the fully-qualified name of the StorageService's
+	// ListBuckets RPC.
+	StorageServiceListBucketsProcedure = "/otterscale.storage.v1.StorageService/ListBuckets"
+	// StorageServiceListRolesProcedure is the fully-qualified name of the StorageService's ListRoles
 	// RPC.
-	StorageServiceDeletePoolProcedure = "/otterscale.storage.v1.StorageService/DeletePool"
+	StorageServiceListRolesProcedure = "/otterscale.storage.v1.StorageService/ListRoles"
+	// StorageServiceListUsersProcedure is the fully-qualified name of the StorageService's ListUsers
+	// RPC.
+	StorageServiceListUsersProcedure = "/otterscale.storage.v1.StorageService/ListUsers"
+	// StorageServiceListAccessKeysProcedure is the fully-qualified name of the StorageService's
+	// ListAccessKeys RPC.
+	StorageServiceListAccessKeysProcedure = "/otterscale.storage.v1.StorageService/ListAccessKeys"
+	// StorageServiceListSnapshotsProcedure is the fully-qualified name of the StorageService's
+	// ListSnapshots RPC.
+	StorageServiceListSnapshotsProcedure = "/otterscale.storage.v1.StorageService/ListSnapshots"
+	// StorageServiceListSnapshotSchedulesProcedure is the fully-qualified name of the StorageService's
+	// ListSnapshotSchedules RPC.
+	StorageServiceListSnapshotSchedulesProcedure = "/otterscale.storage.v1.StorageService/ListSnapshotSchedules"
 )
 
 // StorageServiceClient is a client for the otterscale.storage.v1.StorageService service.
 type StorageServiceClient interface {
+	// Cluster
 	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
-	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
-	DeletePool(context.Context, *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error)
+	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
+	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
+	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
+	// RBD
+	ListImages(context.Context, *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error)
+	// CephFS
+	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
+	ListSubvolumes(context.Context, *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error)
+	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
+	// RGW
+	ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error)
+	ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error)
+	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
+	ListAccessKeys(context.Context, *connect.Request[v1.ListAccessKeysRequest]) (*connect.Response[v1.ListAccessKeysResponse], error)
+	// Snapshot
+	ListSnapshots(context.Context, *connect.Request[v1.ListSnapshotsRequest]) (*connect.Response[v1.ListSnapshotsResponse], error)
+	ListSnapshotSchedules(context.Context, *connect.Request[v1.ListSnapshotSchedulesRequest]) (*connect.Response[v1.ListSnapshotSchedulesResponse], error)
 }
 
 // NewStorageServiceClient constructs a client for the otterscale.storage.v1.StorageService service.
@@ -69,16 +114,82 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(storageServiceMethods.ByName("ListPools")),
 			connect.WithClientOptions(opts...),
 		),
-		createPool: connect.NewClient[v1.CreatePoolRequest, v1.Pool](
+		listMONs: connect.NewClient[v1.ListMONsRequest, v1.ListMONsResponse](
 			httpClient,
-			baseURL+StorageServiceCreatePoolProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("CreatePool")),
+			baseURL+StorageServiceListMONsProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListMONs")),
 			connect.WithClientOptions(opts...),
 		),
-		deletePool: connect.NewClient[v1.DeletePoolRequest, emptypb.Empty](
+		listOSDs: connect.NewClient[v1.ListOSDsRequest, v1.ListOSDsResponse](
 			httpClient,
-			baseURL+StorageServiceDeletePoolProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("DeletePool")),
+			baseURL+StorageServiceListOSDsProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListOSDs")),
+			connect.WithClientOptions(opts...),
+		),
+		doSMART: connect.NewClient[v1.DoSMARTRequest, v1.DoSMARTResponse](
+			httpClient,
+			baseURL+StorageServiceDoSMARTProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("DoSMART")),
+			connect.WithClientOptions(opts...),
+		),
+		listImages: connect.NewClient[v1.ListImagesRequest, v1.ListImagesResponse](
+			httpClient,
+			baseURL+StorageServiceListImagesProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListImages")),
+			connect.WithClientOptions(opts...),
+		),
+		listVolumes: connect.NewClient[v1.ListVolumesRequest, v1.ListVolumesResponse](
+			httpClient,
+			baseURL+StorageServiceListVolumesProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListVolumes")),
+			connect.WithClientOptions(opts...),
+		),
+		listSubvolumes: connect.NewClient[v1.ListSubvolumesRequest, v1.ListSubvolumesResponse](
+			httpClient,
+			baseURL+StorageServiceListSubvolumesProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListSubvolumes")),
+			connect.WithClientOptions(opts...),
+		),
+		listSubvolumeGroups: connect.NewClient[v1.ListSubvolumeGroupsRequest, v1.ListSubvolumeGroupsResponse](
+			httpClient,
+			baseURL+StorageServiceListSubvolumeGroupsProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListSubvolumeGroups")),
+			connect.WithClientOptions(opts...),
+		),
+		listBuckets: connect.NewClient[v1.ListBucketsRequest, v1.ListBucketsResponse](
+			httpClient,
+			baseURL+StorageServiceListBucketsProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListBuckets")),
+			connect.WithClientOptions(opts...),
+		),
+		listRoles: connect.NewClient[v1.ListRolesRequest, v1.ListRolesResponse](
+			httpClient,
+			baseURL+StorageServiceListRolesProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListRoles")),
+			connect.WithClientOptions(opts...),
+		),
+		listUsers: connect.NewClient[v1.ListUsersRequest, v1.ListUsersResponse](
+			httpClient,
+			baseURL+StorageServiceListUsersProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListUsers")),
+			connect.WithClientOptions(opts...),
+		),
+		listAccessKeys: connect.NewClient[v1.ListAccessKeysRequest, v1.ListAccessKeysResponse](
+			httpClient,
+			baseURL+StorageServiceListAccessKeysProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListAccessKeys")),
+			connect.WithClientOptions(opts...),
+		),
+		listSnapshots: connect.NewClient[v1.ListSnapshotsRequest, v1.ListSnapshotsResponse](
+			httpClient,
+			baseURL+StorageServiceListSnapshotsProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListSnapshots")),
+			connect.WithClientOptions(opts...),
+		),
+		listSnapshotSchedules: connect.NewClient[v1.ListSnapshotSchedulesRequest, v1.ListSnapshotSchedulesResponse](
+			httpClient,
+			baseURL+StorageServiceListSnapshotSchedulesProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListSnapshotSchedules")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -86,9 +197,20 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // storageServiceClient implements StorageServiceClient.
 type storageServiceClient struct {
-	listPools  *connect.Client[v1.ListPoolsRequest, v1.ListPoolsResponse]
-	createPool *connect.Client[v1.CreatePoolRequest, v1.Pool]
-	deletePool *connect.Client[v1.DeletePoolRequest, emptypb.Empty]
+	listPools             *connect.Client[v1.ListPoolsRequest, v1.ListPoolsResponse]
+	listMONs              *connect.Client[v1.ListMONsRequest, v1.ListMONsResponse]
+	listOSDs              *connect.Client[v1.ListOSDsRequest, v1.ListOSDsResponse]
+	doSMART               *connect.Client[v1.DoSMARTRequest, v1.DoSMARTResponse]
+	listImages            *connect.Client[v1.ListImagesRequest, v1.ListImagesResponse]
+	listVolumes           *connect.Client[v1.ListVolumesRequest, v1.ListVolumesResponse]
+	listSubvolumes        *connect.Client[v1.ListSubvolumesRequest, v1.ListSubvolumesResponse]
+	listSubvolumeGroups   *connect.Client[v1.ListSubvolumeGroupsRequest, v1.ListSubvolumeGroupsResponse]
+	listBuckets           *connect.Client[v1.ListBucketsRequest, v1.ListBucketsResponse]
+	listRoles             *connect.Client[v1.ListRolesRequest, v1.ListRolesResponse]
+	listUsers             *connect.Client[v1.ListUsersRequest, v1.ListUsersResponse]
+	listAccessKeys        *connect.Client[v1.ListAccessKeysRequest, v1.ListAccessKeysResponse]
+	listSnapshots         *connect.Client[v1.ListSnapshotsRequest, v1.ListSnapshotsResponse]
+	listSnapshotSchedules *connect.Client[v1.ListSnapshotSchedulesRequest, v1.ListSnapshotSchedulesResponse]
 }
 
 // ListPools calls otterscale.storage.v1.StorageService.ListPools.
@@ -96,21 +218,92 @@ func (c *storageServiceClient) ListPools(ctx context.Context, req *connect.Reque
 	return c.listPools.CallUnary(ctx, req)
 }
 
-// CreatePool calls otterscale.storage.v1.StorageService.CreatePool.
-func (c *storageServiceClient) CreatePool(ctx context.Context, req *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error) {
-	return c.createPool.CallUnary(ctx, req)
+// ListMONs calls otterscale.storage.v1.StorageService.ListMONs.
+func (c *storageServiceClient) ListMONs(ctx context.Context, req *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error) {
+	return c.listMONs.CallUnary(ctx, req)
 }
 
-// DeletePool calls otterscale.storage.v1.StorageService.DeletePool.
-func (c *storageServiceClient) DeletePool(ctx context.Context, req *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deletePool.CallUnary(ctx, req)
+// ListOSDs calls otterscale.storage.v1.StorageService.ListOSDs.
+func (c *storageServiceClient) ListOSDs(ctx context.Context, req *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error) {
+	return c.listOSDs.CallUnary(ctx, req)
+}
+
+// DoSMART calls otterscale.storage.v1.StorageService.DoSMART.
+func (c *storageServiceClient) DoSMART(ctx context.Context, req *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error) {
+	return c.doSMART.CallUnary(ctx, req)
+}
+
+// ListImages calls otterscale.storage.v1.StorageService.ListImages.
+func (c *storageServiceClient) ListImages(ctx context.Context, req *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error) {
+	return c.listImages.CallUnary(ctx, req)
+}
+
+// ListVolumes calls otterscale.storage.v1.StorageService.ListVolumes.
+func (c *storageServiceClient) ListVolumes(ctx context.Context, req *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error) {
+	return c.listVolumes.CallUnary(ctx, req)
+}
+
+// ListSubvolumes calls otterscale.storage.v1.StorageService.ListSubvolumes.
+func (c *storageServiceClient) ListSubvolumes(ctx context.Context, req *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error) {
+	return c.listSubvolumes.CallUnary(ctx, req)
+}
+
+// ListSubvolumeGroups calls otterscale.storage.v1.StorageService.ListSubvolumeGroups.
+func (c *storageServiceClient) ListSubvolumeGroups(ctx context.Context, req *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error) {
+	return c.listSubvolumeGroups.CallUnary(ctx, req)
+}
+
+// ListBuckets calls otterscale.storage.v1.StorageService.ListBuckets.
+func (c *storageServiceClient) ListBuckets(ctx context.Context, req *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error) {
+	return c.listBuckets.CallUnary(ctx, req)
+}
+
+// ListRoles calls otterscale.storage.v1.StorageService.ListRoles.
+func (c *storageServiceClient) ListRoles(ctx context.Context, req *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error) {
+	return c.listRoles.CallUnary(ctx, req)
+}
+
+// ListUsers calls otterscale.storage.v1.StorageService.ListUsers.
+func (c *storageServiceClient) ListUsers(ctx context.Context, req *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
+	return c.listUsers.CallUnary(ctx, req)
+}
+
+// ListAccessKeys calls otterscale.storage.v1.StorageService.ListAccessKeys.
+func (c *storageServiceClient) ListAccessKeys(ctx context.Context, req *connect.Request[v1.ListAccessKeysRequest]) (*connect.Response[v1.ListAccessKeysResponse], error) {
+	return c.listAccessKeys.CallUnary(ctx, req)
+}
+
+// ListSnapshots calls otterscale.storage.v1.StorageService.ListSnapshots.
+func (c *storageServiceClient) ListSnapshots(ctx context.Context, req *connect.Request[v1.ListSnapshotsRequest]) (*connect.Response[v1.ListSnapshotsResponse], error) {
+	return c.listSnapshots.CallUnary(ctx, req)
+}
+
+// ListSnapshotSchedules calls otterscale.storage.v1.StorageService.ListSnapshotSchedules.
+func (c *storageServiceClient) ListSnapshotSchedules(ctx context.Context, req *connect.Request[v1.ListSnapshotSchedulesRequest]) (*connect.Response[v1.ListSnapshotSchedulesResponse], error) {
+	return c.listSnapshotSchedules.CallUnary(ctx, req)
 }
 
 // StorageServiceHandler is an implementation of the otterscale.storage.v1.StorageService service.
 type StorageServiceHandler interface {
+	// Cluster
 	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
-	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
-	DeletePool(context.Context, *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error)
+	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
+	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
+	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
+	// RBD
+	ListImages(context.Context, *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error)
+	// CephFS
+	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
+	ListSubvolumes(context.Context, *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error)
+	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
+	// RGW
+	ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error)
+	ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error)
+	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
+	ListAccessKeys(context.Context, *connect.Request[v1.ListAccessKeysRequest]) (*connect.Response[v1.ListAccessKeysResponse], error)
+	// Snapshot
+	ListSnapshots(context.Context, *connect.Request[v1.ListSnapshotsRequest]) (*connect.Response[v1.ListSnapshotsResponse], error)
+	ListSnapshotSchedules(context.Context, *connect.Request[v1.ListSnapshotSchedulesRequest]) (*connect.Response[v1.ListSnapshotSchedulesResponse], error)
 }
 
 // NewStorageServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -126,26 +319,114 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		connect.WithSchema(storageServiceMethods.ByName("ListPools")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreatePoolHandler := connect.NewUnaryHandler(
-		StorageServiceCreatePoolProcedure,
-		svc.CreatePool,
-		connect.WithSchema(storageServiceMethods.ByName("CreatePool")),
+	storageServiceListMONsHandler := connect.NewUnaryHandler(
+		StorageServiceListMONsProcedure,
+		svc.ListMONs,
+		connect.WithSchema(storageServiceMethods.ByName("ListMONs")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeletePoolHandler := connect.NewUnaryHandler(
-		StorageServiceDeletePoolProcedure,
-		svc.DeletePool,
-		connect.WithSchema(storageServiceMethods.ByName("DeletePool")),
+	storageServiceListOSDsHandler := connect.NewUnaryHandler(
+		StorageServiceListOSDsProcedure,
+		svc.ListOSDs,
+		connect.WithSchema(storageServiceMethods.ByName("ListOSDs")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceDoSMARTHandler := connect.NewUnaryHandler(
+		StorageServiceDoSMARTProcedure,
+		svc.DoSMART,
+		connect.WithSchema(storageServiceMethods.ByName("DoSMART")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListImagesHandler := connect.NewUnaryHandler(
+		StorageServiceListImagesProcedure,
+		svc.ListImages,
+		connect.WithSchema(storageServiceMethods.ByName("ListImages")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListVolumesHandler := connect.NewUnaryHandler(
+		StorageServiceListVolumesProcedure,
+		svc.ListVolumes,
+		connect.WithSchema(storageServiceMethods.ByName("ListVolumes")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListSubvolumesHandler := connect.NewUnaryHandler(
+		StorageServiceListSubvolumesProcedure,
+		svc.ListSubvolumes,
+		connect.WithSchema(storageServiceMethods.ByName("ListSubvolumes")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListSubvolumeGroupsHandler := connect.NewUnaryHandler(
+		StorageServiceListSubvolumeGroupsProcedure,
+		svc.ListSubvolumeGroups,
+		connect.WithSchema(storageServiceMethods.ByName("ListSubvolumeGroups")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListBucketsHandler := connect.NewUnaryHandler(
+		StorageServiceListBucketsProcedure,
+		svc.ListBuckets,
+		connect.WithSchema(storageServiceMethods.ByName("ListBuckets")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListRolesHandler := connect.NewUnaryHandler(
+		StorageServiceListRolesProcedure,
+		svc.ListRoles,
+		connect.WithSchema(storageServiceMethods.ByName("ListRoles")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListUsersHandler := connect.NewUnaryHandler(
+		StorageServiceListUsersProcedure,
+		svc.ListUsers,
+		connect.WithSchema(storageServiceMethods.ByName("ListUsers")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListAccessKeysHandler := connect.NewUnaryHandler(
+		StorageServiceListAccessKeysProcedure,
+		svc.ListAccessKeys,
+		connect.WithSchema(storageServiceMethods.ByName("ListAccessKeys")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListSnapshotsHandler := connect.NewUnaryHandler(
+		StorageServiceListSnapshotsProcedure,
+		svc.ListSnapshots,
+		connect.WithSchema(storageServiceMethods.ByName("ListSnapshots")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListSnapshotSchedulesHandler := connect.NewUnaryHandler(
+		StorageServiceListSnapshotSchedulesProcedure,
+		svc.ListSnapshotSchedules,
+		connect.WithSchema(storageServiceMethods.ByName("ListSnapshotSchedules")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.storage.v1.StorageService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case StorageServiceListPoolsProcedure:
 			storageServiceListPoolsHandler.ServeHTTP(w, r)
-		case StorageServiceCreatePoolProcedure:
-			storageServiceCreatePoolHandler.ServeHTTP(w, r)
-		case StorageServiceDeletePoolProcedure:
-			storageServiceDeletePoolHandler.ServeHTTP(w, r)
+		case StorageServiceListMONsProcedure:
+			storageServiceListMONsHandler.ServeHTTP(w, r)
+		case StorageServiceListOSDsProcedure:
+			storageServiceListOSDsHandler.ServeHTTP(w, r)
+		case StorageServiceDoSMARTProcedure:
+			storageServiceDoSMARTHandler.ServeHTTP(w, r)
+		case StorageServiceListImagesProcedure:
+			storageServiceListImagesHandler.ServeHTTP(w, r)
+		case StorageServiceListVolumesProcedure:
+			storageServiceListVolumesHandler.ServeHTTP(w, r)
+		case StorageServiceListSubvolumesProcedure:
+			storageServiceListSubvolumesHandler.ServeHTTP(w, r)
+		case StorageServiceListSubvolumeGroupsProcedure:
+			storageServiceListSubvolumeGroupsHandler.ServeHTTP(w, r)
+		case StorageServiceListBucketsProcedure:
+			storageServiceListBucketsHandler.ServeHTTP(w, r)
+		case StorageServiceListRolesProcedure:
+			storageServiceListRolesHandler.ServeHTTP(w, r)
+		case StorageServiceListUsersProcedure:
+			storageServiceListUsersHandler.ServeHTTP(w, r)
+		case StorageServiceListAccessKeysProcedure:
+			storageServiceListAccessKeysHandler.ServeHTTP(w, r)
+		case StorageServiceListSnapshotsProcedure:
+			storageServiceListSnapshotsHandler.ServeHTTP(w, r)
+		case StorageServiceListSnapshotSchedulesProcedure:
+			storageServiceListSnapshotSchedulesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -159,10 +440,54 @@ func (UnimplementedStorageServiceHandler) ListPools(context.Context, *connect.Re
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListPools is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreatePool is not implemented"))
+func (UnimplementedStorageServiceHandler) ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListMONs is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeletePool(context.Context, *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeletePool is not implemented"))
+func (UnimplementedStorageServiceHandler) ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListOSDs is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DoSMART is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListImages(context.Context, *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListImages is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListVolumes is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListSubvolumes(context.Context, *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListSubvolumes is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListSubvolumeGroups is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListBuckets is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListRoles(context.Context, *connect.Request[v1.ListRolesRequest]) (*connect.Response[v1.ListRolesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListRoles is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListUsers is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListAccessKeys(context.Context, *connect.Request[v1.ListAccessKeysRequest]) (*connect.Response[v1.ListAccessKeysResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListAccessKeys is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListSnapshots(context.Context, *connect.Request[v1.ListSnapshotsRequest]) (*connect.Response[v1.ListSnapshotsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListSnapshots is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListSnapshotSchedules(context.Context, *connect.Request[v1.ListSnapshotSchedulesRequest]) (*connect.Response[v1.ListSnapshotSchedulesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListSnapshotSchedules is not implemented"))
 }
