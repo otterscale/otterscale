@@ -21,7 +21,8 @@ const data = [
                     : i % 4 === 2
                         ? ['noin']
                         : [],
-            usage: Math.floor(Math.random() * 100)
+            usage: Math.floor(Math.random() * 100),
+            devices: Math.floor(Math.random() * 10)
         }) as ObjectStorageDaemon
     )
 ]

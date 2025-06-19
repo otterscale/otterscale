@@ -75,25 +75,25 @@
 		</LayeredTabs.Menu>
 	</LayeredTabs.Menubar>
 
+	<LayeredTabs.Content value="bucket">
+		<Bucket />
+	</LayeredTabs.Content>
 	<LayeredTabs.Content value="block-image">
 		<BlockImage />
 	</LayeredTabs.Content>
 	<LayeredTabs.Content value="file-system">
 		<FileSystem />
 	</LayeredTabs.Content>
-	<LayeredTabs.Content value="pool">
-		<Pool />
-	</LayeredTabs.Content>
 	<LayeredTabs.Content value="object-storage-daemon">
 		<ObjectStorageDaemon />
 	</LayeredTabs.Content>
-	<LayeredTabs.Content value="bucket">
-		<Bucket />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="user">
-		<User />
+	<LayeredTabs.Content value="pool">
+		<Pool />
 	</LayeredTabs.Content>
 	<LayeredTabs.Content value="role">
 		<Role />
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="user">
+		<User />
 	</LayeredTabs.Content>
 </LayeredTabs.Root>
