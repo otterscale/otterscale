@@ -21,11 +21,7 @@ class IterationManager {
         this.value = value
         this.variantGetter = variantGetter
 
-        if (duration) {
-            this.interval = this.getInterval();
-        } else {
-            this.interval = 0
-        }
+        this.interval = this.getInterval();
     }
 
     getInterval() {
