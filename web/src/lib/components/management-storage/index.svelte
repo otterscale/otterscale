@@ -3,7 +3,9 @@
 	import Icon from '@iconify/svelte';
 	import { BlockImage } from './storage-block-image';
 	import { Bucket } from './storage-bucket';
-	import { FileSystem } from './storage-filesystem';
+	import { Volume } from './storage-filesystem-volume';
+	import { Subvolume } from './storage-filesystem-subvolume';
+	import { SubvolumeGroup } from './storage-filesystem-subvolume-group';
 	import { ObjectStorageDaemon } from './storage-object-storage-daemon';
 	import { Pool } from './storage-pool';
 	import { Role } from './storage-role';
@@ -14,7 +16,7 @@
 	<LayeredTabs.Menubar>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
-				<Icon icon="ph:cube" />
+				<Icon icon="ph:circles-four" />
 				CLUSTER
 			</LayeredTabs.Trigger>
 			<LayeredTabs.MenuContent>
@@ -35,26 +37,34 @@
 			</LayeredTabs.Trigger>
 			<LayeredTabs.MenuContent>
 				<LayeredTabs.MenuItem value="block-image">
-					<Icon icon="ph:hard-drives" />
+					<Icon icon="ph:hard-drive" />
 					RADOS Block Device
 				</LayeredTabs.MenuItem>
 			</LayeredTabs.MenuContent>
 		</LayeredTabs.Menu>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
-				<Icon icon="ph:folder" />
+				<Icon icon="ph:folder-simple" />
 				FILE SYSTEM
 			</LayeredTabs.Trigger>
 			<LayeredTabs.MenuContent>
-				<LayeredTabs.MenuItem value="file-system">
-					<Icon icon="ph:folder" />
-					File System
+				<LayeredTabs.MenuItem value="volume">
+					<Icon icon="ph:folder-open" />
+					Volume
+				</LayeredTabs.MenuItem>
+				<LayeredTabs.MenuItem value="subvolume-group">
+					<Icon icon="ph:folders" />
+					Subvolume Group
+				</LayeredTabs.MenuItem>
+				<LayeredTabs.MenuItem value="subvolume">
+					<Icon icon="ph:folder-simple" />
+					Subvolume
 				</LayeredTabs.MenuItem>
 			</LayeredTabs.MenuContent>
 		</LayeredTabs.Menu>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
-				<Icon icon="ph:cube" />
+				<Icon icon="ph:cloud" />
 				GATEWAY
 			</LayeredTabs.Trigger>
 			<LayeredTabs.MenuContent>
@@ -64,11 +74,11 @@
 				</LayeredTabs.MenuItem>
 				<LayeredTabs.MenuSeparator />
 				<LayeredTabs.MenuItem value="user">
-					<Icon icon="ph:user" />
+					<Icon icon="ph:user-circle" />
 					User
 				</LayeredTabs.MenuItem>
 				<LayeredTabs.MenuItem value="role">
-					<Icon icon="ph:user" />
+					<Icon icon="ph:user-gear" />
 					Role
 				</LayeredTabs.MenuItem>
 			</LayeredTabs.MenuContent>
@@ -81,9 +91,6 @@
 	<LayeredTabs.Content value="block-image">
 		<BlockImage />
 	</LayeredTabs.Content>
-	<LayeredTabs.Content value="file-system">
-		<FileSystem />
-	</LayeredTabs.Content>
 	<LayeredTabs.Content value="object-storage-daemon">
 		<ObjectStorageDaemon />
 	</LayeredTabs.Content>
@@ -93,7 +100,16 @@
 	<LayeredTabs.Content value="role">
 		<Role />
 	</LayeredTabs.Content>
+	<LayeredTabs.Content value="subvolume">
+		<Subvolume />
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="subvolume-group">
+		<SubvolumeGroup />
+	</LayeredTabs.Content>
 	<LayeredTabs.Content value="user">
 		<User />
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="volume">
+		<Volume />
 	</LayeredTabs.Content>
 </LayeredTabs.Root>

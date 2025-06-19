@@ -4,6 +4,7 @@
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -17,12 +18,12 @@
 		getPaginationRowModel,
 		getSortedRowModel
 	} from '@tanstack/table-core';
-	import Statistics from './statistics.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	import { data } from './data';
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import Statistics from './statistics.svelte';
+	import type { SubvolumeGroup } from './types';
 
+	let { data }: { data: SubvolumeGroup[] } = $props();
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
