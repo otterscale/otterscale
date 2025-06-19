@@ -9,6 +9,7 @@
 		_row_picker: _row_picker,
 		id: id,
 		host: host,
+		devices: devices,
 		status: status,
 		deviceClass: deviceClass,
 		pgs: pgs,
@@ -42,6 +43,12 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet devices(column: Column<Type>)}
+	<Layout.Header class="flex justify-end">
+		<Layout.HeaderViewer>DEVICES</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

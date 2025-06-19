@@ -4,12 +4,14 @@
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import type { Row } from '@tanstack/table-core';
-	import type { ObjectStorageDaemon as Type } from './types';
+	import { ActionViewDevice } from './action-view-device';
+	import type { ObjectStorageDaemon } from './types';
 
 	export const cells = {
 		_row_picker: _row_picker,
 		id: id,
 		host: host,
+		devices: devices,
 		status: status,
 		deviceClass: deviceClass,
 		pgs: pgs,
@@ -19,7 +21,7 @@
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Type>)}
+{#snippet _row_picker(row: Row<ObjectStorageDaemon>)}
 	<Checkbox
 		checked={row.getIsSelected()}
 		onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -28,15 +30,22 @@
 	/>
 {/snippet}
 
-{#snippet id(row: Row<Type>)}
+{#snippet id(row: Row<ObjectStorageDaemon>)}
 	{row.original.id}
 {/snippet}
 
-{#snippet host(row: Row<Type>)}
+{#snippet host(row: Row<ObjectStorageDaemon>)}
 	{row.original.host}
 {/snippet}
 
-{#snippet status(row: Row<Type>)}
+{#snippet devices(row: Row<ObjectStorageDaemon>)}
+	<span class="flex items-center justify-end gap-1">
+		{row.original.devices}
+		<ActionViewDevice row={row.original} />
+	</span>
+{/snippet}
+
+{#snippet status(row: Row<ObjectStorageDaemon>)}
 	<span class="flex items-center gap-1">
 		{#each row.original.status as status}
 			<Badge variant="outline">
@@ -46,17 +55,17 @@
 	</span>
 {/snippet}
 
-{#snippet deviceClass(row: Row<Type>)}
+{#snippet deviceClass(row: Row<ObjectStorageDaemon>)}
 	<Badge variant="outline">
 		{row.original.deviceClass}
 	</Badge>
 {/snippet}
 
-{#snippet pgs(row: Row<Type>)}
+{#snippet pgs(row: Row<ObjectStorageDaemon>)}
 	<span class="flex justify-end">{row.original.pgs}</span>
 {/snippet}
 
-{#snippet size(row: Row<Type>)}
+{#snippet size(row: Row<ObjectStorageDaemon>)}
 	{@const size = formatCapacity(row.original.size)}
 	<span class="flex items-center justify-end gap-1">
 		{size.value}
@@ -64,7 +73,7 @@
 	</span>
 {/snippet}
 
-{#snippet flags(row: Row<Type>)}
+{#snippet flags(row: Row<ObjectStorageDaemon>)}
 	<span class="flex items-center gap-1">
 		{#each row.original.flags as flag}
 			<Badge variant="outline">
@@ -74,7 +83,7 @@
 	</span>
 {/snippet}
 
-{#snippet usage(row: Row<Type>)}
+{#snippet usage(row: Row<ObjectStorageDaemon>)}
 	<Progress.Root numerator={row.original.usage} denominator={100}>
 		{#snippet ratio({ numerator, denominator })}
 			{(numerator * 100) / denominator}%

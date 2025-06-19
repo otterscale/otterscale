@@ -7,4 +7,5 @@ export type ObjectStorageDaemon = {
     size: number;
     flags: string[];
     usage: number;
+    devices: number;
 };

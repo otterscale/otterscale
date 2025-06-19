@@ -3,9 +3,9 @@ import type { ColumnDef } from "@tanstack/table-core";
 import DataTableActions from "./actions.svelte";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import { type ObjectStorageDaemon as Type } from './types';
+import { type ObjectStorageDaemon } from './types';
 
-const columns: ColumnDef<Type>[] = [
+const columns: ColumnDef<ObjectStorageDaemon>[] = [
     {
         id: "select",
         header: ({ table }) => {
@@ -33,6 +33,15 @@ const columns: ColumnDef<Type>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.host, row);
+        },
+    },
+    {
+        accessorKey: "devices",
+        header: ({ column }) => {
+            return renderSnippet(headers.devices, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.devices, row);
         },
     },
     {
