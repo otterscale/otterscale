@@ -8,37 +8,65 @@ option go_package = "github.com/openhdc/otterscale/api/storage/v1;pb";
 
 service StorageService {
   // Cluster
-  rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
-  // rpc CreatePool(CreatePoolRequest) returns (Pool);
-  // rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
-
   rpc ListMONs(ListMONsRequest) returns (ListMONsResponse);
   rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse);
   rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse);
 
-  // RBD
+  // Cluster Pool
+  rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
+  rpc CreatePool(CreatePoolRequest) returns (Pool);
+  rpc UpdatePool(UpdatePoolRequest) returns (Pool);
+  rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
+
+  // RBD Image
   rpc ListImages(ListImagesRequest) returns (ListImagesResponse);
+  rpc CreateImage(CreateImageRequest) returns (Image);
+  rpc UpdateImage(UpdateImageRequest) returns (Image);
+  rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty);
 
-  // CephFS
+  // RBD Image Snapshot
+  rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot);
+  rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty);
+
+  // CephFS Volume
   rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse);
+
+  // CephFS Subvolume
   rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse);
-  rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse);  // empty is also a group
-  // rpc ListExports(ListExportsRequest) returns (ListExportsResponse);
-  // rpc ListExports(ListSMBExportsRequest) returns (ListSMBExportsResponse);
+  rpc CreateSubvolume(CreateSubvolumeRequest) returns (Subvolume);
+  rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume);
+  rpc DeleteSubvolume(DeleteSubvolumeRequest) returns (google.protobuf.Empty);
 
-  // RGW
+  // CephFS Subvolume Group
+  rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse);
+  rpc CreateSubvolumeGroup(CreateSubvolumeGroupRequest) returns (SubvolumeGroup);
+  rpc UpdateSubvolumeGroup(UpdateSubvolumeGroupRequest) returns (SubvolumeGroup);
+  rpc DeleteSubvolumeGroup(DeleteSubvolumeGroupRequest) returns (google.protobuf.Empty);
+
+  // CephFS Subvolume Export
+  rpc CreateSubvolumeExport(CreateSubvolumeExportRequest) returns (Subvolume.Export);
+  rpc UpdateSubvolumeExport(UpdateSubvolumeExportRequest) returns (Subvolume.Export);
+  rpc DeleteSubvolumeExport(DeleteSubvolumeExportRequest) returns (google.protobuf.Empty);
+  rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
+  rpc RevokeSubvolumeExportAccess(RevokeSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
+
+  // CephFS Subvolume Snapshot
+  rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot);
+  rpc DeleteSubvolumeSnapshot(DeleteSubvolumeSnapshotRequest) returns (google.protobuf.Empty);
+
+  // RGW Bucket
   rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse);
-  rpc ListRoles(ListRolesRequest) returns (ListRolesResponse);
+  rpc CreateBucket(CreateBucketRequest) returns (Bucket);
+  rpc UpdateBucket(UpdateBucketRequest) returns (Bucket);
+  rpc DeleteBucket(DeleteBucketRequest) returns (google.protobuf.Empty);
+
+  // RGW User
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
-  rpc ListAccessKeys(ListAccessKeysRequest) returns (ListAccessKeysResponse);
-
-  // Snapshot
-  rpc ListSnapshots(ListSnapshotsRequest) returns (ListSnapshotsResponse);
-  rpc ListSnapshotSchedules(ListSnapshotSchedulesRequest) returns (ListSnapshotSchedulesResponse);
-}
-
-message Pool {
-  string name = 1;
+  rpc CreateUser(CreateUserRequest) returns (User);
+  rpc UpdateUser(UpdateUserRequest) returns (User);
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
+  rpc CreateUserS3Key(CreateUserS3KeyRequest) returns (User.Key);
+  rpc DeleteUserS3Key(DeleteUserS3KeyRequest) returns (google.protobuf.Empty);
 }
 
 message MON {
@@ -49,8 +77,16 @@ message OSD {
   string name = 1;
 }
 
-message Image {
+message Pool {
   string name = 1;
+}
+
+message Image {
+  message Snapshot {
+    string name = 1;
+  }
+  string name = 1;
+  repeated Snapshot snapshots = 101;
 }
 
 message Volume {
@@ -58,7 +94,22 @@ message Volume {
 }
 
 message Subvolume {
+  message Snapshot {
+    string name = 1;
+  }
+  message Export {
+    message Client {
+      string access_type = 1;
+      repeated string addresses = 2;
+    }
+    string path = 1;
+    string command = 2;
+    string squash = 3;
+    repeated Client clients = 11;
+  }
   string name = 1;
+  Export export = 51;
+  repeated Snapshot snapshots = 101;
 }
 
 message SubvolumeGroup {
@@ -74,41 +125,11 @@ message Role {
 }
 
 message User {
+  message Key {
+    string name = 1;
+  }
   string name = 1;
 }
-
-message AccessKey {
-  string name = 1;
-}
-
-message Snapshot {
-  string name = 1;
-}
-
-message SnapshotSchedule {
-  string name = 1;
-}
-
-message ListPoolsRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-}
-
-message ListPoolsResponse {
-  repeated Pool pools = 1;
-}
-
-// message CreatePoolRequest {
-//   string scope_uuid = 1;
-//   string facility_name = 2;
-//   string name = 3;
-// }
-
-// message DeletePoolRequest {
-//   string scope_uuid = 1;
-//   string facility_name = 2;
-//   string name = 3;
-// }
 
 message ListMONsRequest {
   string scope_uuid = 1;
@@ -134,6 +155,41 @@ message DoSMARTRequest {
 
 message DoSMARTResponse {}
 
+message ListPoolsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListPoolsResponse {
+  repeated Pool pools = 1;
+}
+
+message CreatePoolRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string type = 11;
+  repeated string applications = 12;
+  string compression_mode = 21;
+  string quota_max_bytes = 31;
+  string quota_max_objects = 32;
+}
+
+message UpdatePoolRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string compression_mode = 11;
+  string quota_max_bytes = 21;
+  string quota_max_objects = 22;
+}
+
+message DeletePoolRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+}
+
 message ListImagesRequest {
   string scope_uuid = 1;
   string facility_name = 2;
@@ -141,6 +197,45 @@ message ListImagesRequest {
 
 message ListImagesResponse {
   repeated Image images = 1;
+}
+
+message CreateImageRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  string size = 11;
+}
+
+message UpdateImageRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  string size = 11;
+}
+
+message DeleteImageRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+}
+
+message CreateImageSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  string snapshot_name = 5;
+}
+
+message DeleteImageSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  string snapshot_name = 5;
 }
 
 message ListVolumesRequest {
@@ -155,22 +250,140 @@ message ListVolumesResponse {
 message ListSubvolumesRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  string volume = 3;
-  string group = 4;
+  string volume_name = 3;
+  string group_name = 4;
 }
 
 message ListSubvolumesResponse {
   repeated Subvolume subvolumes = 1;
 }
 
+message CreateSubvolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string subvolume_name = 5;
+  string size = 11;
+}
+
+message UpdateSubvolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string subvolume_name = 5;
+  string size = 11;
+}
+
+message DeleteSubvolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string subvolume_name = 5;
+}
+
 message ListSubvolumeGroupsRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  string volume = 3;
+  string volume_name = 3;
 }
 
 message ListSubvolumeGroupsResponse {
   repeated SubvolumeGroup subvolume_groups = 1;
+}
+
+message CreateSubvolumeGroupRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string size = 11;
+}
+
+message UpdateSubvolumeGroupRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string size = 11;
+}
+
+message DeleteSubvolumeGroupRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+}
+
+message CreateSubvolumeExportRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string export_name = 6;
+  string size = 11;
+  repeated string client_ips = 21;
+}
+
+message UpdateSubvolumeExportRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string export_name = 6;
+  string size = 11;
+}
+
+message DeleteSubvolumeExportRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string export_name = 6;
+  bool purge = 11;
+}
+
+message GrantSubvolumeExportAccessRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string export_name = 6;
+  string client_ip = 11;
+}
+
+message RevokeSubvolumeExportAccessRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string export_name = 6;
+  string client_ip = 11;
+}
+
+message CreateSubvolumeSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string snapshot_name = 6;
+}
+
+message DeleteSubvolumeSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string snapshot_name = 6;
 }
 
 message ListBucketsRequest {
@@ -182,13 +395,24 @@ message ListBucketsResponse {
   repeated Bucket buckets = 1;
 }
 
-message ListRolesRequest {
+message CreateBucketRequest {
   string scope_uuid = 1;
   string facility_name = 2;
+  string bucket_name = 3;
+  string owner = 11;
 }
 
-message ListRolesResponse {
-  repeated Role roles = 1;
+message UpdateBucketRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string bucket_name = 3;
+  string owner = 11;
+}
+
+message DeleteBucketRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string bucket_name = 3;
 }
 
 message ListUsersRequest {
@@ -200,29 +424,37 @@ message ListUsersResponse {
   repeated User users = 1;
 }
 
-message ListAccessKeysRequest {
+message CreateUserRequest {
   string scope_uuid = 1;
   string facility_name = 2;
+  string user_id = 3;
+  string user_name = 11;
+  string suspended = 12;
 }
 
-message ListAccessKeysResponse {
-  repeated AccessKey access_keys = 1;
-}
-
-message ListSnapshotsRequest {
+message UpdateUserRequest {
   string scope_uuid = 1;
   string facility_name = 2;
+  string user_id = 3;
+  string user_name = 11;
+  string suspended = 12;
 }
 
-message ListSnapshotsResponse {
-  repeated Snapshot snapshots = 1;
-}
-
-message ListSnapshotSchedulesRequest {
+message DeleteUserRequest {
   string scope_uuid = 1;
   string facility_name = 2;
+  string user_id = 3;
 }
 
-message ListSnapshotSchedulesResponse {
-  repeated SnapshotSchedule snapshot_schedules = 1;
+message CreateUserS3KeyRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string user_id = 3;
+}
+
+message DeleteUserS3KeyRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string user_id = 3;
+  string access_key = 4;
 }
