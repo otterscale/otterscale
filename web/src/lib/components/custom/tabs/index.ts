@@ -1,10 +1,7 @@
-import { Root, Content } from "$lib/components/ui/tabs/index.js";
-import List from "./tabs-list.svelte";
-import Trigger from "./tabs-trigger.svelte";
+import * as Tabs from "./naive";
+import * as LayeredTabs from "./layered";
 
 export {
-	Root,
-	Content,
-	List,
-	Trigger
+	Tabs,
+	LayeredTabs,
 };

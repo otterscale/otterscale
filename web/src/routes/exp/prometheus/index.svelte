@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
-	import * as Tabs from '$lib/components/custom/tabs';
+	import { Tabs } from '$lib/components/custom/tabs';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { Application } from './application';
 	import { Storage } from './storage';
