@@ -2,7 +2,7 @@
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import { getStartPoint, setValue } from './utils.svelte';
-	import * as Tabs from '$lib/components/custom/tabs/index.js';
+	import { Tabs } from '$lib/components/custom/tabs/index';
 
 	let {
 		start = $bindable(),
