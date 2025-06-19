@@ -16,7 +16,7 @@
 	<span class="col-span-1">
 		<Chart.Text>
 			{#snippet title()}
-				File System
+				Volume
 			{/snippet}
 			{#snippet content()}
 				<div class="flex justify-between">

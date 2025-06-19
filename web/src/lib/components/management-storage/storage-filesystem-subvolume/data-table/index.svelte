@@ -20,14 +20,16 @@
 	} from '@tanstack/table-core';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	import { data } from './data';
 	import Statistics from './statistics.svelte';
+	import type { Subvolume } from './types';
 
+	let { data }: { data: Subvolume[] } = $props();
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
+
 	const table = createSvelteTable({
 		get data() {
 			return data;

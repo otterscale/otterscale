@@ -1,30 +1,26 @@
 <script lang="ts" generics="TData, TValue">
+	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
-	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
-	import RangeFilter from '$lib/components/custom/data-table/data-table-filters/range-filter.svelte';
-
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-
+	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import Statistics from './statistics.svelte';
 	import { columns } from './columns';
 	import { data } from './data';
+	import Statistics from './statistics.svelte';
 
 	import {
-		type ColumnDef,
-		type PaginationState,
-		type SortingState,
 		type ColumnFiltersState,
-		type VisibilityState,
+		type PaginationState,
 		type RowSelectionState,
+		type SortingState,
+		type VisibilityState,
 		getCoreRowModel,
+		getFilteredRowModel,
 		getPaginationRowModel,
-		getSortedRowModel,
-		getFilteredRowModel
+		getSortedRowModel
 	} from '@tanstack/table-core';
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
@@ -143,7 +139,7 @@
 		</Table.Body>
 	</Table.Root>
 	<div class="flex items-center justify-between gap-2">
-		<TableFooter {table} {data} />
+		<TableFooter {table} />
 		<TablePagination {table} />
 	</div>
 </div>
