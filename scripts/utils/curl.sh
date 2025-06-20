@@ -47,7 +47,9 @@ send_config_data() {
     local RBAC_ID=$(su "$username" -c "juju show-credentials cos-k8s cos-k8s --client | grep rbac-id | awk '{print \$2}'")
     local MICROK8S_TOKEN=$(microk8s kubectl get secret -n kube-system "juju-credential-$RBAC_ID" -o json | jq '.data.token')
 
-   echo "$MICROK8S_TOKEN"
+    local MICROK8S_TOKEN=$(microk8s kubectl get secret -n kube-system "juju-credential-$RBAC_ID" -o json | jq '.data.token')
+    local ENDPOINT_JSON=$(microk8s kubectl get endpoints -o json | jq '.items[].subsets[]')
+    local ENDPOINT=$(echo $ENDPOINT_JSON | jq -r '.ports[].name')"://"$(echo $ENDPOINT_JSON | jq -r '.addresses[].ip')":"$(echo $ENDPOINT_JSON | jq '.ports[].port')
 
     local data=$(cat <<EOF
 {"maas_url": "$maas_url",
@@ -60,7 +62,8 @@ send_config_data() {
 "juju_cloud_name": "$juju_cloud_name",
 "juju_cloud_region": "$juju_cloud_region",
 "juju_charmhub_api_url": "$JUJU_CHARMHUB_API_URL",
-"microk8s_token": "$MICROK8S_TOKEN"}
+"microk8s_token": "$MICROK8S_TOKEN",
+"microk8s_host: "$ENDPOINT"}
 EOF
 )
 
