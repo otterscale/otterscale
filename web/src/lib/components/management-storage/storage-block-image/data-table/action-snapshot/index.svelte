@@ -3,6 +3,9 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { DataTable } from './data-table';
+	import type { BlockImage } from '../types';
+
+	let { blockImage }: { blockImage: BlockImage } = $props();
 </script>
 
 <Sheet.Root>
@@ -11,6 +14,6 @@
 		Snapshot
 	</Sheet.Trigger>
 	<Sheet.Content class="flex min-w-[77vw] flex-col justify-center p-4">
-		<DataTable />
+		<DataTable {blockImage} />
 	</Sheet.Content>
 </Sheet.Root>

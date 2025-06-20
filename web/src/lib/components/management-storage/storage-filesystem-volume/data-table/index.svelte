@@ -20,9 +20,12 @@
 	} from '@tanstack/table-core';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	import { data } from './data';
 	import Statistics from './statistics.svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import type { Volume } from './types';
+	import { fetchVolumes } from '../utils.svelte';
 
+	let data: Writable<Volume[]> = $state(writable(fetchVolumes() ?? ([] as Volume[])));
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -31,7 +34,7 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return data;
+			return $data;
 		},
 
 		columns,
@@ -101,7 +104,7 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerAction>
-			<Create />
+			<Create bind:data/>
 		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />

@@ -1,10 +1,9 @@
 <script lang="ts" module>
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import * as Progress from '$lib/components/custom/progress/index.js';
-	import type { Row } from '@tanstack/table-core';
-	import type { BlockImageSnapshot } from './types';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
+	import type { Row } from '@tanstack/table-core';
+	import type { Snapshot } from './types';
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -16,7 +15,7 @@
 	};
 </script>
 
-{#snippet _row_picker(row: Row<BlockImageSnapshot>)}
+{#snippet _row_picker(row: Row<Snapshot>)}
 	<Checkbox
 		checked={row.getIsSelected()}
 		onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -25,11 +24,11 @@
 	/>
 {/snippet}
 
-{#snippet name(row: Row<BlockImageSnapshot>)}
+{#snippet name(row: Row<Snapshot>)}
 	{row.original.name}
 {/snippet}
 
-{#snippet size(row: Row<BlockImageSnapshot>)}
+{#snippet size(row: Row<Snapshot>)}
 	{@const size = formatCapacity(row.original.size)}
 	<div class="flex flex-col items-end">
 		{row.original.size}
@@ -37,7 +36,7 @@
 	</div>
 {/snippet}
 
-{#snippet used(row: Row<BlockImageSnapshot>)}
+{#snippet used(row: Row<Snapshot>)}
 	{@const used = formatCapacity(row.original.used)}
 	<div class="flex flex-col items-end">
 		{row.original.used}
@@ -45,12 +44,12 @@
 	</div>
 {/snippet}
 
-{#snippet state(row: Row<BlockImageSnapshot>)}
+{#snippet state(row: Row<Snapshot>)}
 	<Badge variant="outline">
 		{row.original.state}
 	</Badge>
 {/snippet}
 
-{#snippet createTime(row: Row<BlockImageSnapshot>)}
+{#snippet createTime(row: Row<Snapshot>)}
 	{formatTimeAgo(new Date(row.original.createTime))}
 {/snippet}

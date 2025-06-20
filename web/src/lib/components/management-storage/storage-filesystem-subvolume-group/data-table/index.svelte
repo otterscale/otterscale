@@ -22,8 +22,16 @@
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
 	import type { SubvolumeGroup } from './types';
+	import { writable, type Writable } from 'svelte/store';
+	import { fetchSubvolumeGroup } from '../utils.svelte';
 
-	let { data }: { data: SubvolumeGroup[] } = $props();
+	let { group }: { group: string } = $props();
+
+	let data: Writable<SubvolumeGroup[]> = $state(writable(fetchSubvolumeGroup(group)));
+	$effect(() => {
+		data.set(fetchSubvolumeGroup(group));
+	});
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -31,7 +39,7 @@
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return data;
+			return $data;
 		},
 
 		columns,
@@ -101,7 +109,7 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerAction>
-			<Create />
+			<Create bind:data />
 		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />

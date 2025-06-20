@@ -8,6 +8,7 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { writable, type Writable } from 'svelte/store';
+	import type { SubvolumeGroup } from './types';
 
 	export type Request = {
 		name: string;
@@ -29,6 +30,8 @@
 </script>
 
 <script lang="ts">
+	let { data = $bindable() }: { data: Writable<SubvolumeGroup[]> } = $props();
+
 	const DEFAULT_REQUEST = {} as Request;
 	let request: Request = $state(DEFAULT_REQUEST);
 	function reset() {
@@ -125,7 +128,9 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						console.log(request);
+						data.set([]);
+						console.log($data);
+						stateController.close();
 					}}
 				>
 					Create

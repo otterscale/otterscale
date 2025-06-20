@@ -1,33 +1,33 @@
 <script lang="ts" generics="TData, TValue">
-	import Create from './create.svelte';
-
+	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
-	import RangeFilter from '$lib/components/custom/data-table/data-table-filters/range-filter.svelte';
-
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-
+	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import Statistics from './statistics.svelte';
-	import { columns } from './columns';
-	import { data } from './data';
-
 	import {
-		type ColumnDef,
-		type PaginationState,
-		type SortingState,
-		type ColumnFiltersState,
-		type VisibilityState,
-		type RowSelectionState,
 		getCoreRowModel,
+		getFilteredRowModel,
 		getPaginationRowModel,
 		getSortedRowModel,
-		getFilteredRowModel
+		type ColumnFiltersState,
+		type PaginationState,
+		type RowSelectionState,
+		type SortingState,
+		type VisibilityState
 	} from '@tanstack/table-core';
+	import { writable, type Writable } from 'svelte/store';
+	import { fetchSnapshots } from '../utils.svelte';
+	import { columns } from './columns';
+	import Create from './create.svelte';
+	import Statistics from './statistics.svelte';
+	import type { Snapshot } from './types';
+	import type { BlockImage } from '../../types';
 
+	let { blockImage }: { blockImage: BlockImage } = $props();
+	let data: Writable<Snapshot[]> = $state(writable(fetchSnapshots() ?? ([] as Snapshot[])));
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -36,7 +36,7 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return data;
+			return $data;
 		},
 
 		columns,
@@ -100,51 +100,58 @@
 	});
 </script>
 
-<div class="flex flex-col gap-4">
-	<Statistics {table} />
-	<div class="flex items-center justify-between gap-2">
-		<Create />
-		<div class="flex items-center justify-between gap-2">
+<p class="text-center text-3xl">{blockImage.name}</p>
+<Layout.Root>
+	<Layout.Statistics>
+		<Statistics {table} />
+	</Layout.Statistics>
+	<Layout.Controller>
+		<Layout.ControllerAction>
+			<Create bind:data />
+		</Layout.ControllerAction>
+		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
 			<PointFilter columnId="state" {table} />
 			<ColumnViewer {table} />
-		</div>
-	</div>
-	<Table.Root>
-		<Table.Header class="bg-muted">
-			{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
-				<Table.Row>
-					{#each headerGroup.headers as header (header.id)}
-						<Table.Head>
-							{#if !header.isPlaceholder}
-								<FlexRender
-									content={header.column.columnDef.header}
-									context={header.getContext()}
-								/>
-							{/if}
-						</Table.Head>
-					{/each}
-				</Table.Row>
-			{/each}
-		</Table.Header>
-		<Table.Body>
-			{#each table.getRowModel().rows as row (row.id)}
-				<Table.Row data-state={row.getIsSelected() && 'selected'}>
-					{#each row.getVisibleCells() as cell (cell.id)}
-						<Table.Cell>
-							<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-						</Table.Cell>
-					{/each}
-				</Table.Row>
-			{:else}
-				<Table.Row>
-					<Table.Cell colspan={columns.length}>No results.</Table.Cell>
-				</Table.Row>
-			{/each}
-		</Table.Body>
-	</Table.Root>
-	<div class="flex items-center justify-between gap-2">
-		<TableFooter {table} {data} />
+		</Layout.ControllerFilter>
+	</Layout.Controller>
+	<Layout.Viewer>
+		<Table.Root>
+			<Table.Header class="bg-muted">
+				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
+					<Table.Row>
+						{#each headerGroup.headers as header (header.id)}
+							<Table.Head>
+								{#if !header.isPlaceholder}
+									<FlexRender
+										content={header.column.columnDef.header}
+										context={header.getContext()}
+									/>
+								{/if}
+							</Table.Head>
+						{/each}
+					</Table.Row>
+				{/each}
+			</Table.Header>
+			<Table.Body>
+				{#each table.getRowModel().rows as row (row.id)}
+					<Table.Row data-state={row.getIsSelected() && 'selected'}>
+						{#each row.getVisibleCells() as cell (cell.id)}
+							<Table.Cell>
+								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+							</Table.Cell>
+						{/each}
+					</Table.Row>
+				{:else}
+					<Table.Row>
+						<Table.Cell colspan={columns.length}>No results.</Table.Cell>
+					</Table.Row>
+				{/each}
+			</Table.Body>
+		</Table.Root>
+	</Layout.Viewer>
+	<Layout.Footer>
+		<TableFooter {table} />
 		<TablePagination {table} />
-	</div>
-</div>
+	</Layout.Footer>
+</Layout.Root>

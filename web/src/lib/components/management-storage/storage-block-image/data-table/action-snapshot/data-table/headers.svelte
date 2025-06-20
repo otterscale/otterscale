@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
-	import type { Table, Column } from '@tanstack/table-core';
-	import type { BlockImageSnapshot } from './types';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import type { Column, Table } from '@tanstack/table-core';
+	import type { Snapshot } from './types';
 
 	export const headers = {
 		_row_picker: _row_picker,
@@ -14,7 +15,7 @@
 	};
 </script>
 
-{#snippet _row_picker(table: Table<BlockImageSnapshot>)}
+{#snippet _row_picker(table: Table<Snapshot>)}
 	<Checkbox
 		checked={table.getIsAllPageRowsSelected()}
 		indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
@@ -23,38 +24,47 @@
 		aria-label="Select all"
 	/>
 {/snippet}
-
-{#snippet name(column: Column<BlockImageSnapshot>)}
-	<div class="flex items-center justify-between gap-1">
-		<p class="text-xs font-light">NAME</p>
-		<Sorter {column} />
-	</div>
+{#snippet name(column: Column<Snapshot>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
-{#snippet size(column: Column<BlockImageSnapshot>)}
-	<div class="flex items-center justify-between gap-1">
-		<Sorter {column} />
-		<p class="text-xs font-light">SIZE</p>
-	</div>
+{#snippet size(column: Column<Snapshot>)}
+	<Layout.Header>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>SIZE</Layout.HeaderViewer>
+	</Layout.Header>
 {/snippet}
 
-{#snippet used(column: Column<BlockImageSnapshot>)}
-	<div class="flex items-center justify-between gap-1">
-		<Sorter {column} />
-		<p class="text-xs font-light">USED</p>
-	</div>
+{#snippet used(column: Column<Snapshot>)}
+	<Layout.Header>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>USED</Layout.HeaderViewer>
+	</Layout.Header>
 {/snippet}
 
-{#snippet state(column: Column<BlockImageSnapshot>)}
-	<div class="flex items-center justify-between gap-1">
-		<p class="text-xs font-light">STATE</p>
-		<Sorter {column} />
-	</div>
+{#snippet state(column: Column<Snapshot>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>STATE</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
-{#snippet createTime(column: Column<BlockImageSnapshot>)}
-	<div class="flex items-center justify-between gap-1">
-		<p class="text-xs font-light">CREATE TIME</p>
-		<Sorter {column} />
-	</div>
+{#snippet createTime(column: Column<Snapshot>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}

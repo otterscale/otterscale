@@ -9,21 +9,24 @@
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	import { data } from './data';
 	import Statistics from './statistics.svelte';
 
 	import {
+		getCoreRowModel,
+		getFilteredRowModel,
+		getPaginationRowModel,
+		getSortedRowModel,
 		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
-		getCoreRowModel,
-		getFilteredRowModel,
-		getPaginationRowModel,
-		getSortedRowModel
+		type VisibilityState
 	} from '@tanstack/table-core';
+	import { writable, type Writable } from 'svelte/store';
+	import { fetchBuckets } from '../utils.svelte';
+	import type { Bucket } from './types';
 
+	let data: Writable<Bucket[]> = $state(writable(fetchBuckets() ?? ([] as Bucket[])));
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -32,7 +35,7 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return data;
+			return $data;
 		},
 
 		columns,
@@ -102,7 +105,7 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerAction>
-			<Create />
+			<Create bind:data />
 		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />

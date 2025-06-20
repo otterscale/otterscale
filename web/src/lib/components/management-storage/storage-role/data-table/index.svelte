@@ -19,9 +19,12 @@
 	} from '@tanstack/table-core';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	import { data } from './data';
+	import { writable, type Writable } from 'svelte/store';
+	import type { Role } from './types';
+	import { fetchRoles } from '../utils.svelte';
 	import Statistics from './statistics.svelte';
 
+	let data: Writable<Role[]> = $state(writable(fetchRoles() ?? ([] as Role[])));
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -29,7 +32,7 @@
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return data;
+			return $data;
 		},
 		columns,
 		getCoreRowModel: getCoreRowModel(),
@@ -98,7 +101,7 @@
 
 	<Layout.Controller>
 		<Layout.ControllerAction>
-			<Create />
+			<Create bind:data />
 		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="roleName" {table} />

@@ -12,6 +12,7 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { writable, type Writable } from 'svelte/store';
+	import type { User } from './types';
 
 	export type Request = {
 		userId: string;
@@ -130,6 +131,8 @@
 </script>
 
 <script lang="ts">
+	let { data = $bindable() }: { data: Writable<User[]> } = $props();
+
 	let isShowTenant = $state(false);
 	let maximumBucketsOption = $state('');
 
@@ -515,7 +518,9 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
+						data.set([]);
 						console.log(request);
+						stateController.close();
 					}}
 				>
 					Create

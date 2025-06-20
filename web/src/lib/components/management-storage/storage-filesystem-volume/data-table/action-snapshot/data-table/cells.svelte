@@ -9,8 +9,8 @@
 	export const cells = {
 		_row_picker: _row_picker,
 		name: name,
-		createTime: createTime,
-		pendingClones: pendingClones
+		path: path,
+		createTime: createTime
 	};
 </script>
 
@@ -35,12 +35,6 @@
 	</p>
 {/snippet}
 
-{#snippet pendingClones(row: Row<Snapshot>)}
-	<span class="flex items-center gap-2">
-		{#each row.original.pendingClones as pendingClone}
-			<Badge variant="outline">
-				{pendingClone}
-			</Badge>
-		{/each}
-	</span>
+{#snippet path(row: Row<Snapshot>)}
+	{row.original.path}
 {/snippet}

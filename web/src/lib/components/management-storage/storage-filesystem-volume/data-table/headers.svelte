@@ -3,7 +3,7 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
-	import type { FileSystem } from './types';
+	import type { Volume } from './types';
 
 	export const headers = {
 		_row_picker: _row_picker,
@@ -14,7 +14,7 @@
 	};
 </script>
 
-{#snippet _row_picker(table: Table<FileSystem>)}
+{#snippet _row_picker(table: Table<Volume>)}
 	<Checkbox
 		checked={table.getIsAllPageRowsSelected()}
 		indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
@@ -24,7 +24,7 @@
 	/>
 {/snippet}
 
-{#snippet name(column: Column<FileSystem>)}
+{#snippet name(column: Column<Volume>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -33,13 +33,13 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet enabled(column: Column<FileSystem>)}
+{#snippet enabled(column: Column<Volume>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>ENABLED</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet permission(column: Column<FileSystem>)}
+{#snippet permission(column: Column<Volume>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>PERMISSION</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -48,7 +48,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet createTime(column: Column<FileSystem>)}
+{#snippet createTime(column: Column<Volume>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
 		<Layout.HeaderController>

@@ -6,11 +6,11 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { type Request } from './create.svelte';
-	import type { BlockImageSnapshot } from './types';
+	import type { Snapshot } from './types';
 </script>
 
 <script lang="ts">
-	let { blockImagesnapshot }: { blockImagesnapshot: BlockImageSnapshot } = $props();
+	let { blockImagesnapshot }: { blockImagesnapshot: Snapshot } = $props();
 
 	const DEFAULT_REQUEST = { name: blockImagesnapshot.name } as Request;
 
