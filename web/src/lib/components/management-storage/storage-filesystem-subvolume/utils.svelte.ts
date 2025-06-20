@@ -27,7 +27,7 @@ function fetchSubvolumeGroupList() {
 function fetchSubvolumeListByGroup(group: string) {
     return volumes.get(group) ?? []
 }
-function fetchSubvolume(group: string, subvolume: string) {
+function fetchSubvolume(group: string, subvolume: string): Subvolume[] {
     return getData()
 }
 

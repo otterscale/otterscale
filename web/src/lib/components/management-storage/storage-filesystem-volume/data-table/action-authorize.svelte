@@ -10,7 +10,7 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { writable, type Writable } from 'svelte/store';
-	import type { FileSystem } from './types';
+	import type { Volume } from './types';
 
 	type Request = {
 		userId: string;
@@ -61,7 +61,7 @@
 		request = DEFAULT_REQUEST;
 	}
 
-	let { fileSystem }: { fileSystem: FileSystem } = $props();
+	let { fileSystem }: { fileSystem: Volume } = $props();
 
 	const stateController = new DialogStateController(false);
 </script>

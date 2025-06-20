@@ -36,12 +36,12 @@ const columns: ColumnDef<Snapshot>[] = [
         },
     },
     {
-        accessorKey: "pendingClones",
+        accessorKey: "path",
         header: ({ column }) => {
-            return renderSnippet(headers.pendingClones, column)
+            return renderSnippet(headers.path, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.pendingClones, row);
+            return renderSnippet(cells.path, row);
         },
     },
     {

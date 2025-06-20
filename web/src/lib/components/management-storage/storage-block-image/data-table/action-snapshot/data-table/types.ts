@@ -1,4 +1,4 @@
-export type BlockImageSnapshot = {
+export type Snapshot = {
     name: string;
     size: number;
     used: number;

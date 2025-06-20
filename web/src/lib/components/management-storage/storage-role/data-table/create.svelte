@@ -6,6 +6,8 @@
 	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
+	import type { Writable } from 'svelte/store';
+	import type { Role } from './types';
 
 	export type Request = {
 		rolename: string;
@@ -15,6 +17,8 @@
 </script>
 
 <script lang="ts">
+	let { data = $bindable() }: { data: Writable<Role[]> } = $props();
+
 	const DEFAULT_REQUEST = {} as Request;
 	let request: Request = $state(DEFAULT_REQUEST);
 	function reset() {
@@ -62,7 +66,9 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
+						data.set([]);
 						console.log(request);
+						stateController.close();
 					}}
 				>
 					Create

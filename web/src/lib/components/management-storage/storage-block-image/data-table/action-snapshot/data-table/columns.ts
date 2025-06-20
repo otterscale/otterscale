@@ -1,13 +1,13 @@
 import type { ColumnDef } from "@tanstack/table-core";
 import { renderSnippet, renderComponent } from "$lib/components/ui/data-table/index.js";
 
-import type { BlockImageSnapshot } from './types'
+import type { Snapshot } from './types'
 import DataTableActions from "./actions.svelte";
 
 import { headers } from './headers.svelte'
 import { cells } from './cells.svelte'
 
-const columns: ColumnDef<BlockImageSnapshot>[] = [
+const columns: ColumnDef<Snapshot>[] = [
     {
         id: "select",
         header: ({ table }) => {

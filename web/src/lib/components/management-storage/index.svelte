@@ -12,7 +12,7 @@
 	import { User } from './storage-user';
 </script>
 
-<LayeredTabs.Root value="block-image">
+<LayeredTabs.Root value="subvolume-group">
 	<LayeredTabs.Menubar>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>

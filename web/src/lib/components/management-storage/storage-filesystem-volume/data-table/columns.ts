@@ -3,9 +3,9 @@ import type { ColumnDef } from "@tanstack/table-core";
 import DataTableActions from "./actions.svelte";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import { type FileSystem } from './types';
+import { type Volume } from './types';
 
-const columns: ColumnDef<FileSystem>[] = [
+const columns: ColumnDef<Volume>[] = [
     {
         id: "select",
         header: ({ table }) => {

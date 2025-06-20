@@ -2,20 +2,15 @@
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import {
-		Multiple as MultipleSelect,
-		Single as SingleSelect
-	} from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import type { BlockImageSnapshot } from './types';
 	import { type Request } from './create.svelte';
+	import type { Snapshot } from './types';
 </script>
 
 <script lang="ts">
-	let { blockImagesnapshot }: { blockImagesnapshot: BlockImageSnapshot } = $props();
+	let { blockImagesnapshot }: { blockImagesnapshot: Snapshot } = $props();
 
 	const DEFAULT_REQUEST = { name: blockImagesnapshot.name } as Request;
 

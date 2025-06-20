@@ -8,6 +8,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { writable, type Writable } from 'svelte/store';
+	import type { Volume } from './types';
 
 	export type Request = {
 		name: string;
@@ -31,6 +32,8 @@
 </script>
 
 <script lang="ts">
+	let { data = $bindable() }: { data: Writable<Volume[]> } = $props();
+
 	const DEFAULT_REQUEST = {} as Request;
 	let request: Request = $state(DEFAULT_REQUEST);
 	function reset() {
@@ -132,7 +135,9 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
+						data.set([]);
 						console.log(request);
+						stateController.close();
 					}}
 				>
 					Create

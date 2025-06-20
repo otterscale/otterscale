@@ -5,7 +5,7 @@
 	import { formatTimeAgo } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import { type FileSystem } from './types';
+	import { type Volume } from './types';
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -16,7 +16,7 @@
 	};
 </script>
 
-{#snippet _row_picker(row: Row<FileSystem>)}
+{#snippet _row_picker(row: Row<Volume>)}
 	<Checkbox
 		checked={row.getIsSelected()}
 		onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -25,11 +25,11 @@
 	/>
 {/snippet}
 
-{#snippet name(row: Row<FileSystem>)}
+{#snippet name(row: Row<Volume>)}
 	{row.original.name}
 {/snippet}
 
-{#snippet enabled(row: Row<FileSystem>)}
+{#snippet enabled(row: Row<Volume>)}
 	{#if row.original.enabled}
 		<Icon icon="ph:check" />
 	{:else}
@@ -37,12 +37,12 @@
 	{/if}
 {/snippet}
 
-{#snippet permission(row: Row<FileSystem>)}
+{#snippet permission(row: Row<Volume>)}
 	<Badge variant="outline">
 		{row.original.permission}
 	</Badge>
 {/snippet}
 
-{#snippet createTime(row: Row<FileSystem>)}
+{#snippet createTime(row: Row<Volume>)}
 	{formatTimeAgo(row.original.createTime)}
 {/snippet}

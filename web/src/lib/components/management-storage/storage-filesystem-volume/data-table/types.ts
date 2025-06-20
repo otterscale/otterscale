@@ -1,4 +1,4 @@
-export type FileSystem = {
+export type Volume = {
     id: string;
     name: string;
     type: string,

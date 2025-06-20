@@ -12,7 +12,7 @@
 <Layout.Actions>
 	<Layout.ActionLabel>Views</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<ActionSnapshot />
+		<ActionSnapshot { blockImage } />
 	</Layout.ActionItem>
 	<Layout.ActionSeparator />
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>

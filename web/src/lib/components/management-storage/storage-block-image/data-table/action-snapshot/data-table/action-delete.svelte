@@ -5,11 +5,11 @@
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import Icon from '@iconify/svelte';
 	import { type Request } from './create.svelte';
-	import type { BlockImageSnapshot } from './types';
+	import type { Snapshot } from './types';
 </script>
 
 <script lang="ts">
-	let { blockImagesnapshot }: { blockImagesnapshot: BlockImageSnapshot } = $props();
+	let { blockImagesnapshot }: { blockImagesnapshot: Snapshot } = $props();
 
 	const DEFAULT_REQUEST = {} as Request;
 

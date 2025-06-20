@@ -3,6 +3,9 @@
 	import * as Sheet from '$lib/components/ui/sheet';
 	import Icon from '@iconify/svelte';
 	import { cn } from '$lib/utils';
+	import type { Volume } from '../types';
+
+	let { fileSystem }: { fileSystem: Volume } = $props();
 </script>
 
 <Sheet.Root>
@@ -11,6 +14,6 @@
 		Snapshot
 	</Sheet.Trigger>
 	<Sheet.Content class="flex min-w-[77vw] flex-col justify-center p-4">
-		<DataTable />
+		<DataTable {fileSystem}/>
 	</Sheet.Content>
 </Sheet.Root>

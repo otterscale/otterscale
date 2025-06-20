@@ -5,13 +5,13 @@
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import type { FileSystem } from './types';
+	import type { Volume } from './types';
 
 	type Request = {
 		name: string;
 	};
 
-	let { fileSystem }: { fileSystem: FileSystem } = $props();
+	let { fileSystem }: { fileSystem: Volume } = $props();
 
 	const DEFAULT_REQUEST = { name: fileSystem.name } as Request;
 	let request: Request = $state(DEFAULT_REQUEST);

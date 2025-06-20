@@ -4,19 +4,18 @@
 	import ActionDelete from './action-delete.svelte';
 	import ActionEdit from './action-edit.svelte';
 	import { ActionSnapshot } from './action-snapshot';
-	import type { FileSystem } from './types';
+	import type { Volume } from './types';
 
-	let { fileSystem }: { fileSystem: FileSystem } = $props();
+	let { fileSystem }: { fileSystem: Volume } = $props();
 </script>
 
 <Layout.Actions>
-	<Layout.ActionSeparator />
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>
 	<Layout.ActionItem>
 		<ActionAuthorize {fileSystem} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<ActionSnapshot />
+		<ActionSnapshot {fileSystem} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
 		<ActionEdit {fileSystem} />
