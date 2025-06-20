@@ -6,7 +6,11 @@ type BooleanOption = {
     label: any,
     icon: string
 }
-
+type UnitType = {
+    value: any,
+    label: any,
+    icon?: string
+}
 export type {
-    BooleanOption, InputType
+    BooleanOption, InputType, UnitType
 }
