@@ -17,7 +17,7 @@
 	}: Props = $props();
 </script>
 
-<div class="flex h-full items-end justify-end">
+<div class="mt-2 flex h-full items-end justify-end">
 	<Button
 		bind:ref
 		data-slot="alert-action"
