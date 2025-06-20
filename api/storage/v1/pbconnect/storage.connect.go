@@ -38,9 +38,8 @@ const (
 	StorageServiceListMONsProcedure = "/otterscale.storage.v1.StorageService/ListMONs"
 	// StorageServiceListOSDsProcedure is the fully-qualified name of the StorageService's ListOSDs RPC.
 	StorageServiceListOSDsProcedure = "/otterscale.storage.v1.StorageService/ListOSDs"
-	// StorageServiceDoOSDSMARTProcedure is the fully-qualified name of the StorageService's DoOSDSMART
-	// RPC.
-	StorageServiceDoOSDSMARTProcedure = "/otterscale.storage.v1.StorageService/DoOSDSMART"
+	// StorageServiceDoSMARTProcedure is the fully-qualified name of the StorageService's DoSMART RPC.
+	StorageServiceDoSMARTProcedure = "/otterscale.storage.v1.StorageService/DoSMART"
 	// StorageServiceListPoolsProcedure is the fully-qualified name of the StorageService's ListPools
 	// RPC.
 	StorageServiceListPoolsProcedure = "/otterscale.storage.v1.StorageService/ListPools"
@@ -147,7 +146,7 @@ type StorageServiceClient interface {
 	// Cluster
 	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
 	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
-	DoOSDSMART(context.Context, *connect.Request[v1.DoOSDSMARTRequest]) (*connect.Response[v1.DoOSDSMARTResponse], error)
+	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
 	// Cluster Pool
 	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
 	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
@@ -215,10 +214,10 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(storageServiceMethods.ByName("ListOSDs")),
 			connect.WithClientOptions(opts...),
 		),
-		doOSDSMART: connect.NewClient[v1.DoOSDSMARTRequest, v1.DoOSDSMARTResponse](
+		doSMART: connect.NewClient[v1.DoSMARTRequest, v1.DoSMARTResponse](
 			httpClient,
-			baseURL+StorageServiceDoOSDSMARTProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("DoOSDSMART")),
+			baseURL+StorageServiceDoSMARTProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("DoSMART")),
 			connect.WithClientOptions(opts...),
 		),
 		listPools: connect.NewClient[v1.ListPoolsRequest, v1.ListPoolsResponse](
@@ -426,7 +425,7 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 type storageServiceClient struct {
 	listMONs                    *connect.Client[v1.ListMONsRequest, v1.ListMONsResponse]
 	listOSDs                    *connect.Client[v1.ListOSDsRequest, v1.ListOSDsResponse]
-	doOSDSMART                  *connect.Client[v1.DoOSDSMARTRequest, v1.DoOSDSMARTResponse]
+	doSMART                     *connect.Client[v1.DoSMARTRequest, v1.DoSMARTResponse]
 	listPools                   *connect.Client[v1.ListPoolsRequest, v1.ListPoolsResponse]
 	createPool                  *connect.Client[v1.CreatePoolRequest, v1.Pool]
 	updatePool                  *connect.Client[v1.UpdatePoolRequest, v1.Pool]
@@ -472,9 +471,9 @@ func (c *storageServiceClient) ListOSDs(ctx context.Context, req *connect.Reques
 	return c.listOSDs.CallUnary(ctx, req)
 }
 
-// DoOSDSMART calls otterscale.storage.v1.StorageService.DoOSDSMART.
-func (c *storageServiceClient) DoOSDSMART(ctx context.Context, req *connect.Request[v1.DoOSDSMARTRequest]) (*connect.Response[v1.DoOSDSMARTResponse], error) {
-	return c.doOSDSMART.CallUnary(ctx, req)
+// DoSMART calls otterscale.storage.v1.StorageService.DoSMART.
+func (c *storageServiceClient) DoSMART(ctx context.Context, req *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error) {
+	return c.doSMART.CallUnary(ctx, req)
 }
 
 // ListPools calls otterscale.storage.v1.StorageService.ListPools.
@@ -648,7 +647,7 @@ type StorageServiceHandler interface {
 	// Cluster
 	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
 	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
-	DoOSDSMART(context.Context, *connect.Request[v1.DoOSDSMARTRequest]) (*connect.Response[v1.DoOSDSMARTResponse], error)
+	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
 	// Cluster Pool
 	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
 	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
@@ -712,10 +711,10 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		connect.WithSchema(storageServiceMethods.ByName("ListOSDs")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDoOSDSMARTHandler := connect.NewUnaryHandler(
-		StorageServiceDoOSDSMARTProcedure,
-		svc.DoOSDSMART,
-		connect.WithSchema(storageServiceMethods.ByName("DoOSDSMART")),
+	storageServiceDoSMARTHandler := connect.NewUnaryHandler(
+		StorageServiceDoSMARTProcedure,
+		svc.DoSMART,
+		connect.WithSchema(storageServiceMethods.ByName("DoSMART")),
 		connect.WithHandlerOptions(opts...),
 	)
 	storageServiceListPoolsHandler := connect.NewUnaryHandler(
@@ -922,8 +921,8 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceListMONsHandler.ServeHTTP(w, r)
 		case StorageServiceListOSDsProcedure:
 			storageServiceListOSDsHandler.ServeHTTP(w, r)
-		case StorageServiceDoOSDSMARTProcedure:
-			storageServiceDoOSDSMARTHandler.ServeHTTP(w, r)
+		case StorageServiceDoSMARTProcedure:
+			storageServiceDoSMARTHandler.ServeHTTP(w, r)
 		case StorageServiceListPoolsProcedure:
 			storageServiceListPoolsHandler.ServeHTTP(w, r)
 		case StorageServiceCreatePoolProcedure:
@@ -1007,8 +1006,8 @@ func (UnimplementedStorageServiceHandler) ListOSDs(context.Context, *connect.Req
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListOSDs is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DoOSDSMART(context.Context, *connect.Request[v1.DoOSDSMARTRequest]) (*connect.Response[v1.DoOSDSMARTResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DoOSDSMART is not implemented"))
+func (UnimplementedStorageServiceHandler) DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DoSMART is not implemented"))
 }
 
 func (UnimplementedStorageServiceHandler) ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error) {

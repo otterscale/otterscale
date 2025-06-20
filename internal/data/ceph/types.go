@@ -301,3 +301,58 @@ type fsSubvolumeGroupInfo struct {
 	Mtime      string   `json:"mtime,omitempty"`
 	UID        int      `json:"uid,omitempty"`
 }
+
+type deviceListByDaemon struct {
+	Devid    string `json:"devid,omitempty"`
+	Location []struct {
+		Host string `json:"host,omitempty"`
+		Dev  string `json:"dev,omitempty"`
+		Path string `json:"path,omitempty"`
+	} `json:"location,omitempty"`
+	Daemons []string `json:"daemons,omitempty"`
+}
+
+type osdSMART struct {
+	Device struct {
+		InfoName string `json:"info_name,omitempty"`
+		Name     string `json:"name,omitempty"`
+		Protocol string `json:"protocol,omitempty"`
+		Type     string `json:"type,omitempty"`
+	} `json:"device,omitempty"`
+	DeviceType struct {
+		Name      string `json:"name,omitempty"`
+		ScsiValue int    `json:"scsi_value,omitempty"`
+	} `json:"device_type,omitempty"`
+	JSONFormatVersion []int `json:"json_format_version,omitempty"`
+	LocalTime         struct {
+		Asctime string `json:"asctime,omitempty"`
+		TimeT   int    `json:"time_t,omitempty"`
+	} `json:"local_time,omitempty"`
+	LogicalBlockSize                          int    `json:"logical_block_size,omitempty"`
+	ModelName                                 string `json:"model_name,omitempty"`
+	NvmeSmartHealthInformationAddLogError     string `json:"nvme_smart_health_information_add_log_error,omitempty"`
+	NvmeSmartHealthInformationAddLogErrorCode int    `json:"nvme_smart_health_information_add_log_error_code,omitempty"`
+	NvmeVendor                                string `json:"nvme_vendor,omitempty"`
+	Product                                   string `json:"product,omitempty"`
+	Revision                                  string `json:"revision,omitempty"`
+	RotationRate                              int    `json:"rotation_rate,omitempty"`
+	ScsiVersion                               string `json:"scsi_version,omitempty"`
+	Smartctl                                  struct {
+		Argv         []string `json:"argv,omitempty"`
+		BuildInfo    string   `json:"build_info,omitempty"`
+		ExitStatus   int      `json:"exit_status,omitempty"`
+		Output       []string `json:"output,omitempty"`
+		PlatformInfo string   `json:"platform_info,omitempty"`
+		SvnRevision  string   `json:"svn_revision,omitempty"`
+		Version      []int    `json:"version,omitempty"`
+	} `json:"smartctl,omitempty"`
+	Temperature struct {
+		Current   int `json:"current,omitempty"`
+		DriveTrip int `json:"drive_trip,omitempty"`
+	} `json:"temperature,omitempty"`
+	UserCapacity struct {
+		Blocks int   `json:"blocks,omitempty"`
+		Bytes  int64 `json:"bytes,omitempty"`
+	} `json:"user_capacity,omitempty"`
+	Vendor string `json:"vendor,omitempty"`
+}

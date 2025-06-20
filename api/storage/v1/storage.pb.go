@@ -21,6 +21,94 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type Application int32
+
+const (
+	Application_RBD    Application = 0
+	Application_CephFS Application = 1
+	Application_RGW    Application = 2
+)
+
+// Enum value maps for Application.
+var (
+	Application_name = map[int32]string{
+		0: "RBD",
+		1: "CephFS",
+		2: "RGW",
+	}
+	Application_value = map[string]int32{
+		"RBD":    0,
+		"CephFS": 1,
+		"RGW":    2,
+	}
+)
+
+func (x Application) Enum() *Application {
+	p := new(Application)
+	*p = x
+	return p
+}
+
+func (x Application) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Application) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_storage_v1_storage_proto_enumTypes[0].Descriptor()
+}
+
+func (Application) Type() protoreflect.EnumType {
+	return &file_api_storage_v1_storage_proto_enumTypes[0]
+}
+
+func (x Application) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+type CreatePoolRequest_Type int32
+
+const (
+	CreatePoolRequest_UNSPECIFIED CreatePoolRequest_Type = 0
+	CreatePoolRequest_ERASURE     CreatePoolRequest_Type = 1
+	CreatePoolRequest_REPLICATED  CreatePoolRequest_Type = 2
+)
+
+// Enum value maps for CreatePoolRequest_Type.
+var (
+	CreatePoolRequest_Type_name = map[int32]string{
+		0: "UNSPECIFIED",
+		1: "ERASURE",
+		2: "REPLICATED",
+	}
+	CreatePoolRequest_Type_value = map[string]int32{
+		"UNSPECIFIED": 0,
+		"ERASURE":     1,
+		"REPLICATED":  2,
+	}
+)
+
+func (x CreatePoolRequest_Type) Enum() *CreatePoolRequest_Type {
+	p := new(CreatePoolRequest_Type)
+	*p = x
+	return p
+}
+
+func (x CreatePoolRequest_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CreatePoolRequest_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_storage_v1_storage_proto_enumTypes[1].Descriptor()
+}
+
+func (CreatePoolRequest_Type) Type() protoreflect.EnumType {
+	return &file_api_storage_v1_storage_proto_enumTypes[1]
+}
+
+func (x CreatePoolRequest_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type MON struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
@@ -1198,26 +1286,31 @@ func (b0 ListOSDsResponse_builder) Build() *ListOSDsResponse {
 	return m0
 }
 
-type DoOSDSMARTRequest struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+type DoSMARTRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_OsdName      *string                `protobuf:"bytes,3,opt,name=osd_name,json=osdName"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
-func (x *DoOSDSMARTRequest) Reset() {
-	*x = DoOSDSMARTRequest{}
+func (x *DoSMARTRequest) Reset() {
+	*x = DoSMARTRequest{}
 	mi := &file_api_storage_v1_storage_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DoOSDSMARTRequest) String() string {
+func (x *DoSMARTRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DoOSDSMARTRequest) ProtoMessage() {}
+func (*DoSMARTRequest) ProtoMessage() {}
 
-func (x *DoOSDSMARTRequest) ProtoReflect() protoreflect.Message {
+func (x *DoSMARTRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_storage_v1_storage_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1229,38 +1322,135 @@ func (x *DoOSDSMARTRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-type DoOSDSMARTRequest_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
+func (x *DoSMARTRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
 }
 
-func (b0 DoOSDSMARTRequest_builder) Build() *DoOSDSMARTRequest {
-	m0 := &DoOSDSMARTRequest{}
+func (x *DoSMARTRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DoSMARTRequest) GetOsdName() string {
+	if x != nil {
+		if x.xxx_hidden_OsdName != nil {
+			return *x.xxx_hidden_OsdName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DoSMARTRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *DoSMARTRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *DoSMARTRequest) SetOsdName(v string) {
+	x.xxx_hidden_OsdName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *DoSMARTRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *DoSMARTRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *DoSMARTRequest) HasOsdName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *DoSMARTRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *DoSMARTRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *DoSMARTRequest) ClearOsdName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_OsdName = nil
+}
+
+type DoSMARTRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	OsdName      *string
+}
+
+func (b0 DoSMARTRequest_builder) Build() *DoSMARTRequest {
+	m0 := &DoSMARTRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.OsdName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_OsdName = b.OsdName
+	}
 	return m0
 }
 
-type DoOSDSMARTResponse struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+type DoSMARTResponse struct {
+	state                      protoimpl.MessageState             `protogen:"opaque.v1"`
+	xxx_hidden_DeviceOutputMap map[string]*DoSMARTResponse_Output `protobuf:"bytes,1,rep,name=device_output_map,json=deviceOutputMap" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
-func (x *DoOSDSMARTResponse) Reset() {
-	*x = DoOSDSMARTResponse{}
+func (x *DoSMARTResponse) Reset() {
+	*x = DoSMARTResponse{}
 	mi := &file_api_storage_v1_storage_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DoOSDSMARTResponse) String() string {
+func (x *DoSMARTResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DoOSDSMARTResponse) ProtoMessage() {}
+func (*DoSMARTResponse) ProtoMessage() {}
 
-func (x *DoOSDSMARTResponse) ProtoReflect() protoreflect.Message {
+func (x *DoSMARTResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_storage_v1_storage_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1272,15 +1462,28 @@ func (x *DoOSDSMARTResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-type DoOSDSMARTResponse_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
+func (x *DoSMARTResponse) GetDeviceOutputMap() map[string]*DoSMARTResponse_Output {
+	if x != nil {
+		return x.xxx_hidden_DeviceOutputMap
+	}
+	return nil
 }
 
-func (b0 DoOSDSMARTResponse_builder) Build() *DoOSDSMARTResponse {
-	m0 := &DoOSDSMARTResponse{}
+func (x *DoSMARTResponse) SetDeviceOutputMap(v map[string]*DoSMARTResponse_Output) {
+	x.xxx_hidden_DeviceOutputMap = v
+}
+
+type DoSMARTResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	DeviceOutputMap map[string]*DoSMARTResponse_Output
+}
+
+func (b0 DoSMARTResponse_builder) Build() *DoSMARTResponse {
+	m0 := &DoSMARTResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
+	x.xxx_hidden_DeviceOutputMap = b.DeviceOutputMap
 	return m0
 }
 
@@ -1459,11 +1662,12 @@ type CreatePoolRequest struct {
 	xxx_hidden_ScopeUuid       *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName    *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_PoolName        *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
-	xxx_hidden_Type            *string                `protobuf:"bytes,11,opt,name=type"`
-	xxx_hidden_Applications    []string               `protobuf:"bytes,12,rep,name=applications"`
-	xxx_hidden_CompressionMode *string                `protobuf:"bytes,21,opt,name=compression_mode,json=compressionMode"`
-	xxx_hidden_QuotaMaxBytes   *string                `protobuf:"bytes,31,opt,name=quota_max_bytes,json=quotaMaxBytes"`
-	xxx_hidden_QuotaMaxObjects *string                `protobuf:"bytes,32,opt,name=quota_max_objects,json=quotaMaxObjects"`
+	xxx_hidden_PoolType        CreatePoolRequest_Type `protobuf:"varint,11,opt,name=pool_type,json=poolType,enum=otterscale.storage.v1.CreatePoolRequest_Type"`
+	xxx_hidden_EcOverwrites    bool                   `protobuf:"varint,21,opt,name=ec_overwrites,json=ecOverwrites"`
+	xxx_hidden_ReplicatedSize  int32                  `protobuf:"varint,31,opt,name=replicated_size,json=replicatedSize"`
+	xxx_hidden_QuotaMaxBytes   int64                  `protobuf:"varint,41,opt,name=quota_max_bytes,json=quotaMaxBytes"`
+	xxx_hidden_QuotaMaxObjects int32                  `protobuf:"varint,42,opt,name=quota_max_objects,json=quotaMaxObjects"`
+	xxx_hidden_Applications    []Application          `protobuf:"varint,61,rep,packed,name=applications,enum=otterscale.storage.v1.Application"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
 	unknownFields              protoimpl.UnknownFields
@@ -1525,90 +1729,92 @@ func (x *CreatePoolRequest) GetPoolName() string {
 	return ""
 }
 
-func (x *CreatePoolRequest) GetType() string {
+func (x *CreatePoolRequest) GetPoolType() CreatePoolRequest_Type {
 	if x != nil {
-		if x.xxx_hidden_Type != nil {
-			return *x.xxx_hidden_Type
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 3) {
+			return x.xxx_hidden_PoolType
 		}
-		return ""
 	}
-	return ""
+	return CreatePoolRequest_UNSPECIFIED
 }
 
-func (x *CreatePoolRequest) GetApplications() []string {
+func (x *CreatePoolRequest) GetEcOverwrites() bool {
+	if x != nil {
+		return x.xxx_hidden_EcOverwrites
+	}
+	return false
+}
+
+func (x *CreatePoolRequest) GetReplicatedSize() int32 {
+	if x != nil {
+		return x.xxx_hidden_ReplicatedSize
+	}
+	return 0
+}
+
+func (x *CreatePoolRequest) GetQuotaMaxBytes() int64 {
+	if x != nil {
+		return x.xxx_hidden_QuotaMaxBytes
+	}
+	return 0
+}
+
+func (x *CreatePoolRequest) GetQuotaMaxObjects() int32 {
+	if x != nil {
+		return x.xxx_hidden_QuotaMaxObjects
+	}
+	return 0
+}
+
+func (x *CreatePoolRequest) GetApplications() []Application {
 	if x != nil {
 		return x.xxx_hidden_Applications
 	}
 	return nil
 }
 
-func (x *CreatePoolRequest) GetCompressionMode() string {
-	if x != nil {
-		if x.xxx_hidden_CompressionMode != nil {
-			return *x.xxx_hidden_CompressionMode
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreatePoolRequest) GetQuotaMaxBytes() string {
-	if x != nil {
-		if x.xxx_hidden_QuotaMaxBytes != nil {
-			return *x.xxx_hidden_QuotaMaxBytes
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *CreatePoolRequest) GetQuotaMaxObjects() string {
-	if x != nil {
-		if x.xxx_hidden_QuotaMaxObjects != nil {
-			return *x.xxx_hidden_QuotaMaxObjects
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *CreatePoolRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
 }
 
 func (x *CreatePoolRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 9)
 }
 
 func (x *CreatePoolRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 9)
 }
 
-func (x *CreatePoolRequest) SetType(v string) {
-	x.xxx_hidden_Type = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
+func (x *CreatePoolRequest) SetPoolType(v CreatePoolRequest_Type) {
+	x.xxx_hidden_PoolType = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 9)
 }
 
-func (x *CreatePoolRequest) SetApplications(v []string) {
+func (x *CreatePoolRequest) SetEcOverwrites(v bool) {
+	x.xxx_hidden_EcOverwrites = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 9)
+}
+
+func (x *CreatePoolRequest) SetReplicatedSize(v int32) {
+	x.xxx_hidden_ReplicatedSize = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 9)
+}
+
+func (x *CreatePoolRequest) SetQuotaMaxBytes(v int64) {
+	x.xxx_hidden_QuotaMaxBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 9)
+}
+
+func (x *CreatePoolRequest) SetQuotaMaxObjects(v int32) {
+	x.xxx_hidden_QuotaMaxObjects = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 9)
+}
+
+func (x *CreatePoolRequest) SetApplications(v []Application) {
 	x.xxx_hidden_Applications = v
-}
-
-func (x *CreatePoolRequest) SetCompressionMode(v string) {
-	x.xxx_hidden_CompressionMode = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 8)
-}
-
-func (x *CreatePoolRequest) SetQuotaMaxBytes(v string) {
-	x.xxx_hidden_QuotaMaxBytes = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 8)
-}
-
-func (x *CreatePoolRequest) SetQuotaMaxObjects(v string) {
-	x.xxx_hidden_QuotaMaxObjects = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 8)
 }
 
 func (x *CreatePoolRequest) HasScopeUuid() bool {
@@ -1632,14 +1838,21 @@ func (x *CreatePoolRequest) HasPoolName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreatePoolRequest) HasType() bool {
+func (x *CreatePoolRequest) HasPoolType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CreatePoolRequest) HasCompressionMode() bool {
+func (x *CreatePoolRequest) HasEcOverwrites() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *CreatePoolRequest) HasReplicatedSize() bool {
 	if x == nil {
 		return false
 	}
@@ -1675,24 +1888,29 @@ func (x *CreatePoolRequest) ClearPoolName() {
 	x.xxx_hidden_PoolName = nil
 }
 
-func (x *CreatePoolRequest) ClearType() {
+func (x *CreatePoolRequest) ClearPoolType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Type = nil
+	x.xxx_hidden_PoolType = CreatePoolRequest_UNSPECIFIED
 }
 
-func (x *CreatePoolRequest) ClearCompressionMode() {
+func (x *CreatePoolRequest) ClearEcOverwrites() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_EcOverwrites = false
+}
+
+func (x *CreatePoolRequest) ClearReplicatedSize() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_CompressionMode = nil
+	x.xxx_hidden_ReplicatedSize = 0
 }
 
 func (x *CreatePoolRequest) ClearQuotaMaxBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
-	x.xxx_hidden_QuotaMaxBytes = nil
+	x.xxx_hidden_QuotaMaxBytes = 0
 }
 
 func (x *CreatePoolRequest) ClearQuotaMaxObjects() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
-	x.xxx_hidden_QuotaMaxObjects = nil
+	x.xxx_hidden_QuotaMaxObjects = 0
 }
 
 type CreatePoolRequest_builder struct {
@@ -1701,11 +1919,12 @@ type CreatePoolRequest_builder struct {
 	ScopeUuid       *string
 	FacilityName    *string
 	PoolName        *string
-	Type            *string
-	Applications    []string
-	CompressionMode *string
-	QuotaMaxBytes   *string
-	QuotaMaxObjects *string
+	PoolType        *CreatePoolRequest_Type
+	EcOverwrites    *bool
+	ReplicatedSize  *int32
+	QuotaMaxBytes   *int64
+	QuotaMaxObjects *int32
+	Applications    []Application
 }
 
 func (b0 CreatePoolRequest_builder) Build() *CreatePoolRequest {
@@ -1713,34 +1932,38 @@ func (b0 CreatePoolRequest_builder) Build() *CreatePoolRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 9)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 9)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
-	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
-		x.xxx_hidden_Type = b.Type
+	if b.PoolType != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 9)
+		x.xxx_hidden_PoolType = *b.PoolType
 	}
-	x.xxx_hidden_Applications = b.Applications
-	if b.CompressionMode != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 8)
-		x.xxx_hidden_CompressionMode = b.CompressionMode
+	if b.EcOverwrites != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 9)
+		x.xxx_hidden_EcOverwrites = *b.EcOverwrites
+	}
+	if b.ReplicatedSize != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 9)
+		x.xxx_hidden_ReplicatedSize = *b.ReplicatedSize
 	}
 	if b.QuotaMaxBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 8)
-		x.xxx_hidden_QuotaMaxBytes = b.QuotaMaxBytes
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 9)
+		x.xxx_hidden_QuotaMaxBytes = *b.QuotaMaxBytes
 	}
 	if b.QuotaMaxObjects != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 8)
-		x.xxx_hidden_QuotaMaxObjects = b.QuotaMaxObjects
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 9)
+		x.xxx_hidden_QuotaMaxObjects = *b.QuotaMaxObjects
 	}
+	x.xxx_hidden_Applications = b.Applications
 	return m0
 }
 
@@ -1749,9 +1972,8 @@ type UpdatePoolRequest struct {
 	xxx_hidden_ScopeUuid       *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName    *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_PoolName        *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
-	xxx_hidden_CompressionMode *string                `protobuf:"bytes,11,opt,name=compression_mode,json=compressionMode"`
-	xxx_hidden_QuotaMaxBytes   *string                `protobuf:"bytes,21,opt,name=quota_max_bytes,json=quotaMaxBytes"`
-	xxx_hidden_QuotaMaxObjects *string                `protobuf:"bytes,22,opt,name=quota_max_objects,json=quotaMaxObjects"`
+	xxx_hidden_QuotaMaxBytes   int64                  `protobuf:"varint,41,opt,name=quota_max_bytes,json=quotaMaxBytes"`
+	xxx_hidden_QuotaMaxObjects int32                  `protobuf:"varint,42,opt,name=quota_max_objects,json=quotaMaxObjects"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
 	unknownFields              protoimpl.UnknownFields
@@ -1813,64 +2035,43 @@ func (x *UpdatePoolRequest) GetPoolName() string {
 	return ""
 }
 
-func (x *UpdatePoolRequest) GetCompressionMode() string {
+func (x *UpdatePoolRequest) GetQuotaMaxBytes() int64 {
 	if x != nil {
-		if x.xxx_hidden_CompressionMode != nil {
-			return *x.xxx_hidden_CompressionMode
-		}
-		return ""
+		return x.xxx_hidden_QuotaMaxBytes
 	}
-	return ""
+	return 0
 }
 
-func (x *UpdatePoolRequest) GetQuotaMaxBytes() string {
+func (x *UpdatePoolRequest) GetQuotaMaxObjects() int32 {
 	if x != nil {
-		if x.xxx_hidden_QuotaMaxBytes != nil {
-			return *x.xxx_hidden_QuotaMaxBytes
-		}
-		return ""
+		return x.xxx_hidden_QuotaMaxObjects
 	}
-	return ""
-}
-
-func (x *UpdatePoolRequest) GetQuotaMaxObjects() string {
-	if x != nil {
-		if x.xxx_hidden_QuotaMaxObjects != nil {
-			return *x.xxx_hidden_QuotaMaxObjects
-		}
-		return ""
-	}
-	return ""
+	return 0
 }
 
 func (x *UpdatePoolRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *UpdatePoolRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *UpdatePoolRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *UpdatePoolRequest) SetCompressionMode(v string) {
-	x.xxx_hidden_CompressionMode = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+func (x *UpdatePoolRequest) SetQuotaMaxBytes(v int64) {
+	x.xxx_hidden_QuotaMaxBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *UpdatePoolRequest) SetQuotaMaxBytes(v string) {
-	x.xxx_hidden_QuotaMaxBytes = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
-}
-
-func (x *UpdatePoolRequest) SetQuotaMaxObjects(v string) {
-	x.xxx_hidden_QuotaMaxObjects = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+func (x *UpdatePoolRequest) SetQuotaMaxObjects(v int32) {
+	x.xxx_hidden_QuotaMaxObjects = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *UpdatePoolRequest) HasScopeUuid() bool {
@@ -1894,25 +2095,18 @@ func (x *UpdatePoolRequest) HasPoolName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdatePoolRequest) HasCompressionMode() bool {
+func (x *UpdatePoolRequest) HasQuotaMaxBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *UpdatePoolRequest) HasQuotaMaxBytes() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
-}
-
 func (x *UpdatePoolRequest) HasQuotaMaxObjects() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *UpdatePoolRequest) ClearScopeUuid() {
@@ -1930,19 +2124,14 @@ func (x *UpdatePoolRequest) ClearPoolName() {
 	x.xxx_hidden_PoolName = nil
 }
 
-func (x *UpdatePoolRequest) ClearCompressionMode() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_CompressionMode = nil
-}
-
 func (x *UpdatePoolRequest) ClearQuotaMaxBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_QuotaMaxBytes = nil
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_QuotaMaxBytes = 0
 }
 
 func (x *UpdatePoolRequest) ClearQuotaMaxObjects() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_QuotaMaxObjects = nil
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_QuotaMaxObjects = 0
 }
 
 type UpdatePoolRequest_builder struct {
@@ -1951,9 +2140,8 @@ type UpdatePoolRequest_builder struct {
 	ScopeUuid       *string
 	FacilityName    *string
 	PoolName        *string
-	CompressionMode *string
-	QuotaMaxBytes   *string
-	QuotaMaxObjects *string
+	QuotaMaxBytes   *int64
+	QuotaMaxObjects *int32
 }
 
 func (b0 UpdatePoolRequest_builder) Build() *UpdatePoolRequest {
@@ -1961,28 +2149,24 @@ func (b0 UpdatePoolRequest_builder) Build() *UpdatePoolRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
-	if b.CompressionMode != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
-		x.xxx_hidden_CompressionMode = b.CompressionMode
-	}
 	if b.QuotaMaxBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
-		x.xxx_hidden_QuotaMaxBytes = b.QuotaMaxBytes
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_QuotaMaxBytes = *b.QuotaMaxBytes
 	}
 	if b.QuotaMaxObjects != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
-		x.xxx_hidden_QuotaMaxObjects = b.QuotaMaxObjects
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_QuotaMaxObjects = *b.QuotaMaxObjects
 	}
 	return m0
 }
@@ -8497,6 +8681,63 @@ func (b0 User_Key_builder) Build() *User_Key {
 	return m0
 }
 
+type DoSMARTResponse_Output struct {
+	state            protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Lines []string               `protobuf:"bytes,1,rep,name=lines"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *DoSMARTResponse_Output) Reset() {
+	*x = DoSMARTResponse_Output{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DoSMARTResponse_Output) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DoSMARTResponse_Output) ProtoMessage() {}
+
+func (x *DoSMARTResponse_Output) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *DoSMARTResponse_Output) GetLines() []string {
+	if x != nil {
+		return x.xxx_hidden_Lines
+	}
+	return nil
+}
+
+func (x *DoSMARTResponse_Output) SetLines(v []string) {
+	x.xxx_hidden_Lines = v
+}
+
+type DoSMARTResponse_Output_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Lines []string
+}
+
+func (b0 DoSMARTResponse_Output_builder) Build() *DoSMARTResponse_Output {
+	m0 := &DoSMARTResponse_Output{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Lines = b.Lines
+	return m0
+}
+
 var File_api_storage_v1_storage_proto protoreflect.FileDescriptor
 
 const file_api_storage_v1_storage_proto_rawDesc = "" +
@@ -8551,33 +8792,48 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"B\n" +
 	"\x10ListOSDsResponse\x12.\n" +
-	"\x04osds\x18\x01 \x03(\v2\x1a.otterscale.storage.v1.OSDR\x04osds\"\x13\n" +
-	"\x11DoOSDSMARTRequest\"\x14\n" +
-	"\x12DoOSDSMARTResponse\"V\n" +
+	"\x04osds\x18\x01 \x03(\v2\x1a.otterscale.storage.v1.OSDR\x04osds\"o\n" +
+	"\x0eDoSMARTRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x19\n" +
+	"\bosd_name\x18\x03 \x01(\tR\aosdName\"\x8d\x02\n" +
+	"\x0fDoSMARTResponse\x12g\n" +
+	"\x11device_output_map\x18\x01 \x03(\v2;.otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntryR\x0fdeviceOutputMap\x1a\x1e\n" +
+	"\x06Output\x12\x14\n" +
+	"\x05lines\x18\x01 \x03(\tR\x05lines\x1aq\n" +
+	"\x14DeviceOutputMapEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12C\n" +
+	"\x05value\x18\x02 \x01(\v2-.otterscale.storage.v1.DoSMARTResponse.OutputR\x05value:\x028\x01\"V\n" +
 	"\x10ListPoolsRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"F\n" +
 	"\x11ListPoolsResponse\x121\n" +
-	"\x05pools\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.PoolR\x05pools\"\xab\x02\n" +
+	"\x05pools\x18\x01 \x03(\v2\x1b.otterscale.storage.v1.PoolR\x05pools\"\xe0\x03\n" +
 	"\x11CreatePoolRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1b\n" +
-	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x12\n" +
-	"\x04type\x18\v \x01(\tR\x04type\x12\"\n" +
-	"\fapplications\x18\f \x03(\tR\fapplications\x12)\n" +
-	"\x10compression_mode\x18\x15 \x01(\tR\x0fcompressionMode\x12&\n" +
-	"\x0fquota_max_bytes\x18\x1f \x01(\tR\rquotaMaxBytes\x12*\n" +
-	"\x11quota_max_objects\x18  \x01(\tR\x0fquotaMaxObjects\"\xf3\x01\n" +
+	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12J\n" +
+	"\tpool_type\x18\v \x01(\x0e2-.otterscale.storage.v1.CreatePoolRequest.TypeR\bpoolType\x12#\n" +
+	"\rec_overwrites\x18\x15 \x01(\bR\fecOverwrites\x12'\n" +
+	"\x0freplicated_size\x18\x1f \x01(\x05R\x0ereplicatedSize\x12&\n" +
+	"\x0fquota_max_bytes\x18) \x01(\x03R\rquotaMaxBytes\x12*\n" +
+	"\x11quota_max_objects\x18* \x01(\x05R\x0fquotaMaxObjects\x12F\n" +
+	"\fapplications\x18= \x03(\x0e2\".otterscale.storage.v1.ApplicationR\fapplications\"4\n" +
+	"\x04Type\x12\x0f\n" +
+	"\vUNSPECIFIED\x10\x00\x12\v\n" +
+	"\aERASURE\x10\x01\x12\x0e\n" +
+	"\n" +
+	"REPLICATED\x10\x02\"\xc8\x01\n" +
 	"\x11UpdatePoolRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1b\n" +
-	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12)\n" +
-	"\x10compression_mode\x18\v \x01(\tR\x0fcompressionMode\x12&\n" +
-	"\x0fquota_max_bytes\x18\x15 \x01(\tR\rquotaMaxBytes\x12*\n" +
-	"\x11quota_max_objects\x18\x16 \x01(\tR\x0fquotaMaxObjects\"t\n" +
+	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12&\n" +
+	"\x0fquota_max_bytes\x18) \x01(\x03R\rquotaMaxBytes\x12*\n" +
+	"\x11quota_max_objects\x18* \x01(\x05R\x0fquotaMaxObjects\"t\n" +
 	"\x11DeletePoolRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -8816,12 +9072,16 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
-	"access_key\x18\x04 \x01(\tR\taccessKey2\xce\x1b\n" +
+	"access_key\x18\x04 \x01(\tR\taccessKey*+\n" +
+	"\vApplication\x12\a\n" +
+	"\x03RBD\x10\x00\x12\n" +
+	"\n" +
+	"\x06CephFS\x10\x01\x12\a\n" +
+	"\x03RGW\x10\x022\xc5\x1b\n" +
 	"\x0eStorageService\x12[\n" +
 	"\bListMONs\x12&.otterscale.storage.v1.ListMONsRequest\x1a'.otterscale.storage.v1.ListMONsResponse\x12[\n" +
-	"\bListOSDs\x12&.otterscale.storage.v1.ListOSDsRequest\x1a'.otterscale.storage.v1.ListOSDsResponse\x12a\n" +
-	"\n" +
-	"DoOSDSMART\x12(.otterscale.storage.v1.DoOSDSMARTRequest\x1a).otterscale.storage.v1.DoOSDSMARTResponse\x12^\n" +
+	"\bListOSDs\x12&.otterscale.storage.v1.ListOSDsRequest\x1a'.otterscale.storage.v1.ListOSDsResponse\x12X\n" +
+	"\aDoSMART\x12%.otterscale.storage.v1.DoSMARTRequest\x1a&.otterscale.storage.v1.DoSMARTResponse\x12^\n" +
 	"\tListPools\x12'.otterscale.storage.v1.ListPoolsRequest\x1a(.otterscale.storage.v1.ListPoolsResponse\x12S\n" +
 	"\n" +
 	"CreatePool\x12(.otterscale.storage.v1.CreatePoolRequest\x1a\x1b.otterscale.storage.v1.Pool\x12S\n" +
@@ -8863,162 +9123,171 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x0fCreateUserS3Key\x12-.otterscale.storage.v1.CreateUserS3KeyRequest\x1a\x1f.otterscale.storage.v1.User.Key\x12X\n" +
 	"\x0fDeleteUserS3Key\x12-.otterscale.storage.v1.DeleteUserS3KeyRequest\x1a\x16.google.protobuf.EmptyB1Z/github.com/openhdc/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
 
-var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 61)
+var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 63)
 var file_api_storage_v1_storage_proto_goTypes = []any{
-	(*MON)(nil),                                // 0: otterscale.storage.v1.MON
-	(*OSD)(nil),                                // 1: otterscale.storage.v1.OSD
-	(*Pool)(nil),                               // 2: otterscale.storage.v1.Pool
-	(*Image)(nil),                              // 3: otterscale.storage.v1.Image
-	(*Volume)(nil),                             // 4: otterscale.storage.v1.Volume
-	(*Subvolume)(nil),                          // 5: otterscale.storage.v1.Subvolume
-	(*SubvolumeGroup)(nil),                     // 6: otterscale.storage.v1.SubvolumeGroup
-	(*Bucket)(nil),                             // 7: otterscale.storage.v1.Bucket
-	(*Role)(nil),                               // 8: otterscale.storage.v1.Role
-	(*User)(nil),                               // 9: otterscale.storage.v1.User
-	(*ListMONsRequest)(nil),                    // 10: otterscale.storage.v1.ListMONsRequest
-	(*ListMONsResponse)(nil),                   // 11: otterscale.storage.v1.ListMONsResponse
-	(*ListOSDsRequest)(nil),                    // 12: otterscale.storage.v1.ListOSDsRequest
-	(*ListOSDsResponse)(nil),                   // 13: otterscale.storage.v1.ListOSDsResponse
-	(*DoOSDSMARTRequest)(nil),                  // 14: otterscale.storage.v1.DoOSDSMARTRequest
-	(*DoOSDSMARTResponse)(nil),                 // 15: otterscale.storage.v1.DoOSDSMARTResponse
-	(*ListPoolsRequest)(nil),                   // 16: otterscale.storage.v1.ListPoolsRequest
-	(*ListPoolsResponse)(nil),                  // 17: otterscale.storage.v1.ListPoolsResponse
-	(*CreatePoolRequest)(nil),                  // 18: otterscale.storage.v1.CreatePoolRequest
-	(*UpdatePoolRequest)(nil),                  // 19: otterscale.storage.v1.UpdatePoolRequest
-	(*DeletePoolRequest)(nil),                  // 20: otterscale.storage.v1.DeletePoolRequest
-	(*ListImagesRequest)(nil),                  // 21: otterscale.storage.v1.ListImagesRequest
-	(*ListImagesResponse)(nil),                 // 22: otterscale.storage.v1.ListImagesResponse
-	(*CreateImageRequest)(nil),                 // 23: otterscale.storage.v1.CreateImageRequest
-	(*UpdateImageRequest)(nil),                 // 24: otterscale.storage.v1.UpdateImageRequest
-	(*DeleteImageRequest)(nil),                 // 25: otterscale.storage.v1.DeleteImageRequest
-	(*CreateImageSnapshotRequest)(nil),         // 26: otterscale.storage.v1.CreateImageSnapshotRequest
-	(*DeleteImageSnapshotRequest)(nil),         // 27: otterscale.storage.v1.DeleteImageSnapshotRequest
-	(*ListVolumesRequest)(nil),                 // 28: otterscale.storage.v1.ListVolumesRequest
-	(*ListVolumesResponse)(nil),                // 29: otterscale.storage.v1.ListVolumesResponse
-	(*ListSubvolumesRequest)(nil),              // 30: otterscale.storage.v1.ListSubvolumesRequest
-	(*ListSubvolumesResponse)(nil),             // 31: otterscale.storage.v1.ListSubvolumesResponse
-	(*CreateSubvolumeRequest)(nil),             // 32: otterscale.storage.v1.CreateSubvolumeRequest
-	(*UpdateSubvolumeRequest)(nil),             // 33: otterscale.storage.v1.UpdateSubvolumeRequest
-	(*DeleteSubvolumeRequest)(nil),             // 34: otterscale.storage.v1.DeleteSubvolumeRequest
-	(*GrantSubvolumeExportAccessRequest)(nil),  // 35: otterscale.storage.v1.GrantSubvolumeExportAccessRequest
-	(*RevokeSubvolumeExportAccessRequest)(nil), // 36: otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
-	(*CreateSubvolumeSnapshotRequest)(nil),     // 37: otterscale.storage.v1.CreateSubvolumeSnapshotRequest
-	(*DeleteSubvolumeSnapshotRequest)(nil),     // 38: otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
-	(*ListSubvolumeGroupsRequest)(nil),         // 39: otterscale.storage.v1.ListSubvolumeGroupsRequest
-	(*ListSubvolumeGroupsResponse)(nil),        // 40: otterscale.storage.v1.ListSubvolumeGroupsResponse
-	(*CreateSubvolumeGroupRequest)(nil),        // 41: otterscale.storage.v1.CreateSubvolumeGroupRequest
-	(*UpdateSubvolumeGroupRequest)(nil),        // 42: otterscale.storage.v1.UpdateSubvolumeGroupRequest
-	(*DeleteSubvolumeGroupRequest)(nil),        // 43: otterscale.storage.v1.DeleteSubvolumeGroupRequest
-	(*ListBucketsRequest)(nil),                 // 44: otterscale.storage.v1.ListBucketsRequest
-	(*ListBucketsResponse)(nil),                // 45: otterscale.storage.v1.ListBucketsResponse
-	(*CreateBucketRequest)(nil),                // 46: otterscale.storage.v1.CreateBucketRequest
-	(*UpdateBucketRequest)(nil),                // 47: otterscale.storage.v1.UpdateBucketRequest
-	(*DeleteBucketRequest)(nil),                // 48: otterscale.storage.v1.DeleteBucketRequest
-	(*ListUsersRequest)(nil),                   // 49: otterscale.storage.v1.ListUsersRequest
-	(*ListUsersResponse)(nil),                  // 50: otterscale.storage.v1.ListUsersResponse
-	(*CreateUserRequest)(nil),                  // 51: otterscale.storage.v1.CreateUserRequest
-	(*UpdateUserRequest)(nil),                  // 52: otterscale.storage.v1.UpdateUserRequest
-	(*DeleteUserRequest)(nil),                  // 53: otterscale.storage.v1.DeleteUserRequest
-	(*CreateUserS3KeyRequest)(nil),             // 54: otterscale.storage.v1.CreateUserS3KeyRequest
-	(*DeleteUserS3KeyRequest)(nil),             // 55: otterscale.storage.v1.DeleteUserS3KeyRequest
-	(*Image_Snapshot)(nil),                     // 56: otterscale.storage.v1.Image.Snapshot
-	(*Subvolume_Snapshot)(nil),                 // 57: otterscale.storage.v1.Subvolume.Snapshot
-	(*Subvolume_Export)(nil),                   // 58: otterscale.storage.v1.Subvolume.Export
-	(*Subvolume_Export_Client)(nil),            // 59: otterscale.storage.v1.Subvolume.Export.Client
-	(*User_Key)(nil),                           // 60: otterscale.storage.v1.User.Key
-	(*emptypb.Empty)(nil),                      // 61: google.protobuf.Empty
+	(Application)(0),                           // 0: otterscale.storage.v1.Application
+	(CreatePoolRequest_Type)(0),                // 1: otterscale.storage.v1.CreatePoolRequest.Type
+	(*MON)(nil),                                // 2: otterscale.storage.v1.MON
+	(*OSD)(nil),                                // 3: otterscale.storage.v1.OSD
+	(*Pool)(nil),                               // 4: otterscale.storage.v1.Pool
+	(*Image)(nil),                              // 5: otterscale.storage.v1.Image
+	(*Volume)(nil),                             // 6: otterscale.storage.v1.Volume
+	(*Subvolume)(nil),                          // 7: otterscale.storage.v1.Subvolume
+	(*SubvolumeGroup)(nil),                     // 8: otterscale.storage.v1.SubvolumeGroup
+	(*Bucket)(nil),                             // 9: otterscale.storage.v1.Bucket
+	(*Role)(nil),                               // 10: otterscale.storage.v1.Role
+	(*User)(nil),                               // 11: otterscale.storage.v1.User
+	(*ListMONsRequest)(nil),                    // 12: otterscale.storage.v1.ListMONsRequest
+	(*ListMONsResponse)(nil),                   // 13: otterscale.storage.v1.ListMONsResponse
+	(*ListOSDsRequest)(nil),                    // 14: otterscale.storage.v1.ListOSDsRequest
+	(*ListOSDsResponse)(nil),                   // 15: otterscale.storage.v1.ListOSDsResponse
+	(*DoSMARTRequest)(nil),                     // 16: otterscale.storage.v1.DoSMARTRequest
+	(*DoSMARTResponse)(nil),                    // 17: otterscale.storage.v1.DoSMARTResponse
+	(*ListPoolsRequest)(nil),                   // 18: otterscale.storage.v1.ListPoolsRequest
+	(*ListPoolsResponse)(nil),                  // 19: otterscale.storage.v1.ListPoolsResponse
+	(*CreatePoolRequest)(nil),                  // 20: otterscale.storage.v1.CreatePoolRequest
+	(*UpdatePoolRequest)(nil),                  // 21: otterscale.storage.v1.UpdatePoolRequest
+	(*DeletePoolRequest)(nil),                  // 22: otterscale.storage.v1.DeletePoolRequest
+	(*ListImagesRequest)(nil),                  // 23: otterscale.storage.v1.ListImagesRequest
+	(*ListImagesResponse)(nil),                 // 24: otterscale.storage.v1.ListImagesResponse
+	(*CreateImageRequest)(nil),                 // 25: otterscale.storage.v1.CreateImageRequest
+	(*UpdateImageRequest)(nil),                 // 26: otterscale.storage.v1.UpdateImageRequest
+	(*DeleteImageRequest)(nil),                 // 27: otterscale.storage.v1.DeleteImageRequest
+	(*CreateImageSnapshotRequest)(nil),         // 28: otterscale.storage.v1.CreateImageSnapshotRequest
+	(*DeleteImageSnapshotRequest)(nil),         // 29: otterscale.storage.v1.DeleteImageSnapshotRequest
+	(*ListVolumesRequest)(nil),                 // 30: otterscale.storage.v1.ListVolumesRequest
+	(*ListVolumesResponse)(nil),                // 31: otterscale.storage.v1.ListVolumesResponse
+	(*ListSubvolumesRequest)(nil),              // 32: otterscale.storage.v1.ListSubvolumesRequest
+	(*ListSubvolumesResponse)(nil),             // 33: otterscale.storage.v1.ListSubvolumesResponse
+	(*CreateSubvolumeRequest)(nil),             // 34: otterscale.storage.v1.CreateSubvolumeRequest
+	(*UpdateSubvolumeRequest)(nil),             // 35: otterscale.storage.v1.UpdateSubvolumeRequest
+	(*DeleteSubvolumeRequest)(nil),             // 36: otterscale.storage.v1.DeleteSubvolumeRequest
+	(*GrantSubvolumeExportAccessRequest)(nil),  // 37: otterscale.storage.v1.GrantSubvolumeExportAccessRequest
+	(*RevokeSubvolumeExportAccessRequest)(nil), // 38: otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
+	(*CreateSubvolumeSnapshotRequest)(nil),     // 39: otterscale.storage.v1.CreateSubvolumeSnapshotRequest
+	(*DeleteSubvolumeSnapshotRequest)(nil),     // 40: otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
+	(*ListSubvolumeGroupsRequest)(nil),         // 41: otterscale.storage.v1.ListSubvolumeGroupsRequest
+	(*ListSubvolumeGroupsResponse)(nil),        // 42: otterscale.storage.v1.ListSubvolumeGroupsResponse
+	(*CreateSubvolumeGroupRequest)(nil),        // 43: otterscale.storage.v1.CreateSubvolumeGroupRequest
+	(*UpdateSubvolumeGroupRequest)(nil),        // 44: otterscale.storage.v1.UpdateSubvolumeGroupRequest
+	(*DeleteSubvolumeGroupRequest)(nil),        // 45: otterscale.storage.v1.DeleteSubvolumeGroupRequest
+	(*ListBucketsRequest)(nil),                 // 46: otterscale.storage.v1.ListBucketsRequest
+	(*ListBucketsResponse)(nil),                // 47: otterscale.storage.v1.ListBucketsResponse
+	(*CreateBucketRequest)(nil),                // 48: otterscale.storage.v1.CreateBucketRequest
+	(*UpdateBucketRequest)(nil),                // 49: otterscale.storage.v1.UpdateBucketRequest
+	(*DeleteBucketRequest)(nil),                // 50: otterscale.storage.v1.DeleteBucketRequest
+	(*ListUsersRequest)(nil),                   // 51: otterscale.storage.v1.ListUsersRequest
+	(*ListUsersResponse)(nil),                  // 52: otterscale.storage.v1.ListUsersResponse
+	(*CreateUserRequest)(nil),                  // 53: otterscale.storage.v1.CreateUserRequest
+	(*UpdateUserRequest)(nil),                  // 54: otterscale.storage.v1.UpdateUserRequest
+	(*DeleteUserRequest)(nil),                  // 55: otterscale.storage.v1.DeleteUserRequest
+	(*CreateUserS3KeyRequest)(nil),             // 56: otterscale.storage.v1.CreateUserS3KeyRequest
+	(*DeleteUserS3KeyRequest)(nil),             // 57: otterscale.storage.v1.DeleteUserS3KeyRequest
+	(*Image_Snapshot)(nil),                     // 58: otterscale.storage.v1.Image.Snapshot
+	(*Subvolume_Snapshot)(nil),                 // 59: otterscale.storage.v1.Subvolume.Snapshot
+	(*Subvolume_Export)(nil),                   // 60: otterscale.storage.v1.Subvolume.Export
+	(*Subvolume_Export_Client)(nil),            // 61: otterscale.storage.v1.Subvolume.Export.Client
+	(*User_Key)(nil),                           // 62: otterscale.storage.v1.User.Key
+	(*DoSMARTResponse_Output)(nil),             // 63: otterscale.storage.v1.DoSMARTResponse.Output
+	nil,                                        // 64: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
+	(*emptypb.Empty)(nil),                      // 65: google.protobuf.Empty
 }
 var file_api_storage_v1_storage_proto_depIdxs = []int32{
-	56, // 0: otterscale.storage.v1.Image.snapshots:type_name -> otterscale.storage.v1.Image.Snapshot
-	58, // 1: otterscale.storage.v1.Subvolume.export:type_name -> otterscale.storage.v1.Subvolume.Export
-	57, // 2: otterscale.storage.v1.Subvolume.snapshots:type_name -> otterscale.storage.v1.Subvolume.Snapshot
-	0,  // 3: otterscale.storage.v1.ListMONsResponse.mons:type_name -> otterscale.storage.v1.MON
-	1,  // 4: otterscale.storage.v1.ListOSDsResponse.osds:type_name -> otterscale.storage.v1.OSD
-	2,  // 5: otterscale.storage.v1.ListPoolsResponse.pools:type_name -> otterscale.storage.v1.Pool
-	3,  // 6: otterscale.storage.v1.ListImagesResponse.images:type_name -> otterscale.storage.v1.Image
-	4,  // 7: otterscale.storage.v1.ListVolumesResponse.volumes:type_name -> otterscale.storage.v1.Volume
-	5,  // 8: otterscale.storage.v1.ListSubvolumesResponse.subvolumes:type_name -> otterscale.storage.v1.Subvolume
-	6,  // 9: otterscale.storage.v1.ListSubvolumeGroupsResponse.subvolume_groups:type_name -> otterscale.storage.v1.SubvolumeGroup
-	7,  // 10: otterscale.storage.v1.ListBucketsResponse.buckets:type_name -> otterscale.storage.v1.Bucket
-	9,  // 11: otterscale.storage.v1.ListUsersResponse.users:type_name -> otterscale.storage.v1.User
-	59, // 12: otterscale.storage.v1.Subvolume.Export.clients:type_name -> otterscale.storage.v1.Subvolume.Export.Client
-	10, // 13: otterscale.storage.v1.StorageService.ListMONs:input_type -> otterscale.storage.v1.ListMONsRequest
-	12, // 14: otterscale.storage.v1.StorageService.ListOSDs:input_type -> otterscale.storage.v1.ListOSDsRequest
-	14, // 15: otterscale.storage.v1.StorageService.DoOSDSMART:input_type -> otterscale.storage.v1.DoOSDSMARTRequest
-	16, // 16: otterscale.storage.v1.StorageService.ListPools:input_type -> otterscale.storage.v1.ListPoolsRequest
-	18, // 17: otterscale.storage.v1.StorageService.CreatePool:input_type -> otterscale.storage.v1.CreatePoolRequest
-	19, // 18: otterscale.storage.v1.StorageService.UpdatePool:input_type -> otterscale.storage.v1.UpdatePoolRequest
-	20, // 19: otterscale.storage.v1.StorageService.DeletePool:input_type -> otterscale.storage.v1.DeletePoolRequest
-	21, // 20: otterscale.storage.v1.StorageService.ListImages:input_type -> otterscale.storage.v1.ListImagesRequest
-	23, // 21: otterscale.storage.v1.StorageService.CreateImage:input_type -> otterscale.storage.v1.CreateImageRequest
-	24, // 22: otterscale.storage.v1.StorageService.UpdateImage:input_type -> otterscale.storage.v1.UpdateImageRequest
-	25, // 23: otterscale.storage.v1.StorageService.DeleteImage:input_type -> otterscale.storage.v1.DeleteImageRequest
-	26, // 24: otterscale.storage.v1.StorageService.CreateImageSnapshot:input_type -> otterscale.storage.v1.CreateImageSnapshotRequest
-	27, // 25: otterscale.storage.v1.StorageService.DeleteImageSnapshot:input_type -> otterscale.storage.v1.DeleteImageSnapshotRequest
-	28, // 26: otterscale.storage.v1.StorageService.ListVolumes:input_type -> otterscale.storage.v1.ListVolumesRequest
-	30, // 27: otterscale.storage.v1.StorageService.ListSubvolumes:input_type -> otterscale.storage.v1.ListSubvolumesRequest
-	32, // 28: otterscale.storage.v1.StorageService.CreateSubvolume:input_type -> otterscale.storage.v1.CreateSubvolumeRequest
-	33, // 29: otterscale.storage.v1.StorageService.UpdateSubvolume:input_type -> otterscale.storage.v1.UpdateSubvolumeRequest
-	34, // 30: otterscale.storage.v1.StorageService.DeleteSubvolume:input_type -> otterscale.storage.v1.DeleteSubvolumeRequest
-	35, // 31: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:input_type -> otterscale.storage.v1.GrantSubvolumeExportAccessRequest
-	36, // 32: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:input_type -> otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
-	37, // 33: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:input_type -> otterscale.storage.v1.CreateSubvolumeSnapshotRequest
-	38, // 34: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:input_type -> otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
-	39, // 35: otterscale.storage.v1.StorageService.ListSubvolumeGroups:input_type -> otterscale.storage.v1.ListSubvolumeGroupsRequest
-	41, // 36: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:input_type -> otterscale.storage.v1.CreateSubvolumeGroupRequest
-	42, // 37: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:input_type -> otterscale.storage.v1.UpdateSubvolumeGroupRequest
-	43, // 38: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:input_type -> otterscale.storage.v1.DeleteSubvolumeGroupRequest
-	44, // 39: otterscale.storage.v1.StorageService.ListBuckets:input_type -> otterscale.storage.v1.ListBucketsRequest
-	46, // 40: otterscale.storage.v1.StorageService.CreateBucket:input_type -> otterscale.storage.v1.CreateBucketRequest
-	47, // 41: otterscale.storage.v1.StorageService.UpdateBucket:input_type -> otterscale.storage.v1.UpdateBucketRequest
-	48, // 42: otterscale.storage.v1.StorageService.DeleteBucket:input_type -> otterscale.storage.v1.DeleteBucketRequest
-	49, // 43: otterscale.storage.v1.StorageService.ListUsers:input_type -> otterscale.storage.v1.ListUsersRequest
-	51, // 44: otterscale.storage.v1.StorageService.CreateUser:input_type -> otterscale.storage.v1.CreateUserRequest
-	52, // 45: otterscale.storage.v1.StorageService.UpdateUser:input_type -> otterscale.storage.v1.UpdateUserRequest
-	53, // 46: otterscale.storage.v1.StorageService.DeleteUser:input_type -> otterscale.storage.v1.DeleteUserRequest
-	54, // 47: otterscale.storage.v1.StorageService.CreateUserS3Key:input_type -> otterscale.storage.v1.CreateUserS3KeyRequest
-	55, // 48: otterscale.storage.v1.StorageService.DeleteUserS3Key:input_type -> otterscale.storage.v1.DeleteUserS3KeyRequest
-	11, // 49: otterscale.storage.v1.StorageService.ListMONs:output_type -> otterscale.storage.v1.ListMONsResponse
-	13, // 50: otterscale.storage.v1.StorageService.ListOSDs:output_type -> otterscale.storage.v1.ListOSDsResponse
-	15, // 51: otterscale.storage.v1.StorageService.DoOSDSMART:output_type -> otterscale.storage.v1.DoOSDSMARTResponse
-	17, // 52: otterscale.storage.v1.StorageService.ListPools:output_type -> otterscale.storage.v1.ListPoolsResponse
-	2,  // 53: otterscale.storage.v1.StorageService.CreatePool:output_type -> otterscale.storage.v1.Pool
-	2,  // 54: otterscale.storage.v1.StorageService.UpdatePool:output_type -> otterscale.storage.v1.Pool
-	61, // 55: otterscale.storage.v1.StorageService.DeletePool:output_type -> google.protobuf.Empty
-	22, // 56: otterscale.storage.v1.StorageService.ListImages:output_type -> otterscale.storage.v1.ListImagesResponse
-	3,  // 57: otterscale.storage.v1.StorageService.CreateImage:output_type -> otterscale.storage.v1.Image
-	3,  // 58: otterscale.storage.v1.StorageService.UpdateImage:output_type -> otterscale.storage.v1.Image
-	61, // 59: otterscale.storage.v1.StorageService.DeleteImage:output_type -> google.protobuf.Empty
-	56, // 60: otterscale.storage.v1.StorageService.CreateImageSnapshot:output_type -> otterscale.storage.v1.Image.Snapshot
-	61, // 61: otterscale.storage.v1.StorageService.DeleteImageSnapshot:output_type -> google.protobuf.Empty
-	29, // 62: otterscale.storage.v1.StorageService.ListVolumes:output_type -> otterscale.storage.v1.ListVolumesResponse
-	31, // 63: otterscale.storage.v1.StorageService.ListSubvolumes:output_type -> otterscale.storage.v1.ListSubvolumesResponse
-	5,  // 64: otterscale.storage.v1.StorageService.CreateSubvolume:output_type -> otterscale.storage.v1.Subvolume
-	5,  // 65: otterscale.storage.v1.StorageService.UpdateSubvolume:output_type -> otterscale.storage.v1.Subvolume
-	61, // 66: otterscale.storage.v1.StorageService.DeleteSubvolume:output_type -> google.protobuf.Empty
-	61, // 67: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:output_type -> google.protobuf.Empty
-	61, // 68: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:output_type -> google.protobuf.Empty
-	57, // 69: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:output_type -> otterscale.storage.v1.Subvolume.Snapshot
-	61, // 70: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:output_type -> google.protobuf.Empty
-	40, // 71: otterscale.storage.v1.StorageService.ListSubvolumeGroups:output_type -> otterscale.storage.v1.ListSubvolumeGroupsResponse
-	6,  // 72: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
-	6,  // 73: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
-	61, // 74: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:output_type -> google.protobuf.Empty
-	45, // 75: otterscale.storage.v1.StorageService.ListBuckets:output_type -> otterscale.storage.v1.ListBucketsResponse
-	7,  // 76: otterscale.storage.v1.StorageService.CreateBucket:output_type -> otterscale.storage.v1.Bucket
-	7,  // 77: otterscale.storage.v1.StorageService.UpdateBucket:output_type -> otterscale.storage.v1.Bucket
-	61, // 78: otterscale.storage.v1.StorageService.DeleteBucket:output_type -> google.protobuf.Empty
-	50, // 79: otterscale.storage.v1.StorageService.ListUsers:output_type -> otterscale.storage.v1.ListUsersResponse
-	9,  // 80: otterscale.storage.v1.StorageService.CreateUser:output_type -> otterscale.storage.v1.User
-	9,  // 81: otterscale.storage.v1.StorageService.UpdateUser:output_type -> otterscale.storage.v1.User
-	61, // 82: otterscale.storage.v1.StorageService.DeleteUser:output_type -> google.protobuf.Empty
-	60, // 83: otterscale.storage.v1.StorageService.CreateUserS3Key:output_type -> otterscale.storage.v1.User.Key
-	61, // 84: otterscale.storage.v1.StorageService.DeleteUserS3Key:output_type -> google.protobuf.Empty
-	49, // [49:85] is the sub-list for method output_type
-	13, // [13:49] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	58, // 0: otterscale.storage.v1.Image.snapshots:type_name -> otterscale.storage.v1.Image.Snapshot
+	60, // 1: otterscale.storage.v1.Subvolume.export:type_name -> otterscale.storage.v1.Subvolume.Export
+	59, // 2: otterscale.storage.v1.Subvolume.snapshots:type_name -> otterscale.storage.v1.Subvolume.Snapshot
+	2,  // 3: otterscale.storage.v1.ListMONsResponse.mons:type_name -> otterscale.storage.v1.MON
+	3,  // 4: otterscale.storage.v1.ListOSDsResponse.osds:type_name -> otterscale.storage.v1.OSD
+	64, // 5: otterscale.storage.v1.DoSMARTResponse.device_output_map:type_name -> otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
+	4,  // 6: otterscale.storage.v1.ListPoolsResponse.pools:type_name -> otterscale.storage.v1.Pool
+	1,  // 7: otterscale.storage.v1.CreatePoolRequest.pool_type:type_name -> otterscale.storage.v1.CreatePoolRequest.Type
+	0,  // 8: otterscale.storage.v1.CreatePoolRequest.applications:type_name -> otterscale.storage.v1.Application
+	5,  // 9: otterscale.storage.v1.ListImagesResponse.images:type_name -> otterscale.storage.v1.Image
+	6,  // 10: otterscale.storage.v1.ListVolumesResponse.volumes:type_name -> otterscale.storage.v1.Volume
+	7,  // 11: otterscale.storage.v1.ListSubvolumesResponse.subvolumes:type_name -> otterscale.storage.v1.Subvolume
+	8,  // 12: otterscale.storage.v1.ListSubvolumeGroupsResponse.subvolume_groups:type_name -> otterscale.storage.v1.SubvolumeGroup
+	9,  // 13: otterscale.storage.v1.ListBucketsResponse.buckets:type_name -> otterscale.storage.v1.Bucket
+	11, // 14: otterscale.storage.v1.ListUsersResponse.users:type_name -> otterscale.storage.v1.User
+	61, // 15: otterscale.storage.v1.Subvolume.Export.clients:type_name -> otterscale.storage.v1.Subvolume.Export.Client
+	63, // 16: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry.value:type_name -> otterscale.storage.v1.DoSMARTResponse.Output
+	12, // 17: otterscale.storage.v1.StorageService.ListMONs:input_type -> otterscale.storage.v1.ListMONsRequest
+	14, // 18: otterscale.storage.v1.StorageService.ListOSDs:input_type -> otterscale.storage.v1.ListOSDsRequest
+	16, // 19: otterscale.storage.v1.StorageService.DoSMART:input_type -> otterscale.storage.v1.DoSMARTRequest
+	18, // 20: otterscale.storage.v1.StorageService.ListPools:input_type -> otterscale.storage.v1.ListPoolsRequest
+	20, // 21: otterscale.storage.v1.StorageService.CreatePool:input_type -> otterscale.storage.v1.CreatePoolRequest
+	21, // 22: otterscale.storage.v1.StorageService.UpdatePool:input_type -> otterscale.storage.v1.UpdatePoolRequest
+	22, // 23: otterscale.storage.v1.StorageService.DeletePool:input_type -> otterscale.storage.v1.DeletePoolRequest
+	23, // 24: otterscale.storage.v1.StorageService.ListImages:input_type -> otterscale.storage.v1.ListImagesRequest
+	25, // 25: otterscale.storage.v1.StorageService.CreateImage:input_type -> otterscale.storage.v1.CreateImageRequest
+	26, // 26: otterscale.storage.v1.StorageService.UpdateImage:input_type -> otterscale.storage.v1.UpdateImageRequest
+	27, // 27: otterscale.storage.v1.StorageService.DeleteImage:input_type -> otterscale.storage.v1.DeleteImageRequest
+	28, // 28: otterscale.storage.v1.StorageService.CreateImageSnapshot:input_type -> otterscale.storage.v1.CreateImageSnapshotRequest
+	29, // 29: otterscale.storage.v1.StorageService.DeleteImageSnapshot:input_type -> otterscale.storage.v1.DeleteImageSnapshotRequest
+	30, // 30: otterscale.storage.v1.StorageService.ListVolumes:input_type -> otterscale.storage.v1.ListVolumesRequest
+	32, // 31: otterscale.storage.v1.StorageService.ListSubvolumes:input_type -> otterscale.storage.v1.ListSubvolumesRequest
+	34, // 32: otterscale.storage.v1.StorageService.CreateSubvolume:input_type -> otterscale.storage.v1.CreateSubvolumeRequest
+	35, // 33: otterscale.storage.v1.StorageService.UpdateSubvolume:input_type -> otterscale.storage.v1.UpdateSubvolumeRequest
+	36, // 34: otterscale.storage.v1.StorageService.DeleteSubvolume:input_type -> otterscale.storage.v1.DeleteSubvolumeRequest
+	37, // 35: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:input_type -> otterscale.storage.v1.GrantSubvolumeExportAccessRequest
+	38, // 36: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:input_type -> otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
+	39, // 37: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:input_type -> otterscale.storage.v1.CreateSubvolumeSnapshotRequest
+	40, // 38: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:input_type -> otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
+	41, // 39: otterscale.storage.v1.StorageService.ListSubvolumeGroups:input_type -> otterscale.storage.v1.ListSubvolumeGroupsRequest
+	43, // 40: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:input_type -> otterscale.storage.v1.CreateSubvolumeGroupRequest
+	44, // 41: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:input_type -> otterscale.storage.v1.UpdateSubvolumeGroupRequest
+	45, // 42: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:input_type -> otterscale.storage.v1.DeleteSubvolumeGroupRequest
+	46, // 43: otterscale.storage.v1.StorageService.ListBuckets:input_type -> otterscale.storage.v1.ListBucketsRequest
+	48, // 44: otterscale.storage.v1.StorageService.CreateBucket:input_type -> otterscale.storage.v1.CreateBucketRequest
+	49, // 45: otterscale.storage.v1.StorageService.UpdateBucket:input_type -> otterscale.storage.v1.UpdateBucketRequest
+	50, // 46: otterscale.storage.v1.StorageService.DeleteBucket:input_type -> otterscale.storage.v1.DeleteBucketRequest
+	51, // 47: otterscale.storage.v1.StorageService.ListUsers:input_type -> otterscale.storage.v1.ListUsersRequest
+	53, // 48: otterscale.storage.v1.StorageService.CreateUser:input_type -> otterscale.storage.v1.CreateUserRequest
+	54, // 49: otterscale.storage.v1.StorageService.UpdateUser:input_type -> otterscale.storage.v1.UpdateUserRequest
+	55, // 50: otterscale.storage.v1.StorageService.DeleteUser:input_type -> otterscale.storage.v1.DeleteUserRequest
+	56, // 51: otterscale.storage.v1.StorageService.CreateUserS3Key:input_type -> otterscale.storage.v1.CreateUserS3KeyRequest
+	57, // 52: otterscale.storage.v1.StorageService.DeleteUserS3Key:input_type -> otterscale.storage.v1.DeleteUserS3KeyRequest
+	13, // 53: otterscale.storage.v1.StorageService.ListMONs:output_type -> otterscale.storage.v1.ListMONsResponse
+	15, // 54: otterscale.storage.v1.StorageService.ListOSDs:output_type -> otterscale.storage.v1.ListOSDsResponse
+	17, // 55: otterscale.storage.v1.StorageService.DoSMART:output_type -> otterscale.storage.v1.DoSMARTResponse
+	19, // 56: otterscale.storage.v1.StorageService.ListPools:output_type -> otterscale.storage.v1.ListPoolsResponse
+	4,  // 57: otterscale.storage.v1.StorageService.CreatePool:output_type -> otterscale.storage.v1.Pool
+	4,  // 58: otterscale.storage.v1.StorageService.UpdatePool:output_type -> otterscale.storage.v1.Pool
+	65, // 59: otterscale.storage.v1.StorageService.DeletePool:output_type -> google.protobuf.Empty
+	24, // 60: otterscale.storage.v1.StorageService.ListImages:output_type -> otterscale.storage.v1.ListImagesResponse
+	5,  // 61: otterscale.storage.v1.StorageService.CreateImage:output_type -> otterscale.storage.v1.Image
+	5,  // 62: otterscale.storage.v1.StorageService.UpdateImage:output_type -> otterscale.storage.v1.Image
+	65, // 63: otterscale.storage.v1.StorageService.DeleteImage:output_type -> google.protobuf.Empty
+	58, // 64: otterscale.storage.v1.StorageService.CreateImageSnapshot:output_type -> otterscale.storage.v1.Image.Snapshot
+	65, // 65: otterscale.storage.v1.StorageService.DeleteImageSnapshot:output_type -> google.protobuf.Empty
+	31, // 66: otterscale.storage.v1.StorageService.ListVolumes:output_type -> otterscale.storage.v1.ListVolumesResponse
+	33, // 67: otterscale.storage.v1.StorageService.ListSubvolumes:output_type -> otterscale.storage.v1.ListSubvolumesResponse
+	7,  // 68: otterscale.storage.v1.StorageService.CreateSubvolume:output_type -> otterscale.storage.v1.Subvolume
+	7,  // 69: otterscale.storage.v1.StorageService.UpdateSubvolume:output_type -> otterscale.storage.v1.Subvolume
+	65, // 70: otterscale.storage.v1.StorageService.DeleteSubvolume:output_type -> google.protobuf.Empty
+	65, // 71: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:output_type -> google.protobuf.Empty
+	65, // 72: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:output_type -> google.protobuf.Empty
+	59, // 73: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:output_type -> otterscale.storage.v1.Subvolume.Snapshot
+	65, // 74: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:output_type -> google.protobuf.Empty
+	42, // 75: otterscale.storage.v1.StorageService.ListSubvolumeGroups:output_type -> otterscale.storage.v1.ListSubvolumeGroupsResponse
+	8,  // 76: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
+	8,  // 77: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
+	65, // 78: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:output_type -> google.protobuf.Empty
+	47, // 79: otterscale.storage.v1.StorageService.ListBuckets:output_type -> otterscale.storage.v1.ListBucketsResponse
+	9,  // 80: otterscale.storage.v1.StorageService.CreateBucket:output_type -> otterscale.storage.v1.Bucket
+	9,  // 81: otterscale.storage.v1.StorageService.UpdateBucket:output_type -> otterscale.storage.v1.Bucket
+	65, // 82: otterscale.storage.v1.StorageService.DeleteBucket:output_type -> google.protobuf.Empty
+	52, // 83: otterscale.storage.v1.StorageService.ListUsers:output_type -> otterscale.storage.v1.ListUsersResponse
+	11, // 84: otterscale.storage.v1.StorageService.CreateUser:output_type -> otterscale.storage.v1.User
+	11, // 85: otterscale.storage.v1.StorageService.UpdateUser:output_type -> otterscale.storage.v1.User
+	65, // 86: otterscale.storage.v1.StorageService.DeleteUser:output_type -> google.protobuf.Empty
+	62, // 87: otterscale.storage.v1.StorageService.CreateUserS3Key:output_type -> otterscale.storage.v1.User.Key
+	65, // 88: otterscale.storage.v1.StorageService.DeleteUserS3Key:output_type -> google.protobuf.Empty
+	53, // [53:89] is the sub-list for method output_type
+	17, // [17:53] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_api_storage_v1_storage_proto_init() }
@@ -9031,13 +9300,14 @@ func file_api_storage_v1_storage_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_storage_v1_storage_proto_rawDesc), len(file_api_storage_v1_storage_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   61,
+			NumEnums:      2,
+			NumMessages:   63,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_storage_v1_storage_proto_goTypes,
 		DependencyIndexes: file_api_storage_v1_storage_proto_depIdxs,
+		EnumInfos:         file_api_storage_v1_storage_proto_enumTypes,
 		MessageInfos:      file_api_storage_v1_storage_proto_msgTypes,
 	}.Build()
 	File_api_storage_v1_storage_proto = out.File

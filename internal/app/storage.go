@@ -2,8 +2,11 @@ package app
 
 import (
 	"context"
+	"errors"
+	"strings"
 
 	"connectrpc.com/connect"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/openhdc/otterscale/api/storage/v1"
 	"github.com/openhdc/otterscale/api/storage/v1/pbconnect"
@@ -22,33 +25,6 @@ func NewStorageService(uc *core.StorageUseCase) *StorageService {
 
 var _ pbconnect.StorageServiceHandler = (*StorageService)(nil)
 
-func (s *StorageService) ListPools(ctx context.Context, req *connect.Request[pb.ListPoolsRequest]) (*connect.Response[pb.ListPoolsResponse], error) {
-	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.ListPoolsResponse{}
-	resp.SetPools(toProtoPools(pools))
-	return connect.NewResponse(resp), nil
-}
-
-// func (s *StorageService) CreatePool(ctx context.Context, req *connect.Request[pb.CreatePoolRequest]) (*connect.Response[pb.Pool], error) {
-// 	pool, err := s.uc.CreatePool(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName())
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	resp := toProtoPool(pool)
-// 	return connect.NewResponse(resp), nil
-// }
-
-// func (s *StorageService) DeletePool(ctx context.Context, req *connect.Request[pb.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error) {
-// 	if err := s.uc.DeletePool(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName()); err != nil {
-// 		return nil, err
-// 	}
-// 	resp := &emptypb.Empty{}
-// 	return connect.NewResponse(resp), nil
-// }
-
 func (s *StorageService) ListMONs(ctx context.Context, req *connect.Request[pb.ListMONsRequest]) (*connect.Response[pb.ListMONsResponse], error) {
 	mons, err := s.uc.ListMONs(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
 	if err != nil {
@@ -66,6 +42,74 @@ func (s *StorageService) ListOSDs(ctx context.Context, req *connect.Request[pb.L
 	}
 	resp := &pb.ListOSDsResponse{}
 	resp.SetOsds(toProtoOSDs(osds))
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DoSMART(ctx context.Context, req *connect.Request[pb.DoSMARTRequest]) (*connect.Response[pb.DoSMARTResponse], error) {
+	outputs, err := s.uc.DoSMART(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetOsdName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.DoSMARTResponse{}
+	resp.SetDeviceOutputMap(toDeviceOutputMap(outputs))
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) ListPools(ctx context.Context, req *connect.Request[pb.ListPoolsRequest]) (*connect.Response[pb.ListPoolsResponse], error) {
+	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListPoolsResponse{}
+	resp.SetPools(toProtoPools(pools))
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) CreatePool(ctx context.Context, req *connect.Request[pb.CreatePoolRequest]) (*connect.Response[pb.Pool], error) {
+	if req.Msg.GetPoolType() == pb.CreatePoolRequest_UNSPECIFIED {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid pool type"))
+	}
+	apps := []string{}
+	for _, app := range req.Msg.GetApplications() {
+		apps = append(apps, strings.ToLower(app.String()))
+	}
+	pool, err := s.uc.CreatePool(ctx,
+		req.Msg.GetScopeUuid(),
+		req.Msg.GetFacilityName(),
+		req.Msg.GetPoolName(),
+		strings.ToLower(req.Msg.GetPoolType().String()),
+		req.Msg.GetEcOverwrites(),
+		int(req.Msg.GetQuotaMaxBytes()),
+		int(req.Msg.GetQuotaMaxObjects()),
+		apps,
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoPool(pool)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) UpdatePool(ctx context.Context, req *connect.Request[pb.UpdatePoolRequest]) (*connect.Response[pb.Pool], error) {
+	pool, err := s.uc.UpdatePool(ctx,
+		req.Msg.GetScopeUuid(),
+		req.Msg.GetFacilityName(),
+		req.Msg.GetPoolName(),
+		int(req.Msg.GetQuotaMaxBytes()),
+		int(req.Msg.GetQuotaMaxObjects()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoPool(pool)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DeletePool(ctx context.Context, req *connect.Request[pb.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeletePool(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
 
@@ -90,7 +134,7 @@ func (s *StorageService) ListVolumes(ctx context.Context, req *connect.Request[p
 }
 
 func (s *StorageService) ListSubvolumes(ctx context.Context, req *connect.Request[pb.ListSubvolumesRequest]) (*connect.Response[pb.ListSubvolumesResponse], error) {
-	subvolumes, err := s.uc.ListSubvolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolume(), req.Msg.GetGroup())
+	subvolumes, err := s.uc.ListSubvolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName())
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +144,7 @@ func (s *StorageService) ListSubvolumes(ctx context.Context, req *connect.Reques
 }
 
 func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *connect.Request[pb.ListSubvolumeGroupsRequest]) (*connect.Response[pb.ListSubvolumeGroupsResponse], error) {
-	groups, err := s.uc.ListSubvolumeGroups(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolume())
+	groups, err := s.uc.ListSubvolumeGroups(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName())
 	if err != nil {
 		return nil, err
 	}
@@ -169,20 +213,6 @@ func (s *StorageService) ListUsers(ctx context.Context, req *connect.Request[pb.
 // 	return connect.NewResponse(resp), nil
 // }
 
-func toProtoPools(ps []core.Pool) []*pb.Pool {
-	ret := []*pb.Pool{}
-	for i := range ps {
-		ret = append(ret, toProtoPool(&ps[i]))
-	}
-	return ret
-}
-
-func toProtoPool(p *core.Pool) *pb.Pool {
-	ret := &pb.Pool{}
-	ret.SetName(p.Name)
-	return ret
-}
-
 func toProtoMONs(ms []core.MON) []*pb.MON {
 	ret := []*pb.MON{}
 	for i := range ms {
@@ -208,6 +238,30 @@ func toProtoOSDs(os []core.OSD) []*pb.OSD {
 func toProtoOSD(o *core.OSD) *pb.OSD {
 	ret := &pb.OSD{}
 	ret.SetName(o.Name)
+	return ret
+}
+
+func toDeviceOutputMap(m map[string][]string) map[string]*pb.DoSMARTResponse_Output {
+	ret := map[string]*pb.DoSMARTResponse_Output{}
+	for device, lines := range m {
+		output := &pb.DoSMARTResponse_Output{}
+		output.SetLines(lines)
+		ret[device] = output
+	}
+	return ret
+}
+
+func toProtoPools(ps []core.Pool) []*pb.Pool {
+	ret := []*pb.Pool{}
+	for i := range ps {
+		ret = append(ret, toProtoPool(&ps[i]))
+	}
+	return ret
+}
+
+func toProtoPool(p *core.Pool) *pb.Pool {
+	ret := &pb.Pool{}
+	ret.SetName(p.Name)
 	return ret
 }
 
@@ -309,44 +363,44 @@ func toProtoUser(u *core.RGWUser) *pb.User {
 	return ret
 }
 
-func toProtoAccessKeys(as []core.RGWAccessKey) []*pb.AccessKey {
-	ret := []*pb.AccessKey{}
-	for i := range as {
-		ret = append(ret, toProtoAccessKey(&as[i]))
-	}
-	return ret
-}
+// func toProtoAccessKeys(as []core.RGWAccessKey) []*pb.AccessKey {
+// 	ret := []*pb.AccessKey{}
+// 	for i := range as {
+// 		ret = append(ret, toProtoAccessKey(&as[i]))
+// 	}
+// 	return ret
+// }
 
-func toProtoAccessKey(a *core.RGWAccessKey) *pb.AccessKey {
-	ret := &pb.AccessKey{}
-	ret.SetName(a.Name)
-	return ret
-}
+// func toProtoAccessKey(a *core.RGWAccessKey) *pb.AccessKey {
+// 	ret := &pb.AccessKey{}
+// 	ret.SetName(a.Name)
+// 	return ret
+// }
 
-func toProtoSnapshots(ss []core.Snapshot) []*pb.Snapshot {
-	ret := []*pb.Snapshot{}
-	for i := range ss {
-		ret = append(ret, toProtoSnapshot(&ss[i]))
-	}
-	return ret
-}
+// func toProtoSnapshots(ss []core.Snapshot) []*pb.Snapshot {
+// 	ret := []*pb.Snapshot{}
+// 	for i := range ss {
+// 		ret = append(ret, toProtoSnapshot(&ss[i]))
+// 	}
+// 	return ret
+// }
 
-func toProtoSnapshot(s *core.Snapshot) *pb.Snapshot {
-	ret := &pb.Snapshot{}
-	ret.SetName(s.Name)
-	return ret
-}
+// func toProtoSnapshot(s *core.Snapshot) *pb.Snapshot {
+// 	ret := &pb.Snapshot{}
+// 	ret.SetName(s.Name)
+// 	return ret
+// }
 
-func toProtoSnapshotSchedules(ss []core.SnapshotSchedule) []*pb.SnapshotSchedule {
-	ret := []*pb.SnapshotSchedule{}
-	for i := range ss {
-		ret = append(ret, toProtoSnapshotSchedule(&ss[i]))
-	}
-	return ret
-}
+// func toProtoSnapshotSchedules(ss []core.SnapshotSchedule) []*pb.SnapshotSchedule {
+// 	ret := []*pb.SnapshotSchedule{}
+// 	for i := range ss {
+// 		ret = append(ret, toProtoSnapshotSchedule(&ss[i]))
+// 	}
+// 	return ret
+// }
 
-func toProtoSnapshotSchedule(s *core.SnapshotSchedule) *pb.SnapshotSchedule {
-	ret := &pb.SnapshotSchedule{}
-	ret.SetName(s.Name)
-	return ret
-}
+// func toProtoSnapshotSchedule(s *core.SnapshotSchedule) *pb.SnapshotSchedule {
+// 	ret := &pb.SnapshotSchedule{}
+// 	ret.SetName(s.Name)
+// 	return ret
+// }

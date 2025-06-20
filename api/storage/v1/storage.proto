@@ -10,7 +10,7 @@ service StorageService {
   // Cluster
   rpc ListMONs(ListMONsRequest) returns (ListMONsResponse);
   rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse);
-  rpc DoOSDSMART(DoOSDSMARTRequest) returns (DoOSDSMARTResponse);
+  rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse);
 
   // Cluster Pool
   rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
@@ -62,6 +62,12 @@ service StorageService {
   rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
   rpc CreateUserS3Key(CreateUserS3KeyRequest) returns (User.Key);
   rpc DeleteUserS3Key(DeleteUserS3KeyRequest) returns (google.protobuf.Empty);
+}
+
+enum Application {
+  RBD = 0;
+  CephFS = 1;
+  RGW = 2;
 }
 
 message MON {
@@ -144,9 +150,18 @@ message ListOSDsResponse {
   repeated OSD osds = 1;
 }
 
-message DoOSDSMARTRequest {}
+message DoSMARTRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string osd_name = 3;
+}
 
-message DoOSDSMARTResponse {}
+message DoSMARTResponse {
+  message Output {
+    repeated string lines = 1;
+  }
+  map<string, Output> device_output_map = 1;
+}
 
 message ListPoolsRequest {
   string scope_uuid = 1;
@@ -158,23 +173,28 @@ message ListPoolsResponse {
 }
 
 message CreatePoolRequest {
+  enum Type {
+    UNSPECIFIED = 0;
+    ERASURE = 1;
+    REPLICATED = 2;
+  }
   string scope_uuid = 1;
   string facility_name = 2;
   string pool_name = 3;
-  string type = 11;
-  repeated string applications = 12;
-  string compression_mode = 21;
-  string quota_max_bytes = 31;
-  string quota_max_objects = 32;
+  Type pool_type = 11;
+  bool ec_overwrites = 21;     // erasure
+  int32 replicated_size = 31;  // replicated
+  int64 quota_max_bytes = 41;
+  int32 quota_max_objects = 42;
+  repeated Application applications = 61;
 }
 
 message UpdatePoolRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string pool_name = 3;
-  string compression_mode = 11;
-  string quota_max_bytes = 21;
-  string quota_max_objects = 22;
+  int64 quota_max_bytes = 41;
+  int32 quota_max_objects = 42;
 }
 
 message DeletePoolRequest {
