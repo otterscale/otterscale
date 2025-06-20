@@ -38,8 +38,9 @@ const (
 	StorageServiceListMONsProcedure = "/otterscale.storage.v1.StorageService/ListMONs"
 	// StorageServiceListOSDsProcedure is the fully-qualified name of the StorageService's ListOSDs RPC.
 	StorageServiceListOSDsProcedure = "/otterscale.storage.v1.StorageService/ListOSDs"
-	// StorageServiceDoSMARTProcedure is the fully-qualified name of the StorageService's DoSMART RPC.
-	StorageServiceDoSMARTProcedure = "/otterscale.storage.v1.StorageService/DoSMART"
+	// StorageServiceDoOSDSMARTProcedure is the fully-qualified name of the StorageService's DoOSDSMART
+	// RPC.
+	StorageServiceDoOSDSMARTProcedure = "/otterscale.storage.v1.StorageService/DoOSDSMART"
 	// StorageServiceListPoolsProcedure is the fully-qualified name of the StorageService's ListPools
 	// RPC.
 	StorageServiceListPoolsProcedure = "/otterscale.storage.v1.StorageService/ListPools"
@@ -85,27 +86,6 @@ const (
 	// StorageServiceDeleteSubvolumeProcedure is the fully-qualified name of the StorageService's
 	// DeleteSubvolume RPC.
 	StorageServiceDeleteSubvolumeProcedure = "/otterscale.storage.v1.StorageService/DeleteSubvolume"
-	// StorageServiceListSubvolumeGroupsProcedure is the fully-qualified name of the StorageService's
-	// ListSubvolumeGroups RPC.
-	StorageServiceListSubvolumeGroupsProcedure = "/otterscale.storage.v1.StorageService/ListSubvolumeGroups"
-	// StorageServiceCreateSubvolumeGroupProcedure is the fully-qualified name of the StorageService's
-	// CreateSubvolumeGroup RPC.
-	StorageServiceCreateSubvolumeGroupProcedure = "/otterscale.storage.v1.StorageService/CreateSubvolumeGroup"
-	// StorageServiceUpdateSubvolumeGroupProcedure is the fully-qualified name of the StorageService's
-	// UpdateSubvolumeGroup RPC.
-	StorageServiceUpdateSubvolumeGroupProcedure = "/otterscale.storage.v1.StorageService/UpdateSubvolumeGroup"
-	// StorageServiceDeleteSubvolumeGroupProcedure is the fully-qualified name of the StorageService's
-	// DeleteSubvolumeGroup RPC.
-	StorageServiceDeleteSubvolumeGroupProcedure = "/otterscale.storage.v1.StorageService/DeleteSubvolumeGroup"
-	// StorageServiceCreateSubvolumeExportProcedure is the fully-qualified name of the StorageService's
-	// CreateSubvolumeExport RPC.
-	StorageServiceCreateSubvolumeExportProcedure = "/otterscale.storage.v1.StorageService/CreateSubvolumeExport"
-	// StorageServiceUpdateSubvolumeExportProcedure is the fully-qualified name of the StorageService's
-	// UpdateSubvolumeExport RPC.
-	StorageServiceUpdateSubvolumeExportProcedure = "/otterscale.storage.v1.StorageService/UpdateSubvolumeExport"
-	// StorageServiceDeleteSubvolumeExportProcedure is the fully-qualified name of the StorageService's
-	// DeleteSubvolumeExport RPC.
-	StorageServiceDeleteSubvolumeExportProcedure = "/otterscale.storage.v1.StorageService/DeleteSubvolumeExport"
 	// StorageServiceGrantSubvolumeExportAccessProcedure is the fully-qualified name of the
 	// StorageService's GrantSubvolumeExportAccess RPC.
 	StorageServiceGrantSubvolumeExportAccessProcedure = "/otterscale.storage.v1.StorageService/GrantSubvolumeExportAccess"
@@ -118,6 +98,18 @@ const (
 	// StorageServiceDeleteSubvolumeSnapshotProcedure is the fully-qualified name of the
 	// StorageService's DeleteSubvolumeSnapshot RPC.
 	StorageServiceDeleteSubvolumeSnapshotProcedure = "/otterscale.storage.v1.StorageService/DeleteSubvolumeSnapshot"
+	// StorageServiceListSubvolumeGroupsProcedure is the fully-qualified name of the StorageService's
+	// ListSubvolumeGroups RPC.
+	StorageServiceListSubvolumeGroupsProcedure = "/otterscale.storage.v1.StorageService/ListSubvolumeGroups"
+	// StorageServiceCreateSubvolumeGroupProcedure is the fully-qualified name of the StorageService's
+	// CreateSubvolumeGroup RPC.
+	StorageServiceCreateSubvolumeGroupProcedure = "/otterscale.storage.v1.StorageService/CreateSubvolumeGroup"
+	// StorageServiceUpdateSubvolumeGroupProcedure is the fully-qualified name of the StorageService's
+	// UpdateSubvolumeGroup RPC.
+	StorageServiceUpdateSubvolumeGroupProcedure = "/otterscale.storage.v1.StorageService/UpdateSubvolumeGroup"
+	// StorageServiceDeleteSubvolumeGroupProcedure is the fully-qualified name of the StorageService's
+	// DeleteSubvolumeGroup RPC.
+	StorageServiceDeleteSubvolumeGroupProcedure = "/otterscale.storage.v1.StorageService/DeleteSubvolumeGroup"
 	// StorageServiceListBucketsProcedure is the fully-qualified name of the StorageService's
 	// ListBuckets RPC.
 	StorageServiceListBucketsProcedure = "/otterscale.storage.v1.StorageService/ListBuckets"
@@ -155,7 +147,7 @@ type StorageServiceClient interface {
 	// Cluster
 	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
 	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
-	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
+	DoOSDSMART(context.Context, *connect.Request[v1.DoOSDSMARTRequest]) (*connect.Response[v1.DoOSDSMARTResponse], error)
 	// Cluster Pool
 	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
 	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
@@ -176,20 +168,16 @@ type StorageServiceClient interface {
 	CreateSubvolume(context.Context, *connect.Request[v1.CreateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
 	UpdateSubvolume(context.Context, *connect.Request[v1.UpdateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
 	DeleteSubvolume(context.Context, *connect.Request[v1.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Subvolume Group
-	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
-	CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
-	UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
-	DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Subvolume Export
-	CreateSubvolumeExport(context.Context, *connect.Request[v1.CreateSubvolumeExportRequest]) (*connect.Response[v1.Subvolume_Export], error)
-	UpdateSubvolumeExport(context.Context, *connect.Request[v1.UpdateSubvolumeExportRequest]) (*connect.Response[v1.Subvolume_Export], error)
-	DeleteSubvolumeExport(context.Context, *connect.Request[v1.DeleteSubvolumeExportRequest]) (*connect.Response[emptypb.Empty], error)
 	GrantSubvolumeExportAccess(context.Context, *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
 	RevokeSubvolumeExportAccess(context.Context, *connect.Request[v1.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
 	// CephFS Subvolume Snapshot
 	CreateSubvolumeSnapshot(context.Context, *connect.Request[v1.CreateSubvolumeSnapshotRequest]) (*connect.Response[v1.Subvolume_Snapshot], error)
 	DeleteSubvolumeSnapshot(context.Context, *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	// CephFS Subvolume Group
+	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
+	CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
+	UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
+	DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error)
 	// RGW Bucket
 	ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error)
 	CreateBucket(context.Context, *connect.Request[v1.CreateBucketRequest]) (*connect.Response[v1.Bucket], error)
@@ -227,10 +215,10 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(storageServiceMethods.ByName("ListOSDs")),
 			connect.WithClientOptions(opts...),
 		),
-		doSMART: connect.NewClient[v1.DoSMARTRequest, v1.DoSMARTResponse](
+		doOSDSMART: connect.NewClient[v1.DoOSDSMARTRequest, v1.DoOSDSMARTResponse](
 			httpClient,
-			baseURL+StorageServiceDoSMARTProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("DoSMART")),
+			baseURL+StorageServiceDoOSDSMARTProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("DoOSDSMART")),
 			connect.WithClientOptions(opts...),
 		),
 		listPools: connect.NewClient[v1.ListPoolsRequest, v1.ListPoolsResponse](
@@ -323,48 +311,6 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolume")),
 			connect.WithClientOptions(opts...),
 		),
-		listSubvolumeGroups: connect.NewClient[v1.ListSubvolumeGroupsRequest, v1.ListSubvolumeGroupsResponse](
-			httpClient,
-			baseURL+StorageServiceListSubvolumeGroupsProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("ListSubvolumeGroups")),
-			connect.WithClientOptions(opts...),
-		),
-		createSubvolumeGroup: connect.NewClient[v1.CreateSubvolumeGroupRequest, v1.SubvolumeGroup](
-			httpClient,
-			baseURL+StorageServiceCreateSubvolumeGroupProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("CreateSubvolumeGroup")),
-			connect.WithClientOptions(opts...),
-		),
-		updateSubvolumeGroup: connect.NewClient[v1.UpdateSubvolumeGroupRequest, v1.SubvolumeGroup](
-			httpClient,
-			baseURL+StorageServiceUpdateSubvolumeGroupProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("UpdateSubvolumeGroup")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteSubvolumeGroup: connect.NewClient[v1.DeleteSubvolumeGroupRequest, emptypb.Empty](
-			httpClient,
-			baseURL+StorageServiceDeleteSubvolumeGroupProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeGroup")),
-			connect.WithClientOptions(opts...),
-		),
-		createSubvolumeExport: connect.NewClient[v1.CreateSubvolumeExportRequest, v1.Subvolume_Export](
-			httpClient,
-			baseURL+StorageServiceCreateSubvolumeExportProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("CreateSubvolumeExport")),
-			connect.WithClientOptions(opts...),
-		),
-		updateSubvolumeExport: connect.NewClient[v1.UpdateSubvolumeExportRequest, v1.Subvolume_Export](
-			httpClient,
-			baseURL+StorageServiceUpdateSubvolumeExportProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("UpdateSubvolumeExport")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteSubvolumeExport: connect.NewClient[v1.DeleteSubvolumeExportRequest, emptypb.Empty](
-			httpClient,
-			baseURL+StorageServiceDeleteSubvolumeExportProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeExport")),
-			connect.WithClientOptions(opts...),
-		),
 		grantSubvolumeExportAccess: connect.NewClient[v1.GrantSubvolumeExportAccessRequest, emptypb.Empty](
 			httpClient,
 			baseURL+StorageServiceGrantSubvolumeExportAccessProcedure,
@@ -387,6 +333,30 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+StorageServiceDeleteSubvolumeSnapshotProcedure,
 			connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeSnapshot")),
+			connect.WithClientOptions(opts...),
+		),
+		listSubvolumeGroups: connect.NewClient[v1.ListSubvolumeGroupsRequest, v1.ListSubvolumeGroupsResponse](
+			httpClient,
+			baseURL+StorageServiceListSubvolumeGroupsProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ListSubvolumeGroups")),
+			connect.WithClientOptions(opts...),
+		),
+		createSubvolumeGroup: connect.NewClient[v1.CreateSubvolumeGroupRequest, v1.SubvolumeGroup](
+			httpClient,
+			baseURL+StorageServiceCreateSubvolumeGroupProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("CreateSubvolumeGroup")),
+			connect.WithClientOptions(opts...),
+		),
+		updateSubvolumeGroup: connect.NewClient[v1.UpdateSubvolumeGroupRequest, v1.SubvolumeGroup](
+			httpClient,
+			baseURL+StorageServiceUpdateSubvolumeGroupProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("UpdateSubvolumeGroup")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteSubvolumeGroup: connect.NewClient[v1.DeleteSubvolumeGroupRequest, emptypb.Empty](
+			httpClient,
+			baseURL+StorageServiceDeleteSubvolumeGroupProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeGroup")),
 			connect.WithClientOptions(opts...),
 		),
 		listBuckets: connect.NewClient[v1.ListBucketsRequest, v1.ListBucketsResponse](
@@ -456,7 +426,7 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 type storageServiceClient struct {
 	listMONs                    *connect.Client[v1.ListMONsRequest, v1.ListMONsResponse]
 	listOSDs                    *connect.Client[v1.ListOSDsRequest, v1.ListOSDsResponse]
-	doSMART                     *connect.Client[v1.DoSMARTRequest, v1.DoSMARTResponse]
+	doOSDSMART                  *connect.Client[v1.DoOSDSMARTRequest, v1.DoOSDSMARTResponse]
 	listPools                   *connect.Client[v1.ListPoolsRequest, v1.ListPoolsResponse]
 	createPool                  *connect.Client[v1.CreatePoolRequest, v1.Pool]
 	updatePool                  *connect.Client[v1.UpdatePoolRequest, v1.Pool]
@@ -472,17 +442,14 @@ type storageServiceClient struct {
 	createSubvolume             *connect.Client[v1.CreateSubvolumeRequest, v1.Subvolume]
 	updateSubvolume             *connect.Client[v1.UpdateSubvolumeRequest, v1.Subvolume]
 	deleteSubvolume             *connect.Client[v1.DeleteSubvolumeRequest, emptypb.Empty]
-	listSubvolumeGroups         *connect.Client[v1.ListSubvolumeGroupsRequest, v1.ListSubvolumeGroupsResponse]
-	createSubvolumeGroup        *connect.Client[v1.CreateSubvolumeGroupRequest, v1.SubvolumeGroup]
-	updateSubvolumeGroup        *connect.Client[v1.UpdateSubvolumeGroupRequest, v1.SubvolumeGroup]
-	deleteSubvolumeGroup        *connect.Client[v1.DeleteSubvolumeGroupRequest, emptypb.Empty]
-	createSubvolumeExport       *connect.Client[v1.CreateSubvolumeExportRequest, v1.Subvolume_Export]
-	updateSubvolumeExport       *connect.Client[v1.UpdateSubvolumeExportRequest, v1.Subvolume_Export]
-	deleteSubvolumeExport       *connect.Client[v1.DeleteSubvolumeExportRequest, emptypb.Empty]
 	grantSubvolumeExportAccess  *connect.Client[v1.GrantSubvolumeExportAccessRequest, emptypb.Empty]
 	revokeSubvolumeExportAccess *connect.Client[v1.RevokeSubvolumeExportAccessRequest, emptypb.Empty]
 	createSubvolumeSnapshot     *connect.Client[v1.CreateSubvolumeSnapshotRequest, v1.Subvolume_Snapshot]
 	deleteSubvolumeSnapshot     *connect.Client[v1.DeleteSubvolumeSnapshotRequest, emptypb.Empty]
+	listSubvolumeGroups         *connect.Client[v1.ListSubvolumeGroupsRequest, v1.ListSubvolumeGroupsResponse]
+	createSubvolumeGroup        *connect.Client[v1.CreateSubvolumeGroupRequest, v1.SubvolumeGroup]
+	updateSubvolumeGroup        *connect.Client[v1.UpdateSubvolumeGroupRequest, v1.SubvolumeGroup]
+	deleteSubvolumeGroup        *connect.Client[v1.DeleteSubvolumeGroupRequest, emptypb.Empty]
 	listBuckets                 *connect.Client[v1.ListBucketsRequest, v1.ListBucketsResponse]
 	createBucket                *connect.Client[v1.CreateBucketRequest, v1.Bucket]
 	updateBucket                *connect.Client[v1.UpdateBucketRequest, v1.Bucket]
@@ -505,9 +472,9 @@ func (c *storageServiceClient) ListOSDs(ctx context.Context, req *connect.Reques
 	return c.listOSDs.CallUnary(ctx, req)
 }
 
-// DoSMART calls otterscale.storage.v1.StorageService.DoSMART.
-func (c *storageServiceClient) DoSMART(ctx context.Context, req *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error) {
-	return c.doSMART.CallUnary(ctx, req)
+// DoOSDSMART calls otterscale.storage.v1.StorageService.DoOSDSMART.
+func (c *storageServiceClient) DoOSDSMART(ctx context.Context, req *connect.Request[v1.DoOSDSMARTRequest]) (*connect.Response[v1.DoOSDSMARTResponse], error) {
+	return c.doOSDSMART.CallUnary(ctx, req)
 }
 
 // ListPools calls otterscale.storage.v1.StorageService.ListPools.
@@ -585,41 +552,6 @@ func (c *storageServiceClient) DeleteSubvolume(ctx context.Context, req *connect
 	return c.deleteSubvolume.CallUnary(ctx, req)
 }
 
-// ListSubvolumeGroups calls otterscale.storage.v1.StorageService.ListSubvolumeGroups.
-func (c *storageServiceClient) ListSubvolumeGroups(ctx context.Context, req *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error) {
-	return c.listSubvolumeGroups.CallUnary(ctx, req)
-}
-
-// CreateSubvolumeGroup calls otterscale.storage.v1.StorageService.CreateSubvolumeGroup.
-func (c *storageServiceClient) CreateSubvolumeGroup(ctx context.Context, req *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
-	return c.createSubvolumeGroup.CallUnary(ctx, req)
-}
-
-// UpdateSubvolumeGroup calls otterscale.storage.v1.StorageService.UpdateSubvolumeGroup.
-func (c *storageServiceClient) UpdateSubvolumeGroup(ctx context.Context, req *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
-	return c.updateSubvolumeGroup.CallUnary(ctx, req)
-}
-
-// DeleteSubvolumeGroup calls otterscale.storage.v1.StorageService.DeleteSubvolumeGroup.
-func (c *storageServiceClient) DeleteSubvolumeGroup(ctx context.Context, req *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteSubvolumeGroup.CallUnary(ctx, req)
-}
-
-// CreateSubvolumeExport calls otterscale.storage.v1.StorageService.CreateSubvolumeExport.
-func (c *storageServiceClient) CreateSubvolumeExport(ctx context.Context, req *connect.Request[v1.CreateSubvolumeExportRequest]) (*connect.Response[v1.Subvolume_Export], error) {
-	return c.createSubvolumeExport.CallUnary(ctx, req)
-}
-
-// UpdateSubvolumeExport calls otterscale.storage.v1.StorageService.UpdateSubvolumeExport.
-func (c *storageServiceClient) UpdateSubvolumeExport(ctx context.Context, req *connect.Request[v1.UpdateSubvolumeExportRequest]) (*connect.Response[v1.Subvolume_Export], error) {
-	return c.updateSubvolumeExport.CallUnary(ctx, req)
-}
-
-// DeleteSubvolumeExport calls otterscale.storage.v1.StorageService.DeleteSubvolumeExport.
-func (c *storageServiceClient) DeleteSubvolumeExport(ctx context.Context, req *connect.Request[v1.DeleteSubvolumeExportRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteSubvolumeExport.CallUnary(ctx, req)
-}
-
 // GrantSubvolumeExportAccess calls otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess.
 func (c *storageServiceClient) GrantSubvolumeExportAccess(ctx context.Context, req *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.grantSubvolumeExportAccess.CallUnary(ctx, req)
@@ -639,6 +571,26 @@ func (c *storageServiceClient) CreateSubvolumeSnapshot(ctx context.Context, req 
 // DeleteSubvolumeSnapshot calls otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot.
 func (c *storageServiceClient) DeleteSubvolumeSnapshot(ctx context.Context, req *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteSubvolumeSnapshot.CallUnary(ctx, req)
+}
+
+// ListSubvolumeGroups calls otterscale.storage.v1.StorageService.ListSubvolumeGroups.
+func (c *storageServiceClient) ListSubvolumeGroups(ctx context.Context, req *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error) {
+	return c.listSubvolumeGroups.CallUnary(ctx, req)
+}
+
+// CreateSubvolumeGroup calls otterscale.storage.v1.StorageService.CreateSubvolumeGroup.
+func (c *storageServiceClient) CreateSubvolumeGroup(ctx context.Context, req *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
+	return c.createSubvolumeGroup.CallUnary(ctx, req)
+}
+
+// UpdateSubvolumeGroup calls otterscale.storage.v1.StorageService.UpdateSubvolumeGroup.
+func (c *storageServiceClient) UpdateSubvolumeGroup(ctx context.Context, req *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
+	return c.updateSubvolumeGroup.CallUnary(ctx, req)
+}
+
+// DeleteSubvolumeGroup calls otterscale.storage.v1.StorageService.DeleteSubvolumeGroup.
+func (c *storageServiceClient) DeleteSubvolumeGroup(ctx context.Context, req *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteSubvolumeGroup.CallUnary(ctx, req)
 }
 
 // ListBuckets calls otterscale.storage.v1.StorageService.ListBuckets.
@@ -696,7 +648,7 @@ type StorageServiceHandler interface {
 	// Cluster
 	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
 	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
-	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
+	DoOSDSMART(context.Context, *connect.Request[v1.DoOSDSMARTRequest]) (*connect.Response[v1.DoOSDSMARTResponse], error)
 	// Cluster Pool
 	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
 	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
@@ -717,20 +669,16 @@ type StorageServiceHandler interface {
 	CreateSubvolume(context.Context, *connect.Request[v1.CreateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
 	UpdateSubvolume(context.Context, *connect.Request[v1.UpdateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
 	DeleteSubvolume(context.Context, *connect.Request[v1.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Subvolume Group
-	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
-	CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
-	UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
-	DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Subvolume Export
-	CreateSubvolumeExport(context.Context, *connect.Request[v1.CreateSubvolumeExportRequest]) (*connect.Response[v1.Subvolume_Export], error)
-	UpdateSubvolumeExport(context.Context, *connect.Request[v1.UpdateSubvolumeExportRequest]) (*connect.Response[v1.Subvolume_Export], error)
-	DeleteSubvolumeExport(context.Context, *connect.Request[v1.DeleteSubvolumeExportRequest]) (*connect.Response[emptypb.Empty], error)
 	GrantSubvolumeExportAccess(context.Context, *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
 	RevokeSubvolumeExportAccess(context.Context, *connect.Request[v1.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
 	// CephFS Subvolume Snapshot
 	CreateSubvolumeSnapshot(context.Context, *connect.Request[v1.CreateSubvolumeSnapshotRequest]) (*connect.Response[v1.Subvolume_Snapshot], error)
 	DeleteSubvolumeSnapshot(context.Context, *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	// CephFS Subvolume Group
+	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
+	CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
+	UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
+	DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error)
 	// RGW Bucket
 	ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error)
 	CreateBucket(context.Context, *connect.Request[v1.CreateBucketRequest]) (*connect.Response[v1.Bucket], error)
@@ -764,10 +712,10 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		connect.WithSchema(storageServiceMethods.ByName("ListOSDs")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDoSMARTHandler := connect.NewUnaryHandler(
-		StorageServiceDoSMARTProcedure,
-		svc.DoSMART,
-		connect.WithSchema(storageServiceMethods.ByName("DoSMART")),
+	storageServiceDoOSDSMARTHandler := connect.NewUnaryHandler(
+		StorageServiceDoOSDSMARTProcedure,
+		svc.DoOSDSMART,
+		connect.WithSchema(storageServiceMethods.ByName("DoOSDSMART")),
 		connect.WithHandlerOptions(opts...),
 	)
 	storageServiceListPoolsHandler := connect.NewUnaryHandler(
@@ -860,48 +808,6 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolume")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceListSubvolumeGroupsHandler := connect.NewUnaryHandler(
-		StorageServiceListSubvolumeGroupsProcedure,
-		svc.ListSubvolumeGroups,
-		connect.WithSchema(storageServiceMethods.ByName("ListSubvolumeGroups")),
-		connect.WithHandlerOptions(opts...),
-	)
-	storageServiceCreateSubvolumeGroupHandler := connect.NewUnaryHandler(
-		StorageServiceCreateSubvolumeGroupProcedure,
-		svc.CreateSubvolumeGroup,
-		connect.WithSchema(storageServiceMethods.ByName("CreateSubvolumeGroup")),
-		connect.WithHandlerOptions(opts...),
-	)
-	storageServiceUpdateSubvolumeGroupHandler := connect.NewUnaryHandler(
-		StorageServiceUpdateSubvolumeGroupProcedure,
-		svc.UpdateSubvolumeGroup,
-		connect.WithSchema(storageServiceMethods.ByName("UpdateSubvolumeGroup")),
-		connect.WithHandlerOptions(opts...),
-	)
-	storageServiceDeleteSubvolumeGroupHandler := connect.NewUnaryHandler(
-		StorageServiceDeleteSubvolumeGroupProcedure,
-		svc.DeleteSubvolumeGroup,
-		connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeGroup")),
-		connect.WithHandlerOptions(opts...),
-	)
-	storageServiceCreateSubvolumeExportHandler := connect.NewUnaryHandler(
-		StorageServiceCreateSubvolumeExportProcedure,
-		svc.CreateSubvolumeExport,
-		connect.WithSchema(storageServiceMethods.ByName("CreateSubvolumeExport")),
-		connect.WithHandlerOptions(opts...),
-	)
-	storageServiceUpdateSubvolumeExportHandler := connect.NewUnaryHandler(
-		StorageServiceUpdateSubvolumeExportProcedure,
-		svc.UpdateSubvolumeExport,
-		connect.WithSchema(storageServiceMethods.ByName("UpdateSubvolumeExport")),
-		connect.WithHandlerOptions(opts...),
-	)
-	storageServiceDeleteSubvolumeExportHandler := connect.NewUnaryHandler(
-		StorageServiceDeleteSubvolumeExportProcedure,
-		svc.DeleteSubvolumeExport,
-		connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeExport")),
-		connect.WithHandlerOptions(opts...),
-	)
 	storageServiceGrantSubvolumeExportAccessHandler := connect.NewUnaryHandler(
 		StorageServiceGrantSubvolumeExportAccessProcedure,
 		svc.GrantSubvolumeExportAccess,
@@ -924,6 +830,30 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		StorageServiceDeleteSubvolumeSnapshotProcedure,
 		svc.DeleteSubvolumeSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeSnapshot")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceListSubvolumeGroupsHandler := connect.NewUnaryHandler(
+		StorageServiceListSubvolumeGroupsProcedure,
+		svc.ListSubvolumeGroups,
+		connect.WithSchema(storageServiceMethods.ByName("ListSubvolumeGroups")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceCreateSubvolumeGroupHandler := connect.NewUnaryHandler(
+		StorageServiceCreateSubvolumeGroupProcedure,
+		svc.CreateSubvolumeGroup,
+		connect.WithSchema(storageServiceMethods.ByName("CreateSubvolumeGroup")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceUpdateSubvolumeGroupHandler := connect.NewUnaryHandler(
+		StorageServiceUpdateSubvolumeGroupProcedure,
+		svc.UpdateSubvolumeGroup,
+		connect.WithSchema(storageServiceMethods.ByName("UpdateSubvolumeGroup")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceDeleteSubvolumeGroupHandler := connect.NewUnaryHandler(
+		StorageServiceDeleteSubvolumeGroupProcedure,
+		svc.DeleteSubvolumeGroup,
+		connect.WithSchema(storageServiceMethods.ByName("DeleteSubvolumeGroup")),
 		connect.WithHandlerOptions(opts...),
 	)
 	storageServiceListBucketsHandler := connect.NewUnaryHandler(
@@ -992,8 +922,8 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceListMONsHandler.ServeHTTP(w, r)
 		case StorageServiceListOSDsProcedure:
 			storageServiceListOSDsHandler.ServeHTTP(w, r)
-		case StorageServiceDoSMARTProcedure:
-			storageServiceDoSMARTHandler.ServeHTTP(w, r)
+		case StorageServiceDoOSDSMARTProcedure:
+			storageServiceDoOSDSMARTHandler.ServeHTTP(w, r)
 		case StorageServiceListPoolsProcedure:
 			storageServiceListPoolsHandler.ServeHTTP(w, r)
 		case StorageServiceCreatePoolProcedure:
@@ -1024,20 +954,6 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceUpdateSubvolumeHandler.ServeHTTP(w, r)
 		case StorageServiceDeleteSubvolumeProcedure:
 			storageServiceDeleteSubvolumeHandler.ServeHTTP(w, r)
-		case StorageServiceListSubvolumeGroupsProcedure:
-			storageServiceListSubvolumeGroupsHandler.ServeHTTP(w, r)
-		case StorageServiceCreateSubvolumeGroupProcedure:
-			storageServiceCreateSubvolumeGroupHandler.ServeHTTP(w, r)
-		case StorageServiceUpdateSubvolumeGroupProcedure:
-			storageServiceUpdateSubvolumeGroupHandler.ServeHTTP(w, r)
-		case StorageServiceDeleteSubvolumeGroupProcedure:
-			storageServiceDeleteSubvolumeGroupHandler.ServeHTTP(w, r)
-		case StorageServiceCreateSubvolumeExportProcedure:
-			storageServiceCreateSubvolumeExportHandler.ServeHTTP(w, r)
-		case StorageServiceUpdateSubvolumeExportProcedure:
-			storageServiceUpdateSubvolumeExportHandler.ServeHTTP(w, r)
-		case StorageServiceDeleteSubvolumeExportProcedure:
-			storageServiceDeleteSubvolumeExportHandler.ServeHTTP(w, r)
 		case StorageServiceGrantSubvolumeExportAccessProcedure:
 			storageServiceGrantSubvolumeExportAccessHandler.ServeHTTP(w, r)
 		case StorageServiceRevokeSubvolumeExportAccessProcedure:
@@ -1046,6 +962,14 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceCreateSubvolumeSnapshotHandler.ServeHTTP(w, r)
 		case StorageServiceDeleteSubvolumeSnapshotProcedure:
 			storageServiceDeleteSubvolumeSnapshotHandler.ServeHTTP(w, r)
+		case StorageServiceListSubvolumeGroupsProcedure:
+			storageServiceListSubvolumeGroupsHandler.ServeHTTP(w, r)
+		case StorageServiceCreateSubvolumeGroupProcedure:
+			storageServiceCreateSubvolumeGroupHandler.ServeHTTP(w, r)
+		case StorageServiceUpdateSubvolumeGroupProcedure:
+			storageServiceUpdateSubvolumeGroupHandler.ServeHTTP(w, r)
+		case StorageServiceDeleteSubvolumeGroupProcedure:
+			storageServiceDeleteSubvolumeGroupHandler.ServeHTTP(w, r)
 		case StorageServiceListBucketsProcedure:
 			storageServiceListBucketsHandler.ServeHTTP(w, r)
 		case StorageServiceCreateBucketProcedure:
@@ -1083,8 +1007,8 @@ func (UnimplementedStorageServiceHandler) ListOSDs(context.Context, *connect.Req
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListOSDs is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DoSMART is not implemented"))
+func (UnimplementedStorageServiceHandler) DoOSDSMART(context.Context, *connect.Request[v1.DoOSDSMARTRequest]) (*connect.Response[v1.DoOSDSMARTResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DoOSDSMART is not implemented"))
 }
 
 func (UnimplementedStorageServiceHandler) ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error) {
@@ -1147,34 +1071,6 @@ func (UnimplementedStorageServiceHandler) DeleteSubvolume(context.Context, *conn
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteSubvolume is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListSubvolumeGroups is not implemented"))
-}
-
-func (UnimplementedStorageServiceHandler) CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateSubvolumeGroup is not implemented"))
-}
-
-func (UnimplementedStorageServiceHandler) UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateSubvolumeGroup is not implemented"))
-}
-
-func (UnimplementedStorageServiceHandler) DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteSubvolumeGroup is not implemented"))
-}
-
-func (UnimplementedStorageServiceHandler) CreateSubvolumeExport(context.Context, *connect.Request[v1.CreateSubvolumeExportRequest]) (*connect.Response[v1.Subvolume_Export], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateSubvolumeExport is not implemented"))
-}
-
-func (UnimplementedStorageServiceHandler) UpdateSubvolumeExport(context.Context, *connect.Request[v1.UpdateSubvolumeExportRequest]) (*connect.Response[v1.Subvolume_Export], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateSubvolumeExport is not implemented"))
-}
-
-func (UnimplementedStorageServiceHandler) DeleteSubvolumeExport(context.Context, *connect.Request[v1.DeleteSubvolumeExportRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteSubvolumeExport is not implemented"))
-}
-
 func (UnimplementedStorageServiceHandler) GrantSubvolumeExportAccess(context.Context, *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess is not implemented"))
 }
@@ -1189,6 +1085,22 @@ func (UnimplementedStorageServiceHandler) CreateSubvolumeSnapshot(context.Contex
 
 func (UnimplementedStorageServiceHandler) DeleteSubvolumeSnapshot(context.Context, *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ListSubvolumeGroups is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateSubvolumeGroup is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UpdateSubvolumeGroup is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteSubvolumeGroup is not implemented"))
 }
 
 func (UnimplementedStorageServiceHandler) ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error) {
