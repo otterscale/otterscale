@@ -6,6 +6,7 @@ send_request() {
 
     response=$(curl -s --header "Content-Type: application/json" --data "$data" "$otterscale_url$url_path")
     if [[ "$?" != 0 ]]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Failed execute curl request."
         trap cleanup EXIT
         exit 1
     fi
