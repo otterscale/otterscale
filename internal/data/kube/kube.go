@@ -13,7 +13,7 @@ import (
 
 type Kube struct {
 	conf       *config.Config
-	clientsets *sync.Map
+	clientsets sync.Map
 
 	envSettings    *cli.EnvSettings
 	registryClient *registry.Client

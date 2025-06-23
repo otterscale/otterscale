@@ -62,7 +62,7 @@ func (uc *ApplicationUseCase) config(ctx context.Context, uuid, name string) (*r
 		return nil, err
 	}
 
-	uc.configs.Store(uuid, config)
+	uc.configs.Store(key, config)
 
 	return config, nil
 }

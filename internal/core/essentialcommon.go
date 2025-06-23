@@ -11,7 +11,7 @@ import (
 
 var (
 	commonCharms = []EssentialCharm{
-		{Name: "ch:ceph-csi", LXD: true},
+		{Name: "ch:ceph-csi", LXD: false},
 		{Name: "ch:grafana-agent", LXD: false},
 		{Name: "ch:hardware-observer", LXD: false},
 	}
@@ -87,7 +87,7 @@ func consumeRemoteOffer(ctx context.Context, facilityRepo FacilityRepo, facility
 	if consumeDetails.ControllerInfo != nil {
 		controllerTag, err := names.ParseControllerTag(consumeDetails.ControllerInfo.ControllerTag)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		args.ControllerInfo = &crossmodel.ControllerInfo{
 			ControllerTag: controllerTag,

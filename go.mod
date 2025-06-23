@@ -11,6 +11,7 @@ require (
 	connectrpc.com/grpchealth v1.3.0
 	connectrpc.com/grpcreflect v1.3.0
 	github.com/canonical/gomaasclient v0.8.0
+	github.com/ceph/go-ceph v0.34.0
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/go-faker/faker/v4 v4.6.1
 	github.com/goccy/go-yaml v1.17.1
@@ -23,6 +24,7 @@ require (
 	golang.org/x/net v0.38.0
 	golang.org/x/sync v0.13.0
 	google.golang.org/protobuf v1.36.6
+	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v2 v2.4.0
 	helm.sh/helm/v3 v3.17.2
 	k8s.io/api v0.32.3
@@ -43,6 +45,9 @@ require (
 	github.com/Masterminds/sprig/v3 v3.3.0 // indirect
 	github.com/Masterminds/squirrel v1.5.4 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.36.3 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.67 // indirect
+	github.com/aws/smithy-go v1.22.3 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/canonical/lxd v0.0.0-20241209155119-76da976c6ee7 // indirect
@@ -192,7 +197,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.34.0 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/oauth2 v0.28.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/term v0.30.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 	golang.org/x/time v0.11.0 // indirect

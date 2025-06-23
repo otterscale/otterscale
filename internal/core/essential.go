@@ -40,6 +40,7 @@ type EssentialStatus struct {
 
 type EssentialCharm struct {
 	Name        string
+	Channel     string
 	LXD         bool
 	Subordinate bool
 }
@@ -388,7 +389,7 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 				placement := toPlacement(&MachinePlacement{LXD: charm.LXD}, directive)
 				placements = append(placements, *placement)
 			}
-			_, err := facilityRepo.Create(ctx, uuid, name, configs[charm.Name], charm.Name, "", 0, 1, &base, placements, nil, true)
+			_, err := facilityRepo.Create(ctx, uuid, name, configs[charm.Name], charm.Name, charm.Channel, 0, 1, &base, placements, nil, true)
 			return err
 		})
 	}

@@ -1,0 +1,466 @@
+edition = "2023";
+
+package otterscale.storage.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/storage/v1;pb";
+
+service StorageService {
+  // Cluster
+  rpc ListMONs(ListMONsRequest) returns (ListMONsResponse);
+  rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse);
+  rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse);
+
+  // Cluster Pool
+  rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
+  rpc CreatePool(CreatePoolRequest) returns (Pool);
+  rpc UpdatePool(UpdatePoolRequest) returns (Pool);
+  rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
+
+  // RBD Image
+  rpc ListImages(ListImagesRequest) returns (ListImagesResponse);
+  rpc CreateImage(CreateImageRequest) returns (Image);
+  rpc UpdateImage(UpdateImageRequest) returns (Image);
+  rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty);
+
+  // RBD Image Snapshot
+  rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot);
+  rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty);
+
+  // CephFS Volume
+  rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse);
+
+  // CephFS Subvolume
+  rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse);
+  rpc CreateSubvolume(CreateSubvolumeRequest) returns (Subvolume);
+  rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume);
+  rpc DeleteSubvolume(DeleteSubvolumeRequest) returns (google.protobuf.Empty);
+  rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
+  rpc RevokeSubvolumeExportAccess(RevokeSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
+
+  // CephFS Subvolume Snapshot
+  rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot);
+  rpc DeleteSubvolumeSnapshot(DeleteSubvolumeSnapshotRequest) returns (google.protobuf.Empty);
+
+  // CephFS Subvolume Group
+  rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse);
+  rpc CreateSubvolumeGroup(CreateSubvolumeGroupRequest) returns (SubvolumeGroup);
+  rpc UpdateSubvolumeGroup(UpdateSubvolumeGroupRequest) returns (SubvolumeGroup);
+  rpc DeleteSubvolumeGroup(DeleteSubvolumeGroupRequest) returns (google.protobuf.Empty);
+
+  // RGW Bucket
+  rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse);
+  rpc CreateBucket(CreateBucketRequest) returns (Bucket);
+  rpc UpdateBucket(UpdateBucketRequest) returns (Bucket);
+  rpc DeleteBucket(DeleteBucketRequest) returns (google.protobuf.Empty);
+
+  // RGW User
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  rpc CreateUser(CreateUserRequest) returns (User);
+  rpc UpdateUser(UpdateUserRequest) returns (User);
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
+  rpc CreateUserS3Key(CreateUserS3KeyRequest) returns (User.Key);
+  rpc DeleteUserS3Key(DeleteUserS3KeyRequest) returns (google.protobuf.Empty);
+}
+
+enum Application {
+  UNSPECIFIED = 0;
+  RBD = 1;
+  CephFS = 2;
+  RGW = 3;
+}
+
+message MON {
+  string name = 1;
+}
+
+message OSD {
+  string name = 1;
+}
+
+message Pool {
+  string name = 1;
+}
+
+message Image {
+  message Snapshot {
+    string name = 1;
+  }
+  string name = 1;
+  uint64 size = 2;
+  uint64 object_size_bytes = 21;
+  uint64 stripe_unit_bytes = 22;
+  uint64 stripe_count = 23;
+  bool layering = 31;
+  bool exclusive_lock = 32;
+  bool object_map = 33;
+  bool fast_diff = 34;
+  bool deep_flatten = 35;
+  repeated Snapshot snapshots = 101;
+}
+
+message Volume {
+  string name = 1;
+}
+
+message Subvolume {
+  message Snapshot {
+    string name = 1;
+  }
+  message Export {
+    message Client {
+      string access_type = 1;
+      repeated string addresses = 2;
+    }
+    string path = 1;
+    string command = 2;
+    string squash = 3;
+    repeated Client clients = 11;
+  }
+  string name = 1;
+  Export export = 51;
+  repeated Snapshot snapshots = 101;
+}
+
+message SubvolumeGroup {
+  string name = 1;
+}
+
+message Bucket {
+  string name = 1;
+}
+
+message Role {
+  string name = 1;
+}
+
+message User {
+  message Key {
+    string name = 1;
+  }
+  string name = 1;
+}
+
+message ListMONsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListMONsResponse {
+  repeated MON mons = 1;
+}
+
+message ListOSDsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListOSDsResponse {
+  repeated OSD osds = 1;
+}
+
+message DoSMARTRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string osd_name = 3;
+}
+
+message DoSMARTResponse {
+  message Output {
+    repeated string lines = 1;
+  }
+  map<string, Output> device_output_map = 1;
+}
+
+message ListPoolsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  Application application = 11;
+}
+
+message ListPoolsResponse {
+  repeated Pool pools = 1;
+}
+
+message CreatePoolRequest {
+  enum Type {
+    UNSPECIFIED = 0;
+    ERASURE = 1;
+    REPLICATED = 2;
+  }
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  Type pool_type = 11;
+  bool ec_overwrites = 21;     // erasure
+  int32 replicated_size = 31;  // replicated
+  int64 quota_max_bytes = 41;
+  int32 quota_max_objects = 42;
+  repeated Application applications = 61;
+}
+
+message UpdatePoolRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  int64 quota_max_bytes = 41;
+  int32 quota_max_objects = 42;
+}
+
+message DeletePoolRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+}
+
+message ListImagesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListImagesResponse {
+  repeated Image images = 1;
+}
+
+message CreateImageRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  uint64 object_size_bytes = 11;
+  uint64 stripe_unit_bytes = 12;
+  uint64 stripe_count = 13;
+  uint64 size = 21;
+  bool layering = 31;
+  bool exclusive_lock = 32;
+  bool object_map = 33;
+  bool fast_diff = 34;
+  bool deep_flatten = 35;
+}
+
+message UpdateImageRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  uint64 size = 21;
+  bool exclusive_lock = 31;
+  bool object_map = 32;
+  bool fast_diff = 33;
+  bool deep_flatten = 34;
+}
+
+message DeleteImageRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+}
+
+message CreateImageSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  string snapshot_name = 5;
+}
+
+message DeleteImageSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  string snapshot_name = 5;
+}
+
+message ListVolumesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListVolumesResponse {
+  repeated Volume volumes = 1;
+}
+
+message ListSubvolumesRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+}
+
+message ListSubvolumesResponse {
+  repeated Subvolume subvolumes = 1;
+}
+
+message CreateSubvolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string subvolume_name = 5;
+  string size = 11;
+  bool export = 101;
+}
+
+message UpdateSubvolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string subvolume_name = 5;
+  string size = 11;
+}
+
+message DeleteSubvolumeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string subvolume_name = 5;
+}
+
+message GrantSubvolumeExportAccessRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string export_name = 6;
+  string client_ip = 11;
+}
+
+message RevokeSubvolumeExportAccessRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string export_name = 6;
+  string client_ip = 11;
+}
+
+message CreateSubvolumeSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string snapshot_name = 6;
+}
+
+message DeleteSubvolumeSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string subvolume_name = 4;
+  string group_name = 5;
+  string snapshot_name = 6;
+}
+
+message ListSubvolumeGroupsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+}
+
+message ListSubvolumeGroupsResponse {
+  repeated SubvolumeGroup subvolume_groups = 1;
+}
+
+message CreateSubvolumeGroupRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string size = 11;
+}
+
+message UpdateSubvolumeGroupRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+  string size = 11;
+}
+
+message DeleteSubvolumeGroupRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string volume_name = 3;
+  string group_name = 4;
+}
+
+message ListBucketsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListBucketsResponse {
+  repeated Bucket buckets = 1;
+}
+
+message CreateBucketRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string bucket_name = 3;
+  string owner = 11;
+}
+
+message UpdateBucketRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string bucket_name = 3;
+  string owner = 11;
+}
+
+message DeleteBucketRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string bucket_name = 3;
+}
+
+message ListUsersRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+}
+
+message CreateUserRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string user_id = 3;
+  string user_name = 11;
+  string suspended = 12;
+}
+
+message UpdateUserRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string user_id = 3;
+  string user_name = 11;
+  string suspended = 12;
+}
+
+message DeleteUserRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string user_id = 3;
+}
+
+message CreateUserS3KeyRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string user_id = 3;
+}
+
+message DeleteUserS3KeyRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string user_id = 3;
+  string access_key = 4;
+}
