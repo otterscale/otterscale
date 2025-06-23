@@ -10,7 +10,7 @@ import (
 type RBDImage struct {
 	Name            string
 	Size            uint64
-	Features        string
+	Features        uint64
 	ImageMirrorMode string
 	MirrorImageInfo string
 }
@@ -20,7 +20,6 @@ type CephRBDRepo interface {
 	GetImage(ctx context.Context, config *StorageConfig, poolName, imageName string) (*RBDImage, error)
 	CreateImage(ctx context.Context, config *StorageConfig, poolName, imageName string, order int, stripeUnit, stripeCount, size, features uint64) (*RBDImage, error)
 	UpdateImageSize(ctx context.Context, config *StorageConfig, poolName, imageName string, size uint64) error
-	UpdateImageFeatures(ctx context.Context, config *StorageConfig, poolName, imageName string, features uint64, enabled bool) error
 	DeleteImage(ctx context.Context, config *StorageConfig, poolName, imageName string) error
 }
 
@@ -57,24 +56,11 @@ func (uc *StorageUseCase) CreateImage(ctx context.Context, uuid, facility, pool,
 	return uc.rbd.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
 }
 
-func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool, image string, size uint64, exclusiveLock, objectMap, fastDiff, deepFlatten bool) (*RBDImage, error) {
+func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool, image string, size uint64) (*RBDImage, error) {
 	config, err := uc.config(ctx, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-
-	// the 'layering' feature cannot be updated
-	trueFeatures := uc.convertToRBDImageFeatures(false, exclusiveLock, objectMap, fastDiff, deepFlatten)
-	if err := uc.rbd.UpdateImageFeatures(ctx, config, pool, image, trueFeatures, true); err != nil {
-		return nil, err
-	}
-
-	allFeatures := uc.convertToRBDImageFeatures(true, true, true, true, true)
-	falseFeatures := allFeatures ^ trueFeatures
-	if err := uc.rbd.UpdateImageFeatures(ctx, config, pool, image, falseFeatures, false); err != nil {
-		return nil, err
-	}
-
 	if err := uc.rbd.UpdateImageSize(ctx, config, pool, image, size); err != nil {
 		return nil, err
 	}

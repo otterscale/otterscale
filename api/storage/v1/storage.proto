@@ -244,11 +244,7 @@ message UpdateImageRequest {
   string facility_name = 2;
   string pool_name = 3;
   string image_name = 4;
-  uint64 size = 21;
-  bool exclusive_lock = 31;
-  bool object_map = 32;
-  bool fast_diff = 33;
-  bool deep_flatten = 34;
+  uint64 size = 11;
 }
 
 message DeleteImageRequest {

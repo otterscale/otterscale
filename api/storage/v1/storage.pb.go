@@ -3238,20 +3238,16 @@ func (b0 CreateImageRequest_builder) Build() *CreateImageRequest {
 }
 
 type UpdateImageRequest struct {
-	state                    protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid     *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName  *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_PoolName      *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
-	xxx_hidden_ImageName     *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
-	xxx_hidden_Size          uint64                 `protobuf:"varint,21,opt,name=size"`
-	xxx_hidden_ExclusiveLock bool                   `protobuf:"varint,31,opt,name=exclusive_lock,json=exclusiveLock"`
-	xxx_hidden_ObjectMap     bool                   `protobuf:"varint,32,opt,name=object_map,json=objectMap"`
-	xxx_hidden_FastDiff      bool                   `protobuf:"varint,33,opt,name=fast_diff,json=fastDiff"`
-	xxx_hidden_DeepFlatten   bool                   `protobuf:"varint,34,opt,name=deep_flatten,json=deepFlatten"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
+	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
+	xxx_hidden_Size         uint64                 `protobuf:"varint,11,opt,name=size"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *UpdateImageRequest) Reset() {
@@ -3326,77 +3322,29 @@ func (x *UpdateImageRequest) GetSize() uint64 {
 	return 0
 }
 
-func (x *UpdateImageRequest) GetExclusiveLock() bool {
-	if x != nil {
-		return x.xxx_hidden_ExclusiveLock
-	}
-	return false
-}
-
-func (x *UpdateImageRequest) GetObjectMap() bool {
-	if x != nil {
-		return x.xxx_hidden_ObjectMap
-	}
-	return false
-}
-
-func (x *UpdateImageRequest) GetFastDiff() bool {
-	if x != nil {
-		return x.xxx_hidden_FastDiff
-	}
-	return false
-}
-
-func (x *UpdateImageRequest) GetDeepFlatten() bool {
-	if x != nil {
-		return x.xxx_hidden_DeepFlatten
-	}
-	return false
-}
-
 func (x *UpdateImageRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *UpdateImageRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *UpdateImageRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *UpdateImageRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *UpdateImageRequest) SetSize(v uint64) {
 	x.xxx_hidden_Size = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 9)
-}
-
-func (x *UpdateImageRequest) SetExclusiveLock(v bool) {
-	x.xxx_hidden_ExclusiveLock = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 9)
-}
-
-func (x *UpdateImageRequest) SetObjectMap(v bool) {
-	x.xxx_hidden_ObjectMap = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 9)
-}
-
-func (x *UpdateImageRequest) SetFastDiff(v bool) {
-	x.xxx_hidden_FastDiff = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 9)
-}
-
-func (x *UpdateImageRequest) SetDeepFlatten(v bool) {
-	x.xxx_hidden_DeepFlatten = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *UpdateImageRequest) HasScopeUuid() bool {
@@ -3434,34 +3382,6 @@ func (x *UpdateImageRequest) HasSize() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *UpdateImageRequest) HasExclusiveLock() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
-}
-
-func (x *UpdateImageRequest) HasObjectMap() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
-}
-
-func (x *UpdateImageRequest) HasFastDiff() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
-}
-
-func (x *UpdateImageRequest) HasDeepFlatten() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
-}
-
 func (x *UpdateImageRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
@@ -3487,38 +3407,14 @@ func (x *UpdateImageRequest) ClearSize() {
 	x.xxx_hidden_Size = 0
 }
 
-func (x *UpdateImageRequest) ClearExclusiveLock() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_ExclusiveLock = false
-}
-
-func (x *UpdateImageRequest) ClearObjectMap() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
-	x.xxx_hidden_ObjectMap = false
-}
-
-func (x *UpdateImageRequest) ClearFastDiff() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
-	x.xxx_hidden_FastDiff = false
-}
-
-func (x *UpdateImageRequest) ClearDeepFlatten() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
-	x.xxx_hidden_DeepFlatten = false
-}
-
 type UpdateImageRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid     *string
-	FacilityName  *string
-	PoolName      *string
-	ImageName     *string
-	Size          *uint64
-	ExclusiveLock *bool
-	ObjectMap     *bool
-	FastDiff      *bool
-	DeepFlatten   *bool
+	ScopeUuid    *string
+	FacilityName *string
+	PoolName     *string
+	ImageName    *string
+	Size         *uint64
 }
 
 func (b0 UpdateImageRequest_builder) Build() *UpdateImageRequest {
@@ -3526,40 +3422,24 @@ func (b0 UpdateImageRequest_builder) Build() *UpdateImageRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	if b.Size != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_Size = *b.Size
-	}
-	if b.ExclusiveLock != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 9)
-		x.xxx_hidden_ExclusiveLock = *b.ExclusiveLock
-	}
-	if b.ObjectMap != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 9)
-		x.xxx_hidden_ObjectMap = *b.ObjectMap
-	}
-	if b.FastDiff != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 9)
-		x.xxx_hidden_FastDiff = *b.FastDiff
-	}
-	if b.DeepFlatten != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 9)
-		x.xxx_hidden_DeepFlatten = *b.DeepFlatten
 	}
 	return m0
 }
@@ -9531,7 +9411,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"object_map\x18! \x01(\bR\tobjectMap\x12\x1b\n" +
 	"\tfast_diff\x18\" \x01(\bR\bfastDiff\x12!\n" +
-	"\fdeep_flatten\x18# \x01(\bR\vdeepFlatten\"\xae\x02\n" +
+	"\fdeep_flatten\x18# \x01(\bR\vdeepFlatten\"\xa8\x01\n" +
 	"\x12UpdateImageRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -9539,12 +9419,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12\x12\n" +
-	"\x04size\x18\x15 \x01(\x04R\x04size\x12%\n" +
-	"\x0eexclusive_lock\x18\x1f \x01(\bR\rexclusiveLock\x12\x1d\n" +
-	"\n" +
-	"object_map\x18  \x01(\bR\tobjectMap\x12\x1b\n" +
-	"\tfast_diff\x18! \x01(\bR\bfastDiff\x12!\n" +
-	"\fdeep_flatten\x18\" \x01(\bR\vdeepFlatten\"\x94\x01\n" +
+	"\x04size\x18\v \x01(\x04R\x04size\"\x94\x01\n" +
 	"\x12DeleteImageRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +

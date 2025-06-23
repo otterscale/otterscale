@@ -157,10 +157,6 @@ func (s *StorageService) UpdateImage(ctx context.Context, req *connect.Request[p
 		req.Msg.GetPoolName(),
 		req.Msg.GetImageName(),
 		req.Msg.GetSize(),
-		req.Msg.GetExclusiveLock(),
-		req.Msg.GetObjectMap(),
-		req.Msg.GetFastDiff(),
-		req.Msg.GetDeepFlatten(),
 	)
 	if err != nil {
 		return nil, err

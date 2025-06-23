@@ -101,25 +101,6 @@ func (r *rbd) UpdateImageSize(ctx context.Context, config *core.StorageConfig, p
 	return img.Resize(size)
 }
 
-func (r *rbd) UpdateImageFeatures(ctx context.Context, config *core.StorageConfig, poolName, imageName string, features uint64, enabled bool) error {
-	conn, err := r.ceph.connection(config)
-	if err != nil {
-		return err
-	}
-
-	ioctx, err := conn.OpenIOContext(poolName)
-	if err != nil {
-		return err
-	}
-	defer ioctx.Destroy()
-
-	img, err := cephrbd.OpenImage(ioctx, imageName, cephrbd.NoSnapshot)
-	if err != nil {
-		return err
-	}
-	return img.UpdateFeatures(features, enabled)
-}
-
 func (r *rbd) DeleteImage(ctx context.Context, config *core.StorageConfig, poolName, imageName string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
@@ -159,6 +140,7 @@ func (r *rbd) openImage(ioctx *rados.IOContext, imgName string) (*core.RBDImage,
 	defer img.Close()
 
 	size, _ := img.GetSize()
+	features, _ := img.GetFeatures()
 
 	// img.GetSnapshotNames()
 
@@ -169,7 +151,8 @@ func (r *rbd) openImage(ioctx *rados.IOContext, imgName string) (*core.RBDImage,
 	// fmt.Println(img.GetMirrorImageInfo())
 
 	return &core.RBDImage{
-		Name: img.GetName(),
-		Size: size,
+		Name:     img.GetName(),
+		Size:     size,
+		Features: features,
 	}, nil
 }
