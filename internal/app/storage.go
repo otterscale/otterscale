@@ -56,7 +56,11 @@ func (s *StorageService) DoSMART(ctx context.Context, req *connect.Request[pb.Do
 }
 
 func (s *StorageService) ListPools(ctx context.Context, req *connect.Request[pb.ListPoolsRequest]) (*connect.Response[pb.ListPoolsResponse], error) {
-	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	app := strings.ToLower(req.Msg.GetApplication().String())
+	if strings.EqualFold(app, pb.Application_UNSPECIFIED.String()) {
+		app = ""
+	}
+	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), app)
 	if err != nil {
 		return nil, err
 	}
@@ -120,6 +124,56 @@ func (s *StorageService) ListImages(ctx context.Context, req *connect.Request[pb
 	}
 	resp := &pb.ListImagesResponse{}
 	resp.SetImages(toProtoImages(imgs))
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) CreateImage(ctx context.Context, req *connect.Request[pb.CreateImageRequest]) (*connect.Response[pb.Image], error) {
+	img, err := s.uc.CreateImage(ctx,
+		req.Msg.GetScopeUuid(),
+		req.Msg.GetFacilityName(),
+		req.Msg.GetPoolName(),
+		req.Msg.GetImageName(),
+		req.Msg.GetObjectSizeBytes(),
+		req.Msg.GetStripeUnitBytes(),
+		req.Msg.GetStripeCount(),
+		req.Msg.GetSize(),
+		req.Msg.GetLayering(),
+		req.Msg.GetExclusiveLock(),
+		req.Msg.GetObjectMap(),
+		req.Msg.GetFastDiff(),
+		req.Msg.GetDeepFlatten(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoImage(img)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) UpdateImage(ctx context.Context, req *connect.Request[pb.UpdateImageRequest]) (*connect.Response[pb.Image], error) {
+	img, err := s.uc.UpdateImage(ctx,
+		req.Msg.GetScopeUuid(),
+		req.Msg.GetFacilityName(),
+		req.Msg.GetPoolName(),
+		req.Msg.GetImageName(),
+		req.Msg.GetSize(),
+		req.Msg.GetExclusiveLock(),
+		req.Msg.GetObjectMap(),
+		req.Msg.GetFastDiff(),
+		req.Msg.GetDeepFlatten(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoImage(img)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DeleteImage(ctx context.Context, req *connect.Request[pb.DeleteImageRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteImage(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
 

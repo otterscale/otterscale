@@ -65,9 +65,10 @@ service StorageService {
 }
 
 enum Application {
-  RBD = 0;
-  CephFS = 1;
-  RGW = 2;
+  UNSPECIFIED = 0;
+  RBD = 1;
+  CephFS = 2;
+  RGW = 3;
 }
 
 message MON {
@@ -87,6 +88,15 @@ message Image {
     string name = 1;
   }
   string name = 1;
+  uint64 size = 2;
+  uint64 object_size_bytes = 21;
+  uint64 stripe_unit_bytes = 22;
+  uint64 stripe_count = 23;
+  bool layering = 31;
+  bool exclusive_lock = 32;
+  bool object_map = 33;
+  bool fast_diff = 34;
+  bool deep_flatten = 35;
   repeated Snapshot snapshots = 101;
 }
 
@@ -166,6 +176,7 @@ message DoSMARTResponse {
 message ListPoolsRequest {
   string scope_uuid = 1;
   string facility_name = 2;
+  Application application = 11;
 }
 
 message ListPoolsResponse {
@@ -217,7 +228,15 @@ message CreateImageRequest {
   string facility_name = 2;
   string pool_name = 3;
   string image_name = 4;
-  string size = 11;
+  uint64 object_size_bytes = 11;
+  uint64 stripe_unit_bytes = 12;
+  uint64 stripe_count = 13;
+  uint64 size = 21;
+  bool layering = 31;
+  bool exclusive_lock = 32;
+  bool object_map = 33;
+  bool fast_diff = 34;
+  bool deep_flatten = 35;
 }
 
 message UpdateImageRequest {
@@ -225,7 +244,11 @@ message UpdateImageRequest {
   string facility_name = 2;
   string pool_name = 3;
   string image_name = 4;
-  string size = 11;
+  uint64 size = 21;
+  bool exclusive_lock = 31;
+  bool object_map = 32;
+  bool fast_diff = 33;
+  bool deep_flatten = 34;
 }
 
 message DeleteImageRequest {

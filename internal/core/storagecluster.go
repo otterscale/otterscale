@@ -55,10 +55,13 @@ func (uc *StorageUseCase) DoSMART(ctx context.Context, uuid, facility, osd strin
 	return uc.cluster.DoSMART(ctx, config, osd)
 }
 
-func (uc *StorageUseCase) ListPools(ctx context.Context, uuid, facility string) ([]Pool, error) {
+func (uc *StorageUseCase) ListPools(ctx context.Context, uuid, facility, application string) ([]Pool, error) {
 	config, err := uc.config(ctx, uuid, facility)
 	if err != nil {
 		return nil, err
+	}
+	if application != "" {
+		return uc.cluster.ListPoolsByApplication(ctx, config, application)
 	}
 	return uc.cluster.ListPools(ctx, config)
 }
