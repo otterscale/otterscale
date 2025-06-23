@@ -22,7 +22,7 @@ require (
 	github.com/spf13/cobra v1.9.1
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/net v0.38.0
-	golang.org/x/sync v0.13.0
+	golang.org/x/sync v0.15.0
 	google.golang.org/protobuf v1.36.6
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v2 v2.4.0
