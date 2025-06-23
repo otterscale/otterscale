@@ -173,6 +173,47 @@ func (s *StorageService) DeleteImage(ctx context.Context, req *connect.Request[p
 	return connect.NewResponse(resp), nil
 }
 
+func (s *StorageService) CreateImageSnapshot(ctx context.Context, req *connect.Request[pb.CreateImageSnapshotRequest]) (*connect.Response[pb.Image_Snapshot], error) {
+	snap, err := s.uc.CreateImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoImageSnapshot(snap)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DeleteImageSnapshot(ctx context.Context, req *connect.Request[pb.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) RollbackImageSnapshot(ctx context.Context, req *connect.Request[pb.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.RollbackImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) ProtectImageSnapshot(ctx context.Context, req *connect.Request[pb.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.ProtectImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) UnprotectImageSnapshot(ctx context.Context, req *connect.Request[pb.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.UnprotectImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
 func (s *StorageService) ListVolumes(ctx context.Context, req *connect.Request[pb.ListVolumesRequest]) (*connect.Response[pb.ListVolumesResponse], error) {
 	volumes, err := s.uc.ListVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
 	if err != nil {
@@ -326,6 +367,20 @@ func toProtoImages(is []core.RBDImage) []*pb.Image {
 func toProtoImage(i *core.RBDImage) *pb.Image {
 	ret := &pb.Image{}
 	ret.SetName(i.Name)
+	return ret
+}
+
+func toProtoImageSnapshots(ss []core.RBDImageSnapshot) []*pb.Image_Snapshot {
+	ret := []*pb.Image_Snapshot{}
+	for i := range ss {
+		ret = append(ret, toProtoImageSnapshot(&ss[i]))
+	}
+	return ret
+}
+
+func toProtoImageSnapshot(s *core.RBDImageSnapshot) *pb.Image_Snapshot {
+	ret := &pb.Image_Snapshot{}
+	ret.SetName(s.Name)
 	return ret
 }
 

@@ -70,6 +70,15 @@ const (
 	// StorageServiceDeleteImageSnapshotProcedure is the fully-qualified name of the StorageService's
 	// DeleteImageSnapshot RPC.
 	StorageServiceDeleteImageSnapshotProcedure = "/otterscale.storage.v1.StorageService/DeleteImageSnapshot"
+	// StorageServiceRollbackImageSnapshotProcedure is the fully-qualified name of the StorageService's
+	// RollbackImageSnapshot RPC.
+	StorageServiceRollbackImageSnapshotProcedure = "/otterscale.storage.v1.StorageService/RollbackImageSnapshot"
+	// StorageServiceProtectImageSnapshotProcedure is the fully-qualified name of the StorageService's
+	// ProtectImageSnapshot RPC.
+	StorageServiceProtectImageSnapshotProcedure = "/otterscale.storage.v1.StorageService/ProtectImageSnapshot"
+	// StorageServiceUnprotectImageSnapshotProcedure is the fully-qualified name of the StorageService's
+	// UnprotectImageSnapshot RPC.
+	StorageServiceUnprotectImageSnapshotProcedure = "/otterscale.storage.v1.StorageService/UnprotectImageSnapshot"
 	// StorageServiceListVolumesProcedure is the fully-qualified name of the StorageService's
 	// ListVolumes RPC.
 	StorageServiceListVolumesProcedure = "/otterscale.storage.v1.StorageService/ListVolumes"
@@ -160,6 +169,9 @@ type StorageServiceClient interface {
 	// RBD Image Snapshot
 	CreateImageSnapshot(context.Context, *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error)
 	DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	// CephFS Volume
 	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
 	// CephFS Subvolume
@@ -278,6 +290,24 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+StorageServiceDeleteImageSnapshotProcedure,
 			connect.WithSchema(storageServiceMethods.ByName("DeleteImageSnapshot")),
+			connect.WithClientOptions(opts...),
+		),
+		rollbackImageSnapshot: connect.NewClient[v1.RollbackImageSnapshotRequest, emptypb.Empty](
+			httpClient,
+			baseURL+StorageServiceRollbackImageSnapshotProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("RollbackImageSnapshot")),
+			connect.WithClientOptions(opts...),
+		),
+		protectImageSnapshot: connect.NewClient[v1.ProtectImageSnapshotRequest, emptypb.Empty](
+			httpClient,
+			baseURL+StorageServiceProtectImageSnapshotProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ProtectImageSnapshot")),
+			connect.WithClientOptions(opts...),
+		),
+		unprotectImageSnapshot: connect.NewClient[v1.UnprotectImageSnapshotRequest, emptypb.Empty](
+			httpClient,
+			baseURL+StorageServiceUnprotectImageSnapshotProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("UnprotectImageSnapshot")),
 			connect.WithClientOptions(opts...),
 		),
 		listVolumes: connect.NewClient[v1.ListVolumesRequest, v1.ListVolumesResponse](
@@ -436,6 +466,9 @@ type storageServiceClient struct {
 	deleteImage                 *connect.Client[v1.DeleteImageRequest, emptypb.Empty]
 	createImageSnapshot         *connect.Client[v1.CreateImageSnapshotRequest, v1.Image_Snapshot]
 	deleteImageSnapshot         *connect.Client[v1.DeleteImageSnapshotRequest, emptypb.Empty]
+	rollbackImageSnapshot       *connect.Client[v1.RollbackImageSnapshotRequest, emptypb.Empty]
+	protectImageSnapshot        *connect.Client[v1.ProtectImageSnapshotRequest, emptypb.Empty]
+	unprotectImageSnapshot      *connect.Client[v1.UnprotectImageSnapshotRequest, emptypb.Empty]
 	listVolumes                 *connect.Client[v1.ListVolumesRequest, v1.ListVolumesResponse]
 	listSubvolumes              *connect.Client[v1.ListSubvolumesRequest, v1.ListSubvolumesResponse]
 	createSubvolume             *connect.Client[v1.CreateSubvolumeRequest, v1.Subvolume]
@@ -524,6 +557,21 @@ func (c *storageServiceClient) CreateImageSnapshot(ctx context.Context, req *con
 // DeleteImageSnapshot calls otterscale.storage.v1.StorageService.DeleteImageSnapshot.
 func (c *storageServiceClient) DeleteImageSnapshot(ctx context.Context, req *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteImageSnapshot.CallUnary(ctx, req)
+}
+
+// RollbackImageSnapshot calls otterscale.storage.v1.StorageService.RollbackImageSnapshot.
+func (c *storageServiceClient) RollbackImageSnapshot(ctx context.Context, req *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.rollbackImageSnapshot.CallUnary(ctx, req)
+}
+
+// ProtectImageSnapshot calls otterscale.storage.v1.StorageService.ProtectImageSnapshot.
+func (c *storageServiceClient) ProtectImageSnapshot(ctx context.Context, req *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.protectImageSnapshot.CallUnary(ctx, req)
+}
+
+// UnprotectImageSnapshot calls otterscale.storage.v1.StorageService.UnprotectImageSnapshot.
+func (c *storageServiceClient) UnprotectImageSnapshot(ctx context.Context, req *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.unprotectImageSnapshot.CallUnary(ctx, req)
 }
 
 // ListVolumes calls otterscale.storage.v1.StorageService.ListVolumes.
@@ -661,6 +709,9 @@ type StorageServiceHandler interface {
 	// RBD Image Snapshot
 	CreateImageSnapshot(context.Context, *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error)
 	DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	// CephFS Volume
 	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
 	// CephFS Subvolume
@@ -775,6 +826,24 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		StorageServiceDeleteImageSnapshotProcedure,
 		svc.DeleteImageSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteImageSnapshot")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceRollbackImageSnapshotHandler := connect.NewUnaryHandler(
+		StorageServiceRollbackImageSnapshotProcedure,
+		svc.RollbackImageSnapshot,
+		connect.WithSchema(storageServiceMethods.ByName("RollbackImageSnapshot")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceProtectImageSnapshotHandler := connect.NewUnaryHandler(
+		StorageServiceProtectImageSnapshotProcedure,
+		svc.ProtectImageSnapshot,
+		connect.WithSchema(storageServiceMethods.ByName("ProtectImageSnapshot")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceUnprotectImageSnapshotHandler := connect.NewUnaryHandler(
+		StorageServiceUnprotectImageSnapshotProcedure,
+		svc.UnprotectImageSnapshot,
+		connect.WithSchema(storageServiceMethods.ByName("UnprotectImageSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
 	storageServiceListVolumesHandler := connect.NewUnaryHandler(
@@ -943,6 +1012,12 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceCreateImageSnapshotHandler.ServeHTTP(w, r)
 		case StorageServiceDeleteImageSnapshotProcedure:
 			storageServiceDeleteImageSnapshotHandler.ServeHTTP(w, r)
+		case StorageServiceRollbackImageSnapshotProcedure:
+			storageServiceRollbackImageSnapshotHandler.ServeHTTP(w, r)
+		case StorageServiceProtectImageSnapshotProcedure:
+			storageServiceProtectImageSnapshotHandler.ServeHTTP(w, r)
+		case StorageServiceUnprotectImageSnapshotProcedure:
+			storageServiceUnprotectImageSnapshotHandler.ServeHTTP(w, r)
 		case StorageServiceListVolumesProcedure:
 			storageServiceListVolumesHandler.ServeHTTP(w, r)
 		case StorageServiceListSubvolumesProcedure:
@@ -1048,6 +1123,18 @@ func (UnimplementedStorageServiceHandler) CreateImageSnapshot(context.Context, *
 
 func (UnimplementedStorageServiceHandler) DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteImageSnapshot is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.RollbackImageSnapshot is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ProtectImageSnapshot is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UnprotectImageSnapshot is not implemented"))
 }
 
 func (UnimplementedStorageServiceHandler) ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error) {

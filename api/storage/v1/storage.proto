@@ -27,6 +27,9 @@ service StorageService {
   // RBD Image Snapshot
   rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot);
   rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty);
+  rpc RollbackImageSnapshot(RollbackImageSnapshotRequest) returns (google.protobuf.Empty);
+  rpc ProtectImageSnapshot(ProtectImageSnapshotRequest) returns (google.protobuf.Empty);
+  rpc UnprotectImageSnapshot(UnprotectImageSnapshotRequest) returns (google.protobuf.Empty);
 
   // CephFS Volume
   rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse);
@@ -263,6 +266,30 @@ message CreateImageSnapshotRequest {
 }
 
 message DeleteImageSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  string snapshot_name = 5;
+}
+
+message RollbackImageSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  string snapshot_name = 5;
+}
+
+message ProtectImageSnapshotRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string pool_name = 3;
+  string image_name = 4;
+  string snapshot_name = 5;
+}
+
+message UnprotectImageSnapshotRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string pool_name = 3;
