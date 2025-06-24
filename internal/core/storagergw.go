@@ -3,28 +3,30 @@ package core
 import (
 	"context"
 
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/ceph/go-ceph/rgw/admin"
 )
 
 type RGWBucket = admin.Bucket
 
-type RGWRole struct {
-	Name string
-}
+type RGWUser = admin.User
 
-type RGWUser struct {
-	Name string
-}
-
-type RGWAccessKey struct {
-	Name string
-}
+type RGWUserKey = admin.UserKeySpec
 
 type CephRGWRepo interface {
 	ListBuckets(ctx context.Context, config *StorageConfig) ([]RGWBucket, error)
-	ListRoles(ctx context.Context, config *StorageConfig) ([]RGWRole, error)
+	GetBucket(ctx context.Context, config *StorageConfig, bucket string) (*RGWBucket, error)
+	CreateBucket(ctx context.Context, config *StorageConfig, bucket string, acl types.BucketCannedACL) error
+	UpdateBucketOwner(ctx context.Context, config *StorageConfig, bucket, owner string) error
+	UpdateBucketACL(ctx context.Context, config *StorageConfig, bucket string, acl types.BucketCannedACL) error
+	UpdateBucketPolicy(ctx context.Context, config *StorageConfig, bucket, policy string) error
+	DeleteBucket(ctx context.Context, config *StorageConfig, bucket string) error
 	ListUsers(ctx context.Context, config *StorageConfig) ([]RGWUser, error)
-	ListAccessKeys(ctx context.Context, config *StorageConfig) ([]RGWAccessKey, error)
+	CreateUser(ctx context.Context, config *StorageConfig, id, name string, suspended bool) (*RGWUser, error)
+	UpdateUser(ctx context.Context, config *StorageConfig, id, name string, suspended bool) (*RGWUser, error)
+	DeleteUser(ctx context.Context, config *StorageConfig, id string) error
+	CreateUserKey(ctx context.Context, config *StorageConfig, id string) (*RGWUserKey, error)
+	DeleteUserKey(ctx context.Context, config *StorageConfig, id, accessKey string) error
 }
 
 func (uc *StorageUseCase) ListBuckets(ctx context.Context, uuid, facility string) ([]RGWBucket, error) {
@@ -35,10 +37,96 @@ func (uc *StorageUseCase) ListBuckets(ctx context.Context, uuid, facility string
 	return uc.rgw.ListBuckets(ctx, config)
 }
 
+func (uc *StorageUseCase) CreateBucket(ctx context.Context, uuid, facility, bucket, owner, policy string, acl types.BucketCannedACL) (*RGWBucket, error) {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	if err := uc.rgw.CreateBucket(ctx, config, bucket, acl); err != nil {
+		return nil, err
+	}
+	if err := uc.rgw.UpdateBucketOwner(ctx, config, bucket, owner); err != nil {
+		return nil, err
+	}
+	if policy != "" {
+		if err := uc.rgw.UpdateBucketPolicy(ctx, config, bucket, policy); err != nil {
+			return nil, err
+		}
+	}
+	return uc.rgw.GetBucket(ctx, config, bucket)
+}
+
+func (uc *StorageUseCase) UpdateBucket(ctx context.Context, uuid, facility, bucket, owner, policy string, acl types.BucketCannedACL) (*RGWBucket, error) {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	if err := uc.rgw.UpdateBucketACL(ctx, config, bucket, acl); err != nil {
+		return nil, err
+	}
+	if err := uc.rgw.UpdateBucketOwner(ctx, config, bucket, owner); err != nil {
+		return nil, err
+	}
+	if policy != "" {
+		if err := uc.rgw.UpdateBucketPolicy(ctx, config, bucket, policy); err != nil {
+			return nil, err
+		}
+	}
+	return uc.rgw.GetBucket(ctx, config, bucket)
+}
+
+func (uc *StorageUseCase) DeleteBucket(ctx context.Context, uuid, facility, bucket string) error {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.rgw.DeleteBucket(ctx, config, bucket)
+}
+
 func (uc *StorageUseCase) ListUsers(ctx context.Context, uuid, facility string) ([]RGWUser, error) {
 	config, err := uc.config(ctx, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
 	return uc.rgw.ListUsers(ctx, config)
+}
+
+func (uc *StorageUseCase) CreateUser(ctx context.Context, uuid, facility, id, name string, suspended bool) (*RGWUser, error) {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.rgw.CreateUser(ctx, config, id, name, suspended)
+}
+
+func (uc *StorageUseCase) UpdateUser(ctx context.Context, uuid, facility, id, name string, suspended bool) (*RGWUser, error) {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.rgw.UpdateUser(ctx, config, id, name, suspended)
+}
+
+func (uc *StorageUseCase) DeleteUser(ctx context.Context, uuid, facility, id string) error {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.rgw.DeleteUser(ctx, config, id)
+}
+
+func (uc *StorageUseCase) CreateUserKey(ctx context.Context, uuid, facility, id string) (*admin.UserKeySpec, error) {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.rgw.CreateUserKey(ctx, config, id)
+}
+
+func (uc *StorageUseCase) DeleteUserKey(ctx context.Context, uuid, facility, id, accessKey string) error {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.rgw.DeleteUserKey(ctx, config, id, accessKey)
 }
