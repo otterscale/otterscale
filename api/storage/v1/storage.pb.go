@@ -68,6 +68,53 @@ func (x Application) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
+type Bucket_ACL int32
+
+const (
+	Bucket_PRIVATE            Bucket_ACL = 0
+	Bucket_PUBLIC_READ        Bucket_ACL = 1
+	Bucket_PUBLIC_READ_WRITE  Bucket_ACL = 2
+	Bucket_AUTHENTICATED_READ Bucket_ACL = 3
+)
+
+// Enum value maps for Bucket_ACL.
+var (
+	Bucket_ACL_name = map[int32]string{
+		0: "PRIVATE",
+		1: "PUBLIC_READ",
+		2: "PUBLIC_READ_WRITE",
+		3: "AUTHENTICATED_READ",
+	}
+	Bucket_ACL_value = map[string]int32{
+		"PRIVATE":            0,
+		"PUBLIC_READ":        1,
+		"PUBLIC_READ_WRITE":  2,
+		"AUTHENTICATED_READ": 3,
+	}
+)
+
+func (x Bucket_ACL) Enum() *Bucket_ACL {
+	p := new(Bucket_ACL)
+	*p = x
+	return p
+}
+
+func (x Bucket_ACL) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Bucket_ACL) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_storage_v1_storage_proto_enumTypes[1].Descriptor()
+}
+
+func (Bucket_ACL) Type() protoreflect.EnumType {
+	return &file_api_storage_v1_storage_proto_enumTypes[1]
+}
+
+func (x Bucket_ACL) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type CreatePoolRequest_Type int32
 
 const (
@@ -101,11 +148,11 @@ func (x CreatePoolRequest_Type) String() string {
 }
 
 func (CreatePoolRequest_Type) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_storage_v1_storage_proto_enumTypes[1].Descriptor()
+	return file_api_storage_v1_storage_proto_enumTypes[2].Descriptor()
 }
 
 func (CreatePoolRequest_Type) Type() protoreflect.EnumType {
-	return &file_api_storage_v1_storage_proto_enumTypes[1]
+	return &file_api_storage_v1_storage_proto_enumTypes[2]
 }
 
 func (x CreatePoolRequest_Type) Number() protoreflect.EnumNumber {
@@ -988,6 +1035,8 @@ func (b0 SubvolumeGroup_builder) Build() *SubvolumeGroup {
 type Bucket struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Owner       *string                `protobuf:"bytes,2,opt,name=owner"`
+	xxx_hidden_Acl         Bucket_ACL             `protobuf:"varint,3,opt,name=acl,enum=otterscale.storage.v1.Bucket_ACL"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1029,9 +1078,38 @@ func (x *Bucket) GetName() string {
 	return ""
 }
 
+func (x *Bucket) GetOwner() string {
+	if x != nil {
+		if x.xxx_hidden_Owner != nil {
+			return *x.xxx_hidden_Owner
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Bucket) GetAcl() Bucket_ACL {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
+			return x.xxx_hidden_Acl
+		}
+	}
+	return Bucket_PRIVATE
+}
+
 func (x *Bucket) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *Bucket) SetOwner(v string) {
+	x.xxx_hidden_Owner = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *Bucket) SetAcl(v Bucket_ACL) {
+	x.xxx_hidden_Acl = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *Bucket) HasName() bool {
@@ -1041,15 +1119,41 @@ func (x *Bucket) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
+func (x *Bucket) HasOwner() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Bucket) HasAcl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
 func (x *Bucket) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
 }
 
+func (x *Bucket) ClearOwner() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Owner = nil
+}
+
+func (x *Bucket) ClearAcl() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Acl = Bucket_PRIVATE
+}
+
 type Bucket_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name *string
+	Name  *string
+	Owner *string
+	Acl   *Bucket_ACL
 }
 
 func (b0 Bucket_builder) Build() *Bucket {
@@ -1057,8 +1161,16 @@ func (b0 Bucket_builder) Build() *Bucket {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Name = b.Name
+	}
+	if b.Owner != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_Owner = b.Owner
+	}
+	if b.Acl != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_Acl = *b.Acl
 	}
 	return m0
 }
@@ -3238,20 +3350,16 @@ func (b0 CreateImageRequest_builder) Build() *CreateImageRequest {
 }
 
 type UpdateImageRequest struct {
-	state                    protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid     *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName  *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_PoolName      *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
-	xxx_hidden_ImageName     *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
-	xxx_hidden_Size          uint64                 `protobuf:"varint,21,opt,name=size"`
-	xxx_hidden_ExclusiveLock bool                   `protobuf:"varint,31,opt,name=exclusive_lock,json=exclusiveLock"`
-	xxx_hidden_ObjectMap     bool                   `protobuf:"varint,32,opt,name=object_map,json=objectMap"`
-	xxx_hidden_FastDiff      bool                   `protobuf:"varint,33,opt,name=fast_diff,json=fastDiff"`
-	xxx_hidden_DeepFlatten   bool                   `protobuf:"varint,34,opt,name=deep_flatten,json=deepFlatten"`
-	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
-	XXX_presence             [1]uint32
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
+	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
+	xxx_hidden_Size         uint64                 `protobuf:"varint,11,opt,name=size"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *UpdateImageRequest) Reset() {
@@ -3326,77 +3434,29 @@ func (x *UpdateImageRequest) GetSize() uint64 {
 	return 0
 }
 
-func (x *UpdateImageRequest) GetExclusiveLock() bool {
-	if x != nil {
-		return x.xxx_hidden_ExclusiveLock
-	}
-	return false
-}
-
-func (x *UpdateImageRequest) GetObjectMap() bool {
-	if x != nil {
-		return x.xxx_hidden_ObjectMap
-	}
-	return false
-}
-
-func (x *UpdateImageRequest) GetFastDiff() bool {
-	if x != nil {
-		return x.xxx_hidden_FastDiff
-	}
-	return false
-}
-
-func (x *UpdateImageRequest) GetDeepFlatten() bool {
-	if x != nil {
-		return x.xxx_hidden_DeepFlatten
-	}
-	return false
-}
-
 func (x *UpdateImageRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
 func (x *UpdateImageRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *UpdateImageRequest) SetPoolName(v string) {
 	x.xxx_hidden_PoolName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *UpdateImageRequest) SetImageName(v string) {
 	x.xxx_hidden_ImageName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *UpdateImageRequest) SetSize(v uint64) {
 	x.xxx_hidden_Size = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 9)
-}
-
-func (x *UpdateImageRequest) SetExclusiveLock(v bool) {
-	x.xxx_hidden_ExclusiveLock = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 9)
-}
-
-func (x *UpdateImageRequest) SetObjectMap(v bool) {
-	x.xxx_hidden_ObjectMap = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 9)
-}
-
-func (x *UpdateImageRequest) SetFastDiff(v bool) {
-	x.xxx_hidden_FastDiff = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 9)
-}
-
-func (x *UpdateImageRequest) SetDeepFlatten(v bool) {
-	x.xxx_hidden_DeepFlatten = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *UpdateImageRequest) HasScopeUuid() bool {
@@ -3434,34 +3494,6 @@ func (x *UpdateImageRequest) HasSize() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *UpdateImageRequest) HasExclusiveLock() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
-}
-
-func (x *UpdateImageRequest) HasObjectMap() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
-}
-
-func (x *UpdateImageRequest) HasFastDiff() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
-}
-
-func (x *UpdateImageRequest) HasDeepFlatten() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
-}
-
 func (x *UpdateImageRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
@@ -3487,38 +3519,14 @@ func (x *UpdateImageRequest) ClearSize() {
 	x.xxx_hidden_Size = 0
 }
 
-func (x *UpdateImageRequest) ClearExclusiveLock() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
-	x.xxx_hidden_ExclusiveLock = false
-}
-
-func (x *UpdateImageRequest) ClearObjectMap() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
-	x.xxx_hidden_ObjectMap = false
-}
-
-func (x *UpdateImageRequest) ClearFastDiff() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
-	x.xxx_hidden_FastDiff = false
-}
-
-func (x *UpdateImageRequest) ClearDeepFlatten() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
-	x.xxx_hidden_DeepFlatten = false
-}
-
 type UpdateImageRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	ScopeUuid     *string
-	FacilityName  *string
-	PoolName      *string
-	ImageName     *string
-	Size          *uint64
-	ExclusiveLock *bool
-	ObjectMap     *bool
-	FastDiff      *bool
-	DeepFlatten   *bool
+	ScopeUuid    *string
+	FacilityName *string
+	PoolName     *string
+	ImageName    *string
+	Size         *uint64
 }
 
 func (b0 UpdateImageRequest_builder) Build() *UpdateImageRequest {
@@ -3526,40 +3534,24 @@ func (b0 UpdateImageRequest_builder) Build() *UpdateImageRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.PoolName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ImageName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_ImageName = b.ImageName
 	}
 	if b.Size != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_Size = *b.Size
-	}
-	if b.ExclusiveLock != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 9)
-		x.xxx_hidden_ExclusiveLock = *b.ExclusiveLock
-	}
-	if b.ObjectMap != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 9)
-		x.xxx_hidden_ObjectMap = *b.ObjectMap
-	}
-	if b.FastDiff != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 9)
-		x.xxx_hidden_FastDiff = *b.FastDiff
-	}
-	if b.DeepFlatten != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 9)
-		x.xxx_hidden_DeepFlatten = *b.DeepFlatten
 	}
 	return m0
 }
@@ -4161,6 +4153,636 @@ func (b0 DeleteImageSnapshotRequest_builder) Build() *DeleteImageSnapshotRequest
 	return m0
 }
 
+type RollbackImageSnapshotRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
+	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
+	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *RollbackImageSnapshotRequest) Reset() {
+	*x = RollbackImageSnapshotRequest{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RollbackImageSnapshotRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RollbackImageSnapshotRequest) ProtoMessage() {}
+
+func (x *RollbackImageSnapshotRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *RollbackImageSnapshotRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RollbackImageSnapshotRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RollbackImageSnapshotRequest) GetPoolName() string {
+	if x != nil {
+		if x.xxx_hidden_PoolName != nil {
+			return *x.xxx_hidden_PoolName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RollbackImageSnapshotRequest) GetImageName() string {
+	if x != nil {
+		if x.xxx_hidden_ImageName != nil {
+			return *x.xxx_hidden_ImageName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RollbackImageSnapshotRequest) GetSnapshotName() string {
+	if x != nil {
+		if x.xxx_hidden_SnapshotName != nil {
+			return *x.xxx_hidden_SnapshotName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RollbackImageSnapshotRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *RollbackImageSnapshotRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *RollbackImageSnapshotRequest) SetPoolName(v string) {
+	x.xxx_hidden_PoolName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *RollbackImageSnapshotRequest) SetImageName(v string) {
+	x.xxx_hidden_ImageName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *RollbackImageSnapshotRequest) SetSnapshotName(v string) {
+	x.xxx_hidden_SnapshotName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+}
+
+func (x *RollbackImageSnapshotRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *RollbackImageSnapshotRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *RollbackImageSnapshotRequest) HasPoolName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *RollbackImageSnapshotRequest) HasImageName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *RollbackImageSnapshotRequest) HasSnapshotName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *RollbackImageSnapshotRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *RollbackImageSnapshotRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *RollbackImageSnapshotRequest) ClearPoolName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_PoolName = nil
+}
+
+func (x *RollbackImageSnapshotRequest) ClearImageName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_ImageName = nil
+}
+
+func (x *RollbackImageSnapshotRequest) ClearSnapshotName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_SnapshotName = nil
+}
+
+type RollbackImageSnapshotRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	PoolName     *string
+	ImageName    *string
+	SnapshotName *string
+}
+
+func (b0 RollbackImageSnapshotRequest_builder) Build() *RollbackImageSnapshotRequest {
+	m0 := &RollbackImageSnapshotRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.PoolName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_PoolName = b.PoolName
+	}
+	if b.ImageName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_ImageName = b.ImageName
+	}
+	if b.SnapshotName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_SnapshotName = b.SnapshotName
+	}
+	return m0
+}
+
+type ProtectImageSnapshotRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
+	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
+	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *ProtectImageSnapshotRequest) Reset() {
+	*x = ProtectImageSnapshotRequest{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ProtectImageSnapshotRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProtectImageSnapshotRequest) ProtoMessage() {}
+
+func (x *ProtectImageSnapshotRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ProtectImageSnapshotRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ProtectImageSnapshotRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ProtectImageSnapshotRequest) GetPoolName() string {
+	if x != nil {
+		if x.xxx_hidden_PoolName != nil {
+			return *x.xxx_hidden_PoolName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ProtectImageSnapshotRequest) GetImageName() string {
+	if x != nil {
+		if x.xxx_hidden_ImageName != nil {
+			return *x.xxx_hidden_ImageName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ProtectImageSnapshotRequest) GetSnapshotName() string {
+	if x != nil {
+		if x.xxx_hidden_SnapshotName != nil {
+			return *x.xxx_hidden_SnapshotName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ProtectImageSnapshotRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *ProtectImageSnapshotRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *ProtectImageSnapshotRequest) SetPoolName(v string) {
+	x.xxx_hidden_PoolName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *ProtectImageSnapshotRequest) SetImageName(v string) {
+	x.xxx_hidden_ImageName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *ProtectImageSnapshotRequest) SetSnapshotName(v string) {
+	x.xxx_hidden_SnapshotName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+}
+
+func (x *ProtectImageSnapshotRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ProtectImageSnapshotRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ProtectImageSnapshotRequest) HasPoolName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *ProtectImageSnapshotRequest) HasImageName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *ProtectImageSnapshotRequest) HasSnapshotName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *ProtectImageSnapshotRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *ProtectImageSnapshotRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *ProtectImageSnapshotRequest) ClearPoolName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_PoolName = nil
+}
+
+func (x *ProtectImageSnapshotRequest) ClearImageName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_ImageName = nil
+}
+
+func (x *ProtectImageSnapshotRequest) ClearSnapshotName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_SnapshotName = nil
+}
+
+type ProtectImageSnapshotRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	PoolName     *string
+	ImageName    *string
+	SnapshotName *string
+}
+
+func (b0 ProtectImageSnapshotRequest_builder) Build() *ProtectImageSnapshotRequest {
+	m0 := &ProtectImageSnapshotRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.PoolName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_PoolName = b.PoolName
+	}
+	if b.ImageName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_ImageName = b.ImageName
+	}
+	if b.SnapshotName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_SnapshotName = b.SnapshotName
+	}
+	return m0
+}
+
+type UnprotectImageSnapshotRequest struct {
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_PoolName     *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
+	xxx_hidden_ImageName    *string                `protobuf:"bytes,4,opt,name=image_name,json=imageName"`
+	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
+}
+
+func (x *UnprotectImageSnapshotRequest) Reset() {
+	*x = UnprotectImageSnapshotRequest{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UnprotectImageSnapshotRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnprotectImageSnapshotRequest) ProtoMessage() {}
+
+func (x *UnprotectImageSnapshotRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *UnprotectImageSnapshotRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UnprotectImageSnapshotRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UnprotectImageSnapshotRequest) GetPoolName() string {
+	if x != nil {
+		if x.xxx_hidden_PoolName != nil {
+			return *x.xxx_hidden_PoolName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UnprotectImageSnapshotRequest) GetImageName() string {
+	if x != nil {
+		if x.xxx_hidden_ImageName != nil {
+			return *x.xxx_hidden_ImageName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UnprotectImageSnapshotRequest) GetSnapshotName() string {
+	if x != nil {
+		if x.xxx_hidden_SnapshotName != nil {
+			return *x.xxx_hidden_SnapshotName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UnprotectImageSnapshotRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *UnprotectImageSnapshotRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *UnprotectImageSnapshotRequest) SetPoolName(v string) {
+	x.xxx_hidden_PoolName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *UnprotectImageSnapshotRequest) SetImageName(v string) {
+	x.xxx_hidden_ImageName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *UnprotectImageSnapshotRequest) SetSnapshotName(v string) {
+	x.xxx_hidden_SnapshotName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+}
+
+func (x *UnprotectImageSnapshotRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UnprotectImageSnapshotRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *UnprotectImageSnapshotRequest) HasPoolName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *UnprotectImageSnapshotRequest) HasImageName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *UnprotectImageSnapshotRequest) HasSnapshotName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *UnprotectImageSnapshotRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *UnprotectImageSnapshotRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *UnprotectImageSnapshotRequest) ClearPoolName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_PoolName = nil
+}
+
+func (x *UnprotectImageSnapshotRequest) ClearImageName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_ImageName = nil
+}
+
+func (x *UnprotectImageSnapshotRequest) ClearSnapshotName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_SnapshotName = nil
+}
+
+type UnprotectImageSnapshotRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid    *string
+	FacilityName *string
+	PoolName     *string
+	ImageName    *string
+	SnapshotName *string
+}
+
+func (b0 UnprotectImageSnapshotRequest_builder) Build() *UnprotectImageSnapshotRequest {
+	m0 := &UnprotectImageSnapshotRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.PoolName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_PoolName = b.PoolName
+	}
+	if b.ImageName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_ImageName = b.ImageName
+	}
+	if b.SnapshotName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_SnapshotName = b.SnapshotName
+	}
+	return m0
+}
+
 type ListVolumesRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
@@ -4173,7 +4795,7 @@ type ListVolumesRequest struct {
 
 func (x *ListVolumesRequest) Reset() {
 	*x = ListVolumesRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[28]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4185,7 +4807,7 @@ func (x *ListVolumesRequest) String() string {
 func (*ListVolumesRequest) ProtoMessage() {}
 
 func (x *ListVolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[28]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4281,7 +4903,7 @@ type ListVolumesResponse struct {
 
 func (x *ListVolumesResponse) Reset() {
 	*x = ListVolumesResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[29]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4293,7 +4915,7 @@ func (x *ListVolumesResponse) String() string {
 func (*ListVolumesResponse) ProtoMessage() {}
 
 func (x *ListVolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[29]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4345,7 +4967,7 @@ type ListSubvolumesRequest struct {
 
 func (x *ListSubvolumesRequest) Reset() {
 	*x = ListSubvolumesRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[30]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4357,7 +4979,7 @@ func (x *ListSubvolumesRequest) String() string {
 func (*ListSubvolumesRequest) ProtoMessage() {}
 
 func (x *ListSubvolumesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[30]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4517,7 +5139,7 @@ type ListSubvolumesResponse struct {
 
 func (x *ListSubvolumesResponse) Reset() {
 	*x = ListSubvolumesResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[31]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4529,7 +5151,7 @@ func (x *ListSubvolumesResponse) String() string {
 func (*ListSubvolumesResponse) ProtoMessage() {}
 
 func (x *ListSubvolumesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[31]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4584,7 +5206,7 @@ type CreateSubvolumeRequest struct {
 
 func (x *CreateSubvolumeRequest) Reset() {
 	*x = CreateSubvolumeRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[32]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4596,7 +5218,7 @@ func (x *CreateSubvolumeRequest) String() string {
 func (*CreateSubvolumeRequest) ProtoMessage() {}
 
 func (x *CreateSubvolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[32]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4856,7 +5478,7 @@ type UpdateSubvolumeRequest struct {
 
 func (x *UpdateSubvolumeRequest) Reset() {
 	*x = UpdateSubvolumeRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[33]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4868,7 +5490,7 @@ func (x *UpdateSubvolumeRequest) String() string {
 func (*UpdateSubvolumeRequest) ProtoMessage() {}
 
 func (x *UpdateSubvolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[33]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5098,7 +5720,7 @@ type DeleteSubvolumeRequest struct {
 
 func (x *DeleteSubvolumeRequest) Reset() {
 	*x = DeleteSubvolumeRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[34]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5110,7 +5732,7 @@ func (x *DeleteSubvolumeRequest) String() string {
 func (*DeleteSubvolumeRequest) ProtoMessage() {}
 
 func (x *DeleteSubvolumeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[34]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5310,7 +5932,7 @@ type GrantSubvolumeExportAccessRequest struct {
 
 func (x *GrantSubvolumeExportAccessRequest) Reset() {
 	*x = GrantSubvolumeExportAccessRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[35]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5322,7 +5944,7 @@ func (x *GrantSubvolumeExportAccessRequest) String() string {
 func (*GrantSubvolumeExportAccessRequest) ProtoMessage() {}
 
 func (x *GrantSubvolumeExportAccessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[35]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5586,7 +6208,7 @@ type RevokeSubvolumeExportAccessRequest struct {
 
 func (x *RevokeSubvolumeExportAccessRequest) Reset() {
 	*x = RevokeSubvolumeExportAccessRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[36]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5598,7 +6220,7 @@ func (x *RevokeSubvolumeExportAccessRequest) String() string {
 func (*RevokeSubvolumeExportAccessRequest) ProtoMessage() {}
 
 func (x *RevokeSubvolumeExportAccessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[36]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5861,7 +6483,7 @@ type CreateSubvolumeSnapshotRequest struct {
 
 func (x *CreateSubvolumeSnapshotRequest) Reset() {
 	*x = CreateSubvolumeSnapshotRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[37]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5873,7 +6495,7 @@ func (x *CreateSubvolumeSnapshotRequest) String() string {
 func (*CreateSubvolumeSnapshotRequest) ProtoMessage() {}
 
 func (x *CreateSubvolumeSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[37]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6104,7 +6726,7 @@ type DeleteSubvolumeSnapshotRequest struct {
 
 func (x *DeleteSubvolumeSnapshotRequest) Reset() {
 	*x = DeleteSubvolumeSnapshotRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[38]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6116,7 +6738,7 @@ func (x *DeleteSubvolumeSnapshotRequest) String() string {
 func (*DeleteSubvolumeSnapshotRequest) ProtoMessage() {}
 
 func (x *DeleteSubvolumeSnapshotRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[38]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6344,7 +6966,7 @@ type ListSubvolumeGroupsRequest struct {
 
 func (x *ListSubvolumeGroupsRequest) Reset() {
 	*x = ListSubvolumeGroupsRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[39]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6356,7 +6978,7 @@ func (x *ListSubvolumeGroupsRequest) String() string {
 func (*ListSubvolumeGroupsRequest) ProtoMessage() {}
 
 func (x *ListSubvolumeGroupsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[39]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6484,7 +7106,7 @@ type ListSubvolumeGroupsResponse struct {
 
 func (x *ListSubvolumeGroupsResponse) Reset() {
 	*x = ListSubvolumeGroupsResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[40]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6496,7 +7118,7 @@ func (x *ListSubvolumeGroupsResponse) String() string {
 func (*ListSubvolumeGroupsResponse) ProtoMessage() {}
 
 func (x *ListSubvolumeGroupsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[40]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6549,7 +7171,7 @@ type CreateSubvolumeGroupRequest struct {
 
 func (x *CreateSubvolumeGroupRequest) Reset() {
 	*x = CreateSubvolumeGroupRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[41]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6561,7 +7183,7 @@ func (x *CreateSubvolumeGroupRequest) String() string {
 func (*CreateSubvolumeGroupRequest) ProtoMessage() {}
 
 func (x *CreateSubvolumeGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[41]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6759,7 +7381,7 @@ type UpdateSubvolumeGroupRequest struct {
 
 func (x *UpdateSubvolumeGroupRequest) Reset() {
 	*x = UpdateSubvolumeGroupRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[42]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6771,7 +7393,7 @@ func (x *UpdateSubvolumeGroupRequest) String() string {
 func (*UpdateSubvolumeGroupRequest) ProtoMessage() {}
 
 func (x *UpdateSubvolumeGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[42]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6968,7 +7590,7 @@ type DeleteSubvolumeGroupRequest struct {
 
 func (x *DeleteSubvolumeGroupRequest) Reset() {
 	*x = DeleteSubvolumeGroupRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[43]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6980,7 +7602,7 @@ func (x *DeleteSubvolumeGroupRequest) String() string {
 func (*DeleteSubvolumeGroupRequest) ProtoMessage() {}
 
 func (x *DeleteSubvolumeGroupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[43]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7143,7 +7765,7 @@ type ListBucketsRequest struct {
 
 func (x *ListBucketsRequest) Reset() {
 	*x = ListBucketsRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[44]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7155,7 +7777,7 @@ func (x *ListBucketsRequest) String() string {
 func (*ListBucketsRequest) ProtoMessage() {}
 
 func (x *ListBucketsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[44]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7251,7 +7873,7 @@ type ListBucketsResponse struct {
 
 func (x *ListBucketsResponse) Reset() {
 	*x = ListBucketsResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[45]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7263,7 +7885,7 @@ func (x *ListBucketsResponse) String() string {
 func (*ListBucketsResponse) ProtoMessage() {}
 
 func (x *ListBucketsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[45]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7307,6 +7929,8 @@ type CreateBucketRequest struct {
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_BucketName   *string                `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName"`
 	xxx_hidden_Owner        *string                `protobuf:"bytes,11,opt,name=owner"`
+	xxx_hidden_Policy       *string                `protobuf:"bytes,12,opt,name=policy"`
+	xxx_hidden_Acl          Bucket_ACL             `protobuf:"varint,21,opt,name=acl,enum=otterscale.storage.v1.Bucket_ACL"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -7315,7 +7939,7 @@ type CreateBucketRequest struct {
 
 func (x *CreateBucketRequest) Reset() {
 	*x = CreateBucketRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[46]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7327,7 +7951,7 @@ func (x *CreateBucketRequest) String() string {
 func (*CreateBucketRequest) ProtoMessage() {}
 
 func (x *CreateBucketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[46]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7378,24 +8002,53 @@ func (x *CreateBucketRequest) GetOwner() string {
 	return ""
 }
 
+func (x *CreateBucketRequest) GetPolicy() string {
+	if x != nil {
+		if x.xxx_hidden_Policy != nil {
+			return *x.xxx_hidden_Policy
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateBucketRequest) GetAcl() Bucket_ACL {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 5) {
+			return x.xxx_hidden_Acl
+		}
+	}
+	return Bucket_PRIVATE
+}
+
 func (x *CreateBucketRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
 func (x *CreateBucketRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *CreateBucketRequest) SetBucketName(v string) {
 	x.xxx_hidden_BucketName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
 func (x *CreateBucketRequest) SetOwner(v string) {
 	x.xxx_hidden_Owner = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+}
+
+func (x *CreateBucketRequest) SetPolicy(v string) {
+	x.xxx_hidden_Policy = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+}
+
+func (x *CreateBucketRequest) SetAcl(v Bucket_ACL) {
+	x.xxx_hidden_Acl = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
 func (x *CreateBucketRequest) HasScopeUuid() bool {
@@ -7426,6 +8079,20 @@ func (x *CreateBucketRequest) HasOwner() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
+func (x *CreateBucketRequest) HasPolicy() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *CreateBucketRequest) HasAcl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
 func (x *CreateBucketRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
@@ -7446,6 +8113,16 @@ func (x *CreateBucketRequest) ClearOwner() {
 	x.xxx_hidden_Owner = nil
 }
 
+func (x *CreateBucketRequest) ClearPolicy() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_Policy = nil
+}
+
+func (x *CreateBucketRequest) ClearAcl() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_Acl = Bucket_PRIVATE
+}
+
 type CreateBucketRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -7453,6 +8130,8 @@ type CreateBucketRequest_builder struct {
 	FacilityName *string
 	BucketName   *string
 	Owner        *string
+	Policy       *string
+	Acl          *Bucket_ACL
 }
 
 func (b0 CreateBucketRequest_builder) Build() *CreateBucketRequest {
@@ -7460,20 +8139,28 @@ func (b0 CreateBucketRequest_builder) Build() *CreateBucketRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.BucketName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_BucketName = b.BucketName
 	}
 	if b.Owner != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_Owner = b.Owner
+	}
+	if b.Policy != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		x.xxx_hidden_Policy = b.Policy
+	}
+	if b.Acl != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		x.xxx_hidden_Acl = *b.Acl
 	}
 	return m0
 }
@@ -7484,6 +8171,8 @@ type UpdateBucketRequest struct {
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_BucketName   *string                `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName"`
 	xxx_hidden_Owner        *string                `protobuf:"bytes,11,opt,name=owner"`
+	xxx_hidden_Policy       *string                `protobuf:"bytes,12,opt,name=policy"`
+	xxx_hidden_Acl          Bucket_ACL             `protobuf:"varint,21,opt,name=acl,enum=otterscale.storage.v1.Bucket_ACL"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -7492,7 +8181,7 @@ type UpdateBucketRequest struct {
 
 func (x *UpdateBucketRequest) Reset() {
 	*x = UpdateBucketRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[47]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7504,7 +8193,7 @@ func (x *UpdateBucketRequest) String() string {
 func (*UpdateBucketRequest) ProtoMessage() {}
 
 func (x *UpdateBucketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[47]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7555,24 +8244,53 @@ func (x *UpdateBucketRequest) GetOwner() string {
 	return ""
 }
 
+func (x *UpdateBucketRequest) GetPolicy() string {
+	if x != nil {
+		if x.xxx_hidden_Policy != nil {
+			return *x.xxx_hidden_Policy
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateBucketRequest) GetAcl() Bucket_ACL {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 5) {
+			return x.xxx_hidden_Acl
+		}
+	}
+	return Bucket_PRIVATE
+}
+
 func (x *UpdateBucketRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
 func (x *UpdateBucketRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
 func (x *UpdateBucketRequest) SetBucketName(v string) {
 	x.xxx_hidden_BucketName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
 func (x *UpdateBucketRequest) SetOwner(v string) {
 	x.xxx_hidden_Owner = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+}
+
+func (x *UpdateBucketRequest) SetPolicy(v string) {
+	x.xxx_hidden_Policy = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+}
+
+func (x *UpdateBucketRequest) SetAcl(v Bucket_ACL) {
+	x.xxx_hidden_Acl = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
 func (x *UpdateBucketRequest) HasScopeUuid() bool {
@@ -7603,6 +8321,20 @@ func (x *UpdateBucketRequest) HasOwner() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
+func (x *UpdateBucketRequest) HasPolicy() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *UpdateBucketRequest) HasAcl() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
 func (x *UpdateBucketRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
@@ -7623,6 +8355,16 @@ func (x *UpdateBucketRequest) ClearOwner() {
 	x.xxx_hidden_Owner = nil
 }
 
+func (x *UpdateBucketRequest) ClearPolicy() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_Policy = nil
+}
+
+func (x *UpdateBucketRequest) ClearAcl() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_Acl = Bucket_PRIVATE
+}
+
 type UpdateBucketRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -7630,6 +8372,8 @@ type UpdateBucketRequest_builder struct {
 	FacilityName *string
 	BucketName   *string
 	Owner        *string
+	Policy       *string
+	Acl          *Bucket_ACL
 }
 
 func (b0 UpdateBucketRequest_builder) Build() *UpdateBucketRequest {
@@ -7637,20 +8381,28 @@ func (b0 UpdateBucketRequest_builder) Build() *UpdateBucketRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.BucketName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_BucketName = b.BucketName
 	}
 	if b.Owner != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_Owner = b.Owner
+	}
+	if b.Policy != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		x.xxx_hidden_Policy = b.Policy
+	}
+	if b.Acl != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		x.xxx_hidden_Acl = *b.Acl
 	}
 	return m0
 }
@@ -7668,7 +8420,7 @@ type DeleteBucketRequest struct {
 
 func (x *DeleteBucketRequest) Reset() {
 	*x = DeleteBucketRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[48]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7680,7 +8432,7 @@ func (x *DeleteBucketRequest) String() string {
 func (*DeleteBucketRequest) ProtoMessage() {}
 
 func (x *DeleteBucketRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[48]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7811,7 +8563,7 @@ type ListUsersRequest struct {
 
 func (x *ListUsersRequest) Reset() {
 	*x = ListUsersRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[49]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7823,7 +8575,7 @@ func (x *ListUsersRequest) String() string {
 func (*ListUsersRequest) ProtoMessage() {}
 
 func (x *ListUsersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[49]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7919,7 +8671,7 @@ type ListUsersResponse struct {
 
 func (x *ListUsersResponse) Reset() {
 	*x = ListUsersResponse{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[50]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7931,7 +8683,7 @@ func (x *ListUsersResponse) String() string {
 func (*ListUsersResponse) ProtoMessage() {}
 
 func (x *ListUsersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[50]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7975,7 +8727,7 @@ type CreateUserRequest struct {
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_UserId       *string                `protobuf:"bytes,3,opt,name=user_id,json=userId"`
 	xxx_hidden_UserName     *string                `protobuf:"bytes,11,opt,name=user_name,json=userName"`
-	xxx_hidden_Suspended    *string                `protobuf:"bytes,12,opt,name=suspended"`
+	xxx_hidden_Suspended    bool                   `protobuf:"varint,12,opt,name=suspended"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -7984,7 +8736,7 @@ type CreateUserRequest struct {
 
 func (x *CreateUserRequest) Reset() {
 	*x = CreateUserRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[51]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7996,7 +8748,7 @@ func (x *CreateUserRequest) String() string {
 func (*CreateUserRequest) ProtoMessage() {}
 
 func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[51]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8047,14 +8799,11 @@ func (x *CreateUserRequest) GetUserName() string {
 	return ""
 }
 
-func (x *CreateUserRequest) GetSuspended() string {
+func (x *CreateUserRequest) GetSuspended() bool {
 	if x != nil {
-		if x.xxx_hidden_Suspended != nil {
-			return *x.xxx_hidden_Suspended
-		}
-		return ""
+		return x.xxx_hidden_Suspended
 	}
-	return ""
+	return false
 }
 
 func (x *CreateUserRequest) SetScopeUuid(v string) {
@@ -8077,8 +8826,8 @@ func (x *CreateUserRequest) SetUserName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *CreateUserRequest) SetSuspended(v string) {
-	x.xxx_hidden_Suspended = &v
+func (x *CreateUserRequest) SetSuspended(v bool) {
+	x.xxx_hidden_Suspended = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
@@ -8139,7 +8888,7 @@ func (x *CreateUserRequest) ClearUserName() {
 
 func (x *CreateUserRequest) ClearSuspended() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Suspended = nil
+	x.xxx_hidden_Suspended = false
 }
 
 type CreateUserRequest_builder struct {
@@ -8149,7 +8898,7 @@ type CreateUserRequest_builder struct {
 	FacilityName *string
 	UserId       *string
 	UserName     *string
-	Suspended    *string
+	Suspended    *bool
 }
 
 func (b0 CreateUserRequest_builder) Build() *CreateUserRequest {
@@ -8174,7 +8923,7 @@ func (b0 CreateUserRequest_builder) Build() *CreateUserRequest {
 	}
 	if b.Suspended != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_Suspended = b.Suspended
+		x.xxx_hidden_Suspended = *b.Suspended
 	}
 	return m0
 }
@@ -8185,7 +8934,7 @@ type UpdateUserRequest struct {
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_UserId       *string                `protobuf:"bytes,3,opt,name=user_id,json=userId"`
 	xxx_hidden_UserName     *string                `protobuf:"bytes,11,opt,name=user_name,json=userName"`
-	xxx_hidden_Suspended    *string                `protobuf:"bytes,12,opt,name=suspended"`
+	xxx_hidden_Suspended    bool                   `protobuf:"varint,12,opt,name=suspended"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -8194,7 +8943,7 @@ type UpdateUserRequest struct {
 
 func (x *UpdateUserRequest) Reset() {
 	*x = UpdateUserRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[52]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8206,7 +8955,7 @@ func (x *UpdateUserRequest) String() string {
 func (*UpdateUserRequest) ProtoMessage() {}
 
 func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[52]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8257,14 +9006,11 @@ func (x *UpdateUserRequest) GetUserName() string {
 	return ""
 }
 
-func (x *UpdateUserRequest) GetSuspended() string {
+func (x *UpdateUserRequest) GetSuspended() bool {
 	if x != nil {
-		if x.xxx_hidden_Suspended != nil {
-			return *x.xxx_hidden_Suspended
-		}
-		return ""
+		return x.xxx_hidden_Suspended
 	}
-	return ""
+	return false
 }
 
 func (x *UpdateUserRequest) SetScopeUuid(v string) {
@@ -8287,8 +9033,8 @@ func (x *UpdateUserRequest) SetUserName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *UpdateUserRequest) SetSuspended(v string) {
-	x.xxx_hidden_Suspended = &v
+func (x *UpdateUserRequest) SetSuspended(v bool) {
+	x.xxx_hidden_Suspended = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
@@ -8349,7 +9095,7 @@ func (x *UpdateUserRequest) ClearUserName() {
 
 func (x *UpdateUserRequest) ClearSuspended() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Suspended = nil
+	x.xxx_hidden_Suspended = false
 }
 
 type UpdateUserRequest_builder struct {
@@ -8359,7 +9105,7 @@ type UpdateUserRequest_builder struct {
 	FacilityName *string
 	UserId       *string
 	UserName     *string
-	Suspended    *string
+	Suspended    *bool
 }
 
 func (b0 UpdateUserRequest_builder) Build() *UpdateUserRequest {
@@ -8384,7 +9130,7 @@ func (b0 UpdateUserRequest_builder) Build() *UpdateUserRequest {
 	}
 	if b.Suspended != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_Suspended = b.Suspended
+		x.xxx_hidden_Suspended = *b.Suspended
 	}
 	return m0
 }
@@ -8402,7 +9148,7 @@ type DeleteUserRequest struct {
 
 func (x *DeleteUserRequest) Reset() {
 	*x = DeleteUserRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[53]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8414,7 +9160,7 @@ func (x *DeleteUserRequest) String() string {
 func (*DeleteUserRequest) ProtoMessage() {}
 
 func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[53]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8533,7 +9279,7 @@ func (b0 DeleteUserRequest_builder) Build() *DeleteUserRequest {
 	return m0
 }
 
-type CreateUserS3KeyRequest struct {
+type CreateUserKeyRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
@@ -8544,21 +9290,21 @@ type CreateUserS3KeyRequest struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *CreateUserS3KeyRequest) Reset() {
-	*x = CreateUserS3KeyRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[54]
+func (x *CreateUserKeyRequest) Reset() {
+	*x = CreateUserKeyRequest{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateUserS3KeyRequest) String() string {
+func (x *CreateUserKeyRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateUserS3KeyRequest) ProtoMessage() {}
+func (*CreateUserKeyRequest) ProtoMessage() {}
 
-func (x *CreateUserS3KeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[54]
+func (x *CreateUserKeyRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8569,7 +9315,7 @@ func (x *CreateUserS3KeyRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CreateUserS3KeyRequest) GetScopeUuid() string {
+func (x *CreateUserKeyRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -8579,7 +9325,7 @@ func (x *CreateUserS3KeyRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *CreateUserS3KeyRequest) GetFacilityName() string {
+func (x *CreateUserKeyRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -8589,7 +9335,7 @@ func (x *CreateUserS3KeyRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *CreateUserS3KeyRequest) GetUserId() string {
+func (x *CreateUserKeyRequest) GetUserId() string {
 	if x != nil {
 		if x.xxx_hidden_UserId != nil {
 			return *x.xxx_hidden_UserId
@@ -8599,58 +9345,58 @@ func (x *CreateUserS3KeyRequest) GetUserId() string {
 	return ""
 }
 
-func (x *CreateUserS3KeyRequest) SetScopeUuid(v string) {
+func (x *CreateUserKeyRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *CreateUserS3KeyRequest) SetFacilityName(v string) {
+func (x *CreateUserKeyRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *CreateUserS3KeyRequest) SetUserId(v string) {
+func (x *CreateUserKeyRequest) SetUserId(v string) {
 	x.xxx_hidden_UserId = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *CreateUserS3KeyRequest) HasScopeUuid() bool {
+func (x *CreateUserKeyRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateUserS3KeyRequest) HasFacilityName() bool {
+func (x *CreateUserKeyRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateUserS3KeyRequest) HasUserId() bool {
+func (x *CreateUserKeyRequest) HasUserId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CreateUserS3KeyRequest) ClearScopeUuid() {
+func (x *CreateUserKeyRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *CreateUserS3KeyRequest) ClearFacilityName() {
+func (x *CreateUserKeyRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *CreateUserS3KeyRequest) ClearUserId() {
+func (x *CreateUserKeyRequest) ClearUserId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_UserId = nil
 }
 
-type CreateUserS3KeyRequest_builder struct {
+type CreateUserKeyRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
@@ -8658,8 +9404,8 @@ type CreateUserS3KeyRequest_builder struct {
 	UserId       *string
 }
 
-func (b0 CreateUserS3KeyRequest_builder) Build() *CreateUserS3KeyRequest {
-	m0 := &CreateUserS3KeyRequest{}
+func (b0 CreateUserKeyRequest_builder) Build() *CreateUserKeyRequest {
+	m0 := &CreateUserKeyRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -8677,7 +9423,7 @@ func (b0 CreateUserS3KeyRequest_builder) Build() *CreateUserS3KeyRequest {
 	return m0
 }
 
-type DeleteUserS3KeyRequest struct {
+type DeleteUserKeyRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
@@ -8689,21 +9435,21 @@ type DeleteUserS3KeyRequest struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *DeleteUserS3KeyRequest) Reset() {
-	*x = DeleteUserS3KeyRequest{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[55]
+func (x *DeleteUserKeyRequest) Reset() {
+	*x = DeleteUserKeyRequest{}
+	mi := &file_api_storage_v1_storage_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteUserS3KeyRequest) String() string {
+func (x *DeleteUserKeyRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteUserS3KeyRequest) ProtoMessage() {}
+func (*DeleteUserKeyRequest) ProtoMessage() {}
 
-func (x *DeleteUserS3KeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[55]
+func (x *DeleteUserKeyRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_storage_v1_storage_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8714,7 +9460,7 @@ func (x *DeleteUserS3KeyRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *DeleteUserS3KeyRequest) GetScopeUuid() string {
+func (x *DeleteUserKeyRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -8724,7 +9470,7 @@ func (x *DeleteUserS3KeyRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *DeleteUserS3KeyRequest) GetFacilityName() string {
+func (x *DeleteUserKeyRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -8734,7 +9480,7 @@ func (x *DeleteUserS3KeyRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *DeleteUserS3KeyRequest) GetUserId() string {
+func (x *DeleteUserKeyRequest) GetUserId() string {
 	if x != nil {
 		if x.xxx_hidden_UserId != nil {
 			return *x.xxx_hidden_UserId
@@ -8744,7 +9490,7 @@ func (x *DeleteUserS3KeyRequest) GetUserId() string {
 	return ""
 }
 
-func (x *DeleteUserS3KeyRequest) GetAccessKey() string {
+func (x *DeleteUserKeyRequest) GetAccessKey() string {
 	if x != nil {
 		if x.xxx_hidden_AccessKey != nil {
 			return *x.xxx_hidden_AccessKey
@@ -8754,75 +9500,75 @@ func (x *DeleteUserS3KeyRequest) GetAccessKey() string {
 	return ""
 }
 
-func (x *DeleteUserS3KeyRequest) SetScopeUuid(v string) {
+func (x *DeleteUserKeyRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *DeleteUserS3KeyRequest) SetFacilityName(v string) {
+func (x *DeleteUserKeyRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
-func (x *DeleteUserS3KeyRequest) SetUserId(v string) {
+func (x *DeleteUserKeyRequest) SetUserId(v string) {
 	x.xxx_hidden_UserId = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *DeleteUserS3KeyRequest) SetAccessKey(v string) {
+func (x *DeleteUserKeyRequest) SetAccessKey(v string) {
 	x.xxx_hidden_AccessKey = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *DeleteUserS3KeyRequest) HasScopeUuid() bool {
+func (x *DeleteUserKeyRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteUserS3KeyRequest) HasFacilityName() bool {
+func (x *DeleteUserKeyRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteUserS3KeyRequest) HasUserId() bool {
+func (x *DeleteUserKeyRequest) HasUserId() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *DeleteUserS3KeyRequest) HasAccessKey() bool {
+func (x *DeleteUserKeyRequest) HasAccessKey() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *DeleteUserS3KeyRequest) ClearScopeUuid() {
+func (x *DeleteUserKeyRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *DeleteUserS3KeyRequest) ClearFacilityName() {
+func (x *DeleteUserKeyRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *DeleteUserS3KeyRequest) ClearUserId() {
+func (x *DeleteUserKeyRequest) ClearUserId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_UserId = nil
 }
 
-func (x *DeleteUserS3KeyRequest) ClearAccessKey() {
+func (x *DeleteUserKeyRequest) ClearAccessKey() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_AccessKey = nil
 }
 
-type DeleteUserS3KeyRequest_builder struct {
+type DeleteUserKeyRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
@@ -8831,8 +9577,8 @@ type DeleteUserS3KeyRequest_builder struct {
 	AccessKey    *string
 }
 
-func (b0 DeleteUserS3KeyRequest_builder) Build() *DeleteUserS3KeyRequest {
-	m0 := &DeleteUserS3KeyRequest{}
+func (b0 DeleteUserKeyRequest_builder) Build() *DeleteUserKeyRequest {
+	m0 := &DeleteUserKeyRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -8865,7 +9611,7 @@ type Image_Snapshot struct {
 
 func (x *Image_Snapshot) Reset() {
 	*x = Image_Snapshot{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[56]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8877,7 +9623,7 @@ func (x *Image_Snapshot) String() string {
 func (*Image_Snapshot) ProtoMessage() {}
 
 func (x *Image_Snapshot) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[56]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8943,7 +9689,7 @@ type Subvolume_Snapshot struct {
 
 func (x *Subvolume_Snapshot) Reset() {
 	*x = Subvolume_Snapshot{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[57]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8955,7 +9701,7 @@ func (x *Subvolume_Snapshot) String() string {
 func (*Subvolume_Snapshot) ProtoMessage() {}
 
 func (x *Subvolume_Snapshot) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[57]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9024,7 +9770,7 @@ type Subvolume_Export struct {
 
 func (x *Subvolume_Export) Reset() {
 	*x = Subvolume_Export{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[58]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9036,7 +9782,7 @@ func (x *Subvolume_Export) String() string {
 func (*Subvolume_Export) ProtoMessage() {}
 
 func (x *Subvolume_Export) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[58]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9182,7 +9928,7 @@ type Subvolume_Export_Client struct {
 
 func (x *Subvolume_Export_Client) Reset() {
 	*x = Subvolume_Export_Client{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[59]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9194,7 +9940,7 @@ func (x *Subvolume_Export_Client) String() string {
 func (*Subvolume_Export_Client) ProtoMessage() {}
 
 func (x *Subvolume_Export_Client) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[59]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9264,7 +10010,7 @@ func (b0 Subvolume_Export_Client_builder) Build() *Subvolume_Export_Client {
 
 type User_Key struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Type        *string                `protobuf:"bytes,1,opt,name=type"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -9273,7 +10019,7 @@ type User_Key struct {
 
 func (x *User_Key) Reset() {
 	*x = User_Key{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[60]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9285,7 +10031,7 @@ func (x *User_Key) String() string {
 func (*User_Key) ProtoMessage() {}
 
 func (x *User_Key) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[60]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9296,46 +10042,46 @@ func (x *User_Key) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *User_Key) GetName() string {
+func (x *User_Key) GetType() string {
 	if x != nil {
-		if x.xxx_hidden_Name != nil {
-			return *x.xxx_hidden_Name
+		if x.xxx_hidden_Type != nil {
+			return *x.xxx_hidden_Type
 		}
 		return ""
 	}
 	return ""
 }
 
-func (x *User_Key) SetName(v string) {
-	x.xxx_hidden_Name = &v
+func (x *User_Key) SetType(v string) {
+	x.xxx_hidden_Type = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *User_Key) HasName() bool {
+func (x *User_Key) HasType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *User_Key) ClearName() {
+func (x *User_Key) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Name = nil
+	x.xxx_hidden_Type = nil
 }
 
 type User_Key_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name *string
+	Type *string
 }
 
 func (b0 User_Key_builder) Build() *User_Key {
 	m0 := &User_Key{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Name != nil {
+	if b.Type != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
-		x.xxx_hidden_Name = b.Name
+		x.xxx_hidden_Type = b.Type
 	}
 	return m0
 }
@@ -9349,7 +10095,7 @@ type DoSMARTResponse_Output struct {
 
 func (x *DoSMARTResponse_Output) Reset() {
 	*x = DoSMARTResponse_Output{}
-	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9361,7 +10107,7 @@ func (x *DoSMARTResponse_Output) String() string {
 func (*DoSMARTResponse_Output) ProtoMessage() {}
 
 func (x *DoSMARTResponse_Output) ProtoReflect() protoreflect.Message {
-	mi := &file_api_storage_v1_storage_proto_msgTypes[61]
+	mi := &file_api_storage_v1_storage_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9441,15 +10187,22 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"accessType\x12\x1c\n" +
 	"\taddresses\x18\x02 \x03(\tR\taddresses\"$\n" +
 	"\x0eSubvolumeGroup\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"\x1c\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"\xbb\x01\n" +
 	"\x06Bucket\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"\x1a\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
+	"\x05owner\x18\x02 \x01(\tR\x05owner\x123\n" +
+	"\x03acl\x18\x03 \x01(\x0e2!.otterscale.storage.v1.Bucket.ACLR\x03acl\"R\n" +
+	"\x03ACL\x12\v\n" +
+	"\aPRIVATE\x10\x00\x12\x0f\n" +
+	"\vPUBLIC_READ\x10\x01\x12\x15\n" +
+	"\x11PUBLIC_READ_WRITE\x10\x02\x12\x16\n" +
+	"\x12AUTHENTICATED_READ\x10\x03\"\x1a\n" +
 	"\x04Role\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"5\n" +
 	"\x04User\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x1a\x19\n" +
 	"\x03Key\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"U\n" +
+	"\x04type\x18\x01 \x01(\tR\x04type\"U\n" +
 	"\x0fListMONsRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -9531,7 +10284,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"object_map\x18! \x01(\bR\tobjectMap\x12\x1b\n" +
 	"\tfast_diff\x18\" \x01(\bR\bfastDiff\x12!\n" +
-	"\fdeep_flatten\x18# \x01(\bR\vdeepFlatten\"\xae\x02\n" +
+	"\fdeep_flatten\x18# \x01(\bR\vdeepFlatten\"\xa8\x01\n" +
 	"\x12UpdateImageRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -9539,12 +10292,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
 	"\n" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12\x12\n" +
-	"\x04size\x18\x15 \x01(\x04R\x04size\x12%\n" +
-	"\x0eexclusive_lock\x18\x1f \x01(\bR\rexclusiveLock\x12\x1d\n" +
-	"\n" +
-	"object_map\x18  \x01(\bR\tobjectMap\x12\x1b\n" +
-	"\tfast_diff\x18! \x01(\bR\bfastDiff\x12!\n" +
-	"\fdeep_flatten\x18\" \x01(\bR\vdeepFlatten\"\x94\x01\n" +
+	"\x04size\x18\v \x01(\x04R\x04size\"\x94\x01\n" +
 	"\x12DeleteImageRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -9561,6 +10309,30 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"image_name\x18\x04 \x01(\tR\timageName\x12#\n" +
 	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xc1\x01\n" +
 	"\x1aDeleteImageSnapshotRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1b\n" +
+	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
+	"\n" +
+	"image_name\x18\x04 \x01(\tR\timageName\x12#\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xc3\x01\n" +
+	"\x1cRollbackImageSnapshotRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1b\n" +
+	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
+	"\n" +
+	"image_name\x18\x04 \x01(\tR\timageName\x12#\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xc2\x01\n" +
+	"\x1bProtectImageSnapshotRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1b\n" +
+	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12\x1d\n" +
+	"\n" +
+	"image_name\x18\x04 \x01(\tR\timageName\x12#\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xc4\x01\n" +
+	"\x1dUnprotectImageSnapshotRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1b\n" +
@@ -9699,21 +10471,25 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"N\n" +
 	"\x13ListBucketsResponse\x127\n" +
-	"\abuckets\x18\x01 \x03(\v2\x1d.otterscale.storage.v1.BucketR\abuckets\"\x90\x01\n" +
+	"\abuckets\x18\x01 \x03(\v2\x1d.otterscale.storage.v1.BucketR\abuckets\"\xdd\x01\n" +
 	"\x13CreateBucketRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1f\n" +
 	"\vbucket_name\x18\x03 \x01(\tR\n" +
 	"bucketName\x12\x14\n" +
-	"\x05owner\x18\v \x01(\tR\x05owner\"\x90\x01\n" +
+	"\x05owner\x18\v \x01(\tR\x05owner\x12\x16\n" +
+	"\x06policy\x18\f \x01(\tR\x06policy\x123\n" +
+	"\x03acl\x18\x15 \x01(\x0e2!.otterscale.storage.v1.Bucket.ACLR\x03acl\"\xdd\x01\n" +
 	"\x13UpdateBucketRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1f\n" +
 	"\vbucket_name\x18\x03 \x01(\tR\n" +
 	"bucketName\x12\x14\n" +
-	"\x05owner\x18\v \x01(\tR\x05owner\"z\n" +
+	"\x05owner\x18\v \x01(\tR\x05owner\x12\x16\n" +
+	"\x06policy\x18\f \x01(\tR\x06policy\x123\n" +
+	"\x03acl\x18\x15 \x01(\x0e2!.otterscale.storage.v1.Bucket.ACLR\x03acl\"z\n" +
 	"\x13DeleteBucketRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -9732,25 +10508,25 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1b\n" +
 	"\tuser_name\x18\v \x01(\tR\buserName\x12\x1c\n" +
-	"\tsuspended\x18\f \x01(\tR\tsuspended\"\xab\x01\n" +
+	"\tsuspended\x18\f \x01(\bR\tsuspended\"\xab\x01\n" +
 	"\x11UpdateUserRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1b\n" +
 	"\tuser_name\x18\v \x01(\tR\buserName\x12\x1c\n" +
-	"\tsuspended\x18\f \x01(\tR\tsuspended\"p\n" +
+	"\tsuspended\x18\f \x01(\bR\tsuspended\"p\n" +
 	"\x11DeleteUserRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\tR\x06userId\"u\n" +
-	"\x16CreateUserS3KeyRequest\x12\x1d\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId\"s\n" +
+	"\x14CreateUserKeyRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\tR\x06userId\"\x94\x01\n" +
-	"\x16DeleteUserS3KeyRequest\x12\x1d\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId\"\x92\x01\n" +
+	"\x14DeleteUserKeyRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x17\n" +
@@ -9762,7 +10538,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\x03RBD\x10\x01\x12\n" +
 	"\n" +
 	"\x06CephFS\x10\x02\x12\a\n" +
-	"\x03RGW\x10\x032\xc5\x1b\n" +
+	"\x03RGW\x10\x032\xef\x1d\n" +
 	"\x0eStorageService\x12[\n" +
 	"\bListMONs\x12&.otterscale.storage.v1.ListMONsRequest\x1a'.otterscale.storage.v1.ListMONsResponse\x12[\n" +
 	"\bListOSDs\x12&.otterscale.storage.v1.ListOSDsRequest\x1a'.otterscale.storage.v1.ListOSDsResponse\x12X\n" +
@@ -9781,6 +10557,9 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\vDeleteImage\x12).otterscale.storage.v1.DeleteImageRequest\x1a\x16.google.protobuf.Empty\x12o\n" +
 	"\x13CreateImageSnapshot\x121.otterscale.storage.v1.CreateImageSnapshotRequest\x1a%.otterscale.storage.v1.Image.Snapshot\x12`\n" +
 	"\x13DeleteImageSnapshot\x121.otterscale.storage.v1.DeleteImageSnapshotRequest\x1a\x16.google.protobuf.Empty\x12d\n" +
+	"\x15RollbackImageSnapshot\x123.otterscale.storage.v1.RollbackImageSnapshotRequest\x1a\x16.google.protobuf.Empty\x12b\n" +
+	"\x14ProtectImageSnapshot\x122.otterscale.storage.v1.ProtectImageSnapshotRequest\x1a\x16.google.protobuf.Empty\x12f\n" +
+	"\x16UnprotectImageSnapshot\x124.otterscale.storage.v1.UnprotectImageSnapshotRequest\x1a\x16.google.protobuf.Empty\x12d\n" +
 	"\vListVolumes\x12).otterscale.storage.v1.ListVolumesRequest\x1a*.otterscale.storage.v1.ListVolumesResponse\x12m\n" +
 	"\x0eListSubvolumes\x12,.otterscale.storage.v1.ListSubvolumesRequest\x1a-.otterscale.storage.v1.ListSubvolumesResponse\x12b\n" +
 	"\x0fCreateSubvolume\x12-.otterscale.storage.v1.CreateSubvolumeRequest\x1a .otterscale.storage.v1.Subvolume\x12b\n" +
@@ -9804,176 +10583,189 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"UpdateUser\x12(.otterscale.storage.v1.UpdateUserRequest\x1a\x1b.otterscale.storage.v1.User\x12N\n" +
 	"\n" +
-	"DeleteUser\x12(.otterscale.storage.v1.DeleteUserRequest\x1a\x16.google.protobuf.Empty\x12a\n" +
-	"\x0fCreateUserS3Key\x12-.otterscale.storage.v1.CreateUserS3KeyRequest\x1a\x1f.otterscale.storage.v1.User.Key\x12X\n" +
-	"\x0fDeleteUserS3Key\x12-.otterscale.storage.v1.DeleteUserS3KeyRequest\x1a\x16.google.protobuf.EmptyB1Z/github.com/openhdc/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
+	"DeleteUser\x12(.otterscale.storage.v1.DeleteUserRequest\x1a\x16.google.protobuf.Empty\x12]\n" +
+	"\rCreateUserKey\x12+.otterscale.storage.v1.CreateUserKeyRequest\x1a\x1f.otterscale.storage.v1.User.Key\x12T\n" +
+	"\rDeleteUserKey\x12+.otterscale.storage.v1.DeleteUserKeyRequest\x1a\x16.google.protobuf.EmptyB1Z/github.com/openhdc/otterscale/api/storage/v1;pbb\beditionsp\xe8\a"
 
-var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 63)
+var file_api_storage_v1_storage_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_api_storage_v1_storage_proto_msgTypes = make([]protoimpl.MessageInfo, 66)
 var file_api_storage_v1_storage_proto_goTypes = []any{
 	(Application)(0),                           // 0: otterscale.storage.v1.Application
-	(CreatePoolRequest_Type)(0),                // 1: otterscale.storage.v1.CreatePoolRequest.Type
-	(*MON)(nil),                                // 2: otterscale.storage.v1.MON
-	(*OSD)(nil),                                // 3: otterscale.storage.v1.OSD
-	(*Pool)(nil),                               // 4: otterscale.storage.v1.Pool
-	(*Image)(nil),                              // 5: otterscale.storage.v1.Image
-	(*Volume)(nil),                             // 6: otterscale.storage.v1.Volume
-	(*Subvolume)(nil),                          // 7: otterscale.storage.v1.Subvolume
-	(*SubvolumeGroup)(nil),                     // 8: otterscale.storage.v1.SubvolumeGroup
-	(*Bucket)(nil),                             // 9: otterscale.storage.v1.Bucket
-	(*Role)(nil),                               // 10: otterscale.storage.v1.Role
-	(*User)(nil),                               // 11: otterscale.storage.v1.User
-	(*ListMONsRequest)(nil),                    // 12: otterscale.storage.v1.ListMONsRequest
-	(*ListMONsResponse)(nil),                   // 13: otterscale.storage.v1.ListMONsResponse
-	(*ListOSDsRequest)(nil),                    // 14: otterscale.storage.v1.ListOSDsRequest
-	(*ListOSDsResponse)(nil),                   // 15: otterscale.storage.v1.ListOSDsResponse
-	(*DoSMARTRequest)(nil),                     // 16: otterscale.storage.v1.DoSMARTRequest
-	(*DoSMARTResponse)(nil),                    // 17: otterscale.storage.v1.DoSMARTResponse
-	(*ListPoolsRequest)(nil),                   // 18: otterscale.storage.v1.ListPoolsRequest
-	(*ListPoolsResponse)(nil),                  // 19: otterscale.storage.v1.ListPoolsResponse
-	(*CreatePoolRequest)(nil),                  // 20: otterscale.storage.v1.CreatePoolRequest
-	(*UpdatePoolRequest)(nil),                  // 21: otterscale.storage.v1.UpdatePoolRequest
-	(*DeletePoolRequest)(nil),                  // 22: otterscale.storage.v1.DeletePoolRequest
-	(*ListImagesRequest)(nil),                  // 23: otterscale.storage.v1.ListImagesRequest
-	(*ListImagesResponse)(nil),                 // 24: otterscale.storage.v1.ListImagesResponse
-	(*CreateImageRequest)(nil),                 // 25: otterscale.storage.v1.CreateImageRequest
-	(*UpdateImageRequest)(nil),                 // 26: otterscale.storage.v1.UpdateImageRequest
-	(*DeleteImageRequest)(nil),                 // 27: otterscale.storage.v1.DeleteImageRequest
-	(*CreateImageSnapshotRequest)(nil),         // 28: otterscale.storage.v1.CreateImageSnapshotRequest
-	(*DeleteImageSnapshotRequest)(nil),         // 29: otterscale.storage.v1.DeleteImageSnapshotRequest
-	(*ListVolumesRequest)(nil),                 // 30: otterscale.storage.v1.ListVolumesRequest
-	(*ListVolumesResponse)(nil),                // 31: otterscale.storage.v1.ListVolumesResponse
-	(*ListSubvolumesRequest)(nil),              // 32: otterscale.storage.v1.ListSubvolumesRequest
-	(*ListSubvolumesResponse)(nil),             // 33: otterscale.storage.v1.ListSubvolumesResponse
-	(*CreateSubvolumeRequest)(nil),             // 34: otterscale.storage.v1.CreateSubvolumeRequest
-	(*UpdateSubvolumeRequest)(nil),             // 35: otterscale.storage.v1.UpdateSubvolumeRequest
-	(*DeleteSubvolumeRequest)(nil),             // 36: otterscale.storage.v1.DeleteSubvolumeRequest
-	(*GrantSubvolumeExportAccessRequest)(nil),  // 37: otterscale.storage.v1.GrantSubvolumeExportAccessRequest
-	(*RevokeSubvolumeExportAccessRequest)(nil), // 38: otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
-	(*CreateSubvolumeSnapshotRequest)(nil),     // 39: otterscale.storage.v1.CreateSubvolumeSnapshotRequest
-	(*DeleteSubvolumeSnapshotRequest)(nil),     // 40: otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
-	(*ListSubvolumeGroupsRequest)(nil),         // 41: otterscale.storage.v1.ListSubvolumeGroupsRequest
-	(*ListSubvolumeGroupsResponse)(nil),        // 42: otterscale.storage.v1.ListSubvolumeGroupsResponse
-	(*CreateSubvolumeGroupRequest)(nil),        // 43: otterscale.storage.v1.CreateSubvolumeGroupRequest
-	(*UpdateSubvolumeGroupRequest)(nil),        // 44: otterscale.storage.v1.UpdateSubvolumeGroupRequest
-	(*DeleteSubvolumeGroupRequest)(nil),        // 45: otterscale.storage.v1.DeleteSubvolumeGroupRequest
-	(*ListBucketsRequest)(nil),                 // 46: otterscale.storage.v1.ListBucketsRequest
-	(*ListBucketsResponse)(nil),                // 47: otterscale.storage.v1.ListBucketsResponse
-	(*CreateBucketRequest)(nil),                // 48: otterscale.storage.v1.CreateBucketRequest
-	(*UpdateBucketRequest)(nil),                // 49: otterscale.storage.v1.UpdateBucketRequest
-	(*DeleteBucketRequest)(nil),                // 50: otterscale.storage.v1.DeleteBucketRequest
-	(*ListUsersRequest)(nil),                   // 51: otterscale.storage.v1.ListUsersRequest
-	(*ListUsersResponse)(nil),                  // 52: otterscale.storage.v1.ListUsersResponse
-	(*CreateUserRequest)(nil),                  // 53: otterscale.storage.v1.CreateUserRequest
-	(*UpdateUserRequest)(nil),                  // 54: otterscale.storage.v1.UpdateUserRequest
-	(*DeleteUserRequest)(nil),                  // 55: otterscale.storage.v1.DeleteUserRequest
-	(*CreateUserS3KeyRequest)(nil),             // 56: otterscale.storage.v1.CreateUserS3KeyRequest
-	(*DeleteUserS3KeyRequest)(nil),             // 57: otterscale.storage.v1.DeleteUserS3KeyRequest
-	(*Image_Snapshot)(nil),                     // 58: otterscale.storage.v1.Image.Snapshot
-	(*Subvolume_Snapshot)(nil),                 // 59: otterscale.storage.v1.Subvolume.Snapshot
-	(*Subvolume_Export)(nil),                   // 60: otterscale.storage.v1.Subvolume.Export
-	(*Subvolume_Export_Client)(nil),            // 61: otterscale.storage.v1.Subvolume.Export.Client
-	(*User_Key)(nil),                           // 62: otterscale.storage.v1.User.Key
-	(*DoSMARTResponse_Output)(nil),             // 63: otterscale.storage.v1.DoSMARTResponse.Output
-	nil,                                        // 64: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
-	(*emptypb.Empty)(nil),                      // 65: google.protobuf.Empty
+	(Bucket_ACL)(0),                            // 1: otterscale.storage.v1.Bucket.ACL
+	(CreatePoolRequest_Type)(0),                // 2: otterscale.storage.v1.CreatePoolRequest.Type
+	(*MON)(nil),                                // 3: otterscale.storage.v1.MON
+	(*OSD)(nil),                                // 4: otterscale.storage.v1.OSD
+	(*Pool)(nil),                               // 5: otterscale.storage.v1.Pool
+	(*Image)(nil),                              // 6: otterscale.storage.v1.Image
+	(*Volume)(nil),                             // 7: otterscale.storage.v1.Volume
+	(*Subvolume)(nil),                          // 8: otterscale.storage.v1.Subvolume
+	(*SubvolumeGroup)(nil),                     // 9: otterscale.storage.v1.SubvolumeGroup
+	(*Bucket)(nil),                             // 10: otterscale.storage.v1.Bucket
+	(*Role)(nil),                               // 11: otterscale.storage.v1.Role
+	(*User)(nil),                               // 12: otterscale.storage.v1.User
+	(*ListMONsRequest)(nil),                    // 13: otterscale.storage.v1.ListMONsRequest
+	(*ListMONsResponse)(nil),                   // 14: otterscale.storage.v1.ListMONsResponse
+	(*ListOSDsRequest)(nil),                    // 15: otterscale.storage.v1.ListOSDsRequest
+	(*ListOSDsResponse)(nil),                   // 16: otterscale.storage.v1.ListOSDsResponse
+	(*DoSMARTRequest)(nil),                     // 17: otterscale.storage.v1.DoSMARTRequest
+	(*DoSMARTResponse)(nil),                    // 18: otterscale.storage.v1.DoSMARTResponse
+	(*ListPoolsRequest)(nil),                   // 19: otterscale.storage.v1.ListPoolsRequest
+	(*ListPoolsResponse)(nil),                  // 20: otterscale.storage.v1.ListPoolsResponse
+	(*CreatePoolRequest)(nil),                  // 21: otterscale.storage.v1.CreatePoolRequest
+	(*UpdatePoolRequest)(nil),                  // 22: otterscale.storage.v1.UpdatePoolRequest
+	(*DeletePoolRequest)(nil),                  // 23: otterscale.storage.v1.DeletePoolRequest
+	(*ListImagesRequest)(nil),                  // 24: otterscale.storage.v1.ListImagesRequest
+	(*ListImagesResponse)(nil),                 // 25: otterscale.storage.v1.ListImagesResponse
+	(*CreateImageRequest)(nil),                 // 26: otterscale.storage.v1.CreateImageRequest
+	(*UpdateImageRequest)(nil),                 // 27: otterscale.storage.v1.UpdateImageRequest
+	(*DeleteImageRequest)(nil),                 // 28: otterscale.storage.v1.DeleteImageRequest
+	(*CreateImageSnapshotRequest)(nil),         // 29: otterscale.storage.v1.CreateImageSnapshotRequest
+	(*DeleteImageSnapshotRequest)(nil),         // 30: otterscale.storage.v1.DeleteImageSnapshotRequest
+	(*RollbackImageSnapshotRequest)(nil),       // 31: otterscale.storage.v1.RollbackImageSnapshotRequest
+	(*ProtectImageSnapshotRequest)(nil),        // 32: otterscale.storage.v1.ProtectImageSnapshotRequest
+	(*UnprotectImageSnapshotRequest)(nil),      // 33: otterscale.storage.v1.UnprotectImageSnapshotRequest
+	(*ListVolumesRequest)(nil),                 // 34: otterscale.storage.v1.ListVolumesRequest
+	(*ListVolumesResponse)(nil),                // 35: otterscale.storage.v1.ListVolumesResponse
+	(*ListSubvolumesRequest)(nil),              // 36: otterscale.storage.v1.ListSubvolumesRequest
+	(*ListSubvolumesResponse)(nil),             // 37: otterscale.storage.v1.ListSubvolumesResponse
+	(*CreateSubvolumeRequest)(nil),             // 38: otterscale.storage.v1.CreateSubvolumeRequest
+	(*UpdateSubvolumeRequest)(nil),             // 39: otterscale.storage.v1.UpdateSubvolumeRequest
+	(*DeleteSubvolumeRequest)(nil),             // 40: otterscale.storage.v1.DeleteSubvolumeRequest
+	(*GrantSubvolumeExportAccessRequest)(nil),  // 41: otterscale.storage.v1.GrantSubvolumeExportAccessRequest
+	(*RevokeSubvolumeExportAccessRequest)(nil), // 42: otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
+	(*CreateSubvolumeSnapshotRequest)(nil),     // 43: otterscale.storage.v1.CreateSubvolumeSnapshotRequest
+	(*DeleteSubvolumeSnapshotRequest)(nil),     // 44: otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
+	(*ListSubvolumeGroupsRequest)(nil),         // 45: otterscale.storage.v1.ListSubvolumeGroupsRequest
+	(*ListSubvolumeGroupsResponse)(nil),        // 46: otterscale.storage.v1.ListSubvolumeGroupsResponse
+	(*CreateSubvolumeGroupRequest)(nil),        // 47: otterscale.storage.v1.CreateSubvolumeGroupRequest
+	(*UpdateSubvolumeGroupRequest)(nil),        // 48: otterscale.storage.v1.UpdateSubvolumeGroupRequest
+	(*DeleteSubvolumeGroupRequest)(nil),        // 49: otterscale.storage.v1.DeleteSubvolumeGroupRequest
+	(*ListBucketsRequest)(nil),                 // 50: otterscale.storage.v1.ListBucketsRequest
+	(*ListBucketsResponse)(nil),                // 51: otterscale.storage.v1.ListBucketsResponse
+	(*CreateBucketRequest)(nil),                // 52: otterscale.storage.v1.CreateBucketRequest
+	(*UpdateBucketRequest)(nil),                // 53: otterscale.storage.v1.UpdateBucketRequest
+	(*DeleteBucketRequest)(nil),                // 54: otterscale.storage.v1.DeleteBucketRequest
+	(*ListUsersRequest)(nil),                   // 55: otterscale.storage.v1.ListUsersRequest
+	(*ListUsersResponse)(nil),                  // 56: otterscale.storage.v1.ListUsersResponse
+	(*CreateUserRequest)(nil),                  // 57: otterscale.storage.v1.CreateUserRequest
+	(*UpdateUserRequest)(nil),                  // 58: otterscale.storage.v1.UpdateUserRequest
+	(*DeleteUserRequest)(nil),                  // 59: otterscale.storage.v1.DeleteUserRequest
+	(*CreateUserKeyRequest)(nil),               // 60: otterscale.storage.v1.CreateUserKeyRequest
+	(*DeleteUserKeyRequest)(nil),               // 61: otterscale.storage.v1.DeleteUserKeyRequest
+	(*Image_Snapshot)(nil),                     // 62: otterscale.storage.v1.Image.Snapshot
+	(*Subvolume_Snapshot)(nil),                 // 63: otterscale.storage.v1.Subvolume.Snapshot
+	(*Subvolume_Export)(nil),                   // 64: otterscale.storage.v1.Subvolume.Export
+	(*Subvolume_Export_Client)(nil),            // 65: otterscale.storage.v1.Subvolume.Export.Client
+	(*User_Key)(nil),                           // 66: otterscale.storage.v1.User.Key
+	(*DoSMARTResponse_Output)(nil),             // 67: otterscale.storage.v1.DoSMARTResponse.Output
+	nil,                                        // 68: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
+	(*emptypb.Empty)(nil),                      // 69: google.protobuf.Empty
 }
 var file_api_storage_v1_storage_proto_depIdxs = []int32{
-	58, // 0: otterscale.storage.v1.Image.snapshots:type_name -> otterscale.storage.v1.Image.Snapshot
-	60, // 1: otterscale.storage.v1.Subvolume.export:type_name -> otterscale.storage.v1.Subvolume.Export
-	59, // 2: otterscale.storage.v1.Subvolume.snapshots:type_name -> otterscale.storage.v1.Subvolume.Snapshot
-	2,  // 3: otterscale.storage.v1.ListMONsResponse.mons:type_name -> otterscale.storage.v1.MON
-	3,  // 4: otterscale.storage.v1.ListOSDsResponse.osds:type_name -> otterscale.storage.v1.OSD
-	64, // 5: otterscale.storage.v1.DoSMARTResponse.device_output_map:type_name -> otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
-	0,  // 6: otterscale.storage.v1.ListPoolsRequest.application:type_name -> otterscale.storage.v1.Application
-	4,  // 7: otterscale.storage.v1.ListPoolsResponse.pools:type_name -> otterscale.storage.v1.Pool
-	1,  // 8: otterscale.storage.v1.CreatePoolRequest.pool_type:type_name -> otterscale.storage.v1.CreatePoolRequest.Type
-	0,  // 9: otterscale.storage.v1.CreatePoolRequest.applications:type_name -> otterscale.storage.v1.Application
-	5,  // 10: otterscale.storage.v1.ListImagesResponse.images:type_name -> otterscale.storage.v1.Image
-	6,  // 11: otterscale.storage.v1.ListVolumesResponse.volumes:type_name -> otterscale.storage.v1.Volume
-	7,  // 12: otterscale.storage.v1.ListSubvolumesResponse.subvolumes:type_name -> otterscale.storage.v1.Subvolume
-	8,  // 13: otterscale.storage.v1.ListSubvolumeGroupsResponse.subvolume_groups:type_name -> otterscale.storage.v1.SubvolumeGroup
-	9,  // 14: otterscale.storage.v1.ListBucketsResponse.buckets:type_name -> otterscale.storage.v1.Bucket
-	11, // 15: otterscale.storage.v1.ListUsersResponse.users:type_name -> otterscale.storage.v1.User
-	61, // 16: otterscale.storage.v1.Subvolume.Export.clients:type_name -> otterscale.storage.v1.Subvolume.Export.Client
-	63, // 17: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry.value:type_name -> otterscale.storage.v1.DoSMARTResponse.Output
-	12, // 18: otterscale.storage.v1.StorageService.ListMONs:input_type -> otterscale.storage.v1.ListMONsRequest
-	14, // 19: otterscale.storage.v1.StorageService.ListOSDs:input_type -> otterscale.storage.v1.ListOSDsRequest
-	16, // 20: otterscale.storage.v1.StorageService.DoSMART:input_type -> otterscale.storage.v1.DoSMARTRequest
-	18, // 21: otterscale.storage.v1.StorageService.ListPools:input_type -> otterscale.storage.v1.ListPoolsRequest
-	20, // 22: otterscale.storage.v1.StorageService.CreatePool:input_type -> otterscale.storage.v1.CreatePoolRequest
-	21, // 23: otterscale.storage.v1.StorageService.UpdatePool:input_type -> otterscale.storage.v1.UpdatePoolRequest
-	22, // 24: otterscale.storage.v1.StorageService.DeletePool:input_type -> otterscale.storage.v1.DeletePoolRequest
-	23, // 25: otterscale.storage.v1.StorageService.ListImages:input_type -> otterscale.storage.v1.ListImagesRequest
-	25, // 26: otterscale.storage.v1.StorageService.CreateImage:input_type -> otterscale.storage.v1.CreateImageRequest
-	26, // 27: otterscale.storage.v1.StorageService.UpdateImage:input_type -> otterscale.storage.v1.UpdateImageRequest
-	27, // 28: otterscale.storage.v1.StorageService.DeleteImage:input_type -> otterscale.storage.v1.DeleteImageRequest
-	28, // 29: otterscale.storage.v1.StorageService.CreateImageSnapshot:input_type -> otterscale.storage.v1.CreateImageSnapshotRequest
-	29, // 30: otterscale.storage.v1.StorageService.DeleteImageSnapshot:input_type -> otterscale.storage.v1.DeleteImageSnapshotRequest
-	30, // 31: otterscale.storage.v1.StorageService.ListVolumes:input_type -> otterscale.storage.v1.ListVolumesRequest
-	32, // 32: otterscale.storage.v1.StorageService.ListSubvolumes:input_type -> otterscale.storage.v1.ListSubvolumesRequest
-	34, // 33: otterscale.storage.v1.StorageService.CreateSubvolume:input_type -> otterscale.storage.v1.CreateSubvolumeRequest
-	35, // 34: otterscale.storage.v1.StorageService.UpdateSubvolume:input_type -> otterscale.storage.v1.UpdateSubvolumeRequest
-	36, // 35: otterscale.storage.v1.StorageService.DeleteSubvolume:input_type -> otterscale.storage.v1.DeleteSubvolumeRequest
-	37, // 36: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:input_type -> otterscale.storage.v1.GrantSubvolumeExportAccessRequest
-	38, // 37: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:input_type -> otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
-	39, // 38: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:input_type -> otterscale.storage.v1.CreateSubvolumeSnapshotRequest
-	40, // 39: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:input_type -> otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
-	41, // 40: otterscale.storage.v1.StorageService.ListSubvolumeGroups:input_type -> otterscale.storage.v1.ListSubvolumeGroupsRequest
-	43, // 41: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:input_type -> otterscale.storage.v1.CreateSubvolumeGroupRequest
-	44, // 42: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:input_type -> otterscale.storage.v1.UpdateSubvolumeGroupRequest
-	45, // 43: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:input_type -> otterscale.storage.v1.DeleteSubvolumeGroupRequest
-	46, // 44: otterscale.storage.v1.StorageService.ListBuckets:input_type -> otterscale.storage.v1.ListBucketsRequest
-	48, // 45: otterscale.storage.v1.StorageService.CreateBucket:input_type -> otterscale.storage.v1.CreateBucketRequest
-	49, // 46: otterscale.storage.v1.StorageService.UpdateBucket:input_type -> otterscale.storage.v1.UpdateBucketRequest
-	50, // 47: otterscale.storage.v1.StorageService.DeleteBucket:input_type -> otterscale.storage.v1.DeleteBucketRequest
-	51, // 48: otterscale.storage.v1.StorageService.ListUsers:input_type -> otterscale.storage.v1.ListUsersRequest
-	53, // 49: otterscale.storage.v1.StorageService.CreateUser:input_type -> otterscale.storage.v1.CreateUserRequest
-	54, // 50: otterscale.storage.v1.StorageService.UpdateUser:input_type -> otterscale.storage.v1.UpdateUserRequest
-	55, // 51: otterscale.storage.v1.StorageService.DeleteUser:input_type -> otterscale.storage.v1.DeleteUserRequest
-	56, // 52: otterscale.storage.v1.StorageService.CreateUserS3Key:input_type -> otterscale.storage.v1.CreateUserS3KeyRequest
-	57, // 53: otterscale.storage.v1.StorageService.DeleteUserS3Key:input_type -> otterscale.storage.v1.DeleteUserS3KeyRequest
-	13, // 54: otterscale.storage.v1.StorageService.ListMONs:output_type -> otterscale.storage.v1.ListMONsResponse
-	15, // 55: otterscale.storage.v1.StorageService.ListOSDs:output_type -> otterscale.storage.v1.ListOSDsResponse
-	17, // 56: otterscale.storage.v1.StorageService.DoSMART:output_type -> otterscale.storage.v1.DoSMARTResponse
-	19, // 57: otterscale.storage.v1.StorageService.ListPools:output_type -> otterscale.storage.v1.ListPoolsResponse
-	4,  // 58: otterscale.storage.v1.StorageService.CreatePool:output_type -> otterscale.storage.v1.Pool
-	4,  // 59: otterscale.storage.v1.StorageService.UpdatePool:output_type -> otterscale.storage.v1.Pool
-	65, // 60: otterscale.storage.v1.StorageService.DeletePool:output_type -> google.protobuf.Empty
-	24, // 61: otterscale.storage.v1.StorageService.ListImages:output_type -> otterscale.storage.v1.ListImagesResponse
-	5,  // 62: otterscale.storage.v1.StorageService.CreateImage:output_type -> otterscale.storage.v1.Image
-	5,  // 63: otterscale.storage.v1.StorageService.UpdateImage:output_type -> otterscale.storage.v1.Image
-	65, // 64: otterscale.storage.v1.StorageService.DeleteImage:output_type -> google.protobuf.Empty
-	58, // 65: otterscale.storage.v1.StorageService.CreateImageSnapshot:output_type -> otterscale.storage.v1.Image.Snapshot
-	65, // 66: otterscale.storage.v1.StorageService.DeleteImageSnapshot:output_type -> google.protobuf.Empty
-	31, // 67: otterscale.storage.v1.StorageService.ListVolumes:output_type -> otterscale.storage.v1.ListVolumesResponse
-	33, // 68: otterscale.storage.v1.StorageService.ListSubvolumes:output_type -> otterscale.storage.v1.ListSubvolumesResponse
-	7,  // 69: otterscale.storage.v1.StorageService.CreateSubvolume:output_type -> otterscale.storage.v1.Subvolume
-	7,  // 70: otterscale.storage.v1.StorageService.UpdateSubvolume:output_type -> otterscale.storage.v1.Subvolume
-	65, // 71: otterscale.storage.v1.StorageService.DeleteSubvolume:output_type -> google.protobuf.Empty
-	65, // 72: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:output_type -> google.protobuf.Empty
-	65, // 73: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:output_type -> google.protobuf.Empty
-	59, // 74: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:output_type -> otterscale.storage.v1.Subvolume.Snapshot
-	65, // 75: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:output_type -> google.protobuf.Empty
-	42, // 76: otterscale.storage.v1.StorageService.ListSubvolumeGroups:output_type -> otterscale.storage.v1.ListSubvolumeGroupsResponse
-	8,  // 77: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
-	8,  // 78: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
-	65, // 79: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:output_type -> google.protobuf.Empty
-	47, // 80: otterscale.storage.v1.StorageService.ListBuckets:output_type -> otterscale.storage.v1.ListBucketsResponse
-	9,  // 81: otterscale.storage.v1.StorageService.CreateBucket:output_type -> otterscale.storage.v1.Bucket
-	9,  // 82: otterscale.storage.v1.StorageService.UpdateBucket:output_type -> otterscale.storage.v1.Bucket
-	65, // 83: otterscale.storage.v1.StorageService.DeleteBucket:output_type -> google.protobuf.Empty
-	52, // 84: otterscale.storage.v1.StorageService.ListUsers:output_type -> otterscale.storage.v1.ListUsersResponse
-	11, // 85: otterscale.storage.v1.StorageService.CreateUser:output_type -> otterscale.storage.v1.User
-	11, // 86: otterscale.storage.v1.StorageService.UpdateUser:output_type -> otterscale.storage.v1.User
-	65, // 87: otterscale.storage.v1.StorageService.DeleteUser:output_type -> google.protobuf.Empty
-	62, // 88: otterscale.storage.v1.StorageService.CreateUserS3Key:output_type -> otterscale.storage.v1.User.Key
-	65, // 89: otterscale.storage.v1.StorageService.DeleteUserS3Key:output_type -> google.protobuf.Empty
-	54, // [54:90] is the sub-list for method output_type
-	18, // [18:54] is the sub-list for method input_type
-	18, // [18:18] is the sub-list for extension type_name
-	18, // [18:18] is the sub-list for extension extendee
-	0,  // [0:18] is the sub-list for field type_name
+	62, // 0: otterscale.storage.v1.Image.snapshots:type_name -> otterscale.storage.v1.Image.Snapshot
+	64, // 1: otterscale.storage.v1.Subvolume.export:type_name -> otterscale.storage.v1.Subvolume.Export
+	63, // 2: otterscale.storage.v1.Subvolume.snapshots:type_name -> otterscale.storage.v1.Subvolume.Snapshot
+	1,  // 3: otterscale.storage.v1.Bucket.acl:type_name -> otterscale.storage.v1.Bucket.ACL
+	3,  // 4: otterscale.storage.v1.ListMONsResponse.mons:type_name -> otterscale.storage.v1.MON
+	4,  // 5: otterscale.storage.v1.ListOSDsResponse.osds:type_name -> otterscale.storage.v1.OSD
+	68, // 6: otterscale.storage.v1.DoSMARTResponse.device_output_map:type_name -> otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry
+	0,  // 7: otterscale.storage.v1.ListPoolsRequest.application:type_name -> otterscale.storage.v1.Application
+	5,  // 8: otterscale.storage.v1.ListPoolsResponse.pools:type_name -> otterscale.storage.v1.Pool
+	2,  // 9: otterscale.storage.v1.CreatePoolRequest.pool_type:type_name -> otterscale.storage.v1.CreatePoolRequest.Type
+	0,  // 10: otterscale.storage.v1.CreatePoolRequest.applications:type_name -> otterscale.storage.v1.Application
+	6,  // 11: otterscale.storage.v1.ListImagesResponse.images:type_name -> otterscale.storage.v1.Image
+	7,  // 12: otterscale.storage.v1.ListVolumesResponse.volumes:type_name -> otterscale.storage.v1.Volume
+	8,  // 13: otterscale.storage.v1.ListSubvolumesResponse.subvolumes:type_name -> otterscale.storage.v1.Subvolume
+	9,  // 14: otterscale.storage.v1.ListSubvolumeGroupsResponse.subvolume_groups:type_name -> otterscale.storage.v1.SubvolumeGroup
+	10, // 15: otterscale.storage.v1.ListBucketsResponse.buckets:type_name -> otterscale.storage.v1.Bucket
+	1,  // 16: otterscale.storage.v1.CreateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
+	1,  // 17: otterscale.storage.v1.UpdateBucketRequest.acl:type_name -> otterscale.storage.v1.Bucket.ACL
+	12, // 18: otterscale.storage.v1.ListUsersResponse.users:type_name -> otterscale.storage.v1.User
+	65, // 19: otterscale.storage.v1.Subvolume.Export.clients:type_name -> otterscale.storage.v1.Subvolume.Export.Client
+	67, // 20: otterscale.storage.v1.DoSMARTResponse.DeviceOutputMapEntry.value:type_name -> otterscale.storage.v1.DoSMARTResponse.Output
+	13, // 21: otterscale.storage.v1.StorageService.ListMONs:input_type -> otterscale.storage.v1.ListMONsRequest
+	15, // 22: otterscale.storage.v1.StorageService.ListOSDs:input_type -> otterscale.storage.v1.ListOSDsRequest
+	17, // 23: otterscale.storage.v1.StorageService.DoSMART:input_type -> otterscale.storage.v1.DoSMARTRequest
+	19, // 24: otterscale.storage.v1.StorageService.ListPools:input_type -> otterscale.storage.v1.ListPoolsRequest
+	21, // 25: otterscale.storage.v1.StorageService.CreatePool:input_type -> otterscale.storage.v1.CreatePoolRequest
+	22, // 26: otterscale.storage.v1.StorageService.UpdatePool:input_type -> otterscale.storage.v1.UpdatePoolRequest
+	23, // 27: otterscale.storage.v1.StorageService.DeletePool:input_type -> otterscale.storage.v1.DeletePoolRequest
+	24, // 28: otterscale.storage.v1.StorageService.ListImages:input_type -> otterscale.storage.v1.ListImagesRequest
+	26, // 29: otterscale.storage.v1.StorageService.CreateImage:input_type -> otterscale.storage.v1.CreateImageRequest
+	27, // 30: otterscale.storage.v1.StorageService.UpdateImage:input_type -> otterscale.storage.v1.UpdateImageRequest
+	28, // 31: otterscale.storage.v1.StorageService.DeleteImage:input_type -> otterscale.storage.v1.DeleteImageRequest
+	29, // 32: otterscale.storage.v1.StorageService.CreateImageSnapshot:input_type -> otterscale.storage.v1.CreateImageSnapshotRequest
+	30, // 33: otterscale.storage.v1.StorageService.DeleteImageSnapshot:input_type -> otterscale.storage.v1.DeleteImageSnapshotRequest
+	31, // 34: otterscale.storage.v1.StorageService.RollbackImageSnapshot:input_type -> otterscale.storage.v1.RollbackImageSnapshotRequest
+	32, // 35: otterscale.storage.v1.StorageService.ProtectImageSnapshot:input_type -> otterscale.storage.v1.ProtectImageSnapshotRequest
+	33, // 36: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:input_type -> otterscale.storage.v1.UnprotectImageSnapshotRequest
+	34, // 37: otterscale.storage.v1.StorageService.ListVolumes:input_type -> otterscale.storage.v1.ListVolumesRequest
+	36, // 38: otterscale.storage.v1.StorageService.ListSubvolumes:input_type -> otterscale.storage.v1.ListSubvolumesRequest
+	38, // 39: otterscale.storage.v1.StorageService.CreateSubvolume:input_type -> otterscale.storage.v1.CreateSubvolumeRequest
+	39, // 40: otterscale.storage.v1.StorageService.UpdateSubvolume:input_type -> otterscale.storage.v1.UpdateSubvolumeRequest
+	40, // 41: otterscale.storage.v1.StorageService.DeleteSubvolume:input_type -> otterscale.storage.v1.DeleteSubvolumeRequest
+	41, // 42: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:input_type -> otterscale.storage.v1.GrantSubvolumeExportAccessRequest
+	42, // 43: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:input_type -> otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
+	43, // 44: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:input_type -> otterscale.storage.v1.CreateSubvolumeSnapshotRequest
+	44, // 45: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:input_type -> otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
+	45, // 46: otterscale.storage.v1.StorageService.ListSubvolumeGroups:input_type -> otterscale.storage.v1.ListSubvolumeGroupsRequest
+	47, // 47: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:input_type -> otterscale.storage.v1.CreateSubvolumeGroupRequest
+	48, // 48: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:input_type -> otterscale.storage.v1.UpdateSubvolumeGroupRequest
+	49, // 49: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:input_type -> otterscale.storage.v1.DeleteSubvolumeGroupRequest
+	50, // 50: otterscale.storage.v1.StorageService.ListBuckets:input_type -> otterscale.storage.v1.ListBucketsRequest
+	52, // 51: otterscale.storage.v1.StorageService.CreateBucket:input_type -> otterscale.storage.v1.CreateBucketRequest
+	53, // 52: otterscale.storage.v1.StorageService.UpdateBucket:input_type -> otterscale.storage.v1.UpdateBucketRequest
+	54, // 53: otterscale.storage.v1.StorageService.DeleteBucket:input_type -> otterscale.storage.v1.DeleteBucketRequest
+	55, // 54: otterscale.storage.v1.StorageService.ListUsers:input_type -> otterscale.storage.v1.ListUsersRequest
+	57, // 55: otterscale.storage.v1.StorageService.CreateUser:input_type -> otterscale.storage.v1.CreateUserRequest
+	58, // 56: otterscale.storage.v1.StorageService.UpdateUser:input_type -> otterscale.storage.v1.UpdateUserRequest
+	59, // 57: otterscale.storage.v1.StorageService.DeleteUser:input_type -> otterscale.storage.v1.DeleteUserRequest
+	60, // 58: otterscale.storage.v1.StorageService.CreateUserKey:input_type -> otterscale.storage.v1.CreateUserKeyRequest
+	61, // 59: otterscale.storage.v1.StorageService.DeleteUserKey:input_type -> otterscale.storage.v1.DeleteUserKeyRequest
+	14, // 60: otterscale.storage.v1.StorageService.ListMONs:output_type -> otterscale.storage.v1.ListMONsResponse
+	16, // 61: otterscale.storage.v1.StorageService.ListOSDs:output_type -> otterscale.storage.v1.ListOSDsResponse
+	18, // 62: otterscale.storage.v1.StorageService.DoSMART:output_type -> otterscale.storage.v1.DoSMARTResponse
+	20, // 63: otterscale.storage.v1.StorageService.ListPools:output_type -> otterscale.storage.v1.ListPoolsResponse
+	5,  // 64: otterscale.storage.v1.StorageService.CreatePool:output_type -> otterscale.storage.v1.Pool
+	5,  // 65: otterscale.storage.v1.StorageService.UpdatePool:output_type -> otterscale.storage.v1.Pool
+	69, // 66: otterscale.storage.v1.StorageService.DeletePool:output_type -> google.protobuf.Empty
+	25, // 67: otterscale.storage.v1.StorageService.ListImages:output_type -> otterscale.storage.v1.ListImagesResponse
+	6,  // 68: otterscale.storage.v1.StorageService.CreateImage:output_type -> otterscale.storage.v1.Image
+	6,  // 69: otterscale.storage.v1.StorageService.UpdateImage:output_type -> otterscale.storage.v1.Image
+	69, // 70: otterscale.storage.v1.StorageService.DeleteImage:output_type -> google.protobuf.Empty
+	62, // 71: otterscale.storage.v1.StorageService.CreateImageSnapshot:output_type -> otterscale.storage.v1.Image.Snapshot
+	69, // 72: otterscale.storage.v1.StorageService.DeleteImageSnapshot:output_type -> google.protobuf.Empty
+	69, // 73: otterscale.storage.v1.StorageService.RollbackImageSnapshot:output_type -> google.protobuf.Empty
+	69, // 74: otterscale.storage.v1.StorageService.ProtectImageSnapshot:output_type -> google.protobuf.Empty
+	69, // 75: otterscale.storage.v1.StorageService.UnprotectImageSnapshot:output_type -> google.protobuf.Empty
+	35, // 76: otterscale.storage.v1.StorageService.ListVolumes:output_type -> otterscale.storage.v1.ListVolumesResponse
+	37, // 77: otterscale.storage.v1.StorageService.ListSubvolumes:output_type -> otterscale.storage.v1.ListSubvolumesResponse
+	8,  // 78: otterscale.storage.v1.StorageService.CreateSubvolume:output_type -> otterscale.storage.v1.Subvolume
+	8,  // 79: otterscale.storage.v1.StorageService.UpdateSubvolume:output_type -> otterscale.storage.v1.Subvolume
+	69, // 80: otterscale.storage.v1.StorageService.DeleteSubvolume:output_type -> google.protobuf.Empty
+	69, // 81: otterscale.storage.v1.StorageService.GrantSubvolumeExportAccess:output_type -> google.protobuf.Empty
+	69, // 82: otterscale.storage.v1.StorageService.RevokeSubvolumeExportAccess:output_type -> google.protobuf.Empty
+	63, // 83: otterscale.storage.v1.StorageService.CreateSubvolumeSnapshot:output_type -> otterscale.storage.v1.Subvolume.Snapshot
+	69, // 84: otterscale.storage.v1.StorageService.DeleteSubvolumeSnapshot:output_type -> google.protobuf.Empty
+	46, // 85: otterscale.storage.v1.StorageService.ListSubvolumeGroups:output_type -> otterscale.storage.v1.ListSubvolumeGroupsResponse
+	9,  // 86: otterscale.storage.v1.StorageService.CreateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
+	9,  // 87: otterscale.storage.v1.StorageService.UpdateSubvolumeGroup:output_type -> otterscale.storage.v1.SubvolumeGroup
+	69, // 88: otterscale.storage.v1.StorageService.DeleteSubvolumeGroup:output_type -> google.protobuf.Empty
+	51, // 89: otterscale.storage.v1.StorageService.ListBuckets:output_type -> otterscale.storage.v1.ListBucketsResponse
+	10, // 90: otterscale.storage.v1.StorageService.CreateBucket:output_type -> otterscale.storage.v1.Bucket
+	10, // 91: otterscale.storage.v1.StorageService.UpdateBucket:output_type -> otterscale.storage.v1.Bucket
+	69, // 92: otterscale.storage.v1.StorageService.DeleteBucket:output_type -> google.protobuf.Empty
+	56, // 93: otterscale.storage.v1.StorageService.ListUsers:output_type -> otterscale.storage.v1.ListUsersResponse
+	12, // 94: otterscale.storage.v1.StorageService.CreateUser:output_type -> otterscale.storage.v1.User
+	12, // 95: otterscale.storage.v1.StorageService.UpdateUser:output_type -> otterscale.storage.v1.User
+	69, // 96: otterscale.storage.v1.StorageService.DeleteUser:output_type -> google.protobuf.Empty
+	66, // 97: otterscale.storage.v1.StorageService.CreateUserKey:output_type -> otterscale.storage.v1.User.Key
+	69, // 98: otterscale.storage.v1.StorageService.DeleteUserKey:output_type -> google.protobuf.Empty
+	60, // [60:99] is the sub-list for method output_type
+	21, // [21:60] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_api_storage_v1_storage_proto_init() }
@@ -9986,8 +10778,8 @@ func file_api_storage_v1_storage_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_storage_v1_storage_proto_rawDesc), len(file_api_storage_v1_storage_proto_rawDesc)),
-			NumEnums:      2,
-			NumMessages:   63,
+			NumEnums:      3,
+			NumMessages:   66,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

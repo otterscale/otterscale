@@ -3,10 +3,13 @@ package app
 import (
 	"context"
 	"errors"
+	"slices"
 	"strings"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 
 	pb "github.com/openhdc/otterscale/api/storage/v1"
 	"github.com/openhdc/otterscale/api/storage/v1/pbconnect"
@@ -157,10 +160,6 @@ func (s *StorageService) UpdateImage(ctx context.Context, req *connect.Request[p
 		req.Msg.GetPoolName(),
 		req.Msg.GetImageName(),
 		req.Msg.GetSize(),
-		req.Msg.GetExclusiveLock(),
-		req.Msg.GetObjectMap(),
-		req.Msg.GetFastDiff(),
-		req.Msg.GetDeepFlatten(),
 	)
 	if err != nil {
 		return nil, err
@@ -171,6 +170,47 @@ func (s *StorageService) UpdateImage(ctx context.Context, req *connect.Request[p
 
 func (s *StorageService) DeleteImage(ctx context.Context, req *connect.Request[pb.DeleteImageRequest]) (*connect.Response[emptypb.Empty], error) {
 	if err := s.uc.DeleteImage(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) CreateImageSnapshot(ctx context.Context, req *connect.Request[pb.CreateImageSnapshotRequest]) (*connect.Response[pb.Image_Snapshot], error) {
+	snap, err := s.uc.CreateImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoImageSnapshot(snap)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DeleteImageSnapshot(ctx context.Context, req *connect.Request[pb.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) RollbackImageSnapshot(ctx context.Context, req *connect.Request[pb.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.RollbackImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) ProtectImageSnapshot(ctx context.Context, req *connect.Request[pb.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.ProtectImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) UnprotectImageSnapshot(ctx context.Context, req *connect.Request[pb.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.UnprotectImageSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetPoolName(), req.Msg.GetImageName(), req.Msg.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -217,15 +257,31 @@ func (s *StorageService) ListBuckets(ctx context.Context, req *connect.Request[p
 	return connect.NewResponse(resp), nil
 }
 
-// func (s *StorageService) ListRoles(ctx context.Context, req *connect.Request[pb.ListRolesRequest]) (*connect.Response[pb.ListRolesResponse], error) {
-// 	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	resp := &pb.ListPoolsResponse{}
-// 	resp.SetPools(toProtoPools(pools))
-// 	return connect.NewResponse(resp), nil
-// }
+func (s *StorageService) CreateBucket(ctx context.Context, req *connect.Request[pb.CreateBucketRequest]) (*connect.Response[pb.Bucket], error) {
+	bucket, err := s.uc.CreateBucket(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetBucketName(), req.Msg.GetOwner(), req.Msg.GetPolicy(), s.ACL(req.Msg.GetAcl().String()))
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoBucket(bucket)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) UpdateBucket(ctx context.Context, req *connect.Request[pb.UpdateBucketRequest]) (*connect.Response[pb.Bucket], error) {
+	bucket, err := s.uc.UpdateBucket(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetBucketName(), req.Msg.GetOwner(), req.Msg.GetPolicy(), s.ACL(req.Msg.GetAcl().String()))
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoBucket(bucket)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DeleteBucket(ctx context.Context, req *connect.Request[pb.DeleteBucketRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteBucket(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetBucketName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
 
 func (s *StorageService) ListUsers(ctx context.Context, req *connect.Request[pb.ListUsersRequest]) (*connect.Response[pb.ListUsersResponse], error) {
 	users, err := s.uc.ListUsers(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
@@ -237,35 +293,56 @@ func (s *StorageService) ListUsers(ctx context.Context, req *connect.Request[pb.
 	return connect.NewResponse(resp), nil
 }
 
-// func (s *StorageService) ListAccessKeys(ctx context.Context, req *connect.Request[pb.ListAccessKeysRequest]) (*connect.Response[pb.ListAccessKeysResponse], error) {
-// 	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	resp := &pb.ListPoolsResponse{}
-// 	resp.SetPools(toProtoPools(pools))
-// 	return connect.NewResponse(resp), nil
-// }
+func (s *StorageService) CreateUser(ctx context.Context, req *connect.Request[pb.CreateUserRequest]) (*connect.Response[pb.User], error) {
+	user, err := s.uc.CreateUser(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId(), req.Msg.GetUserName(), req.Msg.GetSuspended())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoUser(user)
+	return connect.NewResponse(resp), nil
+}
 
-// func (s *StorageService) ListSnapshots(ctx context.Context, req *connect.Request[pb.ListSnapshotsRequest]) (*connect.Response[pb.ListSnapshotsResponse], error) {
-// 	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	resp := &pb.ListPoolsResponse{}
-// 	resp.SetPools(toProtoPools(pools))
-// 	return connect.NewResponse(resp), nil
-// }
+func (s *StorageService) UpdateUser(ctx context.Context, req *connect.Request[pb.UpdateUserRequest]) (*connect.Response[pb.User], error) {
+	user, err := s.uc.UpdateUser(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId(), req.Msg.GetUserName(), req.Msg.GetSuspended())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoUser(user)
+	return connect.NewResponse(resp), nil
+}
 
-// func (s *StorageService) ListSnapshotSchedules(ctx context.Context, req *connect.Request[pb.ListSnapshotSchedulesRequest]) (*connect.Response[pb.ListSnapshotSchedulesResponse], error) {
-// 	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	resp := &pb.ListSnapshotSchedulesResponse{}
-// 	resp.SetSnapshotSchedules(toProtoSnapshotSchedules(pools))
-// 	return connect.NewResponse(resp), nil
-// }
+func (s *StorageService) DeleteUser(ctx context.Context, req *connect.Request[pb.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteUser(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) CreateUserKey(ctx context.Context, req *connect.Request[pb.CreateUserKeyRequest]) (*connect.Response[pb.User_Key], error) {
+	key, err := s.uc.CreateUserKey(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoUserKey(key)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DeleteUserKey(ctx context.Context, req *connect.Request[pb.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteUserKey(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetUserId(), req.Msg.GetAccessKey()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) ACL(str string) types.BucketCannedACL {
+	acl := types.BucketCannedACL(strings.ToLower(strings.Join(strings.Split(str, "_"), "-")))
+	if slices.Contains(acl.Values(), acl) {
+		return acl
+	}
+	return types.BucketCannedACLPrivate
+}
 
 func toProtoMONs(ms []core.MON) []*pb.MON {
 	ret := []*pb.MON{}
@@ -333,6 +410,20 @@ func toProtoImage(i *core.RBDImage) *pb.Image {
 	return ret
 }
 
+func toProtoImageSnapshots(ss []core.RBDImageSnapshot) []*pb.Image_Snapshot {
+	ret := []*pb.Image_Snapshot{}
+	for i := range ss {
+		ret = append(ret, toProtoImageSnapshot(&ss[i]))
+	}
+	return ret
+}
+
+func toProtoImageSnapshot(s *core.RBDImageSnapshot) *pb.Image_Snapshot {
+	ret := &pb.Image_Snapshot{}
+	ret.SetName(s.Name)
+	return ret
+}
+
 func toProtoVolumes(vs []core.Volume) []*pb.Volume {
 	ret := []*pb.Volume{}
 	for i := range vs {
@@ -389,20 +480,6 @@ func toProtoBucket(b *core.RGWBucket) *pb.Bucket {
 	return ret
 }
 
-func toProtoRoles(rs []core.RGWRole) []*pb.Role {
-	ret := []*pb.Role{}
-	for i := range rs {
-		ret = append(ret, toProtoRole(&rs[i]))
-	}
-	return ret
-}
-
-func toProtoRole(r *core.RGWRole) *pb.Role {
-	ret := &pb.Role{}
-	ret.SetName(r.Name)
-	return ret
-}
-
 func toProtoUsers(us []core.RGWUser) []*pb.User {
 	ret := []*pb.User{}
 	for i := range us {
@@ -413,48 +490,20 @@ func toProtoUsers(us []core.RGWUser) []*pb.User {
 
 func toProtoUser(u *core.RGWUser) *pb.User {
 	ret := &pb.User{}
-	ret.SetName(u.Name)
+	ret.SetName(u.DisplayName)
 	return ret
 }
 
-// func toProtoAccessKeys(as []core.RGWAccessKey) []*pb.AccessKey {
-// 	ret := []*pb.AccessKey{}
-// 	for i := range as {
-// 		ret = append(ret, toProtoAccessKey(&as[i]))
-// 	}
-// 	return ret
-// }
+func toProtoUserKeys(uks []core.RGWUserKey) []*pb.User_Key {
+	ret := []*pb.User_Key{}
+	for i := range uks {
+		ret = append(ret, toProtoUserKey(&uks[i]))
+	}
+	return ret
+}
 
-// func toProtoAccessKey(a *core.RGWAccessKey) *pb.AccessKey {
-// 	ret := &pb.AccessKey{}
-// 	ret.SetName(a.Name)
-// 	return ret
-// }
-
-// func toProtoSnapshots(ss []core.Snapshot) []*pb.Snapshot {
-// 	ret := []*pb.Snapshot{}
-// 	for i := range ss {
-// 		ret = append(ret, toProtoSnapshot(&ss[i]))
-// 	}
-// 	return ret
-// }
-
-// func toProtoSnapshot(s *core.Snapshot) *pb.Snapshot {
-// 	ret := &pb.Snapshot{}
-// 	ret.SetName(s.Name)
-// 	return ret
-// }
-
-// func toProtoSnapshotSchedules(ss []core.SnapshotSchedule) []*pb.SnapshotSchedule {
-// 	ret := []*pb.SnapshotSchedule{}
-// 	for i := range ss {
-// 		ret = append(ret, toProtoSnapshotSchedule(&ss[i]))
-// 	}
-// 	return ret
-// }
-
-// func toProtoSnapshotSchedule(s *core.SnapshotSchedule) *pb.SnapshotSchedule {
-// 	ret := &pb.SnapshotSchedule{}
-// 	ret.SetName(s.Name)
-// 	return ret
-// }
+func toProtoUserKey(uk *core.RGWUserKey) *pb.User_Key {
+	ret := &pb.User_Key{}
+	ret.SetType(uk.KeyType)
+	return ret
+}

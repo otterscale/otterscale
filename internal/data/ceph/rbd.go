@@ -98,26 +98,9 @@ func (r *rbd) UpdateImageSize(ctx context.Context, config *core.StorageConfig, p
 	if err != nil {
 		return err
 	}
+	defer img.Close()
+
 	return img.Resize(size)
-}
-
-func (r *rbd) UpdateImageFeatures(ctx context.Context, config *core.StorageConfig, poolName, imageName string, features uint64, enabled bool) error {
-	conn, err := r.ceph.connection(config)
-	if err != nil {
-		return err
-	}
-
-	ioctx, err := conn.OpenIOContext(poolName)
-	if err != nil {
-		return err
-	}
-	defer ioctx.Destroy()
-
-	img, err := cephrbd.OpenImage(ioctx, imageName, cephrbd.NoSnapshot)
-	if err != nil {
-		return err
-	}
-	return img.UpdateFeatures(features, enabled)
 }
 
 func (r *rbd) DeleteImage(ctx context.Context, config *core.StorageConfig, poolName, imageName string) error {
@@ -135,30 +118,121 @@ func (r *rbd) DeleteImage(ctx context.Context, config *core.StorageConfig, poolN
 	return cephrbd.RemoveImage(ioctx, imageName)
 }
 
-// func (r *rbd) ListSnapshots(ctx context.Context, config *core.StorageConfig, pools ...string) ([]core.RBDImage, error) {
-// 	conn, err := r.ceph.connection(config)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	images := []core.RBDImage{}
-// 	for _, pool := range pools {
-// 		imgs, err := r.listImages(conn, pool)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		images = append(images, imgs...)
-// 	}
-// 	return images, nil
-// }
+func (r *rbd) CreateImageSnapshot(ctx context.Context, config *core.StorageConfig, poolName, imageName, snapshotName string) error {
+	conn, err := r.ceph.connection(config)
+	if err != nil {
+		return err
+	}
 
-func (r *rbd) openImage(ioctx *rados.IOContext, imgName string) (*core.RBDImage, error) {
-	img, err := cephrbd.OpenImage(ioctx, imgName, cephrbd.NoSnapshot)
+	ioctx, err := conn.OpenIOContext(poolName)
+	if err != nil {
+		return err
+	}
+	defer ioctx.Destroy()
+
+	img, err := cephrbd.OpenImage(ioctx, imageName, cephrbd.NoSnapshot)
+	if err != nil {
+		return err
+	}
+	defer img.Close()
+
+	_, err = img.CreateSnapshot(snapshotName)
+	return err
+}
+
+func (r *rbd) DeleteImageSnapshot(ctx context.Context, config *core.StorageConfig, poolName, imageName, snapshotName string) error {
+	conn, err := r.ceph.connection(config)
+	if err != nil {
+		return err
+	}
+
+	ioctx, err := conn.OpenIOContext(poolName)
+	if err != nil {
+		return err
+	}
+	defer ioctx.Destroy()
+
+	img, err := cephrbd.OpenImage(ioctx, imageName, cephrbd.NoSnapshot)
+	if err != nil {
+		return err
+	}
+	defer img.Close()
+
+	return img.GetSnapshot(snapshotName).Remove()
+}
+
+func (r *rbd) RollbackImageSnapshot(ctx context.Context, config *core.StorageConfig, poolName, imageName, snapshotName string) error {
+	conn, err := r.ceph.connection(config)
+	if err != nil {
+		return err
+	}
+
+	ioctx, err := conn.OpenIOContext(poolName)
+	if err != nil {
+		return err
+	}
+	defer ioctx.Destroy()
+
+	img, err := cephrbd.OpenImage(ioctx, imageName, cephrbd.NoSnapshot)
+	if err != nil {
+		return err
+	}
+	defer img.Close()
+
+	return img.GetSnapshot(snapshotName).Rollback()
+}
+
+func (r *rbd) ProtectImageSnapshot(ctx context.Context, config *core.StorageConfig, poolName, imageName, snapshotName string) error {
+	conn, err := r.ceph.connection(config)
+	if err != nil {
+		return err
+	}
+
+	ioctx, err := conn.OpenIOContext(poolName)
+	if err != nil {
+		return err
+	}
+	defer ioctx.Destroy()
+
+	img, err := cephrbd.OpenImage(ioctx, imageName, cephrbd.NoSnapshot)
+	if err != nil {
+		return err
+	}
+	defer img.Close()
+
+	return img.GetSnapshot(snapshotName).Protect()
+}
+
+func (r *rbd) UnprotectImageSnapshot(ctx context.Context, config *core.StorageConfig, poolName, imageName, snapshotName string) error {
+	conn, err := r.ceph.connection(config)
+	if err != nil {
+		return err
+	}
+
+	ioctx, err := conn.OpenIOContext(poolName)
+	if err != nil {
+		return err
+	}
+	defer ioctx.Destroy()
+
+	img, err := cephrbd.OpenImage(ioctx, imageName, cephrbd.NoSnapshot)
+	if err != nil {
+		return err
+	}
+	defer img.Close()
+
+	return img.GetSnapshot(snapshotName).Unprotect()
+}
+
+func (r *rbd) openImage(ioctx *rados.IOContext, imageName string) (*core.RBDImage, error) {
+	img, err := cephrbd.OpenImage(ioctx, imageName, cephrbd.NoSnapshot)
 	if err != nil {
 		return nil, err
 	}
 	defer img.Close()
 
 	size, _ := img.GetSize()
+	features, _ := img.GetFeatures()
 
 	// img.GetSnapshotNames()
 
@@ -169,7 +243,8 @@ func (r *rbd) openImage(ioctx *rados.IOContext, imgName string) (*core.RBDImage,
 	// fmt.Println(img.GetMirrorImageInfo())
 
 	return &core.RBDImage{
-		Name: img.GetName(),
-		Size: size,
+		Name:     img.GetName(),
+		Size:     size,
+		Features: features,
 	}, nil
 }

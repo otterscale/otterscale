@@ -70,6 +70,15 @@ const (
 	// StorageServiceDeleteImageSnapshotProcedure is the fully-qualified name of the StorageService's
 	// DeleteImageSnapshot RPC.
 	StorageServiceDeleteImageSnapshotProcedure = "/otterscale.storage.v1.StorageService/DeleteImageSnapshot"
+	// StorageServiceRollbackImageSnapshotProcedure is the fully-qualified name of the StorageService's
+	// RollbackImageSnapshot RPC.
+	StorageServiceRollbackImageSnapshotProcedure = "/otterscale.storage.v1.StorageService/RollbackImageSnapshot"
+	// StorageServiceProtectImageSnapshotProcedure is the fully-qualified name of the StorageService's
+	// ProtectImageSnapshot RPC.
+	StorageServiceProtectImageSnapshotProcedure = "/otterscale.storage.v1.StorageService/ProtectImageSnapshot"
+	// StorageServiceUnprotectImageSnapshotProcedure is the fully-qualified name of the StorageService's
+	// UnprotectImageSnapshot RPC.
+	StorageServiceUnprotectImageSnapshotProcedure = "/otterscale.storage.v1.StorageService/UnprotectImageSnapshot"
 	// StorageServiceListVolumesProcedure is the fully-qualified name of the StorageService's
 	// ListVolumes RPC.
 	StorageServiceListVolumesProcedure = "/otterscale.storage.v1.StorageService/ListVolumes"
@@ -133,12 +142,12 @@ const (
 	// StorageServiceDeleteUserProcedure is the fully-qualified name of the StorageService's DeleteUser
 	// RPC.
 	StorageServiceDeleteUserProcedure = "/otterscale.storage.v1.StorageService/DeleteUser"
-	// StorageServiceCreateUserS3KeyProcedure is the fully-qualified name of the StorageService's
-	// CreateUserS3Key RPC.
-	StorageServiceCreateUserS3KeyProcedure = "/otterscale.storage.v1.StorageService/CreateUserS3Key"
-	// StorageServiceDeleteUserS3KeyProcedure is the fully-qualified name of the StorageService's
-	// DeleteUserS3Key RPC.
-	StorageServiceDeleteUserS3KeyProcedure = "/otterscale.storage.v1.StorageService/DeleteUserS3Key"
+	// StorageServiceCreateUserKeyProcedure is the fully-qualified name of the StorageService's
+	// CreateUserKey RPC.
+	StorageServiceCreateUserKeyProcedure = "/otterscale.storage.v1.StorageService/CreateUserKey"
+	// StorageServiceDeleteUserKeyProcedure is the fully-qualified name of the StorageService's
+	// DeleteUserKey RPC.
+	StorageServiceDeleteUserKeyProcedure = "/otterscale.storage.v1.StorageService/DeleteUserKey"
 )
 
 // StorageServiceClient is a client for the otterscale.storage.v1.StorageService service.
@@ -160,6 +169,9 @@ type StorageServiceClient interface {
 	// RBD Image Snapshot
 	CreateImageSnapshot(context.Context, *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error)
 	DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	// CephFS Volume
 	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
 	// CephFS Subvolume
@@ -187,8 +199,8 @@ type StorageServiceClient interface {
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateUserS3Key(context.Context, *connect.Request[v1.CreateUserS3KeyRequest]) (*connect.Response[v1.User_Key], error)
-	DeleteUserS3Key(context.Context, *connect.Request[v1.DeleteUserS3KeyRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateUserKey(context.Context, *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error)
+	DeleteUserKey(context.Context, *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewStorageServiceClient constructs a client for the otterscale.storage.v1.StorageService service.
@@ -278,6 +290,24 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			httpClient,
 			baseURL+StorageServiceDeleteImageSnapshotProcedure,
 			connect.WithSchema(storageServiceMethods.ByName("DeleteImageSnapshot")),
+			connect.WithClientOptions(opts...),
+		),
+		rollbackImageSnapshot: connect.NewClient[v1.RollbackImageSnapshotRequest, emptypb.Empty](
+			httpClient,
+			baseURL+StorageServiceRollbackImageSnapshotProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("RollbackImageSnapshot")),
+			connect.WithClientOptions(opts...),
+		),
+		protectImageSnapshot: connect.NewClient[v1.ProtectImageSnapshotRequest, emptypb.Empty](
+			httpClient,
+			baseURL+StorageServiceProtectImageSnapshotProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("ProtectImageSnapshot")),
+			connect.WithClientOptions(opts...),
+		),
+		unprotectImageSnapshot: connect.NewClient[v1.UnprotectImageSnapshotRequest, emptypb.Empty](
+			httpClient,
+			baseURL+StorageServiceUnprotectImageSnapshotProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("UnprotectImageSnapshot")),
 			connect.WithClientOptions(opts...),
 		),
 		listVolumes: connect.NewClient[v1.ListVolumesRequest, v1.ListVolumesResponse](
@@ -406,16 +436,16 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(storageServiceMethods.ByName("DeleteUser")),
 			connect.WithClientOptions(opts...),
 		),
-		createUserS3Key: connect.NewClient[v1.CreateUserS3KeyRequest, v1.User_Key](
+		createUserKey: connect.NewClient[v1.CreateUserKeyRequest, v1.User_Key](
 			httpClient,
-			baseURL+StorageServiceCreateUserS3KeyProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("CreateUserS3Key")),
+			baseURL+StorageServiceCreateUserKeyProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("CreateUserKey")),
 			connect.WithClientOptions(opts...),
 		),
-		deleteUserS3Key: connect.NewClient[v1.DeleteUserS3KeyRequest, emptypb.Empty](
+		deleteUserKey: connect.NewClient[v1.DeleteUserKeyRequest, emptypb.Empty](
 			httpClient,
-			baseURL+StorageServiceDeleteUserS3KeyProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("DeleteUserS3Key")),
+			baseURL+StorageServiceDeleteUserKeyProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("DeleteUserKey")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -436,6 +466,9 @@ type storageServiceClient struct {
 	deleteImage                 *connect.Client[v1.DeleteImageRequest, emptypb.Empty]
 	createImageSnapshot         *connect.Client[v1.CreateImageSnapshotRequest, v1.Image_Snapshot]
 	deleteImageSnapshot         *connect.Client[v1.DeleteImageSnapshotRequest, emptypb.Empty]
+	rollbackImageSnapshot       *connect.Client[v1.RollbackImageSnapshotRequest, emptypb.Empty]
+	protectImageSnapshot        *connect.Client[v1.ProtectImageSnapshotRequest, emptypb.Empty]
+	unprotectImageSnapshot      *connect.Client[v1.UnprotectImageSnapshotRequest, emptypb.Empty]
 	listVolumes                 *connect.Client[v1.ListVolumesRequest, v1.ListVolumesResponse]
 	listSubvolumes              *connect.Client[v1.ListSubvolumesRequest, v1.ListSubvolumesResponse]
 	createSubvolume             *connect.Client[v1.CreateSubvolumeRequest, v1.Subvolume]
@@ -457,8 +490,8 @@ type storageServiceClient struct {
 	createUser                  *connect.Client[v1.CreateUserRequest, v1.User]
 	updateUser                  *connect.Client[v1.UpdateUserRequest, v1.User]
 	deleteUser                  *connect.Client[v1.DeleteUserRequest, emptypb.Empty]
-	createUserS3Key             *connect.Client[v1.CreateUserS3KeyRequest, v1.User_Key]
-	deleteUserS3Key             *connect.Client[v1.DeleteUserS3KeyRequest, emptypb.Empty]
+	createUserKey               *connect.Client[v1.CreateUserKeyRequest, v1.User_Key]
+	deleteUserKey               *connect.Client[v1.DeleteUserKeyRequest, emptypb.Empty]
 }
 
 // ListMONs calls otterscale.storage.v1.StorageService.ListMONs.
@@ -524,6 +557,21 @@ func (c *storageServiceClient) CreateImageSnapshot(ctx context.Context, req *con
 // DeleteImageSnapshot calls otterscale.storage.v1.StorageService.DeleteImageSnapshot.
 func (c *storageServiceClient) DeleteImageSnapshot(ctx context.Context, req *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteImageSnapshot.CallUnary(ctx, req)
+}
+
+// RollbackImageSnapshot calls otterscale.storage.v1.StorageService.RollbackImageSnapshot.
+func (c *storageServiceClient) RollbackImageSnapshot(ctx context.Context, req *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.rollbackImageSnapshot.CallUnary(ctx, req)
+}
+
+// ProtectImageSnapshot calls otterscale.storage.v1.StorageService.ProtectImageSnapshot.
+func (c *storageServiceClient) ProtectImageSnapshot(ctx context.Context, req *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.protectImageSnapshot.CallUnary(ctx, req)
+}
+
+// UnprotectImageSnapshot calls otterscale.storage.v1.StorageService.UnprotectImageSnapshot.
+func (c *storageServiceClient) UnprotectImageSnapshot(ctx context.Context, req *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.unprotectImageSnapshot.CallUnary(ctx, req)
 }
 
 // ListVolumes calls otterscale.storage.v1.StorageService.ListVolumes.
@@ -632,14 +680,14 @@ func (c *storageServiceClient) DeleteUser(ctx context.Context, req *connect.Requ
 	return c.deleteUser.CallUnary(ctx, req)
 }
 
-// CreateUserS3Key calls otterscale.storage.v1.StorageService.CreateUserS3Key.
-func (c *storageServiceClient) CreateUserS3Key(ctx context.Context, req *connect.Request[v1.CreateUserS3KeyRequest]) (*connect.Response[v1.User_Key], error) {
-	return c.createUserS3Key.CallUnary(ctx, req)
+// CreateUserKey calls otterscale.storage.v1.StorageService.CreateUserKey.
+func (c *storageServiceClient) CreateUserKey(ctx context.Context, req *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error) {
+	return c.createUserKey.CallUnary(ctx, req)
 }
 
-// DeleteUserS3Key calls otterscale.storage.v1.StorageService.DeleteUserS3Key.
-func (c *storageServiceClient) DeleteUserS3Key(ctx context.Context, req *connect.Request[v1.DeleteUserS3KeyRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteUserS3Key.CallUnary(ctx, req)
+// DeleteUserKey calls otterscale.storage.v1.StorageService.DeleteUserKey.
+func (c *storageServiceClient) DeleteUserKey(ctx context.Context, req *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteUserKey.CallUnary(ctx, req)
 }
 
 // StorageServiceHandler is an implementation of the otterscale.storage.v1.StorageService service.
@@ -661,6 +709,9 @@ type StorageServiceHandler interface {
 	// RBD Image Snapshot
 	CreateImageSnapshot(context.Context, *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error)
 	DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
+	UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	// CephFS Volume
 	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
 	// CephFS Subvolume
@@ -688,8 +739,8 @@ type StorageServiceHandler interface {
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateUserS3Key(context.Context, *connect.Request[v1.CreateUserS3KeyRequest]) (*connect.Response[v1.User_Key], error)
-	DeleteUserS3Key(context.Context, *connect.Request[v1.DeleteUserS3KeyRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateUserKey(context.Context, *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error)
+	DeleteUserKey(context.Context, *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewStorageServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -775,6 +826,24 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		StorageServiceDeleteImageSnapshotProcedure,
 		svc.DeleteImageSnapshot,
 		connect.WithSchema(storageServiceMethods.ByName("DeleteImageSnapshot")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceRollbackImageSnapshotHandler := connect.NewUnaryHandler(
+		StorageServiceRollbackImageSnapshotProcedure,
+		svc.RollbackImageSnapshot,
+		connect.WithSchema(storageServiceMethods.ByName("RollbackImageSnapshot")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceProtectImageSnapshotHandler := connect.NewUnaryHandler(
+		StorageServiceProtectImageSnapshotProcedure,
+		svc.ProtectImageSnapshot,
+		connect.WithSchema(storageServiceMethods.ByName("ProtectImageSnapshot")),
+		connect.WithHandlerOptions(opts...),
+	)
+	storageServiceUnprotectImageSnapshotHandler := connect.NewUnaryHandler(
+		StorageServiceUnprotectImageSnapshotProcedure,
+		svc.UnprotectImageSnapshot,
+		connect.WithSchema(storageServiceMethods.ByName("UnprotectImageSnapshot")),
 		connect.WithHandlerOptions(opts...),
 	)
 	storageServiceListVolumesHandler := connect.NewUnaryHandler(
@@ -903,16 +972,16 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		connect.WithSchema(storageServiceMethods.ByName("DeleteUser")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateUserS3KeyHandler := connect.NewUnaryHandler(
-		StorageServiceCreateUserS3KeyProcedure,
-		svc.CreateUserS3Key,
-		connect.WithSchema(storageServiceMethods.ByName("CreateUserS3Key")),
+	storageServiceCreateUserKeyHandler := connect.NewUnaryHandler(
+		StorageServiceCreateUserKeyProcedure,
+		svc.CreateUserKey,
+		connect.WithSchema(storageServiceMethods.ByName("CreateUserKey")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteUserS3KeyHandler := connect.NewUnaryHandler(
-		StorageServiceDeleteUserS3KeyProcedure,
-		svc.DeleteUserS3Key,
-		connect.WithSchema(storageServiceMethods.ByName("DeleteUserS3Key")),
+	storageServiceDeleteUserKeyHandler := connect.NewUnaryHandler(
+		StorageServiceDeleteUserKeyProcedure,
+		svc.DeleteUserKey,
+		connect.WithSchema(storageServiceMethods.ByName("DeleteUserKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.storage.v1.StorageService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -943,6 +1012,12 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceCreateImageSnapshotHandler.ServeHTTP(w, r)
 		case StorageServiceDeleteImageSnapshotProcedure:
 			storageServiceDeleteImageSnapshotHandler.ServeHTTP(w, r)
+		case StorageServiceRollbackImageSnapshotProcedure:
+			storageServiceRollbackImageSnapshotHandler.ServeHTTP(w, r)
+		case StorageServiceProtectImageSnapshotProcedure:
+			storageServiceProtectImageSnapshotHandler.ServeHTTP(w, r)
+		case StorageServiceUnprotectImageSnapshotProcedure:
+			storageServiceUnprotectImageSnapshotHandler.ServeHTTP(w, r)
 		case StorageServiceListVolumesProcedure:
 			storageServiceListVolumesHandler.ServeHTTP(w, r)
 		case StorageServiceListSubvolumesProcedure:
@@ -985,10 +1060,10 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceUpdateUserHandler.ServeHTTP(w, r)
 		case StorageServiceDeleteUserProcedure:
 			storageServiceDeleteUserHandler.ServeHTTP(w, r)
-		case StorageServiceCreateUserS3KeyProcedure:
-			storageServiceCreateUserS3KeyHandler.ServeHTTP(w, r)
-		case StorageServiceDeleteUserS3KeyProcedure:
-			storageServiceDeleteUserS3KeyHandler.ServeHTTP(w, r)
+		case StorageServiceCreateUserKeyProcedure:
+			storageServiceCreateUserKeyHandler.ServeHTTP(w, r)
+		case StorageServiceDeleteUserKeyProcedure:
+			storageServiceDeleteUserKeyHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1048,6 +1123,18 @@ func (UnimplementedStorageServiceHandler) CreateImageSnapshot(context.Context, *
 
 func (UnimplementedStorageServiceHandler) DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteImageSnapshot is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.RollbackImageSnapshot is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.ProtectImageSnapshot is not implemented"))
+}
+
+func (UnimplementedStorageServiceHandler) UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.UnprotectImageSnapshot is not implemented"))
 }
 
 func (UnimplementedStorageServiceHandler) ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error) {
@@ -1134,10 +1221,10 @@ func (UnimplementedStorageServiceHandler) DeleteUser(context.Context, *connect.R
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteUser is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateUserS3Key(context.Context, *connect.Request[v1.CreateUserS3KeyRequest]) (*connect.Response[v1.User_Key], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateUserS3Key is not implemented"))
+func (UnimplementedStorageServiceHandler) CreateUserKey(context.Context, *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateUserKey is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteUserS3Key(context.Context, *connect.Request[v1.DeleteUserS3KeyRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteUserS3Key is not implemented"))
+func (UnimplementedStorageServiceHandler) DeleteUserKey(context.Context, *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteUserKey is not implemented"))
 }

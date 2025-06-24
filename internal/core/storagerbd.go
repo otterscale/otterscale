@@ -7,12 +7,17 @@ import (
 	"github.com/ceph/go-ceph/rbd"
 )
 
+type RBDImageSnapshot struct {
+	Name string
+}
+
 type RBDImage struct {
 	Name            string
 	Size            uint64
-	Features        string
+	Features        uint64
 	ImageMirrorMode string
 	MirrorImageInfo string
+	Snapshots       []RBDImageSnapshot
 }
 
 type CephRBDRepo interface {
@@ -20,8 +25,12 @@ type CephRBDRepo interface {
 	GetImage(ctx context.Context, config *StorageConfig, poolName, imageName string) (*RBDImage, error)
 	CreateImage(ctx context.Context, config *StorageConfig, poolName, imageName string, order int, stripeUnit, stripeCount, size, features uint64) (*RBDImage, error)
 	UpdateImageSize(ctx context.Context, config *StorageConfig, poolName, imageName string, size uint64) error
-	UpdateImageFeatures(ctx context.Context, config *StorageConfig, poolName, imageName string, features uint64, enabled bool) error
 	DeleteImage(ctx context.Context, config *StorageConfig, poolName, imageName string) error
+	CreateImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
+	DeleteImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
+	RollbackImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
+	ProtectImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
+	UnprotectImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
 }
 
 func (uc *StorageUseCase) ListImages(ctx context.Context, uuid, facility string) ([]RBDImage, error) {
@@ -57,24 +66,11 @@ func (uc *StorageUseCase) CreateImage(ctx context.Context, uuid, facility, pool,
 	return uc.rbd.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
 }
 
-func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool, image string, size uint64, exclusiveLock, objectMap, fastDiff, deepFlatten bool) (*RBDImage, error) {
+func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool, image string, size uint64) (*RBDImage, error) {
 	config, err := uc.config(ctx, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-
-	// the 'layering' feature cannot be updated
-	trueFeatures := uc.convertToRBDImageFeatures(false, exclusiveLock, objectMap, fastDiff, deepFlatten)
-	if err := uc.rbd.UpdateImageFeatures(ctx, config, pool, image, trueFeatures, true); err != nil {
-		return nil, err
-	}
-
-	allFeatures := uc.convertToRBDImageFeatures(true, true, true, true, true)
-	falseFeatures := allFeatures ^ trueFeatures
-	if err := uc.rbd.UpdateImageFeatures(ctx, config, pool, image, falseFeatures, false); err != nil {
-		return nil, err
-	}
-
 	if err := uc.rbd.UpdateImageSize(ctx, config, pool, image, size); err != nil {
 		return nil, err
 	}
@@ -87,6 +83,51 @@ func (uc *StorageUseCase) DeleteImage(ctx context.Context, uuid, facility, pool,
 		return err
 	}
 	return uc.rbd.DeleteImage(ctx, config, pool, image)
+}
+
+func (uc *StorageUseCase) CreateImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) (*RBDImageSnapshot, error) {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	if err := uc.rbd.CreateImageSnapshot(ctx, config, pool, image, snapshot); err != nil {
+		return nil, err
+	}
+	return &RBDImageSnapshot{
+		Name: snapshot,
+	}, nil
+}
+
+func (uc *StorageUseCase) DeleteImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.rbd.DeleteImageSnapshot(ctx, config, pool, image, snapshot)
+}
+
+func (uc *StorageUseCase) RollbackImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.rbd.RollbackImageSnapshot(ctx, config, pool, image, snapshot)
+}
+
+func (uc *StorageUseCase) ProtectImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.rbd.ProtectImageSnapshot(ctx, config, pool, image, snapshot)
+}
+
+func (uc *StorageUseCase) UnprotectImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
+	config, err := uc.config(ctx, uuid, facility)
+	if err != nil {
+		return err
+	}
+	return uc.rbd.UnprotectImageSnapshot(ctx, config, pool, image, snapshot)
 }
 
 func (uc *StorageUseCase) convertToRBDImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) uint64 {
