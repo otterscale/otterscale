@@ -30,8 +30,11 @@ tmp
 # Cert files
 *.crt
 
-# Yaml
+# YAML
 *.yaml
+
+# JSON
+*.json
 
 # bin folder
 bin/
