@@ -63,8 +63,8 @@ service StorageService {
   rpc CreateUser(CreateUserRequest) returns (User);
   rpc UpdateUser(UpdateUserRequest) returns (User);
   rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
-  rpc CreateUserS3Key(CreateUserS3KeyRequest) returns (User.Key);
-  rpc DeleteUserS3Key(DeleteUserS3KeyRequest) returns (google.protobuf.Empty);
+  rpc CreateUserKey(CreateUserKeyRequest) returns (User.Key);
+  rpc DeleteUserKey(DeleteUserKeyRequest) returns (google.protobuf.Empty);
 }
 
 enum Application {
@@ -131,7 +131,15 @@ message SubvolumeGroup {
 }
 
 message Bucket {
+  enum ACL {
+    PRIVATE = 0;
+    PUBLIC_READ = 1;
+    PUBLIC_READ_WRITE = 2;
+    AUTHENTICATED_READ = 3;
+  }
   string name = 1;
+  string owner = 2;
+  ACL acl = 3;
 }
 
 message Role {
@@ -140,7 +148,7 @@ message Role {
 
 message User {
   message Key {
-    string name = 1;
+    string type = 1;
   }
   string name = 1;
 }
@@ -429,6 +437,8 @@ message CreateBucketRequest {
   string facility_name = 2;
   string bucket_name = 3;
   string owner = 11;
+  string policy = 12;
+  Bucket.ACL acl = 21;
 }
 
 message UpdateBucketRequest {
@@ -436,6 +446,8 @@ message UpdateBucketRequest {
   string facility_name = 2;
   string bucket_name = 3;
   string owner = 11;
+  string policy = 12;
+  Bucket.ACL acl = 21;
 }
 
 message DeleteBucketRequest {
@@ -458,7 +470,7 @@ message CreateUserRequest {
   string facility_name = 2;
   string user_id = 3;
   string user_name = 11;
-  string suspended = 12;
+  bool suspended = 12;
 }
 
 message UpdateUserRequest {
@@ -466,7 +478,7 @@ message UpdateUserRequest {
   string facility_name = 2;
   string user_id = 3;
   string user_name = 11;
-  string suspended = 12;
+  bool suspended = 12;
 }
 
 message DeleteUserRequest {
@@ -475,13 +487,13 @@ message DeleteUserRequest {
   string user_id = 3;
 }
 
-message CreateUserS3KeyRequest {
+message CreateUserKeyRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string user_id = 3;
 }
 
-message DeleteUserS3KeyRequest {
+message DeleteUserKeyRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string user_id = 3;

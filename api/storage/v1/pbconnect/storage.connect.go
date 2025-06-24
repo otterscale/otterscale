@@ -142,12 +142,12 @@ const (
 	// StorageServiceDeleteUserProcedure is the fully-qualified name of the StorageService's DeleteUser
 	// RPC.
 	StorageServiceDeleteUserProcedure = "/otterscale.storage.v1.StorageService/DeleteUser"
-	// StorageServiceCreateUserS3KeyProcedure is the fully-qualified name of the StorageService's
-	// CreateUserS3Key RPC.
-	StorageServiceCreateUserS3KeyProcedure = "/otterscale.storage.v1.StorageService/CreateUserS3Key"
-	// StorageServiceDeleteUserS3KeyProcedure is the fully-qualified name of the StorageService's
-	// DeleteUserS3Key RPC.
-	StorageServiceDeleteUserS3KeyProcedure = "/otterscale.storage.v1.StorageService/DeleteUserS3Key"
+	// StorageServiceCreateUserKeyProcedure is the fully-qualified name of the StorageService's
+	// CreateUserKey RPC.
+	StorageServiceCreateUserKeyProcedure = "/otterscale.storage.v1.StorageService/CreateUserKey"
+	// StorageServiceDeleteUserKeyProcedure is the fully-qualified name of the StorageService's
+	// DeleteUserKey RPC.
+	StorageServiceDeleteUserKeyProcedure = "/otterscale.storage.v1.StorageService/DeleteUserKey"
 )
 
 // StorageServiceClient is a client for the otterscale.storage.v1.StorageService service.
@@ -199,8 +199,8 @@ type StorageServiceClient interface {
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateUserS3Key(context.Context, *connect.Request[v1.CreateUserS3KeyRequest]) (*connect.Response[v1.User_Key], error)
-	DeleteUserS3Key(context.Context, *connect.Request[v1.DeleteUserS3KeyRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateUserKey(context.Context, *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error)
+	DeleteUserKey(context.Context, *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewStorageServiceClient constructs a client for the otterscale.storage.v1.StorageService service.
@@ -436,16 +436,16 @@ func NewStorageServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(storageServiceMethods.ByName("DeleteUser")),
 			connect.WithClientOptions(opts...),
 		),
-		createUserS3Key: connect.NewClient[v1.CreateUserS3KeyRequest, v1.User_Key](
+		createUserKey: connect.NewClient[v1.CreateUserKeyRequest, v1.User_Key](
 			httpClient,
-			baseURL+StorageServiceCreateUserS3KeyProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("CreateUserS3Key")),
+			baseURL+StorageServiceCreateUserKeyProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("CreateUserKey")),
 			connect.WithClientOptions(opts...),
 		),
-		deleteUserS3Key: connect.NewClient[v1.DeleteUserS3KeyRequest, emptypb.Empty](
+		deleteUserKey: connect.NewClient[v1.DeleteUserKeyRequest, emptypb.Empty](
 			httpClient,
-			baseURL+StorageServiceDeleteUserS3KeyProcedure,
-			connect.WithSchema(storageServiceMethods.ByName("DeleteUserS3Key")),
+			baseURL+StorageServiceDeleteUserKeyProcedure,
+			connect.WithSchema(storageServiceMethods.ByName("DeleteUserKey")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -490,8 +490,8 @@ type storageServiceClient struct {
 	createUser                  *connect.Client[v1.CreateUserRequest, v1.User]
 	updateUser                  *connect.Client[v1.UpdateUserRequest, v1.User]
 	deleteUser                  *connect.Client[v1.DeleteUserRequest, emptypb.Empty]
-	createUserS3Key             *connect.Client[v1.CreateUserS3KeyRequest, v1.User_Key]
-	deleteUserS3Key             *connect.Client[v1.DeleteUserS3KeyRequest, emptypb.Empty]
+	createUserKey               *connect.Client[v1.CreateUserKeyRequest, v1.User_Key]
+	deleteUserKey               *connect.Client[v1.DeleteUserKeyRequest, emptypb.Empty]
 }
 
 // ListMONs calls otterscale.storage.v1.StorageService.ListMONs.
@@ -680,14 +680,14 @@ func (c *storageServiceClient) DeleteUser(ctx context.Context, req *connect.Requ
 	return c.deleteUser.CallUnary(ctx, req)
 }
 
-// CreateUserS3Key calls otterscale.storage.v1.StorageService.CreateUserS3Key.
-func (c *storageServiceClient) CreateUserS3Key(ctx context.Context, req *connect.Request[v1.CreateUserS3KeyRequest]) (*connect.Response[v1.User_Key], error) {
-	return c.createUserS3Key.CallUnary(ctx, req)
+// CreateUserKey calls otterscale.storage.v1.StorageService.CreateUserKey.
+func (c *storageServiceClient) CreateUserKey(ctx context.Context, req *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error) {
+	return c.createUserKey.CallUnary(ctx, req)
 }
 
-// DeleteUserS3Key calls otterscale.storage.v1.StorageService.DeleteUserS3Key.
-func (c *storageServiceClient) DeleteUserS3Key(ctx context.Context, req *connect.Request[v1.DeleteUserS3KeyRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteUserS3Key.CallUnary(ctx, req)
+// DeleteUserKey calls otterscale.storage.v1.StorageService.DeleteUserKey.
+func (c *storageServiceClient) DeleteUserKey(ctx context.Context, req *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteUserKey.CallUnary(ctx, req)
 }
 
 // StorageServiceHandler is an implementation of the otterscale.storage.v1.StorageService service.
@@ -739,8 +739,8 @@ type StorageServiceHandler interface {
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
 	DeleteUser(context.Context, *connect.Request[v1.DeleteUserRequest]) (*connect.Response[emptypb.Empty], error)
-	CreateUserS3Key(context.Context, *connect.Request[v1.CreateUserS3KeyRequest]) (*connect.Response[v1.User_Key], error)
-	DeleteUserS3Key(context.Context, *connect.Request[v1.DeleteUserS3KeyRequest]) (*connect.Response[emptypb.Empty], error)
+	CreateUserKey(context.Context, *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error)
+	DeleteUserKey(context.Context, *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewStorageServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -972,16 +972,16 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 		connect.WithSchema(storageServiceMethods.ByName("DeleteUser")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceCreateUserS3KeyHandler := connect.NewUnaryHandler(
-		StorageServiceCreateUserS3KeyProcedure,
-		svc.CreateUserS3Key,
-		connect.WithSchema(storageServiceMethods.ByName("CreateUserS3Key")),
+	storageServiceCreateUserKeyHandler := connect.NewUnaryHandler(
+		StorageServiceCreateUserKeyProcedure,
+		svc.CreateUserKey,
+		connect.WithSchema(storageServiceMethods.ByName("CreateUserKey")),
 		connect.WithHandlerOptions(opts...),
 	)
-	storageServiceDeleteUserS3KeyHandler := connect.NewUnaryHandler(
-		StorageServiceDeleteUserS3KeyProcedure,
-		svc.DeleteUserS3Key,
-		connect.WithSchema(storageServiceMethods.ByName("DeleteUserS3Key")),
+	storageServiceDeleteUserKeyHandler := connect.NewUnaryHandler(
+		StorageServiceDeleteUserKeyProcedure,
+		svc.DeleteUserKey,
+		connect.WithSchema(storageServiceMethods.ByName("DeleteUserKey")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.storage.v1.StorageService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1060,10 +1060,10 @@ func NewStorageServiceHandler(svc StorageServiceHandler, opts ...connect.Handler
 			storageServiceUpdateUserHandler.ServeHTTP(w, r)
 		case StorageServiceDeleteUserProcedure:
 			storageServiceDeleteUserHandler.ServeHTTP(w, r)
-		case StorageServiceCreateUserS3KeyProcedure:
-			storageServiceCreateUserS3KeyHandler.ServeHTTP(w, r)
-		case StorageServiceDeleteUserS3KeyProcedure:
-			storageServiceDeleteUserS3KeyHandler.ServeHTTP(w, r)
+		case StorageServiceCreateUserKeyProcedure:
+			storageServiceCreateUserKeyHandler.ServeHTTP(w, r)
+		case StorageServiceDeleteUserKeyProcedure:
+			storageServiceDeleteUserKeyHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -1221,10 +1221,10 @@ func (UnimplementedStorageServiceHandler) DeleteUser(context.Context, *connect.R
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteUser is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) CreateUserS3Key(context.Context, *connect.Request[v1.CreateUserS3KeyRequest]) (*connect.Response[v1.User_Key], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateUserS3Key is not implemented"))
+func (UnimplementedStorageServiceHandler) CreateUserKey(context.Context, *connect.Request[v1.CreateUserKeyRequest]) (*connect.Response[v1.User_Key], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.CreateUserKey is not implemented"))
 }
 
-func (UnimplementedStorageServiceHandler) DeleteUserS3Key(context.Context, *connect.Request[v1.DeleteUserS3KeyRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteUserS3Key is not implemented"))
+func (UnimplementedStorageServiceHandler) DeleteUserKey(context.Context, *connect.Request[v1.DeleteUserKeyRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.storage.v1.StorageService.DeleteUserKey is not implemented"))
 }
