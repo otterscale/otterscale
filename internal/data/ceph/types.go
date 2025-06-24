@@ -283,6 +283,12 @@ type fsSubvolumeInfo struct {
 	UID           int      `json:"uid,omitempty"`
 }
 
+type fsSubvolumeSnapshotInfo struct {
+	CreatedAt        string `json:"created_at,omitempty"`
+	DataPool         string `json:"data_pool,omitempty"`
+	HasPendingClones string `json:"has_pending_clones,omitempty"`
+}
+
 type fsSubvolumeGroup struct {
 	Name string `json:"name,omitempty"`
 }
@@ -290,8 +296,8 @@ type fsSubvolumeGroup struct {
 type fsSubvolumeGroupInfo struct {
 	Atime      string   `json:"atime,omitempty"`
 	BytesPcent string   `json:"bytes_pcent,omitempty"`
-	BytesQuota string   `json:"bytes_quota,omitempty"`
-	BytesUsed  int      `json:"bytes_used,omitempty"`
+	BytesQuota any      `json:"bytes_quota,omitempty"`
+	BytesUsed  any      `json:"bytes_used,omitempty"`
 	CreatedAt  string   `json:"created_at,omitempty"`
 	Ctime      string   `json:"ctime,omitempty"`
 	DataPool   string   `json:"data_pool,omitempty"`

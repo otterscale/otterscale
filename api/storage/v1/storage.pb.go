@@ -2081,9 +2081,9 @@ type CreatePoolRequest struct {
 	xxx_hidden_PoolName        *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
 	xxx_hidden_PoolType        CreatePoolRequest_Type `protobuf:"varint,11,opt,name=pool_type,json=poolType,enum=otterscale.storage.v1.CreatePoolRequest_Type"`
 	xxx_hidden_EcOverwrites    bool                   `protobuf:"varint,21,opt,name=ec_overwrites,json=ecOverwrites"`
-	xxx_hidden_ReplicatedSize  int32                  `protobuf:"varint,31,opt,name=replicated_size,json=replicatedSize"`
-	xxx_hidden_QuotaMaxBytes   int64                  `protobuf:"varint,41,opt,name=quota_max_bytes,json=quotaMaxBytes"`
-	xxx_hidden_QuotaMaxObjects int32                  `protobuf:"varint,42,opt,name=quota_max_objects,json=quotaMaxObjects"`
+	xxx_hidden_ReplicatedSize  uint32                 `protobuf:"varint,31,opt,name=replicated_size,json=replicatedSize"`
+	xxx_hidden_QuotaMaxBytes   uint64                 `protobuf:"varint,41,opt,name=quota_max_bytes,json=quotaMaxBytes"`
+	xxx_hidden_QuotaMaxObjects uint32                 `protobuf:"varint,42,opt,name=quota_max_objects,json=quotaMaxObjects"`
 	xxx_hidden_Applications    []Application          `protobuf:"varint,61,rep,packed,name=applications,enum=otterscale.storage.v1.Application"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
@@ -2162,21 +2162,21 @@ func (x *CreatePoolRequest) GetEcOverwrites() bool {
 	return false
 }
 
-func (x *CreatePoolRequest) GetReplicatedSize() int32 {
+func (x *CreatePoolRequest) GetReplicatedSize() uint32 {
 	if x != nil {
 		return x.xxx_hidden_ReplicatedSize
 	}
 	return 0
 }
 
-func (x *CreatePoolRequest) GetQuotaMaxBytes() int64 {
+func (x *CreatePoolRequest) GetQuotaMaxBytes() uint64 {
 	if x != nil {
 		return x.xxx_hidden_QuotaMaxBytes
 	}
 	return 0
 }
 
-func (x *CreatePoolRequest) GetQuotaMaxObjects() int32 {
+func (x *CreatePoolRequest) GetQuotaMaxObjects() uint32 {
 	if x != nil {
 		return x.xxx_hidden_QuotaMaxObjects
 	}
@@ -2215,17 +2215,17 @@ func (x *CreatePoolRequest) SetEcOverwrites(v bool) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 9)
 }
 
-func (x *CreatePoolRequest) SetReplicatedSize(v int32) {
+func (x *CreatePoolRequest) SetReplicatedSize(v uint32) {
 	x.xxx_hidden_ReplicatedSize = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 9)
 }
 
-func (x *CreatePoolRequest) SetQuotaMaxBytes(v int64) {
+func (x *CreatePoolRequest) SetQuotaMaxBytes(v uint64) {
 	x.xxx_hidden_QuotaMaxBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 9)
 }
 
-func (x *CreatePoolRequest) SetQuotaMaxObjects(v int32) {
+func (x *CreatePoolRequest) SetQuotaMaxObjects(v uint32) {
 	x.xxx_hidden_QuotaMaxObjects = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 9)
 }
@@ -2338,9 +2338,9 @@ type CreatePoolRequest_builder struct {
 	PoolName        *string
 	PoolType        *CreatePoolRequest_Type
 	EcOverwrites    *bool
-	ReplicatedSize  *int32
-	QuotaMaxBytes   *int64
-	QuotaMaxObjects *int32
+	ReplicatedSize  *uint32
+	QuotaMaxBytes   *uint64
+	QuotaMaxObjects *uint32
 	Applications    []Application
 }
 
@@ -2389,8 +2389,8 @@ type UpdatePoolRequest struct {
 	xxx_hidden_ScopeUuid       *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName    *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_PoolName        *string                `protobuf:"bytes,3,opt,name=pool_name,json=poolName"`
-	xxx_hidden_QuotaMaxBytes   int64                  `protobuf:"varint,41,opt,name=quota_max_bytes,json=quotaMaxBytes"`
-	xxx_hidden_QuotaMaxObjects int32                  `protobuf:"varint,42,opt,name=quota_max_objects,json=quotaMaxObjects"`
+	xxx_hidden_QuotaMaxBytes   uint64                 `protobuf:"varint,41,opt,name=quota_max_bytes,json=quotaMaxBytes"`
+	xxx_hidden_QuotaMaxObjects uint32                 `protobuf:"varint,42,opt,name=quota_max_objects,json=quotaMaxObjects"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
 	unknownFields              protoimpl.UnknownFields
@@ -2452,14 +2452,14 @@ func (x *UpdatePoolRequest) GetPoolName() string {
 	return ""
 }
 
-func (x *UpdatePoolRequest) GetQuotaMaxBytes() int64 {
+func (x *UpdatePoolRequest) GetQuotaMaxBytes() uint64 {
 	if x != nil {
 		return x.xxx_hidden_QuotaMaxBytes
 	}
 	return 0
 }
 
-func (x *UpdatePoolRequest) GetQuotaMaxObjects() int32 {
+func (x *UpdatePoolRequest) GetQuotaMaxObjects() uint32 {
 	if x != nil {
 		return x.xxx_hidden_QuotaMaxObjects
 	}
@@ -2481,12 +2481,12 @@ func (x *UpdatePoolRequest) SetPoolName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *UpdatePoolRequest) SetQuotaMaxBytes(v int64) {
+func (x *UpdatePoolRequest) SetQuotaMaxBytes(v uint64) {
 	x.xxx_hidden_QuotaMaxBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *UpdatePoolRequest) SetQuotaMaxObjects(v int32) {
+func (x *UpdatePoolRequest) SetQuotaMaxObjects(v uint32) {
 	x.xxx_hidden_QuotaMaxObjects = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
@@ -2557,8 +2557,8 @@ type UpdatePoolRequest_builder struct {
 	ScopeUuid       *string
 	FacilityName    *string
 	PoolName        *string
-	QuotaMaxBytes   *int64
-	QuotaMaxObjects *int32
+	QuotaMaxBytes   *uint64
+	QuotaMaxObjects *uint32
 }
 
 func (b0 UpdatePoolRequest_builder) Build() *UpdatePoolRequest {
@@ -7162,7 +7162,7 @@ type CreateSubvolumeGroupRequest struct {
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_VolumeName   *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_GroupName    *string                `protobuf:"bytes,4,opt,name=group_name,json=groupName"`
-	xxx_hidden_Size         *string                `protobuf:"bytes,11,opt,name=size"`
+	xxx_hidden_Size         uint64                 `protobuf:"varint,11,opt,name=size"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -7234,14 +7234,11 @@ func (x *CreateSubvolumeGroupRequest) GetGroupName() string {
 	return ""
 }
 
-func (x *CreateSubvolumeGroupRequest) GetSize() string {
+func (x *CreateSubvolumeGroupRequest) GetSize() uint64 {
 	if x != nil {
-		if x.xxx_hidden_Size != nil {
-			return *x.xxx_hidden_Size
-		}
-		return ""
+		return x.xxx_hidden_Size
 	}
-	return ""
+	return 0
 }
 
 func (x *CreateSubvolumeGroupRequest) SetScopeUuid(v string) {
@@ -7264,8 +7261,8 @@ func (x *CreateSubvolumeGroupRequest) SetGroupName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *CreateSubvolumeGroupRequest) SetSize(v string) {
-	x.xxx_hidden_Size = &v
+func (x *CreateSubvolumeGroupRequest) SetSize(v uint64) {
+	x.xxx_hidden_Size = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
@@ -7326,7 +7323,7 @@ func (x *CreateSubvolumeGroupRequest) ClearGroupName() {
 
 func (x *CreateSubvolumeGroupRequest) ClearSize() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Size = nil
+	x.xxx_hidden_Size = 0
 }
 
 type CreateSubvolumeGroupRequest_builder struct {
@@ -7336,7 +7333,7 @@ type CreateSubvolumeGroupRequest_builder struct {
 	FacilityName *string
 	VolumeName   *string
 	GroupName    *string
-	Size         *string
+	Size         *uint64
 }
 
 func (b0 CreateSubvolumeGroupRequest_builder) Build() *CreateSubvolumeGroupRequest {
@@ -7361,7 +7358,7 @@ func (b0 CreateSubvolumeGroupRequest_builder) Build() *CreateSubvolumeGroupReque
 	}
 	if b.Size != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_Size = b.Size
+		x.xxx_hidden_Size = *b.Size
 	}
 	return m0
 }
@@ -7372,7 +7369,7 @@ type UpdateSubvolumeGroupRequest struct {
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_VolumeName   *string                `protobuf:"bytes,3,opt,name=volume_name,json=volumeName"`
 	xxx_hidden_GroupName    *string                `protobuf:"bytes,4,opt,name=group_name,json=groupName"`
-	xxx_hidden_Size         *string                `protobuf:"bytes,11,opt,name=size"`
+	xxx_hidden_Size         uint64                 `protobuf:"varint,11,opt,name=size"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -7444,14 +7441,11 @@ func (x *UpdateSubvolumeGroupRequest) GetGroupName() string {
 	return ""
 }
 
-func (x *UpdateSubvolumeGroupRequest) GetSize() string {
+func (x *UpdateSubvolumeGroupRequest) GetSize() uint64 {
 	if x != nil {
-		if x.xxx_hidden_Size != nil {
-			return *x.xxx_hidden_Size
-		}
-		return ""
+		return x.xxx_hidden_Size
 	}
-	return ""
+	return 0
 }
 
 func (x *UpdateSubvolumeGroupRequest) SetScopeUuid(v string) {
@@ -7474,8 +7468,8 @@ func (x *UpdateSubvolumeGroupRequest) SetGroupName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *UpdateSubvolumeGroupRequest) SetSize(v string) {
-	x.xxx_hidden_Size = &v
+func (x *UpdateSubvolumeGroupRequest) SetSize(v uint64) {
+	x.xxx_hidden_Size = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
@@ -7536,7 +7530,7 @@ func (x *UpdateSubvolumeGroupRequest) ClearGroupName() {
 
 func (x *UpdateSubvolumeGroupRequest) ClearSize() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_Size = nil
+	x.xxx_hidden_Size = 0
 }
 
 type UpdateSubvolumeGroupRequest_builder struct {
@@ -7546,7 +7540,7 @@ type UpdateSubvolumeGroupRequest_builder struct {
 	FacilityName *string
 	VolumeName   *string
 	GroupName    *string
-	Size         *string
+	Size         *uint64
 }
 
 func (b0 UpdateSubvolumeGroupRequest_builder) Build() *UpdateSubvolumeGroupRequest {
@@ -7571,7 +7565,7 @@ func (b0 UpdateSubvolumeGroupRequest_builder) Build() *UpdateSubvolumeGroupReque
 	}
 	if b.Size != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_Size = b.Size
+		x.xxx_hidden_Size = *b.Size
 	}
 	return m0
 }
@@ -10241,9 +10235,9 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12J\n" +
 	"\tpool_type\x18\v \x01(\x0e2-.otterscale.storage.v1.CreatePoolRequest.TypeR\bpoolType\x12#\n" +
 	"\rec_overwrites\x18\x15 \x01(\bR\fecOverwrites\x12'\n" +
-	"\x0freplicated_size\x18\x1f \x01(\x05R\x0ereplicatedSize\x12&\n" +
-	"\x0fquota_max_bytes\x18) \x01(\x03R\rquotaMaxBytes\x12*\n" +
-	"\x11quota_max_objects\x18* \x01(\x05R\x0fquotaMaxObjects\x12F\n" +
+	"\x0freplicated_size\x18\x1f \x01(\rR\x0ereplicatedSize\x12&\n" +
+	"\x0fquota_max_bytes\x18) \x01(\x04R\rquotaMaxBytes\x12*\n" +
+	"\x11quota_max_objects\x18* \x01(\rR\x0fquotaMaxObjects\x12F\n" +
 	"\fapplications\x18= \x03(\x0e2\".otterscale.storage.v1.ApplicationR\fapplications\"4\n" +
 	"\x04Type\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\v\n" +
@@ -10255,8 +10249,8 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1b\n" +
 	"\tpool_name\x18\x03 \x01(\tR\bpoolName\x12&\n" +
-	"\x0fquota_max_bytes\x18) \x01(\x03R\rquotaMaxBytes\x12*\n" +
-	"\x11quota_max_objects\x18* \x01(\x05R\x0fquotaMaxObjects\"t\n" +
+	"\x0fquota_max_bytes\x18) \x01(\x04R\rquotaMaxBytes\x12*\n" +
+	"\x11quota_max_objects\x18* \x01(\rR\x0fquotaMaxObjects\"t\n" +
 	"\x11DeletePoolRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -10448,7 +10442,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"volumeName\x12\x1d\n" +
 	"\n" +
 	"group_name\x18\x04 \x01(\tR\tgroupName\x12\x12\n" +
-	"\x04size\x18\v \x01(\tR\x04size\"\xb5\x01\n" +
+	"\x04size\x18\v \x01(\x04R\x04size\"\xb5\x01\n" +
 	"\x1bUpdateSubvolumeGroupRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -10457,7 +10451,7 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"volumeName\x12\x1d\n" +
 	"\n" +
 	"group_name\x18\x04 \x01(\tR\tgroupName\x12\x12\n" +
-	"\x04size\x18\v \x01(\tR\x04size\"\xa1\x01\n" +
+	"\x04size\x18\v \x01(\x04R\x04size\"\xa1\x01\n" +
 	"\x1bDeleteSubvolumeGroupRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
