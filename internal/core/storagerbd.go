@@ -21,16 +21,16 @@ type RBDImage struct {
 }
 
 type CephRBDRepo interface {
-	ListImages(ctx context.Context, config *StorageConfig, poolName string) ([]RBDImage, error)
-	GetImage(ctx context.Context, config *StorageConfig, poolName, imageName string) (*RBDImage, error)
-	CreateImage(ctx context.Context, config *StorageConfig, poolName, imageName string, order int, stripeUnit, stripeCount, size, features uint64) (*RBDImage, error)
-	UpdateImageSize(ctx context.Context, config *StorageConfig, poolName, imageName string, size uint64) error
-	DeleteImage(ctx context.Context, config *StorageConfig, poolName, imageName string) error
-	CreateImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
-	DeleteImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
-	RollbackImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
-	ProtectImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
-	UnprotectImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
+	ListImages(ctx context.Context, config *StorageConfig, pool string) ([]RBDImage, error)
+	GetImage(ctx context.Context, config *StorageConfig, pool, image string) (*RBDImage, error)
+	CreateImage(ctx context.Context, config *StorageConfig, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) (*RBDImage, error)
+	UpdateImageSize(ctx context.Context, config *StorageConfig, pool, image string, size uint64) error
+	DeleteImage(ctx context.Context, config *StorageConfig, pool, image string) error
+	CreateImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
+	DeleteImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
+	RollbackImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
+	ProtectImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
+	UnprotectImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
 }
 
 func (uc *StorageUseCase) ListImages(ctx context.Context, uuid, facility string) ([]RBDImage, error) {

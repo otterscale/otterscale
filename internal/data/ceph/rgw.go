@@ -28,6 +28,7 @@ func NewRGW(ceph *Ceph) core.CephRGWRepo {
 
 var _ core.CephRGWRepo = (*rgw)(nil)
 
+// ceph api
 func (r *rgw) ListBuckets(ctx context.Context, config *core.StorageConfig) ([]core.RGWBucket, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -36,6 +37,7 @@ func (r *rgw) ListBuckets(ctx context.Context, config *core.StorageConfig) ([]co
 	return client.ListBucketsWithStat(ctx)
 }
 
+// ceph api
 func (r *rgw) GetBucket(ctx context.Context, config *core.StorageConfig, bucket string) (*core.RGWBucket, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -53,7 +55,7 @@ func (r *rgw) GetBucket(ctx context.Context, config *core.StorageConfig, bucket 
 	return nil, fmt.Errorf("bucket %q not found", bucket)
 }
 
-// TODO: AuthN & AuthZ
+// s3 api
 func (r *rgw) CreateBucket(ctx context.Context, config *core.StorageConfig, bucket string, acl types.BucketCannedACL) error {
 	s3Client, err := r.s3Client(config)
 	if err != nil {
@@ -66,7 +68,7 @@ func (r *rgw) CreateBucket(ctx context.Context, config *core.StorageConfig, buck
 	return err
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) UpdateBucketOwner(ctx context.Context, config *core.StorageConfig, bucket, owner string) error {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -78,7 +80,7 @@ func (r *rgw) UpdateBucketOwner(ctx context.Context, config *core.StorageConfig,
 	})
 }
 
-// TODO: AuthN & AuthZ
+// s3 api
 func (r *rgw) UpdateBucketACL(ctx context.Context, config *core.StorageConfig, bucket string, acl types.BucketCannedACL) error {
 	s3Client, err := r.s3Client(config)
 	if err != nil {
@@ -91,7 +93,7 @@ func (r *rgw) UpdateBucketACL(ctx context.Context, config *core.StorageConfig, b
 	return err
 }
 
-// TODO: AuthN & AuthZ
+// s3 api
 func (r *rgw) UpdateBucketPolicy(ctx context.Context, config *core.StorageConfig, bucket, policy string) error {
 	s3Client, err := r.s3Client(config)
 	if err != nil {
@@ -104,7 +106,7 @@ func (r *rgw) UpdateBucketPolicy(ctx context.Context, config *core.StorageConfig
 	return err
 }
 
-// TODO: AuthN & AuthZ
+// s3 api
 func (r *rgw) DeleteBucket(ctx context.Context, config *core.StorageConfig, bucket string) error {
 	s3Client, err := r.s3Client(config)
 	if err != nil {
@@ -116,6 +118,7 @@ func (r *rgw) DeleteBucket(ctx context.Context, config *core.StorageConfig, buck
 	return err
 }
 
+// ceph api
 func (r *rgw) ListUsers(ctx context.Context, config *core.StorageConfig) ([]core.RGWUser, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -136,7 +139,7 @@ func (r *rgw) ListUsers(ctx context.Context, config *core.StorageConfig) ([]core
 	return users, nil
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) CreateUser(ctx context.Context, config *core.StorageConfig, id, name string, suspended bool) (*core.RGWUser, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -153,7 +156,7 @@ func (r *rgw) CreateUser(ctx context.Context, config *core.StorageConfig, id, na
 	return &user, err
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) UpdateUser(ctx context.Context, config *core.StorageConfig, id, name string, suspended bool) (*core.RGWUser, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -170,7 +173,7 @@ func (r *rgw) UpdateUser(ctx context.Context, config *core.StorageConfig, id, na
 	return &user, err
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) DeleteUser(ctx context.Context, config *core.StorageConfig, id string) error {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -179,7 +182,7 @@ func (r *rgw) DeleteUser(ctx context.Context, config *core.StorageConfig, id str
 	return client.RemoveUser(ctx, admin.User{ID: id})
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) CreateUserKey(ctx context.Context, config *core.StorageConfig, id string) (*core.RGWUserKey, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -195,7 +198,7 @@ func (r *rgw) CreateUserKey(ctx context.Context, config *core.StorageConfig, id 
 	return nil, fmt.Errorf("create key failed")
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) DeleteUserKey(ctx context.Context, config *core.StorageConfig, id, accessKey string) error {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -235,8 +238,7 @@ func (r *rgw) s3Client(conf *core.StorageConfig) (*s3.Client, error) {
 
 func (r *rgw) boolToIntPointer(b bool) *int {
 	if b {
-		i := 1
-		return &i
+		return aws.Int(1)
 	}
 	return nil
 }

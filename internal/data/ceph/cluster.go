@@ -2,12 +2,9 @@ package ceph
 
 import (
 	"context"
-	"encoding/json"
 	"slices"
 	"strconv"
 	"strings"
-
-	"github.com/ceph/go-ceph/rados"
 
 	"github.com/openhdc/otterscale/internal/core"
 )
@@ -29,7 +26,7 @@ func (r *cluster) ListMONs(ctx context.Context, config *core.StorageConfig) ([]c
 	if err != nil {
 		return nil, err
 	}
-	monDump, err := r.monDump(conn)
+	monDump, err := dumpMon(conn)
 	if err != nil {
 		return nil, err
 	}
@@ -41,11 +38,11 @@ func (r *cluster) ListOSDs(ctx context.Context, config *core.StorageConfig) ([]c
 	if err != nil {
 		return nil, err
 	}
-	osdDump, err := r.osdDump(conn)
+	osdDump, err := dumpOSD(conn)
 	if err != nil {
 		return nil, err
 	}
-	osdTree, err := r.osdTree(conn)
+	osdTree, err := treeOSD(conn)
 	if err != nil {
 		return nil, err
 	}
@@ -57,14 +54,14 @@ func (r *cluster) DoSMART(ctx context.Context, config *core.StorageConfig, who s
 	if err != nil {
 		return nil, err
 	}
-	deviceListByDaemon, err := r.deviceListByDaemon(conn, who)
+	devices, err := listDevices(conn, who)
 	if err != nil {
 		return nil, err
 	}
 	osd := r.getOSDNumber(who)
 	outputs := map[string][]string{}
-	for _, device := range deviceListByDaemon {
-		resp, err := r.osdSMART(conn, osd, device.Devid)
+	for _, device := range devices {
+		resp, err := smartOSD(conn, osd, device.Devid)
 		if err != nil {
 			return nil, err
 		}
@@ -78,7 +75,7 @@ func (r *cluster) ListPools(ctx context.Context, config *core.StorageConfig) ([]
 	if err != nil {
 		return nil, err
 	}
-	osdDump, err := r.osdDump(conn)
+	osdDump, err := dumpOSD(conn)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +87,7 @@ func (r *cluster) ListPoolsByApplication(ctx context.Context, config *core.Stora
 	if err != nil {
 		return nil, err
 	}
-	osdDump, err := r.osdDump(conn)
+	osdDump, err := dumpOSD(conn)
 	if err != nil {
 		return nil, err
 	}
@@ -99,47 +96,47 @@ func (r *cluster) ListPoolsByApplication(ctx context.Context, config *core.Stora
 	}), nil
 }
 
-func (r *cluster) CreatePool(ctx context.Context, config *core.StorageConfig, poolName, poolType string) error {
+func (r *cluster) CreatePool(ctx context.Context, config *core.StorageConfig, pool, poolType string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
 	}
-	return r.osdPoolCreate(conn, poolName, poolType)
+	return createOSDPool(conn, pool, poolType)
 }
 
-func (r *cluster) DeletePool(ctx context.Context, config *core.StorageConfig, poolName string) error {
+func (r *cluster) DeletePool(ctx context.Context, config *core.StorageConfig, pool string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
 	}
-	return r.osdPoolDelete(conn, poolName)
+	return deleteOSDPool(conn, pool)
 }
 
-func (r *cluster) EnableApplication(ctx context.Context, config *core.StorageConfig, poolName, application string) error {
+func (r *cluster) EnableApplication(ctx context.Context, config *core.StorageConfig, pool, application string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
 	}
-	return r.osdPoolApplicationEnable(conn, poolName, application)
+	return enableOSDPoolApplication(conn, pool, application)
 }
 
-func (r *cluster) SetParameter(ctx context.Context, config *core.StorageConfig, poolName, key, value string) error {
+func (r *cluster) SetParameter(ctx context.Context, config *core.StorageConfig, pool, key, value string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
 	}
-	return r.osdPoolSet(conn, poolName, key, value)
+	return setOSDPool(conn, pool, key, value)
 }
 
-func (r *cluster) SetQuota(ctx context.Context, config *core.StorageConfig, poolName string, maxBytes, maxObjects uint64) error {
+func (r *cluster) SetQuota(ctx context.Context, config *core.StorageConfig, pool string, maxBytes, maxObjects uint64) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
 	}
-	if err := r.osdPoolSetQuota(conn, poolName, "max_bytes", maxBytes); err != nil {
+	if err := setOSDPoolQuota(conn, pool, "max_bytes", maxBytes); err != nil {
 		return err
 	}
-	return r.osdPoolSetQuota(conn, poolName, "max_objects", maxObjects)
+	return setOSDPoolQuota(conn, pool, "max_objects", maxObjects)
 }
 
 func (r *cluster) toMONs(d *monDump) []core.MON {
@@ -180,200 +177,6 @@ func (r *cluster) toPools(d *osdDump) []core.Pool {
 		})
 	}
 	return ret
-}
-
-func (r *cluster) monDump(conn *rados.Conn) (*monDump, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix": "mon dump",
-		"format": "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var monDump monDump
-	if err := json.Unmarshal(resp, &monDump); err != nil {
-		return nil, err
-	}
-	return &monDump, nil
-}
-
-func (r *cluster) osdDump(conn *rados.Conn) (*osdDump, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix": "osd dump",
-		"format": "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var osdDump osdDump
-	if err := json.Unmarshal(resp, &osdDump); err != nil {
-		return nil, err
-	}
-	return &osdDump, nil
-}
-
-func (r *cluster) osdTree(conn *rados.Conn) (*osdTree, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix": "osd tree",
-		"format": "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var osdTree osdTree
-	if err := json.Unmarshal(resp, &osdTree); err != nil {
-		return nil, err
-	}
-	return &osdTree, nil
-}
-
-func (r *cluster) deviceListByDaemon(conn *rados.Conn, who string) ([]deviceListByDaemon, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix": "device ls-by-daemon",
-		"who":    who,
-		"format": "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var deviceListByDaemon []deviceListByDaemon
-	if err := json.Unmarshal(resp, &deviceListByDaemon); err != nil {
-		return nil, err
-	}
-	return deviceListByDaemon, nil
-}
-
-func (r *cluster) osdSMART(conn *rados.Conn, osd int, deviceID string) (*osdSMART, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix": "smart",
-		"devid":  deviceID,
-		"format": "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.OsdCommand(osd, [][]byte{cmd})
-	if err != nil {
-		return nil, err
-	}
-	var deviceList map[string]any
-	if err := json.Unmarshal(resp, &deviceList); err != nil {
-		return nil, err
-	}
-	device, err := json.Marshal(deviceList[deviceID])
-	if err != nil {
-		return nil, err
-	}
-	var osdSMART osdSMART
-	if err := json.Unmarshal(device, &osdSMART); err != nil {
-		return nil, err
-	}
-	return &osdSMART, nil
-}
-
-func (r *cluster) osdPoolCreate(conn *rados.Conn, poolName, poolType string) error {
-	m := map[string]string{
-		"prefix":    "osd pool create",
-		"pool":      poolName,
-		"pool_type": poolType,
-		"format":    "json",
-	}
-	if poolType == "erasure" {
-		m["erasure_code_profile"] = "default"
-	}
-	cmd, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *cluster) osdPoolDelete(conn *rados.Conn, poolName string) error {
-	m := map[string]any{
-		"prefix":                      "osd pool delete",
-		"pool":                        poolName,
-		"pool2":                       poolName,
-		"yes_i_really_really_mean_it": true,
-		"format":                      "json",
-	}
-	cmd, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *cluster) osdPoolApplicationEnable(conn *rados.Conn, poolName, app string) error {
-	cmd, err := json.Marshal(map[string]any{
-		"prefix":               "osd pool application enable",
-		"pool":                 poolName,
-		"app":                  app,
-		"yes_i_really_mean_it": true,
-		"format":               "json",
-	})
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *cluster) osdPoolSet(conn *rados.Conn, poolName, key, value string) error {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix": "osd pool set",
-		"pool":   poolName,
-		"var":    key,
-		"val":    value,
-		"format": "json",
-	})
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *cluster) osdPoolSetQuota(conn *rados.Conn, poolName, field string, value uint64) error {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix": "osd pool set-quota",
-		"pool":   poolName,
-		"field":  field,
-		"val":    strconv.Itoa(int(value)),
-		"format": "json",
-	})
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (r *cluster) getOSDNumber(osd string) int {

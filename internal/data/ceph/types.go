@@ -219,105 +219,6 @@ type osdTree struct {
 	Stray []any `json:"stray,omitempty"`
 }
 
-type fsDump struct {
-	Epoch        int    `json:"epoch,omitempty"`
-	Btime        string `json:"btime,omitempty"`
-	DefaultFscid int    `json:"default_fscid,omitempty"`
-	Filesystems  []struct {
-		Mdsmap struct {
-			Epoch                     int    `json:"epoch,omitempty"`
-			Flags                     int    `json:"flags,omitempty"`
-			EverAllowedFeatures       int    `json:"ever_allowed_features,omitempty"`
-			ExplicitlyAllowedFeatures int    `json:"explicitly_allowed_features,omitempty"`
-			Created                   string `json:"created,omitempty"`
-			Modified                  string `json:"modified,omitempty"`
-			Tableserver               int    `json:"tableserver,omitempty"`
-			Root                      int    `json:"root,omitempty"`
-			SessionTimeout            int    `json:"session_timeout,omitempty"`
-			SessionAutoclose          int    `json:"session_autoclose,omitempty"`
-			MaxFileSize               int64  `json:"max_file_size,omitempty"`
-			MaxXattrSize              int    `json:"max_xattr_size,omitempty"`
-			LastFailure               int    `json:"last_failure,omitempty"`
-			LastFailureOsdEpoch       int    `json:"last_failure_osd_epoch,omitempty"`
-			MaxMds                    int    `json:"max_mds,omitempty"`
-			In                        []int  `json:"in,omitempty"`
-			Failed                    []any  `json:"failed,omitempty"`
-			Damaged                   []any  `json:"damaged,omitempty"`
-			Stopped                   []any  `json:"stopped,omitempty"`
-			DataPools                 []int  `json:"data_pools,omitempty"`
-			MetadataPool              int    `json:"metadata_pool,omitempty"`
-			Enabled                   bool   `json:"enabled,omitempty"`
-			FsName                    string `json:"fs_name,omitempty"`
-			Balancer                  string `json:"balancer,omitempty"`
-			BalRankMask               string `json:"bal_rank_mask,omitempty"`
-			StandbyCountWanted        int    `json:"standby_count_wanted,omitempty"`
-			QdbLeader                 int    `json:"qdb_leader,omitempty"`
-			QdbCluster                []int  `json:"qdb_cluster,omitempty"`
-		} `json:"mdsmap,omitempty"`
-		ID int `json:"id,omitempty"`
-	} `json:"filesystems,omitempty"`
-}
-
-type fsSubvolume struct {
-	Name string `json:"name,omitempty"`
-}
-
-type fsSubvolumeInfo struct {
-	Atime         string   `json:"atime,omitempty"`
-	BytesPcent    string   `json:"bytes_pcent,omitempty"`
-	BytesQuota    any      `json:"bytes_quota,omitempty"`
-	BytesUsed     any      `json:"bytes_used,omitempty"`
-	CreatedAt     string   `json:"created_at,omitempty"`
-	Ctime         string   `json:"ctime,omitempty"`
-	DataPool      string   `json:"data_pool,omitempty"`
-	Features      []string `json:"features,omitempty"`
-	Flavor        int      `json:"flavor,omitempty"`
-	Gid           int      `json:"gid,omitempty"`
-	Mode          int      `json:"mode,omitempty"`
-	MonAddrs      []string `json:"mon_addrs,omitempty"`
-	Mtime         string   `json:"mtime,omitempty"`
-	Path          string   `json:"path,omitempty"`
-	PoolNamespace string   `json:"pool_namespace,omitempty"`
-	State         string   `json:"state,omitempty"`
-	Type          string   `json:"type,omitempty"`
-	UID           int      `json:"uid,omitempty"`
-}
-
-type fsSubvolumeSnapshotInfo struct {
-	CreatedAt        string `json:"created_at,omitempty"`
-	DataPool         string `json:"data_pool,omitempty"`
-	HasPendingClones string `json:"has_pending_clones,omitempty"`
-}
-
-type fsSubvolumeGroup struct {
-	Name string `json:"name,omitempty"`
-}
-
-type fsSubvolumeGroupInfo struct {
-	Atime      string   `json:"atime,omitempty"`
-	BytesPcent string   `json:"bytes_pcent,omitempty"`
-	BytesQuota any      `json:"bytes_quota,omitempty"`
-	BytesUsed  any      `json:"bytes_used,omitempty"`
-	CreatedAt  string   `json:"created_at,omitempty"`
-	Ctime      string   `json:"ctime,omitempty"`
-	DataPool   string   `json:"data_pool,omitempty"`
-	Gid        int      `json:"gid,omitempty"`
-	Mode       int      `json:"mode,omitempty"`
-	MonAddrs   []string `json:"mon_addrs,omitempty"`
-	Mtime      string   `json:"mtime,omitempty"`
-	UID        int      `json:"uid,omitempty"`
-}
-
-type deviceListByDaemon struct {
-	Devid    string `json:"devid,omitempty"`
-	Location []struct {
-		Host string `json:"host,omitempty"`
-		Dev  string `json:"dev,omitempty"`
-		Path string `json:"path,omitempty"`
-	} `json:"location,omitempty"`
-	Daemons []string `json:"daemons,omitempty"`
-}
-
 type osdSMART struct {
 	Device struct {
 		InfoName string `json:"info_name,omitempty"`
@@ -361,4 +262,103 @@ type osdSMART struct {
 		Bytes  int64 `json:"bytes,omitempty"`
 	} `json:"user_capacity,omitempty"`
 	Vendor string `json:"vendor,omitempty"`
+}
+
+type device struct {
+	Devid    string `json:"devid,omitempty"`
+	Location []struct {
+		Host string `json:"host,omitempty"`
+		Dev  string `json:"dev,omitempty"`
+		Path string `json:"path,omitempty"`
+	} `json:"location,omitempty"`
+	Daemons []string `json:"daemons,omitempty"`
+}
+
+type fsDump struct {
+	Epoch        int    `json:"epoch,omitempty"`
+	Btime        string `json:"btime,omitempty"`
+	DefaultFscid int    `json:"default_fscid,omitempty"`
+	Filesystems  []struct {
+		Mdsmap struct {
+			Epoch                     int    `json:"epoch,omitempty"`
+			Flags                     int    `json:"flags,omitempty"`
+			EverAllowedFeatures       int    `json:"ever_allowed_features,omitempty"`
+			ExplicitlyAllowedFeatures int    `json:"explicitly_allowed_features,omitempty"`
+			Created                   string `json:"created,omitempty"`
+			Modified                  string `json:"modified,omitempty"`
+			Tableserver               int    `json:"tableserver,omitempty"`
+			Root                      int    `json:"root,omitempty"`
+			SessionTimeout            int    `json:"session_timeout,omitempty"`
+			SessionAutoclose          int    `json:"session_autoclose,omitempty"`
+			MaxFileSize               int64  `json:"max_file_size,omitempty"`
+			MaxXattrSize              int    `json:"max_xattr_size,omitempty"`
+			LastFailure               int    `json:"last_failure,omitempty"`
+			LastFailureOsdEpoch       int    `json:"last_failure_osd_epoch,omitempty"`
+			MaxMds                    int    `json:"max_mds,omitempty"`
+			In                        []int  `json:"in,omitempty"`
+			Failed                    []any  `json:"failed,omitempty"`
+			Damaged                   []any  `json:"damaged,omitempty"`
+			Stopped                   []any  `json:"stopped,omitempty"`
+			DataPools                 []int  `json:"data_pools,omitempty"`
+			MetadataPool              int    `json:"metadata_pool,omitempty"`
+			Enabled                   bool   `json:"enabled,omitempty"`
+			FsName                    string `json:"fs_name,omitempty"`
+			Balancer                  string `json:"balancer,omitempty"`
+			BalRankMask               string `json:"bal_rank_mask,omitempty"`
+			StandbyCountWanted        int    `json:"standby_count_wanted,omitempty"`
+			QdbLeader                 int    `json:"qdb_leader,omitempty"`
+			QdbCluster                []int  `json:"qdb_cluster,omitempty"`
+		} `json:"mdsmap,omitempty"`
+		ID int `json:"id,omitempty"`
+	} `json:"filesystems,omitempty"`
+}
+
+type subvolume struct {
+	Name string `json:"name,omitempty"`
+}
+
+type subvolumeInfo struct {
+	Atime         string   `json:"atime,omitempty"`
+	BytesPcent    string   `json:"bytes_pcent,omitempty"`
+	BytesQuota    any      `json:"bytes_quota,omitempty"`
+	BytesUsed     any      `json:"bytes_used,omitempty"`
+	CreatedAt     string   `json:"created_at,omitempty"`
+	Ctime         string   `json:"ctime,omitempty"`
+	DataPool      string   `json:"data_pool,omitempty"`
+	Features      []string `json:"features,omitempty"`
+	Flavor        int      `json:"flavor,omitempty"`
+	Gid           int      `json:"gid,omitempty"`
+	Mode          int      `json:"mode,omitempty"`
+	MonAddrs      []string `json:"mon_addrs,omitempty"`
+	Mtime         string   `json:"mtime,omitempty"`
+	Path          string   `json:"path,omitempty"`
+	PoolNamespace string   `json:"pool_namespace,omitempty"`
+	State         string   `json:"state,omitempty"`
+	Type          string   `json:"type,omitempty"`
+	UID           int      `json:"uid,omitempty"`
+}
+
+type subvolumeSnapshotInfo struct {
+	CreatedAt        string `json:"created_at,omitempty"`
+	DataPool         string `json:"data_pool,omitempty"`
+	HasPendingClones string `json:"has_pending_clones,omitempty"`
+}
+
+type subvolumeGroup struct {
+	Name string `json:"name,omitempty"`
+}
+
+type subvolumeGroupInfo struct {
+	Atime      string   `json:"atime,omitempty"`
+	BytesPcent string   `json:"bytes_pcent,omitempty"`
+	BytesQuota any      `json:"bytes_quota,omitempty"`
+	BytesUsed  any      `json:"bytes_used,omitempty"`
+	CreatedAt  string   `json:"created_at,omitempty"`
+	Ctime      string   `json:"ctime,omitempty"`
+	DataPool   string   `json:"data_pool,omitempty"`
+	Gid        int      `json:"gid,omitempty"`
+	Mode       int      `json:"mode,omitempty"`
+	MonAddrs   []string `json:"mon_addrs,omitempty"`
+	Mtime      string   `json:"mtime,omitempty"`
+	UID        int      `json:"uid,omitempty"`
 }
