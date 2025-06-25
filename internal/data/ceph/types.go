@@ -265,8 +265,8 @@ type fsSubvolume struct {
 type fsSubvolumeInfo struct {
 	Atime         string   `json:"atime,omitempty"`
 	BytesPcent    string   `json:"bytes_pcent,omitempty"`
-	BytesQuota    string   `json:"bytes_quota,omitempty"`
-	BytesUsed     int      `json:"bytes_used,omitempty"`
+	BytesQuota    any      `json:"bytes_quota,omitempty"`
+	BytesUsed     any      `json:"bytes_used,omitempty"`
 	CreatedAt     string   `json:"created_at,omitempty"`
 	Ctime         string   `json:"ctime,omitempty"`
 	DataPool      string   `json:"data_pool,omitempty"`

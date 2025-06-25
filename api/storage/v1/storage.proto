@@ -91,7 +91,7 @@ message Image {
     string name = 1;
   }
   string name = 1;
-  uint64 size = 2;
+  uint64 size_bytes = 2;
   uint64 object_size_bytes = 21;
   uint64 stripe_unit_bytes = 22;
   uint64 stripe_count = 23;
@@ -112,14 +112,10 @@ message Subvolume {
     string name = 1;
   }
   message Export {
-    message Client {
-      string access_type = 1;
-      repeated string addresses = 2;
-    }
-    string path = 1;
-    string command = 2;
-    string squash = 3;
-    repeated Client clients = 11;
+    string ip = 1;
+    string path = 2;
+    repeated string clients = 3;
+    string command = 11;
   }
   string name = 1;
   Export export = 51;
@@ -207,7 +203,7 @@ message CreatePoolRequest {
   bool ec_overwrites = 21;      // erasure
   uint32 replicated_size = 31;  // replicated
   uint64 quota_max_bytes = 41;
-  uint32 quota_max_objects = 42;
+  uint64 quota_max_objects = 42;
   repeated Application applications = 61;
 }
 
@@ -216,7 +212,7 @@ message UpdatePoolRequest {
   string facility_name = 2;
   string pool_name = 3;
   uint64 quota_max_bytes = 41;
-  uint32 quota_max_objects = 42;
+  uint64 quota_max_objects = 42;
 }
 
 message DeletePoolRequest {
@@ -242,7 +238,7 @@ message CreateImageRequest {
   uint64 object_size_bytes = 11;
   uint64 stripe_unit_bytes = 12;
   uint64 stripe_count = 13;
-  uint64 size = 21;
+  uint64 size_bytes = 21;
   bool layering = 31;
   bool exclusive_lock = 32;
   bool object_map = 33;
@@ -255,7 +251,7 @@ message UpdateImageRequest {
   string facility_name = 2;
   string pool_name = 3;
   string image_name = 4;
-  uint64 size = 11;
+  uint64 size_bytes = 11;
 }
 
 message DeleteImageRequest {
@@ -331,7 +327,7 @@ message CreateSubvolumeRequest {
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
-  string size = 11;
+  uint64 size_bytes = 11;
   bool export = 101;
 }
 
@@ -341,7 +337,7 @@ message UpdateSubvolumeRequest {
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
-  string size = 11;
+  uint64 size_bytes = 11;
 }
 
 message DeleteSubvolumeRequest {
@@ -357,8 +353,6 @@ message GrantSubvolumeExportAccessRequest {
   string facility_name = 2;
   string volume_name = 3;
   string subvolume_name = 4;
-  string group_name = 5;
-  string export_name = 6;
   string client_ip = 11;
 }
 
@@ -367,8 +361,6 @@ message RevokeSubvolumeExportAccessRequest {
   string facility_name = 2;
   string volume_name = 3;
   string subvolume_name = 4;
-  string group_name = 5;
-  string export_name = 6;
   string client_ip = 11;
 }
 
@@ -405,7 +397,7 @@ message CreateSubvolumeGroupRequest {
   string facility_name = 2;
   string volume_name = 3;
   string group_name = 4;
-  uint64 size = 11;
+  uint64 size_bytes = 11;
 }
 
 message UpdateSubvolumeGroupRequest {
@@ -413,7 +405,7 @@ message UpdateSubvolumeGroupRequest {
   string facility_name = 2;
   string volume_name = 3;
   string group_name = 4;
-  uint64 size = 11;
+  uint64 size_bytes = 11;
 }
 
 message DeleteSubvolumeGroupRequest {

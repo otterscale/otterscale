@@ -2,8 +2,8 @@
 // @generated from file api/storage/v1/storage.proto (package otterscale.storage.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv1";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv1";
 import type { EmptySchema } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/storage/v1/storage.proto.
  */
 export const file_api_storage_v1_storage: GenFile = /*@__PURE__*/
-  fileDesc("ChxhcGkvc3RvcmFnZS92MS9zdG9yYWdlLnByb3RvEhVvdHRlcnNjYWxlLnN0b3JhZ2UudjEiEwoDTU9OEgwKBG5hbWUYASABKAkiEwoDT1NEEgwKBG5hbWUYASABKAkiFAoEUG9vbBIMCgRuYW1lGAEgASgJImkKBUltYWdlEgwKBG5hbWUYASABKAkSOAoJc25hcHNob3RzGGUgAygLMiUub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkltYWdlLlNuYXBzaG90GhgKCFNuYXBzaG90EgwKBG5hbWUYASABKAkiFgoGVm9sdW1lEgwKBG5hbWUYASABKAki1wIKCVN1YnZvbHVtZRIMCgRuYW1lGAEgASgJEjcKBmV4cG9ydBgzIAEoCzInLm90dGVyc2NhbGUuc3RvcmFnZS52MS5TdWJ2b2x1bWUuRXhwb3J0EjwKCXNuYXBzaG90cxhlIAMoCzIpLm90dGVyc2NhbGUuc3RvcmFnZS52MS5TdWJ2b2x1bWUuU25hcHNob3QaGAoIU25hcHNob3QSDAoEbmFtZRgBIAEoCRqqAQoGRXhwb3J0EgwKBHBhdGgYASABKAkSDwoHY29tbWFuZBgCIAEoCRIOCgZzcXVhc2gYAyABKAkSPwoHY2xpZW50cxgLIAMoCzIuLm90dGVyc2NhbGUuc3RvcmFnZS52MS5TdWJ2b2x1bWUuRXhwb3J0LkNsaWVudBowCgZDbGllbnQSEwoLYWNjZXNzX3R5cGUYASABKAkSEQoJYWRkcmVzc2VzGAIgAygJIh4KDlN1YnZvbHVtZUdyb3VwEgwKBG5hbWUYASABKAkiFgoGQnVja2V0EgwKBG5hbWUYASABKAkiFAoEUm9sZRIMCgRuYW1lGAEgASgJIikKBFVzZXISDAoEbmFtZRgBIAEoCRoTCgNLZXkSDAoEbmFtZRgBIAEoCSI8Cg9MaXN0TU9Oc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJIjwKEExpc3RNT05zUmVzcG9uc2USKAoEbW9ucxgBIAMoCzIaLm90dGVyc2NhbGUuc3RvcmFnZS52MS5NT04iPAoPTGlzdE9TRHNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCSI8ChBMaXN0T1NEc1Jlc3BvbnNlEigKBG9zZHMYASADKAsyGi5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuT1NEIhMKEURvT1NEU01BUlRSZXF1ZXN0IhQKEkRvT1NEU01BUlRSZXNwb25zZSI9ChBMaXN0UG9vbHNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCSI/ChFMaXN0UG9vbHNSZXNwb25zZRIqCgVwb29scxgBIAMoCzIbLm90dGVyc2NhbGUuc3RvcmFnZS52MS5Qb29sIsMBChFDcmVhdGVQb29sUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEQoJcG9vbF9uYW1lGAMgASgJEgwKBHR5cGUYCyABKAkSFAoMYXBwbGljYXRpb25zGAwgAygJEhgKEGNvbXByZXNzaW9uX21vZGUYFSABKAkSFwoPcXVvdGFfbWF4X2J5dGVzGB8gASgJEhkKEXF1b3RhX21heF9vYmplY3RzGCAgASgJIp8BChFVcGRhdGVQb29sUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEQoJcG9vbF9uYW1lGAMgASgJEhgKEGNvbXByZXNzaW9uX21vZGUYCyABKAkSFwoPcXVvdGFfbWF4X2J5dGVzGBUgASgJEhkKEXF1b3RhX21heF9vYmplY3RzGBYgASgJIlEKEURlbGV0ZVBvb2xSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIRCglwb29sX25hbWUYAyABKAkiPgoRTGlzdEltYWdlc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJIkIKEkxpc3RJbWFnZXNSZXNwb25zZRIsCgZpbWFnZXMYASADKAsyHC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuSW1hZ2UidAoSQ3JlYXRlSW1hZ2VSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIRCglwb29sX25hbWUYAyABKAkSEgoKaW1hZ2VfbmFtZRgEIAEoCRIMCgRzaXplGAsgASgJInQKElVwZGF0ZUltYWdlUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEQoJcG9vbF9uYW1lGAMgASgJEhIKCmltYWdlX25hbWUYBCABKAkSDAoEc2l6ZRgLIAEoCSJmChJEZWxldGVJbWFnZVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhEKCXBvb2xfbmFtZRgDIAEoCRISCgppbWFnZV9uYW1lGAQgASgJIoUBChpDcmVhdGVJbWFnZVNuYXBzaG90UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEQoJcG9vbF9uYW1lGAMgASgJEhIKCmltYWdlX25hbWUYBCABKAkSFQoNc25hcHNob3RfbmFtZRgFIAEoCSKFAQoaRGVsZXRlSW1hZ2VTbmFwc2hvdFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhEKCXBvb2xfbmFtZRgDIAEoCRISCgppbWFnZV9uYW1lGAQgASgJEhUKDXNuYXBzaG90X25hbWUYBSABKAkiPwoSTGlzdFZvbHVtZXNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCSJFChNMaXN0Vm9sdW1lc1Jlc3BvbnNlEi4KB3ZvbHVtZXMYASADKAsyHS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVm9sdW1lImsKFUxpc3RTdWJ2b2x1bWVzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLdm9sdW1lX25hbWUYAyABKAkSEgoKZ3JvdXBfbmFtZRgEIAEoCSJOChZMaXN0U3Vidm9sdW1lc1Jlc3BvbnNlEjQKCnN1YnZvbHVtZXMYASADKAsyIC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuU3Vidm9sdW1lIqIBChZDcmVhdGVTdWJ2b2x1bWVSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRITCgt2b2x1bWVfbmFtZRgDIAEoCRISCgpncm91cF9uYW1lGAQgASgJEhYKDnN1YnZvbHVtZV9uYW1lGAUgASgJEgwKBHNpemUYCyABKAkSDgoGZXhwb3J0GGUgASgIIpIBChZVcGRhdGVTdWJ2b2x1bWVSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRITCgt2b2x1bWVfbmFtZRgDIAEoCRISCgpncm91cF9uYW1lGAQgASgJEhYKDnN1YnZvbHVtZV9uYW1lGAUgASgJEgwKBHNpemUYCyABKAkihAEKFkRlbGV0ZVN1YnZvbHVtZVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhMKC3ZvbHVtZV9uYW1lGAMgASgJEhIKCmdyb3VwX25hbWUYBCABKAkSFgoOc3Vidm9sdW1lX25hbWUYBSABKAkitwEKIUdyYW50U3Vidm9sdW1lRXhwb3J0QWNjZXNzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLdm9sdW1lX25hbWUYAyABKAkSFgoOc3Vidm9sdW1lX25hbWUYBCABKAkSEgoKZ3JvdXBfbmFtZRgFIAEoCRITCgtleHBvcnRfbmFtZRgGIAEoCRIRCgljbGllbnRfaXAYCyABKAkiuAEKIlJldm9rZVN1YnZvbHVtZUV4cG9ydEFjY2Vzc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhMKC3ZvbHVtZV9uYW1lGAMgASgJEhYKDnN1YnZvbHVtZV9uYW1lGAQgASgJEhIKCmdyb3VwX25hbWUYBSABKAkSEwoLZXhwb3J0X25hbWUYBiABKAkSEQoJY2xpZW50X2lwGAsgASgJIqMBCh5DcmVhdGVTdWJ2b2x1bWVTbmFwc2hvdFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhMKC3ZvbHVtZV9uYW1lGAMgASgJEhYKDnN1YnZvbHVtZV9uYW1lGAQgASgJEhIKCmdyb3VwX25hbWUYBSABKAkSFQoNc25hcHNob3RfbmFtZRgGIAEoCSKjAQoeRGVsZXRlU3Vidm9sdW1lU25hcHNob3RSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRITCgt2b2x1bWVfbmFtZRgDIAEoCRIWCg5zdWJ2b2x1bWVfbmFtZRgEIAEoCRISCgpncm91cF9uYW1lGAUgASgJEhUKDXNuYXBzaG90X25hbWUYBiABKAkiXAoaTGlzdFN1YnZvbHVtZUdyb3Vwc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhMKC3ZvbHVtZV9uYW1lGAMgASgJIl4KG0xpc3RTdWJ2b2x1bWVHcm91cHNSZXNwb25zZRI/ChBzdWJ2b2x1bWVfZ3JvdXBzGAEgAygLMiUub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlN1YnZvbHVtZUdyb3VwIn8KG0NyZWF0ZVN1YnZvbHVtZUdyb3VwUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLdm9sdW1lX25hbWUYAyABKAkSEgoKZ3JvdXBfbmFtZRgEIAEoCRIMCgRzaXplGAsgASgJIn8KG1VwZGF0ZVN1YnZvbHVtZUdyb3VwUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLdm9sdW1lX25hbWUYAyABKAkSEgoKZ3JvdXBfbmFtZRgEIAEoCRIMCgRzaXplGAsgASgJInEKG0RlbGV0ZVN1YnZvbHVtZUdyb3VwUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLdm9sdW1lX25hbWUYAyABKAkSEgoKZ3JvdXBfbmFtZRgEIAEoCSI/ChJMaXN0QnVja2V0c1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJIkUKE0xpc3RCdWNrZXRzUmVzcG9uc2USLgoHYnVja2V0cxgBIAMoCzIdLm90dGVyc2NhbGUuc3RvcmFnZS52MS5CdWNrZXQiZAoTQ3JlYXRlQnVja2V0UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLYnVja2V0X25hbWUYAyABKAkSDQoFb3duZXIYCyABKAkiZAoTVXBkYXRlQnVja2V0UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLYnVja2V0X25hbWUYAyABKAkSDQoFb3duZXIYCyABKAkiVQoTRGVsZXRlQnVja2V0UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLYnVja2V0X25hbWUYAyABKAkiPQoQTGlzdFVzZXJzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkiPwoRTGlzdFVzZXJzUmVzcG9uc2USKgoFdXNlcnMYASADKAsyGy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVXNlciJ1ChFDcmVhdGVVc2VyUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSDwoHdXNlcl9pZBgDIAEoCRIRCgl1c2VyX25hbWUYCyABKAkSEQoJc3VzcGVuZGVkGAwgASgJInUKEVVwZGF0ZVVzZXJSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIPCgd1c2VyX2lkGAMgASgJEhEKCXVzZXJfbmFtZRgLIAEoCRIRCglzdXNwZW5kZWQYDCABKAkiTwoRRGVsZXRlVXNlclJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEg8KB3VzZXJfaWQYAyABKAkiVAoWQ3JlYXRlVXNlclMzS2V5UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSDwoHdXNlcl9pZBgDIAEoCSJoChZEZWxldGVVc2VyUzNLZXlSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIPCgd1c2VyX2lkGAMgASgJEhIKCmFjY2Vzc19rZXkYBCABKAkyzhsKDlN0b3JhZ2VTZXJ2aWNlElsKCExpc3RNT05zEiYub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RNT05zUmVxdWVzdBonLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0TU9Oc1Jlc3BvbnNlElsKCExpc3RPU0RzEiYub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RPU0RzUmVxdWVzdBonLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0T1NEc1Jlc3BvbnNlEmEKCkRvT1NEU01BUlQSKC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRG9PU0RTTUFSVFJlcXVlc3QaKS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRG9PU0RTTUFSVFJlc3BvbnNlEl4KCUxpc3RQb29scxInLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0UG9vbHNSZXF1ZXN0Gigub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RQb29sc1Jlc3BvbnNlElMKCkNyZWF0ZVBvb2wSKC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuQ3JlYXRlUG9vbFJlcXVlc3QaGy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuUG9vbBJTCgpVcGRhdGVQb29sEigub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlVwZGF0ZVBvb2xSZXF1ZXN0Ghsub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlBvb2wSTgoKRGVsZXRlUG9vbBIoLm90dGVyc2NhbGUuc3RvcmFnZS52MS5EZWxldGVQb29sUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJhCgpMaXN0SW1hZ2VzEigub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RJbWFnZXNSZXF1ZXN0Gikub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RJbWFnZXNSZXNwb25zZRJWCgtDcmVhdGVJbWFnZRIpLm90dGVyc2NhbGUuc3RvcmFnZS52MS5DcmVhdGVJbWFnZVJlcXVlc3QaHC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuSW1hZ2USVgoLVXBkYXRlSW1hZ2USKS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVXBkYXRlSW1hZ2VSZXF1ZXN0Ghwub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkltYWdlElAKC0RlbGV0ZUltYWdlEikub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkRlbGV0ZUltYWdlUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJvChNDcmVhdGVJbWFnZVNuYXBzaG90EjEub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkNyZWF0ZUltYWdlU25hcHNob3RSZXF1ZXN0GiUub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkltYWdlLlNuYXBzaG90EmAKE0RlbGV0ZUltYWdlU25hcHNob3QSMS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRGVsZXRlSW1hZ2VTbmFwc2hvdFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSZAoLTGlzdFZvbHVtZXMSKS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdFZvbHVtZXNSZXF1ZXN0Gioub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RWb2x1bWVzUmVzcG9uc2USbQoOTGlzdFN1YnZvbHVtZXMSLC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdFN1YnZvbHVtZXNSZXF1ZXN0Gi0ub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RTdWJ2b2x1bWVzUmVzcG9uc2USYgoPQ3JlYXRlU3Vidm9sdW1lEi0ub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkNyZWF0ZVN1YnZvbHVtZVJlcXVlc3QaIC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuU3Vidm9sdW1lEmIKD1VwZGF0ZVN1YnZvbHVtZRItLm90dGVyc2NhbGUuc3RvcmFnZS52MS5VcGRhdGVTdWJ2b2x1bWVSZXF1ZXN0GiAub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlN1YnZvbHVtZRJYCg9EZWxldGVTdWJ2b2x1bWUSLS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRGVsZXRlU3Vidm9sdW1lUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJuChpHcmFudFN1YnZvbHVtZUV4cG9ydEFjY2VzcxI4Lm90dGVyc2NhbGUuc3RvcmFnZS52MS5HcmFudFN1YnZvbHVtZUV4cG9ydEFjY2Vzc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkScAobUmV2b2tlU3Vidm9sdW1lRXhwb3J0QWNjZXNzEjkub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlJldm9rZVN1YnZvbHVtZUV4cG9ydEFjY2Vzc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSewoXQ3JlYXRlU3Vidm9sdW1lU25hcHNob3QSNS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuQ3JlYXRlU3Vidm9sdW1lU25hcHNob3RSZXF1ZXN0Gikub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlN1YnZvbHVtZS5TbmFwc2hvdBJoChdEZWxldGVTdWJ2b2x1bWVTbmFwc2hvdBI1Lm90dGVyc2NhbGUuc3RvcmFnZS52MS5EZWxldGVTdWJ2b2x1bWVTbmFwc2hvdFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSfAoTTGlzdFN1YnZvbHVtZUdyb3VwcxIxLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0U3Vidm9sdW1lR3JvdXBzUmVxdWVzdBoyLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0U3Vidm9sdW1lR3JvdXBzUmVzcG9uc2UScQoUQ3JlYXRlU3Vidm9sdW1lR3JvdXASMi5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuQ3JlYXRlU3Vidm9sdW1lR3JvdXBSZXF1ZXN0GiUub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlN1YnZvbHVtZUdyb3VwEnEKFFVwZGF0ZVN1YnZvbHVtZUdyb3VwEjIub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlVwZGF0ZVN1YnZvbHVtZUdyb3VwUmVxdWVzdBolLm90dGVyc2NhbGUuc3RvcmFnZS52MS5TdWJ2b2x1bWVHcm91cBJiChREZWxldGVTdWJ2b2x1bWVHcm91cBIyLm90dGVyc2NhbGUuc3RvcmFnZS52MS5EZWxldGVTdWJ2b2x1bWVHcm91cFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSZAoLTGlzdEJ1Y2tldHMSKS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdEJ1Y2tldHNSZXF1ZXN0Gioub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RCdWNrZXRzUmVzcG9uc2USWQoMQ3JlYXRlQnVja2V0Eioub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkNyZWF0ZUJ1Y2tldFJlcXVlc3QaHS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuQnVja2V0ElkKDFVwZGF0ZUJ1Y2tldBIqLm90dGVyc2NhbGUuc3RvcmFnZS52MS5VcGRhdGVCdWNrZXRSZXF1ZXN0Gh0ub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkJ1Y2tldBJSCgxEZWxldGVCdWNrZXQSKi5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRGVsZXRlQnVja2V0UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJeCglMaXN0VXNlcnMSJy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdFVzZXJzUmVxdWVzdBooLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0VXNlcnNSZXNwb25zZRJTCgpDcmVhdGVVc2VyEigub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkNyZWF0ZVVzZXJSZXF1ZXN0Ghsub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlVzZXISUwoKVXBkYXRlVXNlchIoLm90dGVyc2NhbGUuc3RvcmFnZS52MS5VcGRhdGVVc2VyUmVxdWVzdBobLm90dGVyc2NhbGUuc3RvcmFnZS52MS5Vc2VyEk4KCkRlbGV0ZVVzZXISKC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRGVsZXRlVXNlclJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSYQoPQ3JlYXRlVXNlclMzS2V5Ei0ub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkNyZWF0ZVVzZXJTM0tleVJlcXVlc3QaHy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVXNlci5LZXkSWAoPRGVsZXRlVXNlclMzS2V5Ei0ub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkRlbGV0ZVVzZXJTM0tleVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHlCMVovZ2l0aHViLmNvbS9vcGVuaGRjL290dGVyc2NhbGUvYXBpL3N0b3JhZ2UvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty]);
+  fileDesc("ChxhcGkvc3RvcmFnZS92MS9zdG9yYWdlLnByb3RvEhVvdHRlcnNjYWxlLnN0b3JhZ2UudjEiEwoDTU9OEgwKBG5hbWUYASABKAkiEwoDT1NEEgwKBG5hbWUYASABKAkiFAoEUG9vbBIMCgRuYW1lGAEgASgJIrACCgVJbWFnZRIMCgRuYW1lGAEgASgJEhIKCnNpemVfYnl0ZXMYAiABKAQSGQoRb2JqZWN0X3NpemVfYnl0ZXMYFSABKAQSGQoRc3RyaXBlX3VuaXRfYnl0ZXMYFiABKAQSFAoMc3RyaXBlX2NvdW50GBcgASgEEhAKCGxheWVyaW5nGB8gASgIEhYKDmV4Y2x1c2l2ZV9sb2NrGCAgASgIEhIKCm9iamVjdF9tYXAYISABKAgSEQoJZmFzdF9kaWZmGCIgASgIEhQKDGRlZXBfZmxhdHRlbhgjIAEoCBI4CglzbmFwc2hvdHMYZSADKAsyJS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuSW1hZ2UuU25hcHNob3QaGAoIU25hcHNob3QSDAoEbmFtZRgBIAEoCSIWCgZWb2x1bWUSDAoEbmFtZRgBIAEoCSLwAQoJU3Vidm9sdW1lEgwKBG5hbWUYASABKAkSNwoGZXhwb3J0GDMgASgLMicub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlN1YnZvbHVtZS5FeHBvcnQSPAoJc25hcHNob3RzGGUgAygLMikub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlN1YnZvbHVtZS5TbmFwc2hvdBoYCghTbmFwc2hvdBIMCgRuYW1lGAEgASgJGkQKBkV4cG9ydBIKCgJpcBgBIAEoCRIMCgRwYXRoGAIgASgJEg8KB2NsaWVudHMYAyADKAkSDwoHY29tbWFuZBgLIAEoCSIeCg5TdWJ2b2x1bWVHcm91cBIMCgRuYW1lGAEgASgJIqkBCgZCdWNrZXQSDAoEbmFtZRgBIAEoCRINCgVvd25lchgCIAEoCRIuCgNhY2wYAyABKA4yIS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuQnVja2V0LkFDTCJSCgNBQ0wSCwoHUFJJVkFURRAAEg8KC1BVQkxJQ19SRUFEEAESFQoRUFVCTElDX1JFQURfV1JJVEUQAhIWChJBVVRIRU5USUNBVEVEX1JFQUQQAyIUCgRSb2xlEgwKBG5hbWUYASABKAkiKQoEVXNlchIMCgRuYW1lGAEgASgJGhMKA0tleRIMCgR0eXBlGAEgASgJIjwKD0xpc3RNT05zUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkiPAoQTGlzdE1PTnNSZXNwb25zZRIoCgRtb25zGAEgAygLMhoub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLk1PTiI8Cg9MaXN0T1NEc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJIjwKEExpc3RPU0RzUmVzcG9uc2USKAoEb3NkcxgBIAMoCzIaLm90dGVyc2NhbGUuc3RvcmFnZS52MS5PU0QiTQoORG9TTUFSVFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhAKCG9zZF9uYW1lGAMgASgJIukBCg9Eb1NNQVJUUmVzcG9uc2USVgoRZGV2aWNlX291dHB1dF9tYXAYASADKAsyOy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRG9TTUFSVFJlc3BvbnNlLkRldmljZU91dHB1dE1hcEVudHJ5GhcKBk91dHB1dBINCgVsaW5lcxgBIAMoCRplChREZXZpY2VPdXRwdXRNYXBFbnRyeRILCgNrZXkYASABKAkSPAoFdmFsdWUYAiABKAsyLS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRG9TTUFSVFJlc3BvbnNlLk91dHB1dDoCOAEidgoQTGlzdFBvb2xzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSNwoLYXBwbGljYXRpb24YCyABKA4yIi5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuQXBwbGljYXRpb24iPwoRTGlzdFBvb2xzUmVzcG9uc2USKgoFcG9vbHMYASADKAsyGy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuUG9vbCLnAgoRQ3JlYXRlUG9vbFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhEKCXBvb2xfbmFtZRgDIAEoCRJACglwb29sX3R5cGUYCyABKA4yLS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuQ3JlYXRlUG9vbFJlcXVlc3QuVHlwZRIVCg1lY19vdmVyd3JpdGVzGBUgASgIEhcKD3JlcGxpY2F0ZWRfc2l6ZRgfIAEoDRIXCg9xdW90YV9tYXhfYnl0ZXMYKSABKAQSGQoRcXVvdGFfbWF4X29iamVjdHMYKiABKAQSOAoMYXBwbGljYXRpb25zGD0gAygOMiIub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkFwcGxpY2F0aW9uIjQKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABILCgdFUkFTVVJFEAESDgoKUkVQTElDQVRFRBACIoUBChFVcGRhdGVQb29sUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEQoJcG9vbF9uYW1lGAMgASgJEhcKD3F1b3RhX21heF9ieXRlcxgpIAEoBBIZChFxdW90YV9tYXhfb2JqZWN0cxgqIAEoBCJRChFEZWxldGVQb29sUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEQoJcG9vbF9uYW1lGAMgASgJIj4KEUxpc3RJbWFnZXNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCSJCChJMaXN0SW1hZ2VzUmVzcG9uc2USLAoGaW1hZ2VzGAEgAygLMhwub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkltYWdlIq0CChJDcmVhdGVJbWFnZVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhEKCXBvb2xfbmFtZRgDIAEoCRISCgppbWFnZV9uYW1lGAQgASgJEhkKEW9iamVjdF9zaXplX2J5dGVzGAsgASgEEhkKEXN0cmlwZV91bml0X2J5dGVzGAwgASgEEhQKDHN0cmlwZV9jb3VudBgNIAEoBBISCgpzaXplX2J5dGVzGBUgASgEEhAKCGxheWVyaW5nGB8gASgIEhYKDmV4Y2x1c2l2ZV9sb2NrGCAgASgIEhIKCm9iamVjdF9tYXAYISABKAgSEQoJZmFzdF9kaWZmGCIgASgIEhQKDGRlZXBfZmxhdHRlbhgjIAEoCCJ6ChJVcGRhdGVJbWFnZVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhEKCXBvb2xfbmFtZRgDIAEoCRISCgppbWFnZV9uYW1lGAQgASgJEhIKCnNpemVfYnl0ZXMYCyABKAQiZgoSRGVsZXRlSW1hZ2VSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIRCglwb29sX25hbWUYAyABKAkSEgoKaW1hZ2VfbmFtZRgEIAEoCSKFAQoaQ3JlYXRlSW1hZ2VTbmFwc2hvdFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhEKCXBvb2xfbmFtZRgDIAEoCRISCgppbWFnZV9uYW1lGAQgASgJEhUKDXNuYXBzaG90X25hbWUYBSABKAkihQEKGkRlbGV0ZUltYWdlU25hcHNob3RSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIRCglwb29sX25hbWUYAyABKAkSEgoKaW1hZ2VfbmFtZRgEIAEoCRIVCg1zbmFwc2hvdF9uYW1lGAUgASgJIocBChxSb2xsYmFja0ltYWdlU25hcHNob3RSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIRCglwb29sX25hbWUYAyABKAkSEgoKaW1hZ2VfbmFtZRgEIAEoCRIVCg1zbmFwc2hvdF9uYW1lGAUgASgJIoYBChtQcm90ZWN0SW1hZ2VTbmFwc2hvdFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhEKCXBvb2xfbmFtZRgDIAEoCRISCgppbWFnZV9uYW1lGAQgASgJEhUKDXNuYXBzaG90X25hbWUYBSABKAkiiAEKHVVucHJvdGVjdEltYWdlU25hcHNob3RSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIRCglwb29sX25hbWUYAyABKAkSEgoKaW1hZ2VfbmFtZRgEIAEoCRIVCg1zbmFwc2hvdF9uYW1lGAUgASgJIj8KEkxpc3RWb2x1bWVzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkiRQoTTGlzdFZvbHVtZXNSZXNwb25zZRIuCgd2b2x1bWVzGAEgAygLMh0ub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlZvbHVtZSJrChVMaXN0U3Vidm9sdW1lc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhMKC3ZvbHVtZV9uYW1lGAMgASgJEhIKCmdyb3VwX25hbWUYBCABKAkiTgoWTGlzdFN1YnZvbHVtZXNSZXNwb25zZRI0CgpzdWJ2b2x1bWVzGAEgAygLMiAub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlN1YnZvbHVtZSKoAQoWQ3JlYXRlU3Vidm9sdW1lUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLdm9sdW1lX25hbWUYAyABKAkSEgoKZ3JvdXBfbmFtZRgEIAEoCRIWCg5zdWJ2b2x1bWVfbmFtZRgFIAEoCRISCgpzaXplX2J5dGVzGAsgASgEEg4KBmV4cG9ydBhlIAEoCCKYAQoWVXBkYXRlU3Vidm9sdW1lUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLdm9sdW1lX25hbWUYAyABKAkSEgoKZ3JvdXBfbmFtZRgEIAEoCRIWCg5zdWJ2b2x1bWVfbmFtZRgFIAEoCRISCgpzaXplX2J5dGVzGAsgASgEIoQBChZEZWxldGVTdWJ2b2x1bWVSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRITCgt2b2x1bWVfbmFtZRgDIAEoCRISCgpncm91cF9uYW1lGAQgASgJEhYKDnN1YnZvbHVtZV9uYW1lGAUgASgJIo4BCiFHcmFudFN1YnZvbHVtZUV4cG9ydEFjY2Vzc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhMKC3ZvbHVtZV9uYW1lGAMgASgJEhYKDnN1YnZvbHVtZV9uYW1lGAQgASgJEhEKCWNsaWVudF9pcBgLIAEoCSKPAQoiUmV2b2tlU3Vidm9sdW1lRXhwb3J0QWNjZXNzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLdm9sdW1lX25hbWUYAyABKAkSFgoOc3Vidm9sdW1lX25hbWUYBCABKAkSEQoJY2xpZW50X2lwGAsgASgJIqMBCh5DcmVhdGVTdWJ2b2x1bWVTbmFwc2hvdFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhMKC3ZvbHVtZV9uYW1lGAMgASgJEhYKDnN1YnZvbHVtZV9uYW1lGAQgASgJEhIKCmdyb3VwX25hbWUYBSABKAkSFQoNc25hcHNob3RfbmFtZRgGIAEoCSKjAQoeRGVsZXRlU3Vidm9sdW1lU25hcHNob3RSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRITCgt2b2x1bWVfbmFtZRgDIAEoCRIWCg5zdWJ2b2x1bWVfbmFtZRgEIAEoCRISCgpncm91cF9uYW1lGAUgASgJEhUKDXNuYXBzaG90X25hbWUYBiABKAkiXAoaTGlzdFN1YnZvbHVtZUdyb3Vwc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhMKC3ZvbHVtZV9uYW1lGAMgASgJIl4KG0xpc3RTdWJ2b2x1bWVHcm91cHNSZXNwb25zZRI/ChBzdWJ2b2x1bWVfZ3JvdXBzGAEgAygLMiUub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlN1YnZvbHVtZUdyb3VwIoUBChtDcmVhdGVTdWJ2b2x1bWVHcm91cFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEhMKC3ZvbHVtZV9uYW1lGAMgASgJEhIKCmdyb3VwX25hbWUYBCABKAkSEgoKc2l6ZV9ieXRlcxgLIAEoBCKFAQobVXBkYXRlU3Vidm9sdW1lR3JvdXBSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRITCgt2b2x1bWVfbmFtZRgDIAEoCRISCgpncm91cF9uYW1lGAQgASgJEhIKCnNpemVfYnl0ZXMYCyABKAQicQobRGVsZXRlU3Vidm9sdW1lR3JvdXBSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRITCgt2b2x1bWVfbmFtZRgDIAEoCRISCgpncm91cF9uYW1lGAQgASgJIj8KEkxpc3RCdWNrZXRzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkiRQoTTGlzdEJ1Y2tldHNSZXNwb25zZRIuCgdidWNrZXRzGAEgAygLMh0ub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkJ1Y2tldCKkAQoTQ3JlYXRlQnVja2V0UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLYnVja2V0X25hbWUYAyABKAkSDQoFb3duZXIYCyABKAkSDgoGcG9saWN5GAwgASgJEi4KA2FjbBgVIAEoDjIhLm90dGVyc2NhbGUuc3RvcmFnZS52MS5CdWNrZXQuQUNMIqQBChNVcGRhdGVCdWNrZXRSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRITCgtidWNrZXRfbmFtZRgDIAEoCRINCgVvd25lchgLIAEoCRIOCgZwb2xpY3kYDCABKAkSLgoDYWNsGBUgASgOMiEub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkJ1Y2tldC5BQ0wiVQoTRGVsZXRlQnVja2V0UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSEwoLYnVja2V0X25hbWUYAyABKAkiPQoQTGlzdFVzZXJzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkiPwoRTGlzdFVzZXJzUmVzcG9uc2USKgoFdXNlcnMYASADKAsyGy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVXNlciJ1ChFDcmVhdGVVc2VyUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSDwoHdXNlcl9pZBgDIAEoCRIRCgl1c2VyX25hbWUYCyABKAkSEQoJc3VzcGVuZGVkGAwgASgIInUKEVVwZGF0ZVVzZXJSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCRIPCgd1c2VyX2lkGAMgASgJEhEKCXVzZXJfbmFtZRgLIAEoCRIRCglzdXNwZW5kZWQYDCABKAgiTwoRRGVsZXRlVXNlclJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEg8KB3VzZXJfaWQYAyABKAkiUgoUQ3JlYXRlVXNlcktleVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEg8KB3VzZXJfaWQYAyABKAkiZgoURGVsZXRlVXNlcktleVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJEg8KB3VzZXJfaWQYAyABKAkSEgoKYWNjZXNzX2tleRgEIAEoCSo8CgtBcHBsaWNhdGlvbhIPCgtVTlNQRUNJRklFRBAAEgcKA1JCRBABEgoKBkNlcGhGUxACEgcKA1JHVxADMu8dCg5TdG9yYWdlU2VydmljZRJbCghMaXN0TU9OcxImLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0TU9Oc1JlcXVlc3QaJy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdE1PTnNSZXNwb25zZRJbCghMaXN0T1NEcxImLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0T1NEc1JlcXVlc3QaJy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdE9TRHNSZXNwb25zZRJYCgdEb1NNQVJUEiUub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkRvU01BUlRSZXF1ZXN0GiYub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkRvU01BUlRSZXNwb25zZRJeCglMaXN0UG9vbHMSJy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdFBvb2xzUmVxdWVzdBooLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0UG9vbHNSZXNwb25zZRJTCgpDcmVhdGVQb29sEigub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkNyZWF0ZVBvb2xSZXF1ZXN0Ghsub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlBvb2wSUwoKVXBkYXRlUG9vbBIoLm90dGVyc2NhbGUuc3RvcmFnZS52MS5VcGRhdGVQb29sUmVxdWVzdBobLm90dGVyc2NhbGUuc3RvcmFnZS52MS5Qb29sEk4KCkRlbGV0ZVBvb2wSKC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRGVsZXRlUG9vbFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSYQoKTGlzdEltYWdlcxIoLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0SW1hZ2VzUmVxdWVzdBopLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0SW1hZ2VzUmVzcG9uc2USVgoLQ3JlYXRlSW1hZ2USKS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuQ3JlYXRlSW1hZ2VSZXF1ZXN0Ghwub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkltYWdlElYKC1VwZGF0ZUltYWdlEikub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlVwZGF0ZUltYWdlUmVxdWVzdBocLm90dGVyc2NhbGUuc3RvcmFnZS52MS5JbWFnZRJQCgtEZWxldGVJbWFnZRIpLm90dGVyc2NhbGUuc3RvcmFnZS52MS5EZWxldGVJbWFnZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSbwoTQ3JlYXRlSW1hZ2VTbmFwc2hvdBIxLm90dGVyc2NhbGUuc3RvcmFnZS52MS5DcmVhdGVJbWFnZVNuYXBzaG90UmVxdWVzdBolLm90dGVyc2NhbGUuc3RvcmFnZS52MS5JbWFnZS5TbmFwc2hvdBJgChNEZWxldGVJbWFnZVNuYXBzaG90EjEub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkRlbGV0ZUltYWdlU25hcHNob3RSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmQKFVJvbGxiYWNrSW1hZ2VTbmFwc2hvdBIzLm90dGVyc2NhbGUuc3RvcmFnZS52MS5Sb2xsYmFja0ltYWdlU25hcHNob3RSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmIKFFByb3RlY3RJbWFnZVNuYXBzaG90EjIub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlByb3RlY3RJbWFnZVNuYXBzaG90UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJmChZVbnByb3RlY3RJbWFnZVNuYXBzaG90EjQub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlVucHJvdGVjdEltYWdlU25hcHNob3RSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmQKC0xpc3RWb2x1bWVzEikub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RWb2x1bWVzUmVxdWVzdBoqLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0Vm9sdW1lc1Jlc3BvbnNlEm0KDkxpc3RTdWJ2b2x1bWVzEiwub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RTdWJ2b2x1bWVzUmVxdWVzdBotLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0U3Vidm9sdW1lc1Jlc3BvbnNlEmIKD0NyZWF0ZVN1YnZvbHVtZRItLm90dGVyc2NhbGUuc3RvcmFnZS52MS5DcmVhdGVTdWJ2b2x1bWVSZXF1ZXN0GiAub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLlN1YnZvbHVtZRJiCg9VcGRhdGVTdWJ2b2x1bWUSLS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVXBkYXRlU3Vidm9sdW1lUmVxdWVzdBogLm90dGVyc2NhbGUuc3RvcmFnZS52MS5TdWJ2b2x1bWUSWAoPRGVsZXRlU3Vidm9sdW1lEi0ub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkRlbGV0ZVN1YnZvbHVtZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSbgoaR3JhbnRTdWJ2b2x1bWVFeHBvcnRBY2Nlc3MSOC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuR3JhbnRTdWJ2b2x1bWVFeHBvcnRBY2Nlc3NSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EnAKG1Jldm9rZVN1YnZvbHVtZUV4cG9ydEFjY2VzcxI5Lm90dGVyc2NhbGUuc3RvcmFnZS52MS5SZXZva2VTdWJ2b2x1bWVFeHBvcnRBY2Nlc3NSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EnsKF0NyZWF0ZVN1YnZvbHVtZVNuYXBzaG90EjUub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkNyZWF0ZVN1YnZvbHVtZVNuYXBzaG90UmVxdWVzdBopLm90dGVyc2NhbGUuc3RvcmFnZS52MS5TdWJ2b2x1bWUuU25hcHNob3QSaAoXRGVsZXRlU3Vidm9sdW1lU25hcHNob3QSNS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRGVsZXRlU3Vidm9sdW1lU25hcHNob3RSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EnwKE0xpc3RTdWJ2b2x1bWVHcm91cHMSMS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdFN1YnZvbHVtZUdyb3Vwc1JlcXVlc3QaMi5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdFN1YnZvbHVtZUdyb3Vwc1Jlc3BvbnNlEnEKFENyZWF0ZVN1YnZvbHVtZUdyb3VwEjIub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkNyZWF0ZVN1YnZvbHVtZUdyb3VwUmVxdWVzdBolLm90dGVyc2NhbGUuc3RvcmFnZS52MS5TdWJ2b2x1bWVHcm91cBJxChRVcGRhdGVTdWJ2b2x1bWVHcm91cBIyLm90dGVyc2NhbGUuc3RvcmFnZS52MS5VcGRhdGVTdWJ2b2x1bWVHcm91cFJlcXVlc3QaJS5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuU3Vidm9sdW1lR3JvdXASYgoURGVsZXRlU3Vidm9sdW1lR3JvdXASMi5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuRGVsZXRlU3Vidm9sdW1lR3JvdXBSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmQKC0xpc3RCdWNrZXRzEikub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RCdWNrZXRzUmVxdWVzdBoqLm90dGVyc2NhbGUuc3RvcmFnZS52MS5MaXN0QnVja2V0c1Jlc3BvbnNlElkKDENyZWF0ZUJ1Y2tldBIqLm90dGVyc2NhbGUuc3RvcmFnZS52MS5DcmVhdGVCdWNrZXRSZXF1ZXN0Gh0ub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkJ1Y2tldBJZCgxVcGRhdGVCdWNrZXQSKi5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVXBkYXRlQnVja2V0UmVxdWVzdBodLm90dGVyc2NhbGUuc3RvcmFnZS52MS5CdWNrZXQSUgoMRGVsZXRlQnVja2V0Eioub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkRlbGV0ZUJ1Y2tldFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSXgoJTGlzdFVzZXJzEicub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkxpc3RVc2Vyc1JlcXVlc3QaKC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuTGlzdFVzZXJzUmVzcG9uc2USUwoKQ3JlYXRlVXNlchIoLm90dGVyc2NhbGUuc3RvcmFnZS52MS5DcmVhdGVVc2VyUmVxdWVzdBobLm90dGVyc2NhbGUuc3RvcmFnZS52MS5Vc2VyElMKClVwZGF0ZVVzZXISKC5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVXBkYXRlVXNlclJlcXVlc3QaGy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVXNlchJOCgpEZWxldGVVc2VyEigub3R0ZXJzY2FsZS5zdG9yYWdlLnYxLkRlbGV0ZVVzZXJSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5El0KDUNyZWF0ZVVzZXJLZXkSKy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuQ3JlYXRlVXNlcktleVJlcXVlc3QaHy5vdHRlcnNjYWxlLnN0b3JhZ2UudjEuVXNlci5LZXkSVAoNRGVsZXRlVXNlcktleRIrLm90dGVyc2NhbGUuc3RvcmFnZS52MS5EZWxldGVVc2VyS2V5UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUIxWi9naXRodWIuY29tL29wZW5oZGMvb3R0ZXJzY2FsZS9hcGkvc3RvcmFnZS92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty]);
 
 /**
  * @generated from message otterscale.storage.v1.MON
@@ -73,6 +73,51 @@ export type Image = Message<"otterscale.storage.v1.Image"> & {
    * @generated from field: string name = 1;
    */
   name: string;
+
+  /**
+   * @generated from field: uint64 size_bytes = 2;
+   */
+  sizeBytes: bigint;
+
+  /**
+   * @generated from field: uint64 object_size_bytes = 21;
+   */
+  objectSizeBytes: bigint;
+
+  /**
+   * @generated from field: uint64 stripe_unit_bytes = 22;
+   */
+  stripeUnitBytes: bigint;
+
+  /**
+   * @generated from field: uint64 stripe_count = 23;
+   */
+  stripeCount: bigint;
+
+  /**
+   * @generated from field: bool layering = 31;
+   */
+  layering: boolean;
+
+  /**
+   * @generated from field: bool exclusive_lock = 32;
+   */
+  exclusiveLock: boolean;
+
+  /**
+   * @generated from field: bool object_map = 33;
+   */
+  objectMap: boolean;
+
+  /**
+   * @generated from field: bool fast_diff = 34;
+   */
+  fastDiff: boolean;
+
+  /**
+   * @generated from field: bool deep_flatten = 35;
+   */
+  deepFlatten: boolean;
 
   /**
    * @generated from field: repeated otterscale.storage.v1.Image.Snapshot snapshots = 101;
@@ -170,24 +215,24 @@ export const Subvolume_SnapshotSchema: GenMessage<Subvolume_Snapshot> = /*@__PUR
  */
 export type Subvolume_Export = Message<"otterscale.storage.v1.Subvolume.Export"> & {
   /**
-   * @generated from field: string path = 1;
+   * @generated from field: string ip = 1;
+   */
+  ip: string;
+
+  /**
+   * @generated from field: string path = 2;
    */
   path: string;
 
   /**
-   * @generated from field: string command = 2;
+   * @generated from field: repeated string clients = 3;
+   */
+  clients: string[];
+
+  /**
+   * @generated from field: string command = 11;
    */
   command: string;
-
-  /**
-   * @generated from field: string squash = 3;
-   */
-  squash: string;
-
-  /**
-   * @generated from field: repeated otterscale.storage.v1.Subvolume.Export.Client clients = 11;
-   */
-  clients: Subvolume_Export_Client[];
 };
 
 /**
@@ -196,28 +241,6 @@ export type Subvolume_Export = Message<"otterscale.storage.v1.Subvolume.Export">
  */
 export const Subvolume_ExportSchema: GenMessage<Subvolume_Export> = /*@__PURE__*/
   messageDesc(file_api_storage_v1_storage, 5, 1);
-
-/**
- * @generated from message otterscale.storage.v1.Subvolume.Export.Client
- */
-export type Subvolume_Export_Client = Message<"otterscale.storage.v1.Subvolume.Export.Client"> & {
-  /**
-   * @generated from field: string access_type = 1;
-   */
-  accessType: string;
-
-  /**
-   * @generated from field: repeated string addresses = 2;
-   */
-  addresses: string[];
-};
-
-/**
- * Describes the message otterscale.storage.v1.Subvolume.Export.Client.
- * Use `create(Subvolume_Export_ClientSchema)` to create a new message.
- */
-export const Subvolume_Export_ClientSchema: GenMessage<Subvolume_Export_Client> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 5, 1, 0);
 
 /**
  * @generated from message otterscale.storage.v1.SubvolumeGroup
@@ -244,6 +267,16 @@ export type Bucket = Message<"otterscale.storage.v1.Bucket"> & {
    * @generated from field: string name = 1;
    */
   name: string;
+
+  /**
+   * @generated from field: string owner = 2;
+   */
+  owner: string;
+
+  /**
+   * @generated from field: otterscale.storage.v1.Bucket.ACL acl = 3;
+   */
+  acl: Bucket_ACL;
 };
 
 /**
@@ -252,6 +285,37 @@ export type Bucket = Message<"otterscale.storage.v1.Bucket"> & {
  */
 export const BucketSchema: GenMessage<Bucket> = /*@__PURE__*/
   messageDesc(file_api_storage_v1_storage, 7);
+
+/**
+ * @generated from enum otterscale.storage.v1.Bucket.ACL
+ */
+export enum Bucket_ACL {
+  /**
+   * @generated from enum value: PRIVATE = 0;
+   */
+  PRIVATE = 0,
+
+  /**
+   * @generated from enum value: PUBLIC_READ = 1;
+   */
+  PUBLIC_READ = 1,
+
+  /**
+   * @generated from enum value: PUBLIC_READ_WRITE = 2;
+   */
+  PUBLIC_READ_WRITE = 2,
+
+  /**
+   * @generated from enum value: AUTHENTICATED_READ = 3;
+   */
+  AUTHENTICATED_READ = 3,
+}
+
+/**
+ * Describes the enum otterscale.storage.v1.Bucket.ACL.
+ */
+export const Bucket_ACLSchema: GenEnum<Bucket_ACL> = /*@__PURE__*/
+  enumDesc(file_api_storage_v1_storage, 7, 0);
 
 /**
  * @generated from message otterscale.storage.v1.Role
@@ -292,9 +356,9 @@ export const UserSchema: GenMessage<User> = /*@__PURE__*/
  */
 export type User_Key = Message<"otterscale.storage.v1.User.Key"> & {
   /**
-   * @generated from field: string name = 1;
+   * @generated from field: string type = 1;
    */
-  name: string;
+  type: string;
 };
 
 /**
@@ -383,30 +447,65 @@ export const ListOSDsResponseSchema: GenMessage<ListOSDsResponse> = /*@__PURE__*
   messageDesc(file_api_storage_v1_storage, 13);
 
 /**
- * @generated from message otterscale.storage.v1.DoOSDSMARTRequest
+ * @generated from message otterscale.storage.v1.DoSMARTRequest
  */
-export type DoOSDSMARTRequest = Message<"otterscale.storage.v1.DoOSDSMARTRequest"> & {
+export type DoSMARTRequest = Message<"otterscale.storage.v1.DoSMARTRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string facility_name = 2;
+   */
+  facilityName: string;
+
+  /**
+   * @generated from field: string osd_name = 3;
+   */
+  osdName: string;
 };
 
 /**
- * Describes the message otterscale.storage.v1.DoOSDSMARTRequest.
- * Use `create(DoOSDSMARTRequestSchema)` to create a new message.
+ * Describes the message otterscale.storage.v1.DoSMARTRequest.
+ * Use `create(DoSMARTRequestSchema)` to create a new message.
  */
-export const DoOSDSMARTRequestSchema: GenMessage<DoOSDSMARTRequest> = /*@__PURE__*/
+export const DoSMARTRequestSchema: GenMessage<DoSMARTRequest> = /*@__PURE__*/
   messageDesc(file_api_storage_v1_storage, 14);
 
 /**
- * @generated from message otterscale.storage.v1.DoOSDSMARTResponse
+ * @generated from message otterscale.storage.v1.DoSMARTResponse
  */
-export type DoOSDSMARTResponse = Message<"otterscale.storage.v1.DoOSDSMARTResponse"> & {
+export type DoSMARTResponse = Message<"otterscale.storage.v1.DoSMARTResponse"> & {
+  /**
+   * @generated from field: map<string, otterscale.storage.v1.DoSMARTResponse.Output> device_output_map = 1;
+   */
+  deviceOutputMap: { [key: string]: DoSMARTResponse_Output };
 };
 
 /**
- * Describes the message otterscale.storage.v1.DoOSDSMARTResponse.
- * Use `create(DoOSDSMARTResponseSchema)` to create a new message.
+ * Describes the message otterscale.storage.v1.DoSMARTResponse.
+ * Use `create(DoSMARTResponseSchema)` to create a new message.
  */
-export const DoOSDSMARTResponseSchema: GenMessage<DoOSDSMARTResponse> = /*@__PURE__*/
+export const DoSMARTResponseSchema: GenMessage<DoSMARTResponse> = /*@__PURE__*/
   messageDesc(file_api_storage_v1_storage, 15);
+
+/**
+ * @generated from message otterscale.storage.v1.DoSMARTResponse.Output
+ */
+export type DoSMARTResponse_Output = Message<"otterscale.storage.v1.DoSMARTResponse.Output"> & {
+  /**
+   * @generated from field: repeated string lines = 1;
+   */
+  lines: string[];
+};
+
+/**
+ * Describes the message otterscale.storage.v1.DoSMARTResponse.Output.
+ * Use `create(DoSMARTResponse_OutputSchema)` to create a new message.
+ */
+export const DoSMARTResponse_OutputSchema: GenMessage<DoSMARTResponse_Output> = /*@__PURE__*/
+  messageDesc(file_api_storage_v1_storage, 15, 0);
 
 /**
  * @generated from message otterscale.storage.v1.ListPoolsRequest
@@ -421,6 +520,11 @@ export type ListPoolsRequest = Message<"otterscale.storage.v1.ListPoolsRequest">
    * @generated from field: string facility_name = 2;
    */
   facilityName: string;
+
+  /**
+   * @generated from field: otterscale.storage.v1.Application application = 11;
+   */
+  application: Application;
 };
 
 /**
@@ -467,29 +571,38 @@ export type CreatePoolRequest = Message<"otterscale.storage.v1.CreatePoolRequest
   poolName: string;
 
   /**
-   * @generated from field: string type = 11;
+   * @generated from field: otterscale.storage.v1.CreatePoolRequest.Type pool_type = 11;
    */
-  type: string;
+  poolType: CreatePoolRequest_Type;
 
   /**
-   * @generated from field: repeated string applications = 12;
+   * erasure
+   *
+   * @generated from field: bool ec_overwrites = 21;
    */
-  applications: string[];
+  ecOverwrites: boolean;
 
   /**
-   * @generated from field: string compression_mode = 21;
+   * replicated
+   *
+   * @generated from field: uint32 replicated_size = 31;
    */
-  compressionMode: string;
+  replicatedSize: number;
 
   /**
-   * @generated from field: string quota_max_bytes = 31;
+   * @generated from field: uint64 quota_max_bytes = 41;
    */
-  quotaMaxBytes: string;
+  quotaMaxBytes: bigint;
 
   /**
-   * @generated from field: string quota_max_objects = 32;
+   * @generated from field: uint64 quota_max_objects = 42;
    */
-  quotaMaxObjects: string;
+  quotaMaxObjects: bigint;
+
+  /**
+   * @generated from field: repeated otterscale.storage.v1.Application applications = 61;
+   */
+  applications: Application[];
 };
 
 /**
@@ -498,6 +611,32 @@ export type CreatePoolRequest = Message<"otterscale.storage.v1.CreatePoolRequest
  */
 export const CreatePoolRequestSchema: GenMessage<CreatePoolRequest> = /*@__PURE__*/
   messageDesc(file_api_storage_v1_storage, 18);
+
+/**
+ * @generated from enum otterscale.storage.v1.CreatePoolRequest.Type
+ */
+export enum CreatePoolRequest_Type {
+  /**
+   * @generated from enum value: UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: ERASURE = 1;
+   */
+  ERASURE = 1,
+
+  /**
+   * @generated from enum value: REPLICATED = 2;
+   */
+  REPLICATED = 2,
+}
+
+/**
+ * Describes the enum otterscale.storage.v1.CreatePoolRequest.Type.
+ */
+export const CreatePoolRequest_TypeSchema: GenEnum<CreatePoolRequest_Type> = /*@__PURE__*/
+  enumDesc(file_api_storage_v1_storage, 18, 0);
 
 /**
  * @generated from message otterscale.storage.v1.UpdatePoolRequest
@@ -519,19 +658,14 @@ export type UpdatePoolRequest = Message<"otterscale.storage.v1.UpdatePoolRequest
   poolName: string;
 
   /**
-   * @generated from field: string compression_mode = 11;
+   * @generated from field: uint64 quota_max_bytes = 41;
    */
-  compressionMode: string;
+  quotaMaxBytes: bigint;
 
   /**
-   * @generated from field: string quota_max_bytes = 21;
+   * @generated from field: uint64 quota_max_objects = 42;
    */
-  quotaMaxBytes: string;
-
-  /**
-   * @generated from field: string quota_max_objects = 22;
-   */
-  quotaMaxObjects: string;
+  quotaMaxObjects: bigint;
 };
 
 /**
@@ -632,9 +766,49 @@ export type CreateImageRequest = Message<"otterscale.storage.v1.CreateImageReque
   imageName: string;
 
   /**
-   * @generated from field: string size = 11;
+   * @generated from field: uint64 object_size_bytes = 11;
    */
-  size: string;
+  objectSizeBytes: bigint;
+
+  /**
+   * @generated from field: uint64 stripe_unit_bytes = 12;
+   */
+  stripeUnitBytes: bigint;
+
+  /**
+   * @generated from field: uint64 stripe_count = 13;
+   */
+  stripeCount: bigint;
+
+  /**
+   * @generated from field: uint64 size_bytes = 21;
+   */
+  sizeBytes: bigint;
+
+  /**
+   * @generated from field: bool layering = 31;
+   */
+  layering: boolean;
+
+  /**
+   * @generated from field: bool exclusive_lock = 32;
+   */
+  exclusiveLock: boolean;
+
+  /**
+   * @generated from field: bool object_map = 33;
+   */
+  objectMap: boolean;
+
+  /**
+   * @generated from field: bool fast_diff = 34;
+   */
+  fastDiff: boolean;
+
+  /**
+   * @generated from field: bool deep_flatten = 35;
+   */
+  deepFlatten: boolean;
 };
 
 /**
@@ -669,9 +843,9 @@ export type UpdateImageRequest = Message<"otterscale.storage.v1.UpdateImageReque
   imageName: string;
 
   /**
-   * @generated from field: string size = 11;
+   * @generated from field: uint64 size_bytes = 11;
    */
-  size: string;
+  sizeBytes: bigint;
 };
 
 /**
@@ -788,6 +962,117 @@ export const DeleteImageSnapshotRequestSchema: GenMessage<DeleteImageSnapshotReq
   messageDesc(file_api_storage_v1_storage, 27);
 
 /**
+ * @generated from message otterscale.storage.v1.RollbackImageSnapshotRequest
+ */
+export type RollbackImageSnapshotRequest = Message<"otterscale.storage.v1.RollbackImageSnapshotRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string facility_name = 2;
+   */
+  facilityName: string;
+
+  /**
+   * @generated from field: string pool_name = 3;
+   */
+  poolName: string;
+
+  /**
+   * @generated from field: string image_name = 4;
+   */
+  imageName: string;
+
+  /**
+   * @generated from field: string snapshot_name = 5;
+   */
+  snapshotName: string;
+};
+
+/**
+ * Describes the message otterscale.storage.v1.RollbackImageSnapshotRequest.
+ * Use `create(RollbackImageSnapshotRequestSchema)` to create a new message.
+ */
+export const RollbackImageSnapshotRequestSchema: GenMessage<RollbackImageSnapshotRequest> = /*@__PURE__*/
+  messageDesc(file_api_storage_v1_storage, 28);
+
+/**
+ * @generated from message otterscale.storage.v1.ProtectImageSnapshotRequest
+ */
+export type ProtectImageSnapshotRequest = Message<"otterscale.storage.v1.ProtectImageSnapshotRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string facility_name = 2;
+   */
+  facilityName: string;
+
+  /**
+   * @generated from field: string pool_name = 3;
+   */
+  poolName: string;
+
+  /**
+   * @generated from field: string image_name = 4;
+   */
+  imageName: string;
+
+  /**
+   * @generated from field: string snapshot_name = 5;
+   */
+  snapshotName: string;
+};
+
+/**
+ * Describes the message otterscale.storage.v1.ProtectImageSnapshotRequest.
+ * Use `create(ProtectImageSnapshotRequestSchema)` to create a new message.
+ */
+export const ProtectImageSnapshotRequestSchema: GenMessage<ProtectImageSnapshotRequest> = /*@__PURE__*/
+  messageDesc(file_api_storage_v1_storage, 29);
+
+/**
+ * @generated from message otterscale.storage.v1.UnprotectImageSnapshotRequest
+ */
+export type UnprotectImageSnapshotRequest = Message<"otterscale.storage.v1.UnprotectImageSnapshotRequest"> & {
+  /**
+   * @generated from field: string scope_uuid = 1;
+   */
+  scopeUuid: string;
+
+  /**
+   * @generated from field: string facility_name = 2;
+   */
+  facilityName: string;
+
+  /**
+   * @generated from field: string pool_name = 3;
+   */
+  poolName: string;
+
+  /**
+   * @generated from field: string image_name = 4;
+   */
+  imageName: string;
+
+  /**
+   * @generated from field: string snapshot_name = 5;
+   */
+  snapshotName: string;
+};
+
+/**
+ * Describes the message otterscale.storage.v1.UnprotectImageSnapshotRequest.
+ * Use `create(UnprotectImageSnapshotRequestSchema)` to create a new message.
+ */
+export const UnprotectImageSnapshotRequestSchema: GenMessage<UnprotectImageSnapshotRequest> = /*@__PURE__*/
+  messageDesc(file_api_storage_v1_storage, 30);
+
+/**
  * @generated from message otterscale.storage.v1.ListVolumesRequest
  */
 export type ListVolumesRequest = Message<"otterscale.storage.v1.ListVolumesRequest"> & {
@@ -807,7 +1092,7 @@ export type ListVolumesRequest = Message<"otterscale.storage.v1.ListVolumesReque
  * Use `create(ListVolumesRequestSchema)` to create a new message.
  */
 export const ListVolumesRequestSchema: GenMessage<ListVolumesRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 28);
+  messageDesc(file_api_storage_v1_storage, 31);
 
 /**
  * @generated from message otterscale.storage.v1.ListVolumesResponse
@@ -824,7 +1109,7 @@ export type ListVolumesResponse = Message<"otterscale.storage.v1.ListVolumesResp
  * Use `create(ListVolumesResponseSchema)` to create a new message.
  */
 export const ListVolumesResponseSchema: GenMessage<ListVolumesResponse> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 29);
+  messageDesc(file_api_storage_v1_storage, 32);
 
 /**
  * @generated from message otterscale.storage.v1.ListSubvolumesRequest
@@ -856,7 +1141,7 @@ export type ListSubvolumesRequest = Message<"otterscale.storage.v1.ListSubvolume
  * Use `create(ListSubvolumesRequestSchema)` to create a new message.
  */
 export const ListSubvolumesRequestSchema: GenMessage<ListSubvolumesRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 30);
+  messageDesc(file_api_storage_v1_storage, 33);
 
 /**
  * @generated from message otterscale.storage.v1.ListSubvolumesResponse
@@ -873,7 +1158,7 @@ export type ListSubvolumesResponse = Message<"otterscale.storage.v1.ListSubvolum
  * Use `create(ListSubvolumesResponseSchema)` to create a new message.
  */
 export const ListSubvolumesResponseSchema: GenMessage<ListSubvolumesResponse> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 31);
+  messageDesc(file_api_storage_v1_storage, 34);
 
 /**
  * @generated from message otterscale.storage.v1.CreateSubvolumeRequest
@@ -905,9 +1190,9 @@ export type CreateSubvolumeRequest = Message<"otterscale.storage.v1.CreateSubvol
   subvolumeName: string;
 
   /**
-   * @generated from field: string size = 11;
+   * @generated from field: uint64 size_bytes = 11;
    */
-  size: string;
+  sizeBytes: bigint;
 
   /**
    * @generated from field: bool export = 101;
@@ -920,7 +1205,7 @@ export type CreateSubvolumeRequest = Message<"otterscale.storage.v1.CreateSubvol
  * Use `create(CreateSubvolumeRequestSchema)` to create a new message.
  */
 export const CreateSubvolumeRequestSchema: GenMessage<CreateSubvolumeRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 32);
+  messageDesc(file_api_storage_v1_storage, 35);
 
 /**
  * @generated from message otterscale.storage.v1.UpdateSubvolumeRequest
@@ -952,9 +1237,9 @@ export type UpdateSubvolumeRequest = Message<"otterscale.storage.v1.UpdateSubvol
   subvolumeName: string;
 
   /**
-   * @generated from field: string size = 11;
+   * @generated from field: uint64 size_bytes = 11;
    */
-  size: string;
+  sizeBytes: bigint;
 };
 
 /**
@@ -962,7 +1247,7 @@ export type UpdateSubvolumeRequest = Message<"otterscale.storage.v1.UpdateSubvol
  * Use `create(UpdateSubvolumeRequestSchema)` to create a new message.
  */
 export const UpdateSubvolumeRequestSchema: GenMessage<UpdateSubvolumeRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 33);
+  messageDesc(file_api_storage_v1_storage, 36);
 
 /**
  * @generated from message otterscale.storage.v1.DeleteSubvolumeRequest
@@ -999,7 +1284,7 @@ export type DeleteSubvolumeRequest = Message<"otterscale.storage.v1.DeleteSubvol
  * Use `create(DeleteSubvolumeRequestSchema)` to create a new message.
  */
 export const DeleteSubvolumeRequestSchema: GenMessage<DeleteSubvolumeRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 34);
+  messageDesc(file_api_storage_v1_storage, 37);
 
 /**
  * @generated from message otterscale.storage.v1.GrantSubvolumeExportAccessRequest
@@ -1026,16 +1311,6 @@ export type GrantSubvolumeExportAccessRequest = Message<"otterscale.storage.v1.G
   subvolumeName: string;
 
   /**
-   * @generated from field: string group_name = 5;
-   */
-  groupName: string;
-
-  /**
-   * @generated from field: string export_name = 6;
-   */
-  exportName: string;
-
-  /**
    * @generated from field: string client_ip = 11;
    */
   clientIp: string;
@@ -1046,7 +1321,7 @@ export type GrantSubvolumeExportAccessRequest = Message<"otterscale.storage.v1.G
  * Use `create(GrantSubvolumeExportAccessRequestSchema)` to create a new message.
  */
 export const GrantSubvolumeExportAccessRequestSchema: GenMessage<GrantSubvolumeExportAccessRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 35);
+  messageDesc(file_api_storage_v1_storage, 38);
 
 /**
  * @generated from message otterscale.storage.v1.RevokeSubvolumeExportAccessRequest
@@ -1073,16 +1348,6 @@ export type RevokeSubvolumeExportAccessRequest = Message<"otterscale.storage.v1.
   subvolumeName: string;
 
   /**
-   * @generated from field: string group_name = 5;
-   */
-  groupName: string;
-
-  /**
-   * @generated from field: string export_name = 6;
-   */
-  exportName: string;
-
-  /**
    * @generated from field: string client_ip = 11;
    */
   clientIp: string;
@@ -1093,7 +1358,7 @@ export type RevokeSubvolumeExportAccessRequest = Message<"otterscale.storage.v1.
  * Use `create(RevokeSubvolumeExportAccessRequestSchema)` to create a new message.
  */
 export const RevokeSubvolumeExportAccessRequestSchema: GenMessage<RevokeSubvolumeExportAccessRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 36);
+  messageDesc(file_api_storage_v1_storage, 39);
 
 /**
  * @generated from message otterscale.storage.v1.CreateSubvolumeSnapshotRequest
@@ -1135,7 +1400,7 @@ export type CreateSubvolumeSnapshotRequest = Message<"otterscale.storage.v1.Crea
  * Use `create(CreateSubvolumeSnapshotRequestSchema)` to create a new message.
  */
 export const CreateSubvolumeSnapshotRequestSchema: GenMessage<CreateSubvolumeSnapshotRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 37);
+  messageDesc(file_api_storage_v1_storage, 40);
 
 /**
  * @generated from message otterscale.storage.v1.DeleteSubvolumeSnapshotRequest
@@ -1177,7 +1442,7 @@ export type DeleteSubvolumeSnapshotRequest = Message<"otterscale.storage.v1.Dele
  * Use `create(DeleteSubvolumeSnapshotRequestSchema)` to create a new message.
  */
 export const DeleteSubvolumeSnapshotRequestSchema: GenMessage<DeleteSubvolumeSnapshotRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 38);
+  messageDesc(file_api_storage_v1_storage, 41);
 
 /**
  * @generated from message otterscale.storage.v1.ListSubvolumeGroupsRequest
@@ -1204,7 +1469,7 @@ export type ListSubvolumeGroupsRequest = Message<"otterscale.storage.v1.ListSubv
  * Use `create(ListSubvolumeGroupsRequestSchema)` to create a new message.
  */
 export const ListSubvolumeGroupsRequestSchema: GenMessage<ListSubvolumeGroupsRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 39);
+  messageDesc(file_api_storage_v1_storage, 42);
 
 /**
  * @generated from message otterscale.storage.v1.ListSubvolumeGroupsResponse
@@ -1221,7 +1486,7 @@ export type ListSubvolumeGroupsResponse = Message<"otterscale.storage.v1.ListSub
  * Use `create(ListSubvolumeGroupsResponseSchema)` to create a new message.
  */
 export const ListSubvolumeGroupsResponseSchema: GenMessage<ListSubvolumeGroupsResponse> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 40);
+  messageDesc(file_api_storage_v1_storage, 43);
 
 /**
  * @generated from message otterscale.storage.v1.CreateSubvolumeGroupRequest
@@ -1248,9 +1513,9 @@ export type CreateSubvolumeGroupRequest = Message<"otterscale.storage.v1.CreateS
   groupName: string;
 
   /**
-   * @generated from field: string size = 11;
+   * @generated from field: uint64 size_bytes = 11;
    */
-  size: string;
+  sizeBytes: bigint;
 };
 
 /**
@@ -1258,7 +1523,7 @@ export type CreateSubvolumeGroupRequest = Message<"otterscale.storage.v1.CreateS
  * Use `create(CreateSubvolumeGroupRequestSchema)` to create a new message.
  */
 export const CreateSubvolumeGroupRequestSchema: GenMessage<CreateSubvolumeGroupRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 41);
+  messageDesc(file_api_storage_v1_storage, 44);
 
 /**
  * @generated from message otterscale.storage.v1.UpdateSubvolumeGroupRequest
@@ -1285,9 +1550,9 @@ export type UpdateSubvolumeGroupRequest = Message<"otterscale.storage.v1.UpdateS
   groupName: string;
 
   /**
-   * @generated from field: string size = 11;
+   * @generated from field: uint64 size_bytes = 11;
    */
-  size: string;
+  sizeBytes: bigint;
 };
 
 /**
@@ -1295,7 +1560,7 @@ export type UpdateSubvolumeGroupRequest = Message<"otterscale.storage.v1.UpdateS
  * Use `create(UpdateSubvolumeGroupRequestSchema)` to create a new message.
  */
 export const UpdateSubvolumeGroupRequestSchema: GenMessage<UpdateSubvolumeGroupRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 42);
+  messageDesc(file_api_storage_v1_storage, 45);
 
 /**
  * @generated from message otterscale.storage.v1.DeleteSubvolumeGroupRequest
@@ -1327,7 +1592,7 @@ export type DeleteSubvolumeGroupRequest = Message<"otterscale.storage.v1.DeleteS
  * Use `create(DeleteSubvolumeGroupRequestSchema)` to create a new message.
  */
 export const DeleteSubvolumeGroupRequestSchema: GenMessage<DeleteSubvolumeGroupRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 43);
+  messageDesc(file_api_storage_v1_storage, 46);
 
 /**
  * @generated from message otterscale.storage.v1.ListBucketsRequest
@@ -1349,7 +1614,7 @@ export type ListBucketsRequest = Message<"otterscale.storage.v1.ListBucketsReque
  * Use `create(ListBucketsRequestSchema)` to create a new message.
  */
 export const ListBucketsRequestSchema: GenMessage<ListBucketsRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 44);
+  messageDesc(file_api_storage_v1_storage, 47);
 
 /**
  * @generated from message otterscale.storage.v1.ListBucketsResponse
@@ -1366,7 +1631,7 @@ export type ListBucketsResponse = Message<"otterscale.storage.v1.ListBucketsResp
  * Use `create(ListBucketsResponseSchema)` to create a new message.
  */
 export const ListBucketsResponseSchema: GenMessage<ListBucketsResponse> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 45);
+  messageDesc(file_api_storage_v1_storage, 48);
 
 /**
  * @generated from message otterscale.storage.v1.CreateBucketRequest
@@ -1391,6 +1656,16 @@ export type CreateBucketRequest = Message<"otterscale.storage.v1.CreateBucketReq
    * @generated from field: string owner = 11;
    */
   owner: string;
+
+  /**
+   * @generated from field: string policy = 12;
+   */
+  policy: string;
+
+  /**
+   * @generated from field: otterscale.storage.v1.Bucket.ACL acl = 21;
+   */
+  acl: Bucket_ACL;
 };
 
 /**
@@ -1398,7 +1673,7 @@ export type CreateBucketRequest = Message<"otterscale.storage.v1.CreateBucketReq
  * Use `create(CreateBucketRequestSchema)` to create a new message.
  */
 export const CreateBucketRequestSchema: GenMessage<CreateBucketRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 46);
+  messageDesc(file_api_storage_v1_storage, 49);
 
 /**
  * @generated from message otterscale.storage.v1.UpdateBucketRequest
@@ -1423,6 +1698,16 @@ export type UpdateBucketRequest = Message<"otterscale.storage.v1.UpdateBucketReq
    * @generated from field: string owner = 11;
    */
   owner: string;
+
+  /**
+   * @generated from field: string policy = 12;
+   */
+  policy: string;
+
+  /**
+   * @generated from field: otterscale.storage.v1.Bucket.ACL acl = 21;
+   */
+  acl: Bucket_ACL;
 };
 
 /**
@@ -1430,7 +1715,7 @@ export type UpdateBucketRequest = Message<"otterscale.storage.v1.UpdateBucketReq
  * Use `create(UpdateBucketRequestSchema)` to create a new message.
  */
 export const UpdateBucketRequestSchema: GenMessage<UpdateBucketRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 47);
+  messageDesc(file_api_storage_v1_storage, 50);
 
 /**
  * @generated from message otterscale.storage.v1.DeleteBucketRequest
@@ -1457,7 +1742,7 @@ export type DeleteBucketRequest = Message<"otterscale.storage.v1.DeleteBucketReq
  * Use `create(DeleteBucketRequestSchema)` to create a new message.
  */
 export const DeleteBucketRequestSchema: GenMessage<DeleteBucketRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 48);
+  messageDesc(file_api_storage_v1_storage, 51);
 
 /**
  * @generated from message otterscale.storage.v1.ListUsersRequest
@@ -1479,7 +1764,7 @@ export type ListUsersRequest = Message<"otterscale.storage.v1.ListUsersRequest">
  * Use `create(ListUsersRequestSchema)` to create a new message.
  */
 export const ListUsersRequestSchema: GenMessage<ListUsersRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 49);
+  messageDesc(file_api_storage_v1_storage, 52);
 
 /**
  * @generated from message otterscale.storage.v1.ListUsersResponse
@@ -1496,7 +1781,7 @@ export type ListUsersResponse = Message<"otterscale.storage.v1.ListUsersResponse
  * Use `create(ListUsersResponseSchema)` to create a new message.
  */
 export const ListUsersResponseSchema: GenMessage<ListUsersResponse> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 50);
+  messageDesc(file_api_storage_v1_storage, 53);
 
 /**
  * @generated from message otterscale.storage.v1.CreateUserRequest
@@ -1523,9 +1808,9 @@ export type CreateUserRequest = Message<"otterscale.storage.v1.CreateUserRequest
   userName: string;
 
   /**
-   * @generated from field: string suspended = 12;
+   * @generated from field: bool suspended = 12;
    */
-  suspended: string;
+  suspended: boolean;
 };
 
 /**
@@ -1533,7 +1818,7 @@ export type CreateUserRequest = Message<"otterscale.storage.v1.CreateUserRequest
  * Use `create(CreateUserRequestSchema)` to create a new message.
  */
 export const CreateUserRequestSchema: GenMessage<CreateUserRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 51);
+  messageDesc(file_api_storage_v1_storage, 54);
 
 /**
  * @generated from message otterscale.storage.v1.UpdateUserRequest
@@ -1560,9 +1845,9 @@ export type UpdateUserRequest = Message<"otterscale.storage.v1.UpdateUserRequest
   userName: string;
 
   /**
-   * @generated from field: string suspended = 12;
+   * @generated from field: bool suspended = 12;
    */
-  suspended: string;
+  suspended: boolean;
 };
 
 /**
@@ -1570,7 +1855,7 @@ export type UpdateUserRequest = Message<"otterscale.storage.v1.UpdateUserRequest
  * Use `create(UpdateUserRequestSchema)` to create a new message.
  */
 export const UpdateUserRequestSchema: GenMessage<UpdateUserRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 52);
+  messageDesc(file_api_storage_v1_storage, 55);
 
 /**
  * @generated from message otterscale.storage.v1.DeleteUserRequest
@@ -1597,12 +1882,12 @@ export type DeleteUserRequest = Message<"otterscale.storage.v1.DeleteUserRequest
  * Use `create(DeleteUserRequestSchema)` to create a new message.
  */
 export const DeleteUserRequestSchema: GenMessage<DeleteUserRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 53);
+  messageDesc(file_api_storage_v1_storage, 56);
 
 /**
- * @generated from message otterscale.storage.v1.CreateUserS3KeyRequest
+ * @generated from message otterscale.storage.v1.CreateUserKeyRequest
  */
-export type CreateUserS3KeyRequest = Message<"otterscale.storage.v1.CreateUserS3KeyRequest"> & {
+export type CreateUserKeyRequest = Message<"otterscale.storage.v1.CreateUserKeyRequest"> & {
   /**
    * @generated from field: string scope_uuid = 1;
    */
@@ -1620,16 +1905,16 @@ export type CreateUserS3KeyRequest = Message<"otterscale.storage.v1.CreateUserS3
 };
 
 /**
- * Describes the message otterscale.storage.v1.CreateUserS3KeyRequest.
- * Use `create(CreateUserS3KeyRequestSchema)` to create a new message.
+ * Describes the message otterscale.storage.v1.CreateUserKeyRequest.
+ * Use `create(CreateUserKeyRequestSchema)` to create a new message.
  */
-export const CreateUserS3KeyRequestSchema: GenMessage<CreateUserS3KeyRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 54);
+export const CreateUserKeyRequestSchema: GenMessage<CreateUserKeyRequest> = /*@__PURE__*/
+  messageDesc(file_api_storage_v1_storage, 57);
 
 /**
- * @generated from message otterscale.storage.v1.DeleteUserS3KeyRequest
+ * @generated from message otterscale.storage.v1.DeleteUserKeyRequest
  */
-export type DeleteUserS3KeyRequest = Message<"otterscale.storage.v1.DeleteUserS3KeyRequest"> & {
+export type DeleteUserKeyRequest = Message<"otterscale.storage.v1.DeleteUserKeyRequest"> & {
   /**
    * @generated from field: string scope_uuid = 1;
    */
@@ -1652,11 +1937,42 @@ export type DeleteUserS3KeyRequest = Message<"otterscale.storage.v1.DeleteUserS3
 };
 
 /**
- * Describes the message otterscale.storage.v1.DeleteUserS3KeyRequest.
- * Use `create(DeleteUserS3KeyRequestSchema)` to create a new message.
+ * Describes the message otterscale.storage.v1.DeleteUserKeyRequest.
+ * Use `create(DeleteUserKeyRequestSchema)` to create a new message.
  */
-export const DeleteUserS3KeyRequestSchema: GenMessage<DeleteUserS3KeyRequest> = /*@__PURE__*/
-  messageDesc(file_api_storage_v1_storage, 55);
+export const DeleteUserKeyRequestSchema: GenMessage<DeleteUserKeyRequest> = /*@__PURE__*/
+  messageDesc(file_api_storage_v1_storage, 58);
+
+/**
+ * @generated from enum otterscale.storage.v1.Application
+ */
+export enum Application {
+  /**
+   * @generated from enum value: UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: RBD = 1;
+   */
+  RBD = 1,
+
+  /**
+   * @generated from enum value: CephFS = 2;
+   */
+  CephFS = 2,
+
+  /**
+   * @generated from enum value: RGW = 3;
+   */
+  RGW = 3,
+}
+
+/**
+ * Describes the enum otterscale.storage.v1.Application.
+ */
+export const ApplicationSchema: GenEnum<Application> = /*@__PURE__*/
+  enumDesc(file_api_storage_v1_storage, 0);
 
 /**
  * @generated from service otterscale.storage.v1.StorageService
@@ -1681,12 +1997,12 @@ export const StorageService: GenService<{
     output: typeof ListOSDsResponseSchema;
   },
   /**
-   * @generated from rpc otterscale.storage.v1.StorageService.DoOSDSMART
+   * @generated from rpc otterscale.storage.v1.StorageService.DoSMART
    */
-  doOSDSMART: {
+  doSMART: {
     methodKind: "unary";
-    input: typeof DoOSDSMARTRequestSchema;
-    output: typeof DoOSDSMARTResponseSchema;
+    input: typeof DoSMARTRequestSchema;
+    output: typeof DoSMARTResponseSchema;
   },
   /**
    * Cluster Pool
@@ -1772,6 +2088,30 @@ export const StorageService: GenService<{
   deleteImageSnapshot: {
     methodKind: "unary";
     input: typeof DeleteImageSnapshotRequestSchema;
+    output: typeof EmptySchema;
+  },
+  /**
+   * @generated from rpc otterscale.storage.v1.StorageService.RollbackImageSnapshot
+   */
+  rollbackImageSnapshot: {
+    methodKind: "unary";
+    input: typeof RollbackImageSnapshotRequestSchema;
+    output: typeof EmptySchema;
+  },
+  /**
+   * @generated from rpc otterscale.storage.v1.StorageService.ProtectImageSnapshot
+   */
+  protectImageSnapshot: {
+    methodKind: "unary";
+    input: typeof ProtectImageSnapshotRequestSchema;
+    output: typeof EmptySchema;
+  },
+  /**
+   * @generated from rpc otterscale.storage.v1.StorageService.UnprotectImageSnapshot
+   */
+  unprotectImageSnapshot: {
+    methodKind: "unary";
+    input: typeof UnprotectImageSnapshotRequestSchema;
     output: typeof EmptySchema;
   },
   /**
@@ -1955,19 +2295,19 @@ export const StorageService: GenService<{
     output: typeof EmptySchema;
   },
   /**
-   * @generated from rpc otterscale.storage.v1.StorageService.CreateUserS3Key
+   * @generated from rpc otterscale.storage.v1.StorageService.CreateUserKey
    */
-  createUserS3Key: {
+  createUserKey: {
     methodKind: "unary";
-    input: typeof CreateUserS3KeyRequestSchema;
+    input: typeof CreateUserKeyRequestSchema;
     output: typeof User_KeySchema;
   },
   /**
-   * @generated from rpc otterscale.storage.v1.StorageService.DeleteUserS3Key
+   * @generated from rpc otterscale.storage.v1.StorageService.DeleteUserKey
    */
-  deleteUserS3Key: {
+  deleteUserKey: {
     methodKind: "unary";
-    input: typeof DeleteUserS3KeyRequestSchema;
+    input: typeof DeleteUserKeyRequestSchema;
     output: typeof EmptySchema;
   },
 }> = /*@__PURE__*/

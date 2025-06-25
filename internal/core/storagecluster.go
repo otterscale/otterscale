@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"strconv"
 )
 
 type MON struct {
@@ -28,7 +29,7 @@ type CephClusterRepo interface {
 	DeletePool(ctx context.Context, config *StorageConfig, poolName string) error
 	EnableApplication(ctx context.Context, config *StorageConfig, poolName, application string) error
 	SetParameter(ctx context.Context, config *StorageConfig, poolName, key, value string) error
-	SetQuota(ctx context.Context, config *StorageConfig, poolName string, maxBytes, maxObjects int) error
+	SetQuota(ctx context.Context, config *StorageConfig, poolName string, maxBytes, maxObjects uint64) error
 }
 
 func (uc *StorageUseCase) ListMONs(ctx context.Context, uuid, facility string) ([]MON, error) {
@@ -66,7 +67,7 @@ func (uc *StorageUseCase) ListPools(ctx context.Context, uuid, facility, applica
 	return uc.cluster.ListPools(ctx, config)
 }
 
-func (uc *StorageUseCase) CreatePool(ctx context.Context, uuid, facility, pool, poolType string, ecOverwrites bool, quotaMaxBytes, quotaMaxObjects int, applications []string) (*Pool, error) {
+func (uc *StorageUseCase) CreatePool(ctx context.Context, uuid, facility, pool, poolType string, ecOverwrites bool, replicatedSize uint32, quotaMaxBytes, quotaMaxObjects uint64, applications []string) (*Pool, error) {
 	config, err := uc.config(ctx, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -76,6 +77,11 @@ func (uc *StorageUseCase) CreatePool(ctx context.Context, uuid, facility, pool, 
 	}
 	if poolType == "erasure" && ecOverwrites {
 		if err := uc.cluster.SetParameter(ctx, config, pool, "allow_ec_overwrites", "true"); err != nil {
+			return nil, err
+		}
+	}
+	if poolType == "replicated" && replicatedSize > 0 {
+		if err := uc.cluster.SetParameter(ctx, config, pool, "size", strconv.Itoa(int(replicatedSize))); err != nil {
 			return nil, err
 		}
 	}
@@ -92,7 +98,7 @@ func (uc *StorageUseCase) CreatePool(ctx context.Context, uuid, facility, pool, 
 	}, nil
 }
 
-func (uc *StorageUseCase) UpdatePool(ctx context.Context, uuid, facility, pool string, quotaMaxBytes, quotaMaxObjects int) (*Pool, error) {
+func (uc *StorageUseCase) UpdatePool(ctx context.Context, uuid, facility, pool string, quotaMaxBytes, quotaMaxObjects uint64) (*Pool, error) {
 	config, err := uc.config(ctx, uuid, facility)
 	if err != nil {
 		return nil, err
