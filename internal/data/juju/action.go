@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	api "github.com/juju/juju/api/client/action"
+	"github.com/juju/names/v5"
 
 	"github.com/openhdc/otterscale/internal/core"
 )
@@ -29,7 +30,7 @@ func (r *action) List(_ context.Context, uuid, appName string) (map[string]core.
 	return api.NewClient(conn).ApplicationCharmActions(appName)
 }
 
-func (r *action) Run(_ context.Context, uuid, unitName, command string) (string, error) {
+func (r *action) RunCommand(_ context.Context, uuid, unitName, command string) (string, error) {
 	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return "", err
@@ -45,7 +46,29 @@ func (r *action) Run(_ context.Context, uuid, unitName, command string) (string,
 		return "", err
 	}
 	if len(enqueued.Actions) == 0 || enqueued.Actions[0].Action == nil {
-		return "", fmt.Errorf("failed to run action %s on %s", command, unitName)
+		return "", fmt.Errorf("failed to run command %q on %s", command, unitName)
+	}
+	return enqueued.Actions[0].Action.ID, nil
+}
+
+func (r *action) RunAction(_ context.Context, uuid, unitName, actionName string, parameters map[string]any) (string, error) {
+	conn, err := r.juju.connection(uuid)
+	if err != nil {
+		return "", err
+	}
+	actions := []api.Action{
+		{
+			Receiver:   names.NewUnitTag(unitName).String(),
+			Name:       actionName,
+			Parameters: parameters,
+		},
+	}
+	enqueued, err := api.NewClient(conn).EnqueueOperation(actions)
+	if err != nil {
+		return "", err
+	}
+	if len(enqueued.Actions) == 0 || enqueued.Actions[0].Action == nil {
+		return "", fmt.Errorf("failed to run action %q on %s", actionName, unitName)
 	}
 	return enqueued.Actions[0].Action.ID, nil
 }

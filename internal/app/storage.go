@@ -86,8 +86,9 @@ func (s *StorageService) CreatePool(ctx context.Context, req *connect.Request[pb
 		req.Msg.GetPoolName(),
 		strings.ToLower(req.Msg.GetPoolType().String()),
 		req.Msg.GetEcOverwrites(),
-		int(req.Msg.GetQuotaMaxBytes()),
-		int(req.Msg.GetQuotaMaxObjects()),
+		req.Msg.GetReplicatedSize(),
+		req.Msg.GetQuotaMaxBytes(),
+		req.Msg.GetQuotaMaxObjects(),
 		apps,
 	)
 	if err != nil {
@@ -102,8 +103,8 @@ func (s *StorageService) UpdatePool(ctx context.Context, req *connect.Request[pb
 		req.Msg.GetScopeUuid(),
 		req.Msg.GetFacilityName(),
 		req.Msg.GetPoolName(),
-		int(req.Msg.GetQuotaMaxBytes()),
-		int(req.Msg.GetQuotaMaxObjects()),
+		req.Msg.GetQuotaMaxBytes(),
+		req.Msg.GetQuotaMaxObjects(),
 	)
 	if err != nil {
 		return nil, err
@@ -139,7 +140,7 @@ func (s *StorageService) CreateImage(ctx context.Context, req *connect.Request[p
 		req.Msg.GetObjectSizeBytes(),
 		req.Msg.GetStripeUnitBytes(),
 		req.Msg.GetStripeCount(),
-		req.Msg.GetSize(),
+		req.Msg.GetSizeBytes(),
 		req.Msg.GetLayering(),
 		req.Msg.GetExclusiveLock(),
 		req.Msg.GetObjectMap(),
@@ -159,7 +160,7 @@ func (s *StorageService) UpdateImage(ctx context.Context, req *connect.Request[p
 		req.Msg.GetFacilityName(),
 		req.Msg.GetPoolName(),
 		req.Msg.GetImageName(),
-		req.Msg.GetSize(),
+		req.Msg.GetSizeBytes(),
 	)
 	if err != nil {
 		return nil, err
@@ -237,6 +238,80 @@ func (s *StorageService) ListSubvolumes(ctx context.Context, req *connect.Reques
 	return connect.NewResponse(resp), nil
 }
 
+func (s *StorageService) CreateSubvolume(ctx context.Context, req *connect.Request[pb.CreateSubvolumeRequest]) (*connect.Response[pb.Subvolume], error) {
+	subvolume, err := s.uc.CreateSubvolume(ctx,
+		req.Msg.GetScopeUuid(),
+		req.Msg.GetFacilityName(),
+		req.Msg.GetVolumeName(),
+		req.Msg.GetSubvolumeName(),
+		req.Msg.GetGroupName(),
+		req.Msg.GetSizeBytes(),
+		req.Msg.GetExport(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoSubvolume(subvolume)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) UpdateSubvolume(ctx context.Context, req *connect.Request[pb.UpdateSubvolumeRequest]) (*connect.Response[pb.Subvolume], error) {
+	subvolume, err := s.uc.UpdateSubvolume(ctx,
+		req.Msg.GetScopeUuid(),
+		req.Msg.GetFacilityName(),
+		req.Msg.GetVolumeName(),
+		req.Msg.GetSubvolumeName(),
+		req.Msg.GetGroupName(),
+		req.Msg.GetSizeBytes(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoSubvolume(subvolume)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DeleteSubvolume(ctx context.Context, req *connect.Request[pb.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteSubvolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetGroupName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *connect.Request[pb.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.GrantSubvolumeClient(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetClientIp()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) RevokeSubvolumeExportAccess(ctx context.Context, req *connect.Request[pb.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.RevokeSubvolumeClient(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetClientIp()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) CreateSubvolumeSnapshot(ctx context.Context, req *connect.Request[pb.CreateSubvolumeSnapshotRequest]) (*connect.Response[pb.Subvolume_Snapshot], error) {
+	snapshot, err := s.uc.CreateSubvolumeSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetGroupName(), req.Msg.GetSnapshotName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoSubvolumeSnapshot(snapshot)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DeleteSubvolumeSnapshot(ctx context.Context, req *connect.Request[pb.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteSubvolumeSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetGroupName(), req.Msg.GetSnapshotName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
 func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *connect.Request[pb.ListSubvolumeGroupsRequest]) (*connect.Response[pb.ListSubvolumeGroupsResponse], error) {
 	groups, err := s.uc.ListSubvolumeGroups(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName())
 	if err != nil {
@@ -244,6 +319,32 @@ func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *connect.R
 	}
 	resp := &pb.ListSubvolumeGroupsResponse{}
 	resp.SetSubvolumeGroups(toProtoSubvolumeGroups(groups))
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) CreateSubvolumeGroup(ctx context.Context, req *connect.Request[pb.CreateSubvolumeGroupRequest]) (*connect.Response[pb.SubvolumeGroup], error) {
+	group, err := s.uc.CreateSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName(), req.Msg.GetSizeBytes())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoSubvolumeGroup(group)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) UpdateSubvolumeGroup(ctx context.Context, req *connect.Request[pb.UpdateSubvolumeGroupRequest]) (*connect.Response[pb.SubvolumeGroup], error) {
+	group, err := s.uc.UpdateSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName(), req.Msg.GetSizeBytes())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoSubvolumeGroup(group)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *StorageService) DeleteSubvolumeGroup(ctx context.Context, req *connect.Request[pb.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
 
@@ -448,6 +549,31 @@ func toProtoSubvolumes(ss []core.Subvolume) []*pb.Subvolume {
 
 func toProtoSubvolume(s *core.Subvolume) *pb.Subvolume {
 	ret := &pb.Subvolume{}
+	ret.SetName(s.Name)
+	ret.SetExport(toProtoSubvolumeExport(s))
+	return ret
+}
+
+func toProtoSubvolumeExport(s *core.Subvolume) *pb.Subvolume_Export {
+	if len(s.Clients) == 0 {
+		return nil
+	}
+	ret := &pb.Subvolume_Export{}
+	ret.SetPath(s.Path)
+	ret.SetClients(s.Clients)
+	return ret
+}
+
+func toProtoSubvolumeSnapshots(ss []core.SubvolumeSnapshot) []*pb.Subvolume_Snapshot {
+	ret := []*pb.Subvolume_Snapshot{}
+	for i := range ss {
+		ret = append(ret, toProtoSubvolumeSnapshot(&ss[i]))
+	}
+	return ret
+}
+
+func toProtoSubvolumeSnapshot(s *core.SubvolumeSnapshot) *pb.Subvolume_Snapshot {
+	ret := &pb.Subvolume_Snapshot{}
 	ret.SetName(s.Name)
 	return ret
 }

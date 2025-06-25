@@ -131,7 +131,7 @@ func (r *cluster) SetParameter(ctx context.Context, config *core.StorageConfig, 
 	return r.osdPoolSet(conn, poolName, key, value)
 }
 
-func (r *cluster) SetQuota(ctx context.Context, config *core.StorageConfig, poolName string, maxBytes, maxObjects int) error {
+func (r *cluster) SetQuota(ctx context.Context, config *core.StorageConfig, poolName string, maxBytes, maxObjects uint64) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -359,12 +359,12 @@ func (r *cluster) osdPoolSet(conn *rados.Conn, poolName, key, value string) erro
 	return nil
 }
 
-func (r *cluster) osdPoolSetQuota(conn *rados.Conn, poolName, field string, value int) error {
+func (r *cluster) osdPoolSetQuota(conn *rados.Conn, poolName, field string, value uint64) error {
 	cmd, err := json.Marshal(map[string]string{
 		"prefix": "osd pool set-quota",
 		"pool":   poolName,
 		"field":  field,
-		"val":    strconv.Itoa(value),
+		"val":    strconv.Itoa(int(value)),
 		"format": "json",
 	})
 	if err != nil {

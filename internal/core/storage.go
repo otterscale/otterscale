@@ -115,7 +115,7 @@ func (uc *StorageUseCase) newConfig(ctx context.Context, uuid, name string) (*St
 
 	eg, egctx = errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		result, err := uc.runAction(egctx, uuid, leader, cephConfigCommand)
+		result, err := uc.runCommand(egctx, uuid, leader, cephConfigCommand)
 		if err != nil {
 			return err
 		}
@@ -127,7 +127,7 @@ func (uc *StorageUseCase) newConfig(ctx context.Context, uuid, name string) (*St
 		return nil
 	})
 	eg.Go(func() error {
-		listResult, err := uc.runAction(egctx, uuid, leader, cephRGWUserListCommand)
+		listResult, err := uc.runCommand(egctx, uuid, leader, cephRGWUserListCommand)
 		if err != nil {
 			return err
 		}
@@ -135,7 +135,7 @@ func (uc *StorageUseCase) newConfig(ctx context.Context, uuid, name string) (*St
 		if err != nil {
 			return err
 		}
-		result, err := uc.runAction(egctx, uuid, leader, cmd)
+		result, err := uc.runCommand(egctx, uuid, leader, cmd)
 		if err != nil {
 			return err
 		}
@@ -156,8 +156,16 @@ func (uc *StorageUseCase) newConfig(ctx context.Context, uuid, name string) (*St
 	}, nil
 }
 
-func (uc *StorageUseCase) runAction(ctx context.Context, uuid, leader, command string) (*action.ActionResult, error) {
-	id, err := uc.action.Run(ctx, uuid, leader, command)
+func (uc *StorageUseCase) runCommand(ctx context.Context, uuid, leader, command string) (*action.ActionResult, error) {
+	id, err := uc.action.RunCommand(ctx, uuid, leader, command)
+	if err != nil {
+		return nil, err
+	}
+	return uc.waitForActionCompleted(ctx, uuid, id)
+}
+
+func (uc *StorageUseCase) runAction(ctx context.Context, uuid, leader, action string, params map[string]any) (*action.ActionResult, error) {
+	id, err := uc.action.RunAction(ctx, uuid, leader, action, params)
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +174,7 @@ func (uc *StorageUseCase) runAction(ctx context.Context, uuid, leader, command s
 
 func (uc *StorageUseCase) waitForActionCompleted(ctx context.Context, uuid, id string) (*action.ActionResult, error) {
 	const tickInterval = time.Second
-	const timeoutDuration = 5 * time.Second
+	const timeoutDuration = time.Minute
 
 	ticker := time.NewTicker(tickInterval)
 	defer ticker.Stop()
@@ -273,5 +281,12 @@ func (uc *StorageUseCase) rgwName(monName string) string {
 	tokens := strings.Split(monName, "-")
 	lastIndex := len(tokens) - 1
 	tokens[lastIndex] = "radosgw"
+	return strings.Join(tokens, "-")
+}
+
+func (uc *StorageUseCase) nfsName(monName string) string {
+	tokens := strings.Split(monName, "-")
+	lastIndex := len(tokens) - 1
+	tokens[lastIndex] = "nfs"
 	return strings.Join(tokens, "-")
 }
