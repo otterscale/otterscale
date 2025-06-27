@@ -59,11 +59,7 @@ func (s *StorageService) DoSMART(ctx context.Context, req *connect.Request[pb.Do
 }
 
 func (s *StorageService) ListPools(ctx context.Context, req *connect.Request[pb.ListPoolsRequest]) (*connect.Response[pb.ListPoolsResponse], error) {
-	app := strings.ToLower(req.Msg.GetApplication().String())
-	if strings.EqualFold(app, pb.Application_UNSPECIFIED.String()) {
-		app = ""
-	}
-	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), app)
+	pools, err := s.uc.ListPools(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetApplication())
 	if err != nil {
 		return nil, err
 	}
@@ -73,12 +69,13 @@ func (s *StorageService) ListPools(ctx context.Context, req *connect.Request[pb.
 }
 
 func (s *StorageService) CreatePool(ctx context.Context, req *connect.Request[pb.CreatePoolRequest]) (*connect.Response[pb.Pool], error) {
-	if req.Msg.GetPoolType() == pb.CreatePoolRequest_UNSPECIFIED {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid pool type"))
-	}
+	poolType := []string{"cephfs", "rbd", "rgw"}
 	apps := []string{}
 	for _, app := range req.Msg.GetApplications() {
-		apps = append(apps, strings.ToLower(app.String()))
+		if !slices.Contains(poolType, app) {
+			return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid pool type"))
+		}
+		apps = append(apps, app)
 	}
 	pool, err := s.uc.CreatePool(ctx,
 		req.Msg.GetScopeUuid(),
@@ -455,7 +452,10 @@ func toProtoMONs(ms []core.MON) []*pb.MON {
 
 func toProtoMON(m *core.MON) *pb.MON {
 	ret := &pb.MON{}
+	ret.SetLeader(m.Leader)
 	ret.SetName(m.Name)
+	ret.SetRank(m.Rank)
+	ret.SetPublicAddress(m.PublicAddress)
 	return ret
 }
 
@@ -469,7 +469,15 @@ func toProtoOSDs(os []core.OSD) []*pb.OSD {
 
 func toProtoOSD(o *core.OSD) *pb.OSD {
 	ret := &pb.OSD{}
+	ret.SetId(o.ID)
 	ret.SetName(o.Name)
+	ret.SetUp(o.Up)
+	ret.SetIn(o.In)
+	ret.SetExists(o.Exists)
+	ret.SetDeviceClass(o.DeviceClass)
+	ret.SetSizeBytes(o.Size)
+	ret.SetUsedBytes(o.Used)
+	ret.SetPlacementGroupCount(o.PGCount)
 	return ret
 }
 
@@ -491,9 +499,29 @@ func toProtoPools(ps []core.Pool) []*pb.Pool {
 	return ret
 }
 
+func toProtoPoolType(s string) pb.PoolType {
+	if pt, ok := pb.PoolType_value[strings.ToUpper(s)]; ok {
+		return pb.PoolType(pt)
+	}
+	return pb.PoolType_UNSPECIFIED
+}
+
 func toProtoPool(p *core.Pool) *pb.Pool {
 	ret := &pb.Pool{}
+	ret.SetId(p.ID)
 	ret.SetName(p.Name)
+	ret.SetPoolType(toProtoPoolType(p.Type))
+	ret.SetEcOverwrites(p.ECOverwrites)
+	ret.SetDataChunks(p.DataChunks)
+	ret.SetCodingChunks(p.CodingChunks)
+	ret.SetReplicatedSize(p.ReplicatedSize)
+	ret.SetQuotaMaxBytes(p.QuotaMaxBytes)
+	ret.SetQuotaMaxObjects(p.QuotaMaxObjects)
+	ret.SetUsedBytes(p.UsedBytes)
+	ret.SetUsedObjects(p.UsedObjects)
+	ret.SetPlacementGroupCount(p.PlacementGroupCount)
+	ret.SetPlacementGroupState(p.PlacementGroupState)
+	ret.SetApplications(p.Applications)
 	return ret
 }
 

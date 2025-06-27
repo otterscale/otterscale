@@ -3,6 +3,7 @@ package ceph
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/ceph/go-ceph/rados"
@@ -20,7 +21,7 @@ func osdCommand(conn *rados.Conn, osd int, m any) ([]byte, error) {
 	return resp, nil
 }
 
-func osdCommandWithUnmarshal(conn *rados.Conn, osd int, key string, m, v any) error {
+func osdCommandWithKeyUnmarshal(conn *rados.Conn, osd int, key string, m, v any) error {
 	resp, err := osdCommand(conn, osd, m)
 	if err != nil {
 		return err
@@ -56,6 +57,22 @@ func monCommandWithUnmarshal(conn *rados.Conn, m, v any) error {
 	return json.Unmarshal(resp, &v)
 }
 
+func monCommandWithKeyUnmarshal(conn *rados.Conn, key string, m, v any) error {
+	resp, err := monCommand(conn, m)
+	if err != nil {
+		return err
+	}
+	var result map[string]any
+	if err := json.Unmarshal(resp, &result); err != nil {
+		return err
+	}
+	tmp, err := json.Marshal(result[key])
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(tmp, &v)
+}
+
 func dumpMon(conn *rados.Conn) (*monDump, error) {
 	cmd := map[string]string{
 		"prefix": "mon dump",
@@ -66,6 +83,18 @@ func dumpMon(conn *rados.Conn) (*monDump, error) {
 		return nil, err
 	}
 	return &monDump, nil
+}
+
+func statMon(conn *rados.Conn) (*monStat, error) {
+	cmd := map[string]string{
+		"prefix": "mon stat",
+		"format": "json",
+	}
+	var monStat monStat
+	if err := monCommandWithUnmarshal(conn, cmd, &monStat); err != nil {
+		return nil, err
+	}
+	return &monStat, nil
 }
 
 func dumpOSD(conn *rados.Conn) (*osdDump, error) {
@@ -90,6 +119,42 @@ func treeOSD(conn *rados.Conn) (*osdTree, error) {
 		return nil, err
 	}
 	return &osdTree, nil
+}
+
+func dfOSD(conn *rados.Conn) (*osdDF, error) {
+	cmd := map[string]string{
+		"prefix": "osd df",
+		"format": "json",
+	}
+	var osdDF osdDF
+	if err := monCommandWithUnmarshal(conn, cmd, &osdDF); err != nil {
+		return nil, err
+	}
+	return &osdDF, nil
+}
+
+func dfAll(conn *rados.Conn) (*df, error) {
+	cmd := map[string]string{
+		"prefix": "df",
+		"format": "json",
+	}
+	var df df
+	if err := monCommandWithUnmarshal(conn, cmd, &df); err != nil {
+		return nil, err
+	}
+	return &df, nil
+}
+
+func dumpPG(conn *rados.Conn) (*pgDump, error) {
+	cmd := map[string]string{
+		"prefix": "pg dump",
+		"format": "json",
+	}
+	var pgDump pgDump
+	if err := monCommandWithUnmarshal(conn, cmd, &pgDump); err != nil {
+		return nil, err
+	}
+	return &pgDump, nil
 }
 
 func createOSDPool(conn *rados.Conn, pool, poolType string) error {
@@ -136,6 +201,20 @@ func enableOSDPoolApplication(conn *rados.Conn, pool, application string) error 
 	return nil
 }
 
+func getOSDPool(conn *rados.Conn, pool, key string) (string, error) {
+	cmd := map[string]string{
+		"prefix": "osd pool get",
+		"pool":   pool,
+		"var":    key,
+		"format": "json",
+	}
+	var v any
+	if err := monCommandWithKeyUnmarshal(conn, key, cmd, &v); err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%v", v), nil
+}
+
 func setOSDPool(conn *rados.Conn, pool, key, value string) error {
 	cmd := map[string]string{
 		"prefix": "osd pool set",
@@ -148,6 +227,19 @@ func setOSDPool(conn *rados.Conn, pool, key, value string) error {
 		return err
 	}
 	return nil
+}
+
+func getOSDPoolQuota(conn *rados.Conn, pool string) (*poolQuota, error) {
+	cmd := map[string]string{
+		"prefix": "osd pool get-quota",
+		"pool":   pool,
+		"format": "json",
+	}
+	var poolQuota poolQuota
+	if err := monCommandWithUnmarshal(conn, cmd, &poolQuota); err != nil {
+		return nil, err
+	}
+	return &poolQuota, nil
 }
 
 func setOSDPoolQuota(conn *rados.Conn, pool, field string, value uint64) error {
@@ -164,6 +256,19 @@ func setOSDPoolQuota(conn *rados.Conn, pool, field string, value uint64) error {
 	return nil
 }
 
+func getECProfile(conn *rados.Conn, name string) (*ecProfile, error) {
+	cmd := map[string]string{
+		"prefix": "osd erasure-code-profile get",
+		"name":   name,
+		"format": "json",
+	}
+	var ecProfile ecProfile
+	if err := monCommandWithUnmarshal(conn, cmd, &ecProfile); err != nil {
+		return nil, err
+	}
+	return &ecProfile, nil
+}
+
 func smartOSD(conn *rados.Conn, osd int, deviceID string) (*osdSMART, error) {
 	cmd := map[string]string{
 		"prefix": "smart",
@@ -171,7 +276,7 @@ func smartOSD(conn *rados.Conn, osd int, deviceID string) (*osdSMART, error) {
 		"format": "json",
 	}
 	var osdSMART osdSMART
-	if err := osdCommandWithUnmarshal(conn, osd, deviceID, cmd, &osdSMART); err != nil {
+	if err := osdCommandWithKeyUnmarshal(conn, osd, deviceID, cmd, &osdSMART); err != nil {
 		return nil, err
 	}
 	return &osdSMART, nil
@@ -202,7 +307,7 @@ func dumpFS(conn *rados.Conn) (*fsDump, error) {
 	return &fsDump, nil
 }
 
-func listSubvolumes(conn *rados.Conn, volume, group string) ([]subvolume, error) {
+func listSubvolumes(conn *rados.Conn, volume, group string) ([]names, error) {
 	cmd := map[string]string{
 		"prefix":   "fs subvolume ls",
 		"vol_name": volume,
@@ -211,11 +316,11 @@ func listSubvolumes(conn *rados.Conn, volume, group string) ([]subvolume, error)
 	if group != "" {
 		cmd["group_name"] = group
 	}
-	var subvolumes []subvolume
-	if err := monCommandWithUnmarshal(conn, cmd, &subvolumes); err != nil {
+	var names []names
+	if err := monCommandWithUnmarshal(conn, cmd, &names); err != nil {
 		return nil, err
 	}
-	return subvolumes, nil
+	return names, nil
 }
 
 func getSubvolume(conn *rados.Conn, volume, subvolume, group string) (*subvolumeInfo, error) {
@@ -337,17 +442,17 @@ func removeSubvolumeSnapshot(conn *rados.Conn, volume, subvolume, group, snapsho
 	return nil
 }
 
-func listSubvolumeGroups(conn *rados.Conn, volume string) ([]subvolumeGroup, error) {
+func listSubvolumeGroups(conn *rados.Conn, volume string) ([]names, error) {
 	cmd := map[string]string{
 		"prefix":   "fs subvolumegroup ls",
 		"vol_name": volume,
 		"format":   "json",
 	}
-	var groups []subvolumeGroup
-	if err := monCommandWithUnmarshal(conn, cmd, &groups); err != nil {
+	var names []names
+	if err := monCommandWithUnmarshal(conn, cmd, &names); err != nil {
 		return nil, err
 	}
-	return groups, nil
+	return names, nil
 }
 
 func getSubvolumeGroup(conn *rados.Conn, volume, group string) (*subvolumeGroupInfo, error) {
