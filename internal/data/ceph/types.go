@@ -2,6 +2,24 @@ package ceph
 
 import "time"
 
+type CephTime struct {
+	time.Time
+}
+
+func (ct *CephTime) UnmarshalJSON(data []byte) error {
+	str := string(data)
+	if str == `""` || str == "null" {
+		return nil
+	}
+
+	t, err := time.Parse(`"2006-01-02 15:04:05"`, str)
+	if err != nil {
+		return err
+	}
+	ct.Time = t
+	return nil
+}
+
 type monDump struct {
 	MONs []struct {
 		Name          string `json:"name,omitempty"`
@@ -98,38 +116,11 @@ type device struct {
 }
 
 type fsDump struct {
-	Filesystems []struct {
-		Mdsmap struct {
-			Epoch                     int       `json:"epoch,omitempty"`
-			Flags                     int       `json:"flags,omitempty"`
-			EverAllowedFeatures       int       `json:"ever_allowed_features,omitempty"`
-			ExplicitlyAllowedFeatures int       `json:"explicitly_allowed_features,omitempty"`
-			Created                   time.Time `json:"created,omitempty"`
-			Modified                  time.Time `json:"modified,omitempty"`
-			Tableserver               int       `json:"tableserver,omitempty"`
-			Root                      int       `json:"root,omitempty"`
-			SessionTimeout            int       `json:"session_timeout,omitempty"`
-			SessionAutoclose          int       `json:"session_autoclose,omitempty"`
-			MaxFileSize               int64     `json:"max_file_size,omitempty"`
-			MaxXattrSize              int       `json:"max_xattr_size,omitempty"`
-			LastFailure               int       `json:"last_failure,omitempty"`
-			LastFailureOsdEpoch       int       `json:"last_failure_osd_epoch,omitempty"`
-			MaxMds                    int       `json:"max_mds,omitempty"`
-			In                        []int     `json:"in,omitempty"`
-			Failed                    []any     `json:"failed,omitempty"`
-			Damaged                   []any     `json:"damaged,omitempty"`
-			Stopped                   []any     `json:"stopped,omitempty"`
-			DataPools                 []int     `json:"data_pools,omitempty"`
-			MetadataPool              int       `json:"metadata_pool,omitempty"`
-			Enabled                   bool      `json:"enabled,omitempty"`
-			FsName                    string    `json:"fs_name,omitempty"`
-			Balancer                  string    `json:"balancer,omitempty"`
-			BalRankMask               string    `json:"bal_rank_mask,omitempty"`
-			StandbyCountWanted        int       `json:"standby_count_wanted,omitempty"`
-			QdbLeader                 int       `json:"qdb_leader,omitempty"`
-			QdbCluster                []int     `json:"qdb_cluster,omitempty"`
+	FileSystems []struct {
+		MDSMap struct {
+			FileSystemName string `json:"fs_name,omitempty"`
 		} `json:"mdsmap,omitempty"`
-		ID int `json:"id,omitempty"`
+		ID int64 `json:"id,omitempty"`
 	} `json:"filesystems,omitempty"`
 }
 
@@ -138,40 +129,24 @@ type names struct {
 }
 
 type subvolumeInfo struct {
-	UID        int       `json:"uid,omitempty"`
-	GID        int       `json:"gid,omitempty"`
-	Mode       int       `json:"mode,omitempty"`
-	DataPool   string    `json:"data_pool,omitempty"`
-	Features   []string  `json:"features,omitempty"`
-	Flavor     int       `json:"flavor,omitempty"`
-	Type       string    `json:"type,omitempty"`
-	Path       string    `json:"path,omitempty"`
-	State      string    `json:"state,omitempty"`
-	BytesPcent string    `json:"bytes_pcent,omitempty"`
-	BytesQuota any       `json:"bytes_quota,omitempty"`
-	BytesUsed  uint64    `json:"bytes_used,omitempty"`
-	CreatedAt  time.Time `json:"created_at,omitempty"`
-	Ctime      time.Time `json:"ctime,omitempty"`
-	Mtime      time.Time `json:"mtime,omitempty"`
-	Atime      time.Time `json:"atime,omitempty"`
+	Path       string   `json:"path,omitempty"`
+	DataPool   string   `json:"data_pool,omitempty"`
+	Mode       int      `json:"mode,omitempty"`
+	BytesQuota any      `json:"bytes_quota,omitempty"`
+	BytesUsed  uint64   `json:"bytes_used,omitempty"`
+	CreatedAt  CephTime `json:"created_at,omitempty"`
 }
 
 type subvolumeSnapshotInfo struct {
-	DataPool         string    `json:"data_pool,omitempty"`
-	HasPendingClones string    `json:"has_pending_clones,omitempty"`
-	CreatedAt        time.Time `json:"created_at,omitempty"`
+	DataPool         string   `json:"data_pool,omitempty"`
+	HasPendingClones string   `json:"has_pending_clones,omitempty"`
+	CreatedAt        CephTime `json:"created_at,omitempty"`
 }
 
 type subvolumeGroupInfo struct {
-	UID        int       `json:"uid,omitempty"`
-	GID        int       `json:"gid,omitempty"`
-	Mode       int       `json:"mode,omitempty"`
-	DataPool   string    `json:"data_pool,omitempty"`
-	BytesPcent string    `json:"bytes_pcent,omitempty"`
-	BytesQuota any       `json:"bytes_quota,omitempty"`
-	BytesUsed  uint64    `json:"bytes_used,omitempty"`
-	CreatedAt  time.Time `json:"created_at,omitempty"`
-	Ctime      time.Time `json:"ctime,omitempty"`
-	Mtime      time.Time `json:"mtime,omitempty"`
-	Atime      time.Time `json:"atime,omitempty"`
+	DataPool   string   `json:"data_pool,omitempty"`
+	Mode       int      `json:"mode,omitempty"`
+	BytesQuota any      `json:"bytes_quota,omitempty"`
+	BytesUsed  uint64   `json:"bytes_used,omitempty"`
+	CreatedAt  CephTime `json:"created_at,omitempty"`
 }
