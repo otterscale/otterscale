@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.storage.v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/openhdc/otterscale/api/storage/v1;pb";
 
@@ -134,12 +135,15 @@ message Image {
 }
 
 message Volume {
-  string name = 1;
+  int64 id = 1;
+  string name = 2;
 }
 
 message Subvolume {
   message Snapshot {
     string name = 1;
+    string has_pending_clones = 2;
+    google.protobuf.Timestamp created_at = 11;
   }
   message Export {
     string ip = 1;
@@ -148,12 +152,23 @@ message Subvolume {
     string command = 11;
   }
   string name = 1;
+  string path = 2;
+  string mode = 11;  // oct
+  string pool_name = 12;
+  uint64 quota_bytes = 21;
+  uint64 used_bytes = 22;
+  google.protobuf.Timestamp created_at = 31;
   Export export = 51;
   repeated Snapshot snapshots = 101;
 }
 
 message SubvolumeGroup {
   string name = 1;
+  string mode = 11;  // oct
+  string pool_name = 12;
+  uint64 quota_bytes = 21;
+  uint64 used_bytes = 22;
+  google.protobuf.Timestamp created_at = 31;
 }
 
 message Bucket {

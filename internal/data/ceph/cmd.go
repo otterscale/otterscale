@@ -390,6 +390,23 @@ func removeSubvolume(conn *rados.Conn, volume, subvolume, group string) error {
 	return nil
 }
 
+func listSubvolumeSnapshots(conn *rados.Conn, volume, subvolume, group string) ([]names, error) {
+	cmd := map[string]string{
+		"prefix":   "fs subvolume snapshot ls",
+		"vol_name": volume,
+		"sub_name": subvolume,
+		"format":   "json",
+	}
+	if group != "" {
+		cmd["group_name"] = group
+	}
+	var names []names
+	if err := monCommandWithUnmarshal(conn, cmd, &names); err != nil {
+		return nil, err
+	}
+	return names, nil
+}
+
 func getSubvolumeSnapshot(conn *rados.Conn, volume, subvolume, group, snapshot string) (*subvolumeSnapshotInfo, error) {
 	cmd := map[string]string{
 		"prefix":    "fs subvolume snapshot info",

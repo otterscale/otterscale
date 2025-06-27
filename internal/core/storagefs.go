@@ -2,30 +2,54 @@ package core
 
 import (
 	"context"
+	"fmt"
+	"time"
 )
 
 type Volume struct {
+	ID   int64
 	Name string
 }
 
 type SubvolumeSnapshot struct {
-	Name string
+	Name             string
+	HasPendingClones string
+	CreatedAt        time.Time
+}
+
+type SubvolumeExport struct {
+	IP      string
+	Path    string
+	Clients []string
+	Command string
 }
 
 type Subvolume struct {
-	Name    string
-	Path    string
-	Clients []string
+	Name      string
+	Path      string
+	Mode      string
+	PoolName  string
+	Quota     uint64
+	Used      uint64
+	CreatedAt time.Time
+	Export    *SubvolumeExport
+	Snapshots []SubvolumeSnapshot
 }
 
 type SubvolumeGroup struct {
-	Name string
+	Name      string
+	Mode      string
+	PoolName  string
+	Quota     uint64
+	Used      uint64
+	CreatedAt time.Time
 }
 
 type CephFSRepo interface {
 	ListVolumes(ctx context.Context, config *StorageConfig) ([]Volume, error)
 	ListSubvolumes(ctx context.Context, config *StorageConfig, volume, group string) ([]Subvolume, error)
 	GetSubvolume(ctx context.Context, config *StorageConfig, volume, subvolume, group string) (*Subvolume, error)
+	ListSubvolumeSnapshots(ctx context.Context, config *StorageConfig, volume, subvolume, group string) ([]SubvolumeSnapshot, error)
 	GetSubvolumeSnapshot(ctx context.Context, config *StorageConfig, volume, subvolume, group, snapshot string) (*SubvolumeSnapshot, error)
 	CreateSubvolume(ctx context.Context, config *StorageConfig, volume, subvolume, group string, size uint64) error
 	ResizeSubvolume(ctx context.Context, config *StorageConfig, volume, subvolume, group string, size uint64) error
@@ -62,8 +86,21 @@ func (uc *StorageUseCase) ListSubvolumes(ctx context.Context, uuid, facility, vo
 	if err != nil {
 		return nil, err
 	}
+	ip, err := uc.exportIP(ctx, uuid, uc.nfsName(facility))
+	if err != nil {
+		return nil, err
+	}
 	for i := range subs {
-		subs[i].Clients = m[subs[i].Path]
+		subs[i].Snapshots, err = uc.fs.ListSubvolumeSnapshots(ctx, config, volume, subs[i].Name, group)
+		if err != nil {
+			return nil, err
+		}
+		subs[i].Export = &SubvolumeExport{
+			IP:      ip,
+			Path:    subs[i].Path,
+			Command: fmt.Sprintf("mount -t nfs4 %s:%s /mnt/%s", ip, subs[i].Path, subs[i].Name),
+			Clients: m[subs[i].Path],
+		}
 	}
 	return subs, nil
 }
@@ -256,4 +293,20 @@ func (uc *StorageUseCase) subvolumeExport(ctx context.Context, config *StorageCo
 	}
 	_, ok := m[sub.Path]
 	return ok, nil
+}
+
+func (uc *StorageUseCase) exportIP(ctx context.Context, uuid, facility string) (string, error) {
+	config, err := uc.facility.GetConfig(ctx, uuid, facility)
+	if err != nil {
+		return "", err
+	}
+	vip, ok := config["vip"]
+	if !ok {
+		return "", nil
+	}
+	value, ok := vip.(map[string]any)["value"]
+	if !ok {
+		return "", nil
+	}
+	return value.(string), nil
 }

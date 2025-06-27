@@ -8,6 +8,7 @@ import (
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 
@@ -563,6 +564,7 @@ func toProtoVolumes(vs []core.Volume) []*pb.Volume {
 
 func toProtoVolume(v *core.Volume) *pb.Volume {
 	ret := &pb.Volume{}
+	ret.SetId(v.ID)
 	ret.SetName(v.Name)
 	return ret
 }
@@ -578,17 +580,26 @@ func toProtoSubvolumes(ss []core.Subvolume) []*pb.Subvolume {
 func toProtoSubvolume(s *core.Subvolume) *pb.Subvolume {
 	ret := &pb.Subvolume{}
 	ret.SetName(s.Name)
-	ret.SetExport(toProtoSubvolumeExport(s))
+	ret.SetPath(s.Path)
+	ret.SetMode(s.Mode)
+	ret.SetPoolName(s.PoolName)
+	ret.SetQuotaBytes(s.Quota)
+	ret.SetUsedBytes(s.Used)
+	ret.SetCreatedAt(timestamppb.New(s.CreatedAt))
+	ret.SetExport(toProtoSubvolumeExport(s.Export))
+	ret.SetSnapshots(toProtoSubvolumeSnapshots(s.Snapshots))
 	return ret
 }
 
-func toProtoSubvolumeExport(s *core.Subvolume) *pb.Subvolume_Export {
-	if len(s.Clients) == 0 {
+func toProtoSubvolumeExport(e *core.SubvolumeExport) *pb.Subvolume_Export {
+	if len(e.Clients) == 0 {
 		return nil
 	}
 	ret := &pb.Subvolume_Export{}
-	ret.SetPath(s.Path)
-	ret.SetClients(s.Clients)
+	ret.SetIp(e.IP)
+	ret.SetPath(e.Path)
+	ret.SetClients(e.Clients)
+	ret.SetCommand(e.Command)
 	return ret
 }
 
@@ -603,6 +614,8 @@ func toProtoSubvolumeSnapshots(ss []core.SubvolumeSnapshot) []*pb.Subvolume_Snap
 func toProtoSubvolumeSnapshot(s *core.SubvolumeSnapshot) *pb.Subvolume_Snapshot {
 	ret := &pb.Subvolume_Snapshot{}
 	ret.SetName(s.Name)
+	ret.SetHasPendingClones(s.HasPendingClones)
+	ret.SetCreatedAt(timestamppb.New(s.CreatedAt))
 	return ret
 }
 
@@ -617,6 +630,11 @@ func toProtoSubvolumeGroups(ss []core.SubvolumeGroup) []*pb.SubvolumeGroup {
 func toProtoSubvolumeGroup(s *core.SubvolumeGroup) *pb.SubvolumeGroup {
 	ret := &pb.SubvolumeGroup{}
 	ret.SetName(s.Name)
+	ret.SetMode(s.Mode)
+	ret.SetPoolName(s.PoolName)
+	ret.SetQuotaBytes(s.Quota)
+	ret.SetUsedBytes(s.Used)
+	ret.SetCreatedAt(timestamppb.New(s.CreatedAt))
 	return ret
 }
 

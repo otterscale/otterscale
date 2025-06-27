@@ -98,6 +98,26 @@ func (r *fs) DeleteSubvolume(ctx context.Context, config *core.StorageConfig, vo
 	return removeSubvolume(conn, volume, subvolume, group)
 }
 
+func (r *fs) ListSubvolumeSnapshots(ctx context.Context, config *core.StorageConfig, volume, subvolume, group string) ([]core.SubvolumeSnapshot, error) {
+	conn, err := r.ceph.connection(config)
+	if err != nil {
+		return nil, err
+	}
+	ss, err := listSubvolumeSnapshots(conn, volume, subvolume, group)
+	if err != nil {
+		return nil, err
+	}
+	var snapshots []core.SubvolumeSnapshot
+	for _, s := range ss {
+		snapshot, err := getSubvolumeSnapshot(conn, volume, subvolume, group, s.Name)
+		if err != nil {
+			return nil, err
+		}
+		snapshots = append(snapshots, *r.toSubvolumeSnapshot(s.Name, snapshot))
+	}
+	return snapshots, nil
+}
+
 func (r *fs) GetSubvolumeSnapshot(ctx context.Context, config *core.StorageConfig, volume, subvolume, group, snapshot string) (*core.SubvolumeSnapshot, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
@@ -220,9 +240,10 @@ func (r *fs) ListPathToExportClients(ctx context.Context, config *core.StorageCo
 
 func (r *fs) toVolumes(d *fsDump) []core.Volume {
 	ret := []core.Volume{}
-	for i := range d.Filesystems {
+	for i := range d.FileSystems {
 		ret = append(ret, core.Volume{
-			Name: d.Filesystems[i].Mdsmap.FsName,
+			ID:   d.FileSystems[i].ID,
+			Name: d.FileSystems[i].MDSMap.FileSystemName,
 		})
 	}
 	return ret
@@ -230,22 +251,34 @@ func (r *fs) toVolumes(d *fsDump) []core.Volume {
 
 func (r *fs) toSubvolume(name string, info *subvolumeInfo) *core.Subvolume {
 	ret := &core.Subvolume{
-		Name: name,
-		Path: info.Path,
+		Name:      name,
+		Path:      info.Path,
+		Mode:      fmt.Sprintf("%o", info.Mode),
+		PoolName:  info.DataPool,
+		Quota:     info.BytesUsed,
+		Used:      info.BytesUsed,
+		CreatedAt: info.CreatedAt.Time,
 	}
 	return ret
 }
 
 func (r *fs) toSubvolumeSnapshot(name string, info *subvolumeSnapshotInfo) *core.SubvolumeSnapshot {
 	ret := &core.SubvolumeSnapshot{
-		Name: name,
+		Name:             name,
+		HasPendingClones: info.HasPendingClones,
+		CreatedAt:        info.CreatedAt.Time,
 	}
 	return ret
 }
 
 func (r *fs) toSubvolumeGroups(name string, info *subvolumeGroupInfo) *core.SubvolumeGroup {
 	ret := &core.SubvolumeGroup{
-		Name: name,
+		Name:      name,
+		Mode:      fmt.Sprintf("%06o", info.Mode),
+		PoolName:  info.DataPool,
+		Quota:     info.BytesUsed,
+		Used:      info.BytesUsed,
+		CreatedAt: info.CreatedAt.Time,
 	}
 	return ret
 }
