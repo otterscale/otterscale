@@ -1,4 +1,5 @@
 <script lang="ts" generics="TData">
+	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
 	import * as Chart from '$lib/components/custom/chart/templates';
 	import { type Table } from '@tanstack/table-core';
 
@@ -7,18 +8,14 @@
 	const filteredData = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 </script>
 
-<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-	<span class="col-span-1">
-		<Chart.Text>
-			{#snippet title()}
-				Bucket
-			{/snippet}
-			{#snippet content()}
-				{@const nameList = filteredData.map((datum) => datum['name' as keyof TData])}
-				<div class="text-7xl">
-					{nameList.length}
-				</div>
-			{/snippet}
-		</Chart.Text>
-	</span>
-</div>
+<Layout>
+	<Chart.Text>
+		{#snippet title()}
+			Bucket
+		{/snippet}
+		{#snippet content()}
+			{@const nameList = filteredData.map((datum) => datum['name' as keyof TData])}
+			{nameList.length}
+		{/snippet}
+	</Chart.Text>
+</Layout>
