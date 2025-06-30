@@ -4,6 +4,23 @@
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Row } from '@tanstack/table-core';
 	import type { Pool } from './types';
+	import { LineChart } from 'layerchart';
+
+	const renderContext: 'svg' | 'canvas' = 'canvas';
+	const debug = false;
+	function generateRandomTimeSeriesData(days = 7, minValue = 50, maxValue = 100) {
+		const data = [];
+		const now = new Date();
+
+		for (let i = 0; i < days; i++) {
+			data.push({
+				date: new Date(now.getTime() - (days - 1 - i) * 24 * 60 * 60 * 1000),
+				value: Math.floor(Math.random() * (maxValue - minValue) + minValue)
+			});
+		}
+
+		return data;
+	}
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -11,7 +28,9 @@
 		dataProtection: dataProtection,
 		applications: applications,
 		PGStatus: PGStatus,
-		usage: usage
+		usage: usage,
+		readBytes: readBytes,
+		writeBytes: writeBytes
 	};
 </script>
 
@@ -50,4 +69,16 @@
 			{(numerator * 100) / denominator}%
 		{/snippet}
 	</Progress.Root>
+{/snippet}
+
+{#snippet readBytes(row: Row<Pool>)}
+	<div class="h-[50px] w-[100px]">
+		<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
+	</div>
+{/snippet}
+
+{#snippet writeBytes(row: Row<Pool>)}
+	<div class="h-[50px] w-[100px]">
+		<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
+	</div>
 {/snippet}

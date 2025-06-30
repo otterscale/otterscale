@@ -11,7 +11,9 @@
 		dataProtection: dataProtection,
 		applications: applications,
 		PGStatus: PGStatus,
-		usage: usage
+		usage: usage,
+		readBytes: readBytes,
+		writeBytes: writeBytes
 	};
 </script>
 
@@ -24,6 +26,7 @@
 		aria-label="Select all"
 	/>
 {/snippet}
+
 {#snippet name(column: Column<Pool>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
@@ -66,5 +69,17 @@
 			<Sorter {column} />
 		</Layout.HeaderController>
 		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet readBytes(column: Column<Pool>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>READ</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet writeBytes(column: Column<Pool>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>WRITE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
