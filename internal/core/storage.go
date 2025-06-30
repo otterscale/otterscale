@@ -46,11 +46,12 @@ type StorageUseCase struct {
 	rbd      CephRBDRepo
 	fs       CephFSRepo
 	rgw      CephRGWRepo
+	machine  MachineRepo
 
 	configs sync.Map
 }
 
-func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClusterRepo, rbd CephRBDRepo, fs CephFSRepo, rgw CephRGWRepo) *StorageUseCase {
+func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClusterRepo, rbd CephRBDRepo, fs CephFSRepo, rgw CephRGWRepo, machine MachineRepo) *StorageUseCase {
 	return &StorageUseCase{
 		action:   action,
 		facility: facility,
@@ -58,6 +59,7 @@ func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClu
 		rbd:      rbd,
 		fs:       fs,
 		rgw:      rgw,
+		machine:  machine,
 	}
 }
 

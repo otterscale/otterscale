@@ -83,7 +83,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	cephRBDRepo := ceph.NewRBD(cephCeph)
 	cephFSRepo := ceph.NewFS(cephCeph)
 	cephRGWRepo := ceph.NewRGW(cephCeph)
-	storageUseCase := core.NewStorageUseCase(actionRepo, facilityRepo, cephClusterRepo, cephRBDRepo, cephFSRepo, cephRGWRepo)
+	storageUseCase := core.NewStorageUseCase(actionRepo, facilityRepo, cephClusterRepo, cephRBDRepo, cephFSRepo, cephRGWRepo, machineRepo)
 	storageService := app.NewStorageService(storageUseCase)
 	keyRepo := juju.NewKey(jujuJuju)
 	sshKeyRepo := maas.NewSSHKey(maasMAAS)

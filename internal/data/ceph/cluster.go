@@ -203,7 +203,6 @@ func (r *cluster) toMONs(d *monDump, s *monStat) []core.MON {
 			Name:          d.MONs[i].Name,
 			Rank:          d.MONs[i].Rank,
 			PublicAddress: d.MONs[i].PublicAddress,
-			Hostname:      d.MONs[i].Name,
 		})
 	}
 	return ret

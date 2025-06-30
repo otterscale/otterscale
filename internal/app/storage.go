@@ -443,6 +443,16 @@ func (s *StorageService) ACL(str string) types.BucketCannedACL {
 	return types.BucketCannedACLPrivate
 }
 
+func toProtoStorageMachine(id, hostname string) *pb.Machine {
+	if id == "" || hostname == "" {
+		return nil
+	}
+	ret := &pb.Machine{}
+	ret.SetId(id)
+	ret.SetHostname(hostname)
+	return ret
+}
+
 func toProtoMONs(ms []core.MON) []*pb.MON {
 	ret := []*pb.MON{}
 	for i := range ms {
@@ -457,6 +467,7 @@ func toProtoMON(m *core.MON) *pb.MON {
 	ret.SetName(m.Name)
 	ret.SetRank(m.Rank)
 	ret.SetPublicAddress(m.PublicAddress)
+	ret.SetMachine(toProtoStorageMachine(m.MachineID, m.MachineHostname))
 	return ret
 }
 
@@ -479,6 +490,7 @@ func toProtoOSD(o *core.OSD) *pb.OSD {
 	ret.SetSizeBytes(o.Size)
 	ret.SetUsedBytes(o.Used)
 	ret.SetPlacementGroupCount(o.PGCount)
+	ret.SetMachine(toProtoStorageMachine(o.MachineID, o.MachineHostname))
 	return ret
 }
 
