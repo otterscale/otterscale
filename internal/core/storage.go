@@ -166,12 +166,15 @@ func (uc *StorageUseCase) runCommand(ctx context.Context, uuid, leader, command 
 	return uc.waitForActionCompleted(ctx, uuid, id)
 }
 
-func (uc *StorageUseCase) runAction(ctx context.Context, uuid, leader, action string, params map[string]any) (*action.ActionResult, error) {
+func (uc *StorageUseCase) runAction(ctx context.Context, uuid, leader, action string, params map[string]any) error {
 	id, err := uc.action.RunAction(ctx, uuid, leader, action, params)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return uc.waitForActionCompleted(ctx, uuid, id)
+	if _, err := uc.waitForActionCompleted(ctx, uuid, id); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (uc *StorageUseCase) waitForActionCompleted(ctx context.Context, uuid, id string) (*action.ActionResult, error) {

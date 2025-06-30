@@ -122,7 +122,7 @@ func (uc *StorageUseCase) CreateSubvolume(ctx context.Context, uuid, facility, v
 			"name": subvolume,
 			"size": size / 1024 / 1024 / 1024, // gb
 		}
-		if _, err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+		if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
 			return nil, err
 		}
 		return uc.fs.GetSubvolume(ctx, config, volume, subvolume, "")
@@ -140,7 +140,7 @@ func (uc *StorageUseCase) UpdateSubvolume(ctx context.Context, uuid, facility, v
 		return nil, err
 	}
 
-	export, err := uc.subvolumeExport(ctx, config, uuid, facility, volume, subvolume, group)
+	export, err := uc.subvolumeExport(ctx, config, facility, volume, subvolume, group)
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +154,7 @@ func (uc *StorageUseCase) UpdateSubvolume(ctx context.Context, uuid, facility, v
 			"name": subvolume,
 			"size": size / 1024 / 1024 / 1024, // gb
 		}
-		if _, err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+		if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
 			return nil, err
 		}
 		return uc.fs.GetSubvolume(ctx, config, volume, subvolume, "")
@@ -171,7 +171,7 @@ func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, v
 	if err != nil {
 		return err
 	}
-	export, err := uc.subvolumeExport(ctx, config, uuid, facility, volume, subvolume, group)
+	export, err := uc.subvolumeExport(ctx, config, facility, volume, subvolume, group)
 	if err != nil {
 		return err
 	}
@@ -185,7 +185,7 @@ func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, v
 			"name":  subvolume,
 			"purge": true,
 		}
-		if _, err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+		if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
 			return err
 		}
 		return nil
@@ -203,7 +203,7 @@ func (uc *StorageUseCase) GrantSubvolumeClient(ctx context.Context, uuid, facili
 		"name":   subvolume,
 		"client": clientIP,
 	}
-	if _, err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+	if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
 		return err
 	}
 	return nil
@@ -219,7 +219,7 @@ func (uc *StorageUseCase) RevokeSubvolumeClient(ctx context.Context, uuid, facil
 		"name":   subvolume,
 		"client": clientIP,
 	}
-	if _, err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+	if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
 		return err
 	}
 	return nil
@@ -282,7 +282,7 @@ func (uc *StorageUseCase) DeleteSubvolumeGroup(ctx context.Context, uuid, facili
 	return uc.fs.DeleteSubvolumeGroup(ctx, config, volume, group)
 }
 
-func (uc *StorageUseCase) subvolumeExport(ctx context.Context, config *StorageConfig, uuid, facility, volume, subvolume, group string) (bool, error) {
+func (uc *StorageUseCase) subvolumeExport(ctx context.Context, config *StorageConfig, facility, volume, subvolume, group string) (bool, error) {
 	pool := uc.nfsName(facility) // TODO: multiple ceph-nfs charms
 	m, err := uc.fs.ListPathToExportClients(ctx, config, pool)
 	if err != nil {

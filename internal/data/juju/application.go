@@ -192,11 +192,11 @@ func (r *application) GetUnitInfo(_ context.Context, uuid, name string) (*api.Un
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("unit info %q not found", name))
 }
 
-func (r *application) Consume(ctx context.Context, uuid string, args crossmodel.ConsumeApplicationArgs) error {
+func (r *application) Consume(ctx context.Context, uuid string, args *crossmodel.ConsumeApplicationArgs) error {
 	conn, err := r.juju.connection(uuid)
 	if err != nil {
 		return err
 	}
-	_, err = api.NewClient(conn).Consume(args)
+	_, err = api.NewClient(conn).Consume(*args)
 	return err
 }

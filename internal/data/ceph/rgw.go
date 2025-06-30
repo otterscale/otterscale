@@ -14,7 +14,10 @@ import (
 	"github.com/openhdc/otterscale/internal/core"
 )
 
-const cephRegion = "us-east-1"
+const (
+	cephRegion       = "us-east-1"
+	retryMaxAttempts = 5
+)
 
 type rgw struct {
 	ceph *Ceph
@@ -244,7 +247,7 @@ func (r *rgw) s3Client(conf *core.StorageConfig) (*s3.Client, error) {
 			},
 		}),
 		config.WithBaseEndpoint(client.Endpoint),
-		config.WithRetryMaxAttempts(5),
+		config.WithRetryMaxAttempts(retryMaxAttempts),
 		config.WithHTTPClient(client.HTTPClient),
 	)
 	if err != nil {

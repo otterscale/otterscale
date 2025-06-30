@@ -72,7 +72,7 @@ func (uc *StorageUseCase) CreateImage(ctx context.Context, uuid, facility, pool,
 		return nil, err
 	}
 
-	order := int(math.Round(math.Log(float64(objectSizeBytes))*100) / 100)
+	order := int(math.Round(math.Log(float64(objectSizeBytes))*100) / 100) //nolint:mnd
 	features := uc.convertToRBDImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten)
 	return uc.rbd.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
 }

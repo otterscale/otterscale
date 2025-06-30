@@ -288,7 +288,7 @@ func (r *fs) toSubvolumeGroups(name string, info *subvolumeGroupInfo) *core.Subv
 }
 
 func (r *fs) exportIndice(ioctx *rados.IOContext) ([]string, error) {
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 1024) //nolint:mnd
 	n, err := ioctx.Read("ganesha-export-index", buffer, 0)
 	if err != nil {
 		return nil, err
@@ -299,7 +299,7 @@ func (r *fs) exportIndice(ioctx *rados.IOContext) ([]string, error) {
 }
 
 func (r *fs) exportIndex(ioctx *rados.IOContext, index string) ([]string, error) {
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 1024) //nolint:mnd
 	n, err := ioctx.Read(index, buffer, 0)
 	if err != nil {
 		return nil, err
