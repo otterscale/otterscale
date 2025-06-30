@@ -1207,15 +1207,18 @@ func (b0 Pool_builder) Build() *Pool {
 type Image struct {
 	state                      protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name            *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_SizeBytes       uint64                 `protobuf:"varint,2,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_PoolName        *string                `protobuf:"bytes,11,opt,name=pool_name,json=poolName"`
 	xxx_hidden_ObjectSizeBytes uint64                 `protobuf:"varint,21,opt,name=object_size_bytes,json=objectSizeBytes"`
 	xxx_hidden_StripeUnitBytes uint64                 `protobuf:"varint,22,opt,name=stripe_unit_bytes,json=stripeUnitBytes"`
 	xxx_hidden_StripeCount     uint64                 `protobuf:"varint,23,opt,name=stripe_count,json=stripeCount"`
-	xxx_hidden_Layering        bool                   `protobuf:"varint,31,opt,name=layering"`
-	xxx_hidden_ExclusiveLock   bool                   `protobuf:"varint,32,opt,name=exclusive_lock,json=exclusiveLock"`
-	xxx_hidden_ObjectMap       bool                   `protobuf:"varint,33,opt,name=object_map,json=objectMap"`
-	xxx_hidden_FastDiff        bool                   `protobuf:"varint,34,opt,name=fast_diff,json=fastDiff"`
-	xxx_hidden_DeepFlatten     bool                   `protobuf:"varint,35,opt,name=deep_flatten,json=deepFlatten"`
+	xxx_hidden_SizeBytes       uint64                 `protobuf:"varint,31,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_UsedBytes       uint64                 `protobuf:"varint,32,opt,name=used_bytes,json=usedBytes"`
+	xxx_hidden_ObjectCount     uint64                 `protobuf:"varint,33,opt,name=object_count,json=objectCount"`
+	xxx_hidden_Layering        bool                   `protobuf:"varint,41,opt,name=layering"`
+	xxx_hidden_ExclusiveLock   bool                   `protobuf:"varint,42,opt,name=exclusive_lock,json=exclusiveLock"`
+	xxx_hidden_ObjectMap       bool                   `protobuf:"varint,43,opt,name=object_map,json=objectMap"`
+	xxx_hidden_FastDiff        bool                   `protobuf:"varint,44,opt,name=fast_diff,json=fastDiff"`
+	xxx_hidden_DeepFlatten     bool                   `protobuf:"varint,45,opt,name=deep_flatten,json=deepFlatten"`
 	xxx_hidden_Snapshots       *[]*Image_Snapshot     `protobuf:"bytes,101,rep,name=snapshots"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
@@ -1258,11 +1261,14 @@ func (x *Image) GetName() string {
 	return ""
 }
 
-func (x *Image) GetSizeBytes() uint64 {
+func (x *Image) GetPoolName() string {
 	if x != nil {
-		return x.xxx_hidden_SizeBytes
+		if x.xxx_hidden_PoolName != nil {
+			return *x.xxx_hidden_PoolName
+		}
+		return ""
 	}
-	return 0
+	return ""
 }
 
 func (x *Image) GetObjectSizeBytes() uint64 {
@@ -1282,6 +1288,27 @@ func (x *Image) GetStripeUnitBytes() uint64 {
 func (x *Image) GetStripeCount() uint64 {
 	if x != nil {
 		return x.xxx_hidden_StripeCount
+	}
+	return 0
+}
+
+func (x *Image) GetSizeBytes() uint64 {
+	if x != nil {
+		return x.xxx_hidden_SizeBytes
+	}
+	return 0
+}
+
+func (x *Image) GetUsedBytes() uint64 {
+	if x != nil {
+		return x.xxx_hidden_UsedBytes
+	}
+	return 0
+}
+
+func (x *Image) GetObjectCount() uint64 {
+	if x != nil {
+		return x.xxx_hidden_ObjectCount
 	}
 	return 0
 }
@@ -1332,52 +1359,67 @@ func (x *Image) GetSnapshots() []*Image_Snapshot {
 
 func (x *Image) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 14)
 }
 
-func (x *Image) SetSizeBytes(v uint64) {
-	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
+func (x *Image) SetPoolName(v string) {
+	x.xxx_hidden_PoolName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 14)
 }
 
 func (x *Image) SetObjectSizeBytes(v uint64) {
 	x.xxx_hidden_ObjectSizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 14)
 }
 
 func (x *Image) SetStripeUnitBytes(v uint64) {
 	x.xxx_hidden_StripeUnitBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 14)
 }
 
 func (x *Image) SetStripeCount(v uint64) {
 	x.xxx_hidden_StripeCount = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 14)
+}
+
+func (x *Image) SetSizeBytes(v uint64) {
+	x.xxx_hidden_SizeBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 14)
+}
+
+func (x *Image) SetUsedBytes(v uint64) {
+	x.xxx_hidden_UsedBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 14)
+}
+
+func (x *Image) SetObjectCount(v uint64) {
+	x.xxx_hidden_ObjectCount = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 14)
 }
 
 func (x *Image) SetLayering(v bool) {
 	x.xxx_hidden_Layering = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 14)
 }
 
 func (x *Image) SetExclusiveLock(v bool) {
 	x.xxx_hidden_ExclusiveLock = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 14)
 }
 
 func (x *Image) SetObjectMap(v bool) {
 	x.xxx_hidden_ObjectMap = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 14)
 }
 
 func (x *Image) SetFastDiff(v bool) {
 	x.xxx_hidden_FastDiff = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 14)
 }
 
 func (x *Image) SetDeepFlatten(v bool) {
 	x.xxx_hidden_DeepFlatten = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 11)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 14)
 }
 
 func (x *Image) SetSnapshots(v []*Image_Snapshot) {
@@ -1391,7 +1433,7 @@ func (x *Image) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Image) HasSizeBytes() bool {
+func (x *Image) HasPoolName() bool {
 	if x == nil {
 		return false
 	}
@@ -1419,39 +1461,60 @@ func (x *Image) HasStripeCount() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *Image) HasLayering() bool {
+func (x *Image) HasSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *Image) HasExclusiveLock() bool {
+func (x *Image) HasUsedBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
-func (x *Image) HasObjectMap() bool {
+func (x *Image) HasObjectCount() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
-func (x *Image) HasFastDiff() bool {
+func (x *Image) HasLayering() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
-func (x *Image) HasDeepFlatten() bool {
+func (x *Image) HasExclusiveLock() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
+}
+
+func (x *Image) HasObjectMap() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 10)
+}
+
+func (x *Image) HasFastDiff() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 11)
+}
+
+func (x *Image) HasDeepFlatten() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
 }
 
 func (x *Image) ClearName() {
@@ -1459,9 +1522,9 @@ func (x *Image) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *Image) ClearSizeBytes() {
+func (x *Image) ClearPoolName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_SizeBytes = 0
+	x.xxx_hidden_PoolName = nil
 }
 
 func (x *Image) ClearObjectSizeBytes() {
@@ -1479,28 +1542,43 @@ func (x *Image) ClearStripeCount() {
 	x.xxx_hidden_StripeCount = 0
 }
 
-func (x *Image) ClearLayering() {
+func (x *Image) ClearSizeBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_SizeBytes = 0
+}
+
+func (x *Image) ClearUsedBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_UsedBytes = 0
+}
+
+func (x *Image) ClearObjectCount() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	x.xxx_hidden_ObjectCount = 0
+}
+
+func (x *Image) ClearLayering() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
 	x.xxx_hidden_Layering = false
 }
 
 func (x *Image) ClearExclusiveLock() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
 	x.xxx_hidden_ExclusiveLock = false
 }
 
 func (x *Image) ClearObjectMap() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
 	x.xxx_hidden_ObjectMap = false
 }
 
 func (x *Image) ClearFastDiff() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
 	x.xxx_hidden_FastDiff = false
 }
 
 func (x *Image) ClearDeepFlatten() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
 	x.xxx_hidden_DeepFlatten = false
 }
 
@@ -1508,10 +1586,13 @@ type Image_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Name            *string
-	SizeBytes       *uint64
+	PoolName        *string
 	ObjectSizeBytes *uint64
 	StripeUnitBytes *uint64
 	StripeCount     *uint64
+	SizeBytes       *uint64
+	UsedBytes       *uint64
+	ObjectCount     *uint64
 	Layering        *bool
 	ExclusiveLock   *bool
 	ObjectMap       *bool
@@ -1525,43 +1606,55 @@ func (b0 Image_builder) Build() *Image {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 14)
 		x.xxx_hidden_Name = b.Name
 	}
-	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
-		x.xxx_hidden_SizeBytes = *b.SizeBytes
+	if b.PoolName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 14)
+		x.xxx_hidden_PoolName = b.PoolName
 	}
 	if b.ObjectSizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 14)
 		x.xxx_hidden_ObjectSizeBytes = *b.ObjectSizeBytes
 	}
 	if b.StripeUnitBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 14)
 		x.xxx_hidden_StripeUnitBytes = *b.StripeUnitBytes
 	}
 	if b.StripeCount != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 14)
 		x.xxx_hidden_StripeCount = *b.StripeCount
 	}
+	if b.SizeBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 14)
+		x.xxx_hidden_SizeBytes = *b.SizeBytes
+	}
+	if b.UsedBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 14)
+		x.xxx_hidden_UsedBytes = *b.UsedBytes
+	}
+	if b.ObjectCount != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 14)
+		x.xxx_hidden_ObjectCount = *b.ObjectCount
+	}
 	if b.Layering != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 14)
 		x.xxx_hidden_Layering = *b.Layering
 	}
 	if b.ExclusiveLock != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 14)
 		x.xxx_hidden_ExclusiveLock = *b.ExclusiveLock
 	}
 	if b.ObjectMap != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 14)
 		x.xxx_hidden_ObjectMap = *b.ObjectMap
 	}
 	if b.FastDiff != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 14)
 		x.xxx_hidden_FastDiff = *b.FastDiff
 	}
 	if b.DeepFlatten != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 11)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 14)
 		x.xxx_hidden_DeepFlatten = *b.DeepFlatten
 	}
 	x.xxx_hidden_Snapshots = &b.Snapshots
@@ -10558,6 +10651,7 @@ func (b0 DeleteUserKeyRequest_builder) Build() *DeleteUserKeyRequest {
 type Image_Snapshot struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Protected   bool                   `protobuf:"varint,2,opt,name=protected"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -10599,9 +10693,21 @@ func (x *Image_Snapshot) GetName() string {
 	return ""
 }
 
+func (x *Image_Snapshot) GetProtected() bool {
+	if x != nil {
+		return x.xxx_hidden_Protected
+	}
+	return false
+}
+
 func (x *Image_Snapshot) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *Image_Snapshot) SetProtected(v bool) {
+	x.xxx_hidden_Protected = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *Image_Snapshot) HasName() bool {
@@ -10611,15 +10717,28 @@ func (x *Image_Snapshot) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
+func (x *Image_Snapshot) HasProtected() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
 func (x *Image_Snapshot) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Name = nil
 }
 
+func (x *Image_Snapshot) ClearProtected() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Protected = false
+}
+
 type Image_Snapshot_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name *string
+	Name      *string
+	Protected *bool
 }
 
 func (b0 Image_Snapshot_builder) Build() *Image_Snapshot {
@@ -10627,8 +10746,12 @@ func (b0 Image_Snapshot_builder) Build() *Image_Snapshot {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_Name = b.Name
+	}
+	if b.Protected != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Protected = *b.Protected
 	}
 	return m0
 }
@@ -11108,23 +11231,28 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\fapplications\x18= \x03(\tR\fapplications\x1aF\n" +
 	"\x18PlacementGroupStateEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01\"\xbc\x03\n" +
+	"\x05value\x18\x02 \x01(\x03R\x05value:\x028\x01\"\xb9\x04\n" +
 	"\x05Image\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1d\n" +
-	"\n" +
-	"size_bytes\x18\x02 \x01(\x04R\tsizeBytes\x12*\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
+	"\tpool_name\x18\v \x01(\tR\bpoolName\x12*\n" +
 	"\x11object_size_bytes\x18\x15 \x01(\x04R\x0fobjectSizeBytes\x12*\n" +
 	"\x11stripe_unit_bytes\x18\x16 \x01(\x04R\x0fstripeUnitBytes\x12!\n" +
-	"\fstripe_count\x18\x17 \x01(\x04R\vstripeCount\x12\x1a\n" +
-	"\blayering\x18\x1f \x01(\bR\blayering\x12%\n" +
-	"\x0eexclusive_lock\x18  \x01(\bR\rexclusiveLock\x12\x1d\n" +
+	"\fstripe_count\x18\x17 \x01(\x04R\vstripeCount\x12\x1d\n" +
 	"\n" +
-	"object_map\x18! \x01(\bR\tobjectMap\x12\x1b\n" +
-	"\tfast_diff\x18\" \x01(\bR\bfastDiff\x12!\n" +
-	"\fdeep_flatten\x18# \x01(\bR\vdeepFlatten\x12C\n" +
-	"\tsnapshots\x18e \x03(\v2%.otterscale.storage.v1.Image.SnapshotR\tsnapshots\x1a\x1e\n" +
+	"size_bytes\x18\x1f \x01(\x04R\tsizeBytes\x12\x1d\n" +
+	"\n" +
+	"used_bytes\x18  \x01(\x04R\tusedBytes\x12!\n" +
+	"\fobject_count\x18! \x01(\x04R\vobjectCount\x12\x1a\n" +
+	"\blayering\x18) \x01(\bR\blayering\x12%\n" +
+	"\x0eexclusive_lock\x18* \x01(\bR\rexclusiveLock\x12\x1d\n" +
+	"\n" +
+	"object_map\x18+ \x01(\bR\tobjectMap\x12\x1b\n" +
+	"\tfast_diff\x18, \x01(\bR\bfastDiff\x12!\n" +
+	"\fdeep_flatten\x18- \x01(\bR\vdeepFlatten\x12C\n" +
+	"\tsnapshots\x18e \x03(\v2%.otterscale.storage.v1.Image.SnapshotR\tsnapshots\x1a<\n" +
 	"\bSnapshot\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\",\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
+	"\tprotected\x18\x02 \x01(\bR\tprotected\",\n" +
 	"\x06Volume\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"\xd5\x04\n" +

@@ -537,6 +537,19 @@ func toProtoImages(is []core.RBDImage) []*pb.Image {
 func toProtoImage(i *core.RBDImage) *pb.Image {
 	ret := &pb.Image{}
 	ret.SetName(i.Name)
+	ret.SetPoolName(i.PoolName)
+	ret.SetObjectSizeBytes(i.ObjectSize)
+	ret.SetStripeUnitBytes(i.StripeUnit)
+	ret.SetStripeCount(i.StripeCount)
+	ret.SetSizeBytes(i.Size)
+	ret.SetUsedBytes(i.Used)
+	ret.SetObjectCount(i.ObjectCount)
+	ret.SetLayering(i.FeatureLayering)
+	ret.SetExclusiveLock(i.FeatureExclusiveLock)
+	ret.SetObjectMap(i.FeatureObjectMap)
+	ret.SetFastDiff(i.FeatureFastDiff)
+	ret.SetDeepFlatten(i.FeatureDeepFlatten)
+	ret.SetSnapshots(toProtoImageSnapshots(i.Snapshots))
 	return ret
 }
 
@@ -551,6 +564,7 @@ func toProtoImageSnapshots(ss []core.RBDImageSnapshot) []*pb.Image_Snapshot {
 func toProtoImageSnapshot(s *core.RBDImageSnapshot) *pb.Image_Snapshot {
 	ret := &pb.Image_Snapshot{}
 	ret.SetName(s.Name)
+	ret.SetProtected(s.Protected)
 	return ret
 }
 

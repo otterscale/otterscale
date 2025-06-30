@@ -120,17 +120,21 @@ message Pool {
 message Image {
   message Snapshot {
     string name = 1;
+    bool protected = 2;
   }
   string name = 1;
-  uint64 size_bytes = 2;
+  string pool_name = 11;
   uint64 object_size_bytes = 21;
   uint64 stripe_unit_bytes = 22;
   uint64 stripe_count = 23;
-  bool layering = 31;
-  bool exclusive_lock = 32;
-  bool object_map = 33;
-  bool fast_diff = 34;
-  bool deep_flatten = 35;
+  uint64 size_bytes = 31;
+  uint64 used_bytes = 32;
+  uint64 object_count = 33;
+  bool layering = 41;
+  bool exclusive_lock = 42;
+  bool object_map = 43;
+  bool fast_diff = 44;
+  bool deep_flatten = 45;
   repeated Snapshot snapshots = 101;
 }
 

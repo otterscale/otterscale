@@ -40,7 +40,7 @@ func (r *rbd) ListImages(ctx context.Context, config *core.StorageConfig, pool s
 
 	imgs := []core.RBDImage{}
 	for _, imgName := range imgNames {
-		img, err := r.openImage(ioctx, imgName)
+		img, err := r.openImage(ioctx, pool, imgName)
 		if err != nil {
 			return nil, err
 		}
@@ -61,7 +61,7 @@ func (r *rbd) GetImage(ctx context.Context, config *core.StorageConfig, pool, im
 	}
 	defer ioctx.Destroy()
 
-	return r.openImage(ioctx, image)
+	return r.openImage(ioctx, pool, image)
 }
 
 func (r *rbd) CreateImage(ctx context.Context, config *core.StorageConfig, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) (*core.RBDImage, error) {
@@ -79,7 +79,7 @@ func (r *rbd) CreateImage(ctx context.Context, config *core.StorageConfig, pool,
 	if _, err := cephrbd.Create3(ioctx, image, size, features, order, stripeUnit, stripeCount); err != nil {
 		return nil, err
 	}
-	return r.openImage(ioctx, image)
+	return r.openImage(ioctx, pool, image)
 }
 
 func (r *rbd) UpdateImageSize(ctx context.Context, config *core.StorageConfig, pool, image string, size uint64) error {
@@ -224,27 +224,51 @@ func (r *rbd) UnprotectImageSnapshot(ctx context.Context, config *core.StorageCo
 	return img.GetSnapshot(snapshot).Unprotect()
 }
 
-func (r *rbd) openImage(ioctx *rados.IOContext, image string) (*core.RBDImage, error) {
+func (r *rbd) openImage(ioctx *rados.IOContext, pool, image string) (*core.RBDImage, error) {
 	img, err := cephrbd.OpenImage(ioctx, image, cephrbd.NoSnapshot)
 	if err != nil {
 		return nil, err
 	}
 	defer img.Close()
 
-	size, _ := img.GetSize()
+	info, err := img.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	stripeUnit, _ := img.GetStripeUnit()
+	stripeCount, _ := img.GetStripeCount()
 	features, _ := img.GetFeatures()
+	snapNames, _ := img.GetSnapshotNames()
 
-	// img.Getsnapshots()
-
-	// fmt.Println(img.GetName())
-	// fmt.Println(img.GetSize())
-	// fmt.Println(img.GetFeatures())
-	// fmt.Println(img.GetImageMirrorMode())
-	// fmt.Println(img.GetMirrorImageInfo())
+	snapshots := []core.RBDImageSnapshot{}
+	for _, info := range snapNames {
+		snapshot := img.GetSnapshot(info.Name)
+		protected, _ := snapshot.IsProtected()
+		snapshots = append(snapshots, core.RBDImageSnapshot{
+			Name:      info.Name,
+			Protected: protected,
+		})
+	}
 
 	return &core.RBDImage{
-		Name:     img.GetName(),
-		Size:     size,
-		Features: features,
+		Name:                 img.GetName(),
+		PoolName:             pool,
+		ObjectSize:           info.Obj_size,
+		StripeUnit:           stripeUnit,
+		StripeCount:          stripeCount,
+		Size:                 0, // TODO: BETTER
+		Used:                 info.Size,
+		ObjectCount:          info.Num_objs,
+		FeatureLayering:      r.featureOn(features, cephrbd.FeatureLayering),
+		FeatureExclusiveLock: r.featureOn(features, cephrbd.FeatureExclusiveLock),
+		FeatureObjectMap:     r.featureOn(features, cephrbd.FeatureObjectMap),
+		FeatureFastDiff:      r.featureOn(features, cephrbd.FeatureFastDiff),
+		FeatureDeepFlatten:   r.featureOn(features, cephrbd.FeatureDeepFlatten),
+		Snapshots:            snapshots,
 	}, nil
+}
+
+func (r *rbd) featureOn(features, feature uint64) bool {
+	return features&feature == feature
 }

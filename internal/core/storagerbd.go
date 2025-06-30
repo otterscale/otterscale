@@ -8,16 +8,25 @@ import (
 )
 
 type RBDImageSnapshot struct {
-	Name string
+	Name      string
+	Protected bool
 }
 
 type RBDImage struct {
-	Name            string
-	Size            uint64
-	Features        uint64
-	ImageMirrorMode string
-	MirrorImageInfo string
-	Snapshots       []RBDImageSnapshot
+	Name                 string
+	PoolName             string
+	ObjectSize           uint64
+	StripeUnit           uint64
+	StripeCount          uint64
+	Size                 uint64
+	Used                 uint64
+	ObjectCount          uint64
+	FeatureLayering      bool
+	FeatureExclusiveLock bool
+	FeatureObjectMap     bool
+	FeatureFastDiff      bool
+	FeatureDeepFlatten   bool
+	Snapshots            []RBDImageSnapshot
 }
 
 type CephRBDRepo interface {
