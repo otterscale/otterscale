@@ -7,8 +7,9 @@ import (
 )
 
 type Volume struct {
-	ID   int64
-	Name string
+	ID        int64
+	Name      string
+	CreatedAt time.Time
 }
 
 type SubvolumeSnapshot struct {

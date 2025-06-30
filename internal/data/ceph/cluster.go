@@ -254,6 +254,7 @@ func (r *cluster) toPools(d *osdDump, pd *pgDump, df *df) []core.Pool {
 			ReplicatedSize:      d.Pools[i].Size,
 			PlacementGroupCount: d.Pools[i].PGCount,
 			PlacementGroupState: map[string]int64{},
+			CreatedAt:           d.Pools[i].CreateTime.Time,
 		}
 		switch d.Pools[i].Type {
 		case 1:

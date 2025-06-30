@@ -114,7 +114,8 @@ message Pool {
   uint64 used_objects = 44;
   uint64 placement_group_count = 51;
   map<string, int64> placement_group_state = 52;
-  repeated string applications = 61;
+  google.protobuf.Timestamp created_at = 61;
+  repeated string applications = 71;
 }
 
 message Image {
@@ -135,12 +136,14 @@ message Image {
   bool object_map = 43;
   bool fast_diff = 44;
   bool deep_flatten = 45;
+  google.protobuf.Timestamp created_at = 51;
   repeated Snapshot snapshots = 101;
 }
 
 message Volume {
   int64 id = 1;
   string name = 2;
+  google.protobuf.Timestamp created_at = 11;
 }
 
 message Subvolume {
@@ -190,11 +193,12 @@ message Bucket {
     string permission = 5;
   }
   string name = 1;
-  string owner = 11;
+  string owner = 2;
   string policy = 21;
   repeated Grant grants = 22;
   uint64 used_bytes = 33;
   uint64 used_objects = 34;
+  google.protobuf.Timestamp created_at = 41;
 }
 
 message User {

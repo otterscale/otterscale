@@ -522,6 +522,7 @@ func toProtoPool(p *core.Pool) *pb.Pool {
 	ret.SetUsedObjects(p.UsedObjects)
 	ret.SetPlacementGroupCount(p.PlacementGroupCount)
 	ret.SetPlacementGroupState(p.PlacementGroupState)
+	ret.SetCreatedAt(timestamppb.New(p.CreatedAt))
 	ret.SetApplications(p.Applications)
 	return ret
 }
@@ -549,6 +550,7 @@ func toProtoImage(i *core.RBDImage) *pb.Image {
 	ret.SetObjectMap(i.FeatureObjectMap)
 	ret.SetFastDiff(i.FeatureFastDiff)
 	ret.SetDeepFlatten(i.FeatureDeepFlatten)
+	ret.SetCreatedAt(timestamppb.New(i.CreatedAt))
 	ret.SetSnapshots(toProtoImageSnapshots(i.Snapshots))
 	return ret
 }
@@ -580,6 +582,7 @@ func toProtoVolume(v *core.Volume) *pb.Volume {
 	ret := &pb.Volume{}
 	ret.SetId(v.ID)
 	ret.SetName(v.Name)
+	ret.SetCreatedAt(timestamppb.New(v.CreatedAt))
 	return ret
 }
 
@@ -675,6 +678,10 @@ func toProtoBucket(b *core.RGWBucket) *pb.Bucket {
 	usedObjects := b.Usage.RgwMain.NumObjects
 	if usedObjects != nil {
 		ret.SetUsedObjects(*usedObjects)
+	}
+	createdAt := b.CreationTime
+	if createdAt != nil {
+		ret.SetCreatedAt(timestamppb.New(*createdAt))
 	}
 	return ret
 }

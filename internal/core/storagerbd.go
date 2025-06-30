@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"math"
+	"time"
 
 	"github.com/ceph/go-ceph/rbd"
 )
@@ -26,6 +27,7 @@ type RBDImage struct {
 	FeatureObjectMap     bool
 	FeatureFastDiff      bool
 	FeatureDeepFlatten   bool
+	CreatedAt            time.Time
 	Snapshots            []RBDImageSnapshot
 }
 

@@ -1,12 +1,33 @@
 package ceph
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type CephTime struct {
 	time.Time
 }
 
 func (ct *CephTime) UnmarshalJSON(data []byte) error {
+	str := string(data)
+	if str == `""` || str == "null" {
+		return nil
+	}
+
+	t, err := time.Parse(`2006-01-02T15:04:05.000000-0700`, strings.ReplaceAll(str, `"`, ``))
+	if err != nil {
+		return err
+	}
+	ct.Time = t
+	return nil
+}
+
+type CephSubvolumeTime struct {
+	time.Time
+}
+
+func (ct *CephSubvolumeTime) UnmarshalJSON(data []byte) error {
 	str := string(data)
 	if str == `""` || str == "null" {
 		return nil
@@ -22,9 +43,10 @@ func (ct *CephTime) UnmarshalJSON(data []byte) error {
 
 type monDump struct {
 	MONs []struct {
-		Name          string `json:"name,omitempty"`
-		Rank          uint64 `json:"rank,omitempty"`
-		PublicAddress string `json:"public_addr,omitempty"`
+		Name          string   `json:"name,omitempty"`
+		Rank          uint64   `json:"rank,omitempty"`
+		PublicAddress string   `json:"public_addr,omitempty"`
+		Created       CephTime `json:"created,omitempty"`
 	} `json:"mons,omitempty"`
 }
 
@@ -40,6 +62,7 @@ type osdDump struct {
 		Size                uint64         `json:"size,omitempty"`
 		PGCount             uint64         `json:"pg_num,omitempty"`
 		ApplicationMetadata map[string]any `json:"application_metadata,omitempty"`
+		CreateTime          CephTime       `json:"create_time,omitempty"`
 	} `json:"pools,omitempty"`
 	OSDs []struct {
 		ID int64 `json:"osd,omitempty"`
@@ -118,7 +141,8 @@ type device struct {
 type fsDump struct {
 	FileSystems []struct {
 		MDSMap struct {
-			FileSystemName string `json:"fs_name,omitempty"`
+			FileSystemName string   `json:"fs_name,omitempty"`
+			Created        CephTime `json:"created,omitempty"`
 		} `json:"mdsmap,omitempty"`
 		ID int64 `json:"id,omitempty"`
 	} `json:"filesystems,omitempty"`
@@ -129,24 +153,24 @@ type names struct {
 }
 
 type subvolumeInfo struct {
-	Path       string   `json:"path,omitempty"`
-	DataPool   string   `json:"data_pool,omitempty"`
-	Mode       int      `json:"mode,omitempty"`
-	BytesQuota any      `json:"bytes_quota,omitempty"`
-	BytesUsed  uint64   `json:"bytes_used,omitempty"`
-	CreatedAt  CephTime `json:"created_at,omitempty"`
+	Path       string            `json:"path,omitempty"`
+	DataPool   string            `json:"data_pool,omitempty"`
+	Mode       int               `json:"mode,omitempty"`
+	BytesQuota any               `json:"bytes_quota,omitempty"`
+	BytesUsed  uint64            `json:"bytes_used,omitempty"`
+	CreatedAt  CephSubvolumeTime `json:"created_at,omitempty"`
 }
 
 type subvolumeSnapshotInfo struct {
-	DataPool         string   `json:"data_pool,omitempty"`
-	HasPendingClones string   `json:"has_pending_clones,omitempty"`
-	CreatedAt        CephTime `json:"created_at,omitempty"`
+	DataPool         string            `json:"data_pool,omitempty"`
+	HasPendingClones string            `json:"has_pending_clones,omitempty"`
+	CreatedAt        CephSubvolumeTime `json:"created_at,omitempty"`
 }
 
 type subvolumeGroupInfo struct {
-	DataPool   string   `json:"data_pool,omitempty"`
-	Mode       int      `json:"mode,omitempty"`
-	BytesQuota any      `json:"bytes_quota,omitempty"`
-	BytesUsed  uint64   `json:"bytes_used,omitempty"`
-	CreatedAt  CephTime `json:"created_at,omitempty"`
+	DataPool   string            `json:"data_pool,omitempty"`
+	Mode       int               `json:"mode,omitempty"`
+	BytesQuota any               `json:"bytes_quota,omitempty"`
+	BytesUsed  uint64            `json:"bytes_used,omitempty"`
+	CreatedAt  CephSubvolumeTime `json:"created_at,omitempty"`
 }

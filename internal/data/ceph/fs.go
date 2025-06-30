@@ -243,8 +243,9 @@ func (r *fs) toVolumes(d *fsDump) []core.Volume {
 	ret := []core.Volume{}
 	for i := range d.FileSystems {
 		ret = append(ret, core.Volume{
-			ID:   d.FileSystems[i].ID,
-			Name: d.FileSystems[i].MDSMap.FileSystemName,
+			ID:        d.FileSystems[i].ID,
+			Name:      d.FileSystems[i].MDSMap.FileSystemName,
+			CreatedAt: d.FileSystems[i].MDSMap.Created.Time,
 		})
 	}
 	return ret

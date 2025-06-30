@@ -2,6 +2,7 @@ package ceph
 
 import (
 	"context"
+	"time"
 
 	"github.com/ceph/go-ceph/rados"
 	cephrbd "github.com/ceph/go-ceph/rbd"
@@ -239,6 +240,7 @@ func (r *rbd) openImage(ioctx *rados.IOContext, pool, image string) (*core.RBDIm
 	stripeUnit, _ := img.GetStripeUnit()
 	stripeCount, _ := img.GetStripeCount()
 	features, _ := img.GetFeatures()
+	timestamp, _ := img.GetCreateTimestamp()
 	snapNames, _ := img.GetSnapshotNames()
 
 	snapshots := []core.RBDImageSnapshot{}
@@ -265,6 +267,7 @@ func (r *rbd) openImage(ioctx *rados.IOContext, pool, image string) (*core.RBDIm
 		FeatureObjectMap:     r.featureOn(features, cephrbd.FeatureObjectMap),
 		FeatureFastDiff:      r.featureOn(features, cephrbd.FeatureFastDiff),
 		FeatureDeepFlatten:   r.featureOn(features, cephrbd.FeatureDeepFlatten),
+		CreatedAt:            time.Unix(timestamp.Sec, timestamp.Nsec),
 		Snapshots:            snapshots,
 	}, nil
 }

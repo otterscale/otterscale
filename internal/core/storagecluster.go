@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"strconv"
+	"time"
 )
 
 type MON struct {
@@ -42,6 +43,7 @@ type Pool struct {
 	UsedObjects         uint64
 	PlacementGroupCount uint64
 	PlacementGroupState map[string]int64
+	CreatedAt           time.Time
 	Applications        []string
 }
 
