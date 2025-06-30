@@ -66,6 +66,24 @@ const columns: ColumnDef<Pool>[] = [
         filterFn: 'inNumberRange',
     },
     {
+        accessorKey: "readBytes",
+        header: ({ column }) => {
+            return renderSnippet(headers.readBytes, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.readBytes, row);
+        },
+    },
+    {
+        accessorKey: "writeBytes",
+        header: ({ column }) => {
+            return renderSnippet(headers.writeBytes, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.writeBytes, row);
+        },
+    },
+    {
         id: "actions",
         cell: ({ row }) => {
             return renderComponent(DataTableActions, { pool: row.original });
