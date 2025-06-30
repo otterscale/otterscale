@@ -1,5 +1,6 @@
 #!/bin/bash
 
+## Current directory
 export INSTALLER_DIR=$(dirname "$(readlink -f $0)")
 
 ## Source env
@@ -22,13 +23,10 @@ main() {
     ## Validate
     validate_system
 
-    ## Proxy setting
-    ask_proxy
-
     ## Package install
     apt_update
     apt_install "$APT_PACKAGES"
-    install_snaps
+    snap_install
 
     ## Host network
     select_bridge
@@ -70,8 +68,27 @@ main() {
     juju_add_k8s
     juju_config_k8s
 
+    ## Send config to otterscale
+    send_config_data
+
     ## cleanup
     trap cleanup EXIT
 }
+
+if [[ $# -eq 0 ]]; then
+    error_exit "URL must be provided as a parameter"
+fi
+while [ $# -gt 0 ]; do
+    case $1 in
+        url=*)
+            otterscale_url="${1#*=}"
+            validate_url "$otterscale_url"
+            ;;
+        *)
+            error_exit "Invalid option: $1"
+            ;;
+    esac
+    shift
+done
 
 main "$@"

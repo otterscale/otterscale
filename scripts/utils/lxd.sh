@@ -37,8 +37,10 @@ init_lxd() {
     generate_lxd_config
 
     log "INFO" "Initializing LXD with bridge $bridge..."
-    if ! cat $lxd_file | lxd init --preseed >$TEMP_LOG 2>&1; then
+    if ! cat $lxd_file | lxd init --preseed >>$TEMP_LOG 2>&1; then
         error_exit "LXD initialization failed."
     fi
     log "INFO" "LXD initialized successfully"
+
+    rm -f "$lxd_file"
 }

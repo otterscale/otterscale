@@ -87,34 +87,35 @@ set_juju_config() {
 # Juju bootstrap with validation
 bootstrap_juju() {
     log "INFO" "Juju bootstrap, it will take few minutes..."
-    local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=ubuntu@22.04"
-    local bootstrap_config="--config default-base=ubuntu@22.04"
+    local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$BASE_IMAGE"
+    local bootstrap_config="--config default-base=$BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
     local bootstrap_machine="--to juju-vm"
 
     if ! maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q . >/dev/null 2>&1; then
         error_exit "Juju bootstrap failed, do not found juju-vm in MAAS."
     fi
 
-    if [ -n "$http_proxy" ] && [ -n "$https_proxy" ]; then
-	export http_proxy=$http_proxy
-	export https_proxy=$https_proxy
-	bootstrap_config="$bootstrap_config --config http-proxy=$http_proxy --config snap-http-proxy=$http_proxy"
-	bootstrap_config="$bootstrap_config --config https-proxy=$https_proxy --config snap-https-proxy=$https_proxy"
-    fi
-
     if ! execute_non_user_cmd "$username" "$bootstrap_cmd $bootstrap_config $bootstrap_machine --debug" "juju bootstrap"; then
-        error_exit "Juju bootstrap with proxy failed."
+        error_exit "Juju bootstrap failed."
     else
-        unset http_proxy
-        unset https_proxy
         log "INFO" "MAAS and Juju setup completed successfully!"
     fi
 }
 
 create_scope() {
-    log "INFO" "Check juju scope"
-    if ! execute_non_user_cmd "$username" "juju models --format=json | jq '.\"models\" | select(.[].\"short-name\"==\"default\")'" "check default model"; then
-        execute_non_user_cmd "$username" "juju create-model default" "create default model"
+    log "INFO" "Create juju default scope"
+    if ! execute_non_user_cmd "$username" "juju add-model default" "create default model"; then
+        error_exit "Failed create juju default model"
+    fi
+}
+
+cross_scope() {
+    if ! execute_non_user_cmd "$username" "juju offer grafana:grafana-dashboard grafana-dashboard" "JuJu offer grafana-dashboard"; then
+        error_exit "Failed execute juju offer grafana-dashboard"
+    fi
+
+    if ! execute_non_user_cmd "$username" "juju offer prometheus:receive-remote-write prometheus-receive-remote-write" "JuJu offer prometheus-receive-remote-write"; then
+        error_exit "Failed execute juju offer prometheus-receive-remote-write"
     fi
 }
 

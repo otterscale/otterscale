@@ -1,12 +1,12 @@
 #!/bin/bash
 
 create_maas_lxd_project() {
-    if ! lxc project list --format json | jq --exit-status '.[] | select(.name == "maas")' >"$TEMP_LOG" 2>&1; then
-        lxc project create maas >"$TEMP_LOG" 2>&1
+    if ! lxc project list --format json | jq --exit-status '.[] | select(.name == "maas")' >>"$TEMP_LOG" 2>&1; then
+        lxc project create maas >>"$TEMP_LOG" 2>&1
         log "INFO" "Create lxd project maas."
     fi
 
-    if ! lxc profile show default | lxc profile edit default --project maas >"$TEMP_LOG" 2>&1; then
+    if ! lxc profile show default | lxc profile edit default --project maas >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to update LXD profile."
     fi
 }
@@ -43,7 +43,7 @@ create_lxd_vm() {
             password=password \
             type=lxd \
             power_address=https://$BRIDGE_IP:8443 \
-            project=maas >"$TEMP_LOG" 2>&1; then
+            project=maas >>"$TEMP_LOG" 2>&1; then
             error_exit "Failed to create LXD VM host."
         fi
         VM_HOST_ID=$(maas admin vm-hosts read | jq -r '.[0].id')
@@ -54,7 +54,7 @@ create_lxd_vm() {
 rename_machine() {
     local machine_id=$1
     local new_name=$2
-    if ! maas admin machine update $machine_id hostname=$new_name >"$TEMP_LOG" 2>&1 ; then
+    if ! maas admin machine update $machine_id hostname=$new_name >>"$TEMP_LOG" 2>&1 ; then
         error_exit "Failed to rename machine $machine_id."
     fi
 }
@@ -135,11 +135,11 @@ update_vm_ip() {
 
     # unlink_subnet
     for id in $(maas admin interfaces read $machineID | jq -r '.[].links | .[].id'); do
-        maas admin interface unlink-subnet $machineID $interface_name id=$id >"$TEMP_LOG" 2>&1
+        maas admin interface unlink-subnet $machineID $interface_name id=$id >>"$TEMP_LOG" 2>&1
     done
 
     # link_subnet and give static ip
-    if ! maas admin interface link-subnet $machineID $interface_name mode=static subnet=$subnet_cidr ip_address=$juju_vm_ip >"$TEMP_LOG" 2>&1; then
+    if ! maas admin interface link-subnet $machineID $interface_name mode=static subnet=$subnet_cidr ip_address=$juju_vm_ip >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to update ip $interface_name to machine $machineID."
     fi
 }

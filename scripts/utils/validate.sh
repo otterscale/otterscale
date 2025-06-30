@@ -1,9 +1,14 @@
 #!/bin/bash
 
+disable_ipv6() {
+    log "INFO" "Disable ipv6 from sysctl, it will resume after reboot."
+    sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
+    sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
+}
+
 check_root() {
     [ "$(id -u)" -eq 0 ] || error_exit "This script must be run as root"
 }
-
 
 check_os() {
     local os_id=$(lsb_release -si)
@@ -29,16 +34,46 @@ check_disk() {
 
 # System validation checks
 validate_system() {
+    log "INFO" "System validation check"
     check_root
     check_os
     check_memory
     check_disk
+    disable_ipv6
     log "INFO" "System validation passed"
+}
+
+validate_url() {
+    local url=$1
+    local ip=$(echo "$url" | awk -F '[/:]' '{print $4}')
+    local port=$(echo "$url" | awk -F '[/:]' '{print $5}')
+
+    if ! validate_ip $ip; then
+        error_exit "Invalid IP format: $ip"
+    fi
+
+    if ! validate_port $port; then
+        error_exit "Invalid Port format: $port"
+    fi
+
+    log "INFO" "Validate URL: $url"
 }
 
 validate_ip() {
     local ip=$1
     if [[ ! $ip =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        return 1
+    fi
+    return 0
+}
+
+validate_port() {
+    local port=$1
+    if [[ ! $port =~ ^[0-9]+$ ]]; then
+        return 1
+    fi
+
+    if [[ "$port" -lt 1 || "$port" -gt 65535 ]]; then
         return 1
     fi
     return 0
