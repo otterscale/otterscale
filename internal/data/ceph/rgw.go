@@ -34,7 +34,19 @@ func (r *rgw) ListBuckets(ctx context.Context, config *core.StorageConfig) ([]co
 	if err != nil {
 		return nil, err
 	}
-	return client.ListBucketsWithStat(ctx)
+	bs, err := client.ListBucketsWithStat(ctx)
+	if err != nil {
+		return nil, err
+	}
+	buckets := []core.RGWBucket{}
+	for i := range bs {
+		bucket, err := r.toBucket(ctx, config, &bs[i])
+		if err != nil {
+			return nil, err
+		}
+		buckets = append(buckets, *bucket)
+	}
+	return buckets, nil
 }
 
 // ceph api
@@ -49,7 +61,7 @@ func (r *rgw) GetBucket(ctx context.Context, config *core.StorageConfig, bucket 
 	}
 	for i := range bs {
 		if bs[i].Bucket == bucket {
-			return &bs[i], nil
+			return r.toBucket(ctx, config, &bs[i])
 		}
 	}
 	return nil, fmt.Errorf("bucket %q not found", bucket)
@@ -124,17 +136,26 @@ func (r *rgw) ListUsers(ctx context.Context, config *core.StorageConfig) ([]core
 	if err != nil {
 		return nil, err
 	}
-	users := []core.RGWUser{}
-	userNames, err := client.GetUsers(ctx)
+	ids, err := client.GetUsers(ctx)
 	if err != nil {
 		return nil, err
 	}
-	if userNames != nil {
-		for _, userName := range *userNames {
-			users = append(users, core.RGWUser{
-				DisplayName: userName,
-			})
+	if ids == nil {
+		return nil, fmt.Errorf("empty user ids")
+	}
+	users := []core.RGWUser{}
+	for _, id := range *ids {
+		user, err := client.GetUser(ctx, admin.User{
+			ID: id,
+			Keys: []admin.UserKeySpec{{
+				AccessKey: config.AccessKey,
+				SecretKey: config.SecretKey,
+			}},
+		})
+		if err != nil {
+			return nil, err
 		}
+		users = append(users, user)
 	}
 	return users, nil
 }
@@ -234,6 +255,29 @@ func (r *rgw) s3Client(conf *core.StorageConfig) (*s3.Client, error) {
 		o.UsePathStyle = true
 	})
 	return svc, nil
+}
+
+func (r *rgw) toBucket(ctx context.Context, config *core.StorageConfig, b *admin.Bucket) (*core.RGWBucket, error) {
+	bucket := &core.RGWBucket{
+		Bucket: b,
+	}
+	s3Client, err := r.s3Client(config)
+	if err != nil {
+		return nil, err
+	}
+	policy, _ := s3Client.GetBucketPolicy(ctx, &s3.GetBucketPolicyInput{
+		Bucket: &b.Bucket,
+	})
+	if policy != nil {
+		bucket.Policy = policy.Policy
+	}
+	acl, _ := s3Client.GetBucketAcl(ctx, &s3.GetBucketAclInput{
+		Bucket: &b.Bucket,
+	})
+	if acl != nil {
+		bucket.Grants = acl.Grants
+	}
+	return bucket, nil
 }
 
 func (r *rgw) boolToIntPointer(b bool) *int {

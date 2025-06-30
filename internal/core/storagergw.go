@@ -7,7 +7,11 @@ import (
 	"github.com/ceph/go-ceph/rgw/admin"
 )
 
-type RGWBucket = admin.Bucket
+type RGWBucket struct {
+	*admin.Bucket
+	Policy *string
+	Grants []types.Grant
+}
 
 type RGWUser = admin.User
 

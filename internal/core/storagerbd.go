@@ -18,7 +18,7 @@ type RBDImage struct {
 	ObjectSize           uint64
 	StripeUnit           uint64
 	StripeCount          uint64
-	Size                 uint64
+	Quota                uint64
 	Used                 uint64
 	ObjectCount          uint64
 	FeatureLayering      bool

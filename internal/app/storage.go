@@ -85,8 +85,8 @@ func (s *StorageService) CreatePool(ctx context.Context, req *connect.Request[pb
 		strings.ToLower(req.Msg.GetPoolType().String()),
 		req.Msg.GetEcOverwrites(),
 		req.Msg.GetReplicatedSize(),
-		req.Msg.GetQuotaMaxBytes(),
-		req.Msg.GetQuotaMaxObjects(),
+		req.Msg.GetQuotaBytes(),
+		req.Msg.GetQuotaObjects(),
 		apps,
 	)
 	if err != nil {
@@ -101,8 +101,8 @@ func (s *StorageService) UpdatePool(ctx context.Context, req *connect.Request[pb
 		req.Msg.GetScopeUuid(),
 		req.Msg.GetFacilityName(),
 		req.Msg.GetPoolName(),
-		req.Msg.GetQuotaMaxBytes(),
-		req.Msg.GetQuotaMaxObjects(),
+		req.Msg.GetQuotaBytes(),
+		req.Msg.GetQuotaObjects(),
 	)
 	if err != nil {
 		return nil, err
@@ -138,7 +138,7 @@ func (s *StorageService) CreateImage(ctx context.Context, req *connect.Request[p
 		req.Msg.GetObjectSizeBytes(),
 		req.Msg.GetStripeUnitBytes(),
 		req.Msg.GetStripeCount(),
-		req.Msg.GetSizeBytes(),
+		req.Msg.GetQuotaBytes(),
 		req.Msg.GetLayering(),
 		req.Msg.GetExclusiveLock(),
 		req.Msg.GetObjectMap(),
@@ -158,7 +158,7 @@ func (s *StorageService) UpdateImage(ctx context.Context, req *connect.Request[p
 		req.Msg.GetFacilityName(),
 		req.Msg.GetPoolName(),
 		req.Msg.GetImageName(),
-		req.Msg.GetSizeBytes(),
+		req.Msg.GetQuotaBytes(),
 	)
 	if err != nil {
 		return nil, err
@@ -243,7 +243,7 @@ func (s *StorageService) CreateSubvolume(ctx context.Context, req *connect.Reque
 		req.Msg.GetVolumeName(),
 		req.Msg.GetSubvolumeName(),
 		req.Msg.GetGroupName(),
-		req.Msg.GetSizeBytes(),
+		req.Msg.GetQuotaBytes(),
 		req.Msg.GetExport(),
 	)
 	if err != nil {
@@ -260,7 +260,7 @@ func (s *StorageService) UpdateSubvolume(ctx context.Context, req *connect.Reque
 		req.Msg.GetVolumeName(),
 		req.Msg.GetSubvolumeName(),
 		req.Msg.GetGroupName(),
-		req.Msg.GetSizeBytes(),
+		req.Msg.GetQuotaBytes(),
 	)
 	if err != nil {
 		return nil, err
@@ -321,7 +321,7 @@ func (s *StorageService) ListSubvolumeGroups(ctx context.Context, req *connect.R
 }
 
 func (s *StorageService) CreateSubvolumeGroup(ctx context.Context, req *connect.Request[pb.CreateSubvolumeGroupRequest]) (*connect.Response[pb.SubvolumeGroup], error) {
-	group, err := s.uc.CreateSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName(), req.Msg.GetSizeBytes())
+	group, err := s.uc.CreateSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName(), req.Msg.GetQuotaBytes())
 	if err != nil {
 		return nil, err
 	}
@@ -330,7 +330,7 @@ func (s *StorageService) CreateSubvolumeGroup(ctx context.Context, req *connect.
 }
 
 func (s *StorageService) UpdateSubvolumeGroup(ctx context.Context, req *connect.Request[pb.UpdateSubvolumeGroupRequest]) (*connect.Response[pb.SubvolumeGroup], error) {
-	group, err := s.uc.UpdateSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName(), req.Msg.GetSizeBytes())
+	group, err := s.uc.UpdateSubvolumeGroup(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetGroupName(), req.Msg.GetQuotaBytes())
 	if err != nil {
 		return nil, err
 	}
@@ -516,8 +516,8 @@ func toProtoPool(p *core.Pool) *pb.Pool {
 	ret.SetDataChunks(p.DataChunks)
 	ret.SetCodingChunks(p.CodingChunks)
 	ret.SetReplicatedSize(p.ReplicatedSize)
-	ret.SetQuotaMaxBytes(p.QuotaMaxBytes)
-	ret.SetQuotaMaxObjects(p.QuotaMaxObjects)
+	ret.SetQuotaBytes(p.QuotaBytes)
+	ret.SetQuotaObjects(p.QuotaObjects)
 	ret.SetUsedBytes(p.UsedBytes)
 	ret.SetUsedObjects(p.UsedObjects)
 	ret.SetPlacementGroupCount(p.PlacementGroupCount)
@@ -541,7 +541,7 @@ func toProtoImage(i *core.RBDImage) *pb.Image {
 	ret.SetObjectSizeBytes(i.ObjectSize)
 	ret.SetStripeUnitBytes(i.StripeUnit)
 	ret.SetStripeCount(i.StripeCount)
-	ret.SetSizeBytes(i.Size)
+	ret.SetQuotaBytes(i.Quota)
 	ret.SetUsedBytes(i.Used)
 	ret.SetObjectCount(i.ObjectCount)
 	ret.SetLayering(i.FeatureLayering)
@@ -662,7 +662,47 @@ func toProtoBuckets(bs []core.RGWBucket) []*pb.Bucket {
 
 func toProtoBucket(b *core.RGWBucket) *pb.Bucket {
 	ret := &pb.Bucket{}
-	ret.SetName(b.Bucket)
+	ret.SetOwner(b.Owner)
+	ret.SetName(b.Bucket.Bucket)
+	if b.Policy != nil {
+		ret.SetPolicy(*b.Policy)
+	}
+	ret.SetGrants(toProtoBucketGrants(b.Grants))
+	usedBytes := b.Usage.RgwMain.Size
+	if usedBytes != nil {
+		ret.SetUsedBytes(*usedBytes)
+	}
+	usedObjects := b.Usage.RgwMain.NumObjects
+	if usedObjects != nil {
+		ret.SetUsedObjects(*usedObjects)
+	}
+	return ret
+}
+
+func toProtoBucketGrants(gs []types.Grant) []*pb.Bucket_Grant {
+	ret := []*pb.Bucket_Grant{}
+	for i := range gs {
+		ret = append(ret, toProtoBucketGrant(&gs[i]))
+	}
+	return ret
+}
+
+func toProtoBucketGrant(g *types.Grant) *pb.Bucket_Grant {
+	ret := &pb.Bucket_Grant{}
+	ret.SetType(string(g.Grantee.Type))
+	id := g.Grantee.ID
+	if id != nil {
+		ret.SetId(*id)
+	}
+	name := g.Grantee.DisplayName
+	if name != nil {
+		ret.SetName(*name)
+	}
+	uri := g.Grantee.URI
+	if uri != nil {
+		ret.SetUri(*uri)
+	}
+	ret.SetPermission(string(g.Permission))
 	return ret
 }
 
@@ -676,7 +716,10 @@ func toProtoUsers(us []core.RGWUser) []*pb.User {
 
 func toProtoUser(u *core.RGWUser) *pb.User {
 	ret := &pb.User{}
+	ret.SetId(u.ID)
 	ret.SetName(u.DisplayName)
+	ret.SetSuspended(u.Suspended != nil && *u.Suspended == 1)
+	ret.SetKeys(toProtoUserKeys(u.Keys))
 	return ret
 }
 
@@ -690,6 +733,7 @@ func toProtoUserKeys(uks []core.RGWUserKey) []*pb.User_Key {
 
 func toProtoUserKey(uk *core.RGWUserKey) *pb.User_Key {
 	ret := &pb.User_Key{}
-	ret.SetType(uk.KeyType)
+	ret.SetAccessKey(uk.AccessKey)
+	ret.SetSecretKey(uk.SecretKey)
 	return ret
 }

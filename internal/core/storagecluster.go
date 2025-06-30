@@ -36,8 +36,8 @@ type Pool struct {
 	DataChunks          uint64
 	CodingChunks        uint64
 	ReplicatedSize      uint64
-	QuotaMaxBytes       uint64
-	QuotaMaxObjects     uint64
+	QuotaBytes          uint64
+	QuotaObjects        uint64
 	UsedBytes           uint64
 	UsedObjects         uint64
 	PlacementGroupCount uint64
@@ -111,8 +111,8 @@ func (uc *StorageUseCase) ListPools(ctx context.Context, uuid, facility, applica
 			}
 		}
 		maxBytes, maxObjects, _ := uc.cluster.GetQuota(ctx, config, pools[i].Name)
-		pools[i].QuotaMaxBytes = maxBytes
-		pools[i].QuotaMaxObjects = maxObjects
+		pools[i].QuotaBytes = maxBytes
+		pools[i].QuotaObjects = maxObjects
 	}
 	return pools, nil
 }
