@@ -2,10 +2,10 @@ package ceph
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/ceph/go-ceph/rados"
@@ -36,7 +36,7 @@ func (r *fs) ListVolumes(ctx context.Context, config *core.StorageConfig) ([]cor
 	if err != nil {
 		return nil, err
 	}
-	fsDump, err := r.fsDump(conn)
+	fsDump, err := dumpFS(conn)
 	if err != nil {
 		return nil, err
 	}
@@ -48,13 +48,13 @@ func (r *fs) ListSubvolumes(ctx context.Context, config *core.StorageConfig, vol
 	if err != nil {
 		return nil, err
 	}
-	subs, err := r.fsSubvolumes(conn, volume, group)
+	subs, err := listSubvolumes(conn, volume, group)
 	if err != nil {
 		return nil, err
 	}
 	subvolumes := []core.Subvolume{}
 	for _, sub := range subs {
-		info, err := r.fsSubvolumeInfo(conn, volume, sub.Name, group)
+		info, err := getSubvolume(conn, volume, sub.Name, group)
 		if err != nil {
 			return nil, err
 		}
@@ -68,7 +68,7 @@ func (r *fs) GetSubvolume(ctx context.Context, config *core.StorageConfig, volum
 	if err != nil {
 		return nil, err
 	}
-	info, err := r.fsSubvolumeInfo(conn, volume, subvolume, group)
+	info, err := getSubvolume(conn, volume, subvolume, group)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (r *fs) CreateSubvolume(ctx context.Context, config *core.StorageConfig, vo
 	if err != nil {
 		return err
 	}
-	return r.fsSubvolumeCreate(conn, volume, subvolume, group, size)
+	return createSubvolume(conn, volume, subvolume, group, size)
 }
 
 func (r *fs) ResizeSubvolume(ctx context.Context, config *core.StorageConfig, volume, subvolume, group string, size uint64) error {
@@ -88,7 +88,7 @@ func (r *fs) ResizeSubvolume(ctx context.Context, config *core.StorageConfig, vo
 	if err != nil {
 		return err
 	}
-	return r.fsSubvolumeResize(conn, volume, subvolume, group, size)
+	return resizeSubvolume(conn, volume, subvolume, group, size)
 }
 
 func (r *fs) DeleteSubvolume(ctx context.Context, config *core.StorageConfig, volume, subvolume, group string) error {
@@ -96,7 +96,27 @@ func (r *fs) DeleteSubvolume(ctx context.Context, config *core.StorageConfig, vo
 	if err != nil {
 		return err
 	}
-	return r.fsSubvolumeRemove(conn, volume, subvolume, group)
+	return removeSubvolume(conn, volume, subvolume, group)
+}
+
+func (r *fs) ListSubvolumeSnapshots(ctx context.Context, config *core.StorageConfig, volume, subvolume, group string) ([]core.SubvolumeSnapshot, error) {
+	conn, err := r.ceph.connection(config)
+	if err != nil {
+		return nil, err
+	}
+	ss, err := listSubvolumeSnapshots(conn, volume, subvolume, group)
+	if err != nil {
+		return nil, err
+	}
+	var snapshots []core.SubvolumeSnapshot
+	for _, s := range ss {
+		snapshot, err := getSubvolumeSnapshot(conn, volume, subvolume, group, s.Name)
+		if err != nil {
+			return nil, err
+		}
+		snapshots = append(snapshots, *r.toSubvolumeSnapshot(s.Name, snapshot))
+	}
+	return snapshots, nil
 }
 
 func (r *fs) GetSubvolumeSnapshot(ctx context.Context, config *core.StorageConfig, volume, subvolume, group, snapshot string) (*core.SubvolumeSnapshot, error) {
@@ -104,7 +124,7 @@ func (r *fs) GetSubvolumeSnapshot(ctx context.Context, config *core.StorageConfi
 	if err != nil {
 		return nil, err
 	}
-	info, err := r.fsSubvolumeSnapshotInfo(conn, volume, subvolume, group, snapshot)
+	info, err := getSubvolumeSnapshot(conn, volume, subvolume, group, snapshot)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +136,7 @@ func (r *fs) CreateSubvolumeSnapshot(ctx context.Context, config *core.StorageCo
 	if err != nil {
 		return err
 	}
-	return r.fsSubvolumeSnapshotCreate(conn, volume, subvolume, group, snapshot)
+	return createSubvolumeSnapshot(conn, volume, subvolume, group, snapshot)
 }
 
 func (r *fs) DeleteSubvolumeSnapshot(ctx context.Context, config *core.StorageConfig, volume, subvolume, group, snapshot string) error {
@@ -124,7 +144,7 @@ func (r *fs) DeleteSubvolumeSnapshot(ctx context.Context, config *core.StorageCo
 	if err != nil {
 		return err
 	}
-	return r.fsSubvolumeSnapshotRemove(conn, volume, subvolume, group, snapshot)
+	return removeSubvolumeSnapshot(conn, volume, subvolume, group, snapshot)
 }
 
 func (r *fs) ListSubvolumeGroups(ctx context.Context, config *core.StorageConfig, volume string) ([]core.SubvolumeGroup, error) {
@@ -132,13 +152,13 @@ func (r *fs) ListSubvolumeGroups(ctx context.Context, config *core.StorageConfig
 	if err != nil {
 		return nil, err
 	}
-	groups, err := r.fsSubvolumeGroups(conn, volume)
+	groups, err := listSubvolumeGroups(conn, volume)
 	if err != nil {
 		return nil, err
 	}
 	subvolumeGroups := []core.SubvolumeGroup{}
 	for _, group := range groups {
-		info, err := r.fsSubvolumeGroupInfo(conn, volume, group.Name)
+		info, err := getSubvolumeGroup(conn, volume, group.Name)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +172,7 @@ func (r *fs) GetSubvolumeGroup(ctx context.Context, config *core.StorageConfig, 
 	if err != nil {
 		return nil, err
 	}
-	info, err := r.fsSubvolumeGroupInfo(conn, volume, group)
+	info, err := getSubvolumeGroup(conn, volume, group)
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +184,7 @@ func (r *fs) CreateSubvolumeGroup(ctx context.Context, config *core.StorageConfi
 	if err != nil {
 		return err
 	}
-	return r.fsSubvolumeGroupCreate(conn, volume, group, size)
+	return createSubvolumeGroup(conn, volume, group, size)
 }
 
 func (r *fs) ResizeSubvolumeGroup(ctx context.Context, config *core.StorageConfig, volume, group string, size uint64) error {
@@ -172,7 +192,7 @@ func (r *fs) ResizeSubvolumeGroup(ctx context.Context, config *core.StorageConfi
 	if err != nil {
 		return err
 	}
-	return r.fsSubvolumeGroupResize(conn, volume, group, size)
+	return resizeSubvolumeGroup(conn, volume, group, size)
 }
 
 func (r *fs) DeleteSubvolumeGroup(ctx context.Context, config *core.StorageConfig, volume, group string) error {
@@ -180,7 +200,7 @@ func (r *fs) DeleteSubvolumeGroup(ctx context.Context, config *core.StorageConfi
 	if err != nil {
 		return err
 	}
-	return r.fsSubvolumeGroupRemove(conn, volume, group)
+	return removeSubvolumeGroup(conn, volume, group)
 }
 
 func (r *fs) ListPathToExportClients(ctx context.Context, config *core.StorageConfig, pool string) (map[string][]string, error) {
@@ -221,321 +241,54 @@ func (r *fs) ListPathToExportClients(ctx context.Context, config *core.StorageCo
 
 func (r *fs) toVolumes(d *fsDump) []core.Volume {
 	ret := []core.Volume{}
-	for i := range d.Filesystems {
+	for i := range d.FileSystems {
 		ret = append(ret, core.Volume{
-			Name: d.Filesystems[i].Mdsmap.FsName,
+			ID:        d.FileSystems[i].ID,
+			Name:      d.FileSystems[i].MDSMap.FileSystemName,
+			CreatedAt: d.FileSystems[i].MDSMap.Created.Time,
 		})
 	}
 	return ret
 }
 
-func (r *fs) toSubvolume(name string, info *fsSubvolumeInfo) *core.Subvolume {
+func (r *fs) toSubvolume(name string, info *subvolumeInfo) *core.Subvolume {
+	quota, _ := strconv.ParseUint(fmt.Sprintf("%d", info.BytesQuota), 10, 64)
 	ret := &core.Subvolume{
-		Name: name,
-		Path: info.Path,
+		Name:      name,
+		Path:      info.Path,
+		Mode:      fmt.Sprintf("%o", info.Mode),
+		PoolName:  info.DataPool,
+		Quota:     quota,
+		Used:      info.BytesUsed,
+		CreatedAt: info.CreatedAt.Time,
 	}
 	return ret
 }
 
-func (r *fs) toSubvolumeSnapshot(name string, info *fsSubvolumeSnapshotInfo) *core.SubvolumeSnapshot {
+func (r *fs) toSubvolumeSnapshot(name string, info *subvolumeSnapshotInfo) *core.SubvolumeSnapshot {
 	ret := &core.SubvolumeSnapshot{
-		Name: name,
+		Name:             name,
+		HasPendingClones: info.HasPendingClones,
+		CreatedAt:        info.CreatedAt.Time,
 	}
 	return ret
 }
 
-func (r *fs) toSubvolumeGroups(name string, info *fsSubvolumeGroupInfo) *core.SubvolumeGroup {
+func (r *fs) toSubvolumeGroups(name string, info *subvolumeGroupInfo) *core.SubvolumeGroup {
+	quota, _ := strconv.ParseUint(fmt.Sprintf("%d", info.BytesQuota), 10, 64)
 	ret := &core.SubvolumeGroup{
-		Name: name,
+		Name:      name,
+		Mode:      fmt.Sprintf("%06o", info.Mode),
+		PoolName:  info.DataPool,
+		Quota:     quota,
+		Used:      info.BytesUsed,
+		CreatedAt: info.CreatedAt.Time,
 	}
 	return ret
-}
-
-func (r *fs) fsDump(conn *rados.Conn) (*fsDump, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix": "fs dump",
-		"format": "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var fsDump fsDump
-	if err := json.Unmarshal(resp, &fsDump); err != nil {
-		return nil, err
-	}
-	return &fsDump, nil
-}
-
-func (r *fs) fsSubvolumes(conn *rados.Conn, volume, group string) ([]fsSubvolume, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix":     "fs subvolume ls",
-		"vol_name":   volume,
-		"group_name": group,
-		"format":     "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var fsSubvolumes []fsSubvolume
-	if err := json.Unmarshal(resp, &fsSubvolumes); err != nil {
-		return nil, err
-	}
-	return fsSubvolumes, nil
-}
-
-func (r *fs) fsSubvolumeInfo(conn *rados.Conn, volume, subvolume, group string) (*fsSubvolumeInfo, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix":     "fs subvolume info",
-		"vol_name":   volume,
-		"sub_name":   subvolume,
-		"group_name": group,
-		"format":     "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var fsSubvolumeInfo fsSubvolumeInfo
-	if err := json.Unmarshal(resp, &fsSubvolumeInfo); err != nil {
-		return nil, err
-	}
-	return &fsSubvolumeInfo, nil
-}
-
-func (r *fs) fsSubvolumeCreate(conn *rados.Conn, volume, subvolume, group string, size uint64) error {
-	m := map[string]any{
-		"prefix":   "fs subvolume create",
-		"vol_name": volume,
-		"sub_name": subvolume,
-		"size":     size,
-		"format":   "json",
-	}
-	if group != "" {
-		m["group_name"] = group
-	}
-	cmd, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *fs) fsSubvolumeResize(conn *rados.Conn, volume, subvolume, group string, size uint64) error {
-	m := map[string]any{
-		"prefix":   "fs subvolume resize",
-		"vol_name": volume,
-		"sub_name": subvolume,
-		"new_size": size,
-		"format":   "json",
-	}
-	if group != "" {
-		m["group_name"] = group
-	}
-	cmd, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *fs) fsSubvolumeRemove(conn *rados.Conn, volume, subvolume, group string) error {
-	m := map[string]any{
-		"prefix":   "fs subvolume rm",
-		"vol_name": volume,
-		"sub_name": subvolume,
-		"format":   "json",
-	}
-	if group != "" {
-		m["group_name"] = group
-	}
-	cmd, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *fs) fsSubvolumeSnapshotInfo(conn *rados.Conn, volume, subvolume, group, snapshot string) (*fsSubvolumeSnapshotInfo, error) {
-	m := map[string]string{
-		"prefix":    "fs subvolume snapshot info",
-		"vol_name":  volume,
-		"sub_name":  subvolume,
-		"snap_name": snapshot,
-		"format":    "json",
-	}
-	if group != "" {
-		m["group_name"] = group
-	}
-	cmd, err := json.Marshal(m)
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var fsSubvolumeSnapshotInfo fsSubvolumeSnapshotInfo
-	if err := json.Unmarshal(resp, &fsSubvolumeSnapshotInfo); err != nil {
-		return nil, err
-	}
-	return &fsSubvolumeSnapshotInfo, nil
-}
-
-func (r *fs) fsSubvolumeGroups(conn *rados.Conn, volume string) ([]fsSubvolumeGroup, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix":   "fs subvolumegroup ls",
-		"vol_name": volume,
-		"format":   "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var fsSubvolumeGroups []fsSubvolumeGroup
-	if err := json.Unmarshal(resp, &fsSubvolumeGroups); err != nil {
-		return nil, err
-	}
-	return fsSubvolumeGroups, nil
-}
-
-func (r *fs) fsSubvolumeGroupInfo(conn *rados.Conn, volume, group string) (*fsSubvolumeGroupInfo, error) {
-	cmd, err := json.Marshal(map[string]string{
-		"prefix":     "fs subvolumegroup info",
-		"vol_name":   volume,
-		"group_name": group,
-		"format":     "json",
-	})
-	if err != nil {
-		return nil, err
-	}
-	resp, _, err := conn.MonCommand(cmd)
-	if err != nil {
-		return nil, err
-	}
-	var fsSubvolumeGroupInfo fsSubvolumeGroupInfo
-	if err := json.Unmarshal(resp, &fsSubvolumeGroupInfo); err != nil {
-		return nil, err
-	}
-	return &fsSubvolumeGroupInfo, nil
-}
-
-func (r *fs) fsSubvolumeGroupCreate(conn *rados.Conn, volume, group string, size uint64) error {
-	cmd, err := json.Marshal(map[string]any{
-		"prefix":     "fs subvolumegroup create",
-		"vol_name":   volume,
-		"group_name": group,
-		"size":       size,
-		"format":     "json",
-	})
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *fs) fsSubvolumeGroupResize(conn *rados.Conn, volume, group string, size uint64) error {
-	cmd, err := json.Marshal(map[string]any{
-		"prefix":     "fs subvolumegroup resize",
-		"vol_name":   volume,
-		"group_name": group,
-		"new_size":   size,
-		"format":     "json",
-	})
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *fs) fsSubvolumeGroupRemove(conn *rados.Conn, volume, group string) error {
-	cmd, err := json.Marshal(map[string]any{
-		"prefix":     "fs subvolumegroup rm",
-		"vol_name":   volume,
-		"group_name": group,
-		"format":     "json",
-	})
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *fs) fsSubvolumeSnapshotCreate(conn *rados.Conn, volume, subvolume, group, snapshot string) error {
-	m := map[string]any{
-		"prefix":    "fs subvolume snapshot create",
-		"vol_name":  volume,
-		"sub_name":  subvolume,
-		"snap_name": snapshot,
-		"format":    "json",
-	}
-	if group != "" {
-		m["group_name"] = group
-	}
-	cmd, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r *fs) fsSubvolumeSnapshotRemove(conn *rados.Conn, volume, subvolume, group, snapshot string) error {
-	m := map[string]any{
-		"prefix":    "fs subvolume snapshot rm",
-		"vol_name":  volume,
-		"sub_name":  subvolume,
-		"snap_name": snapshot,
-		"format":    "json",
-	}
-	if group != "" {
-		m["group_name"] = group
-	}
-	cmd, err := json.Marshal(m)
-	if err != nil {
-		return err
-	}
-	if _, _, err := conn.MonCommand(cmd); err != nil {
-		return err
-	}
-	return nil
 }
 
 func (r *fs) exportIndice(ioctx *rados.IOContext) ([]string, error) {
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 1024) //nolint:mnd
 	n, err := ioctx.Read("ganesha-export-index", buffer, 0)
 	if err != nil {
 		return nil, err
@@ -546,7 +299,7 @@ func (r *fs) exportIndice(ioctx *rados.IOContext) ([]string, error) {
 }
 
 func (r *fs) exportIndex(ioctx *rados.IOContext, index string) ([]string, error) {
-	buffer := make([]byte, 1024)
+	buffer := make([]byte, 1024) //nolint:mnd
 	n, err := ioctx.Read(index, buffer, 0)
 	if err != nil {
 		return nil, err

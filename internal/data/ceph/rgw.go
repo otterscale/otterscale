@@ -14,7 +14,10 @@ import (
 	"github.com/openhdc/otterscale/internal/core"
 )
 
-const cephRegion = "us-east-1"
+const (
+	cephRegion       = "us-east-1"
+	retryMaxAttempts = 5
+)
 
 type rgw struct {
 	ceph *Ceph
@@ -28,14 +31,28 @@ func NewRGW(ceph *Ceph) core.CephRGWRepo {
 
 var _ core.CephRGWRepo = (*rgw)(nil)
 
+// ceph api
 func (r *rgw) ListBuckets(ctx context.Context, config *core.StorageConfig) ([]core.RGWBucket, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return nil, err
 	}
-	return client.ListBucketsWithStat(ctx)
+	bs, err := client.ListBucketsWithStat(ctx)
+	if err != nil {
+		return nil, err
+	}
+	buckets := []core.RGWBucket{}
+	for i := range bs {
+		bucket, err := r.toBucket(ctx, config, &bs[i])
+		if err != nil {
+			return nil, err
+		}
+		buckets = append(buckets, *bucket)
+	}
+	return buckets, nil
 }
 
+// ceph api
 func (r *rgw) GetBucket(ctx context.Context, config *core.StorageConfig, bucket string) (*core.RGWBucket, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -47,13 +64,13 @@ func (r *rgw) GetBucket(ctx context.Context, config *core.StorageConfig, bucket 
 	}
 	for i := range bs {
 		if bs[i].Bucket == bucket {
-			return &bs[i], nil
+			return r.toBucket(ctx, config, &bs[i])
 		}
 	}
 	return nil, fmt.Errorf("bucket %q not found", bucket)
 }
 
-// TODO: AuthN & AuthZ
+// s3 api
 func (r *rgw) CreateBucket(ctx context.Context, config *core.StorageConfig, bucket string, acl types.BucketCannedACL) error {
 	s3Client, err := r.s3Client(config)
 	if err != nil {
@@ -66,7 +83,7 @@ func (r *rgw) CreateBucket(ctx context.Context, config *core.StorageConfig, buck
 	return err
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) UpdateBucketOwner(ctx context.Context, config *core.StorageConfig, bucket, owner string) error {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -78,7 +95,7 @@ func (r *rgw) UpdateBucketOwner(ctx context.Context, config *core.StorageConfig,
 	})
 }
 
-// TODO: AuthN & AuthZ
+// s3 api
 func (r *rgw) UpdateBucketACL(ctx context.Context, config *core.StorageConfig, bucket string, acl types.BucketCannedACL) error {
 	s3Client, err := r.s3Client(config)
 	if err != nil {
@@ -91,7 +108,7 @@ func (r *rgw) UpdateBucketACL(ctx context.Context, config *core.StorageConfig, b
 	return err
 }
 
-// TODO: AuthN & AuthZ
+// s3 api
 func (r *rgw) UpdateBucketPolicy(ctx context.Context, config *core.StorageConfig, bucket, policy string) error {
 	s3Client, err := r.s3Client(config)
 	if err != nil {
@@ -104,7 +121,7 @@ func (r *rgw) UpdateBucketPolicy(ctx context.Context, config *core.StorageConfig
 	return err
 }
 
-// TODO: AuthN & AuthZ
+// s3 api
 func (r *rgw) DeleteBucket(ctx context.Context, config *core.StorageConfig, bucket string) error {
 	s3Client, err := r.s3Client(config)
 	if err != nil {
@@ -116,27 +133,37 @@ func (r *rgw) DeleteBucket(ctx context.Context, config *core.StorageConfig, buck
 	return err
 }
 
+// ceph api
 func (r *rgw) ListUsers(ctx context.Context, config *core.StorageConfig) ([]core.RGWUser, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
 		return nil, err
 	}
-	users := []core.RGWUser{}
-	userNames, err := client.GetUsers(ctx)
+	ids, err := client.GetUsers(ctx)
 	if err != nil {
 		return nil, err
 	}
-	if userNames != nil {
-		for _, userName := range *userNames {
-			users = append(users, core.RGWUser{
-				DisplayName: userName,
-			})
+	if ids == nil {
+		return nil, fmt.Errorf("empty user ids")
+	}
+	users := []core.RGWUser{}
+	for _, id := range *ids {
+		user, err := client.GetUser(ctx, admin.User{
+			ID: id,
+			Keys: []admin.UserKeySpec{{
+				AccessKey: config.AccessKey,
+				SecretKey: config.SecretKey,
+			}},
+		})
+		if err != nil {
+			return nil, err
 		}
+		users = append(users, user)
 	}
 	return users, nil
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) CreateUser(ctx context.Context, config *core.StorageConfig, id, name string, suspended bool) (*core.RGWUser, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -153,7 +180,7 @@ func (r *rgw) CreateUser(ctx context.Context, config *core.StorageConfig, id, na
 	return &user, err
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) UpdateUser(ctx context.Context, config *core.StorageConfig, id, name string, suspended bool) (*core.RGWUser, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -170,7 +197,7 @@ func (r *rgw) UpdateUser(ctx context.Context, config *core.StorageConfig, id, na
 	return &user, err
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) DeleteUser(ctx context.Context, config *core.StorageConfig, id string) error {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -179,7 +206,7 @@ func (r *rgw) DeleteUser(ctx context.Context, config *core.StorageConfig, id str
 	return client.RemoveUser(ctx, admin.User{ID: id})
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) CreateUserKey(ctx context.Context, config *core.StorageConfig, id string) (*core.RGWUserKey, error) {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -195,7 +222,7 @@ func (r *rgw) CreateUserKey(ctx context.Context, config *core.StorageConfig, id 
 	return nil, fmt.Errorf("create key failed")
 }
 
-// TODO: AuthN & AuthZ
+// ceph api
 func (r *rgw) DeleteUserKey(ctx context.Context, config *core.StorageConfig, id, accessKey string) error {
 	client, err := r.ceph.client(config)
 	if err != nil {
@@ -220,7 +247,7 @@ func (r *rgw) s3Client(conf *core.StorageConfig) (*s3.Client, error) {
 			},
 		}),
 		config.WithBaseEndpoint(client.Endpoint),
-		config.WithRetryMaxAttempts(5),
+		config.WithRetryMaxAttempts(retryMaxAttempts),
 		config.WithHTTPClient(client.HTTPClient),
 	)
 	if err != nil {
@@ -233,10 +260,32 @@ func (r *rgw) s3Client(conf *core.StorageConfig) (*s3.Client, error) {
 	return svc, nil
 }
 
+func (r *rgw) toBucket(ctx context.Context, config *core.StorageConfig, b *admin.Bucket) (*core.RGWBucket, error) {
+	bucket := &core.RGWBucket{
+		Bucket: b,
+	}
+	s3Client, err := r.s3Client(config)
+	if err != nil {
+		return nil, err
+	}
+	policy, _ := s3Client.GetBucketPolicy(ctx, &s3.GetBucketPolicyInput{
+		Bucket: &b.Bucket,
+	})
+	if policy != nil {
+		bucket.Policy = policy.Policy
+	}
+	acl, _ := s3Client.GetBucketAcl(ctx, &s3.GetBucketAclInput{
+		Bucket: &b.Bucket,
+	})
+	if acl != nil {
+		bucket.Grants = acl.Grants
+	}
+	return bucket, nil
+}
+
 func (r *rgw) boolToIntPointer(b bool) *int {
 	if b {
-		i := 1
-		return &i
+		return aws.Int(1)
 	}
 	return nil
 }

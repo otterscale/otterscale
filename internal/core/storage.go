@@ -46,11 +46,12 @@ type StorageUseCase struct {
 	rbd      CephRBDRepo
 	fs       CephFSRepo
 	rgw      CephRGWRepo
+	machine  MachineRepo
 
 	configs sync.Map
 }
 
-func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClusterRepo, rbd CephRBDRepo, fs CephFSRepo, rgw CephRGWRepo) *StorageUseCase {
+func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClusterRepo, rbd CephRBDRepo, fs CephFSRepo, rgw CephRGWRepo, machine MachineRepo) *StorageUseCase {
 	return &StorageUseCase{
 		action:   action,
 		facility: facility,
@@ -58,6 +59,7 @@ func NewStorageUseCase(action ActionRepo, facility FacilityRepo, cluster CephClu
 		rbd:      rbd,
 		fs:       fs,
 		rgw:      rgw,
+		machine:  machine,
 	}
 }
 
@@ -164,12 +166,15 @@ func (uc *StorageUseCase) runCommand(ctx context.Context, uuid, leader, command 
 	return uc.waitForActionCompleted(ctx, uuid, id)
 }
 
-func (uc *StorageUseCase) runAction(ctx context.Context, uuid, leader, action string, params map[string]any) (*action.ActionResult, error) {
+func (uc *StorageUseCase) runAction(ctx context.Context, uuid, leader, action string, params map[string]any) error {
 	id, err := uc.action.RunAction(ctx, uuid, leader, action, params)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return uc.waitForActionCompleted(ctx, uuid, id)
+	if _, err := uc.waitForActionCompleted(ctx, uuid, id); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (uc *StorageUseCase) waitForActionCompleted(ctx context.Context, uuid, id string) (*action.ActionResult, error) {

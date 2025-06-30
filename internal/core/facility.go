@@ -120,7 +120,7 @@ type FacilityRepo interface {
 	GetConfig(ctx context.Context, uuid string, name string) (map[string]any, error)
 	GetLeader(ctx context.Context, uuid, name string) (string, error)
 	GetUnitInfo(ctx context.Context, uuid, name string) (*application.UnitInfo, error)
-	Consume(ctx context.Context, uuid string, args crossmodel.ConsumeApplicationArgs) error
+	Consume(ctx context.Context, uuid string, args *crossmodel.ConsumeApplicationArgs) error
 }
 
 type FacilityOffersRepo interface {

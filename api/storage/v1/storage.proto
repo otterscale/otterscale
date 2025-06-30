@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.storage.v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/openhdc/otterscale/api/storage/v1;pb";
 
@@ -67,49 +68,89 @@ service StorageService {
   rpc DeleteUserKey(DeleteUserKeyRequest) returns (google.protobuf.Empty);
 }
 
-enum Application {
+enum PoolType {
   UNSPECIFIED = 0;
-  RBD = 1;
-  CephFS = 2;
-  RGW = 3;
+  ERASURE = 1;
+  REPLICATED = 2;
+}
+
+message Machine {
+  string id = 1;
+  string hostname = 2;
 }
 
 message MON {
-  string name = 1;
+  bool leader = 1;
+  string name = 2;
+  uint64 rank = 3;
+  string public_address = 4;
+  Machine machine = 101;
 }
 
 message OSD {
-  string name = 1;
+  int64 id = 1;
+  string name = 2;
+  bool up = 3;
+  bool in = 4;
+  bool exists = 5;
+  string device_class = 11;
+  uint64 size_bytes = 12;
+  uint64 used_bytes = 13;
+  uint64 placement_group_count = 21;
+  Machine machine = 101;
 }
 
 message Pool {
-  string name = 1;
+  int64 id = 1;
+  string name = 2;
+  PoolType pool_type = 11;
+  bool ec_overwrites = 21;      // erasure
+  uint64 data_chunks = 22;      // erasure k
+  uint64 coding_chunks = 23;    // erasure m
+  uint64 replicated_size = 31;  // replicated
+  uint64 quota_bytes = 41;
+  uint64 quota_objects = 42;
+  uint64 used_bytes = 43;
+  uint64 used_objects = 44;
+  uint64 placement_group_count = 51;
+  map<string, int64> placement_group_state = 52;
+  google.protobuf.Timestamp created_at = 61;
+  repeated string applications = 71;
 }
 
 message Image {
   message Snapshot {
     string name = 1;
+    bool protected = 2;
   }
   string name = 1;
-  uint64 size_bytes = 2;
+  string pool_name = 11;
   uint64 object_size_bytes = 21;
   uint64 stripe_unit_bytes = 22;
   uint64 stripe_count = 23;
-  bool layering = 31;
-  bool exclusive_lock = 32;
-  bool object_map = 33;
-  bool fast_diff = 34;
-  bool deep_flatten = 35;
+  uint64 quota_bytes = 31;
+  uint64 used_bytes = 32;
+  uint64 object_count = 33;
+  bool layering = 41;
+  bool exclusive_lock = 42;
+  bool object_map = 43;
+  bool fast_diff = 44;
+  bool deep_flatten = 45;
+  google.protobuf.Timestamp created_at = 51;
   repeated Snapshot snapshots = 101;
 }
 
 message Volume {
-  string name = 1;
+  int64 id = 1;
+  string name = 2;
+  google.protobuf.Timestamp created_at = 11;
 }
 
 message Subvolume {
   message Snapshot {
     string name = 1;
+    string has_pending_clones = 2;
+    google.protobuf.Timestamp created_at = 11;
   }
   message Export {
     string ip = 1;
@@ -118,12 +159,23 @@ message Subvolume {
     string command = 11;
   }
   string name = 1;
+  string path = 2;
+  string mode = 11;  // oct
+  string pool_name = 12;
+  uint64 quota_bytes = 21;
+  uint64 used_bytes = 22;
+  google.protobuf.Timestamp created_at = 31;
   Export export = 51;
   repeated Snapshot snapshots = 101;
 }
 
 message SubvolumeGroup {
   string name = 1;
+  string mode = 11;  // oct
+  string pool_name = 12;
+  uint64 quota_bytes = 21;
+  uint64 used_bytes = 22;
+  google.protobuf.Timestamp created_at = 31;
 }
 
 message Bucket {
@@ -133,20 +185,31 @@ message Bucket {
     PUBLIC_READ_WRITE = 2;
     AUTHENTICATED_READ = 3;
   }
+  message Grant {
+    string type = 1;
+    string id = 2;
+    string name = 3;
+    string uri = 4;
+    string permission = 5;
+  }
   string name = 1;
   string owner = 2;
-  ACL acl = 3;
-}
-
-message Role {
-  string name = 1;
+  string policy = 21;
+  repeated Grant grants = 22;
+  uint64 used_bytes = 33;
+  uint64 used_objects = 34;
+  google.protobuf.Timestamp created_at = 41;
 }
 
 message User {
   message Key {
-    string type = 1;
+    string access_key = 1;
+    string secret_key = 2;
   }
-  string name = 1;
+  string id = 1;
+  string name = 2;
+  bool suspended = 3;
+  repeated Key keys = 21;
 }
 
 message ListMONsRequest {
@@ -183,7 +246,7 @@ message DoSMARTResponse {
 message ListPoolsRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  Application application = 11;
+  string application = 11;
 }
 
 message ListPoolsResponse {
@@ -191,28 +254,23 @@ message ListPoolsResponse {
 }
 
 message CreatePoolRequest {
-  enum Type {
-    UNSPECIFIED = 0;
-    ERASURE = 1;
-    REPLICATED = 2;
-  }
   string scope_uuid = 1;
   string facility_name = 2;
   string pool_name = 3;
-  Type pool_type = 11;
+  PoolType pool_type = 11;
   bool ec_overwrites = 21;      // erasure
-  uint32 replicated_size = 31;  // replicated
-  uint64 quota_max_bytes = 41;
-  uint64 quota_max_objects = 42;
-  repeated Application applications = 61;
+  uint64 replicated_size = 31;  // replicated
+  uint64 quota_bytes = 41;
+  uint64 quota_objects = 42;
+  repeated string applications = 61;  // cephfs, rbd, rgw
 }
 
 message UpdatePoolRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string pool_name = 3;
-  uint64 quota_max_bytes = 41;
-  uint64 quota_max_objects = 42;
+  uint64 quota_bytes = 41;
+  uint64 quota_objects = 42;
 }
 
 message DeletePoolRequest {
@@ -238,7 +296,7 @@ message CreateImageRequest {
   uint64 object_size_bytes = 11;
   uint64 stripe_unit_bytes = 12;
   uint64 stripe_count = 13;
-  uint64 size_bytes = 21;
+  uint64 quota_bytes = 21;
   bool layering = 31;
   bool exclusive_lock = 32;
   bool object_map = 33;
@@ -251,7 +309,7 @@ message UpdateImageRequest {
   string facility_name = 2;
   string pool_name = 3;
   string image_name = 4;
-  uint64 size_bytes = 11;
+  uint64 quota_bytes = 11;
 }
 
 message DeleteImageRequest {
@@ -327,7 +385,7 @@ message CreateSubvolumeRequest {
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
-  uint64 size_bytes = 11;
+  uint64 quota_bytes = 11;
   bool export = 101;
 }
 
@@ -337,7 +395,7 @@ message UpdateSubvolumeRequest {
   string volume_name = 3;
   string group_name = 4;
   string subvolume_name = 5;
-  uint64 size_bytes = 11;
+  uint64 quota_bytes = 11;
 }
 
 message DeleteSubvolumeRequest {
@@ -397,7 +455,7 @@ message CreateSubvolumeGroupRequest {
   string facility_name = 2;
   string volume_name = 3;
   string group_name = 4;
-  uint64 size_bytes = 11;
+  uint64 quota_bytes = 11;
 }
 
 message UpdateSubvolumeGroupRequest {
@@ -405,7 +463,7 @@ message UpdateSubvolumeGroupRequest {
   string facility_name = 2;
   string volume_name = 3;
   string group_name = 4;
-  uint64 size_bytes = 11;
+  uint64 quota_bytes = 11;
 }
 
 message DeleteSubvolumeGroupRequest {

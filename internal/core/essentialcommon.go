@@ -80,7 +80,7 @@ func consumeRemoteOffer(ctx context.Context, facilityRepo FacilityRepo, facility
 	offerURL.Source = controller
 	consumeDetails.Offer.OfferURL = offerURL.String()
 
-	args := crossmodel.ConsumeApplicationArgs{
+	args := &crossmodel.ConsumeApplicationArgs{
 		Offer:    *consumeDetails.Offer,
 		Macaroon: consumeDetails.Macaroon,
 	}

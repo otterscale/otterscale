@@ -3,34 +3,45 @@ package core
 import (
 	"context"
 	"math"
+	"time"
 
 	"github.com/ceph/go-ceph/rbd"
 )
 
 type RBDImageSnapshot struct {
-	Name string
+	Name      string
+	Protected bool
 }
 
 type RBDImage struct {
-	Name            string
-	Size            uint64
-	Features        uint64
-	ImageMirrorMode string
-	MirrorImageInfo string
-	Snapshots       []RBDImageSnapshot
+	Name                 string
+	PoolName             string
+	ObjectSize           uint64
+	StripeUnit           uint64
+	StripeCount          uint64
+	Quota                uint64
+	Used                 uint64
+	ObjectCount          uint64
+	FeatureLayering      bool
+	FeatureExclusiveLock bool
+	FeatureObjectMap     bool
+	FeatureFastDiff      bool
+	FeatureDeepFlatten   bool
+	CreatedAt            time.Time
+	Snapshots            []RBDImageSnapshot
 }
 
 type CephRBDRepo interface {
-	ListImages(ctx context.Context, config *StorageConfig, poolName string) ([]RBDImage, error)
-	GetImage(ctx context.Context, config *StorageConfig, poolName, imageName string) (*RBDImage, error)
-	CreateImage(ctx context.Context, config *StorageConfig, poolName, imageName string, order int, stripeUnit, stripeCount, size, features uint64) (*RBDImage, error)
-	UpdateImageSize(ctx context.Context, config *StorageConfig, poolName, imageName string, size uint64) error
-	DeleteImage(ctx context.Context, config *StorageConfig, poolName, imageName string) error
-	CreateImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
-	DeleteImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
-	RollbackImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
-	ProtectImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
-	UnprotectImageSnapshot(ctx context.Context, config *StorageConfig, poolName, imageName, snapshotName string) error
+	ListImages(ctx context.Context, config *StorageConfig, pool string) ([]RBDImage, error)
+	GetImage(ctx context.Context, config *StorageConfig, pool, image string) (*RBDImage, error)
+	CreateImage(ctx context.Context, config *StorageConfig, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) (*RBDImage, error)
+	UpdateImageSize(ctx context.Context, config *StorageConfig, pool, image string, size uint64) error
+	DeleteImage(ctx context.Context, config *StorageConfig, pool, image string) error
+	CreateImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
+	DeleteImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
+	RollbackImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
+	ProtectImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
+	UnprotectImageSnapshot(ctx context.Context, config *StorageConfig, pool, image, snapshot string) error
 }
 
 func (uc *StorageUseCase) ListImages(ctx context.Context, uuid, facility string) ([]RBDImage, error) {
@@ -61,7 +72,7 @@ func (uc *StorageUseCase) CreateImage(ctx context.Context, uuid, facility, pool,
 		return nil, err
 	}
 
-	order := int(math.Round(math.Log(float64(objectSizeBytes))*100) / 100)
+	order := int(math.Round(math.Log(float64(objectSizeBytes))*100) / 100) //nolint:mnd
 	features := uc.convertToRBDImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten)
 	return uc.rbd.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
 }
