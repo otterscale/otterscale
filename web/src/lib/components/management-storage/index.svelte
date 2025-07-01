@@ -12,7 +12,7 @@
 	import { User } from './storage-user';
 </script>
 
-<LayeredTabs.Root value="object-storage-daemon">
+<LayeredTabs.Root value="pool">
 	<LayeredTabs.Menubar>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
@@ -72,14 +72,9 @@
 					<Icon icon="ph:cube" />
 					Bucket
 				</LayeredTabs.MenuItem>
-				<LayeredTabs.MenuSeparator />
 				<LayeredTabs.MenuItem value="user">
 					<Icon icon="ph:user-circle" />
 					User
-				</LayeredTabs.MenuItem>
-				<LayeredTabs.MenuItem value="role">
-					<Icon icon="ph:user-gear" />
-					Role
 				</LayeredTabs.MenuItem>
 			</LayeredTabs.MenuContent>
 		</LayeredTabs.Menu>
