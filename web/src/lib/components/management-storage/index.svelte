@@ -72,14 +72,9 @@
 					<Icon icon="ph:cube" />
 					Bucket
 				</LayeredTabs.MenuItem>
-				<LayeredTabs.MenuSeparator />
 				<LayeredTabs.MenuItem value="user">
 					<Icon icon="ph:user-circle" />
 					User
-				</LayeredTabs.MenuItem>
-				<LayeredTabs.MenuItem value="role">
-					<Icon icon="ph:user-gear" />
-					Role
 				</LayeredTabs.MenuItem>
 			</LayeredTabs.MenuContent>
 		</LayeredTabs.Menu>
@@ -91,7 +86,7 @@
 	<!-- <LayeredTabs.Content value="block-image">
 		<BlockImage />
 	</LayeredTabs.Content> -->
-  <LayeredTabs.Content value="object-storage-daemon">
+	<LayeredTabs.Content value="object-storage-daemon">
 		<ObjectStorageDaemon />
 	</LayeredTabs.Content>
 	<LayeredTabs.Content value="pool">

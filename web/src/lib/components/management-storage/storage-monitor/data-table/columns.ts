@@ -1,9 +1,8 @@
-import type { OSD } from "$gen/api/storage/v1/storage_pb";
 import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
-import DataTableActions from './actions.svelte';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import type { OSD } from "$gen/api/storage/v1/storage_pb";
 
 const columns: ColumnDef<OSD>[] = [
     {
@@ -96,12 +95,6 @@ const columns: ColumnDef<OSD>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.writeBytes, row);
-        },
-    },
-    {
-        id: "actions",
-        cell: ({ row }) => {
-            return renderComponent(DataTableActions, { osd: row.original });
         },
     },
 ];
