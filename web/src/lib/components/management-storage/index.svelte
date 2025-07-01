@@ -12,7 +12,7 @@
 	import { User } from './storage-user';
 </script>
 
-<LayeredTabs.Root value="subvolume-group">
+<LayeredTabs.Root value="pool">
 	<LayeredTabs.Menubar>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
@@ -85,31 +85,31 @@
 		</LayeredTabs.Menu>
 	</LayeredTabs.Menubar>
 
-	<LayeredTabs.Content value="bucket">
+	<!-- <LayeredTabs.Content value="bucket">
 		<Bucket />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="block-image">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="block-image">
 		<BlockImage />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="object-storage-daemon">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="object-storage-daemon">
 		<ObjectStorageDaemon />
-	</LayeredTabs.Content>
+	</LayeredTabs.Content> -->
 	<LayeredTabs.Content value="pool">
 		<Pool />
 	</LayeredTabs.Content>
-	<LayeredTabs.Content value="role">
+	<!-- <LayeredTabs.Content value="role">
 		<Role />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="subvolume">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="subvolume">
 		<Subvolume />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="subvolume-group">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="subvolume-group">
 		<SubvolumeGroup />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="user">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="user">
 		<User />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="volume">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="volume">
 		<Volume />
-	</LayeredTabs.Content>
+	</LayeredTabs.Content> -->
 </LayeredTabs.Root>

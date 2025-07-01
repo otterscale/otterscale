@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { Single as Input } from '$lib/components/custom/input/index';
 	let value = $state('');
 </script>
@@ -13,4 +13,4 @@
 		]}
 	/>
 	{value}
-</div>
+</div> -->

@@ -1,9 +1,9 @@
+import type { Pool } from '$gen/api/storage/v1/storage_pb';
 import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
-import DataTableActions from "./actions.svelte";
+import DataTableActions from './actions.svelte';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import { type Pool } from './types';
 
 const columns: ColumnDef<Pool>[] = [
     {
@@ -27,15 +27,6 @@ const columns: ColumnDef<Pool>[] = [
         },
     },
     {
-        accessorKey: "dataProtection",
-        header: ({ column }) => {
-            return renderSnippet(headers.dataProtection, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.dataProtection, row);
-        },
-    },
-    {
         accessorKey: "applications",
         header: ({ column }) => {
             return renderSnippet(headers.applications, column)
@@ -46,14 +37,18 @@ const columns: ColumnDef<Pool>[] = [
         filterFn: 'arrIncludesSome',
     },
     {
-        accessorKey: "PGStatus",
+        accessorKey: "placementGroupState",
         header: ({ column }) => {
-            return renderSnippet(headers.PGStatus, column)
+            return renderSnippet(headers.placement_group_state, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.PGStatus, row);
+            return renderSnippet(cells.placement_group_state, row);
         },
-        filterFn: 'inNumberRange',
+        filterFn: (row, columnId, filterValue) => {
+            const value = Object.keys(row.getValue(columnId) ?? {});
+            if (!value.length || !filterValue.length) return true;
+            return value.some(v => filterValue.includes(v));
+        },
     },
     {
         accessorKey: "usage",
@@ -63,7 +58,6 @@ const columns: ColumnDef<Pool>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.usage, row);
         },
-        filterFn: 'inNumberRange',
     },
     {
         accessorKey: "readBytes",

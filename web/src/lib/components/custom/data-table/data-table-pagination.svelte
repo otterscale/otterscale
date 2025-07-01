@@ -25,7 +25,7 @@
 		<Icon icon="ph:caret-left" />
 	</Button>
 	<span class="flex items-center gap-1 text-xs font-light">
-		<p>{table.getState().pagination.pageIndex + 1}</p>
+		<p>{table.getPageCount() > 0 ? table.getState().pagination.pageIndex + 1 : 0}</p>
 		<p>/</p>
 		<p>{table.getPageCount()}</p>
 	</span>
