@@ -12,7 +12,7 @@
 	import { User } from './storage-user';
 </script>
 
-<LayeredTabs.Root value="object-storage-daemon">
+<LayeredTabs.Root value="pool">
 	<LayeredTabs.Menubar>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
@@ -91,7 +91,7 @@
 	<!-- <LayeredTabs.Content value="block-image">
 		<BlockImage />
 	</LayeredTabs.Content> -->
-	<LayeredTabs.Content value="object-storage-daemon">
+  <LayeredTabs.Content value="object-storage-daemon">
 		<ObjectStorageDaemon />
 	</LayeredTabs.Content>
 	<LayeredTabs.Content value="pool">
