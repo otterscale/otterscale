@@ -1,27 +1,26 @@
 <script lang="ts" module>
+	import type { OSD } from '$gen/api/storage/v1/storage_pb';
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
-	import type { ObjectStorageDaemon } from './types';
 
 	export const headers = {
 		_row_picker: _row_picker,
 		id: id,
-		host: host,
-		devices: devices,
-		status: status,
+		name: name,
+		stateUp: stateUp,
+		stateIn: stateIn,
+		exists: exists,
 		deviceClass: deviceClass,
-		pgs: pgs,
-		size: size,
-		flags: flags,
+		placementGroupCount: placementGroupCount,
 		usage: usage,
 		readBytes: readBytes,
 		writeBytes: writeBytes
 	};
 </script>
 
-{#snippet _row_picker(table: Table<ObjectStorageDaemon>)}
+{#snippet _row_picker(table: Table<OSD>)}
 	<Checkbox
 		checked={table.getIsAllPageRowsSelected()}
 		indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
@@ -30,7 +29,8 @@
 		aria-label="Select all"
 	/>
 {/snippet}
-{#snippet id(column: Column<ObjectStorageDaemon>)}
+
+{#snippet id(column: Column<OSD>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>ID</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -39,31 +39,43 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet host(column: Column<ObjectStorageDaemon>)}
+{#snippet name(column: Column<OSD>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>HOST</Layout.HeaderViewer>
+		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet devices(column: Column<ObjectStorageDaemon>)}
-	<Layout.Header class="flex justify-end">
-		<Layout.HeaderViewer>DEVICES</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
-{#snippet status(column: Column<ObjectStorageDaemon>)}
+{#snippet stateIn(column: Column<OSD>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>STATUS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>IN</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet deviceClass(column: Column<ObjectStorageDaemon>)}
+{#snippet stateUp(column: Column<OSD>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>UP</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet exists(column: Column<OSD>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>EXISTS</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet deviceClass(column: Column<OSD>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>DEVICE CLASS</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -72,34 +84,16 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet pgs(column: Column<ObjectStorageDaemon>)}
+{#snippet placementGroupCount(column: Column<OSD>)}
 	<Layout.Header>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>PLACEMENT GROUP</Layout.HeaderViewer>
+		<Layout.HeaderViewer>PLACEMENT GROUP COUNT</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet size(column: Column<ObjectStorageDaemon>)}
-	<Layout.Header>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-		<Layout.HeaderViewer>SIZE</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
-{#snippet flags(column: Column<ObjectStorageDaemon>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>FLAG</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet usage(column: Column<ObjectStorageDaemon>)}
+{#snippet usage(column: Column<OSD>)}
 	<Layout.Header>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -108,13 +102,13 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet readBytes(column: Column<ObjectStorageDaemon>)}
+{#snippet readBytes(column: Column<OSD>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>READ</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet writeBytes(column: Column<ObjectStorageDaemon>)}
+{#snippet writeBytes(column: Column<OSD>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>WRITE</Layout.HeaderViewer>
 	</Layout.Header>

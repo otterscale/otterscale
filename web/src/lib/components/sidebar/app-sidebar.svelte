@@ -8,6 +8,7 @@
 
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
+	import { siteConfig } from '$lib/config/site';
 
 	const data = {
 		namespaces: [
@@ -179,7 +180,7 @@
 				icon: 'ph:lifebuoy'
 			},
 			{
-				title: m.about(),
+				title: siteConfig.version,
 				url: '/about',
 				icon: 'ph:info'
 			}
