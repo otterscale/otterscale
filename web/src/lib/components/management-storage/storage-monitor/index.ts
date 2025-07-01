@@ -1,5 +1,5 @@
-import { default as ObjectStorageDaemon } from './index.svelte'
+import { default as Monitor } from './index.svelte'
 
 export {
-    ObjectStorageDaemon
+    Monitor
 }

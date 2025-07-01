@@ -8,6 +8,7 @@
 	import { SubvolumeGroup } from './storage-filesystem-subvolume-group';
 	import { ObjectStorageDaemon } from './storage-object-storage-daemon';
 	import { Pool } from './storage-pool';
+	import { Monitor } from './storage-monitor';
 	import { Role } from './storage-role';
 	import { User } from './storage-user';
 </script>
@@ -20,6 +21,10 @@
 				CLUSTER
 			</LayeredTabs.Trigger>
 			<LayeredTabs.MenuContent>
+				<LayeredTabs.MenuItem value="monitor">
+					<Icon icon="ph:pulse" />
+					Monitor
+				</LayeredTabs.MenuItem>
 				<LayeredTabs.MenuItem value="pool">
 					<Icon icon="ph:database" />
 					Pool
@@ -88,6 +93,9 @@
 	</LayeredTabs.Content> -->
 	<LayeredTabs.Content value="object-storage-daemon">
 		<ObjectStorageDaemon />
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="monitor">
+		<Monitor />
 	</LayeredTabs.Content>
 	<LayeredTabs.Content value="pool">
 		<Pool />

@@ -11,24 +11,11 @@
 <Layout>
 	<Chart.Text>
 		{#snippet title()}
-			OSD
+			Monitor
 		{/snippet}
 		{#snippet content()}
-			{@const idList = filteredData.map((datum) => datum['id' as keyof TData])}
+			{@const idList = filteredData.map((datum) => datum['name' as keyof TData])}
 			{idList.length}
-		{/snippet}
-	</Chart.Text>
-	<Chart.Text>
-		{#snippet title()}
-			Usage
-		{/snippet}
-		{#snippet content()}
-			{@const usedList = filteredData.map((datum) => Number(datum['usedBytes' as keyof TData]))}
-			{@const usedTotal = usedList.reduce((a, value) => a + value, 0)}
-			{@const sizeList = filteredData.map((datum) => Number(datum['sizeBytes' as keyof TData]))}
-			{@const sizeTotal = sizeList.reduce((a, value) => a + value, 0)}
-
-			{Number((usedTotal * 100) / sizeTotal).toFixed(1)}%
 		{/snippet}
 	</Chart.Text>
 </Layout>

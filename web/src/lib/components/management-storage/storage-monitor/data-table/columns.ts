@@ -2,9 +2,9 @@ import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/in
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import type { OSD } from "$gen/api/storage/v1/storage_pb";
+import type { MON } from "$gen/api/storage/v1/storage_pb";
 
-const columns: ColumnDef<OSD>[] = [
+const columns: ColumnDef<MON>[] = [
     {
         id: "select",
         header: ({ table }) => {
@@ -16,6 +16,16 @@ const columns: ColumnDef<OSD>[] = [
         enableSorting: false,
         enableHiding: false,
     },
+
+    {
+        accessorKey: "leader",
+        header: ({ column }) => {
+            return renderSnippet(headers.leader, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.leader, row);
+        },
+    },
     {
         accessorKey: "name",
         header: ({ column }) => {
@@ -26,75 +36,21 @@ const columns: ColumnDef<OSD>[] = [
         },
     },
     {
-        accessorKey: "stateUp",
+        accessorKey: "rank",
         header: ({ column }) => {
-            return renderSnippet(headers.stateUp, column)
+            return renderSnippet(headers.rank, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.stateUp, row);
+            return renderSnippet(cells.rank, row);
         },
     },
     {
-        accessorKey: "stateIn",
+        accessorKey: "publicAddress",
         header: ({ column }) => {
-            return renderSnippet(headers.stateIn, column)
+            return renderSnippet(headers.publicAddress, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.stateIn, row);
-        },
-    },
-    {
-        accessorKey: "exists",
-        header: ({ column }) => {
-            return renderSnippet(headers.exists, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.exists, row);
-        },
-    },
-    {
-        accessorKey: "deviceClass",
-        header: ({ column }) => {
-            return renderSnippet(headers.deviceClass, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.deviceClass, row);
-        },
-    },
-    {
-        accessorKey: "placementGroupCount",
-        header: ({ column }) => {
-            return renderSnippet(headers.placementGroupCount, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.placementGroupCount, row);
-        },
-    },
-    {
-        accessorKey: "usage",
-        header: ({ column }) => {
-            return renderSnippet(headers.usage, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.usage, row);
-        },
-    },
-    {
-        accessorKey: "readBytes",
-        header: ({ column }) => {
-            return renderSnippet(headers.readBytes, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.readBytes, row);
-        },
-    },
-    {
-        accessorKey: "writeBytes",
-        header: ({ column }) => {
-            return renderSnippet(headers.writeBytes, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.writeBytes, row);
+            return renderSnippet(cells.publicAddress, row);
         },
     },
 ];

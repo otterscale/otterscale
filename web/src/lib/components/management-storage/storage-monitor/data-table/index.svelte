@@ -1,5 +1,5 @@
 <script lang="ts" generics="TData, TValue">
-	import type { OSD } from '$gen/api/storage/v1/storage_pb';
+	import type { MON, OSD } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
@@ -25,7 +25,7 @@
 	import Statistics from './statistics.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 
-	let { data = $bindable() }: { data: Writable<OSD[]> } = $props();
+	let { data = $bindable() }: { data: Writable<MON[]> } = $props();
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -102,9 +102,6 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="exists" {table} />
-			<PointFilter columnId="deviceClass" alias="Device Class" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
