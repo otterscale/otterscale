@@ -4,7 +4,7 @@ go 1.24.3
 
 replace gopkg.in/yaml.v2 => github.com/juju/yaml/v2 v2.0.0
 
-replace github.com/juju/juju => github.com/openhdc/juju v1.36.5-1
+replace github.com/juju/juju => github.com/iasthc/juju v1.36.7
 
 require (
 	connectrpc.com/connect v1.18.1
