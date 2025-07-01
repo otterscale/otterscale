@@ -102,6 +102,7 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
+			<FuzzyFilter columnId="name" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
