@@ -1,16 +1,15 @@
 <script lang="ts" module>
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import type { Pool } from '$gen/api/storage/v1/storage_pb';
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
-	import type { Table, Column } from '@tanstack/table-core';
-	import type { Pool } from './types';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
 		_row_picker: _row_picker,
 		name: name,
-		dataProtection: dataProtection,
 		applications: applications,
-		PGStatus: PGStatus,
+		placement_group_state: placement_group_state,
 		usage: usage,
 		readBytes: readBytes,
 		writeBytes: writeBytes
@@ -36,15 +35,6 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet dataProtection(column: Column<Pool>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>DATA PROTECTION</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
 {#snippet applications(column: Column<Pool>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>APPLICATIONS</Layout.HeaderViewer>
@@ -54,12 +44,9 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet PGStatus(column: Column<Pool>)}
+{#snippet placement_group_state(column: Column<Pool>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>PG STATUS</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
+		<Layout.HeaderViewer>PLACEMENT GROUP STATE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

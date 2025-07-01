@@ -1,7 +1,8 @@
 <script lang="ts" generics="TData, TValue">
+	import type { Pool } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
-	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
+	import RangeFilter from '$lib/components/custom/data-table/data-table-filters/range-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -18,14 +19,15 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable, type Writable } from 'svelte/store';
-	import { fetchPools } from '../utils.svelte';
+	import type { Writable } from 'svelte/store';
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import type { Pool } from './types';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
+	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
+	import MapPointFilter from '$lib/components/custom/data-table/data-table-filters/map-point-filter.svelte';
 
-	let data: Writable<Pool[]> = $state(writable(fetchPools() ?? ([] as Pool[])));
+	let { data = $bindable() }: { data: Writable<Pool[]> } = $props();
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -108,9 +110,8 @@
 		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="dataProtection" alias="Data Protection" {table} />
-			<PointFilter columnId="applications" {table} />
-			<PointFilter columnId="PGStatus" alias="Status" {table} />
+			<ArrayPointFilter columnId="applications" {table} />
+			<MapPointFilter columnId="placementGroupState" alias="State" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
@@ -143,7 +144,9 @@
 					</Table.Row>
 				{:else}
 					<Table.Row>
-						<Table.Cell colspan={columns.length}>No results.</Table.Cell>
+						<Table.Cell colspan={columns.length}>
+							<TableEmpty />
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>
