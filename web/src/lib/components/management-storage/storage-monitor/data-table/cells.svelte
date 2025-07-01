@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { OSD } from '$gen/api/storage/v1/storage_pb';
+	import type { MON } from '$gen/api/storage/v1/storage_pb';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
@@ -25,20 +25,14 @@
 
 	export const cells = {
 		_row_picker: _row_picker,
-		id: id,
+		leader: leader,
 		name: name,
-		stateUp: stateUp,
-		stateIn: stateIn,
-		exists: exists,
-		deviceClass: deviceClass,
-		placementGroupCount: placementGroupCount,
-		usage: usage,
-		readBytes: readBytes,
-		writeBytes: writeBytes
+		rank: rank,
+		publicAddress: publicAddress
 	};
 </script>
 
-{#snippet _row_picker(row: Row<OSD>)}
+{#snippet _row_picker(row: Row<MON>)}
 	<Checkbox
 		checked={row.getIsSelected()}
 		onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -47,78 +41,22 @@
 	/>
 {/snippet}
 
-{#snippet id(row: Row<OSD>)}
-	{row.original.id}
+{#snippet leader(row: Row<MON>)}
+	<Badge variant="outline">
+		{row.original.leader}
+	</Badge>
 {/snippet}
 
-{#snippet name(row: Row<OSD>)}
+{#snippet name(row: Row<MON>)}
 	{row.original.name}
 {/snippet}
 
-{#snippet stateUp(row: Row<OSD>)}
+{#snippet rank(row: Row<MON>)}
+	<div class="text-end">{row.original.rank}</div>
+{/snippet}
+
+{#snippet publicAddress(row: Row<MON>)}
 	<Badge variant="outline">
-		{row.original.up}
+		{row.original.publicAddress}
 	</Badge>
-{/snippet}
-
-{#snippet stateIn(row: Row<OSD>)}
-	<Badge variant="outline">
-		{row.original.in}
-	</Badge>
-{/snippet}
-
-{#snippet exists(row: Row<OSD>)}
-	<Badge variant="outline">
-		{row.original.exists}
-	</Badge>
-{/snippet}
-
-{#snippet deviceClass(row: Row<OSD>)}
-	<Badge variant="outline">
-		{row.original.deviceClass}
-	</Badge>
-{/snippet}
-
-{#snippet placementGroupCount(row: Row<OSD>)}
-	<span class="flex justify-end">{row.original.placementGroupCount}</span>
-{/snippet}
-
-{#snippet usage(row: Row<OSD>)}
-	<Progress.Root
-		numerator={Number(row.original.usedBytes)}
-		denominator={Number(row.original.sizeBytes)}
-	>
-		{#snippet detail({ numerator, denominator })}
-			{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(
-				numerator / (1024 * 1024)
-			)}
-			{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(
-				denominator / (1024 * 1024)
-			)}
-			<span>
-				{numeratorValue}
-				{numeratorUnit}
-			</span>
-			<span>/</span>
-			<span>
-				{denominatorValue}
-				{denominatorUnit}
-			</span>
-		{/snippet}
-		{#snippet ratio({ numerator, denominator })}
-			{((numerator * 100) / denominator).toFixed(2)}%
-		{/snippet}
-	</Progress.Root>
-{/snippet}
-
-{#snippet readBytes(row: Row<OSD>)}
-	<div class="h-[50px] w-[100px]">
-		<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
-	</div>
-{/snippet}
-
-{#snippet writeBytes(row: Row<OSD>)}
-	<div class="h-[50px] w-[100px]">
-		<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
-	</div>
 {/snippet}
