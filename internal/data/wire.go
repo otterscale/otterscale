@@ -35,6 +35,7 @@ var ProviderSet = wire.NewSet(
 	juju.NewModelConfig,
 	kube.New,
 	kube.NewApps,
+	kube.NewBatch,
 	kube.NewCore,
 	kube.NewHelmRelease,
 	kube.NewHelmChart,

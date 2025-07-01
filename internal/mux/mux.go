@@ -7,6 +7,7 @@ import (
 	"connectrpc.com/grpcreflect"
 
 	applicationv1 "github.com/openhdc/otterscale/api/application/v1/pbconnect"
+	bistv1 "github.com/openhdc/otterscale/api/bist/v1/pbconnect"
 	configurationv1 "github.com/openhdc/otterscale/api/configuration/v1/pbconnect"
 	environmentv1 "github.com/openhdc/otterscale/api/environment/v1/pbconnect"
 	essentialv1 "github.com/openhdc/otterscale/api/essential/v1/pbconnect"
@@ -21,6 +22,7 @@ import (
 
 var Services = []string{
 	applicationv1.ApplicationServiceName,
+	bistv1.BISTServiceName,
 	configurationv1.ConfigurationServiceName,
 	environmentv1.EnvironmentServiceName,
 	facilityv1.FacilityServiceName,
@@ -32,9 +34,10 @@ var Services = []string{
 	tagv1.TagServiceName,
 }
 
-func New(helper bool, app *app.ApplicationService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
+func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle(applicationv1.NewApplicationServiceHandler(app))
+	mux.Handle(bistv1.NewBISTServiceHandler(bist))
 	mux.Handle(configurationv1.NewConfigurationServiceHandler(config))
 	mux.Handle(environmentv1.NewEnvironmentServiceHandler(environment))
 	mux.Handle(facilityv1.NewFacilityServiceHandler(facility))

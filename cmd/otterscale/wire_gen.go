@@ -49,6 +49,8 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	clientRepo := juju.NewClient(jujuJuju)
 	applicationUseCase := core.NewApplicationUseCase(kubeAppsRepo, kubeCoreRepo, kubeStorageRepo, chartRepo, releaseRepo, facilityRepo, scopeRepo, clientRepo)
 	applicationService := app.NewApplicationService(applicationUseCase)
+	bistUseCase := core.NewBISTUseCase(kubeCoreRepo)
+	bistService := app.NewBISTService(bistUseCase)
 	maasMAAS := maas.New(configConfig)
 	serverRepo := maas.NewServer(maasMAAS)
 	scopeConfigRepo := juju.NewModelConfig(jujuJuju)
@@ -91,7 +93,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	scopeService := app.NewScopeService(scopeUseCase)
 	tagUseCase := core.NewTagUseCase(tagRepo)
 	tagService := app.NewTagService(tagUseCase)
-	serveMux := mux.New(bool2, applicationService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, storageService, scopeService, tagService)
+	serveMux := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, storageService, scopeService, tagService)
 	command := newCmd(configConfig, serveMux)
 	return command, func() {
 		cleanup()

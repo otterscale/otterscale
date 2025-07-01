@@ -107,5 +107,9 @@ func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 			CloudRegion:         req.GetJujuCloudRegion(),
 			CharmhubAPIURL:      req.GetJujuCharmhubApiUrl(),
 		},
+		MicroK8s: config.MicroK8s{
+			Host:  req.GetMicroK8SHost(),
+			Token: req.GetMicroK8SToken(),
+		},
 	}
 }

@@ -35,6 +35,22 @@ func (r *core) ListServices(ctx context.Context, config *rest.Config, namespace 
 	return list.Items, nil
 }
 
+func (r *core) ListServicesByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]oscore.Service, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.ListOptions{
+		LabelSelector: label,
+	}
+	list, err := clientset.CoreV1().Services(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
 func (r *core) ListPods(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Pod, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
@@ -61,4 +77,54 @@ func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Conf
 		return nil, err
 	}
 	return list.Items, nil
+}
+
+func (r *core) GetNamespace(ctx context.Context, config *rest.Config, name string) (*oscore.Namespace, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.GetOptions{}
+	return clientset.CoreV1().Namespaces().Get(ctx, name, opts)
+}
+
+func (r *core) CreateNamespace(ctx context.Context, config *rest.Config, ns *oscore.Namespace) (*oscore.Namespace, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.CreateOptions{}
+	return clientset.CoreV1().Namespaces().Create(ctx, ns, opts)
+}
+
+func (r *core) GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.ConfigMap, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.GetOptions{}
+	return clientset.CoreV1().ConfigMaps(namespace).Get(ctx, name, opts)
+}
+
+func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, cm *oscore.ConfigMap) (*oscore.ConfigMap, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.CreateOptions{}
+	return clientset.CoreV1().ConfigMaps(namespace).Create(ctx, cm, opts)
+}
+
+func (r *core) DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return err
+	}
+
+	opts := metav1.DeleteOptions{}
+	return clientset.CoreV1().ConfigMaps(namespace).Delete(ctx, name, opts)
 }

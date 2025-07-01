@@ -52,6 +52,7 @@ func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message st
 func (uc *EnvironmentUseCase) UpdateConfig(ctx context.Context, conf *config.Config) error {
 	uc.conf.MAAS = conf.MAAS
 	uc.conf.Juju = conf.Juju
+	uc.conf.MicroK8s = conf.MicroK8s
 	return uc.conf.Override(uc.conf)
 }
 
