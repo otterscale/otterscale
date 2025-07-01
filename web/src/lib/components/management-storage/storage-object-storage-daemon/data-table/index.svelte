@@ -1,4 +1,5 @@
 <script lang="ts" generics="TData, TValue">
+	import type { OSD } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
@@ -19,16 +20,12 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable, type Writable } from 'svelte/store';
-	import { fetchObjectStorageDaemons } from '../utils.svelte';
+	import { type Writable } from 'svelte/store';
 	import { columns } from './columns';
-	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import type { ObjectStorageDaemon } from './types';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 
-	let data: Writable<ObjectStorageDaemon[]> = $state(
-		writable(fetchObjectStorageDaemons() ?? ([] as ObjectStorageDaemon[]))
-	);
+	let { data = $bindable() }: { data: Writable<OSD[]> } = $props();
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -104,14 +101,10 @@
 		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
-		<Layout.ControllerAction>
-			<Create bind:data/>
-		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
-			<FuzzyFilter columnId="host" {table} />
-			<ArrayPointFilter columnId="status" {table} />
+			<FuzzyFilter columnId="name" {table} />
+			<PointFilter columnId="exists" {table} />
 			<PointFilter columnId="deviceClass" alias="Device Class" {table} />
-			<ArrayPointFilter columnId="flags" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
@@ -144,7 +137,9 @@
 					</Table.Row>
 				{:else}
 					<Table.Row>
-						<Table.Cell colspan={columns.length}>No results.</Table.Cell>
+						<Table.Cell colspan={columns.length}>
+							<TableEmpty />
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>

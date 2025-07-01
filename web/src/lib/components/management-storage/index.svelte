@@ -91,9 +91,9 @@
 	<!-- <LayeredTabs.Content value="block-image">
 		<BlockImage />
 	</LayeredTabs.Content> -->
-	<!-- <LayeredTabs.Content value="object-storage-daemon">
+  <LayeredTabs.Content value="object-storage-daemon">
 		<ObjectStorageDaemon />
-	</LayeredTabs.Content> -->
+	</LayeredTabs.Content>
 	<LayeredTabs.Content value="pool">
 		<Pool />
 	</LayeredTabs.Content>
