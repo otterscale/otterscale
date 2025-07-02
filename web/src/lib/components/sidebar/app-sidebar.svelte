@@ -125,6 +125,10 @@
 						url: '/management/network'
 					},
 					{
+						title: 'Tester',
+						url: '/management/tester'
+					},
+					{
 						title: m.configuration(),
 						url: '/management/general'
 					}
