@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/environment/v1/environment.proto.
  */
 export const file_api_environment_v1_environment: GenFile = /*@__PURE__*/
-  fileDesc("CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFQoTQ2hlY2tIZWFsdGh5UmVxdWVzdCKUAQoUQ2hlY2tIZWFsdGh5UmVzcG9uc2USRgoGcmVzdWx0GAEgASgOMjYub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5DaGVja0hlYWx0aHlSZXNwb25zZS5SZXN1bHQiNAoGUmVzdWx0Eg8KC1VOU1BFQ0lGSUVEEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUiFgoUV2F0Y2hTdGF0dXNlc1JlcXVlc3QiNwoVV2F0Y2hTdGF0dXNlc1Jlc3BvbnNlEg0KBXBoYXNlGAEgASgJEg8KB21lc3NhZ2UYAiABKAkiNQoTVXBkYXRlU3RhdHVzUmVxdWVzdBINCgVwaGFzZRgBIAEoCRIPCgdtZXNzYWdlGAIgASgJIqICChNVcGRhdGVDb25maWdSZXF1ZXN0EhAKCG1hYXNfdXJsGAEgASgJEhAKCG1hYXNfa2V5GAIgASgJEhQKDG1hYXNfdmVyc2lvbhgDIAEoCRIXCg9qdWp1X2NvbnRyb2xsZXIYCyABKAkSIQoZanVqdV9jb250cm9sbGVyX2FkZHJlc3NlcxgMIAMoCRIVCg1qdWp1X3VzZXJuYW1lGA0gASgJEhUKDWp1anVfcGFzc3dvcmQYDiABKAkSFAoManVqdV9jYV9jZXJ0GA8gASgJEhcKD2p1anVfY2xvdWRfbmFtZRgVIAEoCRIZChFqdWp1X2Nsb3VkX3JlZ2lvbhgWIAEoCRIdChVqdWp1X2NoYXJtaHViX2FwaV91cmwYFyABKAkiMwojVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllc1JlcXVlc3QSDAoEdXJscxgBIAMoCTKjBAoSRW52aXJvbm1lbnRTZXJ2aWNlEm8KDENoZWNrSGVhbHRoeRIuLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGh5UmVxdWVzdBovLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGh5UmVzcG9uc2USdAoNV2F0Y2hTdGF0dXNlcxIvLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuV2F0Y2hTdGF0dXNlc1JlcXVlc3QaMC5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLldhdGNoU3RhdHVzZXNSZXNwb25zZTABElYKDFVwZGF0ZVN0YXR1cxIuLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlU3RhdHVzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJWCgxVcGRhdGVDb25maWcSLi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlVwZGF0ZUNvbmZpZ1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdgocVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllcxI+Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHlCNVozZ2l0aHViLmNvbS9vcGVuaGRjL290dGVyc2NhbGUvYXBpL2Vudmlyb25tZW50L3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty]);
+  fileDesc("CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFQoTQ2hlY2tIZWFsdGh5UmVxdWVzdCKUAQoUQ2hlY2tIZWFsdGh5UmVzcG9uc2USRgoGcmVzdWx0GAEgASgOMjYub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5DaGVja0hlYWx0aHlSZXNwb25zZS5SZXN1bHQiNAoGUmVzdWx0Eg8KC1VOU1BFQ0lGSUVEEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUiFgoUV2F0Y2hTdGF0dXNlc1JlcXVlc3QiNwoVV2F0Y2hTdGF0dXNlc1Jlc3BvbnNlEg0KBXBoYXNlGAEgASgJEg8KB21lc3NhZ2UYAiABKAkiNQoTVXBkYXRlU3RhdHVzUmVxdWVzdBINCgVwaGFzZRgBIAEoCRIPCgdtZXNzYWdlGAIgASgJIqICChNVcGRhdGVDb25maWdSZXF1ZXN0EhAKCG1hYXNfdXJsGAEgASgJEhAKCG1hYXNfa2V5GAIgASgJEhQKDG1hYXNfdmVyc2lvbhgDIAEoCRIXCg9qdWp1X2NvbnRyb2xsZXIYCyABKAkSIQoZanVqdV9jb250cm9sbGVyX2FkZHJlc3NlcxgMIAMoCRIVCg1qdWp1X3VzZXJuYW1lGA0gASgJEhUKDWp1anVfcGFzc3dvcmQYDiABKAkSFAoManVqdV9jYV9jZXJ0GA8gASgJEhcKD2p1anVfY2xvdWRfbmFtZRgVIAEoCRIZChFqdWp1X2Nsb3VkX3JlZ2lvbhgWIAEoCRIdChVqdWp1X2NoYXJtaHViX2FwaV91cmwYFyABKAkiMwojVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllc1JlcXVlc3QSDAoEdXJscxgBIAMoCSIwCgpQcm9tZXRoZXVzEhAKCGVuZHBvaW50GAEgASgJEhAKCGJhc2VfdXJsGAIgASgJIhYKFEdldFByb21ldGhldXNSZXF1ZXN0MowFChJFbnZpcm9ubWVudFNlcnZpY2USbwoMQ2hlY2tIZWFsdGh5Ei4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5DaGVja0hlYWx0aHlSZXF1ZXN0Gi8ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5DaGVja0hlYWx0aHlSZXNwb25zZRJ0Cg1XYXRjaFN0YXR1c2VzEi8ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5XYXRjaFN0YXR1c2VzUmVxdWVzdBowLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuV2F0Y2hTdGF0dXNlc1Jlc3BvbnNlMAESVgoMVXBkYXRlU3RhdHVzEi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVTdGF0dXNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElYKDFVwZGF0ZUNvbmZpZxIuLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlQ29uZmlnUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJ2ChxVcGRhdGVDb25maWdIZWxtUmVwb3NpdG9yaWVzEj4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVDb25maWdIZWxtUmVwb3NpdG9yaWVzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJnCg1HZXRQcm9tZXRoZXVzEi8ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5HZXRQcm9tZXRoZXVzUmVxdWVzdBolLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuUHJvbWV0aGV1c0I1WjNnaXRodWIuY29tL29wZW5oZGMvb3R0ZXJzY2FsZS9hcGkvZW52aXJvbm1lbnQvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty]);
 
 /**
  * @generated from message otterscale.environment.v1.CheckHealthyRequest
@@ -212,6 +212,41 @@ export const UpdateConfigHelmRepositoriesRequestSchema: GenMessage<UpdateConfigH
   messageDesc(file_api_environment_v1_environment, 6);
 
 /**
+ * @generated from message otterscale.environment.v1.Prometheus
+ */
+export type Prometheus = Message<"otterscale.environment.v1.Prometheus"> & {
+  /**
+   * @generated from field: string endpoint = 1;
+   */
+  endpoint: string;
+
+  /**
+   * @generated from field: string base_url = 2;
+   */
+  baseUrl: string;
+};
+
+/**
+ * Describes the message otterscale.environment.v1.Prometheus.
+ * Use `create(PrometheusSchema)` to create a new message.
+ */
+export const PrometheusSchema: GenMessage<Prometheus> = /*@__PURE__*/
+  messageDesc(file_api_environment_v1_environment, 7);
+
+/**
+ * @generated from message otterscale.environment.v1.GetPrometheusRequest
+ */
+export type GetPrometheusRequest = Message<"otterscale.environment.v1.GetPrometheusRequest"> & {
+};
+
+/**
+ * Describes the message otterscale.environment.v1.GetPrometheusRequest.
+ * Use `create(GetPrometheusRequestSchema)` to create a new message.
+ */
+export const GetPrometheusRequestSchema: GenMessage<GetPrometheusRequest> = /*@__PURE__*/
+  messageDesc(file_api_environment_v1_environment, 8);
+
+/**
  * @generated from service otterscale.environment.v1.EnvironmentService
  */
 export const EnvironmentService: GenService<{
@@ -254,6 +289,14 @@ export const EnvironmentService: GenService<{
     methodKind: "unary";
     input: typeof UpdateConfigHelmRepositoriesRequestSchema;
     output: typeof EmptySchema;
+  },
+  /**
+   * @generated from rpc otterscale.environment.v1.EnvironmentService.GetPrometheus
+   */
+  getPrometheus: {
+    methodKind: "unary";
+    input: typeof GetPrometheusRequestSchema;
+    output: typeof PrometheusSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_environment_v1_environment, 0);

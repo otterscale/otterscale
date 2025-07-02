@@ -49,6 +49,9 @@ const (
 	// EnvironmentServiceUpdateConfigHelmRepositoriesProcedure is the fully-qualified name of the
 	// EnvironmentService's UpdateConfigHelmRepositories RPC.
 	EnvironmentServiceUpdateConfigHelmRepositoriesProcedure = "/otterscale.environment.v1.EnvironmentService/UpdateConfigHelmRepositories"
+	// EnvironmentServiceGetPrometheusProcedure is the fully-qualified name of the EnvironmentService's
+	// GetPrometheus RPC.
+	EnvironmentServiceGetPrometheusProcedure = "/otterscale.environment.v1.EnvironmentService/GetPrometheus"
 )
 
 // EnvironmentServiceClient is a client for the otterscale.environment.v1.EnvironmentService
@@ -59,6 +62,7 @@ type EnvironmentServiceClient interface {
 	UpdateStatus(context.Context, *connect.Request[v1.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error)
 	UpdateConfig(context.Context, *connect.Request[v1.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error)
 	UpdateConfigHelmRepositories(context.Context, *connect.Request[v1.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error)
+	GetPrometheus(context.Context, *connect.Request[v1.GetPrometheusRequest]) (*connect.Response[v1.Prometheus], error)
 }
 
 // NewEnvironmentServiceClient constructs a client for the
@@ -103,6 +107,12 @@ func NewEnvironmentServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(environmentServiceMethods.ByName("UpdateConfigHelmRepositories")),
 			connect.WithClientOptions(opts...),
 		),
+		getPrometheus: connect.NewClient[v1.GetPrometheusRequest, v1.Prometheus](
+			httpClient,
+			baseURL+EnvironmentServiceGetPrometheusProcedure,
+			connect.WithSchema(environmentServiceMethods.ByName("GetPrometheus")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -113,6 +123,7 @@ type environmentServiceClient struct {
 	updateStatus                 *connect.Client[v1.UpdateStatusRequest, emptypb.Empty]
 	updateConfig                 *connect.Client[v1.UpdateConfigRequest, emptypb.Empty]
 	updateConfigHelmRepositories *connect.Client[v1.UpdateConfigHelmRepositoriesRequest, emptypb.Empty]
+	getPrometheus                *connect.Client[v1.GetPrometheusRequest, v1.Prometheus]
 }
 
 // CheckHealthy calls otterscale.environment.v1.EnvironmentService.CheckHealthy.
@@ -141,6 +152,11 @@ func (c *environmentServiceClient) UpdateConfigHelmRepositories(ctx context.Cont
 	return c.updateConfigHelmRepositories.CallUnary(ctx, req)
 }
 
+// GetPrometheus calls otterscale.environment.v1.EnvironmentService.GetPrometheus.
+func (c *environmentServiceClient) GetPrometheus(ctx context.Context, req *connect.Request[v1.GetPrometheusRequest]) (*connect.Response[v1.Prometheus], error) {
+	return c.getPrometheus.CallUnary(ctx, req)
+}
+
 // EnvironmentServiceHandler is an implementation of the
 // otterscale.environment.v1.EnvironmentService service.
 type EnvironmentServiceHandler interface {
@@ -149,6 +165,7 @@ type EnvironmentServiceHandler interface {
 	UpdateStatus(context.Context, *connect.Request[v1.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error)
 	UpdateConfig(context.Context, *connect.Request[v1.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error)
 	UpdateConfigHelmRepositories(context.Context, *connect.Request[v1.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error)
+	GetPrometheus(context.Context, *connect.Request[v1.GetPrometheusRequest]) (*connect.Response[v1.Prometheus], error)
 }
 
 // NewEnvironmentServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -188,6 +205,12 @@ func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect
 		connect.WithSchema(environmentServiceMethods.ByName("UpdateConfigHelmRepositories")),
 		connect.WithHandlerOptions(opts...),
 	)
+	environmentServiceGetPrometheusHandler := connect.NewUnaryHandler(
+		EnvironmentServiceGetPrometheusProcedure,
+		svc.GetPrometheus,
+		connect.WithSchema(environmentServiceMethods.ByName("GetPrometheus")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/otterscale.environment.v1.EnvironmentService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case EnvironmentServiceCheckHealthyProcedure:
@@ -200,6 +223,8 @@ func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect
 			environmentServiceUpdateConfigHandler.ServeHTTP(w, r)
 		case EnvironmentServiceUpdateConfigHelmRepositoriesProcedure:
 			environmentServiceUpdateConfigHelmRepositoriesHandler.ServeHTTP(w, r)
+		case EnvironmentServiceGetPrometheusProcedure:
+			environmentServiceGetPrometheusHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -227,4 +252,8 @@ func (UnimplementedEnvironmentServiceHandler) UpdateConfig(context.Context, *con
 
 func (UnimplementedEnvironmentServiceHandler) UpdateConfigHelmRepositories(context.Context, *connect.Request[v1.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories is not implemented"))
+}
+
+func (UnimplementedEnvironmentServiceHandler) GetPrometheus(context.Context, *connect.Request[v1.GetPrometheusRequest]) (*connect.Response[v1.Prometheus], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.GetPrometheus is not implemented"))
 }
