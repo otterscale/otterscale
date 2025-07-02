@@ -52,7 +52,7 @@ func (s *MachineService) CreateMachine(ctx context.Context, req *connect.Request
 }
 
 func (s *MachineService) DeleteMachine(ctx context.Context, req *connect.Request[pb.DeleteMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteMachine(ctx, req.Msg.GetId(), req.Msg.GetForce()); err != nil {
+	if err := s.uc.DeleteMachine(ctx, req.Msg.GetId(), req.Msg.GetForce(), req.Msg.GetPurgeDisk()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}

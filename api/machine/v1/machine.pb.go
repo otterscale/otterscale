@@ -1216,6 +1216,7 @@ type DeleteMachineRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id          *string                `protobuf:"bytes,1,opt,name=id"`
 	xxx_hidden_Force       bool                   `protobuf:"varint,2,opt,name=force"`
+	xxx_hidden_PurgeDisk   bool                   `protobuf:"varint,3,opt,name=purge_disk,json=purgeDisk"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1264,14 +1265,26 @@ func (x *DeleteMachineRequest) GetForce() bool {
 	return false
 }
 
+func (x *DeleteMachineRequest) GetPurgeDisk() bool {
+	if x != nil {
+		return x.xxx_hidden_PurgeDisk
+	}
+	return false
+}
+
 func (x *DeleteMachineRequest) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteMachineRequest) SetForce(v bool) {
 	x.xxx_hidden_Force = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *DeleteMachineRequest) SetPurgeDisk(v bool) {
+	x.xxx_hidden_PurgeDisk = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteMachineRequest) HasId() bool {
@@ -1288,6 +1301,13 @@ func (x *DeleteMachineRequest) HasForce() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
+func (x *DeleteMachineRequest) HasPurgeDisk() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
 func (x *DeleteMachineRequest) ClearId() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Id = nil
@@ -1298,11 +1318,17 @@ func (x *DeleteMachineRequest) ClearForce() {
 	x.xxx_hidden_Force = false
 }
 
+func (x *DeleteMachineRequest) ClearPurgeDisk() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_PurgeDisk = false
+}
+
 type DeleteMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Id    *string
-	Force *bool
+	Id        *string
+	Force     *bool
+	PurgeDisk *bool
 }
 
 func (b0 DeleteMachineRequest_builder) Build() *DeleteMachineRequest {
@@ -1310,12 +1336,16 @@ func (b0 DeleteMachineRequest_builder) Build() *DeleteMachineRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_Id = b.Id
 	}
 	if b.Force != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Force = *b.Force
+	}
+	if b.PurgeDisk != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		x.xxx_hidden_PurgeDisk = *b.PurgeDisk
 	}
 	return m0
 }
@@ -2677,10 +2707,12 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\fskip_storage\x18\x05 \x01(\bR\vskipStorage\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\v \x01(\tR\tscopeUuid\x12\x12\n" +
-	"\x04tags\x18\x15 \x03(\tR\x04tags\"<\n" +
+	"\x04tags\x18\x15 \x03(\tR\x04tags\"[\n" +
 	"\x14DeleteMachineRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
-	"\x05force\x18\x02 \x01(\bR\x05force\"B\n" +
+	"\x05force\x18\x02 \x01(\bR\x05force\x12\x1d\n" +
+	"\n" +
+	"purge_disk\x18\x03 \x01(\bR\tpurgeDisk\"B\n" +
 	"\x16PowerOffMachineRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x18\n" +
 	"\acomment\x18\x02 \x01(\tR\acomment\";\n" +

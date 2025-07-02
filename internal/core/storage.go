@@ -163,7 +163,7 @@ func (uc *StorageUseCase) runCommand(ctx context.Context, uuid, leader, command 
 	if err != nil {
 		return nil, err
 	}
-	return uc.waitForActionCompleted(ctx, uuid, id)
+	return waitForActionCompleted(ctx, uc.action, uuid, id, time.Second, time.Minute)
 }
 
 func (uc *StorageUseCase) runAction(ctx context.Context, uuid, leader, action string, params map[string]any) error {
@@ -171,39 +171,10 @@ func (uc *StorageUseCase) runAction(ctx context.Context, uuid, leader, action st
 	if err != nil {
 		return err
 	}
-	if _, err := uc.waitForActionCompleted(ctx, uuid, id); err != nil {
+	if _, err := waitForActionCompleted(ctx, uc.action, uuid, id, time.Second, time.Minute); err != nil {
 		return err
 	}
 	return nil
-}
-
-func (uc *StorageUseCase) waitForActionCompleted(ctx context.Context, uuid, id string) (*action.ActionResult, error) {
-	const tickInterval = time.Second
-	const timeoutDuration = time.Minute
-
-	ticker := time.NewTicker(tickInterval)
-	defer ticker.Stop()
-
-	timeout := time.After(timeoutDuration)
-	for {
-		select {
-		case <-ticker.C:
-			result, err := uc.action.GetResult(ctx, uuid, id)
-			if err != nil {
-				return nil, err
-			}
-			if result.Status == "completed" { // state.ActionCompleted
-				return result, nil
-			}
-			continue
-
-		case <-timeout:
-			return nil, fmt.Errorf("timeout waiting for action %s to become completed", id)
-
-		case <-ctx.Done():
-			return nil, ctx.Err()
-		}
-	}
 }
 
 func (uc *StorageUseCase) extractStorageCephConfig(result *action.ActionResult) (*StorageCephConfig, error) {
