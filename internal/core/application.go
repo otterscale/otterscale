@@ -77,17 +77,13 @@ func (uc *ApplicationUseCase) newConfig(ctx context.Context, uuid, name string) 
 	if err != nil {
 		return nil, err
 	}
-	kubeControl, err := extractWorkerUnitName(unitInfo)
-	if err != nil {
-		return nil, err
-	}
 
 	// kubernetes-worker
-	leader, err = uc.facility.GetLeader(ctx, uuid, kubeControl)
+	worker, err := extractWorkerUnitName(unitInfo)
 	if err != nil {
 		return nil, err
 	}
-	unitInfo, err = uc.facility.GetUnitInfo(ctx, uuid, leader)
+	unitInfo, err = uc.facility.GetUnitInfo(ctx, uuid, worker)
 	if err != nil {
 		return nil, err
 	}
