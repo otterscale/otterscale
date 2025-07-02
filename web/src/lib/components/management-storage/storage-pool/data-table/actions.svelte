@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { Pool } from '$gen/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import ActionDelete from './action-delete.svelte';
-	import ActionEdit from './action-edit.svelte';
-	import type { Pool } from './types';
+	import Delete from './delete.svelte';
+	import Edit from './edit.svelte';
 
 	let { pool }: { pool: Pool } = $props();
 </script>
@@ -10,9 +10,9 @@
 <Layout.Actions>
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<ActionEdit {pool} />
+		<Edit {pool} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<ActionDelete {pool} />
+		<Delete {pool} />
 	</Layout.ActionItem>
 </Layout.Actions>

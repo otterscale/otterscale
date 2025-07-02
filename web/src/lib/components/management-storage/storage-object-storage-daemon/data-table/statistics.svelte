@@ -1,7 +1,6 @@
 <script lang="ts" generics="TData">
 	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
 	import * as Chart from '$lib/components/custom/chart/templates';
-	import { formatCapacity } from '$lib/formatter';
 	import { type Table } from '@tanstack/table-core';
 
 	let { table }: { table: Table<TData> } = $props();
@@ -21,15 +20,15 @@
 	</Chart.Text>
 	<Chart.Text>
 		{#snippet title()}
-			Size
+			Usage
 		{/snippet}
 		{#snippet content()}
-			{@const sizeList = filteredData.map((datum) => datum['size' as keyof TData] as number)}
-			{@const { value, unit } = formatCapacity(sizeList.reduce((a, value) => a + value, 0))}
-			{Number(value).toFixed(1)}
-			<span class="font-light">
-				{unit}
-			</span>
+			{@const usedList = filteredData.map((datum) => Number(datum['usedBytes' as keyof TData]))}
+			{@const usedTotal = usedList.reduce((a, value) => a + value, 0)}
+			{@const sizeList = filteredData.map((datum) => Number(datum['sizeBytes' as keyof TData]))}
+			{@const sizeTotal = sizeList.reduce((a, value) => a + value, 0)}
+
+			{Number((usedTotal * 100) / sizeTotal).toFixed(1)}%
 		{/snippet}
 	</Chart.Text>
 </Layout>

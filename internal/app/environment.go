@@ -79,6 +79,15 @@ func (s *EnvironmentService) UpdateConfigHelmRepositories(ctx context.Context, r
 	return connect.NewResponse(resp), nil
 }
 
+func (s *EnvironmentService) GetPrometheus(ctx context.Context, req *connect.Request[pb.GetPrometheusRequest]) (*connect.Response[pb.Prometheus], error) {
+	endpoint, baseURL, err := s.uc.GetPrometheusInfo(ctx)
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoPrometheus(endpoint, baseURL)
+	return connect.NewResponse(resp), nil
+}
+
 func (s *EnvironmentService) sendStatus(ctx context.Context, stream *connect.ServerStream[pb.WatchStatusesResponse]) error {
 	status, err := s.uc.LoadStatus(ctx)
 	if err != nil {
@@ -112,4 +121,11 @@ func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 			Token: req.GetMicroK8SToken(),
 		},
 	}
+}
+
+func toProtoPrometheus(endpoint, baseURL string) *pb.Prometheus {
+	ret := &pb.Prometheus{}
+	ret.SetEndpoint(endpoint)
+	ret.SetBaseUrl(baseURL)
+	return ret
 }

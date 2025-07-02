@@ -1,11 +1,11 @@
+import type { OSD } from "$gen/api/storage/v1/storage_pb";
 import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
-import DataTableActions from "./actions.svelte";
+import DataTableActions from './actions.svelte';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import { type ObjectStorageDaemon } from './types';
 
-const columns: ColumnDef<ObjectStorageDaemon>[] = [
+const columns: ColumnDef<OSD>[] = [
     {
         id: "select",
         header: ({ table }) => {
@@ -18,41 +18,40 @@ const columns: ColumnDef<ObjectStorageDaemon>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "id",
+        accessorKey: "name",
         header: ({ column }) => {
-            return renderSnippet(headers.id, column)
+            return renderSnippet(headers.name, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.id, row);
+            return renderSnippet(cells.name, row);
         },
     },
     {
-        accessorKey: "host",
+        accessorKey: "stateUp",
         header: ({ column }) => {
-            return renderSnippet(headers.host, column)
+            return renderSnippet(headers.stateUp, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.host, row);
+            return renderSnippet(cells.stateUp, row);
         },
     },
     {
-        accessorKey: "devices",
+        accessorKey: "stateIn",
         header: ({ column }) => {
-            return renderSnippet(headers.devices, column)
+            return renderSnippet(headers.stateIn, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.devices, row);
+            return renderSnippet(cells.stateIn, row);
         },
     },
     {
-        accessorKey: "status",
+        accessorKey: "exists",
         header: ({ column }) => {
-            return renderSnippet(headers.status, column)
+            return renderSnippet(headers.exists, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.status, row);
+            return renderSnippet(cells.exists, row);
         },
-        filterFn: "arrIncludesSome"
     },
     {
         accessorKey: "deviceClass",
@@ -64,32 +63,13 @@ const columns: ColumnDef<ObjectStorageDaemon>[] = [
         },
     },
     {
-        accessorKey: "pgs",
+        accessorKey: "placementGroupCount",
         header: ({ column }) => {
-            return renderSnippet(headers.pgs, column)
+            return renderSnippet(headers.placementGroupCount, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.pgs, row);
+            return renderSnippet(cells.placementGroupCount, row);
         },
-    },
-    {
-        accessorKey: "size",
-        header: ({ column }) => {
-            return renderSnippet(headers.size, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.size, row);
-        },
-    },
-    {
-        accessorKey: "flags",
-        header: ({ column }) => {
-            return renderSnippet(headers.flags, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.flags, row);
-        },
-        filterFn: "arrIncludesSome"
     },
     {
         accessorKey: "usage",

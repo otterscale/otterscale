@@ -1,18 +1,14 @@
 <script lang="ts">
+	import type { OSD } from '$gen/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import ActionDelete from './action-delete.svelte';
-	import ActionEdit from './action-edit.svelte';
-	import type { ObjectStorageDaemon } from './types';
+	import DoSMART from './doSMART.svelte';
 
-	let { osd }: { osd: ObjectStorageDaemon } = $props();
+	let { osd }: { osd: OSD } = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<ActionEdit {osd} />
-	</Layout.ActionItem>
-	<Layout.ActionItem>
-		<ActionDelete {osd} />
+		<DoSMART {osd} />
 	</Layout.ActionItem>
 </Layout.Actions>

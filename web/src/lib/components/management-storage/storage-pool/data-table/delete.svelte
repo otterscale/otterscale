@@ -1,19 +1,18 @@
 <script lang="ts" module>
+	import type { DeletePoolRequest, Pool } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import Icon from '@iconify/svelte';
-	import { type Request } from './create.svelte';
-	import type { Pool } from './types';
 </script>
 
 <script lang="ts">
 	let { pool }: { pool: Pool } = $props();
 
-	const DEFAULT_REQUEST = {} as Request;
+	const DEFAULT_REQUEST = {} as DeletePoolRequest;
 
-	let request: Request = $state(DEFAULT_REQUEST);
+	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
 	}
@@ -28,20 +27,15 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Delete Object Storage Daemon
+			Delete Pool
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.DeletionConfirm
-						required
-						id="pool-delete"
-						target={pool.name}
-						bind:value={request.name}
-					/>
+					<SingleInput.DeletionConfirm required target={pool.name} bind:value={request.poolName} />
 				</Form.Field>
 				<Form.Help>
-					Please type the pool exactly to confirm deletion. This action cannot be undone.
+					Please type the pool name exactly to confirm deletion. This action cannot be undone.
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>

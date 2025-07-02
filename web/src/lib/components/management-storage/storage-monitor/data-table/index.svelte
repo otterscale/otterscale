@@ -1,29 +1,32 @@
 <script lang="ts" generics="TData, TValue">
+	import type { MON, OSD } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import { columns } from './columns';
-	import { data } from './data';
-	import Statistics from './statistics.svelte';
-
 	import {
+		getCoreRowModel,
+		getFilteredRowModel,
+		getPaginationRowModel,
+		getSortedRowModel,
 		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
-		getCoreRowModel,
-		getFilteredRowModel,
-		getPaginationRowModel,
-		getSortedRowModel
+		type VisibilityState
 	} from '@tanstack/table-core';
+	import { type Writable } from 'svelte/store';
+	import { columns } from './columns';
+	import Statistics from './statistics.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
+	let { data = $bindable() }: { data: Writable<MON[]> } = $props();
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -31,15 +34,13 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return data;
+			return $data;
 		},
-
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-
 		state: {
 			get pagination() {
 				return pagination;
@@ -95,51 +96,55 @@
 	});
 </script>
 
-<div class="flex flex-col gap-4">
-	<Statistics {table} />
-	<div class="flex items-center justify-between gap-2">
-		<FuzzyFilter columnId="name" {table} />
-		<div class="flex items-center justify-between gap-2">
-			<ArrayPointFilter columnId="daemons" {table} />
-			<PointFilter columnId="state" {table} />
+<Layout.Root>
+	<Layout.Statistics>
+		<Statistics {table} />
+	</Layout.Statistics>
+	<Layout.Controller>
+		<Layout.ControllerFilter>
+			<FuzzyFilter columnId="name" {table} />
 			<ColumnViewer {table} />
-		</div>
-	</div>
-	<Table.Root>
-		<Table.Header class="bg-muted">
-			{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
-				<Table.Row>
-					{#each headerGroup.headers as header (header.id)}
-						<Table.Head>
-							{#if !header.isPlaceholder}
-								<FlexRender
-									content={header.column.columnDef.header}
-									context={header.getContext()}
-								/>
-							{/if}
-						</Table.Head>
-					{/each}
-				</Table.Row>
-			{/each}
-		</Table.Header>
-		<Table.Body>
-			{#each table.getRowModel().rows as row (row.id)}
-				<Table.Row data-state={row.getIsSelected() && 'selected'}>
-					{#each row.getVisibleCells() as cell (cell.id)}
-						<Table.Cell>
-							<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+		</Layout.ControllerFilter>
+	</Layout.Controller>
+	<Layout.Viewer>
+		<Table.Root>
+			<Table.Header>
+				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
+					<Table.Row>
+						{#each headerGroup.headers as header (header.id)}
+							<Table.Head>
+								{#if !header.isPlaceholder}
+									<FlexRender
+										content={header.column.columnDef.header}
+										context={header.getContext()}
+									/>
+								{/if}
+							</Table.Head>
+						{/each}
+					</Table.Row>
+				{/each}
+			</Table.Header>
+			<Table.Body>
+				{#each table.getRowModel().rows as row (row.id)}
+					<Table.Row data-state={row.getIsSelected() && 'selected'}>
+						{#each row.getVisibleCells() as cell (cell.id)}
+							<Table.Cell>
+								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+							</Table.Cell>
+						{/each}
+					</Table.Row>
+				{:else}
+					<Table.Row>
+						<Table.Cell colspan={columns.length}>
+							<TableEmpty />
 						</Table.Cell>
-					{/each}
-				</Table.Row>
-			{:else}
-				<Table.Row>
-					<Table.Cell colspan={columns.length}>No results.</Table.Cell>
-				</Table.Row>
-			{/each}
-		</Table.Body>
-	</Table.Root>
-	<div class="flex items-center justify-between gap-2">
+					</Table.Row>
+				{/each}
+			</Table.Body>
+		</Table.Root>
+	</Layout.Viewer>
+	<Layout.Footer>
 		<TableFooter {table} />
 		<TablePagination {table} />
-	</div>
-</div>
+	</Layout.Footer>
+</Layout.Root>

@@ -8,11 +8,12 @@
 	import { SubvolumeGroup } from './storage-filesystem-subvolume-group';
 	import { ObjectStorageDaemon } from './storage-object-storage-daemon';
 	import { Pool } from './storage-pool';
+	import { Monitor } from './storage-monitor';
 	import { Role } from './storage-role';
 	import { User } from './storage-user';
 </script>
 
-<LayeredTabs.Root value="subvolume-group">
+<LayeredTabs.Root value="pool">
 	<LayeredTabs.Menubar>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
@@ -20,6 +21,10 @@
 				CLUSTER
 			</LayeredTabs.Trigger>
 			<LayeredTabs.MenuContent>
+				<LayeredTabs.MenuItem value="monitor">
+					<Icon icon="ph:pulse" />
+					Monitor
+				</LayeredTabs.MenuItem>
 				<LayeredTabs.MenuItem value="pool">
 					<Icon icon="ph:database" />
 					Pool
@@ -72,44 +77,42 @@
 					<Icon icon="ph:cube" />
 					Bucket
 				</LayeredTabs.MenuItem>
-				<LayeredTabs.MenuSeparator />
 				<LayeredTabs.MenuItem value="user">
 					<Icon icon="ph:user-circle" />
 					User
-				</LayeredTabs.MenuItem>
-				<LayeredTabs.MenuItem value="role">
-					<Icon icon="ph:user-gear" />
-					Role
 				</LayeredTabs.MenuItem>
 			</LayeredTabs.MenuContent>
 		</LayeredTabs.Menu>
 	</LayeredTabs.Menubar>
 
-	<LayeredTabs.Content value="bucket">
+	<!-- <LayeredTabs.Content value="bucket">
 		<Bucket />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="block-image">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="block-image">
 		<BlockImage />
-	</LayeredTabs.Content>
+	</LayeredTabs.Content> -->
 	<LayeredTabs.Content value="object-storage-daemon">
 		<ObjectStorageDaemon />
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="monitor">
+		<Monitor />
 	</LayeredTabs.Content>
 	<LayeredTabs.Content value="pool">
 		<Pool />
 	</LayeredTabs.Content>
-	<LayeredTabs.Content value="role">
+	<!-- <LayeredTabs.Content value="role">
 		<Role />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="subvolume">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="subvolume">
 		<Subvolume />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="subvolume-group">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="subvolume-group">
 		<SubvolumeGroup />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="user">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="user">
 		<User />
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="volume">
+	</LayeredTabs.Content> -->
+	<!-- <LayeredTabs.Content value="volume">
 		<Volume />
-	</LayeredTabs.Content>
+	</LayeredTabs.Content> -->
 </LayeredTabs.Root>
