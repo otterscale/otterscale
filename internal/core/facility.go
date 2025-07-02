@@ -314,3 +314,29 @@ func (uc *FacilityUseCase) filterCharms(charms []Charm) []Charm {
 		return slices.Contains(charm.Result.DeployableOn, "kubernetes") || charm.Type != "charm"
 	})
 }
+
+func waitForActionCompleted(ctx context.Context, actionRepo ActionRepo, uuid, id string, tickInterval, timeoutDuration time.Duration) (*action.ActionResult, error) {
+	ticker := time.NewTicker(tickInterval)
+	defer ticker.Stop()
+
+	timeout := time.After(timeoutDuration)
+	for {
+		select {
+		case <-ticker.C:
+			result, err := actionRepo.GetResult(ctx, uuid, id)
+			if err != nil {
+				return nil, err
+			}
+			if result.Status == "completed" { // state.ActionCompleted
+				return result, nil
+			}
+			continue
+
+		case <-timeout:
+			return nil, fmt.Errorf("timeout waiting for action %s to become completed", id)
+
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
+	}
+}

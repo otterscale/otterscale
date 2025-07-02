@@ -102,6 +102,7 @@ message CreateMachineRequest {
 message DeleteMachineRequest {
   string id = 1;
   bool force = 2;
+  bool purge_disk = 3;
 }
 
 message PowerOffMachineRequest {

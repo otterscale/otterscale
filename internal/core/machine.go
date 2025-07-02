@@ -71,15 +71,19 @@ type MachineUseCase struct {
 	server         ServerRepo
 	client         ClientRepo
 	tag            TagRepo
+	action         ActionRepo
+	facility       FacilityRepo
 }
 
-func NewMachineUseCase(machine MachineRepo, machineManager MachineManagerRepo, server ServerRepo, client ClientRepo, tag TagRepo) *MachineUseCase {
+func NewMachineUseCase(machine MachineRepo, machineManager MachineManagerRepo, server ServerRepo, client ClientRepo, tag TagRepo, action ActionRepo, facility FacilityRepo) *MachineUseCase {
 	return &MachineUseCase{
 		machine:        machine,
 		machineManager: machineManager,
 		server:         server,
 		client:         client,
 		tag:            tag,
+		action:         action,
+		facility:       facility,
 	}
 }
 
@@ -145,12 +149,19 @@ func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSS
 }
 
 // Note: Delete from MAAS only.
-func (uc *MachineUseCase) DeleteMachine(ctx context.Context, id string, force bool) error {
+func (uc *MachineUseCase) DeleteMachine(ctx context.Context, id string, force, purgeDisk bool) error {
+	if purgeDisk {
+		if err := uc.purgeDisk(ctx, id); err != nil {
+			return err
+		}
+	}
 	params := &entity.MachineReleaseParams{
 		Force: force,
 	}
-	_, err := uc.machine.Release(ctx, id, params)
-	return err
+	if _, err := uc.machine.Release(ctx, id, params); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (uc *MachineUseCase) PowerOffMachine(ctx context.Context, id, comment string) (*Machine, error) {
@@ -214,4 +225,54 @@ func (uc *MachineUseCase) waitForMachineReady(ctx context.Context, id string) er
 			return ctx.Err()
 		}
 	}
+}
+
+func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineSystemID string) error {
+	machine, err := uc.machine.Get(ctx, machineSystemID)
+	if err != nil {
+		return err
+	}
+	uuid, err := getJujuModelUUID(machine.WorkloadAnnotations)
+	if err != nil {
+		return err
+	}
+	id, err := getJujuMachineID(machine.WorkloadAnnotations)
+	if err != nil {
+		return err
+	}
+	s, err := uc.client.Status(ctx, uuid, []string{"machine", id})
+	if err != nil {
+		return err
+	}
+	for name := range s.Applications {
+		if !strings.Contains(s.Applications[name].Charm, "ceph-osd") {
+			continue
+		}
+		config, err := uc.facility.GetConfig(ctx, uuid, name)
+		if err != nil {
+			continue
+		}
+		info, ok := config["osd-devices"].(map[string]interface{})
+		if !ok {
+			continue
+		}
+		val, ok := info["value"]
+		if !ok || val == nil {
+			continue
+		}
+		osdDevices := strings.SplitSeq(val.(string), " ")
+		for osdDevice := range osdDevices {
+			for uname := range s.Applications[name].Units {
+				id, err := uc.action.RunCommand(ctx, uuid, uname, fmt.Sprintf("sudo dd if=/dev/zero of=%s bs=1M count=200000", osdDevice))
+				if err != nil {
+					continue
+				}
+				if _, err := waitForActionCompleted(ctx, uc.action, uuid, id, time.Second*10, time.Minute*10); err != nil { //nolint:mnd
+					return err
+				}
+				break
+			}
+		}
+	}
+	return nil
 }

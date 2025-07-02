@@ -72,7 +72,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	essentialService := app.NewEssentialService(essentialUseCase)
 	machineManagerRepo := juju.NewMachine(jujuJuju)
 	tagRepo := maas.NewTag(maasMAAS)
-	machineUseCase := core.NewMachineUseCase(machineRepo, machineManagerRepo, serverRepo, clientRepo, tagRepo)
+	machineUseCase := core.NewMachineUseCase(machineRepo, machineManagerRepo, serverRepo, clientRepo, tagRepo, actionRepo, facilityRepo)
 	machineService := app.NewMachineService(machineUseCase)
 	fabricRepo := maas.NewFabric(maasMAAS)
 	vlanRepo := maas.NewVLAN(maasMAAS)
