@@ -12,6 +12,7 @@ service EnvironmentService {
   rpc UpdateStatus(UpdateStatusRequest) returns (google.protobuf.Empty);
   rpc UpdateConfig(UpdateConfigRequest) returns (google.protobuf.Empty);
   rpc UpdateConfigHelmRepositories(UpdateConfigHelmRepositoriesRequest) returns (google.protobuf.Empty);
+  rpc GetPrometheus(GetPrometheusRequest) returns (Prometheus);
 }
 
 message CheckHealthyRequest {}
@@ -54,3 +55,10 @@ message UpdateConfigRequest {
 message UpdateConfigHelmRepositoriesRequest {
   repeated string urls = 1;
 }
+
+message Prometheus {
+  string endpoint = 1;
+  string base_url = 2;
+}
+
+message GetPrometheusRequest {}

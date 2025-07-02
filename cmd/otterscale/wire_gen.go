@@ -58,7 +58,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	packageRepositoryRepo := maas.NewPackageRepository(maasMAAS)
 	configurationUseCase := core.NewConfigurationUseCase(serverRepo, scopeRepo, scopeConfigRepo, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo)
 	configurationService := app.NewConfigurationService(configurationUseCase)
-	environmentUseCase := core.NewEnvironmentUseCase(configConfig)
+	environmentUseCase := core.NewEnvironmentUseCase(scopeRepo, facilityRepo, configConfig)
 	environmentService := app.NewEnvironmentService(environmentUseCase)
 	actionRepo := juju.NewAction(jujuJuju)
 	charmRepo := juju.NewCharm(jujuJuju)
