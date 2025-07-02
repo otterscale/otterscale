@@ -325,7 +325,7 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 	})
 
 	eg, ctx := errgroup.WithContext(ctx)
-	result := make([]Essential, len(scopes))
+	result := make([][]Essential, len(scopes))
 	for i := range scopes {
 		eg.Go(func() error {
 			s, err := clientRepo.Status(ctx, scopes[i].UUID, []string{"application", "*"})
@@ -343,14 +343,13 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 						Directive: s.Applications[name].Units[uname].Machine,
 					})
 				}
-				result[i] = Essential{
+				result[i] = append(result[i], Essential{
 					Type:      essentialType,
 					Name:      name,
 					ScopeUUID: scopes[i].UUID,
 					ScopeName: scopes[i].Name,
 					Units:     units,
-				}
-				break
+				})
 			}
 			return nil
 		})
@@ -358,9 +357,14 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-	return slices.DeleteFunc(result, func(e Essential) bool {
-		return e.Type == 0
-	}), nil
+	ret := []Essential{}
+	for i := range result {
+		ret = append(ret, result[i]...)
+	}
+	slices.SortFunc(ret, func(e1, e2 Essential) int {
+		return strings.Compare(e1.Name, e2.Name)
+	})
+	return ret, nil
 }
 
 func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo MachineRepo, facilityRepo FacilityRepo, uuid, machineID, prefix string, charms []EssentialCharm, configs map[string]string) error {
