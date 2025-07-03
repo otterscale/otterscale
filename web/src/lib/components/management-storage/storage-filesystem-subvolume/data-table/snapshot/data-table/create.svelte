@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { CreateSubvolumeRequest, Subvolume } from '$gen/api/storage/v1/storage_pb';
+	import type { CreateSubvolumeSnapshotRequest, Subvolume } from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
@@ -12,7 +12,6 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { type Writable } from 'svelte/store';
-	import { SUBVOLUME_QUOTA_HELP_TEXT } from './helper';
 </script>
 
 <script lang="ts">
@@ -21,12 +20,14 @@
 		selectedFacility,
 		selectedVolume,
 		selectedSubvolumeGroup,
+		subvolume,
 		data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
 		selectedSubvolumeGroup: string;
+		subvolume: Subvolume;
 		data: Writable<Subvolume[]>;
 	} = $props();
 
@@ -34,9 +35,10 @@
 		scopeUuid: selectedScope,
 		facilityName: selectedFacility,
 		volumeName: selectedVolume,
-		groupName: selectedSubvolumeGroup
-	} as CreateSubvolumeRequest;
-	
+		groupName: selectedSubvolumeGroup,
+		subvolumeName: subvolume.name
+	} as CreateSubvolumeSnapshotRequest;
+
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -59,30 +61,13 @@
 	</div>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create Subvolume
+			Create Snapshot
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.subvolumeName} />
-				</Form.Field>
-			</Form.Fieldset>
-
-			<Form.Fieldset>
-				<Form.Legend>Quotas</Form.Legend>
-				<Form.Field>
-					<SingleInput.General type="number" bind:value={request.quotaBytes} />
-				</Form.Field>
-				<Form.Help>
-					{SUBVOLUME_QUOTA_HELP_TEXT}
-				</Form.Help>
-			</Form.Fieldset>
-
-			<Form.Fieldset>
-				<Form.Legend>Export</Form.Legend>
-				<Form.Field>
-					<SingleInput.Boolean bind:value={request.export} />
+					<SingleInput.General required type="text" bind:value={request.snapshotName} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -93,7 +78,7 @@
 					onclick={() => {
 						stateController.close();
 						storageClient
-							.createSubvolume(request)
+							.createSubvolumeSnapshot(request)
 							.then((r) => {
 								toast.success(`Create ${r.name}`);
 								storageClient
@@ -108,7 +93,7 @@
 									});
 							})
 							.catch((e) => {
-								toast.error(`Fail to create subvolume: ${e.toString()}`);
+								toast.error(`Fail to create snapshot: ${e.toString()}`);
 							})
 							.finally(() => {
 								reset();

@@ -1,9 +1,8 @@
-import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/index.js";
+import type { Subvolume } from '$gen/api/storage/v1/storage_pb';
+import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
-import DataTableActions from "./actions.svelte";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import { type Subvolume } from './types';
 
 const columns: ColumnDef<Subvolume>[] = [
     {
@@ -27,21 +26,12 @@ const columns: ColumnDef<Subvolume>[] = [
         },
     },
     {
-        accessorKey: "dataPool",
+        accessorKey: "poolName",
         header: ({ column }) => {
-            return renderSnippet(headers.dataPool, column)
+            return renderSnippet(headers.poolName, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.dataPool, row);
-        },
-    },
-    {
-        accessorKey: "usage",
-        header: ({ column }) => {
-            return renderSnippet(headers.usage, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.usage, row);
+            return renderSnippet(cells.poolName, row);
         },
     },
     {
@@ -63,18 +53,21 @@ const columns: ColumnDef<Subvolume>[] = [
         },
     },
     {
+        accessorKey: "usage",
+        header: ({ column }) => {
+            return renderSnippet(headers.usage, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.usage, row);
+        },
+    },
+    {
         accessorKey: "createTime",
         header: ({ column }) => {
             return renderSnippet(headers.createTime, column)
         },
         cell: ({ row }) => {
             return renderSnippet(cells.createTime, row);
-        },
-    },
-    {
-        id: "actions",
-        cell: ({ row }) => {
-            return renderComponent(DataTableActions, { subvolume: row.original });
         },
     },
 ];

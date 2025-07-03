@@ -1,18 +1,18 @@
 <script lang="ts" module>
-	import type { CreateSubvolumeRequest, Subvolume } from '$gen/api/storage/v1/storage_pb';
+	import type {
+		DeleteSubvolumeRequest,
+		Subvolume
+	} from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { buttonVariants } from '$lib/components/ui/button';
-	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { type Writable } from 'svelte/store';
-	import { SUBVOLUME_QUOTA_HELP_TEXT } from './helper';
 </script>
 
 <script lang="ts">
@@ -21,12 +21,14 @@
 		selectedFacility,
 		selectedVolume,
 		selectedSubvolumeGroup,
+		subvolume,
 		data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
 		selectedSubvolumeGroup: string;
+		subvolume: Subvolume;
 		data: Writable<Subvolume[]>;
 	} = $props();
 
@@ -35,8 +37,8 @@
 		facilityName: selectedFacility,
 		volumeName: selectedVolume,
 		groupName: selectedSubvolumeGroup
-	} as CreateSubvolumeRequest;
-	
+	} as DeleteSubvolumeRequest;
+
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -49,41 +51,26 @@
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<div class="flex justify-end">
-		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
-			<div class="flex items-center gap-1">
-				<Icon icon="ph:plus" />
-				Create
-			</div>
-		</AlertDialog.Trigger>
-	</div>
+	<AlertDialog.Trigger class="text-destructive flex h-full w-full items-center gap-2">
+		<Icon icon="ph:trash" />
+		Delete
+	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create Subvolume
+			Delete Subvolume
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.subvolumeName} />
-				</Form.Field>
-			</Form.Fieldset>
-
-			<Form.Fieldset>
-				<Form.Legend>Quotas</Form.Legend>
-				<Form.Field>
-					<SingleInput.General type="number" bind:value={request.quotaBytes} />
+					<SingleInput.DeletionConfirm
+						required
+						target={subvolume.name}
+						bind:value={request.subvolumeName}
+					/>
 				</Form.Field>
 				<Form.Help>
-					{SUBVOLUME_QUOTA_HELP_TEXT}
+					Please type the subvolume name exactly to confirm deletion. This action cannot be undone.
 				</Form.Help>
-			</Form.Fieldset>
-
-			<Form.Fieldset>
-				<Form.Legend>Export</Form.Legend>
-				<Form.Field>
-					<SingleInput.Boolean bind:value={request.export} />
-				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
@@ -93,9 +80,9 @@
 					onclick={() => {
 						stateController.close();
 						storageClient
-							.createSubvolume(request)
+							.deleteSubvolume(request)
 							.then((r) => {
-								toast.success(`Create ${r.name}`);
+								toast.success(`Delete ${request.subvolumeName}`);
 								storageClient
 									.listSubvolumes({
 										scopeUuid: selectedScope,
@@ -108,14 +95,14 @@
 									});
 							})
 							.catch((e) => {
-								toast.error(`Fail to create subvolume: ${e.toString()}`);
+								toast.error(`Fail to delete subvolume: ${e.toString()}`);
 							})
 							.finally(() => {
 								reset();
 							});
 					}}
 				>
-					Create
+					Delete
 				</AlertDialog.Action>
 			</AlertDialog.ActionsGroup>
 		</AlertDialog.Footer>

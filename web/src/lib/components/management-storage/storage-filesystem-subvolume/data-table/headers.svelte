@@ -3,16 +3,17 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
-	import type { Subvolume } from './types';
+	import type { Subvolume } from '$gen/api/storage/v1/storage_pb';
 
 	export const headers = {
 		_row_picker: _row_picker,
 		name: name,
-		dataPool: dataPool,
+		poolName: poolName,
 		usage: usage,
 		path: path,
 		mode: mode,
-		createTime: createTime
+		createTime: createTime,
+		snapshot: snapshot
 	};
 </script>
 
@@ -29,24 +30,6 @@
 {#snippet name(column: Column<Subvolume>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet dataPool(column: Column<Subvolume>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>DATA POOL</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet usage(column: Column<Subvolume>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -71,11 +54,37 @@
 	</Layout.Header>
 {/snippet}
 
+{#snippet poolName(column: Column<Subvolume>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>POOL NAME</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet usage(column: Column<Subvolume>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
 {#snippet createTime(column: Column<Subvolume>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet snapshot()}
+	<Layout.Header>
+		<Layout.HeaderViewer class="w-full">
+			<p class="text-end">SNAPSHOT</p>
+		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

@@ -1,18 +1,17 @@
 <script lang="ts" module>
-	import type { CreateSubvolumeRequest, Subvolume } from '$gen/api/storage/v1/storage_pb';
+	import type { SubvolumeGroup, UpdateSubvolumeGroupRequest } from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
+	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { type Writable } from 'svelte/store';
-	import { SUBVOLUME_QUOTA_HELP_TEXT } from './helper';
+	import { writable, type Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -20,23 +19,23 @@
 		selectedScope,
 		selectedFacility,
 		selectedVolume,
-		selectedSubvolumeGroup,
+		subvolumeGroup,
 		data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
-		selectedSubvolumeGroup: string;
-		data: Writable<Subvolume[]>;
+		subvolumeGroup: SubvolumeGroup;
+		data: Writable<SubvolumeGroup[]>;
 	} = $props();
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
 		facilityName: selectedFacility,
 		volumeName: selectedVolume,
-		groupName: selectedSubvolumeGroup
-	} as CreateSubvolumeRequest;
-	
+		groupName: subvolumeGroup.name,
+		quotaBytes: subvolumeGroup.quotaBytes
+	} as UpdateSubvolumeGroupRequest;
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -46,43 +45,61 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	const poolOptions: Writable<SingleSelect.OptionType[]> = writable([]);
+	let isPoolsLoading = $state(true);
+	async function fetchPools() {
+		try {
+			const response = await storageClient.listPools({
+				scopeUuid: selectedScope,
+				facilityName: selectedFacility
+			});
+
+			poolOptions.set(
+				response.pools.map((pool) => ({
+					value: pool.name,
+					label: pool.name,
+					icon: 'ph:cube'
+				}))
+			);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		} finally {
+			isPoolsLoading = false;
+		}
+	}
+
+	onMount(async () => {
+		try {
+			await fetchPools();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+	});
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<div class="flex justify-end">
-		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
-			<div class="flex items-center gap-1">
-				<Icon icon="ph:plus" />
-				Create
-			</div>
-		</AlertDialog.Trigger>
-	</div>
+	<AlertDialog.Trigger class={cn('flex h-full w-full items-center gap-2')}>
+		<Icon icon="ph:pencil" />
+		Edit
+	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create Subvolume
+			Edit Subvolume Group
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.subvolumeName} />
+					<SingleInput.General required type="text" bind:value={request.groupName} />
 				</Form.Field>
 			</Form.Fieldset>
 
 			<Form.Fieldset>
 				<Form.Legend>Quotas</Form.Legend>
-				<Form.Field>
-					<SingleInput.General type="number" bind:value={request.quotaBytes} />
-				</Form.Field>
-				<Form.Help>
-					{SUBVOLUME_QUOTA_HELP_TEXT}
-				</Form.Help>
-			</Form.Fieldset>
 
-			<Form.Fieldset>
-				<Form.Legend>Export</Form.Legend>
 				<Form.Field>
-					<SingleInput.Boolean bind:value={request.export} />
+					<SingleInput.General bind:value={request.quotaBytes} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -93,29 +110,28 @@
 					onclick={() => {
 						stateController.close();
 						storageClient
-							.createSubvolume(request)
+							.updateSubvolumeGroup(request)
 							.then((r) => {
-								toast.success(`Create ${r.name}`);
+								toast.success(`Update ${r.name}`);
 								storageClient
-									.listSubvolumes({
+									.listSubvolumeGroups({
 										scopeUuid: selectedScope,
 										facilityName: selectedFacility,
-										volumeName: selectedVolume,
-										groupName: selectedSubvolumeGroup
+										volumeName: selectedVolume
 									})
 									.then((r) => {
-										data.set(r.subvolumes);
+										data.set(r.subvolumeGroups);
 									});
 							})
 							.catch((e) => {
-								toast.error(`Fail to create subvolume: ${e.toString()}`);
+								toast.error(`Fail to update subvolume group: ${e.toString()}`);
 							})
 							.finally(() => {
 								reset();
 							});
 					}}
 				>
-					Create
+					Update
 				</AlertDialog.Action>
 			</AlertDialog.ActionsGroup>
 		</AlertDialog.Footer>

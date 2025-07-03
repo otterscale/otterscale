@@ -2,13 +2,13 @@
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
-	import type { SubvolumeGroup } from './types';
+	import type { SubvolumeGroup } from '$gen/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 
 	export const headers = {
 		_row_picker: _row_picker,
 		name: name,
-		dataPool: dataPool,
+		poolName: poolName,
 		usage: usage,
 		mode: mode,
 		createTime: createTime
@@ -34,18 +34,9 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet dataPool(column: Column<SubvolumeGroup>)}
+{#snippet poolName(column: Column<SubvolumeGroup>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>DATA POOL</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet usage(column: Column<SubvolumeGroup>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>POOL NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -55,6 +46,15 @@
 {#snippet mode(column: Column<SubvolumeGroup>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>MODE</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet usage(column: Column<SubvolumeGroup>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

@@ -2,8 +2,6 @@
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import { formatCapacity } from '$lib/formatter';
-	import { Snapshot } from './snapshot';
 	import type { Row } from '@tanstack/table-core';
 	import type { Image } from '$gen/api/storage/v1/storage_pb';
 
@@ -11,8 +9,7 @@
 		_row_picker: _row_picker,
 		name: name,
 		poolName: poolName,
-		usage: usage,
-		snapshots: snapshots
+		usage: usage
 	};
 </script>
 
@@ -45,14 +42,5 @@
 				{numerator}/{denominator}
 			{/snippet}
 		</Progress.Root>
-	</div>
-{/snippet}
-
-{#snippet snapshots(selectedScope, selectedFacility, row: Row<Image>)}
-	<div class="flex justify-end">
-		<span class="flex items-center gap-1">
-			{row.original.snapshots.length}
-			<Snapshot {selectedScope} {selectedFacility} data={row.original} />
-		</span>
 	</div>
 {/snippet}
