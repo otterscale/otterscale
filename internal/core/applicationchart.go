@@ -48,13 +48,14 @@ func (uc *ApplicationUseCase) GetChartMetadataFromApplication(ctx context.Contex
 		return nil
 	})
 	eg.Go(func() error {
-		if chartRef, ok := app.Labels["app.otterscale.io/chart-ref"]; ok {
-			v, err := uc.chart.Show(chartRef, action.ShowReadme)
-			if err != nil {
-				return err
-			}
-			metadata.ReadmeMD = v
-		}
+		// TODO: invalid label format
+		// if chartRef, ok := app.Labels["app.otterscale.io/chart-ref"]; ok {
+		// 	v, err := uc.chart.Show(chartRef, action.ShowReadme)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// 	metadata.ReadmeMD = v
+		// }
 		return nil
 	})
 	if err := eg.Wait(); err != nil {
