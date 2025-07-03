@@ -19,13 +19,23 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { writable, type Writable } from 'svelte/store';
-	import { fetchBlockImages } from '../utils.svelte';
+	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import type { BlockImage } from './types';
+	import type { Image } from '$gen/api/storage/v1/storage_pb';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
+	import { headers } from './headers.svelte';
+	import { Snapshot } from './snapshot';
 
-	let data: Writable<BlockImage[]> = $state(writable(fetchBlockImages() ?? ([] as BlockImage[])));
+	let {
+		selectedScope,
+		selectedFacility,
+		images
+	}: { selectedScope: string; selectedFacility: string; images: Image[] } = $props();
+
+	let data = $state(writable(images));
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -101,16 +111,14 @@
 		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
-		<Layout.ControllerAction>
-			<Create bind:data />
-		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="pool" {table} />
-			<PointFilter columnId="namespace" {table} />
-			<PointFilter columnId="mirroring" {table} />
+			<PointFilter columnId="poolName" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Create {selectedScope} {selectedFacility} bind:data />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
@@ -127,6 +135,10 @@
 								{/if}
 							</Table.Head>
 						{/each}
+						<Table.Head>
+							{@render headers.snapshots()}
+						</Table.Head>
+						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -138,10 +150,18 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
+						<Table.Cell>
+							<Snapshot {selectedScope} {selectedFacility} image={row.original} bind:data />
+						</Table.Cell>
+						<Table.Cell>
+							<Actions {selectedScope} {selectedFacility} {row} bind:data />
+						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Table.Row>
-						<Table.Cell colspan={columns.length}>No results.</Table.Cell>
+						<Table.Cell colspan={columns.length}>
+							<TableEmpty />
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>

@@ -1,34 +1,38 @@
 <script lang="ts" module>
-	import type { DeletePoolRequest, Pool } from '$gen/api/storage/v1/storage_pb';
-	import { StorageService } from '$gen/api/storage/v1/storage_pb';
+	import type { Image, UpdateImageRequest } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import type { Writable } from 'svelte/store';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext } from 'svelte';
+	import { StorageService } from '$gen/api/storage/v1/storage_pb';
+	import { toast } from 'svelte-sonner';
 </script>
 
 <script lang="ts">
 	let {
 		selectedScope,
 		selectedFacility,
-		pool,
+		image,
 		data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
-		pool: Pool;
-		data: Writable<Pool[]>;
+		image: Image;
+		data: Writable<Image[]>;
 	} = $props();
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
-		facilityName: selectedFacility
-	} as DeletePoolRequest;
+		facilityName: selectedFacility,
+		poolName: image.poolName,
+		imageName: image.name,
+		quotaBytes: image.quotaBytes
+	} as UpdateImageRequest;
 
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
@@ -42,22 +46,21 @@
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<AlertDialog.Trigger class="text-destructive flex h-full w-full items-center gap-2">
-		<Icon icon="ph:trash" />
-		Delete
+	<AlertDialog.Trigger class={cn('flex h-full w-full items-center gap-2')}>
+		<Icon icon="ph:pencil" />
+		Edit
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Delete Pool
+			Updatge RADOS Block Device
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
+				<Form.Legend>Quotas</Form.Legend>
+
 				<Form.Field>
-					<SingleInput.DeletionConfirm required target={pool.name} bind:value={request.poolName} />
+					<SingleInput.General type="number" bind:value={request.quotaBytes} />
 				</Form.Field>
-				<Form.Help>
-					Please type the pool name exactly to confirm deletion. This action cannot be undone.
-				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
@@ -67,21 +70,24 @@
 					onclick={() => {
 						stateController.close();
 						storageClient
-							.deletePool(request)
+							.updateImage(request)
 							.then((r) => {
-								toast.success(`Delete ${request.poolName}`);
+								toast.success(`Update ${request.poolName}`);
 								storageClient
-									.listPools({ scopeUuid: selectedScope, facilityName: selectedFacility })
+									.listImages({ scopeUuid: selectedScope, facilityName: selectedFacility })
 									.then((r) => {
-										data.set(r.pools);
+										data.set(r.images);
 									});
 							})
 							.catch((e) => {
-								toast.error(`Fail to delete pool: ${e.toString()}`);
+								toast.error(`Fail to update image: ${e.toString()}`);
+							})
+							.finally(() => {
+								reset();
 							});
 					}}
 				>
-					Delete
+					Update
 				</AlertDialog.Action>
 			</AlertDialog.ActionsGroup>
 		</AlertDialog.Footer>

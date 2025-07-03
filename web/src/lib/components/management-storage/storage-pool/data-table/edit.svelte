@@ -6,17 +6,41 @@
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
+	import { toast } from 'svelte-sonner';
+	import type { Writable } from 'svelte/store';
 	import { QUOTAS_BYTES_HELP_TEXT, QUOTAS_OBJECTS_HELP_TEXT } from './helper';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext } from 'svelte';
+	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 
-	let { pool }: { pool: Pool } = $props();
+	let {
+		selectedScope,
+		selectedFacility,
+		pool,
+		data = $bindable()
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		pool: Pool;
+		data: Writable<Pool[]>;
+	} = $props();
 
-	const DEFAULT_REQUEST = { poolName: pool.name } as UpdatePoolRequest;
+	const DEFAULT_REQUEST = {
+		scopeUuid: selectedScope,
+		facilityName: selectedFacility,
+		poolName: pool.name,
+		quotaBytes: pool.quotaBytes,
+		quotaObjects: pool.quotaObjects
+	} as UpdatePoolRequest;
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
 	}
 
 	const stateController = new DialogStateController(false);
+
+	const transport: Transport = getContext('transport');
+	const storageClient = createClient(StorageService, transport);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -26,7 +50,7 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create Pool
+			Update Pool
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
@@ -62,6 +86,24 @@
 				<AlertDialog.Action
 					onclick={() => {
 						console.log(request);
+						stateController.close();
+						storageClient
+							.updatePool(request)
+							.then((r) => {
+								toast.success(`Update ${request.poolName}`);
+								storageClient
+									.listPools({ scopeUuid: selectedScope, facilityName: selectedFacility })
+									.then((r) => {
+										data.set(r.pools);
+									});
+							})
+							.catch((e) => {
+								toast.error(`Fail to update pool: ${e.toString()}`);
+								console.log(e);
+							})
+							.finally(() => {
+								reset();
+							});
 					}}
 				>
 					Edit

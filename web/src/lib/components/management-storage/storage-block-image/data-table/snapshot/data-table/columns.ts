@@ -1,10 +1,10 @@
-import type { Image } from '$gen/api/storage/v1/storage_pb';
+import type { Image_Snapshot } from '$gen/api/storage/v1/storage_pb';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-const columns: ColumnDef<Image>[] = [
+const columns: ColumnDef<Image_Snapshot>[] = [
     {
         id: "select",
         header: ({ table }) => {
@@ -26,32 +26,14 @@ const columns: ColumnDef<Image>[] = [
         },
     },
     {
-        accessorKey: "poolName",
+        accessorKey: "protect",
         header: ({ column }) => {
-            return renderSnippet(headers.poolName, column)
+            return renderSnippet(headers.protect, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.poolName, row);
+            return renderSnippet(cells.protect, row);
         },
     },
-    {
-        accessorKey: "usage",
-        header: ({ column }) => {
-            return renderSnippet(headers.usage, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.usage, row);
-        },
-    },
-    // {
-    //     accessorKey: "snapshots",
-    //     header: ({ column }) => {
-    //         return renderSnippet(headers.snapshots, column)
-    //     },
-    //     cell: ({ row }) => {
-    //         return renderSnippet(cells.snapshots, row);
-    //     },
-    // },
 ];
 
 export {

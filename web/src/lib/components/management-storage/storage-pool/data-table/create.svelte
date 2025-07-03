@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { CreatePoolRequest, Pool } from '$gen/api/storage/v1/storage_pb';
-	import { PoolType } from '$gen/api/storage/v1/storage_pb';
+	import { PoolType, StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -11,11 +11,14 @@
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
 	import {
-		QUOTAS_OBJECTS_HELP_TEXT,
 		QUOTAS_BYTES_HELP_TEXT,
+		QUOTAS_OBJECTS_HELP_TEXT,
 		REPLCATED_SIZE_HELP_TEXT
 	} from './helper';
 
@@ -52,15 +55,25 @@
 </script>
 
 <script lang="ts">
-	let { data = $bindable() }: { data: Writable<Pool[]> } = $props();
+	let {
+		selectedScope,
+		selectedFacility,
+		data = $bindable()
+	}: { selectedScope: string; selectedFacility: string; data: Writable<Pool[]> } = $props();
 
-	const DEFAULT_REQUEST = {} as CreatePoolRequest;
+	const DEFAULT_REQUEST = {
+		scopeUuid: selectedScope,
+		facilityName: selectedFacility
+	} as CreatePoolRequest;
 	let request: CreatePoolRequest = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
 	}
 
 	const stateController = new DialogStateController(false);
+
+	const transport: Transport = getContext('transport');
+	const storageClient = createClient(StorageService, transport);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -84,7 +97,7 @@
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Pool Type</Form.Label>
+					<Form.Label>Type</Form.Label>
 					<SingleSelect.Root required options={poolTypes} bind:value={request.poolType}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -112,7 +125,7 @@
 
 				{#if request.poolType === PoolType.ERASURE}
 					<Form.Field>
-						<Form.Label>Flags</Form.Label>
+						<Form.Label>EC Overwrite</Form.Label>
 						<SingleInput.Boolean
 							required
 							descriptor={(value) => {
@@ -199,12 +212,22 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						console.log(request);
 						stateController.close();
-					}}
+						storageClient
+							.createPool(request)
+							.then((r) => {
+								toast.success(`Create ${r.name}`);
+								storageClient
+									.listPools({ scopeUuid: selectedScope, facilityName: selectedFacility })
+									.then((r) => {
+										data.set(r.pools);
+									});
+							})
+							.catch((e) => {
+								toast.error(`Fail to create pool: ${e.toString()}`);
+							});
+					}}>Create</AlertDialog.Action
 				>
-					Create
-				</AlertDialog.Action>
 			</AlertDialog.ActionsGroup>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>

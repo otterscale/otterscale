@@ -16,7 +16,7 @@ class OptionManager {
     }
 
     get selectedOption(): OptionType {
-        return this.options.find((option) => (option.value === this.valueGetter())) ?? {} as OptionType
+        return this.options.find((option) => (JSON.stringify(option.value) === JSON.stringify(this.valueGetter()))) ?? {} as OptionType
     }
 
     handleSelect(option: OptionType) {
