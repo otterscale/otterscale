@@ -1,4 +1,5 @@
 <script lang="ts" generics="TData, TValue">
+	import type { Volume } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
@@ -8,24 +9,28 @@
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
+		getCoreRowModel,
+		getFilteredRowModel,
+		getPaginationRowModel,
+		getSortedRowModel,
 		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
-		getCoreRowModel,
-		getFilteredRowModel,
-		getPaginationRowModel,
-		getSortedRowModel
+		type VisibilityState
 	} from '@tanstack/table-core';
+	import { writable } from 'svelte/store';
 	import { columns } from './columns';
-	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import { writable, type Writable } from 'svelte/store';
-	import type { Volume } from './types';
-	import { fetchVolumes } from '../utils.svelte';
 
-	let data: Writable<Volume[]> = $state(writable(fetchVolumes() ?? ([] as Volume[])));
+	let {
+		selectedScope,
+		selectedFacility,
+		volumes
+	}: { selectedScope: string; selectedFacility: string; volumes: Volume[] } = $props();
+
+	let data = $state(writable(volumes));
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -103,9 +108,6 @@
 		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
-		<Layout.ControllerAction>
-			<Create bind:data/>
-		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
 			<PointFilter columnId="permission" {table} />

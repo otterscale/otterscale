@@ -1,52 +1,62 @@
-<script lang="ts" generics="TData, TValue">
+<script lang="ts" module>
+	import type { Subvolume } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
-	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
+		getCoreRowModel,
+		getFilteredRowModel,
+		getPaginationRowModel,
+		getSortedRowModel,
 		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
-		getCoreRowModel,
-		getFilteredRowModel,
-		getPaginationRowModel,
-		getSortedRowModel
+		type VisibilityState
 	} from '@tanstack/table-core';
+	import { type Writable } from 'svelte/store';
+	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import { writable, type Writable } from 'svelte/store';
-	import type { SubvolumeGroup } from '$gen/api/storage/v1/storage_pb';
-	import Actions from './actions.svelte';
+</script>
 
+<script lang="ts" generics="TData, TValue">
 	let {
 		selectedScope,
 		selectedFacility,
 		selectedVolume,
-		subvolumeGroups
+		selectedSubvolumeGroup,
+		subvolume,
+		data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
-		subvolumeGroups: SubvolumeGroup[];
+		selectedSubvolumeGroup: string;
+		subvolume: Subvolume;
+		data: Writable<Subvolume[]>;
 	} = $props();
 
-	let data = $state(writable(subvolumeGroups));
+	let subdata = $state(subvolume.snapshots);
+	$effect(() => {
+		subvolume;
+		subdata = subvolume.snapshots;
+	});
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return subdata;
 		},
 
 		columns,
@@ -115,19 +125,25 @@
 		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
-		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} {selectedVolume} bind:data />
-		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="dataPool" {table} />
-			<PointFilter columnId="mode" {table} />
+			<ArrayPointFilter columnId="pendingClones" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Create
+				{selectedScope}
+				{selectedFacility}
+				{selectedVolume}
+				{selectedSubvolumeGroup}
+				{subvolume}
+				bind:data
+			/>
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
-			<Table.Header>
+			<Table.Header class="bg-muted">
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
@@ -157,7 +173,9 @@
 								{selectedScope}
 								{selectedFacility}
 								{selectedVolume}
-								subvolumeGroup={row.original}
+								{selectedSubvolumeGroup}
+								{subvolume}
+								snapshot={row.original}
 								bind:data
 							/>
 						</Table.Cell>

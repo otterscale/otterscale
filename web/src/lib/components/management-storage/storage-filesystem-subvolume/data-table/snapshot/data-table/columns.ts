@@ -1,10 +1,10 @@
-import type { Volume } from '$gen/api/storage/v1/storage_pb';
+import type { Subvolume_Snapshot } from '$gen/api/storage/v1/storage_pb';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-const columns: ColumnDef<Volume>[] = [
+const columns: ColumnDef<Subvolume_Snapshot>[] = [
     {
         id: "select",
         header: ({ table }) => {
@@ -32,6 +32,15 @@ const columns: ColumnDef<Volume>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.createTime, row);
+        },
+    },
+    {
+        accessorKey: "hasPendingClones",
+        header: ({ column }) => {
+            return renderSnippet(headers.hasPendingClones, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.hasPendingClones, row);
         },
     },
 ];

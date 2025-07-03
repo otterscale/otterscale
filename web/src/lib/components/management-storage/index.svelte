@@ -13,7 +13,7 @@
 	import { User } from './storage-user';
 </script>
 
-<LayeredTabs.Root value="block-image">
+<LayeredTabs.Root value="subvolume">
 	<LayeredTabs.Menubar>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
@@ -88,9 +88,9 @@
 	<!-- <LayeredTabs.Content value="bucket">
 		<Bucket />
 	</LayeredTabs.Content> -->
-	<LayeredTabs.Content value="block-image">
+	<!-- <LayeredTabs.Content value="block-image">
 		<BlockImage />
-	</LayeredTabs.Content>
+	</LayeredTabs.Content> -->
 	<!-- <LayeredTabs.Content value="object-storage-daemon">
 		<ObjectStorageDaemon />
 	</LayeredTabs.Content> -->
@@ -103,16 +103,16 @@
 	<!-- <LayeredTabs.Content value="role">
 		<Role />
 	</LayeredTabs.Content> -->
-	<!-- <LayeredTabs.Content value="subvolume">
+	<LayeredTabs.Content value="subvolume">
 		<Subvolume />
-	</LayeredTabs.Content> -->
+	</LayeredTabs.Content>
 	<LayeredTabs.Content value="subvolume-group">
 		<SubvolumeGroup />
 	</LayeredTabs.Content>
 	<!-- <LayeredTabs.Content value="user">
 		<User />
 	</LayeredTabs.Content> -->
-	<!-- <LayeredTabs.Content value="volume">
+	<LayeredTabs.Content value="volume">
 		<Volume />
-	</LayeredTabs.Content> -->
+	</LayeredTabs.Content>
 </LayeredTabs.Root>

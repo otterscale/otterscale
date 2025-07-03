@@ -1,22 +1,71 @@
-<script lang="ts">
+<script lang="ts" module>
+	import type { Subvolume } from '$gen/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import ActionDelete from './action-delete.svelte';
-	import { ActionSnapshot } from './action-snapshot';
-	import ActionEdit from './action-edit.svelte';
-	import type { Subvolume } from './types';
+	import type { Writable } from 'svelte/store';
+	import Delete from './delete.svelte';
+	import Grant from './grant-export-access.svelte';
+	import Revoke from './revoke-export-access.svelte';
+	import Edit from './edit.svelte';
+</script>
 
-	let { subvolume }: { subvolume: Subvolume } = $props();
+<script lang="ts">
+	let {
+		selectedScope,
+		selectedFacility,
+		selectedVolume,
+		selectedSubvolumeGroup,
+		subvolume,
+		data = $bindable()
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		selectedVolume: string;
+		selectedSubvolumeGroup: string;
+		subvolume: Subvolume;
+		data: Writable<Subvolume[]>;
+	} = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<ActionSnapshot {subvolume}/>
+		<Grant
+			{selectedScope}
+			{selectedFacility}
+			{selectedSubvolumeGroup}
+			{selectedVolume}
+			{subvolume}
+			bind:data
+		/>
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<ActionEdit {subvolume} />
+		<Revoke
+			{selectedScope}
+			{selectedFacility}
+			{selectedSubvolumeGroup}
+			{selectedVolume}
+			{subvolume}
+			bind:data
+		/>
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<ActionDelete {subvolume} />
+		<Edit
+			{selectedScope}
+			{selectedFacility}
+			{selectedSubvolumeGroup}
+			{selectedVolume}
+			{subvolume}
+			bind:data
+		/>
+	</Layout.ActionItem>
+	<Layout.ActionItem>
+		<Delete
+			{selectedScope}
+			{selectedFacility}
+			{selectedSubvolumeGroup}
+			{selectedVolume}
+			{subvolume}
+			bind:data
+		/>
 	</Layout.ActionItem>
 </Layout.Actions>

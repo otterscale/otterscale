@@ -22,15 +22,26 @@
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import type { Subvolume } from './types';
-	import { fetchSubvolume } from '../utils.svelte';
+	import type { Subvolume } from '$gen/api/storage/v1/storage_pb';
+	import Snapshots from './snapshot/index.svelte';
+	import Actions from './actions.svelte';
+	import { headers } from './headers.svelte';
 
-	let { group, volume }: { group: string; volume: string } = $props();
+	let {
+		selectedScope,
+		selectedFacility,
+		selectedVolume,
+		selectedSubvolumeGroup,
+		subvolumes
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		selectedVolume: string;
+		selectedSubvolumeGroup: string;
+		subvolumes: Subvolume[];
+	} = $props();
 
-	let data: Writable<Subvolume[]> = $state(writable(fetchSubvolume(group, volume)));
-	$effect(() => {
-		data.set(fetchSubvolume(group, volume));
-	});
+	let data = $state(writable(subvolumes));
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
 	let sorting = $state<SortingState>([]);
@@ -109,9 +120,6 @@
 		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
-		<Layout.ControllerAction>
-			<Create bind:data />
-		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
 			<FuzzyFilter columnId="path" {table} />
@@ -119,6 +127,15 @@
 			<PointFilter columnId="mode" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Create
+				{selectedScope}
+				{selectedFacility}
+				{selectedSubvolumeGroup}
+				{selectedVolume}
+				bind:data
+			/>
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
@@ -135,6 +152,8 @@
 								{/if}
 							</Table.Head>
 						{/each}
+						<Table.Head>{@render headers.snapshot()}</Table.Head>
+						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -146,6 +165,26 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
+						<Table.Cell>
+							<Snapshots
+								{selectedScope}
+								{selectedFacility}
+								{selectedSubvolumeGroup}
+								{selectedVolume}
+								subvolume={row.original}
+								bind:data
+							/>
+						</Table.Cell>
+						<Table.Cell>
+							<Actions
+								{selectedScope}
+								{selectedFacility}
+								{selectedSubvolumeGroup}
+								{selectedVolume}
+								subvolume={row.original}
+								bind:data
+							/>
+						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Table.Row>

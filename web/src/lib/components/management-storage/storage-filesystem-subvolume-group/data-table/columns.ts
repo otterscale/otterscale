@@ -3,7 +3,7 @@ import type { ColumnDef } from "@tanstack/table-core";
 import DataTableActions from "./actions.svelte";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import { type SubvolumeGroup } from './types';
+import type { SubvolumeGroup } from '$gen/api/storage/v1/storage_pb';
 
 const columns: ColumnDef<SubvolumeGroup>[] = [
     {
@@ -27,21 +27,12 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
         },
     },
     {
-        accessorKey: "dataPool",
+        accessorKey: "poolName",
         header: ({ column }) => {
-            return renderSnippet(headers.dataPool, column)
+            return renderSnippet(headers.poolName, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.dataPool, row);
-        },
-    },
-    {
-        accessorKey: "usage",
-        header: ({ column }) => {
-            return renderSnippet(headers.usage, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.usage, row);
+            return renderSnippet(cells.poolName, row);
         },
     },
     {
@@ -54,18 +45,21 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
         },
     },
     {
+        accessorKey: "usage",
+        header: ({ column }) => {
+            return renderSnippet(headers.usage, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.usage, row);
+        },
+    },
+    {
         accessorKey: "createTime",
         header: ({ column }) => {
             return renderSnippet(headers.createTime, column)
         },
         cell: ({ row }) => {
             return renderSnippet(cells.createTime, row);
-        },
-    },
-    {
-        id: "actions",
-        cell: ({ row }) => {
-            return renderComponent(DataTableActions, { subvolumeGroup: row.original });
         },
     },
 ];

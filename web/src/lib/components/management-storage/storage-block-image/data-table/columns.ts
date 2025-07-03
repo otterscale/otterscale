@@ -43,15 +43,6 @@ const columns: ColumnDef<Image>[] = [
             return renderSnippet(cells.usage, row);
         },
     },
-    // {
-    //     accessorKey: "snapshots",
-    //     header: ({ column }) => {
-    //         return renderSnippet(headers.snapshots, column)
-    //     },
-    //     cell: ({ row }) => {
-    //         return renderSnippet(cells.snapshots, row);
-    //     },
-    // },
 ];
 
 export {
