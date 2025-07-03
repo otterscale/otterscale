@@ -3,18 +3,16 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
-	import type { Image } from '$gen/api/storage/v1/storage_pb';
+	import type { Image_Snapshot } from '$gen/api/storage/v1/storage_pb';
 
 	export const headers = {
 		_row_picker: _row_picker,
 		name: name,
-		poolName: poolName,
-		usage: usage,
-		snapshots: snapshots
+		protect: protect
 	};
 </script>
 
-{#snippet _row_picker(table: Table<Image>)}
+{#snippet _row_picker(table: Table<Image_Snapshot>)}
 	<Checkbox
 		checked={table.getIsAllPageRowsSelected()}
 		indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
@@ -24,7 +22,7 @@
 	/>
 {/snippet}
 
-{#snippet name(column: Column<Image>)}
+{#snippet name(column: Column<Image_Snapshot>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -33,28 +31,11 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet poolName(column: Column<Image>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>POOL NAME</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet usage(column: Column<Image>)}
+{#snippet protect(column: Column<Image_Snapshot>)}
 	<Layout.Header>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
-{#snippet snapshots()}
-	<Layout.Header>
-		<Layout.HeaderViewer class="w-full">
-			<div class="text-end">SNAPSHOTS</div>
-		</Layout.HeaderViewer>
+		<Layout.HeaderViewer>PROTECTED</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

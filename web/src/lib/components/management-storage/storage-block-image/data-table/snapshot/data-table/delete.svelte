@@ -1,5 +1,9 @@
 <script lang="ts" module>
-	import type { DeletePoolRequest, Pool } from '$gen/api/storage/v1/storage_pb';
+	import type {
+		DeleteImageSnapshotRequest,
+		Image,
+		Image_Snapshot
+	} from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
@@ -16,19 +20,23 @@
 	let {
 		selectedScope,
 		selectedFacility,
-		pool,
+		image,
+		snapshot,
 		data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
-		pool: Pool;
-		data: Writable<Pool[]>;
+		image: Image;
+		snapshot: Image_Snapshot;
+		data: Writable<Image[]>;
 	} = $props();
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
-		facilityName: selectedFacility
-	} as DeletePoolRequest;
+		facilityName: selectedFacility,
+		imageName: image.name,
+		poolName: image.poolName
+	} as DeleteImageSnapshotRequest;
 
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
@@ -48,16 +56,21 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Delete Pool
+			Delete RADOS Block Device Snapshot
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Field>
-					<SingleInput.DeletionConfirm required target={pool.name} bind:value={request.poolName} />
-				</Form.Field>
 				<Form.Help>
-					Please type the pool name exactly to confirm deletion. This action cannot be undone.
+					Please type the snapshot name exactly to confirm deletion. This action cannot be undone.
 				</Form.Help>
+				<Form.Field>
+					<SingleInput.DeletionConfirm
+						required
+						id="rados-block-device-snapshot-delete"
+						target={snapshot.name}
+						bind:value={request.snapshotName}
+					/>
+				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
@@ -65,19 +78,22 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						console.log(request);
 						storageClient
-							.deletePool(request)
+							.deleteImageSnapshot(request)
 							.then((r) => {
-								toast.success(`Delete ${request.poolName}`);
+								toast.success(`Delete ${request.snapshotName}`);
 								storageClient
-									.listPools({ scopeUuid: selectedScope, facilityName: selectedFacility })
+									.listImages({ scopeUuid: selectedScope, facilityName: selectedFacility })
 									.then((r) => {
-										data.set(r.pools);
+										data.set(r.images);
 									});
 							})
 							.catch((e) => {
-								toast.error(`Fail to delete pool: ${e.toString()}`);
+								toast.error(`Fail to delete snapshot: ${e.toString()}`);
+							})
+							.finally(() => {
+								stateController.close();
 							});
 					}}
 				>

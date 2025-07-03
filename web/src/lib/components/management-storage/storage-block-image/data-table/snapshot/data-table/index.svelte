@@ -19,15 +19,31 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { writable, type Writable } from 'svelte/store';
-	import { fetchSnapshots } from '../utils.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import type { Snapshot } from './types';
-	import type { BlockImage } from '../../types';
+	import type { Image, Image_Snapshot } from '$gen/api/storage/v1/storage_pb';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
+	import Actions from './actions.svelte';
 
-	let { blockImage }: { blockImage: BlockImage } = $props();
-	let data: Writable<Snapshot[]> = $state(writable(fetchSnapshots() ?? ([] as Snapshot[])));
+	let {
+		selectedScope,
+		selectedFacility,
+		image,
+		data = $bindable()
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		image: Image;
+		data: Writable<Image[]>;
+	} = $props();
+
+	let subdata = $state(image.snapshots);
+	$effect(() => {
+		image;
+		subdata = image.snapshots;
+	});
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -36,10 +52,10 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return subdata;
 		},
 
-		columns,
+		columns: columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -100,20 +116,18 @@
 	});
 </script>
 
-<p class="text-center text-3xl">{blockImage.name}</p>
 <Layout.Root>
 	<Layout.Statistics>
 		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
-		<Layout.ControllerAction>
-			<Create bind:data />
-		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="state" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Create {selectedScope} {selectedFacility} {image} bind:data />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
@@ -130,6 +144,7 @@
 								{/if}
 							</Table.Head>
 						{/each}
+						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -141,10 +156,21 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
+						<Table.Cell>
+							<Actions
+								{selectedScope}
+								{selectedFacility}
+								{image}
+								snapshot={row.original}
+								bind:data
+							/>
+						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Table.Row>
-						<Table.Cell colspan={columns.length}>No results.</Table.Cell>
+						<Table.Cell colspan={columns.length}>
+							<TableEmpty />
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>

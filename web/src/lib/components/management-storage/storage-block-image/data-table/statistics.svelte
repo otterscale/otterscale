@@ -1,7 +1,7 @@
 <script lang="ts" generics="TData">
 	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
 	import * as Chart from '$lib/components/custom/chart/templates';
-	import { formatCapacity } from '$lib/formatter';
+	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
 
 	let { table }: { table: Table<TData> } = $props();
@@ -21,19 +21,22 @@
 	</Chart.Text>
 	<Chart.Text>
 		{#snippet title()}
-			Objects
-		{/snippet}
-		{#snippet description()}
-			{@const objectList = filteredData.map((datum) => datum['objects' as keyof TData] as number)}
-			{objectList.reduce((a, value) => a + value, 0)} units
+			Usage
 		{/snippet}
 		{#snippet content()}
-			{@const sizeList = filteredData.map((datum) => datum['size' as keyof TData] as number)}
-			{@const { value, unit } = formatCapacity(sizeList.reduce((a, value) => a + value, 0))}
-			{Number(value).toFixed(1)}
-			<span class="font-light">
-				{unit}
-			</span>
+			{@const quotaBytesList = filteredData.map((datum) =>
+				Number(datum['quotaBytes' as keyof TData])
+			)}
+			{@const quotaBytesTotal = quotaBytesList.reduce((a, current) => a + current, 0)}
+			{@const usedBytesList = filteredData.map((datum) =>
+				Number(datum['usedBytes' as keyof TData])
+			)}
+			{@const usedBytesTotal = usedBytesList.reduce((a, current) => a + current, 0)}
+			{#if quotaBytesTotal}
+				{((usedBytesTotal / quotaBytesTotal) * 100).toFixed(2)}%
+			{:else}
+				<Icon icon="ph:infinity" />
+			{/if}
 		{/snippet}
 	</Chart.Text>
 </Layout>

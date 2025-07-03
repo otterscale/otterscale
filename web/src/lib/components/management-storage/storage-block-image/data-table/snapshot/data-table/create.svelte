@@ -1,29 +1,47 @@
 <script lang="ts" module>
+	import type { CreateImageSnapshotRequest, Image } from '$gen/api/storage/v1/storage_pb';
+	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
 	import type { Writable } from 'svelte/store';
-	import type { Snapshot } from './types';
-
-	export type Request = {
-		name: string;
-	};
 </script>
 
 <script lang="ts">
-	let { data = $bindable() }: { data: Writable<Snapshot[]> } = $props();
+	let {
+		selectedScope,
+		selectedFacility,
+		image,
+		data = $bindable()
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		image: Image;
+		data: Writable<Image[]>;
+	} = $props();
 
-	const DEFAULT_REQUEST = {} as Request;
-	let request: Request = $state(DEFAULT_REQUEST);
+	const DEFAULT_REQUEST = {
+		scopeUuid: selectedScope,
+		facilityName: selectedFacility,
+		imageName: image.name,
+		poolName: image.poolName
+	} as CreateImageSnapshotRequest;
+	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
 	}
 
 	const stateController = new DialogStateController(false);
+
+	const transport: Transport = getContext('transport');
+	const storageClient = createClient(StorageService, transport);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -42,13 +60,8 @@
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label for="rados-block-device-snapshot-name">Name</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						id="rados-block-device-snapshot-name"
-						bind:value={request.name}
-					/>
+					<Form.Label>Name</Form.Label>
+					<SingleInput.General required type="text" bind:value={request.snapshotName} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -59,6 +72,22 @@
 					onclick={() => {
 						console.log(request);
 						stateController.close();
+						storageClient
+							.createImageSnapshot(request)
+							.then((r) => {
+								toast.success(`Create ${r.name}`);
+								storageClient
+									.listImages({ scopeUuid: selectedScope, facilityName: selectedFacility })
+									.then((r) => {
+										data.set(r.images);
+									});
+							})
+							.catch((e) => {
+								toast.error(`Fail to create snapshot: ${e.toString()}`);
+							})
+							.finally(() => {
+								reset();
+							});
 					}}
 				>
 					Create

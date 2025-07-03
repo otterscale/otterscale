@@ -1,8 +1,10 @@
 <script lang="ts" generics="TData, TValue">
 	import type { Pool } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
+	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
-	import RangeFilter from '$lib/components/custom/data-table/data-table-filters/range-filter.svelte';
+	import MapPointFilter from '$lib/components/custom/data-table/data-table-filters/map-point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -19,15 +21,20 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import type { Writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
+	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
-	import MapPointFilter from '$lib/components/custom/data-table/data-table-filters/map-point-filter.svelte';
 
-	let { data = $bindable() }: { data: Writable<Pool[]> } = $props();
+	let {
+		selectedScope,
+		selectedFacility,
+		pools
+	}: { selectedScope: string; selectedFacility: string; pools: Pool[] } = $props();
+
+	let data = $state(writable(pools));
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -112,7 +119,7 @@
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create bind:data />
+			<Create {selectedScope} {selectedFacility} bind:data />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -130,6 +137,7 @@
 								{/if}
 							</Table.Head>
 						{/each}
+						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -141,6 +149,9 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
+						<Table.Cell>
+							<Actions {selectedScope} {selectedFacility} {row} bind:data />
+						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Table.Row>
