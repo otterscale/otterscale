@@ -98,12 +98,6 @@ const columns: ColumnDef<OSD>[] = [
             return renderSnippet(cells.writeBytes, row);
         },
     },
-    {
-        id: "actions",
-        cell: ({ row }) => {
-            return renderComponent(DataTableActions, { osd: row.original });
-        },
-    },
 ];
 
 export {

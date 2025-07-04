@@ -1,46 +1,27 @@
 <script lang="ts">
-	import type { OSD } from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
-	import PageLoading from '$lib/components/otterscale/ui/page-loading.svelte';
+	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { getContext } from 'svelte';
 	import { DataTable } from './data-table';
+	import Picker from './pickers/index.svelte';
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	let osds = $state(writable<OSD[]>([]));
-	let isOSDsLoading = $state(true);
-	async function fetchOSDs() {
-		try {
-			const response = await storageClient.listOSDs({
-				scopeUuid: 'b62d195e-3905-4960-85ee-7673f71eb21e',
-				facilityName: 'ceph-mon'
-			});
-			osds.set(response.osds);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			isOSDsLoading = false;
-		}
-	}
-
-	let isMounted = $state(false);
-	onMount(async () => {
-		try {
-			await fetchOSDs();
-			if (!isOSDsLoading) {
-				isMounted = true;
-			}
-		} catch (error) {
-			console.error('Error during initial data load:', error);
-		}
-	});
+	let selectedScope = $state('b62d195e-3905-4960-85ee-7673f71eb21e');
+	let selectedFacility = $state('ceph-mon');
 </script>
 
-{#if isMounted}
-	<DataTable bind:data={osds} />
-{:else}
-	<PageLoading />
-{/if}
+<main class="space-y-4">
+	<Picker bind:selectedScope bind:selectedFacility />
+
+	{#await storageClient.listOSDs({ scopeUuid: selectedScope, facilityName: selectedFacility })}
+		<DataTableLoading />
+	{:then response}
+		{@const objectStorageDaemons = response.osds}
+		<DataTable {selectedScope} {selectedFacility} {objectStorageDaemons} />
+	{:catch}
+		<DataTableLoading />
+	{/await}
+</main>
