@@ -75,8 +75,17 @@ main() {
     trap cleanup EXIT
 }
 
+## Check curl command
+if ! command -v curl &> /dev/null; then
+    apt update --fix-missing >/dev/null 2>&1
+    apt install -y curl >/dev/null 2>&1
+fi
+
+## Check parameter
 if [[ $# -eq 0 ]]; then
-    error_exit "URL must be provided as a parameter"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] URL must be provided as a parameter url, e.g ./installer.sh url=http://127.0.0.1:80"
+    trap cleanup EXIT
+    exit 1
 fi
 while [ $# -gt 0 ]; do
     case $1 in
@@ -91,4 +100,5 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+## Start install
 main "$@"

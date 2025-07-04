@@ -8,6 +8,8 @@ update_maas_dns() {
     log "INFO" "Update $dns_value to maas dns."
     if [[ "$maas_current_dns" =~ "$dns_value" ]]; then
         log "INFO" "Current dns already existed, skipping..."
+    elif [[ $maas_current_dns == "null" ]]; then
+        dns_value="$dns_value"
     elif [[ $maas_current_dns != "null" ]]; then
         dns_value="$maas_current_dns $dns_value"
     fi
@@ -18,7 +20,7 @@ update_maas_dns() {
 set_config() {
     local name=$1
     local value=$2
-    if ! maas admin maas set-config name=$name value=$value >>"$TEMP_LOG" 2>&1; then
+    if ! maas admin maas set-config name=$name value="$value" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to set config $name to $value."
     fi
 }

@@ -99,7 +99,7 @@ get_current_dns() {
     local interface=$1
     current_dns=$(resolvectl -i $interface | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
     if [ -z "$current_dns" ]; then
-        log "WARN" "No dns found for $interface."
+        log "WARN" "No dns found for $interface"
     fi
 }
 
