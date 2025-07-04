@@ -23,8 +23,5 @@
 </script>
 
 <Command.Shortcut bind:ref data-slot="select-check" class={cn('p-0', className)} {...restProps}>
-	<Icon
-		icon="ph:check"
-		class={optionManager.selectedOption.value == option.value ? 'visible' : 'invisible'}
-	/>
+	<Icon icon="ph:check" class={optionManager.isOptionSelected(option) ? 'visible' : 'invisible'} />
 </Command.Shortcut>
