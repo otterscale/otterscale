@@ -37,6 +37,22 @@ func (r *batch) ListJobsByLabel(ctx context.Context, config *rest.Config, namesp
 	return list.Items, nil
 }
 
+func (r *batch) ListJobs(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Job, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.ListOptions{}
+
+	JobList, err := clientset.BatchV1().Jobs(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return JobList.Items, nil
+}
+
 func (r *batch) CreateJob(ctx context.Context, config *rest.Config, job *oscore.Job) (*oscore.Job, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {

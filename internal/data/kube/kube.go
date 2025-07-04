@@ -31,6 +31,7 @@ func New(conf *config.Config) (*Kube, error) {
 		conf:           conf,
 		envSettings:    cli.New(),
 		registryClient: registryClient,
+		clientsets:     sync.Map{},
 	}, nil
 }
 

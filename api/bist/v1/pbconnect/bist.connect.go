@@ -45,8 +45,8 @@ const (
 	BISTServiceDeleteTestResultProcedure = "/otterscale.bist.v1.BISTService/DeleteTestResult"
 	// BISTServiceListBlocksProcedure is the fully-qualified name of the BISTService's ListBlocks RPC.
 	BISTServiceListBlocksProcedure = "/otterscale.bist.v1.BISTService/ListBlocks"
-	// BISTServiceListS3SProcedure is the fully-qualified name of the BISTService's ListS3s RPC.
-	BISTServiceListS3SProcedure = "/otterscale.bist.v1.BISTService/ListS3s"
+	// BISTServiceListS3SProcedure is the fully-qualified name of the BISTService's ListS3S RPC.
+	BISTServiceListS3SProcedure = "/otterscale.bist.v1.BISTService/ListS3S"
 )
 
 // BISTServiceClient is a client for the otterscale.bist.v1.BISTService service.
@@ -96,7 +96,7 @@ func NewBISTServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 		listS3S: connect.NewClient[v1.ListS3SRequest, v1.ListS3SResponse](
 			httpClient,
 			baseURL+BISTServiceListS3SProcedure,
-			connect.WithSchema(bISTServiceMethods.ByName("ListS3s")),
+			connect.WithSchema(bISTServiceMethods.ByName("ListS3S")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -131,7 +131,7 @@ func (c *bISTServiceClient) ListBlocks(ctx context.Context, req *connect.Request
 	return c.listBlocks.CallUnary(ctx, req)
 }
 
-// ListS3S calls otterscale.bist.v1.BISTService.ListS3s.
+// ListS3S calls otterscale.bist.v1.BISTService.ListS3S.
 func (c *bISTServiceClient) ListS3S(ctx context.Context, req *connect.Request[v1.ListS3SRequest]) (*connect.Response[v1.ListS3SResponse], error) {
 	return c.listS3S.CallUnary(ctx, req)
 }
@@ -179,7 +179,7 @@ func NewBISTServiceHandler(svc BISTServiceHandler, opts ...connect.HandlerOption
 	bISTServiceListS3SHandler := connect.NewUnaryHandler(
 		BISTServiceListS3SProcedure,
 		svc.ListS3S,
-		connect.WithSchema(bISTServiceMethods.ByName("ListS3s")),
+		connect.WithSchema(bISTServiceMethods.ByName("ListS3S")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.bist.v1.BISTService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -220,5 +220,5 @@ func (UnimplementedBISTServiceHandler) ListBlocks(context.Context, *connect.Requ
 }
 
 func (UnimplementedBISTServiceHandler) ListS3S(context.Context, *connect.Request[v1.ListS3SRequest]) (*connect.Response[v1.ListS3SResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.bist.v1.BISTService.ListS3s is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.bist.v1.BISTService.ListS3S is not implemented"))
 }

@@ -11,7 +11,7 @@ service BISTService {
   rpc CreateTestResult(CreateTestResultRequest) returns (TestResult);
   rpc DeleteTestResult(DeleteTestResultRequest) returns (google.protobuf.Empty);
   rpc ListBlocks(ListBlocksRequest) returns (ListBlocksResponse);
-  rpc ListS3s(ListS3sRequest) returns (ListS3sResponse);
+  rpc ListS3S(ListS3sRequest) returns (ListS3sResponse);
 }
 
 message TestResult {
@@ -35,7 +35,8 @@ message TestResult {
       RAND_TRIM_WRITE = 9;
     }
     AccessMode access_mode = 1;
-    string storage_class_name = 11;
+    string scope_uuid = 11;    //block
+    string facility_name = 12; //block
     string nfs_endpoint = 21;
     string nfs_path = 22;
     uint64 job_count = 31;   // 1.13.3 Job description
@@ -59,9 +60,15 @@ message TestResult {
     string secret_key = 13;
     string duration = 21;
     string object_size = 31;
+    string object_num = 32;
   }
   TestResult.Type type = 1;
   string name = 2;
+  string status = 3;
+  string start_time = 4;
+  string complete_time = 5;
+  repeated string logs = 6;
+  string args = 7;
   oneof input {
     TestResult.FIO fio = 11;
     TestResult.Warp warp = 12;

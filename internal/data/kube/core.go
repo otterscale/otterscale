@@ -1,9 +1,13 @@
 package kube
 
 import (
+	"bytes"
 	"context"
+	"io"
 
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"k8s.io/client-go/rest"
 
 	oscore "github.com/openhdc/otterscale/internal/core"
@@ -51,6 +55,19 @@ func (r *core) ListServicesByLabel(ctx context.Context, config *rest.Config, nam
 	return list.Items, nil
 }
 
+func (r *core) ListServicesByOptions(ctx context.Context, config *rest.Config, namespace string, opts metav1.ListOptions) ([]oscore.Service, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	list, err := clientset.CoreV1().Services(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
 func (r *core) ListPods(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Pod, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
@@ -63,6 +80,49 @@ func (r *core) ListPods(ctx context.Context, config *rest.Config, namespace stri
 		return nil, err
 	}
 	return list.Items, nil
+}
+
+func (r *core) ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]oscore.Pod, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.ListOptions{
+		LabelSelector: label,
+	}
+	list, err := clientset.CoreV1().Pods(namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	return list.Items, nil
+}
+
+func (r *core) GetPodLogs(ctx context.Context, pod oscore.Pod, config *rest.Config, namespace string) (string, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return "", err
+	}
+
+	opts := corev1.PodLogOptions{
+		Container: pod.Spec.Containers[0].Name,
+	}
+	req := clientset.CoreV1().Pods(namespace).GetLogs(pod.GetName(), &opts)
+	logStream, err := req.Stream(context.TODO())
+	if err != nil {
+		return "", err
+	}
+	defer logStream.Close()
+
+	buf := new(bytes.Buffer)
+	_, err = io.Copy(buf, logStream)
+	if err != nil {
+		return "", err
+	}
+
+	logs := buf.String()
+
+	return logs, nil
 }
 
 func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]oscore.PersistentVolumeClaim, error) {

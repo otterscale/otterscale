@@ -16,11 +16,12 @@ import (
 type BISTService struct {
 	pbconnect.UnimplementedBISTServiceHandler
 
-	uc *core.BISTUseCase
+	uc  *core.BISTUseCase
+	suc *core.StorageUseCase
 }
 
-func NewBISTService(uc *core.BISTUseCase) *BISTService {
-	return &BISTService{uc: uc}
+func NewBISTService(uc *core.BISTUseCase, suc *core.StorageUseCase) *BISTService {
+	return &BISTService{uc: uc, suc: suc}
 }
 
 var _ pbconnect.BISTServiceHandler = (*BISTService)(nil)
@@ -40,6 +41,19 @@ func (s *BISTService) CreateTestResult(ctx context.Context, req *connect.Request
 	if target == pb.TestResult_UNSPECIFIED {
 		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid test result type"))
 	}
+
+	if target == pb.TestResult_BLOCK {
+		// [TODO] if exist
+		_, err := s.suc.CreatePool(ctx, req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), "otterscale_pool", "replicated", false, 1, 0, 0, []string{"rbd"})
+		if err != nil {
+			return nil, err
+		}
+		_, err = s.suc.CreateImage(ctx, req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), "otterscale_pool", "otterscale_image", 4194304, 4194304, 1, 1073741824, true, true, true, true, true)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	result, err := s.uc.CreateResult(ctx, strings.ToLower(target.String()), req.Msg.GetName(), toCoreFIO(req.Msg.GetFio()), toCoreWarp(req.Msg.GetWarp()))
 	if err != nil {
 		return nil, err
@@ -66,7 +80,7 @@ func (s *BISTService) ListBlocks(ctx context.Context, req *connect.Request[pb.Li
 	return connect.NewResponse(resp), nil
 }
 
-func (s *BISTService) ListS3s(ctx context.Context, req *connect.Request[pb.ListS3SRequest]) (*connect.Response[pb.ListS3SResponse], error) {
+func (s *BISTService) ListS3S(ctx context.Context, req *connect.Request[pb.ListS3SRequest]) (*connect.Response[pb.ListS3SResponse], error) {
 	s3s, err := s.uc.ListS3s(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
@@ -81,15 +95,14 @@ func toCoreFIO(p *pb.TestResult_FIO) *core.BISTFIO {
 		return nil
 	}
 	return &core.BISTFIO{
-		AccessMode:       strings.ToLower(strings.ReplaceAll(p.GetAccessMode().String(), "_", "")),
-		StorageClassName: p.GetStorageClassName(),
-		NFSEndpoint:      p.GetNfsEndpoint(),
-		NFSPath:          p.GetNfsPath(),
-		JobCount:         p.GetJobCount(),
-		RunTime:          p.GetRunTime(),
-		BlockSize:        p.GetBlockSize(),
-		FileSize:         p.GetFileSize(),
-		IODepth:          p.GetIoDepth(),
+		AccessMode:  strings.ToLower(strings.ReplaceAll(p.GetAccessMode().String(), "_", "")),
+		NFSEndpoint: p.GetNfsEndpoint(),
+		NFSPath:     p.GetNfsPath(),
+		JobCount:    p.GetJobCount(),
+		RunTime:     p.GetRunTime(),
+		BlockSize:   p.GetBlockSize(),
+		FileSize:    p.GetFileSize(),
+		IODepth:     p.GetIoDepth(),
 	}
 }
 
@@ -116,9 +129,49 @@ func toProtoTestResults(rs []core.BISTResult) []*pb.TestResult {
 }
 
 func toProtoTestResult(r *core.BISTResult) *pb.TestResult {
+	target := toProtoTestResultType(r.Type)
 	ret := &pb.TestResult{}
-	ret.SetType(toProtoTestResultType(r.Type))
+	ret.SetType(target)
 	ret.SetName(r.Name)
+
+	ret.SetStatus(r.Status)
+	ret.SetArgs(r.Args)
+	ret.SetLogs(r.Logs)
+	if r.StartTime != nil {
+		ret.SetStartTime(r.StartTime.String())
+	}
+	if r.CompleteTime != nil {
+		ret.SetCompleteTime(r.CompleteTime.String())
+	}
+	if target == pb.TestResult_S3 {
+		ret.SetWarp(toProtoTestResultWarp(r.Warp))
+	} else {
+		ret.SetFio(toProtoTestResultFIO(r.FIO))
+	}
+	return ret
+}
+
+func toProtoTestResultFIO(f *core.BISTFIO) *pb.TestResult_FIO {
+	ret := &pb.TestResult_FIO{}
+	ret.SetAccessMode(toProtoTestResultFIOAccessMode(f.AccessMode))
+	ret.SetNfsEndpoint(f.NFSEndpoint)
+	ret.SetNfsPath(f.NFSPath)
+	ret.SetJobCount(f.JobCount)
+	ret.SetRunTime(f.RunTime)
+	ret.SetBlockSize(f.BlockSize)
+	ret.SetFileSize(f.FileSize)
+	ret.SetIoDepth(f.IODepth)
+	return ret
+}
+
+func toProtoTestResultWarp(w *core.BISTWarp) *pb.TestResult_Warp {
+	ret := &pb.TestResult_Warp{}
+	ret.SetOperation(toProtoTestResultWarpOperation(w.Operation))
+	ret.SetEndpoint(w.Endpoint)
+	ret.SetAccessKey(w.AccessKey)
+	ret.SetSecretKey(w.SecretKey)
+	ret.SetDuration(w.Duration)
+	ret.SetObjectSize(w.ObjectSize)
 	return ret
 }
 
@@ -159,6 +212,50 @@ func toProtoTestResultType(s string) pb.TestResult_Type {
 		return pb.TestResult_Type(v)
 	}
 	return pb.TestResult_UNSPECIFIED
+}
+
+func toProtoTestResultFIOAccessMode(s string) pb.TestResult_FIO_AccessMode {
+	switch s {
+	case "read":
+		return pb.TestResult_FIO_READ
+	case "write":
+		return pb.TestResult_FIO_WRITE
+	case "trim":
+		return pb.TestResult_FIO_TRIM
+	case "readwrite":
+		return pb.TestResult_FIO_READ_WRITE
+	case "trimwrite":
+		return pb.TestResult_FIO_TRIM_WRITE
+	case "randread":
+		return pb.TestResult_FIO_RAND_READ
+	case "randwrite":
+		return pb.TestResult_FIO_RAND_WRITE
+	case "randtrim":
+		return pb.TestResult_FIO_RAND_TRIM
+	case "randrw":
+		return pb.TestResult_FIO_RAND_RW
+	case "randtrimwrite":
+		return pb.TestResult_FIO_RAND_TRIM_WRITE
+	}
+	return pb.TestResult_FIO_READ
+}
+
+func toProtoTestResultWarpOperation(s string) pb.TestResult_Warp_Operation {
+	switch s {
+	case "get":
+		return pb.TestResult_Warp_GET
+	case "put":
+		return pb.TestResult_Warp_PUT
+	case "delete":
+		return pb.TestResult_Warp_DELETE
+	case "list":
+		return pb.TestResult_Warp_LIST
+	case "stat":
+		return pb.TestResult_Warp_STAT
+	case "mixed":
+		return pb.TestResult_Warp_MIXED
+	}
+	return pb.TestResult_Warp_GET
 }
 
 func toProtoS3Type(s string) pb.S3_Type {

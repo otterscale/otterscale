@@ -88,9 +88,12 @@ type KubeCoreRepo interface {
 	// Service
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
 	ListServicesByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Service, error)
+	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace string, opts metav1.ListOptions) ([]Service, error)
 
 	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
+	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
+	GetPodLogs(ctx context.Context, pod Pod, config *rest.Config, namespace string) (string, error)
 
 	// PersistentVolumeClaim
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
@@ -108,6 +111,7 @@ type KubeCoreRepo interface {
 type KubeStorageRepo interface {
 	// StorageClass
 	ListStorageClasses(ctx context.Context, config *rest.Config) ([]StorageClass, error)
+	ListStorageClassesByLabel(ctx context.Context, config *rest.Config, label string) ([]StorageClass, error)
 	GetStorageClass(ctx context.Context, config *rest.Config, name string) (*StorageClass, error)
 }
 

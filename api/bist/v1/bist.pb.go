@@ -231,14 +231,19 @@ func (x S3_Type) Number() protoreflect.EnumNumber {
 }
 
 type TestResult struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Type        TestResult_Type        `protobuf:"varint,1,opt,name=type,enum=otterscale.bist.v1.TestResult_Type"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_Input       isTestResult_Input     `protobuf_oneof:"input"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Type         TestResult_Type        `protobuf:"varint,1,opt,name=type,enum=otterscale.bist.v1.TestResult_Type"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,2,opt,name=name"`
+	xxx_hidden_Status       *string                `protobuf:"bytes,3,opt,name=status"`
+	xxx_hidden_StartTime    *string                `protobuf:"bytes,4,opt,name=start_time,json=startTime"`
+	xxx_hidden_CompleteTime *string                `protobuf:"bytes,5,opt,name=complete_time,json=completeTime"`
+	xxx_hidden_Logs         []string               `protobuf:"bytes,6,rep,name=logs"`
+	xxx_hidden_Args         *string                `protobuf:"bytes,7,opt,name=args"`
+	xxx_hidden_Input        isTestResult_Input     `protobuf_oneof:"input"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *TestResult) Reset() {
@@ -285,6 +290,53 @@ func (x *TestResult) GetName() string {
 	return ""
 }
 
+func (x *TestResult) GetStatus() string {
+	if x != nil {
+		if x.xxx_hidden_Status != nil {
+			return *x.xxx_hidden_Status
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *TestResult) GetStartTime() string {
+	if x != nil {
+		if x.xxx_hidden_StartTime != nil {
+			return *x.xxx_hidden_StartTime
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *TestResult) GetCompleteTime() string {
+	if x != nil {
+		if x.xxx_hidden_CompleteTime != nil {
+			return *x.xxx_hidden_CompleteTime
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *TestResult) GetLogs() []string {
+	if x != nil {
+		return x.xxx_hidden_Logs
+	}
+	return nil
+}
+
+func (x *TestResult) GetArgs() string {
+	if x != nil {
+		if x.xxx_hidden_Args != nil {
+			return *x.xxx_hidden_Args
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *TestResult) GetFio() *TestResult_FIO {
 	if x != nil {
 		if x, ok := x.xxx_hidden_Input.(*testResult_Fio); ok {
@@ -305,12 +357,36 @@ func (x *TestResult) GetWarp() *TestResult_Warp {
 
 func (x *TestResult) SetType(v TestResult_Type) {
 	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
 }
 
 func (x *TestResult) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
+}
+
+func (x *TestResult) SetStatus(v string) {
+	x.xxx_hidden_Status = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
+}
+
+func (x *TestResult) SetStartTime(v string) {
+	x.xxx_hidden_StartTime = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
+}
+
+func (x *TestResult) SetCompleteTime(v string) {
+	x.xxx_hidden_CompleteTime = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 8)
+}
+
+func (x *TestResult) SetLogs(v []string) {
+	x.xxx_hidden_Logs = v
+}
+
+func (x *TestResult) SetArgs(v string) {
+	x.xxx_hidden_Args = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 8)
 }
 
 func (x *TestResult) SetFio(v *TestResult_FIO) {
@@ -341,6 +417,34 @@ func (x *TestResult) HasName() bool {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *TestResult) HasStatus() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *TestResult) HasStartTime() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *TestResult) HasCompleteTime() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *TestResult) HasArgs() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
 func (x *TestResult) HasInput() bool {
@@ -374,6 +478,26 @@ func (x *TestResult) ClearType() {
 func (x *TestResult) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
+}
+
+func (x *TestResult) ClearStatus() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Status = nil
+}
+
+func (x *TestResult) ClearStartTime() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_StartTime = nil
+}
+
+func (x *TestResult) ClearCompleteTime() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_CompleteTime = nil
+}
+
+func (x *TestResult) ClearArgs() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_Args = nil
 }
 
 func (x *TestResult) ClearInput() {
@@ -413,8 +537,13 @@ func (x *TestResult) WhichInput() case_TestResult_Input {
 type TestResult_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type *TestResult_Type
-	Name *string
+	Type         *TestResult_Type
+	Name         *string
+	Status       *string
+	StartTime    *string
+	CompleteTime *string
+	Logs         []string
+	Args         *string
 	// Fields of oneof xxx_hidden_Input:
 	Fio  *TestResult_FIO
 	Warp *TestResult_Warp
@@ -426,12 +555,29 @@ func (b0 TestResult_builder) Build() *TestResult {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
 		x.xxx_hidden_Type = *b.Type
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
 		x.xxx_hidden_Name = b.Name
+	}
+	if b.Status != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
+		x.xxx_hidden_Status = b.Status
+	}
+	if b.StartTime != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
+		x.xxx_hidden_StartTime = b.StartTime
+	}
+	if b.CompleteTime != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 8)
+		x.xxx_hidden_CompleteTime = b.CompleteTime
+	}
+	x.xxx_hidden_Logs = b.Logs
+	if b.Args != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 8)
+		x.xxx_hidden_Args = b.Args
 	}
 	if b.Fio != nil {
 		x.xxx_hidden_Input = &testResult_Fio{b.Fio}
@@ -1380,20 +1526,21 @@ func (b0 ListS3SResponse_builder) Build() *ListS3SResponse {
 }
 
 type TestResult_FIO struct {
-	state                       protoimpl.MessageState    `protogen:"opaque.v1"`
-	xxx_hidden_AccessMode       TestResult_FIO_AccessMode `protobuf:"varint,1,opt,name=access_mode,json=accessMode,enum=otterscale.bist.v1.TestResult_FIO_AccessMode"`
-	xxx_hidden_StorageClassName *string                   `protobuf:"bytes,11,opt,name=storage_class_name,json=storageClassName"`
-	xxx_hidden_NfsEndpoint      *string                   `protobuf:"bytes,21,opt,name=nfs_endpoint,json=nfsEndpoint"`
-	xxx_hidden_NfsPath          *string                   `protobuf:"bytes,22,opt,name=nfs_path,json=nfsPath"`
-	xxx_hidden_JobCount         uint64                    `protobuf:"varint,31,opt,name=job_count,json=jobCount"`
-	xxx_hidden_RunTime          *string                   `protobuf:"bytes,41,opt,name=run_time,json=runTime"`
-	xxx_hidden_BlockSize        *string                   `protobuf:"bytes,71,opt,name=block_size,json=blockSize"`
-	xxx_hidden_FileSize         *string                   `protobuf:"bytes,91,opt,name=file_size,json=fileSize"`
-	xxx_hidden_IoDepth          uint64                    `protobuf:"varint,121,opt,name=io_depth,json=ioDepth"`
-	XXX_raceDetectHookData      protoimpl.RaceDetectHookData
-	XXX_presence                [1]uint32
-	unknownFields               protoimpl.UnknownFields
-	sizeCache                   protoimpl.SizeCache
+	state                   protoimpl.MessageState    `protogen:"opaque.v1"`
+	xxx_hidden_AccessMode   TestResult_FIO_AccessMode `protobuf:"varint,1,opt,name=access_mode,json=accessMode,enum=otterscale.bist.v1.TestResult_FIO_AccessMode"`
+	xxx_hidden_ScopeUuid    *string                   `protobuf:"bytes,11,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                   `protobuf:"bytes,12,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_NfsEndpoint  *string                   `protobuf:"bytes,21,opt,name=nfs_endpoint,json=nfsEndpoint"`
+	xxx_hidden_NfsPath      *string                   `protobuf:"bytes,22,opt,name=nfs_path,json=nfsPath"`
+	xxx_hidden_JobCount     uint64                    `protobuf:"varint,31,opt,name=job_count,json=jobCount"`
+	xxx_hidden_RunTime      *string                   `protobuf:"bytes,41,opt,name=run_time,json=runTime"`
+	xxx_hidden_BlockSize    *string                   `protobuf:"bytes,71,opt,name=block_size,json=blockSize"`
+	xxx_hidden_FileSize     *string                   `protobuf:"bytes,91,opt,name=file_size,json=fileSize"`
+	xxx_hidden_IoDepth      uint64                    `protobuf:"varint,121,opt,name=io_depth,json=ioDepth"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *TestResult_FIO) Reset() {
@@ -1430,10 +1577,20 @@ func (x *TestResult_FIO) GetAccessMode() TestResult_FIO_AccessMode {
 	return TestResult_FIO_READ
 }
 
-func (x *TestResult_FIO) GetStorageClassName() string {
+func (x *TestResult_FIO) GetScopeUuid() string {
 	if x != nil {
-		if x.xxx_hidden_StorageClassName != nil {
-			return *x.xxx_hidden_StorageClassName
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *TestResult_FIO) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
 		}
 		return ""
 	}
@@ -1506,47 +1663,52 @@ func (x *TestResult_FIO) GetIoDepth() uint64 {
 
 func (x *TestResult_FIO) SetAccessMode(v TestResult_FIO_AccessMode) {
 	x.xxx_hidden_AccessMode = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 10)
 }
 
-func (x *TestResult_FIO) SetStorageClassName(v string) {
-	x.xxx_hidden_StorageClassName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 9)
+func (x *TestResult_FIO) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 10)
+}
+
+func (x *TestResult_FIO) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 10)
 }
 
 func (x *TestResult_FIO) SetNfsEndpoint(v string) {
 	x.xxx_hidden_NfsEndpoint = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 10)
 }
 
 func (x *TestResult_FIO) SetNfsPath(v string) {
 	x.xxx_hidden_NfsPath = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 10)
 }
 
 func (x *TestResult_FIO) SetJobCount(v uint64) {
 	x.xxx_hidden_JobCount = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 10)
 }
 
 func (x *TestResult_FIO) SetRunTime(v string) {
 	x.xxx_hidden_RunTime = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 10)
 }
 
 func (x *TestResult_FIO) SetBlockSize(v string) {
 	x.xxx_hidden_BlockSize = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 10)
 }
 
 func (x *TestResult_FIO) SetFileSize(v string) {
 	x.xxx_hidden_FileSize = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 10)
 }
 
 func (x *TestResult_FIO) SetIoDepth(v uint64) {
 	x.xxx_hidden_IoDepth = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 9)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 10)
 }
 
 func (x *TestResult_FIO) HasAccessMode() bool {
@@ -1556,60 +1718,67 @@ func (x *TestResult_FIO) HasAccessMode() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *TestResult_FIO) HasStorageClassName() bool {
+func (x *TestResult_FIO) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *TestResult_FIO) HasNfsEndpoint() bool {
+func (x *TestResult_FIO) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *TestResult_FIO) HasNfsPath() bool {
+func (x *TestResult_FIO) HasNfsEndpoint() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *TestResult_FIO) HasJobCount() bool {
+func (x *TestResult_FIO) HasNfsPath() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *TestResult_FIO) HasRunTime() bool {
+func (x *TestResult_FIO) HasJobCount() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *TestResult_FIO) HasBlockSize() bool {
+func (x *TestResult_FIO) HasRunTime() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
-func (x *TestResult_FIO) HasFileSize() bool {
+func (x *TestResult_FIO) HasBlockSize() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
-func (x *TestResult_FIO) HasIoDepth() bool {
+func (x *TestResult_FIO) HasFileSize() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
+}
+
+func (x *TestResult_FIO) HasIoDepth() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
 }
 
 func (x *TestResult_FIO) ClearAccessMode() {
@@ -1617,58 +1786,64 @@ func (x *TestResult_FIO) ClearAccessMode() {
 	x.xxx_hidden_AccessMode = TestResult_FIO_READ
 }
 
-func (x *TestResult_FIO) ClearStorageClassName() {
+func (x *TestResult_FIO) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_StorageClassName = nil
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *TestResult_FIO) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_FacilityName = nil
 }
 
 func (x *TestResult_FIO) ClearNfsEndpoint() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_NfsEndpoint = nil
 }
 
 func (x *TestResult_FIO) ClearNfsPath() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_NfsPath = nil
 }
 
 func (x *TestResult_FIO) ClearJobCount() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_JobCount = 0
 }
 
 func (x *TestResult_FIO) ClearRunTime() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_RunTime = nil
 }
 
 func (x *TestResult_FIO) ClearBlockSize() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_BlockSize = nil
 }
 
 func (x *TestResult_FIO) ClearFileSize() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
 	x.xxx_hidden_FileSize = nil
 }
 
 func (x *TestResult_FIO) ClearIoDepth() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
 	x.xxx_hidden_IoDepth = 0
 }
 
 type TestResult_FIO_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	AccessMode       *TestResult_FIO_AccessMode
-	StorageClassName *string
-	NfsEndpoint      *string
-	NfsPath          *string
-	JobCount         *uint64
-	RunTime          *string
-	BlockSize        *string
-	FileSize         *string
-	IoDepth          *uint64
+	AccessMode   *TestResult_FIO_AccessMode
+	ScopeUuid    *string
+	FacilityName *string
+	NfsEndpoint  *string
+	NfsPath      *string
+	JobCount     *uint64
+	RunTime      *string
+	BlockSize    *string
+	FileSize     *string
+	IoDepth      *uint64
 }
 
 func (b0 TestResult_FIO_builder) Build() *TestResult_FIO {
@@ -1676,39 +1851,43 @@ func (b0 TestResult_FIO_builder) Build() *TestResult_FIO {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.AccessMode != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 10)
 		x.xxx_hidden_AccessMode = *b.AccessMode
 	}
-	if b.StorageClassName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 9)
-		x.xxx_hidden_StorageClassName = b.StorageClassName
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 10)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 10)
+		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.NfsEndpoint != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 10)
 		x.xxx_hidden_NfsEndpoint = b.NfsEndpoint
 	}
 	if b.NfsPath != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 10)
 		x.xxx_hidden_NfsPath = b.NfsPath
 	}
 	if b.JobCount != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 10)
 		x.xxx_hidden_JobCount = *b.JobCount
 	}
 	if b.RunTime != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 10)
 		x.xxx_hidden_RunTime = b.RunTime
 	}
 	if b.BlockSize != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 10)
 		x.xxx_hidden_BlockSize = b.BlockSize
 	}
 	if b.FileSize != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 10)
 		x.xxx_hidden_FileSize = b.FileSize
 	}
 	if b.IoDepth != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 9)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 10)
 		x.xxx_hidden_IoDepth = *b.IoDepth
 	}
 	return m0
@@ -1722,6 +1901,7 @@ type TestResult_Warp struct {
 	xxx_hidden_SecretKey   *string                   `protobuf:"bytes,13,opt,name=secret_key,json=secretKey"`
 	xxx_hidden_Duration    *string                   `protobuf:"bytes,21,opt,name=duration"`
 	xxx_hidden_ObjectSize  *string                   `protobuf:"bytes,31,opt,name=object_size,json=objectSize"`
+	xxx_hidden_ObjectNum   *string                   `protobuf:"bytes,32,opt,name=object_num,json=objectNum"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1812,34 +1992,49 @@ func (x *TestResult_Warp) GetObjectSize() string {
 	return ""
 }
 
+func (x *TestResult_Warp) GetObjectNum() string {
+	if x != nil {
+		if x.xxx_hidden_ObjectNum != nil {
+			return *x.xxx_hidden_ObjectNum
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *TestResult_Warp) SetOperation(v TestResult_Warp_Operation) {
 	x.xxx_hidden_Operation = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
 }
 
 func (x *TestResult_Warp) SetEndpoint(v string) {
 	x.xxx_hidden_Endpoint = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
 }
 
 func (x *TestResult_Warp) SetAccessKey(v string) {
 	x.xxx_hidden_AccessKey = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
 
 func (x *TestResult_Warp) SetSecretKey(v string) {
 	x.xxx_hidden_SecretKey = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
 }
 
 func (x *TestResult_Warp) SetDuration(v string) {
 	x.xxx_hidden_Duration = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
 }
 
 func (x *TestResult_Warp) SetObjectSize(v string) {
 	x.xxx_hidden_ObjectSize = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 7)
+}
+
+func (x *TestResult_Warp) SetObjectNum(v string) {
+	x.xxx_hidden_ObjectNum = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 7)
 }
 
 func (x *TestResult_Warp) HasOperation() bool {
@@ -1884,6 +2079,13 @@ func (x *TestResult_Warp) HasObjectSize() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
+func (x *TestResult_Warp) HasObjectNum() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
 func (x *TestResult_Warp) ClearOperation() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Operation = TestResult_Warp_GET
@@ -1914,6 +2116,11 @@ func (x *TestResult_Warp) ClearObjectSize() {
 	x.xxx_hidden_ObjectSize = nil
 }
 
+func (x *TestResult_Warp) ClearObjectNum() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_ObjectNum = nil
+}
+
 type TestResult_Warp_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
@@ -1923,6 +2130,7 @@ type TestResult_Warp_builder struct {
 	SecretKey  *string
 	Duration   *string
 	ObjectSize *string
+	ObjectNum  *string
 }
 
 func (b0 TestResult_Warp_builder) Build() *TestResult_Warp {
@@ -1930,28 +2138,32 @@ func (b0 TestResult_Warp_builder) Build() *TestResult_Warp {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Operation != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
 		x.xxx_hidden_Operation = *b.Operation
 	}
 	if b.Endpoint != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
 		x.xxx_hidden_Endpoint = b.Endpoint
 	}
 	if b.AccessKey != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
 		x.xxx_hidden_AccessKey = b.AccessKey
 	}
 	if b.SecretKey != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
 		x.xxx_hidden_SecretKey = b.SecretKey
 	}
 	if b.Duration != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
 		x.xxx_hidden_Duration = b.Duration
 	}
 	if b.ObjectSize != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 7)
 		x.xxx_hidden_ObjectSize = b.ObjectSize
+	}
+	if b.ObjectNum != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 7)
+		x.xxx_hidden_ObjectNum = b.ObjectNum
 	}
 	return m0
 }
@@ -1960,17 +2172,25 @@ var File_api_bist_v1_bist_proto protoreflect.FileDescriptor
 
 const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\n" +
-	"\x16api/bist/v1/bist.proto\x12\x12otterscale.bist.v1\x1a\x1bgoogle/protobuf/empty.proto\"\xb2\b\n" +
+	"\x16api/bist/v1/bist.proto\x12\x12otterscale.bist.v1\x1a\x1bgoogle/protobuf/empty.proto\"\xeb\t\n" +
 	"\n" +
 	"TestResult\x127\n" +
 	"\x04type\x18\x01 \x01(\x0e2#.otterscale.bist.v1.TestResult.TypeR\x04type\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x126\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"start_time\x18\x04 \x01(\tR\tstartTime\x12#\n" +
+	"\rcomplete_time\x18\x05 \x01(\tR\fcompleteTime\x12\x12\n" +
+	"\x04logs\x18\x06 \x03(\tR\x04logs\x12\x12\n" +
+	"\x04args\x18\a \x01(\tR\x04args\x126\n" +
 	"\x03fio\x18\v \x01(\v2\".otterscale.bist.v1.TestResult.FIOH\x00R\x03fio\x129\n" +
-	"\x04warp\x18\f \x01(\v2#.otterscale.bist.v1.TestResult.WarpH\x00R\x04warp\x1a\xee\x03\n" +
+	"\x04warp\x18\f \x01(\v2#.otterscale.bist.v1.TestResult.WarpH\x00R\x04warp\x1a\x84\x04\n" +
 	"\x03FIO\x12N\n" +
 	"\vaccess_mode\x18\x01 \x01(\x0e2-.otterscale.bist.v1.TestResult.FIO.AccessModeR\n" +
-	"accessMode\x12,\n" +
-	"\x12storage_class_name\x18\v \x01(\tR\x10storageClassName\x12!\n" +
+	"accessMode\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\v \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\f \x01(\tR\ffacilityName\x12!\n" +
 	"\fnfs_endpoint\x18\x15 \x01(\tR\vnfsEndpoint\x12\x19\n" +
 	"\bnfs_path\x18\x16 \x01(\tR\anfsPath\x12\x1b\n" +
 	"\tjob_count\x18\x1f \x01(\x04R\bjobCount\x12\x19\n" +
@@ -1993,7 +2213,7 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"RAND_WRITE\x10\x06\x12\r\n" +
 	"\tRAND_TRIM\x10\a\x12\v\n" +
 	"\aRAND_RW\x10\b\x12\x13\n" +
-	"\x0fRAND_TRIM_WRITE\x10\t\x1a\xb4\x02\n" +
+	"\x0fRAND_TRIM_WRITE\x10\t\x1a\xd3\x02\n" +
 	"\x04Warp\x12K\n" +
 	"\toperation\x18\x01 \x01(\x0e2-.otterscale.bist.v1.TestResult.Warp.OperationR\toperation\x12\x1a\n" +
 	"\bendpoint\x18\v \x01(\tR\bendpoint\x12\x1d\n" +
@@ -2003,7 +2223,9 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"secret_key\x18\r \x01(\tR\tsecretKey\x12\x1a\n" +
 	"\bduration\x18\x15 \x01(\tR\bduration\x12\x1f\n" +
 	"\vobject_size\x18\x1f \x01(\tR\n" +
-	"objectSize\"H\n" +
+	"objectSize\x12\x1d\n" +
+	"\n" +
+	"object_num\x18  \x01(\tR\tobjectNum\"H\n" +
 	"\tOperation\x12\a\n" +
 	"\x03GET\x10\x00\x12\a\n" +
 	"\x03PUT\x10\x01\x12\n" +
@@ -2054,7 +2276,7 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x10DeleteTestResult\x12+.otterscale.bist.v1.DeleteTestResultRequest\x1a\x16.google.protobuf.Empty\x12[\n" +
 	"\n" +
 	"ListBlocks\x12%.otterscale.bist.v1.ListBlocksRequest\x1a&.otterscale.bist.v1.ListBlocksResponse\x12R\n" +
-	"\aListS3s\x12\".otterscale.bist.v1.ListS3sRequest\x1a#.otterscale.bist.v1.ListS3sResponseB.Z,github.com/openhdc/otterscale/api/bist/v1;pbb\beditionsp\xe8\a"
+	"\aListS3S\x12\".otterscale.bist.v1.ListS3sRequest\x1a#.otterscale.bist.v1.ListS3sResponseB.Z,github.com/openhdc/otterscale/api/bist/v1;pbb\beditionsp\xe8\a"
 
 var file_api_bist_v1_bist_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_api_bist_v1_bist_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
@@ -2095,12 +2317,12 @@ var file_api_bist_v1_bist_proto_depIdxs = []int32{
 	9,  // 13: otterscale.bist.v1.BISTService.CreateTestResult:input_type -> otterscale.bist.v1.CreateTestResultRequest
 	10, // 14: otterscale.bist.v1.BISTService.DeleteTestResult:input_type -> otterscale.bist.v1.DeleteTestResultRequest
 	11, // 15: otterscale.bist.v1.BISTService.ListBlocks:input_type -> otterscale.bist.v1.ListBlocksRequest
-	13, // 16: otterscale.bist.v1.BISTService.ListS3s:input_type -> otterscale.bist.v1.ListS3sRequest
+	13, // 16: otterscale.bist.v1.BISTService.ListS3S:input_type -> otterscale.bist.v1.ListS3sRequest
 	8,  // 17: otterscale.bist.v1.BISTService.ListTestResults:output_type -> otterscale.bist.v1.ListTestResultsResponse
 	4,  // 18: otterscale.bist.v1.BISTService.CreateTestResult:output_type -> otterscale.bist.v1.TestResult
 	17, // 19: otterscale.bist.v1.BISTService.DeleteTestResult:output_type -> google.protobuf.Empty
 	12, // 20: otterscale.bist.v1.BISTService.ListBlocks:output_type -> otterscale.bist.v1.ListBlocksResponse
-	14, // 21: otterscale.bist.v1.BISTService.ListS3s:output_type -> otterscale.bist.v1.ListS3sResponse
+	14, // 21: otterscale.bist.v1.BISTService.ListS3S:output_type -> otterscale.bist.v1.ListS3sResponse
 	17, // [17:22] is the sub-list for method output_type
 	12, // [12:17] is the sub-list for method input_type
 	12, // [12:12] is the sub-list for extension type_name
