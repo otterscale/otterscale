@@ -7,8 +7,7 @@
 
 	export const headers = {
 		_row_picker: _row_picker,
-		name: name,
-		protect: protect
+		access: access
 	};
 </script>
 
@@ -22,20 +21,11 @@
 	/>
 {/snippet}
 
-{#snippet name(column: Column<User_Key>)}
+{#snippet access(column: Column<User_Key>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>ACCESSOR</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet protect(column: Column<User_Key>)}
-	<Layout.Header>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-		<Layout.HeaderViewer>PROTECTED</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

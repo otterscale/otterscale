@@ -1,11 +1,8 @@
+import type { Bucket } from "$gen/api/storage/v1/storage_pb";
+import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
-import { renderSnippet, renderComponent } from "$lib/components/ui/data-table/index.js";
-
-import type { Bucket } from './types'
-import DataTableActions from "./actions.svelte";
-
-import { headers } from './headers.svelte'
-import { cells } from './cells.svelte'
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
 
 const columns: ColumnDef<Bucket>[] = [
     {
@@ -38,53 +35,26 @@ const columns: ColumnDef<Bucket>[] = [
         },
     },
     {
-        accessorKey: "usedCapacity",
+        accessorKey: "usage",
         header: ({ column }) => {
-            return renderSnippet(headers.usedCapacity, column)
+            return renderSnippet(headers.usage, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.usedCapacity, row);
+            return renderSnippet(cells.usage, row);
         },
-        filterFn: 'inNumberRange',
     },
     {
-        accessorKey: "capacityLimit",
+        accessorKey: "createTime",
         header: ({ column }) => {
-            return renderSnippet(headers.capacityLimit, column)
+            return renderSnippet(headers.createTime, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.capacityLimit, row);
-        },
-        filterFn: 'inNumberRange',
-    },
-    {
-        accessorKey: "objects",
-        header: ({ column }) => {
-            return renderSnippet(headers.objects, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.objects, row);
-        },
-        filterFn: 'inNumberRange',
-    },
-    {
-        accessorKey: "objectLimit",
-        header: ({ column }) => {
-            return renderSnippet(headers.objectLimit, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.objectLimit, row);
-        },
-        filterFn: 'inNumberRange',
-    },
-    {
-        id: "actions",
-        cell: ({ row }) => {
-            return renderComponent(DataTableActions, { bucket: row.original });
+            return renderSnippet(cells.createTime, row);
         },
     },
 ];
 
 export {
     columns
-}
+};
+

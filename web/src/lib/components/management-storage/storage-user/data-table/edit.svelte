@@ -1,11 +1,10 @@
 <script lang="ts" module>
-	import type { CreateUserRequest, User } from '$gen/api/storage/v1/storage_pb';
+	import type { UpdateUserRequest, User } from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -19,14 +18,22 @@
 	let {
 		selectedScope,
 		selectedFacility,
+		user,
 		data = $bindable()
-	}: { selectedScope: string; selectedFacility: string; data: Writable<User[]> } = $props();
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		user: User;
+		data: Writable<User[]>;
+	} = $props();
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
 		facilityName: selectedFacility,
+		userId: user.id,
+		userName: user.name,
 		suspended: true
-	} as CreateUserRequest;
+	} as UpdateUserRequest;
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -39,17 +46,13 @@
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<div class="flex justify-end">
-		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
-			<div class="flex items-center gap-1">
-				<Icon icon="ph:plus" />
-				Create
-			</div>
-		</AlertDialog.Trigger>
-	</div>
+	<AlertDialog.Trigger class={cn('flex h-full w-full items-center gap-2')}>
+		<Icon icon="ph:pencil" />
+		Edit
+	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create User
+			Edit User
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
@@ -79,9 +82,9 @@
 					onclick={() => {
 						stateController.close();
 						storageClient
-							.createUser(request)
+							.updateUser(request)
 							.then((r) => {
-								toast.success(`Create ${r.name}`);
+								toast.success(`Update ${r.name}`);
 								storageClient
 									.listUsers({ scopeUuid: selectedScope, facilityName: selectedFacility })
 									.then((r) => {
@@ -89,14 +92,14 @@
 									});
 							})
 							.catch((e) => {
-								toast.error(`Fail to create user: ${e.toString()}`);
+								toast.error(`Fail to update user: ${e.toString()}`);
 							})
 							.finally(() => {
 								reset();
 							});
 					}}
 				>
-					Create
+					Update
 				</AlertDialog.Action>
 			</AlertDialog.ActionsGroup>
 		</AlertDialog.Footer>

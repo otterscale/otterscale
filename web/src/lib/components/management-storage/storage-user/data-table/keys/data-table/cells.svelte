@@ -7,8 +7,7 @@
 
 	export const cells = {
 		_row_picker: _row_picker,
-		name: name,
-		protect: protect
+		access: access
 	};
 </script>
 
@@ -21,12 +20,6 @@
 	/>
 {/snippet}
 
-{#snippet name(row: Row<User_Key>)}
-	{row.original.name}
-{/snippet}
-
-{#snippet protect(row: Row<User_Key>)}
-	<div class="flex justify-end">
-		<Badge variant="outline">{row.original.protected}</Badge>
-	</div>
+{#snippet access(row: Row<User_Key>)}
+	{row.original.accessKey}
 {/snippet}

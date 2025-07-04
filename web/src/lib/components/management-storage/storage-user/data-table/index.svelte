@@ -1,31 +1,39 @@
 <script lang="ts" generics="TData, TValue">
+	import type { User } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
-	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
+		getCoreRowModel,
+		getFilteredRowModel,
+		getPaginationRowModel,
+		getSortedRowModel,
 		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
-		getCoreRowModel,
-		getFilteredRowModel,
-		getPaginationRowModel,
-		getSortedRowModel
+		type VisibilityState
 	} from '@tanstack/table-core';
+	import { writable } from 'svelte/store';
+	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import { writable, type Writable } from 'svelte/store';
-	import type { User } from './types';
-	import { fetchUsers } from '../utils.svelte';
+	import { headers } from './headers.svelte';
+	import { Key } from './keys/index';
 
-	let data: Writable<User[]> = $state(writable(fetchUsers() ?? ([] as User[])));
+	let {
+		selectedScope,
+		selectedFacility,
+		users
+	}: { selectedScope: string; selectedFacility: string; users: User[] } = $props();
+
+	let data = $state(writable(users));
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -103,15 +111,14 @@
 		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
-		<Layout.ControllerAction>
-			<Create bind:data />
-		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
-			<FuzzyFilter columnId="username" {table} />
-			<FuzzyFilter columnId="emailAddress" {table} />
-			<PointFilter columnId="tenant" {table} />
+			<FuzzyFilter columnId="id" {table} />
+			<FuzzyFilter columnId="name" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Create {selectedScope} {selectedFacility} bind:data />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
@@ -128,6 +135,8 @@
 								{/if}
 							</Table.Head>
 						{/each}
+						<Table.Head>{@render headers.keys()}</Table.Head>
+						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -139,6 +148,12 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
+						<Table.Cell>
+							<Key {selectedScope} {selectedFacility} user={row.original} bind:data />
+						</Table.Cell>
+						<Table.Cell>
+							<Actions {selectedScope} {selectedFacility} user={row.original} bind:data />
+						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Table.Row>

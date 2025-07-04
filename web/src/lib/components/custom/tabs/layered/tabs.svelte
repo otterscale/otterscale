@@ -9,7 +9,7 @@
 	let {
 		ref = $bindable(null),
 		class: className,
-		value,
+		value = $bindable(),
 		...restProps
 	}: TabsPrimitive.RootProps = $props();
 

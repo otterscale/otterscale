@@ -3,18 +3,14 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
-	import type { User } from './types';
+	import type { User } from '$gen/api/storage/v1/storage_pb';
 
 	export const headers = {
 		_row_picker: _row_picker,
-		username: username,
-		tenant: tenant,
-		fullName: fullName,
-		emailAddress: emailAddress,
+		id: id,
+		name: name,
 		suspended: suspended,
-		maximumBuckets: maximumBuckets,
-		capacityLimit: capacityLimit,
-		objectLimit: objectLimit
+		keys: keys
 	};
 </script>
 
@@ -28,36 +24,18 @@
 	/>
 {/snippet}
 
-{#snippet username(column: Column<User>)}
+{#snippet id(column: Column<User>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>USERNAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>ID</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
-{#snippet tenant(column: Column<User>)}
+{#snippet name(column: Column<User>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>TENANT</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet fullName(column: Column<User>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>FULL NAME</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet emailAddress(column: Column<User>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>EMAIL ADDRESS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -70,29 +48,10 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet maximumBuckets(column: Column<User>)}
+{#snippet keys()}
 	<Layout.Header>
-		<Layout.HeaderViewer>MAX BUCKETS</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet capacityLimit(column: Column<User>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>CAPACITY LIMIT</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet objectLimit(column: Column<User>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>OBJECT LIMIT</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
+		<Layout.HeaderViewer class="w-full">
+			<p class="text-end">KEYS</p>
+		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

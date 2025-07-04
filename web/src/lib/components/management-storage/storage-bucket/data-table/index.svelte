@@ -1,4 +1,5 @@
 <script lang="ts" generics="TData, TValue">
+	import type { Bucket } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
@@ -7,10 +8,6 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import { columns } from './columns';
-	import Create from './create.svelte';
-	import Statistics from './statistics.svelte';
-
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -22,11 +19,20 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable, type Writable } from 'svelte/store';
-	import { fetchBuckets } from '../utils.svelte';
-	import type { Bucket } from './types';
+	import { writable } from 'svelte/store';
+	import Actions from './actions.svelte';
+	import { columns } from './columns';
+	import Create from './create.svelte';
+	import Statistics from './statistics.svelte';
 
-	let data: Writable<Bucket[]> = $state(writable(fetchBuckets() ?? ([] as Bucket[])));
+	let {
+		selectedScope,
+		selectedFacility,
+		buckets
+	}: { selectedScope: string; selectedFacility: string; buckets: Bucket[] } = $props();
+
+	let data = $state(writable(buckets));
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -104,14 +110,14 @@
 		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
-		<Layout.ControllerAction>
-			<Create bind:data />
-		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
 			<PointFilter columnId="owner" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Create {selectedScope} {selectedFacility} bind:data />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
@@ -128,6 +134,7 @@
 								{/if}
 							</Table.Head>
 						{/each}
+						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -139,6 +146,9 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
+						<Table.Cell>
+							<Actions {selectedScope} {selectedFacility} bucket={row.original} bind:data />
+						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Table.Row>
