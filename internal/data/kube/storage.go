@@ -44,7 +44,6 @@ func (r *storage) ListStorageClassesByLabel(ctx context.Context, config *rest.Co
 	opts := metav1.ListOptions{
 		LabelSelector: label,
 	}
-
 	list, err := clientset.StorageV1().StorageClasses().List(ctx, opts)
 	if err != nil {
 		return nil, err
