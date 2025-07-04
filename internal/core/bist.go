@@ -273,12 +273,9 @@ func (uc *BISTUseCase) ListS3s(ctx context.Context, uuid string) ([]BISTS3, erro
 						fmt.Println("nil config")
 						continue
 					}
-					opt := metav1.ListOptions{
-						//LabelSelector: "app.otterscale.io/release-name=minio",
-						LabelSelector: "app.kubernetes.io/name=minio",
-						FieldSelector: "spec.type=NodePort",
-					}
-					svcs, err := uc.kubeCore.ListServicesByOptions(ctx, config, "", opt)
+					label := "app.otterscale.io/release-name=minio"
+					field := "spec.type=NodePort"
+					svcs, err := uc.kubeCore.ListServicesByOptions(ctx, config, "", label, field)
 					if err != nil {
 						return err
 					}

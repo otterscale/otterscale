@@ -39,7 +39,7 @@ func (r *core) ListServices(ctx context.Context, config *rest.Config, namespace 
 	return list.Items, nil
 }
 
-func (r *core) ListServicesByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]oscore.Service, error) {
+func (r *core) ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]oscore.Service, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
@@ -47,20 +47,8 @@ func (r *core) ListServicesByLabel(ctx context.Context, config *rest.Config, nam
 
 	opts := metav1.ListOptions{
 		LabelSelector: label,
+		FieldSelector: field,
 	}
-	list, err := clientset.CoreV1().Services(namespace).List(ctx, opts)
-	if err != nil {
-		return nil, err
-	}
-	return list.Items, nil
-}
-
-func (r *core) ListServicesByOptions(ctx context.Context, config *rest.Config, namespace string, opts metav1.ListOptions) ([]oscore.Service, error) {
-	clientset, err := r.kube.clientset(config)
-	if err != nil {
-		return nil, err
-	}
-
 	list, err := clientset.CoreV1().Services(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err

@@ -87,8 +87,7 @@ type KubeBatchRepo interface {
 type KubeCoreRepo interface {
 	// Service
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
-	ListServicesByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Service, error)
-	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace string, opts metav1.ListOptions) ([]Service, error)
+	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error)
 
 	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
