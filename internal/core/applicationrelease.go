@@ -44,7 +44,10 @@ func (uc *ApplicationUseCase) ListReleases(ctx context.Context) ([]Release, erro
 			if err != nil {
 				return err
 			}
-			releases, _ := uc.release.List(config, "")
+			releases, err := uc.release.List(config, "")
+			if err != nil {
+				return err
+			}
 			for _, release := range releases {
 				result[i] = append(result[i], Release{
 					ScopeName:    kuberneteses[i].ScopeName,
