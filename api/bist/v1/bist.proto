@@ -35,8 +35,8 @@ message TestResult {
       RAND_TRIM_WRITE = 9;
     }
     AccessMode access_mode = 1;
-    string scope_uuid = 11;    //block
-    string facility_name = 12; //block
+    string scope_uuid = 11;     // block
+    string facility_name = 12;  // block
     string nfs_endpoint = 21;
     string nfs_path = 22;
     uint64 job_count = 31;   // 1.13.3 Job description
