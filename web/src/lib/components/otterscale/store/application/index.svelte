@@ -6,7 +6,6 @@
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
-	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { StoreApplication, ReleaseCreate } from '$lib/components/otterscale/index';
 	import { STORE_ITEMS_PER_ROW, STORE_ROWS_PER_PAGE } from '$lib/components/otterscale/index';
 	import {
@@ -17,6 +16,7 @@
 	import Search from './search.svelte';
 	import Filter from './filter.svelte';
 	import { fuzzLogosIcon } from '$lib/icon';
+	import Upload from './upload.svelte';
 
 	let {
 		releases,
@@ -57,21 +57,22 @@
 </script>
 
 <main class="grid justify-between">
-	<div class="flex flex-col justify-between gap-2">
+	<div class="flex flex-col justify-between gap-4">
 		<div class="w-full overflow-auto">
 			{@render Keywords()}
-			<div class="w-full">
+			<div class="flex w-full space-x-4">
 				<Search {charts} bind:searchTerm bind:activePage />
+				<Upload />
 			</div>
 		</div>
 
-		<div class="flex gap-2 overflow-auto">
+		<div class="flex gap-4 overflow-auto">
 			<span class="overflow-visible">
 				<Filter charts={filteredCharts} bind:activePage bind:selectedKeywords />
 			</span>
 			<span
 				class={cn(
-					'grid w-full items-start justify-start gap-x-2',
+					'grid w-full items-start justify-start gap-x-4',
 					`grid-cols-${STORE_ITEMS_PER_ROW} grid-rows-${STORE_ROWS_PER_PAGE}`
 				)}
 			>
@@ -105,9 +106,9 @@
 				{/each}
 			</span>
 		</div>
-		<span class="absolute -bottom-10 left-1/2 -translate-x-1/2">
-			<Paging {filteredCharts} bind:activePage />
-		</span>
+		<!-- <span class="absolute -bottom-10 left-1/2 -translate-x-1/2"> -->
+		<Paging {filteredCharts} bind:activePage />
+		<!-- </span> -->
 	</div>
 </main>
 
