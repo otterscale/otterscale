@@ -47,7 +47,7 @@ func (r *helmChart) List(ctx context.Context) ([]oscore.Chart, error) {
 			v, ok := r.repoIndexCache.Load(urls[i])
 			if ok {
 				helmRepo := v.(*helmRepo)
-				if time.Since(helmRepo.lastFetch) < time.Hour*2 {
+				if time.Since(helmRepo.lastFetch) < time.Hour*24 {
 					result[i] = helmRepo.indexFile
 					return nil
 				}
