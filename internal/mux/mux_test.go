@@ -13,6 +13,7 @@ import (
 // createMockServices creates mock services for testing
 func createMockServices() (
 	*app.ApplicationService,
+	*app.BISTService,
 	*app.ConfigurationService,
 	*app.EnvironmentService,
 	*app.FacilityService,
@@ -26,6 +27,7 @@ func createMockServices() (
 	// Create mock use cases (nil is fine for mux testing as we're not calling the actual methods)
 	var (
 		appUC   *core.ApplicationUseCase
+		bistUC  *core.BISTUseCase
 		confUC  *core.ConfigurationUseCase
 		envUC   *core.EnvironmentUseCase
 		facUC   *core.FacilityUseCase
@@ -38,6 +40,7 @@ func createMockServices() (
 	)
 
 	return app.NewApplicationService(appUC),
+		app.NewBISTService(bistUC, storUC),
 		app.NewConfigurationService(confUC),
 		app.NewEnvironmentService(envUC),
 		app.NewFacilityService(facUC),
@@ -50,9 +53,9 @@ func createMockServices() (
 }
 
 func TestNew_WithoutHelper(t *testing.T) {
-	appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(false, appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	if mux == nil {
 		t.Fatal("Expected mux to be created, got nil")
@@ -60,9 +63,9 @@ func TestNew_WithoutHelper(t *testing.T) {
 }
 
 func TestNew_WithHelper(t *testing.T) {
-	appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(true, appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	if mux == nil {
 		t.Fatal("Expected mux to be created, got nil")
@@ -70,9 +73,9 @@ func TestNew_WithHelper(t *testing.T) {
 }
 
 func TestNew_ServiceHandlersRegistered(t *testing.T) {
-	appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(false, appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -115,9 +118,9 @@ func TestNew_ServiceHandlersRegistered(t *testing.T) {
 }
 
 func TestNew_HealthAndReflectionWithHelper(t *testing.T) {
-	appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(true, appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -158,9 +161,9 @@ func TestNew_HealthAndReflectionWithHelper(t *testing.T) {
 }
 
 func TestNew_NoHealthAndReflectionWithoutHelper(t *testing.T) {
-	appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(false, appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -203,6 +206,7 @@ func TestNew_NoHealthAndReflectionWithoutHelper(t *testing.T) {
 func TestServices_ContainsAllServiceNames(t *testing.T) {
 	expectedServices := []string{
 		"otterscale.application.v1.ApplicationService",
+		"otterscale.bist.v1.BISTService",
 		"otterscale.configuration.v1.ConfigurationService",
 		"otterscale.environment.v1.EnvironmentService",
 		"otterscale.facility.v1.FacilityService",
@@ -240,7 +244,7 @@ func TestNew_NilServices(t *testing.T) {
 		}
 	}()
 
-	mux := New(false, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	mux := New(false, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 
 	if mux == nil {
 		t.Error("Expected mux to be created even with nil services")
@@ -248,7 +252,7 @@ func TestNew_NilServices(t *testing.T) {
 }
 
 func TestNew_HelperFlagBehavior(t *testing.T) {
-	appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
 	testCases := []struct {
 		name         string
@@ -269,7 +273,7 @@ func TestNew_HelperFlagBehavior(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			mux := New(tc.helper, appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+			mux := New(tc.helper, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 			server := httptest.NewServer(mux)
 			defer server.Close()
@@ -295,19 +299,19 @@ func TestNew_HelperFlagBehavior(t *testing.T) {
 
 // Benchmark tests
 func BenchmarkNew_WithoutHelper(b *testing.B) {
-	appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = New(false, appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+		_ = New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 	}
 }
 
 func BenchmarkNew_WithHelper(b *testing.B) {
-	appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = New(true, appSvc, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+		_ = New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 	}
 }
