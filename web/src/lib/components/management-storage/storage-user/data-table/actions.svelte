@@ -1,18 +1,29 @@
 <script lang="ts">
+	import type { User } from '$gen/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import ActionDelete from './action-delete.svelte';
-	import ActionEdit from './action-edit.svelte';
-	import type { User } from './types';
+	import type { Writable } from 'svelte/store';
+	import Delete from './delete.svelte';
+	import Edit from './edit.svelte';
 
-	let { user }: { user: User } = $props();
+	let {
+		selectedScope,
+		selectedFacility,
+		user,
+		data = $bindable()
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		user: User;
+		data: Writable<User[]>;
+	} = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>
 	<Layout.ActionItem>
-		<ActionEdit {user} />
+		<Edit {selectedScope} {selectedFacility} {user} bind:data />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<ActionDelete {user} />
+		<Delete {selectedScope} {selectedFacility} {user} bind:data />
 	</Layout.ActionItem>
 </Layout.Actions>

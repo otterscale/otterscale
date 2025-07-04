@@ -2,16 +2,16 @@
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import type { Row } from '@tanstack/table-core';
-	import type { Bucket } from './types';
+	import type { Bucket } from '$gen/api/storage/v1/storage_pb';
+	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
 
 	export const cells = {
 		_row_picker: _row_picker,
 		name: name,
 		owner: owner,
-		usedCapacity: usedCapacity,
-		capacityLimit: capacityLimit,
-		objects: objects,
-		objectLimit: objectLimit
+		usage: usage,
+		createTime: createTime
 	};
 </script>
 
@@ -25,25 +25,26 @@
 {/snippet}
 
 {#snippet name(row: Row<Bucket>)}
-	<p>{row.original.name}</p>
+	{row.original.name}
 {/snippet}
 
 {#snippet owner(row: Row<Bucket>)}
 	<Badge variant="outline">{row.original.owner}</Badge>
 {/snippet}
 
-{#snippet usedCapacity(row: Row<Bucket>)}
-	<p class="text-right">{row.original.usedCapacity}</p>
+{#snippet usage(row: Row<Bucket>)}
+	{@const { value, unit } = formatCapacity(Number(row.original.usedBytes) / (1024 * 1024))}
+	<div class="flex flex-col items-end">
+		<div class="flex items-end">
+			{value}
+			{unit}
+		</div>
+		<p class="font-light">{row.original.usedObjects} unit(s)</p>
+	</div>
 {/snippet}
 
-{#snippet capacityLimit(row: Row<Bucket>)}
-	<p class="text-right">{row.original.capacityLimit}</p>
-{/snippet}
-
-{#snippet objects(row: Row<Bucket>)}
-	<p class="text-right">{row.original.objects}</p>
-{/snippet}
-
-{#snippet objectLimit(row: Row<Bucket>)}
-	<p class="text-right">{row.original.objectLimit}</p>
+{#snippet createTime(row: Row<Bucket>)}
+	{#if row.original.createdAt}
+		{formatTimeAgo(timestampDate(row.original.createdAt))}
+	{/if}
 {/snippet}

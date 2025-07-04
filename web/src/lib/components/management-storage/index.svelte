@@ -11,9 +11,11 @@
 	import { Monitor } from './storage-monitor';
 	import { Role } from './storage-role';
 	import { User } from './storage-user';
+
+	let value = $state('user');
 </script>
 
-<LayeredTabs.Root value="volume">
+<LayeredTabs.Root bind:value>
 	<LayeredTabs.Menubar>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
@@ -85,34 +87,54 @@
 		</LayeredTabs.Menu>
 	</LayeredTabs.Menubar>
 
-	<!-- <LayeredTabs.Content value="bucket">
-		<Bucket />
-	</LayeredTabs.Content> -->
-	<!-- <LayeredTabs.Content value="block-image">
-		<BlockImage />
-	</LayeredTabs.Content> -->
-	<!-- <LayeredTabs.Content value="object-storage-daemon">
-		<ObjectStorageDaemon />
-	</LayeredTabs.Content> -->
-	<!-- <LayeredTabs.Content value="monitor">
-		<Monitor />
-	</LayeredTabs.Content> -->
-	<!-- <LayeredTabs.Content value="pool">
-		<Pool />
-	</LayeredTabs.Content> -->
-	<!-- <LayeredTabs.Content value="role">
-		<Role />
-	</LayeredTabs.Content> -->
+	<LayeredTabs.Content value="block-image">
+		{#if value === 'block-image'}
+			<BlockImage />
+		{/if}
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="bucket">
+		{#if value === 'bucket'}
+			<Bucket />
+		{/if}
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="monitor">
+		{#if value === 'monitor'}
+			<Monitor />
+		{/if}
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="object-storage-daemon">
+		{#if value === 'object-storage-daemon'}
+			<ObjectStorageDaemon />
+		{/if}
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="pool">
+		{#if value === 'pool'}
+			<Pool />
+		{/if}
+	</LayeredTabs.Content>
+	<LayeredTabs.Content value="role">
+		{#if value === 'role'}
+			<Role />
+		{/if}
+	</LayeredTabs.Content>
 	<LayeredTabs.Content value="subvolume">
-		<Subvolume />
+		{#if value === 'subvolume'}
+			<Subvolume />
+		{/if}
 	</LayeredTabs.Content>
 	<LayeredTabs.Content value="subvolume-group">
-		<SubvolumeGroup />
+		{#if value === 'subvolume-group'}
+			<SubvolumeGroup />
+		{/if}
 	</LayeredTabs.Content>
-	<!-- <LayeredTabs.Content value="user">
-		<User />
-	</LayeredTabs.Content> -->
+	<LayeredTabs.Content value="user">
+		{#if value === 'user'}
+			<User />
+		{/if}
+	</LayeredTabs.Content>
 	<LayeredTabs.Content value="volume">
-		<Volume />
+		{#if value === 'volume'}
+			<Volume />
+		{/if}
 	</LayeredTabs.Content>
 </LayeredTabs.Root>

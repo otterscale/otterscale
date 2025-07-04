@@ -1,32 +1,44 @@
 <script lang="ts" module>
-	import type { CreateUserRequest, User } from '$gen/api/storage/v1/storage_pb';
+	import type {
+		DeleteImageSnapshotRequest,
+		DeleteUserKeyRequest,
+		Image,
+		User,
+		User_Key
+	} from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { buttonVariants } from '$lib/components/ui/button';
-	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { type Writable } from 'svelte/store';
-	import { USER_SUSPENDED_HELP_TEXT } from './helper';
+	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
 	let {
 		selectedScope,
 		selectedFacility,
+		user,
+		key,
 		data = $bindable()
-	}: { selectedScope: string; selectedFacility: string; data: Writable<User[]> } = $props();
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		user: User;
+		key: User_Key;
+		data: Writable<User[]>;
+	} = $props();
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
 		facilityName: selectedFacility,
-		suspended: true
-	} as CreateUserRequest;
+		userId: user.id
+	} as DeleteUserKeyRequest;
+
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -39,37 +51,26 @@
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<div class="flex justify-end">
-		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
-			<div class="flex items-center gap-1">
-				<Icon icon="ph:plus" />
-				Create
-			</div>
-		</AlertDialog.Trigger>
-	</div>
+	<AlertDialog.Trigger class="text-destructive flex h-full w-full items-center gap-2">
+		<Icon icon="ph:trash" />
+		Delete
+	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create User
+			Delete User Key
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Field>
-					<Form.Label>ID</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.userId} />
-				</Form.Field>
-
-				<Form.Field>
-					<Form.Label for="filesystem-placement">Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.userName} />
-				</Form.Field>
-
-				<Form.Field>
-					<Form.Label for="filesystem-placement">Suspended</Form.Label>
-					<SingleInput.Boolean required bind:value={request.suspended} />
-				</Form.Field>
 				<Form.Help>
-					{USER_SUSPENDED_HELP_TEXT}
+					Please type the access key exactly to confirm deletion. This action cannot be undone.
 				</Form.Help>
+				<Form.Field>
+					<SingleInput.DeletionConfirm
+						required
+						target={key.accessKey}
+						bind:value={request.accessKey}
+					/>
+				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
@@ -77,11 +78,11 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						console.log(request);
 						storageClient
-							.createUser(request)
+							.deleteUserKey(request)
 							.then((r) => {
-								toast.success(`Create ${r.name}`);
+								toast.success(`Delete ${request.accessKey}`);
 								storageClient
 									.listUsers({ scopeUuid: selectedScope, facilityName: selectedFacility })
 									.then((r) => {
@@ -89,14 +90,14 @@
 									});
 							})
 							.catch((e) => {
-								toast.error(`Fail to create user: ${e.toString()}`);
+								toast.error(`Fail to delete access key: ${e.toString()}`);
 							})
 							.finally(() => {
-								reset();
+								stateController.close();
 							});
 					}}
 				>
-					Create
+					Delete
 				</AlertDialog.Action>
 			</AlertDialog.ActionsGroup>
 		</AlertDialog.Footer>

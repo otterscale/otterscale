@@ -25,23 +25,24 @@
 	import type { Image, User_Key } from '$gen/api/storage/v1/storage_pb';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import Actions from './actions.svelte';
+	import type { User } from '$gen/api/storage/v1/storage_pb';
 
 	let {
 		selectedScope,
 		selectedFacility,
-		image,
+		user,
 		data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
-		image: Image;
-		data: Writable<Image[]>;
+		user: User;
+		data: Writable<User[]>;
 	} = $props();
 
-	let subdata = $state(image.snapshots);
+	let subdata = $state(user.keys);
 	$effect(() => {
-		image;
-		subdata = image.snapshots;
+		user;
+		subdata = user.keys;
 	});
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
@@ -122,11 +123,11 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<FuzzyFilter columnId="name" {table} />
+			<FuzzyFilter columnId="access" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} {image} bind:data />
+			<Create {selectedScope} {selectedFacility} {user} bind:data />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -160,8 +161,8 @@
 							<Actions
 								{selectedScope}
 								{selectedFacility}
-								{image}
-								snapshot={row.original}
+								{user}
+								key={row.original}
 								bind:data
 							/>
 						</Table.Cell>

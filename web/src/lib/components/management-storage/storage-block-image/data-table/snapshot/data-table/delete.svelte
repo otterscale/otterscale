@@ -1,9 +1,5 @@
 <script lang="ts" module>
-	import type {
-		DeleteImageSnapshotRequest,
-		Image,
-		Image_Snapshot
-	} from '$gen/api/storage/v1/storage_pb';
+	import type { DeleteImageSnapshotRequest, Image, User_Key } from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
@@ -27,7 +23,7 @@
 		selectedScope: string;
 		selectedFacility: string;
 		image: Image;
-		snapshot: Image_Snapshot;
+		snapshot: User_Key;
 		data: Writable<Image[]>;
 	} = $props();
 

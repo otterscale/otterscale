@@ -1,32 +1,35 @@
 <script lang="ts" module>
-	import type { CreateUserRequest, User } from '$gen/api/storage/v1/storage_pb';
+	import type { Bucket, DeleteBucketRequest } from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { buttonVariants } from '$lib/components/ui/button';
-	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { type Writable } from 'svelte/store';
-	import { USER_SUSPENDED_HELP_TEXT } from './helper';
+	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
 	let {
 		selectedScope,
 		selectedFacility,
+		bucket,
 		data = $bindable()
-	}: { selectedScope: string; selectedFacility: string; data: Writable<User[]> } = $props();
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		bucket: Bucket;
+		data: Writable<Bucket[]>;
+	} = $props();
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
-		facilityName: selectedFacility,
-		suspended: true
-	} as CreateUserRequest;
+		facilityName: selectedFacility
+	} as DeleteBucketRequest;
+
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -39,36 +42,26 @@
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<div class="flex justify-end">
-		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
-			<div class="flex items-center gap-1">
-				<Icon icon="ph:plus" />
-				Create
-			</div>
-		</AlertDialog.Trigger>
-	</div>
+	<AlertDialog.Trigger class="text-destructive flex h-full w-full items-center gap-2">
+		<Icon icon="ph:trash" />
+		Delete
+	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create User
+			Delete Bucket
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>ID</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.userId} />
-				</Form.Field>
-
-				<Form.Field>
-					<Form.Label for="filesystem-placement">Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.userName} />
-				</Form.Field>
-
-				<Form.Field>
-					<Form.Label for="filesystem-placement">Suspended</Form.Label>
-					<SingleInput.Boolean required bind:value={request.suspended} />
+					<SingleInput.DeletionConfirm
+						required
+						id="filesystem-delete"
+						target={bucket.name}
+						bind:value={request.bucketName}
+					/>
 				</Form.Field>
 				<Form.Help>
-					{USER_SUSPENDED_HELP_TEXT}
+					Please type the bucket name exactly to confirm deletion. This action cannot be undone.
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
@@ -79,24 +72,24 @@
 					onclick={() => {
 						stateController.close();
 						storageClient
-							.createUser(request)
+							.deleteBucket(request)
 							.then((r) => {
-								toast.success(`Create ${r.name}`);
+								toast.success(`Delete ${request.bucketName}`);
 								storageClient
-									.listUsers({ scopeUuid: selectedScope, facilityName: selectedFacility })
+									.listBuckets({ scopeUuid: selectedScope, facilityName: selectedFacility })
 									.then((r) => {
-										data.set(r.users);
+										data.set(r.buckets);
 									});
 							})
 							.catch((e) => {
-								toast.error(`Fail to create user: ${e.toString()}`);
+								toast.error(`Fail to delete bucket: ${e.toString()}`);
 							})
 							.finally(() => {
 								reset();
 							});
 					}}
 				>
-					Create
+					Delete
 				</AlertDialog.Action>
 			</AlertDialog.ActionsGroup>
 		</AlertDialog.Footer>

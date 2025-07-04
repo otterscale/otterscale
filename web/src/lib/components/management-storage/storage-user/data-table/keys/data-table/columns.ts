@@ -17,21 +17,12 @@ const columns: ColumnDef<User_Key>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "name",
+        accessorKey: "access",
         header: ({ column }) => {
-            return renderSnippet(headers.name, column)
+            return renderSnippet(headers.access, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.name, row);
-        },
-    },
-    {
-        accessorKey: "protect",
-        header: ({ column }) => {
-            return renderSnippet(headers.protect, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.protect, row);
+            return renderSnippet(cells.access, row);
         },
     },
 ];

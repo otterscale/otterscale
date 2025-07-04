@@ -1,77 +1,76 @@
-<script lang="ts" module>
-	import type { Bucket, CreateBucketRequest } from '$gen/api/storage/v1/storage_pb';
+<script lang="ts">
+	import type { Bucket, Bucket_Grant, UpdateBucketRequest } from '$gen/api/storage/v1/storage_pb';
 	import { Bucket_ACL, StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
+	import { accessControlListOptions } from './create.svelte';
 
-	export const accessControlListOptions = writable([
-		{
-			value: Bucket_ACL.PRIVATE,
-			label: 'PRIVATE',
-			icon: 'ph:user'
-		},
-		{
-			value: Bucket_ACL.PUBLIC_READ,
-			label: 'PUBLIC_READ',
-			icon: 'ph:user'
-		},
-		{
-			value: Bucket_ACL.PUBLIC_READ_WRITE,
-			label: 'PUBLIC_READ_WRITE',
-			icon: 'ph:user'
-		},
-		{
-			value: Bucket_ACL.AUTHENTICATED_READ,
-			label: 'AUTHENTICATED_READ',
-			icon: 'ph:user'
+	function getAccessControlList(grants: Bucket_Grant[]): Bucket_ACL {
+		if (grants.some((grant) => grant.uri.includes('AuthenticatedUsers'))) {
+			return Bucket_ACL.AUTHENTICATED_READ;
 		}
-	]);
-</script>
 
-<script lang="ts">
+		if (
+			grants.some((grant) => grant.uri.includes('AllUsers')) &&
+			grants.some((grant) => grant.permission.includes('WRITE'))
+		) {
+			return Bucket_ACL.PUBLIC_READ_WRITE;
+		}
+
+		if (grants.some((grant) => grant.uri.includes('AllUsers'))) {
+			return Bucket_ACL.PUBLIC_READ_WRITE;
+		}
+
+		return Bucket_ACL.PRIVATE;
+	}
+
 	let {
 		selectedScope,
 		selectedFacility,
+		bucket,
 		data = $bindable()
-	}: { selectedScope: string; selectedFacility: string; data: Writable<Bucket[]> } = $props();
+	}: {
+		selectedScope: string;
+		selectedFacility: string;
+		bucket: Bucket;
+		data: Writable<Bucket[]>;
+	} = $props();
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
-		facilityName: selectedFacility
-	} as CreateBucketRequest;
+		facilityName: selectedFacility,
+		bucketName: bucket.name,
+		owner: bucket.owner,
+		policy: bucket.policy,
+		acl: getAccessControlList(bucket.grants)
+	} as UpdateBucketRequest;
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
 	}
 
 	const stateController = new DialogStateController(false);
-
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<div class="flex justify-end">
-		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
-			<div class="flex items-center gap-1">
-				<Icon icon="ph:plus" />
-				Create
-			</div>
-		</AlertDialog.Trigger>
-	</div>
+	<AlertDialog.Trigger class={cn('flex h-full w-full items-center gap-2')}>
+		<Icon icon="ph:pencil" />
+		Edit
+	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create Bucket
+			Edit Bucket
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
@@ -129,9 +128,9 @@
 					onclick={() => {
 						stateController.close();
 						storageClient
-							.createBucket(request)
+							.updateBucket(request)
 							.then((r) => {
-								toast.success(`Create ${r.name}`);
+								toast.success(`Update ${r.name}`);
 								storageClient
 									.listBuckets({ scopeUuid: selectedScope, facilityName: selectedFacility })
 									.then((r) => {
@@ -139,7 +138,7 @@
 									});
 							})
 							.catch((e) => {
-								toast.error(`Fail to create bucket: ${e.toString()}`);
+								toast.error(`Fail to update bucket: ${e.toString()}`);
 							})
 							.finally(() => {
 								reset();

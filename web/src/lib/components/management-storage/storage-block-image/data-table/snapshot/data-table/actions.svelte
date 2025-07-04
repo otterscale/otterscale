@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Image, Image_Snapshot } from '$gen/api/storage/v1/storage_pb';
+	import type { Image, User_Key } from '$gen/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Writable } from 'svelte/store';
 	import Delete from './delete.svelte';
@@ -17,7 +17,7 @@
 		selectedScope: string;
 		selectedFacility: string;
 		image: Image;
-		snapshot: Image_Snapshot;
+		snapshot: User_Key;
 		data: Writable<Image[]>;
 	} = $props();
 </script>

@@ -3,16 +3,14 @@
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
 	import type { Table, Column } from '@tanstack/table-core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import type { Bucket } from './types';
+	import type { Bucket } from '$gen/api/storage/v1/storage_pb';
 
 	export const headers = {
 		_row_picker: _row_picker,
 		name: name,
 		owner: owner,
-		usedCapacity: usedCapacity,
-		capacityLimit: capacityLimit,
-		objects: objects,
-		objectLimit: objectLimit
+		usage: usage,
+		createTime: createTime
 	};
 </script>
 
@@ -25,6 +23,7 @@
 		aria-label="Select all"
 	/>
 {/snippet}
+
 {#snippet name(column: Column<Bucket>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>BUCKET NAME</Layout.HeaderViewer>
@@ -43,38 +42,16 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet usedCapacity(column: Column<Bucket>)}
+{#snippet usage(column: Column<Bucket>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>USED CAPACITY</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
+		<Layout.HeaderViewer class="w-full">
+			<p class="text-end">USAGE</p>
+		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet capacityLimit(column: Column<Bucket>)}
+{#snippet createTime(row: Column<Bucket>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>CAPACITY LIMIT</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet objects(column: Column<Bucket>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>OBJECTS</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
-{#snippet objectLimit(column: Column<Bucket>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>OBJECT LIMIT</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
+		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

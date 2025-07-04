@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type {
 		Image,
-		Image_Snapshot,
+		User_Key,
 		ProtectImageSnapshotRequest
 	} from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
@@ -23,7 +23,7 @@
 		selectedScope: string;
 		selectedFacility: string;
 		image: Image;
-		snapshot: Image_Snapshot;
+		snapshot: User_Key;
 		data: Writable<Image[]>;
 	} = $props();
 

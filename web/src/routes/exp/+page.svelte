@@ -59,22 +59,11 @@
 		</SingleSelect.Options>
 	</SingleSelect.Content>
 </SingleSelect.Root> -->
-
+<!-- 
 <script lang="ts">
-	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import { Tabs } from '$lib/components/custom/tabs';
-	import Progress from '$lib/components/ui/progress/progress.svelte';
-	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-
 	import * as MultipleStepModal from './mutiple-step-modal';
 
-	let step = $state(1);
-
 	let open = $state(false);
-	function close() {
-		open = false;
-	}
 </script>
 
 <MultipleStepModal.Root bind:open steps={3}>
@@ -102,4 +91,4 @@
 			</MultipleStepModal.Controllers>
 		</MultipleStepModal.Footer>
 	</MultipleStepModal.Content>
-</MultipleStepModal.Root>
+</MultipleStepModal.Root> -->
