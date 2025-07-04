@@ -160,32 +160,24 @@ func (uc *StorageUseCase) CreatePool(ctx context.Context, uuid, facility, pool, 
 		return nil, err
 	}
 	if err := uc.cluster.CreatePool(ctx, config, pool, poolType); err != nil {
-		fmt.Println("CreatePool failed")
 		return nil, err
 	}
 	if poolType == "erasure" && ecOverwrites {
 		if err := uc.cluster.SetParameter(ctx, config, pool, "allow_ec_overwrites", "true"); err != nil {
-			fmt.Println("SetParameter failed")
-
 			return nil, err
 		}
 	}
 	if poolType == "replicated" && replicatedSize > 1 {
 		if err := uc.cluster.SetParameter(ctx, config, pool, "size", strconv.FormatUint(replicatedSize, 10)); err != nil {
-			fmt.Println("replicated failed")
-			fmt.Println(err.Error())
 			return nil, err
 		}
 	}
 	for _, app := range applications {
 		if err := uc.cluster.EnableApplication(ctx, config, pool, app); err != nil {
-			fmt.Println("enabled failed: ", app)
 			return nil, err
 		}
 	}
 	if err := uc.cluster.SetQuota(ctx, config, pool, quotaMaxBytes, quotaMaxObjects); err != nil {
-		fmt.Println("SetQuota failed")
-		fmt.Println(err.Error())
 		return nil, err
 	}
 	return &Pool{
