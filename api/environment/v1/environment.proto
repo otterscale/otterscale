@@ -50,6 +50,8 @@ message UpdateConfigRequest {
   string juju_cloud_name = 21;
   string juju_cloud_region = 22;
   string juju_charmhub_api_url = 23;
+  string micro_k8s_host = 31;
+  string micro_k8s_token = 32;
 }
 
 message UpdateConfigHelmRepositoriesRequest {

@@ -1,0 +1,144 @@
+edition = "2023";
+
+package otterscale.bist.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/bist/v1;pb";
+
+service BISTService {
+  rpc ListTestResults(ListTestResultsRequest) returns (ListTestResultsResponse);
+  rpc CreateTestResult(CreateTestResultRequest) returns (TestResult);
+  rpc DeleteTestResult(DeleteTestResultRequest) returns (google.protobuf.Empty);
+  rpc ListBlocks(ListBlocksRequest) returns (ListBlocksResponse);
+  rpc ListS3S(ListS3sRequest) returns (ListS3sResponse);
+}
+
+message TestResult {
+  enum Type {
+    UNSPECIFIED = 0;
+    BLOCK = 1;
+    NFS = 2;
+    S3 = 3;
+  }
+  message FIO {
+    enum AccessMode {
+      READ = 0;
+      WRITE = 1;
+      TRIM = 2;
+      READ_WRITE = 3;
+      TRIM_WRITE = 4;
+      RAND_READ = 5;
+      RAND_WRITE = 6;
+      RAND_TRIM = 7;
+      RAND_RW = 8;
+      RAND_TRIM_WRITE = 9;
+    }
+    AccessMode access_mode = 1;
+    string scope_uuid = 11;     // block
+    string facility_name = 12;  // block
+    string nfs_endpoint = 21;
+    string nfs_path = 22;
+    uint64 job_count = 31;   // 1.13.3 Job description
+    string run_time = 41;    // 1.13.4 Time related parameters
+    string block_size = 71;  // 1.13.7 Block size
+    string file_size = 91;   // 1.13.9 I/O size
+    uint64 io_depth = 121;   // 1.13.12 I/O depth
+  }
+  message Warp {
+    enum Operation {
+      GET = 0;
+      PUT = 1;
+      DELETE = 2;
+      LIST = 3;
+      STAT = 4;
+      MIXED = 5;
+    }
+    Operation operation = 1;
+    string endpoint = 11;
+    string access_key = 12;
+    string secret_key = 13;
+    string duration = 21;
+    string object_size = 31;
+    string object_num = 32;
+  }
+  TestResult.Type type = 1;
+  string name = 2;
+  string status = 3;
+  string start_time = 4;
+  string complete_time = 5;
+  repeated string logs = 6;
+  string args = 7;
+  oneof input {
+    TestResult.FIO fio = 11;
+    TestResult.Warp warp = 12;
+  }
+  // ADD
+  // string bw = 1;
+  // string bw_bytes = 1;
+  // string bw_mean = 1;
+  // string bw_dev = 1;
+  // string iops = 1;
+  // string iops_mean = 1;
+  // string iops_stddev = 1;
+  // string lat_ns_mean = 1;
+  // string stddev = 1;
+  // string percentile = 1;
+  // string io_bytes = 1;
+  // string total_ios = 1;
+  // string job_runtime = 1;
+  // string elapsed = 1;
+  // string usr_cpu = 1;
+  // string sys_cpu = 1;
+  // string io_depth_level = 1;
+  // string error = 1;
+}
+
+message Block {
+  string facility_name = 1;
+  string storage_class_name = 2;
+}
+
+message S3 {
+  enum Type {
+    UNSPECIFIED = 0;
+    CEPH_RADOS_GATEWAY = 1;
+    MINIO = 2;
+  }
+  Type type = 1;
+  string name = 2;
+  string endpoint = 3;
+}
+
+message ListTestResultsRequest {}
+
+message ListTestResultsResponse {
+  repeated TestResult test_results = 1;
+}
+
+message CreateTestResultRequest {
+  TestResult.Type type = 1;
+  string name = 2;
+  oneof input {
+    TestResult.FIO fio = 11;
+    TestResult.Warp warp = 12;
+  }
+}
+
+message DeleteTestResultRequest {
+  string name = 1;
+}
+
+message ListBlocksRequest {}
+
+message ListBlocksResponse {
+  repeated Block blocks = 1;
+}
+
+message ListS3sRequest {
+  string scope_uuid = 1;
+}
+
+message ListS3sResponse {
+  repeated S3 s3s = 1;
+}

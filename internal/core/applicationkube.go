@@ -9,6 +9,7 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	appsv1 "k8s.io/api/apps/v1"
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
@@ -23,7 +24,11 @@ type (
 	DaemonSet   = appsv1.DaemonSet
 )
 
+type Job = batchv1.Job
+
 type (
+	Namespace             = corev1.Namespace
+	ConfigMap             = corev1.ConfigMap
 	Container             = corev1.Container
 	Service               = corev1.Service
 	Pod                   = corev1.Pod
@@ -59,22 +64,53 @@ type ControlPlaneCredential struct {
 }
 
 type KubeAppsRepo interface {
+	// Deployment
 	ListDeployments(ctx context.Context, config *rest.Config, namespace string) ([]Deployment, error)
 	GetDeployment(ctx context.Context, config *rest.Config, namespace, name string) (*Deployment, error)
+
+	// StatefulSet
 	ListStatefulSets(ctx context.Context, config *rest.Config, namespace string) ([]StatefulSet, error)
 	GetStatefulSet(ctx context.Context, config *rest.Config, namespace, name string) (*StatefulSet, error)
+
+	// DaemonSet
 	ListDaemonSets(ctx context.Context, config *rest.Config, namespace string) ([]DaemonSet, error)
 	GetDaemonSet(ctx context.Context, config *rest.Config, namespace, name string) (*DaemonSet, error)
 }
 
+type KubeBatchRepo interface {
+	// Job
+	ListJobsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Job, error)
+	CreateJob(ctx context.Context, config *rest.Config, job *Job) (*Job, error)
+	DeleteJob(ctx context.Context, config *rest.Config, namespace, name string) error
+}
+
 type KubeCoreRepo interface {
+	// Service
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
+	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error)
+
+	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
+	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
+	GetPodLogs(ctx context.Context, pod Pod, config *rest.Config, namespace string) (string, error)
+
+	// PersistentVolumeClaim
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
+
+	// Namespace
+	GetNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
+	CreateNamespace(ctx context.Context, config *rest.Config, ns *Namespace) (*Namespace, error)
+
+	// ConfigMap
+	GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*ConfigMap, error)
+	CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, cm *ConfigMap) (*ConfigMap, error)
+	DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
 type KubeStorageRepo interface {
+	// StorageClass
 	ListStorageClasses(ctx context.Context, config *rest.Config) ([]StorageClass, error)
+	ListStorageClassesByLabel(ctx context.Context, config *rest.Config, label string) ([]StorageClass, error)
 	GetStorageClass(ctx context.Context, config *rest.Config, name string) (*StorageClass, error)
 }
 

@@ -24,6 +24,9 @@ go.work.sum
 # Mac
 .DS_Store
 
+# vscode
+.vscode
+
 # Temp folder
 tmp
 

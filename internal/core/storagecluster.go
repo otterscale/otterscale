@@ -167,7 +167,7 @@ func (uc *StorageUseCase) CreatePool(ctx context.Context, uuid, facility, pool, 
 			return nil, err
 		}
 	}
-	if poolType == "replicated" && replicatedSize > 0 {
+	if poolType == "replicated" && replicatedSize > 1 {
 		if err := uc.cluster.SetParameter(ctx, config, pool, "size", strconv.FormatUint(replicatedSize, 10)); err != nil {
 			return nil, err
 		}

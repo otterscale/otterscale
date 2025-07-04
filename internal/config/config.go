@@ -29,6 +29,11 @@ type Juju struct {
 	CharmhubAPIURL      string   `yaml:"charmhub_api_url"`
 }
 
+type MicroK8s struct {
+	Host  string `yaml:"host"`
+	Token string `yaml:"token"`
+}
+
 type Kube struct {
 	HelmRepositoryURLs []string `yaml:"helm_repository_urls"`
 }
@@ -38,8 +43,12 @@ type Ceph struct {
 }
 
 type Config struct {
-	MAAS MAAS `yaml:"maas"`
-	Juju Juju `yaml:"juju"`
+	// System
+	MAAS     MAAS     `yaml:"maas"`
+	Juju     Juju     `yaml:"juju"`
+	MicroK8s MicroK8s `yaml:"micro_k8s"`
+
+	// User
 	Kube Kube `yaml:"kube"`
 	Ceph Ceph `yaml:"ceph"`
 
