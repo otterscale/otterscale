@@ -112,7 +112,7 @@
 {/snippet}
 
 {#snippet readBytes(row: Row<OSD>)}
-	<div class="h-[50px] w-[100px]">
+	<div class="flex h-[50px] w-[100px]">
 		<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
 	</div>
 {/snippet}

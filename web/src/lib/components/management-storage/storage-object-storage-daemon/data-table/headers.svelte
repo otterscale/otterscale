@@ -51,27 +51,18 @@
 {#snippet stateIn(column: Column<OSD>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>IN</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
 {#snippet stateUp(column: Column<OSD>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>UP</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
 {#snippet exists(column: Column<OSD>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>EXISTS</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
@@ -89,7 +80,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>PLACEMENT GROUP COUNT</Layout.HeaderViewer>
+		<Layout.HeaderViewer>PLACEMENT GROUP</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

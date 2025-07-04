@@ -20,11 +20,19 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { type Writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import { columns } from './columns';
 	import Statistics from './statistics.svelte';
+	import Actions from './actions.svelte';
 
-	let { data = $bindable() }: { data: Writable<OSD[]> } = $props();
+	let {
+		selectedScope,
+		selectedFacility,
+		objectStorageDaemons
+	}: { selectedScope: string; selectedFacility: string; objectStorageDaemons: OSD[] } = $props();
+
+	let data = $state(writable(objectStorageDaemons));
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -122,6 +130,7 @@
 								{/if}
 							</Table.Head>
 						{/each}
+						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -133,6 +142,9 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
+						<Table.Cell>
+							<Actions osd={row.original} />
+						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Table.Row>

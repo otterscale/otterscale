@@ -20,12 +20,15 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { type Writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import { columns } from './columns';
 	import Statistics from './statistics.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 
-	let { data = $bindable() }: { data: Writable<MON[]> } = $props();
+	let { monitors }: { monitors: MON[] } = $props();
+
+	let data = $state(writable(monitors));
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
