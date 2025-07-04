@@ -44,12 +44,10 @@ func (r *batch) ListJobs(ctx context.Context, config *rest.Config, namespace str
 	}
 
 	opts := metav1.ListOptions{}
-
 	JobList, err := clientset.BatchV1().Jobs(namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
-
 	return JobList.Items, nil
 }
 
