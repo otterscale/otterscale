@@ -19,6 +19,10 @@ class OptionManager {
         return this.options.find((option) => (JSON.stringify(option.value) === JSON.stringify(this.valueGetter()))) ?? {} as OptionType
     }
 
+    isOptionSelected(option: OptionType): boolean {
+        return JSON.stringify(option.value) === JSON.stringify(this.valueGetter())
+    }
+
     handleSelect(option: OptionType) {
         this.valueSetter(option.value);
     }

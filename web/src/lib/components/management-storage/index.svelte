@@ -13,7 +13,7 @@
 	import { User } from './storage-user';
 </script>
 
-<LayeredTabs.Root value="subvolume">
+<LayeredTabs.Root value="volume">
 	<LayeredTabs.Menubar>
 		<LayeredTabs.Menu>
 			<LayeredTabs.Trigger>
