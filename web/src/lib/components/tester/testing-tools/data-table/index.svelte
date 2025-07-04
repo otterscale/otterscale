@@ -1,4 +1,5 @@
 <script lang="ts" generics="TData, TValue">
+	import { type TestResult } from '$gen/api/bist/v1/bist_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
@@ -17,18 +18,20 @@
 	} from '@tanstack/table-core';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	import { data } from './data';
 	import Statistics from './statistics.svelte';
 	
+	let { testResults } : { testResults: TestResult[] } = $props();
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
 
+	console.log(testResults);
+
 	const table = createSvelteTable({
 		get data() {
-			return data;
+			return testResults;
 		},
 
 		columns,

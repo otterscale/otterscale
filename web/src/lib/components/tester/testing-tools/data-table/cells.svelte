@@ -1,23 +1,18 @@
 <script lang="ts" module>
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Row } from '@tanstack/table-core';
-	import { type FlexibleIOTest } from './types';
 	import { formatTimeAgo } from '$lib/formatter';
+	import { TestResult_Type, type TestResult } from '$gen/api/bist/v1/bist_pb'
 
 	export const cells = {
 		_row_picker: _row_picker,
+		type: type,
 		name: name,
-		rwMode: rwMode,
-		fileSize: fileSize,
-		numberJobs: numberJobs,
-		blockSize: blockSize,
-		runtime: runtime,
-		createTime: createTime,
-		modifyTime: modifyTime,
+		input: input,
 	};
 </script>
 
-{#snippet _row_picker(row: Row<FlexibleIOTest>)}
+{#snippet _row_picker(row: Row<TestResult>)}
 	<Checkbox
 		checked={row.getIsSelected()}
 		onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -26,51 +21,26 @@
 	/>
 {/snippet}
 
-{#snippet name(row: Row<FlexibleIOTest>)}
+{#snippet type(row: Row<TestResult>)}
+	<p>
+		{TestResult_Type[row.original.type]}
+	</p>
+{/snippet}
+
+{#snippet name(row: Row<TestResult>)}
 	<p>
 		{row.original.name}
 	</p>
 {/snippet}
 
-{#snippet rwMode(row: Row<FlexibleIOTest>)}
+{#snippet input(row: Row<TestResult>)}
 	<p>
-		{row.original.rwMode}
+		{row.original.input.case}
 	</p>
 {/snippet}
 
-
-{#snippet fileSize(row: Row<FlexibleIOTest>)}
+<!-- {#snippet startTime(row: Row<TestResult>)}
 	<p>
-		{row.original.fileSize}
+		{formatTimeAgo(row.original.startTime)}
 	</p>
-{/snippet}
-
-{#snippet numberJobs(row: Row<FlexibleIOTest>)}
-	<p>
-		{row.original.numberJobs}
-	</p>
-{/snippet}
-
-{#snippet blockSize(row: Row<FlexibleIOTest>)}
-	<p>
-		{row.original.blockSize}
-	</p>
-{/snippet}
-
-{#snippet runtime(row: Row<FlexibleIOTest>)}
-	<p>
-		{row.original.runtime}
-	</p>
-{/snippet}
-
-{#snippet createTime(row: Row<FlexibleIOTest>)}
-	<p>
-		{formatTimeAgo(row.original.createTime)}
-	</p>
-{/snippet}
-
-{#snippet modifyTime(row: Row<FlexibleIOTest>)}
-	<p>
-		{formatTimeAgo(row.original.modifyTime)}
-	</p>
-{/snippet}
+{/snippet} -->
