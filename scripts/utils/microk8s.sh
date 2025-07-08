@@ -21,11 +21,11 @@ enable_microk8s_option() {
         chown "$username":"$username" "$kubefolder/config"
 
         log "INFO" "Enable microk8s dns."
-        microk8s enable dns >>"$TEMP_LOG" 2>&1;
+        microk8s enable dns >>"$TEMP_LOG" 2>&1
         log "INFO" "Enable microk8s hostpath-storage."
-        microk8s enable hostpath-storage >>"$TEMP_LOG" 2>&1;
+        microk8s enable hostpath-storage >>"$TEMP_LOG" 2>&1
         log "INFO" "Enable microk8s metallb."
-	microk8s enable metallb:$IPADDR-$IPADDR >>"$TEMP_LOG" 2>&1;
+        microk8s enable metallb:$IPADDR-$IPADDR >>"$TEMP_LOG" 2>&1
     fi
 }
 
