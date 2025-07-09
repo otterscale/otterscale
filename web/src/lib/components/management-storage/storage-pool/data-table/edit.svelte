@@ -1,18 +1,19 @@
-<script lang="ts">
+<script lang="ts" module>
 	import type { Pool, UpdatePoolRequest } from '$gen/api/storage/v1/storage_pb';
+	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { cn } from '$lib/utils';
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import type { Writable } from 'svelte/store';
 	import { QUOTAS_BYTES_HELP_TEXT, QUOTAS_OBJECTS_HELP_TEXT } from './helper';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
-	import { StorageService } from '$gen/api/storage/v1/storage_pb';
+</script>
 
+<script lang="ts">
 	let {
 		selectedScope,
 		selectedFacility,
@@ -44,14 +45,12 @@
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<AlertDialog.Trigger class={cn('flex h-full w-full items-center gap-2')}>
+	<AlertDialog.Trigger class="flex h-full w-full items-center gap-2">
 		<Icon icon="ph:pencil" />
 		Edit
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Update Pool
-		</AlertDialog.Header>
+		<AlertDialog.Header>Update Pool</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

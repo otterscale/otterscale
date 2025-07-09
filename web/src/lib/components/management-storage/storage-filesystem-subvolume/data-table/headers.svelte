@@ -82,9 +82,9 @@
 {/snippet}
 
 {#snippet snapshot()}
-	<Layout.Header>
-		<Layout.HeaderViewer class="w-full">
-			<p class="text-end">SNAPSHOT</p>
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>
+			SNAPSHOT
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

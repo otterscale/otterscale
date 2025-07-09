@@ -42,6 +42,7 @@ const columns: ColumnDef<User>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.suspended, row);
         },
+        filterFn: 'equals',
     },
 ];
 

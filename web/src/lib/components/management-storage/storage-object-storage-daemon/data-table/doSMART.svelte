@@ -4,6 +4,7 @@
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
+	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
@@ -11,8 +12,6 @@
 </script>
 
 <script lang="ts">
-	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
-
 	let { osd }: { osd: OSD } = $props();
 
 	const transport: Transport = getContext('transport');

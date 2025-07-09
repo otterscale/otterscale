@@ -1,10 +1,12 @@
-<script lang="ts" generics="TData">
+<script lang="ts" module>
 	import * as Command from '$lib/components/ui/command/index.js';
+	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
-	import { cn } from '$lib/utils';
 	import { capitalizeFirstLetter } from 'better-auth';
+</script>
 
+<script lang="ts" generics="TData">
 	let { table, columnId, alias }: { table: Table<TData>; columnId: string; alias?: string } =
 		$props();
 

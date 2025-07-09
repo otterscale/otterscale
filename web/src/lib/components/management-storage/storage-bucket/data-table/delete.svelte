@@ -47,9 +47,7 @@
 		Delete
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Delete Bucket
-		</AlertDialog.Header>
+		<AlertDialog.Header>Delete Bucket</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

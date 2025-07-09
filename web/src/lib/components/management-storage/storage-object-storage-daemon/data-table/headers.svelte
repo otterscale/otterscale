@@ -94,13 +94,13 @@
 {/snippet}
 
 {#snippet readBytes(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-center">
 		<Layout.HeaderViewer>READ</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet writeBytes(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-center">
 		<Layout.HeaderViewer>WRITE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

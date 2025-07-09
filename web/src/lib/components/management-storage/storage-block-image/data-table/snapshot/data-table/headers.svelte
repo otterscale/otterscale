@@ -1,9 +1,9 @@
 <script lang="ts" module>
+	import type { Image_Snapshot } from '$gen/api/storage/v1/storage_pb';
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
-	import type { User_Key } from '$gen/api/storage/v1/storage_pb';
 
 	export const headers = {
 		_row_picker: _row_picker,
@@ -12,7 +12,7 @@
 	};
 </script>
 
-{#snippet _row_picker(table: Table<User_Key>)}
+{#snippet _row_picker(table: Table<Image_Snapshot>)}
 	<Checkbox
 		checked={table.getIsAllPageRowsSelected()}
 		indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
@@ -22,7 +22,7 @@
 	/>
 {/snippet}
 
-{#snippet name(column: Column<User_Key>)}
+{#snippet name(column: Column<Image_Snapshot>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
@@ -31,7 +31,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet protect(column: Column<User_Key>)}
+{#snippet protect(column: Column<Image_Snapshot>)}
 	<Layout.Header>
 		<Layout.HeaderController>
 			<Sorter {column} />

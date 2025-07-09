@@ -1,5 +1,9 @@
 <script lang="ts" module>
-	import type { DeleteImageSnapshotRequest, Image, User_Key } from '$gen/api/storage/v1/storage_pb';
+	import type {
+		DeleteImageSnapshotRequest,
+		Image,
+		Image_Snapshot
+	} from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
@@ -23,7 +27,7 @@
 		selectedScope: string;
 		selectedFacility: string;
 		image: Image;
-		snapshot: User_Key;
+		snapshot: Image_Snapshot;
 		data: Writable<Image[]>;
 	} = $props();
 
@@ -51,9 +55,7 @@
 		Delete
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Delete RADOS Block Device Snapshot
-		</AlertDialog.Header>
+		<AlertDialog.Header>Delete RADOS Block Device Snapshot</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Help>
@@ -62,7 +64,6 @@
 				<Form.Field>
 					<SingleInput.DeletionConfirm
 						required
-						id="rados-block-device-snapshot-delete"
 						target={snapshot.name}
 						bind:value={request.snapshotName}
 					/>

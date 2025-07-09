@@ -1,9 +1,11 @@
-<script lang="ts">
+<script lang="ts" module>
 	import type { Subvolume, Subvolume_Snapshot } from '$gen/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Writable } from 'svelte/store';
 	import Delete from './delete.svelte';
+</script>
 
+<script lang="ts">
 	let {
 		selectedScope,
 		selectedFacility,

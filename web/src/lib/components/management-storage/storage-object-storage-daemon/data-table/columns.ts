@@ -1,7 +1,6 @@
 import type { OSD } from "$gen/api/storage/v1/storage_pb";
-import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/index.js";
+import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
-import DataTableActions from './actions.svelte';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
@@ -27,7 +26,7 @@ const columns: ColumnDef<OSD>[] = [
         },
     },
     {
-        accessorKey: "stateUp",
+        accessorKey: "up",
         header: ({ column }) => {
             return renderSnippet(headers.stateUp, column)
         },
@@ -36,7 +35,7 @@ const columns: ColumnDef<OSD>[] = [
         },
     },
     {
-        accessorKey: "stateIn",
+        accessorKey: "in",
         header: ({ column }) => {
             return renderSnippet(headers.stateIn, column)
         },
@@ -52,6 +51,7 @@ const columns: ColumnDef<OSD>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.exists, row);
         },
+        filterFn: 'equals',
     },
     {
         accessorKey: "deviceClass",
@@ -61,6 +61,7 @@ const columns: ColumnDef<OSD>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.deviceClass, row);
         },
+        filterFn: 'arrIncludesSome',
     },
     {
         accessorKey: "placementGroupCount",

@@ -1,16 +1,16 @@
 <script lang="ts" module>
 	import type { Image, UpdateImageRequest } from '$gen/api/storage/v1/storage_pb';
+	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import type { Writable } from 'svelte/store';
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
-	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import { toast } from 'svelte-sonner';
+	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -51,9 +51,7 @@
 		Edit
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Updatge RADOS Block Device
-		</AlertDialog.Header>
+		<AlertDialog.Header>Updatge RADOS Block Device</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Legend>Quotas</Form.Legend>

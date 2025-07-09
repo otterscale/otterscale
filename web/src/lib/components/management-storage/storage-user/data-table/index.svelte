@@ -1,7 +1,9 @@
-<script lang="ts" generics="TData, TValue">
+<script lang="ts" module>
 	import type { User } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
+	import BooleanFilter from '$lib/components/custom/data-table/data-table-filters/boolean-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -22,10 +24,12 @@
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	import Statistics from './statistics.svelte';
 	import { headers } from './headers.svelte';
 	import { Key } from './keys/index';
+	import Statistics from './statistics.svelte';
+</script>
 
+<script lang="ts" generics="TData, TValue">
 	let {
 		selectedScope,
 		selectedFacility,
@@ -114,6 +118,7 @@
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="id" {table} />
 			<FuzzyFilter columnId="name" {table} />
+			<BooleanFilter columnId="suspended" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
@@ -122,7 +127,7 @@
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
-			<Table.Header class="bg-muted">
+			<Table.Header>
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
@@ -157,7 +162,9 @@
 					</Table.Row>
 				{:else}
 					<Table.Row>
-						<Table.Cell colspan={columns.length}>No results.</Table.Cell>
+						<Table.Cell colspan={columns.length}>
+							<TableEmpty />
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>

@@ -54,9 +54,7 @@
 		</AlertDialog.Trigger>
 	</div>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create RADOS Block Device Snapshot
-		</AlertDialog.Header>
+		<AlertDialog.Header>Create RADOS Block Device Snapshot</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

@@ -4,15 +4,14 @@
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -42,37 +41,6 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
-
-	const poolOptions: Writable<SingleSelect.OptionType[]> = writable([]);
-	let isPoolsLoading = $state(true);
-	async function fetchPools() {
-		try {
-			const response = await storageClient.listPools({
-				scopeUuid: selectedScope,
-				facilityName: selectedFacility
-			});
-
-			poolOptions.set(
-				response.pools.map((pool) => ({
-					value: pool.name,
-					label: pool.name,
-					icon: 'ph:cube'
-				}))
-			);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			isPoolsLoading = false;
-		}
-	}
-
-	onMount(async () => {
-		try {
-			await fetchPools();
-		} catch (error) {
-			console.error('Error during initial data load:', error);
-		}
-	});
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -85,9 +53,7 @@
 		</AlertDialog.Trigger>
 	</div>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create Subvolume Group
-		</AlertDialog.Header>
+		<AlertDialog.Header>Create Subvolume Group</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

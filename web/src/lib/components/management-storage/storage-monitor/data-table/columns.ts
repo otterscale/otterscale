@@ -1,8 +1,8 @@
-import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/index.js";
+import type { MON } from "$gen/api/storage/v1/storage_pb";
+import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import type { MON } from "$gen/api/storage/v1/storage_pb";
 
 const columns: ColumnDef<MON>[] = [
     {

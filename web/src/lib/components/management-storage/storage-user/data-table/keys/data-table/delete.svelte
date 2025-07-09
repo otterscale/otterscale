@@ -1,11 +1,5 @@
 <script lang="ts" module>
-	import type {
-		DeleteImageSnapshotRequest,
-		DeleteUserKeyRequest,
-		Image,
-		User,
-		User_Key
-	} from '$gen/api/storage/v1/storage_pb';
+	import type { DeleteUserKeyRequest, User, User_Key } from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
@@ -56,9 +50,7 @@
 		Delete
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Delete User Key
-		</AlertDialog.Header>
+		<AlertDialog.Header>Delete User Key</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Help>

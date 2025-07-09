@@ -1,9 +1,9 @@
 <script lang="ts" module>
+	import type { User } from '$gen/api/storage/v1/storage_pb';
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
-	import type { User } from '$gen/api/storage/v1/storage_pb';
 
 	export const headers = {
 		_row_picker: _row_picker,
@@ -49,9 +49,7 @@
 {/snippet}
 
 {#snippet keys()}
-	<Layout.Header>
-		<Layout.HeaderViewer class="w-full">
-			<p class="text-end">KEYS</p>
-		</Layout.HeaderViewer>
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>KEYS</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
