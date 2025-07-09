@@ -78,6 +78,25 @@ func (r *cluster) DoSMART(ctx context.Context, config *core.StorageConfig, who s
 	return outputs, nil
 }
 
+func (r *cluster) IsPoolExist(ctx context.Context, name string, config *core.StorageConfig) (bool, error) {
+	exist := false
+	conn, err := r.ceph.connection(config)
+	if err != nil {
+		return exist, err
+	}
+	osdDump, err := dumpOSD(conn)
+	if err != nil {
+		return exist, err
+	}
+	for i := range osdDump.Pools {
+		if name == osdDump.Pools[i].Name {
+			exist = true
+		}
+		break
+	}
+	return exist, nil
+}
+
 func (r *cluster) ListPools(ctx context.Context, config *core.StorageConfig) ([]core.Pool, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {

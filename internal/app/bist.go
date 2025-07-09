@@ -44,17 +44,19 @@ func (s *BISTService) CreateTestResult(ctx context.Context, req *connect.Request
 
 	if target == pb.TestResult_BLOCK {
 		// [TODO] if exist
-		_, err := s.suc.CreatePool(ctx, req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), "otterscale_pool", "replicated", false, 1, 0, 0, []string{"rbd"})
-		if err != nil {
-			return nil, err
-		}
-		_, err = s.suc.CreateImage(ctx, req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), "otterscale_pool", "otterscale_image", 4194304, 4194304, 1, 1073741824, true, true, true, true, true)
-		if err != nil {
-			return nil, err
+		if !s.suc.IsPoolExist(ctx, req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), "otterscale_pool") {
+			_, err := s.suc.CreatePool(ctx, req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), "otterscale_pool", "replicated", false, 1, 0, 0, []string{"rbd"})
+			if err != nil {
+				return nil, err
+			}
+			_, err = s.suc.CreateImage(ctx, req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), "otterscale_pool", "otterscale_image", 4194304, 4194304, 1, 1073741824, true, true, true, true, true)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
-	result, err := s.uc.CreateResult(ctx, strings.ToLower(target.String()), req.Msg.GetName(), toCoreFIO(req.Msg.GetFio()), toCoreWarp(req.Msg.GetWarp()))
+	result, err := s.uc.CreateResult(ctx, strings.ToLower(target.String()), req.Msg.GetName(), req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), toCoreFIO(req.Msg.GetFio()), toCoreWarp(req.Msg.GetWarp()))
 	if err != nil {
 		return nil, err
 	}
@@ -67,16 +69,6 @@ func (s *BISTService) DeleteTestResult(ctx context.Context, req *connect.Request
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
-}
-
-func (s *BISTService) ListBlocks(ctx context.Context, req *connect.Request[pb.ListBlocksRequest]) (*connect.Response[pb.ListBlocksResponse], error) {
-	blocks, err := s.uc.ListBlocks(ctx)
-	if err != nil {
-		return nil, err
-	}
-	resp := &pb.ListBlocksResponse{}
-	resp.SetBlocks(toProtoBlocks(blocks))
 	return connect.NewResponse(resp), nil
 }
 
@@ -117,6 +109,7 @@ func toCoreWarp(p *pb.TestResult_Warp) *core.BISTWarp {
 		SecretKey:  p.GetSecretKey(),
 		Duration:   p.GetDuration(),
 		ObjectSize: p.GetObjectSize(),
+		ObjectNum:  p.GetObjectNum(),
 	}
 }
 
@@ -133,9 +126,7 @@ func toProtoTestResult(r *core.BISTResult) *pb.TestResult {
 	ret := &pb.TestResult{}
 	ret.SetType(target)
 	ret.SetName(r.Name)
-
 	ret.SetStatus(r.Status)
-	ret.SetArgs(r.Args)
 	ret.SetLogs(r.Logs)
 	if r.StartTime != nil {
 		ret.SetStartTime(r.StartTime.String())
@@ -145,8 +136,14 @@ func toProtoTestResult(r *core.BISTResult) *pb.TestResult {
 	}
 	if target == pb.TestResult_S3 {
 		ret.SetWarp(toProtoTestResultWarp(r.Warp))
+		if r.CompleteTime != nil {
+			ret.SetWarpResult(toProtoWarpResult(r.WarpResult))
+		}
 	} else {
 		ret.SetFio(toProtoTestResultFIO(r.FIO))
+		if r.CompleteTime != nil {
+			ret.SetFioResult(toProtoFIOResult(r.FIOResult))
+		}
 	}
 	return ret
 }
@@ -172,21 +169,89 @@ func toProtoTestResultWarp(w *core.BISTWarp) *pb.TestResult_Warp {
 	ret.SetSecretKey(w.SecretKey)
 	ret.SetDuration(w.Duration)
 	ret.SetObjectSize(w.ObjectSize)
+	ret.SetObjectNum(w.ObjectNum)
 	return ret
 }
 
-func toProtoBlocks(bs []core.BISTBlock) []*pb.Block {
-	ret := []*pb.Block{}
-	for i := range bs {
-		ret = append(ret, toProtoBlock(&bs[i]))
+func toProtoWarpResult(wr *core.WarpResult) *pb.TestResult_WarpResult {
+	ret := &pb.TestResult_WarpResult{}
+	ret.SetWarpOps(toProtoWarpResultOps(wr.WarpOperations))
+	return ret
+}
+
+func toProtoWarpResultOps(wos []core.WarpOperation) []*pb.TestResult_WarpResult_WarpOps {
+	ret := []*pb.TestResult_WarpResult_WarpOps{}
+	for i := range wos {
+		ret = append(ret, toProtoWarpResultOp(&wos[i]))
 	}
 	return ret
 }
 
-func toProtoBlock(b *core.BISTBlock) *pb.Block {
-	ret := &pb.Block{}
-	ret.SetFacilityName(b.FacilityName)
-	ret.SetStorageClassName(b.StorageClassName)
+func toProtoWarpResultOp(wo *core.WarpOperation) *pb.TestResult_WarpResult_WarpOps {
+	ret := &pb.TestResult_WarpResult_WarpOps{}
+	ret.SetType(wo.Type)
+	ret.SetOps(float64(wo.Throughput.Ops))
+	ret.SetBytes(float64(wo.Throughput.Bytes))
+	ret.SetStartTime(wo.Throughput.StartTime.String())
+	ret.SetEndTime(wo.Throughput.EndTime.String())
+	ret.SetFastestBps(float64(wo.Throughput.Segmented.FastestBps))
+	ret.SetFastestOps(float64(wo.Throughput.Segmented.FastestOps))
+	ret.SetMedianBps(float64(wo.Throughput.Segmented.MedianBps))
+	ret.SetMedianOps(float64(wo.Throughput.Segmented.MedianOps))
+	ret.SetSlowestBps(float64(wo.Throughput.Segmented.SlowestBps))
+	ret.SetSlowestOps(float64(wo.Throughput.Segmented.SlowestOps))
+	return ret
+}
+
+func toProtoFIOResult(fr *core.FIOResult) *pb.TestResult_FIOResult {
+	ret := &pb.TestResult_FIOResult{}
+
+	ret.SetRead(toProtoFIOReadResult(fr))
+	ret.SetWrite(toProtoFIOWriteResult(fr))
+	ret.SetTrim(toProtoFIOTrimResult(fr))
+
+	return ret
+}
+
+func toProtoFIOReadResult(fr *core.FIOResult) *pb.TestResult_FIOResult_FIOValues {
+	ret := &pb.TestResult_FIOResult_FIOValues{}
+	ret.SetBw(uint64(fr.Jobs[0].Read.Bw))
+	ret.SetIoBytes(uint64(fr.Jobs[0].Read.IoBytes))
+	ret.SetIops(uint64(fr.Jobs[0].Read.Iops))
+	ret.SetRuntime(uint64(fr.Jobs[0].Read.Runtime))
+	ret.SetTotalIos(uint64(fr.Jobs[0].Read.TotalIos))
+	ret.SetLatency(toProtoFIOLatency(&fr.Jobs[0].Read.LatNs))
+
+	return ret
+}
+
+func toProtoFIOWriteResult(fr *core.FIOResult) *pb.TestResult_FIOResult_FIOValues {
+	ret := &pb.TestResult_FIOResult_FIOValues{}
+	ret.SetBw(uint64(fr.Jobs[0].Write.Bw))
+	ret.SetIoBytes(uint64(fr.Jobs[0].Write.IoBytes))
+	ret.SetIops(uint64(fr.Jobs[0].Write.Iops))
+	ret.SetRuntime(uint64(fr.Jobs[0].Write.Runtime))
+	ret.SetTotalIos(uint64(fr.Jobs[0].Write.TotalIos))
+	ret.SetLatency(toProtoFIOLatency(&fr.Jobs[0].Write.LatNs))
+	return ret
+}
+
+func toProtoFIOTrimResult(fr *core.FIOResult) *pb.TestResult_FIOResult_FIOValues {
+	ret := &pb.TestResult_FIOResult_FIOValues{}
+	ret.SetBw(uint64(fr.Jobs[0].Trim.Bw))
+	ret.SetIoBytes(uint64(fr.Jobs[0].Trim.IoBytes))
+	ret.SetIops(uint64(fr.Jobs[0].Trim.Iops))
+	ret.SetRuntime(uint64(fr.Jobs[0].Trim.Runtime))
+	ret.SetTotalIos(uint64(fr.Jobs[0].Trim.TotalIos))
+	ret.SetLatency(toProtoFIOLatency(&fr.Jobs[0].Trim.LatNs))
+	return ret
+}
+
+func toProtoFIOLatency(l *core.LatNs) *pb.TestResult_FIOResult_FIOValues_Latency {
+	ret := &pb.TestResult_FIOResult_FIOValues_Latency{}
+	ret.SetMin(uint64(l.Min))
+	ret.SetMax(uint64(l.Max))
+	ret.SetMean(float64(l.Mean))
 	return ret
 }
 
