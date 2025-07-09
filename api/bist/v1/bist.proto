@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.bist.v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/openhdc/otterscale/api/bist/v1;pb";
 
@@ -10,17 +11,38 @@ service BISTService {
   rpc ListTestResults(ListTestResultsRequest) returns (ListTestResultsResponse);
   rpc CreateTestResult(CreateTestResultRequest) returns (TestResult);
   rpc DeleteTestResult(DeleteTestResultRequest) returns (google.protobuf.Empty);
-  rpc ListS3S(ListS3sRequest) returns (ListS3sResponse);
+  rpc GetCephObjectGateway(GetCephObjectGatewayRequest) returns (CephObjectGateway);
+  rpc ListMinIOs(ListMinIOsRequest) returns (ListMinIOsResponse);
 }
 
-message TestResult {
-  enum Type {
-    UNSPECIFIED = 0;
-    BLOCK = 1;
-    NFS = 2;
-    S3 = 3;
-  }
-  message FIO {
+message CephBlockDevice {
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message NetworkFileSystem {
+  string endpoint = 1;
+  string path = 2;
+}
+
+message CephObjectGateway {
+  string name = 1;
+  string endpoint = 2;
+}
+
+message MinIO {
+  string name = 1;
+  string endpoint = 2;
+}
+
+message ExternalObjectService {
+  string endpoint = 1;
+  string access_key = 2;
+  string secret_key = 3;
+}
+
+message FIO {
+  message Input {
     enum AccessMode {
       READ = 0;
       WRITE = 1;
@@ -34,35 +56,14 @@ message TestResult {
       RAND_TRIM_WRITE = 9;
     }
     AccessMode access_mode = 1;
-    string scope_uuid = 11;     // block
-    string facility_name = 12;  // block
-    string nfs_endpoint = 21;
-    string nfs_path = 22;
     uint64 job_count = 31;   // 1.13.3 Job description
     string run_time = 41;    // 1.13.4 Time related parameters
     string block_size = 71;  // 1.13.7 Block size
     string file_size = 91;   // 1.13.9 I/O size
     uint64 io_depth = 121;   // 1.13.12 I/O depth
   }
-  message Warp {
-    enum Operation {
-      GET = 0;
-      PUT = 1;
-      DELETE = 2;
-      LIST = 3;
-      STAT = 4;
-      MIXED = 5;
-    }
-    Operation operation = 1;
-    string endpoint = 11;
-    string access_key = 12;
-    string secret_key = 13;
-    string duration = 21;
-    string object_size = 31;
-    string object_num = 32;
-  }
-  message FIOResult {
-    message FIOValues {
+  message Output {
+    message Values {
       message Latency {
         uint64 min = 1;
         uint64 max = 2;
@@ -75,15 +76,36 @@ message TestResult {
       uint64 total_ios = 5;
       Latency latency = 6;
     }
-    FIOValues read = 1;
-    FIOValues write = 2;
-    FIOValues trim = 3;
+    Values read = 1;
+    Values write = 2;
+    Values trim = 3;
   }
-  message WarpResult {
-    message WarpOps {
+  oneof target {
+    CephBlockDevice ceph_block_device = 1;
+    NetworkFileSystem network_file_system = 2;
+  }
+  Input input = 11;
+  Output output = 12;
+}
+
+message Warp {
+  message Input {
+    enum Operation {
+      GET = 0;
+      PUT = 1;
+      DELETE = 2;
+      LIST = 3;
+      STAT = 4;
+      MIXED = 5;
+    }
+    Operation operation = 1;
+    string duration = 21;
+    string object_size = 31;
+    string object_num = 32;
+  }
+  message Output {
+    message Operation {
       string type = 1;
-      string start_time = 2;
-      string end_time = 3;
       double fastest_bps = 4;
       double fastest_ops = 5;
       double median_bps = 6;
@@ -92,39 +114,36 @@ message TestResult {
       double slowest_ops = 9;
       double bytes = 10;
       double ops = 11;
+      google.protobuf.Timestamp started_at = 2;
+      google.protobuf.Timestamp ended_at = 3;
     }
-    repeated WarpOps warp_ops = 1;
+    repeated Operation operations = 1;
   }
-  TestResult.Type type = 1;
-  string name = 2;
-  string status = 3;
-  string start_time = 4;
-  string complete_time = 5;
-  repeated string logs = 6;
-  oneof input {
-    TestResult.FIO fio = 11;
-    TestResult.Warp warp = 12;
+  oneof target {
+    CephObjectGateway ceph_object_gateway = 1;
+    MinIO min_io = 2;
+    ExternalObjectService external_object_service = 3;
   }
-  oneof output {
-    FIOResult fio_result = 21;
-    WarpResult warp_result = 22;
-  }
+  Input input = 11;
+  Output output = 12;
 }
 
-message Block {
-  string facility_name = 1;
-  string storage_class_name = 2;
-}
-
-message S3 {
-  enum Type {
-    UNSPECIFIED = 0;
-    CEPH_RADOS_GATEWAY = 1;
-    MINIO = 2;
+message TestResult {
+  enum Status {
+    Running = 0;
+    Succeeded = 1;
+    Failed = 2;
   }
-  Type type = 1;
+  string uid = 1;
   string name = 2;
-  string endpoint = 3;
+  Status status = 3;
+  string created_by = 4;
+  google.protobuf.Timestamp started_at = 11;
+  google.protobuf.Timestamp completed_at = 12;
+  oneof kind {
+    FIO fio = 101;
+    Warp warp = 102;
+  }
 }
 
 message ListTestResultsRequest {}
@@ -134,11 +153,10 @@ message ListTestResultsResponse {
 }
 
 message CreateTestResultRequest {
-  TestResult.Type type = 1;
-  string name = 2;
-  oneof input {
-    TestResult.FIO fio = 11;
-    TestResult.Warp warp = 12;
+  string name = 1;
+  oneof kind {
+    FIO fio = 101;
+    Warp warp = 102;
   }
 }
 
@@ -146,16 +164,14 @@ message DeleteTestResultRequest {
   string name = 1;
 }
 
-message ListBlocksRequest {}
-
-message ListBlocksResponse {
-  repeated Block blocks = 1;
-}
-
-message ListS3sRequest {
+message GetCephObjectGatewayRequest {
   string scope_uuid = 1;
 }
 
-message ListS3sResponse {
-  repeated S3 s3s = 1;
+message ListMinIOsRequest {
+  string scope_uuid = 1;
+}
+
+message ListMinIOsResponse {
+  repeated MinIO minios = 1;
 }
