@@ -71,7 +71,7 @@ message TestResult {
       uint64 io_bytes = 1;
       uint64 bw = 2;
       uint64 iops = 3;
-      uint64 runtime = 4; 
+      uint64 runtime = 4;
       uint64 total_ios = 5;
       Latency latency = 6;
     }
@@ -84,7 +84,7 @@ message TestResult {
       string type = 1;
       string start_time = 2;
       string end_time = 3;
-      double  fastest_bps = 4;
+      double fastest_bps = 4;
       double fastest_ops = 5;
       double median_bps = 6;
       double median_ops = 7;
@@ -105,7 +105,7 @@ message TestResult {
     TestResult.FIO fio = 11;
     TestResult.Warp warp = 12;
   }
-  oneof output{
+  oneof output {
     FIOResult fio_result = 21;
     WarpResult warp_result = 22;
   }
