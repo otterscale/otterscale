@@ -25,10 +25,6 @@ export const auth = betterAuth({
 			clientSecret: env.APPLE_CLIENT_SECRET!,
 			appBundleIdentifier: env.APPLE_APP_BUNDLE_IDENTIFIER!,
 		},
-		facebook: {
-			clientId: env.FACEBOOK_CLIENT_ID!,
-			clientSecret: env.FACEBOOK_CLIENT_SECRET!,
-		},
 		github: {
 			clientId: env.GITHUB_CLIENT_ID!,
 			clientSecret: env.GITHUB_CLIENT_SECRET!,
@@ -36,10 +32,6 @@ export const auth = betterAuth({
 		google: {
 			clientId: env.GOOGLE_CLIENT_ID!,
 			clientSecret: env.GOOGLE_CLIENT_SECRET!,
-		},
-		twitter: {
-			clientId: env.TWITTER_CLIENT_ID!,
-			clientSecret: env.TWITTER_CLIENT_SECRET!,
 		},
 	},
 });
