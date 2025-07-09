@@ -68,6 +68,9 @@
 		"vitest-browser-svelte": "^0.1.0"
 	},
 	"dependencies": {
+		"@bufbuild/protobuf": "^2.6.0",
+		"@connectrpc/connect": "^2.0.2",
+		"@connectrpc/connect-web": "^2.0.2",
 		"@inlang/paraglide-js": "^2.0.0",
 		"better-auth": "^1.2.12",
 		"pg": "^8.16.3"
