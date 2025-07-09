@@ -11,8 +11,7 @@ service BISTService {
   rpc ListTestResults(ListTestResultsRequest) returns (ListTestResultsResponse);
   rpc CreateTestResult(CreateTestResultRequest) returns (TestResult);
   rpc DeleteTestResult(DeleteTestResultRequest) returns (google.protobuf.Empty);
-  rpc GetCephObjectGateway(GetCephObjectGatewayRequest) returns (CephObjectGateway);
-  rpc ListMinIOs(ListMinIOsRequest) returns (ListMinIOsResponse);
+  rpc ListObjectServices(ListObjectServicesRequest) returns (ListObjectServicesResponse);
 }
 
 message CephBlockDevice {
@@ -25,12 +24,7 @@ message NetworkFileSystem {
   string path = 2;
 }
 
-message CephObjectGateway {
-  string name = 1;
-  string endpoint = 2;
-}
-
-message MinIO {
+message ObjectService {
   string name = 1;
   string endpoint = 2;
 }
@@ -63,22 +57,21 @@ message FIO {
     uint64 io_depth = 121;   // 1.13.12 I/O depth
   }
   message Output {
-    message Values {
+    message Throughput {
       message Latency {
-        uint64 min = 1;
-        uint64 max = 2;
-        double mean = 3;
+        uint64 min_nanoseconds = 1;
+        uint64 max_nanoseconds = 2;
+        double mean_nanoseconds = 3;
       }
       uint64 io_bytes = 1;
-      uint64 bw = 2;
-      uint64 iops = 3;
-      uint64 runtime = 4;
-      uint64 total_ios = 5;
-      Latency latency = 6;
+      uint64 bandwidth_bytes = 2;
+      uint64 io_per_second = 3;
+      uint64 total_ios = 4;
+      Latency latency = 11;
     }
-    Values read = 1;
-    Values write = 2;
-    Values trim = 3;
+    Throughput read = 1;
+    Throughput write = 2;
+    Throughput trim = 3;
   }
   oneof target {
     CephBlockDevice ceph_block_device = 1;
@@ -104,24 +97,30 @@ message Warp {
     string object_num = 32;
   }
   message Output {
-    message Operation {
-      string type = 1;
-      double fastest_bps = 4;
-      double fastest_ops = 5;
-      double median_bps = 6;
-      double median_ops = 7;
-      double slowest_bps = 8;
-      double slowest_ops = 9;
-      double bytes = 10;
-      double ops = 11;
-      google.protobuf.Timestamp started_at = 2;
-      google.protobuf.Timestamp ended_at = 3;
+    message Throughput {
+      message Bytes {
+        double fastest_per_second = 1;
+        double median_per_second = 2;
+        double slowest_per_second = 3;
+      }
+      message Objects {
+        double fastest_per_second = 1;
+        double median_per_second = 2;
+        double slowest_per_second = 3;
+      }
+      Bytes bytes = 1;
+      Objects objects = 2;
     }
-    repeated Operation operations = 1;
+    double total_bytes = 1;
+    double total_objects = 2;
+    uint64 total_operations = 3;
+    Throughput get = 11;
+    Throughput put = 12;
+    Throughput delete = 13;
   }
   oneof target {
-    CephObjectGateway ceph_object_gateway = 1;
-    MinIO min_io = 2;
+    ObjectService ceph_object_gateway = 1;
+    ObjectService minio = 2;
     ExternalObjectService external_object_service = 3;
   }
   Input input = 11;
@@ -154,6 +153,7 @@ message ListTestResultsResponse {
 
 message CreateTestResultRequest {
   string name = 1;
+  string created_by = 2;
   oneof kind {
     FIO fio = 101;
     Warp warp = 102;
@@ -164,14 +164,11 @@ message DeleteTestResultRequest {
   string name = 1;
 }
 
-message GetCephObjectGatewayRequest {
+message ListObjectServicesRequest {
   string scope_uuid = 1;
 }
 
-message ListMinIOsRequest {
-  string scope_uuid = 1;
-}
-
-message ListMinIOsResponse {
-  repeated MinIO minios = 1;
+message ListObjectServicesResponse {
+  ObjectService ceph_object_gateway = 1;
+  repeated ObjectService minios = 2;
 }
