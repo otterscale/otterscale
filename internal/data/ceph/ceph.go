@@ -41,8 +41,8 @@ func (m *Ceph) newConnection(config *core.StorageConfig) (*rados.Conn, error) {
 	}
 
 	radosTimeout := time.Second * 3
-	if m.conf.Ceph.RadosTimeout > 0 {
-		radosTimeout = m.conf.Ceph.RadosTimeout
+	if m.conf.Ceph.RADOSTimeout > 0 {
+		radosTimeout = m.conf.Ceph.RADOSTimeout
 	}
 	timeout := strconv.FormatFloat(radosTimeout.Seconds(), 'f', -1, 64)
 	if err = conn.SetConfigOption("rados_mon_op_timeout", timeout); err != nil {
