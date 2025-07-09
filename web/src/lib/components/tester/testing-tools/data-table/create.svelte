@@ -8,279 +8,305 @@
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { writable, type Writable } from 'svelte/store';
+	import * as MultipleStepModal from './mutiple-step-modal';
+	import { TestResult_Type, TestResult_FIO_AccessMode, TestResult_Warp_Operation } from '$gen/api/bist/v1/bist_pb'
+	import type { CreateTestResultRequest, TestResult_FIO, TestResult_Warp } from '$gen/api/bist/v1/bist_pb'
 
-	
-	export type Request = {
-		name: string;
-		rwMode: string;
-		fileSize: string;
-		numberJobs: number;
-		blockSize: string;
-		runtime: number;
-
-		// optional
-		timeBased: boolean;
-		exitallOnError: boolean;
-		createSerialize: boolean;
-		norandommap: boolean;
-		direct: boolean;
-		groupReporting: boolean;
-
-		filenameFormat: string;
-		directory:  string;
-		clocksource: string;
-		ioengine: string;
-		diskUtil: string;
-
-		startDelay: number;
-		rwmixread: number;
-		ioDepth: number;
-		bufferCompressPercentage: number;
-	};
-
-	const readWriteMode: Writable<SingleSelect.OptionType[]> = writable([
+	const testResultType: Writable<SingleSelect.OptionType[]> = writable([
 		{
-			value: 'read',
-			label: 'Read',
-			icon: 'ph:upload'
+			value: TestResult_Type.BLOCK,
+			label: TestResult_Type[TestResult_Type.BLOCK],
+			// icon: 'ph:upload'
 		},
 		{
-			value: 'randread',
-			label: 'Random  Read',
-			icon: 'ph:upload'
+			value: TestResult_Type.NFS,
+			label: TestResult_Type[TestResult_Type.NFS],
+			// icon: 'ph:upload'
 		},
 		{
-			value: 'write',
-			label: 'Write',
-			icon: 'ph:download'
+			value: TestResult_Type.S3,
+			label: TestResult_Type[TestResult_Type.S3],
+			// icon: 'ph:download'
 		},
-		{
-			value: 'randwrite',
-			label: 'Random Write',
-			icon: 'ph:download'
-		}
 	]);
 
-	const DEFAULT_REQUEST = { 
-		timeBased: true,
-		exitallOnError: true,
-		createSerialize: true,
-		norandommap: true,
-		direct: true,
-		groupReporting: true,
-	} as Request;
-	let request: Request = $state(DEFAULT_REQUEST);
+	const fioOptions: SingleSelect.OptionType[] = Object.keys(TestResult_FIO_AccessMode)
+		.filter(key => isNaN(Number(key)))
+		.map(key => ({value: TestResult_FIO_AccessMode[key as keyof typeof TestResult_FIO_AccessMode], label: key}));
+	const testResultFIOMode: Writable<SingleSelect.OptionType[]> = writable(fioOptions);
+	const warpOptions: SingleSelect.OptionType[] = Object.keys(TestResult_Warp_Operation)
+		.filter(key => isNaN(Number(key)))
+		.map(key => ({value: TestResult_Warp_Operation[key as keyof typeof TestResult_Warp_Operation], label: key}));
+	const testResultWarpOperation: Writable<SingleSelect.OptionType[]> = writable(warpOptions);
+
+	const testResultInput: Writable<SingleSelect.OptionType[]> = writable([
+		{
+			value: 'fio',
+			label: 'FIO',
+		},
+		{
+			value: 'warp',
+			label: 'WARP',
+		},
+	]);
+
+	// const testResultFIOMode: Writable<SingleSelect.OptionType[]> = writable([
+	// 	{value: TestResult_FIO_AccessMode.READ, label: 'FIO'},
+	// ]);
+	
+	const DEFAULT_REQUEST = { input: {value: {}, case: {}} } as CreateTestResultRequest;
+	const DEFAULT_FIO_REQUEST = { } as TestResult_FIO;
+	const DEFAULT_WARP_REQUEST = { } as TestResult_Warp;
+	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
+	let requestFIO: TestResult_FIO = $state(DEFAULT_FIO_REQUEST);
+	let requestWarp: TestResult_Warp = $state(DEFAULT_WARP_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
+		requestFIO = DEFAULT_FIO_REQUEST;
+		requestWarp = DEFAULT_WARP_REQUEST;
 	}
 
 	const stateController = new DialogStateController(false);
+
+	// STEP
+	let step = $state(1);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<AlertDialog.Root bind:open={stateController.state}>
+<MultipleStepModal.Root bind:open steps={3}>
 	<div class="flex justify-end">
-		<AlertDialog.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
+		<MultipleStepModal.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
 			<div class="flex items-center gap-1">
 				<Icon icon="ph:plus" />
 				Create
 			</div>
-		</AlertDialog.Trigger>
+		</MultipleStepModal.Trigger>
 	</div>
-	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create FIO config
-		</AlertDialog.Header>
-		<Form.Root>
-			<Form.Fieldset>
-				<Form.Field>
-					<Form.Label for="fio-name">Name</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						id="fio-name"
-						bind:value={request.name}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-read-write-mode">Read Write Mode</Form.Label>
-					<SingleSelect.Root options={readWriteMode} bind:value={request.rwMode}>
-						<SingleSelect.Trigger />
-						<SingleSelect.Content>
-							<SingleSelect.Options>
-								<SingleSelect.Input />
-								<SingleSelect.List>
-									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
-									<SingleSelect.Group>
-										{#each $readWriteMode as rw}
-											<SingleSelect.Item option={rw}>
-												<Icon
-													icon={rw.icon ? rw.icon : 'ph:empty'}
-													class={cn('size-5', rw.icon ? 'visibale' : 'invisible')}
-												/>
-												{rw.label}
-												<SingleSelect.Check option={rw} />
-											</SingleSelect.Item>
-										{/each}
-									</SingleSelect.Group>
-								</SingleSelect.List>
-							</SingleSelect.Options>
-						</SingleSelect.Content>
-					</SingleSelect.Root>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-file-size">File Size</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						id="fio-file-size"
-						bind:value={request.fileSize}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-number-jobs">Number Jobs</Form.Label>
-					<SingleInput.General
-						required
-						type="number"
-						id="fio-number-jobs"
-						bind:value={request.numberJobs}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-block-size">Block Size</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						id="fio-block-size"
-						bind:value={request.blockSize}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-runtime">Runtime</Form.Label>
-					<SingleInput.General
-						required
-						type="number"
-						id="fio-runtime"
-						bind:value={request.runtime}
-					/>
-				</Form.Field>
-			</Form.Fieldset>
+	<MultipleStepModal.Content>
 
-			<Form.Fieldset>
-				<Form.Legend>Optional</Form.Legend>
-				<!-- Boolean -->
-				<Form.Field>
-					<Form.Label>Time Based</Form.Label>
-					<SingleInput.Boolean bind:value={request.timeBased} />
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>Exitall On Error</Form.Label>
-					<SingleInput.Boolean bind:value={request.exitallOnError} />
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>Create Serialize</Form.Label>
-					<SingleInput.Boolean bind:value={request.createSerialize} />
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>norandommap</Form.Label>
-					<SingleInput.Boolean bind:value={request.norandommap} />
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>Direct</Form.Label>
-					<SingleInput.Boolean bind:value={request.direct} />
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>Group Reporting</Form.Label>
-					<SingleInput.Boolean bind:value={request.groupReporting} />
-				</Form.Field>
+		<MultipleStepModal.Stepper>
+			<MultipleStepModal.Steps>
+				<MultipleStepModal.Step text="Step 1" icon="ph:number-one" />
+				<MultipleStepModal.Step icon="ph:number-two" />
+				<MultipleStepModal.Step icon="ph:number-three" />
+			</MultipleStepModal.Steps>
+			<!-- <MultipleStepModal.Header class="flex m-4 items-center justify-center text-xl font-bold"> -->
+			<MultipleStepModal.Header class="flex mt-6 mb-6 justify-center text-xl font-bold">
+				BIST
+			</MultipleStepModal.Header>	
+			<MultipleStepModal.Models>
+				<!-- Step One -->
+				<MultipleStepModal.Model>
+					<Form.Root class="max-h-[50vh]">
+					<Form.Fieldset>
+						<Form.Legend>Step 1</Form.Legend>
+						<Form.Field>
+							<Form.Label for="bist-name">Name</Form.Label>
+							<SingleInput.General
+								type="text"
+								id="name"
+								bind:value={request.name}
+							/>
+						</Form.Field>
+						<Form.Field>
+							<Form.Label for="bist-type">Type</Form.Label>
+							<SingleSelect.Root options={testResultType} required bind:value={request.type}>
+								<SingleSelect.Trigger />
+								<SingleSelect.Content>
+									<SingleSelect.Options>
+										<SingleSelect.Input />
+										<SingleSelect.List>
+											<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+											<SingleSelect.Group>
+												{#each $testResultType as item}
+													<SingleSelect.Item option={item}>
+														<Icon
+															icon={item.icon ? item.icon : 'ph:empty'}
+															class={cn('size-5', item.icon ? 'visibale' : 'invisible')}
+														/>
+														{item.label}
+														<SingleSelect.Check option={item} />
+													</SingleSelect.Item>
+												{/each}
+											</SingleSelect.Group>
+										</SingleSelect.List>
+									</SingleSelect.Options>
+								</SingleSelect.Content>
+							</SingleSelect.Root>
+						</Form.Field>
+						<Form.Field>
+							<Form.Label for="bist-input">Input</Form.Label>
+							<SingleSelect.Root options={testResultInput} required bind:value={request.input.case}>
+								<SingleSelect.Trigger />
+								<SingleSelect.Content>
+									<SingleSelect.Options>
+										<SingleSelect.Input />
+										<SingleSelect.List>
+											<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+											<SingleSelect.Group>
+												{#each $testResultInput as item}
+													<SingleSelect.Item option={item}>
+														<Icon
+															icon={item.icon ? item.icon : 'ph:empty'}
+															class={cn('size-5', item.icon ? 'visibale' : 'invisible')}
+														/>
+														{item.label}
+														<SingleSelect.Check option={item} />
+													</SingleSelect.Item>
+												{/each}
+											</SingleSelect.Group>
+										</SingleSelect.List>
+									</SingleSelect.Options>
+								</SingleSelect.Content>
+							</SingleSelect.Root>
+						</Form.Field>
+					</Form.Fieldset>
+					</Form.Root>
+				</MultipleStepModal.Model>
 
-				<!-- String -->
-				<Form.Field>
-					<Form.Label for="fio-filename-format">Filename Format</Form.Label>
-					<SingleInput.General
-						type="text"
-						id="fio-filename-format"
-						bind:value={request.filenameFormat}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-directory">Directory</Form.Label>
-					<SingleInput.General
-						type="text"
-						id="fio-directory"
-						bind:value={request.directory}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-clocksource">Clocksource</Form.Label>
-					<SingleInput.General
-						type="text"
-						id="fio-clocksource"
-						bind:value={request.clocksource}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-ioengine">I/O Engine</Form.Label>
-					<SingleInput.General
-						type="text"
-						id="fio-ioengine"
-						bind:value={request.ioengine}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-disk-util">Disk Util</Form.Label>
-					<SingleInput.General
-						type="text"
-						id="fio-disk-util"
-						bind:value={request.diskUtil}
-					/>
-				</Form.Field>
+				<!-- Step two -->
+				<MultipleStepModal.Model>
+					<Form.Root class="max-h-[50vh]">
+						{#if request.input.case == 'fio'}
+							<Form.Fieldset>
+								<Form.Field>
+									<Form.Label for="fio-access-mode">Access Mode</Form.Label>
+									<SingleSelect.Root options={testResultFIOMode} bind:value={requestFIO.accessMode}>
+										<SingleSelect.Trigger />
+										<SingleSelect.Content>
+											<SingleSelect.Options>
+												<SingleSelect.Input />
+												<SingleSelect.List>
+													<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+													<SingleSelect.Group>
+														{#each $testResultFIOMode as item}
+															<SingleSelect.Item option={item}>
+																<Icon
+																	icon={item.icon ? item.icon : 'ph:empty'}
+																	class={cn('size-5', item.icon ? 'visibale' : 'invisible')}
+																/>
+																{item.label}
+																<SingleSelect.Check option={item} />
+															</SingleSelect.Item>
+														{/each}
+													</SingleSelect.Group>
+												</SingleSelect.List>
+											</SingleSelect.Options>
+										</SingleSelect.Content>
+									</SingleSelect.Root>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Scope UUID</Form.Label>
+									<SingleInput.General type="text" bind:value={requestFIO.scopeUuid}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Facility Name</Form.Label>
+									<SingleInput.General type="text" bind:value={requestFIO.facilityName}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>NFS Endpoint</Form.Label>
+									<SingleInput.General type="text" bind:value={requestFIO.nfsEndpoint}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>NFS Path</Form.Label>
+									<SingleInput.General type="text" bind:value={requestFIO.nfsPath}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Job Count</Form.Label>
+									<SingleInput.General type="number" bind:value={requestFIO.jobCount}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Run Time</Form.Label>
+									<SingleInput.General type="text" bind:value={requestFIO.runTime}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Block Size</Form.Label>
+									<SingleInput.General type="text" bind:value={requestFIO.blockSize}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>File Size</Form.Label>
+									<SingleInput.General type="text" bind:value={requestFIO.fileSize}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>IO Depth</Form.Label>
+									<SingleInput.General type="number" bind:value={requestFIO.ioDepth}/>
+								</Form.Field>
+							</Form.Fieldset>
+						{:else if request.input.case == 'warp'}
+							<Form.Fieldset>
+								<Form.Field>
+									<Form.Label for="fio-access-mode">Operation</Form.Label>
+									<SingleSelect.Root options={testResultWarpOperation} bind:value={requestWarp.operation}>
+										<SingleSelect.Trigger />
+										<SingleSelect.Content>
+											<SingleSelect.Options>
+												<SingleSelect.Input />
+												<SingleSelect.List>
+													<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+													<SingleSelect.Group>
+														{#each $testResultWarpOperation as item}
+															<SingleSelect.Item option={item}>
+																<Icon
+																	icon={item.icon ? item.icon : 'ph:empty'}
+																	class={cn('size-5', item.icon ? 'visibale' : 'invisible')}
+																/>
+																{item.label}
+																<SingleSelect.Check option={item} />
+															</SingleSelect.Item>
+														{/each}
+													</SingleSelect.Group>
+												</SingleSelect.List>
+											</SingleSelect.Options>
+										</SingleSelect.Content>
+									</SingleSelect.Root>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Endpoint</Form.Label>
+									<SingleInput.General type="number" bind:value={requestWarp.endpoint}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Access Key</Form.Label>
+									<SingleInput.General type="number" bind:value={requestWarp.accessKey}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Secret Key</Form.Label>
+									<SingleInput.General type="number" bind:value={requestWarp.secretKey}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Duration</Form.Label>
+									<SingleInput.General type="number" bind:value={requestWarp.duration}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Object Size</Form.Label>
+									<SingleInput.General type="number" bind:value={requestWarp.objectSize}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Object Num</Form.Label>
+									<SingleInput.General type="number" bind:value={requestWarp.objectNum}/>
+								</Form.Field>
+							</Form.Fieldset>
+						{/if}
+					</Form.Root>
+				</MultipleStepModal.Model>
 
-				<!-- Number -->
-				<Form.Field>
-					<Form.Label for="fio-start-delay">Start Delay</Form.Label>
-					<SingleInput.General
-						type="number"
-						id="fio-start-delay"
-						bind:value={request.startDelay}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-rwmixread">Mixed Read Write</Form.Label>
-					<SingleInput.General
-						type="number"
-						id="fio-rwmixread"
-						bind:value={request.rwmixread}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-io-depth">IO Depth</Form.Label>
-					<SingleInput.General
-						type="number"
-						id="fio-io-depth"
-						bind:value={request.ioDepth}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label for="fio-buffer-compress-percentage">Buffer Compress Percentage</Form.Label>
-					<SingleInput.General
-						type="number"
-						id="fio-buffer-compress-percentage"
-						bind:value={request.bufferCompressPercentage}
-					/>
-				</Form.Field>
-			</Form.Fieldset>
-		</Form.Root>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
-			<AlertDialog.ActionsGroup>
-				<AlertDialog.Action
-					onclick={() => {
-						console.log(request);
-					}}
-				>
-					Create
-				</AlertDialog.Action>
-			</AlertDialog.ActionsGroup>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+				<!-- Step three -->
+				<MultipleStepModal.Model>
+					TODO: Content for Tab 3
+				</MultipleStepModal.Model>
+			</MultipleStepModal.Models>
+		</MultipleStepModal.Stepper>
+		
+		<MultipleStepModal.Footer>
+			<MultipleStepModal.Cancel onclick={reset}>Cancel</MultipleStepModal.Cancel>
+			<MultipleStepModal.Confirm>Confirm</MultipleStepModal.Confirm>
+			<MultipleStepModal.Controllers>
+				<MultipleStepModal.Back>Back</MultipleStepModal.Back>
+				<MultipleStepModal.Next>Next</MultipleStepModal.Next>
+			</MultipleStepModal.Controllers>
+		</MultipleStepModal.Footer>
+	</MultipleStepModal.Content>
+</MultipleStepModal.Root>
+
