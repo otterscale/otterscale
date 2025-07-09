@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" module>
 	import type { Bucket, Bucket_Grant, UpdateBucketRequest } from '$gen/api/storage/v1/storage_pb';
 	import { Bucket_ACL, StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
@@ -13,7 +13,9 @@
 	import { toast } from 'svelte-sonner';
 	import { type Writable } from 'svelte/store';
 	import { accessControlListOptions } from './create.svelte';
+</script>
 
+<script lang="ts">
 	function getAccessControlList(grants: Bucket_Grant[]): Bucket_ACL {
 		if (grants.some((grant) => grant.uri.includes('AuthenticatedUsers'))) {
 			return Bucket_ACL.AUTHENTICATED_READ;
@@ -64,14 +66,12 @@
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
-	<AlertDialog.Trigger class={cn('flex h-full w-full items-center gap-2')}>
+	<AlertDialog.Trigger class="flex h-full w-full items-center gap-2">
 		<Icon icon="ph:pencil" />
 		Edit
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Edit Bucket
-		</AlertDialog.Header>
+		<AlertDialog.Header>Edit Bucket</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

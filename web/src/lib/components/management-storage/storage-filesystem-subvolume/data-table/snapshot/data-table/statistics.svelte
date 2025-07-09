@@ -1,8 +1,10 @@
-<script lang="ts" generics="TData">
+<script lang="ts" module>
+	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
 	import * as Chart from '$lib/components/custom/chart/templates';
 	import { type Table } from '@tanstack/table-core';
-	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
+</script>
 
+<script lang="ts" generics="TData">
 	let { table }: { table: Table<TData> } = $props();
 
 	const filteredData = $derived(table.getFilteredRowModel().rows.map((row) => row.original));

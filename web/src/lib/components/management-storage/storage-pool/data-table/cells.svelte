@@ -3,7 +3,6 @@
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import { formatCapacity } from '$lib/formatter';
 	import type { Row } from '@tanstack/table-core';
 	import { LineChart } from 'layerchart';
 

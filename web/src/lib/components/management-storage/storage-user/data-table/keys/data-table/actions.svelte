@@ -1,9 +1,11 @@
-<script lang="ts">
-	import type { Image, User, User_Key } from '$gen/api/storage/v1/storage_pb';
+<script lang="ts" module>
+	import type { User, User_Key } from '$gen/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Writable } from 'svelte/store';
 	import Delete from './delete.svelte';
+</script>
 
+<script lang="ts">
 	let {
 		selectedScope,
 		selectedFacility,

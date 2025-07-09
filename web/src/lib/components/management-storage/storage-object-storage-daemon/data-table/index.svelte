@@ -1,9 +1,10 @@
-<script lang="ts" generics="TData, TValue">
+<script lang="ts" module>
 	import type { OSD } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
+	import BooleanFilter from '$lib/components/custom/data-table/data-table-filters/boolean-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -20,11 +21,13 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable, type Writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
+	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Statistics from './statistics.svelte';
-	import Actions from './actions.svelte';
+</script>
 
+<script lang="ts" generics="TData, TValue">
 	let {
 		selectedScope,
 		selectedFacility,
@@ -110,7 +113,9 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="exists" {table} />
+			<BooleanFilter columnId="in" {table} />
+			<BooleanFilter columnId="up" {table} />
+			<BooleanFilter columnId="exists" {table} />
 			<PointFilter columnId="deviceClass" alias="Device Class" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>

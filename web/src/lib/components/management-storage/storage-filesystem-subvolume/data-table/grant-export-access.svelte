@@ -56,9 +56,7 @@
 		Grant
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Grant Export Access
-		</AlertDialog.Header>
+		<AlertDialog.Header>Grant Export Access</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

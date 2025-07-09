@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import type {
-		GrantSubvolumeExportAccessRequest,
 		RevokeSubvolumeExportAccessRequest,
 		Subvolume
 	} from '$gen/api/storage/v1/storage_pb';
@@ -57,9 +56,7 @@
 		Revoke
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Revoke Export Access
-		</AlertDialog.Header>
+		<AlertDialog.Header>Revoke Export Access</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

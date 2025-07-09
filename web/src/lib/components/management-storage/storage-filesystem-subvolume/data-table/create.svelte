@@ -36,7 +36,7 @@
 		volumeName: selectedVolume,
 		groupName: selectedSubvolumeGroup
 	} as CreateSubvolumeRequest;
-	
+
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;

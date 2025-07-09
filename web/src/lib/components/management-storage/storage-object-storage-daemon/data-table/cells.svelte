@@ -112,13 +112,17 @@
 {/snippet}
 
 {#snippet readBytes(row: Row<OSD>)}
-	<div class="flex h-[50px] w-[100px]">
-		<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
-	</div>
+	<span>
+		<div class="h-[50px] w-[100px]">
+			<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
+		</div>
+	</span>
 {/snippet}
 
 {#snippet writeBytes(row: Row<OSD>)}
-	<div class="h-[50px] w-[100px]">
-		<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
-	</div>
+	<span>
+		<div class="h-[50px] w-[100px]">
+			<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
+		</div>
+	</span>
 {/snippet}

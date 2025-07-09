@@ -1,9 +1,9 @@
-<script lang="ts" generics="TData, TValue">
-	import type { MON, OSD } from '$gen/api/storage/v1/storage_pb';
+<script lang="ts" module>
+	import type { MON } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
-	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
-	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
+	import BooleanyFilter from '$lib/components/custom/data-table/data-table-filters/boolean-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -20,11 +20,12 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable, type Writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
 	import { columns } from './columns';
 	import Statistics from './statistics.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
+</script>
 
+<script lang="ts" generics="TData, TValue">
 	let { monitors }: { monitors: MON[] } = $props();
 
 	let data = $state(writable(monitors));
@@ -106,6 +107,8 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
+			<FuzzyFilter columnId="publicAddress" alias="Address" {table} />
+			<BooleanyFilter columnId="leader" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>

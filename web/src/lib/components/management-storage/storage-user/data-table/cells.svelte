@@ -1,8 +1,8 @@
 <script lang="ts" module>
+	import type { User } from '$gen/api/storage/v1/storage_pb';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import type { User } from '$gen/api/storage/v1/storage_pb';
 
 	export const cells = {
 		_row_picker: _row_picker,

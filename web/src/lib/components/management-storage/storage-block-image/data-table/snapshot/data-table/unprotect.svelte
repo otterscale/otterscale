@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import type {
 		Image,
-		User_Key,
+		Image_Snapshot,
 		UnprotectImageSnapshotRequest
 	} from '$gen/api/storage/v1/storage_pb';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
@@ -23,7 +23,7 @@
 		selectedScope: string;
 		selectedFacility: string;
 		image: Image;
-		snapshot: User_Key;
+		snapshot: Image_Snapshot;
 		data: Writable<Image[]>;
 	} = $props();
 
@@ -47,7 +47,6 @@
 <button
 	class="flex h-full w-full items-center gap-2"
 	onclick={() => {
-		console.log(request);
 		storageClient
 			.unprotectImageSnapshot(request)
 			.then((r) => {

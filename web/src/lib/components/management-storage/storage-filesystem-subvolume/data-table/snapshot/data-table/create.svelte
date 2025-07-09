@@ -60,9 +60,7 @@
 		</AlertDialog.Trigger>
 	</div>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create Snapshot
-		</AlertDialog.Header>
+		<AlertDialog.Header>Create Snapshot</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

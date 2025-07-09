@@ -60,9 +60,7 @@
 		Delete
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Delete Snapshot
-		</AlertDialog.Header>
+		<AlertDialog.Header>Delete Snapshot</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

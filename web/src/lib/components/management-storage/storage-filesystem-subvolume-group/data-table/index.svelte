@@ -1,5 +1,7 @@
-<script lang="ts" generics="TData, TValue">
+<script lang="ts" module>
+	import type { SubvolumeGroup } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
@@ -8,23 +10,24 @@
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
+		getCoreRowModel,
+		getFilteredRowModel,
+		getPaginationRowModel,
+		getSortedRowModel,
 		type ColumnFiltersState,
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState,
-		getCoreRowModel,
-		getFilteredRowModel,
-		getPaginationRowModel,
-		getSortedRowModel
+		type VisibilityState
 	} from '@tanstack/table-core';
+	import { writable } from 'svelte/store';
+	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import { writable, type Writable } from 'svelte/store';
-	import type { SubvolumeGroup } from '$gen/api/storage/v1/storage_pb';
-	import Actions from './actions.svelte';
+</script>
 
+<script lang="ts" generics="TData, TValue">
 	let {
 		selectedScope,
 		selectedFacility,
@@ -115,15 +118,15 @@
 		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
-		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} {selectedVolume} bind:data />
-		</Layout.ControllerAction>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
 			<PointFilter columnId="dataPool" {table} />
 			<PointFilter columnId="mode" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Create {selectedScope} {selectedFacility} {selectedVolume} bind:data />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
@@ -164,7 +167,9 @@
 					</Table.Row>
 				{:else}
 					<Table.Row>
-						<Table.Cell colspan={columns.length}>No results.</Table.Cell>
+						<Table.Cell colspan={columns.length}>
+							<TableEmpty />
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>

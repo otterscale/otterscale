@@ -1,11 +1,13 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import { DataTable } from './data-table';
-	import Picker from './pickers/index.svelte';
+	import Pickers from './pickers.svelte';
+</script>
 
+<script lang="ts">
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
@@ -14,7 +16,7 @@
 </script>
 
 <main class="space-y-4">
-	<Picker bind:selectedScope bind:selectedFacility />
+	<Pickers bind:selectedScope bind:selectedFacility />
 
 	{#await storageClient.listUsers({ scopeUuid: selectedScope, facilityName: selectedFacility })}
 		<DataTableLoading />

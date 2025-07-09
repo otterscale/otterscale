@@ -1,7 +1,8 @@
-<script lang="ts" generics="TData, TValue">
+<script lang="ts" module>
+	import type { User } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
-	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -18,15 +19,14 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
+	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	import type { Image, User_Key } from '$gen/api/storage/v1/storage_pb';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import Actions from './actions.svelte';
-	import type { User } from '$gen/api/storage/v1/storage_pb';
+</script>
 
+<script lang="ts" generics="TData, TValue">
 	let {
 		selectedScope,
 		selectedFacility,
@@ -132,7 +132,7 @@
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
-			<Table.Header class="bg-muted">
+			<Table.Header>
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
@@ -158,13 +158,7 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<Actions
-								{selectedScope}
-								{selectedFacility}
-								{user}
-								key={row.original}
-								bind:data
-							/>
+							<Actions {selectedScope} {selectedFacility} {user} key={row.original} bind:data />
 						</Table.Cell>
 					</Table.Row>
 				{:else}

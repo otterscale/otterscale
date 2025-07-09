@@ -1,11 +1,12 @@
-<script lang="ts">
+<script lang="ts" module>
+	import type { User } from '$gen/api/storage/v1/storage_pb';
 	import * as Sheet from '$lib/components/ui/sheet';
-	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
+	import { type Writable } from 'svelte/store';
 	import { DataTable } from './data-table';
-	import type { Image, User } from '$gen/api/storage/v1/storage_pb';
-	import { writable, type Writable } from 'svelte/store';
+</script>
 
+<script lang="ts">
 	let {
 		selectedScope,
 		selectedFacility,

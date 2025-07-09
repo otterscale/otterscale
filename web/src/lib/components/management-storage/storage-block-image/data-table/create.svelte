@@ -13,6 +13,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
+	import PoolPicker from '../../utils/pool-picker.svelte';
 </script>
 
 <script lang="ts">
@@ -40,37 +41,6 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
-
-	const poolOptions: Writable<SingleSelect.OptionType[]> = writable([]);
-	let isPoolsLoading = $state(true);
-	async function fetchPools() {
-		try {
-			const response = await storageClient.listPools({
-				scopeUuid: 'b62d195e-3905-4960-85ee-7673f71eb21e',
-				facilityName: 'ceph-mon'
-			});
-
-			poolOptions.set(
-				response.pools.map((pool) => ({
-					value: pool.name,
-					label: pool.name,
-					icon: 'ph:cube'
-				}))
-			);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			isPoolsLoading = false;
-		}
-	}
-
-	onMount(async () => {
-		try {
-			await fetchPools();
-		} catch (error) {
-			console.error('Error during initial data load:', error);
-		}
-	});
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -83,9 +53,7 @@
 		</AlertDialog.Trigger>
 	</div>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create RADOS Block Device
-		</AlertDialog.Header>
+		<AlertDialog.Header>Create RADOS Block Device</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
@@ -95,30 +63,7 @@
 
 				<Form.Field>
 					<Form.Label>Pool Name</Form.Label>
-
-					<SingleSelect.Root required options={poolOptions} bind:value={request.poolName}>
-						<SingleSelect.Trigger />
-						<SingleSelect.Content>
-							<SingleSelect.Options>
-								<SingleSelect.Input />
-								<SingleSelect.List>
-									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
-									<SingleSelect.Group>
-										{#each $poolOptions as option}
-											<SingleSelect.Item {option}>
-												<Icon
-													icon={option.icon ? option.icon : 'ph:empty'}
-													class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
-												/>
-												{option.label}
-												<SingleSelect.Check {option} />
-											</SingleSelect.Item>
-										{/each}
-									</SingleSelect.Group>
-								</SingleSelect.List>
-							</SingleSelect.Options>
-						</SingleSelect.Content>
-					</SingleSelect.Root>
+					<PoolPicker {selectedScope} {selectedFacility} bind:selectedPool={request.poolName} />
 				</Form.Field>
 			</Form.Fieldset>
 

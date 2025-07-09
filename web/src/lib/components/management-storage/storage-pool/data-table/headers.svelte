@@ -60,13 +60,13 @@
 {/snippet}
 
 {#snippet readBytes(column: Column<Pool>)}
-	<Layout.Header>
+	<Layout.Header class="justify-center">
 		<Layout.HeaderViewer>READ</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet writeBytes(column: Column<Pool>)}
-	<Layout.Header>
+	<Layout.Header class="justify-center">
 		<Layout.HeaderViewer>WRITE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

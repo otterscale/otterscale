@@ -48,9 +48,7 @@
 		Delete
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Delete RADOS Block Device
-		</AlertDialog.Header>
+		<AlertDialog.Header>Delete RADOS Block Device</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Help>

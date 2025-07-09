@@ -4,7 +4,7 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import { DataTable } from './data-table';
-	import Picker from './pickers/index.svelte';
+	import Pickers from './pickers.svelte';
 </script>
 
 <script lang="ts">
@@ -17,7 +17,7 @@
 </script>
 
 <main class="space-y-4">
-	<Picker bind:selectedScope bind:selectedFacility bind:selectedVolume />
+	<Pickers bind:selectedScope bind:selectedFacility bind:selectedVolume />
 
 	{#await storageClient.listSubvolumeGroups( { scopeUuid: selectedScope, facilityName: selectedFacility, volumeName: selectedVolume } )}
 		<DataTableLoading />

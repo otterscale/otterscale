@@ -52,9 +52,9 @@
 {/snippet}
 
 {#snippet snapshots()}
-	<Layout.Header>
-		<Layout.HeaderViewer class="w-full">
-			<div class="text-end">SNAPSHOTS</div>
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>
+			SNAPSHOTS
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

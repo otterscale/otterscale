@@ -1,10 +1,10 @@
-import type { User_Key } from '$gen/api/storage/v1/storage_pb';
+import type { Image_Snapshot } from '$gen/api/storage/v1/storage_pb';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
-const columns: ColumnDef<User_Key>[] = [
+const columns: ColumnDef<Image_Snapshot>[] = [
     {
         id: "select",
         header: ({ table }) => {

@@ -1,6 +1,7 @@
-<script lang="ts" generics="TData, TValue">
+<script lang="ts" module>
 	import type { Volume } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
@@ -22,7 +23,9 @@
 	import { writable } from 'svelte/store';
 	import { columns } from './columns';
 	import Statistics from './statistics.svelte';
+</script>
 
+<script lang="ts" generics="TData, TValue">
 	let {
 		selectedScope,
 		selectedFacility,
@@ -143,7 +146,9 @@
 					</Table.Row>
 				{:else}
 					<Table.Row>
-						<Table.Cell colspan={columns.length}>No results.</Table.Cell>
+						<Table.Cell colspan={columns.length}>
+							<TableEmpty />
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>

@@ -70,9 +70,7 @@
 		</AlertDialog.Trigger>
 	</div>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create Bucket
-		</AlertDialog.Header>
+		<AlertDialog.Header>Create Bucket</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>

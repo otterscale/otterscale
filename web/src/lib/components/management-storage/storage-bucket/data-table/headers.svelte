@@ -43,10 +43,8 @@
 {/snippet}
 
 {#snippet usage(column: Column<Bucket>)}
-	<Layout.Header>
-		<Layout.HeaderViewer class="w-full">
-			<p class="text-end">USAGE</p>
-		</Layout.HeaderViewer>
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

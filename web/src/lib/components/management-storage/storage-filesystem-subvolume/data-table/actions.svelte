@@ -3,9 +3,9 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Writable } from 'svelte/store';
 	import Delete from './delete.svelte';
+	import Edit from './edit.svelte';
 	import Grant from './grant-export-access.svelte';
 	import Revoke from './revoke-export-access.svelte';
-	import Edit from './edit.svelte';
 </script>
 
 <script lang="ts">

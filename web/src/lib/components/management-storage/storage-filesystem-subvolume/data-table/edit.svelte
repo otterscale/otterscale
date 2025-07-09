@@ -56,9 +56,7 @@
 		Edit
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Edit Subvolume
-		</AlertDialog.Header>
+		<AlertDialog.Header>Edit Subvolume</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Legend>Quotas</Form.Legend>

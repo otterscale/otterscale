@@ -3,13 +3,12 @@
 	import Icon from '@iconify/svelte';
 	import { BlockImage } from './storage-block-image';
 	import { Bucket } from './storage-bucket';
-	import { Volume } from './storage-filesystem-volume';
 	import { Subvolume } from './storage-filesystem-subvolume';
 	import { SubvolumeGroup } from './storage-filesystem-subvolume-group';
+	import { Volume } from './storage-filesystem-volume';
+	import { Monitor } from './storage-monitor';
 	import { ObjectStorageDaemon } from './storage-object-storage-daemon';
 	import { Pool } from './storage-pool';
-	import { Monitor } from './storage-monitor';
-	import { Role } from './storage-role';
 	import { User } from './storage-user';
 
 	let value = $state('user');
@@ -110,11 +109,6 @@
 	<LayeredTabs.Content value="pool">
 		{#if value === 'pool'}
 			<Pool />
-		{/if}
-	</LayeredTabs.Content>
-	<LayeredTabs.Content value="role">
-		{#if value === 'role'}
-			<Role />
 		{/if}
 	</LayeredTabs.Content>
 	<LayeredTabs.Content value="subvolume">

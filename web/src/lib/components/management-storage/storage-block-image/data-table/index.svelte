@@ -1,5 +1,7 @@
-<script lang="ts" generics="TData, TValue">
+<script lang="ts" module>
+	import type { Image } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
@@ -18,16 +20,16 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable, type Writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	import Statistics from './statistics.svelte';
-	import type { Image } from '$gen/api/storage/v1/storage_pb';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import { headers } from './headers.svelte';
 	import { Snapshot } from './snapshot';
+	import Statistics from './statistics.svelte';
+</script>
 
+<script lang="ts" generics="TData, TValue">
 	let {
 		selectedScope,
 		selectedFacility,
