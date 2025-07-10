@@ -64,7 +64,7 @@
 
 				<Form.Field>
 					<Form.Label>Bytes</Form.Label>
-					<SingleInput.General type="number" bind:value={request.quotaBytes} />
+					<SingleInput.BigInteger bind:value={request.quotaBytes} />
 				</Form.Field>
 				<Form.Help>
 					{QUOTAS_BYTES_HELP_TEXT}
@@ -72,7 +72,7 @@
 
 				<Form.Field>
 					<Form.Label>Objects</Form.Label>
-					<SingleInput.General type="number" bind:value={request.quotaObjects} />
+					<SingleInput.BigInteger bind:value={request.quotaObjects} />
 				</Form.Field>
 				<Form.Help>
 					{QUOTAS_OBJECTS_HELP_TEXT}

@@ -1,14 +1,12 @@
-<script lang="ts">
-	import * as m from '$lib/paraglide/messages.js';
-	import Section from './section.svelte';
-	import Namespace from './namespace.svelte';
-	import Footer from './footer.svelte';
-	import { featureTitle } from '../features';
-	import type { Title } from '../ui/sheet';
-
+<script lang="ts" module>
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import type { ComponentProps } from 'svelte';
 	import { siteConfig } from '$lib/config/site';
+	import * as m from '$lib/paraglide/messages.js';
+	import type { ComponentProps } from 'svelte';
+	import { featureTitle } from '../features';
+	import Footer from './footer.svelte';
+	import Namespace from './namespace.svelte';
+	import Section from './section.svelte';
 
 	const data = {
 		namespaces: [
@@ -101,7 +99,7 @@
 				title: m.management(),
 				url: '#',
 				icon: 'ph:command',
-				isActive: true,
+				isActive: false,
 				items: [
 					{
 						title: m.model(),
@@ -113,15 +111,12 @@
 					},
 					{
 						title: m.facility(),
-						url: '/management/facility?intervals=15'
+						url: '/management/facility'
 					},
-					{
-						title: 'Storage',
-						url: '/management/storage?intervals=15'
-					},
+
 					{
 						title: m.machine(),
-						url: '/management/machine?intervals=15'
+						url: '/management/machine'
 					},
 					{
 						title: m.network(),
@@ -130,6 +125,42 @@
 					{
 						title: m.configuration(),
 						url: '/management/general'
+					}
+				]
+			},
+			{
+				title: 'Storage',
+				url: '/management/storage',
+				icon: 'ph:cube',
+				isActive: true,
+				items: [
+					{
+						title: 'Monitor',
+						url: '/management/storage/monitor'
+					},
+					{
+						title: 'Pool',
+						url: '/management/storage/pool'
+					},
+					{
+						title: 'Object Storage Daemon',
+						url: '/management/storage/object_storage_daemon'
+					},
+					{
+						title: 'RADOS Block Device',
+						url: '/management/storage/rados_block_device'
+					},
+					{
+						title: 'Volume',
+						url: '/management/storage/volume'
+					},
+					{
+						title: 'Bucket',
+						url: '/management/storage/bucket'
+					},
+					{
+						title: 'User',
+						url: '/management/storage/user'
 					}
 				]
 			},
@@ -198,7 +229,9 @@
 			}
 		]
 	};
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		collapsible = 'icon',
@@ -213,12 +246,10 @@
 	<Sidebar.Content>
 		<Section label={m.general()} items={data.general} />
 		<Section label={m.shortcut()} items={data.shortcuts} />
-		<!-- <Section label="Alanysis" items={data.analysis} /> -->
 		<Section label={m.platform()} items={data.platforms} />
 	</Sidebar.Content>
+	<Sidebar.Separator />
 	<Sidebar.Footer>
-		<Sidebar.Separator />
 		<Footer items={data.footers} />
 	</Sidebar.Footer>
-	<Sidebar.Rail />
 </Sidebar.Root>

@@ -59,7 +59,7 @@
 		</SingleSelect.Options>
 	</SingleSelect.Content>
 </SingleSelect.Root> -->
-
+<!-- 
 <script lang="ts">
 	import * as MultipleStepModal from '$lib/components/custom/mutiple-step-modal';
 
@@ -92,3 +92,10 @@
 		</MultipleStepModal.Footer>
 	</MultipleStepModal.Content>
 </MultipleStepModal.Root>
+ -->
+
+<script lang="ts" module>
+	import * as Loading from '$lib/components/custom/loading';
+</script>
+
+<Loading.Report />

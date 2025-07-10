@@ -1,3 +1,4 @@
 import DataTable from './data-table.svelte'
+import Report from './report.svelte'
 
-export { DataTable }
+export { DataTable, Report }

@@ -1,7 +1,9 @@
 <script lang="ts" module>
+	import { goto } from '$app/navigation';
 	import type { MON } from '$gen/api/storage/v1/storage_pb';
+	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
@@ -9,17 +11,13 @@
 		leader: leader,
 		name: name,
 		rank: rank,
-		publicAddress: publicAddress
+		publicAddress: publicAddress,
+		machine: machine
 	};
 </script>
 
 {#snippet _row_picker(row: Row<MON>)}
-	<Checkbox
-		checked={row.getIsSelected()}
-		onCheckedChange={(value) => row.toggleSelected(!!value)}
-		class="border-secondary-950"
-		aria-label="Select row"
-	/>
+	<TableRowPicker {row} />
 {/snippet}
 
 {#snippet leader(row: Row<MON>)}
@@ -40,4 +38,19 @@
 	<Badge variant="outline">
 		{row.original.publicAddress}
 	</Badge>
+{/snippet}
+
+{#snippet machine(row: Row<MON>)}
+	<div class="flex items-center gap-1">
+		<Badge variant="outline">
+			{row.original.machine?.hostname}
+		</Badge>
+		<Icon
+			icon="ph:arrow-square-out"
+			class="hover:cursor-pointer"
+			onclick={() => {
+				goto(`/management/machine/${row.original.machine?.id}`);
+			}}
+		/>
+	</div>
 {/snippet}

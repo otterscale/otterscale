@@ -1,9 +1,9 @@
 <script lang="ts" module>
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
-	import type { Table, Column } from '@tanstack/table-core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Bucket } from '$gen/api/storage/v1/storage_pb';
+	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
+	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
 		_row_picker: _row_picker,
@@ -15,13 +15,11 @@
 </script>
 
 {#snippet _row_picker(table: Table<Bucket>)}
-	<Checkbox
-		checked={table.getIsAllPageRowsSelected()}
-		indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
-		onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-		class="border-secondary-950"
-		aria-label="Select all"
-	/>
+	<Layout.Header class="justify-center">
+		<Layout.HeaderController>
+			<TableRowPicker {table} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
 {#snippet name(column: Column<Bucket>)}

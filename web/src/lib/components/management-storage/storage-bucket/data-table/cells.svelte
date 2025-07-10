@@ -1,10 +1,10 @@
 <script lang="ts" module>
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import { Badge } from '$lib/components/ui/badge';
-	import type { Row } from '@tanstack/table-core';
 	import type { Bucket } from '$gen/api/storage/v1/storage_pb';
+	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
+	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -16,12 +16,7 @@
 </script>
 
 {#snippet _row_picker(row: Row<Bucket>)}
-	<Checkbox
-		checked={row.getIsSelected()}
-		onCheckedChange={(value) => row.toggleSelected(!!value)}
-		class="border-secondary-950"
-		aria-label="Select row"
-	/>
+	<TableRowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Bucket>)}
