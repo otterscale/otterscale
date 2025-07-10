@@ -8,8 +8,6 @@ update_maas_dns() {
     log "INFO" "Update $dns_value to maas dns."
     if [[ "$maas_current_dns" =~ "$dns_value" ]]; then
         log "INFO" "Current dns already existed, skipping..."
-    elif [[ $maas_current_dns == "null" ]]; then
-        dns_value="$dns_value"
     elif [[ $maas_current_dns != "null" ]]; then
         dns_value="$maas_current_dns $dns_value"
     fi
@@ -20,7 +18,7 @@ update_maas_dns() {
 set_config() {
     local name=$1
     local value=$2
-    if ! maas admin maas set-config name=$name value="$value" >>"$TEMP_LOG" 2>&1; then
+    if ! maas admin maas set-config name=$name value=$value >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to set config $name to $value."
     fi
 }
@@ -92,7 +90,7 @@ get_fabric() {
 create_dhcp_iprange() {
     log "INFO" "Creating DHCP IP range..."
     if ! maas admin ipranges create type=dynamic start_ip=$start_ip end_ip=$end_ip >>"$TEMP_LOG" 2>&1; then
-        log "WARN" "Please confirm if address is within subnet $subnet, or maybe it already exist."
+        log "WARN" "Please confirm if address is within subnet $subnet, or maybe it already exist"
         error_exit "Failed to create DHCP range."
     fi
 }

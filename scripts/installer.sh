@@ -24,6 +24,7 @@ main() {
     validate_system
 
     ## Package install
+    add_ceph_repository
     apt_update
     apt_install "$APT_PACKAGES"
     snap_install
@@ -68,24 +69,20 @@ main() {
     juju_add_k8s
     juju_config_k8s
 
+    ## Create cluster token
+    create_k8s_token
+
     ## Send config to otterscale
     send_config_data
 
     ## cleanup
     trap cleanup EXIT
+
+    log "INFO" "Otterscale install finished"
 }
 
-## Check curl command
-if ! command -v curl &> /dev/null; then
-    apt update --fix-missing >/dev/null 2>&1
-    apt install -y curl >/dev/null 2>&1
-fi
-
-## Check parameter
 if [[ $# -eq 0 ]]; then
-    echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] URL must be provided as a parameter url, e.g ./installer.sh url=http://127.0.0.1:80"
-    trap cleanup EXIT
-    exit 1
+    error_exit "URL must be provided as a parameter"
 fi
 while [ $# -gt 0 ]; do
     case $1 in
@@ -100,5 +97,4 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-## Start install
 main "$@"

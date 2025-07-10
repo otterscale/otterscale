@@ -22,7 +22,7 @@ search_available_vmhost() {
            [ $(echo "$available_memory >= 4" | bc -l) -eq 1 ] && \
            [ $(echo "$available_disk >= 8" | bc -l) -eq 1 ]; then
             log "INFO" "Using existing VM host $VM_HOST_ID with sufficient resources"
-            log "INFO" "Available resources - Cores: $available_cores, Memory: ${available_memory}GB, Disk: ${available_disk}GB"
+            log "DEBUG" "Available resources - Cores: $available_cores, Memory: ${available_memory}GB, Disk: ${available_disk}GB"
             return 0
         fi
     done < <(echo "$existing_hosts" | jq -c '.[]')
@@ -47,8 +47,8 @@ create_lxd_vm() {
             error_exit "Failed to create LXD VM host."
         fi
         VM_HOST_ID=$(maas admin vm-hosts read | jq -r '.[0].id')
-        log "INFO" "LXD VM host created successfully (ID: $VM_HOST_ID)"
     fi
+    log "INFO" "LXD VM host created successfully (ID: $VM_HOST_ID)"
 }
 
 rename_machine() {
@@ -60,7 +60,7 @@ rename_machine() {
 }
 
 wait_commissioning() {
-    log "INFO" "Waiting for the machine to transition from commissioning to ready state."
+    log "INFO" "Waiting for the machine to transition from commissioning to ready state"
     while true; do
         local status=$(maas admin machine read $machineID | jq -r '.status_name')
         if [ "$status" == "Ready" ]; then
@@ -83,17 +83,17 @@ create_vm_from_maas() {
         log "INFO" "juju-vm already existed, skipping create..."
     else
         log "INFO" "Creating VM on host $VM_HOST_ID..."
-        machineID=$(maas admin vm-host compose "$VM_HOST_ID" cores="$LXD_CORES" memory="$LXD_MEMORY" disk=1:size="$LXD_DISK" | jq -r '.system_id')
-        if [[ -z $machineID ]]; then
+	machineID=$(maas admin vm-host compose $VM_HOST_ID cores=$LXD_CORES memory=$LXD_MEMORY disk=1:size=$LXD_DISK | jq -r '.system_id')
+	if [[ -z $machineID ]]; then
             error_exit "Failed create vm host from kvm lxd $VM_HOST_ID."
-        else
+	else
             wait_commissioning
-        fi
+	fi
     fi
 }
 
 enter_vm_ip() {
-    log "INFO" "Please provide an IP address that falls within the range of $subnet."
+    log "INFO" "Please provide an IP address that falls within the range of $subnet"
     while true; do
         read -p "Enter the IP that juju-vm will used : " juju_vm_ip
         if validate_ip "$juju_vm_ip"; then
@@ -120,7 +120,7 @@ check_vm_ip() {
             break
         elif [[ "$confirm" =~ ^[Nn]$ ]]; then
             enter_vm_ip
-            update_vm_ip
+	    update_vm_ip
             break
         else
             echo "Invalid input. Please enter y or n."
@@ -146,13 +146,9 @@ update_vm_ip() {
 
 set_vm_static_ip() {
     if maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q .; then
-        if [[ $(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | jq -r '.status_message') == "Deployed" ]]; then
-            log "INFO" "Juju-vm had beeen deployed, skip vm network confguration."
-        else
-            machineID=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-            subnet=$(maas admin subnet read $(ip -o -4 addr show dev $bridge | awk '{print $4}') | jq -r '.name')
-            check_vm_ip
-        fi
+        machineID=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
+	subnet=$(maas admin subnet read $(ip -o -4 addr show dev $bridge | awk '{print $4}') | jq -r '.name')
+        check_vm_ip
     else
         error_exit "Machine juju-vm not found."
     fi

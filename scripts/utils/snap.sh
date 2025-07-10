@@ -13,7 +13,7 @@ retry_snap_install() {
 
     while [ $retries -lt $max_retries ]; do
         log "INFO" "Installing snap $snap... (Attempt $((retries+1)))"
-        if snap install $snap $option >/dev/null 2>&1; then
+        if snap install $snap $option >>"$TEMP_LOG" 2>&1; then
             break
         else
             log "WARN" "Failed to install snap $snap. Retrying... (Attempt $((retries+1)))"
