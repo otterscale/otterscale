@@ -53,6 +53,15 @@ const columns: ColumnDef<MON>[] = [
             return renderSnippet(cells.publicAddress, row);
         },
     },
+    {
+        accessorKey: "machine",
+        header: ({ column }) => {
+            return renderSnippet(headers.machine, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.machine, row);
+        },
+    },
 ];
 
 export {

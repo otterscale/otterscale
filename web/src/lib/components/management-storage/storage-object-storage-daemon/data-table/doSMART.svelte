@@ -4,7 +4,7 @@
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
+	import * as Loading from '$lib/components/custom/loading';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
@@ -60,7 +60,7 @@
 		</AlertDialog.Header>
 		<Form.Root>
 			{#if !isMounted}
-				<ComponentLoading />
+				<Loading.Report />
 			{:else}
 				{#each Object.entries($smarts) as [device, output]}
 					<Form.Fieldset>

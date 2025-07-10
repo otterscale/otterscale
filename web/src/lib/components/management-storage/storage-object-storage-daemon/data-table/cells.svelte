@@ -1,9 +1,11 @@
 <script lang="ts" module>
+	import { goto } from '$app/navigation';
 	import type { OSD } from '$gen/api/storage/v1/storage_pb';
+	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { formatCapacity } from '$lib/formatter';
+	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 	import { LineChart } from 'layerchart';
 
@@ -31,6 +33,7 @@
 		stateIn: stateIn,
 		exists: exists,
 		deviceClass: deviceClass,
+		machine: machine,
 		placementGroupCount: placementGroupCount,
 		usage: usage,
 		readBytes: readBytes,
@@ -39,12 +42,7 @@
 </script>
 
 {#snippet _row_picker(row: Row<OSD>)}
-	<Checkbox
-		checked={row.getIsSelected()}
-		onCheckedChange={(value) => row.toggleSelected(!!value)}
-		class="border-secondary-950"
-		aria-label="Select row"
-	/>
+	<TableRowPicker {row} />
 {/snippet}
 
 {#snippet id(row: Row<OSD>)}
@@ -73,6 +71,21 @@
 	</Badge>
 {/snippet}
 
+{#snippet machine(row: Row<OSD>)}
+	<div class="flex items-center gap-1">
+		<Badge variant="outline">
+			{row.original.machine?.hostname}
+		</Badge>
+		<Icon
+			icon="ph:arrow-square-out"
+			class="hover:cursor-pointer"
+			onclick={() => {
+				goto(`/management/machine/${row.original.machine?.id}`);
+			}}
+		/>
+	</div>
+{/snippet}
+
 {#snippet deviceClass(row: Row<OSD>)}
 	<Badge variant="outline">
 		{row.original.deviceClass}
@@ -88,23 +101,6 @@
 		numerator={Number(row.original.usedBytes)}
 		denominator={Number(row.original.sizeBytes)}
 	>
-		{#snippet detail({ numerator, denominator })}
-			{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(
-				numerator / (1024 * 1024)
-			)}
-			{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(
-				denominator / (1024 * 1024)
-			)}
-			<span>
-				{numeratorValue}
-				{numeratorUnit}
-			</span>
-			<span>/</span>
-			<span>
-				{denominatorValue}
-				{denominatorUnit}
-			</span>
-		{/snippet}
 		{#snippet ratio({ numerator, denominator })}
 			{((numerator * 100) / denominator).toFixed(2)}%
 		{/snippet}

@@ -64,6 +64,16 @@ const columns: ColumnDef<OSD>[] = [
         filterFn: 'arrIncludesSome',
     },
     {
+        accessorKey: "machine",
+        header: ({ column }) => {
+            return renderSnippet(headers.machine, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.machine, row);
+        },
+        filterFn: 'arrIncludesSome',
+    },
+    {
         accessorKey: "placementGroupCount",
         header: ({ column }) => {
             return renderSnippet(headers.placementGroupCount, column)

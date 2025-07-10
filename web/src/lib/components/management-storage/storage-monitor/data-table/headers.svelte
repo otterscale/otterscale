@@ -1,8 +1,8 @@
 <script lang="ts" module>
 	import type { MON } from '$gen/api/storage/v1/storage_pb';
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
+	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
@@ -10,18 +10,17 @@
 		leader: leader,
 		name: name,
 		rank: rank,
-		publicAddress: publicAddress
+		publicAddress: publicAddress,
+		machine: machine
 	};
 </script>
 
 {#snippet _row_picker(table: Table<MON>)}
-	<Checkbox
-		checked={table.getIsAllPageRowsSelected()}
-		indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
-		onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-		class="border-secondary-950"
-		aria-label="Select all"
-	/>
+	<Layout.Header class="justify-center">
+		<Layout.HeaderController>
+			<TableRowPicker {table} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
 {#snippet leader(column: Column<MON>)}
@@ -54,5 +53,11 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet machine(column: Column<MON>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>MACHINE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

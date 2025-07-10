@@ -1,8 +1,8 @@
 <script lang="ts" module>
 	import type { OSD } from '$gen/api/storage/v1/storage_pb';
 	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
+	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
@@ -13,6 +13,7 @@
 		stateIn: stateIn,
 		exists: exists,
 		deviceClass: deviceClass,
+		machine: machine,
 		placementGroupCount: placementGroupCount,
 		usage: usage,
 		readBytes: readBytes,
@@ -21,13 +22,11 @@
 </script>
 
 {#snippet _row_picker(table: Table<OSD>)}
-	<Checkbox
-		checked={table.getIsAllPageRowsSelected()}
-		indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
-		onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-		class="border-secondary-950"
-		aria-label="Select all"
-	/>
+	<Layout.Header class="justify-center">
+		<Layout.HeaderController>
+			<TableRowPicker {table} />
+		</Layout.HeaderController>
+	</Layout.Header>
 {/snippet}
 
 {#snippet id(column: Column<OSD>)}
@@ -68,10 +67,16 @@
 
 {#snippet deviceClass(column: Column<OSD>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>DEVICE CLASS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>DEVICE</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet machine(column: Column<OSD>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>MACHINE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -85,10 +90,7 @@
 {/snippet}
 
 {#snippet usage(column: Column<OSD>)}
-	<Layout.Header>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
+	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

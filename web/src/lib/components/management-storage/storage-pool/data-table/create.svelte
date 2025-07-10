@@ -143,7 +143,7 @@
 				{#if request.poolType === PoolType.REPLICATED}
 					<Form.Field>
 						<Form.Label>Replcated Size</Form.Label>
-						<SingleInput.General required type="number" bind:value={request.replicatedSize} />
+						<SingleInput.BigInteger required bind:value={request.replicatedSize} />
 					</Form.Field>
 					<Form.Help>
 						{REPLCATED_SIZE_HELP_TEXT}
@@ -190,7 +190,7 @@
 
 				<Form.Field>
 					<Form.Label>Bytes</Form.Label>
-					<SingleInput.General type="number" bind:value={request.quotaBytes} />
+					<SingleInput.BigInteger bind:value={request.quotaBytes} />
 				</Form.Field>
 				<Form.Help>
 					{QUOTAS_BYTES_HELP_TEXT}
@@ -198,7 +198,7 @@
 
 				<Form.Field>
 					<Form.Label>Objects</Form.Label>
-					<SingleInput.General type="number" bind:value={request.quotaObjects} />
+					<SingleInput.BigInteger bind:value={request.quotaObjects} />
 				</Form.Field>
 				<Form.Help>
 					{QUOTAS_OBJECTS_HELP_TEXT}
@@ -210,7 +210,6 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
 						storageClient
 							.createPool(request)
 							.then((r) => {
@@ -223,9 +222,15 @@
 							})
 							.catch((e) => {
 								toast.error(`Fail to create pool: ${e.toString()}`);
+							})
+							.finally(() => {
+								reset();
+								stateController.close();
 							});
-					}}>Create</AlertDialog.Action
+					}}
 				>
+					Create
+				</AlertDialog.Action>
 			</AlertDialog.ActionsGroup>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
