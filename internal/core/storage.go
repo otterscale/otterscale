@@ -95,7 +95,7 @@ func (uc *StorageUseCase) newConfig(ctx context.Context, uuid, name string) (*St
 		return nil
 	})
 	eg.Go(func() error {
-		leader, err := uc.facility.GetLeader(egctx, uuid, uc.rgwName(name))
+		leader, err := uc.facility.GetLeader(egctx, uuid, rgwName(name))
 		if err != nil {
 			return err
 		}
@@ -253,14 +253,14 @@ func (uc *StorageUseCase) extractStorageRGWConfig(result *action.ActionResult) (
 	}, nil
 }
 
-func (uc *StorageUseCase) rgwName(monName string) string {
+func rgwName(monName string) string {
 	tokens := strings.Split(monName, "-")
 	lastIndex := len(tokens) - 1
 	tokens[lastIndex] = "radosgw"
 	return strings.Join(tokens, "-")
 }
 
-func (uc *StorageUseCase) nfsName(monName string) string {
+func nfsName(monName string) string {
 	tokens := strings.Split(monName, "-")
 	lastIndex := len(tokens) - 1
 	tokens[lastIndex] = "nfs"

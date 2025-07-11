@@ -82,12 +82,12 @@ func (uc *StorageUseCase) ListSubvolumes(ctx context.Context, uuid, facility, vo
 	if err != nil {
 		return nil, err
 	}
-	pool := uc.nfsName(facility) // TODO: multiple ceph-nfs charms
+	pool := nfsName(facility) // TODO: multiple ceph-nfs charms
 	m, err := uc.fs.ListPathToExportClients(ctx, config, pool)
 	if err != nil {
 		return nil, err
 	}
-	ip, err := uc.exportIP(ctx, uuid, uc.nfsName(facility))
+	ip, err := uc.exportIP(ctx, uuid, nfsName(facility))
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func (uc *StorageUseCase) CreateSubvolume(ctx context.Context, uuid, facility, v
 	}
 
 	if export {
-		leader, err := uc.facility.GetLeader(ctx, uuid, uc.nfsName(facility))
+		leader, err := uc.facility.GetLeader(ctx, uuid, nfsName(facility))
 		if err != nil {
 			return nil, err
 		}
@@ -145,7 +145,7 @@ func (uc *StorageUseCase) UpdateSubvolume(ctx context.Context, uuid, facility, v
 		return nil, err
 	}
 	if export {
-		leader, err := uc.facility.GetLeader(ctx, uuid, uc.nfsName(facility))
+		leader, err := uc.facility.GetLeader(ctx, uuid, nfsName(facility))
 		if err != nil {
 			return nil, err
 		}
@@ -176,7 +176,7 @@ func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, v
 		return err
 	}
 	if export {
-		leader, err := uc.facility.GetLeader(ctx, uuid, uc.nfsName(facility))
+		leader, err := uc.facility.GetLeader(ctx, uuid, nfsName(facility))
 		if err != nil {
 			return err
 		}
@@ -194,7 +194,7 @@ func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, v
 }
 
 func (uc *StorageUseCase) GrantSubvolumeClient(ctx context.Context, uuid, facility, volume, subvolume, clientIP string) error {
-	leader, err := uc.facility.GetLeader(ctx, uuid, uc.nfsName(facility))
+	leader, err := uc.facility.GetLeader(ctx, uuid, nfsName(facility))
 	if err != nil {
 		return err
 	}
@@ -210,7 +210,7 @@ func (uc *StorageUseCase) GrantSubvolumeClient(ctx context.Context, uuid, facili
 }
 
 func (uc *StorageUseCase) RevokeSubvolumeClient(ctx context.Context, uuid, facility, volume, subvolume, clientIP string) error {
-	leader, err := uc.facility.GetLeader(ctx, uuid, uc.nfsName(facility))
+	leader, err := uc.facility.GetLeader(ctx, uuid, nfsName(facility))
 	if err != nil {
 		return err
 	}
@@ -283,7 +283,7 @@ func (uc *StorageUseCase) DeleteSubvolumeGroup(ctx context.Context, uuid, facili
 }
 
 func (uc *StorageUseCase) subvolumeExport(ctx context.Context, config *StorageConfig, facility, volume, subvolume, group string) (bool, error) {
-	pool := uc.nfsName(facility) // TODO: multiple ceph-nfs charms
+	pool := nfsName(facility) // TODO: multiple ceph-nfs charms
 	m, err := uc.fs.ListPathToExportClients(ctx, config, pool)
 	if err != nil {
 		return false, err
