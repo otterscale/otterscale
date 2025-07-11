@@ -187,22 +187,22 @@ func (x Warp_Input_Operation) Number() protoreflect.EnumNumber {
 type TestResult_Status int32
 
 const (
-	TestResult_Running   TestResult_Status = 0
-	TestResult_Succeeded TestResult_Status = 1
-	TestResult_Failed    TestResult_Status = 2
+	TestResult_RUNNING   TestResult_Status = 0
+	TestResult_SUCCEEDED TestResult_Status = 1
+	TestResult_FAILED    TestResult_Status = 2
 )
 
 // Enum value maps for TestResult_Status.
 var (
 	TestResult_Status_name = map[int32]string{
-		0: "Running",
-		1: "Succeeded",
-		2: "Failed",
+		0: "RUNNING",
+		1: "SUCCEEDED",
+		2: "FAILED",
 	}
 	TestResult_Status_value = map[string]int32{
-		"Running":   0,
-		"Succeeded": 1,
-		"Failed":    2,
+		"RUNNING":   0,
+		"SUCCEEDED": 1,
+		"FAILED":    2,
 	}
 )
 
@@ -1245,7 +1245,7 @@ func (x *TestResult) GetStatus() TestResult_Status {
 			return x.xxx_hidden_Status
 		}
 	}
-	return TestResult_Running
+	return TestResult_RUNNING
 }
 
 func (x *TestResult) GetCreatedBy() string {
@@ -1411,7 +1411,7 @@ func (x *TestResult) ClearName() {
 
 func (x *TestResult) ClearStatus() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Status = TestResult_Running
+	x.xxx_hidden_Status = TestResult_RUNNING
 }
 
 func (x *TestResult) ClearCreatedBy() {
@@ -3503,10 +3503,10 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x03fio\x18e \x01(\v2\x17.otterscale.bist.v1.FIOH\x00R\x03fio\x12.\n" +
 	"\x04warp\x18f \x01(\v2\x18.otterscale.bist.v1.WarpH\x00R\x04warp\"0\n" +
 	"\x06Status\x12\v\n" +
-	"\aRunning\x10\x00\x12\r\n" +
-	"\tSucceeded\x10\x01\x12\n" +
+	"\aRUNNING\x10\x00\x12\r\n" +
+	"\tSUCCEEDED\x10\x01\x12\n" +
 	"\n" +
-	"\x06Failed\x10\x02B\x06\n" +
+	"\x06FAILED\x10\x02B\x06\n" +
 	"\x04kind\"\x18\n" +
 	"\x16ListTestResultsRequest\"\\\n" +
 	"\x17ListTestResultsResponse\x12A\n" +
