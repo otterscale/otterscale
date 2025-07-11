@@ -151,7 +151,7 @@ func toProtoTestResult(r *core.BISTResult) *pb.TestResult {
 	ret.SetStatus(toProtoTestResultStatus(r.Status))
 	ret.SetCreatedBy(r.CreatedBy)
 	ret.SetStartedAt(timestamppb.New(r.StartTime))
-	ret.SetCompletedAt(timestamppb.New(r.CompleteTime))
+	ret.SetCompletedAt(timestamppb.New(r.CompletionTime))
 	if r.FIO != nil {
 		ret.SetFio(toProtoFIO(r.FIO))
 	}
@@ -169,8 +169,12 @@ func toProtoFIO(f *core.FIO) *pb.FIO {
 	if f.Target.NFS != nil {
 		ret.SetNetworkFileSystem(toProtoNetworkFileSystem(f.Target.NFS))
 	}
-	ret.SetInput(toProtoFIOInput(f.Input))
-	ret.SetOutput(toProtoFIOOutput(f.Output))
+	if f.Input != nil {
+		ret.SetInput(toProtoFIOInput(f.Input))
+	}
+	if f.Output != nil {
+		ret.SetOutput(toProtoFIOOutput(f.Output))
+	}
 	return ret
 }
 
@@ -201,9 +205,15 @@ func toProtoFIOInput(f *core.FIOInput) *pb.FIO_Input {
 
 func toProtoFIOOutput(f *core.FIOOutput) *pb.FIO_Output {
 	ret := &pb.FIO_Output{}
-	ret.SetRead(toProtoFIOOutputThroughput(f.Read))
-	ret.SetWrite(toProtoFIOOutputThroughput(f.Write))
-	ret.SetTrim(toProtoFIOOutputThroughput(f.Trim))
+	if f.Read != nil {
+		ret.SetRead(toProtoFIOOutputThroughput(f.Read))
+	}
+	if f.Write != nil {
+		ret.SetWrite(toProtoFIOOutputThroughput(f.Write))
+	}
+	if f.Trim != nil {
+		ret.SetTrim(toProtoFIOOutputThroughput(f.Trim))
+	}
 	return ret
 }
 
@@ -230,8 +240,12 @@ func toProtoWarp(f *core.Warp) *pb.Warp {
 	if f.Target.External != nil {
 		ret.SetExternalObjectService(toProtoExternalObjectService(f.Target.External))
 	}
-	ret.SetInput(toProtoWarpInput(f.Input))
-	ret.SetOutput(toProtoWarpOutput(f.Output))
+	if f.Input != nil {
+		ret.SetInput(toProtoWarpInput(f.Input))
+	}
+	if f.Output != nil {
+		ret.SetOutput(toProtoWarpOutput(f.Output))
+	}
 	return ret
 }
 

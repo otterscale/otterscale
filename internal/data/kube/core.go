@@ -86,17 +86,18 @@ func (r *core) ListPodsByLabel(ctx context.Context, config *rest.Config, namespa
 	return list.Items, nil
 }
 
-func (r *core) GetPodLogs(ctx context.Context, pod oscore.Pod, config *rest.Config, namespace string) (string, error) {
+func (r *core) GetPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return "", err
 	}
 
 	opts := corev1.PodLogOptions{
-		Container: pod.Spec.Containers[0].Name,
+		Container: containerName,
 	}
-	req := clientset.CoreV1().Pods(namespace).GetLogs(pod.GetName(), &opts)
-	logStream, err := req.Stream(context.TODO())
+	req := clientset.CoreV1().Pods(namespace).GetLogs(podName, &opts)
+
+	logStream, err := req.Stream(ctx)
 	if err != nil {
 		return "", err
 	}
@@ -107,10 +108,7 @@ func (r *core) GetPodLogs(ctx context.Context, pod oscore.Pod, config *rest.Conf
 	if err != nil {
 		return "", err
 	}
-
-	logs := buf.String()
-
-	return logs, nil
+	return buf.String(), nil
 }
 
 func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]oscore.PersistentVolumeClaim, error) {
