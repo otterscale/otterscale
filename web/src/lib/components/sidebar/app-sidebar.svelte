@@ -228,6 +228,17 @@
 					</Sidebar.MenuButton>
 				</Sidebar.MenuItem>
 
+				<Sidebar.MenuItem>
+					<Sidebar.MenuButton>
+						{#snippet child({ props })}
+							<a href="/market" {...props}>
+								<Icon icon="ph:magnifying-glass" />
+								{m.store()}
+							</a>
+						{/snippet}
+					</Sidebar.MenuButton>
+				</Sidebar.MenuItem>
+
 				<Collapsible.Root class="group/main-collapsible">
 					{#snippet child({ props })}
 						<Sidebar.MenuItem {...props}>
@@ -380,16 +391,59 @@
 					{/snippet}
 				</Collapsible.Root>
 
-				<Sidebar.MenuItem>
-					<Sidebar.MenuButton>
-						{#snippet child({ props })}
-							<a href="/market" {...props}>
-								<Icon icon="ph:magnifying-glass" />
-								{m.store()}
-							</a>
-						{/snippet}
-					</Sidebar.MenuButton>
-				</Sidebar.MenuItem>
+				<Collapsible.Root class="group/main-collapsible">
+					{#snippet child({ props })}
+						<Sidebar.MenuItem {...props}>
+							<Collapsible.Trigger>
+								{#snippet child({ props })}
+									<Sidebar.MenuButton {...props}>
+										<Icon icon="ph:speedometer" />
+										Dashboard
+										<Icon
+											icon="ph:caret-right"
+											class="ml-auto transition-transform duration-200 group-data-[state=open]/main-collapsible:rotate-90"
+										/>
+									</Sidebar.MenuButton>
+								{/snippet}
+							</Collapsible.Trigger>
+							<Collapsible.Content>
+								<Sidebar.MenuSub>
+									<Sidebar.MenuSubItem>
+										<Sidebar.MenuSubItem>
+											<Sidebar.MenuSubButton>
+												{#snippet child({ props })}
+													<a href="/dashboard/overall" {...props}>Overall</a>
+												{/snippet}
+											</Sidebar.MenuSubButton>
+										</Sidebar.MenuSubItem>
+
+										<Sidebar.MenuSubButton>
+											{#snippet child({ props })}
+												<a href="/dashboard/application" {...props}>Application</a>
+											{/snippet}
+										</Sidebar.MenuSubButton>
+									</Sidebar.MenuSubItem>
+
+									<Sidebar.MenuSubItem>
+										<Sidebar.MenuSubButton>
+											{#snippet child({ props })}
+												<a href="/dashboard/storage" {...props}>Storage</a>
+											{/snippet}
+										</Sidebar.MenuSubButton>
+									</Sidebar.MenuSubItem>
+
+									<Sidebar.MenuSubItem>
+										<Sidebar.MenuSubButton>
+											{#snippet child({ props })}
+												<a href="/dashboard/hardware" {...props}>Hardware</a>
+											{/snippet}
+										</Sidebar.MenuSubButton>
+									</Sidebar.MenuSubItem>
+								</Sidebar.MenuSub>
+							</Collapsible.Content>
+						</Sidebar.MenuItem>
+					{/snippet}
+				</Collapsible.Root>
 
 				<Collapsible.Root class="group/main-collapsible">
 					{#snippet child({ props })}

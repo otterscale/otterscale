@@ -1,5 +1,3 @@
-NEW BOOTSTRAP FLOW
-
 <!-- <script lang="ts">
 	const healthData = group(healthRawData, (d) => d.type).get('error') ?? [];
 	function metricColor(metric: number) {
@@ -143,6 +141,8 @@ NEW BOOTSTRAP FLOW
 	});
 </script>
 
+NEW BOOTSTRAP FLOW
+
 {#if !mounted}
 	<PageLoading />
 {:else}
@@ -168,8 +168,10 @@ NEW BOOTSTRAP FLOW
 							label: 'Go',
 							onClick: () => goto(`/dashboard?scope=${scope.name}&intervals=30`)
 						}
-					})}>Go to Machines</Button
+					})}
 			>
+				Go to Machines
+			</Button>
 		</Alert.Root>
 	{/if}
 	{#if $errorsStore && $errorsStore.length > 0}
@@ -182,7 +184,7 @@ NEW BOOTSTRAP FLOW
 				<Alert.Root variant="destructive">
 					<Icon icon="material-symbols:warning-rounded" class="size-7" />
 					<Alert.Title class="text-sm">{error.message}</Alert.Title>
-					<Alert.Description class="text-xs text-destructive">{error.details}</Alert.Description>
+					<Alert.Description class="text-destructive text-xs">{error.details}</Alert.Description>
 				</Alert.Root>
 			{/if}
 		{/each}

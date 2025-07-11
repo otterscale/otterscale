@@ -25,6 +25,9 @@
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
+	import { headers } from './headers.svelte';
+	import IopsRead from './iops-read.svelte';
+	import IopsWrite from './iops-write.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -139,6 +142,12 @@
 								{/if}
 							</Table.Head>
 						{/each}
+						<Table.Head>
+							{@render headers.iopsRead()}
+						</Table.Head>
+						<Table.Head>
+							{@render headers.iopsWrite()}
+						</Table.Head>
 						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
@@ -151,6 +160,12 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
+						<Table.Cell>
+							<IopsRead {selectedScope} selectedPool={row.original.name} />
+						</Table.Cell>
+						<Table.Cell>
+							<IopsWrite {selectedScope} selectedPool={row.original.name} />
+						</Table.Cell>
 						<Table.Cell>
 							<Actions {selectedScope} {selectedFacility} {row} bind:data />
 						</Table.Cell>

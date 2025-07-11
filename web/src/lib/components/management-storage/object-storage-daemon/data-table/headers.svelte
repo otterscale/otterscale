@@ -16,8 +16,8 @@
 		machine: machine,
 		placementGroupCount: placementGroupCount,
 		usage: usage,
-		readBytes: readBytes,
-		writeBytes: writeBytes
+		iopsRead: iopsRead,
+		iopsWrite: iopsWrite
 	};
 </script>
 
@@ -95,13 +95,13 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet readBytes(column: Column<OSD>)}
+{#snippet iopsRead()}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderViewer>READ</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet writeBytes(column: Column<OSD>)}
+{#snippet iopsWrite()}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderViewer>WRITE</Layout.HeaderViewer>
 	</Layout.Header>

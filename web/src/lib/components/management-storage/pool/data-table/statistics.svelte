@@ -34,7 +34,7 @@
 				Number(datum['usedBytes' as keyof TData])
 			)}
 			{@const usedBytesTotal = usedBytesList.reduce((a, current) => a + current, 0)}
-			{#if quotaBytesTotal}
+			{#if quotaBytesTotal && usedBytesTotal / quotaBytesTotal < 1}
 				{((usedBytesTotal / quotaBytesTotal) * 100).toFixed(2)}%
 			{:else}
 				<Icon icon="ph:infinity" />
