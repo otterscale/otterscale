@@ -6,9 +6,12 @@
 
 	export const headers = {
 		_row_picker: _row_picker,
-		type: type,
+		uid: uid,
 		name: name,
-		input: input,
+		status: status,
+		createdBy: createdBy,
+		startedAt: startedAt, 
+		completedAt: completedAt, 
 	};
 </script>
 
@@ -23,9 +26,9 @@
 {/snippet}
 
 
-{#snippet type(column: Column<TestResult>)}
+{#snippet uid(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">TYPE</p>
+		<p class="text-xs font-light">UID</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
@@ -37,9 +40,30 @@
 	</div>
 {/snippet}
 
-{#snippet input(column: Column<TestResult>)}
+{#snippet status(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">INPUT</p>
+		<p class="text-xs font-light">STATUS</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet createdBy(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">CREATED BY</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet startedAt(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">STARTED AT</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet completedAt(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">COMPLETED AT</p>
 		<Sorter {column} />
 	</div>
 {/snippet}

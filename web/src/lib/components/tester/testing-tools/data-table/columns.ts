@@ -7,12 +7,12 @@ import { headers } from './headers.svelte';
 
 const columns: ColumnDef<TestResult>[] = [
     {
-        accessorKey: "type",
+        accessorKey: "uid",
         header: ({ column }) => {
-            return renderSnippet(headers.type, column)
+            return renderSnippet(headers.uid, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.type, row);
+            return renderSnippet(cells.uid, row);
         },
     },
     {
@@ -25,12 +25,39 @@ const columns: ColumnDef<TestResult>[] = [
         },
     },
     {
-        accessorKey: "input",
+        accessorKey: "status",
         header: ({ column }) => {
-            return renderSnippet(headers.input, column)
+            return renderSnippet(headers.status, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.input, row);
+            return renderSnippet(cells.status, row);
+        },
+    },
+    {
+        accessorKey: "createdBy",
+        header: ({ column }) => {
+            return renderSnippet(headers.createdBy, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.createdBy, row);
+        },
+    },
+    {
+        accessorKey: "startedAt",
+        header: ({ column }) => {
+            return renderSnippet(headers.startedAt, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.startedAt, row);
+        },
+    },
+    {
+        accessorKey: "completedAt",
+        header: ({ column }) => {
+            return renderSnippet(headers.completedAt, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.completedAt, row);
         },
     },
     {
