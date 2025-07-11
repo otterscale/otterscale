@@ -58,24 +58,24 @@ const columns: ColumnDef<Pool>[] = [
             return renderSnippet(cells.usage, row);
         },
     },
-    {
-        accessorKey: "readBytes",
-        header: ({ column }) => {
-            return renderSnippet(headers.readBytes, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.readBytes, row);
-        },
-    },
-    {
-        accessorKey: "writeBytes",
-        header: ({ column }) => {
-            return renderSnippet(headers.writeBytes, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.writeBytes, row);
-        },
-    },
+    // {
+    //     accessorKey: "readBytes",
+    //     header: ({ column }) => {
+    //         return renderSnippet(headers.readBytes, column)
+    //     },
+    //     cell: ({ row }) => {
+    //         return renderSnippet(cells.readBytes, row);
+    //     },
+    // },
+    // {
+    //     accessorKey: "writeBytes",
+    //     header: ({ column }) => {
+    //         return renderSnippet(headers.writeBytes, column)
+    //     },
+    //     cell: ({ row }) => {
+    //         return renderSnippet(cells.writeBytes, row);
+    //     },
+    // },
 ];
 
 export {

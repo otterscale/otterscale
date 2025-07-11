@@ -4,26 +4,8 @@
 	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
-	import { formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import { LineChart } from 'layerchart';
-
-	const renderContext: 'svg' | 'canvas' = 'canvas';
-	const debug = false;
-	function generateRandomTimeSeriesData(days = 7, minValue = 50, maxValue = 100) {
-		const data = [];
-		const now = new Date();
-
-		for (let i = 0; i < days; i++) {
-			data.push({
-				date: new Date(now.getTime() - (days - 1 - i) * 24 * 60 * 60 * 1000),
-				value: Math.floor(Math.random() * (maxValue - minValue) + minValue)
-			});
-		}
-
-		return data;
-	}
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -35,9 +17,7 @@
 		deviceClass: deviceClass,
 		machine: machine,
 		placementGroupCount: placementGroupCount,
-		usage: usage,
-		readBytes: readBytes,
-		writeBytes: writeBytes
+		usage: usage
 	};
 </script>
 
@@ -105,20 +85,4 @@
 			{((numerator * 100) / denominator).toFixed(2)}%
 		{/snippet}
 	</Progress.Root>
-{/snippet}
-
-{#snippet readBytes(row: Row<OSD>)}
-	<span>
-		<div class="h-[50px] w-[100px]">
-			<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
-		</div>
-	</span>
-{/snippet}
-
-{#snippet writeBytes(row: Row<OSD>)}
-	<span>
-		<div class="h-[50px] w-[100px]">
-			<LineChart data={generateRandomTimeSeriesData()} x="date" y="value" {renderContext} {debug} />
-		</div>
-	</span>
 {/snippet}

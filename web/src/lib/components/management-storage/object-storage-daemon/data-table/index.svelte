@@ -2,9 +2,9 @@
 	import type { OSD } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
+	import BooleanFilter from '$lib/components/custom/data-table/data-table-filters/boolean-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
-	import BooleanFilter from '$lib/components/custom/data-table/data-table-filters/boolean-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -24,6 +24,9 @@
 	import { writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
+	import { headers } from './headers.svelte';
+	import IopsRead from './iops-read.svelte';
+	import IopsWrite from './iops-write.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -135,6 +138,12 @@
 								{/if}
 							</Table.Head>
 						{/each}
+						<Table.Head>
+							{@render headers.iopsRead()}
+						</Table.Head>
+						<Table.Head>
+							{@render headers.iopsWrite()}
+						</Table.Head>
 						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
@@ -147,6 +156,12 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
+						<Table.Cell>
+							<IopsRead {selectedScope} selectedObjectStorageDaemon={row.original.name} />
+						</Table.Cell>
+						<Table.Cell>
+							<IopsWrite {selectedScope} selectedObjectStorageDaemon={row.original.name} />
+						</Table.Cell>
 						<Table.Cell>
 							<Actions osd={row.original} />
 						</Table.Cell>
