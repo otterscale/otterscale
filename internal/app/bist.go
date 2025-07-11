@@ -323,7 +323,7 @@ func toProtoTestResultStatus(s string) pb.TestResult_Status {
 	if ok {
 		return pb.TestResult_Status(v)
 	}
-	return pb.TestResult_Running
+	return pb.TestResult_RUNNING
 }
 
 func toProtoFIOInputAccessMode(s string) pb.FIO_Input_AccessMode {
