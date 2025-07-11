@@ -56,7 +56,6 @@ type CephClusterRepo interface {
 	ListMONs(ctx context.Context, config *StorageConfig) ([]MON, error)
 	ListOSDs(ctx context.Context, config *StorageConfig) ([]OSD, error)
 	DoSMART(ctx context.Context, config *StorageConfig, who string) (map[string][]string, error)
-	IsPoolExist(ctx context.Context, name string, config *StorageConfig) (bool, error)
 	ListPools(ctx context.Context, config *StorageConfig) ([]Pool, error)
 	ListPoolsByApplication(ctx context.Context, config *StorageConfig, application string) ([]Pool, error)
 	CreatePool(ctx context.Context, config *StorageConfig, pool, poolType string) error
@@ -123,18 +122,21 @@ func (uc *StorageUseCase) DoSMART(ctx context.Context, uuid, facility, osd strin
 	return uc.cluster.DoSMART(ctx, config, osd)
 }
 
-func (uc *StorageUseCase) IsPoolExist(ctx context.Context, uuid, facility, name string) bool {
+func (uc *StorageUseCase) IsPoolExists(ctx context.Context, uuid, facility, name string) (bool, error) {
 	config, err := uc.config(ctx, uuid, facility)
 	if err != nil {
-		return false
+		return false, err
 	}
-
-	exist, err := uc.cluster.IsPoolExist(ctx, name, config)
+	pools, err := uc.cluster.ListPools(ctx, config)
 	if err != nil {
-		return false
+		return false, err
 	}
-
-	return exist
+	for i := range pools {
+		if pools[i].Name == name {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 func (uc *StorageUseCase) ListPools(ctx context.Context, uuid, facility, application string) ([]Pool, error) {
