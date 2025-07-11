@@ -1,7 +1,9 @@
 <script lang="ts" module>
+	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { siteConfig } from '$lib/config/site';
 	import * as m from '$lib/paraglide/messages.js';
+	import Icon from '@iconify/svelte';
 	import type { ComponentProps } from 'svelte';
 	import { featureTitle } from '../features';
 	import Footer from './footer.svelte';
@@ -129,42 +131,6 @@
 				]
 			},
 			{
-				title: 'Storage',
-				url: '/management/storage',
-				icon: 'ph:cube',
-				isActive: true,
-				items: [
-					{
-						title: 'Monitor',
-						url: '/management/storage/monitor'
-					},
-					{
-						title: 'Pool',
-						url: '/management/storage/pool'
-					},
-					{
-						title: 'Object Storage Daemon',
-						url: '/management/storage/object_storage_daemon'
-					},
-					{
-						title: 'RADOS Block Device',
-						url: '/management/storage/rados_block_device'
-					},
-					{
-						title: 'Volume',
-						url: '/management/storage/volume'
-					},
-					{
-						title: 'Bucket',
-						url: '/management/storage/bucket'
-					},
-					{
-						title: 'User',
-						url: '/management/storage/user'
-					}
-				]
-			},
-			{
 				title: m.store(),
 				url: '/market',
 				icon: 'ph:magnifying-glass'
@@ -246,7 +212,258 @@
 	<Sidebar.Content>
 		<Section label={m.general()} items={data.general} />
 		<Section label={m.shortcut()} items={data.shortcuts} />
-		<Section label={m.platform()} items={data.platforms} />
+
+		<Sidebar.Group class="group-data-[collapsible=icon]:hidden">
+			<Sidebar.GroupLabel>Platform</Sidebar.GroupLabel>
+
+			<Sidebar.Menu>
+				<Sidebar.MenuItem>
+					<Sidebar.MenuButton>
+						{#snippet child({ props })}
+							<a href="/management/llm" {...props}>
+								<Icon icon="ph:robot" />
+								{m.model()}
+							</a>
+						{/snippet}
+					</Sidebar.MenuButton>
+				</Sidebar.MenuItem>
+
+				<Collapsible.Root class="group/main-collapsible">
+					{#snippet child({ props })}
+						<Sidebar.MenuItem {...props}>
+							<Collapsible.Trigger>
+								{#snippet child({ props })}
+									<Sidebar.MenuButton {...props}>
+										<Icon icon="ph:hard-drives" />
+										Storage
+										<Icon
+											icon="ph:caret-right"
+											class="ml-auto transition-transform duration-200 group-data-[state=open]/main-collapsible:rotate-90"
+										/>
+									</Sidebar.MenuButton>
+								{/snippet}
+							</Collapsible.Trigger>
+							<Collapsible.Content>
+								<Sidebar.MenuSub class="mr-0 pr-0">
+									<Collapsible.Root class="group/sub-collapsible">
+										<Collapsible.Trigger
+											>{#snippet child({ props })}
+												<Sidebar.MenuButton {...props}>
+													<Icon icon="ph:cube" />
+													Cluster
+													<Icon
+														icon="ph:caret-right"
+														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
+													/>
+												</Sidebar.MenuButton>
+											{/snippet}
+										</Collapsible.Trigger>
+										<Collapsible.Content>
+											<Sidebar.MenuSub>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/cluster_monitor" {...props}>Monitor</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/cluster_pool" {...props}>Pool</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a
+																href="/management/storage/cluster_object_storage_daemon"
+																{...props}
+															>
+																OSD
+															</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+											</Sidebar.MenuSub>
+										</Collapsible.Content>
+									</Collapsible.Root>
+
+									<Collapsible.Root class="group/sub-collapsible">
+										<Collapsible.Trigger>
+											{#snippet child({ props })}
+												<Sidebar.MenuButton {...props}>
+													<Icon icon="ph:cube" />
+													Block
+													<Icon
+														icon="ph:caret-right"
+														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
+													/>
+												</Sidebar.MenuButton>
+											{/snippet}
+										</Collapsible.Trigger>
+										<Collapsible.Content>
+											<Sidebar.MenuSub>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/block" {...props}>Image</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+											</Sidebar.MenuSub>
+										</Collapsible.Content>
+									</Collapsible.Root>
+
+									<Collapsible.Root class="group/sub-collapsible">
+										<Collapsible.Trigger
+											>{#snippet child({ props })}
+												<Sidebar.MenuButton {...props}>
+													<Icon icon="ph:cube" />
+													File
+													<Icon
+														icon="ph:caret-right"
+														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
+													/>
+												</Sidebar.MenuButton>
+											{/snippet}
+										</Collapsible.Trigger>
+										<Collapsible.Content>
+											<Sidebar.MenuSub>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/file_system" {...props}>File System</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+											</Sidebar.MenuSub>
+										</Collapsible.Content>
+									</Collapsible.Root>
+
+									<Collapsible.Root class="group/sub-collapsible">
+										<Collapsible.Trigger>
+											{#snippet child({ props })}
+												<Sidebar.MenuButton {...props}>
+													<Icon icon="ph:cube" />
+													Object
+													<Icon
+														icon="ph:caret-right"
+														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
+													/>
+												</Sidebar.MenuButton>
+											{/snippet}
+										</Collapsible.Trigger>
+										<Collapsible.Content>
+											<Sidebar.MenuSub>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/object_bucket" {...props}>Bucket</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/object_user" {...props}>User</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+											</Sidebar.MenuSub>
+										</Collapsible.Content>
+									</Collapsible.Root>
+								</Sidebar.MenuSub>
+							</Collapsible.Content>
+						</Sidebar.MenuItem>
+					{/snippet}
+				</Collapsible.Root>
+
+				<Sidebar.MenuItem>
+					<Sidebar.MenuButton>
+						{#snippet child({ props })}
+							<a href="/market" {...props}>
+								<Icon icon="ph:magnifying-glass" />
+								{m.store()}
+							</a>
+						{/snippet}
+					</Sidebar.MenuButton>
+				</Sidebar.MenuItem>
+
+				<Collapsible.Root class="group/main-collapsible">
+					{#snippet child({ props })}
+						<Sidebar.MenuItem {...props}>
+							<Collapsible.Trigger>
+								{#snippet child({ props })}
+									<Sidebar.MenuButton {...props}>
+										<Icon icon="ph:gear-six" />
+										Management
+										<Icon
+											icon="ph:caret-right"
+											class="ml-auto transition-transform duration-200 group-data-[state=open]/main-collapsible:rotate-90"
+										/>
+									</Sidebar.MenuButton>
+								{/snippet}
+							</Collapsible.Trigger>
+							<Collapsible.Content>
+								<Sidebar.MenuSub>
+									<Sidebar.MenuSubItem>
+										<Sidebar.MenuSubButton>
+											{#snippet child({ props })}
+												<a href="/management/application" {...props}>
+													{m.application()}
+												</a>
+											{/snippet}
+										</Sidebar.MenuSubButton>
+									</Sidebar.MenuSubItem>
+
+									<Sidebar.MenuSubItem>
+										<Sidebar.MenuSubButton>
+											{#snippet child({ props })}
+												<a href="/management/facility" {...props}>
+													{m.facility()}
+												</a>
+											{/snippet}
+										</Sidebar.MenuSubButton>
+									</Sidebar.MenuSubItem>
+
+									<Sidebar.MenuSubItem>
+										<Sidebar.MenuSubButton>
+											{#snippet child({ props })}
+												<a href="/management/machine" {...props}>
+													{m.machine()}
+												</a>
+											{/snippet}
+										</Sidebar.MenuSubButton>
+									</Sidebar.MenuSubItem>
+
+									<Sidebar.MenuSubItem>
+										<Sidebar.MenuSubButton>
+											{#snippet child({ props })}
+												<a href="/management/network" {...props}>
+													{m.network()}
+												</a>
+											{/snippet}
+										</Sidebar.MenuSubButton>
+									</Sidebar.MenuSubItem>
+
+									<Sidebar.MenuSubItem>
+										<Sidebar.MenuSubButton>
+											{#snippet child({ props })}
+												<a href="/management/general" {...props}>
+													{m.configuration()}
+												</a>
+											{/snippet}
+										</Sidebar.MenuSubButton>
+									</Sidebar.MenuSubItem>
+								</Sidebar.MenuSub>
+							</Collapsible.Content>
+						</Sidebar.MenuItem>
+					{/snippet}
+				</Collapsible.Root>
+			</Sidebar.Menu>
+		</Sidebar.Group>
 	</Sidebar.Content>
 	<Sidebar.Separator />
 	<Sidebar.Footer>
