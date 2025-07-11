@@ -100,7 +100,6 @@ message TestResult {
   string status = 3;
   string start_time = 4;
   string complete_time = 5;
-  repeated string logs = 6;
   oneof input {
     TestResult.FIO fio = 11;
     TestResult.Warp warp = 12;

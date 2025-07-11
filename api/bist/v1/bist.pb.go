@@ -237,7 +237,6 @@ type TestResult struct {
 	xxx_hidden_Status       *string                `protobuf:"bytes,3,opt,name=status"`
 	xxx_hidden_StartTime    *string                `protobuf:"bytes,4,opt,name=start_time,json=startTime"`
 	xxx_hidden_CompleteTime *string                `protobuf:"bytes,5,opt,name=complete_time,json=completeTime"`
-	xxx_hidden_Logs         []string               `protobuf:"bytes,6,rep,name=logs"`
 	xxx_hidden_Input        isTestResult_Input     `protobuf_oneof:"input"`
 	xxx_hidden_Output       isTestResult_Output    `protobuf_oneof:"output"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
@@ -320,13 +319,6 @@ func (x *TestResult) GetCompleteTime() string {
 	return ""
 }
 
-func (x *TestResult) GetLogs() []string {
-	if x != nil {
-		return x.xxx_hidden_Logs
-	}
-	return nil
-}
-
 func (x *TestResult) GetFio() *TestResult_FIO {
 	if x != nil {
 		if x, ok := x.xxx_hidden_Input.(*testResult_Fio); ok {
@@ -365,31 +357,27 @@ func (x *TestResult) GetWarpResult() *TestResult_WarpResult {
 
 func (x *TestResult) SetType(v TestResult_Type) {
 	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
 }
 
 func (x *TestResult) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 7)
 }
 
 func (x *TestResult) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
 
 func (x *TestResult) SetStartTime(v string) {
 	x.xxx_hidden_StartTime = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
 }
 
 func (x *TestResult) SetCompleteTime(v string) {
 	x.xxx_hidden_CompleteTime = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 8)
-}
-
-func (x *TestResult) SetLogs(v []string) {
-	x.xxx_hidden_Logs = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
 }
 
 func (x *TestResult) SetFio(v *TestResult_FIO) {
@@ -606,7 +594,6 @@ type TestResult_builder struct {
 	Status       *string
 	StartTime    *string
 	CompleteTime *string
-	Logs         []string
 	// Fields of oneof xxx_hidden_Input:
 	Fio  *TestResult_FIO
 	Warp *TestResult_Warp
@@ -622,26 +609,25 @@ func (b0 TestResult_builder) Build() *TestResult {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
 		x.xxx_hidden_Type = *b.Type
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 7)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
 		x.xxx_hidden_Status = b.Status
 	}
 	if b.StartTime != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
 		x.xxx_hidden_StartTime = b.StartTime
 	}
 	if b.CompleteTime != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 8)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
 		x.xxx_hidden_CompleteTime = b.CompleteTime
 	}
-	x.xxx_hidden_Logs = b.Logs
 	if b.Fio != nil {
 		x.xxx_hidden_Input = &testResult_Fio{b.Fio}
 	}
@@ -3183,7 +3169,7 @@ var File_api_bist_v1_bist_proto protoreflect.FileDescriptor
 
 const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\n" +
-	"\x16api/bist/v1/bist.proto\x12\x12otterscale.bist.v1\x1a\x1bgoogle/protobuf/empty.proto\"\xa0\x12\n" +
+	"\x16api/bist/v1/bist.proto\x12\x12otterscale.bist.v1\x1a\x1bgoogle/protobuf/empty.proto\"\x8c\x12\n" +
 	"\n" +
 	"TestResult\x127\n" +
 	"\x04type\x18\x01 \x01(\x0e2#.otterscale.bist.v1.TestResult.TypeR\x04type\x12\x12\n" +
@@ -3191,8 +3177,7 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x06status\x18\x03 \x01(\tR\x06status\x12\x1d\n" +
 	"\n" +
 	"start_time\x18\x04 \x01(\tR\tstartTime\x12#\n" +
-	"\rcomplete_time\x18\x05 \x01(\tR\fcompleteTime\x12\x12\n" +
-	"\x04logs\x18\x06 \x03(\tR\x04logs\x126\n" +
+	"\rcomplete_time\x18\x05 \x01(\tR\fcompleteTime\x126\n" +
 	"\x03fio\x18\v \x01(\v2\".otterscale.bist.v1.TestResult.FIOH\x00R\x03fio\x129\n" +
 	"\x04warp\x18\f \x01(\v2#.otterscale.bist.v1.TestResult.WarpH\x00R\x04warp\x12I\n" +
 	"\n" +

@@ -127,7 +127,6 @@ func toProtoTestResult(r *core.BISTResult) *pb.TestResult {
 	ret.SetType(target)
 	ret.SetName(r.Name)
 	ret.SetStatus(r.Status)
-	ret.SetLogs(r.Logs)
 	if r.StartTime != nil {
 		ret.SetStartTime(r.StartTime.String())
 	}
@@ -151,6 +150,8 @@ func toProtoTestResult(r *core.BISTResult) *pb.TestResult {
 func toProtoTestResultFIO(f *core.BISTFIO) *pb.TestResult_FIO {
 	ret := &pb.TestResult_FIO{}
 	ret.SetAccessMode(toProtoTestResultFIOAccessMode(f.AccessMode))
+	ret.SetScopeUuid(f.ScopeUUID)
+	ret.SetFacilityName(f.FacilityName)
 	ret.SetNfsEndpoint(f.NFSEndpoint)
 	ret.SetNfsPath(f.NFSPath)
 	ret.SetJobCount(f.JobCount)

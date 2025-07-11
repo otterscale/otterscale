@@ -141,6 +141,7 @@ type WarpResult struct {
 	Type           string          `json:"type"`
 	WarpOperations []WarpOperation `json:"operations"`
 }
+
 type BISTResult struct {
 	Type         string
 	Name         string
@@ -148,7 +149,6 @@ type BISTResult struct {
 	StartTime    *metav1.Time
 	CompleteTime *metav1.Time
 	Args         string
-	Logs         []string
 	FIO          *BISTFIO
 	Warp         *BISTWarp
 	FIOResult    *FIOResult
@@ -165,6 +165,8 @@ type BISTFIO struct {
 	BlockSize        string
 	FileSize         string
 	IODepth          uint64
+	ScopeUUID        string
+	FacilityName     string
 }
 
 type BISTWarp struct {
@@ -175,11 +177,6 @@ type BISTWarp struct {
 	Duration   string `json:"duration"`
 	ObjectSize string `json:"object_size.SIZE"`
 	ObjectNum  string `json:"object_size.NUM"`
-}
-
-type BISTBlock struct {
-	FacilityName     string
-	StorageClassName string
 }
 
 type BISTS3 struct {
@@ -284,10 +281,7 @@ func (uc *BISTUseCase) toBISTConfigMap(name, host, fsid, key string) *corev1.Con
 		},
 		Data: map[string]string{
 			"ceph.conf": fmt.Sprintf(
-				`[global]
-				mon host = %s
-				fsid = %s
-				key = %s`, host, fsid, key),
+				`[global]\nmon host = %s\nfsid = %s\nkey = %s`, host, fsid, key),
 		},
 	}
 }
@@ -310,12 +304,12 @@ func (uc *BISTUseCase) CreateResult(ctx context.Context, target, name, uuid, fac
 		if err != nil {
 			return nil, err
 		}
-
-		job, err = toBISTJob(name, BIST_NAMESPACE, target, BIST_JOB_RETRY, fio)
+		cmName := fmt.Sprintf("ceph-conf-%s", generateShortName(uuid+facilityName))
+		job, err = toBISTJob(name, BIST_NAMESPACE, target, cmName, BIST_JOB_RETRY, fio)
 	case "nfs":
-		job, err = toBISTJob(name, BIST_NAMESPACE, target, BIST_JOB_RETRY, fio)
+		job, err = toBISTJob(name, BIST_NAMESPACE, target, "", BIST_JOB_RETRY, fio)
 	case "s3":
-		job, err = toBISTJob(name, BIST_NAMESPACE, target, BIST_JOB_RETRY, warp)
+		job, err = toBISTJob(name, BIST_NAMESPACE, target, "", BIST_JOB_RETRY, warp)
 	}
 	if err != nil {
 		return nil, err
@@ -645,7 +639,7 @@ func toBISTS3(s3type, name, endpoint string) BISTS3 {
 	}
 }
 
-func toBISTJob(name, namespace, target string, retry int32, BIST interface{}) (*batchv1.Job, error) {
+func toBISTJob(name, namespace, target, cmName string, retry int32, BIST interface{}) (*batchv1.Job, error) {
 	trueVal := false
 	image := BIST_IMAGE_LIST[target]
 
@@ -700,7 +694,7 @@ func toBISTJob(name, namespace, target string, retry int32, BIST interface{}) (*
 							VolumeMounts: generateVolumeMounts(target),
 						},
 					},
-					Volumes:       generateVolume(target),
+					Volumes:       generateVolume(target, cmName),
 					RestartPolicy: corev1.RestartPolicyNever,
 				},
 			},
@@ -708,15 +702,15 @@ func toBISTJob(name, namespace, target string, retry int32, BIST interface{}) (*
 	}, nil
 }
 
-func generateVolume(target string) []corev1.Volume {
-	if target == BIST_TYPE_NFS {
+func generateVolume(target, cmName string) []corev1.Volume {
+	if target == BIST_TYPE_BLOCK {
 		return []corev1.Volume{
 			{
 				Name: "ceph-conf",
 				VolumeSource: corev1.VolumeSource{
 					ConfigMap: &corev1.ConfigMapVolumeSource{
 						LocalObjectReference: corev1.LocalObjectReference{
-							Name: "ceph-conf",
+							Name: cmName,
 						},
 						Items: []corev1.KeyToPath{
 							{
@@ -751,6 +745,14 @@ func generateVolume(target string) []corev1.Volume {
 					},
 				},
 			},
+			{
+				Name: "sys",
+				VolumeSource: corev1.VolumeSource{
+					HostPath: &corev1.HostPathVolumeSource{
+						Path: "/sys",
+					},
+				},
+			},
 		}
 	}
 
@@ -758,7 +760,7 @@ func generateVolume(target string) []corev1.Volume {
 }
 
 func generateVolumeMounts(target string) []corev1.VolumeMount {
-	if target == BIST_TYPE_NFS {
+	if target == BIST_TYPE_BLOCK {
 		return []corev1.VolumeMount{
 			{
 				Name:      "ceph-conf",
@@ -776,6 +778,10 @@ func generateVolumeMounts(target string) []corev1.VolumeMount {
 			{
 				Name:      "run-udev",
 				MountPath: "/run/udev",
+			},
+			{
+				Name:      "sys",
+				MountPath: "/sys",
 			},
 		}
 	}
@@ -832,15 +838,13 @@ func (uc *BISTUseCase) toBISTResult(ctx context.Context, name string, job *batch
 		return nil, err
 	}
 
-	podLog := make([]string, 0, len(pods))
 	for _, pod := range pods {
-		//[TODO] go routine
+		//[TODO] If log can't get
 		if job.Status.CompletionTime != nil {
 			logs, err := uc.kubeCore.GetPodLogs(ctx, pod, config, BIST_NAMESPACE)
 			if err != nil {
 				return nil, err
 			}
-			podLog = append(podLog, logs)
 			json.Unmarshal([]byte(logs), &ret.FIOResult)
 			json.Unmarshal([]byte(RemoveLastTwoLines(logs)), &ret.WarpResult)
 			break
@@ -852,7 +856,6 @@ func (uc *BISTUseCase) toBISTResult(ctx context.Context, name string, job *batch
 	ret.Status = jobStatus
 	ret.StartTime = job.Status.StartTime
 	ret.CompleteTime = job.Status.CompletionTime
-	ret.Logs = podLog
 
 	json.Unmarshal([]byte(job.GetAnnotations()["bist.otterscale.io/config"]), &ret.Warp)
 	json.Unmarshal([]byte(job.GetAnnotations()["bist.otterscale.io/config"]), &ret.FIO)

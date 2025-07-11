@@ -91,8 +91,8 @@ func (r *cluster) IsPoolExist(ctx context.Context, name string, config *core.Sto
 	for i := range osdDump.Pools {
 		if name == osdDump.Pools[i].Name {
 			exist = true
+			break
 		}
-		break
 	}
 	return exist, nil
 }
