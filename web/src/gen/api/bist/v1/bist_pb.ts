@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/bist/v1/bist.proto.
  */
 export const file_api_bist_v1_bist: GenFile = /*@__PURE__*/
-  fileDesc("ChZhcGkvYmlzdC92MS9iaXN0LnByb3RvEhJvdHRlcnNjYWxlLmJpc3QudjEiPAoPQ2VwaEJsb2NrRGV2aWNlEhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCSIzChFOZXR3b3JrRmlsZVN5c3RlbRIQCghlbmRwb2ludBgBIAEoCRIMCgRwYXRoGAIgASgJIi8KDU9iamVjdFNlcnZpY2USDAoEbmFtZRgBIAEoCRIQCghlbmRwb2ludBgCIAEoCSJRChVFeHRlcm5hbE9iamVjdFNlcnZpY2USEAoIZW5kcG9pbnQYASABKAkSEgoKYWNjZXNzX2tleRgCIAEoCRISCgpzZWNyZXRfa2V5GAMgASgJIvAHCgNGSU8SQAoRY2VwaF9ibG9ja19kZXZpY2UYASABKAsyIy5vdHRlcnNjYWxlLmJpc3QudjEuQ2VwaEJsb2NrRGV2aWNlSAASRAoTbmV0d29ya19maWxlX3N5c3RlbRgCIAEoCzIlLm90dGVyc2NhbGUuYmlzdC52MS5OZXR3b3JrRmlsZVN5c3RlbUgAEiwKBWlucHV0GAsgASgLMh0ub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5JbnB1dBIuCgZvdXRwdXQYDCABKAsyHi5vdHRlcnNjYWxlLmJpc3QudjEuRklPLk91dHB1dBrCAgoFSW5wdXQSPQoLYWNjZXNzX21vZGUYASABKA4yKC5vdHRlcnNjYWxlLmJpc3QudjEuRklPLklucHV0LkFjY2Vzc01vZGUSEQoJam9iX2NvdW50GB8gASgEEhAKCHJ1bl90aW1lGCkgASgJEhIKCmJsb2NrX3NpemUYRyABKAkSEQoJZmlsZV9zaXplGFsgASgJEhAKCGlvX2RlcHRoGHkgASgEIpsBCgpBY2Nlc3NNb2RlEggKBFJFQUQQABIJCgVXUklURRABEggKBFRSSU0QAhIOCgpSRUFEX1dSSVRFEAMSDgoKVFJJTV9XUklURRAEEg0KCVJBTkRfUkVBRBAFEg4KClJBTkRfV1JJVEUQBhINCglSQU5EX1RSSU0QBxILCgdSQU5EX1JXEAgSEwoPUkFORF9UUklNX1dSSVRFEAkaswMKBk91dHB1dBI3CgRyZWFkGAEgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBI4CgV3cml0ZRgCIAEoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQSNwoEdHJpbRgDIAEoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQa/AEKClRocm91Z2hwdXQSEAoIaW9fYnl0ZXMYASABKAQSFwoPYmFuZHdpZHRoX2J5dGVzGAIgASgEEhUKDWlvX3Blcl9zZWNvbmQYAyABKAQSEQoJdG90YWxfaW9zGAQgASgEEkIKB2xhdGVuY3kYCyABKAsyMS5vdHRlcnNjYWxlLmJpc3QudjEuRklPLk91dHB1dC5UaHJvdWdocHV0LkxhdGVuY3kaVQoHTGF0ZW5jeRIXCg9taW5fbmFub3NlY29uZHMYASABKAQSFwoPbWF4X25hbm9zZWNvbmRzGAIgASgEEhgKEG1lYW5fbmFub3NlY29uZHMYAyABKAFCCAoGdGFyZ2V0Is4ICgRXYXJwEkAKE2NlcGhfb2JqZWN0X2dhdGV3YXkYASABKAsyIS5vdHRlcnNjYWxlLmJpc3QudjEuT2JqZWN0U2VydmljZUgAEjIKBW1pbmlvGAIgASgLMiEub3R0ZXJzY2FsZS5iaXN0LnYxLk9iamVjdFNlcnZpY2VIABJMChdleHRlcm5hbF9vYmplY3Rfc2VydmljZRgDIAEoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5FeHRlcm5hbE9iamVjdFNlcnZpY2VIABItCgVpbnB1dBgLIAEoCzIeLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLklucHV0Ei8KBm91dHB1dBgMIAEoCzIfLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dBrJAQoFSW5wdXQSOwoJb3BlcmF0aW9uGAEgASgOMigub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuSW5wdXQuT3BlcmF0aW9uEhAKCGR1cmF0aW9uGBUgASgJEhMKC29iamVjdF9zaXplGB8gASgJEhIKCm9iamVjdF9udW0YICABKAkiSAoJT3BlcmF0aW9uEgcKA0dFVBAAEgcKA1BVVBABEgoKBkRFTEVURRACEggKBExJU1QQAxIICgRTVEFUEAQSCQoFTUlYRUQQBRrLBAoGT3V0cHV0EhMKC3RvdGFsX2J5dGVzGAEgASgBEhUKDXRvdGFsX29iamVjdHMYAiABKAESGAoQdG90YWxfb3BlcmF0aW9ucxgDIAEoBBI3CgNnZXQYCyABKAsyKi5vdHRlcnNjYWxlLmJpc3QudjEuV2FycC5PdXRwdXQuVGhyb3VnaHB1dBI3CgNwdXQYDCABKAsyKi5vdHRlcnNjYWxlLmJpc3QudjEuV2FycC5PdXRwdXQuVGhyb3VnaHB1dBI6CgZkZWxldGUYDSABKAsyKi5vdHRlcnNjYWxlLmJpc3QudjEuV2FycC5PdXRwdXQuVGhyb3VnaHB1dBrMAgoKVGhyb3VnaHB1dBI/CgVieXRlcxgBIAEoCzIwLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0LkJ5dGVzEkMKB29iamVjdHMYAiABKAsyMi5vdHRlcnNjYWxlLmJpc3QudjEuV2FycC5PdXRwdXQuVGhyb3VnaHB1dC5PYmplY3RzGloKBUJ5dGVzEhoKEmZhc3Rlc3RfcGVyX3NlY29uZBgBIAEoARIZChFtZWRpYW5fcGVyX3NlY29uZBgCIAEoARIaChJzbG93ZXN0X3Blcl9zZWNvbmQYAyABKAEaXAoHT2JqZWN0cxIaChJmYXN0ZXN0X3Blcl9zZWNvbmQYASABKAESGQoRbWVkaWFuX3Blcl9zZWNvbmQYAiABKAESGgoSc2xvd2VzdF9wZXJfc2Vjb25kGAMgASgBQggKBnRhcmdldCLgAgoKVGVzdFJlc3VsdBILCgN1aWQYASABKAkSDAoEbmFtZRgCIAEoCRI1CgZzdGF0dXMYAyABKA4yJS5vdHRlcnNjYWxlLmJpc3QudjEuVGVzdFJlc3VsdC5TdGF0dXMSEgoKY3JlYXRlZF9ieRgEIAEoCRIuCgpzdGFydGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIwCgxjb21wbGV0ZWRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEiYKA2ZpbxhlIAEoCzIXLm90dGVyc2NhbGUuYmlzdC52MS5GSU9IABIoCgR3YXJwGGYgASgLMhgub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnBIACIwCgZTdGF0dXMSCwoHUnVubmluZxAAEg0KCVN1Y2NlZWRlZBABEgoKBkZhaWxlZBACQgYKBGtpbmQiGAoWTGlzdFRlc3RSZXN1bHRzUmVxdWVzdCJPChdMaXN0VGVzdFJlc3VsdHNSZXNwb25zZRI0Cgx0ZXN0X3Jlc3VsdHMYASADKAsyHi5vdHRlcnNjYWxlLmJpc3QudjEuVGVzdFJlc3VsdCKVAQoXQ3JlYXRlVGVzdFJlc3VsdFJlcXVlc3QSDAoEbmFtZRgBIAEoCRISCgpjcmVhdGVkX2J5GAIgASgJEiYKA2ZpbxhlIAEoCzIXLm90dGVyc2NhbGUuYmlzdC52MS5GSU9IABIoCgR3YXJwGGYgASgLMhgub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnBIAEIGCgRraW5kIicKF0RlbGV0ZVRlc3RSZXN1bHRSZXF1ZXN0EgwKBG5hbWUYASABKAkiLwoZTGlzdE9iamVjdFNlcnZpY2VzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJIo8BChpMaXN0T2JqZWN0U2VydmljZXNSZXNwb25zZRI+ChNjZXBoX29iamVjdF9nYXRld2F5GAEgASgLMiEub3R0ZXJzY2FsZS5iaXN0LnYxLk9iamVjdFNlcnZpY2USMQoGbWluaW9zGAIgAygLMiEub3R0ZXJzY2FsZS5iaXN0LnYxLk9iamVjdFNlcnZpY2UyqAMKC0JJU1RTZXJ2aWNlEmoKD0xpc3RUZXN0UmVzdWx0cxIqLm90dGVyc2NhbGUuYmlzdC52MS5MaXN0VGVzdFJlc3VsdHNSZXF1ZXN0Gisub3R0ZXJzY2FsZS5iaXN0LnYxLkxpc3RUZXN0UmVzdWx0c1Jlc3BvbnNlEl8KEENyZWF0ZVRlc3RSZXN1bHQSKy5vdHRlcnNjYWxlLmJpc3QudjEuQ3JlYXRlVGVzdFJlc3VsdFJlcXVlc3QaHi5vdHRlcnNjYWxlLmJpc3QudjEuVGVzdFJlc3VsdBJXChBEZWxldGVUZXN0UmVzdWx0Eisub3R0ZXJzY2FsZS5iaXN0LnYxLkRlbGV0ZVRlc3RSZXN1bHRSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EnMKEkxpc3RPYmplY3RTZXJ2aWNlcxItLm90dGVyc2NhbGUuYmlzdC52MS5MaXN0T2JqZWN0U2VydmljZXNSZXF1ZXN0Gi4ub3R0ZXJzY2FsZS5iaXN0LnYxLkxpc3RPYmplY3RTZXJ2aWNlc1Jlc3BvbnNlQi5aLGdpdGh1Yi5jb20vb3BlbmhkYy9vdHRlcnNjYWxlL2FwaS9iaXN0L3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("ChZhcGkvYmlzdC92MS9iaXN0LnByb3RvEhJvdHRlcnNjYWxlLmJpc3QudjEiPAoPQ2VwaEJsb2NrRGV2aWNlEhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCSIzChFOZXR3b3JrRmlsZVN5c3RlbRIQCghlbmRwb2ludBgBIAEoCRIMCgRwYXRoGAIgASgJIqMBChVJbnRlcm5hbE9iamVjdFNlcnZpY2USPAoEdHlwZRgBIAEoDjIuLm90dGVyc2NhbGUuYmlzdC52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2UuVHlwZRIMCgRuYW1lGAIgASgJEhAKCGVuZHBvaW50GAMgASgJIiwKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIICgRDRVBIEAESCQoFTUlOSU8QAiJRChVFeHRlcm5hbE9iamVjdFNlcnZpY2USEAoIZW5kcG9pbnQYASABKAkSEgoKYWNjZXNzX2tleRgCIAEoCRISCgpzZWNyZXRfa2V5GAMgASgJIvAHCgNGSU8SQAoRY2VwaF9ibG9ja19kZXZpY2UYASABKAsyIy5vdHRlcnNjYWxlLmJpc3QudjEuQ2VwaEJsb2NrRGV2aWNlSAASRAoTbmV0d29ya19maWxlX3N5c3RlbRgCIAEoCzIlLm90dGVyc2NhbGUuYmlzdC52MS5OZXR3b3JrRmlsZVN5c3RlbUgAEiwKBWlucHV0GAsgASgLMh0ub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5JbnB1dBIuCgZvdXRwdXQYDCABKAsyHi5vdHRlcnNjYWxlLmJpc3QudjEuRklPLk91dHB1dBrCAgoFSW5wdXQSPQoLYWNjZXNzX21vZGUYASABKA4yKC5vdHRlcnNjYWxlLmJpc3QudjEuRklPLklucHV0LkFjY2Vzc01vZGUSEQoJam9iX2NvdW50GB8gASgDEhAKCHJ1bl90aW1lGCkgASgJEhIKCmJsb2NrX3NpemUYRyABKAkSEQoJZmlsZV9zaXplGFsgASgJEhAKCGlvX2RlcHRoGHkgASgDIpsBCgpBY2Nlc3NNb2RlEggKBFJFQUQQABIJCgVXUklURRABEggKBFRSSU0QAhIOCgpSRUFEX1dSSVRFEAMSDgoKVFJJTV9XUklURRAEEg0KCVJBTkRfUkVBRBAFEg4KClJBTkRfV1JJVEUQBhINCglSQU5EX1RSSU0QBxILCgdSQU5EX1JXEAgSEwoPUkFORF9UUklNX1dSSVRFEAkaswMKBk91dHB1dBI3CgRyZWFkGAEgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBI4CgV3cml0ZRgCIAEoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQSNwoEdHJpbRgDIAEoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQa/AEKClRocm91Z2hwdXQSEAoIaW9fYnl0ZXMYASABKAMSFwoPYmFuZHdpZHRoX2J5dGVzGAIgASgDEhUKDWlvX3Blcl9zZWNvbmQYAyABKAESEQoJdG90YWxfaW9zGAQgASgDEkIKB2xhdGVuY3kYCyABKAsyMS5vdHRlcnNjYWxlLmJpc3QudjEuRklPLk91dHB1dC5UaHJvdWdocHV0LkxhdGVuY3kaVQoHTGF0ZW5jeRIXCg9taW5fbmFub3NlY29uZHMYASABKAMSFwoPbWF4X25hbm9zZWNvbmRzGAIgASgDEhgKEG1lYW5fbmFub3NlY29uZHMYAyABKAFCCAoGdGFyZ2V0IswHCgRXYXJwEkwKF2ludGVybmFsX29iamVjdF9zZXJ2aWNlGAEgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkludGVybmFsT2JqZWN0U2VydmljZUgAEkwKF2V4dGVybmFsX29iamVjdF9zZXJ2aWNlGAIgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkV4dGVybmFsT2JqZWN0U2VydmljZUgAEi0KBWlucHV0GAsgASgLMh4ub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuSW5wdXQSLwoGb3V0cHV0GAwgASgLMh8ub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuT3V0cHV0GskBCgVJbnB1dBI7CglvcGVyYXRpb24YASABKA4yKC5vdHRlcnNjYWxlLmJpc3QudjEuV2FycC5JbnB1dC5PcGVyYXRpb24SEAoIZHVyYXRpb24YFSABKAkSEwoLb2JqZWN0X3NpemUYHyABKAkSEgoKb2JqZWN0X251bRggIAEoCSJICglPcGVyYXRpb24SBwoDR0VUEAASBwoDUFVUEAESCgoGREVMRVRFEAISCAoETElTVBADEggKBFNUQVQQBBIJCgVNSVhFRBAFGvEDCgZPdXRwdXQSNwoDZ2V0GAsgASgLMioub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQSNwoDcHV0GAwgASgLMioub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQSOgoGZGVsZXRlGA0gASgLMioub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQauAIKClRocm91Z2hwdXQSEwoLdG90YWxfYnl0ZXMYASABKAESFQoNdG90YWxfb2JqZWN0cxgCIAEoARIYChB0b3RhbF9vcGVyYXRpb25zGAMgASgDEkEKBWJ5dGVzGAsgASgLMjIub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQuTWV0cmljcxJDCgdvYmplY3RzGAwgASgLMjIub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuT3V0cHV0LlRocm91Z2hwdXQuTWV0cmljcxpcCgdNZXRyaWNzEhoKEmZhc3Rlc3RfcGVyX3NlY29uZBgBIAEoARIZChFtZWRpYW5fcGVyX3NlY29uZBgCIAEoARIaChJzbG93ZXN0X3Blcl9zZWNvbmQYAyABKAFCCAoGdGFyZ2V0IuACCgpUZXN0UmVzdWx0EgsKA3VpZBgBIAEoCRIMCgRuYW1lGAIgASgJEjUKBnN0YXR1cxgDIAEoDjIlLm90dGVyc2NhbGUuYmlzdC52MS5UZXN0UmVzdWx0LlN0YXR1cxISCgpjcmVhdGVkX2J5GAQgASgJEi4KCnN0YXJ0ZWRfYXQYCyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjAKDGNvbXBsZXRlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASJgoDZmlvGGUgASgLMhcub3R0ZXJzY2FsZS5iaXN0LnYxLkZJT0gAEigKBHdhcnAYZiABKAsyGC5vdHRlcnNjYWxlLmJpc3QudjEuV2FycEgAIjAKBlN0YXR1cxILCgdSdW5uaW5nEAASDQoJU3VjY2VlZGVkEAESCgoGRmFpbGVkEAJCBgoEa2luZCIYChZMaXN0VGVzdFJlc3VsdHNSZXF1ZXN0Ik8KF0xpc3RUZXN0UmVzdWx0c1Jlc3BvbnNlEjQKDHRlc3RfcmVzdWx0cxgBIAMoCzIeLm90dGVyc2NhbGUuYmlzdC52MS5UZXN0UmVzdWx0IpUBChdDcmVhdGVUZXN0UmVzdWx0UmVxdWVzdBIMCgRuYW1lGAEgASgJEhIKCmNyZWF0ZWRfYnkYAiABKAkSJgoDZmlvGGUgASgLMhcub3R0ZXJzY2FsZS5iaXN0LnYxLkZJT0gAEigKBHdhcnAYZiABKAsyGC5vdHRlcnNjYWxlLmJpc3QudjEuV2FycEgAQgYKBGtpbmQiJwoXRGVsZXRlVGVzdFJlc3VsdFJlcXVlc3QSDAoEbmFtZRgBIAEoCSI3CiFMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCSJxCiJMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1Jlc3BvbnNlEksKGGludGVybmFsX29iamVjdF9zZXJ2aWNlcxgBIAMoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2UywQMKC0JJU1RTZXJ2aWNlEmoKD0xpc3RUZXN0UmVzdWx0cxIqLm90dGVyc2NhbGUuYmlzdC52MS5MaXN0VGVzdFJlc3VsdHNSZXF1ZXN0Gisub3R0ZXJzY2FsZS5iaXN0LnYxLkxpc3RUZXN0UmVzdWx0c1Jlc3BvbnNlEl8KEENyZWF0ZVRlc3RSZXN1bHQSKy5vdHRlcnNjYWxlLmJpc3QudjEuQ3JlYXRlVGVzdFJlc3VsdFJlcXVlc3QaHi5vdHRlcnNjYWxlLmJpc3QudjEuVGVzdFJlc3VsdBJXChBEZWxldGVUZXN0UmVzdWx0Eisub3R0ZXJzY2FsZS5iaXN0LnYxLkRlbGV0ZVRlc3RSZXN1bHRSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EosBChpMaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlcxI1Lm90dGVyc2NhbGUuYmlzdC52MS5MaXN0SW50ZXJuYWxPYmplY3RTZXJ2aWNlc1JlcXVlc3QaNi5vdHRlcnNjYWxlLmJpc3QudjEuTGlzdEludGVybmFsT2JqZWN0U2VydmljZXNSZXNwb25zZUIuWixnaXRodWIuY29tL29wZW5oZGMvb3R0ZXJzY2FsZS9hcGkvYmlzdC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.bist.v1.CephBlockDevice
@@ -59,26 +59,57 @@ export const NetworkFileSystemSchema: GenMessage<NetworkFileSystem> = /*@__PURE_
   messageDesc(file_api_bist_v1_bist, 1);
 
 /**
- * @generated from message otterscale.bist.v1.ObjectService
+ * @generated from message otterscale.bist.v1.InternalObjectService
  */
-export type ObjectService = Message<"otterscale.bist.v1.ObjectService"> & {
+export type InternalObjectService = Message<"otterscale.bist.v1.InternalObjectService"> & {
   /**
-   * @generated from field: string name = 1;
+   * @generated from field: otterscale.bist.v1.InternalObjectService.Type type = 1;
+   */
+  type: InternalObjectService_Type;
+
+  /**
+   * @generated from field: string name = 2;
    */
   name: string;
 
   /**
-   * @generated from field: string endpoint = 2;
+   * @generated from field: string endpoint = 3;
    */
   endpoint: string;
 };
 
 /**
- * Describes the message otterscale.bist.v1.ObjectService.
- * Use `create(ObjectServiceSchema)` to create a new message.
+ * Describes the message otterscale.bist.v1.InternalObjectService.
+ * Use `create(InternalObjectServiceSchema)` to create a new message.
  */
-export const ObjectServiceSchema: GenMessage<ObjectService> = /*@__PURE__*/
+export const InternalObjectServiceSchema: GenMessage<InternalObjectService> = /*@__PURE__*/
   messageDesc(file_api_bist_v1_bist, 2);
+
+/**
+ * @generated from enum otterscale.bist.v1.InternalObjectService.Type
+ */
+export enum InternalObjectService_Type {
+  /**
+   * @generated from enum value: UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: CEPH = 1;
+   */
+  CEPH = 1,
+
+  /**
+   * @generated from enum value: MINIO = 2;
+   */
+  MINIO = 2,
+}
+
+/**
+ * Describes the enum otterscale.bist.v1.InternalObjectService.Type.
+ */
+export const InternalObjectService_TypeSchema: GenEnum<InternalObjectService_Type> = /*@__PURE__*/
+  enumDesc(file_api_bist_v1_bist, 2, 0);
 
 /**
  * @generated from message otterscale.bist.v1.ExternalObjectService
@@ -158,7 +189,7 @@ export type FIO_Input = Message<"otterscale.bist.v1.FIO.Input"> & {
   /**
    * 1.13.3 Job description
    *
-   * @generated from field: uint64 job_count = 31;
+   * @generated from field: int64 job_count = 31;
    */
   jobCount: bigint;
 
@@ -186,7 +217,7 @@ export type FIO_Input = Message<"otterscale.bist.v1.FIO.Input"> & {
   /**
    * 1.13.12 I/O depth
    *
-   * @generated from field: uint64 io_depth = 121;
+   * @generated from field: int64 io_depth = 121;
    */
   ioDepth: bigint;
 };
@@ -291,22 +322,22 @@ export const FIO_OutputSchema: GenMessage<FIO_Output> = /*@__PURE__*/
  */
 export type FIO_Output_Throughput = Message<"otterscale.bist.v1.FIO.Output.Throughput"> & {
   /**
-   * @generated from field: uint64 io_bytes = 1;
+   * @generated from field: int64 io_bytes = 1;
    */
   ioBytes: bigint;
 
   /**
-   * @generated from field: uint64 bandwidth_bytes = 2;
+   * @generated from field: int64 bandwidth_bytes = 2;
    */
   bandwidthBytes: bigint;
 
   /**
-   * @generated from field: uint64 io_per_second = 3;
+   * @generated from field: double io_per_second = 3;
    */
-  ioPerSecond: bigint;
+  ioPerSecond: number;
 
   /**
-   * @generated from field: uint64 total_ios = 4;
+   * @generated from field: int64 total_ios = 4;
    */
   totalIos: bigint;
 
@@ -328,12 +359,12 @@ export const FIO_Output_ThroughputSchema: GenMessage<FIO_Output_Throughput> = /*
  */
 export type FIO_Output_Throughput_Latency = Message<"otterscale.bist.v1.FIO.Output.Throughput.Latency"> & {
   /**
-   * @generated from field: uint64 min_nanoseconds = 1;
+   * @generated from field: int64 min_nanoseconds = 1;
    */
   minNanoseconds: bigint;
 
   /**
-   * @generated from field: uint64 max_nanoseconds = 2;
+   * @generated from field: int64 max_nanoseconds = 2;
    */
   maxNanoseconds: bigint;
 
@@ -359,19 +390,13 @@ export type Warp = Message<"otterscale.bist.v1.Warp"> & {
    */
   target: {
     /**
-     * @generated from field: otterscale.bist.v1.ObjectService ceph_object_gateway = 1;
+     * @generated from field: otterscale.bist.v1.InternalObjectService internal_object_service = 1;
      */
-    value: ObjectService;
-    case: "cephObjectGateway";
+    value: InternalObjectService;
+    case: "internalObjectService";
   } | {
     /**
-     * @generated from field: otterscale.bist.v1.ObjectService minio = 2;
-     */
-    value: ObjectService;
-    case: "minio";
-  } | {
-    /**
-     * @generated from field: otterscale.bist.v1.ExternalObjectService external_object_service = 3;
+     * @generated from field: otterscale.bist.v1.ExternalObjectService external_object_service = 2;
      */
     value: ExternalObjectService;
     case: "externalObjectService";
@@ -473,21 +498,6 @@ export const Warp_Input_OperationSchema: GenEnum<Warp_Input_Operation> = /*@__PU
  */
 export type Warp_Output = Message<"otterscale.bist.v1.Warp.Output"> & {
   /**
-   * @generated from field: double total_bytes = 1;
-   */
-  totalBytes: number;
-
-  /**
-   * @generated from field: double total_objects = 2;
-   */
-  totalObjects: number;
-
-  /**
-   * @generated from field: uint64 total_operations = 3;
-   */
-  totalOperations: bigint;
-
-  /**
    * @generated from field: otterscale.bist.v1.Warp.Output.Throughput get = 11;
    */
   get?: Warp_Output_Throughput;
@@ -515,14 +525,29 @@ export const Warp_OutputSchema: GenMessage<Warp_Output> = /*@__PURE__*/
  */
 export type Warp_Output_Throughput = Message<"otterscale.bist.v1.Warp.Output.Throughput"> & {
   /**
-   * @generated from field: otterscale.bist.v1.Warp.Output.Throughput.Bytes bytes = 1;
+   * @generated from field: double total_bytes = 1;
    */
-  bytes?: Warp_Output_Throughput_Bytes;
+  totalBytes: number;
 
   /**
-   * @generated from field: otterscale.bist.v1.Warp.Output.Throughput.Objects objects = 2;
+   * @generated from field: double total_objects = 2;
    */
-  objects?: Warp_Output_Throughput_Objects;
+  totalObjects: number;
+
+  /**
+   * @generated from field: int64 total_operations = 3;
+   */
+  totalOperations: bigint;
+
+  /**
+   * @generated from field: otterscale.bist.v1.Warp.Output.Throughput.Metrics bytes = 11;
+   */
+  bytes?: Warp_Output_Throughput_Metrics;
+
+  /**
+   * @generated from field: otterscale.bist.v1.Warp.Output.Throughput.Metrics objects = 12;
+   */
+  objects?: Warp_Output_Throughput_Metrics;
 };
 
 /**
@@ -533,9 +558,9 @@ export const Warp_Output_ThroughputSchema: GenMessage<Warp_Output_Throughput> = 
   messageDesc(file_api_bist_v1_bist, 5, 1, 0);
 
 /**
- * @generated from message otterscale.bist.v1.Warp.Output.Throughput.Bytes
+ * @generated from message otterscale.bist.v1.Warp.Output.Throughput.Metrics
  */
-export type Warp_Output_Throughput_Bytes = Message<"otterscale.bist.v1.Warp.Output.Throughput.Bytes"> & {
+export type Warp_Output_Throughput_Metrics = Message<"otterscale.bist.v1.Warp.Output.Throughput.Metrics"> & {
   /**
    * @generated from field: double fastest_per_second = 1;
    */
@@ -553,38 +578,11 @@ export type Warp_Output_Throughput_Bytes = Message<"otterscale.bist.v1.Warp.Outp
 };
 
 /**
- * Describes the message otterscale.bist.v1.Warp.Output.Throughput.Bytes.
- * Use `create(Warp_Output_Throughput_BytesSchema)` to create a new message.
+ * Describes the message otterscale.bist.v1.Warp.Output.Throughput.Metrics.
+ * Use `create(Warp_Output_Throughput_MetricsSchema)` to create a new message.
  */
-export const Warp_Output_Throughput_BytesSchema: GenMessage<Warp_Output_Throughput_Bytes> = /*@__PURE__*/
+export const Warp_Output_Throughput_MetricsSchema: GenMessage<Warp_Output_Throughput_Metrics> = /*@__PURE__*/
   messageDesc(file_api_bist_v1_bist, 5, 1, 0, 0);
-
-/**
- * @generated from message otterscale.bist.v1.Warp.Output.Throughput.Objects
- */
-export type Warp_Output_Throughput_Objects = Message<"otterscale.bist.v1.Warp.Output.Throughput.Objects"> & {
-  /**
-   * @generated from field: double fastest_per_second = 1;
-   */
-  fastestPerSecond: number;
-
-  /**
-   * @generated from field: double median_per_second = 2;
-   */
-  medianPerSecond: number;
-
-  /**
-   * @generated from field: double slowest_per_second = 3;
-   */
-  slowestPerSecond: number;
-};
-
-/**
- * Describes the message otterscale.bist.v1.Warp.Output.Throughput.Objects.
- * Use `create(Warp_Output_Throughput_ObjectsSchema)` to create a new message.
- */
-export const Warp_Output_Throughput_ObjectsSchema: GenMessage<Warp_Output_Throughput_Objects> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 5, 1, 0, 1);
 
 /**
  * @generated from message otterscale.bist.v1.TestResult
@@ -758,9 +756,9 @@ export const DeleteTestResultRequestSchema: GenMessage<DeleteTestResultRequest> 
   messageDesc(file_api_bist_v1_bist, 10);
 
 /**
- * @generated from message otterscale.bist.v1.ListObjectServicesRequest
+ * @generated from message otterscale.bist.v1.ListInternalObjectServicesRequest
  */
-export type ListObjectServicesRequest = Message<"otterscale.bist.v1.ListObjectServicesRequest"> & {
+export type ListInternalObjectServicesRequest = Message<"otterscale.bist.v1.ListInternalObjectServicesRequest"> & {
   /**
    * @generated from field: string scope_uuid = 1;
    */
@@ -768,32 +766,27 @@ export type ListObjectServicesRequest = Message<"otterscale.bist.v1.ListObjectSe
 };
 
 /**
- * Describes the message otterscale.bist.v1.ListObjectServicesRequest.
- * Use `create(ListObjectServicesRequestSchema)` to create a new message.
+ * Describes the message otterscale.bist.v1.ListInternalObjectServicesRequest.
+ * Use `create(ListInternalObjectServicesRequestSchema)` to create a new message.
  */
-export const ListObjectServicesRequestSchema: GenMessage<ListObjectServicesRequest> = /*@__PURE__*/
+export const ListInternalObjectServicesRequestSchema: GenMessage<ListInternalObjectServicesRequest> = /*@__PURE__*/
   messageDesc(file_api_bist_v1_bist, 11);
 
 /**
- * @generated from message otterscale.bist.v1.ListObjectServicesResponse
+ * @generated from message otterscale.bist.v1.ListInternalObjectServicesResponse
  */
-export type ListObjectServicesResponse = Message<"otterscale.bist.v1.ListObjectServicesResponse"> & {
+export type ListInternalObjectServicesResponse = Message<"otterscale.bist.v1.ListInternalObjectServicesResponse"> & {
   /**
-   * @generated from field: otterscale.bist.v1.ObjectService ceph_object_gateway = 1;
+   * @generated from field: repeated otterscale.bist.v1.InternalObjectService internal_object_services = 1;
    */
-  cephObjectGateway?: ObjectService;
-
-  /**
-   * @generated from field: repeated otterscale.bist.v1.ObjectService minios = 2;
-   */
-  minios: ObjectService[];
+  internalObjectServices: InternalObjectService[];
 };
 
 /**
- * Describes the message otterscale.bist.v1.ListObjectServicesResponse.
- * Use `create(ListObjectServicesResponseSchema)` to create a new message.
+ * Describes the message otterscale.bist.v1.ListInternalObjectServicesResponse.
+ * Use `create(ListInternalObjectServicesResponseSchema)` to create a new message.
  */
-export const ListObjectServicesResponseSchema: GenMessage<ListObjectServicesResponse> = /*@__PURE__*/
+export const ListInternalObjectServicesResponseSchema: GenMessage<ListInternalObjectServicesResponse> = /*@__PURE__*/
   messageDesc(file_api_bist_v1_bist, 12);
 
 /**
@@ -825,12 +818,12 @@ export const BISTService: GenService<{
     output: typeof EmptySchema;
   },
   /**
-   * @generated from rpc otterscale.bist.v1.BISTService.ListObjectServices
+   * @generated from rpc otterscale.bist.v1.BISTService.ListInternalObjectServices
    */
-  listObjectServices: {
+  listInternalObjectServices: {
     methodKind: "unary";
-    input: typeof ListObjectServicesRequestSchema;
-    output: typeof ListObjectServicesResponseSchema;
+    input: typeof ListInternalObjectServicesRequestSchema;
+    output: typeof ListInternalObjectServicesResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_bist_v1_bist, 0);

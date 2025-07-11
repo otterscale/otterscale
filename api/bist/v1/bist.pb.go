@@ -22,6 +22,50 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type InternalObjectService_Type int32
+
+const (
+	InternalObjectService_UNSPECIFIED InternalObjectService_Type = 0
+	InternalObjectService_CEPH        InternalObjectService_Type = 1
+	InternalObjectService_MINIO       InternalObjectService_Type = 2
+)
+
+// Enum value maps for InternalObjectService_Type.
+var (
+	InternalObjectService_Type_name = map[int32]string{
+		0: "UNSPECIFIED",
+		1: "CEPH",
+		2: "MINIO",
+	}
+	InternalObjectService_Type_value = map[string]int32{
+		"UNSPECIFIED": 0,
+		"CEPH":        1,
+		"MINIO":       2,
+	}
+)
+
+func (x InternalObjectService_Type) Enum() *InternalObjectService_Type {
+	p := new(InternalObjectService_Type)
+	*p = x
+	return p
+}
+
+func (x InternalObjectService_Type) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (InternalObjectService_Type) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_bist_v1_bist_proto_enumTypes[0].Descriptor()
+}
+
+func (InternalObjectService_Type) Type() protoreflect.EnumType {
+	return &file_api_bist_v1_bist_proto_enumTypes[0]
+}
+
+func (x InternalObjectService_Type) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
 type FIO_Input_AccessMode int32
 
 const (
@@ -76,11 +120,11 @@ func (x FIO_Input_AccessMode) String() string {
 }
 
 func (FIO_Input_AccessMode) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_bist_v1_bist_proto_enumTypes[0].Descriptor()
+	return file_api_bist_v1_bist_proto_enumTypes[1].Descriptor()
 }
 
 func (FIO_Input_AccessMode) Type() protoreflect.EnumType {
-	return &file_api_bist_v1_bist_proto_enumTypes[0]
+	return &file_api_bist_v1_bist_proto_enumTypes[1]
 }
 
 func (x FIO_Input_AccessMode) Number() protoreflect.EnumNumber {
@@ -129,11 +173,11 @@ func (x Warp_Input_Operation) String() string {
 }
 
 func (Warp_Input_Operation) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_bist_v1_bist_proto_enumTypes[1].Descriptor()
+	return file_api_bist_v1_bist_proto_enumTypes[2].Descriptor()
 }
 
 func (Warp_Input_Operation) Type() protoreflect.EnumType {
-	return &file_api_bist_v1_bist_proto_enumTypes[1]
+	return &file_api_bist_v1_bist_proto_enumTypes[2]
 }
 
 func (x Warp_Input_Operation) Number() protoreflect.EnumNumber {
@@ -173,11 +217,11 @@ func (x TestResult_Status) String() string {
 }
 
 func (TestResult_Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_bist_v1_bist_proto_enumTypes[2].Descriptor()
+	return file_api_bist_v1_bist_proto_enumTypes[3].Descriptor()
 }
 
 func (TestResult_Status) Type() protoreflect.EnumType {
-	return &file_api_bist_v1_bist_proto_enumTypes[2]
+	return &file_api_bist_v1_bist_proto_enumTypes[3]
 }
 
 func (x TestResult_Status) Number() protoreflect.EnumNumber {
@@ -406,30 +450,31 @@ func (b0 NetworkFileSystem_builder) Build() *NetworkFileSystem {
 	return m0
 }
 
-type ObjectService struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Endpoint    *string                `protobuf:"bytes,2,opt,name=endpoint"`
+type InternalObjectService struct {
+	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Type        InternalObjectService_Type `protobuf:"varint,1,opt,name=type,enum=otterscale.bist.v1.InternalObjectService_Type"`
+	xxx_hidden_Name        *string                    `protobuf:"bytes,2,opt,name=name"`
+	xxx_hidden_Endpoint    *string                    `protobuf:"bytes,3,opt,name=endpoint"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *ObjectService) Reset() {
-	*x = ObjectService{}
+func (x *InternalObjectService) Reset() {
+	*x = InternalObjectService{}
 	mi := &file_api_bist_v1_bist_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ObjectService) String() string {
+func (x *InternalObjectService) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ObjectService) ProtoMessage() {}
+func (*InternalObjectService) ProtoMessage() {}
 
-func (x *ObjectService) ProtoReflect() protoreflect.Message {
+func (x *InternalObjectService) ProtoReflect() protoreflect.Message {
 	mi := &file_api_bist_v1_bist_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -441,7 +486,16 @@ func (x *ObjectService) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ObjectService) GetName() string {
+func (x *InternalObjectService) GetType() InternalObjectService_Type {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
+			return x.xxx_hidden_Type
+		}
+	}
+	return InternalObjectService_UNSPECIFIED
+}
+
+func (x *InternalObjectService) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -451,7 +505,7 @@ func (x *ObjectService) GetName() string {
 	return ""
 }
 
-func (x *ObjectService) GetEndpoint() string {
+func (x *InternalObjectService) GetEndpoint() string {
 	if x != nil {
 		if x.xxx_hidden_Endpoint != nil {
 			return *x.xxx_hidden_Endpoint
@@ -461,57 +515,79 @@ func (x *ObjectService) GetEndpoint() string {
 	return ""
 }
 
-func (x *ObjectService) SetName(v string) {
+func (x *InternalObjectService) SetType(v InternalObjectService_Type) {
+	x.xxx_hidden_Type = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *InternalObjectService) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *ObjectService) SetEndpoint(v string) {
+func (x *InternalObjectService) SetEndpoint(v string) {
 	x.xxx_hidden_Endpoint = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *ObjectService) HasName() bool {
+func (x *InternalObjectService) HasType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ObjectService) HasEndpoint() bool {
+func (x *InternalObjectService) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ObjectService) ClearName() {
+func (x *InternalObjectService) HasEndpoint() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *InternalObjectService) ClearType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Type = InternalObjectService_UNSPECIFIED
+}
+
+func (x *InternalObjectService) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Name = nil
 }
 
-func (x *ObjectService) ClearEndpoint() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+func (x *InternalObjectService) ClearEndpoint() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Endpoint = nil
 }
 
-type ObjectService_builder struct {
+type InternalObjectService_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	Type     *InternalObjectService_Type
 	Name     *string
 	Endpoint *string
 }
 
-func (b0 ObjectService_builder) Build() *ObjectService {
-	m0 := &ObjectService{}
+func (b0 InternalObjectService_builder) Build() *InternalObjectService {
+	m0 := &InternalObjectService{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.Type != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_Type = *b.Type
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Endpoint != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Endpoint = b.Endpoint
 	}
 	return m0
@@ -916,19 +992,10 @@ func (x *Warp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Warp) GetCephObjectGateway() *ObjectService {
+func (x *Warp) GetInternalObjectService() *InternalObjectService {
 	if x != nil {
-		if x, ok := x.xxx_hidden_Target.(*warp_CephObjectGateway); ok {
-			return x.CephObjectGateway
-		}
-	}
-	return nil
-}
-
-func (x *Warp) GetMinio() *ObjectService {
-	if x != nil {
-		if x, ok := x.xxx_hidden_Target.(*warp_Minio); ok {
-			return x.Minio
+		if x, ok := x.xxx_hidden_Target.(*warp_InternalObjectService); ok {
+			return x.InternalObjectService
 		}
 	}
 	return nil
@@ -957,20 +1024,12 @@ func (x *Warp) GetOutput() *Warp_Output {
 	return nil
 }
 
-func (x *Warp) SetCephObjectGateway(v *ObjectService) {
+func (x *Warp) SetInternalObjectService(v *InternalObjectService) {
 	if v == nil {
 		x.xxx_hidden_Target = nil
 		return
 	}
-	x.xxx_hidden_Target = &warp_CephObjectGateway{v}
-}
-
-func (x *Warp) SetMinio(v *ObjectService) {
-	if v == nil {
-		x.xxx_hidden_Target = nil
-		return
-	}
-	x.xxx_hidden_Target = &warp_Minio{v}
+	x.xxx_hidden_Target = &warp_InternalObjectService{v}
 }
 
 func (x *Warp) SetExternalObjectService(v *ExternalObjectService) {
@@ -996,19 +1055,11 @@ func (x *Warp) HasTarget() bool {
 	return x.xxx_hidden_Target != nil
 }
 
-func (x *Warp) HasCephObjectGateway() bool {
+func (x *Warp) HasInternalObjectService() bool {
 	if x == nil {
 		return false
 	}
-	_, ok := x.xxx_hidden_Target.(*warp_CephObjectGateway)
-	return ok
-}
-
-func (x *Warp) HasMinio() bool {
-	if x == nil {
-		return false
-	}
-	_, ok := x.xxx_hidden_Target.(*warp_Minio)
+	_, ok := x.xxx_hidden_Target.(*warp_InternalObjectService)
 	return ok
 }
 
@@ -1038,14 +1089,8 @@ func (x *Warp) ClearTarget() {
 	x.xxx_hidden_Target = nil
 }
 
-func (x *Warp) ClearCephObjectGateway() {
-	if _, ok := x.xxx_hidden_Target.(*warp_CephObjectGateway); ok {
-		x.xxx_hidden_Target = nil
-	}
-}
-
-func (x *Warp) ClearMinio() {
-	if _, ok := x.xxx_hidden_Target.(*warp_Minio); ok {
+func (x *Warp) ClearInternalObjectService() {
+	if _, ok := x.xxx_hidden_Target.(*warp_InternalObjectService); ok {
 		x.xxx_hidden_Target = nil
 	}
 }
@@ -1065,19 +1110,16 @@ func (x *Warp) ClearOutput() {
 }
 
 const Warp_Target_not_set_case case_Warp_Target = 0
-const Warp_CephObjectGateway_case case_Warp_Target = 1
-const Warp_Minio_case case_Warp_Target = 2
-const Warp_ExternalObjectService_case case_Warp_Target = 3
+const Warp_InternalObjectService_case case_Warp_Target = 1
+const Warp_ExternalObjectService_case case_Warp_Target = 2
 
 func (x *Warp) WhichTarget() case_Warp_Target {
 	if x == nil {
 		return Warp_Target_not_set_case
 	}
 	switch x.xxx_hidden_Target.(type) {
-	case *warp_CephObjectGateway:
-		return Warp_CephObjectGateway_case
-	case *warp_Minio:
-		return Warp_Minio_case
+	case *warp_InternalObjectService:
+		return Warp_InternalObjectService_case
 	case *warp_ExternalObjectService:
 		return Warp_ExternalObjectService_case
 	default:
@@ -1089,8 +1131,7 @@ type Warp_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	// Fields of oneof xxx_hidden_Target:
-	CephObjectGateway     *ObjectService
-	Minio                 *ObjectService
+	InternalObjectService *InternalObjectService
 	ExternalObjectService *ExternalObjectService
 	// -- end of xxx_hidden_Target
 	Input  *Warp_Input
@@ -1101,11 +1142,8 @@ func (b0 Warp_builder) Build() *Warp {
 	m0 := &Warp{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.CephObjectGateway != nil {
-		x.xxx_hidden_Target = &warp_CephObjectGateway{b.CephObjectGateway}
-	}
-	if b.Minio != nil {
-		x.xxx_hidden_Target = &warp_Minio{b.Minio}
+	if b.InternalObjectService != nil {
+		x.xxx_hidden_Target = &warp_InternalObjectService{b.InternalObjectService}
 	}
 	if b.ExternalObjectService != nil {
 		x.xxx_hidden_Target = &warp_ExternalObjectService{b.ExternalObjectService}
@@ -1129,21 +1167,15 @@ type isWarp_Target interface {
 	isWarp_Target()
 }
 
-type warp_CephObjectGateway struct {
-	CephObjectGateway *ObjectService `protobuf:"bytes,1,opt,name=ceph_object_gateway,json=cephObjectGateway,oneof"`
-}
-
-type warp_Minio struct {
-	Minio *ObjectService `protobuf:"bytes,2,opt,name=minio,oneof"`
+type warp_InternalObjectService struct {
+	InternalObjectService *InternalObjectService `protobuf:"bytes,1,opt,name=internal_object_service,json=internalObjectService,oneof"`
 }
 
 type warp_ExternalObjectService struct {
-	ExternalObjectService *ExternalObjectService `protobuf:"bytes,3,opt,name=external_object_service,json=externalObjectService,oneof"`
+	ExternalObjectService *ExternalObjectService `protobuf:"bytes,2,opt,name=external_object_service,json=externalObjectService,oneof"`
 }
 
-func (*warp_CephObjectGateway) isWarp_Target() {}
-
-func (*warp_Minio) isWarp_Target() {}
+func (*warp_InternalObjectService) isWarp_Target() {}
 
 func (*warp_ExternalObjectService) isWarp_Target() {}
 
@@ -1920,7 +1952,7 @@ func (b0 DeleteTestResultRequest_builder) Build() *DeleteTestResultRequest {
 	return m0
 }
 
-type ListObjectServicesRequest struct {
+type ListInternalObjectServicesRequest struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -1929,20 +1961,20 @@ type ListObjectServicesRequest struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *ListObjectServicesRequest) Reset() {
-	*x = ListObjectServicesRequest{}
+func (x *ListInternalObjectServicesRequest) Reset() {
+	*x = ListInternalObjectServicesRequest{}
 	mi := &file_api_bist_v1_bist_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListObjectServicesRequest) String() string {
+func (x *ListInternalObjectServicesRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListObjectServicesRequest) ProtoMessage() {}
+func (*ListInternalObjectServicesRequest) ProtoMessage() {}
 
-func (x *ListObjectServicesRequest) ProtoReflect() protoreflect.Message {
+func (x *ListInternalObjectServicesRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_bist_v1_bist_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1954,7 +1986,7 @@ func (x *ListObjectServicesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListObjectServicesRequest) GetScopeUuid() string {
+func (x *ListInternalObjectServicesRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -1964,31 +1996,31 @@ func (x *ListObjectServicesRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *ListObjectServicesRequest) SetScopeUuid(v string) {
+func (x *ListInternalObjectServicesRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *ListObjectServicesRequest) HasScopeUuid() bool {
+func (x *ListInternalObjectServicesRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListObjectServicesRequest) ClearScopeUuid() {
+func (x *ListInternalObjectServicesRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-type ListObjectServicesRequest_builder struct {
+type ListInternalObjectServicesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid *string
 }
 
-func (b0 ListObjectServicesRequest_builder) Build() *ListObjectServicesRequest {
-	m0 := &ListObjectServicesRequest{}
+func (b0 ListInternalObjectServicesRequest_builder) Build() *ListInternalObjectServicesRequest {
+	m0 := &ListInternalObjectServicesRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -1998,28 +2030,27 @@ func (b0 ListObjectServicesRequest_builder) Build() *ListObjectServicesRequest {
 	return m0
 }
 
-type ListObjectServicesResponse struct {
-	state                        protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_CephObjectGateway *ObjectService         `protobuf:"bytes,1,opt,name=ceph_object_gateway,json=cephObjectGateway"`
-	xxx_hidden_Minios            *[]*ObjectService      `protobuf:"bytes,2,rep,name=minios"`
-	unknownFields                protoimpl.UnknownFields
-	sizeCache                    protoimpl.SizeCache
+type ListInternalObjectServicesResponse struct {
+	state                             protoimpl.MessageState    `protogen:"opaque.v1"`
+	xxx_hidden_InternalObjectServices *[]*InternalObjectService `protobuf:"bytes,1,rep,name=internal_object_services,json=internalObjectServices"`
+	unknownFields                     protoimpl.UnknownFields
+	sizeCache                         protoimpl.SizeCache
 }
 
-func (x *ListObjectServicesResponse) Reset() {
-	*x = ListObjectServicesResponse{}
+func (x *ListInternalObjectServicesResponse) Reset() {
+	*x = ListInternalObjectServicesResponse{}
 	mi := &file_api_bist_v1_bist_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListObjectServicesResponse) String() string {
+func (x *ListInternalObjectServicesResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListObjectServicesResponse) ProtoMessage() {}
+func (*ListInternalObjectServicesResponse) ProtoMessage() {}
 
-func (x *ListObjectServicesResponse) ProtoReflect() protoreflect.Message {
+func (x *ListInternalObjectServicesResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_bist_v1_bist_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2031,65 +2062,41 @@ func (x *ListObjectServicesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListObjectServicesResponse) GetCephObjectGateway() *ObjectService {
+func (x *ListInternalObjectServicesResponse) GetInternalObjectServices() []*InternalObjectService {
 	if x != nil {
-		return x.xxx_hidden_CephObjectGateway
-	}
-	return nil
-}
-
-func (x *ListObjectServicesResponse) GetMinios() []*ObjectService {
-	if x != nil {
-		if x.xxx_hidden_Minios != nil {
-			return *x.xxx_hidden_Minios
+		if x.xxx_hidden_InternalObjectServices != nil {
+			return *x.xxx_hidden_InternalObjectServices
 		}
 	}
 	return nil
 }
 
-func (x *ListObjectServicesResponse) SetCephObjectGateway(v *ObjectService) {
-	x.xxx_hidden_CephObjectGateway = v
+func (x *ListInternalObjectServicesResponse) SetInternalObjectServices(v []*InternalObjectService) {
+	x.xxx_hidden_InternalObjectServices = &v
 }
 
-func (x *ListObjectServicesResponse) SetMinios(v []*ObjectService) {
-	x.xxx_hidden_Minios = &v
-}
-
-func (x *ListObjectServicesResponse) HasCephObjectGateway() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_CephObjectGateway != nil
-}
-
-func (x *ListObjectServicesResponse) ClearCephObjectGateway() {
-	x.xxx_hidden_CephObjectGateway = nil
-}
-
-type ListObjectServicesResponse_builder struct {
+type ListInternalObjectServicesResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	CephObjectGateway *ObjectService
-	Minios            []*ObjectService
+	InternalObjectServices []*InternalObjectService
 }
 
-func (b0 ListObjectServicesResponse_builder) Build() *ListObjectServicesResponse {
-	m0 := &ListObjectServicesResponse{}
+func (b0 ListInternalObjectServicesResponse_builder) Build() *ListInternalObjectServicesResponse {
+	m0 := &ListInternalObjectServicesResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_CephObjectGateway = b.CephObjectGateway
-	x.xxx_hidden_Minios = &b.Minios
+	x.xxx_hidden_InternalObjectServices = &b.InternalObjectServices
 	return m0
 }
 
 type FIO_Input struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_AccessMode  FIO_Input_AccessMode   `protobuf:"varint,1,opt,name=access_mode,json=accessMode,enum=otterscale.bist.v1.FIO_Input_AccessMode"`
-	xxx_hidden_JobCount    uint64                 `protobuf:"varint,31,opt,name=job_count,json=jobCount"`
+	xxx_hidden_JobCount    int64                  `protobuf:"varint,31,opt,name=job_count,json=jobCount"`
 	xxx_hidden_RunTime     *string                `protobuf:"bytes,41,opt,name=run_time,json=runTime"`
 	xxx_hidden_BlockSize   *string                `protobuf:"bytes,71,opt,name=block_size,json=blockSize"`
 	xxx_hidden_FileSize    *string                `protobuf:"bytes,91,opt,name=file_size,json=fileSize"`
-	xxx_hidden_IoDepth     uint64                 `protobuf:"varint,121,opt,name=io_depth,json=ioDepth"`
+	xxx_hidden_IoDepth     int64                  `protobuf:"varint,121,opt,name=io_depth,json=ioDepth"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -2130,7 +2137,7 @@ func (x *FIO_Input) GetAccessMode() FIO_Input_AccessMode {
 	return FIO_Input_READ
 }
 
-func (x *FIO_Input) GetJobCount() uint64 {
+func (x *FIO_Input) GetJobCount() int64 {
 	if x != nil {
 		return x.xxx_hidden_JobCount
 	}
@@ -2167,7 +2174,7 @@ func (x *FIO_Input) GetFileSize() string {
 	return ""
 }
 
-func (x *FIO_Input) GetIoDepth() uint64 {
+func (x *FIO_Input) GetIoDepth() int64 {
 	if x != nil {
 		return x.xxx_hidden_IoDepth
 	}
@@ -2179,7 +2186,7 @@ func (x *FIO_Input) SetAccessMode(v FIO_Input_AccessMode) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
 }
 
-func (x *FIO_Input) SetJobCount(v uint64) {
+func (x *FIO_Input) SetJobCount(v int64) {
 	x.xxx_hidden_JobCount = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
@@ -2199,7 +2206,7 @@ func (x *FIO_Input) SetFileSize(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
 }
 
-func (x *FIO_Input) SetIoDepth(v uint64) {
+func (x *FIO_Input) SetIoDepth(v int64) {
 	x.xxx_hidden_IoDepth = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
@@ -2280,11 +2287,11 @@ type FIO_Input_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	AccessMode *FIO_Input_AccessMode
-	JobCount   *uint64
+	JobCount   *int64
 	RunTime    *string
 	BlockSize  *string
 	FileSize   *string
-	IoDepth    *uint64
+	IoDepth    *int64
 }
 
 func (b0 FIO_Input_builder) Build() *FIO_Input {
@@ -2438,10 +2445,10 @@ func (b0 FIO_Output_builder) Build() *FIO_Output {
 
 type FIO_Output_Throughput struct {
 	state                     protoimpl.MessageState         `protogen:"opaque.v1"`
-	xxx_hidden_IoBytes        uint64                         `protobuf:"varint,1,opt,name=io_bytes,json=ioBytes"`
-	xxx_hidden_BandwidthBytes uint64                         `protobuf:"varint,2,opt,name=bandwidth_bytes,json=bandwidthBytes"`
-	xxx_hidden_IoPerSecond    uint64                         `protobuf:"varint,3,opt,name=io_per_second,json=ioPerSecond"`
-	xxx_hidden_TotalIos       uint64                         `protobuf:"varint,4,opt,name=total_ios,json=totalIos"`
+	xxx_hidden_IoBytes        int64                          `protobuf:"varint,1,opt,name=io_bytes,json=ioBytes"`
+	xxx_hidden_BandwidthBytes int64                          `protobuf:"varint,2,opt,name=bandwidth_bytes,json=bandwidthBytes"`
+	xxx_hidden_IoPerSecond    float64                        `protobuf:"fixed64,3,opt,name=io_per_second,json=ioPerSecond"`
+	xxx_hidden_TotalIos       int64                          `protobuf:"varint,4,opt,name=total_ios,json=totalIos"`
 	xxx_hidden_Latency        *FIO_Output_Throughput_Latency `protobuf:"bytes,11,opt,name=latency"`
 	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
 	XXX_presence              [1]uint32
@@ -2474,28 +2481,28 @@ func (x *FIO_Output_Throughput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *FIO_Output_Throughput) GetIoBytes() uint64 {
+func (x *FIO_Output_Throughput) GetIoBytes() int64 {
 	if x != nil {
 		return x.xxx_hidden_IoBytes
 	}
 	return 0
 }
 
-func (x *FIO_Output_Throughput) GetBandwidthBytes() uint64 {
+func (x *FIO_Output_Throughput) GetBandwidthBytes() int64 {
 	if x != nil {
 		return x.xxx_hidden_BandwidthBytes
 	}
 	return 0
 }
 
-func (x *FIO_Output_Throughput) GetIoPerSecond() uint64 {
+func (x *FIO_Output_Throughput) GetIoPerSecond() float64 {
 	if x != nil {
 		return x.xxx_hidden_IoPerSecond
 	}
 	return 0
 }
 
-func (x *FIO_Output_Throughput) GetTotalIos() uint64 {
+func (x *FIO_Output_Throughput) GetTotalIos() int64 {
 	if x != nil {
 		return x.xxx_hidden_TotalIos
 	}
@@ -2509,22 +2516,22 @@ func (x *FIO_Output_Throughput) GetLatency() *FIO_Output_Throughput_Latency {
 	return nil
 }
 
-func (x *FIO_Output_Throughput) SetIoBytes(v uint64) {
+func (x *FIO_Output_Throughput) SetIoBytes(v int64) {
 	x.xxx_hidden_IoBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
-func (x *FIO_Output_Throughput) SetBandwidthBytes(v uint64) {
+func (x *FIO_Output_Throughput) SetBandwidthBytes(v int64) {
 	x.xxx_hidden_BandwidthBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
-func (x *FIO_Output_Throughput) SetIoPerSecond(v uint64) {
+func (x *FIO_Output_Throughput) SetIoPerSecond(v float64) {
 	x.xxx_hidden_IoPerSecond = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *FIO_Output_Throughput) SetTotalIos(v uint64) {
+func (x *FIO_Output_Throughput) SetTotalIos(v int64) {
 	x.xxx_hidden_TotalIos = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
@@ -2595,10 +2602,10 @@ func (x *FIO_Output_Throughput) ClearLatency() {
 type FIO_Output_Throughput_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	IoBytes        *uint64
-	BandwidthBytes *uint64
-	IoPerSecond    *uint64
-	TotalIos       *uint64
+	IoBytes        *int64
+	BandwidthBytes *int64
+	IoPerSecond    *float64
+	TotalIos       *int64
 	Latency        *FIO_Output_Throughput_Latency
 }
 
@@ -2628,8 +2635,8 @@ func (b0 FIO_Output_Throughput_builder) Build() *FIO_Output_Throughput {
 
 type FIO_Output_Throughput_Latency struct {
 	state                      protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_MinNanoseconds  uint64                 `protobuf:"varint,1,opt,name=min_nanoseconds,json=minNanoseconds"`
-	xxx_hidden_MaxNanoseconds  uint64                 `protobuf:"varint,2,opt,name=max_nanoseconds,json=maxNanoseconds"`
+	xxx_hidden_MinNanoseconds  int64                  `protobuf:"varint,1,opt,name=min_nanoseconds,json=minNanoseconds"`
+	xxx_hidden_MaxNanoseconds  int64                  `protobuf:"varint,2,opt,name=max_nanoseconds,json=maxNanoseconds"`
 	xxx_hidden_MeanNanoseconds float64                `protobuf:"fixed64,3,opt,name=mean_nanoseconds,json=meanNanoseconds"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
@@ -2662,14 +2669,14 @@ func (x *FIO_Output_Throughput_Latency) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *FIO_Output_Throughput_Latency) GetMinNanoseconds() uint64 {
+func (x *FIO_Output_Throughput_Latency) GetMinNanoseconds() int64 {
 	if x != nil {
 		return x.xxx_hidden_MinNanoseconds
 	}
 	return 0
 }
 
-func (x *FIO_Output_Throughput_Latency) GetMaxNanoseconds() uint64 {
+func (x *FIO_Output_Throughput_Latency) GetMaxNanoseconds() int64 {
 	if x != nil {
 		return x.xxx_hidden_MaxNanoseconds
 	}
@@ -2683,12 +2690,12 @@ func (x *FIO_Output_Throughput_Latency) GetMeanNanoseconds() float64 {
 	return 0
 }
 
-func (x *FIO_Output_Throughput_Latency) SetMinNanoseconds(v uint64) {
+func (x *FIO_Output_Throughput_Latency) SetMinNanoseconds(v int64) {
 	x.xxx_hidden_MinNanoseconds = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *FIO_Output_Throughput_Latency) SetMaxNanoseconds(v uint64) {
+func (x *FIO_Output_Throughput_Latency) SetMaxNanoseconds(v int64) {
 	x.xxx_hidden_MaxNanoseconds = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
@@ -2737,8 +2744,8 @@ func (x *FIO_Output_Throughput_Latency) ClearMeanNanoseconds() {
 type FIO_Output_Throughput_Latency_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	MinNanoseconds  *uint64
-	MaxNanoseconds  *uint64
+	MinNanoseconds  *int64
+	MaxNanoseconds  *int64
 	MeanNanoseconds *float64
 }
 
@@ -2938,17 +2945,12 @@ func (b0 Warp_Input_builder) Build() *Warp_Input {
 }
 
 type Warp_Output struct {
-	state                      protoimpl.MessageState  `protogen:"opaque.v1"`
-	xxx_hidden_TotalBytes      float64                 `protobuf:"fixed64,1,opt,name=total_bytes,json=totalBytes"`
-	xxx_hidden_TotalObjects    float64                 `protobuf:"fixed64,2,opt,name=total_objects,json=totalObjects"`
-	xxx_hidden_TotalOperations uint64                  `protobuf:"varint,3,opt,name=total_operations,json=totalOperations"`
-	xxx_hidden_Get             *Warp_Output_Throughput `protobuf:"bytes,11,opt,name=get"`
-	xxx_hidden_Put             *Warp_Output_Throughput `protobuf:"bytes,12,opt,name=put"`
-	xxx_hidden_Delete          *Warp_Output_Throughput `protobuf:"bytes,13,opt,name=delete"`
-	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
-	XXX_presence               [1]uint32
-	unknownFields              protoimpl.UnknownFields
-	sizeCache                  protoimpl.SizeCache
+	state             protoimpl.MessageState  `protogen:"opaque.v1"`
+	xxx_hidden_Get    *Warp_Output_Throughput `protobuf:"bytes,11,opt,name=get"`
+	xxx_hidden_Put    *Warp_Output_Throughput `protobuf:"bytes,12,opt,name=put"`
+	xxx_hidden_Delete *Warp_Output_Throughput `protobuf:"bytes,13,opt,name=delete"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *Warp_Output) Reset() {
@@ -2976,27 +2978,6 @@ func (x *Warp_Output) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Warp_Output) GetTotalBytes() float64 {
-	if x != nil {
-		return x.xxx_hidden_TotalBytes
-	}
-	return 0
-}
-
-func (x *Warp_Output) GetTotalObjects() float64 {
-	if x != nil {
-		return x.xxx_hidden_TotalObjects
-	}
-	return 0
-}
-
-func (x *Warp_Output) GetTotalOperations() uint64 {
-	if x != nil {
-		return x.xxx_hidden_TotalOperations
-	}
-	return 0
-}
-
 func (x *Warp_Output) GetGet() *Warp_Output_Throughput {
 	if x != nil {
 		return x.xxx_hidden_Get
@@ -3018,21 +2999,6 @@ func (x *Warp_Output) GetDelete() *Warp_Output_Throughput {
 	return nil
 }
 
-func (x *Warp_Output) SetTotalBytes(v float64) {
-	x.xxx_hidden_TotalBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
-}
-
-func (x *Warp_Output) SetTotalObjects(v float64) {
-	x.xxx_hidden_TotalObjects = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
-}
-
-func (x *Warp_Output) SetTotalOperations(v uint64) {
-	x.xxx_hidden_TotalOperations = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
-}
-
 func (x *Warp_Output) SetGet(v *Warp_Output_Throughput) {
 	x.xxx_hidden_Get = v
 }
@@ -3043,27 +3009,6 @@ func (x *Warp_Output) SetPut(v *Warp_Output_Throughput) {
 
 func (x *Warp_Output) SetDelete(v *Warp_Output_Throughput) {
 	x.xxx_hidden_Delete = v
-}
-
-func (x *Warp_Output) HasTotalBytes() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *Warp_Output) HasTotalObjects() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *Warp_Output) HasTotalOperations() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *Warp_Output) HasGet() bool {
@@ -3087,21 +3032,6 @@ func (x *Warp_Output) HasDelete() bool {
 	return x.xxx_hidden_Delete != nil
 }
 
-func (x *Warp_Output) ClearTotalBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_TotalBytes = 0
-}
-
-func (x *Warp_Output) ClearTotalObjects() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_TotalObjects = 0
-}
-
-func (x *Warp_Output) ClearTotalOperations() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_TotalOperations = 0
-}
-
 func (x *Warp_Output) ClearGet() {
 	x.xxx_hidden_Get = nil
 }
@@ -3117,30 +3047,15 @@ func (x *Warp_Output) ClearDelete() {
 type Warp_Output_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	TotalBytes      *float64
-	TotalObjects    *float64
-	TotalOperations *uint64
-	Get             *Warp_Output_Throughput
-	Put             *Warp_Output_Throughput
-	Delete          *Warp_Output_Throughput
+	Get    *Warp_Output_Throughput
+	Put    *Warp_Output_Throughput
+	Delete *Warp_Output_Throughput
 }
 
 func (b0 Warp_Output_builder) Build() *Warp_Output {
 	m0 := &Warp_Output{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.TotalBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
-		x.xxx_hidden_TotalBytes = *b.TotalBytes
-	}
-	if b.TotalObjects != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
-		x.xxx_hidden_TotalObjects = *b.TotalObjects
-	}
-	if b.TotalOperations != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
-		x.xxx_hidden_TotalOperations = *b.TotalOperations
-	}
 	x.xxx_hidden_Get = b.Get
 	x.xxx_hidden_Put = b.Put
 	x.xxx_hidden_Delete = b.Delete
@@ -3148,11 +3063,16 @@ func (b0 Warp_Output_builder) Build() *Warp_Output {
 }
 
 type Warp_Output_Throughput struct {
-	state              protoimpl.MessageState          `protogen:"opaque.v1"`
-	xxx_hidden_Bytes   *Warp_Output_Throughput_Bytes   `protobuf:"bytes,1,opt,name=bytes"`
-	xxx_hidden_Objects *Warp_Output_Throughput_Objects `protobuf:"bytes,2,opt,name=objects"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state                      protoimpl.MessageState          `protogen:"opaque.v1"`
+	xxx_hidden_TotalBytes      float64                         `protobuf:"fixed64,1,opt,name=total_bytes,json=totalBytes"`
+	xxx_hidden_TotalObjects    float64                         `protobuf:"fixed64,2,opt,name=total_objects,json=totalObjects"`
+	xxx_hidden_TotalOperations int64                           `protobuf:"varint,3,opt,name=total_operations,json=totalOperations"`
+	xxx_hidden_Bytes           *Warp_Output_Throughput_Metrics `protobuf:"bytes,11,opt,name=bytes"`
+	xxx_hidden_Objects         *Warp_Output_Throughput_Metrics `protobuf:"bytes,12,opt,name=objects"`
+	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
+	XXX_presence               [1]uint32
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
 func (x *Warp_Output_Throughput) Reset() {
@@ -3180,26 +3100,83 @@ func (x *Warp_Output_Throughput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Warp_Output_Throughput) GetBytes() *Warp_Output_Throughput_Bytes {
+func (x *Warp_Output_Throughput) GetTotalBytes() float64 {
+	if x != nil {
+		return x.xxx_hidden_TotalBytes
+	}
+	return 0
+}
+
+func (x *Warp_Output_Throughput) GetTotalObjects() float64 {
+	if x != nil {
+		return x.xxx_hidden_TotalObjects
+	}
+	return 0
+}
+
+func (x *Warp_Output_Throughput) GetTotalOperations() int64 {
+	if x != nil {
+		return x.xxx_hidden_TotalOperations
+	}
+	return 0
+}
+
+func (x *Warp_Output_Throughput) GetBytes() *Warp_Output_Throughput_Metrics {
 	if x != nil {
 		return x.xxx_hidden_Bytes
 	}
 	return nil
 }
 
-func (x *Warp_Output_Throughput) GetObjects() *Warp_Output_Throughput_Objects {
+func (x *Warp_Output_Throughput) GetObjects() *Warp_Output_Throughput_Metrics {
 	if x != nil {
 		return x.xxx_hidden_Objects
 	}
 	return nil
 }
 
-func (x *Warp_Output_Throughput) SetBytes(v *Warp_Output_Throughput_Bytes) {
+func (x *Warp_Output_Throughput) SetTotalBytes(v float64) {
+	x.xxx_hidden_TotalBytes = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *Warp_Output_Throughput) SetTotalObjects(v float64) {
+	x.xxx_hidden_TotalObjects = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *Warp_Output_Throughput) SetTotalOperations(v int64) {
+	x.xxx_hidden_TotalOperations = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *Warp_Output_Throughput) SetBytes(v *Warp_Output_Throughput_Metrics) {
 	x.xxx_hidden_Bytes = v
 }
 
-func (x *Warp_Output_Throughput) SetObjects(v *Warp_Output_Throughput_Objects) {
+func (x *Warp_Output_Throughput) SetObjects(v *Warp_Output_Throughput_Metrics) {
 	x.xxx_hidden_Objects = v
+}
+
+func (x *Warp_Output_Throughput) HasTotalBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *Warp_Output_Throughput) HasTotalObjects() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Warp_Output_Throughput) HasTotalOperations() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *Warp_Output_Throughput) HasBytes() bool {
@@ -3216,6 +3193,21 @@ func (x *Warp_Output_Throughput) HasObjects() bool {
 	return x.xxx_hidden_Objects != nil
 }
 
+func (x *Warp_Output_Throughput) ClearTotalBytes() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_TotalBytes = 0
+}
+
+func (x *Warp_Output_Throughput) ClearTotalObjects() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_TotalObjects = 0
+}
+
+func (x *Warp_Output_Throughput) ClearTotalOperations() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_TotalOperations = 0
+}
+
 func (x *Warp_Output_Throughput) ClearBytes() {
 	x.xxx_hidden_Bytes = nil
 }
@@ -3227,20 +3219,35 @@ func (x *Warp_Output_Throughput) ClearObjects() {
 type Warp_Output_Throughput_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Bytes   *Warp_Output_Throughput_Bytes
-	Objects *Warp_Output_Throughput_Objects
+	TotalBytes      *float64
+	TotalObjects    *float64
+	TotalOperations *int64
+	Bytes           *Warp_Output_Throughput_Metrics
+	Objects         *Warp_Output_Throughput_Metrics
 }
 
 func (b0 Warp_Output_Throughput_builder) Build() *Warp_Output_Throughput {
 	m0 := &Warp_Output_Throughput{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.TotalBytes != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_TotalBytes = *b.TotalBytes
+	}
+	if b.TotalObjects != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_TotalObjects = *b.TotalObjects
+	}
+	if b.TotalOperations != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_TotalOperations = *b.TotalOperations
+	}
 	x.xxx_hidden_Bytes = b.Bytes
 	x.xxx_hidden_Objects = b.Objects
 	return m0
 }
 
-type Warp_Output_Throughput_Bytes struct {
+type Warp_Output_Throughput_Metrics struct {
 	state                       protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_FastestPerSecond float64                `protobuf:"fixed64,1,opt,name=fastest_per_second,json=fastestPerSecond"`
 	xxx_hidden_MedianPerSecond  float64                `protobuf:"fixed64,2,opt,name=median_per_second,json=medianPerSecond"`
@@ -3251,20 +3258,20 @@ type Warp_Output_Throughput_Bytes struct {
 	sizeCache                   protoimpl.SizeCache
 }
 
-func (x *Warp_Output_Throughput_Bytes) Reset() {
-	*x = Warp_Output_Throughput_Bytes{}
+func (x *Warp_Output_Throughput_Metrics) Reset() {
+	*x = Warp_Output_Throughput_Metrics{}
 	mi := &file_api_bist_v1_bist_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Warp_Output_Throughput_Bytes) String() string {
+func (x *Warp_Output_Throughput_Metrics) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Warp_Output_Throughput_Bytes) ProtoMessage() {}
+func (*Warp_Output_Throughput_Metrics) ProtoMessage() {}
 
-func (x *Warp_Output_Throughput_Bytes) ProtoReflect() protoreflect.Message {
+func (x *Warp_Output_Throughput_Metrics) ProtoReflect() protoreflect.Message {
 	mi := &file_api_bist_v1_bist_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3276,79 +3283,79 @@ func (x *Warp_Output_Throughput_Bytes) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Warp_Output_Throughput_Bytes) GetFastestPerSecond() float64 {
+func (x *Warp_Output_Throughput_Metrics) GetFastestPerSecond() float64 {
 	if x != nil {
 		return x.xxx_hidden_FastestPerSecond
 	}
 	return 0
 }
 
-func (x *Warp_Output_Throughput_Bytes) GetMedianPerSecond() float64 {
+func (x *Warp_Output_Throughput_Metrics) GetMedianPerSecond() float64 {
 	if x != nil {
 		return x.xxx_hidden_MedianPerSecond
 	}
 	return 0
 }
 
-func (x *Warp_Output_Throughput_Bytes) GetSlowestPerSecond() float64 {
+func (x *Warp_Output_Throughput_Metrics) GetSlowestPerSecond() float64 {
 	if x != nil {
 		return x.xxx_hidden_SlowestPerSecond
 	}
 	return 0
 }
 
-func (x *Warp_Output_Throughput_Bytes) SetFastestPerSecond(v float64) {
+func (x *Warp_Output_Throughput_Metrics) SetFastestPerSecond(v float64) {
 	x.xxx_hidden_FastestPerSecond = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *Warp_Output_Throughput_Bytes) SetMedianPerSecond(v float64) {
+func (x *Warp_Output_Throughput_Metrics) SetMedianPerSecond(v float64) {
 	x.xxx_hidden_MedianPerSecond = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *Warp_Output_Throughput_Bytes) SetSlowestPerSecond(v float64) {
+func (x *Warp_Output_Throughput_Metrics) SetSlowestPerSecond(v float64) {
 	x.xxx_hidden_SlowestPerSecond = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *Warp_Output_Throughput_Bytes) HasFastestPerSecond() bool {
+func (x *Warp_Output_Throughput_Metrics) HasFastestPerSecond() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Warp_Output_Throughput_Bytes) HasMedianPerSecond() bool {
+func (x *Warp_Output_Throughput_Metrics) HasMedianPerSecond() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Warp_Output_Throughput_Bytes) HasSlowestPerSecond() bool {
+func (x *Warp_Output_Throughput_Metrics) HasSlowestPerSecond() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Warp_Output_Throughput_Bytes) ClearFastestPerSecond() {
+func (x *Warp_Output_Throughput_Metrics) ClearFastestPerSecond() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_FastestPerSecond = 0
 }
 
-func (x *Warp_Output_Throughput_Bytes) ClearMedianPerSecond() {
+func (x *Warp_Output_Throughput_Metrics) ClearMedianPerSecond() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_MedianPerSecond = 0
 }
 
-func (x *Warp_Output_Throughput_Bytes) ClearSlowestPerSecond() {
+func (x *Warp_Output_Throughput_Metrics) ClearSlowestPerSecond() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_SlowestPerSecond = 0
 }
 
-type Warp_Output_Throughput_Bytes_builder struct {
+type Warp_Output_Throughput_Metrics_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	FastestPerSecond *float64
@@ -3356,143 +3363,8 @@ type Warp_Output_Throughput_Bytes_builder struct {
 	SlowestPerSecond *float64
 }
 
-func (b0 Warp_Output_Throughput_Bytes_builder) Build() *Warp_Output_Throughput_Bytes {
-	m0 := &Warp_Output_Throughput_Bytes{}
-	b, x := &b0, m0
-	_, _ = b, x
-	if b.FastestPerSecond != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
-		x.xxx_hidden_FastestPerSecond = *b.FastestPerSecond
-	}
-	if b.MedianPerSecond != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
-		x.xxx_hidden_MedianPerSecond = *b.MedianPerSecond
-	}
-	if b.SlowestPerSecond != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
-		x.xxx_hidden_SlowestPerSecond = *b.SlowestPerSecond
-	}
-	return m0
-}
-
-type Warp_Output_Throughput_Objects struct {
-	state                       protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_FastestPerSecond float64                `protobuf:"fixed64,1,opt,name=fastest_per_second,json=fastestPerSecond"`
-	xxx_hidden_MedianPerSecond  float64                `protobuf:"fixed64,2,opt,name=median_per_second,json=medianPerSecond"`
-	xxx_hidden_SlowestPerSecond float64                `protobuf:"fixed64,3,opt,name=slowest_per_second,json=slowestPerSecond"`
-	XXX_raceDetectHookData      protoimpl.RaceDetectHookData
-	XXX_presence                [1]uint32
-	unknownFields               protoimpl.UnknownFields
-	sizeCache                   protoimpl.SizeCache
-}
-
-func (x *Warp_Output_Throughput_Objects) Reset() {
-	*x = Warp_Output_Throughput_Objects{}
-	mi := &file_api_bist_v1_bist_proto_msgTypes[21]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Warp_Output_Throughput_Objects) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Warp_Output_Throughput_Objects) ProtoMessage() {}
-
-func (x *Warp_Output_Throughput_Objects) ProtoReflect() protoreflect.Message {
-	mi := &file_api_bist_v1_bist_proto_msgTypes[21]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-func (x *Warp_Output_Throughput_Objects) GetFastestPerSecond() float64 {
-	if x != nil {
-		return x.xxx_hidden_FastestPerSecond
-	}
-	return 0
-}
-
-func (x *Warp_Output_Throughput_Objects) GetMedianPerSecond() float64 {
-	if x != nil {
-		return x.xxx_hidden_MedianPerSecond
-	}
-	return 0
-}
-
-func (x *Warp_Output_Throughput_Objects) GetSlowestPerSecond() float64 {
-	if x != nil {
-		return x.xxx_hidden_SlowestPerSecond
-	}
-	return 0
-}
-
-func (x *Warp_Output_Throughput_Objects) SetFastestPerSecond(v float64) {
-	x.xxx_hidden_FastestPerSecond = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
-}
-
-func (x *Warp_Output_Throughput_Objects) SetMedianPerSecond(v float64) {
-	x.xxx_hidden_MedianPerSecond = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
-}
-
-func (x *Warp_Output_Throughput_Objects) SetSlowestPerSecond(v float64) {
-	x.xxx_hidden_SlowestPerSecond = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
-}
-
-func (x *Warp_Output_Throughput_Objects) HasFastestPerSecond() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
-}
-
-func (x *Warp_Output_Throughput_Objects) HasMedianPerSecond() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *Warp_Output_Throughput_Objects) HasSlowestPerSecond() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
-func (x *Warp_Output_Throughput_Objects) ClearFastestPerSecond() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_FastestPerSecond = 0
-}
-
-func (x *Warp_Output_Throughput_Objects) ClearMedianPerSecond() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_MedianPerSecond = 0
-}
-
-func (x *Warp_Output_Throughput_Objects) ClearSlowestPerSecond() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_SlowestPerSecond = 0
-}
-
-type Warp_Output_Throughput_Objects_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
-	FastestPerSecond *float64
-	MedianPerSecond  *float64
-	SlowestPerSecond *float64
-}
-
-func (b0 Warp_Output_Throughput_Objects_builder) Build() *Warp_Output_Throughput_Objects {
-	m0 := &Warp_Output_Throughput_Objects{}
+func (b0 Warp_Output_Throughput_Metrics_builder) Build() *Warp_Output_Throughput_Metrics {
+	m0 := &Warp_Output_Throughput_Metrics{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.FastestPerSecond != nil {
@@ -3521,10 +3393,15 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"C\n" +
 	"\x11NetworkFileSystem\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x12\n" +
-	"\x04path\x18\x02 \x01(\tR\x04path\"?\n" +
-	"\rObjectService\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1a\n" +
-	"\bendpoint\x18\x02 \x01(\tR\bendpoint\"q\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\"\xb9\x01\n" +
+	"\x15InternalObjectService\x12B\n" +
+	"\x04type\x18\x01 \x01(\x0e2..otterscale.bist.v1.InternalObjectService.TypeR\x04type\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
+	"\bendpoint\x18\x03 \x01(\tR\bendpoint\",\n" +
+	"\x04Type\x12\x0f\n" +
+	"\vUNSPECIFIED\x10\x00\x12\b\n" +
+	"\x04CEPH\x10\x01\x12\t\n" +
+	"\x05MINIO\x10\x02\"q\n" +
 	"\x15ExternalObjectService\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x1d\n" +
 	"\n" +
@@ -3539,12 +3416,12 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x05Input\x12I\n" +
 	"\vaccess_mode\x18\x01 \x01(\x0e2(.otterscale.bist.v1.FIO.Input.AccessModeR\n" +
 	"accessMode\x12\x1b\n" +
-	"\tjob_count\x18\x1f \x01(\x04R\bjobCount\x12\x19\n" +
+	"\tjob_count\x18\x1f \x01(\x03R\bjobCount\x12\x19\n" +
 	"\brun_time\x18) \x01(\tR\arunTime\x12\x1d\n" +
 	"\n" +
 	"block_size\x18G \x01(\tR\tblockSize\x12\x1b\n" +
 	"\tfile_size\x18[ \x01(\tR\bfileSize\x12\x19\n" +
-	"\bio_depth\x18y \x01(\x04R\aioDepth\"\x9b\x01\n" +
+	"\bio_depth\x18y \x01(\x03R\aioDepth\"\x9b\x01\n" +
 	"\n" +
 	"AccessMode\x12\b\n" +
 	"\x04READ\x10\x00\x12\t\n" +
@@ -3566,21 +3443,19 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x04trim\x18\x03 \x01(\v2).otterscale.bist.v1.FIO.Output.ThroughputR\x04trim\x1a\xe7\x02\n" +
 	"\n" +
 	"Throughput\x12\x19\n" +
-	"\bio_bytes\x18\x01 \x01(\x04R\aioBytes\x12'\n" +
-	"\x0fbandwidth_bytes\x18\x02 \x01(\x04R\x0ebandwidthBytes\x12\"\n" +
-	"\rio_per_second\x18\x03 \x01(\x04R\vioPerSecond\x12\x1b\n" +
-	"\ttotal_ios\x18\x04 \x01(\x04R\btotalIos\x12K\n" +
+	"\bio_bytes\x18\x01 \x01(\x03R\aioBytes\x12'\n" +
+	"\x0fbandwidth_bytes\x18\x02 \x01(\x03R\x0ebandwidthBytes\x12\"\n" +
+	"\rio_per_second\x18\x03 \x01(\x01R\vioPerSecond\x12\x1b\n" +
+	"\ttotal_ios\x18\x04 \x01(\x03R\btotalIos\x12K\n" +
 	"\alatency\x18\v \x01(\v21.otterscale.bist.v1.FIO.Output.Throughput.LatencyR\alatency\x1a\x86\x01\n" +
 	"\aLatency\x12'\n" +
-	"\x0fmin_nanoseconds\x18\x01 \x01(\x04R\x0eminNanoseconds\x12'\n" +
-	"\x0fmax_nanoseconds\x18\x02 \x01(\x04R\x0emaxNanoseconds\x12)\n" +
+	"\x0fmin_nanoseconds\x18\x01 \x01(\x03R\x0eminNanoseconds\x12'\n" +
+	"\x0fmax_nanoseconds\x18\x02 \x01(\x03R\x0emaxNanoseconds\x12)\n" +
 	"\x10mean_nanoseconds\x18\x03 \x01(\x01R\x0fmeanNanosecondsB\b\n" +
-	"\x06target\"\xf3\n" +
-	"\n" +
-	"\x04Warp\x12S\n" +
-	"\x13ceph_object_gateway\x18\x01 \x01(\v2!.otterscale.bist.v1.ObjectServiceH\x00R\x11cephObjectGateway\x129\n" +
-	"\x05minio\x18\x02 \x01(\v2!.otterscale.bist.v1.ObjectServiceH\x00R\x05minio\x12c\n" +
-	"\x17external_object_service\x18\x03 \x01(\v2).otterscale.bist.v1.ExternalObjectServiceH\x00R\x15externalObjectService\x124\n" +
+	"\x06target\"\xb8\t\n" +
+	"\x04Warp\x12c\n" +
+	"\x17internal_object_service\x18\x01 \x01(\v2).otterscale.bist.v1.InternalObjectServiceH\x00R\x15internalObjectService\x12c\n" +
+	"\x17external_object_service\x18\x02 \x01(\v2).otterscale.bist.v1.ExternalObjectServiceH\x00R\x15externalObjectService\x124\n" +
 	"\x05input\x18\v \x01(\v2\x1e.otterscale.bist.v1.Warp.InputR\x05input\x127\n" +
 	"\x06output\x18\f \x01(\v2\x1f.otterscale.bist.v1.Warp.OutputR\x06output\x1a\xf5\x01\n" +
 	"\x05Input\x12F\n" +
@@ -3597,24 +3472,20 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x06DELETE\x10\x02\x12\b\n" +
 	"\x04LIST\x10\x03\x12\b\n" +
 	"\x04STAT\x10\x04\x12\t\n" +
-	"\x05MIXED\x10\x05\x1a\x84\x06\n" +
-	"\x06Output\x12\x1f\n" +
+	"\x05MIXED\x10\x05\x1a\xf4\x04\n" +
+	"\x06Output\x12<\n" +
+	"\x03get\x18\v \x01(\v2*.otterscale.bist.v1.Warp.Output.ThroughputR\x03get\x12<\n" +
+	"\x03put\x18\f \x01(\v2*.otterscale.bist.v1.Warp.Output.ThroughputR\x03put\x12B\n" +
+	"\x06delete\x18\r \x01(\v2*.otterscale.bist.v1.Warp.Output.ThroughputR\x06delete\x1a\xa9\x03\n" +
+	"\n" +
+	"Throughput\x12\x1f\n" +
 	"\vtotal_bytes\x18\x01 \x01(\x01R\n" +
 	"totalBytes\x12#\n" +
 	"\rtotal_objects\x18\x02 \x01(\x01R\ftotalObjects\x12)\n" +
-	"\x10total_operations\x18\x03 \x01(\x04R\x0ftotalOperations\x12<\n" +
-	"\x03get\x18\v \x01(\v2*.otterscale.bist.v1.Warp.Output.ThroughputR\x03get\x12<\n" +
-	"\x03put\x18\f \x01(\v2*.otterscale.bist.v1.Warp.Output.ThroughputR\x03put\x12B\n" +
-	"\x06delete\x18\r \x01(\v2*.otterscale.bist.v1.Warp.Output.ThroughputR\x06delete\x1a\xc8\x03\n" +
-	"\n" +
-	"Throughput\x12F\n" +
-	"\x05bytes\x18\x01 \x01(\v20.otterscale.bist.v1.Warp.Output.Throughput.BytesR\x05bytes\x12L\n" +
-	"\aobjects\x18\x02 \x01(\v22.otterscale.bist.v1.Warp.Output.Throughput.ObjectsR\aobjects\x1a\x8f\x01\n" +
-	"\x05Bytes\x12,\n" +
-	"\x12fastest_per_second\x18\x01 \x01(\x01R\x10fastestPerSecond\x12*\n" +
-	"\x11median_per_second\x18\x02 \x01(\x01R\x0fmedianPerSecond\x12,\n" +
-	"\x12slowest_per_second\x18\x03 \x01(\x01R\x10slowestPerSecond\x1a\x91\x01\n" +
-	"\aObjects\x12,\n" +
+	"\x10total_operations\x18\x03 \x01(\x03R\x0ftotalOperations\x12H\n" +
+	"\x05bytes\x18\v \x01(\v22.otterscale.bist.v1.Warp.Output.Throughput.MetricsR\x05bytes\x12L\n" +
+	"\aobjects\x18\f \x01(\v22.otterscale.bist.v1.Warp.Output.Throughput.MetricsR\aobjects\x1a\x91\x01\n" +
+	"\aMetrics\x12,\n" +
 	"\x12fastest_per_second\x18\x01 \x01(\x01R\x10fastestPerSecond\x12*\n" +
 	"\x11median_per_second\x18\x02 \x01(\x01R\x0fmedianPerSecond\x12,\n" +
 	"\x12slowest_per_second\x18\x03 \x01(\x01R\x10slowestPerSecondB\b\n" +
@@ -3648,94 +3519,92 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x04warp\x18f \x01(\v2\x18.otterscale.bist.v1.WarpH\x00R\x04warpB\x06\n" +
 	"\x04kind\"-\n" +
 	"\x17DeleteTestResultRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\":\n" +
-	"\x19ListObjectServicesRequest\x12\x1d\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\"B\n" +
+	"!ListInternalObjectServicesRequest\x12\x1d\n" +
 	"\n" +
-	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\"\xaa\x01\n" +
-	"\x1aListObjectServicesResponse\x12Q\n" +
-	"\x13ceph_object_gateway\x18\x01 \x01(\v2!.otterscale.bist.v1.ObjectServiceR\x11cephObjectGateway\x129\n" +
-	"\x06minios\x18\x02 \x03(\v2!.otterscale.bist.v1.ObjectServiceR\x06minios2\xa8\x03\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\"\x89\x01\n" +
+	"\"ListInternalObjectServicesResponse\x12c\n" +
+	"\x18internal_object_services\x18\x01 \x03(\v2).otterscale.bist.v1.InternalObjectServiceR\x16internalObjectServices2\xc1\x03\n" +
 	"\vBISTService\x12j\n" +
 	"\x0fListTestResults\x12*.otterscale.bist.v1.ListTestResultsRequest\x1a+.otterscale.bist.v1.ListTestResultsResponse\x12_\n" +
 	"\x10CreateTestResult\x12+.otterscale.bist.v1.CreateTestResultRequest\x1a\x1e.otterscale.bist.v1.TestResult\x12W\n" +
-	"\x10DeleteTestResult\x12+.otterscale.bist.v1.DeleteTestResultRequest\x1a\x16.google.protobuf.Empty\x12s\n" +
-	"\x12ListObjectServices\x12-.otterscale.bist.v1.ListObjectServicesRequest\x1a..otterscale.bist.v1.ListObjectServicesResponseB.Z,github.com/openhdc/otterscale/api/bist/v1;pbb\beditionsp\xe8\a"
+	"\x10DeleteTestResult\x12+.otterscale.bist.v1.DeleteTestResultRequest\x1a\x16.google.protobuf.Empty\x12\x8b\x01\n" +
+	"\x1aListInternalObjectServices\x125.otterscale.bist.v1.ListInternalObjectServicesRequest\x1a6.otterscale.bist.v1.ListInternalObjectServicesResponseB.Z,github.com/openhdc/otterscale/api/bist/v1;pbb\beditionsp\xe8\a"
 
-var file_api_bist_v1_bist_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_api_bist_v1_bist_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_api_bist_v1_bist_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
+var file_api_bist_v1_bist_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_api_bist_v1_bist_proto_goTypes = []any{
-	(FIO_Input_AccessMode)(0),              // 0: otterscale.bist.v1.FIO.Input.AccessMode
-	(Warp_Input_Operation)(0),              // 1: otterscale.bist.v1.Warp.Input.Operation
-	(TestResult_Status)(0),                 // 2: otterscale.bist.v1.TestResult.Status
-	(*CephBlockDevice)(nil),                // 3: otterscale.bist.v1.CephBlockDevice
-	(*NetworkFileSystem)(nil),              // 4: otterscale.bist.v1.NetworkFileSystem
-	(*ObjectService)(nil),                  // 5: otterscale.bist.v1.ObjectService
-	(*ExternalObjectService)(nil),          // 6: otterscale.bist.v1.ExternalObjectService
-	(*FIO)(nil),                            // 7: otterscale.bist.v1.FIO
-	(*Warp)(nil),                           // 8: otterscale.bist.v1.Warp
-	(*TestResult)(nil),                     // 9: otterscale.bist.v1.TestResult
-	(*ListTestResultsRequest)(nil),         // 10: otterscale.bist.v1.ListTestResultsRequest
-	(*ListTestResultsResponse)(nil),        // 11: otterscale.bist.v1.ListTestResultsResponse
-	(*CreateTestResultRequest)(nil),        // 12: otterscale.bist.v1.CreateTestResultRequest
-	(*DeleteTestResultRequest)(nil),        // 13: otterscale.bist.v1.DeleteTestResultRequest
-	(*ListObjectServicesRequest)(nil),      // 14: otterscale.bist.v1.ListObjectServicesRequest
-	(*ListObjectServicesResponse)(nil),     // 15: otterscale.bist.v1.ListObjectServicesResponse
-	(*FIO_Input)(nil),                      // 16: otterscale.bist.v1.FIO.Input
-	(*FIO_Output)(nil),                     // 17: otterscale.bist.v1.FIO.Output
-	(*FIO_Output_Throughput)(nil),          // 18: otterscale.bist.v1.FIO.Output.Throughput
-	(*FIO_Output_Throughput_Latency)(nil),  // 19: otterscale.bist.v1.FIO.Output.Throughput.Latency
-	(*Warp_Input)(nil),                     // 20: otterscale.bist.v1.Warp.Input
-	(*Warp_Output)(nil),                    // 21: otterscale.bist.v1.Warp.Output
-	(*Warp_Output_Throughput)(nil),         // 22: otterscale.bist.v1.Warp.Output.Throughput
-	(*Warp_Output_Throughput_Bytes)(nil),   // 23: otterscale.bist.v1.Warp.Output.Throughput.Bytes
-	(*Warp_Output_Throughput_Objects)(nil), // 24: otterscale.bist.v1.Warp.Output.Throughput.Objects
-	(*timestamppb.Timestamp)(nil),          // 25: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                  // 26: google.protobuf.Empty
+	(InternalObjectService_Type)(0),            // 0: otterscale.bist.v1.InternalObjectService.Type
+	(FIO_Input_AccessMode)(0),                  // 1: otterscale.bist.v1.FIO.Input.AccessMode
+	(Warp_Input_Operation)(0),                  // 2: otterscale.bist.v1.Warp.Input.Operation
+	(TestResult_Status)(0),                     // 3: otterscale.bist.v1.TestResult.Status
+	(*CephBlockDevice)(nil),                    // 4: otterscale.bist.v1.CephBlockDevice
+	(*NetworkFileSystem)(nil),                  // 5: otterscale.bist.v1.NetworkFileSystem
+	(*InternalObjectService)(nil),              // 6: otterscale.bist.v1.InternalObjectService
+	(*ExternalObjectService)(nil),              // 7: otterscale.bist.v1.ExternalObjectService
+	(*FIO)(nil),                                // 8: otterscale.bist.v1.FIO
+	(*Warp)(nil),                               // 9: otterscale.bist.v1.Warp
+	(*TestResult)(nil),                         // 10: otterscale.bist.v1.TestResult
+	(*ListTestResultsRequest)(nil),             // 11: otterscale.bist.v1.ListTestResultsRequest
+	(*ListTestResultsResponse)(nil),            // 12: otterscale.bist.v1.ListTestResultsResponse
+	(*CreateTestResultRequest)(nil),            // 13: otterscale.bist.v1.CreateTestResultRequest
+	(*DeleteTestResultRequest)(nil),            // 14: otterscale.bist.v1.DeleteTestResultRequest
+	(*ListInternalObjectServicesRequest)(nil),  // 15: otterscale.bist.v1.ListInternalObjectServicesRequest
+	(*ListInternalObjectServicesResponse)(nil), // 16: otterscale.bist.v1.ListInternalObjectServicesResponse
+	(*FIO_Input)(nil),                          // 17: otterscale.bist.v1.FIO.Input
+	(*FIO_Output)(nil),                         // 18: otterscale.bist.v1.FIO.Output
+	(*FIO_Output_Throughput)(nil),              // 19: otterscale.bist.v1.FIO.Output.Throughput
+	(*FIO_Output_Throughput_Latency)(nil),      // 20: otterscale.bist.v1.FIO.Output.Throughput.Latency
+	(*Warp_Input)(nil),                         // 21: otterscale.bist.v1.Warp.Input
+	(*Warp_Output)(nil),                        // 22: otterscale.bist.v1.Warp.Output
+	(*Warp_Output_Throughput)(nil),             // 23: otterscale.bist.v1.Warp.Output.Throughput
+	(*Warp_Output_Throughput_Metrics)(nil),     // 24: otterscale.bist.v1.Warp.Output.Throughput.Metrics
+	(*timestamppb.Timestamp)(nil),              // 25: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                      // 26: google.protobuf.Empty
 }
 var file_api_bist_v1_bist_proto_depIdxs = []int32{
-	3,  // 0: otterscale.bist.v1.FIO.ceph_block_device:type_name -> otterscale.bist.v1.CephBlockDevice
-	4,  // 1: otterscale.bist.v1.FIO.network_file_system:type_name -> otterscale.bist.v1.NetworkFileSystem
-	16, // 2: otterscale.bist.v1.FIO.input:type_name -> otterscale.bist.v1.FIO.Input
-	17, // 3: otterscale.bist.v1.FIO.output:type_name -> otterscale.bist.v1.FIO.Output
-	5,  // 4: otterscale.bist.v1.Warp.ceph_object_gateway:type_name -> otterscale.bist.v1.ObjectService
-	5,  // 5: otterscale.bist.v1.Warp.minio:type_name -> otterscale.bist.v1.ObjectService
-	6,  // 6: otterscale.bist.v1.Warp.external_object_service:type_name -> otterscale.bist.v1.ExternalObjectService
-	20, // 7: otterscale.bist.v1.Warp.input:type_name -> otterscale.bist.v1.Warp.Input
-	21, // 8: otterscale.bist.v1.Warp.output:type_name -> otterscale.bist.v1.Warp.Output
-	2,  // 9: otterscale.bist.v1.TestResult.status:type_name -> otterscale.bist.v1.TestResult.Status
+	0,  // 0: otterscale.bist.v1.InternalObjectService.type:type_name -> otterscale.bist.v1.InternalObjectService.Type
+	4,  // 1: otterscale.bist.v1.FIO.ceph_block_device:type_name -> otterscale.bist.v1.CephBlockDevice
+	5,  // 2: otterscale.bist.v1.FIO.network_file_system:type_name -> otterscale.bist.v1.NetworkFileSystem
+	17, // 3: otterscale.bist.v1.FIO.input:type_name -> otterscale.bist.v1.FIO.Input
+	18, // 4: otterscale.bist.v1.FIO.output:type_name -> otterscale.bist.v1.FIO.Output
+	6,  // 5: otterscale.bist.v1.Warp.internal_object_service:type_name -> otterscale.bist.v1.InternalObjectService
+	7,  // 6: otterscale.bist.v1.Warp.external_object_service:type_name -> otterscale.bist.v1.ExternalObjectService
+	21, // 7: otterscale.bist.v1.Warp.input:type_name -> otterscale.bist.v1.Warp.Input
+	22, // 8: otterscale.bist.v1.Warp.output:type_name -> otterscale.bist.v1.Warp.Output
+	3,  // 9: otterscale.bist.v1.TestResult.status:type_name -> otterscale.bist.v1.TestResult.Status
 	25, // 10: otterscale.bist.v1.TestResult.started_at:type_name -> google.protobuf.Timestamp
 	25, // 11: otterscale.bist.v1.TestResult.completed_at:type_name -> google.protobuf.Timestamp
-	7,  // 12: otterscale.bist.v1.TestResult.fio:type_name -> otterscale.bist.v1.FIO
-	8,  // 13: otterscale.bist.v1.TestResult.warp:type_name -> otterscale.bist.v1.Warp
-	9,  // 14: otterscale.bist.v1.ListTestResultsResponse.test_results:type_name -> otterscale.bist.v1.TestResult
-	7,  // 15: otterscale.bist.v1.CreateTestResultRequest.fio:type_name -> otterscale.bist.v1.FIO
-	8,  // 16: otterscale.bist.v1.CreateTestResultRequest.warp:type_name -> otterscale.bist.v1.Warp
-	5,  // 17: otterscale.bist.v1.ListObjectServicesResponse.ceph_object_gateway:type_name -> otterscale.bist.v1.ObjectService
-	5,  // 18: otterscale.bist.v1.ListObjectServicesResponse.minios:type_name -> otterscale.bist.v1.ObjectService
-	0,  // 19: otterscale.bist.v1.FIO.Input.access_mode:type_name -> otterscale.bist.v1.FIO.Input.AccessMode
-	18, // 20: otterscale.bist.v1.FIO.Output.read:type_name -> otterscale.bist.v1.FIO.Output.Throughput
-	18, // 21: otterscale.bist.v1.FIO.Output.write:type_name -> otterscale.bist.v1.FIO.Output.Throughput
-	18, // 22: otterscale.bist.v1.FIO.Output.trim:type_name -> otterscale.bist.v1.FIO.Output.Throughput
-	19, // 23: otterscale.bist.v1.FIO.Output.Throughput.latency:type_name -> otterscale.bist.v1.FIO.Output.Throughput.Latency
-	1,  // 24: otterscale.bist.v1.Warp.Input.operation:type_name -> otterscale.bist.v1.Warp.Input.Operation
-	22, // 25: otterscale.bist.v1.Warp.Output.get:type_name -> otterscale.bist.v1.Warp.Output.Throughput
-	22, // 26: otterscale.bist.v1.Warp.Output.put:type_name -> otterscale.bist.v1.Warp.Output.Throughput
-	22, // 27: otterscale.bist.v1.Warp.Output.delete:type_name -> otterscale.bist.v1.Warp.Output.Throughput
-	23, // 28: otterscale.bist.v1.Warp.Output.Throughput.bytes:type_name -> otterscale.bist.v1.Warp.Output.Throughput.Bytes
-	24, // 29: otterscale.bist.v1.Warp.Output.Throughput.objects:type_name -> otterscale.bist.v1.Warp.Output.Throughput.Objects
-	10, // 30: otterscale.bist.v1.BISTService.ListTestResults:input_type -> otterscale.bist.v1.ListTestResultsRequest
-	12, // 31: otterscale.bist.v1.BISTService.CreateTestResult:input_type -> otterscale.bist.v1.CreateTestResultRequest
-	13, // 32: otterscale.bist.v1.BISTService.DeleteTestResult:input_type -> otterscale.bist.v1.DeleteTestResultRequest
-	14, // 33: otterscale.bist.v1.BISTService.ListObjectServices:input_type -> otterscale.bist.v1.ListObjectServicesRequest
-	11, // 34: otterscale.bist.v1.BISTService.ListTestResults:output_type -> otterscale.bist.v1.ListTestResultsResponse
-	9,  // 35: otterscale.bist.v1.BISTService.CreateTestResult:output_type -> otterscale.bist.v1.TestResult
-	26, // 36: otterscale.bist.v1.BISTService.DeleteTestResult:output_type -> google.protobuf.Empty
-	15, // 37: otterscale.bist.v1.BISTService.ListObjectServices:output_type -> otterscale.bist.v1.ListObjectServicesResponse
-	34, // [34:38] is the sub-list for method output_type
-	30, // [30:34] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	8,  // 12: otterscale.bist.v1.TestResult.fio:type_name -> otterscale.bist.v1.FIO
+	9,  // 13: otterscale.bist.v1.TestResult.warp:type_name -> otterscale.bist.v1.Warp
+	10, // 14: otterscale.bist.v1.ListTestResultsResponse.test_results:type_name -> otterscale.bist.v1.TestResult
+	8,  // 15: otterscale.bist.v1.CreateTestResultRequest.fio:type_name -> otterscale.bist.v1.FIO
+	9,  // 16: otterscale.bist.v1.CreateTestResultRequest.warp:type_name -> otterscale.bist.v1.Warp
+	6,  // 17: otterscale.bist.v1.ListInternalObjectServicesResponse.internal_object_services:type_name -> otterscale.bist.v1.InternalObjectService
+	1,  // 18: otterscale.bist.v1.FIO.Input.access_mode:type_name -> otterscale.bist.v1.FIO.Input.AccessMode
+	19, // 19: otterscale.bist.v1.FIO.Output.read:type_name -> otterscale.bist.v1.FIO.Output.Throughput
+	19, // 20: otterscale.bist.v1.FIO.Output.write:type_name -> otterscale.bist.v1.FIO.Output.Throughput
+	19, // 21: otterscale.bist.v1.FIO.Output.trim:type_name -> otterscale.bist.v1.FIO.Output.Throughput
+	20, // 22: otterscale.bist.v1.FIO.Output.Throughput.latency:type_name -> otterscale.bist.v1.FIO.Output.Throughput.Latency
+	2,  // 23: otterscale.bist.v1.Warp.Input.operation:type_name -> otterscale.bist.v1.Warp.Input.Operation
+	23, // 24: otterscale.bist.v1.Warp.Output.get:type_name -> otterscale.bist.v1.Warp.Output.Throughput
+	23, // 25: otterscale.bist.v1.Warp.Output.put:type_name -> otterscale.bist.v1.Warp.Output.Throughput
+	23, // 26: otterscale.bist.v1.Warp.Output.delete:type_name -> otterscale.bist.v1.Warp.Output.Throughput
+	24, // 27: otterscale.bist.v1.Warp.Output.Throughput.bytes:type_name -> otterscale.bist.v1.Warp.Output.Throughput.Metrics
+	24, // 28: otterscale.bist.v1.Warp.Output.Throughput.objects:type_name -> otterscale.bist.v1.Warp.Output.Throughput.Metrics
+	11, // 29: otterscale.bist.v1.BISTService.ListTestResults:input_type -> otterscale.bist.v1.ListTestResultsRequest
+	13, // 30: otterscale.bist.v1.BISTService.CreateTestResult:input_type -> otterscale.bist.v1.CreateTestResultRequest
+	14, // 31: otterscale.bist.v1.BISTService.DeleteTestResult:input_type -> otterscale.bist.v1.DeleteTestResultRequest
+	15, // 32: otterscale.bist.v1.BISTService.ListInternalObjectServices:input_type -> otterscale.bist.v1.ListInternalObjectServicesRequest
+	12, // 33: otterscale.bist.v1.BISTService.ListTestResults:output_type -> otterscale.bist.v1.ListTestResultsResponse
+	10, // 34: otterscale.bist.v1.BISTService.CreateTestResult:output_type -> otterscale.bist.v1.TestResult
+	26, // 35: otterscale.bist.v1.BISTService.DeleteTestResult:output_type -> google.protobuf.Empty
+	16, // 36: otterscale.bist.v1.BISTService.ListInternalObjectServices:output_type -> otterscale.bist.v1.ListInternalObjectServicesResponse
+	33, // [33:37] is the sub-list for method output_type
+	29, // [29:33] is the sub-list for method input_type
+	29, // [29:29] is the sub-list for extension type_name
+	29, // [29:29] is the sub-list for extension extendee
+	0,  // [0:29] is the sub-list for field type_name
 }
 
 func init() { file_api_bist_v1_bist_proto_init() }
@@ -3748,8 +3617,7 @@ func file_api_bist_v1_bist_proto_init() {
 		(*fIO_NetworkFileSystem)(nil),
 	}
 	file_api_bist_v1_bist_proto_msgTypes[5].OneofWrappers = []any{
-		(*warp_CephObjectGateway)(nil),
-		(*warp_Minio)(nil),
+		(*warp_InternalObjectService)(nil),
 		(*warp_ExternalObjectService)(nil),
 	}
 	file_api_bist_v1_bist_proto_msgTypes[6].OneofWrappers = []any{
@@ -3765,8 +3633,8 @@ func file_api_bist_v1_bist_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_bist_v1_bist_proto_rawDesc), len(file_api_bist_v1_bist_proto_rawDesc)),
-			NumEnums:      3,
-			NumMessages:   22,
+			NumEnums:      4,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
