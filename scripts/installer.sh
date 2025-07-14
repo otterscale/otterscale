@@ -24,6 +24,7 @@ main() {
     validate_system
 
     ## Package install
+    add_ceph_repository
     apt_update
     apt_install "$APT_PACKAGES"
     snap_install
@@ -68,11 +69,16 @@ main() {
     juju_add_k8s
     juju_config_k8s
 
+    ## Create cluster token
+    create_k8s_token
+
     ## Send config to otterscale
     send_config_data
 
     ## cleanup
     trap cleanup EXIT
+
+    log "INFO" "Otterscale install finished"
 }
 
 if [[ $# -eq 0 ]]; then
