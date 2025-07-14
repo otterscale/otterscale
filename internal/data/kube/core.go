@@ -135,14 +135,19 @@ func (r *core) GetNamespace(ctx context.Context, config *rest.Config, name strin
 	return clientset.CoreV1().Namespaces().Get(ctx, name, opts)
 }
 
-func (r *core) CreateNamespace(ctx context.Context, config *rest.Config, ns *oscore.Namespace) (*oscore.Namespace, error) {
+func (r *core) CreateNamespace(ctx context.Context, config *rest.Config, name string) (*oscore.Namespace, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
 
+	namespace := &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+	}
 	opts := metav1.CreateOptions{}
-	return clientset.CoreV1().Namespaces().Create(ctx, ns, opts)
+	return clientset.CoreV1().Namespaces().Create(ctx, namespace, opts)
 }
 
 func (r *core) GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.ConfigMap, error) {
@@ -155,14 +160,20 @@ func (r *core) GetConfigMap(ctx context.Context, config *rest.Config, namespace,
 	return clientset.CoreV1().ConfigMaps(namespace).Get(ctx, name, opts)
 }
 
-func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, cm *oscore.ConfigMap) (*oscore.ConfigMap, error) {
+func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, name string, data map[string]string) (*oscore.ConfigMap, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
 
+	configMap := &corev1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+		Data: data,
+	}
 	opts := metav1.CreateOptions{}
-	return clientset.CoreV1().ConfigMaps(namespace).Create(ctx, cm, opts)
+	return clientset.CoreV1().ConfigMaps(namespace).Create(ctx, configMap, opts)
 }
 
 func (r *core) DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error {

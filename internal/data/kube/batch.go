@@ -3,6 +3,7 @@ package kube
 import (
 	"context"
 
+	batchv1 "k8s.io/api/batch/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
@@ -51,12 +52,21 @@ func (r *batch) ListJobs(ctx context.Context, config *rest.Config, namespace str
 	return JobList.Items, nil
 }
 
-func (r *batch) CreateJob(ctx context.Context, config *rest.Config, job *oscore.Job) (*oscore.Job, error) {
+func (r *batch) CreateJob(ctx context.Context, config *rest.Config, namespace, name string, labels, annotations map[string]string, spec oscore.JobSpec) (*oscore.Job, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
 
+	job := &batchv1.Job{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:        name,
+			Namespace:   namespace,
+			Labels:      labels,
+			Annotations: annotations,
+		},
+		Spec: spec,
+	}
 	opts := metav1.CreateOptions{}
 	return clientset.BatchV1().Jobs(job.GetNamespace()).Create(ctx, job, opts)
 }

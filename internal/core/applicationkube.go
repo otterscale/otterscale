@@ -24,7 +24,10 @@ type (
 	DaemonSet   = appsv1.DaemonSet
 )
 
-type Job = batchv1.Job
+type (
+	Job     = batchv1.Job
+	JobSpec = batchv1.JobSpec
+)
 
 type (
 	Namespace             = corev1.Namespace
@@ -80,7 +83,7 @@ type KubeAppsRepo interface {
 type KubeBatchRepo interface {
 	// Job
 	ListJobsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Job, error)
-	CreateJob(ctx context.Context, config *rest.Config, job *Job) (*Job, error)
+	CreateJob(ctx context.Context, config *rest.Config, namespace, name string, labels, annotations map[string]string, spec JobSpec) (*Job, error)
 	DeleteJob(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
@@ -99,11 +102,11 @@ type KubeCoreRepo interface {
 
 	// Namespace
 	GetNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
-	CreateNamespace(ctx context.Context, config *rest.Config, ns *Namespace) (*Namespace, error)
+	CreateNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
 
 	// ConfigMap
 	GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*ConfigMap, error)
-	CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, cm *ConfigMap) (*ConfigMap, error)
+	CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, name string, data map[string]string) (*ConfigMap, error)
 	DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
