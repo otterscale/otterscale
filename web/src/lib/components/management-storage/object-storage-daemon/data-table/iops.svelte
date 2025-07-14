@@ -81,22 +81,18 @@
 		>
 			<svelte:fragment slot="tooltip">
 				<Tooltip.Root let:data>
-					<Tooltip.Header class="bg-muted flex items-center justify-between rounded p-2">
-						<Icon icon="ph:network" />
-						{format(data.time, 'yyyy-MM-dd HH:mm')}
+					<Tooltip.Header>
+						<span><Icon icon="ph:network" /></span>
+						<span>{format(data.time, 'yyyy-MM-dd HH:mm')}</span>
 					</Tooltip.Header>
 					<Tooltip.List class="rounded px-2">
-						<Tooltip.Item label="read">
+						<Tooltip.Item label="read" color="hsl(var(--color-info))">
 							{@const { value, unit } = formatNetworkIO(data.read)}
-							<span class="flex items-center justify-end gap-1">
-								<p>{value} {unit}</p>
-							</span>
+							<p>{value} {unit}</p>
 						</Tooltip.Item>
-						<Tooltip.Item label="write">
+						<Tooltip.Item label="write" color="hsl(var(--color-danger))">
 							{@const { value, unit } = formatNetworkIO(data.write)}
-							<span class="flex items-center justify-end gap-1">
-								<p>{value} {unit}</p>
-							</span>
+							<p>{value} {unit}</p>
 						</Tooltip.Item>
 					</Tooltip.List>
 				</Tooltip.Root>
