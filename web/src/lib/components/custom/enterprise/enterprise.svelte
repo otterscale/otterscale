@@ -1,26 +1,31 @@
 <script lang="ts" module>
+	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import * as Tooptip from '$lib/components/ui/tooltip';
-	import { Tooltip, type WithElementRef } from 'bits-ui';
+	import { Tooltip, type WithElementRef, type WithoutChildren } from 'bits-ui';
+	import { getContext, type Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { enabled } from './data';
 </script>
 
 <script lang="ts">
 	let {
 		ref = $bindable(null),
 		children,
+		class: className,
 		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
+	}: WithoutChildren<WithElementRef<HTMLAttributes<HTMLDivElement>>> & {
+		children?: Snippet<[{ disable: boolean }]>;
+	} = $props();
+
+	const getIsEnterprise: () => boolean = getContext('getIsEnterprise');
 </script>
 
-{#if enabled}
-	{@render children?.()}
+{#if getIsEnterprise() === true}
+	{@render children?.({ disable: !getIsEnterprise() })}
 {:else}
 	<Tooltip.Provider>
 		<Tooltip.Root>
-			<Tooltip.Trigger>
-				{@render children?.()}
+			<Tooltip.Trigger class={cn(className)}>
+				{@render children?.({ disable: !getIsEnterprise() })}
 			</Tooltip.Trigger>
 			<Tooltip.Content class="bg-popover flex items-center gap-1 border p-2 shadow">
 				<Icon icon="ph:info" />
