@@ -28,7 +28,8 @@
 
 	const DEFAULT_REQUEST = {
 		id: machine.id,
-		force: false
+		force: false,
+		purgeDisk: false
 	} as DeleteMachineRequest;
 
 	let deleteMachineRequest = $state(DEFAULT_REQUEST);
@@ -45,7 +46,7 @@
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger
-		class="flex items-center gap-1 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:text-muted-foreground"
+		class="disabled:text-muted-foreground flex items-center gap-1 disabled:pointer-events-auto disabled:cursor-not-allowed"
 		{disabled}
 	>
 		<Icon icon="ph:trash" />
@@ -54,16 +55,18 @@
 	<AlertDialog.Content>
 		<AlertDialog.Header>
 			<AlertDialog.Title>Remove {machine.fqdn}</AlertDialog.Title>
-			<AlertDialog.Description class="grid gap-4 rounded-lg bg-muted/50 p-2">
-				<p class="px-2">
+			<AlertDialog.Description class=" grid gap-4 rounded-lg ">
+				<p class="bg-muted/50 p-2">
 					This action will permanently delete the machine {machine.fqdn}. This action cannot be
 					undone.
 				</p>
-				<div class="ml-auto">
-					<span class="flex justify-between space-x-4">
-						<legent>Force</legent>
-						<Switch bind:checked={deleteMachineRequest.force} />
-					</span>
+				<div class="flex justify-between">
+					<legent>Force</legent>
+					<Switch bind:checked={deleteMachineRequest.force} />
+				</div>
+				<div class="flex justify-between">
+					<legent>Purge Disk</legent>
+					<Switch bind:checked={deleteMachineRequest.purgeDisk} />
 				</div>
 			</AlertDialog.Description>
 		</AlertDialog.Header>
