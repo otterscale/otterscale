@@ -2773,7 +2773,7 @@ type Warp_Input struct {
 	xxx_hidden_Operation   Warp_Input_Operation   `protobuf:"varint,1,opt,name=operation,enum=otterscale.bist.v1.Warp_Input_Operation"`
 	xxx_hidden_Duration    *string                `protobuf:"bytes,21,opt,name=duration"`
 	xxx_hidden_ObjectSize  *string                `protobuf:"bytes,31,opt,name=object_size,json=objectSize"`
-	xxx_hidden_ObjectNum   *string                `protobuf:"bytes,32,opt,name=object_num,json=objectNum"`
+	xxx_hidden_ObjectCount *string                `protobuf:"bytes,32,opt,name=object_count,json=objectCount"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -2834,10 +2834,10 @@ func (x *Warp_Input) GetObjectSize() string {
 	return ""
 }
 
-func (x *Warp_Input) GetObjectNum() string {
+func (x *Warp_Input) GetObjectCount() string {
 	if x != nil {
-		if x.xxx_hidden_ObjectNum != nil {
-			return *x.xxx_hidden_ObjectNum
+		if x.xxx_hidden_ObjectCount != nil {
+			return *x.xxx_hidden_ObjectCount
 		}
 		return ""
 	}
@@ -2859,8 +2859,8 @@ func (x *Warp_Input) SetObjectSize(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *Warp_Input) SetObjectNum(v string) {
-	x.xxx_hidden_ObjectNum = &v
+func (x *Warp_Input) SetObjectCount(v string) {
+	x.xxx_hidden_ObjectCount = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
@@ -2885,7 +2885,7 @@ func (x *Warp_Input) HasObjectSize() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Warp_Input) HasObjectNum() bool {
+func (x *Warp_Input) HasObjectCount() bool {
 	if x == nil {
 		return false
 	}
@@ -2907,18 +2907,18 @@ func (x *Warp_Input) ClearObjectSize() {
 	x.xxx_hidden_ObjectSize = nil
 }
 
-func (x *Warp_Input) ClearObjectNum() {
+func (x *Warp_Input) ClearObjectCount() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_ObjectNum = nil
+	x.xxx_hidden_ObjectCount = nil
 }
 
 type Warp_Input_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Operation  *Warp_Input_Operation
-	Duration   *string
-	ObjectSize *string
-	ObjectNum  *string
+	Operation   *Warp_Input_Operation
+	Duration    *string
+	ObjectSize  *string
+	ObjectCount *string
 }
 
 func (b0 Warp_Input_builder) Build() *Warp_Input {
@@ -2937,9 +2937,9 @@ func (b0 Warp_Input_builder) Build() *Warp_Input {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_ObjectSize = b.ObjectSize
 	}
-	if b.ObjectNum != nil {
+	if b.ObjectCount != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_ObjectNum = b.ObjectNum
+		x.xxx_hidden_ObjectCount = b.ObjectCount
 	}
 	return m0
 }
@@ -3452,19 +3452,18 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x0fmin_nanoseconds\x18\x01 \x01(\x03R\x0eminNanoseconds\x12'\n" +
 	"\x0fmax_nanoseconds\x18\x02 \x01(\x03R\x0emaxNanoseconds\x12)\n" +
 	"\x10mean_nanoseconds\x18\x03 \x01(\x01R\x0fmeanNanosecondsB\b\n" +
-	"\x06target\"\xb8\t\n" +
+	"\x06target\"\xbc\t\n" +
 	"\x04Warp\x12c\n" +
 	"\x17internal_object_service\x18\x01 \x01(\v2).otterscale.bist.v1.InternalObjectServiceH\x00R\x15internalObjectService\x12c\n" +
 	"\x17external_object_service\x18\x02 \x01(\v2).otterscale.bist.v1.ExternalObjectServiceH\x00R\x15externalObjectService\x124\n" +
 	"\x05input\x18\v \x01(\v2\x1e.otterscale.bist.v1.Warp.InputR\x05input\x127\n" +
-	"\x06output\x18\f \x01(\v2\x1f.otterscale.bist.v1.Warp.OutputR\x06output\x1a\xf5\x01\n" +
+	"\x06output\x18\f \x01(\v2\x1f.otterscale.bist.v1.Warp.OutputR\x06output\x1a\xf9\x01\n" +
 	"\x05Input\x12F\n" +
 	"\toperation\x18\x01 \x01(\x0e2(.otterscale.bist.v1.Warp.Input.OperationR\toperation\x12\x1a\n" +
 	"\bduration\x18\x15 \x01(\tR\bduration\x12\x1f\n" +
 	"\vobject_size\x18\x1f \x01(\tR\n" +
-	"objectSize\x12\x1d\n" +
-	"\n" +
-	"object_num\x18  \x01(\tR\tobjectNum\"H\n" +
+	"objectSize\x12!\n" +
+	"\fobject_count\x18  \x01(\tR\vobjectCount\"H\n" +
 	"\tOperation\x12\a\n" +
 	"\x03GET\x10\x00\x12\a\n" +
 	"\x03PUT\x10\x01\x12\n" +

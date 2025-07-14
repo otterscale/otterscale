@@ -100,7 +100,7 @@ message Warp {
     Operation operation = 1;
     string duration = 21;
     string object_size = 31;
-    string object_num = 32;
+    string object_count = 32;
   }
   message Output {
     message Throughput {
