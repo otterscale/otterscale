@@ -31,8 +31,10 @@ message InternalObjectService {
     MINIO = 2;
   }
   Type type = 1;
-  string name = 2;
-  string endpoint = 3;
+  string scope_uuid = 2;
+  string facility_name = 3;
+  string name = 4;
+  string endpoint = 5;
 }
 
 message ExternalObjectService {

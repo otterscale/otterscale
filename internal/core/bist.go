@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"net/url"
 	"strings"
 	"time"
 
@@ -112,9 +111,11 @@ type WarpTarget struct {
 }
 
 type WarpTargetInternal struct {
-	Type     string `json:"type"`
-	Name     string `json:"name"`
-	Endpoint string `json:"endpoint"`
+	Type         string `json:"type"`
+	ScopeUUID    string `json:"scope_uuid"`
+	FacilityName string `json:"facility_name"`
+	Name         string `json:"name"`
+	Endpoint     string `json:"endpoint"`
 }
 
 type WarpTargetExternal struct {
@@ -248,9 +249,11 @@ func (uc *BISTUseCase) listCephObjectServices(ctx context.Context, uuid string) 
 			continue
 		}
 		services = append(services, WarpTargetInternal{
-			Type:     "ceph",
-			Name:     ceph.Name,
-			Endpoint: info.PublicAddress,
+			Type:         "ceph",
+			ScopeUUID:    ceph.ScopeUUID,
+			FacilityName: ceph.Name,
+			Name:         ceph.Name,
+			Endpoint:     info.PublicAddress,
 		})
 	}
 	return services, nil
@@ -263,6 +266,14 @@ func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid string) ([]WarpTarge
 	}
 	services := []WarpTargetInternal{}
 	for _, kube := range kubes {
+		leader, err := uc.facility.GetLeader(ctx, uuid, kube.Name)
+		if err != nil {
+			continue
+		}
+		info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
+		if err != nil {
+			continue
+		}
 		config, err := kubeConfig(ctx, uc.facility, uuid, kube.Name)
 		if err != nil {
 			continue
@@ -276,14 +287,12 @@ func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid string) ([]WarpTarge
 				if port.Name != "minio-api" {
 					continue
 				}
-				url, err := url.Parse(config.Host)
-				if err != nil {
-					continue
-				}
 				services = append(services, WarpTargetInternal{
-					Type:     "minio",
-					Name:     fmt.Sprintf("%s.%s", svcs[i].GetNamespace(), svcs[i].GetName()),
-					Endpoint: fmt.Sprintf("%s:%d", url.Hostname(), port.NodePort),
+					Type:         "minio",
+					ScopeUUID:    kube.ScopeUUID,
+					FacilityName: kube.Name,
+					Name:         fmt.Sprintf("%s.%s", svcs[i].GetNamespace(), svcs[i].GetName()),
+					Endpoint:     fmt.Sprintf("%s:%d", info.PublicAddress, port.NodePort),
 				})
 			}
 		}

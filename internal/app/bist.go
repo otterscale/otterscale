@@ -101,9 +101,11 @@ func toCoreWarpTarget(i *pb.InternalObjectService, e *pb.ExternalObjectService) 
 	ret := core.WarpTarget{}
 	if i != nil {
 		ret.Internal = &core.WarpTargetInternal{
-			Type:     strings.ToLower(i.GetType().String()),
-			Name:     i.GetName(),
-			Endpoint: i.GetEndpoint(),
+			Type:         strings.ToLower(i.GetType().String()),
+			ScopeUUID:    i.GetScopeUuid(),
+			FacilityName: i.GetFacilityName(),
+			Name:         i.GetName(),
+			Endpoint:     i.GetEndpoint(),
 		}
 	}
 	if e != nil {
@@ -260,6 +262,8 @@ func toProtoInternalObjectServices(ss []core.WarpTargetInternal) []*pb.InternalO
 func toProtoInternalObjectService(s *core.WarpTargetInternal) *pb.InternalObjectService {
 	ret := &pb.InternalObjectService{}
 	ret.SetType(toProtoInternalObjectServiceType(s.Type))
+	ret.SetScopeUuid(s.ScopeUUID)
+	ret.SetFacilityName(s.FacilityName)
 	ret.SetName(s.Name)
 	ret.SetEndpoint(s.Endpoint)
 	return ret

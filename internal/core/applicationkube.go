@@ -33,6 +33,7 @@ type (
 	Namespace             = corev1.Namespace
 	ConfigMap             = corev1.ConfigMap
 	Container             = corev1.Container
+	Secret                = corev1.Secret
 	Service               = corev1.Service
 	Pod                   = corev1.Pod
 	PersistentVolumeClaim = corev1.PersistentVolumeClaim
@@ -107,7 +108,9 @@ type KubeCoreRepo interface {
 	// ConfigMap
 	GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*ConfigMap, error)
 	CreateConfigMap(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*ConfigMap, error)
-	DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error
+
+	// Secret
+	GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*Secret, error)
 }
 
 type KubeStorageRepo interface {

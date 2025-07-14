@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -52,19 +53,24 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	if internal != nil {
 		switch internal.Type {
 		case "ceph":
-			// internal.Name
-			spec = uc.internalS3JobSpec(internal.Endpoint, "", "", input)
+			spec, err = uc.warpCephObjectGatewayJobSpec(ctx, internal, input)
+			if err != nil {
+				return nil, err
+			}
 		case "minio":
-			spec = uc.internalS3JobSpec(internal.Endpoint, "", "", input)
+			spec, err = uc.warpMinIOJobSpec(ctx, internal, input)
+			if err != nil {
+				return nil, err
+			}
 		default:
-			return nil, fmt.Errorf("unsupported kind %q", internal.Type)
+			return nil, fmt.Errorf("unsupported internal kind %q", internal.Type)
 		}
 	}
 
 	// s3 external
 	external := target.External
 	if external != nil {
-		spec = uc.externalS3JobSpec(external, input)
+		spec = uc.warpJobSpec(external, input)
 	}
 
 	// job
@@ -75,39 +81,39 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	return uc.toBISTResult(ctx, config, job)
 }
 
-func (uc *BISTUseCase) internalS3JobSpec(endpoint, accessKey, secretKey string, input *WarpInput) *JobSpec {
-	bistJobBackoffLimit := int32(2)
-	env := []corev1.EnvVar{
-		{Name: "BENCHMARK_TYPE", Value: "s3"},
-		{Name: "BENCHMARK_ARGS_WARP_HOST", Value: endpoint},
-		{Name: "BENCHMARK_ARGS_WARP_ACCESS_KEY", Value: accessKey},
-		{Name: "BENCHMARK_ARGS_WARP_SECRET_KEY", Value: secretKey},
-		{Name: "BENCHMARK_ARGS_WARP_ACTION", Value: input.Operation},
-		{Name: "BENCHMARK_ARGS_WARP_DURATION", Value: input.Duration},
-		{Name: "BENCHMARK_ARGS_WARP_CONCURRENT", Value: "2"},
-		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: input.ObjectSize},
-		{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: input.ObjectCount},
+func (uc *BISTUseCase) warpCephObjectGatewayJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (*JobSpec, error) {
+	sc, err := storageConfig(ctx, uc.facility, uc.action, target.ScopeUUID, target.FacilityName)
+	if err != nil {
+		return nil, err
 	}
-	return &JobSpec{
-		BackoffLimit: &bistJobBackoffLimit,
-		Template: corev1.PodTemplateSpec{
-			Spec: corev1.PodSpec{
-				Containers: []corev1.Container{
-					{
-						Name:            "bist-container",
-						Image:           "docker.io/otterscale/bist-s3:v3",
-						Command:         []string{"./start.sh"},
-						Env:             env,
-						ImagePullPolicy: corev1.PullIfNotPresent,
-					},
-				},
-				RestartPolicy: corev1.RestartPolicyNever,
-			},
-		},
-	}
+	return uc.warpJobSpec(&WarpTargetExternal{
+		Endpoint:  target.Endpoint, // without protocol prefix
+		AccessKey: sc.AccessKey,
+		SecretKey: sc.SecretKey,
+	}, input), nil
 }
 
-func (uc *BISTUseCase) externalS3JobSpec(target *WarpTargetExternal, input *WarpInput) *JobSpec {
+func (uc *BISTUseCase) warpMinIOJobSpec(ctx context.Context, target *WarpTargetInternal, input *WarpInput) (*JobSpec, error) {
+	tmp := strings.Split(target.Name, ".")
+	if len(tmp) != 2 {
+		return nil, fmt.Errorf("invalid name %q", target.Name)
+	}
+	kc, err := kubeConfig(ctx, uc.facility, target.ScopeUUID, target.FacilityName)
+	if err != nil {
+		return nil, err
+	}
+	secret, err := uc.kubeCore.GetSecret(ctx, kc, tmp[0], tmp[1])
+	if err != nil {
+		return nil, err
+	}
+	return uc.warpJobSpec(&WarpTargetExternal{
+		Endpoint:  target.Endpoint,
+		AccessKey: string(secret.Data["root-user"]),
+		SecretKey: string(secret.Data["root-password"]),
+	}, input), nil
+}
+
+func (uc *BISTUseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput) *JobSpec {
 	bistJobBackoffLimit := int32(2)
 	env := []corev1.EnvVar{
 		{Name: "BENCHMARK_TYPE", Value: "s3"},
@@ -118,7 +124,9 @@ func (uc *BISTUseCase) externalS3JobSpec(target *WarpTargetExternal, input *Warp
 		{Name: "BENCHMARK_ARGS_WARP_DURATION", Value: input.Duration},
 		{Name: "BENCHMARK_ARGS_WARP_CONCURRENT", Value: "2"},
 		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: input.ObjectSize},
-		{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: input.ObjectCount},
+	}
+	if input.Operation == http.MethodPut {
+		env = append(env, corev1.EnvVar{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: input.ObjectCount})
 	}
 	return &JobSpec{
 		BackoffLimit: &bistJobBackoffLimit,

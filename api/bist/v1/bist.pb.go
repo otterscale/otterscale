@@ -451,14 +451,16 @@ func (b0 NetworkFileSystem_builder) Build() *NetworkFileSystem {
 }
 
 type InternalObjectService struct {
-	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
-	xxx_hidden_Type        InternalObjectService_Type `protobuf:"varint,1,opt,name=type,enum=otterscale.bist.v1.InternalObjectService_Type"`
-	xxx_hidden_Name        *string                    `protobuf:"bytes,2,opt,name=name"`
-	xxx_hidden_Endpoint    *string                    `protobuf:"bytes,3,opt,name=endpoint"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Type         InternalObjectService_Type `protobuf:"varint,1,opt,name=type,enum=otterscale.bist.v1.InternalObjectService_Type"`
+	xxx_hidden_ScopeUuid    *string                    `protobuf:"bytes,2,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                    `protobuf:"bytes,3,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                    `protobuf:"bytes,4,opt,name=name"`
+	xxx_hidden_Endpoint     *string                    `protobuf:"bytes,5,opt,name=endpoint"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *InternalObjectService) Reset() {
@@ -495,6 +497,26 @@ func (x *InternalObjectService) GetType() InternalObjectService_Type {
 	return InternalObjectService_UNSPECIFIED
 }
 
+func (x *InternalObjectService) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *InternalObjectService) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *InternalObjectService) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -517,17 +539,27 @@ func (x *InternalObjectService) GetEndpoint() string {
 
 func (x *InternalObjectService) SetType(v InternalObjectService_Type) {
 	x.xxx_hidden_Type = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *InternalObjectService) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *InternalObjectService) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *InternalObjectService) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *InternalObjectService) SetEndpoint(v string) {
 	x.xxx_hidden_Endpoint = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *InternalObjectService) HasType() bool {
@@ -537,18 +569,32 @@ func (x *InternalObjectService) HasType() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *InternalObjectService) HasName() bool {
+func (x *InternalObjectService) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *InternalObjectService) HasEndpoint() bool {
+func (x *InternalObjectService) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *InternalObjectService) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *InternalObjectService) HasEndpoint() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
 func (x *InternalObjectService) ClearType() {
@@ -556,22 +602,34 @@ func (x *InternalObjectService) ClearType() {
 	x.xxx_hidden_Type = InternalObjectService_UNSPECIFIED
 }
 
-func (x *InternalObjectService) ClearName() {
+func (x *InternalObjectService) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *InternalObjectService) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *InternalObjectService) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *InternalObjectService) ClearEndpoint() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_Endpoint = nil
 }
 
 type InternalObjectService_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Type     *InternalObjectService_Type
-	Name     *string
-	Endpoint *string
+	Type         *InternalObjectService_Type
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Endpoint     *string
 }
 
 func (b0 InternalObjectService_builder) Build() *InternalObjectService {
@@ -579,15 +637,23 @@ func (b0 InternalObjectService_builder) Build() *InternalObjectService {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
 		x.xxx_hidden_Type = *b.Type
 	}
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Endpoint != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_Endpoint = b.Endpoint
 	}
 	return m0
@@ -3393,11 +3459,14 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"C\n" +
 	"\x11NetworkFileSystem\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x12\n" +
-	"\x04path\x18\x02 \x01(\tR\x04path\"\xb9\x01\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path\"\xfd\x01\n" +
 	"\x15InternalObjectService\x12B\n" +
-	"\x04type\x18\x01 \x01(\x0e2..otterscale.bist.v1.InternalObjectService.TypeR\x04type\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
-	"\bendpoint\x18\x03 \x01(\tR\bendpoint\",\n" +
+	"\x04type\x18\x01 \x01(\x0e2..otterscale.bist.v1.InternalObjectService.TypeR\x04type\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x02 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x03 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12\x1a\n" +
+	"\bendpoint\x18\x05 \x01(\tR\bendpoint\",\n" +
 	"\x04Type\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04CEPH\x10\x01\x12\t\n" +

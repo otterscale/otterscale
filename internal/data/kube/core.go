@@ -176,12 +176,12 @@ func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespa
 	return clientset.CoreV1().ConfigMaps(namespace).Create(ctx, configMap, opts)
 }
 
-func (r *core) DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error {
+func (r *core) GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.Secret, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	opts := metav1.DeleteOptions{}
-	return clientset.CoreV1().ConfigMaps(namespace).Delete(ctx, name, opts)
+	opts := metav1.GetOptions{}
+	return clientset.CoreV1().Secrets(namespace).Get(ctx, name, opts)
 }
