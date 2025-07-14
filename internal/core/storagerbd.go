@@ -45,7 +45,7 @@ type CephRBDRepo interface {
 }
 
 func (uc *StorageUseCase) ListImages(ctx context.Context, uuid, facility string) ([]RBDImage, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -67,18 +67,18 @@ func (uc *StorageUseCase) ListImages(ctx context.Context, uuid, facility string)
 }
 
 func (uc *StorageUseCase) CreateImage(ctx context.Context, uuid, facility, pool, image string, objectSizeBytes, stripeUnitBytes, stripeCount, size uint64, layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) (*RBDImage, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
 
 	order := int(math.Round(math.Log2(float64(objectSizeBytes))))
-	features := uc.convertToRBDImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten)
+	features := convertToRBDImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten)
 	return uc.rbd.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
 }
 
 func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool, image string, size uint64) (*RBDImage, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (uc *StorageUseCase) UpdateImage(ctx context.Context, uuid, facility, pool,
 }
 
 func (uc *StorageUseCase) DeleteImage(ctx context.Context, uuid, facility, pool, image string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func (uc *StorageUseCase) DeleteImage(ctx context.Context, uuid, facility, pool,
 }
 
 func (uc *StorageUseCase) CreateImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) (*RBDImageSnapshot, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +110,7 @@ func (uc *StorageUseCase) CreateImageSnapshot(ctx context.Context, uuid, facilit
 }
 
 func (uc *StorageUseCase) DeleteImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
@@ -118,7 +118,7 @@ func (uc *StorageUseCase) DeleteImageSnapshot(ctx context.Context, uuid, facilit
 }
 
 func (uc *StorageUseCase) RollbackImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
@@ -126,7 +126,7 @@ func (uc *StorageUseCase) RollbackImageSnapshot(ctx context.Context, uuid, facil
 }
 
 func (uc *StorageUseCase) ProtectImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
@@ -134,14 +134,14 @@ func (uc *StorageUseCase) ProtectImageSnapshot(ctx context.Context, uuid, facili
 }
 
 func (uc *StorageUseCase) UnprotectImageSnapshot(ctx context.Context, uuid, facility, pool, image, snapshot string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
 	return uc.rbd.UnprotectImageSnapshot(ctx, config, pool, image, snapshot)
 }
 
-func (uc *StorageUseCase) convertToRBDImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) uint64 {
+func convertToRBDImageFeatures(layering, exclusiveLock, objectMap, fastDiff, deepFlatten bool) uint64 {
 	var fs uint64
 	if layering {
 		fs |= rbd.FeatureLayering

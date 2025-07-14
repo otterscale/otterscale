@@ -69,7 +69,7 @@ type CephClusterRepo interface {
 }
 
 func (uc *StorageUseCase) ListMONs(ctx context.Context, uuid, facility string) ([]MON, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (uc *StorageUseCase) ListMONs(ctx context.Context, uuid, facility string) (
 }
 
 func (uc *StorageUseCase) ListOSDs(ctx context.Context, uuid, facility string) ([]OSD, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -115,32 +115,15 @@ func (uc *StorageUseCase) ListOSDs(ctx context.Context, uuid, facility string) (
 }
 
 func (uc *StorageUseCase) DoSMART(ctx context.Context, uuid, facility, osd string) (map[string][]string, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
 	return uc.cluster.DoSMART(ctx, config, osd)
 }
 
-func (uc *StorageUseCase) IsPoolExists(ctx context.Context, uuid, facility, name string) (bool, error) {
-	config, err := uc.config(ctx, uuid, facility)
-	if err != nil {
-		return false, err
-	}
-	pools, err := uc.cluster.ListPools(ctx, config)
-	if err != nil {
-		return false, err
-	}
-	for i := range pools {
-		if pools[i].Name == name {
-			return true, nil
-		}
-	}
-	return false, nil
-}
-
 func (uc *StorageUseCase) ListPools(ctx context.Context, uuid, facility, application string) ([]Pool, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -172,7 +155,7 @@ func (uc *StorageUseCase) ListPools(ctx context.Context, uuid, facility, applica
 }
 
 func (uc *StorageUseCase) CreatePool(ctx context.Context, uuid, facility, pool, poolType string, ecOverwrites bool, replicatedSize, quotaMaxBytes, quotaMaxObjects uint64, applications []string) (*Pool, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +186,7 @@ func (uc *StorageUseCase) CreatePool(ctx context.Context, uuid, facility, pool, 
 }
 
 func (uc *StorageUseCase) UpdatePool(ctx context.Context, uuid, facility, pool string, quotaMaxBytes, quotaMaxObjects uint64) (*Pool, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +199,7 @@ func (uc *StorageUseCase) UpdatePool(ctx context.Context, uuid, facility, pool s
 }
 
 func (uc *StorageUseCase) DeletePool(ctx context.Context, uuid, facility, pool string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}

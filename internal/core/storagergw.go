@@ -34,7 +34,7 @@ type CephRGWRepo interface {
 }
 
 func (uc *StorageUseCase) ListBuckets(ctx context.Context, uuid, facility string) ([]RGWBucket, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (uc *StorageUseCase) ListBuckets(ctx context.Context, uuid, facility string
 }
 
 func (uc *StorageUseCase) CreateBucket(ctx context.Context, uuid, facility, bucket, owner, policy string, acl types.BucketCannedACL) (*RGWBucket, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (uc *StorageUseCase) CreateBucket(ctx context.Context, uuid, facility, buck
 }
 
 func (uc *StorageUseCase) UpdateBucket(ctx context.Context, uuid, facility, bucket, owner, policy string, acl types.BucketCannedACL) (*RGWBucket, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (uc *StorageUseCase) UpdateBucket(ctx context.Context, uuid, facility, buck
 }
 
 func (uc *StorageUseCase) DeleteBucket(ctx context.Context, uuid, facility, bucket string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
@@ -88,7 +88,7 @@ func (uc *StorageUseCase) DeleteBucket(ctx context.Context, uuid, facility, buck
 }
 
 func (uc *StorageUseCase) ListUsers(ctx context.Context, uuid, facility string) ([]RGWUser, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (uc *StorageUseCase) ListUsers(ctx context.Context, uuid, facility string) 
 }
 
 func (uc *StorageUseCase) CreateUser(ctx context.Context, uuid, facility, id, name string, suspended bool) (*RGWUser, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func (uc *StorageUseCase) CreateUser(ctx context.Context, uuid, facility, id, na
 }
 
 func (uc *StorageUseCase) UpdateUser(ctx context.Context, uuid, facility, id, name string, suspended bool) (*RGWUser, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (uc *StorageUseCase) UpdateUser(ctx context.Context, uuid, facility, id, na
 }
 
 func (uc *StorageUseCase) DeleteUser(ctx context.Context, uuid, facility, id string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (uc *StorageUseCase) DeleteUser(ctx context.Context, uuid, facility, id str
 }
 
 func (uc *StorageUseCase) CreateUserKey(ctx context.Context, uuid, facility, id string) (*admin.UserKeySpec, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -128,7 +128,7 @@ func (uc *StorageUseCase) CreateUserKey(ctx context.Context, uuid, facility, id 
 }
 
 func (uc *StorageUseCase) DeleteUserKey(ctx context.Context, uuid, facility, id, accessKey string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}

@@ -66,7 +66,7 @@ type CephFSRepo interface {
 }
 
 func (uc *StorageUseCase) ListVolumes(ctx context.Context, uuid, facility string) ([]Volume, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,7 @@ func (uc *StorageUseCase) ListVolumes(ctx context.Context, uuid, facility string
 }
 
 func (uc *StorageUseCase) ListSubvolumes(ctx context.Context, uuid, facility, volume, group string) ([]Subvolume, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func (uc *StorageUseCase) ListSubvolumes(ctx context.Context, uuid, facility, vo
 }
 
 func (uc *StorageUseCase) CreateSubvolume(ctx context.Context, uuid, facility, volume, subvolume, group string, size uint64, export bool) (*Subvolume, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +122,7 @@ func (uc *StorageUseCase) CreateSubvolume(ctx context.Context, uuid, facility, v
 			"name": subvolume,
 			"size": size / 1024 / 1024 / 1024, // gb
 		}
-		if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+		if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 			return nil, err
 		}
 		return uc.fs.GetSubvolume(ctx, config, volume, subvolume, "")
@@ -135,7 +135,7 @@ func (uc *StorageUseCase) CreateSubvolume(ctx context.Context, uuid, facility, v
 }
 
 func (uc *StorageUseCase) UpdateSubvolume(ctx context.Context, uuid, facility, volume, subvolume, group string, size uint64) (*Subvolume, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +154,7 @@ func (uc *StorageUseCase) UpdateSubvolume(ctx context.Context, uuid, facility, v
 			"name": subvolume,
 			"size": size / 1024 / 1024 / 1024, // gb
 		}
-		if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+		if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 			return nil, err
 		}
 		return uc.fs.GetSubvolume(ctx, config, volume, subvolume, "")
@@ -167,7 +167,7 @@ func (uc *StorageUseCase) UpdateSubvolume(ctx context.Context, uuid, facility, v
 }
 
 func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, volume, subvolume, group string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
@@ -185,7 +185,7 @@ func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, v
 			"name":  subvolume,
 			"purge": true,
 		}
-		if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+		if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 			return err
 		}
 		return nil
@@ -203,7 +203,7 @@ func (uc *StorageUseCase) GrantSubvolumeClient(ctx context.Context, uuid, facili
 		"name":   subvolume,
 		"client": clientIP,
 	}
-	if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+	if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 		return err
 	}
 	return nil
@@ -219,14 +219,14 @@ func (uc *StorageUseCase) RevokeSubvolumeClient(ctx context.Context, uuid, facil
 		"name":   subvolume,
 		"client": clientIP,
 	}
-	if err := uc.runAction(ctx, uuid, leader, action, params); err != nil {
+	if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (uc *StorageUseCase) CreateSubvolumeSnapshot(ctx context.Context, uuid, facility, volume, subvolume, group, snapshot string) (*SubvolumeSnapshot, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -237,7 +237,7 @@ func (uc *StorageUseCase) CreateSubvolumeSnapshot(ctx context.Context, uuid, fac
 }
 
 func (uc *StorageUseCase) DeleteSubvolumeSnapshot(ctx context.Context, uuid, facility, volume, subvolume, group, snapshot string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
@@ -245,7 +245,7 @@ func (uc *StorageUseCase) DeleteSubvolumeSnapshot(ctx context.Context, uuid, fac
 }
 
 func (uc *StorageUseCase) ListSubvolumeGroups(ctx context.Context, uuid, facility, volume string) ([]SubvolumeGroup, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -253,7 +253,7 @@ func (uc *StorageUseCase) ListSubvolumeGroups(ctx context.Context, uuid, facilit
 }
 
 func (uc *StorageUseCase) CreateSubvolumeGroup(ctx context.Context, uuid, facility, volume, group string, size uint64) (*SubvolumeGroup, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -264,7 +264,7 @@ func (uc *StorageUseCase) CreateSubvolumeGroup(ctx context.Context, uuid, facili
 }
 
 func (uc *StorageUseCase) UpdateSubvolumeGroup(ctx context.Context, uuid, facility, volume, group string, size uint64) (*SubvolumeGroup, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -275,7 +275,7 @@ func (uc *StorageUseCase) UpdateSubvolumeGroup(ctx context.Context, uuid, facili
 }
 
 func (uc *StorageUseCase) DeleteSubvolumeGroup(ctx context.Context, uuid, facility, volume, group string) error {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
