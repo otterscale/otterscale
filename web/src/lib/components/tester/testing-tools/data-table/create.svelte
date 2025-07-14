@@ -3,26 +3,48 @@
 	import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { cn } from '$lib/utils';
-	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import * as MultipleStepModal from './mutiple-step-modal';
 	import type { CreateTestResultRequest, FIO, FIO_Input, CephBlockDevice, NetworkFileSystem } from '$gen/api/bist/v1/bist_pb'
-	import { FIO_Input_AccessMode } from '$gen/api/bist/v1/bist_pb'
-	
-	// const warpOptions: SingleSelect.OptionType[] = Object.keys(TestResult_Warp_Operation)
-	// 	.filter(key => isNaN(Number(key)))
-	// 	.map(key => ({value: TestResult_Warp_Operation[key as keyof typeof TestResult_Warp_Operation], label: key}));
-	// const testResultWarpOperation: Writable<SingleSelect.OptionType[]> = writable(warpOptions);
+	import { BISTService, FIO_Input_AccessMode } from '$gen/api/bist/v1/bist_pb'
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext } from 'svelte';
+	import * as Picker from '$lib/components/custom/picker';
+	import CephPicker from '$lib/components/management-storage/utils/ceph-picker.svelte';
 
+	// FIO Target
+	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([
+		{
+			value: 'cephBlockDevice',
+			label: 'Ceph Block Device',
+		},
+		{
+			value: 'networkFileSystem',
+			label: 'Network File System',
+		},
+	]);
+
+	// FIO AccessMode
+	const Options: SingleSelect.OptionType[] = Object.keys(FIO_Input_AccessMode)
+		.filter(key => isNaN(Number(key)))
+		.map(key => ({value: FIO_Input_AccessMode[key as keyof typeof FIO_Input_AccessMode], label: key}));
+	const fioInputeAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
+</script>
+
+<script lang="ts">
 	// Request
 	const DEFAULT_FIO_REQUEST = { target: {value: {}, case: {}}} as FIO;
-	const DEFAULT_REQUEST = { kind: {value: DEFAULT_FIO_REQUEST, case: "fio"} } as CreateTestResultRequest;
+	const DEFAULT_REQUEST = { kind: {value: DEFAULT_FIO_REQUEST, case: "fio"}, createdBy: "Woody Lin" } as CreateTestResultRequest;
 	const DEFAULT_CEPH_BLOCK_DEVICE = { } as CephBlockDevice;
 	const DEFAULT_NETWORK_FILE_SYSTEM = { } as NetworkFileSystem;
-	const DEFAULT_FIO_INPUT = { } as FIO_Input;
+	const DEFAULT_FIO_INPUT = { 
+		jobCount: "32", runTime: "100", blockSize: "4k", fileSize: "1G", ioDepth: "1"
+	} as unknown as FIO_Input;
+	let selectedScope = $state('');
+	let selectedFacility = $state('');
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
 	let requestCephBlockDevice: CephBlockDevice = $state(DEFAULT_CEPH_BLOCK_DEVICE);
@@ -36,35 +58,16 @@
 		requestFioInput = DEFAULT_FIO_INPUT;
 	}
 
-	// FIO Target
-	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([
-		{
-			value: 'cephBlockDevice',
-			label: 'FIO',
-		},
-		{
-			value: 'networkFileSystem',
-			label: 'WARP',
-		},
-	]);
-
-	// FIO AccessMode
-	const Options: SingleSelect.OptionType[] = Object.keys(FIO_Input_AccessMode)
-		.filter(key => isNaN(Number(key)))
-		.map(key => ({value: FIO_Input_AccessMode[key as keyof typeof FIO_Input_AccessMode], label: key}));
-	const fioInputeAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
-
+	// Modal state
 	const stateController = new DialogStateController(false);
 
-	// STEP
-	let step = $state(1);
-	let open = $state(false);
-	function close() {
-		open = false;
-	}
+	// grpc
+	const transport: Transport = getContext('transport');
+	const bistClient = createClient(BISTService, transport);
 </script>
 
-<MultipleStepModal.Root bind:open steps={3}>
+
+<MultipleStepModal.Root bind:open={stateController.state} steps={3}>
 	<div class="flex justify-end">
 		<MultipleStepModal.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
 			<div class="flex items-center gap-1">
@@ -131,14 +134,12 @@
 						{#if requestFio.target.case == 'cephBlockDevice'}
 							<Form.Fieldset>
 								<Form.Legend>Target</Form.Legend>
-								<Form.Field>
-									<Form.Label>Scope UUID</Form.Label>
-									<SingleInput.General type="text" bind:value={requestCephBlockDevice.scopeUuid}/>
-								</Form.Field>
-								<Form.Field>
-									<Form.Label>Facility Name</Form.Label>
-									<SingleInput.General type="text" bind:value={requestCephBlockDevice.facilityName}/>
-								</Form.Field>
+								<Picker.Root align="left">
+									<Picker.Wrapper class="*:h-8">
+										<Picker.Label>Ceph</Picker.Label>
+										<CephPicker bind:selectedScope bind:selectedFacility />
+									</Picker.Wrapper>
+								</Picker.Root>
 							</Form.Fieldset>
 						{:else if requestFio.target.case == 'networkFileSystem'}
 							<Form.Fieldset>
@@ -191,27 +192,27 @@
 							<!-- jobCount -->
 							<Form.Field>
 								<Form.Label>Job Count</Form.Label>
-								<SingleInput.General type="number" bind:value={requestFioInput.jobCount}/>
+								<SingleInput.General type="number" placeholder="32" bind:value={requestFioInput.jobCount}/>
 							</Form.Field>
 							<!-- runTime -->
 							<Form.Field>
 								<Form.Label>Run Time</Form.Label>
-								<SingleInput.General type="text" bind:value={requestFioInput.runTime}/>
+								<SingleInput.General type="text" placeholder="100" bind:value={requestFioInput.runTime}/>
 							</Form.Field>
 							<!-- blockSize -->
 							<Form.Field>
 								<Form.Label>Block Size</Form.Label>
-								<SingleInput.General type="text" bind:value={requestFioInput.blockSize}/>
+								<SingleInput.General type="text" placeholder="4k" bind:value={requestFioInput.blockSize}/>
 							</Form.Field>
 							<!-- fileSize -->
 							<Form.Field>
 								<Form.Label>File Size</Form.Label>
-								<SingleInput.General type="text" bind:value={requestFioInput.fileSize}/>
+								<SingleInput.General type="text" placeholder="1G" bind:value={requestFioInput.fileSize}/>
 							</Form.Field>
 							<!-- ioDepth -->
 							<Form.Field>
 								<Form.Label>I/O Depth</Form.Label>
-								<SingleInput.General type="number" bind:value={requestFioInput.ioDepth}/>
+								<SingleInput.General type="number" placeholder="1" bind:value={requestFioInput.ioDepth}/>
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
@@ -219,14 +220,54 @@
 
 				<!-- Step three Overview -->
 				<MultipleStepModal.Model>
-					TODO: Content for Tab 3
+					<Form.Root>
+						<!-- Step 1 -->
+						<Form.Fieldset>
+							<Form.Legend>Step 1</Form.Legend>
+							<Form.Description>Name: {request.name}</Form.Description>
+							<Form.Description>Target: {requestFio.target.case}</Form.Description>
+							{#if requestFio.target.case == 'cephBlockDevice'}
+								<Form.Description>Scope UUID: {selectedScope}</Form.Description>
+								<Form.Description>Facility Name: {selectedFacility}</Form.Description>
+							{:else if requestFio.target.case == 'networkFileSystem'}
+								<Form.Description>Endpoint: {requestNetworkFileSystem.endpoint}</Form.Description>
+								<Form.Description>Path: {requestNetworkFileSystem.path}</Form.Description>
+							{/if}
+						</Form.Fieldset>
+						<!-- Step 2 -->
+						<Form.Fieldset>
+							<Form.Legend>Step 2</Form.Legend>
+							<Form.Description>Access Mode: {FIO_Input_AccessMode[requestFioInput.accessMode]}</Form.Description>
+							<Form.Description>Job Count: {requestFioInput.jobCount}</Form.Description>
+							<Form.Description>Run Time: {requestFioInput.runTime}</Form.Description>
+							<Form.Description>Block Size: {requestFioInput.blockSize}</Form.Description>
+							<Form.Description>File Size: {requestFioInput.jobCount}</Form.Description>
+							<Form.Description>I/O Depth: {requestFioInput.ioDepth}</Form.Description>
+						</Form.Fieldset>
+					</Form.Root>
 				</MultipleStepModal.Model>
 			</MultipleStepModal.Models>
 		</MultipleStepModal.Stepper>
 		
 		<MultipleStepModal.Footer>
-			<MultipleStepModal.Cancel onclick={reset}>Cancel</MultipleStepModal.Cancel>
-			<MultipleStepModal.Confirm>Confirm</MultipleStepModal.Confirm>
+			<MultipleStepModal.Cancel onclick={() => { reset(); }}>Cancel</MultipleStepModal.Cancel>
+			<MultipleStepModal.Confirm
+				onclick={() => {
+                    if (requestFio.target.case == 'cephBlockDevice') {
+						requestCephBlockDevice.scopeUuid = selectedScope;
+						requestCephBlockDevice.facilityName = selectedFacility;
+                        requestFio.target.value = requestCephBlockDevice;
+                    } else if (requestFio.target.case == 'networkFileSystem') {
+                        requestFio.target.value = requestNetworkFileSystem;
+                    }
+					requestFio.input = requestFioInput;
+					request.kind.value = requestFio;
+					stateController.close();
+					bistClient.createTestResult(request);
+				}}
+			>
+				Confirm
+			</MultipleStepModal.Confirm>
 			<MultipleStepModal.Controllers>
 				<MultipleStepModal.Back>Back</MultipleStepModal.Back>
 				<MultipleStepModal.Next>Next</MultipleStepModal.Next>
