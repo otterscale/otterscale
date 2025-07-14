@@ -383,21 +383,28 @@ func (uc *BISTUseCase) toFIO(ctx context.Context, config *rest.Config, job *Job)
 		return nil, err
 	}
 	// output
-	logs, err := uc.getLogs(ctx, config, job)
-	if err != nil {
+	if err := uc.unmarshalFIOOutput(ctx, config, job, &fio.Output); err != nil {
 		return nil, err
 	}
-	v, ok := logs["jobs"].([]any)
+	return fio, nil
+}
+
+func (uc *BISTUseCase) unmarshalFIOOutput(ctx context.Context, config *rest.Config, job *Job, val **FIOOutput) error {
+	logs, err := uc.getLogs(ctx, config, job)
+	if err != nil {
+		return err
+	}
+	jobs, ok := logs["jobs"].([]any)
 	if ok {
-		b, err := json.Marshal(v[0])
+		data, err := json.Marshal(jobs[0])
 		if err != nil {
-			return nil, err
+			return err
 		}
-		if err := json.Unmarshal(b, &fio.Output); err != nil {
-			return nil, err
+		if err := json.Unmarshal(data, &val); err != nil {
+			return err
 		}
 	}
-	return fio, nil
+	return nil
 }
 
 func (uc *BISTUseCase) toWarp(ctx context.Context, config *rest.Config, job *Job) (*Warp, error) {
@@ -407,15 +414,20 @@ func (uc *BISTUseCase) toWarp(ctx context.Context, config *rest.Config, job *Job
 		return nil, err
 	}
 	// output
-	// logs, err := uc.getLogs(ctx, config, job)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// if err := json.Unmarshal([]byte(logs), &warp.Output); err != nil {
-	// 	return nil, err
-	// }
-
-	// TODO
-
+	if err := uc.unmarshalWarpOutput(ctx, config, job, &warp.Output); err != nil {
+		return nil, err
+	}
 	return warp, nil
+}
+
+func (uc *BISTUseCase) unmarshalWarpOutput(ctx context.Context, config *rest.Config, job *Job, val **WarpOutput) error {
+	logs, err := uc.getLogs(ctx, config, job)
+	if err != nil {
+		return err
+	}
+	data, err := json.Marshal(logs)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(data, &val)
 }
