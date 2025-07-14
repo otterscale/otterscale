@@ -90,7 +90,7 @@
 
 				<Form.Field>
 					<Form.Label>Policy</Form.Label>
-					<SingleInput.Structure bind:value={request.policy} />
+					<SingleInput.Structure preview required bind:value={request.policy} language="json" />
 				</Form.Field>
 
 				<Form.Field>
