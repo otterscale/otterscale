@@ -16,8 +16,7 @@
 		machine: machine,
 		placementGroupCount: placementGroupCount,
 		usage: usage,
-		iopsRead: iopsRead,
-		iopsWrite: iopsWrite
+		iops: iops
 	};
 </script>
 
@@ -95,14 +94,8 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet iopsRead()}
-	<Layout.Header class="justify-center">
-		<Layout.HeaderViewer>READ</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
-{#snippet iopsWrite()}
-	<Layout.Header class="justify-center">
-		<Layout.HeaderViewer>WRITE</Layout.HeaderViewer>
+{#snippet iops()}
+	<Layout.Header>
+		<Layout.HeaderViewer>IOPS</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
