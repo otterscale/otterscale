@@ -25,8 +25,7 @@
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import { headers } from './headers.svelte';
-	import IopsRead from './iops-read.svelte';
-	import IopsWrite from './iops-write.svelte';
+	import IOPS from './iops.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -139,10 +138,7 @@
 							</Table.Head>
 						{/each}
 						<Table.Head>
-							{@render headers.iopsRead()}
-						</Table.Head>
-						<Table.Head>
-							{@render headers.iopsWrite()}
+							{@render headers.iops()}
 						</Table.Head>
 						<Table.Head></Table.Head>
 					</Table.Row>
@@ -157,10 +153,7 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<IopsRead {selectedScope} selectedObjectStorageDaemon={row.original.name} />
-						</Table.Cell>
-						<Table.Cell>
-							<IopsWrite {selectedScope} selectedObjectStorageDaemon={row.original.name} />
+							<IOPS {selectedScope} selectedObjectStorageDaemon={row.original.name} />
 						</Table.Cell>
 						<Table.Cell>
 							<Actions osd={row.original} />
