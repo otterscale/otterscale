@@ -1,9 +1,12 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { EssentialService } from '$gen/api/essential/v1/essential_pb';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import Overall from '$lib/components/dashboard/overall/index.svelte';
 	import PageLoading from '$lib/components/otterscale/ui/page-loading.svelte';
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 
 	const prometheus = new PrometheusDriver({
 		endpoint: 'http://10.102.197.18/cos-dev-prometheus-0',
@@ -33,6 +36,13 @@
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
+			const transport: Transport = getContext('transport');
+			const essentialClient = createClient(EssentialService, transport);
+			const listEssentialsResponse = await essentialClient.listEssentials({});
+			if (listEssentialsResponse.essentials?.length === 0) {
+				goto('/dashboard/installation');
+			}
+
 			await fetchJujuModelUuids();
 		} catch (error) {
 			console.error('Error during initial data load:', error);

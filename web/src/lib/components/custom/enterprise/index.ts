@@ -1,7 +1,4 @@
+import { getIsEnterprise, setIsEnterprise } from './data.svelte'
 import Hint from './enterprise.svelte'
-import { enabled } from './data'
 
-export {
-    Hint,
-    enabled
-}
+export { getIsEnterprise, Hint, setIsEnterprise }
