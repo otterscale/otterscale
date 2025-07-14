@@ -365,9 +365,9 @@ func (uc *BISTUseCase) ensureImage(ctx context.Context, uuid, facility, pool, im
 		}
 	}
 	objectSizeBytes := 4194304
-	stripeUnitBytes := uint64(4194304)
+	stripeUnitBytes := uint64(4194304) //nolint:mnd
 	stripeCount := uint64(1)
-	size := uint64(10737418240)
+	size := uint64(10737418240) //nolint:mnd
 	order := int(math.Round(math.Log2(float64(objectSizeBytes))))
 	features := convertToRBDImageFeatures(true, true, true, true, true)
 	_, err = uc.cephRBD.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)

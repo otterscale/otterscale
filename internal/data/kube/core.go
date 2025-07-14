@@ -160,7 +160,7 @@ func (r *core) GetConfigMap(ctx context.Context, config *rest.Config, namespace,
 	return clientset.CoreV1().ConfigMaps(namespace).Get(ctx, name, opts)
 }
 
-func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, name string, data map[string]string) (*oscore.ConfigMap, error) {
+func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*oscore.ConfigMap, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err

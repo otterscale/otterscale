@@ -83,7 +83,7 @@ type KubeAppsRepo interface {
 type KubeBatchRepo interface {
 	// Job
 	ListJobsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Job, error)
-	CreateJob(ctx context.Context, config *rest.Config, namespace, name string, labels, annotations map[string]string, spec JobSpec) (*Job, error)
+	CreateJob(ctx context.Context, config *rest.Config, namespace, name string, labels, annotations map[string]string, spec *JobSpec) (*Job, error)
 	DeleteJob(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
@@ -106,7 +106,7 @@ type KubeCoreRepo interface {
 
 	// ConfigMap
 	GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*ConfigMap, error)
-	CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, name string, data map[string]string) (*ConfigMap, error)
+	CreateConfigMap(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*ConfigMap, error)
 	DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 

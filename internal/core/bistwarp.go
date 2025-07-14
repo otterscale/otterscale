@@ -45,7 +45,7 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	}
 
 	// spec
-	var spec JobSpec
+	var spec *JobSpec
 
 	// s3 internal
 	internal := target.Internal
@@ -75,7 +75,7 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	return uc.toBISTResult(ctx, config, job)
 }
 
-func (uc *BISTUseCase) internalS3JobSpec(endpoint, accessKey, secretKey string, input *WarpInput) JobSpec {
+func (uc *BISTUseCase) internalS3JobSpec(endpoint, accessKey, secretKey string, input *WarpInput) *JobSpec {
 	bistJobBackoffLimit := int32(2)
 	env := []corev1.EnvVar{
 		{Name: "BENCHMARK_TYPE", Value: "s3"},
@@ -88,7 +88,7 @@ func (uc *BISTUseCase) internalS3JobSpec(endpoint, accessKey, secretKey string, 
 		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: input.ObjectSize},
 		{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: input.ObjectCount},
 	}
-	return JobSpec{
+	return &JobSpec{
 		BackoffLimit: &bistJobBackoffLimit,
 		Template: corev1.PodTemplateSpec{
 			Spec: corev1.PodSpec{
@@ -107,7 +107,7 @@ func (uc *BISTUseCase) internalS3JobSpec(endpoint, accessKey, secretKey string, 
 	}
 }
 
-func (uc *BISTUseCase) externalS3JobSpec(target *WarpTargetExternal, input *WarpInput) JobSpec {
+func (uc *BISTUseCase) externalS3JobSpec(target *WarpTargetExternal, input *WarpInput) *JobSpec {
 	bistJobBackoffLimit := int32(2)
 	env := []corev1.EnvVar{
 		{Name: "BENCHMARK_TYPE", Value: "s3"},
@@ -120,7 +120,7 @@ func (uc *BISTUseCase) externalS3JobSpec(target *WarpTargetExternal, input *Warp
 		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: input.ObjectSize},
 		{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: input.ObjectCount},
 	}
-	return JobSpec{
+	return &JobSpec{
 		BackoffLimit: &bistJobBackoffLimit,
 		Template: corev1.PodTemplateSpec{
 			Spec: corev1.PodSpec{

@@ -45,7 +45,7 @@ func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy stri
 	}
 
 	// spec
-	var spec JobSpec
+	var spec *JobSpec
 
 	// block
 	block := target.Ceph
@@ -79,7 +79,7 @@ func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy stri
 	return uc.toBISTResult(ctx, config, job)
 }
 
-func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) JobSpec {
+func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) *JobSpec {
 	bistJobBackoffLimit := int32(2)
 	privileged := true
 	env := []corev1.EnvVar{
@@ -101,7 +101,7 @@ func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) JobSp
 		{Name: "BENCHMARK_ARGS_FIO_CREATE_SERIALIZE", Value: "0"},
 		{Name: "BENCHMARK_ARGS_FIO_RUNTIME", Value: input.RunTime},
 	}
-	return JobSpec{
+	return &JobSpec{
 		BackoffLimit: &bistJobBackoffLimit,
 		Template: corev1.PodTemplateSpec{
 			Spec: corev1.PodSpec{
@@ -165,7 +165,7 @@ func (uc *BISTUseCase) blockJobSpec(configMapName string, input *FIOInput) JobSp
 	}
 }
 
-func (uc *BISTUseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) JobSpec {
+func (uc *BISTUseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) *JobSpec {
 	bistJobBackoffLimit := int32(2)
 	privileged := true
 	env := []corev1.EnvVar{
@@ -187,7 +187,7 @@ func (uc *BISTUseCase) nfsJobSpec(target *FIOTargetNFS, input *FIOInput) JobSpec
 		{Name: "BENCHMARK_ARGS_FIO_CREATE_SERIALIZE", Value: "0"},
 		{Name: "BENCHMARK_ARGS_FIO_RUNTIME", Value: input.RunTime},
 	}
-	return JobSpec{
+	return &JobSpec{
 		BackoffLimit: &bistJobBackoffLimit,
 		Template: corev1.PodTemplateSpec{
 			Spec: corev1.PodSpec{

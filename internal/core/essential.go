@@ -11,7 +11,6 @@ import (
 	"connectrpc.com/connect"
 	"github.com/canonical/gomaasclient/entity/node"
 	"github.com/juju/juju/core/instance"
-	"github.com/juju/juju/core/status"
 	jujustatus "github.com/juju/juju/core/status"
 	"github.com/juju/juju/rpc/params"
 	"golang.org/x/sync/errgroup"
@@ -322,7 +321,7 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 		return nil, err
 	}
 	scopes = slices.DeleteFunc(scopes, func(s Scope) bool {
-		return !strings.Contains(s.UUID, scopeUUID) || s.Status.Status != status.Available
+		return !strings.Contains(s.UUID, scopeUUID) || s.Status.Status != jujustatus.Available
 	})
 
 	eg, ctx := errgroup.WithContext(ctx)
