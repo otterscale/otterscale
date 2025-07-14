@@ -41,7 +41,7 @@ func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy str
 	})
 	annotations := map[string]string{
 		bistAnnotationCreatedBy: createdBy,
-		bistAnnotationKind:      bistAnnotationWarp,
+		bistAnnotationKind:      bistKindWarp,
 		bistAnnotationFIO:       string(warp),
 	}
 
