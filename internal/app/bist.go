@@ -18,12 +18,11 @@ import (
 type BISTService struct {
 	pbconnect.UnimplementedBISTServiceHandler
 
-	uc  *core.BISTUseCase
-	suc *core.StorageUseCase
+	uc *core.BISTUseCase
 }
 
-func NewBISTService(uc *core.BISTUseCase, suc *core.StorageUseCase) *BISTService {
-	return &BISTService{uc: uc, suc: suc}
+func NewBISTService(uc *core.BISTUseCase) *BISTService {
+	return &BISTService{uc: uc}
 }
 
 var _ pbconnect.BISTServiceHandler = (*BISTService)(nil)
@@ -46,13 +45,13 @@ func (s *BISTService) CreateTestResult(ctx context.Context, req *connect.Request
 	switch req.Msg.WhichKind() {
 	case pb.CreateTestResultRequest_Fio_case:
 		fio := req.Msg.GetFio()
-		result, err = s.uc.CreateFIOResult(ctx, req.Msg.GetName(), req.Msg.GetCreatedBy(), toCoreFIOInput(fio.GetInput()), toCoreFIOTarget(fio.GetCephBlockDevice(), fio.GetNetworkFileSystem()))
+		result, err = s.uc.CreateFIOResult(ctx, req.Msg.GetName(), req.Msg.GetCreatedBy(), toCoreFIOTarget(fio.GetCephBlockDevice(), fio.GetNetworkFileSystem()), toCoreFIOInput(fio.GetInput()))
 		if err != nil {
 			return nil, err
 		}
 	case pb.CreateTestResultRequest_Warp_case:
 		warp := req.Msg.GetWarp()
-		result, err = s.uc.CreateWarpResult(ctx, req.Msg.GetName(), req.Msg.GetCreatedBy(), toCoreWarpInput(warp.GetInput()), toCoreWarpTarget(warp.GetInternalObjectService(), warp.GetExternalObjectService()))
+		result, err = s.uc.CreateWarpResult(ctx, req.Msg.GetName(), req.Msg.GetCreatedBy(), toCoreWarpTarget(warp.GetInternalObjectService(), warp.GetExternalObjectService()), toCoreWarpInput(warp.GetInput()))
 		if err != nil {
 			return nil, err
 		}
@@ -81,8 +80,8 @@ func (s *BISTService) ListInternalObjectServices(ctx context.Context, req *conne
 	return connect.NewResponse(resp), nil
 }
 
-func toCoreFIOTarget(c *pb.CephBlockDevice, n *pb.NetworkFileSystem) *core.FIOTarget {
-	ret := &core.FIOTarget{}
+func toCoreFIOTarget(c *pb.CephBlockDevice, n *pb.NetworkFileSystem) core.FIOTarget {
+	ret := core.FIOTarget{}
 	if c != nil {
 		ret.Ceph = &core.FIOTargetCeph{
 			ScopeUUID:    c.GetScopeUuid(),
@@ -98,10 +97,11 @@ func toCoreFIOTarget(c *pb.CephBlockDevice, n *pb.NetworkFileSystem) *core.FIOTa
 	return ret
 }
 
-func toCoreWarpTarget(i *pb.InternalObjectService, e *pb.ExternalObjectService) *core.WarpTarget {
-	ret := &core.WarpTarget{}
+func toCoreWarpTarget(i *pb.InternalObjectService, e *pb.ExternalObjectService) core.WarpTarget {
+	ret := core.WarpTarget{}
 	if i != nil {
 		ret.Internal = &core.WarpTargetInternal{
+			Type:     strings.ToLower(i.GetType().String()),
 			Name:     i.GetName(),
 			Endpoint: i.GetEndpoint(),
 		}
@@ -129,10 +129,10 @@ func toCoreFIOInput(p *pb.FIO_Input) *core.FIOInput {
 
 func toCoreWarpInput(p *pb.Warp_Input) *core.WarpInput {
 	return &core.WarpInput{
-		Operation:  strings.ToLower(p.GetOperation().String()),
-		Duration:   p.GetDuration(),
-		ObjectSize: p.GetObjectSize(),
-		ObjectNum:  p.GetObjectNum(),
+		Operation:   strings.ToLower(p.GetOperation().String()),
+		Duration:    p.GetDuration(),
+		ObjectSize:  p.GetObjectSize(),
+		ObjectCount: p.GetObjectCount(),
 	}
 }
 
@@ -278,7 +278,7 @@ func toProtoWarpInput(w *core.WarpInput) *pb.Warp_Input {
 	ret.SetOperation(toProtoWarpInputOperation(w.Operation))
 	ret.SetDuration(w.Duration)
 	ret.SetObjectSize(w.ObjectSize)
-	ret.SetObjectNum(w.ObjectNum)
+	ret.SetObjectCount(w.ObjectCount)
 	return ret
 }
 

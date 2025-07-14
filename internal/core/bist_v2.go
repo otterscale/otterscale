@@ -2,15 +2,20 @@ package core
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"net/url"
 	"strings"
 	"time"
 
 	"golang.org/x/sync/errgroup"
+
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
@@ -26,6 +31,8 @@ const (
 	bistAnnotationKind      = "bist.otterscale.io/kind"
 	bistAnnotationFIO       = "bist.otterscale.io/fio"
 	bistAnnotationWarp      = "bist.otterscale.io/warp"
+	bistBlockPool           = "otterscale_bist_pool"
+	bistBlockImage          = "otterscale_bist_image"
 )
 
 const (
@@ -117,10 +124,10 @@ type WarpTargetExternal struct {
 }
 
 type WarpInput struct {
-	Operation  string `json:"operation"`
-	Duration   string `json:"duration"`
-	ObjectSize string `json:"object_size"`
-	ObjectNum  string `json:"object_num"`
+	Operation   string `json:"operation"`
+	Duration    string `json:"duration"`
+	ObjectSize  string `json:"object_size"`
+	ObjectCount string `json:"object_count"`
 }
 
 type WarpOutput struct {
@@ -146,23 +153,29 @@ type WarpOperation struct {
 }
 
 type BISTUseCase struct {
-	scope     ScopeRepo
-	client    ClientRepo
-	facility  FacilityRepo
-	kubeBatch KubeBatchRepo
-	kubeCore  KubeCoreRepo
+	scope       ScopeRepo
+	client      ClientRepo
+	facility    FacilityRepo
+	action      ActionRepo
+	kubeBatch   KubeBatchRepo
+	kubeCore    KubeCoreRepo
+	cephCluster CephClusterRepo
+	cephRBD     CephRBDRepo
 
 	conf *config.Config
 }
 
-func NewBISTUseCase(scope ScopeRepo, client ClientRepo, facility FacilityRepo, kubeBatch KubeBatchRepo, kubeCore KubeCoreRepo, conf *config.Config) *BISTUseCase {
+func NewBISTUseCase(scope ScopeRepo, client ClientRepo, facility FacilityRepo, action ActionRepo, kubeBatch KubeBatchRepo, kubeCore KubeCoreRepo, cephCluster CephClusterRepo, cephRBD CephRBDRepo, conf *config.Config) *BISTUseCase {
 	return &BISTUseCase{
-		scope:     scope,
-		client:    client,
-		facility:  facility,
-		kubeBatch: kubeBatch,
-		kubeCore:  kubeCore,
-		conf:      conf,
+		scope:       scope,
+		client:      client,
+		facility:    facility,
+		action:      action,
+		kubeBatch:   kubeBatch,
+		kubeCore:    kubeCore,
+		cephCluster: cephCluster,
+		cephRBD:     cephRBD,
+		conf:        conf,
 	}
 }
 
@@ -184,14 +197,6 @@ func (uc *BISTUseCase) ListResults(ctx context.Context) ([]BISTResult, error) {
 		results = append(results, *bist)
 	}
 	return results, nil
-}
-
-func (uc *BISTUseCase) CreateFIOResult(ctx context.Context, name, createdBy string, input *FIOInput, target *FIOTarget) (*BISTResult, error) {
-	return nil, nil
-}
-
-func (uc *BISTUseCase) CreateWarpResult(ctx context.Context, name, createdBy string, input *WarpInput, target *WarpTarget) (*BISTResult, error) {
-	return nil, nil
 }
 
 func (uc *BISTUseCase) DeleteResult(ctx context.Context, name string) error {
@@ -300,30 +305,73 @@ func (uc *BISTUseCase) newMicroK8sConfig() (*rest.Config, error) {
 	}, nil
 }
 
-func (uc *BISTUseCase) toBISTResult(ctx context.Context, config *rest.Config, job *Job) (*BISTResult, error) {
-	annotations := job.GetAnnotations()
-	kind, ok := annotations[bistAnnotationKind]
-	if !ok {
-		return nil, errors.New("kind of bist not found")
+func (uc *BISTUseCase) ensureNamespace(ctx context.Context, config *rest.Config) error {
+	_, err := uc.kubeCore.GetNamespace(ctx, config, bistNamespace)
+	if apierrors.IsNotFound(err) {
+		_, err := uc.kubeCore.CreateNamespace(ctx, config, bistNamespace)
+		return err
 	}
+	return nil
+}
 
-	result := &BISTResult{
-		UID:            string(job.UID),
-		Name:           job.Name,
-		Status:         uc.toBISTResultStatus(job),
-		CreatedBy:      annotations[bistAnnotationCreatedBy],
-		StartTime:      job.Status.StartTime.Time,
-		CompletionTime: job.Status.CompletionTime.Time,
+func (uc *BISTUseCase) ensureConfigMap(ctx context.Context, config *rest.Config, uuid, facility, name string) error {
+	_, err := uc.kubeCore.GetConfigMap(ctx, config, bistNamespace, name)
+	if apierrors.IsNotFound(err) {
+		sc, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+		if err != nil {
+			return err
+		}
+		data := map[string]string{
+			"ceph.conf": fmt.Sprintf(`[global]\nmon host = %s\nfsid = %s\nkey = %s`, sc.MONHost, sc.FSID, sc.Key),
+		}
+		_, err = uc.kubeCore.CreateConfigMap(ctx, config, bistNamespace, name, data)
+		return err
 	}
+	return nil
+}
 
-	switch kind {
-	case bistKindFIO:
-		result.FIO, _ = uc.toFIO(ctx, config, job)
-	case bistKindWarp:
-		result.Warp, _ = uc.toWarp(ctx, config, job)
+func (uc *BISTUseCase) ensurePool(ctx context.Context, uuid, facility, pool string) error {
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
 	}
+	pools, err := uc.cephCluster.ListPools(ctx, config)
+	if err != nil {
+		return err
+	}
+	for i := range pools {
+		if pools[i].Name == pool {
+			return nil
+		}
+	}
+	if err := uc.cephCluster.CreatePool(ctx, config, pool, "replicated"); err != nil {
+		return err
+	}
+	return uc.cephCluster.EnableApplication(ctx, config, pool, "rbd")
+}
 
-	return result, nil
+func (uc *BISTUseCase) ensureImage(ctx context.Context, uuid, facility, pool, image string) error {
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	imgs, err := uc.cephRBD.ListImages(ctx, config, pool)
+	if err != nil {
+		return err
+	}
+	for i := range imgs {
+		if imgs[i].Name == image {
+			return nil
+		}
+	}
+	objectSizeBytes := 4194304
+	stripeUnitBytes := uint64(4194304)
+	stripeCount := uint64(1)
+	size := uint64(10737418240)
+	order := int(math.Round(math.Log2(float64(objectSizeBytes))))
+	features := convertToRBDImageFeatures(true, true, true, true, true)
+	_, err = uc.cephRBD.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
+	return err
 }
 
 func (uc *BISTUseCase) getLogs(ctx context.Context, config *rest.Config, job *Job) (map[string]any, error) {
@@ -357,16 +405,6 @@ func (uc *BISTUseCase) getLogs(ctx context.Context, config *rest.Config, job *Jo
 	return map[string]any{}, nil
 }
 
-func (uc *BISTUseCase) toBISTResultStatus(job *Job) string {
-	if job.Status.Succeeded > 0 {
-		return "succeeded"
-	}
-	if job.Status.Failed > 0 {
-		return "failed"
-	}
-	return "running"
-}
-
 func (uc *BISTUseCase) removeLastTwoLines(input string) string {
 	lines := strings.Split(input, "\n")
 	if len(lines) < 2 {
@@ -374,19 +412,6 @@ func (uc *BISTUseCase) removeLastTwoLines(input string) string {
 	}
 	lines = lines[:len(lines)-2]
 	return strings.Join(lines, "\n")
-}
-
-func (uc *BISTUseCase) toFIO(ctx context.Context, config *rest.Config, job *Job) (*FIO, error) {
-	fio := &FIO{}
-	// target & input
-	if err := json.Unmarshal([]byte(job.Annotations[bistAnnotationFIO]), fio); err != nil {
-		return nil, err
-	}
-	// output
-	if err := uc.unmarshalFIOOutput(ctx, config, job, &fio.Output); err != nil {
-		return nil, err
-	}
-	return fio, nil
 }
 
 func (uc *BISTUseCase) unmarshalFIOOutput(ctx context.Context, config *rest.Config, job *Job, val **FIOOutput) error {
@@ -407,6 +432,73 @@ func (uc *BISTUseCase) unmarshalFIOOutput(ctx context.Context, config *rest.Conf
 	return nil
 }
 
+func (uc *BISTUseCase) unmarshalWarpOutput(ctx context.Context, config *rest.Config, job *Job, val **WarpOutput) error {
+	logs, err := uc.getLogs(ctx, config, job)
+	if err != nil {
+		return err
+	}
+	data, err := json.Marshal(logs)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(data, &val)
+}
+
+func (uc *BISTUseCase) toBISTResultStatus(job *Job) string {
+	if job.Status.Succeeded > 0 {
+		return "succeeded"
+	}
+	if job.Status.Failed > 0 {
+		return "failed"
+	}
+	return "running"
+}
+
+func (uc *BISTUseCase) toBISTResult(ctx context.Context, config *rest.Config, job *Job) (*BISTResult, error) {
+	annotations := job.GetAnnotations()
+	kind, ok := annotations[bistAnnotationKind]
+	if !ok {
+		return nil, errors.New("kind of bist not found")
+	}
+
+	result := &BISTResult{
+		UID:       string(job.UID),
+		Name:      job.Name,
+		Status:    uc.toBISTResultStatus(job),
+		CreatedBy: annotations[bistAnnotationCreatedBy],
+	}
+
+	if job.Status.StartTime != nil {
+		result.StartTime = job.Status.StartTime.Time
+	}
+
+	if job.Status.CompletionTime != nil {
+		result.CompletionTime = job.Status.CompletionTime.Time
+	}
+
+	switch kind {
+	case bistKindFIO:
+		result.FIO, _ = uc.toFIO(ctx, config, job)
+	case bistKindWarp:
+		result.Warp, _ = uc.toWarp(ctx, config, job)
+	}
+
+	return result, nil
+}
+
+func (uc *BISTUseCase) toFIO(ctx context.Context, config *rest.Config, job *Job) (*FIO, error) {
+	fio := &FIO{}
+	// target & input
+	if err := json.Unmarshal([]byte(job.Annotations[bistAnnotationFIO]), fio); err != nil {
+		return nil, err
+	}
+	// output
+	if err := uc.unmarshalFIOOutput(ctx, config, job, &fio.Output); err != nil {
+		return nil, err
+	}
+	return fio, nil
+}
+
 func (uc *BISTUseCase) toWarp(ctx context.Context, config *rest.Config, job *Job) (*Warp, error) {
 	warp := &Warp{}
 	// target & input
@@ -420,14 +512,7 @@ func (uc *BISTUseCase) toWarp(ctx context.Context, config *rest.Config, job *Job
 	return warp, nil
 }
 
-func (uc *BISTUseCase) unmarshalWarpOutput(ctx context.Context, config *rest.Config, job *Job, val **WarpOutput) error {
-	logs, err := uc.getLogs(ctx, config, job)
-	if err != nil {
-		return err
-	}
-	data, err := json.Marshal(logs)
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(data, &val)
+func generateHashedName(input string) string {
+	hash := sha256.Sum256([]byte(input))
+	return hex.EncodeToString(hash[:4])
 }
