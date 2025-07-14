@@ -43,10 +43,9 @@ const (
 	// BISTServiceDeleteTestResultProcedure is the fully-qualified name of the BISTService's
 	// DeleteTestResult RPC.
 	BISTServiceDeleteTestResultProcedure = "/otterscale.bist.v1.BISTService/DeleteTestResult"
-	// BISTServiceListBlocksProcedure is the fully-qualified name of the BISTService's ListBlocks RPC.
-	BISTServiceListBlocksProcedure = "/otterscale.bist.v1.BISTService/ListBlocks"
-	// BISTServiceListS3SProcedure is the fully-qualified name of the BISTService's ListS3S RPC.
-	BISTServiceListS3SProcedure = "/otterscale.bist.v1.BISTService/ListS3S"
+	// BISTServiceListInternalObjectServicesProcedure is the fully-qualified name of the BISTService's
+	// ListInternalObjectServices RPC.
+	BISTServiceListInternalObjectServicesProcedure = "/otterscale.bist.v1.BISTService/ListInternalObjectServices"
 )
 
 // BISTServiceClient is a client for the otterscale.bist.v1.BISTService service.
@@ -54,8 +53,7 @@ type BISTServiceClient interface {
 	ListTestResults(context.Context, *connect.Request[v1.ListTestResultsRequest]) (*connect.Response[v1.ListTestResultsResponse], error)
 	CreateTestResult(context.Context, *connect.Request[v1.CreateTestResultRequest]) (*connect.Response[v1.TestResult], error)
 	DeleteTestResult(context.Context, *connect.Request[v1.DeleteTestResultRequest]) (*connect.Response[emptypb.Empty], error)
-	ListBlocks(context.Context, *connect.Request[v1.ListBlocksRequest]) (*connect.Response[v1.ListBlocksResponse], error)
-	ListS3S(context.Context, *connect.Request[v1.ListS3SRequest]) (*connect.Response[v1.ListS3SResponse], error)
+	ListInternalObjectServices(context.Context, *connect.Request[v1.ListInternalObjectServicesRequest]) (*connect.Response[v1.ListInternalObjectServicesResponse], error)
 }
 
 // NewBISTServiceClient constructs a client for the otterscale.bist.v1.BISTService service. By
@@ -87,16 +85,10 @@ func NewBISTServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(bISTServiceMethods.ByName("DeleteTestResult")),
 			connect.WithClientOptions(opts...),
 		),
-		listBlocks: connect.NewClient[v1.ListBlocksRequest, v1.ListBlocksResponse](
+		listInternalObjectServices: connect.NewClient[v1.ListInternalObjectServicesRequest, v1.ListInternalObjectServicesResponse](
 			httpClient,
-			baseURL+BISTServiceListBlocksProcedure,
-			connect.WithSchema(bISTServiceMethods.ByName("ListBlocks")),
-			connect.WithClientOptions(opts...),
-		),
-		listS3S: connect.NewClient[v1.ListS3SRequest, v1.ListS3SResponse](
-			httpClient,
-			baseURL+BISTServiceListS3SProcedure,
-			connect.WithSchema(bISTServiceMethods.ByName("ListS3S")),
+			baseURL+BISTServiceListInternalObjectServicesProcedure,
+			connect.WithSchema(bISTServiceMethods.ByName("ListInternalObjectServices")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -104,11 +96,10 @@ func NewBISTServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // bISTServiceClient implements BISTServiceClient.
 type bISTServiceClient struct {
-	listTestResults  *connect.Client[v1.ListTestResultsRequest, v1.ListTestResultsResponse]
-	createTestResult *connect.Client[v1.CreateTestResultRequest, v1.TestResult]
-	deleteTestResult *connect.Client[v1.DeleteTestResultRequest, emptypb.Empty]
-	listBlocks       *connect.Client[v1.ListBlocksRequest, v1.ListBlocksResponse]
-	listS3S          *connect.Client[v1.ListS3SRequest, v1.ListS3SResponse]
+	listTestResults            *connect.Client[v1.ListTestResultsRequest, v1.ListTestResultsResponse]
+	createTestResult           *connect.Client[v1.CreateTestResultRequest, v1.TestResult]
+	deleteTestResult           *connect.Client[v1.DeleteTestResultRequest, emptypb.Empty]
+	listInternalObjectServices *connect.Client[v1.ListInternalObjectServicesRequest, v1.ListInternalObjectServicesResponse]
 }
 
 // ListTestResults calls otterscale.bist.v1.BISTService.ListTestResults.
@@ -126,14 +117,9 @@ func (c *bISTServiceClient) DeleteTestResult(ctx context.Context, req *connect.R
 	return c.deleteTestResult.CallUnary(ctx, req)
 }
 
-// ListBlocks calls otterscale.bist.v1.BISTService.ListBlocks.
-func (c *bISTServiceClient) ListBlocks(ctx context.Context, req *connect.Request[v1.ListBlocksRequest]) (*connect.Response[v1.ListBlocksResponse], error) {
-	return c.listBlocks.CallUnary(ctx, req)
-}
-
-// ListS3S calls otterscale.bist.v1.BISTService.ListS3S.
-func (c *bISTServiceClient) ListS3S(ctx context.Context, req *connect.Request[v1.ListS3SRequest]) (*connect.Response[v1.ListS3SResponse], error) {
-	return c.listS3S.CallUnary(ctx, req)
+// ListInternalObjectServices calls otterscale.bist.v1.BISTService.ListInternalObjectServices.
+func (c *bISTServiceClient) ListInternalObjectServices(ctx context.Context, req *connect.Request[v1.ListInternalObjectServicesRequest]) (*connect.Response[v1.ListInternalObjectServicesResponse], error) {
+	return c.listInternalObjectServices.CallUnary(ctx, req)
 }
 
 // BISTServiceHandler is an implementation of the otterscale.bist.v1.BISTService service.
@@ -141,8 +127,7 @@ type BISTServiceHandler interface {
 	ListTestResults(context.Context, *connect.Request[v1.ListTestResultsRequest]) (*connect.Response[v1.ListTestResultsResponse], error)
 	CreateTestResult(context.Context, *connect.Request[v1.CreateTestResultRequest]) (*connect.Response[v1.TestResult], error)
 	DeleteTestResult(context.Context, *connect.Request[v1.DeleteTestResultRequest]) (*connect.Response[emptypb.Empty], error)
-	ListBlocks(context.Context, *connect.Request[v1.ListBlocksRequest]) (*connect.Response[v1.ListBlocksResponse], error)
-	ListS3S(context.Context, *connect.Request[v1.ListS3SRequest]) (*connect.Response[v1.ListS3SResponse], error)
+	ListInternalObjectServices(context.Context, *connect.Request[v1.ListInternalObjectServicesRequest]) (*connect.Response[v1.ListInternalObjectServicesResponse], error)
 }
 
 // NewBISTServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -170,16 +155,10 @@ func NewBISTServiceHandler(svc BISTServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(bISTServiceMethods.ByName("DeleteTestResult")),
 		connect.WithHandlerOptions(opts...),
 	)
-	bISTServiceListBlocksHandler := connect.NewUnaryHandler(
-		BISTServiceListBlocksProcedure,
-		svc.ListBlocks,
-		connect.WithSchema(bISTServiceMethods.ByName("ListBlocks")),
-		connect.WithHandlerOptions(opts...),
-	)
-	bISTServiceListS3SHandler := connect.NewUnaryHandler(
-		BISTServiceListS3SProcedure,
-		svc.ListS3S,
-		connect.WithSchema(bISTServiceMethods.ByName("ListS3S")),
+	bISTServiceListInternalObjectServicesHandler := connect.NewUnaryHandler(
+		BISTServiceListInternalObjectServicesProcedure,
+		svc.ListInternalObjectServices,
+		connect.WithSchema(bISTServiceMethods.ByName("ListInternalObjectServices")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.bist.v1.BISTService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -190,10 +169,8 @@ func NewBISTServiceHandler(svc BISTServiceHandler, opts ...connect.HandlerOption
 			bISTServiceCreateTestResultHandler.ServeHTTP(w, r)
 		case BISTServiceDeleteTestResultProcedure:
 			bISTServiceDeleteTestResultHandler.ServeHTTP(w, r)
-		case BISTServiceListBlocksProcedure:
-			bISTServiceListBlocksHandler.ServeHTTP(w, r)
-		case BISTServiceListS3SProcedure:
-			bISTServiceListS3SHandler.ServeHTTP(w, r)
+		case BISTServiceListInternalObjectServicesProcedure:
+			bISTServiceListInternalObjectServicesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -215,10 +192,6 @@ func (UnimplementedBISTServiceHandler) DeleteTestResult(context.Context, *connec
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.bist.v1.BISTService.DeleteTestResult is not implemented"))
 }
 
-func (UnimplementedBISTServiceHandler) ListBlocks(context.Context, *connect.Request[v1.ListBlocksRequest]) (*connect.Response[v1.ListBlocksResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.bist.v1.BISTService.ListBlocks is not implemented"))
-}
-
-func (UnimplementedBISTServiceHandler) ListS3S(context.Context, *connect.Request[v1.ListS3SRequest]) (*connect.Response[v1.ListS3SResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.bist.v1.BISTService.ListS3S is not implemented"))
+func (UnimplementedBISTServiceHandler) ListInternalObjectServices(context.Context, *connect.Request[v1.ListInternalObjectServicesRequest]) (*connect.Response[v1.ListInternalObjectServicesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.bist.v1.BISTService.ListInternalObjectServices is not implemented"))
 }

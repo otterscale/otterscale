@@ -86,17 +86,18 @@ func (r *core) ListPodsByLabel(ctx context.Context, config *rest.Config, namespa
 	return list.Items, nil
 }
 
-func (r *core) GetPodLogs(ctx context.Context, pod oscore.Pod, config *rest.Config, namespace string) (string, error) {
+func (r *core) GetPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return "", err
 	}
 
 	opts := corev1.PodLogOptions{
-		Container: pod.Spec.Containers[0].Name,
+		Container: containerName,
 	}
-	req := clientset.CoreV1().Pods(namespace).GetLogs(pod.GetName(), &opts)
-	logStream, err := req.Stream(context.TODO())
+	req := clientset.CoreV1().Pods(namespace).GetLogs(podName, &opts)
+
+	logStream, err := req.Stream(ctx)
 	if err != nil {
 		return "", err
 	}
@@ -107,10 +108,7 @@ func (r *core) GetPodLogs(ctx context.Context, pod oscore.Pod, config *rest.Conf
 	if err != nil {
 		return "", err
 	}
-
-	logs := buf.String()
-
-	return logs, nil
+	return buf.String(), nil
 }
 
 func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]oscore.PersistentVolumeClaim, error) {
@@ -137,14 +135,19 @@ func (r *core) GetNamespace(ctx context.Context, config *rest.Config, name strin
 	return clientset.CoreV1().Namespaces().Get(ctx, name, opts)
 }
 
-func (r *core) CreateNamespace(ctx context.Context, config *rest.Config, ns *oscore.Namespace) (*oscore.Namespace, error) {
+func (r *core) CreateNamespace(ctx context.Context, config *rest.Config, name string) (*oscore.Namespace, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
 
+	namespace := &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+	}
 	opts := metav1.CreateOptions{}
-	return clientset.CoreV1().Namespaces().Create(ctx, ns, opts)
+	return clientset.CoreV1().Namespaces().Create(ctx, namespace, opts)
 }
 
 func (r *core) GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.ConfigMap, error) {
@@ -157,22 +160,28 @@ func (r *core) GetConfigMap(ctx context.Context, config *rest.Config, namespace,
 	return clientset.CoreV1().ConfigMaps(namespace).Get(ctx, name, opts)
 }
 
-func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, cm *oscore.ConfigMap) (*oscore.ConfigMap, error) {
+func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*oscore.ConfigMap, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
 	}
 
+	configMap := &corev1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+		Data: data,
+	}
 	opts := metav1.CreateOptions{}
-	return clientset.CoreV1().ConfigMaps(namespace).Create(ctx, cm, opts)
+	return clientset.CoreV1().ConfigMaps(namespace).Create(ctx, configMap, opts)
 }
 
-func (r *core) DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error {
+func (r *core) GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.Secret, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	opts := metav1.DeleteOptions{}
-	return clientset.CoreV1().ConfigMaps(namespace).Delete(ctx, name, opts)
+	opts := metav1.GetOptions{}
+	return clientset.CoreV1().Secrets(namespace).Get(ctx, name, opts)
 }

@@ -40,7 +40,7 @@ func createMockServices() (
 	)
 
 	return app.NewApplicationService(appUC),
-		app.NewBISTService(bistUC, storUC),
+		app.NewBISTService(bistUC),
 		app.NewConfigurationService(confUC),
 		app.NewEnvironmentService(envUC),
 		app.NewFacilityService(facUC),

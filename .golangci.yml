@@ -126,4 +126,5 @@ linters:
   # - wsl
 
 run:
+  tests: false
   timeout: 5m

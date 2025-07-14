@@ -24,12 +24,16 @@ type (
 	DaemonSet   = appsv1.DaemonSet
 )
 
-type Job = batchv1.Job
+type (
+	Job     = batchv1.Job
+	JobSpec = batchv1.JobSpec
+)
 
 type (
 	Namespace             = corev1.Namespace
 	ConfigMap             = corev1.ConfigMap
 	Container             = corev1.Container
+	Secret                = corev1.Secret
 	Service               = corev1.Service
 	Pod                   = corev1.Pod
 	PersistentVolumeClaim = corev1.PersistentVolumeClaim
@@ -80,7 +84,7 @@ type KubeAppsRepo interface {
 type KubeBatchRepo interface {
 	// Job
 	ListJobsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Job, error)
-	CreateJob(ctx context.Context, config *rest.Config, job *Job) (*Job, error)
+	CreateJob(ctx context.Context, config *rest.Config, namespace, name string, labels, annotations map[string]string, spec *JobSpec) (*Job, error)
 	DeleteJob(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
@@ -92,19 +96,21 @@ type KubeCoreRepo interface {
 	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
-	GetPodLogs(ctx context.Context, pod Pod, config *rest.Config, namespace string) (string, error)
+	GetPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
 
 	// PersistentVolumeClaim
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
 
 	// Namespace
 	GetNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
-	CreateNamespace(ctx context.Context, config *rest.Config, ns *Namespace) (*Namespace, error)
+	CreateNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
 
 	// ConfigMap
 	GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*ConfigMap, error)
-	CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, cm *ConfigMap) (*ConfigMap, error)
-	DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error
+	CreateConfigMap(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*ConfigMap, error)
+
+	// Secret
+	GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*Secret, error)
 }
 
 type KubeStorageRepo interface {
@@ -125,7 +131,7 @@ func (uc *ApplicationUseCase) ListApplications(ctx context.Context, uuid, facili
 		storageClasses         []storagev1.StorageClass
 	)
 
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -222,7 +228,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		storageClasses         []storagev1.StorageClass
 	)
 
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -300,7 +306,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 }
 
 func (uc *ApplicationUseCase) ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
 	if err != nil {
 		return nil, err
 	}

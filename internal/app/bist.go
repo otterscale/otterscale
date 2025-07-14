@@ -3,10 +3,12 @@ package app
 import (
 	"context"
 	"errors"
+	"net/http"
 	"strings"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/openhdc/otterscale/api/bist/v1"
 	"github.com/openhdc/otterscale/api/bist/v1/pbconnect"
@@ -16,12 +18,11 @@ import (
 type BISTService struct {
 	pbconnect.UnimplementedBISTServiceHandler
 
-	uc  *core.BISTUseCase
-	suc *core.StorageUseCase
+	uc *core.BISTUseCase
 }
 
-func NewBISTService(uc *core.BISTUseCase, suc *core.StorageUseCase) *BISTService {
-	return &BISTService{uc: uc, suc: suc}
+func NewBISTService(uc *core.BISTUseCase) *BISTService {
+	return &BISTService{uc: uc}
 }
 
 var _ pbconnect.BISTServiceHandler = (*BISTService)(nil)
@@ -37,26 +38,25 @@ func (s *BISTService) ListTestResults(ctx context.Context, req *connect.Request[
 }
 
 func (s *BISTService) CreateTestResult(ctx context.Context, req *connect.Request[pb.CreateTestResultRequest]) (*connect.Response[pb.TestResult], error) {
-	target := req.Msg.GetType()
-	if target == pb.TestResult_UNSPECIFIED {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid test result type"))
-	}
-
-	if target == pb.TestResult_BLOCK {
-		// [TODO] if exist
-		_, err := s.suc.CreatePool(ctx, req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), "otterscale_pool", "replicated", false, 1, 0, 0, []string{"rbd"})
+	var (
+		result *core.BISTResult
+		err    error
+	)
+	switch req.Msg.WhichKind() {
+	case pb.CreateTestResultRequest_Fio_case:
+		fio := req.Msg.GetFio()
+		result, err = s.uc.CreateFIOResult(ctx, req.Msg.GetName(), req.Msg.GetCreatedBy(), toCoreFIOTarget(fio.GetCephBlockDevice(), fio.GetNetworkFileSystem()), toCoreFIOInput(fio.GetInput()))
 		if err != nil {
 			return nil, err
 		}
-		_, err = s.suc.CreateImage(ctx, req.Msg.GetFio().GetScopeUuid(), req.Msg.GetFio().GetFacilityName(), "otterscale_pool", "otterscale_image", 4194304, 4194304, 1, 1073741824, true, true, true, true, true)
+	case pb.CreateTestResultRequest_Warp_case:
+		warp := req.Msg.GetWarp()
+		result, err = s.uc.CreateWarpResult(ctx, req.Msg.GetName(), req.Msg.GetCreatedBy(), toCoreWarpTarget(warp.GetInternalObjectService(), warp.GetExternalObjectService()), toCoreWarpInput(warp.GetInput()))
 		if err != nil {
 			return nil, err
 		}
-	}
-
-	result, err := s.uc.CreateResult(ctx, strings.ToLower(target.String()), req.Msg.GetName(), toCoreFIO(req.Msg.GetFio()), toCoreWarp(req.Msg.GetWarp()))
-	if err != nil {
-		return nil, err
+	default:
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("kind is empty"))
 	}
 	resp := toProtoTestResult(result)
 	return connect.NewResponse(resp), nil
@@ -70,53 +70,71 @@ func (s *BISTService) DeleteTestResult(ctx context.Context, req *connect.Request
 	return connect.NewResponse(resp), nil
 }
 
-func (s *BISTService) ListBlocks(ctx context.Context, req *connect.Request[pb.ListBlocksRequest]) (*connect.Response[pb.ListBlocksResponse], error) {
-	blocks, err := s.uc.ListBlocks(ctx)
+func (s *BISTService) ListInternalObjectServices(ctx context.Context, req *connect.Request[pb.ListInternalObjectServicesRequest]) (*connect.Response[pb.ListInternalObjectServicesResponse], error) {
+	services, err := s.uc.ListInternalObjectServices(ctx, req.Msg.GetScopeUuid())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ListBlocksResponse{}
-	resp.SetBlocks(toProtoBlocks(blocks))
+	resp := &pb.ListInternalObjectServicesResponse{}
+	resp.SetInternalObjectServices(toProtoInternalObjectServices(services))
 	return connect.NewResponse(resp), nil
 }
 
-func (s *BISTService) ListS3S(ctx context.Context, req *connect.Request[pb.ListS3SRequest]) (*connect.Response[pb.ListS3SResponse], error) {
-	s3s, err := s.uc.ListS3s(ctx, req.Msg.GetScopeUuid())
-	if err != nil {
-		return nil, err
+func toCoreFIOTarget(c *pb.CephBlockDevice, n *pb.NetworkFileSystem) core.FIOTarget {
+	ret := core.FIOTarget{}
+	if c != nil {
+		ret.Ceph = &core.FIOTargetCeph{
+			ScopeUUID:    c.GetScopeUuid(),
+			FacilityName: c.GetFacilityName(),
+		}
 	}
-	resp := &pb.ListS3SResponse{}
-	resp.SetS3S(toProtoS3s(s3s))
-	return connect.NewResponse(resp), nil
+	if n != nil {
+		ret.NFS = &core.FIOTargetNFS{
+			Endpoint: n.GetEndpoint(),
+			Path:     n.GetPath(),
+		}
+	}
+	return ret
 }
 
-func toCoreFIO(p *pb.TestResult_FIO) *core.BISTFIO {
-	if p == nil {
-		return nil
+func toCoreWarpTarget(i *pb.InternalObjectService, e *pb.ExternalObjectService) core.WarpTarget {
+	ret := core.WarpTarget{}
+	if i != nil {
+		ret.Internal = &core.WarpTargetInternal{
+			Type:         strings.ToLower(i.GetType().String()),
+			ScopeUUID:    i.GetScopeUuid(),
+			FacilityName: i.GetFacilityName(),
+			Name:         i.GetName(),
+			Endpoint:     i.GetEndpoint(),
+		}
 	}
-	return &core.BISTFIO{
-		AccessMode:  strings.ToLower(strings.ReplaceAll(p.GetAccessMode().String(), "_", "")),
-		NFSEndpoint: p.GetNfsEndpoint(),
-		NFSPath:     p.GetNfsPath(),
-		JobCount:    p.GetJobCount(),
-		RunTime:     p.GetRunTime(),
-		BlockSize:   p.GetBlockSize(),
-		FileSize:    p.GetFileSize(),
-		IODepth:     p.GetIoDepth(),
+	if e != nil {
+		ret.External = &core.WarpTargetExternal{
+			Endpoint:  e.GetEndpoint(),
+			AccessKey: e.GetAccessKey(),
+			SecretKey: e.GetSecretKey(),
+		}
+	}
+	return ret
+}
+
+func toCoreFIOInput(p *pb.FIO_Input) *core.FIOInput {
+	return &core.FIOInput{
+		AccessMode: strings.ToLower(strings.ReplaceAll(p.GetAccessMode().String(), "_", "")),
+		JobCount:   p.GetJobCount(),
+		RunTime:    p.GetRunTime(),
+		BlockSize:  p.GetBlockSize(),
+		FileSize:   p.GetFileSize(),
+		IODepth:    p.GetIoDepth(),
 	}
 }
 
-func toCoreWarp(p *pb.TestResult_Warp) *core.BISTWarp {
-	if p == nil {
-		return nil
-	}
-	return &core.BISTWarp{
-		Operation:  strings.ToLower(p.GetOperation().String()),
-		Endpoint:   p.GetEndpoint(),
-		AccessKey:  p.GetAccessKey(),
-		SecretKey:  p.GetSecretKey(),
-		Duration:   p.GetDuration(),
-		ObjectSize: p.GetObjectSize(),
+func toCoreWarpInput(p *pb.Warp_Input) *core.WarpInput {
+	return &core.WarpInput{
+		Operation:   strings.ToLower(p.GetOperation().String()),
+		Duration:    p.GetDuration(),
+		ObjectSize:  p.GetObjectSize(),
+		ObjectCount: p.GetObjectCount(),
 	}
 }
 
@@ -129,33 +147,56 @@ func toProtoTestResults(rs []core.BISTResult) []*pb.TestResult {
 }
 
 func toProtoTestResult(r *core.BISTResult) *pb.TestResult {
-	target := toProtoTestResultType(r.Type)
 	ret := &pb.TestResult{}
-	ret.SetType(target)
+	ret.SetUid(r.UID)
 	ret.SetName(r.Name)
-
-	ret.SetStatus(r.Status)
-	ret.SetArgs(r.Args)
-	ret.SetLogs(r.Logs)
-	if r.StartTime != nil {
-		ret.SetStartTime(r.StartTime.String())
+	ret.SetStatus(toProtoTestResultStatus(r.Status))
+	ret.SetCreatedBy(r.CreatedBy)
+	ret.SetStartedAt(timestamppb.New(r.StartTime))
+	ret.SetCompletedAt(timestamppb.New(r.CompletionTime))
+	if r.FIO != nil {
+		ret.SetFio(toProtoFIO(r.FIO))
 	}
-	if r.CompleteTime != nil {
-		ret.SetCompleteTime(r.CompleteTime.String())
-	}
-	if target == pb.TestResult_S3 {
-		ret.SetWarp(toProtoTestResultWarp(r.Warp))
-	} else {
-		ret.SetFio(toProtoTestResultFIO(r.FIO))
+	if r.Warp != nil {
+		ret.SetWarp(toProtoWarp(r.Warp))
 	}
 	return ret
 }
 
-func toProtoTestResultFIO(f *core.BISTFIO) *pb.TestResult_FIO {
-	ret := &pb.TestResult_FIO{}
-	ret.SetAccessMode(toProtoTestResultFIOAccessMode(f.AccessMode))
-	ret.SetNfsEndpoint(f.NFSEndpoint)
-	ret.SetNfsPath(f.NFSPath)
+func toProtoFIO(f *core.FIO) *pb.FIO {
+	ret := &pb.FIO{}
+	if f.Target.Ceph != nil {
+		ret.SetCephBlockDevice(toProtoCephBlockDevice(f.Target.Ceph))
+	}
+	if f.Target.NFS != nil {
+		ret.SetNetworkFileSystem(toProtoNetworkFileSystem(f.Target.NFS))
+	}
+	if f.Input != nil {
+		ret.SetInput(toProtoFIOInput(f.Input))
+	}
+	if f.Output != nil {
+		ret.SetOutput(toProtoFIOOutput(f.Output))
+	}
+	return ret
+}
+
+func toProtoCephBlockDevice(f *core.FIOTargetCeph) *pb.CephBlockDevice {
+	ret := &pb.CephBlockDevice{}
+	ret.SetScopeUuid(f.ScopeUUID)
+	ret.SetFacilityName(f.FacilityName)
+	return ret
+}
+
+func toProtoNetworkFileSystem(f *core.FIOTargetNFS) *pb.NetworkFileSystem {
+	ret := &pb.NetworkFileSystem{}
+	ret.SetEndpoint(f.Endpoint)
+	ret.SetPath(f.Path)
+	return ret
+}
+
+func toProtoFIOInput(f *core.FIOInput) *pb.FIO_Input {
+	ret := &pb.FIO_Input{}
+	ret.SetAccessMode(toProtoFIOInputAccessMode(f.AccessMode))
 	ret.SetJobCount(f.JobCount)
 	ret.SetRunTime(f.RunTime)
 	ret.SetBlockSize(f.BlockSize)
@@ -164,106 +205,179 @@ func toProtoTestResultFIO(f *core.BISTFIO) *pb.TestResult_FIO {
 	return ret
 }
 
-func toProtoTestResultWarp(w *core.BISTWarp) *pb.TestResult_Warp {
-	ret := &pb.TestResult_Warp{}
-	ret.SetOperation(toProtoTestResultWarpOperation(w.Operation))
-	ret.SetEndpoint(w.Endpoint)
-	ret.SetAccessKey(w.AccessKey)
-	ret.SetSecretKey(w.SecretKey)
-	ret.SetDuration(w.Duration)
-	ret.SetObjectSize(w.ObjectSize)
-	return ret
-}
-
-func toProtoBlocks(bs []core.BISTBlock) []*pb.Block {
-	ret := []*pb.Block{}
-	for i := range bs {
-		ret = append(ret, toProtoBlock(&bs[i]))
+func toProtoFIOOutput(f *core.FIOOutput) *pb.FIO_Output {
+	ret := &pb.FIO_Output{}
+	if f.Read != nil {
+		ret.SetRead(toProtoFIOOutputThroughput(f.Read))
+	}
+	if f.Write != nil {
+		ret.SetWrite(toProtoFIOOutputThroughput(f.Write))
+	}
+	if f.Trim != nil {
+		ret.SetTrim(toProtoFIOOutputThroughput(f.Trim))
 	}
 	return ret
 }
 
-func toProtoBlock(b *core.BISTBlock) *pb.Block {
-	ret := &pb.Block{}
-	ret.SetFacilityName(b.FacilityName)
-	ret.SetStorageClassName(b.StorageClassName)
+func toProtoFIOOutputThroughput(f *core.FIOThroughput) *pb.FIO_Output_Throughput {
+	latency := &pb.FIO_Output_Throughput_Latency{}
+	latency.SetMinNanoseconds(f.Latency.Min)
+	latency.SetMaxNanoseconds(f.Latency.Max)
+	latency.SetMeanNanoseconds(f.Latency.Mean)
+
+	ret := &pb.FIO_Output_Throughput{}
+	ret.SetIoBytes(f.IOBytes)
+	ret.SetBandwidthBytes(f.Bandwidth)
+	ret.SetIoPerSecond(f.IOPS)
+	ret.SetTotalIos(f.TotalIOs)
+	ret.SetLatency(latency)
 	return ret
 }
 
-func toProtoS3s(ss []core.BISTS3) []*pb.S3 {
-	ret := []*pb.S3{}
+func toProtoWarp(f *core.Warp) *pb.Warp {
+	ret := &pb.Warp{}
+	if f.Target.Internal != nil {
+		ret.SetInternalObjectService(toProtoInternalObjectService(f.Target.Internal))
+	}
+	if f.Target.External != nil {
+		ret.SetExternalObjectService(toProtoExternalObjectService(f.Target.External))
+	}
+	if f.Input != nil {
+		ret.SetInput(toProtoWarpInput(f.Input))
+	}
+	if f.Output != nil {
+		ret.SetOutput(toProtoWarpOutput(f.Output))
+	}
+	return ret
+}
+
+func toProtoInternalObjectServices(ss []core.WarpTargetInternal) []*pb.InternalObjectService {
+	ret := []*pb.InternalObjectService{}
 	for i := range ss {
-		ret = append(ret, toProtoS3(&ss[i]))
+		ret = append(ret, toProtoInternalObjectService(&ss[i]))
 	}
 	return ret
 }
 
-func toProtoS3(s *core.BISTS3) *pb.S3 {
-	ret := &pb.S3{}
-	ret.SetType(toProtoS3Type(s.Type))
+func toProtoInternalObjectService(s *core.WarpTargetInternal) *pb.InternalObjectService {
+	ret := &pb.InternalObjectService{}
+	ret.SetType(toProtoInternalObjectServiceType(s.Type))
+	ret.SetScopeUuid(s.ScopeUUID)
+	ret.SetFacilityName(s.FacilityName)
 	ret.SetName(s.Name)
 	ret.SetEndpoint(s.Endpoint)
 	return ret
 }
 
-func toProtoTestResultType(s string) pb.TestResult_Type {
-	v, ok := pb.TestResult_Type_value[strings.ToUpper(s)]
-	if ok {
-		return pb.TestResult_Type(v)
-	}
-	return pb.TestResult_UNSPECIFIED
+func toProtoExternalObjectService(f *core.WarpTargetExternal) *pb.ExternalObjectService {
+	ret := &pb.ExternalObjectService{}
+	ret.SetEndpoint(f.Endpoint)
+	ret.SetAccessKey(f.AccessKey)
+	ret.SetSecretKey(f.SecretKey)
+	return ret
 }
 
-func toProtoTestResultFIOAccessMode(s string) pb.TestResult_FIO_AccessMode {
+func toProtoWarpInput(w *core.WarpInput) *pb.Warp_Input {
+	ret := &pb.Warp_Input{}
+	ret.SetOperation(toProtoWarpInputOperation(w.Operation))
+	ret.SetDuration(w.Duration)
+	ret.SetObjectSize(w.ObjectSize)
+	ret.SetObjectCount(w.ObjectCount)
+	return ret
+}
+
+func toProtoWarpOutput(f *core.WarpOutput) *pb.Warp_Output {
+	ret := &pb.Warp_Output{}
+	for i := range f.Operations {
+		if f.Operations[i].Type == http.MethodGet {
+			ret.SetGet(toProtoWarpOutputThroughput(&f.Operations[i]))
+		}
+		if f.Operations[i].Type == http.MethodPut {
+			ret.SetPut(toProtoWarpOutputThroughput(&f.Operations[i]))
+		}
+		if f.Operations[i].Type == http.MethodDelete {
+			ret.SetDelete(toProtoWarpOutputThroughput(&f.Operations[i]))
+		}
+	}
+	return ret
+}
+
+func toProtoWarpOutputThroughput(f *core.WarpOperation) *pb.Warp_Output_Throughput {
+	bps := &pb.Warp_Output_Throughput_Metrics{}
+	bps.SetFastestPerSecond(f.Throughput.Metrics.FastestBPS)
+	bps.SetMedianPerSecond(f.Throughput.Metrics.MedianBPS)
+	bps.SetSlowestPerSecond(f.Throughput.Metrics.SlowestBPS)
+
+	ops := &pb.Warp_Output_Throughput_Metrics{}
+	ops.SetFastestPerSecond(f.Throughput.Metrics.FastestOPS)
+	ops.SetMedianPerSecond(f.Throughput.Metrics.MedianOPS)
+	ops.SetSlowestPerSecond(f.Throughput.Metrics.SlowestOPS)
+
+	ret := &pb.Warp_Output_Throughput{}
+	ret.SetTotalBytes(f.Throughput.TotalBytes)
+	ret.SetTotalObjects(f.Throughput.TotalObjects)
+	ret.SetTotalOperations(f.Throughput.TotalOperations)
+	ret.SetBytes(bps)
+	ret.SetObjects(ops)
+	return ret
+}
+
+func toProtoTestResultStatus(s string) pb.TestResult_Status {
+	v, ok := pb.TestResult_Status_value[strings.ToUpper(s)]
+	if ok {
+		return pb.TestResult_Status(v)
+	}
+	return pb.TestResult_RUNNING
+}
+
+func toProtoFIOInputAccessMode(s string) pb.FIO_Input_AccessMode {
 	switch s {
 	case "read":
-		return pb.TestResult_FIO_READ
+		return pb.FIO_Input_READ
 	case "write":
-		return pb.TestResult_FIO_WRITE
+		return pb.FIO_Input_WRITE
 	case "trim":
-		return pb.TestResult_FIO_TRIM
+		return pb.FIO_Input_TRIM
 	case "readwrite":
-		return pb.TestResult_FIO_READ_WRITE
+		return pb.FIO_Input_READ_WRITE
 	case "trimwrite":
-		return pb.TestResult_FIO_TRIM_WRITE
+		return pb.FIO_Input_TRIM_WRITE
 	case "randread":
-		return pb.TestResult_FIO_RAND_READ
+		return pb.FIO_Input_RAND_READ
 	case "randwrite":
-		return pb.TestResult_FIO_RAND_WRITE
+		return pb.FIO_Input_RAND_WRITE
 	case "randtrim":
-		return pb.TestResult_FIO_RAND_TRIM
+		return pb.FIO_Input_RAND_TRIM
 	case "randrw":
-		return pb.TestResult_FIO_RAND_RW
+		return pb.FIO_Input_RAND_RW
 	case "randtrimwrite":
-		return pb.TestResult_FIO_RAND_TRIM_WRITE
+		return pb.FIO_Input_RAND_TRIM_WRITE
 	}
-	return pb.TestResult_FIO_READ
+	return pb.FIO_Input_READ
 }
 
-func toProtoTestResultWarpOperation(s string) pb.TestResult_Warp_Operation {
+func toProtoWarpInputOperation(s string) pb.Warp_Input_Operation {
 	switch s {
 	case "get":
-		return pb.TestResult_Warp_GET
+		return pb.Warp_Input_GET
 	case "put":
-		return pb.TestResult_Warp_PUT
+		return pb.Warp_Input_PUT
 	case "delete":
-		return pb.TestResult_Warp_DELETE
+		return pb.Warp_Input_DELETE
 	case "list":
-		return pb.TestResult_Warp_LIST
+		return pb.Warp_Input_LIST
 	case "stat":
-		return pb.TestResult_Warp_STAT
+		return pb.Warp_Input_STAT
 	case "mixed":
-		return pb.TestResult_Warp_MIXED
+		return pb.Warp_Input_MIXED
 	}
-	return pb.TestResult_Warp_GET
+	return pb.Warp_Input_GET
 }
 
-func toProtoS3Type(s string) pb.S3_Type {
-	switch s {
-	case "ceph":
-		return pb.S3_CEPH_RADOS_GATEWAY
-	case "minio":
-		return pb.S3_MINIO
+func toProtoInternalObjectServiceType(s string) pb.InternalObjectService_Type {
+	v, ok := pb.InternalObjectService_Type_value[strings.ToUpper(s)]
+	if ok {
+		return pb.InternalObjectService_Type(v)
 	}
-	return pb.S3_UNSPECIFIED
+	return pb.InternalObjectService_UNSPECIFIED
 }
