@@ -77,8 +77,6 @@
 		toast.error(message);
 	};
 
-	const showSuccess = (message: string) => toast.success(message);
-
 	const setLoadingState = async (provider: string, asyncFn: () => Promise<void>) => {
 		loading.update((state) => ({ ...state, [provider]: true }));
 		try {
@@ -97,10 +95,7 @@
 				password: $signUpForm.password,
 				name: `${$signUpForm.firstName} ${$signUpForm.lastName}`,
 				fetchOptions: {
-					onSuccess: () => {
-						showSuccess('Account created successfully!');
-						goto(data.nextPath);
-					},
+					onSuccess: () => goto(data.nextPath),
 					onError: showError
 				}
 			});
@@ -114,9 +109,6 @@
 				password: $signInForm.password,
 				callbackURL: data.nextPath,
 				fetchOptions: {
-					onSuccess: () => {
-						showSuccess('Signed in successfully!');
-					},
 					onError: showError
 				}
 			});
@@ -129,9 +121,6 @@
 				provider: provider as any,
 				callbackURL: data.nextPath,
 				fetchOptions: {
-					onSuccess: () => {
-						showSuccess('Signed in successfully!');
-					},
 					onError: showError
 				}
 			});
