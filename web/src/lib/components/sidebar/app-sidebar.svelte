@@ -125,8 +125,8 @@
 						url: '/management/network'
 					},
 					{
-						title: 'Tester',
-						url: '/management/tester'
+						title: 'BIST',
+						url: '/management/bist'
 					},
 					{
 						title: m.configuration(),
@@ -501,6 +501,17 @@
 											{#snippet child({ props })}
 												<a href="/management/network" {...props}>
 													{m.network()}
+												</a>
+											{/snippet}
+										</Sidebar.MenuSubButton>
+									</Sidebar.MenuSubItem>
+
+									<Sidebar.MenuSubItem>
+										<Sidebar.MenuSubButton>
+											{#snippet child({ props })}
+												<a href="/management/bist" {...props}>
+													<!-- {m.tester()} -->
+													 BIST
 												</a>
 											{/snippet}
 										</Sidebar.MenuSubButton>
