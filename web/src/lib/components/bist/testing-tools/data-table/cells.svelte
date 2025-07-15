@@ -7,7 +7,6 @@
 
 	export const cells = {
 		_row_picker: _row_picker,
-		uid: uid,
 		name: name,
 		status: status,
 		createdBy: createdBy,
@@ -23,12 +22,6 @@
 		class="border-secondary-950"
 		aria-label="Select row"
 	/>
-{/snippet}
-
-{#snippet uid(row: Row<TestResult>)}
-	<p>
-		{row.original.uid}
-	</p>
 {/snippet}
 
 {#snippet name(row: Row<TestResult>)}
@@ -50,14 +43,16 @@
 {/snippet}
 
 {#snippet startedAt(row: Row<TestResult>)}
-	{#if row.original.completedAt}
+	{#if row.original.startedAt}
 		{formatTimeAgo(timestampDate(row.original.startedAt))}
 	{/if}
 {/snippet}
 
 {#snippet completedAt(row: Row<TestResult>)}
 	{#if row.original.completedAt}
-		{formatTimeAgo(timestampDate(row.original.completedAt))}
+		{#if Number(timestampDate(row.original.completedAt)) >= 0}
+			{formatTimeAgo(timestampDate(row.original.completedAt))}
+		{/if}
 	{/if}
 {/snippet}
 

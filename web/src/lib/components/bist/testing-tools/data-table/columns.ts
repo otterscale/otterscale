@@ -7,15 +7,6 @@ import { headers } from './headers.svelte';
 
 const columns: ColumnDef<TestResult>[] = [
     {
-        accessorKey: "uid",
-        header: ({ column }) => {
-            return renderSnippet(headers.uid, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.uid, row);
-        },
-    },
-    {
         accessorKey: "name",
         header: ({ column }) => {
             return renderSnippet(headers.name, column)

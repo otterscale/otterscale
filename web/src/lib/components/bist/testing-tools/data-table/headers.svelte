@@ -6,7 +6,6 @@
 
 	export const headers = {
 		_row_picker: _row_picker,
-		uid: uid,
 		name: name,
 		status: status,
 		createdBy: createdBy,
@@ -23,14 +22,6 @@
 		class="border-secondary-950"
 		aria-label="Select all"
 	/>
-{/snippet}
-
-
-{#snippet uid(column: Column<TestResult>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">UID</p>
-		<Sorter {column} />
-	</div>
 {/snippet}
 
 {#snippet name(column: Column<TestResult>)}
