@@ -52,13 +52,13 @@ install_or_update_snap() {
     local channel=$2
     if snap list | grep -q "^${snap}[[:space:]]"; then
         if [[ $(get_snap_channel "$snap") != "$channel" ]]; then
-            retry_snap_refresh "$snap" "$channel" "$MAX_RETRIES"
+            retry_snap_refresh "$snap" "$channel" "$OTTERSCALE_MAX_RETRIES"
         fi
     else
         if [[ $snap == "microk8s" ]]; then
-            retry_snap_install "$snap" "$MAX_RETRIES" "--classic --channel=$channel"
+            retry_snap_install "$snap" "$OTTERSCALE_MAX_RETRIES" "--classic --channel=$channel"
         else
-            retry_snap_install "$snap" "$MAX_RETRIES" "--channel=$channel"
+            retry_snap_install "$snap" "$OTTERSCALE_MAX_RETRIES" "--channel=$channel"
         fi
     fi
 }

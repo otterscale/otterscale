@@ -13,8 +13,8 @@ check_root() {
 check_os() {
     local os_id=$(lsb_release -si)
     local os_version=$(lsb_release -sr)
-    if [ "$os_id" != "Ubuntu" ] || [ "$os_version" != "$REQUIRED_UBUNTU_VERSION" ]; then
-        error_exit "This script requires Ubuntu $REQUIRED_UBUNTU_VERSION. Detected: $os_id $os_version"
+    if [ "$os_id" != "Ubuntu" ] || [ "$os_version" != "$OTTERSCALE_OS" ]; then
+        error_exit "This script requires Ubuntu $OTTERSCALE_OS. Detected: $os_id $os_version"
     fi
 }
 

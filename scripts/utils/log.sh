@@ -2,10 +2,10 @@
 
 # Enhanced logging functions
 log() {
-    local level=$1
-    local message=$2
-    echo "$(date '+%Y-%m-%d %H:%M:%S') [${level}] ${message}" | tee -a $INSTALLER_DIR/setup.log
-    send_status_data "Otterscale" "$message"
+    local LOG_LEVEL=$1
+    local MESSAGE=$2
+    echo "$(date '+%Y-%m-%d %H:%M:%S') [${LOG_LEVEL}] ${MESSAGE}" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log
+    send_status_data "Otterscale" "$MESSAGE"
 }
 
 error_exit() {

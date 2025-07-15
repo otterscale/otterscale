@@ -7,7 +7,7 @@ config:
   core.trust_password: password
 storage_pools:
 - config:
-    size: $LXD_STORAGE_SIZE
+    size: $LXD_STORAGE_SIZE_GB
   description: ""
   name: default
   driver: zfs
@@ -33,7 +33,7 @@ EOF
 
 # Enhanced LXD initialization
 init_lxd() {
-    lxd_file=$INSTALLER_DIR/lxd-config.yaml
+    lxd_file=$OTTERSCALE_INSTALL_DIR/lxd-config.yaml
     generate_lxd_config
 
     log "INFO" "Initializing LXD with bridge $bridge..."

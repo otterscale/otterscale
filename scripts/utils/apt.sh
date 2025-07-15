@@ -15,26 +15,3 @@ apt_install() {
     fi
     log "INFO" "Apt packages installed successfully"
 }
-
-add_ceph_repository() {
-    local CEPH_CLI="/usr/local/bin/cephadm"
-    local CEPH_GITHUB_LINK="https://github.com/ceph/ceph/raw/pacific/src/cephadm/cephadm"
-    if [[ -f $CEPH_CLI ]]; then
-        log "INFO" "Binary cephadm already exist, skipping..."
-    else
-        log "INFO" "Curl get cephadm from github"
-        if ! curl --silent --remote-name --location $CEPH_GITHUB_LINK; then
-            error_exit "Failed curl $CEPH_GITHUB_LINK."
-        else
-            chmod +x $INSTALLER_DIR/cephadm
-            mv $INSTALLER_DIR/cephadm $CEPH_CLI
-	fi
-    fi
-
-    if [[ -f /etc/apt/sources.list.d/ceph.list ]]; then
-        log "INFO" "Add ceph apt repository"
-        if ! $CEPH_CLI add-repo --release $CEPH_VERSION; then
-            error_exit "Failed cephadm add-repo."
-        fi
-    fi
-}

@@ -86,8 +86,8 @@ set_juju_config() {
 
 # Juju bootstrap with validation
 bootstrap_juju() {
-    log "INFO" "Juju bootstrap, it will take few minutes..."
-    local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$BASE_IMAGE"
+    log "INFO" "Juju bootstrap, it will take a few minutes..."
+    local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$OTTERSCALE_BASE_IMAGE"
     local bootstrap_config="--config default-base=$BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
     local bootstrap_machine="--to juju-vm"
 

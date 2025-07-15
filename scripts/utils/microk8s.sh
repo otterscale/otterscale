@@ -113,9 +113,9 @@ apply_yaml() {
 }
 
 create_k8s_token() {
-    export SA_PATH=$INSTALLER_DIR/otters_sa.yaml
-    export RBAC_PATH=$INSTALLER_DIR/otters_rbac.yaml
-    export SECRET_PATH=$INSTALLER_DIR/otter_secret.yaml
+    export SA_PATH=$OTTERSCALE_INSTALL_DIR/otters_sa.yaml
+    export RBAC_PATH=$OTTERSCALE_INSTALL_DIR/otters_rbac.yaml
+    export SECRET_PATH=$OTTERSCALE_INSTALL_DIR/otter_secret.yaml
 
     log "INFO" "Gererate service account"
     generate_sa_yaml
