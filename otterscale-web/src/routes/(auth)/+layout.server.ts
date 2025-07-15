@@ -1,3 +1,4 @@
+import type { User } from "better-auth";
 import { redirect } from "@sveltejs/kit";
 import { auth } from "$lib/auth";
 import type { LayoutServerLoad } from "./$types";
@@ -12,6 +13,6 @@ export const load: LayoutServerLoad = async ({ request, url }) => {
 	}
 
 	return {
-		user: session.user,
+		user: session.user as User,
 	};
 };
