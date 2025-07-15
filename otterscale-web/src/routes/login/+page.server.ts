@@ -4,7 +4,7 @@ import { auth } from "$lib/auth";
 import { dashboardPath } from "$lib/path";
 import type { PageServerLoad } from "./$types";
 
-const isProviderConfigured = (clientId: string | undefined, clientSecret: string | undefined, ...additionalKeys: (string | undefined)[]) => {
+const isProviderConfigured = (clientId: any, clientSecret: any, ...additionalKeys: any[]) => {
 	return Boolean(clientId && clientSecret && additionalKeys.every(key => key));
 };
 
