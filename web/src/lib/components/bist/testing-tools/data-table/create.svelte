@@ -8,12 +8,14 @@
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import * as MultipleStepModal from './mutiple-step-modal';
-	import type { CreateTestResultRequest, FIO, FIO_Input, CephBlockDevice, NetworkFileSystem } from '$gen/api/bist/v1/bist_pb'
+	import type { CreateTestResultRequest, FIO, FIO_Input, CephBlockDevice, NetworkFileSystem, InternalObjectService } from '$gen/api/bist/v1/bist_pb'
 	import { BISTService, FIO_Input_AccessMode } from '$gen/api/bist/v1/bist_pb'
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import * as Picker from '$lib/components/custom/picker';
 	import CephPicker from '$lib/components/management-storage/utils/ceph-picker.svelte';
+	import ObjectServicesPicker from '$lib/components/bist/utils/object-services-picker.svelte'
+
 
 	// FIO Target
 	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([
@@ -35,6 +37,8 @@
 </script>
 
 <script lang="ts">
+	import { Field } from "formsnap";
+
 	// Request
 	const DEFAULT_FIO_REQUEST = { target: {value: {}, case: {}}} as FIO;
 	const DEFAULT_REQUEST = { kind: {value: DEFAULT_FIO_REQUEST, case: "fio"}, createdBy: "Woody Lin" } as CreateTestResultRequest;
@@ -43,8 +47,10 @@
 	const DEFAULT_FIO_INPUT = { 
 		jobCount: "32", runTime: "100", blockSize: "4k", fileSize: "1G", ioDepth: "1"
 	} as unknown as FIO_Input;
+	const DEFAULT_OBJECT_SERVICE = {} as InternalObjectService;
 	let selectedScope = $state('');
 	let selectedFacility = $state('');
+	let selectedObjectService = $state(DEFAULT_OBJECT_SERVICE);
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
 	let requestCephBlockDevice: CephBlockDevice = $state(DEFAULT_CEPH_BLOCK_DEVICE);
@@ -56,6 +62,7 @@
 		requestCephBlockDevice = DEFAULT_CEPH_BLOCK_DEVICE;
 		requestNetworkFileSystem = DEFAULT_NETWORK_FILE_SYSTEM;
 		requestFioInput = DEFAULT_FIO_INPUT;
+		selectedObjectService = DEFAULT_OBJECT_SERVICE;
 	}
 
 	// Modal state
@@ -134,23 +141,17 @@
 						{#if requestFio.target.case == 'cephBlockDevice'}
 							<Form.Fieldset>
 								<Form.Legend>Target</Form.Legend>
-								<Picker.Root align="left">
-									<Picker.Wrapper class="*:h-8">
-										<Picker.Label>Ceph</Picker.Label>
-										<CephPicker bind:selectedScope bind:selectedFacility />
-									</Picker.Wrapper>
-								</Picker.Root>
+								<Form.Field>
+									<Form.Label>Ceph</Form.Label>
+									<CephPicker bind:selectedScope bind:selectedFacility />
+								</Form.Field>
 							</Form.Fieldset>
 						{:else if requestFio.target.case == 'networkFileSystem'}
 							<Form.Fieldset>
 								<Form.Legend>Target</Form.Legend>
 								<Form.Field>
-									<Form.Label>Endpoint</Form.Label>
-									<SingleInput.General type="text" bind:value={requestNetworkFileSystem.endpoint}/>
-								</Form.Field>
-								<Form.Field>
-									<Form.Label>Path</Form.Label>
-									<SingleInput.General type="text" bind:value={requestNetworkFileSystem.path}/>
+									<Form.Label>Interanl Object Service</Form.Label>
+									<ObjectServicesPicker bind:selectedObjectService={selectedObjectService} />
 								</Form.Field>
 							</Form.Fieldset>
 						{/if}
@@ -230,8 +231,9 @@
 								<Form.Description>Scope UUID: {selectedScope}</Form.Description>
 								<Form.Description>Facility Name: {selectedFacility}</Form.Description>
 							{:else if requestFio.target.case == 'networkFileSystem'}
-								<Form.Description>Endpoint: {requestNetworkFileSystem.endpoint}</Form.Description>
-								<Form.Description>Path: {requestNetworkFileSystem.path}</Form.Description>
+								<Form.Description>type: {selectedObjectService.type}</Form.Description>
+								<Form.Description>name: {selectedObjectService.name}</Form.Description>
+								<Form.Description>endpoint: {selectedObjectService.endpoint}</Form.Description>
 							{/if}
 						</Form.Fieldset>
 						<!-- Step 2 -->
@@ -262,6 +264,7 @@
                     }
 					requestFio.input = requestFioInput;
 					request.kind.value = requestFio;
+					console.log(request);
 					stateController.close();
 					bistClient.createTestResult(request);
 				}}

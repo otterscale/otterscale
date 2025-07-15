@@ -1,6 +1,5 @@
 <script lang="ts" module>
-	import { BISTService } from '$gen/api/bist/v1/bist_pb'
-	import * as Picker from '$lib/components/custom/picker';
+	import { BISTService, InternalObjectService_Type, type InternalObjectService } from '$gen/api/bist/v1/bist_pb'
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { cn } from '$lib/utils.js';
@@ -12,38 +11,28 @@
 
 <script lang="ts">
 	let {
-		selectedName = $bindable(),
-		selectedPath = $bindable()
-	}: { selectedName: string; selectedPath: string } = $props();
+		selectedObjectService = $bindable(),
+	}: { selectedObjectService: InternalObjectService } = $props();
 
 	let tmp = $state({});
+	let scopeUuid = $state("b62d195e-3905-4960-85ee-7673f71eb21e");
 
 	const transport: Transport = getContext('transport');
 	const bistClient = createClient(BISTService, transport);
 
-	const objectServiceName = writable<SingleSelect.OptionType[]>([]);
-	const objectServicePath = writable<SingleSelect.OptionType[]>([]);
+	const internalObjectServices = writable<SingleSelect.OptionType[]>([]);
 	let isLoading = $state(true);
 	async function fetchOptions() {
 		try {
-			const response = await bistClient.listObjectServices({ });
-			objectServiceName.set(
-				response.minios.map(
-					(minios) =>
+			const response = await bistClient.listInternalObjectServices({ scopeUuid: scopeUuid});
+			internalObjectServices.set(
+				response.internalObjectServices.map(
+					(internalObjectServices) =>
 						({
-							value: { name: minios.name },
-							label: minios.name,
-							icon: 'ph:cube'
-						}) as SingleSelect.OptionType
-				)
-			);
-			objectServicePath.set(
-				response.minios.map(
-					(minios) =>
-						({
-							value: { endpoint: minios.endpoint },
-							label: minios.endpoint,
-							icon: 'ph:cube'
+							value: internalObjectServices,
+							label: `${InternalObjectService_Type[internalObjectServices.type]}-${internalObjectServices.name}`,
+							icon: 'ph:cube',
+							information: `${InternalObjectService_Type[internalObjectServices.type]}-${internalObjectServices.name} (${internalObjectServices.endpoint})`
 						}) as SingleSelect.OptionType
 				)
 			);
@@ -67,68 +56,34 @@
 </script>
 
 {#if isMounted}
-	<Picker.Root align="left">
-		<!-- Name -->
-		<Picker.Wrapper class="*:h-8">
-			<SingleSelect.Root options={objectServiceName} bind:value={tmp}>
-				<SingleSelect.Trigger />
-				<SingleSelect.Content>
-					<SingleSelect.Options>
-						<SingleSelect.Input />
-						<SingleSelect.List>
-							<SingleSelect.Empty>No results found.</SingleSelect.Empty>
-							<SingleSelect.Group>
-								{#each $objectServiceName as option}
-									<SingleSelect.Item
-										{option}
-										onclick={() => {
-											selectedName = option.value;
-										}}
-									>
-										<Icon
-											icon={option.icon ? option.icon : 'ph:empty'}
-											class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
-										/>
-										{option.label}
-										<SingleSelect.Check {option} />
-									</SingleSelect.Item>
-								{/each}
-							</SingleSelect.Group>
-						</SingleSelect.List>
-					</SingleSelect.Options>
-				</SingleSelect.Content>
-			</SingleSelect.Root>
-			<!-- Path -->
-			<SingleSelect.Root options={objectServicePath} bind:value={tmp}>
-				<SingleSelect.Trigger />
-				<SingleSelect.Content>
-					<SingleSelect.Options>
-						<SingleSelect.Input />
-						<SingleSelect.List>
-							<SingleSelect.Empty>No results found.</SingleSelect.Empty>
-							<SingleSelect.Group>
-								{#each $objectServicePath as option}
-									<SingleSelect.Item
-										{option}
-										onclick={() => {
-											selectedName = option.value;
-										}}
-									>
-										<Icon
-											icon={option.icon ? option.icon : 'ph:empty'}
-											class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
-										/>
-										{option.label}
-										<SingleSelect.Check {option} />
-									</SingleSelect.Item>
-								{/each}
-							</SingleSelect.Group>
-						</SingleSelect.List>
-					</SingleSelect.Options>
-				</SingleSelect.Content>
-			</SingleSelect.Root>
-		</Picker.Wrapper>
-	</Picker.Root>
+	<SingleSelect.Root options={internalObjectServices} bind:value={tmp}>
+		<SingleSelect.Trigger />
+		<SingleSelect.Content>
+			<SingleSelect.Options>
+				<SingleSelect.Input />
+				<SingleSelect.List>
+					<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+					<SingleSelect.Group>
+						{#each $internalObjectServices as option}
+							<SingleSelect.Item
+								{option}
+								onclick={() => {
+									selectedObjectService = option.value;
+								}}
+							>
+								<Icon
+									icon={option.icon ? option.icon : 'ph:empty'}
+									class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+								/>
+								{option.label}
+								<SingleSelect.Check {option} />
+							</SingleSelect.Item>
+						{/each}
+					</SingleSelect.Group>
+				</SingleSelect.List>
+			</SingleSelect.Options>
+		</SingleSelect.Content>
+	</SingleSelect.Root>
 {:else}
 	<Skeleton class="bg-muted w-[100px]" />
 {/if}
