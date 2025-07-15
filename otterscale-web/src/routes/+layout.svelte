@@ -16,6 +16,6 @@
 </script>
 
 <ModeWatcher />
-<Toaster />
+<Toaster richColors />
 
 {@render children()}
