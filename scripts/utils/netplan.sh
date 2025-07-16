@@ -2,7 +2,7 @@
 
 select_bridge() {
     while true; do
-        log "INFO" "Detecting available bridges..."
+        log "INFO" "Detecting available bridges..." "OS network"
         log AVAILABLE_BRIDGES=($(brctl show 2>/dev/null | awk 'NR>1 {print $1}' | grep -v '^$'))
 
         echo "Available network bridges:"
@@ -25,7 +25,7 @@ select_bridge() {
                 fi
                 ;;
         esac
-        log "WARN" "Invalid selection. Please try again."
+        log "WARN" "Invalid selection. Please try again." "OS network"
     done
 }
 
@@ -34,7 +34,7 @@ backup_netplan() {
     if [ -z "$NETPLAN_FILE" ]; then
         touch "$NETPLAN_FILE"
     else
-        log "INFO" "Backed up network config to ${NETPLAN_FILE}.backup"
+        log "INFO" "Backed up network config to ${NETPLAN_FILE}.backup" "OS network"
         cp "$NETPLAN_FILE" "${NETPLAN_FILE}.backup"
     fi
 }
@@ -52,7 +52,7 @@ select_interfaces() {
             OTTERSCALE_NETWORK_INTERFACE=${interfaces[$((iface_choice-1))]}
             break
         fi
-        log "WARN" "Invalid selection. Please try again."
+        log "WARN" "Invalid selection. Please try again." "OS network"
     done
 }
 
@@ -99,7 +99,7 @@ get_current_dns() {
     local INTERFACE=$1
     OTTERSCALE_INTERFACE_DNS=$(resolvectl -i $INTERFACE | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
     if [ -z "$OTTERSCALE_INTERFACE_DNS" ]; then
-        log "WARN" "No dns found for $INTERFACE."
+        log "WARN" "No dns found for $INTERFACE" "OS network"
     fi
 }
 
@@ -114,7 +114,7 @@ get_current_ip() {
         OTTERSCALE_INTERFACE_IP=${#INTERFACE_IPS[0]}
 
     elif [ ${@INTERFACE_IPS[@]} -ge 2 ]; then
-        log "INFO" "Detect multiple IPs on network interface $INTERFACE"
+        log "INFO" "Detect multiple IPs on network interface $INTERFACE" "OS network"
         for i in "${!INTERFACE_IPS[@]}"; do
             echo "$((i+1))) ${INTERFACE_IPS[$i]}"
         done
@@ -124,7 +124,7 @@ get_current_ip() {
             if validate_ip ${INTERFACE_IPS[$((USER_IP_SELECT-1))]}; then
                 OTTERSCALE_INTERFACE_IP=${INTERFACE_IPS[$((USER_IP_SELECT-1))]}
             else
-                log "WARN" "Invalid selection. Please try again"
+                log "WARN" "Invalid selection. Please try again." "OS network"
             fi
         done
     fi
@@ -137,12 +137,12 @@ get_current_gateway() {
     OTTERSCALE_INTERFACE_GATEWAY=$(ip route show dev $INTERFACE | awk '/default/ {print $3}' | head -1)
     if [ -z "$OTTERSCALE_INTERFACE_GATEWAY" ]; then
         OTTERSCALE_INTERFACE_GATEWAY=$(ip route show | awk '/default/ {print $3}' | head -1)
-        log "WARN" "No gateway found for $INTERFACE, using system default: $OTTERSCALE_INTERFACE_GATEWAY"
+        log "WARN" "No gateway found for $INTERFACE, using system default: $OTTERSCALE_INTERFACE_GATEWAY" "OS network"
     fi
 }
 
 create_new_bridge() {
-    log "INFO" "Preparing to create new bridge..."
+    log "INFO" "Preparing to create new bridge..." "OS network"
     backup_netplan
     select_interfaces
     enter_bridge_name
@@ -150,8 +150,8 @@ create_new_bridge() {
     get_current_dns $OTTERSCALE_NETWORK_INTERFACE
     get_current_ip $OTTERSCALE_NETWORK_INTERFACE
     get_OTTERSCALE_INTERFACE_GATEWAY $OTTERSCALE_NETWORK_INTERFACE
-    log "INFO" "Creating bridge $OTTERSCALE_BRIDGE_NAME with interface $OTTERSCALE_NETWORK_INTERFACE..."
-    log "INFO" "Using existing IP: $OTTERSCALE_INTERFACE_IP, Gateway: $OTTERSCALE_INTERFACE_GATEWAY, DNS: $OTTERSCALE_INTERFACE_DNS"
+    log "INFO" "Creating bridge $OTTERSCALE_BRIDGE_NAME with interface $OTTERSCALE_NETWORK_INTERFACE..." "OS network"
+    log "INFO" "Using existing IP: $OTTERSCALE_INTERFACE_IP, Gateway: $OTTERSCALE_INTERFACE_GATEWAY, DNS: $OTTERSCALE_INTERFACE_DNS" "OS network"
 
     create_netplan
     stop_service "NetworkManager"
@@ -160,5 +160,5 @@ create_new_bridge() {
     enable_service "systemd-networkd"
     netplan apply || error_exit "Failed to apply netplan configuration"
 
-    log "INFO" "Successfully created bridge $OTTERSCALE_BRIDGE_NAME with IP $OTTERSCALE_INTERFACE_IP"
+    log "INFO" "Successfully created bridge $OTTERSCALE_BRIDGE_NAME with IP $OTTERSCALE_INTERFACE_IP" "OS network"
 }

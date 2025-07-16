@@ -1,7 +1,7 @@
 #!/bin/bash
 
 disable_ipv6() {
-    log "INFO" "Disable ipv6 from sysctl, it will resume after reboot."
+    log "INFO" "Disable ipv6 from sysctl, it will resume after reboot" "OS config"
     sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
     sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
 }
@@ -34,13 +34,13 @@ check_disk() {
 
 # System validation checks
 validate_system() {
-    log "INFO" "System validation check"
+    log "INFO" "System validation check" "OS check"
     check_root
     check_os
     check_memory
     check_disk
     disable_ipv6
-    log "INFO" "System validation passed"
+    log "INFO" "System validation passed" "OS check finished"
 }
 
 validate_url() {
@@ -56,7 +56,7 @@ validate_url() {
         error_exit "Invalid Port format: $PORT"
     fi
 
-    log "INFO" "Validate URL: $URL"
+    log "INFO" "Validate URL: $URL" "URL check"
 }
 
 validate_ip() {
@@ -140,14 +140,14 @@ check_ip_range() {
     # Check if DHCP_START_IP and DHCP_END_IP are in the network
     if is_ip_in_network $DHCP_START_IP $NETWORK $MASK_DOTTED; then
         if is_ip_in_network $DHCP_END_IP $NETWORK $MASK_DOTTED; then
-            log "INFO" "IP range $DHCP_START_IP to $DHCP_END_IP is within the network $MAAS_NETWORK_SUBNET"
+            log "INFO" "IP range $DHCP_START_IP to $DHCP_END_IP is within the network $MAAS_NETWORK_SUBNET" "IP range check"
             return 0
         else
-            log "WARN" "End IP $DHCP_END_IP is not in the network $MAAS_NETWORK_SUBNET"
+            log "WARN" "End IP $DHCP_END_IP is not in the network $MAAS_NETWORK_SUBNET" "IP range check"
             return 1
         fi
     else
-        log "WARN" "Start IP $DHCP_START_IP is not in the network $MAAS_NETWORK_SUBNET"
+        log "WARN" "Start IP $DHCP_START_IP is not in the network $MAAS_NETWORK_SUBNET" "IP range check"
         return 1
     fi
 }

@@ -26,35 +26,21 @@ EOF'
 juju_clouds() {
     ## If cloud exist, try use update
     if su "NON_ROOT_USER" -c 'juju clouds 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Cloud already exists, updating configuration..."
-        if ! execute_non_user_cmd "NON_ROOT_USER" "juju update-cloud maas-cloud -f $JUJU_CLOUD" "update cloud"; then
-            log "WARN" "Failed to update cloud, removing and recreating..."
-            execute_non_user_cmd "NON_ROOT_USER" "juju remove-cloud maas-cloud || true" "remove cloud"
-            if ! execute_non_user_cmd "NON_ROOT_USER" "juju add-cloud maas-cloud $JUJU_CLOUD" "add cloud"; then
-                error_exit "Failed to add Juju cloud."
-            fi
+        log "WARN" "JuJu cloud maas-cloud already exists, skipping created..." "JuJu clouds"
         fi
     else
         if ! execute_non_user_cmd "NON_ROOT_USER" "juju add-cloud maas-cloud $JUJU_CLOUD" "add cloud"; then
-            error_exit "Failed to add Juju cloud."
+            error_exit "Failed to add Juju cloud"
         fi
     fi
 }
 
 juju_credentials() {
-    ## If credential exist, try use update
     if su "NON_ROOT_USER" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Credential already exists, updating..."
-        if ! execute_non_user_cmd "NON_ROOT_USER" "juju update-credential maas-cloud maas-cloud-credential -f $JUJU_CREDENTIAL" "update credential"; then
-            log "WARN" "Failed to update credential, removing and recreating..."
-            execute_non_user_cmd "NON_ROOT_USER" "juju remove-credential maas-cloud maas-cloud-credential || true" "remove credential"
-            if ! execute_non_user_cmd "NON_ROOT_USER" "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"; then
-                error_exit "Failed to add Juju credentials."
-            fi
-        fi
+        log "WARN" "JuJu Credential maas-cloud already exists, skipping created..." "JuJu credentials"
     else
         if ! execute_non_user_cmd "NON_ROOT_USER" "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"; then
-            error_exit "Failed to add Juju credentials."
+            error_exit "Failed to add Juju credentials"
         fi
     fi
 }
@@ -68,15 +54,15 @@ set_juju_config() {
     export OTTERSCALE_INTERFACE_IP=$OTTERSCALE_INTERFACE_IP
     export APIKEY=$APIKEY
 
-    log "INFO" "Configuring Juju clouds..."
+    log "INFO" "Configuring Juju clouds..." "JuJu clouds"
     generate_clouds_yaml
     juju_clouds
 
-    log "INFO" "Configuring Juju credentials..."
+    log "INFO" "Configuring Juju credentials..." "JuJu credentials"
     generate_credentials_yaml
     juju_credentials
 
-    log "INFO" "Juju configuration completed"
+    log "INFO" "Juju configuration completed" "JuJu prepare"
     rm -rf /home/NON_ROOT_USER/ottersacle
     unset JUJU_CLOUD
     unset JUJU_CREDENTIAL
@@ -86,24 +72,24 @@ set_juju_config() {
 
 # Juju bootstrap with validation
 bootstrap_juju() {
-    log "INFO" "Juju bootstrap, it will take a few minutes..."
+    log "INFO" "Juju bootstrap, it will take a few minutes..." "JuJu bootstrap"
     local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$OTTERSCALE_BASE_IMAGE"
     local bootstrap_config="--config default-base=$BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
     local bootstrap_machine="--to juju-vm"
 
     if ! maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q . >/dev/null 2>&1; then
-        error_exit "Juju bootstrap failed, do not found juju-vm in MAAS."
+        error_exit "Juju bootstrap failed, do not found juju-vm in MAAS"
     fi
 
     if ! execute_non_user_cmd "NON_ROOT_USER" "$bootstrap_cmd $bootstrap_config $bootstrap_machine --debug" "juju bootstrap"; then
-        error_exit "Juju bootstrap failed."
+        error_exit "Juju bootstrap failed"
     else
-        log "INFO" "MAAS and Juju setup completed successfully!"
+        log "INFO" "MAAS and Juju setup completed successfully!" "Finished bootstrap"
     fi
 }
 
 create_scope() {
-    log "INFO" "Create juju default scope"
+    log "INFO" "Create juju default scope" "JuJu scope"
     if ! execute_non_user_cmd "NON_ROOT_USER" "juju add-model default" "create default model"; then
         error_exit "Failed create juju default model"
     fi
@@ -121,24 +107,24 @@ cross_scope() {
 
 # JuJu K8S
 juju_add_k8s() {
-    log "INFO" "Juju add-k8s to maas-cloud-controller"
+    log "INFO" "Juju add-k8s to maas-cloud-controller" "JuJu K8S"
     if ! execute_non_user_cmd "NON_ROOT_USER" "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" "execute juju add-k8s"; then
         error_exit "Failed execute juju add-k8s"
     fi
 
-    log "INFO" "Juju add-model cos"
+    log "INFO" "Juju add-model cos" "JuJu K8S"
     if ! execute_non_user_cmd "NON_ROOT_USER" "juju add-model cos cos-k8s --debug" "execute juju add-model"; then
         error_exit "Failed execute juju add-model"
     fi
 
-    log "INFO" "Juju deploy cos-lite"
+    log "INFO" "Juju deploy cos-lite" "JuJu K8S"
     if ! execute_non_user_cmd "NON_ROOT_USER" "juju deploy cos-lite --trust --debug" "juju deploy cos-lite"; then
         error_exit "Failed execute juju deploy cos-lite"
     fi
 }
 
 juju_config_k8s() {
-    log "INFO" "Juju config prometheus"
+    log "INFO" "Juju config prometheus" "JuJu config"
     execute_non_user_cmd "NON_ROOT_USER" "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
     execute_non_user_cmd "NON_ROOT_USER" "juju config prometheus maximum_retention_size=60% --debug" "update max retention size to 60%"
 }

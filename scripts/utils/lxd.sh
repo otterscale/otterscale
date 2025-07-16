@@ -36,11 +36,11 @@ init_lxd() {
     lxd_file=$OTTERSCALE_INSTALL_DIR/lxd-config.yaml
     generate_lxd_config
 
-    log "INFO" "Initializing LXD with bridge $OTTERSCALE_BRIDGE_NAME..."
+    log "INFO" "Initializing LXD with bridge $OTTERSCALE_BRIDGE_NAME..." "LXD init"
     if ! cat $lxd_file | lxd init --preseed >>$TEMP_LOG 2>&1; then
-        error_exit "LXD initialization failed."
+        error_exit "LXD initialization failed"
     else
-        log "INFO" "LXD initialized successfully"
+        log "INFO" "LXD initialized successfully" "LXD init"
         rm -f "$lxd_file"
     fi
 }

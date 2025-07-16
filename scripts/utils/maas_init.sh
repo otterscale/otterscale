@@ -4,49 +4,49 @@
 init_maas() {
     # Check if MAAS admin user already exists
     if maas apikey --username "$OTTERSCALE_MAAS_ADMIN_USER" >/dev/null 2>&1; then
-        log "INFO" "MAAS is already initialized (admin user exists). Skipping initialization."
+        log "INFO" "MAAS is already initialized (admin user exists). Skipping initialization." "MAAS init"
         return 0
     fi
 
-    log "INFO" "Initializing MAAS..."
+    log "INFO" "Initializing MAAS..." "MAAS init"
     if ! maas init region+rack \
         --database-uri maas-test-db:/// \
         --maas-url "http://$OTTERSCALE_INTERFACE_IP:5240/MAAS" \
         >>"$TEMP_LOG" 2>&1; then
-        error_exit "MAAS initialization failed."
+        error_exit "MAAS initialization failed"
     fi
-    log "INFO" "MAAS initialized successfully"
+    log "INFO" "MAAS initialized successfully" "MAAS init"
 }
 
 create_maas_admin() {
-    log "INFO" "Creating MAAS admin user..."
+    log "INFO" "Creating MAAS admin user..." "MAAS init"
     if maas apikey --username "$OTTERSCALE_MAAS_ADMIN_USER" >/dev/null 2>&1; then
-        log "WARN" "Admin user '$OTTERSCALE_MAAS_ADMIN_USER' already exists. Using existing credentials."
+        log "WARN" "Admin user '$OTTERSCALE_MAAS_ADMIN_USER' already exists. Using existing credentials" "MAAS init"
     else
         if ! maas createadmin \
             --username "$OTTERSCALE_MAAS_ADMIN_USER" \
             --password "$OTTERSCALE_MAAS_ADMIN_PASS" \
             --email "$OTTERSCALE_MAAS_ADMIN_EMAIL" \
             >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed to create MAAS admin user."
+            error_exit "Failed to create MAAS admin user"
         fi
     fi
-    log "INFO" "Access MAAS at: http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
-    log "INFO" "MAAS Username: $OTTERSCALE_MAAS_ADMIN_USER"
-    log "INFO" "MAAS Password: $OTTERSCALE_MAAS_ADMIN_PASS"
+    log "INFO" "Access MAAS at: http://$OTTERSCALE_INTERFACE_IP:5240/MAAS" "MAAS init"
+    log "INFO" "MAAS Username: $OTTERSCALE_MAAS_ADMIN_USER" "MAAS init"
+    log "INFO" "MAAS Password: $OTTERSCALE_MAAS_ADMIN_PASS" "MAAS init"
 }
 
 login_maas() {
-    log "INFO" "Attempting to login maas..."
+    log "INFO" "Attempting to login maas..." "MAAS init"
     local retries=0
 
     APIKEY=$(maas apikey --username "$OTTERSCALE_MAAS_ADMIN_USER")
     while [ $retries -lt $OTTERSCALE_MAX_RETRIES ]; do
         if maas login admin "http://localhost:5240/MAAS/" "$APIKEY" >>"$TEMP_LOG" 2>&1; then
-            log "INFO" "MAAS login successfully"
+            log "INFO" "MAAS login successfully" "MAAS init"
             break
         else
-            log "WARN" "Failed to login to MAAS, retry in 10 secs. (Attempt $((retries+1)))"
+            log "WARN" "Failed to login to MAAS, retry in 10 secs. (Attempt $((retries+1)))" "MAAS init"
             retries=$((retries+1))
             sleep 10
         fi

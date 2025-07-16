@@ -12,17 +12,17 @@ retry_snap_install() {
     local RETRIES=0
 
     while [ $RETRIES -lt $MAX_RETRIES ]; do
-        log "INFO" "Installing snap $SNAP_NAME... (Attempt $((RETRIES)))"
+        log "INFO" "Installing snap $SNAP_NAME... (Attempt $((RETRIES)))" "Snap install"
         if snap install $SNAP_NAME $SNAP_OPTION >>"$TEMP_LOG" 2>&1; then
             break
         else
-            log "WARN" "Failed to install snap $SNAP_NAME. Retrying... (Attempt $((RETRIES)))"
+            log "WARN" "Failed to install snap $SNAP_NAME. Retrying... (Attempt $((RETRIES)))" "Snap install"
             RETRIES=$((RETRIES+1))
         fi
     done
 
     if [ $RETRIES -eq $MAX_RETRIES ]; then
-        error_exit "Failed to install snap $SNAP_NAME after $MAX_RETRIES attempts."
+        error_exit "Failed to install snap $SNAP_NAME after $MAX_RETRIES attempts"
     fi
 }
 
@@ -33,17 +33,17 @@ retry_snap_refresh() {
     local RETRIES=0
 
     while [ $RETRIES -lt $MAX_RETRIES ]; do
-        log "INFO" "Refreshing snap $SNAP_NAME to $MAX_RETRIES... (Attempt $((RETRIES)))"
+        log "INFO" "Refreshing snap $SNAP_NAME to $MAX_RETRIES... (Attempt $((RETRIES)))" "Snap refresh"
         if snap refresh $SNAP_NAME --channel=$MAX_RETRIES >>"$TEMP_LOG" 2>&1; then
             break
         else
-            log "WARN" "Failed to refresh snap $snSNAP_NAMEap to $MAX_RETRIES. Retrying... (Attempt $((RETRIES)))"
+            log "WARN" "Failed to refresh snap $snSNAP_NAMEap to $MAX_RETRIES. Retrying... (Attempt $((RETRIES)))" "Snap refresh"
             RETRIES=$((RETRIES+1))
         fi
     done
 
     if [ $RETRIES -eq $MAX_RETRIES ]; then
-        error_exit "Failed to refresh snap $SNAP_NAME to $MAX_RETRIES after $MAX_RETRIES attempts."
+        error_exit "Failed to refresh snap $SNAP_NAME to $MAX_RETRIES after $MAX_RETRIES attempts"
     fi
 }
 
@@ -80,6 +80,6 @@ snap_install() {
         install_or_update_snap "$SNAP_NAME" "$CHANNEL"
     done
 
-    log "INFO" "Holding all snaps..."
+    log "INFO" "Holding all snaps..." "Snap hold"
     snap refresh --hold >>"$TEMP_LOG" 2>&1
 }

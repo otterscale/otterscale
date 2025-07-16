@@ -3,11 +3,11 @@
 create_maas_lxd_project() {
     if ! lxc project list --format json | jq --exit-status '.[] | select(.name == "maas")' >>"$TEMP_LOG" 2>&1; then
         lxc project create maas >>"$TEMP_LOG" 2>&1
-        log "INFO" "Create lxd project maas."
+        log "INFO" "Create lxd project maas" "MAAS lxd create"
     fi
 
     if ! lxc profile show default | lxc profile edit default --project maas >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to update LXD profile."
+        error_exit "Failed to update LXD profile"
     fi
 }
 
@@ -21,8 +21,8 @@ search_available_vmhost() {
         if [ $(echo "$AVAILABLE_CORES >= 1" | bc -l) -eq 1 ] && \
            [ $(echo "$AVAILABLE_MEMORY_GB >= 4" | bc -l) -eq 1 ] && \
            [ $(echo "$AVAILABLE_DISK_GB >= 8" | bc -l) -eq 1 ]; then
-            log "INFO" "Using existing VM host $VM_HOST_ID with sufficient resources"
-            log "DEBUG" "Available resources - Cores: $AVAILABLE_CORES, Memory: ${AVAILABLE_MEMORY_GB}GB, Disk: ${AVAILABLE_DISK_GB}GB"
+            log "INFO" "Using existing VM host $VM_HOST_ID with sufficient resources" "MAAS vmhost create"
+            log "DEBUG" "Available resources - Cores: $AVAILABLE_CORES, Memory: ${AVAILABLE_MEMORY_GB}GB, Disk: ${AVAILABLE_DISK_GB}GB" "MAAS vmhost create"
             return 0
         fi
     done < <(echo "$MAAS_VM_HOSTS" | jq -c '.[]')
@@ -30,48 +30,48 @@ search_available_vmhost() {
 
 # LXD VM host creation with validation
 create_lxd_vm() {
-    log "INFO" "Checking for existing LXD VM hosts..."
+    log "INFO" "Checking for existing LXD VM hosts..." "MAAS lxd create"
     local MAAS_VM_HOSTS=$(maas admin vm-hosts read)
     local MAAS_VM_HOST_COUNT=$(echo "$MAAS_VM_HOSTS" | jq '. | length')
 
     if [ "$MAAS_VM_HOST_COUNT" -gt 0 ]; then
-        log "INFO" "Found existing VM hosts, checking resources..."
+        log "INFO" "Found existing VM hosts, checking resources..." "MAAS lxd create"
         search_available_vmhost
     else
-        log "INFO" "Creating new LXD VM host..."
+        log "INFO" "Creating new LXD VM host..." "MAAS lxd create"
         if ! maas admin vm-hosts create \
             password=password \
             type=lxd \
             power_address=https://$OTTERSCALE_INTERFACE_IP:8443 \
             project=maas >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed to create LXD VM host."
+            error_exit "Failed to create LXD VM host"
         fi
         VM_HOST_ID=$(maas admin vm-hosts read | jq -r '.[0].id')
     fi
-    log "INFO" "LXD VM host created successfully (ID: $VM_HOST_ID)"
+    log "INFO" "LXD VM host created successfully (ID: $VM_HOST_ID)" "MAAS lxd create"
 }
 
 rename_machine() {
     local MACHINE_ID=$1
     local MACHINE_NAME=$2
     if ! maas admin machine update $MACHINE_ID hostname=$MACHINE_NAME >>"$TEMP_LOG" 2>&1 ; then
-        error_exit "Failed to rename machine $MACHINE_ID."
+        error_exit "Failed to rename machine $MACHINE_ID"
     fi
 }
 
 wait_commissioning() {
-    log "INFO" "Waiting for the machine to transition from commissioning to ready state"
+    log "INFO" "Waiting for the machine to transition from commissioning to ready state" "MAAS prepare machine"
     while true; do
         local MACHINE_STATUS=$(maas admin machine read $JUJU_MACHINE_ID | jq -r '.status_name')
         if [ "$MACHINE_STATUS" == "Ready" ]; then
-            log "INFO" "Machine $JUJU_MACHINE_ID created successfully"
-            log "INFO" "Machine juju-vm id is $JUJU_MACHINE_ID."
+            log "INFO" "Machine $JUJU_MACHINE_ID created successfully" "MAAS prepare machine"
+            log "INFO" "Machine juju-vm id is $JUJU_MACHINE_ID" "MAAS prepare machine"
             rename_machine $JUJU_MACHINE_ID "juju-vm"
             break
         elif [ "$MACHINE_STATUS" == "Failed commissioning" ]; then
-            error_exit "Failed commissioning machine $JUJU_MACHINE_ID."
+            error_exit "Failed commissioning machine $JUJU_MACHINE_ID"
         elif [ "$MACHINE_STATUS" == "Failed testing" ]; then
-            error_exit "Failed testing machine $JUJU_MACHINE_ID."
+            error_exit "Failed testing machine $JUJU_MACHINE_ID"
         fi
         sleep 10
     done
@@ -80,12 +80,12 @@ wait_commissioning() {
 create_vm_from_maas() {
     ## if juju-vm already exist, do not create
     if maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q . >/dev/null 2>&1; then
-        log "INFO" "juju-vm already existed, skipping create..."
+        log "INFO" "juju-vm already existed, skipping create..." "MAAS prepare machine"
     else
-        log "INFO" "Creating VM on host $VM_HOST_ID..."
+        log "INFO" "Creating VM on host $VM_HOST_ID..." "MAAS prepare machine"
 	    JUJU_MACHINE_ID=$(maas admin vm-host compose $VM_HOST_ID cores=$LXD_CORES memory=$LXD_MEMORY_MB disk=1:size=$LXD_DISK_GB | jq -r '.system_id')
 	    if [[ -z $JUJU_MACHINE_ID ]]; then
-            error_exit "Failed create vm host from kvm lxd $VM_HOST_ID."
+            error_exit "Failed create vm host from kvm lxd $VM_HOST_ID"
 	    else
             wait_commissioning
 	    fi
@@ -141,7 +141,7 @@ update_vm_ip() {
 
     # link_subnet and give static ip
     if ! maas admin interface link-subnet $JUJU_MACHINE_ID $JUJU_MACHINE_INTERFACE_NAME mode=static subnet=$MAAS_SUBNET_CIDR ip_address=$juju_vm_ip >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to update ip $JUJU_MACHINE_INTERFACE_NAME to machine $JUJU_MACHINE_ID."
+        error_exit "Failed to update ip $JUJU_MACHINE_INTERFACE_NAME to machine $JUJU_MACHINE_ID"
     fi
 }
 
@@ -151,6 +151,6 @@ set_vm_static_ip() {
 	    MAAS_NETWORK_SUBNET=$(maas admin subnet read $(ip -o -4 addr show dev $OTTERSCALE_BRIDGE_NAME | awk '{print $4}') | jq -r '.name')
         check_vm_ip
     else
-        error_exit "Machine juju-vm not found."
+        error_exit "Machine juju-vm not found"
     fi
 }

@@ -4,7 +4,7 @@ update_maas_dns() {
     get_current_dns $OTTERSCALE_BRIDGE_NAME
     local maas_current_dns=$(maas admin maas get-config name=upstream_dns | jq -r)
 
-    log "INFO" "Update $OTTERSCALE_INTERFACE_DNS to maas dns."
+    log "INFO" "Update $OTTERSCALE_INTERFACE_DNS to maas dns" "MAAS config update"
     if [[ "$maas_current_dns" =~ "$OTTERSCALE_INTERFACE_DNS" ]]; then
         log "INFO" "Current dns already existed, skipping..."
     elif [[ $maas_current_dns != "null" ]]; then
@@ -18,7 +18,7 @@ set_config() {
     local name=$1
     local value=$2
     if ! maas admin maas set-config name=$name value=$value >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to set config $name to $value."
+        error_exit "Failed to set config $name to $value"
     fi
 }
 
@@ -62,21 +62,21 @@ enter_dhcp_end_ip() {
 
 update_fabric_dns() {
     local FABRIC_DNS=$(maas admin subnet read $subnet | jq -r '.dns_servers')
-    log "INFO" "Update dns $OTTERSCALE_INTERFACE_DNS to fabric $MAAS_NETWORK_SUBNET."
+    log "INFO" "Update dns $OTTERSCALE_INTERFACE_DNS to fabric $MAAS_NETWORK_SUBNET" "MAAS config update"
 
     if [[ "$FABRIC_DNS" =~ "$OTTERSCALE_INTERFACE_DNS" ]]; then
-        log "INFO" "Current dns already existed, skipping..."
+        log "INFO" "Current dns already existed, skipping..." "MAAS config update"
     elif [[ ! -z $maas_current_dns ]]; then
         dns_value="$FABRIC_DNS $OTTERSCALE_INTERFACE_DNS"
     fi
 
     if ! maas admin subnet update "$MAAS_NETWORK_SUBNET" dns_servers="$dns_value" >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to update dns to fabric."
+        error_exit "Failed to update dns to fabric"
     fi
 }
 
 get_fabric() {
-    log "INFO" "Getting fabric and VLAN information..."
+    log "INFO" "Getting fabric and VLAN information..." "MAAS config update"
     FABRIC_ID=$(maas admin subnet read "$MAAS_NETWORK_SUBNET" | jq -r ".vlan.fabric_id")
     VLAN_TAG=$(maas admin subnet read "$MAAS_NETWORK_SUBNET" | jq -r ".vlan.vid")
     PRIMARY_RACK=$(maas admin rack-controllers read | jq -r ".[] | .system_id")
@@ -86,28 +86,28 @@ get_fabric() {
 }
 
 create_dhcp_iprange() {
-    log "INFO" "Creating DHCP IP range..."
+    log "INFO" "Creating DHCP IP range..." "MAAS config update"
     if ! maas admin ipranges create type=dynamic start_ip=$DHCP_START_IP end_ip=$DHCP_END_IP >>"$TEMP_LOG" 2>&1; then
-        log "WARN" "Please confirm if address is within subnet $MAAS_NETWORK_SUBNET, or maybe it already exist"
-        error_exit "Failed to create DHCP range."
+        log "WARN" "Please confirm if address is within subnet $MAAS_NETWORK_SUBNET, or maybe it already exist" "MAAS config update"
+        error_exit "Failed to create DHCP range"
     fi
 }
 
 update_dhcp_config() {
-    log "INFO" "Enabling DHCP on VLAN..."
+    log "INFO" "Enabling DHCP on VLAN..." "MAAS config update"
     if ! maas admin vlan update $FABRIC_ID $VLAN_TAG dhcp_on=True primary_rack=$PRIMARY_RACK >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to enable DHCP."
+        error_exit "Failed to enable DHCP"
     fi
 }
 
 enable_maas_dhcp() {
     dynamic_ipranges_count=$(maas admin ipranges read | jq '. | length')
     if [ "$dynamic_ipranges_count" -ne 0 ]; then
-        log "INFO" "MAAS already has dynamic IP ranges, skipping..."
+        log "INFO" "MAAS already has dynamic IP ranges, skipping..." "MAAS config update"
         return 0
     fi
 
-    log "INFO" "Configuring MAAS DHCP..."
+    log "INFO" "Configuring MAAS DHCP..." "MAAS config update"
     get_current_ip $OTTERSCALE_BRIDGE_NAME
     while true; do
         enter_dhcp_subnet
@@ -121,5 +121,5 @@ enable_maas_dhcp() {
 	    break
         fi
     done
-    log "INFO" "DHCP configuration completed"
+    log "INFO" "DHCP configuration completed" "MAAS config update"
 }

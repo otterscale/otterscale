@@ -77,7 +77,7 @@ main() {
     ## cleanup
     trap cleanup EXIT
 
-    log "INFO" "Otterscale install finished"
+    log "INFO" "Otterscale install finished" "Otterscale"
 }
 
 if [[ $# -eq 0 ]]; then
