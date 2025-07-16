@@ -19,8 +19,8 @@ select_bridge() {
                 ;;
             [1-9]*)
                 if [ $choice -le ${#AVAILABLE_BRIDGES[@]} ]; then
-                    bridge=${AVAILABLE_BRIDGES[$((choice-1))]}
-                    get_current_ip $bridge
+                    OTTERSCALE_BRIDGE_NAME=${AVAILABLE_BRIDGES[$((choice-1))]}
+                    get_current_ip $OTTERSCALE_BRIDGE_NAME
                     return
                 fi
                 ;;
@@ -90,15 +90,15 @@ network:
       - to: default
         via: $OTTERSCALE_INTERFACE_GATEWAY
       nameservers:
-        addresses: [$current_dns]
+        addresses: [$OTTERSCALE_INTERFACE_DNS]
 EOF
     chmod 600 /etc/netplan/*.yaml
 }
 
 get_current_dns() {
     local INTERFACE=$1
-    current_dns=$(resolvectl -i $INTERFACE | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
-    if [ -z "$current_dns" ]; then
+    OTTERSCALE_INTERFACE_DNS=$(resolvectl -i $INTERFACE | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
+    if [ -z "$OTTERSCALE_INTERFACE_DNS" ]; then
         log "WARN" "No dns found for $INTERFACE."
     fi
 }
@@ -151,7 +151,7 @@ create_new_bridge() {
     get_current_ip $OTTERSCALE_NETWORK_INTERFACE
     get_OTTERSCALE_INTERFACE_GATEWAY $OTTERSCALE_NETWORK_INTERFACE
     log "INFO" "Creating bridge $OTTERSCALE_BRIDGE_NAME with interface $OTTERSCALE_NETWORK_INTERFACE..."
-    log "INFO" "Using existing IP: $current_ip, Gateway: $OTTERSCALE_INTERFACE_GATEWAY, DNS: $current_dns"
+    log "INFO" "Using existing IP: $current_ip, Gateway: $OTTERSCALE_INTERFACE_GATEWAY, DNS: $OTTERSCALE_INTERFACE_DNS"
 
     create_netplan
     stop_service "NetworkManager"

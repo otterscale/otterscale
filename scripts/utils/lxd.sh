@@ -20,7 +20,7 @@ profiles:
     eth0:
       name: eth0
       nictype: bridged
-      parent: $bridge
+      parent: $OTTERSCALE_BRIDGE_NAME
       type: nic
     root:
       path: /
@@ -36,11 +36,11 @@ init_lxd() {
     lxd_file=$OTTERSCALE_INSTALL_DIR/lxd-config.yaml
     generate_lxd_config
 
-    log "INFO" "Initializing LXD with bridge $bridge..."
+    log "INFO" "Initializing LXD with bridge $OTTERSCALE_BRIDGE_NAME..."
     if ! cat $lxd_file | lxd init --preseed >>$TEMP_LOG 2>&1; then
         error_exit "LXD initialization failed."
+    else
+        log "INFO" "LXD initialized successfully"
+        rm -f "$lxd_file"
     fi
-    log "INFO" "LXD initialized successfully"
-
-    rm -f "$lxd_file"
 }

@@ -98,27 +98,27 @@ ip_to_number() {
 
 # Function to convert a network and mask to a number
 network_to_number() {
-    local network=$1
-    local mask=$2
-    local -a octets=(${network//./ })
-    local -a mask_octets=(${mask//./ })
-    local network_number=0
+    local NETWORK=$1
+    local MASK=$2
+    local -a octets=(${NETWORK//./ })
+    local -a mask_octets=(${MASK//./ })
+    local NETWORK_NUMBER=0
     for i in {0..3}; do
-        network_number=$((network_number + (octets[i] & mask_octets[i]) * 256**(3-i)))
+        NETWORK_NUMBER=$((NETWORK_NUMBER + (octets[i] & mask_octets[i]) * 256**(3-i)))
     done
-    echo $network_number
+    echo $NETWORK_NUMBER
 }
 
 # Function to check if an IP is in the network
 is_ip_in_network() {
-    local ip=$1
-    local network=$2
-    local mask=$3
-    local ip_number=$(ip_to_number $ip)
-    local network_number=$(network_to_number $network $mask)
-    local mask_number=$(ip_to_number $mask)
+    local IP=$1
+    local NETWORK=$2
+    local MASK=$3
+    local IP_NUMBER=$(ip_to_number $IP)
+    local NETWORK_NUMBER=$(network_to_number $NETWORK $MASK)
+    local MASK_NUMBER=$(ip_to_number $mask)
 
-    if [ $((ip_number & mask_number)) -eq $network_number ]; then
+    if [ $((NETWORK_NUMBER & MASK_NUMBER)) -eq $NETWORK_NUMBER ]; then
         return 0
     else
         return 1
@@ -127,27 +127,27 @@ is_ip_in_network() {
 
 check_ip_range() {
     # Extract network and mask from subnet
-    local network=$(echo $subnet | cut -d'/' -f1)
-    local mask=$(echo $subnet | cut -d'/' -f2)
+    local NETWORK=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f1)
+    local MASK=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f2)
 
     # Convert mask to dotted decimal format
-    local mask_dotted=$(printf "%d.%d.%d.%d" \
-        $((0xFF << (32 - mask) >> 24 & 0xFF)) \
-        $((0xFF << (32 - mask) >> 16 & 0xFF)) \
-        $((0xFF << (32 - mask) >> 8 & 0xFF)) \
-        $((0xFF << (32 - mask) & 0xFF)))
+    local MASK_DOTTED=$(printf "%d.%d.%d.%d" \
+        $((0xFF << (32 - MASK) >> 24 & 0xFF)) \
+        $((0xFF << (32 - MASK) >> 16 & 0xFF)) \
+        $((0xFF << (32 - MASK) >> 8 & 0xFF)) \
+        $((0xFF << (32 - MASK) & 0xFF)))
 
-    # Check if start_ip and end_ip are in the network
-    if is_ip_in_network $start_ip $network $mask_dotted; then
-        if is_ip_in_network $end_ip $network $mask_dotted; then
-            log "INFO" "IP range $start_ip to $end_ip is within the network $subnet"
+    # Check if DHCP_START_IP and DHCP_END_IP are in the network
+    if is_ip_in_network $DHCP_START_IP $NETWORK $MASK_DOTTED; then
+        if is_ip_in_network $DHCP_END_IP $NETWORK $MASK_DOTTED; then
+            log "INFO" "IP range $DHCP_START_IP to $DHCP_END_IP is within the network $MAAS_NETWORK_SUBNET"
             return 0
         else
-            log "WARN" "End IP $end_ip is not in the network $subnet"
+            log "WARN" "End IP $DHCP_END_IP is not in the network $MAAS_NETWORK_SUBNET"
             return 1
         fi
     else
-        log "WARN" "Start IP $start_ip is not in the network $subnet"
+        log "WARN" "Start IP $DHCP_START_IP is not in the network $MAAS_NETWORK_SUBNET"
         return 1
     fi
 }

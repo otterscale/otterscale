@@ -1,17 +1,17 @@
 #!/bin/bash
 
 update_microk8s_config() {
-    KUBE_FOLDER="/home/$username/.kube"
+    KUBE_FOLDER="/home/NON_ROOT_USER/.kube"
 
     ## Add user group
-    log "INFO" "Add $username to group microk8s"
-    usermod -aG microk8s "$username"
+    log "INFO" "Add NON_ROOT_USER to group microk8s"
+    usermod -aG microk8s "NON_ROOT_USER"
 
     ## Create folder
     if [ ! -d "$KUBE_FOLDER" ]; then
         mkdir -p "$KUBE_FOLDER"
     fi
-    chown "$username":"$username" "$KUBE_FOLDER"
+    chown "NON_ROOT_USER":"NON_ROOT_USER" "$KUBE_FOLDER"
 
     ## Update calico-node env
     log "INFO" "Update microk8s calico daemonset environment IP_AUTODETECTION_METHOD to $OTTERSCALE_BRIDGE_NAME"
@@ -25,7 +25,7 @@ enable_microk8s_option() {
     if microk8s status --wait-ready >/dev/null 2>&1; then
         log "INFO" "microk8s is ready."
         microk8s config > "$KUBE_FOLDER/config"
-        chown "$username":"$username" "$KUBE_FOLDER/config"
+        chown "NON_ROOT_USER":"NON_ROOT_USER" "$KUBE_FOLDER/config"
 
         log "INFO" "Enable microk8s dns"
         microk8s enable dns >>"$TEMP_LOG" 2>&1;

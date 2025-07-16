@@ -2,12 +2,12 @@
 
 update_boot_source(){
     # Existing source found - modify it
-    boot_source_id=$(echo "$sources" | jq -r '.[0].id')
-    selection_id=$(maas admin boot-source-selections read $boot_source_id | jq -r '.[0].id')
-    log "INFO" "Modifying existing boot source (ID: $boot_source_id)"
+    MAAS_BOOT_SOURCE_ID=$(echo "$sources" | jq -r '.[0].id')
+    MAAS_BOOT_SELECTION_ID=$(maas admin boot-source-selections read $MAAS_BOOT_SOURCE_ID | jq -r '.[0].id')
+    log "INFO" "Modifying existing boot source (ID: $MAAS_BOOT_SOURCE_ID)"
 
     # Remove any additional sources if present
-    if [ "$source_count" -gt 1 ]; then
+    if [ "$MAAS_BOOT_SOURCE_COUNT" -gt 1 ]; then
         log "INFO" "Removing duplicate boot sources..."
         for id in $(echo "$sources" | jq -r '.[].id' | tail -n +2); do
             if ! maas admin boot-source delete "$id" >>"$TEMP_LOG" 2>&1; then
@@ -18,7 +18,7 @@ update_boot_source(){
 
     # Update to use only Jammy amd64
     log "INFO" "Updating boot source to Ubuntu Jammy (22.04) amd64..."
-    if ! maas admin boot-source-selection update "$boot_source_id" "$selection_id" \
+    if ! maas admin boot-source-selection update "$MAAS_BOOT_SOURCE_ID" "$MAAS_BOOT_SELECTION_ID" \
         release=jammy \
         arches=amd64 \
         subarches="*" \
@@ -37,10 +37,10 @@ create_boot_source() {
     fi
 
     # Get the new source ID
-    boot_source_id=$(maas admin boot-sources read | jq -r '.[0].id')
+    MAAS_BOOT_SOURCE_ID=$(maas admin boot-sources read | jq -r '.[0].id')
 
     # Create selection for Jammy amd64
-    if ! maas admin boot-source-selections create "$boot_source_id" \
+    if ! maas admin boot-source-selections create "$MAAS_BOOT_SOURCE_ID" \
         release=jammy \
         arches=amd64 \
         subarches="*" \
@@ -72,9 +72,9 @@ start_import() {
 download_maas_img() {
     log "INFO" "Configuring MAAS boot sources..."
 
-    sources=$(maas admin boot-sources read)
-    source_count=$(echo "$sources" | jq '. | length')
-    if [ "$source_count" -gt 0 ]; then
+    local MAAS_BOOT_SOURCES=$(maas admin boot-sources read)
+    MAAS_BOOT_SOURCE_COUNT=$(echo "$MAAS_BOOT_SOURCES" | jq '. | length')
+    if [ "$MAAS_BOOT_SOURCE_COUNT" -gt 0 ]; then
         update_boot_source
     else
         create_boot_source

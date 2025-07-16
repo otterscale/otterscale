@@ -1,38 +1,38 @@
 #!/bin/bash
 
 start_service() {
-    local serviceName=$1
+    local SERVICE_NAME=$1
     systemctl daemon-reload >/dev/null 2>&1
-    if systemctl start $serviceName >/dev/null 2>&1; then
-        log "INFO" "Start service $serviceName"
+    if systemctl start $SERVICE_NAME >/dev/null 2>&1; then
+        log "INFO" "Start service $SERVICE_NAME"
     else
-        error_exit "Failed start service $serviceName"
+        error_exit "Failed start service $SERVICE_NAME"
     fi
 }
 
 stop_service() {
-    local serviceName=$1
+    local SERVICE_NAME=$1
     systemctl daemon-reload >/dev/null 2>&1
-    if systemctl stop $serviceName >/dev/null 2>&1; then
-        log "INFO" "Stop service $serviceName"
+    if systemctl stop $SERVICE_NAME >/dev/null 2>&1; then
+        log "INFO" "Stop service $SERVICE_NAME"
     else
-        error_exit "Failed stop service $serviceName"
+        error_exit "Failed stop service $SERVICE_NAME"
     fi
 }
 
 enable_service() {
-    local serviceName=$1
+    local SERVICE_NAME=$1
     systemctl daemon-reload >/dev/null 2>&1
-    if ! systemctl enable $serviceName >/dev/null 2>&1; then
-        error_exit "Failed enable service $serviceName"
+    if ! systemctl enable $SERVICE_NAME >/dev/null 2>&1; then
+        error_exit "Failed enable service $SERVICE_NAME"
     fi
 }
 
 disable_service() {
-    local serviceName=$1
+    local SERVICE_NAME=$1
     systemctl daemon-reload >/dev/null 2>&1
-    if ! systemctl disable $serviceName >/dev/null 2>&1; then
-        error_exit "Failed disable service $serviceName"
+    if ! systemctl disable $SERVICE_NAME >/dev/null 2>&1; then
+        error_exit "Failed disable service $SERVICE_NAME"
     fi
 }
 
@@ -43,11 +43,11 @@ cleanup() {
 }
 
 execute_non_user_cmd() {
-    local username="$1"
-    local command="$2"
-    local description="$3"
-    if ! su "$username" -c "${command} >>$LOG 2>&1"; then
-        log "WARN" "Failed to $description, check $LOG for details."
+    local USERNAME="$1"
+    local COMMAND="$2"
+    local DESCRIPTION="$3"
+    if ! su "$USERNAME" -c "${COMMAND} >>$LOG 2>&1"; then
+        log "WARN" "Failed to $DESCRIPTION, check $LOG for details."
         return 1
     fi
     return 0
