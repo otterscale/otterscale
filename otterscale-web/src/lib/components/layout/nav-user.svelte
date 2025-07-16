@@ -1,33 +1,35 @@
 <script lang="ts">
 	import type { User } from 'better-auth';
+	import { mode, toggleMode } from 'mode-watcher';
 	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 	import { goto } from '$app/navigation';
+	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import { authClient } from '$lib/auth-client';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
+	import { getLocale, setLocale } from '$lib/paraglide/runtime';
+	import { m } from '$lib/paraglide/messages.js';
 	import { accountPath, loginPath, settingsPath } from '$lib/path';
-	import SheetBookmark from './sheet-bookmark.svelte';
 	import SheetNotification from './sheet-notification.svelte';
 
 	let { user }: { user: User } = $props();
-	const sidebar = useSidebar();
 
-	let openBookmark = $state(false);
+	const sidebar = useSidebar();
+	let locale = $state(getLocale());
 	let openNotification = $state(false);
 
-	const menuItems = [
-		{ icon: 'ph:user-bold', label: 'Account', action: () => goto(accountPath) },
-		{ icon: 'ph:push-pin-bold', label: 'Bookmarks', action: () => (openBookmark = true) },
-		{
-			icon: 'ph:bell-ringing-bold',
-			label: 'Notifications',
-			action: () => (openNotification = true),
-			hasNotification: true
-		}
-	];
+	const getUserInitials = (name: string) => {
+		return (
+			name
+				?.split(' ')
+				.map((n) => n[0])
+				.join('')
+				.toUpperCase() || ''
+		);
+	};
 
 	const handleSignOut = () => {
 		authClient.signOut({
@@ -40,18 +42,24 @@
 		});
 	};
 
-	const getUserInitials = (name: string) => {
-		return (
-			name
-				?.split(' ')
-				.map((n) => n[0])
-				.join('')
-				.toUpperCase() || ''
-		);
+	const handleLanguageChange = (newLocale: any) => {
+		setLocale(newLocale);
+		locale = newLocale;
+	};
+
+	const toggleNotification = () => {
+		openNotification = !openNotification;
 	};
 </script>
 
-<SheetBookmark bind:open={openBookmark} />
+<svelte:window
+	use:shortcut={{
+		key: 'p',
+		ctrl: true,
+		callback: toggleNotification
+	}}
+/>
+
 <SheetNotification bind:open={openNotification} />
 
 <Sidebar.Menu>
@@ -99,33 +107,68 @@
 
 				<DropdownMenu.Separator />
 
-				<!-- Main Menu Items -->
+				<!-- User Actions -->
 				<DropdownMenu.Group>
-					{#each menuItems as item}
-						<DropdownMenu.Item onclick={item.action}>
-							<Icon icon={item.icon} />
-							{item.label}
-							{#if item.hasNotification}
-								<span class="absolute right-2 flex size-2.5">
-									<span
-										class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
-									></span>
-									<span class="relative inline-flex size-2.5 rounded-full bg-blue-500"></span>
-								</span>
-							{/if}
-						</DropdownMenu.Item>
-					{/each}
+					<DropdownMenu.Item onclick={() => goto(accountPath)}>
+						<Icon icon="ph:user-bold" />
+						Account
+					</DropdownMenu.Item>
+
+					<DropdownMenu.Item onclick={toggleNotification}>
+						<Icon icon="ph:bell-ringing-bold" />
+						Notifications
+						<span class="relative flex size-2.5">
+							<span
+								class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
+							></span>
+							<span class="relative inline-flex size-2.5 rounded-full bg-blue-500"></span>
+						</span>
+						<DropdownMenu.Shortcut>
+							<div class="flex items-center justify-center">
+								<Icon icon="ph:control-bold" />
+								P
+							</div>
+						</DropdownMenu.Shortcut>
+					</DropdownMenu.Item>
+				</DropdownMenu.Group>
+
+				<DropdownMenu.Separator />
+
+				<!-- Preferences -->
+				<DropdownMenu.Group>
+					<DropdownMenu.Item onclick={toggleMode}>
+						<Icon icon={mode.current === 'light' ? 'ph:sun' : 'ph:moon'} />
+						{mode.current === 'light' ? 'Light Mode' : 'Dark Mode'}
+					</DropdownMenu.Item>
+
+					<DropdownMenu.Sub>
+						<DropdownMenu.SubTrigger>
+							<Icon icon="ph:translate-bold" />
+							{m.locale()}
+						</DropdownMenu.SubTrigger>
+						<DropdownMenu.SubContent>
+							<DropdownMenu.RadioGroup bind:value={locale}>
+								<DropdownMenu.RadioItem value="en" onclick={() => handleLanguageChange('en')}>
+									English
+								</DropdownMenu.RadioItem>
+								<DropdownMenu.RadioItem
+									value="zh-hant"
+									onclick={() => handleLanguageChange('zh-hant')}
+								>
+									繁體中文
+								</DropdownMenu.RadioItem>
+							</DropdownMenu.RadioGroup>
+						</DropdownMenu.SubContent>
+					</DropdownMenu.Sub>
 				</DropdownMenu.Group>
 
 				<DropdownMenu.Separator />
 
 				<!-- Settings -->
-				<DropdownMenu.Group>
-					<DropdownMenu.Item onclick={() => goto(settingsPath)}>
-						<Icon icon="ph:gear-bold" />
-						Settings
-					</DropdownMenu.Item>
-				</DropdownMenu.Group>
+				<DropdownMenu.Item onclick={() => goto(settingsPath)}>
+					<Icon icon="ph:gear-bold" />
+					Settings
+				</DropdownMenu.Item>
 
 				<DropdownMenu.Separator />
 
