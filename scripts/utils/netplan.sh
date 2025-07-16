@@ -85,7 +85,7 @@ network:
     $OTTERSCALE_BRIDGE_NAME:
       link-local: []
       interfaces: [$OTTERSCALE_NETWORK_INTERFACE]
-      addresses: [$current_ip]
+      addresses: [$OTTERSCALE_INTERFACE_IP]
       routes:
       - to: default
         via: $OTTERSCALE_INTERFACE_GATEWAY
@@ -151,7 +151,7 @@ create_new_bridge() {
     get_current_ip $OTTERSCALE_NETWORK_INTERFACE
     get_OTTERSCALE_INTERFACE_GATEWAY $OTTERSCALE_NETWORK_INTERFACE
     log "INFO" "Creating bridge $OTTERSCALE_BRIDGE_NAME with interface $OTTERSCALE_NETWORK_INTERFACE..."
-    log "INFO" "Using existing IP: $current_ip, Gateway: $OTTERSCALE_INTERFACE_GATEWAY, DNS: $OTTERSCALE_INTERFACE_DNS"
+    log "INFO" "Using existing IP: $OTTERSCALE_INTERFACE_IP, Gateway: $OTTERSCALE_INTERFACE_GATEWAY, DNS: $OTTERSCALE_INTERFACE_DNS"
 
     create_netplan
     stop_service "NetworkManager"

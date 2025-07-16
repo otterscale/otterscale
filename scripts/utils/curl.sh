@@ -27,7 +27,7 @@ EOF
 }
 
 send_config_data() {
-    local OTTERSCALE_MAAS_ENDPOINT="http://$current_ip:5240/MAAS"
+    local OTTERSCALE_MAAS_ENDPOINT="http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
     local OTTERSCALE_MAAS_KEY=$(su "NON_ROOT_USER" -c "juju show-credentials maas-cloud maas-cloud-credential --show-secrets --client | grep maas-oauth | awk '{print \$2}'")
     local OTTERSCALE_CONTROLLER=$(su "NON_ROOT_USER" -c "juju controllers --format json | jq -r '.\"current-controller\"'")
     local OTTERSCALE_CONTROLLER_DETIAL=$(su "NON_ROOT_USER" -c "OTTERSCALE_CONTROLLER=\$(juju controllers --format json | jq -r '.\"current-controller\"'); juju show-controller \$OTTERSCALE_CONTROLLER --show-password --format=json")

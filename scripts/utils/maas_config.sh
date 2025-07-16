@@ -32,7 +32,7 @@ update_maas_config() {
 
 enter_dhcp_subnet() {
     while true; do
-        read -p "Enter DHCP subnet in CIDR notation (e.g., $current_ip): " MAAS_NETWORK_SUBNET
+        read -p "Enter DHCP subnet in CIDR notation (e.g., $OTTERSCALE_INTERFACE_IP): " MAAS_NETWORK_SUBNET
         if validate_cidr "$MAAS_NETWORK_SUBNET"; then
             break
         fi
