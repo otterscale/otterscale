@@ -61,13 +61,13 @@ enter_dhcp_end_ip() {
 }
 
 update_fabric_dns() {
-    local fabric_dns=$(maas admin subnet read $subnet | jq -r '.dns_servers')
+    local FABRIC_DNS=$(maas admin subnet read $subnet | jq -r '.dns_servers')
     log "INFO" "Update dns $OTTERSCALE_INTERFACE_DNS to fabric $MAAS_NETWORK_SUBNET."
 
-    if [[ "$fabric_dns" =~ "$OTTERSCALE_INTERFACE_DNS" ]]; then
+    if [[ "$FABRIC_DNS" =~ "$OTTERSCALE_INTERFACE_DNS" ]]; then
         log "INFO" "Current dns already existed, skipping..."
     elif [[ ! -z $maas_current_dns ]]; then
-        dns_value="$fabric_dns $OTTERSCALE_INTERFACE_DNS"
+        dns_value="$FABRIC_DNS $OTTERSCALE_INTERFACE_DNS"
     fi
 
     if ! maas admin subnet update "$MAAS_NETWORK_SUBNET" dns_servers="$dns_value" >>"$TEMP_LOG" 2>&1; then
