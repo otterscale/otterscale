@@ -19,19 +19,22 @@
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
-	
+	import { writable } from 'svelte/store';
+
 	let { testResults } : { testResults: TestResult[] } = $props();
+	let data = $state(writable(testResults));
+	
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
 
-	console.log(testResults);
+	// console.log(testResults);
 
 	const table = createSvelteTable({
 		get data() {
-			return testResults;
+			return $data;
 		},
 
 		columns,
@@ -98,7 +101,7 @@
 <Statistics {table} />
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between gap-2">
-		<Create />
+		<Create bind:data />
 		<div class="flex items-center justify-between gap-2">
 			<FuzzyFilter columnId="name" {table} />
 			<!-- <PointFilter columnId="permission" {table} /> -->

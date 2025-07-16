@@ -8,13 +8,14 @@
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import * as MultipleStepModal from './mutiple-step-modal';
-	import type { CreateTestResultRequest, FIO, FIO_Input, CephBlockDevice, NetworkFileSystem, InternalObjectService } from '$gen/api/bist/v1/bist_pb'
+	import type { TestResult, CreateTestResultRequest, FIO, FIO_Input, CephBlockDevice, NetworkFileSystem, InternalObjectService } from '$gen/api/bist/v1/bist_pb'
 	import { BISTService, FIO_Input_AccessMode } from '$gen/api/bist/v1/bist_pb'
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext } from 'svelte';
 	import * as Picker from '$lib/components/custom/picker';
 	import CephPicker from '$lib/components/management-storage/utils/ceph-picker.svelte';
 	import ObjectServicesPicker from '$lib/components/bist/utils/object-services-picker.svelte'
+	import { toast } from 'svelte-sonner';
 
 
 	// FIO Target
@@ -37,7 +38,9 @@
 </script>
 
 <script lang="ts">
-	import { Field } from "formsnap";
+	let {
+		data = $bindable()
+	}: { data: Writable<TestResult[]> } = $props();
 
 	// Request
 	const DEFAULT_FIO_REQUEST = { target: {value: {}, case: {}}} as FIO;
@@ -255,6 +258,7 @@
 			<MultipleStepModal.Cancel onclick={() => { reset(); }}>Cancel</MultipleStepModal.Cancel>
 			<MultipleStepModal.Confirm
 				onclick={() => {
+					// prepare request
                     if (requestFio.target.case == 'cephBlockDevice') {
 						requestCephBlockDevice.scopeUuid = selectedScope;
 						requestCephBlockDevice.facilityName = selectedFacility;
@@ -265,8 +269,26 @@
 					requestFio.input = requestFioInput;
 					request.kind.value = requestFio;
 					console.log(request);
+					// request
+					bistClient
+						.createTestResult(request)
+						.then((r) => {
+							toast.success(`Create ${r.name}`);
+							bistClient
+								.listTestResults({})
+								.then((r) => {
+									data.set(r.testResults);
+								});
+						})
+						.catch((e) => {
+							console.log(e.toString());
+							toast.error(`Fail to create test: ${e.toString()}`);
+						})
+						.finally(() => {
+							reset();
+							stateController.close();
+						});
 					stateController.close();
-					bistClient.createTestResult(request);
 				}}
 			>
 				Confirm
