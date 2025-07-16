@@ -42,6 +42,7 @@ type EssentialCharm struct {
 	Name        string
 	Channel     string
 	LXD         bool
+	Machine     bool
 	Subordinate bool
 }
 
@@ -169,13 +170,13 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 	}
 
 	// default
-	vips := strings.Join(userVirtualIPs, " ")
-	if vips == "" {
-		ip, err := GetAndReserveIP(ctx, uc.machine, uc.subnet, uc.ipRange, machineID, fmt.Sprintf("kubernetes load balancer IP for %s", prefix))
+	kubeVIPs := strings.Join(userVirtualIPs, " ")
+	if kubeVIPs == "" {
+		ip, err := GetAndReserveIP(ctx, uc.machine, uc.subnet, uc.ipRange, machineID, fmt.Sprintf("Kubernetes Load Balancer IP for %s", prefix))
 		if err != nil {
 			return err
 		}
-		vips = ip.String()
+		kubeVIPs = ip.String()
 	}
 
 	cidr := userCalicoCIDR
@@ -184,12 +185,17 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 	}
 
 	// config
-	kubeConfigs, err := newKubernetesConfigs(prefix, vips, cidr)
+	kubeConfigs, err := newKubernetesConfigs(prefix, kubeVIPs, cidr)
 	if err != nil {
 		return err
 	}
 
-	cephConfigs, err := newCephConfigs(prefix, osdDevices)
+	nfsVIP, err := GetAndReserveIP(ctx, uc.machine, uc.subnet, uc.ipRange, machineID, fmt.Sprintf("Ceph NFS IP for %s", prefix))
+	if err != nil {
+		return err
+	}
+
+	cephConfigs, err := newCephConfigs(prefix, osdDevices, nfsVIP.String())
 	if err != nil {
 		return err
 	}
@@ -260,26 +266,6 @@ func NewCharmConfigs(prefix string, configs map[string]map[string]any) (map[stri
 		result["ch:"+name] = string(value)
 	}
 	return result, nil
-}
-
-func GetDirectives(ctx context.Context, machineRepo MachineRepo, machineIDs ...string) ([]string, error) {
-	directives := []string{}
-	for _, id := range machineIDs {
-		directive, err := getDirective(ctx, machineRepo, id)
-		if err != nil {
-			return nil, err
-		}
-		directives = append(directives, directive)
-	}
-	return directives, nil
-}
-
-func ToEssentialName(prefix, charm string) string {
-	return toEssentialName(prefix, charm)
-}
-
-func ToPlacement(lxd bool, directive string) *instance.Placement {
-	return toPlacement(&MachinePlacement{LXD: lxd}, directive)
 }
 
 // ch:amd64/kubernetes-control-plane-567 -> kubernetes-control-plane
@@ -389,8 +375,8 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 		eg.Go(func() error {
 			name := toEssentialName(prefix, charm.Name)
 			placements := []instance.Placement{}
-			if directive != "" {
-				placement := toPlacement(&MachinePlacement{LXD: charm.LXD}, directive)
+			if directive != "" && !charm.Subordinate {
+				placement := toPlacement(&MachinePlacement{LXD: charm.LXD, Machine: charm.Machine}, directive)
 				placements = append(placements, *placement)
 			}
 			_, err := facilityRepo.Create(egctx, uuid, name, configs[charm.Name], charm.Name, charm.Channel, 0, 1, &base, placements, nil, true)

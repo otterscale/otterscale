@@ -11,9 +11,8 @@ import (
 
 var (
 	commonCharms = []EssentialCharm{
-		{Name: "ch:ceph-csi", LXD: false},
-		{Name: "ch:grafana-agent", LXD: false},
-		{Name: "ch:hardware-observer", LXD: false},
+		{Name: "ch:ceph-csi", Subordinate: true},
+		{Name: "ch:grafana-agent", Subordinate: true},
 	}
 
 	commonRelations = [][]string{
@@ -23,7 +22,6 @@ var (
 		{"grafana-agent:cos-agent", "kubeapi-load-balancer:cos-agent"},
 		{"grafana-agent:cos-agent", "kubernetes-control-plane:cos-agent"},
 		{"grafana-agent:cos-agent", "kubernetes-worker:cos-agent"},
-		{"grafana-agent:cos-agent", "hardware-observer:cos-agent"},
 	}
 )
 
@@ -41,6 +39,7 @@ func newCommonConfigs(prefix string) (map[string]string, error) {
 	configs := map[string]map[string]any{
 		"ceph-csi": {
 			"default-storage":      "ceph-ext4",
+			"cephfs-enable":        "true",
 			"provisioner-replicas": 1,
 		},
 	}

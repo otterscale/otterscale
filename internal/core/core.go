@@ -52,8 +52,6 @@ func toPlacement(p *MachinePlacement, directive string) *instance.Placement {
 		placement.Scope = "kvm"
 	} else if p.Machine {
 		placement.Scope = "#"
-	} else {
-		return nil
 	}
 	return placement
 }

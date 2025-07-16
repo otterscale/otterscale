@@ -16,14 +16,14 @@ const charmKubernetes = "kubernetes-control-plane"
 
 var (
 	kubernetesCharms = []EssentialCharm{
-		{Name: "ch:calico", LXD: true, Subordinate: true},
-		{Name: "ch:containerd", LXD: true, Subordinate: true},
+		{Name: "ch:calico", Subordinate: true},
+		{Name: "ch:containerd", Subordinate: true},
 		{Name: "ch:easyrsa", LXD: true},
 		{Name: "ch:etcd", LXD: true},
-		{Name: "ch:keepalived", LXD: true, Subordinate: true},
+		{Name: "ch:keepalived", Subordinate: true},
 		{Name: "ch:kubeapi-load-balancer", LXD: true},
 		{Name: "ch:kubernetes-control-plane", LXD: true},
-		{Name: "ch:kubernetes-worker"},
+		{Name: "ch:kubernetes-worker", Machine: true},
 	}
 
 	kubernetesRelations = [][]string{
@@ -60,11 +60,9 @@ func newKubernetesConfigs(prefix, vips, cidr string) (map[string]string, error) 
 	configs := map[string]map[string]any{
 		"kubernetes-control-plane": {
 			"allow-privileged": "true",
-			"extra_sans":       vips,
 			"loadbalancer-ips": vips,
 		},
 		"kubeapi-load-balancer": {
-			"extra_sans":       vips,
 			"loadbalancer-ips": vips,
 		},
 		"calico": {
