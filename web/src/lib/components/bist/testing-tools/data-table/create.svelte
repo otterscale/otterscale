@@ -50,10 +50,8 @@
 	const DEFAULT_FIO_INPUT = { 
 		jobCount: "32", runTime: "100", blockSize: "4k", fileSize: "1G", ioDepth: "1"
 	} as unknown as FIO_Input;
-	const DEFAULT_OBJECT_SERVICE = {} as InternalObjectService;
 	let selectedScope = $state('');
 	let selectedFacility = $state('');
-	let selectedObjectService = $state(DEFAULT_OBJECT_SERVICE);
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
 	let requestCephBlockDevice: CephBlockDevice = $state(DEFAULT_CEPH_BLOCK_DEVICE);
@@ -65,7 +63,6 @@
 		requestCephBlockDevice = DEFAULT_CEPH_BLOCK_DEVICE;
 		requestNetworkFileSystem = DEFAULT_NETWORK_FILE_SYSTEM;
 		requestFioInput = DEFAULT_FIO_INPUT;
-		selectedObjectService = DEFAULT_OBJECT_SERVICE;
 	}
 
 	// Modal state
@@ -153,8 +150,12 @@
 							<Form.Fieldset>
 								<Form.Legend>Target</Form.Legend>
 								<Form.Field>
-									<Form.Label>Interanl Object Service</Form.Label>
-									<ObjectServicesPicker bind:selectedObjectService={selectedObjectService} />
+									<Form.Label>Endpoint</Form.Label>
+									<SingleInput.General type="text" required bind:value={requestNetworkFileSystem.endpoint}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Path</Form.Label>
+									<SingleInput.General type="text" required bind:value={requestNetworkFileSystem.path}/>
 								</Form.Field>
 							</Form.Fieldset>
 						{/if}
@@ -234,9 +235,8 @@
 								<Form.Description>Scope UUID: {selectedScope}</Form.Description>
 								<Form.Description>Facility Name: {selectedFacility}</Form.Description>
 							{:else if requestFio.target.case == 'networkFileSystem'}
-								<Form.Description>type: {selectedObjectService.type}</Form.Description>
-								<Form.Description>name: {selectedObjectService.name}</Form.Description>
-								<Form.Description>endpoint: {selectedObjectService.endpoint}</Form.Description>
+								<Form.Description>type: {requestNetworkFileSystem.endpoint}</Form.Description>
+								<Form.Description>name: {requestNetworkFileSystem.path}</Form.Description>
 							{/if}
 						</Form.Fieldset>
 						<!-- Step 2 -->
