@@ -135,11 +135,11 @@ func (uc *EssentialUseCase) ListStatuses(ctx context.Context, uuid string) ([]Es
 }
 
 func (uc *EssentialUseCase) ListEssentials(ctx context.Context, esType int32, uuid string) ([]Essential, error) {
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	result := make([][]Essential, 2)
 	if esType == 0 || esType == 1 {
 		eg.Go(func() error {
-			v, err := listKuberneteses(ctx, uc.scope, uc.client, uuid)
+			v, err := listKuberneteses(egctx, uc.scope, uc.client, uuid)
 			if err == nil {
 				result[0] = v
 			}
@@ -148,7 +148,7 @@ func (uc *EssentialUseCase) ListEssentials(ctx context.Context, esType int32, uu
 	}
 	if esType == 0 || esType == 2 {
 		eg.Go(func() error {
-			v, err := listCephs(ctx, uc.scope, uc.client, uuid)
+			v, err := listCephs(egctx, uc.scope, uc.client, uuid)
 			if err == nil {
 				result[1] = v
 			}
@@ -324,11 +324,11 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 		return !strings.Contains(s.UUID, scopeUUID) || s.Status.Status != jujustatus.Available
 	})
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	result := make([][]Essential, len(scopes))
 	for i := range scopes {
 		eg.Go(func() error {
-			s, err := clientRepo.Status(ctx, scopes[i].UUID, []string{"application", "*"})
+			s, err := clientRepo.Status(egctx, scopes[i].UUID, []string{"application", "*"})
 			if err != nil {
 				return err
 			}
@@ -384,7 +384,7 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 		return err
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	for _, charm := range charms {
 		eg.Go(func() error {
 			name := toEssentialName(prefix, charm.Name)
@@ -393,7 +393,7 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 				placement := toPlacement(&MachinePlacement{LXD: charm.LXD}, directive)
 				placements = append(placements, *placement)
 			}
-			_, err := facilityRepo.Create(ctx, uuid, name, configs[charm.Name], charm.Name, charm.Channel, 0, 1, &base, placements, nil, true)
+			_, err := facilityRepo.Create(egctx, uuid, name, configs[charm.Name], charm.Name, charm.Channel, 0, 1, &base, placements, nil, true)
 			return err
 		})
 	}
@@ -401,10 +401,10 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 }
 
 func createEssentialRelations(ctx context.Context, facilityRepo FacilityRepo, uuid string, endpointList [][]string) error {
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	for _, endpoints := range endpointList {
 		eg.Go(func() error {
-			_, err := facilityRepo.CreateRelation(ctx, uuid, endpoints)
+			_, err := facilityRepo.CreateRelation(egctx, uuid, endpoints)
 			return err
 		})
 	}

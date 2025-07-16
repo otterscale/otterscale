@@ -101,10 +101,10 @@ func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*Machine, 
 
 func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool, uuid string, tags []string) (*Machine, error) {
 	// tag
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	for _, tag := range tags {
 		eg.Go(func() error {
-			return uc.tag.AddMachines(ctx, tag, []string{id})
+			return uc.tag.AddMachines(egctx, tag, []string{id})
 		})
 	}
 	if err := eg.Wait(); err != nil {
@@ -172,20 +172,20 @@ func (uc *MachineUseCase) PowerOffMachine(ctx context.Context, id, comment strin
 }
 
 func (uc *MachineUseCase) AddMachineTags(ctx context.Context, id string, tags []string) error {
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	for _, tag := range tags {
 		eg.Go(func() error {
-			return uc.tag.AddMachines(ctx, tag, []string{id})
+			return uc.tag.AddMachines(egctx, tag, []string{id})
 		})
 	}
 	return eg.Wait()
 }
 
 func (uc *MachineUseCase) RemoveMachineTags(ctx context.Context, id string, tags []string) error {
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	for _, tag := range tags {
 		eg.Go(func() error {
-			return uc.tag.RemoveMachines(ctx, tag, []string{id})
+			return uc.tag.RemoveMachines(egctx, tag, []string{id})
 		})
 	}
 	return eg.Wait()

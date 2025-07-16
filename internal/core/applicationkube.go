@@ -136,51 +136,51 @@ func (uc *ApplicationUseCase) ListApplications(ctx context.Context, uuid, facili
 		return nil, err
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		v, err := uc.kubeApps.ListDeployments(ctx, config, "")
+		v, err := uc.kubeApps.ListDeployments(egctx, config, "")
 		if err == nil {
 			deployments = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeApps.ListStatefulSets(ctx, config, "")
+		v, err := uc.kubeApps.ListStatefulSets(egctx, config, "")
 		if err == nil {
 			statefulSets = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeApps.ListDaemonSets(ctx, config, "")
+		v, err := uc.kubeApps.ListDaemonSets(egctx, config, "")
 		if err == nil {
 			daemonSets = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListServices(ctx, config, "")
+		v, err := uc.kubeCore.ListServices(egctx, config, "")
 		if err == nil {
 			services = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListPods(ctx, config, "")
+		v, err := uc.kubeCore.ListPods(egctx, config, "")
 		if err == nil {
 			pods = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListPersistentVolumeClaims(ctx, config, "")
+		v, err := uc.kubeCore.ListPersistentVolumeClaims(egctx, config, "")
 		if err == nil {
 			persistentVolumeClaims = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeStorage.ListStorageClasses(ctx, config)
+		v, err := uc.kubeStorage.ListStorageClasses(egctx, config)
 		if err == nil {
 			storageClasses = v
 		}
@@ -233,9 +233,9 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		return nil, err
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		v, err := uc.kubeApps.GetDeployment(ctx, config, namespace, name)
+		v, err := uc.kubeApps.GetDeployment(egctx, config, namespace, name)
 		if err == nil {
 			deployment = v
 		} else if isKeyNotFoundError(err) {
@@ -244,7 +244,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeApps.GetStatefulSet(ctx, config, namespace, name)
+		v, err := uc.kubeApps.GetStatefulSet(egctx, config, namespace, name)
 		if err == nil {
 			statefulSet = v
 		} else if isKeyNotFoundError(err) {
@@ -253,7 +253,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeApps.GetDaemonSet(ctx, config, namespace, name)
+		v, err := uc.kubeApps.GetDaemonSet(egctx, config, namespace, name)
 		if err == nil {
 			daemonSet = v
 		} else if isKeyNotFoundError(err) {
@@ -262,28 +262,28 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListServices(ctx, config, namespace)
+		v, err := uc.kubeCore.ListServices(egctx, config, namespace)
 		if err == nil {
 			services = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListPods(ctx, config, namespace)
+		v, err := uc.kubeCore.ListPods(egctx, config, namespace)
 		if err == nil {
 			pods = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListPersistentVolumeClaims(ctx, config, namespace)
+		v, err := uc.kubeCore.ListPersistentVolumeClaims(egctx, config, namespace)
 		if err == nil {
 			persistentVolumeClaims = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeStorage.ListStorageClasses(ctx, config)
+		v, err := uc.kubeStorage.ListStorageClasses(egctx, config)
 		if err == nil {
 			storageClasses = v
 		}

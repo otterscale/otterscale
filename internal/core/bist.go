@@ -210,9 +210,9 @@ func (uc *BISTUseCase) DeleteResult(ctx context.Context, name string) error {
 
 func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid string) ([]WarpTargetInternal, error) {
 	var cephs, minios []WarpTargetInternal
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		svcs, err := uc.listCephObjectServices(ctx, uuid)
+		svcs, err := uc.listCephObjectServices(egctx, uuid)
 		if err != nil {
 			return err
 		}
@@ -220,7 +220,7 @@ func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid stri
 		return nil
 	})
 	eg.Go(func() error {
-		svcs, err := uc.listMinIOs(ctx, uuid)
+		svcs, err := uc.listMinIOs(egctx, uuid)
 		if err != nil {
 			return err
 		}
