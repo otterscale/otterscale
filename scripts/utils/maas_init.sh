@@ -11,7 +11,7 @@ init_maas() {
     log "INFO" "Initializing MAAS..."
     if ! maas init region+rack \
         --database-uri maas-test-db:/// \
-        --maas-url "http://$BRIDGE_IP:5240/MAAS" \
+        --maas-url "http://$OTTERSCALE_INTERFACE_IP:5240/MAAS" \
         >>"$TEMP_LOG" 2>&1; then
         error_exit "MAAS initialization failed."
     fi
@@ -31,7 +31,7 @@ create_maas_admin() {
             error_exit "Failed to create MAAS admin user."
         fi
     fi
-    log "INFO" "Access MAAS at: http://$BRIDGE_IP:5240/MAAS"
+    log "INFO" "Access MAAS at: http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
     log "INFO" "MAAS Username: $OTTERSCALE_MAAS_ADMIN_USER"
     log "INFO" "MAAS Password: $OTTERSCALE_MAAS_ADMIN_PASS"
 }

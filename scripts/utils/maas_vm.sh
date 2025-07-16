@@ -42,7 +42,7 @@ create_lxd_vm() {
         if ! maas admin vm-hosts create \
             password=password \
             type=lxd \
-            power_address=https://$BRIDGE_IP:8443 \
+            power_address=https://$OTTERSCALE_INTERFACE_IP:8443 \
             project=maas >>"$TEMP_LOG" 2>&1; then
             error_exit "Failed to create LXD VM host."
         fi

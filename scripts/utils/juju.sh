@@ -7,7 +7,7 @@ clouds:
     type: maas
     description: Metal As A Service
     auth-types: [oauth1]
-    endpoint: http://$BRIDGE_IP:5240/MAAS/api/2.0/
+    endpoint: http://$OTTERSCALE_INTERFACE_IP:5240/MAAS/api/2.0/
     regions:
       default: {}
 EOF'
@@ -65,7 +65,7 @@ set_juju_config() {
 
     export JUJU_CLOUD=/home/$username/ottersacle/cloud.yaml
     export JUJU_CREDENTIAL=/home/$username/ottersacle/credential.yaml
-    export BRIDGE_IP=$BRIDGE_IP
+    export OTTERSCALE_INTERFACE_IP=$OTTERSCALE_INTERFACE_IP
     export APIKEY=$APIKEY
 
     log "INFO" "Configuring Juju clouds..."
@@ -80,7 +80,7 @@ set_juju_config() {
     rm -rf /home/$username/ottersacle
     unset JUJU_CLOUD
     unset JUJU_CREDENTIAL
-    unset BRIDGE_IP
+    unset OTTERSCALE_INTERFACE_IP
     unset APIKEY
 }
 

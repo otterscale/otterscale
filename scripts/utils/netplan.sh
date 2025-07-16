@@ -3,24 +3,24 @@
 select_bridge() {
     while true; do
         log "INFO" "Detecting available bridges..."
-        bridges=($(brctl show 2>/dev/null | awk 'NR>1 {print $1}' | grep -v '^$'))
+        log AVAILABLE_BRIDGES=($(brctl show 2>/dev/null | awk 'NR>1 {print $1}' | grep -v '^$'))
 
         echo "Available network bridges:"
         echo "0) Create new bridge"
-        for i in "${!bridges[@]}"; do
-            echo "$((i+1))) ${bridges[$i]}"
+        for i in "${!AVAILABLE_BRIDGES[@]}"; do
+            echo "$((i+1))) ${AVAILABLE_BRIDGES[$i]}"
         done
 
-        read -p "Select bridge (0-${#bridges[@]}): " choice
+        read -p "Select bridge (0-${#AVAILABLE_BRIDGES[@]}): " choice
         case $choice in
             0)
                 create_new_bridge
                 return
                 ;;
             [1-9]*)
-                if [ $choice -le ${#bridges[@]} ]; then
-                    bridge=${bridges[$((choice-1))]}
-                    validate_selected_bridge
+                if [ $choice -le ${#AVAILABLE_BRIDGES[@]} ]; then
+                    bridge=${AVAILABLE_BRIDGES[$((choice-1))]}
+                    get_current_ip $bridge
                     return
                 fi
                 ;;
@@ -49,7 +49,7 @@ select_interfaces() {
     while true; do
         read -p "Select interface to bridge (1-${#interfaces[@]}): " iface_choice
         if [[ $iface_choice =~ ^[0-9]+$ ]] && [ $iface_choice -ge 1 ] && [ $iface_choice -le ${#interfaces[@]} ]; then
-            selected_iface=${interfaces[$((iface_choice-1))]}
+            OTTERSCALE_NETWORK_INTERFACE=${interfaces[$((iface_choice-1))]}
             break
         fi
         log "WARN" "Invalid selection. Please try again."
@@ -58,10 +58,10 @@ select_interfaces() {
 
 enter_bridge_name() {
     while true; do
-        read -p "Enter bridge name, directily input Enter to get default value [$OTTERSCALE_BRIDGE]: " bridge_name
-        bridge_name=${bridge_name:-$OTTERSCALE_BRIDGE}
+        read -p "Enter bridge name, directily input Enter to get default value [$OTTERSCALE_DEFAULT_BRIDGE]: " OTTERSCALE_BRIDGE_NAME
+        OTTERSCALE_BRIDGE_NAME=${OTTERSCALE_BRIDGE_NAME:-$OTTERSCALE_DEFAULT_BRIDGE}
 
-        read -p "You entered: $bridge_name. Is this correct? [y/n]: " confirm
+        read -p "You entered: $OTTERSCALE_BRIDGE_NAME. Is this correct? [y/n]: " confirm
         if [[ "$confirm" =~ ^[Yy]$ ]]; then
             break
         elif [[ "$confirm" =~ ^[Nn]$ ]]; then
@@ -78,17 +78,17 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    $selected_iface:
+    $OTTERSCALE_NETWORK_INTERFACE:
       dhcp4: no
       dhcp6: no
   bridges:
-    $bridge_name:
+    $OTTERSCALE_BRIDGE_NAME:
       link-local: []
-      interfaces: [$selected_iface]
+      interfaces: [$OTTERSCALE_NETWORK_INTERFACE]
       addresses: [$current_ip]
       routes:
       - to: default
-        via: $current_gateway
+        via: $OTTERSCALE_INTERFACE_GATEWAY
       nameservers:
         addresses: [$current_dns]
 EOF
@@ -96,27 +96,48 @@ EOF
 }
 
 get_current_dns() {
-    local interface=$1
-    current_dns=$(resolvectl -i $interface | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
+    local INTERFACE=$1
+    current_dns=$(resolvectl -i $INTERFACE | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
     if [ -z "$current_dns" ]; then
-        log "WARN" "No dns found for $interface."
+        log "WARN" "No dns found for $INTERFACE."
     fi
 }
 
 get_current_ip() {
-    local interface=$1
-    current_ip=$(ip -o -4 addr show dev $interface | awk '{print $4}')
-    if [ -z "$current_ip" ]; then
-        error_exit "Selected interface $interface has no IP address"
+    local INTERFACE=$1
+    local INTERFACE_IPS=($(ip -o -4 addr show dev "$INTERFACE" | awk '{print $4}' | cut -d'/' -f1))
+
+    if [ ${@INTERFACE_IPS[@]} -eq 0 ]; then
+        error_exit "Network interface $INTERFACE has no IP address assigned"
+
+    elif [ ${@INTERFACE_IPS[@]} -eq 1 ]; then
+        OTTERSCALE_INTERFACE_IP=${#INTERFACE_IPS[0]}
+
+    elif [ ${@INTERFACE_IPS[@]} -ge 2 ]; then
+        log "INFO" "Detect multiple IPs on network interface $INTERFACE"
+        for i in "${!INTERFACE_IPS[@]}"; do
+            echo "$((i+1))) ${INTERFACE_IPS[$i]}"
+        done
+
+        while true; do
+            read -p "Please select the IP you want to use on MAAS: " USER_IP_SELECT
+            if validate_ip ${INTERFACE_IPS[$((USER_IP_SELECT-1))]}; then
+                OTTERSCALE_INTERFACE_IP=${INTERFACE_IPS[$((USER_IP_SELECT-1))]}
+            else
+                log "WARN" "Invalid selection. Please try again"
+            fi
+        done
     fi
+
+    log "INFO" "Using bridge $INTERFACE with IP $OTTERSCALE_INTERFACE_IP"
 }
 
-get_current_gw() {
-    local interface=$1
-    current_gateway=$(ip route show dev $interface | awk '/default/ {print $3}' | head -1)
-    if [ -z "$current_gateway" ]; then
-        current_gateway=$(ip route show | awk '/default/ {print $3}' | head -1)
-        log "WARN" "No gateway found for $interface, using system default: $current_gateway"
+get_current_gateway() {
+    local INTERFACE=$1
+    OTTERSCALE_INTERFACE_GATEWAY=$(ip route show dev $INTERFACE | awk '/default/ {print $3}' | head -1)
+    if [ -z "$OTTERSCALE_INTERFACE_GATEWAY" ]; then
+        OTTERSCALE_INTERFACE_GATEWAY=$(ip route show | awk '/default/ {print $3}' | head -1)
+        log "WARN" "No gateway found for $INTERFACE, using system default: $OTTERSCALE_INTERFACE_GATEWAY"
     fi
 }
 
@@ -126,22 +147,18 @@ create_new_bridge() {
     select_interfaces
     enter_bridge_name
 
-    get_current_dns $selected_iface
-    get_current_ip $selected_iface
-    get_current_gw $selected_iface
-    log "INFO" "Creating bridge $bridge_name with interface $selected_iface..."
-    log "INFO" "Using existing IP: $current_ip, Gateway: $current_gateway, DNS: $current_dns"
+    get_current_dns $OTTERSCALE_NETWORK_INTERFACE
+    get_current_ip $OTTERSCALE_NETWORK_INTERFACE
+    get_OTTERSCALE_INTERFACE_GATEWAY $OTTERSCALE_NETWORK_INTERFACE
+    log "INFO" "Creating bridge $OTTERSCALE_BRIDGE_NAME with interface $OTTERSCALE_NETWORK_INTERFACE..."
+    log "INFO" "Using existing IP: $current_ip, Gateway: $OTTERSCALE_INTERFACE_GATEWAY, DNS: $current_dns"
 
     create_netplan
-
     stop_service "NetworkManager"
     disable_service "NetworkManager"
     start_service "systemd-networkd"
     enable_service "systemd-networkd"
-
     netplan apply || error_exit "Failed to apply netplan configuration"
 
-    bridge="$bridge_name"
-    BRIDGE_IP=$(echo "$current_ip" | cut -d'/' -f1)
-    log "INFO" "Successfully created bridge $bridge with IP $BRIDGE_IP"
+    log "INFO" "Successfully created bridge $OTTERSCALE_BRIDGE_NAME with IP $OTTERSCALE_INTERFACE_IP"
 }

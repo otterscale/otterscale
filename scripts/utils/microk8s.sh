@@ -1,21 +1,21 @@
 #!/bin/bash
 
 update_microk8s_config() {
-    kubefolder="/home/$username/.kube"
+    KUBE_FOLDER="/home/$username/.kube"
 
     ## Add user group
     log "INFO" "Add $username to group microk8s"
     usermod -aG microk8s "$username"
 
     ## Create folder
-    if [ ! -d "$kubefolder" ]; then
-        mkdir -p "$kubefolder"
+    if [ ! -d "$KUBE_FOLDER" ]; then
+        mkdir -p "$KUBE_FOLDER"
     fi
-    chown "$username":"$username" "$kubefolder"
+    chown "$username":"$username" "$KUBE_FOLDER"
 
     ## Update calico-node env
-    log "INFO" "Update microk8s calico daemonset environment IP_AUTODETECTION_METHOD to $bridge_name"
-    if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$bridge_name"; then
+    log "INFO" "Update microk8s calico daemonset environment IP_AUTODETECTION_METHOD to $OTTERSCALE_BRIDGE_NAME"
+    if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$OTTERSCALE_BRIDGE_NAME"; then
         error_exit "Failed update microk8s calico env IP_AUTODETECTION_METHOD."
     fi
 }
@@ -24,8 +24,8 @@ enable_microk8s_option() {
     local IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
     if microk8s status --wait-ready >/dev/null 2>&1; then
         log "INFO" "microk8s is ready."
-        microk8s config > "$kubefolder/config"
-        chown "$username":"$username" "$kubefolder/config"
+        microk8s config > "$KUBE_FOLDER/config"
+        chown "$username":"$username" "$KUBE_FOLDER/config"
 
         log "INFO" "Enable microk8s dns"
         microk8s enable dns >>"$TEMP_LOG" 2>&1;
