@@ -16,10 +16,10 @@
 	import SheetNotification from './sheet-notification.svelte';
 
 	let { user }: { user: User } = $props();
+	let locale = $state(getLocale());
+	let open = $state(false);
 
 	const sidebar = useSidebar();
-	let locale = $state(getLocale());
-	let openNotification = $state(false);
 
 	const getUserInitials = (name: string) => {
 		return (
@@ -48,7 +48,7 @@
 	};
 
 	const toggleNotification = () => {
-		openNotification = !openNotification;
+		open = !open;
 	};
 </script>
 
@@ -60,7 +60,7 @@
 	}}
 />
 
-<SheetNotification bind:open={openNotification} />
+<SheetNotification bind:open />
 
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
