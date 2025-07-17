@@ -8,11 +8,11 @@ const charmCeph = "ceph-mon"
 
 var (
 	cephCharms = []EssentialCharm{
-		{Name: "ch:ceph-fs", Channel: "squid/stable", LXD: true},
 		{Name: "ch:ceph-mon", Channel: "squid/stable", LXD: true},
 		{Name: "ch:ceph-osd", Channel: "squid/stable", Machine: true},
-		{Name: "ch:ceph-nfs", Channel: "squid/stable", LXD: true},
+		{Name: "ch:ceph-fs", Channel: "squid/stable", LXD: true},
 		{Name: "ch:ceph-radosgw", Channel: "squid/stable", LXD: true},
+		{Name: "ch:ceph-nfs", Channel: "squid/stable", LXD: true},
 		{Name: "ch:hacluster", Channel: "2.4/stable", Subordinate: true},
 	}
 

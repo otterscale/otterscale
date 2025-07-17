@@ -16,32 +16,27 @@ const charmKubernetes = "kubernetes-control-plane"
 
 var (
 	kubernetesCharms = []EssentialCharm{
+		{Name: "ch:kubernetes-control-plane", Machine: true},
+		{Name: "ch:etcd", LXD: true},
+		{Name: "ch:easyrsa", LXD: true},
+		{Name: "ch:kubeapi-load-balancer", LXD: true},
 		{Name: "ch:calico", Subordinate: true},
 		{Name: "ch:containerd", Subordinate: true},
-		{Name: "ch:easyrsa", LXD: true},
-		{Name: "ch:etcd", LXD: true},
 		{Name: "ch:keepalived", Subordinate: true},
-		{Name: "ch:kubeapi-load-balancer", LXD: true},
-		{Name: "ch:kubernetes-control-plane", LXD: true},
-		{Name: "ch:kubernetes-worker", Machine: true},
 	}
 
 	kubernetesRelations = [][]string{
 		{"calico:cni", "kubernetes-control-plane:cni"},
-		{"calico:cni", "kubernetes-worker:cni"},
 		{"calico:etcd", "etcd:db"},
 		{"easyrsa:client", "etcd:certificates"},
 		{"easyrsa:client", "kubernetes-control-plane:certificates"},
-		{"easyrsa:client", "kubernetes-worker:certificates"},
 		{"easyrsa:client", "kubeapi-load-balancer:certificates"},
 		{"etcd:db", "kubernetes-control-plane:etcd"},
-		{"kubernetes-control-plane:kube-control", "kubernetes-worker:kube-control"},
 		{"kubernetes-control-plane:loadbalancer-external", "kubeapi-load-balancer:lb-consumers"},
 		{"kubernetes-control-plane:loadbalancer-internal", "kubeapi-load-balancer:lb-consumers"},
 		{"keepalived:juju-info", "kubeapi-load-balancer:juju-info"},
 		{"keepalived:website", "kubeapi-load-balancer:apiserver"},
 		{"containerd:containerd", "kubernetes-control-plane:container-runtime"},
-		{"containerd:containerd", "kubernetes-worker:container-runtime"},
 	}
 )
 
