@@ -163,6 +163,11 @@ func (uc *EssentialUseCase) ListEssentials(ctx context.Context, esType int32, uu
 }
 
 func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineID, prefix string, userVirtualIPs []string, userCalicoCIDR string, userOSDDevices []string) error {
+	// validate
+	if err := uc.validateMachineStatus(ctx, uuid, machineID); err != nil {
+		return err
+	}
+
 	// check
 	osdDevices := strings.Join(userOSDDevices, " ")
 	if osdDevices == "" {
@@ -253,6 +258,35 @@ func (uc *EssentialUseCase) getMachineStatusMessage(machines []Machine) string {
 		}
 	}
 	return message
+}
+
+func (uc *EssentialUseCase) validateMachineStatus(ctx context.Context, uuid, machineID string) error {
+	// maas
+	machine, err := uc.machine.Get(ctx, machineID)
+	if err != nil {
+		return err
+	}
+	if machine.Status != node.StatusDeployed {
+		return connect.NewError(connect.CodeInvalidArgument, errors.New("machine is not deployed"))
+	}
+
+	// juju
+	id, err := getJujuMachineID(machine.WorkloadAnnotations)
+	if err != nil {
+		return err
+	}
+	status, err := uc.client.Status(ctx, uuid, []string{"machine", id})
+	if err != nil {
+		return err
+	}
+	m, ok := status.Machines[id]
+	if !ok {
+		return connect.NewError(connect.CodeInvalidArgument, errors.New("machine is not found"))
+	}
+	if m.AgentStatus.Status != jujustatus.Started.String() {
+		return connect.NewError(connect.CodeInvalidArgument, errors.New("machine is not started"))
+	}
+	return nil
 }
 
 func NewCharmConfigs(prefix string, configs map[string]map[string]any) (map[string]string, error) {
