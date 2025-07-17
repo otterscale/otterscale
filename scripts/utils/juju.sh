@@ -107,7 +107,7 @@ cross_scope() {
 
 # JuJu K8S
 juju_add_k8s() {
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s | grep -q ." "check juju cloud"; then
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s > /dev/null 2>&1" "check juju cloud"; then
         log "INFO" "cos-k8s already exist, skipping..."
     else
         log "INFO" "Juju add-k8s to maas-cloud-controller" "JuJu K8S"
@@ -116,12 +116,12 @@ juju_add_k8s() {
         fi
     fi
 
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos | grep -q ." "check juju model"; then
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos > /dev/null 2>&1" "check juju model"; then
         log "INFO" "cos model already exist, skipping..."
     else
         log "INFO" "Juju add-model cos" "JuJu K8S"
         if ! execute_non_user_cmd "$NON_ROOT_USER" "juju add-model cos cos-k8s --debug" "execute juju add-model"; then
-            error_exit "Failed execute juju add-model"
+            error_exit "Failed execute juju add-model, maybe cos model already exist"
         fi
 
         log "INFO" "Juju deploy cos-lite" "JuJu K8S"
