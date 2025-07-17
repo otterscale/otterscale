@@ -40,7 +40,7 @@
 
 	function getIcon(name: string) {
 		const index = scopes.findIndex((scope) => scope.name === name);
-		return index !== -1 && index < icons.length ? icons[index] : icons[0];
+		return index !== -1 ? icons[index % icons.length] : icons[0];
 	}
 
 	function handleScopeShortcut(index: number) {
