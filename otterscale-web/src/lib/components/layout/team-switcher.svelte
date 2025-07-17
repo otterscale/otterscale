@@ -2,18 +2,19 @@
 	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import DialogCreateScope from './dialog-create-scope.svelte';
 
-	let { teams }: { teams: { name: string; icon: any; enterprise: boolean }[] } = $props();
-	let activeTeam = $state(teams[0]);
+	let { scopes }: { scopes: Scope[] } = $props();
+	let activeScope = $state(scopes[0]);
 	let open = $state(false);
 
 	const sidebar = useSidebar();
 
-	const indexIcons = [
+	const shortcutIcons = [
 		'ph:number-one',
 		'ph:number-two',
 		'ph:number-three',
@@ -25,10 +26,27 @@
 		'ph:number-nine'
 	];
 
-	function handleTeamShortcut(index: number) {
-		if (teams.length > index) {
-			activeTeam = teams[index];
-			toast.info(`Toggle to ${activeTeam.name}`);
+	const icons = [
+		'ph:airplane-tilt',
+		'ph:cactus',
+		'ph:cherries',
+		'ph:piggy-bank',
+		'ph:flower',
+		'ph:joystick',
+		'ph:clover',
+		'ph:cube',
+		'ph:gavel'
+	];
+
+	function getIcon(name: string) {
+		const index = scopes.findIndex((scope) => scope.name === name);
+		return index !== -1 && index < icons.length ? icons[index] : icons[0];
+	}
+
+	function handleScopeShortcut(index: number) {
+		if (scopes.length > index) {
+			activeScope = scopes[index];
+			toast.info(`Toggle to ${activeScope.name}`);
 		}
 	}
 
@@ -41,47 +59,47 @@
 	use:shortcut={{
 		key: '1',
 		ctrl: true,
-		callback: () => handleTeamShortcut(0)
+		callback: () => handleScopeShortcut(0)
 	}}
 	use:shortcut={{
 		key: '2',
 		ctrl: true,
-		callback: () => handleTeamShortcut(1)
+		callback: () => handleScopeShortcut(1)
 	}}
 	use:shortcut={{
 		key: '3',
 		ctrl: true,
-		callback: () => handleTeamShortcut(2)
+		callback: () => handleScopeShortcut(2)
 	}}
 	use:shortcut={{
 		key: '4',
 		ctrl: true,
-		callback: () => handleTeamShortcut(3)
+		callback: () => handleScopeShortcut(3)
 	}}
 	use:shortcut={{
 		key: '5',
 		ctrl: true,
-		callback: () => handleTeamShortcut(4)
+		callback: () => handleScopeShortcut(4)
 	}}
 	use:shortcut={{
 		key: '6',
 		ctrl: true,
-		callback: () => handleTeamShortcut(5)
+		callback: () => handleScopeShortcut(5)
 	}}
 	use:shortcut={{
 		key: '7',
 		ctrl: true,
-		callback: () => handleTeamShortcut(6)
+		callback: () => handleScopeShortcut(6)
 	}}
 	use:shortcut={{
 		key: '8',
 		ctrl: true,
-		callback: () => handleTeamShortcut(7)
+		callback: () => handleScopeShortcut(7)
 	}}
 	use:shortcut={{
 		key: '9',
 		ctrl: true,
-		callback: () => handleTeamShortcut(8)
+		callback: () => handleScopeShortcut(8)
 	}}
 />
 
@@ -100,11 +118,12 @@
 						<div
 							class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 						>
-							<Icon icon={activeTeam.icon + '-fill'} class="size-4.5" />
+							<Icon icon={getIcon(activeScope.name) + '-fill'} class="size-4.5" />
 						</div>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-medium">{activeTeam.name}</span>
-							<span class="truncate text-xs">{activeTeam.enterprise ? 'Enterprise' : 'Free'}</span>
+							<span class="truncate font-medium">{activeScope.name}</span>
+							<!-- <span class="truncate text-xs">{activeScope.enterprise ? 'Enterprise' : 'Free'}</span> -->
+							<span class="truncate text-xs">Free</span>
 						</div>
 						<Icon icon="ph:caret-up-down-bold" class="ml-auto" />
 					</Sidebar.MenuButton>
@@ -117,17 +136,17 @@
 				sideOffset={4}
 			>
 				<DropdownMenu.Label class="text-muted-foreground text-xs">Scopes</DropdownMenu.Label>
-				{#each teams as team, index (team.name)}
-					<DropdownMenu.Item onSelect={() => handleTeamShortcut(index)} class="gap-2 p-2">
+				{#each scopes as scope, index (scope.name)}
+					<DropdownMenu.Item onSelect={() => handleScopeShortcut(index)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
-							<Icon icon={team.icon + '-bold'} class="size-3.5 shrink-0" />
+							<Icon icon={getIcon(scope.name) + '-bold'} class="size-3.5 shrink-0" />
 						</div>
-						{team.name}
+						{scope.name}
 						{#if index < 9}
 							<DropdownMenu.Shortcut>
 								<div class="flex items-center justify-center">
 									<Icon icon="ph:control-bold" />
-									<Icon icon={indexIcons[index]} />
+									<Icon icon={shortcutIcons[index]} />
 								</div>
 							</DropdownMenu.Shortcut>
 						{/if}
