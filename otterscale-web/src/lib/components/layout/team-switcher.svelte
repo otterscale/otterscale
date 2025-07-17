@@ -1,14 +1,17 @@
 <script lang="ts">
+	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
-	import { toast } from 'svelte-sonner';
+	import DialogCreateScope from './dialog-create-scope.svelte';
 
 	let { teams }: { teams: { name: string; icon: any; enterprise: boolean }[] } = $props();
-	const sidebar = useSidebar();
 	let activeTeam = $state(teams[0]);
+	let open = $state(false);
+
+	const sidebar = useSidebar();
 
 	const indexIcons = [
 		'ph:number-one',
@@ -25,9 +28,13 @@
 	function handleTeamShortcut(index: number) {
 		if (teams.length > index) {
 			activeTeam = teams[index];
-			toast.success(`Toggle to ${activeTeam.name}`);
+			toast.info(`Toggle to ${activeTeam.name}`);
 		}
 	}
+
+	const toggleDialog = () => {
+		open = !open;
+	};
 </script>
 
 <svelte:window
@@ -78,6 +85,8 @@
 	}}
 />
 
+<DialogCreateScope bind:open />
+
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
 		<DropdownMenu.Root>
@@ -125,7 +134,7 @@
 					</DropdownMenu.Item>
 				{/each}
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item class="gap-2 p-2">
+				<DropdownMenu.Item class="gap-2 p-2" onclick={toggleDialog}>
 					<div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
 						<Icon icon="ph:plus" />
 					</div>
