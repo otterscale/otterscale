@@ -90,7 +90,7 @@ get_fabric() {
 create_dhcp_iprange() {
     log "INFO" "Creating DHCP IP range..."
     if ! maas admin ipranges create type=dynamic start_ip=$start_ip end_ip=$end_ip >>"$TEMP_LOG" 2>&1; then
-        log "WARN" "Please confirm if address is within subnet $subnet, or maybe it already exist."
+        log "WARN" "Please confirm if address is within subnet $subnet, or maybe it already exist"
         error_exit "Failed to create DHCP range."
     fi
 }

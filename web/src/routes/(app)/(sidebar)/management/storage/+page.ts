@@ -1,5 +1,5 @@
 import type { PageLoad } from './$types';
-import type { FileSystem } from '$lib/components/management-storage/storage-filesystem-volume/data-table';
+import type { FileSystem } from '$lib/components/management-storage/volume/data-table';
 
 export const load: PageLoad = ({ params }) => {
     return {

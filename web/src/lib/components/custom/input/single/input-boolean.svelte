@@ -2,16 +2,15 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Select from '$lib/components/ui/select';
 	import * as Switch from '$lib/components/ui/switch';
-	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { Switch as SwitchPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
 	import { z } from 'zod';
+	import InputValidation from './input-validation.svelte';
+	import type { BooleanOption } from './types';
 </script>
 
 <script lang="ts">
-	import InputValidation from './input-validation.svelte';
-	import type { BooleanOption } from './types';
 	import {
 		BORDER_INPUT_CLASSNAME,
 		InputValidator,
@@ -33,9 +32,10 @@
 		format?: 'switch' | 'checkbox';
 	} = $props();
 
-	let proxyChecked = $state(false);
 	const validator = new InputValidator(z.boolean());
 	const validation = $derived(validator.validate(checked));
+
+	let proxyChecked = $state(false);
 </script>
 
 <div class="flex items-center gap-2">
@@ -96,8 +96,8 @@
 		class={cn(
 			BORDER_INPUT_CLASSNAME,
 			isNotFilled ? RING_INVALID_INPUT_CLASSNAME : RING_VALID_INPUT_CLASSNAME,
-			format === 'checkbox' ? 'bg-muted border-none shadow-none ring-0' : '',
 			'w-full justify-between',
+			format === 'checkbox' && 'bg-muted border-none shadow-none ring-0',
 			className
 		)}
 	>

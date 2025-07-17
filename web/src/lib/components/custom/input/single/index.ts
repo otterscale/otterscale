@@ -1,3 +1,4 @@
+import { default as BigInteger } from './input-big-integer.svelte';
 import { default as Boolean } from './input-boolean.svelte';
 import { default as Color } from './input-color.svelte';
 import { default as DeletionConfirm } from './input-deletion-confirm.svelte';
@@ -8,7 +9,7 @@ import { default as Structure } from './input-structure.svelte';
 import type { InputType, UnitType } from './types';
 import { PasswordManager, typeToIcon } from './utils.svelte';
 
-export { Boolean, Color, DeletionConfirm, General, Measurement, Password, PasswordManager, Structure, typeToIcon };
+export { BigInteger, Boolean, Color, DeletionConfirm, General, Measurement, Password, PasswordManager, Structure, typeToIcon };
 export type {
     InputType, UnitType
 };

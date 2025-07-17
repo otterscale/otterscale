@@ -58,7 +58,7 @@ select_interfaces() {
 
 enter_bridge_name() {
     while true; do
-        read -p "Enter bridge name [$DEFAULT_BRIDGE_NAME]: " bridge_name
+        read -p "Enter bridge name, directily input Enter to get default value [$DEFAULT_BRIDGE_NAME]: " bridge_name
         bridge_name=${bridge_name:-$DEFAULT_BRIDGE_NAME}
 
         read -p "You entered: $bridge_name. Is this correct? [y/n]: " confirm

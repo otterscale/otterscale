@@ -11,7 +11,6 @@ import (
 	"connectrpc.com/connect"
 	"github.com/canonical/gomaasclient/entity/node"
 	"github.com/juju/juju/core/instance"
-	"github.com/juju/juju/core/status"
 	jujustatus "github.com/juju/juju/core/status"
 	"github.com/juju/juju/rpc/params"
 	"golang.org/x/sync/errgroup"
@@ -43,6 +42,7 @@ type EssentialCharm struct {
 	Name        string
 	Channel     string
 	LXD         bool
+	Machine     bool
 	Subordinate bool
 }
 
@@ -136,11 +136,11 @@ func (uc *EssentialUseCase) ListStatuses(ctx context.Context, uuid string) ([]Es
 }
 
 func (uc *EssentialUseCase) ListEssentials(ctx context.Context, esType int32, uuid string) ([]Essential, error) {
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	result := make([][]Essential, 2)
 	if esType == 0 || esType == 1 {
 		eg.Go(func() error {
-			v, err := listKuberneteses(ctx, uc.scope, uc.client, uuid)
+			v, err := listKuberneteses(egctx, uc.scope, uc.client, uuid)
 			if err == nil {
 				result[0] = v
 			}
@@ -149,7 +149,7 @@ func (uc *EssentialUseCase) ListEssentials(ctx context.Context, esType int32, uu
 	}
 	if esType == 0 || esType == 2 {
 		eg.Go(func() error {
-			v, err := listCephs(ctx, uc.scope, uc.client, uuid)
+			v, err := listCephs(egctx, uc.scope, uc.client, uuid)
 			if err == nil {
 				result[1] = v
 			}
@@ -170,13 +170,13 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 	}
 
 	// default
-	vips := strings.Join(userVirtualIPs, " ")
-	if vips == "" {
-		ip, err := GetAndReserveIP(ctx, uc.machine, uc.subnet, uc.ipRange, machineID, fmt.Sprintf("kubernetes load balancer IP for %s", prefix))
+	kubeVIPs := strings.Join(userVirtualIPs, " ")
+	if kubeVIPs == "" {
+		ip, err := GetAndReserveIP(ctx, uc.machine, uc.subnet, uc.ipRange, machineID, fmt.Sprintf("Kubernetes Load Balancer IP for %s", prefix))
 		if err != nil {
 			return err
 		}
-		vips = ip.String()
+		kubeVIPs = ip.String()
 	}
 
 	cidr := userCalicoCIDR
@@ -185,12 +185,17 @@ func (uc *EssentialUseCase) CreateSingleNode(ctx context.Context, uuid, machineI
 	}
 
 	// config
-	kubeConfigs, err := newKubernetesConfigs(prefix, vips, cidr)
+	kubeConfigs, err := newKubernetesConfigs(prefix, kubeVIPs, cidr)
 	if err != nil {
 		return err
 	}
 
-	cephConfigs, err := newCephConfigs(prefix, osdDevices)
+	nfsVIP, err := GetAndReserveIP(ctx, uc.machine, uc.subnet, uc.ipRange, machineID, fmt.Sprintf("Ceph NFS IP for %s", prefix))
+	if err != nil {
+		return err
+	}
+
+	cephConfigs, err := newCephConfigs(prefix, osdDevices, nfsVIP.String())
 	if err != nil {
 		return err
 	}
@@ -263,26 +268,6 @@ func NewCharmConfigs(prefix string, configs map[string]map[string]any) (map[stri
 	return result, nil
 }
 
-func GetDirectives(ctx context.Context, machineRepo MachineRepo, machineIDs ...string) ([]string, error) {
-	directives := []string{}
-	for _, id := range machineIDs {
-		directive, err := getDirective(ctx, machineRepo, id)
-		if err != nil {
-			return nil, err
-		}
-		directives = append(directives, directive)
-	}
-	return directives, nil
-}
-
-func ToEssentialName(prefix, charm string) string {
-	return toEssentialName(prefix, charm)
-}
-
-func ToPlacement(lxd bool, directive string) *instance.Placement {
-	return toPlacement(&MachinePlacement{LXD: lxd}, directive)
-}
-
 // ch:amd64/kubernetes-control-plane-567 -> kubernetes-control-plane
 func formatAppCharm(name string) (string, bool) {
 	t := strings.Split(name, "/")
@@ -322,14 +307,14 @@ func listEssentials(ctx context.Context, scopeRepo ScopeRepo, clientRepo ClientR
 		return nil, err
 	}
 	scopes = slices.DeleteFunc(scopes, func(s Scope) bool {
-		return !strings.Contains(s.UUID, scopeUUID) || s.Status.Status != status.Available
+		return !strings.Contains(s.UUID, scopeUUID) || s.Status.Status != jujustatus.Available
 	})
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	result := make([][]Essential, len(scopes))
 	for i := range scopes {
 		eg.Go(func() error {
-			s, err := clientRepo.Status(ctx, scopes[i].UUID, []string{"application", "*"})
+			s, err := clientRepo.Status(egctx, scopes[i].UUID, []string{"application", "*"})
 			if err != nil {
 				return err
 			}
@@ -385,16 +370,16 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 		return err
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	for _, charm := range charms {
 		eg.Go(func() error {
 			name := toEssentialName(prefix, charm.Name)
 			placements := []instance.Placement{}
-			if directive != "" {
-				placement := toPlacement(&MachinePlacement{LXD: charm.LXD}, directive)
+			if directive != "" && !charm.Subordinate {
+				placement := toPlacement(&MachinePlacement{LXD: charm.LXD, Machine: charm.Machine}, directive)
 				placements = append(placements, *placement)
 			}
-			_, err := facilityRepo.Create(ctx, uuid, name, configs[charm.Name], charm.Name, charm.Channel, 0, 1, &base, placements, nil, true)
+			_, err := facilityRepo.Create(egctx, uuid, name, configs[charm.Name], charm.Name, charm.Channel, 0, 1, &base, placements, nil, true)
 			return err
 		})
 	}
@@ -402,10 +387,10 @@ func createEssential(ctx context.Context, serverRepo ServerRepo, machineRepo Mac
 }
 
 func createEssentialRelations(ctx context.Context, facilityRepo FacilityRepo, uuid string, endpointList [][]string) error {
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	for _, endpoints := range endpointList {
 		eg.Go(func() error {
-			_, err := facilityRepo.CreateRelation(ctx, uuid, endpoints)
+			_, err := facilityRepo.CreateRelation(egctx, uuid, endpoints)
 			return err
 		})
 	}

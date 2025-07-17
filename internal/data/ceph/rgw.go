@@ -72,7 +72,7 @@ func (r *rgw) GetBucket(ctx context.Context, config *core.StorageConfig, bucket 
 
 // s3 api
 func (r *rgw) CreateBucket(ctx context.Context, config *core.StorageConfig, bucket string, acl types.BucketCannedACL) error {
-	s3Client, err := r.s3Client(config)
+	s3Client, err := r.s3Client(ctx, config)
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func (r *rgw) UpdateBucketOwner(ctx context.Context, config *core.StorageConfig,
 
 // s3 api
 func (r *rgw) UpdateBucketACL(ctx context.Context, config *core.StorageConfig, bucket string, acl types.BucketCannedACL) error {
-	s3Client, err := r.s3Client(config)
+	s3Client, err := r.s3Client(ctx, config)
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func (r *rgw) UpdateBucketACL(ctx context.Context, config *core.StorageConfig, b
 
 // s3 api
 func (r *rgw) UpdateBucketPolicy(ctx context.Context, config *core.StorageConfig, bucket, policy string) error {
-	s3Client, err := r.s3Client(config)
+	s3Client, err := r.s3Client(ctx, config)
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func (r *rgw) UpdateBucketPolicy(ctx context.Context, config *core.StorageConfig
 
 // s3 api
 func (r *rgw) DeleteBucket(ctx context.Context, config *core.StorageConfig, bucket string) error {
-	s3Client, err := r.s3Client(config)
+	s3Client, err := r.s3Client(ctx, config)
 	if err != nil {
 		return err
 	}
@@ -231,13 +231,13 @@ func (r *rgw) DeleteUserKey(ctx context.Context, config *core.StorageConfig, id,
 	return client.RemoveKey(ctx, admin.UserKeySpec{UID: id, AccessKey: accessKey})
 }
 
-func (r *rgw) s3Client(conf *core.StorageConfig) (*s3.Client, error) {
+func (r *rgw) s3Client(ctx context.Context, conf *core.StorageConfig) (*s3.Client, error) {
 	client, err := r.ceph.client(conf)
 	if err != nil {
 		return nil, err
 	}
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(),
+	cfg, err := config.LoadDefaultConfig(ctx,
 		config.WithRegion(cephRegion),
 		config.WithCredentialsProvider(credentials.StaticCredentialsProvider{
 			Value: aws.Credentials{
@@ -264,7 +264,7 @@ func (r *rgw) toBucket(ctx context.Context, config *core.StorageConfig, b *admin
 	bucket := &core.RGWBucket{
 		Bucket: b,
 	}
-	s3Client, err := r.s3Client(config)
+	s3Client, err := r.s3Client(ctx, config)
 	if err != nil {
 		return nil, err
 	}

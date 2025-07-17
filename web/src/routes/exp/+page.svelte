@@ -61,7 +61,7 @@
 </SingleSelect.Root> -->
 <!-- 
 <script lang="ts">
-	import * as MultipleStepModal from './mutiple-step-modal';
+	import * as MultipleStepModal from '$lib/components/custom/mutiple-step-modal';
 
 	let open = $state(false);
 </script>
@@ -69,9 +69,10 @@
 <MultipleStepModal.Root bind:open steps={3}>
 	<MultipleStepModal.Trigger>Trigger</MultipleStepModal.Trigger>
 	<MultipleStepModal.Content>
+		<MultipleStepModal.Header>Header</MultipleStepModal.Header>
 		<MultipleStepModal.Stepper>
 			<MultipleStepModal.Steps>
-				<MultipleStepModal.Step text="STEP 1" icon="ph:sun" />
+				<MultipleStepModal.Step icon="ph:sun"></MultipleStepModal.Step>
 				<MultipleStepModal.Step icon="ph:moon" />
 				<MultipleStepModal.Step />
 			</MultipleStepModal.Steps>
@@ -81,14 +82,20 @@
 				<MultipleStepModal.Model>Content for Tab 3</MultipleStepModal.Model>
 			</MultipleStepModal.Models>
 		</MultipleStepModal.Stepper>
-		<MultipleStepModal.Header>Header</MultipleStepModal.Header>
 		<MultipleStepModal.Footer>
 			<MultipleStepModal.Cancel>Cancel</MultipleStepModal.Cancel>
-			<MultipleStepModal.Confirm>Confirm</MultipleStepModal.Confirm>
 			<MultipleStepModal.Controllers>
 				<MultipleStepModal.Back>Back</MultipleStepModal.Back>
 				<MultipleStepModal.Next>Next</MultipleStepModal.Next>
+				<MultipleStepModal.Confirm>Confirm</MultipleStepModal.Confirm>
 			</MultipleStepModal.Controllers>
 		</MultipleStepModal.Footer>
 	</MultipleStepModal.Content>
-</MultipleStepModal.Root> -->
+</MultipleStepModal.Root>
+ -->
+
+<script lang="ts" module>
+	import * as Loading from '$lib/components/custom/loading';
+</script>
+
+<Loading.Report />

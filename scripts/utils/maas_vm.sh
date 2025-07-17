@@ -60,7 +60,7 @@ rename_machine() {
 }
 
 wait_commissioning() {
-    log "INFO" "Waiting for the machine to transition from commissioning to ready state."
+    log "INFO" "Waiting for the machine to transition from commissioning to ready state"
     while true; do
         local status=$(maas admin machine read $machineID | jq -r '.status_name')
         if [ "$status" == "Ready" ]; then
@@ -93,7 +93,7 @@ create_vm_from_maas() {
 }
 
 enter_vm_ip() {
-    log "INFO" "Please provide an IP address that falls within the range of $subnet."
+    log "INFO" "Please provide an IP address that falls within the range of $subnet"
     while true; do
         read -p "Enter the IP that juju-vm will used : " juju_vm_ip
         if validate_ip "$juju_vm_ip"; then

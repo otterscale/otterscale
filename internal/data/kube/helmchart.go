@@ -40,7 +40,7 @@ var _ oscore.ChartRepo = (*helmChart)(nil)
 
 func (r *helmChart) List(ctx context.Context) ([]oscore.Chart, error) {
 	urls := r.kube.helmRepoURLs()
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	result := make([]*repo.IndexFile, len(urls))
 	for i := range urls {
 		eg.Go(func() error {
@@ -52,7 +52,7 @@ func (r *helmChart) List(ctx context.Context) ([]oscore.Chart, error) {
 					return nil
 				}
 			}
-			indexFile, err := r.fetchRepoIndex(ctx, urls[i])
+			indexFile, err := r.fetchRepoIndex(egctx, urls[i])
 			if err == nil {
 				indexFile.SortEntries()
 				r.repoIndexCache.Store(urls[i], &helmRepo{

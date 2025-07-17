@@ -16,9 +16,6 @@ init_maas() {
         error_exit "MAAS initialization failed."
     fi
     log "INFO" "MAAS initialized successfully"
-    log "INFO" "Access MAAS at: http://$BRIDGE_IP:5240/MAAS"
-    log "INFO" "MAAS Username: $MAAS_ADMIN_USER"
-    log "INFO" "MAAS Password: $MAAS_ADMIN_PASS"
 }
 
 create_maas_admin() {
@@ -34,6 +31,9 @@ create_maas_admin() {
             error_exit "Failed to create MAAS admin user."
         fi
     fi
+    log "INFO" "Access MAAS at: http://$BRIDGE_IP:5240/MAAS"
+    log "INFO" "MAAS Username: $MAAS_ADMIN_USER"
+    log "INFO" "MAAS Password: $MAAS_ADMIN_PASS"
 }
 
 login_maas() {

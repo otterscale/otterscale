@@ -2,706 +2,526 @@ package core
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"reflect"
-	"slices"
-	"strconv"
+	"math"
 	"strings"
-	"sync"
 	"time"
 
-	pb "github.com/openhdc/otterscale/api/bist/v1"
 	"golang.org/x/sync/errgroup"
-	batchv1 "k8s.io/api/batch/v1"
-	corev1 "k8s.io/api/core/v1"
 
-	kuberr "k8s.io/apimachinery/pkg/api/errors"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/rest"
 
 	"github.com/openhdc/otterscale/internal/config"
-	"k8s.io/client-go/rest"
 )
 
 const (
-	BIST_NAME      = "bist"
-	BIST_NAMESPACE = "bist"
-	BIST_LABEL     = "app.otterscale.io/app=bist"
-	BIST_JOB_RETRY = 3
-
-	BIST_PHASE_COMPLETE = "COMPLETE"
-	BIST_PHASE_RUNNING  = "RUNNING"
-	BIST_PHASE_FAIL     = "FAILED"
-	BIST_PHASE_CREATING = "CREATING"
+	bistKindFIO             = "fio"
+	bistKindWarp            = "warp"
+	bistNamespace           = "bist"
+	bistLabel               = "bist.otterscale.io/name=bist"
+	bistAnnotationCreatedBy = "bist.otterscale.io/created-by"
+	bistAnnotationKind      = "bist.otterscale.io/kind"
+	bistAnnotationFIO       = "bist.otterscale.io/fio"
+	bistAnnotationWarp      = "bist.otterscale.io/warp"
+	bistBlockPool           = "otterscale_bist_pool"
+	bistBlockImage          = "otterscale_bist_image"
 )
 
-var (
-	BIST_JOB_LABEL = map[string]string{
-		"app.otterscale.io/app": "bist",
-	}
-	BIST_IMAGE_LIST = map[string]string{
-		"block": "docker.io/otterscale/bist-block:v1",
-		"nfs":   "docker.io/otterscale/bist-nfs:v1",
-		"s3":    "docker.io/otterscale/bist-s3:v2",
-	}
-	BIST_WARP_ENV = map[string]string{
-		"BENCHMARK_TYPE":                 "s3",
-		"BENCHMARK_ARGS_WARP_HOST":       "",
-		"BENCHMARK_ARGS_WARP_ACCESS_KEY": "",
-		"BENCHMARK_ARGS_WARP_SECRET_KEY": "",
-		"BENCHMARK_ARGS_WARP_ACTION":     "",
-		"BENCHMARK_ARGS_WARP_DURATION":   "",
-		"BENCHMARK_ARGS_WARP_CONCURRENT": "2",
-		"BENCHMARK_ARGS_WARP_OBJ.SIZE":   "",
-	}
-
-	BIST_FIO_ENV = map[string]string{
-		"BENCHMARK_TYPE":                                "",
-		"BENCHMARK_ARGS_FIO_DIRECT":                     "1",
-		"BENCHMARK_ARGS_FIO_FILESIZE":                   "",
-		"BENCHMARK_ARGS_FIO_IODEPTH":                    "",
-		"BENCHMARK_ARGS_FIO_NUMJOBS":                    "",
-		"BENCHMARK_ARGS_FIO_GROUP_REPORTING":            "True",
-		"BENCHMARK_ARGS_FIO_RWMIXREAD":                  "100",
-		"BENCHMARK_ARGS_FIO_NORANDOMMAP":                "True",
-		"BENCHMARK_ARGS_FIO_BS":                         "",
-		"BENCHMARK_ARGS_FIO_BUFFER_COMPRESS_PERCENTAGE": "0",
-		"BENCHMARK_ARGS_FIO_RW":                         "",
-		"BENCHMARK_ARGS_FIO_STARTDELAY":                 "5",
-		"BENCHMARK_ARGS_FIO_TIME_BASED":                 "True",
-		"BENCHMARK_ARGS_FIO_EXITALL_ON_ERROR":           "True",
-		"BENCHMARK_ARGS_FIO_CREATE_SERIALIZE":           "0",
-		"BENCHMARK_ARGS_FIO_RUNTIME":                    "",
-	}
+const (
+	minioLabel       = "app.kubernetes.io/name=minio"
+	minioField       = "spec.type=NodePort"
+	minioServiceName = "minio-api"
 )
 
 type BISTResult struct {
-	Type         string
-	Name         string
-	Status       string
-	StartTime    *metav1.Time
-	CompleteTime *metav1.Time
-	Args         string
-	Logs         []string
-	FIO          *BISTFIO
-	Warp         *BISTWarp
+	UID            string
+	Name           string
+	Status         string
+	CreatedBy      string
+	StartTime      time.Time
+	CompletionTime time.Time
+	FIO            *FIO
+	Warp           *Warp
 }
 
-type BISTFIO struct {
-	AccessMode       string
-	StorageClassName string
-	NFSEndpoint      string
-	NFSPath          string
-	JobCount         uint64
-	RunTime          string
-	BlockSize        string
-	FileSize         string
-	IODepth          uint64
+type FIO struct {
+	Target FIOTarget  `json:"target"`
+	Input  *FIOInput  `json:"input,omitempty"`
+	Output *FIOOutput `json:"output,omitempty"`
 }
 
-type BISTWarp struct {
-	Operation  string `json:"operation"`
-	Endpoint   string `json:"endpoint"`
-	AccessKey  string `json:"access_key"`
-	SecretKey  string `json:"secret_key"`
-	Duration   string `json:"duration"`
-	ObjectSize string `json:"object_size.SIZE"`
+type FIOTarget struct {
+	Ceph *FIOTargetCeph `json:"ceph,omitempty"`
+	NFS  *FIOTargetNFS  `json:"nfs,omitempty"`
 }
 
-type BISTBlock struct {
-	FacilityName     string
-	StorageClassName string
+type FIOTargetCeph struct {
+	ScopeUUID    string `json:"scope_uuid"`
+	FacilityName string `json:"facility_name"`
 }
 
-type BISTS3 struct {
-	Type     string
-	Name     string
-	Endpoint string
+type FIOTargetNFS struct {
+	Endpoint string `json:"endpoint"`
+	Path     string `json:"path"`
+}
+
+type FIOInput struct {
+	AccessMode string `json:"access_mode"`
+	JobCount   int64  `json:"job_count"`
+	RunTime    string `json:"run_time"`
+	BlockSize  string `json:"block_size"`
+	FileSize   string `json:"file_size"`
+	IODepth    int64  `json:"io_depth"`
+}
+
+type FIOOutput struct {
+	Read  *FIOThroughput `json:"read"`
+	Write *FIOThroughput `json:"write"`
+	Trim  *FIOThroughput `json:"trim"`
+}
+
+type FIOThroughput struct {
+	IOBytes   int64   `json:"io_bytes"`
+	Bandwidth int64   `json:"bw"`
+	IOPS      float64 `json:"iops"`
+	TotalIOs  int64   `json:"total_ios"`
+	Latency   struct {
+		Min  int64   `json:"min"`
+		Max  int64   `json:"max"`
+		Mean float64 `json:"mean"`
+	} `json:"lat_ns"`
+}
+
+type Warp struct {
+	Target WarpTarget  `json:"target"`
+	Input  *WarpInput  `json:"input,omitempty"`
+	Output *WarpOutput `json:"output,omitempty"`
+}
+
+type WarpTarget struct {
+	Internal *WarpTargetInternal `json:"internal,omitempty"`
+	External *WarpTargetExternal `json:"external,omitempty"`
+}
+
+type WarpTargetInternal struct {
+	Type         string `json:"type"`
+	ScopeUUID    string `json:"scope_uuid"`
+	FacilityName string `json:"facility_name"`
+	Name         string `json:"name"`
+	Endpoint     string `json:"endpoint"`
+}
+
+type WarpTargetExternal struct {
+	Endpoint  string `json:"endpoint"`
+	AccessKey string `json:"access_key"`
+	SecretKey string `json:"secret_key"`
+}
+
+type WarpInput struct {
+	Operation   string `json:"operation"`
+	Duration    string `json:"duration"`
+	ObjectSize  string `json:"object_size"`
+	ObjectCount string `json:"object_count"`
+}
+
+type WarpOutput struct {
+	Type       string          `json:"type"`
+	Operations []WarpOperation `json:"operations"`
+}
+
+type WarpOperation struct {
+	Type       string `json:"type"`
+	Throughput struct {
+		Metrics struct {
+			FastestBPS float64 `json:"fastest_bps"`
+			MedianBPS  float64 `json:"median_bps"`
+			SlowestBPS float64 `json:"slowest_bps"`
+			FastestOPS float64 `json:"fastest_ops"`
+			MedianOPS  float64 `json:"median_ops"`
+			SlowestOPS float64 `json:"slowest_ops"`
+		} `json:"segmented"`
+		TotalBytes      float64 `json:"bytes"`
+		TotalObjects    float64 `json:"objects"`
+		TotalOperations int64   `json:"ops"`
+	} `json:"throughput"`
 }
 
 type BISTUseCase struct {
-	action      ActionRepo
 	scope       ScopeRepo
-	kubeStorage KubeStorageRepo
 	client      ClientRepo
 	facility    FacilityRepo
-	kubeCore    KubeCoreRepo
+	action      ActionRepo
 	kubeBatch   KubeBatchRepo
-	conf        *config.Config
-	configs     sync.Map
+	kubeCore    KubeCoreRepo
+	cephCluster CephClusterRepo
+	cephRBD     CephRBDRepo
+
+	conf *config.Config
 }
 
-func NewBISTUseCase(action ActionRepo, scope ScopeRepo, kubeBatch KubeBatchRepo, kube KubeAppsRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo, facility FacilityRepo, conf *config.Config, client ClientRepo) *BISTUseCase {
+func NewBISTUseCase(scope ScopeRepo, client ClientRepo, facility FacilityRepo, action ActionRepo, kubeBatch KubeBatchRepo, kubeCore KubeCoreRepo, cephCluster CephClusterRepo, cephRBD CephRBDRepo, conf *config.Config) *BISTUseCase {
 	return &BISTUseCase{
-		action:      action,
-		client:      client,
 		scope:       scope,
-		kubeCore:    kubeCore,
-		kubeBatch:   kubeBatch,
-		kubeStorage: kubeStorage,
+		client:      client,
 		facility:    facility,
+		action:      action,
+		kubeBatch:   kubeBatch,
+		kubeCore:    kubeCore,
+		cephCluster: cephCluster,
+		cephRBD:     cephRBD,
 		conf:        conf,
 	}
 }
 
 func (uc *BISTUseCase) ListResults(ctx context.Context) ([]BISTResult, error) {
-	config, err := uc.newConfig(ctx)
+	config, err := uc.newMicroK8sConfig()
 	if err != nil {
 		return nil, err
 	}
-
-	jobs, err := uc.kubeBatch.ListJobsByLabel(ctx, config, BIST_NAMESPACE, BIST_LABEL)
+	jobs, err := uc.kubeBatch.ListJobsByLabel(ctx, config, bistNamespace, bistLabel)
 	if err != nil {
 		return nil, err
 	}
-
-	bists := []BISTResult{}
-	for _, job := range jobs {
-		bist, err := uc.toBISTResult(ctx, job.Name, &job, config)
+	results := []BISTResult{}
+	for i := range jobs {
+		bist, err := uc.toBISTResult(ctx, config, &jobs[i])
 		if err != nil {
 			return nil, err
 		}
-		bists = append(bists, *bist)
+		results = append(results, *bist)
 	}
-
-	return bists, nil
-}
-
-func (uc *BISTUseCase) CreateResult(ctx context.Context, target, name string, fio *BISTFIO, warp *BISTWarp) (*BISTResult, error) {
-	config, err := uc.newConfig(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if config == nil {
-		return nil, fmt.Errorf("invalid config")
-	}
-
-	_, err = uc.kubeCore.GetNamespace(ctx, config, BIST_NAMESPACE)
-	if err != nil {
-		if kuberr.IsNotFound(err) {
-			// Create namespace if not exist
-			namespace := &corev1.Namespace{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: BIST_NAMESPACE,
-				},
-			}
-			_, err = uc.kubeCore.CreateNamespace(ctx, config, namespace)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			return nil, err
-		}
-	}
-
-	var job *batchv1.Job
-	if target == "block" {
-		job = toBISTJob(name, BIST_NAMESPACE, target, BIST_JOB_RETRY, fio)
-	} else if target == "nfs" {
-		job = toBISTJob(name, BIST_NAMESPACE, target, BIST_JOB_RETRY, fio)
-	} else if target == "s3" {
-		job = toBISTJob(name, BIST_NAMESPACE, target, BIST_JOB_RETRY, warp)
-	}
-
-	if job == nil {
-		return nil, fmt.Errorf("Invalid bist job specified")
-	}
-
-	job, err = uc.kubeBatch.CreateJob(ctx, config, job)
-	if err != nil {
-		return nil, err
-	}
-
-	bist, err := uc.toBISTResult(ctx, job.Name, job, config)
-
-	return bist, nil
+	return results, nil
 }
 
 func (uc *BISTUseCase) DeleteResult(ctx context.Context, name string) error {
-	config, err := uc.newConfig(ctx)
+	config, err := uc.newMicroK8sConfig()
 	if err != nil {
 		return err
 	}
-	return uc.kubeBatch.DeleteJob(ctx, config, BIST_NAMESPACE, name)
+	return uc.kubeBatch.DeleteJob(ctx, config, bistNamespace, name)
 }
 
-func (uc *BISTUseCase) ListBlocks(ctx context.Context) ([]BISTBlock, error) {
-
-	config, err := uc.newConfig(ctx)
-	if err != nil {
-		return nil, err
-	}
-	sc, err := uc.kubeStorage.ListStorageClassesByLabel(ctx, config, "juju.io/manifest=rbd")
-
-	return toBISTBlocks(sc), nil
-}
-
-func (uc *BISTUseCase) ListS3s(ctx context.Context, uuid string) ([]BISTS3, error) {
-	//
-	scopes, err := uc.scope.List(ctx)
-	if err != nil {
-		return nil, err
-	}
-	scopes = slices.DeleteFunc(scopes, func(s Scope) bool {
-		return !strings.Contains(s.UUID, uuid)
+func (uc *BISTUseCase) ListInternalObjectServices(ctx context.Context, uuid string) ([]WarpTargetInternal, error) {
+	var cephs, minios []WarpTargetInternal
+	eg, egctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		svcs, err := uc.listCephObjectServices(egctx, uuid)
+		if err != nil {
+			return err
+		}
+		cephs = svcs
+		return nil
 	})
-
-	minioEndpoints := make([]BISTS3, 0, len(scopes))
-	eg, ctx := errgroup.WithContext(ctx)
-	for i := range scopes {
-		eg.Go(func() error {
-			s, err := uc.client.Status(ctx, scopes[i].UUID, []string{"application", "*"})
-			if err != nil {
-				return err
-			}
-			for name := range s.Applications {
-				if !strings.Contains(s.Applications[name].Charm, "kubernetes-control-plane") {
-					continue
-				}
-				units := []EssentialUnit{}
-				for uname := range s.Applications[name].Units {
-					units = append(units, EssentialUnit{
-						Name:      uname,
-						Directive: s.Applications[name].Units[uname].Machine,
-					})
-				}
-
-				for _, unit := range units {
-					config, err := uc.config(ctx, uuid, removeLastSlashAndAfter(unit.Name))
-					if config == nil {
-						fmt.Println("nil config")
-						continue
-					}
-					label := "app.otterscale.io/release-name=minio"
-					field := "spec.type=NodePort"
-					svcs, err := uc.kubeCore.ListServicesByOptions(ctx, config, "", label, field)
-					if err != nil {
-						return err
-					}
-					for _, svc := range svcs {
-						for _, port := range svc.Spec.Ports {
-							if port.Name == "minio-api" {
-								minioEndpoints = append(minioEndpoints, toBISTS3("minio", svc.GetName()+"/"+svc.GetNamespace(), fmt.Sprintf("%s:%d", config.Host, port.NodePort)))
-							}
-						}
-					}
-				}
-				break
-			}
-			return nil
-		})
-	}
+	eg.Go(func() error {
+		svcs, err := uc.listMinIOs(egctx, uuid)
+		if err != nil {
+			return err
+		}
+		minios = svcs
+		return nil
+	})
 	if err := eg.Wait(); err != nil {
 		return nil, err
 	}
-
-	cephEndpoints := make([]BISTS3, 0, len(scopes))
-
-	for i := range scopes {
-		eg.Go(func() error {
-			s, err := uc.client.Status(ctx, scopes[i].UUID, []string{"application", "*"})
-			if err != nil {
-				return err
-			}
-			for name := range s.Applications {
-				if !strings.Contains(s.Applications[name].Charm, "ceph-mon") {
-					continue
-				}
-				units := []EssentialUnit{}
-				for uname := range s.Applications[name].Units {
-					units = append(units, EssentialUnit{
-						Name:      uname,
-						Directive: s.Applications[name].Units[uname].Machine,
-					})
-				}
-				for _, unit := range units {
-					leader, err := uc.facility.GetLeader(ctx, uuid, removeLastSlashAndAfter(unit.Name))
-					if err != nil {
-						return err
-					}
-
-					info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
-					if err != nil {
-						return err
-					}
-
-					cephEndpoints = append(cephEndpoints, toBISTS3("ceph", unit.Name, fmt.Sprintf("http://%s", info.PublicAddress)))
-				}
-				break
-			}
-			return nil
-		})
-	}
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-
-	s3Endpoints := append(cephEndpoints, minioEndpoints...)
-
-	// s3 endpoints
-	return s3Endpoints, nil
+	return append(cephs, minios...), nil
 }
 
-func (uc *BISTUseCase) newConfig(ctx context.Context) (*rest.Config, error) {
+func (uc *BISTUseCase) listCephObjectServices(ctx context.Context, uuid string) ([]WarpTargetInternal, error) {
+	cephs, err := listCephs(ctx, uc.scope, uc.client, uuid)
+	if err != nil {
+		return nil, err
+	}
+	services := []WarpTargetInternal{}
+	for _, ceph := range cephs {
+		leader, err := uc.facility.GetLeader(ctx, uuid, rgwName(ceph.Name))
+		if err != nil {
+			continue
+		}
+		info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
+		if err != nil {
+			continue
+		}
+		services = append(services, WarpTargetInternal{
+			Type:         "ceph",
+			ScopeUUID:    ceph.ScopeUUID,
+			FacilityName: ceph.Name,
+			Name:         ceph.Name,
+			Endpoint:     info.PublicAddress,
+		})
+	}
+	return services, nil
+}
 
-	decodedBytes, _ := base64.StdEncoding.DecodeString(uc.conf.MicroK8s.Token)
+func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid string) ([]WarpTargetInternal, error) {
+	kubes, err := listKuberneteses(ctx, uc.scope, uc.client, uuid)
+	if err != nil {
+		return nil, err
+	}
+	services := []WarpTargetInternal{}
+	for _, kube := range kubes {
+		leader, err := uc.facility.GetLeader(ctx, uuid, kube.Name)
+		if err != nil {
+			continue
+		}
+		info, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
+		if err != nil {
+			continue
+		}
+		config, err := kubeConfig(ctx, uc.facility, uuid, kube.Name)
+		if err != nil {
+			continue
+		}
+		svcs, err := uc.kubeCore.ListServicesByOptions(ctx, config, "", minioLabel, minioField)
+		if err != nil {
+			continue
+		}
+		for i := range svcs {
+			for _, port := range svcs[i].Spec.Ports {
+				if port.Name != "minio-api" {
+					continue
+				}
+				services = append(services, WarpTargetInternal{
+					Type:         "minio",
+					ScopeUUID:    kube.ScopeUUID,
+					FacilityName: kube.Name,
+					Name:         fmt.Sprintf("%s.%s", svcs[i].GetNamespace(), svcs[i].GetName()),
+					Endpoint:     fmt.Sprintf("%s:%d", info.PublicAddress, port.NodePort),
+				})
+			}
+		}
+	}
+	return services, nil
+}
 
+func (uc *BISTUseCase) newMicroK8sConfig() (*rest.Config, error) {
+	token, err := base64.StdEncoding.DecodeString(uc.conf.MicroK8s.Token)
+	if err != nil {
+		return nil, err
+	}
 	return &rest.Config{
 		Host:        uc.conf.MicroK8s.Host,
-		BearerToken: string(decodedBytes),
+		BearerToken: string(token),
 		TLSClientConfig: rest.TLSClientConfig{
 			Insecure: true,
 		},
 	}, nil
 }
 
-func (uc *BISTUseCase) config(ctx context.Context, uuid, name string) (*rest.Config, error) {
-	key := uuid + "/" + name
-
-	if v, ok := uc.configs.Load(key); ok {
-		return v.(*rest.Config), nil
+func (uc *BISTUseCase) ensureNamespace(ctx context.Context, config *rest.Config) error {
+	_, err := uc.kubeCore.GetNamespace(ctx, config, bistNamespace)
+	if apierrors.IsNotFound(err) {
+		_, err := uc.kubeCore.CreateNamespace(ctx, config, bistNamespace)
+		return err
 	}
-
-	config, err := uc.newKubeConfig(ctx, uuid, name)
-	if err != nil {
-		return nil, err
-	}
-
-	uc.configs.Store(key, config)
-
-	return config, nil
+	return nil
 }
 
-func (uc *BISTUseCase) newKubeConfig(ctx context.Context, uuid, name string) (*rest.Config, error) {
-	// kubernetes-control-plane
-	leader, err := uc.facility.GetLeader(ctx, uuid, name)
-	if err != nil {
-		return nil, err
-	}
-	unitInfo, err := uc.facility.GetUnitInfo(ctx, uuid, leader)
-	if err != nil {
-		return nil, err
-	}
-	kubeControl, err := extractWorkerUnitName(unitInfo)
-	if err != nil {
-		return nil, err
-	}
-
-	// [TODO] Replace the last "/" and the char after
-	kubeControl = removeLastSlashAndAfter(kubeControl)
-
-	// kubernetes-worker
-	leader, err = uc.facility.GetLeader(ctx, uuid, kubeControl)
-	if err != nil {
-		return nil, err
-	}
-	unitInfo, err = uc.facility.GetUnitInfo(ctx, uuid, leader)
-	if err != nil {
-		return nil, err
-	}
-
-	// config
-	endpoint, err := extractEndpoint(unitInfo)
-	if err != nil {
-		return nil, err
-	}
-	clientToken, err := extractClientToken(unitInfo)
-	if err != nil {
-		return nil, err
-	}
-	return &rest.Config{
-		Host:        endpoint,
-		BearerToken: clientToken,
-		TLSClientConfig: rest.TLSClientConfig{
-			Insecure: true,
-		},
-	}, nil
-}
-
-func removeLastSlashAndAfter(s string) string {
-	lastSlashIndex := strings.LastIndex(s, "/")
-
-	if lastSlashIndex == -1 {
-		return s
-	}
-	return s[:lastSlashIndex]
-}
-
-func toBISTS3(s3type, name, endpoint string) BISTS3 {
-	return BISTS3{
-		Type:     s3type,
-		Name:     name,
-		Endpoint: endpoint,
-	}
-}
-
-func toBISTBlocks(scs []StorageClass) []BISTBlock {
-	ret := []BISTBlock{}
-	for i := range scs {
-		ret = append(ret, toBISTBlock(&scs[i]))
-	}
-	return ret
-}
-
-func toBISTBlock(sc *StorageClass) BISTBlock {
-
-	fName := sc.GetLabels()["juju.io/application"]
-	return BISTBlock{
-		FacilityName:     fName,
-		StorageClassName: sc.GetName(),
-	}
-}
-
-func toBISTJob(name, namespace, target string, retry int32, BIST interface{}) *batchv1.Job {
-
-	containerName := name + "-container"
-	trueVal := true
-	image := BIST_IMAGE_LIST[target]
-
-	envJSON, err := json.Marshal(BIST)
-	if err != nil {
-		return nil
-	}
-	annotation := make(map[string]string)
-	annotation["otterscale/bist-config"] = string(envJSON)
-
-	BIST_JOB_LABEL["app.otterscale.io/bist"] = target
-
-	jobEnv, _ := toJobEnv(target, BIST)
-
-	//jobName := generateNameWithDateTime(name)
-	return &batchv1.Job{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:        name,
-			Namespace:   namespace,
-			Labels:      BIST_JOB_LABEL,
-			Annotations: annotation,
-		},
-		Spec: batchv1.JobSpec{
-			BackoffLimit: &retry,
-			Template: corev1.PodTemplateSpec{
-				Spec: corev1.PodSpec{
-					Containers: []corev1.Container{
-						{
-							Name:            containerName,
-							Image:           image,
-							ImagePullPolicy: corev1.PullIfNotPresent,
-							Command: []string{
-								"./start.sh",
-							},
-							SecurityContext: &corev1.SecurityContext{
-								Privileged: &trueVal,
-							},
-							Env:          jobEnv,
-							VolumeMounts: generateVolumeMounts(target),
-						},
-					},
-					Volumes:       generateVolume(target),
-					RestartPolicy: corev1.RestartPolicyNever,
-				},
-			},
-		},
-	}
-}
-
-func generateVolume(target string) []corev1.Volume {
-
-	switch target {
-	case "block":
-		return []corev1.Volume{
-			{
-				Name: "dev",
-				VolumeSource: corev1.VolumeSource{
-					HostPath: &corev1.HostPathVolumeSource{
-						Path: "/dev",
-					},
-				},
-			},
-			{
-				Name: "modules",
-				VolumeSource: corev1.VolumeSource{
-					HostPath: &corev1.HostPathVolumeSource{
-						Path: "/lib/modules",
-					},
-				},
-			},
-			{
-				Name: "run-udev",
-				VolumeSource: corev1.VolumeSource{
-					HostPath: &corev1.HostPathVolumeSource{
-						Path: "/run/udev",
-					},
-				},
-			},
+func (uc *BISTUseCase) ensureConfigMap(ctx context.Context, config *rest.Config, uuid, facility, name string) error {
+	_, err := uc.kubeCore.GetConfigMap(ctx, config, bistNamespace, name)
+	if apierrors.IsNotFound(err) {
+		sc, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+		if err != nil {
+			return err
 		}
-	case "nfs":
-		return []corev1.Volume{}
-	case "s3":
-		return []corev1.Volume{}
-	}
-	return []corev1.Volume{}
-}
-
-func generateVolumeMounts(target string) []corev1.VolumeMount {
-
-	switch target {
-	case "nfs":
-		return []corev1.VolumeMount{}
-	case "block":
-		return []corev1.VolumeMount{
-			{
-				Name:      "dev",
-				MountPath: "/dev",
-			},
-			{
-				Name:      "modules",
-				MountPath: "/lib/modules",
-			},
-			{
-				Name:      "run-udev",
-				MountPath: "/run/udev",
-			},
+		data := map[string]string{
+			"ceph.conf": fmt.Sprintf(`[global]\nmon host = %s\nfsid = %s\nkey = %s`, sc.MONHost, sc.FSID, sc.Key),
 		}
-	case "s3":
-		return []corev1.VolumeMount{}
-	default:
-		return []corev1.VolumeMount{}
+		_, err = uc.kubeCore.CreateConfigMap(ctx, config, bistNamespace, name, data)
+		return err
 	}
+	return nil
 }
 
-func generateNameWithDateTime(baseName string) string {
-	now := time.Now()
-	dateTimeStr := now.Format("20060102150405")
-	return fmt.Sprintf("%s-%s", baseName, dateTimeStr)
+func (uc *BISTUseCase) ensurePool(ctx context.Context, uuid, facility, pool string) error {
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
+	}
+	pools, err := uc.cephCluster.ListPools(ctx, config)
+	if err != nil {
+		return err
+	}
+	for i := range pools {
+		if pools[i].Name == pool {
+			return nil
+		}
+	}
+	if err := uc.cephCluster.CreatePool(ctx, config, pool, "replicated"); err != nil {
+		return err
+	}
+	return uc.cephCluster.EnableApplication(ctx, config, pool, "rbd")
 }
 
-func (uc *BISTUseCase) toBISTResult(ctx context.Context, name string, job *batchv1.Job, config *rest.Config) (*BISTResult, error) {
-
-	var jobStatus string
-	var ret BISTResult
-
-	if job.Status.Succeeded == 1 && job.Status.CompletionTime != nil {
-		jobStatus = BIST_PHASE_COMPLETE
-	} else if job.Status.Failed == 1 {
-		jobStatus = BIST_PHASE_FAIL
-	} else if job.Status.Active == 1 && job.Status.Ready != nil {
-		jobStatus = BIST_PHASE_RUNNING
-	} else {
-		jobStatus = BIST_PHASE_CREATING
+func (uc *BISTUseCase) ensureImage(ctx context.Context, uuid, facility, pool, image string) error {
+	config, err := storageConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return err
 	}
+	imgs, err := uc.cephRBD.ListImages(ctx, config, pool)
+	if err != nil {
+		return err
+	}
+	for i := range imgs {
+		if imgs[i].Name == image {
+			return nil
+		}
+	}
+	objectSizeBytes := 4194304
+	stripeUnitBytes := uint64(4194304) //nolint:mnd
+	stripeCount := uint64(1)
+	size := uint64(10737418240) //nolint:mnd
+	order := int(math.Round(math.Log2(float64(objectSizeBytes))))
+	features := convertToRBDImageFeatures(true, true, true, true, true)
+	_, err = uc.cephRBD.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)
+	return err
+}
 
-	//jsonBytes, err := json.Marshal(job.Spec.Template.Spec.Containers[0].Env)
-
-	// [TODO] test result
+func (uc *BISTUseCase) getLogs(ctx context.Context, config *rest.Config, job *Job) (map[string]any, error) {
+	if job.Status.CompletionTime == nil {
+		return map[string]any{}, nil
+	}
 	selector, err := metav1.LabelSelectorAsSelector(job.Spec.Selector)
 	if err != nil {
 		return nil, err
 	}
 
-	pods, err := uc.kubeCore.ListPodsByLabel(ctx, config, BIST_NAMESPACE, selector.String())
+	pods, err := uc.kubeCore.ListPodsByLabel(ctx, config, bistNamespace, selector.String())
 	if err != nil {
 		return nil, err
 	}
 
-	podLog := make([]string, 0, len(pods))
-	for _, pod := range pods {
-		logs, err := uc.kubeCore.GetPodLogs(ctx, pod, config, BIST_NAMESPACE)
+	for i := range pods {
+		logs, err := uc.kubeCore.GetPodLogs(ctx, config, bistNamespace, pods[i].Name, pods[i].Spec.Containers[0].Name)
 		if err != nil {
-			return nil, err
+			continue
 		}
-		podLog = append(podLog, logs)
-	}
-
-	ret.Name = name
-	ret.Type = job.GetLabels()["app.otterscale.io/bist"]
-	ret.Status = jobStatus
-	ret.Args = job.GetAnnotations()["otterscale/bist-config"]
-	ret.StartTime = job.Status.StartTime
-	ret.CompleteTime = job.Status.CompletionTime
-	ret.Logs = podLog
-
-	target := toBISTType(job.GetLabels()["app.otterscale.io/bist"])
-	if target == pb.TestResult_S3 {
-		err := json.Unmarshal([]byte(job.GetAnnotations()["otterscale/bist-config"]), &ret.Warp)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		err := json.Unmarshal([]byte(job.GetAnnotations()["otterscale/bist-config"]), &ret.FIO)
-		if err != nil {
-			return nil, err
+		// warp result has redundant message
+		for _, v := range []string{logs, uc.removeLastTwoLines(logs)} {
+			var result map[string]any
+			if err := json.Unmarshal([]byte(v), &result); err != nil {
+				continue
+			}
+			return result, nil
 		}
 	}
-
-	return &ret, nil
+	return map[string]any{}, nil
 }
 
-func toBISTType(s string) pb.TestResult_Type {
-	switch s {
-	case "s3":
-		return pb.TestResult_S3
-	case "block":
-		return pb.TestResult_BLOCK
-	case "nfs":
-		return pb.TestResult_NFS
+func (uc *BISTUseCase) removeLastTwoLines(input string) string {
+	lines := strings.Split(input, "\n")
+	if len(lines) < 2 {
+		return input
 	}
-	return pb.TestResult_UNSPECIFIED
+	lines = lines[:len(lines)-2]
+	return strings.Join(lines, "\n")
 }
 
-func toJobEnv(target string, BIST interface{}) ([]corev1.EnvVar, error) {
-
-	var jobEnv []corev1.EnvVar
-	v := reflect.ValueOf(BIST)
-	t := reflect.TypeOf(BIST)
-
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-		t = t.Elem()
+func (uc *BISTUseCase) unmarshalFIOOutput(ctx context.Context, config *rest.Config, job *Job, val **FIOOutput) error {
+	logs, err := uc.getLogs(ctx, config, job)
+	if err != nil {
+		return err
 	}
-
-	switch s := BIST.(type) {
-	case *BISTWarp:
-		BIST_WARP_ENV["BENCHMARK_ARGS_WARP_HOST"] = s.Endpoint
-		BIST_WARP_ENV["BENCHMARK_ARGS_WARP_ACCESS_KEY"] = s.AccessKey
-		BIST_WARP_ENV["BENCHMARK_ARGS_WARP_SECRET_KEY"] = s.SecretKey
-		BIST_WARP_ENV["BENCHMARK_ARGS_WARP_ACTION"] = s.Operation
-		BIST_WARP_ENV["BENCHMARK_ARGS_WARP_DURATION"] = s.Duration
-		BIST_WARP_ENV["BENCHMARK_ARGS_WARP_OBJ.SIZE"] = s.ObjectSize
-		jobEnv = make([]corev1.EnvVar, 0, len(BIST_WARP_ENV))
-		for k, v := range BIST_WARP_ENV {
-			jobEnv = append(jobEnv, corev1.EnvVar{
-				Name:  k,
-				Value: v,
-			})
+	jobs, ok := logs["jobs"].([]any)
+	if ok {
+		data, err := json.Marshal(jobs[0])
+		if err != nil {
+			return err
 		}
-	case *BISTFIO:
-		BIST_FIO_ENV["BENCHMARK_TYPE"] = target
-		BIST_FIO_ENV["BENCHMARK_ARGS_FIO_FILESIZE"] = s.FileSize
-		BIST_FIO_ENV["BENCHMARK_ARGS_FIO_IODEPTH"] = strconv.FormatUint(s.IODepth, 10)
-		BIST_FIO_ENV["BENCHMARK_ARGS_FIO_NUMJOBS"] = strconv.FormatUint(s.JobCount, 10)
-		BIST_FIO_ENV["BENCHMARK_ARGS_FIO_BS"] = s.BlockSize
-		BIST_FIO_ENV["BENCHMARK_ARGS_FIO_RW"] = s.AccessMode
-		BIST_FIO_ENV["BENCHMARK_ARGS_FIO_RUNTIME"] = s.RunTime
-		BIST_FIO_ENV["BENCHMARK_ARGS_NFS_ENDPOINT"] = s.NFSEndpoint
-		BIST_FIO_ENV["BENCHMARK_ARGS_NFS_PATH"] = s.NFSPath
-		BIST_FIO_ENV["BENCHMARK_ARGS_NFS_SC"] = s.StorageClassName
-		jobEnv = make([]corev1.EnvVar, 0, len(BIST_FIO_ENV))
-		for k, v := range BIST_FIO_ENV {
-			jobEnv = append(jobEnv, corev1.EnvVar{
-				Name:  k,
-				Value: v,
-			})
-		}
-	default:
-		jobEnv = make([]corev1.EnvVar, 0, len(BIST_WARP_ENV))
-		for k, v := range BIST_WARP_ENV {
-			jobEnv = append(jobEnv, corev1.EnvVar{
-				Name:  k,
-				Value: v,
-			})
+		if err := json.Unmarshal(data, &val); err != nil {
+			return err
 		}
 	}
+	return nil
+}
 
-	return jobEnv, nil
+func (uc *BISTUseCase) unmarshalWarpOutput(ctx context.Context, config *rest.Config, job *Job, val **WarpOutput) error {
+	logs, err := uc.getLogs(ctx, config, job)
+	if err != nil {
+		return err
+	}
+	data, err := json.Marshal(logs)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(data, &val)
+}
+
+func (uc *BISTUseCase) toBISTResultStatus(job *Job) string {
+	if job.Status.Succeeded > 0 {
+		return "succeeded"
+	}
+	if job.Status.Failed > 0 {
+		return "failed"
+	}
+	return "running"
+}
+
+func (uc *BISTUseCase) toBISTResult(ctx context.Context, config *rest.Config, job *Job) (*BISTResult, error) {
+	annotations := job.GetAnnotations()
+	kind, ok := annotations[bistAnnotationKind]
+	if !ok {
+		return nil, errors.New("kind of bist not found")
+	}
+
+	result := &BISTResult{
+		UID:       string(job.UID),
+		Name:      job.Name,
+		Status:    uc.toBISTResultStatus(job),
+		CreatedBy: annotations[bistAnnotationCreatedBy],
+	}
+
+	if job.Status.StartTime != nil {
+		result.StartTime = job.Status.StartTime.Time
+	}
+
+	if job.Status.CompletionTime != nil {
+		result.CompletionTime = job.Status.CompletionTime.Time
+	}
+
+	switch kind {
+	case bistKindFIO:
+		result.FIO, _ = uc.toFIO(ctx, config, job)
+	case bistKindWarp:
+		result.Warp, _ = uc.toWarp(ctx, config, job)
+	}
+
+	return result, nil
+}
+
+func (uc *BISTUseCase) toFIO(ctx context.Context, config *rest.Config, job *Job) (*FIO, error) {
+	fio := &FIO{}
+	// target & input
+	if err := json.Unmarshal([]byte(job.Annotations[bistAnnotationFIO]), fio); err != nil {
+		return nil, err
+	}
+	// output
+	if err := uc.unmarshalFIOOutput(ctx, config, job, &fio.Output); err != nil {
+		return nil, err
+	}
+	return fio, nil
+}
+
+func (uc *BISTUseCase) toWarp(ctx context.Context, config *rest.Config, job *Job) (*Warp, error) {
+	warp := &Warp{}
+	// target & input
+	if err := json.Unmarshal([]byte(job.Annotations[bistAnnotationWarp]), warp); err != nil {
+		return nil, err
+	}
+	// output
+	if err := uc.unmarshalWarpOutput(ctx, config, job, &warp.Output); err != nil {
+		return nil, err
+	}
+	return warp, nil
+}
+
+func generateHashedName(input string) string {
+	hash := sha256.Sum256([]byte(input))
+	return hex.EncodeToString(hash[:4])
 }

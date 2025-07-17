@@ -24,12 +24,16 @@ type (
 	DaemonSet   = appsv1.DaemonSet
 )
 
-type Job = batchv1.Job
+type (
+	Job     = batchv1.Job
+	JobSpec = batchv1.JobSpec
+)
 
 type (
 	Namespace             = corev1.Namespace
 	ConfigMap             = corev1.ConfigMap
 	Container             = corev1.Container
+	Secret                = corev1.Secret
 	Service               = corev1.Service
 	Pod                   = corev1.Pod
 	PersistentVolumeClaim = corev1.PersistentVolumeClaim
@@ -80,7 +84,7 @@ type KubeAppsRepo interface {
 type KubeBatchRepo interface {
 	// Job
 	ListJobsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Job, error)
-	CreateJob(ctx context.Context, config *rest.Config, job *Job) (*Job, error)
+	CreateJob(ctx context.Context, config *rest.Config, namespace, name string, labels, annotations map[string]string, spec *JobSpec) (*Job, error)
 	DeleteJob(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
@@ -92,19 +96,21 @@ type KubeCoreRepo interface {
 	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
-	GetPodLogs(ctx context.Context, pod Pod, config *rest.Config, namespace string) (string, error)
+	GetPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
 
 	// PersistentVolumeClaim
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
 
 	// Namespace
 	GetNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
-	CreateNamespace(ctx context.Context, config *rest.Config, ns *Namespace) (*Namespace, error)
+	CreateNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
 
 	// ConfigMap
 	GetConfigMap(ctx context.Context, config *rest.Config, namespace, name string) (*ConfigMap, error)
-	CreateConfigMap(ctx context.Context, config *rest.Config, namespace string, cm *ConfigMap) (*ConfigMap, error)
-	DeleteConfigMap(ctx context.Context, config *rest.Config, namespace, name string) error
+	CreateConfigMap(ctx context.Context, config *rest.Config, namespace, name string, data map[string]string) (*ConfigMap, error)
+
+	// Secret
+	GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*Secret, error)
 }
 
 type KubeStorageRepo interface {
@@ -125,56 +131,56 @@ func (uc *ApplicationUseCase) ListApplications(ctx context.Context, uuid, facili
 		storageClasses         []storagev1.StorageClass
 	)
 
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		v, err := uc.kubeApps.ListDeployments(ctx, config, "")
+		v, err := uc.kubeApps.ListDeployments(egctx, config, "")
 		if err == nil {
 			deployments = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeApps.ListStatefulSets(ctx, config, "")
+		v, err := uc.kubeApps.ListStatefulSets(egctx, config, "")
 		if err == nil {
 			statefulSets = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeApps.ListDaemonSets(ctx, config, "")
+		v, err := uc.kubeApps.ListDaemonSets(egctx, config, "")
 		if err == nil {
 			daemonSets = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListServices(ctx, config, "")
+		v, err := uc.kubeCore.ListServices(egctx, config, "")
 		if err == nil {
 			services = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListPods(ctx, config, "")
+		v, err := uc.kubeCore.ListPods(egctx, config, "")
 		if err == nil {
 			pods = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListPersistentVolumeClaims(ctx, config, "")
+		v, err := uc.kubeCore.ListPersistentVolumeClaims(egctx, config, "")
 		if err == nil {
 			persistentVolumeClaims = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeStorage.ListStorageClasses(ctx, config)
+		v, err := uc.kubeStorage.ListStorageClasses(egctx, config)
 		if err == nil {
 			storageClasses = v
 		}
@@ -222,14 +228,14 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		storageClasses         []storagev1.StorageClass
 	)
 
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
 
-	eg, ctx := errgroup.WithContext(ctx)
+	eg, egctx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		v, err := uc.kubeApps.GetDeployment(ctx, config, namespace, name)
+		v, err := uc.kubeApps.GetDeployment(egctx, config, namespace, name)
 		if err == nil {
 			deployment = v
 		} else if isKeyNotFoundError(err) {
@@ -238,7 +244,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeApps.GetStatefulSet(ctx, config, namespace, name)
+		v, err := uc.kubeApps.GetStatefulSet(egctx, config, namespace, name)
 		if err == nil {
 			statefulSet = v
 		} else if isKeyNotFoundError(err) {
@@ -247,7 +253,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeApps.GetDaemonSet(ctx, config, namespace, name)
+		v, err := uc.kubeApps.GetDaemonSet(egctx, config, namespace, name)
 		if err == nil {
 			daemonSet = v
 		} else if isKeyNotFoundError(err) {
@@ -256,28 +262,28 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListServices(ctx, config, namespace)
+		v, err := uc.kubeCore.ListServices(egctx, config, namespace)
 		if err == nil {
 			services = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListPods(ctx, config, namespace)
+		v, err := uc.kubeCore.ListPods(egctx, config, namespace)
 		if err == nil {
 			pods = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeCore.ListPersistentVolumeClaims(ctx, config, namespace)
+		v, err := uc.kubeCore.ListPersistentVolumeClaims(egctx, config, namespace)
 		if err == nil {
 			persistentVolumeClaims = v
 		}
 		return err
 	})
 	eg.Go(func() error {
-		v, err := uc.kubeStorage.ListStorageClasses(ctx, config)
+		v, err := uc.kubeStorage.ListStorageClasses(egctx, config)
 		if err == nil {
 			storageClasses = v
 		}
@@ -300,7 +306,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 }
 
 func (uc *ApplicationUseCase) ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error) {
-	config, err := uc.config(ctx, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
 	if err != nil {
 		return nil, err
 	}

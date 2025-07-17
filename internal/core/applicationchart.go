@@ -34,7 +34,7 @@ func (uc *ApplicationUseCase) GetChartMetadataFromApplication(ctx context.Contex
 	eg, _ := errgroup.WithContext(ctx)
 	eg.Go(func() error {
 		if releaseName, ok := app.Labels["app.otterscale.io/release-name"]; ok {
-			config, err := uc.config(ctx, uuid, facility)
+			config, err := kubeConfig(ctx, uc.facility, uuid, facility)
 			if err != nil {
 				return err
 			}

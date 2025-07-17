@@ -39,7 +39,7 @@ type Kube struct {
 }
 
 type Ceph struct {
-	RadosTimeout time.Duration `yaml:"rados_timeout"`
+	RADOSTimeout time.Duration `yaml:"rados_timeout"`
 }
 
 type Config struct {

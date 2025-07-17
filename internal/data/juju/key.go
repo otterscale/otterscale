@@ -33,7 +33,9 @@ func (r *key) Add(_ context.Context, uuid, key string) error {
 	}
 	errs := []error{}
 	for _, result := range results {
-		errs = append(errs, result.Error)
+		if result.Error != nil {
+			errs = append(errs, result.Error)
+		}
 	}
 	return errors.Join(errs...)
 }

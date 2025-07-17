@@ -35,7 +35,9 @@ func (r *machine) AddMachines(_ context.Context, uuid string, params []params.Ad
 	}
 	errs := []error{}
 	for _, result := range results {
-		errs = append(errs, result.Error)
+		if result.Error != nil {
+			errs = append(errs, result.Error)
+		}
 	}
 	return errors.Join(errs...)
 }
@@ -52,7 +54,9 @@ func (r *machine) DestroyMachines(_ context.Context, uuid string, force, keep, d
 	}
 	errs := []error{}
 	for _, result := range results {
-		errs = append(errs, result.Error)
+		if result.Error != nil {
+			errs = append(errs, result.Error)
+		}
 	}
 	return errors.Join(errs...)
 }

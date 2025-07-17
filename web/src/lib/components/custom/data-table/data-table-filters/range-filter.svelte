@@ -1,18 +1,15 @@
-<script lang="ts" generics="TData">
-	import { cn } from '$lib/utils.js';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
-	import Icon from '@iconify/svelte';
+<script lang="ts" module>
+	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input';
-
-	import { type Table } from '@tanstack/table-core';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
-
+	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Slider } from '$lib/components/ui/slider/index.js';
+	import { cn } from '$lib/utils.js';
+	import Icon from '@iconify/svelte';
+	import { type Table } from '@tanstack/table-core';
 	import { capitalizeFirstLetter } from 'better-auth';
+</script>
 
+<script lang="ts" generics="TData">
 	let { table, columnId, alias }: { table: Table<TData>; columnId: string; alias?: string } =
 		$props();
 

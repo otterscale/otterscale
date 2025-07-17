@@ -1,17 +1,17 @@
-<script lang="ts" generics="TData">
+<script lang="ts" module>
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils';
-
-	import Icon from '@iconify/svelte';
 	import * as Command from '$lib/components/ui/command/index.js';
-	import * as Popover from '$lib/components/ui/popover/index.js';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
-
-	import { type Table } from '@tanstack/table-core';
+	import * as Popover from '$lib/components/ui/popover/index.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { cn } from '$lib/utils';
+	import Icon from '@iconify/svelte';
+	import { type Table } from '@tanstack/table-core';
 	import { capitalizeFirstLetter } from 'better-auth';
+</script>
 
+<script lang="ts" generics="TData">
 	let { table, columnId, alias }: { table: Table<TData>; columnId: string; alias?: string } =
 		$props();
 
@@ -22,11 +22,9 @@
 			)
 		].sort() as string[]) ?? ([] as string[])
 	);
-
 	const filteredValues = $derived(
 		(table.getColumn(columnId)?.getFilterValue() as string[]) ?? ([] as string[])
 	);
-
 	const distinctValueCounts = $derived(
 		values.reduce(
 			(a, value) => {
