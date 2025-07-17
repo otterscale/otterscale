@@ -62,6 +62,7 @@ main() {
     enable_microk8s_option
     extend_microk8s_cert
     juju_add_k8s
+    juju_config_k8s
     create_k8s_token
 
     ## Send config to otterscale

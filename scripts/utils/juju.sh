@@ -128,7 +128,6 @@ juju_add_k8s() {
         if ! execute_non_user_cmd "$NON_ROOT_USER" "juju deploy cos-lite --trust --debug" "juju deploy cos-lite"; then
             error_exit "Failed execute juju deploy cos-lite"
         fi
-        juju_config_k8s	
     fi
 }
 
@@ -136,4 +135,6 @@ juju_config_k8s() {
     log "INFO" "Juju config prometheus" "JuJu config"
     execute_non_user_cmd "$NON_ROOT_USER" "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
     execute_non_user_cmd "$NON_ROOT_USER" "juju config prometheus maximum_retention_size=60% --debug" "update max retention size to 60%"
+    execute_non_user_cmd "$NON_ROOT_USER" "juju offer grafana:grafana-dashboard global-grafana" "juju offer grafana"
+    execute_non_user_cmd "$NON_ROOT_USER" "juju offer prometheus:receive-remote-write" "juju offer prometheus"
 }
