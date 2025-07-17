@@ -3,7 +3,7 @@
 select_bridge() {
     while true; do
         log "INFO" "Detecting available bridges..." "OS network"
-        log AVAILABLE_BRIDGES=($(brctl show 2>/dev/null | awk 'NR>1 {print $1}' | grep -v '^$'))
+        local AVAILABLE_BRIDGES=($(brctl show 2>/dev/null | awk 'NR>1 {print $1}' | grep -v '^$'))
 
         echo "Available network bridges:"
         echo "0) Create new bridge"
@@ -21,6 +21,7 @@ select_bridge() {
                 if [ $choice -le ${#AVAILABLE_BRIDGES[@]} ]; then
                     OTTERSCALE_BRIDGE_NAME=${AVAILABLE_BRIDGES[$((choice-1))]}
                     get_current_ip $OTTERSCALE_BRIDGE_NAME
+                    get_current_dns $OTTERSCALE_BRIDGE_NAME
                     return
                 fi
                 ;;
@@ -85,7 +86,7 @@ network:
     $OTTERSCALE_BRIDGE_NAME:
       link-local: []
       interfaces: [$OTTERSCALE_NETWORK_INTERFACE]
-      addresses: [$OTTERSCALE_INTERFACE_IP]
+      addresses: [$OTTERSCALE_INTERFACE_IP/$OTTERSCALE_INTERFACE_IP_MASK]
       routes:
       - to: default
         via: $OTTERSCALE_INTERFACE_GATEWAY
@@ -99,21 +100,24 @@ get_current_dns() {
     local INTERFACE=$1
     OTTERSCALE_INTERFACE_DNS=$(resolvectl -i $INTERFACE | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
     if [ -z "$OTTERSCALE_INTERFACE_DNS" ]; then
-        log "WARN" "No dns found for $INTERFACE" "OS network"
+        log "WARN" "No dns found for $INTERFACE, used 8.8.8.8 instead" "OS network"
+	OTTERSCALE_INTERFACE_DNS="8.8.8.8"
     fi
 }
 
 get_current_ip() {
     local INTERFACE=$1
-    local INTERFACE_IPS=($(ip -o -4 addr show dev "$INTERFACE" | awk '{print $4}' | cut -d'/' -f1))
+    local INTERFACE_IPS=($(ip -o -4 addr show dev "$INTERFACE" | awk '{print $4}'))
+    local INTERFACE_MASK=($(ip -o -4 addr show dev "$INTERFACE" | awk '{print $4}' | cut -d'/' -f2))
 
-    if [ ${@INTERFACE_IPS[@]} -eq 0 ]; then
+    if [ ${#INTERFACE_IPS[@]} -eq 0 ]; then
         error_exit "Network interface $INTERFACE has no IP address assigned"
 
-    elif [ ${@INTERFACE_IPS[@]} -eq 1 ]; then
-        OTTERSCALE_INTERFACE_IP=${#INTERFACE_IPS[0]}
+    elif [ ${#INTERFACE_IPS[@]} -eq 1 ]; then
+        OTTERSCALE_INTERFACE_IP=$(echo ${INTERFACE_IPS[0]} | cut -d'/' -f1)
+        OTTERSCALE_INTERFACE_IP_MASK=$(echo ${INTERFACE_IPS[0]} | cut -d'/' -f2)
 
-    elif [ ${@INTERFACE_IPS[@]} -ge 2 ]; then
+    elif [ ${#INTERFACE_IPS[@]} -ge 2 ]; then
         log "INFO" "Detect multiple IPs on network interface $INTERFACE" "OS network"
         for i in "${!INTERFACE_IPS[@]}"; do
             echo "$((i+1))) ${INTERFACE_IPS[$i]}"
@@ -122,14 +126,15 @@ get_current_ip() {
         while true; do
             read -p "Please select the IP you want to use on MAAS: " USER_IP_SELECT
             if validate_ip ${INTERFACE_IPS[$((USER_IP_SELECT-1))]}; then
-                OTTERSCALE_INTERFACE_IP=${INTERFACE_IPS[$((USER_IP_SELECT-1))]}
+                OTTERSCALE_INTERFACE_IP=$(echo ${INTERFACE_IPS[$((USER_IP_SELECT-1))]} | cut -d'/' -f1)
+		OTTERSCALE_INTERFACE_IP_MASK=$(echo ${INTERFACE_IPS[$((USER_IP_SELECT-1))]} | cut -d'/' -f2)
             else
                 log "WARN" "Invalid selection. Please try again." "OS network"
             fi
         done
     fi
 
-    log "INFO" "Using bridge $INTERFACE with IP $OTTERSCALE_INTERFACE_IP"
+    log "INFO" "Using bridge $INTERFACE with IP $OTTERSCALE_INTERFACE_IP/$OTTERSCALE_INTERFACE_IP_MASK"
 }
 
 get_current_gateway() {
@@ -149,8 +154,8 @@ create_new_bridge() {
 
     get_current_dns $OTTERSCALE_NETWORK_INTERFACE
     get_current_ip $OTTERSCALE_NETWORK_INTERFACE
-    get_OTTERSCALE_INTERFACE_GATEWAY $OTTERSCALE_NETWORK_INTERFACE
-    log "INFO" "Creating bridge $OTTERSCALE_BRIDGE_NAME with interface $OTTERSCALE_NETWORK_INTERFACE..." "OS network"
+    get_current_gateway $OTTERSCALE_NETWORK_INTERFACE
+    log "INFO" "Creating bridge $OTTERSCALE_BRIDGE_NAME with network interface $OTTERSCALE_NETWORK_INTERFACE..." "OS network"
     log "INFO" "Using existing IP: $OTTERSCALE_INTERFACE_IP, Gateway: $OTTERSCALE_INTERFACE_GATEWAY, DNS: $OTTERSCALE_INTERFACE_DNS" "OS network"
 
     create_netplan

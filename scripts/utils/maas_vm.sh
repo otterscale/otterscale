@@ -48,7 +48,7 @@ create_lxd_vm() {
         fi
         VM_HOST_ID=$(maas admin vm-hosts read | jq -r '.[0].id')
     fi
-    log "INFO" "LXD VM host created successfully (ID: $VM_HOST_ID)" "MAAS lxd create"
+    log "INFO" "LXD VM host (ID: $VM_HOST_ID) is ready" "MAAS lxd create"
 }
 
 rename_machine() {

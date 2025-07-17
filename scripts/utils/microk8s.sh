@@ -1,21 +1,21 @@
 #!/bin/bash
 
 update_microk8s_config() {
-    KUBE_FOLDER="/home/NON_ROOT_USER/.kube"
+    KUBE_FOLDER="/home/$NON_ROOT_USER/.kube"
 
     ## Add user group
-    log "INFO" "Add NON_ROOT_USER to group microk8s" "MicroK8S config"
-    usermod -aG microk8s "NON_ROOT_USER"
+    log "INFO" "Add $NON_ROOT_USER to group microk8s" "MicroK8S config"
+    usermod -aG microk8s "$NON_ROOT_USER"
 
     ## Create folder
     if [ ! -d "$KUBE_FOLDER" ]; then
         mkdir -p "$KUBE_FOLDER"
     fi
-    chown "NON_ROOT_USER":"NON_ROOT_USER" "$KUBE_FOLDER"
+    chown "$NON_ROOT_USER":"$NON_ROOT_USER" "$KUBE_FOLDER"
 
     ## Update calico-node env
     log "INFO" "Update microk8s calico daemonset environment IP_AUTODETECTION_METHOD to $OTTERSCALE_BRIDGE_NAME" "MicroK8S config"
-    if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$OTTERSCALE_BRIDGE_NAME"; then
+    if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$OTTERSCALE_BRIDGE_NAME" >> "$TEMP_LOG" 2>&1; then
         error_exit "Failed update microk8s calico env IP_AUTODETECTION_METHOD"
     fi
 }
@@ -25,14 +25,14 @@ enable_microk8s_option() {
     if microk8s status --wait-ready >/dev/null 2>&1; then
         log "INFO" "microk8s is ready." "MicroK8S config"
         microk8s config > "$KUBE_FOLDER/config"
-        chown "NON_ROOT_USER":"NON_ROOT_USER" "$KUBE_FOLDER/config"
+        chown "$NON_ROOT_USER":"$NON_ROOT_USER" "$KUBE_FOLDER/config"
 
         log "INFO" "Enable microk8s dns" "MicroK8S config"
-        microk8s enable dns >>"$TEMP_LOG" 2>&1;
+        microk8s enable dns >>"$TEMP_LOG" 2>&1
         log "INFO" "Enable microk8s hostpath-storage" "MicroK8S config"
-        microk8s enable hostpath-storage >>"$TEMP_LOG" 2>&1;
+        microk8s enable hostpath-storage >>"$TEMP_LOG" 2>&1
         log "INFO" "Enable microk8s metallb" "MicroK8S config"
-	    microk8s enable metallb:$IPADDR-$IPADDR >>"$TEMP_LOG" 2>&1;
+        microk8s enable metallb:$IPADDR-$IPADDR >>"$TEMP_LOG" 2>&1
     fi
 }
 
@@ -113,23 +113,25 @@ apply_yaml() {
 }
 
 create_k8s_token() {
-    export SA_PATH=$OTTERSCALE_INSTALL_DIR/otters_sa.yaml
-    export RBAC_PATH=$OTTERSCALE_INSTALL_DIR/otters_rbac.yaml
-    export SECRET_PATH=$OTTERSCALE_INSTALL_DIR/otter_secret.yaml
+    if ! microk8s kubectl get secret otters-secret -n kube-system >/dev/null 2>&1; then
+        export SA_PATH=$OTTERSCALE_INSTALL_DIR/otters_sa.yaml
+        export RBAC_PATH=$OTTERSCALE_INSTALL_DIR/otters_rbac.yaml
+        export SECRET_PATH=$OTTERSCALE_INSTALL_DIR/otter_secret.yaml
 
-    log "INFO" "Gererate service account" "MicroK8S create token"
-    generate_sa_yaml
-    apply_yaml $SA_PATH
+        log "INFO" "Gererate service account" "MicroK8S create token"
+        generate_sa_yaml
+        apply_yaml $SA_PATH
 
-    log "INFO" "Gererate cluster role binding" "MicroK8S create token"
-    generate_rbac_yaml
-    apply_yaml $RBAC_PATH
+        log "INFO" "Gererate cluster role binding" "MicroK8S create token"
+        generate_rbac_yaml
+        apply_yaml $RBAC_PATH
 
-    log "INFO" "Gererate secret" "MicroK8S create token"
-    generate_secret_yaml
-    apply_yaml $SECRET_PATH
+        log "INFO" "Gererate secret" "MicroK8S create token"
+        generate_secret_yaml
+        apply_yaml $SECRET_PATH
 
-    unset SA_PATH
-    unset RBAC_PATH
-    unset SECRET_PATH
+        unset SA_PATH
+        unset RBAC_PATH
+        unset SECRET_PATH
+    fi
 }

@@ -14,7 +14,7 @@ error_exit() {
     log "ERROR" "$MESSAGE" "ERROR"
     if [ -s "$TEMP_LOG" ]; then
         log "DEBUG" "Full error output:" "ERROR"
-        cat "$TEMP_LOG" | while read line; do log "DEBUG" "$line"; done
+        cat "$TEMP_LOG" | while read line; do log "DEBUG" "$line" "ERROR"; done
     fi
     trap cleanup EXIT
     exit 1

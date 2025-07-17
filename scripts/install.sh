@@ -55,20 +55,13 @@ main() {
     ## Bootstrap
     set_juju_config
     bootstrap_juju
-
-    ## Create default model
     create_scope
 
     ## Config microk8s
     update_microk8s_config
     enable_microk8s_option
     extend_microk8s_cert
-
-    ## Add juju-k8s
     juju_add_k8s
-    juju_config_k8s
-
-    ## Create cluster token
     create_k8s_token
 
     ## Send config to otterscale

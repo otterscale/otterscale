@@ -2,7 +2,7 @@
 
 update_boot_source(){
     # Existing source found - modify it
-    MAAS_BOOT_SOURCE_ID=$(echo "$sources" | jq -r '.[0].id')
+    MAAS_BOOT_SOURCE_ID=$(echo "$MAAS_BOOT_SOURCES" | jq -r '.[0].id')
     MAAS_BOOT_SELECTION_ID=$(maas admin boot-source-selections read $MAAS_BOOT_SOURCE_ID | jq -r '.[0].id')
     log "INFO" "Modifying existing boot source (ID: $MAAS_BOOT_SOURCE_ID)" "MAAS boot image"
 
@@ -50,7 +50,7 @@ create_boot_source() {
 }
 
 start_import() {
-    log "INFO" "Starting image download..." "MAAS boot image"
+    log "INFO" "Starting download MAAS boot image..." "MAAS boot image"
     maas admin boot-resources stop-import >>"$TEMP_LOG" 2>&1
     sleep 10
 
@@ -72,7 +72,7 @@ start_import() {
 download_maas_img() {
     log "INFO" "Configuring MAAS boot sources..." "MAAS boot image"
 
-    local MAAS_BOOT_SOURCES=$(maas admin boot-sources read)
+    MAAS_BOOT_SOURCES=$(maas admin boot-sources read)
     MAAS_BOOT_SOURCE_COUNT=$(echo "$MAAS_BOOT_SOURCES" | jq '. | length')
     if [ "$MAAS_BOOT_SOURCE_COUNT" -gt 0 ]; then
         update_boot_source
