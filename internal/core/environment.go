@@ -2,16 +2,23 @@ package core
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
-	"regexp"
 	"slices"
 	"sync"
 
 	"connectrpc.com/connect"
-	"github.com/juju/juju/api/client/application"
 
 	"github.com/openhdc/otterscale/internal/config"
 )
+
+const traefikShowAction = "show-proxied-endpoints"
+
+type traefikProxiedEndpoints struct {
+	Prometheus struct {
+		URL string `json:"url"`
+	} `json:"prometheus/0"`
+}
 
 type EnvironmentStatus struct {
 	Phase   string
@@ -20,17 +27,23 @@ type EnvironmentStatus struct {
 
 type EnvironmentUseCase struct {
 	scope    ScopeRepo
+	action   ActionRepo
 	facility FacilityRepo
+
+	prometheusEndpoint string
+	prometheusBaseURL  string
 
 	conf      *config.Config
 	statusMap sync.Map
 }
 
-func NewEnvironmentUseCase(scope ScopeRepo, facility FacilityRepo, conf *config.Config) *EnvironmentUseCase {
+func NewEnvironmentUseCase(scope ScopeRepo, action ActionRepo, facility FacilityRepo, conf *config.Config) *EnvironmentUseCase {
 	return &EnvironmentUseCase{
-		scope:    scope,
-		facility: facility,
-		conf:     conf,
+		scope:             scope,
+		action:            action,
+		facility:          facility,
+		conf:              conf,
+		prometheusBaseURL: "/api/v1",
 	}
 }
 
@@ -70,6 +83,10 @@ func (uc *EnvironmentUseCase) UpdateConfigHelmRepos(ctx context.Context, urls []
 }
 
 func (uc *EnvironmentUseCase) GetPrometheusInfo(ctx context.Context) (endpoint, baseURL string, err error) {
+	if uc.prometheusEndpoint != "" {
+		return uc.prometheusEndpoint, uc.prometheusBaseURL, nil
+	}
+
 	scopes, err := uc.scope.List(ctx)
 	if err != nil {
 		return "", "", err
@@ -81,38 +98,20 @@ func (uc *EnvironmentUseCase) GetPrometheusInfo(ctx context.Context) (endpoint, 
 	})
 
 	for i := range scopes {
-		leader, err := uc.facility.GetLeader(ctx, scopes[i].UUID, "prometheus")
+		leader, err := uc.facility.GetLeader(ctx, scopes[i].UUID, "traefik")
 		if err != nil {
-			return "", "", err
-		}
-		unitInfo, err := uc.facility.GetUnitInfo(ctx, scopes[i].UUID, leader)
-		if err != nil {
-			return "", "", err
-		}
-		endpoint, _ := extractPrometheusIngress(unitInfo)
-		if endpoint != "" {
-			return endpoint, "/api/v1", nil
-		}
-	}
-	return "", "", connect.NewError(connect.CodeNotFound, errors.New("prometheus info not found"))
-}
-
-func extractPrometheusIngress(unitInfo *application.UnitInfo) (string, error) {
-	for _, erd := range unitInfo.RelationData {
-		ingress, ok := erd.ApplicationData["ingress"]
-		if !ok || ingress == nil {
 			continue
 		}
-		val, ok := ingress.(string)
-		if !ok {
-			return "", errors.New("prometheus ingress value is not a string")
+		result, err := runAction(ctx, uc.action, scopes[i].UUID, leader, traefikShowAction, nil)
+		if err != nil {
+			continue
 		}
-		re := regexp.MustCompile(`url: (.*)`)
-		matches := re.FindStringSubmatch(val)
-		if len(matches) < 2 {
-			return "", errors.New("prometheus ingress url not found")
+		var endpoints traefikProxiedEndpoints
+		if err := json.Unmarshal([]byte(result.Output["proxied-endpoints"].(string)), &endpoints); err != nil {
+			continue
 		}
-		return matches[1], nil
+		uc.prometheusEndpoint = endpoints.Prometheus.URL
+		return uc.prometheusEndpoint, uc.prometheusBaseURL, nil
 	}
-	return "", errors.New("prometheus ingress not found")
+	return "", "", connect.NewError(connect.CodeNotFound, errors.New("prometheus info not found"))
 }
