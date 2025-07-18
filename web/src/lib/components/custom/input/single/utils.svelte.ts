@@ -36,13 +36,15 @@ type InputValidatorResponse = {
     errors: z.ZodIssue[]
 }
 class InputValidator {
-    schema: ZodFirstPartySchemaTypes
+    schema: ZodFirstPartySchemaTypes | undefined
 
-    constructor(schema: ZodFirstPartySchemaTypes) {
+    constructor(schema: ZodFirstPartySchemaTypes | undefined) {
         this.schema = schema
     }
 
     validate(input: any) {
+        if (!this.schema) { return { isValid: true, errors: undefined } }
+
         const result = this.schema.safeParse(input)
         if (result.success) return { isValid: true, errors: [] } as InputValidatorResponse
         return { isValid: false, errors: result.error.errors } as InputValidatorResponse

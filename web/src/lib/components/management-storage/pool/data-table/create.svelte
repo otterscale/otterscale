@@ -74,6 +74,8 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let invalid: boolean | undefined = $state();
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -87,16 +89,16 @@
 	</div>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Create Pool</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.poolName} />
+					<SingleInput.General id="name" required type="text" bind:value={request.poolName} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Type</Form.Label>
-					<SingleSelect.Root required options={poolTypes} bind:value={request.poolType}>
+					<SingleSelect.Root id="type" required options={poolTypes} bind:value={request.poolType}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
@@ -190,7 +192,18 @@
 
 				<Form.Field>
 					<Form.Label>Bytes</Form.Label>
-					<SingleInput.BigInteger bind:value={request.quotaBytes} />
+					<SingleInput.Measurement
+						bind:value={request.quotaBytes}
+						transformer={(value) => String(value)}
+						units={[
+							{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+						]}
+					/>
 				</Form.Field>
 				<Form.Help>
 					{QUOTAS_BYTES_HELP_TEXT}
@@ -209,6 +222,7 @@
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						storageClient
 							.createPool(request)

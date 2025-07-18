@@ -120,8 +120,7 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="dataPool" {table} />
-			<PointFilter columnId="mode" {table} />
+			<PointFilter columnId="mode" {table} values={$data.map((row) => row.mode)} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

@@ -95,7 +95,21 @@
  -->
 
 <script lang="ts" module>
-	import * as Loading from '$lib/components/custom/loading';
+	import { Single as Input } from '$lib/components/custom/input';
+	import type { UnitType } from '$lib/components/custom/input/single';
+
+	let value = $state(0);
 </script>
 
-<Loading.Report />
+{value}
+<Input.Measurement
+	bind:value
+	units={[
+		{ value: Math.pow(2, 10 * 0), label: 'B' } as UnitType,
+		{ value: Math.pow(2, 10 * 1), label: 'KB' } as UnitType,
+		{ value: Math.pow(2, 10 * 2), label: 'MB' } as UnitType,
+		{ value: Math.pow(2, 10 * 3), label: 'GB' } as UnitType,
+		{ value: Math.pow(2, 10 * 4), label: 'TB' } as UnitType,
+		{ value: Math.pow(2, 10 * 5), label: 'PB' } as UnitType
+	]}
+/>

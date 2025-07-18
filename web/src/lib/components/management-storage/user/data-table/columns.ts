@@ -3,6 +3,8 @@ import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { array } from 'zod';
+import { range } from 'd3-array';
 
 const columns: ColumnDef<User>[] = [
     {
@@ -43,6 +45,26 @@ const columns: ColumnDef<User>[] = [
             return renderSnippet(cells.suspended, row);
         },
         filterFn: 'equals',
+    },
+    {
+        id: "keys",
+        filterFn: (row, columnId, filterValues: Record<number, number> | undefined) => {
+            if (!filterValues) {
+                return true
+            }
+
+            if (Object.values(filterValues).length != 2) {
+                throw `invalid filter range for ${columnId}`
+            }
+
+            const keys = Object.keys(row.original.keys ?? []).length;
+            const range = Object.values(filterValues)
+            range.sort()
+            const [minimum, maximum] = range;
+
+            return minimum <= keys && keys <= maximum;
+        }
+
     },
 ];
 

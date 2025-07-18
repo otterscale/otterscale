@@ -23,7 +23,7 @@
 {#if isInvalid && errors}
 	<div
 		bind:this={ref}
-		data-slot="input-required"
+		data-slot="input-errors"
 		class={cn('animate-in fade-in text-destructive flex items-center gap-2', className)}
 		{...restProps}
 	>

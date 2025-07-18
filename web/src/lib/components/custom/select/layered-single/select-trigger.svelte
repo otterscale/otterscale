@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { FormValidator } from '$lib/components/custom/form';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
@@ -18,8 +19,14 @@
 	}: DropdownMenuPrimitive.TriggerProps & {} = $props();
 
 	const optionManager: OptionManager = getContext('OptionManager');
-	const required: Boolean = getContext('required');
-	const isNull = $derived(required && !optionManager.selectedAncestralOption);
+	const required: boolean | undefined = getContext('required');
+	const id: string | undefined = getContext('id');
+	const isNotFilled = $derived(required && !optionManager.selectedAncestralOption);
+
+	const formValidator: FormValidator = getContext('FormValidator');
+	$effect(() => {
+		formValidator.set(id, isNotFilled);
+	});
 </script>
 
 <DropdownMenu.Trigger
@@ -28,7 +35,7 @@
 	class={cn(
 		'cursor-pointer',
 		buttonVariants({ variant: 'outline' }),
-		required && isNull ? 'ring-destructive ring-1' : 'ring-1'
+		required && isNotFilled ? 'ring-destructive ring-1' : 'ring-1'
 	)}
 	{...restProps}
 >
@@ -45,7 +52,7 @@
 			/>
 			{option.label}
 		{/each}
-	{:else if required && isNull}
+	{:else if required && isNotFilled}
 		<p class=" text-destructive text-xs">Required</p>
 	{:else}
 		Select

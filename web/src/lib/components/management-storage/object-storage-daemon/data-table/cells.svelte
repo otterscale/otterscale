@@ -11,6 +11,7 @@
 		_row_picker: _row_picker,
 		id: id,
 		name: name,
+		state: state,
 		stateUp: stateUp,
 		stateIn: stateIn,
 		exists: exists,
@@ -33,6 +34,17 @@
 	{row.original.name}
 {/snippet}
 
+{#snippet state(row: Row<OSD>)}
+	<div class="flex items-center gap-1">
+		{#if row.original.in}
+			<Badge variant="outline">in</Badge>
+		{/if}
+		{#if row.original.up}
+			<Badge variant="outline">up</Badge>
+		{/if}
+	</div>
+{/snippet}
+
 {#snippet stateUp(row: Row<OSD>)}
 	<Badge variant="outline">
 		{row.original.up}
@@ -46,9 +58,11 @@
 {/snippet}
 
 {#snippet exists(row: Row<OSD>)}
-	<Badge variant="outline">
-		{row.original.exists}
-	</Badge>
+	{#if !row.original.exists}
+		<Icon icon="ph:x" class="text-destructive" />
+	{:else}
+		<Icon icon="ph:circle" class="text-primary" />
+	{/if}
 {/snippet}
 
 {#snippet machine(row: Row<OSD>)}

@@ -21,9 +21,9 @@
 {/snippet}
 
 {#snippet leader(row: Row<MON>)}
-	<Badge variant="outline">
-		{row.original.leader}
-	</Badge>
+	{#if row.original.leader}
+		<Icon icon="ph:circle" class="text-primary" />
+	{/if}
 {/snippet}
 
 {#snippet name(row: Row<MON>)}

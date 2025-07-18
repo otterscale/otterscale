@@ -46,8 +46,11 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet createTime(row: Column<Bucket>)}
+{#snippet createTime(column: Column<Bucket>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}

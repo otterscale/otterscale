@@ -21,7 +21,6 @@
 		selectedFacility,
 		data = $bindable()
 	}: { selectedScope: string; selectedFacility: string; data: Writable<User[]> } = $props();
-
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
 		facilityName: selectedFacility,
@@ -36,6 +35,8 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let idRef = $state(null);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>

@@ -5,9 +5,10 @@ type OptionType = {
     information?: string;
     enabled?: boolean;
 };
-type valueSetterType = (value: any) => void;
-type valueGetterType = () => any;
 
-export type {
-    OptionType, valueGetterType, valueSetterType
-};
+type AccessorType = {
+    value: any
+}
+
+export type { AccessorType, OptionType };
+

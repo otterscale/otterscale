@@ -8,6 +8,7 @@
 	export const headers = {
 		_row_picker: _row_picker,
 		name: name,
+		type: type,
 		applications: applications,
 		placement_group_state: placement_group_state,
 		usage: usage,
@@ -26,6 +27,15 @@
 {#snippet name(column: Column<Pool>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet type(column: Column<Pool>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>TYPE</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

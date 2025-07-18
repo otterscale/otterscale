@@ -1,13 +1,16 @@
 <script lang="ts" module>
-	import type { Pool } from '$gen/api/storage/v1/storage_pb';
+	import { PoolType, type Pool } from '$gen/api/storage/v1/storage_pb';
 	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
+	import { cn } from '$lib/utils';
 	import type { Row } from '@tanstack/table-core';
+	import { getPlacementGroupStateVariant } from './utils.svelte';
 
 	export const cells = {
 		_row_picker: _row_picker,
 		name: name,
+		type: type,
 		applications: applications,
 		placement_group_state: placement_group_state,
 		usage: usage
@@ -22,6 +25,16 @@
 	{row.original.name}
 {/snippet}
 
+{#snippet type(row: Row<Pool>)}
+	<Badge variant="outline">
+		{#if row.original.poolType == PoolType.ERASURE}
+			ERASURE
+		{:else if row.original.poolType == PoolType.REPLICATED}
+			REPLICATED
+		{:else}{/if}
+	</Badge>
+{/snippet}
+
 {#snippet applications(row: Row<Pool>)}
 	{#each row.original.applications as application}
 		{#if application}
@@ -34,7 +47,7 @@
 
 {#snippet placement_group_state(row: Row<Pool>)}
 	{#each Object.entries(row.original.placementGroupState) as [state, number]}
-		<Badge variant="outline">
+		<Badge variant={getPlacementGroupStateVariant(state)}>
 			{state}:{number}
 		</Badge>
 	{/each}

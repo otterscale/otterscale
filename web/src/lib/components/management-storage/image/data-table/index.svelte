@@ -115,7 +115,12 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="poolName" {table} />
+			<PointFilter
+				columnId="poolName"
+				alias="Pool Name"
+				{table}
+				values={$data.map((row) => row.poolName)}
+			/>
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

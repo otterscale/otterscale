@@ -34,7 +34,8 @@
 		scopeUuid: selectedScope,
 		facilityName: selectedFacility,
 		volumeName: selectedVolume,
-		groupName: selectedSubvolumeGroup
+		groupName: selectedSubvolumeGroup,
+		export: true
 	} as CreateSubvolumeRequest;
 
 	let request = $state(DEFAULT_REQUEST);
@@ -72,19 +73,30 @@
 			<Form.Fieldset>
 				<Form.Legend>Quotas</Form.Legend>
 				<Form.Field>
-					<SingleInput.BigInteger bind:value={request.quotaBytes} />
+					<SingleInput.Measurement
+						bind:value={request.quotaBytes}
+						transformer={(value) => String(value)}
+						units={[
+							{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+							{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+						]}
+					/>
 				</Form.Field>
 				<Form.Help>
 					{SUBVOLUME_QUOTA_HELP_TEXT}
 				</Form.Help>
 			</Form.Fieldset>
 
-			<Form.Fieldset>
+			<!-- <Form.Fieldset>
 				<Form.Legend>Export</Form.Legend>
 				<Form.Field>
 					<SingleInput.Boolean bind:value={request.export} />
 				</Form.Field>
-			</Form.Fieldset>
+			</Form.Fieldset> -->
 		</Form.Root>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>

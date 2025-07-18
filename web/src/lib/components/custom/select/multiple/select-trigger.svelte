@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { FormValidator } from '$lib/components/custom/form';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card';
@@ -26,8 +27,14 @@
 	} = $props();
 
 	const optionManager: OptionManager = getContext('OptionManager');
-	const required: Boolean = getContext('required');
-	const isNull = $derived(required && !optionManager.isSomeOptionsSelected);
+	const required: Boolean | undefined = getContext('required');
+	const id: string | undefined = getContext('id');
+	const isNotFilled = $derived(required && !optionManager.isSomeOptionsSelected);
+
+	const formValidator: FormValidator = getContext('FormValidator');
+	$effect(() => {
+		formValidator.set(id, isNotFilled);
+	});
 </script>
 
 <Popover.Trigger
@@ -36,14 +43,14 @@
 	class={cn(
 		'w-full cursor-pointer',
 		buttonVariants({ variant: variant }),
-		required && isNull ? 'ring-destructive ring-1' : 'ring-1',
+		required && isNotFilled ? 'ring-destructive ring-1' : 'ring-1',
 		className
 	)}
 	{...restProps}
 >
 	{#if children}
 		{@render children?.()}
-	{:else if required && isNull}
+	{:else if required && isNotFilled}
 		<p class=" text-destructive text-xs">Required</p>
 	{:else if optionManager.isSomeOptionsSelected}
 		<p>Select</p>

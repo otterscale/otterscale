@@ -108,7 +108,12 @@
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
 			<FuzzyFilter columnId="publicAddress" alias="Address" {table} />
-			<BooleanyFilter columnId="leader" {table} />
+			<BooleanyFilter
+				{table}
+				values={$data.map((row) => row.leader)}
+				columnId="leader"
+				descriptor={(value) => (value ? 'Leading' : 'Not Leading')}
+			/>
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>

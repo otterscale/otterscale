@@ -10,18 +10,27 @@
 </script>
 
 <script lang="ts" generics="TData">
-	let { table, columnId, alias }: { table: Table<TData>; columnId: string; alias?: string } =
-		$props();
+	let {
+		table,
+		columnId,
+		alias,
+		values,
+		descriptor = (v: any) => v
+	}: {
+		table: Table<TData>;
+		columnId: string;
+		alias?: string;
+		values: boolean[];
+		descriptor?: (v: any) => string;
+	} = $props();
 
 	let selectedValue: boolean | undefined = $state(undefined);
 
-	const values = [false, true];
+	const options = [false, true];
 	const distinctValueCounts = $derived(
-		values.reduce(
-			(a, value) => {
-				a[String(value)] = table
-					.getCoreRowModel()
-					.rows.filter((row) => row.getValue(columnId) === value).length;
+		options.reduce(
+			(a, option) => {
+				a[String(option)] = values.filter((value) => value === option).length;
 				return a;
 			},
 			{} as Record<string, number>
@@ -37,31 +46,33 @@
 				{alias ?? capitalizeFirstLetter(columnId)}
 			</span>
 			{#if selectedValue !== undefined}
-				<Badge variant="outline">{selectedValue}</Badge>
+				<Badge variant="outline">{descriptor(selectedValue)}</Badge>
 			{/if}
 		</Button>
 	</Popover.Trigger>
-	<Popover.Content class="w-fit p-0">
+	<Popover.Content class="w-[300px] p-0">
 		<Command.Root>
 			<Command.List>
 				<Command.Group>
-					{#each values as value}
+					{#each options as option}
 						<Command.Item
-							value={String(value)}
+							value={String(option)}
 							onclick={() => {
-								selectedValue = value;
-								table.getColumn(columnId)?.setFilterValue(value);
+								selectedValue = option;
+								table.getColumn(columnId)?.setFilterValue(option);
 							}}
 							class="borderr flex w-full items-center justify-between text-xs hover:cursor-pointer"
 						>
-							<div class="flex w-full items-center gap-1 text-xs">
-								<Icon
-									icon={selectedValue === value ? 'ph:check' : 'ph:funnel-simple'}
-									class={cn('h-4 w-4')}
-								/>
-								{capitalizeFirstLetter(String(value))}
+							<div class="flex w-full items-center gap-4 text-xs">
+								<div class="flex w-full items-center gap-1 text-xs">
+									<Icon
+										icon={selectedValue === option ? 'ph:check' : 'ph:funnel-simple'}
+										class={cn('h-4 w-4')}
+									/>
+									{capitalizeFirstLetter(String(descriptor(option)))}
+								</div>
 								<p class="text-muted-foreground ml-auto font-mono">
-									{distinctValueCounts[String(value)]}
+									{distinctValueCounts[String(option)]}
 								</p>
 							</div>
 						</Command.Item>

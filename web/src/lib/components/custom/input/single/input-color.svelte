@@ -6,20 +6,12 @@
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { z, type ZodFirstPartySchemaTypes } from 'zod';
+	import { BORDER_INPUT_CLASSNAME, typeToIcon } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import InputValidation from './input-validation.svelte';
-	import {
-		BORDER_INPUT_CLASSNAME,
-		InputValidator,
-		RING_INVALID_INPUT_CLASSNAME,
-		RING_VALID_INPUT_CLASSNAME,
-		typeToIcon,
-		UNFOCUS_INPUT_CLASSNAME
-	} from './utils.svelte';
-
 	let {
+		id,
 		ref = $bindable(null),
 		value = $bindable(),
 		schema = z.string().regex(/^#[0-9a-fA-F]{6}$/),
@@ -28,20 +20,9 @@
 	}: WithElementRef<Exclude<HTMLInputAttributes, 'type'>> & { type?: 'color' } & {
 		schema?: ZodFirstPartySchemaTypes;
 	} = $props();
-
-	const validator = new InputValidator(schema);
-	const validation = $derived(validator.validate(value));
-	const isInvalid = $derived(value && !validation.isValid);
 </script>
 
-<div
-	class={cn(
-		BORDER_INPUT_CLASSNAME,
-		isInvalid ? RING_INVALID_INPUT_CLASSNAME : RING_VALID_INPUT_CLASSNAME,
-		'h-10 justify-between',
-		className
-	)}
->
+<div class={cn(BORDER_INPUT_CLASSNAME, 'h-10 justify-between ring-1', className)}>
 	<span class="flex items-center gap-2">
 		<span class="pl-3">
 			<Icon icon={typeToIcon['color']} />
@@ -52,13 +33,9 @@
 	<Input
 		bind:ref
 		data-slot="input-color"
-		class={cn(UNFOCUS_INPUT_CLASSNAME, 'mr-3 aspect-square h-7 w-fit cursor-pointer p-0')}
+		class="mr-3 aspect-square h-7 w-fit cursor-pointer border-none p-0 shadow-none"
 		type="color"
 		bind:value
 		{...restProps}
 	/>
-</div>
-
-<div class="transition-all duration-500">
-	<InputValidation {isInvalid} errors={validation.errors} />
 </div>

@@ -1,14 +1,12 @@
-import type { OptionType, valueGetterType, valueSetterType } from './types';
+import type { AccessorType, OptionType } from './types';
 
 class OptionManager {
     options = $state([] as OptionType[]);
-    valueSetter: valueSetterType;
-    valueGetter: valueGetterType;
+    accessor: AccessorType
 
-    constructor(options: OptionType[], valueSetter: valueSetterType, valueGetter: valueGetterType) {
+    constructor(options: OptionType[], accessor: AccessorType) {
         this.options = options;
-        this.valueSetter = valueSetter
-        this.valueGetter = valueGetter
+        this.accessor = accessor
     }
 
     updateOptions(newOptions: OptionType[]) {
@@ -16,15 +14,15 @@ class OptionManager {
     }
 
     get selectedOption(): OptionType {
-        return this.options.find((option) => (JSON.stringify(option.value) === JSON.stringify(this.valueGetter()))) ?? {} as OptionType
+        return this.options.find((option) => (JSON.stringify(option.value) === JSON.stringify(this.accessor.value))) ?? {} as OptionType
     }
 
     isOptionSelected(option: OptionType): boolean {
-        return JSON.stringify(option.value) === JSON.stringify(this.valueGetter())
+        return JSON.stringify(option.value) === JSON.stringify(this.accessor.value)
     }
 
     handleSelect(option: OptionType) {
-        this.valueSetter(option.value);
+        this.accessor.value = option.value;
     }
 }
 

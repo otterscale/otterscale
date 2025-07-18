@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import type { Pool } from '$gen/api/storage/v1/storage_pb';
+	import { PoolType, type Pool } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
+	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import MapPointFilter from '$lib/components/custom/data-table/data-table-filters/map-point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
@@ -117,9 +118,24 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<FuzzyFilter columnId="name" {table} />
-			<ArrayPointFilter columnId="applications" {table} />
-			<MapPointFilter columnId="placementGroupState" alias="State" {table} />
+			<FuzzyFilter {table} columnId="name" />
+			<PointFilter
+				{table}
+				columnId="poolType"
+				alias="Type"
+				values={$data.map((row) => row.poolType)}
+				descriptor={(value) => {
+					if (value === PoolType.ERASURE) {
+						return 'ERASURE';
+					} else if (value === PoolType.REPLICATED) {
+						return 'REPLICATED';
+					} else {
+						return 'UNSPECIFIED';
+					}
+				}}
+			/>
+			<ArrayPointFilter {table} columnId="applications" />
+			<MapPointFilter {table} columnId="placementGroupState" alias="State" />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

@@ -217,180 +217,6 @@
 			<Sidebar.GroupLabel>Platform</Sidebar.GroupLabel>
 
 			<Sidebar.Menu>
-				<Sidebar.MenuItem>
-					<Sidebar.MenuButton>
-						{#snippet child({ props })}
-							<a href="/management/llm" {...props}>
-								<Icon icon="ph:robot" />
-								{m.model()}
-							</a>
-						{/snippet}
-					</Sidebar.MenuButton>
-				</Sidebar.MenuItem>
-
-				<Sidebar.MenuItem>
-					<Sidebar.MenuButton>
-						{#snippet child({ props })}
-							<a href="/market" {...props}>
-								<Icon icon="ph:magnifying-glass" />
-								{m.store()}
-							</a>
-						{/snippet}
-					</Sidebar.MenuButton>
-				</Sidebar.MenuItem>
-
-				<Collapsible.Root class="group/main-collapsible">
-					{#snippet child({ props })}
-						<Sidebar.MenuItem {...props}>
-							<Collapsible.Trigger>
-								{#snippet child({ props })}
-									<Sidebar.MenuButton {...props}>
-										<Icon icon="ph:hard-drives" />
-										Storage
-										<Icon
-											icon="ph:caret-right"
-											class="ml-auto transition-transform duration-200 group-data-[state=open]/main-collapsible:rotate-90"
-										/>
-									</Sidebar.MenuButton>
-								{/snippet}
-							</Collapsible.Trigger>
-							<Collapsible.Content>
-								<Sidebar.MenuSub class="mr-0 pr-0">
-									<Collapsible.Root class="group/sub-collapsible">
-										<Collapsible.Trigger
-											>{#snippet child({ props })}
-												<Sidebar.MenuButton {...props}>
-													<Icon icon="ph:cube" />
-													Cluster
-													<Icon
-														icon="ph:caret-right"
-														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
-													/>
-												</Sidebar.MenuButton>
-											{/snippet}
-										</Collapsible.Trigger>
-										<Collapsible.Content>
-											<Sidebar.MenuSub>
-												<Sidebar.MenuSubItem>
-													<Sidebar.MenuSubButton>
-														{#snippet child({ props })}
-															<a href="/management/storage/cluster_monitor" {...props}>Monitor</a>
-														{/snippet}
-													</Sidebar.MenuSubButton>
-												</Sidebar.MenuSubItem>
-												<Sidebar.MenuSubItem>
-													<Sidebar.MenuSubButton>
-														{#snippet child({ props })}
-															<a href="/management/storage/cluster_pool" {...props}>Pool</a>
-														{/snippet}
-													</Sidebar.MenuSubButton>
-												</Sidebar.MenuSubItem>
-												<Sidebar.MenuSubItem>
-													<Sidebar.MenuSubButton>
-														{#snippet child({ props })}
-															<a
-																href="/management/storage/cluster_object_storage_daemon"
-																{...props}
-															>
-																OSD
-															</a>
-														{/snippet}
-													</Sidebar.MenuSubButton>
-												</Sidebar.MenuSubItem>
-											</Sidebar.MenuSub>
-										</Collapsible.Content>
-									</Collapsible.Root>
-
-									<Collapsible.Root class="group/sub-collapsible">
-										<Collapsible.Trigger>
-											{#snippet child({ props })}
-												<Sidebar.MenuButton {...props}>
-													<Icon icon="ph:cube" />
-													Block
-													<Icon
-														icon="ph:caret-right"
-														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
-													/>
-												</Sidebar.MenuButton>
-											{/snippet}
-										</Collapsible.Trigger>
-										<Collapsible.Content>
-											<Sidebar.MenuSub>
-												<Sidebar.MenuSubItem>
-													<Sidebar.MenuSubButton>
-														{#snippet child({ props })}
-															<a href="/management/storage/block" {...props}>Image</a>
-														{/snippet}
-													</Sidebar.MenuSubButton>
-												</Sidebar.MenuSubItem>
-											</Sidebar.MenuSub>
-										</Collapsible.Content>
-									</Collapsible.Root>
-
-									<Collapsible.Root class="group/sub-collapsible">
-										<Collapsible.Trigger
-											>{#snippet child({ props })}
-												<Sidebar.MenuButton {...props}>
-													<Icon icon="ph:cube" />
-													File
-													<Icon
-														icon="ph:caret-right"
-														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
-													/>
-												</Sidebar.MenuButton>
-											{/snippet}
-										</Collapsible.Trigger>
-										<Collapsible.Content>
-											<Sidebar.MenuSub>
-												<Sidebar.MenuSubItem>
-													<Sidebar.MenuSubButton>
-														{#snippet child({ props })}
-															<a href="/management/storage/file_system" {...props}>File System</a>
-														{/snippet}
-													</Sidebar.MenuSubButton>
-												</Sidebar.MenuSubItem>
-											</Sidebar.MenuSub>
-										</Collapsible.Content>
-									</Collapsible.Root>
-
-									<Collapsible.Root class="group/sub-collapsible">
-										<Collapsible.Trigger>
-											{#snippet child({ props })}
-												<Sidebar.MenuButton {...props}>
-													<Icon icon="ph:cube" />
-													Object
-													<Icon
-														icon="ph:caret-right"
-														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
-													/>
-												</Sidebar.MenuButton>
-											{/snippet}
-										</Collapsible.Trigger>
-										<Collapsible.Content>
-											<Sidebar.MenuSub>
-												<Sidebar.MenuSubItem>
-													<Sidebar.MenuSubButton>
-														{#snippet child({ props })}
-															<a href="/management/storage/object_bucket" {...props}>Bucket</a>
-														{/snippet}
-													</Sidebar.MenuSubButton>
-												</Sidebar.MenuSubItem>
-												<Sidebar.MenuSubItem>
-													<Sidebar.MenuSubButton>
-														{#snippet child({ props })}
-															<a href="/management/storage/object_user" {...props}>User</a>
-														{/snippet}
-													</Sidebar.MenuSubButton>
-												</Sidebar.MenuSubItem>
-											</Sidebar.MenuSub>
-										</Collapsible.Content>
-									</Collapsible.Root>
-								</Sidebar.MenuSub>
-							</Collapsible.Content>
-						</Sidebar.MenuItem>
-					{/snippet}
-				</Collapsible.Root>
-
 				<Collapsible.Root class="group/main-collapsible">
 					{#snippet child({ props })}
 						<Sidebar.MenuItem {...props}>
@@ -516,6 +342,179 @@
 						</Sidebar.MenuItem>
 					{/snippet}
 				</Collapsible.Root>
+
+				<Collapsible.Root class="group/main-collapsible">
+					{#snippet child({ props })}
+						<Sidebar.MenuItem {...props}>
+							<Collapsible.Trigger>
+								{#snippet child({ props })}
+									<Sidebar.MenuButton {...props}>
+										<Icon icon="ph:hard-drives" />
+										Storage
+										<Icon
+											icon="ph:caret-right"
+											class="ml-auto transition-transform duration-200 group-data-[state=open]/main-collapsible:rotate-90"
+										/>
+									</Sidebar.MenuButton>
+								{/snippet}
+							</Collapsible.Trigger>
+							<Collapsible.Content>
+								<Sidebar.MenuSub class="mr-0 pr-0">
+									<Collapsible.Root class="group/sub-collapsible">
+										<Collapsible.Trigger
+											>{#snippet child({ props })}
+												<Sidebar.MenuButton {...props}>
+													<Icon icon="ph:cube" />
+													Cluster
+													<Icon
+														icon="ph:caret-right"
+														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
+													/>
+												</Sidebar.MenuButton>
+											{/snippet}
+										</Collapsible.Trigger>
+										<Collapsible.Content>
+											<Sidebar.MenuSub>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/cluster_monitor" {...props}>Monitor</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a
+																href="/management/storage/cluster_object_storage_daemon"
+																{...props}
+															>
+																OSD
+															</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/cluster_pool" {...props}>Pool</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+											</Sidebar.MenuSub>
+										</Collapsible.Content>
+									</Collapsible.Root>
+									<Collapsible.Root class="group/sub-collapsible">
+										<Collapsible.Trigger>
+											{#snippet child({ props })}
+												<Sidebar.MenuButton {...props}>
+													<Icon icon="ph:cube" />
+													Block
+													<Icon
+														icon="ph:caret-right"
+														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
+													/>
+												</Sidebar.MenuButton>
+											{/snippet}
+										</Collapsible.Trigger>
+										<Collapsible.Content>
+											<Sidebar.MenuSub>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/block" {...props}>Image</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+											</Sidebar.MenuSub>
+										</Collapsible.Content>
+									</Collapsible.Root>
+
+									<Collapsible.Root class="group/sub-collapsible">
+										<Collapsible.Trigger
+											>{#snippet child({ props })}
+												<Sidebar.MenuButton {...props}>
+													<Icon icon="ph:cube" />
+													File
+													<Icon
+														icon="ph:caret-right"
+														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
+													/>
+												</Sidebar.MenuButton>
+											{/snippet}
+										</Collapsible.Trigger>
+										<Collapsible.Content>
+											<Sidebar.MenuSub>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/file_system" {...props}>File System</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+											</Sidebar.MenuSub>
+										</Collapsible.Content>
+									</Collapsible.Root>
+
+									<Collapsible.Root class="group/sub-collapsible">
+										<Collapsible.Trigger>
+											{#snippet child({ props })}
+												<Sidebar.MenuButton {...props}>
+													<Icon icon="ph:cube" />
+													Object
+													<Icon
+														icon="ph:caret-right"
+														class="ml-auto transition-transform duration-200 group-data-[state=open]/sub-collapsible:rotate-90"
+													/>
+												</Sidebar.MenuButton>
+											{/snippet}
+										</Collapsible.Trigger>
+										<Collapsible.Content>
+											<Sidebar.MenuSub>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/object_bucket" {...props}>Bucket</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+												<Sidebar.MenuSubItem>
+													<Sidebar.MenuSubButton>
+														{#snippet child({ props })}
+															<a href="/management/storage/object_user" {...props}>User</a>
+														{/snippet}
+													</Sidebar.MenuSubButton>
+												</Sidebar.MenuSubItem>
+											</Sidebar.MenuSub>
+										</Collapsible.Content>
+									</Collapsible.Root>
+								</Sidebar.MenuSub>
+							</Collapsible.Content>
+						</Sidebar.MenuItem>
+					{/snippet}
+				</Collapsible.Root>
+
+				<Sidebar.MenuItem>
+					<Sidebar.MenuButton>
+						{#snippet child({ props })}
+							<a href="/management/llm" {...props}>
+								<Icon icon="ph:robot" />
+								{m.model()}
+							</a>
+						{/snippet}
+					</Sidebar.MenuButton>
+				</Sidebar.MenuItem>
+
+				<Sidebar.MenuItem>
+					<Sidebar.MenuButton>
+						{#snippet child({ props })}
+							<a href="/market" {...props}>
+								<Icon icon="ph:magnifying-glass" />
+								{m.store()}
+							</a>
+						{/snippet}
+					</Sidebar.MenuButton>
+				</Sidebar.MenuItem>
 			</Sidebar.Menu>
 		</Sidebar.Group>
 	</Sidebar.Content>

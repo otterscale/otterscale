@@ -2,13 +2,14 @@
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { z } from 'zod';
+	import General from './input-general.svelte';
+
+	type Props = WithElementRef<Omit<HTMLInputAttributes, 'type'>>;
 </script>
 
 <script lang="ts">
-	import General from './input-general.svelte';
-	type Props = WithElementRef<Omit<HTMLInputAttributes, 'type'>>;
-
 	let {
+		id,
 		ref = $bindable(null),
 		value = $bindable(),
 		target,
@@ -16,20 +17,23 @@
 		class: className,
 		...restProps
 	}: Props & { target: string } = $props();
-</script>
 
-<General
-	bind:ref
-	required
-	type="text"
-	schema={z.string().refine(
+	const schema = z.string().refine(
 		(value) => value === target,
 		() => ({
 			code: 'Unmatch',
 			message: `Please type "${target}" to confirm deletion`
 		})
-	)}
-	id="filesystem-delete"
+	);
+</script>
+
+<General
+	{id}
+	bind:ref
+	data-slot="input-delete-confirm"
+	required
+	type="text"
+	{schema}
 	placeholder={target}
 	bind:value
 	{...restProps}

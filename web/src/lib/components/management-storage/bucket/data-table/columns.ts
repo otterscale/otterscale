@@ -3,6 +3,7 @@ import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { timestampDate, type Timestamp } from "@bufbuild/protobuf/wkt";
 
 const columns: ColumnDef<Bucket>[] = [
     {
@@ -51,6 +52,31 @@ const columns: ColumnDef<Bucket>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.createTime, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => {
+            const previous: Timestamp | undefined = previousRow.original.createdAt
+            const next: Timestamp | undefined = nextRow.original.createdAt
+
+            if (!(previous || next)) {
+                return 0
+            }
+            else if (!previous) {
+                return -1
+            }
+            else if (!next) {
+                return 1
+            }
+            else {
+                if (timestampDate(previous) < timestampDate(next)) {
+                    return -1
+                }
+                else if (timestampDate(previous) > timestampDate(next)) {
+                    return 1
+                }
+                else {
+                    return 0
+                }
+            }
+        }
     },
 ];
 

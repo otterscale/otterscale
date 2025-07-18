@@ -115,7 +115,7 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="owner" {table} />
+			<PointFilter columnId="owner" {table} values={$data.map((row) => row.owner)} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

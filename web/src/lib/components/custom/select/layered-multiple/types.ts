@@ -5,9 +5,9 @@ type OptionType = {
     subOptions?: OptionType[];
 };
 type AncestralOptionType = OptionType[];
-type valuesSetterType = (newValues: any[]) => void
-type valuesGetterType = () => any[]
+type AccessorType = {
+    value: any[]
+}
 
-export type {
-    AncestralOptionType, OptionType, valuesGetterType, valuesSetterType
-};
+export type { AccessorType, AncestralOptionType, OptionType };
+

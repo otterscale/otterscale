@@ -3,9 +3,10 @@ type OptionType = {
     label: string;
     icon?: string;
 };
-type valuesSetterType = (options: any[]) => void
-type valuesGetterType = () => any[]
 
-export type {
-    OptionType, valuesGetterType, valuesSetterType
-};
+type AccessorType = {
+    value: any[]
+}
+
+export type { AccessorType, OptionType };
+

@@ -13,7 +13,7 @@
 
 	$effect(() => {
 		selectedScope;
-		selectedVolume = '';
+		selectedVolume = 'ceph-fs';
 	});
 </script>
 
@@ -22,11 +22,4 @@
 		<Picker.Label>Ceph</Picker.Label>
 		<CephPicker bind:selectedScope bind:selectedFacility />
 	</Picker.Wrapper>
-
-	{#key selectedScope}
-		<Picker.Wrapper class="*:h-8">
-			<Picker.Label>Volume</Picker.Label>
-			<VolumePicker {selectedScope} {selectedFacility} bind:selectedVolume />
-		</Picker.Wrapper>
-	{/key}
 </Picker.Root>
