@@ -29,6 +29,6 @@
 	{#if row.original.suspended}
 		<Icon icon="ph:x" class="text-destructive" />
 	{:else}
-		<Icon icon="ph:check" class="text-success" />
+		<Icon icon="ph:circle" class="text-primary" />
 	{/if}
 {/snippet}

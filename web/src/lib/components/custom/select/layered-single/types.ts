@@ -5,9 +5,9 @@ type OptionType = {
     subOptions?: OptionType[];
 };
 type AncestralOptionType = OptionType[];
-type valueSetterType = (newVamue: any) => void
-type valueGetterType = () => any
+type AccessorType = {
+    value: any
+}
 
-export type {
-    AncestralOptionType, OptionType, valueGetterType, valueSetterType
-};
+export type { AccessorType, AncestralOptionType, OptionType };
+

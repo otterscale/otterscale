@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { setContext } from 'svelte';
 	import * as Popover from '$lib/components/ui/popover';
-	import { OptionManager } from './utils.svelte';
-	import type { OptionType } from './types';
-	import type { Writable } from 'svelte/store';
-	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils';
+	import { Popover as PopoverPrimitive } from 'bits-ui';
+	import { setContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import type { OptionType } from './types';
+	import { OptionManager } from './utils.svelte';
 
 	let {
+		id,
 		open = $bindable(false),
 		class: className,
 		value = $bindable(),
@@ -17,6 +18,7 @@
 		selectedOptions,
 		...restProps
 	}: PopoverPrimitive.RootProps & {
+		id?: string;
 		class?: string;
 		value: any[];
 		options: Writable<OptionType[]>;
@@ -24,14 +26,19 @@
 		required?: boolean;
 	} = $props();
 
-	const setter = (newValues: any[]) => {
-		value = newValues;
-	};
-	const getter = () => {
-		return Array.isArray(value) ? value : value ? [value] : [];
-	};
 	setContext('options', options);
-	setContext('OptionManager', new OptionManager($options, setter, getter));
+	setContext(
+		'OptionManager',
+		new OptionManager($options, {
+			get value() {
+				return Array.isArray(value) ? value : value ? [value] : [];
+			},
+			set value(newValues: any[]) {
+				value = newValues;
+			}
+		})
+	);
+	setContext('id', id);
 	setContext('required', required);
 </script>
 

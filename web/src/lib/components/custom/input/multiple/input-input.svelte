@@ -21,11 +21,17 @@
 
 	const inputManager: InputManager = getContext('InputManager');
 	const valuesManager: ValuesManager = getContext('ValuesManager');
+	const id: string | undefined = getContext('id');
+	const required: boolean | undefined = getContext('required');
+
+	const isNotFilled = $derived(required && valuesManager.values.length === 0);
 </script>
 
 <div class="w-full">
 	{#if inputManager.type === 'color'}
 		<Input.Color
+			{id}
+			{required}
 			bind:ref
 			data-slot="input-input"
 			bind:value={inputManager.input}
@@ -41,11 +47,12 @@
 		/>
 	{:else}
 		<Input.General
+			{id}
 			bind:ref
 			data-slot="input-input"
 			type={inputManager.type}
 			bind:value={inputManager.input}
-			class={cn(className)}
+			class={cn('ring-1', isNotFilled ? 'ring-destructive' : '', className)}
 			onkeydown={(e) => {
 				if (e.key === 'Enter') {
 					valuesManager.append(inputManager.input);

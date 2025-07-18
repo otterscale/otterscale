@@ -12,23 +12,30 @@
 </script>
 
 <script lang="ts" generics="TData">
-	let { table, columnId, alias }: { table: Table<TData>; columnId: string; alias?: string } =
-		$props();
+	let {
+		table,
+		columnId,
+		alias,
+		values,
+		descriptor = (v: any) => v
+	}: {
+		table: Table<TData>;
+		columnId: string;
+		alias?: string;
+		values: any[];
+		descriptor?: (v: any) => string;
+	} = $props();
 
-	const values = $derived(
-		([
-			...new Set(table.getCoreRowModel().rows.map((row) => row.getValue(columnId)))
-		].sort() as string[]) ?? ([] as string[])
-	);
+	const options = $derived(([...new Set(values)].sort() as string[]) ?? ([] as string[]));
 	const filteredValues = $derived(
 		(table.getColumn(columnId)?.getFilterValue() as string[]) ?? ([] as string[])
 	);
 	const distinctValueCounts = $derived(
-		values.reduce(
-			(a, value) => {
-				a[value] = table
+		options.reduce(
+			(a, option) => {
+				a[option] = table
 					.getCoreRowModel()
-					.rows.filter((row) => row.getValue(columnId) === value).length;
+					.rows.filter((row) => row.getValue(columnId) === option).length;
 				return a;
 			},
 			{} as Record<string, number>
@@ -75,23 +82,23 @@
 {/snippet}
 
 {#snippet filterItems()}
-	{#each values as value}
-		{@const newValue = filteredValues.includes(value)
-			? filteredValues.filter((v) => v !== value)
-			: [...filteredValues, value]}
+	{#each options as option}
+		{@const newValue = filteredValues.includes(option)
+			? filteredValues.filter((v) => v !== option)
+			: [...filteredValues, option]}
 		<Command.Item
-			{value}
+			value={option}
 			onSelect={() => {
 				table.getColumn(columnId)?.setFilterValue(newValue.length ? newValue : undefined);
 			}}
 		>
 			<div class="flex w-full items-center gap-1 text-xs">
 				<Icon
-					icon={filteredValues.includes(value) ? 'ph:check' : 'ph:funnel-simple'}
+					icon={filteredValues.includes(option) ? 'ph:check' : 'ph:funnel-simple'}
 					class={cn('h-4 w-4')}
 				/>
-				{value}
-				<p class="text-muted-foreground ml-auto font-mono">{distinctValueCounts[value]}</p>
+				{descriptor(option)}
+				<p class="text-muted-foreground ml-auto font-mono">{distinctValueCounts[option]}</p>
 			</div>
 		</Command.Item>
 	{/each}
@@ -111,7 +118,7 @@
 
 {#snippet showFilter(filter: any)}
 	<Badge variant="secondary" class="-my-1 rounded-lg text-xs">
-		{String(filter)}
+		{String(descriptor(filter))}
 	</Badge>
 {/snippet}
 
@@ -127,7 +134,7 @@
 			{#each filteredValues as filter}
 				<Badge variant="outline" class="flex items-center gap-1 rounded-lg text-xs">
 					<Icon icon="ph:funnel-simple" />
-					{filter}
+					{descriptor(filter)}
 				</Badge>
 			{/each}
 		</HoverCard.Content>

@@ -13,7 +13,7 @@
 
 	let selectedScope = $state('b62d195e-3905-4960-85ee-7673f71eb21e');
 	let selectedFacility = $state('ceph-mon');
-	let selectedVolume = $state('');
+	let selectedVolume = $state('ceph-fs');
 	let selectedSubvolumeGroup = $state('');
 </script>
 

@@ -26,22 +26,33 @@ const columns: ColumnDef<OSD>[] = [
         },
     },
     {
-        accessorKey: "up",
+        accessorKey: "state",
         header: ({ column }) => {
-            return renderSnippet(headers.stateUp, column)
+            return renderSnippet(headers.state, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.stateUp, row);
+            return renderSnippet(cells.state, row);
         },
     },
     {
-        accessorKey: "in",
-        header: ({ column }) => {
-            return renderSnippet(headers.stateIn, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.stateIn, row);
-        },
+        id: "in",
+        filterFn: (row, columnId, filterValue: boolean) => {
+            if (filterValue === undefined) {
+                return true
+            }
+
+            return row.original.in === filterValue
+        }
+    },
+    {
+        id: "up",
+        filterFn: (row, columnId, filterValue: boolean) => {
+            if (filterValue === undefined) {
+                return true
+            }
+
+            return row.original.up === filterValue
+        }
     },
     {
         accessorKey: "exists",

@@ -1,4 +1,4 @@
-import type { AncestralOptionType, OptionType, valueGetterType, valueSetterType } from './types';
+import type { AccessorType, AncestralOptionType, OptionType } from './types';
 
 const getAllAncestralOptions = (
     options: OptionType[],
@@ -31,20 +31,17 @@ function getAncestralOptionsMap(
 class OptionManager {
     options: OptionType[];
     ancestralOptionsMap: Record<string, OptionType[]>
+    accesor: AccessorType
 
-    valueSetter: valueSetterType;
-    valueGetter: valueGetterType;
-
-    constructor(options: OptionType[], valueSetter: valueSetterType, valueGetter: valueGetterType) {
+    constructor(options: OptionType[], accesor: AccessorType) {
         this.ancestralOptionsMap = getAncestralOptionsMap(options);
 
         this.options = options
-        this.valueSetter = valueSetter;
-        this.valueGetter = valueGetter
+        this.accesor = accesor;
     }
 
     get selectedAncestralOption(): AncestralOptionType {
-        return this.ancestralOptionsMap[JSON.stringify(this.valueGetter())]
+        return this.ancestralOptionsMap[JSON.stringify(this.accesor.value)]
     }
 
     hasSubOptions(option: OptionType): boolean {
@@ -58,11 +55,11 @@ class OptionManager {
     }
 
     isOptionSelected(option: OptionType, parents: OptionType[]): boolean {
-        return JSON.stringify(this.valueGetter()) === JSON.stringify([...parents.map((parent) => (parent.value)), option.value]);
+        return JSON.stringify(this.accesor.value) === JSON.stringify([...parents.map((parent) => (parent.value)), option.value]);
     }
 
     handleSelect(option: OptionType, parents: OptionType[]) {
-        this.valueSetter([...parents.map((parent) => (parent.value)), option.value]);
+        this.accesor.value = [...parents.map((parent) => (parent.value)), option.value]
     }
 }
 

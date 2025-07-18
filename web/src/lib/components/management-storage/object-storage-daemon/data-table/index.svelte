@@ -115,10 +115,30 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<BooleanFilter columnId="in" {table} />
-			<BooleanFilter columnId="up" {table} />
-			<BooleanFilter columnId="exists" {table} />
-			<PointFilter columnId="deviceClass" alias="Device Class" {table} />
+			<BooleanFilter
+				columnId="in"
+				{table}
+				values={$data.map((row) => row.in)}
+				descriptor={(value) => (value ? 'In' : 'Out')}
+			/>
+			<BooleanFilter
+				columnId="up"
+				{table}
+				values={$data.map((row) => row.up)}
+				descriptor={(value) => (value ? 'Up' : 'Down')}
+			/>
+			<BooleanFilter
+				columnId="exists"
+				{table}
+				values={$data.map((row) => row.exists)}
+				descriptor={(value) => (value ? 'Exists' : 'Not Exists')}
+			/>
+			<PointFilter
+				columnId="deviceClass"
+				alias="Device Class"
+				{table}
+				values={$data.map((row) => row.deviceClass)}
+			/>
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>

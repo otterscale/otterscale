@@ -3,6 +3,8 @@ import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import type { Row } from '$lib/components/ui/table';
+import { timestampDate, type Timestamp } from '@bufbuild/protobuf/wkt';
 
 const columns: ColumnDef<Subvolume>[] = [
     {
@@ -35,21 +37,21 @@ const columns: ColumnDef<Subvolume>[] = [
         },
     },
     {
-        accessorKey: "path",
-        header: ({ column }) => {
-            return renderSnippet(headers.path, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.path, row);
-        },
-    },
-    {
         accessorKey: "mode",
         header: ({ column }) => {
             return renderSnippet(headers.mode, column)
         },
         cell: ({ row }) => {
             return renderSnippet(cells.mode, row);
+        },
+    },
+    {
+        accessorKey: "export",
+        header: ({ column }) => {
+            return renderSnippet(headers.Export, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.Export, row);
         },
     },
     {
@@ -69,6 +71,31 @@ const columns: ColumnDef<Subvolume>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.createTime, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => {
+            const previous: Timestamp | undefined = previousRow.original.createdAt
+            const next: Timestamp | undefined = nextRow.original.createdAt
+
+            if (!(previous || next)) {
+                return 0
+            }
+            else if (!previous) {
+                return -1
+            }
+            else if (!next) {
+                return 1
+            }
+            else {
+                if (timestampDate(previous) < timestampDate(next)) {
+                    return -1
+                }
+                else if (timestampDate(previous) > timestampDate(next)) {
+                    return 1
+                }
+                else {
+                    return 0
+                }
+            }
+        }
     },
 ];
 

@@ -11,7 +11,7 @@ import Options from './select-options.svelte';
 import Shortcut from './select-shortcut.svelte';
 import Trigger from './select-trigger.svelte';
 import Root from './select.svelte';
-import type { OptionType, valueSetterType } from './types';
+import type { OptionType } from './types';
 import { OptionManager } from './utils.svelte';
 const Close = PopoverPrimitive.Close;
 
@@ -19,5 +19,6 @@ export {
     Check, Close, Content, Empty, Group, Input, Item, ItemInformation, List, OptionManager, Options, Root, Shortcut, Trigger
 };
 export type {
-    OptionType, valueSetterType
+    OptionType
 };
+

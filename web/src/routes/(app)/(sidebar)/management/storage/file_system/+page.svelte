@@ -3,19 +3,19 @@
 	import { Tabs } from '$lib/components/custom/tabs/index';
 </script>
 
-<Tabs.Root value="volume">
+<Tabs.Root value="subvolume">
 	<Tabs.List>
-		<Tabs.Trigger value="volume">Volume</Tabs.Trigger>
-		<Tabs.Trigger value="subvolume group">Subvolume Group</Tabs.Trigger>
-		<Tabs.Trigger value="subvolume">Subvolume</Tabs.Trigger>
+		<!-- <Tabs.Trigger value="volume">Volume</Tabs.Trigger> -->
+		<Tabs.Trigger value="subvolume">NFS</Tabs.Trigger>
+		<Tabs.Trigger value="subvolume group">Group</Tabs.Trigger>
 	</Tabs.List>
-	<Tabs.Content value="volume">
+	<!-- <Tabs.Content value="volume">
 		<StorageManagement.Volume />
+	</Tabs.Content> -->
+	<Tabs.Content value="subvolume">
+		<StorageManagement.Subvolume />
 	</Tabs.Content>
 	<Tabs.Content value="subvolume group">
 		<StorageManagement.SubvolumeGroup />
-	</Tabs.Content>
-	<Tabs.Content value="subvolume">
-		<StorageManagement.Subvolume />
 	</Tabs.Content>
 </Tabs.Root>

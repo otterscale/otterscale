@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { Button } from '$lib/components/ui/button/index.js';
+	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { Slider } from '$lib/components/ui/slider/index.js';
@@ -10,62 +10,83 @@
 </script>
 
 <script lang="ts" generics="TData">
-	let { table, columnId, alias }: { table: Table<TData>; columnId: string; alias?: string } =
-		$props();
+	let {
+		table,
+		values,
+		columnId,
+		alias
+	}: { table: Table<TData>; values: number[]; columnId: string; alias?: string } = $props();
 
-	const values =
-		table.getCoreRowModel().rows.map((row) => Number(row.getValue(columnId))) ?? ([] as number[]);
+	const minimum = Math.min(...values);
+	const maximum = Math.max(...values);
 
-	const min = Math.min(...values);
-	const max = Math.max(...values);
+	let rangeMinimum: number | undefined = $state(minimum);
+	let rangeMaximum: number | undefined = $state(maximum);
 
-	let rangeMin = $state(min);
-	let rangeMax = $state(max);
-
-	let value = $derived([rangeMin, rangeMax]);
+	let value = $derived([rangeMinimum, rangeMaximum]);
 </script>
 
 <Popover.Root>
-	<Popover.Trigger>
-		<Button variant="outline"
-			><Icon icon="ph:funnel" />{alias ?? capitalizeFirstLetter(columnId)}</Button
-		>
+	<Popover.Trigger class={buttonVariants({ size: 'sm', variant: 'outline' })}>
+		<Icon icon="ph:funnel" />{alias ?? capitalizeFirstLetter(columnId)}
 	</Popover.Trigger>
 	<Popover.Content
 		class={cn(
-			'flex flex-col items-center justify-between gap-4 sm:w-[62vw] md:w-[50vw] lg:w-[38vw]'
+			'flex flex-col items-center justify-center gap-4 sm:w-[62vw] md:w-[50vw] lg:w-[38vw]'
 		)}
 	>
-		<Slider
-			type="multiple"
-			{value}
-			{min}
-			{max}
-			step={1}
-			onValueChange={(v) => {
-				rangeMin = v[0];
-				rangeMax = v[1];
-				table.getColumn(columnId)?.setFilterValue(value);
-			}}
-		/>
 		<div class="flex w-full items-center justify-between gap-2">
 			<Input
-				class="text-xs"
-				bind:value={rangeMin}
+				class="h-7 w-16 text-xs"
+				bind:value={rangeMinimum}
 				type="number"
 				oninput={() => {
 					table.getColumn(columnId)?.setFilterValue(value);
 				}}
 			/>
-			<p class="text-sm">to</p>
+			<Slider
+				type="multiple"
+				{value}
+				min={minimum}
+				max={maximum}
+				step={1}
+				onValueChange={(v) => {
+					[rangeMinimum, rangeMaximum] = v;
+					table.getColumn(columnId)?.setFilterValue(value);
+				}}
+			/>
 			<Input
-				class="text-xs"
-				bind:value={rangeMax}
+				class="h-7 w-16 text-xs"
+				bind:value={rangeMaximum}
 				type="number"
 				oninput={() => {
 					table.getColumn(columnId)?.setFilterValue(value);
 				}}
 			/>
+		</div>
+
+		<div class="flex w-full flex-col items-center justify-between gap-2">
+			<div class="items-cent1er flex w-full justify-end gap-2">
+				<Button
+					variant="outline"
+					size="sm"
+					onclick={() => {
+						rangeMinimum = minimum;
+						rangeMaximum = maximum;
+						table.getColumn(columnId)?.setFilterValue(value);
+					}}>All</Button
+				>
+
+				<Button
+					variant="secondary"
+					size="sm"
+					onclick={() => {
+						rangeMinimum = minimum;
+						rangeMaximum = minimum;
+						table.getColumn(columnId)?.setFilterValue([undefined, undefined]);
+					}}>Clear</Button
+				>
+			</div>
 		</div>
 	</Popover.Content>
 </Popover.Root>

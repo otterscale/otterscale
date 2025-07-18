@@ -13,6 +13,7 @@
 		path: path,
 		mode: mode,
 		createTime: createTime,
+		Export: Export,
 		snapshot: snapshot
 	};
 </script>
@@ -64,6 +65,15 @@
 {#snippet usage(column: Column<Subvolume>)}
 	<Layout.Header>
 		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet Export(column: Column<Subvolume>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>EXPORT</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

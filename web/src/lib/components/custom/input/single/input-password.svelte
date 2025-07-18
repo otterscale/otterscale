@@ -1,22 +1,15 @@
 <script lang="ts" module>
-	import { Input } from '$lib/components/ui/input';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
+	import { General } from '.';
 </script>
 
 <script lang="ts">
-	import {
-		BORDER_INPUT_CLASSNAME,
-		PasswordManager,
-		RING_INVALID_INPUT_CLASSNAME,
-		RING_VALID_INPUT_CLASSNAME,
-		typeToIcon,
-		UNFOCUS_INPUT_CLASSNAME
-	} from './utils.svelte';
+	import { PasswordManager } from './utils.svelte';
 
 	let {
+		id,
 		ref = $bindable(null),
 		value = $bindable(),
 		required,
@@ -28,33 +21,21 @@
 	const isNotFilled = $derived(required && !value);
 </script>
 
-<div
-	class={cn(
-		BORDER_INPUT_CLASSNAME,
-		isNotFilled ? RING_INVALID_INPUT_CLASSNAME : RING_VALID_INPUT_CLASSNAME
-	)}
->
-	<span class="pl-3">
-		<Icon icon={typeToIcon['password']} />
-	</span>
-
-	<Input
+<div class="relative">
+	<General
 		bind:ref
 		data-slot="input-password"
-		placeholder={isNotFilled ? 'Required' : ''}
-		class={cn(
-			UNFOCUS_INPUT_CLASSNAME,
-			isNotFilled ? 'placeholder:text-destructive/60 placeholder:text-xs' : '',
-			className
-		)}
+		class="pr-9"
 		type={passwordManager.isVisible ? 'text' : 'password'}
+		{required}
+		aria-invalid={isNotFilled}
 		bind:value
 		{...restProps}
 	/>
 
 	<button
 		type="button"
-		class="pr-3 hover:cursor-pointer focus:outline-none"
+		class="absolute right-3 top-1/2 -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
 		onmousedown={() => {
 			passwordManager.enable();
 		}}

@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { goto } from '$app/navigation';
 	import type { Bucket, CreateBucketRequest } from '$gen/api/storage/v1/storage_pb';
 	import { Bucket_ACL, StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
@@ -7,6 +8,7 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -90,6 +92,20 @@
 				<Form.Field>
 					<Form.Label>Policy</Form.Label>
 					<SingleInput.Structure preview required bind:value={request.policy} language="json" />
+					<div class="flex justify-end gap-2">
+						<Button
+							variant="outline"
+							size="sm"
+							href="https://awspolicygen.s3.amazonaws.com/policygen.html"
+							target="_blank">Reference</Button
+						>
+						<Button
+							variant="outline"
+							size="sm"
+							href="https://awspolicygen.s3.amazonaws.com/policygen.html"
+							target="_blank">Generator</Button
+						>
+					</div>
 				</Form.Field>
 
 				<Form.Field>

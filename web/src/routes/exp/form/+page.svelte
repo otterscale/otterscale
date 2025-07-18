@@ -139,11 +139,16 @@
 		value3: any;
 		value4: any;
 		value5: any;
-		value6: any[];
+		value6: any;
 		value7: any;
-		value8: any[];
+		value8: any;
 		value9: any;
-		value0: any[];
+		value10: any;
+		values1: any[];
+		values2: any[];
+		values3: any[];
+		values4: any[];
+		values5: any[];
 	};
 
 	let values: Values = $state({} as Values);
@@ -160,17 +165,15 @@
 		});
 	}
 
-	const stateController = new DialogStateController(false);
+	const stateController = new DialogStateController(true);
 
 	import * as Enterprise from '$lib/components/custom/enterprise/index';
+	let invalid = $state(false);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
 	<Enterprise.Hint>
-		<AlertDialog.Trigger
-			disabled={!Enterprise.enabled}
-			class={cn('hover:cursor-pointer', buttonVariants({ variant: 'outline' }))}
-		>
+		<AlertDialog.Trigger class={cn('hover:cursor-pointer', buttonVariants({ variant: 'outline' }))}>
 			Trigger
 		</AlertDialog.Trigger>
 	</Enterprise.Hint>
@@ -178,7 +181,7 @@
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold"
 			>Header</AlertDialog.Header
 		>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Legend>Fieldset I</Form.Legend>
 				<Form.Description>
@@ -186,7 +189,7 @@
 					the purpose of this section.
 				</Form.Description>
 				<Form.Field>
-					<Form.Label for="single-input">
+					<Form.Label>
 						Field I
 						{#snippet information()}
 							This is a detailed description for the form field. It provides additional context
@@ -197,7 +200,7 @@
 						required
 						schema={z.string().min(3)}
 						type="text"
-						id="single-input"
+						id="1"
 						bind:value={values.value1}
 					/>
 					<Form.Help>
@@ -205,22 +208,18 @@
 					</Form.Help>
 				</Form.Field>
 				<Form.Field>
-					<Form.Label for="single-input">
+					<Form.Label>
 						Field II
 						{#snippet information()}
 							This is a new description for Field II. Please enter a number in this field as
 							required.
 						{/snippet}
 					</Form.Label>
-					<SingleInput.General
-						required
-						type="number"
-						id="single-input"
-						bind:value={values.value2}
-					/>
+					<SingleInput.General required type="number" id="2" bind:value={values.value2} />
 					<Form.Help>This is a help text for Field II. Please enter a valid number.</Form.Help>
 				</Form.Field>
 			</Form.Fieldset>
+
 			<Form.Fieldset>
 				<Form.Legend>Fieldset II</Form.Legend>
 				<Form.Description>
@@ -228,24 +227,55 @@
 					the purpose and usage of this section.
 				</Form.Description>
 				<Form.Field>
-					<Label for="single-input">Field III</Label>
-					<SingleInput.Boolean required id="single-input" bind:value={values.value3} />
+					<Label>Field III</Label>
+					<SingleInput.Boolean required id="3" bind:value={values.value3} />
 					<Form.Help>
 						Enable this option if you want to activate Field III. This is a help text for the
 						boolean input.
 					</Form.Help>
 				</Form.Field>
 				<Form.Field>
-					<Label for="single-input">Field IV</Label>
-					<SingleInput.Password required id="single-input" bind:value={values.value4} />
+					<Label>Field IV</Label>
+					<SingleInput.Password required id="4" bind:value={values.value4} />
 					<Form.Help>Please enter your password. Make sure it is strong and secure.</Form.Help>
 				</Form.Field>
 				<Form.Field>
-					<Label for="single-input">Field V</Label>
-					<SingleInput.Color id="single-input" bind:value={values.value5} />
+					<Label>Field V</Label>
+					<SingleInput.Color id="5" required bind:value={values.value5} />
 					<Form.Help>Select your favorite color using the color picker above.</Form.Help>
 				</Form.Field>
+				<Form.Field>
+					<Label>Field VI</Label>
+					<SingleInput.DeletionConfirm id="6" required target="value6" bind:value={values.value6} />
+					<Form.Help>
+						This field requires confirmation before deletion. Double check before proceeding.
+					</Form.Help>
+				</Form.Field>
+				<Form.Field>
+					<Label>Field VII</Label>
+					<SingleInput.Structure id="7" language="json" required bind:value={values.value7} />
+					<Form.Help>
+						Enter valid JSON structure. The input will validate your JSON format.
+					</Form.Help>
+				</Form.Field>
+				<Form.Field>
+					<Label>Field VIII</Label>
+					<SingleInput.Measurement
+						id="8"
+						bind:value={values.value8}
+						required
+						units={[
+							{ value: 1, label: 'I' } as SingleInput.UnitType,
+							{ value: 2, label: 'II' } as SingleInput.UnitType,
+							{ value: 3, label: 'III' } as SingleInput.UnitType
+						]}
+					/>
+					<Form.Help>
+						Enter a value and select a unit of measurement from the dropdown options.
+					</Form.Help>
+				</Form.Field>
 			</Form.Fieldset>
+
 			<Form.Fieldset>
 				<Form.Legend>Fieldset III</Form.Legend>
 				<Form.Description>
@@ -253,11 +283,11 @@
 					values as needed.
 				</Form.Description>
 				<Form.Field>
-					<Label for="multiple-input">Field VI</Label>
-					<MultipleInput.Root type="number" bind:values={values.value6} id="multiple-input">
+					<Label>Field IV</Label>
+					<MultipleInput.Root type="number" required bind:values={values.values1} id="9">
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
-							<MultipleInput.Input required />
+							<MultipleInput.Input />
 							<MultipleInput.Add />
 							<MultipleInput.Clear />
 						</MultipleInput.Controller>
@@ -271,15 +301,15 @@
 
 			<Form.Separator>Or</Form.Separator>
 
-			<Form.Fieldset disabled={ListenInputs(values.value1, values.value2, values.value3)}>
+			<Form.Fieldset>
 				<Form.Legend>Fieldset IV</Form.Legend>
 				<Form.Description>
 					This section demonstrates various select components, including single, multiple, and
 					layered selects with nested options.
 				</Form.Description>
 				<Form.Field>
-					<Label for="single-select">Field VII</Label>
-					<SingleSelect.Root bind:options={options1} bind:value={values.value7} required>
+					<Label>Field V</Label>
+					<SingleSelect.Root id="10" bind:options={options1} bind:value={values.value9} required>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
@@ -307,8 +337,8 @@
 					</Form.Help>
 				</Form.Field>
 				<Form.Field>
-					<Label for="single-select">Field VIII</Label>
-					<MultipleSelect.Root bind:options={options2} bind:value={values.value8} required>
+					<Label>Field XI</Label>
+					<MultipleSelect.Root id="11" bind:options={options2} bind:value={values.values2} required>
 						<MultipleSelect.Viewer />
 						<MultipleSelect.Controller>
 							<MultipleSelect.Trigger />
@@ -344,8 +374,8 @@
 					</Form.Help>
 				</Form.Field>
 				<Form.Field>
-					<Label for="single-select">Field IX</Label>
-					<LayeredSingleSelect.Root bind:value={values.value9} options={options3} required>
+					<Label>Field XII</Label>
+					<LayeredSingleSelect.Root id="12" bind:value={values.value10} options={options3} required>
 						<LayeredSingleSelect.Trigger />
 						<LayeredSingleSelect.Content>
 							<LayeredSingleSelect.Group>
@@ -415,8 +445,13 @@
 					</Form.Help>
 				</Form.Field>
 				<Form.Field>
-					<Label for="single-select">Field X</Label>
-					<LayeredMultipleSelect.Root bind:value={values.value0} options={options4} required>
+					<Label>Field XIII</Label>
+					<LayeredMultipleSelect.Root
+						id="13"
+						bind:value={values.values3}
+						options={options4}
+						required
+					>
 						<LayeredMultipleSelect.Viewer />
 						<LayeredMultipleSelect.Controller>
 							<LayeredMultipleSelect.Trigger />
@@ -501,7 +536,6 @@
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
-				<AlertDialog.Action actionVariant="secondary" onclick={reset}>Reset</AlertDialog.Action>
 				<AlertDialog.Actions>
 					<AlertDialog.ActionGroup>
 						<AlertDialog.ActionGroupHeading>Group</AlertDialog.ActionGroupHeading>
@@ -536,6 +570,7 @@
 						</AlertDialog.ActionItem>
 					</AlertDialog.ActionGroup>
 				</AlertDialog.Actions>
+				<AlertDialog.Action disabled={invalid} onclick={reset}>Confirm</AlertDialog.Action>
 			</AlertDialog.ActionsGroup>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>

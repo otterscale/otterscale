@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { FormValidator } from '$lib/components/custom/form';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -21,9 +22,14 @@
 	}: DropdownMenuPrimitive.TriggerProps & {} = $props();
 
 	const optionManager: OptionManager = getContext('OptionManager');
-	const required: Boolean = getContext('required');
+	const required: boolean | undefined = getContext('required');
+	const id: string | undefined = getContext('id');
 
-	const isNull = $derived(required && !optionManager.isSomeAncestralOptionsSelected);
+	const isNotFilled = $derived(required && !optionManager.isSomeAncestralOptionsSelected);
+	const formValidator: FormValidator = getContext('FormValidator');
+	$effect(() => {
+		formValidator.set(id, isNotFilled);
+	});
 </script>
 
 <DropdownMenu.Trigger
@@ -32,7 +38,7 @@
 	class={cn(
 		'w-full cursor-pointer',
 		buttonVariants({ variant: 'outline' }),
-		required && isNull ? 'ring-destructive ring-1' : 'ring-1'
+		required && isNotFilled ? 'ring-destructive ring-1' : 'ring-1'
 	)}
 	{...restProps}
 >
@@ -55,7 +61,7 @@
 				{@render ShowOptions(optionManager.selectedAncestralOptions)}
 			{/if}
 		</div>
-	{:else if required && isNull}
+	{:else if required && isNotFilled}
 		<p class=" text-destructive text-xs">Required</p>
 	{:else}
 		Select

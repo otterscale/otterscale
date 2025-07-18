@@ -10,6 +10,7 @@
 	import { OptionManager } from './utils.svelte';
 
 	let {
+		id,
 		open = $bindable(false),
 		value = $bindable(),
 		class: className,
@@ -18,20 +19,25 @@
 		required,
 		...restProps
 	}: DropdownMenuPrimitive.RootProps & {
+		id?: string;
 		class?: string;
 		value: any[];
 		options: OptionType[];
 		required?: boolean;
 	} = $props();
 
-	const setter = (newValues: any[]) => {
-		value = newValues;
-	};
-	const getter = () => {
-		return value ?? [];
-	};
-
-	setContext('OptionManager', new OptionManager(options, setter, getter));
+	setContext(
+		'OptionManager',
+		new OptionManager(options, {
+			get value() {
+				return value ?? [];
+			},
+			set value(newValues: any[]) {
+				value = newValues;
+			}
+		})
+	);
+	setContext('id', id);
 	setContext('required', required);
 </script>
 

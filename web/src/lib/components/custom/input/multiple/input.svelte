@@ -9,15 +9,18 @@
 	import type { string } from 'zod';
 
 	let {
+		id,
 		ref = $bindable(null),
 		class: className,
 		values = $bindable(),
+		required,
 		type,
 		contextData,
 		children,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		values: any[];
+		required?: boolean;
 		type: InputType;
 		contextData?: Record<string, any>;
 	} = $props();
@@ -29,6 +32,8 @@
 			values = newValues;
 		})
 	);
+	setContext('id', id);
+	setContext('required', required);
 	if (contextData) {
 		for (const key in contextData) {
 			setContext(key, contextData[key]);

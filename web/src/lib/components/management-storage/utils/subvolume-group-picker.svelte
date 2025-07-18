@@ -33,6 +33,7 @@
 				facilityName: selectedFacility,
 				volumeName: selectedVolume
 			});
+
 			subvolumeGroupOptions.set(
 				response.subvolumeGroups.map(
 					(subvolumeGroup) =>
@@ -62,11 +63,10 @@
 	onMount(async () => {
 		try {
 			await fetchVolumeOptions();
+			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
-
-		isMounted = true;
 	});
 </script>
 

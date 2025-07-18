@@ -26,6 +26,15 @@ const columns: ColumnDef<Pool>[] = [
         },
     },
     {
+        accessorKey: "poolType",
+        header: ({ column }) => {
+            return renderSnippet(headers.type, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.type, row);
+        },
+    },
+    {
         accessorKey: "applications",
         header: ({ column }) => {
             return renderSnippet(headers.applications, column)

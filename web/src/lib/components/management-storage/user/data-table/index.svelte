@@ -3,6 +3,7 @@
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
+	import RangeFilter from '$lib/components/custom/data-table/data-table-filters/range-filter.svelte';
 	import BooleanFilter from '$lib/components/custom/data-table/data-table-filters/boolean-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
@@ -118,7 +119,8 @@
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="id" {table} />
 			<FuzzyFilter columnId="name" {table} />
-			<BooleanFilter columnId="suspended" {table} />
+			<BooleanFilter columnId="suspended" {table} values={$data.map((row) => row.suspended)} />
+			<RangeFilter {table} values={$data.map((row) => row.keys.length)} columnId="keys" />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

@@ -20,7 +20,8 @@
 
 	$effect(() => {
 		selectedScope;
-		selectedVolume = '';
+		selectedFacility;
+		selectedVolume = 'ceph-fs';
 		selectedSubvolumeGroup = '';
 	});
 </script>
@@ -33,20 +34,13 @@
 
 	{#key selectedScope}
 		<Picker.Wrapper class="*:h-8">
-			<Picker.Label>Volume</Picker.Label>
-			<VolumePicker {selectedScope} {selectedFacility} bind:selectedVolume />
+			<Picker.Label>Group</Picker.Label>
+			<SubvolumeGroupPicker
+				{selectedScope}
+				{selectedFacility}
+				{selectedVolume}
+				bind:selectedSubvolumeGroup
+			/>
 		</Picker.Wrapper>
-
-		{#key selectedVolume}
-			<Picker.Wrapper class="*:h-8">
-				<Picker.Label>Group</Picker.Label>
-				<SubvolumeGroupPicker
-					{selectedScope}
-					{selectedFacility}
-					{selectedVolume}
-					bind:selectedSubvolumeGroup
-				/>
-			</Picker.Wrapper>
-		{/key}
 	{/key}
 </Picker.Root>

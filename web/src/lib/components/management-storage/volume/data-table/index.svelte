@@ -113,7 +113,6 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="permission" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>

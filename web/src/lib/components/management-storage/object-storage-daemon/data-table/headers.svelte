@@ -9,6 +9,7 @@
 		_row_picker: _row_picker,
 		id: id,
 		name: name,
+		state: state,
 		stateUp: stateUp,
 		stateIn: stateIn,
 		exists: exists,
@@ -43,6 +44,12 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet state(column: Column<OSD>)}
+	<Layout.Header>
+		<Layout.HeaderViewer>STATE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
