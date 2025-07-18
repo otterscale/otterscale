@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { BISTService, InternalObjectService_Type, type InternalObjectService } from '$gen/api/bist/v1/bist_pb'
+	// import { BISTService, InternalObjectService_Type } from '$gen/api/bist/v1/bist_pb'
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { cn } from '$lib/utils.js';
@@ -11,8 +12,8 @@
 
 <script lang="ts">
 	let {
-		selectedObjectService = $bindable(),
-	}: { selectedObjectService: InternalObjectService } = $props();
+		selectedInternalObjectService = $bindable(),
+	}: { selectedInternalObjectService: InternalObjectService } = $props();
 
 	let tmp = $state({});
 	let scopeUuid = $state("b62d195e-3905-4960-85ee-7673f71eb21e");
@@ -68,7 +69,7 @@
 							<SingleSelect.Item
 								{option}
 								onclick={() => {
-									selectedObjectService = option.value;
+									selectedInternalObjectService = option.value;
 								}}
 							>
 								<Icon

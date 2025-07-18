@@ -1,11 +1,10 @@
 <script lang="ts" module>
-	import type { CephBlockDevice, CreateTestResultRequest, FIO, FIO_Input, NetworkFileSystem, TestResult } from '$gen/api/bist/v1/bist_pb';
-	import { BISTService, FIO_Input_AccessMode } from '$gen/api/bist/v1/bist_pb';
+	import type { TestResult, CreateTestResultRequest, Warp, Warp_Input, InternalObjectService, ExternalObjectService } from '$gen/api/bist/v1/bist_pb'
+	import { BISTService, Warp_Input_Operation } from '$gen/api/bist/v1/bist_pb'
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import CephPicker from '$lib/components/management-storage/utils/ceph-picker.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -15,25 +14,26 @@
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
 	import * as MultipleStepModal from './mutiple-step-modal';
+	import ObjectServicesPicker from '$lib/components/bist/utils/object-services-picker.svelte';
 
 
-	// FIO Target
-	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([
+	// WARP Target
+	const warpTarget: Writable<SingleSelect.OptionType[]> = writable([
 		{
-			value: 'cephBlockDevice',
-			label: 'Ceph Block Device',
+			value: 'internalObjectService',
+			label: 'Internal Object Service',
 		},
 		{
-			value: 'networkFileSystem',
-			label: 'Network File System',
+			value: 'externalObjectService',
+			label: 'External Object Service',
 		},
 	]);
 
-	// FIO AccessMode
-	const Options: SingleSelect.OptionType[] = Object.keys(FIO_Input_AccessMode)
+	// WARP AccessMode
+	const Options: SingleSelect.OptionType[] = Object.keys(Warp_Input_Operation)
 		.filter(key => isNaN(Number(key)))
-		.map(key => ({value: FIO_Input_AccessMode[key as keyof typeof FIO_Input_AccessMode], label: key}));
-	const fioInputeAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
+		.map(key => ({value: Warp_Input_Operation[key as keyof typeof Warp_Input_Operation], label: key}));
+	const warpInputOperation: Writable<SingleSelect.OptionType[]> = writable(Options);
 </script>
 
 <script lang="ts">
@@ -48,50 +48,63 @@
 	} = $props();
 
 	// Request
-    const DEFAULT_FIO_REQUEST = testResult 
-		? { target: {value: testResult.kind.value?.target.value, case: testResult.kind.value?.target.case} } as FIO 
-		: { target: {value: {}, case: {}}} as FIO;
-	const DEFAULT_REQUEST = { kind: {value: DEFAULT_FIO_REQUEST, case: "fio"}, createdBy: "Woody Lin" } as CreateTestResultRequest;
-    const DEFAULT_CEPH_BLOCK_DEVICE = testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-        ? testResult.kind.value.target.value as CephBlockDevice
-        : {} as CephBlockDevice;
-    const DEFAULT_NETWORK_FILE_SYSTEM = testResult && testResult.kind.value?.target?.case === 'networkFileSystem'
-        ? testResult.kind.value.target.value as NetworkFileSystem
-        : {} as NetworkFileSystem;
-	const DEFAULT_FIO_INPUT = testResult && testResult.kind.value?.input
-    ? testResult.kind.value.input as FIO_Input
-	: { jobCount: "32", runTime: "100", blockSize: "4k", fileSize: "1G", ioDepth: "1" } as unknown as FIO_Input; 
-    let selectedScope = $state(
-        testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-            ? testResult.kind.value.target.value?.scopeUuid ?? ''
-            : ''
-    );
-    let selectedFacility = $state(
-        testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-            ? testResult.kind.value.target.value?.facilityName ?? ''
-            : ''
-    );
+    const DEFAULT_WARP_REQUEST = testResult 
+		? { target: {value: testResult.kind.value?.target.value, case: testResult.kind.value?.target.case} } as Warp 
+		: { target: {value: {}, case: {}}} as Warp;
+	const DEFAULT_REQUEST = { kind: {value: DEFAULT_WARP_REQUEST, case: "warp"}, createdBy: "Woody Lin" } as CreateTestResultRequest;
+    const DEFAULT_INTERNAL_OBJECT_SERVICE = testResult && testResult.kind.value?.target?.case === 'internalObjectService'
+        ? testResult.kind.value.target.value as InternalObjectService
+        : {} as InternalObjectService;
+    const DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE = testResult && testResult.kind.value?.target?.case === 'externalObjectService'
+        ? testResult.kind.value.target.value as ExternalObjectService
+        : {} as ExternalObjectService;
+	const DEFAULT_WARP_INPUT = testResult && testResult.kind.value?.input
+    ? testResult.kind.value.input as Warp_Input
+	: { duration: "60s", objectSize: "4MiB", objectCount: "500" } as unknown as Warp_Input; 
+    // let selectedType = $state(
+    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
+    //         ? testResult.kind.value.target.value?.type ?? 0
+    //         : 0
+    // );
+	// let selectedScope = $state(
+    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
+    //         ? testResult.kind.value.target.value?.scopeUuid ?? ''
+    //         : ''
+    // );
+    // let selectedFacility = $state(
+    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
+    //         ? testResult.kind.value.target.value?.facilityName ?? ''
+    //         : ''
+    // );
+	// let selectedName = $state(
+    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
+    //         ? testResult.kind.value.target.value?.name ?? ''
+    //         : ''
+    // );
+	// let selectedEndpoint = $state(
+    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
+    //         ? testResult.kind.value.target.value?.endpoint ?? ''
+    //         : ''
+    // );
+
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
-	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
-	let requestCephBlockDevice: CephBlockDevice = $state(DEFAULT_CEPH_BLOCK_DEVICE);
-	let requestNetworkFileSystem: NetworkFileSystem = $state(DEFAULT_NETWORK_FILE_SYSTEM);
-	let fioAccessMode = $state(DEFAULT_FIO_INPUT.accessMode);
-	let fioJobCount = $state(DEFAULT_FIO_INPUT.jobCount);
-	let fioRunTime = $state(DEFAULT_FIO_INPUT.runTime);
-	let fioBlockSize = $state(DEFAULT_FIO_INPUT.blockSize);
-	let fioFileSize = $state(DEFAULT_FIO_INPUT.fileSize);
-	let fioIoDepth = $state(DEFAULT_FIO_INPUT.ioDepth);
+	let requestWarp: Warp = $state(DEFAULT_WARP_REQUEST);
+	let requestInternalObjectService = $state(DEFAULT_INTERNAL_OBJECT_SERVICE);
+	// let requestInternalObjectService: InternalObjectService = $state(DEFAULT_INTERNAL_OBJECT_SERVICE);
+	let requestExternalObjectService: ExternalObjectService = $state(DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE);
+	let warpOperation = $state(DEFAULT_WARP_INPUT.operation);
+	let warpDuration = $state(DEFAULT_WARP_INPUT.duration);
+	let warpObjectSize = $state(DEFAULT_WARP_INPUT.objectSize);
+	let warpObjectCount = $state(DEFAULT_WARP_INPUT.objectCount);
 	function reset() {
 		request = DEFAULT_REQUEST;
-		requestFio = DEFAULT_FIO_REQUEST;
-		requestCephBlockDevice = DEFAULT_CEPH_BLOCK_DEVICE;
-		requestNetworkFileSystem = DEFAULT_NETWORK_FILE_SYSTEM;
-		fioAccessMode = DEFAULT_FIO_INPUT.accessMode; 
-		fioJobCount = DEFAULT_FIO_INPUT.jobCount; 
-		fioRunTime = DEFAULT_FIO_INPUT.runTime; 
-		fioBlockSize = DEFAULT_FIO_INPUT.blockSize; 
-		fioFileSize = DEFAULT_FIO_INPUT.fileSize; 
-		fioIoDepth = DEFAULT_FIO_INPUT.ioDepth; 
+		requestWarp = DEFAULT_WARP_REQUEST;
+		requestInternalObjectService = DEFAULT_INTERNAL_OBJECT_SERVICE;
+		requestExternalObjectService = DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE;
+		warpOperation = DEFAULT_WARP_INPUT.operation; 
+		warpDuration = DEFAULT_WARP_INPUT.duration; 
+		warpObjectSize = DEFAULT_WARP_INPUT.objectSize; 
+		warpObjectCount = DEFAULT_WARP_INPUT.objectCount; 
 	}
 
 	// Modal state
@@ -146,7 +159,7 @@
 							<!-- Choose Target -->
 							<Form.Field>
 								<Form.Label for="bist-input">Target</Form.Label>
-								<SingleSelect.Root options={fioTarget} required bind:value={requestFio.target.case}>
+								<SingleSelect.Root options={warpTarget} required bind:value={requestWarp.target.case}>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -154,7 +167,7 @@
 											<SingleSelect.List>
 												<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 												<SingleSelect.Group>
-													{#each $fioTarget as item}
+													{#each $warpTarget as item}
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
@@ -172,24 +185,28 @@
 							</Form.Field>
 						</Form.Fieldset>
 						<!-- Target -->
-						{#if requestFio.target.case == 'cephBlockDevice'}
+						{#if requestWarp.target.case == 'internalObjectService'}
 							<Form.Fieldset>
 								<Form.Legend>Target</Form.Legend>
 								<Form.Field>
-									<Form.Label>Ceph</Form.Label>
-									<CephPicker bind:selectedScope bind:selectedFacility />
+									<Form.Label>Interanl Object Service</Form.Label>
+									<ObjectServicesPicker bind:selectedInternalObjectService={requestInternalObjectService} />
 								</Form.Field>
 							</Form.Fieldset>
-						{:else if requestFio.target.case == 'networkFileSystem'}
+						{:else if requestWarp.target.case == 'externalObjectService'}
 							<Form.Fieldset>
 								<Form.Legend>Target</Form.Legend>
 								<Form.Field>
 									<Form.Label>Endpoint</Form.Label>
-									<SingleInput.General type="text" required bind:value={requestNetworkFileSystem.endpoint}/>
+									<SingleInput.General type="text" required bind:value={requestExternalObjectService.endpoint}/>
 								</Form.Field>
 								<Form.Field>
-									<Form.Label>Path</Form.Label>
-									<SingleInput.General type="text" required bind:value={requestNetworkFileSystem.path}/>
+									<Form.Label>Access Key</Form.Label>
+									<SingleInput.General type="text" required bind:value={requestExternalObjectService.accessKey}/>
+								</Form.Field>
+								<Form.Field>
+									<Form.Label>Secret Key</Form.Label>
+									<SingleInput.General type="text" required bind:value={requestExternalObjectService.secretKey}/>
 								</Form.Field>
 							</Form.Fieldset>
 						{/if}
@@ -201,10 +218,10 @@
 					<Form.Root class="max-h-[65vh]">
 						<Form.Fieldset>
 							<Form.Legend>Parameter</Form.Legend>
-							<!-- fioInputeAccessMode -->
+							<!-- warpInputOperation -->
 							<Form.Field>
-								<Form.Label for="fio-access-mode">Access Mode</Form.Label>
-								<SingleSelect.Root options={fioInputeAccessMode} bind:value={fioAccessMode}>
+								<Form.Label for="warp-operation">Operation</Form.Label>
+								<SingleSelect.Root options={warpInputOperation} bind:value={warpOperation}>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -212,7 +229,7 @@
 											<SingleSelect.List>
 												<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 												<SingleSelect.Group>
-													{#each $fioInputeAccessMode as item}
+													{#each $warpInputOperation as item}
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
@@ -228,30 +245,20 @@
 									</SingleSelect.Content>
 								</SingleSelect.Root>
 							</Form.Field>
-							<!-- jobCount -->
+							<!-- Duration -->
 							<Form.Field>
-								<Form.Label>Job Count</Form.Label>
-								<SingleInput.General type="number" placeholder="32" bind:value={fioJobCount}/>
+								<Form.Label>Duration</Form.Label>
+								<SingleInput.General type="text" placeholder="32" bind:value={warpDuration}/>
 							</Form.Field>
-							<!-- runTime -->
+							<!-- ObjectSize -->
 							<Form.Field>
-								<Form.Label>Run Time</Form.Label>
-								<SingleInput.General type="text" placeholder="100" bind:value={fioRunTime}/>
+								<Form.Label>Object Size</Form.Label>
+								<SingleInput.General type="text" placeholder="100" bind:value={warpObjectSize}/>
 							</Form.Field>
-							<!-- blockSize -->
+							<!-- ObjectCount -->
 							<Form.Field>
-								<Form.Label>Block Size</Form.Label>
-								<SingleInput.General type="text" placeholder="4k" bind:value={fioBlockSize}/>
-							</Form.Field>
-							<!-- fileSize -->
-							<Form.Field>
-								<Form.Label>File Size</Form.Label>
-								<SingleInput.General type="text" placeholder="1G" bind:value={fioFileSize}/>
-							</Form.Field>
-							<!-- ioDepth -->
-							<Form.Field>
-								<Form.Label>I/O Depth</Form.Label>
-								<SingleInput.General type="number" placeholder="1" bind:value={fioIoDepth}/>
+								<Form.Label>Object Count</Form.Label>
+								<SingleInput.General type="text" placeholder="4k" bind:value={warpObjectCount}/>
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
@@ -264,24 +271,29 @@
 						<Form.Fieldset>
 							<Form.Legend>Step 1</Form.Legend>
 							<Form.Description>Name: {request.name}</Form.Description>
-							<Form.Description>Target: {requestFio.target.case}</Form.Description>
-							{#if requestFio.target.case == 'cephBlockDevice'}
+							<Form.Description>Target: {requestWarp.target.case}</Form.Description>
+							{#if requestWarp.target.case == 'internalObjectService'}
+								<!-- <Form.Description>Type: {selectedType}</Form.Description>
 								<Form.Description>Scope UUID: {selectedScope}</Form.Description>
 								<Form.Description>Facility Name: {selectedFacility}</Form.Description>
-							{:else if requestFio.target.case == 'networkFileSystem'}
-								<Form.Description>type: {requestNetworkFileSystem.endpoint}</Form.Description>
-								<Form.Description>name: {requestNetworkFileSystem.path}</Form.Description>
+								<Form.Description>Name: {selectedName}</Form.Description>
+								<Form.Description>Endpoint: {selectedEndpoint}</Form.Description> -->
+								<Form.Description>type: {requestInternalObjectService.type}</Form.Description>
+								<Form.Description>name: {requestInternalObjectService.name}</Form.Description>
+								<Form.Description>endpoint: {requestInternalObjectService.endpoint}</Form.Description>
+							{:else if requestWarp.target.case == 'externalObjectService'}
+								<Form.Description>Endpoint: {requestExternalObjectService.endpoint}</Form.Description>
+								<Form.Description>Access Key: {requestExternalObjectService.accessKey}</Form.Description>
+								<Form.Description>Secret Key: {requestExternalObjectService.secretKey}</Form.Description>
 							{/if}
 						</Form.Fieldset>
 						<!-- Step 2 -->
 						<Form.Fieldset>
 							<Form.Legend>Step 2</Form.Legend>
-							<Form.Description>Access Mode: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description>
-							<Form.Description>Job Count: {fioJobCount}</Form.Description>
-							<Form.Description>Run Time: {fioRunTime}</Form.Description>
-							<Form.Description>Block Size: {fioBlockSize}</Form.Description>
-							<Form.Description>File Size: {fioFileSize}</Form.Description>
-							<Form.Description>I/O Depth: {fioIoDepth}</Form.Description>
+							<Form.Description>Operation: {Warp_Input_Operation[warpOperation]}</Form.Description>
+							<Form.Description>Duration: {warpDuration}</Form.Description>
+							<Form.Description>Object Size: {warpObjectSize}</Form.Description>
+							<Form.Description>Object Count: {warpObjectCount}</Form.Description>
 						</Form.Fieldset>
 					</Form.Root>
 				</MultipleStepModal.Model>
@@ -293,22 +305,23 @@
 			<MultipleStepModal.Confirm
 				onclick={() => {
 					// prepare request
-                    if (requestFio.target.case == 'cephBlockDevice') {
-						requestCephBlockDevice.scopeUuid = selectedScope;
-						requestCephBlockDevice.facilityName = selectedFacility;
-                        requestFio.target.value = requestCephBlockDevice;
-                    } else if (requestFio.target.case == 'networkFileSystem') {
-                        requestFio.target.value = requestNetworkFileSystem;
+                    if (requestWarp.target.case == 'internalObjectService') {
+						// requestInternalObjectService.type = selectedType;
+						// requestInternalObjectService.scopeUuid = selectedScope;
+						// requestInternalObjectService.facilityName = selectedFacility;
+						// requestInternalObjectService.name = selectedName;
+						// requestInternalObjectService.endpoint = selectedEndpoint;
+                        requestWarp.target.value = requestInternalObjectService;
+                    } else if (requestWarp.target.case == 'externalObjectService') {
+                        requestWarp.target.value = requestExternalObjectService;
                     }
-					requestFio.input = {
-						accessMode: fioAccessMode,
-						jobCount: BigInt(fioJobCount),
-						runTime: fioRunTime,
-						blockSize: fioBlockSize,
-						fileSize: fioFileSize,
-						ioDepth: BigInt(fioIoDepth)
-					} as FIO_Input;
-					request.kind.value = requestFio;
+					requestWarp.input = {
+						operation: warpOperation,
+						duration: warpDuration,
+						objectSize: warpObjectSize,
+						objectCount: warpObjectCount
+					} as Warp_Input;
+					request.kind.value = requestWarp;
 					// request
 					bistClient
 						.createTestResult(request)
@@ -317,7 +330,7 @@
 							bistClient
 								.listTestResults({})
 								.then((r) => {
-									data.set(r.testResults.filter((result) => result.kind.case === 'fio' ));
+									data.set(r.testResults.filter((result) => result.kind.case === 'warp' ));
 								});
 						})
 						.catch((e) => {

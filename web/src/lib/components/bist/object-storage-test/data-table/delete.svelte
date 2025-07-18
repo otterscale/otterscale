@@ -72,7 +72,7 @@
 								bistClient
 									.listTestResults({})
 									.then((r) => {
-										data.set(r.testResults.filter((result) => result.kind.case === 'fio' ));
+										data.set(r.testResults.filter((result) => result.kind.case === 'warp' ));
 									});
 							})
 							.catch((e) => {

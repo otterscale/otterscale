@@ -1,8 +1,12 @@
 <script lang="ts" module>
 	import { type TestResult } from '$gen/api/bist/v1/bist_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
+	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
+	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -16,16 +20,10 @@
 		getPaginationRowModel,
 		getSortedRowModel
 	} from '@tanstack/table-core';
-	import { columns } from './columns';
-	// import Create from './create.svelte';
-	import Statistics from './statistics.svelte';
 	import { writable } from 'svelte/store';
 	import Actions from './actions.svelte';
-	import * as Layout from '$lib/components/custom/data-table/layout';
-	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import { headers } from './headers.svelte';
+	import { columns } from './columns';
+	import Statistics from './statistics.svelte';
 	import Create from './test-step-modal.svelte';
 
 </script>

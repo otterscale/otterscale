@@ -13,8 +13,8 @@
 {#await bistClient.listTestResults({})}
 	<PageLoading />
 {:then response}
-	{@const fioTestResults = response.testResults.filter((result) => result.kind.case === 'fio' )}
-	<DataTable testResults={fioTestResults} />
+	{@const testResults = response.testResults.filter((result) => result.kind.case === 'warp' )}
+	<DataTable testResults={testResults} />
 {:catch e}
 	<div class="flex w-fill items-center justify-center border">No Data</div>
 {/await}
