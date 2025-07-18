@@ -44,12 +44,12 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 		return nil, nil, err
 	}
 	jujuJuju := juju.New(configConfig)
+	actionRepo := juju.NewAction(jujuJuju)
 	facilityRepo := juju.NewApplication(jujuJuju)
 	scopeRepo := juju.NewModel(jujuJuju)
 	clientRepo := juju.NewClient(jujuJuju)
-	applicationUseCase := core.NewApplicationUseCase(kubeAppsRepo, kubeCoreRepo, kubeStorageRepo, chartRepo, releaseRepo, facilityRepo, scopeRepo, clientRepo)
+	applicationUseCase := core.NewApplicationUseCase(kubeAppsRepo, kubeCoreRepo, kubeStorageRepo, chartRepo, releaseRepo, actionRepo, facilityRepo, scopeRepo, clientRepo)
 	applicationService := app.NewApplicationService(applicationUseCase)
-	actionRepo := juju.NewAction(jujuJuju)
 	kubeBatchRepo := kube.NewBatch(kubeKube)
 	cephCeph := ceph.New(configConfig)
 	cephClusterRepo := ceph.NewCluster(cephCeph)
@@ -65,7 +65,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	packageRepositoryRepo := maas.NewPackageRepository(maasMAAS)
 	configurationUseCase := core.NewConfigurationUseCase(serverRepo, scopeRepo, scopeConfigRepo, bootResourceRepo, bootSourceRepo, bootSourceSelectionRepo, packageRepositoryRepo)
 	configurationService := app.NewConfigurationService(configurationUseCase)
-	environmentUseCase := core.NewEnvironmentUseCase(scopeRepo, facilityRepo, configConfig)
+	environmentUseCase := core.NewEnvironmentUseCase(scopeRepo, actionRepo, facilityRepo, configConfig)
 	environmentService := app.NewEnvironmentService(environmentUseCase)
 	charmRepo := juju.NewCharm(jujuJuju)
 	machineRepo := maas.NewMachine(maasMAAS)

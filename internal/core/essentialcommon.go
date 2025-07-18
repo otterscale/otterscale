@@ -21,7 +21,6 @@ var (
 		{"grafana-agent:cos-agent", "ceph-mon:cos-agent"},
 		{"grafana-agent:cos-agent", "kubeapi-load-balancer:cos-agent"},
 		{"grafana-agent:cos-agent", "kubernetes-control-plane:cos-agent"},
-		{"grafana-agent:cos-agent", "kubernetes-worker:cos-agent"},
 	}
 )
 

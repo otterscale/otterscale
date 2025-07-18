@@ -15,6 +15,13 @@ import (
 	"gopkg.in/ini.v1"
 )
 
+const (
+	cephConfigCommand        = "ceph config generate-minimal-conf && ceph auth get client.admin"
+	cephRGWUserListCommand   = "radosgw-admin user list"
+	cephRGWUserCreateCommand = "radosgw-admin user create --system --uid=otterscale --display-name=OtterScale --format json"
+	cephRGWUserInfoCommand   = "radosgw-admin user info --uid=otterscale --format=json"
+)
+
 var storageConfigs sync.Map
 
 func storageConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) (*StorageConfig, error) {
@@ -196,15 +203,12 @@ func runCommand(ctx context.Context, actionRepo ActionRepo, uuid, leader, comman
 	return waitForActionCompleted(ctx, actionRepo, uuid, id, time.Second, time.Minute)
 }
 
-func runAction(ctx context.Context, actionRepo ActionRepo, uuid, leader, action string, params map[string]any) error {
+func runAction(ctx context.Context, actionRepo ActionRepo, uuid, leader, action string, params map[string]any) (*action.ActionResult, error) {
 	id, err := actionRepo.RunAction(ctx, uuid, leader, action, params)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if _, err := waitForActionCompleted(ctx, actionRepo, uuid, id, time.Second, time.Minute); err != nil {
-		return err
-	}
-	return nil
+	return waitForActionCompleted(ctx, actionRepo, uuid, id, time.Second, time.Minute)
 }
 
 func waitForActionCompleted(ctx context.Context, actionRepo ActionRepo, uuid, id string, tickInterval, timeoutDuration time.Duration) (*action.ActionResult, error) {

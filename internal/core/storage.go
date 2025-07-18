@@ -1,12 +1,5 @@
 package core
 
-const (
-	cephConfigCommand        = "ceph config generate-minimal-conf && ceph auth get client.admin"
-	cephRGWUserListCommand   = "radosgw-admin user list"
-	cephRGWUserCreateCommand = "radosgw-admin user create --system --uid=otterscale --display-name=OtterScale --format json"
-	cephRGWUserInfoCommand   = "radosgw-admin user info --uid=otterscale --format=json"
-)
-
 type StorageCephConfig struct {
 	FSID    string
 	MONHost string

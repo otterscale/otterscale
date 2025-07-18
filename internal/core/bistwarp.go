@@ -98,7 +98,7 @@ func (uc *BISTUseCase) warpMinIOJobSpec(ctx context.Context, target *WarpTargetI
 	if len(tmp) != 2 {
 		return nil, fmt.Errorf("invalid name %q", target.Name)
 	}
-	kc, err := kubeConfig(ctx, uc.facility, target.ScopeUUID, target.FacilityName)
+	kc, err := kubeConfig(ctx, uc.facility, uc.action, target.ScopeUUID, target.FacilityName)
 	if err != nil {
 		return nil, err
 	}

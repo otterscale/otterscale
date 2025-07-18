@@ -122,7 +122,7 @@ func (uc *StorageUseCase) CreateSubvolume(ctx context.Context, uuid, facility, v
 			"name": subvolume,
 			"size": size / 1024 / 1024 / 1024, // gb
 		}
-		if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
+		if _, err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 			return nil, err
 		}
 		return uc.fs.GetSubvolume(ctx, config, volume, subvolume, "")
@@ -154,7 +154,7 @@ func (uc *StorageUseCase) UpdateSubvolume(ctx context.Context, uuid, facility, v
 			"name": subvolume,
 			"size": size / 1024 / 1024 / 1024, // gb
 		}
-		if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
+		if _, err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 			return nil, err
 		}
 		return uc.fs.GetSubvolume(ctx, config, volume, subvolume, "")
@@ -185,7 +185,7 @@ func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, v
 			"name":  subvolume,
 			"purge": true,
 		}
-		if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
+		if _, err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 			return err
 		}
 		return nil
@@ -203,7 +203,7 @@ func (uc *StorageUseCase) GrantSubvolumeClient(ctx context.Context, uuid, facili
 		"name":   subvolume,
 		"client": clientIP,
 	}
-	if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
+	if _, err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 		return err
 	}
 	return nil
@@ -219,7 +219,7 @@ func (uc *StorageUseCase) RevokeSubvolumeClient(ctx context.Context, uuid, facil
 		"name":   subvolume,
 		"client": clientIP,
 	}
-	if err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
+	if _, err := runAction(ctx, uc.action, uuid, leader, action, params); err != nil {
 		return err
 	}
 	return nil
