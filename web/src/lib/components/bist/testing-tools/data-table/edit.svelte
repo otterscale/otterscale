@@ -1,60 +1,44 @@
-<script lang="ts">
-	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import * as Form from '$lib/components/custom/form';
-	import { Single as SingleInput } from '$lib/components/custom/input';
+<script lang="ts" module>
+	import type { CreateTestResultRequest, TestResult } from '$gen/api/bist/v1/bist_pb';
+	import { BISTService } from '$gen/api/bist/v1/bist_pb';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { cn } from '$lib/utils';
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import type { FlexibleIOTest } from './types';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	// import Create from './create.svelte';
+	import * as MultipleStepModal from './mutiple-step-modal';
+	import TestStepModal from './test-step-modal.svelte'
+</script>
 
-	type Request = {
-		name: string;
-	};
+<script lang="ts">
+	let {
+		testResult,
+		data = $bindable()
+	}: {
+		testResult: TestResult;
+		data: Writable<TestResult[]>;
+	} = $props();
 
-	let { flexibleIOTest }: { flexibleIOTest: FlexibleIOTest } = $props();
+	const DEFAULT_REQUEST = {
+		name: testResult.name
+	} as CreateTestResultRequest;
 
-	const DEFAULT_REQUEST = { name: flexibleIOTest.name } as Request;
-	let request: Request = $state(DEFAULT_REQUEST);
+	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
 	}
 
 	const stateController = new DialogStateController(false);
+	const transport: Transport = getContext('transport');
+	const bistClient = createClient(BISTService, transport);
 </script>
 
-<AlertDialog.Root bind:open={stateController.state}>
-	<AlertDialog.Trigger class={cn('flex h-full w-full items-center gap-2')}>
-		<Icon icon="ph:pencil" />
-		Edit
-	</AlertDialog.Trigger>
-	<AlertDialog.Content>
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Edit FIO
-		</AlertDialog.Header>
-		<Form.Root>
-			<Form.Fieldset>
-				<Form.Field>
-					<Form.Label for="fio-name">Name</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						id="fio-name"
-						bind:value={request.name}
-					/>
-				</Form.Field>
-			</Form.Fieldset>
-		</Form.Root>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
-			<AlertDialog.ActionsGroup>
-				<AlertDialog.Action
-					onclick={() => {
-						console.log(request);
-					}}
-				>
-					Create
-				</AlertDialog.Action>
-			</AlertDialog.ActionsGroup>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+{#snippet trigger()}
+	<MultipleStepModal.Trigger class="flex h-full w-full items-center gap-2">
+		<Icon icon="ph:play" />
+		Retest``
+	</MultipleStepModal.Trigger>
+{/snippet}
+
+<TestStepModal testResult={testResult} data={data} {trigger} />

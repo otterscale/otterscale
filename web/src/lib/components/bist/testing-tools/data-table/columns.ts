@@ -1,7 +1,6 @@
 import { type TestResult } from '$gen/api/bist/v1/bist_pb';
-import { renderComponent, renderSnippet } from "$lib/components/ui/data-table/index.js";
+import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import { type ColumnDef } from "@tanstack/table-core";
-import DataTableActions from "./actions.svelte";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
@@ -50,13 +49,7 @@ const columns: ColumnDef<TestResult>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.completedAt, row);
         },
-    },
-    {
-        id: "actions",
-        cell: ({ row }) => {
-            return renderComponent(DataTableActions, { flexibleIOTest: row.original });
-        },
-    },
+    }
 ];
 
 export {

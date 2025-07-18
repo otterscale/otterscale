@@ -1,4 +1,4 @@
-<script lang="ts" generics="TData, TValue">
+<script lang="ts" module>
 	import { type TestResult } from '$gen/api/bist/v1/bist_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
@@ -17,10 +17,20 @@
 		getSortedRowModel
 	} from '@tanstack/table-core';
 	import { columns } from './columns';
-	import Create from './create.svelte';
+	// import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
 	import { writable } from 'svelte/store';
+	import Actions from './actions.svelte';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
+	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
+	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
+	import { headers } from './headers.svelte';
+	import Create from './test-step-modal.svelte';
 
+</script>
+
+<script lang="ts" generics="TData, TValue">
 	let { testResults } : { testResults: TestResult[] } = $props();
 	let data = $state(writable(testResults));
 	
@@ -98,50 +108,66 @@
 	});
 </script>
 
-<Statistics {table} />
-<div class="flex flex-col gap-4">
-	<div class="flex items-center justify-between gap-2">
-		<Create bind:data />
-		<div class="flex items-center justify-between gap-2">
+<Layout.Root>
+	<Layout.Statistics>
+		<Statistics {table} />
+	</Layout.Statistics>
+	<Layout.Controller>
+		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<!-- <PointFilter columnId="permission" {table} /> -->
+			<PointFilter columnId="createdBy" alias="Creater" {table} />
 			<ColumnViewer {table} />
-		</div>
-	</div>
-	<Table.Root>
-		<Table.Header class="bg-muted">
-			{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
-				<Table.Row>
-					{#each headerGroup.headers as header (header.id)}
-						<Table.Head>
-							{#if !header.isPlaceholder}
-								<FlexRender
-									content={header.column.columnDef.header}
-									context={header.getContext()}
-								/>
-							{/if}
-						</Table.Head>
-					{/each}
-				</Table.Row>
-			{/each}
-		</Table.Header>
-		<Table.Body>
-			{#each table.getRowModel().rows as row (row.id)}
-				<Table.Row data-state={row.getIsSelected() && 'selected'}>
-					{#each row.getVisibleCells() as cell (cell.id)}
+		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Create bind:data />
+		</Layout.ControllerAction>
+	</Layout.Controller>
+	<Layout.Viewer>
+		<Table.Root>
+			<Table.Header>
+				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
+					<Table.Row>
+						{#each headerGroup.headers as header (header.id)}
+							<Table.Head>
+								{#if !header.isPlaceholder}
+									<FlexRender
+										content={header.column.columnDef.header}
+										context={header.getContext()}
+									/>
+								{/if}
+							</Table.Head>
+						{/each}
+						<!-- <Table.Head>
+							{@render headers.iops()}
+						</Table.Head> -->
+						<Table.Head></Table.Head>
+					</Table.Row>
+				{/each}
+			</Table.Header>
+			<Table.Body>
+				{#each table.getRowModel().rows as row (row.id)}
+					<Table.Row data-state={row.getIsSelected() && 'selected'}>
+						{#each row.getVisibleCells() as cell (cell.id)}
+							<Table.Cell>
+								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+							</Table.Cell>
+						{/each}
 						<Table.Cell>
-							<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+							<Actions {row} bind:data />
 						</Table.Cell>
-					{/each}
-				</Table.Row>
-			{:else}
-				<Table.Row>
-					<Table.Cell colspan={columns.length}>No results.</Table.Cell>
-				</Table.Row>
-			{/each}
-		</Table.Body>
-	</Table.Root>
-	<div class="flex items-center justify-end gap-2">
+					</Table.Row>
+				{:else}
+					<Table.Row>
+						<Table.Cell colspan={columns.length}>
+							<TableEmpty />
+						</Table.Cell>
+					</Table.Row>
+				{/each}
+			</Table.Body>
+		</Table.Root>
+	</Layout.Viewer>
+	<Layout.Footer>
+		<TableFooter {table} />
 		<TablePagination {table} />
-	</div>
-</div>
+	</Layout.Footer>
+</Layout.Root>

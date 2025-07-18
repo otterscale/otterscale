@@ -1,32 +1,28 @@
-<script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import Icon from '@iconify/svelte';
+<script lang="ts" module>
+	import type { TestResult } from '$gen/api/bist/v1/bist_pb';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { Row } from '@tanstack/table-core';
+	import type { Writable } from 'svelte/store';
 	import Delete from './delete.svelte';
 	import Edit from './edit.svelte';
-	import type { FlexibleIOTest } from './types';
-
-	let { flexibleIOTest }: { flexibleIOTest: FlexibleIOTest } = $props();
 </script>
 
-<DropdownMenu.Root>
-	<DropdownMenu.Trigger>
-		{#snippet child({ props })}
-			<div class="w-full">
-				<Button variant="ghost" size="icon" class="float-right" {...props}>
-					<Icon icon="ph:dots-three" />
-				</Button>
-			</div>
-		{/snippet}
-	</DropdownMenu.Trigger>
-	<DropdownMenu.Content class="[&_.action]:cursor-pointer [&_.action]:text-xs [&_.label]:text-xs">
-		<DropdownMenu.Group>
-			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
-				<Edit {flexibleIOTest} />
-			</DropdownMenu.Item>
-			<DropdownMenu.Item class="action" onSelect={(e) => e.preventDefault()}>
-				<Delete {flexibleIOTest} />
-			</DropdownMenu.Item>
-		</DropdownMenu.Group>
-	</DropdownMenu.Content>
-</DropdownMenu.Root>
+<script lang="ts">
+	let {
+		row,
+		data = $bindable()
+	}: {
+		row: Row<TestResult>;
+		data: Writable<TestResult[]>;
+	} = $props();
+</script>
+
+<Layout.Actions>
+	<Layout.ActionLabel>Actions</Layout.ActionLabel>
+	<Layout.ActionItem>
+				<Edit testResult={row.original} bind:data />
+	</Layout.ActionItem>
+	<Layout.ActionItem>
+				<Delete testResult={row.original} bind:data />
+	</Layout.ActionItem>
+</Layout.Actions>
