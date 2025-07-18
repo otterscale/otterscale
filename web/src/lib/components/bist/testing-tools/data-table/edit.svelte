@@ -37,7 +37,7 @@
 {#snippet trigger()}
 	<MultipleStepModal.Trigger class="flex h-full w-full items-center gap-2">
 		<Icon icon="ph:play" />
-		Retest``
+		Retest
 	</MultipleStepModal.Trigger>
 {/snippet}
 

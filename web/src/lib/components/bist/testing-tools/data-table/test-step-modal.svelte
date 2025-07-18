@@ -317,7 +317,7 @@
 							bistClient
 								.listTestResults({})
 								.then((r) => {
-									data.set(r.testResults);
+									data.set(r.testResults.filter((result) => result.kind.case === 'fio' ));
 								});
 						})
 						.catch((e) => {
