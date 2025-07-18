@@ -10,18 +10,20 @@ type ApplicationUseCase struct {
 	kubeStorage KubeStorageRepo
 	chart       ChartRepo
 	release     ReleaseRepo
+	action      ActionRepo
 	facility    FacilityRepo
 	scope       ScopeRepo
 	client      ClientRepo
 }
 
-func NewApplicationUseCase(kubeApps KubeAppsRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo, chart ChartRepo, release ReleaseRepo, facility FacilityRepo, scope ScopeRepo, client ClientRepo) *ApplicationUseCase {
+func NewApplicationUseCase(kubeApps KubeAppsRepo, kubeCore KubeCoreRepo, kubeStorage KubeStorageRepo, chart ChartRepo, release ReleaseRepo, action ActionRepo, facility FacilityRepo, scope ScopeRepo, client ClientRepo) *ApplicationUseCase {
 	return &ApplicationUseCase{
 		kubeApps:    kubeApps,
 		kubeCore:    kubeCore,
 		kubeStorage: kubeStorage,
 		chart:       chart,
 		release:     release,
+		action:      action,
 		facility:    facility,
 		scope:       scope,
 		client:      client,

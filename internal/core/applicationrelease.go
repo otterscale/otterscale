@@ -40,7 +40,7 @@ func (uc *ApplicationUseCase) ListReleases(ctx context.Context) ([]Release, erro
 	result := make([][]Release, len(kuberneteses))
 	for i := range kuberneteses {
 		eg.Go(func() error {
-			config, err := kubeConfig(egctx, uc.facility, kuberneteses[i].ScopeUUID, kuberneteses[i].Name)
+			config, err := kubeConfig(egctx, uc.facility, uc.action, kuberneteses[i].ScopeUUID, kuberneteses[i].Name)
 			if err != nil {
 				return err
 			}
@@ -76,7 +76,7 @@ func (uc *ApplicationUseCase) CreateRelease(ctx context.Context, uuid, facility,
 		return nil, err
 	}
 
-	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func (uc *ApplicationUseCase) UpdateRelease(ctx context.Context, uuid, facility,
 		return nil, err
 	}
 
-	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (uc *ApplicationUseCase) UpdateRelease(ctx context.Context, uuid, facility,
 }
 
 func (uc *ApplicationUseCase) DeleteRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {
-	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func (uc *ApplicationUseCase) DeleteRelease(ctx context.Context, uuid, facility,
 }
 
 func (uc *ApplicationUseCase) RollbackRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {
-	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}

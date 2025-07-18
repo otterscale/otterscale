@@ -274,7 +274,7 @@ func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid string) ([]WarpTarge
 		if err != nil {
 			continue
 		}
-		config, err := kubeConfig(ctx, uc.facility, uuid, kube.Name)
+		config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, kube.Name)
 		if err != nil {
 			continue
 		}

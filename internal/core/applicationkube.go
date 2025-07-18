@@ -131,7 +131,7 @@ func (uc *ApplicationUseCase) ListApplications(ctx context.Context, uuid, facili
 		storageClasses         []storagev1.StorageClass
 	)
 
-	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -228,7 +228,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 		storageClasses         []storagev1.StorageClass
 	)
 
-	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
@@ -306,7 +306,7 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 }
 
 func (uc *ApplicationUseCase) ListStorageClasses(ctx context.Context, uuid, facility string) ([]storagev1.StorageClass, error) {
-	config, err := kubeConfig(ctx, uc.facility, uuid, facility)
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
