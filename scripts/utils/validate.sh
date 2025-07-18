@@ -34,7 +34,6 @@ check_disk() {
 
 # System validation checks
 validate_system() {
-    log "INFO" "System validation check" "OS check"
     check_root
     check_os
     check_memory
@@ -86,88 +85,4 @@ validate_cidr() {
         return 1
     fi
     return 0
-}
-
-# Function to convert an IP address to a number
-ip_to_number() {
-    local ip=$1
-    local -a octets=(${ip//./ })
-    echo $((octets[0] * 256**3 + octets[1] * 256**2 + octets[2] * 256 + octets[3]))
-}
-
-# Function to convert a network and mask to a number
-network_to_number() {
-    local network=$1
-    local mask=$2
-    local -a octets=(${network//./ })
-    local -a mask_octets=(${mask//./ })
-    local network_number=0
-    for i in {0..3}; do
-        network_number=$((network_number + (octets[i] & mask_octets[i]) * 256**(3-i)))
-    done
-    echo $network_number
-}
-
-
-# Function to check if an IP is in the network
-is_ip_in_network() {
-    local ip=$1
-    local network=$2
-    local mask=$3
-    local ip_number=$(ip_to_number $ip)
-    local network_number=$(network_to_number $network $mask)
-    local mask_number=$(ip_to_number $mask)
-
-    if [ $((ip_number & mask_number)) -eq $network_number ]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-check_ip_range() {
-    # Extract network and mask from subnet
-    local network=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f1)
-    local mask=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f2)
-
-    # Convert mask to dotted decimal format
-    local mask_dotted=$(printf "%d.%d.%d.%d" \
-        $((0xFF << (32 - mask) >> 24 & 0xFF)) \
-        $((0xFF << (32 - mask) >> 16 & 0xFF)) \
-        $((0xFF << (32 - mask) >> 8 & 0xFF)) \
-        $((0xFF << (32 - mask) & 0xFF)))
-
-    # Check if start_ip and end_ip are in the network
-    if is_ip_in_network $DHCP_START_IP $network $mask_dotted; then
-        if is_ip_in_network $DHCP_END_IP $network $mask_dotted; then
-            log "INFO" "IP range $DHCP_START_IP to $DHCP_END_IP is within the network $MAAS_NETWORK_SUBNET"
-            return 0
-        else
-            log "WARN" "End IP $DHCP_END_IP is not in the network $MAAS_NETWORK_SUBNET"
-            return 1
-        fi
-    else
-        log "WARN" "Start IP $DHCP_START_IP is not in the network $MAAS_NETWORK_SUBNET"
-        return 1
-    fi
-}
-
-check_interface_exist() {
-    local INTERFACE=$1
-    if ip addr show $INTERFACE > /dev/null 2>&1; then
-        return 0
-    fi
-    return 1
-}
-
-check_ip_in_cidr() {
-    local INTERFACE=$1
-    local TARGET_CIDR=$2
-    local CIDRS=$(ip -o -4 addr show dev INTERFACE | awk '{print $4}')
-    for i in ${CIDRS[@]}; do
-        if [[ $i == $TARGET_CIDR ]]; then
-            return 0
-        fi
-    done
-    return 1
 }

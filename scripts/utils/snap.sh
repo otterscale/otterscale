@@ -71,11 +71,7 @@ snap_install() {
     SNAP_CHANNELS[microk8s]=$MICROK8S_CHANNEL
 
     for SNAP_NAME in $SNAP_PACKAGES; do
-        CHANNEL=${SNAP_CHANNELS[$SNAP_NAME]}
-        if [[ -z $CHANNEL ]]; then
-            CHANNEL=""
-        fi
-        install_or_update_snap "$SNAP_NAME" "$CHANNEL"
+        install_or_update_snap "$SNAP_NAME" "${SNAP_CHANNELS[$SNAP_NAME]}"
     done
 
     log "INFO" "Holding all snaps..." "Snap hold"

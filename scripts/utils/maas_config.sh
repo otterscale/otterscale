@@ -1,9 +1,7 @@
 #!/bin/bash
 
-update_maas_dns() {
+get_maas_dns() {
     local maas_current_dns=$(maas admin maas get-config name=upstream_dns | jq -r)
-    log "INFO" "Update dns $OTTERSCALE_INTERFACE_DNS to maas dns" "MAAS config update"
-
     if [[ -z $maas_current_dns ]]; then
         dns_value="$OTTERSCALE_INTERFACE_DNS"
     elif [[ "$maas_current_dns" =~ "$OTTERSCALE_INTERFACE_DNS" ]]; then
@@ -11,19 +9,18 @@ update_maas_dns() {
     elif [[ $maas_current_dns != "null" ]]; then
         dns_value="$maas_current_dns $OTTERSCALE_INTERFACE_DNS"
     fi
-
-    set_config "upstream_dns" "$dns_value"
 }
 
 set_config() {
     local NAME=$1
     local VALUE=$2
-    if ! maas admin maas set-config name=$NAME value=$VALUE >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to set config $NAME to $VALUE"
-    fi
+    log "INFO" "Update Config: $NAME, Value: $VALUE" "MAAS config update"
+    execute_cmd "maas admin maas set-config name=$NAME value=$VALUE" "set maas $NAME config"
 }
 
 update_maas_config() {
+    get_maas_dns
+    set_config "upstream_dns" "$dns_value"	
     set_config "boot_images_auto_import" "false"
     set_config "enable_http_proxy" "false"
     set_config "enable_analytics" "false"
@@ -33,7 +30,7 @@ update_maas_config() {
 
 enter_dhcp_subnet() {
     while true; do
-        read -p "Enter DHCP subnet in CIDR notation (e.g., $OTTERSCALE_INTERFACE_IP/$OTTERSCALE_INTERFACE_IP_MASK): " MAAS_NETWORK_SUBNET
+        read -p "Enter DHCP subnet in CIDR notation (e.g. $OTTERSCALE_CONFIG_MAAS_CIDR): " MAAS_NETWORK_SUBNET
         if validate_cidr "$MAAS_NETWORK_SUBNET"; then
             break
         fi
@@ -71,9 +68,7 @@ update_fabric_dns() {
         dns_value="$FABRIC_DNS $OTTERSCALE_INTERFACE_DNS"
     fi
 
-    if ! maas admin subnet update "$MAAS_NETWORK_SUBNET" dns_servers="$dns_value" >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to update dns to fabric"
-    fi
+    execute_cmd "maas admin subnet update $MAAS_NETWORK_SUBNET dns_servers=$dns_value" "update maas dns to fabric"
 }
 
 get_fabric() {
@@ -122,8 +117,7 @@ get_dhcp_subnet_and_ip() {
 }
 
 enable_maas_dhcp() {
-    dynamic_ipranges_count=$(maas admin ipranges read | jq '. | length')
-    if [ "$dynamic_ipranges_count" -ne 0 ]; then
+    if [ $(maas admin ipranges read | jq '. | length') -ne 0 ]; then
         log "INFO" "MAAS already has dynamic IP ranges, skipping..." "MAAS config update"
         return 0
     fi
@@ -138,7 +132,7 @@ enable_maas_dhcp() {
             update_dhcp_config
 	    break
         else
-            if  ! -z $OTTERSCALE_CNOFIG_MAAS_DHCP_CIDR && ! -z $OTTERSCALE_CONFIG_MAAS_DHCP_START_IP && ! -z $OTTERSCALE_CONFIG_MAAS_DHCP_END_IP ]]; then
+            if ! -z $OTTERSCALE_CNOFIG_MAAS_DHCP_CIDR && ! -z $OTTERSCALE_CONFIG_MAAS_DHCP_START_IP && ! -z $OTTERSCALE_CONFIG_MAAS_DHCP_END_IP ]]; then
                 break
             fi
         fi

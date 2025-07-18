@@ -39,13 +39,7 @@ create_lxd_vm() {
         search_available_vmhost
     else
         log "INFO" "Creating new LXD VM host..." "MAAS lxd create"
-        if ! maas admin vm-hosts create \
-            password=password \
-            type=lxd \
-            power_address=https://$OTTERSCALE_INTERFACE_IP:8443 \
-            project=maas >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed to create LXD VM host"
-        fi
+        execute_cmd "maas admin vm-hosts create password=password type=lxd power_address=https://$OTTERSCALE_INTERFACE_IP:8443 project=maas" "create maas LXD VM host"
         VM_HOST_ID=$(maas admin vm-hosts read | jq -r '.[0].id')
     fi
     log "INFO" "LXD VM host (ID: $VM_HOST_ID) is ready" "MAAS lxd create"
@@ -54,25 +48,27 @@ create_lxd_vm() {
 rename_machine() {
     local MACHINE_ID=$1
     local MACHINE_NAME=$2
-    if ! maas admin machine update $MACHINE_ID hostname=$MACHINE_NAME >>"$TEMP_LOG" 2>&1 ; then
-        error_exit "Failed to rename machine $MACHINE_ID"
-    fi
+    execute_cmd "maas admin machine update $MACHINE_ID hostname=$MACHINE_NAME" "rename maas machine $MACHINE_ID"
 }
 
 wait_commissioning() {
     log "INFO" "Waiting for the machine to transition from commissioning to ready state" "MAAS prepare machine"
     while true; do
         local MACHINE_STATUS=$(maas admin machine read $JUJU_MACHINE_ID | jq -r '.status_name')
-        if [ "$MACHINE_STATUS" == "Ready" ]; then
-            log "INFO" "Machine $JUJU_MACHINE_ID created successfully" "MAAS prepare machine"
-            log "INFO" "Machine juju-vm id is $JUJU_MACHINE_ID" "MAAS prepare machine"
-            rename_machine $JUJU_MACHINE_ID "juju-vm"
-            break
-        elif [ "$MACHINE_STATUS" == "Failed commissioning" ]; then
-            error_exit "Failed commissioning machine $JUJU_MACHINE_ID"
-        elif [ "$MACHINE_STATUS" == "Failed testing" ]; then
-            error_exit "Failed testing machine $JUJU_MACHINE_ID"
-        fi
+        case $MACHINE_STATUS in
+            "Ready")
+                log "INFO" "Machine $JUJU_MACHINE_ID created successfully" "MAAS prepare machine"
+                log "INFO" "Machine juju-vm id is $JUJU_MACHINE_ID" "MAAS prepare machine"
+                rename_machine $JUJU_MACHINE_ID "juju-vm"
+                break
+                ;;
+            "Failed commissioning")
+                error_exit "Failed commissioning machine $JUJU_MACHINE_ID"
+                ;;
+            "Failed testing")
+                error_exit "Failed testing machine $JUJU_MACHINE_ID"
+                ;;
+	esac
         sleep 10
     done
 }
@@ -161,9 +157,7 @@ update_vm_ip() {
     done
 
     # link_subnet and give static ip
-    if ! maas admin interface link-subnet $JUJU_MACHINE_ID $JUJU_MACHINE_INTERFACE_NAME mode=static subnet=$MAAS_SUBNET_CIDR ip_address=$JUJU_VM_IP >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to update ip $JUJU_MACHINE_INTERFACE_NAME to machine $JUJU_MACHINE_ID"
-    fi
+    execute_cmd "maas admin interface link-subnet $JUJU_MACHINE_ID $JUJU_MACHINE_INTERFACE_NAME mode=static subnet=$MAAS_SUBNET_CIDR ip_address=$JUJU_VM_IP" "update ip $JUJU_MACHINE_INTERFACE_NAME to machine $JUJU_MACHINE_ID"
 }
 
 set_vm_static_ip() {

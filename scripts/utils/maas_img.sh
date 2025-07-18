@@ -3,16 +3,14 @@
 update_boot_source(){
     # Existing source found - modify it
     MAAS_BOOT_SOURCE_ID=$(echo "$MAAS_BOOT_SOURCES" | jq -r '.[0].id')
-    MAAS_BOOT_SELECTION_ID=$(maas admin boot-source-selections read $MAAS_BOOT_SOURCE_ID | jq -r '.[0].id')
+    MAAS_BOOT_SELECTION_ID=$(maas admin boot-source-selections read "$MAAS_BOOT_SOURCE_ID" | jq -r '.[0].id')
     log "INFO" "Modifying existing boot source (ID: $MAAS_BOOT_SOURCE_ID)" "MAAS boot image"
 
     # Remove any additional sources if present
     if [ "$MAAS_BOOT_SOURCE_COUNT" -gt 1 ]; then
         log "INFO" "Removing duplicate boot sources..." "MAAS boot image"
         for id in $(echo "$sources" | jq -r '.[].id' | tail -n +2); do
-            if ! maas admin boot-source delete "$id" >>"$TEMP_LOG" 2>&1; then
-                error_exit "Failed to remove boot source $id"
-            fi
+            execute_cmd "maas admin boot-source delete $id" "remove maas boot source $id"
         done
     fi
 
@@ -23,7 +21,7 @@ update_boot_source(){
         arches=amd64 \
         subarches="*" \
         labels="*" >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to update boot source"
+        error_exit "Failed to update maas boot source"
     fi
 }
 
@@ -33,7 +31,7 @@ create_boot_source() {
     if ! maas admin boot-sources create \
         url="http://images.maas.io/ephemeral-v3/stable/" \
         keyring_filename="/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg" >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to create boot source"
+        error_exit "Failed to create maas boot source"
     fi
 
     # Get the new source ID
@@ -45,7 +43,7 @@ create_boot_source() {
         arches=amd64 \
         subarches="*" \
         labels="*" >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to create boot source selection"
+        error_exit "Failed create maas boot source selection"
     fi
 }
 
@@ -54,15 +52,12 @@ start_import() {
     maas admin boot-resources stop-import >>"$TEMP_LOG" 2>&1
     sleep 10
 
-    if ! maas admin boot-resources import >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed to start image download"
-    fi
+    execute_cmd "maas admin boot-resources import" "start maas image download"
     sleep 10
 
     log "INFO" "Waiting for image download to complete..." "MAAS boot image"
     while true; do
-        status=$(maas admin boot-resources is-importing | jq)
-        if [ "$status" != "true" ]; then
+	if [ $(maas admin boot-resources is-importing | jq -r) != "true" ]; then
             break
         fi
         sleep 10

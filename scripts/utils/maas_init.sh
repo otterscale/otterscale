@@ -4,18 +4,12 @@
 init_maas() {
     # Check if MAAS admin user already exists
     if maas apikey --username "$OTTERSCALE_MAAS_ADMIN_USER" >/dev/null 2>&1; then
-        log "INFO" "MAAS is already initialized (admin user exists). Skipping initialization." "MAAS init"
+        log "INFO" "MAAS is already initialized ($OTTERSCALE_MAAS_ADMIN_USER exist). Skipping initialization..."
         return 0
     fi
 
     log "INFO" "Initializing MAAS..." "MAAS init"
-    if ! maas init region+rack \
-        --database-uri maas-test-db:/// \
-        --maas-url "http://$OTTERSCALE_INTERFACE_IP:5240/MAAS" \
-        >>"$TEMP_LOG" 2>&1; then
-        error_exit "MAAS initialization failed"
-    fi
-    log "INFO" "MAAS initialized successfully" "MAAS init"
+    execute_cmd "maas init region+rack --database-uri maas-test-db:/// --maas-url http://$OTTERSCALE_INTERFACE_IP:5240/MAAS" "maas initialization"
 }
 
 create_maas_admin() {
@@ -23,13 +17,7 @@ create_maas_admin() {
     if maas apikey --username "$OTTERSCALE_MAAS_ADMIN_USER" >/dev/null 2>&1; then
         log "WARN" "Admin user '$OTTERSCALE_MAAS_ADMIN_USER' already exists. Using existing credentials" "MAAS init"
     else
-        if ! maas createadmin \
-            --username "$OTTERSCALE_MAAS_ADMIN_USER" \
-            --password "$OTTERSCALE_MAAS_ADMIN_PASS" \
-            --email "$OTTERSCALE_MAAS_ADMIN_EMAIL" \
-            >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed to create MAAS admin user"
-        fi
+        execute_cmd "maas createadmin --username $OTTERSCALE_MAAS_ADMIN_USER --password $OTTERSCALE_MAAS_ADMIN_PASS --email $OTTERSCALE_MAAS_ADMIN_EMAIL" "create MAAS admin user"
     fi
     log "INFO" "MAAS web url: http://$OTTERSCALE_INTERFACE_IP:5240/MAAS" "MAAS init"
     log "INFO" "MAAS Username: $OTTERSCALE_MAAS_ADMIN_USER" "MAAS init"
@@ -52,7 +40,7 @@ login_maas() {
         fi
     done
 
-    if [ $RETRIES -eq $OTTERSCALE_MAX_RETRIES ]; then
+    if [[ $RETRIES -eq $OTTERSCALE_MAX_RETRIES ]]; then
         error_exit "Failed to get login MAAS after $OTTERSCALE_MAX_RETRIES attempts"
     fi
 }
@@ -71,7 +59,6 @@ check_maas() {
     set_sshkey
 
     ## Configure
-    update_maas_dns
     update_maas_config
     download_maas_img
     enable_maas_dhcp

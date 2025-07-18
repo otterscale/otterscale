@@ -1,116 +1,43 @@
 #!/bin/bash
 
+get_interface_through_ip() {
+    local CIDR=$1
+    OTTERSCALE_NETWORK_INTERFACE=$(ip -br addr show to $CIDR | awk '{print $1}')
+    if [ -z $OTTERSCALE_NETWORK_INTERFACE ]; then
+        error_exit "Failed get network interface from $CIDR"
+    fi
+}
+
+is_interface_bridge() {
+    local INTERFACE=$1
+    if ! brctl show $INTERFACE > /dev/null 2>&1; then
+        error_exit "Network interface $INTERFACE is not a network bridge"
+    fi
+    return 0
+}
+
+get_maas_cidr() {
+    while true; do
+        read -p "Please enter the CIDR that you want to use on MAAAS: " $OTTERSCALE_CONFIG_MAAS_CIDR
+	if validate_cidr $OTTERSCALE_CONFIG_MAAS_CIDR; then
+            break
+        fi
+        log "WARN" "Invild CIDR. Please try agein" "OS network" 
+    done
+}
+
 check_bridge() {
-    if [ -z $OTTERSCALE_CONFIG_BRIDGE_NAME ]; then
-        select_bridge
-    else
-        OTTERSCALE_BRIDGE_NAME=$OTTERSCALE_CONFIG_BRIDGE_NAME
-        if ! check_interface_exist $OTTERSCALE_BRIDGE_NAME; then
-            error_exit "Network interface $OTTERSCALE_BRIDGE_NAME not exist."
-        fi
-
-        if ! check_ip_in_interface $OTTERSCALE_BRIDGE_NAME $OTTERSCALE_CONFIG_BRIDGE_CIDR; then
-            error_exit "CIDR $OTTERSCALE_CONFIG_BRIDGE_CIDR not found in network interface $OTTERSCALE_BRIDGE_NAME"
-        fi
-        OTTERSCALE_INTERFACE_IP=$(echo $OTTERSCALE_CONFIG_BRIDGE_CIDR | cut -d'/' -f1)
-        OTTERSCALE_INTERFACE_IP_MASK=$(echo $OTTERSCALE_CONFIG_BRIDGE_CIDR | cut -d'/' -f2)
-        get_current_dns $OTTERSCALE_BRIDGE_NAME
+    if [ -z $OTTERSCALE_CONFIG_MAAS_CIDR ]; then
+        get_maas_cidr
     fi
-}
+    get_interface_through_ip $OTTERSCALE_CONFIG_MAAS_CIDR
 
-select_bridge() {
-    while true; do
-        log "INFO" "Detecting available bridges..." "OS network"
-        local AVAILABLE_BRIDGES=($(brctl show 2>/dev/null | awk 'NR>1 {print $1}' | grep -v '^$'))
-
-        echo "Available network bridges:"
-        echo "0) Create new bridge"
-        for i in "${!AVAILABLE_BRIDGES[@]}"; do
-            echo "$((i+1))) ${AVAILABLE_BRIDGES[$i]}"
-        done
-
-        read -p "Select bridge (0-${#AVAILABLE_BRIDGES[@]}): " choice
-        case $choice in
-            0)
-                create_new_bridge
-                return
-                ;;
-            [1-9]*)
-                if [ $choice -le ${#AVAILABLE_BRIDGES[@]} ]; then
-                    OTTERSCALE_BRIDGE_NAME=${AVAILABLE_BRIDGES[$((choice-1))]}
-                    get_current_ip $OTTERSCALE_BRIDGE_NAME
-                    get_current_dns $OTTERSCALE_BRIDGE_NAME
-                    return
-                fi
-                ;;
-        esac
-        log "WARN" "Invalid selection. Please try again." "OS network"
-    done
-}
-
-backup_netplan() {
-    NETPLAN_FILE=$(ls /etc/netplan/*.yaml | head -n1)
-    if [ -z "$NETPLAN_FILE" ]; then
-        touch "$NETPLAN_FILE"
-    else
-        log "INFO" "Backed up network config to ${NETPLAN_FILE}.backup" "OS network"
-        cp "$NETPLAN_FILE" "${NETPLAN_FILE}.backup"
+    if is_interface_bridge $OTTERSCALE_NETWORK_INTERFACE ;then
+        OTTERSCALE_BRIDGE_NAME=$OTTERSCALE_NETWORK_INTERFACE
+        OTTERSCALE_INTERFACE_IP=$(echo $OTTERSCALE_CONFIG_MAAS_CIDR | cut -d'/' -f1)
+        OTTERSCALE_INTERFACE_IP_MASK=$(echo $OTTERSCALE_CONFIG_MAAS_CIDR | cut -d'/' -f2)
+	get_current_dns $OTTERSCALE_BRIDGE_NAME
     fi
-}
-
-select_interfaces() {
-    interfaces=($(ip -o link show | awk -F': ' '{print $2}' | grep -v 'lo'))
-    echo "Please select a network interface for bridge $OTTERSCALE_BRIDGE_NAME"
-    echo "Available network interfaces:"
-    for i in "${!interfaces[@]}"; do
-        echo "$((i+1))) ${interfaces[$i]}"
-    done
-
-    while true; do
-        read -p "Select interface to bridge (1-${#interfaces[@]}): " iface_choice
-        if [[ $iface_choice =~ ^[0-9]+$ ]] && [ $iface_choice -ge 1 ] && [ $iface_choice -le ${#interfaces[@]} ]; then
-            OTTERSCALE_NETWORK_INTERFACE=${interfaces[$((iface_choice-1))]}
-            break
-        fi
-        log "WARN" "Invalid selection. Please try again." "OS network"
-    done
-}
-
-enter_bridge_name() {
-    while true; do
-        read -p "Please enter bridge name, (e.g. br-pxe): " OTTERSCALE_BRIDGE_NAME
-        read -p "You entered: $OTTERSCALE_BRIDGE_NAME. Is this correct? [y/n]: " confirm
-        if [[ "$confirm" =~ ^[Yy]$ ]]; then
-            break
-        elif [[ "$confirm" =~ ^[Nn]$ ]]; then
-            echo "Please re-enter the bridge name."
-        else
-            echo "Invalid input. Please enter y or n."
-        fi
-    done
-}
-
-create_netplan() {
-    cat > "$NETPLAN_FILE" <<EOF
-network:
-  version: 2
-  renderer: networkd
-  ethernets:
-    $OTTERSCALE_NETWORK_INTERFACE:
-      dhcp4: no
-      dhcp6: no
-  bridges:
-    $OTTERSCALE_BRIDGE_NAME:
-      link-local: []
-      interfaces: [$OTTERSCALE_NETWORK_INTERFACE]
-      addresses: [$OTTERSCALE_INTERFACE_IP/$OTTERSCALE_INTERFACE_IP_MASK]
-      routes:
-      - to: default
-        via: $OTTERSCALE_INTERFACE_GATEWAY
-      nameservers:
-        addresses: [$OTTERSCALE_INTERFACE_DNS]
-EOF
-    chmod 600 /etc/netplan/*.yaml
 }
 
 get_current_dns() {
@@ -122,67 +49,62 @@ get_current_dns() {
     fi
 }
 
-get_current_ip() {
-    local INTERFACE=$1
-    local INTERFACE_IPS=($(ip -o -4 addr show dev "$INTERFACE" | awk '{print $4}'))
-    local INTERFACE_MASK=($(ip -o -4 addr show dev "$INTERFACE" | awk '{print $4}' | cut -d'/' -f2))
-
-    case ${#INTERFACE_IPS[@]} in
-        0)
-            error_exit "Network interface $INTERFACE has no IP address assigned"
-            ;;
-        1)
-            OTTERSCALE_INTERFACE_IP=$(echo ${INTERFACE_IPS[0]} | cut -d'/' -f1)
-            OTTERSCALE_INTERFACE_IP_MASK=$(echo ${INTERFACE_IPS[0]} | cut -d'/' -f2)
-            ;;
-        2)
-            log "INFO" "Detect multiple IPs on network interface $INTERFACE" "OS network"
-            for i in "${!INTERFACE_IPS[@]}"; do
-                echo "$((i+1))) ${INTERFACE_IPS[$i]}"
-            done
-
-            while true; do
-                read -p "Please select the IP you want to use on MAAS: " USER_IP_SELECT
-                if validate_ip ${INTERFACE_IPS[$((USER_IP_SELECT-1))]}; then
-                    OTTERSCALE_INTERFACE_IP=$(echo ${INTERFACE_IPS[$((USER_IP_SELECT-1))]} | cut -d'/' -f1)
-                    OTTERSCALE_INTERFACE_IP_MASK=$(echo ${INTERFACE_IPS[$((USER_IP_SELECT-1))]} | cut -d'/' -f2)
-                else
-                    log "WARN" "Invalid selection. Please try again." "OS network"
-                fi
-            done
-            ;;
-    esac
-
-    log "INFO" "Using bridge $INTERFACE with IP $OTTERSCALE_INTERFACE_IP/$OTTERSCALE_INTERFACE_IP_MASK"
+# Function to convert an IP address to a number
+ip_to_number() {
+    local ip=$1
+    local -a octets=(${ip//./ })
+    echo $((octets[0] * 256**3 + octets[1] * 256**2 + octets[2] * 256 + octets[3]))
 }
 
-get_current_gateway() {
-    local INTERFACE=$1
-    OTTERSCALE_INTERFACE_GATEWAY=$(ip route show dev $INTERFACE | awk '/default/ {print $3}' | head -1)
-    if [ -z "$OTTERSCALE_INTERFACE_GATEWAY" ]; then
-        OTTERSCALE_INTERFACE_GATEWAY=$(ip route show | awk '/default/ {print $3}' | head -1)
-        log "WARN" "No gateway found for $INTERFACE, using system default: $OTTERSCALE_INTERFACE_GATEWAY" "OS network"
+# Function to convert a network and mask to a number
+network_to_number() {
+    local network=$1
+    local mask=$2
+    local -a octets=(${network//./ })
+    local -a mask_octets=(${mask//./ })
+    local network_number=0
+    for i in {0..3}; do
+        network_number=$((network_number + (octets[i] & mask_octets[i]) * 256**(3-i)))
+    done
+    echo $network_number
+}
+
+# Function to check if an IP is in the network
+is_ip_in_network() {
+    local ip=$1
+    local network=$2
+    local mask=$3
+    local ip_number=$(ip_to_number $ip)
+    local network_number=$(network_to_number $network $mask)
+    local mask_number=$(ip_to_number $mask)
+
+    if [ $((ip_number & mask_number)) -eq $network_number ]; then
+        return 0
+    else
+        return 1
     fi
 }
 
-create_new_bridge() {
-    log "INFO" "Preparing to create new bridge..." "OS network"
-    enter_bridge_name
-    select_interfaces
-    backup_netplan
+check_ip_range() {
+    local network=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f1)
+    local mask=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f2)
+    local mask_dotted=$(printf "%d.%d.%d.%d" \
+        $((0xFF << (32 - mask) >> 24 & 0xFF)) \
+        $((0xFF << (32 - mask) >> 16 & 0xFF)) \
+        $((0xFF << (32 - mask) >> 8 & 0xFF)) \
+        $((0xFF << (32 - mask) & 0xFF)))
 
-    get_current_dns $OTTERSCALE_NETWORK_INTERFACE
-    get_current_ip $OTTERSCALE_NETWORK_INTERFACE
-    get_current_gateway $OTTERSCALE_NETWORK_INTERFACE
-    log "INFO" "Creating bridge $OTTERSCALE_BRIDGE_NAME with network interface $OTTERSCALE_NETWORK_INTERFACE..." "OS network"
-    log "INFO" "Using existing IP: $OTTERSCALE_INTERFACE_IP, Gateway: $OTTERSCALE_INTERFACE_GATEWAY, DNS: $OTTERSCALE_INTERFACE_DNS" "OS network"
-
-    create_netplan
-    stop_service "NetworkManager"
-    disable_service "NetworkManager"
-    start_service "systemd-networkd"
-    enable_service "systemd-networkd"
-    netplan apply || error_exit "Failed to apply netplan configuration"
-
-    log "INFO" "Successfully created bridge $OTTERSCALE_BRIDGE_NAME with IP $OTTERSCALE_INTERFACE_IP" "OS network"
+    # Check if start_ip and end_ip are in the network
+    if is_ip_in_network $DHCP_START_IP $network $mask_dotted; then
+        if is_ip_in_network $DHCP_END_IP $network $mask_dotted; then
+            log "INFO" "IP range $DHCP_START_IP to $DHCP_END_IP is within the network $MAAS_NETWORK_SUBNET"
+            return 0
+        else
+            log "WARN" "End IP $DHCP_END_IP is not in the network $MAAS_NETWORK_SUBNET"
+            return 1
+        fi
+    else
+        log "WARN" "Start IP $DHCP_START_IP is not in the network $MAAS_NETWORK_SUBNET"
+        return 1
+    fi
 }

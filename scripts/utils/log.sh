@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Enhanced logging functions
 log() {
     local LOG_LEVEL=$1
     local MESSAGE=$2
@@ -18,4 +17,10 @@ error_exit() {
     fi
     trap cleanup EXIT
     exit 1
+}
+
+# Cleanup on exit
+cleanup() {
+    echo "Cleaning up temporary files..."
+    rm -f "$TEMP_LOG"
 }

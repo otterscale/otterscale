@@ -1,45 +1,46 @@
 #!/bin/bash
 
-start_service() {
-    local SERVICE_NAME=$1
-    systemctl daemon-reload >/dev/null 2>&1
-    if systemctl start $SERVICE_NAME >/dev/null 2>&1; then
-        log "INFO" "Start service $SERVICE_NAME" "Syetem service"
-    else
-        error_exit "Failed start service $SERVICE_NAME"
+find_first_non_user() {
+    local USER_HOME=""
+    for USER in $(ls /home); do
+        if [ -d "/home/$USER" ]; then
+            USER_HOME="/home/$USER"
+            break
+        fi
+    done
+
+    if [ -z "$USER_HOME" ]; then
+        error_exit "No non-root user found for SSH key setup"
+    fi
+
+    NON_ROOT_USER=$(basename "$USER_HOME")
+    log "INFO" "Non-root user is $NON_ROOT_USER"
+}
+
+generate_ssh_key() {
+    if [[ ! -f "/home/$NON_ROOT_USER/.ssh/id_rsa" ]]; then
+        if ! su "$NON_ROOT_USER" -c 'mkdir -p $HOME/.ssh; ssh-keygen -q -t rsa -N "" -f "$HOME/.ssh/id_rsa" >>"$LOG" 2>&1'; then
+            error_exit "SSH key generation failed"
+        fi
+    fi
+
+    chown -R "$NON_ROOT_USER:$NON_ROOT_USER" "/home/$NON_ROOT_USER/.ssh"
+    chmod 600 "/home/$NON_ROOT_USER/.ssh/id_rsa"
+    chmod 644 "/home/$NON_ROOT_USER/.ssh/id_rsa.pub"
+}
+
+add_key_to_maas() {
+    if [[ $(maas admin sshkeys read | jq -r 'length') -eq 0 ]]; then
+        if ! maas admin sshkeys create key="$(cat "/home/$NON_ROOT_USER/.ssh/id_rsa.pub")" >>"$TEMP_LOG" 2>&1; then
+            error_exit "Failed to add SSH key to MAAS"
+        fi
     fi
 }
 
-stop_service() {
-    local SERVICE_NAME=$1
-    systemctl daemon-reload >/dev/null 2>&1
-    if systemctl stop $SERVICE_NAME >/dev/null 2>&1; then
-        log "INFO" "Stop service $SERVICE_NAME" "Syetem service"
-    else
-        error_exit "Failed stop service $SERVICE_NAME"
-    fi
-}
-
-enable_service() {
-    local SERVICE_NAME=$1
-    systemctl daemon-reload >/dev/null 2>&1
-    if ! systemctl enable $SERVICE_NAME >/dev/null 2>&1; then
-        error_exit "Failed enable service $SERVICE_NAME"
-    fi
-}
-
-disable_service() {
-    local SERVICE_NAME=$1
-    systemctl daemon-reload >/dev/null 2>&1
-    if ! systemctl disable $SERVICE_NAME >/dev/null 2>&1; then
-        error_exit "Failed disable service $SERVICE_NAME"
-    fi
-}
-
-# Cleanup on exit
-cleanup() {
-    echo "Cleaning up temporary files..."
-    rm -f "$TEMP_LOG"
+set_sshkey() {
+    find_first_non_user
+    generate_ssh_key
+    add_key_to_maas
 }
 
 execute_non_user_cmd() {
@@ -49,6 +50,16 @@ execute_non_user_cmd() {
     if ! su "$USERNAME" -c "${COMMAND} >>$LOG 2>&1"; then
         log "WARN" "Failed to $DESCRIPTION, check $LOG for details" "Non-root cmd"
         return 1
+    fi
+    return 0
+}
+
+execute_cmd() {
+    local CMD=$1
+    local MSG=$2
+    log "INFO" "Execute command: $CMD" "$MSG"
+    if ! $CMD >>"$TEMP_LOG" 2>&1; then
+        error_exit "Failed $MSG"
     fi
     return 0
 }

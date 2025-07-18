@@ -4,7 +4,7 @@ send_request() {
     local URL_PATH=$1
     local DATA=$2
     curl -s --header "Content-Type: application/json" --data "$DATA" "$OTTERSCALE_ENDPOINT$URL_PATH" > /dev/null 2>&1
-    if [[ "$?" != 0 ]]; then
+    if ! curl -s --header "Content-Type: application/json" --data "$DATA" "$OTTERSCALE_ENDPOINT$URL_PATH" > /dev/null 2>&1 ; then
         echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Failed execute curl request"
         trap cleanup EXIT
         exit 1
@@ -25,7 +25,7 @@ EOF
     send_request "/otterscale.environment.v1.EnvironmentService/UpdateStatus" "$DATA"
 }
 
-send_config_data() {
+send_otterscale_config_data() {
     local OTTERSCALE_MAAS_ENDPOINT="http://$OTTERSCALE_INTERFACE_IP:5240/MAAS"
     local OTTERSCALE_MAAS_KEY=$(su "$NON_ROOT_USER" -c "juju show-credentials maas-cloud maas-cloud-credential --show-secrets --client | grep maas-oauth | awk '{print \$2}'")
     local OTTERSCALE_CONTROLLER=$(su "$NON_ROOT_USER" -c "juju controllers --format json | jq -r '.\"current-controller\"'")

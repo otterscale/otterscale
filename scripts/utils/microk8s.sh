@@ -8,13 +8,8 @@ prepare_microk8s_config() {
         mkdir -p "$KUBE_FOLDER"
     fi
     chown "$NON_ROOT_USER":"$NON_ROOT_USER" "$KUBE_FOLDER"
-}
 
-update_microk8s_cni_interface() {
-    log "INFO" "Update microk8s calico daemonset environment IP_AUTODETECTION_METHOD to $OTTERSCALE_BRIDGE_NAME" "MicroK8S config"
-    if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$OTTERSCALE_BRIDGE_NAME" >> "$TEMP_LOG" 2>&1; then
-        error_exit "Failed update microk8s calico env IP_AUTODETECTION_METHOD"
-    fi
+    execute_cmd "microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD='"'interface=$OTTERSCALE_BRIDGE_NAME'"'" "update microk8s calico IP_AUTODETECTION_METHOD"
 }
 
 enable_microk8s_option() {
@@ -23,43 +18,23 @@ enable_microk8s_option() {
         microk8s config > "$KUBE_FOLDER/config"
         chown "$NON_ROOT_USER":"$NON_ROOT_USER" "$KUBE_FOLDER/config"
 
-        log "INFO" "Enable microk8s dns" "MicroK8S config"
-        if ! microk8s enable dns >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed enable microk8s dns"
-        fi
-        log "INFO" "Enable microk8s hostpath-storage" "MicroK8S config"
-	if ! microk8s enable hostpath-storage >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed enable microk8s hostpath-storage"
-	fi
-
-        log "INFO" "Enable microk8s metallb" "MicroK8S config"
-        if ! microk8s enable metallb:$OTTERSCALE_INTERFACE_IP-$OTTERSCALE_INTERFACE_IP >>"$TEMP_LOG" 2>&1; then
-            error_exit "Failed enable microk8s metallb"
-        fi
+	execute_cmd "microk8s enable dns" "enable microk8s dns"
+	execute_cmd "microk8s enable hostpath-storage" "enable microk8s hostpath-storage"
+	execute_cmd "microk8s enable metallb:$OTTERSCALE_INTERFACE_IP-$OTTERSCALE_INTERFACE_IP" "enable microk8s metallb"
     fi
 }
 
 extend_microk8s_cert() {
     log "INFO" "Refresh microk8s certificate to 3650 days" "MicroK8S certificate update"
-    local SNAP="/snap/microk8s/current"
-    local SNAP_DATA="/var/snap/microk8s/current"
-    local OPENSSL_CONF="/snap/microk8s/current/etc/ssl/openssl.cnf"
+    SNAP_SSL="/snap/microk8s/current/usr/bin/openssl"
+    SNAP_DATA="/var/snap/microk8s/current"
+    OPENSSL_CONF="/snap/microk8s/current/etc/ssl/openssl.cnf"
 
-    if ! ${SNAP}/usr/bin/openssl req -new -sha256 -key ${SNAP_DATA}/certs/server.key -out ${SNAP_DATA}/certs/server.csr -config ${SNAP_DATA}/certs/csr.conf >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed extend microk8s certificate (out server.csr)"
-    fi
+    execute_cmd "${SNAP_SSL} req -new -sha256 -key ${SNAP_DATA}/certs/server.key -out ${SNAP_DATA}/certs/server.csr -config ${SNAP_DATA}/certs/csr.conf" "extend microk8s certificate: server.csr"
+    execute_cmd "${SNAP_SSL} x509 -req -sha256 -in ${SNAP_DATA}/certs/server.csr -CA ${SNAP_DATA}/certs/ca.crt -CAkey ${SNAP_DATA}/certs/ca.key -CAcreateserial -out ${SNAP_DATA}/certs/server.crt -days 3650 -extensions v3_ext -extfile ${SNAP_DATA}/certs/csr.conf" "extend microk8s certificate: server.crt"
 
-    if ! ${SNAP}/usr/bin/openssl x509 -req -sha256 -in ${SNAP_DATA}/certs/server.csr -CA ${SNAP_DATA}/certs/ca.crt -CAkey ${SNAP_DATA}/certs/ca.key -CAcreateserial -out ${SNAP_DATA}/certs/server.crt -days 3650 -extensions v3_ext -extfile ${SNAP_DATA}/certs/csr.conf >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed extend microk8s certificate (out server.crt)"
-    fi
-
-    if ! ${SNAP}/usr/bin/openssl req -new -sha256 -key ${SNAP_DATA}/certs/front-proxy-client.key -out ${SNAP_DATA}/certs/front-proxy-client.csr -config <(sed '/^prompt = no/d' ${SNAP_DATA}/certs/csr.conf) -subj "/CN=front-proxy-client" >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed extend microk8s certificate (out front-proxy-client.csr)"
-    fi
-
-    if ! ${SNAP}/usr/bin/openssl x509 -req -sha256 -in ${SNAP_DATA}/certs/front-proxy-client.csr -CA ${SNAP_DATA}/certs/front-proxy-ca.crt -CAkey ${SNAP_DATA}/certs/front-proxy-ca.key -CAcreateserial -out ${SNAP_DATA}/certs/front-proxy-client.crt -days 3650 -extensions v3_ext -extfile ${SNAP_DATA}/certs/csr.conf >>"$TEMP_LOG" 2>&1; then
-        error_exit "Failed extend microk8s certificate out front-proxy-client.crt)"
-    fi
+    execute_cmd "${SNAP_SSL} req -new -sha256 -key ${SNAP_DATA}/certs/front-proxy-client.key -out ${SNAP_DATA}/certs/front-proxy-client.csr -config <(sed '/^prompt = no/d' ${SNAP_DATA}/certs/csr.conf) -subj '"'/CN=front-proxy-client'"'" "extend microk8s certificate: front-proxy-client.csr"
+    execute_cmd "${SNAP_SSL} x509 -req -sha256 -in ${SNAP_DATA}/certs/front-proxy-client.csr -CA ${SNAP_DATA}/certs/front-proxy-ca.crt -CAkey ${SNAP_DATA}/certs/front-proxy-ca.key -CAcreateserial -out ${SNAP_DATA}/certs/front-proxy-client.crt -days 3650 -extensions v3_ext -extfile ${SNAP_DATA}/certs/csr.conf" "extend microk8s certificate: front-proxy-client.crt"
 }
 
 generate_sa_yaml() {
@@ -141,7 +116,7 @@ create_k8s_token() {
 
 check_microk8s() {
     prepare_microk8s_config
-    update_microk8s_cni_interface
     enable_microk8s_option
     extend_microk8s_cert
+    create_k8s_token
 }

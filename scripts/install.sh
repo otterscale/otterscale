@@ -4,9 +4,7 @@
 export OTTERSCALE_INSTALL_DIR=$(dirname "$(readlink -f $0)")
 
 ## Source env
-for envfile in $OTTERSCALE_INSTALL_DIR/env/*.env; do
-    source "$envfile"
-done
+source $OTTERSCALE_INSTALL_DIR/static.env
 
 ## Import script
 for file in $OTTERSCALE_INSTALL_DIR/utils/*.sh; do
@@ -19,49 +17,15 @@ export LOG=$OTTERSCALE_INSTALL_DIR/setup.log
 touch $LOG
 chmod 666 $LOG
 
-main() {
-    ## Validate
-    validate_system
-
-    ## Package install
-    apt_update
-    apt_install "$APT_PACKAGES"
-    snap_install
-
-    ## Host network
-    check_bridge
-    
-    ## MAAS init and login
-    check_maas
-
-    ## Bootstrap
-    set_juju_config
-    bootstrap_juju
-    create_scope
-
-    ## Config microk8s
-    check_microk8s
-    juju_add_k8s
-    juju_config_k8s
-    create_k8s_token
-
-    ## Send config to otterscale
-    send_config_data
-
-    ## cleanup
-    trap cleanup EXIT
-
-    log "INFO" "Otterscale install finished" "Otterscale"
-}
-
 ## without parameter
 if [[ $# -eq 0 ]]; then
+    OTTERSCALE_ENDPOINT="http://127.0.0.1:8299"
     while true; do
-        read -p "Please enter otterscale endpoint (e.g., http://127.0.0.1:8299): " OTTERSCALE_ENDPOINT
+        read -p "Please enter otterscale endpoint (default is http://127.0.0.1:8299): " OTTERSCALE_ENDPOINT
         if validate_url "$OTTERSCALE_ENDPOINT"; then
             break
         else
-            echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] URL $OTTERSCALE_ENDPOINT is invalid, please try again" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log 
+            echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] URL $OTTERSCALE_ENDPOINT is invalid, please try again" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log
         fi
     done
 fi
@@ -91,7 +55,7 @@ while [ $# -gt 0 ]; do
             echo "Example"
             echo "  sudo bash install.sh"
             echo "  sudo bash install.sh config=FILEPATH"
-	    exit 0
+            exit 0
             ;;
         *)
             echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Invalid option: $1, please try again" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log
@@ -100,5 +64,22 @@ while [ $# -gt 0 ]; do
     esac
     shift
 done
+
+main() {
+    validate_system
+    apt_update
+    apt_install "$APT_PACKAGES"
+    snap_install
+
+    check_bridge
+    check_maas
+    bootstrap_juju
+    check_microk8s
+    juju_add_k8s
+    send_otterscale_config_data
+
+    trap cleanup EXIT
+    log "INFO" "Otterscale install finished" "Otterscale"
+}
 
 main "$@"
