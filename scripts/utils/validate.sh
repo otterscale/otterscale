@@ -84,9 +84,8 @@ validate_cidr() {
     local CIDR=$1
     if [[ ! $CIDR =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+$ ]]; then
         return 1
-    else
-        return 0
     fi
+    return 0
 }
 
 # Function to convert an IP address to a number
@@ -151,4 +150,24 @@ check_ip_range() {
         log "WARN" "Start IP $DHCP_START_IP is not in the network $MAAS_NETWORK_SUBNET"
         return 1
     fi
+}
+
+check_interface_exist() {
+    local INTERFACE=$1
+    if ip addr show $INTERFACE > /dev/null 2>&1; then
+        return 0
+    fi
+    return 1
+}
+
+check_ip_in_cidr() {
+    local INTERFACE=$1
+    local TARGET_CIDR=$2
+    local CIDRS=$(ip -o -4 addr show dev INTERFACE | awk '{print $4}')
+    for i in ${CIDRS[@]}; do
+        if [[ $i == $TARGET_CIDR ]]; then
+            return 0
+        fi
+    done
+    return 1
 }

@@ -56,3 +56,30 @@ login_maas() {
         error_exit "Failed to get login MAAS after $OTTERSCALE_MAX_RETRIES attempts"
     fi
 }
+
+check_maas() {
+    OTTERSCALE_MAAS_ADMIN_USER=${OTTERSCALE_CONFIG_MAAS_ADMIN_USER:-admin}
+    OTTERSCALE_MAAS_ADMIN_PASS=${OTTERSCALE_CONFIG_MAAS_ADMIN_PASS:-admin}
+    OTTERSCALE_MAAS_ADMIN_EMAIL=${OTTERSCALE_CONFIG_MAAS_ADMIN_EMAIL:-admin@example.com}
+
+    ## Init, create, and login
+    init_maas
+    create_maas_admin
+    login_maas
+
+    ## Generate ssh
+    set_sshkey
+
+    ## Configure
+    update_maas_dns
+    update_maas_config
+    download_maas_img
+    enable_maas_dhcp
+
+    ## Lxd
+    init_lxd
+    create_maas_lxd_project
+    create_lxd_vm
+    create_vm_from_maas
+    set_vm_static_ip
+}

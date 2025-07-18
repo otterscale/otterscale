@@ -83,45 +83,44 @@ create_vm_from_maas() {
         log "INFO" "juju-vm already existed, skipping create..." "MAAS prepare machine"
     else
         log "INFO" "Creating VM on host $VM_HOST_ID..." "MAAS prepare machine"
-	    JUJU_MACHINE_ID=$(maas admin vm-host compose $VM_HOST_ID cores=$LXD_CORES memory=$LXD_MEMORY_MB disk=1:size=$LXD_DISK_GB | jq -r '.system_id')
-	    if [[ -z $JUJU_MACHINE_ID ]]; then
+        JUJU_MACHINE_ID=$(maas admin vm-host compose $VM_HOST_ID cores=$LXD_CORES memory=$LXD_MEMORY_MB disk=1:size=$LXD_DISK_GB | jq -r '.system_id')
+        if [[ -z $JUJU_MACHINE_ID ]]; then
             error_exit "Failed create vm host from kvm lxd $VM_HOST_ID"
-	    else
+        else
             wait_commissioning
-	    fi
+        fi
     fi
 }
 
 enter_vm_ip() {
     log "INFO" "Please provide an IP address that falls within the range of $MAAS_NETWORK_SUBNET"
     while true; do
-        read -p "Enter the IP that juju-vm will used : " juju_vm_ip
-        if validate_ip "$juju_vm_ip"; then
+        read -p "Enter the IP that juju-vm will used : " JUJU_VM_IP
+        if validate_ip "$JUJU_VM_IP"; then
             break
-        else
-            echo "Invalid IP format. Please try again."
         fi
+        echo "Invalid IP format. Please try again."
     done
 }
 
-check_vm_ip() {
-    local JUJU_MACHINE_SUBNET_MODE=$(maas admin interfaces read $JUJU_MACHINE_ID | jq -r '.[].links' | jq -r '.[] | select(.subnet.name=="'"$MAAS_NETWORK_SUBNET"'") | .mode')
-    log "INFO" "Machine $JUJU_MACHINE_ID interfaces mode is $JUJU_MACHINE_SUBNET_MODE"
-
-    if [[ $JUJU_MACHINE_SUBNET_MODE != "static" ]]; then
+set_static_vm_ip() {
+    if [ ! -z $OTTERSCALE_CONFIG_JUJU_IP ]; then
+        JUJU_VM_IP=$OTTERSCALE_CONFIG_JUJU_IP
+    else
         enter_vm_ip
-        update_vm_ip
-        return 0
     fi
+    update_vm_ip
+}
 
-    local current_vm_ip=$(maas admin interfaces read $JUJU_MACHINE_ID | jq -r '.[].links' | jq '.[] | select(.subnet.name=="'"$MAAS_NETWORK_SUBNET"'") | .ip_address')
+
+ask_user_type_vm_ip() {
     while true; do
-        read -p "The juju-vm is already configured with a static IP $current_vm_ip, do you want to continue using this IP? [y/n]: " confirm
+        read -p "The juju-vm is already configured with a static IP $CURRENT_JUJU_IP, do you want to continue using this IP? [y/n]: " confirm
         if [[ "$confirm" =~ ^[Yy]$ ]]; then
             break
         elif [[ "$confirm" =~ ^[Nn]$ ]]; then
             enter_vm_ip
-	        update_vm_ip
+            update_vm_ip
             break
         else
             echo "Invalid input. Please enter y or n."
@@ -129,8 +128,30 @@ check_vm_ip() {
     done
 }
 
+check_modify_vm_ip() {
+    CURRENT_JUJU_IP=$(maas admin interfaces read $JUJU_MACHINE_ID | jq -r '.[].links' | jq '.[] | select(.subnet.name=="'"$MAAS_NETWORK_SUBNET"'") | .ip_address')
+    if [ ! -z $OTTERSCALE_CONFIG_JUJU_IP ]; then
+        if [ $OTTERSCALE_CONFIG_JUJU_IP != $CURRENT_JUJU_IP ]; then
+            JUJU_VM_IP=$OTTERSCALE_CONFIG_JUJU_IP
+            update_vm_ip
+        fi
+    else
+        ask_user_type_vm_ip	    
+    fi
+}
+
+check_vm_ip() {
+    local JUJU_MACHINE_SUBNET_MODE=$(maas admin interfaces read $JUJU_MACHINE_ID | jq -r '.[].links' | jq -r '.[] | select(.subnet.name=="'"$MAAS_NETWORK_SUBNET"'") | .mode')
+    log "INFO" "Machine $JUJU_MACHINE_ID interfaces mode is $JUJU_MACHINE_SUBNET_MODE"
+    if [[ $JUJU_MACHINE_SUBNET_MODE != "static" ]]; then
+        set_static_vm_ip
+    else
+        check_modify_vm_ip
+    fi
+}
+
 update_vm_ip() {
-    log "INFO" "Update $juju_vm_ip to juju-vm."
+    log "INFO" "Update $JUJU_VM_IP to juju-vm."
     local JUJU_MACHINE_INTERFACE_NAME=$(maas admin interfaces read $JUJU_MACHINE_ID | jq -r '.[].name')
     local MAAS_SUBNET_CIDR=$(maas admin subnet read $MAAS_NETWORK_SUBNET | jq -r '.cidr')
 
@@ -140,7 +161,7 @@ update_vm_ip() {
     done
 
     # link_subnet and give static ip
-    if ! maas admin interface link-subnet $JUJU_MACHINE_ID $JUJU_MACHINE_INTERFACE_NAME mode=static subnet=$MAAS_SUBNET_CIDR ip_address=$juju_vm_ip >>"$TEMP_LOG" 2>&1; then
+    if ! maas admin interface link-subnet $JUJU_MACHINE_ID $JUJU_MACHINE_INTERFACE_NAME mode=static subnet=$MAAS_SUBNET_CIDR ip_address=$JUJU_VM_IP >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to update ip $JUJU_MACHINE_INTERFACE_NAME to machine $JUJU_MACHINE_ID"
     fi
 }
@@ -148,7 +169,7 @@ update_vm_ip() {
 set_vm_static_ip() {
     if maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q .; then
         JUJU_MACHINE_ID=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
-	    MAAS_NETWORK_SUBNET=$(maas admin subnet read $(ip -o -4 addr show dev $OTTERSCALE_BRIDGE_NAME | awk '{print $4}') | jq -r '.name')
+        MAAS_NETWORK_SUBNET=$(maas admin subnet read $(ip -o -4 addr show dev $OTTERSCALE_BRIDGE_NAME | awk '{print $4}') | jq -r '.name')
         check_vm_ip
     else
         error_exit "Machine juju-vm not found"

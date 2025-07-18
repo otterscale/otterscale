@@ -15,10 +15,9 @@ retry_snap_install() {
         log "INFO" "Installing snap $SNAP_NAME... (Attempt $((RETRIES)))" "Snap install"
         if snap install $SNAP_NAME $SNAP_OPTION >>"$TEMP_LOG" 2>&1; then
             break
-        else
-            log "WARN" "Failed to install snap $SNAP_NAME. Retrying... (Attempt $((RETRIES)))" "Snap install"
-            RETRIES=$((RETRIES+1))
         fi
+        log "WARN" "Failed to install snap $SNAP_NAME. Retrying... (Attempt $((RETRIES)))" "Snap install"
+        RETRIES=$((RETRIES+1))
     done
 
     if [ $RETRIES -eq $MAX_RETRIES ]; then
@@ -36,10 +35,9 @@ retry_snap_refresh() {
         log "INFO" "Refreshing snap $SNAP_NAME to $MAX_RETRIES... (Attempt $((RETRIES)))" "Snap refresh"
         if snap refresh $SNAP_NAME --channel=$MAX_RETRIES >>"$TEMP_LOG" 2>&1; then
             break
-        else
-            log "WARN" "Failed to refresh snap $snSNAP_NAMEap to $MAX_RETRIES. Retrying... (Attempt $((RETRIES)))" "Snap refresh"
-            RETRIES=$((RETRIES+1))
         fi
+        log "WARN" "Failed to refresh snap $snSNAP_NAMEap to $MAX_RETRIES. Retrying... (Attempt $((RETRIES)))" "Snap refresh"
+        RETRIES=$((RETRIES+1))
     done
 
     if [ $RETRIES -eq $MAX_RETRIES ]; then

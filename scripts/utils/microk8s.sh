@@ -1,19 +1,16 @@
 #!/bin/bash
 
-update_microk8s_config() {
-    KUBE_FOLDER="/home/$NON_ROOT_USER/.kube"
-
-    ## Add user group
-    log "INFO" "Add $NON_ROOT_USER to group microk8s" "MicroK8S config"
+prepare_microk8s_config() {
     usermod -aG microk8s "$NON_ROOT_USER"
 
-    ## Create folder
+    KUBE_FOLDER="/home/$NON_ROOT_USER/.kube"
     if [ ! -d "$KUBE_FOLDER" ]; then
         mkdir -p "$KUBE_FOLDER"
     fi
     chown "$NON_ROOT_USER":"$NON_ROOT_USER" "$KUBE_FOLDER"
+}
 
-    ## Update calico-node env
+update_microk8s_cni_interface() {
     log "INFO" "Update microk8s calico daemonset environment IP_AUTODETECTION_METHOD to $OTTERSCALE_BRIDGE_NAME" "MicroK8S config"
     if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$OTTERSCALE_BRIDGE_NAME" >> "$TEMP_LOG" 2>&1; then
         error_exit "Failed update microk8s calico env IP_AUTODETECTION_METHOD"
@@ -21,23 +18,29 @@ update_microk8s_config() {
 }
 
 enable_microk8s_option() {
-    local IPADDR=$(ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc')
     if microk8s status --wait-ready >/dev/null 2>&1; then
         log "INFO" "microk8s is ready." "MicroK8S config"
         microk8s config > "$KUBE_FOLDER/config"
         chown "$NON_ROOT_USER":"$NON_ROOT_USER" "$KUBE_FOLDER/config"
 
         log "INFO" "Enable microk8s dns" "MicroK8S config"
-        microk8s enable dns >>"$TEMP_LOG" 2>&1
+        if ! microk8s enable dns >>"$TEMP_LOG" 2>&1; then
+            error_exit "Failed enable microk8s dns"
+        fi
         log "INFO" "Enable microk8s hostpath-storage" "MicroK8S config"
-        microk8s enable hostpath-storage >>"$TEMP_LOG" 2>&1
+	if ! microk8s enable hostpath-storage >>"$TEMP_LOG" 2>&1; then
+            error_exit "Failed enable microk8s hostpath-storage"
+	fi
+
         log "INFO" "Enable microk8s metallb" "MicroK8S config"
-        microk8s enable metallb:$IPADDR-$IPADDR >>"$TEMP_LOG" 2>&1
+        if ! microk8s enable metallb:$OTTERSCALE_INTERFACE_IP-$OTTERSCALE_INTERFACE_IP >>"$TEMP_LOG" 2>&1; then
+            error_exit "Failed enable microk8s metallb"
+        fi
     fi
 }
 
 extend_microk8s_cert() {
-    log "INFO" "Refresh microk8s certificate." "MicroK8S certificate update"
+    log "INFO" "Refresh microk8s certificate to 3650 days" "MicroK8S certificate update"
     local SNAP="/snap/microk8s/current"
     local SNAP_DATA="/var/snap/microk8s/current"
     local OPENSSL_CONF="/snap/microk8s/current/etc/ssl/openssl.cnf"
@@ -134,4 +137,11 @@ create_k8s_token() {
         unset RBAC_PATH
         unset SECRET_PATH
     fi
+}
+
+check_microk8s() {
+    prepare_microk8s_config
+    update_microk8s_cni_interface
+    enable_microk8s_option
+    extend_microk8s_cert
 }

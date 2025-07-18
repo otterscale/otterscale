@@ -29,28 +29,10 @@ main() {
     snap_install
 
     ## Host network
-    select_bridge
+    check_bridge
     
     ## MAAS init and login
-    init_maas
-    create_maas_admin
-    login_maas
-
-    ## User ssh-key
-    set_sshkey
-
-    ## MAAS configure
-    update_maas_dns
-    update_maas_config
-    download_maas_img
-    enable_maas_dhcp
-
-    ## Create LXD
-    init_lxd
-    create_maas_lxd_project
-    create_lxd_vm
-    create_vm_from_maas
-    set_vm_static_ip
+    check_maas
 
     ## Bootstrap
     set_juju_config
@@ -58,9 +40,7 @@ main() {
     create_scope
 
     ## Config microk8s
-    update_microk8s_config
-    enable_microk8s_option
-    extend_microk8s_cert
+    check_microk8s
     juju_add_k8s
     juju_config_k8s
     create_k8s_token
@@ -74,17 +54,48 @@ main() {
     log "INFO" "Otterscale install finished" "Otterscale"
 }
 
+## without parameter
 if [[ $# -eq 0 ]]; then
-    error_exit "URL must be provided as a parameter"
+    while true; do
+        read -p "Please enter otterscale endpoint (e.g., http://127.0.0.1:8299): " OTTERSCALE_ENDPOINT
+        if validate_url "$OTTERSCALE_ENDPOINT"; then
+            break
+        else
+            echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] URL $OTTERSCALE_ENDPOINT is invalid, please try again" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log 
+        fi
+    done
 fi
+
+## with parameter
 while [ $# -gt 0 ]; do
     case $1 in
-        url=*)
-            otterscale_url="${1#*=}"
-            validate_url "$otterscale_url"
+        --config=* | config=*)
+            OTTERSCALE_CONFIG_PATH="${1#*=}"
+            if [ ! -f $OTTERSCALE_CONFIG_PATH ]; then
+                echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Config file $OTTERSCALE_CONFIG_PATH not found, please try again" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log
+                exit 1
+            fi
+
+            source $OTTERSCALE_CONFIG_PATH
+            if ! validate_url "$OTTERSCALE_ENDPOINT"; then
+                exit 1
+            fi
+            ;;
+        -h | --help | help)
+            echo "Usage: sudo bash install.sh [options]"
+            echo ""
+            echo "Options:"
+            echo "  -h | --help | help     Show this help message"
+            echo "  --config= | config=    Specific the configuration file to use"
+            echo ""
+            echo "Example"
+            echo "  sudo bash install.sh"
+            echo "  sudo bash install.sh config=FILEPATH"
+	    exit 0
             ;;
         *)
-            error_exit "Invalid option: $1"
+            echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Invalid option: $1, please try again" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log
+            exit 1
             ;;
     esac
     shift

@@ -1,5 +1,23 @@
 #!/bin/bash
 
+check_bridge() {
+    if [ -z $OTTERSCALE_CONFIG_BRIDGE_NAME ]; then
+        select_bridge
+    else
+        OTTERSCALE_BRIDGE_NAME=$OTTERSCALE_CONFIG_BRIDGE_NAME
+        if ! check_interface_exist $OTTERSCALE_BRIDGE_NAME; then
+            error_exit "Network interface $OTTERSCALE_BRIDGE_NAME not exist."
+        fi
+
+        if ! check_ip_in_interface $OTTERSCALE_BRIDGE_NAME $OTTERSCALE_CONFIG_BRIDGE_CIDR; then
+            error_exit "CIDR $OTTERSCALE_CONFIG_BRIDGE_CIDR not found in network interface $OTTERSCALE_BRIDGE_NAME"
+        fi
+        OTTERSCALE_INTERFACE_IP=$(echo $OTTERSCALE_CONFIG_BRIDGE_CIDR | cut -d'/' -f1)
+        OTTERSCALE_INTERFACE_IP_MASK=$(echo $OTTERSCALE_CONFIG_BRIDGE_CIDR | cut -d'/' -f2)
+        get_current_dns $OTTERSCALE_BRIDGE_NAME
+    fi
+}
+
 select_bridge() {
     while true; do
         log "INFO" "Detecting available bridges..." "OS network"
@@ -42,6 +60,7 @@ backup_netplan() {
 
 select_interfaces() {
     interfaces=($(ip -o link show | awk -F': ' '{print $2}' | grep -v 'lo'))
+    echo "Please select a network interface for bridge $OTTERSCALE_BRIDGE_NAME"
     echo "Available network interfaces:"
     for i in "${!interfaces[@]}"; do
         echo "$((i+1))) ${interfaces[$i]}"
@@ -59,9 +78,7 @@ select_interfaces() {
 
 enter_bridge_name() {
     while true; do
-        read -p "Enter bridge name, directily input Enter to get default value [$OTTERSCALE_DEFAULT_BRIDGE]: " OTTERSCALE_BRIDGE_NAME
-        OTTERSCALE_BRIDGE_NAME=${OTTERSCALE_BRIDGE_NAME:-$OTTERSCALE_DEFAULT_BRIDGE}
-
+        read -p "Please enter bridge name, (e.g. br-pxe): " OTTERSCALE_BRIDGE_NAME
         read -p "You entered: $OTTERSCALE_BRIDGE_NAME. Is this correct? [y/n]: " confirm
         if [[ "$confirm" =~ ^[Yy]$ ]]; then
             break
@@ -110,29 +127,31 @@ get_current_ip() {
     local INTERFACE_IPS=($(ip -o -4 addr show dev "$INTERFACE" | awk '{print $4}'))
     local INTERFACE_MASK=($(ip -o -4 addr show dev "$INTERFACE" | awk '{print $4}' | cut -d'/' -f2))
 
-    if [ ${#INTERFACE_IPS[@]} -eq 0 ]; then
-        error_exit "Network interface $INTERFACE has no IP address assigned"
+    case ${#INTERFACE_IPS[@]} in
+        0)
+            error_exit "Network interface $INTERFACE has no IP address assigned"
+            ;;
+        1)
+            OTTERSCALE_INTERFACE_IP=$(echo ${INTERFACE_IPS[0]} | cut -d'/' -f1)
+            OTTERSCALE_INTERFACE_IP_MASK=$(echo ${INTERFACE_IPS[0]} | cut -d'/' -f2)
+            ;;
+        2)
+            log "INFO" "Detect multiple IPs on network interface $INTERFACE" "OS network"
+            for i in "${!INTERFACE_IPS[@]}"; do
+                echo "$((i+1))) ${INTERFACE_IPS[$i]}"
+            done
 
-    elif [ ${#INTERFACE_IPS[@]} -eq 1 ]; then
-        OTTERSCALE_INTERFACE_IP=$(echo ${INTERFACE_IPS[0]} | cut -d'/' -f1)
-        OTTERSCALE_INTERFACE_IP_MASK=$(echo ${INTERFACE_IPS[0]} | cut -d'/' -f2)
-
-    elif [ ${#INTERFACE_IPS[@]} -ge 2 ]; then
-        log "INFO" "Detect multiple IPs on network interface $INTERFACE" "OS network"
-        for i in "${!INTERFACE_IPS[@]}"; do
-            echo "$((i+1))) ${INTERFACE_IPS[$i]}"
-        done
-
-        while true; do
-            read -p "Please select the IP you want to use on MAAS: " USER_IP_SELECT
-            if validate_ip ${INTERFACE_IPS[$((USER_IP_SELECT-1))]}; then
-                OTTERSCALE_INTERFACE_IP=$(echo ${INTERFACE_IPS[$((USER_IP_SELECT-1))]} | cut -d'/' -f1)
-		OTTERSCALE_INTERFACE_IP_MASK=$(echo ${INTERFACE_IPS[$((USER_IP_SELECT-1))]} | cut -d'/' -f2)
-            else
-                log "WARN" "Invalid selection. Please try again." "OS network"
-            fi
-        done
-    fi
+            while true; do
+                read -p "Please select the IP you want to use on MAAS: " USER_IP_SELECT
+                if validate_ip ${INTERFACE_IPS[$((USER_IP_SELECT-1))]}; then
+                    OTTERSCALE_INTERFACE_IP=$(echo ${INTERFACE_IPS[$((USER_IP_SELECT-1))]} | cut -d'/' -f1)
+                    OTTERSCALE_INTERFACE_IP_MASK=$(echo ${INTERFACE_IPS[$((USER_IP_SELECT-1))]} | cut -d'/' -f2)
+                else
+                    log "WARN" "Invalid selection. Please try again." "OS network"
+                fi
+            done
+            ;;
+    esac
 
     log "INFO" "Using bridge $INTERFACE with IP $OTTERSCALE_INTERFACE_IP/$OTTERSCALE_INTERFACE_IP_MASK"
 }
@@ -148,9 +167,9 @@ get_current_gateway() {
 
 create_new_bridge() {
     log "INFO" "Preparing to create new bridge..." "OS network"
-    backup_netplan
-    select_interfaces
     enter_bridge_name
+    select_interfaces
+    backup_netplan
 
     get_current_dns $OTTERSCALE_NETWORK_INTERFACE
     get_current_ip $OTTERSCALE_NETWORK_INTERFACE
