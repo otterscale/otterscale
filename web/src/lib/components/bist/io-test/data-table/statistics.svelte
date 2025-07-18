@@ -12,27 +12,10 @@
 	<span class="col-span-1">
 		<Chart.Text>
 			{#snippet title()}
-				FIO
+				I/O Tester
 			{/snippet}
 			{#snippet description()}
-				Flexible I/O tester
-			{/snippet}
-			{#snippet content()}
-				<div class="flex justify-between">
-					<div class="text-7xl">
-						{statisticManager.count('name')}
-					</div>
-				</div>
-			{/snippet}
-		</Chart.Text>
-	</span>
-	<span class="col-span-1">
-		<Chart.Text>
-			{#snippet title()}
-				WARP
-			{/snippet}
-			{#snippet description()}
-				S3 benchmarking tool
+				Ceph Block and NFS Tester
 			{/snippet}
 			{#snippet content()}
 				<div class="flex justify-between">
