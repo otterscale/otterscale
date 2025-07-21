@@ -18,8 +18,8 @@ is_interface_bridge() {
 
 get_maas_cidr() {
     while true; do
-        read -p "Please enter the CIDR that you want to use on MAAAS: " $OTTERSCALE_CONFIG_MAAS_CIDR
-	if validate_cidr $OTTERSCALE_CONFIG_MAAS_CIDR; then
+        read -p "Please enter the CIDR IP to be used for MAAS (e.g., 192.168.10.245/24): " OTTERSCALE_CONFIG_MAAS_CIDR
+        if validate_cidr $OTTERSCALE_CONFIG_MAAS_CIDR; then
             break
         fi
         log "WARN" "Invild CIDR. Please try agein" "OS network" 
