@@ -16,7 +16,6 @@
 	}: { selectedScope: string; selectedFacility: string } = $props();
 
 	let selectedCeph = $state({});
-
 	const transport: Transport = getContext('transport');
 	const essentialClient = createClient(EssentialService, transport);
 
@@ -35,6 +34,21 @@
 						}) as SingleSelect.OptionType
 				)
 			);
+			if (selectedScope && selectedFacility) {
+				const options = response.essentials.map(
+					(essential) => ({
+						value: { scopeUuid: essential.scopeUuid, facilityName: essential.name },
+						label: `${essential.scopeName}-${essential.name}`,
+						icon: 'ph:cube'
+					})
+				);
+				const matched = options.find(
+					opt => opt.value.scopeUuid === selectedScope && opt.value.facilityName === selectedFacility
+				);
+				if (matched) {
+					selectedCeph = { scopeUuid: matched.value.scopeUuid, facilityName: matched.value.facilityName }
+				}
+			}
 		} catch (error) {
 			console.error('Error fetching:', error);
 		} finally {
