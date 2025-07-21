@@ -4,7 +4,7 @@
 	import type { Row } from '@tanstack/table-core';
 	import type { Writable } from 'svelte/store';
 	import Delete from './delete.svelte';
-	import Edit from './edit.svelte';
+	import Retest from './retest.svelte';
 </script>
 
 <script lang="ts">
@@ -20,7 +20,7 @@
 <Layout.Actions>
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>
 	<Layout.ActionItem>
-				<Edit testResult={row.original} bind:data />
+				<Retest testResult={row.original} bind:data />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
 				<Delete testResult={row.original} bind:data />

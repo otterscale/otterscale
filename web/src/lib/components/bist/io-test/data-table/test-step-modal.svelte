@@ -14,7 +14,7 @@
 	import { type Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
-	import * as MultipleStepModal from './mutiple-step-modal';
+	import * as MultipleStepModal from '../../utils/mutiple-step-modal';
 
 
 	// FIO Target
