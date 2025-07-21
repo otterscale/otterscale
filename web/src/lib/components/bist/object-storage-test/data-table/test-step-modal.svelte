@@ -61,36 +61,10 @@
 	const DEFAULT_WARP_INPUT = testResult && testResult.kind.value?.input
     ? testResult.kind.value.input as Warp_Input
 	: { duration: "60s", objectSize: "4MiB", objectCount: "500" } as unknown as Warp_Input; 
-    // let selectedType = $state(
-    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
-    //         ? testResult.kind.value.target.value?.type ?? 0
-    //         : 0
-    // );
-	// let selectedScope = $state(
-    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
-    //         ? testResult.kind.value.target.value?.scopeUuid ?? ''
-    //         : ''
-    // );
-    // let selectedFacility = $state(
-    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
-    //         ? testResult.kind.value.target.value?.facilityName ?? ''
-    //         : ''
-    // );
-	// let selectedName = $state(
-    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
-    //         ? testResult.kind.value.target.value?.name ?? ''
-    //         : ''
-    // );
-	// let selectedEndpoint = $state(
-    //     testResult && testResult.kind.value?.target?.case === 'internalObjectService'
-    //         ? testResult.kind.value.target.value?.endpoint ?? ''
-    //         : ''
-    // );
 
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestWarp: Warp = $state(DEFAULT_WARP_REQUEST);
-	let requestInternalObjectService = $state(DEFAULT_INTERNAL_OBJECT_SERVICE);
-	// let requestInternalObjectService: InternalObjectService = $state(DEFAULT_INTERNAL_OBJECT_SERVICE);
+	let requestInternalObjectService: InternalObjectService = $state(DEFAULT_INTERNAL_OBJECT_SERVICE);
 	let requestExternalObjectService: ExternalObjectService = $state(DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE);
 	let warpOperation = $state(DEFAULT_WARP_INPUT.operation);
 	let warpDuration = $state(DEFAULT_WARP_INPUT.duration);
@@ -273,11 +247,6 @@
 							<Form.Description>Name: {request.name}</Form.Description>
 							<Form.Description>Target: {requestWarp.target.case}</Form.Description>
 							{#if requestWarp.target.case == 'internalObjectService'}
-								<!-- <Form.Description>Type: {selectedType}</Form.Description>
-								<Form.Description>Scope UUID: {selectedScope}</Form.Description>
-								<Form.Description>Facility Name: {selectedFacility}</Form.Description>
-								<Form.Description>Name: {selectedName}</Form.Description>
-								<Form.Description>Endpoint: {selectedEndpoint}</Form.Description> -->
 								<Form.Description>type: {requestInternalObjectService.type}</Form.Description>
 								<Form.Description>name: {requestInternalObjectService.name}</Form.Description>
 								<Form.Description>endpoint: {requestInternalObjectService.endpoint}</Form.Description>
@@ -306,11 +275,6 @@
 				onclick={() => {
 					// prepare request
                     if (requestWarp.target.case == 'internalObjectService') {
-						// requestInternalObjectService.type = selectedType;
-						// requestInternalObjectService.scopeUuid = selectedScope;
-						// requestInternalObjectService.facilityName = selectedFacility;
-						// requestInternalObjectService.name = selectedName;
-						// requestInternalObjectService.endpoint = selectedEndpoint;
                         requestWarp.target.value = requestInternalObjectService;
                     } else if (requestWarp.target.case == 'externalObjectService') {
                         requestWarp.target.value = requestExternalObjectService;

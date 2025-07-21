@@ -15,7 +15,7 @@
 		selectedInternalObjectService = $bindable(),
 	}: { selectedInternalObjectService: InternalObjectService } = $props();
 
-	let tmp = $state({});
+	let selectedInit = $state({});
 	let scopeUuid = $state("b62d195e-3905-4960-85ee-7673f71eb21e");
 
 	const transport: Transport = getContext('transport');
@@ -26,17 +26,39 @@
 	async function fetchOptions() {
 		try {
 			const response = await bistClient.listInternalObjectServices({ scopeUuid: scopeUuid});
-			internalObjectServices.set(
-				response.internalObjectServices.map(
-					(internalObjectServices) =>
-						({
-							value: internalObjectServices,
-							label: `${InternalObjectService_Type[internalObjectServices.type]}-${internalObjectServices.name}`,
-							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectServices.type]}-${internalObjectServices.name} (${internalObjectServices.endpoint})`
-						}) as SingleSelect.OptionType
-				)
-			);
+            internalObjectServices.set(
+                response.internalObjectServices.map(
+                    (internalObjectService) =>
+                        ({
+                            value: internalObjectService,
+                            label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
+                            icon: 'ph:cube',
+                            information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
+                        }) as SingleSelect.OptionType
+                )
+            );
+            if (selectedInternalObjectService) {
+                const options = response.internalObjectServices.map(
+                    (internalObjectService) =>
+                        ({
+                            value: internalObjectService,
+                            label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
+                            icon: 'ph:cube',
+                            information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
+                        }) as SingleSelect.OptionType
+                );
+                const matched = options.find(
+                    opt => 
+						opt.value.type === selectedInternalObjectService.type && 
+						opt.value.scopeUuid === selectedInternalObjectService.scopeUuid && 
+						opt.value.facilityName === selectedInternalObjectService.facilityName && 
+						opt.value.name === selectedInternalObjectService.name && 
+						opt.value.endpoint === selectedInternalObjectService.endpoint
+                );
+                if (matched) {
+                    selectedInit = matched.value;
+                }
+            }
 		} catch (error) {
 			console.error('Error fetching:', error);
 		} finally {
@@ -57,7 +79,7 @@
 </script>
 
 {#if isMounted}
-	<SingleSelect.Root options={internalObjectServices} bind:value={tmp}>
+	<SingleSelect.Root options={internalObjectServices} bind:value={selectedInit}>
 		<SingleSelect.Trigger />
 		<SingleSelect.Content>
 			<SingleSelect.Options>
