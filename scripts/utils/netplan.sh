@@ -108,3 +108,48 @@ check_ip_range() {
         return 1
     fi
 }
+
+validate_url() {
+    local URL=$1
+    local IP=$(echo "$URL" | awk -F '[/:]' '{print $4}')
+    local PORT=$(echo "$URL" | awk -F '[/:]' '{print $5}')
+
+    if ! validate_ip $IP; then
+        error_exit "Invalid IP format: $IP"
+    fi
+
+    if ! validate_port $PORT; then
+        error_exit "Invalid Port format: $PORT"
+    fi
+
+    log "INFO" "Validate URL: $URL" "URL check"
+}
+
+validate_ip() {
+    local IP=$1
+    if [[ ! $IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+validate_port() {
+    local PORT=$1
+    if [[ ! $PORT =~ ^[0-9]+$ ]]; then
+        return 1
+    fi
+
+    if [[ "$PORT" -lt 1 || "$PORT" -gt 65535 ]]; then
+        return 1
+    fi
+    return 0
+}
+
+validate_cidr() {
+    local CIDR=$1
+    if [[ ! $CIDR =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+$ ]]; then
+        return 1
+    fi
+    return 0
+}

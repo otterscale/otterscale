@@ -1,5 +1,11 @@
 #!/bin/bash
 
+disable_ipv6() {
+    log "INFO" "Disable ipv6 from sysctl, it will resume after reboot" "OS config"
+    sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
+    sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
+}
+
 find_first_non_user() {
     local USER_HOME=""
     for USER in $(ls /home); do
@@ -62,4 +68,40 @@ execute_cmd() {
         error_exit "Failed $MSG"
     fi
     return 0
+}
+
+check_root() {
+    [ "$(id -u)" -eq 0 ] || error_exit "This script must be run as root"
+}
+
+check_os() {
+    local OS_ID=$(lsb_release -si)
+    local OS_VERSION=$(lsb_release -sr)
+    if [ "$OS_ID" != "Ubuntu" ] || [ "$OS_VERSION" != "$OTTERSCALE_OS" ]; then
+        error_exit "This script requires Ubuntu $OTTERSCALE_OS. Detected: $OS_ID $OS_VERSION"
+    fi
+}
+
+check_memory() {
+    local OS_MEMORY_GB=$(free -g | awk '/Mem:/ {print $2}')
+    if [ "$OS_MEMORY_GB" -lt "$MIN_MEMORY_GB" ]; then
+        error_exit "Insufficient memory. Minimum required: ${MIN_MEMORY_GB}GB, Available: ${OS_MEMORY_GB}GB"
+    fi
+}
+
+check_disk() {
+    local OS_DISK_AVAILABLE_GB=$(df -BG / | awk 'NR==2 {print $4}' | tr -d 'G')
+    if [ "$OS_DISK_AVAILABLE_GB" -lt "$MIN_DISK_GB" ]; then
+        error_exit "Insufficient disk space. Minimum required: ${MIN_DISK_GB}GB, Available: ${OS_DISK_AVAILABLE_GB}GB"
+    fi
+}
+
+# System validation checks
+validate_system() {
+    check_root
+    check_os
+    check_memory
+    check_disk
+    disable_ipv6
+    log "INFO" "System validation passed" "OS check finished"
 }
