@@ -9,7 +9,10 @@ prepare_microk8s_config() {
     fi
     chown "$NON_ROOT_USER":"$NON_ROOT_USER" "$KUBE_FOLDER"
 
-    execute_cmd "microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD='"'interface=$OTTERSCALE_BRIDGE_NAME'"'" "update microk8s calico IP_AUTODETECTION_METHOD"
+    log "INFO" "Update microk8s calico daemonset environment IP_AUTODETECTION_METHOD to $bridge_name"
+    if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$bridge_name"; then
+        error_exit "Failed update microk8s calico env IP_AUTODETECTION_METHOD."
+    fi
 }
 
 enable_microk8s_option() {
