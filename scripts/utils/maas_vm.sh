@@ -91,7 +91,7 @@ create_vm_from_maas() {
 enter_vm_ip() {
     log "INFO" "Please provide an IP address that falls within the range of $MAAS_NETWORK_SUBNET"
     while true; do
-        read -p "Enter the IP that juju-vm will used : " JUJU_VM_IP
+        read -p "Enter the IP that juju-vm will used: " JUJU_VM_IP
         if validate_ip "$JUJU_VM_IP"; then
             break
         fi
