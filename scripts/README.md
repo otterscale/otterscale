@@ -36,12 +36,11 @@ Provide the IP address for MAAS in CIDR format:
   ```
   MAAS DHCP dynamic end IP: 172.20.10.12
   ```
-
 5. **Input Juju VM Fixed IP**
 Provide the static IP address that Juju VM will use:
-  ```
-  Enter the IP that juju-vm will used: 172.20.10.6
-  ```
+   ```
+   172.20.10.6
+   ```
 
 ## One-Time Installation
 
