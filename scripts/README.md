@@ -1,66 +1,65 @@
 # OtterScale Installation Manual
 
-## Interactive Installation
+## Prerequisites
+Before starting the installation process, ensure the following prerequisites are met:
+- A network bridge must be set up in your environment and bind a group of IP addresses to the bridge.
+- The IP address used by MAAS must be part of the network configured on the bridge.
 
-To install OtterScale interactively, follow these steps:
+## Interactive Installation
+To perform an interactive installation, follow these steps:
 
 1. **Run the Installation Script**
-   Execute the installation script with superuser privileges:
    ```bash
    $ sudo bash install.sh
    ```
 
-2. **Input OtterScale Endpoint (CIDR)**
-   When prompted, enter the OtterScale endpoint, below is an examaple:
-   ```
-   http://127.0.0.1:8299
-   ```
+2. **Input OtterScale Endpoint**
+   - You will be prompted to enter the OtterScale endpoint URL.
+   - Example: `http://127.0.0.1:8299`
+
 3. **Input MAAS IP (CIDR Format)**
-Provide the IP address for MAAS in CIDR format:
-   ```
-   172.20.10.5/28
-   ```
-4. **Configure MAAS DHCP Dynamic Range**
-- **Input the DHCP Dynamic Range Name**
-  Enter the name of the DHCP dynamic range used for Network PXE boot:
-  ```
-  Enter DHCP subnet in CIDR notation: 172.20.10.5/28
-  ```
-- **Input the DHCP Dynamic Start IP**
-  Specify the start IP of the DHCP dynamic range:
-  ```
-  MAAS DHCP dynamic start IP: 172.20.10.8
-  ```
-- **Input the DHCP Dynamic End IP**
-  Specify the end IP of the DHCP dynamic range:
-  ```
-  MAAS DHCP dynamic end IP: 172.20.10.12
-  ```
-5. **Input Juju VM Fixed IP**
-Provide the static IP address that Juju VM will use:
-   ```
-   172.20.10.6
-   ```
+   - You will be prompted to enter the IP address (in CIDR format) that MAAS will use.
+   - Example: `172.20.10.5/28`
+
+4. **Input MAAS DHCP Dynamic Range**
+   a. **Name of the IP Range**
+      - You will be prompted to enter the name of the IP range for MAAS DHCP.
+      - Example: `172.20.10.5/28`
+   b. **Start IP for MAAS DHCP**
+      - You will be prompted to enter the start IP address for the MAAS DHCP dynamic range.
+      - Example: `172.20.10.8`
+   c. **End IP for MAAS DHCP**
+      - You will be prompted to enter the end IP address for the MAAS DHCP dynamic range.
+      - Example: `172.20.10.12`
+
+5. **Input Juju VM Static IP**
+   - You will be prompted to enter the static IP address that the Juju VM will use.
+   - Example: `172.20.10.6`
 
 ## One-Time Installation
-
 For a one-time installation, follow these steps:
 
 1. **Prepare an Existing Network Bridge**
-Ensure that you have an existing network bridge configured on your system. This bridge will be used for network connectivity during the installation process.
+   - Ensure that a network bridge is already set up and configured in your environment.
 
 2. **Prepare the Configuration File**
-Create a configuration file (you can name it anything, e.g., `install.cfg`) with the required parameters. Here is an example of what the configuration file should look like:
+   - Create a configuration file named `install.cfg` (or any name you prefer) with the required parameters.
 
-```cfg
-## Otterscale endpoint
+3. **Run the Installation Script with Configuration File**
+   ```bash
+   $ sudo bash install.sh --config=./install.cfg
+   ```
+
+### Example `install.cfg` File
+```bash
+## OtterScale endpoint
 OTTERSCALE_ENDPOINT="http://127.0.0.1:8299"
 
 ## Type network bridge name that will be used
 OTTERSCALE_CONFIG_BRIDGE_CIDR="172.20.10.5/28"
 
-## Type the ip range for network pxe boot used
-OTTERSCALE_CONFIG_MAAS_DHCP_CIDR="172.20.10.5/28"
+## Type the IP range for network PXE boot used
+OTTERSCALE_CNOFIG_MAAS_DHCP_CIDR="172.20.10.5/28"
 OTTERSCALE_CONFIG_MAAS_DHCP_START_IP="172.20.10.8"
 OTTERSCALE_CONFIG_MAAS_DHCP_END_IP="172.20.10.12"
 
@@ -71,9 +70,17 @@ OTTERSCALE_CONFIG_JUJU_IP="172.20.10.6"
 OTTERSCALE_CONFIG_MAAS_ADMIN_USER="admin"
 OTTERSCALE_CONFIG_MAAS_ADMIN_PASS="admin"
 OTTERSCALE_CONFIG_MAAS_ADMIN_EMAIL="admin@example.com"
-  ```
+```
 
-3. Run the Installation Script with Configuration File Execute the installation script with the configuration file using the --config flag:
-  ```
-$ sudo bash install.sh --config=./install.cfg
-  ```
+### Notes
+- Ensure that the network bridge is correctly configured and the IP addresses specified are within the same subnet.
+- The `OTTERSCALE_CONFIG_MAAS_DHCP_CIDR` should match the `OTTERSCALE_CONFIG_BRIDGE_CIDR`.
+- The `OTTERSCALE_CONFIG_MAAS_DHCP_START_IP` and `OTTERSCALE_CONFIG_MAAS_DHCP_END_IP` should be within the range specified in `OTTERSCALE_CONFIG_MAAS_DHCP_CIDR`.
+- The `OTTERSCALE_CONFIG_JUJU_IP` should be a static IP address outside the DHCP range.
+
+## Troubleshooting
+- **Network Issues**: Ensure that the network bridge is properly configured and that the IP addresses are not in use.
+- **Script Errors**: If you encounter any errors during the installation, check the script's logs for more detailed information.
+- **MAAS Configuration**: Verify that the MAAS admin credentials and IP configurations are correct.
+
+For further assistance, refer to the OtterScale documentation or contact the support team.
