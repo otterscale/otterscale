@@ -19,9 +19,9 @@ chmod 666 $LOG
 
 ## without parameter
 if [[ $# -eq 0 ]]; then
-    OTTERSCALE_ENDPOINT="http://127.0.0.1:8299"
     while true; do
-        read -p "Please enter otterscale endpoint (default is http://127.0.0.1:8299): " OTTERSCALE_ENDPOINT
+        read -p "Please enter otterscale endpoint (default is http://127.0.0.1:8299): " USER_INPUT_ENDPOINT
+        OTTERSCALE_ENDPOINT=${USER_INPUT_ENDPOINT:-http://127.0.0.1:8299}
         if validate_url "$OTTERSCALE_ENDPOINT"; then
             break
         else
