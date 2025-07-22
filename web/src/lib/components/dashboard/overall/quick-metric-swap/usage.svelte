@@ -11,15 +11,17 @@
 
 	const query = $derived(
 		`
-		(
-			(
-				node_memory_SwapTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
-			-
-				node_memory_SwapFree_bytes{juju_model_uuid=~"${scope.uuid}"}
-			)
-		/
-			(node_memory_SwapTotal_bytes{juju_model_uuid=~"${scope.uuid}"})
-		)
+avg(
+    (
+        node_memory_SwapTotal_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+      -
+        node_memory_SwapFree_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+    )
+  /
+    (
+      node_memory_SwapTotal_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+    )
+)
 		`
 	);
 </script>

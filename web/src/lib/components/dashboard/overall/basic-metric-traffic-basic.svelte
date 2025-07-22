@@ -27,13 +27,25 @@
 
 	const receiveQuery = $derived(
 		`
-		sum(irate(node_network_receive_bytes_total{device="lo",juju_model_uuid=~"${scope.uuid}"}[4m])) * 8
+sum(
+    irate(
+      node_network_receive_bytes_total{device="lo",instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}[4m]
+    )
+  *
+    8
+)
 		`
 	);
 
 	const transmitQuery = $derived(
 		`
-		sum(irate(node_network_transmit_bytes_total{device="lo",juju_model_uuid=~"${scope.uuid}"}[4m])) * 8
+sum(
+    irate(
+      node_network_transmit_bytes_total{device="lo",instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}[4m]
+    )
+  *
+    8
+)
 		`
 	);
 

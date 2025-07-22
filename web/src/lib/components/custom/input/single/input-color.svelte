@@ -22,7 +22,7 @@
 	} = $props();
 </script>
 
-<div class={cn(BORDER_INPUT_CLASSNAME, 'h-10 justify-between ring-1', className)}>
+<div class={cn(BORDER_INPUT_CLASSNAME, 'justify-between ring-1', className)}>
 	<span class="flex items-center gap-2">
 		<span class="pl-3">
 			<Icon icon={typeToIcon['color']} />

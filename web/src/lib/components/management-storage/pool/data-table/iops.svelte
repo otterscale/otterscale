@@ -8,10 +8,6 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	const client = new PrometheusDriver({
-		endpoint: 'http://10.102.197.18/cos-dev-prometheus-0',
-		baseURL: '/api/v1'
-	});
 	const step = 10 * 60;
 	const timeRange = {
 		start: new Date(Date.now() - 60 * 60 * 1000),
@@ -20,7 +16,11 @@
 </script>
 
 <script lang="ts">
-	let { selectedScope, selectedPool }: { selectedScope: string; selectedPool: string } = $props();
+	let {
+		client,
+		selectedScope,
+		selectedPool
+	}: { client: PrometheusDriver; selectedScope: string; selectedPool: string } = $props();
 
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;

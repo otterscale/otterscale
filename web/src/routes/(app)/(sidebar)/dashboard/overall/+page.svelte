@@ -7,18 +7,17 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
+	import type { Writable } from 'svelte/store';
 
-	const prometheus = new PrometheusDriver({
-		endpoint: 'http://10.102.197.18/cos-dev-prometheus-0',
-		baseURL: '/api/v1'
-	});
+	const transport: Transport = getContext('transport');
+	const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
 
 	let scopes: Scope[] = $state([]);
 	async function fetchJujuModelUuids() {
 		const query = `group by (juju_model_uuid) (node_exporter_build_info{})`;
 
 		try {
-			const response = await prometheus.instantQuery(query);
+			const response = await $prometheusDriver.instantQuery(query);
 
 			scopes = response.result
 				.map((result) => {
@@ -36,7 +35,6 @@
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
-			const transport: Transport = getContext('transport');
 			const essentialClient = createClient(EssentialService, transport);
 			const listEssentialsResponse = await essentialClient.listEssentials({});
 			if (listEssentialsResponse.essentials?.length === 0) {
@@ -55,5 +53,5 @@
 {#if !mounted}
 	<PageLoading />
 {:else}
-	<Overall client={prometheus} {scopes} />
+	<Overall client={$prometheusDriver} {scopes} />
 {/if}

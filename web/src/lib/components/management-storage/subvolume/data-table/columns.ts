@@ -36,15 +36,15 @@ const columns: ColumnDef<Subvolume>[] = [
             return renderSnippet(cells.poolName, row);
         },
     },
-    {
-        accessorKey: "mode",
-        header: ({ column }) => {
-            return renderSnippet(headers.mode, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.mode, row);
-        },
-    },
+    // {
+    //     accessorKey: "mode",
+    //     header: ({ column }) => {
+    //         return renderSnippet(headers.mode, column)
+    //     },
+    //     cell: ({ row }) => {
+    //         return renderSnippet(cells.mode, row);
+    //     },
+    // },
     {
         accessorKey: "export",
         header: ({ column }) => {

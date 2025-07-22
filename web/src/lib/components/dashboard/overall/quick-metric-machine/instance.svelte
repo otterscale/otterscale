@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { PrometheusDriver } from 'prometheus-query';
-	import { formatCapacity } from '$lib/formatter';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import type { Scope } from '$gen/api/scope/v1/scope_pb';
 	import * as Empty from '../../utils/empty';
@@ -8,8 +7,10 @@
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-sum(
-  node_memory_MemTotal_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+count(
+  count by (instance) (
+    node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+  )
 )
 		`
 	);
@@ -22,9 +23,8 @@ sum(
 	{#if result.length === 0}
 		<Empty.Text />
 	{:else}
-		{@const memory = result[0].value.value}
-		{@const capacity = formatCapacity(memory / 1024 / 1024)}
-		<p class="text-3xl">{capacity.value} {capacity.unit}</p>
+		{@const cores = result[0].value.value}
+		<p class="text-6xl">{cores}</p>
 	{/if}
 {:catch error}
 	Error

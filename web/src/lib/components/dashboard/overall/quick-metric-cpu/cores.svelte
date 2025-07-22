@@ -7,9 +7,11 @@
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		count(
-		count by (cpu) (node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"})
-		)
+count(
+  count by (instance, cpu) (
+    node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+  )
+)
 		`
 	);
 </script>
