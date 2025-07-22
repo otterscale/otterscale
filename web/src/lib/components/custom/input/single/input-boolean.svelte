@@ -55,52 +55,50 @@
 		aria-invalid={isNotFilled}
 		class={cn(
 			BORDER_INPUT_CLASSNAME,
-			'w-full justify-between ring-1',
+			'flex items-center gap-2 ring-1',
 			isNotFilled ? 'ring-destructive' : '',
 			format === 'checkbox' && 'bg-muted border-none shadow-none ring-0',
 			className
 		)}
 	>
-		<span class="flex h-9 items-center gap-2">
-			<span class="pl-3">
-				<Icon icon={typeToIcon['boolean']} />
-			</span>
+		<span class="pl-3">
+			<Icon icon={format === 'checkbox' ? typeToIcon['boolean'] : typeToIcon['boolean']} />
+		</span>
 
-			{#if required}
-				{@const isValid = [true, false].includes(checked)}
-				{@const isNull = [null, undefined].includes(checked)}
+		{#if required}
+			{@const isValid = [true, false].includes(checked)}
+			{@const isNull = [null, undefined].includes(checked)}
 
-				{#if isValid}
-					{#if descriptor}
-						<p class="text-muted-foreground text-xs">{descriptor(checked)}</p>
-					{:else if checked === true}
-						<Badge variant="default">True</Badge>
-					{:else if checked === false}
-						<Badge variant="outline">False</Badge>
-					{/if}
-				{:else if isNull}
-					<Badge variant="destructive">Required</Badge>
-				{:else}
-					<Badge variant="destructive">Invalid</Badge>
+			{#if isValid}
+				{#if descriptor}
+					<p class="text-muted-foreground text-xs">{descriptor(checked)}</p>
+				{:else if checked === true}
+					<Badge variant="default">True</Badge>
+				{:else if checked === false}
+					<Badge variant="outline">False</Badge>
+				{/if}
+			{:else if isNull}
+				<Badge variant="destructive">Required</Badge>
+			{:else}
+				<Badge variant="destructive">Invalid</Badge>
+			{/if}
+		{:else}
+			{@const isValid = [null, undefined, true, false].includes(checked)}
+
+			{#if isValid}
+				{#if descriptor}
+					<p class="text-muted-foreground text-xs">{descriptor(checked)}</p>
+				{:else if checked === true}
+					<Badge variant="default">True</Badge>
+				{:else if checked === false}
+					<Badge variant="outline">False</Badge>
+				{:else if checked === null || checked === undefined}
+					<Badge variant="secondary">Null</Badge>
 				{/if}
 			{:else}
-				{@const isValid = [null, undefined, true, false].includes(checked)}
-
-				{#if isValid}
-					{#if descriptor}
-						<p class="text-muted-foreground text-xs">{descriptor(checked)}</p>
-					{:else if checked === true}
-						<Badge variant="default">True</Badge>
-					{:else if checked === false}
-						<Badge variant="outline">False</Badge>
-					{:else if checked === null || checked === undefined}
-						<Badge variant="secondary">Null</Badge>
-					{/if}
-				{:else}
-					<Badge variant="destructive">Invalid</Badge>
-				{/if}
+				<Badge variant="destructive">Invalid</Badge>
 			{/if}
-		</span>
+		{/if}
 	</div>
 
 	{#if required}

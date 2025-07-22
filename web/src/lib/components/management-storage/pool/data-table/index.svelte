@@ -3,9 +3,9 @@
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import ArrayPointFilter from '$lib/components/custom/data-table/data-table-filters/array-point-filter.svelte';
-	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import MapPointFilter from '$lib/components/custom/data-table/data-table-filters/map-point-filter.svelte';
+	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -22,7 +22,9 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable } from 'svelte/store';
+	import type { PrometheusDriver } from 'prometheus-query';
+	import { getContext } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
@@ -32,6 +34,8 @@
 </script>
 
 <script lang="ts" generics="TData, TValue">
+	const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
+
 	let {
 		selectedScope,
 		selectedFacility,
@@ -173,7 +177,7 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<IOPS {selectedScope} selectedPool={row.original.name} />
+							<IOPS client={$prometheusDriver} {selectedScope} selectedPool={row.original.name} />
 						</Table.Cell>
 						<Table.Cell>
 							<Actions {selectedScope} {selectedFacility} {row} bind:data />

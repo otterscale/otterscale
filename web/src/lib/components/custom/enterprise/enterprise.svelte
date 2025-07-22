@@ -2,8 +2,9 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { Tooltip, type WithElementRef, type WithoutChildren } from 'bits-ui';
-	import { getContext, type Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import { getIsEnterprise } from './data.svelte';
 </script>
 
 <script lang="ts">
@@ -15,8 +16,6 @@
 	}: WithoutChildren<WithElementRef<HTMLAttributes<HTMLDivElement>>> & {
 		children?: Snippet<[{ disable: boolean }]>;
 	} = $props();
-
-	const getIsEnterprise: () => boolean = getContext('getIsEnterprise');
 </script>
 
 {#if getIsEnterprise() === true}

@@ -8,7 +8,9 @@
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		node_filesystem_size_bytes{fstype!="rootfs",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
+sum(
+  node_filesystem_size_bytes{fstype!="rootfs",instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mountpoint="/"}
+)
 		`
 	);
 </script>

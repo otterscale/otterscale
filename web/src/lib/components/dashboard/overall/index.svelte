@@ -7,6 +7,7 @@
 	import { getLocalTimeZone, now, today } from '@internationalized/date';
 	import { PrometheusDriver } from 'prometheus-query';
 	import * as Pickers from '../utils/pickers';
+	import { default as BasicMachine } from './quick-metric-machine/index.svelte';
 	import { default as BasicCPU } from './basic-metric-cpu.svelte';
 	import { default as BasicRAM } from './basic-metric-ram.svelte';
 	import { default as BasicSWAP } from './basic-metric-swap.svelte';
@@ -37,6 +38,9 @@
 		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 			<span class="col-span-1">
 				<QuickUptime {client} scope={selectedScope} />
+			</span>
+			<span class="col-span-1">
+				<BasicMachine {client} scope={selectedScope} />
 			</span>
 		</div>
 		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">

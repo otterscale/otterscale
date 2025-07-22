@@ -8,7 +8,9 @@
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		node_memory_SwapTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
+sum(
+  node_memory_SwapTotal_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+)
 		`
 	);
 </script>

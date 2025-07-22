@@ -1,8 +1,8 @@
 <script lang="ts">
-	import * as Alert from '$lib/components/ui/alert/index.js';
+	import * as Alert from '$lib/components/ui/alert';
 	import { llmData, createDateSeries, type LLMModel } from './dataset';
 	import { formatBigNumber as formatNumber } from '$lib/formatter';
-	import * as Pagination from '$lib/components/ui/pagination/index.js';
+	import * as Pagination from '$lib/components/ui/pagination';
 	import * as Table from '$lib/components/ui/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
@@ -15,10 +15,11 @@
 	import { writable } from 'svelte/store';
 	import { AreaChart, BarChart, LineChart, PieChart } from 'layerchart';
 	import { Input } from '$lib/components/ui/input';
-	import * as Select from '$lib/components/ui/select/index.js';
+	import * as Select from '$lib/components/ui/select';
 	import { Button } from '$lib/components/ui/button';
-	import { Progress } from '$lib/components/ui/progress/index.js';
+	import { Progress } from '$lib/components/ui/progress';
 	import Icon from '@iconify/svelte';
+	import { browser } from '$app/environment';
 
 	const transport: Transport = getContext('transport');
 	const networkClient = createClient(NetworkService, transport);
@@ -27,6 +28,7 @@
 	const networksStore = writable<Network[]>([]);
 	const networksLoading = writable(true);
 	async function fetchNetworks() {
+		if (!browser) return;
 		try {
 			const response = await networkClient.listNetworks({});
 			networksStore.set(response.networks);
@@ -40,6 +42,7 @@
 	const machinesStore = writable<Machine[]>([]);
 	const machinesLoading = writable(true);
 	async function fetchMachines() {
+		if (!browser) return;
 		try {
 			const response = await machineClient.listMachines({});
 			machinesStore.set(response.machines);

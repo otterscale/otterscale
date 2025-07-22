@@ -21,15 +21,19 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable } from 'svelte/store';
+	import { writable, type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import { headers } from './headers.svelte';
 	import IOPS from './iops.svelte';
 	import Statistics from './statistics.svelte';
+	import type { PrometheusDriver } from 'prometheus-query';
+	import { getContext } from 'svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
+	const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
+
 	let {
 		selectedScope,
 		selectedFacility,
@@ -173,7 +177,11 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<IOPS {selectedScope} selectedObjectStorageDaemon={row.original.name} />
+							<IOPS
+								client={$prometheusDriver}
+								{selectedScope}
+								selectedObjectStorageDaemon={row.original.name}
+							/>
 						</Table.Cell>
 						<Table.Cell>
 							<Actions osd={row.original} />

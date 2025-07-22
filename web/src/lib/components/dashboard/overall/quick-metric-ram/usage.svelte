@@ -11,13 +11,15 @@
 
 	const query = $derived(
 		`
-		1
-		-
-		(
-			(node_memory_MemAvailable_bytes{juju_model_uuid=~"${scope.uuid}"})
-			/
-			node_memory_MemTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
-		)
+avg(
+    1
+  -
+    (
+        node_memory_MemAvailable_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+      /
+        node_memory_MemTotal_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+    )
+)
 		`
 	);
 </script>

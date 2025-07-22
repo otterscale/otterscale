@@ -11,15 +11,15 @@
 
 	const query = $derived(
 		`
-		1
-		-
-		(
-			(
-				node_filesystem_avail_bytes{fstype!="rootfs",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
-			)
-			/
-			node_filesystem_size_bytes{fstype!="rootfs",juju_model_uuid=~"${scope.uuid}",mountpoint="/"}
-		)
+avg(
+    1
+  -
+    (
+        node_filesystem_avail_bytes{fstype!="rootfs",instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mountpoint="/"}
+      /
+        node_filesystem_size_bytes{fstype!="rootfs",instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mountpoint="/"}
+    )
+)
 		`
 	);
 </script>

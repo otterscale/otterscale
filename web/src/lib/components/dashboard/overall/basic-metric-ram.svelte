@@ -23,36 +23,44 @@
 
 	const totalQuery = $derived(
 		`
-		node_memory_MemTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
+sum(
+  node_memory_MemTotal_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+)
 		`
 	);
 	const usedQuery = $derived(
 		`
-			node_memory_MemTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
-		-
-			node_memory_MemFree_bytes{juju_model_uuid=~"${scope.uuid}"}
-		-
-		(
-				node_memory_Cached_bytes{juju_model_uuid=~"${scope.uuid}"}
-			+
-				node_memory_Buffers_bytes{juju_model_uuid=~"${scope.uuid}"}
-			+
-			node_memory_SReclaimable_bytes{juju_model_uuid=~"${scope.uuid}"}
-		)
+sum(
+      node_memory_MemTotal_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+    -
+      node_memory_MemFree_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+  -
+    (
+          node_memory_Cached_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+        +
+          node_memory_Buffers_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+      +
+        node_memory_SReclaimable_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+    )
+)
 		`
 	);
 	const cacheAndBufferQuery = $derived(
 		`
-			node_memory_Cached_bytes{juju_model_uuid=~"${scope.uuid}"}
-		+
-			node_memory_Buffers_bytes{juju_model_uuid=~"${scope.uuid}"}
-		+
-		node_memory_SReclaimable_bytes{juju_model_uuid=~"${scope.uuid}"}
+sum(
+      node_memory_Cached_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+    +
+      node_memory_Buffers_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+  +
+    node_memory_SReclaimable_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+)
 		`
 	);
 	const freeQuery = $derived(
 		`
-		node_memory_MemFree_bytes{juju_model_uuid=~"${scope.uuid}"}
+sum(
+  node_memory_MemFree_bytes{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+)
 		`
 	);
 

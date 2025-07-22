@@ -11,9 +11,21 @@
 
 	const query = $derived(
 		`
-		sum((irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}",mode!="idle"}[6m])))
-		/
-		sum((irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"}[6m])))
+avg(
+    sum by (instance) (
+      irate(
+        node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mode!="idle"}[4m]
+      )
+    )
+  / on (instance) group_left ()
+    sum by (instance) (
+      (
+        irate(
+          node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}[4m]
+        )
+      )
+    )
+)
 		`
 	);
 </script>

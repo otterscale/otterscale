@@ -22,48 +22,116 @@
 
 	const systemQuery = $derived(
 		`
-		sum(irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}",mode="system"}[4m]))
-		/
-		sum((irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"}[4m])))
+avg(
+    sum by (instance) (
+      irate(
+        node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mode="system"}[4m]
+      )
+    )
+  / on (instance) group_left ()
+    sum by (instance) (
+      (
+        irate(
+          node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}[4m]
+        )
+      )
+    )
+)
 		`
 	);
 	const userQuery = $derived(
 		`
-		sum(irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}",mode="user"}[4m]))
-		/
-		sum((irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"}[4m])))
+avg(
+    sum by (instance) (
+      irate(
+        node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mode="user"}[4m]
+      )
+    )
+  / on (instance) group_left ()
+    sum by (instance) (
+      (
+        irate(
+          node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}[4m]
+        )
+      )
+    )
+)
 		`
 	);
 	const iowaitQuery = $derived(
 		`
-		sum(irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}",mode="iowait"}[4m]))
-		/
-		sum((irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"}[4m])))
+avg(
+    sum by (instance) (
+      irate(
+        node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mode="iowait"}[4m]
+      )
+    )
+  / on (instance) group_left ()
+    sum by (instance) (
+      (
+        irate(
+          node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}[4m]
+        )
+      )
+    )
+)
 		`
 	);
 	const irqsQuery = $derived(
 		`
-		sum(irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}",mode=~".*irq"}[4m]))
-		/
-		sum((irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"}[4m])))
+avg(
+    sum by (instance) (
+      irate(
+        node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mode=~".*irq"}[4m]
+      )
+    )
+  / on (instance) group_left ()
+    sum by (instance) (
+      (
+        irate(
+          node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}[4m]
+        )
+      )
+    )
+)
 		`
 	);
 	const idleQuery = $derived(
 		`
-		sum(irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}",mode="idle"}[4m]))
-		/
-		sum((irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"}[4m])))
+avg(
+    sum by (instance) (
+      irate(
+        node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mode!="idle",mode!="iowait",mode!="irq",mode!="softirq",mode!="system",mode!="user"}[4m]
+      )
+    )
+  / on (instance) group_left ()
+    sum by (instance) (
+      (
+        irate(
+          node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}[4m]
+        )
+      )
+    )
+)
 		`
 	);
 	const otherQuery = $derived(
 		`
-		sum(
-			irate(
-			node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}",mode!="idle",mode!="iowait",mode!="irq",mode!="softirq",mode!="system",mode!="user"}[4m]
-			)
-		)
-		/
-		sum((irate(node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"}[4m])))
+avg(
+    sum by (instance) (
+      irate(
+        node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*",mode="idle"}[4m]
+      )
+    )
+  / on (instance) group_left ()
+    sum by (instance) (
+      (
+        irate(
+          node_cpu_seconds_total{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}[4m]
+        )
+      )
+    )
+)
 		`
 	);
 

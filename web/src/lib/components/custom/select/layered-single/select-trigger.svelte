@@ -25,7 +25,9 @@
 
 	const formValidator: FormValidator = getContext('FormValidator');
 	$effect(() => {
-		formValidator.set(id, isNotFilled);
+		if (formValidator) {
+			formValidator.set(id, isNotFilled);
+		}
 	});
 </script>
 

@@ -8,9 +8,11 @@
 	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
 	const query = $derived(
 		`
-		node_time_seconds{juju_model_uuid=~"${scope.uuid}"}
-		-
-		node_boot_time_seconds{juju_model_uuid=~"${scope.uuid}"}
+min(
+    node_time_seconds{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+  -
+    node_boot_time_seconds{instance!~".*lxd.*",instance!~"juju.*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid="${scope.uuid}",juju_unit=~".*"}
+)
 		`
 	);
 </script>
