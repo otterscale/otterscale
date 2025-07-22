@@ -19,6 +19,7 @@
 	import { columns } from './columns';
 	// import Create from './create.svelte';
 	import Statistics from './statistics.svelte';
+	import Chart from './chart.svelte';
 	import { writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -112,6 +113,8 @@
 	<Layout.Statistics>
 		<Statistics {table} />
 	</Layout.Statistics>
+	<Chart {table}/>
+
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />

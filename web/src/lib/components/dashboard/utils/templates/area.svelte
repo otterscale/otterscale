@@ -12,6 +12,7 @@
 		description,
 		footer,
 		hint,
+		controller,
 		class: className
 	}: {
 		title: string;
@@ -19,6 +20,7 @@
 		description?: Snippet;
 		footer?: Snippet;
 		hint?: Snippet;
+		controller?: Snippet;
 		class?: string;
 	} = $props();
 </script>
@@ -38,6 +40,11 @@
 						</Tooltip.Content>
 					</Tooltip.Root>
 				</Tooltip.Provider>
+			{/if}
+			{#if controller}
+				<div class="flex items-center ml-auto justify-end flex-1">
+					{@render controller()}
+				</div>
 			{/if}
 		</Card.Title>
 		<Card.Description>
