@@ -3,7 +3,6 @@
 	import * as Chart from '$lib/components/custom/chart/templates';
 	import { StatisticManager } from '$lib/components/custom/data-table/utils.svelte';
 	import { type Table } from '@tanstack/table-core';
-	
 	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
 
 
