@@ -1,147 +1,155 @@
 #!/bin/bash
 
-select_bridge() {
-    while true; do
-        log "INFO" "Detecting available bridges..."
-        bridges=($(brctl show 2>/dev/null | awk 'NR>1 {print $1}' | grep -v '^$'))
-
-        echo "Available network bridges:"
-        echo "0) Create new bridge"
-        for i in "${!bridges[@]}"; do
-            echo "$((i+1))) ${bridges[$i]}"
-        done
-
-        read -p "Select bridge (0-${#bridges[@]}): " choice
-        case $choice in
-            0)
-                create_new_bridge
-                return
-                ;;
-            [1-9]*)
-                if [ $choice -le ${#bridges[@]} ]; then
-                    bridge=${bridges[$((choice-1))]}
-                    validate_selected_bridge
-                    return
-                fi
-                ;;
-        esac
-        log "WARN" "Invalid selection. Please try again."
-    done
-}
-
-backup_netplan() {
-    NETPLAN_FILE=$(ls /etc/netplan/*.yaml | head -n1)
-    if [ -z "$NETPLAN_FILE" ]; then
-        touch "$NETPLAN_FILE"
-    else
-        log "INFO" "Backed up network config to ${NETPLAN_FILE}.backup"
-        cp "$NETPLAN_FILE" "${NETPLAN_FILE}.backup"
+get_interface_through_ip() {
+    local CIDR=$1
+    OTTERSCALE_NETWORK_INTERFACE=$(ip -br addr show to $CIDR | awk '{print $1}')
+    if [ -z $OTTERSCALE_NETWORK_INTERFACE ]; then
+        error_exit "Failed get network interface from $CIDR"
     fi
 }
 
-select_interfaces() {
-    interfaces=($(ip -o link show | awk -F': ' '{print $2}' | grep -v 'lo'))
-    echo "Available network interfaces:"
-    for i in "${!interfaces[@]}"; do
-        echo "$((i+1))) ${interfaces[$i]}"
-    done
+is_interface_bridge() {
+    local INTERFACE=$1
+    if ! brctl show $INTERFACE > /dev/null 2>&1; then
+        error_exit "Network interface $INTERFACE is not a network bridge"
+    fi
+    return 0
+}
 
+get_maas_cidr() {
     while true; do
-        read -p "Select interface to bridge (1-${#interfaces[@]}): " iface_choice
-        if [[ $iface_choice =~ ^[0-9]+$ ]] && [ $iface_choice -ge 1 ] && [ $iface_choice -le ${#interfaces[@]} ]; then
-            selected_iface=${interfaces[$((iface_choice-1))]}
+        read -p "Please enter the CIDR IP to be used for MAAS (e.g., 192.168.10.245/24): " OTTERSCALE_CONFIG_MAAS_CIDR
+        if validate_cidr $OTTERSCALE_CONFIG_MAAS_CIDR; then
             break
         fi
-        log "WARN" "Invalid selection. Please try again."
+        log "WARN" "Invild CIDR. Please try agein" "OS network" 
     done
 }
 
-enter_bridge_name() {
-    while true; do
-        read -p "Enter bridge name, directily input Enter to get default value [$DEFAULT_BRIDGE_NAME]: " bridge_name
-        bridge_name=${bridge_name:-$DEFAULT_BRIDGE_NAME}
+check_bridge() {
+    if [ -z $OTTERSCALE_CONFIG_MAAS_CIDR ]; then
+        get_maas_cidr
+    fi
+    get_interface_through_ip $OTTERSCALE_CONFIG_MAAS_CIDR
 
-        read -p "You entered: $bridge_name. Is this correct? [y/n]: " confirm
-        if [[ "$confirm" =~ ^[Yy]$ ]]; then
-            break
-        elif [[ "$confirm" =~ ^[Nn]$ ]]; then
-            echo "Please re-enter the bridge name."
-        else
-            echo "Invalid input. Please enter y or n."
-        fi
-    done
-}
-
-create_netplan() {
-    cat > "$NETPLAN_FILE" <<EOF
-network:
-  version: 2
-  renderer: networkd
-  ethernets:
-    $selected_iface:
-      dhcp4: no
-      dhcp6: no
-  bridges:
-    $bridge_name:
-      link-local: []
-      interfaces: [$selected_iface]
-      addresses: [$current_ip]
-      routes:
-      - to: default
-        via: $current_gateway
-      nameservers:
-        addresses: [$current_dns]
-EOF
-    chmod 600 /etc/netplan/*.yaml
+    if is_interface_bridge $OTTERSCALE_NETWORK_INTERFACE ;then
+        OTTERSCALE_BRIDGE_NAME=$OTTERSCALE_NETWORK_INTERFACE
+        OTTERSCALE_INTERFACE_IP=$(echo $OTTERSCALE_CONFIG_MAAS_CIDR | cut -d'/' -f1)
+        OTTERSCALE_INTERFACE_IP_MASK=$(echo $OTTERSCALE_CONFIG_MAAS_CIDR | cut -d'/' -f2)
+	get_current_dns $OTTERSCALE_BRIDGE_NAME
+    fi
 }
 
 get_current_dns() {
-    local interface=$1
-    current_dns=$(resolvectl -i $interface | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
-    if [ -z "$current_dns" ]; then
-        log "WARN" "No dns found for $interface."
+    local INTERFACE=$1
+    OTTERSCALE_INTERFACE_DNS=$(resolvectl -i $INTERFACE | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
+    if [ -z "$OTTERSCALE_INTERFACE_DNS" ]; then
+        log "WARN" "No dns found for $INTERFACE, used 8.8.8.8 instead" "OS network"
+	OTTERSCALE_INTERFACE_DNS="8.8.8.8"
     fi
 }
 
-get_current_ip() {
-    local interface=$1
-    current_ip=$(ip -o -4 addr show dev $interface | awk '{print $4}')
-    if [ -z "$current_ip" ]; then
-        error_exit "Selected interface $interface has no IP address"
+# Function to convert an IP address to a number
+ip_to_number() {
+    local ip=$1
+    local -a octets=(${ip//./ })
+    echo $((octets[0] * 256**3 + octets[1] * 256**2 + octets[2] * 256 + octets[3]))
+}
+
+# Function to convert a network and mask to a number
+network_to_number() {
+    local network=$1
+    local mask=$2
+    local -a octets=(${network//./ })
+    local -a mask_octets=(${mask//./ })
+    local network_number=0
+    for i in {0..3}; do
+        network_number=$((network_number + (octets[i] & mask_octets[i]) * 256**(3-i)))
+    done
+    echo $network_number
+}
+
+# Function to check if an IP is in the network
+is_ip_in_network() {
+    local ip=$1
+    local network=$2
+    local mask=$3
+    local ip_number=$(ip_to_number $ip)
+    local network_number=$(network_to_number $network $mask)
+    local mask_number=$(ip_to_number $mask)
+
+    if [ $((ip_number & mask_number)) -eq $network_number ]; then
+        return 0
+    else
+        return 1
     fi
 }
 
-get_current_gw() {
-    local interface=$1
-    current_gateway=$(ip route show dev $interface | awk '/default/ {print $3}' | head -1)
-    if [ -z "$current_gateway" ]; then
-        current_gateway=$(ip route show | awk '/default/ {print $3}' | head -1)
-        log "WARN" "No gateway found for $interface, using system default: $current_gateway"
+check_ip_range() {
+    local network=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f1)
+    local mask=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f2)
+    local mask_dotted=$(printf "%d.%d.%d.%d" \
+        $((0xFF << (32 - mask) >> 24 & 0xFF)) \
+        $((0xFF << (32 - mask) >> 16 & 0xFF)) \
+        $((0xFF << (32 - mask) >> 8 & 0xFF)) \
+        $((0xFF << (32 - mask) & 0xFF)))
+
+    # Check if start_ip and end_ip are in the network
+    if is_ip_in_network $DHCP_START_IP $network $mask_dotted; then
+        if is_ip_in_network $DHCP_END_IP $network $mask_dotted; then
+            log "INFO" "IP range $DHCP_START_IP to $DHCP_END_IP is within the network $MAAS_NETWORK_SUBNET"
+            return 0
+        else
+            log "WARN" "End IP $DHCP_END_IP is not in the network $MAAS_NETWORK_SUBNET"
+            return 1
+        fi
+    else
+        log "WARN" "Start IP $DHCP_START_IP is not in the network $MAAS_NETWORK_SUBNET"
+        return 1
     fi
 }
 
-create_new_bridge() {
-    log "INFO" "Preparing to create new bridge..."
-    backup_netplan
-    select_interfaces
-    enter_bridge_name
+validate_url() {
+    local URL=$1
+    local IP=$(echo "$URL" | awk -F '[/:]' '{print $4}')
+    local PORT=$(echo "$URL" | awk -F '[/:]' '{print $5}')
 
-    get_current_dns $selected_iface
-    get_current_ip $selected_iface
-    get_current_gw $selected_iface
-    log "INFO" "Creating bridge $bridge_name with interface $selected_iface..."
-    log "INFO" "Using existing IP: $current_ip, Gateway: $current_gateway, DNS: $current_dns"
+    if ! validate_ip $IP; then
+        error_exit "Invalid IP format: $IP"
+    fi
 
-    create_netplan
+    if ! validate_port $PORT; then
+        error_exit "Invalid Port format: $PORT"
+    fi
 
-    stop_service "NetworkManager"
-    disable_service "NetworkManager"
-    start_service "systemd-networkd"
-    enable_service "systemd-networkd"
+    log "INFO" "Validate URL: $URL" "URL check"
+}
 
-    netplan apply || error_exit "Failed to apply netplan configuration"
+validate_ip() {
+    local IP=$1
+    if [[ ! $IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
 
-    bridge="$bridge_name"
-    BRIDGE_IP=$(echo "$current_ip" | cut -d'/' -f1)
-    log "INFO" "Successfully created bridge $bridge with IP $BRIDGE_IP"
+validate_port() {
+    local PORT=$1
+    if [[ ! $PORT =~ ^[0-9]+$ ]]; then
+        return 1
+    fi
+
+    if [[ "$PORT" -lt 1 || "$PORT" -gt 65535 ]]; then
+        return 1
+    fi
+    return 0
+}
+
+validate_cidr() {
+    local CIDR=$1
+    if [[ ! $CIDR =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+$ ]]; then
+        return 1
+    fi
+    return 0
 }

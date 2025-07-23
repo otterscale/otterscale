@@ -1,64 +1,62 @@
 #!/bin/bash
 
 get_snap_channel() {
-    local snap=$1
-    snap list | grep "^${snap}[[:space:]]" | awk '{print $4}'
+    local SNAP_NAME=$1
+    snap list | grep "^${SNAP_NAME}[[:space:]]" | awk '{print $4}'
 }
 
 retry_snap_install() {
-    local snap="$1"
-    local max_retries="$2"
-    local option="$3"
-    local retries=0
+    local SNAP_NAME="$1"
+    local MAX_RETRIES="$2"
+    local SNAP_OPTION="$3"
+    local RETRIES=0
 
-    while [ $retries -lt $max_retries ]; do
-        log "INFO" "Installing snap $snap... (Attempt $((retries+1)))"
-        if snap install $snap $option >>"$TEMP_LOG" 2>&1; then
+    while [ $RETRIES -lt $MAX_RETRIES ]; do
+        log "INFO" "Installing snap $SNAP_NAME... (Attempt $((RETRIES)))" "Snap install"
+        if snap install $SNAP_NAME $SNAP_OPTION >>"$TEMP_LOG" 2>&1; then
             break
-        else
-            log "WARN" "Failed to install snap $snap. Retrying... (Attempt $((retries+1)))"
-            retries=$((retries+1))
         fi
+        log "WARN" "Failed to install snap $SNAP_NAME. Retrying... (Attempt $((RETRIES)))" "Snap install"
+        RETRIES=$((RETRIES+1))
     done
 
-    if [ $retries -eq $max_retries ]; then
-        error_exit "Failed to install snap $snap after $max_retries attempts."
+    if [ $RETRIES -eq $MAX_RETRIES ]; then
+        error_exit "Failed to install snap $SNAP_NAME after $MAX_RETRIES attempts"
     fi
 }
 
 retry_snap_refresh() {
-    local snap="$1"
-    local channel="$2"
-    local max_retries="$3"
-    local retries=0
+    local SNAP_NAME="$1"
+    local SNAP_CHANNEL="$2"
+    local MAX_RETRIES="$3"
+    local RETRIES=0
 
-    while [ $retries -lt $max_retries ]; do
-        log "INFO" "Refreshing snap $snap to $channel... (Attempt $((retries+1)))"
-        if snap refresh $snap --channel=$channel >>"$TEMP_LOG" 2>&1; then
+    while [ $RETRIES -lt $MAX_RETRIES ]; do
+        log "INFO" "Refreshing snap $SNAP_NAME to $MAX_RETRIES... (Attempt $((RETRIES)))" "Snap refresh"
+        if snap refresh $SNAP_NAME --channel=$MAX_RETRIES >>"$TEMP_LOG" 2>&1; then
             break
-        else
-            log "WARN" "Failed to refresh snap $snap to $channel. Retrying... (Attempt $((retries+1)))"
-            retries=$((retries+1))
         fi
+        log "WARN" "Failed to refresh snap $snSNAP_NAMEap to $MAX_RETRIES. Retrying... (Attempt $((RETRIES)))" "Snap refresh"
+        RETRIES=$((RETRIES+1))
     done
 
-    if [ $retries -eq $max_retries ]; then
-        error_exit "Failed to refresh snap $snap to $channel after $max_retries attempts."
+    if [ $RETRIES -eq $MAX_RETRIES ]; then
+        error_exit "Failed to refresh snap $SNAP_NAME to $MAX_RETRIES after $MAX_RETRIES attempts"
     fi
 }
 
 install_or_update_snap() {
-    local snap=$1
-    local channel=$2
-    if snap list | grep -q "^${snap}[[:space:]]"; then
-        if [[ $(get_snap_channel "$snap") != "$channel" ]]; then
-            retry_snap_refresh "$snap" "$channel" "$MAX_RETRIES"
+    local SNAP_NAME=$1
+    local SNAP_CHANNEL=$2
+    if snap list | grep -q "^${SNAP_NAME}[[:space:]]"; then
+        if [[ $(get_snap_channel "$SNAP_NAME") != "$SNAP_CHANNEL" ]]; then
+            retry_snap_refresh "$SNAP_NAME" "$SNAP_CHANNEL" "$OTTERSCALE_MAX_RETRIES"
         fi
     else
-        if [[ $snap == "microk8s" ]]; then
-            retry_snap_install "$snap" "$MAX_RETRIES" "--classic --channel=$channel"
+        if [[ $SNAP_NAME == "microk8s" ]]; then
+            retry_snap_install "$SNAP_NAME" "$OTTERSCALE_MAX_RETRIES" "--classic --channel=$SNAP_CHANNEL"
         else
-            retry_snap_install "$snap" "$MAX_RETRIES" "--channel=$channel"
+            retry_snap_install "$SNAP_NAME" "$OTTERSCALE_MAX_RETRIES" "--channel=$SNAP_CHANNEL"
         fi
     fi
 }
@@ -72,14 +70,10 @@ snap_install() {
     SNAP_CHANNELS[lxd]=$LXD_CHANNEL
     SNAP_CHANNELS[microk8s]=$MICROK8S_CHANNEL
 
-    for snap in $SNAP_PACKAGES; do
-        CHANNEL=${SNAP_CHANNELS[$snap]}
-        if [[ -z $CHANNEL ]]; then
-            CHANNEL=""
-        fi
-        install_or_update_snap "$snap" "$CHANNEL"
+    for SNAP_NAME in $SNAP_PACKAGES; do
+        install_or_update_snap "$SNAP_NAME" "${SNAP_CHANNELS[$SNAP_NAME]}"
     done
 
-    log "INFO" "Holding all snaps..."
+    log "INFO" "Holding all snaps..." "Snap hold"
     snap refresh --hold >>"$TEMP_LOG" 2>&1
 }

@@ -1,20 +1,29 @@
 #!/bin/bash
 
+juju_cmd() {
+    local CMD=$1
+    local MSG=$2
+    log "INFO" "Execute command: $CMD" "$MSG"
+    if ! execute_non_user_cmd "$NON_ROOT_USER" "$CMD" "$MSG"; then
+        error_exit "Failed $MSG"
+    fi
+}
+
 generate_clouds_yaml() {
-    su "$username" -c 'cat > $JUJU_CLOUD <<EOF
+    su "$NON_ROOT_USER" -c 'cat > $JUJU_CLOUD <<EOF
 clouds:
   maas-cloud:
     type: maas
     description: Metal As A Service
     auth-types: [oauth1]
-    endpoint: http://$BRIDGE_IP:5240/MAAS/api/2.0/
+    endpoint: http://$OTTERSCALE_INTERFACE_IP:5240/MAAS/api/2.0/
     regions:
       default: {}
 EOF'
 }
 
 generate_credentials_yaml() {
-    su "$username" -c 'cat > $JUJU_CREDENTIAL <<EOF
+    su "$NON_ROOT_USER" -c 'cat > $JUJU_CREDENTIAL <<EOF
 credentials:
   maas-cloud:
     maas-cloud-credential:
@@ -24,121 +33,98 @@ EOF'
 }
 
 juju_clouds() {
-    ## If cloud exist, try use update
-    if su "$username" -c 'juju clouds 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Cloud already exists, updating configuration..."
-        if ! execute_non_user_cmd "$username" "juju update-cloud maas-cloud -f $JUJU_CLOUD" "update cloud"; then
-            log "WARN" "Failed to update cloud, removing and recreating..."
-            execute_non_user_cmd "$username" "juju remove-cloud maas-cloud || true" "remove cloud"
-            if ! execute_non_user_cmd "$username" "juju add-cloud maas-cloud $JUJU_CLOUD" "add cloud"; then
-                error_exit "Failed to add Juju cloud."
-            fi
-        fi
+    log "INFO" "Configuring Juju clouds..." "JuJu clouds"
+    generate_clouds_yaml
+
+    if su "$NON_ROOT_USER" -c 'juju clouds 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
+        log "WARN" "JuJu cloud maas-cloud already exists, skipping created..." "JuJu clouds"
     else
-        if ! execute_non_user_cmd "$username" "juju add-cloud maas-cloud $JUJU_CLOUD" "add cloud"; then
-            error_exit "Failed to add Juju cloud."
-        fi
+        juju_cmd "juju add-cloud maas-cloud $JUJU_CLOUD" "add juju cloud"
     fi
 }
 
 juju_credentials() {
-    ## If credential exist, try use update
-    if su "$username" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
-        log "WARN" "Credential already exists, updating..."
-        if ! execute_non_user_cmd "$username" "juju update-credential maas-cloud maas-cloud-credential -f $JUJU_CREDENTIAL" "update credential"; then
-            log "WARN" "Failed to update credential, removing and recreating..."
-            execute_non_user_cmd "$username" "juju remove-credential maas-cloud maas-cloud-credential || true" "remove credential"
-            if ! execute_non_user_cmd "$username" "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"; then
-                error_exit "Failed to add Juju credentials."
-            fi
-        fi
+    log "INFO" "Configuring Juju credentials..." "JuJu credentials"
+    generate_credentials_yaml
+
+    if su "$NON_ROOT_USER" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
+        log "WARN" "JuJu Credential maas-cloud already exists, skipping created..." "JuJu credentials"
     else
-        if ! execute_non_user_cmd "$username" "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"; then
-            error_exit "Failed to add Juju credentials."
-        fi
+        juju_cmd "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"
     fi
 }
 
-set_juju_config() {
-    su "$username" -c 'mkdir -p ~/.local/share/juju'
-    su "$username" -c 'mkdir -p ~/ottersacle'
+is_machine_exist() {
+    if maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q . >/dev/null 2>&1; then
+        return 0
+    fi
+    return 1
+}
 
-    export JUJU_CLOUD=/home/$username/ottersacle/cloud.yaml
-    export JUJU_CREDENTIAL=/home/$username/ottersacle/credential.yaml
-    export BRIDGE_IP=$BRIDGE_IP
-    export APIKEY=$APIKEY
-
-    log "INFO" "Configuring Juju clouds..."
-    generate_clouds_yaml
-    juju_clouds
-
-    log "INFO" "Configuring Juju credentials..."
-    generate_credentials_yaml
-    juju_credentials
-
-    log "INFO" "Juju configuration completed"
-    rm -rf /home/$username/ottersacle
-    unset JUJU_CLOUD
-    unset JUJU_CREDENTIAL
-    unset BRIDGE_IP
-    unset APIKEY
+is_machine_deployed() {
+    if [ $(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | jq -r '.status_name') == Deployed ]; then
+	return 0
+    fi
+    return 1
 }
 
 # Juju bootstrap with validation
 bootstrap_juju() {
-    log "INFO" "Juju bootstrap, it will take few minutes..."
-    local bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$BASE_IMAGE"
-    local bootstrap_config="--config default-base=$BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
-    local bootstrap_machine="--to juju-vm"
+    su "$NON_ROOT_USER" -c 'mkdir -p ~/.local/share/juju'
+    su "$NON_ROOT_USER" -c 'mkdir -p ~/ottersacle'
 
-    if ! maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q . >/dev/null 2>&1; then
-        error_exit "Juju bootstrap failed, do not found juju-vm in MAAS."
+    export JUJU_CLOUD=/home/$NON_ROOT_USER/ottersacle/cloud.yaml
+    export JUJU_CREDENTIAL=/home/$NON_ROOT_USER/ottersacle/credential.yaml
+    export OTTERSCALE_INTERFACE_IP=$OTTERSCALE_INTERFACE_IP
+    export APIKEY=$APIKEY
+
+    juju_clouds
+    juju_credentials
+
+    rm -rf /home/$NON_ROOT_USER/ottersacle
+    unset JUJU_CLOUD
+    unset JUJU_CREDENTIAL
+    unset APIKEY
+	
+    bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$OTTERSCALE_BASE_IMAGE"
+    bootstrap_config="--config default-base=$BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
+    bootstrap_machine="--to juju-vm"
+
+    if ! is_machine_exist; then
+        error_exit "Juju bootstrap failed, do not found juju-vm in MAAS"
     fi
 
-    if ! execute_non_user_cmd "$username" "$bootstrap_cmd $bootstrap_config $bootstrap_machine --debug" "juju bootstrap"; then
-        error_exit "Juju bootstrap failed."
+    if is_machine_deployed; then
+        log "INFO" "JuJu had already bootstrap, skipping..."
     else
-        log "INFO" "MAAS and Juju setup completed successfully!"
+        log "INFO" "Juju bootstrap, it will take a few minutes..." "JuJu bootstrap"
+        juju_cmd "$bootstrap_cmd $bootstrap_config $bootstrap_machine --debug" "juju bootstrap"
+        log "INFO" "MAAS and Juju setup completed successfully!" "Finished bootstrap"
     fi
+
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model default > /dev/null 2>&1" "check juju model"; then
+        log "INFO" "default model already exist, skipping..." "JuJu model"
+    else
+        juju_cmd "juju add-model model --debug" "execute juju add-model"
+    fi    
 }
 
-create_scope() {
-    log "INFO" "Create juju default scope"
-    if ! execute_non_user_cmd "$username" "juju add-model default" "create default model"; then
-        error_exit "Failed create juju default model"
-    fi
-}
-
-cross_scope() {
-    if ! execute_non_user_cmd "$username" "juju offer grafana:grafana-dashboard grafana-dashboard" "JuJu offer grafana-dashboard"; then
-        error_exit "Failed execute juju offer grafana-dashboard"
-    fi
-
-    if ! execute_non_user_cmd "$username" "juju offer prometheus:receive-remote-write prometheus-receive-remote-write" "JuJu offer prometheus-receive-remote-write"; then
-        error_exit "Failed execute juju offer prometheus-receive-remote-write"
-    fi
-}
-
-# JuJu K8S
 juju_add_k8s() {
-    log "INFO" "Juju add-k8s to maas-cloud-controller"
-    if ! execute_non_user_cmd "$username" "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" "execute juju add-k8s"; then
-        error_exit "Failed execute juju add-k8s"
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s > /dev/null 2>&1" "check juju cloud"; then
+        log "INFO" "cos-k8s already exist, skipping..." "JuJu cloud"
+    else
+        juju_cmd "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" "execute juju add-k8s"
     fi
 
-    log "INFO" "Juju add-model cos"
-    if ! execute_non_user_cmd "$username" "juju add-model cos cos-k8s --debug" "execute juju add-model"; then
-        error_exit "Failed execute juju add-model"
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos > /dev/null 2>&1" "check juju model"; then
+        log "INFO" "cos model already exist, skipping..." "JuJu model"
+    else
+        juju_cmd "juju add-model cos cos-k8s --debug" "execute juju add-model"
+        juju_cmd "juju deploy cos-lite --trust --debug" "juju deploy cos-lite"
     fi
 
-    log "INFO" "Juju deploy cos-lite"
-    if ! execute_non_user_cmd "$username" "juju deploy cos-lite --trust --debug" "juju deploy cos-lite"; then
-        error_exit "Failed execute juju deploy cos-lite"
-    fi
-}
-
-juju_config_k8s() {
-    log "INFO" "Juju config prometheus"
-    execute_non_user_cmd "$username" "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
-    execute_non_user_cmd "$username" "juju config prometheus maximum_retention_size=60% --debug" "update max retention size to 60%"
+    juju_cmd "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
+    juju_cmd "juju config prometheus maximum_retention_size=60% --debug" "update max retention size to 60%"
+    juju_cmd "juju offer grafana:grafana-dashboard global-grafana" "offer grafana-dashboard"
+    juju_cmd "juju offer prometheus:receive-remote-write global-prometheus" "offer prometheus-receive-remote-write"
 }
