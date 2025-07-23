@@ -1,9 +1,7 @@
-import { applicationsPath, changelogPath, documentationPath, feedbackPath, machinesPath, modelPath, settingsPath, storagePath } from "$lib/path";
+import { applicationsPath, documentationPath, feedbackPath, machinesPath, modelPath, settingsPath, storagePath } from "$lib/path";
 
 export function getIconFromUrl(url: string): string {
     switch (url) {
-        case changelogPath:
-            return 'ph:clock-counter-clockwise'
         case documentationPath:
             return 'ph:book-open'
         case feedbackPath:

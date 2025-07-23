@@ -2,32 +2,30 @@
 	import type { ComponentProps } from 'svelte';
 	import Icon from '@iconify/svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar';
+	import { getIconFromUrl } from './icon';
 
 	interface NavItem {
 		title: string;
 		url: string;
-		icon: string;
 	}
 
-	let {
-		ref = $bindable(null),
-		items,
-		...restProps
-	}: {
+	interface Props extends ComponentProps<typeof Sidebar.Group> {
 		items: NavItem[];
-	} & ComponentProps<typeof Sidebar.Group> = $props();
+	}
+
+	let { ref = $bindable(null), items, ...restProps }: Props = $props();
 </script>
 
 <Sidebar.Group bind:ref {...restProps}>
 	<Sidebar.GroupContent>
 		<Sidebar.Menu>
-			{#each items as { title, url, icon } (title)}
+			{#each items as item (item.title)}
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton size="sm">
 						{#snippet child({ props })}
-							<a href={url} {...props}>
-								<Icon {icon} />
-								<span>{title}</span>
+							<a href={item.url} {...props}>
+								<Icon icon={getIconFromUrl(item.url)} />
+								<span>{item.title}</span>
 							</a>
 						{/snippet}
 					</Sidebar.MenuButton>
