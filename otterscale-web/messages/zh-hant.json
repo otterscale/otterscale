@@ -1,0 +1,5 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"locale": "繁體中文",
+	"hello_world": "Hello, {name} from zh-hant!"
+}

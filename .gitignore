@@ -24,7 +24,7 @@ go.work.sum
 # Mac
 .DS_Store
 
-# vscode
+# VS Code
 .vscode
 
 # Temp folder
@@ -35,9 +35,6 @@ tmp
 
 # YAML
 *.yaml
-
-# JSON
-*.json
 
 # bin folder
 bin/
