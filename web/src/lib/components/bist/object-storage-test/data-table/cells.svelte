@@ -2,7 +2,7 @@
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Row } from '@tanstack/table-core';
 	import { formatTimeAgo } from '$lib/formatter';
-	import { type TestResult, TestResult_Status, InternalObjectService_Type } from '$gen/api/bist/v1/bist_pb'
+	import { type TestResult, TestResult_Status, InternalObjectService_Type, Warp_Input_Operation } from '$gen/api/bist/v1/bist_pb'
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
@@ -68,7 +68,7 @@
 {#snippet operation(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'warp' &&  row.original.kind.value?.input}
-			{row.original.kind.value.input.operation}
+			{Warp_Input_Operation[row.original.kind.value.input.operation]}
         {/if}
 	</p>
 {/snippet}

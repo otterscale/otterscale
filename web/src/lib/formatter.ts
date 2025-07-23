@@ -132,3 +132,19 @@ export function formatLatency(second: number): { value: string, unit: string } {
     }
 };
 
+export function formatLatencyNano(nanosecond: number): { value: string, unit: string } {
+    const second = nanosecond / 1000000000;
+    const millisecond = nanosecond / 1000000;
+    const microsecond = nanosecond / 1000;
+
+    if (second >= 1) {
+        return { value: `${Math.round(second * 100) / 100}`, unit: "s" };
+    } else if (millisecond >= 1) {
+        return { value: `${Math.round(millisecond * 100) / 100}`, unit: "ms" };
+    } else if (microsecond >= 1) {
+        return { value: `${Math.round(microsecond * 100) / 100}`, unit: "us" };
+    } else {
+        return { value: `${Math.round(nanosecond * 100) / 100}`, unit: "ns" };
+    }
+};
+

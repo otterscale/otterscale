@@ -5,7 +5,7 @@
 	
 	import { Chart as Layout } from '$lib/components/custom/chart/layouts/index';
 	import * as Template from '$lib/components/dashboard/utils/templates';
-	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
+	import { formatCapacityV2 as formatCapacity, formatLatencyNano } from '$lib/formatter';
 	import { scaleLog } from 'd3-scale';
 	import dayjs from 'dayjs';
 	import { ScatterChart, Tooltip } from 'layerchart';
@@ -117,7 +117,7 @@
 		{/snippet}
 	</Template.Area>
 
-	<Template.Area title="IO">
+	<Template.Area title="IOPS">
 		{#snippet hint()}
 			<p>IO Per Second</p>
 		{/snippet}
@@ -156,12 +156,6 @@
 								tweened: { duration: 200 },
 								format: (d: Date) => dayjs(d).format('MM/DD')
 							},
-							yAxis: {
-								format: (v: number) => {
-									const capacity = formatCapacity(v);
-									return `${Number(capacity.value).toFixed(0)} ${capacity.unit}`;
-								}
-							},
 							grid: { tweened: { duration: 200 } },
 							points: { tweened: { duration: 200 } },
 						}}
@@ -176,10 +170,7 @@
 							<Tooltip.Header class='font-light'>{data.seriesKey}</Tooltip.Header>
 							<Tooltip.List>
 								<Tooltip.Item label="Name" value={(data.name)} />
-								<Tooltip.Item
-									label="IO"
-									value={`${Number(formatCapacity(data.ioPerSecond).value).toFixed(0)} ${formatCapacity(data.ioPerSecond).unit}/s`}
-								/>
+								<Tooltip.Item label="IO" value={data.ioPerSecond} />
 								<Tooltip.Item label="Date" value={dayjs(data.completedAt).format('YYYY/MM/DD HH:mm')} />
 							</Tooltip.List>
 							</Tooltip.Root>
@@ -229,8 +220,8 @@
 							},
 							yAxis: {
 								format: (v: number) => {
-									const capacity = formatCapacity(v);
-									return `${Number(capacity.value).toFixed(0)} ${capacity.unit}`;
+									const latency = formatLatencyNano(v);
+									return `${Number(latency.value).toFixed(0)} ${latency.unit}`;
 								}
 							},
 							grid: { tweened: { duration: 200 } },
@@ -248,8 +239,8 @@
 							<Tooltip.List>
 								<Tooltip.Item label="Name" value={(data.name)} />
 								<Tooltip.Item
-									label="IO"
-									value={`${Number(formatCapacity(data.latency).value).toFixed(0)} ${formatCapacity(data.latency).unit}`}
+									label="Bandwidth"
+									value={`${Number(formatLatencyNano(data.latency).value).toFixed(0)} ${formatLatencyNano(data.latency).unit}`}
 								/>
 								<Tooltip.Item label="Date" value={dayjs(data.completedAt).format('YYYY/MM/DD HH:mm')} />
 							</Tooltip.List>

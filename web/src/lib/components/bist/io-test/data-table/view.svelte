@@ -4,6 +4,8 @@
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import Icon from '@iconify/svelte';
+	import { formatCapacityV2 as formatCapacity, formatLatencyNano } from '$lib/formatter';
+
 </script>
 
 <script lang="ts">
@@ -28,35 +30,54 @@
 		</AlertDialog.Header>
 		<Form.Root>
 			{#if testResult?.kind?.value?.output && testResult.kind.case == 'fio'}
+				{@const readOutput = testResult.kind.value.output.read}
+				{@const writeOutput = testResult.kind.value.output.write}
+				{@const trimOutput = testResult.kind.value.output.trim}
+				
 				<Form.Fieldset>
 					<Form.Legend>Read</Form.Legend>
-					<Form.Description>IO Bytes: {testResult.kind.value.output.read?.ioBytes}</Form.Description>
-					<Form.Description>Bandwidth Bytes: {testResult.kind.value.output.read?.bandwidthBytes}</Form.Description>
-					<Form.Description>IO Per Second: {testResult.kind.value.output.read?.ioPerSecond}</Form.Description>
-					<Form.Description>Total Ios: {testResult.kind.value.output.read?.totalIos}</Form.Description>
-					<Form.Description>Min Latency (ns): {testResult.kind.value.output.read?.latency?.minNanoseconds}</Form.Description>
-					<Form.Description>Max Latency (ns): {testResult.kind.value.output.read?.latency?.maxNanoseconds}</Form.Description>
-					<Form.Description>Mean Latency (ns): {testResult.kind.value.output.read?.latency?.meanNanoseconds}</Form.Description>
+					{@const readIoBytes = formatCapacity(Number(readOutput?.ioBytes || 0))}
+					{@const readBandwidthBytes = formatCapacity(Number(readOutput?.bandwidthBytes || 0))}
+					{@const readMinLatency = formatLatencyNano(Number(readOutput?.latency?.minNanoseconds || 0))}
+					{@const readMaxLatency = formatLatencyNano(Number(readOutput?.latency?.maxNanoseconds || 0))}
+					{@const readMeanLatency = formatLatencyNano(readOutput?.latency?.meanNanoseconds || 0)}
+					<Form.Description>IO Bytes: {readIoBytes.value} {readIoBytes.unit}</Form.Description>
+					<Form.Description>Bandwidth Bytes: {readBandwidthBytes.value} {readBandwidthBytes.unit}</Form.Description>
+					<Form.Description>IO Per Second: {readOutput?.ioPerSecond}</Form.Description>
+					<Form.Description>Total Ios: {readOutput?.totalIos}</Form.Description>
+					<Form.Description>Min Latency: {readMinLatency.value} {readMinLatency.unit}</Form.Description>
+					<Form.Description>Max Latency: {readMaxLatency.value} {readMaxLatency.unit}</Form.Description>
+					<Form.Description>Mean Latency: {readMeanLatency.value} {readMeanLatency.unit}</Form.Description>
 				</Form.Fieldset>
 				<Form.Fieldset>
 					<Form.Legend>Write</Form.Legend>
-					<Form.Description>IO Bytes: {testResult.kind.value.output.write?.ioBytes}</Form.Description>
-					<Form.Description>Bandwidth Bytes: {testResult.kind.value.output.write?.bandwidthBytes}</Form.Description>
-					<Form.Description>IO Per Second: {testResult.kind.value.output.write?.ioPerSecond}</Form.Description>
-					<Form.Description>Total Ios: {testResult.kind.value.output.write?.totalIos}</Form.Description>
-					<Form.Description>Min Latency (ns): {testResult.kind.value.output.write?.latency?.minNanoseconds}</Form.Description>
-					<Form.Description>Max Latency (ns): {testResult.kind.value.output.write?.latency?.maxNanoseconds}</Form.Description>
-					<Form.Description>Mean Latency (ns): {testResult.kind.value.output.write?.latency?.meanNanoseconds}</Form.Description>
+					{@const writeIoBytes = formatCapacity(Number(writeOutput?.ioBytes || 0))}
+					{@const writeBandwidthBytes = formatCapacity(Number(writeOutput?.bandwidthBytes || 0))}
+					{@const writeMinLatency = formatLatencyNano(Number(writeOutput?.latency?.minNanoseconds || 0))}
+					{@const writeMaxLatency = formatLatencyNano(Number(writeOutput?.latency?.maxNanoseconds || 0))}
+					{@const writeMeanLatency = formatLatencyNano(writeOutput?.latency?.meanNanoseconds || 0)}
+					<Form.Description>IO Bytes: {writeIoBytes.value} {writeIoBytes.unit}</Form.Description>
+					<Form.Description>Bandwidth Bytes: {writeBandwidthBytes.value} {writeBandwidthBytes.unit}</Form.Description>
+					<Form.Description>IO Per Second: {writeOutput?.ioPerSecond}</Form.Description>
+					<Form.Description>Total Ios: {writeOutput?.totalIos}</Form.Description>
+					<Form.Description>Min Latency: {writeMinLatency.value} {writeMinLatency.unit}</Form.Description>
+					<Form.Description>Max Latency: {writeMaxLatency.value} {writeMaxLatency.unit}</Form.Description>
+					<Form.Description>Mean Latency: {writeMeanLatency.value} {writeMeanLatency.unit}</Form.Description>
 				</Form.Fieldset>
 				<Form.Fieldset>
 					<Form.Legend>Trim</Form.Legend>
-					<Form.Description>IO Bytes: {testResult.kind.value.output.trim?.ioBytes}</Form.Description>
-					<Form.Description>Bandwidth Bytes: {testResult.kind.value.output.trim?.bandwidthBytes}</Form.Description>
-					<Form.Description>IO Per Second: {testResult.kind.value.output.trim?.ioPerSecond}</Form.Description>
-					<Form.Description>Total Ios: {testResult.kind.value.output.trim?.totalIos}</Form.Description>
-					<Form.Description>Min Latency (ns): {testResult.kind.value.output.trim?.latency?.minNanoseconds}</Form.Description>
-					<Form.Description>Max Latency (ns): {testResult.kind.value.output.trim?.latency?.maxNanoseconds}</Form.Description>
-					<Form.Description>Mean Latency (ns): {testResult.kind.value.output.trim?.latency?.meanNanoseconds}</Form.Description>
+					{@const trimIoBytes = formatCapacity(Number(trimOutput?.ioBytes || 0))}
+					{@const trimBandwidthBytes = formatCapacity(Number(trimOutput?.bandwidthBytes || 0))}
+					{@const trimMinLatency = formatLatencyNano(Number(trimOutput?.latency?.minNanoseconds || 0))}
+					{@const trimMaxLatency = formatLatencyNano(Number(trimOutput?.latency?.maxNanoseconds || 0))}
+					{@const trimMeanLatency = formatLatencyNano(trimOutput?.latency?.meanNanoseconds || 0)}
+					<Form.Description>IO Bytes: {trimIoBytes.value} {trimIoBytes.unit}</Form.Description>
+					<Form.Description>Bandwidth Bytes: {trimBandwidthBytes.value} {trimBandwidthBytes.unit}</Form.Description>
+					<Form.Description>IO Per Second: {trimOutput?.ioPerSecond}</Form.Description>
+					<Form.Description>Total Ios: {trimOutput?.totalIos}</Form.Description>
+					<Form.Description>Min Latency: {trimMinLatency.value} {trimMinLatency.unit}</Form.Description>
+					<Form.Description>Max Latency: {trimMaxLatency.value} {trimMaxLatency.unit}</Form.Description>
+					<Form.Description>Mean Latency: {trimMeanLatency.value} {trimMeanLatency.unit}</Form.Description>
 				</Form.Fieldset>
 			{:else}
 				<Form.Description class="text-xs font-light">
