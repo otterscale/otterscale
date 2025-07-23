@@ -27,16 +27,12 @@
     
     let modeThroughputFastest = $state("get");
     let modeThroughputMedian = $state("get");
-    let modeLatency = $state("get");
 
     const triggerBandwidthContent = $derived(
         modes.find((m) => m.value === modeThroughputFastest)?.label ?? "Select a mode"
     );
     const triggerIOContent = $derived(
         modes.find((m) => m.value === modeThroughputMedian)?.label ?? "Select a mode"
-    );
-    const triggerLatencyContent = $derived(
-        modes.find((m) => m.value === modeLatency)?.label ?? "Select a mode"
     );
 </script>
 
@@ -125,7 +121,7 @@
         {#snippet controller()}
             <Select.Root type="single" name="ioMode" bind:value={modeThroughputMedian}>
             <Select.Trigger class="w-[180px]">
-                {triggerBandwidthContent}
+                {triggerIOContent}
             </Select.Trigger>
             <Select.Content>
                 <Select.Group>

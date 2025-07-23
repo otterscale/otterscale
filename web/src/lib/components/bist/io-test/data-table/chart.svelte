@@ -239,7 +239,7 @@
 							<Tooltip.List>
 								<Tooltip.Item label="Name" value={(data.name)} />
 								<Tooltip.Item
-									label="Bandwidth"
+									label="Latency"
 									value={`${Number(formatLatencyNano(data.latency).value).toFixed(0)} ${formatLatencyNano(data.latency).unit}`}
 								/>
 								<Tooltip.Item label="Date" value={dayjs(data.completedAt).format('YYYY/MM/DD HH:mm')} />

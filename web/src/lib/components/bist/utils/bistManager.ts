@@ -1,6 +1,7 @@
 import type { Table } from '@tanstack/table-core';
 import type { TestResult } from '$gen/api/bist/v1/bist_pb';
 import { FIO_Input_AccessMode, Warp_Input_Operation } from '$gen/api/bist/v1/bist_pb';
+import { hashCode } from './hashGroupID';
 
 interface FioDataPoint {
     name: string;
@@ -49,15 +50,6 @@ class BistDashboardManager<TData = TestResult> {
         return this.table.getFilteredRowModel().rows.map((row) => row.original);
     }
 
-    private hashCode(str: string): number {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = ((hash << 5) - hash) + str.charCodeAt(i);
-            hash |= 0;
-        }
-        return hash;
-    }
-
     private generateGroupName(input: any): string {
         return `${FIO_Input_AccessMode[input.accessMode]}-${Number(input.jobCount)}-${input.runTime}-${input.blockSize}-${input.fileSize}-${Number(input.ioDepth)}`;
     }
@@ -67,7 +59,7 @@ class BistDashboardManager<TData = TestResult> {
     }
 
     private generateColor(groupName: string): string {
-        const hue = Math.abs(this.hashCode(groupName)) % 360;
+        const hue = Math.abs(hashCode(groupName)) % 360;
         return `hsl(${hue}, 70%, 50%)`;
     }
 

@@ -80,11 +80,6 @@ export function formatCapacityV2(capacity: number | bigint): { value: string, un
     } else {
         return { value: `${Math.round(KB * 100) / 100}`, unit: "KB" };
     }
-    // } else if (KB >= 1) {
-    //     return { value: `${Math.round(KB * 100) / 100}`, unit: "KB" };
-    // } else {
-    //     return { value: `${Math.round(B * 100) / 100}`, unit: "B" };
-    // }
 }
 
 export function formatNetworkIO(bytes: number | bigint): { value: number, unit: string } {
