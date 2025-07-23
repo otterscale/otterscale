@@ -6,15 +6,15 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
+	import { activeScope } from '$lib/stores';
 	import DialogCreateScope from './dialog-create-scope.svelte';
 
 	let { scopes }: { scopes: Scope[] } = $props();
-	let activeScope = $state(scopes[0]);
 	let open = $state(false);
 
 	const sidebar = useSidebar();
 
-	const shortcutIcons = [
+	const SHORTCUT_ICONS = [
 		'ph:number-one',
 		'ph:number-two',
 		'ph:number-three',
@@ -26,7 +26,7 @@
 		'ph:number-nine'
 	];
 
-	const icons = [
+	const SCOPE_ICONS = [
 		'ph:airplane-tilt',
 		'ph:cactus',
 		'ph:cherries',
@@ -38,21 +38,21 @@
 		'ph:gavel'
 	];
 
-	function getIcon(name: string) {
+	function getIcon(name: string): string {
 		const index = scopes.findIndex((scope) => scope.name === name);
-		return index !== -1 ? icons[index % icons.length] : icons[0];
+		return index !== -1 ? SCOPE_ICONS[index % SCOPE_ICONS.length] : SCOPE_ICONS[0];
 	}
 
-	function handleScopeShortcut(index: number) {
+	function handleScopeShortcut(index: number): void {
 		if (scopes.length > index) {
-			activeScope = scopes[index];
-			toast.info(`Toggle to ${activeScope.name}`);
+			activeScope.set(scopes[index]);
+			toast.info(`Switched to '${$activeScope.name}' scope`);
 		}
 	}
 
-	const toggleDialog = () => {
+	function toggleDialog(): void {
 		open = !open;
-	};
+	}
 </script>
 
 <svelte:window
@@ -118,10 +118,10 @@
 						<div
 							class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 						>
-							<Icon icon={getIcon(activeScope.name) + '-fill'} class="size-4.5" />
+							<Icon icon="{getIcon($activeScope.name)}-fill" class="size-4.5" />
 						</div>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-medium">{activeScope.name}</span>
+							<span class="truncate font-medium">{$activeScope.name}</span>
 							<!-- <span class="truncate text-xs">{activeScope.enterprise ? 'Enterprise' : 'Free'}</span> -->
 							<span class="truncate text-xs">Free</span>
 						</div>
@@ -139,14 +139,14 @@
 				{#each scopes as scope, index (scope.name)}
 					<DropdownMenu.Item onSelect={() => handleScopeShortcut(index)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
-							<Icon icon={getIcon(scope.name) + '-bold'} class="size-3.5 shrink-0" />
+							<Icon icon="{getIcon(scope.name)}-bold" class="size-3.5 shrink-0" />
 						</div>
 						{scope.name}
 						{#if index < 9}
 							<DropdownMenu.Shortcut>
 								<div class="flex items-center justify-center">
 									<Icon icon="ph:control-bold" />
-									<Icon icon={shortcutIcons[index]} />
+									<Icon icon={SHORTCUT_ICONS[index]} />
 								</div>
 							</DropdownMenu.Shortcut>
 						{/if}
