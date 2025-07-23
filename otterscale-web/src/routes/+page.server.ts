@@ -1,6 +1,6 @@
 import { redirect } from "@sveltejs/kit";
 import { auth } from "$lib/auth";
-import { dashboardPath, loginPath } from "$lib/path";
+import { applicationsPath, loginPath } from "$lib/path";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ request, url }) => {
@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	});
 
 	if (session) {
-		redirect(302, dashboardPath);
+		redirect(302, applicationsPath);
 	}
 
 	redirect(302, `${loginPath}${url.search}`);

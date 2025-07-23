@@ -12,7 +12,7 @@
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages.js';
-	import { accountPath, loginPath, settingsPath } from '$lib/path';
+	import { accountPath, accountSettingsPath, loginPath } from '$lib/path';
 	import SheetNotification from './sheet-notification.svelte';
 
 	let { user }: { user: User } = $props();
@@ -165,7 +165,7 @@
 				<DropdownMenu.Separator />
 
 				<!-- Settings -->
-				<DropdownMenu.Item onclick={() => goto(settingsPath)}>
+				<DropdownMenu.Item onclick={() => goto(accountSettingsPath)}>
 					<Icon icon="ph:gear-bold" />
 					Settings
 				</DropdownMenu.Item>
