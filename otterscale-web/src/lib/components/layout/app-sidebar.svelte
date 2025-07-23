@@ -4,8 +4,6 @@
 		applicationsServicePath,
 		applicationsStorePath,
 		applicationsWorkloadPath,
-		documentationPath,
-		feedbackPath,
 		machinesMetalPath,
 		machinesPath,
 		machinesVirtualMachinePath,
@@ -62,10 +60,6 @@
 					{ title: 'Network', url: settingsNetworkPath }
 				]
 			}
-		],
-		secondary: [
-			{ title: 'Feedback', url: feedbackPath },
-			{ title: 'Documentation', url: documentationPath }
 		],
 		bookmarks: [
 			{ name: 'FOO 1', url: '#' },
@@ -158,7 +152,7 @@
 	<Sidebar.Content>
 		<NavMain items={NAVIGATION_DATA.main} />
 		<NavPrimary bookmarks={NAVIGATION_DATA.bookmarks} />
-		<NavSecondary items={NAVIGATION_DATA.secondary} class="mt-auto" />
+		<NavSecondary class="mt-auto" />
 	</Sidebar.Content>
 
 	<Sidebar.Footer>
