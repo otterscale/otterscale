@@ -7,7 +7,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { writable, type Writable } from 'svelte/store';
-	import * as MultipleStepModal from './mutiple-step-modal';
+	import * as MultipleStepModal from '../../utils/mutiple-step-modal';
 	import type { TestResult, CreateTestResultRequest, FIO, FIO_Input, CephBlockDevice, NetworkFileSystem, InternalObjectService } from '$gen/api/bist/v1/bist_pb'
 	import { BISTService, FIO_Input_AccessMode } from '$gen/api/bist/v1/bist_pb'
 	import { createClient, type Transport } from '@connectrpc/connect';

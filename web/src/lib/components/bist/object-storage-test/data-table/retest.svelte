@@ -2,7 +2,7 @@
 	import type { TestResult } from '$gen/api/bist/v1/bist_pb';
 	import Icon from '@iconify/svelte';
 	import type { Writable } from 'svelte/store';
-	import * as MultipleStepModal from './mutiple-step-modal';
+	import * as MultipleStepModal from '../../utils/mutiple-step-modal';
 	import TestStepModal from './test-step-modal.svelte';
 </script>
 

@@ -25,7 +25,7 @@
 	import { columns } from './columns';
 	import Statistics from './statistics.svelte';
 	import Create from './test-step-modal.svelte';
-
+	import Chart from './chart.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -110,10 +110,11 @@
 	<Layout.Statistics>
 		<Statistics {table} />
 	</Layout.Statistics>
+	<Chart {table}/>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="createdBy" alias="Creater" {table} />
+			<PointFilter columnId="createdBy" {table} values={$data.map((row) => row.createdBy)} alias="Creater" />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

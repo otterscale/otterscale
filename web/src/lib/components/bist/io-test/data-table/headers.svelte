@@ -8,6 +8,13 @@
 		_row_picker: _row_picker,
 		name: name,
 		status: status,
+		target: target,
+		accessMode: accessMode,
+		jobCount: jobCount,
+		runTime: runTime,
+		blockSize: blockSize,
+		fileSize: fileSize,
+		ioDepth: ioDepth,
 		createdBy: createdBy,
 		startedAt: startedAt, 
 		completedAt: completedAt, 
@@ -34,6 +41,55 @@
 {#snippet status(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
 		<p class="text-xs font-light">STATUS</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet target(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">TARGET</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet accessMode(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">ACCESS MODE</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet jobCount(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">JOB COUNT</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet runTime(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">RUN TIME</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet blockSize(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">BLOCK SIZE</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet fileSize(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">FILE SIZE</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet ioDepth(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">IO DEPTH</p>
 		<Sorter {column} />
 	</div>
 {/snippet}

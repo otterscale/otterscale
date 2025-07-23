@@ -63,6 +63,25 @@ export function formatCapacity(capacity: number | bigint): { value: string, unit
     }
 }
 
+
+export function formatCapacityV2(capacity: number | bigint): { value: string, unit: string } {
+    const B = Number(capacity)
+    const KB = B / 1024;
+    const MB = KB / 1024;
+    const GB = MB / 1024;
+    const TB = GB / 1024;
+
+    if (TB >= 1) {
+        return { value: `${Math.round(TB * 100) / 100}`, unit: "TB" };
+    } else if (GB >= 1) {
+        return { value: `${Math.round(GB * 100) / 100}`, unit: "GB" };
+    } else if (MB >= 1) {
+        return { value: `${Math.round(MB * 100) / 100}`, unit: "MB" };
+    } else {
+        return { value: `${Math.round(KB * 100) / 100}`, unit: "KB" };
+    }
+}
+
 export function formatNetworkIO(bytes: number | bigint): { value: number, unit: string } {
     const B = Number(bytes);
     const KB = B / 1024;
@@ -107,3 +126,20 @@ export function formatLatency(second: number): { value: string, unit: string } {
         return { value: `${nanosecond}`, unit: "ns" };
     }
 };
+
+export function formatLatencyNano(nanosecond: number): { value: string, unit: string } {
+    const second = nanosecond / 1000000000;
+    const millisecond = nanosecond / 1000000;
+    const microsecond = nanosecond / 1000;
+
+    if (second >= 1) {
+        return { value: `${Math.round(second * 100) / 100}`, unit: "s" };
+    } else if (millisecond >= 1) {
+        return { value: `${Math.round(millisecond * 100) / 100}`, unit: "ms" };
+    } else if (microsecond >= 1) {
+        return { value: `${Math.round(microsecond * 100) / 100}`, unit: "us" };
+    } else {
+        return { value: `${Math.round(nanosecond * 100) / 100}`, unit: "ns" };
+    }
+};
+

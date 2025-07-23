@@ -24,6 +24,69 @@ const columns: ColumnDef<TestResult>[] = [
         },
     },
     {
+        accessorKey: "target",
+        header: ({ column }) => {
+            return renderSnippet(headers.target, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.target, row);
+        },
+    },
+    {
+        accessorKey: "accessMode",
+        header: ({ column }) => {
+            return renderSnippet(headers.accessMode, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.accessMode, row);
+        },
+    },
+    {
+        accessorKey: "jobCount",
+        header: ({ column }) => {
+            return renderSnippet(headers.jobCount, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.jobCount, row);
+        },
+    },
+    {
+        accessorKey: "runTime",
+        header: ({ column }) => {
+            return renderSnippet(headers.runTime, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.runTime, row);
+        },
+    },
+    {
+        accessorKey: "blockSize",
+        header: ({ column }) => {
+            return renderSnippet(headers.blockSize, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.blockSize, row);
+        },
+    },
+    {
+        accessorKey: "fileSize",
+        header: ({ column }) => {
+            return renderSnippet(headers.fileSize, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.fileSize, row);
+        },
+    },
+    {
+        accessorKey: "ioDepth",
+        header: ({ column }) => {
+            return renderSnippet(headers.ioDepth, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.ioDepth, row);
+        },
+    },
+    {
         accessorKey: "createdBy",
         header: ({ column }) => {
             return renderSnippet(headers.createdBy, column)
