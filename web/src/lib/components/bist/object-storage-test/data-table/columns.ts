@@ -24,6 +24,51 @@ const columns: ColumnDef<TestResult>[] = [
         },
     },
     {
+        accessorKey: "target",
+        header: ({ column }) => {
+            return renderSnippet(headers.target, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.target, row);
+        },
+    },
+    {
+        accessorKey: "operation",
+        header: ({ column }) => {
+            return renderSnippet(headers.operation, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.operation, row);
+        },
+    },
+    {
+        accessorKey: "duration",
+        header: ({ column }) => {
+            return renderSnippet(headers.duration, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.duration, row);
+        },
+    },
+    {
+        accessorKey: "objectSize",
+        header: ({ column }) => {
+            return renderSnippet(headers.objectSize, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.objectSize, row);
+        },
+    },
+    {
+        accessorKey: "objectCount",
+        header: ({ column }) => {
+            return renderSnippet(headers.objectCount, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.objectCount, row);
+        },
+    },
+    {
         accessorKey: "createdBy",
         header: ({ column }) => {
             return renderSnippet(headers.createdBy, column)

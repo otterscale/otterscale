@@ -8,6 +8,11 @@
 		_row_picker: _row_picker,
 		name: name,
 		status: status,
+		target: target,
+		operation: operation,
+		duration: duration,
+		objectSize: objectSize, 
+		objectCount: objectCount,
 		createdBy: createdBy,
 		startedAt: startedAt, 
 		completedAt: completedAt, 
@@ -34,6 +39,41 @@
 {#snippet status(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
 		<p class="text-xs font-light">STATUS</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet target(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">TARGET</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet operation(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">OPERATION</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet duration(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">DURATION</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet objectSize(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">OBJECT SIZE</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet objectCount(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">OBJECT COUNT</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
