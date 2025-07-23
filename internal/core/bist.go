@@ -505,6 +505,15 @@ func (uc *BISTUseCase) toFIO(ctx context.Context, config *rest.Config, job *Job)
 	if err := uc.unmarshalFIOOutput(ctx, config, job, &fio.Output); err != nil {
 		return nil, err
 	}
+	if fio.Output.Read != nil && fio.Output.Read.IOBytes == 0 {
+		fio.Output.Read = nil
+	}
+	if fio.Output.Write != nil && fio.Output.Write.IOBytes == 0 {
+		fio.Output.Write = nil
+	}
+	if fio.Output.Trim != nil && fio.Output.Trim.IOBytes == 0 {
+		fio.Output.Trim = nil
+	}
 	return fio, nil
 }
 
