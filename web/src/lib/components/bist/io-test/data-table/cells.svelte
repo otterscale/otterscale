@@ -4,19 +4,20 @@
 	import { formatTimeAgo } from '$lib/formatter';
 	import { type TestResult, TestResult_Status, FIO_Input_AccessMode } from '$gen/api/bist/v1/bist_pb'
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import { encode } from '$lib/components/bist/utils/hashGroupID';
+	import Icon from '@iconify/svelte';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 
 	export const cells = {
 		_row_picker: _row_picker,
 		name: name,
 		status: status,
+		target: target,
 		accessMode: accessMode,
 		jobCount: jobCount,
 		runTime: runTime,
 		blockSize: blockSize,
 		fileSize: fileSize,
 		ioDepth: ioDepth,
-		groupID: groupID,
 		createdBy: createdBy,
 		startedAt: startedAt,
 		completedAt: completedAt
@@ -40,7 +41,29 @@
 
 {#snippet status(row: Row<TestResult>)}
 	<p>
-		{TestResult_Status[row.original.status]}
+		{#if TestResult_Status[row.original.status] === 'SUCCEEDED'}
+			<Icon icon="ph:check" />
+		{:else if TestResult_Status[row.original.status] === 'FAILED'}
+			<Icon icon="ph:x" />
+		{:else}
+			<Icon icon="svg-spinners:180-ring-with-bg" />
+		{/if}
+	</p>
+{/snippet}
+
+{#snippet target(row: Row<TestResult>)}
+	<p>
+		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
+			{#if row.original.kind.value.target.case === 'cephBlockDevice' }
+				<Badge variant="outline">
+					{row.original.kind.value.target.value.facilityName}
+				</Badge>
+			{:else if row.original.kind.value.target.case === 'networkFileSystem' }
+				<Badge variant="outline">
+					{row.original.kind.value.target.value.endpoint}
+				</Badge>
+			{/if}
+        {/if}
 	</p>
 {/snippet}
 
@@ -92,37 +115,6 @@
 	</p>
 {/snippet}
 
-{#snippet groupID(row: Row<TestResult>)}
-	<p>
-		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-			{(() => {
-				const input = row.original.kind.value.input;
-				return encode({
-					accessMode: FIO_Input_AccessMode[input.accessMode],
-					jobCount: input.jobCount,
-					runTime: input.runTime,
-					blockSize: input.blockSize,
-					fileSize: input.fileSize,
-					ioDepth: input.ioDepth
-				});
-			})()}
-		{/if}
-	</p>
-{/snippet}
-
-<!-- {#snippet groupID(row: Row<TestResult>)}
-	<p>
-		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-			{FIO_Input_AccessMode[row.original.kind.value?.input.accessMode]}
-			-{row.original.kind.value?.input.jobCount}
-			-{row.original.kind.value?.input.runTime}
-			-{row.original.kind.value?.input.blockSize}
-			-{row.original.kind.value?.input.fileSize}
-			-{row.original.kind.value?.input.ioDepth}
-		{/if}
-	</p>
-{/snippet} -->
-
 {#snippet createdBy(row: Row<TestResult>)}
 	<p>
 		{row.original.createdBy}
@@ -144,8 +136,3 @@
 {/snippet}
 
 
-<!-- {#snippet startTime(row: Row<TestResult>)}
-	<p>
-		{formatTimeAgo(row.original.startTime)}
-	</p>
-{/snippet} -->

@@ -131,3 +131,4 @@ export function formatLatency(second: number): { value: string, unit: string } {
         return { value: `${nanosecond}`, unit: "ns" };
     }
 };
+

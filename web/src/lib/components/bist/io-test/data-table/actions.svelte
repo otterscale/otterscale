@@ -5,6 +5,7 @@
 	import type { Writable } from 'svelte/store';
 	import Delete from './delete.svelte';
 	import Retest from './retest.svelte';
+	import View from './view.svelte';
 </script>
 
 <script lang="ts">
@@ -19,6 +20,9 @@
 
 <Layout.Actions>
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>
+	<Layout.ActionItem>
+				<View testResult={row.original} />
+	</Layout.ActionItem>
 	<Layout.ActionItem>
 				<Retest testResult={row.original} bind:data />
 	</Layout.ActionItem>

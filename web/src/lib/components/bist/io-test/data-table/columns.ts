@@ -24,6 +24,15 @@ const columns: ColumnDef<TestResult>[] = [
         },
     },
     {
+        accessorKey: "target",
+        header: ({ column }) => {
+            return renderSnippet(headers.target, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.target, row);
+        },
+    },
+    {
         accessorKey: "accessMode",
         header: ({ column }) => {
             return renderSnippet(headers.accessMode, column)
@@ -75,15 +84,6 @@ const columns: ColumnDef<TestResult>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.ioDepth, row);
-        },
-    },
-    {
-        accessorKey: "groupID",
-        header: ({ column }) => {
-            return renderSnippet(headers.groupID, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.groupID, row);
         },
     },
     {

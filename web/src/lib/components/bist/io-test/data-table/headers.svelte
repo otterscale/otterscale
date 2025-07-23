@@ -8,13 +8,13 @@
 		_row_picker: _row_picker,
 		name: name,
 		status: status,
+		target: target,
 		accessMode: accessMode,
 		jobCount: jobCount,
 		runTime: runTime,
 		blockSize: blockSize,
 		fileSize: fileSize,
 		ioDepth: ioDepth,
-		groupID: groupID,
 		createdBy: createdBy,
 		startedAt: startedAt, 
 		completedAt: completedAt, 
@@ -41,6 +41,13 @@
 {#snippet status(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
 		<p class="text-xs font-light">STATUS</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet target(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">TARGET</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
@@ -83,13 +90,6 @@
 {#snippet ioDepth(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
 		<p class="text-xs font-light">IO DEPTH</p>
-		<Sorter {column} />
-	</div>
-{/snippet}
-
-{#snippet groupID(column: Column<TestResult>)}
-	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">GROUP ID</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
