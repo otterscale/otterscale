@@ -2,35 +2,46 @@
 	import type { ComponentProps } from 'svelte';
 	import Icon from '@iconify/svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { getIconFromUrl } from './icon';
+	import { documentationPath } from '$lib/path';
+	import DialogAbout from './dialog-about.svelte';
 
-	interface NavItem {
-		title: string;
-		url: string;
-	}
+	interface Props extends ComponentProps<typeof Sidebar.Group> {}
 
-	interface Props extends ComponentProps<typeof Sidebar.Group> {
-		items: NavItem[];
-	}
+	let { ref = $bindable(null), ...restProps }: Props = $props();
 
-	let { ref = $bindable(null), items, ...restProps }: Props = $props();
+	let open = $state(false);
 </script>
+
+<DialogAbout bind:open />
 
 <Sidebar.Group bind:ref {...restProps}>
 	<Sidebar.GroupContent>
 		<Sidebar.Menu>
-			{#each items as item (item.title)}
-				<Sidebar.MenuItem>
-					<Sidebar.MenuButton size="sm">
-						{#snippet child({ props })}
-							<a href={item.url} {...props}>
-								<Icon icon={getIconFromUrl(item.url)} />
-								<span>{item.title}</span>
-							</a>
-						{/snippet}
-					</Sidebar.MenuButton>
-				</Sidebar.MenuItem>
-			{/each}
+			<Sidebar.MenuItem>
+				<Sidebar.MenuButton size="sm">
+					{#snippet child({ props })}
+						<a href={documentationPath} {...props}>
+							<Icon icon="ph:book-open" />
+							<span>Documentation</span>
+						</a>
+					{/snippet}
+				</Sidebar.MenuButton>
+			</Sidebar.MenuItem>
+			<Sidebar.MenuItem>
+				<Sidebar.MenuButton
+					size="sm"
+					onclick={() => {
+						open = true;
+					}}
+				>
+					{#snippet child({ props })}
+						<a href="##" {...props}>
+							<Icon icon="ph:info" />
+							<span>About</span>
+						</a>
+					{/snippet}
+				</Sidebar.MenuButton>
+			</Sidebar.MenuItem>
 		</Sidebar.Menu>
 	</Sidebar.GroupContent>
 </Sidebar.Group>

@@ -1,5 +1,7 @@
 // External
 export const documentationPath = "https://otterscale.github.io";
+export const githubPath = "https://github.com/otterscale/otterscale";
+export const releasePath = "https://github.com/otterscale/otterscale/releases/latest";
 export const feedbackPath = "https://github.com/otterscale/otterscale/issues/new/choose";
 
 // Misc
