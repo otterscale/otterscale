@@ -6,8 +6,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
-	// import Create from './create.svelte';
-	import * as MultipleStepModal from '../../utils/mutiple-step-modal';
+	import * as MultipleStepModal from '$lib/components/custom/mutiple-step-modal';
 	import TestStepModal from './test-step-modal.svelte'
 </script>
 
