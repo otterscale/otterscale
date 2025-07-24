@@ -2,6 +2,7 @@
 	import type { ComponentProps } from 'svelte';
 	import Icon from '@iconify/svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar';
+	import { m } from '$lib/paraglide/messages.js';
 	import { documentationPath } from '$lib/path';
 	import DialogAbout from './dialog-about.svelte';
 
@@ -22,7 +23,7 @@
 					{#snippet child({ props })}
 						<a href={documentationPath} {...props}>
 							<Icon icon="ph:book-open" />
-							<span>Documentation</span>
+							<span>{m.documentation()}</span>
 						</a>
 					{/snippet}
 				</Sidebar.MenuButton>
@@ -37,7 +38,7 @@
 					{#snippet child({ props })}
 						<a href="##" {...props}>
 							<Icon icon="ph:info" />
-							<span>About</span>
+							<span>{m.about()}</span>
 						</a>
 					{/snippet}
 				</Sidebar.MenuButton>

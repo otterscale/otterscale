@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { m } from '$lib/paraglide/messages.js';
 	import {
 		applicationsPath,
 		applicationsServicePath,
@@ -7,57 +8,70 @@
 		machinesMetalPath,
 		machinesPath,
 		machinesVirtualMachinePath,
-		modelLLMPath,
-		modelPath,
+		modelsLLMPath,
+		modelsPath,
 		settingsPath,
 		settingsNetworkPath,
 		storageBlockDevicePath,
 		storageClusterPath,
 		storageFileSystemPath,
 		storageObjectGatewayPath,
-		storagePath
+		storagePath,
+		settingsBISTPath,
+		databasesPath,
+		databasesRelationalPath,
+		databasesNoSQLPath
 	} from '$lib/path';
 
 	const NAVIGATION_DATA = {
 		main: [
 			{
-				title: 'Model',
-				url: modelPath,
-				items: [{ title: 'LLM', url: modelLLMPath }]
+				title: m.models(),
+				url: modelsPath,
+				items: [{ title: m.llm(), url: modelsLLMPath }]
 			},
 			{
-				title: 'Applications',
+				title: m.databases(),
+				url: databasesPath,
+				items: [
+					{ title: m.relational(), url: databasesRelationalPath },
+					{ title: m.no_sql(), url: databasesNoSQLPath }
+				]
+			},
+			{
+				title: m.applications(),
 				url: applicationsPath,
 				items: [
-					{ title: 'Workload', url: applicationsWorkloadPath },
-					{ title: 'Service', url: applicationsServicePath },
-					{ title: 'Store', url: applicationsStorePath }
+					{ title: m.workload(), url: applicationsWorkloadPath },
+					{ title: m.service(), url: applicationsServicePath },
+					{ title: m.store(), url: applicationsStorePath }
 				]
 			},
 			{
-				title: 'Storage',
+				title: m.storage(),
 				url: storagePath,
 				items: [
-					{ title: 'Cluster', url: storageClusterPath },
-					{ title: 'Block Device', url: storageBlockDevicePath },
-					{ title: 'File System - NFS', url: storageFileSystemPath },
-					{ title: 'Object Gateway - S3', url: storageObjectGatewayPath }
+					{ title: m.cluster(), url: storageClusterPath },
+					{ title: m.block_device(), url: storageBlockDevicePath },
+					{ title: m.file_system_nfs(), url: storageFileSystemPath },
+					{ title: m.object_gateway_s3(), url: storageObjectGatewayPath }
 				]
 			},
 			{
-				title: 'Machines',
+				title: m.machines(),
 				url: machinesPath,
 				items: [
-					{ title: 'Metal', url: machinesMetalPath },
-					{ title: 'Virtual Machine', url: machinesVirtualMachinePath }
+					{ title: m.metal(), url: machinesMetalPath },
+					{ title: m.virtual_machine(), url: machinesVirtualMachinePath }
 				]
 			},
 			{
-				title: 'Settings',
+				title: m.settings(),
 				url: settingsPath,
 				items: [
-					{ title: 'General', url: settingsPath },
-					{ title: 'Network', url: settingsNetworkPath }
+					{ title: m.general(), url: settingsPath },
+					{ title: m.network(), url: settingsNetworkPath },
+					{ title: m.built_in_test(), url: settingsBISTPath }
 				]
 			}
 		],

@@ -14,8 +14,13 @@ export const accountPath = "/account"
 export const accountSettingsPath = "/account/settings"
 
 // Model
-export const modelPath = "/model"
-export const modelLLMPath = "/model/llm"
+export const modelsPath = "/models"
+export const modelsLLMPath = "/models/llm"
+
+// Database
+export const databasesPath = "/databases"
+export const databasesRelationalPath = "/databases/relational"
+export const databasesNoSQLPath = "/databases/no-sql"
 
 // Application
 export const applicationsPath = "/applications"
@@ -38,6 +43,7 @@ export const machinesVirtualMachinePath = "/machines/virtual-machine"
 // Setting
 export const settingsPath = "/settings"
 export const settingsNetworkPath = "/settings/network"
+export const settingsBISTPath = "/settings/built-in-self-test"
 
 
 

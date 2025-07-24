@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { toast } from 'svelte-sonner';
-	import { Button } from '$lib/components/ui/button';
-	import * as Sidebar from '$lib/components/ui/sidebar';
 	import Icon from '@iconify/svelte';
+	import { m } from '$lib/paraglide/messages.js';
+	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { getIconFromUrl } from './icon';
 
 	interface Bookmark {
@@ -28,7 +28,7 @@
 </script>
 
 <Sidebar.Group class="group-data-[collapsible=icon]:hidden">
-	<Sidebar.GroupLabel>Bookmarks</Sidebar.GroupLabel>
+	<Sidebar.GroupLabel>{m.bookmarks()}</Sidebar.GroupLabel>
 	<Sidebar.Menu>
 		{#each visibleBookmarks as bookmark (bookmark.name)}
 			<Sidebar.MenuItem>
@@ -51,7 +51,7 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton onclick={showMoreBookmarks}>
 					<Icon icon="ph:dots-three-bold" />
-					More
+					{m.more()}
 				</Sidebar.MenuButton>
 			</Sidebar.MenuItem>
 		{/if}

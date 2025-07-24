@@ -1,7 +1,8 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import Icon from '@iconify/svelte';
+	import { m } from '$lib/paraglide/messages.js';
 	import { getIconFromUrl } from './icon';
 	import { page } from '$app/state';
 
@@ -28,7 +29,7 @@
 </script>
 
 <Sidebar.Group>
-	<Sidebar.GroupLabel>Platform</Sidebar.GroupLabel>
+	<Sidebar.GroupLabel>{m.platform()}</Sidebar.GroupLabel>
 	<Sidebar.Menu>
 		{#each items as mainItem (mainItem.title)}
 			<Collapsible.Root open={isItemActive(mainItem.url)}>

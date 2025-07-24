@@ -12,7 +12,7 @@
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages.js';
-	import { accountPath, accountSettingsPath, loginPath } from '$lib/path';
+	import { accountPath, loginPath } from '$lib/path';
 	import SheetNotification from './sheet-notification.svelte';
 
 	let { user }: { user: User } = $props();
@@ -111,12 +111,12 @@
 				<DropdownMenu.Group>
 					<DropdownMenu.Item onclick={() => goto(accountPath)}>
 						<Icon icon="ph:user-bold" />
-						Account
+						{m.account()}
 					</DropdownMenu.Item>
 
 					<DropdownMenu.Item onclick={toggleNotification}>
 						<Icon icon="ph:bell-ringing-bold" />
-						Notifications
+						{m.notifications()}
 						<span class="relative flex size-2.5">
 							<span
 								class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
@@ -138,7 +138,7 @@
 				<DropdownMenu.Group>
 					<DropdownMenu.Item onclick={toggleMode}>
 						<Icon icon={mode.current === 'light' ? 'ph:sun' : 'ph:moon'} />
-						{mode.current === 'light' ? 'Light Mode' : 'Dark Mode'}
+						{mode.current === 'light' ? m.light_mode() : m.dark_mode()}
 					</DropdownMenu.Item>
 
 					<DropdownMenu.Sub>
@@ -164,18 +164,10 @@
 
 				<DropdownMenu.Separator />
 
-				<!-- Settings -->
-				<DropdownMenu.Item onclick={() => goto(accountSettingsPath)}>
-					<Icon icon="ph:gear-bold" />
-					Settings
-				</DropdownMenu.Item>
-
-				<DropdownMenu.Separator />
-
 				<!-- Sign Out -->
 				<DropdownMenu.Item variant="destructive" onclick={handleSignOut}>
 					<Icon icon="ph:sign-out-bold" />
-					Log out
+					{m.log_out()}
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
