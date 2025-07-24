@@ -1,21 +1,19 @@
 <script lang="ts" module>
-	import Icon from '@iconify/svelte';
-	import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
-	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import { cn } from '$lib/utils';
-	import { buttonVariants } from '$lib/components/ui/button';
+	import type { CephBlockDevice, CreateTestResultRequest, FIO, FIO_Input, NetworkFileSystem, TestResult } from '$gen/api/bist/v1/bist_pb';
+	import { BISTService, FIO_Input_AccessMode } from '$gen/api/bist/v1/bist_pb';
 	import * as Form from '$lib/components/custom/form';
+	import { Single as SingleInput } from '$lib/components/custom/input';
+	import * as MultipleStepModal from '$lib/components/custom/mutiple-step-modal';
+	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { writable, type Writable } from 'svelte/store';
-	import * as MultipleStepModal from '../../utils/mutiple-step-modal';
-	import type { TestResult, CreateTestResultRequest, FIO, FIO_Input, CephBlockDevice, NetworkFileSystem, InternalObjectService } from '$gen/api/bist/v1/bist_pb'
-	import { BISTService, FIO_Input_AccessMode } from '$gen/api/bist/v1/bist_pb'
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
-	import * as Picker from '$lib/components/custom/picker';
 	import CephPicker from '$lib/components/management-storage/utils/ceph-picker.svelte';
-	import ObjectServicesPicker from '$lib/components/bist/utils/object-services-picker.svelte'
+	import { buttonVariants } from '$lib/components/ui/button';
+	import { cn } from '$lib/utils';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
+	import { writable, type Writable } from 'svelte/store';
 
 
 	// FIO Target
@@ -87,7 +85,7 @@
 
 		<MultipleStepModal.Stepper>
 			<MultipleStepModal.Steps>
-				<MultipleStepModal.Step text="Step 1" icon="ph:number-one" />
+				<MultipleStepModal.Step icon="ph:number-one" />
 				<MultipleStepModal.Step icon="ph:number-two" />
 				<MultipleStepModal.Step icon="ph:number-three" />
 			</MultipleStepModal.Steps>

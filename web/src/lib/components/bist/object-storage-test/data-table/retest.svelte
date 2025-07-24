@@ -1,8 +1,8 @@
 <script lang="ts" module>
 	import type { TestResult } from '$gen/api/bist/v1/bist_pb';
+	import * as MultipleStepModal from '$lib/components/custom/mutiple-step-modal';
 	import Icon from '@iconify/svelte';
 	import type { Writable } from 'svelte/store';
-	import * as MultipleStepModal from '../../utils/mutiple-step-modal';
 	import TestStepModal from './test-step-modal.svelte';
 </script>
 

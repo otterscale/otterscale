@@ -1,21 +1,19 @@
 <script lang="ts" module>
-	import type { TestResult, CreateTestResultRequest, Warp, Warp_Input, InternalObjectService, ExternalObjectService } from '$gen/api/bist/v1/bist_pb'
-	import { BISTService, Warp_Input_Operation } from '$gen/api/bist/v1/bist_pb'
+	import type { CreateTestResultRequest, ExternalObjectService, InternalObjectService, TestResult, Warp, Warp_Input } from '$gen/api/bist/v1/bist_pb';
+	import { BISTService, Warp_Input_Operation } from '$gen/api/bist/v1/bist_pb';
+	import ObjectServicesPicker from '$lib/components/bist/utils/object-services-picker.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
+	import * as MultipleStepModal from '$lib/components/custom/mutiple-step-modal';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { type Snippet } from 'svelte';
+	import { getContext, type Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
-	import * as MultipleStepModal from '../../utils/mutiple-step-modal';
-	import ObjectServicesPicker from '$lib/components/bist/utils/object-services-picker.svelte';
-
 
 	// WARP Target
 	const warpTarget: Writable<SingleSelect.OptionType[]> = writable([
@@ -108,7 +106,7 @@
 
 		<MultipleStepModal.Stepper>
 			<MultipleStepModal.Steps>
-				<MultipleStepModal.Step text="Step 1" icon="ph:number-one" />
+				<MultipleStepModal.Step icon="ph:number-one" />
 				<MultipleStepModal.Step icon="ph:number-two" />
 				<MultipleStepModal.Step icon="ph:number-three" />
 			</MultipleStepModal.Steps>
