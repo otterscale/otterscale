@@ -1,6 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"locale": "繁體中文",
+	"home": "首頁",
 	"platform": "平台",
 	"models": "模型",
 	"llm": "大型語言模型",
