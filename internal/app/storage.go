@@ -523,6 +523,7 @@ func toProtoPool(p *core.Pool) *pb.Pool {
 	ret := &pb.Pool{}
 	ret.SetId(p.ID)
 	ret.SetName(p.Name)
+	ret.SetUpdating(p.Updating)
 	ret.SetPoolType(toProtoPoolType(p.Type))
 	ret.SetEcOverwrites(p.ECOverwrites)
 	ret.SetDataChunks(p.DataChunks)

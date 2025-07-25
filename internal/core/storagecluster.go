@@ -37,6 +37,7 @@ type OSD struct {
 type Pool struct {
 	ID                  int64
 	Name                string
+	Updating            bool
 	Type                string
 	ECOverwrites        bool
 	DataChunks          uint64
