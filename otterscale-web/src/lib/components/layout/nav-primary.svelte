@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
-	import { m } from '$lib/paraglide/messages.js';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { getIconFromUrl } from './icon';
+	import { m } from '$lib/paraglide/messages.js';
+	import { getIconFromUrl } from '$lib/path';
 
 	interface Bookmark {
 		name: string;

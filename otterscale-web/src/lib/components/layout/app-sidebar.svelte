@@ -1,91 +1,3 @@
-<script lang="ts" module>
-	import { m } from '$lib/paraglide/messages.js';
-	import {
-		applicationsPath,
-		applicationsServicePath,
-		applicationsStorePath,
-		applicationsWorkloadPath,
-		machinesMetalPath,
-		machinesPath,
-		machinesVirtualMachinePath,
-		modelsLLMPath,
-		modelsPath,
-		settingsPath,
-		settingsNetworkPath,
-		storageBlockDevicePath,
-		storageClusterPath,
-		storageFileSystemPath,
-		storageObjectGatewayPath,
-		storagePath,
-		settingsBISTPath,
-		databasesPath,
-		databasesRelationalPath,
-		databasesNoSQLPath
-	} from '$lib/path';
-
-	const NAVIGATION_DATA = {
-		main: [
-			{
-				title: m.models(),
-				url: modelsPath,
-				items: [{ title: m.llm(), url: modelsLLMPath }]
-			},
-			{
-				title: m.databases(),
-				url: databasesPath,
-				items: [
-					{ title: m.relational(), url: databasesRelationalPath },
-					{ title: m.no_sql(), url: databasesNoSQLPath }
-				]
-			},
-			{
-				title: m.applications(),
-				url: applicationsPath,
-				items: [
-					{ title: m.workload(), url: applicationsWorkloadPath },
-					{ title: m.service(), url: applicationsServicePath },
-					{ title: m.store(), url: applicationsStorePath }
-				]
-			},
-			{
-				title: m.storage(),
-				url: storagePath,
-				items: [
-					{ title: m.cluster(), url: storageClusterPath },
-					{ title: m.block_device(), url: storageBlockDevicePath },
-					{ title: m.file_system_nfs(), url: storageFileSystemPath },
-					{ title: m.object_gateway_s3(), url: storageObjectGatewayPath }
-				]
-			},
-			{
-				title: m.machines(),
-				url: machinesPath,
-				items: [
-					{ title: m.metal(), url: machinesMetalPath },
-					{ title: m.virtual_machine(), url: machinesVirtualMachinePath }
-				]
-			},
-			{
-				title: m.settings(),
-				url: settingsPath,
-				items: [
-					{ title: m.general(), url: settingsPath },
-					{ title: m.network(), url: settingsNetworkPath },
-					{ title: m.built_in_test(), url: settingsBISTPath }
-				]
-			}
-		],
-		bookmarks: [
-			{ name: 'FOO 1', url: '#' },
-			{ name: 'BAR 1', url: '#' },
-			{ name: 'FOO 2', url: '#' },
-			{ name: 'BAR 2', url: '#' },
-			{ name: 'FOO 3', url: '#' },
-			{ name: 'BAR 3', url: '#' }
-		]
-	};
-</script>
-
 <script lang="ts">
 	import type { ComponentProps } from 'svelte';
 	import { getContext, onMount } from 'svelte';
@@ -96,6 +8,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { activeScope, scopeLoading } from '$lib/stores';
+	import { bookmarks, routes } from './routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
 	import NavSecondary from './nav-secondary.svelte';
@@ -164,8 +77,8 @@
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavMain items={NAVIGATION_DATA.main} />
-		<NavPrimary bookmarks={NAVIGATION_DATA.bookmarks} />
+		<NavMain {routes} />
+		<NavPrimary {bookmarks} />
 		<NavSecondary class="mt-auto" />
 	</Sidebar.Content>
 

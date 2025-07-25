@@ -4,10 +4,34 @@
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Sidebar from '$lib/components/ui/sidebar';
+	import { getPath, homePath } from '$lib/path';
+	import { breadcrumb } from '$lib/stores';
 	import type { LayoutData } from './$types';
 
-	let { data, children }: { data: LayoutData; children: Snippet } = $props();
+	interface Props {
+		data: LayoutData;
+		children: Snippet;
+	}
+
+	let { data, children }: Props = $props();
+
+	// Derived breadcrumb values
+	const breadcrumbData = $derived.by(() => {
+		const parent = getPath($breadcrumb.parent);
+		const current = getPath($breadcrumb.current);
+
+		return {
+			parentURL: parent?.url,
+			parentTitle: parent?.title,
+			currentTitle: current?.title,
+			showParentBreadcrumb: parent?.url !== homePath
+		};
+	});
 </script>
+
+<svelte:head>
+	<title>{breadcrumbData.currentTitle} | OtterScale 🦦</title>
+</svelte:head>
 
 <Sidebar.Provider>
 	<AppSidebar user={data.user} />
@@ -19,18 +43,23 @@
 				<nav aria-label="Breadcrumb">
 					<Breadcrumb.Root>
 						<Breadcrumb.List>
-							<Breadcrumb.Item class="hidden md:block">
-								<Breadcrumb.Link href="/">Home</Breadcrumb.Link>
-							</Breadcrumb.Item>
-							<Breadcrumb.Separator class="hidden md:block" />
+							{#if breadcrumbData.showParentBreadcrumb}
+								<Breadcrumb.Item class="hidden md:block">
+									<Breadcrumb.Link href={breadcrumbData.parentURL}>
+										{breadcrumbData.parentTitle}
+									</Breadcrumb.Link>
+								</Breadcrumb.Item>
+								<Breadcrumb.Separator class="hidden md:block" />
+							{/if}
 							<Breadcrumb.Item>
-								<Breadcrumb.Page>Current Page</Breadcrumb.Page>
+								<Breadcrumb.Page>{breadcrumbData.currentTitle}</Breadcrumb.Page>
 							</Breadcrumb.Item>
 						</Breadcrumb.List>
 					</Breadcrumb.Root>
 				</nav>
 			</div>
 		</header>
+
 		<main class="flex flex-1 flex-col gap-4 p-4 pt-0">
 			{@render children()}
 		</main>

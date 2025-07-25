@@ -2,7 +2,12 @@
 	import * as Alert from '$lib/components/ui/alert';
 	import { siteConfig } from '$lib/config/site';
 	import { m } from '$lib/paraglide/messages';
+	import { homePath, modelsPath } from '$lib/path';
+	import { breadcrumb } from '$lib/stores';
 	import Icon from '@iconify/svelte';
+
+	// Set breadcrumb navigation
+	breadcrumb.set({ parent: homePath, current: modelsPath });
 </script>
 
 <Alert.Root variant="destructive">

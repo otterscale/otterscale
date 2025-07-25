@@ -1,3 +1,5 @@
+import { m } from '$lib/paraglide/messages.js';
+
 // External
 export const documentationPath = "https://otterscale.github.io";
 export const githubPath = "https://github.com/otterscale/otterscale";
@@ -5,6 +7,7 @@ export const releasePath = "https://github.com/otterscale/otterscale/releases/la
 export const feedbackPath = "https://github.com/otterscale/otterscale/issues/new/choose";
 
 // Misc
+export const homePath = "/";
 export const privacyPolicyPath = "/privacy-policy";
 export const termsOfServicePath = "/terms-of-service";
 
@@ -45,5 +48,55 @@ export const settingsPath = "/settings"
 export const settingsNetworkPath = "/settings/network"
 export const settingsBISTPath = "/settings/built-in-self-test"
 
+// Functions
+export function getIconFromUrl(url: string): string {
+    const iconMap = new Map<string, string>([
+        [modelsPath, "ph:robot"],
+        [databasesPath, "ph:database"],
+        [applicationsPath, "ph:compass"],
+        [storagePath, "ph:hard-drives"],
+        [machinesPath, "ph:computer-tower"],
+        [settingsPath, "ph:sliders-horizontal"]
+    ]);
 
+    for (const [path, icon] of iconMap) {
+        if (url.startsWith(path)) {
+            return icon;
+        }
+    }
+    return 'ph:circle-dashed';
+}
 
+export interface Path {
+    title: string;
+    url: string;
+}
+
+const routesMap = new Map<string, Path>([
+    [homePath, { title: m.home(), url: homePath }],
+    [accountPath, { title: m.account(), url: accountPath }],
+    [modelsPath, { title: m.models(), url: modelsPath }],
+    [modelsLLMPath, { title: m.llm(), url: modelsLLMPath }],
+    [databasesPath, { title: m.databases(), url: databasesPath }],
+    [databasesRelationalPath, { title: m.relational(), url: databasesRelationalPath }],
+    [databasesNoSQLPath, { title: m.no_sql(), url: databasesNoSQLPath }],
+    [applicationsPath, { title: m.applications(), url: applicationsPath }],
+    [applicationsWorkloadPath, { title: m.workload(), url: applicationsWorkloadPath }],
+    [applicationsServicePath, { title: m.service(), url: applicationsServicePath }],
+    [applicationsStorePath, { title: m.store(), url: applicationsStorePath }],
+    [storagePath, { title: m.storage(), url: storagePath }],
+    [storageClusterPath, { title: m.cluster(), url: storageClusterPath }],
+    [storageBlockDevicePath, { title: m.block_device(), url: storageBlockDevicePath }],
+    [storageFileSystemPath, { title: m.file_system_nfs(), url: storageFileSystemPath }],
+    [storageObjectGatewayPath, { title: m.object_gateway_s3(), url: storageObjectGatewayPath }],
+    [machinesPath, { title: m.machines(), url: machinesPath }],
+    [machinesMetalPath, { title: m.metal(), url: machinesMetalPath }],
+    [machinesVirtualMachinePath, { title: m.virtual_machine(), url: machinesVirtualMachinePath }],
+    [settingsPath, { title: m.settings(), url: settingsPath }],
+    [settingsNetworkPath, { title: m.network(), url: settingsNetworkPath }],
+    [settingsBISTPath, { title: m.built_in_test(), url: settingsBISTPath }],
+]);
+
+export function getPath(url: string): Path {
+    return routesMap.get(url) ?? { title: m.home(), url: homePath };
+}
