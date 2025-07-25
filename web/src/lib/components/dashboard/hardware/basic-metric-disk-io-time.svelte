@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Scope } from '$gen/api/scope/v1/scope_pb';
+	import type { Machine } from '$gen/api/machine/v1/machine_pb';
 	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import { formatLatency, formatTime } from '$lib/formatter';
@@ -14,11 +14,11 @@
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
 
-	let {
-		client,
-		scope: scope,
-		timeRange
-	}: { client: PrometheusDriver; scope: Scope; timeRange: TimeRange } = $props();
+let {
+	client,
+	machine,
+	timeRange
+}: { client: PrometheusDriver; machine: Machine; timeRange: TimeRange } = $props();
 
 	const step = 1 * 120;
 	const ioTimeQuery = $derived(
