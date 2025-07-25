@@ -770,6 +770,7 @@ type Pool struct {
 	state                          protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Id                  int64                  `protobuf:"varint,1,opt,name=id"`
 	xxx_hidden_Name                *string                `protobuf:"bytes,2,opt,name=name"`
+	xxx_hidden_Updating            bool                   `protobuf:"varint,3,opt,name=updating"`
 	xxx_hidden_PoolType            PoolType               `protobuf:"varint,11,opt,name=pool_type,json=poolType,enum=otterscale.storage.v1.PoolType"`
 	xxx_hidden_EcOverwrites        bool                   `protobuf:"varint,21,opt,name=ec_overwrites,json=ecOverwrites"`
 	xxx_hidden_DataChunks          uint64                 `protobuf:"varint,22,opt,name=data_chunks,json=dataChunks"`
@@ -831,9 +832,16 @@ func (x *Pool) GetName() string {
 	return ""
 }
 
+func (x *Pool) GetUpdating() bool {
+	if x != nil {
+		return x.xxx_hidden_Updating
+	}
+	return false
+}
+
 func (x *Pool) GetPoolType() PoolType {
 	if x != nil {
-		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 3) {
 			return x.xxx_hidden_PoolType
 		}
 	}
@@ -926,62 +934,67 @@ func (x *Pool) GetApplications() []string {
 
 func (x *Pool) SetId(v int64) {
 	x.xxx_hidden_Id = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 16)
 }
 
 func (x *Pool) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 16)
+}
+
+func (x *Pool) SetUpdating(v bool) {
+	x.xxx_hidden_Updating = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 16)
 }
 
 func (x *Pool) SetPoolType(v PoolType) {
 	x.xxx_hidden_PoolType = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 16)
 }
 
 func (x *Pool) SetEcOverwrites(v bool) {
 	x.xxx_hidden_EcOverwrites = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 16)
 }
 
 func (x *Pool) SetDataChunks(v uint64) {
 	x.xxx_hidden_DataChunks = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 16)
 }
 
 func (x *Pool) SetCodingChunks(v uint64) {
 	x.xxx_hidden_CodingChunks = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 16)
 }
 
 func (x *Pool) SetReplicatedSize(v uint64) {
 	x.xxx_hidden_ReplicatedSize = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 16)
 }
 
 func (x *Pool) SetQuotaBytes(v uint64) {
 	x.xxx_hidden_QuotaBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 16)
 }
 
 func (x *Pool) SetQuotaObjects(v uint64) {
 	x.xxx_hidden_QuotaObjects = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 16)
 }
 
 func (x *Pool) SetUsedBytes(v uint64) {
 	x.xxx_hidden_UsedBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 16)
 }
 
 func (x *Pool) SetUsedObjects(v uint64) {
 	x.xxx_hidden_UsedObjects = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 16)
 }
 
 func (x *Pool) SetPlacementGroupCount(v uint64) {
 	x.xxx_hidden_PlacementGroupCount = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 15)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 16)
 }
 
 func (x *Pool) SetPlacementGroupState(v map[string]int64) {
@@ -1010,74 +1023,81 @@ func (x *Pool) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Pool) HasPoolType() bool {
+func (x *Pool) HasUpdating() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Pool) HasEcOverwrites() bool {
+func (x *Pool) HasPoolType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *Pool) HasDataChunks() bool {
+func (x *Pool) HasEcOverwrites() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *Pool) HasCodingChunks() bool {
+func (x *Pool) HasDataChunks() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
 }
 
-func (x *Pool) HasReplicatedSize() bool {
+func (x *Pool) HasCodingChunks() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
 }
 
-func (x *Pool) HasQuotaBytes() bool {
+func (x *Pool) HasReplicatedSize() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
 }
 
-func (x *Pool) HasQuotaObjects() bool {
+func (x *Pool) HasQuotaBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
 }
 
-func (x *Pool) HasUsedBytes() bool {
+func (x *Pool) HasQuotaObjects() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
 }
 
-func (x *Pool) HasUsedObjects() bool {
+func (x *Pool) HasUsedBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 10)
 }
 
-func (x *Pool) HasPlacementGroupCount() bool {
+func (x *Pool) HasUsedObjects() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 11)
+}
+
+func (x *Pool) HasPlacementGroupCount() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
 }
 
 func (x *Pool) HasCreatedAt() bool {
@@ -1097,53 +1117,58 @@ func (x *Pool) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *Pool) ClearPoolType() {
+func (x *Pool) ClearUpdating() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Updating = false
+}
+
+func (x *Pool) ClearPoolType() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_PoolType = PoolType_UNSPECIFIED
 }
 
 func (x *Pool) ClearEcOverwrites() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_EcOverwrites = false
 }
 
 func (x *Pool) ClearDataChunks() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_DataChunks = 0
 }
 
 func (x *Pool) ClearCodingChunks() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
 	x.xxx_hidden_CodingChunks = 0
 }
 
 func (x *Pool) ClearReplicatedSize() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
 	x.xxx_hidden_ReplicatedSize = 0
 }
 
 func (x *Pool) ClearQuotaBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
 	x.xxx_hidden_QuotaBytes = 0
 }
 
 func (x *Pool) ClearQuotaObjects() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
 	x.xxx_hidden_QuotaObjects = 0
 }
 
 func (x *Pool) ClearUsedBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
 	x.xxx_hidden_UsedBytes = 0
 }
 
 func (x *Pool) ClearUsedObjects() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
 	x.xxx_hidden_UsedObjects = 0
 }
 
 func (x *Pool) ClearPlacementGroupCount() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
 	x.xxx_hidden_PlacementGroupCount = 0
 }
 
@@ -1156,6 +1181,7 @@ type Pool_builder struct {
 
 	Id                  *int64
 	Name                *string
+	Updating            *bool
 	PoolType            *PoolType
 	EcOverwrites        *bool
 	DataChunks          *uint64
@@ -1176,51 +1202,55 @@ func (b0 Pool_builder) Build() *Pool {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 16)
 		x.xxx_hidden_Id = *b.Id
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 16)
 		x.xxx_hidden_Name = b.Name
 	}
+	if b.Updating != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 16)
+		x.xxx_hidden_Updating = *b.Updating
+	}
 	if b.PoolType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 16)
 		x.xxx_hidden_PoolType = *b.PoolType
 	}
 	if b.EcOverwrites != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 16)
 		x.xxx_hidden_EcOverwrites = *b.EcOverwrites
 	}
 	if b.DataChunks != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 16)
 		x.xxx_hidden_DataChunks = *b.DataChunks
 	}
 	if b.CodingChunks != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 16)
 		x.xxx_hidden_CodingChunks = *b.CodingChunks
 	}
 	if b.ReplicatedSize != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 16)
 		x.xxx_hidden_ReplicatedSize = *b.ReplicatedSize
 	}
 	if b.QuotaBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 16)
 		x.xxx_hidden_QuotaBytes = *b.QuotaBytes
 	}
 	if b.QuotaObjects != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 16)
 		x.xxx_hidden_QuotaObjects = *b.QuotaObjects
 	}
 	if b.UsedBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 16)
 		x.xxx_hidden_UsedBytes = *b.UsedBytes
 	}
 	if b.UsedObjects != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 16)
 		x.xxx_hidden_UsedObjects = *b.UsedObjects
 	}
 	if b.PlacementGroupCount != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 15)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 16)
 		x.xxx_hidden_PlacementGroupCount = *b.PlacementGroupCount
 	}
 	x.xxx_hidden_PlacementGroupState = b.PlacementGroupState
@@ -11710,10 +11740,11 @@ const file_api_storage_v1_storage_proto_rawDesc = "" +
 	"\n" +
 	"used_bytes\x18\r \x01(\x04R\tusedBytes\x122\n" +
 	"\x15placement_group_count\x18\x15 \x01(\x04R\x13placementGroupCount\x128\n" +
-	"\amachine\x18e \x01(\v2\x1e.otterscale.storage.v1.MachineR\amachine\"\xc9\x05\n" +
+	"\amachine\x18e \x01(\v2\x1e.otterscale.storage.v1.MachineR\amachine\"\xe5\x05\n" +
 	"\x04Pool\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12<\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
+	"\bupdating\x18\x03 \x01(\bR\bupdating\x12<\n" +
 	"\tpool_type\x18\v \x01(\x0e2\x1f.otterscale.storage.v1.PoolTypeR\bpoolType\x12#\n" +
 	"\rec_overwrites\x18\x15 \x01(\bR\fecOverwrites\x12\x1f\n" +
 	"\vdata_chunks\x18\x16 \x01(\x04R\n" +

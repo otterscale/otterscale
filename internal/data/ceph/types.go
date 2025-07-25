@@ -56,13 +56,16 @@ type monStat struct {
 
 type osdDump struct {
 	Pools []struct {
-		ID                  int64          `json:"pool,omitempty"`
-		Name                string         `json:"pool_name,omitempty"`
-		Type                int            `json:"type,omitempty"`
-		Size                uint64         `json:"size,omitempty"`
-		PGCount             uint64         `json:"pg_num,omitempty"`
-		ApplicationMetadata map[string]any `json:"application_metadata,omitempty"`
-		CreateTime          CephTime       `json:"create_time,omitempty"`
+		ID                   int64          `json:"pool,omitempty"`
+		Name                 string         `json:"pool_name,omitempty"`
+		Type                 int            `json:"type,omitempty"`
+		Size                 uint64         `json:"size,omitempty"`
+		PgNum                uint64         `json:"pg_num,omitempty"`
+		PgNumTarget          uint64         `json:"pg_num_target,omitempty"`
+		PgPlacementNum       uint64         `json:"pg_placement_num,omitempty"`
+		PgPlacementNumTarget uint64         `json:"pg_placement_num_target,omitempty"`
+		ApplicationMetadata  map[string]any `json:"application_metadata,omitempty"`
+		CreateTime           CephTime       `json:"create_time,omitempty"`
 	} `json:"pools,omitempty"`
 	OSDs []struct {
 		ID int64 `json:"osd,omitempty"`

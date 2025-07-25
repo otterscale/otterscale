@@ -250,8 +250,9 @@ func (r *cluster) toPools(d *osdDump, pd *pgDump, df *df) []core.Pool {
 		pool := core.Pool{
 			ID:                  d.Pools[i].ID,
 			Name:                d.Pools[i].Name,
+			Updating:            d.Pools[i].PgNum+d.Pools[i].PgPlacementNum != d.Pools[i].PgNumTarget+d.Pools[i].PgPlacementNumTarget,
 			ReplicatedSize:      d.Pools[i].Size,
-			PlacementGroupCount: d.Pools[i].PGCount,
+			PlacementGroupCount: d.Pools[i].PgNum,
 			PlacementGroupState: map[string]int64{},
 			CreatedAt:           d.Pools[i].CreateTime.Time,
 		}
