@@ -97,6 +97,6 @@ const routesMap = new Map<string, Path>([
     [settingsBISTPath, { title: m.built_in_test(), url: settingsBISTPath }],
 ]);
 
-export function getPath(url: string): Path | undefined {
-    return routesMap.get(url);
+export function getPath(url: string): Path {
+    return routesMap.get(url) ?? { title: m.home(), url: homePath };
 }

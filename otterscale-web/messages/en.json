@@ -1,6 +1,9 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"locale": "English",
+	"welcome_to": "Welcome to {name}",
+	"privacy_policy": "Privacy Policy",
+	"terms_of_service": "Terms of Service",
 	"home": "Home",
 	"platform": "Platform",
 	"models": "Models",
