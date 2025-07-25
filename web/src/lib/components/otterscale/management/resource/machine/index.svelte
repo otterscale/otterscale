@@ -17,6 +17,12 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import IOPS from '$lib/components/management-storage/pool/data-table/iops.svelte';
+	import CPU from './inline-cpu.svelte'
+	import RAM from './inline-ram.svelte'
+	import DISK from './inline-disk.svelte'
+	import type { PrometheusDriver } from 'prometheus-query';
+	import { type Writable } from 'svelte/store';
 
 	let {
 		machines
@@ -24,6 +30,7 @@
 		machines: Machine[];
 	} = $props();
 
+	const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
 	const machineSubvalueContentClass = cn('text-xs font-extralight');
 
 	const transport: Transport = getContext('transport');
@@ -85,6 +92,9 @@
 					<Table.Head class="text-end  ">RAM</Table.Head>
 					<Table.Head>DISKS</Table.Head>
 					<Table.Head class="text-end">STORAGE</Table.Head>
+					<Table.Head class="text-end">CPU USAGE</Table.Head>
+					<Table.Head class="text-end">RAM USAGE</Table.Head>
+					<Table.Head class="text-end">DISK USAGE</Table.Head>
 					<Table.Head>SCOPE</Table.Head>
 				</Table.Row>
 			</Table.Header>
@@ -159,6 +169,15 @@
 									{formatCapacity(machine.storageMb).unit}
 								</div>
 							</div>
+						</Table.Cell>
+						<Table.Cell>
+							<CPU client={$prometheusDriver} selectedMachine={machine.fqdn} />
+						</Table.Cell>
+						<Table.Cell>
+							<RAM client={$prometheusDriver} selectedMachine={machine.fqdn} />
+						</Table.Cell>
+						<Table.Cell>
+							<DISK client={$prometheusDriver} selectedMachine={machine.fqdn} />
 						</Table.Cell>
 						<Table.Cell>
 							{machine.workloadAnnotations['juju-machine-id']
