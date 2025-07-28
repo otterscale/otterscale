@@ -57,7 +57,12 @@
 
 	// Constants
 	const socialProviders = [
-		{ id: 'apple', icon: 'streamline-logos:apple-logo-solid', label: 'Apple', enabled: data.apple },
+		{
+			id: 'apple',
+			icon: 'streamline-logos:apple-logo-solid',
+			label: 'Apple',
+			enabled: data.apple
+		},
 		{
 			id: 'github',
 			icon: 'streamline-logos:github-logo-2-solid',
@@ -224,7 +229,7 @@
 			<img
 				src={Placeholder}
 				alt="placeholder"
-				class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+				class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.75] dark:grayscale"
 			/>
 		</div>
 

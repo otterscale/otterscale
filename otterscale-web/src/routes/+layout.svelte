@@ -2,8 +2,13 @@
 	import { setContext } from 'svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import { createConnectTransport } from '@connectrpc/connect-web';
+	import { addCollection } from '@iconify/svelte';
+	import logosIcons from '@iconify-json/logos/icons.json';
+	import phIcons from '@iconify-json/ph/icons.json';
+	import streamlineLogosIcons from '@iconify-json/streamline-logos/icons.json';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
+
 	import '../app.css';
 
 	let { children } = $props();
@@ -13,6 +18,10 @@
 	});
 
 	setContext('transport', transport);
+
+	addCollection(logosIcons);
+	addCollection(phIcons);
+	addCollection(streamlineLogosIcons);
 </script>
 
 <ModeWatcher />
