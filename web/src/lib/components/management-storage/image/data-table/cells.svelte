@@ -33,9 +33,6 @@
 			{#snippet ratio({ numerator, denominator })}
 				{Math.round((numerator * 100) / denominator)}%
 			{/snippet}
-			{#snippet detail({ numerator, denominator })}
-				{numerator}/{denominator}
-			{/snippet}
 		</Progress.Root>
 	</div>
 {/snippet}

@@ -1,14 +1,15 @@
 <script lang="ts" module>
 	import type { Image_Snapshot } from '$gen/api/storage/v1/storage_pb';
 	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
-	import { Badge } from '$lib/components/ui/badge';
+	import * as Progress from '$lib/components/custom/progress/index.js';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
-		_row_picker: _row_picker,
-		name: name,
-		protect: protect
+		_row_picker,
+		name,
+		protect,
+		usage
 	};
 </script>
 
@@ -27,5 +28,17 @@
 		{:else}
 			<Icon icon="ph:x" class="text-destructive" />
 		{/if}
+	</div>
+{/snippet}
+
+{#snippet usage(row: Row<Image_Snapshot>)}
+	{@const denominator = Number(row.original.quotaBytes)}
+	{@const numerator = Number(row.original.usedBytes)}
+	<div class="flex justify-end">
+		<Progress.Root {numerator} {denominator}>
+			{#snippet ratio({ numerator, denominator })}
+				{Math.round((numerator * 100) / denominator)}%
+			{/snippet}
+		</Progress.Root>
 	</div>
 {/snippet}
