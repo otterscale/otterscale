@@ -1,8 +1,10 @@
 <script lang="ts" module>
-	import { StorageService } from '$gen/api/storage/v1/storage_pb';
+	import { StorageService, type SubvolumeGroup } from '$gen/api/storage/v1/storage_pb';
 	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
+	import * as Reloader from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
 	import Pickers from './pickers.svelte';
 </script>
@@ -14,17 +16,49 @@
 	let selectedScope = $state('b62d195e-3905-4960-85ee-7673f71eb21e');
 	let selectedFacility = $state('ceph-mon');
 	let selectedVolume = $state('');
+
+	const subvolumeGroups = $state(writable([] as SubvolumeGroup[]));
+	const reloadManager = new Reloader.ReloadManager(() => {
+		storageClient
+			.listSubvolumeGroups({
+				scopeUuid: selectedScope,
+				facilityName: selectedFacility,
+				volumeName: selectedVolume
+			})
+			.then((response) => {
+				subvolumeGroups.set(response.subvolumeGroups);
+			});
+	});
+
+	let isMounted = $state(false);
+	onMount(() => {
+		storageClient
+			.listSubvolumeGroups({
+				scopeUuid: selectedScope,
+				facilityName: selectedFacility,
+				volumeName: selectedVolume
+			})
+			.then((response) => {
+				subvolumeGroups.set(response.subvolumeGroups);
+				isMounted = true;
+			})
+			.catch((error) => {
+				console.error('Error during initial data load:', error);
+			});
+
+		reloadManager.start();
+	});
+	onDestroy(() => {
+		reloadManager.stop();
+	});
 </script>
 
 <main class="space-y-4">
 	<Pickers bind:selectedScope bind:selectedFacility bind:selectedVolume />
-
-	{#await storageClient.listSubvolumeGroups( { scopeUuid: selectedScope, facilityName: selectedFacility, volumeName: selectedVolume } )}
+	<Reloader.Root {reloadManager} />
+	{#if !isMounted}
 		<DataTableLoading />
-	{:then response}
-		{@const subvolumeGroups = response.subvolumeGroups}
+	{:else}
 		<DataTable {selectedScope} {selectedFacility} {selectedVolume} {subvolumeGroups} />
-	{:catch}
-		<DataTableLoading />
-	{/await}
+	{/if}
 </main>

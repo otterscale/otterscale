@@ -71,7 +71,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Deleting ${request.groupName}...`);
 						storageClient
 							.deleteSubvolumeGroup(request)
 							.then((r) => {
@@ -92,6 +92,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Delete

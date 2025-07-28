@@ -12,12 +12,12 @@
 		selectedScope,
 		selectedFacility,
 		row,
-		data = $bindable()
+		pools: data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		row: Row<Pool>;
-		data: Writable<Pool[]>;
+		pools: Writable<Pool[]>;
 	} = $props();
 </script>
 

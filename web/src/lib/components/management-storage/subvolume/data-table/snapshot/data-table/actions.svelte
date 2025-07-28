@@ -13,7 +13,7 @@
 		selectedSubvolumeGroup,
 		subvolume,
 		snapshot,
-		data = $bindable()
+		subvolumes: data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
@@ -21,7 +21,7 @@
 		selectedSubvolumeGroup: string;
 		subvolume: Subvolume;
 		snapshot: Subvolume_Snapshot;
-		data: Writable<Subvolume[]>;
+		subvolumes: Writable<Subvolume[]>;
 	} = $props();
 </script>
 

@@ -75,7 +75,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						console.log(request);
+						toast.info(`Deleting ${request.snapshotName}...`);
 						storageClient
 							.deleteImageSnapshot(request)
 							.then((r) => {
@@ -90,8 +90,9 @@
 								toast.error(`Fail to delete snapshot: ${e.toString()}`);
 							})
 							.finally(() => {
-								stateController.close();
+								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Delete

@@ -20,7 +20,7 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
@@ -32,9 +32,7 @@
 		selectedScope,
 		selectedFacility,
 		buckets
-	}: { selectedScope: string; selectedFacility: string; buckets: Bucket[] } = $props();
-
-	let data = $state(writable(buckets));
+	}: { selectedScope: string; selectedFacility: string; buckets: Writable<Bucket[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -44,9 +42,8 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return $buckets;
 		},
-
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -104,7 +101,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -115,11 +113,11 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="owner" {table} values={$data.map((row) => row.owner)} />
+			<PointFilter columnId="owner" {table} values={$buckets.map((row) => row.owner)} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} bind:data />
+			<Create {selectedScope} {selectedFacility} bind:buckets />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -150,7 +148,7 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<Actions {selectedScope} {selectedFacility} bucket={row.original} bind:data />
+							<Actions {selectedScope} {selectedFacility} bucket={row.original} bind:buckets />
 						</Table.Cell>
 					</Table.Row>
 				{:else}

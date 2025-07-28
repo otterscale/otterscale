@@ -11,12 +11,12 @@
 		selectedScope,
 		selectedFacility,
 		user,
-		data = $bindable()
+		users: users = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		user: User;
-		data: Writable<User[]>;
+		users: Writable<User[]>;
 	} = $props();
 </script>
 
@@ -27,7 +27,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[38vw]">
-			<DataTable {selectedScope} {selectedFacility} {user} bind:data />
+			<DataTable {selectedScope} {selectedFacility} {user} bind:users />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

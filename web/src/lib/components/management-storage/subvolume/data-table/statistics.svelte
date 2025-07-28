@@ -13,7 +13,7 @@
 <Layout>
 	<Chart.Text>
 		{#snippet title()}
-			Subvolume
+			NFS
 		{/snippet}
 		{#snippet content()}
 			{@const nameList = filteredData.map((datum) => datum['name' as keyof TData])}

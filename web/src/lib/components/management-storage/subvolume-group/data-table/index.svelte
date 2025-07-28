@@ -20,7 +20,7 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
@@ -37,10 +37,8 @@
 		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
-		subvolumeGroups: SubvolumeGroup[];
+		subvolumeGroups: Writable<SubvolumeGroup[]>;
 	} = $props();
-
-	let data = $state(writable(subvolumeGroups));
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -49,9 +47,8 @@
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return $subvolumeGroups;
 		},
-
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -109,7 +106,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -120,11 +118,11 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="mode" {table} values={$data.map((row) => row.mode)} />
+			<PointFilter columnId="mode" {table} values={$subvolumeGroups.map((row) => row.mode)} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} {selectedVolume} bind:data />
+			<Create {selectedScope} {selectedFacility} {selectedVolume} bind:subvolumeGroups />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -160,7 +158,7 @@
 								{selectedFacility}
 								{selectedVolume}
 								subvolumeGroup={row.original}
-								bind:data
+								bind:subvolumeGroups
 							/>
 						</Table.Cell>
 					</Table.Row>

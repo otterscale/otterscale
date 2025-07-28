@@ -63,7 +63,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Deleting ${request.poolName}...`);
 						storageClient
 							.deletePool(request)
 							.then((r) => {
@@ -77,6 +77,7 @@
 							.catch((e) => {
 								toast.error(`Fail to delete pool: ${e.toString()}`);
 							});
+						stateController.close();
 					}}
 				>
 					Delete

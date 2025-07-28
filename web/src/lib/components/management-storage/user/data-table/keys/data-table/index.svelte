@@ -31,21 +31,21 @@
 		selectedScope,
 		selectedFacility,
 		user,
-		data = $bindable()
+		users = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		user: User;
-		data: Writable<User[]>;
+		users: Writable<User[]>;
 	} = $props();
 
-	let subdata = $state(user.keys);
+	let keys = $state(user.keys);
 	$effect(() => {
 		user;
-		subdata = user.keys;
+		keys = user.keys;
 	});
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -53,9 +53,8 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return subdata;
+			return keys;
 		},
-
 		columns: columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -113,7 +112,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -127,7 +127,7 @@
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} {user} bind:data />
+			<Create {selectedScope} {selectedFacility} {user} bind:users />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -158,7 +158,7 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<Actions {selectedScope} {selectedFacility} {user} key={row.original} bind:data />
+							<Actions {selectedScope} {selectedFacility} {user} key={row.original} bind:users />
 						</Table.Cell>
 					</Table.Row>
 				{:else}

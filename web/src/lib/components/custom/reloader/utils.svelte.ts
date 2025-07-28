@@ -3,7 +3,7 @@ class ReloadManager {
     private identifier: number | NodeJS.Timeout | undefined;
 
     state: boolean = $state(false);
-    interval: number | undefined = $state(15);
+    interval: number | undefined = $state(3);
 
     constructor(reloadFn: () => void) {
         this.reloadFn = reloadFn;

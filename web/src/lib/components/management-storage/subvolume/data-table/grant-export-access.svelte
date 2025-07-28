@@ -70,7 +70,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Granting ${request.subvolumeName}...`);
 						storageClient
 							.grantSubvolumeExportAccess(request)
 							.then((r) => {
@@ -92,6 +92,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Grant

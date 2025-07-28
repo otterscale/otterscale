@@ -70,7 +70,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Revoking ${request.subvolumeName}...`);
 						storageClient
 							.revokeSubvolumeExportAccess(request)
 							.then((r) => {
@@ -92,6 +92,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Revoke

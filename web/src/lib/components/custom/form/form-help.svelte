@@ -11,9 +11,6 @@
 	}: WithElementRef<HTMLAttributes<HTMLParagraphElement>> = $props();
 </script>
 
-<p
-	class={cn('text-muted-foreground bg-muted rounded-md p-2 text-xs font-light', className)}
-	{...restProps}
->
+<p class={cn('text-muted-foreground rounded-md text-xs font-light', className)} {...restProps}>
 	{@render children?.()}
 </p>

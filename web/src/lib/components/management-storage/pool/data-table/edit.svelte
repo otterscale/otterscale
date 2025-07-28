@@ -58,13 +58,12 @@
 					<Form.Label>Name</Form.Label>
 					<SingleInput.General required type="text" bind:value={request.poolName} />
 				</Form.Field>
-			</Form.Fieldset>
-
-			<Form.Fieldset>
-				<Form.Legend>Quotas</Form.Legend>
 
 				<Form.Field>
-					<Form.Label>Bytes</Form.Label>
+					<Form.Label>Quotas Size</Form.Label>
+					<Form.Help>
+						{QUOTAS_BYTES_HELP_TEXT}
+					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
@@ -78,17 +77,14 @@
 						]}
 					/>
 				</Form.Field>
-				<Form.Help>
-					{QUOTAS_BYTES_HELP_TEXT}
-				</Form.Help>
 
 				<Form.Field>
-					<Form.Label>Objects</Form.Label>
+					<Form.Label>Quotas Objects</Form.Label>
+					<Form.Help>
+						{QUOTAS_OBJECTS_HELP_TEXT}
+					</Form.Help>
 					<SingleInput.BigInteger bind:value={request.quotaObjects} />
 				</Form.Field>
-				<Form.Help>
-					{QUOTAS_OBJECTS_HELP_TEXT}
-				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
@@ -96,7 +92,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						console.log('request', request);
+						toast.info(`Updating ${request.poolName}...`);
 						storageClient
 							.updatePool(request)
 							.then((r) => {
@@ -112,9 +108,9 @@
 								console.log(e);
 							})
 							.finally(() => {
-								stateController.close();
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Edit

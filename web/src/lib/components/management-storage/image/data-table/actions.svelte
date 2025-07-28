@@ -12,12 +12,12 @@
 		selectedScope,
 		selectedFacility,
 		row,
-		data = $bindable()
+		images: data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		row: Row<Image>;
-		data: Writable<Image[]>;
+		images: Writable<Image[]>;
 	} = $props();
 </script>
 

@@ -1,8 +1,10 @@
 <script lang="ts" module>
-	import { StorageService } from '$gen/api/storage/v1/storage_pb';
+	import { StorageService, type Subvolume } from '$gen/api/storage/v1/storage_pb';
 	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
+	import * as Reloader from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
 	import Pickers from './pickers.svelte';
 </script>
@@ -15,6 +17,43 @@
 	let selectedFacility = $state('ceph-mon');
 	let selectedVolume = $state('ceph-fs');
 	let selectedSubvolumeGroup = $state('');
+
+	const subvolumes = $state(writable([] as Subvolume[]));
+	const reloadManager = new Reloader.ReloadManager(() => {
+		storageClient
+			.listSubvolumes({
+				scopeUuid: selectedScope,
+				facilityName: selectedFacility,
+				volumeName: selectedVolume,
+				groupName: selectedSubvolumeGroup
+			})
+			.then((response) => {
+				subvolumes.set(response.subvolumes);
+			});
+	});
+
+	let isMounted = $state(false);
+	onMount(() => {
+		storageClient
+			.listSubvolumes({
+				scopeUuid: selectedScope,
+				facilityName: selectedFacility,
+				volumeName: selectedVolume,
+				groupName: selectedSubvolumeGroup
+			})
+			.then((response) => {
+				subvolumes.set(response.subvolumes);
+				isMounted = true;
+			})
+			.catch((error) => {
+				console.error('Error during initial data load:', error);
+			});
+
+		reloadManager.start();
+	});
+	onDestroy(() => {
+		reloadManager.stop();
+	});
 </script>
 
 <main class="space-y-4">
@@ -24,11 +63,10 @@
 		bind:selectedVolume
 		bind:selectedSubvolumeGroup
 	/>
-
-	{#await storageClient.listSubvolumes( { scopeUuid: selectedScope, facilityName: selectedFacility, volumeName: selectedVolume, groupName: selectedSubvolumeGroup } )}
+	<Reloader.Root {reloadManager} />
+	{#if !isMounted}
 		<DataTableLoading />
-	{:then response}
-		{@const subvolumes = response.subvolumes}
+	{:else}
 		<DataTable
 			{selectedScope}
 			{selectedFacility}
@@ -36,7 +74,5 @@
 			{selectedSubvolumeGroup}
 			{subvolumes}
 		/>
-	{:catch}
-		<DataTableLoading />
-	{/await}
+	{/if}
 </main>

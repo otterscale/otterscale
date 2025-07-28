@@ -31,7 +31,7 @@
 		transformer?: (value: any) => void;
 	} = $props();
 
-	const isNotFilled = $derived(required && !value);
+	const isNotFilled = $derived(required && (value === '' || value === undefined));
 
 	const validator = new InputValidator(schema);
 	const validation = $derived(validator.validate(value));

@@ -19,8 +19,8 @@
 	let {
 		selectedScope,
 		selectedFacility,
-		data = $bindable()
-	}: { selectedScope: string; selectedFacility: string; data: Writable<User[]> } = $props();
+		users: data = $bindable()
+	}: { selectedScope: string; selectedFacility: string; users: Writable<User[]> } = $props();
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
 		facilityName: selectedFacility,
@@ -64,16 +64,15 @@
 
 				<Form.Field>
 					<Form.Label>Suspended</Form.Label>
+					<Form.Help>
+						{USER_SUSPENDED_HELP_TEXT}
+					</Form.Help>
 					<SingleInput.Boolean
 						format="checkbox"
 						descriptor={user_suspended_descriptor}
-						required
 						bind:value={request.suspended}
 					/>
 				</Form.Field>
-				<Form.Help>
-					{USER_SUSPENDED_HELP_TEXT}
-				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
@@ -81,7 +80,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Creating ${request.userId}`);
 						storageClient
 							.createUser(request)
 							.then((r) => {
@@ -98,6 +97,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Create

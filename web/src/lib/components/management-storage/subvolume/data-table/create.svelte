@@ -21,13 +21,13 @@
 		selectedFacility,
 		selectedVolume,
 		selectedSubvolumeGroup,
-		data = $bindable()
+		subvolumes: data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
 		selectedSubvolumeGroup: string;
-		data: Writable<Subvolume[]>;
+		subvolumes: Writable<Subvolume[]>;
 	} = $props();
 
 	const DEFAULT_REQUEST = {
@@ -60,7 +60,7 @@
 	</div>
 	<AlertDialog.Content>
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			Create Subvolume
+			Create NFS
 		</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
@@ -68,11 +68,22 @@
 					<Form.Label>Name</Form.Label>
 					<SingleInput.General required type="text" bind:value={request.subvolumeName} />
 				</Form.Field>
-			</Form.Fieldset>
 
-			<Form.Fieldset>
-				<Form.Legend>Quotas</Form.Legend>
 				<Form.Field>
+					<Form.Label>Group</Form.Label>
+					<SingleInput.General
+						required
+						disabled
+						type="text"
+						value={selectedSubvolumeGroup === '' ? 'default' : selectedSubvolumeGroup}
+					/>
+				</Form.Field>
+
+				<Form.Field>
+					<Form.Label>Quotas Size</Form.Label>
+					<Form.Help>
+						{SUBVOLUME_QUOTA_HELP_TEXT}
+					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
@@ -86,9 +97,6 @@
 						]}
 					/>
 				</Form.Field>
-				<Form.Help>
-					{SUBVOLUME_QUOTA_HELP_TEXT}
-				</Form.Help>
 			</Form.Fieldset>
 
 			<!-- <Form.Fieldset>
@@ -97,13 +105,17 @@
 					<SingleInput.Boolean bind:value={request.export} />
 				</Form.Field>
 			</Form.Fieldset> -->
+			<!-- {selectedScope}
+			{selectedFacility}
+			{selectedVolume}
+			{selectedSubvolumeGroup} -->
 		</Form.Root>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Creating ${request.subvolumeName}...`);
 						storageClient
 							.createSubvolume(request)
 							.then((r) => {
@@ -125,6 +137,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Create

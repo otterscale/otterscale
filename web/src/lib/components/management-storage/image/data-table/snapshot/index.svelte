@@ -11,12 +11,12 @@
 		selectedScope,
 		selectedFacility,
 		image,
-		data = $bindable()
+		images: data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		image: Image;
-		data: Writable<Image[]>;
+		images: Writable<Image[]>;
 	} = $props();
 </script>
 
@@ -27,7 +27,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[38vw]">
-			<DataTable {selectedScope} {selectedFacility} {image} bind:data />
+			<DataTable {selectedScope} {selectedFacility} {image} bind:images={data} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>
