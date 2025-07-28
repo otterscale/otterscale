@@ -9,7 +9,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { m } from '$lib/paraglide/messages';
-	import Placeholder from '$lib/static/placeholder.svg';
+	import LoginImage from '$lib/static/login.jpg';
 
 	const { data } = $props();
 	const id = $props.id();
@@ -227,9 +227,9 @@
 		<!-- Placeholder Image -->
 		<div class="bg-muted relative hidden md:block">
 			<img
-				src={Placeholder}
+				src={LoginImage}
 				alt="placeholder"
-				class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.75] dark:grayscale"
+				class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.9]"
 			/>
 		</div>
 
