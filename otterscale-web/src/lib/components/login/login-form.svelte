@@ -229,7 +229,7 @@
 			<img
 				src={LoginImage}
 				alt="placeholder"
-				class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.9]"
+				class="absolute inset-0 h-full w-full object-cover brightness-[0.95] dark:brightness-[0.85]"
 			/>
 		</div>
 
