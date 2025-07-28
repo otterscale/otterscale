@@ -3,8 +3,8 @@ import { m } from '$lib/paraglide/messages.js';
 // External
 export const documentationPath = "https://otterscale.github.io";
 export const githubPath = "https://github.com/otterscale/otterscale";
-export const releasePath = "https://github.com/otterscale/otterscale/releases/latest";
 export const feedbackPath = "https://github.com/otterscale/otterscale/issues/new/choose";
+export const contributorsPath = "https://github.com/otterscale/otterscale/graphs/contributors";
 
 // Misc
 export const homePath = "/";
@@ -87,8 +87,8 @@ const routesMap = new Map<string, Path>([
     [storagePath, { title: m.storage(), url: storagePath }],
     [storageClusterPath, { title: m.cluster(), url: storageClusterPath }],
     [storageBlockDevicePath, { title: m.block_device(), url: storageBlockDevicePath }],
-    [storageFileSystemPath, { title: m.file_system_nfs(), url: storageFileSystemPath }],
-    [storageObjectGatewayPath, { title: m.object_gateway_s3(), url: storageObjectGatewayPath }],
+    [storageFileSystemPath, { title: m.file_system(), url: storageFileSystemPath }],
+    [storageObjectGatewayPath, { title: m.object_gateway(), url: storageObjectGatewayPath }],
     [machinesPath, { title: m.machines(), url: machinesPath }],
     [machinesMetalPath, { title: m.metal(), url: machinesMetalPath }],
     [machinesVirtualMachinePath, { title: m.virtual_machine(), url: machinesVirtualMachinePath }],
