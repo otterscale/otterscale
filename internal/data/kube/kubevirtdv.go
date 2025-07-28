@@ -21,7 +21,7 @@ func NewVirtDV(kube *Kube, kubevirt *kubevirt) oscore.KubeVirtDVRepo {
 
 var _ oscore.KubeVirtDVRepo = (*virtDV)(nil)
 
-func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, spec *oscore.DVSpec) (*oscore.DataVolume, error) {
+func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, spec *oscore.DataVolumeSpec) (*oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 	return virtClient.CdiClient().CdiV1beta1().DataVolumes(namespace).Create(ctx, dv, opts)
 }
 
-func (r *virtDV) GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string, spec *oscore.DVSpec) (*oscore.DataVolume, error) {
+func (r *virtDV) GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
