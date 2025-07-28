@@ -19,8 +19,10 @@
 			<div
 				class="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4"
 			>
-				By clicking continue, you agree to our <a href={termsOfServicePath}>Terms of Service</a> and
-				<a href={privacyPolicyPath}>Privacy Policy</a>.
+				{@html m.login_footer({
+					terms_of_service: `<a href="${termsOfServicePath}">${m.terms_of_service()}</a>`,
+					privacy_policy: `<a href="${privacyPolicyPath}">${m.privacy_policy()}</a>`
+				})}
 			</div>
 		</div>
 	</div>
