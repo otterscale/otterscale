@@ -21,7 +21,7 @@
             <Command.Root>
                 <Command.Input placeholder="Search" />
                 <Command.List>
-                    <Command.Empty class="justift-center grid items-center">No Result</Command.Empty>
+                    <Command.Empty class="justify-center grid items-center">No Result</Command.Empty>
                     <Command.Group>
                         {#each machines as machine}
                             <Command.Item
