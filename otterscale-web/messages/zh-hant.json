@@ -38,5 +38,13 @@
 	"log_out": "登出",
 	"under_development": "開發中",
 	"under_development_description": "此頁面正在開發中，即將推出。",
-	"current_version": "目前版本：{version}"
+	"current_version": "目前版本：{version}",
+	"scopes": "範疇",
+	"add_scope": "增加範疇",
+	"create_scope": "新增範疇",
+	"create_scope_description": "將使用者組織成具有特定權限的群組，資源在範疇之間是隔離的。",
+	"scope_name": "名稱",
+	"scope_name_description": "請輸入名稱",
+	"create": "新增",
+	"cancel": "取消"
 }

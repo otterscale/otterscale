@@ -8,6 +8,7 @@
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { activeScope } from '$lib/stores';
 	import DialogCreateScope from './dialog-create-scope.svelte';
+	import { m } from '$lib/paraglide/messages';
 
 	let { scopes }: { scopes: Scope[] } = $props();
 	let open = $state(false);
@@ -135,7 +136,7 @@
 				side={sidebar.isMobile ? 'bottom' : 'right'}
 				sideOffset={4}
 			>
-				<DropdownMenu.Label class="text-muted-foreground text-xs">Scopes</DropdownMenu.Label>
+				<DropdownMenu.Label class="text-muted-foreground text-xs">{m.scopes()}</DropdownMenu.Label>
 				{#each scopes as scope, index (scope.name)}
 					<DropdownMenu.Item onSelect={() => handleScopeShortcut(index)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
@@ -146,7 +147,7 @@
 							<DropdownMenu.Shortcut>
 								<div class="flex items-center justify-center">
 									<Icon icon="ph:control-bold" />
-									<Icon icon={SHORTCUT_ICONS[index]} />
+									<Icon icon={SHORTCUT_ICONS[index]} class="size-3.5" />
 								</div>
 							</DropdownMenu.Shortcut>
 						{/if}
@@ -157,7 +158,7 @@
 					<div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
 						<Icon icon="ph:plus" />
 					</div>
-					<div class="text-muted-foreground font-medium">Add scope</div>
+					<div class="text-muted-foreground font-medium">{m.add_scope()}</div>
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

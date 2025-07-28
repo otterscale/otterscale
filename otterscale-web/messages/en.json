@@ -38,5 +38,13 @@
 	"log_out": "Log Out",
 	"under_development": "Under Development",
 	"under_development_description": "This page is currently under development and will be available soon.",
-	"current_version": "Current Version: {version}"
+	"current_version": "Current Version: {version}",
+	"scopes": "Scopes",
+	"add_scope": "Add scope",
+	"create_scope": "Create Scope",
+	"create_scope_description": "Organize users into groups with specific permissions. Resources are isolated between scopes.",
+	"scope_name": "Name",
+	"scope_name_description": "Enter scope name",
+	"create": "Create",
+	"cancel": "Cancel"
 }
