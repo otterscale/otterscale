@@ -8,7 +8,7 @@
 	const query = $derived(
 		`
 		count(
-		count by (cpu) (node_cpu_seconds_total{instance="${machine.fqdn}"})
+		count by (cpu) (node_cpu_seconds_total{instance=~"${machine.fqdn}"})
 		)
 		`
 	);

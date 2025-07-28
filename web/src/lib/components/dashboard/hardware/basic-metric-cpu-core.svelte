@@ -42,7 +42,7 @@
 	// The Prometheus query, derived from component props
 	const query = $derived(
 		`
-		sum by (cpu) (rate(node_cpu_seconds_total{instance="${machine.fqdn}", mode!="idle"}[5m]))
+		sum by (cpu) (rate(node_cpu_seconds_total{instance=~"${machine.fqdn}", mode!="idle"}[5m]))
 		`
 	);
 

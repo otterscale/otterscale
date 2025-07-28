@@ -23,12 +23,12 @@ let {
 	const step = 1 * 120;
 	const readBytesQuery = $derived(
 		`
-		sum by (instance) (rate(node_disk_read_bytes_total{instance="${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))
+		sum (rate(node_disk_read_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))
 		`
 	);
 	const writeBytesQuery = $derived(
 		`
-		sum by (instance) (rate(node_disk_written_bytes_total{instance="${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))
+		sum (rate(node_disk_written_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))
 		`
 	);
 

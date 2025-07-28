@@ -14,9 +14,9 @@
 		1
 		-
 		(
-			(node_memory_MemAvailable_bytes{instance="${machine.fqdn}"})
+			(node_memory_MemAvailable_bytes{instance=~"${machine.fqdn}"})
 			/
-			node_memory_MemTotal_bytes{instance="${machine.fqdn}"}
+			node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}
 		)
 		`
 	);

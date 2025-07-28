@@ -23,35 +23,35 @@ let {
 
 	const totalQuery = $derived(
 		`
-		node_memory_MemTotal_bytes{instance="${machine.fqdn}"}
+		node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 	const usedQuery = $derived(
 		`
 		(
-		node_memory_MemTotal_bytes{instance="${machine.fqdn}"}
+		node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}
 		-
-		node_memory_MemFree_bytes{instance="${machine.fqdn}"}
+		node_memory_MemFree_bytes{instance=~"${machine.fqdn}"}
 		-
-		node_memory_Buffers_bytes{instance="${machine.fqdn}"}
+		node_memory_Buffers_bytes{instance=~"${machine.fqdn}"}
 		-
-		node_memory_Cached_bytes{instance="${machine.fqdn}"}
+		node_memory_Cached_bytes{instance=~"${machine.fqdn}"}
 		)
 		`
 	);
 	const bufferQuery = $derived(
 		`
-		node_memory_Buffers_bytes{instance="${machine.fqdn}"}
+		node_memory_Buffers_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 	const cacheQuery = $derived(
 		`
-		node_memory_Cached_bytes{instance="${machine.fqdn}"}
+		node_memory_Cached_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 	const freeQuery = $derived(
 		`
-		node_memory_MemFree_bytes{instance="${machine.fqdn}"}
+		node_memory_MemFree_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 

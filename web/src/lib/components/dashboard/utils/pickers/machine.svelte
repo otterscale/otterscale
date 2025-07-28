@@ -14,7 +14,7 @@
     <Popover.Root>
         <Popover.Trigger>
             <Button variant="outline" class="h-8 w-full justify-between">
-                {selectedMachine.fqdn}
+                {(!selectedMachine?.id || selectedMachine.id == '') ? 'All Machine' : selectedMachine.fqdn}
             </Button>
         </Popover.Trigger>
         <Popover.Content class="w-fit p-0">
@@ -37,7 +37,7 @@
                                             icon="ph:check"
                                             class={cn('h-4 w-4', selectedMachine === machine ? 'visible' : 'invisible')}
                                         />
-                                        {machine.fqdn}
+                                        {(!machine?.id || machine.id == '') ? 'All Machine' : machine.fqdn}
                                     </div>
                                 </div>
                             </Command.Item>

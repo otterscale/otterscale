@@ -8,7 +8,7 @@
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 	const query = $derived(
 		`
-		node_filesystem_size_bytes{fstype!="rootfs",instance="${machine.fqdn}",mountpoint="/"}
+		node_filesystem_size_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"}
 		`
 	);
 </script>

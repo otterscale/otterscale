@@ -22,7 +22,7 @@ let {
 	const step = 1 * 60;
 	const query = $derived(
 		`
-		rate(node_network_receive_bytes_total{instance="${machine.fqdn}", device!="lo"}[5m])
+		rate(node_network_receive_bytes_total{instance=~"${machine.fqdn}", device!="lo"}[5m])
 		`
 	);
 

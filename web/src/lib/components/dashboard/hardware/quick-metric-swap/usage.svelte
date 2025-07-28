@@ -13,12 +13,12 @@
 		`
 		(
 			(
-				node_memory_SwapTotal_bytes{instance="${machine.fqdn}"}
+				node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"}
 			-
-				node_memory_SwapFree_bytes{instance="${machine.fqdn}"}
+				node_memory_SwapFree_bytes{instance=~"${machine.fqdn}"}
 			)
 		/
-			(node_memory_SwapTotal_bytes{instance="${machine.fqdn}"})
+			(node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"})
 		)
 		`
 	);

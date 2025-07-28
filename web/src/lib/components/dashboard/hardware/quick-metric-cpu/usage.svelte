@@ -11,9 +11,9 @@
 
 	const query = $derived(
 		`
-		sum((irate(node_cpu_seconds_total{instance="${machine.fqdn}",mode!="idle"}[6m])))
+		sum((irate(node_cpu_seconds_total{instance=~"${machine.fqdn}",mode!="idle"}[6m])))
 		/
-		sum((irate(node_cpu_seconds_total{instance="${machine.fqdn}"}[6m])))
+		sum((irate(node_cpu_seconds_total{instance=~"${machine.fqdn}"}[6m])))
 		`
 	);
 </script>

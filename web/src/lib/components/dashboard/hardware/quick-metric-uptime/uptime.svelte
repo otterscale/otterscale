@@ -8,9 +8,9 @@
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 	const query = $derived(
 		`
-		node_time_seconds{instance="${machine.fqdn}"}
+		node_time_seconds{instance=~"${machine.fqdn}"}
 		-
-		node_boot_time_seconds{instance="${machine.fqdn}"}
+		node_boot_time_seconds{instance=~"${machine.fqdn}"}
 		`
 	);
 </script>

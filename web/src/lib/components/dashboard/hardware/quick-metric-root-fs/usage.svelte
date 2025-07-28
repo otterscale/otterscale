@@ -15,10 +15,10 @@
 		-
 		(
 			(
-				node_filesystem_avail_bytes{fstype!="rootfs",instance="${machine.fqdn}",mountpoint="/"}
+				node_filesystem_avail_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"}
 			)
 			/
-			node_filesystem_size_bytes{fstype!="rootfs",instance="${machine.fqdn}",mountpoint="/"}
+			node_filesystem_size_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"}
 		)
 		`
 	);

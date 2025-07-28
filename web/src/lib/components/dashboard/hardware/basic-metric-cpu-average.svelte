@@ -22,8 +22,8 @@ let {
 	const step = 1 * 60;
 	const loadAverage1m = $derived(
 		`
-		node_load1{instance="${machine.fqdn}"}
-		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance="${machine.fqdn}", mode="idle"})
+		node_load1{instance=~"${machine.fqdn}"}
+		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})
 		`
 	);
 	const loadAverage5m = $derived(
@@ -34,8 +34,8 @@ let {
 	);
 	const loadAverage15m = $derived(
 		`
-		node_load15{instance="${machine.fqdn}"}
-		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance="${machine.fqdn}", mode="idle"})
+		node_load15{instance=~"${machine.fqdn}"}
+		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})
 		`
 	);
 

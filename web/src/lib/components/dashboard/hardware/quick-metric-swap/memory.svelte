@@ -8,7 +8,7 @@
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 	const query = $derived(
 		`
-		node_memory_SwapTotal_bytes{instance="${machine.fqdn}"}
+		node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 </script>
