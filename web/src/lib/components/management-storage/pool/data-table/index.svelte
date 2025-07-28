@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { page } from '$app/stores';
 	import { PoolType, type Pool } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
@@ -24,7 +25,7 @@
 	} from '@tanstack/table-core';
 	import type { PrometheusDriver } from 'prometheus-query';
 	import { getContext } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
@@ -40,11 +41,14 @@
 		selectedScope,
 		selectedFacility,
 		pools
-	}: { selectedScope: string; selectedFacility: string; pools: Pool[] } = $props();
+	}: { selectedScope: string; selectedFacility: string; pools: Writable<Pool[]> } = $props();
 
-	let data = $state(writable(pools));
-
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
+	let pagination = $state<PaginationState>({
+		pageIndex: $page.url.searchParams.has('pagination')
+			? Number($page.url.searchParams.get('pagination'))
+			: 0,
+		pageSize: 10
+	});
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -52,9 +56,8 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return $pools;
 		},
-
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -112,7 +115,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -127,7 +131,7 @@
 				{table}
 				columnId="poolType"
 				alias="Type"
-				values={$data.map((row) => row.poolType)}
+				values={$pools.map((row) => row.poolType)}
 				descriptor={(value) => {
 					if (value === PoolType.ERASURE) {
 						return 'ERASURE';
@@ -143,7 +147,7 @@
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} bind:data />
+			<Create {selectedScope} {selectedFacility} bind:pools />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -180,7 +184,7 @@
 							<IOPS client={$prometheusDriver} {selectedScope} selectedPool={row.original.name} />
 						</Table.Cell>
 						<Table.Cell>
-							<Actions {selectedScope} {selectedFacility} {row} bind:data />
+							<Actions {selectedScope} {selectedFacility} {row} bind:pools />
 						</Table.Cell>
 					</Table.Row>
 				{:else}

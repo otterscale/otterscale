@@ -2,8 +2,8 @@
 	import type { MON } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import BooleanyFilter from '$lib/components/custom/data-table/data-table-filters/boolean-filter.svelte';
+	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -20,15 +20,13 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import { columns } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { monitors }: { monitors: MON[] } = $props();
-
-	let data = $state(writable(monitors));
+	let { monitors }: { monitors: Writable<MON[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -38,13 +36,14 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return $monitors;
 		},
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+
 		state: {
 			get pagination() {
 				return pagination;
@@ -96,7 +95,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -110,7 +110,7 @@
 			<FuzzyFilter columnId="publicAddress" alias="Address" {table} />
 			<BooleanyFilter
 				{table}
-				values={$data.map((row) => row.leader)}
+				values={$monitors.map((row) => row.leader)}
 				columnId="leader"
 				descriptor={(value) => (value ? 'Leading' : 'Not Leading')}
 			/>

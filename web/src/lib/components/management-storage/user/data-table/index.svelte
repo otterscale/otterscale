@@ -2,9 +2,9 @@
 	import type { User } from '$gen/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
+	import BooleanFilter from '$lib/components/custom/data-table/data-table-filters/boolean-filter.svelte';
 	import FuzzyFilter from '$lib/components/custom/data-table/data-table-filters/fuzzy-filter.svelte';
 	import RangeFilter from '$lib/components/custom/data-table/data-table-filters/range-filter.svelte';
-	import BooleanFilter from '$lib/components/custom/data-table/data-table-filters/boolean-filter.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -21,7 +21,7 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
@@ -35,9 +35,7 @@
 		selectedScope,
 		selectedFacility,
 		users
-	}: { selectedScope: string; selectedFacility: string; users: User[] } = $props();
-
-	let data = $state(writable(users));
+	}: { selectedScope: string; selectedFacility: string; users: Writable<User[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -47,9 +45,8 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return $users;
 		},
-
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -107,7 +104,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -119,12 +117,12 @@
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="id" {table} />
 			<FuzzyFilter columnId="name" {table} />
-			<BooleanFilter columnId="suspended" {table} values={$data.map((row) => row.suspended)} />
-			<RangeFilter {table} values={$data.map((row) => row.keys.length)} columnId="keys" />
+			<BooleanFilter columnId="suspended" {table} values={$users.map((row) => row.suspended)} />
+			<RangeFilter {table} values={$users.map((row) => row.keys.length)} columnId="keys" />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} bind:data />
+			<Create {selectedScope} {selectedFacility} bind:users />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -156,10 +154,10 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<Key {selectedScope} {selectedFacility} user={row.original} bind:data />
+							<Key {selectedScope} {selectedFacility} user={row.original} bind:users />
 						</Table.Cell>
 						<Table.Cell>
-							<Actions {selectedScope} {selectedFacility} user={row.original} bind:data />
+							<Actions {selectedScope} {selectedFacility} user={row.original} bind:users />
 						</Table.Cell>
 					</Table.Row>
 				{:else}

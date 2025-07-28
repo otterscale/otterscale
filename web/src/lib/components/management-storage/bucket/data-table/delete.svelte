@@ -68,7 +68,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Deleting ${request.bucketName}...`);
 						storageClient
 							.deleteBucket(request)
 							.then((r) => {
@@ -85,6 +85,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Delete

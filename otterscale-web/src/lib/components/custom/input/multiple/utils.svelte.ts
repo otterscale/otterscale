@@ -1,0 +1,48 @@
+import { typeToIcon } from "../single";
+import type { AccessorType, InputType } from './types';
+
+class InputManager {
+    input: any = $state();
+    type: InputType = 'text';
+
+    constructor(type: InputType) {
+        this.type = type
+    }
+
+    reset() {
+        this.input = '';
+    }
+}
+
+class ValuesManager {
+    values: any[] = $state([] as any[]);
+    accessor: AccessorType;
+
+    constructor(initialValues: any, accessor: AccessorType) {
+        this.values = Array.isArray(initialValues) ? initialValues : initialValues ? [initialValues] : []
+        this.accessor = accessor
+    }
+
+    append(value: any) {
+        if (value === undefined || value === null || String(value).trim() === '') {
+            return;
+        }
+        if (this.values.includes(value)) return;
+        this.values = [...this.values, value];
+        this.accessor.values = this.values
+    }
+
+    remove(value: any) {
+        this.values = this.values.filter((v) => v !== value);
+        this.accessor.values = this.values
+    }
+
+    reset() {
+        this.values = [];
+        this.accessor.values = this.values
+    }
+}
+
+export {
+    InputManager, typeToIcon, ValuesManager
+};

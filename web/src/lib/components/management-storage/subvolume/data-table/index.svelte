@@ -20,7 +20,7 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
@@ -41,12 +41,10 @@
 		selectedFacility: string;
 		selectedVolume: string;
 		selectedSubvolumeGroup: string;
-		subvolumes: Subvolume[];
+		subvolumes: Writable<Subvolume[]>;
 	} = $props();
 
-	let data = $state(writable(subvolumes));
-
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -54,9 +52,8 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return $subvolumes;
 		},
-
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -114,7 +111,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -126,7 +124,7 @@
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
 			<FuzzyFilter columnId="path" {table} />
-			<PointFilter columnId="mode" {table} values={$data.map((row) => row.mode)} />
+			<PointFilter columnId="mode" {table} values={$subvolumes.map((row) => row.mode)} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
@@ -135,7 +133,7 @@
 				{selectedFacility}
 				{selectedSubvolumeGroup}
 				{selectedVolume}
-				bind:data
+				bind:subvolumes
 			/>
 		</Layout.ControllerAction>
 	</Layout.Controller>
@@ -174,7 +172,7 @@
 								{selectedSubvolumeGroup}
 								{selectedVolume}
 								subvolume={row.original}
-								bind:data
+								bind:subvolumes
 							/>
 						</Table.Cell>
 						<Table.Cell>
@@ -184,7 +182,7 @@
 								{selectedSubvolumeGroup}
 								{selectedVolume}
 								subvolume={row.original}
-								bind:data
+								bind:subvolumes
 							/>
 						</Table.Cell>
 					</Table.Row>

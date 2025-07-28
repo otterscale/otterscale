@@ -31,21 +31,21 @@
 		selectedScope,
 		selectedFacility,
 		image,
-		data = $bindable()
+		images = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		image: Image;
-		data: Writable<Image[]>;
+		images: Writable<Image[]>;
 	} = $props();
 
-	let subdata = $state(image.snapshots);
+	let snapshots = $state(image.snapshots);
 	$effect(() => {
 		image;
-		subdata = image.snapshots;
+		snapshots = image.snapshots;
 	});
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -53,9 +53,8 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return subdata;
+			return snapshots;
 		},
-
 		columns: columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -113,7 +112,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -127,7 +127,7 @@
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} {image} bind:data />
+			<Create {selectedScope} {selectedFacility} {image} bind:images />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -163,7 +163,7 @@
 								{selectedFacility}
 								{image}
 								snapshot={row.original}
-								bind:data
+								bind:images
 							/>
 						</Table.Cell>
 					</Table.Row>

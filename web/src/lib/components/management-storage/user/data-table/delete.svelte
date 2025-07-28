@@ -62,7 +62,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Deleting ${request.userId}...`);
 						storageClient
 							.deleteUser(request)
 							.then((r) => {
@@ -79,6 +79,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Delete

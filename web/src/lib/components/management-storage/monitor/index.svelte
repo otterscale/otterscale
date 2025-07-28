@@ -51,6 +51,6 @@
 	{#if !isMounted}
 		<DataTableLoading />
 	{:else}
-		<DataTable monitors={$monitors} />
+		<DataTable {monitors} />
 	{/if}
 </main>

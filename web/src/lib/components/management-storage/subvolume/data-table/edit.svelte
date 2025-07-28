@@ -85,7 +85,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Updating ${request.subvolumeName}...`);
 						storageClient
 							.updateSubvolume(request)
 							.then((r) => {
@@ -107,6 +107,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Update

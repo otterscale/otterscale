@@ -58,8 +58,8 @@
 	let {
 		selectedScope,
 		selectedFacility,
-		data = $bindable()
-	}: { selectedScope: string; selectedFacility: string; data: Writable<Pool[]> } = $props();
+		pools: data = $bindable()
+	}: { selectedScope: string; selectedFacility: string; pools: Writable<Pool[]> } = $props();
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
@@ -127,7 +127,7 @@
 					<Form.Field>
 						<Form.Label>EC Overwrite</Form.Label>
 						<SingleInput.Boolean
-							required
+							format="checkbox"
 							descriptor={(value) => {
 								if (value === true) {
 									return 'EC Overwrites';
@@ -145,7 +145,7 @@
 				{#if request.poolType === PoolType.REPLICATED}
 					<Form.Field>
 						<Form.Label>Replcated Size</Form.Label>
-						<SingleInput.BigInteger required bind:value={request.replicatedSize} />
+						<SingleInput.BigInteger bind:value={request.replicatedSize} />
 					</Form.Field>
 					<Form.Help>
 						{REPLCATED_SIZE_HELP_TEXT}
@@ -185,13 +185,12 @@
 						</MultipleSelect.Controller>
 					</MultipleSelect.Root>
 				</Form.Field>
-			</Form.Fieldset>
-
-			<Form.Fieldset>
-				<Form.Legend>Quotas</Form.Legend>
 
 				<Form.Field>
-					<Form.Label>Bytes</Form.Label>
+					<Form.Label>Quotas Size</Form.Label>
+					<Form.Help>
+						{QUOTAS_BYTES_HELP_TEXT}
+					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
@@ -205,17 +204,14 @@
 						]}
 					/>
 				</Form.Field>
-				<Form.Help>
-					{QUOTAS_BYTES_HELP_TEXT}
-				</Form.Help>
 
 				<Form.Field>
-					<Form.Label>Objects</Form.Label>
+					<Form.Label>Quotas Objects</Form.Label>
+					<Form.Help>
+						{QUOTAS_OBJECTS_HELP_TEXT}
+					</Form.Help>
 					<SingleInput.BigInteger bind:value={request.quotaObjects} />
 				</Form.Field>
-				<Form.Help>
-					{QUOTAS_OBJECTS_HELP_TEXT}
-				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
@@ -224,6 +220,7 @@
 				<AlertDialog.Action
 					disabled={invalid}
 					onclick={() => {
+						toast.info(`Creating ${request.poolName}...`);
 						storageClient
 							.createPool(request)
 							.then((r) => {
@@ -239,8 +236,8 @@
 							})
 							.finally(() => {
 								reset();
-								stateController.close();
 							});
+						stateController.close();
 					}}
 				>
 					Create

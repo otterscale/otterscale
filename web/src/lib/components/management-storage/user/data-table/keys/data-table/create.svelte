@@ -14,12 +14,12 @@
 		selectedScope,
 		selectedFacility,
 		user,
-		data = $bindable()
+		users: data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		user: User;
-		data: Writable<User[]>;
+		users: Writable<User[]>;
 	} = $props();
 
 	const DEFAULT_REQUEST = {
@@ -39,7 +39,7 @@
 <Button
 	class="size-sm flex h-full w-full items-center gap-2"
 	onclick={() => {
-		console.log(request);
+		toast.info(`Creating ${request.userId}...`);
 		storageClient
 			.createUserKey(request)
 			.then((r) => {

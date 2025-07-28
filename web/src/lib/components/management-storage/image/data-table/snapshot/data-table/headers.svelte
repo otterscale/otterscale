@@ -6,9 +6,10 @@
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker: _row_picker,
-		name: name,
-		protect: protect
+		_row_picker,
+		name,
+		protect,
+		usage
 	};
 </script>
 
@@ -35,5 +36,14 @@
 			<Sorter {column} />
 		</Layout.HeaderController>
 		<Layout.HeaderViewer>PROTECTED</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet usage(column: Column<Image_Snapshot>)}
+	<Layout.Header>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

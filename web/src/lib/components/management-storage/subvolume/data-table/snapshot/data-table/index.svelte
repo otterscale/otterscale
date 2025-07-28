@@ -34,32 +34,31 @@
 		selectedVolume,
 		selectedSubvolumeGroup,
 		subvolume,
-		data = $bindable()
+		subvolumes = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
 		selectedSubvolumeGroup: string;
 		subvolume: Subvolume;
-		data: Writable<Subvolume[]>;
+		subvolumes: Writable<Subvolume[]>;
 	} = $props();
 
-	let subdata = $state(subvolume.snapshots);
+	let snapshots = $state(subvolume.snapshots);
 	$effect(() => {
 		subvolume;
-		subdata = subvolume.snapshots;
+		snapshots = subvolume.snapshots;
 	});
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 5 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
 	const table = createSvelteTable({
 		get data() {
-			return subdata;
+			return snapshots;
 		},
-
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -117,7 +116,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -138,7 +138,7 @@
 				{selectedVolume}
 				{selectedSubvolumeGroup}
 				{subvolume}
-				bind:data
+				bind:subvolumes
 			/>
 		</Layout.ControllerAction>
 	</Layout.Controller>
@@ -177,7 +177,7 @@
 								{selectedSubvolumeGroup}
 								{subvolume}
 								snapshot={row.original}
-								bind:data
+								bind:subvolumes
 							/>
 						</Table.Cell>
 					</Table.Row>

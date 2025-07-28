@@ -20,7 +20,7 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
@@ -34,9 +34,7 @@
 		selectedScope,
 		selectedFacility,
 		images
-	}: { selectedScope: string; selectedFacility: string; images: Image[] } = $props();
-
-	let data = $state(writable(images));
+	}: { selectedScope: string; selectedFacility: string; images: Writable<Image[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -46,13 +44,14 @@
 
 	export const table = createSvelteTable({
 		get data() {
-			return $data;
+			return $images;
 		},
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+
 		state: {
 			get pagination() {
 				return pagination;
@@ -104,7 +103,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -119,12 +119,12 @@
 				columnId="poolName"
 				alias="Pool Name"
 				{table}
-				values={$data.map((row) => row.poolName)}
+				values={$images.map((row) => row.poolName)}
 			/>
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScope} {selectedFacility} bind:data />
+			<Create {selectedScope} {selectedFacility} bind:images />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -158,10 +158,10 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<Snapshot {selectedScope} {selectedFacility} image={row.original} bind:data />
+							<Snapshot {selectedScope} {selectedFacility} image={row.original} bind:images />
 						</Table.Cell>
 						<Table.Cell>
-							<Actions {selectedScope} {selectedFacility} {row} bind:data />
+							<Actions {selectedScope} {selectedFacility} {row} bind:images />
 						</Table.Cell>
 					</Table.Row>
 				{:else}

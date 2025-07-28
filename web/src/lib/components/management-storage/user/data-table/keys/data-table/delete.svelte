@@ -53,9 +53,6 @@
 		<AlertDialog.Header>Delete User Key</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Help>
-					Please type the access key exactly to confirm deletion. This action cannot be undone.
-				</Form.Help>
 				<Form.Field>
 					<SingleInput.DeletionConfirm
 						required
@@ -63,6 +60,9 @@
 						bind:value={request.accessKey}
 					/>
 				</Form.Field>
+				<Form.Help>
+					Please type the access key exactly to confirm deletion. This action cannot be undone.
+				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
@@ -70,7 +70,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						console.log(request);
+						toast.info(`Deleting ${request.accessKey}...`);
 						storageClient
 							.deleteUserKey(request)
 							.then((r) => {
@@ -85,8 +85,9 @@
 								toast.error(`Fail to delete access key: ${e.toString()}`);
 							})
 							.finally(() => {
-								stateController.close();
+								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Delete

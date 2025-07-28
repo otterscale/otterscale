@@ -34,6 +34,11 @@
 
 	{#key selectedScope}
 		<Picker.Wrapper class="*:h-8">
+			<Picker.Label>File System</Picker.Label>
+			<VolumePicker {selectedScope} {selectedFacility} bind:selectedVolume />
+		</Picker.Wrapper>
+
+		<Picker.Wrapper class="*:h-8">
 			<Picker.Label>Group</Picker.Label>
 			<SubvolumeGroupPicker
 				{selectedScope}

@@ -32,9 +32,9 @@
 	function getDefault(): { value: number | undefined; unit: UnitType | undefined } {
 		const UNITS = units.sort((p, n) => p.value - n.value);
 
-		const INITIAL_VALUE = value ? Number(value) : undefined;
+		const INITIAL_VALUE = value !== undefined ? Number(value) : undefined;
 
-		if (!INITIAL_VALUE) {
+		if (INITIAL_VALUE === undefined) {
 			return { value: undefined, unit: UNITS[0] };
 		}
 
@@ -50,8 +50,8 @@
 	}
 
 	const DEFAULT = getDefault();
-	const DEFAULT_VALUE = DEFAULT?.value;
-	const DEFAULT_UNIT = DEFAULT?.unit;
+	const DEFAULT_VALUE = DEFAULT.value;
+	const DEFAULT_UNIT = DEFAULT.unit;
 
 	let inputValue: number | undefined = $state(DEFAULT_VALUE);
 	let unit: UnitType | undefined = $state(DEFAULT_UNIT);
@@ -67,7 +67,7 @@
 			{required}
 			{...restProps}
 			oninput={(e) => {
-				value = transformer(inputValue && unit ? inputValue * unit.value : undefined);
+				value = transformer(inputValue !== undefined && unit ? inputValue * unit.value : undefined);
 				oninput?.(e);
 			}}
 		/>
@@ -83,7 +83,9 @@
 					class="flex items-center gap-2 text-xs hover:cursor-pointer"
 					onclick={() => {
 						unit = option;
-						value = transformer(inputValue && unit ? inputValue * unit.value : undefined);
+						value = transformer(
+							inputValue !== undefined && unit ? inputValue * unit.value : undefined
+						);
 					}}
 				>
 					<Icon icon={option.icon ?? 'ph:scales'} class={cn('size-4')} />

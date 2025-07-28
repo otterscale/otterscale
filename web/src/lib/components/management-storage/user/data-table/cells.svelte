@@ -27,8 +27,8 @@
 
 {#snippet suspended(row: Row<User>)}
 	{#if row.original.suspended}
-		<Icon icon="ph:x" class="text-destructive" />
-	{:else}
 		<Icon icon="ph:circle" class="text-primary" />
+	{:else}
+		<Icon icon="ph:x" class="text-destructive" />
 	{/if}
 {/snippet}

@@ -19,12 +19,12 @@
 		selectedScope,
 		selectedFacility,
 		selectedVolume,
-		data = $bindable()
+		subvolumeGroups: data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		selectedVolume: string;
-		data: Writable<SubvolumeGroup[]>;
+		subvolumeGroups: Writable<SubvolumeGroup[]>;
 	} = $props();
 
 	const DEFAULT_REQUEST = {
@@ -60,12 +60,9 @@
 					<Form.Label>Name</Form.Label>
 					<SingleInput.General required type="text" bind:value={request.groupName} />
 				</Form.Field>
-			</Form.Fieldset>
-
-			<Form.Fieldset>
-				<Form.Legend>Quotas</Form.Legend>
 
 				<Form.Field>
+					<Form.Label>Quotas Size</Form.Label>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
@@ -86,7 +83,8 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Create ${request.groupName}...`);
+						console.log(request);
 						storageClient
 							.createSubvolumeGroup(request)
 							.then((r) => {
@@ -107,6 +105,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Create

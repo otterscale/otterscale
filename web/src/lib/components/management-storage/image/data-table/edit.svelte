@@ -54,10 +54,10 @@
 		<AlertDialog.Header>Updatge RADOS Block Device</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Legend>Quotas</Form.Legend>
-
+				<Form.Label>Quotas Size</Form.Label>
 				<Form.Field>
 					<SingleInput.Measurement
+						required
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
 						units={[
@@ -77,11 +77,12 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						console.log(request);
+						toast.info(`Updating ${request.poolName}...`);
 						storageClient
 							.updateImage(request)
 							.then((r) => {
-								toast.success(`Update ${request.poolName}`);
+								toast.success(`Update ${r.poolName}`);
 								storageClient
 									.listImages({ scopeUuid: selectedScope, facilityName: selectedFacility })
 									.then((r) => {
@@ -94,6 +95,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Update

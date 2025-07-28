@@ -59,12 +59,9 @@
 					<Form.Label>Name</Form.Label>
 					<SingleInput.General required type="text" bind:value={request.groupName} />
 				</Form.Field>
-			</Form.Fieldset>
-
-			<Form.Fieldset>
-				<Form.Legend>Quotas</Form.Legend>
 
 				<Form.Field>
+					<Form.Label>Quotas Size</Form.Label>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
@@ -85,7 +82,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Updating ${request.groupName}...`);
 						storageClient
 							.updateSubvolumeGroup(request)
 							.then((r) => {
@@ -106,6 +103,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Update

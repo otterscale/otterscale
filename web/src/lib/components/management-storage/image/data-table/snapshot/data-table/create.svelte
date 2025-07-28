@@ -19,12 +19,12 @@
 		selectedScope,
 		selectedFacility,
 		image,
-		data = $bindable()
+		images: data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		image: Image;
-		data: Writable<Image[]>;
+		images: Writable<Image[]>;
 	} = $props();
 
 	const DEFAULT_REQUEST = {
@@ -68,8 +68,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						console.log(request);
-						stateController.close();
+						toast.info(`Creating ${request.snapshotName}...`);
 						storageClient
 							.createImageSnapshot(request)
 							.then((r) => {
@@ -86,6 +85,7 @@
 							.finally(() => {
 								reset();
 							});
+						stateController.close();
 					}}
 				>
 					Create

@@ -11,12 +11,12 @@
 		selectedScope,
 		selectedFacility,
 		bucket,
-		data = $bindable()
+		buckets: data = $bindable()
 	}: {
 		selectedScope: string;
 		selectedFacility: string;
 		bucket: Bucket;
-		data: Writable<Bucket[]>;
+		buckets: Writable<Bucket[]>;
 	} = $props();
 </script>
 

@@ -27,8 +27,7 @@
 
 	const DEFAULT_REQUEST = {
 		scopeUuid: selectedScope,
-		facilityName: selectedFacility,
-		poolName: image.poolName
+		facilityName: selectedFacility
 	} as DeleteImageRequest;
 
 	let request = $state(DEFAULT_REQUEST);
@@ -51,13 +50,11 @@
 		<AlertDialog.Header>Delete RADOS Block Device</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Help>
-					Please type the pool name and image name exactly to confirm deletion. This action cannot
-					be undone.
-				</Form.Help>
 				<Form.Field>
 					<Form.Label>Pool Name</Form.Label>
-
+					<Form.Help>
+						Please type the pool name exactly to confirm deletion. This action cannot be undone.
+					</Form.Help>
 					<SingleInput.DeletionConfirm
 						required
 						target={image.poolName}
@@ -66,7 +63,9 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>Image Name</Form.Label>
-
+					<Form.Help>
+						Please type the image name exactly to confirm deletion. This action cannot be undone.
+					</Form.Help>
 					<SingleInput.DeletionConfirm
 						required
 						target={image.name}
@@ -80,7 +79,7 @@
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					onclick={() => {
-						stateController.close();
+						toast.info(`Deleting ${request.imageName}...`);
 						storageClient
 							.deleteImage(request)
 							.then((r) => {
@@ -94,6 +93,7 @@
 							.catch((e) => {
 								toast.error(`Fail to delete image: ${e.toString()}`);
 							});
+						stateController.close();
 					}}
 				>
 					Delete

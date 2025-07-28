@@ -21,14 +21,14 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { writable, type Writable } from 'svelte/store';
+	import type { PrometheusDriver } from 'prometheus-query';
+	import { getContext } from 'svelte';
+	import { type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import { headers } from './headers.svelte';
 	import IOPS from './iops.svelte';
 	import Statistics from './statistics.svelte';
-	import type { PrometheusDriver } from 'prometheus-query';
-	import { getContext } from 'svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -38,9 +38,8 @@
 		selectedScope,
 		selectedFacility,
 		objectStorageDaemons
-	}: { selectedScope: string; selectedFacility: string; objectStorageDaemons: OSD[] } = $props();
-
-	let data = $state(writable(objectStorageDaemons));
+	}: { selectedScope: string; selectedFacility: string; objectStorageDaemons: Writable<OSD[]> } =
+		$props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -50,13 +49,14 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $data;
+			return $objectStorageDaemons;
 		},
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+
 		state: {
 			get pagination() {
 				return pagination;
@@ -108,7 +108,8 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
+		autoResetAll: false
 	});
 </script>
 
@@ -122,26 +123,26 @@
 			<BooleanFilter
 				columnId="in"
 				{table}
-				values={$data.map((row) => row.in)}
+				values={$objectStorageDaemons.map((row) => row.in)}
 				descriptor={(value) => (value ? 'In' : 'Out')}
 			/>
 			<BooleanFilter
 				columnId="up"
 				{table}
-				values={$data.map((row) => row.up)}
+				values={$objectStorageDaemons.map((row) => row.up)}
 				descriptor={(value) => (value ? 'Up' : 'Down')}
 			/>
 			<BooleanFilter
 				columnId="exists"
 				{table}
-				values={$data.map((row) => row.exists)}
+				values={$objectStorageDaemons.map((row) => row.exists)}
 				descriptor={(value) => (value ? 'Exists' : 'Not Exists')}
 			/>
 			<PointFilter
 				columnId="deviceClass"
 				alias="Device Class"
 				{table}
-				values={$data.map((row) => row.deviceClass)}
+				values={$objectStorageDaemons.map((row) => row.deviceClass)}
 			/>
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>

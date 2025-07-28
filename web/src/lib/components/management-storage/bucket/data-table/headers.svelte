@@ -24,7 +24,7 @@
 
 {#snippet name(column: Column<Bucket>)}
 	<Layout.Header>
-		<Layout.HeaderViewer>BUCKET NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

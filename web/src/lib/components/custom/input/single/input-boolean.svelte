@@ -57,13 +57,15 @@
 			BORDER_INPUT_CLASSNAME,
 			'flex items-center gap-2 ring-1',
 			isNotFilled ? 'ring-destructive' : '',
-			format === 'checkbox' && 'bg-muted border-none shadow-none ring-0',
+			format === 'checkbox' && 'border-none shadow-none ring-0',
 			className
 		)}
 	>
-		<span class="pl-3">
-			<Icon icon={format === 'checkbox' ? typeToIcon['boolean'] : typeToIcon['boolean']} />
-		</span>
+		{#if format === 'switch'}
+			<span class="pl-3">
+				<Icon icon={typeToIcon['boolean']} />
+			</span>
+		{/if}
 
 		{#if required}
 			{@const isValid = [true, false].includes(checked)}
@@ -101,36 +103,17 @@
 		{/if}
 	</div>
 
-	{#if required}
-		{#if checked === undefined}
-			<Switch.Root
-				bind:ref
-				bind:checked={proxyChecked}
-				data-slot="input-boolean"
-				{...restProps}
-				onCheckedChange={() => {
-					checked = proxyChecked;
-				}}
-			/>
-		{:else}
-			<Switch.Root bind:ref bind:checked data-slot="input-boolean" {...restProps} />
-		{/if}
+	{#if checked === undefined}
+		<Switch.Root
+			bind:ref
+			bind:checked={proxyChecked}
+			data-slot="input-boolean"
+			{...restProps}
+			onCheckedChange={() => {
+				checked = proxyChecked;
+			}}
+		/>
 	{:else}
-		<Select.Root type="single" bind:value={checked}>
-			<Select.Trigger class="h-9 w-fit">Select</Select.Trigger>
-			<Select.Content>
-				<Select.Group>
-					{#each options as option}
-						<Select.Item value={option.value}>
-							<Icon
-								icon={option.icon ? option.icon : 'ph:empty'}
-								class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
-							/>
-							{option.label}
-						</Select.Item>
-					{/each}
-				</Select.Group>
-			</Select.Content>
-		</Select.Root>
+		<Switch.Root bind:ref bind:checked data-slot="input-boolean" {...restProps} />
 	{/if}
 </div>

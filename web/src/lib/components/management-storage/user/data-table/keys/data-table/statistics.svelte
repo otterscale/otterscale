@@ -13,7 +13,7 @@
 <Layout class="lg:grid-cols-2">
 	<Chart.Text>
 		{#snippet title()}
-			Snapshot
+			Key
 		{/snippet}
 		{#snippet content()}
 			{@const nameList = filteredData.map((datum) => datum['name' as keyof TData])}

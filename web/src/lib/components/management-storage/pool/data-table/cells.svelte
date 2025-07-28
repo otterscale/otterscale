@@ -6,6 +6,7 @@
 	import { cn } from '$lib/utils';
 	import type { Row } from '@tanstack/table-core';
 	import { getPlacementGroupStateVariant } from './utils.svelte';
+	import Icon from '@iconify/svelte';
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -22,15 +23,20 @@
 {/snippet}
 
 {#snippet name(row: Row<Pool>)}
-	{row.original.name}
+	<div class="flex items-center gap-1">
+		{row.original.name}
+		{#if row.original.updating}
+			<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
+		{/if}
+	</div>
 {/snippet}
 
 {#snippet type(row: Row<Pool>)}
 	<Badge variant="outline">
 		{#if row.original.poolType == PoolType.ERASURE}
-			ERASURE
+			ERASURE:{row.original.dataChunks}<Icon icon="ph:x" />{row.original.codingChunks}
 		{:else if row.original.poolType == PoolType.REPLICATED}
-			REPLICATED
+			REPLICATED:<Icon icon="ph:x" />{row.original.replicatedSize}
 		{:else}{/if}
 	</Badge>
 {/snippet}
