@@ -2,13 +2,13 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { formatCapacity } from '$lib/formatter';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
-	import type { Scope } from '$gen/api/scope/v1/scope_pb';
+	import type { Machine } from '$gen/api/machine/v1/machine_pb';
 	import * as Empty from '../../utils/empty';
 
-	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 	const query = $derived(
 		`
-		node_memory_MemTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
+		node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 </script>

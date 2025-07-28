@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { Scope } from '$gen/api/scope/v1/scope_pb';
+	import type { Machine } from '$gen/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import { PrometheusDriver } from 'prometheus-query';
 	import * as Empty from '../../utils/empty';
 
-	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 	const query = $derived(
 		`
 		count(
-		count by (cpu) (node_cpu_seconds_total{juju_model_uuid=~"${scope.uuid}"})
+		count by (cpu) (node_cpu_seconds_total{instance=~"${machine.fqdn}"})
 		)
 		`
 	);
