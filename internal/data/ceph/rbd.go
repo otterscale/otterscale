@@ -2,6 +2,7 @@ package ceph
 
 import (
 	"context"
+	"slices"
 	"time"
 
 	"github.com/ceph/go-ceph/rados"
@@ -241,17 +242,17 @@ func (r *rbd) openImage(ioctx *rados.IOContext, pool, image string) (*core.RBDIm
 	stripeCount, _ := img.GetStripeCount()
 	features, _ := img.GetFeatures()
 	timestamp, _ := img.GetCreateTimestamp()
-	snapNames, _ := img.GetSnapshotNames()
+	snaps, _ := img.GetSnapshotNames()
+	mirrorMode, _ := img.GetImageMirrorMode()
 
-	snapshots := []core.RBDImageSnapshot{}
-	for _, info := range snapNames {
-		snapshot := img.GetSnapshot(info.Name)
-		protected, _ := snapshot.IsProtected()
-		snapshots = append(snapshots, core.RBDImageSnapshot{
-			Name:      info.Name,
-			Protected: protected,
-		})
+	// disk usage
+	snaps = r.sortAndAppendSnapInfo(snaps, info.Size)
+	snapshots, err := r.imageDiskUsage(img, mirrorMode, features, snaps)
+	if err != nil {
+		return nil, err
 	}
+	du := snapshots[len(snapshots)-1].Used
+	snapshots = snapshots[:len(snapshots)-1]
 
 	return &core.RBDImage{
 		Name:                 img.GetName(),
@@ -260,7 +261,7 @@ func (r *rbd) openImage(ioctx *rados.IOContext, pool, image string) (*core.RBDIm
 		StripeUnit:           stripeUnit,
 		StripeCount:          stripeCount,
 		Quota:                info.Size,
-		Used:                 0,
+		Used:                 du,
 		ObjectCount:          info.Num_objs,
 		FeatureLayering:      r.featureOn(features, cephrbd.FeatureLayering),
 		FeatureExclusiveLock: r.featureOn(features, cephrbd.FeatureExclusiveLock),
@@ -274,4 +275,70 @@ func (r *rbd) openImage(ioctx *rados.IOContext, pool, image string) (*core.RBDIm
 
 func (r *rbd) featureOn(features, feature uint64) bool {
 	return features&feature == feature
+}
+
+func (r *rbd) imageDiskUsage(img *cephrbd.Image, mirrorMode cephrbd.ImageMirrorMode, features uint64, snaps []cephrbd.SnapInfo) ([]core.RBDImageSnapshot, error) {
+	snapshots := []core.RBDImageSnapshot{}
+	previous := ""
+	for _, info := range snaps {
+		snap := img.GetSnapshot(info.Name)
+		protected, _ := snap.IsProtected()
+		snapshot := core.RBDImageSnapshot{
+			Name:      info.Name,
+			Quota:     info.Size,
+			Protected: protected,
+		}
+		if mirrorMode != cephrbd.ImageMirrorModeSnapshot && r.featureOn(features, cephrbd.FeatureFastDiff) {
+			du, err := r.diskUsage(img, previous, info.Name, info.Size)
+			if err != nil {
+				return nil, err
+			}
+			snapshot.Used = du
+		}
+		snapshots = append(snapshots, snapshot)
+		previous = info.Name
+	}
+	return snapshots, nil
+}
+
+func (r *rbd) sortAndAppendSnapInfo(snaps []cephrbd.SnapInfo, size uint64) []cephrbd.SnapInfo {
+	slices.SortFunc(snaps, func(a, b cephrbd.SnapInfo) int {
+		if a.Id < b.Id {
+			return -1
+		} else if a.Id > b.Id {
+			return 1
+		}
+		return 0
+	})
+
+	id := uint64(0)
+	if len(snaps) > 0 {
+		id = uint64(len(snaps) + 1) //nolint:gosec
+	}
+
+	return append(snaps, cephrbd.SnapInfo{
+		Id:   id,
+		Size: size,
+	})
+}
+
+func (r *rbd) diskUsage(img *cephrbd.Image, previous, current string, size uint64) (uint64, error) {
+	du := uint64(0)
+	if err := img.SetSnapshot(current); err != nil {
+		return 0, err
+	}
+	if err := img.DiffIterate(cephrbd.DiffIterateConfig{
+		SnapName:    previous,
+		Length:      size,
+		WholeObject: cephrbd.EnableWholeObject,
+		Callback: func(_, length uint64, exists int, _ any) int {
+			if exists > 0 {
+				du += length
+			}
+			return 0
+		},
+	}); err != nil {
+		return 0, err
+	}
+	return du, nil
 }

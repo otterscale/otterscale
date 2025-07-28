@@ -580,6 +580,8 @@ func toProtoImageSnapshot(s *core.RBDImageSnapshot) *pb.Image_Snapshot {
 	ret := &pb.Image_Snapshot{}
 	ret.SetName(s.Name)
 	ret.SetProtected(s.Protected)
+	ret.SetQuotaBytes(s.Quota)
+	ret.SetUsedBytes(s.Used)
 	return ret
 }
 
