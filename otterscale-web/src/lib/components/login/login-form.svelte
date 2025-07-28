@@ -57,7 +57,12 @@
 
 	// Constants
 	const socialProviders = [
-		{ id: 'apple', icon: 'streamline-logos:apple-logo-solid', label: 'Apple', enabled: data.apple },
+		{
+			id: 'apple',
+			icon: 'streamline-logos:apple-logo-solid',
+			label: 'Apple',
+			enabled: data.apple
+		},
 		{
 			id: 'github',
 			icon: 'streamline-logos:github-logo-2-solid',
