@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Scope } from '$gen/api/scope/v1/scope_pb';
+	import type { Machine } from '$gen/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import { cn } from '$lib/utils';
 	import { Arc, Chart, Group, Svg } from 'layerchart';
@@ -7,18 +7,18 @@
 	import { metricBackgroundColor, metricColor } from '../../utils';
 	import * as Empty from '../../utils/empty';
 
-	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 
 	const query = $derived(
 		`
 		(
 			(
-				node_memory_SwapTotal_bytes{instance="juju-1eb21e-0-lxd-1"}
+				node_memory_SwapTotal_bytes{instance="${machine.fqdn}"}
 			-
-				node_memory_SwapFree_bytes{instance="juju-1eb21e-0-lxd-1"}
+				node_memory_SwapFree_bytes{instance="${machine.fqdn}"}
 			)
 		/
-			(node_memory_SwapTotal_bytes{instance="juju-1eb21e-0-lxd-1"})
+			(node_memory_SwapTotal_bytes{instance="${machine.fqdn}"})
 		)
 		`
 	);

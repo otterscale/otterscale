@@ -23,7 +23,7 @@ let {
 	const step = 1 * 120;
 	const ioTimeQuery = $derived(
 		`
-		sum by (instance) (rate(node_disk_io_time_seconds_total{instance="juju-1eb21e-0-lxd-1", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))
+		sum by (instance) (rate(node_disk_io_time_seconds_total{instance="${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))
 		`
 	);
 

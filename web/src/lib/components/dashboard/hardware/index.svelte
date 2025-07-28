@@ -27,7 +27,7 @@
 
 <div class="flex flex-col gap-4">
 	<div class="mr-auto flex flex-wrap items-center gap-2">
-		<Pickers.Scope bind:selectedScope={selectedMachine} {scopes} />
+		<Pickers.Machine bind:selectedMachine={selectedMachine} {machines} />
 	</div>
 	<div class="mr-auto flex flex-wrap items-center gap-2">
 		<DateTimestampPicker bind:value={selectedTimeRange} />

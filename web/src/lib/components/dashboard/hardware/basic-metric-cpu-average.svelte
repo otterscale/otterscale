@@ -22,20 +22,20 @@ let {
 	const step = 1 * 60;
 	const loadAverage1m = $derived(
 		`
-		node_load1{instance="juju-1eb21e-0-lxd-1"}
-		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance="juju-1eb21e-0-lxd-1", mode="idle"})
+		node_load1{instance="${machine.fqdn}"}
+		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance="${machine.fqdn}", mode="idle"})
 		`
 	);
 	const loadAverage5m = $derived(
 		`
-		node_load5{instance="juju-1eb21e-0-lxd-1"}
-		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance="juju-1eb21e-0-lxd-1", mode="idle"})
+		node_load5{instance="${machine.fqdn}"}
+		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance="${machine.fqdn}", mode="idle"})
 		`
 	);
 	const loadAverage15m = $derived(
 		`
-		node_load15{instance="juju-1eb21e-0-lxd-1"}
-		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance="juju-1eb21e-0-lxd-1", mode="idle"})
+		node_load15{instance="${machine.fqdn}"}
+		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance="${machine.fqdn}", mode="idle"})
 		`
 	);
 
