@@ -2,13 +2,14 @@
 	import { toast } from 'svelte-sonner';
 	import { writable } from 'svelte/store';
 	import Icon from '@iconify/svelte';
+	import { goto } from '$app/navigation';
 	import { authClient } from '$lib/auth-client';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
-	import Placeholder from '$lib/static/placeholder.svg';
-	import { goto } from '$app/navigation';
+	import { m } from '$lib/paraglide/messages';
+	import LoginImage from '$lib/static/login.jpg';
 
 	const { data } = $props();
 	const id = $props.id();
@@ -56,7 +57,12 @@
 
 	// Constants
 	const socialProviders = [
-		{ id: 'apple', icon: 'streamline-logos:apple-logo-solid', label: 'Apple', enabled: data.apple },
+		{
+			id: 'apple',
+			icon: 'streamline-logos:apple-logo-solid',
+			label: 'Apple',
+			enabled: data.apple
+		},
 		{
 			id: 'github',
 			icon: 'streamline-logos:github-logo-2-solid',
@@ -148,12 +154,12 @@
 			<form class="p-6 md:p-8" onsubmit={handleSignInSubmit}>
 				<div class="flex flex-col gap-6">
 					<div class="flex flex-col items-center text-center">
-						<h1 class="text-2xl font-bold">Welcome back</h1>
-						<p class="text-muted-foreground text-balance">Login to access your account</p>
+						<h1 class="text-2xl font-bold">{m.login_title()}</h1>
+						<p class="text-muted-foreground text-balance">{m.login_description()}</p>
 					</div>
 
 					<div class="grid gap-3">
-						<Label for="signin-email-{id}">Email</Label>
+						<Label for="signin-email-{id}">{m.email()}</Label>
 						<Input
 							id="signin-email-{id}"
 							type="email"
@@ -165,7 +171,7 @@
 					</div>
 
 					<div class="grid gap-3">
-						<Label for="signin-password-{id}">Password</Label>
+						<Label for="signin-password-{id}">{m.password()}</Label>
 						<Input
 							id="signin-password-{id}"
 							type="password"
@@ -180,7 +186,7 @@
 						{#if $loading.email}
 							<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
 						{:else}
-							Login
+							{m.login()}
 						{/if}
 					</Button>
 
@@ -188,7 +194,8 @@
 					<div
 						class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
 					>
-						<span class="bg-card text-muted-foreground relative z-10 px-2">OR CONTINUE WITH</span>
+						<span class="bg-card text-muted-foreground relative z-10 px-2">{m.login_divider()}</span
+						>
 					</div>
 
 					<div class="grid grid-cols-3 gap-4">
@@ -211,7 +218,7 @@
 					</div>
 
 					<Button variant="link" class="text-muted-foreground" onclick={toggleMode}>
-						Don't have an account?
+						{m.login_toggle()}
 					</Button>
 				</div>
 			</form>
@@ -220,9 +227,9 @@
 		<!-- Placeholder Image -->
 		<div class="bg-muted relative hidden md:block">
 			<img
-				src={Placeholder}
+				src={LoginImage}
 				alt="placeholder"
-				class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+				class="absolute inset-0 h-full w-full object-cover brightness-[0.95] dark:brightness-[0.85]"
 			/>
 		</div>
 
@@ -231,13 +238,13 @@
 			<form class="p-6 md:p-8" onsubmit={handleSignUpSubmit}>
 				<div class="flex flex-col gap-6">
 					<div class="flex flex-col items-center text-center">
-						<h1 class="text-2xl font-bold">Hello!</h1>
-						<p class="text-muted-foreground text-balance">Create your account to get started</p>
+						<h1 class="text-2xl font-bold">{m.sign_up_title()}</h1>
+						<p class="text-muted-foreground text-balance">{m.sign_up_description()}</p>
 					</div>
 
 					<div class="grid grid-cols-2 gap-4">
 						<div class="grid gap-3">
-							<Label for="first-name-{id}">First Name</Label>
+							<Label for="first-name-{id}">{m.first_name()}</Label>
 							<Input
 								id="first-name-{id}"
 								placeholder="Paul"
@@ -247,7 +254,7 @@
 							/>
 						</div>
 						<div class="grid gap-3">
-							<Label for="last-name-{id}">Last Name</Label>
+							<Label for="last-name-{id}">{m.last_name()}</Label>
 							<Input
 								id="last-name-{id}"
 								placeholder="Smith"
@@ -259,7 +266,7 @@
 					</div>
 
 					<div class="grid gap-3">
-						<Label for="email-{id}">Email</Label>
+						<Label for="email-{id}">{m.email()}</Label>
 						<Input
 							id="email-{id}"
 							type="email"
@@ -271,7 +278,7 @@
 					</div>
 
 					<div class="grid gap-3">
-						<Label for="password-{id}">Password</Label>
+						<Label for="password-{id}">{m.password()}</Label>
 						<Input
 							id="password-{id}"
 							type="password"
@@ -286,12 +293,12 @@
 						{#if $loading.email}
 							<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
 						{:else}
-							Sign Up
+							{m.sign_up()}
 						{/if}
 					</Button>
 
 					<Button variant="link" class="text-muted-foreground" onclick={toggleMode}>
-						Already have an account?
+						{m.sign_up_toggle()}
 					</Button>
 				</div>
 			</form>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Scope } from '$gen/api/scope/v1/scope_pb';
+	import type { Machine } from '$gen/api/machine/v1/machine_pb';
 	import type { TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 	import ComponentLoading from '$lib/components/otterscale/ui/component-loading.svelte';
 	import { formatCapacity, formatTime } from '$lib/formatter';
@@ -13,45 +13,45 @@
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
 
-	let {
-		client,
-		scope: scope,
-		timeRange
-	}: { client: PrometheusDriver; scope: Scope; timeRange: TimeRange } = $props();
+let {
+	client,
+	machine,
+	timeRange
+}: { client: PrometheusDriver; machine: Machine; timeRange: TimeRange } = $props();
 
 	const step = 1 * 60;
 
 	const totalQuery = $derived(
 		`
-		node_memory_MemTotal_bytes{instance="juju-1eb21e-0-lxd-1"}
+		node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 	const usedQuery = $derived(
 		`
 		(
-		node_memory_MemTotal_bytes{instance="juju-1eb21e-0-lxd-1"}
+		node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}
 		-
-		node_memory_MemFree_bytes{instance="juju-1eb21e-0-lxd-1"}
+		node_memory_MemFree_bytes{instance=~"${machine.fqdn}"}
 		-
-		node_memory_Buffers_bytes{instance="juju-1eb21e-0-lxd-1"}
+		node_memory_Buffers_bytes{instance=~"${machine.fqdn}"}
 		-
-		node_memory_Cached_bytes{instance="juju-1eb21e-0-lxd-1"}
+		node_memory_Cached_bytes{instance=~"${machine.fqdn}"}
 		)
 		`
 	);
 	const bufferQuery = $derived(
 		`
-		node_memory_Buffers_bytes{instance="juju-1eb21e-0-lxd-1"}
+		node_memory_Buffers_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 	const cacheQuery = $derived(
 		`
-		node_memory_Cached_bytes{instance="juju-1eb21e-0-lxd-1"}
+		node_memory_Cached_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 	const freeQuery = $derived(
 		`
-		node_memory_MemFree_bytes{instance="juju-1eb21e-0-lxd-1"}
+		node_memory_MemFree_bytes{instance=~"${machine.fqdn}"}
 		`
 	);
 

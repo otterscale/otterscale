@@ -143,7 +143,7 @@
 
 					<DropdownMenu.Sub>
 						<DropdownMenu.SubTrigger>
-							<Icon icon="ph:translate-bold" />
+							<Icon icon="ph:globe" />
 							{m.locale()}
 						</DropdownMenu.SubTrigger>
 						<DropdownMenu.SubContent>

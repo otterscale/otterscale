@@ -10,6 +10,8 @@ import (
 
 type RBDImageSnapshot struct {
 	Name      string
+	Quota     uint64
+	Used      uint64
 	Protected bool
 }
 

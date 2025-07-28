@@ -36,10 +36,10 @@
 					}}
 				>
 					{#snippet child({ props })}
-						<a href="##" {...props}>
+						<button type="button" {...props}>
 							<Icon icon="ph:info" />
 							<span>{m.about()}</span>
-						</a>
+						</button>
 					{/snippet}
 				</Sidebar.MenuButton>
 			</Sidebar.MenuItem>

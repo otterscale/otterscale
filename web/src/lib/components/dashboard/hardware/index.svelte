@@ -1,9 +1,6 @@
 <script lang="ts">
-	import type { Scope } from '$gen/api/scope/v1/scope_pb';
-	import {
-		DateTimestampPicker,
-		type TimeRange
-	} from '$lib/components/custom/date-timestamp-range-picker';
+	import type { Machine } from '$gen/api/machine/v1/machine_pb';
+	import { DateTimestampPicker, type TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
 	import { getLocalTimeZone, now } from '@internationalized/date';
 	import { PrometheusDriver } from 'prometheus-query';
 	import * as Pickers from '../utils/pickers';
@@ -20,63 +17,63 @@
 	import { default as QuickSWAP } from './quick-metric-swap/index.svelte';
 	import { default as QuickUptime } from './quick-metric-uptime/index.svelte';
 
-	let { client, scopes }: { client: PrometheusDriver; scopes: Scope[] } = $props();
+	let { client, machines }: { client: PrometheusDriver; machines: Machine[] } = $props();
 	let selectedTimeRange = $state({
 		start: new Date(now(getLocalTimeZone()).toDate().getTime() - 60 * 60 * 1000),
 		end: now(getLocalTimeZone()).toDate()
 	} as TimeRange);
-	let selectedScope = $state(scopes[0]);
+	let selectedMachine = $state(machines[0]);
 </script>
 
 <div class="flex flex-col gap-4">
 	<div class="mr-auto flex flex-wrap items-center gap-2">
-		<Pickers.Scope bind:selectedScope {scopes} />
+		<Pickers.Machine bind:selectedMachine={selectedMachine} {machines} />
 	</div>
 	<div class="mr-auto flex flex-wrap items-center gap-2">
 		<DateTimestampPicker bind:value={selectedTimeRange} />
 	</div>
-	{#key selectedScope}
+	{#key selectedMachine}
 		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 			<span class="col-span-1">
-				<QuickUptime {client} scope={selectedScope} />
+				<QuickUptime {client} machine={selectedMachine} />
 			</span>
 		</div>
 		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 			<span class="col-span-1">
-				<QuickCPU {client} scope={selectedScope} />
+				<QuickCPU {client} machine={selectedMachine} />
 			</span>
 			<span class="col-span-1">
-				<QuickRAM {client} scope={selectedScope} />
+				<QuickRAM {client} machine={selectedMachine} />
 			</span>
 			<span class="col-span-1">
-				<QuickSWAP {client} scope={selectedScope} />
+				<QuickSWAP {client} machine={selectedMachine} />
 			</span>
 			<span class="col-span-1">
-				<QuickRootFS {client} scope={selectedScope} />
+				<QuickRootFS {client} machine={selectedMachine} />
 			</span>
 		</div>
 		{#key selectedTimeRange}
 			<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2">
 				<span class="col-span-1">
-					<CPUCoreProcessor {client} scope={selectedScope} timeRange={selectedTimeRange} />
+					<CPUCoreProcessor {client} machine={selectedMachine} timeRange={selectedTimeRange} />
 				</span>
 				<span class="col-span-1">
-					<CPUAverage {client} scope={selectedScope} timeRange={selectedTimeRange} />
+					<CPUAverage {client} machine={selectedMachine} timeRange={selectedTimeRange} />
 				</span>
 				<span class="col-span-1">
-					<BasicRAM {client} scope={selectedScope} timeRange={selectedTimeRange} />
+					<BasicRAM {client} machine={selectedMachine} timeRange={selectedTimeRange} />
 				</span>
 				<span class="col-span-1">
-					<BasicDisk {client} scope={selectedScope} timeRange={selectedTimeRange} />
+					<BasicDisk {client} machine={selectedMachine} timeRange={selectedTimeRange} />
 				</span>
 				<span class="col-span-1">
-					<DiskIOTime {client} scope={selectedScope} timeRange={selectedTimeRange} />
+					<DiskIOTime {client} machine={selectedMachine} timeRange={selectedTimeRange} />
 				</span>
 				<span class="col-span-1">
-					<NetworkReceived {client} scope={selectedScope} timeRange={selectedTimeRange} />
+					<NetworkReceived {client} machine={selectedMachine} timeRange={selectedTimeRange} />
 				</span>
 				<span class="col-span-1">
-					<NetworkTransmitted {client} scope={selectedScope} timeRange={selectedTimeRange} />
+					<NetworkTransmitted {client} machine={selectedMachine} timeRange={selectedTimeRange} />
 				</span>
 			</div>
 		{/key}

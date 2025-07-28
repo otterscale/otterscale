@@ -3,6 +3,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import { m } from '$lib/paraglide/messages';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 
@@ -25,20 +26,18 @@
 <Dialog.Root bind:open onOpenChange={handleClose}>
 	<Dialog.Content class="sm:max-w-[475px]">
 		<Dialog.Header>
-			<Dialog.Title>Create Scope</Dialog.Title>
-			<Dialog.Description>
-				Organize users into groups with specific permissions. Resources are isolated between scopes.
-			</Dialog.Description>
+			<Dialog.Title>{m.create_scope()}</Dialog.Title>
+			<Dialog.Description>{m.create_scope_description()}</Dialog.Description>
 		</Dialog.Header>
 
 		<form onsubmit={handleSubmit}>
 			<div class="grid gap-4 py-4">
 				<div class="grid grid-cols-4 items-center gap-4">
-					<Label for="name" class="text-right">Name</Label>
+					<Label for="name" class="text-right">{m.scope_name()}</Label>
 					<Input
 						id="name"
 						bind:value={name}
-						placeholder="Enter scope name"
+						placeholder={m.scope_name_description()}
 						class="col-span-3"
 						required
 					/>
@@ -46,8 +45,8 @@
 			</div>
 
 			<Dialog.Footer>
-				<Button type="button" variant="outline" onclick={handleClose}>Cancel</Button>
-				<Button type="submit" disabled={!name.trim()}>Create</Button>
+				<Button type="button" variant="outline" onclick={handleClose}>{m.cancel()}</Button>
+				<Button type="submit" disabled={!name.trim()}>{m.create()}</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>

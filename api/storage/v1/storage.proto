@@ -123,6 +123,8 @@ message Image {
   message Snapshot {
     string name = 1;
     bool protected = 2;
+    uint64 quota_bytes = 3;
+    uint64 used_bytes = 4;
   }
   string name = 1;
   string pool_name = 11;

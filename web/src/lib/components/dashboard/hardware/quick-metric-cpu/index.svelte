@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Scope } from '$gen/api/scope/v1/scope_pb';
+	import type { Machine } from '$gen/api/machine/v1/machine_pb';
 	import { PrometheusDriver } from 'prometheus-query';
 	import * as Template from '../../utils/templates';
 	import Cores from './cores.svelte';
 	import FinalUsage from './usage.svelte';
 
-	let { client, scope: scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 </script>
 
 <Template.Metric title="CPU">
@@ -13,9 +13,9 @@
 		<p>Busy State of all CPU Cores</p>
 	{/snippet}
 	{#snippet description()}
-		<Cores {client} {scope} />
+		<Cores {client} {machine} />
 	{/snippet}
 	{#snippet content()}
-		<FinalUsage {client} {scope} />
+		<FinalUsage {client} {machine} />
 	{/snippet}
 </Template.Metric>

@@ -68,10 +68,10 @@ export const routes = [
 ];
 
 export const bookmarks = [
-    { name: 'FOO 1', url: '#' },
-    { name: 'BAR 1', url: '#' },
-    { name: 'FOO 2', url: '#' },
-    { name: 'BAR 2', url: '#' },
-    { name: 'FOO 3', url: '#' },
-    { name: 'BAR 3', url: '#' }
+    { title: 'FOO 1', url: '#' },
+    { title: 'BAR 1', url: '#' },
+    { title: 'FOO 2', url: '#' },
+    { title: 'BAR 2', url: '#' },
+    { title: 'FOO 3', url: '#' },
+    { title: 'BAR 3', url: '#' }
 ];
