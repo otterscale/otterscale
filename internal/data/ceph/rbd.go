@@ -259,8 +259,8 @@ func (r *rbd) openImage(ioctx *rados.IOContext, pool, image string) (*core.RBDIm
 		ObjectSize:           info.Obj_size,
 		StripeUnit:           stripeUnit,
 		StripeCount:          stripeCount,
-		Quota:                0, // TODO: BETTER
-		Used:                 info.Size,
+		Quota:                info.Size,
+		Used:                 0,
 		ObjectCount:          info.Num_objs,
 		FeatureLayering:      r.featureOn(features, cephrbd.FeatureLayering),
 		FeatureExclusiveLock: r.featureOn(features, cephrbd.FeatureExclusiveLock),
