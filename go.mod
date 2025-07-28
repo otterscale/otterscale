@@ -6,6 +6,12 @@ replace gopkg.in/yaml.v2 => github.com/juju/yaml/v2 v2.0.0
 
 replace github.com/juju/juju => github.com/iasthc/juju v1.36.7
 
+replace k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff
+
+replace kubevirt.io/client-go => kubevirt.io/client-go v1.6.0-rc.0
+
+replace k8s.io/client-go => k8s.io/client-go v0.32.5
+
 require (
 	connectrpc.com/connect v1.18.1
 	connectrpc.com/grpchealth v1.4.0
@@ -35,6 +41,9 @@ require (
 	k8s.io/apimachinery v0.33.2
 	k8s.io/cli-runtime v0.33.2
 	k8s.io/client-go v0.33.2
+	kubevirt.io/api v0.0.0-20250717231457-95bd9c2be14c
+	kubevirt.io/client-go v1.6.0-rc.0
+	kubevirt.io/containerized-data-importer-api v1.60.3-0.20241105012228-50fbed985de9
 	sigs.k8s.io/yaml v1.4.0
 )
 
@@ -79,6 +88,8 @@ require (
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
 	github.com/go-errors/errors v1.4.2 // indirect
 	github.com/go-gorp/gorp/v3 v3.1.0 // indirect
+	github.com/go-kit/log v0.2.1 // indirect
+	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-macaroon-bakery/macaroon-bakery/v3 v3.0.1 // indirect
 	github.com/go-macaroon-bakery/macaroonpb v1.0.0 // indirect
@@ -141,9 +152,11 @@ require (
 	github.com/juju/webbrowser v1.0.0 // indirect
 	github.com/juju/worker/v3 v3.5.0 // indirect
 	github.com/julienschmidt/httprouter v1.3.0 // indirect
+	github.com/k8snetworkplumbingwg/network-attachment-definition-client v0.0.0-20191119172530-79f836b90111 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
+	github.com/kubernetes-csi/external-snapshotter/client/v4 v4.2.0 // indirect
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/lib/pq v1.10.9 // indirect
@@ -167,8 +180,12 @@ require (
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
+	github.com/openshift/api v0.0.0-20230503133300-8bbcb7ca7183 // indirect
+	github.com/openshift/client-go v0.0.0-20210112165513-ebc401615f47 // indirect
+	github.com/openshift/custom-resource-status v1.1.2 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.68.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/fastuuid v1.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
@@ -187,6 +204,7 @@ require (
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
 	github.com/xlab/treeprint v1.2.0 // indirect
+	go.uber.org/mock v0.5.1 // indirect
 	golang.org/x/crypto v0.40.0 // indirect
 	golang.org/x/oauth2 v0.28.0 // indirect
 	golang.org/x/sys v0.34.0 // indirect
@@ -211,9 +229,10 @@ require (
 	k8s.io/apiserver v0.33.2 // indirect
 	k8s.io/component-base v0.33.2 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
-	k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff // indirect
+	k8s.io/kube-openapi v0.31.0 // indirect
 	k8s.io/kubectl v0.33.2 // indirect
 	k8s.io/utils v0.0.0-20241210054802-24370beab758 // indirect
+	kubevirt.io/controller-lifecycle-operator-sdk/api v0.0.0-20220329064328-f3cc58c6ed90 // indirect
 	oras.land/oras-go/v2 v2.6.0 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/kustomize/api v0.19.0 // indirect

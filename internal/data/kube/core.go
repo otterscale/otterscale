@@ -111,6 +111,25 @@ func (r *core) GetPodLogs(ctx context.Context, config *rest.Config, namespace, p
 	return buf.String(), nil
 }
 
+func (r *core) CreatePersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*oscore.PersistentVolumeClaim, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	pvc := &corev1.PersistentVolumeClaim{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+	}
+	if spec != nil {
+		pvc.Spec = *spec
+	}
+
+	opts := metav1.CreateOptions{}
+	return clientset.CoreV1().PersistentVolumeClaims(namespace).Create(ctx, pvc, opts)
+}
+
 func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]oscore.PersistentVolumeClaim, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
@@ -123,6 +142,35 @@ func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Conf
 		return nil, err
 	}
 	return list.Items, nil
+}
+
+func (r *core) UpdatePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*oscore.PersistentVolumeClaim, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	pvc := &corev1.PersistentVolumeClaim{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+	}
+	if spec != nil {
+		pvc.Spec = *spec
+	}
+
+	opts := metav1.UpdateOptions{}
+	return clientset.CoreV1().PersistentVolumeClaims(namespace).Update(ctx, pvc, opts)
+}
+
+func (r *core) DeletePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) error {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return err
+	}
+
+	opts := metav1.DeleteOptions{}
+	return clientset.CoreV1().PersistentVolumeClaims(namespace).Delete(ctx, name, opts)
 }
 
 func (r *core) GetNamespace(ctx context.Context, config *rest.Config, name string) (*oscore.Namespace, error) {
