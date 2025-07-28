@@ -2,15 +2,16 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { siteConfig } from '$lib/config/site';
-	import { feedbackPath, githubPath, releasePath } from '$lib/path';
+	import { m } from '$lib/paraglide/messages';
+	import { contributorsPath, feedbackPath, githubPath } from '$lib/path';
 	import Icon from '@iconify/svelte';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 
 	const links = [
-		{ icon: 'ph:git-branch', text: siteConfig.version, url: releasePath },
-		{ icon: 'ph:github-logo', text: 'GitHub', url: githubPath },
-		{ icon: 'ph:paper-plane-tilt', text: 'Feedback', url: feedbackPath }
+		{ icon: 'ph:house', text: m.homepage(), url: githubPath },
+		{ icon: 'ph:users', text: m.contributors(), url: contributorsPath },
+		{ icon: 'ph:paper-plane-tilt', text: m.feedback(), url: feedbackPath }
 	];
 
 	const openLink = (url: string) => window.open(url, '_blank');
@@ -18,8 +19,12 @@
 
 <Dialog.Root bind:open>
 	<Dialog.Content class="sm:max-w-[480px]">
-		<Dialog.Header>
-			<Dialog.Title>{siteConfig.title}</Dialog.Title>
+		<Dialog.Header class="gap-4">
+			<Dialog.Title class="flex items-center space-x-2">
+				<span>{siteConfig.title}</span>
+				<Icon icon="ph:git-commit-bold" class="text-muted-foreground" />
+				<span class="text-muted-foreground text-sm font-semibold">{siteConfig.version}</span>
+			</Dialog.Title>
 			<Dialog.Description>{siteConfig.description}</Dialog.Description>
 		</Dialog.Header>
 		<Dialog.Footer class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-around">

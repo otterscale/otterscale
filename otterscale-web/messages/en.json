@@ -1,6 +1,11 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"locale": "English",
+	"site_title": "OtterScale",
+	"site_description": "A comprehensive cloud infrastructure management platform for deploying and managing databases, applications, storage, and virtual machines.",
+	"contributors": "Contributors",
+	"homepage": "Homepage",
+	"feedback": "Contributor",
 	"welcome_to": "Welcome to {name}",
 	"privacy_policy": "Privacy Policy",
 	"terms_of_service": "Terms of Service",

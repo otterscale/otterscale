@@ -3,8 +3,8 @@ import { m } from '$lib/paraglide/messages.js';
 // External
 export const documentationPath = "https://otterscale.github.io";
 export const githubPath = "https://github.com/otterscale/otterscale";
-export const releasePath = "https://github.com/otterscale/otterscale/releases/latest";
 export const feedbackPath = "https://github.com/otterscale/otterscale/issues/new/choose";
+export const contributorsPath = "https://github.com/otterscale/otterscale/graphs/contributors";
 
 // Misc
 export const homePath = "/";
