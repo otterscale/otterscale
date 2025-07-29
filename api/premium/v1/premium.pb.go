@@ -20,26 +20,73 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Ping struct {
+type PremiumEdition int32
+
+const (
+	PremiumEdition_BASIC      PremiumEdition = 0
+	PremiumEdition_PLATINUM   PremiumEdition = 1
+	PremiumEdition_GOLD       PremiumEdition = 2
+	PremiumEdition_ENTERPRISE PremiumEdition = 3
+)
+
+// Enum value maps for PremiumEdition.
+var (
+	PremiumEdition_name = map[int32]string{
+		0: "BASIC",
+		1: "PLATINUM",
+		2: "GOLD",
+		3: "ENTERPRISE",
+	}
+	PremiumEdition_value = map[string]int32{
+		"BASIC":      0,
+		"PLATINUM":   1,
+		"GOLD":       2,
+		"ENTERPRISE": 3,
+	}
+)
+
+func (x PremiumEdition) Enum() *PremiumEdition {
+	p := new(PremiumEdition)
+	*p = x
+	return p
+}
+
+func (x PremiumEdition) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PremiumEdition) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_premium_v1_premium_proto_enumTypes[0].Descriptor()
+}
+
+func (PremiumEdition) Type() protoreflect.EnumType {
+	return &file_api_premium_v1_premium_proto_enumTypes[0]
+}
+
+func (x PremiumEdition) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+type GetEditionRequest struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Ping) Reset() {
-	*x = Ping{}
+func (x *GetEditionRequest) Reset() {
+	*x = GetEditionRequest{}
 	mi := &file_api_premium_v1_premium_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Ping) String() string {
+func (x *GetEditionRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Ping) ProtoMessage() {}
+func (*GetEditionRequest) ProtoMessage() {}
 
-func (x *Ping) ProtoReflect() protoreflect.Message {
+func (x *GetEditionRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_premium_v1_premium_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -51,38 +98,41 @@ func (x *Ping) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-type Ping_builder struct {
+type GetEditionRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 }
 
-func (b0 Ping_builder) Build() *Ping {
-	m0 := &Ping{}
+func (b0 GetEditionRequest_builder) Build() *GetEditionRequest {
+	m0 := &GetEditionRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	return m0
 }
 
-type Pong struct {
-	state         protoimpl.MessageState `protogen:"opaque.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+type GetEditionResponse struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Edition     PremiumEdition         `protobuf:"varint,1,opt,name=edition,enum=otterscale.premium.v1.PremiumEdition"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
-func (x *Pong) Reset() {
-	*x = Pong{}
+func (x *GetEditionResponse) Reset() {
+	*x = GetEditionResponse{}
 	mi := &file_api_premium_v1_premium_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Pong) String() string {
+func (x *GetEditionResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Pong) ProtoMessage() {}
+func (*GetEditionResponse) ProtoMessage() {}
 
-func (x *Pong) ProtoReflect() protoreflect.Message {
+func (x *GetEditionResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_premium_v1_premium_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -94,15 +144,46 @@ func (x *Pong) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-type Pong_builder struct {
-	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
-
+func (x *GetEditionResponse) GetEdition() PremiumEdition {
+	if x != nil {
+		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
+			return x.xxx_hidden_Edition
+		}
+	}
+	return PremiumEdition_BASIC
 }
 
-func (b0 Pong_builder) Build() *Pong {
-	m0 := &Pong{}
+func (x *GetEditionResponse) SetEdition(v PremiumEdition) {
+	x.xxx_hidden_Edition = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *GetEditionResponse) HasEdition() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *GetEditionResponse) ClearEdition() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Edition = PremiumEdition_BASIC
+}
+
+type GetEditionResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Edition *PremiumEdition
+}
+
+func (b0 GetEditionResponse_builder) Build() *GetEditionResponse {
+	m0 := &GetEditionResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.Edition != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Edition = *b.Edition
+	}
 	return m0
 }
 
@@ -110,26 +191,36 @@ var File_api_premium_v1_premium_proto protoreflect.FileDescriptor
 
 const file_api_premium_v1_premium_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/premium/v1/premium.proto\x12\x15otterscale.premium.v1\"\x06\n" +
-	"\x04Ping\"\x06\n" +
-	"\x04Pong2X\n" +
-	"\x0ePremiumService\x12F\n" +
+	"\x1capi/premium/v1/premium.proto\x12\x15otterscale.premium.v1\"\x13\n" +
+	"\x11GetEditionRequest\"U\n" +
+	"\x12GetEditionResponse\x12?\n" +
+	"\aedition\x18\x01 \x01(\x0e2%.otterscale.premium.v1.PremiumEditionR\aedition*C\n" +
+	"\x0ePremiumEdition\x12\t\n" +
+	"\x05BASIC\x10\x00\x12\f\n" +
+	"\bPLATINUM\x10\x01\x12\b\n" +
+	"\x04GOLD\x10\x02\x12\x0e\n" +
 	"\n" +
-	"Enterprise\x12\x1b.otterscale.premium.v1.Ping\x1a\x1b.otterscale.premium.v1.PongB1Z/github.com/openhdc/otterscale/api/premium/v1;pbb\beditionsp\xe8\a"
+	"ENTERPRISE\x10\x032s\n" +
+	"\x0ePremiumService\x12a\n" +
+	"\n" +
+	"GetEdition\x12(.otterscale.premium.v1.GetEditionRequest\x1a).otterscale.premium.v1.GetEditionResponseB1Z/github.com/openhdc/otterscale/api/premium/v1;pbb\beditionsp\xe8\a"
 
+var file_api_premium_v1_premium_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_premium_v1_premium_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_api_premium_v1_premium_proto_goTypes = []any{
-	(*Ping)(nil), // 0: otterscale.premium.v1.Ping
-	(*Pong)(nil), // 1: otterscale.premium.v1.Pong
+	(PremiumEdition)(0),        // 0: otterscale.premium.v1.PremiumEdition
+	(*GetEditionRequest)(nil),  // 1: otterscale.premium.v1.GetEditionRequest
+	(*GetEditionResponse)(nil), // 2: otterscale.premium.v1.GetEditionResponse
 }
 var file_api_premium_v1_premium_proto_depIdxs = []int32{
-	0, // 0: otterscale.premium.v1.PremiumService.Enterprise:input_type -> otterscale.premium.v1.Ping
-	1, // 1: otterscale.premium.v1.PremiumService.Enterprise:output_type -> otterscale.premium.v1.Pong
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: otterscale.premium.v1.GetEditionResponse.edition:type_name -> otterscale.premium.v1.PremiumEdition
+	1, // 1: otterscale.premium.v1.PremiumService.GetEdition:input_type -> otterscale.premium.v1.GetEditionRequest
+	2, // 2: otterscale.premium.v1.PremiumService.GetEdition:output_type -> otterscale.premium.v1.GetEditionResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_api_premium_v1_premium_proto_init() }
@@ -142,13 +233,14 @@ func file_api_premium_v1_premium_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_premium_v1_premium_proto_rawDesc), len(file_api_premium_v1_premium_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_premium_v1_premium_proto_goTypes,
 		DependencyIndexes: file_api_premium_v1_premium_proto_depIdxs,
+		EnumInfos:         file_api_premium_v1_premium_proto_enumTypes,
 		MessageInfos:      file_api_premium_v1_premium_proto_msgTypes,
 	}.Build()
 	File_api_premium_v1_premium_proto = out.File

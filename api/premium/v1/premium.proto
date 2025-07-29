@@ -5,9 +5,18 @@ package otterscale.premium.v1;
 option go_package = "github.com/openhdc/otterscale/api/premium/v1;pb";
 
 service PremiumService {
-  rpc Enterprise(Ping) returns (Pong);
+  rpc GetEdition(GetEditionRequest) returns (GetEditionResponse);
 }
 
-message Ping {}
+enum PremiumEdition {
+  BASIC = 0;
+  PLATINUM = 1;
+  GOLD = 2;
+  ENTERPRISE = 3;
+}
 
-message Pong {}
+message GetEditionRequest {}
+
+message GetEditionResponse {
+  PremiumEdition edition = 1;
+}

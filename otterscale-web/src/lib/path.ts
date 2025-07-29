@@ -48,6 +48,10 @@ export const settingsPath = "/settings"
 export const settingsNetworkPath = "/settings/network"
 export const settingsBISTPath = "/settings/built-in-self-test"
 
+// Setup
+export const setupPath = "/setup"
+export const setupScopePath = "/setup/scope"
+
 // Functions
 export function getIconFromUrl(url: string): string {
     const iconMap = new Map<string, string>([
@@ -95,6 +99,8 @@ const routesMap = new Map<string, Path>([
     [settingsPath, { title: m.settings(), url: settingsPath }],
     [settingsNetworkPath, { title: m.network(), url: settingsNetworkPath }],
     [settingsBISTPath, { title: m.built_in_test(), url: settingsBISTPath }],
+    [setupPath, { title: m.setup(), url: setupPath }],
+    [setupScopePath, { title: m.scopes(), url: setupScopePath }],
 ]);
 
 export function getPath(url: string): Path {

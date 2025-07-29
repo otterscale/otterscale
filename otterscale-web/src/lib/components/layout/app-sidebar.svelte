@@ -2,13 +2,26 @@
 	import type { ComponentProps } from 'svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
 	import type { User } from 'better-auth';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import { goto } from '$app/navigation';
+	import { PremiumEdition, PremiumService } from '$lib/api/premium/v1/premium_pb';
+	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { activeScope, scopeLoading } from '$lib/stores';
-	import { bookmarks, routes } from './routes';
+	import { m } from '$lib/paraglide/messages';
+	import { setupScopePath } from '$lib/path';
+	import {
+		activeScope,
+		currentCeph,
+		currentKubernetes,
+		edition,
+		loadingScopes,
+		triggerUpdateScopes
+	} from '$lib/stores';
+	import { bookmarks, cephPaths, kubernetesPaths, routes } from './routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
 	import NavSecondary from './nav-secondary.svelte';
@@ -21,41 +34,102 @@
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
+	const premiumClient = createClient(PremiumService, transport);
+	const essentialClient = createClient(EssentialService, transport);
 	const scopes = writable<Scope[]>([]);
 
-	async function initializeScopes() {
-		scopeLoading.set(true);
+	const editionMap = {
+		[PremiumEdition.BASIC]: m.basic_edition(),
+		[PremiumEdition.PLATINUM]: m.platinum_edition(),
+		[PremiumEdition.GOLD]: m.gold_edition(),
+		[PremiumEdition.ENTERPRISE]: m.enterprise_edition()
+	};
 
+	const skeletonClasses = {
+		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
+		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
+		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
+	};
+
+	async function fetchScopes() {
 		try {
 			const response = await scopeClient.listScopes({});
 			scopes.set(response.scopes);
 
 			if (response.scopes.length > 0) {
-				activeScope.set(response.scopes[0]);
+				handleScopeOnSelect(0);
 			}
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
-		} finally {
-			scopeLoading.set(false);
 		}
 	}
 
-	onMount(initializeScopes);
-
-	function renderLoadingSkeleton() {
-		return {
-			avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
-			title: 'bg-sidebar-primary/50 h-3 w-[150px]',
-			subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
-		};
+	async function fetchEdition() {
+		try {
+			const response = await premiumClient.getEdition({});
+			edition.set(editionMap[response.edition]);
+		} catch (error) {
+			const connectError = error as ConnectError;
+			if (connectError.code !== Code.Unimplemented) {
+				console.error('Failed to fetch edition:', connectError);
+			}
+		}
 	}
 
-	const skeletonClasses = renderLoadingSkeleton();
+	async function fetchEssentials(uuid: string) {
+		try {
+			const response = await essentialClient.listEssentials({ scopeUuid: uuid });
+			const { essentials } = response;
+
+			currentCeph.set(essentials.find((e) => e.type === Essential_Type.CEPH));
+			currentKubernetes.set(essentials.find((e) => e.type === Essential_Type.KUBERNETES));
+		} catch (error) {
+			console.error('Failed to fetch essentials:', error);
+		}
+	}
+
+	async function handleScopeOnSelect(index: number) {
+		const scope = $scopes[index];
+		if (!scope) return;
+
+		activeScope.set(scope);
+		toast.success(m.switch_scope({ name: scope.name }));
+
+		await fetchEssentials(scope.uuid);
+		if (!$currentCeph && !$currentKubernetes) {
+			toast.info(m.scope_not_configured({ name: scope.name }), {
+				duration: Number.POSITIVE_INFINITY,
+				action: {
+					label: m.goto(),
+					onClick: () => goto(setupScopePath)
+				}
+			});
+		}
+	}
+
+	async function initialize() {
+		loadingScopes.set(true);
+		try {
+			await Promise.all([fetchScopes(), fetchEdition()]);
+		} catch (error) {
+			console.error('Failed to initialize:', error);
+		} finally {
+			loadingScopes.set(false);
+		}
+	}
+
+	onMount(initialize);
+
+	$effect(() => {
+		if ($triggerUpdateScopes) {
+			initialize();
+		}
+	});
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
 	<Sidebar.Header>
-		{#if $scopeLoading}
+		{#if $loadingScopes}
 			<Sidebar.Menu>
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton size="lg">
@@ -72,12 +146,12 @@
 				</Sidebar.MenuItem>
 			</Sidebar.Menu>
 		{:else}
-			<ScopeSwitcher scopes={$scopes} />
+			<ScopeSwitcher scopes={$scopes} edition={$edition} onSelect={handleScopeOnSelect} />
 		{/if}
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavMain {routes} />
+		<NavMain {routes} {cephPaths} {kubernetesPaths} />
 		<NavPrimary {bookmarks} />
 		<NavSecondary class="mt-auto" />
 	</Sidebar.Content>

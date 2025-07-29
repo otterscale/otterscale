@@ -2,53 +2,88 @@
 // @generated from file api/premium/v1/premium.proto (package otterscale.premium.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file api/premium/v1/premium.proto.
  */
 export const file_api_premium_v1_premium: GenFile = /*@__PURE__*/
-  fileDesc("ChxhcGkvcHJlbWl1bS92MS9wcmVtaXVtLnByb3RvEhVvdHRlcnNjYWxlLnByZW1pdW0udjEiBgoEUGluZyIGCgRQb25nMlgKDlByZW1pdW1TZXJ2aWNlEkYKCkVudGVycHJpc2USGy5vdHRlcnNjYWxlLnByZW1pdW0udjEuUGluZxobLm90dGVyc2NhbGUucHJlbWl1bS52MS5Qb25nQjFaL2dpdGh1Yi5jb20vb3BlbmhkYy9vdHRlcnNjYWxlL2FwaS9wcmVtaXVtL3YxO3BiYghlZGl0aW9uc3DoBw");
+  fileDesc("ChxhcGkvcHJlbWl1bS92MS9wcmVtaXVtLnByb3RvEhVvdHRlcnNjYWxlLnByZW1pdW0udjEiEwoRR2V0RWRpdGlvblJlcXVlc3QiTAoSR2V0RWRpdGlvblJlc3BvbnNlEjYKB2VkaXRpb24YASABKA4yJS5vdHRlcnNjYWxlLnByZW1pdW0udjEuUHJlbWl1bUVkaXRpb24qQwoOUHJlbWl1bUVkaXRpb24SCQoFQkFTSUMQABIMCghQTEFUSU5VTRABEggKBEdPTEQQAhIOCgpFTlRFUlBSSVNFEAMycwoOUHJlbWl1bVNlcnZpY2USYQoKR2V0RWRpdGlvbhIoLm90dGVyc2NhbGUucHJlbWl1bS52MS5HZXRFZGl0aW9uUmVxdWVzdBopLm90dGVyc2NhbGUucHJlbWl1bS52MS5HZXRFZGl0aW9uUmVzcG9uc2VCMVovZ2l0aHViLmNvbS9vcGVuaGRjL290dGVyc2NhbGUvYXBpL3ByZW1pdW0vdjE7cGJiCGVkaXRpb25zcOgH");
 
 /**
- * @generated from message otterscale.premium.v1.Ping
+ * @generated from message otterscale.premium.v1.GetEditionRequest
  */
-export type Ping = Message<"otterscale.premium.v1.Ping"> & {
+export type GetEditionRequest = Message<"otterscale.premium.v1.GetEditionRequest"> & {
 };
 
 /**
- * Describes the message otterscale.premium.v1.Ping.
- * Use `create(PingSchema)` to create a new message.
+ * Describes the message otterscale.premium.v1.GetEditionRequest.
+ * Use `create(GetEditionRequestSchema)` to create a new message.
  */
-export const PingSchema: GenMessage<Ping> = /*@__PURE__*/
+export const GetEditionRequestSchema: GenMessage<GetEditionRequest> = /*@__PURE__*/
   messageDesc(file_api_premium_v1_premium, 0);
 
 /**
- * @generated from message otterscale.premium.v1.Pong
+ * @generated from message otterscale.premium.v1.GetEditionResponse
  */
-export type Pong = Message<"otterscale.premium.v1.Pong"> & {
+export type GetEditionResponse = Message<"otterscale.premium.v1.GetEditionResponse"> & {
+  /**
+   * @generated from field: otterscale.premium.v1.PremiumEdition edition = 1;
+   */
+  edition: PremiumEdition;
 };
 
 /**
- * Describes the message otterscale.premium.v1.Pong.
- * Use `create(PongSchema)` to create a new message.
+ * Describes the message otterscale.premium.v1.GetEditionResponse.
+ * Use `create(GetEditionResponseSchema)` to create a new message.
  */
-export const PongSchema: GenMessage<Pong> = /*@__PURE__*/
+export const GetEditionResponseSchema: GenMessage<GetEditionResponse> = /*@__PURE__*/
   messageDesc(file_api_premium_v1_premium, 1);
+
+/**
+ * @generated from enum otterscale.premium.v1.PremiumEdition
+ */
+export enum PremiumEdition {
+  /**
+   * @generated from enum value: BASIC = 0;
+   */
+  BASIC = 0,
+
+  /**
+   * @generated from enum value: PLATINUM = 1;
+   */
+  PLATINUM = 1,
+
+  /**
+   * @generated from enum value: GOLD = 2;
+   */
+  GOLD = 2,
+
+  /**
+   * @generated from enum value: ENTERPRISE = 3;
+   */
+  ENTERPRISE = 3,
+}
+
+/**
+ * Describes the enum otterscale.premium.v1.PremiumEdition.
+ */
+export const PremiumEditionSchema: GenEnum<PremiumEdition> = /*@__PURE__*/
+  enumDesc(file_api_premium_v1_premium, 0);
 
 /**
  * @generated from service otterscale.premium.v1.PremiumService
  */
 export const PremiumService: GenService<{
   /**
-   * @generated from rpc otterscale.premium.v1.PremiumService.Enterprise
+   * @generated from rpc otterscale.premium.v1.PremiumService.GetEdition
    */
-  enterprise: {
+  getEdition: {
     methodKind: "unary";
-    input: typeof PingSchema;
-    output: typeof PongSchema;
+    input: typeof GetEditionRequestSchema;
+    output: typeof GetEditionResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_premium_v1_premium, 0);

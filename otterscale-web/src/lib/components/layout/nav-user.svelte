@@ -35,7 +35,7 @@
 		authClient.signOut({
 			fetchOptions: {
 				onSuccess: () => {
-					toast.success('Signed out successfully!');
+					toast.success(m.sign_out_success());
 					goto(loginPath);
 				}
 			}
