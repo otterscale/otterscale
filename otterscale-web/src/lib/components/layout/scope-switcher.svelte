@@ -10,7 +10,7 @@
 	import DialogCreateScope from './dialog-create-scope.svelte';
 	import { m } from '$lib/paraglide/messages';
 
-	let { scopes }: { scopes: Scope[] } = $props();
+	let { scopes, edition }: { scopes: Scope[]; edition: string } = $props();
 	let open = $state(false);
 
 	const sidebar = useSidebar();
@@ -123,8 +123,7 @@
 						</div>
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-medium">{$activeScope.name}</span>
-							<!-- <span class="truncate text-xs">{activeScope.enterprise ? 'Enterprise' : 'Free'}</span> -->
-							<span class="truncate text-xs">Free</span>
+							<span class="truncate text-xs">{edition}</span>
 						</div>
 						<Icon icon="ph:caret-up-down-bold" class="ml-auto" />
 					</Sidebar.MenuButton>

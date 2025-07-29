@@ -3,11 +3,13 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import type { User } from 'better-auth';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import { PremiumEdition, PremiumService } from '$lib/api/premium/v1/premium_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { activeScope, loadingScopes, triggerUpdateScopes } from '$lib/stores';
+	import { m } from '$lib/paraglide/messages';
+	import { activeScope, edition, loadingScopes, triggerUpdateScopes } from '$lib/stores';
 	import { bookmarks, routes } from './routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
@@ -21,11 +23,10 @@
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
+	const premiumClient = createClient(PremiumService, transport);
 	const scopes = writable<Scope[]>([]);
 
-	async function initializeScopes() {
-		loadingScopes.set(true);
-
+	async function fetchScopes() {
 		try {
 			const response = await scopeClient.listScopes({});
 			scopes.set(response.scopes);
@@ -35,18 +36,44 @@
 			}
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
+		}
+	}
+
+	async function fetchEdition() {
+		try {
+			const response = await premiumClient.getEdition({});
+			edition.set(editionMap[response.edition]);
+		} catch (error) {
+			const connectError = error as ConnectError;
+			if (connectError.code !== Code.Unimplemented) {
+				console.error('Failed to fetch edition:', connectError);
+			}
+		}
+	}
+
+	async function initialize() {
+		loadingScopes.set(true);
+		try {
+			await Promise.all([fetchScopes(), fetchEdition()]);
 		} finally {
 			loadingScopes.set(false);
 		}
 	}
 
-	onMount(initializeScopes);
+	onMount(initialize);
 
 	$effect(() => {
 		if ($triggerUpdateScopes) {
-			initializeScopes();
+			initialize();
 		}
 	});
+
+	const editionMap = {
+		[PremiumEdition.BASIC]: m.basic_edition(),
+		[PremiumEdition.PLATINUM]: m.platinum_edition(),
+		[PremiumEdition.GOLD]: m.gold_edition(),
+		[PremiumEdition.ENTERPRISE]: m.enterprise_edition()
+	};
 
 	const skeletonClasses = {
 		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
@@ -74,7 +101,7 @@
 				</Sidebar.MenuItem>
 			</Sidebar.Menu>
 		{:else}
-			<ScopeSwitcher scopes={$scopes} />
+			<ScopeSwitcher scopes={$scopes} edition={$edition} />
 		{/if}
 	</Sidebar.Header>
 
