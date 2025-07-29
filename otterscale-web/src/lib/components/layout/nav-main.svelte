@@ -5,15 +5,26 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { getIconFromUrl, type Path } from '$lib/path';
+	import { currentCeph, currentKubernetes } from '$lib/stores';
 
 	type Route = {
 		path: Path;
 		items: Path[];
 	};
 
-	let { routes }: { routes: Route[] } = $props();
+	let {
+		routes,
+		cephPaths,
+		kubernetesPaths
+	}: { routes: Route[]; cephPaths: string[]; kubernetesPaths: string[] } = $props();
 
 	const isItemActive = (url: string): boolean => page.url.pathname.startsWith(url);
+	const isItemDisabled = (url: string): boolean => {
+		return (
+			(!$currentCeph && cephPaths.includes(url)) ||
+			(!$currentKubernetes && kubernetesPaths.includes(url))
+		);
+	};
 	const hasSubItems = (route: Route): boolean => Boolean(route.items?.length);
 </script>
 
@@ -24,7 +35,10 @@
 			<Collapsible.Root open={isItemActive(route.path.url)}>
 				{#snippet child({ props })}
 					<Sidebar.MenuItem {...props}>
-						<Sidebar.MenuButton tooltipContent={route.path.title}>
+						<Sidebar.MenuButton
+							tooltipContent={route.path.title}
+							aria-disabled={isItemDisabled(route.path.url)}
+						>
 							{#snippet child({ props })}
 								<a href={route.path.url} {...props}>
 									<Icon icon={getIconFromUrl(route.path.url)} />
@@ -47,7 +61,10 @@
 								<Sidebar.MenuSub>
 									{#each route.items as subRoute (subRoute.title)}
 										<Sidebar.MenuSubItem>
-											<Sidebar.MenuSubButton href={subRoute.url}>
+											<Sidebar.MenuSubButton
+												href={subRoute.url}
+												aria-disabled={isItemDisabled(route.path.url)}
+											>
 												<span>{subRoute.title}</span>
 											</Sidebar.MenuSubButton>
 										</Sidebar.MenuSubItem>

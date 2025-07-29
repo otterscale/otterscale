@@ -10,6 +10,9 @@ interface BreadcrumbState {
 }
 
 interface AppStores {
+    // Navigation
+    breadcrumb: Writable<BreadcrumbState>;
+
     // Edition
     edition: Writable<string>;
 
@@ -17,28 +20,28 @@ interface AppStores {
     triggerUpdateScopes: Writable<boolean>;
     loadingScopes: Writable<boolean>;
     activeScope: Writable<Scope>;
-    currentEssentials: Writable<Essential[]>;
-
-    // Navigation
-    breadcrumb: Writable<BreadcrumbState>;
+    currentCeph: Writable<Essential | undefined>;
+    currentKubernetes: Writable<Essential | undefined>;
 }
 
 // Create stores
 const createStores = (): AppStores => ({
+    breadcrumb: writable<BreadcrumbState>({ parent: "/", current: "/" }),
     edition: writable(m.basic_edition()),
     triggerUpdateScopes: writable(false),
     loadingScopes: writable(true),
     activeScope: writable<Scope>(),
-    currentEssentials: writable<Essential[]>([]),
-    breadcrumb: writable<BreadcrumbState>({ parent: "/", current: "/" })
+    currentCeph: writable<Essential | undefined>(undefined),
+    currentKubernetes: writable<Essential | undefined>(undefined),
 });
 
 // Export individual stores
 export const {
+    breadcrumb,
     edition,
     triggerUpdateScopes,
     loadingScopes,
     activeScope,
-    currentEssentials,
-    breadcrumb
+    currentCeph,
+    currentKubernetes,
 } = createStores();

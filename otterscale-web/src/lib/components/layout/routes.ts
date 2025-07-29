@@ -22,6 +22,16 @@ import {
     getPath,
 } from '$lib/path';
 
+export const cephPaths = [
+    storagePath,
+]
+
+export const kubernetesPaths = [
+    modelsPath,
+    databasesPath,
+    applicationsPath,
+]
+
 export const routes = [
     {
         path: getPath(modelsPath),

@@ -7,7 +7,7 @@
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { goto } from '$app/navigation';
 	import { PremiumEdition, PremiumService } from '$lib/api/premium/v1/premium_pb';
-	import { EssentialService } from '$lib/api/essential/v1/essential_pb';
+	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
@@ -15,12 +15,13 @@
 	import { setupScopePath } from '$lib/path';
 	import {
 		activeScope,
-		currentEssentials,
+		currentCeph,
+		currentKubernetes,
 		edition,
 		loadingScopes,
 		triggerUpdateScopes
 	} from '$lib/stores';
-	import { bookmarks, routes } from './routes';
+	import { bookmarks, cephPaths, kubernetesPaths, routes } from './routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
 	import NavSecondary from './nav-secondary.svelte';
@@ -78,7 +79,10 @@
 	async function fetchEssentials(uuid: string) {
 		try {
 			const response = await essentialClient.listEssentials({ scopeUuid: uuid });
-			currentEssentials.set(response.essentials);
+			const { essentials } = response;
+
+			currentCeph.set(essentials.find((e) => e.type === Essential_Type.CEPH));
+			currentKubernetes.set(essentials.find((e) => e.type === Essential_Type.KUBERNETES));
 		} catch (error) {
 			console.error('Failed to fetch essentials:', error);
 		}
@@ -92,7 +96,7 @@
 		toast.success(m.switch_scope({ name: scope.name }));
 
 		await fetchEssentials(scope.uuid);
-		if ($currentEssentials.length == 0) {
+		if (!$currentCeph && !$currentKubernetes) {
 			toast.info(m.scope_not_configured({ name: scope.name }), {
 				duration: Number.POSITIVE_INFINITY,
 				action: {
@@ -147,7 +151,7 @@
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavMain {routes} />
+		<NavMain {routes} {cephPaths} {kubernetesPaths} />
 		<NavPrimary {bookmarks} />
 		<NavSecondary class="mt-auto" />
 	</Sidebar.Content>
