@@ -5,15 +5,20 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
-	import { activeScope } from '$lib/stores';
 	import DialogCreateScope from './dialog-create-scope.svelte';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
+		active,
 		scopes,
 		edition,
 		onSelect
-	}: { scopes: Scope[]; edition: string; onSelect: (index: number) => Promise<void> } = $props();
+	}: {
+		active: Scope;
+		scopes: Scope[];
+		edition: string;
+		onSelect: (index: number) => Promise<void>;
+	} = $props();
 
 	let open = $state(false);
 
@@ -116,10 +121,10 @@
 						<div
 							class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 						>
-							<Icon icon="{getIcon($activeScope.name)}-fill" class="size-4.5" />
+							<Icon icon="{getIcon(active.name)}-fill" class="size-4.5" />
 						</div>
 						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-medium">{$activeScope.name}</span>
+							<span class="truncate font-medium">{active.name}</span>
 							<span class="truncate text-xs">{edition}</span>
 						</div>
 						<Icon icon="ph:caret-up-down-bold" class="ml-auto" />

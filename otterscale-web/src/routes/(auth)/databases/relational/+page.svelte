@@ -2,12 +2,12 @@
 	import * as Alert from '$lib/components/ui/alert';
 	import { siteConfig } from '$lib/config/site';
 	import { m } from '$lib/paraglide/messages';
-	import { databasesRelationalPath, machinesPath } from '$lib/path';
+	import { databasesPath, databasesRelationalPath } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 	import Icon from '@iconify/svelte';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parent: machinesPath, current: databasesRelationalPath });
+	breadcrumb.set({ parent: databasesPath, current: databasesRelationalPath });
 </script>
 
 <Alert.Root variant="destructive">
