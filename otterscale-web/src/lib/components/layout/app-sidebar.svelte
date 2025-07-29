@@ -7,7 +7,7 @@
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { activeScope, scopeLoading } from '$lib/stores';
+	import { activeScope, loadingScopes, triggerUpdateScopes } from '$lib/stores';
 	import { bookmarks, routes } from './routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
@@ -24,7 +24,7 @@
 	const scopes = writable<Scope[]>([]);
 
 	async function initializeScopes() {
-		scopeLoading.set(true);
+		loadingScopes.set(true);
 
 		try {
 			const response = await scopeClient.listScopes({});
@@ -36,26 +36,28 @@
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		} finally {
-			scopeLoading.set(false);
+			loadingScopes.set(false);
 		}
 	}
 
 	onMount(initializeScopes);
 
-	function renderLoadingSkeleton() {
-		return {
-			avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
-			title: 'bg-sidebar-primary/50 h-3 w-[150px]',
-			subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
-		};
-	}
+	$effect(() => {
+		if ($triggerUpdateScopes) {
+			initializeScopes();
+		}
+	});
 
-	const skeletonClasses = renderLoadingSkeleton();
+	const skeletonClasses = {
+		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
+		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
+		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
+	};
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
 	<Sidebar.Header>
-		{#if $scopeLoading}
+		{#if $loadingScopes}
 			<Sidebar.Menu>
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton size="lg">

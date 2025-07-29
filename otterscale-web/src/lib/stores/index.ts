@@ -8,7 +8,8 @@ interface BreadcrumbState {
 }
 
 // Scope stores
-export const scopeLoading: Writable<boolean> = writable(true);
+export const triggerUpdateScopes: Writable<boolean> = writable(false);
+export const loadingScopes: Writable<boolean> = writable(true);
 export const activeScope: Writable<Scope> = writable();
 
 // Navigation stores
