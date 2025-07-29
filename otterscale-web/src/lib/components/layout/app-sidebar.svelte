@@ -18,7 +18,6 @@
 		currentCeph,
 		currentKubernetes,
 		edition,
-		loadingScopes,
 		triggerUpdateScopes
 	} from '$lib/stores';
 	import { bookmarks, cephPaths, kubernetesPaths, routes } from './routes';
@@ -93,7 +92,6 @@
 		if (!scope) return;
 
 		activeScope.set(scope);
-		toast.success(m.switch_scope({ name: scope.name }));
 
 		await fetchEssentials(scope.uuid);
 		if (!$currentCeph && !$currentKubernetes) {
@@ -104,17 +102,16 @@
 					onClick: () => goto(setupScopePath)
 				}
 			});
+		} else {
+			toast.success(m.switch_scope({ name: scope.name }));
 		}
 	}
 
 	async function initialize() {
-		loadingScopes.set(true);
 		try {
 			await Promise.all([fetchScopes(), fetchEdition()]);
 		} catch (error) {
 			console.error('Failed to initialize:', error);
-		} finally {
-			loadingScopes.set(false);
 		}
 	}
 
@@ -129,7 +126,14 @@
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
 	<Sidebar.Header>
-		{#if $loadingScopes}
+		{#if $activeScope}
+			<ScopeSwitcher
+				active={$activeScope}
+				scopes={$scopes}
+				edition={$edition}
+				onSelect={handleScopeOnSelect}
+			/>
+		{:else}
 			<Sidebar.Menu>
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton size="lg">
@@ -145,8 +149,6 @@
 					</Sidebar.MenuButton>
 				</Sidebar.MenuItem>
 			</Sidebar.Menu>
-		{:else}
-			<ScopeSwitcher scopes={$scopes} edition={$edition} onSelect={handleScopeOnSelect} />
 		{/if}
 	</Sidebar.Header>
 

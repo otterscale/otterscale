@@ -18,8 +18,7 @@ interface AppStores {
 
     // Scope & Essential
     triggerUpdateScopes: Writable<boolean>;
-    loadingScopes: Writable<boolean>;
-    activeScope: Writable<Scope>;
+    activeScope: Writable<Scope | undefined>;
     currentCeph: Writable<Essential | undefined>;
     currentKubernetes: Writable<Essential | undefined>;
 }
@@ -29,8 +28,7 @@ const createStores = (): AppStores => ({
     breadcrumb: writable<BreadcrumbState>({ parent: "/", current: "/" }),
     edition: writable(m.basic_edition()),
     triggerUpdateScopes: writable(false),
-    loadingScopes: writable(true),
-    activeScope: writable<Scope>(),
+    activeScope: writable<Scope | undefined>(undefined),
     currentCeph: writable<Essential | undefined>(undefined),
     currentKubernetes: writable<Essential | undefined>(undefined),
 });
@@ -40,7 +38,6 @@ export const {
     breadcrumb,
     edition,
     triggerUpdateScopes,
-    loadingScopes,
     activeScope,
     currentCeph,
     currentKubernetes,

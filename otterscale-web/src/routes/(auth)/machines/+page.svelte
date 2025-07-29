@@ -3,7 +3,7 @@
 	import { writable } from 'svelte/store';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { homePath, machinesPath } from '$lib/path';
-	import { activeScope, breadcrumb, loadingScopes } from '$lib/stores';
+	import { activeScope, breadcrumb } from '$lib/stores';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 
 	// Set breadcrumb navigation
@@ -33,9 +33,7 @@
 	});
 </script>
 
-{#if $loadingScopes}
-	loading scope
-{:else}
+{#if $activeScope}
 	current scope: {$activeScope.uuid}
 {/if}
 
