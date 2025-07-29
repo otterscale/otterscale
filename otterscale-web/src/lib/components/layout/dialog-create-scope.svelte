@@ -24,11 +24,11 @@
 			scopeClient
 				.createScope(createScopeRequest)
 				.then((r) => {
-					toast.success(`Create ${r.name} success`);
+					toast.success(m.create_scope_success({ name: r.name }));
 					triggerUpdateScopes.set(true);
 				})
 				.catch((e) => {
-					toast.error(`Fail to create ${createScopeRequest.name}: ${e.toString()}`);
+					toast.error(m.create_scope_error({ name: createScopeRequest.name, error: e.toString() }));
 				});
 
 			open = false;
