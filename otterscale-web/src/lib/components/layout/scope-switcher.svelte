@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -10,22 +9,15 @@
 	import DialogCreateScope from './dialog-create-scope.svelte';
 	import { m } from '$lib/paraglide/messages';
 
-	let { scopes, edition }: { scopes: Scope[]; edition: string } = $props();
+	let {
+		scopes,
+		edition,
+		onSelect
+	}: { scopes: Scope[]; edition: string; onSelect: (index: number) => Promise<void> } = $props();
+
 	let open = $state(false);
 
 	const sidebar = useSidebar();
-
-	const SHORTCUT_ICONS = [
-		'ph:number-one',
-		'ph:number-two',
-		'ph:number-three',
-		'ph:number-four',
-		'ph:number-five',
-		'ph:number-six',
-		'ph:number-seven',
-		'ph:number-eight',
-		'ph:number-nine'
-	];
 
 	const SCOPE_ICONS = [
 		'ph:airplane-tilt',
@@ -39,19 +31,24 @@
 		'ph:gavel'
 	];
 
+	const SHORTCUT_ICONS = [
+		'ph:number-one',
+		'ph:number-two',
+		'ph:number-three',
+		'ph:number-four',
+		'ph:number-five',
+		'ph:number-six',
+		'ph:number-seven',
+		'ph:number-eight',
+		'ph:number-nine'
+	];
+
 	function getIcon(name: string): string {
 		const index = scopes.findIndex((scope) => scope.name === name);
 		return index !== -1 ? SCOPE_ICONS[index % SCOPE_ICONS.length] : SCOPE_ICONS[0];
 	}
 
-	function handleScopeShortcut(index: number): void {
-		if (scopes.length > index) {
-			activeScope.set(scopes[index]);
-			toast.info(`Switched to '${$activeScope.name}' scope`);
-		}
-	}
-
-	function toggleDialog(): void {
+	function toggleDialog() {
 		open = !open;
 	}
 </script>
@@ -60,47 +57,47 @@
 	use:shortcut={{
 		key: '1',
 		ctrl: true,
-		callback: () => handleScopeShortcut(0)
+		callback: async () => await onSelect(0)
 	}}
 	use:shortcut={{
 		key: '2',
 		ctrl: true,
-		callback: () => handleScopeShortcut(1)
+		callback: async () => await onSelect(1)
 	}}
 	use:shortcut={{
 		key: '3',
 		ctrl: true,
-		callback: () => handleScopeShortcut(2)
+		callback: async () => await onSelect(2)
 	}}
 	use:shortcut={{
 		key: '4',
 		ctrl: true,
-		callback: () => handleScopeShortcut(3)
+		callback: async () => await onSelect(3)
 	}}
 	use:shortcut={{
 		key: '5',
 		ctrl: true,
-		callback: () => handleScopeShortcut(4)
+		callback: async () => await onSelect(4)
 	}}
 	use:shortcut={{
 		key: '6',
 		ctrl: true,
-		callback: () => handleScopeShortcut(5)
+		callback: async () => await onSelect(5)
 	}}
 	use:shortcut={{
 		key: '7',
 		ctrl: true,
-		callback: () => handleScopeShortcut(6)
+		callback: async () => await onSelect(6)
 	}}
 	use:shortcut={{
 		key: '8',
 		ctrl: true,
-		callback: () => handleScopeShortcut(7)
+		callback: async () => await onSelect(7)
 	}}
 	use:shortcut={{
 		key: '9',
 		ctrl: true,
-		callback: () => handleScopeShortcut(8)
+		callback: async () => await onSelect(8)
 	}}
 />
 
@@ -137,7 +134,7 @@
 			>
 				<DropdownMenu.Label class="text-muted-foreground text-xs">{m.scopes()}</DropdownMenu.Label>
 				{#each scopes as scope, index (scope.name)}
-					<DropdownMenu.Item onSelect={() => handleScopeShortcut(index)} class="gap-2 p-2">
+					<DropdownMenu.Item onSelect={async () => await onSelect(index)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
 							<Icon icon="{getIcon(scope.name)}-bold" class="size-3.5 shrink-0" />
 						</div>

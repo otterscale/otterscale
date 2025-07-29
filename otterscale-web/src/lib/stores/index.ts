@@ -1,4 +1,5 @@
 import { writable, type Writable } from "svelte/store";
+import type { Essential } from "$lib/api/essential/v1/essential_pb";
 import type { Scope } from "$lib/api/scope/v1/scope_pb";
 import { m } from "$lib/paraglide/messages";
 
@@ -8,14 +9,36 @@ interface BreadcrumbState {
     current: string;
 }
 
-// Scope stores
-export const triggerUpdateScopes: Writable<boolean> = writable(false);
-export const loadingScopes: Writable<boolean> = writable(true);
-export const activeScope: Writable<Scope> = writable();
-export const edition: Writable<string> = writable(m.basic_edition());
+interface AppStores {
+    // Edition
+    edition: Writable<string>;
 
-// Navigation stores
-export const breadcrumb: Writable<BreadcrumbState> = writable({
-    parent: "/",
-    current: "/"
+    // Scope & Essential
+    triggerUpdateScopes: Writable<boolean>;
+    loadingScopes: Writable<boolean>;
+    activeScope: Writable<Scope>;
+    currentEssentials: Writable<Essential[]>;
+
+    // Navigation
+    breadcrumb: Writable<BreadcrumbState>;
+}
+
+// Create stores
+const createStores = (): AppStores => ({
+    edition: writable(m.basic_edition()),
+    triggerUpdateScopes: writable(false),
+    loadingScopes: writable(true),
+    activeScope: writable<Scope>(),
+    currentEssentials: writable<Essential[]>([]),
+    breadcrumb: writable<BreadcrumbState>({ parent: "/", current: "/" })
 });
+
+// Export individual stores
+export const {
+    edition,
+    triggerUpdateScopes,
+    loadingScopes,
+    activeScope,
+    currentEssentials,
+    breadcrumb
+} = createStores();

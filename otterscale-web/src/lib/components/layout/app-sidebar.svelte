@@ -2,14 +2,24 @@
 	import type { ComponentProps } from 'svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
 	import type { User } from 'better-auth';
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import { goto } from '$app/navigation';
 	import { PremiumEdition, PremiumService } from '$lib/api/premium/v1/premium_pb';
+	import { EssentialService } from '$lib/api/essential/v1/essential_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { activeScope, edition, loadingScopes, triggerUpdateScopes } from '$lib/stores';
+	import { setupScopePath } from '$lib/path';
+	import {
+		activeScope,
+		currentEssentials,
+		edition,
+		loadingScopes,
+		triggerUpdateScopes
+	} from '$lib/stores';
 	import { bookmarks, routes } from './routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
@@ -24,7 +34,21 @@
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
 	const premiumClient = createClient(PremiumService, transport);
+	const essentialClient = createClient(EssentialService, transport);
 	const scopes = writable<Scope[]>([]);
+
+	const editionMap = {
+		[PremiumEdition.BASIC]: m.basic_edition(),
+		[PremiumEdition.PLATINUM]: m.platinum_edition(),
+		[PremiumEdition.GOLD]: m.gold_edition(),
+		[PremiumEdition.ENTERPRISE]: m.enterprise_edition()
+	};
+
+	const skeletonClasses = {
+		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
+		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
+		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
+	};
 
 	async function fetchScopes() {
 		try {
@@ -32,7 +56,7 @@
 			scopes.set(response.scopes);
 
 			if (response.scopes.length > 0) {
-				activeScope.set(response.scopes[0]);
+				handleScopeOnSelect(0);
 			}
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
@@ -51,10 +75,33 @@
 		}
 	}
 
+	async function fetchEssentials(uuid: string) {
+		try {
+			const response = await essentialClient.listEssentials({ scopeUuid: uuid });
+			currentEssentials.set(response.essentials);
+		} catch (error) {
+			console.error('Failed to fetch essentials:', error);
+		}
+	}
+
+	async function handleScopeOnSelect(index: number) {
+		const scope = $scopes[index];
+		if (!scope) return;
+
+		activeScope.set(scope);
+		await fetchEssentials(scope.uuid);
+		if ($currentEssentials.length == 0) {
+			goto(setupScopePath);
+		}
+		toast.info(m.switch_scope({ name: scope.name }));
+	}
+
 	async function initialize() {
 		loadingScopes.set(true);
 		try {
 			await Promise.all([fetchScopes(), fetchEdition()]);
+		} catch (error) {
+			console.error('Failed to initialize:', error);
 		} finally {
 			loadingScopes.set(false);
 		}
@@ -67,19 +114,6 @@
 			initialize();
 		}
 	});
-
-	const editionMap = {
-		[PremiumEdition.BASIC]: m.basic_edition(),
-		[PremiumEdition.PLATINUM]: m.platinum_edition(),
-		[PremiumEdition.GOLD]: m.gold_edition(),
-		[PremiumEdition.ENTERPRISE]: m.enterprise_edition()
-	};
-
-	const skeletonClasses = {
-		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
-		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
-		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
-	};
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
@@ -101,7 +135,7 @@
 				</Sidebar.MenuItem>
 			</Sidebar.Menu>
 		{:else}
-			<ScopeSwitcher scopes={$scopes} edition={$edition} />
+			<ScopeSwitcher scopes={$scopes} edition={$edition} onSelect={handleScopeOnSelect} />
 		{/if}
 	</Sidebar.Header>
 
