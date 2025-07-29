@@ -73,6 +73,7 @@
 	"create": "Create",
 	"cancel": "Cancel",
 	"switch_scope": "Switched to scope {name}",
+	"scope_not_configured": "Scope {name} is not configured",
 	"create_scope_success": "Create scope {name} success!",
 	"create_scope_error": "Fail to create scope {name}: {error}"
 }

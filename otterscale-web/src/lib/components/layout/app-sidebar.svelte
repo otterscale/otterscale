@@ -89,11 +89,13 @@
 		if (!scope) return;
 
 		activeScope.set(scope);
+		toast.info(m.switch_scope({ name: scope.name }));
+
 		await fetchEssentials(scope.uuid);
 		if ($currentEssentials.length == 0) {
 			goto(setupScopePath);
+			toast.error(m.scope_not_configured({ name: scope.name }));
 		}
-		toast.info(m.switch_scope({ name: scope.name }));
 	}
 
 	async function initialize() {
