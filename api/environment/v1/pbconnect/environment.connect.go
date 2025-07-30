@@ -34,9 +34,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// EnvironmentServiceCheckHealthyProcedure is the fully-qualified name of the EnvironmentService's
-	// CheckHealthy RPC.
-	EnvironmentServiceCheckHealthyProcedure = "/otterscale.environment.v1.EnvironmentService/CheckHealthy"
+	// EnvironmentServiceCheckHealthProcedure is the fully-qualified name of the EnvironmentService's
+	// CheckHealth RPC.
+	EnvironmentServiceCheckHealthProcedure = "/otterscale.environment.v1.EnvironmentService/CheckHealth"
 	// EnvironmentServiceWatchStatusesProcedure is the fully-qualified name of the EnvironmentService's
 	// WatchStatuses RPC.
 	EnvironmentServiceWatchStatusesProcedure = "/otterscale.environment.v1.EnvironmentService/WatchStatuses"
@@ -57,7 +57,7 @@ const (
 // EnvironmentServiceClient is a client for the otterscale.environment.v1.EnvironmentService
 // service.
 type EnvironmentServiceClient interface {
-	CheckHealthy(context.Context, *connect.Request[v1.CheckHealthyRequest]) (*connect.Response[v1.CheckHealthyResponse], error)
+	CheckHealth(context.Context, *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error)
 	WatchStatuses(context.Context, *connect.Request[v1.WatchStatusesRequest]) (*connect.ServerStreamForClient[v1.WatchStatusesResponse], error)
 	UpdateStatus(context.Context, *connect.Request[v1.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error)
 	UpdateConfig(context.Context, *connect.Request[v1.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error)
@@ -77,10 +77,10 @@ func NewEnvironmentServiceClient(httpClient connect.HTTPClient, baseURL string, 
 	baseURL = strings.TrimRight(baseURL, "/")
 	environmentServiceMethods := v1.File_api_environment_v1_environment_proto.Services().ByName("EnvironmentService").Methods()
 	return &environmentServiceClient{
-		checkHealthy: connect.NewClient[v1.CheckHealthyRequest, v1.CheckHealthyResponse](
+		checkHealth: connect.NewClient[v1.CheckHealthRequest, v1.CheckHealthResponse](
 			httpClient,
-			baseURL+EnvironmentServiceCheckHealthyProcedure,
-			connect.WithSchema(environmentServiceMethods.ByName("CheckHealthy")),
+			baseURL+EnvironmentServiceCheckHealthProcedure,
+			connect.WithSchema(environmentServiceMethods.ByName("CheckHealth")),
 			connect.WithClientOptions(opts...),
 		),
 		watchStatuses: connect.NewClient[v1.WatchStatusesRequest, v1.WatchStatusesResponse](
@@ -118,7 +118,7 @@ func NewEnvironmentServiceClient(httpClient connect.HTTPClient, baseURL string, 
 
 // environmentServiceClient implements EnvironmentServiceClient.
 type environmentServiceClient struct {
-	checkHealthy                 *connect.Client[v1.CheckHealthyRequest, v1.CheckHealthyResponse]
+	checkHealth                  *connect.Client[v1.CheckHealthRequest, v1.CheckHealthResponse]
 	watchStatuses                *connect.Client[v1.WatchStatusesRequest, v1.WatchStatusesResponse]
 	updateStatus                 *connect.Client[v1.UpdateStatusRequest, emptypb.Empty]
 	updateConfig                 *connect.Client[v1.UpdateConfigRequest, emptypb.Empty]
@@ -126,9 +126,9 @@ type environmentServiceClient struct {
 	getPrometheus                *connect.Client[v1.GetPrometheusRequest, v1.Prometheus]
 }
 
-// CheckHealthy calls otterscale.environment.v1.EnvironmentService.CheckHealthy.
-func (c *environmentServiceClient) CheckHealthy(ctx context.Context, req *connect.Request[v1.CheckHealthyRequest]) (*connect.Response[v1.CheckHealthyResponse], error) {
-	return c.checkHealthy.CallUnary(ctx, req)
+// CheckHealth calls otterscale.environment.v1.EnvironmentService.CheckHealth.
+func (c *environmentServiceClient) CheckHealth(ctx context.Context, req *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error) {
+	return c.checkHealth.CallUnary(ctx, req)
 }
 
 // WatchStatuses calls otterscale.environment.v1.EnvironmentService.WatchStatuses.
@@ -160,7 +160,7 @@ func (c *environmentServiceClient) GetPrometheus(ctx context.Context, req *conne
 // EnvironmentServiceHandler is an implementation of the
 // otterscale.environment.v1.EnvironmentService service.
 type EnvironmentServiceHandler interface {
-	CheckHealthy(context.Context, *connect.Request[v1.CheckHealthyRequest]) (*connect.Response[v1.CheckHealthyResponse], error)
+	CheckHealth(context.Context, *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error)
 	WatchStatuses(context.Context, *connect.Request[v1.WatchStatusesRequest], *connect.ServerStream[v1.WatchStatusesResponse]) error
 	UpdateStatus(context.Context, *connect.Request[v1.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error)
 	UpdateConfig(context.Context, *connect.Request[v1.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error)
@@ -175,10 +175,10 @@ type EnvironmentServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	environmentServiceMethods := v1.File_api_environment_v1_environment_proto.Services().ByName("EnvironmentService").Methods()
-	environmentServiceCheckHealthyHandler := connect.NewUnaryHandler(
-		EnvironmentServiceCheckHealthyProcedure,
-		svc.CheckHealthy,
-		connect.WithSchema(environmentServiceMethods.ByName("CheckHealthy")),
+	environmentServiceCheckHealthHandler := connect.NewUnaryHandler(
+		EnvironmentServiceCheckHealthProcedure,
+		svc.CheckHealth,
+		connect.WithSchema(environmentServiceMethods.ByName("CheckHealth")),
 		connect.WithHandlerOptions(opts...),
 	)
 	environmentServiceWatchStatusesHandler := connect.NewServerStreamHandler(
@@ -213,8 +213,8 @@ func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect
 	)
 	return "/otterscale.environment.v1.EnvironmentService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case EnvironmentServiceCheckHealthyProcedure:
-			environmentServiceCheckHealthyHandler.ServeHTTP(w, r)
+		case EnvironmentServiceCheckHealthProcedure:
+			environmentServiceCheckHealthHandler.ServeHTTP(w, r)
 		case EnvironmentServiceWatchStatusesProcedure:
 			environmentServiceWatchStatusesHandler.ServeHTTP(w, r)
 		case EnvironmentServiceUpdateStatusProcedure:
@@ -234,8 +234,8 @@ func NewEnvironmentServiceHandler(svc EnvironmentServiceHandler, opts ...connect
 // UnimplementedEnvironmentServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedEnvironmentServiceHandler struct{}
 
-func (UnimplementedEnvironmentServiceHandler) CheckHealthy(context.Context, *connect.Request[v1.CheckHealthyRequest]) (*connect.Response[v1.CheckHealthyResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.CheckHealthy is not implemented"))
+func (UnimplementedEnvironmentServiceHandler) CheckHealth(context.Context, *connect.Request[v1.CheckHealthRequest]) (*connect.Response[v1.CheckHealthResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.environment.v1.EnvironmentService.CheckHealth is not implemented"))
 }
 
 func (UnimplementedEnvironmentServiceHandler) WatchStatuses(context.Context, *connect.Request[v1.WatchStatusesRequest], *connect.ServerStream[v1.WatchStatusesResponse]) error {

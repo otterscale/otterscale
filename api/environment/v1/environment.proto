@@ -7,7 +7,7 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/openhdc/otterscale/api/environment/v1;pb";
 
 service EnvironmentService {
-  rpc CheckHealthy(CheckHealthyRequest) returns (CheckHealthyResponse);
+  rpc CheckHealth(CheckHealthRequest) returns (CheckHealthResponse);
   rpc WatchStatuses(WatchStatusesRequest) returns (stream WatchStatusesResponse);
   rpc UpdateStatus(UpdateStatusRequest) returns (google.protobuf.Empty);
   rpc UpdateConfig(UpdateConfigRequest) returns (google.protobuf.Empty);
@@ -15,9 +15,9 @@ service EnvironmentService {
   rpc GetPrometheus(GetPrometheusRequest) returns (Prometheus);
 }
 
-message CheckHealthyRequest {}
+message CheckHealthRequest {}
 
-message CheckHealthyResponse {
+message CheckHealthResponse {
   enum Result {
     UNSPECIFIED = 0;
     OK = 11;

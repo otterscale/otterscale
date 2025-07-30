@@ -25,13 +25,13 @@ func NewEnvironmentService(uc *core.EnvironmentUseCase) *EnvironmentService {
 
 var _ pbconnect.EnvironmentServiceHandler = (*EnvironmentService)(nil)
 
-func (s *EnvironmentService) CheckHealthy(ctx context.Context, req *connect.Request[pb.CheckHealthyRequest]) (*connect.Response[pb.CheckHealthyResponse], error) {
-	result, err := s.uc.CheckHealthy(ctx)
+func (s *EnvironmentService) CheckHealth(ctx context.Context, req *connect.Request[pb.CheckHealthRequest]) (*connect.Response[pb.CheckHealthResponse], error) {
+	result, err := s.uc.CheckHealth(ctx)
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.CheckHealthyResponse{}
-	resp.SetResult(pb.CheckHealthyResponse_Result(result))
+	resp := &pb.CheckHealthResponse{}
+	resp.SetResult(pb.CheckHealthResponse_Result(result))
 	return connect.NewResponse(resp), nil
 }
 

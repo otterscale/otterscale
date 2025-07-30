@@ -12,42 +12,42 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/environment/v1/environment.proto.
  */
 export const file_api_environment_v1_environment: GenFile = /*@__PURE__*/
-  fileDesc("CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFQoTQ2hlY2tIZWFsdGh5UmVxdWVzdCKUAQoUQ2hlY2tIZWFsdGh5UmVzcG9uc2USRgoGcmVzdWx0GAEgASgOMjYub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5DaGVja0hlYWx0aHlSZXNwb25zZS5SZXN1bHQiNAoGUmVzdWx0Eg8KC1VOU1BFQ0lGSUVEEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUiFgoUV2F0Y2hTdGF0dXNlc1JlcXVlc3QiNwoVV2F0Y2hTdGF0dXNlc1Jlc3BvbnNlEg0KBXBoYXNlGAEgASgJEg8KB21lc3NhZ2UYAiABKAkiNQoTVXBkYXRlU3RhdHVzUmVxdWVzdBINCgVwaGFzZRgBIAEoCRIPCgdtZXNzYWdlGAIgASgJItMCChNVcGRhdGVDb25maWdSZXF1ZXN0EhAKCG1hYXNfdXJsGAEgASgJEhAKCG1hYXNfa2V5GAIgASgJEhQKDG1hYXNfdmVyc2lvbhgDIAEoCRIXCg9qdWp1X2NvbnRyb2xsZXIYCyABKAkSIQoZanVqdV9jb250cm9sbGVyX2FkZHJlc3NlcxgMIAMoCRIVCg1qdWp1X3VzZXJuYW1lGA0gASgJEhUKDWp1anVfcGFzc3dvcmQYDiABKAkSFAoManVqdV9jYV9jZXJ0GA8gASgJEhcKD2p1anVfY2xvdWRfbmFtZRgVIAEoCRIZChFqdWp1X2Nsb3VkX3JlZ2lvbhgWIAEoCRIdChVqdWp1X2NoYXJtaHViX2FwaV91cmwYFyABKAkSFgoObWljcm9fazhzX2hvc3QYHyABKAkSFwoPbWljcm9fazhzX3Rva2VuGCAgASgJIjMKI1VwZGF0ZUNvbmZpZ0hlbG1SZXBvc2l0b3JpZXNSZXF1ZXN0EgwKBHVybHMYASADKAkiMAoKUHJvbWV0aGV1cxIQCghlbmRwb2ludBgBIAEoCRIQCghiYXNlX3VybBgCIAEoCSIWChRHZXRQcm9tZXRoZXVzUmVxdWVzdDKMBQoSRW52aXJvbm1lbnRTZXJ2aWNlEm8KDENoZWNrSGVhbHRoeRIuLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGh5UmVxdWVzdBovLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGh5UmVzcG9uc2USdAoNV2F0Y2hTdGF0dXNlcxIvLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuV2F0Y2hTdGF0dXNlc1JlcXVlc3QaMC5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLldhdGNoU3RhdHVzZXNSZXNwb25zZTABElYKDFVwZGF0ZVN0YXR1cxIuLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlU3RhdHVzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJWCgxVcGRhdGVDb25maWcSLi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlVwZGF0ZUNvbmZpZ1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdgocVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllcxI+Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSZwoNR2V0UHJvbWV0aGV1cxIvLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuR2V0UHJvbWV0aGV1c1JlcXVlc3QaJS5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlByb21ldGhldXNCNVozZ2l0aHViLmNvbS9vcGVuaGRjL290dGVyc2NhbGUvYXBpL2Vudmlyb25tZW50L3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty]);
+  fileDesc("CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFAoSQ2hlY2tIZWFsdGhSZXF1ZXN0IpIBChNDaGVja0hlYWx0aFJlc3BvbnNlEkUKBnJlc3VsdBgBIAEoDjI1Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZS5SZXN1bHQiNAoGUmVzdWx0Eg8KC1VOU1BFQ0lGSUVEEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUiFgoUV2F0Y2hTdGF0dXNlc1JlcXVlc3QiNwoVV2F0Y2hTdGF0dXNlc1Jlc3BvbnNlEg0KBXBoYXNlGAEgASgJEg8KB21lc3NhZ2UYAiABKAkiNQoTVXBkYXRlU3RhdHVzUmVxdWVzdBINCgVwaGFzZRgBIAEoCRIPCgdtZXNzYWdlGAIgASgJItMCChNVcGRhdGVDb25maWdSZXF1ZXN0EhAKCG1hYXNfdXJsGAEgASgJEhAKCG1hYXNfa2V5GAIgASgJEhQKDG1hYXNfdmVyc2lvbhgDIAEoCRIXCg9qdWp1X2NvbnRyb2xsZXIYCyABKAkSIQoZanVqdV9jb250cm9sbGVyX2FkZHJlc3NlcxgMIAMoCRIVCg1qdWp1X3VzZXJuYW1lGA0gASgJEhUKDWp1anVfcGFzc3dvcmQYDiABKAkSFAoManVqdV9jYV9jZXJ0GA8gASgJEhcKD2p1anVfY2xvdWRfbmFtZRgVIAEoCRIZChFqdWp1X2Nsb3VkX3JlZ2lvbhgWIAEoCRIdChVqdWp1X2NoYXJtaHViX2FwaV91cmwYFyABKAkSFgoObWljcm9fazhzX2hvc3QYHyABKAkSFwoPbWljcm9fazhzX3Rva2VuGCAgASgJIjMKI1VwZGF0ZUNvbmZpZ0hlbG1SZXBvc2l0b3JpZXNSZXF1ZXN0EgwKBHVybHMYASADKAkiMAoKUHJvbWV0aGV1cxIQCghlbmRwb2ludBgBIAEoCRIQCghiYXNlX3VybBgCIAEoCSIWChRHZXRQcm9tZXRoZXVzUmVxdWVzdDKJBQoSRW52aXJvbm1lbnRTZXJ2aWNlEmwKC0NoZWNrSGVhbHRoEi0ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5DaGVja0hlYWx0aFJlcXVlc3QaLi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLkNoZWNrSGVhbHRoUmVzcG9uc2USdAoNV2F0Y2hTdGF0dXNlcxIvLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuV2F0Y2hTdGF0dXNlc1JlcXVlc3QaMC5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLldhdGNoU3RhdHVzZXNSZXNwb25zZTABElYKDFVwZGF0ZVN0YXR1cxIuLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlU3RhdHVzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJWCgxVcGRhdGVDb25maWcSLi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlVwZGF0ZUNvbmZpZ1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdgocVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllcxI+Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSZwoNR2V0UHJvbWV0aGV1cxIvLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuR2V0UHJvbWV0aGV1c1JlcXVlc3QaJS5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlByb21ldGhldXNCNVozZ2l0aHViLmNvbS9vcGVuaGRjL290dGVyc2NhbGUvYXBpL2Vudmlyb25tZW50L3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty]);
 
 /**
- * @generated from message otterscale.environment.v1.CheckHealthyRequest
+ * @generated from message otterscale.environment.v1.CheckHealthRequest
  */
-export type CheckHealthyRequest = Message<"otterscale.environment.v1.CheckHealthyRequest"> & {
+export type CheckHealthRequest = Message<"otterscale.environment.v1.CheckHealthRequest"> & {
 };
 
 /**
- * Describes the message otterscale.environment.v1.CheckHealthyRequest.
- * Use `create(CheckHealthyRequestSchema)` to create a new message.
+ * Describes the message otterscale.environment.v1.CheckHealthRequest.
+ * Use `create(CheckHealthRequestSchema)` to create a new message.
  */
-export const CheckHealthyRequestSchema: GenMessage<CheckHealthyRequest> = /*@__PURE__*/
+export const CheckHealthRequestSchema: GenMessage<CheckHealthRequest> = /*@__PURE__*/
   messageDesc(file_api_environment_v1_environment, 0);
 
 /**
- * @generated from message otterscale.environment.v1.CheckHealthyResponse
+ * @generated from message otterscale.environment.v1.CheckHealthResponse
  */
-export type CheckHealthyResponse = Message<"otterscale.environment.v1.CheckHealthyResponse"> & {
+export type CheckHealthResponse = Message<"otterscale.environment.v1.CheckHealthResponse"> & {
   /**
-   * @generated from field: otterscale.environment.v1.CheckHealthyResponse.Result result = 1;
+   * @generated from field: otterscale.environment.v1.CheckHealthResponse.Result result = 1;
    */
-  result: CheckHealthyResponse_Result;
+  result: CheckHealthResponse_Result;
 };
 
 /**
- * Describes the message otterscale.environment.v1.CheckHealthyResponse.
- * Use `create(CheckHealthyResponseSchema)` to create a new message.
+ * Describes the message otterscale.environment.v1.CheckHealthResponse.
+ * Use `create(CheckHealthResponseSchema)` to create a new message.
  */
-export const CheckHealthyResponseSchema: GenMessage<CheckHealthyResponse> = /*@__PURE__*/
+export const CheckHealthResponseSchema: GenMessage<CheckHealthResponse> = /*@__PURE__*/
   messageDesc(file_api_environment_v1_environment, 1);
 
 /**
- * @generated from enum otterscale.environment.v1.CheckHealthyResponse.Result
+ * @generated from enum otterscale.environment.v1.CheckHealthResponse.Result
  */
-export enum CheckHealthyResponse_Result {
+export enum CheckHealthResponse_Result {
   /**
    * @generated from enum value: UNSPECIFIED = 0;
    */
@@ -65,9 +65,9 @@ export enum CheckHealthyResponse_Result {
 }
 
 /**
- * Describes the enum otterscale.environment.v1.CheckHealthyResponse.Result.
+ * Describes the enum otterscale.environment.v1.CheckHealthResponse.Result.
  */
-export const CheckHealthyResponse_ResultSchema: GenEnum<CheckHealthyResponse_Result> = /*@__PURE__*/
+export const CheckHealthResponse_ResultSchema: GenEnum<CheckHealthResponse_Result> = /*@__PURE__*/
   enumDesc(file_api_environment_v1_environment, 1, 0);
 
 /**
@@ -261,12 +261,12 @@ export const GetPrometheusRequestSchema: GenMessage<GetPrometheusRequest> = /*@_
  */
 export const EnvironmentService: GenService<{
   /**
-   * @generated from rpc otterscale.environment.v1.EnvironmentService.CheckHealthy
+   * @generated from rpc otterscale.environment.v1.EnvironmentService.CheckHealth
    */
-  checkHealthy: {
+  checkHealth: {
     methodKind: "unary";
-    input: typeof CheckHealthyRequestSchema;
-    output: typeof CheckHealthyResponseSchema;
+    input: typeof CheckHealthRequestSchema;
+    output: typeof CheckHealthResponseSchema;
   },
   /**
    * @generated from rpc otterscale.environment.v1.EnvironmentService.WatchStatuses

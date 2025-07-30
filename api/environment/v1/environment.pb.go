@@ -21,70 +21,70 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type CheckHealthyResponse_Result int32
+type CheckHealthResponse_Result int32
 
 const (
-	CheckHealthyResponse_UNSPECIFIED   CheckHealthyResponse_Result = 0
-	CheckHealthyResponse_OK            CheckHealthyResponse_Result = 11
-	CheckHealthyResponse_NOT_INSTALLED CheckHealthyResponse_Result = 21
+	CheckHealthResponse_UNSPECIFIED   CheckHealthResponse_Result = 0
+	CheckHealthResponse_OK            CheckHealthResponse_Result = 11
+	CheckHealthResponse_NOT_INSTALLED CheckHealthResponse_Result = 21
 )
 
-// Enum value maps for CheckHealthyResponse_Result.
+// Enum value maps for CheckHealthResponse_Result.
 var (
-	CheckHealthyResponse_Result_name = map[int32]string{
+	CheckHealthResponse_Result_name = map[int32]string{
 		0:  "UNSPECIFIED",
 		11: "OK",
 		21: "NOT_INSTALLED",
 	}
-	CheckHealthyResponse_Result_value = map[string]int32{
+	CheckHealthResponse_Result_value = map[string]int32{
 		"UNSPECIFIED":   0,
 		"OK":            11,
 		"NOT_INSTALLED": 21,
 	}
 )
 
-func (x CheckHealthyResponse_Result) Enum() *CheckHealthyResponse_Result {
-	p := new(CheckHealthyResponse_Result)
+func (x CheckHealthResponse_Result) Enum() *CheckHealthResponse_Result {
+	p := new(CheckHealthResponse_Result)
 	*p = x
 	return p
 }
 
-func (x CheckHealthyResponse_Result) String() string {
+func (x CheckHealthResponse_Result) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (CheckHealthyResponse_Result) Descriptor() protoreflect.EnumDescriptor {
+func (CheckHealthResponse_Result) Descriptor() protoreflect.EnumDescriptor {
 	return file_api_environment_v1_environment_proto_enumTypes[0].Descriptor()
 }
 
-func (CheckHealthyResponse_Result) Type() protoreflect.EnumType {
+func (CheckHealthResponse_Result) Type() protoreflect.EnumType {
 	return &file_api_environment_v1_environment_proto_enumTypes[0]
 }
 
-func (x CheckHealthyResponse_Result) Number() protoreflect.EnumNumber {
+func (x CheckHealthResponse_Result) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-type CheckHealthyRequest struct {
+type CheckHealthRequest struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CheckHealthyRequest) Reset() {
-	*x = CheckHealthyRequest{}
+func (x *CheckHealthRequest) Reset() {
+	*x = CheckHealthRequest{}
 	mi := &file_api_environment_v1_environment_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CheckHealthyRequest) String() string {
+func (x *CheckHealthRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CheckHealthyRequest) ProtoMessage() {}
+func (*CheckHealthRequest) ProtoMessage() {}
 
-func (x *CheckHealthyRequest) ProtoReflect() protoreflect.Message {
+func (x *CheckHealthRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_environment_v1_environment_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -96,41 +96,41 @@ func (x *CheckHealthyRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-type CheckHealthyRequest_builder struct {
+type CheckHealthRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 }
 
-func (b0 CheckHealthyRequest_builder) Build() *CheckHealthyRequest {
-	m0 := &CheckHealthyRequest{}
+func (b0 CheckHealthRequest_builder) Build() *CheckHealthRequest {
+	m0 := &CheckHealthRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	return m0
 }
 
-type CheckHealthyResponse struct {
-	state                  protoimpl.MessageState      `protogen:"opaque.v1"`
-	xxx_hidden_Result      CheckHealthyResponse_Result `protobuf:"varint,1,opt,name=result,enum=otterscale.environment.v1.CheckHealthyResponse_Result"`
+type CheckHealthResponse struct {
+	state                  protoimpl.MessageState     `protogen:"opaque.v1"`
+	xxx_hidden_Result      CheckHealthResponse_Result `protobuf:"varint,1,opt,name=result,enum=otterscale.environment.v1.CheckHealthResponse_Result"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *CheckHealthyResponse) Reset() {
-	*x = CheckHealthyResponse{}
+func (x *CheckHealthResponse) Reset() {
+	*x = CheckHealthResponse{}
 	mi := &file_api_environment_v1_environment_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CheckHealthyResponse) String() string {
+func (x *CheckHealthResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CheckHealthyResponse) ProtoMessage() {}
+func (*CheckHealthResponse) ProtoMessage() {}
 
-func (x *CheckHealthyResponse) ProtoReflect() protoreflect.Message {
+func (x *CheckHealthResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_environment_v1_environment_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -142,40 +142,40 @@ func (x *CheckHealthyResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CheckHealthyResponse) GetResult() CheckHealthyResponse_Result {
+func (x *CheckHealthResponse) GetResult() CheckHealthResponse_Result {
 	if x != nil {
 		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
 			return x.xxx_hidden_Result
 		}
 	}
-	return CheckHealthyResponse_UNSPECIFIED
+	return CheckHealthResponse_UNSPECIFIED
 }
 
-func (x *CheckHealthyResponse) SetResult(v CheckHealthyResponse_Result) {
+func (x *CheckHealthResponse) SetResult(v CheckHealthResponse_Result) {
 	x.xxx_hidden_Result = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
-func (x *CheckHealthyResponse) HasResult() bool {
+func (x *CheckHealthResponse) HasResult() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CheckHealthyResponse) ClearResult() {
+func (x *CheckHealthResponse) ClearResult() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Result = CheckHealthyResponse_UNSPECIFIED
+	x.xxx_hidden_Result = CheckHealthResponse_UNSPECIFIED
 }
 
-type CheckHealthyResponse_builder struct {
+type CheckHealthResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Result *CheckHealthyResponse_Result
+	Result *CheckHealthResponse_Result
 }
 
-func (b0 CheckHealthyResponse_builder) Build() *CheckHealthyResponse {
-	m0 := &CheckHealthyResponse{}
+func (b0 CheckHealthResponse_builder) Build() *CheckHealthResponse {
+	m0 := &CheckHealthResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Result != nil {
@@ -1120,10 +1120,10 @@ var File_api_environment_v1_environment_proto protoreflect.FileDescriptor
 
 const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\n" +
-	"$api/environment/v1/environment.proto\x12\x19otterscale.environment.v1\x1a\x1bgoogle/protobuf/empty.proto\"\x15\n" +
-	"\x13CheckHealthyRequest\"\x9c\x01\n" +
-	"\x14CheckHealthyResponse\x12N\n" +
-	"\x06result\x18\x01 \x01(\x0e26.otterscale.environment.v1.CheckHealthyResponse.ResultR\x06result\"4\n" +
+	"$api/environment/v1/environment.proto\x12\x19otterscale.environment.v1\x1a\x1bgoogle/protobuf/empty.proto\"\x14\n" +
+	"\x12CheckHealthRequest\"\x9a\x01\n" +
+	"\x13CheckHealthResponse\x12M\n" +
+	"\x06result\x18\x01 \x01(\x0e25.otterscale.environment.v1.CheckHealthResponse.ResultR\x06result\"4\n" +
 	"\x06Result\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\x06\n" +
 	"\x02OK\x10\v\x12\x11\n" +
@@ -1156,9 +1156,9 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"Prometheus\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x19\n" +
 	"\bbase_url\x18\x02 \x01(\tR\abaseUrl\"\x16\n" +
-	"\x14GetPrometheusRequest2\x8c\x05\n" +
-	"\x12EnvironmentService\x12o\n" +
-	"\fCheckHealthy\x12..otterscale.environment.v1.CheckHealthyRequest\x1a/.otterscale.environment.v1.CheckHealthyResponse\x12t\n" +
+	"\x14GetPrometheusRequest2\x89\x05\n" +
+	"\x12EnvironmentService\x12l\n" +
+	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12t\n" +
 	"\rWatchStatuses\x12/.otterscale.environment.v1.WatchStatusesRequest\x1a0.otterscale.environment.v1.WatchStatusesResponse0\x01\x12V\n" +
 	"\fUpdateStatus\x12..otterscale.environment.v1.UpdateStatusRequest\x1a\x16.google.protobuf.Empty\x12V\n" +
 	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\x12v\n" +
@@ -1168,9 +1168,9 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_api_environment_v1_environment_proto_goTypes = []any{
-	(CheckHealthyResponse_Result)(0),            // 0: otterscale.environment.v1.CheckHealthyResponse.Result
-	(*CheckHealthyRequest)(nil),                 // 1: otterscale.environment.v1.CheckHealthyRequest
-	(*CheckHealthyResponse)(nil),                // 2: otterscale.environment.v1.CheckHealthyResponse
+	(CheckHealthResponse_Result)(0),             // 0: otterscale.environment.v1.CheckHealthResponse.Result
+	(*CheckHealthRequest)(nil),                  // 1: otterscale.environment.v1.CheckHealthRequest
+	(*CheckHealthResponse)(nil),                 // 2: otterscale.environment.v1.CheckHealthResponse
 	(*WatchStatusesRequest)(nil),                // 3: otterscale.environment.v1.WatchStatusesRequest
 	(*WatchStatusesResponse)(nil),               // 4: otterscale.environment.v1.WatchStatusesResponse
 	(*UpdateStatusRequest)(nil),                 // 5: otterscale.environment.v1.UpdateStatusRequest
@@ -1181,14 +1181,14 @@ var file_api_environment_v1_environment_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),                       // 10: google.protobuf.Empty
 }
 var file_api_environment_v1_environment_proto_depIdxs = []int32{
-	0,  // 0: otterscale.environment.v1.CheckHealthyResponse.result:type_name -> otterscale.environment.v1.CheckHealthyResponse.Result
-	1,  // 1: otterscale.environment.v1.EnvironmentService.CheckHealthy:input_type -> otterscale.environment.v1.CheckHealthyRequest
+	0,  // 0: otterscale.environment.v1.CheckHealthResponse.result:type_name -> otterscale.environment.v1.CheckHealthResponse.Result
+	1,  // 1: otterscale.environment.v1.EnvironmentService.CheckHealth:input_type -> otterscale.environment.v1.CheckHealthRequest
 	3,  // 2: otterscale.environment.v1.EnvironmentService.WatchStatuses:input_type -> otterscale.environment.v1.WatchStatusesRequest
 	5,  // 3: otterscale.environment.v1.EnvironmentService.UpdateStatus:input_type -> otterscale.environment.v1.UpdateStatusRequest
 	6,  // 4: otterscale.environment.v1.EnvironmentService.UpdateConfig:input_type -> otterscale.environment.v1.UpdateConfigRequest
 	7,  // 5: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:input_type -> otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
 	9,  // 6: otterscale.environment.v1.EnvironmentService.GetPrometheus:input_type -> otterscale.environment.v1.GetPrometheusRequest
-	2,  // 7: otterscale.environment.v1.EnvironmentService.CheckHealthy:output_type -> otterscale.environment.v1.CheckHealthyResponse
+	2,  // 7: otterscale.environment.v1.EnvironmentService.CheckHealth:output_type -> otterscale.environment.v1.CheckHealthResponse
 	4,  // 8: otterscale.environment.v1.EnvironmentService.WatchStatuses:output_type -> otterscale.environment.v1.WatchStatusesResponse
 	10, // 9: otterscale.environment.v1.EnvironmentService.UpdateStatus:output_type -> google.protobuf.Empty
 	10, // 10: otterscale.environment.v1.EnvironmentService.UpdateConfig:output_type -> google.protobuf.Empty
