@@ -33,14 +33,13 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// PremiumServiceGetEditionProcedure is the fully-qualified name of the PremiumService's GetEdition
-	// RPC.
-	PremiumServiceGetEditionProcedure = "/otterscale.premium.v1.PremiumService/GetEdition"
+	// PremiumServiceGetTierProcedure is the fully-qualified name of the PremiumService's GetTier RPC.
+	PremiumServiceGetTierProcedure = "/otterscale.premium.v1.PremiumService/GetTier"
 )
 
 // PremiumServiceClient is a client for the otterscale.premium.v1.PremiumService service.
 type PremiumServiceClient interface {
-	GetEdition(context.Context, *connect.Request[v1.GetEditionRequest]) (*connect.Response[v1.GetEditionResponse], error)
+	GetTier(context.Context, *connect.Request[v1.GetTierRequest]) (*connect.Response[v1.GetTierResponse], error)
 }
 
 // NewPremiumServiceClient constructs a client for the otterscale.premium.v1.PremiumService service.
@@ -54,10 +53,10 @@ func NewPremiumServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 	baseURL = strings.TrimRight(baseURL, "/")
 	premiumServiceMethods := v1.File_api_premium_v1_premium_proto.Services().ByName("PremiumService").Methods()
 	return &premiumServiceClient{
-		getEdition: connect.NewClient[v1.GetEditionRequest, v1.GetEditionResponse](
+		getTier: connect.NewClient[v1.GetTierRequest, v1.GetTierResponse](
 			httpClient,
-			baseURL+PremiumServiceGetEditionProcedure,
-			connect.WithSchema(premiumServiceMethods.ByName("GetEdition")),
+			baseURL+PremiumServiceGetTierProcedure,
+			connect.WithSchema(premiumServiceMethods.ByName("GetTier")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -65,17 +64,17 @@ func NewPremiumServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // premiumServiceClient implements PremiumServiceClient.
 type premiumServiceClient struct {
-	getEdition *connect.Client[v1.GetEditionRequest, v1.GetEditionResponse]
+	getTier *connect.Client[v1.GetTierRequest, v1.GetTierResponse]
 }
 
-// GetEdition calls otterscale.premium.v1.PremiumService.GetEdition.
-func (c *premiumServiceClient) GetEdition(ctx context.Context, req *connect.Request[v1.GetEditionRequest]) (*connect.Response[v1.GetEditionResponse], error) {
-	return c.getEdition.CallUnary(ctx, req)
+// GetTier calls otterscale.premium.v1.PremiumService.GetTier.
+func (c *premiumServiceClient) GetTier(ctx context.Context, req *connect.Request[v1.GetTierRequest]) (*connect.Response[v1.GetTierResponse], error) {
+	return c.getTier.CallUnary(ctx, req)
 }
 
 // PremiumServiceHandler is an implementation of the otterscale.premium.v1.PremiumService service.
 type PremiumServiceHandler interface {
-	GetEdition(context.Context, *connect.Request[v1.GetEditionRequest]) (*connect.Response[v1.GetEditionResponse], error)
+	GetTier(context.Context, *connect.Request[v1.GetTierRequest]) (*connect.Response[v1.GetTierResponse], error)
 }
 
 // NewPremiumServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -85,16 +84,16 @@ type PremiumServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewPremiumServiceHandler(svc PremiumServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	premiumServiceMethods := v1.File_api_premium_v1_premium_proto.Services().ByName("PremiumService").Methods()
-	premiumServiceGetEditionHandler := connect.NewUnaryHandler(
-		PremiumServiceGetEditionProcedure,
-		svc.GetEdition,
-		connect.WithSchema(premiumServiceMethods.ByName("GetEdition")),
+	premiumServiceGetTierHandler := connect.NewUnaryHandler(
+		PremiumServiceGetTierProcedure,
+		svc.GetTier,
+		connect.WithSchema(premiumServiceMethods.ByName("GetTier")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.premium.v1.PremiumService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case PremiumServiceGetEditionProcedure:
-			premiumServiceGetEditionHandler.ServeHTTP(w, r)
+		case PremiumServiceGetTierProcedure:
+			premiumServiceGetTierHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -104,6 +103,6 @@ func NewPremiumServiceHandler(svc PremiumServiceHandler, opts ...connect.Handler
 // UnimplementedPremiumServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedPremiumServiceHandler struct{}
 
-func (UnimplementedPremiumServiceHandler) GetEdition(context.Context, *connect.Request[v1.GetEditionRequest]) (*connect.Response[v1.GetEditionResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.premium.v1.PremiumService.GetEdition is not implemented"))
+func (UnimplementedPremiumServiceHandler) GetTier(context.Context, *connect.Request[v1.GetTierRequest]) (*connect.Response[v1.GetTierResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.premium.v1.PremiumService.GetTier is not implemented"))
 }
