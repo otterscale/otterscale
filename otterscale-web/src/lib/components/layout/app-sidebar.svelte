@@ -94,8 +94,8 @@
 
 		await fetchEssentials(scope.uuid);
 		if (!$currentCeph && !$currentKubernetes) {
+			goto(setupScopePath);
 			toast.info(m.scope_not_configured({ name: scope.name }), {
-				duration: Number.POSITIVE_INFINITY,
 				action: {
 					label: m.goto(),
 					onClick: () => goto(setupScopePath)
