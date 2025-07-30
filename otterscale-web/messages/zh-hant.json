@@ -74,6 +74,7 @@
 	"switch_scope": "已切換至範疇 {name}",
 	"scope_not_configured": "範疇 {name} 尚未設定",
 	"goto": "前往",
+	"recommended": "推薦使用",
 	"create_scope_success": "成功新增範疇 {name}！",
 	"create_scope_error": "新增範疇 {name} 失敗：{error}",
 	"setup_scope": "設定範疇",

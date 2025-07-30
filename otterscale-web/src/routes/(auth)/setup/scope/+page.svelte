@@ -152,7 +152,7 @@
 						<div
 							class="bg-primary text-primary-foreground absolute top-0 right-0 rounded-tr-lg rounded-bl-lg px-3 py-1 text-xs font-medium uppercase"
 						>
-							Recommended
+							{m.recommended()}
 						</div>
 					{/if}
 
