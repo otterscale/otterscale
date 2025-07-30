@@ -145,7 +145,7 @@
 	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
 		<p class={(row.original.kind.value?.output?.get || row.original.kind.value?.output?.put) ? 'mt-1' : ''}>
 			<Badge variant="outline">
-				D: {(Number(row.original.kind.value.output.delete.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s, 
+				D: {(Number(row.original.kind.value.output.delete.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		</p>
 	{/if}
