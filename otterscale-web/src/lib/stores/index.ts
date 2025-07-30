@@ -1,7 +1,7 @@
 import { writable, type Writable } from "svelte/store";
 import type { Essential } from "$lib/api/essential/v1/essential_pb";
+import { PremiumTier } from "$lib/api/premium/v1/premium_pb";
 import type { Scope } from "$lib/api/scope/v1/scope_pb";
-import { m } from "$lib/paraglide/messages";
 
 // Types
 interface BreadcrumbState {
@@ -13,8 +13,8 @@ interface AppStores {
     // Navigation
     breadcrumb: Writable<BreadcrumbState>;
 
-    // Tier
-    tier: Writable<string>;
+    // Premium Tier
+    premiumTier: Writable<PremiumTier>;
 
     // Scope & Essential
     triggerUpdateScopes: Writable<boolean>;
@@ -26,7 +26,7 @@ interface AppStores {
 // Create stores
 const createStores = (): AppStores => ({
     breadcrumb: writable<BreadcrumbState>({ parents: ["/"], current: "/" }),
-    tier: writable(m.basic_tier()),
+    premiumTier: writable(PremiumTier.BASIC),
     triggerUpdateScopes: writable(false),
     activeScope: writable<Scope | undefined>(undefined),
     currentCeph: writable<Essential | undefined>(undefined),
@@ -36,7 +36,7 @@ const createStores = (): AppStores => ({
 // Export individual stores
 export const {
     breadcrumb,
-    tier,
+    premiumTier,
     triggerUpdateScopes,
     activeScope,
     currentCeph,

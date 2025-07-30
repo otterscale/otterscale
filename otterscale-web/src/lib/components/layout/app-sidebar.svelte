@@ -17,7 +17,7 @@
 		activeScope,
 		currentCeph,
 		currentKubernetes,
-		tier,
+		premiumTier,
 		triggerUpdateScopes
 	} from '$lib/stores';
 	import { bookmarks, cephPaths, kubernetesPaths, routes } from './routes';
@@ -65,7 +65,7 @@
 	async function fetchEdition() {
 		try {
 			const response = await premiumClient.getTier({});
-			tier.set(tierMap[response.tier]);
+			premiumTier.set(response.tier);
 		} catch (error) {
 			const connectError = error as ConnectError;
 			if (connectError.code !== Code.Unimplemented) {
@@ -129,7 +129,7 @@
 			<ScopeSwitcher
 				active={$activeScope}
 				scopes={$scopes}
-				tier={$tier}
+				tier={tierMap[$premiumTier]}
 				onSelect={handleScopeOnSelect}
 			/>
 		{:else}
