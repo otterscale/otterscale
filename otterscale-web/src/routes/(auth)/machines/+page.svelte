@@ -7,7 +7,7 @@
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parent: homePath, current: machinesPath });
+	breadcrumb.set({ parents: [homePath], current: machinesPath });
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);

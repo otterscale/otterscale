@@ -3,7 +3,7 @@
 	import { activeScope, breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parent: applicationsPath, current: applicationsServicePath });
+	breadcrumb.set({ parents: [applicationsPath], current: applicationsServicePath });
 </script>
 
 {#if $activeScope}

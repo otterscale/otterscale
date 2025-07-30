@@ -51,6 +51,8 @@ export const settingsBISTPath = "/settings/built-in-self-test"
 // Setup
 export const setupPath = "/setup"
 export const setupScopePath = "/setup/scope"
+export const setupScopeCephPath = "/setup/scope/ceph"
+export const setupScopeKubernetesPath = "/setup/scope/kubernetes"
 
 // Functions
 export function getIconFromUrl(url: string): string {
@@ -101,6 +103,8 @@ const routesMap = new Map<string, Path>([
     [settingsBISTPath, { title: m.built_in_test(), url: settingsBISTPath }],
     [setupPath, { title: m.setup(), url: setupPath }],
     [setupScopePath, { title: m.scopes(), url: setupScopePath }],
+    [setupScopeCephPath, { title: 'Ceph', url: setupScopeCephPath }],
+    [setupScopeKubernetesPath, { title: 'Kubernetes', url: setupScopeKubernetesPath }],
 ]);
 
 export function getPath(url: string): Path {

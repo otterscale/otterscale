@@ -7,7 +7,7 @@
 	import Icon from '@iconify/svelte';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parent: homePath, current: modelsPath });
+	breadcrumb.set({ parents: [homePath], current: modelsPath });
 </script>
 
 <Alert.Root variant="destructive">

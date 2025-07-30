@@ -3,5 +3,5 @@
 	import { breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parent: homePath, current: accountPath });
+	breadcrumb.set({ parents: [homePath], current: accountPath });
 </script>

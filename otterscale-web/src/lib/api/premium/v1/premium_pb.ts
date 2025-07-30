@@ -10,67 +10,62 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/premium/v1/premium.proto.
  */
 export const file_api_premium_v1_premium: GenFile = /*@__PURE__*/
-  fileDesc("ChxhcGkvcHJlbWl1bS92MS9wcmVtaXVtLnByb3RvEhVvdHRlcnNjYWxlLnByZW1pdW0udjEiEwoRR2V0RWRpdGlvblJlcXVlc3QiTAoSR2V0RWRpdGlvblJlc3BvbnNlEjYKB2VkaXRpb24YASABKA4yJS5vdHRlcnNjYWxlLnByZW1pdW0udjEuUHJlbWl1bUVkaXRpb24qQwoOUHJlbWl1bUVkaXRpb24SCQoFQkFTSUMQABIMCghQTEFUSU5VTRABEggKBEdPTEQQAhIOCgpFTlRFUlBSSVNFEAMycwoOUHJlbWl1bVNlcnZpY2USYQoKR2V0RWRpdGlvbhIoLm90dGVyc2NhbGUucHJlbWl1bS52MS5HZXRFZGl0aW9uUmVxdWVzdBopLm90dGVyc2NhbGUucHJlbWl1bS52MS5HZXRFZGl0aW9uUmVzcG9uc2VCMVovZ2l0aHViLmNvbS9vcGVuaGRjL290dGVyc2NhbGUvYXBpL3ByZW1pdW0vdjE7cGJiCGVkaXRpb25zcOgH");
+  fileDesc("ChxhcGkvcHJlbWl1bS92MS9wcmVtaXVtLnByb3RvEhVvdHRlcnNjYWxlLnByZW1pdW0udjEiEAoOR2V0VGllclJlcXVlc3QiQwoPR2V0VGllclJlc3BvbnNlEjAKBHRpZXIYASABKA4yIi5vdHRlcnNjYWxlLnByZW1pdW0udjEuUHJlbWl1bVRpZXIqNgoLUHJlbWl1bVRpZXISCQoFQkFTSUMQABIMCghBRFZBTkNFRBABEg4KCkVOVEVSUFJJU0UQAjJqCg5QcmVtaXVtU2VydmljZRJYCgdHZXRUaWVyEiUub3R0ZXJzY2FsZS5wcmVtaXVtLnYxLkdldFRpZXJSZXF1ZXN0GiYub3R0ZXJzY2FsZS5wcmVtaXVtLnYxLkdldFRpZXJSZXNwb25zZUIxWi9naXRodWIuY29tL29wZW5oZGMvb3R0ZXJzY2FsZS9hcGkvcHJlbWl1bS92MTtwYmIIZWRpdGlvbnNw6Ac");
 
 /**
- * @generated from message otterscale.premium.v1.GetEditionRequest
+ * @generated from message otterscale.premium.v1.GetTierRequest
  */
-export type GetEditionRequest = Message<"otterscale.premium.v1.GetEditionRequest"> & {
+export type GetTierRequest = Message<"otterscale.premium.v1.GetTierRequest"> & {
 };
 
 /**
- * Describes the message otterscale.premium.v1.GetEditionRequest.
- * Use `create(GetEditionRequestSchema)` to create a new message.
+ * Describes the message otterscale.premium.v1.GetTierRequest.
+ * Use `create(GetTierRequestSchema)` to create a new message.
  */
-export const GetEditionRequestSchema: GenMessage<GetEditionRequest> = /*@__PURE__*/
+export const GetTierRequestSchema: GenMessage<GetTierRequest> = /*@__PURE__*/
   messageDesc(file_api_premium_v1_premium, 0);
 
 /**
- * @generated from message otterscale.premium.v1.GetEditionResponse
+ * @generated from message otterscale.premium.v1.GetTierResponse
  */
-export type GetEditionResponse = Message<"otterscale.premium.v1.GetEditionResponse"> & {
+export type GetTierResponse = Message<"otterscale.premium.v1.GetTierResponse"> & {
   /**
-   * @generated from field: otterscale.premium.v1.PremiumEdition edition = 1;
+   * @generated from field: otterscale.premium.v1.PremiumTier tier = 1;
    */
-  edition: PremiumEdition;
+  tier: PremiumTier;
 };
 
 /**
- * Describes the message otterscale.premium.v1.GetEditionResponse.
- * Use `create(GetEditionResponseSchema)` to create a new message.
+ * Describes the message otterscale.premium.v1.GetTierResponse.
+ * Use `create(GetTierResponseSchema)` to create a new message.
  */
-export const GetEditionResponseSchema: GenMessage<GetEditionResponse> = /*@__PURE__*/
+export const GetTierResponseSchema: GenMessage<GetTierResponse> = /*@__PURE__*/
   messageDesc(file_api_premium_v1_premium, 1);
 
 /**
- * @generated from enum otterscale.premium.v1.PremiumEdition
+ * @generated from enum otterscale.premium.v1.PremiumTier
  */
-export enum PremiumEdition {
+export enum PremiumTier {
   /**
    * @generated from enum value: BASIC = 0;
    */
   BASIC = 0,
 
   /**
-   * @generated from enum value: PLATINUM = 1;
+   * @generated from enum value: ADVANCED = 1;
    */
-  PLATINUM = 1,
+  ADVANCED = 1,
 
   /**
-   * @generated from enum value: GOLD = 2;
+   * @generated from enum value: ENTERPRISE = 2;
    */
-  GOLD = 2,
-
-  /**
-   * @generated from enum value: ENTERPRISE = 3;
-   */
-  ENTERPRISE = 3,
+  ENTERPRISE = 2,
 }
 
 /**
- * Describes the enum otterscale.premium.v1.PremiumEdition.
+ * Describes the enum otterscale.premium.v1.PremiumTier.
  */
-export const PremiumEditionSchema: GenEnum<PremiumEdition> = /*@__PURE__*/
+export const PremiumTierSchema: GenEnum<PremiumTier> = /*@__PURE__*/
   enumDesc(file_api_premium_v1_premium, 0);
 
 /**
@@ -78,12 +73,12 @@ export const PremiumEditionSchema: GenEnum<PremiumEdition> = /*@__PURE__*/
  */
 export const PremiumService: GenService<{
   /**
-   * @generated from rpc otterscale.premium.v1.PremiumService.GetEdition
+   * @generated from rpc otterscale.premium.v1.PremiumService.GetTier
    */
-  getEdition: {
+  getTier: {
     methodKind: "unary";
-    input: typeof GetEditionRequestSchema;
-    output: typeof GetEditionResponseSchema;
+    input: typeof GetTierRequestSchema;
+    output: typeof GetTierResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_premium_v1_premium, 0);
