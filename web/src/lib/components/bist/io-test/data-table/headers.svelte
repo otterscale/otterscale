@@ -15,6 +15,11 @@
 		blockSize: blockSize,
 		fileSize: fileSize,
 		ioDepth: ioDepth,
+		bandwidth: bandwidth,
+		iops: iops,
+		latencyMin: latencyMin,
+		latencyMax: latencyMax,
+		latencyMean: latencyMean,
 		createdBy: createdBy,
 		startedAt: startedAt, 
 		completedAt: completedAt, 
@@ -96,21 +101,56 @@
 
 {#snippet createdBy(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">CREATED BY</p>
+		<p class="text-xs font-light">CREATER</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet bandwidth(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">BANDWIDTH</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet iops(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">IOPS</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet latencyMin(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">LATENCY ( MIN )</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet latencyMax(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">LATENCY ( MAX )</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet latencyMean(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">LATENCY ( MEAN )</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
 
 {#snippet startedAt(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">STARTED AT</p>
+		<p class="text-xs font-light">STARTED</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
 
 {#snippet completedAt(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">COMPLETED AT</p>
+		<p class="text-xs font-light">COMPLETED</p>
 		<Sorter {column} />
 	</div>
 {/snippet}

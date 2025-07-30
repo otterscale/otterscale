@@ -13,6 +13,9 @@
 		duration: duration,
 		objectSize: objectSize, 
 		objectCount: objectCount,
+		throughputFastest: throughputFastest,
+		throughputSlowest: throughputSlowest,
+		throughputMedian: throughputMedian,
 		createdBy: createdBy,
 		startedAt: startedAt, 
 		completedAt: completedAt, 
@@ -50,6 +53,13 @@
 	</div>
 {/snippet}
 
+{#snippet createdBy(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">CREATER</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
 {#snippet operation(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
 		<p class="text-xs font-light">OPERATION</p>
@@ -78,23 +88,38 @@
 	</div>
 {/snippet}
 
-{#snippet createdBy(column: Column<TestResult>)}
+{#snippet throughputFastest(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">CREATED BY</p>
+		<p class="text-xs font-light">THROUGHPUT ( FASTEST )</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+{#snippet throughputSlowest(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">THROUGHPUT ( SLOWEST )</p>
+		<Sorter {column} />
+	</div>
+{/snippet}
+
+
+{#snippet throughputMedian(column: Column<TestResult>)}
+	<div class="flex items-center gap-1">
+		<p class="text-xs font-light">THROUGHPUT ( MEDIAN )</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
 
 {#snippet startedAt(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">STARTED AT</p>
+		<p class="text-xs font-light">STARTED</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
 
 {#snippet completedAt(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">COMPLETED AT</p>
+		<p class="text-xs font-light">COMPLETED</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
