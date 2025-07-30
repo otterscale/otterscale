@@ -89,6 +89,9 @@
 	];
 </script>
 
+<!-- just-in-time  -->
+<dummy class="bg-[#326de6] bg-[#f0424d]"></dummy>
+
 <h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">{m.setup_scope()}</h2>
 
 {#if $currentKubernetes || $currentCeph}
