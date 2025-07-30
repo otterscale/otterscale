@@ -5,7 +5,7 @@ import { m } from "$lib/paraglide/messages";
 
 // Types
 interface BreadcrumbState {
-    parent: string;
+    parents: string[];
     current: string;
 }
 
@@ -25,7 +25,7 @@ interface AppStores {
 
 // Create stores
 const createStores = (): AppStores => ({
-    breadcrumb: writable<BreadcrumbState>({ parent: "/", current: "/" }),
+    breadcrumb: writable<BreadcrumbState>({ parents: ["/"], current: "/" }),
     edition: writable(m.basic_edition()),
     triggerUpdateScopes: writable(false),
     activeScope: writable<Scope | undefined>(undefined),

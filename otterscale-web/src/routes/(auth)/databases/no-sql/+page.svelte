@@ -7,7 +7,7 @@
 	import Icon from '@iconify/svelte';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parent: databasesPath, current: databasesNoSQLPath });
+	breadcrumb.set({ parents: [databasesPath], current: databasesNoSQLPath });
 </script>
 
 <Alert.Root variant="destructive">

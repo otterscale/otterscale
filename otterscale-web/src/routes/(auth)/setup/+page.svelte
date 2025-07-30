@@ -3,7 +3,7 @@
 	import { breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parent: homePath, current: setupPath });
+	breadcrumb.set({ parents: [homePath], current: setupPath });
 </script>
 
 Setup Enviroment
