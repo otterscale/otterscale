@@ -6,7 +6,7 @@
 	import type { User } from 'better-auth';
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { goto } from '$app/navigation';
-	import { PremiumEdition, PremiumService } from '$lib/api/premium/v1/premium_pb';
+	import { PremiumTier, PremiumService } from '$lib/api/premium/v1/premium_pb';
 	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { Skeleton } from '$lib/components/ui/skeleton';
@@ -17,7 +17,7 @@
 		activeScope,
 		currentCeph,
 		currentKubernetes,
-		edition,
+		tier,
 		triggerUpdateScopes
 	} from '$lib/stores';
 	import { bookmarks, cephPaths, kubernetesPaths, routes } from './routes';
@@ -37,11 +37,10 @@
 	const essentialClient = createClient(EssentialService, transport);
 	const scopes = writable<Scope[]>([]);
 
-	const editionMap = {
-		[PremiumEdition.BASIC]: m.basic_edition(),
-		[PremiumEdition.PLATINUM]: m.platinum_edition(),
-		[PremiumEdition.GOLD]: m.gold_edition(),
-		[PremiumEdition.ENTERPRISE]: m.enterprise_edition()
+	const tierMap = {
+		[PremiumTier.BASIC]: m.basic_tier(),
+		[PremiumTier.ADVANCED]: m.advanced_tier(),
+		[PremiumTier.ENTERPRISE]: m.enterprise_tier()
 	};
 
 	const skeletonClasses = {
@@ -65,12 +64,12 @@
 
 	async function fetchEdition() {
 		try {
-			const response = await premiumClient.getEdition({});
-			edition.set(editionMap[response.edition]);
+			const response = await premiumClient.getTier({});
+			tier.set(tierMap[response.tier]);
 		} catch (error) {
 			const connectError = error as ConnectError;
 			if (connectError.code !== Code.Unimplemented) {
-				console.error('Failed to fetch edition:', connectError);
+				console.error('Failed to fetch tier:', connectError);
 			}
 		}
 	}
@@ -130,7 +129,7 @@
 			<ScopeSwitcher
 				active={$activeScope}
 				scopes={$scopes}
-				edition={$edition}
+				tier={$tier}
 				onSelect={handleScopeOnSelect}
 			/>
 		{:else}

@@ -42,10 +42,9 @@
 	"light_mode": "Light Mode",
 	"dark_mode": "Dark Mode",
 	"log_out": "Log Out",
-	"basic_edition": "Basic",
-	"platinum_edition": "Platinum",
-	"gold_edition": "Gold",
-	"enterprise_edition": "Enterprise",
+	"basic_tier": "Basic",
+	"advanced_tier": "Advanced",
+	"enterprise_tier": "Enterprise",
 	"under_development": "Under Development",
 	"under_development_description": "This page is currently under development and will be available soon.",
 	"current_version": "Current Version: {version}",
@@ -76,5 +75,8 @@
 	"scope_not_configured": "Scope {name} is not configured",
 	"goto": "Go",
 	"create_scope_success": "Create scope {name} success!",
-	"create_scope_error": "Fail to create scope {name}: {error}"
+	"create_scope_error": "Fail to create scope {name}: {error}",
+	"setup_scope": "Setup Scope",
+	"setup_scope_configured_description": "Your scope is already configured with the following services:",
+	"setup_scope_not_configured_description": "Choose your plan below to get started."
 }

@@ -13,12 +13,12 @@
 	let {
 		active,
 		scopes,
-		edition,
+		tier,
 		onSelect
 	}: {
 		active: Scope;
 		scopes: Scope[];
-		edition: string;
+		tier: string;
 		onSelect: (index: number) => Promise<void>;
 	} = $props();
 
@@ -130,7 +130,7 @@
 						<div {...props} class="flex h-12 w-full items-center">
 							<div class="grid flex-1 text-left text-sm leading-tight">
 								<span class="truncate font-medium">{active.name}</span>
-								<span class="truncate text-xs">{edition}</span>
+								<span class="truncate text-xs">{tier}</span>
 							</div>
 							<Icon icon="ph:caret-up-down-bold" class="ml-auto size-4 shrink-0" />
 						</div>

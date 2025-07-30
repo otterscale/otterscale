@@ -13,8 +13,8 @@ interface AppStores {
     // Navigation
     breadcrumb: Writable<BreadcrumbState>;
 
-    // Edition
-    edition: Writable<string>;
+    // Tier
+    tier: Writable<string>;
 
     // Scope & Essential
     triggerUpdateScopes: Writable<boolean>;
@@ -26,7 +26,7 @@ interface AppStores {
 // Create stores
 const createStores = (): AppStores => ({
     breadcrumb: writable<BreadcrumbState>({ parents: ["/"], current: "/" }),
-    edition: writable(m.basic_edition()),
+    tier: writable(m.basic_tier()),
     triggerUpdateScopes: writable(false),
     activeScope: writable<Scope | undefined>(undefined),
     currentCeph: writable<Essential | undefined>(undefined),
@@ -36,7 +36,7 @@ const createStores = (): AppStores => ({
 // Export individual stores
 export const {
     breadcrumb,
-    edition,
+    tier,
     triggerUpdateScopes,
     activeScope,
     currentCeph,
