@@ -77,6 +77,8 @@
 	"recommended": "Recommended",
 	"create_scope_success": "Create scope {name} success!",
 	"create_scope_error": "Fail to create scope {name}: {error}",
+	"setup_environment": "Setup Environment",
+	"setup_environment_description": "Copy the following command and execute it on the computer you want to use as the control node.",
 	"setup_scope": "Setup Scope",
 	"setup_scope_configured_description": "Your scope is already configured with the following facilities:",
 	"setup_scope_not_configured_description": "Choose your plan below to get started.",
