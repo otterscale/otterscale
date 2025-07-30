@@ -49,7 +49,6 @@ func NewEnvironmentUseCase(scope ScopeRepo, action ActionRepo, facility Facility
 
 //nolint:mnd
 func (uc *EnvironmentUseCase) CheckHealth(ctx context.Context) (int32, error) {
-	return 21, nil // NOT_INSTALLED
 	if uc.conf.MAAS.Key == "::" {
 		return 21, nil // NOT_INSTALLED
 	}
