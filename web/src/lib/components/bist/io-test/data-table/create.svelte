@@ -122,7 +122,7 @@
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
-																class={cn('size-5', item.icon ? 'visibale' : 'invisible')}
+																class={cn('size-5', item.icon ? 'visible' : 'invisible')}
 															/>
 															{item.label}
 															<SingleSelect.Check option={item} />
@@ -180,7 +180,7 @@
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
-																class={cn('size-5', item.icon ? 'visibale' : 'invisible')}
+																class={cn('size-5', item.icon ? 'visible' : 'invisible')}
 															/>
 															{item.label}
 															<SingleSelect.Check option={item} />

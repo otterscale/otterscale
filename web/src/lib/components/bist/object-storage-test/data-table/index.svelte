@@ -112,7 +112,7 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="createdBy" {table} values={$data.map((row) => row.createdBy)} alias="Creater" />
+			<PointFilter columnId="createdBy" {table} values={$data.map((row) => row.createdBy)} alias="Creator" />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

@@ -101,7 +101,7 @@
 
 {#snippet createdBy(column: Column<TestResult>)}
 	<div class="flex items-center gap-1">
-		<p class="text-xs font-light">CREATER</p>
+		<p class="text-xs font-light">CREATOR</p>
 		<Sorter {column} />
 	</div>
 {/snippet}
