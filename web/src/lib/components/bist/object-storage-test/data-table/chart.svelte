@@ -3,64 +3,26 @@
 	import { BistDashboardManager } from '$lib/components/bist/utils/bistManager';
 	import { Chart as Layout } from '$lib/components/custom/chart/layouts/index';
 	import * as Template from '$lib/components/dashboard/utils/templates';
-	import * as Select from "$lib/components/ui/select/index.js";
 	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
 	import { type Table } from '@tanstack/table-core';
-	import { scaleLog } from 'd3-scale';
 	import dayjs from 'dayjs';
 	import { ScatterChart, Tooltip } from 'layerchart';
+	import Pickers from './pickers.svelte';
 
+    let { table }: { table: Table<TestResult> } = $props();
 	let renderContext: 'svg' | 'canvas' = 'svg';
 	let debug = false;
-
-    // 確保泛型 TData 被正確設定為 TestResult
-    let { table }: { table: Table<TestResult> } = $props();
-
+	let mode = $state("put");
 	const dashboardManager = new BistDashboardManager(table);
-
-
-    const modes = [
-        { value: "get", label: "GET" },
-        { value: "put", label: "PUT" },
-        { value: "delete", label: "DELETE" }
-    ];
-    
-    let modeThroughputFastest = $state("get");
-    let modeThroughputMedian = $state("get");
-
-    const triggerBandwidthContent = $derived(
-        modes.find((m) => m.value === modeThroughputFastest)?.label ?? "Select a mode"
-    );
-    const triggerIOContent = $derived(
-        modes.find((m) => m.value === modeThroughputMedian)?.label ?? "Select a mode"
-    );
 </script>
 
+<Pickers bind:selectedMode={mode} />
 <Layout>
     {@const { get: getTmp, put: putTmp, delete: deleteTmp } = dashboardManager.getWarpOutputs()}
     <!-- Show FioOutputs at the side -->
 	<Template.Area title="Throughput">
 		{#snippet hint()}
 			<p>Throughput Fastest</p>
-		{/snippet}
-        {#snippet controller()}
-            <Select.Root type="single" name="ioMode" bind:value={modeThroughputFastest}>
-            <Select.Trigger class="w-[180px]">
-                {triggerBandwidthContent}
-            </Select.Trigger>
-            <Select.Content>
-                <Select.Group>
-                {#each modes as mode (mode.value)}
-                    <Select.Item
-                    value={mode.value}
-                    label={mode.label}
-                    >
-                    {mode.label}
-                    </Select.Item>
-                {/each}
-                </Select.Group>
-            </Select.Content>
-            </Select.Root>
 		{/snippet}
 		{#snippet description()}
 			<p class="text-xl">Fastest</p>
@@ -71,11 +33,10 @@
 						x="completedAt"
 						y="bytesFastest"
                         series={Object.values(
-                            modeThroughputFastest === "get" ? getTmp :
-                            modeThroughputFastest === "put" ? putTmp :
+                            mode === "get" ? getTmp :
+                            mode === "put" ? putTmp :
                             deleteTmp
                         )}
-						yScale={scaleLog()}
 						props={{
 							xAxis: { 
 								tweened: { duration: 200 },
@@ -116,26 +77,62 @@
 
 	<Template.Area title="Throughput">
 		{#snippet hint()}
-			<p>Throughput Fastest</p>
+			<p>Throughput Slowest</p>
 		{/snippet}
-        {#snippet controller()}
-            <Select.Root type="single" name="ioMode" bind:value={modeThroughputMedian}>
-            <Select.Trigger class="w-[180px]">
-                {triggerIOContent}
-            </Select.Trigger>
-            <Select.Content>
-                <Select.Group>
-                {#each modes as mode (mode.value)}
-                    <Select.Item
-                    value={mode.value}
-                    label={mode.label}
-                    >
-                    {mode.label}
-                    </Select.Item>
-                {/each}
-                </Select.Group>
-            </Select.Content>
-            </Select.Root>
+		{#snippet description()}
+			<p class="text-xl">Slowest</p>
+		{/snippet}
+		{#snippet content()}
+				<div class="h-[200px] w-full resize overflow-visible">
+					<ScatterChart
+						x="completedAt"
+						y="bytesSlowest"
+                        series={Object.values(
+                            mode === "get" ? getTmp :
+                            mode === "put" ? putTmp :
+                            deleteTmp
+                        )}
+						props={{
+							xAxis: { 
+								tweened: { duration: 200 },
+								format: (d: Date) => dayjs(d).format('MM/DD')
+							},
+							yAxis: {
+								format: (v: number) => {
+									const capacity = formatCapacity(v);
+									return `${Number(capacity.value).toFixed(0)} ${capacity.unit}`;
+								}
+							},
+							grid: { tweened: { duration: 200 } },
+							points: { tweened: { duration: 200 } },
+						}}
+						legend={{
+							classes: { root: '-mb-[50px] w-full overflow-auto' }
+						}}
+						{renderContext}
+						{debug}
+					>
+						<svelte:fragment slot="tooltip">
+							<Tooltip.Root let:data>
+							<Tooltip.Header class='font-light'>{data.seriesKey}</Tooltip.Header>
+							<Tooltip.List>
+								<Tooltip.Item label="Name" value={(data.name)} />
+								<Tooltip.Item
+									label="Bandwidth"
+									value={`${Number(formatCapacity(data.bytesSlowest).value).toFixed(0)} ${formatCapacity(data.bytesSlowest).unit}`}
+								/>
+								<Tooltip.Item label="Date" value={dayjs(data.completedAt).format('YYYY/MM/DD HH:mm')} />
+							</Tooltip.List>
+							</Tooltip.Root>
+						</svelte:fragment>
+					</ScatterChart>
+				</div>
+		{/snippet}
+	</Template.Area>
+
+	<Template.Area title="Throughput">
+		{#snippet hint()}
+			<p>Throughput Fastest</p>
 		{/snippet}
 		{#snippet description()}
 			<p class="text-xl">Median</p>
@@ -146,11 +143,10 @@
 						x="completedAt"
 						y="bytesMedian"
                         series={Object.values(
-                            modeThroughputMedian === "get" ? getTmp :
-                            modeThroughputMedian === "put" ? putTmp :
+                            mode === "get" ? getTmp :
+                            mode === "put" ? putTmp :
                             deleteTmp
                         )}
-						yScale={scaleLog()}
 						props={{
 							xAxis: { 
 								tweened: { duration: 200 },

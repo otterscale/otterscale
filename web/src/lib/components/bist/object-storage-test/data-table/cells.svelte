@@ -16,6 +16,9 @@
 		duration: duration,
 		objectSize: objectSize, 
 		objectCount: objectCount,
+		throughputFastest: throughputFastest,
+		throughputSlowest: throughputSlowest,
+		throughputMedian: throughputMedian,
 		createdBy: createdBy,
 		startedAt: startedAt,
 		completedAt: completedAt
@@ -65,6 +68,12 @@
 	</p>
 {/snippet}
 
+{#snippet createdBy(row: Row<TestResult>)}
+	<p>
+		{row.original.createdBy}
+	</p>
+{/snippet}
+
 {#snippet operation(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'warp' &&  row.original.kind.value?.input}
@@ -94,11 +103,76 @@
 	</p>
 {/snippet}
 
+{#snippet throughputFastest(row: Row<TestResult>)}
+	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
+		<p>
+			<Badge variant="outline">
+				G: {(Number(row.original.kind.value.output.get.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.put?.bytes}
+		<p class={row.original.kind.value?.output?.put ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				P: {(Number(row.original.kind.value.output.put.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
+		<p class={(row.original.kind.value?.output?.get || row.original.kind.value?.output?.put) ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				D: {(Number(row.original.kind.value.output.delete.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
+			</Badge>
+		</p>
+	{/if}
+{/snippet}
 
-{#snippet createdBy(row: Row<TestResult>)}
-	<p>
-		{row.original.createdBy}
-	</p>
+{#snippet throughputSlowest(row: Row<TestResult>)}
+	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
+		<p>
+			<Badge variant="outline">
+				G: {(Number(row.original.kind.value.output.get.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.put?.bytes}
+		<p class={row.original.kind.value?.output?.put ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				P: {(Number(row.original.kind.value.output.put.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
+		<p class={(row.original.kind.value?.output?.get || row.original.kind.value?.output?.put) ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				D: {(Number(row.original.kind.value.output.delete.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
+			</Badge>
+		</p>
+	{/if}
+{/snippet}
+
+{#snippet throughputMedian(row: Row<TestResult>)}
+	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
+		<p>
+			<Badge variant="outline">
+				G: {(Number(row.original.kind.value.output.get.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.put?.bytes}
+		<p class={row.original.kind.value?.output?.put ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				P: {(Number(row.original.kind.value.output.put.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
+		<p class={(row.original.kind.value?.output?.get || row.original.kind.value?.output?.put) ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				D: {(Number(row.original.kind.value.output.delete.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
+			</Badge>
+		</p>
+	{/if}
 {/snippet}
 
 {#snippet startedAt(row: Row<TestResult>)}

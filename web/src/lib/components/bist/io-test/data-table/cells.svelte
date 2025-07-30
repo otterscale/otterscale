@@ -18,6 +18,11 @@
 		blockSize: blockSize,
 		fileSize: fileSize,
 		ioDepth: ioDepth,
+		bandwidth: bandwidth,
+		iops: iops,
+		latencyMin: latencyMin,
+		latencyMax: latencyMax,
+		latencyMean: latencyMean,
 		createdBy: createdBy,
 		startedAt: startedAt,
 		completedAt: completedAt
@@ -121,6 +126,136 @@
 	</p>
 {/snippet}
 
+{#snippet bandwidth(row: Row<TestResult>)}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
+		<p>
+			<Badge variant="outline">
+				R: {(Number(row.original.kind.value.output.read.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write}
+		<p class={row.original.kind.value?.output?.read ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				W: {(Number(row.original.kind.value.output.write.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim}
+		<p class={(row.original.kind.value?.output?.read || row.original.kind.value?.output?.write) ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				T: {(Number(row.original.kind.value.output.trim.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
+			</Badge>
+		</p>
+	{/if}
+{/snippet}
+
+{#snippet iops(row: Row<TestResult>)}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
+		<p>
+			<Badge variant="outline">
+				R: {row.original.kind.value.output.read.ioPerSecond.toFixed(0)}
+			</Badge>	
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write}
+		<p class={row.original.kind.value?.output?.read ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				W: {row.original.kind.value.output.write.ioPerSecond.toFixed(0)}
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim}
+		<p class={(row.original.kind.value?.output?.read || row.original.kind.value?.output?.write) ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				T: {row.original.kind.value.output.trim.ioPerSecond.toFixed(0)}
+			</Badge>
+		</p>
+	{/if}
+{/snippet}
+
+{#snippet latencyMin(row: Row<TestResult>)}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
+		<p>
+			<Badge variant="outline">
+				R: 
+				{(Number(row.original.kind.value.output.read.latency.minNanoseconds) / 1000000).toFixed(3)} ms
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
+		<p class={row.original.kind.value?.output?.read ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				W: 
+				{(Number(row.original.kind.value.output.write.latency.minNanoseconds) / 1000000).toFixed(3)} ms
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
+		<p class={(row.original.kind.value?.output?.read || row.original.kind.value?.output?.write) ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				T: 
+				{(Number(row.original.kind.value.output.trim.latency.minNanoseconds) / 1000000).toFixed(3)} ms
+			</Badge>
+		</p>
+	{/if}
+{/snippet}
+
+{#snippet latencyMax(row: Row<TestResult>)}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
+		<p>
+			<Badge variant="outline">
+				R: 
+				{(Number(row.original.kind.value.output.read.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
+		<p class={row.original.kind.value?.output?.read ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				W: 
+				{(Number(row.original.kind.value.output.write.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
+		<p class={(row.original.kind.value?.output?.read || row.original.kind.value?.output?.write) ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				T: 
+				{(Number(row.original.kind.value.output.trim.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
+			</Badge>
+		</p>
+	{/if}
+{/snippet}
+
+
+{#snippet latencyMean(row: Row<TestResult>)}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
+		<p>
+			<Badge variant="outline">
+				R: 
+				{(Number(row.original.kind.value.output.read.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
+		<p class={row.original.kind.value?.output?.read ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				W: 
+				{(Number(row.original.kind.value.output.write.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
+			</Badge>
+		</p>
+	{/if}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
+		<p class={(row.original.kind.value?.output?.read || row.original.kind.value?.output?.write) ? 'mt-1' : ''}>
+			<Badge variant="outline">
+				T: 
+				{(Number(row.original.kind.value.output.trim.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
+			</Badge>
+		</p>
+	{/if}
+{/snippet}
+
 {#snippet startedAt(row: Row<TestResult>)}
 	{#if row.original.startedAt}
 		{formatTimeAgo(timestampDate(row.original.startedAt))}
@@ -134,5 +269,3 @@
 		{/if}
 	{/if}
 {/snippet}
-
-

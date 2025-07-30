@@ -33,6 +33,15 @@ const columns: ColumnDef<TestResult>[] = [
         },
     },
     {
+        accessorKey: "createdBy",
+        header: ({ column }) => {
+            return renderSnippet(headers.createdBy, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.createdBy, row);
+        },
+    },
+    {
         accessorKey: "operation",
         header: ({ column }) => {
             return renderSnippet(headers.operation, column)
@@ -69,12 +78,30 @@ const columns: ColumnDef<TestResult>[] = [
         },
     },
     {
-        accessorKey: "createdBy",
+        accessorKey: "throughputFastest",
         header: ({ column }) => {
-            return renderSnippet(headers.createdBy, column)
+            return renderSnippet(headers.throughputFastest, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.createdBy, row);
+            return renderSnippet(cells.throughputFastest, row);
+        },
+    },
+    {
+        accessorKey: "throughputSlowest",
+        header: ({ column }) => {
+            return renderSnippet(headers.throughputSlowest, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.throughputSlowest, row);
+        },
+    },
+    {
+        accessorKey: "throughputMedian",
+        header: ({ column }) => {
+            return renderSnippet(headers.throughputMedian, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.throughputMedian, row);
         },
     },
     {
