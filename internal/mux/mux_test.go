@@ -86,7 +86,7 @@ func TestNew_ServiceHandlersRegistered(t *testing.T) {
 	serviceEndpoints := []string{
 		"/otterscale.application.v1.ApplicationService/ListApplications",
 		"/otterscale.configuration.v1.ConfigurationService/GetConfiguration",
-		"/otterscale.environment.v1.EnvironmentService/CheckHealthy", // Updated
+		"/otterscale.environment.v1.EnvironmentService/CheckHealth", // Updated
 		"/otterscale.facility.v1.FacilityService/ListFacilities",
 		"/otterscale.essential.v1.EssentialService/ListEssentials", // Updated
 		"/otterscale.machine.v1.MachineService/ListMachines",
