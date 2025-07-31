@@ -32,18 +32,25 @@
 	const environmentClient = createClient(EnvironmentService, transport);
 
 	async function watchStatuses() {
-		for await (const status of environmentClient.watchStatuses({})) {
-			statusStore.update((state) => ({
-				...state,
-				started: status.started,
-				messages: [...state.messages, status]
-			}));
+		while (true) {
+			try {
+				for await (const status of environmentClient.watchStatuses({})) {
+					statusStore.update((state) => ({
+						...state,
+						started: status.started,
+						messages: [...state.messages, status]
+					}));
+				}
+				break;
+			} catch (error) {
+				console.error('Error watching statuses:', error);
+				await new Promise((resolve) => setTimeout(resolve, 2000));
+			}
 		}
 	}
 
 	let terminal: HTMLDivElement | undefined = $state();
 	function scrollToBottom() {
-		console.log(terminal?.scrollHeight);
 		if (terminal) {
 			terminal.scrollTop = terminal.scrollHeight;
 		}
