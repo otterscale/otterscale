@@ -20,13 +20,13 @@ type EnvironmentService struct {
 
 	uc         *core.EnvironmentUseCase
 	clients    sync.Map
-	statusChan chan *pb.WatchStatusesResponse
+	statusChan chan *pb.WatchStatusResponse
 }
 
 func NewEnvironmentService(uc *core.EnvironmentUseCase) *EnvironmentService {
 	s := &EnvironmentService{
 		uc:         uc,
-		statusChan: make(chan *pb.WatchStatusesResponse, statusChanSize),
+		statusChan: make(chan *pb.WatchStatusResponse, statusChanSize),
 	}
 	go s.broadcastStatus()
 	return s
@@ -44,27 +44,40 @@ func (s *EnvironmentService) CheckHealth(ctx context.Context, req *connect.Reque
 	return connect.NewResponse(resp), nil
 }
 
-func (s *EnvironmentService) WatchStatuses(ctx context.Context, req *connect.Request[pb.WatchStatusesRequest], stream *connect.ServerStream[pb.WatchStatusesResponse]) error {
-	s.clients.Store(stream, "")
+func (s *EnvironmentService) WatchStatus(ctx context.Context, req *connect.Request[pb.WatchStatusRequest], stream *connect.ServerStream[pb.WatchStatusResponse]) error {
+	// Send initial status to the new client
+	status := s.uc.LoadStatus(ctx)
+	if err := stream.Send(toProtoWatchStatus(status)); err != nil {
+		return err
+	}
+
+	// Register client for status updates
+	s.clients.Store(stream, struct{}{})
+	defer s.clients.Delete(stream)
+
+	// Wait for context cancellation
 	<-ctx.Done()
-	s.clients.Delete(stream)
 	return ctx.Err()
 }
 
 func (s *EnvironmentService) UpdateStatus(ctx context.Context, req *connect.Request[pb.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error) {
+	// Update the environment status in the use case layer
 	s.uc.StoreStatus(ctx, req.Msg.GetPhase(), req.Msg.GetMessage())
+
+	status := s.uc.LoadStatus(ctx)
 	select {
-	case s.statusChan <- toProtoWatchStatus(s.uc.LoadStatus(ctx)):
+	case s.statusChan <- toProtoWatchStatus(status):
 	default:
-		// Non-blocking send to avoid deadlock if no one is listening
+		// Non-blocking send to avoid deadlock if channel is full
 	}
+
 	return connect.NewResponse(&emptypb.Empty{}), nil
 }
 
 func (s *EnvironmentService) broadcastStatus() {
 	for status := range s.statusChan {
 		s.clients.Range(func(key, _ any) bool {
-			stream := key.(*connect.ServerStream[pb.WatchStatusesResponse])
+			stream := key.(*connect.ServerStream[pb.WatchStatusResponse])
 			if err := stream.Send(status); err != nil {
 				s.clients.Delete(stream)
 			}
@@ -122,9 +135,10 @@ func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 	}
 }
 
-func toProtoWatchStatus(status *core.EnvironmentStatus) *pb.WatchStatusesResponse {
-	ret := &pb.WatchStatusesResponse{}
+func toProtoWatchStatus(status *core.EnvironmentStatus) *pb.WatchStatusResponse {
+	ret := &pb.WatchStatusResponse{}
 	ret.SetStarted(status.Started)
+	ret.SetFinished(status.Finished)
 	ret.SetPhase(status.Phase)
 	ret.SetMessage(status.Message)
 	return ret

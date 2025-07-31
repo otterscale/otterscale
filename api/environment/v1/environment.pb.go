@@ -185,26 +185,26 @@ func (b0 CheckHealthResponse_builder) Build() *CheckHealthResponse {
 	return m0
 }
 
-type WatchStatusesRequest struct {
+type WatchStatusRequest struct {
 	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *WatchStatusesRequest) Reset() {
-	*x = WatchStatusesRequest{}
+func (x *WatchStatusRequest) Reset() {
+	*x = WatchStatusRequest{}
 	mi := &file_api_environment_v1_environment_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *WatchStatusesRequest) String() string {
+func (x *WatchStatusRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*WatchStatusesRequest) ProtoMessage() {}
+func (*WatchStatusRequest) ProtoMessage() {}
 
-func (x *WatchStatusesRequest) ProtoReflect() protoreflect.Message {
+func (x *WatchStatusRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_environment_v1_environment_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -216,43 +216,44 @@ func (x *WatchStatusesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-type WatchStatusesRequest_builder struct {
+type WatchStatusRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 }
 
-func (b0 WatchStatusesRequest_builder) Build() *WatchStatusesRequest {
-	m0 := &WatchStatusesRequest{}
+func (b0 WatchStatusRequest_builder) Build() *WatchStatusRequest {
+	m0 := &WatchStatusRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	return m0
 }
 
-type WatchStatusesResponse struct {
+type WatchStatusResponse struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Started     bool                   `protobuf:"varint,1,opt,name=started"`
-	xxx_hidden_Phase       *string                `protobuf:"bytes,2,opt,name=phase"`
-	xxx_hidden_Message     *string                `protobuf:"bytes,3,opt,name=message"`
+	xxx_hidden_Finished    bool                   `protobuf:"varint,2,opt,name=finished"`
+	xxx_hidden_Phase       *string                `protobuf:"bytes,11,opt,name=phase"`
+	xxx_hidden_Message     *string                `protobuf:"bytes,12,opt,name=message"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *WatchStatusesResponse) Reset() {
-	*x = WatchStatusesResponse{}
+func (x *WatchStatusResponse) Reset() {
+	*x = WatchStatusResponse{}
 	mi := &file_api_environment_v1_environment_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *WatchStatusesResponse) String() string {
+func (x *WatchStatusResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*WatchStatusesResponse) ProtoMessage() {}
+func (*WatchStatusResponse) ProtoMessage() {}
 
-func (x *WatchStatusesResponse) ProtoReflect() protoreflect.Message {
+func (x *WatchStatusResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_environment_v1_environment_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -264,14 +265,21 @@ func (x *WatchStatusesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *WatchStatusesResponse) GetStarted() bool {
+func (x *WatchStatusResponse) GetStarted() bool {
 	if x != nil {
 		return x.xxx_hidden_Started
 	}
 	return false
 }
 
-func (x *WatchStatusesResponse) GetPhase() string {
+func (x *WatchStatusResponse) GetFinished() bool {
+	if x != nil {
+		return x.xxx_hidden_Finished
+	}
+	return false
+}
+
+func (x *WatchStatusResponse) GetPhase() string {
 	if x != nil {
 		if x.xxx_hidden_Phase != nil {
 			return *x.xxx_hidden_Phase
@@ -281,7 +289,7 @@ func (x *WatchStatusesResponse) GetPhase() string {
 	return ""
 }
 
-func (x *WatchStatusesResponse) GetMessage() string {
+func (x *WatchStatusResponse) GetMessage() string {
 	if x != nil {
 		if x.xxx_hidden_Message != nil {
 			return *x.xxx_hidden_Message
@@ -291,79 +299,101 @@ func (x *WatchStatusesResponse) GetMessage() string {
 	return ""
 }
 
-func (x *WatchStatusesResponse) SetStarted(v bool) {
+func (x *WatchStatusResponse) SetStarted(v bool) {
 	x.xxx_hidden_Started = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *WatchStatusesResponse) SetPhase(v string) {
+func (x *WatchStatusResponse) SetFinished(v bool) {
+	x.xxx_hidden_Finished = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
+func (x *WatchStatusResponse) SetPhase(v string) {
 	x.xxx_hidden_Phase = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *WatchStatusesResponse) SetMessage(v string) {
+func (x *WatchStatusResponse) SetMessage(v string) {
 	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *WatchStatusesResponse) HasStarted() bool {
+func (x *WatchStatusResponse) HasStarted() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *WatchStatusesResponse) HasPhase() bool {
+func (x *WatchStatusResponse) HasFinished() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *WatchStatusesResponse) HasMessage() bool {
+func (x *WatchStatusResponse) HasPhase() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *WatchStatusesResponse) ClearStarted() {
+func (x *WatchStatusResponse) HasMessage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *WatchStatusResponse) ClearStarted() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_Started = false
 }
 
-func (x *WatchStatusesResponse) ClearPhase() {
+func (x *WatchStatusResponse) ClearFinished() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Finished = false
+}
+
+func (x *WatchStatusResponse) ClearPhase() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Phase = nil
 }
 
-func (x *WatchStatusesResponse) ClearMessage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+func (x *WatchStatusResponse) ClearMessage() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Message = nil
 }
 
-type WatchStatusesResponse_builder struct {
+type WatchStatusResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Started *bool
-	Phase   *string
-	Message *string
+	Started  *bool
+	Finished *bool
+	Phase    *string
+	Message  *string
 }
 
-func (b0 WatchStatusesResponse_builder) Build() *WatchStatusesResponse {
-	m0 := &WatchStatusesResponse{}
+func (b0 WatchStatusResponse_builder) Build() *WatchStatusResponse {
+	m0 := &WatchStatusResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Started != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Started = *b.Started
 	}
+	if b.Finished != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_Finished = *b.Finished
+	}
 	if b.Phase != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Phase = b.Phase
 	}
 	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Message = b.Message
 	}
 	return m0
@@ -1157,12 +1187,13 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\x06Result\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\x06\n" +
 	"\x02OK\x10\v\x12\x11\n" +
-	"\rNOT_INSTALLED\x10\x15\"\x16\n" +
-	"\x14WatchStatusesRequest\"a\n" +
-	"\x15WatchStatusesResponse\x12\x18\n" +
-	"\astarted\x18\x01 \x01(\bR\astarted\x12\x14\n" +
-	"\x05phase\x18\x02 \x01(\tR\x05phase\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\"E\n" +
+	"\rNOT_INSTALLED\x10\x15\"\x14\n" +
+	"\x12WatchStatusRequest\"{\n" +
+	"\x13WatchStatusResponse\x12\x18\n" +
+	"\astarted\x18\x01 \x01(\bR\astarted\x12\x1a\n" +
+	"\bfinished\x18\x02 \x01(\bR\bfinished\x12\x14\n" +
+	"\x05phase\x18\v \x01(\tR\x05phase\x12\x18\n" +
+	"\amessage\x18\f \x01(\tR\amessage\"E\n" +
 	"\x13UpdateStatusRequest\x12\x14\n" +
 	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"\x94\x04\n" +
@@ -1187,10 +1218,10 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"Prometheus\x12\x1a\n" +
 	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x19\n" +
 	"\bbase_url\x18\x02 \x01(\tR\abaseUrl\"\x16\n" +
-	"\x14GetPrometheusRequest2\x89\x05\n" +
+	"\x14GetPrometheusRequest2\x83\x05\n" +
 	"\x12EnvironmentService\x12l\n" +
-	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12t\n" +
-	"\rWatchStatuses\x12/.otterscale.environment.v1.WatchStatusesRequest\x1a0.otterscale.environment.v1.WatchStatusesResponse0\x01\x12V\n" +
+	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12n\n" +
+	"\vWatchStatus\x12-.otterscale.environment.v1.WatchStatusRequest\x1a..otterscale.environment.v1.WatchStatusResponse0\x01\x12V\n" +
 	"\fUpdateStatus\x12..otterscale.environment.v1.UpdateStatusRequest\x1a\x16.google.protobuf.Empty\x12V\n" +
 	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\x12v\n" +
 	"\x1cUpdateConfigHelmRepositories\x12>.otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest\x1a\x16.google.protobuf.Empty\x12g\n" +
@@ -1202,8 +1233,8 @@ var file_api_environment_v1_environment_proto_goTypes = []any{
 	(CheckHealthResponse_Result)(0),             // 0: otterscale.environment.v1.CheckHealthResponse.Result
 	(*CheckHealthRequest)(nil),                  // 1: otterscale.environment.v1.CheckHealthRequest
 	(*CheckHealthResponse)(nil),                 // 2: otterscale.environment.v1.CheckHealthResponse
-	(*WatchStatusesRequest)(nil),                // 3: otterscale.environment.v1.WatchStatusesRequest
-	(*WatchStatusesResponse)(nil),               // 4: otterscale.environment.v1.WatchStatusesResponse
+	(*WatchStatusRequest)(nil),                  // 3: otterscale.environment.v1.WatchStatusRequest
+	(*WatchStatusResponse)(nil),                 // 4: otterscale.environment.v1.WatchStatusResponse
 	(*UpdateStatusRequest)(nil),                 // 5: otterscale.environment.v1.UpdateStatusRequest
 	(*UpdateConfigRequest)(nil),                 // 6: otterscale.environment.v1.UpdateConfigRequest
 	(*UpdateConfigHelmRepositoriesRequest)(nil), // 7: otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
@@ -1214,13 +1245,13 @@ var file_api_environment_v1_environment_proto_goTypes = []any{
 var file_api_environment_v1_environment_proto_depIdxs = []int32{
 	0,  // 0: otterscale.environment.v1.CheckHealthResponse.result:type_name -> otterscale.environment.v1.CheckHealthResponse.Result
 	1,  // 1: otterscale.environment.v1.EnvironmentService.CheckHealth:input_type -> otterscale.environment.v1.CheckHealthRequest
-	3,  // 2: otterscale.environment.v1.EnvironmentService.WatchStatuses:input_type -> otterscale.environment.v1.WatchStatusesRequest
+	3,  // 2: otterscale.environment.v1.EnvironmentService.WatchStatus:input_type -> otterscale.environment.v1.WatchStatusRequest
 	5,  // 3: otterscale.environment.v1.EnvironmentService.UpdateStatus:input_type -> otterscale.environment.v1.UpdateStatusRequest
 	6,  // 4: otterscale.environment.v1.EnvironmentService.UpdateConfig:input_type -> otterscale.environment.v1.UpdateConfigRequest
 	7,  // 5: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:input_type -> otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
 	9,  // 6: otterscale.environment.v1.EnvironmentService.GetPrometheus:input_type -> otterscale.environment.v1.GetPrometheusRequest
 	2,  // 7: otterscale.environment.v1.EnvironmentService.CheckHealth:output_type -> otterscale.environment.v1.CheckHealthResponse
-	4,  // 8: otterscale.environment.v1.EnvironmentService.WatchStatuses:output_type -> otterscale.environment.v1.WatchStatusesResponse
+	4,  // 8: otterscale.environment.v1.EnvironmentService.WatchStatus:output_type -> otterscale.environment.v1.WatchStatusResponse
 	10, // 9: otterscale.environment.v1.EnvironmentService.UpdateStatus:output_type -> google.protobuf.Empty
 	10, // 10: otterscale.environment.v1.EnvironmentService.UpdateConfig:output_type -> google.protobuf.Empty
 	10, // 11: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:output_type -> google.protobuf.Empty

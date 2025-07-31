@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/environment/v1/environment.proto.
  */
 export const file_api_environment_v1_environment: GenFile = /*@__PURE__*/
-  fileDesc("CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFAoSQ2hlY2tIZWFsdGhSZXF1ZXN0IpIBChNDaGVja0hlYWx0aFJlc3BvbnNlEkUKBnJlc3VsdBgBIAEoDjI1Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZS5SZXN1bHQiNAoGUmVzdWx0Eg8KC1VOU1BFQ0lGSUVEEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUiFgoUV2F0Y2hTdGF0dXNlc1JlcXVlc3QiSAoVV2F0Y2hTdGF0dXNlc1Jlc3BvbnNlEg8KB3N0YXJ0ZWQYASABKAgSDQoFcGhhc2UYAiABKAkSDwoHbWVzc2FnZRgDIAEoCSI1ChNVcGRhdGVTdGF0dXNSZXF1ZXN0Eg0KBXBoYXNlGAEgASgJEg8KB21lc3NhZ2UYAiABKAki0wIKE1VwZGF0ZUNvbmZpZ1JlcXVlc3QSEAoIbWFhc191cmwYASABKAkSEAoIbWFhc19rZXkYAiABKAkSFAoMbWFhc192ZXJzaW9uGAMgASgJEhcKD2p1anVfY29udHJvbGxlchgLIAEoCRIhChlqdWp1X2NvbnRyb2xsZXJfYWRkcmVzc2VzGAwgAygJEhUKDWp1anVfdXNlcm5hbWUYDSABKAkSFQoNanVqdV9wYXNzd29yZBgOIAEoCRIUCgxqdWp1X2NhX2NlcnQYDyABKAkSFwoPanVqdV9jbG91ZF9uYW1lGBUgASgJEhkKEWp1anVfY2xvdWRfcmVnaW9uGBYgASgJEh0KFWp1anVfY2hhcm1odWJfYXBpX3VybBgXIAEoCRIWCg5taWNyb19rOHNfaG9zdBgfIAEoCRIXCg9taWNyb19rOHNfdG9rZW4YICABKAkiMwojVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllc1JlcXVlc3QSDAoEdXJscxgBIAMoCSIwCgpQcm9tZXRoZXVzEhAKCGVuZHBvaW50GAEgASgJEhAKCGJhc2VfdXJsGAIgASgJIhYKFEdldFByb21ldGhldXNSZXF1ZXN0MokFChJFbnZpcm9ubWVudFNlcnZpY2USbAoLQ2hlY2tIZWFsdGgSLS5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLkNoZWNrSGVhbHRoUmVxdWVzdBouLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZRJ0Cg1XYXRjaFN0YXR1c2VzEi8ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5XYXRjaFN0YXR1c2VzUmVxdWVzdBowLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuV2F0Y2hTdGF0dXNlc1Jlc3BvbnNlMAESVgoMVXBkYXRlU3RhdHVzEi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVTdGF0dXNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElYKDFVwZGF0ZUNvbmZpZxIuLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlQ29uZmlnUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJ2ChxVcGRhdGVDb25maWdIZWxtUmVwb3NpdG9yaWVzEj4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVDb25maWdIZWxtUmVwb3NpdG9yaWVzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJnCg1HZXRQcm9tZXRoZXVzEi8ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5HZXRQcm9tZXRoZXVzUmVxdWVzdBolLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuUHJvbWV0aGV1c0I1WjNnaXRodWIuY29tL29wZW5oZGMvb3R0ZXJzY2FsZS9hcGkvZW52aXJvbm1lbnQvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty]);
+  fileDesc("CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFAoSQ2hlY2tIZWFsdGhSZXF1ZXN0IpIBChNDaGVja0hlYWx0aFJlc3BvbnNlEkUKBnJlc3VsdBgBIAEoDjI1Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZS5SZXN1bHQiNAoGUmVzdWx0Eg8KC1VOU1BFQ0lGSUVEEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUiFAoSV2F0Y2hTdGF0dXNSZXF1ZXN0IlgKE1dhdGNoU3RhdHVzUmVzcG9uc2USDwoHc3RhcnRlZBgBIAEoCBIQCghmaW5pc2hlZBgCIAEoCBINCgVwaGFzZRgLIAEoCRIPCgdtZXNzYWdlGAwgASgJIjUKE1VwZGF0ZVN0YXR1c1JlcXVlc3QSDQoFcGhhc2UYASABKAkSDwoHbWVzc2FnZRgCIAEoCSLTAgoTVXBkYXRlQ29uZmlnUmVxdWVzdBIQCghtYWFzX3VybBgBIAEoCRIQCghtYWFzX2tleRgCIAEoCRIUCgxtYWFzX3ZlcnNpb24YAyABKAkSFwoPanVqdV9jb250cm9sbGVyGAsgASgJEiEKGWp1anVfY29udHJvbGxlcl9hZGRyZXNzZXMYDCADKAkSFQoNanVqdV91c2VybmFtZRgNIAEoCRIVCg1qdWp1X3Bhc3N3b3JkGA4gASgJEhQKDGp1anVfY2FfY2VydBgPIAEoCRIXCg9qdWp1X2Nsb3VkX25hbWUYFSABKAkSGQoRanVqdV9jbG91ZF9yZWdpb24YFiABKAkSHQoVanVqdV9jaGFybWh1Yl9hcGlfdXJsGBcgASgJEhYKDm1pY3JvX2s4c19ob3N0GB8gASgJEhcKD21pY3JvX2s4c190b2tlbhggIAEoCSIzCiNVcGRhdGVDb25maWdIZWxtUmVwb3NpdG9yaWVzUmVxdWVzdBIMCgR1cmxzGAEgAygJIjAKClByb21ldGhldXMSEAoIZW5kcG9pbnQYASABKAkSEAoIYmFzZV91cmwYAiABKAkiFgoUR2V0UHJvbWV0aGV1c1JlcXVlc3QygwUKEkVudmlyb25tZW50U2VydmljZRJsCgtDaGVja0hlYWx0aBItLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXF1ZXN0Gi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5DaGVja0hlYWx0aFJlc3BvbnNlEm4KC1dhdGNoU3RhdHVzEi0ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5XYXRjaFN0YXR1c1JlcXVlc3QaLi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLldhdGNoU3RhdHVzUmVzcG9uc2UwARJWCgxVcGRhdGVTdGF0dXMSLi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlVwZGF0ZVN0YXR1c1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSVgoMVXBkYXRlQ29uZmlnEi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVDb25maWdSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EnYKHFVwZGF0ZUNvbmZpZ0hlbG1SZXBvc2l0b3JpZXMSPi5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLlVwZGF0ZUNvbmZpZ0hlbG1SZXBvc2l0b3JpZXNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmcKDUdldFByb21ldGhldXMSLy5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLkdldFByb21ldGhldXNSZXF1ZXN0GiUub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5Qcm9tZXRoZXVzQjVaM2dpdGh1Yi5jb20vb3BlbmhkYy9vdHRlcnNjYWxlL2FwaS9lbnZpcm9ubWVudC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty]);
 
 /**
  * @generated from message otterscale.environment.v1.CheckHealthRequest
@@ -71,43 +71,48 @@ export const CheckHealthResponse_ResultSchema: GenEnum<CheckHealthResponse_Resul
   enumDesc(file_api_environment_v1_environment, 1, 0);
 
 /**
- * @generated from message otterscale.environment.v1.WatchStatusesRequest
+ * @generated from message otterscale.environment.v1.WatchStatusRequest
  */
-export type WatchStatusesRequest = Message<"otterscale.environment.v1.WatchStatusesRequest"> & {
+export type WatchStatusRequest = Message<"otterscale.environment.v1.WatchStatusRequest"> & {
 };
 
 /**
- * Describes the message otterscale.environment.v1.WatchStatusesRequest.
- * Use `create(WatchStatusesRequestSchema)` to create a new message.
+ * Describes the message otterscale.environment.v1.WatchStatusRequest.
+ * Use `create(WatchStatusRequestSchema)` to create a new message.
  */
-export const WatchStatusesRequestSchema: GenMessage<WatchStatusesRequest> = /*@__PURE__*/
+export const WatchStatusRequestSchema: GenMessage<WatchStatusRequest> = /*@__PURE__*/
   messageDesc(file_api_environment_v1_environment, 2);
 
 /**
- * @generated from message otterscale.environment.v1.WatchStatusesResponse
+ * @generated from message otterscale.environment.v1.WatchStatusResponse
  */
-export type WatchStatusesResponse = Message<"otterscale.environment.v1.WatchStatusesResponse"> & {
+export type WatchStatusResponse = Message<"otterscale.environment.v1.WatchStatusResponse"> & {
   /**
    * @generated from field: bool started = 1;
    */
   started: boolean;
 
   /**
-   * @generated from field: string phase = 2;
+   * @generated from field: bool finished = 2;
+   */
+  finished: boolean;
+
+  /**
+   * @generated from field: string phase = 11;
    */
   phase: string;
 
   /**
-   * @generated from field: string message = 3;
+   * @generated from field: string message = 12;
    */
   message: string;
 };
 
 /**
- * Describes the message otterscale.environment.v1.WatchStatusesResponse.
- * Use `create(WatchStatusesResponseSchema)` to create a new message.
+ * Describes the message otterscale.environment.v1.WatchStatusResponse.
+ * Use `create(WatchStatusResponseSchema)` to create a new message.
  */
-export const WatchStatusesResponseSchema: GenMessage<WatchStatusesResponse> = /*@__PURE__*/
+export const WatchStatusResponseSchema: GenMessage<WatchStatusResponse> = /*@__PURE__*/
   messageDesc(file_api_environment_v1_environment, 3);
 
 /**
@@ -274,12 +279,12 @@ export const EnvironmentService: GenService<{
     output: typeof CheckHealthResponseSchema;
   },
   /**
-   * @generated from rpc otterscale.environment.v1.EnvironmentService.WatchStatuses
+   * @generated from rpc otterscale.environment.v1.EnvironmentService.WatchStatus
    */
-  watchStatuses: {
+  watchStatus: {
     methodKind: "server_streaming";
-    input: typeof WatchStatusesRequestSchema;
-    output: typeof WatchStatusesResponseSchema;
+    input: typeof WatchStatusRequestSchema;
+    output: typeof WatchStatusResponseSchema;
   },
   /**
    * @generated from rpc otterscale.environment.v1.EnvironmentService.UpdateStatus

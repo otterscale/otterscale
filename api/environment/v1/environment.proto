@@ -8,7 +8,7 @@ option go_package = "github.com/openhdc/otterscale/api/environment/v1;pb";
 
 service EnvironmentService {
   rpc CheckHealth(CheckHealthRequest) returns (CheckHealthResponse);
-  rpc WatchStatuses(WatchStatusesRequest) returns (stream WatchStatusesResponse);
+  rpc WatchStatus(WatchStatusRequest) returns (stream WatchStatusResponse);
   rpc UpdateStatus(UpdateStatusRequest) returns (google.protobuf.Empty);
   rpc UpdateConfig(UpdateConfigRequest) returns (google.protobuf.Empty);
   rpc UpdateConfigHelmRepositories(UpdateConfigHelmRepositoriesRequest) returns (google.protobuf.Empty);
@@ -26,12 +26,13 @@ message CheckHealthResponse {
   Result result = 1;
 }
 
-message WatchStatusesRequest {}
+message WatchStatusRequest {}
 
-message WatchStatusesResponse {
+message WatchStatusResponse {
   bool started = 1;
-  string phase = 2;
-  string message = 3;
+  bool finished = 2;
+  string phase = 11;
+  string message = 12;
 }
 
 message UpdateStatusRequest {

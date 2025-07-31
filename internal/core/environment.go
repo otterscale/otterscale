@@ -12,6 +12,11 @@ import (
 	"github.com/openhdc/otterscale/internal/config"
 )
 
+const (
+	healthOK           = 11
+	healthNotInstalled = 21
+)
+
 const traefikShowAction = "show-proxied-endpoints"
 
 type traefikProxiedEndpoints struct {
@@ -21,9 +26,10 @@ type traefikProxiedEndpoints struct {
 }
 
 type EnvironmentStatus struct {
-	Started bool
-	Phase   string
-	Message string
+	Started  bool
+	Finished bool
+	Phase    string
+	Message  string
 }
 
 type EnvironmentUseCase struct {
@@ -48,12 +54,11 @@ func NewEnvironmentUseCase(scope ScopeRepo, action ActionRepo, facility Facility
 	}
 }
 
-//nolint:mnd
 func (uc *EnvironmentUseCase) CheckHealth(ctx context.Context) (int32, error) {
-	if uc.conf.MAAS.Key == "::" {
-		return 21, nil // NOT_INSTALLED
+	if !uc.isMAASConfigured() {
+		return healthNotInstalled, nil
 	}
-	return 11, nil // OK
+	return healthOK, nil
 }
 
 func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) *EnvironmentStatus {
@@ -66,9 +71,10 @@ func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) *EnvironmentStatus
 
 func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message string) {
 	uc.statusMap.Store("", &EnvironmentStatus{
-		Started: true,
-		Phase:   phase,
-		Message: message,
+		Started:  true,
+		Finished: uc.isMAASConfigured(),
+		Phase:    phase,
+		Message:  message,
 	})
 }
 
@@ -116,4 +122,8 @@ func (uc *EnvironmentUseCase) GetPrometheusInfo(ctx context.Context) (endpoint, 
 		return uc.prometheusEndpoint, uc.prometheusBaseURL, nil
 	}
 	return "", "", connect.NewError(connect.CodeNotFound, errors.New("prometheus info not found"))
+}
+
+func (uc *EnvironmentUseCase) isMAASConfigured() bool {
+	return uc.conf.MAAS.Key != "::"
 }
