@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { fly } from 'svelte/transition';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
@@ -12,12 +14,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import { homePath, setupPath } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
-	import { writable } from 'svelte/store';
-	import { typewriter } from '$lib/actions/typewriter';
-	import { fly } from 'svelte/transition';
-	import { Window } from '$lib/components/custom/window';
-	import * as Card from '$lib/components/ui/card';
-	import { message } from 'sveltekit-superforms';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [homePath], current: setupPath });
