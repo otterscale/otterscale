@@ -234,17 +234,48 @@
 							<!-- runTime -->
 							<Form.Field>
 								<Form.Label>Run Time</Form.Label>
-								<SingleInput.General type="text" placeholder="100" bind:value={fioRunTime}/>
+								<SingleInput.Measurement
+bind:value={fioRunTime}
+									transformer={(value) => String(value)}
+									units={[
+										{ value: 1, label: 's' } as SingleInput.UnitType,
+										{ value: 60, label: 'm' } as SingleInput.UnitType,
+										{ value: 3600, label: 'h' } as SingleInput.UnitType,
+										{ value: 86400, label: 'd' } as SingleInput.UnitType
+									]}
+								/>
 							</Form.Field>
 							<!-- blockSize -->
 							<Form.Field>
 								<Form.Label>Block Size</Form.Label>
-								<SingleInput.General type="text" placeholder="4k" bind:value={fioBlockSize}/>
+								<SingleInput.Measurement
+									bind:value={fioBlockSize}
+									transformer={(value) => String(value)}
+									units={[
+										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+									]}
+								/>
 							</Form.Field>
 							<!-- fileSize -->
 							<Form.Field>
 								<Form.Label>File Size</Form.Label>
-								<SingleInput.General type="text" placeholder="1G" bind:value={fioFileSize}/>
+								<SingleInput.Measurement
+									bind:value={fioFileSize}
+									transformer={(value) => String(value)}
+									units={[
+										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+									]}
+								/>
 							</Form.Field>
 							<!-- ioDepth -->
 							<Form.Field>
