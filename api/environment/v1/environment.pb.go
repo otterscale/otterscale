@@ -230,8 +230,9 @@ func (b0 WatchStatusesRequest_builder) Build() *WatchStatusesRequest {
 
 type WatchStatusesResponse struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Phase       *string                `protobuf:"bytes,1,opt,name=phase"`
-	xxx_hidden_Message     *string                `protobuf:"bytes,2,opt,name=message"`
+	xxx_hidden_Started     bool                   `protobuf:"varint,1,opt,name=started"`
+	xxx_hidden_Phase       *string                `protobuf:"bytes,2,opt,name=phase"`
+	xxx_hidden_Message     *string                `protobuf:"bytes,3,opt,name=message"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -263,6 +264,13 @@ func (x *WatchStatusesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *WatchStatusesResponse) GetStarted() bool {
+	if x != nil {
+		return x.xxx_hidden_Started
+	}
+	return false
+}
+
 func (x *WatchStatusesResponse) GetPhase() string {
 	if x != nil {
 		if x.xxx_hidden_Phase != nil {
@@ -283,43 +291,61 @@ func (x *WatchStatusesResponse) GetMessage() string {
 	return ""
 }
 
+func (x *WatchStatusesResponse) SetStarted(v bool) {
+	x.xxx_hidden_Started = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
 func (x *WatchStatusesResponse) SetPhase(v string) {
 	x.xxx_hidden_Phase = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *WatchStatusesResponse) SetMessage(v string) {
 	x.xxx_hidden_Message = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *WatchStatusesResponse) HasPhase() bool {
+func (x *WatchStatusesResponse) HasStarted() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *WatchStatusesResponse) HasMessage() bool {
+func (x *WatchStatusesResponse) HasPhase() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *WatchStatusesResponse) ClearPhase() {
+func (x *WatchStatusesResponse) HasMessage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *WatchStatusesResponse) ClearStarted() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Started = false
+}
+
+func (x *WatchStatusesResponse) ClearPhase() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Phase = nil
 }
 
 func (x *WatchStatusesResponse) ClearMessage() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Message = nil
 }
 
 type WatchStatusesResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	Started *bool
 	Phase   *string
 	Message *string
 }
@@ -328,12 +354,16 @@ func (b0 WatchStatusesResponse_builder) Build() *WatchStatusesResponse {
 	m0 := &WatchStatusesResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.Started != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_Started = *b.Started
+	}
 	if b.Phase != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_Phase = b.Phase
 	}
 	if b.Message != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Message = b.Message
 	}
 	return m0
@@ -1128,10 +1158,11 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\vUNSPECIFIED\x10\x00\x12\x06\n" +
 	"\x02OK\x10\v\x12\x11\n" +
 	"\rNOT_INSTALLED\x10\x15\"\x16\n" +
-	"\x14WatchStatusesRequest\"G\n" +
-	"\x15WatchStatusesResponse\x12\x14\n" +
-	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"E\n" +
+	"\x14WatchStatusesRequest\"a\n" +
+	"\x15WatchStatusesResponse\x12\x18\n" +
+	"\astarted\x18\x01 \x01(\bR\astarted\x12\x14\n" +
+	"\x05phase\x18\x02 \x01(\tR\x05phase\x12\x18\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\"E\n" +
 	"\x13UpdateStatusRequest\x12\x14\n" +
 	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"\x94\x04\n" +

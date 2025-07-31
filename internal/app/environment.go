@@ -2,7 +2,7 @@ package app
 
 import (
 	"context"
-	"time"
+	"sync"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -13,14 +13,23 @@ import (
 	"github.com/openhdc/otterscale/internal/core"
 )
 
+const statusChanSize = 100
+
 type EnvironmentService struct {
 	pbconnect.UnimplementedEnvironmentServiceHandler
 
-	uc *core.EnvironmentUseCase
+	uc         *core.EnvironmentUseCase
+	clients    sync.Map
+	statusChan chan *pb.WatchStatusesResponse
 }
 
 func NewEnvironmentService(uc *core.EnvironmentUseCase) *EnvironmentService {
-	return &EnvironmentService{uc: uc}
+	s := &EnvironmentService{
+		uc:         uc,
+		statusChan: make(chan *pb.WatchStatusesResponse, statusChanSize),
+	}
+	go s.broadcastStatus()
+	return s
 }
 
 var _ pbconnect.EnvironmentServiceHandler = (*EnvironmentService)(nil)
@@ -36,31 +45,32 @@ func (s *EnvironmentService) CheckHealth(ctx context.Context, req *connect.Reque
 }
 
 func (s *EnvironmentService) WatchStatuses(ctx context.Context, req *connect.Request[pb.WatchStatusesRequest], stream *connect.ServerStream[pb.WatchStatusesResponse]) error {
-	ticker := time.NewTicker(10 * time.Second) //nolint:mnd
-	defer ticker.Stop()
-
-	// Send initial status immediately
-	if err := s.sendStatus(ctx, stream); err != nil {
-		return err
-	}
-
-	// Then send status every 10 seconds
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case <-ticker.C:
-			if err := s.sendStatus(ctx, stream); err != nil {
-				return err
-			}
-		}
-	}
+	s.clients.Store(stream, "")
+	<-ctx.Done()
+	s.clients.Delete(stream)
+	return ctx.Err()
 }
 
 func (s *EnvironmentService) UpdateStatus(ctx context.Context, req *connect.Request[pb.UpdateStatusRequest]) (*connect.Response[emptypb.Empty], error) {
 	s.uc.StoreStatus(ctx, req.Msg.GetPhase(), req.Msg.GetMessage())
-	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+	select {
+	case s.statusChan <- toProtoWatchStatus(s.uc.LoadStatus(ctx)):
+	default:
+		// Non-blocking send to avoid deadlock if no one is listening
+	}
+	return connect.NewResponse(&emptypb.Empty{}), nil
+}
+
+func (s *EnvironmentService) broadcastStatus() {
+	for status := range s.statusChan {
+		s.clients.Range(func(key, _ any) bool {
+			stream := key.(*connect.ServerStream[pb.WatchStatusesResponse])
+			if err := stream.Send(status); err != nil {
+				s.clients.Delete(stream)
+			}
+			return true
+		})
+	}
 }
 
 func (s *EnvironmentService) UpdateConfig(ctx context.Context, req *connect.Request[pb.UpdateConfigRequest]) (*connect.Response[emptypb.Empty], error) {
@@ -88,17 +98,6 @@ func (s *EnvironmentService) GetPrometheus(ctx context.Context, req *connect.Req
 	return connect.NewResponse(resp), nil
 }
 
-func (s *EnvironmentService) sendStatus(ctx context.Context, stream *connect.ServerStream[pb.WatchStatusesResponse]) error {
-	status, err := s.uc.LoadStatus(ctx)
-	if err != nil {
-		return err
-	}
-	resp := &pb.WatchStatusesResponse{}
-	resp.SetPhase(status.Phase)
-	resp.SetMessage(status.Message)
-	return stream.Send(resp)
-}
-
 func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 	return &config.Config{
 		MAAS: config.MAAS{
@@ -121,6 +120,14 @@ func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 			Token: req.GetMicroK8SToken(),
 		},
 	}
+}
+
+func toProtoWatchStatus(status *core.EnvironmentStatus) *pb.WatchStatusesResponse {
+	ret := &pb.WatchStatusesResponse{}
+	ret.SetStarted(status.Started)
+	ret.SetPhase(status.Phase)
+	ret.SetMessage(status.Message)
+	return ret
 }
 
 func toProtoPrometheus(endpoint, baseURL string) *pb.Prometheus {

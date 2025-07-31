@@ -21,6 +21,7 @@ type traefikProxiedEndpoints struct {
 }
 
 type EnvironmentStatus struct {
+	Started bool
 	Phase   string
 	Message string
 }
@@ -55,16 +56,17 @@ func (uc *EnvironmentUseCase) CheckHealth(ctx context.Context) (int32, error) {
 	return 11, nil // OK
 }
 
-func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) (*EnvironmentStatus, error) {
+func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) *EnvironmentStatus {
 	v, ok := uc.statusMap.Load("")
 	if ok {
-		return v.(*EnvironmentStatus), nil
+		return v.(*EnvironmentStatus)
 	}
-	return nil, connect.NewError(connect.CodeNotFound, errors.New("status not found"))
+	return &EnvironmentStatus{}
 }
 
 func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message string) {
 	uc.statusMap.Store("", &EnvironmentStatus{
+		Started: true,
 		Phase:   phase,
 		Message: message,
 	})

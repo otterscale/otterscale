@@ -29,8 +29,9 @@ message CheckHealthResponse {
 message WatchStatusesRequest {}
 
 message WatchStatusesResponse {
-  string phase = 1;
-  string message = 2;
+  bool started = 1;
+  string phase = 2;
+  string message = 3;
 }
 
 message UpdateStatusRequest {
