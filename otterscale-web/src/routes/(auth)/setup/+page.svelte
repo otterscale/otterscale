@@ -150,6 +150,46 @@
 				</div>
 			</div>
 		{:else if started}
+			<!-- Installation Progress View -->
+			<Button
+				class="text-muted-foreground mt-4 text-center text-lg"
+				variant="ghost"
+				size="lg"
+				disabled
+			>
+				<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
+				{m.setup_environment_installing()}
+			</Button>
+
+			<div
+				class="border-border dark bg-card text-card-foreground m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
+			>
+				<div class="flex border-b border-inherit p-4">
+					<div class="flex items-center gap-2">
+						<div class="size-3 rounded-full bg-[#ff605c]"></div>
+						<div class="size-3 rounded-full bg-[#ffbd44]"></div>
+						<div class="size-3 rounded-full bg-[#00ca4e]"></div>
+					</div>
+				</div>
+				<div bind:this={terminal} class="h-[calc(100%-64px)] flex-col overflow-auto p-4">
+					{#each messages as msg, i}
+						{@const isLastMessage = messages.length === i + 1}
+						{@const iconName = isLastMessage ? 'ph:spinner-gap' : 'ph:check-bold'}
+						{@const iconClass = isLastMessage ? 'animate-spin' : ''}
+						{@const textClass = isLastMessage ? '' : 'text-green-500'}
+
+						{#if msg.message !== ''}
+							<span class="block" transition:fly={{ y: -5, duration: 500 }}>
+								<span class="flex space-x-1 {textClass}">
+									<Icon icon={iconName} class="size-5 {iconClass}" />
+									<span>[{msg.phase}] {msg.message}</span>
+								</span>
+							</span>
+						{/if}
+					{/each}
+				</div>
+			</div>
+		{:else}
 			<!-- Installation View -->
 			<Button
 				class="text-muted-foreground mt-4 text-center text-lg"
@@ -217,46 +257,6 @@
 							stroke-linecap="round"
 						/>
 					</svg>
-				</div>
-			</div>
-		{:else}
-			<!-- Installation Progress View -->
-			<Button
-				class="text-muted-foreground mt-4 text-center text-lg"
-				variant="ghost"
-				size="lg"
-				disabled
-			>
-				<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
-				{m.setup_environment_installing()}
-			</Button>
-
-			<div
-				class="border-border dark bg-card text-card-foreground m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
-			>
-				<div class="flex border-b border-inherit p-4">
-					<div class="flex items-center gap-2">
-						<div class="size-3 rounded-full bg-[#ff605c]"></div>
-						<div class="size-3 rounded-full bg-[#ffbd44]"></div>
-						<div class="size-3 rounded-full bg-[#00ca4e]"></div>
-					</div>
-				</div>
-				<div bind:this={terminal} class="h-[calc(100%-64px)] flex-col overflow-auto p-4">
-					{#each messages as msg, i}
-						{@const isLastMessage = messages.length === i + 1}
-						{@const iconName = isLastMessage ? 'ph:spinner-gap' : 'ph:check-bold'}
-						{@const iconClass = isLastMessage ? 'animate-spin' : ''}
-						{@const textClass = isLastMessage ? '' : 'text-green-500'}
-
-						{#if msg.message !== ''}
-							<span class="block" transition:fly={{ y: -5, duration: 500 }}>
-								<span class="flex space-x-1 {textClass}">
-									<Icon icon={iconName} class="size-5 {iconClass}" />
-									<span>[{msg.phase}] {msg.message}</span>
-								</span>
-							</span>
-						{/if}
-					{/each}
 				</div>
 			</div>
 		{/if}
