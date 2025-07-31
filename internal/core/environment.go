@@ -66,7 +66,9 @@ func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) *EnvironmentStatus
 	if ok {
 		return v.(*EnvironmentStatus)
 	}
-	return &EnvironmentStatus{}
+	return &EnvironmentStatus{
+		Finished: uc.isMAASConfigured(),
+	}
 }
 
 func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message string) {
