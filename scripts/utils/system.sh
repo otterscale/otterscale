@@ -105,3 +105,9 @@ validate_system() {
     disable_ipv6
     log "INFO" "System validation passed" "OS check finished"
 }
+
+config_modules() {
+    if ! tee -a /etc/modules rbd; then
+        error_exit "Failed tee rbd into /etc/modules"
+    fi
+}

@@ -70,6 +70,7 @@ main() {
     apt_update
     apt_install "$APT_PACKAGES"
     snap_install
+    config_modules
 
     check_bridge
     check_maas
