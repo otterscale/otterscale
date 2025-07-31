@@ -1,19 +1,67 @@
 <script lang="ts">
+	import { getContext, onMount } from 'svelte';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
+	import {
+		EnvironmentService,
+		type WatchStatusesResponse
+	} from '$lib/api/environment/v1/environment_pb';
+	import { Button } from '$lib/components/ui/button';
+	import * as Code from '$lib/components/custom/code';
+	import { m } from '$lib/paraglide/messages';
 	import { homePath, setupPath } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
-	import * as Code from '$lib/components/custom/code';
-	import * as Terminal from '$lib/components/custom/terminal';
-	import { m } from '$lib/paraglide/messages';
-	import Icon from '@iconify/svelte';
-	import { Button } from '$lib/components/ui/button';
+	import { writable } from 'svelte/store';
+	import { typewriter } from '$lib/actions/typewriter';
+	import { fly } from 'svelte/transition';
+	import { Window } from '$lib/components/custom/window';
+	import * as Card from '$lib/components/ui/card';
+	import { message } from 'sveltekit-superforms';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [homePath], current: setupPath });
 
 	const code = `sh -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh" -- url=${PUBLIC_API_URL})`;
 
-	let started = $state(true);
+	interface State {
+		started: boolean;
+		messages: WatchStatusesResponse[];
+	}
+
+	let statusStore = writable<State>({ started: false, messages: [] });
+	let { started, messages } = $derived($statusStore);
+
+	const transport: Transport = getContext('transport');
+	const environmentClient = createClient(EnvironmentService, transport);
+
+	async function watchStatuses() {
+		for await (const status of environmentClient.watchStatuses({})) {
+			statusStore.update((state) => ({
+				...state,
+				started: status.started,
+				messages: [...state.messages, status]
+			}));
+		}
+	}
+
+	let terminal: HTMLDivElement | undefined = $state();
+	function scrollToBottom() {
+		console.log(terminal?.scrollHeight);
+		if (terminal) {
+			terminal.scrollTop = terminal.scrollHeight;
+		}
+	}
+
+	onMount(async () => {
+		await watchStatuses();
+	});
+
+	$effect(() => {
+		if (messages.length > 0) {
+			scrollToBottom();
+		}
+	});
 </script>
 
 <div class="flex flex-col items-center justify-center">
@@ -30,39 +78,34 @@
 			{m.setup_environment_installing()}
 		</Button>
 
-		<Terminal.Root class="m-6 max-w-6xl font-sans text-sm font-normal" delay={250}>
-			<Terminal.TypingAnimation>&gt; jsrepo add ui/terminal</Terminal.TypingAnimation>
-			<Terminal.Loading delay={1500}>
-				{#snippet loadingMessage()}
-					Fetching manifest
-				{/snippet}
-				{#snippet completeMessage()}
-					<span class="text-green-500">
-						<Icon icon="ph:check-bold" class="size-5" />
-						✔ Retrieved blocks from github/ieedan/shadcn-svelte-extras
+		<div
+			class="border-border dark bg-card text-card-foreground m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
+		>
+			<div class="flex border-b border-inherit p-4">
+				<div class="flex items-center gap-2">
+					<div class="size-3 rounded-full bg-[#ff605c]"></div>
+					<div class="size-3 rounded-full bg-[#ffbd44]"></div>
+					<div class="size-3 rounded-full bg-[#00ca4e]"></div>
+				</div>
+			</div>
+			<div bind:this={terminal} class="h-[calc(100%-64px)] flex-col overflow-auto p-4">
+				{#each messages as msg, i}
+					{@const isLastMessage = messages.length === i + 1}
+					{@const iconName = isLastMessage ? 'ph:spinner-gap' : 'ph:check-bold'}
+					{@const iconClass = isLastMessage ? 'animate-spin' : ''}
+					{@const textClass = isLastMessage ? '' : 'text-green-500'}
+
+					<span class="block" transition:fly={{ y: -5, duration: 500 }}>
+						<span class="flex space-x-1 {textClass}">
+							<Icon icon={iconName} class="size-5 {iconClass}" />
+							<span>
+								[{msg.phase}] {msg.message}
+							</span>
+						</span>
 					</span>
-				{/snippet}
-			</Terminal.Loading>
-			<Terminal.Loading delay={2750}>
-				{#snippet loadingMessage()}
-					Adding ui/terminal
-				{/snippet}
-				{#snippet completeMessage()}
-					<span class="text-green-500">✔ Added ui/terminal</span>
-				{/snippet}
-			</Terminal.Loading>
-			<Terminal.Loading delay={4000}>
-				{#snippet loadingMessage()}
-					Installing dependencies
-				{/snippet}
-				{#snippet completeMessage()}
-					<span class="text-green-500">✔ Installed runed@^0.23.4</span>
-				{/snippet}
-			</Terminal.Loading>
-			<Terminal.AnimatedSpan delay={5250} class="text-green-500">
-				<span>✔ All done.</span>
-			</Terminal.AnimatedSpan>
-		</Terminal.Root>
+				{/each}
+			</div>
+		</div>
 	{:else}
 		<Button
 			class="text-muted-foreground mt-4 text-center text-lg"
