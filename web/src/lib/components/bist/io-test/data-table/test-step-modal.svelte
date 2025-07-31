@@ -14,6 +14,7 @@
 	import { getContext, type Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
+	import { formatByte, formatSecond } from '$lib/formatter';
 
 	// FIO Target
 	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([
@@ -58,7 +59,7 @@
         : {} as NetworkFileSystem;
 	const DEFAULT_FIO_INPUT = testResult && testResult.kind.value?.input
     ? testResult.kind.value.input as FIO_Input
-	: { jobCount: "32", runTime: "100", blockSize: "4k", fileSize: "1G", ioDepth: "1" } as unknown as FIO_Input; 
+	: { jobCount: "32", runTime: "60", blockSize: "4096", fileSize: String(1024 * 1024 * 1024), ioDepth: "1" } as unknown as FIO_Input; 
     let selectedScope = $state(
         testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
             ? testResult.kind.value.target.value?.scopeUuid ?? ''
@@ -235,7 +236,7 @@
 							<Form.Field>
 								<Form.Label>Run Time</Form.Label>
 								<SingleInput.Measurement
-bind:value={fioRunTime}
+									bind:value={fioRunTime}
 									transformer={(value) => String(value)}
 									units={[
 										{ value: 1, label: 's' } as SingleInput.UnitType,
@@ -304,12 +305,15 @@ bind:value={fioRunTime}
 						</Form.Fieldset>
 						<!-- Step 2 -->
 						<Form.Fieldset>
+							{@const rumTime = formatSecond(Number(fioRunTime))}
+							{@const blockSize = formatByte(Number(fioBlockSize))}
+							{@const fileSize = formatByte(Number(fioFileSize))}
 							<Form.Legend>Step 2</Form.Legend>
 							<Form.Description>Access Mode: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description>
 							<Form.Description>Job Count: {fioJobCount}</Form.Description>
-							<Form.Description>Run Time: {fioRunTime}</Form.Description>
-							<Form.Description>Block Size: {fioBlockSize}</Form.Description>
-							<Form.Description>File Size: {fioFileSize}</Form.Description>
+							<Form.Description>Run Time: {rumTime.value} {rumTime.unit}</Form.Description>
+							<Form.Description>Block Size: {blockSize.value} {blockSize.unit}</Form.Description>
+							<Form.Description>File Size: {fileSize.value} {fileSize.unit}</Form.Description>
 							<Form.Description>I/O Depth: {fioIoDepth}</Form.Description>
 						</Form.Fieldset>
 					</Form.Root>

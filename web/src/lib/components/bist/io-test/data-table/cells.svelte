@@ -6,6 +6,7 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
+	import { formatByte, formatSecond } from '$lib/formatter';
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -91,7 +92,8 @@
 {#snippet runTime(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-            {row.original.kind.value?.input.runTime}
+			{@const formatted = formatSecond(Number(row.original.kind.value?.input.runTime))}
+            {formatted.value} {formatted.unit}
         {/if}
 	</p>
 {/snippet}
@@ -99,7 +101,8 @@
 {#snippet blockSize(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-            {row.original.kind.value?.input.blockSize}
+            {@const formatted = formatByte(Number(row.original.kind.value?.input.blockSize))}
+            {formatted.value} {formatted.unit}
         {/if}
 	</p>
 {/snippet}
@@ -107,7 +110,8 @@
 {#snippet fileSize(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-            {row.original.kind.value?.input.fileSize}
+            {@const formatted = formatByte(Number(row.original.kind.value?.input.fileSize))}
+            {formatted.value} {formatted.unit}
         {/if}
 	</p>
 {/snippet}

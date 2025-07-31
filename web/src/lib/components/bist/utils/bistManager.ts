@@ -2,6 +2,7 @@ import type { Table } from '@tanstack/table-core';
 import type { TestResult } from '$gen/api/bist/v1/bist_pb';
 import { FIO_Input_AccessMode, Warp_Input_Operation } from '$gen/api/bist/v1/bist_pb';
 import { hashCode } from './hashGroupID';
+import { formatByte as formatCapacity, formatSecond } from '$lib/formatter';
 
 interface FioDataPoint {
     name: string;
@@ -51,11 +52,18 @@ class BistDashboardManager<TData = TestResult> {
     }
 
     private generateGroupName(input: any): string {
-        return `${FIO_Input_AccessMode[input.accessMode]}-${Number(input.jobCount)}-${input.runTime}-${input.blockSize}-${input.fileSize}-${Number(input.ioDepth)}`;
+        // return `${FIO_Input_AccessMode[input.accessMode]}-${Number(input.jobCount)}-${input.runTime}-${input.blockSize}-${input.fileSize}-${Number(input.ioDepth)}`;
+        const rumTime = formatSecond(Number(input.runTime))
+        const blockSize = formatCapacity(Number(input.blockSize))
+        const fileSize = formatCapacity(Number(input.fileSize))
+        return `${FIO_Input_AccessMode[input.accessMode]}-${Number(input.jobCount)}-${rumTime.value}${rumTime.unit}-${blockSize.value}${blockSize.unit}-${fileSize.value}${fileSize.unit}-${Number(input.ioDepth)}`;
     }
 
     private generateWarpGroupName(input: any): string {
-        return `${Warp_Input_Operation[input.operation]}-${input.duration}-${input.objectSize}-${input.objectCount}`;
+        // return `${Warp_Input_Operation[input.operation]}-${input.duration}-${input.objectSize}-${input.objectCount}`;
+        const duration = formatSecond(Number(input.duration))
+        const objectSize = formatCapacity(Number(input.objectSize))
+        return `${Warp_Input_Operation[input.operation]}-${duration.value}${duration.unit}-${objectSize.value}${objectSize.unit}-${input.objectCount}`;
     }
 
     private generateColor(groupName: string): string {

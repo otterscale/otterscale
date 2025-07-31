@@ -14,6 +14,7 @@
 	import { getContext, type Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
+	import { formatByte, formatSecond } from '$lib/formatter';
 
 	// WARP Target
 	const warpTarget: Writable<SingleSelect.OptionType[]> = writable([
@@ -58,7 +59,7 @@
         : {} as ExternalObjectService;
 	const DEFAULT_WARP_INPUT = testResult && testResult.kind.value?.input
     ? testResult.kind.value.input as Warp_Input
-	: { duration: "60s", objectSize: "4MiB", objectCount: "500" } as unknown as Warp_Input; 
+	: { duration: "60", objectSize: String(4 * 1024 * 1024), objectCount: "500" } as unknown as Warp_Input; 
 
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestWarp: Warp = $state(DEFAULT_WARP_REQUEST);
@@ -221,7 +222,7 @@
 							<Form.Field>
 								<Form.Label>Duration</Form.Label>
 								<SingleInput.Measurement
-bind:value={warpDuration}
+									bind:value={warpDuration}
 									transformer={(value) => String(value)}
 									units={[
 										{ value: 1, label: 's' } as SingleInput.UnitType,
@@ -250,7 +251,7 @@ bind:value={warpDuration}
 							<!-- ObjectCount -->
 							<Form.Field>
 								<Form.Label>Object Count</Form.Label>
-								<SingleInput.General type="text" placeholder="4k" bind:value={warpObjectCount}/>
+								<SingleInput.General type="text" placeholder="500" bind:value={warpObjectCount}/>
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
@@ -276,10 +277,12 @@ bind:value={warpDuration}
 						</Form.Fieldset>
 						<!-- Step 2 -->
 						<Form.Fieldset>
+							{@const duration = formatSecond(Number(warpDuration))}
+							{@const objectSize = formatByte(Number(warpObjectSize))}
 							<Form.Legend>Step 2</Form.Legend>
 							<Form.Description>Operation: {Warp_Input_Operation[warpOperation]}</Form.Description>
-							<Form.Description>Duration: {warpDuration}</Form.Description>
-							<Form.Description>Object Size: {warpObjectSize}</Form.Description>
+							<Form.Description>Duration: {duration.value} {duration.unit}</Form.Description>
+							<Form.Description>Object Size: {objectSize.value} {objectSize.unit}</Form.Description>
 							<Form.Description>Object Count: {warpObjectCount}</Form.Description>
 						</Form.Fieldset>
 					</Form.Root>
