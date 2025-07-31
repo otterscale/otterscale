@@ -117,8 +117,10 @@
 			switch (response.result) {
 				case CheckHealthResponse_Result.OK:
 					await Promise.all([fetchScopes(), fetchEdition()]);
+					break;
 				case CheckHealthResponse_Result.NOT_INSTALLED:
 					goto(setupPath);
+					break;
 			}
 		} catch (error) {
 			console.error('Failed to initialize:', error);
