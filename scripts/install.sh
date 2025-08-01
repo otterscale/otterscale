@@ -70,13 +70,13 @@ main() {
     apt_update
     apt_install "$APT_PACKAGES"
     snap_install
-    config_modules
 
     check_bridge
     check_maas
     bootstrap_juju
     check_microk8s
     juju_add_k8s
+    config_modules
     send_otterscale_config_data
 
     trap cleanup EXIT

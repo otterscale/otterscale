@@ -164,7 +164,9 @@ set_vm_static_ip() {
     if maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q .; then
         JUJU_MACHINE_ID=$(maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm") | .system_id')
         MAAS_NETWORK_SUBNET=$(maas admin subnet read $(ip -o -4 addr show dev $OTTERSCALE_BRIDGE_NAME | awk '{print $4}') | jq -r '.name')
-        check_vm_ip
+	if ! is_machine_deployed; then
+            check_vm_ip
+        fi
     else
         error_exit "Machine juju-vm not found"
     fi

@@ -101,22 +101,16 @@ bootstrap_juju() {
         juju_cmd "$bootstrap_cmd $bootstrap_config $bootstrap_machine --debug" "juju bootstrap"
         log "INFO" "MAAS and Juju setup completed successfully!" "Finished bootstrap"
     fi
-
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model default > /dev/null 2>&1" "check juju model"; then
-        log "INFO" "default model already exist, skipping..." "JuJu model"
-    else
-        juju_cmd "juju add-model model --debug" "execute juju add-model"
-    fi    
 }
 
 juju_add_k8s() {
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s > /dev/null 2>&1" "check juju cloud"; then
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s > /dev/null 2>&1" "check juju cloud if cos-k8s exist"; then
         log "INFO" "cos-k8s already exist, skipping..." "JuJu cloud"
     else
         juju_cmd "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" "execute juju add-k8s"
     fi
 
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos > /dev/null 2>&1" "check juju model"; then
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos > /dev/null 2>&1" "check juju model if cos exist"; then
         log "INFO" "cos model already exist, skipping..." "JuJu model"
     else
         juju_cmd "juju add-model cos cos-k8s --debug" "execute juju add-model"
