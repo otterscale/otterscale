@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import type { CreateImageRequest, Image } from '$gen/api/storage/v1/storage_pb';
-	import * as Collapsible from '$lib/components/ui/collapsible';
 	import { StorageService } from '$gen/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
