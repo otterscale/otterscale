@@ -2156,17 +2156,17 @@ func (b0 ListInternalObjectServicesResponse_builder) Build() *ListInternalObject
 }
 
 type FIO_Input struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_AccessMode  FIO_Input_AccessMode   `protobuf:"varint,1,opt,name=access_mode,json=accessMode,enum=otterscale.bist.v1.FIO_Input_AccessMode"`
-	xxx_hidden_JobCount    int64                  `protobuf:"varint,31,opt,name=job_count,json=jobCount"`
-	xxx_hidden_RunTime     *string                `protobuf:"bytes,41,opt,name=run_time,json=runTime"`
-	xxx_hidden_BlockSize   *string                `protobuf:"bytes,71,opt,name=block_size,json=blockSize"`
-	xxx_hidden_FileSize    *string                `protobuf:"bytes,91,opt,name=file_size,json=fileSize"`
-	xxx_hidden_IoDepth     int64                  `protobuf:"varint,121,opt,name=io_depth,json=ioDepth"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                     protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_AccessMode     FIO_Input_AccessMode   `protobuf:"varint,1,opt,name=access_mode,json=accessMode,enum=otterscale.bist.v1.FIO_Input_AccessMode"`
+	xxx_hidden_JobCount       int64                  `protobuf:"varint,31,opt,name=job_count,json=jobCount"`
+	xxx_hidden_RunTimeSeconds int64                  `protobuf:"varint,41,opt,name=run_time_seconds,json=runTimeSeconds"`
+	xxx_hidden_BlockSizeBytes int64                  `protobuf:"varint,71,opt,name=block_size_bytes,json=blockSizeBytes"`
+	xxx_hidden_FileSizeBytes  int64                  `protobuf:"varint,91,opt,name=file_size_bytes,json=fileSizeBytes"`
+	xxx_hidden_IoDepth        int64                  `protobuf:"varint,121,opt,name=io_depth,json=ioDepth"`
+	XXX_raceDetectHookData    protoimpl.RaceDetectHookData
+	XXX_presence              [1]uint32
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
 }
 
 func (x *FIO_Input) Reset() {
@@ -2210,34 +2210,25 @@ func (x *FIO_Input) GetJobCount() int64 {
 	return 0
 }
 
-func (x *FIO_Input) GetRunTime() string {
+func (x *FIO_Input) GetRunTimeSeconds() int64 {
 	if x != nil {
-		if x.xxx_hidden_RunTime != nil {
-			return *x.xxx_hidden_RunTime
-		}
-		return ""
+		return x.xxx_hidden_RunTimeSeconds
 	}
-	return ""
+	return 0
 }
 
-func (x *FIO_Input) GetBlockSize() string {
+func (x *FIO_Input) GetBlockSizeBytes() int64 {
 	if x != nil {
-		if x.xxx_hidden_BlockSize != nil {
-			return *x.xxx_hidden_BlockSize
-		}
-		return ""
+		return x.xxx_hidden_BlockSizeBytes
 	}
-	return ""
+	return 0
 }
 
-func (x *FIO_Input) GetFileSize() string {
+func (x *FIO_Input) GetFileSizeBytes() int64 {
 	if x != nil {
-		if x.xxx_hidden_FileSize != nil {
-			return *x.xxx_hidden_FileSize
-		}
-		return ""
+		return x.xxx_hidden_FileSizeBytes
 	}
-	return ""
+	return 0
 }
 
 func (x *FIO_Input) GetIoDepth() int64 {
@@ -2257,18 +2248,18 @@ func (x *FIO_Input) SetJobCount(v int64) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
 }
 
-func (x *FIO_Input) SetRunTime(v string) {
-	x.xxx_hidden_RunTime = &v
+func (x *FIO_Input) SetRunTimeSeconds(v int64) {
+	x.xxx_hidden_RunTimeSeconds = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
-func (x *FIO_Input) SetBlockSize(v string) {
-	x.xxx_hidden_BlockSize = &v
+func (x *FIO_Input) SetBlockSizeBytes(v int64) {
+	x.xxx_hidden_BlockSizeBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
 }
 
-func (x *FIO_Input) SetFileSize(v string) {
-	x.xxx_hidden_FileSize = &v
+func (x *FIO_Input) SetFileSizeBytes(v int64) {
+	x.xxx_hidden_FileSizeBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
 }
 
@@ -2291,21 +2282,21 @@ func (x *FIO_Input) HasJobCount() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *FIO_Input) HasRunTime() bool {
+func (x *FIO_Input) HasRunTimeSeconds() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *FIO_Input) HasBlockSize() bool {
+func (x *FIO_Input) HasBlockSizeBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *FIO_Input) HasFileSize() bool {
+func (x *FIO_Input) HasFileSizeBytes() bool {
 	if x == nil {
 		return false
 	}
@@ -2329,19 +2320,19 @@ func (x *FIO_Input) ClearJobCount() {
 	x.xxx_hidden_JobCount = 0
 }
 
-func (x *FIO_Input) ClearRunTime() {
+func (x *FIO_Input) ClearRunTimeSeconds() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_RunTime = nil
+	x.xxx_hidden_RunTimeSeconds = 0
 }
 
-func (x *FIO_Input) ClearBlockSize() {
+func (x *FIO_Input) ClearBlockSizeBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_BlockSize = nil
+	x.xxx_hidden_BlockSizeBytes = 0
 }
 
-func (x *FIO_Input) ClearFileSize() {
+func (x *FIO_Input) ClearFileSizeBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_FileSize = nil
+	x.xxx_hidden_FileSizeBytes = 0
 }
 
 func (x *FIO_Input) ClearIoDepth() {
@@ -2352,12 +2343,12 @@ func (x *FIO_Input) ClearIoDepth() {
 type FIO_Input_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	AccessMode *FIO_Input_AccessMode
-	JobCount   *int64
-	RunTime    *string
-	BlockSize  *string
-	FileSize   *string
-	IoDepth    *int64
+	AccessMode     *FIO_Input_AccessMode
+	JobCount       *int64
+	RunTimeSeconds *int64
+	BlockSizeBytes *int64
+	FileSizeBytes  *int64
+	IoDepth        *int64
 }
 
 func (b0 FIO_Input_builder) Build() *FIO_Input {
@@ -2372,17 +2363,17 @@ func (b0 FIO_Input_builder) Build() *FIO_Input {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
 		x.xxx_hidden_JobCount = *b.JobCount
 	}
-	if b.RunTime != nil {
+	if b.RunTimeSeconds != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
-		x.xxx_hidden_RunTime = b.RunTime
+		x.xxx_hidden_RunTimeSeconds = *b.RunTimeSeconds
 	}
-	if b.BlockSize != nil {
+	if b.BlockSizeBytes != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
-		x.xxx_hidden_BlockSize = b.BlockSize
+		x.xxx_hidden_BlockSizeBytes = *b.BlockSizeBytes
 	}
-	if b.FileSize != nil {
+	if b.FileSizeBytes != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
-		x.xxx_hidden_FileSize = b.FileSize
+		x.xxx_hidden_FileSizeBytes = *b.FileSizeBytes
 	}
 	if b.IoDepth != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
@@ -2835,15 +2826,15 @@ func (b0 FIO_Output_Throughput_Latency_builder) Build() *FIO_Output_Throughput_L
 }
 
 type Warp_Input struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Operation   Warp_Input_Operation   `protobuf:"varint,1,opt,name=operation,enum=otterscale.bist.v1.Warp_Input_Operation"`
-	xxx_hidden_Duration    *string                `protobuf:"bytes,21,opt,name=duration"`
-	xxx_hidden_ObjectSize  *string                `protobuf:"bytes,31,opt,name=object_size,json=objectSize"`
-	xxx_hidden_ObjectCount *string                `protobuf:"bytes,32,opt,name=object_count,json=objectCount"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                      protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Operation       Warp_Input_Operation   `protobuf:"varint,1,opt,name=operation,enum=otterscale.bist.v1.Warp_Input_Operation"`
+	xxx_hidden_DurationSeconds int64                  `protobuf:"varint,21,opt,name=duration_seconds,json=durationSeconds"`
+	xxx_hidden_ObjectSizeBytes int64                  `protobuf:"varint,31,opt,name=object_size_bytes,json=objectSizeBytes"`
+	xxx_hidden_ObjectCount     int64                  `protobuf:"varint,32,opt,name=object_count,json=objectCount"`
+	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
+	XXX_presence               [1]uint32
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
 func (x *Warp_Input) Reset() {
@@ -2880,34 +2871,25 @@ func (x *Warp_Input) GetOperation() Warp_Input_Operation {
 	return Warp_Input_GET
 }
 
-func (x *Warp_Input) GetDuration() string {
+func (x *Warp_Input) GetDurationSeconds() int64 {
 	if x != nil {
-		if x.xxx_hidden_Duration != nil {
-			return *x.xxx_hidden_Duration
-		}
-		return ""
+		return x.xxx_hidden_DurationSeconds
 	}
-	return ""
+	return 0
 }
 
-func (x *Warp_Input) GetObjectSize() string {
+func (x *Warp_Input) GetObjectSizeBytes() int64 {
 	if x != nil {
-		if x.xxx_hidden_ObjectSize != nil {
-			return *x.xxx_hidden_ObjectSize
-		}
-		return ""
+		return x.xxx_hidden_ObjectSizeBytes
 	}
-	return ""
+	return 0
 }
 
-func (x *Warp_Input) GetObjectCount() string {
+func (x *Warp_Input) GetObjectCount() int64 {
 	if x != nil {
-		if x.xxx_hidden_ObjectCount != nil {
-			return *x.xxx_hidden_ObjectCount
-		}
-		return ""
+		return x.xxx_hidden_ObjectCount
 	}
-	return ""
+	return 0
 }
 
 func (x *Warp_Input) SetOperation(v Warp_Input_Operation) {
@@ -2915,18 +2897,18 @@ func (x *Warp_Input) SetOperation(v Warp_Input_Operation) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
-func (x *Warp_Input) SetDuration(v string) {
-	x.xxx_hidden_Duration = &v
+func (x *Warp_Input) SetDurationSeconds(v int64) {
+	x.xxx_hidden_DurationSeconds = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
-func (x *Warp_Input) SetObjectSize(v string) {
-	x.xxx_hidden_ObjectSize = &v
+func (x *Warp_Input) SetObjectSizeBytes(v int64) {
+	x.xxx_hidden_ObjectSizeBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
-func (x *Warp_Input) SetObjectCount(v string) {
-	x.xxx_hidden_ObjectCount = &v
+func (x *Warp_Input) SetObjectCount(v int64) {
+	x.xxx_hidden_ObjectCount = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
@@ -2937,14 +2919,14 @@ func (x *Warp_Input) HasOperation() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *Warp_Input) HasDuration() bool {
+func (x *Warp_Input) HasDurationSeconds() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Warp_Input) HasObjectSize() bool {
+func (x *Warp_Input) HasObjectSizeBytes() bool {
 	if x == nil {
 		return false
 	}
@@ -2963,28 +2945,28 @@ func (x *Warp_Input) ClearOperation() {
 	x.xxx_hidden_Operation = Warp_Input_GET
 }
 
-func (x *Warp_Input) ClearDuration() {
+func (x *Warp_Input) ClearDurationSeconds() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
-	x.xxx_hidden_Duration = nil
+	x.xxx_hidden_DurationSeconds = 0
 }
 
-func (x *Warp_Input) ClearObjectSize() {
+func (x *Warp_Input) ClearObjectSizeBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_ObjectSize = nil
+	x.xxx_hidden_ObjectSizeBytes = 0
 }
 
 func (x *Warp_Input) ClearObjectCount() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_ObjectCount = nil
+	x.xxx_hidden_ObjectCount = 0
 }
 
 type Warp_Input_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Operation   *Warp_Input_Operation
-	Duration    *string
-	ObjectSize  *string
-	ObjectCount *string
+	Operation       *Warp_Input_Operation
+	DurationSeconds *int64
+	ObjectSizeBytes *int64
+	ObjectCount     *int64
 }
 
 func (b0 Warp_Input_builder) Build() *Warp_Input {
@@ -2995,17 +2977,17 @@ func (b0 Warp_Input_builder) Build() *Warp_Input {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_Operation = *b.Operation
 	}
-	if b.Duration != nil {
+	if b.DurationSeconds != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
-		x.xxx_hidden_Duration = b.Duration
+		x.xxx_hidden_DurationSeconds = *b.DurationSeconds
 	}
-	if b.ObjectSize != nil {
+	if b.ObjectSizeBytes != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
-		x.xxx_hidden_ObjectSize = b.ObjectSize
+		x.xxx_hidden_ObjectSizeBytes = *b.ObjectSizeBytes
 	}
 	if b.ObjectCount != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_ObjectCount = b.ObjectCount
+		x.xxx_hidden_ObjectCount = *b.ObjectCount
 	}
 	return m0
 }
@@ -3476,20 +3458,20 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\n" +
 	"access_key\x18\x02 \x01(\tR\taccessKey\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x03 \x01(\tR\tsecretKey\"\xde\t\n" +
+	"secret_key\x18\x03 \x01(\tR\tsecretKey\"\x83\n" +
+	"\n" +
 	"\x03FIO\x12Q\n" +
 	"\x11ceph_block_device\x18\x01 \x01(\v2#.otterscale.bist.v1.CephBlockDeviceH\x00R\x0fcephBlockDevice\x12W\n" +
 	"\x13network_file_system\x18\x02 \x01(\v2%.otterscale.bist.v1.NetworkFileSystemH\x00R\x11networkFileSystem\x123\n" +
 	"\x05input\x18\v \x01(\v2\x1d.otterscale.bist.v1.FIO.InputR\x05input\x126\n" +
-	"\x06output\x18\f \x01(\v2\x1e.otterscale.bist.v1.FIO.OutputR\x06output\x1a\xff\x02\n" +
+	"\x06output\x18\f \x01(\v2\x1e.otterscale.bist.v1.FIO.OutputR\x06output\x1a\xa4\x03\n" +
 	"\x05Input\x12I\n" +
 	"\vaccess_mode\x18\x01 \x01(\x0e2(.otterscale.bist.v1.FIO.Input.AccessModeR\n" +
 	"accessMode\x12\x1b\n" +
-	"\tjob_count\x18\x1f \x01(\x03R\bjobCount\x12\x19\n" +
-	"\brun_time\x18) \x01(\tR\arunTime\x12\x1d\n" +
-	"\n" +
-	"block_size\x18G \x01(\tR\tblockSize\x12\x1b\n" +
-	"\tfile_size\x18[ \x01(\tR\bfileSize\x12\x19\n" +
+	"\tjob_count\x18\x1f \x01(\x03R\bjobCount\x12(\n" +
+	"\x10run_time_seconds\x18) \x01(\x03R\x0erunTimeSeconds\x12(\n" +
+	"\x10block_size_bytes\x18G \x01(\x03R\x0eblockSizeBytes\x12&\n" +
+	"\x0ffile_size_bytes\x18[ \x01(\x03R\rfileSizeBytes\x12\x19\n" +
 	"\bio_depth\x18y \x01(\x03R\aioDepth\"\x9b\x01\n" +
 	"\n" +
 	"AccessMode\x12\b\n" +
@@ -3521,18 +3503,17 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x0fmin_nanoseconds\x18\x01 \x01(\x03R\x0eminNanoseconds\x12'\n" +
 	"\x0fmax_nanoseconds\x18\x02 \x01(\x03R\x0emaxNanoseconds\x12)\n" +
 	"\x10mean_nanoseconds\x18\x03 \x01(\x01R\x0fmeanNanosecondsB\b\n" +
-	"\x06target\"\xbc\t\n" +
+	"\x06target\"\xd6\t\n" +
 	"\x04Warp\x12c\n" +
 	"\x17internal_object_service\x18\x01 \x01(\v2).otterscale.bist.v1.InternalObjectServiceH\x00R\x15internalObjectService\x12c\n" +
 	"\x17external_object_service\x18\x02 \x01(\v2).otterscale.bist.v1.ExternalObjectServiceH\x00R\x15externalObjectService\x124\n" +
 	"\x05input\x18\v \x01(\v2\x1e.otterscale.bist.v1.Warp.InputR\x05input\x127\n" +
-	"\x06output\x18\f \x01(\v2\x1f.otterscale.bist.v1.Warp.OutputR\x06output\x1a\xf9\x01\n" +
+	"\x06output\x18\f \x01(\v2\x1f.otterscale.bist.v1.Warp.OutputR\x06output\x1a\x93\x02\n" +
 	"\x05Input\x12F\n" +
-	"\toperation\x18\x01 \x01(\x0e2(.otterscale.bist.v1.Warp.Input.OperationR\toperation\x12\x1a\n" +
-	"\bduration\x18\x15 \x01(\tR\bduration\x12\x1f\n" +
-	"\vobject_size\x18\x1f \x01(\tR\n" +
-	"objectSize\x12!\n" +
-	"\fobject_count\x18  \x01(\tR\vobjectCount\"H\n" +
+	"\toperation\x18\x01 \x01(\x0e2(.otterscale.bist.v1.Warp.Input.OperationR\toperation\x12)\n" +
+	"\x10duration_seconds\x18\x15 \x01(\x03R\x0fdurationSeconds\x12*\n" +
+	"\x11object_size_bytes\x18\x1f \x01(\x03R\x0fobjectSizeBytes\x12!\n" +
+	"\fobject_count\x18  \x01(\x03R\vobjectCount\"H\n" +
 	"\tOperation\x12\a\n" +
 	"\x03GET\x10\x00\x12\a\n" +
 	"\x03PUT\x10\x01\x12\n" +
