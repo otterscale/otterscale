@@ -302,13 +302,13 @@
 						</Form.Fieldset>
 						<!-- Step 2 -->
 						<Form.Fieldset>
-							{@const rumTime = formatSecond(Number(fioRunTime))}
+							{@const runTime = formatSecond(Number(fioRunTime))}
 							{@const blockSize = formatByte(Number(fioBlockSize))}
 							{@const fileSize = formatByte(Number(fioFileSize))}
 							<Form.Legend>Step 2</Form.Legend>
 							<Form.Description>Access Mode: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description>
 							<Form.Description>Job Count: {fioJobCount}</Form.Description>
-							<Form.Description>Run Time: {rumTime.value} {rumTime.unit}</Form.Description>
+							<Form.Description>Run Time: {runTime.value} {runTime.unit}</Form.Description>
 							<Form.Description>Block Size: {blockSize.value} {blockSize.unit}</Form.Description>
 							<Form.Description>File Size: {fileSize.value} {fileSize.unit}</Form.Description>
 							<Form.Description>I/O Depth: {fioIoDepth}</Form.Description>
