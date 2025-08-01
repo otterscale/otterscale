@@ -4,7 +4,7 @@ import { betterAuth } from "better-auth";
 import { Pool } from "pg";
 
 export const auth = betterAuth({
-	baseURL: publicEnv.PUBLIC_URL,
+	baseURL: env.PUBLIC_URL,
 	database: new Pool({
 		connectionString: env.DATABASE_URL,
 	}),
