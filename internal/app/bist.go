@@ -122,9 +122,9 @@ func toCoreFIOInput(p *pb.FIO_Input) *core.FIOInput {
 	return &core.FIOInput{
 		AccessMode: strings.ToLower(strings.ReplaceAll(p.GetAccessMode().String(), "_", "")),
 		JobCount:   p.GetJobCount(),
-		RunTime:    p.GetRunTime(),
-		BlockSize:  p.GetBlockSize(),
-		FileSize:   p.GetFileSize(),
+		RunTime:    p.GetRunTimeSeconds(),
+		BlockSize:  p.GetBlockSizeBytes(),
+		FileSize:   p.GetFileSizeBytes(),
 		IODepth:    p.GetIoDepth(),
 	}
 }
@@ -132,8 +132,8 @@ func toCoreFIOInput(p *pb.FIO_Input) *core.FIOInput {
 func toCoreWarpInput(p *pb.Warp_Input) *core.WarpInput {
 	return &core.WarpInput{
 		Operation:   strings.ToLower(p.GetOperation().String()),
-		Duration:    p.GetDuration(),
-		ObjectSize:  p.GetObjectSize(),
+		Duration:    p.GetDurationSeconds(),
+		ObjectSize:  p.GetObjectSizeBytes(),
 		ObjectCount: p.GetObjectCount(),
 	}
 }
@@ -198,9 +198,9 @@ func toProtoFIOInput(f *core.FIOInput) *pb.FIO_Input {
 	ret := &pb.FIO_Input{}
 	ret.SetAccessMode(toProtoFIOInputAccessMode(f.AccessMode))
 	ret.SetJobCount(f.JobCount)
-	ret.SetRunTime(f.RunTime)
-	ret.SetBlockSize(f.BlockSize)
-	ret.SetFileSize(f.FileSize)
+	ret.SetRunTimeSeconds(f.RunTime)
+	ret.SetBlockSizeBytes(f.BlockSize)
+	ret.SetFileSizeBytes(f.FileSize)
 	ret.SetIoDepth(f.IODepth)
 	return ret
 }
@@ -280,8 +280,8 @@ func toProtoExternalObjectService(f *core.WarpTargetExternal) *pb.ExternalObject
 func toProtoWarpInput(w *core.WarpInput) *pb.Warp_Input {
 	ret := &pb.Warp_Input{}
 	ret.SetOperation(toProtoWarpInputOperation(w.Operation))
-	ret.SetDuration(w.Duration)
-	ret.SetObjectSize(w.ObjectSize)
+	ret.SetDurationSeconds(w.Duration)
+	ret.SetObjectSizeBytes(w.ObjectSize)
 	ret.SetObjectCount(w.ObjectCount)
 	return ret
 }
