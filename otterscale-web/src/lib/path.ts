@@ -47,6 +47,13 @@ export const machinesVirtualMachinePath = "/machines/virtual-machine"
 export const settingsPath = "/settings"
 export const settingsNetworkPath = "/settings/network"
 export const settingsBISTPath = "/settings/built-in-self-test"
+export const settingsSubscriptionPath = "/settings/subscription"
+
+// Setup
+export const setupPath = "/setup"
+export const setupScopePath = "/setup/scope"
+export const setupScopeCephPath = "/setup/scope/ceph"
+export const setupScopeKubernetesPath = "/setup/scope/kubernetes"
 
 // Functions
 export function getIconFromUrl(url: string): string {
@@ -95,6 +102,11 @@ const routesMap = new Map<string, Path>([
     [settingsPath, { title: m.settings(), url: settingsPath }],
     [settingsNetworkPath, { title: m.network(), url: settingsNetworkPath }],
     [settingsBISTPath, { title: m.built_in_test(), url: settingsBISTPath }],
+    [settingsSubscriptionPath, { title: m.subscription(), url: settingsSubscriptionPath }],
+    [setupPath, { title: m.setup(), url: setupPath }],
+    [setupScopePath, { title: m.scopes(), url: setupScopePath }],
+    [setupScopeCephPath, { title: 'Ceph', url: setupScopeCephPath }],
+    [setupScopeKubernetesPath, { title: 'Kubernetes', url: setupScopeKubernetesPath }],
 ]);
 
 export function getPath(url: string): Path {

@@ -20,7 +20,18 @@ import {
     databasesRelationalPath,
     databasesNoSQLPath,
     getPath,
+    settingsSubscriptionPath,
 } from '$lib/path';
+
+export const cephPaths = [
+    storagePath,
+]
+
+export const kubernetesPaths = [
+    modelsPath,
+    databasesPath,
+    applicationsPath,
+]
 
 export const routes = [
     {
@@ -62,7 +73,8 @@ export const routes = [
         path: getPath(settingsPath),
         items: [
             getPath(settingsNetworkPath),
-            getPath(settingsBISTPath)
+            getPath(settingsSubscriptionPath),
+            getPath(settingsBISTPath),
         ]
     }
 ];

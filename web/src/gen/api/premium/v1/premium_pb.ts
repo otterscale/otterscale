@@ -2,53 +2,83 @@
 // @generated from file api/premium/v1/premium.proto (package otterscale.premium.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file api/premium/v1/premium.proto.
  */
 export const file_api_premium_v1_premium: GenFile = /*@__PURE__*/
-  fileDesc("ChxhcGkvcHJlbWl1bS92MS9wcmVtaXVtLnByb3RvEhVvdHRlcnNjYWxlLnByZW1pdW0udjEiBgoEUGluZyIGCgRQb25nMlgKDlByZW1pdW1TZXJ2aWNlEkYKCkVudGVycHJpc2USGy5vdHRlcnNjYWxlLnByZW1pdW0udjEuUGluZxobLm90dGVyc2NhbGUucHJlbWl1bS52MS5Qb25nQjFaL2dpdGh1Yi5jb20vb3BlbmhkYy9vdHRlcnNjYWxlL2FwaS9wcmVtaXVtL3YxO3BiYghlZGl0aW9uc3DoBw");
+  fileDesc("ChxhcGkvcHJlbWl1bS92MS9wcmVtaXVtLnByb3RvEhVvdHRlcnNjYWxlLnByZW1pdW0udjEiEAoOR2V0VGllclJlcXVlc3QiQwoPR2V0VGllclJlc3BvbnNlEjAKBHRpZXIYASABKA4yIi5vdHRlcnNjYWxlLnByZW1pdW0udjEuUHJlbWl1bVRpZXIqNgoLUHJlbWl1bVRpZXISCQoFQkFTSUMQABIMCghBRFZBTkNFRBABEg4KCkVOVEVSUFJJU0UQAjJqCg5QcmVtaXVtU2VydmljZRJYCgdHZXRUaWVyEiUub3R0ZXJzY2FsZS5wcmVtaXVtLnYxLkdldFRpZXJSZXF1ZXN0GiYub3R0ZXJzY2FsZS5wcmVtaXVtLnYxLkdldFRpZXJSZXNwb25zZUIxWi9naXRodWIuY29tL29wZW5oZGMvb3R0ZXJzY2FsZS9hcGkvcHJlbWl1bS92MTtwYmIIZWRpdGlvbnNw6Ac");
 
 /**
- * @generated from message otterscale.premium.v1.Ping
+ * @generated from message otterscale.premium.v1.GetTierRequest
  */
-export type Ping = Message<"otterscale.premium.v1.Ping"> & {
+export type GetTierRequest = Message<"otterscale.premium.v1.GetTierRequest"> & {
 };
 
 /**
- * Describes the message otterscale.premium.v1.Ping.
- * Use `create(PingSchema)` to create a new message.
+ * Describes the message otterscale.premium.v1.GetTierRequest.
+ * Use `create(GetTierRequestSchema)` to create a new message.
  */
-export const PingSchema: GenMessage<Ping> = /*@__PURE__*/
+export const GetTierRequestSchema: GenMessage<GetTierRequest> = /*@__PURE__*/
   messageDesc(file_api_premium_v1_premium, 0);
 
 /**
- * @generated from message otterscale.premium.v1.Pong
+ * @generated from message otterscale.premium.v1.GetTierResponse
  */
-export type Pong = Message<"otterscale.premium.v1.Pong"> & {
+export type GetTierResponse = Message<"otterscale.premium.v1.GetTierResponse"> & {
+  /**
+   * @generated from field: otterscale.premium.v1.PremiumTier tier = 1;
+   */
+  tier: PremiumTier;
 };
 
 /**
- * Describes the message otterscale.premium.v1.Pong.
- * Use `create(PongSchema)` to create a new message.
+ * Describes the message otterscale.premium.v1.GetTierResponse.
+ * Use `create(GetTierResponseSchema)` to create a new message.
  */
-export const PongSchema: GenMessage<Pong> = /*@__PURE__*/
+export const GetTierResponseSchema: GenMessage<GetTierResponse> = /*@__PURE__*/
   messageDesc(file_api_premium_v1_premium, 1);
+
+/**
+ * @generated from enum otterscale.premium.v1.PremiumTier
+ */
+export enum PremiumTier {
+  /**
+   * @generated from enum value: BASIC = 0;
+   */
+  BASIC = 0,
+
+  /**
+   * @generated from enum value: ADVANCED = 1;
+   */
+  ADVANCED = 1,
+
+  /**
+   * @generated from enum value: ENTERPRISE = 2;
+   */
+  ENTERPRISE = 2,
+}
+
+/**
+ * Describes the enum otterscale.premium.v1.PremiumTier.
+ */
+export const PremiumTierSchema: GenEnum<PremiumTier> = /*@__PURE__*/
+  enumDesc(file_api_premium_v1_premium, 0);
 
 /**
  * @generated from service otterscale.premium.v1.PremiumService
  */
 export const PremiumService: GenService<{
   /**
-   * @generated from rpc otterscale.premium.v1.PremiumService.Enterprise
+   * @generated from rpc otterscale.premium.v1.PremiumService.GetTier
    */
-  enterprise: {
+  getTier: {
     methodKind: "unary";
-    input: typeof PingSchema;
-    output: typeof PongSchema;
+    input: typeof GetTierRequestSchema;
+    output: typeof GetTierResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_premium_v1_premium, 0);

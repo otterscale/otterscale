@@ -107,7 +107,6 @@
 				<Icon icon="ph:x" />
 			</button>
 		{/if}
-
 		{#if checked === undefined}
 			<Switch.Root
 				bind:ref

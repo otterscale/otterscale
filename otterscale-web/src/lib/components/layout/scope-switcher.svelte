@@ -1,31 +1,30 @@
 <script lang="ts">
-	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { Button } from '$lib/components/ui/button';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
-	import { activeScope } from '$lib/stores';
-	import DialogCreateScope from './dialog-create-scope.svelte';
 	import { m } from '$lib/paraglide/messages';
+	import { setupScopePath } from '$lib/path';
+	import DialogCreateScope from './dialog-create-scope.svelte';
 
-	let { scopes }: { scopes: Scope[] } = $props();
+	let {
+		active,
+		scopes,
+		tier,
+		onSelect
+	}: {
+		active: Scope;
+		scopes: Scope[];
+		tier: string;
+		onSelect: (index: number) => Promise<void>;
+	} = $props();
+
 	let open = $state(false);
 
 	const sidebar = useSidebar();
-
-	const SHORTCUT_ICONS = [
-		'ph:number-one',
-		'ph:number-two',
-		'ph:number-three',
-		'ph:number-four',
-		'ph:number-five',
-		'ph:number-six',
-		'ph:number-seven',
-		'ph:number-eight',
-		'ph:number-nine'
-	];
 
 	const SCOPE_ICONS = [
 		'ph:airplane-tilt',
@@ -39,19 +38,24 @@
 		'ph:gavel'
 	];
 
+	const SHORTCUT_ICONS = [
+		'ph:number-one',
+		'ph:number-two',
+		'ph:number-three',
+		'ph:number-four',
+		'ph:number-five',
+		'ph:number-six',
+		'ph:number-seven',
+		'ph:number-eight',
+		'ph:number-nine'
+	];
+
 	function getIcon(name: string): string {
 		const index = scopes.findIndex((scope) => scope.name === name);
 		return index !== -1 ? SCOPE_ICONS[index % SCOPE_ICONS.length] : SCOPE_ICONS[0];
 	}
 
-	function handleScopeShortcut(index: number): void {
-		if (scopes.length > index) {
-			activeScope.set(scopes[index]);
-			toast.info(`Switched to '${$activeScope.name}' scope`);
-		}
-	}
-
-	function toggleDialog(): void {
+	function toggleDialog() {
 		open = !open;
 	}
 </script>
@@ -60,47 +64,47 @@
 	use:shortcut={{
 		key: '1',
 		ctrl: true,
-		callback: () => handleScopeShortcut(0)
+		callback: async () => await onSelect(0)
 	}}
 	use:shortcut={{
 		key: '2',
 		ctrl: true,
-		callback: () => handleScopeShortcut(1)
+		callback: async () => await onSelect(1)
 	}}
 	use:shortcut={{
 		key: '3',
 		ctrl: true,
-		callback: () => handleScopeShortcut(2)
+		callback: async () => await onSelect(2)
 	}}
 	use:shortcut={{
 		key: '4',
 		ctrl: true,
-		callback: () => handleScopeShortcut(3)
+		callback: async () => await onSelect(3)
 	}}
 	use:shortcut={{
 		key: '5',
 		ctrl: true,
-		callback: () => handleScopeShortcut(4)
+		callback: async () => await onSelect(4)
 	}}
 	use:shortcut={{
 		key: '6',
 		ctrl: true,
-		callback: () => handleScopeShortcut(5)
+		callback: async () => await onSelect(5)
 	}}
 	use:shortcut={{
 		key: '7',
 		ctrl: true,
-		callback: () => handleScopeShortcut(6)
+		callback: async () => await onSelect(6)
 	}}
 	use:shortcut={{
 		key: '8',
 		ctrl: true,
-		callback: () => handleScopeShortcut(7)
+		callback: async () => await onSelect(7)
 	}}
 	use:shortcut={{
 		key: '9',
 		ctrl: true,
-		callback: () => handleScopeShortcut(8)
+		callback: async () => await onSelect(8)
 	}}
 />
 
@@ -112,21 +116,24 @@
 			<DropdownMenu.Trigger>
 				{#snippet child({ props })}
 					<Sidebar.MenuButton
-						{...props}
+						data-state={props['data-state']}
 						size="lg"
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
-						<div
-							class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
+						<Button
+							href={setupScopePath}
+							class="group/icon bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg transition"
 						>
-							<Icon icon="{getIcon($activeScope.name)}-fill" class="size-4.5" />
+							<Icon icon="{getIcon(active.name)}-fill" class="size-4.5 group-hover/icon:hidden" />
+							<Icon icon="ph:wrench-fill" class="hidden size-4.5 group-hover/icon:block" />
+						</Button>
+						<div {...props} class="flex h-12 w-full items-center">
+							<div class="grid flex-1 text-left text-sm leading-tight">
+								<span class="truncate font-medium">{active.name}</span>
+								<span class="truncate text-xs">{tier}</span>
+							</div>
+							<Icon icon="ph:caret-up-down-bold" class="ml-auto size-4 shrink-0" />
 						</div>
-						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-medium">{$activeScope.name}</span>
-							<!-- <span class="truncate text-xs">{activeScope.enterprise ? 'Enterprise' : 'Free'}</span> -->
-							<span class="truncate text-xs">Free</span>
-						</div>
-						<Icon icon="ph:caret-up-down-bold" class="ml-auto" />
 					</Sidebar.MenuButton>
 				{/snippet}
 			</DropdownMenu.Trigger>
@@ -138,7 +145,7 @@
 			>
 				<DropdownMenu.Label class="text-muted-foreground text-xs">{m.scopes()}</DropdownMenu.Label>
 				{#each scopes as scope, index (scope.name)}
-					<DropdownMenu.Item onSelect={() => handleScopeShortcut(index)} class="gap-2 p-2">
+					<DropdownMenu.Item onSelect={async () => await onSelect(index)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
 							<Icon icon="{getIcon(scope.name)}-bold" class="size-3.5 shrink-0" />
 						</div>

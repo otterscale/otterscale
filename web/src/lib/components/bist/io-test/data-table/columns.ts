@@ -96,6 +96,51 @@ const columns: ColumnDef<TestResult>[] = [
         },
     },
     {
+        accessorKey: "bandwidth",
+        header: ({ column }) => {
+            return renderSnippet(headers.bandwidth, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.bandwidth, row);
+        },
+    },
+    {
+        accessorKey: "iops",
+        header: ({ column }) => {
+            return renderSnippet(headers.iops, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.iops, row);
+        },
+    },
+    {
+        accessorKey: "latencyMin",
+        header: ({ column }) => {
+            return renderSnippet(headers.latencyMin, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.latencyMin, row);
+        },
+    },
+    {
+        accessorKey: "latencyMax",
+        header: ({ column }) => {
+            return renderSnippet(headers.latencyMax, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.latencyMax, row);
+        },
+    },
+    {
+        accessorKey: "latencyMean",
+        header: ({ column }) => {
+            return renderSnippet(headers.latencyMean, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.latencyMean, row);
+        },
+    },
+    {
         accessorKey: "startedAt",
         header: ({ column }) => {
             return renderSnippet(headers.startedAt, column)
@@ -112,7 +157,7 @@ const columns: ColumnDef<TestResult>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.completedAt, row);
         },
-    }
+    },
 ];
 
 export {

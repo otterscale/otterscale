@@ -74,7 +74,7 @@
 }
 
 @theme {
-  --font-sans: "Inter", sans-serif;
+  --font-sans: "Inter", "Noto Sans TC", sans-serif;
 }
 
 @theme inline {

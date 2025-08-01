@@ -22,23 +22,24 @@
 	} from '@tanstack/table-core';
 	import { writable } from 'svelte/store';
 	import Actions from './actions.svelte';
-	import { columns } from './columns';
-	import Statistics from './statistics.svelte';
-	import Create from './test-step-modal.svelte';
 	import Chart from './chart.svelte';
+	import { columns } from './columns';
+	import Create from './test-step-modal.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
 	let { testResults } : { testResults: TestResult[] } = $props();
 	let data = $state(writable(testResults));
-	
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
-	let columnVisibility = $state<VisibilityState>({});
+	let columnVisibility = $state<VisibilityState>({
+		operation: false,
+		duration: false,
+		objectSize: false,
+		objectCount: false,
+	});
 	let rowSelection = $state<RowSelectionState>({});
-
-	// console.log(testResults);
 
 	const table = createSvelteTable({
 		get data() {
@@ -107,14 +108,11 @@
 </script>
 
 <Layout.Root>
-	<Layout.Statistics>
-		<Statistics {table} />
-	</Layout.Statistics>
 	<Chart {table}/>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
-			<PointFilter columnId="createdBy" {table} values={$data.map((row) => row.createdBy)} alias="Creater" />
+			<PointFilter columnId="createdBy" {table} values={$data.map((row) => row.createdBy)} alias="Creator" />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
@@ -136,9 +134,6 @@
 								{/if}
 							</Table.Head>
 						{/each}
-						<!-- <Table.Head>
-							{@render headers.iops()}
-						</Table.Head> -->
 						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}

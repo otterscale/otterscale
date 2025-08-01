@@ -121,12 +121,12 @@ func (uc *BISTUseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput)
 		{Name: "BENCHMARK_ARGS_WARP_ACCESS_KEY", Value: target.AccessKey},
 		{Name: "BENCHMARK_ARGS_WARP_SECRET_KEY", Value: target.SecretKey},
 		{Name: "BENCHMARK_ARGS_WARP_ACTION", Value: input.Operation},
-		{Name: "BENCHMARK_ARGS_WARP_DURATION", Value: input.Duration},
+		{Name: "BENCHMARK_ARGS_WARP_DURATION", Value: strconv.FormatInt(input.Duration, 10)},
 		{Name: "BENCHMARK_ARGS_WARP_CONCURRENT", Value: "2"},
-		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: input.ObjectSize},
+		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: strconv.FormatInt(input.ObjectSize, 10)},
 	}
 	if input.Operation == http.MethodPut {
-		env = append(env, corev1.EnvVar{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: input.ObjectCount})
+		env = append(env, corev1.EnvVar{Name: "BENCHMARK_ARGS_WARP_OBJECTS", Value: strconv.FormatInt(input.ObjectCount, 10)})
 	}
 	return &JobSpec{
 		BackoffLimit: &bistJobBackoffLimit,

@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { Metal } from '$lib/components/machines/metal/data-table/metal';
 	import { machinesMetalPath, machinesPath } from '$lib/path';
-	import { breadcrumb, scopeLoading } from '$lib/stores';
+	import { activeScope, breadcrumb } from '$lib/stores';
 
-	breadcrumb.set({ parent: machinesPath, current: machinesMetalPath });
+	breadcrumb.set({ parents: [machinesPath], current: machinesMetalPath });
 </script>
 
-{#if $scopeLoading}
-	loading scope
-{:else}
+{#if $activeScope}
 	<Metal />
 {/if}

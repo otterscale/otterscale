@@ -1,13 +1,11 @@
 <script lang="ts">
 	import { storageFileSystemPath, storagePath } from '$lib/path';
-	import { activeScope, breadcrumb, scopeLoading } from '$lib/stores';
+	import { activeScope, breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parent: storagePath, current: storageFileSystemPath });
+	breadcrumb.set({ parents: [storagePath], current: storageFileSystemPath });
 </script>
 
-{#if $scopeLoading}
-	loading scope
-{:else}
+{#if $activeScope}
 	current scope: {$activeScope.uuid}
 {/if}

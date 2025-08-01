@@ -2,13 +2,29 @@
 	import type { ComponentProps } from 'svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
 	import type { User } from 'better-auth';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import { goto } from '$app/navigation';
+	import {
+		CheckHealthResponse_Result,
+		EnvironmentService
+	} from '$lib/api/environment/v1/environment_pb';
+	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
+	import { PremiumTier, PremiumService } from '$lib/api/premium/v1/premium_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { activeScope, scopeLoading } from '$lib/stores';
-	import { bookmarks, routes } from './routes';
+	import { m } from '$lib/paraglide/messages';
+	import { setupPath, setupScopePath } from '$lib/path';
+	import {
+		activeScope,
+		currentCeph,
+		currentKubernetes,
+		premiumTier,
+		triggerUpdateScopes
+	} from '$lib/stores';
+	import { bookmarks, cephPaths, kubernetesPaths, routes } from './routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
 	import NavSecondary from './nav-secondary.svelte';
@@ -20,42 +36,116 @@
 	let { user, ref = $bindable(null), ...restProps }: Props = $props();
 
 	const transport: Transport = getContext('transport');
+	const environmentClient = createClient(EnvironmentService, transport);
 	const scopeClient = createClient(ScopeService, transport);
+	const premiumClient = createClient(PremiumService, transport);
+	const essentialClient = createClient(EssentialService, transport);
 	const scopes = writable<Scope[]>([]);
 
-	async function initializeScopes() {
-		scopeLoading.set(true);
+	const tierMap = {
+		[PremiumTier.BASIC]: m.basic_tier(),
+		[PremiumTier.ADVANCED]: m.advanced_tier(),
+		[PremiumTier.ENTERPRISE]: m.enterprise_tier()
+	};
 
+	const skeletonClasses = {
+		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
+		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
+		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
+	};
+
+	async function fetchScopes() {
 		try {
 			const response = await scopeClient.listScopes({});
 			scopes.set(response.scopes);
 
 			if (response.scopes.length > 0) {
-				activeScope.set(response.scopes[0]);
+				handleScopeOnSelect(0);
 			}
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
-		} finally {
-			scopeLoading.set(false);
 		}
 	}
 
-	onMount(initializeScopes);
-
-	function renderLoadingSkeleton() {
-		return {
-			avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
-			title: 'bg-sidebar-primary/50 h-3 w-[150px]',
-			subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
-		};
+	async function fetchEdition() {
+		try {
+			const response = await premiumClient.getTier({});
+			premiumTier.set(response.tier);
+		} catch (error) {
+			const connectError = error as ConnectError;
+			if (connectError.code !== Code.Unimplemented) {
+				console.error('Failed to fetch tier:', connectError);
+			}
+		}
 	}
 
-	const skeletonClasses = renderLoadingSkeleton();
+	async function fetchEssentials(uuid: string) {
+		try {
+			const response = await essentialClient.listEssentials({ scopeUuid: uuid });
+			const { essentials } = response;
+
+			currentCeph.set(essentials.find((e) => e.type === Essential_Type.CEPH));
+			currentKubernetes.set(essentials.find((e) => e.type === Essential_Type.KUBERNETES));
+		} catch (error) {
+			console.error('Failed to fetch essentials:', error);
+		}
+	}
+
+	async function handleScopeOnSelect(index: number) {
+		const scope = $scopes[index];
+		if (!scope) return;
+
+		activeScope.set(scope);
+
+		await fetchEssentials(scope.uuid);
+		if (!$currentCeph && !$currentKubernetes) {
+			toast.info(m.scope_not_configured({ name: scope.name }), {
+				action: {
+					label: m.goto(),
+					onClick: () => goto(setupScopePath)
+				}
+			});
+			goto(setupScopePath);
+		} else {
+			toast.success(m.switch_scope({ name: scope.name }));
+		}
+	}
+
+	async function initialize() {
+		try {
+			const response = await environmentClient.checkHealth({});
+			switch (response.result) {
+				case CheckHealthResponse_Result.OK:
+					await Promise.all([fetchScopes(), fetchEdition()]);
+					break;
+				case CheckHealthResponse_Result.NOT_INSTALLED:
+					goto(setupPath);
+					break;
+			}
+		} catch (error) {
+			console.error('Failed to initialize:', error);
+		}
+	}
+
+	onMount(initialize);
+
+	$effect(() => {
+		if ($triggerUpdateScopes) {
+			initialize();
+		}
+	});
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
 	<Sidebar.Header>
-		{#if $scopeLoading}
+		{#if $activeScope}
+			<ScopeSwitcher
+				active={$activeScope}
+				scopes={$scopes}
+				tier={tierMap[$premiumTier]}
+				onSelect={handleScopeOnSelect}
+			/>
+		{:else}
 			<Sidebar.Menu>
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton size="lg">
@@ -71,13 +161,11 @@
 					</Sidebar.MenuButton>
 				</Sidebar.MenuItem>
 			</Sidebar.Menu>
-		{:else}
-			<ScopeSwitcher scopes={$scopes} />
 		{/if}
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavMain {routes} />
+		<NavMain {routes} {cephPaths} {kubernetesPaths} />
 		<NavPrimary {bookmarks} />
 		<NavSecondary class="mt-auto" />
 	</Sidebar.Content>

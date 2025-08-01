@@ -3,11 +3,11 @@
 	import { writable } from 'svelte/store';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { homePath, machinesPath } from '$lib/path';
-	import { activeScope, breadcrumb, scopeLoading } from '$lib/stores';
+	import { activeScope, breadcrumb } from '$lib/stores';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parent: homePath, current: machinesPath });
+	breadcrumb.set({ parents: [homePath], current: machinesPath });
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -33,9 +33,7 @@
 	});
 </script>
 
-{#if $scopeLoading}
-	loading scope
-{:else}
+{#if $activeScope}
 	current scope: {$activeScope.uuid}
 {/if}
 

@@ -17,8 +17,6 @@
 		getSortedRowModel
 	} from '@tanstack/table-core';
 	import { columns } from './columns';
-	// import Create from './create.svelte';
-	import Statistics from './statistics.svelte';
 	import Chart from './chart.svelte';
 	import { writable } from 'svelte/store';
 	import Actions from './actions.svelte';
@@ -26,7 +24,6 @@
 	import PointFilter from '$lib/components/custom/data-table/data-table-filters/point-filter.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import { headers } from './headers.svelte';
 	import Create from './test-step-modal.svelte';
 
 </script>
@@ -34,14 +31,18 @@
 <script lang="ts" generics="TData, TValue">
 	let { testResults } : { testResults: TestResult[] } = $props();
 	let data = $state(writable(testResults));
-	
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
-	let columnVisibility = $state<VisibilityState>({});
+	let columnVisibility = $state<VisibilityState>({
+		accessMode: false,
+		jobCount: false,
+		runTime: false,
+		blockSize: false,
+		fileSize: false,
+		ioDepth: false,
+	});
 	let rowSelection = $state<RowSelectionState>({});
-
-	// console.log(testResults);
 
 	const table = createSvelteTable({
 		get data() {
@@ -110,11 +111,7 @@
 </script>
 
 <Layout.Root>
-	<Layout.Statistics>
-		<Statistics {table} />
-	</Layout.Statistics>
 	<Chart {table}/>
-
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<FuzzyFilter columnId="name" {table} />
