@@ -3,7 +3,7 @@
 	import { BistDashboardManager } from '$lib/components/bist/utils/bistManager';
 	import { Chart as Layout } from '$lib/components/custom/chart/layouts/index';
 	import * as Template from '$lib/components/dashboard/utils/templates';
-	import { formatCapacityV2 as formatCapacity, formatLatencyNano } from '$lib/formatter';
+	import { formatByte, formatLatencyNano } from '$lib/formatter';
 	import { type Table } from '@tanstack/table-core';
 	import { scaleLog } from 'd3-scale';
 	import dayjs from 'dayjs';
@@ -36,7 +36,6 @@
                             mode === "write" ? writeTmp :
                             trimTmp
                         )}
-						yScale={scaleLog()}
 						props={{
 							xAxis: { 
 								tweened: { duration: 200 },
@@ -44,7 +43,7 @@
 							},
 							yAxis: {
 								format: (v: number) => {
-									const capacity = formatCapacity(v);
+									const capacity = formatByte(v);
 									return `${Number(capacity.value).toFixed(0)} ${capacity.unit}`;
 								}
 							},
@@ -64,7 +63,7 @@
 								<Tooltip.Item label="Name" value={(data.name)} />
 								<Tooltip.Item
 									label="Bandwidth"
-									value={`${Number(formatCapacity(data.bandwidthBytes).value).toFixed(0)} ${formatCapacity(data.bandwidthBytes).unit}`}
+									value={`${Number(formatByte(data.bandwidthBytes).value).toFixed(0)} ${formatByte(data.bandwidthBytes).unit}`}
 								/>
 								<Tooltip.Item label="Date" value={dayjs(data.completedAt).format('YYYY/MM/DD HH:mm')} />
 							</Tooltip.List>

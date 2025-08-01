@@ -3,7 +3,7 @@
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
+	import { formatByte } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 </script>
 
@@ -35,10 +35,10 @@
 				
 				<Form.Fieldset>
 					<Form.Legend>GET</Form.Legend>
-					{@const getTotalBytes = formatCapacity(getOutput?.totalBytes || 0)}
-					{@const getFastest = formatCapacity(getOutput?.bytes?.fastestPerSecond || 0)}
-					{@const getMedian = formatCapacity(getOutput?.bytes?.medianPerSecond || 0)}
-					{@const getSlowest = formatCapacity(getOutput?.bytes?.slowestPerSecond || 0)}
+					{@const getTotalBytes = formatByte(getOutput?.totalBytes || 0)}
+					{@const getFastest = formatByte(getOutput?.bytes?.fastestPerSecond || 0)}
+					{@const getMedian = formatByte(getOutput?.bytes?.medianPerSecond || 0)}
+					{@const getSlowest = formatByte(getOutput?.bytes?.slowestPerSecond || 0)}
 					<Form.Description>Total Bytes: {getTotalBytes.value} {getTotalBytes.unit}</Form.Description>
 					<Form.Description>Total Objects: {getOutput?.totalObjects}</Form.Description>
 					<Form.Description>Total Operations: {getOutput?.totalOperations}</Form.Description>
@@ -51,10 +51,10 @@
 				</Form.Fieldset>
 				<Form.Fieldset>
 					<Form.Legend>PUT</Form.Legend>
-					{@const putTotalBytes = formatCapacity(putOutput?.totalBytes || 0)}
-					{@const putFastest = formatCapacity(putOutput?.bytes?.fastestPerSecond || 0)}
-					{@const putMedian = formatCapacity(putOutput?.bytes?.medianPerSecond || 0)}
-					{@const putSlowest = formatCapacity(putOutput?.bytes?.slowestPerSecond || 0)}
+					{@const putTotalBytes = formatByte(putOutput?.totalBytes || 0)}
+					{@const putFastest = formatByte(putOutput?.bytes?.fastestPerSecond || 0)}
+					{@const putMedian = formatByte(putOutput?.bytes?.medianPerSecond || 0)}
+					{@const putSlowest = formatByte(putOutput?.bytes?.slowestPerSecond || 0)}
 					<Form.Description>Total Bytes: {putTotalBytes.value} {putTotalBytes.unit}</Form.Description>
 					<Form.Description>Total Objects: {putOutput?.totalObjects}</Form.Description>
 					<Form.Description>Total Operations: {putOutput?.totalOperations}</Form.Description>
@@ -67,10 +67,10 @@
 				</Form.Fieldset>
 				<Form.Fieldset>
 					<Form.Legend>DELETE</Form.Legend>
-					{@const deleteTotalBytes = formatCapacity(deleteOutput?.totalBytes || 0)}
-					{@const deleteFastest = formatCapacity(deleteOutput?.bytes?.fastestPerSecond || 0)}
-					{@const deleteMedian = formatCapacity(deleteOutput?.bytes?.medianPerSecond || 0)}
-					{@const deleteSlowest = formatCapacity(deleteOutput?.bytes?.slowestPerSecond || 0)}
+					{@const deleteTotalBytes = formatByte(deleteOutput?.totalBytes || 0)}
+					{@const deleteFastest = formatByte(deleteOutput?.bytes?.fastestPerSecond || 0)}
+					{@const deleteMedian = formatByte(deleteOutput?.bytes?.medianPerSecond || 0)}
+					{@const deleteSlowest = formatByte(deleteOutput?.bytes?.slowestPerSecond || 0)}
 					<Form.Description>Total Bytes: {deleteTotalBytes.value} {deleteTotalBytes.unit}</Form.Description>
 					<Form.Description>Total Objects: {deleteOutput?.totalObjects}</Form.Description>
 					<Form.Description>Total Operations: {deleteOutput?.totalOperations}</Form.Description>

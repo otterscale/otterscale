@@ -4,7 +4,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import Icon from '@iconify/svelte';
-	import { formatCapacityV2 as formatCapacity, formatLatencyNano } from '$lib/formatter';
+	import { formatByte, formatLatencyNano } from '$lib/formatter';
 
 </script>
 
@@ -36,8 +36,8 @@
 				
 				<Form.Fieldset>
 					<Form.Legend>Read</Form.Legend>
-					{@const readIoBytes = formatCapacity(Number(readOutput?.ioBytes || 0))}
-					{@const readBandwidthBytes = formatCapacity(Number(readOutput?.bandwidthBytes || 0))}
+					{@const readIoBytes = formatByte(Number(readOutput?.ioBytes || 0))}
+					{@const readBandwidthBytes = formatByte(Number(readOutput?.bandwidthBytes || 0))}
 					{@const readMinLatency = formatLatencyNano(Number(readOutput?.latency?.minNanoseconds || 0))}
 					{@const readMaxLatency = formatLatencyNano(Number(readOutput?.latency?.maxNanoseconds || 0))}
 					{@const readMeanLatency = formatLatencyNano(readOutput?.latency?.meanNanoseconds || 0)}
@@ -51,8 +51,8 @@
 				</Form.Fieldset>
 				<Form.Fieldset>
 					<Form.Legend>Write</Form.Legend>
-					{@const writeIoBytes = formatCapacity(Number(writeOutput?.ioBytes || 0))}
-					{@const writeBandwidthBytes = formatCapacity(Number(writeOutput?.bandwidthBytes || 0))}
+					{@const writeIoBytes = formatByte(Number(writeOutput?.ioBytes || 0))}
+					{@const writeBandwidthBytes = formatByte(Number(writeOutput?.bandwidthBytes || 0))}
 					{@const writeMinLatency = formatLatencyNano(Number(writeOutput?.latency?.minNanoseconds || 0))}
 					{@const writeMaxLatency = formatLatencyNano(Number(writeOutput?.latency?.maxNanoseconds || 0))}
 					{@const writeMeanLatency = formatLatencyNano(writeOutput?.latency?.meanNanoseconds || 0)}
@@ -66,8 +66,8 @@
 				</Form.Fieldset>
 				<Form.Fieldset>
 					<Form.Legend>Trim</Form.Legend>
-					{@const trimIoBytes = formatCapacity(Number(trimOutput?.ioBytes || 0))}
-					{@const trimBandwidthBytes = formatCapacity(Number(trimOutput?.bandwidthBytes || 0))}
+					{@const trimIoBytes = formatByte(Number(trimOutput?.ioBytes || 0))}
+					{@const trimBandwidthBytes = formatByte(Number(trimOutput?.bandwidthBytes || 0))}
 					{@const trimMinLatency = formatLatencyNano(Number(trimOutput?.latency?.minNanoseconds || 0))}
 					{@const trimMaxLatency = formatLatencyNano(Number(trimOutput?.latency?.maxNanoseconds || 0))}
 					{@const trimMeanLatency = formatLatencyNano(trimOutput?.latency?.meanNanoseconds || 0)}

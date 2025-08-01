@@ -14,6 +14,7 @@
 	import { getContext, type Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
+	import { formatByte, formatSecond } from '$lib/formatter';
 
 	// WARP Target
 	const warpTarget: Writable<SingleSelect.OptionType[]> = writable([
@@ -58,15 +59,15 @@
         : {} as ExternalObjectService;
 	const DEFAULT_WARP_INPUT = testResult && testResult.kind.value?.input
     ? testResult.kind.value.input as Warp_Input
-	: { duration: "60s", objectSize: "4MiB", objectCount: "500" } as unknown as Warp_Input; 
+	: { durationSeconds: 60, objectSizeBytes: 4 * 1024 * 1024, objectCount: 500 } as unknown as Warp_Input; 
 
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestWarp: Warp = $state(DEFAULT_WARP_REQUEST);
 	let requestInternalObjectService: InternalObjectService = $state(DEFAULT_INTERNAL_OBJECT_SERVICE);
 	let requestExternalObjectService: ExternalObjectService = $state(DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE);
 	let warpOperation = $state(DEFAULT_WARP_INPUT.operation);
-	let warpDuration = $state(DEFAULT_WARP_INPUT.duration);
-	let warpObjectSize = $state(DEFAULT_WARP_INPUT.objectSize);
+	let warpDuration = $state(DEFAULT_WARP_INPUT.durationSeconds);
+	let warpObjectSize = $state(DEFAULT_WARP_INPUT.objectSizeBytes);
 	let warpObjectCount = $state(DEFAULT_WARP_INPUT.objectCount);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -74,8 +75,8 @@
 		requestInternalObjectService = DEFAULT_INTERNAL_OBJECT_SERVICE;
 		requestExternalObjectService = DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE;
 		warpOperation = DEFAULT_WARP_INPUT.operation; 
-		warpDuration = DEFAULT_WARP_INPUT.duration; 
-		warpObjectSize = DEFAULT_WARP_INPUT.objectSize; 
+		warpDuration = DEFAULT_WARP_INPUT.durationSeconds; 
+		warpObjectSize = DEFAULT_WARP_INPUT.objectSizeBytes; 
 		warpObjectCount = DEFAULT_WARP_INPUT.objectCount; 
 	}
 
@@ -220,17 +221,35 @@
 							<!-- Duration -->
 							<Form.Field>
 								<Form.Label>Duration</Form.Label>
-								<SingleInput.General type="text" placeholder="32" bind:value={warpDuration}/>
+								<SingleInput.Measurement
+									bind:value={warpDuration}
+									units={[
+										{ value: 1, label: 's' } as SingleInput.UnitType,
+										{ value: 60, label: 'm' } as SingleInput.UnitType,
+										{ value: 3600, label: 'h' } as SingleInput.UnitType,
+										{ value: 86400, label: 'd' } as SingleInput.UnitType
+									]}
+								/>
 							</Form.Field>
 							<!-- ObjectSize -->
 							<Form.Field>
 								<Form.Label>Object Size</Form.Label>
-								<SingleInput.General type="text" placeholder="100" bind:value={warpObjectSize}/>
+								<SingleInput.Measurement
+									bind:value={warpObjectSize}
+									units={[
+										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+									]}
+								/>
 							</Form.Field>
 							<!-- ObjectCount -->
 							<Form.Field>
 								<Form.Label>Object Count</Form.Label>
-								<SingleInput.General type="text" placeholder="4k" bind:value={warpObjectCount}/>
+								<SingleInput.General type="number" placeholder="500" bind:value={warpObjectCount}/>
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
@@ -256,10 +275,12 @@
 						</Form.Fieldset>
 						<!-- Step 2 -->
 						<Form.Fieldset>
+							{@const duration = formatSecond(Number(warpDuration))}
+							{@const objectSize = formatByte(Number(warpObjectSize))}
 							<Form.Legend>Step 2</Form.Legend>
 							<Form.Description>Operation: {Warp_Input_Operation[warpOperation]}</Form.Description>
-							<Form.Description>Duration: {warpDuration}</Form.Description>
-							<Form.Description>Object Size: {warpObjectSize}</Form.Description>
+							<Form.Description>Duration: {duration.value} {duration.unit}</Form.Description>
+							<Form.Description>Object Size: {objectSize.value} {objectSize.unit}</Form.Description>
 							<Form.Description>Object Count: {warpObjectCount}</Form.Description>
 						</Form.Fieldset>
 					</Form.Root>
@@ -279,9 +300,9 @@
                     }
 					requestWarp.input = {
 						operation: warpOperation,
-						duration: warpDuration,
-						objectSize: warpObjectSize,
-						objectCount: warpObjectCount
+						durationSeconds: BigInt(warpDuration),
+						objectSizeBytes: BigInt(warpObjectSize),
+						objectCount: BigInt(warpObjectCount)
 					} as Warp_Input;
 					request.kind.value = requestWarp;
 					// request
