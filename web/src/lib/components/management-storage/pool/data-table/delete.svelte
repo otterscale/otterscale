@@ -39,6 +39,8 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let invalid: boolean | undefined = $state();
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -48,10 +50,15 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Delete Pool</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.DeletionConfirm required target={pool.name} bind:value={request.poolName} />
+					<SingleInput.DeletionConfirm
+						id="deletion"
+						required
+						target={pool.name}
+						bind:value={request.poolName}
+					/>
 				</Form.Field>
 				<Form.Help>
 					Please type the pool name exactly to confirm deletion. This action cannot be undone.
@@ -62,6 +69,7 @@
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						toast.info(`Deleting ${request.poolName}...`);
 						storageClient

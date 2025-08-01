@@ -19,7 +19,7 @@
 	}: Props & { target: string } = $props();
 
 	const schema = z.string().refine(
-		(value) => value === target,
+		(value) => value && value === target,
 		() => ({
 			code: 'Unmatch',
 			message: `Please type "${target}" to confirm deletion`

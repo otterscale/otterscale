@@ -1,6 +1,7 @@
-<script lang="ts">
+<script lang="ts" module>
+	import { Cluster } from '$lib/components/storage/cluster';
 	import { storageClusterPath, storagePath } from '$lib/path';
-	import { activeScope, breadcrumb, scopeLoading } from '$lib/stores';
+	import { breadcrumb, scopeLoading } from '$lib/stores';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parent: storagePath, current: storageClusterPath });
@@ -9,5 +10,5 @@
 {#if $scopeLoading}
 	loading scope
 {:else}
-	current scope: {$activeScope.uuid}
+	<Cluster />
 {/if}

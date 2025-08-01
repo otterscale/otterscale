@@ -13,6 +13,10 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
 </script>
 
-<div bind:this={ref} class={cn('[&_th]:bg-muted', className)} {...restProps}>
+<div
+	bind:this={ref}
+	class={cn('[&_th]:bg-muted [&_th]:first:rounded-tl [&_th]:last:rounded-tr', className)}
+	{...restProps}
+>
 	{@render children?.()}
 </div>

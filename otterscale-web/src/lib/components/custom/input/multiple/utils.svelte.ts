@@ -3,14 +3,14 @@ import type { AccessorType, InputType } from './types';
 
 class InputManager {
     input: any = $state();
-    type: InputType = 'text';
+    type: InputType | undefined;
 
-    constructor(type: InputType) {
-        this.type = type
+    constructor(type: InputType | undefined) {
+        this.type = type ?? 'text'
     }
 
     reset() {
-        this.input = '';
+        this.input = undefined;
     }
 }
 
@@ -43,6 +43,11 @@ class ValuesManager {
     }
 }
 
+function validate(required: boolean | undefined, valuesManager: ValuesManager) {
+    return required && valuesManager.values.length === 0
+}
+
 export {
-    InputManager, typeToIcon, ValuesManager
+    InputManager, typeToIcon, validate, ValuesManager
 };
+

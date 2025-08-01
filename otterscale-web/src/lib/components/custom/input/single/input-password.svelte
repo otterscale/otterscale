@@ -1,8 +1,6 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
-	import { getContext } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { General } from '.';
 </script>
@@ -16,15 +14,17 @@
 		class: className,
 		id,
 		required,
+		invalid = $bindable(),
 		...restProps
-	}: WithElementRef<Omit<HTMLInputAttributes, 'type' | 'files'> & { type?: 'password' }> = $props();
+	}: WithElementRef<Omit<HTMLInputAttributes, 'type' | 'files'> & { type?: 'password' }> & {
+		invalid?: boolean | null | undefined;
+	} = $props();
 
 	const passwordManager = new PasswordManager();
 
 	const isInvalid = $derived(required && !value);
-	const formValidator: FormValidator = getContext('FormValidator');
 	$effect(() => {
-		formValidator.set(id, isInvalid);
+		invalid = isInvalid;
 	});
 </script>
 

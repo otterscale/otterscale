@@ -39,6 +39,8 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let invalid = $state(false);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -48,7 +50,7 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Delete RADOS Block Device</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Pool Name</Form.Label>
@@ -56,6 +58,7 @@
 						Please type the pool name exactly to confirm deletion. This action cannot be undone.
 					</Form.Help>
 					<SingleInput.DeletionConfirm
+						id="pool_name"
 						required
 						target={image.poolName}
 						bind:value={request.poolName}
@@ -67,6 +70,7 @@
 						Please type the image name exactly to confirm deletion. This action cannot be undone.
 					</Form.Help>
 					<SingleInput.DeletionConfirm
+						id="image_name"
 						required
 						target={image.name}
 						bind:value={request.imageName}
@@ -78,6 +82,7 @@
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						toast.info(`Deleting ${request.imageName}...`);
 						storageClient

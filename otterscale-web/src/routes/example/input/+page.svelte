@@ -131,22 +131,24 @@
 
 	<SingleInput.Boolean id="3" required bind:value={values.value3} />
 
-	<SingleInput.Password id="4" required bind:value={values.value4} />
+	<SingleInput.Boolean id="4" required format="switch" bind:value={values.value4} />
 
-	<SingleInput.DeletionConfirm id="5" required target="value6" bind:value={values.value5} />
+	<SingleInput.Password id="5" required bind:value={values.value5} />
+
+	<SingleInput.DeletionConfirm id="6" required target="value6" bind:value={values.value6} />
 
 	<SingleInput.Measurement
-		id="6"
+		id="7"
 		required
 		units={[
 			{ value: 1, label: 'I' } as SingleInput.UnitType,
 			{ value: 2, label: 'II' } as SingleInput.UnitType,
 			{ value: 3, label: 'III' } as SingleInput.UnitType
 		]}
-		bind:value={values.value6}
+		bind:value={values.value7}
 	/>
 
-	<MultipleInput.Root type="text" required bind:values={values.values1} id="6">
+	<MultipleInput.Root type="text" required bind:values={values.values1} id="8">
 		<MultipleInput.Viewer />
 		<MultipleInput.Controller>
 			<MultipleInput.Input />
@@ -155,7 +157,7 @@
 		</MultipleInput.Controller>
 	</MultipleInput.Root>
 
-	<MultipleInput.Root type="number" required bind:values={values.values2} id="7">
+	<MultipleInput.Root type="number" required bind:values={values.values2} id="9">
 		<MultipleInput.Viewer />
 		<MultipleInput.Controller>
 			<MultipleInput.Input />
@@ -164,7 +166,7 @@
 		</MultipleInput.Controller>
 	</MultipleInput.Root>
 
-	<SingleSelect.Root id="10" bind:options={options1} bind:value={values.value9} required>
+	<SingleSelect.Root id="10" bind:options={options1} bind:value={values.value8} required>
 		<SingleSelect.Trigger />
 		<SingleSelect.Content>
 			<SingleSelect.Options>
@@ -218,8 +220,7 @@
 			</MultipleSelect.Content>
 		</MultipleSelect.Controller>
 	</MultipleSelect.Root>
-
-	<LayeredSingleSelect.Root id="12" bind:value={values.value10} options={options3} required>
+	<LayeredSingleSelect.Root id="12" bind:value={values.value9} options={options3} required>
 		<LayeredSingleSelect.Trigger />
 		<LayeredSingleSelect.Content>
 			<LayeredSingleSelect.Group>

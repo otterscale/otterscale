@@ -1,0 +1,76 @@
+<script lang="ts" module>
+	import { PoolType, type Pool } from '$lib/api/storage/v1/storage_pb';
+	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import * as Progress from '$lib/components/custom/progress';
+	import { Badge } from '$lib/components/ui/badge';
+	import Icon from '@iconify/svelte';
+	import type { Row } from '@tanstack/table-core';
+	import { getPlacementGroupStateVariant } from './utils.svelte';
+
+	export const cells = {
+		_row_picker,
+		name: name,
+		type: type,
+		applications,
+		placement_group_state,
+		usage: usage
+	};
+</script>
+
+{#snippet _row_picker(row: Row<Pool>)}
+	<TableRowPicker {row} />
+{/snippet}
+
+{#snippet name(row: Row<Pool>)}
+	<div class="flex items-center gap-1">
+		{row.original.name}
+		{#if row.original.updating}
+			<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
+		{/if}
+	</div>
+{/snippet}
+
+{#snippet type(row: Row<Pool>)}
+	<Badge variant="outline">
+		{#if row.original.poolType == PoolType.ERASURE}
+			ERASURE:{row.original.dataChunks}<Icon icon="ph:x" />{row.original.codingChunks}
+		{:else if row.original.poolType == PoolType.REPLICATED}
+			REPLICATED:<Icon icon="ph:x" />{row.original.replicatedSize}
+		{:else}{/if}
+	</Badge>
+{/snippet}
+
+{#snippet applications(row: Row<Pool>)}
+	<span class="flex gap-1">
+		{#each row.original.applications as application}
+			{#if application}
+				<Badge variant="outline">
+					{application}
+				</Badge>
+			{/if}
+		{/each}
+	</span>
+{/snippet}
+
+{#snippet placement_group_state(row: Row<Pool>)}
+	<span class="flex flex-col gap-1">
+		{#each Object.entries(row.original.placementGroupState) as [state, number]}
+			<Badge variant={getPlacementGroupStateVariant(state)}>
+				{state}:{number}
+			</Badge>
+		{/each}
+	</span>
+{/snippet}
+
+{#snippet usage(row: Row<Pool>)}
+	<div class="flex justify-end">
+		<Progress.Root
+			numerator={Number(row.original.usedBytes)}
+			denominator={Number(row.original.quotaBytes)}
+		>
+			{#snippet ratio({ numerator, denominator })}
+				{(numerator * 100) / denominator}%
+			{/snippet}
+		</Progress.Root>
+	</div>
+{/snippet}

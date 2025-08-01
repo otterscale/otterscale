@@ -42,6 +42,8 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let invalid = $state(false);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -55,11 +57,11 @@
 	</div>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Create RADOS Block Device Snapshot</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.snapshotName} />
+					<SingleInput.General id="name" required type="text" bind:value={request.snapshotName} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -67,6 +69,7 @@
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						toast.info(`Creating ${request.snapshotName}...`);
 						storageClient

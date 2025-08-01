@@ -63,6 +63,10 @@ class OptionManager {
     }
 }
 
+function validate(required: boolean | undefined, optionManager: OptionManager) {
+    return required && !optionManager.selectedAncestralOption
+}
+
 export {
-    getAllAncestralOptions, getAncestralOptionsMap, OptionManager
+    getAllAncestralOptions, getAncestralOptionsMap, OptionManager, validate
 };

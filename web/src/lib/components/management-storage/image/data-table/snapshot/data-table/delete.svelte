@@ -47,6 +47,8 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let invalid = $state(false);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -56,24 +58,26 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Delete RADOS Block Device Snapshot</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
-				<Form.Help>
-					Please type the snapshot name exactly to confirm deletion. This action cannot be undone.
-				</Form.Help>
 				<Form.Field>
 					<SingleInput.DeletionConfirm
+						id="deletion"
 						required
 						target={snapshot.name}
 						bind:value={request.snapshotName}
 					/>
 				</Form.Field>
+				<Form.Help>
+					Please type the snapshot name exactly to confirm deletion. This action cannot be undone.
+				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						toast.info(`Deleting ${request.snapshotName}...`);
 						storageClient

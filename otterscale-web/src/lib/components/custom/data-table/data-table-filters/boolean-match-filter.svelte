@@ -40,7 +40,7 @@
 </script>
 
 <Popover.Root>
-	<Popover.Trigger class={cn(buttonVariants({ size: 'sm', variant: 'outline' }))}>
+	<Popover.Trigger class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
 		<Icon icon="ph:funnel" />
 		{alias ?? capitalizeFirstLetter(columnId)}
 		{#if selectedValue !== undefined}

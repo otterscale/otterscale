@@ -6,7 +6,7 @@
 	import Icon from '@iconify/svelte';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
-	import type { OptionManager } from './utils.svelte';
+	import { validate, type OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -20,24 +20,19 @@
 		variant?: ButtonVariant;
 	} = $props();
 
-	const id: string | undefined = getContext('id');
 	const required: boolean | undefined = getContext('required');
 	const optionManager: OptionManager = getContext('OptionManager');
 
-	const isInvalid = $derived(required && !optionManager.selectedOption.value);
-	const formValidator: FormValidator = getContext('FormValidator');
-	$effect(() => {
-		formValidator.set(id, isInvalid);
-	});
+	const isInvalid = $derived(validate(required, optionManager));
 </script>
 
 <Popover.Trigger
 	bind:ref
 	data-slot="select-trigger"
 	class={cn(
-		'cursor-pointer ring-1',
+		'data-[state=open]:ring-primary group cursor-pointer ring-1',
 		buttonVariants({ variant: variant }),
-		required && isInvalid ? 'ring-destructive' : '',
+		isInvalid ? 'ring-destructive' : '',
 		className
 	)}
 	{...restProps}
@@ -45,16 +40,25 @@
 	{#if children}
 		{@render children?.()}
 	{:else if optionManager.selectedOption.label}
-		<div class={cn('flex items-center gap-1 rounded-sm p-1 font-normal')}>
+		<div class={'flex items-center gap-1 rounded-sm p-1 font-normal'}>
 			<Icon
 				icon={optionManager.selectedOption.icon ?? 'ph:empty'}
 				class={cn('size-4', optionManager.selectedOption ? 'visibale' : 'hidden')}
 			/>
 			{optionManager.selectedOption.label}
 		</div>
-	{:else if required && isInvalid}
-		<p class="text-destructive text-xs">Required</p>
+	{:else if isInvalid}
+		<span
+			class="group-data-[state=open]:text-primary group-data-[state=closed]:text-destructive flex items-center gap-1 text-xs"
+		>
+			<Icon icon="ph:list" />
+			<p class="group-data-[state=closed]:hidden">Select</p>
+			<p class="group-data-[state=open]:hidden">Required</p>
+		</span>
 	{:else}
-		Select
+		<span class="flex items-center gap-1 text-xs">
+			<Icon icon="ph:list" />
+			Select
+		</span>
 	{/if}
 </Popover.Trigger>
