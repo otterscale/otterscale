@@ -62,6 +62,8 @@
 	"enterprise_tier": "企業版",
 	"enterprise_tier_name": "企業級多節點應用程式和儲存平台",
 	"enterprise_tier_description": "適合部署可擴展的應用程式平台和儲存叢集，支援多節點擴展性、高可用性和企業級功能。",
+	"migrating": "遷移中",
+	"migrating_description": "此功能正在遷移至我們的新介面，將於短期內提供。",
 	"under_development": "開發中",
 	"under_development_description": "此頁面正在開發中，即將推出。",
 	"current_version": "目前版本：{version}",

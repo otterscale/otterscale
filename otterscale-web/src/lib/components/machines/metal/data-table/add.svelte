@@ -37,7 +37,7 @@
 	} = $props();
 
 	const DEFAULT_REQUEST = {
-		scopeUuid: $activeScope.uuid,
+		scopeUuid: $activeScope?.uuid,
 		id: machine.id,
 		enableSsh: true,
 		skipBmcConfig: false,
