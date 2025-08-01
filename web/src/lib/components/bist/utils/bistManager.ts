@@ -52,10 +52,10 @@ class BistDashboardManager<TData = TestResult> {
     }
 
     private generateFioGroupName(input: FIO_Input): string {
-        const rumTime = formatSecond(Number(input.runTimeSeconds))
+        const runTime = formatSecond(Number(input.runTimeSeconds))
         const blockSize = formatCapacity(Number(input.blockSizeBytes))
         const fileSize = formatCapacity(Number(input.fileSizeBytes))
-        return `${Number(input.jobCount)}-${rumTime.value}${rumTime.unit}-${blockSize.value}${blockSize.unit}-${fileSize.value}${fileSize.unit}-${Number(input.ioDepth)}`;
+        return `${Number(input.jobCount)}-${runTime.value}${runTime.unit}-${blockSize.value}${blockSize.unit}-${fileSize.value}${fileSize.unit}-${Number(input.ioDepth)}`;
     }
 
     private generateWarpGroupName(input: Warp_Input): string {
