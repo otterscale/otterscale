@@ -6,7 +6,7 @@
 	import logosIcons from '@iconify-json/logos/icons.json';
 	import phIcons from '@iconify-json/ph/icons.json';
 	import streamlineLogosIcons from '@iconify-json/streamline-logos/icons.json';
-	import { PUBLIC_API_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 
 	import '../app.css';
@@ -14,7 +14,7 @@
 	let { children } = $props();
 
 	const transport = createConnectTransport({
-		baseUrl: PUBLIC_API_URL
+		baseUrl: env.PUBLIC_API_URL
 	});
 
 	setContext('transport', transport);

@@ -86,11 +86,11 @@
 		{m.setup_scope_configured_description()}
 	</p>
 	<div class="mx-auto max-w-5xl px-4 py-10 xl:px-0">
-		<div class="rounded-xl border">
+		<div class="bg-card rounded-xl border shadow-sm">
 			<div class="rounded-xl p-4 lg:p-8">
 				<div class="grid min-w-2xl grid-cols-1 items-center gap-x-12 gap-y-20 sm:grid-cols-2">
 					<div
-						class="before:bg-border relative text-center before:absolute before:start-1/2 before:-top-full before:mt-3.5 before:h-20 before:w-px before:-translate-x-1/2 before:rotate-[60deg] before:transform first:before:hidden sm:before:-start-6 sm:before:top-1/2 sm:before:mt-0 sm:before:-translate-x-0 sm:before:-translate-y-1/2 sm:before:rotate-12"
+						class="before:bg-border relative text-center before:absolute before:start-1/2 before:-top-full before:mt-3.5 before:h-20 before:w-px before:-translate-x-1/2 before:rotate-[60deg] before:transform before:shadow-sm first:before:hidden sm:before:-start-6 sm:before:top-1/2 sm:before:mt-0 sm:before:-translate-x-0 sm:before:-translate-y-1/2 sm:before:rotate-12"
 					>
 						<div class="space-y-2">
 							<Icon icon="simple-icons:ceph" class="mx-auto size-14 shrink-0 text-[#f0424d]" />
@@ -106,7 +106,7 @@
 						</Button>
 					</div>
 					<div
-						class="before:bg-border relative text-center before:absolute before:start-1/2 before:-top-full before:mt-3.5 before:h-20 before:w-px before:-translate-x-1/2 before:rotate-[60deg] before:transform first:before:hidden sm:before:-start-6 sm:before:top-1/2 sm:before:mt-0 sm:before:-translate-x-0 sm:before:-translate-y-1/2 sm:before:rotate-12"
+						class="before:bg-border relative text-center before:absolute before:start-1/2 before:-top-full before:mt-3.5 before:h-20 before:w-px before:-translate-x-1/2 before:rotate-[60deg] before:transform before:shadow-sm first:before:hidden sm:before:-start-6 sm:before:top-1/2 sm:before:mt-0 sm:before:-translate-x-0 sm:before:-translate-y-1/2 sm:before:rotate-12"
 					>
 						<div class="space-y-2">
 							<Icon
