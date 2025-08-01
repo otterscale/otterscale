@@ -15,7 +15,7 @@
 
 <div
 	bind:this={ref}
-	class={cn('[&_th]:bg-muted [&_th]:first:rounded-tl [&_th]:last:rounded-tr', className)}
+	class={cn('[&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg', className)}
 	{...restProps}
 >
 	{@render children?.()}
