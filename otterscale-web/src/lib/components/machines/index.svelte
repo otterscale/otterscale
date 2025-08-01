@@ -3,6 +3,8 @@
 	import { Metals } from './metal/index';
 </script>
 
-{#key $activeScope.uuid}
-	<Metals />
-{/key}
+{#if $activeScope}
+	{#key $activeScope.uuid}
+		<Metals />
+	{/key}
+{/if}

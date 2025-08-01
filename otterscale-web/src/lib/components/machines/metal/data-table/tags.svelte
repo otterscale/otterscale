@@ -87,7 +87,6 @@
 									loading: 'Loading...',
 									success: () => {
 										machineClient.listMachines({}).then((response) => {
-											console.log(response.machines);
 											machines.set(response.machines);
 										});
 										return `Update ${machine.fqdn} tags success`;

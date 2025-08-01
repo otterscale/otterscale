@@ -31,7 +31,6 @@
 		quotaBytes: pool.quotaBytes,
 		quotaObjects: pool.quotaObjects
 	} as UpdatePoolRequest;
-	console.log('DEFAULT_REQUEST', DEFAULT_REQUEST);
 	let request = $state(DEFAULT_REQUEST);
 	function reset() {
 		request = DEFAULT_REQUEST;
