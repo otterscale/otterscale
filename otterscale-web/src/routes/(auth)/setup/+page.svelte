@@ -4,7 +4,7 @@
 	import { fly } from 'svelte/transition';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { PUBLIC_API_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import {
 		EnvironmentService,
 		type WatchStatusResponse
@@ -27,7 +27,7 @@
 	import { breadcrumb, triggerUpdateScopes } from '$lib/stores';
 
 	// Constants
-	const INSTALL_CODE = `sh -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh" -- url=${PUBLIC_API_URL})`;
+	const INSTALL_CODE = `sh -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh" -- url=${env.PUBLIC_API_URL})`;
 	const RETRY_DELAY = 2000;
 
 	const SERVICES = [

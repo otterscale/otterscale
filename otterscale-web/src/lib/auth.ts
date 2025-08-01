@@ -1,12 +1,10 @@
 import { env } from "$env/dynamic/private";
-import { PUBLIC_BASE_URL } from "$env/static/public";
+import { env as publicEnv } from "$env/dynamic/public";
 import { betterAuth } from "better-auth";
 import { Pool } from "pg";
 
-if (!env.DATABASE_URL) throw new Error("DATABASE_URL is not set");
-
 export const auth = betterAuth({
-	baseURL: PUBLIC_BASE_URL,
+	baseURL: publicEnv.PUBLIC_URL,
 	database: new Pool({
 		connectionString: env.DATABASE_URL,
 	}),
@@ -19,6 +17,7 @@ export const auth = betterAuth({
 			maxAge: 5 * 60,
 		},
 	},
+	secret: env.AUTH_SECRET,
 	socialProviders: {
 		apple: {
 			clientId: env.APPLE_CLIENT_ID!,
@@ -34,4 +33,5 @@ export const auth = betterAuth({
 			clientSecret: env.GOOGLE_CLIENT_SECRET!,
 		},
 	},
+	trustedOrigins: [publicEnv.PUBLIC_URL],
 });
