@@ -5,7 +5,7 @@
 	import { setContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 	import type { OptionType } from './types';
-	import { OptionManager } from './utils.svelte';
+	import { OptionManager, validate } from './utils.svelte';
 
 	let {
 		id,
@@ -16,6 +16,7 @@
 		options = $bindable(),
 		required,
 		selectedOptions,
+		invalid = $bindable(),
 		...restProps
 	}: PopoverPrimitive.RootProps & {
 		id?: string;
@@ -24,22 +25,23 @@
 		options: Writable<OptionType[]>;
 		selectedOptions?: OptionType[];
 		required?: boolean;
+		invalid?: boolean | null | undefined;
 	} = $props();
-
+	const optionManager = new OptionManager($options, {
+		get value() {
+			return Array.isArray(value) ? value : value ? [value] : [];
+		},
+		set value(newValues: any[]) {
+			value = newValues;
+		}
+	});
 	setContext('id', id);
 	setContext('required', required);
 	setContext('options', options);
-	setContext(
-		'OptionManager',
-		new OptionManager($options, {
-			get value() {
-				return Array.isArray(value) ? value : value ? [value] : [];
-			},
-			set value(newValues: any[]) {
-				value = newValues;
-			}
-		})
-	);
+	setContext('OptionManager', optionManager);
+	$effect(() => {
+		invalid = validate(required, optionManager);
+	});
 </script>
 
 <Popover.Root {open} {...restProps}>

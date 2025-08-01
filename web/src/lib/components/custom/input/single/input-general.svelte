@@ -31,13 +31,18 @@
 		transformer?: (value: any) => void;
 	} = $props();
 
-	const isNotFilled = $derived(required && (value === '' || value === undefined));
+	const isNotFilled = $derived(required && (value === '' || value === undefined || value === null));
 
 	const validator = new InputValidator(schema);
 	const validation = $derived(validator.validate(value));
-	const isInvalid = $derived(value && !validation.isValid);
+	const isInvalid = $derived(
+		!(value === '' || value === undefined || value === null) && !validation.isValid
+	);
 
 	const formValidator: FormValidator = getContext('FormValidator');
+	$effect(() => {
+		formValidator.set(id, isNotFilled || isInvalid);
+	});
 </script>
 
 <div class="relative">
@@ -55,7 +60,6 @@
 		bind:value
 		oninput={(e) => {
 			value = transformer(value);
-			formValidator.set(id, isNotFilled || isInvalid);
 			oninput?.(e);
 		}}
 		class={cn(

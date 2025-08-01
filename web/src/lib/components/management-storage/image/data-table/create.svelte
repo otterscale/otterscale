@@ -5,16 +5,17 @@
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
+	import * as Loading from '$lib/components/custom/loading';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { DialogStateController } from '$lib/components/custom/utils.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
+	import * as Collapsible from '$lib/components/ui/collapsible';
 	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
-	import PoolPicker from '../../utils/pool-picker.svelte';
 </script>
 
 <script lang="ts">
@@ -44,6 +45,44 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
+	let isPoolsLoading = $state(true);
+	async function fetchVolumeOptions() {
+		try {
+			const response = await storageClient.listPools({
+				scopeUuid: selectedScope,
+				facilityName: selectedFacility
+			});
+			poolOptions.set(
+				response.pools.map(
+					(pool) =>
+						({
+							value: pool.name,
+							label: pool.name,
+							icon: 'ph:cube'
+						}) as SingleSelect.OptionType
+				)
+			);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		} finally {
+			isPoolsLoading = false;
+		}
+	}
+
+	let isMounted = $state(false);
+	onMount(async () => {
+		try {
+			await fetchVolumeOptions();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+
+		isMounted = true;
+	});
+
+	let invalid = $state(false);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -57,31 +96,64 @@
 	</div>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Create RADOS Block Device</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Image Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.imageName} />
+					<SingleInput.General
+						id="image_name"
+						required
+						type="text"
+						bind:value={request.imageName}
+					/>
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Pool Name</Form.Label>
-					<PoolPicker {selectedScope} {selectedFacility} bind:selectedPool={request.poolName} />
+					{#if isPoolsLoading}
+						<Loading.Selection />
+					{:else}
+						<SingleSelect.Root
+							id="pool_name"
+							required
+							bind:options={poolOptions}
+							bind:value={request.poolName}
+						>
+							<SingleSelect.Trigger />
+							<SingleSelect.Content>
+								<SingleSelect.Options>
+									<SingleSelect.Input />
+									<SingleSelect.List>
+										<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+										<SingleSelect.Group>
+											{#each $poolOptions as option}
+												<SingleSelect.Item {option}>
+													<Icon
+														icon={option.icon ? option.icon : 'ph:empty'}
+														class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+													/>
+													{option.label}
+													<SingleSelect.Check {option} />
+												</SingleSelect.Item>
+											{/each}
+										</SingleSelect.Group>
+									</SingleSelect.List>
+								</SingleSelect.Options>
+							</SingleSelect.Content>
+						</SingleSelect.Root>
+					{/if}
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Quotas Size</Form.Label>
+					<Form.Label>Quota Size</Form.Label>
 					<SingleInput.Measurement
 						required
+						id="quotas_size"
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
 						units={[
-							{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>
@@ -108,12 +180,8 @@
 								bind:value={request.objectSizeBytes}
 								transformer={(value) => String(value)}
 								units={[
-									{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 								]}
 							/>
 						</Form.Field>
@@ -124,12 +192,8 @@
 								bind:value={request.stripeUnitBytes}
 								transformer={(value) => String(value)}
 								units={[
-									{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 								]}
 							/>
 						</Form.Field>
@@ -197,6 +261,7 @@
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						toast.info(`Creating ${request.imageName}...`);
 						storageClient

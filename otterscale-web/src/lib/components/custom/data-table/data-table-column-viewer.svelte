@@ -14,7 +14,7 @@
 <Popover.Root>
 	<Popover.Trigger>
 		{#snippet child({ props })}
-			<Button {...props} variant="outline" size="sm" class="ml-auto">
+			<Button {...props} variant="outline" size="sm" class="ml-auto text-xs">
 				<Icon icon="ph:sliders-horizontal" />
 				View
 			</Button>

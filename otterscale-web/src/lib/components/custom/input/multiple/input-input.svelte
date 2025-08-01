@@ -6,6 +6,7 @@
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import * as Input from '../single';
 	import { InputManager, ValuesManager } from './utils.svelte';
+	import { validate } from './utils.svelte';
 
 	type Props = WithElementRef<Omit<HTMLInputAttributes, 'value' | 'type'>>;
 </script>
@@ -24,11 +25,7 @@
 	const inputManager: InputManager = getContext('InputManager');
 	const valuesManager: ValuesManager = getContext('ValuesManager');
 
-	const isInvalid = $derived(required && valuesManager.values.length === 0);
-	const formValidator: FormValidator = getContext('FormValidator');
-	$effect(() => {
-		formValidator.set(id, isInvalid);
-	});
+	const isInvalid = $derived(validate(required, valuesManager));
 </script>
 
 <div class="w-full">
@@ -40,7 +37,9 @@
 		bind:value={inputManager.input}
 		class={cn(
 			'ring-1',
-			isInvalid ? 'placeholder:text-destructive/60 placeholder:text-xs' : '',
+			isInvalid
+				? 'placeholder:text-destructive/60 placeholder:text-xs focus:placeholder:invisible'
+				: '',
 			isInvalid ? 'ring-destructive' : '',
 			className
 		)}

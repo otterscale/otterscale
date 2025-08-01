@@ -27,10 +27,10 @@
 	<Layout.ActionItem>
 		<Rollback {selectedScope} {selectedFacility} {image} {snapshot} bind:data />
 	</Layout.ActionItem>
-	<Layout.ActionItem>
+	<Layout.ActionItem disabled={snapshot.protected}>
 		<Protect {selectedScope} {selectedFacility} {image} {snapshot} bind:data />
 	</Layout.ActionItem>
-	<Layout.ActionItem>
+	<Layout.ActionItem disabled={!snapshot.protected}>
 		<Unprotect {selectedScope} {selectedFacility} {image} {snapshot} bind:data />
 	</Layout.ActionItem>
 	<Layout.ActionItem>

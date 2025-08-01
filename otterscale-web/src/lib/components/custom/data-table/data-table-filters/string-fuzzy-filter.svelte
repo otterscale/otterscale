@@ -20,7 +20,7 @@
 </script>
 
 <div class="relative max-w-xs">
-	<Command.Root class={buttonVariants({ size: 'sm', variant: 'outline' })}>
+	<Command.Root class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
 		{@render filterInput()}
 		{@render filterSuggestions()}
 	</Command.Root>

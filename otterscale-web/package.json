@@ -81,6 +81,7 @@
 		"better-auth": "^1.2.12",
 		"isomorphic-dompurify": "^2.26.0",
 		"pg": "^8.16.3",
+		"prometheus-query": "^3.5.0",
 		"runed": "^0.31.1",
 		"shiki": "^3.8.1",
 		"svelte-toolbelt": "^0.9.3"

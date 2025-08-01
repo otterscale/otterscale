@@ -14,7 +14,7 @@
 </script>
 
 <p
-	class={cn('text-muted-foreground bg-muted rounded-md p-2 text-xs font-light', className)}
+	class={cn('text-muted-foreground rounded-md p-0 text-xs font-extralight', className)}
 	{...restProps}
 >
 	{@render children?.()}

@@ -59,19 +59,15 @@
 		<AlertDialog.Header>Edit Subvolume</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Legend>Quotas</Form.Legend>
+				<Form.Legend>Quota</Form.Legend>
 
 				<Form.Field>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
 						units={[
-							{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>

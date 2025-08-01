@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Metals } from '$lib/components/machines';
 	import { machinesMetalPath, machinesPath } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 
@@ -7,5 +8,5 @@
 </script>
 
 {#if $activeScope}
-	current scope: {$activeScope.uuid}
+	<Metals />
 {/if}

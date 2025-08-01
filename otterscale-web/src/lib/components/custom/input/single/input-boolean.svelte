@@ -1,11 +1,9 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Switch from '$lib/components/ui/switch';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { Switch as SwitchPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
-	import { getContext } from 'svelte';
 	import { INPUT_CLASSNAME, typeToIcon } from './utils.svelte';
 </script>
 
@@ -16,18 +14,24 @@
 		value: checked = $bindable(undefined),
 		id,
 		required,
+		nullable = false,
 		descriptor,
+		format = 'checkbox',
+		invalid = $bindable(),
+
 		...restProps
 	}: WithoutChildrenOrChild<SwitchPrimitive.RootProps> & {
+		nullable?: boolean;
 		descriptor?: (v: any) => string;
+		format?: 'switch' | 'checkbox';
+		invalid?: boolean | null | undefined;
 	} = $props();
 
-	const isInvalid = $derived(required && [null, undefined].includes(checked));
 	let proxyChecked = $state(false);
 
-	const formValidator: FormValidator = getContext('FormValidator');
+	const isInvalid = $derived(required && [null, undefined].includes(checked));
 	$effect(() => {
-		formValidator.set(id, isInvalid);
+		invalid = isInvalid;
 	});
 </script>
 
@@ -36,21 +40,26 @@
 		INPUT_CLASSNAME,
 		'relative flex items-center gap-2 ring-1',
 		isInvalid ? 'ring-destructive' : '',
+		format === 'checkbox' && 'border-none shadow-none ring-0',
 		className
 	)}
 >
-	<span class="absolute left-3 top-1/2 -translate-y-1/2 items-center">
-		<Icon icon={typeToIcon['boolean']} />
-	</span>
+	{#if format === 'switch'}
+		<span class="absolute left-3 top-1/2 -translate-y-1/2 items-center">
+			<Icon icon={typeToIcon['boolean']} />
+		</span>
+	{/if}
 
-	<span class="pr-15 pl-9">
+	<span class={cn('pr-15', format === 'switch' ? 'pl-9' : '')}>
 		{#if required}
 			{@const isValid = [true, false].includes(checked)}
 			{@const isNull = [null, undefined].includes(checked)}
 
 			{#if isValid}
 				{#if descriptor}
-					<p class="text-muted-foreground text-xs">{descriptor(checked)}</p>
+					<p class={cn('text-sm', checked ? 'text-primary' : 'text-muted-foreground ')}>
+						{descriptor(checked)}
+					</p>
 				{:else if checked === true}
 					<Badge variant="default">True</Badge>
 				{:else if checked === false}
@@ -66,7 +75,9 @@
 
 			{#if isValid}
 				{#if descriptor}
-					<p class="text-muted-foreground text-xs">{descriptor(checked)}</p>
+					<p class={cn('text-sm', checked ? 'text-primary font-bold' : 'text-muted-foreground ')}>
+						{descriptor(checked)}
+					</p>
 				{:else if checked === true}
 					<Badge variant="default">True</Badge>
 				{:else if checked === false}
@@ -81,9 +92,12 @@
 	</span>
 
 	<span
-		class="absolute right-3 top-1/2 flex -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
+		class={cn(
+			'absolute right-3 top-1/2 flex -translate-y-1/2 items-center rounded-full hover:cursor-pointer focus:outline-none',
+			format === 'checkbox' && isInvalid ? 'ring-destructive ring-1' : ''
+		)}
 	>
-		{#if !required}
+		{#if nullable}
 			<button
 				class="absolute right-9 top-1/2 flex -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
 				onclick={() => {

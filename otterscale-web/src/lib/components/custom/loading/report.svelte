@@ -8,10 +8,8 @@
 			widthClasses.push(`w-${numerator}/${denominator}`);
 		}
 	});
-	console.log(widthClasses.length);
 	function getWidthClass() {
 		const widthClass = widthClasses[Math.floor(Math.random() * widthClasses.length)];
-		console.log(widthClass);
 		return widthClass;
 	}
 </script>

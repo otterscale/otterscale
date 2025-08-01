@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts" module>
+	import { Cluster } from '$lib/components/storage/cluster';
 	import { storageClusterPath, storagePath } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 
@@ -7,5 +8,5 @@
 </script>
 
 {#if $activeScope}
-	current scope: {$activeScope.uuid}
+	<Cluster />
 {/if}

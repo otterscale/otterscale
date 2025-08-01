@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { setContext } from 'svelte';
-	import { InputManager, ValuesManager } from './utils.svelte';
+	import { InputManager, validate, ValuesManager } from './utils.svelte';
 	import type { InputType } from './types';
 	import { cn } from '$lib/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
@@ -16,24 +16,28 @@
 		id,
 		required,
 		type,
+		invalid = $bindable(),
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
-		values: any[];
+		values?: any[];
 		required?: boolean;
-		type: InputType;
+		type?: InputType;
+		invalid?: boolean | null | undefined;
 	} = $props();
-
+	const inputManager = new InputManager(type);
+	const valuesManager = new ValuesManager(values, {
+		set values(newValue: any[]) {
+			values = newValue;
+		}
+	});
 	setContext('id', id);
 	setContext('required', required);
-	setContext('InputManager', new InputManager(type));
-	setContext(
-		'ValuesManager',
-		new ValuesManager(values, {
-			set values(newValue: any[]) {
-				values = newValue;
-			}
-		})
-	);
+	setContext('InputManager', inputManager);
+	setContext('ValuesManager', valuesManager);
+
+	$effect(() => {
+		invalid = validate(required, valuesManager);
+	});
 </script>
 
 <div
