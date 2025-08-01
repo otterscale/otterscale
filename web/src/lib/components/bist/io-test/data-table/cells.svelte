@@ -92,7 +92,7 @@
 {#snippet runTime(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-			{@const formatted = formatSecond(Number(row.original.kind.value?.input.runTime))}
+			{@const formatted = formatSecond(Number(row.original.kind.value?.input.runTimeSeconds))}
             {formatted.value} {formatted.unit}
         {/if}
 	</p>
@@ -101,7 +101,7 @@
 {#snippet blockSize(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-            {@const formatted = formatByte(Number(row.original.kind.value?.input.blockSize))}
+            {@const formatted = formatByte(Number(row.original.kind.value?.input.blockSizeBytes))}
             {formatted.value} {formatted.unit}
         {/if}
 	</p>
@@ -110,7 +110,7 @@
 {#snippet fileSize(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-            {@const formatted = formatByte(Number(row.original.kind.value?.input.fileSize))}
+            {@const formatted = formatByte(Number(row.original.kind.value?.input.fileSizeBytes))}
             {formatted.value} {formatted.unit}
         {/if}
 	</p>

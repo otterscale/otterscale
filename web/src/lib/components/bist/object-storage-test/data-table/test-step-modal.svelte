@@ -59,15 +59,15 @@
         : {} as ExternalObjectService;
 	const DEFAULT_WARP_INPUT = testResult && testResult.kind.value?.input
     ? testResult.kind.value.input as Warp_Input
-	: { duration: "60", objectSize: String(4 * 1024 * 1024), objectCount: "500" } as unknown as Warp_Input; 
+	: { durationSeconds: 60, objectSizeBytes: 4 * 1024 * 1024, objectCount: 500 } as unknown as Warp_Input; 
 
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestWarp: Warp = $state(DEFAULT_WARP_REQUEST);
 	let requestInternalObjectService: InternalObjectService = $state(DEFAULT_INTERNAL_OBJECT_SERVICE);
 	let requestExternalObjectService: ExternalObjectService = $state(DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE);
 	let warpOperation = $state(DEFAULT_WARP_INPUT.operation);
-	let warpDuration = $state(DEFAULT_WARP_INPUT.duration);
-	let warpObjectSize = $state(DEFAULT_WARP_INPUT.objectSize);
+	let warpDuration = $state(DEFAULT_WARP_INPUT.durationSeconds);
+	let warpObjectSize = $state(DEFAULT_WARP_INPUT.objectSizeBytes);
 	let warpObjectCount = $state(DEFAULT_WARP_INPUT.objectCount);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -75,8 +75,8 @@
 		requestInternalObjectService = DEFAULT_INTERNAL_OBJECT_SERVICE;
 		requestExternalObjectService = DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE;
 		warpOperation = DEFAULT_WARP_INPUT.operation; 
-		warpDuration = DEFAULT_WARP_INPUT.duration; 
-		warpObjectSize = DEFAULT_WARP_INPUT.objectSize; 
+		warpDuration = DEFAULT_WARP_INPUT.durationSeconds; 
+		warpObjectSize = DEFAULT_WARP_INPUT.objectSizeBytes; 
 		warpObjectCount = DEFAULT_WARP_INPUT.objectCount; 
 	}
 
@@ -223,7 +223,6 @@
 								<Form.Label>Duration</Form.Label>
 								<SingleInput.Measurement
 									bind:value={warpDuration}
-									transformer={(value) => String(value)}
 									units={[
 										{ value: 1, label: 's' } as SingleInput.UnitType,
 										{ value: 60, label: 'm' } as SingleInput.UnitType,
@@ -237,7 +236,6 @@
 								<Form.Label>Object Size</Form.Label>
 								<SingleInput.Measurement
 									bind:value={warpObjectSize}
-									transformer={(value) => String(value)}
 									units={[
 										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
@@ -251,7 +249,7 @@
 							<!-- ObjectCount -->
 							<Form.Field>
 								<Form.Label>Object Count</Form.Label>
-								<SingleInput.General type="text" placeholder="500" bind:value={warpObjectCount}/>
+								<SingleInput.General type="number" placeholder="500" bind:value={warpObjectCount}/>
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
@@ -302,9 +300,9 @@
                     }
 					requestWarp.input = {
 						operation: warpOperation,
-						duration: warpDuration,
-						objectSize: warpObjectSize,
-						objectCount: warpObjectCount
+						durationSeconds: BigInt(warpDuration),
+						objectSizeBytes: BigInt(warpObjectSize),
+						objectCount: BigInt(warpObjectCount)
 					} as Warp_Input;
 					request.kind.value = requestWarp;
 					// request

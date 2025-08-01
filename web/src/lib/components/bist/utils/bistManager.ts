@@ -1,6 +1,6 @@
 import type { Table } from '@tanstack/table-core';
-import type { TestResult } from '$gen/api/bist/v1/bist_pb';
-import { FIO_Input_AccessMode, Warp_Input_Operation } from '$gen/api/bist/v1/bist_pb';
+import type { TestResult, FIO_Input, Warp_Input } from '$gen/api/bist/v1/bist_pb';
+import { Warp_Input_Operation } from '$gen/api/bist/v1/bist_pb';
 import { hashCode } from './hashGroupID';
 import { formatByte as formatCapacity, formatSecond } from '$lib/formatter';
 
@@ -51,18 +51,16 @@ class BistDashboardManager<TData = TestResult> {
         return this.table.getFilteredRowModel().rows.map((row) => row.original);
     }
 
-    private generateGroupName(input: any): string {
-        // return `${FIO_Input_AccessMode[input.accessMode]}-${Number(input.jobCount)}-${input.runTime}-${input.blockSize}-${input.fileSize}-${Number(input.ioDepth)}`;
-        const rumTime = formatSecond(Number(input.runTime))
-        const blockSize = formatCapacity(Number(input.blockSize))
-        const fileSize = formatCapacity(Number(input.fileSize))
-        return `${FIO_Input_AccessMode[input.accessMode]}-${Number(input.jobCount)}-${rumTime.value}${rumTime.unit}-${blockSize.value}${blockSize.unit}-${fileSize.value}${fileSize.unit}-${Number(input.ioDepth)}`;
+    private generateFioGroupName(input: FIO_Input): string {
+        const rumTime = formatSecond(Number(input.runTimeSeconds))
+        const blockSize = formatCapacity(Number(input.blockSizeBytes))
+        const fileSize = formatCapacity(Number(input.fileSizeBytes))
+        return `${Number(input.jobCount)}-${rumTime.value}${rumTime.unit}-${blockSize.value}${blockSize.unit}-${fileSize.value}${fileSize.unit}-${Number(input.ioDepth)}`;
     }
 
-    private generateWarpGroupName(input: any): string {
-        // return `${Warp_Input_Operation[input.operation]}-${input.duration}-${input.objectSize}-${input.objectCount}`;
-        const duration = formatSecond(Number(input.duration))
-        const objectSize = formatCapacity(Number(input.objectSize))
+    private generateWarpGroupName(input: Warp_Input): string {
+        const duration = formatSecond(Number(input.durationSeconds))
+        const objectSize = formatCapacity(Number(input.objectSizeBytes))
         return `${Warp_Input_Operation[input.operation]}-${duration.value}${duration.unit}-${objectSize.value}${objectSize.unit}-${input.objectCount}`;
     }
 
@@ -85,7 +83,7 @@ class BistDashboardManager<TData = TestResult> {
                 testResult.kind.value.output && 
                 testResult.kind.value.input
             ) {
-                const groupName = this.generateGroupName(testResult.kind.value.input);
+                const groupName = this.generateFioGroupName(testResult.kind.value.input);
                 
                 // Process read output
                 if (testResult.kind.value.output.read && testResult.kind.value.output.read.latency) {

@@ -59,7 +59,7 @@
         : {} as NetworkFileSystem;
 	const DEFAULT_FIO_INPUT = testResult && testResult.kind.value?.input
     ? testResult.kind.value.input as FIO_Input
-	: { jobCount: "32", runTime: "60", blockSize: "4096", fileSize: String(1024 * 1024 * 1024), ioDepth: "1" } as unknown as FIO_Input; 
+	: { jobCount: 32, runTimeSeconds: 60, blockSizeBytes: 4096, fileSizeBytes: 1024 * 1024 * 1024, ioDepth: 1 } as unknown as FIO_Input; 
     let selectedScope = $state(
         testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
             ? testResult.kind.value.target.value?.scopeUuid ?? ''
@@ -76,9 +76,9 @@
 	let requestNetworkFileSystem: NetworkFileSystem = $state(DEFAULT_NETWORK_FILE_SYSTEM);
 	let fioAccessMode = $state(DEFAULT_FIO_INPUT.accessMode);
 	let fioJobCount = $state(DEFAULT_FIO_INPUT.jobCount);
-	let fioRunTime = $state(DEFAULT_FIO_INPUT.runTime);
-	let fioBlockSize = $state(DEFAULT_FIO_INPUT.blockSize);
-	let fioFileSize = $state(DEFAULT_FIO_INPUT.fileSize);
+	let fioRunTime = $state(DEFAULT_FIO_INPUT.runTimeSeconds);
+	let fioBlockSize = $state(DEFAULT_FIO_INPUT.blockSizeBytes);
+	let fioFileSize = $state(DEFAULT_FIO_INPUT.fileSizeBytes);
 	let fioIoDepth = $state(DEFAULT_FIO_INPUT.ioDepth);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -87,9 +87,9 @@
 		requestNetworkFileSystem = DEFAULT_NETWORK_FILE_SYSTEM;
 		fioAccessMode = DEFAULT_FIO_INPUT.accessMode; 
 		fioJobCount = DEFAULT_FIO_INPUT.jobCount; 
-		fioRunTime = DEFAULT_FIO_INPUT.runTime; 
-		fioBlockSize = DEFAULT_FIO_INPUT.blockSize; 
-		fioFileSize = DEFAULT_FIO_INPUT.fileSize; 
+		fioRunTime = DEFAULT_FIO_INPUT.runTimeSeconds; 
+		fioBlockSize = DEFAULT_FIO_INPUT.blockSizeBytes; 
+		fioFileSize = DEFAULT_FIO_INPUT.fileSizeBytes; 
 		fioIoDepth = DEFAULT_FIO_INPUT.ioDepth; 
 	}
 
@@ -237,7 +237,6 @@
 								<Form.Label>Run Time</Form.Label>
 								<SingleInput.Measurement
 									bind:value={fioRunTime}
-									transformer={(value) => String(value)}
 									units={[
 										{ value: 1, label: 's' } as SingleInput.UnitType,
 										{ value: 60, label: 'm' } as SingleInput.UnitType,
@@ -251,7 +250,6 @@
 								<Form.Label>Block Size</Form.Label>
 								<SingleInput.Measurement
 									bind:value={fioBlockSize}
-									transformer={(value) => String(value)}
 									units={[
 										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
@@ -267,7 +265,6 @@
 								<Form.Label>File Size</Form.Label>
 								<SingleInput.Measurement
 									bind:value={fioFileSize}
-									transformer={(value) => String(value)}
 									units={[
 										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
@@ -336,9 +333,9 @@
 					requestFio.input = {
 						accessMode: fioAccessMode,
 						jobCount: BigInt(fioJobCount),
-						runTime: fioRunTime,
-						blockSize: fioBlockSize,
-						fileSize: fioFileSize,
+						runTimeSeconds: BigInt(fioRunTime),
+						blockSizeBytes: BigInt(fioBlockSize),
+						fileSizeBytes: BigInt(fioFileSize),
 						ioDepth: BigInt(fioIoDepth)
 					} as FIO_Input;
 					request.kind.value = requestFio;

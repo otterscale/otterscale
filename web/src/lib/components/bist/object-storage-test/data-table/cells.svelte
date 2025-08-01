@@ -85,15 +85,15 @@
 {#snippet duration(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'warp' &&  row.original.kind.value?.input}
-			{@const formatted = formatSecond(Number(row.original.kind.value?.input.duration))}
-            {formatted.value} {formatted.unit}
+			{@const formatted = formatSecond(Number(row.original.kind.value?.input.durationSeconds))}
+			{formatted.value} {formatted.unit}
         {/if}
 	</p>
 {/snippet}
 {#snippet objectSize(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'warp' &&  row.original.kind.value?.input}
-            {@const formatted = formatByte(Number(row.original.kind.value?.input.objectSize))}
+            {@const formatted = formatByte(Number(row.original.kind.value?.input.objectSizeBytes))}
             {formatted.value} {formatted.unit}
         {/if}
 	</p>

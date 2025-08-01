@@ -36,7 +36,6 @@
                             mode === "write" ? writeTmp :
                             trimTmp
                         )}
-						yScale={scaleLog()}
 						props={{
 							xAxis: { 
 								tweened: { duration: 200 },
