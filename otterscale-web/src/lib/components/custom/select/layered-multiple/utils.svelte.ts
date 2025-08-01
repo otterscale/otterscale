@@ -64,6 +64,10 @@ class OptionManager {
     }
 }
 
+function validate(required: boolean | undefined, optionManager: OptionManager) {
+    return required && !optionManager.isSomeAncestralOptionsSelected
+}
+
 export {
-    OptionManager
+    OptionManager, validate
 };

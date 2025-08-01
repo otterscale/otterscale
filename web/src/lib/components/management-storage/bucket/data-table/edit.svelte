@@ -68,6 +68,8 @@
 				console.error('Error during initial data load:', error);
 			});
 	});
+
+	let invalid = $state(false);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -77,17 +79,22 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Edit Bucket</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.bucketName} />
+					<SingleInput.General id="name" required type="text" bind:value={request.bucketName} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Owner</Form.Label>
 					{#if isMounted}
-						<SingleSelect.Root bind:options={userOptions} bind:value={request.owner} required>
+						<SingleSelect.Root
+							id="owner"
+							bind:options={userOptions}
+							bind:value={request.owner}
+							required
+						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
 								<SingleSelect.Options>
@@ -156,6 +163,7 @@
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						toast.info(`Updating ${request.bucketName}...`);
 						storageClient

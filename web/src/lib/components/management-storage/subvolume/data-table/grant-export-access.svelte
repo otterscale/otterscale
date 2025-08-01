@@ -48,6 +48,8 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let invalid = $state(false);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -57,11 +59,11 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Grant Export Access</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Client IP</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.clientIp} />
+					<SingleInput.General id="client_ip" required type="text" bind:value={request.clientIp} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -69,6 +71,7 @@
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						toast.info(`Granting ${request.subvolumeName}...`);
 						storageClient

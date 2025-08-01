@@ -3,7 +3,7 @@
 </script>
 
 <main class="space-y-4">
-	<Loading.Sparkline />
+	<Loading.Selection />
 	<Loading.Report />
 	<Loading.DataTable />
 </main>

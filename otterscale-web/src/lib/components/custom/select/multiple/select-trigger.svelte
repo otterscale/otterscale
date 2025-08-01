@@ -10,7 +10,7 @@
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 	import type { OptionType } from './types';
-	import type { OptionManager } from './utils.svelte';
+	import { validate, type OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -25,32 +25,33 @@
 		variant?: ButtonVariant;
 	} = $props();
 
-	const id: string | undefined = getContext('id');
-	const required: Boolean | undefined = getContext('required');
+	const required: boolean | undefined = getContext('required');
 	const optionManager: OptionManager = getContext('OptionManager');
 
-	const isInvalid = $derived(required && !optionManager.isSomeOptionsSelected);
-	const formValidator: FormValidator = getContext('FormValidator');
-	$effect(() => {
-		formValidator.set(id, isInvalid);
-	});
+	const isInvalid = $derived(validate(required, optionManager));
 </script>
 
 <Popover.Trigger
 	bind:ref
 	data-slot="select-trigger"
 	class={cn(
-		'w-full cursor-pointer',
+		'data-[state=open]:ring-primary group w-full cursor-pointer',
 		buttonVariants({ variant: variant }),
-		required && isInvalid ? 'ring-destructive ring-1' : 'ring-1',
+		isInvalid ? 'ring-destructive ring-1' : 'ring-1',
 		className
 	)}
 	{...restProps}
 >
 	{#if children}
 		{@render children?.()}
-	{:else if required && isInvalid}
-		<p class=" text-destructive text-xs">Required</p>
+	{:else if isInvalid}
+		<span
+			class="group-data-[state=open]:text-primary group-data-[state=closed]:text-destructive flex items-center gap-1 text-xs"
+		>
+			<Icon icon="ph:list" />
+			<p class="group-data-[state=closed]:hidden">Select</p>
+			<p class="group-data-[state=open]:hidden">Required</p>
+		</span>
 	{:else if optionManager.isSomeOptionsSelected}
 		<p>Select</p>
 

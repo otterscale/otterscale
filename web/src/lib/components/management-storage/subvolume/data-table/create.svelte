@@ -47,6 +47,8 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let invalid = $state(false);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -62,11 +64,11 @@
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
 			Create NFS
 		</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General required type="text" bind:value={request.subvolumeName} />
+					<SingleInput.General id="name" required type="text" bind:value={request.subvolumeName} />
 				</Form.Field>
 
 				<Form.Field>
@@ -80,7 +82,7 @@
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Quotas Size</Form.Label>
+					<Form.Label>Quota Size</Form.Label>
 					<Form.Help>
 						{SUBVOLUME_QUOTA_HELP_TEXT}
 					</Form.Help>
@@ -88,12 +90,8 @@
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
 						units={[
-							{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
 						]}
 					/>
 				</Form.Field>
@@ -114,6 +112,7 @@
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						toast.info(`Creating ${request.subvolumeName}...`);
 						storageClient

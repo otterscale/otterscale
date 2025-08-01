@@ -38,6 +38,8 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
+
+	let invalid = $state(false);
 </script>
 
 <AlertDialog.Root bind:open={stateController.state}>
@@ -47,10 +49,15 @@
 	</AlertDialog.Trigger>
 	<AlertDialog.Content>
 		<AlertDialog.Header>Delete User</AlertDialog.Header>
-		<Form.Root>
+		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.DeletionConfirm required target={user.id} bind:value={request.userId} />
+					<SingleInput.DeletionConfirm
+						id="deletion"
+						required
+						target={user.id}
+						bind:value={request.userId}
+					/>
 				</Form.Field>
 				<Form.Help>
 					Please type the user id exactly to confirm deletion. This action cannot be undone.
@@ -61,6 +68,7 @@
 			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
+					disabled={invalid}
 					onclick={() => {
 						toast.info(`Deleting ${request.userId}...`);
 						storageClient

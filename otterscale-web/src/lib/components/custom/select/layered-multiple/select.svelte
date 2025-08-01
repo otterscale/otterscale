@@ -5,6 +5,7 @@
 	import { setContext } from 'svelte';
 	import type { OptionType } from './types';
 	import { OptionManager } from './utils.svelte';
+	import { validate } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -16,6 +17,7 @@
 		children,
 		options,
 		required,
+		invalid = $bindable(),
 		...restProps
 	}: DropdownMenuPrimitive.RootProps & {
 		id?: string;
@@ -23,21 +25,22 @@
 		value: any[];
 		options: OptionType[];
 		required?: boolean;
+		invalid?: boolean | null | undefined;
 	} = $props();
-
+	const optionManager = new OptionManager(options, {
+		get value() {
+			return value ?? [];
+		},
+		set value(newValues: any[]) {
+			value = newValues;
+		}
+	});
 	setContext('id', id);
 	setContext('required', required);
-	setContext(
-		'OptionManager',
-		new OptionManager(options, {
-			get value() {
-				return value ?? [];
-			},
-			set value(newValues: any[]) {
-				value = newValues;
-			}
-		})
-	);
+	setContext('OptionManager', optionManager);
+	$effect(() => {
+		invalid = validate(required, optionManager);
+	});
 </script>
 
 <DropdownMenu.Root {open} {...restProps}>

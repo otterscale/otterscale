@@ -1,16 +1,12 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import * as Select from '$lib/components/ui/select';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
-	import { getContext } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { General } from '.';
 	import type { InputType, UnitType } from './types';
 	import { getInputMeasurementUnitByValue } from './utils.svelte';
-
-	type Props = WithElementRef<Omit<HTMLInputAttributes, 'type'> & { type?: InputType }>;
 </script>
 
 <script lang="ts">
@@ -23,10 +19,12 @@
 		units,
 		oninput,
 		transformer = (value) => value,
+		invalid = $bindable(),
 		...restProps
-	}: Props & {
+	}: WithElementRef<Omit<HTMLInputAttributes, 'type'> & { type?: InputType }> & {
 		units: UnitType[];
 		transformer?: (value: any) => void;
+		invalid?: boolean | null | undefined;
 	} = $props();
 
 	const DEFAULT = getInputMeasurementUnitByValue(value, units);
@@ -37,9 +35,8 @@
 	let unit: UnitType | undefined = $state(DEFAULT_UNIT);
 
 	const isInvalid = $derived(required && (value === null || value === undefined));
-	const formValidator: FormValidator = getContext('FormValidator');
 	$effect(() => {
-		formValidator.set(id, isInvalid);
+		invalid = isInvalid;
 	});
 </script>
 

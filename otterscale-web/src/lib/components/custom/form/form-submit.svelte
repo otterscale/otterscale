@@ -16,8 +16,6 @@
 		children,
 		...restProps
 	}: ButtonProps & {} = $props();
-
-	const formValidator: FormValidator = getContext('FormValidator');
 </script>
 
 <Button
@@ -26,7 +24,7 @@
 	class={cn('w-fit cursor-pointer shadow', buttonVariants({ variant, size }), className)}
 	{href}
 	type="submit"
-	disabled={formValidator.isInvalid}
+	{disabled}
 	{...restProps}
 >
 	{@render children?.()}

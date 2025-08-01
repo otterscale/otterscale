@@ -44,7 +44,7 @@
 </script>
 
 <Popover.Root>
-	<Popover.Trigger class={buttonVariants({ size: 'sm', variant: 'outline' })}>
+	<Popover.Trigger class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
 		{@render filterTrigger()}
 	</Popover.Trigger>
 	<Popover.Content class="w-fit p-0">

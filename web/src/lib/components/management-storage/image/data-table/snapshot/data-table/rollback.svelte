@@ -59,7 +59,7 @@
 		<AlertDialog.Header>Rollback RADOS Block Device Snapshot</AlertDialog.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Label>Snapshot</Form.Label>
+				<Form.Label>Name</Form.Label>
 				<Form.Help>Please check the snapshot name exactly to confirm this action.</Form.Help>
 				<Form.Field>
 					<SingleInput.General type="text" disabled bind:value={request.snapshotName} />
