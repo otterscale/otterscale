@@ -20,6 +20,7 @@ import {
     databasesRelationalPath,
     databasesNoSQLPath,
     getPath,
+    settingsSubscriptionPath,
 } from '$lib/path';
 
 export const cephPaths = [
@@ -72,7 +73,8 @@ export const routes = [
         path: getPath(settingsPath),
         items: [
             getPath(settingsNetworkPath),
-            getPath(settingsBISTPath)
+            getPath(settingsSubscriptionPath),
+            getPath(settingsBISTPath),
         ]
     }
 ];

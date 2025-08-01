@@ -6,13 +6,17 @@
 	import type { User } from 'better-auth';
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { goto } from '$app/navigation';
-	import { PremiumTier, PremiumService } from '$lib/api/premium/v1/premium_pb';
+	import {
+		CheckHealthResponse_Result,
+		EnvironmentService
+	} from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
+	import { PremiumTier, PremiumService } from '$lib/api/premium/v1/premium_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { setupScopePath } from '$lib/path';
+	import { setupPath, setupScopePath } from '$lib/path';
 	import {
 		activeScope,
 		currentCeph,
@@ -32,6 +36,7 @@
 	let { user, ref = $bindable(null), ...restProps }: Props = $props();
 
 	const transport: Transport = getContext('transport');
+	const environmentClient = createClient(EnvironmentService, transport);
 	const scopeClient = createClient(ScopeService, transport);
 	const premiumClient = createClient(PremiumService, transport);
 	const essentialClient = createClient(EssentialService, transport);
@@ -95,12 +100,12 @@
 		await fetchEssentials(scope.uuid);
 		if (!$currentCeph && !$currentKubernetes) {
 			toast.info(m.scope_not_configured({ name: scope.name }), {
-				duration: Number.POSITIVE_INFINITY,
 				action: {
 					label: m.goto(),
 					onClick: () => goto(setupScopePath)
 				}
 			});
+			goto(setupScopePath);
 		} else {
 			toast.success(m.switch_scope({ name: scope.name }));
 		}
@@ -108,7 +113,15 @@
 
 	async function initialize() {
 		try {
-			await Promise.all([fetchScopes(), fetchEdition()]);
+			const response = await environmentClient.checkHealth({});
+			switch (response.result) {
+				case CheckHealthResponse_Result.OK:
+					await Promise.all([fetchScopes(), fetchEdition()]);
+					break;
+				case CheckHealthResponse_Result.NOT_INSTALLED:
+					goto(setupPath);
+					break;
+			}
 		} catch (error) {
 			console.error('Failed to initialize:', error);
 		}
