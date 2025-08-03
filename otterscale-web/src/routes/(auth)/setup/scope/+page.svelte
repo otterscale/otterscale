@@ -14,9 +14,9 @@
 		setupScopeKubernetesPath,
 		setupScopePath
 	} from '$lib/path';
-	import AdvancedTierImage from '$lib/static/advanced-tier.jpg';
-	import BasicTierImage from '$lib/static/basic-tier.jpg';
-	import EnterpriseTierImage from '$lib/static/enterprise-tier.jpg';
+	import AdvancedTierImage from '$lib/assets/advanced-tier.jpg';
+	import BasicTierImage from '$lib/assets/basic-tier.jpg';
+	import EnterpriseTierImage from '$lib/assets/enterprise-tier.jpg';
 	import { breadcrumb, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	// Set breadcrumb navigation
