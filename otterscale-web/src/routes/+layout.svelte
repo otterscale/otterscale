@@ -7,6 +7,7 @@
 	import phIcons from '@iconify-json/ph/icons.json';
 	import streamlineLogosIcons from '@iconify-json/streamline-logos/icons.json';
 	import { env } from '$env/dynamic/public';
+	import favicon from '$lib/assets/favicon.svg';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 
 	import '../app.css';
@@ -23,6 +24,10 @@
 	addCollection(phIcons);
 	addCollection(streamlineLogosIcons);
 </script>
+
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
 
 <ModeWatcher />
 <Toaster richColors />

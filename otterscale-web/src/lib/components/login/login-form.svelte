@@ -9,8 +9,8 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { m } from '$lib/paraglide/messages';
-	import LoginImage from '$lib/static/login.png';
-	import SignUpImage from '$lib/static/sign-up.jpg';
+	import LoginImage from '$lib/assets/login.png';
+	import SignUpImage from '$lib/assets/sign-up.jpg';
 
 	const { data } = $props();
 	const id = $props.id();

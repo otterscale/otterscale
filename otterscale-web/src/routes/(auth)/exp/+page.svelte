@@ -7,9 +7,9 @@
 	import * as Carousel from '$lib/components/ui/carousel';
 	import type { CarouselAPI } from '$lib/components/ui/carousel/context.js';
 	import { Label } from '$lib/components/ui/label';
-	import AdvancedTierImage from '$lib/static/advanced-tier.jpg';
-	import BasicTierImage from '$lib/static/basic-tier.jpg';
-	import EnterpriseTierImage from '$lib/static/enterprise-tier.jpg';
+	import AdvancedTierImage from '$lib/assets/advanced-tier.jpg';
+	import BasicTierImage from '$lib/assets/basic-tier.jpg';
+	import EnterpriseTierImage from '$lib/assets/enterprise-tier.jpg';
 	import { premiumTier } from '$lib/stores';
 	import { m } from '$lib/paraglide/messages';
 
