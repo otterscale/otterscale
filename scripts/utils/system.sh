@@ -107,7 +107,7 @@ validate_system() {
 }
 
 config_modules() {
-    if ! tee -a /etc/modules rbd; then
+    if ! echo 'rbd' | tee /etc/modules; then
         error_exit "Failed tee rbd into /etc/modules"
     fi
 }
