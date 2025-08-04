@@ -115,8 +115,8 @@ main() {
     confirm_remove
     find_first_non_user
     remove_juju_model
-    #remove_pkg
-    #remove_juju_file
+    remove_pkg
+    remove_juju_file
 }
 
 main
