@@ -6,6 +6,7 @@
 	import type { User } from 'better-auth';
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import {
 		CheckHealthResponse_Result,
 		EnvironmentService
@@ -58,10 +59,6 @@
 		try {
 			const response = await scopeClient.listScopes({});
 			scopes.set(response.scopes);
-
-			if (response.scopes.length > 0) {
-				handleScopeOnSelect(0);
-			}
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		}
@@ -117,6 +114,8 @@
 			switch (response.result) {
 				case CheckHealthResponse_Result.OK:
 					await Promise.all([fetchScopes(), fetchEdition()]);
+					const index = $scopes.findIndex((scope) => scope.name == page.params.scope);
+					handleScopeOnSelect(index);
 					break;
 				case CheckHealthResponse_Result.NOT_INSTALLED:
 					goto(setupPath);
