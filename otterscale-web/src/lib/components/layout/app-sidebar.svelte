@@ -18,13 +18,7 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths, staticPaths } from '$lib/path';
-	import {
-		activeScope,
-		currentCeph,
-		currentKubernetes,
-		premiumTier,
-		triggerUpdateScopes
-	} from '$lib/stores';
+	import { activeScope, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 	import { bookmarks, cephPaths, kubernetesPaths, routes } from './routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
@@ -42,6 +36,7 @@
 	const premiumClient = createClient(PremiumService, transport);
 	const essentialClient = createClient(EssentialService, transport);
 	const scopes = writable<Scope[]>([]);
+	const trigger = writable<boolean>(false);
 
 	const tierMap = {
 		[PremiumTier.BASIC]: m.basic_tier(),
@@ -132,8 +127,9 @@
 	onMount(initialize);
 
 	$effect(() => {
-		if ($triggerUpdateScopes) {
+		if ($trigger) {
 			initialize();
+			trigger.set(false);
 		}
 	});
 </script>
@@ -146,6 +142,7 @@
 				scopes={$scopes}
 				tier={tierMap[$premiumTier]}
 				onSelect={handleScopeOnSelect}
+				{trigger}
 			/>
 		{:else}
 			<Sidebar.Menu>

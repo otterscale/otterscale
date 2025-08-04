@@ -18,7 +18,6 @@ interface AppStores {
     premiumTier: Writable<PremiumTier>;
 
     // Scope & Essential
-    triggerUpdateScopes: Writable<boolean>;
     activeScope: Writable<Scope>;
     currentCeph: Writable<Essential | undefined>;
     currentKubernetes: Writable<Essential | undefined>;
@@ -28,7 +27,6 @@ interface AppStores {
 const createStores = (): AppStores => ({
     breadcrumb: writable<BreadcrumbState>({ parents: [], current: staticPaths.home }),
     premiumTier: writable(PremiumTier.BASIC),
-    triggerUpdateScopes: writable(false),
     activeScope: writable<Scope>(),
     currentCeph: writable<Essential | undefined>(undefined),
     currentKubernetes: writable<Essential | undefined>(undefined),
@@ -38,7 +36,6 @@ const createStores = (): AppStores => ({
 export const {
     breadcrumb,
     premiumTier,
-    triggerUpdateScopes,
     activeScope,
     currentCeph,
     currentKubernetes,
