@@ -107,7 +107,9 @@ validate_system() {
 }
 
 config_modules() {
-    if ! echo 'rbd' | tee /etc/modules >/dev/null; then
-        error_exit "Failed tee rbd into /etc/modules"
+    local MODULE=rbd
+    local MODULES_FILE="/etc/modules"
+    if ! if ! grep -q "^$MODULE$" "$MODULES_FILE"; then
+        echo "$MODULE" >> "$MODULES_FILE"
     fi
 }
