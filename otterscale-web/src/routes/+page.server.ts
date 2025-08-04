@@ -2,7 +2,7 @@ import { error, redirect } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 import { env as publicEnv } from "$env/dynamic/public";
 import { auth } from "$lib/auth";
-import { applicationsPath, loginPath } from "$lib/path";
+import { loginPath, scopesPath } from "$lib/path";
 import type { PageServerLoad } from "./$types";
 
 // Environment variables are loaded from .env in development or system environment in production
@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	});
 
 	if (session) {
-		redirect(302, applicationsPath);
+		redirect(302, scopesPath);
 	}
 
 	redirect(302, `${loginPath}${url.search}`);
