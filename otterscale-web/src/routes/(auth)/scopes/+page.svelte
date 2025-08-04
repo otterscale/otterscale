@@ -26,21 +26,25 @@
 	onMount(fetchScopes);
 </script>
 
-<div class="flex space-x-2">
-	{#each $scopes as scope}
-		<Button href={dynamicPaths.scope(scope.name).url}>{scope.name}</Button>
-	{/each}
-</div>
+<main class="flex flex-1 flex-col px-2 py-20 md:px-4 md:py-24">
+	SCOPE SELECTOR
 
-<Button
-	onclick={() => {
-		authClient.signOut({
-			fetchOptions: {
-				onSuccess: () => {
-					toast.success(m.sign_out_success());
-					goto(staticPaths.login.url);
-				}
-			}
-		});
-	}}>LOGOUT</Button
->
+	<div class="flex space-x-2">
+		{#each $scopes as scope}
+			<Button href={dynamicPaths.scope(scope.name).url}>{scope.name}</Button>
+		{/each}
+
+		<Button
+			onclick={() => {
+				authClient.signOut({
+					fetchOptions: {
+						onSuccess: () => {
+							toast.success(m.sign_out_success());
+							goto(staticPaths.login.url);
+						}
+					}
+				});
+			}}>LOGOUT</Button
+		>
+	</div>
+</main>
