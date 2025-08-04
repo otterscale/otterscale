@@ -1,80 +1,52 @@
-import {
-    applicationsPath,
-    applicationsServicePath,
-    applicationsStorePath,
-    applicationsWorkloadPath,
-    machinesMetalPath,
-    machinesPath,
-    machinesVirtualMachinePath,
-    modelsLLMPath,
-    modelsPath,
-    settingsPath,
-    settingsNetworkPath,
-    storageBlockDevicePath,
-    storageClusterPath,
-    storageFileSystemPath,
-    storageObjectGatewayPath,
-    storagePath,
-    settingsBISTPath,
-    databasesPath,
-    databasesRelationalPath,
-    databasesNoSQLPath,
-    getPath,
-    settingsSubscriptionPath,
-} from '$lib/path';
+import { dynamicPaths, type Path } from '$lib/path';
 
-export const cephPaths = [
-    storagePath,
-]
+export interface Route {
+    path: Path;
+    items: Path[];
+};
 
-export const kubernetesPaths = [
-    modelsPath,
-    databasesPath,
-    applicationsPath,
-]
-
-export const routes = [
+export const routes = (scope: string): Route[] => [
     {
-        path: getPath(modelsPath),
-        items: [getPath(modelsLLMPath)]
+        path: dynamicPaths.models(scope),
+        items: [dynamicPaths.modelsLLM(scope)]
     },
     {
-        path: getPath(databasesPath),
+        path: dynamicPaths.databases(scope),
         items: [
-            getPath(databasesRelationalPath),
-            getPath(databasesNoSQLPath)
+            dynamicPaths.databasesRelational(scope),
+            dynamicPaths.databasesNoSQL(scope)
         ]
     },
     {
-        path: getPath(applicationsPath),
+        path: dynamicPaths.applications(scope),
         items: [
-            getPath(applicationsWorkloadPath),
-            getPath(applicationsServicePath),
-            getPath(applicationsStorePath)
+            dynamicPaths.applicationsWorkload(scope),
+            dynamicPaths.applicationsService(scope),
+            dynamicPaths.applicationsStore(scope)
         ]
     },
     {
-        path: getPath(storagePath),
+        path: dynamicPaths.storage(scope),
         items: [
-            getPath(storageClusterPath),
-            getPath(storageBlockDevicePath),
-            getPath(storageFileSystemPath),
-            getPath(storageObjectGatewayPath)
+            dynamicPaths.storageCluster(scope),
+            dynamicPaths.storageBlockDevice(scope),
+            dynamicPaths.storageFileSystem(scope),
+            dynamicPaths.storageObjectGateway(scope)
         ]
     },
     {
-        path: getPath(machinesPath),
+        path: dynamicPaths.machines(scope),
         items: [
-            getPath(machinesMetalPath),
-            getPath(machinesVirtualMachinePath)
+            dynamicPaths.machinesMetal(scope),
+            dynamicPaths.machinesVirtualMachine(scope)
         ]
     },
     {
-        path: getPath(settingsPath),
+        path: dynamicPaths.settings(scope),
         items: [
-            getPath(settingsNetworkPath),
-            getPath(settingsSubscriptionPath),
-            getPath(settingsBISTPath),
+            dynamicPaths.settingsNetwork(scope),
+            dynamicPaths.settingsSubscription(scope),
+            dynamicPaths.settingsBIST(scope),
         ]
     }
 ];
@@ -87,3 +59,13 @@ export const bookmarks = [
     { title: 'FOO 3', url: '#' },
     { title: 'BAR 3', url: '#' }
 ];
+
+export const cephPaths = (scope: string): Path[] => [
+    dynamicPaths.storage(scope),
+]
+
+export const kubernetesPaths = (scope: string): Path[] => [
+    dynamicPaths.models(scope),
+    dynamicPaths.databases(scope),
+    dynamicPaths.applications(scope),
+]

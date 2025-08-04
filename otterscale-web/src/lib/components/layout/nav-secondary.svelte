@@ -3,7 +3,7 @@
 	import Icon from '@iconify/svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
-	import { documentationPath } from '$lib/path';
+	import { staticPaths } from '$lib/path';
 	import DialogAbout from './dialog-about.svelte';
 
 	interface Props extends ComponentProps<typeof Sidebar.Group> {}
@@ -21,7 +21,7 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton size="sm">
 					{#snippet child({ props })}
-						<a href={documentationPath} {...props}>
+						<a href={staticPaths.documentation.url} {...props}>
 							<Icon icon="ph:book-open" />
 							<span>{m.documentation()}</span>
 						</a>

@@ -7,8 +7,9 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { setupScopePath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import DialogCreateScope from './dialog-create-scope.svelte';
+	import { page } from '$app/state';
 
 	let {
 		active,
@@ -121,7 +122,7 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
 						<Button
-							href={setupScopePath}
+							href={dynamicPaths.setupScope(page.params.scope).url}
 							class="group/icon bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg transition"
 						>
 							<Icon icon="{getIcon(active.name)}-fill" class="size-4.5 group-hover/icon:hidden" />

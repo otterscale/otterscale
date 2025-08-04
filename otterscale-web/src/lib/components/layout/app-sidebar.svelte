@@ -6,6 +6,7 @@
 	import type { User } from 'better-auth';
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import {
 		CheckHealthResponse_Result,
 		EnvironmentService
@@ -16,7 +17,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { setupPath, setupScopePath } from '$lib/path';
+	import { dynamicPaths, staticPaths } from '$lib/path';
 	import {
 		activeScope,
 		currentCeph,
@@ -58,10 +59,6 @@
 		try {
 			const response = await scopeClient.listScopes({});
 			scopes.set(response.scopes);
-
-			if (response.scopes.length > 0) {
-				handleScopeOnSelect(0);
-			}
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		}
@@ -102,10 +99,10 @@
 			toast.info(m.scope_not_configured({ name: scope.name }), {
 				action: {
 					label: m.goto(),
-					onClick: () => goto(setupScopePath)
+					onClick: () => goto(dynamicPaths.setupScope(page.params.scope).url)
 				}
 			});
-			goto(setupScopePath);
+			goto(dynamicPaths.setupScope(page.params.scope).url);
 		} else {
 			toast.success(m.switch_scope({ name: scope.name }));
 		}
@@ -117,9 +114,14 @@
 			switch (response.result) {
 				case CheckHealthResponse_Result.OK:
 					await Promise.all([fetchScopes(), fetchEdition()]);
+					const index = Math.max(
+						$scopes.findIndex((scope) => scope.name == page.params.scope),
+						0
+					);
+					handleScopeOnSelect(index);
 					break;
 				case CheckHealthResponse_Result.NOT_INSTALLED:
-					goto(setupPath);
+					goto(staticPaths.setup.url);
 					break;
 			}
 		} catch (error) {
@@ -165,7 +167,11 @@
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavMain {routes} {cephPaths} {kubernetesPaths} />
+		<NavMain
+			routes={routes(page.params.scope)}
+			cephPaths={cephPaths(page.params.scope)}
+			kubernetesPaths={kubernetesPaths(page.params.scope)}
+		/>
 		<NavPrimary {bookmarks} />
 		<NavSecondary class="mt-auto" />
 	</Sidebar.Content>

@@ -4,25 +4,21 @@
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
-	import { getIconFromUrl, type Path } from '$lib/path';
+	import { urlIcon, type Path } from '$lib/path';
 	import { currentCeph, currentKubernetes } from '$lib/stores';
-
-	type Route = {
-		path: Path;
-		items: Path[];
-	};
+	import type { Route } from './routes';
 
 	let {
 		routes,
 		cephPaths,
 		kubernetesPaths
-	}: { routes: Route[]; cephPaths: string[]; kubernetesPaths: string[] } = $props();
+	}: { routes: Route[]; cephPaths: Path[]; kubernetesPaths: Path[] } = $props();
 
 	const isItemActive = (url: string): boolean => page.url.pathname.startsWith(url);
 	const isItemDisabled = (url: string): boolean => {
 		return (
-			(!$currentCeph && cephPaths.includes(url)) ||
-			(!$currentKubernetes && kubernetesPaths.includes(url))
+			(!$currentCeph && cephPaths.some((path) => path.url === url)) ||
+			(!$currentKubernetes && kubernetesPaths.some((path) => path.url === url))
 		);
 	};
 	const hasSubItems = (route: Route): boolean => Boolean(route.items?.length);
@@ -41,7 +37,7 @@
 						>
 							{#snippet child({ props })}
 								<a href={route.path.url} {...props}>
-									<Icon icon={getIconFromUrl(route.path.url)} />
+									<Icon icon={urlIcon(page.params.scope, route.path.url)} />
 									<span>{route.path.title}</span>
 								</a>
 							{/snippet}

@@ -1,8 +1,8 @@
-import { redirect } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 import { env as publicEnv } from "$env/dynamic/public";
 import { auth } from "$lib/auth";
-import { applicationsPath, loginPath } from "$lib/path";
+import { staticPaths } from "$lib/path";
 import type { PageServerLoad } from "./$types";
 
 // Environment variables are loaded from .env in development or system environment in production
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ request, url }) => {
 
 	for (const { value, name } of requiredEnvVars) {
 		if (!value) {
-			return { error: `${name} is not set` };
+			error(503, `${name} is not set`)
 		}
 	}
 
@@ -27,8 +27,8 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	});
 
 	if (session) {
-		redirect(302, applicationsPath);
+		redirect(302, staticPaths.scopes.url);
 	}
 
-	redirect(302, `${loginPath}${url.search}`);
+	redirect(302, `${staticPaths.login.url}${url.search}`);
 };

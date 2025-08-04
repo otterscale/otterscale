@@ -12,32 +12,25 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Code from '$lib/components/custom/code';
 	import { m } from '$lib/paraglide/messages';
-	import {
-		applicationsPath,
-		databasesPath,
-		getIconFromUrl,
-		getPath,
-		homePath,
-		machinesPath,
-		modelsPath,
-		settingsPath,
-		setupPath,
-		storagePath
-	} from '$lib/path';
-	import { breadcrumb, triggerUpdateScopes } from '$lib/stores';
+	import { dynamicPaths, staticPaths, urlIcon } from '$lib/path';
+	import { activeScope, breadcrumb, triggerUpdateScopes } from '$lib/stores';
+	import { page } from '$app/state';
 
 	// Constants
 	const INSTALL_CODE = `sh -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh" -- url=${env.PUBLIC_API_URL})`;
 	const RETRY_DELAY = 2000;
 
-	const SERVICES = [
-		{ url: modelsPath, description: m.models_description() },
-		{ url: databasesPath, description: m.databases_description() },
-		{ url: applicationsPath, description: m.applications_description() },
-		{ url: storagePath, description: m.storage_description() },
-		{ url: machinesPath, description: m.machines_description() },
-		{ url: settingsPath, description: m.settings_description() }
-	];
+	// const SERVICES = [
+	// 	{ path: dynamicPaths.models($activeScope.name), description: m.models_description() },
+	// 	{ path: dynamicPaths.databases($activeScope.name), description: m.databases_description() },
+	// 	{
+	// 		path: dynamicPaths.applications($activeScope.name),
+	// 		description: m.applications_description()
+	// 	},
+	// 	{ path: dynamicPaths.storage($activeScope.name), description: m.storage_description() },
+	// 	{ path: dynamicPaths.machines($activeScope.name), description: m.machines_description() },
+	// 	{ path: dynamicPaths.settings($activeScope.name), description: m.settings_description() }
+	// ];
 
 	// Types
 	interface SetupState {
@@ -58,7 +51,7 @@
 	const environmentClient = createClient(EnvironmentService, transport);
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [homePath], current: setupPath });
+	breadcrumb.set({ parents: [staticPaths.home], current: staticPaths.setup });
 
 	// Functions
 	function scrollToBottom() {
@@ -118,33 +111,33 @@
 
 			<div class="mx-auto max-w-4xl sm:mt-12">
 				<div class="grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2">
-					{#each SERVICES as service}
+					<!-- {#each SERVICES as service}
 						<div
 							class="group hover:border-primary/20 hover:bg-muted/50 flex items-center gap-4 rounded-lg border border-transparent p-3 transition-all duration-300"
 						>
 							<div class="bg-primary/10 rounded-full p-3">
-								<Icon icon={getIconFromUrl(service.url)} class="size-6" />
+								<Icon icon={urlIcon($activeScope.name, service.path.url)} class="size-6" />
 							</div>
 							<div>
-								<h3 class="font-medium">{getPath(service.url).title}</h3>
+								<h3 class="font-medium">{service.path.title}</h3>
 								<p class="text-muted-foreground text-sm">
 									{service.description}
 								</p>
 							</div>
 							<div class="ml-auto">
 								<a
-									href={service.url}
+									href={service.path.url}
 									class="text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors"
 								>
 									<Icon icon="ph:arrow-right" class="size-4" />
 								</a>
 							</div>
 						</div>
-					{/each}
+					{/each} -->
 				</div>
 
 				<div class="mt-12 text-center">
-					<Button href={homePath} class="inline-flex items-center gap-2">
+					<Button href={staticPaths.home.url} class="inline-flex items-center gap-2">
 						{m.go_back_to_home()}
 					</Button>
 				</div>

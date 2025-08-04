@@ -3,15 +3,15 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { siteConfig } from '$lib/config/site';
 	import { m } from '$lib/paraglide/messages';
-	import { contributorsPath, feedbackPath, githubPath } from '$lib/path';
+	import { staticPaths } from '$lib/path';
 	import Icon from '@iconify/svelte';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 
 	const links = [
-		{ icon: 'ph:house', text: m.homepage(), url: githubPath },
-		{ icon: 'ph:users', text: m.contributors(), url: contributorsPath },
-		{ icon: 'ph:paper-plane-tilt', text: m.feedback(), url: feedbackPath }
+		{ icon: 'ph:house', text: m.homepage(), url: staticPaths.github.url },
+		{ icon: 'ph:users', text: m.contributors(), url: staticPaths.contributors.url },
+		{ icon: 'ph:paper-plane-tilt', text: m.feedback(), url: staticPaths.feedback.url }
 	];
 
 	const openLink = (url: string) => window.open(url, '_blank');
@@ -23,7 +23,9 @@
 			<Dialog.Title class="flex items-center space-x-2">
 				<span>{siteConfig.title}</span>
 				<Icon icon="ph:git-commit-bold" class="text-muted-foreground" />
-				<span class="text-muted-foreground text-sm font-semibold">{siteConfig.version}</span>
+				<span class="text-muted-foreground text-sm font-semibold">
+					{import.meta.env.PACKAGE_VERSION}
+				</span>
 			</Dialog.Title>
 			<Dialog.Description>{siteConfig.description}</Dialog.Description>
 		</Dialog.Header>
