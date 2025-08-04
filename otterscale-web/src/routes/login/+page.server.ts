@@ -14,10 +14,10 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	});
 
 	if (session) {
-		redirect(302, staticPaths.scopesPath.url);
+		redirect(302, staticPaths.scopes.url);
 	}
 
-	const nextPath = url.searchParams.get('next') || staticPaths.scopesPath.url;
+	const nextPath = url.searchParams.get('next') || staticPaths.scopes.url;
 
 	return {
 		nextPath,
