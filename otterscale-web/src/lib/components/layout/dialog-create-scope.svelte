@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { ScopeService, type CreateScopeRequest } from '$lib/api/scope/v1/scope_pb';
 	import { Button } from '$lib/components/ui/button';
@@ -7,10 +9,11 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { m } from '$lib/paraglide/messages';
-	import { toast } from 'svelte-sonner';
-	import { triggerUpdateScopes } from '$lib/stores';
 
-	let { open = $bindable(false) }: { open: boolean } = $props();
+	let {
+		open = $bindable(false),
+		trigger = $bindable(writable(false))
+	}: { open: boolean; trigger: Writable<boolean> } = $props();
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
@@ -25,7 +28,7 @@
 				.createScope(createScopeRequest)
 				.then((r) => {
 					toast.success(m.create_scope_success({ name: r.name }));
-					triggerUpdateScopes.set(true);
+					trigger.set(true);
 				})
 				.catch((e) => {
 					toast.error(m.create_scope_error({ name: createScopeRequest.name, error: e.toString() }));

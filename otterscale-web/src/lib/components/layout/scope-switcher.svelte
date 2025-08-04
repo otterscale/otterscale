@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { writable, type Writable } from 'svelte/store';
 	import Icon from '@iconify/svelte';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -15,12 +16,14 @@
 		active,
 		scopes,
 		tier,
-		onSelect
+		onSelect,
+		trigger = $bindable(writable(false))
 	}: {
 		active: Scope;
 		scopes: Scope[];
 		tier: string;
 		onSelect: (index: number) => Promise<void>;
+		trigger: Writable<boolean>;
 	} = $props();
 
 	let open = $state(false);
@@ -109,7 +112,7 @@
 	}}
 />
 
-<DialogCreateScope bind:open />
+<DialogCreateScope bind:open bind:trigger />
 
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
