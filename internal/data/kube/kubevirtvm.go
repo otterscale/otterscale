@@ -3,17 +3,17 @@ package kube
 import (
 	"context"
 
-	oscore "github.com/openhdc/otterscale/internal/core"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 	clonev1 "kubevirt.io/api/clone/v1beta1"
 	virtv1 "kubevirt.io/api/core/v1"
 	snapshotv1 "kubevirt.io/api/snapshot/v1beta1"
+
+	oscore "github.com/openhdc/otterscale/internal/core"
 )
 
 type virtVM struct {
 	kubevirt *kubevirt
-	kube     *Kube
 }
 
 func NewVirtVM(kube *Kube, kubevirt *kubevirt) oscore.KubeVirtVMRepo {

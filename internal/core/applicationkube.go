@@ -99,7 +99,10 @@ type KubeCoreRepo interface {
 	GetPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
 
 	// PersistentVolumeClaim
+	CreatePersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*PersistentVolumeClaim, error)
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
+	UpdatePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*PersistentVolumeClaim, error)
+	DeletePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	// Namespace
 	GetNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
