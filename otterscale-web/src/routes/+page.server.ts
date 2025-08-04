@@ -1,4 +1,4 @@
-import { redirect } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 import { env as publicEnv } from "$env/dynamic/public";
 import { auth } from "$lib/auth";
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ request, url }) => {
 
 	for (const { value, name } of requiredEnvVars) {
 		if (!value) {
-			return { error: `${name} is not set` };
+			error(503, `${name} is not set`)
 		}
 	}
 
