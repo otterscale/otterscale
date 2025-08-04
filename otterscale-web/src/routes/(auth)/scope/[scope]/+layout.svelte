@@ -4,7 +4,6 @@
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { getPath, homePath } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 	import type { LayoutData } from './$types';
 
@@ -14,16 +13,10 @@
 	}
 
 	let { data, children }: Props = $props();
-
-	// Computed values
-	const currentPath = $derived(getPath($breadcrumb.current));
-	const filteredParents = $derived(
-		$breadcrumb.parents.filter((parent) => getPath(parent).url !== homePath)
-	);
 </script>
 
 <svelte:head>
-	<title>{currentPath.title} | OtterScale 🦦</title>
+	<title>{$breadcrumb.current.title} | OtterScale 🦦</title>
 </svelte:head>
 
 <Sidebar.Provider>
@@ -36,16 +29,16 @@
 				<nav aria-label="Breadcrumb">
 					<Breadcrumb.Root>
 						<Breadcrumb.List>
-							{#each filteredParents as parent}
+							{#each $breadcrumb.parents as parent}
 								<Breadcrumb.Item class="hidden md:block">
-									<Breadcrumb.Link href={getPath(parent).url}>
-										{getPath(parent).title}
+									<Breadcrumb.Link href={parent.url}>
+										{parent.title}
 									</Breadcrumb.Link>
 								</Breadcrumb.Item>
 								<Breadcrumb.Separator class="hidden md:block" />
 							{/each}
 							<Breadcrumb.Item>
-								<Breadcrumb.Page>{currentPath.title}</Breadcrumb.Page>
+								<Breadcrumb.Page>{$breadcrumb.current.title}</Breadcrumb.Page>
 							</Breadcrumb.Item>
 						</Breadcrumb.List>
 					</Breadcrumb.Root>

@@ -7,7 +7,8 @@
 	import { formatCapacity } from '$lib/formatter';
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { machinesMetalPath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
+	import { page } from '$app/state';
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -33,7 +34,8 @@
 			variant="ghost"
 			size="icon"
 			class="m-0 p-0"
-			onclick={() => goto(`${machinesMetalPath}/${row.original.id}`)}
+			onclick={() =>
+				goto(`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.id}`)}
 		>
 			<Icon icon="ph:arrow-square-out" />
 		</Button>

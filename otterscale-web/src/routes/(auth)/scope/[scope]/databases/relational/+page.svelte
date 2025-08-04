@@ -1,12 +1,16 @@
 <script lang="ts">
 	import * as Alert from '$lib/components/ui/alert';
+	import { page } from '$app/state';
 	import { m } from '$lib/paraglide/messages';
-	import { databasesPath, databasesRelationalPath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 	import Icon from '@iconify/svelte';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [databasesPath], current: databasesRelationalPath });
+	breadcrumb.set({
+		parents: [dynamicPaths.databases(page.params.scope)],
+		current: dynamicPaths.databasesRelational(page.params.scope)
+	});
 </script>
 
 <Alert.Root variant="destructive">

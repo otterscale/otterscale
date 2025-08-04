@@ -1,12 +1,16 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+	import { page } from '$app/state';
 	import * as Alert from '$lib/components/ui/alert';
 	import { m } from '$lib/paraglide/messages';
-	import { storageFileSystemPath, storagePath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [storagePath], current: storageFileSystemPath });
+	breadcrumb.set({
+		parents: [dynamicPaths.storage(page.params.scope)],
+		current: dynamicPaths.storageFileSystem(page.params.scope)
+	});
 </script>
 
 {#if $activeScope}

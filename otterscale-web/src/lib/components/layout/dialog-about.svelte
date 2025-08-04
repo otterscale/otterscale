@@ -3,15 +3,15 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { siteConfig } from '$lib/config/site';
 	import { m } from '$lib/paraglide/messages';
-	import { contributorsPath, feedbackPath, githubPath } from '$lib/path';
+	import { staticPaths } from '$lib/path';
 	import Icon from '@iconify/svelte';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 
 	const links = [
-		{ icon: 'ph:house', text: m.homepage(), url: githubPath },
-		{ icon: 'ph:users', text: m.contributors(), url: contributorsPath },
-		{ icon: 'ph:paper-plane-tilt', text: m.feedback(), url: feedbackPath }
+		{ icon: 'ph:house', text: m.homepage(), url: staticPaths.github.url },
+		{ icon: 'ph:users', text: m.contributors(), url: staticPaths.contributors.url },
+		{ icon: 'ph:paper-plane-tilt', text: m.feedback(), url: staticPaths.feedback.url }
 	];
 
 	const openLink = (url: string) => window.open(url, '_blank');

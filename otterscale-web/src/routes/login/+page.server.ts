@@ -1,7 +1,7 @@
 import { redirect } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 import { auth } from "$lib/auth";
-import { scopesPath } from "$lib/path";
+import { staticPaths } from "$lib/path";
 import type { PageServerLoad } from "./$types";
 
 const isProviderConfigured = (clientId: any, clientSecret: any, ...additionalKeys: any[]) => {
@@ -14,10 +14,10 @@ export const load: PageServerLoad = async ({ request, url }) => {
 	});
 
 	if (session) {
-		redirect(302, scopesPath);
+		redirect(302, staticPaths.scopesPath.url);
 	}
 
-	const nextPath = url.searchParams.get('next') || scopesPath;
+	const nextPath = url.searchParams.get('next') || staticPaths.scopesPath.url;
 
 	return {
 		nextPath,

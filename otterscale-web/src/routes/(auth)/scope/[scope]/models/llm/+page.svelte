@@ -1,12 +1,16 @@
 <script lang="ts">
 	import * as Alert from '$lib/components/ui/alert';
+	import { page } from '$app/state';
 	import { m } from '$lib/paraglide/messages';
-	import { modelsLLMPath, modelsPath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 	import Icon from '@iconify/svelte';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [modelsPath], current: modelsLLMPath });
+	breadcrumb.set({
+		parents: [dynamicPaths.models(page.params.scope)],
+		current: dynamicPaths.modelsLLM(page.params.scope)
+	});
 </script>
 
 <Alert.Root variant="destructive">

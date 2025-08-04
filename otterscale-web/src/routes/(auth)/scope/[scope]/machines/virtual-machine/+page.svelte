@@ -1,12 +1,16 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+	import { page } from '$app/state';
 	import * as Alert from '$lib/components/ui/alert';
 	import { m } from '$lib/paraglide/messages';
-	import { machinesPath, machinesVirtualMachinePath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [machinesPath], current: machinesVirtualMachinePath });
+	breadcrumb.set({
+		parents: [dynamicPaths.machines(page.params.scope)],
+		current: dynamicPaths.machinesVirtualMachine(page.params.scope)
+	});
 </script>
 
 <Alert.Root variant="destructive">

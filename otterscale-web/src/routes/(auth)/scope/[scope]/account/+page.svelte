@@ -1,12 +1,13 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+	import { page } from '$app/state';
 	import * as Alert from '$lib/components/ui/alert';
 	import { m } from '$lib/paraglide/messages';
-	import { accountPath, homePath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [homePath], current: accountPath });
+	breadcrumb.set({ parents: [], current: dynamicPaths.account(page.params.scope) });
 </script>
 
 <Alert.Root variant="default">

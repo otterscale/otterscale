@@ -1,16 +1,17 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+	import { page } from '$app/state';
 	import * as Alert from '$lib/components/ui/alert';
 	import { m } from '$lib/paraglide/messages';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { homePath, machinesPath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [homePath], current: machinesPath });
+	breadcrumb.set({ parents: [], current: dynamicPaths.machines(page.params.scope) });
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);

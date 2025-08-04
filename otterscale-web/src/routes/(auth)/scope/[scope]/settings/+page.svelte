@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { homePath, settingsPath } from '$lib/path';
+	import { page } from '$app/state';
+	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [homePath], current: settingsPath });
+	breadcrumb.set({ parents: [], current: dynamicPaths.settings(page.params.scope) });
 </script>
 
 {#if $activeScope}

@@ -1,14 +1,18 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+	import { page } from '$app/state';
 	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
-	import { settingsPath, settingsSubscriptionPath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb, premiumTier } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [settingsPath], current: settingsSubscriptionPath });
+	breadcrumb.set({
+		parents: [dynamicPaths.settings(page.params.scope)],
+		current: dynamicPaths.settingsSubscription(page.params.scope)
+	});
 
 	// Tier configurations
 	const tiers = [

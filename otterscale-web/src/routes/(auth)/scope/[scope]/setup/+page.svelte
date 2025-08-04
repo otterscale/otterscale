@@ -1,275 +1,213 @@
 <script lang="ts">
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { fly } from 'svelte/transition';
-	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { env } from '$env/dynamic/public';
-	import {
-		EnvironmentService,
-		type WatchStatusResponse
-	} from '$lib/api/environment/v1/environment_pb';
+	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import * as Code from '$lib/components/custom/code';
+	import * as Card from '$lib/components/ui/card';
+	import * as Carousel from '$lib/components/ui/carousel';
+	import type { CarouselAPI } from '$lib/components/ui/carousel/context.js';
+	import { Label } from '$lib/components/ui/label';
 	import { m } from '$lib/paraglide/messages';
-	import {
-		applicationsPath,
-		databasesPath,
-		getIconFromUrl,
-		getPath,
-		homePath,
-		machinesPath,
-		modelsPath,
-		settingsPath,
-		setupPath,
-		storagePath
-	} from '$lib/path';
-	import { breadcrumb, triggerUpdateScopes } from '$lib/stores';
-
-	// Constants
-	const INSTALL_CODE = `sh -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh" -- url=${env.PUBLIC_API_URL})`;
-	const RETRY_DELAY = 2000;
-
-	const SERVICES = [
-		{ url: modelsPath, description: m.models_description() },
-		{ url: databasesPath, description: m.databases_description() },
-		{ url: applicationsPath, description: m.applications_description() },
-		{ url: storagePath, description: m.storage_description() },
-		{ url: machinesPath, description: m.machines_description() },
-		{ url: settingsPath, description: m.settings_description() }
-	];
-
-	// Types
-	interface SetupState {
-		started: boolean;
-		finished: boolean;
-		messages: WatchStatusResponse[];
-	}
-
-	// State
-	const statusStore = writable<SetupState>({ started: false, finished: false, messages: [] });
-	const { started, finished, messages } = $derived($statusStore);
-
-	let terminal: HTMLDivElement | undefined = $state();
-	let mounted = $state(false);
-
-	// Context
-	const transport: Transport = getContext('transport');
-	const environmentClient = createClient(EnvironmentService, transport);
+	import { dynamicPaths } from '$lib/path';
+	import AdvancedTierImage from '$lib/assets/advanced-tier.jpg';
+	import BasicTierImage from '$lib/assets/basic-tier.jpg';
+	import EnterpriseTierImage from '$lib/assets/enterprise-tier.jpg';
+	import { breadcrumb, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
+	import { page } from '$app/state';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [homePath], current: setupPath });
-
-	// Functions
-	function scrollToBottom() {
-		if (terminal) {
-			terminal.scrollTop = terminal.scrollHeight;
-		}
-	}
-
-	async function watchStatus() {
-		while (true) {
-			try {
-				for await (const status of environmentClient.watchStatus({})) {
-					statusStore.update((state) => ({
-						...state,
-						started: status.started,
-						finished: status.finished,
-						messages: [...state.messages, status]
-					}));
-				}
-				break;
-			} catch (error) {
-				console.error('Error watching statuses:', error);
-				await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
-			}
-		}
-	}
-
-	// Lifecycle
-	onMount(async () => {
-		await watchStatus();
+	breadcrumb.set({
+		parents: [],
+		current: dynamicPaths.setupScope(page.params.scope)
 	});
 
-	// Effects
+	let api = $state<CarouselAPI>();
+
+	let current = $state(0);
 	$effect(() => {
-		mounted = messages.length > 0;
-		if (mounted) {
-			scrollToBottom();
-		}
-
-		if (finished) {
-			triggerUpdateScopes.set(true);
+		if (api) {
+			current = api.selectedScrollSnap() + 1;
+			api.on('select', () => {
+				current = api!.selectedScrollSnap() + 1;
+			});
 		}
 	});
+
+	interface Plan {
+		tier: string;
+		star: boolean;
+		name: string;
+		description: string;
+		tags: string[];
+		image: string;
+		disabled: boolean;
+	}
+
+	const plans: Plan[] = [
+		{
+			tier: m.basic_tier(),
+			star: false,
+			name: m.basic_tier_name(),
+			description: m.basic_tier_description(),
+			tags: ['Ceph', 'Kubernetes', m.single_node()],
+			image: BasicTierImage,
+			disabled: $premiumTier < PremiumTier.BASIC
+		},
+		{
+			tier: m.advanced_tier(),
+			star: true,
+			name: m.advanced_tier_name(),
+			description: m.advanced_tier_description(),
+			tags: ['Ceph', 'Multi-Node', m.multi_node(), m.cluster()],
+			image: AdvancedTierImage,
+			disabled: $premiumTier < PremiumTier.ADVANCED
+		},
+		{
+			tier: m.enterprise_tier(),
+			star: true,
+			name: m.enterprise_tier_name(),
+			description: m.enterprise_tier_description(),
+			tags: ['Ceph', 'Kubernetes', m.multi_node(), m.cluster()],
+			image: EnterpriseTierImage,
+			disabled: $premiumTier < PremiumTier.ENTERPRISE
+		}
+	];
 </script>
 
-<div class="flex flex-col items-center justify-center">
-	<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">
-		{m.setup_environment()}
-	</h2>
+<!-- just-in-time  -->
+<dummy class="bg-[#326de6]"></dummy>
+<dummy class="bg-[#f0424d]"></dummy>
 
-	{#if mounted}
-		{#if finished}
-			<!-- Completion View -->
-			<p class="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg">
-				{m.setup_environment_complete_description()}
-			</p>
+<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">{m.setup_scope()}</h2>
 
-			<div class="mx-auto max-w-4xl sm:mt-12">
-				<div class="grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2">
-					{#each SERVICES as service}
-						<div
-							class="group hover:border-primary/20 hover:bg-muted/50 flex items-center gap-4 rounded-lg border border-transparent p-3 transition-all duration-300"
-						>
-							<div class="bg-primary/10 rounded-full p-3">
-								<Icon icon={getIconFromUrl(service.url)} class="size-6" />
-							</div>
-							<div>
-								<h3 class="font-medium">{getPath(service.url).title}</h3>
-								<p class="text-muted-foreground text-sm">
-									{service.description}
-								</p>
-							</div>
-							<div class="ml-auto">
-								<a
-									href={service.url}
-									class="text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground inline-flex h-7 w-7 items-center justify-center rounded-full transition-colors"
-								>
-									<Icon icon="ph:arrow-right" class="size-4" />
-								</a>
-							</div>
+{#if $currentKubernetes || $currentCeph}
+	<p class="text-muted-foreground mt-4 text-center text-lg">
+		{m.setup_scope_configured_description()}
+	</p>
+	<div class="mx-auto max-w-5xl px-4 py-10 xl:px-0">
+		<div class="bg-card rounded-xl border shadow-sm">
+			<div class="rounded-xl p-4 lg:p-8">
+				<div class="grid min-w-2xl grid-cols-1 items-center gap-x-12 gap-y-20 sm:grid-cols-2">
+					<div
+						class="before:bg-border relative text-center before:absolute before:start-1/2 before:-top-full before:mt-3.5 before:h-20 before:w-px before:-translate-x-1/2 before:rotate-[60deg] before:transform before:shadow-sm first:before:hidden sm:before:-start-6 sm:before:top-1/2 sm:before:mt-0 sm:before:-translate-x-0 sm:before:-translate-y-1/2 sm:before:rotate-12"
+					>
+						<div class="space-y-2">
+							<Icon icon="simple-icons:ceph" class="mx-auto size-14 shrink-0 text-[#f0424d]" />
+							<h3 class="text-lg font-semibold sm:text-2xl">Ceph</h3>
 						</div>
-					{/each}
-				</div>
-
-				<div class="mt-12 text-center">
-					<Button href={homePath} class="inline-flex items-center gap-2">
-						{m.go_back_to_home()}
-					</Button>
-				</div>
-			</div>
-		{:else if started}
-			<!-- Installation Progress View -->
-			<Button
-				class="text-muted-foreground mt-4 text-center text-lg"
-				variant="ghost"
-				size="lg"
-				disabled
-			>
-				<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
-				{m.setup_environment_installing()}
-			</Button>
-
-			<div
-				class="border-border dark bg-card text-card-foreground m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
-			>
-				<div class="flex border-b border-inherit p-4">
-					<div class="flex items-center gap-2">
-						<div class="size-3 rounded-full bg-[#ff605c]"></div>
-						<div class="size-3 rounded-full bg-[#ffbd44]"></div>
-						<div class="size-3 rounded-full bg-[#00ca4e]"></div>
+						<Button
+							href={dynamicPaths.setupScopeCeph(page.params.scope).url}
+							variant="ghost"
+							class="text-muted-foreground text-sm sm:text-base"
+						>
+							<Icon icon="ph:wrench" class="size-5" />
+							{$currentCeph ? $currentCeph.name : '-'}
+						</Button>
+					</div>
+					<div
+						class="before:bg-border relative text-center before:absolute before:start-1/2 before:-top-full before:mt-3.5 before:h-20 before:w-px before:-translate-x-1/2 before:rotate-[60deg] before:transform before:shadow-sm first:before:hidden sm:before:-start-6 sm:before:top-1/2 sm:before:mt-0 sm:before:-translate-x-0 sm:before:-translate-y-1/2 sm:before:rotate-12"
+					>
+						<div class="space-y-2">
+							<Icon
+								icon="simple-icons:kubernetes"
+								class="mx-auto size-14 shrink-0 text-[#326de6]"
+							/>
+							<h3 class="text-lg font-semibold sm:text-2xl">Kubernetes</h3>
+						</div>
+						<Button
+							href={dynamicPaths.setupScopeKubernetes(page.params.scope).url}
+							variant="ghost"
+							class="text-muted-foreground text-sm sm:text-base"
+						>
+							<Icon icon="ph:wrench" class="size-5" />
+							{$currentKubernetes ? $currentKubernetes.name : '-'}
+						</Button>
 					</div>
 				</div>
-				<div bind:this={terminal} class="h-[calc(100%-64px)] flex-col overflow-auto p-4">
-					{#each messages as msg, i}
-						{@const isLastMessage = messages.length === i + 1}
-						{@const iconName = isLastMessage ? 'ph:spinner-gap' : 'ph:check-bold'}
-						{@const iconClass = isLastMessage ? 'animate-spin' : ''}
-						{@const textClass = isLastMessage ? '' : 'text-green-500'}
-
-						{#if msg.message !== ''}
-							<span class="block" transition:fly={{ y: -5, duration: 500 }}>
-								<span class="flex space-x-1 {textClass}">
-									<Icon icon={iconName} class="size-5 {iconClass}" />
-									<span>[{msg.phase}] {msg.message}</span>
-								</span>
-							</span>
-						{/if}
-					{/each}
-				</div>
 			</div>
-		{:else}
-			<!-- Installation View -->
-			<Button
-				class="text-muted-foreground mt-4 text-center text-lg"
-				variant="ghost"
-				size="lg"
-				disabled
-			>
-				<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
-				{m.setup_environment_waiting()}
-			</Button>
+		</div>
+	</div>
+{:else}
+	<p class="text-muted-foreground mt-4 text-center text-lg">
+		{m.setup_scope_not_configured_description()}
+	</p>
+	<div class="mx-auto w-full max-w-5xl px-4 py-10 xl:px-0">
+		<Carousel.Root setApi={(emblaApi) => (api = emblaApi)} class="w-full">
+			<Carousel.Content>
+				{#each plans as plan}
+					<Carousel.Item>
+						<Card.Root class="relative aspect-[21/9] overflow-hidden rounded-xl shadow-none">
+							<Card.Content class="flex items-center justify-center">
+								<div class="absolute inset-0 transition-transform duration-500 ease-out">
+									<div class="absolute inset-0">
+										<img src={plan.image} alt={plan.name} class="object-cover" />
+										<div
+											class="from-background/90 via-background/50 absolute inset-0 bg-gradient-to-r to-transparent"
+										></div>
+									</div>
 
-			<div class="relative mx-auto flex w-full max-w-6xl flex-grow flex-col sm:mt-48">
-				<p class="text-muted-foreground mt-4 text-center text-lg">
-					{m.setup_environment_curl_description()}
-				</p>
+									<div class="absolute top-12 left-12 flex min-h-76 flex-col justify-between">
+										<div class="flex max-w-2xl flex-col space-y-4">
+											<Badge
+												variant="secondary"
+												class="bg-primary/10 text-primary flex items-center uppercase"
+											>
+												{#if plan.star}
+													<Icon icon="ph:star-fill" class="text-yellow-500" />
+												{/if}
+												<span>{plan.tier}</span>
+											</Badge>
 
-				<div class="w-full p-6">
-					<Code.Root lang="bash" class="w-full" variant="secondary" code={INSTALL_CODE} hideLines>
-						<Code.CopyButton />
-					</Code.Root>
-				</div>
+											<h2 class="text-3xl font-semibold tracking-tight">{plan.name}</h2>
+											<p class="text-accent-foreground/80 text-md">{plan.description}</p>
 
-				<!-- Decorative elements -->
-				<div class="absolute end-0 top-0 hidden translate-x-20 -translate-y-12 md:block">
-					<svg
-						class="h-auto w-16 text-orange-500"
-						width={121}
-						height={135}
-						viewBox="0 0 121 135"
-						fill="none"
-					>
-						<path
-							d="M5 16.4754C11.7688 27.4499 21.2452 57.3224 5 89.0164"
-							stroke="currentColor"
-							stroke-width={10}
-							stroke-linecap="round"
-						/>
-						<path
-							d="M33.6761 112.104C44.6984 98.1239 74.2618 57.6776 83.4821 5"
-							stroke="currentColor"
-							stroke-width={10}
-							stroke-linecap="round"
-						/>
-						<path
-							d="M50.5525 130C68.2064 127.495 110.731 117.541 116 78.0874"
-							stroke="currentColor"
-							stroke-width={10}
-							stroke-linecap="round"
-						/>
-					</svg>
-				</div>
+											<div class="flex flex-wrap gap-2">
+												{#each plan.tags as tag}
+													<Badge variant="outline" class="bg-background/50 backdrop-blur-sm">
+														{tag}
+													</Badge>
+												{/each}
+											</div>
+										</div>
 
-				<div class="absolute start-0 bottom-0 hidden -translate-x-32 translate-y-10 md:block">
-					<svg
-						class="h-auto w-40 text-cyan-500"
-						width={347}
-						height={188}
-						viewBox="0 0 347 188"
-						fill="none"
-					>
-						<path
-							d="M4 82.4591C54.7956 92.8751 30.9771 162.782 68.2065 181.385C112.642 203.59 127.943 78.57 122.161 25.5053C120.504 2.2376 93.4028 -8.11128 89.7468 25.5053C85.8633 61.2125 130.186 199.678 180.982 146.248L214.898 107.02C224.322 95.4118 242.9 79.2851 258.6 107.02C274.299 134.754 299.315 125.589 309.861 117.539L343 93.4426"
-							stroke="currentColor"
-							stroke-width={7}
-							stroke-linecap="round"
-						/>
-					</svg>
-				</div>
+										<div class="space-y-2 pt-4">
+											{#if plan.disabled}
+												<Label for="install" class="text-red-500">
+													<Icon icon="ph:info" />
+													{m.requires_subscription()}
+												</Label>
+											{/if}
+											<Button id="install" size="lg" disabled={plan.disabled}>
+												<Icon icon="ph:download-bold" />
+												{m.install()}
+											</Button>
+										</div>
+									</div>
+								</div>
+							</Card.Content>
+						</Card.Root>
+					</Carousel.Item>
+				{/each}
+			</Carousel.Content>
+
+			<!-- Navigation dots -->
+			<div class="absolute bottom-10 left-12 flex items-center space-x-2">
+				{#each plans as _, index}
+					<button
+						onclick={() => api?.scrollTo(index)}
+						aria-label="Go to slide {index + 1}"
+						class="size-2 rounded-full transition-all {index + 1 === current
+							? 'bg-primary w-6'
+							: 'bg-primary/30 hover:bg-primary/50'}"
+					></button>
+				{/each}
 			</div>
-		{/if}
-	{:else}
-		<!-- Loading View -->
-		<Button
-			class="text-muted-foreground mt-4 text-center text-lg"
-			variant="ghost"
-			size="lg"
-			disabled
-		>
-			<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
-			{m.setup_environment_loading()}
-		</Button>
-	{/if}
-</div>
+
+			<!-- Previous/Next buttons -->
+			<div class="absolute right-16 bottom-12 flex items-center">
+				<Carousel.Previous class="top-1/2 -left-12 rounded-md" />
+				<Carousel.Next class="top-1/2 -right-6 rounded-md" />
+			</div>
+		</Carousel.Root>
+	</div>
+{/if}

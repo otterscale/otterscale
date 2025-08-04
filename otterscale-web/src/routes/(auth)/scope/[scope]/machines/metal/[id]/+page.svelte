@@ -1,9 +1,16 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { Metal } from '$lib/components/machines/metal/data-table/metal';
-	import { machinesMetalPath, machinesPath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 
-	breadcrumb.set({ parents: [machinesPath], current: machinesMetalPath });
+	breadcrumb.set({
+		parents: [
+			dynamicPaths.machines(page.params.scope),
+			dynamicPaths.machinesMetal(page.params.scope)
+		],
+		current: { title: page.params.id, url: '' }
+	});
 </script>
 
 {#if $activeScope}
