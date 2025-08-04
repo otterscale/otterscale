@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import * as Alert from '$lib/components/ui/alert';
-	import { siteConfig } from '$lib/config/site';
 	import { m } from '$lib/paraglide/messages';
 	import { settingsNetworkPath, settingsPath } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
@@ -22,5 +21,5 @@
 
 <div class="pointer-events-none fixed inset-0 flex flex-col items-center justify-center">
 	<Icon icon="ph:barricade" class="text-9xl" />
-	{m.current_version({ version: siteConfig.version })}
+	{m.current_version({ version: import.meta.env.PACKAGE_VERSION })}
 </div>

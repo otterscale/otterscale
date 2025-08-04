@@ -2,11 +2,11 @@
 	import Icon from '@iconify/svelte';
 	import * as Alert from '$lib/components/ui/alert';
 	import { m } from '$lib/paraglide/messages';
-	import { settingsBISTPath, settingsPath } from '$lib/path';
+	import { storageObjectGatewayPath, storagePath } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [settingsPath], current: settingsBISTPath });
+	breadcrumb.set({ parents: [storagePath], current: storageObjectGatewayPath });
 </script>
 
 {#if $activeScope}

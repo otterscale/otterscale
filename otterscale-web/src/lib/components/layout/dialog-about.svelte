@@ -23,7 +23,9 @@
 			<Dialog.Title class="flex items-center space-x-2">
 				<span>{siteConfig.title}</span>
 				<Icon icon="ph:git-commit-bold" class="text-muted-foreground" />
-				<span class="text-muted-foreground text-sm font-semibold">{siteConfig.version}</span>
+				<span class="text-muted-foreground text-sm font-semibold">
+					{import.meta.env.PACKAGE_VERSION}
+				</span>
 			</Dialog.Title>
 			<Dialog.Description>{siteConfig.description}</Dialog.Description>
 		</Dialog.Header>
