@@ -1,0 +1,282 @@
+edition = "2023";
+
+package otterscale.kubevirt.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/openhdc/otterscale/api/kubevirt/v1;pb";
+
+// Virtual Machine Management Service for KubeVirt
+service KubeVirtService {
+  // Virtual Machine Operations
+  rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse);
+  rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
+  rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
+  rpc UpdateVirtualMachine(UpdateVirtualMachineRequest) returns (VirtualMachine);
+  rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty);
+  // Virtual Machine Control Operations
+  rpc StartVirtualMachine(StartVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc StopVirtualMachine(StopVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc PauseVirtualMachine(PauseVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc UnpauseVirtualMachine(UnpauseVirtualMachineRequest) returns (google.protobuf.Empty);
+  // Virtual Machine Advanced Operations
+  rpc CloneVirtualMachine(CloneVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc SnapshotVirtualMachine(SnapshotVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc RestoreVirtualMachine(RestoreVirtualMachineRequest) returns (google.protobuf.Empty);
+  rpc MigrateVirtualMachine(MigrateVirtualMachineRequest) returns (google.protobuf.Empty);
+  // Data Volume Operations
+  rpc CreateDataVolume(CreateDataVolumeRequest) returns (DataVolume);
+  rpc GetDataVolume(GetDataVolumeRequest) returns (DataVolume);
+  rpc ListDataVolumes(ListDataVolumesRequest) returns (ListDataVolumesResponse);
+  rpc DeleteDataVolume(DeleteDataVolumeRequest) returns (google.protobuf.Empty);
+  rpc ExtendDataVolume(ExtendDataVolumeRequest) returns (google.protobuf.Empty);
+  // Network Operations
+  rpc CreateNetwork(CreateNetworkRequest) returns (Network);
+  rpc GetNetwork(GetNetworkRequest) returns (Network);
+  rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);
+  rpc UpdateNetwork(UpdateNetworkRequest) returns (Network);
+  rpc DeleteNetwork(DeleteNetworkRequest) returns (google.protobuf.Empty);
+  // Flavor Operations
+  rpc CreateFlavor(CreateFlavorRequest) returns (Flavor);
+  rpc GetFlavor(GetFlavorRequest) returns (Flavor);
+  rpc ListFlavors(ListFlavorsRequest) returns (ListFlavorsResponse);
+  rpc DeleteFlavor(DeleteFlavorRequest) returns (google.protobuf.Empty);
+}
+
+// Common messages
+message Metadata {
+  string name = 1;
+  string namespace = 2;
+  map<string, string> labels = 3;
+  map<string, string> annotations = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+// Virtual Machine messages
+message VirtualMachine {
+  enum VirtualMachineStatus {
+    UNSPECIFIED = 0;
+    PROVISIONING = 1;
+    STARTING = 2;
+    RUNNING = 3;
+    TERMINATING = 4;
+    STOPPED = 5;
+    PAUSED = 6;
+    MIGRATING = 7;
+  }
+  message Operation{
+    message OperationResult {
+      enum OperationStatus {
+        OPERATION_STATUS_UNSPECIFIED = 0;
+        OPERATION_STATUS_IN_PROGRESS = 1;
+        OPERATION_STATUS_SUCCEEDED = 2;
+        OPERATION_STATUS_FAILED = 3;
+      }
+      OperationStatus status = 1;
+      string message = 2;
+      string reason = 3;
+    }
+    string name = 1;
+    string type = 2;
+    string description = 3;
+    google.protobuf.Timestamp create_time = 4;
+    OperationResult status = 11;
+  }
+
+  Metadata metadata = 1;
+  VirtualMachineSpec spec = 11;
+  VirtualMachineStatus status = 12;
+  repeated Operation snapshots = 21;
+  repeated Operation clones = 22;
+  repeated Operation migrates = 23;
+  repeated Operation restores = 24;
+}
+
+message VirtualMachineSpec {
+  string flavor_name = 1;
+  string network_name = 2;
+  string startup_script = 3;
+  repeated string data_volumes = 11;
+  // use, pcie, disk ...
+  repeated Device devices = 12;
+}
+
+// Resource definitions
+message Flavor {
+  Metadata metadata = 1;
+  float cpu_cores = 2;
+  int64 memory_bytes = 3;
+}
+
+message DataVolume {
+  Metadata metadata = 1;
+  string source = 2;
+  string type = 3;
+  int64 size_bytes = 4;
+}
+
+message Network {
+  Metadata metadata = 1;
+  string service_type = 2;
+  int32 port = 3;
+  int32 node_port = 4;
+  int32 container_port = 5;
+}
+
+message Device {
+  string name = 1;
+  string type = 2;
+}
+
+// Request/Response messages
+message ListVirtualMachinesRequest {
+  string namespace = 1;
+}
+
+message ListVirtualMachinesResponse {
+  repeated VirtualMachine items = 1;
+}
+
+message GetVirtualMachineRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message CreateVirtualMachineRequest {
+  Metadata metadata = 2;
+  VirtualMachineSpec spec = 1;
+}
+
+message UpdateVirtualMachineRequest {
+  Metadata metadata = 2;
+  VirtualMachineSpec spec = 3;
+}
+
+message DeleteVirtualMachineRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message StartVirtualMachineRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message StopVirtualMachineRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message PauseVirtualMachineRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message UnpauseVirtualMachineRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message SnapshotVirtualMachineRequest {
+  string name = 1;
+  string namespace = 2;
+  string snapshot_name = 3;
+}
+
+message CloneVirtualMachineRequest {
+  string target_name = 1;
+  string target_namespace = 2;
+  string source_name = 3;
+  string source_namespace = 4;
+}
+
+message RestoreVirtualMachineRequest {
+  string name = 1;
+  string namespace = 2;
+  string snapshot_name = 3;
+}
+
+message MigrateVirtualMachineRequest {
+  string name = 1;
+  string namespace = 2;
+  // [TODO]
+  string target_node = 3;
+}
+
+message CreateDataVolumeRequest {
+  DataVolume data_volume = 1;
+}
+
+message ListDataVolumesRequest {
+  string namespace = 1;
+}
+
+message ListDataVolumesResponse {
+  repeated DataVolume items = 1;
+}
+
+message GetDataVolumeRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message DeleteDataVolumeRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message ExtendDataVolumeRequest {
+  string name = 1;
+  string namespace = 2;
+  int64 size_bytes = 3;
+}
+
+message CreateNetworkRequest {
+  Network network = 1;
+}
+
+message ListNetworksRequest {
+  string namespace = 1;
+}
+
+message ListNetworksResponse {
+  repeated Network items = 1;
+}
+
+message GetNetworkRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message UpdateNetworkRequest {
+  Network network = 1;
+}
+
+message DeleteNetworkRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message CreateFlavorRequest {
+  Flavor flavor = 1;
+}
+
+message ListFlavorsRequest {
+  string namespace = 1;
+}
+
+message ListFlavorsResponse {
+  repeated Flavor items = 1;
+}
+
+message GetFlavorRequest {
+  string name = 1;
+  string namespace = 2;
+}
+
+message DeleteFlavorRequest {
+  string name = 1;
+  string namespace = 2;
+}
