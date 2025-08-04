@@ -8,6 +8,8 @@ export const contributorsPath = "https://github.com/otterscale/otterscale/graphs
 
 // Misc
 export const homePath = "/";
+export const scopesPath = "/scopes";
+export const scopePath = (scope: string): string => { return `/scope/${scope}` };
 export const privacyPolicyPath = "/privacy-policy";
 export const termsOfServicePath = "/terms-of-service";
 
