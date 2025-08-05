@@ -36,7 +36,7 @@
 				<Sidebar.MenuButton>
 					{#snippet child({ props })}
 						<a href={bookmark.url} {...props}>
-							<Icon icon={urlIcon(page.params.scope, bookmark.url)} />
+							<Icon icon={urlIcon(bookmark.url)} />
 							<span>{bookmark.title}</span>
 						</a>
 					{/snippet}
