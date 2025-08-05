@@ -5,8 +5,10 @@
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
+	import { cephPaths, kubernetesPaths } from '$lib/routes';
+	import { currentCeph, currentKubernetes } from '$lib/stores';
 
-	const cards = [
+	const cards = $derived([
 		{
 			background: 'bg-[#1c77c3]/30',
 			path: dynamicPaths.models(page.params.scope),
@@ -27,7 +29,14 @@
 			path: dynamicPaths.machines(page.params.scope),
 			description: m.machines_description()
 		}
-	];
+	]);
+
+	const disabled = (scope: string, url: string): boolean => {
+		return (
+			(!$currentCeph && cephPaths(scope).some((path) => path.url === url)) ||
+			(!$currentKubernetes && kubernetesPaths(scope).some((path) => path.url === url))
+		);
+	};
 </script>
 
 <!-- just-in-time  -->
@@ -45,7 +54,12 @@
 	<div class="mx-auto flex max-w-5xl px-4 xl:px-0">
 		<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
 			{#each cards as card}
-				<HomeCard background={card.background} path={card.path} description={card.description} />
+				<HomeCard
+					background={card.background}
+					path={card.path}
+					description={card.description}
+					disabled={disabled(page.params.scope, card.path.url)}
+				/>
 			{/each}
 		</div>
 	</div>
