@@ -1,15 +1,12 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { toast } from 'svelte-sonner';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { goto } from '$app/navigation';
-	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
-	import { authClient } from '$lib/auth-client';
-	import { Button } from '$lib/components/ui/button';
-	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, staticPaths } from '$lib/path';
 	import Icon from '@iconify/svelte';
+	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
+	import { scopeIcon } from '$lib/components/scopes/icon';
+	import { m } from '$lib/paraglide/messages';
+	import { dynamicPaths } from '$lib/path';
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
@@ -50,7 +47,10 @@
 				</div>
 				<div class="relative flex space-x-4 p-6">
 					<div class="bg-primary flex size-10 items-center justify-center rounded-lg">
-						<Icon icon="ph:airplane-tilt-fill" class="text-primary-foreground size-6" />
+						<Icon
+							icon="{scopeIcon($scopes.findIndex((s) => s.name === scope.name))}-fill"
+							class="text-primary-foreground size-6"
+						/>
 					</div>
 					<div class="flex flex-col">
 						<p class="text-muted-foreground text-xs tracking-wide uppercase">Scope</p>

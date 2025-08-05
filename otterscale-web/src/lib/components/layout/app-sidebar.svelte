@@ -19,7 +19,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths, staticPaths } from '$lib/path';
 	import { activeScope, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
-	import { bookmarks, cephPaths, kubernetesPaths, routes } from './routes';
+	import { bookmarks, cephPaths, kubernetesPaths, routes } from '$lib/routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
 	import NavSecondary from './nav-secondary.svelte';
@@ -87,20 +87,15 @@
 		const scope = $scopes[index];
 		if (!scope) return;
 
+		// Set store and fetch essentials
 		activeScope.set(scope);
-
 		await fetchEssentials(scope.uuid);
-		if (!$currentCeph && !$currentKubernetes) {
-			toast.info(m.scope_not_configured({ name: scope.name }), {
-				action: {
-					label: m.goto(),
-					onClick: () => goto(dynamicPaths.setupScope(page.params.scope).url)
-				}
-			});
-			goto(dynamicPaths.setupScope(page.params.scope).url);
-		} else {
-			toast.success(m.switch_scope({ name: scope.name }));
-		}
+
+		// Show success feedback
+		toast.success(m.switch_scope({ name: scope.name }));
+
+		// Navigate to scope
+		goto(dynamicPaths.scope(scope.name).url);
 	}
 
 	async function initialize() {
