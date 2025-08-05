@@ -1,10 +1,10 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { page } from '$app/state';
 	import { HomeCard, HomeCell } from '$lib/components/scopes';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
-	import Icon from '@iconify/svelte';
 
 	const cards = [
 		{
@@ -75,7 +75,7 @@
 					</div>
 				</div>
 				<div class="mx-auto mt-6 max-w-lg space-y-4 text-center sm:mt-0 sm:text-left">
-					<h2 class="text-3xl font-semibold text-balance md:text-4xl">
+					<h2 class="text-3xl font-semibold text-balance">
 						{m.home_integration()}
 					</h2>
 					<p class="text-muted-foreground">

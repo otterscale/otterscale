@@ -5,8 +5,8 @@
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { urlIcon, type Path } from '$lib/path';
+	import type { Route } from '$lib/routes';
 	import { currentCeph, currentKubernetes } from '$lib/stores';
-	import type { Route } from './routes';
 
 	let {
 		routes,
