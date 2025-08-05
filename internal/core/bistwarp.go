@@ -121,7 +121,7 @@ func (uc *BISTUseCase) warpJobSpec(target *WarpTargetExternal, input *WarpInput)
 		{Name: "BENCHMARK_ARGS_WARP_ACCESS_KEY", Value: target.AccessKey},
 		{Name: "BENCHMARK_ARGS_WARP_SECRET_KEY", Value: target.SecretKey},
 		{Name: "BENCHMARK_ARGS_WARP_ACTION", Value: input.Operation},
-		{Name: "BENCHMARK_ARGS_WARP_DURATION", Value: strconv.FormatInt(input.Duration, 10)},
+		{Name: "BENCHMARK_ARGS_WARP_DURATION", Value: strconv.FormatInt(input.Duration, 10) + "s"}, // with unit
 		{Name: "BENCHMARK_ARGS_WARP_CONCURRENT", Value: "2"},
 		{Name: "BENCHMARK_ARGS_WARP_OBJ.SIZE", Value: strconv.FormatInt(input.ObjectSize, 10)},
 	}
