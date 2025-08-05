@@ -52,11 +52,9 @@
 
 	<div class="bg-muted -mx-2 -my-4 hidden py-6 md:-mx-4 md:-my-6 md:py-8 lg:block">
 		<div class="mx-auto max-w-5xl px-6">
-			<div class="grid items-center sm:grid-cols-2">
+			<div class="grid items-center gap-4 sm:grid-cols-2">
 				<div class="dark:bg-muted/50 relative mx-auto w-fit">
-					<div
-						class="to-muted dark:to-background absolute inset-0 z-10 bg-radial from-transparent to-75%"
-					></div>
+					<div class="to-muted absolute inset-0 z-10 bg-radial from-transparent to-75%"></div>
 					<div class="mx-auto mb-2 flex w-fit justify-center gap-2">
 						<HomeCell icon="logos:postgresql" />
 						<HomeCell icon="ph:circle-dashed" color="#f0424d" />
@@ -70,7 +68,6 @@
 						<HomeCell icon="simple-icons:ceph" color="#f0424d" />
 						<HomeCell icon="simple-icons:minio" color="#c72c48" />
 					</div>
-
 					<div class="mx-auto flex w-fit justify-center gap-2">
 						<HomeCell icon="ph:circle-dashed" color="#326de6" />
 						<HomeCell icon="simple-icons:maas" color="#dd4813" />

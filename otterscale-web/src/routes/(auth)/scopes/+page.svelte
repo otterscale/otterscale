@@ -9,6 +9,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths, staticPaths } from '$lib/path';
+	import Icon from '@iconify/svelte';
 
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
@@ -26,25 +27,44 @@
 	onMount(fetchScopes);
 </script>
 
-<main class="flex flex-1 flex-col px-2 py-20 md:px-4 md:py-24">
-	SCOPE SELECTOR
+<svelte:head>
+	<title>{m.welcome_to({ name: 'OtterScale 🦦' })}</title>
+</svelte:head>
 
-	<div class="flex space-x-2">
+<main class="bg-muted flex min-h-svh flex-1 flex-col px-2 py-20 md:px-4 md:py-24">
+	<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">{m.scope_selector()}</h2>
+	<p class="text-muted-foreground mt-4 text-center text-lg">
+		{m.scope_selector_description()}
+	</p>
+
+	<div class="mx-auto grid gap-4 px-4 py-10 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 xl:px-0">
 		{#each $scopes as scope}
-			<Button href={dynamicPaths.scope(scope.name).url}>{scope.name}</Button>
+			<a
+				class="bg-card/50 group text-card-foreground relative flex cursor-pointer flex-col gap-6 overflow-hidden rounded-xl shadow-sm hover:shadow-md"
+				href={dynamicPaths.scope(scope.name).url}
+			>
+				<div
+					class="text-primary/5 absolute -top-4 -right-4 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+				>
+					{scope.name}
+				</div>
+				<div class="relative flex space-x-4 p-6">
+					<div class="bg-primary flex size-10 items-center justify-center rounded-lg">
+						<Icon icon="ph:airplane-tilt-fill" class="text-primary-foreground size-6" />
+					</div>
+					<div class="flex flex-col">
+						<p class="text-muted-foreground text-xs tracking-wide uppercase">Scope</p>
+						<h3 class="text-xl font-medium tracking-wide sm:text-2xl">{scope.name}</h3>
+					</div>
+					<div class="ml-auto">
+						<div
+							class="text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground inline-flex size-10 items-center justify-center rounded-full transition-colors"
+						>
+							<Icon icon="ph:arrow-right" class="size-6" />
+						</div>
+					</div>
+				</div>
+			</a>
 		{/each}
-
-		<Button
-			onclick={() => {
-				authClient.signOut({
-					fetchOptions: {
-						onSuccess: () => {
-							toast.success(m.sign_out_success());
-							goto(staticPaths.login.url);
-						}
-					}
-				});
-			}}>LOGOUT</Button
-		>
 	</div>
 </main>

@@ -83,6 +83,8 @@
 	"login": "登入",
 	"sign_up": "註冊",
 	"scopes": "範疇",
+	"scope_selector": "選擇範疇",
+	"scope_selector_description": "請從以下選項中選擇您的範疇：",
 	"add_scope": "增加範疇",
 	"create_scope": "新增範疇",
 	"create_scope_description": "將使用者組織成具有特定權限的群組，資源在範疇之間是隔離的。",

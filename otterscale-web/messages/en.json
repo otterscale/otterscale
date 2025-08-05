@@ -82,6 +82,8 @@
 	"password": "Password",
 	"login": "Login",
 	"sign_up": "Sign Up",
+	"scope_selector": "Select Scope",
+	"scope_selector_description": "Please select your scope from the following:",
 	"scopes": "Scopes",
 	"add_scope": "Add scope",
 	"create_scope": "Create Scope",
