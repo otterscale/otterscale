@@ -57,18 +57,17 @@ export const dynamicPaths = {
 
 // Icon mapping
 const ICON_MAP = new Map([
-    ['models', 'ph:robot'],
-    ['databases', 'ph:database'],
-    ['applications', 'ph:compass'],
-    ['storage', 'ph:hard-drives'],
-    ['machines', 'ph:computer-tower'],
-    ['settings', 'ph:sliders-horizontal']
+    ['/models', 'ph:robot'],
+    ['/databases', 'ph:database'],
+    ['/applications', 'ph:compass'],
+    ['/storage', 'ph:hard-drives'],
+    ['/machines', 'ph:computer-tower'],
+    ['/settings', 'ph:sliders-horizontal']
 ]);
 
-export function urlIcon(scope: string, url: string): string {
+export function urlIcon(url: string): string {
     for (const [section, icon] of ICON_MAP) {
-        const sectionPath = dynamicPaths[section as keyof typeof dynamicPaths](scope);
-        if (url.startsWith(sectionPath.url)) {
+        if (url.endsWith(section)) {
             return icon;
         }
     }
