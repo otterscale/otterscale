@@ -309,7 +309,7 @@
 						operation: warpOperation,
 						durationSeconds: BigInt(warpDuration),
 						objectSizeBytes: BigInt(warpObjectSize),
-						objectCount: warpOperation === Warp_Input_Operation.PUT ? "" : BigInt(warpObjectCount)
+						objectCount: warpOperation === Warp_Input_Operation.PUT ? 0n : BigInt(warpObjectCount)
 					} as Warp_Input;
 					request.kind.value = requestWarp;
 					// request
