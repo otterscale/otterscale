@@ -203,7 +203,7 @@
 							<!-- fioInputeAccessMode -->
 							<Form.Field>
 								<Form.Label for="fio-access-mode">Access Mode</Form.Label>
-								<SingleSelect.Root options={fioInputeAccessMode} bind:value={fioAccessMode}>
+								<SingleSelect.Root options={fioInputeAccessMode} required bind:value={fioAccessMode}>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>

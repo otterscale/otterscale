@@ -194,7 +194,7 @@
 							<!-- warpInputOperation -->
 							<Form.Field>
 								<Form.Label for="warp-operation">Operation</Form.Label>
-								<SingleSelect.Root options={warpInputOperation} bind:value={warpOperation}>
+								<SingleSelect.Root options={warpInputOperation} required bind:value={warpOperation}>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -249,7 +249,12 @@
 							<!-- ObjectCount -->
 							<Form.Field>
 								<Form.Label>Object Count</Form.Label>
-								<SingleInput.General type="number" placeholder="500" bind:value={warpObjectCount}/>
+								<SingleInput.General
+									type="number"
+									placeholder="500"
+									bind:value={warpObjectCount}
+									disabled={warpOperation == Warp_Input_Operation.PUT}
+								/>
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
@@ -281,7 +286,9 @@
 							<Form.Description>Operation: {Warp_Input_Operation[warpOperation]}</Form.Description>
 							<Form.Description>Duration: {duration.value} {duration.unit}</Form.Description>
 							<Form.Description>Object Size: {objectSize.value} {objectSize.unit}</Form.Description>
-							<Form.Description>Object Count: {warpObjectCount}</Form.Description>
+							{#if warpOperation !== Warp_Input_Operation.PUT}
+								<Form.Description>Object Count: {warpObjectCount}</Form.Description>
+							{/if}
 						</Form.Fieldset>
 					</Form.Root>
 				</MultipleStepModal.Model>
@@ -302,7 +309,7 @@
 						operation: warpOperation,
 						durationSeconds: BigInt(warpDuration),
 						objectSizeBytes: BigInt(warpObjectSize),
-						objectCount: BigInt(warpObjectCount)
+						objectCount: warpOperation === Warp_Input_Operation.PUT ? "" : BigInt(warpObjectCount)
 					} as Warp_Input;
 					request.kind.value = requestWarp;
 					// request
