@@ -128,7 +128,7 @@
 									class="group hover:border-primary/20 hover:bg-muted/50 flex items-center gap-4 rounded-lg border border-transparent p-3 transition-all duration-300"
 								>
 									<div class="bg-primary/10 rounded-full p-3">
-										<Icon icon={urlIcon($scopes[0].name, service.path.url)} class="size-6" />
+										<Icon icon={urlIcon(service.path.url)} class="size-6" />
 									</div>
 									<div>
 										<h3 class="font-medium">{service.path.title}</h3>

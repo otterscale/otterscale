@@ -37,7 +37,7 @@
 						>
 							{#snippet child({ props })}
 								<a href={route.path.url} {...props}>
-									<Icon icon={urlIcon(page.params.scope, route.path.url)} />
+									<Icon icon={urlIcon(route.path.url)} />
 									<span>{route.path.title}</span>
 								</a>
 							{/snippet}
