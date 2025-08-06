@@ -35,6 +35,15 @@ OTTERSCALE_MAX_RETRIES=5
 # Canonical charmhub URL
 OTTERSCALE_CHARMHUB_URL="https://api.charmhub.io"
 
+## Current directory
+export OTTERSCALE_INSTALL_DIR=$(dirname "$(readlink -f $0)")
+
+## LOG
+export TEMP_LOG=$(mktemp)
+export LOG=$OTTERSCALE_INSTALL_DIR/setup.log
+touch $LOG
+chmod 666 $LOG
+
 
 apt_update() {
     log "INFO" "Executing command apt update..." "APT update"
@@ -150,7 +159,8 @@ juju_clouds() {
     if su "$NON_ROOT_USER" -c 'juju clouds 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
         log "WARN" "JuJu cloud maas-cloud already exists, skipping created..." "JuJu clouds"
     else
-        juju_cmd "juju add-cloud maas-cloud $JUJU_CLOUD" "add juju cloud"
+        #su "$NON_ROOT_USER" -c 'juju add-cloud maas-cloud $JUJU_CLOUD --client --debug'
+        juju_cmd "juju add-cloud maas-cloud $JUJU_CLOUD --client --debug" "add juju cloud"
     fi
 }
 
@@ -161,7 +171,7 @@ juju_credentials() {
     if su "$NON_ROOT_USER" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
         log "WARN" "JuJu Credential maas-cloud already exists, skipping created..." "JuJu credentials"
     else
-        juju_cmd "juju add-credential maas-cloud -f $JUJU_CREDENTIAL" "add credential"
+        juju_cmd "juju add-credential maas-cloud -f $JUJU_CREDENTIAL --controller maas-cloud-controller --client --debug" "add juju credential"
     fi
 }
 
@@ -182,17 +192,17 @@ is_machine_deployed() {
 # Juju bootstrap with validation
 bootstrap_juju() {
     su "$NON_ROOT_USER" -c 'mkdir -p ~/.local/share/juju'
-    su "$NON_ROOT_USER" -c 'mkdir -p ~/ottersacle'
+    su "$NON_ROOT_USER" -c 'mkdir -p ~/otterscale'
 
-    export JUJU_CLOUD=/home/$NON_ROOT_USER/ottersacle/cloud.yaml
-    export JUJU_CREDENTIAL=/home/$NON_ROOT_USER/ottersacle/credential.yaml
+    export JUJU_CLOUD=/home/$NON_ROOT_USER/otterscale/cloud.yaml
+    export JUJU_CREDENTIAL=/home/$NON_ROOT_USER/otterscale/credential.yaml
     export OTTERSCALE_INTERFACE_IP=$OTTERSCALE_INTERFACE_IP
     export APIKEY=$APIKEY
 
     juju_clouds
     juju_credentials
 
-    rm -rf /home/$NON_ROOT_USER/ottersacle
+    rm -rf /home/$NON_ROOT_USER/otterscale
     unset JUJU_CLOUD
     unset JUJU_CREDENTIAL
     unset APIKEY
@@ -401,7 +411,7 @@ init_maas() {
 create_maas_admin() {
     log "INFO" "Creating MAAS admin user..." "MAAS init"
     if maas apikey --username "$OTTERSCALE_MAAS_ADMIN_USER" >/dev/null 2>&1; then
-        log "WARN" "Admin user '$OTTERSCALE_MAAS_ADMIN_USER' already exists. Using existing credentials" "MAAS init"
+        log "INFO" "Admin user '$OTTERSCALE_MAAS_ADMIN_USER' already exists. Using existing credentials" "MAAS init"
     else
         execute_cmd "maas createadmin --username $OTTERSCALE_MAAS_ADMIN_USER --password $OTTERSCALE_MAAS_ADMIN_PASS --email $OTTERSCALE_MAAS_ADMIN_EMAIL" "create MAAS admin user"
     fi
@@ -619,7 +629,7 @@ search_available_vmhost() {
            [ $(echo "$AVAILABLE_MEMORY_GB >= 4" | bc -l) -eq 1 ] && \
            [ $(echo "$AVAILABLE_DISK_GB >= 8" | bc -l) -eq 1 ]; then
             log "INFO" "Using existing VM host $VM_HOST_ID with sufficient resources" "MAAS vmhost create"
-            log "DEBUG" "Available resources - Cores: $AVAILABLE_CORES, Memory: ${AVAILABLE_MEMORY_GB}GB, Disk: ${AVAILABLE_DISK_GB}GB" "MAAS vmhost create"
+            log "INFO" "Available resources - Cores: $AVAILABLE_CORES, Memory: ${AVAILABLE_MEMORY_GB}GB, Disk: ${AVAILABLE_DISK_GB}GB" "MAAS vmhost create"
             return 0
         fi
     done < <(echo "$MAAS_VM_HOSTS" | jq -c '.[]')
@@ -1249,15 +1259,6 @@ config_modules() {
     fi
 }
 
-
-## Current directory
-export OTTERSCALE_INSTALL_DIR=$(dirname "$(readlink -f $0)")
-
-## LOG
-export TEMP_LOG=$(mktemp)
-export LOG=$OTTERSCALE_INSTALL_DIR/setup.log
-touch $LOG
-chmod 666 $LOG
 
 ## without parameter
 if [[ $# -eq 0 ]]; then

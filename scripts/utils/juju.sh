@@ -71,17 +71,17 @@ is_machine_deployed() {
 # Juju bootstrap with validation
 bootstrap_juju() {
     su "$NON_ROOT_USER" -c 'mkdir -p ~/.local/share/juju'
-    su "$NON_ROOT_USER" -c 'mkdir -p ~/ottersacle'
+    su "$NON_ROOT_USER" -c 'mkdir -p ~/otterscale'
 
-    export JUJU_CLOUD=/home/$NON_ROOT_USER/ottersacle/cloud.yaml
-    export JUJU_CREDENTIAL=/home/$NON_ROOT_USER/ottersacle/credential.yaml
+    export JUJU_CLOUD=/home/$NON_ROOT_USER/otterscale/cloud.yaml
+    export JUJU_CREDENTIAL=/home/$NON_ROOT_USER/otterscale/credential.yaml
     export OTTERSCALE_INTERFACE_IP=$OTTERSCALE_INTERFACE_IP
     export APIKEY=$APIKEY
 
     juju_clouds
     juju_credentials
 
-    rm -rf /home/$NON_ROOT_USER/ottersacle
+    rm -rf /home/$NON_ROOT_USER/otterscale
     unset JUJU_CLOUD
     unset JUJU_CREDENTIAL
     unset APIKEY
