@@ -45,6 +45,7 @@
 	"documentation": "Documentation",
 	"about": "About",
 	"changelog": "Changelog",
+	"changelog_description": "View the latest updates, improvements, and fixes",
 	"account": "Account",
 	"notifications": "Notifications",
 	"light_mode": "Light Mode",
