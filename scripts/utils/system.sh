@@ -109,7 +109,7 @@ validate_system() {
 config_modules() {
     local MODULE=rbd
     local MODULES_FILE="/etc/modules"
-    if ! if ! grep -q "^$MODULE$" "$MODULES_FILE"; then
+    if ! grep -q "^$MODULE$" "$MODULES_FILE"; then
         echo "$MODULE" >> "$MODULES_FILE"
     fi
 }
