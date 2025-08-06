@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APT_PACKAGES="jq openssh-server bridge-utils openvswitch-switch"
+APT_PACKAGES="jq openssh-server"
 SNAP_PACKAGES="core24 maas maas-test-db juju lxd microk8s"
 
 log() {
