@@ -1,7 +1,7 @@
 {
 	"name": "otterscale-web",
 	"private": true,
-	"version": "v1.0.0-beta.3",
+	"version": "v1.0.0-beta.4",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -77,6 +77,7 @@
 		"@connectrpc/connect-web": "^2.0.2",
 		"@iconify/svelte": "^5.0.0",
 		"@inlang/paraglide-js": "^2.0.0",
+		"@octokit/core": "^7.0.3",
 		"@shikijs/langs": "^3.8.1",
 		"@shikijs/themes": "^3.8.1",
 		"better-auth": "^1.2.12",
