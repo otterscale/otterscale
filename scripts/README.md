@@ -10,7 +10,7 @@ Before starting the installation process, ensure the following prerequisites are
 
 2. **Run the Installation Script with Configuration File**
    ```bash
-   $ curl -L http://REMOTE_IP/otterscale/install.sh | sudo bash -s -- --config=~/install.cfg
+   $ curl -L https://github.com/openhdc/otterscale/blob/main/scripts/install.sh | sudo bash -s -- --config=~/install.cfg
    ```
 
 ## Interactive Installation
