@@ -1,7 +1,7 @@
 {
 	"name": "otterscale-web",
 	"private": true,
-	"version": "0.0.1",
+	"version": "v1.0.0-beta.3",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -67,6 +67,7 @@
 		"vaul-svelte": "1.0.0-next.7",
 		"vite": "^6.2.6",
 		"vite-plugin-devtools-json": "^0.2.0",
+		"vite-plugin-package-version": "^1.1.0",
 		"vitest": "^3.2.3",
 		"vitest-browser-svelte": "^0.1.0"
 	},

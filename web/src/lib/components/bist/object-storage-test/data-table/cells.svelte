@@ -6,6 +6,7 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
+	import { formatByte, formatSecond } from '$lib/formatter';
 
 	export const cells = {
 		_row_picker: _row_picker,
@@ -84,14 +85,16 @@
 {#snippet duration(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'warp' &&  row.original.kind.value?.input}
-			{row.original.kind.value.input.duration}
+			{@const formatted = formatSecond(Number(row.original.kind.value?.input.durationSeconds))}
+			{formatted.value} {formatted.unit}
         {/if}
 	</p>
 {/snippet}
 {#snippet objectSize(row: Row<TestResult>)}
 	<p>
 		{#if row.original.kind.case === 'warp' &&  row.original.kind.value?.input}
-			{row.original.kind.value.input.objectSize}
+            {@const formatted = formatByte(Number(row.original.kind.value?.input.objectSizeBytes))}
+            {formatted.value} {formatted.unit}
         {/if}
 	</p>
 {/snippet}

@@ -14,6 +14,7 @@
 	import { getContext, type Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
+	import { formatByte, formatSecond } from '$lib/formatter';
 
 	// FIO Target
 	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([
@@ -58,7 +59,7 @@
         : {} as NetworkFileSystem;
 	const DEFAULT_FIO_INPUT = testResult && testResult.kind.value?.input
     ? testResult.kind.value.input as FIO_Input
-	: { jobCount: "32", runTime: "100", blockSize: "4k", fileSize: "1G", ioDepth: "1" } as unknown as FIO_Input; 
+	: { jobCount: 32, runTimeSeconds: 60, blockSizeBytes: 4096, fileSizeBytes: 1024 * 1024 * 1024, ioDepth: 1 } as unknown as FIO_Input; 
     let selectedScope = $state(
         testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
             ? testResult.kind.value.target.value?.scopeUuid ?? ''
@@ -75,9 +76,9 @@
 	let requestNetworkFileSystem: NetworkFileSystem = $state(DEFAULT_NETWORK_FILE_SYSTEM);
 	let fioAccessMode = $state(DEFAULT_FIO_INPUT.accessMode);
 	let fioJobCount = $state(DEFAULT_FIO_INPUT.jobCount);
-	let fioRunTime = $state(DEFAULT_FIO_INPUT.runTime);
-	let fioBlockSize = $state(DEFAULT_FIO_INPUT.blockSize);
-	let fioFileSize = $state(DEFAULT_FIO_INPUT.fileSize);
+	let fioRunTime = $state(DEFAULT_FIO_INPUT.runTimeSeconds);
+	let fioBlockSize = $state(DEFAULT_FIO_INPUT.blockSizeBytes);
+	let fioFileSize = $state(DEFAULT_FIO_INPUT.fileSizeBytes);
 	let fioIoDepth = $state(DEFAULT_FIO_INPUT.ioDepth);
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -86,9 +87,9 @@
 		requestNetworkFileSystem = DEFAULT_NETWORK_FILE_SYSTEM;
 		fioAccessMode = DEFAULT_FIO_INPUT.accessMode; 
 		fioJobCount = DEFAULT_FIO_INPUT.jobCount; 
-		fioRunTime = DEFAULT_FIO_INPUT.runTime; 
-		fioBlockSize = DEFAULT_FIO_INPUT.blockSize; 
-		fioFileSize = DEFAULT_FIO_INPUT.fileSize; 
+		fioRunTime = DEFAULT_FIO_INPUT.runTimeSeconds; 
+		fioBlockSize = DEFAULT_FIO_INPUT.blockSizeBytes; 
+		fioFileSize = DEFAULT_FIO_INPUT.fileSizeBytes; 
 		fioIoDepth = DEFAULT_FIO_INPUT.ioDepth; 
 	}
 
@@ -202,7 +203,7 @@
 							<!-- fioInputeAccessMode -->
 							<Form.Field>
 								<Form.Label for="fio-access-mode">Access Mode</Form.Label>
-								<SingleSelect.Root options={fioInputeAccessMode} bind:value={fioAccessMode}>
+								<SingleSelect.Root options={fioInputeAccessMode} required bind:value={fioAccessMode}>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -234,17 +235,45 @@
 							<!-- runTime -->
 							<Form.Field>
 								<Form.Label>Run Time</Form.Label>
-								<SingleInput.General type="text" placeholder="100" bind:value={fioRunTime}/>
+								<SingleInput.Measurement
+									bind:value={fioRunTime}
+									units={[
+										{ value: 1, label: 's' } as SingleInput.UnitType,
+										{ value: 60, label: 'm' } as SingleInput.UnitType,
+										{ value: 3600, label: 'h' } as SingleInput.UnitType,
+										{ value: 86400, label: 'd' } as SingleInput.UnitType
+									]}
+								/>
 							</Form.Field>
 							<!-- blockSize -->
 							<Form.Field>
 								<Form.Label>Block Size</Form.Label>
-								<SingleInput.General type="text" placeholder="4k" bind:value={fioBlockSize}/>
+								<SingleInput.Measurement
+									bind:value={fioBlockSize}
+									units={[
+										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+									]}
+								/>
 							</Form.Field>
 							<!-- fileSize -->
 							<Form.Field>
 								<Form.Label>File Size</Form.Label>
-								<SingleInput.General type="text" placeholder="1G" bind:value={fioFileSize}/>
+								<SingleInput.Measurement
+									bind:value={fioFileSize}
+									units={[
+										{ value: Math.pow(2, 10 * 0), label: 'B' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 1), label: 'KB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
+										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+									]}
+								/>
 							</Form.Field>
 							<!-- ioDepth -->
 							<Form.Field>
@@ -273,12 +302,15 @@
 						</Form.Fieldset>
 						<!-- Step 2 -->
 						<Form.Fieldset>
+							{@const runTime = formatSecond(Number(fioRunTime))}
+							{@const blockSize = formatByte(Number(fioBlockSize))}
+							{@const fileSize = formatByte(Number(fioFileSize))}
 							<Form.Legend>Step 2</Form.Legend>
 							<Form.Description>Access Mode: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description>
 							<Form.Description>Job Count: {fioJobCount}</Form.Description>
-							<Form.Description>Run Time: {fioRunTime}</Form.Description>
-							<Form.Description>Block Size: {fioBlockSize}</Form.Description>
-							<Form.Description>File Size: {fioFileSize}</Form.Description>
+							<Form.Description>Run Time: {runTime.value} {runTime.unit}</Form.Description>
+							<Form.Description>Block Size: {blockSize.value} {blockSize.unit}</Form.Description>
+							<Form.Description>File Size: {fileSize.value} {fileSize.unit}</Form.Description>
 							<Form.Description>I/O Depth: {fioIoDepth}</Form.Description>
 						</Form.Fieldset>
 					</Form.Root>
@@ -301,9 +333,9 @@
 					requestFio.input = {
 						accessMode: fioAccessMode,
 						jobCount: BigInt(fioJobCount),
-						runTime: fioRunTime,
-						blockSize: fioBlockSize,
-						fileSize: fioFileSize,
+						runTimeSeconds: BigInt(fioRunTime),
+						blockSizeBytes: BigInt(fioBlockSize),
+						fileSizeBytes: BigInt(fioFileSize),
 						ioDepth: BigInt(fioIoDepth)
 					} as FIO_Input;
 					request.kind.value = requestFio;

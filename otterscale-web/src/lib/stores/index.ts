@@ -2,11 +2,12 @@ import { writable, type Writable } from "svelte/store";
 import type { Essential } from "$lib/api/essential/v1/essential_pb";
 import { PremiumTier } from "$lib/api/premium/v1/premium_pb";
 import type { Scope } from "$lib/api/scope/v1/scope_pb";
+import { staticPaths, type Path } from "$lib/path";
 
 // Types
 interface BreadcrumbState {
-    parents: string[];
-    current: string;
+    parents: Path[];
+    current: Path;
 }
 
 interface AppStores {
@@ -17,18 +18,16 @@ interface AppStores {
     premiumTier: Writable<PremiumTier>;
 
     // Scope & Essential
-    triggerUpdateScopes: Writable<boolean>;
-    activeScope: Writable<Scope | undefined>;
+    activeScope: Writable<Scope>;
     currentCeph: Writable<Essential | undefined>;
     currentKubernetes: Writable<Essential | undefined>;
 }
 
 // Create stores
 const createStores = (): AppStores => ({
-    breadcrumb: writable<BreadcrumbState>({ parents: ["/"], current: "/" }),
+    breadcrumb: writable<BreadcrumbState>({ parents: [], current: staticPaths.home }),
     premiumTier: writable(PremiumTier.BASIC),
-    triggerUpdateScopes: writable(false),
-    activeScope: writable<Scope | undefined>(undefined),
+    activeScope: writable<Scope>(),
     currentCeph: writable<Essential | undefined>(undefined),
     currentKubernetes: writable<Essential | undefined>(undefined),
 });
@@ -37,7 +36,6 @@ const createStores = (): AppStores => ({
 export const {
     breadcrumb,
     premiumTier,
-    triggerUpdateScopes,
     activeScope,
     currentCeph,
     currentKubernetes,

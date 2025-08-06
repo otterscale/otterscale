@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
+	import { page } from '$app/state';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
-	import { getIconFromUrl } from '$lib/path';
+	import { urlIcon } from '$lib/path';
 
 	interface Bookmark {
 		title: string;
@@ -35,7 +36,7 @@
 				<Sidebar.MenuButton>
 					{#snippet child({ props })}
 						<a href={bookmark.url} {...props}>
-							<Icon icon={getIconFromUrl(bookmark.url)} />
+							<Icon icon={urlIcon(bookmark.url)} />
 							<span>{bookmark.title}</span>
 						</a>
 					{/snippet}

@@ -3,7 +3,7 @@
 	import { BistDashboardManager } from '$lib/components/bist/utils/bistManager';
 	import { Chart as Layout } from '$lib/components/custom/chart/layouts/index';
 	import * as Template from '$lib/components/dashboard/utils/templates';
-	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
+	import { formatByte } from '$lib/formatter';
 	import { type Table } from '@tanstack/table-core';
 	import dayjs from 'dayjs';
 	import { ScatterChart, Tooltip } from 'layerchart';
@@ -44,7 +44,7 @@
 							},
 							yAxis: {
 								format: (v: number) => {
-									const capacity = formatCapacity(v);
+									const capacity = formatByte(v);
 									return `${Number(capacity.value).toFixed(0)} ${capacity.unit}`;
 								}
 							},
@@ -64,7 +64,7 @@
 								<Tooltip.Item label="Name" value={(data.name)} />
 								<Tooltip.Item
 									label="Bandwidth"
-									value={`${Number(formatCapacity(data.bytesFastest).value).toFixed(0)} ${formatCapacity(data.bytesFastest).unit}`}
+									value={`${Number(formatByte(data.bytesFastest).value).toFixed(0)} ${formatByte(data.bytesFastest).unit}`}
 								/>
 								<Tooltip.Item label="Date" value={dayjs(data.completedAt).format('YYYY/MM/DD HH:mm')} />
 							</Tooltip.List>
@@ -99,7 +99,7 @@
 							},
 							yAxis: {
 								format: (v: number) => {
-									const capacity = formatCapacity(v);
+									const capacity = formatByte(v);
 									return `${Number(capacity.value).toFixed(0)} ${capacity.unit}`;
 								}
 							},
@@ -119,7 +119,7 @@
 								<Tooltip.Item label="Name" value={(data.name)} />
 								<Tooltip.Item
 									label="Bandwidth"
-									value={`${Number(formatCapacity(data.bytesSlowest).value).toFixed(0)} ${formatCapacity(data.bytesSlowest).unit}`}
+									value={`${Number(formatByte(data.bytesSlowest).value).toFixed(0)} ${formatByte(data.bytesSlowest).unit}`}
 								/>
 								<Tooltip.Item label="Date" value={dayjs(data.completedAt).format('YYYY/MM/DD HH:mm')} />
 							</Tooltip.List>
@@ -154,7 +154,7 @@
 							},
 							yAxis: {
 								format: (v: number) => {
-									const capacity = formatCapacity(v);
+									const capacity = formatByte(v);
 									return `${Number(capacity.value).toFixed(0)} ${capacity.unit}`;
 								}
 							},
@@ -174,7 +174,7 @@
 								<Tooltip.Item label="Name" value={(data.name)} />
 								<Tooltip.Item
 									label="Bandwidth"
-									value={`${Number(formatCapacity(data.bytesMedian).value).toFixed(0)} ${formatCapacity(data.bytesMedian).unit}`}
+									value={`${Number(formatByte(data.bytesMedian).value).toFixed(0)} ${formatByte(data.bytesMedian).unit}`}
 								/>
 								<Tooltip.Item label="Date" value={dayjs(data.completedAt).format('YYYY/MM/DD HH:mm')} />
 							</Tooltip.List>

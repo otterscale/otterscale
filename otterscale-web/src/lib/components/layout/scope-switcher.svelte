@@ -1,42 +1,35 @@
 <script lang="ts">
+	import { writable, type Writable } from 'svelte/store';
 	import Icon from '@iconify/svelte';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { scopeIcon } from '$lib/components/scopes/icon';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { setupScopePath } from '$lib/path';
+	import { dynamicPaths } from '$lib/path';
 	import DialogCreateScope from './dialog-create-scope.svelte';
+	import { page } from '$app/state';
 
 	let {
 		active,
 		scopes,
 		tier,
-		onSelect
+		onSelect,
+		trigger = $bindable(writable(false))
 	}: {
 		active: Scope;
 		scopes: Scope[];
 		tier: string;
 		onSelect: (index: number) => Promise<void>;
+		trigger: Writable<boolean>;
 	} = $props();
 
 	let open = $state(false);
 
 	const sidebar = useSidebar();
-
-	const SCOPE_ICONS = [
-		'ph:airplane-tilt',
-		'ph:cactus',
-		'ph:cherries',
-		'ph:piggy-bank',
-		'ph:flower',
-		'ph:joystick',
-		'ph:clover',
-		'ph:cube',
-		'ph:gavel'
-	];
 
 	const SHORTCUT_ICONS = [
 		'ph:number-one',
@@ -49,11 +42,6 @@
 		'ph:number-eight',
 		'ph:number-nine'
 	];
-
-	function getIcon(name: string): string {
-		const index = scopes.findIndex((scope) => scope.name === name);
-		return index !== -1 ? SCOPE_ICONS[index % SCOPE_ICONS.length] : SCOPE_ICONS[0];
-	}
 
 	function toggleDialog() {
 		open = !open;
@@ -108,7 +96,7 @@
 	}}
 />
 
-<DialogCreateScope bind:open />
+<DialogCreateScope bind:open bind:trigger />
 
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
@@ -121,10 +109,13 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
 						<Button
-							href={setupScopePath}
+							href={dynamicPaths.setupScope(page.params.scope).url}
 							class="group/icon bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg transition"
 						>
-							<Icon icon="{getIcon(active.name)}-fill" class="size-4.5 group-hover/icon:hidden" />
+							<Icon
+								icon="{scopeIcon(scopes.findIndex((s) => s.name === active.name))}-fill"
+								class="size-4.5 group-hover/icon:hidden"
+							/>
 							<Icon icon="ph:wrench-fill" class="hidden size-4.5 group-hover/icon:block" />
 						</Button>
 						<div {...props} class="flex h-12 w-full items-center">
@@ -147,7 +138,10 @@
 				{#each scopes as scope, index (scope.name)}
 					<DropdownMenu.Item onSelect={async () => await onSelect(index)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
-							<Icon icon="{getIcon(scope.name)}-bold" class="size-3.5 shrink-0" />
+							<Icon
+								icon="{scopeIcon(scopes.findIndex((s) => s.name === active.name))}-bold"
+								class="size-3.5 shrink-0"
+							/>
 						</div>
 						{scope.name}
 						{#if index < 9}

@@ -1,10 +1,6 @@
 <script lang="ts" module>
-	import type { CreateTestResultRequest, TestResult } from '$gen/api/bist/v1/bist_pb';
-	import { BISTService } from '$gen/api/bist/v1/bist_pb';
-	import { DialogStateController } from '$lib/components/custom/utils.svelte';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import type { TestResult } from '$gen/api/bist/v1/bist_pb';
 	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 	import * as MultipleStepModal from '$lib/components/custom/mutiple-step-modal';
 	import TestStepModal from './test-step-modal.svelte'
@@ -18,19 +14,6 @@
 		testResult: TestResult;
 		data: Writable<TestResult[]>;
 	} = $props();
-
-	const DEFAULT_REQUEST = {
-		name: testResult.name
-	} as CreateTestResultRequest;
-
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
-	const stateController = new DialogStateController(false);
-	const transport: Transport = getContext('transport');
-	const bistClient = createClient(BISTService, transport);
 </script>
 
 {#snippet trigger()}

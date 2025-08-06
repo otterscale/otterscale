@@ -9,7 +9,8 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import { m } from '$lib/paraglide/messages';
-	import LoginImage from '$lib/static/login.jpg';
+	import LoginImage from '$lib/assets/login.png';
+	import SignUpImage from '$lib/assets/sign-up.jpg';
 
 	const { data } = $props();
 	const id = $props.id();
@@ -222,19 +223,28 @@
 					</Button>
 				</div>
 			</form>
-		{/if}
 
-		<!-- Placeholder Image -->
-		<div class="bg-muted relative hidden md:block">
-			<img
-				src={LoginImage}
-				alt="placeholder"
-				class="absolute inset-0 h-full w-full object-cover brightness-[0.95] dark:brightness-[0.85]"
-			/>
-		</div>
+			<!-- Placeholder Image -->
+			<div class="bg-muted relative hidden md:block">
+				<img
+					src={LoginImage}
+					alt="placeholder"
+					class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.85]"
+				/>
+			</div>
+		{/if}
 
 		<!-- Sign Up Form -->
 		{#if $signUp}
+			<!-- Placeholder Image -->
+			<div class="bg-muted relative hidden md:block">
+				<img
+					src={SignUpImage}
+					alt="placeholder"
+					class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.85]"
+				/>
+			</div>
+
 			<form class="p-6 md:p-8" onsubmit={handleSignUpSubmit}>
 				<div class="flex flex-col gap-6">
 					<div class="flex flex-col items-center text-center">

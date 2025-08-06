@@ -13,7 +13,7 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 
-	const selectedScopeUuid = $activeScope.uuid;
+	const selectedScopeUuid = $activeScope ? $activeScope.uuid : '';
 
 	const pools = writable([] as Pool[]);
 	const reloadManager = new Reloader.ReloadManager(() => {

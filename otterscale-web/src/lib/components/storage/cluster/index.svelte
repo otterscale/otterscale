@@ -3,6 +3,8 @@
 	import { Pool } from './pool';
 </script>
 
-{#key $activeScope.uuid}
-	<Pool />
-{/key}
+{#if $activeScope}
+	{#key $activeScope.uuid}
+		<Pool />
+	{/key}
+{/if}
