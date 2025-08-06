@@ -3,6 +3,7 @@
 		ApplicationService,
 		type Application_Chart
 	} from '$lib/api/application/v1/application_pb';
+	import * as Loading from '$lib/components/custom/loading';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -40,31 +41,35 @@
 	const paginationManager = $derived(new PaginationManager(filterManager.filteredCharts));
 </script>
 
-<section class="bg-background container mx-auto space-y-6 py-2 md:py-4">
-	<div class="space-y-2 text-center">
-		<h2 class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">Applications</h2>
-		<p class="text-muted-foreground mx-auto text-lg">
-			Browse and install verified applications for your cluster
-		</p>
-	</div>
+{#if isMounted}
+	<section class="bg-background mx-auto my-auto space-y-4">
+		<div class="space-y-2 text-center">
+			<h2 class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">Applications</h2>
+			<p class="text-muted-foreground mx-auto text-lg">
+				Browse and install verified applications for your cluster
+			</p>
+		</div>
 
-	<div class="flex items-center gap-1">
-		<FilterName {filterManager} />
-		<FilterKeyword {filterManager} />
-		<FilterMaintainer {filterManager} />
-		<FilterReset {filterManager} />
-		<Upload class="ml-auto" />
-	</div>
+		<div class="flex items-center gap-1">
+			<FilterName {filterManager} />
+			<FilterKeyword {filterManager} />
+			<FilterMaintainer {filterManager} />
+			<FilterReset {filterManager} />
+			<Upload class="ml-auto" />
+		</div>
 
-	<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-		{#each filterManager.filteredCharts.slice(paginationManager.activePage * paginationManager.perPage, (paginationManager.activePage + 1) * paginationManager.perPage) as chart}
-			<Chart {chart}>
-				<Thumbnail {chart} />
-			</Chart>
-		{/each}
-	</div>
+		<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+			{#each filterManager.filteredCharts.slice(paginationManager.activePage * paginationManager.perPage, (paginationManager.activePage + 1) * paginationManager.perPage) as chart}
+				<Chart {chart}>
+					<Thumbnail {chart} />
+				</Chart>
+			{/each}
+		</div>
 
-	<div class="text-center">
-		<Pagination {paginationManager} />
-	</div>
-</section>
+		<div class="text-center">
+			<Pagination {paginationManager} />
+		</div>
+	</section>
+{:else}
+	<Loading.ApplicationStore />
+{/if}

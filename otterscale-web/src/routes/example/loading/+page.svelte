@@ -6,4 +6,5 @@
 	<Loading.Selection />
 	<Loading.Report />
 	<Loading.DataTable />
+	<Loading.ApplicationStore />
 </main>
