@@ -26,20 +26,6 @@ find_first_non_user() {
     NON_ROOT_USER=$(basename "$USER_HOME")
 }
 
-confirm_remove() {
-    while true; do
-        read -p "Confirm to remove otterscale (y/n): " confirm
-        if [[ "$confirm" =~ ^[Yy]$ ]]; then
-            log "INFO" "Start uninstall otterscale..."
-	    break
-        elif [[ "$confirm" =~ ^[Nn]$ ]]; then
-            exit 0
-        else
-            log "Warning" "Invalid input. Please enter y or n."
-        fi
-    done
-}
-
 get_models() {
     JUJU_MODELS=$(su "$NON_ROOT_USER" -c "juju models --format json | jq -r '.models[] | select(.\"is-controller\" == false and .\"cloud\" != \"cos-k8s\") | .name'")
 }
@@ -112,11 +98,9 @@ remove_juju_file() {
 }
 
 main() {
-    confirm_remove
     find_first_non_user
     remove_juju_model
     remove_pkg
     remove_juju_file
 }
-
 main
