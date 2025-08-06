@@ -151,5 +151,6 @@
 	"customization_services": "Customization and Consulting Services",
 	"customization_services_description": "Offers custom development, integration services, and professional consulting.",
 	"training_services": "Training Services",
-	"training_services_description": "Offers exclusive training courses for enterprise users."
+	"training_services_description": "Offers exclusive training courses for enterprise users.",
+	"error_generic": "Something went wrong!"
 }

@@ -1,33 +1,21 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { page } from '$app/state';
 	import { urlIcon, type Path } from '$lib/path';
-	import { cephPaths, kubernetesPaths } from '$lib/routes';
-	import { currentCeph, currentKubernetes } from '$lib/stores';
 
 	interface Props {
 		background: string;
 		path: Path;
 		description: string;
+		disabled: boolean;
 	}
 
-	let { background, path, description }: Props = $props();
-
-	const disabled = (url: string): boolean => {
-		return (
-			(!$currentCeph && cephPaths(page.params.scope).some((path) => path.url === url)) ||
-			(!$currentKubernetes && kubernetesPaths(page.params.scope).some((path) => path.url === url))
-		);
-	};
+	let { background, path, description, disabled }: Props = $props();
 </script>
 
 <a
 	href={path.url}
-	class="group bg-card flex aspect-square flex-col overflow-hidden rounded-lg border shadow-sm transition-all hover:shadow-md {disabled(
-		path.url
-	)
-		? 'pointer-events-none cursor-not-allowed opacity-50'
-		: ''}"
+	class="group bg-card flex aspect-square flex-col overflow-hidden rounded-lg border shadow-sm transition-all hover:shadow-md
+	{disabled ? 'pointer-events-none cursor-not-allowed opacity-50' : ''}"
 >
 	<header class="relative flex aspect-video">
 		<div

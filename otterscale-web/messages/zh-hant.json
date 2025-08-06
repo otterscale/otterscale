@@ -151,5 +151,6 @@
 	"customization_services": "客製化和顧問服務",
 	"customization_services_description": "提供客製化開發、整合服務和專業顧問諮詢。",
 	"training_services": "教育訓練服務",
-	"training_services_description": "為企業使用者提供專屬培訓課程。"
+	"training_services_description": "為企業使用者提供專屬培訓課程。",
+	"error_generic": "發生錯誤！"
 }
