@@ -2,6 +2,22 @@ import { Octokit } from "@octokit/core";
 import { env } from "$env/dynamic/private";
 import type { PageServerLoad } from "./$types";
 
+const REPO_CONFIG = {
+    owner: 'openhdc',
+    repo: 'otterscale'
+} as const;
+
+interface Release {
+    latest: boolean;
+    name: string | null;
+    tag_name: string;
+    html_url: string;
+    prerelease: boolean;
+    created_at: Date;
+    changes: Changes;
+}
+
+
 interface Changes {
     feat: ChangeItem[];
     fix: ChangeItem[];
@@ -70,10 +86,46 @@ const parseBody = (body: string): Changes => {
     return changes;
 };
 
-const REPO_CONFIG = {
-    owner: 'openhdc',
-    repo: 'otterscale'
-} as const;
+interface UserDetails {
+    username: string;
+    name: string | null;
+    company: string | null;
+}
+
+const fetchUserDetails = async (octokit: Octokit, authors: string[]): Promise<UserDetails[]> => {
+    const userPromises = authors.map(author =>
+        octokit.request('GET /users/{username}', { username: author })
+    );
+
+    const userResponses = await Promise.all(userPromises);
+
+    return userResponses.map(response => ({
+        username: response.data.login,
+        name: response.data.name,
+        company: response.data.company,
+    }));
+};
+
+const extractAuthors = (releases: Array<{ changes: Changes }>): string[] => {
+    const allAuthors = new Set<string>();
+
+    for (const release of releases) {
+        for (const changeList of Object.values(release.changes)) {
+            for (const change of changeList) {
+                allAuthors.add(change.author);
+            }
+        }
+    }
+
+    return Array.from(allAuthors);
+};
+
+const createUsersMap = (users: UserDetails[]): Record<string, UserDetails> => {
+    return users.reduce((acc, user) => {
+        acc[user.username] = user;
+        return acc;
+    }, {} as Record<string, UserDetails>);
+};
 
 export const load: PageServerLoad = async () => {
     const octokit = new Octokit({
@@ -86,19 +138,24 @@ export const load: PageServerLoad = async () => {
             octokit.request('GET /repos/{owner}/{repo}/releases', REPO_CONFIG)
         ]);
 
-        const releases = releasesResponse.data.map((release: any) => ({
-            latest: latestResponse.data.html_url === release.html_url,
+        const latestUrl = latestResponse.data.html_url;
+        const releases: Release[] = releasesResponse.data.map(release => ({
+            latest: latestUrl === release.html_url,
             name: release.name,
             tag_name: release.tag_name,
             html_url: release.html_url,
             prerelease: release.prerelease,
-            created_at: release.created_at,
+            created_at: new Date(release.created_at),
             changes: parseBody(release.body || '')
         }));
 
-        return { releases, error: undefined };
+        const authors = extractAuthors(releases);
+        const users = await fetchUserDetails(octokit, authors);
+        const usersMap = createUsersMap(users);
+
+        return { releases, usersMap, error: '' };
     } catch (error) {
         console.error('Failed to fetch releases:', error);
-        return { releases: [], error: 'Failed to fetch releases' };
+        return { releases: [] as Release[], usersMap: {} as Record<string, UserDetails>, error: 'Failed to fetch releases' };
     }
 };

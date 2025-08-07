@@ -1,5 +1,6 @@
 // import dayjs from 'dayjs';
 
+import { getLocale } from "./paraglide/runtime";
 
 const DIVISIONS = [
     { amount: 60, name: 'seconds' },
@@ -11,20 +12,22 @@ const DIVISIONS = [
     { amount: Number.POSITIVE_INFINITY, name: 'years' }
 ] as const;
 
-const formatter = new Intl.RelativeTimeFormat(undefined, {
-    numeric: 'auto'
-});
+export function formatTimeAgo(date: Date): string {
+    const formatter = new Intl.RelativeTimeFormat(getLocale(), {
+        numeric: 'auto'
+    });
 
-export function formatTimeAgo(date: Date) {
-    let duration = (new Date(date).getTime() - new Date().getTime()) / 1000;
+    let duration = (date.getTime() - new Date().getTime()) / 1000;
 
-    for (let i = 0; i <= DIVISIONS.length; i++) {
-        const division = DIVISIONS[i];
+    for (const division of DIVISIONS) {
         if (Math.abs(duration) < division.amount) {
             return formatter.format(Math.round(duration), division.name);
         }
         duration /= division.amount;
     }
+
+    // Fallback for very large durations
+    return formatter.format(Math.round(duration), 'years');
 }
 
 export function formatDuration(duration: number): { value: number, unit: string } {
