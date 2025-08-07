@@ -34,15 +34,15 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// KubeVirtServiceListVirtualMachinesProcedure is the fully-qualified name of the KubeVirtService's
-	// ListVirtualMachines RPC.
-	KubeVirtServiceListVirtualMachinesProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListVirtualMachines"
-	// KubeVirtServiceGetVirtualMachineProcedure is the fully-qualified name of the KubeVirtService's
-	// GetVirtualMachine RPC.
-	KubeVirtServiceGetVirtualMachineProcedure = "/otterscale.kubevirt.v1.KubeVirtService/GetVirtualMachine"
 	// KubeVirtServiceCreateVirtualMachineProcedure is the fully-qualified name of the KubeVirtService's
 	// CreateVirtualMachine RPC.
 	KubeVirtServiceCreateVirtualMachineProcedure = "/otterscale.kubevirt.v1.KubeVirtService/CreateVirtualMachine"
+	// KubeVirtServiceGetVirtualMachineProcedure is the fully-qualified name of the KubeVirtService's
+	// GetVirtualMachine RPC.
+	KubeVirtServiceGetVirtualMachineProcedure = "/otterscale.kubevirt.v1.KubeVirtService/GetVirtualMachine"
+	// KubeVirtServiceListVirtualMachinesProcedure is the fully-qualified name of the KubeVirtService's
+	// ListVirtualMachines RPC.
+	KubeVirtServiceListVirtualMachinesProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListVirtualMachines"
 	// KubeVirtServiceUpdateVirtualMachineProcedure is the fully-qualified name of the KubeVirtService's
 	// UpdateVirtualMachine RPC.
 	KubeVirtServiceUpdateVirtualMachineProcedure = "/otterscale.kubevirt.v1.KubeVirtService/UpdateVirtualMachine"
@@ -120,9 +120,9 @@ const (
 // KubeVirtServiceClient is a client for the otterscale.kubevirt.v1.KubeVirtService service.
 type KubeVirtServiceClient interface {
 	// Virtual Machine Operations
-	ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error)
-	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
+	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
+	ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error)
 	UpdateVirtualMachine(context.Context, *connect.Request[v1.UpdateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	// Virtual Machine Control Operations
@@ -142,10 +142,10 @@ type KubeVirtServiceClient interface {
 	DeleteDataVolume(context.Context, *connect.Request[v1.DeleteDataVolumeRequest]) (*connect.Response[emptypb.Empty], error)
 	ExtendDataVolume(context.Context, *connect.Request[v1.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error)
 	// Network Operations
-	CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error)
-	GetNetwork(context.Context, *connect.Request[v1.GetNetworkRequest]) (*connect.Response[v1.Network], error)
+	CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error)
+	GetNetwork(context.Context, *connect.Request[v1.GetNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error)
 	ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error)
-	UpdateNetwork(context.Context, *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.Network], error)
+	UpdateNetwork(context.Context, *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error)
 	DeleteNetwork(context.Context, *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error)
 	// Flavor Operations
 	CreateFlavor(context.Context, *connect.Request[v1.CreateFlavorRequest]) (*connect.Response[v1.Flavor], error)
@@ -165,10 +165,10 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 	baseURL = strings.TrimRight(baseURL, "/")
 	kubeVirtServiceMethods := v1.File_api_kubevirt_v1_kubevirt_proto.Services().ByName("KubeVirtService").Methods()
 	return &kubeVirtServiceClient{
-		listVirtualMachines: connect.NewClient[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse](
+		createVirtualMachine: connect.NewClient[v1.CreateVirtualMachineRequest, v1.VirtualMachine](
 			httpClient,
-			baseURL+KubeVirtServiceListVirtualMachinesProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachines")),
+			baseURL+KubeVirtServiceCreateVirtualMachineProcedure,
+			connect.WithSchema(kubeVirtServiceMethods.ByName("CreateVirtualMachine")),
 			connect.WithClientOptions(opts...),
 		),
 		getVirtualMachine: connect.NewClient[v1.GetVirtualMachineRequest, v1.VirtualMachine](
@@ -177,10 +177,10 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(kubeVirtServiceMethods.ByName("GetVirtualMachine")),
 			connect.WithClientOptions(opts...),
 		),
-		createVirtualMachine: connect.NewClient[v1.CreateVirtualMachineRequest, v1.VirtualMachine](
+		listVirtualMachines: connect.NewClient[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse](
 			httpClient,
-			baseURL+KubeVirtServiceCreateVirtualMachineProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("CreateVirtualMachine")),
+			baseURL+KubeVirtServiceListVirtualMachinesProcedure,
+			connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachines")),
 			connect.WithClientOptions(opts...),
 		),
 		updateVirtualMachine: connect.NewClient[v1.UpdateVirtualMachineRequest, v1.VirtualMachine](
@@ -273,13 +273,13 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(kubeVirtServiceMethods.ByName("ExtendDataVolume")),
 			connect.WithClientOptions(opts...),
 		),
-		createNetwork: connect.NewClient[v1.CreateNetworkRequest, v1.Network](
+		createNetwork: connect.NewClient[v1.CreateNetworkRequest, v1.KubeVirtNetwork](
 			httpClient,
 			baseURL+KubeVirtServiceCreateNetworkProcedure,
 			connect.WithSchema(kubeVirtServiceMethods.ByName("CreateNetwork")),
 			connect.WithClientOptions(opts...),
 		),
-		getNetwork: connect.NewClient[v1.GetNetworkRequest, v1.Network](
+		getNetwork: connect.NewClient[v1.GetNetworkRequest, v1.KubeVirtNetwork](
 			httpClient,
 			baseURL+KubeVirtServiceGetNetworkProcedure,
 			connect.WithSchema(kubeVirtServiceMethods.ByName("GetNetwork")),
@@ -291,7 +291,7 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(kubeVirtServiceMethods.ByName("ListNetworks")),
 			connect.WithClientOptions(opts...),
 		),
-		updateNetwork: connect.NewClient[v1.UpdateNetworkRequest, v1.Network](
+		updateNetwork: connect.NewClient[v1.UpdateNetworkRequest, v1.KubeVirtNetwork](
 			httpClient,
 			baseURL+KubeVirtServiceUpdateNetworkProcedure,
 			connect.WithSchema(kubeVirtServiceMethods.ByName("UpdateNetwork")),
@@ -332,9 +332,9 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // kubeVirtServiceClient implements KubeVirtServiceClient.
 type kubeVirtServiceClient struct {
-	listVirtualMachines    *connect.Client[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse]
-	getVirtualMachine      *connect.Client[v1.GetVirtualMachineRequest, v1.VirtualMachine]
 	createVirtualMachine   *connect.Client[v1.CreateVirtualMachineRequest, v1.VirtualMachine]
+	getVirtualMachine      *connect.Client[v1.GetVirtualMachineRequest, v1.VirtualMachine]
+	listVirtualMachines    *connect.Client[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse]
 	updateVirtualMachine   *connect.Client[v1.UpdateVirtualMachineRequest, v1.VirtualMachine]
 	deleteVirtualMachine   *connect.Client[v1.DeleteVirtualMachineRequest, emptypb.Empty]
 	startVirtualMachine    *connect.Client[v1.StartVirtualMachineRequest, emptypb.Empty]
@@ -350,10 +350,10 @@ type kubeVirtServiceClient struct {
 	listDataVolumes        *connect.Client[v1.ListDataVolumesRequest, v1.ListDataVolumesResponse]
 	deleteDataVolume       *connect.Client[v1.DeleteDataVolumeRequest, emptypb.Empty]
 	extendDataVolume       *connect.Client[v1.ExtendDataVolumeRequest, emptypb.Empty]
-	createNetwork          *connect.Client[v1.CreateNetworkRequest, v1.Network]
-	getNetwork             *connect.Client[v1.GetNetworkRequest, v1.Network]
+	createNetwork          *connect.Client[v1.CreateNetworkRequest, v1.KubeVirtNetwork]
+	getNetwork             *connect.Client[v1.GetNetworkRequest, v1.KubeVirtNetwork]
 	listNetworks           *connect.Client[v1.ListNetworksRequest, v1.ListNetworksResponse]
-	updateNetwork          *connect.Client[v1.UpdateNetworkRequest, v1.Network]
+	updateNetwork          *connect.Client[v1.UpdateNetworkRequest, v1.KubeVirtNetwork]
 	deleteNetwork          *connect.Client[v1.DeleteNetworkRequest, emptypb.Empty]
 	createFlavor           *connect.Client[v1.CreateFlavorRequest, v1.Flavor]
 	getFlavor              *connect.Client[v1.GetFlavorRequest, v1.Flavor]
@@ -361,9 +361,9 @@ type kubeVirtServiceClient struct {
 	deleteFlavor           *connect.Client[v1.DeleteFlavorRequest, emptypb.Empty]
 }
 
-// ListVirtualMachines calls otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines.
-func (c *kubeVirtServiceClient) ListVirtualMachines(ctx context.Context, req *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error) {
-	return c.listVirtualMachines.CallUnary(ctx, req)
+// CreateVirtualMachine calls otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine.
+func (c *kubeVirtServiceClient) CreateVirtualMachine(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
+	return c.createVirtualMachine.CallUnary(ctx, req)
 }
 
 // GetVirtualMachine calls otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine.
@@ -371,9 +371,9 @@ func (c *kubeVirtServiceClient) GetVirtualMachine(ctx context.Context, req *conn
 	return c.getVirtualMachine.CallUnary(ctx, req)
 }
 
-// CreateVirtualMachine calls otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine.
-func (c *kubeVirtServiceClient) CreateVirtualMachine(ctx context.Context, req *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
-	return c.createVirtualMachine.CallUnary(ctx, req)
+// ListVirtualMachines calls otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines.
+func (c *kubeVirtServiceClient) ListVirtualMachines(ctx context.Context, req *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error) {
+	return c.listVirtualMachines.CallUnary(ctx, req)
 }
 
 // UpdateVirtualMachine calls otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine.
@@ -452,12 +452,12 @@ func (c *kubeVirtServiceClient) ExtendDataVolume(ctx context.Context, req *conne
 }
 
 // CreateNetwork calls otterscale.kubevirt.v1.KubeVirtService.CreateNetwork.
-func (c *kubeVirtServiceClient) CreateNetwork(ctx context.Context, req *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error) {
+func (c *kubeVirtServiceClient) CreateNetwork(ctx context.Context, req *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error) {
 	return c.createNetwork.CallUnary(ctx, req)
 }
 
 // GetNetwork calls otterscale.kubevirt.v1.KubeVirtService.GetNetwork.
-func (c *kubeVirtServiceClient) GetNetwork(ctx context.Context, req *connect.Request[v1.GetNetworkRequest]) (*connect.Response[v1.Network], error) {
+func (c *kubeVirtServiceClient) GetNetwork(ctx context.Context, req *connect.Request[v1.GetNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error) {
 	return c.getNetwork.CallUnary(ctx, req)
 }
 
@@ -467,7 +467,7 @@ func (c *kubeVirtServiceClient) ListNetworks(ctx context.Context, req *connect.R
 }
 
 // UpdateNetwork calls otterscale.kubevirt.v1.KubeVirtService.UpdateNetwork.
-func (c *kubeVirtServiceClient) UpdateNetwork(ctx context.Context, req *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.Network], error) {
+func (c *kubeVirtServiceClient) UpdateNetwork(ctx context.Context, req *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error) {
 	return c.updateNetwork.CallUnary(ctx, req)
 }
 
@@ -500,9 +500,9 @@ func (c *kubeVirtServiceClient) DeleteFlavor(ctx context.Context, req *connect.R
 // service.
 type KubeVirtServiceHandler interface {
 	// Virtual Machine Operations
-	ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error)
-	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
+	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
+	ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error)
 	UpdateVirtualMachine(context.Context, *connect.Request[v1.UpdateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	DeleteVirtualMachine(context.Context, *connect.Request[v1.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	// Virtual Machine Control Operations
@@ -522,10 +522,10 @@ type KubeVirtServiceHandler interface {
 	DeleteDataVolume(context.Context, *connect.Request[v1.DeleteDataVolumeRequest]) (*connect.Response[emptypb.Empty], error)
 	ExtendDataVolume(context.Context, *connect.Request[v1.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error)
 	// Network Operations
-	CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error)
-	GetNetwork(context.Context, *connect.Request[v1.GetNetworkRequest]) (*connect.Response[v1.Network], error)
+	CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error)
+	GetNetwork(context.Context, *connect.Request[v1.GetNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error)
 	ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error)
-	UpdateNetwork(context.Context, *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.Network], error)
+	UpdateNetwork(context.Context, *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error)
 	DeleteNetwork(context.Context, *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error)
 	// Flavor Operations
 	CreateFlavor(context.Context, *connect.Request[v1.CreateFlavorRequest]) (*connect.Response[v1.Flavor], error)
@@ -541,10 +541,10 @@ type KubeVirtServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	kubeVirtServiceMethods := v1.File_api_kubevirt_v1_kubevirt_proto.Services().ByName("KubeVirtService").Methods()
-	kubeVirtServiceListVirtualMachinesHandler := connect.NewUnaryHandler(
-		KubeVirtServiceListVirtualMachinesProcedure,
-		svc.ListVirtualMachines,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachines")),
+	kubeVirtServiceCreateVirtualMachineHandler := connect.NewUnaryHandler(
+		KubeVirtServiceCreateVirtualMachineProcedure,
+		svc.CreateVirtualMachine,
+		connect.WithSchema(kubeVirtServiceMethods.ByName("CreateVirtualMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
 	kubeVirtServiceGetVirtualMachineHandler := connect.NewUnaryHandler(
@@ -553,10 +553,10 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 		connect.WithSchema(kubeVirtServiceMethods.ByName("GetVirtualMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeVirtServiceCreateVirtualMachineHandler := connect.NewUnaryHandler(
-		KubeVirtServiceCreateVirtualMachineProcedure,
-		svc.CreateVirtualMachine,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("CreateVirtualMachine")),
+	kubeVirtServiceListVirtualMachinesHandler := connect.NewUnaryHandler(
+		KubeVirtServiceListVirtualMachinesProcedure,
+		svc.ListVirtualMachines,
+		connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachines")),
 		connect.WithHandlerOptions(opts...),
 	)
 	kubeVirtServiceUpdateVirtualMachineHandler := connect.NewUnaryHandler(
@@ -705,12 +705,12 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 	)
 	return "/otterscale.kubevirt.v1.KubeVirtService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case KubeVirtServiceListVirtualMachinesProcedure:
-			kubeVirtServiceListVirtualMachinesHandler.ServeHTTP(w, r)
-		case KubeVirtServiceGetVirtualMachineProcedure:
-			kubeVirtServiceGetVirtualMachineHandler.ServeHTTP(w, r)
 		case KubeVirtServiceCreateVirtualMachineProcedure:
 			kubeVirtServiceCreateVirtualMachineHandler.ServeHTTP(w, r)
+		case KubeVirtServiceGetVirtualMachineProcedure:
+			kubeVirtServiceGetVirtualMachineHandler.ServeHTTP(w, r)
+		case KubeVirtServiceListVirtualMachinesProcedure:
+			kubeVirtServiceListVirtualMachinesHandler.ServeHTTP(w, r)
 		case KubeVirtServiceUpdateVirtualMachineProcedure:
 			kubeVirtServiceUpdateVirtualMachineHandler.ServeHTTP(w, r)
 		case KubeVirtServiceDeleteVirtualMachineProcedure:
@@ -768,16 +768,16 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 // UnimplementedKubeVirtServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedKubeVirtServiceHandler struct{}
 
-func (UnimplementedKubeVirtServiceHandler) ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines is not implemented"))
+func (UnimplementedKubeVirtServiceHandler) CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine is not implemented"))
 }
 
 func (UnimplementedKubeVirtServiceHandler) GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine is not implemented"))
+func (UnimplementedKubeVirtServiceHandler) ListVirtualMachines(context.Context, *connect.Request[v1.ListVirtualMachinesRequest]) (*connect.Response[v1.ListVirtualMachinesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines is not implemented"))
 }
 
 func (UnimplementedKubeVirtServiceHandler) UpdateVirtualMachine(context.Context, *connect.Request[v1.UpdateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
@@ -840,11 +840,11 @@ func (UnimplementedKubeVirtServiceHandler) ExtendDataVolume(context.Context, *co
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.Network], error) {
+func (UnimplementedKubeVirtServiceHandler) CreateNetwork(context.Context, *connect.Request[v1.CreateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.CreateNetwork is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) GetNetwork(context.Context, *connect.Request[v1.GetNetworkRequest]) (*connect.Response[v1.Network], error) {
+func (UnimplementedKubeVirtServiceHandler) GetNetwork(context.Context, *connect.Request[v1.GetNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.GetNetwork is not implemented"))
 }
 
@@ -852,7 +852,7 @@ func (UnimplementedKubeVirtServiceHandler) ListNetworks(context.Context, *connec
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListNetworks is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) UpdateNetwork(context.Context, *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.Network], error) {
+func (UnimplementedKubeVirtServiceHandler) UpdateNetwork(context.Context, *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.UpdateNetwork is not implemented"))
 }
 

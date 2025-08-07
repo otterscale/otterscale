@@ -10,9 +10,9 @@ option go_package = "github.com/openhdc/otterscale/api/kubevirt/v1;pb";
 // Virtual Machine Management Service for KubeVirt
 service KubeVirtService {
   // Virtual Machine Operations
-  rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse);
-  rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
   rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
+  rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
+  rpc ListVirtualMachines(ListVirtualMachinesRequest) returns (ListVirtualMachinesResponse);
   rpc UpdateVirtualMachine(UpdateVirtualMachineRequest) returns (VirtualMachine);
   rpc DeleteVirtualMachine(DeleteVirtualMachineRequest) returns (google.protobuf.Empty);
   // Virtual Machine Control Operations
@@ -32,10 +32,10 @@ service KubeVirtService {
   rpc DeleteDataVolume(DeleteDataVolumeRequest) returns (google.protobuf.Empty);
   rpc ExtendDataVolume(ExtendDataVolumeRequest) returns (google.protobuf.Empty);
   // Network Operations
-  rpc CreateNetwork(CreateNetworkRequest) returns (Network);
-  rpc GetNetwork(GetNetworkRequest) returns (Network);
+  rpc CreateNetwork(CreateNetworkRequest) returns (KubeVirtNetwork);
+  rpc GetNetwork(GetNetworkRequest) returns (KubeVirtNetwork);
   rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);
-  rpc UpdateNetwork(UpdateNetworkRequest) returns (Network);
+  rpc UpdateNetwork(UpdateNetworkRequest) returns (KubeVirtNetwork);
   rpc DeleteNetwork(DeleteNetworkRequest) returns (google.protobuf.Empty);
   // Flavor Operations
   rpc CreateFlavor(CreateFlavorRequest) returns (Flavor);
@@ -56,7 +56,7 @@ message Metadata {
 
 // Virtual Machine messages
 message VirtualMachine {
-  enum VirtualMachineStatus {
+  enum Status {
     UNSPECIFIED = 0;
     PROVISIONING = 1;
     STARTING = 2;
@@ -67,27 +67,27 @@ message VirtualMachine {
     MIGRATING = 7;
   }
   message Operation{
-    message OperationResult {
-      enum OperationStatus {
-        OPERATION_STATUS_UNSPECIFIED = 0;
-        OPERATION_STATUS_IN_PROGRESS = 1;
-        OPERATION_STATUS_SUCCEEDED = 2;
-        OPERATION_STATUS_FAILED = 3;
+    message Result {
+      enum Status {
+        UNSPECIFIED = 0;
+        IN_PROGRESS = 1;
+        SUCCEEDED = 2;
+        FAILED = 3;
       }
-      OperationStatus status = 1;
+      Status status = 1;
       string message = 2;
       string reason = 3;
     }
     string name = 1;
     string type = 2;
     string description = 3;
-    google.protobuf.Timestamp create_time = 4;
-    OperationResult status = 11;
+    google.protobuf.Timestamp created_at = 4;
+    Result status = 11;
   }
 
   Metadata metadata = 1;
   VirtualMachineSpec spec = 11;
-  VirtualMachineStatus status = 12;
+  Status status = 12;
   repeated Operation snapshots = 21;
   repeated Operation clones = 22;
   repeated Operation migrates = 23;
@@ -99,7 +99,7 @@ message VirtualMachineSpec {
   string network_name = 2;
   string startup_script = 3;
   repeated string data_volumes = 11;
-  // use, pcie, disk ...
+  // usb, pcie, disk ...
   repeated Device devices = 12;
 }
 
@@ -117,7 +117,7 @@ message DataVolume {
   int64 size_bytes = 4;
 }
 
-message Network {
+message KubeVirtNetwork {
   Metadata metadata = 1;
   string service_type = 2;
   int32 port = 3;
@@ -132,151 +132,214 @@ message Device {
 
 // Request/Response messages
 message ListVirtualMachinesRequest {
-  string namespace = 1;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
 }
 
 message ListVirtualMachinesResponse {
-  repeated VirtualMachine items = 1;
+  repeated VirtualMachine virtualMachines = 1;
 }
 
 message GetVirtualMachineRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message CreateVirtualMachineRequest {
-  Metadata metadata = 2;
-  VirtualMachineSpec spec = 1;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  Metadata metadata = 3;
+  VirtualMachineSpec spec = 4;
 }
 
 message UpdateVirtualMachineRequest {
-  Metadata metadata = 2;
-  VirtualMachineSpec spec = 3;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
+  string flavor_name = 5;
+  string network_name = 6;
+  string startup_script = 7;
+
+  map<string, string> labels = 11;
+  map<string, string> annotations = 12;
+
+  repeated string data_volumes = 21;
+  repeated Device devices = 22;
 }
 
 message DeleteVirtualMachineRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message StartVirtualMachineRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message StopVirtualMachineRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message PauseVirtualMachineRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message UnpauseVirtualMachineRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message SnapshotVirtualMachineRequest {
-  string name = 1;
-  string namespace = 2;
-  string snapshot_name = 3;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
+  string snapshot_name = 5;
 }
 
 message CloneVirtualMachineRequest {
-  string target_name = 1;
-  string target_namespace = 2;
-  string source_name = 3;
-  string source_namespace = 4;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string target_name = 3;
+  string target_namespace = 4;
+  string source_name = 5;
+  string source_namespace = 6;
 }
 
 message RestoreVirtualMachineRequest {
-  string name = 1;
-  string namespace = 2;
-  string snapshot_name = 3;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
+  string snapshot_name = 5;
 }
 
 message MigrateVirtualMachineRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
   // [TODO]
-  string target_node = 3;
+  string target_node = 5;
 }
 
 message CreateDataVolumeRequest {
-  DataVolume data_volume = 1;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  DataVolume data_volume = 3;
 }
 
 message ListDataVolumesRequest {
-  string namespace = 1;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
 }
 
 message ListDataVolumesResponse {
-  repeated DataVolume items = 1;
+  repeated DataVolume datavolumes = 1;
 }
 
 message GetDataVolumeRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message DeleteDataVolumeRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message ExtendDataVolumeRequest {
-  string name = 1;
-  string namespace = 2;
-  int64 size_bytes = 3;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
+  int64 size_bytes = 5;
 }
 
 message CreateNetworkRequest {
-  Network network = 1;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  KubeVirtNetwork network = 3;
 }
 
 message ListNetworksRequest {
-  string namespace = 1;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
 }
 
 message ListNetworksResponse {
-  repeated Network items = 1;
+  repeated KubeVirtNetwork networks = 1;
 }
 
 message GetNetworkRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message UpdateNetworkRequest {
-  Network network = 1;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  KubeVirtNetwork network = 3;
 }
 
 message DeleteNetworkRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message CreateFlavorRequest {
-  Flavor flavor = 1;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  Flavor flavor = 3;
 }
 
 message ListFlavorsRequest {
-  string namespace = 1;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
 }
 
 message ListFlavorsResponse {
-  repeated Flavor items = 1;
+  repeated Flavor flavors = 1;
 }
 
 message GetFlavorRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }
 
 message DeleteFlavorRequest {
-  string name = 1;
-  string namespace = 2;
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
+  string namespace = 4;
 }

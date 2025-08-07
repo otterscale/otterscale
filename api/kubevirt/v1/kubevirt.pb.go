@@ -22,22 +22,22 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type VirtualMachine_VirtualMachineStatus int32
+type VirtualMachine_Status int32
 
 const (
-	VirtualMachine_UNSPECIFIED  VirtualMachine_VirtualMachineStatus = 0
-	VirtualMachine_PROVISIONING VirtualMachine_VirtualMachineStatus = 1
-	VirtualMachine_STARTING     VirtualMachine_VirtualMachineStatus = 2
-	VirtualMachine_RUNNING      VirtualMachine_VirtualMachineStatus = 3
-	VirtualMachine_TERMINATING  VirtualMachine_VirtualMachineStatus = 4
-	VirtualMachine_STOPPED      VirtualMachine_VirtualMachineStatus = 5
-	VirtualMachine_PAUSED       VirtualMachine_VirtualMachineStatus = 6
-	VirtualMachine_MIGRATING    VirtualMachine_VirtualMachineStatus = 7
+	VirtualMachine_UNSPECIFIED  VirtualMachine_Status = 0
+	VirtualMachine_PROVISIONING VirtualMachine_Status = 1
+	VirtualMachine_STARTING     VirtualMachine_Status = 2
+	VirtualMachine_RUNNING      VirtualMachine_Status = 3
+	VirtualMachine_TERMINATING  VirtualMachine_Status = 4
+	VirtualMachine_STOPPED      VirtualMachine_Status = 5
+	VirtualMachine_PAUSED       VirtualMachine_Status = 6
+	VirtualMachine_MIGRATING    VirtualMachine_Status = 7
 )
 
-// Enum value maps for VirtualMachine_VirtualMachineStatus.
+// Enum value maps for VirtualMachine_Status.
 var (
-	VirtualMachine_VirtualMachineStatus_name = map[int32]string{
+	VirtualMachine_Status_name = map[int32]string{
 		0: "UNSPECIFIED",
 		1: "PROVISIONING",
 		2: "STARTING",
@@ -47,7 +47,7 @@ var (
 		6: "PAUSED",
 		7: "MIGRATING",
 	}
-	VirtualMachine_VirtualMachineStatus_value = map[string]int32{
+	VirtualMachine_Status_value = map[string]int32{
 		"UNSPECIFIED":  0,
 		"PROVISIONING": 1,
 		"STARTING":     2,
@@ -59,72 +59,72 @@ var (
 	}
 )
 
-func (x VirtualMachine_VirtualMachineStatus) Enum() *VirtualMachine_VirtualMachineStatus {
-	p := new(VirtualMachine_VirtualMachineStatus)
+func (x VirtualMachine_Status) Enum() *VirtualMachine_Status {
+	p := new(VirtualMachine_Status)
 	*p = x
 	return p
 }
 
-func (x VirtualMachine_VirtualMachineStatus) String() string {
+func (x VirtualMachine_Status) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (VirtualMachine_VirtualMachineStatus) Descriptor() protoreflect.EnumDescriptor {
+func (VirtualMachine_Status) Descriptor() protoreflect.EnumDescriptor {
 	return file_api_kubevirt_v1_kubevirt_proto_enumTypes[0].Descriptor()
 }
 
-func (VirtualMachine_VirtualMachineStatus) Type() protoreflect.EnumType {
+func (VirtualMachine_Status) Type() protoreflect.EnumType {
 	return &file_api_kubevirt_v1_kubevirt_proto_enumTypes[0]
 }
 
-func (x VirtualMachine_VirtualMachineStatus) Number() protoreflect.EnumNumber {
+func (x VirtualMachine_Status) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-type VirtualMachine_Operation_OperationResult_OperationStatus int32
+type VirtualMachine_Operation_Result_Status int32
 
 const (
-	VirtualMachine_Operation_OperationResult_OPERATION_STATUS_UNSPECIFIED VirtualMachine_Operation_OperationResult_OperationStatus = 0
-	VirtualMachine_Operation_OperationResult_OPERATION_STATUS_IN_PROGRESS VirtualMachine_Operation_OperationResult_OperationStatus = 1
-	VirtualMachine_Operation_OperationResult_OPERATION_STATUS_SUCCEEDED   VirtualMachine_Operation_OperationResult_OperationStatus = 2
-	VirtualMachine_Operation_OperationResult_OPERATION_STATUS_FAILED      VirtualMachine_Operation_OperationResult_OperationStatus = 3
+	VirtualMachine_Operation_Result_UNSPECIFIED VirtualMachine_Operation_Result_Status = 0
+	VirtualMachine_Operation_Result_IN_PROGRESS VirtualMachine_Operation_Result_Status = 1
+	VirtualMachine_Operation_Result_SUCCEEDED   VirtualMachine_Operation_Result_Status = 2
+	VirtualMachine_Operation_Result_FAILED      VirtualMachine_Operation_Result_Status = 3
 )
 
-// Enum value maps for VirtualMachine_Operation_OperationResult_OperationStatus.
+// Enum value maps for VirtualMachine_Operation_Result_Status.
 var (
-	VirtualMachine_Operation_OperationResult_OperationStatus_name = map[int32]string{
-		0: "OPERATION_STATUS_UNSPECIFIED",
-		1: "OPERATION_STATUS_IN_PROGRESS",
-		2: "OPERATION_STATUS_SUCCEEDED",
-		3: "OPERATION_STATUS_FAILED",
+	VirtualMachine_Operation_Result_Status_name = map[int32]string{
+		0: "UNSPECIFIED",
+		1: "IN_PROGRESS",
+		2: "SUCCEEDED",
+		3: "FAILED",
 	}
-	VirtualMachine_Operation_OperationResult_OperationStatus_value = map[string]int32{
-		"OPERATION_STATUS_UNSPECIFIED": 0,
-		"OPERATION_STATUS_IN_PROGRESS": 1,
-		"OPERATION_STATUS_SUCCEEDED":   2,
-		"OPERATION_STATUS_FAILED":      3,
+	VirtualMachine_Operation_Result_Status_value = map[string]int32{
+		"UNSPECIFIED": 0,
+		"IN_PROGRESS": 1,
+		"SUCCEEDED":   2,
+		"FAILED":      3,
 	}
 )
 
-func (x VirtualMachine_Operation_OperationResult_OperationStatus) Enum() *VirtualMachine_Operation_OperationResult_OperationStatus {
-	p := new(VirtualMachine_Operation_OperationResult_OperationStatus)
+func (x VirtualMachine_Operation_Result_Status) Enum() *VirtualMachine_Operation_Result_Status {
+	p := new(VirtualMachine_Operation_Result_Status)
 	*p = x
 	return p
 }
 
-func (x VirtualMachine_Operation_OperationResult_OperationStatus) String() string {
+func (x VirtualMachine_Operation_Result_Status) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (VirtualMachine_Operation_OperationResult_OperationStatus) Descriptor() protoreflect.EnumDescriptor {
+func (VirtualMachine_Operation_Result_Status) Descriptor() protoreflect.EnumDescriptor {
 	return file_api_kubevirt_v1_kubevirt_proto_enumTypes[1].Descriptor()
 }
 
-func (VirtualMachine_Operation_OperationResult_OperationStatus) Type() protoreflect.EnumType {
+func (VirtualMachine_Operation_Result_Status) Type() protoreflect.EnumType {
 	return &file_api_kubevirt_v1_kubevirt_proto_enumTypes[1]
 }
 
-func (x VirtualMachine_Operation_OperationResult_OperationStatus) Number() protoreflect.EnumNumber {
+func (x VirtualMachine_Operation_Result_Status) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
@@ -320,14 +320,14 @@ func (b0 Metadata_builder) Build() *Metadata {
 
 // Virtual Machine messages
 type VirtualMachine struct {
-	state                  protoimpl.MessageState              `protogen:"opaque.v1"`
-	xxx_hidden_Metadata    *Metadata                           `protobuf:"bytes,1,opt,name=metadata"`
-	xxx_hidden_Spec        *VirtualMachineSpec                 `protobuf:"bytes,11,opt,name=spec"`
-	xxx_hidden_Status      VirtualMachine_VirtualMachineStatus `protobuf:"varint,12,opt,name=status,enum=otterscale.kubevirt.v1.VirtualMachine_VirtualMachineStatus"`
-	xxx_hidden_Snapshots   *[]*VirtualMachine_Operation        `protobuf:"bytes,21,rep,name=snapshots"`
-	xxx_hidden_Clones      *[]*VirtualMachine_Operation        `protobuf:"bytes,22,rep,name=clones"`
-	xxx_hidden_Migrates    *[]*VirtualMachine_Operation        `protobuf:"bytes,23,rep,name=migrates"`
-	xxx_hidden_Restores    *[]*VirtualMachine_Operation        `protobuf:"bytes,24,rep,name=restores"`
+	state                  protoimpl.MessageState       `protogen:"opaque.v1"`
+	xxx_hidden_Metadata    *Metadata                    `protobuf:"bytes,1,opt,name=metadata"`
+	xxx_hidden_Spec        *VirtualMachineSpec          `protobuf:"bytes,11,opt,name=spec"`
+	xxx_hidden_Status      VirtualMachine_Status        `protobuf:"varint,12,opt,name=status,enum=otterscale.kubevirt.v1.VirtualMachine_Status"`
+	xxx_hidden_Snapshots   *[]*VirtualMachine_Operation `protobuf:"bytes,21,rep,name=snapshots"`
+	xxx_hidden_Clones      *[]*VirtualMachine_Operation `protobuf:"bytes,22,rep,name=clones"`
+	xxx_hidden_Migrates    *[]*VirtualMachine_Operation `protobuf:"bytes,23,rep,name=migrates"`
+	xxx_hidden_Restores    *[]*VirtualMachine_Operation `protobuf:"bytes,24,rep,name=restores"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -373,7 +373,7 @@ func (x *VirtualMachine) GetSpec() *VirtualMachineSpec {
 	return nil
 }
 
-func (x *VirtualMachine) GetStatus() VirtualMachine_VirtualMachineStatus {
+func (x *VirtualMachine) GetStatus() VirtualMachine_Status {
 	if x != nil {
 		if protoimpl.X.Present(&(x.XXX_presence[0]), 2) {
 			return x.xxx_hidden_Status
@@ -426,7 +426,7 @@ func (x *VirtualMachine) SetSpec(v *VirtualMachineSpec) {
 	x.xxx_hidden_Spec = v
 }
 
-func (x *VirtualMachine) SetStatus(v VirtualMachine_VirtualMachineStatus) {
+func (x *VirtualMachine) SetStatus(v VirtualMachine_Status) {
 	x.xxx_hidden_Status = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
 }
@@ -486,7 +486,7 @@ type VirtualMachine_builder struct {
 
 	Metadata  *Metadata
 	Spec      *VirtualMachineSpec
-	Status    *VirtualMachine_VirtualMachineStatus
+	Status    *VirtualMachine_Status
 	Snapshots []*VirtualMachine_Operation
 	Clones    []*VirtualMachine_Operation
 	Migrates  []*VirtualMachine_Operation
@@ -660,7 +660,7 @@ type VirtualMachineSpec_builder struct {
 	NetworkName   *string
 	StartupScript *string
 	DataVolumes   []string
-	// useb, pcie, disk ...
+	// usb, pcie, disk ...
 	Devices []*Device
 }
 
@@ -982,7 +982,7 @@ func (b0 DataVolume_builder) Build() *DataVolume {
 	return m0
 }
 
-type Network struct {
+type KubeVirtNetwork struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Metadata      *Metadata              `protobuf:"bytes,1,opt,name=metadata"`
 	xxx_hidden_ServiceType   *string                `protobuf:"bytes,2,opt,name=service_type,json=serviceType"`
@@ -995,20 +995,20 @@ type Network struct {
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *Network) Reset() {
-	*x = Network{}
+func (x *KubeVirtNetwork) Reset() {
+	*x = KubeVirtNetwork{}
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Network) String() string {
+func (x *KubeVirtNetwork) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Network) ProtoMessage() {}
+func (*KubeVirtNetwork) ProtoMessage() {}
 
-func (x *Network) ProtoReflect() protoreflect.Message {
+func (x *KubeVirtNetwork) ProtoReflect() protoreflect.Message {
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1020,14 +1020,14 @@ func (x *Network) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Network) GetMetadata() *Metadata {
+func (x *KubeVirtNetwork) GetMetadata() *Metadata {
 	if x != nil {
 		return x.xxx_hidden_Metadata
 	}
 	return nil
 }
 
-func (x *Network) GetServiceType() string {
+func (x *KubeVirtNetwork) GetServiceType() string {
 	if x != nil {
 		if x.xxx_hidden_ServiceType != nil {
 			return *x.xxx_hidden_ServiceType
@@ -1037,111 +1037,111 @@ func (x *Network) GetServiceType() string {
 	return ""
 }
 
-func (x *Network) GetPort() int32 {
+func (x *KubeVirtNetwork) GetPort() int32 {
 	if x != nil {
 		return x.xxx_hidden_Port
 	}
 	return 0
 }
 
-func (x *Network) GetNodePort() int32 {
+func (x *KubeVirtNetwork) GetNodePort() int32 {
 	if x != nil {
 		return x.xxx_hidden_NodePort
 	}
 	return 0
 }
 
-func (x *Network) GetContainerPort() int32 {
+func (x *KubeVirtNetwork) GetContainerPort() int32 {
 	if x != nil {
 		return x.xxx_hidden_ContainerPort
 	}
 	return 0
 }
 
-func (x *Network) SetMetadata(v *Metadata) {
+func (x *KubeVirtNetwork) SetMetadata(v *Metadata) {
 	x.xxx_hidden_Metadata = v
 }
 
-func (x *Network) SetServiceType(v string) {
+func (x *KubeVirtNetwork) SetServiceType(v string) {
 	x.xxx_hidden_ServiceType = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
-func (x *Network) SetPort(v int32) {
+func (x *KubeVirtNetwork) SetPort(v int32) {
 	x.xxx_hidden_Port = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *Network) SetNodePort(v int32) {
+func (x *KubeVirtNetwork) SetNodePort(v int32) {
 	x.xxx_hidden_NodePort = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *Network) SetContainerPort(v int32) {
+func (x *KubeVirtNetwork) SetContainerPort(v int32) {
 	x.xxx_hidden_ContainerPort = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
-func (x *Network) HasMetadata() bool {
+func (x *KubeVirtNetwork) HasMetadata() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Metadata != nil
 }
 
-func (x *Network) HasServiceType() bool {
+func (x *KubeVirtNetwork) HasServiceType() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Network) HasPort() bool {
+func (x *KubeVirtNetwork) HasPort() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Network) HasNodePort() bool {
+func (x *KubeVirtNetwork) HasNodePort() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *Network) HasContainerPort() bool {
+func (x *KubeVirtNetwork) HasContainerPort() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
-func (x *Network) ClearMetadata() {
+func (x *KubeVirtNetwork) ClearMetadata() {
 	x.xxx_hidden_Metadata = nil
 }
 
-func (x *Network) ClearServiceType() {
+func (x *KubeVirtNetwork) ClearServiceType() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_ServiceType = nil
 }
 
-func (x *Network) ClearPort() {
+func (x *KubeVirtNetwork) ClearPort() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Port = 0
 }
 
-func (x *Network) ClearNodePort() {
+func (x *KubeVirtNetwork) ClearNodePort() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_NodePort = 0
 }
 
-func (x *Network) ClearContainerPort() {
+func (x *KubeVirtNetwork) ClearContainerPort() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_ContainerPort = 0
 }
 
-type Network_builder struct {
+type KubeVirtNetwork_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Metadata      *Metadata
@@ -1151,8 +1151,8 @@ type Network_builder struct {
 	ContainerPort *int32
 }
 
-func (b0 Network_builder) Build() *Network {
-	m0 := &Network{}
+func (b0 KubeVirtNetwork_builder) Build() *KubeVirtNetwork {
+	m0 := &KubeVirtNetwork{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Metadata = b.Metadata
@@ -1288,12 +1288,14 @@ func (b0 Device_builder) Build() *Device {
 
 // Request/Response messages
 type ListVirtualMachinesRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,1,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *ListVirtualMachinesRequest) Reset() {
@@ -1321,6 +1323,26 @@ func (x *ListVirtualMachinesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *ListVirtualMachinesRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListVirtualMachinesRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ListVirtualMachinesRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -1331,45 +1353,89 @@ func (x *ListVirtualMachinesRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *ListVirtualMachinesRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+func (x *ListVirtualMachinesRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *ListVirtualMachinesRequest) HasNamespace() bool {
+func (x *ListVirtualMachinesRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *ListVirtualMachinesRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *ListVirtualMachinesRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListVirtualMachinesRequest) ClearNamespace() {
+func (x *ListVirtualMachinesRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListVirtualMachinesRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *ListVirtualMachinesRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *ListVirtualMachinesRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *ListVirtualMachinesRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
 type ListVirtualMachinesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
 }
 
 func (b0 ListVirtualMachinesRequest_builder) Build() *ListVirtualMachinesRequest {
 	m0 := &ListVirtualMachinesRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type ListVirtualMachinesResponse struct {
-	state            protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Items *[]*VirtualMachine     `protobuf:"bytes,1,rep,name=items"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	state                      protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_VirtualMachines *[]*VirtualMachine     `protobuf:"bytes,1,rep,name=virtualMachines"`
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
 func (x *ListVirtualMachinesResponse) Reset() {
@@ -1397,41 +1463,43 @@ func (x *ListVirtualMachinesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListVirtualMachinesResponse) GetItems() []*VirtualMachine {
+func (x *ListVirtualMachinesResponse) GetVirtualMachines() []*VirtualMachine {
 	if x != nil {
-		if x.xxx_hidden_Items != nil {
-			return *x.xxx_hidden_Items
+		if x.xxx_hidden_VirtualMachines != nil {
+			return *x.xxx_hidden_VirtualMachines
 		}
 	}
 	return nil
 }
 
-func (x *ListVirtualMachinesResponse) SetItems(v []*VirtualMachine) {
-	x.xxx_hidden_Items = &v
+func (x *ListVirtualMachinesResponse) SetVirtualMachines(v []*VirtualMachine) {
+	x.xxx_hidden_VirtualMachines = &v
 }
 
 type ListVirtualMachinesResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Items []*VirtualMachine
+	VirtualMachines []*VirtualMachine
 }
 
 func (b0 ListVirtualMachinesResponse_builder) Build() *ListVirtualMachinesResponse {
 	m0 := &ListVirtualMachinesResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Items = &b.Items
+	x.xxx_hidden_VirtualMachines = &b.VirtualMachines
 	return m0
 }
 
 type GetVirtualMachineRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *GetVirtualMachineRequest) Reset() {
@@ -1459,6 +1527,26 @@ func (x *GetVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *GetVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *GetVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *GetVirtualMachineRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -1479,68 +1567,116 @@ func (x *GetVirtualMachineRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *GetVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *GetVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *GetVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *GetVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *GetVirtualMachineRequest) HasName() bool {
+func (x *GetVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetVirtualMachineRequest) HasNamespace() bool {
+func (x *GetVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GetVirtualMachineRequest) ClearName() {
+func (x *GetVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *GetVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *GetVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *GetVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *GetVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *GetVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type GetVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 GetVirtualMachineRequest_builder) Build() *GetVirtualMachineRequest {
 	m0 := &GetVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type CreateVirtualMachineRequest struct {
-	state               protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Metadata *Metadata              `protobuf:"bytes,2,opt,name=metadata"`
-	xxx_hidden_Spec     *VirtualMachineSpec    `protobuf:"bytes,1,opt,name=spec"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Metadata     *Metadata              `protobuf:"bytes,3,opt,name=metadata"`
+	xxx_hidden_Spec         *VirtualMachineSpec    `protobuf:"bytes,4,opt,name=spec"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *CreateVirtualMachineRequest) Reset() {
@@ -1568,6 +1704,26 @@ func (x *CreateVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *CreateVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *CreateVirtualMachineRequest) GetMetadata() *Metadata {
 	if x != nil {
 		return x.xxx_hidden_Metadata
@@ -1582,12 +1738,36 @@ func (x *CreateVirtualMachineRequest) GetSpec() *VirtualMachineSpec {
 	return nil
 }
 
+func (x *CreateVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *CreateVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *CreateVirtualMachineRequest) SetMetadata(v *Metadata) {
 	x.xxx_hidden_Metadata = v
 }
 
 func (x *CreateVirtualMachineRequest) SetSpec(v *VirtualMachineSpec) {
 	x.xxx_hidden_Spec = v
+}
+
+func (x *CreateVirtualMachineRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateVirtualMachineRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *CreateVirtualMachineRequest) HasMetadata() bool {
@@ -1604,6 +1784,16 @@ func (x *CreateVirtualMachineRequest) HasSpec() bool {
 	return x.xxx_hidden_Spec != nil
 }
 
+func (x *CreateVirtualMachineRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CreateVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
 func (x *CreateVirtualMachineRequest) ClearMetadata() {
 	x.xxx_hidden_Metadata = nil
 }
@@ -1615,25 +1805,46 @@ func (x *CreateVirtualMachineRequest) ClearSpec() {
 type CreateVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Metadata *Metadata
-	Spec     *VirtualMachineSpec
+	ScopeUuid    *string
+	FacilityName *string
+	Metadata     *Metadata
+	Spec         *VirtualMachineSpec
 }
 
 func (b0 CreateVirtualMachineRequest_builder) Build() *CreateVirtualMachineRequest {
 	m0 := &CreateVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	x.xxx_hidden_Metadata = b.Metadata
 	x.xxx_hidden_Spec = b.Spec
 	return m0
 }
 
 type UpdateVirtualMachineRequest struct {
-	state               protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Metadata *Metadata              `protobuf:"bytes,2,opt,name=metadata"`
-	xxx_hidden_Spec     *VirtualMachineSpec    `protobuf:"bytes,3,opt,name=spec"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	state                    protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid     *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName  *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name          *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace     *string                `protobuf:"bytes,4,opt,name=namespace"`
+	xxx_hidden_FlavorName    *string                `protobuf:"bytes,5,opt,name=flavor_name,json=flavorName"`
+	xxx_hidden_NetworkName   *string                `protobuf:"bytes,6,opt,name=network_name,json=networkName"`
+	xxx_hidden_StartupScript *string                `protobuf:"bytes,7,opt,name=startup_script,json=startupScript"`
+	xxx_hidden_Labels        map[string]string      `protobuf:"bytes,11,rep,name=labels" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	xxx_hidden_Annotations   map[string]string      `protobuf:"bytes,12,rep,name=annotations" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	xxx_hidden_DataVolumes   []string               `protobuf:"bytes,21,rep,name=data_volumes,json=dataVolumes"`
+	xxx_hidden_Devices       *[]*Device             `protobuf:"bytes,22,rep,name=devices"`
+	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
+	XXX_presence             [1]uint32
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
 func (x *UpdateVirtualMachineRequest) Reset() {
@@ -1661,74 +1872,306 @@ func (x *UpdateVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *UpdateVirtualMachineRequest) GetMetadata() *Metadata {
+func (x *UpdateVirtualMachineRequest) GetScopeUuid() string {
 	if x != nil {
-		return x.xxx_hidden_Metadata
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineRequest) GetName() string {
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineRequest) GetFlavorName() string {
+	if x != nil {
+		if x.xxx_hidden_FlavorName != nil {
+			return *x.xxx_hidden_FlavorName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineRequest) GetNetworkName() string {
+	if x != nil {
+		if x.xxx_hidden_NetworkName != nil {
+			return *x.xxx_hidden_NetworkName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineRequest) GetStartupScript() string {
+	if x != nil {
+		if x.xxx_hidden_StartupScript != nil {
+			return *x.xxx_hidden_StartupScript
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateVirtualMachineRequest) GetLabels() map[string]string {
+	if x != nil {
+		return x.xxx_hidden_Labels
 	}
 	return nil
 }
 
-func (x *UpdateVirtualMachineRequest) GetSpec() *VirtualMachineSpec {
+func (x *UpdateVirtualMachineRequest) GetAnnotations() map[string]string {
 	if x != nil {
-		return x.xxx_hidden_Spec
+		return x.xxx_hidden_Annotations
 	}
 	return nil
 }
 
-func (x *UpdateVirtualMachineRequest) SetMetadata(v *Metadata) {
-	x.xxx_hidden_Metadata = v
+func (x *UpdateVirtualMachineRequest) GetDataVolumes() []string {
+	if x != nil {
+		return x.xxx_hidden_DataVolumes
+	}
+	return nil
 }
 
-func (x *UpdateVirtualMachineRequest) SetSpec(v *VirtualMachineSpec) {
-	x.xxx_hidden_Spec = v
+func (x *UpdateVirtualMachineRequest) GetDevices() []*Device {
+	if x != nil {
+		if x.xxx_hidden_Devices != nil {
+			return *x.xxx_hidden_Devices
+		}
+	}
+	return nil
 }
 
-func (x *UpdateVirtualMachineRequest) HasMetadata() bool {
+func (x *UpdateVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 11)
+}
+
+func (x *UpdateVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 11)
+}
+
+func (x *UpdateVirtualMachineRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 11)
+}
+
+func (x *UpdateVirtualMachineRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
+}
+
+func (x *UpdateVirtualMachineRequest) SetFlavorName(v string) {
+	x.xxx_hidden_FlavorName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
+}
+
+func (x *UpdateVirtualMachineRequest) SetNetworkName(v string) {
+	x.xxx_hidden_NetworkName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 11)
+}
+
+func (x *UpdateVirtualMachineRequest) SetStartupScript(v string) {
+	x.xxx_hidden_StartupScript = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 11)
+}
+
+func (x *UpdateVirtualMachineRequest) SetLabels(v map[string]string) {
+	x.xxx_hidden_Labels = v
+}
+
+func (x *UpdateVirtualMachineRequest) SetAnnotations(v map[string]string) {
+	x.xxx_hidden_Annotations = v
+}
+
+func (x *UpdateVirtualMachineRequest) SetDataVolumes(v []string) {
+	x.xxx_hidden_DataVolumes = v
+}
+
+func (x *UpdateVirtualMachineRequest) SetDevices(v []*Device) {
+	x.xxx_hidden_Devices = &v
+}
+
+func (x *UpdateVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Metadata != nil
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UpdateVirtualMachineRequest) HasSpec() bool {
+func (x *UpdateVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Spec != nil
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UpdateVirtualMachineRequest) ClearMetadata() {
-	x.xxx_hidden_Metadata = nil
+func (x *UpdateVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *UpdateVirtualMachineRequest) ClearSpec() {
-	x.xxx_hidden_Spec = nil
+func (x *UpdateVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *UpdateVirtualMachineRequest) HasFlavorName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *UpdateVirtualMachineRequest) HasNetworkName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *UpdateVirtualMachineRequest) HasStartupScript() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
+func (x *UpdateVirtualMachineRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *UpdateVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *UpdateVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *UpdateVirtualMachineRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *UpdateVirtualMachineRequest) ClearFlavorName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_FlavorName = nil
+}
+
+func (x *UpdateVirtualMachineRequest) ClearNetworkName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_NetworkName = nil
+}
+
+func (x *UpdateVirtualMachineRequest) ClearStartupScript() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_StartupScript = nil
 }
 
 type UpdateVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Metadata *Metadata
-	Spec     *VirtualMachineSpec
+	ScopeUuid     *string
+	FacilityName  *string
+	Name          *string
+	Namespace     *string
+	FlavorName    *string
+	NetworkName   *string
+	StartupScript *string
+	Labels        map[string]string
+	Annotations   map[string]string
+	DataVolumes   []string
+	Devices       []*Device
 }
 
 func (b0 UpdateVirtualMachineRequest_builder) Build() *UpdateVirtualMachineRequest {
 	m0 := &UpdateVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Metadata = b.Metadata
-	x.xxx_hidden_Spec = b.Spec
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 11)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 11)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 11)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.FlavorName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
+		x.xxx_hidden_FlavorName = b.FlavorName
+	}
+	if b.NetworkName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
+		x.xxx_hidden_NetworkName = b.NetworkName
+	}
+	if b.StartupScript != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 11)
+		x.xxx_hidden_StartupScript = b.StartupScript
+	}
+	x.xxx_hidden_Labels = b.Labels
+	x.xxx_hidden_Annotations = b.Annotations
+	x.xxx_hidden_DataVolumes = b.DataVolumes
+	x.xxx_hidden_Devices = &b.Devices
 	return m0
 }
 
 type DeleteVirtualMachineRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *DeleteVirtualMachineRequest) Reset() {
@@ -1756,6 +2199,26 @@ func (x *DeleteVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *DeleteVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *DeleteVirtualMachineRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -1776,70 +2239,116 @@ func (x *DeleteVirtualMachineRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *DeleteVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *DeleteVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *DeleteVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *DeleteVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *DeleteVirtualMachineRequest) HasName() bool {
+func (x *DeleteVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteVirtualMachineRequest) HasNamespace() bool {
+func (x *DeleteVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteVirtualMachineRequest) ClearName() {
+func (x *DeleteVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *DeleteVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *DeleteVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *DeleteVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *DeleteVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *DeleteVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type DeleteVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 DeleteVirtualMachineRequest_builder) Build() *DeleteVirtualMachineRequest {
 	m0 := &DeleteVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type StartVirtualMachineRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *StartVirtualMachineRequest) Reset() {
@@ -1867,6 +2376,26 @@ func (x *StartVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *StartVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StartVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *StartVirtualMachineRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -1887,70 +2416,116 @@ func (x *StartVirtualMachineRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *StartVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *StartVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *StartVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *StartVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *StartVirtualMachineRequest) HasName() bool {
+func (x *StartVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *StartVirtualMachineRequest) HasNamespace() bool {
+func (x *StartVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *StartVirtualMachineRequest) ClearName() {
+func (x *StartVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *StartVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *StartVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *StartVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *StartVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *StartVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type StartVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 StartVirtualMachineRequest_builder) Build() *StartVirtualMachineRequest {
 	m0 := &StartVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type StopVirtualMachineRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *StopVirtualMachineRequest) Reset() {
@@ -1978,6 +2553,26 @@ func (x *StopVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *StopVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *StopVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *StopVirtualMachineRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -1998,70 +2593,116 @@ func (x *StopVirtualMachineRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *StopVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *StopVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *StopVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *StopVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *StopVirtualMachineRequest) HasName() bool {
+func (x *StopVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *StopVirtualMachineRequest) HasNamespace() bool {
+func (x *StopVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *StopVirtualMachineRequest) ClearName() {
+func (x *StopVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *StopVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *StopVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *StopVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *StopVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *StopVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type StopVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 StopVirtualMachineRequest_builder) Build() *StopVirtualMachineRequest {
 	m0 := &StopVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type PauseVirtualMachineRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *PauseVirtualMachineRequest) Reset() {
@@ -2089,6 +2730,26 @@ func (x *PauseVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *PauseVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *PauseVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *PauseVirtualMachineRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -2109,70 +2770,116 @@ func (x *PauseVirtualMachineRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *PauseVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *PauseVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *PauseVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *PauseVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *PauseVirtualMachineRequest) HasName() bool {
+func (x *PauseVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *PauseVirtualMachineRequest) HasNamespace() bool {
+func (x *PauseVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *PauseVirtualMachineRequest) ClearName() {
+func (x *PauseVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *PauseVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *PauseVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *PauseVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *PauseVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *PauseVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type PauseVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 PauseVirtualMachineRequest_builder) Build() *PauseVirtualMachineRequest {
 	m0 := &PauseVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type UnpauseVirtualMachineRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *UnpauseVirtualMachineRequest) Reset() {
@@ -2200,6 +2907,26 @@ func (x *UnpauseVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *UnpauseVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UnpauseVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *UnpauseVirtualMachineRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -2220,57 +2947,101 @@ func (x *UnpauseVirtualMachineRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *UnpauseVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *UnpauseVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *UnpauseVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *UnpauseVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *UnpauseVirtualMachineRequest) HasName() bool {
+func (x *UnpauseVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *UnpauseVirtualMachineRequest) HasNamespace() bool {
+func (x *UnpauseVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *UnpauseVirtualMachineRequest) ClearName() {
+func (x *UnpauseVirtualMachineRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *UnpauseVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *UnpauseVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *UnpauseVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *UnpauseVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *UnpauseVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type UnpauseVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 UnpauseVirtualMachineRequest_builder) Build() *UnpauseVirtualMachineRequest {
 	m0 := &UnpauseVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
@@ -2278,9 +3049,11 @@ func (b0 UnpauseVirtualMachineRequest_builder) Build() *UnpauseVirtualMachineReq
 
 type SnapshotVirtualMachineRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_SnapshotName *string                `protobuf:"bytes,3,opt,name=snapshot_name,json=snapshotName"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -2310,6 +3083,26 @@ func (x *SnapshotVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 		return ms
 	}
 	return mi.MessageOf(x)
+}
+
+func (x *SnapshotVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *SnapshotVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
 }
 
 func (x *SnapshotVirtualMachineRequest) GetName() string {
@@ -2342,60 +3135,96 @@ func (x *SnapshotVirtualMachineRequest) GetSnapshotName() string {
 	return ""
 }
 
+func (x *SnapshotVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *SnapshotVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
 func (x *SnapshotVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *SnapshotVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *SnapshotVirtualMachineRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
-func (x *SnapshotVirtualMachineRequest) HasName() bool {
+func (x *SnapshotVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *SnapshotVirtualMachineRequest) HasNamespace() bool {
+func (x *SnapshotVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *SnapshotVirtualMachineRequest) HasSnapshotName() bool {
+func (x *SnapshotVirtualMachineRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *SnapshotVirtualMachineRequest) ClearName() {
+func (x *SnapshotVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *SnapshotVirtualMachineRequest) HasSnapshotName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *SnapshotVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *SnapshotVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *SnapshotVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *SnapshotVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *SnapshotVirtualMachineRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_SnapshotName = nil
 }
 
 type SnapshotVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	ScopeUuid    *string
+	FacilityName *string
 	Name         *string
 	Namespace    *string
 	SnapshotName *string
@@ -2405,16 +3234,24 @@ func (b0 SnapshotVirtualMachineRequest_builder) Build() *SnapshotVirtualMachineR
 	m0 := &SnapshotVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
@@ -2422,10 +3259,12 @@ func (b0 SnapshotVirtualMachineRequest_builder) Build() *SnapshotVirtualMachineR
 
 type CloneVirtualMachineRequest struct {
 	state                      protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_TargetName      *string                `protobuf:"bytes,1,opt,name=target_name,json=targetName"`
-	xxx_hidden_TargetNamespace *string                `protobuf:"bytes,2,opt,name=target_namespace,json=targetNamespace"`
-	xxx_hidden_SourceName      *string                `protobuf:"bytes,3,opt,name=source_name,json=sourceName"`
-	xxx_hidden_SourceNamespace *string                `protobuf:"bytes,4,opt,name=source_namespace,json=sourceNamespace"`
+	xxx_hidden_ScopeUuid       *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName    *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_TargetName      *string                `protobuf:"bytes,3,opt,name=target_name,json=targetName"`
+	xxx_hidden_TargetNamespace *string                `protobuf:"bytes,4,opt,name=target_namespace,json=targetNamespace"`
+	xxx_hidden_SourceName      *string                `protobuf:"bytes,5,opt,name=source_name,json=sourceName"`
+	xxx_hidden_SourceNamespace *string                `protobuf:"bytes,6,opt,name=source_namespace,json=sourceNamespace"`
 	XXX_raceDetectHookData     protoimpl.RaceDetectHookData
 	XXX_presence               [1]uint32
 	unknownFields              protoimpl.UnknownFields
@@ -2455,6 +3294,26 @@ func (x *CloneVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 		return ms
 	}
 	return mi.MessageOf(x)
+}
+
+func (x *CloneVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CloneVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
 }
 
 func (x *CloneVirtualMachineRequest) GetTargetName() string {
@@ -2497,77 +3356,113 @@ func (x *CloneVirtualMachineRequest) GetSourceNamespace() string {
 	return ""
 }
 
+func (x *CloneVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+}
+
+func (x *CloneVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+}
+
 func (x *CloneVirtualMachineRequest) SetTargetName(v string) {
 	x.xxx_hidden_TargetName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
 }
 
 func (x *CloneVirtualMachineRequest) SetTargetNamespace(v string) {
 	x.xxx_hidden_TargetNamespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
 }
 
 func (x *CloneVirtualMachineRequest) SetSourceName(v string) {
 	x.xxx_hidden_SourceName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
 }
 
 func (x *CloneVirtualMachineRequest) SetSourceNamespace(v string) {
 	x.xxx_hidden_SourceNamespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
 }
 
-func (x *CloneVirtualMachineRequest) HasTargetName() bool {
+func (x *CloneVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CloneVirtualMachineRequest) HasTargetNamespace() bool {
+func (x *CloneVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CloneVirtualMachineRequest) HasSourceName() bool {
+func (x *CloneVirtualMachineRequest) HasTargetName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *CloneVirtualMachineRequest) HasSourceNamespace() bool {
+func (x *CloneVirtualMachineRequest) HasTargetNamespace() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *CloneVirtualMachineRequest) ClearTargetName() {
+func (x *CloneVirtualMachineRequest) HasSourceName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *CloneVirtualMachineRequest) HasSourceNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *CloneVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CloneVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *CloneVirtualMachineRequest) ClearTargetName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_TargetName = nil
 }
 
 func (x *CloneVirtualMachineRequest) ClearTargetNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_TargetNamespace = nil
 }
 
 func (x *CloneVirtualMachineRequest) ClearSourceName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_SourceName = nil
 }
 
 func (x *CloneVirtualMachineRequest) ClearSourceNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
 	x.xxx_hidden_SourceNamespace = nil
 }
 
 type CloneVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	ScopeUuid       *string
+	FacilityName    *string
 	TargetName      *string
 	TargetNamespace *string
 	SourceName      *string
@@ -2578,20 +3473,28 @@ func (b0 CloneVirtualMachineRequest_builder) Build() *CloneVirtualMachineRequest
 	m0 := &CloneVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.TargetName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
 		x.xxx_hidden_TargetName = b.TargetName
 	}
 	if b.TargetNamespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
 		x.xxx_hidden_TargetNamespace = b.TargetNamespace
 	}
 	if b.SourceName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
 		x.xxx_hidden_SourceName = b.SourceName
 	}
 	if b.SourceNamespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
 		x.xxx_hidden_SourceNamespace = b.SourceNamespace
 	}
 	return m0
@@ -2599,9 +3502,11 @@ func (b0 CloneVirtualMachineRequest_builder) Build() *CloneVirtualMachineRequest
 
 type RestoreVirtualMachineRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name         *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_SnapshotName *string                `protobuf:"bytes,3,opt,name=snapshot_name,json=snapshotName"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	xxx_hidden_SnapshotName *string                `protobuf:"bytes,5,opt,name=snapshot_name,json=snapshotName"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -2631,6 +3536,26 @@ func (x *RestoreVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 		return ms
 	}
 	return mi.MessageOf(x)
+}
+
+func (x *RestoreVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *RestoreVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
 }
 
 func (x *RestoreVirtualMachineRequest) GetName() string {
@@ -2663,60 +3588,96 @@ func (x *RestoreVirtualMachineRequest) GetSnapshotName() string {
 	return ""
 }
 
+func (x *RestoreVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *RestoreVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
 func (x *RestoreVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *RestoreVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *RestoreVirtualMachineRequest) SetSnapshotName(v string) {
 	x.xxx_hidden_SnapshotName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
-func (x *RestoreVirtualMachineRequest) HasName() bool {
+func (x *RestoreVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *RestoreVirtualMachineRequest) HasNamespace() bool {
+func (x *RestoreVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *RestoreVirtualMachineRequest) HasSnapshotName() bool {
+func (x *RestoreVirtualMachineRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *RestoreVirtualMachineRequest) ClearName() {
+func (x *RestoreVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *RestoreVirtualMachineRequest) HasSnapshotName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *RestoreVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *RestoreVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *RestoreVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *RestoreVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *RestoreVirtualMachineRequest) ClearSnapshotName() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_SnapshotName = nil
 }
 
 type RestoreVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
+	ScopeUuid    *string
+	FacilityName *string
 	Name         *string
 	Namespace    *string
 	SnapshotName *string
@@ -2726,30 +3687,40 @@ func (b0 RestoreVirtualMachineRequest_builder) Build() *RestoreVirtualMachineReq
 	m0 := &RestoreVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.SnapshotName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_SnapshotName = b.SnapshotName
 	}
 	return m0
 }
 
 type MigrateVirtualMachineRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_TargetNode  *string                `protobuf:"bytes,3,opt,name=target_node,json=targetNode"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	xxx_hidden_TargetNode   *string                `protobuf:"bytes,5,opt,name=target_node,json=targetNode"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *MigrateVirtualMachineRequest) Reset() {
@@ -2775,6 +3746,26 @@ func (x *MigrateVirtualMachineRequest) ProtoReflect() protoreflect.Message {
 		return ms
 	}
 	return mi.MessageOf(x)
+}
+
+func (x *MigrateVirtualMachineRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *MigrateVirtualMachineRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
 }
 
 func (x *MigrateVirtualMachineRequest) GetName() string {
@@ -2807,62 +3798,98 @@ func (x *MigrateVirtualMachineRequest) GetTargetNode() string {
 	return ""
 }
 
+func (x *MigrateVirtualMachineRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *MigrateVirtualMachineRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
 func (x *MigrateVirtualMachineRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *MigrateVirtualMachineRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *MigrateVirtualMachineRequest) SetTargetNode(v string) {
 	x.xxx_hidden_TargetNode = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
-func (x *MigrateVirtualMachineRequest) HasName() bool {
+func (x *MigrateVirtualMachineRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *MigrateVirtualMachineRequest) HasNamespace() bool {
+func (x *MigrateVirtualMachineRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *MigrateVirtualMachineRequest) HasTargetNode() bool {
+func (x *MigrateVirtualMachineRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *MigrateVirtualMachineRequest) ClearName() {
+func (x *MigrateVirtualMachineRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *MigrateVirtualMachineRequest) HasTargetNode() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *MigrateVirtualMachineRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *MigrateVirtualMachineRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *MigrateVirtualMachineRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *MigrateVirtualMachineRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *MigrateVirtualMachineRequest) ClearTargetNode() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_TargetNode = nil
 }
 
 type MigrateVirtualMachineRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 	// [TODO]
 	TargetNode *string
 }
@@ -2871,26 +3898,38 @@ func (b0 MigrateVirtualMachineRequest_builder) Build() *MigrateVirtualMachineReq
 	m0 := &MigrateVirtualMachineRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.TargetNode != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_TargetNode = b.TargetNode
 	}
 	return m0
 }
 
 type CreateDataVolumeRequest struct {
-	state                 protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_DataVolume *DataVolume            `protobuf:"bytes,1,opt,name=data_volume,json=dataVolume"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_DataVolume   *DataVolume            `protobuf:"bytes,3,opt,name=data_volume,json=dataVolume"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *CreateDataVolumeRequest) Reset() {
@@ -2918,6 +3957,26 @@ func (x *CreateDataVolumeRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *CreateDataVolumeRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateDataVolumeRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *CreateDataVolumeRequest) GetDataVolume() *DataVolume {
 	if x != nil {
 		return x.xxx_hidden_DataVolume
@@ -2925,8 +3984,32 @@ func (x *CreateDataVolumeRequest) GetDataVolume() *DataVolume {
 	return nil
 }
 
+func (x *CreateDataVolumeRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *CreateDataVolumeRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
 func (x *CreateDataVolumeRequest) SetDataVolume(v *DataVolume) {
 	x.xxx_hidden_DataVolume = v
+}
+
+func (x *CreateDataVolumeRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateDataVolumeRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *CreateDataVolumeRequest) HasDataVolume() bool {
@@ -2936,6 +4019,16 @@ func (x *CreateDataVolumeRequest) HasDataVolume() bool {
 	return x.xxx_hidden_DataVolume != nil
 }
 
+func (x *CreateDataVolumeRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CreateDataVolumeRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
 func (x *CreateDataVolumeRequest) ClearDataVolume() {
 	x.xxx_hidden_DataVolume = nil
 }
@@ -2943,24 +4036,36 @@ func (x *CreateDataVolumeRequest) ClearDataVolume() {
 type CreateDataVolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	DataVolume *DataVolume
+	ScopeUuid    *string
+	FacilityName *string
+	DataVolume   *DataVolume
 }
 
 func (b0 CreateDataVolumeRequest_builder) Build() *CreateDataVolumeRequest {
 	m0 := &CreateDataVolumeRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	x.xxx_hidden_DataVolume = b.DataVolume
 	return m0
 }
 
 type ListDataVolumesRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,1,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *ListDataVolumesRequest) Reset() {
@@ -2988,6 +4093,26 @@ func (x *ListDataVolumesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *ListDataVolumesRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListDataVolumesRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ListDataVolumesRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -2998,45 +4123,89 @@ func (x *ListDataVolumesRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *ListDataVolumesRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+func (x *ListDataVolumesRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *ListDataVolumesRequest) HasNamespace() bool {
+func (x *ListDataVolumesRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *ListDataVolumesRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *ListDataVolumesRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListDataVolumesRequest) ClearNamespace() {
+func (x *ListDataVolumesRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListDataVolumesRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *ListDataVolumesRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *ListDataVolumesRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *ListDataVolumesRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
 type ListDataVolumesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
 }
 
 func (b0 ListDataVolumesRequest_builder) Build() *ListDataVolumesRequest {
 	m0 := &ListDataVolumesRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type ListDataVolumesResponse struct {
-	state            protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Items *[]*DataVolume         `protobuf:"bytes,1,rep,name=items"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Datavolumes *[]*DataVolume         `protobuf:"bytes,1,rep,name=datavolumes"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *ListDataVolumesResponse) Reset() {
@@ -3064,41 +4233,43 @@ func (x *ListDataVolumesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListDataVolumesResponse) GetItems() []*DataVolume {
+func (x *ListDataVolumesResponse) GetDatavolumes() []*DataVolume {
 	if x != nil {
-		if x.xxx_hidden_Items != nil {
-			return *x.xxx_hidden_Items
+		if x.xxx_hidden_Datavolumes != nil {
+			return *x.xxx_hidden_Datavolumes
 		}
 	}
 	return nil
 }
 
-func (x *ListDataVolumesResponse) SetItems(v []*DataVolume) {
-	x.xxx_hidden_Items = &v
+func (x *ListDataVolumesResponse) SetDatavolumes(v []*DataVolume) {
+	x.xxx_hidden_Datavolumes = &v
 }
 
 type ListDataVolumesResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Items []*DataVolume
+	Datavolumes []*DataVolume
 }
 
 func (b0 ListDataVolumesResponse_builder) Build() *ListDataVolumesResponse {
 	m0 := &ListDataVolumesResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Items = &b.Items
+	x.xxx_hidden_Datavolumes = &b.Datavolumes
 	return m0
 }
 
 type GetDataVolumeRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *GetDataVolumeRequest) Reset() {
@@ -3126,6 +4297,26 @@ func (x *GetDataVolumeRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *GetDataVolumeRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *GetDataVolumeRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *GetDataVolumeRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -3146,70 +4337,116 @@ func (x *GetDataVolumeRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *GetDataVolumeRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *GetDataVolumeRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *GetDataVolumeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *GetDataVolumeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *GetDataVolumeRequest) HasName() bool {
+func (x *GetDataVolumeRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetDataVolumeRequest) HasNamespace() bool {
+func (x *GetDataVolumeRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GetDataVolumeRequest) ClearName() {
+func (x *GetDataVolumeRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *GetDataVolumeRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *GetDataVolumeRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *GetDataVolumeRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *GetDataVolumeRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *GetDataVolumeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type GetDataVolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 GetDataVolumeRequest_builder) Build() *GetDataVolumeRequest {
 	m0 := &GetDataVolumeRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type DeleteDataVolumeRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *DeleteDataVolumeRequest) Reset() {
@@ -3237,6 +4474,26 @@ func (x *DeleteDataVolumeRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *DeleteDataVolumeRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteDataVolumeRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *DeleteDataVolumeRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -3257,71 +4514,117 @@ func (x *DeleteDataVolumeRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *DeleteDataVolumeRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *DeleteDataVolumeRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *DeleteDataVolumeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *DeleteDataVolumeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *DeleteDataVolumeRequest) HasName() bool {
+func (x *DeleteDataVolumeRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteDataVolumeRequest) HasNamespace() bool {
+func (x *DeleteDataVolumeRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteDataVolumeRequest) ClearName() {
+func (x *DeleteDataVolumeRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *DeleteDataVolumeRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *DeleteDataVolumeRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *DeleteDataVolumeRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *DeleteDataVolumeRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *DeleteDataVolumeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type DeleteDataVolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 DeleteDataVolumeRequest_builder) Build() *DeleteDataVolumeRequest {
 	m0 := &DeleteDataVolumeRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type ExtendDataVolumeRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	xxx_hidden_SizeBytes   int64                  `protobuf:"varint,3,opt,name=size_bytes,json=sizeBytes"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	xxx_hidden_SizeBytes    int64                  `protobuf:"varint,5,opt,name=size_bytes,json=sizeBytes"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *ExtendDataVolumeRequest) Reset() {
@@ -3347,6 +4650,26 @@ func (x *ExtendDataVolumeRequest) ProtoReflect() protoreflect.Message {
 		return ms
 	}
 	return mi.MessageOf(x)
+}
+
+func (x *ExtendDataVolumeRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExtendDataVolumeRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
 }
 
 func (x *ExtendDataVolumeRequest) GetName() string {
@@ -3376,89 +4699,137 @@ func (x *ExtendDataVolumeRequest) GetSizeBytes() int64 {
 	return 0
 }
 
+func (x *ExtendDataVolumeRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *ExtendDataVolumeRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
 func (x *ExtendDataVolumeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *ExtendDataVolumeRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
 func (x *ExtendDataVolumeRequest) SetSizeBytes(v int64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
-func (x *ExtendDataVolumeRequest) HasName() bool {
+func (x *ExtendDataVolumeRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ExtendDataVolumeRequest) HasNamespace() bool {
+func (x *ExtendDataVolumeRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ExtendDataVolumeRequest) HasSizeBytes() bool {
+func (x *ExtendDataVolumeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *ExtendDataVolumeRequest) ClearName() {
+func (x *ExtendDataVolumeRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *ExtendDataVolumeRequest) HasSizeBytes() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *ExtendDataVolumeRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *ExtendDataVolumeRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *ExtendDataVolumeRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *ExtendDataVolumeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 func (x *ExtendDataVolumeRequest) ClearSizeBytes() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
 	x.xxx_hidden_SizeBytes = 0
 }
 
 type ExtendDataVolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
-	SizeBytes *int64
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
+	SizeBytes    *int64
 }
 
 func (b0 ExtendDataVolumeRequest_builder) Build() *ExtendDataVolumeRequest {
 	m0 := &ExtendDataVolumeRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
 	return m0
 }
 
 type CreateNetworkRequest struct {
-	state              protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Network *Network               `protobuf:"bytes,1,opt,name=network"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Network      *KubeVirtNetwork       `protobuf:"bytes,3,opt,name=network"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *CreateNetworkRequest) Reset() {
@@ -3486,15 +4857,59 @@ func (x *CreateNetworkRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CreateNetworkRequest) GetNetwork() *Network {
+func (x *CreateNetworkRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateNetworkRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateNetworkRequest) GetNetwork() *KubeVirtNetwork {
 	if x != nil {
 		return x.xxx_hidden_Network
 	}
 	return nil
 }
 
-func (x *CreateNetworkRequest) SetNetwork(v *Network) {
+func (x *CreateNetworkRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *CreateNetworkRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *CreateNetworkRequest) SetNetwork(v *KubeVirtNetwork) {
 	x.xxx_hidden_Network = v
+}
+
+func (x *CreateNetworkRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateNetworkRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *CreateNetworkRequest) HasNetwork() bool {
@@ -3504,6 +4919,16 @@ func (x *CreateNetworkRequest) HasNetwork() bool {
 	return x.xxx_hidden_Network != nil
 }
 
+func (x *CreateNetworkRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CreateNetworkRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
 func (x *CreateNetworkRequest) ClearNetwork() {
 	x.xxx_hidden_Network = nil
 }
@@ -3511,24 +4936,36 @@ func (x *CreateNetworkRequest) ClearNetwork() {
 type CreateNetworkRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Network *Network
+	ScopeUuid    *string
+	FacilityName *string
+	Network      *KubeVirtNetwork
 }
 
 func (b0 CreateNetworkRequest_builder) Build() *CreateNetworkRequest {
 	m0 := &CreateNetworkRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	x.xxx_hidden_Network = b.Network
 	return m0
 }
 
 type ListNetworksRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,1,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *ListNetworksRequest) Reset() {
@@ -3556,6 +4993,26 @@ func (x *ListNetworksRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *ListNetworksRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListNetworksRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ListNetworksRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -3566,45 +5023,89 @@ func (x *ListNetworksRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *ListNetworksRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+func (x *ListNetworksRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *ListNetworksRequest) HasNamespace() bool {
+func (x *ListNetworksRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *ListNetworksRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *ListNetworksRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListNetworksRequest) ClearNamespace() {
+func (x *ListNetworksRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListNetworksRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *ListNetworksRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *ListNetworksRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *ListNetworksRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
 type ListNetworksRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
 }
 
 func (b0 ListNetworksRequest_builder) Build() *ListNetworksRequest {
 	m0 := &ListNetworksRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type ListNetworksResponse struct {
-	state            protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Items *[]*Network            `protobuf:"bytes,1,rep,name=items"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	state               protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Networks *[]*KubeVirtNetwork    `protobuf:"bytes,1,rep,name=networks"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *ListNetworksResponse) Reset() {
@@ -3632,41 +5133,43 @@ func (x *ListNetworksResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListNetworksResponse) GetItems() []*Network {
+func (x *ListNetworksResponse) GetNetworks() []*KubeVirtNetwork {
 	if x != nil {
-		if x.xxx_hidden_Items != nil {
-			return *x.xxx_hidden_Items
+		if x.xxx_hidden_Networks != nil {
+			return *x.xxx_hidden_Networks
 		}
 	}
 	return nil
 }
 
-func (x *ListNetworksResponse) SetItems(v []*Network) {
-	x.xxx_hidden_Items = &v
+func (x *ListNetworksResponse) SetNetworks(v []*KubeVirtNetwork) {
+	x.xxx_hidden_Networks = &v
 }
 
 type ListNetworksResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Items []*Network
+	Networks []*KubeVirtNetwork
 }
 
 func (b0 ListNetworksResponse_builder) Build() *ListNetworksResponse {
 	m0 := &ListNetworksResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Items = &b.Items
+	x.xxx_hidden_Networks = &b.Networks
 	return m0
 }
 
 type GetNetworkRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *GetNetworkRequest) Reset() {
@@ -3694,6 +5197,26 @@ func (x *GetNetworkRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *GetNetworkRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *GetNetworkRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *GetNetworkRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -3714,67 +5237,115 @@ func (x *GetNetworkRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *GetNetworkRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *GetNetworkRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *GetNetworkRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *GetNetworkRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *GetNetworkRequest) HasName() bool {
+func (x *GetNetworkRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetNetworkRequest) HasNamespace() bool {
+func (x *GetNetworkRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GetNetworkRequest) ClearName() {
+func (x *GetNetworkRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *GetNetworkRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *GetNetworkRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *GetNetworkRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *GetNetworkRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *GetNetworkRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type GetNetworkRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 GetNetworkRequest_builder) Build() *GetNetworkRequest {
 	m0 := &GetNetworkRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type UpdateNetworkRequest struct {
-	state              protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Network *Network               `protobuf:"bytes,1,opt,name=network"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Network      *KubeVirtNetwork       `protobuf:"bytes,3,opt,name=network"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *UpdateNetworkRequest) Reset() {
@@ -3802,15 +5373,59 @@ func (x *UpdateNetworkRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *UpdateNetworkRequest) GetNetwork() *Network {
+func (x *UpdateNetworkRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateNetworkRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *UpdateNetworkRequest) GetNetwork() *KubeVirtNetwork {
 	if x != nil {
 		return x.xxx_hidden_Network
 	}
 	return nil
 }
 
-func (x *UpdateNetworkRequest) SetNetwork(v *Network) {
+func (x *UpdateNetworkRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *UpdateNetworkRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *UpdateNetworkRequest) SetNetwork(v *KubeVirtNetwork) {
 	x.xxx_hidden_Network = v
+}
+
+func (x *UpdateNetworkRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *UpdateNetworkRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *UpdateNetworkRequest) HasNetwork() bool {
@@ -3820,6 +5435,16 @@ func (x *UpdateNetworkRequest) HasNetwork() bool {
 	return x.xxx_hidden_Network != nil
 }
 
+func (x *UpdateNetworkRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *UpdateNetworkRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
 func (x *UpdateNetworkRequest) ClearNetwork() {
 	x.xxx_hidden_Network = nil
 }
@@ -3827,25 +5452,37 @@ func (x *UpdateNetworkRequest) ClearNetwork() {
 type UpdateNetworkRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Network *Network
+	ScopeUuid    *string
+	FacilityName *string
+	Network      *KubeVirtNetwork
 }
 
 func (b0 UpdateNetworkRequest_builder) Build() *UpdateNetworkRequest {
 	m0 := &UpdateNetworkRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	x.xxx_hidden_Network = b.Network
 	return m0
 }
 
 type DeleteNetworkRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *DeleteNetworkRequest) Reset() {
@@ -3873,6 +5510,26 @@ func (x *DeleteNetworkRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *DeleteNetworkRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteNetworkRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *DeleteNetworkRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -3893,67 +5550,115 @@ func (x *DeleteNetworkRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *DeleteNetworkRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *DeleteNetworkRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *DeleteNetworkRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *DeleteNetworkRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *DeleteNetworkRequest) HasName() bool {
+func (x *DeleteNetworkRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteNetworkRequest) HasNamespace() bool {
+func (x *DeleteNetworkRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteNetworkRequest) ClearName() {
+func (x *DeleteNetworkRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *DeleteNetworkRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *DeleteNetworkRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *DeleteNetworkRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *DeleteNetworkRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *DeleteNetworkRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type DeleteNetworkRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 DeleteNetworkRequest_builder) Build() *DeleteNetworkRequest {
 	m0 := &DeleteNetworkRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type CreateFlavorRequest struct {
-	state             protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Flavor *Flavor                `protobuf:"bytes,1,opt,name=flavor"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Flavor       *Flavor                `protobuf:"bytes,3,opt,name=flavor"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *CreateFlavorRequest) Reset() {
@@ -3981,6 +5686,26 @@ func (x *CreateFlavorRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *CreateFlavorRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *CreateFlavorRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *CreateFlavorRequest) GetFlavor() *Flavor {
 	if x != nil {
 		return x.xxx_hidden_Flavor
@@ -3988,8 +5713,32 @@ func (x *CreateFlavorRequest) GetFlavor() *Flavor {
 	return nil
 }
 
+func (x *CreateFlavorRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *CreateFlavorRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
 func (x *CreateFlavorRequest) SetFlavor(v *Flavor) {
 	x.xxx_hidden_Flavor = v
+}
+
+func (x *CreateFlavorRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *CreateFlavorRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
 func (x *CreateFlavorRequest) HasFlavor() bool {
@@ -3999,6 +5748,16 @@ func (x *CreateFlavorRequest) HasFlavor() bool {
 	return x.xxx_hidden_Flavor != nil
 }
 
+func (x *CreateFlavorRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *CreateFlavorRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
 func (x *CreateFlavorRequest) ClearFlavor() {
 	x.xxx_hidden_Flavor = nil
 }
@@ -4006,24 +5765,36 @@ func (x *CreateFlavorRequest) ClearFlavor() {
 type CreateFlavorRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Flavor *Flavor
+	ScopeUuid    *string
+	FacilityName *string
+	Flavor       *Flavor
 }
 
 func (b0 CreateFlavorRequest_builder) Build() *CreateFlavorRequest {
 	m0 := &CreateFlavorRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	x.xxx_hidden_Flavor = b.Flavor
 	return m0
 }
 
 type ListFlavorsRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,1,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *ListFlavorsRequest) Reset() {
@@ -4051,6 +5822,26 @@ func (x *ListFlavorsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *ListFlavorsRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ListFlavorsRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *ListFlavorsRequest) GetNamespace() string {
 	if x != nil {
 		if x.xxx_hidden_Namespace != nil {
@@ -4061,45 +5852,89 @@ func (x *ListFlavorsRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *ListFlavorsRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+func (x *ListFlavorsRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *ListFlavorsRequest) HasNamespace() bool {
+func (x *ListFlavorsRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *ListFlavorsRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+}
+
+func (x *ListFlavorsRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListFlavorsRequest) ClearNamespace() {
+func (x *ListFlavorsRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ListFlavorsRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *ListFlavorsRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *ListFlavorsRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *ListFlavorsRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Namespace = nil
 }
 
 type ListFlavorsRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Namespace    *string
 }
 
 func (b0 ListFlavorsRequest_builder) Build() *ListFlavorsRequest {
 	m0 := &ListFlavorsRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type ListFlavorsResponse struct {
-	state            protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Items *[]*Flavor             `protobuf:"bytes,1,rep,name=items"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	state              protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Flavors *[]*Flavor             `protobuf:"bytes,1,rep,name=flavors"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *ListFlavorsResponse) Reset() {
@@ -4127,41 +5962,43 @@ func (x *ListFlavorsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListFlavorsResponse) GetItems() []*Flavor {
+func (x *ListFlavorsResponse) GetFlavors() []*Flavor {
 	if x != nil {
-		if x.xxx_hidden_Items != nil {
-			return *x.xxx_hidden_Items
+		if x.xxx_hidden_Flavors != nil {
+			return *x.xxx_hidden_Flavors
 		}
 	}
 	return nil
 }
 
-func (x *ListFlavorsResponse) SetItems(v []*Flavor) {
-	x.xxx_hidden_Items = &v
+func (x *ListFlavorsResponse) SetFlavors(v []*Flavor) {
+	x.xxx_hidden_Flavors = &v
 }
 
 type ListFlavorsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Items []*Flavor
+	Flavors []*Flavor
 }
 
 func (b0 ListFlavorsResponse_builder) Build() *ListFlavorsResponse {
 	m0 := &ListFlavorsResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Items = &b.Items
+	x.xxx_hidden_Flavors = &b.Flavors
 	return m0
 }
 
 type GetFlavorRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *GetFlavorRequest) Reset() {
@@ -4189,6 +6026,26 @@ func (x *GetFlavorRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *GetFlavorRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *GetFlavorRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *GetFlavorRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -4209,70 +6066,116 @@ func (x *GetFlavorRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *GetFlavorRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *GetFlavorRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *GetFlavorRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *GetFlavorRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *GetFlavorRequest) HasName() bool {
+func (x *GetFlavorRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetFlavorRequest) HasNamespace() bool {
+func (x *GetFlavorRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GetFlavorRequest) ClearName() {
+func (x *GetFlavorRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *GetFlavorRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *GetFlavorRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *GetFlavorRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *GetFlavorRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *GetFlavorRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type GetFlavorRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 GetFlavorRequest_builder) Build() *GetFlavorRequest {
 	m0 := &GetFlavorRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type DeleteFlavorRequest struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
+	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
+	XXX_presence            [1]uint32
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *DeleteFlavorRequest) Reset() {
@@ -4300,6 +6203,26 @@ func (x *DeleteFlavorRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
+func (x *DeleteFlavorRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DeleteFlavorRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *DeleteFlavorRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
@@ -4320,69 +6243,113 @@ func (x *DeleteFlavorRequest) GetNamespace() string {
 	return ""
 }
 
+func (x *DeleteFlavorRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+}
+
+func (x *DeleteFlavorRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+}
+
 func (x *DeleteFlavorRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *DeleteFlavorRequest) SetNamespace(v string) {
 	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
-func (x *DeleteFlavorRequest) HasName() bool {
+func (x *DeleteFlavorRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteFlavorRequest) HasNamespace() bool {
+func (x *DeleteFlavorRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteFlavorRequest) ClearName() {
+func (x *DeleteFlavorRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *DeleteFlavorRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *DeleteFlavorRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *DeleteFlavorRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *DeleteFlavorRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
 func (x *DeleteFlavorRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
 	x.xxx_hidden_Namespace = nil
 }
 
 type DeleteFlavorRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Name      *string
-	Namespace *string
+	ScopeUuid    *string
+	FacilityName *string
+	Name         *string
+	Namespace    *string
 }
 
 func (b0 DeleteFlavorRequest_builder) Build() *DeleteFlavorRequest {
 	m0 := &DeleteFlavorRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
 		x.xxx_hidden_Name = b.Name
 	}
 	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
 
 type VirtualMachine_Operation struct {
-	state                  protoimpl.MessageState                    `protogen:"opaque.v1"`
-	xxx_hidden_Name        *string                                   `protobuf:"bytes,1,opt,name=name"`
-	xxx_hidden_Type        *string                                   `protobuf:"bytes,2,opt,name=type"`
-	xxx_hidden_Description *string                                   `protobuf:"bytes,3,opt,name=description"`
-	xxx_hidden_CreateTime  *timestamppb.Timestamp                    `protobuf:"bytes,4,opt,name=create_time,json=createTime"`
-	xxx_hidden_Status      *VirtualMachine_Operation_OperationResult `protobuf:"bytes,11,opt,name=status"`
+	state                  protoimpl.MessageState           `protogen:"opaque.v1"`
+	xxx_hidden_Name        *string                          `protobuf:"bytes,1,opt,name=name"`
+	xxx_hidden_Type        *string                          `protobuf:"bytes,2,opt,name=type"`
+	xxx_hidden_Description *string                          `protobuf:"bytes,3,opt,name=description"`
+	xxx_hidden_CreatedAt   *timestamppb.Timestamp           `protobuf:"bytes,4,opt,name=created_at,json=createdAt"`
+	xxx_hidden_Status      *VirtualMachine_Operation_Result `protobuf:"bytes,11,opt,name=status"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -4444,14 +6411,14 @@ func (x *VirtualMachine_Operation) GetDescription() string {
 	return ""
 }
 
-func (x *VirtualMachine_Operation) GetCreateTime() *timestamppb.Timestamp {
+func (x *VirtualMachine_Operation) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.xxx_hidden_CreateTime
+		return x.xxx_hidden_CreatedAt
 	}
 	return nil
 }
 
-func (x *VirtualMachine_Operation) GetStatus() *VirtualMachine_Operation_OperationResult {
+func (x *VirtualMachine_Operation) GetStatus() *VirtualMachine_Operation_Result {
 	if x != nil {
 		return x.xxx_hidden_Status
 	}
@@ -4473,11 +6440,11 @@ func (x *VirtualMachine_Operation) SetDescription(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
-func (x *VirtualMachine_Operation) SetCreateTime(v *timestamppb.Timestamp) {
-	x.xxx_hidden_CreateTime = v
+func (x *VirtualMachine_Operation) SetCreatedAt(v *timestamppb.Timestamp) {
+	x.xxx_hidden_CreatedAt = v
 }
 
-func (x *VirtualMachine_Operation) SetStatus(v *VirtualMachine_Operation_OperationResult) {
+func (x *VirtualMachine_Operation) SetStatus(v *VirtualMachine_Operation_Result) {
 	x.xxx_hidden_Status = v
 }
 
@@ -4502,11 +6469,11 @@ func (x *VirtualMachine_Operation) HasDescription() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *VirtualMachine_Operation) HasCreateTime() bool {
+func (x *VirtualMachine_Operation) HasCreatedAt() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_CreateTime != nil
+	return x.xxx_hidden_CreatedAt != nil
 }
 
 func (x *VirtualMachine_Operation) HasStatus() bool {
@@ -4531,8 +6498,8 @@ func (x *VirtualMachine_Operation) ClearDescription() {
 	x.xxx_hidden_Description = nil
 }
 
-func (x *VirtualMachine_Operation) ClearCreateTime() {
-	x.xxx_hidden_CreateTime = nil
+func (x *VirtualMachine_Operation) ClearCreatedAt() {
+	x.xxx_hidden_CreatedAt = nil
 }
 
 func (x *VirtualMachine_Operation) ClearStatus() {
@@ -4545,8 +6512,8 @@ type VirtualMachine_Operation_builder struct {
 	Name        *string
 	Type        *string
 	Description *string
-	CreateTime  *timestamppb.Timestamp
-	Status      *VirtualMachine_Operation_OperationResult
+	CreatedAt   *timestamppb.Timestamp
+	Status      *VirtualMachine_Operation_Result
 }
 
 func (b0 VirtualMachine_Operation_builder) Build() *VirtualMachine_Operation {
@@ -4565,36 +6532,36 @@ func (b0 VirtualMachine_Operation_builder) Build() *VirtualMachine_Operation {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Description = b.Description
 	}
-	x.xxx_hidden_CreateTime = b.CreateTime
+	x.xxx_hidden_CreatedAt = b.CreatedAt
 	x.xxx_hidden_Status = b.Status
 	return m0
 }
 
-type VirtualMachine_Operation_OperationResult struct {
-	state                  protoimpl.MessageState                                   `protogen:"opaque.v1"`
-	xxx_hidden_Status      VirtualMachine_Operation_OperationResult_OperationStatus `protobuf:"varint,1,opt,name=status,enum=otterscale.kubevirt.v1.VirtualMachine_Operation_OperationResult_OperationStatus"`
-	xxx_hidden_Message     *string                                                  `protobuf:"bytes,2,opt,name=message"`
-	xxx_hidden_Reason      *string                                                  `protobuf:"bytes,3,opt,name=reason"`
+type VirtualMachine_Operation_Result struct {
+	state                  protoimpl.MessageState                 `protogen:"opaque.v1"`
+	xxx_hidden_Status      VirtualMachine_Operation_Result_Status `protobuf:"varint,1,opt,name=status,enum=otterscale.kubevirt.v1.VirtualMachine_Operation_Result_Status"`
+	xxx_hidden_Message     *string                                `protobuf:"bytes,2,opt,name=message"`
+	xxx_hidden_Reason      *string                                `protobuf:"bytes,3,opt,name=reason"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *VirtualMachine_Operation_OperationResult) Reset() {
-	*x = VirtualMachine_Operation_OperationResult{}
+func (x *VirtualMachine_Operation_Result) Reset() {
+	*x = VirtualMachine_Operation_Result{}
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *VirtualMachine_Operation_OperationResult) String() string {
+func (x *VirtualMachine_Operation_Result) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*VirtualMachine_Operation_OperationResult) ProtoMessage() {}
+func (*VirtualMachine_Operation_Result) ProtoMessage() {}
 
-func (x *VirtualMachine_Operation_OperationResult) ProtoReflect() protoreflect.Message {
+func (x *VirtualMachine_Operation_Result) ProtoReflect() protoreflect.Message {
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -4606,16 +6573,16 @@ func (x *VirtualMachine_Operation_OperationResult) ProtoReflect() protoreflect.M
 	return mi.MessageOf(x)
 }
 
-func (x *VirtualMachine_Operation_OperationResult) GetStatus() VirtualMachine_Operation_OperationResult_OperationStatus {
+func (x *VirtualMachine_Operation_Result) GetStatus() VirtualMachine_Operation_Result_Status {
 	if x != nil {
 		if protoimpl.X.Present(&(x.XXX_presence[0]), 0) {
 			return x.xxx_hidden_Status
 		}
 	}
-	return VirtualMachine_Operation_OperationResult_OPERATION_STATUS_UNSPECIFIED
+	return VirtualMachine_Operation_Result_UNSPECIFIED
 }
 
-func (x *VirtualMachine_Operation_OperationResult) GetMessage() string {
+func (x *VirtualMachine_Operation_Result) GetMessage() string {
 	if x != nil {
 		if x.xxx_hidden_Message != nil {
 			return *x.xxx_hidden_Message
@@ -4625,7 +6592,7 @@ func (x *VirtualMachine_Operation_OperationResult) GetMessage() string {
 	return ""
 }
 
-func (x *VirtualMachine_Operation_OperationResult) GetReason() string {
+func (x *VirtualMachine_Operation_Result) GetReason() string {
 	if x != nil {
 		if x.xxx_hidden_Reason != nil {
 			return *x.xxx_hidden_Reason
@@ -4635,67 +6602,67 @@ func (x *VirtualMachine_Operation_OperationResult) GetReason() string {
 	return ""
 }
 
-func (x *VirtualMachine_Operation_OperationResult) SetStatus(v VirtualMachine_Operation_OperationResult_OperationStatus) {
+func (x *VirtualMachine_Operation_Result) SetStatus(v VirtualMachine_Operation_Result_Status) {
 	x.xxx_hidden_Status = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *VirtualMachine_Operation_OperationResult) SetMessage(v string) {
+func (x *VirtualMachine_Operation_Result) SetMessage(v string) {
 	x.xxx_hidden_Message = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *VirtualMachine_Operation_OperationResult) SetReason(v string) {
+func (x *VirtualMachine_Operation_Result) SetReason(v string) {
 	x.xxx_hidden_Reason = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *VirtualMachine_Operation_OperationResult) HasStatus() bool {
+func (x *VirtualMachine_Operation_Result) HasStatus() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *VirtualMachine_Operation_OperationResult) HasMessage() bool {
+func (x *VirtualMachine_Operation_Result) HasMessage() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *VirtualMachine_Operation_OperationResult) HasReason() bool {
+func (x *VirtualMachine_Operation_Result) HasReason() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *VirtualMachine_Operation_OperationResult) ClearStatus() {
+func (x *VirtualMachine_Operation_Result) ClearStatus() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Status = VirtualMachine_Operation_OperationResult_OPERATION_STATUS_UNSPECIFIED
+	x.xxx_hidden_Status = VirtualMachine_Operation_Result_UNSPECIFIED
 }
 
-func (x *VirtualMachine_Operation_OperationResult) ClearMessage() {
+func (x *VirtualMachine_Operation_Result) ClearMessage() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_Message = nil
 }
 
-func (x *VirtualMachine_Operation_OperationResult) ClearReason() {
+func (x *VirtualMachine_Operation_Result) ClearReason() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Reason = nil
 }
 
-type VirtualMachine_Operation_OperationResult_builder struct {
+type VirtualMachine_Operation_Result_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Status  *VirtualMachine_Operation_OperationResult_OperationStatus
+	Status  *VirtualMachine_Operation_Result_Status
 	Message *string
 	Reason  *string
 }
 
-func (b0 VirtualMachine_Operation_OperationResult_builder) Build() *VirtualMachine_Operation_OperationResult {
-	m0 := &VirtualMachine_Operation_OperationResult{}
+func (b0 VirtualMachine_Operation_Result_builder) Build() *VirtualMachine_Operation_Result {
+	m0 := &VirtualMachine_Operation_Result{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Status != nil {
@@ -4732,32 +6699,33 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +
 	"\x10AnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xdd\t\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xcc\b\n" +
 	"\x0eVirtualMachine\x12<\n" +
 	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12>\n" +
-	"\x04spec\x18\v \x01(\v2*.otterscale.kubevirt.v1.VirtualMachineSpecR\x04spec\x12S\n" +
-	"\x06status\x18\f \x01(\x0e2;.otterscale.kubevirt.v1.VirtualMachine.VirtualMachineStatusR\x06status\x12N\n" +
+	"\x04spec\x18\v \x01(\v2*.otterscale.kubevirt.v1.VirtualMachineSpecR\x04spec\x12E\n" +
+	"\x06status\x18\f \x01(\x0e2-.otterscale.kubevirt.v1.VirtualMachine.StatusR\x06status\x12N\n" +
 	"\tsnapshots\x18\x15 \x03(\v20.otterscale.kubevirt.v1.VirtualMachine.OperationR\tsnapshots\x12H\n" +
 	"\x06clones\x18\x16 \x03(\v20.otterscale.kubevirt.v1.VirtualMachine.OperationR\x06clones\x12L\n" +
 	"\bmigrates\x18\x17 \x03(\v20.otterscale.kubevirt.v1.VirtualMachine.OperationR\bmigrates\x12L\n" +
-	"\brestores\x18\x18 \x03(\v20.otterscale.kubevirt.v1.VirtualMachine.OperationR\brestores\x1a\xb1\x04\n" +
+	"\brestores\x18\x18 \x03(\v20.otterscale.kubevirt.v1.VirtualMachine.OperationR\brestores\x1a\xbd\x03\n" +
 	"\tOperation\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescription\x12;\n" +
-	"\vcreate_time\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
-	"createTime\x12X\n" +
-	"\x06status\x18\v \x01(\v2@.otterscale.kubevirt.v1.VirtualMachine.Operation.OperationResultR\x06status\x1a\xc2\x02\n" +
-	"\x0fOperationResult\x12h\n" +
-	"\x06status\x18\x01 \x01(\x0e2P.otterscale.kubevirt.v1.VirtualMachine.Operation.OperationResult.OperationStatusR\x06status\x12\x18\n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x129\n" +
+	"\n" +
+	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12O\n" +
+	"\x06status\x18\v \x01(\v27.otterscale.kubevirt.v1.VirtualMachine.Operation.ResultR\x06status\x1a\xd9\x01\n" +
+	"\x06Result\x12V\n" +
+	"\x06status\x18\x01 \x01(\x0e2>.otterscale.kubevirt.v1.VirtualMachine.Operation.Result.StatusR\x06status\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x16\n" +
-	"\x06reason\x18\x03 \x01(\tR\x06reason\"\x92\x01\n" +
-	"\x0fOperationStatus\x12 \n" +
-	"\x1cOPERATION_STATUS_UNSPECIFIED\x10\x00\x12 \n" +
-	"\x1cOPERATION_STATUS_IN_PROGRESS\x10\x01\x12\x1e\n" +
-	"\x1aOPERATION_STATUS_SUCCEEDED\x10\x02\x12\x1b\n" +
-	"\x17OPERATION_STATUS_FAILED\x10\x03\"\x8d\x01\n" +
-	"\x14VirtualMachineStatus\x12\x0f\n" +
+	"\x06reason\x18\x03 \x01(\tR\x06reason\"E\n" +
+	"\x06Status\x12\x0f\n" +
+	"\vUNSPECIFIED\x10\x00\x12\x0f\n" +
+	"\vIN_PROGRESS\x10\x01\x12\r\n" +
+	"\tSUCCEEDED\x10\x02\x12\n" +
+	"\n" +
+	"\x06FAILED\x10\x03\"\x7f\n" +
+	"\x06Status\x12\x0f\n" +
 	"\vUNSPECIFIED\x10\x00\x12\x10\n" +
 	"\fPROVISIONING\x10\x01\x12\f\n" +
 	"\bSTARTING\x10\x02\x12\v\n" +
@@ -4784,8 +6752,8 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12\x12\n" +
 	"\x04type\x18\x03 \x01(\tR\x04type\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\x04 \x01(\x03R\tsizeBytes\"\xc2\x01\n" +
-	"\aNetwork\x12<\n" +
+	"size_bytes\x18\x04 \x01(\x03R\tsizeBytes\"\xca\x01\n" +
+	"\x0fKubeVirtNetwork\x12<\n" +
 	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12!\n" +
 	"\fservice_type\x18\x02 \x01(\tR\vserviceType\x12\x12\n" +
 	"\x04port\x18\x03 \x01(\x05R\x04port\x12\x1b\n" +
@@ -4793,103 +6761,198 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\x0econtainer_port\x18\x05 \x01(\x05R\rcontainerPort\"0\n" +
 	"\x06Device\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
-	"\x04type\x18\x02 \x01(\tR\x04type\":\n" +
-	"\x1aListVirtualMachinesRequest\x12\x1c\n" +
-	"\tnamespace\x18\x01 \x01(\tR\tnamespace\"[\n" +
-	"\x1bListVirtualMachinesResponse\x12<\n" +
-	"\x05items\x18\x01 \x03(\v2&.otterscale.kubevirt.v1.VirtualMachineR\x05items\"L\n" +
-	"\x18GetVirtualMachineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"\x9b\x01\n" +
-	"\x1bCreateVirtualMachineRequest\x12<\n" +
-	"\bmetadata\x18\x02 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12>\n" +
-	"\x04spec\x18\x01 \x01(\v2*.otterscale.kubevirt.v1.VirtualMachineSpecR\x04spec\"\x9b\x01\n" +
-	"\x1bUpdateVirtualMachineRequest\x12<\n" +
-	"\bmetadata\x18\x02 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12>\n" +
-	"\x04spec\x18\x03 \x01(\v2*.otterscale.kubevirt.v1.VirtualMachineSpecR\x04spec\"O\n" +
-	"\x1bDeleteVirtualMachineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"N\n" +
-	"\x1aStartVirtualMachineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"M\n" +
-	"\x19StopVirtualMachineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"N\n" +
-	"\x1aPauseVirtualMachineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"P\n" +
-	"\x1cUnpauseVirtualMachineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"v\n" +
-	"\x1dSnapshotVirtualMachineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12#\n" +
-	"\rsnapshot_name\x18\x03 \x01(\tR\fsnapshotName\"\xb4\x01\n" +
-	"\x1aCloneVirtualMachineRequest\x12\x1f\n" +
-	"\vtarget_name\x18\x01 \x01(\tR\n" +
-	"targetName\x12)\n" +
-	"\x10target_namespace\x18\x02 \x01(\tR\x0ftargetNamespace\x12\x1f\n" +
-	"\vsource_name\x18\x03 \x01(\tR\n" +
-	"sourceName\x12)\n" +
-	"\x10source_namespace\x18\x04 \x01(\tR\x0fsourceNamespace\"u\n" +
-	"\x1cRestoreVirtualMachineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12#\n" +
-	"\rsnapshot_name\x18\x03 \x01(\tR\fsnapshotName\"q\n" +
-	"\x1cMigrateVirtualMachineRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1f\n" +
-	"\vtarget_node\x18\x03 \x01(\tR\n" +
-	"targetNode\"^\n" +
-	"\x17CreateDataVolumeRequest\x12C\n" +
-	"\vdata_volume\x18\x01 \x01(\v2\".otterscale.kubevirt.v1.DataVolumeR\n" +
-	"dataVolume\"6\n" +
-	"\x16ListDataVolumesRequest\x12\x1c\n" +
-	"\tnamespace\x18\x01 \x01(\tR\tnamespace\"S\n" +
-	"\x17ListDataVolumesResponse\x128\n" +
-	"\x05items\x18\x01 \x03(\v2\".otterscale.kubevirt.v1.DataVolumeR\x05items\"H\n" +
-	"\x14GetDataVolumeRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"K\n" +
-	"\x17DeleteDataVolumeRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"j\n" +
-	"\x17ExtendDataVolumeRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x1d\n" +
+	"\x04type\x18\x02 \x01(\tR\x04type\"~\n" +
+	"\x1aListVirtualMachinesRequest\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\x03 \x01(\x03R\tsizeBytes\"Q\n" +
-	"\x14CreateNetworkRequest\x129\n" +
-	"\anetwork\x18\x01 \x01(\v2\x1f.otterscale.kubevirt.v1.NetworkR\anetwork\"3\n" +
-	"\x13ListNetworksRequest\x12\x1c\n" +
-	"\tnamespace\x18\x01 \x01(\tR\tnamespace\"M\n" +
-	"\x14ListNetworksResponse\x125\n" +
-	"\x05items\x18\x01 \x03(\v2\x1f.otterscale.kubevirt.v1.NetworkR\x05items\"E\n" +
-	"\x11GetNetworkRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"Q\n" +
-	"\x14UpdateNetworkRequest\x129\n" +
-	"\anetwork\x18\x01 \x01(\v2\x1f.otterscale.kubevirt.v1.NetworkR\anetwork\"H\n" +
-	"\x14DeleteNetworkRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"M\n" +
-	"\x13CreateFlavorRequest\x126\n" +
-	"\x06flavor\x18\x01 \x01(\v2\x1e.otterscale.kubevirt.v1.FlavorR\x06flavor\"2\n" +
-	"\x12ListFlavorsRequest\x12\x1c\n" +
-	"\tnamespace\x18\x01 \x01(\tR\tnamespace\"K\n" +
-	"\x13ListFlavorsResponse\x124\n" +
-	"\x05items\x18\x01 \x03(\v2\x1e.otterscale.kubevirt.v1.FlavorR\x05items\"D\n" +
-	"\x10GetFlavorRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace\"G\n" +
-	"\x13DeleteFlavorRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x02 \x01(\tR\tnamespace2\xbe\x15\n" +
-	"\x0fKubeVirtService\x12~\n" +
-	"\x13ListVirtualMachines\x122.otterscale.kubevirt.v1.ListVirtualMachinesRequest\x1a3.otterscale.kubevirt.v1.ListVirtualMachinesResponse\x12m\n" +
-	"\x11GetVirtualMachine\x120.otterscale.kubevirt.v1.GetVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12s\n" +
-	"\x14CreateVirtualMachine\x123.otterscale.kubevirt.v1.CreateVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12s\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"o\n" +
+	"\x1bListVirtualMachinesResponse\x12P\n" +
+	"\x0fvirtualMachines\x18\x01 \x03(\v2&.otterscale.kubevirt.v1.VirtualMachineR\x0fvirtualMachines\"\x90\x01\n" +
+	"\x18GetVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\xdf\x01\n" +
+	"\x1bCreateVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12<\n" +
+	"\bmetadata\x18\x03 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12>\n" +
+	"\x04spec\x18\x04 \x01(\v2*.otterscale.kubevirt.v1.VirtualMachineSpecR\x04spec\"\x97\x05\n" +
+	"\x1bUpdateVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\x12\x1f\n" +
+	"\vflavor_name\x18\x05 \x01(\tR\n" +
+	"flavorName\x12!\n" +
+	"\fnetwork_name\x18\x06 \x01(\tR\vnetworkName\x12%\n" +
+	"\x0estartup_script\x18\a \x01(\tR\rstartupScript\x12W\n" +
+	"\x06labels\x18\v \x03(\v2?.otterscale.kubevirt.v1.UpdateVirtualMachineRequest.LabelsEntryR\x06labels\x12f\n" +
+	"\vannotations\x18\f \x03(\v2D.otterscale.kubevirt.v1.UpdateVirtualMachineRequest.AnnotationsEntryR\vannotations\x12!\n" +
+	"\fdata_volumes\x18\x15 \x03(\tR\vdataVolumes\x128\n" +
+	"\adevices\x18\x16 \x03(\v2\x1e.otterscale.kubevirt.v1.DeviceR\adevices\x1a9\n" +
+	"\vLabelsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +
+	"\x10AnnotationsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x93\x01\n" +
+	"\x1bDeleteVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x92\x01\n" +
+	"\x1aStartVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x91\x01\n" +
+	"\x19StopVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x92\x01\n" +
+	"\x1aPauseVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x94\x01\n" +
+	"\x1cUnpauseVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\xba\x01\n" +
+	"\x1dSnapshotVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\x12#\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xf8\x01\n" +
+	"\x1aCloneVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1f\n" +
+	"\vtarget_name\x18\x03 \x01(\tR\n" +
+	"targetName\x12)\n" +
+	"\x10target_namespace\x18\x04 \x01(\tR\x0ftargetNamespace\x12\x1f\n" +
+	"\vsource_name\x18\x05 \x01(\tR\n" +
+	"sourceName\x12)\n" +
+	"\x10source_namespace\x18\x06 \x01(\tR\x0fsourceNamespace\"\xb9\x01\n" +
+	"\x1cRestoreVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\x12#\n" +
+	"\rsnapshot_name\x18\x05 \x01(\tR\fsnapshotName\"\xb5\x01\n" +
+	"\x1cMigrateVirtualMachineRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\x12\x1f\n" +
+	"\vtarget_node\x18\x05 \x01(\tR\n" +
+	"targetNode\"\xa2\x01\n" +
+	"\x17CreateDataVolumeRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12C\n" +
+	"\vdata_volume\x18\x03 \x01(\v2\".otterscale.kubevirt.v1.DataVolumeR\n" +
+	"dataVolume\"z\n" +
+	"\x16ListDataVolumesRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"_\n" +
+	"\x17ListDataVolumesResponse\x12D\n" +
+	"\vdatavolumes\x18\x01 \x03(\v2\".otterscale.kubevirt.v1.DataVolumeR\vdatavolumes\"\x8c\x01\n" +
+	"\x14GetDataVolumeRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x8f\x01\n" +
+	"\x17DeleteDataVolumeRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\xae\x01\n" +
+	"\x17ExtendDataVolumeRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\x12\x1d\n" +
+	"\n" +
+	"size_bytes\x18\x05 \x01(\x03R\tsizeBytes\"\x9d\x01\n" +
+	"\x14CreateNetworkRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12A\n" +
+	"\anetwork\x18\x03 \x01(\v2'.otterscale.kubevirt.v1.KubeVirtNetworkR\anetwork\"w\n" +
+	"\x13ListNetworksRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"[\n" +
+	"\x14ListNetworksResponse\x12C\n" +
+	"\bnetworks\x18\x01 \x03(\v2'.otterscale.kubevirt.v1.KubeVirtNetworkR\bnetworks\"\x89\x01\n" +
+	"\x11GetNetworkRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x9d\x01\n" +
+	"\x14UpdateNetworkRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12A\n" +
+	"\anetwork\x18\x03 \x01(\v2'.otterscale.kubevirt.v1.KubeVirtNetworkR\anetwork\"\x8c\x01\n" +
+	"\x14DeleteNetworkRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x91\x01\n" +
+	"\x13CreateFlavorRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x126\n" +
+	"\x06flavor\x18\x03 \x01(\v2\x1e.otterscale.kubevirt.v1.FlavorR\x06flavor\"v\n" +
+	"\x12ListFlavorsRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"O\n" +
+	"\x13ListFlavorsResponse\x128\n" +
+	"\aflavors\x18\x01 \x03(\v2\x1e.otterscale.kubevirt.v1.FlavorR\aflavors\"\x88\x01\n" +
+	"\x10GetFlavorRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x8b\x01\n" +
+	"\x13DeleteFlavorRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
+	"\tnamespace\x18\x04 \x01(\tR\tnamespace2\xd6\x15\n" +
+	"\x0fKubeVirtService\x12s\n" +
+	"\x14CreateVirtualMachine\x123.otterscale.kubevirt.v1.CreateVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12m\n" +
+	"\x11GetVirtualMachine\x120.otterscale.kubevirt.v1.GetVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12~\n" +
+	"\x13ListVirtualMachines\x122.otterscale.kubevirt.v1.ListVirtualMachinesRequest\x1a3.otterscale.kubevirt.v1.ListVirtualMachinesResponse\x12s\n" +
 	"\x14UpdateVirtualMachine\x123.otterscale.kubevirt.v1.UpdateVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12c\n" +
 	"\x14DeleteVirtualMachine\x123.otterscale.kubevirt.v1.DeleteVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12a\n" +
 	"\x13StartVirtualMachine\x122.otterscale.kubevirt.v1.StartVirtualMachineRequest\x1a\x16.google.protobuf.Empty\x12_\n" +
@@ -4904,12 +6967,12 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\rGetDataVolume\x12,.otterscale.kubevirt.v1.GetDataVolumeRequest\x1a\".otterscale.kubevirt.v1.DataVolume\x12r\n" +
 	"\x0fListDataVolumes\x12..otterscale.kubevirt.v1.ListDataVolumesRequest\x1a/.otterscale.kubevirt.v1.ListDataVolumesResponse\x12[\n" +
 	"\x10DeleteDataVolume\x12/.otterscale.kubevirt.v1.DeleteDataVolumeRequest\x1a\x16.google.protobuf.Empty\x12[\n" +
-	"\x10ExtendDataVolume\x12/.otterscale.kubevirt.v1.ExtendDataVolumeRequest\x1a\x16.google.protobuf.Empty\x12^\n" +
-	"\rCreateNetwork\x12,.otterscale.kubevirt.v1.CreateNetworkRequest\x1a\x1f.otterscale.kubevirt.v1.Network\x12X\n" +
+	"\x10ExtendDataVolume\x12/.otterscale.kubevirt.v1.ExtendDataVolumeRequest\x1a\x16.google.protobuf.Empty\x12f\n" +
+	"\rCreateNetwork\x12,.otterscale.kubevirt.v1.CreateNetworkRequest\x1a'.otterscale.kubevirt.v1.KubeVirtNetwork\x12`\n" +
 	"\n" +
-	"GetNetwork\x12).otterscale.kubevirt.v1.GetNetworkRequest\x1a\x1f.otterscale.kubevirt.v1.Network\x12i\n" +
-	"\fListNetworks\x12+.otterscale.kubevirt.v1.ListNetworksRequest\x1a,.otterscale.kubevirt.v1.ListNetworksResponse\x12^\n" +
-	"\rUpdateNetwork\x12,.otterscale.kubevirt.v1.UpdateNetworkRequest\x1a\x1f.otterscale.kubevirt.v1.Network\x12U\n" +
+	"GetNetwork\x12).otterscale.kubevirt.v1.GetNetworkRequest\x1a'.otterscale.kubevirt.v1.KubeVirtNetwork\x12i\n" +
+	"\fListNetworks\x12+.otterscale.kubevirt.v1.ListNetworksRequest\x1a,.otterscale.kubevirt.v1.ListNetworksResponse\x12f\n" +
+	"\rUpdateNetwork\x12,.otterscale.kubevirt.v1.UpdateNetworkRequest\x1a'.otterscale.kubevirt.v1.KubeVirtNetwork\x12U\n" +
 	"\rDeleteNetwork\x12,.otterscale.kubevirt.v1.DeleteNetworkRequest\x1a\x16.google.protobuf.Empty\x12[\n" +
 	"\fCreateFlavor\x12+.otterscale.kubevirt.v1.CreateFlavorRequest\x1a\x1e.otterscale.kubevirt.v1.Flavor\x12U\n" +
 	"\tGetFlavor\x12(.otterscale.kubevirt.v1.GetFlavorRequest\x1a\x1e.otterscale.kubevirt.v1.Flavor\x12f\n" +
@@ -4917,63 +6980,65 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\fDeleteFlavor\x12+.otterscale.kubevirt.v1.DeleteFlavorRequest\x1a\x16.google.protobuf.EmptyB2Z0github.com/openhdc/otterscale/api/kubevirt/v1;pbb\beditionsp\xe8\a"
 
 var file_api_kubevirt_v1_kubevirt_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_kubevirt_v1_kubevirt_proto_msgTypes = make([]protoimpl.MessageInfo, 42)
+var file_api_kubevirt_v1_kubevirt_proto_msgTypes = make([]protoimpl.MessageInfo, 44)
 var file_api_kubevirt_v1_kubevirt_proto_goTypes = []any{
-	(VirtualMachine_VirtualMachineStatus)(0),                      // 0: otterscale.kubevirt.v1.VirtualMachine.VirtualMachineStatus
-	(VirtualMachine_Operation_OperationResult_OperationStatus)(0), // 1: otterscale.kubevirt.v1.VirtualMachine.Operation.OperationResult.OperationStatus
-	(*Metadata)(nil),                                 // 2: otterscale.kubevirt.v1.Metadata
-	(*VirtualMachine)(nil),                           // 3: otterscale.kubevirt.v1.VirtualMachine
-	(*VirtualMachineSpec)(nil),                       // 4: otterscale.kubevirt.v1.VirtualMachineSpec
-	(*Flavor)(nil),                                   // 5: otterscale.kubevirt.v1.Flavor
-	(*DataVolume)(nil),                               // 6: otterscale.kubevirt.v1.DataVolume
-	(*Network)(nil),                                  // 7: otterscale.kubevirt.v1.Network
-	(*Device)(nil),                                   // 8: otterscale.kubevirt.v1.Device
-	(*ListVirtualMachinesRequest)(nil),               // 9: otterscale.kubevirt.v1.ListVirtualMachinesRequest
-	(*ListVirtualMachinesResponse)(nil),              // 10: otterscale.kubevirt.v1.ListVirtualMachinesResponse
-	(*GetVirtualMachineRequest)(nil),                 // 11: otterscale.kubevirt.v1.GetVirtualMachineRequest
-	(*CreateVirtualMachineRequest)(nil),              // 12: otterscale.kubevirt.v1.CreateVirtualMachineRequest
-	(*UpdateVirtualMachineRequest)(nil),              // 13: otterscale.kubevirt.v1.UpdateVirtualMachineRequest
-	(*DeleteVirtualMachineRequest)(nil),              // 14: otterscale.kubevirt.v1.DeleteVirtualMachineRequest
-	(*StartVirtualMachineRequest)(nil),               // 15: otterscale.kubevirt.v1.StartVirtualMachineRequest
-	(*StopVirtualMachineRequest)(nil),                // 16: otterscale.kubevirt.v1.StopVirtualMachineRequest
-	(*PauseVirtualMachineRequest)(nil),               // 17: otterscale.kubevirt.v1.PauseVirtualMachineRequest
-	(*UnpauseVirtualMachineRequest)(nil),             // 18: otterscale.kubevirt.v1.UnpauseVirtualMachineRequest
-	(*SnapshotVirtualMachineRequest)(nil),            // 19: otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
-	(*CloneVirtualMachineRequest)(nil),               // 20: otterscale.kubevirt.v1.CloneVirtualMachineRequest
-	(*RestoreVirtualMachineRequest)(nil),             // 21: otterscale.kubevirt.v1.RestoreVirtualMachineRequest
-	(*MigrateVirtualMachineRequest)(nil),             // 22: otterscale.kubevirt.v1.MigrateVirtualMachineRequest
-	(*CreateDataVolumeRequest)(nil),                  // 23: otterscale.kubevirt.v1.CreateDataVolumeRequest
-	(*ListDataVolumesRequest)(nil),                   // 24: otterscale.kubevirt.v1.ListDataVolumesRequest
-	(*ListDataVolumesResponse)(nil),                  // 25: otterscale.kubevirt.v1.ListDataVolumesResponse
-	(*GetDataVolumeRequest)(nil),                     // 26: otterscale.kubevirt.v1.GetDataVolumeRequest
-	(*DeleteDataVolumeRequest)(nil),                  // 27: otterscale.kubevirt.v1.DeleteDataVolumeRequest
-	(*ExtendDataVolumeRequest)(nil),                  // 28: otterscale.kubevirt.v1.ExtendDataVolumeRequest
-	(*CreateNetworkRequest)(nil),                     // 29: otterscale.kubevirt.v1.CreateNetworkRequest
-	(*ListNetworksRequest)(nil),                      // 30: otterscale.kubevirt.v1.ListNetworksRequest
-	(*ListNetworksResponse)(nil),                     // 31: otterscale.kubevirt.v1.ListNetworksResponse
-	(*GetNetworkRequest)(nil),                        // 32: otterscale.kubevirt.v1.GetNetworkRequest
-	(*UpdateNetworkRequest)(nil),                     // 33: otterscale.kubevirt.v1.UpdateNetworkRequest
-	(*DeleteNetworkRequest)(nil),                     // 34: otterscale.kubevirt.v1.DeleteNetworkRequest
-	(*CreateFlavorRequest)(nil),                      // 35: otterscale.kubevirt.v1.CreateFlavorRequest
-	(*ListFlavorsRequest)(nil),                       // 36: otterscale.kubevirt.v1.ListFlavorsRequest
-	(*ListFlavorsResponse)(nil),                      // 37: otterscale.kubevirt.v1.ListFlavorsResponse
-	(*GetFlavorRequest)(nil),                         // 38: otterscale.kubevirt.v1.GetFlavorRequest
-	(*DeleteFlavorRequest)(nil),                      // 39: otterscale.kubevirt.v1.DeleteFlavorRequest
-	nil,                                              // 40: otterscale.kubevirt.v1.Metadata.LabelsEntry
-	nil,                                              // 41: otterscale.kubevirt.v1.Metadata.AnnotationsEntry
-	(*VirtualMachine_Operation)(nil),                 // 42: otterscale.kubevirt.v1.VirtualMachine.Operation
-	(*VirtualMachine_Operation_OperationResult)(nil), // 43: otterscale.kubevirt.v1.VirtualMachine.Operation.OperationResult
-	(*timestamppb.Timestamp)(nil),                    // 44: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                            // 45: google.protobuf.Empty
+	(VirtualMachine_Status)(0),                  // 0: otterscale.kubevirt.v1.VirtualMachine.Status
+	(VirtualMachine_Operation_Result_Status)(0), // 1: otterscale.kubevirt.v1.VirtualMachine.Operation.Result.Status
+	(*Metadata)(nil),                            // 2: otterscale.kubevirt.v1.Metadata
+	(*VirtualMachine)(nil),                      // 3: otterscale.kubevirt.v1.VirtualMachine
+	(*VirtualMachineSpec)(nil),                  // 4: otterscale.kubevirt.v1.VirtualMachineSpec
+	(*Flavor)(nil),                              // 5: otterscale.kubevirt.v1.Flavor
+	(*DataVolume)(nil),                          // 6: otterscale.kubevirt.v1.DataVolume
+	(*KubeVirtNetwork)(nil),                     // 7: otterscale.kubevirt.v1.KubeVirtNetwork
+	(*Device)(nil),                              // 8: otterscale.kubevirt.v1.Device
+	(*ListVirtualMachinesRequest)(nil),          // 9: otterscale.kubevirt.v1.ListVirtualMachinesRequest
+	(*ListVirtualMachinesResponse)(nil),         // 10: otterscale.kubevirt.v1.ListVirtualMachinesResponse
+	(*GetVirtualMachineRequest)(nil),            // 11: otterscale.kubevirt.v1.GetVirtualMachineRequest
+	(*CreateVirtualMachineRequest)(nil),         // 12: otterscale.kubevirt.v1.CreateVirtualMachineRequest
+	(*UpdateVirtualMachineRequest)(nil),         // 13: otterscale.kubevirt.v1.UpdateVirtualMachineRequest
+	(*DeleteVirtualMachineRequest)(nil),         // 14: otterscale.kubevirt.v1.DeleteVirtualMachineRequest
+	(*StartVirtualMachineRequest)(nil),          // 15: otterscale.kubevirt.v1.StartVirtualMachineRequest
+	(*StopVirtualMachineRequest)(nil),           // 16: otterscale.kubevirt.v1.StopVirtualMachineRequest
+	(*PauseVirtualMachineRequest)(nil),          // 17: otterscale.kubevirt.v1.PauseVirtualMachineRequest
+	(*UnpauseVirtualMachineRequest)(nil),        // 18: otterscale.kubevirt.v1.UnpauseVirtualMachineRequest
+	(*SnapshotVirtualMachineRequest)(nil),       // 19: otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
+	(*CloneVirtualMachineRequest)(nil),          // 20: otterscale.kubevirt.v1.CloneVirtualMachineRequest
+	(*RestoreVirtualMachineRequest)(nil),        // 21: otterscale.kubevirt.v1.RestoreVirtualMachineRequest
+	(*MigrateVirtualMachineRequest)(nil),        // 22: otterscale.kubevirt.v1.MigrateVirtualMachineRequest
+	(*CreateDataVolumeRequest)(nil),             // 23: otterscale.kubevirt.v1.CreateDataVolumeRequest
+	(*ListDataVolumesRequest)(nil),              // 24: otterscale.kubevirt.v1.ListDataVolumesRequest
+	(*ListDataVolumesResponse)(nil),             // 25: otterscale.kubevirt.v1.ListDataVolumesResponse
+	(*GetDataVolumeRequest)(nil),                // 26: otterscale.kubevirt.v1.GetDataVolumeRequest
+	(*DeleteDataVolumeRequest)(nil),             // 27: otterscale.kubevirt.v1.DeleteDataVolumeRequest
+	(*ExtendDataVolumeRequest)(nil),             // 28: otterscale.kubevirt.v1.ExtendDataVolumeRequest
+	(*CreateNetworkRequest)(nil),                // 29: otterscale.kubevirt.v1.CreateNetworkRequest
+	(*ListNetworksRequest)(nil),                 // 30: otterscale.kubevirt.v1.ListNetworksRequest
+	(*ListNetworksResponse)(nil),                // 31: otterscale.kubevirt.v1.ListNetworksResponse
+	(*GetNetworkRequest)(nil),                   // 32: otterscale.kubevirt.v1.GetNetworkRequest
+	(*UpdateNetworkRequest)(nil),                // 33: otterscale.kubevirt.v1.UpdateNetworkRequest
+	(*DeleteNetworkRequest)(nil),                // 34: otterscale.kubevirt.v1.DeleteNetworkRequest
+	(*CreateFlavorRequest)(nil),                 // 35: otterscale.kubevirt.v1.CreateFlavorRequest
+	(*ListFlavorsRequest)(nil),                  // 36: otterscale.kubevirt.v1.ListFlavorsRequest
+	(*ListFlavorsResponse)(nil),                 // 37: otterscale.kubevirt.v1.ListFlavorsResponse
+	(*GetFlavorRequest)(nil),                    // 38: otterscale.kubevirt.v1.GetFlavorRequest
+	(*DeleteFlavorRequest)(nil),                 // 39: otterscale.kubevirt.v1.DeleteFlavorRequest
+	nil,                                         // 40: otterscale.kubevirt.v1.Metadata.LabelsEntry
+	nil,                                         // 41: otterscale.kubevirt.v1.Metadata.AnnotationsEntry
+	(*VirtualMachine_Operation)(nil),            // 42: otterscale.kubevirt.v1.VirtualMachine.Operation
+	(*VirtualMachine_Operation_Result)(nil),     // 43: otterscale.kubevirt.v1.VirtualMachine.Operation.Result
+	nil,                                         // 44: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.LabelsEntry
+	nil,                                         // 45: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.AnnotationsEntry
+	(*timestamppb.Timestamp)(nil),               // 46: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                       // 47: google.protobuf.Empty
 }
 var file_api_kubevirt_v1_kubevirt_proto_depIdxs = []int32{
 	40, // 0: otterscale.kubevirt.v1.Metadata.labels:type_name -> otterscale.kubevirt.v1.Metadata.LabelsEntry
 	41, // 1: otterscale.kubevirt.v1.Metadata.annotations:type_name -> otterscale.kubevirt.v1.Metadata.AnnotationsEntry
-	44, // 2: otterscale.kubevirt.v1.Metadata.created_at:type_name -> google.protobuf.Timestamp
-	44, // 3: otterscale.kubevirt.v1.Metadata.updated_at:type_name -> google.protobuf.Timestamp
+	46, // 2: otterscale.kubevirt.v1.Metadata.created_at:type_name -> google.protobuf.Timestamp
+	46, // 3: otterscale.kubevirt.v1.Metadata.updated_at:type_name -> google.protobuf.Timestamp
 	2,  // 4: otterscale.kubevirt.v1.VirtualMachine.metadata:type_name -> otterscale.kubevirt.v1.Metadata
 	4,  // 5: otterscale.kubevirt.v1.VirtualMachine.spec:type_name -> otterscale.kubevirt.v1.VirtualMachineSpec
-	0,  // 6: otterscale.kubevirt.v1.VirtualMachine.status:type_name -> otterscale.kubevirt.v1.VirtualMachine.VirtualMachineStatus
+	0,  // 6: otterscale.kubevirt.v1.VirtualMachine.status:type_name -> otterscale.kubevirt.v1.VirtualMachine.Status
 	42, // 7: otterscale.kubevirt.v1.VirtualMachine.snapshots:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation
 	42, // 8: otterscale.kubevirt.v1.VirtualMachine.clones:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation
 	42, // 9: otterscale.kubevirt.v1.VirtualMachine.migrates:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation
@@ -4981,81 +7046,82 @@ var file_api_kubevirt_v1_kubevirt_proto_depIdxs = []int32{
 	8,  // 11: otterscale.kubevirt.v1.VirtualMachineSpec.devices:type_name -> otterscale.kubevirt.v1.Device
 	2,  // 12: otterscale.kubevirt.v1.Flavor.metadata:type_name -> otterscale.kubevirt.v1.Metadata
 	2,  // 13: otterscale.kubevirt.v1.DataVolume.metadata:type_name -> otterscale.kubevirt.v1.Metadata
-	2,  // 14: otterscale.kubevirt.v1.Network.metadata:type_name -> otterscale.kubevirt.v1.Metadata
-	3,  // 15: otterscale.kubevirt.v1.ListVirtualMachinesResponse.items:type_name -> otterscale.kubevirt.v1.VirtualMachine
+	2,  // 14: otterscale.kubevirt.v1.KubeVirtNetwork.metadata:type_name -> otterscale.kubevirt.v1.Metadata
+	3,  // 15: otterscale.kubevirt.v1.ListVirtualMachinesResponse.virtualMachines:type_name -> otterscale.kubevirt.v1.VirtualMachine
 	2,  // 16: otterscale.kubevirt.v1.CreateVirtualMachineRequest.metadata:type_name -> otterscale.kubevirt.v1.Metadata
 	4,  // 17: otterscale.kubevirt.v1.CreateVirtualMachineRequest.spec:type_name -> otterscale.kubevirt.v1.VirtualMachineSpec
-	2,  // 18: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.metadata:type_name -> otterscale.kubevirt.v1.Metadata
-	4,  // 19: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.spec:type_name -> otterscale.kubevirt.v1.VirtualMachineSpec
-	6,  // 20: otterscale.kubevirt.v1.CreateDataVolumeRequest.data_volume:type_name -> otterscale.kubevirt.v1.DataVolume
-	6,  // 21: otterscale.kubevirt.v1.ListDataVolumesResponse.items:type_name -> otterscale.kubevirt.v1.DataVolume
-	7,  // 22: otterscale.kubevirt.v1.CreateNetworkRequest.network:type_name -> otterscale.kubevirt.v1.Network
-	7,  // 23: otterscale.kubevirt.v1.ListNetworksResponse.items:type_name -> otterscale.kubevirt.v1.Network
-	7,  // 24: otterscale.kubevirt.v1.UpdateNetworkRequest.network:type_name -> otterscale.kubevirt.v1.Network
-	5,  // 25: otterscale.kubevirt.v1.CreateFlavorRequest.flavor:type_name -> otterscale.kubevirt.v1.Flavor
-	5,  // 26: otterscale.kubevirt.v1.ListFlavorsResponse.items:type_name -> otterscale.kubevirt.v1.Flavor
-	44, // 27: otterscale.kubevirt.v1.VirtualMachine.Operation.create_time:type_name -> google.protobuf.Timestamp
-	43, // 28: otterscale.kubevirt.v1.VirtualMachine.Operation.status:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation.OperationResult
-	1,  // 29: otterscale.kubevirt.v1.VirtualMachine.Operation.OperationResult.status:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation.OperationResult.OperationStatus
-	9,  // 30: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:input_type -> otterscale.kubevirt.v1.ListVirtualMachinesRequest
-	11, // 31: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:input_type -> otterscale.kubevirt.v1.GetVirtualMachineRequest
-	12, // 32: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineRequest
-	13, // 33: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest
-	14, // 34: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineRequest
-	15, // 35: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:input_type -> otterscale.kubevirt.v1.StartVirtualMachineRequest
-	16, // 36: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:input_type -> otterscale.kubevirt.v1.StopVirtualMachineRequest
-	17, // 37: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:input_type -> otterscale.kubevirt.v1.PauseVirtualMachineRequest
-	18, // 38: otterscale.kubevirt.v1.KubeVirtService.UnpauseVirtualMachine:input_type -> otterscale.kubevirt.v1.UnpauseVirtualMachineRequest
-	20, // 39: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:input_type -> otterscale.kubevirt.v1.CloneVirtualMachineRequest
-	19, // 40: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:input_type -> otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
-	21, // 41: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:input_type -> otterscale.kubevirt.v1.RestoreVirtualMachineRequest
-	22, // 42: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:input_type -> otterscale.kubevirt.v1.MigrateVirtualMachineRequest
-	23, // 43: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:input_type -> otterscale.kubevirt.v1.CreateDataVolumeRequest
-	26, // 44: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:input_type -> otterscale.kubevirt.v1.GetDataVolumeRequest
-	24, // 45: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:input_type -> otterscale.kubevirt.v1.ListDataVolumesRequest
-	27, // 46: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:input_type -> otterscale.kubevirt.v1.DeleteDataVolumeRequest
-	28, // 47: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:input_type -> otterscale.kubevirt.v1.ExtendDataVolumeRequest
-	29, // 48: otterscale.kubevirt.v1.KubeVirtService.CreateNetwork:input_type -> otterscale.kubevirt.v1.CreateNetworkRequest
-	32, // 49: otterscale.kubevirt.v1.KubeVirtService.GetNetwork:input_type -> otterscale.kubevirt.v1.GetNetworkRequest
-	30, // 50: otterscale.kubevirt.v1.KubeVirtService.ListNetworks:input_type -> otterscale.kubevirt.v1.ListNetworksRequest
-	33, // 51: otterscale.kubevirt.v1.KubeVirtService.UpdateNetwork:input_type -> otterscale.kubevirt.v1.UpdateNetworkRequest
-	34, // 52: otterscale.kubevirt.v1.KubeVirtService.DeleteNetwork:input_type -> otterscale.kubevirt.v1.DeleteNetworkRequest
-	35, // 53: otterscale.kubevirt.v1.KubeVirtService.CreateFlavor:input_type -> otterscale.kubevirt.v1.CreateFlavorRequest
-	38, // 54: otterscale.kubevirt.v1.KubeVirtService.GetFlavor:input_type -> otterscale.kubevirt.v1.GetFlavorRequest
-	36, // 55: otterscale.kubevirt.v1.KubeVirtService.ListFlavors:input_type -> otterscale.kubevirt.v1.ListFlavorsRequest
-	39, // 56: otterscale.kubevirt.v1.KubeVirtService.DeleteFlavor:input_type -> otterscale.kubevirt.v1.DeleteFlavorRequest
-	10, // 57: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:output_type -> otterscale.kubevirt.v1.ListVirtualMachinesResponse
-	3,  // 58: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
-	3,  // 59: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
-	3,  // 60: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
-	45, // 61: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
-	45, // 62: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:output_type -> google.protobuf.Empty
-	45, // 63: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:output_type -> google.protobuf.Empty
-	45, // 64: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:output_type -> google.protobuf.Empty
-	45, // 65: otterscale.kubevirt.v1.KubeVirtService.UnpauseVirtualMachine:output_type -> google.protobuf.Empty
-	45, // 66: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:output_type -> google.protobuf.Empty
-	45, // 67: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:output_type -> google.protobuf.Empty
-	45, // 68: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:output_type -> google.protobuf.Empty
-	45, // 69: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:output_type -> google.protobuf.Empty
-	6,  // 70: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
-	6,  // 71: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
-	25, // 72: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:output_type -> otterscale.kubevirt.v1.ListDataVolumesResponse
-	45, // 73: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:output_type -> google.protobuf.Empty
-	45, // 74: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:output_type -> google.protobuf.Empty
-	7,  // 75: otterscale.kubevirt.v1.KubeVirtService.CreateNetwork:output_type -> otterscale.kubevirt.v1.Network
-	7,  // 76: otterscale.kubevirt.v1.KubeVirtService.GetNetwork:output_type -> otterscale.kubevirt.v1.Network
-	31, // 77: otterscale.kubevirt.v1.KubeVirtService.ListNetworks:output_type -> otterscale.kubevirt.v1.ListNetworksResponse
-	7,  // 78: otterscale.kubevirt.v1.KubeVirtService.UpdateNetwork:output_type -> otterscale.kubevirt.v1.Network
-	45, // 79: otterscale.kubevirt.v1.KubeVirtService.DeleteNetwork:output_type -> google.protobuf.Empty
-	5,  // 80: otterscale.kubevirt.v1.KubeVirtService.CreateFlavor:output_type -> otterscale.kubevirt.v1.Flavor
-	5,  // 81: otterscale.kubevirt.v1.KubeVirtService.GetFlavor:output_type -> otterscale.kubevirt.v1.Flavor
-	37, // 82: otterscale.kubevirt.v1.KubeVirtService.ListFlavors:output_type -> otterscale.kubevirt.v1.ListFlavorsResponse
-	45, // 83: otterscale.kubevirt.v1.KubeVirtService.DeleteFlavor:output_type -> google.protobuf.Empty
-	57, // [57:84] is the sub-list for method output_type
-	30, // [30:57] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	44, // 18: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.labels:type_name -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest.LabelsEntry
+	45, // 19: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.annotations:type_name -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest.AnnotationsEntry
+	8,  // 20: otterscale.kubevirt.v1.UpdateVirtualMachineRequest.devices:type_name -> otterscale.kubevirt.v1.Device
+	6,  // 21: otterscale.kubevirt.v1.CreateDataVolumeRequest.data_volume:type_name -> otterscale.kubevirt.v1.DataVolume
+	6,  // 22: otterscale.kubevirt.v1.ListDataVolumesResponse.datavolumes:type_name -> otterscale.kubevirt.v1.DataVolume
+	7,  // 23: otterscale.kubevirt.v1.CreateNetworkRequest.network:type_name -> otterscale.kubevirt.v1.KubeVirtNetwork
+	7,  // 24: otterscale.kubevirt.v1.ListNetworksResponse.networks:type_name -> otterscale.kubevirt.v1.KubeVirtNetwork
+	7,  // 25: otterscale.kubevirt.v1.UpdateNetworkRequest.network:type_name -> otterscale.kubevirt.v1.KubeVirtNetwork
+	5,  // 26: otterscale.kubevirt.v1.CreateFlavorRequest.flavor:type_name -> otterscale.kubevirt.v1.Flavor
+	5,  // 27: otterscale.kubevirt.v1.ListFlavorsResponse.flavors:type_name -> otterscale.kubevirt.v1.Flavor
+	46, // 28: otterscale.kubevirt.v1.VirtualMachine.Operation.created_at:type_name -> google.protobuf.Timestamp
+	43, // 29: otterscale.kubevirt.v1.VirtualMachine.Operation.status:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation.Result
+	1,  // 30: otterscale.kubevirt.v1.VirtualMachine.Operation.Result.status:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation.Result.Status
+	12, // 31: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:input_type -> otterscale.kubevirt.v1.CreateVirtualMachineRequest
+	11, // 32: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:input_type -> otterscale.kubevirt.v1.GetVirtualMachineRequest
+	9,  // 33: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:input_type -> otterscale.kubevirt.v1.ListVirtualMachinesRequest
+	13, // 34: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:input_type -> otterscale.kubevirt.v1.UpdateVirtualMachineRequest
+	14, // 35: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:input_type -> otterscale.kubevirt.v1.DeleteVirtualMachineRequest
+	15, // 36: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:input_type -> otterscale.kubevirt.v1.StartVirtualMachineRequest
+	16, // 37: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:input_type -> otterscale.kubevirt.v1.StopVirtualMachineRequest
+	17, // 38: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:input_type -> otterscale.kubevirt.v1.PauseVirtualMachineRequest
+	18, // 39: otterscale.kubevirt.v1.KubeVirtService.UnpauseVirtualMachine:input_type -> otterscale.kubevirt.v1.UnpauseVirtualMachineRequest
+	20, // 40: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:input_type -> otterscale.kubevirt.v1.CloneVirtualMachineRequest
+	19, // 41: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:input_type -> otterscale.kubevirt.v1.SnapshotVirtualMachineRequest
+	21, // 42: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:input_type -> otterscale.kubevirt.v1.RestoreVirtualMachineRequest
+	22, // 43: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:input_type -> otterscale.kubevirt.v1.MigrateVirtualMachineRequest
+	23, // 44: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:input_type -> otterscale.kubevirt.v1.CreateDataVolumeRequest
+	26, // 45: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:input_type -> otterscale.kubevirt.v1.GetDataVolumeRequest
+	24, // 46: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:input_type -> otterscale.kubevirt.v1.ListDataVolumesRequest
+	27, // 47: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:input_type -> otterscale.kubevirt.v1.DeleteDataVolumeRequest
+	28, // 48: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:input_type -> otterscale.kubevirt.v1.ExtendDataVolumeRequest
+	29, // 49: otterscale.kubevirt.v1.KubeVirtService.CreateNetwork:input_type -> otterscale.kubevirt.v1.CreateNetworkRequest
+	32, // 50: otterscale.kubevirt.v1.KubeVirtService.GetNetwork:input_type -> otterscale.kubevirt.v1.GetNetworkRequest
+	30, // 51: otterscale.kubevirt.v1.KubeVirtService.ListNetworks:input_type -> otterscale.kubevirt.v1.ListNetworksRequest
+	33, // 52: otterscale.kubevirt.v1.KubeVirtService.UpdateNetwork:input_type -> otterscale.kubevirt.v1.UpdateNetworkRequest
+	34, // 53: otterscale.kubevirt.v1.KubeVirtService.DeleteNetwork:input_type -> otterscale.kubevirt.v1.DeleteNetworkRequest
+	35, // 54: otterscale.kubevirt.v1.KubeVirtService.CreateFlavor:input_type -> otterscale.kubevirt.v1.CreateFlavorRequest
+	38, // 55: otterscale.kubevirt.v1.KubeVirtService.GetFlavor:input_type -> otterscale.kubevirt.v1.GetFlavorRequest
+	36, // 56: otterscale.kubevirt.v1.KubeVirtService.ListFlavors:input_type -> otterscale.kubevirt.v1.ListFlavorsRequest
+	39, // 57: otterscale.kubevirt.v1.KubeVirtService.DeleteFlavor:input_type -> otterscale.kubevirt.v1.DeleteFlavorRequest
+	3,  // 58: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
+	3,  // 59: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
+	10, // 60: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:output_type -> otterscale.kubevirt.v1.ListVirtualMachinesResponse
+	3,  // 61: otterscale.kubevirt.v1.KubeVirtService.UpdateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
+	47, // 62: otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachine:output_type -> google.protobuf.Empty
+	47, // 63: otterscale.kubevirt.v1.KubeVirtService.StartVirtualMachine:output_type -> google.protobuf.Empty
+	47, // 64: otterscale.kubevirt.v1.KubeVirtService.StopVirtualMachine:output_type -> google.protobuf.Empty
+	47, // 65: otterscale.kubevirt.v1.KubeVirtService.PauseVirtualMachine:output_type -> google.protobuf.Empty
+	47, // 66: otterscale.kubevirt.v1.KubeVirtService.UnpauseVirtualMachine:output_type -> google.protobuf.Empty
+	47, // 67: otterscale.kubevirt.v1.KubeVirtService.CloneVirtualMachine:output_type -> google.protobuf.Empty
+	47, // 68: otterscale.kubevirt.v1.KubeVirtService.SnapshotVirtualMachine:output_type -> google.protobuf.Empty
+	47, // 69: otterscale.kubevirt.v1.KubeVirtService.RestoreVirtualMachine:output_type -> google.protobuf.Empty
+	47, // 70: otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine:output_type -> google.protobuf.Empty
+	6,  // 71: otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
+	6,  // 72: otterscale.kubevirt.v1.KubeVirtService.GetDataVolume:output_type -> otterscale.kubevirt.v1.DataVolume
+	25, // 73: otterscale.kubevirt.v1.KubeVirtService.ListDataVolumes:output_type -> otterscale.kubevirt.v1.ListDataVolumesResponse
+	47, // 74: otterscale.kubevirt.v1.KubeVirtService.DeleteDataVolume:output_type -> google.protobuf.Empty
+	47, // 75: otterscale.kubevirt.v1.KubeVirtService.ExtendDataVolume:output_type -> google.protobuf.Empty
+	7,  // 76: otterscale.kubevirt.v1.KubeVirtService.CreateNetwork:output_type -> otterscale.kubevirt.v1.KubeVirtNetwork
+	7,  // 77: otterscale.kubevirt.v1.KubeVirtService.GetNetwork:output_type -> otterscale.kubevirt.v1.KubeVirtNetwork
+	31, // 78: otterscale.kubevirt.v1.KubeVirtService.ListNetworks:output_type -> otterscale.kubevirt.v1.ListNetworksResponse
+	7,  // 79: otterscale.kubevirt.v1.KubeVirtService.UpdateNetwork:output_type -> otterscale.kubevirt.v1.KubeVirtNetwork
+	47, // 80: otterscale.kubevirt.v1.KubeVirtService.DeleteNetwork:output_type -> google.protobuf.Empty
+	5,  // 81: otterscale.kubevirt.v1.KubeVirtService.CreateFlavor:output_type -> otterscale.kubevirt.v1.Flavor
+	5,  // 82: otterscale.kubevirt.v1.KubeVirtService.GetFlavor:output_type -> otterscale.kubevirt.v1.Flavor
+	37, // 83: otterscale.kubevirt.v1.KubeVirtService.ListFlavors:output_type -> otterscale.kubevirt.v1.ListFlavorsResponse
+	47, // 84: otterscale.kubevirt.v1.KubeVirtService.DeleteFlavor:output_type -> google.protobuf.Empty
+	58, // [58:85] is the sub-list for method output_type
+	31, // [31:58] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_api_kubevirt_v1_kubevirt_proto_init() }
@@ -5069,7 +7135,7 @@ func file_api_kubevirt_v1_kubevirt_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_kubevirt_v1_kubevirt_proto_rawDesc), len(file_api_kubevirt_v1_kubevirt_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   42,
+			NumMessages:   44,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
