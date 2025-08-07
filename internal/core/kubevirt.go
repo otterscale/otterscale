@@ -1,9 +1,7 @@
 package core
 
 import (
-	"context"
-
-	"k8s.io/client-go/rest"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	clonev1 "kubevirt.io/api/clone/v1beta1"
 	v1 "kubevirt.io/api/core/v1"
 	snapshotv1 "kubevirt.io/api/snapshot/v1beta1"
@@ -27,42 +25,87 @@ type (
 	DataVolume                          = v1beta1.DataVolume
 )
 
-type KubeVirtVMRepo interface {
-	// VirtualMachines
-	CreateVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string, spec *VirtualMachineSpec) (*VirtualMachine, error)
-	GetVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachine, error)
-	ListVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) ([]VirtualMachine, error)
-	UpdateVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string, spec *VirtualMachineSpec) (*VirtualMachine, error)
-	DeleteVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
-	MigrateVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
-	StartVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
-	RestartVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
-	StopVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) error
-	CreateVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string, spec *VirtualMachineCloneSpec) (*VirtualMachineClone, error)
-	GetVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineClone, error)
-	ListVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string) ([]VirtualMachineClone, error)
-	DeleteVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string) error
-	CreateVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string, spec *VirtualMachineSnapshotSpec) (*VirtualMachineSnapshot, error)
-	GetVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineSnapshot, error)
-	ListVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string) ([]VirtualMachineSnapshot, error)
-	DeleteVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string) error
-	CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string, spec *VirtualMachineRestoreSpec) (*VirtualMachineRestore, error)
-	GetVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineRestore, error)
-	ListVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string) ([]VirtualMachineRestore, error)
-	DeleteVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string) error
-	// VirtualMachine Instances
-	GetVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineInstance, error)
-	ListVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string) ([]VirtualMachineInstance, error)
-	UpdateVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string, spec *VirtualMachineInstanceSpec) (*VirtualMachineInstance, error)
-	DeleteVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string) error
-	MigrateVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string, spec *VirtualMachineInstanceMigrationSpec) (*VirtualMachineInstanceMigration, error)
-	PauseVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string) error
-	UnpauseVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string) error
+type Metadata struct {
+	Name        string
+	Namespace   string
+	Labels      map[string]string
+	Annotations map[string]string
+	CreatedAt   *timestamppb.Timestamp
+	UpdatedAt   *timestamppb.Timestamp
 }
 
-type KubeVirtDVRepo interface {
-	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, spec *DataVolumeSpec) (*DataVolume, error)
-	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string) (*DataVolume, error)
-	ListDataVolume(ctx context.Context, config *rest.Config, namespace, name string) ([]DataVolume, error)
-	DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error
+// VirtualMachineSpec defines the specification for a virtual machine
+type KubeVirtVirtualMachineSpec struct {
+	FlavorName    string
+	NetworkName   string
+	StartupScript string
+	DataVolumes   []string
+	Devices       []Device
+}
+
+// VirtualMachine represents a virtual machine resource
+type KubeVirtVirtualMachine struct {
+	Metadata  Metadata
+	Spec      KubeVirtVirtualMachineSpec
+	Status    string // Maps to pb.VirtualMachine_Status enum (e.g., "RUNNING", "STOPPED")
+	Snapshots []Operation
+	Clones    []Operation
+	Migrates  []Operation
+	Restores  []Operation
+}
+
+// Operation represents an operation on a virtual machine (snapshot, clone, etc.)
+type Operation struct {
+	Name        string
+	Type        string
+	Description string
+	CreatedAt   *timestamppb.Timestamp
+	Status      OperationResult
+}
+
+// OperationResult represents the result of an operation
+type OperationResult struct {
+	Status  string // Maps to pb.VirtualMachine_Operation_Result_Status enum (e.g., "IN_PROGRESS", "SUCCEEDED")
+	Message string
+	Reason  string
+}
+
+// Device represents a device attached to a virtual machine
+type Device struct {
+	Name string
+	Type string
+}
+
+// DataVolume represents a data volume resource
+type KubeVirtDataVolume struct {
+	Metadata  Metadata
+	Source    string
+	Type      string
+	SizeBytes int64
+}
+
+// Network represents a network resource
+type KubeVirtNetwork struct {
+	Metadata      Metadata
+	ServiceType   string
+	Port          int32
+	NodePort      int32
+	ContainerPort int32
+}
+
+// Flavor represents a flavor resource
+type Flavor struct {
+	Metadata    Metadata
+	CpuCores    float32
+	MemoryBytes int64
+}
+
+type KubeVirtUseCase struct {
+	kubeCore    KubeCoreRepo
+	KubeApps    KubeAppsRepo
+	kubeVirtVM  KubeVirtVMRepo
+	KubeVirtDV  KubeVirtDVRepo
+	KubeVirtNet KubeVirtNetRepo
+	action      ActionRepo
+	facility    FacilityRepo
 }
