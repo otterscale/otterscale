@@ -2,7 +2,7 @@
 
 import { getLocale } from "./paraglide/runtime";
 
-const DIVISIONS = [
+const TIME_DIVISIONS = [
     { amount: 60, name: 'seconds' },
     { amount: 60, name: 'minutes' },
     { amount: 24, name: 'hours' },
@@ -17,16 +17,15 @@ export function formatTimeAgo(date: Date): string {
         numeric: 'auto'
     });
 
-    let duration = (date.getTime() - new Date().getTime()) / 1000;
+    let duration = (date.getTime() - Date.now()) / 1000;
 
-    for (const division of DIVISIONS) {
+    for (const division of TIME_DIVISIONS) {
         if (Math.abs(duration) < division.amount) {
             return formatter.format(Math.round(duration), division.name);
         }
         duration /= division.amount;
     }
 
-    // Fallback for very large durations
     return formatter.format(Math.round(duration), 'years');
 }
 

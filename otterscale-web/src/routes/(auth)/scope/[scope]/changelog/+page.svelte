@@ -123,43 +123,37 @@
 		{#each data.releases as release}
 			<Accordion.Item value={release.tag_name}>
 				<Accordion.Trigger
-					class="hover:bg-accent items-center gap-2 hover:rounded-none hover:no-underline [[data-state=open]]:rounded-b-none [[data-state=open]]:border-b [&>svg:last-child]:hidden"
+					class="hover:bg-accent/50 items-center gap-2 hover:rounded-none hover:no-underline [[data-state=open]]:rounded-b-none [[data-state=open]]:border-b [&>svg:last-child]:hidden"
 				>
-					<div class="flex w-full flex-col flex-wrap space-y-1 px-6">
-						<span class="text-foreground flex items-center space-x-1 text-lg font-medium">
-							{release.name}
+					<div class="flex w-full flex-col flex-wrap px-4">
+						<span
+							class="text-foreground flex flex-1 items-center space-x-1 text-lg font-medium text-nowrap"
+						>
+							<Icon icon="ph:tag" class="size-4.5" />
+							<span>{release.name}</span>
 						</span>
-						<div class="flex space-x-2">
-							<div class="flex items-center space-x-1">
-								<Icon icon="ph:tag" class="text-muted-foreground size-3.5" />
-								<span class="text-muted-foreground text-xs tracking-tight">{release.tag_name}</span>
-							</div>
-							<div class="flex items-center space-x-1">
-								<Icon icon="ph:clock" class="text-muted-foreground size-3.5" />
-								<Tooltip.Provider>
-									<Tooltip.Root>
-										<Tooltip.Trigger class="text-muted-foreground text-xs tracking-tight">
-											{formatTimeAgo(release.created_at)}
-										</Tooltip.Trigger>
-										<Tooltip.Content>
-											{release.created_at.toString()}
-										</Tooltip.Content>
-									</Tooltip.Root>
-								</Tooltip.Provider>
-							</div>
-						</div>
 					</div>
 
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger
+								class="text-muted-foreground flex space-x-1 text-xs tracking-tight text-nowrap"
+							>
+								<Icon icon="ph:git-pull-request" class="text-muted-foreground size-4" />
+								<p>{formatTimeAgo(release.created_at)}</p>
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								{release.created_at.toString()}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+
 					{#if release.prerelease}
-						<Badge variant="outline">{m.changelog_prerelease()}</Badge>
+						<Badge href={release.html_url} variant="outline">{m.changelog_prerelease()}</Badge>
 					{/if}
 					{#if release.latest}
-						<Badge>{m.changelog_latest()}</Badge>
+						<Badge href={release.html_url}>{m.changelog_latest()}</Badge>
 					{/if}
-
-					<Button href={release.html_url} variant="ghost" size="icon" class="hover:text-primary/80">
-						<Icon icon="ph:arrow-square-out" class="size-4" />
-					</Button>
 
 					<Icon
 						icon="ph:caret-down"
