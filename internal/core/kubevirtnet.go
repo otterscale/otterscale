@@ -14,6 +14,7 @@ type KubeVirtNetRepo interface {
 	UpdateNetwork(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
+/*
 func (uc *KubeVirtUseCase) CreateNetwork(ctx context.Context, uuid, facility, namespace, name string, network Network) (*Network, error) {
 	return uc.kubeCore.CreateService(ctx, config, namespace, name)
 }
@@ -33,3 +34,4 @@ func (uc *KubeVirtUseCase) UpdateNetwork(ctx context.Context, uuid, facility, ne
 func (uc *KubeVirtUseCase) DeleteNetwork(ctx context.Context, uuid, facility, name, namespace string) error {
 	return uc.KubeCore.DeleteService()
 }
+*/

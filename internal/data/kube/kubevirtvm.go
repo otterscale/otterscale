@@ -54,7 +54,7 @@ func (r *virtVM) GetVirtualMachine(ctx context.Context, config *rest.Config, nam
 	return virtClient.VirtualMachine(namespace).Get(ctx, name, opts)
 }
 
-func (r *virtVM) ListVirtualMachine(ctx context.Context, config *rest.Config, namespace, name string) ([]oscore.VirtualMachine, error) {
+func (r *virtVM) ListVirtualMachines(ctx context.Context, config *rest.Config, namespace string) ([]oscore.VirtualMachine, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err

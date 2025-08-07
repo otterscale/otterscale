@@ -50,7 +50,7 @@ func (r *virtDV) GetDataVolume(ctx context.Context, config *rest.Config, namespa
 	return virtClient.CdiClient().CdiV1beta1().DataVolumes(namespace).Get(ctx, name, opts)
 }
 
-func (r *virtDV) ListDataVolume(ctx context.Context, config *rest.Config, namespace, name string) ([]oscore.DataVolume, error) {
+func (r *virtDV) ListDataVolume(ctx context.Context, config *rest.Config, namespace string) ([]oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err

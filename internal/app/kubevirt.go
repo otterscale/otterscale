@@ -173,98 +173,132 @@ func (s *KubeVirtService) DeleteDataVolume(ctx context.Context, req *connect.Req
 }
 
 func (s *KubeVirtService) ExtendDataVolume(ctx context.Context, req *connect.Request[pb.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.ExtendDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetSizeBytes()); err != nil {
-		return nil, err
-	}
+	/*
+		if err := s.uc.ExtendDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetSizeBytes()); err != nil {
+			return nil, err
+		}
+	*/
 	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
 
 // Network Operations
-func (s *KubeVirtService) CreateNetwork(ctx context.Context, req *connect.Request[pb.CreateNetworkRequest]) (*connect.Response[pb.Network], error) {
-	network, err := s.uc.CreateNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNetwork().GetMetadata().GetNamespace(), req.Msg.GetNetwork().GetMetadata().GetName(), toCoreNetwork(req.Msg.GetNetwork()))
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoNetwork(network)
+func (s *KubeVirtService) CreateNetwork(ctx context.Context, req *connect.Request[pb.CreateNetworkRequest]) (*connect.Response[pb.KubeVirtNetwork], error) {
+	/*
+		network, err := s.uc.CreateNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNetwork().GetMetadata().GetNamespace(), req.Msg.GetNetwork().GetMetadata().GetName(), toCoreNetwork(req.Msg.GetNetwork()))
+		if err != nil {
+			return nil, err
+		}
+
+		resp := toProtoNetwork(network)
+	*/
+	resp := &pb.KubeVirtNetwork{}
+
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) GetNetwork(ctx context.Context, req *connect.Request[pb.GetNetworkRequest]) (*connect.Response[pb.Network], error) {
-	network, err := s.uc.GetNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoNetwork(network)
+func (s *KubeVirtService) GetNetwork(ctx context.Context, req *connect.Request[pb.GetNetworkRequest]) (*connect.Response[pb.KubeVirtNetwork], error) {
+	/*
+		network, err := s.uc.GetNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
+		if err != nil {
+			return nil, err
+		}
+		resp := toProtoNetwork(network)
+	*/
+	resp := &pb.KubeVirtNetwork{}
+
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) ListNetworks(ctx context.Context, req *connect.Request[pb.ListNetworksRequest]) (*connect.Response[pb.ListNetworksResponse], error) {
-	networks, err := s.uc.ListNetworks(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
-	if err != nil {
-		return nil, err
-	}
+	/*
+		networks, err := s.uc.ListNetworks(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+		if err != nil {
+			return nil, err
+		}
+		resp := &pb.ListNetworksResponse{}
+		resp.SetNetworks(toProtoNetworks(networks))
+	*/
 	resp := &pb.ListNetworksResponse{}
-	resp.SetNetworks(toProtoNetworks(networks))
+
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) UpdateNetwork(ctx context.Context, req *connect.Request[pb.UpdateNetworkRequest]) (*connect.Response[pb.KubeVirtNetwork], error) {
-	network, err := s.uc.UpdateNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreNetwork(req.Msg.GetNetwork()))
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoNetwork(network)
+	/*
+		network, err := s.uc.UpdateNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreNetwork(req.Msg.GetNetwork()))
+		if err != nil {
+			return nil, err
+		}
+		resp := toProtoNetwork(network)
+	*/
+	resp := &pb.KubeVirtNetwork{}
+
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) DeleteNetwork(ctx context.Context, req *connect.Request[pb.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
-		return nil, err
-	}
+	/*
+		if err := s.uc.DeleteNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
+			return nil, err
+		}
+	*/
 	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
 
 // Flavor Operations
 func (s *KubeVirtService) CreateFlavor(ctx context.Context, req *connect.Request[pb.CreateFlavorRequest]) (*connect.Response[pb.Flavor], error) {
-	flavor, err := s.uc.CreateFlavor(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreFlavor(req.Msg.GetFlavor()))
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoFlavor(flavor)
+	/*
+		flavor, err := s.uc.CreateFlavor(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreFlavor(req.Msg.GetFlavor()))
+		if err != nil {
+			return nil, err
+		}
+		resp := toProtoFlavor(flavor)
+	*/
+	resp := &pb.Flavor{}
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) GetFlavor(ctx context.Context, req *connect.Request[pb.GetFlavorRequest]) (*connect.Response[pb.Flavor], error) {
-	flavor, err := s.uc.GetFlavor(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoFlavor(flavor)
+	/*
+		flavor, err := s.uc.GetFlavor(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
+		if err != nil {
+			return nil, err
+		}
+		resp := toProtoFlavor(flavor)
+	*/
+	resp := &pb.Flavor{}
+
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) ListFlavors(ctx context.Context, req *connect.Request[pb.ListFlavorsRequest]) (*connect.Response[pb.ListFlavorsResponse], error) {
-	flavors, err := s.uc.ListFlavors(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
-	if err != nil {
-		return nil, err
-	}
+	/*
+		flavors, err := s.uc.ListFlavors(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+		if err != nil {
+			return nil, err
+		}
+		resp := &pb.ListFlavorsResponse{}
+		resp.Flavors = toProtoFlavors(flavors)
+	*/
 	resp := &pb.ListFlavorsResponse{}
-	resp.Flavors = toProtoFlavors(flavors)
+
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) DeleteFlavor(ctx context.Context, req *connect.Request[pb.DeleteFlavorRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteFlavor(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
-		return nil, err
-	}
+	/*
+		if err := s.uc.DeleteFlavor(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
+			return nil, err
+		}
+	*/
 	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
 
 // Conversion functions
-func toProtoVirtualMachines(vms []core.KubeVirtVirtualMachine) []*pb.VirtualMachine {
+func toProtoVirtualMachines(vms []core.VirtualMachine) []*pb.VirtualMachine {
 	ret := []*pb.VirtualMachine{}
 	for i := range vms {
 		ret = append(ret, toProtoVirtualMachine(&vms[i]))
@@ -272,16 +306,17 @@ func toProtoVirtualMachines(vms []core.KubeVirtVirtualMachine) []*pb.VirtualMach
 	return ret
 }
 
-func toProtoVirtualMachine(vm *core.KubeVirtVirtualMachine) *pb.VirtualMachine {
+func toProtoVirtualMachine(vm *core.VirtualMachine) *pb.VirtualMachine {
 	ret := &pb.VirtualMachine{}
-	ret.SetMetadata(toProtoMetadata(vm.Metadata))
-	ret.SetSpec(toProtoVirtualMachineSpec(vm.Spec))
-	ret.SetStatus(pb.VirtualMachine_Status(pb.VirtualMachine_Status_value[vm.Status]))
-	ret.SetClones(toProtoOperations(vm.Clones))
-	ret.SetSnapshots(toProtoOperations(vm.Snapshots))
-	ret.SetMigrates(toProtoOperations(vm.Migrates))
-	ret.SetRestores(toProtoOperations(vm.Restores))
-
+	/*
+		ret.SetMetadata(toProtoMetadata(vm.Metadata))
+		ret.SetSpec(toProtoVirtualMachineSpec(vm.Spec))
+		ret.SetStatus(pb.VirtualMachine_Status(pb.VirtualMachine_Status_value[vm.Status]))
+		ret.SetClones(toProtoOperations(vm.Clones))
+		ret.SetSnapshots(toProtoOperations(vm.Snapshots))
+		ret.SetMigrates(toProtoOperations(vm.Migrates))
+		ret.SetRestores(toProtoOperations(vm.Restores))
+	*/
 	return ret
 }
 
@@ -321,14 +356,17 @@ func toProtoVirtualMachineSpec(spec core.KubeVirtVirtualMachineSpec) *pb.Virtual
 	return ret
 }
 
-func toCoreVirtualMachineSpec(spec *pb.VirtualMachineSpec) core.KubeVirtVirtualMachineSpec {
-	return core.KubeVirtVirtualMachineSpec{
-		FlavorName:    spec.GetFlavorName(),
-		NetworkName:   spec.GetNetworkName(),
-		StartupScript: spec.GetStartupScript(),
-		DataVolumes:   spec.GetDataVolumes(),
-		Devices:       toCoreDevices(spec.GetDevices()),
-	}
+func toCoreVirtualMachineSpec(spec *pb.VirtualMachineSpec) core.VirtualMachineSpec {
+	/*
+		return core.KubeVirtVirtualMachineSpec{
+			FlavorName:    spec.GetFlavorName(),
+			NetworkName:   spec.GetNetworkName(),
+			StartupScript: spec.GetStartupScript(),
+			DataVolumes:   spec.GetDataVolumes(),
+			Devices:       toCoreDevices(spec.GetDevices()),
+		}
+	*/
+	return core.VirtualMachineSpec{}
 }
 
 func toProtoDevices(devices []core.Device) []*pb.Device {
@@ -370,7 +408,7 @@ func toProtoOperations(ops []core.Operation) []*pb.VirtualMachine_Operation {
 	return ret
 }
 
-func toProtoDataVolumes(dvs []core.KubeVirtDataVolume) []*pb.DataVolume {
+func toProtoDataVolumes(dvs []core.DataVolume) []*pb.DataVolume {
 	ret := []*pb.DataVolume{}
 	for i := range dvs {
 		ret = append(ret, toProtoDataVolume(&dvs[i]))
@@ -378,24 +416,27 @@ func toProtoDataVolumes(dvs []core.KubeVirtDataVolume) []*pb.DataVolume {
 	return ret
 }
 
-func toProtoDataVolume(dv *core.KubeVirtDataVolume) *pb.DataVolume {
+func toProtoDataVolume(dv *core.DataVolume) *pb.DataVolume {
 	ret := &pb.DataVolume{}
-
-	ret.SetMetadata(toProtoMetadata(dv.Metadata))
-	ret.SetSource(dv.Source)
-	ret.SetType(dv.Type)
-	ret.SetSizeBytes(dv.SizeBytes)
-
+	/*
+		ret.SetMetadata(toProtoMetadata(dv.Metadata))
+		ret.SetSource(dv.Source)
+		ret.SetType(dv.Type)
+		ret.SetSizeBytes(dv.SizeBytes)
+	*/
 	return ret
 }
 
-func toCoreDataVolume(dv *pb.DataVolume) core.KubeVirtDataVolume {
-	return core.KubeVirtDataVolume{
-		Metadata:  toCoreMetadata(dv.GetMetadata()),
-		Source:    dv.GetSource(),
-		Type:      dv.GetType(),
-		SizeBytes: dv.GetSizeBytes(),
-	}
+func toCoreDataVolume(dv *pb.DataVolume) core.DataVolume {
+	ret := core.DataVolume{}
+	/*
+		return core.KubeVirtDataVolume{
+			Metadata:  toCoreMetadata(dv.GetMetadata()),
+			Source:    dv.GetSource(),
+			Type:      dv.GetType(),
+			SizeBytes: dv.GetSizeBytes(),
+		}*/
+	return ret
 }
 
 func toProtoKubeVirtNetworks(networks []core.KubeVirtNetwork) []*pb.KubeVirtNetwork {
