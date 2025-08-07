@@ -18,7 +18,7 @@
 
 	const CHANGE_TYPES = {
 		feat: {
-			title: 'New Features',
+			title: m.changelog_feat(),
 			icon: 'ph:check-circle',
 			colors: {
 				bg: 'bg-green-50 dark:bg-green-950/30',
@@ -27,7 +27,7 @@
 			}
 		},
 		fix: {
-			title: 'Bug Fixes',
+			title: m.changelog_fix(),
 			icon: 'ph:warning',
 			colors: {
 				bg: 'bg-red-50 dark:bg-red-950/30',
@@ -36,7 +36,7 @@
 			}
 		},
 		perf: {
-			title: 'Improvements',
+			title: m.changelog_perf(),
 			icon: 'ph:arrow-circle-up-right',
 			colors: {
 				bg: 'bg-blue-50 dark:bg-blue-950/30',
@@ -45,7 +45,7 @@
 			}
 		},
 		refactor: {
-			title: 'Refactoring',
+			title: m.changelog_refactor(),
 			icon: 'ph:recycle',
 			colors: {
 				bg: 'bg-purple-50 dark:bg-purple-950/30',
@@ -54,7 +54,7 @@
 			}
 		},
 		test: {
-			title: 'Tests',
+			title: m.changelog_test(),
 			icon: 'ph:test-tube',
 			colors: {
 				bg: 'bg-yellow-50 dark:bg-yellow-950/30',
@@ -63,7 +63,7 @@
 			}
 		},
 		style: {
-			title: 'Styling',
+			title: m.changelog_style(),
 			icon: 'ph:palette',
 			colors: {
 				bg: 'bg-pink-50 dark:bg-pink-950/30',
@@ -72,7 +72,7 @@
 			}
 		},
 		docs: {
-			title: 'Documentation',
+			title: m.changelog_docs(),
 			icon: 'ph:book',
 			colors: {
 				bg: 'bg-indigo-50 dark:bg-indigo-950/30',
@@ -81,7 +81,7 @@
 			}
 		},
 		chore: {
-			title: 'Miscellaneous Task',
+			title: m.changelog_chore(),
 			icon: 'ph:gear',
 			colors: {
 				bg: 'bg-gray-50 dark:bg-gray-950/30',
@@ -106,9 +106,13 @@
 	{m.changelog_description()}
 </p>
 
-<Accordion.Root type="single" class="mx-auto w-full py-10 md:max-w-[60%]" value="latest">
+<Accordion.Root
+	type="single"
+	class="mx-auto w-full py-10 md:max-w-[60%]"
+	value={data.releases[0].tag_name}
+>
 	{#each data.releases as release}
-		<Accordion.Item value={release.latest ? 'latest' : release.tag_name}>
+		<Accordion.Item value={release.tag_name}>
 			<Accordion.Trigger
 				class="hover:bg-accent items-center hover:no-underline [[data-state=open]]:rounded-b-none [[data-state=open]]:border-b [&>svg:last-child]:hidden"
 			>
@@ -149,7 +153,7 @@
 				{#each Object.entries(CHANGE_TYPES) as [key, config]}
 					{#if hasChanges(release, key as keyof typeof CHANGE_TYPES)}
 						<Card.Root class="gap-0 p-0 {config.colors.border}">
-							<Card.Header class="rounded-t-xl py-3 {config.colors.bg}">
+							<Card.Header class="gap-0 rounded-t-xl py-3 {config.colors.bg}">
 								<Card.Title
 									class="flex items-center space-x-1 text-sm font-semibold {config.colors.text}"
 								>
