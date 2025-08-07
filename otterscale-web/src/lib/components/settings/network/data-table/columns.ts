@@ -82,15 +82,15 @@ const columns: ColumnDef<Network>[] = [
             return renderSnippet(cells.ipAddresses, row);
         },
     },
-    {
-        accessorKey: "ipRanges",
-        header: ({ column }) => {
-            return renderSnippet(headers.ipRanges, column)
-        },
-        cell: ({ row }) => {
-            return renderSnippet(cells.ipRanges, row);
-        },
-    },
+    // {
+    //     accessorKey: "ipRanges",
+    //     header: ({ column }) => {
+    //         return renderSnippet(headers.ipRanges, column)
+    //     },
+    //     cell: ({ row }) => {
+    //         return renderSnippet(cells.ipRanges, row);
+    //     },
+    // },
     {
         accessorKey: "statistics",
         header: ({ column }) => {
