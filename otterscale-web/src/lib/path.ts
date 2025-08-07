@@ -56,7 +56,6 @@ export const dynamicPaths = {
     setupScopeKubernetes: (scope: string): Path => ({ title: "Kubernetes", url: createScopePath(scope, '/setup/kubernetes') })
 };
 
-// Icon mapping
 const ICON_MAP = new Map([
     ['/models', 'ph:robot'],
     ['/databases', 'ph:database'],
@@ -74,3 +73,30 @@ export function urlIcon(url: string): string {
     }
     return 'ph:circle-dashed';
 }
+
+const disabledPaths = (scope: string) => ({
+    ceph: [
+        dynamicPaths.storage(scope),
+    ],
+    kube: [
+        dynamicPaths.models(scope),
+        dynamicPaths.databases(scope),
+        dynamicPaths.applications(scope),
+    ]
+});
+
+export const pathDisabled = (cephName: string | undefined, kubeName: string | undefined, scope: string, url: string): boolean => {
+    const paths = disabledPaths(scope);
+    return (!cephName && paths.ceph.some((path) => path.url === url)) ||
+        (!kubeName && paths.kube.some((path) => path.url === url));
+};
+
+export const findDynamicPath = (pathname: string, scope: string): keyof typeof dynamicPaths | null => {
+    for (const [key, pathFn] of Object.entries(dynamicPaths)) {
+        const path = pathFn(scope);
+        if (path.url === pathname) {
+            return key as keyof typeof dynamicPaths;
+        }
+    }
+    return null;
+};

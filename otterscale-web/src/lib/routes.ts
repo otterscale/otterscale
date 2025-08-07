@@ -60,12 +60,3 @@ export const bookmarks = [
     { title: 'BAR 3', url: '#' }
 ];
 
-export const cephPaths = (scope: string): Path[] => [
-    dynamicPaths.storage(scope),
-]
-
-export const kubernetesPaths = (scope: string): Path[] => [
-    dynamicPaths.models(scope),
-    dynamicPaths.databases(scope),
-    dynamicPaths.applications(scope),
-]

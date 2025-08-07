@@ -86,13 +86,14 @@ export const load: PageServerLoad = async () => {
             octokit.request('GET /repos/{owner}/{repo}/releases', REPO_CONFIG)
         ]);
 
+        const latestUrl = latestResponse.data.html_url;
         const releases = releasesResponse.data.map((release: any) => ({
-            latest: latestResponse.data.html_url === release.html_url,
+            latest: latestUrl === release.html_url,
             name: release.name,
             tag_name: release.tag_name,
             html_url: release.html_url,
             prerelease: release.prerelease,
-            created_at: release.created_at,
+            created_at: new Date(release.created_at),
             changes: parseBody(release.body || '')
         }));
 

@@ -2,11 +2,17 @@
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import { Button } from '$lib/components/ui/button';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { formatTimeAgo } from '$lib/formatter';
 	import changelogRead from '$lib/stores/changelog';
 	import Icon from '@iconify/svelte';
 	import type { PageData } from './$types';
 	import { m } from '$lib/paraglide/messages';
+	import { dynamicPaths, findDynamicPath } from '$lib/path';
+	import { page } from '$app/state';
+
+	console.log(dynamicPaths[findDynamicPath(page.url.pathname, page.params.scope)]);
 
 	interface Props {
 		data: PageData;
@@ -114,7 +120,7 @@
 	{#each data.releases as release}
 		<Accordion.Item value={release.tag_name}>
 			<Accordion.Trigger
-				class="hover:bg-accent items-center hover:rounded-none hover:no-underline [[data-state=open]]:rounded-b-none [[data-state=open]]:border-b [&>svg:last-child]:hidden"
+				class="hover:bg-accent items-center gap-2 hover:rounded-none hover:no-underline [[data-state=open]]:rounded-b-none [[data-state=open]]:border-b [&>svg:last-child]:hidden"
 			>
 				<div class="flex w-full flex-col flex-wrap space-y-1 px-6">
 					<span class="text-foreground flex items-center space-x-1 text-lg font-medium">
@@ -127,7 +133,16 @@
 						</div>
 						<div class="flex items-center space-x-1">
 							<Icon icon="ph:clock" class="text-muted-foreground size-3.5" />
-							<span class="text-muted-foreground text-xs tracking-tight">{release.created_at}</span>
+							<Tooltip.Provider>
+								<Tooltip.Root>
+									<Tooltip.Trigger class="text-muted-foreground text-xs tracking-tight">
+										{formatTimeAgo(release.created_at)}
+									</Tooltip.Trigger>
+									<Tooltip.Content>
+										{release.created_at.toString()}
+									</Tooltip.Content>
+								</Tooltip.Root>
+							</Tooltip.Provider>
 						</div>
 					</div>
 				</div>
@@ -139,7 +154,7 @@
 					<Badge>{m.changelog_latest()}</Badge>
 				{/if}
 
-				<Button href={release.html_url} variant="ghost" size="icon">
+				<Button href={release.html_url} variant="ghost" size="icon" class="hover:text-primary/80">
 					<Icon icon="ph:arrow-square-out" class="size-4" />
 				</Button>
 
@@ -154,24 +169,22 @@
 					{#if hasChanges(release, key as keyof typeof CHANGE_TYPES)}
 						<Card.Root class="gap-0 p-0 {config.colors.border}">
 							<Card.Header class="gap-0 rounded-t-xl py-3 {config.colors.bg}">
-								<Card.Title
-									class="flex items-center space-x-1 text-sm font-semibold {config.colors.text}"
-								>
+								<Card.Title class="flex items-center space-x-1 font-semibold {config.colors.text}">
 									<Icon icon={config.icon} class="size-5" />
 									<span>{config.title}</span>
 								</Card.Title>
 							</Card.Header>
 
 							<Card.Content class="space-y-2 rounded-b-xl py-6">
-								{#each release.changes[key as keyof typeof CHANGE_TYPES] as item}
+								{#each release.changes[key as keyof typeof CHANGE_TYPES] as item, index}
 									<p class="flex items-center space-x-2 text-sm">
-										<Icon icon="ph:circle-fill" class="size-1.5" />
 										<span>
+											{index + 1}.
 											{item.description} by
 											<a
 												target="_blank"
 												href="https://github.com/{item.author}"
-												class="font-semibold underline underline-offset-4"
+												class="hover:text-primary/80 font-semibold underline underline-offset-4"
 											>
 												{item.author}
 											</a>

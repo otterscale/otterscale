@@ -4,8 +4,7 @@
 	import { HomeCard, HomeCell } from '$lib/components/scopes';
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
-	import { cephPaths, kubernetesPaths } from '$lib/routes';
+	import { dynamicPaths, pathDisabled } from '$lib/path';
 	import { currentCeph, currentKubernetes } from '$lib/stores';
 
 	const cards = $derived([
@@ -30,13 +29,6 @@
 			description: m.machines_description()
 		}
 	]);
-
-	const disabled = (scope: string, url: string): boolean => {
-		return (
-			(!$currentCeph && cephPaths(scope).some((path) => path.url === url)) ||
-			(!$currentKubernetes && kubernetesPaths(scope).some((path) => path.url === url))
-		);
-	};
 </script>
 
 <!-- just-in-time  -->
@@ -58,7 +50,12 @@
 					background={card.background}
 					path={card.path}
 					description={card.description}
-					disabled={disabled(page.params.scope, card.path.url)}
+					disabled={pathDisabled(
+						$currentCeph?.name,
+						$currentKubernetes?.name,
+						page.params.scope,
+						card.path.url
+					)}
 				/>
 			{/each}
 		</div>
