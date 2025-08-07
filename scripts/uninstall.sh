@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APT_PACKAGES="jq openssh-server"
+APT_PACKAGES="jq"
 SNAP_PACKAGES="core24 maas maas-test-db juju lxd microk8s"
 
 log() {
