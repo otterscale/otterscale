@@ -10,6 +10,7 @@
 </script>
 
 <Pagination.Root
+	class={paginationManager.count === 0 ? 'hidden' : 'visible'}
 	count={paginationManager.count}
 	perPage={paginationManager.perPage}
 	siblingCount={paginationManager.siblingCount}
