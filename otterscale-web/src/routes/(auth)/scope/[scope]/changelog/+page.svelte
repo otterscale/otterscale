@@ -1,16 +1,21 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
 	import * as HoverCard from '$lib/components/ui/hover-card';
-	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
+	import { dynamicPaths } from '$lib/path';
+	import { breadcrumb } from '$lib/stores';
 	import changelogRead from '$lib/stores/changelog';
 	import Icon from '@iconify/svelte';
 	import type { PageData } from './$types';
-	import { m } from '$lib/paraglide/messages';
+
+	// Set breadcrumb navigation
+	breadcrumb.set({ parents: [], current: dynamicPaths.changelog(page.params.scope) });
 
 	interface Props {
 		data: PageData;
@@ -117,7 +122,7 @@
 {:else}
 	<Accordion.Root
 		type="single"
-		class="mx-auto w-full py-10 md:max-w-[60%]"
+		class="mx-auto w-full py-10 sm:max-w-[80%] md:max-w-[65%]"
 		value={data.releases[0].tag_name}
 	>
 		{#each data.releases as release}
