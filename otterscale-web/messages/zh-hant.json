@@ -47,6 +47,8 @@
 	"account": "帳戶",
 	"changelog": "更新日誌",
 	"changelog_description": "檢視最新的更新、改進和修復",
+	"changelog_latest": "最新版本",
+	"changelog_prerelease": "預覽版本",
 	"changelog_feat": "新功能",
 	"changelog_fix": "錯誤修復",
 	"changelog_perf": "效能改善",

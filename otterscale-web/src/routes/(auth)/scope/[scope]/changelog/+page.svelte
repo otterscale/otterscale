@@ -114,7 +114,7 @@
 	{#each data.releases as release}
 		<Accordion.Item value={release.tag_name}>
 			<Accordion.Trigger
-				class="hover:bg-accent items-center hover:no-underline [[data-state=open]]:rounded-b-none [[data-state=open]]:border-b [&>svg:last-child]:hidden"
+				class="hover:bg-accent items-center hover:rounded-none hover:no-underline [[data-state=open]]:rounded-b-none [[data-state=open]]:border-b [&>svg:last-child]:hidden"
 			>
 				<div class="flex w-full flex-col flex-wrap space-y-1 px-6">
 					<span class="text-foreground flex items-center space-x-1 text-lg font-medium">
@@ -133,10 +133,10 @@
 				</div>
 
 				{#if release.prerelease}
-					<Badge variant="outline">Pre-release</Badge>
+					<Badge variant="outline">{m.changelog_prerelease()}</Badge>
 				{/if}
 				{#if release.latest}
-					<Badge>Latest</Badge>
+					<Badge>{m.changelog_latest()}</Badge>
 				{/if}
 
 				<Button href={release.html_url} variant="ghost" size="icon">

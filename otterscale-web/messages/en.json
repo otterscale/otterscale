@@ -46,6 +46,8 @@
 	"about": "About",
 	"changelog": "Changelog",
 	"changelog_description": "View the latest updates, improvements, and fixes",
+	"changelog_latest": "Latest",
+	"changelog_prerelease": "Pre-release",
 	"changelog_feat": "New Features",
 	"changelog_fix": "Bug Fixes",
 	"changelog_perf": "Improvements",
