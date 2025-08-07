@@ -44,7 +44,7 @@
 						{value}
 					</span>
 					<Button
-						class="size-3 cursor-pointer"
+						class={cn('size-3 cursor-pointer', disabled ? 'hidden' : 'visible')}
 						aria-label="Remove"
 						size="icon"
 						variant="ghost"

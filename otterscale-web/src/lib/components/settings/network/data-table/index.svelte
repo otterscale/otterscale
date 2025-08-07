@@ -1,14 +1,14 @@
 <script lang="ts" module>
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
+	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
 	import * as Table from '$lib/components/ui/table/index.js';
 	// import type { PrometheusDriver } from 'prometheus-query';
-	import type { Application } from '$lib/api/application/v1/application_pb';
+	import type { Network } from '$lib/api/network/v1/network_pb';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -22,15 +22,17 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import { columns } from './columns';
+	import Actions from './actions.svelte';
+	import Create from './create.svelte';
 	// import type { PrometheusDriver } from 'prometheus-query';
 </script>
 
 <script lang="ts" generics="TData, TValue">
 	// const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
 
-	let { applications }: { applications: Writable<Application[]> } = $props();
+	let { networks }: { networks: Writable<Network[]> } = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 15 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -38,7 +40,7 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $applications;
+			return $networks;
 		},
 		columns,
 
@@ -108,19 +110,17 @@
 	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={$applications.map((row) => row.name)} columnId="name" {table} />
-			<Filters.StringMatch
-				values={$applications.flatMap((row) => row.type)}
-				columnId="type"
-				{table}
-			/>
-			<Filters.StringMatch
-				values={$applications.flatMap((row) => row.namespace)}
-				columnId="namespace"
+			<Filters.StringFuzzy
+				values={$networks.map((row) => row.fabric?.name)}
+				columnId="fabricName"
+				alias="Fabric"
 				{table}
 			/>
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Create bind:networks />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>
@@ -149,7 +149,9 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-						<Table.Cell></Table.Cell>
+						<Table.Cell>
+							<Actions {row} bind:networks />
+						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Table.Row>
