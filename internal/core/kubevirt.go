@@ -102,10 +102,22 @@ type Flavor struct {
 
 type KubeVirtUseCase struct {
 	kubeCore    KubeCoreRepo
-	KubeApps    KubeAppsRepo
+	kubeApps    KubeAppsRepo
 	kubeVirtVM  KubeVirtVMRepo
-	KubeVirtDV  KubeVirtDVRepo
-	KubeVirtNet KubeVirtNetRepo
+	kubeVirtDV  KubeVirtDVRepo
+	kubeVirtNet KubeVirtNetRepo
 	action      ActionRepo
 	facility    FacilityRepo
+}
+
+func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtNet KubeVirtNetRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
+	return &KubeVirtUseCase{
+		kubeCore:    kubeCore,
+		kubeApps:    kubeApps,
+		kubeVirtVM:  kubeVirtVM,
+		kubeVirtDV:  kubeVirtDV,
+		kubeVirtNet: kubeVirtNet,
+		action:      action,
+		facility:    facility,
+	}
 }

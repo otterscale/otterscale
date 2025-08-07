@@ -14,4 +14,5 @@ var ProviderSet = wire.NewSet(
 	NewScopeUseCase,
 	NewStorageUseCase,
 	NewTagUseCase,
+	NewKubeVirtUseCase,
 )

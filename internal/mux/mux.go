@@ -12,6 +12,7 @@ import (
 	environmentv1 "github.com/openhdc/otterscale/api/environment/v1/pbconnect"
 	essentialv1 "github.com/openhdc/otterscale/api/essential/v1/pbconnect"
 	facilityv1 "github.com/openhdc/otterscale/api/facility/v1/pbconnect"
+	kubevirtv1 "github.com/openhdc/otterscale/api/kubevirt/v1/pbconnect"
 	machinev1 "github.com/openhdc/otterscale/api/machine/v1/pbconnect"
 	networkv1 "github.com/openhdc/otterscale/api/network/v1/pbconnect"
 	scopev1 "github.com/openhdc/otterscale/api/scope/v1/pbconnect"
@@ -32,6 +33,7 @@ var Services = []string{
 	scopev1.ScopeServiceName,
 	storagev1.StorageServiceName,
 	tagv1.TagServiceName,
+	kubevirtv1.KubeVirtServiceName,
 }
 
 func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {

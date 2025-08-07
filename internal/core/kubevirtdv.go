@@ -20,7 +20,7 @@ func (uc *KubeVirtUseCase) CreateDataVolume(ctx context.Context, uuid, facility,
 		return nil, err
 	}
 
-	return uc.KubeVirtDV.CreateDataVolume(ctx, config, namespace, name, &dataVolume.Spec)
+	return uc.kubeVirtDV.CreateDataVolume(ctx, config, namespace, name, &dataVolume.Spec)
 }
 
 func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility, name, namespace string) (*DataVolume, error) {
@@ -28,7 +28,7 @@ func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility, na
 	if err != nil {
 		return nil, err
 	}
-	return uc.KubeVirtDV.GetDataVolume(ctx, config, name, namespace)
+	return uc.kubeVirtDV.GetDataVolume(ctx, config, namespace, name)
 }
 
 func (uc *KubeVirtUseCase) ListDataVolumes(ctx context.Context, uuid, facility, namespace string) ([]DataVolume, error) {
@@ -36,7 +36,7 @@ func (uc *KubeVirtUseCase) ListDataVolumes(ctx context.Context, uuid, facility, 
 	if err != nil {
 		return nil, err
 	}
-	return uc.KubeVirtDV.ListDataVolume(ctx, config, namespace)
+	return uc.kubeVirtDV.ListDataVolume(ctx, config, namespace)
 }
 
 func (uc *KubeVirtUseCase) DeleteDataVolume(ctx context.Context, uuid, facility, name, namespace string) error {
@@ -44,5 +44,5 @@ func (uc *KubeVirtUseCase) DeleteDataVolume(ctx context.Context, uuid, facility,
 	if err != nil {
 		return err
 	}
-	return uc.KubeVirtDV.DeleteDataVolume(ctx, config, name, namespace)
+	return uc.kubeVirtDV.DeleteDataVolume(ctx, config, namespace, name)
 }
