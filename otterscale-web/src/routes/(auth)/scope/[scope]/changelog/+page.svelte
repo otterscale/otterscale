@@ -1,7 +1,9 @@
 <script lang="ts">
 	import * as Accordion from '$lib/components/ui/accordion';
+	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
+	import * as HoverCard from '$lib/components/ui/hover-card';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatTimeAgo } from '$lib/formatter';
@@ -9,10 +11,6 @@
 	import Icon from '@iconify/svelte';
 	import type { PageData } from './$types';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, findDynamicPath } from '$lib/path';
-	import { page } from '$app/state';
-
-	console.log(dynamicPaths[findDynamicPath(page.url.pathname, page.params.scope)]);
 
 	interface Props {
 		data: PageData;
@@ -112,98 +110,132 @@
 	{m.changelog_description()}
 </p>
 
-<Accordion.Root
-	type="single"
-	class="mx-auto w-full py-10 md:max-w-[60%]"
-	value={data.releases[0].tag_name}
->
-	{#each data.releases as release}
-		<Accordion.Item value={release.tag_name}>
-			<Accordion.Trigger
-				class="hover:bg-accent items-center gap-2 hover:rounded-none hover:no-underline [[data-state=open]]:rounded-b-none [[data-state=open]]:border-b [&>svg:last-child]:hidden"
-			>
-				<div class="flex w-full flex-col flex-wrap space-y-1 px-6">
-					<span class="text-foreground flex items-center space-x-1 text-lg font-medium">
-						{release.name}
-					</span>
-					<div class="flex space-x-2">
-						<div class="flex items-center space-x-1">
-							<Icon icon="ph:tag" class="text-muted-foreground size-3.5" />
-							<span class="text-muted-foreground text-xs tracking-tight">{release.tag_name}</span>
-						</div>
-						<div class="flex items-center space-x-1">
-							<Icon icon="ph:clock" class="text-muted-foreground size-3.5" />
-							<Tooltip.Provider>
-								<Tooltip.Root>
-									<Tooltip.Trigger class="text-muted-foreground text-xs tracking-tight">
-										{formatTimeAgo(release.created_at)}
-									</Tooltip.Trigger>
-									<Tooltip.Content>
-										{release.created_at.toString()}
-									</Tooltip.Content>
-								</Tooltip.Root>
-							</Tooltip.Provider>
+{#if data.error}
+	<span class="mx-auto animate-pulse py-4 text-red-500">
+		{data.error}
+	</span>
+{:else}
+	<Accordion.Root
+		type="single"
+		class="mx-auto w-full py-10 md:max-w-[60%]"
+		value={data.releases[0].tag_name}
+	>
+		{#each data.releases as release}
+			<Accordion.Item value={release.tag_name}>
+				<Accordion.Trigger
+					class="hover:bg-accent items-center gap-2 hover:rounded-none hover:no-underline [[data-state=open]]:rounded-b-none [[data-state=open]]:border-b [&>svg:last-child]:hidden"
+				>
+					<div class="flex w-full flex-col flex-wrap space-y-1 px-6">
+						<span class="text-foreground flex items-center space-x-1 text-lg font-medium">
+							{release.name}
+						</span>
+						<div class="flex space-x-2">
+							<div class="flex items-center space-x-1">
+								<Icon icon="ph:tag" class="text-muted-foreground size-3.5" />
+								<span class="text-muted-foreground text-xs tracking-tight">{release.tag_name}</span>
+							</div>
+							<div class="flex items-center space-x-1">
+								<Icon icon="ph:clock" class="text-muted-foreground size-3.5" />
+								<Tooltip.Provider>
+									<Tooltip.Root>
+										<Tooltip.Trigger class="text-muted-foreground text-xs tracking-tight">
+											{formatTimeAgo(release.created_at)}
+										</Tooltip.Trigger>
+										<Tooltip.Content>
+											{release.created_at.toString()}
+										</Tooltip.Content>
+									</Tooltip.Root>
+								</Tooltip.Provider>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				{#if release.prerelease}
-					<Badge variant="outline">{m.changelog_prerelease()}</Badge>
-				{/if}
-				{#if release.latest}
-					<Badge>{m.changelog_latest()}</Badge>
-				{/if}
-
-				<Button href={release.html_url} variant="ghost" size="icon" class="hover:text-primary/80">
-					<Icon icon="ph:arrow-square-out" class="size-4" />
-				</Button>
-
-				<Icon
-					icon="ph:caret-down"
-					class="text-muted-foreground pointer-events-none mr-4 size-5 shrink-0 translate-y-0.5 transition-transform duration-200"
-				/>
-			</Accordion.Trigger>
-
-			<Accordion.Content class="flex flex-col space-y-4 p-6 text-balance">
-				{#each Object.entries(CHANGE_TYPES) as [key, config]}
-					{#if hasChanges(release, key as keyof typeof CHANGE_TYPES)}
-						<Card.Root class="gap-0 p-0 {config.colors.border}">
-							<Card.Header class="gap-0 rounded-t-xl py-3 {config.colors.bg}">
-								<Card.Title class="flex items-center space-x-1 font-semibold {config.colors.text}">
-									<Icon icon={config.icon} class="size-5" />
-									<span>{config.title}</span>
-								</Card.Title>
-							</Card.Header>
-
-							<Card.Content class="space-y-2 rounded-b-xl py-6">
-								{#each release.changes[key as keyof typeof CHANGE_TYPES] as item, index}
-									<p class="flex items-center space-x-2 text-sm">
-										<span>
-											{index + 1}.
-											{item.description} by
-											<a
-												target="_blank"
-												href="https://github.com/{item.author}"
-												class="hover:text-primary/80 font-semibold underline underline-offset-4"
-											>
-												{item.author}
-											</a>
-											in
-											<a
-												target="_blank"
-												href={item.pull_request}
-												class="text-blue-600 underline underline-offset-4 hover:text-blue-800"
-											>
-												{extractPRNumber(item.pull_request)}
-											</a>
-										</span>
-									</p>
-								{/each}
-							</Card.Content>
-						</Card.Root>
+					{#if release.prerelease}
+						<Badge variant="outline">{m.changelog_prerelease()}</Badge>
 					{/if}
-				{/each}
-			</Accordion.Content>
-		</Accordion.Item>
-	{/each}
-</Accordion.Root>
+					{#if release.latest}
+						<Badge>{m.changelog_latest()}</Badge>
+					{/if}
+
+					<Button href={release.html_url} variant="ghost" size="icon" class="hover:text-primary/80">
+						<Icon icon="ph:arrow-square-out" class="size-4" />
+					</Button>
+
+					<Icon
+						icon="ph:caret-down"
+						class="text-muted-foreground pointer-events-none mr-4 size-5 shrink-0 translate-y-0.5 transition-transform duration-200"
+					/>
+				</Accordion.Trigger>
+
+				<Accordion.Content class="flex flex-col space-y-4 p-6 text-balance">
+					{#each Object.entries(CHANGE_TYPES) as [key, config]}
+						{#if hasChanges(release, key as keyof typeof CHANGE_TYPES)}
+							<Card.Root class="gap-0 p-0 {config.colors.border}">
+								<Card.Header class="gap-0 rounded-t-xl py-3 {config.colors.bg}">
+									<Card.Title
+										class="flex items-center space-x-1 font-semibold {config.colors.text}"
+									>
+										<Icon icon={config.icon} class="size-5" />
+										<span>{config.title}</span>
+									</Card.Title>
+								</Card.Header>
+
+								<Card.Content class="space-y-2 rounded-b-xl py-6">
+									{#each release.changes[key as keyof typeof CHANGE_TYPES] as item, index}
+										<p class="flex items-center space-x-2 text-sm">
+											<span>
+												{index + 1}.
+												{item.description} by
+												<HoverCard.Root>
+													<HoverCard.Trigger
+														href="https://github.com/{item.author}"
+														target="_blank"
+														rel="noreferrer noopener"
+														class="hover:text-primary/80 rounded-sm font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
+													>
+														{item.author}
+													</HoverCard.Trigger>
+													<HoverCard.Content class="w-70">
+														<div class="flex items-center space-x-4">
+															<Avatar.Root class="size-10">
+																<Avatar.Image src="https://github.com/{item.author}.png" />
+																<Avatar.Fallback>{item.author.slice(0, 2)}</Avatar.Fallback>
+															</Avatar.Root>
+															<div class="space-y-2">
+																<span class="text-sm font-semibold">{item.author}</span>
+																<span class="text-muted-foreground text-sm">
+																	{data.usersMap[item.author].name}
+																</span>
+																{#if data.usersMap[item.author].company}
+																	<div class="flex items-center space-x-1 pt-1">
+																		<Icon icon="ph:building-office" class="size-4 opacity-80" />
+																		<span class="text-xs">
+																			{data.usersMap[item.author].company}
+																		</span>
+																	</div>
+																{/if}
+															</div>
+														</div>
+													</HoverCard.Content>
+												</HoverCard.Root>
+												in
+												<a
+													href={item.pull_request}
+													target="_blank"
+													rel="noreferrer noopener"
+													class="text-blue-600 underline underline-offset-4 hover:text-blue-800 focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black"
+												>
+													{extractPRNumber(item.pull_request)}
+												</a>
+											</span>
+										</p>
+									{/each}
+								</Card.Content>
+							</Card.Root>
+						{/if}
+					{/each}
+				</Accordion.Content>
+			</Accordion.Item>
+		{/each}
+	</Accordion.Root>
+{/if}
