@@ -1,9 +1,16 @@
-import { env } from "$env/dynamic/private";
-import { env as publicEnv } from "$env/dynamic/public";
 import { betterAuth } from "better-auth";
 import { Pool } from "pg";
+import { sso } from "@better-auth/sso";
+import { env } from "$env/dynamic/private";
+import { env as publicEnv } from "$env/dynamic/public";
 
 export const auth = betterAuth({
+	account: {
+		accountLinking: {
+			enabled: true,
+			trustedProviders: env.AUTH_TRUSTED_PROVIDERS?.split(',') || []
+		}
+	},
 	baseURL: env.PUBLIC_URL,
 	database: new Pool({
 		connectionString: env.DATABASE_URL,
@@ -11,13 +18,16 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 	},
+	plugins: [
+		sso(),
+	],
+	secret: env.AUTH_SECRET,
 	session: {
 		cookieCache: {
 			enabled: true,
 			maxAge: 5 * 60,
 		},
 	},
-	secret: env.AUTH_SECRET,
 	socialProviders: {
 		apple: {
 			clientId: env.APPLE_CLIENT_ID!,

@@ -44,6 +44,7 @@ export const routes = (scope: string): Route[] => [
     {
         path: dynamicPaths.settings(scope),
         items: [
+            dynamicPaths.settingsSSO(scope),
             dynamicPaths.settingsNetwork(scope),
             dynamicPaths.settingsSubscription(scope),
             dynamicPaths.settingsBIST(scope),

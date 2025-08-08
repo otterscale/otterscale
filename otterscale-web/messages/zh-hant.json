@@ -37,6 +37,7 @@
 	"settings_description": "環境的全域設定和配置選項",
 	"general": "一般",
 	"network": "網路",
+	"sso": "單一登入",
 	"built_in_test": "內建測試",
 	"subscription": "訂閱",
 	"setup": "安裝",
