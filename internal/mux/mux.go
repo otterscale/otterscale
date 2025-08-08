@@ -36,7 +36,7 @@ var Services = []string{
 	kubevirtv1.KubeVirtServiceName,
 }
 
-func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
+func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, kubevirt *app.KubeVirtService, machine *app.MachineService, network *app.NetworkService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle(applicationv1.NewApplicationServiceHandler(app))
 	mux.Handle(bistv1.NewBISTServiceHandler(bist))
@@ -44,6 +44,7 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 	mux.Handle(environmentv1.NewEnvironmentServiceHandler(environment))
 	mux.Handle(facilityv1.NewFacilityServiceHandler(facility))
 	mux.Handle(essentialv1.NewEssentialServiceHandler(essential))
+	mux.Handle(kubevirtv1.NewKubeVirtServiceHandler(kubevirt))
 	mux.Handle(machinev1.NewMachineServiceHandler(machine))
 	mux.Handle(networkv1.NewNetworkServiceHandler(network))
 	mux.Handle(storagev1.NewStorageServiceHandler(storage))

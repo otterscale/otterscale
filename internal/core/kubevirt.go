@@ -110,14 +110,13 @@ type KubeVirtUseCase struct {
 	facility    FacilityRepo
 }
 
-func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtNet KubeVirtNetRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
+func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
 	return &KubeVirtUseCase{
-		kubeCore:    kubeCore,
-		kubeApps:    kubeApps,
-		kubeVirtVM:  kubeVirtVM,
-		kubeVirtDV:  kubeVirtDV,
-		kubeVirtNet: kubeVirtNet,
-		action:      action,
-		facility:    facility,
+		kubeCore:   kubeCore,
+		kubeApps:   kubeApps,
+		kubeVirtVM: kubeVirtVM,
+		kubeVirtDV: kubeVirtDV,
+		action:     action,
+		facility:   facility,
 	}
 }

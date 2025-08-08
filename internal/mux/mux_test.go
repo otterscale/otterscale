@@ -18,6 +18,7 @@ func createMockServices() (
 	*app.EnvironmentService,
 	*app.FacilityService,
 	*app.EssentialService,
+	*app.KubeVirtService,
 	*app.MachineService,
 	*app.NetworkService,
 	*app.StorageService,
@@ -26,17 +27,18 @@ func createMockServices() (
 ) {
 	// Create mock use cases (nil is fine for mux testing as we're not calling the actual methods)
 	var (
-		appUC   *core.ApplicationUseCase
-		bistUC  *core.BISTUseCase
-		confUC  *core.ConfigurationUseCase
-		envUC   *core.EnvironmentUseCase
-		facUC   *core.FacilityUseCase
-		essUC   *core.EssentialUseCase
-		machUC  *core.MachineUseCase
-		netUC   *core.NetworkUseCase
-		storUC  *core.StorageUseCase
-		scopeUC *core.ScopeUseCase
-		tagUC   *core.TagUseCase
+		appUC      *core.ApplicationUseCase
+		bistUC     *core.BISTUseCase
+		confUC     *core.ConfigurationUseCase
+		envUC      *core.EnvironmentUseCase
+		facUC      *core.FacilityUseCase
+		essUC      *core.EssentialUseCase
+		kubevirtUC *core.KubeVirtUseCase
+		machUC     *core.MachineUseCase
+		netUC      *core.NetworkUseCase
+		storUC     *core.StorageUseCase
+		scopeUC    *core.ScopeUseCase
+		tagUC      *core.TagUseCase
 	)
 
 	return app.NewApplicationService(appUC),
@@ -45,6 +47,7 @@ func createMockServices() (
 		app.NewEnvironmentService(envUC),
 		app.NewFacilityService(facUC),
 		app.NewEssentialService(essUC),
+		app.NewKubeVirtService(kubevirtUC),
 		app.NewMachineService(machUC),
 		app.NewNetworkService(netUC),
 		app.NewStorageService(storUC),
@@ -53,9 +56,9 @@ func createMockServices() (
 }
 
 func TestNew_WithoutHelper(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	if mux == nil {
 		t.Fatal("Expected mux to be created, got nil")
@@ -63,9 +66,9 @@ func TestNew_WithoutHelper(t *testing.T) {
 }
 
 func TestNew_WithHelper(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	if mux == nil {
 		t.Fatal("Expected mux to be created, got nil")
@@ -73,9 +76,9 @@ func TestNew_WithHelper(t *testing.T) {
 }
 
 func TestNew_ServiceHandlersRegistered(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -118,9 +121,9 @@ func TestNew_ServiceHandlersRegistered(t *testing.T) {
 }
 
 func TestNew_HealthAndReflectionWithHelper(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -161,9 +164,9 @@ func TestNew_HealthAndReflectionWithHelper(t *testing.T) {
 }
 
 func TestNew_NoHealthAndReflectionWithoutHelper(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
-	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -244,7 +247,7 @@ func TestNew_NilServices(t *testing.T) {
 		}
 	}()
 
-	mux := New(false, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	mux := New(false, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 
 	if mux == nil {
 		t.Error("Expected mux to be created even with nil services")
@@ -252,7 +255,7 @@ func TestNew_NilServices(t *testing.T) {
 }
 
 func TestNew_HelperFlagBehavior(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
 	testCases := []struct {
 		name         string
@@ -273,7 +276,7 @@ func TestNew_HelperFlagBehavior(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			mux := New(tc.helper, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+			mux := New(tc.helper, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 
 			server := httptest.NewServer(mux)
 			defer server.Close()
@@ -299,19 +302,19 @@ func TestNew_HelperFlagBehavior(t *testing.T) {
 
 // Benchmark tests
 func BenchmarkNew_WithoutHelper(b *testing.B) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+		_ = New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 	}
 }
 
 func BenchmarkNew_WithHelper(b *testing.B) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+		_ = New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, kubevirtSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
 	}
 }
