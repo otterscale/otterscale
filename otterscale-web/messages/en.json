@@ -36,6 +36,7 @@
 	"settings": "Settings",
 	"settings_description": "Global settings and configuration options for your environment",
 	"general": "General",
+	"sso": "Single Sign-On",
 	"network": "Network",
 	"built_in_test": "Built-in Test",
 	"subscription": "Subscription",
