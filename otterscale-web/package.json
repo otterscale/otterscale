@@ -24,6 +24,7 @@
 		"@fontsource/fira-mono": "^5.0.0",
 		"@iconify-json/logos": "^1.2.5",
 		"@iconify-json/ph": "^1.2.2",
+		"@iconify-json/simple-icons": "^1.2.46",
 		"@iconify-json/streamline-logos": "^1.2.0",
 		"@internationalized/date": "^3.8.2",
 		"@lucide/svelte": "^0.515.0",
