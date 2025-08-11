@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
-	import { page } from '$app/state';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { urlIcon } from '$lib/path';

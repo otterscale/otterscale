@@ -44,6 +44,7 @@ export const routes = (scope: string): Route[] => [
     {
         path: dynamicPaths.settings(scope),
         items: [
+            dynamicPaths.settingsSSO(scope),
             dynamicPaths.settingsNetwork(scope),
             dynamicPaths.settingsSubscription(scope),
             dynamicPaths.settingsBIST(scope),
@@ -60,12 +61,3 @@ export const bookmarks = [
     { title: 'BAR 3', url: '#' }
 ];
 
-export const cephPaths = (scope: string): Path[] => [
-    dynamicPaths.storage(scope),
-]
-
-export const kubernetesPaths = (scope: string): Path[] => [
-    dynamicPaths.models(scope),
-    dynamicPaths.databases(scope),
-    dynamicPaths.applications(scope),
-]

@@ -27,6 +27,7 @@ export const staticPaths: Record<string, Path> = {
 // Dynamic
 export const dynamicPaths = {
     scope: (scope: string): Path => ({ title: m.scopes(), url: createScopePath(scope) }),
+    changelog: (scope: string): Path => ({ title: m.changelog(), url: createScopePath(scope, '/changelog') }),
     account: (scope: string): Path => ({ title: m.account(), url: createScopePath(scope, '/account') }),
     accountSettings: (scope: string): Path => ({ title: m.settings(), url: createScopePath(scope, '/account/settings') }),
     models: (scope: string): Path => ({ title: m.models(), url: createScopePath(scope, '/models') }),
@@ -47,6 +48,7 @@ export const dynamicPaths = {
     machinesMetal: (scope: string): Path => ({ title: m.metal(), url: createScopePath(scope, '/machines/metal') }),
     machinesVirtualMachine: (scope: string): Path => ({ title: m.virtual_machine(), url: createScopePath(scope, '/machines/virtual-machine') }),
     settings: (scope: string): Path => ({ title: m.settings(), url: createScopePath(scope, '/settings') }),
+    settingsSSO: (scope: string): Path => ({ title: m.sso(), url: createScopePath(scope, '/settings/sso') }),
     settingsNetwork: (scope: string): Path => ({ title: m.network(), url: createScopePath(scope, '/settings/network') }),
     settingsBIST: (scope: string): Path => ({ title: m.built_in_test(), url: createScopePath(scope, '/settings/built-in-self-test') }),
     settingsSubscription: (scope: string): Path => ({ title: m.subscription(), url: createScopePath(scope, '/settings/subscription') }),
@@ -55,7 +57,6 @@ export const dynamicPaths = {
     setupScopeKubernetes: (scope: string): Path => ({ title: "Kubernetes", url: createScopePath(scope, '/setup/kubernetes') })
 };
 
-// Icon mapping
 const ICON_MAP = new Map([
     ['/models', 'ph:robot'],
     ['/databases', 'ph:database'],
@@ -73,3 +74,30 @@ export function urlIcon(url: string): string {
     }
     return 'ph:circle-dashed';
 }
+
+const disabledPaths = (scope: string) => ({
+    ceph: [
+        dynamicPaths.storage(scope),
+    ],
+    kube: [
+        dynamicPaths.models(scope),
+        dynamicPaths.databases(scope),
+        dynamicPaths.applications(scope),
+    ]
+});
+
+export const pathDisabled = (cephName: string | undefined, kubeName: string | undefined, scope: string, url: string): boolean => {
+    const paths = disabledPaths(scope);
+    return (!cephName && paths.ceph.some((path) => path.url === url)) ||
+        (!kubeName && paths.kube.some((path) => path.url === url));
+};
+
+export const findDynamicPath = (pathname: string, scope: string): keyof typeof dynamicPaths | null => {
+    for (const [key, pathFn] of Object.entries(dynamicPaths)) {
+        const path = pathFn(scope);
+        if (path.url === pathname) {
+            return key as keyof typeof dynamicPaths;
+        }
+    }
+    return null;
+};

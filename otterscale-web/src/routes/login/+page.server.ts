@@ -24,5 +24,6 @@ export const load: PageServerLoad = async ({ request, url }) => {
 		apple: isProviderConfigured(env.APPLE_CLIENT_ID, env.APPLE_CLIENT_SECRET, env.APPLE_APP_BUNDLE_IDENTIFIER),
 		github: isProviderConfigured(env.GITHUB_CLIENT_ID, env.GITHUB_CLIENT_SECRET),
 		google: isProviderConfigured(env.GOOGLE_CLIENT_ID, env.GOOGLE_CLIENT_SECRET),
+		oidcProvider: env.AUTH_OIDC_PROVIDER,
 	};
 };

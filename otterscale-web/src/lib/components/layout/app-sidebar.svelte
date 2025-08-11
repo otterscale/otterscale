@@ -17,9 +17,9 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, staticPaths } from '$lib/path';
+	import { dynamicPaths, findDynamicPath, pathDisabled, staticPaths } from '$lib/path';
 	import { activeScope, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
-	import { bookmarks, cephPaths, kubernetesPaths, routes } from '$lib/routes';
+	import { bookmarks, routes } from '$lib/routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
 	import NavSecondary from './nav-secondary.svelte';
@@ -94,8 +94,24 @@
 		// Show success feedback
 		toast.success(m.switch_scope({ name: scope.name }));
 
-		// Navigate to scope
-		goto(dynamicPaths.scope(scope.name).url);
+		// Navigate to new url
+		const homeURL = dynamicPaths.scope(scope.name).url;
+
+		const currentPathKey = findDynamicPath(page.url.pathname, page.params.scope);
+		if (!currentPathKey) {
+			goto(homeURL);
+			return;
+		}
+
+		const newPath = dynamicPaths[currentPathKey](scope.name);
+		const disabled = pathDisabled(
+			$currentCeph?.name,
+			$currentKubernetes?.name,
+			scope.name,
+			newPath.url
+		);
+
+		goto(disabled ? homeURL : newPath.url);
 	}
 
 	async function initialize() {
@@ -159,11 +175,7 @@
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavMain
-			routes={routes(page.params.scope)}
-			cephPaths={cephPaths(page.params.scope)}
-			kubernetesPaths={kubernetesPaths(page.params.scope)}
-		/>
+		<NavMain routes={routes(page.params.scope)} />
 		<NavPrimary {bookmarks} />
 		<NavSecondary class="mt-auto" />
 	</Sidebar.Content>

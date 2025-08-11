@@ -4,10 +4,11 @@
 	import Icon from '@iconify/svelte';
 	import { goto } from '$app/navigation';
 	import { authClient } from '$lib/auth-client';
-	import { Button } from '$lib/components/ui/button';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 	import LoginImage from '$lib/assets/login.png';
 	import SignUpImage from '$lib/assets/sign-up.jpg';
@@ -21,6 +22,7 @@
 		apple: boolean;
 		github: boolean;
 		google: boolean;
+		sso: boolean;
 	}
 
 	interface SignInForm {
@@ -41,7 +43,8 @@
 		email: false,
 		apple: false,
 		github: false,
-		google: false
+		google: false,
+		sso: false
 	});
 
 	const signInForm = writable<SignInForm>({
@@ -57,26 +60,39 @@
 	});
 
 	// Constants
-	const socialProviders = [
+	const providers = [
 		{
+			type: 'social',
 			id: 'apple',
 			icon: 'streamline-logos:apple-logo-solid',
 			label: 'Apple',
 			enabled: data.apple
 		},
 		{
+			type: 'social',
 			id: 'github',
 			icon: 'streamline-logos:github-logo-2-solid',
 			label: 'GitHub',
 			enabled: data.github
 		},
 		{
+			type: 'social',
 			id: 'google',
 			icon: 'streamline-logos:google-logo-solid',
 			label: 'Google',
 			enabled: data.google
+		},
+		{
+			type: 'oidc',
+			id: 'oidc',
+			icon: 'simple-icons:openid',
+			label: 'OIDC SSO',
+			enabled: Boolean(data.oidcProvider)
 		}
 	];
+
+	// Calculate enabled social providers count
+	const enabledProviders = providers.filter((provider) => provider.enabled);
 
 	// Utility functions
 	const showError = (context: any) => {
@@ -130,6 +146,15 @@
 				fetchOptions: {
 					onError: showError
 				}
+			});
+		});
+	};
+
+	const handleOIDCSignIn = async (provider: string) => {
+		await setLoadingState(provider, async () => {
+			await authClient.signIn.sso({
+				providerId: data.oidcProvider,
+				callbackURL: data.nextPath
 			});
 		});
 	};
@@ -192,31 +217,48 @@
 					</Button>
 
 					<!-- Social Sign In -->
-					<div
-						class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
-					>
-						<span class="bg-card text-muted-foreground relative z-10 px-2">{m.login_divider()}</span
+					{#if enabledProviders.length > 0}
+						<div
+							class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
 						>
-					</div>
+							<span class="bg-card text-muted-foreground relative z-10 px-2">
+								{m.login_divider()}
+							</span>
+						</div>
 
-					<div class="grid grid-cols-3 gap-4">
-						{#each socialProviders as provider}
-							<Button
-								variant="outline"
-								type="button"
-								class="w-full"
-								disabled={!provider.enabled || $loading[provider.id as keyof LoadingState]}
-								onclick={() => handleSocialSignIn(provider.id)}
-							>
-								{#if $loading[provider.id as keyof LoadingState]}
-									<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
-								{:else}
-									<Icon icon={provider.icon} class="size-5" />
-									<span class="sr-only">Login with {provider.label}</span>
-								{/if}
-							</Button>
-						{/each}
-					</div>
+						<div
+							class="grid gap-4 {enabledProviders.length > 1
+								? `grid-cols-${enabledProviders.length}`
+								: ''}"
+						>
+							{#each enabledProviders as provider}
+								<Tooltip.Provider>
+									<Tooltip.Root>
+										<Tooltip.Trigger
+											class={buttonVariants({ variant: 'outline' })}
+											disabled={$loading[provider.id as keyof LoadingState]}
+											onclick={() => {
+												if (provider.type == 'social') {
+													handleSocialSignIn(provider.id);
+												} else if (provider.type == 'oidc') {
+													handleOIDCSignIn(provider.id);
+												}
+											}}
+										>
+											{#if $loading[provider.id as keyof LoadingState]}
+												<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
+											{:else}
+												<Icon icon={provider.icon} class="size-5" />
+											{/if}
+										</Tooltip.Trigger>
+										<Tooltip.Content>
+											<p>{provider.label}</p>
+										</Tooltip.Content>
+									</Tooltip.Root>
+								</Tooltip.Provider>
+							{/each}
+						</div>
+					{/if}
 
 					<Button variant="link" class="text-muted-foreground" onclick={toggleMode}>
 						{m.login_toggle()}
