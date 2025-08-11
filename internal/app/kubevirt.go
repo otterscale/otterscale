@@ -5,6 +5,8 @@ import (
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	v1 "k8s.io/api/core/v1"
 
 	pb "github.com/openhdc/otterscale/api/kubevirt/v1"
 	"github.com/openhdc/otterscale/api/kubevirt/v1/pbconnect"
@@ -418,12 +420,49 @@ func toProtoDataVolumes(dvs []core.DataVolume) []*pb.DataVolume {
 
 func toProtoDataVolume(dv *core.DataVolume) *pb.DataVolume {
 	ret := &pb.DataVolume{}
-	/*
-		ret.SetMetadata(toProtoMetadata(dv.Metadata))
-		ret.SetSource(dv.Source)
-		ret.SetType(dv.Type)
-		ret.SetSizeBytes(dv.SizeBytes)
-	*/
+	ret.SetMetadata(toProtoMetadata(core.Metadata{
+		Name:        dv.GetName(),
+		Namespace:   dv.GetNamespace(),
+		Labels:      dv.GetLabels(),
+		Annotations: dv.GetAnnotations(),
+		CreatedAt:   timestamppb.New(dv.CreationTimestamp.Time),
+	}))
+	var source string
+	var sourceType string
+	var sizeBytes int64
+
+	if dv.Spec.PVC != nil {
+		if dv.Spec.PVC.Resources.Requests != nil {
+			size, found := dv.Spec.PVC.Resources.Requests[v1.ResourceStorage]
+			if found {
+				sizeBytes = size.Value()
+			}
+		}
+	} else if dv.Spec.Storage != nil {
+		if dv.Spec.Storage.Resources.Requests != nil {
+			size, found := dv.Spec.Storage.Resources.Requests[v1.ResourceStorage]
+			if found {
+				sizeBytes = size.Value()
+			}
+		}
+	}
+	if dv.Spec.Source.HTTP != nil {
+		source = dv.Spec.Source.HTTP.URL
+		sourceType = "HTTP"
+	} else if dv.Spec.Source.Upload != nil {
+		source = ""
+		sourceType = "Upload"
+	} else if dv.Spec.Source.S3 != nil {
+		source = dv.Spec.Source.S3.URL
+		sourceType = "S3"
+	} else if dv.Spec.Source.VDDK != nil {
+		source = dv.Spec.Source.VDDK.URL
+		sourceType = string(dv.Spec.Source.VDDK.UUID)
+	}
+
+	ret.SetType(sourceType)
+	ret.SetSizeBytes(sizeBytes)
+	ret.SetSource(source)
 	return ret
 }
 
