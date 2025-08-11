@@ -66,7 +66,7 @@
 <div
 	aria-invalid={!valid}
 	class={cn(
-		'ring-offset-background border-input bg-background selection:bg-primary dark:bg-input/30 focus-within:ring-ring flex h-9 w-fit place-items-center rounded-md border px-3 font-mono font-light ring-2 ring-transparent focus-within:ring-offset-2',
+		'ring-offset-background border-input bg-background selection:bg-primary dark:bg-input/30 focus-within:ring-ring flex h-9 w-fit place-items-center rounded-md border px-3 font-sans font-light ring-2 ring-transparent focus-within:ring-offset-2',
 		className
 	)}
 >
@@ -90,7 +90,7 @@
 		placeholder={parsedPlaceholder ? parsedPlaceholder[0] : undefined}
 		onpaste={paste}
 	/>
-	<span class="font-mono">{separator}</span>
+	<span class="font-sans">{separator}</span>
 	<Input
 		bind:ref={secondInput}
 		goNext={() => thirdInput?.focus()}
@@ -112,7 +112,7 @@
 		placeholder={parsedPlaceholder ? parsedPlaceholder[1] : undefined}
 		onpaste={paste}
 	/>
-	<span class="font-mono">{separator}</span>
+	<span class="font-sans">{separator}</span>
 	<Input
 		bind:ref={thirdInput}
 		goNext={() => fourthInput?.focus()}
@@ -134,7 +134,7 @@
 		placeholder={parsedPlaceholder ? parsedPlaceholder[2] : undefined}
 		onpaste={paste}
 	/>
-	<span class="font-mono">{separator}</span>
+	<span class="font-sans">{separator}</span>
 	<Input
 		bind:ref={fourthInput}
 		goPrevious={() => thirdInput?.focus()}
