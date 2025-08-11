@@ -142,7 +142,7 @@ func (s *KubeVirtService) CreateDataVolume(ctx context.Context, req *connect.Req
 	if err != nil {
 		return nil, err
 	}
-	println(toCoreDataVolume(req.Msg.GetDataVolume()))
+	println(req.Msg.GetDataVolume())
 	resp := toProtoDataVolume(dv)
 	return connect.NewResponse(resp), nil
 }
