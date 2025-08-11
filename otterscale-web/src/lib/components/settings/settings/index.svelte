@@ -5,7 +5,7 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { TagService, type Tag } from '$lib/api/tag/v1/tag_pb';
 	import * as Table from '$lib/components/custom/table';
-	import * as Accordion from '$lib/components/ui/accordion';
+	import * as Alert from '$lib/components/ui/alert';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { cn } from '$lib/utils';
@@ -13,17 +13,16 @@
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import UpdateNTPServer from './update-ntp-server.svelte';
-	import UpdatePackageRepository from './update-package-repository.svelte';
+	import CreateBootImage from './create-boot-image.svelte';
 	import CreateTag from './create-tag.svelte';
 	import DeleteTag from './delete-tag.svelte';
-	import * as Alert from '$lib/components/ui/alert';
+	import ImportBootImage from './import-boot-image.svelte';
+	import * as Layout from './layout';
 	import ReadArchitectures from './read-architectures.svelte';
 	import SetBootImageAsDefault from './set-boot-image-as-default.svelte';
-	import CreateBootImage from './create-boot-image.svelte';
-	import ImportBootImage from './import-boot-image.svelte';
-	import Items from './utils/items.svelte';
-	import Item from './utils/item.svelte';
+	import UpdateNTPServer from './update-ntp-server.svelte';
+	import UpdatePackageRepository from './update-package-repository.svelte';
+	import { Item, Items } from './utils';
 </script>
 
 <script lang="ts">
@@ -82,34 +81,34 @@
 		<Items>
 			<Item icon="ph:network" name="NTP Servers" type="network" value="ntp_servers">
 				{#if !isConfigurationLoading}
-					<span class="flex justify-between gap-2">
-						<h1 class="text-lg font-bold">Address</h1>
+					<Layout.Title>Address</Layout.Title>
+					<Layout.Actions>
 						<UpdateNTPServer bind:configuration />
-					</span>
-					<p class="text-muted-foreground text-sm">
+					</Layout.Actions>
+					<Layout.Description>
 						NTP servers, specified as IP addresses or hostnames delimited by commas and/or spaces,
 						to be used as time references for MAAS itself, the machines MAAS deploys, and devices
 						that make use of MAAS's DHCP services.
-					</p>
-					<div class="bg-muted rounded-lg p-4">
+					</Layout.Description>
+					<Layout.Controller>
 						{#if $configuration.ntpServer && $configuration.ntpServer.addresses}
 							{#each $configuration.ntpServer.addresses as address}
 								<Badge>{address}</Badge>
 							{/each}
 						{/if}
-					</div>
+					</Layout.Controller>
 				{/if}
 			</Item>
 
 			<Item icon="ph:cloud" name="Package Repository" type="system" value="package_repository">
 				{#if !isConfigurationLoading}
-					<h1 class="text-lg font-bold">Repository</h1>
-					<p class="text-muted-foreground text-sm">
+					<Layout.Title>Repository</Layout.Title>
+					<Layout.Description>
 						Package repositories contain software packages that can be installed on machines. These
 						repositories can be configured with custom URLs and enabled/disabled as needed to
 						control software sources and updates for your infrastructure.
-					</p>
-					<div>
+					</Layout.Description>
+					<Layout.Controller>
 						<Table.Root>
 							<Table.Header>
 								<Table.Row>
@@ -146,27 +145,23 @@
 								{/each}
 							</Table.Body>
 						</Table.Root>
-					</div>
+					</Layout.Controller>
 				{/if}
 			</Item>
 
 			<Item icon="ph:squares-four" name="Boot Image" type="system" value="boot_image">
 				{#if !isConfigurationLoading}
-					<span class="flex justify-between gap-2">
-						<h1 class="text-lg font-bold">Image</h1>
-						<span>
-							<CreateBootImage bind:configuration />
-							<ImportBootImage bind:configuration />
-						</span>
-					</span>
-
-					<p class="text-muted-foreground text-sm">
+					<Layout.Title>Image</Layout.Title>
+					<Layout.Actions>
+						<CreateBootImage bind:configuration />
+						<ImportBootImage bind:configuration />
+					</Layout.Actions>
+					<Layout.Description>
 						Boot images are operating system files used for machine deployment. These images can be
 						configured with different architectures and distribution series, and can be set as
 						default for automatic deployment of machines.
-					</p>
-
-					<div>
+					</Layout.Description>
+					<Layout.Controller>
 						<Table.Root>
 							<Table.Header>
 								<Table.Row>
@@ -204,22 +199,22 @@
 								{/each}
 							</Table.Body>
 						</Table.Root>
-					</div>
+					</Layout.Controller>
 				{/if}
 			</Item>
 
 			<Item icon="ph:tag" name="Tag" type="machine" value="tag">
 				{#if !isConfigurationLoading}
-					<span class="flex justify-between gap-2">
-						<h1 class="text-lg font-bold">Tag</h1>
+					<Layout.Title>Tag</Layout.Title>
+					<Layout.Actions>
 						<CreateTag bind:tags />
-					</span>
-					<p class="text-muted-foreground text-sm">
+					</Layout.Actions>
+					<Layout.Description>
 						Tags are identifiable labels that can be assigned to machines for filtering and group
 						management. These tags help in organizing and managing machines based on their
 						characteristics or purposes.
-					</p>
-					<div>
+					</Layout.Description>
+					<Layout.Controller>
 						<Table.Root>
 							<Table.Header>
 								<Table.Row>
@@ -244,7 +239,7 @@
 								{/each}
 							</Table.Body>
 						</Table.Root>
-					</div>
+					</Layout.Controller>
 				{/if}
 			</Item>
 		</Items>
