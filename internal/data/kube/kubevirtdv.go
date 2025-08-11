@@ -33,6 +33,10 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 			Namespace: namespace,
 		},
 	}
+
+	println(dv.Name)
+	println(dv.Namespace)
+
 	if spec != nil {
 		dv.Spec = *spec
 	}
