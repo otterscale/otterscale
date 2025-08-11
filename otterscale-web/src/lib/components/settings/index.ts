@@ -1,4 +1,5 @@
-import Settings from './index.svelte'
 import { Network } from './network'
+import { Settings } from './settings'
 
-export { Settings, Network }
+export { Network, Settings }
+
