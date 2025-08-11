@@ -4,7 +4,7 @@
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import {
 		Multiple as MultipleSelect,
 		Single as SingleSelect
@@ -78,13 +78,13 @@
 	let invalidReplicatedSize: boolean | undefined = $state();
 </script>
 
-<SingleStepModal.Root bind:open={stateController.state}>
-	<SingleStepModal.Trigger variant="default">
+<Modal.Root bind:open={stateController.state}>
+	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
 		Create
-	</SingleStepModal.Trigger>
-	<SingleStepModal.Content>
-		<SingleStepModal.Header>Create Pool</SingleStepModal.Header>
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>Create Pool</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
@@ -222,10 +222,10 @@
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
-		<SingleStepModal.Footer>
-			<SingleStepModal.Cancel onclick={reset}>Cancel</SingleStepModal.Cancel>
-			<SingleStepModal.ActionsGroup>
-				<SingleStepModal.Action
+		<Modal.Footer>
+			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
 					disabled={invalidName ||
 						invalidType ||
 						(request.poolType === PoolType.REPLICATED && invalidReplicatedSize)}
@@ -251,8 +251,8 @@
 					}}
 				>
 					Create
-				</SingleStepModal.Action>
-			</SingleStepModal.ActionsGroup>
-		</SingleStepModal.Footer>
-	</SingleStepModal.Content>
-</SingleStepModal.Root>
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

@@ -1,0 +1,42 @@
+<script lang="ts" module>
+	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+</script>
+
+<script lang="ts">
+	const lines = 3;
+</script>
+
+<div class="flex flex-col gap-4">
+	<div class="flex items-center justify-center">
+		<span class="*:h-[50px] *:w-[300px]">
+			<Skeleton class="bg-muted" />
+		</span>
+	</div>
+	<div class="flex items-center justify-center">
+		<span class="*:h-[30px] *:w-[700px]">
+			<Skeleton class="bg-muted" />
+		</span>
+	</div>
+	<div class="flex items-center justify-between gap-2">
+		<div class="flex items-center gap-2 *:h-[50px] *:w-[100px]">
+			<Skeleton class="bg-muted" />
+			<Skeleton class="bg-muted" />
+			<Skeleton class="bg-muted" />
+		</div>
+		<div class="flex items-center gap-2 *:h-[50px] *:w-[100px]">
+			<Skeleton class="bg-muted" />
+		</div>
+	</div>
+	{#each Array(lines) as _}
+		<div class="flex items-center gap-4 *:h-[300px] *:w-full">
+			<Skeleton class="bg-muted" />
+			<Skeleton class="bg-muted" />
+			<Skeleton class="bg-muted" />
+		</div>
+	{/each}
+	<div class="flex items-center justify-center">
+		<span class="*:h-[50px] *:w-[300px]">
+			<Skeleton class="bg-muted" />
+		</span>
+	</div>
+</div>

@@ -21,53 +21,45 @@
 
 <div class="relative max-w-xs">
 	<Command.Root class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
-		{@render filterInput()}
-		{@render filterSuggestions()}
+		<Command.Input
+			class="placeholder:text-xs"
+			placeholder={alias ?? capitalizeFirstLetter(columnId)}
+			value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
+			oninput={(e) => {
+				table.getColumn(columnId)?.setFilterValue(e.currentTarget.value);
+				suggestionsOpen = true;
+				if (!e.currentTarget.value) {
+					suggestionsOpen = false;
+				}
+			}}
+			onmousedowncapture={() => {
+				suggestionsOpen = true;
+			}}
+			onblur={(e) => {
+				suggestionsOpen = false;
+			}}
+		/>
+		<Command.List
+			class={cn(
+				'bg-card absolute top-10 z-50 w-full rounded-md border shadow',
+				suggestionsOpen ? 'visible' : 'hidden'
+			)}
+		>
+			{#each suggestions as suggestion}
+				<Command.Item
+					disabled={!suggestionsOpen}
+					value={suggestion}
+					class="text-xs hover:cursor-pointer"
+					onmousedown={(e) => {
+						e.preventDefault();
+						table.getColumn(columnId)?.setFilterValue(suggestion);
+						suggestionsOpen = false;
+					}}
+				>
+					<Icon icon="ph:list-magnifying-glass" />
+					{suggestion}
+				</Command.Item>
+			{/each}
+		</Command.List>
 	</Command.Root>
 </div>
-
-{#snippet filterInput()}
-	<Command.Input
-		class="placeholder:text-xs"
-		placeholder={alias ?? capitalizeFirstLetter(columnId)}
-		value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
-		oninput={(e) => {
-			table.getColumn(columnId)?.setFilterValue(e.currentTarget.value);
-			suggestionsOpen = true;
-			if (!e.currentTarget.value) {
-				suggestionsOpen = false;
-			}
-		}}
-		onmousedowncapture={() => {
-			suggestionsOpen = true;
-		}}
-		onblur={(e) => {
-			suggestionsOpen = false;
-		}}
-	/>
-{/snippet}
-
-{#snippet filterSuggestions()}
-	<Command.List
-		class={cn(
-			'bg-card absolute top-10 z-50 w-full rounded-md border shadow',
-			suggestionsOpen ? 'visible' : 'hidden'
-		)}
-	>
-		{#each suggestions as suggestion}
-			<Command.Item
-				disabled={!suggestionsOpen}
-				value={suggestion}
-				class="text-xs hover:cursor-pointer"
-				onmousedown={(e) => {
-					e.preventDefault();
-					table.getColumn(columnId)?.setFilterValue(suggestion);
-					suggestionsOpen = false;
-				}}
-			>
-				<Icon icon="ph:list-magnifying-glass" />
-				{suggestion}
-			</Command.Item>
-		{/each}
-	</Command.List>
-{/snippet}
