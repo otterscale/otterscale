@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import type { Image } from '$lib/api/storage/v1/storage_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
@@ -18,22 +19,30 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	// import type { PrometheusDriver } from 'prometheus-query';
-	import { type Pool } from '$lib/api/storage/v1/storage_pb';
 	import { type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	import { headers } from './headers.svelte';
-
-	const selectedFacility = 'ceph-mon';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	// const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
+	let {
+		selectedScopeUuid,
+		selectedFacility,
+		image,
+		images = $bindable()
+	}: {
+		selectedScopeUuid: string;
+		selectedFacility: string;
+		image: Image;
+		images: Writable<Image[]>;
+	} = $props();
 
-	let { selectedScopeUuid, pools }: { selectedScopeUuid: string; pools: Writable<Pool[]> } =
-		$props();
+	let snapshots = $state(image.snapshots);
+	$effect(() => {
+		image;
+		snapshots = image.snapshots;
+	});
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -43,10 +52,9 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return $pools;
+			return snapshots;
 		},
-		columns,
-
+		columns: columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -104,7 +112,6 @@
 				rowSelection = updater;
 			}
 		},
-
 		autoResetAll: false
 	});
 </script>
@@ -115,18 +122,11 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={$pools.map((row) => row.name)} columnId="name" {table} />
-			<Filters.StringMatch
-				values={$pools.flatMap((row) => row.applications)}
-				columnId="applications"
-				alias="Application"
-				{table}
-			/>
-			<Filters.StructureMatch {table} columnId="placementGroupState" alias="State" />
+			<Filters.StringFuzzy values={$images.map((row) => row.name)} columnId="name" {table} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScopeUuid} bind:pools />
+			<Create selectedScope={selectedScopeUuid} {selectedFacility} {image} bind:images />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -144,9 +144,6 @@
 								{/if}
 							</Table.Head>
 						{/each}
-						<Table.Head>
-							{@render headers.iops()}
-						</Table.Head>
 						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
@@ -160,10 +157,7 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<!-- <IOPS client={$prometheusDriver} {selectedScope} selectedPool={row.original.name} /> -->
-						</Table.Cell>
-						<Table.Cell>
-							<Actions {selectedScopeUuid} {row} bind:pools />
+							<Actions {selectedScopeUuid} {image} snapshot={row.original} bind:images />
 						</Table.Cell>
 					</Table.Row>
 				{:else}

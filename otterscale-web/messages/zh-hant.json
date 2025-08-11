@@ -25,7 +25,7 @@
 	"store": "商店",
 	"storage": "儲存裝置",
 	"storage_description": "具備 NFS、S3 和區塊儲存功能的 Ceph 儲存系統",
-	"cluster": "叢集",
+	"pool": "儲存池",
 	"block_device": "區塊裝置",
 	"file_system": "NFS",
 	"object_gateway": "物件",

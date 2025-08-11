@@ -28,7 +28,7 @@ export const routes = (scope: string): Route[] => [
     {
         path: dynamicPaths.storage(scope),
         items: [
-            dynamicPaths.storageCluster(scope),
+            dynamicPaths.storagePool(scope),
             dynamicPaths.storageBlockDevice(scope),
             dynamicPaths.storageFileSystem(scope),
             dynamicPaths.storageObjectGateway(scope)
