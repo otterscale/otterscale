@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { mode } from 'mode-watcher';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -14,11 +14,18 @@
 	import * as Carousel from '$lib/components/ui/carousel';
 	import type { CarouselAPI } from '$lib/components/ui/carousel/context.js';
 	import { Label } from '$lib/components/ui/label';
+	import * as Sheet from '$lib/components/ui/sheet';
 	import { m } from '$lib/paraglide/messages';
 	import { premiumTier } from '$lib/stores';
 	import AdvancedTierImage from '$lib/assets/advanced-tier.jpg';
 	import BasicTierImage from '$lib/assets/basic-tier.jpg';
 	import EnterpriseTierImage from '$lib/assets/enterprise-tier.jpg';
+	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { Input } from '$lib/components/ui/input';
+	import * as Select from '$lib/components/ui/select';
+	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
+	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
+	import { Separator } from '$lib/components/ui/separator';
 
 	let {
 		open = $bindable(false),
@@ -26,8 +33,9 @@
 	}: { open: boolean; trigger: Writable<boolean> } = $props();
 
 	let api = $state<CarouselAPI>();
-
 	let current = $state(0);
+	let openSheet = $state(false);
+
 	$effect(() => {
 		if (api) {
 			current = api.selectedScrollSnap() + 1;
@@ -37,8 +45,29 @@
 		}
 	});
 
+	let mounted = false;
+	onMount(async () => {
+		try {
+			await fetchMachines();
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+		mounted = true;
+	});
+
 	const transport: Transport = getContext('transport');
+	const machineClient = createClient(MachineService, transport);
 	const scopeClient = createClient(ScopeService, transport);
+	const machinesStore = writable<Machine[]>([]);
+
+	async function fetchMachines() {
+		try {
+			const response = await machineClient.listMachines({});
+			machinesStore.set(response.machines);
+		} catch (error) {
+			console.error('Error fetching:', error);
+		}
+	}
 
 	const DEFAULT_REQUEST = { name: '' } as CreateScopeRequest;
 
@@ -107,6 +136,136 @@
 	];
 </script>
 
+<Sheet.Root bind:open={openSheet}>
+	<Sheet.Trigger>Open</Sheet.Trigger>
+	<Sheet.Content class="inset-y-auto bottom-0 h-9/10 rounded-tl-lg sm:max-w-4/5">
+		{@const plan = plans[current]}
+		<Sheet.Header class="h-full p-0">
+			<div class="flex h-full flex-col p-12 lg:max-w-3/5">
+				<div class="flex flex-col space-y-4">
+					<Badge variant="secondary" class="bg-primary/10 text-primary flex items-center uppercase">
+						{#if plan.star}
+							<Icon icon="ph:star-fill" class="text-yellow-500" />
+						{/if}
+						<span>{plan.tier}</span>
+					</Badge>
+
+					<h2 class="text-3xl font-semibold tracking-tight">{plan.name}</h2>
+					<p class="text-accent-foreground/80 text-md">{plan.description}</p>
+
+					<div class="flex flex-wrap gap-2">
+						{#each plan.tags as tag}
+							<Badge variant="outline" class="bg-background/50 backdrop-blur-sm">
+								{tag}
+							</Badge>
+						{/each}
+					</div>
+
+					<Separator class="my-4" />
+				</div>
+
+				<form class="flex h-full flex-col justify-between pt-4" onsubmit={handleSubmit}>
+					<div class="grid gap-6">
+						<div class="grid gap-4">
+							<div class="grid gap-1">
+								<Label for="name">
+									Name
+									<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
+								</Label>
+								<p class="text-muted-foreground text-sm">
+									Enter a unique identifier for your scope and prefix for facility naming.
+								</p>
+							</div>
+							<Input id="name" type="text" placeholder="scope-name" required />
+						</div>
+						<div class="grid gap-4">
+							<div class="grid gap-1">
+								<Label for="machine">
+									Machine
+									<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
+								</Label>
+								<p class="text-muted-foreground text-sm">
+									Choose a machine for your Ceph and Kubernetes deployment.
+								</p>
+							</div>
+							<div class="flex space-x-2">
+								{#each $machinesStore as machine}
+									{#if machine.status == 'Ready'}
+										<!-- required -->
+										<!-- <span>{machine.fqdn}</span> -->
+										<button class="h-8 w-8 rounded-full bg-slate-200"></button>
+									{/if}
+								{/each}
+							</div>
+						</div>
+
+						<div class="grid gap-4">
+							<div class="grid gap-1">
+								<Label for="storage-devices">
+									Storage Devices
+									<div class="h-2 w-2 rounded-full bg-yellow-500"></div>
+								</Label>
+								<p class="text-muted-foreground text-sm">
+									Configure dedicated storage devices for Ceph.
+								</p>
+							</div>
+							<Select.Root type="single" required>
+								<!-- bind:value={area} -->
+								<Select.Trigger id="storage-devices" class="w-full">123</Select.Trigger>
+								<Select.Content>
+									<!-- {#each areas as area (area.value)} -->
+									<Select.Item value="ffff">"fff"</Select.Item>
+									<Select.Item value="aaa">"aaa"</Select.Item>
+									<!-- {/each} -->
+								</Select.Content>
+							</Select.Root>
+						</div>
+
+						<div class="grid grid-cols-2">
+							<div class="grid gap-4">
+								<div class="grid gap-1">
+									<Label for="calico-cidr">Calico CIDR</Label>
+									<p class="text-muted-foreground text-sm">
+										Network range for Kubernetes pod communication.
+									</p>
+								</div>
+								<IPv4CIDRInput class="font-sans text-sm font-normal" placeholder="192.168.0.0/16" />
+							</div>
+							<div class="grid gap-4">
+								<div class="grid gap-1">
+									<Label for="virtual-ip">Virtual IP</Label>
+									<p class="text-muted-foreground text-sm">
+										High availability IP for Kubernetes control plane.
+									</p>
+								</div>
+								<IPv4AddressInput class="font-sans text-sm font-normal" placeholder="192.168.1.1" />
+							</div>
+						</div>
+					</div>
+
+					<div class="flex gap-8">
+						<Button
+							size="lg"
+							variant="outline"
+							class="flex-1"
+							onclick={() => {
+								openSheet = false;
+							}}
+						>
+							Cancel
+						</Button>
+						<Button type="submit" size="lg" class="flex-1">Confirm</Button>
+					</div>
+				</form>
+			</div>
+
+			<div class="relative lg:absolute lg:inset-y-0 lg:right-0 lg:w-2/5">
+				<img src={plan.image} alt={plan.name} class="absolute inset-0 size-full object-cover" />
+			</div>
+		</Sheet.Header>
+	</Sheet.Content>
+</Sheet.Root>
+
 <Dialog.Root bind:open onOpenChange={handleClose}>
 	<Dialog.Content showCloseButton={false} class="min-w-4xl overflow-hidden border-0 p-0">
 		<Carousel.Root setApi={(emblaApi) => (api = emblaApi)}>
@@ -152,7 +311,15 @@
 													{m.requires_subscription()}
 												</Label>
 											{/if}
-											<Button id="install" size="lg" disabled={plan.disabled}>
+											<Button
+												id="install"
+												size="lg"
+												disabled={plan.disabled}
+												onclick={() => {
+													open = false;
+													openSheet = true;
+												}}
+											>
 												<Icon icon="ph:download-bold" />
 												{m.install()}
 											</Button>
