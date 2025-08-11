@@ -84,6 +84,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	vlanRepo := maas.NewVLAN(maasMAAS)
 	networkUseCase := core.NewNetworkUseCase(fabricRepo, vlanRepo, subnetRepo, ipRangeRepo)
 	networkService := app.NewNetworkService(networkUseCase)
+	premiumService := app.NewPremiumService()
 	cephFSRepo := ceph.NewFS(cephCeph)
 	cephRGWRepo := ceph.NewRGW(cephCeph)
 	storageUseCase := core.NewStorageUseCase(actionRepo, facilityRepo, cephClusterRepo, cephRBDRepo, cephFSRepo, cephRGWRepo, machineRepo)
@@ -94,7 +95,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	scopeService := app.NewScopeService(scopeUseCase)
 	tagUseCase := core.NewTagUseCase(tagRepo)
 	tagService := app.NewTagService(tagUseCase)
-	serveMux := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, storageService, scopeService, tagService)
+	serveMux := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, machineService, networkService, premiumService, storageService, scopeService, tagService)
 	command := newCmd(configConfig, serveMux)
 	return command, func() {
 		cleanup()
