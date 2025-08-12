@@ -1000,11 +1000,11 @@ is_ip_in_network() {
 check_ip_range() {
     local network=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f1)
     local mask=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f2)
-    local mask_dotted='$(printf "%d.%d.%d.%d" \
+    local mask_dotted=$(printf "%d.%d.%d.%d" \
         $((0xFF << (32 - mask) >> 24 & 0xFF)) \
         $((0xFF << (32 - mask) >> 16 & 0xFF)) \
         $((0xFF << (32 - mask) >> 8 & 0xFF)) \
-        $((0xFF << (32 - mask) & 0xFF)))'
+        $((0xFF << (32 - mask) & 0xFF)))
 
     # Check if start_ip and end_ip are in the network
     if is_ip_in_network $DHCP_START_IP $network $mask_dotted; then
