@@ -99,7 +99,9 @@ remove_juju_file() {
 
 main() {
     find_first_non_user
-    remove_juju_model
+    if command -v juju >/dev/null 2>&1; then
+        remove_juju_model
+    fi
     remove_pkg
     remove_juju_file
 }
