@@ -5,7 +5,10 @@
 	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths, pathDisabled } from '$lib/path';
-	import { currentCeph, currentKubernetes } from '$lib/stores';
+	import { breadcrumb, currentCeph, currentKubernetes } from '$lib/stores';
+
+	// Set breadcrumb navigation
+	breadcrumb.set({ parents: [], current: dynamicPaths.scope(page.params.scope) });
 
 	const cards = $derived([
 		{
