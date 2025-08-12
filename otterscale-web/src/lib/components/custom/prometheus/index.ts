@@ -139,6 +139,7 @@ export function convertToNewDataFormat(oldFormatData: Array<{ time: Date, value:
     // Convert to array and sort by time
     return Array.from(timeMap.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
 }
+
 /**
  * Fetch and flatten Prometheus range query results
  * @param client PrometheusDriver instance

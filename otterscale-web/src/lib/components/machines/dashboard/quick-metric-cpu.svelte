@@ -6,16 +6,11 @@
 	import Layout from '$lib/components/custom/chart/layout/quick.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 
-	// State
-	let chartData = $state([{ value: 0 }]);
-	let cores: number | null = $state(null);
-	let usage: number | null = $state(null);
-	let loading = $state(true);
-	let error = $state(false);
+	// Constants
+	const CHART_TITLE = 'CPU';
 
 	// Queries
 	const queries = $derived({
@@ -27,56 +22,46 @@
 		`
 	});
 
-	// Data fetching
+	// Data fetching function
 	async function fetchMetrics() {
-		try {
-			loading = true;
-			error = false;
+		const [coresResponse, usageResponse] = await Promise.all([
+			client.instantQuery(queries.cores),
+			client.instantQuery(queries.usage)
+		]);
 
-			const [coresResponse, usageResponse] = await Promise.all([
-				client.instantQuery(queries.cores),
-				client.instantQuery(queries.usage)
-			]);
+		const cores = coresResponse.result[0]?.value?.value ?? null;
+		const usage = usageResponse.result[0]?.value?.value
+			? usageResponse.result[0].value.value * 100
+			: null;
 
-			cores = coresResponse.result[0]?.value?.value ?? null;
-			usage = usageResponse.result[0]?.value?.value
-				? usageResponse.result[0].value.value * 100
-				: null;
-
-			if (usage !== null) {
-				chartData = [{ value: usage }];
-			}
-		} catch (err) {
-			error = true;
-			console.error('Failed to fetch CPU metrics:', err);
-		} finally {
-			loading = false;
-		}
+		return {
+			cores,
+			usage: usage !== null ? [{ value: usage }] : [{ value: 0 }],
+			description: cores !== null ? `${cores} Cores` : undefined
+		};
 	}
-
-	onMount(fetchMetrics);
 </script>
 
-{#if loading}
+{#await fetchMetrics()}
 	<ComponentLoading />
-{:else if error}
-	Error
-{:else}
+{:then response}
 	<Layout>
 		{#snippet title()}
-			<Title title="CPU" />
+			<Title title={CHART_TITLE} />
 		{/snippet}
 
 		{#snippet description()}
-			{#if cores === null}
-				<Description />
+			{#if response.description}
+				<Description description={response.description} />
 			{:else}
-				<Description description="{cores} Cores" />
+				<Description />
 			{/if}
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={chartData} />
+			<Content data={response.usage} />
 		{/snippet}
 	</Layout>
-{/if}
+{:catch error}
+	Error
+{/await}
