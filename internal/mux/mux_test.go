@@ -215,6 +215,7 @@ func TestServices_ContainsAllServiceNames(t *testing.T) {
 		"otterscale.essential.v1.EssentialService",
 		"otterscale.machine.v1.MachineService",
 		"otterscale.network.v1.NetworkService",
+		"otterscale.premium.v1.PremiumService",
 		"otterscale.scope.v1.ScopeService",
 		"otterscale.storage.v1.StorageService",
 		"otterscale.tag.v1.TagService",
