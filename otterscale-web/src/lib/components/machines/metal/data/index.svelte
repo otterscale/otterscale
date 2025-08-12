@@ -1,11 +1,11 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 	import * as Layout from '../layout';
 	import Alert from './alert.svelte';
 	import StatisticCPU from './statistic-cpu.svelte';
-	import StatisticMachine from './statistic-machine.svelte';
 	import StatisticMemory from './statistic-memory.svelte';
 	import StatisticPower from './statistic-power.svelte';
 	import StatisticStorage from './statistic-storage.svelte';
@@ -14,7 +14,9 @@
 	import TableMainboard from './table-mainboard.svelte';
 	import TableNetwork from './table-network.svelte';
 	import TableSystem from './table-system.svelte';
+</script>
 
+<script lang="ts">
 	let {
 		machine
 	}: {
@@ -27,8 +29,22 @@
 		<Alert {machine} />
 	{/if}
 
+	<div class="space-y-4 py-4">
+		<div class="flex items-end gap-2 text-5xl">
+			<p class="text-muted-foreground">{$machine.id}</p>
+			{$machine.fqdn}
+		</div>
+		<div class="flex flex-wrap gap-1 overflow-visible">
+			{#each $machine.tags as tag}
+				<Badge variant="outline">
+					<Icon icon="ph:tag" />
+					{tag}
+				</Badge>
+			{/each}
+		</div>
+	</div>
+
 	<Layout.Statistics>
-		<StatisticMachine {machine} />
 		<StatisticPower {machine} />
 		<StatisticCPU {machine} />
 		<StatisticMemory {machine} />

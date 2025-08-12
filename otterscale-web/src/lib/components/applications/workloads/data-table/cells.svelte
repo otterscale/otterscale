@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { page } from '$app/state';
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
 	import { Badge } from '$lib/components/ui/badge';
@@ -26,7 +27,14 @@
 {/snippet}
 
 {#snippet name(row: Row<Application>)}
-	{row.original.name}
+	<span class="flex items-center">
+		<Badge variant="outline">
+			{row.original.name}
+		</Badge>
+		<Button variant="ghost" href={`${page.url}/${row.original.namespace}/${row.original.name}`}>
+			<Icon icon="ph:arrow-square-out" />
+		</Button>
+	</span>
 {/snippet}
 
 {#snippet type(row: Row<Application>)}

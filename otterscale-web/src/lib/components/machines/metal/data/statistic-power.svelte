@@ -23,6 +23,12 @@
 				Power {$machine.powerState}
 			</Badge>
 		</Statistic.Title>
+		<Statistic.Action>
+			<Badge variant="outline">
+				<Icon icon="ph:power" />
+				{$machine.powerType}
+			</Badge>
+		</Statistic.Action>
 	</Statistic.Header>
 	<Statistic.Content>
 		{$machine.status}

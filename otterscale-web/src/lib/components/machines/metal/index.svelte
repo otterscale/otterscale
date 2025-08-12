@@ -1,11 +1,13 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { page } from '$app/state';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Data } from '$lib/components/machines/metal/data';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+</script>
 
+<script lang="ts">
 	const transport: Transport = getContext('transport');
 	const client = createClient(MachineService, transport);
 
