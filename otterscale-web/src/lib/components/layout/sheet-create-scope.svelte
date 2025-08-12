@@ -53,6 +53,7 @@
 		}
 	}
 
+	// TODO
 	function handleSubmit() {
 		// if (createScopeRequest.name.trim()) {
 		// 	scopeClient
@@ -67,8 +68,9 @@
 		// 	open = false;
 		// 	createScopeRequest = DEFAULT_REQUEST;
 		// }
-		// goto();
-		// handleClose();
+		handleClose();
+		// trigger.set(true);
+		goto(dynamicPaths.setupScope('zzz').url);
 	}
 
 	function handleClose() {
