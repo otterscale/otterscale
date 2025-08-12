@@ -207,7 +207,7 @@ bootstrap_juju() {
     unset APIKEY
 
     bootstrap_cmd="juju bootstrap maas-cloud maas-cloud-controller --bootstrap-base=$OTTERSCALE_BASE_IMAGE"
-    bootstrap_config="--config default-base=$BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
+    bootstrap_config="--config default-base=$OTTERSCALE_BASE_IMAGE --controller-charm-channel=$CONTROLLER_CHARM_CHANNEL"
     bootstrap_machine="--to juju-vm"
 
     if ! is_machine_exist; then
