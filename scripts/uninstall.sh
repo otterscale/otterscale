@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APT_PACKAGES="jq"
+APT_PACKAGES="bridge-utils"
 SNAP_PACKAGES="core24 maas maas-test-db juju lxd microk8s"
 
 log() {
