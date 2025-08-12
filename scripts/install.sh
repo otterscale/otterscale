@@ -1000,11 +1000,11 @@ is_ip_in_network() {
 check_ip_range() {
     local network=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f1)
     local mask=$(echo $MAAS_NETWORK_SUBNET | cut -d'/' -f2)
-    local mask_dotted=$(printf "%d.%d.%d.%d" '\
+    local mask_dotted=$(printf "%d.%d.%d.%d" \
         $((0xFF << (32 - mask) >> 24 & 0xFF)) \
         $((0xFF << (32 - mask) >> 16 & 0xFF)) \
         $((0xFF << (32 - mask) >> 8 & 0xFF)) \
-        $((0xFF << (32 - mask) & 0xFF))'
+        $((0xFF << (32 - mask) & 0xFF))
     )
 
     # Check if start_ip and end_ip are in the network
@@ -1288,7 +1288,7 @@ function check_otterscale_config_variable() {
   for v in "${vars[@]}"; do
       val="${!v}"
       if [[ -z "$val" ]]; then
-          echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR]  "Variable $v is empty"
+          echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Variable $v is empty"
           exit 1
       fi
   done
