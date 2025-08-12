@@ -91,7 +91,7 @@
 			star: true,
 			name: m.advanced_tier_name(),
 			description: m.advanced_tier_description(),
-			tags: ['Ceph', 'Multi-Node', m.multi_node(), m.pool()],
+			tags: ['Ceph', 'Multi-Node', m.multi_node(), m.cluster()],
 			image: AdvancedTierImage,
 			disabled: $premiumTier < PremiumTier.ADVANCED
 		},
@@ -100,7 +100,7 @@
 			star: true,
 			name: m.enterprise_tier_name(),
 			description: m.enterprise_tier_description(),
-			tags: ['Ceph', 'Kubernetes', m.multi_node(), m.pool()],
+			tags: ['Ceph', 'Kubernetes', m.multi_node(), m.cluster()],
 			image: EnterpriseTierImage,
 			disabled: $premiumTier < PremiumTier.ENTERPRISE
 		}
