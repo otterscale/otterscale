@@ -1258,7 +1258,6 @@ config_modules() {
     fi
 }
 
-
 ## without parameter
 if [[ $# -eq 0 ]]; then
     while true; do
@@ -1272,6 +1271,28 @@ if [[ $# -eq 0 ]]; then
     done
 fi
 
+function check_otterscale_config_variable() {
+    local vars=(
+        OTTERSCALE_ENDPOINT
+        OTTERSCALE_CONFIG_MAAS_CIDR
+        OTTERSCALE_CNOFIG_MAAS_DHCP_CIDR
+        OTTERSCALE_CONFIG_MAAS_DHCP_START_IP
+        OTTERSCALE_CONFIG_MAAS_DHCP_END_IP
+        OTTERSCALE_CONFIG_JUJU_IP
+        OTTERSCALE_CONFIG_MAAS_ADMIN_USER
+        OTTERSCALE_CONFIG_MAAS_ADMIN_PASS
+        OTTERSCALE_CONFIG_MAAS_ADMIN_EMAIL
+    )
+
+  for v in "${vars[@]}"; do
+      val="${!v}"
+      if [[ -z "$val" ]]; then
+          echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR]  "Variable $v is empty"
+          exit 1
+      fi
+  done
+}
+
 ## with parameter
 while [ $# -gt 0 ]; do
     case $1 in
@@ -1281,6 +1302,8 @@ while [ $# -gt 0 ]; do
                 echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Config file $OTTERSCALE_CONFIG_PATH not found, please try again" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log
                 exit 1
             fi
+
+            check_otterscale_config_variable
 
             source $OTTERSCALE_CONFIG_PATH
             if ! validate_url "$OTTERSCALE_ENDPOINT"; then
