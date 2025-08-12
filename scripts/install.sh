@@ -1302,10 +1302,8 @@ while [ $# -gt 0 ]; do
                 echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Config file $OTTERSCALE_CONFIG_PATH not found, please try again" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log
                 exit 1
             fi
-
-            check_otterscale_config_variable
-
             source $OTTERSCALE_CONFIG_PATH
+            check_otterscale_config_variable
             if ! validate_url "$OTTERSCALE_ENDPOINT"; then
                 exit 1
             fi
