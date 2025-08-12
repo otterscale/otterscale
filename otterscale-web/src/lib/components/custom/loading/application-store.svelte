@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-	const lines = 3;
+	const lines = 2;
 </script>
 
 <div class="flex flex-col gap-4">
@@ -18,7 +18,7 @@
 		</span>
 	</div>
 	<div class="flex items-center justify-between gap-2">
-		<div class="flex items-center gap-2 *:h-[50px] *:w-[100px]">
+		<div class="flex items-center gap-2 *:h-[30px] *:w-[100px]">
 			<Skeleton class="bg-muted" />
 			<Skeleton class="bg-muted" />
 			<Skeleton class="bg-muted" />
@@ -28,15 +28,19 @@
 		</div>
 	</div>
 	{#each Array(lines) as _}
-		<div class="flex items-center gap-4 *:h-[300px] *:w-full">
+		<div class="flex items-center gap-4 *:h-[350px] *:w-full">
 			<Skeleton class="bg-muted" />
 			<Skeleton class="bg-muted" />
 			<Skeleton class="bg-muted" />
 		</div>
 	{/each}
-	<div class="flex items-center justify-center">
-		<span class="*:h-[50px] *:w-[300px]">
-			<Skeleton class="bg-muted" />
-		</span>
+	<div class="flex items-center justify-center gap-2 *:h-[50px] *:w-[50px]">
+		<Skeleton class="bg-muted" />
+		<Skeleton class="bg-muted-foreground" />
+		<Skeleton class="bg-muted" />
+		<Skeleton class="bg-muted" />
+		<Skeleton class="bg-muted" />
+		<Skeleton class="bg-muted" />
+		<Skeleton class="bg-muted" />
 	</div>
 </div>

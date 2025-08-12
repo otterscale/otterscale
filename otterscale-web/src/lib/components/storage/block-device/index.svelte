@@ -44,10 +44,10 @@
 </script>
 
 <main class="space-y-4">
-	<Reloader.Root {reloadManager} />
 	{#if !isMounted}
 		<DataTableLoading />
 	{:else}
+		<Reloader.Root {reloadManager} />
 		<DataTable {selectedScopeUuid} {images} />
 	{/if}
 </main>
