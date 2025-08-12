@@ -15,7 +15,7 @@
 </script>
 
 <script lang="ts">
-	let { lines = 10 }: { lines?: number } = $props();
+	let { lines = 13 }: { lines?: number } = $props();
 </script>
 
 <div class="flex flex-col gap-2">
