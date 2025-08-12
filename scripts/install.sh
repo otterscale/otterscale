@@ -444,10 +444,6 @@ get_maas_dns() {
     local maas_current_dns=$(maas admin maas get-config name=upstream_dns | jq -r)
     if [[ -z $maas_current_dns ]]; then
         dns_value="$OTTERSCALE_INTERFACE_DNS"
-    elif [[ "$maas_current_dns" =~ "$OTTERSCALE_INTERFACE_DNS" ]]; then
-        log "INFO" "Current dns already existed, skipping..."
-    elif [[ $maas_current_dns != "null" ]]; then
-        dns_value="$maas_current_dns $OTTERSCALE_INTERFACE_DNS"
     fi
 }
 
