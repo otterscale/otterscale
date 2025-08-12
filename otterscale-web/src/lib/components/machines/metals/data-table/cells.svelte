@@ -1,14 +1,14 @@
 <script lang="ts" module>
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
 	import { Badge } from '$lib/components/ui/badge';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { formatCapacity } from '$lib/formatter';
+	import { dynamicPaths } from '$lib/path';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import { formatCapacity } from '$lib/formatter';
-	import { goto } from '$app/navigation';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { dynamicPaths } from '$lib/path';
-	import { page } from '$app/state';
 
 	export const cells = {
 		_row_picker: _row_picker,

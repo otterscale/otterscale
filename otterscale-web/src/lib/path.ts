@@ -49,7 +49,6 @@ export const dynamicPaths = {
     machinesMetal: (scope: string): Path => ({ title: m.metal(), url: createScopePath(scope, '/machines/metal') }),
     machinesVirtualMachine: (scope: string): Path => ({ title: m.virtual_machine(), url: createScopePath(scope, '/machines/virtual-machine') }),
     settings: (scope: string): Path => ({ title: m.settings(), url: createScopePath(scope, '/settings') }),
-    settingsSSO: (scope: string): Path => ({ title: m.sso(), url: createScopePath(scope, '/settings/sso') }),
     settingsNetwork: (scope: string): Path => ({ title: m.network(), url: createScopePath(scope, '/settings/network') }),
     settingsBIST: (scope: string): Path => ({ title: m.built_in_test(), url: createScopePath(scope, '/settings/built-in-self-test') }),
     settingsSubscription: (scope: string): Path => ({ title: m.subscription(), url: createScopePath(scope, '/settings/subscription') }),

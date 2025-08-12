@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { page } from '$app/state';
 	import { authClient } from '$lib/auth-client';
 	import { dynamicPaths } from '$lib/path';
@@ -9,25 +9,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { toast } from 'svelte-sonner';
 
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [dynamicPaths.settings(page.params.scope)],
-		current: dynamicPaths.settingsSSO(page.params.scope)
-	});
-
-	// OIDC configuration
 	const providerId = 'otterscale-oidc';
-
-	let formData = {
-		issuer: '',
-		domain: '',
-		clientId: '',
-		clientSecret: '',
-		authorizationEndpoint: '',
-		tokenEndpoint: '',
-		jwksEndpoint: '',
-		discoveryEndpoint: ''
-	};
 
 	const formFields = [
 		{
@@ -87,6 +69,19 @@
 			span: 2
 		}
 	];
+</script>
+
+<script lang="ts">
+	let formData = {
+		issuer: '',
+		domain: '',
+		clientId: '',
+		clientSecret: '',
+		authorizationEndpoint: '',
+		tokenEndpoint: '',
+		jwksEndpoint: '',
+		discoveryEndpoint: ''
+	};
 
 	async function handleSubmit(event: Event) {
 		event.preventDefault();
@@ -123,12 +118,12 @@
 	}
 </script>
 
-<span>TODO: LAYOUT</span>
+<!-- <span>TODO: LAYOUT</span>
 <span>TODO: TITLE</span>
 <span>TODO: I18N</span>
-<span>TODO: SAML</span>
+<span>TODO: SAML</span> -->
 
-<Card.Root class="mx-auto w-full max-w-4xl">
+<Card.Root>
 	<Card.Header>
 		<Card.Title>Configure OIDC Provider</Card.Title>
 		<Card.Description>Set up your OpenID Connect provider configuration</Card.Description>

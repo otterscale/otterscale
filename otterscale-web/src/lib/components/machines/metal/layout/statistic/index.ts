@@ -7,4 +7,3 @@ import Title from "./statistic-title.svelte";
 import Root from "./statistic.svelte";
 
 export { Action, Content, Description, Footer, Header, Root, Title };
-

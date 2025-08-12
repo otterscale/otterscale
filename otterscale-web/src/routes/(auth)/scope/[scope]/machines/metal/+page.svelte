@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { Metals } from '$lib/components/machines/metal';
+	import { Metals } from '$lib/components/machines/metals/index';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 

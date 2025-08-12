@@ -3,6 +3,7 @@
 		ConfigurationService,
 		type Configuration
 	} from '$lib/api/configuration/v1/configuration_pb';
+	import * as Card from '$lib/components/ui/card';
 	import { TagService, type Tag } from '$lib/api/tag/v1/tag_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Alert from '$lib/components/ui/alert';
@@ -20,6 +21,7 @@
 	import * as Layout from './layout';
 	import ReadArchitectures from './read-architectures.svelte';
 	import SetBootImageAsDefault from './set-boot-image-as-default.svelte';
+	import SingleSignOn from './single-sign-on.svelte';
 	import UpdateNTPServer from './update-ntp-server.svelte';
 	import UpdatePackageRepository from './update-package-repository.svelte';
 	import { Item, Items } from './utils';
@@ -45,7 +47,6 @@
 
 	let tags = $state(writable<Tag[]>());
 	let isTagLoading = $state(true);
-
 	async function fetchTags() {
 		try {
 			tagClient.listTags({}).then((response) => {
@@ -56,6 +57,17 @@
 			console.error('Error fetching:', error);
 		}
 	}
+
+	let singleSignOnFormData = {
+		issuer: '',
+		domain: '',
+		clientId: '',
+		clientSecret: '',
+		authorizationEndpoint: '',
+		tokenEndpoint: '',
+		jwksEndpoint: '',
+		discoveryEndpoint: ''
+	};
 
 	let isMounted = $state(false);
 	onMount(async () => {
@@ -82,20 +94,24 @@
 			<Item icon="ph:network" name="NTP Servers" type="network" value="ntp_servers">
 				{#if !isConfigurationLoading}
 					<Layout.Title>Address</Layout.Title>
-					<Layout.Actions>
-						<UpdateNTPServer bind:configuration />
-					</Layout.Actions>
 					<Layout.Description>
 						NTP servers, specified as IP addresses or hostnames delimited by commas and/or spaces,
 						to be used as time references for MAAS itself, the machines MAAS deploys, and devices
 						that make use of MAAS's DHCP services.
 					</Layout.Description>
+					<Layout.Actions>
+						<UpdateNTPServer bind:configuration />
+					</Layout.Actions>
 					<Layout.Controller>
-						{#if $configuration.ntpServer && $configuration.ntpServer.addresses}
-							{#each $configuration.ntpServer.addresses as address}
-								<Badge>{address}</Badge>
-							{/each}
-						{/if}
+						<Card.Root>
+							<Card.Content>
+								{#if $configuration.ntpServer && $configuration.ntpServer.addresses}
+									{#each $configuration.ntpServer.addresses as address}
+										<Badge>{address}</Badge>
+									{/each}
+								{/if}
+							</Card.Content>
+						</Card.Root>
 					</Layout.Controller>
 				{/if}
 			</Item>
@@ -152,15 +168,15 @@
 			<Item icon="ph:squares-four" name="Boot Image" type="system" value="boot_image">
 				{#if !isConfigurationLoading}
 					<Layout.Title>Image</Layout.Title>
-					<Layout.Actions>
-						<CreateBootImage bind:configuration />
-						<ImportBootImage bind:configuration />
-					</Layout.Actions>
 					<Layout.Description>
 						Boot images are operating system files used for machine deployment. These images can be
 						configured with different architectures and distribution series, and can be set as
 						default for automatic deployment of machines.
 					</Layout.Description>
+					<Layout.Actions>
+						<CreateBootImage bind:configuration />
+						<ImportBootImage bind:configuration />
+					</Layout.Actions>
 					<Layout.Controller>
 						<Table.Root>
 							<Table.Header>
@@ -206,14 +222,15 @@
 			<Item icon="ph:tag" name="Tag" type="machine" value="tag">
 				{#if !isConfigurationLoading}
 					<Layout.Title>Tag</Layout.Title>
-					<Layout.Actions>
-						<CreateTag bind:tags />
-					</Layout.Actions>
+
 					<Layout.Description>
 						Tags are identifiable labels that can be assigned to machines for filtering and group
 						management. These tags help in organizing and managing machines based on their
 						characteristics or purposes.
 					</Layout.Description>
+					<Layout.Actions>
+						<CreateTag bind:tags />
+					</Layout.Actions>
 					<Layout.Controller>
 						<Table.Root>
 							<Table.Header>
@@ -239,6 +256,20 @@
 								{/each}
 							</Table.Body>
 						</Table.Root>
+					</Layout.Controller>
+				{/if}
+			</Item>
+
+			<Item icon="ph:key" name="Single Sign On" type="secret" value="single-sign-on">
+				{#if !isConfigurationLoading}
+					<Layout.Title>Single Sign On</Layout.Title>
+					<Layout.Description>
+						Single Sign-On (SSO) allows users to access multiple applications with one set of
+						credentials. Configure your SSO provider details here to enable centralized
+						authentication across your infrastructure management system.
+					</Layout.Description>
+					<Layout.Controller>
+						<SingleSignOn />
 					</Layout.Controller>
 				{/if}
 			</Item>

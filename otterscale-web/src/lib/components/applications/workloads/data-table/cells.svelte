@@ -81,14 +81,16 @@
 	{#each row.original.services as service}
 		{#each service.ports as port}
 			{#if port.nodePort > 0}
-				<Button
-					variant="ghost"
-					target="_blank"
-					href={`http://${row.original.publicAddress}:${port.nodePort}`}
-				>
-					{port.targetPort}
-					<Icon icon="ph:arrow-square-out" />
-				</Button>
+				<span class="flex items-center">
+					<Badge variant="outline">{port.targetPort}</Badge>
+					<Button
+						variant="ghost"
+						target="_blank"
+						href={`http://${row.original.publicAddress}:${port.nodePort}`}
+					>
+						<Icon icon="ph:arrow-square-out" />
+					</Button>
+				</span>
 			{/if}
 		{/each}
 	{/each}

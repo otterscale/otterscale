@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { Button } from '$lib/components/ui/button';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 	import * as Layout from '../layout';

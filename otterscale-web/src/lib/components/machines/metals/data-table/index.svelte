@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
@@ -7,8 +8,6 @@
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	// import type { PrometheusDriver } from 'prometheus-query';
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -25,12 +24,9 @@
 	import { columns } from './columns';
 	import { headers } from './headers.svelte';
 	import Tags from './tags.svelte';
-	// import type { PrometheusDriver } from 'prometheus-query';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	// const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
-
 	let { machines }: { machines: Writable<Machine[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });

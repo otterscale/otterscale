@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import type { Application } from '$lib/api/application/v1/application_pb';
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
@@ -7,7 +8,6 @@
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import type { Application } from '$lib/api/application/v1/application_pb';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -26,7 +26,7 @@
 <script lang="ts" generics="TData, TValue">
 	let { applications }: { applications: Writable<Application[]> } = $props();
 
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 15 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 13 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});

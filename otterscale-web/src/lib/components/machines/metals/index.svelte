@@ -1,8 +1,7 @@
 <script lang="ts" module>
-	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
 	import * as Reloader from '$lib/components/custom/reloader';
-	import { currentKubernetes } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -11,30 +10,21 @@
 
 <script lang="ts">
 	const transport: Transport = getContext('transport');
-	const applicationClient = createClient(ApplicationService, transport);
+	const machineClient = createClient(MachineService, transport);
 
-	const applications = writable<Application[]>([]);
+	const machines = writable<Machine[]>([]);
 	const reloadManager = new Reloader.ReloadManager(() => {
-		applicationClient
-			.listApplications({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name
-			})
-			.then((response) => {
-				applications.set(response.applications);
-			});
+		machineClient.listMachines({}).then((response) => {
+			machines.set(response.machines);
+		});
 	});
 
 	let isMounted = $state(false);
 	onMount(() => {
-		console.log($currentKubernetes?.scopeUuid, $currentKubernetes?.name);
-		applicationClient
-			.listApplications({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name
-			})
+		machineClient
+			.listMachines({})
 			.then((response) => {
-				applications.set(response.applications);
+				machines.set(response.machines);
 				isMounted = true;
 			})
 			.catch((error) => {
@@ -52,9 +42,7 @@
 	{#if !isMounted}
 		<DataTableLoading />
 	{:else}
-		<div class="flex justify-end">
-			<Reloader.Root {reloadManager} />
-		</div>
-		<DataTable {applications} />
+		<Reloader.Root {reloadManager} />
+		<DataTable {machines} />
 	{/if}
 </main>
