@@ -61,7 +61,7 @@
 		</div>
 	</div>
 
-	<div class="bg-muted -mx-2 -my-4 hidden py-6 md:-mx-4 md:-my-6 md:py-8 lg:block">
+	<div class="bg-muted -mx-2 -my-4 hidden rounded-b-xl py-6 md:-mx-4 md:-my-6 md:py-8 lg:block">
 		<div class="mx-auto max-w-5xl px-6">
 			<div class="grid items-center gap-4 sm:grid-cols-2">
 				<div class="dark:bg-muted/50 relative mx-auto w-fit">
