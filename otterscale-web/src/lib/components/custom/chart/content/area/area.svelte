@@ -75,7 +75,8 @@
 		{#snippet marks({ series: chartSeries, getAreaProps })}
 			<defs>
 				{#each chartSeries as s, i (s.key)}
-					<linearGradient id="fill{s.key}" x1="0" y1="0" x2="0" y2="1">
+					{@const key = s.key.replace(/\s+/g, '')}
+					<linearGradient id="fill{key}" x1="0" y1="0" x2="0" y2="1">
 						<stop offset="5%" stop-color={s.color} stop-opacity={GRADIENT_OPACITY_START} />
 						<stop offset="95%" stop-color={s.color} stop-opacity={GRADIENT_OPACITY_END} />
 					</linearGradient>
@@ -93,7 +94,8 @@
 				}}
 			>
 				{#each chartSeries as s, i (s.key)}
-					<Area {...getAreaProps(s, i)} fill="url(#fill{s.key})" />
+					{@const key = s.key.replace(/\s+/g, '')}
+					<Area {...getAreaProps(s, i)} fill="url(#fill{key})" />
 				{/each}
 			</ChartClipPath>
 		{/snippet}
