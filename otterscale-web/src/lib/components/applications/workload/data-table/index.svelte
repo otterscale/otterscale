@@ -7,7 +7,6 @@
 	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	// import type { PrometheusDriver } from 'prometheus-query';
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import {
 		getCoreRowModel,
@@ -22,12 +21,9 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import { columns } from './columns';
-	// import type { PrometheusDriver } from 'prometheus-query';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	// const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
-
 	let { applications }: { applications: Writable<Application[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 15 });

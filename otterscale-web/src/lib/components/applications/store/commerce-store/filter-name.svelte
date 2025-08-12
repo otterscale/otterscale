@@ -2,7 +2,7 @@
 	import Input from '$lib/components/ui/input/input.svelte';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import type { FilterManager } from './utils.svelte';
+	import type { FilterManager } from './utils';
 </script>
 
 <script lang="ts">

@@ -5,7 +5,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import { fuzzLogosIcon } from './utils.svelte';
+	import { fuzzLogosIcon } from './utils';
 </script>
 
 <script lang="ts">

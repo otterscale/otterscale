@@ -7,7 +7,7 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { Snippet } from 'svelte';
-	import { fuzzLogosIcon } from '../utils.svelte';
+	import { fuzzLogosIcon } from '../utils';
 	import Install from './install.svelte';
 </script>
 

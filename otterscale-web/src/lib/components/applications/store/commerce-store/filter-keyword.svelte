@@ -4,7 +4,7 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import type { FilterManager } from './utils.svelte';
+	import type { FilterManager } from './utils';
 </script>
 
 <script lang="ts">

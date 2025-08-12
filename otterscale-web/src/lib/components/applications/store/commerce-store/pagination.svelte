@@ -1,8 +1,7 @@
 <script lang="ts" module>
-	import { type Application_Chart } from '$lib/api/application/v1/application_pb';
 	import * as Pagination from '$lib/components/ui/pagination';
 	import Icon from '@iconify/svelte';
-	import type { PaginationManager } from './utils.svelte';
+	import type { PaginationManager } from './utils';
 </script>
 
 <script lang="ts">

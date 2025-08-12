@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { Button } from '$lib/components/ui/button';
 	import Icon from '@iconify/svelte';
-	import { FilterManager } from './utils.svelte';
+	import { FilterManager } from './utils';
 	import { cn } from '$lib/utils';
 </script>
 
