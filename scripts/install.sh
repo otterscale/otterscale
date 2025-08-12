@@ -1286,6 +1286,7 @@ function check_otterscale_config_variable() {
 
   for v in "${vars[@]}"; do
       val="${!v}"
+      echo $val
       if [[ -z "$val" ]]; then
           echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Variable $v is empty"
           exit 1
