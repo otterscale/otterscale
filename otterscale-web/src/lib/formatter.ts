@@ -52,21 +52,6 @@ export function formatDuration(duration: number): { value: number, unit: string 
 }
 
 export function formatCapacity(capacity: number | bigint): { value: string, unit: string } {
-    const MB = Number(capacity)
-    const GB = MB / 1024;
-    const TB = GB / 1024;
-
-    if (TB >= 1) {
-        return { value: `${Math.round(TB * 100) / 100}`, unit: "TB" };
-    } else if (GB >= 1) {
-        return { value: `${Math.round(GB * 100) / 100}`, unit: "GB" };
-    } else {
-        return { value: `${Math.round(MB * 100) / 100}`, unit: "MB" };
-    }
-}
-
-
-export function formatCapacityV2(capacity: number | bigint): { value: string, unit: string } {
     const B = Number(capacity)
     const KB = B / 1024;
     const MB = KB / 1024;
