@@ -92,7 +92,7 @@ export const pathDisabled = (cephName: string | undefined, kubeName: string | un
         (!kubeName && paths.kube.some((path) => path.url === url));
 };
 
-export const findDynamicPath = (pathname: string, scope: string): keyof typeof dynamicPaths | null => {
+const findDynamicPath = (pathname: string, scope: string): keyof typeof dynamicPaths | null => {
     for (const [key, pathFn] of Object.entries(dynamicPaths)) {
         const path = pathFn(scope);
         if (path.url === pathname) {
@@ -100,4 +100,33 @@ export const findDynamicPath = (pathname: string, scope: string): keyof typeof d
         }
     }
     return null;
+};
+
+const pathBypass = (pathname: string, scope: string): boolean => {
+    const bypass = ['/machines', '/settings'];
+    for (const url of bypass) {
+        if (pathname.includes(url)) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const getValidURL = (pathname: string, scope: string, cephName: string | undefined, kubeName: string | undefined): string => {
+    if (pathBypass(pathname, scope)) {
+        return pathname.replace(/\/scope\/[^\/]+/, `/scope/${scope}`);
+    }
+
+    const homeURL = dynamicPaths.scope(scope).url;
+    const currentPathKey = findDynamicPath(pathname, scope);
+    if (!currentPathKey) {
+        return homeURL;
+    }
+
+    const path = dynamicPaths[currentPathKey](scope);
+    if (pathDisabled(cephName, kubeName, scope, path.url)) {
+        return homeURL;
+    }
+
+    return path.url;
 };

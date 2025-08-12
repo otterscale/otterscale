@@ -1,12 +1,6 @@
 <script lang="ts">
 	import { mode } from 'mode-watcher';
-	import { getContext } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
-	import { toast } from 'svelte-sonner';
-	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
-	import { ScopeService, type CreateScopeRequest } from '$lib/api/scope/v1/scope_pb';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -15,19 +9,16 @@
 	import type { CarouselAPI } from '$lib/components/ui/carousel/context.js';
 	import { Label } from '$lib/components/ui/label';
 	import { m } from '$lib/paraglide/messages';
-	import { premiumTier } from '$lib/stores';
-	import AdvancedTierImage from '$lib/assets/advanced-tier.jpg';
-	import BasicTierImage from '$lib/assets/basic-tier.jpg';
-	import EnterpriseTierImage from '$lib/assets/enterprise-tier.jpg';
+	import { plans } from './plans';
+	import SheetCreateScope from './sheet-create-scope.svelte';
 
-	let {
-		open = $bindable(false),
-		trigger = $bindable(writable(false))
-	}: { open: boolean; trigger: Writable<boolean> } = $props();
+	let { open = $bindable(false) }: { open: boolean } = $props();
 
 	let api = $state<CarouselAPI>();
-
 	let current = $state(0);
+	let openSheet = $state(false);
+	let selected = $state(-1);
+
 	$effect(() => {
 		if (api) {
 			current = api.selectedScrollSnap() + 1;
@@ -37,81 +28,20 @@
 		}
 	});
 
-	const transport: Transport = getContext('transport');
-	const scopeClient = createClient(ScopeService, transport);
-
-	const DEFAULT_REQUEST = { name: '' } as CreateScopeRequest;
-
-	let createScopeRequest = $state(DEFAULT_REQUEST);
-
-	function handleSubmit() {
-		if (createScopeRequest.name.trim()) {
-			scopeClient
-				.createScope(createScopeRequest)
-				.then((r) => {
-					toast.success(m.create_scope_success({ name: r.name }));
-					trigger.set(true);
-				})
-				.catch((e) => {
-					toast.error(m.create_scope_error({ name: createScopeRequest.name, error: e.toString() }));
-				});
-
-			open = false;
-			createScopeRequest = DEFAULT_REQUEST;
-		}
-	}
-
-	function handleClose() {
+	function handlePlanSelect(index: number) {
 		open = false;
-		createScopeRequest = DEFAULT_REQUEST;
+		openSheet = true;
+		selected = index;
 	}
-
-	interface Plan {
-		tier: string;
-		star: boolean;
-		name: string;
-		description: string;
-		tags: string[];
-		image: string;
-		disabled: boolean;
-	}
-
-	const plans: Plan[] = [
-		{
-			tier: m.basic_tier(),
-			star: false,
-			name: m.basic_tier_name(),
-			description: m.basic_tier_description(),
-			tags: ['Ceph', 'Kubernetes', m.single_node()],
-			image: BasicTierImage,
-			disabled: $premiumTier < PremiumTier.BASIC
-		},
-		{
-			tier: m.advanced_tier(),
-			star: true,
-			name: m.advanced_tier_name(),
-			description: m.advanced_tier_description(),
-			tags: ['Ceph', 'Multi-Node', m.multi_node(), m.cluster()],
-			image: AdvancedTierImage,
-			disabled: $premiumTier < PremiumTier.ADVANCED
-		},
-		{
-			tier: m.enterprise_tier(),
-			star: true,
-			name: m.enterprise_tier_name(),
-			description: m.enterprise_tier_description(),
-			tags: ['Ceph', 'Kubernetes', m.multi_node(), m.cluster()],
-			image: EnterpriseTierImage,
-			disabled: $premiumTier < PremiumTier.ENTERPRISE
-		}
-	];
 </script>
 
-<Dialog.Root bind:open onOpenChange={handleClose}>
+<SheetCreateScope bind:open={openSheet} plan={plans[selected]} />
+
+<Dialog.Root bind:open>
 	<Dialog.Content showCloseButton={false} class="min-w-4xl overflow-hidden border-0 p-0">
 		<Carousel.Root setApi={(emblaApi) => (api = emblaApi)}>
 			<Carousel.Content>
-				{#each plans as plan}
+				{#each plans as plan, index}
 					<Carousel.Item>
 						<Card.Root class="relative aspect-[21/9] rounded-lg border-0 shadow-none">
 							<Card.Content class="flex items-center justify-center rounded-lg">
@@ -152,7 +82,12 @@
 													{m.requires_subscription()}
 												</Label>
 											{/if}
-											<Button id="install" size="lg" disabled={plan.disabled}>
+											<Button
+												id="install"
+												size="lg"
+												disabled={plan.disabled}
+												onclick={() => handlePlanSelect(index)}
+											>
 												<Icon icon="ph:download-bold" />
 												{m.install()}
 											</Button>

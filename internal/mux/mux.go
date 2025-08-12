@@ -14,6 +14,7 @@ import (
 	facilityv1 "github.com/openhdc/otterscale/api/facility/v1/pbconnect"
 	machinev1 "github.com/openhdc/otterscale/api/machine/v1/pbconnect"
 	networkv1 "github.com/openhdc/otterscale/api/network/v1/pbconnect"
+	premiumv1 "github.com/openhdc/otterscale/api/premium/v1/pbconnect"
 	scopev1 "github.com/openhdc/otterscale/api/scope/v1/pbconnect"
 	storagev1 "github.com/openhdc/otterscale/api/storage/v1/pbconnect"
 	tagv1 "github.com/openhdc/otterscale/api/tag/v1/pbconnect"
@@ -29,12 +30,13 @@ var Services = []string{
 	essentialv1.EssentialServiceName,
 	machinev1.MachineServiceName,
 	networkv1.NetworkServiceName,
+	premiumv1.PremiumServiceName,
 	scopev1.ScopeServiceName,
 	storagev1.StorageServiceName,
 	tagv1.TagServiceName,
 }
 
-func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
+func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config *app.ConfigurationService, environment *app.EnvironmentService, facility *app.FacilityService, essential *app.EssentialService, machine *app.MachineService, network *app.NetworkService, premium *app.PremiumService, storage *app.StorageService, scope *app.ScopeService, tag *app.TagService) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle(applicationv1.NewApplicationServiceHandler(app))
 	mux.Handle(bistv1.NewBISTServiceHandler(bist))
@@ -43,6 +45,7 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 	mux.Handle(facilityv1.NewFacilityServiceHandler(facility))
 	mux.Handle(essentialv1.NewEssentialServiceHandler(essential))
 	mux.Handle(machinev1.NewMachineServiceHandler(machine))
+	mux.Handle(premiumv1.NewPremiumServiceHandler(premium))
 	mux.Handle(networkv1.NewNetworkServiceHandler(network))
 	mux.Handle(storagev1.NewStorageServiceHandler(storage))
 	mux.Handle(scopev1.NewScopeServiceHandler(scope))
