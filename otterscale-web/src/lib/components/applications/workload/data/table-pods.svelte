@@ -3,7 +3,9 @@
 	import * as Table from '$lib/components/custom/table';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 </script>
@@ -39,27 +41,34 @@
 				<Table.Cell>{pod.restarts}</Table.Cell>
 				<Table.Cell>
 					{#if pod.lastCondition}
-						<Badge variant="outline">
-							{pod.lastCondition.type}: {pod.lastCondition.status}
-							<p class={pod.lastCondition.reason ? 'text-muted-foreground italic' : 'hidden'}>
-								({pod.lastCondition.reason})
-							</p>
-						</Badge>
-						<span class={pod.lastCondition.message ? 'flex items-center' : 'hidden'}>
-							<Tooltip.Provider>
-								<Tooltip.Root>
-									<Tooltip.Trigger class={buttonVariants({ variant: 'ghost' })}>
-										<Icon icon="ph:info" />
-									</Tooltip.Trigger>
-									<Tooltip.Content class="max-w-[77vw] overflow-auto">
-										{pod.lastCondition.message}
-									</Tooltip.Content>
-								</Tooltip.Root>
-							</Tooltip.Provider>
-							<p class="text-muted-foreground max-w-[700px] truncate">
-								{pod.lastCondition.message}
-							</p>
-						</span>
+						{#if pod.lastCondition.reason || pod.lastCondition.message}
+							<div class="text-destructive flex items-center gap-2">
+								<Badge
+									variant="destructive"
+									class={pod.lastCondition.reason ? 'visible' : 'hidden'}
+								>
+									{pod.lastCondition.reason}
+								</Badge>
+								<Tooltip.Provider>
+									<Tooltip.Root>
+										<Tooltip.Trigger>
+											<p
+												class={cn(pod.lastCondition.message ? 'max-w-[1000px] truncate' : 'hidden')}
+											>
+												{pod.lastCondition.message}
+											</p>
+										</Tooltip.Trigger>
+										<Tooltip.Content class="max-w-[77vw] overflow-auto">
+											{pod.lastCondition.message}
+										</Tooltip.Content>
+									</Tooltip.Root>
+								</Tooltip.Provider>
+							</div>
+						{:else}
+							<Badge variant="outline">
+								{pod.lastCondition.type}
+							</Badge>
+						{/if}
 					{/if}
 				</Table.Cell>
 			</Table.Row>

@@ -6,7 +6,8 @@
 	import Alert from './alert.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import StatisticContainers from './statistic-containers.svelte';
-	import StatisticVolumes from './statistic-volumes.svelte';
+	import StatisticPersistVolumeClaims from './statistic-persist-volume-claims.svelte';
+	import StatisticStorageClasses from './statistic-storage-classes.svelte';
 	import TablePods from './table-pods.svelte';
 	import TableServices from './table-services.svelte';
 </script>
@@ -41,7 +42,8 @@
 
 	<Layout.Statistics>
 		<StatisticContainers {application} />
-		<StatisticVolumes {application} />
+		<StatisticPersistVolumeClaims {application} />
+		<StatisticStorageClasses {application} />
 	</Layout.Statistics>
 
 	<Layout.Tables>
