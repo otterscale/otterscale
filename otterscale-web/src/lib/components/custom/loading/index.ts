@@ -1,5 +1,4 @@
 import ApplicationStore from './application-store.svelte'
-import ApplicationStore from './application-store.svelte'
 import DataTable from './data-table.svelte'
 import * as DataTables from './data-tables'
 import Data from './data.svelte'
