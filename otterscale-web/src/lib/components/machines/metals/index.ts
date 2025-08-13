@@ -1,4 +1,4 @@
-import Metals from './index.svelte'
+import { Metals } from './metal'
 
 export {
     Metals

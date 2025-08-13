@@ -17,7 +17,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, findDynamicPath, pathDisabled, staticPaths } from '$lib/path';
+	import { getValidURL, staticPaths } from '$lib/path';
 	import { activeScope, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 	import { bookmarks, routes } from '$lib/routes';
 	import NavMain from './nav-main.svelte';
@@ -95,23 +95,13 @@
 		toast.success(m.switch_scope({ name: scope.name }));
 
 		// Navigate to new url
-		const homeURL = dynamicPaths.scope(scope.name).url;
-
-		const currentPathKey = findDynamicPath(page.url.pathname, page.params.scope);
-		if (!currentPathKey) {
-			goto(homeURL);
-			return;
-		}
-
-		const newPath = dynamicPaths[currentPathKey](scope.name);
-		const disabled = pathDisabled(
-			$currentCeph?.name,
-			$currentKubernetes?.name,
+		const url = getValidURL(
+			page.url.pathname,
 			scope.name,
-			newPath.url
+			$currentCeph?.name,
+			$currentKubernetes?.name
 		);
-
-		goto(disabled ? homeURL : newPath.url);
+		goto(url);
 	}
 
 	async function initialize() {

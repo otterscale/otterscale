@@ -20,42 +20,44 @@ func createMockServices() (
 	*app.EssentialService,
 	*app.MachineService,
 	*app.NetworkService,
+	*app.PremiumService,
 	*app.StorageService,
 	*app.ScopeService,
 	*app.TagService,
 ) {
 	// Create mock use cases (nil is fine for mux testing as we're not calling the actual methods)
 	var (
-		appUC   *core.ApplicationUseCase
-		bistUC  *core.BISTUseCase
-		confUC  *core.ConfigurationUseCase
-		envUC   *core.EnvironmentUseCase
-		facUC   *core.FacilityUseCase
-		essUC   *core.EssentialUseCase
-		machUC  *core.MachineUseCase
-		netUC   *core.NetworkUseCase
-		storUC  *core.StorageUseCase
-		scopeUC *core.ScopeUseCase
-		tagUC   *core.TagUseCase
+		application   *core.ApplicationUseCase
+		bist          *core.BISTUseCase
+		configuration *core.ConfigurationUseCase
+		environment   *core.EnvironmentUseCase
+		facility      *core.FacilityUseCase
+		essential     *core.EssentialUseCase
+		machine       *core.MachineUseCase
+		network       *core.NetworkUseCase
+		storage       *core.StorageUseCase
+		scope         *core.ScopeUseCase
+		tag           *core.TagUseCase
 	)
 
-	return app.NewApplicationService(appUC),
-		app.NewBISTService(bistUC),
-		app.NewConfigurationService(confUC),
-		app.NewEnvironmentService(envUC),
-		app.NewFacilityService(facUC),
-		app.NewEssentialService(essUC),
-		app.NewMachineService(machUC),
-		app.NewNetworkService(netUC),
-		app.NewStorageService(storUC),
-		app.NewScopeService(scopeUC),
-		app.NewTagService(tagUC)
+	return app.NewApplicationService(application),
+		app.NewBISTService(bist),
+		app.NewConfigurationService(configuration),
+		app.NewEnvironmentService(environment),
+		app.NewFacilityService(facility),
+		app.NewEssentialService(essential),
+		app.NewMachineService(machine),
+		app.NewNetworkService(network),
+		app.NewPremiumService(),
+		app.NewStorageService(storage),
+		app.NewScopeService(scope),
+		app.NewTagService(tag)
 }
 
 func TestNew_WithoutHelper(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 
 	if mux == nil {
 		t.Fatal("Expected mux to be created, got nil")
@@ -63,9 +65,9 @@ func TestNew_WithoutHelper(t *testing.T) {
 }
 
 func TestNew_WithHelper(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(true, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 
 	if mux == nil {
 		t.Fatal("Expected mux to be created, got nil")
@@ -73,9 +75,9 @@ func TestNew_WithHelper(t *testing.T) {
 }
 
 func TestNew_ServiceHandlersRegistered(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -118,9 +120,9 @@ func TestNew_ServiceHandlersRegistered(t *testing.T) {
 }
 
 func TestNew_HealthAndReflectionWithHelper(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(true, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -161,9 +163,9 @@ func TestNew_HealthAndReflectionWithHelper(t *testing.T) {
 }
 
 func TestNew_NoHealthAndReflectionWithoutHelper(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
-	mux := New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+	mux := New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 
 	// Create a test server with the mux
 	server := httptest.NewServer(mux)
@@ -213,6 +215,7 @@ func TestServices_ContainsAllServiceNames(t *testing.T) {
 		"otterscale.essential.v1.EssentialService",
 		"otterscale.machine.v1.MachineService",
 		"otterscale.network.v1.NetworkService",
+		"otterscale.premium.v1.PremiumService",
 		"otterscale.scope.v1.ScopeService",
 		"otterscale.storage.v1.StorageService",
 		"otterscale.tag.v1.TagService",
@@ -244,7 +247,7 @@ func TestNew_NilServices(t *testing.T) {
 		}
 	}()
 
-	mux := New(false, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	mux := New(false, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil)
 
 	if mux == nil {
 		t.Error("Expected mux to be created even with nil services")
@@ -252,7 +255,7 @@ func TestNew_NilServices(t *testing.T) {
 }
 
 func TestNew_HelperFlagBehavior(t *testing.T) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
 	testCases := []struct {
 		name         string
@@ -273,7 +276,7 @@ func TestNew_HelperFlagBehavior(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			mux := New(tc.helper, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+			mux := New(tc.helper, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 
 			server := httptest.NewServer(mux)
 			defer server.Close()
@@ -299,19 +302,19 @@ func TestNew_HelperFlagBehavior(t *testing.T) {
 
 // Benchmark tests
 func BenchmarkNew_WithoutHelper(b *testing.B) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = New(false, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+		_ = New(false, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 	}
 }
 
 func BenchmarkNew_WithHelper(b *testing.B) {
-	appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc := createMockServices()
+	application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag := createMockServices()
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = New(true, appSvc, bistSVC, confSvc, envSvc, facSvc, essSvc, machSvc, netSvc, storSvc, scopeSvc, tagSvc)
+		_ = New(true, application, bist, configuration, environment, facility, essential, machine, network, premium, storage, scope, tag)
 	}
 }

@@ -180,10 +180,9 @@
 								</Card.Header>
 
 								<Card.Content class="space-y-2 rounded-b-xl py-6">
-									{#each release.changes[key as keyof typeof CHANGE_TYPES] as item, index}
-										<p class="flex items-center space-x-2 text-sm">
-											<span>
-												{index + 1}.
+									<ul class="ml-6 list-disc [&>li]:mt-2">
+										{#each release.changes[key as keyof typeof CHANGE_TYPES] as item}
+											<li>
 												{item.description} by
 												<HoverCard.Root>
 													<HoverCard.Trigger
@@ -226,9 +225,9 @@
 												>
 													{extractPRNumber(item.pull_request)}
 												</a>
-											</span>
-										</p>
-									{/each}
+											</li>
+										{/each}
+									</ul>
 								</Card.Content>
 							</Card.Root>
 						{/if}

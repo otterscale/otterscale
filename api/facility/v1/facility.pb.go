@@ -29,6 +29,7 @@ type Facility struct {
 	xxx_hidden_CharmName   *string                  `protobuf:"bytes,11,opt,name=charm_name,json=charmName"`
 	xxx_hidden_Version     *string                  `protobuf:"bytes,12,opt,name=version"`
 	xxx_hidden_Revision    int64                    `protobuf:"varint,13,opt,name=revision"`
+	xxx_hidden_Channel     *string                  `protobuf:"bytes,14,opt,name=channel"`
 	xxx_hidden_Metadata    *Facility_Charm_Metadata `protobuf:"bytes,21,opt,name=metadata"`
 	xxx_hidden_Units       *[]*Facility_Unit        `protobuf:"bytes,31,rep,name=units"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
@@ -106,6 +107,16 @@ func (x *Facility) GetRevision() int64 {
 	return 0
 }
 
+func (x *Facility) GetChannel() string {
+	if x != nil {
+		if x.xxx_hidden_Channel != nil {
+			return *x.xxx_hidden_Channel
+		}
+		return ""
+	}
+	return ""
+}
+
 func (x *Facility) GetMetadata() *Facility_Charm_Metadata {
 	if x != nil {
 		return x.xxx_hidden_Metadata
@@ -124,7 +135,7 @@ func (x *Facility) GetUnits() []*Facility_Unit {
 
 func (x *Facility) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 8)
 }
 
 func (x *Facility) SetStatus(v *Facility_Status) {
@@ -133,17 +144,22 @@ func (x *Facility) SetStatus(v *Facility_Status) {
 
 func (x *Facility) SetCharmName(v string) {
 	x.xxx_hidden_CharmName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 8)
 }
 
 func (x *Facility) SetVersion(v string) {
 	x.xxx_hidden_Version = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 8)
 }
 
 func (x *Facility) SetRevision(v int64) {
 	x.xxx_hidden_Revision = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 7)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 8)
+}
+
+func (x *Facility) SetChannel(v string) {
+	x.xxx_hidden_Channel = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 8)
 }
 
 func (x *Facility) SetMetadata(v *Facility_Charm_Metadata) {
@@ -189,6 +205,13 @@ func (x *Facility) HasRevision() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
 }
 
+func (x *Facility) HasChannel() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
 func (x *Facility) HasMetadata() bool {
 	if x == nil {
 		return false
@@ -220,6 +243,11 @@ func (x *Facility) ClearRevision() {
 	x.xxx_hidden_Revision = 0
 }
 
+func (x *Facility) ClearChannel() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_Channel = nil
+}
+
 func (x *Facility) ClearMetadata() {
 	x.xxx_hidden_Metadata = nil
 }
@@ -232,6 +260,7 @@ type Facility_builder struct {
 	CharmName *string
 	Version   *string
 	Revision  *int64
+	Channel   *string
 	Metadata  *Facility_Charm_Metadata
 	Units     []*Facility_Unit
 }
@@ -241,21 +270,25 @@ func (b0 Facility_builder) Build() *Facility {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 8)
 		x.xxx_hidden_Name = b.Name
 	}
 	x.xxx_hidden_Status = b.Status
 	if b.CharmName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 8)
 		x.xxx_hidden_CharmName = b.CharmName
 	}
 	if b.Version != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 8)
 		x.xxx_hidden_Version = b.Version
 	}
 	if b.Revision != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 7)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 8)
 		x.xxx_hidden_Revision = *b.Revision
+	}
+	if b.Channel != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 8)
+		x.xxx_hidden_Channel = b.Channel
 	}
 	x.xxx_hidden_Metadata = b.Metadata
 	x.xxx_hidden_Units = &b.Units
@@ -4066,14 +4099,15 @@ var File_api_facility_v1_facility_proto protoreflect.FileDescriptor
 
 const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\n" +
-	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd4\r\n" +
+	"\x1eapi/facility/v1/facility.proto\x12\x16otterscale.facility.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xee\r\n" +
 	"\bFacility\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12?\n" +
 	"\x06status\x18\x02 \x01(\v2'.otterscale.facility.v1.Facility.StatusR\x06status\x12\x1d\n" +
 	"\n" +
 	"charm_name\x18\v \x01(\tR\tcharmName\x12\x18\n" +
 	"\aversion\x18\f \x01(\tR\aversion\x12\x1a\n" +
-	"\brevision\x18\r \x01(\x03R\brevision\x12K\n" +
+	"\brevision\x18\r \x01(\x03R\brevision\x12\x18\n" +
+	"\achannel\x18\x0e \x01(\tR\achannel\x12K\n" +
 	"\bmetadata\x18\x15 \x01(\v2/.otterscale.facility.v1.Facility.Charm.MetadataR\bmetadata\x12;\n" +
 	"\x05units\x18\x1f \x03(\v2%.otterscale.facility.v1.Facility.UnitR\x05units\x1a\xb3\x06\n" +
 	"\x05Charm\x12\x0e\n" +

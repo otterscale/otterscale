@@ -82,6 +82,7 @@ message Facility {
   string charm_name = 11;
   string version = 12;
   int64 revision = 13;
+  string channel = 14;
   Charm.Metadata metadata = 21;
   repeated Unit units = 31;
 }
