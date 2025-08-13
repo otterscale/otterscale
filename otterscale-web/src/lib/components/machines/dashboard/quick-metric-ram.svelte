@@ -5,22 +5,17 @@
 	import Description from '$lib/components/custom/chart/description.svelte';
 	import Layout from '$lib/components/custom/chart/layout/quick.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
-	import { formatCapacity } from '$lib/formatter';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
+	import { formatCapacity } from '$lib/formatter';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 
-	// State
-	let chartData = $state([{ value: 0 }]);
-	let totalMemory: number | null = $state(null);
-	let usagePercentage: number | null = $state(null);
-	let loading = $state(true);
-	let error = $state(false);
+	// Constants
+	const CHART_TITLE = 'RAM';
 
-	// Prometheus queries
+	// Queries
 	const queries = $derived({
-		total: `node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}`,
+		description: `node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}`,
 		usage: `
             1 - (
                 node_memory_MemAvailable_bytes{instance=~"${machine.fqdn}"} /
@@ -29,53 +24,46 @@
         `
 	});
 
+	// Data fetching function
 	async function fetchMetrics() {
-		try {
-			loading = true;
-			error = false;
+		const [descriptionResponse, usageResponse] = await Promise.all([
+			client.instantQuery(queries.description),
+			client.instantQuery(queries.usage)
+		]);
 
-			const [totalResponse, usageResponse] = await Promise.all([
-				client.instantQuery(queries.total),
-				client.instantQuery(queries.usage)
-			]);
+		const descriptionValue = descriptionResponse.result[0]?.value?.value;
+		const usageValue = usageResponse.result[0]?.value?.value;
 
-			totalMemory = totalResponse.result[0]?.value?.value ?? null;
-			const rawUsage = usageResponse.result[0]?.value?.value;
-			usagePercentage = rawUsage ? rawUsage * 100 : null;
+		const capacity = descriptionValue ? formatCapacity(descriptionValue) : null;
+		const usagePercentage = usageValue ? usageValue * 100 : null;
 
-			chartData = usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: 0 }];
-		} catch (err) {
-			error = true;
-			console.error('Failed to fetch memory metrics:', err);
-		} finally {
-			loading = false;
-		}
+		return {
+			description: capacity ? `${capacity.value} ${capacity.unit}` : undefined,
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
+		};
 	}
-
-	onMount(fetchMetrics);
 </script>
 
-{#if loading}
+{#await fetchMetrics()}
 	<ComponentLoading />
-{:else if error}
-	Error
-{:else}
+{:then response}
 	<Layout>
 		{#snippet title()}
-			<Title title="RAM" />
+			<Title title={CHART_TITLE} />
 		{/snippet}
 
 		{#snippet description()}
-			{#if totalMemory === null}
-				<Description />
+			{#if response.description}
+				<Description description={response.description} />
 			{:else}
-				{@const capacity = formatCapacity(totalMemory)}
-				<Description description="{capacity.value} {capacity.unit}" />
+				<Description />
 			{/if}
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={chartData} />
+			<Content data={response.usage} />
 		{/snippet}
 	</Layout>
-{/if}
+{:catch error}
+	Error
+{/await}

@@ -11,10 +11,11 @@
 
 	// Constants
 	const CHART_TITLE = 'CPU';
+	const DESCRIPTION_UNIT = 'Cores';
 
 	// Queries
 	const queries = $derived({
-		cores: `count(count by (cpu) (node_cpu_seconds_total{instance=~"${machine.fqdn}"}))`,
+		description: `count(count by (cpu) (node_cpu_seconds_total{instance=~"${machine.fqdn}"}))`,
 		usage: `
 			sum(irate(node_cpu_seconds_total{instance=~"${machine.fqdn}",mode!="idle"}[6m]))
 			/
@@ -24,20 +25,22 @@
 
 	// Data fetching function
 	async function fetchMetrics() {
-		const [coresResponse, usageResponse] = await Promise.all([
-			client.instantQuery(queries.cores),
+		const [descriptionResponse, usageResponse] = await Promise.all([
+			client.instantQuery(queries.description),
 			client.instantQuery(queries.usage)
 		]);
 
-		const cores = coresResponse.result[0]?.value?.value ?? null;
-		const usage = usageResponse.result[0]?.value?.value
-			? usageResponse.result[0].value.value * 100
-			: null;
+		// Parse responses
+		const description = descriptionResponse.result[0]?.value?.value ?? null;
+		const usageValue = usageResponse.result[0]?.value?.value ?? null;
+
+		// Format data for display
+		const formattedDescription = description ? `${description} ${DESCRIPTION_UNIT}` : undefined;
+		const usagePercentage = usageValue ? usageValue * 100 : null;
 
 		return {
-			cores,
-			usage: usage !== null ? [{ value: usage }] : [{ value: 0 }],
-			description: cores !== null ? `${cores} Cores` : undefined
+			description: formattedDescription,
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
 		};
 	}
 </script>
