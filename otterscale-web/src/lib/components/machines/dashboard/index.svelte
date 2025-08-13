@@ -1,24 +1,20 @@
 <script lang="ts">
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	// import { DateTimestampPicker, type TimeRange } from '$lib/components/custom/date-timestamp-range-picker';
-	import { getLocalTimeZone, now } from '@internationalized/date';
-	import { PrometheusDriver } from 'prometheus-query';
-	// import * as Pickers from '../utils/pickers';
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext } from 'svelte';
-	import { type Writable } from 'svelte/store';
-	import { default as QuickUptime } from './quick-metric-uptime.svelte';
-	import { default as QuickCPU } from './quick-metric-cpu.svelte';
-	import { default as QuickRAM } from './quick-metric-ram.svelte';
-	import { default as QuickSWAP } from './quick-metric-swap.svelte';
-	import { default as QuickRootFS } from './quick-metric-root-fs.svelte';
-	import { default as CPUCoreProcessor } from './basic-metric-cpu-core.svelte';
-	import { default as CPUAverage } from './basic-metric-cpu-average.svelte';
-	import { default as BasicRAM } from './basic-metric-ram.svelte';
-	import { default as BasicDisk } from './basic-metric-disk.svelte';
-	import { default as DiskIOTime } from './basic-metric-disk-io-time.svelte';
-	import { default as NetworkReceived } from './basic-metric-network-received.svelte';
-	import { default as NetworkTransmitted } from './basic-metric-network-transmitted.svelte';
+	import { default as CPUAverage } from './area-chart-cpu-average.svelte';
+	import { default as CPUCoreProcessor } from './area-chart-cpu-core.svelte';
+	import { default as DiskIOTime } from './area-chart-disk-io-time.svelte';
+	import { default as BasicDisk } from './area-chart-disk-rw.svelte';
+	import { default as NetworkReceived } from './area-chart-network-received.svelte';
+	import { default as NetworkTransmitted } from './area-chart-network-transmitted.svelte';
+	import { default as BasicRAM } from './area-chart-ram.svelte';
+	import { default as UsageRateUptime } from './text-chart-uptime.svelte';
+	import { default as UsageRateCPU } from './usage-rate-chart-cpu.svelte';
+	import { default as UsageRateRAM } from './usage-rate-chart-ram.svelte';
+	import { default as UsageRateRootFS } from './usage-rate-chart-root-fs.svelte';
+	import { default as UsageRateSWAP } from './usage-rate-chart-swap.svelte';
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -43,21 +39,21 @@
 	{#key selectedMachine}
 		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 			<span class="col-span-1">
-				<QuickUptime {client} machine={selectedMachine} />
+				<UsageRateUptime {client} machine={selectedMachine} />
 			</span>
 		</div>
 		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 			<span class="col-span-1">
-				<QuickCPU {client} machine={selectedMachine} />
+				<UsageRateCPU {client} machine={selectedMachine} />
 			</span>
 			<span class="col-span-1">
-				<QuickRAM {client} machine={selectedMachine} />
+				<UsageRateRAM {client} machine={selectedMachine} />
 			</span>
 			<span class="col-span-1">
-				<QuickSWAP {client} machine={selectedMachine} />
+				<UsageRateSWAP {client} machine={selectedMachine} />
 			</span>
 			<span class="col-span-1">
-				<QuickRootFS {client} machine={selectedMachine} />
+				<UsageRateRootFS {client} machine={selectedMachine} />
 			</span>
 		</div>
 
