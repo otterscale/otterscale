@@ -1,17 +1,15 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
 	import { page } from '$app/state';
-	import * as Alert from '$lib/components/ui/alert';
-	import { m } from '$lib/paraglide/messages';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { dynamicPaths } from '$lib/path';
-	import { activeScope, breadcrumb } from '$lib/stores';
+	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { DashBoard } from '$lib/components/machines';
+	import { dynamicPaths } from '$lib/path';
+	import { breadcrumb } from '$lib/stores';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [], current: dynamicPaths.machines(page.params.scope) });
@@ -62,7 +60,8 @@
 		machine.workloadAnnotations?.['juju-machine-id']?.includes('-machine-')
 	)}
 	{@const allMachine = {
-		fqdn: filteredMachines.map((machine) => machine.fqdn).join('|')
+		fqdn: filteredMachines.map((machine) => machine.fqdn).join('|'),
+		id: 'All Machine'
 	} as Machine}
 	{@const machines = [allMachine, ...filteredMachines]}
 	<DashBoard client={prometheusDriver} {machines} />

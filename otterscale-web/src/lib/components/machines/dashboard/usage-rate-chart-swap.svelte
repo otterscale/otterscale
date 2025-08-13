@@ -15,17 +15,15 @@
 
 	// Queries
 	const queries = $derived({
-		description: `node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"}`,
+		description: `sum(node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"})`,
 		usage: `
 		(
-			(
-				node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"}
+			sum(node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"})
 			-
-				node_memory_SwapFree_bytes{instance=~"${machine.fqdn}"}
-			)
-		/
-			(node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"})
+			sum(node_memory_SwapFree_bytes{instance=~"${machine.fqdn}"})
 		)
+		/
+		sum(node_memory_SwapTotal_bytes{instance=~"${machine.fqdn}"})
 		`
 	});
 

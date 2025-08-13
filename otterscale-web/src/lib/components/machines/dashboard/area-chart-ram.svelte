@@ -22,12 +22,12 @@
 	const endTime = new Date();
 	const startTime = new Date(endTime.getTime() - TIME_RANGE_HOURS * 60 * 60 * 1000);
 
-	// Prometheus query for CPU load average
+	// Prometheus query for Memory usage
 	const query = $derived({
-		Total: `node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"} - node_memory_MemAvailable_bytes{instance=~"${machine.fqdn}"}`,
-		Buffer: `node_memory_Buffers_bytes{instance=~"${machine.fqdn}"}`,
-		Cache: `node_memory_Cached_bytes{instance=~"${machine.fqdn}"}`,
-		Free: `node_memory_MemFree_bytes{instance=~"${machine.fqdn}"}`
+		Total: `sum(node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}) - sum(node_memory_MemAvailable_bytes{instance=~"${machine.fqdn}"})`,
+		Buffer: `sum(node_memory_Buffers_bytes{instance=~"${machine.fqdn}"})`,
+		Cache: `sum(node_memory_Cached_bytes{instance=~"${machine.fqdn}"})`,
+		Free: `sum(node_memory_MemFree_bytes{instance=~"${machine.fqdn}"})`
 	});
 </script>
 

@@ -15,16 +15,14 @@
 
 	// Queries
 	const queries = $derived({
-		description: `node_filesystem_size_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"}`,
+		description: `sum(node_filesystem_size_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"})`,
 		usage: `
 		1
 		-
 		(
-			(
-				node_filesystem_avail_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"}
-			)
+			sum(node_filesystem_avail_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"})
 			/
-			node_filesystem_size_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"}
+			sum(node_filesystem_size_bytes{fstype!="rootfs",instance=~"${machine.fqdn}",mountpoint="/"})
 		)
 		`
 	});

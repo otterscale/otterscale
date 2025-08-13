@@ -15,11 +15,11 @@
 
 	// Queries
 	const queries = $derived({
-		description: `node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}`,
+		description: `sum(node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"})`,
 		usage: `
             1 - (
-                node_memory_MemAvailable_bytes{instance=~"${machine.fqdn}"} /
-                node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"}
+                sum(node_memory_MemAvailable_bytes{instance=~"${machine.fqdn}"}) /
+                sum(node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"})
             )
         `
 	});

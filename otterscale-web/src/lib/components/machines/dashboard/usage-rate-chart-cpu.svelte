@@ -15,7 +15,7 @@
 
 	// Queries
 	const queries = $derived({
-		description: `count(count by (cpu) (node_cpu_seconds_total{instance=~"${machine.fqdn}"}))`,
+		description: `count(count by (cpu, instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}"}))`,
 		usage: `
 			sum(irate(node_cpu_seconds_total{instance=~"${machine.fqdn}",mode!="idle"}[6m]))
 			/

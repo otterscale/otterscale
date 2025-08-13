@@ -26,16 +26,16 @@
 	// Prometheus query for CPU load average
 	const query = $derived({
 		'Load Average 1m': `
-		node_load1{instance=~"${machine.fqdn}"}
-		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"}) * 100
+		avg(node_load1{instance=~"${machine.fqdn}"})
+		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})) * 100
 		`,
 		'Load Average 5m': `
-		node_load5{instance=~"${machine.fqdn}"}
-		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"}) * 100
+		avg(node_load5{instance=~"${machine.fqdn}"})
+		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})) * 100
 		`,
 		'Load Average 15m': `
-		node_load15{instance=~"${machine.fqdn}"}
-		/ on(instance) group_left() count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"}) * 100
+		avg(node_load15{instance=~"${machine.fqdn}"})
+		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})) * 100
 		`
 	});
 </script>
