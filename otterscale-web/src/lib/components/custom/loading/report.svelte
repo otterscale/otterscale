@@ -14,12 +14,8 @@
 	}
 </script>
 
-<script lang="ts">
-	let { lines = 10 }: { lines?: number } = $props();
-</script>
-
 <div class="flex flex-col gap-2">
-	{#each Array(lines) as _}
+	{#each Array(13) as _}
 		<Skeleton class={cn('bg-muted h-[30px]', getWidthClass())} />
 	{/each}
 </div>

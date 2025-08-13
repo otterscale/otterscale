@@ -19,7 +19,7 @@
 	let suggestionsOpen = $state(false);
 </script>
 
-<div class="relative max-w-xs">
+<div class="relative w-40">
 	<Command.Root class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
 		<Command.Input
 			class="placeholder:text-xs"
@@ -41,7 +41,7 @@
 		/>
 		<Command.List
 			class={cn(
-				'bg-card absolute top-10 z-50 w-full rounded-md border shadow',
+				'bg-card absolute top-10 left-0 z-50 w-fit min-w-40 rounded-md border shadow',
 				suggestionsOpen ? 'visible' : 'hidden'
 			)}
 		>

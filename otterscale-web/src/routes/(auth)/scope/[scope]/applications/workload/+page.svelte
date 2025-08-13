@@ -1,13 +1,17 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { page } from '$app/state';
+	import { Workloads } from '$lib/components/applications/workloads';
 	import { dynamicPaths } from '$lib/path';
-	import { activeScope, breadcrumb } from '$lib/stores';
-	import { Workload } from '$lib/components/applications/workload';
+	import { breadcrumb, currentKubernetes } from '$lib/stores';
+</script>
 
-	// Set breadcrumb navigation
+<script lang="ts">
 	breadcrumb.set({ parents: [], current: dynamicPaths.settings(page.params.scope) });
 </script>
 
-{#if $activeScope}
-	<Workload />
+{#if $currentKubernetes}
+	{@const scopeUuid = $currentKubernetes.scopeUuid}
+	{@const facilityName = $currentKubernetes.name}
+
+	<Workloads {scopeUuid} {facilityName} />
 {/if}

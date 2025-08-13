@@ -26,6 +26,8 @@
 	"storage": "Storage",
 	"storage_description": "Ceph with NFS, S3, and block storage capabilities",
 	"cluster": "Cluster",
+	"pool": "Pool",
+	"osd": "OSD",
 	"block_device": "Block Device",
 	"file_system": "NFS",
 	"object_gateway": "Object",
