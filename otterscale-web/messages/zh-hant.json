@@ -191,5 +191,10 @@
 	"name": "名稱",
 	"mac_address": "MAC 位址",
 	"optional": "選填",
+	"details": "詳細資料",
+	"control_planes": "控制平面",
+	"workers": "工作節點",
+	"monitors": "監視器",
+	"osds": "物件儲存裝置",
 	"error_generic": "發生錯誤！"
 }

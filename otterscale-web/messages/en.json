@@ -191,5 +191,10 @@
 	"name": "Name",
 	"mac_address": "MAC address",
 	"optional": "Optional",
+	"details": "Details",
+	"control_planes": "Control Planes",
+	"workers": "Workers",
+	"monitors": "Monitors",
+	"osds": "OSDs",
 	"error_generic": "Something went wrong!"
 }
