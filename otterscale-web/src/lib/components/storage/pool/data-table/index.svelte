@@ -24,13 +24,14 @@
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import { headers } from './headers.svelte';
-
-	const selectedFacility = 'ceph-mon';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { selectedScopeUuid, pools }: { selectedScopeUuid: string; pools: Writable<Pool[]> } =
-		$props();
+	let {
+		selectedScopeUuid,
+		selectedFacility,
+		pools
+	}: { selectedScopeUuid: string; selectedFacility: string; pools: Writable<Pool[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);

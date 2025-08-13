@@ -6,7 +6,7 @@
 </script>
 
 <script lang="ts">
-	let selectedScopeUuid = $state($activeScope ? $activeScope.uuid : '');
+	let selectedScopeUuid = $derived($activeScope ? $activeScope.uuid : '');
 	let selectedFacility = $state('ceph-mon');
 
 	breadcrumb.set({

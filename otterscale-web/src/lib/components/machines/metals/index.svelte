@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
+	import * as Loading from '$lib/components/custom/loading';
 	import * as Reloader from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount } from 'svelte';
@@ -40,7 +40,7 @@
 
 <main class="space-y-4">
 	{#if !isMounted}
-		<DataTableLoading />
+		<Loading.DataTable />
 	{:else}
 		<Reloader.Root {reloadManager} />
 		<DataTable {machines} />

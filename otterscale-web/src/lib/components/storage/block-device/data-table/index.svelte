@@ -4,8 +4,8 @@
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
+	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -24,15 +24,15 @@
 	import { columns } from './columns';
 	import Create from './create.svelte';
 	import { headers } from './headers.svelte';
-	import Statistics from './statistics.svelte';
 	import { Snapshot } from './snapshot';
-
-	const selectedFacility = 'ceph-mon';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { selectedScopeUuid, images }: { selectedScopeUuid: string; images: Writable<Image[]> } =
-		$props();
+	let {
+		selectedScopeUuid,
+		selectedFacility,
+		images
+	}: { selectedScopeUuid: string; selectedFacility: string; images: Writable<Image[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);

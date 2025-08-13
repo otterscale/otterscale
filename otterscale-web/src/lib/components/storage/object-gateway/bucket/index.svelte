@@ -1,9 +1,9 @@
 <script lang="ts" module>
 	import { StorageService, type Bucket } from '$lib/api/storage/v1/storage_pb';
-	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
+	import * as Loading from '$lib/components/custom/loading';
 	import * as Reloader from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
 </script>
@@ -11,10 +11,12 @@
 <script lang="ts">
 	let {
 		selectedScopeUuid = $bindable(),
-		selectedFacility = $bindable()
+		selectedFacility = $bindable(),
+		trigger
 	}: {
 		selectedScopeUuid: string;
 		selectedFacility: string;
+		trigger: Snippet;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -49,10 +51,13 @@
 </script>
 
 <main class="space-y-4">
-	<Reloader.Root {reloadManager} />
-	{#if !isMounted}
-		<DataTableLoading />
-	{:else}
+	{#if isMounted}
+		<div class="flex items-center justify-between gap-2">
+			{@render trigger()}
+			<Reloader.Root {reloadManager} />
+		</div>
 		<DataTable {selectedScopeUuid} {selectedFacility} {buckets} />
+	{:else}
+		<Loading.DataTables.Table />
 	{/if}
 </main>

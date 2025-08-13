@@ -10,15 +10,21 @@
 </script>
 
 <script lang="ts">
+	let {
+		selectedScopeUuid = $bindable(),
+		selectedFacility = $bindable()
+	}: {
+		selectedScopeUuid: string;
+		selectedFacility: string;
+	} = $props();
+
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
-
-	const selectedScopeUuid = $activeScope ? $activeScope.uuid : '';
 
 	const pools = writable([] as Pool[]);
 	const reloadManager = new Reloader.ReloadManager(() => {
 		storageClient
-			.listPools({ scopeUuid: selectedScopeUuid, facilityName: 'ceph-mon' })
+			.listPools({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
 			.then((response) => {
 				pools.set(response.pools);
 			});
@@ -27,7 +33,7 @@
 	let isMounted = $state(false);
 	onMount(() => {
 		storageClient
-			.listPools({ scopeUuid: selectedScopeUuid, facilityName: 'ceph-mon' })
+			.listPools({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
 			.then((response) => {
 				pools.set(response.pools);
 				isMounted = true;
@@ -44,10 +50,10 @@
 </script>
 
 <main class="space-y-4">
-	<Reloader.Root {reloadManager} />
-	{#if !isMounted}
-		<DataTableLoading />
+	{#if isMounted}
+		<Reloader.Root {reloadManager} />
+		<DataTable {selectedScopeUuid} {selectedFacility} {pools} />
 	{:else}
-		<DataTable {selectedScopeUuid} {pools} />
+		<DataTableLoading />
 	{/if}
 </main>

@@ -14,19 +14,17 @@
 	} = $props();
 </script>
 
-<Tabs.Root value="user">
+{#snippet trigger()}
 	<Tabs.List>
-		<Tabs.Trigger value="user">
-            User
-        </Tabs.Trigger>
-		<Tabs.Trigger value="bucket">
-            Bucket
-        </Tabs.Trigger>
+		<Tabs.Trigger value="user">User</Tabs.Trigger>
+		<Tabs.Trigger value="bucket">Bucket</Tabs.Trigger>
 	</Tabs.List>
+{/snippet}
+<Tabs.Root value="user">
 	<Tabs.Content value="user">
-		<User bind:selectedScopeUuid bind:selectedFacility />
+		<User bind:selectedScopeUuid bind:selectedFacility {trigger} />
 	</Tabs.Content>
 	<Tabs.Content value="bucket">
-		<Bucket bind:selectedScopeUuid bind:selectedFacility />
+		<Bucket bind:selectedScopeUuid bind:selectedFacility {trigger} />
 	</Tabs.Content>
 </Tabs.Root>

@@ -2,17 +2,20 @@
 	import { StorageService, type OSD } from '$lib/api/storage/v1/storage_pb';
 	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
 	import * as Reloader from '$lib/components/custom/reloader';
-	import { activeScope } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
-
-	const selectedFacility = 'ceph-mon';
 </script>
 
 <script lang="ts">
-	const selectedScopeUuid = $activeScope ? $activeScope.uuid : '';
+	let {
+		selectedScopeUuid = $bindable(),
+		selectedFacility = $bindable()
+	}: {
+		selectedScopeUuid: string;
+		selectedFacility: string;
+	} = $props();
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
@@ -46,10 +49,10 @@
 </script>
 
 <main class="space-y-4">
-	<Reloader.Root {reloadManager} />
-	{#if !isMounted}
-		<DataTableLoading />
-	{:else}
+	{#if isMounted}
+		<Reloader.Root {reloadManager} />
 		<DataTable {selectedScopeUuid} {selectedFacility} {objectStorageDaemons} />
+	{:else}
+		<DataTableLoading />
 	{/if}
 </main>

@@ -13,12 +13,12 @@
 		selectedScopeUuid,
 		selectedFacility,
 		selectedVolume,
-		selectedSubvolumeGroup = $bindable()
+		selectedSubvolumeGroupName = $bindable()
 	}: {
 		selectedScopeUuid: string;
 		selectedFacility: string;
 		selectedVolume: string;
-		selectedSubvolumeGroup: string;
+		selectedSubvolumeGroupName: string;
 	} = $props();
 
 	const transport: Transport = getContext('transport');
@@ -71,7 +71,7 @@
 </script>
 
 {#if isMounted}
-	<SingleSelect.Root options={subvolumeGroupOptions} bind:value={selectedSubvolumeGroup}>
+	<SingleSelect.Root options={subvolumeGroupOptions} bind:value={selectedSubvolumeGroupName}>
 		<SingleSelect.Trigger />
 		<SingleSelect.Content>
 			<SingleSelect.Options>

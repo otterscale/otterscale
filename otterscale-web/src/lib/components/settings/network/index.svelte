@@ -2,7 +2,6 @@
 	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
 	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
 	import * as Reloader from '$lib/components/custom/reloader';
-	import { currentKubernetes } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -22,7 +21,6 @@
 
 	let isMounted = $state(false);
 	onMount(() => {
-		console.log($currentKubernetes?.scopeUuid, $currentKubernetes?.name);
 		networkClient
 			.listNetworks({})
 			.then((response) => {
@@ -44,9 +42,7 @@
 	{#if !isMounted}
 		<DataTableLoading />
 	{:else}
-		<div class="flex justify-end">
-			<Reloader.Root {reloadManager} />
-		</div>
+		<Reloader.Root {reloadManager} />
 		<DataTable {networks} />
 	{/if}
 </main>

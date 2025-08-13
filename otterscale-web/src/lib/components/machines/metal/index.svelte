@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import { page } from '$app/state';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import * as Loading from '$lib/components/custom/loading';
 	import { Data } from '$lib/components/machines/metal/data';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
@@ -34,6 +35,6 @@
 	{#if isMounted}
 		<Data {machine} />
 	{:else}
-		Loading
+		<Loading.Data />
 	{/if}
 </main>
