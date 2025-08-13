@@ -1,15 +1,15 @@
 <script lang="ts">
+	import { getContext, onDestroy, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { page } from '$app/state';
+	import { FacilityService, type Facility } from '$lib/api/facility/v1/facility_pb';
+	import ContainerImage from '$lib/assets/container.jpg';
+	import DiskImage from '$lib/assets/disk.jpg';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb, currentCeph, currentKubernetes } from '$lib/stores';
-	import ContainerImage from '$lib/assets/container.jpg';
-	import DiskImage from '$lib/assets/disk.jpg';
-	import { getContext, onMount } from 'svelte';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { FacilityService, type Facility } from '$lib/api/facility/v1/facility_pb';
-	import { writable } from 'svelte/store';
 
 	// Types
 	interface StateConfig {
@@ -58,8 +58,6 @@
 		mon: createEmptyComponent(),
 		osd: createEmptyComponent()
 	};
-
-	let mounted = $state(false);
 
 	// Helper functions
 	function createEmptyComponent(): ServiceComponent {
@@ -136,10 +134,10 @@
 		return toStateConfig(status.state, status.details);
 	}
 
-	async function fetchFacilities() {
+	async function fetchFacilities(uuid: string) {
 		try {
 			const response = await facilityClient.listFacilities({
-				scopeUuid: 'b62d195e-3905-4960-85ee-7673f71eb21e'
+				scopeUuid: uuid
 			});
 			facilitiesStore.set(response.facilities);
 		} catch (error) {
@@ -188,187 +186,185 @@
 	}
 
 	onMount(async () => {
-		await fetchFacilities();
+		const unsubscribe = activeScope.subscribe(async (scope) => {
+			if (scope) {
+				await fetchFacilities(scope.uuid);
 
-		const facilities = $facilitiesStore;
-		processKubernetesFacilities(facilities);
-		processCephFacilities(facilities);
+				const facilities = $facilitiesStore;
+				processKubernetesFacilities(facilities);
+				processCephFacilities(facilities);
+			}
+		});
 
-		mounted = true;
+		onDestroy(() => unsubscribe());
 	});
 </script>
 
-{#if mounted}
-	<div class="mx-auto max-w-7xl">
-		<div class="grid w-full grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-			{#if $currentKubernetes}
-				<!-- Kubernetes Main Card -->
-				<a
-					href={dynamicPaths.setupScopeKubernetes(page.params.scope).url}
-					class="group relative col-span-2 row-span-2 overflow-clip rounded-lg sm:max-lg:col-span-1"
+<div class="mx-auto min-w-7xl">
+	<div class="grid w-full grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+		{#if $currentKubernetes}
+			<!-- Kubernetes Main Card -->
+			<a
+				href={dynamicPaths.setupScopeKubernetes(page.params.scope).url}
+				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg sm:max-lg:col-span-1"
+			>
+				<img
+					src={ContainerImage}
+					alt="container"
+					class="absolute h-full w-full object-cover object-center"
+				/>
+				<div
+					class="bg-primary/20 text-primary-foreground hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between p-4 transition-colors md:p-6 lg:p-10"
 				>
-					<img
-						src={ContainerImage}
-						alt="container"
-						class="absolute h-full w-full object-cover object-center"
-					/>
-					<div
-						class="bg-primary/20 text-primary-foreground hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between p-4 transition-colors md:p-6 lg:p-10"
+					<div class="flex items-center gap-4">
+						<Icon icon="logos:kubernetes" class="size-14" />
+						<div class="flex flex-col">
+							<span class="text-2xl font-semibold">Kubernetes</span>
+							<span class="text-md">
+								{kubernetes.controlPlane?.channel}
+								{kubernetes.controlPlane?.version}
+							</span>
+						</div>
+					</div>
+					<div class="flex items-center text-xs font-medium md:text-base lg:text-lg">
+						{m.details()}
+						<Icon
+							icon="ph:arrow-right-bold"
+							class="ml-2 size-6 transition-transform group-hover:translate-x-0.5"
+						/>
+					</div>
+				</div>
+			</a>
+
+			<!-- Control Planes Card -->
+			<div
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+			>
+				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
+					{kubernetes.controlPlane?.activeUnits}
+					{#if kubernetes.controlPlane?.activeUnits !== kubernetes.controlPlane?.allUnits}
+						-> {kubernetes.controlPlane?.allUnits}
+					{/if}
+				</div>
+				<div class="text-xs md:text-base lg:text-lg">{m.control_planes()}</div>
+			</div>
+
+			<!-- Kubernetes Status Card -->
+			<div
+				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 md:p-6 lg:p-10"
+			>
+				<div
+					class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+				>
+					<Icon icon={kubernetes.state.icon} class="size-84" />
+				</div>
+				<div class="mb-8 flex flex-col space-y-2 text-3xl sm:mb-2 lg:text-5xl">
+					<span
+						class="flex space-x-2 truncate overflow-visible capitalize {kubernetes.state.textClass}"
 					>
-						<div class="flex items-center gap-4">
-							<Icon icon="logos:kubernetes" class="size-14" />
-							<div class="flex flex-col">
-								<span class="text-2xl font-semibold">Kubernetes</span>
-								<span class="text-md">
-									{kubernetes.controlPlane?.channel}
-									{kubernetes.controlPlane?.version}
-								</span>
-							</div>
-						</div>
-						<div class="flex items-center text-xs font-medium md:text-base lg:text-lg">
-							Details
-							<Icon
-								icon="ph:arrow-right-bold"
-								class="ml-2 size-6 transition-transform group-hover:translate-x-0.5"
-							/>
-						</div>
-					</div>
-				</a>
-
-				<!-- Control Planes Card -->
-				<div
-					class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
-				>
-					<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
-						{kubernetes.controlPlane?.activeUnits}
-						{#if kubernetes.controlPlane?.activeUnits !== kubernetes.controlPlane?.allUnits}
-							-> {kubernetes.controlPlane?.allUnits}
-						{/if}
-					</div>
-					<div class="text-xs md:text-base lg:text-lg">Control Planes</div>
-				</div>
-
-				<!-- Kubernetes Status Card -->
-				<div
-					class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 md:p-6 lg:p-10"
-				>
+						<span>{kubernetes.state.state}</span>
+					</span>
 					<div
-						class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+						class="text-muted-foreground text-xs tracking-tight capitalize md:text-base lg:text-lg"
 					>
-						<Icon icon={kubernetes.state.icon} class="size-84" />
-					</div>
-					<div class="mb-8 flex flex-col space-y-2 text-3xl sm:mb-2 lg:text-5xl">
-						<span
-							class="flex space-x-2 truncate overflow-visible capitalize {kubernetes.state
-								.textClass}"
-						>
-							<span>{kubernetes.state.state}</span>
-						</span>
-						<div
-							class="text-muted-foreground text-xs tracking-tight capitalize md:text-base lg:text-lg"
-						>
-							{kubernetes.state.details}
-						</div>
+						{kubernetes.state.details}
 					</div>
 				</div>
+			</div>
 
-				<!-- Workers Card -->
-				<div
-					class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
-				>
-					<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
-						{kubernetes.worker?.activeUnits}
-						{#if kubernetes.worker?.activeUnits !== kubernetes.worker?.allUnits}
-							-> {kubernetes.worker?.allUnits}
-						{/if}
-					</div>
-					<div class="text-xs md:text-base lg:text-lg">Workers</div>
+			<!-- Workers Card -->
+			<div
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+			>
+				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
+					{kubernetes.worker?.activeUnits}
+					{#if kubernetes.worker?.activeUnits !== kubernetes.worker?.allUnits}
+						-> {kubernetes.worker?.allUnits}
+					{/if}
 				</div>
-			{/if}
+				<div class="text-xs md:text-base lg:text-lg">{m.workers()}</div>
+			</div>
+		{/if}
 
-			{#if $currentCeph}
-				<!-- Monitors Card -->
-				<div
-					class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
-				>
-					<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
-						{ceph.mon?.activeUnits}
-						{#if ceph.mon?.activeUnits !== ceph.mon?.allUnits}
-							-> {ceph.mon?.allUnits}
-						{/if}
-					</div>
-					<div class="text-xs md:text-base lg:text-lg">Monitors</div>
+		{#if $currentCeph}
+			<!-- Monitors Card -->
+			<div
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+			>
+				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
+					{ceph.mon?.activeUnits}
+					{#if ceph.mon?.activeUnits !== ceph.mon?.allUnits}
+						-> {ceph.mon?.allUnits}
+					{/if}
 				</div>
+				<div class="text-xs md:text-base lg:text-lg">{m.monitors()}</div>
+			</div>
 
-				<!-- Ceph Status Card -->
+			<!-- Ceph Status Card -->
+			<div
+				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 md:p-6 lg:p-10"
+			>
 				<div
-					class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 md:p-6 lg:p-10"
+					class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
 				>
+					<Icon icon={ceph.state.icon} class="size-84" />
+				</div>
+				<div class="mb-8 flex flex-col space-y-2 text-3xl sm:mb-2 lg:text-5xl">
+					<span class="flex space-x-2 truncate overflow-visible capitalize {ceph.state.textClass}">
+						<span>{ceph.state.state}</span>
+					</span>
 					<div
-						class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+						class="text-muted-foreground text-xs tracking-tight capitalize md:text-base lg:text-lg"
 					>
-						<Icon icon={ceph.state.icon} class="size-84" />
-					</div>
-					<div class="mb-8 flex flex-col space-y-2 text-3xl sm:mb-2 lg:text-5xl">
-						<span
-							class="flex space-x-2 truncate overflow-visible capitalize {ceph.state.textClass}"
-						>
-							<span>{ceph.state.state}</span>
-						</span>
-						<div
-							class="text-muted-foreground text-xs tracking-tight capitalize md:text-base lg:text-lg"
-						>
-							{ceph.state.details}
-						</div>
+						{ceph.state.details}
 					</div>
 				</div>
+			</div>
 
-				<!-- Ceph Main Card -->
-				<a
-					href={dynamicPaths.setupScopeCeph(page.params.scope).url}
-					class="group relative col-span-2 row-span-2 overflow-clip rounded-lg sm:max-lg:col-span-1"
-				>
-					<img
-						src={DiskImage}
-						alt="disk"
-						class="absolute h-full w-full object-cover object-center"
-					/>
-					<div
-						class="bg-primary/20 text-primary-foreground hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between gap-4 p-4 transition-colors md:flex-row md:items-end md:p-6 lg:p-10"
-					>
-						<div class="flex items-center gap-4">
-							<Icon icon="simple-icons:ceph" class="size-14 text-[#f0424d]" />
-							<div class="flex flex-col">
-								<span class="text-2xl font-semibold">Ceph</span>
-								<span class="text-md">quincy/stable</span>
-							</div>
-						</div>
-						<div class="flex shrink-0 items-center text-xs font-medium md:text-base lg:text-lg">
-							Details
-							<Icon
-								icon="ph:arrow-right-bold"
-								class="ml-2 size-6 transition-transform group-hover:translate-x-0.5"
-							/>
-						</div>
-					</div>
-				</a>
-
-				<!-- OSDs Card -->
+			<!-- Ceph Main Card -->
+			<a
+				href={dynamicPaths.setupScopeCeph(page.params.scope).url}
+				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg sm:max-lg:col-span-1"
+			>
+				<img src={DiskImage} alt="disk" class="absolute h-full w-full object-cover object-center" />
 				<div
-					class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+					class="bg-primary/20 text-primary-foreground hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between gap-4 p-4 transition-colors md:flex-row md:items-end md:p-6 lg:p-10"
 				>
-					<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
-						{ceph.osd?.activeUnits}
-						{#if ceph.osd?.activeUnits !== ceph.osd?.allUnits}
-							-> {ceph.osd?.allUnits}
-						{/if}
+					<div class="flex items-center gap-4">
+						<Icon icon="simple-icons:ceph" class="size-14 text-[#f0424d]" />
+						<div class="flex flex-col">
+							<span class="text-2xl font-semibold">Ceph</span>
+							<span class="text-md">
+								{ceph.mon?.channel}
+								{ceph.mon?.version}
+							</span>
+						</div>
 					</div>
-					<div class="text-xs md:text-base lg:text-lg">OSDs</div>
+					<div class="flex shrink-0 items-center text-xs font-medium md:text-base lg:text-lg">
+						{m.details()}
+						<Icon
+							icon="ph:arrow-right-bold"
+							class="ml-2 size-6 transition-transform group-hover:translate-x-0.5"
+						/>
+					</div>
 				</div>
-			{/if}
-		</div>
+			</a>
+
+			<!-- OSDs Card -->
+			<div
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+			>
+				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
+					{ceph.osd?.activeUnits}
+					{#if ceph.osd?.activeUnits !== ceph.osd?.allUnits}
+						-> {ceph.osd?.allUnits}
+					{/if}
+				</div>
+				<div class="text-xs md:text-base lg:text-lg">{m.osds()}</div>
+			</div>
+		{/if}
 	</div>
-{/if}
+</div>
 
 {#if !$currentKubernetes && !$currentCeph}
 	<p class="text-muted-foreground mt-4 text-center text-lg">
