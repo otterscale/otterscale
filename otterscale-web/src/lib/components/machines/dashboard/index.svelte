@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { createClient, type Transport } from '@connectrpc/connect';
+	import { type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { default as Pickers } from '$lib/components/machines/units/machine-picker.svelte';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { getContext } from 'svelte';
 	import { default as CPUAverage } from './area-chart-cpu-average.svelte';
 	import { default as CPUCoreProcessor } from './area-chart-cpu-core.svelte';
 	import { default as DiskIOTime } from './area-chart-disk-io-time.svelte';
@@ -16,26 +15,14 @@
 	import { default as UsageRateRootFS } from './usage-rate-chart-root-fs.svelte';
 	import { default as UsageRateSWAP } from './usage-rate-chart-swap.svelte';
 
-	const transport: Transport = getContext('transport');
-	const machineClient = createClient(MachineService, transport);
-	// const client: Promise<PrometheusDriver> = getContext('prometheusDriver');
-
-	let { client }: { client: PrometheusDriver } = $props();
-	// let selectedTimeRange = $state({
-	// 	start: new Date(now(getLocalTimeZone()).toDate().getTime() - 60 * 60 * 1000),
-	// 	end: now(getLocalTimeZone()).toDate()
-	// } as TimeRange);
-	let fakeMachine: Machine = {
-		id: 'fake-id',
-		fqdn: 'ottersacle-vm143.maas',
-		description: 'This is a fake machine for demo purposes'
-		// Add other required Machine fields with mock values as needed
-	} as Machine;
-	// let selectedMachine = $state(machines[0]);
-	let selectedMachine = $state(fakeMachine);
+	let { client, machines }: { client: PrometheusDriver; machines: Machine[] } = $props();
+	let selectedMachine = $state(machines[0]);
 </script>
 
 <div class="flex flex-col gap-4">
+	<div class="mr-auto flex flex-wrap items-center gap-2">
+		<Pickers bind:selectedMachine {machines} />
+	</div>
 	{#key selectedMachine}
 		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 			<span class="col-span-1">

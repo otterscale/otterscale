@@ -36,7 +36,7 @@
 
 		// Format data for display
 		const formattedDescription = description ? `${description} ${DESCRIPTION_UNIT}` : undefined;
-		const usagePercentage = usageValue ? usageValue * 100 : null;
+		const usagePercentage = usageValue != null ? usageValue * 100 : null;
 
 		return {
 			description: formattedDescription,

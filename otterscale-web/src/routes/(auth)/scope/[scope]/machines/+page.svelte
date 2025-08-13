@@ -57,29 +57,18 @@
 	});
 </script>
 
-{#if mounted && prometheusDriver}
-	<DashBoard client={prometheusDriver} />
+{#if mounted && prometheusDriver && $machinesStore.length > 0}
+	{@const filteredMachines = $machinesStore.filter((machine) =>
+		machine.workloadAnnotations?.['juju-machine-id']?.includes('-machine-')
+	)}
+	{@const allMachine = {
+		fqdn: filteredMachines.map((machine) => machine.fqdn).join('|')
+	} as Machine}
+	{@const machines = [allMachine, ...filteredMachines]}
+	<DashBoard client={prometheusDriver} {machines} />
 {:else}
-	loading
+	<div class="flex items-center justify-center p-8">
+		<Icon icon="mdi:loading" class="animate-spin text-2xl" />
+		<span class="ml-2">Loading machines...</span>
+	</div>
 {/if}
-<!-- 
-{#if $activeScope}
-	current scope: {$activeScope.uuid}
-{/if}
-
-{#if mounted}
-	{#each $machinesStore as machine}
-		<p>{machine.id}</p>
-	{/each}
-{/if} -->
-
-<!-- <Alert.Root variant="default">
-	<Icon icon="ph:airplane-takeoff" />
-	<Alert.Title>{m.migrating()}</Alert.Title>
-	<Alert.Description>{m.migrating_description()}</Alert.Description>
-</Alert.Root> -->
-
-<!-- <div class="pointer-events-none fixed inset-0 flex flex-col items-center justify-center">
-	<Icon icon="ph:barricade" class="text-9xl" />
-	{m.current_version({ version: import.meta.env.PACKAGE_VERSION })}
-</div> -->

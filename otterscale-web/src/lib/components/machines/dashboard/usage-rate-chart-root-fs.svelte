@@ -40,7 +40,7 @@
 		const usageValue = usageResponse.result[0]?.value?.value;
 
 		const capacity = descriptionValue ? formatCapacity(descriptionValue) : null;
-		const usagePercentage = usageValue ? usageValue * 100 : null;
+		const usagePercentage = usageValue != null ? usageValue * 100 : null;
 
 		return {
 			description: capacity ? `${capacity.value} ${capacity.unit}` : undefined,
