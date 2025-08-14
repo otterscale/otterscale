@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"fmt"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -194,7 +193,6 @@ func toProtoFacility(f *core.Facility, machineMap map[string]string) *pb.Facilit
 	ret.SetVersion(f.Status.WorkloadVersion)
 	ret.SetRevision(int64(f.Status.CharmRev))
 	ret.SetChannel(f.Status.CharmChannel)
-	fmt.Println(f.Status.Scale)
 	ret.SetUnits(toProtoFacilityUnits(f.Status.Units, machineMap))
 	if f.Metadata != nil {
 		ret.SetMetadata(toProtoFacilityMetadata(f.Metadata))
