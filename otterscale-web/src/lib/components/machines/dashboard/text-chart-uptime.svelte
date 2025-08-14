@@ -32,7 +32,7 @@
 			{:else}
 				{@const uptime = result[0].value.value}
 				{@const duration = formatDuration(uptime)}
-				<Content value={duration.value.toPrecision(2)} unit={duration.unit} />
+				<Content value={duration.value.toFixed(1)} unit={duration.unit} />
 			{/if}
 		{/snippet}
 	</Layout>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { PrometheusDriver, SampleValue } from 'prometheus-query';
 
 // Define chart configuration type

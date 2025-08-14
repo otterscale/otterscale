@@ -1,5 +1,3 @@
-// import dayjs from 'dayjs';
-
 import { getLocale } from "./paraglide/runtime";
 
 const TIME_DIVISIONS = [
