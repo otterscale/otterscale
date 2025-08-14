@@ -28,7 +28,8 @@ export const routes = (scope: string): Route[] => [
     {
         path: dynamicPaths.storage(scope),
         items: [
-            dynamicPaths.storageCluster(scope),
+            dynamicPaths.storageOSD(scope),
+            dynamicPaths.storagePool(scope),
             dynamicPaths.storageBlockDevice(scope),
             dynamicPaths.storageFileSystem(scope),
             dynamicPaths.storageObjectGateway(scope)
@@ -44,7 +45,6 @@ export const routes = (scope: string): Route[] => [
     {
         path: dynamicPaths.settings(scope),
         items: [
-            dynamicPaths.settingsSSO(scope),
             dynamicPaths.settingsNetwork(scope),
             dynamicPaths.settingsSubscription(scope),
             dynamicPaths.settingsBIST(scope),

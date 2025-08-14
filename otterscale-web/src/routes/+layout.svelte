@@ -4,9 +4,10 @@
 	import { createConnectTransport } from '@connectrpc/connect-web';
 	import { createClient } from '@connectrpc/connect';
 	import { addCollection } from '@iconify/svelte';
-	import logosIcons from '@iconify-json/logos/icons.json';
-	import phIcons from '@iconify-json/ph/icons.json';
-	import streamlineLogosIcons from '@iconify-json/streamline-logos/icons.json';
+	import logos from '@iconify-json/logos/icons.json';
+	import ph from '@iconify-json/ph/icons.json';
+	import simpleIcons from '@iconify-json/simple-icons/icons.json';
+	import streamlineLogos from '@iconify-json/streamline-logos/icons.json';
 	import { env } from '$env/dynamic/public';
 	import favicon from '$lib/assets/favicon.svg';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
@@ -23,25 +24,10 @@
 
 	setContext('transport', transport);
 
-	// // 創建 PrometheusDriver 初始化 promise
-	// const prometheusDriver = (async () => {
-	// 	try {
-	// 		const environmentService = createClient(EnvironmentService, transport);
-	// 		const response = await environmentService.getPrometheus({});
-	// 		return new PrometheusDriver({
-	// 			endpoint: response.endpoint,
-	// 			baseURL: response.baseUrl
-	// 		});
-	// 	} catch (error) {
-	// 		console.error('Error initializing PrometheusDriver:', error);
-	// 		throw error;
-	// 	}
-	// })();
-
-	// setContext('prometheusDriver', prometheusDriver);
-	addCollection(logosIcons);
-	addCollection(phIcons);
-	addCollection(streamlineLogosIcons);
+	addCollection(logos);
+	addCollection(ph);
+	addCollection(simpleIcons);
+	addCollection(streamlineLogos);
 </script>
 
 <svelte:head>

@@ -2,7 +2,6 @@
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
-	import ErrorContent from '$lib/components/custom/chart/content/text/text.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';

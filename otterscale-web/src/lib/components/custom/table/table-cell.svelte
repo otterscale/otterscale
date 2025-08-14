@@ -13,14 +13,6 @@
 	}: WithElementRef<HTMLTdAttributes> = $props();
 </script>
 
-<Table.Cell
-	bind:ref
-	data-slot="table-cell"
-	class={cn(
-		'has-data-[slot=badge]:gap-1 has-data-[slot=badge]:flex has-data-[slot=badge]:flex-wrap has-data-[slot=badge]:items-center text-xs',
-		className
-	)}
-	{...restProps}
->
+<Table.Cell bind:ref data-slot="table-cell" class={cn('text-xs', className)} {...restProps}>
 	{@render children?.()}
 </Table.Cell>

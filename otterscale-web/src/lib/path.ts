@@ -40,7 +40,8 @@ export const dynamicPaths = {
     applicationsService: (scope: string): Path => ({ title: m.service(), url: createScopePath(scope, '/applications/service') }),
     applicationsStore: (scope: string): Path => ({ title: m.store(), url: createScopePath(scope, '/applications/store') }),
     storage: (scope: string): Path => ({ title: m.storage(), url: createScopePath(scope, '/storage') }),
-    storageCluster: (scope: string): Path => ({ title: m.cluster(), url: createScopePath(scope, '/storage/cluster') }),
+    storageOSD: (scope: string): Path => ({ title: m.osd(), url: createScopePath(scope, '/storage/osd') }),
+    storagePool: (scope: string): Path => ({ title: m.pool(), url: createScopePath(scope, '/storage/pool') }),
     storageBlockDevice: (scope: string): Path => ({ title: m.block_device(), url: createScopePath(scope, '/storage/block-device') }),
     storageFileSystem: (scope: string): Path => ({ title: m.file_system(), url: createScopePath(scope, '/storage/file-system') }),
     storageObjectGateway: (scope: string): Path => ({ title: m.object_gateway(), url: createScopePath(scope, '/storage/object-gateway') }),
@@ -48,7 +49,6 @@ export const dynamicPaths = {
     machinesMetal: (scope: string): Path => ({ title: m.metal(), url: createScopePath(scope, '/machines/metal') }),
     machinesVirtualMachine: (scope: string): Path => ({ title: m.virtual_machine(), url: createScopePath(scope, '/machines/virtual-machine') }),
     settings: (scope: string): Path => ({ title: m.settings(), url: createScopePath(scope, '/settings') }),
-    settingsSSO: (scope: string): Path => ({ title: m.sso(), url: createScopePath(scope, '/settings/sso') }),
     settingsNetwork: (scope: string): Path => ({ title: m.network(), url: createScopePath(scope, '/settings/network') }),
     settingsBIST: (scope: string): Path => ({ title: m.built_in_test(), url: createScopePath(scope, '/settings/built-in-self-test') }),
     settingsSubscription: (scope: string): Path => ({ title: m.subscription(), url: createScopePath(scope, '/settings/subscription') }),
@@ -92,7 +92,7 @@ export const pathDisabled = (cephName: string | undefined, kubeName: string | un
         (!kubeName && paths.kube.some((path) => path.url === url));
 };
 
-export const findDynamicPath = (pathname: string, scope: string): keyof typeof dynamicPaths | null => {
+const findDynamicPath = (pathname: string, scope: string): keyof typeof dynamicPaths | null => {
     for (const [key, pathFn] of Object.entries(dynamicPaths)) {
         const path = pathFn(scope);
         if (path.url === pathname) {
@@ -100,4 +100,33 @@ export const findDynamicPath = (pathname: string, scope: string): keyof typeof d
         }
     }
     return null;
+};
+
+const pathBypass = (pathname: string, scope: string): boolean => {
+    const bypass = ['/machines', '/settings'];
+    for (const url of bypass) {
+        if (pathname.includes(url)) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const getValidURL = (pathname: string, scope: string, cephName: string | undefined, kubeName: string | undefined): string => {
+    if (pathBypass(pathname, scope)) {
+        return pathname.replace(/\/scope\/[^\/]+/, `/scope/${scope}`);
+    }
+
+    const homeURL = dynamicPaths.scope(scope).url;
+    const currentPathKey = findDynamicPath(pathname, scope);
+    if (!currentPathKey) {
+        return homeURL;
+    }
+
+    const path = dynamicPaths[currentPathKey](scope);
+    if (pathDisabled(cephName, kubeName, scope, path.url)) {
+        return homeURL;
+    }
+
+    return path.url;
 };

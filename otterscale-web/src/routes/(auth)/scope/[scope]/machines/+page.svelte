@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { DashBoard } from '$lib/components/machines';
+	import { Dashboard } from '$lib/components/machines/dashboard';
 	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -64,7 +64,7 @@
 		id: 'All Machine'
 	} as Machine}
 	{@const machines = [allMachine, ...filteredMachines]}
-	<DashBoard client={prometheusDriver} {machines} />
+	<Dashboard client={prometheusDriver} {machines} />
 {:else}
 	<div class="flex items-center justify-center p-8">
 		<Icon icon="mdi:loading" class="animate-spin text-2xl" />

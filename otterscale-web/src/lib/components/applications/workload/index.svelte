@@ -1,60 +1,49 @@
 <script lang="ts" module>
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
-	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
-	import * as Reloader from '$lib/components/custom/reloader';
-	import { currentKubernetes } from '$lib/stores';
+	import * as Loading from '$lib/components/custom/loading';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { DataTable } from './data-table/index';
+	import { Data } from './data';
 </script>
 
 <script lang="ts">
+	let {
+		scopeUuid,
+		facilityName,
+		namespace,
+		applicationName
+	}: { scopeUuid: string; facilityName: string; namespace: string; applicationName: string } =
+		$props();
 	const transport: Transport = getContext('transport');
-	const applicationClient = createClient(ApplicationService, transport);
+	const client = createClient(ApplicationService, transport);
 
-	const applications = writable<Application[]>([]);
-	const reloadManager = new Reloader.ReloadManager(() => {
-		applicationClient
-			.listApplications({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name
-			})
-			.then((response) => {
-				applications.set(response.applications);
-			});
-	});
+	const application = writable<Application>();
 
 	let isMounted = $state(false);
-	onMount(() => {
-		console.log($currentKubernetes?.scopeUuid, $currentKubernetes?.name);
-		applicationClient
-			.listApplications({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name
-			})
-			.then((response) => {
-				applications.set(response.applications);
-				isMounted = true;
-			})
-			.catch((error) => {
-				console.error('Error during initial data load:', error);
-			});
-
-		reloadManager.start();
-	});
-	onDestroy(() => {
-		reloadManager.stop();
+	onMount(async () => {
+		try {
+			client
+				.getApplication({
+					scopeUuid: scopeUuid,
+					facilityName: facilityName,
+					namespace: namespace,
+					name: applicationName
+				})
+				.then((response) => {
+					application.set(response);
+					isMounted = true;
+				});
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
 	});
 </script>
 
-<main class="space-y-4">
-	{#if !isMounted}
-		<DataTableLoading />
+<main>
+	{#if isMounted}
+		<Data {application} />
 	{:else}
-		<div class="flex justify-end">
-			<Reloader.Root {reloadManager} />
-		</div>
-		<DataTable {applications} />
+		<Loading.Data />
 	{/if}
 </main>
