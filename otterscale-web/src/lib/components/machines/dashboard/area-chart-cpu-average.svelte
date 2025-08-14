@@ -53,7 +53,11 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={'1h'} />
+			<Content
+				data={response}
+				timeRange={'1h'}
+				valueFormatter={(value) => ({ value: value, unit: '%' })}
+			/>
 		{/snippet}
 	</Layout>
 {:catch error}

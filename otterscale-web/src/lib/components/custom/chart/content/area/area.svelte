@@ -37,9 +37,11 @@
 		timeRange?: TimeRange;
 		/** Additional CSS classes for the chart container */
 		class?: string;
+		/** Optional value formatter function that returns formatted value and unit */
+		valueFormatter?: (value: number) => { value: number; unit: string };
 	}
 
-	let { data, chartConfig, timeRange, class: className = '' }: Props = $props();
+	let { data, chartConfig, timeRange, valueFormatter, class: className = '' }: Props = $props();
 
 	// Derived reactive values
 	const computedChartConfig = $derived(() => chartConfig ?? generateChartConfig(data));
@@ -101,10 +103,33 @@
 		{/snippet}
 
 		{#snippet tooltip()}
-			<Chart.Tooltip
-				labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)}
-				indicator="line"
-			/>
+			{#if valueFormatter}
+				<Chart.Tooltip labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)}>
+					{#snippet formatter({ name, value })}
+						<div
+							style="--color-bg: var(--color-{name})"
+							class="border-(--color-border) bg-(--color-bg) h-full w-1 shrink-0 rounded-[2px]"
+						></div>
+						<div class="flex flex-1 shrink-0 items-center justify-between leading-none">
+							<div class="grid gap-1.5">
+								<span class="text-muted-foreground"> {name} </span>
+							</div>
+							{#if value !== undefined && value !== null}
+								{@const formatted = valueFormatter(Number(value))}
+								<span class="text-foreground font-mono font-medium tabular-nums">
+									{formatted.value.toLocaleString()}
+									{formatted.unit}
+								</span>
+							{/if}
+						</div>
+					{/snippet}
+				</Chart.Tooltip>
+			{:else}
+				<Chart.Tooltip
+					labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)}
+					indicator="line"
+				/>
+			{/if}
 		{/snippet}
 	</AreaChart>
 </ChartContainer>

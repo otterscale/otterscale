@@ -6,6 +6,7 @@
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
+	import { formatIO } from '$lib/formatter';
 	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
@@ -42,7 +43,7 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={'1h'} />
+			<Content data={response} timeRange={'1h'} valueFormatter={formatIO} />
 		{/snippet}
 	</Layout>
 {:catch error}

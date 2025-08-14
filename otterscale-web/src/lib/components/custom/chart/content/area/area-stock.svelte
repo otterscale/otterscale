@@ -37,9 +37,11 @@
 		timeRange?: TimeRange;
 		/** Additional CSS classes for the chart container */
 		class?: string;
+		/** Optional value formatter function that returns formatted value and unit */
+		valueFormatter?: (value: number) => { value: number; unit: string };
 	}
 
-	let { data, chartConfig, timeRange, class: className = '' }: Props = $props();
+	let { data, chartConfig, timeRange, valueFormatter, class: className = '' }: Props = $props();
 
 	// Derived reactive values
 	const computedChartConfig = $derived(() => chartConfig ?? generateChartConfig(data));
@@ -76,7 +78,8 @@
 		{#snippet marks({ series: chartSeries, getAreaProps })}
 			<defs>
 				{#each chartSeries as s, i (s.key)}
-					<linearGradient id="fill{s.key}" x1="0" y1="0" x2="0" y2="1">
+					{@const key = s.key.replace(/\s+/g, '')}
+					<linearGradient id="fill{key}" x1="0" y1="0" x2="0" y2="1">
 						<stop offset="5%" stop-color={s.color} stop-opacity={GRADIENT_OPACITY_START} />
 						<stop offset="95%" stop-color={s.color} stop-opacity={GRADIENT_OPACITY_END} />
 					</linearGradient>
@@ -94,16 +97,40 @@
 				}}
 			>
 				{#each chartSeries as s, i (s.key)}
-					<Area {...getAreaProps(s, i)} fill="url(#fill{s.key})" />
+					{@const key = s.key.replace(/\s+/g, '')}
+					<Area {...getAreaProps(s, i)} fill="url(#fill{key})" />
 				{/each}
 			</ChartClipPath>
 		{/snippet}
 
 		{#snippet tooltip()}
-			<Chart.Tooltip
-				labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)}
-				indicator="line"
-			/>
+			{#if valueFormatter}
+				<Chart.Tooltip labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)}>
+					{#snippet formatter({ name, value })}
+						<div
+							style="--color-bg: var(--color-{name})"
+							class="border-(--color-border) bg-(--color-bg) h-full w-1 shrink-0 rounded-[2px]"
+						></div>
+						<div class="flex flex-1 shrink-0 items-center justify-between leading-none">
+							<div class="grid gap-1.5">
+								<span class="text-muted-foreground"> {name} </span>
+							</div>
+							{#if value !== undefined && value !== null}
+								{@const formatted = valueFormatter(Number(value))}
+								<span class="text-foreground font-mono font-medium tabular-nums">
+									{formatted.value.toLocaleString()}
+									{formatted.unit}
+								</span>
+							{/if}
+						</div>
+					{/snippet}
+				</Chart.Tooltip>
+			{:else}
+				<Chart.Tooltip
+					labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)}
+					indicator="line"
+				/>
+			{/if}
 		{/snippet}
 	</AreaChart>
 </ChartContainer>
