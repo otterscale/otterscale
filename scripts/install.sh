@@ -175,7 +175,7 @@ juju_credentials() {
 }
 
 is_machine_exist() {
-    if maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q . >/dev/null 2>&1; then
+    if maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q . > /dev/null 2>&1; then
         return 0
     fi
     return 1
