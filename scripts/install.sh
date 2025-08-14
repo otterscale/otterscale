@@ -680,10 +680,10 @@ create_vm_from_maas() {
     if maas admin machines read | jq -r '.[] | select(.hostname=="juju-vm")' | grep -q . >/dev/null 2>&1; then
         log "INFO" "juju-vm already existed, skipping create..." "MAAS prepare machine"
     else
-        log "INFO" "Creating VM on host $VM_HOST_ID..." "MAAS prepare machine"
+        log "INFO" "Creating VM from kvm lxd id $VM_HOST_ID..." "MAAS prepare machine"
         JUJU_MACHINE_ID=$(maas admin vm-host compose $VM_HOST_ID cores=$LXD_CORES memory=$LXD_MEMORY_MB disk=1:size=$LXD_DISK_GB | jq -r '.system_id')
         if [[ -z $JUJU_MACHINE_ID ]]; then
-            error_exit "Failed create vm host from kvm lxd $VM_HOST_ID"
+            error_exit "Failed create vm host from kvm lxd id $VM_HOST_ID"
         else
             wait_commissioning
         fi
