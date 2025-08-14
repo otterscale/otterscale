@@ -1,5 +1,3 @@
-// import dayjs from 'dayjs';
-
 import { getLocale } from "./paraglide/runtime";
 
 const TIME_DIVISIONS = [
@@ -51,22 +49,7 @@ export function formatDuration(duration: number): { value: number, unit: string 
     return { value: seconds, unit: "Second" };
 }
 
-export function formatCapacity(capacity: number | bigint): { value: string, unit: string } {
-    const MB = Number(capacity)
-    const GB = MB / 1024;
-    const TB = GB / 1024;
-
-    if (TB >= 1) {
-        return { value: `${Math.round(TB * 100) / 100}`, unit: "TB" };
-    } else if (GB >= 1) {
-        return { value: `${Math.round(GB * 100) / 100}`, unit: "GB" };
-    } else {
-        return { value: `${Math.round(MB * 100) / 100}`, unit: "MB" };
-    }
-}
-
-
-export function formatCapacityV2(capacity: number | bigint): { value: string, unit: string } {
+export function formatCapacity(capacity: number | bigint): { value: number, unit: string } {
     const B = Number(capacity)
     const KB = B / 1024;
     const MB = KB / 1024;
@@ -74,17 +57,17 @@ export function formatCapacityV2(capacity: number | bigint): { value: string, un
     const TB = GB / 1024;
 
     if (TB >= 1) {
-        return { value: `${Math.round(TB * 100) / 100}`, unit: "TB" };
+        return { value: Math.round(TB * 100) / 100, unit: "TB" };
     } else if (GB >= 1) {
-        return { value: `${Math.round(GB * 100) / 100}`, unit: "GB" };
+        return { value: Math.round(GB * 100) / 100, unit: "GB" };
     } else if (MB >= 1) {
-        return { value: `${Math.round(MB * 100) / 100}`, unit: "MB" };
+        return { value: Math.round(MB * 100) / 100, unit: "MB" };
     } else {
-        return { value: `${Math.round(KB * 100) / 100}`, unit: "KB" };
+        return { value: Math.round(KB * 100) / 100, unit: "KB" };
     }
 }
 
-export function formatNetworkIO(bytes: number | bigint): { value: number, unit: string } {
+export function formatIO(bytes: number | bigint): { value: number, unit: string } {
     const B = Number(bytes);
     const KB = B / 1024;
     const MB = KB / 1024;
@@ -113,35 +96,35 @@ export function formatBigNumber(number: Number | BigInt) {
 //     return dayjs(v).format('HH:mm');
 // };
 
-export function formatLatency(second: number): { value: string, unit: string } {
+export function formatLatency(second: number): { value: number, unit: string } {
     const millisecond = second * 1000;
     const microsecond = millisecond * 1000;
     const nanosecond = microsecond * 1000;
 
     if (second >= 1) {
-        return { value: `${second}`, unit: "s" };
+        return { value: Math.round(second * 100) / 100, unit: "s" };
     } else if (millisecond >= 1) {
-        return { value: `${millisecond}`, unit: "ms" };
+        return { value: Math.round(millisecond * 100) / 100, unit: "ms" };
     } else if (microsecond >= 1) {
-        return { value: `${microsecond}`, unit: "us" };
+        return { value: Math.round(microsecond * 100) / 100, unit: "us" };
     } else {
-        return { value: `${nanosecond}`, unit: "ns" };
+        return { value: Math.round(nanosecond * 100) / 100, unit: "ns" };
     }
 };
 
-export function formatLatencyNano(nanosecond: number): { value: string, unit: string } {
+export function formatLatencyNano(nanosecond: number): { value: number, unit: string } {
     const second = nanosecond / 1000000000;
     const millisecond = nanosecond / 1000000;
     const microsecond = nanosecond / 1000;
 
     if (second >= 1) {
-        return { value: `${Math.round(second * 100) / 100}`, unit: "s" };
+        return { value: Math.round(second * 100) / 100, unit: "s" };
     } else if (millisecond >= 1) {
-        return { value: `${Math.round(millisecond * 100) / 100}`, unit: "ms" };
+        return { value: Math.round(millisecond * 100) / 100, unit: "ms" };
     } else if (microsecond >= 1) {
-        return { value: `${Math.round(microsecond * 100) / 100}`, unit: "us" };
+        return { value: Math.round(microsecond * 100) / 100, unit: "us" };
     } else {
-        return { value: `${Math.round(nanosecond * 100) / 100}`, unit: "ns" };
+        return { value: Math.round(nanosecond * 100) / 100, unit: "ns" };
     }
 };
 
