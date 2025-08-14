@@ -246,7 +246,10 @@
 						-> {kubernetes.controlPlane?.allUnits}
 					{/if}
 				</div>
-				<div class="text-xs md:text-base lg:text-lg">{m.control_planes()}</div>
+				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
+					<Icon icon="ph:compass" class="size-6" />
+					<span>{m.control_planes()}</span>
+				</div>
 			</div>
 
 			<!-- Kubernetes Status Card -->
@@ -282,7 +285,10 @@
 						-> {kubernetes.worker?.allUnits}
 					{/if}
 				</div>
-				<div class="text-xs md:text-base lg:text-lg">{m.workers()}</div>
+				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
+					<Icon icon="ph:cube" class="size-6" />
+					<span>{m.workers()}</span>
+				</div>
 			</div>
 		{/if}
 
@@ -297,7 +303,10 @@
 						-> {ceph.mon?.allUnits}
 					{/if}
 				</div>
-				<div class="text-xs md:text-base lg:text-lg">{m.monitors()}</div>
+				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
+					<Icon icon="ph:binoculars" class="size-6" />
+					<span>{m.monitors()}</span>
+				</div>
 			</div>
 
 			<!-- Ceph Status Card -->
@@ -360,7 +369,10 @@
 						-> {ceph.osd?.allUnits}
 					{/if}
 				</div>
-				<div class="text-xs md:text-base lg:text-lg">{m.osds()}</div>
+				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
+					<Icon icon="ph:hard-drives" class="size-6" />
+					<span>{m.osds()}</span>
+				</div>
 			</div>
 		{/if}
 	</div>
