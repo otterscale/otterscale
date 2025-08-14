@@ -5,13 +5,14 @@
 	import Description from '$lib/components/custom/chart/description.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 
 	// Constants
-	const CHART_TITLE = 'CPU';
-	const DESCRIPTION_UNIT = 'Cores';
+	const CHART_TITLE = m.cpu();
+	const DESCRIPTION_UNIT = m.cores();
 
 	// Queries
 	const queries = $derived({

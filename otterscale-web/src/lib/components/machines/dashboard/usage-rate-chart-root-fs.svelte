@@ -5,13 +5,14 @@
 	import Description from '$lib/components/custom/chart/description.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
-	import { PrometheusDriver } from 'prometheus-query';
 	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
+	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 
 	// Constants
-	const CHART_TITLE = 'Root FS';
+	const CHART_TITLE = m.root_disk();
 
 	// Queries
 	const queries = $derived({

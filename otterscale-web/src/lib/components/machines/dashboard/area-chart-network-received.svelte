@@ -7,6 +7,7 @@
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { fetchFlattenedRange } from '$lib/components/custom/prometheus';
 	import { formatIO } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
@@ -16,8 +17,8 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = 'Network';
-	const CHART_DESCRIPTION = 'Received';
+	const CHART_TITLE = m.network();
+	const CHART_DESCRIPTION = m.received();
 
 	// Time range calculation
 	const endTime = new Date();

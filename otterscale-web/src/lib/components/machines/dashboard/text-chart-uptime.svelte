@@ -5,9 +5,15 @@
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatDuration } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
+
+	// Constants
+	const CHART_TITLE = m.uptime();
+
+	// Query
 	const query = $derived(
 		`
 		node_time_seconds{instance=~"${machine.fqdn}"}
@@ -22,7 +28,7 @@
 {:then response}
 	<Layout>
 		{#snippet title()}
-			<Title title="Uptime" />
+			<Title title={CHART_TITLE} />
 		{/snippet}
 
 		{#snippet content()}

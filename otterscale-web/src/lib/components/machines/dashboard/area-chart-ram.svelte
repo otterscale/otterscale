@@ -7,6 +7,7 @@
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
 	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
@@ -16,8 +17,8 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = 'RAM';
-	const CHART_DESCRIPTION = 'Memory Usage';
+	const CHART_TITLE = m.ram();
+	const CHART_DESCRIPTION = m.memory_usage();
 
 	// Time range calculation
 	const endTime = new Date();
