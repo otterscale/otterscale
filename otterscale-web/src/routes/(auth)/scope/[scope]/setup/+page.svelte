@@ -206,7 +206,7 @@
 			<!-- Kubernetes Main Card -->
 			<a
 				href={dynamicPaths.setupScopeKubernetes(page.params.scope).url}
-				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg sm:max-lg:col-span-1"
+				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg shadow-sm sm:max-lg:col-span-1"
 			>
 				<img
 					src={ContainerImage}
@@ -238,7 +238,7 @@
 
 			<!-- Control Planes Card -->
 			<div
-				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+				class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
 				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
 					{kubernetes.controlPlane?.activeUnits}
@@ -251,7 +251,7 @@
 
 			<!-- Kubernetes Status Card -->
 			<div
-				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 md:p-6 lg:p-10"
+				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
 			>
 				<div
 					class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
@@ -274,7 +274,7 @@
 
 			<!-- Workers Card -->
 			<div
-				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
 				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
 					{kubernetes.worker?.activeUnits}
@@ -289,7 +289,7 @@
 		{#if $currentCeph}
 			<!-- Monitors Card -->
 			<div
-				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
 				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
 					{ceph.mon?.activeUnits}
@@ -302,7 +302,7 @@
 
 			<!-- Ceph Status Card -->
 			<div
-				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 md:p-6 lg:p-10"
+				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
 			>
 				<div
 					class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
@@ -324,7 +324,7 @@
 			<!-- Ceph Main Card -->
 			<a
 				href={dynamicPaths.setupScopeCeph(page.params.scope).url}
-				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg sm:max-lg:col-span-1"
+				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg shadow-sm sm:max-lg:col-span-1"
 			>
 				<img src={DiskImage} alt="disk" class="absolute h-full w-full object-cover object-center" />
 				<div
@@ -352,7 +352,7 @@
 
 			<!-- OSDs Card -->
 			<div
-				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
 				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
 					{ceph.osd?.activeUnits}
