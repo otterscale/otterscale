@@ -200,13 +200,13 @@
 	});
 </script>
 
-<div class="mx-auto min-w-7xl">
+<div class="mx-auto max-w-7xl min-w-7xl">
 	<div class="grid w-full grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
 		{#if $currentKubernetes}
 			<!-- Kubernetes Main Card -->
 			<a
 				href={dynamicPaths.setupScopeKubernetes(page.params.scope).url}
-				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg sm:max-lg:col-span-1"
+				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg shadow-sm sm:max-lg:col-span-1"
 			>
 				<img
 					src={ContainerImage}
@@ -238,7 +238,7 @@
 
 			<!-- Control Planes Card -->
 			<div
-				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+				class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
 				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
 					{kubernetes.controlPlane?.activeUnits}
@@ -246,12 +246,15 @@
 						-> {kubernetes.controlPlane?.allUnits}
 					{/if}
 				</div>
-				<div class="text-xs md:text-base lg:text-lg">{m.control_planes()}</div>
+				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
+					<Icon icon="ph:compass" class="size-6" />
+					<span>{m.control_planes()}</span>
+				</div>
 			</div>
 
 			<!-- Kubernetes Status Card -->
 			<div
-				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 md:p-6 lg:p-10"
+				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
 			>
 				<div
 					class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
@@ -274,7 +277,7 @@
 
 			<!-- Workers Card -->
 			<div
-				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
 				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
 					{kubernetes.worker?.activeUnits}
@@ -282,14 +285,17 @@
 						-> {kubernetes.worker?.allUnits}
 					{/if}
 				</div>
-				<div class="text-xs md:text-base lg:text-lg">{m.workers()}</div>
+				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
+					<Icon icon="ph:cube" class="size-6" />
+					<span>{m.workers()}</span>
+				</div>
 			</div>
 		{/if}
 
 		{#if $currentCeph}
 			<!-- Monitors Card -->
 			<div
-				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
 				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
 					{ceph.mon?.activeUnits}
@@ -297,12 +303,15 @@
 						-> {ceph.mon?.allUnits}
 					{/if}
 				</div>
-				<div class="text-xs md:text-base lg:text-lg">{m.monitors()}</div>
+				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
+					<Icon icon="ph:binoculars" class="size-6" />
+					<span>{m.monitors()}</span>
+				</div>
 			</div>
 
 			<!-- Ceph Status Card -->
 			<div
-				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 md:p-6 lg:p-10"
+				class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
 			>
 				<div
 					class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
@@ -324,7 +333,7 @@
 			<!-- Ceph Main Card -->
 			<a
 				href={dynamicPaths.setupScopeCeph(page.params.scope).url}
-				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg sm:max-lg:col-span-1"
+				class="group relative col-span-2 row-span-2 overflow-clip rounded-lg shadow-sm sm:max-lg:col-span-1"
 			>
 				<img src={DiskImage} alt="disk" class="absolute h-full w-full object-cover object-center" />
 				<div
@@ -352,7 +361,7 @@
 
 			<!-- OSDs Card -->
 			<div
-				class="bg-accent flex flex-col justify-between rounded-lg p-4 sm:justify-end md:p-6 lg:p-10"
+				class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
 				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
 					{ceph.osd?.activeUnits}
@@ -360,14 +369,11 @@
 						-> {ceph.osd?.allUnits}
 					{/if}
 				</div>
-				<div class="text-xs md:text-base lg:text-lg">{m.osds()}</div>
+				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
+					<Icon icon="ph:hard-drives" class="size-6" />
+					<span>{m.osds()}</span>
+				</div>
 			</div>
 		{/if}
 	</div>
 </div>
-
-{#if !$currentKubernetes && !$currentCeph}
-	<p class="text-muted-foreground mt-4 text-center text-lg">
-		{m.error_generic()}
-	</p>
-{/if}

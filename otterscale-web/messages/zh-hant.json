@@ -29,7 +29,8 @@
 	"pool": "儲存池",
 	"osd": "OSD",
 	"block_device": "區塊裝置",
-	"file_system": "NFS",
+	"network_file_system": "NFS",
+	"file_system": "檔案系統",
 	"object_gateway": "物件",
 	"machines": "機器",
 	"machines_description": "部署和管理基礎設施",
@@ -196,6 +197,7 @@
 	"details": "詳細資料",
 	"control_planes": "控制平面",
 	"workers": "工作節點",
+	"load_balancers": "負載平衡器",
 	"monitors": "監視器",
 	"osds": "物件儲存裝置",
 	"error_generic": "發生錯誤！"

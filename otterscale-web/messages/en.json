@@ -29,7 +29,8 @@
 	"pool": "Pool",
 	"osd": "OSD",
 	"block_device": "Block Device",
-	"file_system": "NFS",
+	"network_file_system": "NFS",
+	"file_system": "File System",
 	"object_gateway": "Object",
 	"machines": "Machines",
 	"machines_description": "Deploy and manage infrastructure facilities",
@@ -196,6 +197,7 @@
 	"details": "Details",
 	"control_planes": "Control Planes",
 	"workers": "Workers",
+	"load_balancers": "Load Balancers",
 	"monitors": "Monitors",
 	"osds": "OSDs",
 	"error_generic": "Something went wrong!"
