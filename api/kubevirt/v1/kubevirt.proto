@@ -37,11 +37,11 @@ service KubeVirtService {
   rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);
   rpc UpdateNetwork(UpdateNetworkRequest) returns (KubeVirtNetwork);
   rpc DeleteNetwork(DeleteNetworkRequest) returns (google.protobuf.Empty);
-  // Flavor Operations
-  rpc CreateFlavor(CreateFlavorRequest) returns (Flavor);
-  rpc GetFlavor(GetFlavorRequest) returns (Flavor);
-  rpc ListFlavors(ListFlavorsRequest) returns (ListFlavorsResponse);
-  rpc DeleteFlavor(DeleteFlavorRequest) returns (google.protobuf.Empty);
+  // InstanceType Operations
+  rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
+  rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType);
+  rpc ListInstanceTypes(ListInstanceTypesRequest) returns (ListInstanceTypesResponse);
+  rpc DeleteInstanceType(DeleteInstanceTypeRequest) returns (google.protobuf.Empty);
 }
 
 // Common messages
@@ -95,7 +95,7 @@ message VirtualMachine {
 }
 
 message VirtualMachineSpec {
-  string flavor_name = 1;
+  string instanceType_name = 1;
   string network_name = 2;
   string startup_script = 3;
   repeated string data_volumes = 11;
@@ -104,7 +104,7 @@ message VirtualMachineSpec {
 }
 
 // Resource definitions
-message Flavor {
+message InstanceType {
   Metadata metadata = 1;
   float cpu_cores = 2;
   int64 memory_bytes = 3;
@@ -160,7 +160,7 @@ message UpdateVirtualMachineRequest {
   string facility_name = 2;
   string name = 3;
   string namespace = 4;
-  string flavor_name = 5;
+  string instanceType_name = 5;
   string network_name = 6;
   string startup_script = 7;
 
@@ -314,32 +314,29 @@ message DeleteNetworkRequest {
   string namespace = 4;
 }
 
-message CreateFlavorRequest {
+message CreateInstanceTypeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  Flavor flavor = 3;
+  InstanceType instanceType = 3;
 }
 
-message ListFlavorsRequest {
+message ListInstanceTypesRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  string namespace = 3;
 }
 
-message ListFlavorsResponse {
-  repeated Flavor flavors = 1;
+message ListInstanceTypesResponse {
+  repeated InstanceType instanceTypes = 1;
 }
 
-message GetFlavorRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string name = 3;
-  string namespace = 4;
-}
-
-message DeleteFlavorRequest {
+message GetInstanceTypeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;
-  string namespace = 4;
+}
+
+message DeleteInstanceTypeRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string name = 3;
 }

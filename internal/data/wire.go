@@ -42,6 +42,7 @@ var ProviderSet = wire.NewSet(
 	kube.NewKubeVirt,
 	kube.NewVirtDV,
 	kube.NewVirtVM,
+	kube.NewVirtInstanceType,
 	kube.NewStorage,
 	ceph.New,
 	ceph.NewCluster,

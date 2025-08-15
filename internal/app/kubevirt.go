@@ -5,6 +5,7 @@ import (
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/openhdc/otterscale/api/kubevirt/v1"
 	"github.com/openhdc/otterscale/api/kubevirt/v1/pbconnect"
@@ -53,7 +54,7 @@ func (s *KubeVirtService) ListVirtualMachines(ctx context.Context, req *connect.
 }
 
 func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetFlavorName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), req.Msg.GetAnnotations(), req.Msg.GetDataVolumes(), toCoreDevices(req.Msg.GetDevices()))
+	vm, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetInstanceTypeName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), req.Msg.GetAnnotations(), req.Msg.GetDataVolumes(), toCoreDevices(req.Msg.GetDevices()))
 	if err != nil {
 		return nil, err
 	}
@@ -137,16 +138,23 @@ func (s *KubeVirtService) MigrateVirtualMachine(ctx context.Context, req *connec
 
 // Data Volume Operations
 func (s *KubeVirtService) CreateDataVolume(ctx context.Context, req *connect.Request[pb.CreateDataVolumeRequest]) (*connect.Response[pb.DataVolume], error) {
-	dv, err := s.uc.CreateDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetDataVolume().GetMetadata().GetNamespace(), req.Msg.GetDataVolume().GetMetadata().GetName(), toCoreDataVolume(req.Msg.GetDataVolume()))
+	dv, err := s.uc.CreateDataVolume(ctx, req.Msg.GetScopeUuid(),
+		req.Msg.GetFacilityName(),
+		req.Msg.GetDataVolume().GetMetadata().GetNamespace(),
+		req.Msg.GetDataVolume().GetMetadata().GetName(),
+		req.Msg.GetDataVolume().GetType(),
+		req.Msg.GetDataVolume().GetSource(),
+		req.Msg.GetDataVolume().GetSizeBytes())
 	if err != nil {
 		return nil, err
 	}
+
 	resp := toProtoDataVolume(dv)
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) GetDataVolume(ctx context.Context, req *connect.Request[pb.GetDataVolumeRequest]) (*connect.Response[pb.DataVolume], error) {
-	dv, err := s.uc.GetDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
+	dv, err := s.uc.GetDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +163,7 @@ func (s *KubeVirtService) GetDataVolume(ctx context.Context, req *connect.Reques
 }
 
 func (s *KubeVirtService) ListDataVolumes(ctx context.Context, req *connect.Request[pb.ListDataVolumesRequest]) (*connect.Response[pb.ListDataVolumesResponse], error) {
-	dvs, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	dvs, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetNamespace(), req.Msg.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +173,7 @@ func (s *KubeVirtService) ListDataVolumes(ctx context.Context, req *connect.Requ
 }
 
 func (s *KubeVirtService) DeleteDataVolume(ctx context.Context, req *connect.Request[pb.DeleteDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
+	if err := s.uc.DeleteDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -173,11 +181,9 @@ func (s *KubeVirtService) DeleteDataVolume(ctx context.Context, req *connect.Req
 }
 
 func (s *KubeVirtService) ExtendDataVolume(ctx context.Context, req *connect.Request[pb.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	/*
-		if err := s.uc.ExtendDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetSizeBytes()); err != nil {
-			return nil, err
-		}
-	*/
+	if err := s.uc.ExtendDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSizeBytes()); err != nil {
+		return nil, err
+	}
 	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
@@ -247,52 +253,41 @@ func (s *KubeVirtService) DeleteNetwork(ctx context.Context, req *connect.Reques
 	return connect.NewResponse(resp), nil
 }
 
-// Flavor Operations
-func (s *KubeVirtService) CreateFlavor(ctx context.Context, req *connect.Request[pb.CreateFlavorRequest]) (*connect.Response[pb.Flavor], error) {
-	/*
-		flavor, err := s.uc.CreateFlavor(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreFlavor(req.Msg.GetFlavor()))
-		if err != nil {
-			return nil, err
-		}
-		resp := toProtoFlavor(flavor)
-	*/
-	resp := &pb.Flavor{}
-	return connect.NewResponse(resp), nil
-}
-
-func (s *KubeVirtService) GetFlavor(ctx context.Context, req *connect.Request[pb.GetFlavorRequest]) (*connect.Response[pb.Flavor], error) {
-	/*
-		flavor, err := s.uc.GetFlavor(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
-		if err != nil {
-			return nil, err
-		}
-		resp := toProtoFlavor(flavor)
-	*/
-	resp := &pb.Flavor{}
+// InstanceType Operations
+func (s *KubeVirtService) CreateInstanceType(ctx context.Context, req *connect.Request[pb.CreateInstanceTypeRequest]) (*connect.Response[pb.InstanceType], error) {
+	InstanceType, err := s.uc.CreateInstanceType(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreInstanceType(req.Msg.GetInstanceType()))
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoInstanceType(InstanceType)
 
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) ListFlavors(ctx context.Context, req *connect.Request[pb.ListFlavorsRequest]) (*connect.Response[pb.ListFlavorsResponse], error) {
-	/*
-		flavors, err := s.uc.ListFlavors(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
-		if err != nil {
-			return nil, err
-		}
-		resp := &pb.ListFlavorsResponse{}
-		resp.Flavors = toProtoFlavors(flavors)
-	*/
-	resp := &pb.ListFlavorsResponse{}
+func (s *KubeVirtService) GetInstanceType(ctx context.Context, req *connect.Request[pb.GetInstanceTypeRequest]) (*connect.Response[pb.InstanceType], error) {
+	InstanceType, err := s.uc.GetInstanceType(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoInstanceType(InstanceType)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *KubeVirtService) ListInstanceTypes(ctx context.Context, req *connect.Request[pb.ListInstanceTypesRequest]) (*connect.Response[pb.ListInstanceTypesResponse], error) {
+	InstanceType, err := s.uc.ListInstanceTypes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListInstanceTypesResponse{}
+	resp.SetInstanceTypes(toProtoInstanceTypes(InstanceType))
 
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) DeleteFlavor(ctx context.Context, req *connect.Request[pb.DeleteFlavorRequest]) (*connect.Response[emptypb.Empty], error) {
-	/*
-		if err := s.uc.DeleteFlavor(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
-			return nil, err
-		}
-	*/
+func (s *KubeVirtService) DeleteInstanceType(ctx context.Context, req *connect.Request[pb.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteInstanceType(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName()); err != nil {
+		return nil, err
+	}
 	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
@@ -347,7 +342,7 @@ func toCoreMetadata(m *pb.Metadata) core.Metadata {
 func toProtoVirtualMachineSpec(spec core.KubeVirtVirtualMachineSpec) *pb.VirtualMachineSpec {
 	ret := &pb.VirtualMachineSpec{}
 
-	ret.SetFlavorName(spec.FlavorName)
+	ret.SetInstanceTypeName(spec.InstanceTypeName)
 	ret.SetNetworkName(spec.NetworkName)
 	ret.SetStartupScript(spec.StartupScript)
 	ret.SetDataVolumes(spec.DataVolumes)
@@ -359,7 +354,7 @@ func toProtoVirtualMachineSpec(spec core.KubeVirtVirtualMachineSpec) *pb.Virtual
 func toCoreVirtualMachineSpec(spec *pb.VirtualMachineSpec) core.VirtualMachineSpec {
 	/*
 		return core.KubeVirtVirtualMachineSpec{
-			FlavorName:    spec.GetFlavorName(),
+			InstanceTypeName:    spec.GetInstanceTypeName(),
 			NetworkName:   spec.GetNetworkName(),
 			StartupScript: spec.GetStartupScript(),
 			DataVolumes:   spec.GetDataVolumes(),
@@ -418,12 +413,17 @@ func toProtoDataVolumes(dvs []core.DataVolume) []*pb.DataVolume {
 
 func toProtoDataVolume(dv *core.DataVolume) *pb.DataVolume {
 	ret := &pb.DataVolume{}
-	/*
-		ret.SetMetadata(toProtoMetadata(dv.Metadata))
-		ret.SetSource(dv.Source)
-		ret.SetType(dv.Type)
-		ret.SetSizeBytes(dv.SizeBytes)
-	*/
+	ret.SetMetadata(toProtoMetadata(core.Metadata{
+		Name:        dv.GetName(),
+		Namespace:   dv.GetNamespace(),
+		Labels:      dv.GetLabels(),
+		Annotations: dv.GetAnnotations(),
+		CreatedAt:   timestamppb.New(dv.CreationTimestamp.Time),
+	}))
+	source, sourceType, sizeBytes := core.ExtractDataVolumeInfo(dv)
+	ret.SetType(sourceType)
+	ret.SetSizeBytes(sizeBytes)
+	ret.SetSource(source)
 	return ret
 }
 
@@ -468,16 +468,16 @@ func toCoreNetwork(n *pb.KubeVirtNetwork) core.KubeVirtNetwork {
 	}
 }
 
-func toProtoFlavors(flavors []core.Flavor) []*pb.Flavor {
-	ret := []*pb.Flavor{}
+func toProtoInstanceTypes(flavors []core.InstanceType) []*pb.InstanceType {
+	ret := []*pb.InstanceType{}
 	for i := range flavors {
-		ret = append(ret, toProtoFlavor(&flavors[i]))
+		ret = append(ret, toProtoInstanceType(&flavors[i]))
 	}
 	return ret
 }
 
-func toProtoFlavor(f *core.Flavor) *pb.Flavor {
-	ret := &pb.Flavor{}
+func toProtoInstanceType(f *core.InstanceType) *pb.InstanceType {
+	ret := &pb.InstanceType{}
 
 	ret.SetMetadata(toProtoMetadata(f.Metadata))
 	ret.SetCpuCores(f.CpuCores)
@@ -486,8 +486,8 @@ func toProtoFlavor(f *core.Flavor) *pb.Flavor {
 	return ret
 }
 
-func toCoreFlavor(f *pb.Flavor) core.Flavor {
-	return core.Flavor{
+func toCoreInstanceType(f *pb.InstanceType) core.InstanceType {
+	return core.InstanceType{
 		Metadata:    toCoreMetadata(f.GetMetadata()),
 		CpuCores:    f.GetCpuCores(),
 		MemoryBytes: f.GetMemoryBytes(),

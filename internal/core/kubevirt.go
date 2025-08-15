@@ -36,11 +36,11 @@ type Metadata struct {
 
 // VirtualMachineSpec defines the specification for a virtual machine
 type KubeVirtVirtualMachineSpec struct {
-	FlavorName    string
-	NetworkName   string
-	StartupScript string
-	DataVolumes   []string
-	Devices       []Device
+	InstanceTypeName string
+	NetworkName      string
+	StartupScript    string
+	DataVolumes      []string
+	Devices          []Device
 }
 
 // VirtualMachine represents a virtual machine resource
@@ -93,30 +93,65 @@ type KubeVirtNetwork struct {
 	ContainerPort int32
 }
 
-// Flavor represents a flavor resource
-type Flavor struct {
+// InstanceType represents a flavor resource
+type InstanceType struct {
 	Metadata    Metadata
 	CpuCores    float32
 	MemoryBytes int64
 }
 
 type KubeVirtUseCase struct {
-	kubeCore    KubeCoreRepo
-	kubeApps    KubeAppsRepo
-	kubeVirtVM  KubeVirtVMRepo
-	kubeVirtDV  KubeVirtDVRepo
-	kubeVirtNet KubeVirtNetRepo
-	action      ActionRepo
-	facility    FacilityRepo
+	kubeCore             KubeCoreRepo
+	kubeApps             KubeAppsRepo
+	kubeVirtVM           KubeVirtVMRepo
+	kubeVirtDV           KubeVirtDVRepo
+	kubeVirtNet          KubeVirtNetRepo
+	kubeVirtInstanceType KubeVirtInstanceTypeRepo
+	action               ActionRepo
+	facility             FacilityRepo
 }
 
-func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
+func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtInstanceType KubeVirtInstanceTypeRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
 	return &KubeVirtUseCase{
-		kubeCore:   kubeCore,
-		kubeApps:   kubeApps,
-		kubeVirtVM: kubeVirtVM,
-		kubeVirtDV: kubeVirtDV,
-		action:     action,
-		facility:   facility,
+		kubeCore:             kubeCore,
+		kubeApps:             kubeApps,
+		kubeVirtVM:           kubeVirtVM,
+		kubeVirtDV:           kubeVirtDV,
+		kubeVirtInstanceType: kubeVirtInstanceType,
+		action:               action,
+		facility:             facility,
 	}
+}
+
+// Extracts source, sourceType, and sizeBytes from a DataVolume
+func ExtractDataVolumeInfo(dv *DataVolume) (source string, sourceType string, sizeBytes int64) {
+	if dv.Spec.PVC != nil {
+		if dv.Spec.PVC.Resources.Requests != nil {
+			size, found := dv.Spec.PVC.Resources.Requests["storage"]
+			if found {
+				sizeBytes = size.Value()
+			}
+		}
+	} else if dv.Spec.Storage != nil {
+		if dv.Spec.Storage.Resources.Requests != nil {
+			size, found := dv.Spec.Storage.Resources.Requests["storage"]
+			if found {
+				sizeBytes = size.Value()
+			}
+		}
+	}
+	if dv.Spec.Source.HTTP != nil {
+		source = dv.Spec.Source.HTTP.URL
+		sourceType = "HTTP"
+	} else if dv.Spec.Source.Upload != nil {
+		source = ""
+		sourceType = "Upload"
+	} else if dv.Spec.Source.S3 != nil {
+		source = dv.Spec.Source.S3.URL
+		sourceType = "S3"
+	} else if dv.Spec.Source.VDDK != nil {
+		source = dv.Spec.Source.VDDK.URL
+		sourceType = string(dv.Spec.Source.VDDK.UUID)
+	}
+	return
 }
