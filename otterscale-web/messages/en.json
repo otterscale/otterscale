@@ -181,6 +181,7 @@
 	"create_scope_calico_cidr_description": "Network range for Kubernetes pod communication.",
 	"create_scope_virtual_ip": "Virtual IP",
 	"create_scope_virtual_ip_description": "High availability IP for Kubernetes control plane.",
+	"cluster_health": "Cluster Health",
 	"architecture": "Architecture",
 	"cpu": "CPU",
 	"core": "Core",
@@ -222,5 +223,14 @@
 	"monitors": "Monitors",
 	"osds": "OSDs",
 	"root_disk": "Root Disk",
-	"error_generic": "Something went wrong!"
+	"error_generic": "Something went wrong!",
+	"pools": "Pools",
+	"osd_in_ratio": "OSD In Ratio",
+	"osd_up_ratio": "OSD Up Ratio",
+	"osd_monitor_ratio": "Monitor In ratio",
+	"osd_in": "In",
+	"osd_out": "Out",
+	"osd_up": "Up",
+	"osd_down": "Down",
+	"capacity": "Capacity"
 }

@@ -1,13 +1,22 @@
 <script lang="ts">
-    let {
-        value,
-        unit,
-    }: {
-        value?: string;
-        unit?: string;
-    } = $props();
+	import { cn } from '$lib/utils';
+
+	let {
+		value,
+		unit,
+		class: className,
+		textClass
+	}: {
+		value?: string;
+		unit?: string;
+		class?: string;
+		textClass?: string;
+	} = $props();
 </script>
 
-<div class="aspect-auto h-[250px] w-full flex items-center justify-center">
-    <p class="fill-foreground font-bold text-4xl!">{value || 'No Data'} {unit || ''}</p>
+<div class={cn('flex aspect-auto h-[250px] w-full items-center justify-center', className)}>
+	<p class={cn('fill-foreground text-4xl! font-bold', textClass)}>
+		{value || 'No Data'}
+		{unit || ''}
+	</p>
 </div>
