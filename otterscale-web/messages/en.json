@@ -202,5 +202,9 @@
 	"osds": "OSDs",
 	"add_node": "Add Node",
 	"auto_refresh": "Auto Refresh",
+	"complete": "Complete",
+	"remove": "Remove",
+	"bookmark_added": "Added to bookmarks",
+	"empty_bookmark": "Empty",
 	"error_generic": "Something went wrong!"
 }

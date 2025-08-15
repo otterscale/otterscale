@@ -202,5 +202,9 @@
 	"osds": "物件儲存裝置",
 	"add_node": "新增節點",
 	"auto_refresh": "自動重新整理",
+	"complete": "完成",
+	"remove": "移除",
+	"bookmark_added": "已新增至書籤",
+	"empty_bookmark": "尚無書籤",
 	"error_generic": "發生錯誤！"
 }
