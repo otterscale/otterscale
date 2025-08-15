@@ -137,7 +137,10 @@ func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 }
 
 func (s *EnvironmentService) GetPrometheusURL() *url.URL {
-	return s.uc.GetPrometheusURL()
+	if s.uc != nil {
+		return s.uc.GetPrometheusURL()
+	}
+	return nil
 }
 
 func toProtoWatchStatus(status *core.EnvironmentStatus) *pb.WatchStatusResponse {
