@@ -36,11 +36,11 @@ type Metadata struct {
 
 // VirtualMachineSpec defines the specification for a virtual machine
 type KubeVirtVirtualMachineSpec struct {
-	FlavorName    string
-	NetworkName   string
-	StartupScript string
-	DataVolumes   []string
-	Devices       []Device
+	InstancetypeName string
+	NetworkName      string
+	StartupScript    string
+	DataVolumes      []string
+	Devices          []Device
 }
 
 // VirtualMachine represents a virtual machine resource
@@ -93,31 +93,33 @@ type KubeVirtNetwork struct {
 	ContainerPort int32
 }
 
-// Flavor represents a flavor resource
-type Flavor struct {
+// Instancetype represents a flavor resource
+type Instancetype struct {
 	Metadata    Metadata
 	CpuCores    float32
 	MemoryBytes int64
 }
 
 type KubeVirtUseCase struct {
-	kubeCore    KubeCoreRepo
-	kubeApps    KubeAppsRepo
-	kubeVirtVM  KubeVirtVMRepo
-	kubeVirtDV  KubeVirtDVRepo
-	kubeVirtNet KubeVirtNetRepo
-	action      ActionRepo
-	facility    FacilityRepo
+	kubeCore             KubeCoreRepo
+	kubeApps             KubeAppsRepo
+	kubeVirtVM           KubeVirtVMRepo
+	kubeVirtDV           KubeVirtDVRepo
+	kubeVirtNet          KubeVirtNetRepo
+	kubeVirtInstancetype KubeVirtInstancetypeRepo
+	action               ActionRepo
+	facility             FacilityRepo
 }
 
-func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
+func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtInstancetype KubeVirtInstancetypeRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
 	return &KubeVirtUseCase{
-		kubeCore:   kubeCore,
-		kubeApps:   kubeApps,
-		kubeVirtVM: kubeVirtVM,
-		kubeVirtDV: kubeVirtDV,
-		action:     action,
-		facility:   facility,
+		kubeCore:             kubeCore,
+		kubeApps:             kubeApps,
+		kubeVirtVM:           kubeVirtVM,
+		kubeVirtDV:           kubeVirtDV,
+		kubeVirtInstancetype: kubeVirtInstancetype,
+		action:               action,
+		facility:             facility,
 	}
 }
 

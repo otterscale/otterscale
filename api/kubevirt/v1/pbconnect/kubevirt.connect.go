@@ -103,18 +103,18 @@ const (
 	// KubeVirtServiceDeleteNetworkProcedure is the fully-qualified name of the KubeVirtService's
 	// DeleteNetwork RPC.
 	KubeVirtServiceDeleteNetworkProcedure = "/otterscale.kubevirt.v1.KubeVirtService/DeleteNetwork"
-	// KubeVirtServiceCreateFlavorProcedure is the fully-qualified name of the KubeVirtService's
-	// CreateFlavor RPC.
-	KubeVirtServiceCreateFlavorProcedure = "/otterscale.kubevirt.v1.KubeVirtService/CreateFlavor"
-	// KubeVirtServiceGetFlavorProcedure is the fully-qualified name of the KubeVirtService's GetFlavor
-	// RPC.
-	KubeVirtServiceGetFlavorProcedure = "/otterscale.kubevirt.v1.KubeVirtService/GetFlavor"
-	// KubeVirtServiceListFlavorsProcedure is the fully-qualified name of the KubeVirtService's
-	// ListFlavors RPC.
-	KubeVirtServiceListFlavorsProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListFlavors"
-	// KubeVirtServiceDeleteFlavorProcedure is the fully-qualified name of the KubeVirtService's
-	// DeleteFlavor RPC.
-	KubeVirtServiceDeleteFlavorProcedure = "/otterscale.kubevirt.v1.KubeVirtService/DeleteFlavor"
+	// KubeVirtServiceCreateInstancetypeProcedure is the fully-qualified name of the KubeVirtService's
+	// CreateInstancetype RPC.
+	KubeVirtServiceCreateInstancetypeProcedure = "/otterscale.kubevirt.v1.KubeVirtService/CreateInstancetype"
+	// KubeVirtServiceGetInstancetypeProcedure is the fully-qualified name of the KubeVirtService's
+	// GetInstancetype RPC.
+	KubeVirtServiceGetInstancetypeProcedure = "/otterscale.kubevirt.v1.KubeVirtService/GetInstancetype"
+	// KubeVirtServiceListInstancetypesProcedure is the fully-qualified name of the KubeVirtService's
+	// ListInstancetypes RPC.
+	KubeVirtServiceListInstancetypesProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListInstancetypes"
+	// KubeVirtServiceDeleteInstancetypeProcedure is the fully-qualified name of the KubeVirtService's
+	// DeleteInstancetype RPC.
+	KubeVirtServiceDeleteInstancetypeProcedure = "/otterscale.kubevirt.v1.KubeVirtService/DeleteInstancetype"
 )
 
 // KubeVirtServiceClient is a client for the otterscale.kubevirt.v1.KubeVirtService service.
@@ -147,11 +147,11 @@ type KubeVirtServiceClient interface {
 	ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error)
 	UpdateNetwork(context.Context, *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error)
 	DeleteNetwork(context.Context, *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error)
-	// Flavor Operations
-	CreateFlavor(context.Context, *connect.Request[v1.CreateFlavorRequest]) (*connect.Response[v1.Flavor], error)
-	GetFlavor(context.Context, *connect.Request[v1.GetFlavorRequest]) (*connect.Response[v1.Flavor], error)
-	ListFlavors(context.Context, *connect.Request[v1.ListFlavorsRequest]) (*connect.Response[v1.ListFlavorsResponse], error)
-	DeleteFlavor(context.Context, *connect.Request[v1.DeleteFlavorRequest]) (*connect.Response[emptypb.Empty], error)
+	// Instancetype Operations
+	CreateInstancetype(context.Context, *connect.Request[v1.CreateInstancetypeRequest]) (*connect.Response[v1.Instancetype], error)
+	GetInstancetype(context.Context, *connect.Request[v1.GetInstancetypeRequest]) (*connect.Response[v1.Instancetype], error)
+	ListInstancetypes(context.Context, *connect.Request[v1.ListInstancetypesRequest]) (*connect.Response[v1.ListInstancetypesResponse], error)
+	DeleteInstancetype(context.Context, *connect.Request[v1.DeleteInstancetypeRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewKubeVirtServiceClient constructs a client for the otterscale.kubevirt.v1.KubeVirtService
@@ -303,28 +303,28 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteNetwork")),
 			connect.WithClientOptions(opts...),
 		),
-		createFlavor: connect.NewClient[v1.CreateFlavorRequest, v1.Flavor](
+		createInstancetype: connect.NewClient[v1.CreateInstancetypeRequest, v1.Instancetype](
 			httpClient,
-			baseURL+KubeVirtServiceCreateFlavorProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("CreateFlavor")),
+			baseURL+KubeVirtServiceCreateInstancetypeProcedure,
+			connect.WithSchema(kubeVirtServiceMethods.ByName("CreateInstancetype")),
 			connect.WithClientOptions(opts...),
 		),
-		getFlavor: connect.NewClient[v1.GetFlavorRequest, v1.Flavor](
+		getInstancetype: connect.NewClient[v1.GetInstancetypeRequest, v1.Instancetype](
 			httpClient,
-			baseURL+KubeVirtServiceGetFlavorProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("GetFlavor")),
+			baseURL+KubeVirtServiceGetInstancetypeProcedure,
+			connect.WithSchema(kubeVirtServiceMethods.ByName("GetInstancetype")),
 			connect.WithClientOptions(opts...),
 		),
-		listFlavors: connect.NewClient[v1.ListFlavorsRequest, v1.ListFlavorsResponse](
+		listInstancetypes: connect.NewClient[v1.ListInstancetypesRequest, v1.ListInstancetypesResponse](
 			httpClient,
-			baseURL+KubeVirtServiceListFlavorsProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("ListFlavors")),
+			baseURL+KubeVirtServiceListInstancetypesProcedure,
+			connect.WithSchema(kubeVirtServiceMethods.ByName("ListInstancetypes")),
 			connect.WithClientOptions(opts...),
 		),
-		deleteFlavor: connect.NewClient[v1.DeleteFlavorRequest, emptypb.Empty](
+		deleteInstancetype: connect.NewClient[v1.DeleteInstancetypeRequest, emptypb.Empty](
 			httpClient,
-			baseURL+KubeVirtServiceDeleteFlavorProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteFlavor")),
+			baseURL+KubeVirtServiceDeleteInstancetypeProcedure,
+			connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteInstancetype")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -355,10 +355,10 @@ type kubeVirtServiceClient struct {
 	listNetworks           *connect.Client[v1.ListNetworksRequest, v1.ListNetworksResponse]
 	updateNetwork          *connect.Client[v1.UpdateNetworkRequest, v1.KubeVirtNetwork]
 	deleteNetwork          *connect.Client[v1.DeleteNetworkRequest, emptypb.Empty]
-	createFlavor           *connect.Client[v1.CreateFlavorRequest, v1.Flavor]
-	getFlavor              *connect.Client[v1.GetFlavorRequest, v1.Flavor]
-	listFlavors            *connect.Client[v1.ListFlavorsRequest, v1.ListFlavorsResponse]
-	deleteFlavor           *connect.Client[v1.DeleteFlavorRequest, emptypb.Empty]
+	createInstancetype     *connect.Client[v1.CreateInstancetypeRequest, v1.Instancetype]
+	getInstancetype        *connect.Client[v1.GetInstancetypeRequest, v1.Instancetype]
+	listInstancetypes      *connect.Client[v1.ListInstancetypesRequest, v1.ListInstancetypesResponse]
+	deleteInstancetype     *connect.Client[v1.DeleteInstancetypeRequest, emptypb.Empty]
 }
 
 // CreateVirtualMachine calls otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine.
@@ -476,24 +476,24 @@ func (c *kubeVirtServiceClient) DeleteNetwork(ctx context.Context, req *connect.
 	return c.deleteNetwork.CallUnary(ctx, req)
 }
 
-// CreateFlavor calls otterscale.kubevirt.v1.KubeVirtService.CreateFlavor.
-func (c *kubeVirtServiceClient) CreateFlavor(ctx context.Context, req *connect.Request[v1.CreateFlavorRequest]) (*connect.Response[v1.Flavor], error) {
-	return c.createFlavor.CallUnary(ctx, req)
+// CreateInstancetype calls otterscale.kubevirt.v1.KubeVirtService.CreateInstancetype.
+func (c *kubeVirtServiceClient) CreateInstancetype(ctx context.Context, req *connect.Request[v1.CreateInstancetypeRequest]) (*connect.Response[v1.Instancetype], error) {
+	return c.createInstancetype.CallUnary(ctx, req)
 }
 
-// GetFlavor calls otterscale.kubevirt.v1.KubeVirtService.GetFlavor.
-func (c *kubeVirtServiceClient) GetFlavor(ctx context.Context, req *connect.Request[v1.GetFlavorRequest]) (*connect.Response[v1.Flavor], error) {
-	return c.getFlavor.CallUnary(ctx, req)
+// GetInstancetype calls otterscale.kubevirt.v1.KubeVirtService.GetInstancetype.
+func (c *kubeVirtServiceClient) GetInstancetype(ctx context.Context, req *connect.Request[v1.GetInstancetypeRequest]) (*connect.Response[v1.Instancetype], error) {
+	return c.getInstancetype.CallUnary(ctx, req)
 }
 
-// ListFlavors calls otterscale.kubevirt.v1.KubeVirtService.ListFlavors.
-func (c *kubeVirtServiceClient) ListFlavors(ctx context.Context, req *connect.Request[v1.ListFlavorsRequest]) (*connect.Response[v1.ListFlavorsResponse], error) {
-	return c.listFlavors.CallUnary(ctx, req)
+// ListInstancetypes calls otterscale.kubevirt.v1.KubeVirtService.ListInstancetypes.
+func (c *kubeVirtServiceClient) ListInstancetypes(ctx context.Context, req *connect.Request[v1.ListInstancetypesRequest]) (*connect.Response[v1.ListInstancetypesResponse], error) {
+	return c.listInstancetypes.CallUnary(ctx, req)
 }
 
-// DeleteFlavor calls otterscale.kubevirt.v1.KubeVirtService.DeleteFlavor.
-func (c *kubeVirtServiceClient) DeleteFlavor(ctx context.Context, req *connect.Request[v1.DeleteFlavorRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteFlavor.CallUnary(ctx, req)
+// DeleteInstancetype calls otterscale.kubevirt.v1.KubeVirtService.DeleteInstancetype.
+func (c *kubeVirtServiceClient) DeleteInstancetype(ctx context.Context, req *connect.Request[v1.DeleteInstancetypeRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteInstancetype.CallUnary(ctx, req)
 }
 
 // KubeVirtServiceHandler is an implementation of the otterscale.kubevirt.v1.KubeVirtService
@@ -527,11 +527,11 @@ type KubeVirtServiceHandler interface {
 	ListNetworks(context.Context, *connect.Request[v1.ListNetworksRequest]) (*connect.Response[v1.ListNetworksResponse], error)
 	UpdateNetwork(context.Context, *connect.Request[v1.UpdateNetworkRequest]) (*connect.Response[v1.KubeVirtNetwork], error)
 	DeleteNetwork(context.Context, *connect.Request[v1.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error)
-	// Flavor Operations
-	CreateFlavor(context.Context, *connect.Request[v1.CreateFlavorRequest]) (*connect.Response[v1.Flavor], error)
-	GetFlavor(context.Context, *connect.Request[v1.GetFlavorRequest]) (*connect.Response[v1.Flavor], error)
-	ListFlavors(context.Context, *connect.Request[v1.ListFlavorsRequest]) (*connect.Response[v1.ListFlavorsResponse], error)
-	DeleteFlavor(context.Context, *connect.Request[v1.DeleteFlavorRequest]) (*connect.Response[emptypb.Empty], error)
+	// Instancetype Operations
+	CreateInstancetype(context.Context, *connect.Request[v1.CreateInstancetypeRequest]) (*connect.Response[v1.Instancetype], error)
+	GetInstancetype(context.Context, *connect.Request[v1.GetInstancetypeRequest]) (*connect.Response[v1.Instancetype], error)
+	ListInstancetypes(context.Context, *connect.Request[v1.ListInstancetypesRequest]) (*connect.Response[v1.ListInstancetypesResponse], error)
+	DeleteInstancetype(context.Context, *connect.Request[v1.DeleteInstancetypeRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewKubeVirtServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -679,28 +679,28 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 		connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteNetwork")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeVirtServiceCreateFlavorHandler := connect.NewUnaryHandler(
-		KubeVirtServiceCreateFlavorProcedure,
-		svc.CreateFlavor,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("CreateFlavor")),
+	kubeVirtServiceCreateInstancetypeHandler := connect.NewUnaryHandler(
+		KubeVirtServiceCreateInstancetypeProcedure,
+		svc.CreateInstancetype,
+		connect.WithSchema(kubeVirtServiceMethods.ByName("CreateInstancetype")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeVirtServiceGetFlavorHandler := connect.NewUnaryHandler(
-		KubeVirtServiceGetFlavorProcedure,
-		svc.GetFlavor,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("GetFlavor")),
+	kubeVirtServiceGetInstancetypeHandler := connect.NewUnaryHandler(
+		KubeVirtServiceGetInstancetypeProcedure,
+		svc.GetInstancetype,
+		connect.WithSchema(kubeVirtServiceMethods.ByName("GetInstancetype")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeVirtServiceListFlavorsHandler := connect.NewUnaryHandler(
-		KubeVirtServiceListFlavorsProcedure,
-		svc.ListFlavors,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("ListFlavors")),
+	kubeVirtServiceListInstancetypesHandler := connect.NewUnaryHandler(
+		KubeVirtServiceListInstancetypesProcedure,
+		svc.ListInstancetypes,
+		connect.WithSchema(kubeVirtServiceMethods.ByName("ListInstancetypes")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeVirtServiceDeleteFlavorHandler := connect.NewUnaryHandler(
-		KubeVirtServiceDeleteFlavorProcedure,
-		svc.DeleteFlavor,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteFlavor")),
+	kubeVirtServiceDeleteInstancetypeHandler := connect.NewUnaryHandler(
+		KubeVirtServiceDeleteInstancetypeProcedure,
+		svc.DeleteInstancetype,
+		connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteInstancetype")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/otterscale.kubevirt.v1.KubeVirtService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -751,14 +751,14 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 			kubeVirtServiceUpdateNetworkHandler.ServeHTTP(w, r)
 		case KubeVirtServiceDeleteNetworkProcedure:
 			kubeVirtServiceDeleteNetworkHandler.ServeHTTP(w, r)
-		case KubeVirtServiceCreateFlavorProcedure:
-			kubeVirtServiceCreateFlavorHandler.ServeHTTP(w, r)
-		case KubeVirtServiceGetFlavorProcedure:
-			kubeVirtServiceGetFlavorHandler.ServeHTTP(w, r)
-		case KubeVirtServiceListFlavorsProcedure:
-			kubeVirtServiceListFlavorsHandler.ServeHTTP(w, r)
-		case KubeVirtServiceDeleteFlavorProcedure:
-			kubeVirtServiceDeleteFlavorHandler.ServeHTTP(w, r)
+		case KubeVirtServiceCreateInstancetypeProcedure:
+			kubeVirtServiceCreateInstancetypeHandler.ServeHTTP(w, r)
+		case KubeVirtServiceGetInstancetypeProcedure:
+			kubeVirtServiceGetInstancetypeHandler.ServeHTTP(w, r)
+		case KubeVirtServiceListInstancetypesProcedure:
+			kubeVirtServiceListInstancetypesHandler.ServeHTTP(w, r)
+		case KubeVirtServiceDeleteInstancetypeProcedure:
+			kubeVirtServiceDeleteInstancetypeHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -860,18 +860,18 @@ func (UnimplementedKubeVirtServiceHandler) DeleteNetwork(context.Context, *conne
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.DeleteNetwork is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) CreateFlavor(context.Context, *connect.Request[v1.CreateFlavorRequest]) (*connect.Response[v1.Flavor], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.CreateFlavor is not implemented"))
+func (UnimplementedKubeVirtServiceHandler) CreateInstancetype(context.Context, *connect.Request[v1.CreateInstancetypeRequest]) (*connect.Response[v1.Instancetype], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.CreateInstancetype is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) GetFlavor(context.Context, *connect.Request[v1.GetFlavorRequest]) (*connect.Response[v1.Flavor], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.GetFlavor is not implemented"))
+func (UnimplementedKubeVirtServiceHandler) GetInstancetype(context.Context, *connect.Request[v1.GetInstancetypeRequest]) (*connect.Response[v1.Instancetype], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.GetInstancetype is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) ListFlavors(context.Context, *connect.Request[v1.ListFlavorsRequest]) (*connect.Response[v1.ListFlavorsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListFlavors is not implemented"))
+func (UnimplementedKubeVirtServiceHandler) ListInstancetypes(context.Context, *connect.Request[v1.ListInstancetypesRequest]) (*connect.Response[v1.ListInstancetypesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListInstancetypes is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) DeleteFlavor(context.Context, *connect.Request[v1.DeleteFlavorRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.DeleteFlavor is not implemented"))
+func (UnimplementedKubeVirtServiceHandler) DeleteInstancetype(context.Context, *connect.Request[v1.DeleteInstancetypeRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.DeleteInstancetype is not implemented"))
 }
