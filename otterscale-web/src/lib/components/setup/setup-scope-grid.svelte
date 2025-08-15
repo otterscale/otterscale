@@ -6,12 +6,19 @@
 		type Facility_Status,
 		type Facility_Unit
 	} from '$lib/api/facility/v1/facility_pb';
+	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
 	import * as Accordion from '$lib/components/ui/accordion';
+	import { Button } from '$lib/components/ui/button';
+	import { Label } from '$lib/components/ui/label';
+	import { Switch } from '$lib/components/ui/switch';
 	import { dynamicPaths } from '$lib/path';
+	import { premiumTier } from '$lib/stores';
+	import { m } from '$lib/paraglide/messages';
 
 	let {
 		services,
-		facilities
+		facilities,
+		autoRefresh = $bindable(true)
 	}: {
 		services: Record<
 			string,
@@ -23,6 +30,7 @@
 			}
 		>;
 		facilities: Facility[];
+		autoRefresh: boolean;
 	} = $props();
 
 	// Helper functions
@@ -32,16 +40,9 @@
 		);
 	}
 
-	function countUnitsByService(serviceName: string): string {
+	function countUnitsByService(serviceName: string): number {
 		const facility = findFacilityByService(serviceName);
-		if (facility) {
-			const activeUnits = facility.units.filter((u) => u.workloadStatus?.state === 'active');
-			if (activeUnits.length != facility.units.length) {
-				return `${activeUnits.length} -> ${facility.units.length}`;
-			}
-			return `${facility.units.length}`;
-		}
-		return '0';
+		return facility?.units.filter((u) => u.workloadStatus?.state === 'active').length ?? 0;
 	}
 
 	function getStatusClass(status: Facility_Status | undefined): string {
@@ -50,6 +51,17 @@
 </script>
 
 <div class="grid w-full grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-6">
+	<div class="col-span-3 flex justify-end space-x-4 rounded-lg sm:space-x-6 lg:col-span-6">
+		<Button variant="ghost" disabled={$premiumTier === PremiumTier.BASIC}>
+			<Icon icon="ph:plus" class="size-4" />
+			{m.add_node()}
+		</Button>
+		<div class="flex items-center space-x-2">
+			<Switch id="auto-refresh" bind:checked={autoRefresh} />
+			<Label for="auto-refresh">{m.auto_refresh()}</Label>
+		</div>
+	</div>
+
 	{#each Object.entries(services) as [key, service]}
 		{@const facility = findFacilityByService(service.name)}
 		{@const count = countUnitsByService(service.name)}
@@ -70,8 +82,18 @@
 						{facility?.status?.details}
 					</p>
 				</div>
-				<div class="mb-8 flex text-3xl sm:mb-2 lg:text-5xl">
-					{count}
+				<div class="mb-8 flex items-center space-x-1 text-3xl sm:mb-2 lg:text-5xl">
+					<span>{count}</span>
+					{#if facility && facility.units.length > count}
+						<div class="mx-2 flex items-center">
+							<div class="flex space-x-2">
+								<div class="size-2 animate-[pulse_2s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_0.5s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_1s_infinite] rounded-full bg-current"></div>
+							</div>
+						</div>
+						<span>{facility.units.length}</span>
+					{/if}
 				</div>
 			</div>
 

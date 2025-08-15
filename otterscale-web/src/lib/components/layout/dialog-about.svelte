@@ -18,15 +18,15 @@
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Content class="bg-muted sm:max-w-2xl">
+	<Dialog.Content class="p-12 sm:max-w-2xl">
 		<div class="pointer-events-none absolute right-0 bottom-0 z-0 size-full">
 			<svg
 				aria-hidden="true"
 				class="pointer-events-none absolute inset-0 h-full w-full fill-gray-400/30 stroke-gray-400/30"
-				style="mask-image:radial-gradient(circle at 100% 100%, black 60%, transparent 100%);-webkit-mask-image:radial-gradient(circle at 100% 100%, black 60%, transparent 100%);opacity:0.5"
+				style="mask-image:radial-gradient(circle at 100% 100%, black 60%, transparent 100%);-webkit-mask-image:radial-gradient(circle at 100% 100%, black 60%, transparent 100%);opacity:0.4"
 			>
 				<defs>
-					<pattern id=":S1:" width="30" height="30" patternUnits="userSpaceOnUse" x="-1" y="-1">
+					<pattern id=":S1:" width="40" height="40" patternUnits="userSpaceOnUse" x="-1" y="-1">
 						<path d="M.5 40V.5H40" fill="none" stroke-dasharray="0"></path>
 					</pattern>
 				</defs>

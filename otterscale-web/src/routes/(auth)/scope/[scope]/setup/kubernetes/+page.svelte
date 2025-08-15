@@ -54,6 +54,10 @@
 	const facilityClient = createClient(FacilityService, transport);
 	const facilitiesStore = writable<Facility[]>([]);
 
+	// State & Timer
+	let autoRefresh = $state(false);
+	let refreshInterval: NodeJS.Timeout | null = null;
+
 	async function fetchFacilities(uuid: string) {
 		try {
 			const response = await facilityClient.listFacilities({ scopeUuid: uuid });
@@ -63,17 +67,36 @@
 		}
 	}
 
-	onMount(async () => {
-		const unsubscribe = activeScope.subscribe(async (scope) => {
-			if (scope) {
-				await fetchFacilities(scope.uuid);
-			}
-		});
+	$effect(() => {
+		const scope = $activeScope;
 
-		onDestroy(() => unsubscribe());
+		// Clear existing interval
+		if (refreshInterval) {
+			clearInterval(refreshInterval);
+			refreshInterval = null;
+		}
+
+		if (scope) {
+			fetchFacilities(scope.uuid);
+
+			// Setup auto-refresh if enabled
+			if (autoRefresh) {
+				refreshInterval = setInterval(() => {
+					fetchFacilities(scope.uuid);
+				}, 3000);
+			}
+		}
+
+		// Cleanup on effect destruction
+		return () => {
+			if (refreshInterval) {
+				clearInterval(refreshInterval);
+				refreshInterval = null;
+			}
+		};
 	});
 </script>
 
 <div class="mx-auto max-w-7xl min-w-7xl">
-	<SetupScopeGrid facilities={$facilitiesStore} services={KUBERNETES_SERVICES} />
+	<SetupScopeGrid facilities={$facilitiesStore} services={KUBERNETES_SERVICES} bind:autoRefresh />
 </div>

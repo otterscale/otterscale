@@ -21,6 +21,9 @@ interface AppStores {
     activeScope: Writable<Scope>;
     currentCeph: Writable<Essential | undefined>;
     currentKubernetes: Writable<Essential | undefined>;
+
+    // Bookmark
+    bookmarks: Writable<Path[]>;
 }
 
 // Create stores
@@ -30,6 +33,7 @@ const createStores = (): AppStores => ({
     activeScope: writable<Scope>(),
     currentCeph: writable<Essential | undefined>(undefined),
     currentKubernetes: writable<Essential | undefined>(undefined),
+    bookmarks: writable<Path[]>([]),
 });
 
 // Export individual stores
@@ -39,4 +43,5 @@ export const {
     activeScope,
     currentCeph,
     currentKubernetes,
+    bookmarks,
 } = createStores();
