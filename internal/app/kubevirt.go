@@ -257,50 +257,39 @@ func (s *KubeVirtService) DeleteNetwork(ctx context.Context, req *connect.Reques
 
 // Instancetype Operations
 func (s *KubeVirtService) CreateInstancetype(ctx context.Context, req *connect.Request[pb.CreateInstancetypeRequest]) (*connect.Response[pb.Instancetype], error) {
-	/*
-		flavor, err := s.uc.CreateInstancetype(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreInstancetype(req.Msg.GetInstancetype()))
-		if err != nil {
-			return nil, err
-		}
-		resp := toProtoInstancetype(flavor)
-	*/
-	resp := &pb.Instancetype{}
+	instancetype, err := s.uc.CreateInstancetype(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreInstancetype(req.Msg.GetInstancetype()))
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoInstancetype(instancetype)
+
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) GetInstancetype(ctx context.Context, req *connect.Request[pb.GetInstancetypeRequest]) (*connect.Response[pb.Instancetype], error) {
-	/*
-		flavor, err := s.uc.GetInstancetype(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
-		if err != nil {
-			return nil, err
-		}
-		resp := toProtoInstancetype(flavor)
-	*/
-	resp := &pb.Instancetype{}
-
+	instancetype, err := s.uc.GetInstancetype(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoInstancetype(instancetype)
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) ListInstancetypes(ctx context.Context, req *connect.Request[pb.ListInstancetypesRequest]) (*connect.Response[pb.ListInstancetypesResponse], error) {
-	/*
-		flavors, err := s.uc.ListInstancetypes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
-		if err != nil {
-			return nil, err
-		}
-		resp := &pb.ListInstancetypesResponse{}
-		resp.Instancetypes = toProtoInstancetypes(flavors)
-	*/
+	instancetype, err := s.uc.ListInstancetypes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
 	resp := &pb.ListInstancetypesResponse{}
+	resp.SetInstancetypes(toProtoInstancetypes(instancetype))
 
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) DeleteInstancetype(ctx context.Context, req *connect.Request[pb.DeleteInstancetypeRequest]) (*connect.Response[emptypb.Empty], error) {
-	/*
-		if err := s.uc.DeleteInstancetype(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
-			return nil, err
-		}
-	*/
+	if err := s.uc.DeleteInstancetype(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName()); err != nil {
+		return nil, err
+	}
 	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }

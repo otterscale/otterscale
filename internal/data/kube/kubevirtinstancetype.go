@@ -8,7 +8,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
-	kubevirtv1 "kubevirt.io/api/instancetype/v1alpha1"
+	kubevirtv1 "kubevirt.io/api/instancetype/v1beta1"
 )
 
 func resourcePtr(bytes int64) *resource.Quantity {
@@ -34,7 +34,27 @@ func (r *virtInstancetype) CreateInstancetype(ctx context.Context, config *rest.
 		return nil, err
 	}
 
+	println(instancetype.Metadata.Name)
+	println(instancetype.CpuCores)
+	println(instancetype.MemoryBytes)
+
 	obj := &kubevirtv1.VirtualMachineClusterInstancetype{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:        "test-instancetype",
+			Labels:      map[string]string{"test": "true"},
+			Annotations: map[string]string{"desc": "hot test"},
+		},
+		Spec: kubevirtv1.VirtualMachineInstancetypeSpec{
+			CPU: kubevirtv1.CPUInstancetype{
+				Guest: uint32(math.Round(float64(instancetype.CpuCores))),
+			},
+			Memory: kubevirtv1.MemoryInstancetype{
+				Guest: *resourcePtr(instancetype.MemoryBytes),
+			},
+		},
+	}
+
+	/*obj := &kubevirtv1.VirtualMachineClusterInstancetype{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        instancetype.Metadata.Name,
 			Labels:      instancetype.Metadata.Labels,
@@ -48,7 +68,7 @@ func (r *virtInstancetype) CreateInstancetype(ctx context.Context, config *rest.
 				Guest: *resourcePtr(instancetype.MemoryBytes),
 			},
 		},
-	}
+	}*/
 
 	created, err := virtClient.VirtualMachineClusterInstancetype().Create(ctx, obj, metav1.CreateOptions{})
 	if err != nil {
@@ -95,8 +115,7 @@ func (r *virtInstancetype) ListInstancetypes(ctx context.Context, config *rest.C
 		return nil, err
 	}
 
-	virtClient.VirtualMachineInstancetype().List()
-	list, err := virtClient.VirtualMachineInstancetype().List(ctx, metav1.ListOptions{})
+	list, err := virtClient.VirtualMachineClusterInstancetype().List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}

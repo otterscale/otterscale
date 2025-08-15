@@ -5790,7 +5790,6 @@ type ListInstancetypesRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,3,opt,name=namespace"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -5842,29 +5841,14 @@ func (x *ListInstancetypesRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *ListInstancetypesRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *ListInstancetypesRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
 func (x *ListInstancetypesRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
-}
-
-func (x *ListInstancetypesRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
 func (x *ListInstancetypesRequest) HasScopeUuid() bool {
@@ -5881,13 +5865,6 @@ func (x *ListInstancetypesRequest) HasFacilityName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListInstancetypesRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
-}
-
 func (x *ListInstancetypesRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
@@ -5898,17 +5875,11 @@ func (x *ListInstancetypesRequest) ClearFacilityName() {
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *ListInstancetypesRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
-	x.xxx_hidden_Namespace = nil
-}
-
 type ListInstancetypesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
 	FacilityName *string
-	Namespace    *string
 }
 
 func (b0 ListInstancetypesRequest_builder) Build() *ListInstancetypesRequest {
@@ -5916,16 +5887,12 @@ func (b0 ListInstancetypesRequest_builder) Build() *ListInstancetypesRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
 		x.xxx_hidden_FacilityName = b.FacilityName
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
-		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
@@ -5994,7 +5961,6 @@ type GetInstancetypeRequest struct {
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -6056,34 +6022,19 @@ func (x *GetInstancetypeRequest) GetName() string {
 	return ""
 }
 
-func (x *GetInstancetypeRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *GetInstancetypeRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *GetInstancetypeRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *GetInstancetypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *GetInstancetypeRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *GetInstancetypeRequest) HasScopeUuid() bool {
@@ -6107,13 +6058,6 @@ func (x *GetInstancetypeRequest) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *GetInstancetypeRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *GetInstancetypeRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
@@ -6129,18 +6073,12 @@ func (x *GetInstancetypeRequest) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *GetInstancetypeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Namespace = nil
-}
-
 type GetInstancetypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
 	FacilityName *string
 	Name         *string
-	Namespace    *string
 }
 
 func (b0 GetInstancetypeRequest_builder) Build() *GetInstancetypeRequest {
@@ -6148,20 +6086,16 @@ func (b0 GetInstancetypeRequest_builder) Build() *GetInstancetypeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
@@ -6171,7 +6105,6 @@ type DeleteInstancetypeRequest struct {
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_Name         *string                `protobuf:"bytes,3,opt,name=name"`
-	xxx_hidden_Namespace    *string                `protobuf:"bytes,4,opt,name=namespace"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -6233,34 +6166,19 @@ func (x *DeleteInstancetypeRequest) GetName() string {
 	return ""
 }
 
-func (x *DeleteInstancetypeRequest) GetNamespace() string {
-	if x != nil {
-		if x.xxx_hidden_Namespace != nil {
-			return *x.xxx_hidden_Namespace
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *DeleteInstancetypeRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
 func (x *DeleteInstancetypeRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
 func (x *DeleteInstancetypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
-}
-
-func (x *DeleteInstancetypeRequest) SetNamespace(v string) {
-	x.xxx_hidden_Namespace = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
 func (x *DeleteInstancetypeRequest) HasScopeUuid() bool {
@@ -6284,13 +6202,6 @@ func (x *DeleteInstancetypeRequest) HasName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *DeleteInstancetypeRequest) HasNamespace() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
-}
-
 func (x *DeleteInstancetypeRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
@@ -6306,18 +6217,12 @@ func (x *DeleteInstancetypeRequest) ClearName() {
 	x.xxx_hidden_Name = nil
 }
 
-func (x *DeleteInstancetypeRequest) ClearNamespace() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
-	x.xxx_hidden_Namespace = nil
-}
-
 type DeleteInstancetypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
 	FacilityName *string
 	Name         *string
-	Namespace    *string
 }
 
 func (b0 DeleteInstancetypeRequest_builder) Build() *DeleteInstancetypeRequest {
@@ -6325,20 +6230,16 @@ func (b0 DeleteInstancetypeRequest_builder) Build() *DeleteInstancetypeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.Name != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 3)
 		x.xxx_hidden_Name = b.Name
-	}
-	if b.Namespace != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
-		x.xxx_hidden_Namespace = b.Namespace
 	}
 	return m0
 }
@@ -6927,26 +6828,23 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12H\n" +
-	"\finstancetype\x18\x03 \x01(\v2$.otterscale.kubevirt.v1.InstancetypeR\finstancetype\"|\n" +
+	"\finstancetype\x18\x03 \x01(\v2$.otterscale.kubevirt.v1.InstancetypeR\finstancetype\"^\n" +
 	"\x18ListInstancetypesRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
-	"\tnamespace\x18\x03 \x01(\tR\tnamespace\"g\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"g\n" +
 	"\x19ListInstancetypesResponse\x12J\n" +
-	"\rinstancetypes\x18\x01 \x03(\v2$.otterscale.kubevirt.v1.InstancetypeR\rinstancetypes\"\x8e\x01\n" +
+	"\rinstancetypes\x18\x01 \x03(\v2$.otterscale.kubevirt.v1.InstancetypeR\rinstancetypes\"p\n" +
 	"\x16GetInstancetypeRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\x91\x01\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\"s\n" +
 	"\x19DeleteInstancetypeRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
-	"\tnamespace\x18\x04 \x01(\tR\tnamespace2\x98\x16\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name2\x98\x16\n" +
 	"\x0fKubeVirtService\x12s\n" +
 	"\x14CreateVirtualMachine\x123.otterscale.kubevirt.v1.CreateVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12m\n" +
 	"\x11GetVirtualMachine\x120.otterscale.kubevirt.v1.GetVirtualMachineRequest\x1a&.otterscale.kubevirt.v1.VirtualMachine\x12~\n" +

@@ -323,7 +323,6 @@ message CreateInstancetypeRequest {
 message ListInstancetypesRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  string namespace = 3;
 }
 
 message ListInstancetypesResponse {
@@ -334,12 +333,10 @@ message GetInstancetypeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;
-  string namespace = 4;
 }
 
 message DeleteInstancetypeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;
-  string namespace = 4;
 }
