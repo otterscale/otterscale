@@ -49,6 +49,7 @@ const columns: ColumnDef<Machine>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.powerState, row);
         },
+        filterFn: 'arrIncludesSome'
     },
     {
         accessorKey: "status",
@@ -58,6 +59,7 @@ const columns: ColumnDef<Machine>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.status, row);
         },
+        filterFn: 'arrIncludesSome'
     },
     {
         accessorKey: "cores_arch",
@@ -135,6 +137,14 @@ const columns: ColumnDef<Machine>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.tags, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.tags.length,
+                nextRow.original.tags.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "actions",

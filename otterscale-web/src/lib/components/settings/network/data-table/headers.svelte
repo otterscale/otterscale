@@ -69,8 +69,11 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet ipRanges()}
+{#snippet ipRanges(column: Column<Network>)}
 	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 		<Layout.HeaderViewer>IP RANGE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

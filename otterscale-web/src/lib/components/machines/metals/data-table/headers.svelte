@@ -94,8 +94,11 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet tags()}
+{#snippet tags(column: Column<Machine>)}
 	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 		<Layout.HeaderViewer>TAGS</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

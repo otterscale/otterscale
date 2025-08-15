@@ -34,6 +34,7 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.type, row);
         },
+        filterFn: 'arrIncludesSome'
     },
     {
         accessorKey: "namespace",
@@ -43,6 +44,7 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.namespace, row);
         },
+        filterFn: 'arrIncludesSome'
     },
     {
         accessorKey: "health",

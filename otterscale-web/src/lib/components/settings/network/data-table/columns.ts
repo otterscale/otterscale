@@ -92,6 +92,14 @@ const columns: ColumnDef<Network>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.ipRanges, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.subnet?.ipRanges?.length,
+                nextRow.original.subnet?.ipRanges?.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "statistics",
