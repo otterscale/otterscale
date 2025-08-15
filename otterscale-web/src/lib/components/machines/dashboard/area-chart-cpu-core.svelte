@@ -6,6 +6,7 @@
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { fetchFlattenedRange } from '$lib/components/custom/prometheus';
+	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
@@ -15,8 +16,8 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = 'CPU';
-	const CHART_DESCRIPTION = 'Core/Processor';
+	const CHART_TITLE = m.cpu();
+	const CHART_DESCRIPTION = `${m.core()}/${m.processor()}`;
 
 	// Time range calculation
 	const endTime = new Date();

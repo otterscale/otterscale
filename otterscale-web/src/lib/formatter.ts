@@ -1,4 +1,5 @@
 import { getLocale } from "./paraglide/runtime";
+import { m } from '$lib/paraglide/messages';
 
 const TIME_DIVISIONS = [
     { amount: 60, name: 'seconds' },
@@ -28,25 +29,25 @@ export function formatTimeAgo(date: Date): string {
 }
 
 export function formatDuration(duration: number): { value: number, unit: string } {
-    if (duration === 0) return { value: 0, unit: "Second" };
+    if (duration === 0) return { value: 0, unit: m.second() };
 
     const years = (duration / (365 * 24 * 3600));
-    if (years >= 1) return { value: years, unit: "Year" };
+    if (years >= 1) return { value: years, unit: m.year() };
 
     const weeks = ((duration % (365 * 24 * 3600)) / (7 * 24 * 3600));
-    if (weeks >= 1) return { value: weeks, unit: "Week" };
+    if (weeks >= 1) return { value: weeks, unit: m.week() };
 
     const days = ((duration % (7 * 24 * 3600)) / (24 * 3600));
-    if (days >= 1) return { value: days, unit: "Day" };
+    if (days >= 1) return { value: days, unit: m.day() };
 
     const hours = ((duration % (24 * 3600)) / 3600);
-    if (hours >= 1) return { value: hours, unit: "Hour" };
+    if (hours >= 1) return { value: hours, unit: m.hour() };
 
     const minutes = ((duration % 3600) / 60);
-    if (minutes >= 1) return { value: minutes, unit: "Minute" };
+    if (minutes >= 1) return { value: minutes, unit: m.minute() };
 
     const seconds = (duration % 60);
-    return { value: seconds, unit: "Second" };
+    return { value: seconds, unit: m.second() };
 }
 
 export function formatCapacity(capacity: number | bigint): { value: number, unit: string } {

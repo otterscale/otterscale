@@ -6,12 +6,13 @@
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { PrometheusDriver } from 'prometheus-query';
+	import { m } from '$lib/paraglide/messages';
 	import { formatCapacity } from '$lib/formatter';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 
 	// Constants
-	const CHART_TITLE = 'Swap';
+	const CHART_TITLE = m.swap();
 
 	// Queries
 	const queries = $derived({

@@ -7,6 +7,7 @@
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
 	import { formatIO } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
@@ -16,8 +17,8 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = 'DISK I/O';
-	const CHART_DESCRIPTION = 'Read/Write';
+	const CHART_TITLE = m.disk();
+	const CHART_DESCRIPTION = `${m.read()}/${m.write()}`;
 
 	// Time range calculation
 	const endTime = new Date();
