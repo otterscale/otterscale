@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Dashboard } from '$lib/components/machines/dashboard';
@@ -24,7 +25,7 @@
 		try {
 			const response = await environmentService.getPrometheus({});
 			return new PrometheusDriver({
-				endpoint: response.endpoint,
+				endpoint: `${env.PUBLIC_API_URL}/prometheus`,
 				baseURL: response.baseUrl
 			});
 		} catch (error) {

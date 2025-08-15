@@ -2,6 +2,7 @@ package mux
 
 import (
 	"net/http"
+	"net/http/httputil"
 
 	"connectrpc.com/grpchealth"
 	"connectrpc.com/grpcreflect"
@@ -50,6 +51,15 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 	mux.Handle(storagev1.NewStorageServiceHandler(storage))
 	mux.Handle(scopev1.NewScopeServiceHandler(scope))
 	mux.Handle(tagv1.NewTagServiceHandler(tag))
+
+	// prometheus proxy
+	proxy := httputil.NewSingleHostReverseProxy(environment.GetPrometheusURL())
+	proxy.ModifyResponse = func(resp *http.Response) error {
+		resp.Header.Del("Access-Control-Allow-Origin")
+		return nil
+	}
+
+	mux.Handle("/prometheus/", http.StripPrefix("/prometheus", proxy))
 
 	if helper {
 		// health
