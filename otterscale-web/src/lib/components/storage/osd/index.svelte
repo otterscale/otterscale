@@ -3,7 +3,7 @@
 	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
 	import * as Reloader from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
 </script>
@@ -28,6 +28,7 @@
 				objectStorageDaemons.set(response.osds);
 			});
 	});
+	setContext(reloadManager, 'ReloadManager');
 
 	let isMounted = $state(false);
 	onMount(() => {

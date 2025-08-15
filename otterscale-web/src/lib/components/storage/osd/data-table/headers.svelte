@@ -1,23 +1,24 @@
 <script lang="ts" module>
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
-	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
+	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
+	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker: _row_picker,
-		id: id,
-		name: name,
-		state: state,
-		stateUp: stateUp,
-		stateIn: stateIn,
-		exists: exists,
-		deviceClass: deviceClass,
-		machine: machine,
-		placementGroupCount: placementGroupCount,
-		usage: usage,
-		iops: iops
+		_row_picker,
+		id,
+		name,
+		state,
+		stateUp,
+		stateIn,
+		exists,
+		deviceClass,
+		machine,
+		placementGroupCount,
+		usage,
+		// iops,
+		actions
 	};
 </script>
 
@@ -30,7 +31,7 @@
 {/snippet}
 
 {#snippet id(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>ID</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -39,7 +40,7 @@
 {/snippet}
 
 {#snippet name(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -66,13 +67,16 @@
 {/snippet}
 
 {#snippet exists(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>EXISTS</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
 {#snippet deviceClass(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>DEVICE</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -81,13 +85,16 @@
 {/snippet}
 
 {#snippet machine(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>MACHINE</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
 {#snippet placementGroupCount(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -97,12 +104,17 @@
 
 {#snippet usage(column: Column<OSD>)}
 	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet iops()}
+<!-- {#snippet iops()}
 	<Layout.Header>
 		<Layout.HeaderViewer>IOPS</Layout.HeaderViewer>
 	</Layout.Header>
-{/snippet}
+{/snippet} -->
+
+{#snippet actions(column: Column<OSD>)}{/snippet}

@@ -1,11 +1,6 @@
 <script lang="ts" module>
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-filters/column.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
+	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -22,11 +17,7 @@
 	import type { PrometheusDriver } from 'prometheus-query';
 	import { getContext } from 'svelte';
 	import { type Writable } from 'svelte/store';
-	import Actions from './actions.svelte';
 	import { columns } from './columns';
-	import { headers } from './headers.svelte';
-	// import IOPS from './iops.svelte';
-	// import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -110,7 +101,8 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetAll: false
+
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -151,7 +143,7 @@
 				{table}
 				values={$objectStorageDaemons.map((row) => row.deviceClass)}
 			/>
-			<ColumnViewer {table} />
+			<Filters.Column {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -171,10 +163,6 @@
 								</Table.Head>
 							{/if}
 						{/each}
-						<Table.Head>
-							{@render headers.iops()}
-						</Table.Head>
-						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -188,29 +176,15 @@
 								</Table.Cell>
 							{/if}
 						{/each}
-						<Table.Cell>
-							<!-- <IOPS
-								client={$prometheusDriver}
-								{selectedScopeUuid}
-								selectedObjectStorageDaemon={row.original.name}
-							/> -->
-						</Table.Cell>
-						<Table.Cell>
-							<Actions osd={row.original} />
-						</Table.Cell>
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<TableEmpty />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<TableFooter {table} />
-		<TablePagination {table} />
+		<Footer {table} />
+		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

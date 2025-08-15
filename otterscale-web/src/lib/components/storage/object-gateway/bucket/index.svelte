@@ -3,7 +3,7 @@
 	import * as Loading from '$lib/components/custom/loading';
 	import * as Reloader from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
 </script>
@@ -30,6 +30,7 @@
 				buckets.set(response.buckets);
 			});
 	});
+	setContext(reloadManager, 'ReloadManager');
 
 	let isMounted = $state(false);
 	onMount(() => {

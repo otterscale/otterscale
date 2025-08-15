@@ -2,13 +2,14 @@
 	import type { DoSMARTResponse_Output, OSD } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import * as Form from '$lib/components/custom/form';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
+	import * as Code from '$lib/components/custom/code';
+	import * as Form from '$lib/components/custom/form';
 	import * as Loading from '$lib/components/custom/loading';
+	import { currentCeph } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
-	import * as Code from '$lib/components/custom/code';
 	import { writable } from 'svelte/store';
 </script>
 
@@ -25,8 +26,8 @@
 	async function fetchSMARTs() {
 		try {
 			const response = await storageClient.doSMART({
-				scopeUuid: 'b62d195e-3905-4960-85ee-7673f71eb21e',
-				facilityName: 'ceph-mon',
+				scopeUuid: $currentCeph?.scopeUuid,
+				facilityName: $currentCeph?.name,
 				osdName: osd.name
 			});
 			smarts.set(response.deviceOutputMap);

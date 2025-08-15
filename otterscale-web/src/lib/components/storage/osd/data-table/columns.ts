@@ -3,6 +3,7 @@ import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { getSortingFunction } from "$lib/components/custom/data-table";
 
 const columns: ColumnDef<OSD>[] = [
     {
@@ -102,6 +103,23 @@ const columns: ColumnDef<OSD>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.usage, row);
+        },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.usedBytes / previousRow.original.sizeBytes,
+                nextRow.original.usedBytes / nextRow.original.sizeBytes,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
         },
     },
 ];
