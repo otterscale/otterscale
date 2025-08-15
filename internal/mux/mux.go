@@ -54,6 +54,11 @@ func New(helper bool, app *app.ApplicationService, bist *app.BISTService, config
 
 	// prometheus proxy
 	proxy := httputil.NewSingleHostReverseProxy(environment.GetPrometheusURL())
+	proxy.ModifyResponse = func(resp *http.Response) error {
+		resp.Header.Del("Access-Control-Allow-Origin")
+		return nil
+	}
+
 	mux.Handle("/prometheus/", http.StripPrefix("/prometheus", proxy))
 
 	if helper {
