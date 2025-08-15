@@ -6,8 +6,12 @@
 		type Facility_Status,
 		type Facility_Unit
 	} from '$lib/api/facility/v1/facility_pb';
+	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
+	import { Button } from '$lib/components/ui/button';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { dynamicPaths } from '$lib/path';
+	import { premiumTier } from '$lib/stores';
+	import { m } from '$lib/paraglide/messages';
 
 	let {
 		services,
@@ -43,6 +47,13 @@
 </script>
 
 <div class="grid w-full grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-6">
+	<div class="col-span-3 flex justify-end space-x-4 rounded-lg sm:space-x-6 lg:col-span-6">
+		<Button variant="default" disabled={$premiumTier === PremiumTier.BASIC}>
+			<Icon icon="ph:plus" class="size-4" />
+			{m.add_node()}
+		</Button>
+	</div>
+
 	{#each Object.entries(services) as [key, service]}
 		{@const facility = findFacilityByService(service.name)}
 		{@const count = countUnitsByService(service.name)}
