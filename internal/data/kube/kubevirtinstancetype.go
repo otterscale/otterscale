@@ -16,78 +16,58 @@ func resourcePtr(bytes int64) *resource.Quantity {
 	return q
 }
 
-type virtInstancetype struct {
+type virtInstanceType struct {
 	kubevirt *kubevirt
 }
 
-func NewVirtInstancetype(kube *Kube, kubevirt *kubevirt) oscore.KubeVirtInstancetypeRepo {
-	return &virtInstancetype{
+func NewVirtInstanceType(kube *Kube, kubevirt *kubevirt) oscore.KubeVirtInstanceTypeRepo {
+	return &virtInstanceType{
 		kubevirt: kubevirt,
 	}
 }
 
-var _ oscore.KubeVirtInstancetypeRepo = (*virtInstancetype)(nil)
+var _ oscore.KubeVirtInstanceTypeRepo = (*virtInstanceType)(nil)
 
-func (r *virtInstancetype) CreateInstancetype(ctx context.Context, config *rest.Config, instancetype oscore.Instancetype) (*oscore.Instancetype, error) {
+func (r *virtInstanceType) CreateInstanceType(ctx context.Context, config *rest.Config, InstanceType oscore.InstanceType) (*oscore.InstanceType, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
 	}
 
-	println(instancetype.Metadata.Name)
-	println(instancetype.CpuCores)
-	println(instancetype.MemoryBytes)
-
 	obj := &kubevirtv1.VirtualMachineClusterInstancetype{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        "test-instancetype",
-			Labels:      map[string]string{"test": "true"},
-			Annotations: map[string]string{"desc": "hot test"},
+			Name:        InstanceType.Metadata.Name,
+			Labels:      InstanceType.Metadata.Labels,
+			Annotations: InstanceType.Metadata.Annotations,
 		},
 		Spec: kubevirtv1.VirtualMachineInstancetypeSpec{
 			CPU: kubevirtv1.CPUInstancetype{
-				Guest: uint32(math.Round(float64(instancetype.CpuCores))),
+				Guest: uint32(math.Round(float64(InstanceType.CpuCores))),
 			},
 			Memory: kubevirtv1.MemoryInstancetype{
-				Guest: *resourcePtr(instancetype.MemoryBytes),
+				Guest: *resourcePtr(InstanceType.MemoryBytes),
 			},
 		},
 	}
 
-	/*obj := &kubevirtv1.VirtualMachineClusterInstancetype{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:        instancetype.Metadata.Name,
-			Labels:      instancetype.Metadata.Labels,
-			Annotations: instancetype.Metadata.Annotations,
-		},
-		Spec: kubevirtv1.VirtualMachineInstancetypeSpec{
-			CPU: kubevirtv1.CPUInstancetype{
-				Guest: uint32(math.Round(float64(instancetype.CpuCores))),
-			},
-			Memory: kubevirtv1.MemoryInstancetype{
-				Guest: *resourcePtr(instancetype.MemoryBytes),
-			},
-		},
-	}*/
-
-	created, err := virtClient.VirtualMachineClusterInstancetype().Create(ctx, obj, metav1.CreateOptions{})
+	opts := metav1.CreateOptions{}
+	created, err := virtClient.VirtualMachineClusterInstancetype().Create(ctx, obj, opts)
 	if err != nil {
 		return nil, err
 	}
 
-	return &oscore.Instancetype{
+	return &oscore.InstanceType{
 		Metadata: oscore.Metadata{
 			Name:        created.Name,
 			Labels:      created.Labels,
 			Annotations: created.Annotations,
-			// CreatedAt/UpdatedAt 可視需要補充
 		},
 		CpuCores:    float32(created.Spec.CPU.Guest),
 		MemoryBytes: created.Spec.Memory.Guest.Value(),
 	}, nil
 }
 
-func (r *virtInstancetype) GetInstancetype(ctx context.Context, config *rest.Config, name string) (*oscore.Instancetype, error) {
+func (r *virtInstanceType) GetInstanceType(ctx context.Context, config *rest.Config, name string) (*oscore.InstanceType, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
@@ -98,7 +78,7 @@ func (r *virtInstancetype) GetInstancetype(ctx context.Context, config *rest.Con
 		return nil, err
 	}
 
-	return &oscore.Instancetype{
+	return &oscore.InstanceType{
 		Metadata: oscore.Metadata{
 			Name:        obj.Name,
 			Labels:      obj.Labels,
@@ -109,7 +89,7 @@ func (r *virtInstancetype) GetInstancetype(ctx context.Context, config *rest.Con
 	}, nil
 }
 
-func (r *virtInstancetype) ListInstancetypes(ctx context.Context, config *rest.Config) ([]oscore.Instancetype, error) {
+func (r *virtInstanceType) ListInstanceTypes(ctx context.Context, config *rest.Config) ([]oscore.InstanceType, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
@@ -120,9 +100,9 @@ func (r *virtInstancetype) ListInstancetypes(ctx context.Context, config *rest.C
 		return nil, err
 	}
 
-	var result []oscore.Instancetype
+	var result []oscore.InstanceType
 	for _, obj := range list.Items {
-		result = append(result, oscore.Instancetype{
+		result = append(result, oscore.InstanceType{
 			Metadata: oscore.Metadata{
 				Name:        obj.Name,
 				Labels:      obj.Labels,
@@ -135,7 +115,7 @@ func (r *virtInstancetype) ListInstancetypes(ctx context.Context, config *rest.C
 	return result, nil
 }
 
-func (r *virtInstancetype) DeleteInstancetype(ctx context.Context, config *rest.Config, name string) error {
+func (r *virtInstanceType) DeleteInstanceType(ctx context.Context, config *rest.Config, name string) error {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return err

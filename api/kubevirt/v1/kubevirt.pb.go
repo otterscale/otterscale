@@ -512,7 +512,7 @@ func (b0 VirtualMachine_builder) Build() *VirtualMachine {
 
 type VirtualMachineSpec struct {
 	state                       protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_InstancetypeName *string                `protobuf:"bytes,1,opt,name=instancetype_name,json=instancetypeName"`
+	xxx_hidden_InstanceTypeName *string                `protobuf:"bytes,1,opt,name=InstanceType_name,json=InstanceTypeName"`
 	xxx_hidden_NetworkName      *string                `protobuf:"bytes,2,opt,name=network_name,json=networkName"`
 	xxx_hidden_StartupScript    *string                `protobuf:"bytes,3,opt,name=startup_script,json=startupScript"`
 	xxx_hidden_DataVolumes      []string               `protobuf:"bytes,11,rep,name=data_volumes,json=dataVolumes"`
@@ -548,10 +548,10 @@ func (x *VirtualMachineSpec) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *VirtualMachineSpec) GetInstancetypeName() string {
+func (x *VirtualMachineSpec) GetInstanceTypeName() string {
 	if x != nil {
-		if x.xxx_hidden_InstancetypeName != nil {
-			return *x.xxx_hidden_InstancetypeName
+		if x.xxx_hidden_InstanceTypeName != nil {
+			return *x.xxx_hidden_InstanceTypeName
 		}
 		return ""
 	}
@@ -594,8 +594,8 @@ func (x *VirtualMachineSpec) GetDevices() []*Device {
 	return nil
 }
 
-func (x *VirtualMachineSpec) SetInstancetypeName(v string) {
-	x.xxx_hidden_InstancetypeName = &v
+func (x *VirtualMachineSpec) SetInstanceTypeName(v string) {
+	x.xxx_hidden_InstanceTypeName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
 }
 
@@ -617,7 +617,7 @@ func (x *VirtualMachineSpec) SetDevices(v []*Device) {
 	x.xxx_hidden_Devices = &v
 }
 
-func (x *VirtualMachineSpec) HasInstancetypeName() bool {
+func (x *VirtualMachineSpec) HasInstanceTypeName() bool {
 	if x == nil {
 		return false
 	}
@@ -638,9 +638,9 @@ func (x *VirtualMachineSpec) HasStartupScript() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *VirtualMachineSpec) ClearInstancetypeName() {
+func (x *VirtualMachineSpec) ClearInstanceTypeName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_InstancetypeName = nil
+	x.xxx_hidden_InstanceTypeName = nil
 }
 
 func (x *VirtualMachineSpec) ClearNetworkName() {
@@ -656,7 +656,7 @@ func (x *VirtualMachineSpec) ClearStartupScript() {
 type VirtualMachineSpec_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	InstancetypeName *string
+	InstanceTypeName *string
 	NetworkName      *string
 	StartupScript    *string
 	DataVolumes      []string
@@ -668,9 +668,9 @@ func (b0 VirtualMachineSpec_builder) Build() *VirtualMachineSpec {
 	m0 := &VirtualMachineSpec{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.InstancetypeName != nil {
+	if b.InstanceTypeName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
-		x.xxx_hidden_InstancetypeName = b.InstancetypeName
+		x.xxx_hidden_InstanceTypeName = b.InstanceTypeName
 	}
 	if b.NetworkName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
@@ -686,7 +686,7 @@ func (b0 VirtualMachineSpec_builder) Build() *VirtualMachineSpec {
 }
 
 // Resource definitions
-type Instancetype struct {
+type InstanceType struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Metadata    *Metadata              `protobuf:"bytes,1,opt,name=metadata"`
 	xxx_hidden_CpuCores    float32                `protobuf:"fixed32,2,opt,name=cpu_cores,json=cpuCores"`
@@ -697,20 +697,20 @@ type Instancetype struct {
 	sizeCache              protoimpl.SizeCache
 }
 
-func (x *Instancetype) Reset() {
-	*x = Instancetype{}
+func (x *InstanceType) Reset() {
+	*x = InstanceType{}
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Instancetype) String() string {
+func (x *InstanceType) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Instancetype) ProtoMessage() {}
+func (*InstanceType) ProtoMessage() {}
 
-func (x *Instancetype) ProtoReflect() protoreflect.Message {
+func (x *InstanceType) ProtoReflect() protoreflect.Message {
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -722,77 +722,77 @@ func (x *Instancetype) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Instancetype) GetMetadata() *Metadata {
+func (x *InstanceType) GetMetadata() *Metadata {
 	if x != nil {
 		return x.xxx_hidden_Metadata
 	}
 	return nil
 }
 
-func (x *Instancetype) GetCpuCores() float32 {
+func (x *InstanceType) GetCpuCores() float32 {
 	if x != nil {
 		return x.xxx_hidden_CpuCores
 	}
 	return 0
 }
 
-func (x *Instancetype) GetMemoryBytes() int64 {
+func (x *InstanceType) GetMemoryBytes() int64 {
 	if x != nil {
 		return x.xxx_hidden_MemoryBytes
 	}
 	return 0
 }
 
-func (x *Instancetype) SetMetadata(v *Metadata) {
+func (x *InstanceType) SetMetadata(v *Metadata) {
 	x.xxx_hidden_Metadata = v
 }
 
-func (x *Instancetype) SetCpuCores(v float32) {
+func (x *InstanceType) SetCpuCores(v float32) {
 	x.xxx_hidden_CpuCores = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *Instancetype) SetMemoryBytes(v int64) {
+func (x *InstanceType) SetMemoryBytes(v int64) {
 	x.xxx_hidden_MemoryBytes = v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *Instancetype) HasMetadata() bool {
+func (x *InstanceType) HasMetadata() bool {
 	if x == nil {
 		return false
 	}
 	return x.xxx_hidden_Metadata != nil
 }
 
-func (x *Instancetype) HasCpuCores() bool {
+func (x *InstanceType) HasCpuCores() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *Instancetype) HasMemoryBytes() bool {
+func (x *InstanceType) HasMemoryBytes() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *Instancetype) ClearMetadata() {
+func (x *InstanceType) ClearMetadata() {
 	x.xxx_hidden_Metadata = nil
 }
 
-func (x *Instancetype) ClearCpuCores() {
+func (x *InstanceType) ClearCpuCores() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_CpuCores = 0
 }
 
-func (x *Instancetype) ClearMemoryBytes() {
+func (x *InstanceType) ClearMemoryBytes() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_MemoryBytes = 0
 }
 
-type Instancetype_builder struct {
+type InstanceType_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	Metadata    *Metadata
@@ -800,8 +800,8 @@ type Instancetype_builder struct {
 	MemoryBytes *int64
 }
 
-func (b0 Instancetype_builder) Build() *Instancetype {
-	m0 := &Instancetype{}
+func (b0 InstanceType_builder) Build() *InstanceType {
+	m0 := &InstanceType{}
 	b, x := &b0, m0
 	_, _ = b, x
 	x.xxx_hidden_Metadata = b.Metadata
@@ -1834,7 +1834,7 @@ type UpdateVirtualMachineRequest struct {
 	xxx_hidden_FacilityName     *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_Name             *string                `protobuf:"bytes,3,opt,name=name"`
 	xxx_hidden_Namespace        *string                `protobuf:"bytes,4,opt,name=namespace"`
-	xxx_hidden_InstancetypeName *string                `protobuf:"bytes,5,opt,name=instancetype_name,json=instancetypeName"`
+	xxx_hidden_InstanceTypeName *string                `protobuf:"bytes,5,opt,name=InstanceType_name,json=InstanceTypeName"`
 	xxx_hidden_NetworkName      *string                `protobuf:"bytes,6,opt,name=network_name,json=networkName"`
 	xxx_hidden_StartupScript    *string                `protobuf:"bytes,7,opt,name=startup_script,json=startupScript"`
 	xxx_hidden_Labels           map[string]string      `protobuf:"bytes,11,rep,name=labels" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
@@ -1912,10 +1912,10 @@ func (x *UpdateVirtualMachineRequest) GetNamespace() string {
 	return ""
 }
 
-func (x *UpdateVirtualMachineRequest) GetInstancetypeName() string {
+func (x *UpdateVirtualMachineRequest) GetInstanceTypeName() string {
 	if x != nil {
-		if x.xxx_hidden_InstancetypeName != nil {
-			return *x.xxx_hidden_InstancetypeName
+		if x.xxx_hidden_InstanceTypeName != nil {
+			return *x.xxx_hidden_InstanceTypeName
 		}
 		return ""
 	}
@@ -1992,8 +1992,8 @@ func (x *UpdateVirtualMachineRequest) SetNamespace(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 11)
 }
 
-func (x *UpdateVirtualMachineRequest) SetInstancetypeName(v string) {
-	x.xxx_hidden_InstancetypeName = &v
+func (x *UpdateVirtualMachineRequest) SetInstanceTypeName(v string) {
+	x.xxx_hidden_InstanceTypeName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 11)
 }
 
@@ -2051,7 +2051,7 @@ func (x *UpdateVirtualMachineRequest) HasNamespace() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *UpdateVirtualMachineRequest) HasInstancetypeName() bool {
+func (x *UpdateVirtualMachineRequest) HasInstanceTypeName() bool {
 	if x == nil {
 		return false
 	}
@@ -2092,9 +2092,9 @@ func (x *UpdateVirtualMachineRequest) ClearNamespace() {
 	x.xxx_hidden_Namespace = nil
 }
 
-func (x *UpdateVirtualMachineRequest) ClearInstancetypeName() {
+func (x *UpdateVirtualMachineRequest) ClearInstanceTypeName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_InstancetypeName = nil
+	x.xxx_hidden_InstanceTypeName = nil
 }
 
 func (x *UpdateVirtualMachineRequest) ClearNetworkName() {
@@ -2114,7 +2114,7 @@ type UpdateVirtualMachineRequest_builder struct {
 	FacilityName     *string
 	Name             *string
 	Namespace        *string
-	InstancetypeName *string
+	InstanceTypeName *string
 	NetworkName      *string
 	StartupScript    *string
 	Labels           map[string]string
@@ -2143,9 +2143,9 @@ func (b0 UpdateVirtualMachineRequest_builder) Build() *UpdateVirtualMachineReque
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 11)
 		x.xxx_hidden_Namespace = b.Namespace
 	}
-	if b.InstancetypeName != nil {
+	if b.InstanceTypeName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 11)
-		x.xxx_hidden_InstancetypeName = b.InstancetypeName
+		x.xxx_hidden_InstanceTypeName = b.InstanceTypeName
 	}
 	if b.NetworkName != nil {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 11)
@@ -5650,31 +5650,31 @@ func (b0 DeleteNetworkRequest_builder) Build() *DeleteNetworkRequest {
 	return m0
 }
 
-type CreateInstancetypeRequest struct {
+type CreateInstanceTypeRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_Instancetype *Instancetype          `protobuf:"bytes,3,opt,name=instancetype"`
+	xxx_hidden_InstanceType *InstanceType          `protobuf:"bytes,3,opt,name=InstanceType"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *CreateInstancetypeRequest) Reset() {
-	*x = CreateInstancetypeRequest{}
+func (x *CreateInstanceTypeRequest) Reset() {
+	*x = CreateInstanceTypeRequest{}
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateInstancetypeRequest) String() string {
+func (x *CreateInstanceTypeRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateInstancetypeRequest) ProtoMessage() {}
+func (*CreateInstanceTypeRequest) ProtoMessage() {}
 
-func (x *CreateInstancetypeRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateInstanceTypeRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5686,7 +5686,7 @@ func (x *CreateInstancetypeRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *CreateInstancetypeRequest) GetScopeUuid() string {
+func (x *CreateInstanceTypeRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -5696,7 +5696,7 @@ func (x *CreateInstancetypeRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *CreateInstancetypeRequest) GetFacilityName() string {
+func (x *CreateInstanceTypeRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -5706,72 +5706,72 @@ func (x *CreateInstancetypeRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *CreateInstancetypeRequest) GetInstancetype() *Instancetype {
+func (x *CreateInstanceTypeRequest) GetInstanceType() *InstanceType {
 	if x != nil {
-		return x.xxx_hidden_Instancetype
+		return x.xxx_hidden_InstanceType
 	}
 	return nil
 }
 
-func (x *CreateInstancetypeRequest) SetScopeUuid(v string) {
+func (x *CreateInstanceTypeRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *CreateInstancetypeRequest) SetFacilityName(v string) {
+func (x *CreateInstanceTypeRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *CreateInstancetypeRequest) SetInstancetype(v *Instancetype) {
-	x.xxx_hidden_Instancetype = v
+func (x *CreateInstanceTypeRequest) SetInstanceType(v *InstanceType) {
+	x.xxx_hidden_InstanceType = v
 }
 
-func (x *CreateInstancetypeRequest) HasScopeUuid() bool {
+func (x *CreateInstanceTypeRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *CreateInstancetypeRequest) HasFacilityName() bool {
+func (x *CreateInstanceTypeRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *CreateInstancetypeRequest) HasInstancetype() bool {
+func (x *CreateInstanceTypeRequest) HasInstanceType() bool {
 	if x == nil {
 		return false
 	}
-	return x.xxx_hidden_Instancetype != nil
+	return x.xxx_hidden_InstanceType != nil
 }
 
-func (x *CreateInstancetypeRequest) ClearScopeUuid() {
+func (x *CreateInstanceTypeRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *CreateInstancetypeRequest) ClearFacilityName() {
+func (x *CreateInstanceTypeRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *CreateInstancetypeRequest) ClearInstancetype() {
-	x.xxx_hidden_Instancetype = nil
+func (x *CreateInstanceTypeRequest) ClearInstanceType() {
+	x.xxx_hidden_InstanceType = nil
 }
 
-type CreateInstancetypeRequest_builder struct {
+type CreateInstanceTypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
 	FacilityName *string
-	Instancetype *Instancetype
+	InstanceType *InstanceType
 }
 
-func (b0 CreateInstancetypeRequest_builder) Build() *CreateInstancetypeRequest {
-	m0 := &CreateInstancetypeRequest{}
+func (b0 CreateInstanceTypeRequest_builder) Build() *CreateInstanceTypeRequest {
+	m0 := &CreateInstanceTypeRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -5782,11 +5782,11 @@ func (b0 CreateInstancetypeRequest_builder) Build() *CreateInstancetypeRequest {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
-	x.xxx_hidden_Instancetype = b.Instancetype
+	x.xxx_hidden_InstanceType = b.InstanceType
 	return m0
 }
 
-type ListInstancetypesRequest struct {
+type ListInstanceTypesRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
@@ -5796,20 +5796,20 @@ type ListInstancetypesRequest struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *ListInstancetypesRequest) Reset() {
-	*x = ListInstancetypesRequest{}
+func (x *ListInstanceTypesRequest) Reset() {
+	*x = ListInstanceTypesRequest{}
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListInstancetypesRequest) String() string {
+func (x *ListInstanceTypesRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListInstancetypesRequest) ProtoMessage() {}
+func (*ListInstanceTypesRequest) ProtoMessage() {}
 
-func (x *ListInstancetypesRequest) ProtoReflect() protoreflect.Message {
+func (x *ListInstanceTypesRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5821,7 +5821,7 @@ func (x *ListInstancetypesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListInstancetypesRequest) GetScopeUuid() string {
+func (x *ListInstanceTypesRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -5831,7 +5831,7 @@ func (x *ListInstancetypesRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *ListInstancetypesRequest) GetFacilityName() string {
+func (x *ListInstanceTypesRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -5841,49 +5841,49 @@ func (x *ListInstancetypesRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *ListInstancetypesRequest) SetScopeUuid(v string) {
+func (x *ListInstanceTypesRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
 }
 
-func (x *ListInstancetypesRequest) SetFacilityName(v string) {
+func (x *ListInstanceTypesRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
 }
 
-func (x *ListInstancetypesRequest) HasScopeUuid() bool {
+func (x *ListInstanceTypesRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *ListInstancetypesRequest) HasFacilityName() bool {
+func (x *ListInstanceTypesRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *ListInstancetypesRequest) ClearScopeUuid() {
+func (x *ListInstanceTypesRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *ListInstancetypesRequest) ClearFacilityName() {
+func (x *ListInstanceTypesRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-type ListInstancetypesRequest_builder struct {
+type ListInstanceTypesRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
 	FacilityName *string
 }
 
-func (b0 ListInstancetypesRequest_builder) Build() *ListInstancetypesRequest {
-	m0 := &ListInstancetypesRequest{}
+func (b0 ListInstanceTypesRequest_builder) Build() *ListInstanceTypesRequest {
+	m0 := &ListInstanceTypesRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -5897,27 +5897,27 @@ func (b0 ListInstancetypesRequest_builder) Build() *ListInstancetypesRequest {
 	return m0
 }
 
-type ListInstancetypesResponse struct {
+type ListInstanceTypesResponse struct {
 	state                    protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Instancetypes *[]*Instancetype       `protobuf:"bytes,1,rep,name=instancetypes"`
+	xxx_hidden_InstanceTypes *[]*InstanceType       `protobuf:"bytes,1,rep,name=InstanceTypes"`
 	unknownFields            protoimpl.UnknownFields
 	sizeCache                protoimpl.SizeCache
 }
 
-func (x *ListInstancetypesResponse) Reset() {
-	*x = ListInstancetypesResponse{}
+func (x *ListInstanceTypesResponse) Reset() {
+	*x = ListInstanceTypesResponse{}
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListInstancetypesResponse) String() string {
+func (x *ListInstanceTypesResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListInstancetypesResponse) ProtoMessage() {}
+func (*ListInstanceTypesResponse) ProtoMessage() {}
 
-func (x *ListInstancetypesResponse) ProtoReflect() protoreflect.Message {
+func (x *ListInstanceTypesResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5929,34 +5929,34 @@ func (x *ListInstancetypesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *ListInstancetypesResponse) GetInstancetypes() []*Instancetype {
+func (x *ListInstanceTypesResponse) GetInstanceTypes() []*InstanceType {
 	if x != nil {
-		if x.xxx_hidden_Instancetypes != nil {
-			return *x.xxx_hidden_Instancetypes
+		if x.xxx_hidden_InstanceTypes != nil {
+			return *x.xxx_hidden_InstanceTypes
 		}
 	}
 	return nil
 }
 
-func (x *ListInstancetypesResponse) SetInstancetypes(v []*Instancetype) {
-	x.xxx_hidden_Instancetypes = &v
+func (x *ListInstanceTypesResponse) SetInstanceTypes(v []*InstanceType) {
+	x.xxx_hidden_InstanceTypes = &v
 }
 
-type ListInstancetypesResponse_builder struct {
+type ListInstanceTypesResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Instancetypes []*Instancetype
+	InstanceTypes []*InstanceType
 }
 
-func (b0 ListInstancetypesResponse_builder) Build() *ListInstancetypesResponse {
-	m0 := &ListInstancetypesResponse{}
+func (b0 ListInstanceTypesResponse_builder) Build() *ListInstanceTypesResponse {
+	m0 := &ListInstanceTypesResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Instancetypes = &b.Instancetypes
+	x.xxx_hidden_InstanceTypes = &b.InstanceTypes
 	return m0
 }
 
-type GetInstancetypeRequest struct {
+type GetInstanceTypeRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
@@ -5967,20 +5967,20 @@ type GetInstancetypeRequest struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *GetInstancetypeRequest) Reset() {
-	*x = GetInstancetypeRequest{}
+func (x *GetInstanceTypeRequest) Reset() {
+	*x = GetInstanceTypeRequest{}
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetInstancetypeRequest) String() string {
+func (x *GetInstanceTypeRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetInstancetypeRequest) ProtoMessage() {}
+func (*GetInstanceTypeRequest) ProtoMessage() {}
 
-func (x *GetInstancetypeRequest) ProtoReflect() protoreflect.Message {
+func (x *GetInstanceTypeRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5992,7 +5992,7 @@ func (x *GetInstancetypeRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *GetInstancetypeRequest) GetScopeUuid() string {
+func (x *GetInstanceTypeRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -6002,7 +6002,7 @@ func (x *GetInstancetypeRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *GetInstancetypeRequest) GetFacilityName() string {
+func (x *GetInstanceTypeRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -6012,7 +6012,7 @@ func (x *GetInstancetypeRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *GetInstancetypeRequest) GetName() string {
+func (x *GetInstanceTypeRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -6022,58 +6022,58 @@ func (x *GetInstancetypeRequest) GetName() string {
 	return ""
 }
 
-func (x *GetInstancetypeRequest) SetScopeUuid(v string) {
+func (x *GetInstanceTypeRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *GetInstancetypeRequest) SetFacilityName(v string) {
+func (x *GetInstanceTypeRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *GetInstancetypeRequest) SetName(v string) {
+func (x *GetInstanceTypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *GetInstancetypeRequest) HasScopeUuid() bool {
+func (x *GetInstanceTypeRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *GetInstancetypeRequest) HasFacilityName() bool {
+func (x *GetInstanceTypeRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GetInstancetypeRequest) HasName() bool {
+func (x *GetInstanceTypeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *GetInstancetypeRequest) ClearScopeUuid() {
+func (x *GetInstanceTypeRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *GetInstancetypeRequest) ClearFacilityName() {
+func (x *GetInstanceTypeRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *GetInstancetypeRequest) ClearName() {
+func (x *GetInstanceTypeRequest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
-type GetInstancetypeRequest_builder struct {
+type GetInstanceTypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
@@ -6081,8 +6081,8 @@ type GetInstancetypeRequest_builder struct {
 	Name         *string
 }
 
-func (b0 GetInstancetypeRequest_builder) Build() *GetInstancetypeRequest {
-	m0 := &GetInstancetypeRequest{}
+func (b0 GetInstanceTypeRequest_builder) Build() *GetInstanceTypeRequest {
+	m0 := &GetInstanceTypeRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -6100,7 +6100,7 @@ func (b0 GetInstancetypeRequest_builder) Build() *GetInstancetypeRequest {
 	return m0
 }
 
-type DeleteInstancetypeRequest struct {
+type DeleteInstanceTypeRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
@@ -6111,20 +6111,20 @@ type DeleteInstancetypeRequest struct {
 	sizeCache               protoimpl.SizeCache
 }
 
-func (x *DeleteInstancetypeRequest) Reset() {
-	*x = DeleteInstancetypeRequest{}
+func (x *DeleteInstanceTypeRequest) Reset() {
+	*x = DeleteInstanceTypeRequest{}
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteInstancetypeRequest) String() string {
+func (x *DeleteInstanceTypeRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteInstancetypeRequest) ProtoMessage() {}
+func (*DeleteInstanceTypeRequest) ProtoMessage() {}
 
-func (x *DeleteInstancetypeRequest) ProtoReflect() protoreflect.Message {
+func (x *DeleteInstanceTypeRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_kubevirt_v1_kubevirt_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6136,7 +6136,7 @@ func (x *DeleteInstancetypeRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *DeleteInstancetypeRequest) GetScopeUuid() string {
+func (x *DeleteInstanceTypeRequest) GetScopeUuid() string {
 	if x != nil {
 		if x.xxx_hidden_ScopeUuid != nil {
 			return *x.xxx_hidden_ScopeUuid
@@ -6146,7 +6146,7 @@ func (x *DeleteInstancetypeRequest) GetScopeUuid() string {
 	return ""
 }
 
-func (x *DeleteInstancetypeRequest) GetFacilityName() string {
+func (x *DeleteInstanceTypeRequest) GetFacilityName() string {
 	if x != nil {
 		if x.xxx_hidden_FacilityName != nil {
 			return *x.xxx_hidden_FacilityName
@@ -6156,7 +6156,7 @@ func (x *DeleteInstancetypeRequest) GetFacilityName() string {
 	return ""
 }
 
-func (x *DeleteInstancetypeRequest) GetName() string {
+func (x *DeleteInstanceTypeRequest) GetName() string {
 	if x != nil {
 		if x.xxx_hidden_Name != nil {
 			return *x.xxx_hidden_Name
@@ -6166,58 +6166,58 @@ func (x *DeleteInstancetypeRequest) GetName() string {
 	return ""
 }
 
-func (x *DeleteInstancetypeRequest) SetScopeUuid(v string) {
+func (x *DeleteInstanceTypeRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
 }
 
-func (x *DeleteInstancetypeRequest) SetFacilityName(v string) {
+func (x *DeleteInstanceTypeRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
 }
 
-func (x *DeleteInstancetypeRequest) SetName(v string) {
+func (x *DeleteInstanceTypeRequest) SetName(v string) {
 	x.xxx_hidden_Name = &v
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 3)
 }
 
-func (x *DeleteInstancetypeRequest) HasScopeUuid() bool {
+func (x *DeleteInstanceTypeRequest) HasScopeUuid() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
-func (x *DeleteInstancetypeRequest) HasFacilityName() bool {
+func (x *DeleteInstanceTypeRequest) HasFacilityName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *DeleteInstancetypeRequest) HasName() bool {
+func (x *DeleteInstanceTypeRequest) HasName() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
-func (x *DeleteInstancetypeRequest) ClearScopeUuid() {
+func (x *DeleteInstanceTypeRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
 }
 
-func (x *DeleteInstancetypeRequest) ClearFacilityName() {
+func (x *DeleteInstanceTypeRequest) ClearFacilityName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *DeleteInstancetypeRequest) ClearName() {
+func (x *DeleteInstanceTypeRequest) ClearName() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
 	x.xxx_hidden_Name = nil
 }
 
-type DeleteInstancetypeRequest_builder struct {
+type DeleteInstanceTypeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
@@ -6225,8 +6225,8 @@ type DeleteInstancetypeRequest_builder struct {
 	Name         *string
 }
 
-func (b0 DeleteInstancetypeRequest_builder) Build() *DeleteInstancetypeRequest {
-	m0 := &DeleteInstancetypeRequest{}
+func (b0 DeleteInstanceTypeRequest_builder) Build() *DeleteInstanceTypeRequest {
+	m0 := &DeleteInstanceTypeRequest{}
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
@@ -6637,12 +6637,12 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\x06PAUSED\x10\x06\x12\r\n" +
 	"\tMIGRATING\x10\a\"\xe8\x01\n" +
 	"\x12VirtualMachineSpec\x12+\n" +
-	"\x11instancetype_name\x18\x01 \x01(\tR\x10instancetypeName\x12!\n" +
+	"\x11InstanceType_name\x18\x01 \x01(\tR\x10InstanceTypeName\x12!\n" +
 	"\fnetwork_name\x18\x02 \x01(\tR\vnetworkName\x12%\n" +
 	"\x0estartup_script\x18\x03 \x01(\tR\rstartupScript\x12!\n" +
 	"\fdata_volumes\x18\v \x03(\tR\vdataVolumes\x128\n" +
 	"\adevices\x18\f \x03(\v2\x1e.otterscale.kubevirt.v1.DeviceR\adevices\"\x8c\x01\n" +
-	"\fInstancetype\x12<\n" +
+	"\fInstanceType\x12<\n" +
 	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12\x1b\n" +
 	"\tcpu_cores\x18\x02 \x01(\x02R\bcpuCores\x12!\n" +
 	"\fmemory_bytes\x18\x03 \x01(\x03R\vmemoryBytes\"\x95\x01\n" +
@@ -6687,7 +6687,7 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x04 \x01(\tR\tnamespace\x12+\n" +
-	"\x11instancetype_name\x18\x05 \x01(\tR\x10instancetypeName\x12!\n" +
+	"\x11InstanceType_name\x18\x05 \x01(\tR\x10InstanceTypeName\x12!\n" +
 	"\fnetwork_name\x18\x06 \x01(\tR\vnetworkName\x12%\n" +
 	"\x0estartup_script\x18\a \x01(\tR\rstartupScript\x12W\n" +
 	"\x06labels\x18\v \x03(\v2?.otterscale.kubevirt.v1.UpdateVirtualMachineRequest.LabelsEntryR\x06labels\x12f\n" +
@@ -6824,23 +6824,23 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"\xa9\x01\n" +
-	"\x19CreateInstancetypeRequest\x12\x1d\n" +
+	"\x19CreateInstanceTypeRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12H\n" +
-	"\finstancetype\x18\x03 \x01(\v2$.otterscale.kubevirt.v1.InstancetypeR\finstancetype\"^\n" +
-	"\x18ListInstancetypesRequest\x12\x1d\n" +
+	"\fInstanceType\x18\x03 \x01(\v2$.otterscale.kubevirt.v1.InstanceTypeR\fInstanceType\"^\n" +
+	"\x18ListInstanceTypesRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"g\n" +
-	"\x19ListInstancetypesResponse\x12J\n" +
-	"\rinstancetypes\x18\x01 \x03(\v2$.otterscale.kubevirt.v1.InstancetypeR\rinstancetypes\"p\n" +
-	"\x16GetInstancetypeRequest\x12\x1d\n" +
+	"\x19ListInstanceTypesResponse\x12J\n" +
+	"\rInstanceTypes\x18\x01 \x03(\v2$.otterscale.kubevirt.v1.InstanceTypeR\rInstanceTypes\"p\n" +
+	"\x16GetInstanceTypeRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\"s\n" +
-	"\x19DeleteInstancetypeRequest\x12\x1d\n" +
+	"\x19DeleteInstanceTypeRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x12\n" +
@@ -6870,10 +6870,10 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\fListNetworks\x12+.otterscale.kubevirt.v1.ListNetworksRequest\x1a,.otterscale.kubevirt.v1.ListNetworksResponse\x12f\n" +
 	"\rUpdateNetwork\x12,.otterscale.kubevirt.v1.UpdateNetworkRequest\x1a'.otterscale.kubevirt.v1.KubeVirtNetwork\x12U\n" +
 	"\rDeleteNetwork\x12,.otterscale.kubevirt.v1.DeleteNetworkRequest\x1a\x16.google.protobuf.Empty\x12m\n" +
-	"\x12CreateInstancetype\x121.otterscale.kubevirt.v1.CreateInstancetypeRequest\x1a$.otterscale.kubevirt.v1.Instancetype\x12g\n" +
-	"\x0fGetInstancetype\x12..otterscale.kubevirt.v1.GetInstancetypeRequest\x1a$.otterscale.kubevirt.v1.Instancetype\x12x\n" +
-	"\x11ListInstancetypes\x120.otterscale.kubevirt.v1.ListInstancetypesRequest\x1a1.otterscale.kubevirt.v1.ListInstancetypesResponse\x12_\n" +
-	"\x12DeleteInstancetype\x121.otterscale.kubevirt.v1.DeleteInstancetypeRequest\x1a\x16.google.protobuf.EmptyB2Z0github.com/openhdc/otterscale/api/kubevirt/v1;pbb\beditionsp\xe8\a"
+	"\x12CreateInstanceType\x121.otterscale.kubevirt.v1.CreateInstanceTypeRequest\x1a$.otterscale.kubevirt.v1.InstanceType\x12g\n" +
+	"\x0fGetInstanceType\x12..otterscale.kubevirt.v1.GetInstanceTypeRequest\x1a$.otterscale.kubevirt.v1.InstanceType\x12x\n" +
+	"\x11ListInstanceTypes\x120.otterscale.kubevirt.v1.ListInstanceTypesRequest\x1a1.otterscale.kubevirt.v1.ListInstanceTypesResponse\x12_\n" +
+	"\x12DeleteInstanceType\x121.otterscale.kubevirt.v1.DeleteInstanceTypeRequest\x1a\x16.google.protobuf.EmptyB2Z0github.com/openhdc/otterscale/api/kubevirt/v1;pbb\beditionsp\xe8\a"
 
 var file_api_kubevirt_v1_kubevirt_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_api_kubevirt_v1_kubevirt_proto_msgTypes = make([]protoimpl.MessageInfo, 44)
@@ -6883,7 +6883,7 @@ var file_api_kubevirt_v1_kubevirt_proto_goTypes = []any{
 	(*Metadata)(nil),                            // 2: otterscale.kubevirt.v1.Metadata
 	(*VirtualMachine)(nil),                      // 3: otterscale.kubevirt.v1.VirtualMachine
 	(*VirtualMachineSpec)(nil),                  // 4: otterscale.kubevirt.v1.VirtualMachineSpec
-	(*Instancetype)(nil),                        // 5: otterscale.kubevirt.v1.Instancetype
+	(*InstanceType)(nil),                        // 5: otterscale.kubevirt.v1.InstanceType
 	(*DataVolume)(nil),                          // 6: otterscale.kubevirt.v1.DataVolume
 	(*KubeVirtNetwork)(nil),                     // 7: otterscale.kubevirt.v1.KubeVirtNetwork
 	(*Device)(nil),                              // 8: otterscale.kubevirt.v1.Device
@@ -6913,11 +6913,11 @@ var file_api_kubevirt_v1_kubevirt_proto_goTypes = []any{
 	(*GetNetworkRequest)(nil),                   // 32: otterscale.kubevirt.v1.GetNetworkRequest
 	(*UpdateNetworkRequest)(nil),                // 33: otterscale.kubevirt.v1.UpdateNetworkRequest
 	(*DeleteNetworkRequest)(nil),                // 34: otterscale.kubevirt.v1.DeleteNetworkRequest
-	(*CreateInstancetypeRequest)(nil),           // 35: otterscale.kubevirt.v1.CreateInstancetypeRequest
-	(*ListInstancetypesRequest)(nil),            // 36: otterscale.kubevirt.v1.ListInstancetypesRequest
-	(*ListInstancetypesResponse)(nil),           // 37: otterscale.kubevirt.v1.ListInstancetypesResponse
-	(*GetInstancetypeRequest)(nil),              // 38: otterscale.kubevirt.v1.GetInstancetypeRequest
-	(*DeleteInstancetypeRequest)(nil),           // 39: otterscale.kubevirt.v1.DeleteInstancetypeRequest
+	(*CreateInstanceTypeRequest)(nil),           // 35: otterscale.kubevirt.v1.CreateInstanceTypeRequest
+	(*ListInstanceTypesRequest)(nil),            // 36: otterscale.kubevirt.v1.ListInstanceTypesRequest
+	(*ListInstanceTypesResponse)(nil),           // 37: otterscale.kubevirt.v1.ListInstanceTypesResponse
+	(*GetInstanceTypeRequest)(nil),              // 38: otterscale.kubevirt.v1.GetInstanceTypeRequest
+	(*DeleteInstanceTypeRequest)(nil),           // 39: otterscale.kubevirt.v1.DeleteInstanceTypeRequest
 	nil,                                         // 40: otterscale.kubevirt.v1.Metadata.LabelsEntry
 	nil,                                         // 41: otterscale.kubevirt.v1.Metadata.AnnotationsEntry
 	(*VirtualMachine_Operation)(nil),            // 42: otterscale.kubevirt.v1.VirtualMachine.Operation
@@ -6940,7 +6940,7 @@ var file_api_kubevirt_v1_kubevirt_proto_depIdxs = []int32{
 	42, // 9: otterscale.kubevirt.v1.VirtualMachine.migrates:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation
 	42, // 10: otterscale.kubevirt.v1.VirtualMachine.restores:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation
 	8,  // 11: otterscale.kubevirt.v1.VirtualMachineSpec.devices:type_name -> otterscale.kubevirt.v1.Device
-	2,  // 12: otterscale.kubevirt.v1.Instancetype.metadata:type_name -> otterscale.kubevirt.v1.Metadata
+	2,  // 12: otterscale.kubevirt.v1.InstanceType.metadata:type_name -> otterscale.kubevirt.v1.Metadata
 	2,  // 13: otterscale.kubevirt.v1.DataVolume.metadata:type_name -> otterscale.kubevirt.v1.Metadata
 	2,  // 14: otterscale.kubevirt.v1.KubeVirtNetwork.metadata:type_name -> otterscale.kubevirt.v1.Metadata
 	3,  // 15: otterscale.kubevirt.v1.ListVirtualMachinesResponse.virtualMachines:type_name -> otterscale.kubevirt.v1.VirtualMachine
@@ -6954,8 +6954,8 @@ var file_api_kubevirt_v1_kubevirt_proto_depIdxs = []int32{
 	7,  // 23: otterscale.kubevirt.v1.CreateNetworkRequest.network:type_name -> otterscale.kubevirt.v1.KubeVirtNetwork
 	7,  // 24: otterscale.kubevirt.v1.ListNetworksResponse.networks:type_name -> otterscale.kubevirt.v1.KubeVirtNetwork
 	7,  // 25: otterscale.kubevirt.v1.UpdateNetworkRequest.network:type_name -> otterscale.kubevirt.v1.KubeVirtNetwork
-	5,  // 26: otterscale.kubevirt.v1.CreateInstancetypeRequest.instancetype:type_name -> otterscale.kubevirt.v1.Instancetype
-	5,  // 27: otterscale.kubevirt.v1.ListInstancetypesResponse.instancetypes:type_name -> otterscale.kubevirt.v1.Instancetype
+	5,  // 26: otterscale.kubevirt.v1.CreateInstanceTypeRequest.InstanceType:type_name -> otterscale.kubevirt.v1.InstanceType
+	5,  // 27: otterscale.kubevirt.v1.ListInstanceTypesResponse.InstanceTypes:type_name -> otterscale.kubevirt.v1.InstanceType
 	46, // 28: otterscale.kubevirt.v1.VirtualMachine.Operation.created_at:type_name -> google.protobuf.Timestamp
 	43, // 29: otterscale.kubevirt.v1.VirtualMachine.Operation.status:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation.Result
 	1,  // 30: otterscale.kubevirt.v1.VirtualMachine.Operation.Result.status:type_name -> otterscale.kubevirt.v1.VirtualMachine.Operation.Result.Status
@@ -6982,10 +6982,10 @@ var file_api_kubevirt_v1_kubevirt_proto_depIdxs = []int32{
 	30, // 51: otterscale.kubevirt.v1.KubeVirtService.ListNetworks:input_type -> otterscale.kubevirt.v1.ListNetworksRequest
 	33, // 52: otterscale.kubevirt.v1.KubeVirtService.UpdateNetwork:input_type -> otterscale.kubevirt.v1.UpdateNetworkRequest
 	34, // 53: otterscale.kubevirt.v1.KubeVirtService.DeleteNetwork:input_type -> otterscale.kubevirt.v1.DeleteNetworkRequest
-	35, // 54: otterscale.kubevirt.v1.KubeVirtService.CreateInstancetype:input_type -> otterscale.kubevirt.v1.CreateInstancetypeRequest
-	38, // 55: otterscale.kubevirt.v1.KubeVirtService.GetInstancetype:input_type -> otterscale.kubevirt.v1.GetInstancetypeRequest
-	36, // 56: otterscale.kubevirt.v1.KubeVirtService.ListInstancetypes:input_type -> otterscale.kubevirt.v1.ListInstancetypesRequest
-	39, // 57: otterscale.kubevirt.v1.KubeVirtService.DeleteInstancetype:input_type -> otterscale.kubevirt.v1.DeleteInstancetypeRequest
+	35, // 54: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:input_type -> otterscale.kubevirt.v1.CreateInstanceTypeRequest
+	38, // 55: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:input_type -> otterscale.kubevirt.v1.GetInstanceTypeRequest
+	36, // 56: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:input_type -> otterscale.kubevirt.v1.ListInstanceTypesRequest
+	39, // 57: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:input_type -> otterscale.kubevirt.v1.DeleteInstanceTypeRequest
 	3,  // 58: otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
 	3,  // 59: otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachine:output_type -> otterscale.kubevirt.v1.VirtualMachine
 	10, // 60: otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachines:output_type -> otterscale.kubevirt.v1.ListVirtualMachinesResponse
@@ -7009,10 +7009,10 @@ var file_api_kubevirt_v1_kubevirt_proto_depIdxs = []int32{
 	31, // 78: otterscale.kubevirt.v1.KubeVirtService.ListNetworks:output_type -> otterscale.kubevirt.v1.ListNetworksResponse
 	7,  // 79: otterscale.kubevirt.v1.KubeVirtService.UpdateNetwork:output_type -> otterscale.kubevirt.v1.KubeVirtNetwork
 	47, // 80: otterscale.kubevirt.v1.KubeVirtService.DeleteNetwork:output_type -> google.protobuf.Empty
-	5,  // 81: otterscale.kubevirt.v1.KubeVirtService.CreateInstancetype:output_type -> otterscale.kubevirt.v1.Instancetype
-	5,  // 82: otterscale.kubevirt.v1.KubeVirtService.GetInstancetype:output_type -> otterscale.kubevirt.v1.Instancetype
-	37, // 83: otterscale.kubevirt.v1.KubeVirtService.ListInstancetypes:output_type -> otterscale.kubevirt.v1.ListInstancetypesResponse
-	47, // 84: otterscale.kubevirt.v1.KubeVirtService.DeleteInstancetype:output_type -> google.protobuf.Empty
+	5,  // 81: otterscale.kubevirt.v1.KubeVirtService.CreateInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
+	5,  // 82: otterscale.kubevirt.v1.KubeVirtService.GetInstanceType:output_type -> otterscale.kubevirt.v1.InstanceType
+	37, // 83: otterscale.kubevirt.v1.KubeVirtService.ListInstanceTypes:output_type -> otterscale.kubevirt.v1.ListInstanceTypesResponse
+	47, // 84: otterscale.kubevirt.v1.KubeVirtService.DeleteInstanceType:output_type -> google.protobuf.Empty
 	58, // [58:85] is the sub-list for method output_type
 	31, // [31:58] is the sub-list for method input_type
 	31, // [31:31] is the sub-list for extension type_name

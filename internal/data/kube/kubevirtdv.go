@@ -2,11 +2,14 @@ package kube
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	oscore "github.com/openhdc/otterscale/internal/core"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
 	"kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
@@ -108,4 +111,42 @@ func (r *virtDV) DeleteDataVolume(ctx context.Context, config *rest.Config, name
 	}
 	opts := metav1.DeleteOptions{}
 	return virtClient.CdiClient().CdiV1beta1().DataVolumes(namespace).Delete(ctx, name, opts)
+}
+
+func (r *virtDV) ExtendDataVolume(ctx context.Context, config *rest.Config, namespace, pvcName string, sizeBytes int64) error {
+	virtClient, err := r.kubevirt.virtClient(config)
+	if err != nil {
+		return err
+	}
+	opts := metav1.GetOptions{}
+
+	pvc, err := virtClient.CoreV1().PersistentVolumeClaims(namespace).Get(ctx, pvcName, opts)
+	if err != nil {
+		return fmt.Errorf("failed to get PVC: %w", err)
+	}
+
+	current := pvc.Spec.Resources.Requests[v1.ResourceStorage]
+	desired := *resource.NewQuantity(sizeBytes, resource.BinarySI)
+	if current.Cmp(desired) >= 0 {
+		return fmt.Errorf("current size >= requested size, no need to extend")
+	}
+
+	type patchSpec struct {
+		Op    string            `json:"op"`
+		Path  string            `json:"path"`
+		Value resource.Quantity `json:"value"`
+	}
+	patch := []patchSpec{{
+		Op:    "replace",
+		Path:  "/spec/resources/requests/storage",
+		Value: desired,
+	}}
+	patchBytes, _ := json.Marshal(patch)
+
+	_, err = virtClient.CoreV1().PersistentVolumeClaims(namespace).
+		Patch(ctx, pvcName, types.JSONPatchType, patchBytes, metav1.PatchOptions{})
+	if err != nil {
+		return fmt.Errorf("patch PVC failed: %w", err)
+	}
+	return nil
 }

@@ -54,7 +54,7 @@ func (s *KubeVirtService) ListVirtualMachines(ctx context.Context, req *connect.
 }
 
 func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetInstancetypeName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), req.Msg.GetAnnotations(), req.Msg.GetDataVolumes(), toCoreDevices(req.Msg.GetDevices()))
+	vm, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetInstanceTypeName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), req.Msg.GetAnnotations(), req.Msg.GetDataVolumes(), toCoreDevices(req.Msg.GetDevices()))
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +154,7 @@ func (s *KubeVirtService) CreateDataVolume(ctx context.Context, req *connect.Req
 }
 
 func (s *KubeVirtService) GetDataVolume(ctx context.Context, req *connect.Request[pb.GetDataVolumeRequest]) (*connect.Response[pb.DataVolume], error) {
-	dv, err := s.uc.GetDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
+	dv, err := s.uc.GetDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +163,7 @@ func (s *KubeVirtService) GetDataVolume(ctx context.Context, req *connect.Reques
 }
 
 func (s *KubeVirtService) ListDataVolumes(ctx context.Context, req *connect.Request[pb.ListDataVolumesRequest]) (*connect.Response[pb.ListDataVolumesResponse], error) {
-	dvs, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	dvs, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetNamespace(), req.Msg.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -173,7 +173,7 @@ func (s *KubeVirtService) ListDataVolumes(ctx context.Context, req *connect.Requ
 }
 
 func (s *KubeVirtService) DeleteDataVolume(ctx context.Context, req *connect.Request[pb.DeleteDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
+	if err := s.uc.DeleteDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -181,11 +181,9 @@ func (s *KubeVirtService) DeleteDataVolume(ctx context.Context, req *connect.Req
 }
 
 func (s *KubeVirtService) ExtendDataVolume(ctx context.Context, req *connect.Request[pb.ExtendDataVolumeRequest]) (*connect.Response[emptypb.Empty], error) {
-	/*
-		if err := s.uc.ExtendDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetSizeBytes()); err != nil {
-			return nil, err
-		}
-	*/
+	if err := s.uc.ExtendDataVolume(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSizeBytes()); err != nil {
+		return nil, err
+	}
 	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
@@ -255,39 +253,39 @@ func (s *KubeVirtService) DeleteNetwork(ctx context.Context, req *connect.Reques
 	return connect.NewResponse(resp), nil
 }
 
-// Instancetype Operations
-func (s *KubeVirtService) CreateInstancetype(ctx context.Context, req *connect.Request[pb.CreateInstancetypeRequest]) (*connect.Response[pb.Instancetype], error) {
-	instancetype, err := s.uc.CreateInstancetype(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreInstancetype(req.Msg.GetInstancetype()))
+// InstanceType Operations
+func (s *KubeVirtService) CreateInstanceType(ctx context.Context, req *connect.Request[pb.CreateInstanceTypeRequest]) (*connect.Response[pb.InstanceType], error) {
+	InstanceType, err := s.uc.CreateInstanceType(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreInstanceType(req.Msg.GetInstanceType()))
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoInstancetype(instancetype)
+	resp := toProtoInstanceType(InstanceType)
 
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) GetInstancetype(ctx context.Context, req *connect.Request[pb.GetInstancetypeRequest]) (*connect.Response[pb.Instancetype], error) {
-	instancetype, err := s.uc.GetInstancetype(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName())
+func (s *KubeVirtService) GetInstanceType(ctx context.Context, req *connect.Request[pb.GetInstanceTypeRequest]) (*connect.Response[pb.InstanceType], error) {
+	InstanceType, err := s.uc.GetInstanceType(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoInstancetype(instancetype)
+	resp := toProtoInstanceType(InstanceType)
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) ListInstancetypes(ctx context.Context, req *connect.Request[pb.ListInstancetypesRequest]) (*connect.Response[pb.ListInstancetypesResponse], error) {
-	instancetype, err := s.uc.ListInstancetypes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+func (s *KubeVirtService) ListInstanceTypes(ctx context.Context, req *connect.Request[pb.ListInstanceTypesRequest]) (*connect.Response[pb.ListInstanceTypesResponse], error) {
+	InstanceType, err := s.uc.ListInstanceTypes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ListInstancetypesResponse{}
-	resp.SetInstancetypes(toProtoInstancetypes(instancetype))
+	resp := &pb.ListInstanceTypesResponse{}
+	resp.SetInstanceTypes(toProtoInstanceTypes(InstanceType))
 
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) DeleteInstancetype(ctx context.Context, req *connect.Request[pb.DeleteInstancetypeRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteInstancetype(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName()); err != nil {
+func (s *KubeVirtService) DeleteInstanceType(ctx context.Context, req *connect.Request[pb.DeleteInstanceTypeRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteInstanceType(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -344,7 +342,7 @@ func toCoreMetadata(m *pb.Metadata) core.Metadata {
 func toProtoVirtualMachineSpec(spec core.KubeVirtVirtualMachineSpec) *pb.VirtualMachineSpec {
 	ret := &pb.VirtualMachineSpec{}
 
-	ret.SetInstancetypeName(spec.InstancetypeName)
+	ret.SetInstanceTypeName(spec.InstanceTypeName)
 	ret.SetNetworkName(spec.NetworkName)
 	ret.SetStartupScript(spec.StartupScript)
 	ret.SetDataVolumes(spec.DataVolumes)
@@ -356,7 +354,7 @@ func toProtoVirtualMachineSpec(spec core.KubeVirtVirtualMachineSpec) *pb.Virtual
 func toCoreVirtualMachineSpec(spec *pb.VirtualMachineSpec) core.VirtualMachineSpec {
 	/*
 		return core.KubeVirtVirtualMachineSpec{
-			InstancetypeName:    spec.GetInstancetypeName(),
+			InstanceTypeName:    spec.GetInstanceTypeName(),
 			NetworkName:   spec.GetNetworkName(),
 			StartupScript: spec.GetStartupScript(),
 			DataVolumes:   spec.GetDataVolumes(),
@@ -470,16 +468,16 @@ func toCoreNetwork(n *pb.KubeVirtNetwork) core.KubeVirtNetwork {
 	}
 }
 
-func toProtoInstancetypes(flavors []core.Instancetype) []*pb.Instancetype {
-	ret := []*pb.Instancetype{}
+func toProtoInstanceTypes(flavors []core.InstanceType) []*pb.InstanceType {
+	ret := []*pb.InstanceType{}
 	for i := range flavors {
-		ret = append(ret, toProtoInstancetype(&flavors[i]))
+		ret = append(ret, toProtoInstanceType(&flavors[i]))
 	}
 	return ret
 }
 
-func toProtoInstancetype(f *core.Instancetype) *pb.Instancetype {
-	ret := &pb.Instancetype{}
+func toProtoInstanceType(f *core.InstanceType) *pb.InstanceType {
+	ret := &pb.InstanceType{}
 
 	ret.SetMetadata(toProtoMetadata(f.Metadata))
 	ret.SetCpuCores(f.CpuCores)
@@ -488,8 +486,8 @@ func toProtoInstancetype(f *core.Instancetype) *pb.Instancetype {
 	return ret
 }
 
-func toCoreInstancetype(f *pb.Instancetype) core.Instancetype {
-	return core.Instancetype{
+func toCoreInstanceType(f *pb.InstanceType) core.InstanceType {
+	return core.InstanceType{
 		Metadata:    toCoreMetadata(f.GetMetadata()),
 		CpuCores:    f.GetCpuCores(),
 		MemoryBytes: f.GetMemoryBytes(),

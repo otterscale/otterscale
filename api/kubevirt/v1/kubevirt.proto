@@ -37,11 +37,11 @@ service KubeVirtService {
   rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);
   rpc UpdateNetwork(UpdateNetworkRequest) returns (KubeVirtNetwork);
   rpc DeleteNetwork(DeleteNetworkRequest) returns (google.protobuf.Empty);
-  // Instancetype Operations
-  rpc CreateInstancetype(CreateInstancetypeRequest) returns (Instancetype);
-  rpc GetInstancetype(GetInstancetypeRequest) returns (Instancetype);
-  rpc ListInstancetypes(ListInstancetypesRequest) returns (ListInstancetypesResponse);
-  rpc DeleteInstancetype(DeleteInstancetypeRequest) returns (google.protobuf.Empty);
+  // InstanceType Operations
+  rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
+  rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType);
+  rpc ListInstanceTypes(ListInstanceTypesRequest) returns (ListInstanceTypesResponse);
+  rpc DeleteInstanceType(DeleteInstanceTypeRequest) returns (google.protobuf.Empty);
 }
 
 // Common messages
@@ -95,7 +95,7 @@ message VirtualMachine {
 }
 
 message VirtualMachineSpec {
-  string instancetype_name = 1;
+  string InstanceType_name = 1;
   string network_name = 2;
   string startup_script = 3;
   repeated string data_volumes = 11;
@@ -104,7 +104,7 @@ message VirtualMachineSpec {
 }
 
 // Resource definitions
-message Instancetype {
+message InstanceType {
   Metadata metadata = 1;
   float cpu_cores = 2;
   int64 memory_bytes = 3;
@@ -160,7 +160,7 @@ message UpdateVirtualMachineRequest {
   string facility_name = 2;
   string name = 3;
   string namespace = 4;
-  string instancetype_name = 5;
+  string InstanceType_name = 5;
   string network_name = 6;
   string startup_script = 7;
 
@@ -314,28 +314,28 @@ message DeleteNetworkRequest {
   string namespace = 4;
 }
 
-message CreateInstancetypeRequest {
+message CreateInstanceTypeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  Instancetype instancetype = 3;
+  InstanceType InstanceType = 3;
 }
 
-message ListInstancetypesRequest {
+message ListInstanceTypesRequest {
   string scope_uuid = 1;
   string facility_name = 2;
 }
 
-message ListInstancetypesResponse {
-  repeated Instancetype instancetypes = 1;
+message ListInstanceTypesResponse {
+  repeated InstanceType InstanceTypes = 1;
 }
 
-message GetInstancetypeRequest {
+message GetInstanceTypeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;
 }
 
-message DeleteInstancetypeRequest {
+message DeleteInstanceTypeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;

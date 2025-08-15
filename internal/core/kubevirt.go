@@ -36,7 +36,7 @@ type Metadata struct {
 
 // VirtualMachineSpec defines the specification for a virtual machine
 type KubeVirtVirtualMachineSpec struct {
-	InstancetypeName string
+	InstanceTypeName string
 	NetworkName      string
 	StartupScript    string
 	DataVolumes      []string
@@ -93,8 +93,8 @@ type KubeVirtNetwork struct {
 	ContainerPort int32
 }
 
-// Instancetype represents a flavor resource
-type Instancetype struct {
+// InstanceType represents a flavor resource
+type InstanceType struct {
 	Metadata    Metadata
 	CpuCores    float32
 	MemoryBytes int64
@@ -106,18 +106,18 @@ type KubeVirtUseCase struct {
 	kubeVirtVM           KubeVirtVMRepo
 	kubeVirtDV           KubeVirtDVRepo
 	kubeVirtNet          KubeVirtNetRepo
-	kubeVirtInstancetype KubeVirtInstancetypeRepo
+	kubeVirtInstanceType KubeVirtInstanceTypeRepo
 	action               ActionRepo
 	facility             FacilityRepo
 }
 
-func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtInstancetype KubeVirtInstancetypeRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
+func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtInstanceType KubeVirtInstanceTypeRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
 	return &KubeVirtUseCase{
 		kubeCore:             kubeCore,
 		kubeApps:             kubeApps,
 		kubeVirtVM:           kubeVirtVM,
 		kubeVirtDV:           kubeVirtDV,
-		kubeVirtInstancetype: kubeVirtInstancetype,
+		kubeVirtInstanceType: kubeVirtInstanceType,
 		action:               action,
 		facility:             facility,
 	}
