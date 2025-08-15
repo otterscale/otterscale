@@ -23,7 +23,7 @@ func (uc *KubeVirtUseCase) CreateDataVolume(ctx context.Context, uuid, facility,
 	return uc.kubeVirtDV.CreateDataVolume(ctx, config, namespace, name, source_type, source, sizeBytes)
 }
 
-func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility, name, namespace string) (*DataVolume, error) {
+func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility, namespace, name string) (*DataVolume, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
