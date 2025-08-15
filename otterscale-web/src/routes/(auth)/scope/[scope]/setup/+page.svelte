@@ -214,7 +214,7 @@
 					class="absolute h-full w-full object-cover object-center"
 				/>
 				<div
-					class="bg-primary/20 text-primary-foreground hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between p-4 transition-colors md:p-6 lg:p-10"
+					class="bg-primary/20 text-primary-foreground dark:text-primary hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between p-4 transition-colors md:p-6 lg:p-10"
 				>
 					<div class="flex items-center gap-4">
 						<Icon icon="logos:kubernetes" class="size-14" />
@@ -240,10 +240,17 @@
 			<div
 				class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
-				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
-					{kubernetes.controlPlane?.activeUnits}
-					{#if kubernetes.controlPlane?.activeUnits !== kubernetes.controlPlane?.allUnits}
-						-> {kubernetes.controlPlane?.allUnits}
+				<div class="mb-8 flex items-center space-x-1 text-3xl sm:mb-2 lg:text-5xl">
+					<span>{kubernetes.controlPlane?.activeUnits}</span>
+					{#if kubernetes.controlPlane && kubernetes.controlPlane.allUnits > kubernetes.controlPlane.activeUnits}
+						<div class="mx-2 flex items-center">
+							<div class="flex space-x-2">
+								<div class="size-2 animate-[pulse_2s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_0.5s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_1s_infinite] rounded-full bg-current"></div>
+							</div>
+						</div>
+						<span>{kubernetes.controlPlane.allUnits}</span>
 					{/if}
 				</div>
 				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
@@ -279,10 +286,17 @@
 			<div
 				class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
-				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
-					{kubernetes.worker?.activeUnits}
-					{#if kubernetes.worker?.activeUnits !== kubernetes.worker?.allUnits}
-						-> {kubernetes.worker?.allUnits}
+				<div class="mb-8 flex items-center space-x-1 text-3xl sm:mb-2 lg:text-5xl">
+					<span>{kubernetes.worker?.activeUnits}</span>
+					{#if kubernetes.worker && kubernetes.worker.allUnits > kubernetes.worker.activeUnits}
+						<div class="mx-2 flex items-center">
+							<div class="flex space-x-2">
+								<div class="size-2 animate-[pulse_2s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_0.5s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_1s_infinite] rounded-full bg-current"></div>
+							</div>
+						</div>
+						<span>{kubernetes.worker.allUnits}</span>
 					{/if}
 				</div>
 				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
@@ -297,10 +311,17 @@
 			<div
 				class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
-				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
-					{ceph.mon?.activeUnits}
-					{#if ceph.mon?.activeUnits !== ceph.mon?.allUnits}
-						-> {ceph.mon?.allUnits}
+				<div class="mb-8 flex items-center space-x-1 text-3xl sm:mb-2 lg:text-5xl">
+					<span>{ceph.mon?.activeUnits}</span>
+					{#if ceph.mon && ceph.mon.allUnits > ceph.mon.activeUnits}
+						<div class="mx-2 flex items-center">
+							<div class="flex space-x-2">
+								<div class="size-2 animate-[pulse_2s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_0.5s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_1s_infinite] rounded-full bg-current"></div>
+							</div>
+						</div>
+						<span>{ceph.mon.allUnits}</span>
 					{/if}
 				</div>
 				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
@@ -337,7 +358,7 @@
 			>
 				<img src={DiskImage} alt="disk" class="absolute h-full w-full object-cover object-center" />
 				<div
-					class="bg-primary/20 text-primary-foreground hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between gap-4 p-4 transition-colors md:flex-row md:items-end md:p-6 lg:p-10"
+					class="bg-primary/20 text-primary-foreground dark:text-primary hover:bg-primary/30 relative flex h-full w-full flex-col items-start justify-between gap-4 p-4 transition-colors md:flex-row md:items-end md:p-6 lg:p-10"
 				>
 					<div class="flex items-center gap-4">
 						<Icon icon="simple-icons:ceph" class="size-14 text-[#f0424d]" />
@@ -363,10 +384,17 @@
 			<div
 				class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 			>
-				<div class="mb-8 text-3xl sm:mb-2 lg:text-5xl">
-					{ceph.osd?.activeUnits}
-					{#if ceph.osd?.activeUnits !== ceph.osd?.allUnits}
-						-> {ceph.osd?.allUnits}
+				<div class="mb-8 flex items-center space-x-1 text-3xl sm:mb-2 lg:text-5xl">
+					<span>{ceph.osd?.activeUnits}</span>
+					{#if ceph.osd && ceph.osd.allUnits > ceph.osd.activeUnits}
+						<div class="mx-2 flex items-center">
+							<div class="flex space-x-2">
+								<div class="size-2 animate-[pulse_2s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_0.5s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_1s_infinite] rounded-full bg-current"></div>
+							</div>
+						</div>
+						<span>{ceph.osd.allUnits}</span>
 					{/if}
 				</div>
 				<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">

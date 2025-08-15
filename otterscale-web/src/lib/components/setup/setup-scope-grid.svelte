@@ -32,16 +32,9 @@
 		);
 	}
 
-	function countUnitsByService(serviceName: string): string {
+	function countUnitsByService(serviceName: string): number {
 		const facility = findFacilityByService(serviceName);
-		if (facility) {
-			const activeUnits = facility.units.filter((u) => u.workloadStatus?.state === 'active');
-			if (activeUnits.length != facility.units.length) {
-				return `${activeUnits.length} -> ${facility.units.length}`;
-			}
-			return `${facility.units.length}`;
-		}
-		return '0';
+		return facility?.units.filter((u) => u.workloadStatus?.state === 'active').length ?? 0;
 	}
 
 	function getStatusClass(status: Facility_Status | undefined): string {
@@ -70,8 +63,18 @@
 						{facility?.status?.details}
 					</p>
 				</div>
-				<div class="mb-8 flex text-3xl sm:mb-2 lg:text-5xl">
-					{count}
+				<div class="mb-8 flex items-center space-x-1 text-3xl sm:mb-2 lg:text-5xl">
+					<span>{count}</span>
+					{#if facility && facility.units.length > count}
+						<div class="mx-2 flex items-center">
+							<div class="flex space-x-2">
+								<div class="size-2 animate-[pulse_2s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_0.5s_infinite] rounded-full bg-current"></div>
+								<div class="size-2 animate-[pulse_2s_1s_infinite] rounded-full bg-current"></div>
+							</div>
+						</div>
+						<span>{facility.units.length}</span>
+					{/if}
 				</div>
 			</div>
 

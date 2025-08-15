@@ -81,6 +81,20 @@
 
 @theme {
   --font-sans: "Inter", "Noto Sans TC", sans-serif;
+  --animate-blink: blink 1.5s infinite;
+
+  @keyframes blink {
+
+    0%,
+    20% {
+      opacity: 0.4;
+    }
+
+    40%,
+    100% {
+      opacity: 1;
+    }
+  }
 }
 
 @theme inline {
