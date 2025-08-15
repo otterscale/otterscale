@@ -52,7 +52,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.DeletionConfirm target={bootImage.name} bind:value={name} />
+					<SingleInput.Confirm target={bootImage.name} bind:value={name} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

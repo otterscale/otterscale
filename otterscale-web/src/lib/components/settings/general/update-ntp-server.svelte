@@ -6,6 +6,7 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
 	import { Multiple as MultipleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -19,17 +20,11 @@
 	let { configuration = $bindable() }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
+
 	const client = createClient(ConfigurationService, transport);
-
-	const DEFAULT_REQUEST = {
+	const requestManager = new RequestManager<UpdateNTPServerRequest>({
 		addresses: $configuration.ntpServer?.addresses
-	} as UpdateNTPServerRequest;
-	let request = $state(DEFAULT_REQUEST);
-
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
+	} as UpdateNTPServerRequest);
 	const stateController = new StateController(false);
 </script>
 
@@ -44,7 +39,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Addresses</Form.Label>
-					<MultipleInput.Root type="text" bind:values={request.addresses}>
+					<MultipleInput.Root type="text" bind:values={requestManager.request.addresses}>
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
 							<MultipleInput.Input />
@@ -56,11 +51,15 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}>Cancel</Modal.Cancel
+			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
-						toast.promise(() => client.updateNTPServer(request), {
+						toast.promise(() => client.updateNTPServer(requestManager.request), {
 							loading: 'Loading...',
 							success: () => {
 								client.getConfiguration({}).then((response) => {
@@ -78,7 +77,7 @@
 							}
 						});
 
-						reset();
+						requestManager.reset();
 						stateController.close();
 					}}
 				>

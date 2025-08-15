@@ -1,10 +1,10 @@
 <script lang="ts" module>
-	import {
-		type Application_Chart
-	} from '$lib/api/application/v1/application_pb';
+	import { type Application_Chart } from '$lib/api/application/v1/application_pb';
 	import { type Writable } from 'svelte/store';
 	import { Chart } from './chart';
+	import FilterDeprecation from './filter-deprecation.svelte';
 	import FilterKeyword from './filter-keyword.svelte';
+	import FilterLicence from './filter-licence.svelte';
 	import FilterMaintainer from './filter-maintainer.svelte';
 	import FilterName from './filter-name.svelte';
 	import FilterReset from './filter-reset.svelte';
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	let { charts }: { charts: Writable<Application_Chart[]> } = $props();
-	
+
 	const filterManager = $derived(new FilterManager($charts));
 	const paginationManager = $derived(new PaginationManager(filterManager.filteredCharts));
 </script>
@@ -33,6 +33,8 @@
 		<FilterName {filterManager} />
 		<FilterKeyword {filterManager} />
 		<FilterMaintainer {filterManager} />
+		<FilterLicence {filterManager} />
+		<FilterDeprecation {filterManager} />
 		<FilterReset {filterManager} />
 		<Upload class="ml-auto" />
 	</div>

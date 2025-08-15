@@ -168,7 +168,7 @@
 						{/if}
 					{:else}
 						{#each chart.sources as source}
-							<span class="flex items-start gap-1">
+							<span class="flex items-center gap-1">
 								<Button variant="ghost" class="size-5" target="_blank" href={source}>
 									<Icon icon="ph:link" class="size-4" />
 								</Button>

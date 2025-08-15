@@ -2,11 +2,8 @@
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import * as Table from '$lib/components/custom/table';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import { buttonVariants } from '$lib/components/ui/button';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 </script>
 
@@ -73,5 +70,12 @@
 				</Table.Cell>
 			</Table.Row>
 		{/each}
+		{#if $application.pods.length === 0}
+			<Table.Row>
+				<Table.Cell colspan={5}>
+					<Table.Empty />
+				</Table.Cell>
+			</Table.Row>
+		{/if}
 	</Table.Body>
 </Table.Root>

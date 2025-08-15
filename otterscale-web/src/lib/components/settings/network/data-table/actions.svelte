@@ -1,43 +1,39 @@
 <script lang="ts" module>
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import type { Row } from '@tanstack/table-core';
-	import type { Writable } from 'svelte/store';
 	import type { Network } from '$lib/api/network/v1/network_pb';
+	import { Layout } from '$lib/components/custom/data-table';
 	import DeleteFabric from './delete-fabric.svelte';
 	import UpdateFabric from './update-fabric.svelte';
-	import UpdateVLAN from './update-vlan.svelte';
 	import UpdateSubnet from './update-subnet.svelte';
+	import UpdateVLAN from './update-vlan.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		row,
-		networks = $bindable()
+		network
 	}: {
-		row: Row<Network>;
-		networks: Writable<Network[]>;
+		network: Network;
 	} = $props();
 </script>
 
 <Layout.Actions>
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>
 	<Layout.ActionSeparator />
-	{#if row.original.fabric}
+	{#if network.fabric}
 		<Layout.ActionItem>
-			<UpdateFabric fabric={row.original.fabric} bind:networks />
+			<UpdateFabric fabric={network.fabric} />
 		</Layout.ActionItem>
-		{#if row.original.vlan}
+		{#if network.vlan}
 			<Layout.ActionItem>
-				<UpdateVLAN fabric={row.original.fabric} vlan={row.original.vlan} bind:networks />
+				<UpdateVLAN fabric={network.fabric} vlan={network.vlan} />
 			</Layout.ActionItem>
 		{/if}
-		{#if row.original.subnet}
+		{#if network.subnet}
 			<Layout.ActionItem>
-				<UpdateSubnet subnet={row.original.subnet} bind:networks />
+				<UpdateSubnet subnet={network.subnet} />
 			</Layout.ActionItem>
 		{/if}
 		<Layout.ActionItem>
-			<DeleteFabric fabric={row.original.fabric} bind:networks />
+			<DeleteFabric fabric={network.fabric} />
 		</Layout.ActionItem>
 	{/if}
 </Layout.Actions>

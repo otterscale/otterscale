@@ -6,41 +6,35 @@
 	} from '$lib/api/machine/v1/machine_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
-	const transport: Transport = getContext('transport');
-	const machineClient = createClient(MachineService, transport);
-
 	let {
-		machine,
-		machines = $bindable()
+		machine
 	}: {
 		machine: Machine;
-		machines: Writable<Machine[]>;
 	} = $props();
 
-	const DEFAULT_REQUEST = {
+	const transport: Transport = getContext('transport');
+	const reloadManager: ReloadManager = getContext('ReloadManager');
+
+	let invalid: boolean | undefined = $state();
+
+	const machineClient = createClient(MachineService, transport);
+	const requestManager = new RequestManager<DeleteMachineRequest>({
 		id: machine.id,
 		force: false,
 		purgeDisk: false
-	} as DeleteMachineRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
+	} as DeleteMachineRequest);
 	const stateController = new StateController(false);
-
-	let fqdn = $state();
-	let invalid: boolean | undefined = $state();
 </script>
 
 <SingleStepModal.Root bind:open={stateController.state}>
@@ -54,44 +48,44 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>FQDN</Form.Label>
-					<SingleInput.DeletionConfirm
-						id="deletion"
-						required
-						target={machine.fqdn}
-						bind:value={fqdn}
-						bind:invalid
-					/>
+					<SingleInput.Confirm required target={machine.fqdn} bind:invalid />
 					<Form.Help>
 						Please type the machine fqdn {machine.fqdn} exactly to confirm deletion. This action cannot
 						be undone.
 					</Form.Help>
 
 					<Form.Field>
-						<SingleInput.Boolean required descriptor={() => 'Force'} bind:value={request.force} />
+						<SingleInput.Boolean
+							required
+							descriptor={() => 'Force'}
+							bind:value={requestManager.request.force}
+						/>
 					</Form.Field>
 
 					<Form.Field>
 						<SingleInput.Boolean
 							required
 							descriptor={() => 'Purge Disk'}
-							bind:value={request.purgeDisk}
+							bind:value={requestManager.request.purgeDisk}
 						/>
 					</Form.Field>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<SingleStepModal.Footer>
-			<SingleStepModal.Cancel onclick={reset}>Cancel</SingleStepModal.Cancel>
+			<SingleStepModal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}>Cancel</SingleStepModal.Cancel
+			>
 			<SingleStepModal.ActionsGroup>
 				<SingleStepModal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => machineClient.deleteMachine(request), {
+						toast.promise(() => machineClient.deleteMachine(requestManager.request), {
 							loading: 'Loading...',
 							success: () => {
-								machineClient.listMachines({}).then((response) => {
-									machines.set(response.machines);
-								});
+								reloadManager.force();
 								return `Delete ${machine.fqdn} success`;
 							},
 							error: (error) => {
@@ -104,7 +98,7 @@
 							}
 						});
 
-						reset();
+						requestManager.reset();
 						stateController.close();
 					}}
 				>

@@ -4,21 +4,22 @@
 	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
+	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
-		_row_picker: _row_picker,
-		id: id,
-		name: name,
-		state: state,
-		stateUp: stateUp,
-		stateIn: stateIn,
-		exists: exists,
-		deviceClass: deviceClass,
-		machine: machine,
-		placementGroupCount: placementGroupCount,
-		usage: usage
+		_row_picker,
+		id,
+		name,
+		state,
+		stateUp,
+		stateIn,
+		exists,
+		deviceClass,
+		machine,
+		placementGroupCount,
+		usage
 	};
 </script>
 
@@ -96,7 +97,14 @@
 		denominator={Number(row.original.sizeBytes)}
 	>
 		{#snippet ratio({ numerator, denominator })}
-			{((numerator * 100) / denominator).toFixed(2)}%
+			{Progress.formatRatio(numerator, denominator)}
+		{/snippet}
+		{#snippet detail({ numerator, denominator })}
+			{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
+			{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
+			{numeratorValue}
+			{numeratorUnit}/{denominatorValue}
+			{denominatorUnit}
 		{/snippet}
 	</Progress.Root>
 {/snippet}

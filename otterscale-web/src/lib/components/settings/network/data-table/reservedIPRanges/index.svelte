@@ -8,11 +8,9 @@
 
 <script lang="ts">
 	let {
-		subnet,
-		networks = $bindable()
+		subnet
 	}: {
 		subnet: Network_Subnet;
-		networks: Writable<Network[]>;
 	} = $props();
 </script>
 
@@ -23,7 +21,7 @@
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
 		<Sheet.Content class="min-w-[50vw] p-4">
-			<DataTable {subnet} bind:networks />
+			<DataTable {subnet} />
 		</Sheet.Content>
 	</Sheet.Root>
 </div>

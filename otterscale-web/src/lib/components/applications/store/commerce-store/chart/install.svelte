@@ -10,7 +10,7 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { writable, type Writable } from 'svelte/store';
-	import ReleaseValuesEdit from '../utils/input-release-configuration.svelte';
+	import ReleaseValuesEdit from './input-release-configuration.svelte';
 	// import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
 </script>
 

@@ -12,6 +12,10 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
 </script>
 
-<div class={cn('flex w-full flex-col gap-2', className)}>
-	{@render children?.()}
+<div class={cn('text-muted-foreground p-2 text-center', className)}>
+	{#if children}
+		{@render children()}
+	{:else}
+		No Data
+	{/if}
 </div>

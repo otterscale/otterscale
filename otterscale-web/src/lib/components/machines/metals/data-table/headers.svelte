@@ -1,12 +1,10 @@
 <script lang="ts" module>
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
-	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
+	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker: _row_picker,
+		_row_picker,
 		fqdn_ip,
 		powerState,
 		status,
@@ -14,14 +12,15 @@
 		ram,
 		disk,
 		storage,
-		tags
+		tags,
+		actions
 	};
 </script>
 
 {#snippet _row_picker(table: Table<Machine>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<TableRowPicker {table} />
+			<RowPickers.Header {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
@@ -100,3 +99,5 @@
 		<Layout.HeaderViewer>TAGS</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
+
+{#snippet actions()}{/snippet}

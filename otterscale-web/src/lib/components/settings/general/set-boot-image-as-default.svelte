@@ -7,6 +7,7 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -26,18 +27,11 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(ConfigurationService, transport);
 
-	const DEFAULT_REQUEST = {
+	const requestManager = new RequestManager<SetDefaultBootImageRequest>({
 		distroSeries: bootImage.distroSeries
-	} as SetDefaultBootImageRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
-	let name = $state('');
-
+	} as SetDefaultBootImageRequest);
+	const client = createClient(ConfigurationService, transport);
 	const stateController = new StateController(false);
 </script>
 
@@ -53,25 +47,29 @@
 				<Form.Fieldset>
 					<Form.Field>
 						<Form.Label>Name</Form.Label>
-						<SingleInput.DeletionConfirm target={bootImage.name} bind:value={name} />
+						<SingleInput.Confirm target={bootImage.name} />
 					</Form.Field>
 				</Form.Fieldset>
 			</Form.Root>
 			<Modal.Footer>
-				<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+				<Modal.Cancel
+					onclick={() => {
+						requestManager.reset();
+					}}>Cancel</Modal.Cancel
+				>
 				<Modal.ActionsGroup>
 					<Modal.Action
 						onclick={() => {
-							toast.promise(() => client.setDefaultBootImage(request), {
+							toast.promise(() => client.setDefaultBootImage(requestManager.request), {
 								loading: 'Loading...',
 								success: () => {
 									client.getConfiguration({}).then((response) => {
 										configuration.set(response);
 									});
-									return `Set ${request.distroSeries} as default`;
+									return `Set ${requestManager.request.distroSeries} as default`;
 								},
 								error: (error) => {
-									let message = `Fail to set ${request.distroSeries} as default`;
+									let message = `Fail to set ${requestManager.request.distroSeries} as default`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
 										duration: Number.POSITIVE_INFINITY
@@ -80,7 +78,7 @@
 								}
 							});
 
-							reset();
+							requestManager.reset();
 							stateController.close();
 						}}
 					>

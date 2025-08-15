@@ -58,7 +58,7 @@
 					<Form.Help>
 						Please type the pool name exactly to confirm deletion. This action cannot be undone.
 					</Form.Help>
-					<SingleInput.DeletionConfirm
+					<SingleInput.Confirm
 						required
 						target={image.poolName}
 						bind:value={request.poolName}
@@ -70,7 +70,7 @@
 					<Form.Help>
 						Please type the image name exactly to confirm deletion. This action cannot be undone.
 					</Form.Help>
-					<SingleInput.DeletionConfirm
+					<SingleInput.Confirm
 						required
 						target={image.name}
 						bind:value={request.imageName}

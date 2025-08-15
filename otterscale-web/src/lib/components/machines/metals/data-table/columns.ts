@@ -1,4 +1,5 @@
 import type { Machine } from '$lib/api/machine/v1/machine_pb';
+import { getSortingFunction } from '$lib/components/custom/data-table';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
@@ -24,16 +25,21 @@ const columns: ColumnDef<Machine>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.fqdn_ip, row);
         },
-    },
-    {
-        id: "fqdn",
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.fqdn,
+                nextRow.original.fqdn,
+                (p: string, n: string) => (p.localeCompare(n) < 0),
+                (p, n) => (p === n)
+            )
+        ),
         filterFn: (row, columnId, filterValue: string | undefined) => {
             if (filterValue === undefined) {
                 return true
             }
 
             return row.original.fqdn.includes(filterValue)
-        }
+        },
     },
     {
         accessorKey: "powerState",
@@ -61,6 +67,14 @@ const columns: ColumnDef<Machine>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.cores_arch, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.cpuCount,
+                nextRow.original.cpuCount,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "ram",
@@ -70,6 +84,14 @@ const columns: ColumnDef<Machine>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.ram, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.memoryMb,
+                nextRow.original.memoryMb,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "disk",
@@ -79,6 +101,14 @@ const columns: ColumnDef<Machine>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.disk, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.blockDevices.length,
+                nextRow.original.blockDevices.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "storage",
@@ -87,6 +117,32 @@ const columns: ColumnDef<Machine>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.storage, row);
+        },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.storageMb,
+                nextRow.original.storageMb,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
+    },
+    {
+        accessorKey: "tags",
+        header: ({ column }) => {
+            return renderSnippet(headers.tags, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.tags, row);
+        },
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
         },
     },
 ];

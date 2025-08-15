@@ -130,7 +130,7 @@
 
 				<Form.Field>
 					<Form.Label>Policy</Form.Label>
-					<!-- <SingleInput.Structure preview bind:value={request.policy} language="json" /> -->
+					<SingleInput.Structure preview bind:value={request.policy} language="json" />
 					<div class="flex justify-end gap-2">
 						<Button
 							variant="outline"

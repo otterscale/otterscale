@@ -2,39 +2,32 @@
 	import {
 		NetworkService,
 		type DeleteNetworkRequest,
-		type Network,
 		type Network_Fabric
 	} from '$lib/api/network/v1/network_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
-	let {
-		fabric,
-		networks = $bindable()
-	}: { fabric: Network_Fabric; networks: Writable<Network[]> } = $props();
+	let { fabric }: { fabric: Network_Fabric } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(NetworkService, transport);
+	const reloadManager: ReloadManager = getContext('ReloadManager');
 
-	const DEFAULT_REQUEST = { id: fabric.id } as DeleteNetworkRequest;
-
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
-	let name = $state('');
 	let invalid: boolean | undefined = $state();
 
+	const client = createClient(NetworkService, transport);
+	const requestManager = new RequestManager<DeleteNetworkRequest>({
+		id: fabric.id
+	} as DeleteNetworkRequest);
 	const stateController = new StateController(false);
 </script>
 
@@ -48,13 +41,7 @@
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.DeletionConfirm
-						id="deletion"
-						required
-						target={fabric.name}
-						value={name}
-						bind:invalid
-					/>
+					<SingleInput.Confirm id="deletion" required target={fabric.name} bind:invalid />
 				</Form.Field>
 				<Form.Help>
 					Please type the fabric id exactly to confirm deletion. This action cannot be undone.
@@ -62,17 +49,19 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}>Cancel</Modal.Cancel
+			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => client.deleteNetwork(request), {
+						toast.promise(() => client.deleteNetwork(requestManager.request), {
 							loading: 'Loading...',
 							success: () => {
-								client.listNetworks({}).then((response) => {
-									networks.set(response.networks);
-								});
+								reloadManager.force();
 								return `Delete ${fabric.name} success`;
 							},
 							error: (error) => {
@@ -85,7 +74,7 @@
 							}
 						});
 
-						reset();
+						requestManager.reset();
 						stateController.close();
 					}}
 				>

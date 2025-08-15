@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';

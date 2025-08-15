@@ -53,7 +53,7 @@
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.DeletionConfirm
+					<SingleInput.Confirm
 						required
 						id="deletion"
 						target={bucket.name}

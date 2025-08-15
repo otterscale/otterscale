@@ -1,14 +1,8 @@
 <script lang="ts" module>
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
+	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	// import type { PrometheusDriver } from 'prometheus-query';
-	import type { Network, Network_Subnet } from '$lib/api/network/v1/network_pb';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -20,22 +14,16 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { type Writable } from 'svelte/store';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
-	// import type { PrometheusDriver } from 'prometheus-query';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	// const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
-
 	let {
-		subnet,
-		networks = $bindable()
+		subnet
 	}: {
 		subnet: Network_Subnet;
-		networks: Writable<Network[]>;
 	} = $props();
 
 	let ipRanges = $state(subnet.ipRanges);
@@ -124,10 +112,10 @@
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={ipRanges.map((row) => row.comment)} columnId="comment" {table} />
 			<Filters.StringMatch values={ipRanges.flatMap((row) => row.type)} columnId="type" {table} />
-			<ColumnViewer {table} />
+			<Filters.Column {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {subnet} bind:networks />
+			<Create {subnet} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -158,21 +146,17 @@
 							</Table.Cell>
 						{/each}
 						<Table.Cell>
-							<Actions {row} bind:networks />
+							<Actions {row} />
 						</Table.Cell>
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<TableEmpty />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<TableFooter {table} />
-		<TablePagination {table} />
+		<Footer {table} />
+		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

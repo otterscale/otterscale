@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { User } from '$lib/api/storage/v1/storage_pb';
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import ColumnViewer from '$lib/components/custom/data-table/data-table-filters/column.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';

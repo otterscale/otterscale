@@ -4,7 +4,7 @@
 
 <main class="space-y-4">
 	<!-- <Loading.Selection /> -->
-	<!-- <Loading.Report /> -->
+	<Loading.Report />
 	<!-- <Loading.DataTable /> -->
 	<!-- <Loading.ApplicationStore /> -->
 	<!-- <Loading.Data /> -->

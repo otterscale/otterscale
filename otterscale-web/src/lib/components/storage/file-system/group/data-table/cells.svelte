@@ -3,7 +3,7 @@
 	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Badge } from '$lib/components/ui/badge';
-	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
+	import { formatCapacityV2 as formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
 
@@ -44,25 +44,17 @@
 		numerator={Number(row.original.usedBytes)}
 		denominator={Number(row.original.usedBytes)}
 	>
-		{#snippet detail({ numerator, denominator })}
-			{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(
-				numerator / (1024 * 1024)
-			)}
-			{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(
-				denominator / (1024 * 1024)
-			)}
-			<span>
-				{numeratorValue}
-				{numeratorUnit}
-			</span>
-			<span>/</span>
-			<span>
-				{denominatorValue}
-				{denominatorUnit}
-			</span>
-		{/snippet}
 		{#snippet ratio({ numerator, denominator })}
-			{((numerator * 100) / denominator).toFixed(2)}%
+			{Progress.formatRatio(numerator, denominator)}
+		{/snippet}
+		{#snippet detail({ numerator, denominator })}
+			{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
+			{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
+			{numeratorValue}
+			{numeratorUnit}
+			/
+			{denominatorValue}
+			{denominatorUnit}
 		{/snippet}
 	</Progress.Root>
 {/snippet}

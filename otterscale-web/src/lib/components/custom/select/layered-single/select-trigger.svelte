@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import Separator from '$lib/components/ui/separator/separator.svelte';

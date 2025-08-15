@@ -53,9 +53,11 @@ const columns: ColumnDef<Pool>[] = [
             return renderSnippet(cells.placement_group_state, row);
         },
         filterFn: (row, columnId, filterValue) => {
-            const value = Object.keys(row.getValue(columnId) ?? {});
-            if (!value.length || !filterValue.length) return true;
-            return value.some(v => filterValue.includes(v));
+            const values = Object.keys(row.getValue(columnId) ?? {});
+            if (!values.length || !filterValue.length) return true;
+            console.log('f', filterValue)
+            console.log('v', values)
+            return values.some(value => filterValue.includes(value));
         },
     },
     {
@@ -67,24 +69,6 @@ const columns: ColumnDef<Pool>[] = [
             return renderSnippet(cells.usage, row);
         },
     },
-    // {
-    //     accessorKey: "readBytes",
-    //     header: ({ column }) => {
-    //         return renderSnippet(headers.readBytes, column)
-    //     },
-    //     cell: ({ row }) => {
-    //         return renderSnippet(cells.readBytes, row);
-    //     },
-    // },
-    // {
-    //     accessorKey: "writeBytes",
-    //     header: ({ column }) => {
-    //         return renderSnippet(headers.writeBytes, column)
-    //     },
-    //     cell: ({ row }) => {
-    //         return renderSnippet(cells.writeBytes, row);
-    //     },
-    // },
 ];
 
 export {

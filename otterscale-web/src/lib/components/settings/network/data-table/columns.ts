@@ -1,4 +1,5 @@
 import type { Network } from '$lib/api/network/v1/network_pb';
+import { getSortingFunction } from '$lib/components/custom/data-table';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
@@ -24,15 +25,12 @@ const columns: ColumnDef<Network>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.fabric, row);
         },
-    },
-    {
-        id: "fabricName",
         filterFn: (row, columnId, filterValue) => {
             if (!filterValue) {
                 return true
             }
 
-            return row.original.fabric?.name === filterValue
+            return row.original.fabric ? row.original.fabric.name.includes(filterValue) : false
         },
     },
     {
@@ -43,16 +41,12 @@ const columns: ColumnDef<Network>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.vlan, row);
         },
-    },
-    {
-        id: "vlanName",
         filterFn: (row, columnId, filterValue) => {
-            console.log(row.original.vlan?.name, filterValue)
             if (!filterValue) {
                 return true
             }
 
-            return filterValue.includes(row.original.vlan?.name)
+            return row.original.vlan ? row.original.vlan.name.includes(filterValue) : false
         },
     },
     {
@@ -81,16 +75,24 @@ const columns: ColumnDef<Network>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.ipAddresses, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.subnet?.ipAddresses.length,
+                nextRow.original.subnet?.ipAddresses.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
-    // {
-    //     accessorKey: "ipRanges",
-    //     header: ({ column }) => {
-    //         return renderSnippet(headers.ipRanges, column)
-    //     },
-    //     cell: ({ row }) => {
-    //         return renderSnippet(cells.ipRanges, row);
-    //     },
-    // },
+    {
+        accessorKey: "ipRanges",
+        header: ({ column }) => {
+            return renderSnippet(headers.ipRanges, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.ipRanges, row);
+        },
+    },
     {
         accessorKey: "statistics",
         header: ({ column }) => {
@@ -98,6 +100,23 @@ const columns: ColumnDef<Network>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.statistics, row);
+        },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                Number(previousRow.original.subnet?.statistics?.available) / Number(previousRow.original.subnet?.statistics?.total),
+                Number(nextRow.original.subnet?.statistics?.available) / Number(nextRow.original.subnet?.statistics?.total),
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
         },
     },
 ];

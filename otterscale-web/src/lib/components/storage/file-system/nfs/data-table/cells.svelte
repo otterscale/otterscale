@@ -5,7 +5,8 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Table from '$lib/components/ui/table';
-	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { formatCapacityV2 as formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
@@ -129,31 +130,32 @@
 		numerator={Number(row.original.usedBytes)}
 		denominator={Number(row.original.usedBytes)}
 	>
-		{#snippet detail({ numerator, denominator })}
-			{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(
-				numerator / (1024 * 1024)
-			)}
-			{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(
-				denominator / (1024 * 1024)
-			)}
-			<span>
-				{numeratorValue}
-				{numeratorUnit}
-			</span>
-			<span>/</span>
-			<span>
-				{denominatorValue}
-				{denominatorUnit}
-			</span>
-		{/snippet}
 		{#snippet ratio({ numerator, denominator })}
-			{((numerator * 100) / denominator).toFixed(2)}%
+			{Progress.formatRatio(numerator, denominator)}
+		{/snippet}
+		{#snippet detail({ numerator, denominator })}
+			{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
+			{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
+			{numeratorValue}
+			{numeratorUnit}
+			/
+			{denominatorValue}
+			{denominatorUnit}
 		{/snippet}
 	</Progress.Root>
 {/snippet}
 
 {#snippet createTime(row: Row<Subvolume>)}
 	{#if row.original.createdAt}
-		{formatTimeAgo(timestampDate(row.original.createdAt))}
+		<Tooltip.Provider>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{formatTimeAgo(timestampDate(row.original.createdAt))}
+				</Tooltip.Trigger>
+				<Tooltip.Content>
+					{timestampDate(row.original.createdAt)}
+				</Tooltip.Content>
+			</Tooltip.Root>
+		</Tooltip.Provider>
 	{/if}
 {/snippet}

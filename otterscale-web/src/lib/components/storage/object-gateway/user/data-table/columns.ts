@@ -44,26 +44,6 @@ const columns: ColumnDef<User>[] = [
         },
         filterFn: 'equals',
     },
-    {
-        id: "keys",
-        filterFn: (row, columnId, filterValues: Record<number, number> | undefined) => {
-            if (!filterValues) {
-                return true
-            }
-
-            if (Object.values(filterValues).length != 2) {
-                throw `invalid filter range for ${columnId}`
-            }
-
-            const keys = Object.keys(row.original.keys ?? []).length;
-            const range = Object.values(filterValues)
-            range.sort()
-            const [minimum, maximum] = range;
-
-            return minimum <= keys && keys <= maximum;
-        }
-
-    },
 ];
 
 export {

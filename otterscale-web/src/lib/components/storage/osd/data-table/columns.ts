@@ -35,24 +35,26 @@ const columns: ColumnDef<OSD>[] = [
         },
     },
     {
-        id: "in",
+        id: "_in",
         filterFn: (row, columnId, filterValue: boolean) => {
             if (filterValue === undefined) {
                 return true
             }
 
             return row.original.in === filterValue
-        }
+        },
+        enableHiding: false,
     },
     {
-        id: "up",
+        id: "_up",
         filterFn: (row, columnId, filterValue: boolean) => {
             if (filterValue === undefined) {
                 return true
             }
 
             return row.original.up === filterValue
-        }
+        },
+        enableHiding: false,
     },
     {
         accessorKey: "exists",

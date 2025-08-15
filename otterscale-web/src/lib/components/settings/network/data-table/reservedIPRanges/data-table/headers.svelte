@@ -1,11 +1,10 @@
 <script lang="ts" module>
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
+	import { Layout, RowPickers } from '$lib/components/custom/data-table';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker: _row_picker,
+		_row_picker,
 		type,
 		startIp,
 		endIp,
@@ -16,7 +15,7 @@
 {#snippet _row_picker(table: Table<Network_IPRange>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<TableRowPicker {table} />
+			<RowPickers.Header {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}

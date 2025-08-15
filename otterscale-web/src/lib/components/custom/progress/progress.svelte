@@ -1,11 +1,14 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { Progress } from '$lib/components/ui/progress';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -25,19 +28,22 @@
 {#if denominator > 0}
 	<div bind:this={ref} data-slot="progress-root" {...restProps}>
 		<Progress value={numerator / denominator} max={1} />
-		{#if detail || ratio}
-			<div
-				class={cn(
-					'text-muted-foreground flex items-center justify-between gap-4 font-light',
-					className
-				)}
-			>
-				<span>
-					{@render detail?.({ numerator, denominator })}
-				</span>
-				<span>
+		{#if ratio}
+			<div class={cn('text-muted-foreground flex items-center justify-end font-light', className)}>
+				{#if detail}
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								{@render ratio?.({ numerator, denominator })}
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								{@render detail?.({ numerator, denominator })}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+				{:else}
 					{@render ratio?.({ numerator, denominator })}
-				</span>
+				{/if}
 			</div>
 		{/if}
 	</div>

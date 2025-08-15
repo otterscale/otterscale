@@ -6,4 +6,4 @@ interface TableState {
     rowSelection: RowSelectionState;
 }
 
-export type { TableState }
+export type { TableState };

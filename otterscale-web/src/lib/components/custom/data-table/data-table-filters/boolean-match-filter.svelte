@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import { Badge } from '$lib/components/ui/badge';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
@@ -28,15 +28,15 @@
 	let selectedValue: boolean | undefined = $state(undefined);
 
 	const options = [false, true];
-	const counts = $derived(
-		options.reduce(
-			(a, option) => {
-				a[String(option)] = values.filter((value) => value === option).length;
-				return a;
-			},
-			{} as Record<string, number>
-		)
-	);
+	// const counts = $derived(
+	// 	options.reduce(
+	// 		(a, option) => {
+	// 			a[String(option)] = values.filter((value) => value === option).length;
+	// 			return a;
+	// 		},
+	// 		{} as Record<string, number>
+	// 	)
+	// );
 </script>
 
 <Popover.Root>
@@ -63,6 +63,7 @@
 									selectedValue = option;
 									table.getColumn(columnId)?.setFilterValue(option);
 								}
+								table.firstPage();
 							}}
 							class="flex w-full items-center justify-between gap-4 text-xs"
 						>
@@ -73,9 +74,9 @@
 								/>
 								{capitalizeFirstLetter(String(descriptor(option)))}
 							</span>
-							<p class="text-muted-foreground ml-auto font-mono">
+							<!-- <p class="text-muted-foreground ml-auto font-mono">
 								{counts[String(option)]}
-							</p>
+							</p> -->
 						</Command.Item>
 					{/each}
 				</Command.Group>

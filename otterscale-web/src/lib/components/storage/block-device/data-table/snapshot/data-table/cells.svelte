@@ -2,6 +2,7 @@
 	import type { Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
 	import * as Progress from '$lib/components/custom/progress/index.js';
+	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
@@ -36,7 +37,14 @@
 	{@const numerator = Number(row.original.usedBytes)}
 	<Progress.Root {numerator} {denominator}>
 		{#snippet ratio({ numerator, denominator })}
-			{Math.round((numerator * 100) / denominator)}%
+			{Progress.formatRatio(numerator, denominator)}
+		{/snippet}
+		{#snippet detail({ numerator, denominator })}
+			{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
+			{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
+			{numeratorValue}
+			{numeratorUnit}/{denominatorValue}
+			{denominatorUnit}
 		{/snippet}
 	</Progress.Root>
 {/snippet}

@@ -1,12 +1,9 @@
 <script lang="ts" module>
-	import { page } from '$app/state';
 	import { authClient } from '$lib/auth-client';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb } from '$lib/stores';
 	import { Button } from '$lib/components/ui/button';
-	import { Label } from '$lib/components/ui/label';
-	import { Input } from '$lib/components/ui/input';
 	import * as Card from '$lib/components/ui/card';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
 	import { toast } from 'svelte-sonner';
 
 	const providerId = 'otterscale-oidc';

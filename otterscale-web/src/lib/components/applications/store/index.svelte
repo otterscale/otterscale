@@ -12,11 +12,12 @@
 
 <script lang="ts">
 	const transport: Transport = getContext('transport');
-	const applicationClient = createClient(ApplicationService, transport);
 
 	const charts = writable<Application_Chart[]>([]);
-
 	let isMounted = $state(false);
+
+	const applicationClient = createClient(ApplicationService, transport);
+
 	onMount(async () => {
 		await applicationClient
 			.listCharts({})

@@ -128,7 +128,7 @@
 
 				<Form.Field>
 					<Form.Label>Policy</Form.Label>
-					<!-- <SingleInput.Structure preview bind:value={request.policy} language="json" /> -->
+					<SingleInput.Structure preview bind:value={request.policy} language="json" />
 				</Form.Field>
 
 				<Form.Field>

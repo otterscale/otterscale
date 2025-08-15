@@ -1,31 +1,31 @@
 <script lang="ts" module>
 	import {
 		NetworkService,
-		type Network,
 		type Network_Subnet,
 		type UpdateSubnetRequest
 	} from '$lib/api/network/v1/network_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
-	let {
-		subnet,
-		networks = $bindable()
-	}: { subnet: Network_Subnet; networks: Writable<Network[]> } = $props();
+	let { subnet }: { subnet: Network_Subnet } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(NetworkService, transport);
+	const reloadManager: ReloadManager = getContext('ReloadManager');
 
-	const DEFAULT_REQUEST = {
+	let invalid: boolean | undefined = $state();
+
+	const client = createClient(NetworkService, transport);
+	const requestManager = new RequestManager<UpdateSubnetRequest>({
 		id: subnet.id,
 		name: subnet.name,
 		cidr: subnet.cidr,
@@ -33,14 +33,7 @@
 		dnsServers: subnet.dnsServers,
 		description: subnet.description,
 		allowDnsResolution: subnet.allowDnsResolution
-	} as UpdateSubnetRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
-	let invalid: boolean | undefined = $state();
-
+	} as UpdateSubnetRequest);
 	const stateController = new StateController(false);
 </script>
 
@@ -55,12 +48,17 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General type="text" required value={request.name} bind:invalid />
+					<SingleInput.General
+						type="text"
+						required
+						value={requestManager.request.name}
+						bind:invalid
+					/>
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Description</Form.Label>
-					<SingleInput.General type="text" value={request.description} />
+					<SingleInput.General type="text" value={requestManager.request.description} />
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -69,12 +67,12 @@
 
 				<Form.Field>
 					<Form.Label>CIDR</Form.Label>
-					<SingleInput.General type="text" value={request.cidr} />
+					<SingleInput.General type="text" value={requestManager.request.cidr} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Gateway</Form.Label>
-					<SingleInput.General type="text" value={request.gatewayIp} />
+					<SingleInput.General type="text" value={requestManager.request.gatewayIp} />
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -83,7 +81,7 @@
 
 				<Form.Field>
 					<Form.Label>Server</Form.Label>
-					<MultipleInput.Root type="text" bind:values={request.dnsServers}>
+					<MultipleInput.Root type="text" bind:values={requestManager.request.dnsServers}>
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
 							<MultipleInput.Input />
@@ -96,23 +94,25 @@
 				<Form.Field>
 					<SingleInput.Boolean
 						descriptor={() => 'Allow DNS Resolution'}
-						bind:value={request.allowDnsResolution}
+						bind:value={requestManager.request.allowDnsResolution}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}>Cancel</Modal.Cancel
+			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => client.updateSubnet(request), {
+						toast.promise(() => client.updateSubnet(requestManager.request), {
 							loading: 'Loading...',
 							success: () => {
-								client.listNetworks({}).then((response) => {
-									networks.set(response.networks);
-								});
+								reloadManager.force();
 								return `Update ${subnet.name} success`;
 							},
 							error: (error) => {
@@ -125,7 +125,7 @@
 							}
 						});
 
-						reset();
+						requestManager.reset();
 						stateController.close();
 					}}
 				>

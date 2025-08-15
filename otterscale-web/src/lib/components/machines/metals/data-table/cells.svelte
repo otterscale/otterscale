@@ -2,28 +2,32 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { RowPickers } from '$lib/components/custom/data-table';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { formatCapacity } from '$lib/formatter';
 	import { dynamicPaths } from '$lib/path';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+	import Actions from './actions.svelte';
+	import Tags from './tags.svelte';
 
 	export const cells = {
-		_row_picker: _row_picker,
+		_row_picker,
 		fqdn_ip,
 		powerState,
 		status,
 		cores_arch,
 		ram,
 		disk,
-		storage
+		storage,
+		tags,
+		actions
 	};
 </script>
 
 {#snippet _row_picker(row: Row<Machine>)}
-	<TableRowPicker {row} />
+	<RowPickers.Cell {row} />
 {/snippet}
 
 {#snippet fqdn_ip(row: Row<Machine>)}
@@ -122,4 +126,12 @@
 		{formatCapacity(row.original.storageMb).value}
 		{formatCapacity(row.original.storageMb).unit}
 	</span>
+{/snippet}
+
+{#snippet tags(row: Row<Machine>)}
+	<Tags machine={row.original} />
+{/snippet}
+
+{#snippet actions(row: Row<Machine>)}
+	<Actions machine={row.original} />
 {/snippet}

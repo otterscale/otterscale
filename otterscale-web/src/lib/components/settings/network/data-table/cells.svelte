@@ -1,28 +1,31 @@
 <script lang="ts" module>
 	import type { Network } from '$lib/api/network/v1/network_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import { RowPickers } from '$lib/components/custom/data-table';
+	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import ViewVLAN from './view-vlan.svelte';
-	import ViewSubnet from './view-subnet.svelte';
+	import Actions from './actions.svelte';
+	import { ReservedIPRanges } from './reservedIPRanges';
 	import ViewIPAddresses from './view-ip-addresses.svelte';
+	import ViewSubnet from './view-subnet.svelte';
+	import ViewVLAN from './view-vlan.svelte';
 
 	export const cells = {
-		_row_picker: _row_picker,
+		_row_picker,
 		fabric,
 		vlan,
 		dhcpOn,
 		subnet,
 		ipAddresses,
 		ipRanges,
-		statistics
+		statistics,
+		actions
 	};
 </script>
 
 {#snippet _row_picker(row: Row<Network>)}
-	<TableRowPicker {row} />
+	<RowPickers.Cell {row} />
 {/snippet}
 
 {#snippet fabric(row: Row<Network>)}
@@ -72,15 +75,27 @@
 {#snippet ipRanges(row: Row<Network>)}
 	<span class="flex justify-end">
 		{#if row.original.subnet}
-			{row.original.subnet.ipRanges.length}
+			<ReservedIPRanges subnet={row.original.subnet} />
 		{/if}
 	</span>
 {/snippet}
 
 {#snippet statistics(row: Row<Network>)}
-	<span class="flex justify-end">
-		{#if row.original.subnet && row.original.subnet.statistics}
-			{row.original.subnet.statistics.usagePercent}
-		{/if}
-	</span>
+	{#if row.original.subnet && row.original.subnet.statistics}
+		<Progress.Root
+			numerator={Number(row.original.subnet.statistics.available)}
+			denominator={Number(row.original.subnet.statistics.total)}
+		>
+			{#snippet ratio({ numerator, denominator })}
+				{Progress.formatRatio(numerator, denominator)}
+			{/snippet}
+			{#snippet detail({ numerator, denominator })}
+				{numerator}/{denominator}
+			{/snippet}
+		</Progress.Root>
+	{/if}
+{/snippet}
+
+{#snippet actions(row: Row<Network>)}
+	<Actions network={row.original}></Actions>
 {/snippet}

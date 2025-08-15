@@ -1,17 +1,17 @@
 <script lang="ts" module>
 	import {
 		NetworkService,
-		type DeleteNetworkRequest,
 		type Network,
 		type Network_Fabric,
 		type Network_VLAN,
-		type UpdateFabricRequest,
 		type UpdateVLANRequest
 	} from '$lib/api/network/v1/network_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
+	import { RequestManager } from '$lib/components/custom/form';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -20,30 +20,22 @@
 </script>
 
 <script lang="ts">
-	let {
-		fabric,
-		vlan,
-		networks = $bindable()
-	}: { fabric: Network_Fabric; vlan: Network_VLAN; networks: Writable<Network[]> } = $props();
+	let { fabric, vlan }: { fabric: Network_Fabric; vlan: Network_VLAN } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(NetworkService, transport);
+	const reloadManager: ReloadManager = getContext('ReloadManager');
 
-	const DEFAULT_REQUEST = {
+	let invalid: boolean | undefined = $state();
+
+	const client = createClient(NetworkService, transport);
+	const requestManager = new RequestManager<UpdateVLANRequest>({
 		fabricId: fabric.id,
 		vid: vlan.id,
 		name: vlan.name,
 		mtu: vlan.mtu,
 		description: vlan.description,
 		dhcpOn: vlan.dhcpOn
-	} as UpdateVLANRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
-	let invalid: boolean | undefined = $state();
-
+	} as UpdateVLANRequest);
 	const stateController = new StateController(false);
 </script>
 
@@ -58,36 +50,43 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General type="text" required value={request.name} bind:invalid />
+					<SingleInput.General
+						type="text"
+						required
+						value={requestManager.request.name}
+						bind:invalid
+					/>
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>NTU</Form.Label>
-					<SingleInput.General type="number" value={request.mtu} />
+					<SingleInput.General type="number" value={requestManager.request.mtu} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Description</Form.Label>
-					<SingleInput.General type="text" value={request.description} />
+					<SingleInput.General type="text" value={requestManager.request.description} />
 				</Form.Field>
 
 				<Form.Field>
-					<SingleInput.Boolean descriptor={() => 'DHCP ON'} value={request.dhcpOn} />
+					<SingleInput.Boolean descriptor={() => 'DHCP ON'} value={requestManager.request.dhcpOn} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}>Cancel</Modal.Cancel
+			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => client.updateVLAN(request), {
+						toast.promise(() => client.updateVLAN(requestManager.request), {
 							loading: 'Loading...',
 							success: () => {
-								client.listNetworks({}).then((response) => {
-									networks.set(response.networks);
-								});
+								reloadManager.force();
 								return `Update ${vlan.name} success`;
 							},
 							error: (error) => {
@@ -100,7 +99,7 @@
 							}
 						});
 
-						reset();
+						requestManager.reset();
 						stateController.close();
 					}}
 				>

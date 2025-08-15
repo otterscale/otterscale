@@ -38,12 +38,7 @@
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.DeletionConfirm
-						required
-						target={tag.name}
-						value={request.name}
-						bind:invalid
-					/>
+					<SingleInput.Confirm required target={tag.name} value={request.name} bind:invalid />
 				</Form.Field>
 				<Form.Help>
 					Please type the tag name exactly to confirm deletion. This action cannot be undone.

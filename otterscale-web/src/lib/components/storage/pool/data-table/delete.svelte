@@ -51,7 +51,7 @@
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.DeletionConfirm
+					<SingleInput.Confirm
 						id="deletion"
 						required
 						target={pool.name}

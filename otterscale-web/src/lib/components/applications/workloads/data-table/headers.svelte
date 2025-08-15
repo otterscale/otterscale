@@ -1,12 +1,10 @@
 <script lang="ts" module>
 	import type { Application } from '$lib/api/application/v1/application_pb';
-	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
+	import { Sorter, Layout, RowPickers } from '$lib/components/custom/data-table';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker: _row_picker,
+		_row_picker,
 		name,
 		type,
 		namespace,
@@ -23,7 +21,7 @@
 {#snippet _row_picker(table: Table<Application>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<TableRowPicker {table} />
+			<RowPickers.Header {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
@@ -87,7 +85,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>PRELICA</Layout.HeaderViewer>
+		<Layout.HeaderViewer>REPLICA</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

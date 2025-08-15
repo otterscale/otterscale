@@ -2,40 +2,33 @@
 	import {
 		NetworkService,
 		type DeleteIPRangeRequest,
-		type Network,
 		type Network_IPRange
 	} from '$lib/api/network/v1/network_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
-	let {
-		ipRange,
-		networks = $bindable()
-	}: { ipRange: Network_IPRange; networks: Writable<Network[]> } = $props();
+	let { ipRange }: { ipRange: Network_IPRange } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(NetworkService, transport);
+	const reloadManager: ReloadManager = getContext('ReloadManager');
 
-	const DEFAULT_REQUEST = { id: ipRange.id } as DeleteIPRangeRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
-	let startIP = $state('');
-	let endIP = $state('');
 	let invalidStartIP: boolean | undefined = $state();
 	let invalidEndIP: boolean | undefined = $state();
 
+	const client = createClient(NetworkService, transport);
+	const requestManager = new RequestManager<DeleteIPRangeRequest>({
+		id: ipRange.id
+	} as DeleteIPRangeRequest);
 	const stateController = new StateController(false);
 </script>
 
@@ -50,21 +43,11 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Start</Form.Label>
-					<SingleInput.DeletionConfirm
-						required
-						target={ipRange.startIp}
-						value={startIP}
-						bind:invalid={invalidStartIP}
-					/>
+					<SingleInput.Confirm required target={ipRange.startIp} bind:invalid={invalidStartIP} />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>End</Form.Label>
-					<SingleInput.DeletionConfirm
-						required
-						target={ipRange.endIp}
-						value={endIP}
-						bind:invalid={invalidEndIP}
-					/>
+					<SingleInput.Confirm required target={ipRange.endIp} bind:invalid={invalidEndIP} />
 				</Form.Field>
 				<Form.Help>
 					Please type the ip range exactly to confirm deletion. This action cannot be undone.
@@ -72,17 +55,19 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}>Cancel</Modal.Cancel
+			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalidStartIP || invalidEndIP}
 					onclick={() => {
-						toast.promise(() => client.deleteIPRange(request), {
+						toast.promise(() => client.deleteIPRange(requestManager.request), {
 							loading: 'Loading...',
 							success: () => {
-								client.listNetworks({}).then((response) => {
-									networks.set(response.networks);
-								});
+								reloadManager.force();
 								return `Delete ${ipRange.id} success`;
 							},
 							error: (error) => {
@@ -95,7 +80,7 @@
 							}
 						});
 
-						reset();
+						requestManager.reset();
 						stateController.close();
 					}}
 				>

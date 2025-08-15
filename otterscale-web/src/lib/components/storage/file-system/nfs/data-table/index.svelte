@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import ColumnViewer from '$lib/components/custom/data-table/data-table-filters/column.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
@@ -25,7 +25,6 @@
 	import Create from './create.svelte';
 	import { headers } from './headers.svelte';
 	import { Snapshot } from './snapshot';
-	// import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -116,13 +115,10 @@
 </script>
 
 <Layout.Root>
-	<Layout.Statistics>
-		<!-- <Statistics {table} /> -->
-	</Layout.Statistics>
+	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={$subvolumes.map((row) => row.name)} columnId="name" {table} />
-			<Filters.StringFuzzy values={$subvolumes.map((row) => row.path)} columnId="path" {table} />
 			<Filters.StringMatch columnId="mode" {table} values={$subvolumes.map((row) => row.mode)} />
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>

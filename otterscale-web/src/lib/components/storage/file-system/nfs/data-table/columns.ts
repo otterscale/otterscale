@@ -4,6 +4,7 @@ import { timestampDate, type Timestamp } from '@bufbuild/protobuf/wkt';
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { getSortingFunction } from '$lib/components/custom/data-table/utils.svelte';
 
 const columns: ColumnDef<Subvolume>[] = [
     {
@@ -36,26 +37,6 @@ const columns: ColumnDef<Subvolume>[] = [
         },
     },
     {
-        id: "path",
-        filterFn: (row, columnId, filterValue) => {
-            console.log(row.original.path, filterValue)
-            if (!filterValue) {
-                return true
-            }
-
-            return filterValue.includes(row.original.path)
-        },
-    },
-    // {
-    //     accessorKey: "mode",
-    //     header: ({ column }) => {
-    //         return renderSnippet(headers.mode, column)
-    //     },
-    //     cell: ({ row }) => {
-    //         return renderSnippet(cells.mode, row);
-    //     },
-    // },
-    {
         accessorKey: "export",
         header: ({ column }) => {
             return renderSnippet(headers.Export, column)
@@ -81,31 +62,14 @@ const columns: ColumnDef<Subvolume>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.createTime, row);
         },
-        sortingFn: (previousRow, nextRow, columnId) => {
-            const previous: Timestamp | undefined = previousRow.original.createdAt
-            const next: Timestamp | undefined = nextRow.original.createdAt
-
-            if (!(previous || next)) {
-                return 0
-            }
-            else if (!previous) {
-                return -1
-            }
-            else if (!next) {
-                return 1
-            }
-            else {
-                if (timestampDate(previous) < timestampDate(next)) {
-                    return -1
-                }
-                else if (timestampDate(previous) > timestampDate(next)) {
-                    return 1
-                }
-                else {
-                    return 0
-                }
-            }
-        }
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.createdAt,
+                nextRow.original.createdAt,
+                (p, n) => (timestampDate(p) < timestampDate(n)),
+                (p, n) => (timestampDate(p) === timestampDate(n))
+            )
+        )
     },
 ];
 

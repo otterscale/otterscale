@@ -1,6 +1,7 @@
 import type { Bucket } from "$lib/api/storage/v1/storage_pb";
+import { getSortingFunction } from "$lib/components/custom/data-table/utils.svelte";
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
-import { timestampDate, type Timestamp } from "@bufbuild/protobuf/wkt";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
@@ -52,31 +53,14 @@ const columns: ColumnDef<Bucket>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.createTime, row);
         },
-        sortingFn: (previousRow, nextRow, columnId) => {
-            const previous: Timestamp | undefined = previousRow.original.createdAt
-            const next: Timestamp | undefined = nextRow.original.createdAt
-
-            if (!(previous || next)) {
-                return 0
-            }
-            else if (!previous) {
-                return -1
-            }
-            else if (!next) {
-                return 1
-            }
-            else {
-                if (timestampDate(previous) < timestampDate(next)) {
-                    return -1
-                }
-                else if (timestampDate(previous) > timestampDate(next)) {
-                    return 1
-                }
-                else {
-                    return 0
-                }
-            }
-        }
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.createdAt,
+                nextRow.original.createdAt,
+                (p, n) => (timestampDate(p) < timestampDate(n)),
+                (p, n) => (timestampDate(p) === timestampDate(n))
+            )
+        )
     },
 ];
 

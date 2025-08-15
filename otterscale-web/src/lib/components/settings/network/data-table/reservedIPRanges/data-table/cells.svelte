@@ -1,11 +1,11 @@
 <script lang="ts" module>
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { RowPickers } from '$lib/components/custom/data-table';
 	import { Badge } from '$lib/components/ui/badge';
 	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
-		_row_picker: _row_picker,
+		_row_picker,
 		type,
 		startIp,
 		endIp,
@@ -14,7 +14,7 @@
 </script>
 
 {#snippet _row_picker(row: Row<Network_IPRange>)}
-	<TableRowPicker {row} />
+	<RowPickers.Cell {row} />
 {/snippet}
 
 {#snippet type(row: Row<Network_IPRange>)}

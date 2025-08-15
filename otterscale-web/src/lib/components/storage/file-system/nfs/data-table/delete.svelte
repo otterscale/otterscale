@@ -59,7 +59,7 @@
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.DeletionConfirm
+					<SingleInput.Confirm
 						id="deletion"
 						required
 						target={subvolume.name}

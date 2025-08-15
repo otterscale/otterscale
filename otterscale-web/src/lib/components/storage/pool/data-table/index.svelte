@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
+	import ColumnViewer from '$lib/components/custom/data-table/data-table-filters/column.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
 	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
@@ -120,7 +120,12 @@
 				alias="Application"
 				{table}
 			/>
-			<Filters.StructureMatch {table} columnId="placementGroupState" alias="State" />
+			<Filters.StringMatch
+				values={[...new Set($pools.flatMap((row) => Object.keys(row.placementGroupState)))]}
+				{table}
+				columnId="placementGroupState"
+				alias="State"
+			/>
 			<ColumnViewer {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

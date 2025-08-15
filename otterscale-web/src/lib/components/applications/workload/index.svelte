@@ -15,6 +15,7 @@
 		applicationName
 	}: { scopeUuid: string; facilityName: string; namespace: string; applicationName: string } =
 		$props();
+
 	const transport: Transport = getContext('transport');
 	const client = createClient(ApplicationService, transport);
 

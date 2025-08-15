@@ -2,6 +2,7 @@
 	import { TagService, type CreateTagRequest, type Tag } from '$lib/api/tag/v1/tag_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -15,14 +16,9 @@
 	let { tags = $bindable() }: { tags: Writable<Tag[]> } = $props();
 
 	const transport: Transport = getContext('transport');
+
 	const client = createClient(TagService, transport);
-
-	const DEFAULT_REQUEST = {} as CreateTagRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
+	const requestManager = new RequestManager<CreateTagRequest>({} as CreateTagRequest);
 	const stateController = new StateController(false);
 </script>
 
@@ -37,30 +33,36 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General type="text" bind:value={request.name} />
+					<SingleInput.General type="text" bind:value={requestManager.request.name} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Comment</Form.Label>
-					<SingleInput.General type="text" bind:value={request.comment} />
+					<SingleInput.General type="text" bind:value={requestManager.request.comment} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}
+			>
+				Cancel
+			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
-						toast.promise(() => client.createTag(request), {
+						toast.promise(() => client.createTag(requestManager.request), {
 							loading: 'Loading...',
 							success: () => {
 								client.listTags({}).then((response) => {
 									tags.set(response.tags);
 								});
-								return `Create ${request.name} success`;
+								return `Create ${requestManager.request.name} success`;
 							},
 							error: (error) => {
-								let message = `Fail to create ${request.name}`;
+								let message = `Fail to create ${requestManager.request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -69,7 +71,7 @@
 							}
 						});
 
-						reset();
+						requestManager.reset();
 						stateController.close();
 					}}
 				>

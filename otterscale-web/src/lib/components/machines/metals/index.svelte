@@ -3,23 +3,25 @@
 	import * as Loading from '$lib/components/custom/loading';
 	import * as Reloader from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table/index';
 </script>
 
 <script lang="ts">
 	const transport: Transport = getContext('transport');
-	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
+	let isMounted = $state(false);
+
+	const machineClient = createClient(MachineService, transport);
 	const reloadManager = new Reloader.ReloadManager(() => {
 		machineClient.listMachines({}).then((response) => {
 			machines.set(response.machines);
 		});
 	});
+	setContext('ReloadManager', reloadManager);
 
-	let isMounted = $state(false);
 	onMount(() => {
 		machineClient
 			.listMachines({})
@@ -39,10 +41,10 @@
 </script>
 
 <main class="space-y-4">
-	{#if !isMounted}
-		<Loading.DataTable />
-	{:else}
+	{#if isMounted}
 		<Reloader.Root {reloadManager} />
 		<DataTable {machines} />
+	{:else}
+		<Loading.DataTable />
 	{/if}
 </main>

@@ -1,17 +1,12 @@
 <script lang="ts" module>
-	import type { Network_IPAddress, Network_VLAN } from '$lib/api/network/v1/network_pb';
-	import * as Form from '$lib/components/custom/form';
-	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
+	import type { Network_IPAddress } from '$lib/api/network/v1/network_pb';
+	import * as Table from '$lib/components/custom/table';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
-	import * as Table from '$lib/components/custom/table';
-	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
 </script>
 
 <script lang="ts">
-	import { Caption } from '$lib/components/ui/table';
 
 	let { ipAddresses }: { ipAddresses: Network_IPAddress[] } = $props();
 </script>

@@ -7,9 +7,11 @@
 	import { TagService } from '$lib/api/tag/v1/tag_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import {
 		Multiple as MultipleSelect,
 		Single as SingleSelect
@@ -20,23 +22,26 @@
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { writable, type Writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
-	const transport: Transport = getContext('transport');
-	const machineClient = createClient(MachineService, transport);
-	const tagClient = createClient(TagService, transport);
-
 	let {
-		machine,
-		machines = $bindable()
+		machine
 	}: {
 		machine: Machine;
-		machines: Writable<Machine[]>;
 	} = $props();
 
-	const DEFAULT_REQUEST = {
+	const transport: Transport = getContext('transport');
+	const reloadManager: ReloadManager = getContext('ReloadManager');
+
+	const tagOptions = writable<SingleSelect.OptionType[]>([]);
+	let isTagLoading = $state(true);
+	let isMounted = $state(false);
+
+	const machineClient = createClient(MachineService, transport);
+	const tagClient = createClient(TagService, transport);
+	const requestManager = new RequestManager<CreateMachineRequest>({
 		scopeUuid: $activeScope?.uuid,
 		id: machine.id,
 		enableSsh: true,
@@ -44,17 +49,9 @@
 		skipNetworking: false,
 		skipStorage: false,
 		tags: [] as string[]
-	} as CreateMachineRequest;
-	let request: CreateMachineRequest = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
+	} as CreateMachineRequest);
 	const stateController = new StateController(false);
 
-	const tagOptions = writable<SingleSelect.OptionType[]>([]);
-	let isTagLoading = $state(true);
-	let isMounted = $state(false);
 	onMount(async () => {
 		try {
 			tagClient
@@ -94,7 +91,7 @@
 					<SingleInput.Boolean
 						required
 						descriptor={() => 'Enable SSH'}
-						bind:value={request.enableSsh}
+						bind:value={requestManager.request.enableSsh}
 					/>
 				</Form.Field>
 
@@ -102,7 +99,7 @@
 					<SingleInput.Boolean
 						required
 						descriptor={() => 'Skip BMC Configuration'}
-						bind:value={request.skipBmcConfig}
+						bind:value={requestManager.request.skipBmcConfig}
 					/>
 				</Form.Field>
 
@@ -110,7 +107,7 @@
 					<SingleInput.Boolean
 						required
 						descriptor={() => 'Skip Networking'}
-						bind:value={request.skipNetworking}
+						bind:value={requestManager.request.skipNetworking}
 					/>
 				</Form.Field>
 
@@ -118,7 +115,7 @@
 					<SingleInput.Boolean
 						required
 						descriptor={() => 'Skip Storage'}
-						bind:value={request.skipStorage}
+						bind:value={requestManager.request.skipStorage}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
@@ -129,7 +126,7 @@
 					{#if isTagLoading}
 						<Loading.Selection />
 					{:else}
-						<MultipleSelect.Root bind:value={request.tags} options={tagOptions}>
+						<MultipleSelect.Root bind:value={requestManager.request.tags} options={tagOptions}>
 							<MultipleSelect.Viewer />
 							<MultipleSelect.Controller>
 								<MultipleSelect.Trigger />
@@ -164,16 +161,18 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<SingleStepModal.Footer>
-			<SingleStepModal.Cancel onclick={reset}>Cancel</SingleStepModal.Cancel>
+			<SingleStepModal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}>Cancel</SingleStepModal.Cancel
+			>
 			<SingleStepModal.ActionsGroup>
 				<SingleStepModal.Action
 					onclick={() => {
-						toast.promise(() => machineClient.createMachine(request), {
+						toast.promise(() => machineClient.createMachine(requestManager.request), {
 							loading: 'Executing...',
 							success: (response) => {
-								machineClient.listMachines({}).then((r) => {
-									machines.set(r.machines);
-								});
+								reloadManager.force();
 								return `Create ${response.fqdn} success`;
 							},
 							error: (error) => {
@@ -185,7 +184,7 @@
 								return message;
 							}
 						});
-						reset();
+						requestManager.reset();
 						stateController.close();
 					}}
 				>

@@ -29,11 +29,16 @@
 
 <script lang="ts">
 	const transport: Transport = getContext('transport');
-	const tagClient = createClient(TagService, transport);
-	const configurationClient = createClient(ConfigurationService, transport);
 
 	let configuration = $state(writable<Configuration>());
 	let isConfigurationLoading = $state(true);
+
+	const tagClient = createClient(TagService, transport);
+	const configurationClient = createClient(ConfigurationService, transport);
+	let tags = $state(writable<Tag[]>());
+	let isTagLoading = $state(true);
+	let isMounted = $state(false);
+
 	async function fetchConfiguration() {
 		try {
 			configurationClient.getConfiguration({}).then((response) => {
@@ -44,9 +49,6 @@
 			console.error('Error fetching:', error);
 		}
 	}
-
-	let tags = $state(writable<Tag[]>());
-	let isTagLoading = $state(true);
 	async function fetchTags() {
 		try {
 			tagClient.listTags({}).then((response) => {
@@ -57,8 +59,6 @@
 			console.error('Error fetching:', error);
 		}
 	}
-
-	let isMounted = $state(false);
 	onMount(async () => {
 		try {
 			await fetchConfiguration();

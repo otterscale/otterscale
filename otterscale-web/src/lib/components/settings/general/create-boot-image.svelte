@@ -6,6 +6,7 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import {
 		Multiple as MultipleSelect,
@@ -24,25 +25,22 @@
 	let { configuration = $bindable() }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(ConfigurationService, transport);
-
-	const DEFAULT_REQUEST = {} as CreateBootImageRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
 	let distroSeriesOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
-	const architecturesOptions = $derived(distroSeriesArchitecturesMap[request.distroSeries]);
-	$effect(() => {
-		request.distroSeries;
-		request.architectures = [];
-	});
+	let isMounted = false;
 
+	const client = createClient(ConfigurationService, transport);
+	const requestManager = new RequestManager<CreateBootImageRequest>({} as CreateBootImageRequest);
 	const stateController = new StateController(false);
 
-	let isMounted = false;
+	const architecturesOptions = $derived(
+		distroSeriesArchitecturesMap[requestManager.request.distroSeries]
+	);
+	$effect(() => {
+		requestManager.request.distroSeries;
+		requestManager.request.architectures = [];
+	});
+
 	onMount(async () => {
 		try {
 			await client.listBootImageSelections({}).then((response) => {
@@ -85,7 +83,10 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Distro Series</Form.Label>
-					<SingleSelect.Root options={distroSeriesOptions} bind:value={request.distroSeries}>
+					<SingleSelect.Root
+						options={distroSeriesOptions}
+						bind:value={requestManager.request.distroSeries}
+					>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
@@ -110,10 +111,13 @@
 					</SingleSelect.Root>
 				</Form.Field>
 
-				{#if request.distroSeries}
+				{#if requestManager.request.distroSeries}
 					<Form.Field>
 						<Form.Label>Architectures</Form.Label>
-						<MultipleSelect.Root bind:value={request.architectures} options={architecturesOptions}>
+						<MultipleSelect.Root
+							bind:value={requestManager.request.architectures}
+							options={architecturesOptions}
+						>
 							<MultipleSelect.Viewer />
 							<MultipleSelect.Controller>
 								<MultipleSelect.Trigger />
@@ -148,20 +152,24 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}>Cancel</Modal.Cancel
+			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
-						toast.promise(() => client.createBootImage(request), {
+						toast.promise(() => client.createBootImage(requestManager.request), {
 							loading: 'Loading...',
 							success: () => {
 								client.getConfiguration({}).then((response) => {
 									configuration.set(response);
 								});
-								return `Create boot images ${request.distroSeries}: ${request.architectures.join(', ')} success`;
+								return `Create boot images ${requestManager.request.distroSeries}: ${requestManager.request.architectures.join(', ')} success`;
 							},
 							error: (error) => {
-								let message = `Fail to create boot images ${request.distroSeries}: ${request.architectures.join(', ')}`;
+								let message = `Fail to create boot images ${requestManager.request.distroSeries}: ${requestManager.request.architectures.join(', ')}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -170,7 +178,7 @@
 							}
 						});
 
-						reset();
+						requestManager.reset();
 						stateController.close();
 					}}>Create</Modal.Action
 				>
