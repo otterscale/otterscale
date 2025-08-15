@@ -224,17 +224,17 @@ bootstrap_juju() {
 }
 
 juju_add_k8s() {
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s > /dev/null 2>&1" "check juju cloud if cos-k8s exist"; then
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s > /dev/null 2>&1" "check juju cloud, please check if cos-k8s exist"; then
         log "INFO" "cos-k8s already exist, skipping..." "JuJu cloud"
     else
-        juju_cmd "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" "execute juju add-k8s"
+        juju_cmd "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug /dev/null 2>&1" "execute juju add-k8s"
     fi
 
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos > /dev/null 2>&1" "check juju model if cos exist"; then
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos > /dev/null 2>&1" "check juju model, please check if cos exist"; then
         log "INFO" "cos model already exist, skipping..." "JuJu model"
     else
-        juju_cmd "juju add-model cos cos-k8s --debug" "execute juju add-model"
-        juju_cmd "juju deploy cos-lite --trust --debug" "juju deploy cos-lite"
+        juju_cmd "juju add-model cos cos-k8s --debug /dev/null 2>&1" "execute juju add-model"
+        juju_cmd "juju deploy cos-lite --trust --debug /dev/null 2>&1" "juju deploy cos-lite"
     fi
 
     juju_cmd "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
