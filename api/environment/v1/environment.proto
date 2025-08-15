@@ -61,7 +61,7 @@ message UpdateConfigHelmRepositoriesRequest {
 }
 
 message Prometheus {
-  string endpoint = 1;
+  reserved 1;
   string base_url = 2;
 }
 
