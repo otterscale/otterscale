@@ -1,14 +1,16 @@
 <script lang="ts" module>
-	import type { CreatePoolRequest, Pool } from '$lib/api/storage/v1/storage_pb';
+	import type { CreatePoolRequest } from '$lib/api/storage/v1/storage_pb';
 	import { PoolType, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import {
 		Multiple as MultipleSelect,
 		Single as SingleSelect
 	} from '$lib/components/custom/select';
+	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -54,14 +56,9 @@
 </script>
 
 <script lang="ts">
-	let {
-		selectedScopeUuid,
-		pools = $bindable()
-	}: { selectedScopeUuid: string; pools: Writable<Pool[]> } = $props();
-
 	const DEFAULT_REQUEST = {
-		scopeUuid: selectedScopeUuid,
-		facilityName: 'ceph-mon'
+		scopeUuid: $currentCeph?.scopeUuid,
+		facilityName: $currentCeph?.name
 	} as CreatePoolRequest;
 	let request: CreatePoolRequest = $state(DEFAULT_REQUEST);
 	function reset() {
@@ -71,6 +68,7 @@
 	const stateController = new StateController(false);
 
 	const transport: Transport = getContext('transport');
+	const reloadManager: ReloadManager = getContext('ReloadManager');
 	const storageClient = createClient(StorageService, transport);
 
 	let invalidName: boolean | undefined = $state();
@@ -234,12 +232,8 @@
 						storageClient
 							.createPool(request)
 							.then((r) => {
+								reloadManager.force();
 								toast.success(`Create ${r.name}`);
-								storageClient
-									.listPools({ scopeUuid: selectedScopeUuid, facilityName: 'ceph-mon' })
-									.then((r) => {
-										pools.set(r.pools);
-									});
 							})
 							.catch((e) => {
 								toast.error(`Fail to create pool: ${e.toString()}`);

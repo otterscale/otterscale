@@ -5,28 +5,25 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { currentCeph } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 	import { QUOTAS_BYTES_HELP_TEXT, QUOTAS_OBJECTS_HELP_TEXT } from './helper';
 </script>
 
 <script lang="ts">
 	let {
-		selectedScopeUuid,
-		pool,
-		data = $bindable()
+		pool
 	}: {
-		selectedScopeUuid: string;
 		pool: Pool;
-		data: Writable<Pool[]>;
 	} = $props();
 
 	const DEFAULT_REQUEST = {
-		scopeUuid: selectedScopeUuid,
-		facilityName: 'ceph-mon',
+		scopeUuid: $currentCeph?.scopeUuid,
+		facilityName: $currentCeph?.name,
 		poolName: pool.name,
 		quotaBytes: pool.quotaBytes,
 		quotaObjects: pool.quotaObjects
@@ -39,6 +36,7 @@
 	const stateController = new StateController(false);
 
 	const transport: Transport = getContext('transport');
+	const reloadManager: ReloadManager = getContext('ReloadManager');
 	const storageClient = createClient(StorageService, transport);
 
 	let invalid = $state(false);
@@ -92,12 +90,8 @@
 						storageClient
 							.updatePool(request)
 							.then((r) => {
+								reloadManager.force();
 								toast.success(`Update ${request.poolName}`);
-								storageClient
-									.listPools({ scopeUuid: selectedScopeUuid, facilityName: 'ceph-mon' })
-									.then((r) => {
-										data.set(r.pools);
-									});
 							})
 							.catch((e) => {
 								toast.error(`Fail to update pool: ${e.toString()}`);

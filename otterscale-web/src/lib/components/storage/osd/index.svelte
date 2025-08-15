@@ -52,7 +52,7 @@
 <main class="space-y-4">
 	{#if isMounted}
 		<Reloader.Root {reloadManager} />
-		<DataTable {selectedScopeUuid} {selectedFacility} {objectStorageDaemons} />
+		<DataTable {objectStorageDaemons} />
 	{:else}
 		<DataTableLoading />
 	{/if}

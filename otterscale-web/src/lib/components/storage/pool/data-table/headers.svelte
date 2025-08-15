@@ -6,13 +6,14 @@
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker: _row_picker,
-		name: name,
-		type: type,
-		applications: applications,
-		placement_group_state: placement_group_state,
-		usage: usage,
-		iops: iops
+		_row_picker,
+		name,
+		type,
+		applications,
+		placement_group_state,
+		usage,
+		iops,
+		actions
 	};
 </script>
 
@@ -59,12 +60,17 @@
 
 {#snippet usage(column: Column<Pool>)}
 	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet iops()}
+{#snippet iops(column: Column<Pool>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>IOPS</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
+
+{#snippet actions(column: Column<Pool>)}{/snippet}

@@ -24,12 +24,8 @@
 	const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
 
 	let {
-		selectedScopeUuid,
-		selectedFacility,
 		objectStorageDaemons
 	}: {
-		selectedScopeUuid: string;
-		selectedFacility: string;
 		objectStorageDaemons: Writable<OSD[]>;
 	} = $props();
 

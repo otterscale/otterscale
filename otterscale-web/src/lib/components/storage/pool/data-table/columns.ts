@@ -1,4 +1,5 @@
 import type { Pool } from '$lib/api/storage/v1/storage_pb';
+import { getSortingFunction } from '$lib/components/custom/data-table';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
@@ -67,6 +68,32 @@ const columns: ColumnDef<Pool>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.usage, row);
+        },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                Number(previousRow.original.quotaBytes) !== 0 ? previousRow.original.usedBytes / previousRow.original.quotaBytes : 0,
+                Number(nextRow.original.quotaBytes) !== 0 ? nextRow.original.usedBytes / nextRow.original.quotaBytes : 0,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
+    },
+    {
+        accessorKey: "iops",
+        header: ({ column }) => {
+            return renderSnippet(headers.iops, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.iops, row);
+        },
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
         },
     },
 ];

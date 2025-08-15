@@ -4,7 +4,7 @@
 	import * as Reloader from '$lib/components/custom/reloader';
 	import { activeScope } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
 </script>
@@ -29,6 +29,7 @@
 				pools.set(response.pools);
 			});
 	});
+	setContext(reloadManager, 'ReloadManager');
 
 	let isMounted = $state(false);
 	onMount(() => {
@@ -52,7 +53,7 @@
 <main class="space-y-4">
 	{#if isMounted}
 		<Reloader.Root {reloadManager} />
-		<DataTable {selectedScopeUuid} {selectedFacility} {pools} />
+		<DataTable {pools} />
 	{:else}
 		<DataTableLoading />
 	{/if}

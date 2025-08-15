@@ -6,15 +6,18 @@
 	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+	import Actions from './actions.svelte';
 	import { getPlacementGroupStateVariant } from './utils.svelte';
 
 	export const cells = {
 		_row_picker,
-		name: name,
-		type: type,
+		name,
+		type,
 		applications,
 		placement_group_state,
-		usage: usage
+		usage,
+		iops,
+		actions
 	};
 </script>
 
@@ -81,4 +84,10 @@
 			{/snippet}
 		</Progress.Root>
 	</div>
+{/snippet}
+
+{#snippet iops(row: Row<Pool>)}{/snippet}
+
+{#snippet actions(row: Row<Pool>)}
+	<Actions pool={row.original} />
 {/snippet}
