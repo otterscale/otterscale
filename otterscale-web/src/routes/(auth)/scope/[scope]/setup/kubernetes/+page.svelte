@@ -54,6 +54,9 @@
 	const facilityClient = createClient(FacilityService, transport);
 	const facilitiesStore = writable<Facility[]>([]);
 
+	// State
+	let autoRefresh = $state(true);
+
 	async function fetchFacilities(uuid: string) {
 		try {
 			const response = await facilityClient.listFacilities({ scopeUuid: uuid });
@@ -75,5 +78,5 @@
 </script>
 
 <div class="mx-auto max-w-7xl min-w-7xl">
-	<SetupScopeGrid facilities={$facilitiesStore} services={KUBERNETES_SERVICES} />
+	<SetupScopeGrid facilities={$facilitiesStore} services={KUBERNETES_SERVICES} bind:autoRefresh />
 </div>

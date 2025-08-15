@@ -201,5 +201,6 @@
 	"monitors": "Monitors",
 	"osds": "OSDs",
 	"add_node": "Add Node",
+	"auto_refresh": "Auto Refresh",
 	"error_generic": "Something went wrong!"
 }

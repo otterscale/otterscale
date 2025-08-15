@@ -7,15 +7,18 @@
 		type Facility_Unit
 	} from '$lib/api/facility/v1/facility_pb';
 	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
-	import { Button } from '$lib/components/ui/button';
 	import * as Accordion from '$lib/components/ui/accordion';
+	import { Button } from '$lib/components/ui/button';
+	import { Label } from '$lib/components/ui/label';
+	import { Switch } from '$lib/components/ui/switch';
 	import { dynamicPaths } from '$lib/path';
 	import { premiumTier } from '$lib/stores';
 	import { m } from '$lib/paraglide/messages';
 
 	let {
 		services,
-		facilities
+		facilities,
+		autoRefresh = $bindable(true)
 	}: {
 		services: Record<
 			string,
@@ -27,6 +30,7 @@
 			}
 		>;
 		facilities: Facility[];
+		autoRefresh: boolean;
 	} = $props();
 
 	// Helper functions
@@ -48,10 +52,14 @@
 
 <div class="grid w-full grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-6">
 	<div class="col-span-3 flex justify-end space-x-4 rounded-lg sm:space-x-6 lg:col-span-6">
-		<Button variant="default" disabled={$premiumTier === PremiumTier.BASIC}>
+		<Button variant="ghost" disabled={$premiumTier === PremiumTier.BASIC}>
 			<Icon icon="ph:plus" class="size-4" />
 			{m.add_node()}
 		</Button>
+		<div class="flex items-center space-x-2">
+			<Switch id="auto-refresh" bind:checked={autoRefresh} />
+			<Label for="auto-refresh">{m.auto_refresh()}</Label>
+		</div>
 	</div>
 
 	{#each Object.entries(services) as [key, service]}

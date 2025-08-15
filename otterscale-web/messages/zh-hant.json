@@ -201,5 +201,6 @@
 	"monitors": "監視器",
 	"osds": "物件儲存裝置",
 	"add_node": "新增節點",
+	"auto_refresh": "自動重新整理",
 	"error_generic": "發生錯誤！"
 }
