@@ -95,7 +95,7 @@ message VirtualMachine {
 }
 
 message VirtualMachineSpec {
-  string InstanceType_name = 1;
+  string instanceType_name = 1;
   string network_name = 2;
   string startup_script = 3;
   repeated string data_volumes = 11;
@@ -160,7 +160,7 @@ message UpdateVirtualMachineRequest {
   string facility_name = 2;
   string name = 3;
   string namespace = 4;
-  string InstanceType_name = 5;
+  string instanceType_name = 5;
   string network_name = 6;
   string startup_script = 7;
 
@@ -317,7 +317,7 @@ message DeleteNetworkRequest {
 message CreateInstanceTypeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  InstanceType InstanceType = 3;
+  InstanceType instanceType = 3;
 }
 
 message ListInstanceTypesRequest {
@@ -326,7 +326,7 @@ message ListInstanceTypesRequest {
 }
 
 message ListInstanceTypesResponse {
-  repeated InstanceType InstanceTypes = 1;
+  repeated InstanceType instanceTypes = 1;
 }
 
 message GetInstanceTypeRequest {
