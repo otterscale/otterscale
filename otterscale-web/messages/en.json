@@ -232,5 +232,6 @@
 	"osd_out": "Out",
 	"osd_up": "Up",
 	"osd_down": "Down",
-	"capacity": "Capacity"
+	"capacity": "Capacity",
+	"throughput": "Throughput"
 }

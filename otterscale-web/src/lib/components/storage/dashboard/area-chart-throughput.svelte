@@ -17,8 +17,8 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = m.capacity();
-	const CHART_DESCRIPTION = m.cluster();
+	const CHART_TITLE = m.throughput();
+	const CHART_DESCRIPTION = `${m.read()}/${m.write()}`;
 
 	// Time range calculation
 	const endTime = new Date();
@@ -26,8 +26,8 @@
 
 	// Prometheus query for Memory usage
 	const query = $derived({
-		Total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"}`,
-		Used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"}`
+		Read: `sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
+		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`
 	});
 </script>
 

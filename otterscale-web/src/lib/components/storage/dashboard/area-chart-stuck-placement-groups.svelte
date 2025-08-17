@@ -2,12 +2,10 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
-	import Description from '$lib/components/custom/chart/description.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
 	import { formatCapacity } from '$lib/formatter';
-	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
@@ -17,8 +15,7 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = m.capacity();
-	const CHART_DESCRIPTION = m.cluster();
+	const CHART_TITLE = 'Stuck PGs';
 
 	// Time range calculation
 	const endTime = new Date();
@@ -26,8 +23,9 @@
 
 	// Prometheus query for Memory usage
 	const query = $derived({
-		Total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"}`,
-		Used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"}`
+		Degraded: `sum(ceph_pg_degraded{juju_model_uuid=~"${scope.uuid}"})`,
+		Stale: `sum(ceph_pg_stale{juju_model_uuid=~"${scope.uuid}"})`,
+		Undersized: `sum(ceph_pg_undersized{juju_model_uuid=~"${scope.uuid}"})`
 	});
 </script>
 
@@ -39,12 +37,8 @@
 			<Title title={CHART_TITLE} />
 		{/snippet}
 
-		{#snippet description()}
-			<Description description={CHART_DESCRIPTION} />
-		{/snippet}
-
 		{#snippet content()}
-			<Content data={response} timeRange={'1h'} valueFormatter={formatCapacity} />
+			<Content data={response} timeRange={'1h'} />
 		{/snippet}
 	</Layout>
 {:catch error}
