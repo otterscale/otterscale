@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import Loading from '$lib/components/custom/loading/report.svelte';
 	import { Dashboard } from '$lib/components/storage/dashboard';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
-	import Loading from '$lib/components/custom/loading/report.svelte';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [], current: dynamicPaths.storage(page.params.scope) });
@@ -22,7 +22,7 @@
 	async function initializePrometheusDriver(): Promise<PrometheusDriver> {
 		const response = await environmentService.getPrometheus({});
 		return new PrometheusDriver({
-			endpoint: response.endpoint,
+			endpoint: `${env.PUBLIC_API_URL}/prometheus`,
 			baseURL: response.baseUrl
 		});
 	}

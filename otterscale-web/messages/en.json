@@ -239,5 +239,7 @@
 	"osd_up": "Up",
 	"osd_down": "Down",
 	"capacity": "Capacity",
-	"throughput": "Throughput"
+	"throughput": "Throughput",
+	"running": "Running",
+	"container": "Container"
 }
