@@ -1,0 +1,99 @@
+<script lang="ts" module>
+	import type { DeleteSubvolumeRequest, Subvolume } from '$lib/api/storage/v1/storage_pb';
+	import { StorageService } from '$lib/api/storage/v1/storage_pb';
+	import * as Modal from '$lib/components/custom/alert-dialog';
+	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
+	import * as Form from '$lib/components/custom/form';
+	import { RequestManager } from '$lib/components/custom/form';
+	import { Single as SingleInput } from '$lib/components/custom/input';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { get } from 'svelte/store';
+	import { type NFSStore } from '../../utils.svelte.js';
+</script>
+
+<script lang="ts">
+	let {
+		subvolume
+	}: {
+		subvolume: Subvolume;
+	} = $props();
+
+	const nfsStore: NFSStore = getContext('nfsStore');
+	const transport: Transport = getContext('transport');
+	const reloadManager: ReloadManager = getContext('reloadManager');
+
+	const stateController = new StateController(false);
+	let invalid = $state(false);
+
+	const requestManager = new RequestManager<DeleteSubvolumeRequest>({
+		scopeUuid: get(nfsStore.selectedScopeUuid),
+		facilityName: get(nfsStore.selectedFacilityName),
+		volumeName: get(nfsStore.selectedVolumeName),
+		groupName: get(nfsStore.selectedSubvolumeGroupName)
+	} as DeleteSubvolumeRequest);
+	const storageClient = createClient(StorageService, transport);
+</script>
+
+<Modal.Root bind:open={stateController.state}>
+	<Modal.Trigger class="text-destructive flex h-full w-full items-center gap-2">
+		<Icon icon="ph:trash" />
+		Delete
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>Delete Subvolume</Modal.Header>
+		<Form.Root bind:invalid>
+			<Form.Fieldset>
+				<Form.Field>
+					<SingleInput.Confirm
+						id="deletion"
+						required
+						target={subvolume.name}
+						bind:value={requestManager.request.subvolumeName}
+					/>
+				</Form.Field>
+				<Form.Help>
+					Please type the subvolume name exactly to confirm deletion. This action cannot be undone.
+				</Form.Help>
+			</Form.Fieldset>
+		</Form.Root>
+		<Modal.Footer>
+			<Modal.Cancel
+				onclick={() => {
+					requestManager.reset();
+				}}
+			>
+				Cancel
+			</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
+					disabled={invalid}
+					onclick={() => {
+						toast.promise(() => storageClient.deleteSubvolume(requestManager.request), {
+							loading: `Deleting ${requestManager.request.subvolumeName}...`,
+							success: (response) => {
+								reloadManager.force();
+								return `Delete ${requestManager.request.subvolumeName}`;
+							},
+							error: (error) => {
+								let message = `Fail to delete ${requestManager.request.subvolumeName}`;
+								toast.error(message, {
+									description: (error as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY
+								});
+								return message;
+							}
+						});
+						requestManager.reset();
+						stateController.close();
+					}}
+				>
+					Delete
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

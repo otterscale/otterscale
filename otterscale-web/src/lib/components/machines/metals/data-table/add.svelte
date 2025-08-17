@@ -33,7 +33,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('ReloadManager');
+	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const tagOptions = writable<SingleSelect.OptionType[]>([]);
 	let isTagLoading = $state(true);

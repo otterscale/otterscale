@@ -1,12 +1,13 @@
 <script lang="ts" module>
 	import { StorageService, type Subvolume } from '$lib/api/storage/v1/storage_pb';
-	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
-	import * as Reloader from '$lib/components/custom/reloader';
+	import * as Loading from '$lib/components/custom/loading';
+	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
 	import Pickers from './pickers.svelte';
+	import { createNFSStore, type NFSStore } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -25,10 +26,12 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const storageClient = createClient(StorageService, transport);
 
+	let isMounted = $state(false);
 	const subvolumes = $state(writable([] as Subvolume[]));
-	const reloadManager = new Reloader.ReloadManager(() => {
+	const nfsStore: NFSStore = createNFSStore();
+	const storageClient = createClient(StorageService, transport);
+	const reloadManager = new ReloadManager(() => {
 		storageClient
 			.listSubvolumes({
 				scopeUuid: selectedScopeUuid,
@@ -40,9 +43,14 @@
 				subvolumes.set(response.subvolumes);
 			});
 	});
-
-	let isMounted = $state(false);
+	setContext('nfsStore', nfsStore);
+	setContext('reloadManager', reloadManager);
 	onMount(() => {
+		nfsStore.selectedScopeUuid.set(selectedScopeUuid);
+		nfsStore.selectedFacilityName.set(selectedFacility);
+		nfsStore.selectedVolumeName.set(selectedVolume);
+		nfsStore.selectedSubvolumeGroupName.set(selectedSubvolumeGroupName);
+
 		storageClient
 			.listSubvolumes({
 				scopeUuid: selectedScopeUuid,
@@ -76,17 +84,11 @@
 					{selectedVolume}
 					bind:selectedSubvolumeGroupName
 				/>
-				<Reloader.Root {reloadManager} />
+				<Reloader {reloadManager} />
 			</div>
 		</div>
-		<DataTable
-			{selectedScopeUuid}
-			{selectedFacility}
-			{selectedVolume}
-			{selectedSubvolumeGroupName}
-			{subvolumes}
-		/>
+		<DataTable {subvolumes} />
 	{:else}
-		<DataTableLoading />
+		<Loading.DataTable />
 	{/if}
 </main>

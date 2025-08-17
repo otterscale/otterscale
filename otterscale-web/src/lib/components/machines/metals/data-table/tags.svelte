@@ -21,7 +21,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('ReloadManager');
+	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	let tags = $state(machine.tags);
 	let tagOptions: string[] = $state([]);

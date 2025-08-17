@@ -14,15 +14,11 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import type { PrometheusDriver } from 'prometheus-query';
-	import { getContext } from 'svelte';
 	import { type Writable } from 'svelte/store';
 	import { columns } from './columns';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
-
 	let {
 		objectStorageDaemons
 	}: {
@@ -40,6 +36,7 @@
 			return $objectStorageDaemons;
 		},
 		columns,
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -103,9 +100,7 @@
 </script>
 
 <Layout.Root>
-	<Layout.Statistics>
-		<!-- <Statistics {table} /> -->
-	</Layout.Statistics>
+	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy

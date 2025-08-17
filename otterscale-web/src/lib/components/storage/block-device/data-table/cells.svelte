@@ -5,12 +5,16 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
 	import type { Row } from '@tanstack/table-core';
+	import Actions from './cells/actions.svelte';
+	import { Snapshots } from './cells/snapshots';
 
 	export const cells = {
 		_row_picker,
 		name,
 		poolName,
-		usage
+		usage,
+		snapshots,
+		actions
 	};
 </script>
 
@@ -41,4 +45,12 @@
 			{denominatorUnit}
 		{/snippet}
 	</Progress.Root>
+{/snippet}
+
+{#snippet snapshots(row: Row<Image>)}
+	<Snapshots image={row.original} />
+{/snippet}
+
+{#snippet actions(row: Row<Image>)}
+	<Actions image={row.original} />
 {/snippet}

@@ -17,7 +17,7 @@
 		machine,
 		placementGroupCount,
 		usage,
-		// iops,
+		iops,
 		actions
 	};
 </script>
@@ -49,19 +49,19 @@
 {/snippet}
 
 {#snippet state(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>STATE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet stateIn(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>IN</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet stateUp(column: Column<OSD>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>UP</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -111,10 +111,10 @@
 	</Layout.Header>
 {/snippet}
 
-<!-- {#snippet iops()}
-	<Layout.Header>
+{#snippet iops(column: Column<OSD>)}
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>IOPS</Layout.HeaderViewer>
 	</Layout.Header>
-{/snippet} -->
+{/snippet}
 
 {#snippet actions(column: Column<OSD>)}{/snippet}

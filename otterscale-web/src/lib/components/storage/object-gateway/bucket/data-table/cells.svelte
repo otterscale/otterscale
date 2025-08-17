@@ -5,13 +5,15 @@
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
+	import Actions from './cells/actions.svelte';
 
 	export const cells = {
-		_row_picker: _row_picker,
-		name: name,
-		owner: owner,
-		usage: usage,
-		createTime: createTime
+		_row_picker,
+		name,
+		owner,
+		usage,
+		createTime,
+		actions
 	};
 </script>
 
@@ -42,4 +44,8 @@
 	{#if row.original.createdAt}
 		{formatTimeAgo(timestampDate(row.original.createdAt))}
 	{/if}
+{/snippet}
+
+{#snippet actions(row: Row<Bucket>)}
+	<Actions bucket={row.original} />
 {/snippet}

@@ -4,12 +4,16 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+	import Actions from './cells/actions.svelte';
+	import { Keys } from './cells/keys';
 
 	export const cells = {
-		_row_picker: _row_picker,
-		id: id,
-		name: name,
-		suspended: suspended
+		_row_picker,
+		id,
+		name,
+		suspended,
+		keys,
+		actions
 	};
 </script>
 
@@ -31,4 +35,12 @@
 	{:else}
 		<Icon icon="ph:x" class="text-destructive" />
 	{/if}
+{/snippet}
+
+{#snippet keys(row: Row<User>)}
+	<Keys user={row.original} />
+{/snippet}
+
+{#snippet actions(row: Row<User>)}
+	<Actions user={row.original} />
 {/snippet}

@@ -1,10 +1,10 @@
 import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
+import { getSortingFunction } from '$lib/components/custom/data-table/utils.svelte';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
-import { timestampDate, type Timestamp } from '@bufbuild/protobuf/wkt';
+import { timestampDate } from '@bufbuild/protobuf/wkt';
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
-import { getSortingFunction } from '$lib/components/custom/data-table/utils.svelte';
 
 const columns: ColumnDef<Subvolume>[] = [
     {
@@ -70,6 +70,33 @@ const columns: ColumnDef<Subvolume>[] = [
                 (p, n) => (timestampDate(p) === timestampDate(n))
             )
         )
+    },
+    {
+        accessorKey: "snapshots",
+        header: ({ column }) => {
+            return renderSnippet(headers.snapshots, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.snapshots, row);
+        },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.snapshots.length,
+                nextRow.original.snapshots.length,
+                (p, n) => (timestampDate(p) < timestampDate(n)),
+                (p, n) => (timestampDate(p) === timestampDate(n))
+            )
+        )
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
+        },
+        
     },
 ];
 

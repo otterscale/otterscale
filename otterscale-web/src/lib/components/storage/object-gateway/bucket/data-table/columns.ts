@@ -62,6 +62,15 @@ const columns: ColumnDef<Bucket>[] = [
             )
         )
     },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
+        },
+    },
 ];
 
 export {

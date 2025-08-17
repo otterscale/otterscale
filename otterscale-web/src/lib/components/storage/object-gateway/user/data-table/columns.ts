@@ -33,6 +33,7 @@ const columns: ColumnDef<User>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.name, row);
         },
+        filterFn: 'arrIncludesSome',
     },
     {
         accessorKey: "suspended",
@@ -43,6 +44,24 @@ const columns: ColumnDef<User>[] = [
             return renderSnippet(cells.suspended, row);
         },
         filterFn: 'equals',
+    },
+    {
+        accessorKey: "keys",
+        header: ({ column }) => {
+            return renderSnippet(headers.keys, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.keys, row);
+        },
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
+        },
     },
 ];
 

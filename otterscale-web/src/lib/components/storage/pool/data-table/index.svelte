@@ -15,8 +15,8 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
+	import Create from './actions/create.svelte';
 	import { columns } from './columns';
-	import Create from './create.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -92,7 +92,7 @@
 			}
 		},
 
-		autoResetAll: false
+		autoResetPageIndex: false
 	});
 </script>
 

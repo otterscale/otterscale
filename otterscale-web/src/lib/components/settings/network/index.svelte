@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import * as Reloader from '$lib/components/custom/reloader';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -15,12 +15,12 @@
 	let isMounted = $state(false);
 
 	const networkClient = createClient(NetworkService, transport);
-	const reloadManager = new Reloader.ReloadManager(() => {
+	const reloadManager = new ReloadManager(() => {
 		networkClient.listNetworks({}).then((response) => {
 			networks.set(response.networks);
 		});
 	});
-	setContext(reloadManager, 'ReloadManager');
+	setContext(reloadManager, 'reloadManager');
 
 	onMount(() => {
 		networkClient
@@ -42,7 +42,7 @@
 
 <main class="space-y-4">
 	{#if isMounted}
-		<Reloader.Root {reloadManager} />
+		<Reloader {reloadManager} />
 		<DataTable {networks} />
 	{:else}
 		<Loading.DataTable />

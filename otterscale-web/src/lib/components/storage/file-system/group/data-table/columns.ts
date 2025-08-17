@@ -34,15 +34,6 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
             return renderSnippet(cells.poolName, row);
         },
     },
-    // {
-    //     accessorKey: "mode",
-    //     header: ({ column }) => {
-    //         return renderSnippet(headers.mode, column)
-    //     },
-    //     cell: ({ row }) => {
-    //         return renderSnippet(cells.mode, row);
-    //     },
-    // },
     {
         accessorKey: "usage",
         header: ({ column }) => {
@@ -59,6 +50,15 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.createTime, row);
+        },
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
         },
     },
 ];

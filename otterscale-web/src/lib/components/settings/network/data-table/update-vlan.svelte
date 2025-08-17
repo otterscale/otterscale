@@ -23,7 +23,7 @@
 	let { fabric, vlan }: { fabric: Network_Fabric; vlan: Network_VLAN } = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('ReloadManager');
+	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	let invalid: boolean | undefined = $state();
 

@@ -6,7 +6,7 @@
 	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import Actions from './actions.svelte';
+	import Actions from './cells/actions.svelte';
 	import { getPlacementGroupStateVariant } from './utils.svelte';
 
 	export const cells = {

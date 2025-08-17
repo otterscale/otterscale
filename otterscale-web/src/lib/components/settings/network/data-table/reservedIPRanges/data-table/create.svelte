@@ -24,7 +24,7 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const reloadManager: ReloadManager = getContext('ReloadManager');
+	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const client = createClient(NetworkService, transport);
 	const requestManager = new RequestManager<CreateIPRangeRequest>({

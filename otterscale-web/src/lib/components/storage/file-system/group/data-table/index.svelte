@@ -1,11 +1,6 @@
 <script lang="ts" module>
 	import type { SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-filters/column.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -20,24 +15,16 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-	import Actions from './actions.svelte';
+	import Create from './actions/create.svelte';
 	import { columns } from './columns';
-	import Create from './create.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
 	let {
-		selectedScopeUuid,
-		selectedFacility,
-		selectedVolume,
 		subvolumeGroups
 	}: {
-		selectedScopeUuid: string;
-		selectedFacility: string;
-		selectedVolume: string;
 		subvolumeGroups: Writable<SubvolumeGroup[]>;
 	} = $props();
-
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -52,7 +39,6 @@
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-
 		state: {
 			get pagination() {
 				return pagination;
@@ -105,14 +91,12 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetAll: false
+		autoResetPageIndex: false
 	});
 </script>
 
 <Layout.Root>
-	<Layout.Statistics>
-		<!-- <Statistics {table} /> -->
-	</Layout.Statistics>
+	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
@@ -125,10 +109,10 @@
 				{table}
 				values={$subvolumeGroups.map((row) => row.mode)}
 			/>
-			<ColumnViewer {table} />
+			<Filters.Column {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScopeUuid} {selectedFacility} {selectedVolume} bind:subvolumeGroups />
+			<Create />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -146,7 +130,6 @@
 								{/if}
 							</Table.Head>
 						{/each}
-						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -158,20 +141,11 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-						<Table.Cell>
-							<Actions
-								{selectedScopeUuid}
-								{selectedFacility}
-								{selectedVolume}
-								subvolumeGroup={row.original}
-								bind:subvolumeGroups
-							/>
-						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Table.Row>
 						<Table.Cell colspan={columns.length}>
-							<TableEmpty />
+							<Empty {table} />
 						</Table.Cell>
 					</Table.Row>
 				{/each}
@@ -179,7 +153,7 @@
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<TableFooter {table} />
-		<TablePagination {table} />
+		<Footer {table} />
+		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

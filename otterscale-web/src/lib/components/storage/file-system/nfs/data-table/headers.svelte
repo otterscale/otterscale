@@ -1,8 +1,8 @@
 <script lang="ts" module>
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
-	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
+	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
@@ -14,7 +14,8 @@
 		mode,
 		createTime,
 		Export,
-		snapshot
+		snapshots,
+		actions
 	};
 </script>
 
@@ -27,7 +28,7 @@
 {/snippet}
 
 {#snippet name(column: Column<Subvolume>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -36,7 +37,7 @@
 {/snippet}
 
 {#snippet path(column: Column<Subvolume>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>PATH</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -45,7 +46,7 @@
 {/snippet}
 
 {#snippet mode(column: Column<Subvolume>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>MODE</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -54,7 +55,7 @@
 {/snippet}
 
 {#snippet poolName(column: Column<Subvolume>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>POOL NAME</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -63,16 +64,16 @@
 {/snippet}
 
 {#snippet usage(column: Column<Subvolume>)}
-	<Layout.Header>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
+		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet Export(column: Column<Subvolume>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>EXPORT</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -81,7 +82,7 @@
 {/snippet}
 
 {#snippet createTime(column: Column<Subvolume>)}
-	<Layout.Header>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -89,8 +90,13 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet snapshot()}
+{#snippet snapshots(column: Column<Subvolume>)}
 	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 		<Layout.HeaderViewer>SNAPSHOT</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
+
+{#snippet actions(column: Column<Subvolume>)}{/snippet}

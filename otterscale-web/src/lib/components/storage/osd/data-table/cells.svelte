@@ -7,7 +7,7 @@
 	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import Actions from './actions.svelte';
+	import Actions from './cells/actions.svelte';
 
 	export const cells = {
 		_row_picker,
@@ -21,7 +21,7 @@
 		machine,
 		placementGroupCount,
 		usage,
-		// iops,
+		iops,
 		actions
 	};
 </script>
@@ -112,9 +112,7 @@
 	</Progress.Root>
 {/snippet}
 
-<!-- {#snippet iops(row: Row<OSD>)}
-	<Iops />
-{/snippet} -->
+{#snippet iops(row: Row<OSD>)}{/snippet}
 
 {#snippet actions(row: Row<OSD>)}
 	<Actions osd={row.original} />

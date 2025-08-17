@@ -11,6 +11,7 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 	import { toast } from 'svelte-sonner';
+	import Actions from './cells/actions.svelte';
 
 	export const cells = {
 		_row_picker,
@@ -20,7 +21,9 @@
 		path,
 		mode,
 		createTime,
-		Export
+		Export,
+		snapshots,
+		actions
 	};
 </script>
 
@@ -158,4 +161,10 @@
 			</Tooltip.Root>
 		</Tooltip.Provider>
 	{/if}
+{/snippet}
+
+{#snippet snapshots(row: Row<Subvolume>)}{/snippet}
+
+{#snippet actions(row: Row<Subvolume>)}
+	<Actions subvolume={row.original} />
 {/snippet}
