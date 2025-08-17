@@ -3,7 +3,8 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
-	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
+	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
@@ -51,5 +52,5 @@
 		{/snippet}
 	</Layout>
 {:catch error}
-	Error
+	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
 {/await}

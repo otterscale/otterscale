@@ -22,8 +22,7 @@
 	async function initializePrometheusDriver(): Promise<PrometheusDriver> {
 		const response = await environmentService.getPrometheus({});
 		return new PrometheusDriver({
-			// endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-			endpoint: 'http://10.102.197.18/cos-dev-prometheus-0',
+			endpoint: `${env.PUBLIC_API_URL}/prometheus`,
 			baseURL: response.baseUrl
 		});
 	}
