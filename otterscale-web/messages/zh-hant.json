@@ -242,6 +242,5 @@
 	"capacity": "容量",
 	"throughput": "流通量",
 	"running": "運行中",
-	"container": "容器",
-	"application": ""
+	"container": "容器"
 }

@@ -2,7 +2,6 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area-stock.svelte';
-	import Description from '$lib/components/custom/chart/description.svelte';
 	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
@@ -18,8 +17,7 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = m.cpu();
-	const CHART_DESCRIPTION = `${m.core()}/${m.processor()}`;
+	const CHART_TITLE = 'Volume Space';
 
 	// Time range calculation
 	const endTime = new Date();
@@ -59,10 +57,6 @@
 			<Title title={CHART_TITLE} />
 		{/snippet}
 
-		{#snippet description()}
-			<Description description={CHART_DESCRIPTION} />
-		{/snippet}
-
 		{#snippet content()}
 			<Content
 				data={response}
@@ -72,5 +66,5 @@
 		{/snippet}
 	</Layout>
 {:catch error}
-	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
+	<ErrorLayout title={CHART_TITLE} />
 {/await}

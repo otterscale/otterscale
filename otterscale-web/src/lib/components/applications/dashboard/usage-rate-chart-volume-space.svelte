@@ -11,7 +11,7 @@
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	// Constants
-	const CHART_TITLE = 'Volumn Space';
+	const CHART_TITLE = 'Volume Space';
 
 	// Queries
 	const queries = $derived({

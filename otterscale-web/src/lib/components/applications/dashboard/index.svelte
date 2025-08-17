@@ -2,7 +2,7 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { default as AreaErrorBudget } from './area-chart-error-budget.svelte';
-	import { default as AreaVolumnSpace } from './area-chart-volumn-space.svelte';
+	import { default as AreaVolumeSpace } from './area-chart-volume-space.svelte';
 	import { default as TextRunningKubelet } from './text-chart-running-kubelet.svelte';
 	import { default as TextRunningKubeletPod } from './text-chart-running-kubelet-pod.svelte';
 	import { default as TextRunningKubeletContainer } from './text-chart-running-kubelet-container.svelte';
@@ -11,7 +11,7 @@
 	import { default as TextUpProxy } from './text-chart-up-proxy.svelte';
 	import { default as TextUpScheduler } from './text-chart-up-scheduler.svelte';
 	import { default as UsageAvailability } from './usage-rate-chart-availability.svelte';
-	import { default as UsageVolumnSpace } from './usage-rate-chart-volumn-space.svelte';
+	import { default as UsageVolumeSpace } from './usage-rate-chart-volume-space.svelte';
 
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>
@@ -55,10 +55,10 @@
 
 	<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 		<span class="col-span-2">
-			<UsageVolumnSpace {client} {scope} />
+			<UsageVolumeSpace {client} {scope} />
 		</span>
 		<span class="col-span-2">
-			<AreaVolumnSpace {client} {scope} />
+			<AreaVolumeSpace {client} {scope} />
 		</span>
 	</div>
 </div>
