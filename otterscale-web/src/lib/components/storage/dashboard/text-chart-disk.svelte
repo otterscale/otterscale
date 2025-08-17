@@ -2,6 +2,7 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
+	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { m } from '$lib/paraglide/messages';
@@ -53,5 +54,5 @@
 		{/snippet}
 	</Layout>
 {:catch error}
-	Error
+	<ErrorLayout title={CHART_TITLE} />
 {/await}
