@@ -2,51 +2,28 @@
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
+	import Description from '$lib/components/custom/chart/description.svelte';
 	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { formatIO } from '$lib/formatter';
 
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	// Constants
-	const CHART_TITLE = m.network();
+	const CHART_TITLE = 'RUNNING';
+	const CHART_DESCRIPTION = 'Kubelet Container';
 
 	// Query
 	const query = $derived(
 		`
 		sum(
-			(
-				rate(node_network_receive_bytes{device!="lo",juju_model_uuid=~"${scope.uuid}"}[4m])
-				or
-				rate(node_network_receive_bytes_total{device!="lo",juju_model_uuid=~"${scope.uuid}"}[4m])
-			)
-			unless on (device, instance)
-			label_replace(
-				(bonding_slaves{juju_model_uuid=~"${scope.uuid}"} > 0),
-				"device",
-				"$1",
-				"master",
-				"(.+)"
-			)
+			kubelet_running_containers{job="kubelet",juju_model_uuid=~"${scope.uuid}",metrics_path="/metrics"}
 		)
-		+
+		or
 		sum(
-			(
-				rate(node_network_transmit_bytes{device!="lo",juju_model_uuid=~"${scope.uuid}"}[4m])
-				or
-				rate(node_network_transmit_bytes_total{device!="lo",juju_model_uuid=~"${scope.uuid}"}[4m])
-			)
-			unless on (device, instance)
-			label_replace(
-				(bonding_slaves{juju_model_uuid=~"${scope.uuid}"} > 0),
-				"device",
-				"$1",
-				"master",
-				"(.+)"
-			)
+			kubelet_running_container_count{job="kubelet",juju_model_uuid=~"${scope.uuid}",metrics_path="/metrics"}
 		)
 		`
 	);
@@ -60,17 +37,20 @@
 			<Title title={CHART_TITLE} />
 		{/snippet}
 
+		{#snippet description()}
+			<Description description={CHART_DESCRIPTION} />
+		{/snippet}
+
 		{#snippet content()}
 			{@const result = response.result}
 			{#if result.length === 0}
 				<Content />
 			{:else}
 				{@const value = result[0].value.value}
-				{@const throughput = formatIO(value)}
-				<Content value={throughput.value} unit={throughput.unit} />
+				<Content {value} />
 			{/if}
 		{/snippet}
 	</Layout>
 {:catch error}
-	<ErrorLayout title={CHART_TITLE} />
+	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
 {/await}

@@ -3,10 +3,10 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 
 	let {
-		data,
+		data = [{ value: NaN }],
 		subtitle
 	}: {
-		data: Array<any>;
+		data?: Array<any>;
 		subtitle?: string;
 	} = $props();
 

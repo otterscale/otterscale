@@ -160,28 +160,23 @@ export async function fetchFlattenedRange(
     const start = timeStart || new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
     const end = timeEnd || new Date(); // Now
 
-    try {
-        const response = await client.rangeQuery(
-            query,
-            start.getTime(),
-            end.getTime(),
-            step
-        );
+    const response = await client.rangeQuery(
+        query,
+        start.getTime(),
+        end.getTime(),
+        step
+    );
 
-        const oldFormatData = response.result.flatMap((series) => {
-            const resolvedMetricName = resolveMetricName(series, metricName);
-            return series.values.map((sampleValue: SampleValue) => ({
-                time: sampleValue.time,
-                value: sampleValue.value,
-                metric: resolvedMetricName
-            }));
-        });
+    const oldFormatData = response.result.flatMap((series) => {
+        const resolvedMetricName = resolveMetricName(series, metricName);
+        return series.values.map((sampleValue: SampleValue) => ({
+            time: sampleValue.time,
+            value: sampleValue.value,
+            metric: resolvedMetricName
+        }));
+    });
 
-        return convertToNewDataFormat(oldFormatData);
-    } catch (error) {
-        console.error('Error fetching flattened range:', error);
-        return [];
-    }
+    return convertToNewDataFormat(oldFormatData);
 }
 
 /**
@@ -203,19 +198,13 @@ export async function fetchMultipleFlattenedRange(
     const start = timeStart || new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
     const end = timeEnd || new Date(); // Now
 
-    try {
-        const queryPromises = Object.entries(queries).map(([metricName, query]) =>
-            executeQueryWithMetricName(client, query, start, end, step, metricName)
-        );
+    const queryPromises = Object.entries(queries).map(([metricName, query]) =>
+        executeQueryWithMetricName(client, query, start, end, step, metricName)
+    );
+    const allResults = await Promise.all(queryPromises);
+    const combinedOldFormatData = allResults.flat();
 
-        const allResults = await Promise.all(queryPromises);
-        const combinedOldFormatData = allResults.flat();
-
-        return convertToNewDataFormat(combinedOldFormatData);
-    } catch (error) {
-        console.error('Error fetching multiple flattened range:', error);
-        return [];
-    }
+    return convertToNewDataFormat(combinedOldFormatData);
 }
 
 /**

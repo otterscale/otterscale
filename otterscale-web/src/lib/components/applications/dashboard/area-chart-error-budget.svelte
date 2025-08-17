@@ -1,14 +1,13 @@
 <script lang="ts">
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
-	import Content from '$lib/components/custom/chart/content/area/area.svelte';
+	import Content from '$lib/components/custom/chart/content/area/area-stock.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
 	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
-	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
-	import { formatCapacity } from '$lib/formatter';
+	import { fetchFlattenedRange } from '$lib/components/custom/prometheus';
 	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
 
@@ -19,21 +18,22 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = 'IOPS';
-	const CHART_DESCRIPTION = `${m.read()}/${m.write()}`;
+	const CHART_TITLE = 'Error Budget';
+	const CHART_DESCRIPTION = '30 days';
 
 	// Time range calculation
 	const endTime = new Date();
 	const startTime = new Date(endTime.getTime() - TIME_RANGE_HOURS * 60 * 60 * 1000);
 
-	// Prometheus query for Memory usage
-	const query = $derived({
-		Read: `sum(irate(ceph_osd_op_r{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
-		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[5m]))`
-	});
+	// The Prometheus query, derived from component props
+	const query = $derived(
+		`
+        100 * (apiserver_request:availability30d{juju_model_uuid=~"${scope.uuid}",verb="all"} - 0.99)
+		`
+	);
 </script>
 
-{#await fetchMultipleFlattenedRange(client, query, startTime, endTime, STEP_SECONDS)}
+{#await fetchFlattenedRange(client, query, startTime, endTime, STEP_SECONDS)}
 	<ComponentLoading />
 {:then response}
 	<Layout>
@@ -46,11 +46,7 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content
-				data={response}
-				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
-				valueFormatter={formatCapacity}
-			/>
+			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} />
 		{/snippet}
 	</Layout>
 {:catch error}
