@@ -4,6 +4,7 @@
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
+	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
 	import { formatCapacity } from '$lib/formatter';
 	import { PrometheusDriver } from 'prometheus-query';
@@ -36,7 +37,11 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={'1h'} valueFormatter={formatCapacity} />
+			<Content
+				data={response}
+				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
+				valueFormatter={formatCapacity}
+			/>
 		{/snippet}
 	</Layout>
 {:catch error}

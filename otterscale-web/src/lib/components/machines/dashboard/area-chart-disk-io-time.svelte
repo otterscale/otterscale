@@ -5,6 +5,7 @@
 	import Description from '$lib/components/custom/chart/description.svelte';
 	import Layout from '$lib/components/custom/chart/layout/standard.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
+	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
 	import { fetchFlattenedRange } from '$lib/components/custom/prometheus';
 	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
@@ -42,7 +43,7 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content data={response} timeRange={'1h'} />
+			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} />
 		{/snippet}
 	</Layout>
 {:catch error}
