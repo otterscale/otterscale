@@ -181,6 +181,7 @@
 	"create_scope_calico_cidr_description": "Kubernetes Pod 通訊的網路範圍。",
 	"create_scope_virtual_ip": "虛擬 IP",
 	"create_scope_virtual_ip_description": "Kubernetes 控制平面的高可用性 IP。",
+	"cluster_health": "叢集健康度",
 	"architecture": "架構",
 	"cpu": "處理器",
 	"core": "核心",
@@ -228,5 +229,16 @@
 	"bookmark_added": "已新增至書籤",
 	"empty_bookmark": "尚無書籤",
 	"root_disk": "系統磁碟",
-	"error_generic": "發生錯誤！"
+	"error_generic": "發生錯誤！",
+	"hosts": "主機",
+	"pools": "儲存池",
+	"osd_in_ratio": "OSD In 比率",
+	"osd_up_ratio": "OSD Up 比率",
+	"osd_monitor_ratio": "Monitor In 比率",
+	"osd_in": "In",
+	"osd_out": "Out",
+	"osd_up": "Up",
+	"osd_down": "Down",
+	"capacity": "容量",
+	"throughput": "流通量"
 }
