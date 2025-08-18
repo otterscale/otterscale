@@ -17,7 +17,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { getValidURL, staticPaths, type Path } from '$lib/path';
+	import { dynamicPaths, getValidURL, staticPaths, type Path } from '$lib/path';
 	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 	import { routes } from '$lib/routes';
 	import NavMain from './nav-main.svelte';
@@ -83,7 +83,7 @@
 		}
 	}
 
-	async function handleScopeOnSelect(index: number) {
+	async function handleScopeOnSelect(index: number, home: boolean = false) {
 		const scope = $scopes[index];
 		if (!scope) return;
 
@@ -93,6 +93,12 @@
 
 		// Show success feedback
 		toast.success(m.switch_scope({ name: scope.name }));
+
+		// Go home
+		if (home) {
+			goto(dynamicPaths.scope(scope.name).url);
+			return;
+		}
 
 		// Navigate to new url
 		const url = getValidURL(
