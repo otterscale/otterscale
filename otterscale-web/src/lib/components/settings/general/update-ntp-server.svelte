@@ -29,7 +29,7 @@
 </script>
 
 <Modal.Root bind:open={stateController.state}>
-	<Modal.Trigger>
+	<Modal.Trigger variant="default">
 		<Icon icon="ph:pencil" />
 		Edit
 	</Modal.Trigger>

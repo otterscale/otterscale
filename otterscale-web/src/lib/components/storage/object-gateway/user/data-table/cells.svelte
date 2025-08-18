@@ -1,14 +1,14 @@
 <script lang="ts" module>
 	import type { User } from '$lib/api/storage/v1/storage_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import { Key } from '$lib/components/storage/object-gateway/user/key';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import Actions from './cells/actions.svelte';
-	import { Keys } from './cells/keys';
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
-		_row_picker,
+		row_picker,
 		id,
 		name,
 		suspended,
@@ -17,8 +17,8 @@
 	};
 </script>
 
-{#snippet _row_picker(row: Row<User>)}
-	<TableRowPicker {row} />
+{#snippet row_picker(row: Row<User>)}
+	<RowPicker {row} />
 {/snippet}
 
 {#snippet id(row: Row<User>)}
@@ -30,15 +30,17 @@
 {/snippet}
 
 {#snippet suspended(row: Row<User>)}
-	{#if row.original.suspended}
-		<Icon icon="ph:circle" class="text-primary" />
-	{:else}
-		<Icon icon="ph:x" class="text-destructive" />
-	{/if}
+	<div class="flex justify-end">
+		{#if row.original.suspended}
+			<Icon icon="ph:circle" class="text-primary" />
+		{:else}
+			<Icon icon="ph:x" class="text-destructive" />
+		{/if}
+	</div>
 {/snippet}
 
 {#snippet keys(row: Row<User>)}
-	<Keys user={row.original} />
+	<Key user={row.original} />
 {/snippet}
 
 {#snippet actions(row: Row<User>)}

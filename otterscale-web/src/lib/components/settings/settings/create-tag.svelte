@@ -27,7 +27,7 @@
 </script>
 
 <Modal.Root bind:open={stateController.state}>
-	<Modal.Trigger>
+	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Create
 	</Modal.Trigger>

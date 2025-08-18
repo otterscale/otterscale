@@ -6,7 +6,10 @@
 </script>
 
 <script lang="ts">
-	breadcrumb.set({ parents: [], current: dynamicPaths.settings(page.params.scope) });
+	breadcrumb.set({
+		parents: [dynamicPaths.applications(page.params.scope)],
+		current: dynamicPaths.applicationsWorkload(page.params.scope)
+	});
 </script>
 
 {#if $currentKubernetes}

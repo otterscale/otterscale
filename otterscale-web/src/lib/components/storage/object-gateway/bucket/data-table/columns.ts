@@ -10,10 +10,10 @@ const columns: ColumnDef<Bucket>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,
@@ -35,6 +35,7 @@ const columns: ColumnDef<Bucket>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.owner, row);
         },
+        filterFn: 'arrIncludesSome'
     },
     {
         accessorKey: "usage",
@@ -44,6 +45,14 @@ const columns: ColumnDef<Bucket>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.usage, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                Number(previousRow.original.usedBytes),
+                Number(nextRow.original.usedBytes),
+                (p, n) => (timestampDate(p) < timestampDate(n)),
+                (p, n) => (timestampDate(p) === timestampDate(n))
+            )
+        )
     },
     {
         accessorKey: "createTime",

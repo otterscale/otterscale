@@ -4,9 +4,6 @@ class RequestManager<Type> {
 
     constructor(initialValue: Type) {
         this.INITIAL_VALUE = initialValue
-    }
-
-    $init() {
         this.request = this.INITIAL_VALUE
     }
 

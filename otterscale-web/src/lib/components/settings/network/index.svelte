@@ -20,7 +20,7 @@
 			networks.set(response.networks);
 		});
 	});
-	setContext(reloadManager, 'reloadManager');
+	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		networkClient

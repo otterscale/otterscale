@@ -10,10 +10,10 @@ const columns: ColumnDef<Subvolume>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,
@@ -37,12 +37,12 @@ const columns: ColumnDef<Subvolume>[] = [
         },
     },
     {
-        accessorKey: "export",
+        accessorKey: "exportSubvolume",
         header: ({ column }) => {
-            return renderSnippet(headers.Export, column)
+            return renderSnippet(headers.exportSubvolume, column)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells.Export, row);
+            return renderSnippet(cells.exportSubvolume, row);
         },
     },
     {
@@ -53,6 +53,14 @@ const columns: ColumnDef<Subvolume>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.usage, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                Number(previousRow.original.quotaBytes) !== 0 ? Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes) : 0,
+                Number(nextRow.original.quotaBytes) !== 0 ? Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes) : 0,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "createTime",
@@ -83,8 +91,8 @@ const columns: ColumnDef<Subvolume>[] = [
             getSortingFunction(
                 previousRow.original.snapshots.length,
                 nextRow.original.snapshots.length,
-                (p, n) => (timestampDate(p) < timestampDate(n)),
-                (p, n) => (timestampDate(p) === timestampDate(n))
+                (p, n) => (p < n),
+                (p, n) => (p === n)
             )
         )
     },
@@ -96,7 +104,7 @@ const columns: ColumnDef<Subvolume>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.actions, row);
         },
-        
+
     },
 ];
 

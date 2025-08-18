@@ -15,7 +15,7 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-	import Create from './actions/create.svelte';
+	import Create from './action-create.svelte';
 	import { columns } from './columns';
 </script>
 
@@ -99,10 +99,11 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={$users.map((row) => row.id)} columnId="id" {table} />
-			<Filters.StringFuzzy values={$users.map((row) => row.name)} columnId="name" {table} />
+			<Filters.StringMatch values={$users.map((row) => row.name)} columnId="name" {table} />
 			<Filters.BooleanMatch
 				columnId="suspended"
 				{table}
+				descriptor={(value) => (value ? 'suspended' : 'Not suspended')}
 				values={$users.map((row) => row.suspended)}
 			/>
 			<Filters.Column {table} />

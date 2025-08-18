@@ -34,14 +34,10 @@
 </script>
 
 <Modal.Root bind:open={stateController.state}>
-	<div class="flex justify-end">
-		<Modal.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
-			<div class="flex items-center gap-1">
-				<Icon icon="ph:plus" />
-				Create
-			</div>
-		</Modal.Trigger>
-	</div>
+	<Modal.Trigger class="default">
+		<Icon icon="ph:plus" />
+		Create
+	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>Create Subvolume Group</Modal.Header>
 		<Form.Root bind:invalid>

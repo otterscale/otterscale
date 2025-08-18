@@ -4,7 +4,7 @@
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker,
+		row_picker,
 		fqdn_ip,
 		powerState,
 		status,
@@ -13,11 +13,12 @@
 		disk,
 		storage,
 		tags,
+		scope,
 		actions
 	};
 </script>
 
-{#snippet _row_picker(table: Table<Machine>)}
+{#snippet row_picker(table: Table<Machine>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
 			<RowPickers.Header {table} />
@@ -100,6 +101,12 @@
 			<Sorter {column} />
 		</Layout.HeaderController>
 		<Layout.HeaderViewer>TAGS</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet scope(column: Column<Machine>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>SCOPE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

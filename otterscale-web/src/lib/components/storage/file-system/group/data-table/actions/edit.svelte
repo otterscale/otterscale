@@ -41,7 +41,7 @@
 </script>
 
 <Modal.Root bind:open={stateController.state}>
-	<Modal.Trigger class={cn('flex h-full w-full items-center gap-2')}>
+	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit
 	</Modal.Trigger>

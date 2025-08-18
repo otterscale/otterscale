@@ -9,10 +9,10 @@ const columns: ColumnDef<Machine>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,
@@ -128,6 +128,15 @@ const columns: ColumnDef<Machine>[] = [
                 (p, n) => (p === n)
             )
         )
+    },
+    {
+        accessorKey: "scope",
+        header: ({ column }) => {
+            return renderSnippet(headers.scope, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.scope, row);
+        },
     },
     {
         accessorKey: "tags",

@@ -49,10 +49,10 @@
 					selectedCeph = { scopeUuid: matched.value.scopeUuid, facilityName: matched.value.facilityName }
 				}
 			}
+
+			isCephsLoading = false;
 		} catch (error) {
 			console.error('Error fetching:', error);
-		} finally {
-			isCephsLoading = false;
 		}
 	}
 

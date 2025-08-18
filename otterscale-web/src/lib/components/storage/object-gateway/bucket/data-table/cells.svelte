@@ -1,14 +1,14 @@
 <script lang="ts" module>
 	import type { Bucket } from '$lib/api/storage/v1/storage_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
-	import Actions from './cells/actions.svelte';
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
-		_row_picker,
+		row_picker,
 		name,
 		owner,
 		usage,
@@ -17,8 +17,8 @@
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Bucket>)}
-	<TableRowPicker {row} />
+{#snippet row_picker(row: Row<Bucket>)}
+	<RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Bucket>)}

@@ -32,7 +32,7 @@
 				buckets.set(response.buckets);
 			});
 	});
-	setContext(reloadManager, 'reloadManager');
+	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		storageClient

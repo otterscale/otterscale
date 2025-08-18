@@ -9,7 +9,7 @@
 	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
-		_row_picker,
+		row_picker,
 		name,
 		type,
 		namespace,
@@ -23,7 +23,7 @@
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Application>)}
+{#snippet row_picker(row: Row<Application>)}
 	<RowPickers.Cell {row} />
 {/snippet}
 

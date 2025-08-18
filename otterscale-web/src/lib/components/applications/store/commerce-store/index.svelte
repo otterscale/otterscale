@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { type Application_Chart } from '$lib/api/application/v1/application_pb';
 	import { type Writable } from 'svelte/store';
-	import { Chart } from './chart';
+	import Chart from './chart.svelte';
 	import FilterDeprecation from './filter-deprecation.svelte';
 	import FilterKeyword from './filter-keyword.svelte';
 	import FilterLicence from './filter-licence.svelte';
@@ -15,7 +15,7 @@
 </script>
 
 <script lang="ts">
-	let { charts }: { charts: Writable<Application_Chart[]> } = $props();
+	let { charts = $bindable() }: { charts: Writable<Application_Chart[]> } = $props();
 
 	const filterManager = $derived(new FilterManager($charts));
 	const paginationManager = $derived(new PaginationManager(filterManager.filteredCharts));
@@ -41,7 +41,7 @@
 
 	<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 		{#each filterManager.filteredCharts.slice(paginationManager.activePage * paginationManager.perPage, (paginationManager.activePage + 1) * paginationManager.perPage) as chart}
-			<Chart {chart}>
+			<Chart {chart} bind:charts>
 				<Thumbnail {chart} />
 			</Chart>
 		{/each}

@@ -9,10 +9,10 @@ const columns: ColumnDef<OSD>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,
@@ -36,7 +36,13 @@ const columns: ColumnDef<OSD>[] = [
         },
     },
     {
-        id: "_in",
+        id: "in",
+        header: ({ column }) => {
+            return renderSnippet(headers.osdIn, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.osdIn, row);
+        },
         filterFn: (row, columnId, filterValue: boolean) => {
             if (filterValue === undefined) {
                 return true
@@ -47,7 +53,13 @@ const columns: ColumnDef<OSD>[] = [
         enableHiding: false,
     },
     {
-        id: "_up",
+        id: "up",
+        header: ({ column }) => {
+            return renderSnippet(headers.osdUp, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.osdUp, row);
+        },
         filterFn: (row, columnId, filterValue: boolean) => {
             if (filterValue === undefined) {
                 return true
@@ -106,8 +118,8 @@ const columns: ColumnDef<OSD>[] = [
         },
         sortingFn: (previousRow, nextRow, columnId) => (
             getSortingFunction(
-                previousRow.original.usedBytes / previousRow.original.sizeBytes,
-                nextRow.original.usedBytes / nextRow.original.sizeBytes,
+                Number(previousRow.original.usedBytes) / Number(previousRow.original.sizeBytes),
+                Number(nextRow.original.usedBytes) / Number(nextRow.original.sizeBytes),
                 (p, n) => (p < n),
                 (p, n) => (p === n)
             )

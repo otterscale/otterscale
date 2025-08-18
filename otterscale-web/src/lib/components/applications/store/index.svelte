@@ -13,7 +13,7 @@
 <script lang="ts">
 	const transport: Transport = getContext('transport');
 
-	const charts = writable<Application_Chart[]>([]);
+	let charts = $state(writable<Application_Chart[]>([]));
 	let isMounted = $state(false);
 
 	const applicationClient = createClient(ApplicationService, transport);
@@ -32,7 +32,7 @@
 </script>
 
 {#if isMounted}
-	<CommerceStore {charts} />
+	<CommerceStore bind:charts />
 {:else}
 	<Loading.ApplicationStore />
 {/if}

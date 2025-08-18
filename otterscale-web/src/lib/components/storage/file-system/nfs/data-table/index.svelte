@@ -15,7 +15,7 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-	import Create from './actions/create.svelte';
+	import Create from './actions-create.svelte';
 	import { columns } from './columns';
 </script>
 
@@ -100,7 +100,12 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={$subvolumes.map((row) => row.name)} columnId="name" {table} />
-			<Filters.StringMatch columnId="mode" {table} values={$subvolumes.map((row) => row.mode)} />
+			<Filters.StringMatch
+				values={$subvolumes.map((row) => row.poolName)}
+				columnId="poolName"
+				alias="Pool Name"
+				{table}
+			/>
 			<Filters.Column {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

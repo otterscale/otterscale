@@ -1,34 +1,35 @@
 <script lang="ts" module>
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import * as Progress from '$lib/components/custom/progress/index.js';
+	import { Snapshot } from '$lib/components/storage/file-system/nfs/snapshot';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { formatCapacityV2 as formatCapacity, formatTimeAgo } from '$lib/formatter';
+	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 	import { toast } from 'svelte-sonner';
-	import Actions from './cells/actions.svelte';
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
-		_row_picker,
+		row_picker,
 		name,
 		poolName,
 		usage,
 		path,
 		mode,
 		createTime,
-		Export,
+		exportSubvolume,
 		snapshots,
 		actions
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Subvolume>)}
-	<TableRowPicker {row} />
+{#snippet row_picker(row: Row<Subvolume>)}
+	<RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Subvolume>)}
@@ -51,7 +52,7 @@
 	</Badge>
 {/snippet}
 
-{#snippet Export(row: Row<Subvolume>)}
+{#snippet exportSubvolume(row: Row<Subvolume>)}
 	{#if row.original.export}
 		<div class="flex items-center gap-1">
 			<Badge variant="outline">
@@ -129,23 +130,25 @@
 {/snippet}
 
 {#snippet usage(row: Row<Subvolume>)}
-	<Progress.Root
-		numerator={Number(row.original.usedBytes)}
-		denominator={Number(row.original.usedBytes)}
-	>
-		{#snippet ratio({ numerator, denominator })}
-			{Progress.formatRatio(numerator, denominator)}
-		{/snippet}
-		{#snippet detail({ numerator, denominator })}
-			{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
-			{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
-			{numeratorValue}
-			{numeratorUnit}
-			/
-			{denominatorValue}
-			{denominatorUnit}
-		{/snippet}
-	</Progress.Root>
+	<div class="flex justify-end">
+		<Progress.Root
+			numerator={Number(row.original.usedBytes)}
+			denominator={Number(row.original.usedBytes)}
+		>
+			{#snippet ratio({ numerator, denominator })}
+				{Progress.formatRatio(numerator, denominator)}
+			{/snippet}
+			{#snippet detail({ numerator, denominator })}
+				{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
+				{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
+				{numeratorValue}
+				{numeratorUnit}
+				/
+				{denominatorValue}
+				{denominatorUnit}
+			{/snippet}
+		</Progress.Root>
+	</div>
 {/snippet}
 
 {#snippet createTime(row: Row<Subvolume>)}
@@ -163,7 +166,9 @@
 	{/if}
 {/snippet}
 
-{#snippet snapshots(row: Row<Subvolume>)}{/snippet}
+{#snippet snapshots(row: Row<Subvolume>)}
+	<Snapshot subvolume={row.original} />
+{/snippet}
 
 {#snippet actions(row: Row<Subvolume>)}
 	<Actions subvolume={row.original} />

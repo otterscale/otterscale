@@ -9,11 +9,11 @@
 	import { dynamicPaths } from '$lib/path';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import Actions from './actions.svelte';
-	import Tags from './tags.svelte';
+	import Actions from './cell-actions.svelte';
+	import Tags from './cell-tags.svelte';
 
 	export const cells = {
-		_row_picker,
+		row_picker,
 		fqdn_ip,
 		powerState,
 		status,
@@ -22,11 +22,12 @@
 		disk,
 		storage,
 		tags,
+		scope,
 		actions
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Machine>)}
+{#snippet row_picker(row: Row<Machine>)}
 	<RowPickers.Cell {row} />
 {/snippet}
 
@@ -130,6 +131,14 @@
 
 {#snippet tags(row: Row<Machine>)}
 	<Tags machine={row.original} />
+{/snippet}
+
+{#snippet scope(row: Row<Machine>)}
+	{@const identifier = row.original.workloadAnnotations['juju-machine-id']}
+	{#if identifier}
+		{@const scope = identifier.split('-machine-')[0]}
+		{scope}
+	{/if}
 {/snippet}
 
 {#snippet actions(row: Row<Machine>)}

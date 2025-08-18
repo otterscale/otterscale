@@ -1,16 +1,16 @@
 <script lang="ts" module>
 	import { PoolType, type Pool } from '$lib/api/storage/v1/storage_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
-	import { formatCapacityV2 as formatCapacity } from '$lib/formatter';
+	import { formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import Actions from './cells/actions.svelte';
+	import Actions from './cell-actions.svelte';
 	import { getPlacementGroupStateVariant } from './utils.svelte';
 
 	export const cells = {
-		_row_picker,
+		row_picker,
 		name,
 		type,
 		applications,
@@ -21,8 +21,8 @@
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Pool>)}
-	<TableRowPicker {row} />
+{#snippet row_picker(row: Row<Pool>)}
+	<RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Pool>)}

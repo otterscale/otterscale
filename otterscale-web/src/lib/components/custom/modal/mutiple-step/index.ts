@@ -1,5 +1,6 @@
-import { Action, Cancel, Content, Description, Footer, Header, Overlay, Portal, Title, Trigger } from "$lib/components/custom/alert-dialog";
+import { Action, Content, Description, Footer, Header, Overlay, Portal, Title, Trigger } from "$lib/components/custom/alert-dialog";
 import Back from './modal-back.svelte';
+import Cancel from './modal-cancel.svelte';
 import Confirm from './modal-confirm.svelte';
 import Controllers from './modal-controllers.svelte';
 import Model from './modal-model.svelte';

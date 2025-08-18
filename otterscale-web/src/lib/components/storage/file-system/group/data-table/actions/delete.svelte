@@ -38,7 +38,7 @@
 </script>
 
 <Modal.Root bind:open={stateController.state}>
-	<Modal.Trigger class="text-destructive flex h-full w-full items-center gap-2">
+	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		Delete
 	</Modal.Trigger>

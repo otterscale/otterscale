@@ -1,19 +1,19 @@
 <script lang="ts" module>
 	import type { TableRow } from './type';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
-		_row_picker,
+		row_picker,
 		id,
 		name,
 		isVerified
 	};
 </script>
 
-{#snippet _row_picker(row: Row<TableRow>)}
+{#snippet row_picker(row: Row<TableRow>)}
 	<TableRowPicker {row} />
 {/snippet}
 

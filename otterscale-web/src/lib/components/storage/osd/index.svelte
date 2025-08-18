@@ -30,7 +30,7 @@
 				objectStorageDaemons.set(response.osds);
 			});
 	});
-	setContext(reloadManager, 'reloadManager');
+	setContext('reloadManager', reloadManager);
 
 	let isMounted = $state(false);
 	onMount(() => {

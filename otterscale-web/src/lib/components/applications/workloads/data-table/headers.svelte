@@ -4,7 +4,7 @@
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker,
+		row_picker,
 		name,
 		type,
 		namespace,
@@ -18,7 +18,7 @@
 	};
 </script>
 
-{#snippet _row_picker(table: Table<Application>)}
+{#snippet row_picker(table: Table<Application>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
 			<RowPickers.Header {table} />

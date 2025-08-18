@@ -30,7 +30,7 @@
 				images.set(response.images);
 			});
 	});
-	setContext(reloadManager, 'reloadManager');
+	setContext('reloadManager', reloadManager);
 
 	onMount(() => {
 		storageClient

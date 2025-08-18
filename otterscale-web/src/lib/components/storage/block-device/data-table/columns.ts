@@ -3,15 +3,16 @@ import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { getSortingFunction } from '$lib/components/custom/data-table';
 
 const columns: ColumnDef<Image>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,
@@ -33,6 +34,7 @@ const columns: ColumnDef<Image>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.poolName, row);
         },
+        filterFn: 'arrIncludesSome'
     },
     {
         accessorKey: "usage",
@@ -42,6 +44,14 @@ const columns: ColumnDef<Image>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.usage, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes),
+                Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes),
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "snapshots",
@@ -51,6 +61,14 @@ const columns: ColumnDef<Image>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.snapshots, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.snapshots.length,
+                nextRow.original.snapshots.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "actions",

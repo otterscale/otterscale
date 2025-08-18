@@ -38,19 +38,14 @@
 <div
 	class={cn(
 		INPUT_CLASSNAME,
-		'relative flex items-center gap-2 ring-1',
-		isInvalid ? 'ring-destructive' : '',
-		format === 'checkbox' && 'border-none shadow-none ring-0',
+		'relative flex items-start gap-2 ',
+		format === 'switch' ? 'ring-1' : 'border-none shadow-none',
+		isInvalid && format === 'switch' ? 'ring-destructive' : '',
+		isInvalid && format === 'checkbox' ? 'ring-destructive ring-1' : '',
 		className
 	)}
 >
-	{#if format === 'switch'}
-		<span class="absolute left-3 top-1/2 -translate-y-1/2 items-center">
-			<Icon icon={typeToIcon['boolean']} />
-		</span>
-	{/if}
-
-	<span class={cn('pr-15', format === 'switch' ? 'pl-9' : '')}>
+	<span class="pr-15 pl-3">
 		{#if required}
 			{@const isValid = [true, false].includes(checked)}
 			{@const isNull = [null, undefined].includes(checked)}
@@ -93,13 +88,13 @@
 
 	<span
 		class={cn(
-			'absolute right-3 top-1/2 flex -translate-y-1/2 items-center rounded-full hover:cursor-pointer focus:outline-none',
-			format === 'checkbox' && isInvalid ? 'ring-destructive ring-1' : ''
+			'absolute top-1/2 right-3 flex -translate-y-1/2 items-center rounded-full hover:cursor-pointer focus:outline-none'
+			// format === 'checkbox' && isInvalid ? 'ring-destructive ring-1' : ''
 		)}
 	>
 		{#if nullable}
 			<button
-				class="absolute right-9 top-1/2 flex -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
+				class="absolute top-1/2 right-9 flex -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
 				onclick={() => {
 					checked = undefined;
 				}}

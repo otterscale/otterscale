@@ -105,9 +105,10 @@
 				{table}
 			/>
 			<Filters.StringMatch
-				columnId="mode"
+				columnId="poolName"
+				alias="Pool Name"
 				{table}
-				values={$subvolumeGroups.map((row) => row.mode)}
+				values={$subvolumeGroups.map((row) => row.poolName)}
 			/>
 			<Filters.Column {table} />
 		</Layout.ControllerFilter>

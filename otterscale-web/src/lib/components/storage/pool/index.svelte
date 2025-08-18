@@ -30,7 +30,7 @@
 				pools.set(response.pools);
 			});
 	});
-	setContext(reloadManager, 'reloadManager');
+	setContext('reloadManager', reloadManager);
 
 	let isMounted = $state(false);
 	onMount(() => {

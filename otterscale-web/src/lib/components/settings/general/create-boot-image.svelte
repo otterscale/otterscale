@@ -73,7 +73,7 @@
 </script>
 
 <Modal.Root bind:open={stateController.state}>
-	<Modal.Trigger>
+	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Boot Image
 	</Modal.Trigger>
@@ -177,10 +177,11 @@
 								return message;
 							}
 						});
-
 						requestManager.reset();
 						stateController.close();
-					}}>Create</Modal.Action
+					}}>
+					Create
+					</Modal.Action
 				>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

@@ -5,14 +5,14 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import Actions from './actions.svelte';
-	import { ReservedIPRanges } from './reservedIPRanges';
-	import ViewIPAddresses from './view-ip-addresses.svelte';
-	import ViewSubnet from './view-subnet.svelte';
-	import ViewVLAN from './view-vlan.svelte';
+	import Actions from './cell-actions.svelte';
+	import { ReservedIPRanges } from './cell-reserved-ip-ranges';
+	import ViewIPAddresses from './action-view-ip-addresses.svelte';
+	import ViewSubnet from './action-view-subnet.svelte';
+	import ViewVLAN from './action-view-vlan.svelte';
 
 	export const cells = {
-		_row_picker,
+		row_picker,
 		fabric,
 		vlan,
 		dhcpOn,
@@ -24,7 +24,7 @@
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Network>)}
+{#snippet row_picker(row: Row<Network>)}
 	<RowPickers.Cell {row} />
 {/snippet}
 

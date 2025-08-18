@@ -29,7 +29,12 @@
 	<div bind:this={ref} data-slot="progress-root" {...restProps}>
 		<Progress value={numerator / denominator} max={1} />
 		{#if ratio}
-			<div class={cn('text-muted-foreground flex items-center justify-end font-light', className)}>
+			<div
+				class={cn(
+					'text-muted-foreground flex items-center justify-end font-light sm:min-w-[100px] md:min-w-[200px]',
+					className
+				)}
+			>
 				{#if detail}
 					<Tooltip.Provider>
 						<Tooltip.Root>

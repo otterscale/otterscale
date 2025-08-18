@@ -4,7 +4,7 @@
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker,
+		row_picker,
 		fabric,
 		vlan,
 		dhcpOn,
@@ -16,7 +16,7 @@
 	};
 </script>
 
-{#snippet _row_picker(table: Table<Network>)}
+{#snippet row_picker(table: Table<Network>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
 			<RowPickers.Header {table} />

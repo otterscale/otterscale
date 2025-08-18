@@ -109,14 +109,14 @@
 				{table}
 			/>
 			<Filters.BooleanMatch
-				columnId="_in"
+				columnId="in"
 				alias="In"
 				{table}
 				values={$objectStorageDaemons.map((row) => row.in)}
 				descriptor={(value) => (value ? 'In' : 'Out')}
 			/>
 			<Filters.BooleanMatch
-				columnId="_up"
+				columnId="up"
 				alias="Up"
 				{table}
 				values={$objectStorageDaemons.map((row) => row.up)}
