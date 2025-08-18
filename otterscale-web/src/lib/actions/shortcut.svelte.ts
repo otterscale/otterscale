@@ -100,6 +100,7 @@ export function attachShortcut(opts: Options[] | Options) {
 }
 
 export type Key =
+	| '/'
 	| 'backspace'
 	| 'tab'
 	| 'enter'

@@ -23,7 +23,7 @@
 		active: Scope;
 		scopes: Scope[];
 		tier: string;
-		onSelect: (index: number) => Promise<void>;
+		onSelect: (index: number, home?: boolean) => Promise<void>;
 		trigger: Writable<boolean>;
 	} = $props();
 
@@ -136,7 +136,7 @@
 			>
 				<DropdownMenu.Label class="text-muted-foreground text-xs">{m.scopes()}</DropdownMenu.Label>
 				{#each scopes as scope, index (scope.name)}
-					<DropdownMenu.Item onSelect={async () => await onSelect(index)} class="gap-2 p-2">
+					<DropdownMenu.Item onSelect={async () => await onSelect(index, true)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
 							<Icon
 								icon="{scopeIcon(scopes.findIndex((s) => s.name === active.name))}-bold"
