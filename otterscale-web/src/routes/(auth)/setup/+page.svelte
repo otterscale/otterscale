@@ -151,7 +151,7 @@
 
 					<div class="mt-12 text-center">
 						<Button href={staticPaths.home.url} class="inline-flex items-center gap-2">
-							{m.go_back_to_home()}
+							{m.back_to_home()}
 						</Button>
 					</div>
 				</div>
