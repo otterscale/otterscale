@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/go-faker/faker/v4"
-	"golang.org/x/sync/errgroup"
 
 	"helm.sh/helm/v3/pkg/release"
 	"helm.sh/helm/v3/pkg/strvals"
@@ -15,12 +14,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-type Release struct {
-	ScopeName    string
-	ScopeUUID    string
-	FacilityName string
-	*release.Release
-}
+type Release = release.Release
 
 type ReleaseRepo interface {
 	List(config *rest.Config, namespace string) ([]release.Release, error)
@@ -31,43 +25,12 @@ type ReleaseRepo interface {
 	GetValues(config *rest.Config, namespace, name string) (map[string]any, error)
 }
 
-func (uc *ApplicationUseCase) ListReleases(ctx context.Context) ([]Release, error) {
-	kuberneteses, err := listKuberneteses(ctx, uc.scope, uc.client, "")
+func (uc *ApplicationUseCase) ListReleases(ctx context.Context, uuid, facility string) ([]Release, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	eg, egctx := errgroup.WithContext(ctx)
-	result := make([][]Release, len(kuberneteses))
-	for i := range kuberneteses {
-		eg.Go(func() error {
-			config, err := kubeConfig(egctx, uc.facility, uc.action, kuberneteses[i].ScopeUUID, kuberneteses[i].Name)
-			if err != nil {
-				return err
-			}
-			releases, err := uc.release.List(config, "")
-			if err != nil {
-				return err
-			}
-			for _, release := range releases {
-				result[i] = append(result[i], Release{
-					ScopeName:    kuberneteses[i].ScopeName,
-					ScopeUUID:    kuberneteses[i].ScopeUUID,
-					FacilityName: kuberneteses[i].Name,
-					Release:      &release,
-				})
-			}
-			return nil
-		})
-	}
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-
-	release := []Release{}
-	for _, r := range result {
-		release = append(release, r...)
-	}
-	return release, nil
+	return uc.release.List(config, "")
 }
 
 func (uc *ApplicationUseCase) CreateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string, valuesMap map[string]string) (*Release, error) {
@@ -80,11 +43,7 @@ func (uc *ApplicationUseCase) CreateRelease(ctx context.Context, uuid, facility,
 	if err != nil {
 		return nil, err
 	}
-	release, err := uc.release.Install(config, namespace, getReleaseName(name), dryRun, chartRef, values)
-	if err != nil {
-		return nil, err
-	}
-	return &Release{Release: release}, nil
+	return uc.release.Install(config, namespace, getReleaseName(name), dryRun, chartRef, values)
 }
 
 func (uc *ApplicationUseCase) UpdateRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool, chartRef, valuesYAML string) (*Release, error) {
@@ -97,11 +56,7 @@ func (uc *ApplicationUseCase) UpdateRelease(ctx context.Context, uuid, facility,
 	if err != nil {
 		return nil, err
 	}
-	release, err := uc.release.Upgrade(config, namespace, name, dryRun, chartRef, values)
-	if err != nil {
-		return nil, err
-	}
-	return &Release{Release: release}, nil
+	return uc.release.Upgrade(config, namespace, name, dryRun, chartRef, values)
 }
 
 func (uc *ApplicationUseCase) DeleteRelease(ctx context.Context, uuid, facility, namespace, name string, dryRun bool) error {

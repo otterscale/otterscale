@@ -184,10 +184,8 @@ func (r *helmRelease) config(restConfig *rest.Config, namespace string) (*action
 	getter := genericclioptions.NewConfigFlags(true)
 	getter.APIServer = &restConfig.Host
 	getter.BearerToken = &restConfig.BearerToken
-	getter.CAFile = &restConfig.CAFile
-	getter.CertFile = &restConfig.TLSClientConfig.CertFile
-	getter.KeyFile = &restConfig.TLSClientConfig.KeyFile
 	getter.Insecure = &restConfig.Insecure
+	getter.CAFile = &restConfig.CAFile
 	getter.Namespace = &namespace
 
 	config := new(action.Configuration)
