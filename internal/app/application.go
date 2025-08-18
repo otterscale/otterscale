@@ -68,7 +68,7 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *connect.Re
 }
 
 func (s *ApplicationService) ListReleases(ctx context.Context, req *connect.Request[pb.ListReleasesRequest]) (*connect.Response[pb.ListReleasesResponse], error) {
-	releases, err := s.uc.ListReleases(ctx)
+	releases, err := s.uc.ListReleases(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -299,9 +299,6 @@ func toProtoReleases(rs []core.Release) []*pb.Application_Release {
 
 func toProtoRelease(r *core.Release) *pb.Application_Release {
 	ret := &pb.Application_Release{}
-	ret.SetScopeName(r.ScopeName)
-	ret.SetScopeUuid(r.ScopeUUID)
-	ret.SetFacilityName(r.FacilityName)
 	ret.SetNamespace(r.Namespace)
 	ret.SetName(r.Name)
 	ret.SetRevision(int32(r.Version)) //nolint:gosec
