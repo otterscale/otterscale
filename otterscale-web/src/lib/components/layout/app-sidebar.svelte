@@ -19,10 +19,10 @@
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths, getValidURL, staticPaths, type Path } from '$lib/path';
 	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
-	import { routes } from '$lib/routes';
-	import NavMain from './nav-main.svelte';
-	import NavPrimary from './nav-primary.svelte';
-	import NavSecondary from './nav-secondary.svelte';
+	import { globalRoutes, platformRoutes } from '$lib/routes';
+	import NavBookmark from './nav-bookmark.svelte';
+	import NavFooter from './nav-footer.svelte';
+	import NavGeneral from './nav-general.svelte';
 	import NavUser from './nav-user.svelte';
 	import ScopeSwitcher from './scope-switcher.svelte';
 
@@ -177,9 +177,10 @@
 	</Sidebar.Header>
 
 	<Sidebar.Content>
-		<NavMain routes={routes(page.params.scope)} />
-		<NavPrimary bookmarks={$bookmarks} onDelete={onBookmarkDelete} />
-		<NavSecondary class="mt-auto" />
+		<NavGeneral title={m.platform()} routes={platformRoutes(page.params.scope)} />
+		<NavGeneral title={m.global()} routes={globalRoutes(page.params.scope)} />
+		<NavBookmark bookmarks={$bookmarks} onDelete={onBookmarkDelete} />
+		<NavFooter class="mt-auto" />
 	</Sidebar.Content>
 
 	<Sidebar.Footer>

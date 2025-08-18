@@ -8,8 +8,8 @@
 
 	// Set breadcrumb navigation
 	breadcrumb.set({
-		parents: [dynamicPaths.machines(page.params.scope)],
-		current: dynamicPaths.machinesVirtualMachine(page.params.scope)
+		parents: [],
+		current: dynamicPaths.virtualization(page.params.scope)
 	});
 </script>
 
