@@ -523,8 +523,7 @@ type UpdateConfigRequest struct {
 	xxx_hidden_JujuCloudName           *string                `protobuf:"bytes,21,opt,name=juju_cloud_name,json=jujuCloudName"`
 	xxx_hidden_JujuCloudRegion         *string                `protobuf:"bytes,22,opt,name=juju_cloud_region,json=jujuCloudRegion"`
 	xxx_hidden_JujuCharmhubApiUrl      *string                `protobuf:"bytes,23,opt,name=juju_charmhub_api_url,json=jujuCharmhubApiUrl"`
-	xxx_hidden_MicroK8SHost            *string                `protobuf:"bytes,31,opt,name=micro_k8s_host,json=microK8sHost"`
-	xxx_hidden_MicroK8SToken           *string                `protobuf:"bytes,32,opt,name=micro_k8s_token,json=microK8sToken"`
+	xxx_hidden_MircoK8SConfig          *string                `protobuf:"bytes,33,opt,name=mirco_k8s_config,json=mircoK8sConfig"`
 	XXX_raceDetectHookData             protoimpl.RaceDetectHookData
 	XXX_presence                       [1]uint32
 	unknownFields                      protoimpl.UnknownFields
@@ -663,20 +662,10 @@ func (x *UpdateConfigRequest) GetJujuCharmhubApiUrl() string {
 	return ""
 }
 
-func (x *UpdateConfigRequest) GetMicroK8SHost() string {
+func (x *UpdateConfigRequest) GetMircoK8SConfig() string {
 	if x != nil {
-		if x.xxx_hidden_MicroK8SHost != nil {
-			return *x.xxx_hidden_MicroK8SHost
-		}
-		return ""
-	}
-	return ""
-}
-
-func (x *UpdateConfigRequest) GetMicroK8SToken() string {
-	if x != nil {
-		if x.xxx_hidden_MicroK8SToken != nil {
-			return *x.xxx_hidden_MicroK8SToken
+		if x.xxx_hidden_MircoK8SConfig != nil {
+			return *x.xxx_hidden_MircoK8SConfig
 		}
 		return ""
 	}
@@ -685,22 +674,22 @@ func (x *UpdateConfigRequest) GetMicroK8SToken() string {
 
 func (x *UpdateConfigRequest) SetMaasUrl(v string) {
 	x.xxx_hidden_MaasUrl = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 12)
 }
 
 func (x *UpdateConfigRequest) SetMaasKey(v string) {
 	x.xxx_hidden_MaasKey = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
 }
 
 func (x *UpdateConfigRequest) SetMaasVersion(v string) {
 	x.xxx_hidden_MaasVersion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
 }
 
 func (x *UpdateConfigRequest) SetJujuController(v string) {
 	x.xxx_hidden_JujuController = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 12)
 }
 
 func (x *UpdateConfigRequest) SetJujuControllerAddresses(v []string) {
@@ -709,42 +698,37 @@ func (x *UpdateConfigRequest) SetJujuControllerAddresses(v []string) {
 
 func (x *UpdateConfigRequest) SetJujuUsername(v string) {
 	x.xxx_hidden_JujuUsername = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 12)
 }
 
 func (x *UpdateConfigRequest) SetJujuPassword(v string) {
 	x.xxx_hidden_JujuPassword = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 12)
 }
 
 func (x *UpdateConfigRequest) SetJujuCaCert(v string) {
 	x.xxx_hidden_JujuCaCert = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 12)
 }
 
 func (x *UpdateConfigRequest) SetJujuCloudName(v string) {
 	x.xxx_hidden_JujuCloudName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
 }
 
 func (x *UpdateConfigRequest) SetJujuCloudRegion(v string) {
 	x.xxx_hidden_JujuCloudRegion = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 12)
 }
 
 func (x *UpdateConfigRequest) SetJujuCharmhubApiUrl(v string) {
 	x.xxx_hidden_JujuCharmhubApiUrl = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 13)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 12)
 }
 
-func (x *UpdateConfigRequest) SetMicroK8SHost(v string) {
-	x.xxx_hidden_MicroK8SHost = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 13)
-}
-
-func (x *UpdateConfigRequest) SetMicroK8SToken(v string) {
-	x.xxx_hidden_MicroK8SToken = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 13)
+func (x *UpdateConfigRequest) SetMircoK8SConfig(v string) {
+	x.xxx_hidden_MircoK8SConfig = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 12)
 }
 
 func (x *UpdateConfigRequest) HasMaasUrl() bool {
@@ -817,18 +801,11 @@ func (x *UpdateConfigRequest) HasJujuCharmhubApiUrl() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 10)
 }
 
-func (x *UpdateConfigRequest) HasMicroK8SHost() bool {
+func (x *UpdateConfigRequest) HasMircoK8SConfig() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 11)
-}
-
-func (x *UpdateConfigRequest) HasMicroK8SToken() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 12)
 }
 
 func (x *UpdateConfigRequest) ClearMaasUrl() {
@@ -881,14 +858,9 @@ func (x *UpdateConfigRequest) ClearJujuCharmhubApiUrl() {
 	x.xxx_hidden_JujuCharmhubApiUrl = nil
 }
 
-func (x *UpdateConfigRequest) ClearMicroK8SHost() {
+func (x *UpdateConfigRequest) ClearMircoK8SConfig() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
-	x.xxx_hidden_MicroK8SHost = nil
-}
-
-func (x *UpdateConfigRequest) ClearMicroK8SToken() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 12)
-	x.xxx_hidden_MicroK8SToken = nil
+	x.xxx_hidden_MircoK8SConfig = nil
 }
 
 type UpdateConfigRequest_builder struct {
@@ -905,8 +877,7 @@ type UpdateConfigRequest_builder struct {
 	JujuCloudName           *string
 	JujuCloudRegion         *string
 	JujuCharmhubApiUrl      *string
-	MicroK8SHost            *string
-	MicroK8SToken           *string
+	MircoK8SConfig          *string
 }
 
 func (b0 UpdateConfigRequest_builder) Build() *UpdateConfigRequest {
@@ -914,53 +885,49 @@ func (b0 UpdateConfigRequest_builder) Build() *UpdateConfigRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.MaasUrl != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 12)
 		x.xxx_hidden_MaasUrl = b.MaasUrl
 	}
 	if b.MaasKey != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
 		x.xxx_hidden_MaasKey = b.MaasKey
 	}
 	if b.MaasVersion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
 		x.xxx_hidden_MaasVersion = b.MaasVersion
 	}
 	if b.JujuController != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 12)
 		x.xxx_hidden_JujuController = b.JujuController
 	}
 	x.xxx_hidden_JujuControllerAddresses = b.JujuControllerAddresses
 	if b.JujuUsername != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 12)
 		x.xxx_hidden_JujuUsername = b.JujuUsername
 	}
 	if b.JujuPassword != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 12)
 		x.xxx_hidden_JujuPassword = b.JujuPassword
 	}
 	if b.JujuCaCert != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 12)
 		x.xxx_hidden_JujuCaCert = b.JujuCaCert
 	}
 	if b.JujuCloudName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 12)
 		x.xxx_hidden_JujuCloudName = b.JujuCloudName
 	}
 	if b.JujuCloudRegion != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 12)
 		x.xxx_hidden_JujuCloudRegion = b.JujuCloudRegion
 	}
 	if b.JujuCharmhubApiUrl != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 13)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 12)
 		x.xxx_hidden_JujuCharmhubApiUrl = b.JujuCharmhubApiUrl
 	}
-	if b.MicroK8SHost != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 13)
-		x.xxx_hidden_MicroK8SHost = b.MicroK8SHost
-	}
-	if b.MicroK8SToken != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 13)
-		x.xxx_hidden_MicroK8SToken = b.MicroK8SToken
+	if b.MircoK8SConfig != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 12)
+		x.xxx_hidden_MircoK8SConfig = b.MircoK8SConfig
 	}
 	return m0
 }
@@ -1163,7 +1130,7 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\amessage\x18\f \x01(\tR\amessage\"E\n" +
 	"\x13UpdateStatusRequest\x12\x14\n" +
 	"\x05phase\x18\x01 \x01(\tR\x05phase\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\x94\x04\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xf6\x03\n" +
 	"\x13UpdateConfigRequest\x12\x19\n" +
 	"\bmaas_url\x18\x01 \x01(\tR\amaasUrl\x12\x19\n" +
 	"\bmaas_key\x18\x02 \x01(\tR\amaasKey\x12!\n" +
@@ -1176,9 +1143,8 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"jujuCaCert\x12&\n" +
 	"\x0fjuju_cloud_name\x18\x15 \x01(\tR\rjujuCloudName\x12*\n" +
 	"\x11juju_cloud_region\x18\x16 \x01(\tR\x0fjujuCloudRegion\x121\n" +
-	"\x15juju_charmhub_api_url\x18\x17 \x01(\tR\x12jujuCharmhubApiUrl\x12$\n" +
-	"\x0emicro_k8s_host\x18\x1f \x01(\tR\fmicroK8sHost\x12&\n" +
-	"\x0fmicro_k8s_token\x18  \x01(\tR\rmicroK8sToken\"9\n" +
+	"\x15juju_charmhub_api_url\x18\x17 \x01(\tR\x12jujuCharmhubApiUrl\x12(\n" +
+	"\x10mirco_k8s_config\x18! \x01(\tR\x0emircoK8sConfigJ\x04\b\x1f\x10!\"9\n" +
 	"#UpdateConfigHelmRepositoriesRequest\x12\x12\n" +
 	"\x04urls\x18\x01 \x03(\tR\x04urls\"-\n" +
 	"\n" +
