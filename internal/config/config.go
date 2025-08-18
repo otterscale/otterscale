@@ -30,8 +30,7 @@ type Juju struct {
 }
 
 type MicroK8s struct {
-	Host  string `yaml:"host"`
-	Token string `yaml:"token"`
+	Config string `yaml:"config"`
 }
 
 type Kube struct {
