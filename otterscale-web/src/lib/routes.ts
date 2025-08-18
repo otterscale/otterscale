@@ -23,6 +23,10 @@ export const platformRoutes = (scope: string): Route[] => [
 		]
 	},
 	{
+		path: dynamicPaths.virtualization(scope),
+		items: []
+	},
+	{
 		path: dynamicPaths.storage(scope),
 		items: [
 			dynamicPaths.storageOSD(scope),
@@ -31,10 +35,6 @@ export const platformRoutes = (scope: string): Route[] => [
 			dynamicPaths.storageFileSystem(scope),
 			dynamicPaths.storageObjectGateway(scope)
 		]
-	},
-	{
-		path: dynamicPaths.virtualization(scope),
-		items: []
 	}
 ];
 
