@@ -138,10 +138,7 @@
 				{#each scopes as scope, index (scope.name)}
 					<DropdownMenu.Item onSelect={async () => await onSelect(index, true)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
-							<Icon
-								icon="{scopeIcon(scopes.findIndex((s) => s.name === active.name))}-bold"
-								class="size-3.5 shrink-0"
-							/>
+							<Icon icon="{scopeIcon(index)}-bold" class="size-3.5 shrink-0" />
 						</div>
 						{scope.name}
 						{#if index < 9}
