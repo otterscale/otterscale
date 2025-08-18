@@ -1,26 +1,17 @@
 <script lang="ts">
-	import { toast } from 'svelte-sonner';
 	import Icon from '@iconify/svelte';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
-	import { urlIcon } from '$lib/path';
+	import { urlIcon, type Path } from '$lib/path';
 
-	interface Bookmark {
-		title: string;
-		url: string;
-	}
-
-	let { bookmarks }: { bookmarks: Bookmark[] } = $props();
+	let { bookmarks, onDelete }: { bookmarks: Path[]; onDelete: (path: Path) => Promise<void> } =
+		$props();
 
 	let visibleCount = $state(3);
 	const increment = 3;
 
 	const visibleBookmarks = $derived(bookmarks.slice(0, visibleCount));
 	const hasMoreBookmarks = $derived(bookmarks.length > visibleCount);
-
-	function deleteBookmark(bookmark: Bookmark): void {
-		toast.warning(`TODO: delete ${bookmark.title.toLowerCase()}`);
-	}
 
 	function showMoreBookmarks(): void {
 		visibleCount += increment;
@@ -40,7 +31,7 @@
 						</a>
 					{/snippet}
 				</Sidebar.MenuButton>
-				<Sidebar.MenuAction showOnHover onclick={() => deleteBookmark(bookmark)}>
+				<Sidebar.MenuAction showOnHover onclick={() => onDelete(bookmark)}>
 					<Icon icon="ph:x-bold" class="text-red-500" />
 					<span class="sr-only">Delete {bookmark.title}</span>
 				</Sidebar.MenuAction>
@@ -52,6 +43,15 @@
 				<Sidebar.MenuButton onclick={showMoreBookmarks}>
 					<Icon icon="ph:dots-three-bold" />
 					{m.more()}
+				</Sidebar.MenuButton>
+			</Sidebar.MenuItem>
+		{/if}
+
+		{#if bookmarks.length === 0}
+			<Sidebar.MenuItem>
+				<Sidebar.MenuButton aria-disabled>
+					<Icon icon="ph:empty" />
+					{m.empty_bookmark()}
 				</Sidebar.MenuButton>
 			</Sidebar.MenuItem>
 		{/if}

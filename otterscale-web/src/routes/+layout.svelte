@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { setContext } from 'svelte';
+	import { setContext, onMount } from 'svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import { createConnectTransport } from '@connectrpc/connect-web';
 	import { addCollection } from '@iconify/svelte';
@@ -10,7 +10,6 @@
 	import { env } from '$env/dynamic/public';
 	import favicon from '$lib/assets/favicon.svg';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
-
 	import '../app.css';
 
 	let { children } = $props();

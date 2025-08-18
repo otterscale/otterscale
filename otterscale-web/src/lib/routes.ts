@@ -51,13 +51,3 @@ export const routes = (scope: string): Route[] => [
         ]
     }
 ];
-
-export const bookmarks = [
-    { title: 'FOO 1', url: '#' },
-    { title: 'BAR 1', url: '#' },
-    { title: 'FOO 2', url: '#' },
-    { title: 'BAR 2', url: '#' },
-    { title: 'FOO 3', url: '#' },
-    { title: 'BAR 3', url: '#' }
-];
-

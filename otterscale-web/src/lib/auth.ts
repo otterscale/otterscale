@@ -43,5 +43,6 @@ export const auth = betterAuth({
 			clientSecret: env.GOOGLE_CLIENT_SECRET!,
 		},
 	},
+	telemetry: { enabled: false },
 	trustedOrigins: [publicEnv.PUBLIC_URL],
 });

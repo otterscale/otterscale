@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"net/url"
 	"sync"
 
 	"connectrpc.com/connect"
@@ -103,11 +104,11 @@ func (s *EnvironmentService) UpdateConfigHelmRepositories(ctx context.Context, r
 }
 
 func (s *EnvironmentService) GetPrometheus(ctx context.Context, req *connect.Request[pb.GetPrometheusRequest]) (*connect.Response[pb.Prometheus], error) {
-	endpoint, baseURL, err := s.uc.GetPrometheusInfo(ctx)
+	_, err := s.uc.FetchPrometheusInfo(ctx)
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoPrometheus(endpoint, baseURL)
+	resp := toProtoPrometheus()
 	return connect.NewResponse(resp), nil
 }
 
@@ -135,6 +136,13 @@ func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 	}
 }
 
+func (s *EnvironmentService) GetPrometheusURL() *url.URL {
+	if s.uc != nil {
+		return s.uc.GetPrometheusURL()
+	}
+	return nil
+}
+
 func toProtoWatchStatus(status *core.EnvironmentStatus) *pb.WatchStatusResponse {
 	ret := &pb.WatchStatusResponse{}
 	ret.SetStarted(status.Started)
@@ -144,9 +152,8 @@ func toProtoWatchStatus(status *core.EnvironmentStatus) *pb.WatchStatusResponse 
 	return ret
 }
 
-func toProtoPrometheus(endpoint, baseURL string) *pb.Prometheus {
+func toProtoPrometheus() *pb.Prometheus {
 	ret := &pb.Prometheus{}
-	ret.SetEndpoint(endpoint)
-	ret.SetBaseUrl(baseURL)
+	ret.SetBaseUrl("/api/v1")
 	return ret
 }

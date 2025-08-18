@@ -1024,7 +1024,6 @@ func (b0 UpdateConfigHelmRepositoriesRequest_builder) Build() *UpdateConfigHelmR
 
 type Prometheus struct {
 	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Endpoint    *string                `protobuf:"bytes,1,opt,name=endpoint"`
 	xxx_hidden_BaseUrl     *string                `protobuf:"bytes,2,opt,name=base_url,json=baseUrl"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
@@ -1057,16 +1056,6 @@ func (x *Prometheus) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *Prometheus) GetEndpoint() string {
-	if x != nil {
-		if x.xxx_hidden_Endpoint != nil {
-			return *x.xxx_hidden_Endpoint
-		}
-		return ""
-	}
-	return ""
-}
-
 func (x *Prometheus) GetBaseUrl() string {
 	if x != nil {
 		if x.xxx_hidden_BaseUrl != nil {
@@ -1077,57 +1066,35 @@ func (x *Prometheus) GetBaseUrl() string {
 	return ""
 }
 
-func (x *Prometheus) SetEndpoint(v string) {
-	x.xxx_hidden_Endpoint = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
-}
-
 func (x *Prometheus) SetBaseUrl(v string) {
 	x.xxx_hidden_BaseUrl = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
-}
-
-func (x *Prometheus) HasEndpoint() bool {
-	if x == nil {
-		return false
-	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
 }
 
 func (x *Prometheus) HasBaseUrl() bool {
 	if x == nil {
 		return false
 	}
-	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
-}
-
-func (x *Prometheus) ClearEndpoint() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
-	x.xxx_hidden_Endpoint = nil
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
 }
 
 func (x *Prometheus) ClearBaseUrl() {
-	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_BaseUrl = nil
 }
 
 type Prometheus_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Endpoint *string
-	BaseUrl  *string
+	BaseUrl *string
 }
 
 func (b0 Prometheus_builder) Build() *Prometheus {
 	m0 := &Prometheus{}
 	b, x := &b0, m0
 	_, _ = b, x
-	if b.Endpoint != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
-		x.xxx_hidden_Endpoint = b.Endpoint
-	}
 	if b.BaseUrl != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
 		x.xxx_hidden_BaseUrl = b.BaseUrl
 	}
 	return m0
@@ -1213,11 +1180,10 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\x0emicro_k8s_host\x18\x1f \x01(\tR\fmicroK8sHost\x12&\n" +
 	"\x0fmicro_k8s_token\x18  \x01(\tR\rmicroK8sToken\"9\n" +
 	"#UpdateConfigHelmRepositoriesRequest\x12\x12\n" +
-	"\x04urls\x18\x01 \x03(\tR\x04urls\"C\n" +
+	"\x04urls\x18\x01 \x03(\tR\x04urls\"-\n" +
 	"\n" +
-	"Prometheus\x12\x1a\n" +
-	"\bendpoint\x18\x01 \x01(\tR\bendpoint\x12\x19\n" +
-	"\bbase_url\x18\x02 \x01(\tR\abaseUrl\"\x16\n" +
+	"Prometheus\x12\x19\n" +
+	"\bbase_url\x18\x02 \x01(\tR\abaseUrlJ\x04\b\x01\x10\x02\"\x16\n" +
 	"\x14GetPrometheusRequest2\x83\x05\n" +
 	"\x12EnvironmentService\x12l\n" +
 	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12n\n" +

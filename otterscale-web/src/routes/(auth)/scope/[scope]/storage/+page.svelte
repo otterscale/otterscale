@@ -1,26 +1,49 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
 	import { page } from '$app/state';
-	import * as Alert from '$lib/components/ui/alert';
-	import { m } from '$lib/paraglide/messages';
+	import { env } from '$env/dynamic/public';
+	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import Loading from '$lib/components/custom/loading/report.svelte';
+	import { Dashboard } from '$lib/components/storage/dashboard';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { PrometheusDriver } from 'prometheus-query';
+	import { getContext, onMount } from 'svelte';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [], current: dynamicPaths.storage(page.params.scope) });
+
+	const transport: Transport = getContext('transport');
+	const environmentService = createClient(EnvironmentService, transport);
+
+	let prometheusDriver: PrometheusDriver | null = null;
+	let mounted = false;
+
+	async function initializePrometheusDriver(): Promise<PrometheusDriver> {
+		const response = await environmentService.getPrometheus({});
+		return new PrometheusDriver({
+			endpoint: `${env.PUBLIC_API_URL}/prometheus`,
+			baseURL: response.baseUrl
+		});
+	}
+
+	onMount(async () => {
+		try {
+			prometheusDriver = await initializePrometheusDriver();
+		} catch (error) {
+			console.error('Failed to initialize Prometheus driver:', error);
+		} finally {
+			mounted = true;
+		}
+	});
 </script>
 
-{#if $activeScope}
-	current scope: {$activeScope.uuid}
+{#if mounted && prometheusDriver && $activeScope}
+	<Dashboard client={prometheusDriver} scope={$activeScope} />
+{:else}
+	<!-- <div class="flex items-center justify-center p-8">
+		<Icon icon="mdi:loading" class="animate-spin text-2xl" />
+		<span class="ml-2">Loading Storage...</span>
+	</div> -->
+	<Loading />
 {/if}
-
-<Alert.Root variant="default">
-	<Icon icon="ph:airplane-takeoff" />
-	<Alert.Title>{m.migrating()}</Alert.Title>
-	<Alert.Description>{m.migrating_description()}</Alert.Description>
-</Alert.Root>
-
-<div class="pointer-events-none fixed inset-0 flex flex-col items-center justify-center">
-	<Icon icon="ph:barricade" class="text-9xl" />
-	{m.current_version({ version: import.meta.env.PACKAGE_VERSION })}
-</div>

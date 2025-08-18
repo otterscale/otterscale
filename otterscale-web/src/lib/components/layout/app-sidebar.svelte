@@ -17,9 +17,9 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
-	import { getValidURL, staticPaths } from '$lib/path';
-	import { activeScope, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
-	import { bookmarks, routes } from '$lib/routes';
+	import { getValidURL, staticPaths, type Path } from '$lib/path';
+	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
+	import { routes } from '$lib/routes';
 	import NavMain from './nav-main.svelte';
 	import NavPrimary from './nav-primary.svelte';
 	import NavSecondary from './nav-secondary.svelte';
@@ -125,6 +125,12 @@
 		}
 	}
 
+	async function onBookmarkDelete(path: Path) {
+		bookmarks.update((currentBookmarks) =>
+			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
+		);
+	}
+
 	onMount(initialize);
 
 	$effect(() => {
@@ -166,7 +172,7 @@
 
 	<Sidebar.Content>
 		<NavMain routes={routes(page.params.scope)} />
-		<NavPrimary {bookmarks} />
+		<NavPrimary bookmarks={$bookmarks} onDelete={onBookmarkDelete} />
 		<NavSecondary class="mt-auto" />
 	</Sidebar.Content>
 
