@@ -1,8 +1,8 @@
-import { betterAuth } from "better-auth";
-import { Pool } from "pg";
-import { sso } from "@better-auth/sso";
-import { env } from "$env/dynamic/private";
-import { env as publicEnv } from "$env/dynamic/public";
+import { betterAuth } from 'better-auth';
+import { Pool } from 'pg';
+import { sso } from '@better-auth/sso';
+import { env } from '$env/dynamic/private';
+import { env as publicEnv } from '$env/dynamic/public';
 
 export const auth = betterAuth({
 	account: {
@@ -13,36 +13,34 @@ export const auth = betterAuth({
 	},
 	baseURL: env.PUBLIC_URL,
 	database: new Pool({
-		connectionString: env.DATABASE_URL,
+		connectionString: env.DATABASE_URL
 	}),
 	emailAndPassword: {
-		enabled: true,
+		enabled: true
 	},
-	plugins: [
-		sso(),
-	],
+	plugins: [sso()],
 	secret: env.AUTH_SECRET,
 	session: {
 		cookieCache: {
 			enabled: true,
-			maxAge: 5 * 60,
-		},
+			maxAge: 5 * 60
+		}
 	},
 	socialProviders: {
 		apple: {
 			clientId: env.APPLE_CLIENT_ID!,
 			clientSecret: env.APPLE_CLIENT_SECRET!,
-			appBundleIdentifier: env.APPLE_APP_BUNDLE_IDENTIFIER!,
+			appBundleIdentifier: env.APPLE_APP_BUNDLE_IDENTIFIER!
 		},
 		github: {
 			clientId: env.GITHUB_CLIENT_ID!,
-			clientSecret: env.GITHUB_CLIENT_SECRET!,
+			clientSecret: env.GITHUB_CLIENT_SECRET!
 		},
 		google: {
 			clientId: env.GOOGLE_CLIENT_ID!,
-			clientSecret: env.GOOGLE_CLIENT_SECRET!,
-		},
+			clientSecret: env.GOOGLE_CLIENT_SECRET!
+		}
 	},
 	telemetry: { enabled: false },
-	trustedOrigins: [publicEnv.PUBLIC_URL],
+	trustedOrigins: [publicEnv.PUBLIC_URL]
 });
