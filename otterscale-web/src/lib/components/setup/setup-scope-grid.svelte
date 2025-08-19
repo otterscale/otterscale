@@ -84,17 +84,10 @@
 					</p>
 				</div>
 
-				<div class="flex items-center space-x-1 text-3xl sm:mb-2 lg:text-5xl">
+				<div class="flex space-x-1 text-3xl sm:mb-2 lg:text-5xl">
 					<span>{count}</span>
 					{#if facility && facility.units.length > count}
-						<div class="mx-2 flex items-center">
-							<div class="flex space-x-2">
-								<div class="size-2 animate-[pulse_2s_infinite] rounded-full bg-current"></div>
-								<div class="size-2 animate-[pulse_2s_0.5s_infinite] rounded-full bg-current"></div>
-								<div class="size-2 animate-[pulse_2s_1s_infinite] rounded-full bg-current"></div>
-							</div>
-						</div>
-						<span>{facility.units.length}</span>
+						<Icon icon="ph:arrow-up-bold" class="size-6 animate-bounce" />
 					{/if}
 				</div>
 			</div>
