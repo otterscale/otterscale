@@ -26,7 +26,7 @@
 	import { columns } from './columns';
 	import { headers } from './headers.svelte';
 	// import IOPS from './iops.svelte';
-	// import Statistics from './statistics.svelte';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -116,7 +116,7 @@
 
 <Layout.Root>
 	<Layout.Statistics>
-		<!-- <Statistics {table} /> -->
+		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>

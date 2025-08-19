@@ -1,6 +1,7 @@
-<!-- <script lang="ts" module>
-	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
-	import * as Chart from '$lib/components/custom/chart/templates';
+<script lang="ts" module>
+	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
+	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
+	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatCapacity } from '$lib/formatter';
 	import { type Table } from '@tanstack/table-core';
 </script>
@@ -11,28 +12,29 @@
 	const filteredData = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 </script>
 
-<Layout>
-	<Chart.Text>
+<div class="grid grid-cols-5 gap-3">
+	<Layout>
 		{#snippet title()}
-			Bucket
+			<Title title="Usage" />
 		{/snippet}
+
 		{#snippet content()}
 			{@const nameList = filteredData.map((datum) => datum['name' as keyof TData])}
-			{nameList.length}
+			<Content value={nameList.length} />
 		{/snippet}
-	</Chart.Text>
-	<Chart.Text>
+	</Layout>
+	<Layout>
 		{#snippet title()}
-			Usage
+			<Title title="Bucket" />
 		{/snippet}
+
 		{#snippet content()}
-			{@const usedBytesList = filteredData.map((datum) =>
+			{@const bucketBytesList = filteredData.map((datum) =>
 				Number(datum['usedBytes' as keyof TData])
 			)}
-			{@const usedBytesTotal = usedBytesList.reduce((a, current) => a + current, 0)}
-			{@const { value, unit } = formatCapacity(Number(usedBytesTotal) / (1024 * 1024))}
-			{value}
-			{unit}
+			{@const bucketBytesTotal = bucketBytesList.reduce((a, current) => a + current, 0)}
+			{@const { value, unit } = formatCapacity(Number(bucketBytesTotal) / (1024 * 1024))}
+			<Content {value} {unit} />
 		{/snippet}
-	</Chart.Text>
-</Layout> -->
+	</Layout>
+</div>

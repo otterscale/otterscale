@@ -23,6 +23,7 @@
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
 	import Create from './create.svelte';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -111,7 +112,7 @@
 
 <Layout.Root>
 	<Layout.Statistics>
-		<!-- <Statistics {table} /> -->
+		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>

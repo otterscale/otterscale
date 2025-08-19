@@ -1,8 +1,11 @@
-<!-- <script lang="ts" module>
-	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
-	import * as Chart from '$lib/components/custom/chart/templates';
-	import Icon from '@iconify/svelte';
+<script lang="ts" module>
+	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
+	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
+	import Title from '$lib/components/custom/chart/title.svelte';
+	import Description from '$lib/components/custom/chart/description.svelte';
 	import { type Table } from '@tanstack/table-core';
+	import { formatCapacity } from '$lib/formatter';
+	import Icon from '@iconify/svelte';
 </script>
 
 <script lang="ts" generics="TData">
@@ -11,34 +14,35 @@
 	const filteredData = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 </script>
 
-<Layout>
-	<Chart.Text>
+<div class="grid grid-cols-5 gap-3">
+	<Layout>
 		{#snippet title()}
-			Image
+			<Title title="Image" />
 		{/snippet}
+
 		{#snippet content()}
 			{@const nameList = filteredData.map((datum) => datum['name' as keyof TData])}
-			{nameList.length}
+			<Content value={nameList.length} />
 		{/snippet}
-	</Chart.Text>
-	<Chart.Text>
+	</Layout>
+	<Layout>
 		{#snippet title()}
-			Usage
+			<Title title="Usage" />
 		{/snippet}
+
 		{#snippet content()}
-			{@const quotaBytesList = filteredData.map((datum) =>
-				Number(datum['quotaBytes' as keyof TData])
-			)}
-			{@const quotaBytesTotal = quotaBytesList.reduce((a, current) => a + current, 0)}
-			{@const usedBytesList = filteredData.map((datum) =>
-				Number(datum['usedBytes' as keyof TData])
-			)}
-			{@const usedBytesTotal = usedBytesList.reduce((a, current) => a + current, 0)}
-			{#if quotaBytesTotal}
-				{((usedBytesTotal / quotaBytesTotal) * 100).toFixed(2)}%
+			{@const quotaList = filteredData.map((datum) => Number(datum['quotaBytes' as keyof TData]))}
+			{@const quotaTotal = quotaList.reduce((a, current) => a + current, 0)}
+			{@const usedList = filteredData.map((datum) => Number(datum['usedBytes' as keyof TData]))}
+			{@const usedTotal = usedList.reduce((a, current) => a + current, 0)}
+			{#if quotaTotal && usedTotal / quotaTotal < 1}
+				{console.log('test: ', usedTotal, quotaTotal)}
+				<Content value={Math.round((usedTotal / quotaTotal) * 100)} unit="%" />
 			{:else}
-				<Icon icon="ph:infinity" />
+				<Content>
+					<Icon icon="ph:infinity" />
+				</Content>
 			{/if}
 		{/snippet}
-	</Chart.Text>
-</Layout> -->
+	</Layout>
+</div>

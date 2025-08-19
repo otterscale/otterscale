@@ -25,7 +25,7 @@
 	import Create from './create.svelte';
 	import { headers } from './headers.svelte';
 	import { Snapshot } from './snapshot';
-	// import Statistics from './statistics.svelte';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -117,7 +117,7 @@
 
 <Layout.Root>
 	<Layout.Statistics>
-		<!-- <Statistics {table} /> -->
+		<Statistics {table} />
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
