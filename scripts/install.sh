@@ -159,7 +159,7 @@ juju_clouds() {
     if su "$NON_ROOT_USER" -c 'juju clouds 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
         log "WARN" "JuJu cloud maas-cloud already exists, skipping created..." "JuJu clouds"
     else
-        juju_cmd "juju add-cloud maas-cloud $JUJU_CLOUD --client --debug" "add juju cloud"
+        juju_cmd "juju add-cloud maas-cloud $JUJU_CLOUD --debug" "add juju cloud"
     fi
 }
 
