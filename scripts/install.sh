@@ -192,6 +192,7 @@ is_machine_deployed() {
 bootstrap_juju() {
     su "$NON_ROOT_USER" -c 'mkdir -p ~/.local/share/juju'
     su "$NON_ROOT_USER" -c 'mkdir -p ~/otterscale-tmp'
+    chmod 777 /home/$NON_ROOT_USER/otterscale-tmp
 
     export JUJU_CLOUD=/home/$NON_ROOT_USER/otterscale-tmp/cloud.yaml
     export JUJU_CREDENTIAL=/home/$NON_ROOT_USER/otterscale-tmp/credential.yaml
