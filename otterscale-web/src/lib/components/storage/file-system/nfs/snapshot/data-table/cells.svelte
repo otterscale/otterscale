@@ -17,7 +17,7 @@
 </script>
 
 {#snippet row_picker(row: Row<Subvolume_Snapshot>)}
-	<TableRowPicker {row} />
+	<RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Subvolume_Snapshot>)}

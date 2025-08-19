@@ -17,7 +17,7 @@
 </script>
 
 {#snippet row_picker(row: Row<Image_Snapshot>)}
-	<TableRowPicker {row} />
+	<RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Image_Snapshot>)}

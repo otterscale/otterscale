@@ -12,7 +12,7 @@
 </script>
 
 {#snippet row_picker(row: Row<User_Key>)}
-	<TableRowPicker {row} />
+	<RowPicker {row} />
 {/snippet}
 
 {#snippet accessKey(row: Row<User_Key>)}

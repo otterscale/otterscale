@@ -16,7 +16,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
-	import ReleaseValuesEdit from './chart-input-release-configuration.svelte';
+	import ReleaseValuesInputEdit from './chart-input-release-configuration.svelte';
 	// import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
 </script>
 
@@ -106,7 +106,7 @@
 
 			<Form.Field>
 				<Form.Label>Configuration</Form.Label>
-				<ReleaseValuesEdit
+				<ReleaseValuesInputEdit
 					chartRef={versionRefrence}
 					bind:valuesYaml={requestManager.request.valuesYaml}
 					bind:valuesMap={requestManager.request.valuesMap}

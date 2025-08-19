@@ -45,7 +45,7 @@
 		className
 	)}
 >
-	<span class="pr-15 pl-3">
+	<span class="pr-15">
 		{#if required}
 			{@const isValid = [true, false].includes(checked)}
 			{@const isNull = [null, undefined].includes(checked)}
@@ -88,13 +88,13 @@
 
 	<span
 		class={cn(
-			'absolute top-1/2 right-3 flex -translate-y-1/2 items-center rounded-full hover:cursor-pointer focus:outline-none'
+			'absolute top-1/2 right-0 flex -translate-y-1/2 items-center rounded-full hover:cursor-pointer focus:outline-none'
 			// format === 'checkbox' && isInvalid ? 'ring-destructive ring-1' : ''
 		)}
 	>
 		{#if nullable}
 			<button
-				class="absolute top-1/2 right-9 flex -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
+				class="absolute top-1/2 right-6 flex -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
 				onclick={() => {
 					checked = undefined;
 				}}

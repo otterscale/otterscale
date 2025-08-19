@@ -47,17 +47,19 @@
 {/snippet}
 
 {#snippet health(row: Row<Application>)}
-	<Progress.Root
-		numerator={Number(row.original.healthies)}
-		denominator={Number(row.original.pods.length)}
-	>
-		{#snippet ratio({ numerator, denominator })}
-			{Progress.formatRatio(numerator, denominator)}
-		{/snippet}
-		{#snippet detail({ numerator, denominator })}
-			{numerator}/{denominator}
-		{/snippet}
-	</Progress.Root>
+	<div class="flex justify-end">
+		<Progress.Root
+			numerator={Number(row.original.healthies)}
+			denominator={Number(row.original.pods.length)}
+		>
+			{#snippet ratio({ numerator, denominator })}
+				{Progress.formatRatio(numerator, denominator)}
+			{/snippet}
+			{#snippet detail({ numerator, denominator })}
+				{numerator}/{denominator}
+			{/snippet}
+		</Progress.Root>
+	</div>
 {/snippet}
 
 {#snippet service(row: Row<Application>)}

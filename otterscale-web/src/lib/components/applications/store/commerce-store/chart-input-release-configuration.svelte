@@ -29,7 +29,7 @@
 	}: {
 		chartRef: string;
 		valuesYaml: string;
-		valuesMap: { [key: string]: any };
+		valuesMap?: { [key: string]: any };
 	} = $props();
 
 	if (!valuesMap) {
@@ -93,37 +93,41 @@
 	<AlertDialog.Content class="h-[70vh] max-w-[70vw] min-w-[70vw]">
 		<Tabs.Root value="basic" class="w-full">
 			<AlertDialog.Header>
-				<AlertDialog.Title>Edit Profile</AlertDialog.Title>
-				<AlertDialog.Description>
-					<div class="flex items-center gap-1">
-						For more information, view the chart documentation at
-						<a
-							href={chartRef}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="flex items-center gap-1"
-						>
-							{chartRef}
-							<Icon icon="ph:arrow-square-out" />
-						</a>
+				<div class="flex items-start justify-between gap-2">
+					<div>
+						<AlertDialog.Title>Edit Profile</AlertDialog.Title>
+						<AlertDialog.Description>
+							<div class="flex items-center gap-1">
+								For more information, view the chart documentation at
+								<a
+									href={chartRef}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="flex items-center gap-1"
+								>
+									{chartRef}
+									<Icon icon="ph:arrow-square-out" />
+								</a>
+							</div>
+						</AlertDialog.Description>
 					</div>
-				</AlertDialog.Description>
-				<div class="flex justify-end">
-					<Tabs.List>
-						<Tabs.Trigger
-							value="basic"
-							disabled={!valuesMap || Object.keys(valuesMap).length === 0}
-						>
-							Basic
-						</Tabs.Trigger>
-						<Tabs.Trigger value="advance">Advance</Tabs.Trigger>
-					</Tabs.List>
+					<div class="flex justify-end">
+						<Tabs.List>
+							<Tabs.Trigger
+								value="basic"
+								disabled={!valuesMap || Object.keys(valuesMap).length === 0}
+							>
+								Basic
+							</Tabs.Trigger>
+							<Tabs.Trigger value="advance">Advance</Tabs.Trigger>
+						</Tabs.List>
+					</div>
 				</div>
 			</AlertDialog.Header>
-			<Resizable.PaneGroup direction="horizontal">
-				<Resizable.Pane defaultSize={50} class="h-[50vh] p-4">
+			<Resizable.PaneGroup direction="horizontal" class="flex items-center justify-center">
+				<Resizable.Pane defaultSize={50} class="h-[50vh]">
 					{#if isChartMetadataLoading}
-						<div class="max-w-[32vw] flex-col space-y-4 pr-4">
+						<div class="flex-col space-y-4 pr-4">
 							{#each Array(3) as _}
 								<Skeleton class="h-[40px] w-full" />
 								<Skeleton class="h-[20px] w-3/4" />
@@ -132,20 +136,20 @@
 							{/each}
 						</div>
 					{:else}
-						<div class="markdown h-full max-w-[32vw] overflow-auto">
+						<div class="markdown h-full max-w-[35vw] overflow-auto">
 							<Markdown {plugins} md={readme.substring(readme.indexOf('#'))} />
 						</div>
 					{/if}
 				</Resizable.Pane>
-				<Resizable.Handle withHandle />
-				<Resizable.Pane defaultSize={50} class="h-[50vh] ">
+				<Resizable.Handle withHandle class="h-[50vh]" />
+				<Resizable.Pane defaultSize={50} class="h-[50vh]">
 					<Tabs.Content value="basic">
-						<div class="h-full max-w-[32vw] overflow-auto rounded-lg p-4">
+						<div class="h-full overflow-auto rounded-lg p-2">
 							<DynamicInput bind:data={valuesMap} />
 						</div>
 					</Tabs.Content>
 					<Tabs.Content value="advance">
-						<div class="h-[50vh] max-w-[32vw]">
+						<div class="h-[100vh]">
 							<Monaco
 								options={{
 									language: 'yaml',

@@ -82,17 +82,19 @@
 
 {#snippet statistics(row: Row<Network>)}
 	{#if row.original.subnet && row.original.subnet.statistics}
-		<Progress.Root
-			numerator={Number(row.original.subnet.statistics.available)}
-			denominator={Number(row.original.subnet.statistics.total)}
-		>
-			{#snippet ratio({ numerator, denominator })}
-				{Progress.formatRatio(numerator, denominator)}
-			{/snippet}
-			{#snippet detail({ numerator, denominator })}
-				{numerator}/{denominator}
-			{/snippet}
-		</Progress.Root>
+		<div class="flex justify-end">
+			<Progress.Root
+				numerator={Number(row.original.subnet.statistics.available)}
+				denominator={Number(row.original.subnet.statistics.total)}
+			>
+				{#snippet ratio({ numerator, denominator })}
+					{Progress.formatRatio(numerator, denominator)}
+				{/snippet}
+				{#snippet detail({ numerator, denominator })}
+					{numerator}/{denominator}
+				{/snippet}
+			</Progress.Root>
+		</div>
 	{/if}
 {/snippet}
 

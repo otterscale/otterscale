@@ -10,7 +10,7 @@
 	import * as Table from '$lib/components/ui/table';
 	import { formatBigNumber as formatNumber } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
-	import { startOfToday, subDays } from 'date-fns';
+	// import { startOfToday, subDays } from 'date-fns';
 	import { LineChart } from 'layerchart';
 
 	function getRandomInteger(min: number, max: number, includeMax = true) {
@@ -23,34 +23,34 @@
 		return Math.random() * (max - min) + min;
 	}
 
-	function createDateSeries<TKey extends string>(options: {
-		count?: number;
-		min: number;
-		max: number;
-		keys?: TKey[];
-		value?: 'number' | 'integer';
-	}) {
-		const now = startOfToday();
+	// function createDateSeries<TKey extends string>(options: {
+	// 	count?: number;
+	// 	min: number;
+	// 	max: number;
+	// 	keys?: TKey[];
+	// 	value?: 'number' | 'integer';
+	// }) {
+	// 	const now = startOfToday();
 
-		const count = options.count ?? 10;
-		const min = options.min;
-		const max = options.max;
-		const keys = options.keys ?? ['value'];
+	// 	const count = options.count ?? 10;
+	// 	const min = options.min;
+	// 	const max = options.max;
+	// 	const keys = options.keys ?? ['value'];
 
-		return Array.from({ length: count }).map((_, i) => {
-			return {
-				date: subDays(now, count - i - 1),
-				...Object.fromEntries(
-					keys.map((key) => {
-						return [
-							key,
-							options.value === 'integer' ? getRandomInteger(min, max) : getRandomNumber(min, max)
-						];
-					})
-				)
-			} as { date: Date } & { [K in TKey]: number };
-		});
-	}
+	// 	return Array.from({ length: count }).map((_, i) => {
+	// 		return {
+	// 			date: subDays(now, count - i - 1),
+	// 			...Object.fromEntries(
+	// 				keys.map((key) => {
+	// 					return [
+	// 						key,
+	// 						options.value === 'integer' ? getRandomInteger(min, max) : getRandomNumber(min, max)
+	// 					];
+	// 				})
+	// 			)
+	// 		} as { date: Date } & { [K in TKey]: number };
+	// 	});
+	// }
 
 	interface LLMModel {
 		name: string;
@@ -149,43 +149,13 @@
 			usageStats: { requests: 450000, uptime: 99.5 }
 		}
 	];
+
+	const numberOfModels = llmData.length;
+	const averageAccuracy =
+		llmData.reduce((acc, model) => acc + model.metrics.accuracy, 0) / llmData.length;
+	const maxRequests = Math.max(...llmData.map((model) => model.usageStats.requests));
 </script>
 
-{#snippet Statistic()}
-	{@const numberOfModels = llmData.length}
-	{@const averageAccuracy =
-		llmData.reduce((acc, model) => acc + model.metrics.accuracy, 0) / llmData.length}
-	{@const maxRequests = Math.max(...llmData.map((model) => model.usageStats.requests))}
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>Models</Card.Title>
-		</Card.Header>
-		<Card.Content class="text-3xl">
-			{numberOfModels}
-		</Card.Content>
-		<Card.Footer class="flex flex-col items-start"></Card.Footer>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>Average Accuracy</Card.Title>
-		</Card.Header>
-		<Card.Content class="text-3xl">
-			{Math.round(averageAccuracy * 100)} %
-		</Card.Content>
-		<Card.Footer class="flex flex-col items-start">
-			<Progress value={averageAccuracy * 100} max={100} />
-		</Card.Footer>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>Max Requests</Card.Title>
-		</Card.Header>
-		<Card.Content class="text-3xl">
-			{formatNumber(maxRequests)}
-		</Card.Content>
-		<Card.Footer class="flex flex-col items-start"></Card.Footer>
-	</Card.Root>
-{/snippet}
 <div class="flex-col space-y-4">
 	<Alert.Root variant="destructive">
 		<Icon icon="ph:warning-diamond" class="size-5" />
@@ -193,15 +163,41 @@
 		<Alert.Description>This LLM management page is still under development.</Alert.Description>
 	</Alert.Root>
 	<div class="grid grid-cols-4 gap-3">
-		{@render Statistic()}
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Models</Card.Title>
+			</Card.Header>
+			<Card.Content class="text-3xl">
+				{numberOfModels}
+			</Card.Content>
+			<Card.Footer class="flex flex-col items-start"></Card.Footer>
+		</Card.Root>
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Average Accuracy</Card.Title>
+			</Card.Header>
+			<Card.Content class="text-3xl">
+				{Math.round(averageAccuracy * 100)} %
+			</Card.Content>
+			<Card.Footer class="flex flex-col items-start">
+				<Progress value={averageAccuracy * 100} max={100} />
+			</Card.Footer>
+		</Card.Root>
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>Max Requests</Card.Title>
+			</Card.Header>
+			<Card.Content class="text-3xl">
+				{formatNumber(maxRequests)}
+			</Card.Content>
+			<Card.Footer class="flex flex-col items-start"></Card.Footer>
+		</Card.Root>
 	</div>
 </div>
-
 <div class="flex items-center justify-between">
 	<span>
-		<Input type="text" placeholder="Search models..." />
+		<Input type="text" placeholder="Model" />
 	</span>
-
 	<span class="my-4 flex items-center gap-2">
 		<Button>Filter</Button>
 		<Select.Root type="multiple">
@@ -225,26 +221,10 @@
 			<Table.Head class="text-right">ACCURACY</Table.Head>
 			<Table.Head class="text-right">SPEED</Table.Head>
 			<Table.Head class="text-right">REQUESTS</Table.Head>
-			<Table.Head class="text-right">LATENCY</Table.Head>
-			<Table.Head class="text-right">THROUGHPUT</Table.Head>
 		</Table.Row>
 	</Table.Header>
 	<Table.Body class="*:text-sm">
 		{#each llmData as model}
-			{@const latency = createDateSeries({
-				count: 23,
-				min: 0,
-				max: 10000,
-				value: 'number',
-				keys: ['value', 'average']
-			})}
-			{@const throughput = createDateSeries({
-				count: 13,
-				min: 0,
-				max: 1000000,
-				value: 'number',
-				keys: ['value', 'average']
-			})}
 			<Table.Row>
 				<Table.Cell>{model.name}</Table.Cell>
 				<Table.Cell><Badge variant="outline">{model.version}</Badge></Table.Cell>
@@ -253,27 +233,13 @@
 				<Table.Cell class="text-right">{Math.round(model.metrics.accuracy * 100)}%</Table.Cell>
 				<Table.Cell class="text-right">{model.metrics.speed}</Table.Cell>
 				<Table.Cell class="text-right">{formatNumber(model.usageStats.requests)}</Table.Cell>
-				<Table.Cell class="gap-1 text-right align-top">
-					<p class="text-xs font-light">{latency[latency.length - 1].average.toFixed(0)} ms</p>
-					<span class="inline-block h-[23px] w-[130px]">
-						<LineChart data={latency} x="date" y="value" axis={false} />
-					</span>
-				</Table.Cell>
-				<Table.Cell class="gap-1 text-right align-top">
-					<p class="text-xs font-light">
-						{throughput[throughput.length - 1].average.toFixed(0)} tpm
-					</p>
-					<span class="inline-block h-[23px] w-[130px]">
-						<LineChart data={throughput} x="date" y="value" axis={false} />
-					</span>
-				</Table.Cell>
 			</Table.Row>
 		{/each}
 	</Table.Body>
 </Table.Root>
 <Pagination.Root count={10} perPage={10}>
 	{#snippet children({ pages })}
-		<Pagination.Content class="rounded-lg bg-muted p-1">
+		<Pagination.Content class="bg-muted rounded-lg p-1">
 			<Pagination.Item>
 				<Pagination.PrevButton />
 			</Pagination.Item>
