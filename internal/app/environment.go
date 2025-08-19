@@ -130,8 +130,7 @@ func toConfig(req *pb.UpdateConfigRequest) *config.Config {
 			CharmhubAPIURL:      req.GetJujuCharmhubApiUrl(),
 		},
 		MicroK8s: config.MicroK8s{
-			Host:  req.GetMicroK8SHost(),
-			Token: req.GetMicroK8SToken(),
+			Config: req.GetMircoK8SConfig(),
 		},
 	}
 }

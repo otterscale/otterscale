@@ -17,6 +17,7 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/openhdc/otterscale/internal/config"
 )
@@ -301,17 +302,15 @@ func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid string) ([]WarpTarge
 }
 
 func (uc *BISTUseCase) newMicroK8sConfig() (*rest.Config, error) {
-	token, err := base64.StdEncoding.DecodeString(uc.conf.MicroK8s.Token)
+	kubeConfig, err := base64.StdEncoding.DecodeString(uc.conf.MicroK8s.Config)
 	if err != nil {
 		return nil, err
 	}
-	return &rest.Config{
-		Host:        uc.conf.MicroK8s.Host,
-		BearerToken: string(token),
-		TLSClientConfig: rest.TLSClientConfig{
-			Insecure: true,
-		},
-	}, nil
+	configAPI, err := clientcmd.Load(kubeConfig)
+	if err != nil {
+		return nil, err
+	}
+	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
 }
 
 func (uc *BISTUseCase) ensureNamespace(ctx context.Context, config *rest.Config) error {

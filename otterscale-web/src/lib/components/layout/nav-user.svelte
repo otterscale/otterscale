@@ -55,7 +55,7 @@
 
 <svelte:window
 	use:shortcut={{
-		key: 'p',
+		key: '/',
 		ctrl: true,
 		callback: toggleNotification
 	}}
@@ -125,9 +125,9 @@
 							<span class="relative inline-flex size-2.5 rounded-full bg-blue-500"></span>
 						</span>
 						<DropdownMenu.Shortcut>
-							<div class="flex items-center justify-center">
+							<div class="flex items-center justify-center space-x-1">
 								<Icon icon="ph:control-bold" />
-								P
+								<span>/</span>
 							</div>
 						</DropdownMenu.Shortcut>
 					</DropdownMenu.Item>

@@ -115,7 +115,7 @@
 			</div>
 		</header>
 
-		<main class="flex flex-1 flex-col px-2 py-4 md:px-4 md:py-6">
+		<main class="flex flex-1 flex-col px-2 md:px-4">
 			{@render children()}
 		</main>
 	</Sidebar.Inset>
