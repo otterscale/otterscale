@@ -6,6 +6,7 @@
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table/index';
+	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">
@@ -43,6 +44,7 @@
 		<Loading.DataTable />
 	{:else}
 		<Reloader.Root {reloadManager} />
+		<Statistics machines={$machines} />
 		<DataTable {machines} />
 	{/if}
 </main>

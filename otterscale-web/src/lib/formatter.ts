@@ -127,3 +127,14 @@ export function formatLatencyNano(nanosecond: number): { value: number; unit: st
 		return { value: Math.round(nanosecond * 100) / 100, unit: 'ns' };
 	}
 }
+
+export function formatHealthColor(healthPercentage: number): string {
+    if (healthPercentage > 62) {
+        return 'bg-green-50 *:bg-green-700';
+    } else if (healthPercentage > 38) {
+        return 'bg-yellow-50 *:bg-yellow-500';
+    } else {
+        return 'bg-red-50 *:bg-red-700';
+    }
+}
+
