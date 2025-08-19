@@ -64,8 +64,8 @@
 								class="text-primary-foreground size-6"
 							/>
 						</div>
-						<div class="flex flex-col">
-							<Card.Description>
+						<div class="grid -space-y-1">
+							<Card.Description class="capitalize">
 								{scope.status}
 							</Card.Description>
 							<Card.Title class="text-2xl text-nowrap">{scope.name}</Card.Title>
