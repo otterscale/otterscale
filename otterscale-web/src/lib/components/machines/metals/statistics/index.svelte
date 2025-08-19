@@ -20,8 +20,8 @@
 	const machinesDeployed = $derived(machines.filter((m) => m.status === 'Deployed').length);
 	const powerOnPercentage = $derived(Math.round((machinesOn / totalMachines) * 100));
 	const deploymentPercentage = $derived(Math.round((machinesDeployed / totalMachines) * 100));
-	const powerOnRatio = $derived(machinesOn / totalMachines);
-	const deploymentRatio = $derived(machinesDeployed / totalMachines);
+	const powerOnRatio = $derived((machinesOn / totalMachines) * 100);
+	const deploymentRatio = $derived((machinesDeployed / totalMachines) * 100);
 </script>
 
 <span class="grid grid-cols-4 gap-4">
@@ -69,7 +69,7 @@
 			</p>
 		</Card.Content>
 		<Card.Footer>
-			<Progress value={powerOnRatio} max={1} />
+			<Progress value={powerOnRatio} max={100} />
 		</Card.Footer>
 	</Card.Root>
 	<Card.Root>
@@ -87,7 +87,7 @@
 			</p>
 		</Card.Content>
 		<Card.Footer>
-			<Progress value={deploymentRatio} max={1} />
+			<Progress value={deploymentRatio} max={100} />
 		</Card.Footer>
 	</Card.Root>
 </span>

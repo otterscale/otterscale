@@ -44,7 +44,7 @@
 		<DataTableLoading />
 	{:else}
 		<Reloader.Root {reloadManager} />
-		<Statistics {networks} />
+		<Statistics networks={$networks} />
 		<DataTable {networks} />
 	{/if}
 </main>

@@ -130,11 +130,11 @@ export function formatLatencyNano(nanosecond: number): { value: number; unit: st
 
 export function formatHealthColor(healthPercentage: number): string {
     if (healthPercentage > 62) {
-        return 'bg-green-50 *:bg-green-700';
+        return 'bg-green-50 *:bg-green-700 bg-primary/20';
     } else if (healthPercentage > 38) {
-        return 'bg-yellow-50 *:bg-yellow-500';
+        return 'bg-yellow-50 *:bg-yellow-500 bg-primary/20';
     } else {
-        return 'bg-red-50 *:bg-red-700';
+        return 'bg-red-50 *:bg-red-700 bg-primary/20';
     }
 }
 

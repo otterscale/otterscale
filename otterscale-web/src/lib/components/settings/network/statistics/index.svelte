@@ -12,8 +12,8 @@
 	} = $props();
 
 	// Calculate statistics
-	const fabricCount = $derived(networks.filter((n) => n).map((n) => n.fabric).length);
-	const vlanList = $derived(networks.filter((n) => n).map((n) => n.vlan));
+	const fabricCount = $derived(networks.map((n) => n.fabric).length);
+	const vlanList = $derived(networks.map((n) => n.vlan));
 	const dhcpEnabledCount = $derived(
 		networks.reduce((a, network) => a + (network.vlan?.dhcpOn ? 1 : 0), 0)
 	);
