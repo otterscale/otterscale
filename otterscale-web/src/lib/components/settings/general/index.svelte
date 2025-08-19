@@ -223,8 +223,10 @@
 					<Layout.Controller>
 						<div class="rounded-lg border shadow-sm">
 							<Table.Root>
-								<Table.Header class="bg-muted rounded-lg shadow-sm">
-									<Table.Row class="*:px-4">
+								<Table.Header>
+									<Table.Row
+										class="*:bg-muted *:rounded-t-lg *:px-4 *:first:rounded-tl-lg *:last:rounded-tr-lg"
+									>
 										<Table.Head>NAME</Table.Head>
 										<Table.Head>URL</Table.Head>
 										<Table.Head>ENABLED</Table.Head>
@@ -280,8 +282,10 @@
 					<Layout.Controller>
 						<div class="rounded-lg border shadow-sm">
 							<Table.Root>
-								<Table.Header class="bg-muted rounded-lg">
-									<Table.Row class="*:px-4">
+								<Table.Header>
+									<Table.Row
+										class="*:bg-muted *:rounded-t-lg *:px-4 *:first:rounded-tl-lg *:last:rounded-tr-lg"
+									>
 										<Table.Head>NAME</Table.Head>
 										<Table.Head>SOURCE</Table.Head>
 										<Table.Head>DISTRO SERIES</Table.Head>
@@ -336,8 +340,10 @@
 					<Layout.Controller>
 						<div class="rounded-lg border shadow-sm">
 							<Table.Root>
-								<Table.Header class="bg-muted rounded-lg">
-									<Table.Row class="*:px-4">
+								<Table.Header>
+									<Table.Row
+										class="*:bg-muted *:rounded-t-lg *:px-4 *:first:rounded-tl-lg *:last:rounded-tr-lg"
+									>
 										<Table.Head>TAG</Table.Head>
 										<Table.Head>COMMENT</Table.Head>
 										<Table.Head></Table.Head>
