@@ -201,14 +201,14 @@
 
 {#snippet statusCard(serviceState: ServiceState)}
 	<div
-		class="bg-accent relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
+		class="bg-muted relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
 	>
 		<div
 			class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
 		>
 			<Icon icon={serviceState.state?.icon} class="size-84" />
 		</div>
-		<div class="mb-8 flex flex-col space-y-2 text-3xl sm:mb-2 lg:text-5xl">
+		<div class="z-10 mb-8 flex flex-col space-y-2 text-3xl sm:mb-2 lg:text-5xl">
 			<span
 				class="flex space-x-2 truncate overflow-visible capitalize {serviceState.state?.textClass}"
 			>
@@ -271,7 +271,7 @@
 
 	<!-- Workers Card -->
 	<div
-		class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
+		class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 	>
 		{@render unitCount(kubernetes.worker)}
 		<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
@@ -284,7 +284,7 @@
 {#snippet cephCards()}
 	<!-- Monitors Card -->
 	<div
-		class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
+		class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 	>
 		{@render unitCount(ceph.mon)}
 		<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
@@ -327,7 +327,7 @@
 
 	<!-- OSDs Card -->
 	<div
-		class="bg-accent flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
+		class="bg-muted flex flex-col justify-between rounded-lg p-4 shadow-sm sm:justify-end md:p-6 lg:p-10"
 	>
 		{@render unitCount(ceph.osd)}
 		<div class="flex items-center space-x-2 text-xs md:text-base lg:text-lg">
