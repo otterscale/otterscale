@@ -30,7 +30,7 @@
 {/snippet}
 
 {#snippet usage(row: Row<Bucket>)}
-	{@const { value, unit } = formatCapacity(Number(row.original.usedBytes) / (1024 * 1024))}
+	{@const { value, unit } = formatCapacity(row.original.usedBytes}
 	<div class="flex flex-col items-end">
 		<div class="flex items-end">
 			{value}

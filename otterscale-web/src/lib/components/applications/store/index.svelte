@@ -1,7 +1,10 @@
 <script lang="ts" module>
 	import {
 		ApplicationService,
-		type Application_Chart
+		type Application_Chart,
+
+		type Application_Release
+
 	} from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -14,6 +17,7 @@
 	const transport: Transport = getContext('transport');
 
 	let charts = $state(writable<Application_Chart[]>([]));
+	let releases = $state(writable<Application_Release[]>([]));
 	let isMounted = $state(false);
 
 	const applicationClient = createClient(ApplicationService, transport);
@@ -28,6 +32,12 @@
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
+		await applicationClient
+			.listReleases({})
+			.then((response) => {
+				releases.set(response.releases);
+				isMounted = true;
+			})
 	});
 </script>
 

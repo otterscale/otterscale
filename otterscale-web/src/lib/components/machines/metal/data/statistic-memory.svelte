@@ -12,7 +12,7 @@
 		machine: Writable<Machine>;
 	} = $props();
 
-	const { value, unit } = formatCapacity($machine.memoryMb);
+	const { value, unit } = formatCapacity(Number($machine.memoryMb)*1000*1000);
 </script>
 
 <Layout.Statistic.Root>

@@ -111,8 +111,8 @@
 
 {#snippet ram(row: Row<Machine>)}
 	<span class="flex items-end justify-end gap-1">
-		{formatCapacity(row.original.memoryMb).value}
-		{formatCapacity(row.original.memoryMb).unit}
+		{formatCapacity(Number(row.original.memoryMb)*1000*1000).value}
+		{formatCapacity(Number(row.original.memoryMb)*1000*1000).unit}
 	</span>
 {/snippet}
 
@@ -124,8 +124,8 @@
 
 {#snippet storage(row: Row<Machine>)}
 	<span class="flex items-end justify-end gap-1">
-		{formatCapacity(row.original.storageMb).value}
-		{formatCapacity(row.original.storageMb).unit}
+		{formatCapacity(Number(row.original.storageMb)*1000*1000)).value}
+		{formatCapacity(Number(row.original.storageMb)*1000*1000)).unit}
 	</span>
 {/snippet}
 
