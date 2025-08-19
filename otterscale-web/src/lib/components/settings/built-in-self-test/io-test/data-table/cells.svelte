@@ -120,17 +120,17 @@
 	<div class="flex flex-col gap-1 items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
 			<Badge variant="outline">
-				R: {(Number(row.original.kind.value.output.read.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
+				Read {(Number(row.original.kind.value.output.read.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write}
 			<Badge variant="default">
-				W: {(Number(row.original.kind.value.output.write.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
+				Write {(Number(row.original.kind.value.output.write.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim}
 			<Badge variant="secondary">
-				T: {(Number(row.original.kind.value.output.trim.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
+				Trim {(Number(row.original.kind.value.output.trim.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
 			</Badge>
 		{/if}
 	</div>
@@ -140,17 +140,17 @@
 	<div class="flex flex-col gap-1 items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
 			<Badge variant="outline">
-				R: {row.original.kind.value.output.read.ioPerSecond.toFixed(0)}
+				Read: {row.original.kind.value.output.read.ioPerSecond.toFixed(0)}
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write}
 			<Badge variant="default">
-				W: {row.original.kind.value.output.write.ioPerSecond.toFixed(0)}
+				Write: {row.original.kind.value.output.write.ioPerSecond.toFixed(0)}
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim}
 			<Badge variant="secondary">
-				T: {row.original.kind.value.output.trim.ioPerSecond.toFixed(0)}
+				Trim: {row.original.kind.value.output.trim.ioPerSecond.toFixed(0)}
 			</Badge>
 		{/if}
 	</div>
@@ -160,17 +160,17 @@
 	<div class="flex flex-col gap-1 items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
-				R: {(Number(row.original.kind.value.output.read.latency.minNanoseconds) / 1000000).toFixed(3)} ms
+				Read: {(Number(row.original.kind.value.output.read.latency.minNanoseconds) / 1000000).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
 			<Badge variant="default">
-				W: {(Number(row.original.kind.value.output.write.latency.minNanoseconds) / 1000000).toFixed(3)} ms
+				Write: {(Number(row.original.kind.value.output.write.latency.minNanoseconds) / 1000000).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
 			<Badge variant="secondary">
-				T: {(Number(row.original.kind.value.output.trim.latency.minNanoseconds) / 1000000).toFixed(3)} ms
+				Trim: {(Number(row.original.kind.value.output.trim.latency.minNanoseconds) / 1000000).toFixed(3)} ms
 			</Badge>
 		{/if}
 	</div>
@@ -180,17 +180,17 @@
 	<div class="flex gap-1 flex-col items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
-				R: {(Number(row.original.kind.value.output.read.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
+				Read: {(Number(row.original.kind.value.output.read.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
 			<Badge variant="default">
-				W: {(Number(row.original.kind.value.output.write.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
+				Write: {(Number(row.original.kind.value.output.write.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
 			<Badge variant="secondary">
-				T: {(Number(row.original.kind.value.output.trim.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
+				Trim: {(Number(row.original.kind.value.output.trim.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
 			</Badge>
 		{/if}
 	</div>
@@ -201,17 +201,17 @@
 	<div class="flex flex-col gap-1 items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
-				R: {(Number(row.original.kind.value.output.read.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
+				Read: {(Number(row.original.kind.value.output.read.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
 			<Badge variant="default">
-				W: {(Number(row.original.kind.value.output.write.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
+				Write: {(Number(row.original.kind.value.output.write.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
 			<Badge variant="secondary">
-				T: {(Number(row.original.kind.value.output.trim.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
+				Trim: {(Number(row.original.kind.value.output.trim.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
 			</Badge>
 		{/if}
 	</div>

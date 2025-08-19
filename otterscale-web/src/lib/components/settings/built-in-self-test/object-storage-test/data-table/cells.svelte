@@ -97,17 +97,17 @@
 	<div class="flex flex-col gap-1 items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
-				G: {(Number(row.original.kind.value.output.get.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
+				GET {(Number(row.original.kind.value.output.get.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.put?.bytes}
 			<Badge variant="default">
-				P: {(Number(row.original.kind.value.output.put.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
+				PUT {(Number(row.original.kind.value.output.put.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
 			<Badge variant="destructive">
-				D: {(Number(row.original.kind.value.output.delete.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
+				DELETE {(Number(row.original.kind.value.output.delete.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 	</div>
@@ -117,17 +117,17 @@
 	<div class="flex flex-col gap-1 items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
-				G: {(Number(row.original.kind.value.output.get.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
+				GET {(Number(row.original.kind.value.output.get.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.put?.bytes}
 			<Badge variant="default">
-				P: {(Number(row.original.kind.value.output.put.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
+				PUT {(Number(row.original.kind.value.output.put.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
 			<Badge variant="destructive">
-				D: {(Number(row.original.kind.value.output.delete.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
+				DELETE {(Number(row.original.kind.value.output.delete.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 	</div>
@@ -137,17 +137,17 @@
 	<div class="flex flex-col gap-1 items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
-				G: {(Number(row.original.kind.value.output.get.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
+				GET {(Number(row.original.kind.value.output.get.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.put?.bytes}
 			<Badge variant="default">
-				P: {(Number(row.original.kind.value.output.put.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
+				PUT {(Number(row.original.kind.value.output.put.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
 			<Badge variant="destructive">
-				D: {(Number(row.original.kind.value.output.delete.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
+				DELETE {(Number(row.original.kind.value.output.delete.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 	</div>
