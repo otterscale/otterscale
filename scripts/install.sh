@@ -99,7 +99,7 @@ send_otterscale_config_data() {
     local OTTERSCALE_JUJU_REGION="default"
     local OTTERSCALE_K8S_ENDPOINT_JSON=$(microk8s kubectl get endpoints -o json | jq '.items[].subsets[]')
     local OTTERSCALE_K8S_ENDPOINT=$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq -r '.ports[].name')"://"$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq -r '.addresses[].ip')":"$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq '.ports[].port')
-    local OTTERSCALE_K8S_TOKEN=$(microk8s kubectl describe secret -n kube-system otters-secret | grep -E '^token' | cut -f2 -d ':' |  tr -d ' ')
+    local OTTERSCALE_MICROK8S_ENCODE_TOKEN=$(cat "$$KUBE_FOLDER/config" | base64)
     local DATA=$(cat <<EOF
 {"maas_url": "$OTTERSCALE_MAAS_ENDPOINT",
 "maas_key": "$OTTERSCALE_MAAS_KEY",
@@ -112,7 +112,7 @@ send_otterscale_config_data() {
 "juju_cloud_name": "$OTTERSCALE_JUJU_CLOUD_NAME",
 "juju_cloud_region": "$OTTERSCALE_JUJU_REGION",
 "juju_charmhub_api_url": "$OTTERSCALE_CHARMHUB_URL",
-"micro_k8s_token": "$OTTERSCALE_K8S_TOKEN",
+"micro_k8s_token": "$OTTERSCALE_MICROK8S_ENCODE_TOKEN",
 "micro_k8s_host": "$OTTERSCALE_K8S_ENDPOINT"}
 EOF
 )
@@ -224,23 +224,23 @@ bootstrap_juju() {
 }
 
 juju_add_k8s() {
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s > /dev/null 2>&1" "check juju cloud, please check if cos-k8s exist"; then
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s --debug" "check juju cloud, please check if cos-k8s exist"; then
         log "INFO" "cos-k8s already exist, skipping..." "JuJu cloud"
     else
-        juju_cmd "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug /dev/null 2>&1" "execute juju add-k8s"
+        juju_cmd "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" "execute juju add-k8s"
     fi
 
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos > /dev/null 2>&1" "check juju model, please check if cos exist"; then
+    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos" "check juju model, please check if cos exist"; then
         log "INFO" "cos model already exist, skipping..." "JuJu model"
     else
-        juju_cmd "juju add-model cos cos-k8s --debug /dev/null 2>&1" "execute juju add-model"
-        juju_cmd "juju deploy cos-lite --trust --debug /dev/null 2>&1" "juju deploy cos-lite"
+        juju_cmd "juju add-model cos cos-k8s --debug" "execute juju add-model"
+        juju_cmd "juju deploy cos-lite --trust --debug" "juju deploy cos-lite"
     fi
 
     juju_cmd "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
     juju_cmd "juju config prometheus maximum_retention_size=60% --debug" "update max retention size to 60%"
-    juju_cmd "juju offer grafana:grafana-dashboard global-grafana" "offer grafana-dashboard"
-    juju_cmd "juju offer prometheus:receive-remote-write global-prometheus" "offer prometheus-receive-remote-write"
+    juju_cmd "juju offer grafana:grafana-dashboard global-grafana --debug" "offer grafana-dashboard"
+    juju_cmd "juju offer prometheus:receive-remote-write global-prometheus --debug" "offer prometheus-receive-remote-write"
 }
 
 log() {
@@ -905,7 +905,7 @@ check_microk8s() {
     prepare_microk8s_config
     enable_microk8s_option
     extend_microk8s_cert
-    create_k8s_token
+    #create_k8s_token
 }
 
 get_interface_through_ip() {
@@ -1193,7 +1193,7 @@ execute_non_user_cmd() {
     local USERNAME="$1"
     local COMMAND="$2"
     local DESCRIPTION="$3"
-    if ! su "$USERNAME" -c "${COMMAND} >>$LOG 2>&1"; then
+    if ! su "$USERNAME" -c "${COMMAND} >>$TEMP_LOG 2>&1"; then
         log "WARN" "Failed to $DESCRIPTION, check $LOG for details" "Non-root cmd"
         return 1
     fi
