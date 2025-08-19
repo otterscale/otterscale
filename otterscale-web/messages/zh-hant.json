@@ -240,6 +240,7 @@
 	"monitors": "監視器",
 	"osds": "物件儲存裝置",
 	"add_node": "新增節點",
+	"unit": "單元",
 	"auto_refresh": "自動重新整理",
 	"complete": "完成",
 	"remove": "移除",

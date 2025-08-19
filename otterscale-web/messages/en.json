@@ -240,6 +240,7 @@
 	"monitors": "Monitors",
 	"osds": "OSDs",
 	"add_node": "Add Node",
+	"unit": "Unit",
 	"auto_refresh": "Auto Refresh",
 	"complete": "Complete",
 	"remove": "Remove",

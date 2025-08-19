@@ -10,6 +10,7 @@
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
+	import { Separator } from '$lib/components/ui/separator';
 	import { Switch } from '$lib/components/ui/switch';
 	import { dynamicPaths } from '$lib/path';
 	import { premiumTier } from '$lib/stores';
@@ -70,19 +71,20 @@
 			class="bg-muted relative {service.gridClass} flex flex-col space-y-2 overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
 		>
 			<div
-				class="text-primary/5 absolute -right-16 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+				class="text-primary/5 absolute top-0 -right-16 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
 			>
 				<Icon icon={service.icon} class="size-72" />
 			</div>
 
-			<div class="flex items-center justify-between">
+			<div class="z-10 flex items-center justify-between">
 				<div class="flex flex-col items-start">
 					<h2 class="text-2xl font-medium">{service.title}</h2>
-					<p class="capitalize {getStatusClass(facility?.status)}">
+					<p class="text-sm capitalize {getStatusClass(facility?.status)}">
 						{facility?.status?.details}
 					</p>
 				</div>
-				<div class="mb-8 flex items-center space-x-1 text-3xl sm:mb-2 lg:text-5xl">
+
+				<div class="flex items-center space-x-1 text-3xl sm:mb-2 lg:text-5xl">
 					<span>{count}</span>
 					{#if facility && facility.units.length > count}
 						<div class="mx-2 flex items-center">
@@ -96,6 +98,8 @@
 					{/if}
 				</div>
 			</div>
+
+			<Separator class="z-10" />
 
 			<div class="z-10 pb-8 sm:pb-12">
 				{@render facilityDisplay(facility)}
@@ -117,7 +121,7 @@
 					<Accordion.Trigger class="py-4">
 						<div class="flex flex-col space-y-1">
 							<div class="flex items-center space-x-2">
-								<span class="text-xs md:text-base lg:text-lg">
+								<span class="text-xs font-medium md:text-base lg:text-lg">
 									{unit.name}
 								</span>
 
@@ -128,11 +132,11 @@
 								{/if}
 
 								{#if unit.leader}
-									<Icon icon="ph:star-fill" class="size-4 text-yellow-500 " />
+									<Icon icon="ph:star-fill" class="size-4 text-yellow-400 " />
 								{/if}
 							</div>
 
-							<div class="flex items-center space-x-2">
+							<div class="flex items-center space-x-2 font-normal">
 								<span class="text-muted-foreground text-sm leading-none">
 									{unit.version !== '' ? unit.version : '-'}
 								</span>
@@ -155,7 +159,7 @@
 {/snippet}
 
 {#snippet subordinatesDisplay(subordinates: Facility_Unit[])}
-	<div class="flex flex-col space-y-2 pl-2">
+	<div class="flex flex-col space-y-2">
 		{#each subordinates as subordinate}
 			{#if subordinate.workloadStatus}
 				<div
