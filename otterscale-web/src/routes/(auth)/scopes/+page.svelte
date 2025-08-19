@@ -12,17 +12,38 @@
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 
+	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite'];
+
 	const transport: Transport = getContext('transport');
 	const scopeClient = createClient(ScopeService, transport);
 	const scopes = writable<Scope[]>([]);
+	const filteredScopes = writable<Scope[]>([]);
 
 	async function fetchScopes() {
 		try {
 			const response = await scopeClient.listScopes({});
 			scopes.set(response.scopes);
+			filteredScopes.set(response.scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name)));
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		}
+	}
+
+	function handleScopeClick(scopeName: string) {
+		goto(dynamicPaths.scope(scopeName).url);
+	}
+
+	function getCardColumnClass(index: number, scopeCount: number): string {
+		if (index == 0) {
+			if (scopeCount === 1) return 'col-start-4';
+			if (scopeCount === 2) return 'col-start-3';
+			if (scopeCount === 3) return 'col-start-2';
+		}
+		return '';
+	}
+
+	function getScopeIndex(scopeName: string): number {
+		return $scopes.findIndex((scope) => scope.name === scopeName);
 	}
 
 	onMount(fetchScopes);
@@ -35,6 +56,7 @@
 <main
 	class="bg-sidebar relative flex min-h-screen flex-col overflow-hidden px-2 py-20 md:px-4 md:py-24"
 >
+	<!-- Background Image -->
 	<div class="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center opacity-100">
 		<img
 			src={SquareGridImage}
@@ -43,27 +65,30 @@
 		/>
 	</div>
 
+	<!-- Header -->
 	<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">{m.scope_selector()}</h2>
 	<p class="text-muted-foreground mt-4 text-center text-lg">
 		{m.scope_selector_description()}
 	</p>
 
-	<div class="z-10 mx-auto grid w-full grid-cols-3 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-3/5">
-		{#each $scopes as scope}
+	<!-- Scopes Grid -->
+	<div class="z-10 mx-auto grid w-full grid-cols-8 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-2/3">
+		{#each $filteredScopes as scope, index}
 			<Card.Root
-				class="group cursor-pointer"
-				onclick={() => {
-					goto(dynamicPaths.scope(scope.name).url);
-				}}
+				class="group col-span-2 cursor-pointer {getCardColumnClass(index, $filteredScopes.length)}"
+				onclick={() => handleScopeClick(scope.name)}
 			>
 				<Card.Header class="gap-0">
 					<div class="flex items-center gap-4">
+						<!-- Scope Icon -->
 						<div class="bg-primary flex size-10 items-center justify-center rounded-lg">
 							<Icon
-								icon="{scopeIcon($scopes.findIndex((s) => s.name === scope.name))}-fill"
+								icon="{scopeIcon(getScopeIndex(scope.name))}-fill"
 								class="text-primary-foreground size-6"
 							/>
 						</div>
+
+						<!-- Scope Info -->
 						<div class="grid -space-y-1">
 							<Card.Description class="capitalize">
 								{scope.status}
@@ -72,6 +97,7 @@
 						</div>
 					</div>
 
+					<!-- Scope Stats and Action -->
 					<Card.Action class="overflow-hidden group-hover:self-center">
 						<Badge variant="outline" class="hidden group-hover:hidden lg:block">
 							<span class="text-green-600">
