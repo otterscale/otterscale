@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+	import { goto } from '$app/navigation';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { scopeIcon } from '$lib/components/scopes/icon';
+	import { Badge } from '$lib/components/ui/badge';
+	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 
@@ -45,40 +48,45 @@
 		{m.scope_selector_description()}
 	</p>
 
-	<div
-		class="mx-auto grid gap-4 px-4 py-10 sm:gap-6 xl:px-0
-	{$scopes.length > 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'grid-cols-3'}"
-	>
+	<div class="z-10 mx-auto grid w-full grid-cols-3 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-3/5">
 		{#each $scopes as scope}
-			<a
-				class="bg-card group text-card-foreground relative flex cursor-pointer flex-col gap-6 overflow-hidden rounded-xl shadow-sm hover:shadow-md"
-				href={dynamicPaths.scope(scope.name).url}
+			<Card.Root
+				class="group cursor-pointer"
+				onclick={() => {
+					goto(dynamicPaths.scope(scope.name).url);
+				}}
 			>
-				<div
-					class="text-primary/5 absolute -top-4 -right-4 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
-				>
-					{scope.name}
-				</div>
-				<div class="relative flex space-x-4 p-6">
-					<div class="bg-primary flex size-10 items-center justify-center rounded-lg">
-						<Icon
-							icon="{scopeIcon($scopes.findIndex((s) => s.name === scope.name))}-fill"
-							class="text-primary-foreground size-6"
-						/>
+				<Card.Header class="gap-0">
+					<div class="flex items-center gap-4">
+						<div class="bg-primary flex size-10 items-center justify-center rounded-lg">
+							<Icon
+								icon="{scopeIcon($scopes.findIndex((s) => s.name === scope.name))}-fill"
+								class="text-primary-foreground size-6"
+							/>
+						</div>
+						<div class="flex flex-col">
+							<Card.Description>
+								{scope.status}
+							</Card.Description>
+							<Card.Title class="text-2xl">{scope.name}</Card.Title>
+						</div>
 					</div>
-					<div class="flex flex-col">
-						<p class="text-muted-foreground text-xs tracking-wide uppercase">Scope</p>
-						<h3 class="text-xl font-medium tracking-wide sm:text-2xl">{scope.name}</h3>
-					</div>
-					<div class="ml-auto">
+
+					<Card.Action class="overflow-hidden group-hover:self-center">
+						<Badge variant="outline" class="hidden group-hover:hidden lg:block">
+							<span class="text-green-600">
+								{m.machines()}: {scope.machineCount > 0 ? scope.machineCount : '-'} /
+								{m.unit()}: {scope.unitCount > 0 ? scope.unitCount : '-'}
+							</span>
+						</Badge>
 						<div
-							class="text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground inline-flex size-10 items-center justify-center rounded-full transition-colors"
+							class="text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground hidden size-10 items-center justify-center rounded-full transition-colors group-hover:inline-flex"
 						>
 							<Icon icon="ph:arrow-right" class="size-6" />
 						</div>
-					</div>
-				</div>
-			</a>
+					</Card.Action>
+				</Card.Header>
+			</Card.Root>
 		{/each}
 	</div>
 </main>
