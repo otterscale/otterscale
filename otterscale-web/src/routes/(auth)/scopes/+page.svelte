@@ -68,7 +68,7 @@
 							<Card.Description>
 								{scope.status}
 							</Card.Description>
-							<Card.Title class="text-2xl">{scope.name}</Card.Title>
+							<Card.Title class="text-2xl text-nowrap">{scope.name}</Card.Title>
 						</div>
 					</div>
 
