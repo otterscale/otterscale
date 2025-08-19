@@ -29,10 +29,6 @@
 		}
 	}
 
-	function handleScopeClick(scopeName: string) {
-		goto(dynamicPaths.scope(scopeName).url);
-	}
-
 	function getCardColumnClass(index: number, scopeCount: number): string {
 		if (index == 0) {
 			if (scopeCount === 1) return 'col-start-4';
@@ -74,45 +70,47 @@
 	<!-- Scopes Grid -->
 	<div class="z-10 mx-auto grid w-full grid-cols-8 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-2/3">
 		{#each $filteredScopes as scope, index}
-			<Card.Root
+			<a
+				href={dynamicPaths.scope(scope.name).url}
 				class="group col-span-2 cursor-pointer {getCardColumnClass(index, $filteredScopes.length)}"
-				onclick={() => handleScopeClick(scope.name)}
 			>
-				<Card.Header class="gap-0">
-					<div class="flex items-center gap-4">
-						<!-- Scope Icon -->
-						<div class="bg-primary flex size-10 items-center justify-center rounded-lg">
-							<Icon
-								icon="{scopeIcon(getScopeIndex(scope.name))}-fill"
-								class="text-primary-foreground size-6"
-							/>
+				<Card.Root>
+					<Card.Header class="gap-0">
+						<div class="flex items-center gap-4">
+							<!-- Scope Icon -->
+							<div class="bg-primary flex size-10 items-center justify-center rounded-lg">
+								<Icon
+									icon="{scopeIcon(getScopeIndex(scope.name))}-fill"
+									class="text-primary-foreground size-6"
+								/>
+							</div>
+
+							<!-- Scope Info -->
+							<div class="grid -space-y-1">
+								<Card.Description class="capitalize">
+									{scope.status}
+								</Card.Description>
+								<Card.Title class="text-2xl text-nowrap">{scope.name}</Card.Title>
+							</div>
 						</div>
 
-						<!-- Scope Info -->
-						<div class="grid -space-y-1">
-							<Card.Description class="capitalize">
-								{scope.status}
-							</Card.Description>
-							<Card.Title class="text-2xl text-nowrap">{scope.name}</Card.Title>
-						</div>
-					</div>
-
-					<!-- Scope Stats and Action -->
-					<Card.Action class="overflow-hidden group-hover:self-center">
-						<Badge variant="outline" class="hidden group-hover:hidden lg:block">
-							<span class="text-green-600">
-								{m.machines()}: {scope.machineCount > 0 ? scope.machineCount : '-'} /
-								{m.unit()}: {scope.unitCount > 0 ? scope.unitCount : '-'}
-							</span>
-						</Badge>
-						<div
-							class="text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground hidden size-10 items-center justify-center rounded-full transition-colors group-hover:inline-flex"
-						>
-							<Icon icon="ph:arrow-right" class="size-6" />
-						</div>
-					</Card.Action>
-				</Card.Header>
-			</Card.Root>
+						<!-- Scope Stats and Action -->
+						<Card.Action class="overflow-hidden group-hover:self-center">
+							<Badge variant="outline" class="hidden group-hover:hidden lg:block">
+								<span class="text-green-600">
+									{m.machines()}: {scope.machineCount > 0 ? scope.machineCount : '-'} /
+									{m.unit()}: {scope.unitCount > 0 ? scope.unitCount : '-'}
+								</span>
+							</Badge>
+							<div
+								class="text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground hidden size-10 items-center justify-center rounded-full transition-colors group-hover:inline-flex"
+							>
+								<Icon icon="ph:arrow-right" class="size-6" />
+							</div>
+						</Card.Action>
+					</Card.Header>
+				</Card.Root>
+			</a>
 		{/each}
 	</div>
 </main>
