@@ -42,7 +42,7 @@ func (r *virtInstanceType) CreateInstanceType(ctx context.Context, config *rest.
 		},
 		Spec: kubevirtv1.VirtualMachineInstancetypeSpec{
 			CPU: kubevirtv1.CPUInstancetype{
-				Guest: uint32(math.Round(float64(InstanceType.CpuCores))),
+				Guest: uint32(math.Round(float64(InstanceType.CPUCores))),
 			},
 			Memory: kubevirtv1.MemoryInstancetype{
 				Guest: *resourcePtr(InstanceType.MemoryBytes),
@@ -62,7 +62,7 @@ func (r *virtInstanceType) CreateInstanceType(ctx context.Context, config *rest.
 			Labels:      created.Labels,
 			Annotations: created.Annotations,
 		},
-		CpuCores:    float32(created.Spec.CPU.Guest),
+		CPUCores:    float32(created.Spec.CPU.Guest),
 		MemoryBytes: created.Spec.Memory.Guest.Value(),
 	}, nil
 }
@@ -84,7 +84,7 @@ func (r *virtInstanceType) GetInstanceType(ctx context.Context, config *rest.Con
 			Labels:      obj.Labels,
 			Annotations: obj.Annotations,
 		},
-		CpuCores:    float32(obj.Spec.CPU.Guest),
+		CPUCores:    float32(obj.Spec.CPU.Guest),
 		MemoryBytes: obj.Spec.Memory.Guest.Value(),
 	}, nil
 }
@@ -108,7 +108,7 @@ func (r *virtInstanceType) ListInstanceTypes(ctx context.Context, config *rest.C
 				Labels:      obj.Labels,
 				Annotations: obj.Annotations,
 			},
-			CpuCores:    float32(obj.Spec.CPU.Guest),
+			CPUCores:    float32(obj.Spec.CPU.Guest),
 			MemoryBytes: obj.Spec.Memory.Guest.Value(),
 		})
 	}

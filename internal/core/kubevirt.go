@@ -1,20 +1,22 @@
 package core
 
 import (
+	"time"
+
 	"google.golang.org/protobuf/types/known/timestamppb"
 	clonev1 "kubevirt.io/api/clone/v1beta1"
-	v1 "kubevirt.io/api/core/v1"
+	virtCorev1 "kubevirt.io/api/core/v1"
 	snapshotv1 "kubevirt.io/api/snapshot/v1beta1"
 	v1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
 
 type (
-	VirtualMachineSpec                  = v1.VirtualMachineSpec
-	VirtualMachine                      = v1.VirtualMachine
-	VirtualMachineInstance              = v1.VirtualMachineInstance
-	VirtualMachineInstanceMigration     = v1.VirtualMachineInstanceMigration
-	VirtualMachineInstanceMigrationSpec = v1.VirtualMachineInstanceMigrationSpec
-	VirtualMachineInstanceSpec          = v1.VirtualMachineInstanceSpec
+	VirtualMachineSpec                  = virtCorev1.VirtualMachineSpec
+	VirtualMachine                      = virtCorev1.VirtualMachine
+	VirtualMachineInstance              = virtCorev1.VirtualMachineInstance
+	VirtualMachineInstanceMigration     = virtCorev1.VirtualMachineInstanceMigration
+	VirtualMachineInstanceMigrationSpec = virtCorev1.VirtualMachineInstanceMigrationSpec
+	VirtualMachineInstanceSpec          = virtCorev1.VirtualMachineInstanceSpec
 	VirtualMachineCloneSpec             = clonev1.VirtualMachineCloneSpec
 	VirtualMachineClone                 = clonev1.VirtualMachineClone
 	VirtualMachineSnapshotSpec          = snapshotv1.VirtualMachineSnapshotSpec
@@ -23,6 +25,9 @@ type (
 	VirtualMachineRestore               = snapshotv1.VirtualMachineRestore
 	DataVolumeSpec                      = v1beta1.DataVolumeSpec
 	DataVolume                          = v1beta1.DataVolume
+	KubeVirtVolume                      = virtCorev1.Volume
+	KubeVirtDisk                        = virtCorev1.Disk
+	KubeVirtDevice                      = virtCorev1.Devices
 )
 
 type Metadata struct {
@@ -52,6 +57,34 @@ type KubeVirtVirtualMachine struct {
 	Clones    []Operation
 	Migrates  []Operation
 	Restores  []Operation
+}
+
+type VirtualMachineResources struct {
+	InstanceName string
+	CPUcores     uint32
+	MemoryBytes  int64
+}
+
+type VirtualMachineOperation struct {
+	Name        string
+	Type        string
+	Description string
+	CreatedAt   *time.Time
+	Status      VirtualMachineOperationStatus
+}
+
+// VirtualMachineOperationStatus represents the status of an operation
+type VirtualMachineOperationStatus struct {
+	Status  int32
+	Message string
+	Reason  string
+}
+
+type DiskDevice struct {
+	Name     string
+	DiskType string
+	Bus      string
+	Data     string
 }
 
 // Operation represents an operation on a virtual machine (snapshot, clone, etc.)
@@ -96,13 +129,13 @@ type KubeVirtVMService struct {
 	Metadata Metadata
 	Type     string
 	Ports    []KubeVirtVMServicePort
-	Selector map[string] string
+	Selector map[string]string
 }
 
 // InstanceType represents a flavor resource
 type InstanceType struct {
 	Metadata    Metadata
-	CpuCores    float32
+	CPUCores    float32
 	MemoryBytes int64
 }
 
@@ -116,7 +149,7 @@ type KubeVirtUseCase struct {
 	facility             FacilityRepo
 }
 
-func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
+func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtInstanceType KubeVirtInstanceTypeRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
 	return &KubeVirtUseCase{
 		kubeCore:             kubeCore,
 		kubeApps:             kubeApps,

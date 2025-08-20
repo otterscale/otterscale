@@ -56,6 +56,7 @@ func (r *core) CreateService(ctx context.Context, config *rest.Config, namespace
 	opts := metav1.CreateOptions{}
 	return clientset.CoreV1().Services(namespace).Create(ctx, svc, opts)
 }
+
 func (r *core) ListServices(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Service, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {

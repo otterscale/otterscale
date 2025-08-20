@@ -2,7 +2,9 @@ package app
 
 import (
 	"context"
-    "strconv"
+	"strconv"
+	"strings"
+	"time"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -27,44 +29,44 @@ var _ pbconnect.KubeVirtServiceHandler = (*KubeVirtService)(nil)
 
 // Virtual Machine Operations
 func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.CreateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreMetadata(req.Msg.GetMetadata()), toCoreVirtualMachineSpec(req.Msg.GetSpec()))
+	vm, err := s.uc.CreateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), req.Msg.GetAnnotations(), toCoreVirtualMachineResource(req.Msg.GetCustom(), req.Msg.GetInstancetype()), toCoreDiskDevices(req.Msg.GetDisks()))
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoVirtualMachine(vm)
+	resp := toProtoVirtualMachine(vm, nil)
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) GetVirtualMachine(ctx context.Context, req *connect.Request[pb.GetVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.GetVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
+	vm, vmi, err := s.uc.GetVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoVirtualMachine(vm)
+	resp := toProtoVirtualMachine(vm, vmi)
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) ListVirtualMachines(ctx context.Context, req *connect.Request[pb.ListVirtualMachinesRequest]) (*connect.Response[pb.ListVirtualMachinesResponse], error) {
-	vms, err := s.uc.ListVirtualMachines(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	vms, vmis, err := s.uc.ListVirtualMachines(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.ListVirtualMachinesResponse{}
-	resp.SetVirtualMachines(toProtoVirtualMachines(vms))
+	resp.SetVirtualMachines(toProtoVirtualMachines(vms, vmis))
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetInstanceTypeName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), req.Msg.GetAnnotations(), req.Msg.GetDataVolumes(), toCoreDevices(req.Msg.GetDevices()))
+	vm, vmi, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), req.Msg.GetAnnotations(), toCoreDiskDevices(req.Msg.GetDisks()))
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoVirtualMachine(vm)
+	resp := toProtoVirtualMachine(vm, vmi)
 	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) DeleteVirtualMachine(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
+	if err := s.uc.DeleteVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -73,7 +75,7 @@ func (s *KubeVirtService) DeleteVirtualMachine(ctx context.Context, req *connect
 
 // Virtual Machine Control Operations
 func (s *KubeVirtService) StartVirtualMachine(ctx context.Context, req *connect.Request[pb.StartVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.StartVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
+	if err := s.uc.StartVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -81,7 +83,7 @@ func (s *KubeVirtService) StartVirtualMachine(ctx context.Context, req *connect.
 }
 
 func (s *KubeVirtService) StopVirtualMachine(ctx context.Context, req *connect.Request[pb.StopVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.StopVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
+	if err := s.uc.StopVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -89,15 +91,15 @@ func (s *KubeVirtService) StopVirtualMachine(ctx context.Context, req *connect.R
 }
 
 func (s *KubeVirtService) PauseVirtualMachine(ctx context.Context, req *connect.Request[pb.PauseVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.PauseVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
+	if err := s.uc.PauseVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) UnpauseVirtualMachine(ctx context.Context, req *connect.Request[pb.UnpauseVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.UnpauseVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
+func (s *KubeVirtService) ResumeVirtualMachine(ctx context.Context, req *connect.Request[pb.ResumeVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.UnpauseVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -106,7 +108,7 @@ func (s *KubeVirtService) UnpauseVirtualMachine(ctx context.Context, req *connec
 
 // Virtual Machine Advanced Operations
 func (s *KubeVirtService) CloneVirtualMachine(ctx context.Context, req *connect.Request[pb.CloneVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.CloneVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetTargetName(), req.Msg.GetTargetNamespace(), req.Msg.GetSourceName(), req.Msg.GetSourceNamespace()); err != nil {
+	if err := s.uc.CloneVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetTargetNamespace(), req.Msg.GetTargetName(), req.Msg.GetSourceNamespace(), req.Msg.GetSourceName(), req.Msg.GetDescription()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -114,7 +116,7 @@ func (s *KubeVirtService) CloneVirtualMachine(ctx context.Context, req *connect.
 }
 
 func (s *KubeVirtService) SnapshotVirtualMachine(ctx context.Context, req *connect.Request[pb.SnapshotVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.SnapshotVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetSnapshotName()); err != nil {
+	if err := s.uc.SnapshotVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSnapshotName(), req.Msg.GetDescription()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -122,7 +124,7 @@ func (s *KubeVirtService) SnapshotVirtualMachine(ctx context.Context, req *conne
 }
 
 func (s *KubeVirtService) RestoreVirtualMachine(ctx context.Context, req *connect.Request[pb.RestoreVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.RestoreVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetSnapshotName()); err != nil {
+	if err := s.uc.RestoreVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSnapshotName(), req.Msg.GetDescription()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -130,7 +132,127 @@ func (s *KubeVirtService) RestoreVirtualMachine(ctx context.Context, req *connec
 }
 
 func (s *KubeVirtService) MigrateVirtualMachine(ctx context.Context, req *connect.Request[pb.MigrateVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.MigrateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace(), req.Msg.GetTargetNode()); err != nil {
+	if err := s.uc.MigrateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetTargetNode(), req.Msg.GetDescription()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+// GetVirtualMachineClone retrieves a virtual machine clone
+func (s *KubeVirtService) GetVirtualMachineClone(ctx context.Context, req *connect.Request[pb.GetVirtualMachineCloneRequest]) (*connect.Response[pb.VirtualMachineOperation], error) {
+	op, err := s.uc.GetVirtualMachineClone(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := fromVirtualMachineClone(op)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *KubeVirtService) ListVirtualMachineClones(ctx context.Context, req *connect.Request[pb.ListVirtualMachineClonesRequest]) (*connect.Response[pb.ListVirtualMachineOperations], error) {
+	resp := &pb.ListVirtualMachineOperations{}
+	ops, err := s.uc.ListVirtualMachineClones(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+	resp.SetOps(fromVirtualMachineClones(ops))
+	return connect.NewResponse(resp), nil
+}
+
+// DeleteVirtualMachineClone deletes a virtual machine clone
+func (s *KubeVirtService) DeleteVirtualMachineClone(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error) {
+	err := s.uc.DeleteVirtualMachineClone(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+// GetVirtualMachineSnapshot retrieves a virtual machine snapshot
+func (s *KubeVirtService) GetVirtualMachineSnapshot(ctx context.Context, req *connect.Request[pb.GetVirtualMachineSnapshotRequest]) (*connect.Response[pb.VirtualMachineOperation], error) {
+	op, err := s.uc.GetVirtualMachineSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := fromVirtualMachineSnapshot(op)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *KubeVirtService) ListVirtualMachineSnapshots(ctx context.Context, req *connect.Request[pb.ListVirtualMachineSnapshotsRequest]) (*connect.Response[pb.ListVirtualMachineOperations], error) {
+	resp := &pb.ListVirtualMachineOperations{}
+	ops, err := s.uc.ListVirtualMachineSnapshots(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+	resp.SetOps(fromVirtualMachineSnapshots(ops))
+	return connect.NewResponse(resp), nil
+}
+
+// DeleteVirtualMachineSnapshot deletes a virtual machine snapshot
+func (s *KubeVirtService) DeleteVirtualMachineSnapshot(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
+	err := s.uc.DeleteVirtualMachineSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+// GetVirtualMachineRestore retrieves a virtual machine restore operation
+func (s *KubeVirtService) GetVirtualMachineRestore(ctx context.Context, req *connect.Request[pb.GetVirtualMachineRestoreRequest]) (*connect.Response[pb.VirtualMachineOperation], error) {
+	op, err := s.uc.GetVirtualMachineRestore(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := fromVirtualMachineRestore(op)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *KubeVirtService) ListVirtualMachineRestores(ctx context.Context, req *connect.Request[pb.ListVirtualMachineRestoresRequest]) (*connect.Response[pb.ListVirtualMachineOperations], error) {
+	resp := &pb.ListVirtualMachineOperations{}
+	ops, err := s.uc.ListVirtualMachineRestores(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+	resp.SetOps(fromVirtualMachineRestores(ops))
+	return connect.NewResponse(resp), nil
+}
+
+// DeleteVirtualMachineRestore deletes a virtual machine restore operation
+func (s *KubeVirtService) DeleteVirtualMachineRestore(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error) {
+	err := s.uc.DeleteVirtualMachineRestore(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
+}
+
+// GetVirtualMachineMigrate retrieves a virtual machine Migrate operation
+func (s *KubeVirtService) GetVirtualMachineMigrate(ctx context.Context, req *connect.Request[pb.GetVirtualMachineMigrateRequest]) (*connect.Response[pb.VirtualMachineOperation], error) {
+	op, err := s.uc.GetVirtualMachineMigrate(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := fromVirtualMachineMigrate(op)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *KubeVirtService) ListVirtualMachineMigrates(ctx context.Context, req *connect.Request[pb.ListVirtualMachineMigratesRequest]) (*connect.Response[pb.ListVirtualMachineOperations], error) {
+	resp := &pb.ListVirtualMachineOperations{}
+	ops, err := s.uc.ListVirtualMachineMigrates(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+	resp.SetOps(fromVirtualMachineMigrates(ops))
+	return connect.NewResponse(resp), nil
+}
+
+// DeleteVirtualMachineMigrate deletes a virtual machine Migrate operation
+func (s *KubeVirtService) DeleteVirtualMachineMigrate(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineMigrateRequest]) (*connect.Response[emptypb.Empty], error) {
+	err := s.uc.DeleteVirtualMachineMigrate(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -191,50 +313,50 @@ func (s *KubeVirtService) ExtendDataVolume(ctx context.Context, req *connect.Req
 
 // VMService Operations
 func (s *KubeVirtService) CreateVMService(ctx context.Context, req *connect.Request[pb.CreateVMServiceRequest]) (*connect.Response[pb.KubeVirtVMService], error) {
-    vmservice, err := s.uc.CreateVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVMService().GetMetadata().GetNamespace(), req.Msg.GetVMService().GetMetadata().GetName(), toCoreVMService(req.Msg.GetVMService()))
-    if err != nil {
-        return nil, err
-    }
+	vmservice, err := s.uc.CreateVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVMService().GetMetadata().GetNamespace(), req.Msg.GetVMService().GetMetadata().GetName(), toCoreVMService(req.Msg.GetVMService()))
+	if err != nil {
+		return nil, err
+	}
 
-    resp := toProtoKubeVirtVMService(vmservice)
-    return connect.NewResponse(resp), nil
+	resp := toProtoKubeVirtVMService(vmservice)
+	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) GetVMService(ctx context.Context, req *connect.Request[pb.GetVMServiceRequest]) (*connect.Response[pb.KubeVirtVMService], error) {
-    vmservice, err := s.uc.GetVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
-    if err != nil {
-        return nil, err
-    }
-    resp := toProtoKubeVirtVMService(vmservice)
-    return connect.NewResponse(resp), nil
+	vmservice, err := s.uc.GetVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoKubeVirtVMService(vmservice)
+	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) ListVMServices(ctx context.Context, req *connect.Request[pb.ListVMServicesRequest]) (*connect.Response[pb.ListVMServicesResponse], error) {
-    vmservices, err := s.uc.ListVMServices(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
-    if err != nil {
-        return nil, err
-    }
-    resp := &pb.ListVMServicesResponse{}
-    resp.SetVMServices(toProtoKubeVirtVMServices(vmservices))
-    return connect.NewResponse(resp), nil
+	vmservices, err := s.uc.ListVMServices(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+	resp := &pb.ListVMServicesResponse{}
+	resp.SetVMServices(toProtoKubeVirtVMServices(vmservices))
+	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) UpdateVMService(ctx context.Context, req *connect.Request[pb.UpdateVMServiceRequest]) (*connect.Response[pb.KubeVirtVMService], error) {
-    vmservice, err := s.uc.UpdateVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toCoreVMService(req.Msg.GetVMService()))
-    if err != nil {
-        return nil, err
-    }
-    resp := toProtoKubeVirtVMService(vmservice)
-    return connect.NewResponse(resp), nil
+	vmservice, err := s.uc.UpdateVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toCoreVMService(req.Msg.GetVMService()))
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoKubeVirtVMService(vmservice)
+	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) DeleteVMService(ctx context.Context, req *connect.Request[pb.DeleteVMServiceRequest]) (*connect.Response[emptypb.Empty], error) {
-    if err := s.uc.DeleteVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
-        return nil, err
-    }
-   
-    resp := &emptypb.Empty{}
-    return connect.NewResponse(resp), nil
+	if err := s.uc.DeleteVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+		return nil, err
+	}
+
+	resp := &emptypb.Empty{}
+	return connect.NewResponse(resp), nil
 }
 
 // InstanceType Operations
@@ -276,37 +398,60 @@ func (s *KubeVirtService) DeleteInstanceType(ctx context.Context, req *connect.R
 }
 
 // Conversion functions
-func toProtoVirtualMachines(vms []core.VirtualMachine) []*pb.VirtualMachine {
+func toProtoVirtualMachines(vms []core.VirtualMachine, vmis []core.VirtualMachineInstance) []*pb.VirtualMachine {
 	ret := []*pb.VirtualMachine{}
-	for i := range vms {
-		ret = append(ret, toProtoVirtualMachine(&vms[i]))
+	for i := 0; i < len(vmis); i++ {
+		for j := 0; j < len(vms); j++ {
+			if vms[j].Name == vmis[i].Name {
+				ret = append(ret, toProtoVirtualMachine(&vms[j], &vmis[i]))
+				break
+			}
+		}
 	}
 	return ret
 }
 
-func toProtoVirtualMachine(vm *core.VirtualMachine) *pb.VirtualMachine {
+func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInstance) *pb.VirtualMachine {
 	ret := &pb.VirtualMachine{}
-	/*
-		ret.SetMetadata(toProtoMetadata(vm.Metadata))
-		ret.SetSpec(toProtoVirtualMachineSpec(vm.Spec))
-		ret.SetStatus(pb.VirtualMachine_Status(pb.VirtualMachine_Status_value[vm.Status]))
-		ret.SetClones(toProtoOperations(vm.Clones))
-		ret.SetSnapshots(toProtoOperations(vm.Snapshots))
-		ret.SetMigrates(toProtoOperations(vm.Migrates))
-		ret.SetRestores(toProtoOperations(vm.Restores))
-	*/
+
+	ret.SetMetadata(fromVirtualMachine(vm))
+	ret.SetSpec(toProtoVirtualMachineSpec(vm))
+	if vmi != nil {
+		ret.SetStatus(toProtoVirtualMachineStatus(string(vmi.Status.Phase)))
+	}
+	// [TODO] snapshots
+	// ret.SetSnapshots(toProtoOperations(vm.Snapshots))
 	return ret
 }
 
-func toProtoMetadata(m core.Metadata) *pb.Metadata {
+func fromVirtualMachine(vm *core.VirtualMachine) *pb.Metadata {
+	return toProtoMetadata(vm.GetName(), vm.GetNamespace(), vm.GetLabels(), vm.GetAnnotations(), vm.CreationTimestamp.Time, vm.GetAnnotations()["otterscale/update-timestamp"])
+}
+
+func fromDataVolume(dv *core.DataVolume) *pb.Metadata {
+	return toProtoMetadata(dv.GetName(), dv.GetNamespace(), dv.GetLabels(), dv.GetAnnotations(), dv.CreationTimestamp.Time, dv.GetAnnotations()["otterscale/update-timestamp"])
+}
+
+func fromVirtualMachineService(s *core.KubeVirtVMService) *pb.Metadata {
+	return toProtoMetadata(s.Metadata.Name, s.Metadata.Namespace, s.Metadata.Labels, s.Metadata.Annotations, s.Metadata.CreatedAt.AsTime(), s.Metadata.Annotations["otterscale/update-timestamp"])
+}
+
+func fromInstanceType(t *core.InstanceType) *pb.Metadata {
+	return toProtoMetadata(t.Metadata.Name, t.Metadata.Namespace, t.Metadata.Labels, t.Metadata.Annotations, t.Metadata.CreatedAt.AsTime(), t.Metadata.Annotations["otterscale/update-timestamp"])
+}
+
+func toProtoMetadata(name, namespace string, labels, annotations map[string]string, creationTimestamp time.Time, updateTimestamp string) *pb.Metadata {
 	ret := &pb.Metadata{}
 
-	ret.SetName(m.Name)
-	ret.SetNamespace(m.Namespace)
-	ret.SetLabels(m.Labels)
-	ret.SetAnnotations(m.Annotations)
-	ret.SetCreatedAt(m.CreatedAt)
-	ret.SetUpdatedAt(m.UpdatedAt)
+	ret.SetName(name)
+	ret.SetNamespace(namespace)
+	ret.SetLabels(labels)
+	ret.SetAnnotations(annotations)
+	ret.SetCreatedAt(timestamppb.New(creationTimestamp))
+	parsedUpdateTime, err := time.Parse(time.RFC3339, updateTimestamp)
+	if err == nil {
+		ret.SetUpdatedAt(timestamppb.New(parsedUpdateTime))
+	}
 
 	return ret
 }
@@ -322,67 +467,127 @@ func toCoreMetadata(m *pb.Metadata) core.Metadata {
 	}
 }
 
-func toProtoVirtualMachineSpec(spec core.KubeVirtVirtualMachineSpec) *pb.VirtualMachineSpec {
+func toCoreVirtualMachineResource(r *pb.VirtualMachineResources, instanceName string) core.VirtualMachineResources {
+	ret := core.VirtualMachineResources{}
+	if r != nil {
+		ret.CPUcores = r.GetCpuCores()
+		ret.MemoryBytes = r.GetMemoryBytes()
+	} else {
+		ret.InstanceName = instanceName
+	}
+
+	return ret
+}
+
+func toProtoVirtualMachineSpec(vm *core.VirtualMachine) *pb.VirtualMachineSpec {
 	ret := &pb.VirtualMachineSpec{}
 
-	ret.SetInstanceTypeName(spec.InstanceTypeName)
-	ret.SetNetworkName(spec.NetworkName)
-	ret.SetStartupScript(spec.StartupScript)
-	ret.SetDataVolumes(spec.DataVolumes)
-	ret.SetDevices(toProtoDevices(spec.Devices))
+	ret.SetStartupScript(toProtoVirutalMachineScripts(vm.Spec.Template.Spec.Volumes))
+	ret.SetResoureces(toProtoVirtualMachineResources(vm))
+	// [TODO] if multiple network in the future
+	ret.SetNetworkName(vm.Spec.Template.Spec.Networks[0].Name)
 
 	return ret
 }
 
-func toCoreVirtualMachineSpec(spec *pb.VirtualMachineSpec) core.VirtualMachineSpec {
-	/*
-		return core.KubeVirtVirtualMachineSpec{
-			InstanceTypeName:    spec.GetInstanceTypeName(),
-			NetworkName:   spec.GetNetworkName(),
-			StartupScript: spec.GetStartupScript(),
-			DataVolumes:   spec.GetDataVolumes(),
-			Devices:       toCoreDevices(spec.GetDevices()),
-		}
-	*/
-	return core.VirtualMachineSpec{}
-}
-
-func toProtoDevices(devices []core.Device) []*pb.Device {
-	ret := []*pb.Device{}
-	for _, d := range devices {
-		dev := &pb.Device{}
-		dev.SetName(d.Name)
-		dev.SetType(d.Type)
-		ret = append(ret, dev)
+func toProtoVirtualMachineStatus(s string) pb.VirtualMachine_Status {
+	v, ok := pb.VirtualMachine_Status_value[strings.ToUpper(s)]
+	if ok {
+		return pb.VirtualMachine_Status(v)
 	}
+	return pb.VirtualMachine_RUNNING
+}
+
+func toProtoVirutalMachineScripts(volume []core.KubeVirtVolume) string {
+	var userData string
+	for i := range volume {
+		if volume[i].CloudInitNoCloud != nil { // is a cloud-init volume
+			userData = volume[i].CloudInitNoCloud.UserData
+			break
+		}
+	}
+	return userData
+}
+
+func toProtoVirtualMachineResources(vm *core.VirtualMachine) *pb.VirtualMachineResources {
+	ret := &pb.VirtualMachineResources{}
+	ret.SetCpuCores(vm.Spec.Template.Spec.Domain.CPU.Cores)
+	ret.SetMemoryBytes(vm.Spec.Template.Spec.Domain.Resources.Requests.Memory().Value())
 	return ret
 }
 
-func toCoreDevices(devices []*pb.Device) []core.Device {
-	ret := []core.Device{}
-	for _, d := range devices {
-		ret = append(ret, core.Device{
-			Name: d.GetName(),
-			Type: d.GetType(),
+func toCoreDiskDevices(disks []*pb.VirtualMachineDisk) []core.DiskDevice {
+	ret := []core.DiskDevice{}
+	for i := range disks {
+		ret = append(ret, core.DiskDevice{
+			Name:     disks[i].GetName(),
+			DiskType: pb.VirtualMachineDiskType_name[int32(disks[i].GetDiskType())],
+			Bus:      disks[i].GetBus(),
+			Data:     disks[i].GetData(),
 		})
 	}
 	return ret
 }
 
-func toProtoOperations(ops []core.Operation) []*pb.VirtualMachine_Operation {
-	ret := []*pb.VirtualMachine_Operation{}
-	for _, op := range ops {
-		operation := &pb.VirtualMachine_Operation{}
-		operation.SetName(op.Name)
-		operation.SetType(op.Type)
-		operation.SetDescription(op.Description)
-		operation.SetCreatedAt(op.CreatedAt)
-		operation.SetStatus(&pb.VirtualMachine_Operation_Result{})
-		operation.GetStatus().SetStatus(pb.VirtualMachine_Operation_Result_Status(pb.VirtualMachine_Operation_Result_Status_value[op.Status.Status]))
-		operation.GetStatus().SetMessage(op.Status.Message)
-		operation.GetStatus().SetReason(op.Status.Reason)
-		ret = append(ret, operation)
+func fromVirtualMachineClones(clones []core.VirtualMachineClone) []*pb.VirtualMachineOperation {
+	ret := []*pb.VirtualMachineOperation{}
+	for i := range clones {
+		ret = append(ret, toProtoVirtualMachineOperation(pb.VirtualMachineOperation_CLONE, clones[i].Namespace, clones[i].Name, clones[i].Namespace, clones[i].Spec.Source.Name, clones[i].GetAnnotations()["otterscale.io/clone-description"], clones[i].CreationTimestamp.Time))
 	}
+	return ret
+}
+
+func fromVirtualMachineClone(clone *core.VirtualMachineClone) *pb.VirtualMachineOperation {
+	return toProtoVirtualMachineOperation(pb.VirtualMachineOperation_CLONE, clone.Namespace, clone.Name, clone.Namespace, clone.Spec.Source.Name, clone.GetAnnotations()["otterscale.io/clone-description"], clone.CreationTimestamp.Time)
+}
+
+func fromVirtualMachineSnapshots(snapshots []core.VirtualMachineSnapshot) []*pb.VirtualMachineOperation {
+	ret := []*pb.VirtualMachineOperation{}
+	for i := range snapshots {
+		ret = append(ret, toProtoVirtualMachineOperation(pb.VirtualMachineOperation_SNAPSHOT, snapshots[i].Namespace, snapshots[i].Name, snapshots[i].Namespace, snapshots[i].Spec.Source.Name, snapshots[i].GetAnnotations()["otterscale.io/snapshot-description"], snapshots[i].CreationTimestamp.Time))
+	}
+	return ret
+}
+
+func fromVirtualMachineSnapshot(snapshot *core.VirtualMachineSnapshot) *pb.VirtualMachineOperation {
+	return toProtoVirtualMachineOperation(pb.VirtualMachineOperation_SNAPSHOT, snapshot.Namespace, snapshot.Name, snapshot.Namespace, snapshot.Spec.Source.Name, snapshot.GetAnnotations()["otterscale.io/snapshot-description"], snapshot.CreationTimestamp.Time)
+}
+
+func fromVirtualMachineRestores(restores []core.VirtualMachineRestore) []*pb.VirtualMachineOperation {
+	ret := []*pb.VirtualMachineOperation{}
+	for i := range restores {
+		ret = append(ret, toProtoVirtualMachineOperation(pb.VirtualMachineOperation_RESTORE, restores[i].Namespace, restores[i].Spec.Target.Name, restores[i].Namespace, restores[i].Spec.VirtualMachineSnapshotName, restores[i].GetAnnotations()["otterscale.io/restore-description"], restores[i].CreationTimestamp.Time))
+	}
+	return ret
+}
+
+func fromVirtualMachineRestore(restore *core.VirtualMachineRestore) *pb.VirtualMachineOperation {
+	return toProtoVirtualMachineOperation(pb.VirtualMachineOperation_RESTORE, restore.Namespace, restore.Spec.Target.Name, restore.Namespace, restore.Spec.VirtualMachineSnapshotName, restore.GetAnnotations()["otterscale.io/restore-description"], restore.CreationTimestamp.Time)
+}
+
+func fromVirtualMachineMigrates(migrates []core.VirtualMachineInstanceMigration) []*pb.VirtualMachineOperation {
+	ret := []*pb.VirtualMachineOperation{}
+	for i := range migrates {
+		ret = append(ret, toProtoVirtualMachineOperation(pb.VirtualMachineOperation_MIGRATE, migrates[i].Namespace, migrates[i].Name, migrates[i].Namespace, migrates[i].Spec.VMIName, migrates[i].GetAnnotations()["otterscale.io/migrate-description"], migrates[i].CreationTimestamp.Time))
+	}
+	return ret
+}
+
+func fromVirtualMachineMigrate(migrate *core.VirtualMachineInstanceMigration) *pb.VirtualMachineOperation {
+	return toProtoVirtualMachineOperation(pb.VirtualMachineOperation_MIGRATE, migrate.Namespace, migrate.Name, migrate.Namespace, migrate.Spec.VMIName, migrate.GetAnnotations()["otterscale.io/migrate-description"], migrate.CreationTimestamp.Time)
+}
+
+// toProtoVirtualMachineOperation converts core VirtualMachineOperation to protobuf
+func toProtoVirtualMachineOperation(t pb.VirtualMachineOperation_Type, namespace, name, srcNamespace, srcName, description string, creationTimestamp time.Time) *pb.VirtualMachineOperation {
+	ret := &pb.VirtualMachineOperation{}
+	ret.SetType(t)
+	ret.SetName(name)
+	ret.SetNamespace(namespace)
+	ret.SetSourceName(srcName)
+	ret.SetDescription(description)
+	ret.SetSourceNamespace(srcNamespace)
+	ret.SetCreatedAt(timestamppb.New(creationTimestamp))
+
 	return ret
 }
 
@@ -396,29 +601,11 @@ func toProtoDataVolumes(dvs []core.DataVolume) []*pb.DataVolume {
 
 func toProtoDataVolume(dv *core.DataVolume) *pb.DataVolume {
 	ret := &pb.DataVolume{}
-	ret.SetMetadata(toProtoMetadata(core.Metadata{
-		Name:        dv.GetName(),
-		Namespace:   dv.GetNamespace(),
-		Labels:      dv.GetLabels(),
-		Annotations: dv.GetAnnotations(),
-		CreatedAt:   timestamppb.New(dv.CreationTimestamp.Time),
-	}))
+	ret.SetMetadata(fromDataVolume(dv))
 	source, sourceType, sizeBytes := core.ExtractDataVolumeInfo(dv)
 	ret.SetType(sourceType)
 	ret.SetSizeBytes(sizeBytes)
 	ret.SetSource(source)
-	return ret
-}
-
-func toCoreDataVolume(dv *pb.DataVolume) core.DataVolume {
-	ret := core.DataVolume{}
-	/*
-		return core.KubeVirtDataVolume{
-			Metadata:  toCoreMetadata(dv.GetMetadata()),
-			Source:    dv.GetSource(),
-			Type:      dv.GetType(),
-			SizeBytes: dv.GetSizeBytes(),
-		}*/
 	return ret
 }
 
@@ -432,7 +619,7 @@ func toProtoKubeVirtVMServices(vmservices []core.KubeVirtVMService) []*pb.KubeVi
 
 func toProtoKubeVirtVMService(s *core.KubeVirtVMService) *pb.KubeVirtVMService {
 	ret := &pb.KubeVirtVMService{}
-	ret.SetMetadata(toProtoMetadata(s.Metadata))
+	ret.SetMetadata(fromVirtualMachineService(s))
 
 	spec := &pb.KubeVirtVMServiceSpec{}
 	if s.Selector != nil {
@@ -449,7 +636,7 @@ func toProtoKubeVirtVMService(s *core.KubeVirtVMService) *pb.KubeVirtVMService {
 		sp.SetName(p.Name)
 		sp.SetPort(p.Port)
 		sp.SetTargetPort(strconv.Itoa(int(p.TargetPort)))
-		sp.SetProtocol(pb.KubeVirtVMServiceSpec_Protocol(pb.KubeVirtVMServiceSpec_Protocol_value["TCP"]))      
+		sp.SetProtocol(pb.KubeVirtVMServiceSpec_Protocol(pb.KubeVirtVMServiceSpec_Protocol_value["TCP"]))
 		sp.SetNodePort(p.NodePort)
 		ports = append(ports, sp)
 	}
@@ -508,8 +695,8 @@ func toProtoInstanceTypes(flavors []core.InstanceType) []*pb.InstanceType {
 func toProtoInstanceType(f *core.InstanceType) *pb.InstanceType {
 	ret := &pb.InstanceType{}
 
-	ret.SetMetadata(toProtoMetadata(f.Metadata))
-	ret.SetCpuCores(f.CpuCores)
+	ret.SetMetadata(fromInstanceType(f))
+	ret.SetCpuCores(f.CPUCores)
 	ret.SetMemoryBytes(f.MemoryBytes)
 
 	return ret
@@ -518,7 +705,7 @@ func toProtoInstanceType(f *core.InstanceType) *pb.InstanceType {
 func toCoreInstanceType(f *pb.InstanceType) core.InstanceType {
 	return core.InstanceType{
 		Metadata:    toCoreMetadata(f.GetMetadata()),
-		CpuCores:    f.GetCpuCores(),
+		CPUCores:    f.GetCpuCores(),
 		MemoryBytes: f.GetMemoryBytes(),
 	}
 }
