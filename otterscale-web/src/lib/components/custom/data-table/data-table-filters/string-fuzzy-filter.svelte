@@ -10,9 +10,10 @@
 	let {
 		table,
 		columnId,
-		alias,
+		messages,
 		values
-	}: { table: Table<TData>; columnId: string; alias?: string; values: any[] } = $props();
+	}: { table: Table<TData>; columnId: string; messages: Record<string, string>; values: any[] } =
+		$props();
 
 	const suggestions = $derived(([...new Set(values)].sort() as string[]) ?? ([] as string[]));
 	let open = $state(false);
@@ -25,7 +26,7 @@
 		<div class="relative">
 			<Command.Input
 				class="pr-3 placeholder:text-xs"
-				placeholder={alias ?? columnId}
+				placeholder={messages[columnId]}
 				value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
 				oninput={(e) => {
 					table.getColumn(columnId)?.setFilterValue(e.currentTarget.value);

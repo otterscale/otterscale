@@ -14,14 +14,12 @@
 	let {
 		table,
 		columnId,
-		alias,
-		values,
+		messages,
 		descriptor = (v: any) => v
 	}: {
 		table: Table<TData>;
 		columnId: string;
-		alias?: string;
-		values: boolean[];
+		messages: Record<string, string>;
 		descriptor?: (v: any) => string;
 	} = $props();
 
@@ -35,7 +33,7 @@
 		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), ' text-xs capitalize')}
 	>
 		<Icon icon="ph:funnel" />
-		{alias ?? columnId}
+		{messages[columnId]}
 		{#if selectedValue !== undefined}
 			<Separator orientation="vertical" />
 			<Badge variant="outline">{descriptor(selectedValue)}</Badge>

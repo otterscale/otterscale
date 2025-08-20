@@ -102,15 +102,15 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				values={$networks.map((row) => row.fabric?.name)}
 				columnId="fabric"
-				alias="Fabric"
+				values={$networks.map((row) => row.fabric?.name)}
+				{messages}
 				{table}
 			/>
 			<Filters.StringFuzzy
-				values={$networks.map((row) => row.vlan?.name)}
 				columnId="vlan"
-				alias="VLAN"
+				values={$networks.map((row) => row.vlan?.name)}
+				{messages}
 				{table}
 			/>
 			<Filters.Column {table} {messages} />

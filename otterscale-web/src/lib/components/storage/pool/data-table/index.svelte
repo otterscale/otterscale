@@ -104,18 +104,23 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={$pools.map((row) => row.name)} columnId="name" {table} />
-			<Filters.StringMatch
-				values={$pools.flatMap((row) => row.applications)}
-				columnId="applications"
-				alias="Application"
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$pools.map((row) => row.name)}
+				{messages}
 				{table}
 			/>
 			<Filters.StringMatch
-				values={[...new Set($pools.flatMap((row) => Object.keys(row.placementGroupState)))]}
+				columnId="applications"
+				values={$pools.flatMap((row) => row.applications)}
+				{messages}
 				{table}
+			/>
+			<Filters.StringMatch
 				columnId="placementGroupState"
-				alias="State"
+				values={[...new Set($pools.flatMap((row) => Object.keys(row.placementGroupState)))]}
+				{messages}
+				{table}
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>

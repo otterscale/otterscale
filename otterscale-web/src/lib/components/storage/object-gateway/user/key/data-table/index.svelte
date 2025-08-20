@@ -108,7 +108,12 @@
 	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={keys.map((row) => row.accessKey)} columnId="access" {table} />
+			<Filters.StringFuzzy
+				columnId="access"
+				values={keys.map((row) => row.accessKey)}
+				{messages}
+				{table}
+			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

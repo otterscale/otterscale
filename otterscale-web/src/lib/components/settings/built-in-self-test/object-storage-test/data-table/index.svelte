@@ -101,12 +101,17 @@
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={$testResults.map((row) => row.name)} columnId="name" {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$testResults.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.StringMatch
 				columnId="createdBy"
-				{table}
 				values={$testResults.map((row) => row.createdBy)}
-				alias="Creator"
+				{messages}
+				{table}
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>

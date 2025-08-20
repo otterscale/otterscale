@@ -104,7 +104,12 @@
 	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={snapshots.map((row) => row.name)} columnId="name" {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={snapshots.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

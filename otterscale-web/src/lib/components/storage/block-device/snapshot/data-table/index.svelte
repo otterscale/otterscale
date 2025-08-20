@@ -108,6 +108,7 @@
 			<Filters.StringFuzzy
 				values={snapshots.map((snapshot) => snapshot.name)}
 				columnId="name"
+				{messages}
 				{table}
 			/>
 			<Filters.Column {table} {messages} />

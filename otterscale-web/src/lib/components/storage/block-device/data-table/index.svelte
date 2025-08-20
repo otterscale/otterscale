@@ -99,12 +99,17 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={$images.map((row) => row.name)} columnId="name" {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$images.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.StringMatch
 				columnId="poolName"
-				alias="Pool Name"
-				{table}
 				values={$images.map((row) => row.poolName)}
+				{messages}
+				{table}
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
