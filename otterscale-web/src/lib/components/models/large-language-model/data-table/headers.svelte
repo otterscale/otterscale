@@ -1,7 +1,19 @@
 <script lang="ts" module>
 	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 	import { type LargeLangeageModel } from '../protobuf.svelte';
+
+	export const messages = {
+		name: m.models_large_language_model_headers_name(),
+		version: m.models_large_language_model_headers_version(),
+		parameters: m.models_large_language_model_headers_parameters(),
+		accuracy: m.models_large_language_model_headers_accuracy(),
+		speed: m.models_large_language_model_headers_speed(),
+		architecture: m.models_large_language_model_headers_architecture(),
+		requests: m.models_large_language_model_headers_requests(),
+		uptime: m.models_large_language_model_headers_uptime()
+	};
 
 	export const headers = {
 		row_picker,
@@ -26,16 +38,15 @@
 
 {#snippet name(column: Column<LargeLangeageModel>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages['name']}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
-
 {#snippet version(column: Column<LargeLangeageModel>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>VERSION</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages['version']}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -47,7 +58,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>PARAMETERS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages['parameters']}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -56,7 +67,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>ACCURACY</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages['accuracy']}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -65,13 +76,13 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>SPEED</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages['speed']}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet architecture(column: Column<LargeLangeageModel>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>ARCHITECTURE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages['architecture']}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -83,7 +94,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>REQUESTS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages['requests']}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -92,6 +103,6 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>UPTIME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages['uptime']}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

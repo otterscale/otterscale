@@ -5,6 +5,7 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { Slider } from '$lib/components/ui/slider/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
@@ -87,7 +88,7 @@
 				table.getColumn(columnId)?.setFilterValue(value);
 			}}
 		>
-			All
+			{m.datatable_filter_action_all()}
 		</Button>
 		<Button
 			variant="secondary"
@@ -98,7 +99,7 @@
 				table.getColumn(columnId)?.setFilterValue(empty);
 			}}
 		>
-			Clear
+			{m.datatable_filter_action_clear()}
 		</Button>
 	</div>
 {/snippet}

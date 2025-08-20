@@ -261,5 +261,20 @@
 	"capacity": "Capacity",
 	"throughput": "Throughput",
 	"running": "Running",
-	"container": "Container"
+	"container": "Container",
+	"datatable_filter_columns": "Columns",
+	"datatable_filter_action_all": "All",
+	"datatable_filter_action_clear": "Clear",
+	"datatable_footer_empty": "No Data",
+	"datatable_footer_selected": "selected",
+	"datatable_footer_filtered": "filtered",
+	"datatable_footer_rows": "rows",
+	"models_large_language_model_headers_name": "NAME",
+	"models_large_language_model_headers_version": "VERSION",
+	"models_large_language_model_headers_parameters": "PARAMETERS",
+	"models_large_language_model_headers_accuracy": "ACCURACY",
+	"models_large_language_model_headers_speed": "SPEED",
+	"models_large_language_model_headers_architecture": "ARCHITECTURE",
+	"models_large_language_model_headers_requests": "REQUESTS",
+	"models_large_language_model_headers_uptime": "UPTIME"
 }

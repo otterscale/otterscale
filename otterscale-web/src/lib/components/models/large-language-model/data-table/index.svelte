@@ -1,8 +1,8 @@
 <script lang="ts" module>
-	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -15,8 +15,9 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-	import { columns } from './columns';
 	import type { LargeLangeageModel } from '../protobuf.svelte';
+	import { columns } from './columns';
+	import { messages } from './headers.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -99,14 +100,16 @@
 			<Filters.StringFuzzy
 				values={$largeLanguageModels.map((row) => row.name)}
 				columnId="name"
+				alias={m.models_large_language_model_headers_name()}
 				{table}
 			/>
 			<Filters.StringMatch
 				values={$largeLanguageModels.flatMap((row) => row.architecture)}
 				columnId="architecture"
+				alias={m.models_large_language_model_headers_architecture()}
 				{table}
 			/>
-			<Filters.Column {table} />
+			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
 	<Layout.Viewer>

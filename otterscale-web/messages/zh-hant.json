@@ -262,5 +262,20 @@
 	"capacity": "容量",
 	"throughput": "流通量",
 	"running": "運行中",
-	"container": "容器"
+	"container": "容器",
+	"datatable_filter_columns": "欄位",
+	"datatable_filter_action_all": "全選",
+	"datatable_filter_action_clear": "清除",
+	"datatable_footer_empty": "沒有資料",
+	"datatable_footer_selected": "已選取",
+	"datatable_footer_filtered": "已篩選",
+	"datatable_footer_rows": "筆資料",
+	"models_large_language_model_headers_name": "名稱",
+	"models_large_language_model_headers_version": "版本",
+	"models_large_language_model_headers_parameters": "參數",
+	"models_large_language_model_headers_accuracy": "準確度",
+	"models_large_language_model_headers_speed": "速度",
+	"models_large_language_model_headers_architecture": "架構",
+	"models_large_language_model_headers_requests": "請求數",
+	"models_large_language_model_headers_uptime": "運行時間"
 }
