@@ -4,9 +4,7 @@
 		type DeleteMachineRequest,
 		type Machine
 	} from '$lib/api/machine/v1/machine_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -23,21 +21,30 @@
 		machine: Machine;
 	} = $props();
 
-	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
+
+	const transport: Transport = getContext('transport');
+	const machineClient = createClient(MachineService, transport);
 
 	let invalid: boolean | undefined = $state();
 
-	const machineClient = createClient(MachineService, transport);
-	const requestManager = new RequestManager<DeleteMachineRequest>({
+	const defaults = {
 		id: machine.id,
 		force: false,
 		purgeDisk: false
-	} as DeleteMachineRequest);
-	const stateController = new StateController(false);
+	} as DeleteMachineRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<SingleStepModal.Root bind:open={stateController.state}>
+<SingleStepModal.Root bind:open>
 	<SingleStepModal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		Remove
@@ -53,20 +60,14 @@
 						Please type the machine fqdn {machine.fqdn} exactly to confirm deletion. This action cannot
 						be undone.
 					</Form.Help>
-
 					<Form.Field>
-						<SingleInput.Boolean
-							required
-							descriptor={() => 'Force'}
-							bind:value={requestManager.request.force}
-						/>
+						<SingleInput.Boolean required descriptor={() => 'Force'} bind:value={request.force} />
 					</Form.Field>
-
 					<Form.Field>
 						<SingleInput.Boolean
 							required
 							descriptor={() => 'Purge Disk'}
-							bind:value={requestManager.request.purgeDisk}
+							bind:value={request.purgeDisk}
 						/>
 					</Form.Field>
 				</Form.Field>
@@ -75,7 +76,7 @@
 		<SingleStepModal.Footer>
 			<SingleStepModal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -84,7 +85,7 @@
 				<SingleStepModal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => machineClient.deleteMachine(requestManager.request), {
+						toast.promise(() => machineClient.deleteMachine(request), {
 							loading: 'Loading...',
 							success: () => {
 								reloadManager.force();
@@ -100,8 +101,8 @@
 							}
 						});
 
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Remove

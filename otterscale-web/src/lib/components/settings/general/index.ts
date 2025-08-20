@@ -1,3 +1,3 @@
-import General from './index.svelte'
+import General from './index.svelte';
 
-export { General }
+export { General };

@@ -1,13 +1,10 @@
 <script lang="ts" module>
 	import {
 		NetworkService,
-		type Network,
 		type Network_Fabric,
 		type Network_VLAN,
 		type UpdateVLANRequest
 	} from '$lib/api/network/v1/network_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
-	import { RequestManager } from '$lib/components/custom/form';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -16,7 +13,6 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -28,18 +24,26 @@
 	let invalid: boolean | undefined = $state();
 
 	const client = createClient(NetworkService, transport);
-	const requestManager = new RequestManager<UpdateVLANRequest>({
+	const defaults = {
 		fabricId: fabric.id,
 		vid: vlan.id,
 		name: vlan.name,
 		mtu: vlan.mtu,
 		description: vlan.description,
 		dhcpOn: vlan.dhcpOn
-	} as UpdateVLANRequest);
-	const stateController = new StateController(false);
+	} as UpdateVLANRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit VLAN
@@ -50,40 +54,35 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General
-						type="text"
-						required
-						value={requestManager.request.name}
-						bind:invalid
-					/>
+					<SingleInput.General type="text" required value={request.name} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>NTU</Form.Label>
-					<SingleInput.General type="number" value={requestManager.request.mtu} />
+					<SingleInput.General type="number" value={request.mtu} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Description</Form.Label>
-					<SingleInput.General type="text" value={requestManager.request.description} />
+					<SingleInput.General type="text" value={request.description} />
 				</Form.Field>
 
 				<Form.Field>
-					<SingleInput.Boolean descriptor={() => 'DHCP ON'} value={requestManager.request.dhcpOn} />
+					<SingleInput.Boolean descriptor={() => 'DHCP ON'} value={request.dhcpOn} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}>Cancel</Modal.Cancel
 			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => client.updateVLAN(requestManager.request), {
+						toast.promise(() => client.updateVLAN(request), {
 							loading: 'Loading...',
 							success: () => {
 								reloadManager.force();
@@ -99,8 +98,8 @@
 							}
 						});
 
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Edit

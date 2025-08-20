@@ -4,9 +4,7 @@
 		type Network_IPRange,
 		type UpdateIPRangeRequest
 	} from '$lib/api/network/v1/network_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -30,16 +28,24 @@
 	let invalidEndIP: boolean | undefined = $state();
 
 	const client = createClient(NetworkService, transport);
-	const requestManager = new RequestManager<UpdateIPRangeRequest>({
+	const defaults = {
 		id: ipRange.id,
 		startIp: ipRange.startIp,
 		endIp: ipRange.endIp,
 		comment: ipRange.comment
-	} as UpdateIPRangeRequest);
-	const stateController = new StateController(false);
+	} as UpdateIPRangeRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit
@@ -53,7 +59,7 @@
 					<SingleInput.General
 						required
 						type="text"
-						bind:value={requestManager.request.startIp}
+						bind:value={request.startIp}
 						bind:invalid={invalidStartIP}
 					/>
 				</Form.Field>
@@ -63,21 +69,21 @@
 					<SingleInput.General
 						required
 						type="text"
-						bind:value={requestManager.request.endIp}
+						bind:value={request.endIp}
 						bind:invalid={invalidEndIP}
 					/>
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Coment</Form.Label>
-					<SingleInput.General type="text" bind:value={requestManager.request.comment} />
+					<SingleInput.General type="text" bind:value={request.comment} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -85,14 +91,14 @@
 			<Modal.Action
 				disabled={invalidStartIP || invalidEndIP}
 				onclick={() => {
-					toast.promise(() => client.updateIPRange(requestManager.request), {
+					toast.promise(() => client.updateIPRange(request), {
 						loading: 'Loading...',
 						success: () => {
 							reloadManager.force();
-							return `Update ${requestManager.request.startIp} - ${requestManager.request.endIp} success`;
+							return `Update ${request.startIp} - ${request.endIp} success`;
 						},
 						error: (error) => {
-							let message = `Fail to update ${requestManager.request.startIp} - ${requestManager.request.endIp}`;
+							let message = `Fail to update ${request.startIp} - ${request.endIp}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
 								duration: Number.POSITIVE_INFINITY
@@ -101,8 +107,8 @@
 						}
 					});
 
-					requestManager.reset();
-					stateController.close();
+					reset();
+					close();
 				}}
 			>
 				Create

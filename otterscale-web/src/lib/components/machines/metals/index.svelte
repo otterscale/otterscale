@@ -10,11 +10,12 @@
 
 <script lang="ts">
 	const transport: Transport = getContext('transport');
+	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
+
 	let isMounted = $state(false);
 
-	const machineClient = createClient(MachineService, transport);
 	const reloadManager = new ReloadManager(() => {
 		machineClient.listMachines({}).then((response) => {
 			machines.set(response.machines);

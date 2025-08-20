@@ -5,9 +5,7 @@
 		Image_Snapshot
 	} from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -31,16 +29,24 @@
 
 	let invalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
-	const requestManager = new RequestManager<DeleteImageSnapshotRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
 		imageName: image.name,
 		poolName: image.poolName
-	} as DeleteImageSnapshotRequest);
-	const stateController = new StateController(false);
+	} as DeleteImageSnapshotRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		Delete
@@ -53,7 +59,7 @@
 					<SingleInput.Confirm
 						required
 						target={snapshot.name}
-						bind:value={requestManager.request.snapshotName}
+						bind:value={request.snapshotName}
 						bind:invalid
 					/>
 				</Form.Field>
@@ -65,7 +71,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -74,14 +80,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.deleteImageSnapshot(requestManager.request), {
-							loading: `Deleting ${requestManager.request.snapshotName}...`,
+						toast.promise(() => storageClient.deleteImageSnapshot(request), {
+							loading: `Deleting ${request.snapshotName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Delete ${requestManager.request.snapshotName}`;
+								return `Delete ${request.snapshotName}`;
 							},
 							error: (error) => {
-								let message = `Fail to delete ${requestManager.request.snapshotName}`;
+								let message = `Fail to delete ${request.snapshotName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -89,8 +95,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Delete

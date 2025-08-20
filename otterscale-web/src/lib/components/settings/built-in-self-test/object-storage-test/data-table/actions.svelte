@@ -8,7 +8,7 @@
 
 <script lang="ts">
 	let {
-		testResult,
+		testResult
 	}: {
 		testResult: TestResult;
 	} = $props();
@@ -18,12 +18,12 @@
 	<Layout.ActionLabel>Actions</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
-		<View {testResult}/>
+		<View {testResult} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Retest {testResult}/>
+		<Retest {testResult} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Delete {testResult}/>
+		<Delete {testResult} />
 	</Layout.ActionItem>
 </Layout.Actions>

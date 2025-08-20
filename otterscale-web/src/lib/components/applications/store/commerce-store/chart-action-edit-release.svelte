@@ -13,7 +13,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import type { Writable } from 'svelte/store';
-	import ReleaseValuesInputEdit from './chart-input-release-configuration.svelte';
+	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
 </script>
 
 <script lang="ts">
@@ -30,7 +30,7 @@
 	const transport: Transport = getContext('transport');
 	const client = createClient(ApplicationService, transport);
 
-	const DEFAULT_REQUEST = {
+	const defaults = {
 		dryRun: false,
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
@@ -39,11 +39,9 @@
 		chartRef: release.version?.chartRef,
 		valuesYaml: valuesYaml
 	} as UpdateReleaseRequest;
-
-	let request = $state(DEFAULT_REQUEST);
-
+	let request = $state(defaults);
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = defaults;
 	}
 
 	let open = $state(false);

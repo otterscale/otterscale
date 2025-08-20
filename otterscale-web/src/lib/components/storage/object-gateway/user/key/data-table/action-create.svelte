@@ -1,7 +1,6 @@
 <script lang="ts" module>
 	import type { CreateUserKeyRequest, User } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { RequestManager } from '$lib/components/custom/form';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { currentCeph } from '$lib/stores';
@@ -18,17 +17,21 @@
 
 	const storageClient = createClient(StorageService, transport);
 
-	const requestManager = new RequestManager<CreateUserKeyRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
 		userId: user.id
-	} as CreateUserKeyRequest);
+	} as CreateUserKeyRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
 </script>
 
 <Button
 	class="size-sm flex h-full w-full items-center gap-2"
 	onclick={() => {
-		toast.promise(() => storageClient.createUserKey(requestManager.request), {
+		toast.promise(() => storageClient.createUserKey(request), {
 			loading: `Creating access key...`,
 			success: (response) => {
 				reloadManager.force();
@@ -43,7 +46,7 @@
 				return message;
 			}
 		});
-		requestManager.reset();
+		reset();
 	}}
 >
 	<Icon icon="ph:plus" />

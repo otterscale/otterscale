@@ -4,9 +4,7 @@
 		type Application_Chart,
 		type CreateReleaseRequest
 	} from '$lib/api/application/v1/application_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
@@ -16,7 +14,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
-	import ReleaseValuesInputEdit from './chart-input-release-configuration.svelte';
+	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
 	// import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
 </script>
 
@@ -43,11 +41,20 @@
 	);
 
 	const applicationClient = createClient(ApplicationService, transport);
-	const requestManager = new RequestManager<CreateReleaseRequest>({} as CreateReleaseRequest);
-	const stateController = new StateController(false);
+
+	const defaults = $state({} as CreateReleaseRequest);
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root>
+<Modal.Root bind:open>
 	<Modal.Trigger disabled={chart.deprecated} variant="default" class="w-full">
 		<Icon icon="ph:download-simple" />
 		Install
@@ -59,27 +66,21 @@
 
 			<Form.Field>
 				<Form.Label>Name</Form.Label>
-				<SingleInput.General type="text" bind:value={requestManager.request.name} />
+				<SingleInput.General type="text" bind:value={request.name} />
 			</Form.Field>
 
 			<Form.Field>
 				<Form.Label>Namespace</Form.Label>
-				<SingleInput.General type="text" bind:value={requestManager.request.namespace} />
+				<SingleInput.General type="text" bind:value={request.namespace} />
 			</Form.Field>
 
 			<Form.Field>
-				<SingleInput.Boolean
-					descriptor={() => 'Dry Run'}
-					bind:value={requestManager.request.dryRun}
-				/>
+				<SingleInput.Boolean descriptor={() => 'Dry Run'} bind:value={request.dryRun} />
 			</Form.Field>
 
 			<Form.Field>
 				<Form.Label>Version</Form.Label>
-				<SingleSelect.Root
-					bind:options={versionReferenceOptions}
-					bind:value={requestManager.request.chartRef}
-				>
+				<SingleSelect.Root bind:options={versionReferenceOptions} bind:value={request.chartRef}>
 					<SingleSelect.Trigger />
 					<SingleSelect.Content>
 						<SingleSelect.Options>
@@ -108,8 +109,8 @@
 				<Form.Label>Configuration</Form.Label>
 				<ReleaseValuesInputEdit
 					chartRef={versionRefrence}
-					bind:valuesYaml={requestManager.request.valuesYaml}
-					bind:valuesMap={requestManager.request.valuesMap}
+					bind:valuesYaml={request.valuesYaml}
+					bind:valuesMap={request.valuesMap}
 				/>
 			</Form.Field>
 		</Form.Fieldset>
@@ -117,23 +118,23 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
-					toast.promise(() => applicationClient.createRelease(requestManager.request), {
-						loading: `Creating ${requestManager.request.name}...`,
+					toast.promise(() => applicationClient.createRelease(request), {
+						loading: `Creating ${request.name}...`,
 						success: (response) => {
 							applicationClient.listCharts({}).then((response) => {
 								charts.set(response.charts);
 							});
-							return `Create ${requestManager.request.name}`;
+							return `Create ${request.name}`;
 						},
 						error: (error) => {
-							let message = `Fail to create ${requestManager.request.name}`;
+							let message = `Fail to create ${request.name}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
 								duration: Number.POSITIVE_INFINITY
@@ -142,8 +143,8 @@
 						}
 					});
 
-					requestManager.reset();
-					stateController.close();
+					reset();
+					close();
 				}}
 			>
 				Confirm

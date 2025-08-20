@@ -5,11 +5,11 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
-	import Actions from './cell-actions.svelte';
-	import { ReservedIPRanges } from './cell-reserved-ip-ranges';
 	import ViewIPAddresses from './action-view-ip-addresses.svelte';
 	import ViewSubnet from './action-view-subnet.svelte';
 	import ViewVLAN from './action-view-vlan.svelte';
+	import Actions from './cell-actions.svelte';
+	import { ReservedIPRanges } from './cell-reserved-ip-ranges';
 
 	export const cells = {
 		row_picker,

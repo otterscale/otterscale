@@ -1,9 +1,7 @@
 <script lang="ts" module>
 	import type { Bucket, UpdateBucketRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -34,15 +32,23 @@
 	let isMounted = $state(false);
 	let invalid = $state(false);
 
-	const requestManager = new RequestManager<UpdateBucketRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
 		bucketName: bucket.name,
 		owner: bucket.owner,
 		policy: bucket.policy,
 		acl: getAccessControlList(bucket.grants)
-	} as UpdateBucketRequest);
-	const stateController = new StateController(false);
+	} as UpdateBucketRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	onMount(() => {
 		storageClient
@@ -66,7 +72,7 @@
 	});
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit
@@ -77,12 +83,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General
-						id="name"
-						required
-						type="text"
-						bind:value={requestManager.request.bucketName}
-					/>
+					<SingleInput.General id="name" required type="text" bind:value={request.bucketName} />
 				</Form.Field>
 
 				<Form.Field>
@@ -91,7 +92,7 @@
 						<SingleSelect.Root
 							id="owner"
 							bind:options={userOptions}
-							bind:value={requestManager.request.owner}
+							bind:value={request.owner}
 							required
 						>
 							<SingleSelect.Trigger />
@@ -127,19 +128,12 @@
 
 				<Form.Field>
 					<Form.Label>Policy</Form.Label>
-					<SingleInput.Structure
-						preview
-						bind:value={requestManager.request.policy}
-						language="json"
-					/>
+					<SingleInput.Structure preview bind:value={request.policy} language="json" />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Access Control List</Form.Label>
-					<SingleSelect.Root
-						options={accessControlListOptions}
-						bind:value={requestManager.request.acl}
-					>
+					<SingleSelect.Root options={accessControlListOptions} bind:value={request.acl}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
@@ -168,7 +162,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -177,14 +171,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.updateBucket(requestManager.request), {
-							loading: `Updating ${requestManager.request.bucketName}...`,
+						toast.promise(() => storageClient.updateBucket(request), {
+							loading: `Updating ${request.bucketName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Update ${requestManager.request.bucketName}`;
+								return `Update ${request.bucketName}`;
 							},
 							error: (error) => {
-								let message = `Fail to update ${requestManager.request.bucketName}`;
+								let message = `Fail to update ${request.bucketName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -192,8 +186,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Update

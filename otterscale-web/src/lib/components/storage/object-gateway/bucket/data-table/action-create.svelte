@@ -1,9 +1,7 @@
 <script lang="ts" module>
 	import type { CreateBucketRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -29,12 +27,20 @@
 	let isMounted = $state(false);
 	let invalid = $state(false);
 
-	const requestManager = new RequestManager<CreateBucketRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
 		policy: '{}'
-	} as CreateBucketRequest);
-	const stateController = new StateController(false);
+	} as CreateBucketRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	onMount(() => {
 		storageClient
@@ -58,7 +64,7 @@
 	});
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Create
@@ -69,12 +75,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General
-						id="name"
-						required
-						type="text"
-						bind:value={requestManager.request.bucketName}
-					/>
+					<SingleInput.General id="name" required type="text" bind:value={request.bucketName} />
 				</Form.Field>
 
 				<Form.Field>
@@ -83,7 +84,7 @@
 						<SingleSelect.Root
 							id="owner"
 							bind:options={userOptions}
-							bind:value={requestManager.request.owner}
+							bind:value={request.owner}
 							required
 						>
 							<SingleSelect.Trigger />
@@ -119,11 +120,7 @@
 
 				<Form.Field>
 					<Form.Label>Policy</Form.Label>
-					<SingleInput.Structure
-						preview
-						bind:value={requestManager.request.policy}
-						language="json"
-					/>
+					<SingleInput.Structure preview bind:value={request.policy} language="json" />
 					<div class="flex justify-end gap-2">
 						<Button
 							variant="outline"
@@ -150,10 +147,7 @@
 
 				<Form.Field>
 					<Form.Label>Access Control List</Form.Label>
-					<SingleSelect.Root
-						options={accessControlListOptions}
-						bind:value={requestManager.request.acl}
-					>
+					<SingleSelect.Root options={accessControlListOptions} bind:value={request.acl}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
@@ -182,7 +176,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -191,14 +185,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.createBucket(requestManager.request), {
-							loading: `Creating ${requestManager.request.bucketName}...`,
+						toast.promise(() => storageClient.createBucket(request), {
+							loading: `Creating ${request.bucketName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Create ${requestManager.request.bucketName}`;
+								return `Create ${request.bucketName}`;
 							},
 							error: (error) => {
-								let message = `Fail to create ${requestManager.request.bucketName}`;
+								let message = `Fail to create ${request.bucketName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -206,8 +200,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Create

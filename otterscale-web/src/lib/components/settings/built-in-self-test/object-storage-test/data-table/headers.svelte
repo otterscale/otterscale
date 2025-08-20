@@ -12,15 +12,15 @@
 		target,
 		operation,
 		duration,
-		objectSize, 
+		objectSize,
 		objectCount,
 		throughputFastest,
 		throughputSlowest,
 		throughputMedian,
 		createdBy,
-		startedAt, 
+		startedAt,
 		completedAt,
-		actions, 
+		actions
 	};
 </script>
 
@@ -105,9 +105,7 @@
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			THROUGHPUT
-			<p class="text-muted-foreground">
-				FASTEST
-			</p>
+			<p class="text-muted-foreground">FASTEST</p>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -116,21 +114,16 @@
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			THROUGHPUT
-			<p class="text-muted-foreground">
-				SLOWEST
-			</p>
+			<p class="text-muted-foreground">SLOWEST</p>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
-
 
 {#snippet throughputMedian(column: Column<TestResult>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			THROUGHPUT
-			<p class="text-muted-foreground">
-				MEDIAN
-			</p>
+			<p class="text-muted-foreground">MEDIAN</p>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -153,5 +146,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<TestResult>)}
-{/snippet}
+{#snippet actions(column: Column<TestResult>)}{/snippet}

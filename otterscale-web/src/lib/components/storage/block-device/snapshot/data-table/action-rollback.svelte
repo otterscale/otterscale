@@ -5,9 +5,7 @@
 		RollbackImageSnapshotRequest
 	} from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -31,16 +29,24 @@
 
 	let invalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
-	const requestManager = new RequestManager<RollbackImageSnapshotRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
 		imageName: image.name,
 		poolName: image.poolName
-	} as RollbackImageSnapshotRequest);
-	const stateController = new StateController(false);
+	} as RollbackImageSnapshotRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:lock-open" />
 		Rollback
@@ -55,7 +61,7 @@
 					<SingleInput.Confirm
 						required
 						target={snapshot.name}
-						bind:value={requestManager.request.snapshotName}
+						bind:value={request.snapshotName}
 						bind:invalid
 					/>
 				</Form.Field>
@@ -64,7 +70,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -73,14 +79,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.rollbackImageSnapshot(requestManager.request), {
-							loading: `Rolling back ${requestManager.request.snapshotName}...`,
+						toast.promise(() => storageClient.rollbackImageSnapshot(request), {
+							loading: `Rolling back ${request.snapshotName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Rollback ${requestManager.request.snapshotName}`;
+								return `Rollback ${request.snapshotName}`;
 							},
 							error: (error) => {
-								let message = `Fail to rollback ${requestManager.request.snapshotName}`;
+								let message = `Fail to rollback ${request.snapshotName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -88,8 +94,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Rollback

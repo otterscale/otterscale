@@ -5,9 +5,7 @@
 		type Machine
 	} from '$lib/api/machine/v1/machine_pb';
 	import { TagService } from '$lib/api/tag/v1/tag_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
@@ -31,17 +29,18 @@
 	}: {
 		machine: Machine;
 	} = $props();
-
-	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
+	const transport: Transport = getContext('transport');
+	const machineClient = createClient(MachineService, transport);
+	const tagClient = createClient(TagService, transport);
+
 	const tagOptions = writable<SingleSelect.OptionType[]>([]);
+
 	let isTagLoading = $state(true);
 	let isMounted = $state(false);
 
-	const machineClient = createClient(MachineService, transport);
-	const tagClient = createClient(TagService, transport);
-	const requestManager = new RequestManager<CreateMachineRequest>({
+	const defaults = {
 		scopeUuid: $activeScope?.uuid,
 		id: machine.id,
 		enableSsh: true,
@@ -49,8 +48,16 @@
 		skipNetworking: false,
 		skipStorage: false,
 		tags: [] as string[]
-	} as CreateMachineRequest);
-	const stateController = new StateController(false);
+	} as CreateMachineRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	onMount(async () => {
 		try {
@@ -76,7 +83,7 @@
 	});
 </script>
 
-<SingleStepModal.Root bind:open={stateController.state}>
+<SingleStepModal.Root bind:open>
 	<SingleStepModal.Trigger variant="creative">
 		<Icon icon="ph:compass" />
 		Add
@@ -86,47 +93,42 @@
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Legend>Features</Form.Legend>
-
 				<Form.Field>
 					<SingleInput.Boolean
 						required
 						descriptor={() => 'Enable SSH'}
-						bind:value={requestManager.request.enableSsh}
+						bind:value={request.enableSsh}
 					/>
 				</Form.Field>
-
 				<Form.Field>
 					<SingleInput.Boolean
 						required
 						descriptor={() => 'Skip BMC Configuration'}
-						bind:value={requestManager.request.skipBmcConfig}
+						bind:value={request.skipBmcConfig}
 					/>
 				</Form.Field>
-
 				<Form.Field>
 					<SingleInput.Boolean
 						required
 						descriptor={() => 'Skip Networking'}
-						bind:value={requestManager.request.skipNetworking}
+						bind:value={request.skipNetworking}
 					/>
 				</Form.Field>
-
 				<Form.Field>
 					<SingleInput.Boolean
 						required
 						descriptor={() => 'Skip Storage'}
-						bind:value={requestManager.request.skipStorage}
+						bind:value={request.skipStorage}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
-
 			<Form.Fieldset>
 				<Form.Legend>Tags</Form.Legend>
 				<Form.Field>
 					{#if isTagLoading}
 						<Loading.Selection />
 					{:else}
-						<MultipleSelect.Root bind:value={requestManager.request.tags} options={tagOptions}>
+						<MultipleSelect.Root bind:value={request.tags} options={tagOptions}>
 							<MultipleSelect.Viewer />
 							<MultipleSelect.Controller>
 								<MultipleSelect.Trigger />
@@ -163,7 +165,7 @@
 		<SingleStepModal.Footer>
 			<SingleStepModal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -171,7 +173,7 @@
 			<SingleStepModal.ActionsGroup>
 				<SingleStepModal.Action
 					onclick={() => {
-						toast.promise(() => machineClient.createMachine(requestManager.request), {
+						toast.promise(() => machineClient.createMachine(request), {
 							loading: 'Executing...',
 							success: (response) => {
 								reloadManager.force();
@@ -186,8 +188,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Create

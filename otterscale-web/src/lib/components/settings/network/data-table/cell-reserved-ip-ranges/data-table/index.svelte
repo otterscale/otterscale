@@ -14,9 +14,9 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
+	import Create from './action-create.svelte';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
-	import Create from './action-create.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">

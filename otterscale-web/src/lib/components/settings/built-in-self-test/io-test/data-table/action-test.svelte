@@ -1,8 +1,14 @@
 <script lang="ts" module>
-	import type { CephBlockDevice, CreateTestResultRequest, FIO, FIO_Input, NetworkFileSystem, TestResult } from '$lib/api/bist/v1/bist_pb';
+	import type {
+		CephBlockDevice,
+		CreateTestResultRequest,
+		FIO,
+		FIO_Input,
+		NetworkFileSystem,
+		TestResult
+	} from '$lib/api/bist/v1/bist_pb';
 	import { BISTService, FIO_Input_AccessMode } from '$lib/api/bist/v1/bist_pb';
 	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
@@ -22,52 +28,72 @@
 	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'cephBlockDevice',
-			label: 'Ceph Block Device',
+			label: 'Ceph Block Device'
 		},
 		{
 			value: 'networkFileSystem',
-			label: 'Network File System',
-		},
+			label: 'Network File System'
+		}
 	]);
 
 	// FIO AccessMode
 	const Options: SingleSelect.OptionType[] = Object.keys(FIO_Input_AccessMode)
-		.filter(key => isNaN(Number(key)))
-		.map(key => ({value: FIO_Input_AccessMode[key as keyof typeof FIO_Input_AccessMode], label: key}));
+		.filter((key) => isNaN(Number(key)))
+		.map((key) => ({
+			value: FIO_Input_AccessMode[key as keyof typeof FIO_Input_AccessMode],
+			label: key
+		}));
 	const fioInputeAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
 </script>
 
 <script lang="ts">
 	let {
-		testResult,
-	}: { 
+		testResult
+	}: {
 		testResult?: TestResult;
 	} = $props();
 
 	// Request
-    const DEFAULT_FIO_REQUEST = testResult 
-		? { target: {value: testResult.kind.value?.target.value, case: testResult.kind.value?.target.case} } as FIO 
-		: { target: {value: {}, case: {}}} as FIO;
-	const DEFAULT_REQUEST = { kind: {value: DEFAULT_FIO_REQUEST, case: "fio"}, createdBy: "Woody Lin" } as CreateTestResultRequest;
-    const DEFAULT_CEPH_BLOCK_DEVICE = testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-        ? testResult.kind.value.target.value as CephBlockDevice
-        : {} as CephBlockDevice;
-    const DEFAULT_NETWORK_FILE_SYSTEM = testResult && testResult.kind.value?.target?.case === 'networkFileSystem'
-        ? testResult.kind.value.target.value as NetworkFileSystem
-        : {} as NetworkFileSystem;
-	const DEFAULT_FIO_INPUT = testResult && testResult.kind.value?.input
-    ? testResult.kind.value.input as FIO_Input
-	: { jobCount: 32, runTimeSeconds: 60, blockSizeBytes: 4096, fileSizeBytes: 1024 * 1024 * 1024, ioDepth: 1 } as unknown as FIO_Input; 
-    let selectedScope = $state(
-        testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-            ? testResult.kind.value.target.value?.scopeUuid ?? ''
-            : ''
-    );
-    let selectedFacility = $state(
-        testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
-            ? testResult.kind.value.target.value?.facilityName ?? ''
-            : ''
-    );
+	const DEFAULT_FIO_REQUEST = testResult
+		? ({
+				target: {
+					value: testResult.kind.value?.target.value,
+					case: testResult.kind.value?.target.case
+				}
+			} as FIO)
+		: ({ target: { value: {}, case: {} } } as FIO);
+	const DEFAULT_REQUEST = {
+		kind: { value: DEFAULT_FIO_REQUEST, case: 'fio' },
+		createdBy: 'Woody Lin'
+	} as CreateTestResultRequest;
+	const DEFAULT_CEPH_BLOCK_DEVICE =
+		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
+			? (testResult.kind.value.target.value as CephBlockDevice)
+			: ({} as CephBlockDevice);
+	const DEFAULT_NETWORK_FILE_SYSTEM =
+		testResult && testResult.kind.value?.target?.case === 'networkFileSystem'
+			? (testResult.kind.value.target.value as NetworkFileSystem)
+			: ({} as NetworkFileSystem);
+	const DEFAULT_FIO_INPUT =
+		testResult && testResult.kind.value?.input
+			? (testResult.kind.value.input as FIO_Input)
+			: ({
+					jobCount: 32,
+					runTimeSeconds: 60,
+					blockSizeBytes: 4096,
+					fileSizeBytes: 1024 * 1024 * 1024,
+					ioDepth: 1
+				} as unknown as FIO_Input);
+	let selectedScope = $state(
+		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
+			? (testResult.kind.value.target.value?.scopeUuid ?? '')
+			: ''
+	);
+	let selectedFacility = $state(
+		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
+			? (testResult.kind.value.target.value?.facilityName ?? '')
+			: ''
+	);
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
 	let requestCephBlockDevice: CephBlockDevice = $state(DEFAULT_CEPH_BLOCK_DEVICE);
@@ -83,16 +109,19 @@
 		requestFio = DEFAULT_FIO_REQUEST;
 		requestCephBlockDevice = DEFAULT_CEPH_BLOCK_DEVICE;
 		requestNetworkFileSystem = DEFAULT_NETWORK_FILE_SYSTEM;
-		fioAccessMode = DEFAULT_FIO_INPUT.accessMode; 
-		fioJobCount = DEFAULT_FIO_INPUT.jobCount; 
-		fioRunTime = DEFAULT_FIO_INPUT.runTimeSeconds; 
-		fioBlockSize = DEFAULT_FIO_INPUT.blockSizeBytes; 
-		fioFileSize = DEFAULT_FIO_INPUT.fileSizeBytes; 
-		fioIoDepth = DEFAULT_FIO_INPUT.ioDepth; 
+		fioAccessMode = DEFAULT_FIO_INPUT.accessMode;
+		fioJobCount = DEFAULT_FIO_INPUT.jobCount;
+		fioRunTime = DEFAULT_FIO_INPUT.runTimeSeconds;
+		fioBlockSize = DEFAULT_FIO_INPUT.blockSizeBytes;
+		fioFileSize = DEFAULT_FIO_INPUT.fileSizeBytes;
+		fioIoDepth = DEFAULT_FIO_INPUT.ioDepth;
 	}
 
 	// Modal state
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	// grpc
 	const transport: Transport = getContext('transport');
@@ -133,8 +162,7 @@
 	});
 </script>
 
-
-<MultipleStepModal.Root bind:open={stateController.state} steps={3}>
+<MultipleStepModal.Root bind:open steps={3}>
 	<!-- {@render trigger()} -->
 	{#if testResult}
 		<MultipleStepModal.Trigger class="flex h-full w-full items-center gap-2">
@@ -152,9 +180,9 @@
 		</div>
 	{/if}
 	<MultipleStepModal.Content>
-		<MultipleStepModal.Header class="flex mt-6 mb-6 justify-center text-xl font-bold">
+		<MultipleStepModal.Header class="mt-6 mb-6 flex justify-center text-xl font-bold">
 			Built-in Self Test
-		</MultipleStepModal.Header>	
+		</MultipleStepModal.Header>
 		<MultipleStepModal.Stepper>
 			<MultipleStepModal.Steps>
 				<MultipleStepModal.Step icon="ph:number-one" />
@@ -169,11 +197,7 @@
 							<!-- Name -->
 							<Form.Field>
 								<Form.Label for="bist-name">Name</Form.Label>
-								<SingleInput.General
-									type="text"
-									id="name"
-									bind:value={request.name}
-								/>
+								<SingleInput.General type="text" id="name" bind:value={request.name} />
 							</Form.Field>
 							<!-- Choose Target -->
 							<Form.Field>
@@ -242,7 +266,6 @@
 											</SingleSelect.Content>
 										</SingleSelect.Root>
 									{/if}
-
 								</Form.Field>
 							</Form.Fieldset>
 						{:else if requestFio.target.case == 'networkFileSystem'}
@@ -250,11 +273,19 @@
 								<Form.Legend>Target</Form.Legend>
 								<Form.Field>
 									<Form.Label>Endpoint</Form.Label>
-									<SingleInput.General type="text" required bind:value={requestNetworkFileSystem.endpoint}/>
+									<SingleInput.General
+										type="text"
+										required
+										bind:value={requestNetworkFileSystem.endpoint}
+									/>
 								</Form.Field>
 								<Form.Field>
 									<Form.Label>Path</Form.Label>
-									<SingleInput.General type="text" required bind:value={requestNetworkFileSystem.path}/>
+									<SingleInput.General
+										type="text"
+										required
+										bind:value={requestNetworkFileSystem.path}
+									/>
 								</Form.Field>
 							</Form.Fieldset>
 						{/if}
@@ -269,7 +300,11 @@
 							<!-- fioInputeAccessMode -->
 							<Form.Field>
 								<Form.Label for="fio-access-mode">Access Mode</Form.Label>
-								<SingleSelect.Root options={fioInputeAccessMode} required bind:value={fioAccessMode}>
+								<SingleSelect.Root
+									options={fioInputeAccessMode}
+									required
+									bind:value={fioAccessMode}
+								>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -296,7 +331,7 @@
 							<!-- jobCount -->
 							<Form.Field>
 								<Form.Label>Job Count</Form.Label>
-								<SingleInput.General type="number" placeholder="32" bind:value={fioJobCount}/>
+								<SingleInput.General type="number" placeholder="32" bind:value={fioJobCount} />
 							</Form.Field>
 							<!-- runTime -->
 							<Form.Field>
@@ -344,7 +379,7 @@
 							<!-- ioDepth -->
 							<Form.Field>
 								<Form.Label>I/O Depth</Form.Label>
-								<SingleInput.General type="number" placeholder="1" bind:value={fioIoDepth}/>
+								<SingleInput.General type="number" placeholder="1" bind:value={fioIoDepth} />
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
@@ -372,7 +407,8 @@
 							{@const blockSize = formatCapacity(Number(fioBlockSize))}
 							{@const fileSize = formatCapacity(Number(fioFileSize))}
 							<Form.Legend>Step 2</Form.Legend>
-							<Form.Description>Access Mode: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description>
+							<Form.Description>Access Mode: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description
+							>
 							<Form.Description>Job Count: {fioJobCount}</Form.Description>
 							<Form.Description>Run Time: {runTime.value} {runTime.unit}</Form.Description>
 							<Form.Description>Block Size: {blockSize.value} {blockSize.unit}</Form.Description>
@@ -383,56 +419,58 @@
 				</MultipleStepModal.Model>
 			</MultipleStepModal.Models>
 		</MultipleStepModal.Stepper>
-		
+
 		<MultipleStepModal.Footer>
-			<MultipleStepModal.Cancel onclick={() => { reset(); }}>Cancel</MultipleStepModal.Cancel>
+			<MultipleStepModal.Cancel
+				onclick={() => {
+					reset();
+				}}>Cancel</MultipleStepModal.Cancel
+			>
 			<MultipleStepModal.Controllers>
 				<MultipleStepModal.Back>Back</MultipleStepModal.Back>
 				<MultipleStepModal.Next>Next</MultipleStepModal.Next>
 				<MultipleStepModal.Confirm
-				onclick={() => {
-					// prepare request
-                    if (requestFio.target.case == 'cephBlockDevice') {
-						requestCephBlockDevice.scopeUuid = selectedScope;
-						requestCephBlockDevice.facilityName = selectedFacility;
-                        requestFio.target.value = requestCephBlockDevice;
-                    } else if (requestFio.target.case == 'networkFileSystem') {
-                        requestFio.target.value = requestNetworkFileSystem;
-                    }
-					requestFio.input = {
-						accessMode: fioAccessMode,
-						jobCount: BigInt(fioJobCount),
-						runTimeSeconds: BigInt(fioRunTime),
-						blockSizeBytes: BigInt(fioBlockSize),
-						fileSizeBytes: BigInt(fioFileSize),
-						ioDepth: BigInt(fioIoDepth)
-					} as FIO_Input;
-					request.kind.value = requestFio;
-					// request
-					toast.promise(() => bistClient.createTestResult(request), {
-						loading: `Testing ${request.name}...`,
-						success: () => {
-							reloadManager.force();
-							return `Conduct ${request.name}`;
-						},
-						error: (error) => {
-							let message = `Fail to test ${request.name}`;
-							toast.error(message, {
-								description: (error as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY
-							});
-							return message;
+					onclick={() => {
+						// prepare request
+						if (requestFio.target.case == 'cephBlockDevice') {
+							requestCephBlockDevice.scopeUuid = selectedScope;
+							requestCephBlockDevice.facilityName = selectedFacility;
+							requestFio.target.value = requestCephBlockDevice;
+						} else if (requestFio.target.case == 'networkFileSystem') {
+							requestFio.target.value = requestNetworkFileSystem;
 						}
-					});
-					reset();
-					stateController.close();
-
-				}}
-			>
-				Confirm
-			</MultipleStepModal.Confirm>
+						requestFio.input = {
+							accessMode: fioAccessMode,
+							jobCount: BigInt(fioJobCount),
+							runTimeSeconds: BigInt(fioRunTime),
+							blockSizeBytes: BigInt(fioBlockSize),
+							fileSizeBytes: BigInt(fioFileSize),
+							ioDepth: BigInt(fioIoDepth)
+						} as FIO_Input;
+						request.kind.value = requestFio;
+						// request
+						toast.promise(() => bistClient.createTestResult(request), {
+							loading: `Testing ${request.name}...`,
+							success: () => {
+								reloadManager.force();
+								return `Conduct ${request.name}`;
+							},
+							error: (error) => {
+								let message = `Fail to test ${request.name}`;
+								toast.error(message, {
+									description: (error as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY
+								});
+								return message;
+							}
+						});
+						reset();
+						close();
+					}}
+				>
+					Confirm
+				</MultipleStepModal.Confirm>
 			</MultipleStepModal.Controllers>
 		</MultipleStepModal.Footer>
 	</MultipleStepModal.Content>
 </MultipleStepModal.Root>
-

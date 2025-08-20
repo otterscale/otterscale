@@ -4,9 +4,7 @@
 		type Network_Fabric,
 		type UpdateFabricRequest
 	} from '$lib/api/network/v1/network_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -25,14 +23,22 @@
 	let invalid: boolean | undefined = $state();
 
 	const client = createClient(NetworkService, transport);
-	const requestManager = new RequestManager<UpdateFabricRequest>({
+	const defaults = {
 		id: fabric.id,
 		name: fabric.name
-	} as UpdateFabricRequest);
-	const stateController = new StateController(false);
+	} as UpdateFabricRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit Fabric
@@ -43,26 +49,21 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General
-						type="text"
-						required
-						value={requestManager.request.name}
-						bind:invalid
-					/>
+					<SingleInput.General type="text" required value={request.name} bind:invalid />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}>Cancel</Modal.Cancel
 			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => client.updateFabric(requestManager.request), {
+						toast.promise(() => client.updateFabric(request), {
 							loading: 'Loading...',
 							success: () => {
 								reloadManager.force();
@@ -78,8 +79,8 @@
 							}
 						});
 
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Edit

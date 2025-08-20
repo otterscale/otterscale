@@ -22,7 +22,6 @@
 	let isMounted = $derived(!isChartsLoading && !isReleasesLoading);
 
 	const applicationClient = createClient(ApplicationService, transport);
-	console.log($currentKubernetes);
 
 	onMount(async () => {
 		await applicationClient
@@ -49,7 +48,6 @@
 	});
 </script>
 
-{isMounted}
 {#if isMounted}
 	<CommerceStore bind:charts bind:releases />
 {:else}

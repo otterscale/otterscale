@@ -1,8 +1,7 @@
 <script lang="ts" module>
-	import type { Network, Network_Subnet } from '$lib/api/network/v1/network_pb';
+	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import Icon from '@iconify/svelte';
-	import type { Writable } from 'svelte/store';
 	import { DataTable } from './data-table';
 </script>
 

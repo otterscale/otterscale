@@ -1,7 +1,13 @@
 <script lang="ts" module>
-	import type { CreateTestResultRequest, ExternalObjectService, InternalObjectService, TestResult, Warp, Warp_Input } from '$lib/api/bist/v1/bist_pb';
+	import type {
+		CreateTestResultRequest,
+		ExternalObjectService,
+		InternalObjectService,
+		TestResult,
+		Warp,
+		Warp_Input
+	} from '$lib/api/bist/v1/bist_pb';
 	import { BISTService, Warp_Input_Operation } from '$lib/api/bist/v1/bist_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as MultipleStepModal from '$lib/components/custom/modal/mutiple-step';
@@ -21,47 +27,67 @@
 	const warpTarget: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'internalObjectService',
-			label: 'Internal Object Service',
+			label: 'Internal Object Service'
 		},
 		{
 			value: 'externalObjectService',
-			label: 'External Object Service',
-		},
+			label: 'External Object Service'
+		}
 	]);
 
 	// WARP AccessMode
 	const Options: SingleSelect.OptionType[] = Object.keys(Warp_Input_Operation)
-		.filter(key => isNaN(Number(key)))
-		.map(key => ({value: Warp_Input_Operation[key as keyof typeof Warp_Input_Operation], label: key}));
+		.filter((key) => isNaN(Number(key)))
+		.map((key) => ({
+			value: Warp_Input_Operation[key as keyof typeof Warp_Input_Operation],
+			label: key
+		}));
 	const warpInputOperation: Writable<SingleSelect.OptionType[]> = writable(Options);
 </script>
 
 <script lang="ts">
 	let {
-		testResult,
-	}: { 
+		testResult
+	}: {
 		testResult?: TestResult;
 	} = $props();
 
 	// Request
-    const DEFAULT_WARP_REQUEST = testResult 
-		? { target: {value: testResult.kind.value?.target.value, case: testResult.kind.value?.target.case} } as Warp 
-		: { target: {value: {}, case: {}}} as Warp;
-	const DEFAULT_REQUEST = { kind: {value: DEFAULT_WARP_REQUEST, case: "warp"}, createdBy: "Woody Lin" } as CreateTestResultRequest;
-    const DEFAULT_INTERNAL_OBJECT_SERVICE = testResult && testResult.kind.value?.target?.case === 'internalObjectService'
-        ? testResult.kind.value.target.value as InternalObjectService
-        : {} as InternalObjectService;
-    const DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE = testResult && testResult.kind.value?.target?.case === 'externalObjectService'
-        ? testResult.kind.value.target.value as ExternalObjectService
-        : {} as ExternalObjectService;
-	const DEFAULT_WARP_INPUT = testResult && testResult.kind.value?.input
-    ? testResult.kind.value.input as Warp_Input
-	: { durationSeconds: 60, objectSizeBytes: 4 * 1024 * 1024, objectCount: 500 } as unknown as Warp_Input; 
+	const DEFAULT_WARP_REQUEST = testResult
+		? ({
+				target: {
+					value: testResult.kind.value?.target.value,
+					case: testResult.kind.value?.target.case
+				}
+			} as Warp)
+		: ({ target: { value: {}, case: {} } } as Warp);
+	const DEFAULT_REQUEST = {
+		kind: { value: DEFAULT_WARP_REQUEST, case: 'warp' },
+		createdBy: 'Woody Lin'
+	} as CreateTestResultRequest;
+	const DEFAULT_INTERNAL_OBJECT_SERVICE =
+		testResult && testResult.kind.value?.target?.case === 'internalObjectService'
+			? (testResult.kind.value.target.value as InternalObjectService)
+			: ({} as InternalObjectService);
+	const DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE =
+		testResult && testResult.kind.value?.target?.case === 'externalObjectService'
+			? (testResult.kind.value.target.value as ExternalObjectService)
+			: ({} as ExternalObjectService);
+	const DEFAULT_WARP_INPUT =
+		testResult && testResult.kind.value?.input
+			? (testResult.kind.value.input as Warp_Input)
+			: ({
+					durationSeconds: 60,
+					objectSizeBytes: 4 * 1024 * 1024,
+					objectCount: 500
+				} as unknown as Warp_Input);
 
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestWarp: Warp = $state(DEFAULT_WARP_REQUEST);
 	let requestInternalObjectService: InternalObjectService = $state(DEFAULT_INTERNAL_OBJECT_SERVICE);
-	let requestExternalObjectService: ExternalObjectService = $state(DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE);
+	let requestExternalObjectService: ExternalObjectService = $state(
+		DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE
+	);
 	let warpOperation = $state(DEFAULT_WARP_INPUT.operation);
 	let warpDuration = $state(DEFAULT_WARP_INPUT.durationSeconds);
 	let warpObjectSize = $state(DEFAULT_WARP_INPUT.objectSizeBytes);
@@ -71,33 +97,41 @@
 		requestWarp = DEFAULT_WARP_REQUEST;
 		requestInternalObjectService = DEFAULT_INTERNAL_OBJECT_SERVICE;
 		requestExternalObjectService = DEFAULT_DEFAULT_EXTERNAL_OBJECT_SERVICE;
-		warpOperation = DEFAULT_WARP_INPUT.operation; 
-		warpDuration = DEFAULT_WARP_INPUT.durationSeconds; 
-		warpObjectSize = DEFAULT_WARP_INPUT.objectSizeBytes; 
-		warpObjectCount = DEFAULT_WARP_INPUT.objectCount; 
+		warpOperation = DEFAULT_WARP_INPUT.operation;
+		warpDuration = DEFAULT_WARP_INPUT.durationSeconds;
+		warpObjectSize = DEFAULT_WARP_INPUT.objectSizeBytes;
+		warpObjectCount = DEFAULT_WARP_INPUT.objectCount;
 	}
 
 	// Modal state
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	// grpc
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 	const client = createClient(BISTService, transport);
 
-	let invalidName = $state(false)
-	let invalidTarget = $state(false)
-	let invalidEndPoint = $state(false)
-	let invalidAccessKey = $state(false)
-	let invalidSecretKey = $state(false)
-	let invalidOperation = $state(false)
+	let invalidName = $state(false);
+	let invalidTarget = $state(false);
+	let invalidEndPoint = $state(false);
+	let invalidAccessKey = $state(false);
+	let invalidSecretKey = $state(false);
+	let invalidOperation = $state(false);
 
-	const invalidBasic = $derived(invalidName || invalidTarget || (requestWarp.target.case == 'externalObjectService' && (invalidEndPoint||invalidAccessKey||invalidSecretKey)))
-	const invalidAdvanced = $derived(invalidOperation)
-	const invalid = $derived(invalidBasic || invalidAdvanced)
+	const invalidBasic = $derived(
+		invalidName ||
+			invalidTarget ||
+			(requestWarp.target.case == 'externalObjectService' &&
+				(invalidEndPoint || invalidAccessKey || invalidSecretKey))
+	);
+	const invalidAdvanced = $derived(invalidOperation);
+	const invalid = $derived(invalidBasic || invalidAdvanced);
 </script>
 
-<MultipleStepModal.Root bind:open={stateController.state} steps={3}>
+<MultipleStepModal.Root bind:open steps={3}>
 	{#if testResult}
 		<MultipleStepModal.Trigger class="flex h-full w-full items-center gap-2">
 			<Icon icon="ph:play" />
@@ -114,12 +148,10 @@
 		</div>
 	{/if}
 	<MultipleStepModal.Content>
-		<MultipleStepModal.Header>
-			Built-in Self Test
-		</MultipleStepModal.Header>	
+		<MultipleStepModal.Header>Built-in Self Test</MultipleStepModal.Header>
 		<MultipleStepModal.Stepper>
 			<MultipleStepModal.Steps>
-				<MultipleStepModal.Step icon="ph:number-one" >
+				<MultipleStepModal.Step icon="ph:number-one">
 					{#snippet text()}
 						Basic
 					{/snippet}
@@ -154,7 +186,12 @@
 							<!-- Choose Target -->
 							<Form.Field>
 								<Form.Label for="bist-input">Target</Form.Label>
-								<SingleSelect.Root options={warpTarget} required bind:value={requestWarp.target.case} bind:invalid={invalidTarget}>
+								<SingleSelect.Root
+									options={warpTarget}
+									required
+									bind:value={requestWarp.target.case}
+									bind:invalid={invalidTarget}
+								>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -185,7 +222,9 @@
 								<Form.Legend>Target</Form.Legend>
 								<Form.Field>
 									<Form.Label>Interanl Object Service</Form.Label>
-									<ObjectServicesPicker bind:selectedInternalObjectService={requestInternalObjectService} />
+									<ObjectServicesPicker
+										bind:selectedInternalObjectService={requestInternalObjectService}
+									/>
 								</Form.Field>
 							</Form.Fieldset>
 						{:else if requestWarp.target.case == 'externalObjectService'}
@@ -193,15 +232,30 @@
 								<Form.Legend>Target</Form.Legend>
 								<Form.Field>
 									<Form.Label>Endpoint</Form.Label>
-									<SingleInput.General type="text" required bind:value={requestExternalObjectService.endpoint} bind:invalid={invalidEndPoint}/>
+									<SingleInput.General
+										type="text"
+										required
+										bind:value={requestExternalObjectService.endpoint}
+										bind:invalid={invalidEndPoint}
+									/>
 								</Form.Field>
 								<Form.Field>
 									<Form.Label>Access Key</Form.Label>
-									<SingleInput.General type="text" required bind:value={requestExternalObjectService.accessKey} bind:invalid={invalidAccessKey}/>
+									<SingleInput.General
+										type="text"
+										required
+										bind:value={requestExternalObjectService.accessKey}
+										bind:invalid={invalidAccessKey}
+									/>
 								</Form.Field>
 								<Form.Field>
 									<Form.Label>Secret Key</Form.Label>
-									<SingleInput.General type="text" required bind:value={requestExternalObjectService.secretKey} bind:invalid={invalidSecretKey}/>
+									<SingleInput.General
+										type="text"
+										required
+										bind:value={requestExternalObjectService.secretKey}
+										bind:invalid={invalidSecretKey}
+									/>
 								</Form.Field>
 							</Form.Fieldset>
 						{/if}
@@ -216,7 +270,12 @@
 							<!-- warpInputOperation -->
 							<Form.Field>
 								<Form.Label for="warp-operation">Operation</Form.Label>
-								<SingleSelect.Root options={warpInputOperation} required bind:value={warpOperation} bind:invalid={invalidOperation}>
+								<SingleSelect.Root
+									options={warpInputOperation}
+									required
+									bind:value={warpOperation}
+									bind:invalid={invalidOperation}
+								>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -293,11 +352,19 @@
 							{#if requestWarp.target.case == 'internalObjectService'}
 								<Form.Description>Type: {requestInternalObjectService.type}</Form.Description>
 								<Form.Description>Name: {requestInternalObjectService.name}</Form.Description>
-								<Form.Description>Endpoint: {requestInternalObjectService.endpoint}</Form.Description>
+								<Form.Description
+									>Endpoint: {requestInternalObjectService.endpoint}</Form.Description
+								>
 							{:else if requestWarp.target.case == 'externalObjectService'}
-								<Form.Description>Endpoint: {requestExternalObjectService.endpoint}</Form.Description>
-								<Form.Description>Access Key: {requestExternalObjectService.accessKey}</Form.Description>
-								<Form.Description>Secret Key: {requestExternalObjectService.secretKey}</Form.Description>
+								<Form.Description
+									>Endpoint: {requestExternalObjectService.endpoint}</Form.Description
+								>
+								<Form.Description
+									>Access Key: {requestExternalObjectService.accessKey}</Form.Description
+								>
+								<Form.Description
+									>Secret Key: {requestExternalObjectService.secretKey}</Form.Description
+								>
 							{/if}
 						</Form.Fieldset>
 						<!-- Step 2 -->
@@ -316,31 +383,33 @@
 				</MultipleStepModal.Model>
 			</MultipleStepModal.Models>
 		</MultipleStepModal.Stepper>
-		
+
 		<MultipleStepModal.Footer>
-			<MultipleStepModal.Cancel onclick={() => { reset(); }}>Cancel</MultipleStepModal.Cancel>
+			<MultipleStepModal.Cancel
+				onclick={() => {
+					reset();
+				}}>Cancel</MultipleStepModal.Cancel
+			>
 			<MultipleStepModal.Controllers>
 				<MultipleStepModal.Back>Back</MultipleStepModal.Back>
-				<MultipleStepModal.Next>
-				Next
-			</MultipleStepModal.Next>
+				<MultipleStepModal.Next>Next</MultipleStepModal.Next>
 				<MultipleStepModal.Confirm
-				disabled={invalid}
-				onclick={() => {
-					// prepare request
-                    if (requestWarp.target.case == 'internalObjectService') {
-                        requestWarp.target.value = requestInternalObjectService;
-                    } else if (requestWarp.target.case == 'externalObjectService') {
-                        requestWarp.target.value = requestExternalObjectService;
-                    }
-					requestWarp.input = {
-						operation: warpOperation,
-						durationSeconds: BigInt(warpDuration),
-						objectSizeBytes: BigInt(warpObjectSize),
-						objectCount: warpOperation === Warp_Input_Operation.PUT ? 0n : BigInt(warpObjectCount)
-					} as Warp_Input;
-					request.kind.value = requestWarp;
-					toast.promise(() => client.createTestResult(request), {
+					disabled={invalid}
+					onclick={() => {
+						// prepare request
+						if (requestWarp.target.case == 'internalObjectService') {
+							requestWarp.target.value = requestInternalObjectService;
+						} else if (requestWarp.target.case == 'externalObjectService') {
+							requestWarp.target.value = requestExternalObjectService;
+						}
+						requestWarp.input = {
+							operation: warpOperation,
+							durationSeconds: BigInt(warpDuration),
+							objectSizeBytes: BigInt(warpObjectSize),
+							objectCount: warpOperation === Warp_Input_Operation.PUT ? 0n : BigInt(warpObjectCount)
+						} as Warp_Input;
+						request.kind.value = requestWarp;
+						toast.promise(() => client.createTestResult(request), {
 							loading: `Testing ${request.name}...`,
 							success: () => {
 								reloadManager.force();
@@ -356,13 +425,12 @@
 							}
 						});
 						reset();
-						stateController.close();
-				}}
-			>
-				Confirm
-			</MultipleStepModal.Confirm>
+						close();
+					}}
+				>
+					Confirm
+				</MultipleStepModal.Confirm>
 			</MultipleStepModal.Controllers>
 		</MultipleStepModal.Footer>
 	</MultipleStepModal.Content>
 </MultipleStepModal.Root>
-

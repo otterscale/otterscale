@@ -1,8 +1,6 @@
 <script lang="ts" module>
 	import { NetworkService, type CreateNetworkRequest } from '$lib/api/network/v1/network_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -17,14 +15,22 @@
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const client = createClient(NetworkService, transport);
-	const requestManager = new RequestManager<CreateNetworkRequest>({
+	const defaults = {
 		dhcpOn: true,
 		dnsServers: [] as string[]
-	} as CreateNetworkRequest);
-	const stateController = new StateController(false);
+	} as CreateNetworkRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Create
@@ -35,10 +41,7 @@
 			<Form.Fieldset>
 				<Form.Legend>VLAN</Form.Legend>
 				<Form.Field>
-					<SingleInput.Boolean
-						descriptor={() => 'DHCP ON'}
-						bind:value={requestManager.request.dhcpOn}
-					/>
+					<SingleInput.Boolean descriptor={() => 'DHCP ON'} bind:value={request.dhcpOn} />
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -46,17 +49,17 @@
 				<Form.Legend>Subnet</Form.Legend>
 				<Form.Field>
 					<Form.Label>CIDR</Form.Label>
-					<SingleInput.General type="text" bind:value={requestManager.request.cidr} />
+					<SingleInput.General type="text" bind:value={request.cidr} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Gateway</Form.Label>
-					<SingleInput.General type="text" bind:value={requestManager.request.gatewayIp} />
+					<SingleInput.General type="text" bind:value={request.gatewayIp} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>DNS</Form.Label>
-					<MultipleInput.Root type="text" bind:values={requestManager.request.dnsServers}>
+					<MultipleInput.Root type="text" bind:values={request.dnsServers}>
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
 							<MultipleInput.Input />
@@ -70,20 +73,20 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 				class="mr-auto">Cancel</Modal.Cancel
 			>
 			<Modal.Action
 				onclick={() => {
-					toast.promise(() => client.createNetwork(requestManager.request), {
+					toast.promise(() => client.createNetwork(request), {
 						loading: 'Loading...',
 						success: () => {
 							reloadManager.force();
-							return `Create ${requestManager.request.cidr} success`;
+							return `Create ${request.cidr} success`;
 						},
 						error: (error) => {
-							let message = `Fail to create ${requestManager.request.cidr}`;
+							let message = `Fail to create ${request.cidr}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
 								duration: Number.POSITIVE_INFINITY
@@ -92,8 +95,8 @@
 						}
 					});
 
-					requestManager.reset();
-					stateController.close();
+					reset();
+					close();
 				}}
 			>
 				Create

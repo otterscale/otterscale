@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
@@ -18,16 +17,20 @@
 		machine: Machine;
 	} = $props();
 
-	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
+
+	const transport: Transport = getContext('transport');
+	const machineClient = createClient(MachineService, transport);
 
 	let invalid: boolean | undefined = $state();
 
-	const machineClient = createClient(MachineService, transport);
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<SingleStepModal.Root bind:open={stateController.state}>
+<SingleStepModal.Root bind:open>
 	<SingleStepModal.Trigger disabled={machine.powerState.toLowerCase() === 'off'} variant="creative">
 		<Icon icon="ph:power" />
 		Power Off
@@ -72,8 +75,7 @@
 								}
 							}
 						);
-
-						stateController.close();
+						close();
 					}}
 				>
 					Confirm

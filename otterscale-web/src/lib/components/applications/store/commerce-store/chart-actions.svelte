@@ -2,9 +2,9 @@
 	import type { Application_Release } from '$lib/api/application/v1/application_pb';
 	import { Layout } from '$lib/components/custom/data-table';
 	import type { Writable } from 'svelte/store';
-	import Delete from './chart-delete-release.svelte';
-	import Edit from './chart-edit-release.svelte';
-	import Rollback from './chart-rollback-release.svelte';
+	import Delete from './chart-action-delete-release.svelte';
+	import Edit from './chart-action-edit-release.svelte';
+	import Rollback from './chart-action-rollback-release.svelte';
 </script>
 
 <script lang="ts">

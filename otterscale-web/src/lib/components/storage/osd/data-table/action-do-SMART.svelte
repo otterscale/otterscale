@@ -2,7 +2,6 @@
 	import type { DoSMARTResponse_Output, OSD } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import * as Loading from '$lib/components/custom/loading';
@@ -18,7 +17,10 @@
 
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	let smarts = $state(writable<Record<string, DoSMARTResponse_Output>>({}));
 	let isSMARTsLoading = $state(true);
@@ -51,7 +53,7 @@
 	});
 </script>
 
-<AlertDialog.Root bind:open={stateController.state}>
+<AlertDialog.Root bind:open>
 	<AlertDialog.Trigger class="flex h-full w-full items-center gap-2">
 		<Icon icon="ph:file" />
 		Do SMART

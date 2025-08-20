@@ -2,7 +2,7 @@
 	import {
 		ApplicationService,
 		type Application_Release,
-		type DeleteReleaseRequest
+		type RollbackReleaseRequest
 	} from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -24,18 +24,16 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-
 	const client = createClient(ApplicationService, transport);
 
-	const DEFAULT_REQUEST = {
-		dryRun: false,
+	const defaults = {
 		scopeUuid: release.name,
 		facilityName: release.name,
 		namespace: release.namespace
-	} as DeleteReleaseRequest;
-	let request = $state(DEFAULT_REQUEST as DeleteReleaseRequest);
+	} as RollbackReleaseRequest;
+	let request = $state(defaults);
 	function reset() {
-		request = { dryRun: false } as DeleteReleaseRequest;
+		request = { dryRun: false } as RollbackReleaseRequest;
 	}
 
 	let invalid = $state(false);
@@ -47,16 +45,16 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="destructive">
-		<Icon icon="ph:trash" />
-		Delete
+	<Modal.Trigger variant="creative">
+		<Icon icon="ph:arrow-counter-clockwise" />
+		Rollback
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Delete Release</Modal.Header>
+		<Modal.Header>Rollback Release</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Help>
-					Please type the release name exactly to confirm deletion. This action cannot be undone.
+					Please type the release name exactly to confirm rollback. This action cannot be undone.
 				</Form.Help>
 				<Form.Field>
 					<SingleInput.Confirm
@@ -75,16 +73,16 @@
 			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
-					toast.promise(() => client.deleteRelease(request), {
+					toast.promise(() => client.rollbackRelease(request), {
 						loading: 'Loading...',
 						success: (r) => {
 							client.listReleases({}).then((r) => {
 								releases.set(r.releases);
 							});
-							return `Delete ${request.name}`;
+							return `Rollback ${request.name}`;
 						},
 						error: (e) => {
-							let msg = `Fail to delete ${request.name}`;
+							let msg = `Fail to rollback ${request.name}`;
 							toast.error(msg, {
 								description: (e as ConnectError).message.toString(),
 								duration: Number.POSITIVE_INFINITY
@@ -93,6 +91,7 @@
 						}
 					});
 
+					reset();
 					close();
 				}}>Confirm</Modal.Action
 			>

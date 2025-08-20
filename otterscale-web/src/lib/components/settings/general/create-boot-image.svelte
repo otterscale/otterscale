@@ -4,9 +4,7 @@
 		type Configuration,
 		type CreateBootImageRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import {
 		Multiple as MultipleSelect,
@@ -30,15 +28,21 @@
 	let isMounted = false;
 
 	const client = createClient(ConfigurationService, transport);
-	const requestManager = new RequestManager<CreateBootImageRequest>({} as CreateBootImageRequest);
-	const stateController = new StateController(false);
+	const defaults = {} as CreateBootImageRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
 
-	const architecturesOptions = $derived(
-		distroSeriesArchitecturesMap[requestManager.request.distroSeries]
-	);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
+
+	const architecturesOptions = $derived(distroSeriesArchitecturesMap[request.distroSeries]);
 	$effect(() => {
-		requestManager.request.distroSeries;
-		requestManager.request.architectures = [];
+		request.distroSeries;
+		request.architectures = [];
 	});
 
 	onMount(async () => {
@@ -72,7 +76,7 @@
 	});
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Boot Image
@@ -83,10 +87,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Distro Series</Form.Label>
-					<SingleSelect.Root
-						options={distroSeriesOptions}
-						bind:value={requestManager.request.distroSeries}
-					>
+					<SingleSelect.Root options={distroSeriesOptions} bind:value={request.distroSeries}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
@@ -111,13 +112,10 @@
 					</SingleSelect.Root>
 				</Form.Field>
 
-				{#if requestManager.request.distroSeries}
+				{#if request.distroSeries}
 					<Form.Field>
 						<Form.Label>Architectures</Form.Label>
-						<MultipleSelect.Root
-							bind:value={requestManager.request.architectures}
-							options={architecturesOptions}
-						>
+						<MultipleSelect.Root bind:value={request.architectures} options={architecturesOptions}>
 							<MultipleSelect.Viewer />
 							<MultipleSelect.Controller>
 								<MultipleSelect.Trigger />
@@ -154,22 +152,22 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}>Cancel</Modal.Cancel
 			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
-						toast.promise(() => client.createBootImage(requestManager.request), {
+						toast.promise(() => client.createBootImage(request), {
 							loading: 'Loading...',
 							success: () => {
 								client.getConfiguration({}).then((response) => {
 									configuration.set(response);
 								});
-								return `Create boot images ${requestManager.request.distroSeries}: ${requestManager.request.architectures.join(', ')} success`;
+								return `Create boot images ${request.distroSeries}: ${request.architectures.join(', ')} success`;
 							},
 							error: (error) => {
-								let message = `Fail to create boot images ${requestManager.request.distroSeries}: ${requestManager.request.architectures.join(', ')}`;
+								let message = `Fail to create boot images ${request.distroSeries}: ${request.architectures.join(', ')}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -177,12 +175,12 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
-					}}>
-					Create
-					</Modal.Action
+						reset();
+						close();
+					}}
 				>
+					Create
+				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
 	</Modal.Content>

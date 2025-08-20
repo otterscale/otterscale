@@ -4,9 +4,7 @@
 		type Network_Subnet,
 		type UpdateSubnetRequest
 	} from '$lib/api/network/v1/network_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -25,7 +23,7 @@
 	let invalid: boolean | undefined = $state();
 
 	const client = createClient(NetworkService, transport);
-	const requestManager = new RequestManager<UpdateSubnetRequest>({
+	const defaults = {
 		id: subnet.id,
 		name: subnet.name,
 		cidr: subnet.cidr,
@@ -33,11 +31,19 @@
 		dnsServers: subnet.dnsServers,
 		description: subnet.description,
 		allowDnsResolution: subnet.allowDnsResolution
-	} as UpdateSubnetRequest);
-	const stateController = new StateController(false);
+	} as UpdateSubnetRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit Subnet
@@ -48,17 +54,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General
-						type="text"
-						required
-						value={requestManager.request.name}
-						bind:invalid
-					/>
+					<SingleInput.General type="text" required value={request.name} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Description</Form.Label>
-					<SingleInput.General type="text" value={requestManager.request.description} />
+					<SingleInput.General type="text" value={request.description} />
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -67,12 +68,12 @@
 
 				<Form.Field>
 					<Form.Label>CIDR</Form.Label>
-					<SingleInput.General type="text" value={requestManager.request.cidr} />
+					<SingleInput.General type="text" value={request.cidr} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Gateway</Form.Label>
-					<SingleInput.General type="text" value={requestManager.request.gatewayIp} />
+					<SingleInput.General type="text" value={request.gatewayIp} />
 				</Form.Field>
 			</Form.Fieldset>
 
@@ -81,7 +82,7 @@
 
 				<Form.Field>
 					<Form.Label>Server</Form.Label>
-					<MultipleInput.Root type="text" bind:values={requestManager.request.dnsServers}>
+					<MultipleInput.Root type="text" bind:values={request.dnsServers}>
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
 							<MultipleInput.Input />
@@ -94,7 +95,7 @@
 				<Form.Field>
 					<SingleInput.Boolean
 						descriptor={() => 'Allow DNS Resolution'}
-						bind:value={requestManager.request.allowDnsResolution}
+						bind:value={request.allowDnsResolution}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
@@ -102,14 +103,14 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}>Cancel</Modal.Cancel
 			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => client.updateSubnet(requestManager.request), {
+						toast.promise(() => client.updateSubnet(request), {
 							loading: 'Loading...',
 							success: () => {
 								reloadManager.force();
@@ -125,8 +126,8 @@
 							}
 						});
 
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Edit

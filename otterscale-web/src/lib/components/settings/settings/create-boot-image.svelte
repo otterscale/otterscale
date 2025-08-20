@@ -4,7 +4,6 @@
 		type Configuration,
 		type CreateBootImageRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import {
@@ -40,7 +39,10 @@
 		request.architectures = [];
 	});
 
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	let isMounted = false;
 	onMount(async () => {
@@ -74,7 +76,7 @@
 	});
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Boot Image
@@ -171,7 +173,7 @@
 						});
 
 						reset();
-						stateController.close();
+						close();
 					}}>Create</Modal.Action
 				>
 			</Modal.ActionsGroup>

@@ -1,5 +1,3 @@
-import { default as BlockDevice } from './index.svelte'
+import { default as BlockDevice } from './index.svelte';
 
-export {
-    BlockDevice
-}
+export { BlockDevice };

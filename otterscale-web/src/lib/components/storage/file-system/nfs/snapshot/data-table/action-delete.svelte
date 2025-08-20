@@ -5,9 +5,7 @@
 		Subvolume_Snapshot
 	} from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -16,7 +14,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { get } from 'svelte/store';
-	import type { NFSStore } from '../../../utils.svelte';
+	import type { NFSStore } from '../../utils.svelte';
 </script>
 
 <script lang="ts">
@@ -34,17 +32,25 @@
 	let invalid = $state(false);
 
 	const storageClient = createClient(StorageService, transport);
-	const requestManager = new RequestManager<DeleteSubvolumeSnapshotRequest>({
+	const defaults = {
 		scopeUuid: get(nfsStore.selectedScopeUuid),
 		facilityName: get(nfsStore.selectedFacilityName),
 		volumeName: get(nfsStore.selectedVolumeName),
 		groupName: get(nfsStore.selectedSubvolumeGroupName),
 		subvolumeName: subvolume.name
-	} as DeleteSubvolumeSnapshotRequest);
-	const stateController = new StateController(false);
+	} as DeleteSubvolumeSnapshotRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		Delete
@@ -58,7 +64,7 @@
 						id="deletion"
 						required
 						target={snapshot.name}
-						bind:value={requestManager.request.snapshotName}
+						bind:value={request.snapshotName}
 					/>
 				</Form.Field>
 				<Form.Help>
@@ -69,7 +75,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -78,14 +84,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.deleteSubvolumeSnapshot(requestManager.request), {
-							loading: `Deleting ${requestManager.request.snapshotName}...`,
+						toast.promise(() => storageClient.deleteSubvolumeSnapshot(request), {
+							loading: `Deleting ${request.snapshotName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Delete ${requestManager.request.snapshotName}`;
+								return `Delete ${request.snapshotName}`;
 							},
 							error: (error) => {
-								let message = `Fail to delete ${requestManager.request.snapshotName}`;
+								let message = `Fail to delete ${request.snapshotName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -93,8 +99,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Delete

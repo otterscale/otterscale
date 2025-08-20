@@ -1,19 +1,16 @@
 <script lang="ts" module>
 	import type { SubvolumeGroup, UpdateSubvolumeGroupRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { get } from 'svelte/store';
-	import { type GroupStore } from '../../utils.svelte.js';
+	import { type GroupStore } from '../utils.svelte';
 </script>
 
 <script lang="ts">
@@ -30,17 +27,25 @@
 	const storageClient = createClient(StorageService, transport);
 	let invalid = $state(false);
 
-	const requestManager = new RequestManager<UpdateSubvolumeGroupRequest>({
+	const defaults = {
 		scopeUuid: get(groupStore.selectedScopeUuid),
 		facilityName: get(groupStore.selectedFacilityName),
 		volumeName: get(groupStore.selectedVolumeName),
 		groupName: subvolumeGroup.name,
 		quotaBytes: subvolumeGroup.quotaBytes
-	} as UpdateSubvolumeGroupRequest);
-	const stateController = new StateController(false);
+	} as UpdateSubvolumeGroupRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit
@@ -51,18 +56,13 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General
-						id="name"
-						required
-						type="text"
-						bind:value={requestManager.request.groupName}
-					/>
+					<SingleInput.General id="name" required type="text" bind:value={request.groupName} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Quota Size</Form.Label>
 					<SingleInput.Measurement
-						bind:value={requestManager.request.quotaBytes}
+						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
@@ -75,7 +75,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -84,14 +84,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.updateSubvolumeGroup(requestManager.request), {
-							loading: `Updating ${requestManager.request.volumeName}...`,
+						toast.promise(() => storageClient.updateSubvolumeGroup(request), {
+							loading: `Updating ${request.volumeName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Update ${requestManager.request.volumeName}`;
+								return `Update ${request.volumeName}`;
 							},
 							error: (error) => {
-								let message = `Fail to update ${requestManager.request.volumeName}`;
+								let message = `Fail to update ${request.volumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -99,8 +99,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Update

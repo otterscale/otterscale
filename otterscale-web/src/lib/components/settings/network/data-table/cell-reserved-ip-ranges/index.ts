@@ -1,3 +1,3 @@
-import ReservedIPRanges from './index.svelte'
+import ReservedIPRanges from './index.svelte';
 
-export { ReservedIPRanges }
+export { ReservedIPRanges };

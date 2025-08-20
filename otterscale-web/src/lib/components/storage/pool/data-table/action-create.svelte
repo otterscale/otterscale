@@ -1,9 +1,7 @@
 <script lang="ts" module>
 	import type { CreatePoolRequest } from '$lib/api/storage/v1/storage_pb';
 	import { PoolType, StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -65,14 +63,22 @@
 	let invalidType: boolean | undefined = $state();
 	let invalidReplicatedSize: boolean | undefined = $state();
 
-	const requestManager = new RequestManager<CreatePoolRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name
-	} as CreatePoolRequest);
-	const stateController = new StateController(false);
+	} as CreatePoolRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Create
@@ -87,7 +93,7 @@
 						id="name"
 						required
 						type="text"
-						bind:value={requestManager.request.poolName}
+						bind:value={request.poolName}
 						bind:invalid={invalidName}
 					/>
 				</Form.Field>
@@ -98,7 +104,7 @@
 						id="type"
 						required
 						options={poolTypes}
-						bind:value={requestManager.request.poolType}
+						bind:value={request.poolType}
 						bind:invalid={invalidType}
 					>
 						<SingleSelect.Trigger />
@@ -125,7 +131,7 @@
 					</SingleSelect.Root>
 				</Form.Field>
 
-				{#if requestManager.request.poolType === PoolType.ERASURE}
+				{#if request.poolType === PoolType.ERASURE}
 					<Form.Field>
 						<Form.Label>EC Overwrite</Form.Label>
 						<SingleInput.Boolean
@@ -139,17 +145,17 @@
 									return 'Undetermined';
 								}
 							}}
-							bind:value={requestManager.request.ecOverwrites}
+							bind:value={request.ecOverwrites}
 						/>
 					</Form.Field>
 				{/if}
 
-				{#if requestManager.request.poolType === PoolType.REPLICATED}
+				{#if request.poolType === PoolType.REPLICATED}
 					<Form.Field>
 						<Form.Label>Replcated Size</Form.Label>
 						<SingleInput.General
 							required
-							bind:value={requestManager.request.replicatedSize}
+							bind:value={request.replicatedSize}
 							bind:invalid={invalidReplicatedSize}
 						/>
 					</Form.Field>
@@ -160,10 +166,7 @@
 
 				<Form.Field>
 					<Form.Label>Applications</Form.Label>
-					<MultipleSelect.Root
-						bind:value={requestManager.request.applications}
-						options={applications}
-					>
+					<MultipleSelect.Root bind:value={request.applications} options={applications}>
 						<MultipleSelect.Viewer />
 						<MultipleSelect.Controller>
 							<MultipleSelect.Trigger />
@@ -201,7 +204,7 @@
 						{QUOTAS_BYTES_HELP_TEXT}
 					</Form.Help>
 					<SingleInput.Measurement
-						bind:value={requestManager.request.quotaBytes}
+						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
@@ -215,14 +218,14 @@
 					<Form.Help>
 						{QUOTAS_OBJECTS_HELP_TEXT}
 					</Form.Help>
-					<SingleInput.General bind:value={requestManager.request.quotaObjects} />
+					<SingleInput.General bind:value={request.quotaObjects} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -231,16 +234,16 @@
 				<Modal.Action
 					disabled={invalidName ||
 						invalidType ||
-						(requestManager.request.poolType === PoolType.REPLICATED && invalidReplicatedSize)}
+						(request.poolType === PoolType.REPLICATED && invalidReplicatedSize)}
 					onclick={() => {
-						toast.promise(() => storageClient.createPool(requestManager.request), {
-							loading: `Creating ${requestManager.request.poolName}...`,
+						toast.promise(() => storageClient.createPool(request), {
+							loading: `Creating ${request.poolName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Create ${requestManager.request.poolName}`;
+								return `Create ${request.poolName}`;
 							},
 							error: (error) => {
-								let message = `Fail to create ${requestManager.request.poolName}`;
+								let message = `Fail to create ${request.poolName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -248,8 +251,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Create

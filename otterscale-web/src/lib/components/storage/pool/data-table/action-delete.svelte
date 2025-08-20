@@ -1,9 +1,7 @@
 <script lang="ts" module>
 	import type { DeletePoolRequest, Pool } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -29,14 +27,22 @@
 	const storageClient = createClient(StorageService, transport);
 	let invalid: boolean | undefined = $state();
 
-	const requestManager = new RequestManager<DeletePoolRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name
-	} as DeletePoolRequest);
-	const stateController = new StateController(false);
+	} as DeletePoolRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		Delete
@@ -50,7 +56,7 @@
 						id="deletion"
 						required
 						target={pool.name}
-						bind:value={requestManager.request.poolName}
+						bind:value={request.poolName}
 						bind:invalid
 					/>
 				</Form.Field>
@@ -62,7 +68,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -71,14 +77,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.deletePool(requestManager.request), {
-							loading: `Deleting ${requestManager.request.poolName}...`,
+						toast.promise(() => storageClient.deletePool(request), {
+							loading: `Deleting ${request.poolName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Delete ${requestManager.request.poolName}`;
+								return `Delete ${request.poolName}`;
 							},
 							error: (error) => {
-								let message = `Fail to delete ${requestManager.request.poolName}`;
+								let message = `Fail to delete ${request.poolName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -86,8 +92,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Delete

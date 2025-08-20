@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import { TagService, type CreateTagRequest, type Tag } from '$lib/api/tag/v1/tag_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -23,10 +22,13 @@
 		request = DEFAULT_REQUEST;
 	}
 
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Create
@@ -70,7 +72,7 @@
 						});
 
 						reset();
-						stateController.close();
+						close();
 					}}
 				>
 					Create

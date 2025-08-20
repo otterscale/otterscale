@@ -1,9 +1,7 @@
 <script lang="ts" module>
 	import type { CreateImageRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -30,7 +28,7 @@
 	let isMounted = $state(false);
 	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	const storageClient = createClient(StorageService, transport);
-	const requestManager = new RequestManager<CreateImageRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
 		layering: true,
@@ -38,8 +36,16 @@
 		objectMap: true,
 		fastDiff: true,
 		deepFlatten: true
-	} as CreateImageRequest);
-	const stateController = new StateController(false);
+	} as CreateImageRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	async function fetchVolumeOptions() {
 		try {
@@ -74,7 +80,7 @@
 	});
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Create
@@ -88,7 +94,7 @@
 					<SingleInput.General
 						required
 						type="text"
-						bind:value={requestManager.request.imageName}
+						bind:value={request.imageName}
 						bind:invalid={isImageNameInvalid}
 					/>
 				</Form.Field>
@@ -101,7 +107,7 @@
 						<SingleSelect.Root
 							required
 							bind:options={poolOptions}
-							bind:value={requestManager.request.poolName}
+							bind:value={request.poolName}
 							bind:invalid={isPoolNameInvalid}
 						>
 							<SingleSelect.Trigger />
@@ -132,7 +138,7 @@
 				<Form.Field>
 					<Form.Label>Quota Size</Form.Label>
 					<SingleInput.Measurement
-						bind:value={requestManager.request.quotaBytes}
+						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
@@ -160,7 +166,7 @@
 						<Form.Field>
 							<Form.Label>Object Size</Form.Label>
 							<SingleInput.Measurement
-								bind:value={requestManager.request.objectSizeBytes}
+								bind:value={request.objectSizeBytes}
 								transformer={(value) => String(value)}
 								units={[
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
@@ -172,7 +178,7 @@
 						<Form.Field>
 							<Form.Label>Stripe Unit</Form.Label>
 							<SingleInput.Measurement
-								bind:value={requestManager.request.stripeUnitBytes}
+								bind:value={request.stripeUnitBytes}
 								transformer={(value) => String(value)}
 								units={[
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
@@ -184,7 +190,7 @@
 						<Form.Field>
 							<Form.Label>Stripe Count</Form.Label>
 							<SingleInput.General
-								bind:value={requestManager.request.stripeCount}
+								bind:value={request.stripeCount}
 								transformer={(value) => String(value)}
 							/>
 						</Form.Field>
@@ -197,7 +203,7 @@
 							<SingleInput.Boolean
 								descriptor={() => 'Allows the creation of snapshots and clones of an image.'}
 								format="checkbox"
-								bind:value={requestManager.request.layering}
+								bind:value={request.layering}
 							/>
 						</Form.Field>
 
@@ -205,7 +211,7 @@
 							<SingleInput.Boolean
 								descriptor={() => 'Ensures that only one client can write to the image at a time.'}
 								format="checkbox"
-								bind:value={requestManager.request.exclusiveLock}
+								bind:value={request.exclusiveLock}
 							/>
 						</Form.Field>
 
@@ -213,7 +219,7 @@
 							<SingleInput.Boolean
 								descriptor={() => 'Tracks object existence to speed up image operations.'}
 								format="checkbox"
-								bind:value={requestManager.request.objectMap}
+								bind:value={request.objectMap}
 							/>
 						</Form.Field>
 
@@ -221,7 +227,7 @@
 							<SingleInput.Boolean
 								descriptor={() => 'Speeds up the process of comparing two images.'}
 								format="checkbox"
-								bind:value={requestManager.request.fastDiff}
+								bind:value={request.fastDiff}
 							/>
 						</Form.Field>
 
@@ -229,7 +235,7 @@
 							<SingleInput.Boolean
 								descriptor={() => 'Removes clone dependency on parent image for faster deletion.'}
 								format="checkbox"
-								bind:value={requestManager.request.deepFlatten}
+								bind:value={request.deepFlatten}
 							/>
 						</Form.Field>
 					</Form.Fieldset>
@@ -239,7 +245,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -248,14 +254,14 @@
 				<Modal.Action
 					disabled={isImageNameInvalid || isPoolNameInvalid}
 					onclick={() => {
-						toast.promise(() => storageClient.createImage(requestManager.request), {
-							loading: `Creating ${requestManager.request.imageName}...`,
+						toast.promise(() => storageClient.createImage(request), {
+							loading: `Creating ${request.imageName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Create ${requestManager.request.imageName}`;
+								return `Create ${request.imageName}`;
 							},
 							error: (error) => {
-								let message = `Fail to create ${requestManager.request.imageName}`;
+								let message = `Fail to create ${request.imageName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -263,8 +269,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Create

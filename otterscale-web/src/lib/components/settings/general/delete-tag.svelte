@@ -1,8 +1,6 @@
 <script lang="ts" module>
 	import { TagService, type DeleteTagRequest, type Tag } from '$lib/api/tag/v1/tag_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -18,13 +16,22 @@
 	const transport: Transport = getContext('transport');
 
 	const client = createClient(TagService, transport);
-	const requestManager = new RequestManager<DeleteTagRequest>({} as DeleteTagRequest);
-	const stateController = new StateController(false);
+	
+	const defaults = {} as DeleteTagRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 	let invalid: boolean | undefined = $state();
 </script>
 
 <div>
-	<Modal.Root bind:open={stateController.state}>
+	<Modal.Root bind:open>
 		<Modal.Trigger variant="destructive">
 			<Icon icon="ph:trash" />
 			Delete
@@ -37,7 +44,7 @@
 						<SingleInput.Confirm
 							required
 							target={tag.name}
-							bind:value={requestManager.request.name}
+							bind:value={request.name}
 							bind:invalid
 						/>
 					</Form.Field>
@@ -49,14 +56,14 @@
 			<Modal.Footer>
 				<Modal.Cancel
 					onclick={() => {
-						requestManager.reset();
+						reset();
 					}}>Cancel</Modal.Cancel
 				>
 				<Modal.ActionsGroup>
 					<Modal.Action
 						disabled={invalid}
 						onclick={() => {
-							toast.promise(() => client.deleteTag(requestManager.request), {
+							toast.promise(() => client.deleteTag(request), {
 								loading: 'Loading...',
 								success: () => {
 									client.listTags({}).then((response) => {
@@ -74,8 +81,8 @@
 								}
 							});
 
-							requestManager.reset();
-							stateController.close();
+							reset();
+							close();
 						}}
 					>
 						Delete

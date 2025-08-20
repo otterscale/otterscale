@@ -1,10 +1,8 @@
 <script lang="ts" module>
-	import type { DeleteTestResultRequest, TestResult } from '$gen/api/bist/v1/bist_pb';
+	import type { DeleteTestResultRequest, TestResult } from '$lib/api/bist/v1/bist_pb';
 	import { BISTService } from '$lib/api/bist/v1/bist_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import { StateController } from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -15,22 +13,33 @@
 
 <script lang="ts">
 	let {
-		testResult,
+		testResult
 	}: {
 		testResult: TestResult;
 	} = $props();
 
-	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
-	let invalid = $state(false)
+
+	const transport: Transport = getContext('transport');
 	const client = createClient(BISTService, transport);
-	const requestManager = new RequestManager<DeleteTestResultRequest>({
+
+	let invalid = $state(false);
+
+	const defaults = {
 		name: testResult.name
-	} as DeleteTestResultRequest);
-	const stateController = new StateController(false);
+	} as DeleteTestResultRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<AlertDialog.Root bind:open={stateController.state}>
+<AlertDialog.Root bind:open>
 	<AlertDialog.Trigger class="text-destructive flex h-full w-full items-center gap-2">
 		<Icon icon="ph:trash" />
 		Delete
@@ -40,37 +49,35 @@
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Help>
-					Please type the test name exactly to confirm deletion. This action cannot
-					be undone.
+					Please type the test name exactly to confirm deletion. This action cannot be undone.
 				</Form.Help>
 				<Form.Field>
 					<Form.Label>Test Name</Form.Label>
 
-					<SingleInput.Confirm
-						required
-						target={testResult.name}
-						bind:value={requestManager.request.name}
-					/>
+					<SingleInput.Confirm required target={testResult.name} bind:value={request.name} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel onclick={() => {requestManager.reset()}}>
+			<AlertDialog.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
 				Cancel
 			</AlertDialog.Cancel>
 			<AlertDialog.ActionsGroup>
 				<AlertDialog.Action
 					disabled={invalid}
 					onclick={() => {
-						stateController.close();
-						toast.promise(() => client.deleteTestResult(requestManager.request), {
-							loading: `Deleting ${requestManager.request.name}...`,
+						toast.promise(() => client.deleteTestResult(request), {
+							loading: `Deleting ${request.name}...`,
 							success: () => {
 								reloadManager.force();
-								return `Delete ${requestManager.request.name}`;
+								return `Delete ${request.name}`;
 							},
 							error: (error) => {
-								let message = `Fail to delete ${requestManager.request.name}`;
+								let message = `Fail to delete ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -78,8 +85,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Delete

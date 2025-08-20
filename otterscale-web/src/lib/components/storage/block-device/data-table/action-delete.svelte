@@ -1,9 +1,7 @@
 <script lang="ts" module>
 	import type { DeleteImageRequest, Image } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -27,14 +25,22 @@
 	let isPoolNameInvalid = $state(false);
 	let isImageNameInvalid = $state(false);
 	const storageClient = createClient(StorageService, transport);
-	const requestManager = new RequestManager<DeleteImageRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name
-	} as DeleteImageRequest);
-	const stateController = new StateController(false);
+	} as DeleteImageRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		Delete
@@ -51,7 +57,7 @@
 					<SingleInput.Confirm
 						required
 						target={image.poolName}
-						bind:value={requestManager.request.poolName}
+						bind:value={request.poolName}
 						bind:invalid={isPoolNameInvalid}
 					/>
 				</Form.Field>
@@ -63,7 +69,7 @@
 					<SingleInput.Confirm
 						required
 						target={image.name}
-						bind:value={requestManager.request.imageName}
+						bind:value={request.imageName}
 						bind:invalid={isImageNameInvalid}
 					/>
 				</Form.Field>
@@ -72,7 +78,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -81,14 +87,14 @@
 				<Modal.Action
 					disabled={isPoolNameInvalid || isImageNameInvalid}
 					onclick={() => {
-						toast.promise(() => storageClient.deleteImage(requestManager.request), {
-							loading: `Deleting ${requestManager.request.imageName}...`,
+						toast.promise(() => storageClient.deleteImage(request), {
+							loading: `Deleting ${request.imageName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Delete ${requestManager.request.imageName}`;
+								return `Delete ${request.imageName}`;
 							},
 							error: (error) => {
-								let message = `Fail to delete ${requestManager.request.imageName}`;
+								let message = `Fail to delete ${request.imageName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -96,8 +102,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Delete

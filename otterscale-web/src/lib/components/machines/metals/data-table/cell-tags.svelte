@@ -1,7 +1,6 @@
 <script lang="ts" module>
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { TagService } from '$lib/api/tag/v1/tag_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog';
 	import * as Loading from '$lib/components/custom/loading';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -34,7 +33,11 @@
 
 	const machineClient = createClient(MachineService, transport);
 	const tagClient = createClient(TagService, transport);
-	const stateController = new StateController(false);
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	onMount(async () => {
 		try {
@@ -58,7 +61,7 @@
 	<Loading.Selection />
 {:else}
 	<div class="flex w-full justify-end">
-		<Select.Root bind:open={stateController.state} type="multiple" bind:value={tags}>
+		<Select.Root bind:open type="multiple" bind:value={tags}>
 			<Select.Trigger class="ring-none m-0 flex-row-reverse border-none p-0 shadow-none">
 				{machine.tags.length}
 			</Select.Trigger>
@@ -102,7 +105,7 @@
 										}
 									}
 								);
-								stateController.close();
+								close();
 							}}
 						>
 							Save

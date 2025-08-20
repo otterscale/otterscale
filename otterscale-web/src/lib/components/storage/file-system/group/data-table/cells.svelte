@@ -6,7 +6,7 @@
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
-	import Actions from './cells/actions.svelte';
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,

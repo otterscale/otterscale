@@ -24,8 +24,6 @@
 	}: { charts: Writable<Application_Chart[]>; releases: Writable<Application_Release[]> } =
 		$props();
 
-	console.log('i', $releases);
-
 	const releasesFromChartName = $derived(
 		$releases.reduce((mapping, release) => {
 			if (release.chartName) {

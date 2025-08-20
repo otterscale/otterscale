@@ -1,11 +1,9 @@
 <script lang="ts" module>
 	import type { CreateSubvolumeRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { SingleStep as Modal } from '$lib/components/custom/modal';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -21,20 +19,27 @@
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 	let invalid = $state(false);
+	const storageClient = createClient(StorageService, transport);
 
-	const requestManager = new RequestManager<CreateSubvolumeRequest>({
+	const defaults = {
 		scopeUuid: get(nfsStore.selectedScopeUuid),
 		facilityName: get(nfsStore.selectedFacilityName),
 		volumeName: get(nfsStore.selectedVolumeName),
 		groupName: get(nfsStore.selectedSubvolumeGroupName),
 		export: true
-	} as CreateSubvolumeRequest);
-	const storageClient = createClient(StorageService, transport);
+	} as CreateSubvolumeRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Create
@@ -47,12 +52,7 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General
-						id="name"
-						required
-						type="text"
-						bind:value={requestManager.request.subvolumeName}
-					/>
+					<SingleInput.General id="name" required type="text" bind:value={request.subvolumeName} />
 				</Form.Field>
 
 				<Form.Field>
@@ -73,7 +73,7 @@
 						{SUBVOLUME_QUOTA_HELP_TEXT}
 					</Form.Help>
 					<SingleInput.Measurement
-						bind:value={requestManager.request.quotaBytes}
+						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
@@ -86,7 +86,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -95,14 +95,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.createSubvolume(requestManager.request), {
-							loading: `Creating ${requestManager.request.subvolumeName}...`,
+						toast.promise(() => storageClient.createSubvolume(request), {
+							loading: `Creating ${request.subvolumeName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Create ${requestManager.request.subvolumeName}`;
+								return `Create ${request.subvolumeName}`;
 							},
 							error: (error) => {
-								let message = `Fail to create ${requestManager.request.subvolumeName}`;
+								let message = `Fail to create ${request.subvolumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -110,8 +110,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Create

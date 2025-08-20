@@ -1,9 +1,7 @@
 <script lang="ts" module>
 	import type { UpdateUserRequest, User } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -28,17 +26,25 @@
 	const storageClient = createClient(StorageService, transport);
 	let invalid = $state(false);
 
-	const requestManager = new RequestManager<UpdateUserRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
 		userId: user.id,
 		userName: user.name,
 		suspended: true
-	} as UpdateUserRequest);
-	const stateController = new StateController(false);
+	} as UpdateUserRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit
@@ -49,22 +55,12 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>ID</Form.Label>
-					<SingleInput.General
-						id="id"
-						required
-						type="text"
-						bind:value={requestManager.request.userId}
-					/>
+					<SingleInput.General id="id" required type="text" bind:value={request.userId} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Name</Form.Label>
-					<SingleInput.General
-						id="name"
-						required
-						type="text"
-						bind:value={requestManager.request.userName}
-					/>
+					<SingleInput.General id="name" required type="text" bind:value={request.userName} />
 				</Form.Field>
 
 				<Form.Field>
@@ -75,7 +71,7 @@
 					<SingleInput.Boolean
 						format="checkbox"
 						descriptor={user_suspended_descriptor}
-						bind:value={requestManager.request.suspended}
+						bind:value={request.suspended}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
@@ -83,7 +79,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -92,14 +88,14 @@
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => storageClient.updateUser(requestManager.request), {
-							loading: `Updating ${requestManager.request.userId}...`,
+						toast.promise(() => storageClient.updateUser(request), {
+							loading: `Updating ${request.userId}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Update ${requestManager.request.userId}`;
+								return `Update ${request.userId}`;
 							},
 							error: (error) => {
-								let message = `Fail to update ${requestManager.request.userId}`;
+								let message = `Fail to update ${request.userId}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -107,8 +103,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Update

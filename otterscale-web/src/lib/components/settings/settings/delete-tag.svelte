@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import { TagService, type DeleteTagRequest, type Tag } from '$lib/api/tag/v1/tag_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -25,10 +24,13 @@
 
 	let invalid: boolean | undefined = $state();
 
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		Delete
@@ -70,7 +72,7 @@
 						});
 
 						reset();
-						stateController.close();
+						close();
 					}}
 				>
 					Delete

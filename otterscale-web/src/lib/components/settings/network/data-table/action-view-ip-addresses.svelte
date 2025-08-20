@@ -7,7 +7,6 @@
 </script>
 
 <script lang="ts">
-
 	let { ipAddresses }: { ipAddresses: Network_IPAddress[] } = $props();
 </script>
 
@@ -20,7 +19,6 @@
 			<Table.Header>
 				<Table.Row>
 					<Table.Head></Table.Head>
-
 					<Table.Head>
 						IP
 						<Table.SubHead>SYSTEM ID</Table.SubHead>

@@ -20,24 +20,20 @@
 
 <script lang="ts" generics="TData, TValue">
 	let { machines }: { machines: Writable<Machine[]> } = $props();
-
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
-
 	const table = createSvelteTable({
 		get data() {
 			return $machines;
 		},
 		columns,
-
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-
 		state: {
 			get pagination() {
 				return pagination;
@@ -90,7 +86,6 @@
 				rowSelection = updater;
 			}
 		},
-
 		autoResetPageIndex: false
 	});
 </script>

@@ -3,10 +3,8 @@
 		ConfigurationService,
 		type Configuration,
 		type Configuration_PackageRepository,
-		type UpdateNTPServerRequest,
 		type UpdatePackageRepositoryRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -40,10 +38,13 @@
 		request = DEFAULT_REQUEST;
 	}
 
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit
@@ -82,7 +83,7 @@
 						});
 
 						reset();
-						stateController.close();
+						close();
 					}}
 				>
 					Edit

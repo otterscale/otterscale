@@ -1,3 +1,3 @@
-import BuiltInSelfTest from './index.svelte'
+import BuiltInSelfTest from './index.svelte';
 
-export {BuiltInSelfTest}
+export { BuiltInSelfTest };

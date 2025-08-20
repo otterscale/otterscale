@@ -4,9 +4,7 @@
 		type DeleteNetworkRequest,
 		type Network_Fabric
 	} from '$lib/api/network/v1/network_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -25,13 +23,21 @@
 	let invalid: boolean | undefined = $state();
 
 	const client = createClient(NetworkService, transport);
-	const requestManager = new RequestManager<DeleteNetworkRequest>({
+	const defaults = {
 		id: fabric.id
-	} as DeleteNetworkRequest);
-	const stateController = new StateController(false);
+	} as DeleteNetworkRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
 		Delete
@@ -51,14 +57,14 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}>Cancel</Modal.Cancel
 			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => client.deleteNetwork(requestManager.request), {
+						toast.promise(() => client.deleteNetwork(request), {
 							loading: 'Loading...',
 							success: () => {
 								reloadManager.force();
@@ -74,8 +80,8 @@
 							}
 						});
 
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Delete

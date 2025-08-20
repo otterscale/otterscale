@@ -9,13 +9,13 @@
 </script>
 
 <script lang="ts">
-	let { trigger }: { trigger: Snippet } = $props()
+	let { trigger }: { trigger: Snippet } = $props();
 
 	const transport: Transport = getContext('transport');
 
 	const testResults = writable<TestResult[]>([]);
 	let isMounted = $state(false);
-	
+
 	const bistClient = createClient(BISTService, transport);
 	const reloadManager = new ReloadManager(() => {
 		bistClient.listTestResults({}).then((response) => {
@@ -44,7 +44,7 @@
 
 <main class="space-y-4">
 	{#if isMounted}
-		<div class="flex gap-2 justify-between">
+		<div class="flex justify-between gap-2">
 			{@render trigger()}
 			<Reloader {reloadManager} />
 		</div>

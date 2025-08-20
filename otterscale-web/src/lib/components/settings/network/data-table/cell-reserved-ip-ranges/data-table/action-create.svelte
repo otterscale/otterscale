@@ -4,9 +4,7 @@
 		type CreateIPRangeRequest,
 		type Network_Subnet
 	} from '$lib/api/network/v1/network_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -27,13 +25,21 @@
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const client = createClient(NetworkService, transport);
-	const requestManager = new RequestManager<CreateIPRangeRequest>({
+	const defaults = {
 		subnetId: subnet.id
-	} as CreateIPRangeRequest);
-	const stateController = new StateController(false);
+	} as CreateIPRangeRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Create
@@ -44,38 +50,38 @@
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>Start</Form.Label>
-					<SingleInput.General type="text" bind:value={requestManager.request.startIp} />
+					<SingleInput.General type="text" bind:value={request.startIp} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>End</Form.Label>
-					<SingleInput.General type="text" bind:value={requestManager.request.endIp} />
+					<SingleInput.General type="text" bind:value={request.endIp} />
 				</Form.Field>
 
 				<Form.Field>
 					<Form.Label>Coment</Form.Label>
-					<SingleInput.General type="text" bind:value={requestManager.request.comment} />
+					<SingleInput.General type="text" bind:value={request.comment} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
-					toast.promise(() => client.createIPRange(requestManager.request), {
+					toast.promise(() => client.createIPRange(request), {
 						loading: 'Loading...',
 						success: () => {
 							reloadManager.force();
-							return `Create ${requestManager.request.startIp} - ${requestManager.request.endIp} success`;
+							return `Create ${request.startIp} - ${request.endIp} success`;
 						},
 						error: (error) => {
-							let message = `Fail to create ${requestManager.request.startIp} - ${requestManager.request.endIp}`;
+							let message = `Fail to create ${request.startIp} - ${request.endIp}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
 								duration: Number.POSITIVE_INFINITY
@@ -84,8 +90,8 @@
 						}
 					});
 
-					requestManager.reset();
-					stateController.close();
+					reset();
+					close();
 				}}
 			>
 				Create

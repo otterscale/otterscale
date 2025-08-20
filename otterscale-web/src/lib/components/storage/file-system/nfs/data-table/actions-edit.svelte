@@ -1,11 +1,9 @@
 <script lang="ts" module>
 	import type { Subvolume, UpdateSubvolumeRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { SingleStep as Modal } from '$lib/components/custom/modal';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
-	import { RequestManager } from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -27,20 +25,28 @@
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
-	const requestManager = new RequestManager<UpdateSubvolumeRequest>({
+	const defaults = {
 		scopeUuid: get(nfsStore.selectedScopeUuid),
 		facilityName: get(nfsStore.selectedFacilityName),
 		volumeName: get(nfsStore.selectedVolumeName),
 		groupName: get(nfsStore.selectedSubvolumeGroupName),
 		subvolumeName: subvolume.name,
 		quotaBytes: subvolume.quotaBytes
-	} as UpdateSubvolumeRequest);
+	} as UpdateSubvolumeRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
 	const storageClient = createClient(StorageService, transport);
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
 		Edit
@@ -53,7 +59,7 @@
 
 				<Form.Field>
 					<SingleInput.Measurement
-						bind:value={requestManager.request.quotaBytes}
+						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
@@ -69,7 +75,7 @@
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
-					requestManager.reset();
+					reset();
 				}}
 			>
 				Cancel
@@ -77,14 +83,14 @@
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
-						toast.promise(() => storageClient.updateSubvolume(requestManager.request), {
-							loading: `Updating ${requestManager.request.subvolumeName}...`,
+						toast.promise(() => storageClient.updateSubvolume(request), {
+							loading: `Updating ${request.subvolumeName}...`,
 							success: (response) => {
 								reloadManager.force();
-								return `Update ${requestManager.request.subvolumeName}`;
+								return `Update ${request.subvolumeName}`;
 							},
 							error: (error) => {
-								let message = `Fail to update ${requestManager.request.subvolumeName}`;
+								let message = `Fail to update ${request.subvolumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -92,8 +98,8 @@
 								return message;
 							}
 						});
-						requestManager.reset();
-						stateController.close();
+						reset();
+						close();
 					}}
 				>
 					Update

@@ -1,5 +1,3 @@
-import { default as Snapshot } from './index.svelte'
+import { default as Snapshot } from './index.svelte';
 
-export {
-    Snapshot
-}
+export { Snapshot };

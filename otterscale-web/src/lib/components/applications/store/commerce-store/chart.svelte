@@ -11,7 +11,7 @@
 	import Icon from '@iconify/svelte';
 	import type { Snippet } from 'svelte';
 	import type { Writable } from 'svelte/store';
-	import Install from './chart-install-release.svelte';
+	import Install from './chart-action-install-release.svelte';
 	import { fuzzLogosIcon } from './utils';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Table from '$lib/components/custom/table';

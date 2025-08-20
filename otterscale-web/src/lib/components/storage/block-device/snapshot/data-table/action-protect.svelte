@@ -5,7 +5,6 @@
 		ProtectImageSnapshotRequest
 	} from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { RequestManager } from '$lib/components/custom/form';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -26,26 +25,30 @@
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
 	const storageClient = createClient(StorageService, transport);
-	const requestManager = new RequestManager<ProtectImageSnapshotRequest>({
+	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
 		imageName: image.name,
 		poolName: image.poolName,
 		snapshotName: snapshot.name
-	} as ProtectImageSnapshotRequest);
+	} as ProtectImageSnapshotRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
 </script>
 
 <button
 	class="flex h-full w-full items-center gap-2"
 	onclick={() => {
-		toast.promise(() => storageClient.protectImageSnapshot(requestManager.request), {
-			loading: `Protecting ${requestManager.request.snapshotName}...`,
+		toast.promise(() => storageClient.protectImageSnapshot(request), {
+			loading: `Protecting ${request.snapshotName}...`,
 			success: (response) => {
 				reloadManager.force();
-				return `Protect ${requestManager.request.snapshotName}`;
+				return `Protect ${request.snapshotName}`;
 			},
 			error: (error) => {
-				let message = `Fail to protect ${requestManager.request.snapshotName}`;
+				let message = `Fail to protect ${request.snapshotName}`;
 				toast.error(message, {
 					description: (error as ConnectError).message.toString(),
 					duration: Number.POSITIVE_INFINITY
@@ -53,7 +56,7 @@
 				return message;
 			}
 		});
-		requestManager.reset();
+		reset();
 	}}
 >
 	<Icon icon="ph:lock-open" />

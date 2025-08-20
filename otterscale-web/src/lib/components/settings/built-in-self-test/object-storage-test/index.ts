@@ -1,5 +1,3 @@
-import { default as ObjectStorageTest } from './index.svelte'
+import { default as ObjectStorageTest } from './index.svelte';
 
-export {
-    ObjectStorageTest
-}
+export { ObjectStorageTest };
