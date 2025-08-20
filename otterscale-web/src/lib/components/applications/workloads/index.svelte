@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import * as Reloader from '$lib/components/custom/reloader';
+	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -13,10 +13,12 @@
 	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
 
 	const transport: Transport = getContext('transport');
-	const applicationClient = createClient(ApplicationService, transport);
+	let isMounted = $state(false);
 
 	const applications = writable<Application[]>([]);
-	const reloadManager = new Reloader.ReloadManager(() => {
+
+	const applicationClient = createClient(ApplicationService, transport);
+	const reloadManager = new ReloadManager(() => {
 		applicationClient
 			.listApplications({
 				scopeUuid: scopeUuid,
@@ -27,7 +29,6 @@
 			});
 	});
 
-	let isMounted = $state(false);
 	onMount(() => {
 		applicationClient
 			.listApplications({
@@ -49,12 +50,12 @@
 	});
 </script>
 
-<main class="space-y-4">
-	{#if !isMounted}
-		<Loading.DataTable />
-	{:else}
-		<Reloader.Root {reloadManager} />
+<main class="space-y-4 py-4">
+	{#if isMounted}
+		<Reloader {reloadManager} />
 		<Statistics {scopeUuid} {facilityName} />
 		<DataTable {applications} />
+	{:else}
+		<Loading.DataTable />
 	{/if}
 </main>

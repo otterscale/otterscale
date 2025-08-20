@@ -1,4 +1,5 @@
 import type { OSD } from "$lib/api/storage/v1/storage_pb";
+import { getSortingFunction } from "$lib/components/custom/data-table";
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
@@ -8,10 +9,10 @@ const columns: ColumnDef<OSD>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,
@@ -36,23 +37,37 @@ const columns: ColumnDef<OSD>[] = [
     },
     {
         id: "in",
+        header: ({ column }) => {
+            return renderSnippet(headers.osdIn, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.osdIn, row);
+        },
         filterFn: (row, columnId, filterValue: boolean) => {
             if (filterValue === undefined) {
                 return true
             }
 
             return row.original.in === filterValue
-        }
+        },
+        enableHiding: false,
     },
     {
         id: "up",
+        header: ({ column }) => {
+            return renderSnippet(headers.osdUp, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.osdUp, row);
+        },
         filterFn: (row, columnId, filterValue: boolean) => {
             if (filterValue === undefined) {
                 return true
             }
 
             return row.original.up === filterValue
-        }
+        },
+        enableHiding: false,
     },
     {
         accessorKey: "exists",
@@ -100,6 +115,32 @@ const columns: ColumnDef<OSD>[] = [
         },
         cell: ({ row }) => {
             return renderSnippet(cells.usage, row);
+        },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                Number(previousRow.original.usedBytes) / Number(previousRow.original.sizeBytes),
+                Number(nextRow.original.usedBytes) / Number(nextRow.original.sizeBytes),
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
+    },
+    {
+        accessorKey: "iops",
+        header: ({ column }) => {
+            return renderSnippet(headers.iops, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.iops, row);
+        },
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
         },
     },
 ];

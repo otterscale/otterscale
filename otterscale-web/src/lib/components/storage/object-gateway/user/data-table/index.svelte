@@ -1,11 +1,6 @@
 <script lang="ts" module>
 	import type { User } from '$lib/api/storage/v1/storage_pb';
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -20,19 +15,12 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-	import Actions from './actions.svelte';
+	import Create from './action-create.svelte';
 	import { columns } from './columns';
-	import Create from './create.svelte';
-	import { headers } from './headers.svelte';
-	import { Key } from './keys/index';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let {
-		selectedScopeUuid,
-		selectedFacility,
-		users
-	}: { selectedScopeUuid: string; selectedFacility: string; users: Writable<User[]> } = $props();
+	let { users }: { users: Writable<User[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -107,23 +95,21 @@
 </script>
 
 <Layout.Root>
-	<Layout.Statistics>
-		<!-- <Statistics {table} /> -->
-	</Layout.Statistics>
+	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={$users.map((row) => row.id)} columnId="id" {table} />
-			<Filters.StringFuzzy values={$users.map((row) => row.name)} columnId="name" {table} />
+			<Filters.StringMatch values={$users.map((row) => row.name)} columnId="name" {table} />
 			<Filters.BooleanMatch
 				columnId="suspended"
 				{table}
+				descriptor={(value) => (value ? 'suspended' : 'Not suspended')}
 				values={$users.map((row) => row.suspended)}
 			/>
-			<Filters.NumberRange {table} values={$users.map((row) => row.keys.length)} columnId="keys" />
-			<ColumnViewer {table} />
+			<Filters.Column {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScopeUuid} {selectedFacility} bind:users />
+			<Create />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -141,8 +127,6 @@
 								{/if}
 							</Table.Head>
 						{/each}
-						<Table.Head>{@render headers.keys()}</Table.Head>
-						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -154,25 +138,15 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-						<Table.Cell>
-							<Key {selectedScopeUuid} {selectedFacility} user={row.original} bind:users />
-						</Table.Cell>
-						<Table.Cell>
-							<Actions {selectedScopeUuid} {selectedFacility} user={row.original} bind:users />
-						</Table.Cell>
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<TableEmpty />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<TableFooter {table} />
-		<TablePagination {table} />
+		<Footer {table} />
+		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

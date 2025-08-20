@@ -1,4 +1,5 @@
 import type { Application } from '$lib/api/application/v1/application_pb';
+import { getSortingFunction } from '$lib/components/custom/data-table';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
@@ -8,10 +9,10 @@ const columns: ColumnDef<Application>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,
@@ -33,6 +34,7 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.type, row);
         },
+        filterFn: 'arrIncludesSome'
     },
     {
         accessorKey: "namespace",
@@ -42,6 +44,7 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.namespace, row);
         },
+        filterFn: 'arrIncludesSome'
     },
     {
         accessorKey: "health",
@@ -51,6 +54,14 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.health, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.healthies / previousRow.original.pods.length,
+                nextRow.original.healthies / nextRow.original.pods.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "service",
@@ -60,6 +71,14 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.service, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.services.length,
+                nextRow.original.services.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "pod",
@@ -69,6 +88,14 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.pod, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.pods.length,
+                nextRow.original.pods.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "replica",
@@ -78,6 +105,14 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.replica, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.replicas,
+                nextRow.original.replicas,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "container",
@@ -87,6 +122,14 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.container, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.containers.length,
+                nextRow.original.containers.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "volume",
@@ -96,6 +139,14 @@ const columns: ColumnDef<Application>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.volume, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                previousRow.original.persistentVolumeClaims.length,
+                nextRow.original.persistentVolumeClaims.length,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
     {
         accessorKey: "nodeport",

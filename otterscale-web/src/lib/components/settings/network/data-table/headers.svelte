@@ -1,26 +1,25 @@
 <script lang="ts" module>
 	import type { Network } from '$lib/api/network/v1/network_pb';
-	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
+	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker: _row_picker,
+		row_picker,
 		fabric,
 		vlan,
 		dhcpOn,
 		subnet,
 		ipAddresses,
 		ipRanges,
-		statistics
+		statistics,
+		actions
 	};
 </script>
 
-{#snippet _row_picker(table: Table<Network>)}
+{#snippet row_picker(table: Table<Network>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<TableRowPicker {table} />
+			<RowPickers.Header {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
@@ -70,8 +69,11 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet ipRanges()}
+{#snippet ipRanges(column: Column<Network>)}
 	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 		<Layout.HeaderViewer>IP RANGE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -84,3 +86,5 @@
 		<Layout.HeaderViewer>STATISTICS</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
+
+{#snippet actions(column: Column<Network>)}{/snippet}

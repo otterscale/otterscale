@@ -1,0 +1,101 @@
+<script lang="ts" module>
+	import type {
+		RevokeSubvolumeExportAccessRequest,
+		Subvolume
+	} from '$lib/api/storage/v1/storage_pb';
+	import { StorageService } from '$lib/api/storage/v1/storage_pb';
+	import * as Form from '$lib/components/custom/form';
+	import { Single as SingleInput } from '$lib/components/custom/input';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
+	import { get } from 'svelte/store';
+	import { type NFSStore } from '../utils.svelte.js';
+</script>
+
+<script lang="ts">
+	let {
+		subvolume
+	}: {
+		subvolume: Subvolume;
+	} = $props();
+
+	const nfsStore: NFSStore = getContext('nfsStore');
+	const transport: Transport = getContext('transport');
+	const reloadManager: ReloadManager = getContext('reloadManager');
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
+	let invalid = $state(false);
+
+	const defaults = {
+		scopeUuid: get(nfsStore.selectedScopeUuid),
+		facilityName: get(nfsStore.selectedFacilityName),
+		volumeName: get(nfsStore.selectedVolumeName),
+		subvolumeName: subvolume.name
+	} as RevokeSubvolumeExportAccessRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	const storageClient = createClient(StorageService, transport);
+</script>
+
+<Modal.Root bind:open>
+	<Modal.Trigger variant="destructive">
+		<Icon icon="ph:shield-slash" />
+		Revoke
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>Revoke Export Access</Modal.Header>
+		<Form.Root bind:invalid>
+			<Form.Fieldset>
+				<Form.Field>
+					<Form.Label>Client IP</Form.Label>
+					<SingleInput.General id="client_ip" required type="text" bind:value={request.clientIp} />
+				</Form.Field>
+			</Form.Fieldset>
+		</Form.Root>
+		<Modal.Footer>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				Cancel
+			</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
+					disabled={invalid}
+					onclick={() => {
+						toast.promise(() => storageClient.revokeSubvolumeExportAccess(request), {
+							loading: `Revoking ${request.subvolumeName}...`,
+							success: (response) => {
+								reloadManager.force();
+								return `Revoke ${request.subvolumeName}`;
+							},
+							error: (error) => {
+								let message = `Fail to revoke ${request.subvolumeName}`;
+								toast.error(message, {
+									description: (error as ConnectError).message.toString(),
+									duration: Number.POSITIVE_INFINITY
+								});
+								return message;
+							}
+						});
+						reset();
+						close();
+					}}
+				>
+					Revoke
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

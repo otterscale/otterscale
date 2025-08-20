@@ -1,10 +1,13 @@
 <script lang="ts" module>
 	import {
-		type Application_Chart
+		type Application_Chart,
+		type Application_Release
 	} from '$lib/api/application/v1/application_pb';
 	import { type Writable } from 'svelte/store';
-	import { Chart } from './chart';
+	import Chart from './chart.svelte';
+	import FilterDeprecation from './filter-deprecation.svelte';
 	import FilterKeyword from './filter-keyword.svelte';
+	import FilterLicence from './filter-licence.svelte';
 	import FilterMaintainer from './filter-maintainer.svelte';
 	import FilterName from './filter-name.svelte';
 	import FilterReset from './filter-reset.svelte';
@@ -15,8 +18,23 @@
 </script>
 
 <script lang="ts">
-	let { charts }: { charts: Writable<Application_Chart[]> } = $props();
-	
+	let {
+		charts = $bindable(),
+		releases = $bindable()
+	}: { charts: Writable<Application_Chart[]>; releases: Writable<Application_Release[]> } =
+		$props();
+
+	const releasesFromChartName = $derived(
+		$releases.reduce((mapping, release) => {
+			if (release.chartName) {
+				if (!mapping.has(release.chartName)) {
+					mapping.set(release.chartName, []);
+				}
+				mapping.get(release.chartName)?.push(release);
+			}
+			return mapping;
+		}, new Map<string, Application_Release[]>())
+	);
 	const filterManager = $derived(new FilterManager($charts));
 	const paginationManager = $derived(new PaginationManager(filterManager.filteredCharts));
 </script>
@@ -33,14 +51,21 @@
 		<FilterName {filterManager} />
 		<FilterKeyword {filterManager} />
 		<FilterMaintainer {filterManager} />
+		<FilterLicence {filterManager} />
+		<FilterDeprecation {filterManager} />
 		<FilterReset {filterManager} />
 		<Upload class="ml-auto" />
 	</div>
 
 	<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 		{#each filterManager.filteredCharts.slice(paginationManager.activePage * paginationManager.perPage, (paginationManager.activePage + 1) * paginationManager.perPage) as chart}
-			<Chart {chart}>
-				<Thumbnail {chart} />
+			<Chart
+				{chart}
+				chartReleases={releasesFromChartName.get(chart.name)}
+				bind:charts
+				bind:releases
+			>
+				<Thumbnail {chart} chartReleases={releasesFromChartName.get(chart.name)} />
 			</Chart>
 		{/each}
 	</div>

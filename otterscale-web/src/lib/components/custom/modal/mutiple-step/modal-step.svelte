@@ -32,7 +32,7 @@
 		<Progress value={stepManager.areStepsActive(value) ? 100 : 0} class="bg-muted" />
 	</div>
 {/if}
-<div class="flex flex-col gap-1 transition-all duration-300">
+<div class="flex flex-col items-center justify-center gap-1 transition-all duration-300">
 	<div class="h-12 w-fit">
 		<Button
 			class={cn(

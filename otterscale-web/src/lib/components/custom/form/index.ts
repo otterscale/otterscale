@@ -9,9 +9,6 @@ import Legend from './form-legend.svelte';
 import Separator from './form-separator.svelte';
 import Submit from './form-submit.svelte';
 import Root from './form.svelte';
-import type { Invalidity } from './type';
-import { FormValidator } from './utils.svelte';
+import { RequestManager } from './utils.svelte';
 
-export { Actions, Collapsible, Description, Field, Fieldset, FormValidator, Help, Label, Legend, Root, Separator, Submit };
-export type { Invalidity as Invalidaties };
-
+export { Actions, Collapsible, Description, Field, Fieldset, Help, Label, Legend, RequestManager, Root, Separator, Submit };

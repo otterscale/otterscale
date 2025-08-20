@@ -1,8 +1,8 @@
 <script lang="ts" module>
 	import { Button } from '$lib/components/ui/button';
+	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { FilterManager } from './utils';
-	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">
@@ -10,7 +10,7 @@
 </script>
 
 <Button
-	variant="secondary"
+	variant="destructive"
 	class={cn('flex h-8 items-center gap-2', filterManager.isFiltered ? 'visible' : 'hidden')}
 	onclick={() => {
 		filterManager.reset();

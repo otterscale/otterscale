@@ -1,11 +1,6 @@
 <script lang="ts" module>
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -20,35 +15,21 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-	import Actions from './actions.svelte';
+	import Create from './actions-create.svelte';
 	import { columns } from './columns';
-	import Create from './create.svelte';
-	import { headers } from './headers.svelte';
-	import { Snapshot } from './snapshot';
-	// import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
 	let {
-		selectedScopeUuid,
-		selectedFacility,
-		selectedVolume,
-		selectedSubvolumeGroupName,
 		subvolumes
 	}: {
-		selectedScopeUuid: string;
-		selectedFacility: string;
-		selectedVolume: string;
-		selectedSubvolumeGroupName: string;
 		subvolumes: Writable<Subvolume[]>;
 	} = $props();
-
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
-
 	const table = createSvelteTable({
 		get data() {
 			return $subvolumes;
@@ -58,7 +39,6 @@
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-
 		state: {
 			get pagination() {
 				return pagination;
@@ -111,29 +91,25 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetAll: false
+		autoResetPageIndex: false
 	});
 </script>
 
 <Layout.Root>
-	<Layout.Statistics>
-		<!-- <Statistics {table} /> -->
-	</Layout.Statistics>
+	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={$subvolumes.map((row) => row.name)} columnId="name" {table} />
-			<Filters.StringFuzzy values={$subvolumes.map((row) => row.path)} columnId="path" {table} />
-			<Filters.StringMatch columnId="mode" {table} values={$subvolumes.map((row) => row.mode)} />
-			<ColumnViewer {table} />
+			<Filters.StringMatch
+				values={$subvolumes.map((row) => row.poolName)}
+				columnId="poolName"
+				alias="Pool Name"
+				{table}
+			/>
+			<Filters.Column {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create
-				{selectedScopeUuid}
-				{selectedFacility}
-				{selectedSubvolumeGroupName}
-				{selectedVolume}
-				bind:subvolumes
-			/>
+			<Create />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -151,8 +127,6 @@
 								{/if}
 							</Table.Head>
 						{/each}
-						<Table.Head>{@render headers.snapshot()}</Table.Head>
-						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -164,39 +138,15 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-						<Table.Cell>
-							<Snapshot
-								{selectedScopeUuid}
-								{selectedFacility}
-								{selectedSubvolumeGroupName}
-								{selectedVolume}
-								subvolume={row.original}
-								bind:subvolumes
-							/>
-						</Table.Cell>
-						<Table.Cell>
-							<Actions
-								{selectedScopeUuid}
-								{selectedFacility}
-								{selectedSubvolumeGroupName}
-								{selectedVolume}
-								subvolume={row.original}
-								bind:subvolumes
-							/>
-						</Table.Cell>
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<TableEmpty />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<TableFooter {table} />
-		<TablePagination {table} />
+		<Footer {table} />
+		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

@@ -1,24 +1,28 @@
 <script lang="ts" module>
 	import { PoolType, type Pool } from '$lib/api/storage/v1/storage_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
+	import { formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+	import Actions from './cell-actions.svelte';
 	import { getPlacementGroupStateVariant } from './utils.svelte';
 
 	export const cells = {
-		_row_picker,
-		name: name,
-		type: type,
+		row_picker,
+		name,
+		type,
 		applications,
 		placement_group_state,
-		usage: usage
+		usage,
+		iops,
+		actions
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Pool>)}
-	<TableRowPicker {row} />
+{#snippet row_picker(row: Row<Pool>)}
+	<RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Pool>)}
@@ -69,8 +73,21 @@
 			denominator={Number(row.original.quotaBytes)}
 		>
 			{#snippet ratio({ numerator, denominator })}
-				{(numerator * 100) / denominator}%
+				{Progress.formatRatio(numerator, denominator)}
+			{/snippet}
+			{#snippet detail({ numerator, denominator })}
+				{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
+				{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
+				{numeratorValue}
+				{numeratorUnit}/{denominatorValue}
+				{denominatorUnit}
 			{/snippet}
 		</Progress.Root>
 	</div>
+{/snippet}
+
+{#snippet iops(row: Row<Pool>)}{/snippet}
+
+{#snippet actions(row: Row<Pool>)}
+	<Actions pool={row.original} />
 {/snippet}

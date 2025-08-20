@@ -16,44 +16,59 @@
 	}: { table: Table<TData>; columnId: string; alias?: string; values: any[] } = $props();
 
 	const suggestions = $derived(([...new Set(values)].sort() as string[]) ?? ([] as string[]));
-	let suggestionsOpen = $state(false);
+	let open = $state(false);
 </script>
 
 <div class="relative w-40">
 	<Command.Root class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
-		<Command.Input
-			class="placeholder:text-xs"
-			placeholder={alias ?? capitalizeFirstLetter(columnId)}
-			value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
-			oninput={(e) => {
-				table.getColumn(columnId)?.setFilterValue(e.currentTarget.value);
-				suggestionsOpen = true;
-				if (!e.currentTarget.value) {
-					suggestionsOpen = false;
-				}
-			}}
-			onmousedowncapture={() => {
-				suggestionsOpen = true;
-			}}
-			onblur={(e) => {
-				suggestionsOpen = false;
-			}}
-		/>
+		<div class="relative">
+			<Command.Input
+				class="pr-3 placeholder:text-xs"
+				placeholder={alias ?? capitalizeFirstLetter(columnId)}
+				value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
+				oninput={(e) => {
+					table.getColumn(columnId)?.setFilterValue(e.currentTarget.value);
+					table.firstPage();
+					console.log('setting1');
+					open = e.currentTarget.value ? true : false;
+				}}
+				onmousedowncapture={(e) => {
+					open = true;
+				}}
+				onblur={(e) => {
+					open = false;
+				}}
+			/>
+			<button
+				class={cn(
+					'absolute top-1/2 right-0 -translate-y-1/2',
+					table.getColumn(columnId)?.getFilterValue() ? 'visible' : 'hidden'
+				)}
+				onclick={() => {
+					table.getColumn(columnId)?.setFilterValue(undefined);
+				}}
+			>
+				<Icon icon="ph:x" />
+			</button>
+		</div>
 		<Command.List
 			class={cn(
 				'bg-card absolute top-10 left-0 z-50 w-fit min-w-40 rounded-md border shadow',
-				suggestionsOpen ? 'visible' : 'hidden'
+				open ? 'visible' : 'hidden'
 			)}
 		>
 			{#each suggestions as suggestion}
 				<Command.Item
-					disabled={!suggestionsOpen}
+					disabled={!open}
 					value={suggestion}
 					class="text-xs hover:cursor-pointer"
 					onmousedown={(e) => {
 						e.preventDefault();
+
 						table.getColumn(columnId)?.setFilterValue(suggestion);
-						suggestionsOpen = false;
+						table.firstPage();
+						console.log('setting2');
+						open = false;
 					}}
 				>
 					<Icon icon="ph:list-magnifying-glass" />

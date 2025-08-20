@@ -1,11 +1,11 @@
 <script lang="ts" module>
 	import type { Application } from '$lib/api/application/v1/application_pb';
+	import { Layout } from '$lib/components/custom/instance';
 	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
-	import { Statistic } from '../layout';
 </script>
 
 <script lang="ts">
@@ -18,10 +18,10 @@
 	let isExpand = $state(false);
 </script>
 
-<Statistic.Root class={isExpand ? 'col-span-3' : 'col-span-1'}>
-	<Statistic.Header>
-		<Statistic.Title>Persistent Volumn Claims</Statistic.Title>
-		<Statistic.Action>
+<Layout.Statistic.Root class={isExpand ? 'col-span-3' : 'col-span-1'}>
+	<Layout.Statistic.Header>
+		<Layout.Statistic.Title>Persistent Volumn Claims</Layout.Statistic.Title>
+		<Layout.Statistic.Action>
 			<Button
 				disabled={$application.persistentVolumeClaims.length === 0}
 				variant="ghost"
@@ -31,9 +31,9 @@
 			>
 				<Icon icon="ph:resize" />
 			</Button>
-		</Statistic.Action>
-	</Statistic.Header>
-	<Statistic.Content class={isExpand ? 'flex h-full flex-col justify-evenly gap-8' : ''}>
+		</Layout.Statistic.Action>
+	</Layout.Statistic.Header>
+	<Layout.Statistic.Content class={isExpand ? 'flex h-full flex-col justify-evenly gap-8' : ''}>
 		{#if !isExpand}
 			{$application.persistentVolumeClaims.length}
 		{:else}
@@ -119,5 +119,5 @@
 				</Table.Root>
 			</div>
 		{/if}
-	</Statistic.Content>
-</Statistic.Root>
+	</Layout.Statistic.Content>
+</Layout.Statistic.Root>

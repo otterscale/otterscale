@@ -5,6 +5,7 @@
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
+	import { BuiltInSelfTest } from '$lib/components/settings/built-in-self-test/index';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({
@@ -14,16 +15,5 @@
 </script>
 
 {#if $activeScope}
-	current scope: {$activeScope.uuid}
+	<BuiltInSelfTest />
 {/if}
-
-<Alert.Root variant="default">
-	<Icon icon="ph:airplane-takeoff" />
-	<Alert.Title>{m.migrating()}</Alert.Title>
-	<Alert.Description>{m.migrating_description()}</Alert.Description>
-</Alert.Root>
-
-<div class="pointer-events-none fixed inset-0 flex flex-col items-center justify-center">
-	<Icon icon="ph:barricade" class="text-9xl" />
-	{m.current_version({ version: import.meta.env.PACKAGE_VERSION })}
-</div>

@@ -2,28 +2,33 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { RowPickers } from '$lib/components/custom/data-table';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { formatCapacity } from '$lib/formatter';
 	import { dynamicPaths } from '$lib/path';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+	import Actions from './cell-actions.svelte';
+	import Tags from './cell-tags.svelte';
 
 	export const cells = {
-		_row_picker: _row_picker,
+		row_picker,
 		fqdn_ip,
 		powerState,
 		status,
 		cores_arch,
 		ram,
 		disk,
-		storage
+		storage,
+		tags,
+		scope,
+		actions
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Machine>)}
-	<TableRowPicker {row} />
+{#snippet row_picker(row: Row<Machine>)}
+	<RowPickers.Cell {row} />
 {/snippet}
 
 {#snippet fqdn_ip(row: Row<Machine>)}
@@ -106,8 +111,8 @@
 
 {#snippet ram(row: Row<Machine>)}
 	<span class="flex items-end justify-end gap-1">
-		{formatCapacity(row.original.memoryMb).value}
-		{formatCapacity(row.original.memoryMb).unit}
+		{formatCapacity(Number(row.original.memoryMb) * 1000 * 1000).value}
+		{formatCapacity(Number(row.original.memoryMb) * 1000 * 1000).unit}
 	</span>
 {/snippet}
 
@@ -119,7 +124,23 @@
 
 {#snippet storage(row: Row<Machine>)}
 	<span class="flex items-end justify-end gap-1">
-		{formatCapacity(row.original.storageMb).value}
-		{formatCapacity(row.original.storageMb).unit}
+		{formatCapacity(Number(row.original.storageMb) * 1000 * 1000).value}
+		{formatCapacity(Number(row.original.storageMb) * 1000 * 1000).unit}
 	</span>
+{/snippet}
+
+{#snippet tags(row: Row<Machine>)}
+	<Tags machine={row.original} />
+{/snippet}
+
+{#snippet scope(row: Row<Machine>)}
+	{@const identifier = row.original.workloadAnnotations['juju-machine-id']}
+	{#if identifier}
+		{@const scope = identifier.split('-machine-')[0]}
+		{scope}
+	{/if}
+{/snippet}
+
+{#snippet actions(row: Row<Machine>)}
+	<Actions machine={row.original} />
 {/snippet}

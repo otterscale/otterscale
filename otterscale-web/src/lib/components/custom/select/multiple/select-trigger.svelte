@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card';
@@ -106,7 +105,7 @@
 				icon={option.icon ? option.icon : 'ph:empty'}
 				class={cn('size-3', option.icon ? 'visibale' : 'invisible')}
 			/>
-			<p class="select-none text-xs">{option.label}</p>
+			<p class="text-xs select-none">{option.label}</p>
 		</span>
 	{/each}
 {/snippet}

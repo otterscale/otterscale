@@ -1,4 +1,4 @@
-import { default as Root } from './reloader.svelte';
+import { default as Reloader } from './reloader.svelte';
 import { ReloadManager } from "./utils.svelte";
 
-export { Root, ReloadManager };
+export { Reloader, ReloadManager, Reloader as Root };

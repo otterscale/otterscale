@@ -8,10 +8,10 @@ const columns: ColumnDef<User>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,
@@ -33,6 +33,7 @@ const columns: ColumnDef<User>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.name, row);
         },
+        filterFn: 'arrIncludesSome',
     },
     {
         accessorKey: "suspended",
@@ -45,24 +46,22 @@ const columns: ColumnDef<User>[] = [
         filterFn: 'equals',
     },
     {
-        id: "keys",
-        filterFn: (row, columnId, filterValues: Record<number, number> | undefined) => {
-            if (!filterValues) {
-                return true
-            }
-
-            if (Object.values(filterValues).length != 2) {
-                throw `invalid filter range for ${columnId}`
-            }
-
-            const keys = Object.keys(row.original.keys ?? []).length;
-            const range = Object.values(filterValues)
-            range.sort()
-            const [minimum, maximum] = range;
-
-            return minimum <= keys && keys <= maximum;
-        }
-
+        accessorKey: "keys",
+        header: ({ column }) => {
+            return renderSnippet(headers.keys, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.keys, row);
+        },
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
+        },
     },
 ];
 

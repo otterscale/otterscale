@@ -8,10 +8,10 @@ const columns: ColumnDef<TableRow>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,

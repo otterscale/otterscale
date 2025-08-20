@@ -3,10 +3,8 @@
 		ConfigurationService,
 		type Configuration,
 		type Configuration_PackageRepository,
-		type UpdateNTPServerRequest,
 		type UpdatePackageRepositoryRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -27,24 +25,26 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(ConfigurationService, transport);
 
-	const DEFAULT_REQUEST = {
+	const client = createClient(ConfigurationService, transport);
+	const defaults = {
 		id: packageRepository.id,
 		url: packageRepository.url,
 		skipJuju: false
 	} as UpdatePackageRepositoryRequest;
-	let request = $state(DEFAULT_REQUEST);
-
+	let request = $state(defaults);
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = defaults;
 	}
 
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
 <div>
-	<Modal.Root bind:open={stateController.state}>
+	<Modal.Root bind:open>
 		<Modal.Trigger variant="creative">
 			<Icon icon="ph:pencil" />
 			Edit
@@ -60,7 +60,11 @@
 				</Form.Fieldset>
 			</Form.Root>
 			<Modal.Footer>
-				<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+				<Modal.Cancel
+					onclick={() => {
+						reset();
+					}}>Cancel</Modal.Cancel
+				>
 				<Modal.ActionsGroup>
 					<Modal.Action
 						onclick={() => {
@@ -83,7 +87,7 @@
 							});
 
 							reset();
-							stateController.close();
+							close();
 						}}
 					>
 						Edit

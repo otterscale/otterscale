@@ -1,29 +1,33 @@
 <script lang="ts" module>
 	import { goto } from '$app/navigation';
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
+	import { formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+	import Actions from './cell-actions.svelte';
 
 	export const cells = {
-		_row_picker: _row_picker,
-		id: id,
-		name: name,
-		state: state,
-		stateUp: stateUp,
-		stateIn: stateIn,
-		exists: exists,
-		deviceClass: deviceClass,
-		machine: machine,
-		placementGroupCount: placementGroupCount,
-		usage: usage
+		row_picker,
+		id,
+		name,
+		state,
+		osdUp,
+		osdIn,
+		exists,
+		deviceClass,
+		machine,
+		placementGroupCount,
+		usage,
+		iops,
+		actions
 	};
 </script>
 
-{#snippet _row_picker(row: Row<OSD>)}
-	<TableRowPicker {row} />
+{#snippet row_picker(row: Row<OSD>)}
+	<RowPicker {row} />
 {/snippet}
 
 {#snippet id(row: Row<OSD>)}
@@ -45,17 +49,9 @@
 	</div>
 {/snippet}
 
-{#snippet stateUp(row: Row<OSD>)}
-	<Badge variant="outline">
-		{row.original.up}
-	</Badge>
-{/snippet}
+{#snippet osdUp(row: Row<OSD>)}{/snippet}
 
-{#snippet stateIn(row: Row<OSD>)}
-	<Badge variant="outline">
-		{row.original.in}
-	</Badge>
-{/snippet}
+{#snippet osdIn(row: Row<OSD>)}{/snippet}
 
 {#snippet exists(row: Row<OSD>)}
 	{#if !row.original.exists}
@@ -91,12 +87,27 @@
 {/snippet}
 
 {#snippet usage(row: Row<OSD>)}
-	<Progress.Root
-		numerator={Number(row.original.usedBytes)}
-		denominator={Number(row.original.sizeBytes)}
-	>
-		{#snippet ratio({ numerator, denominator })}
-			{((numerator * 100) / denominator).toFixed(2)}%
-		{/snippet}
-	</Progress.Root>
+	<div class="flex justify-end">
+		<Progress.Root
+			numerator={Number(row.original.usedBytes)}
+			denominator={Number(row.original.sizeBytes)}
+		>
+			{#snippet ratio({ numerator, denominator })}
+				{Progress.formatRatio(numerator, denominator)}
+			{/snippet}
+			{#snippet detail({ numerator, denominator })}
+				{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
+				{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
+				{numeratorValue}
+				{numeratorUnit}/{denominatorValue}
+				{denominatorUnit}
+			{/snippet}
+		</Progress.Root>
+	</div>
+{/snippet}
+
+{#snippet iops(row: Row<OSD>)}{/snippet}
+
+{#snippet actions(row: Row<OSD>)}
+	<Actions osd={row.original} />
 {/snippet}

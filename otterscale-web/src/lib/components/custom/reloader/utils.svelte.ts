@@ -13,6 +13,10 @@ class ReloadManager {
         return this.state && this.interval && this.interval > 0;
     }
 
+    force() {
+        this.reloadFn()
+    }
+
     start() {
         if (this.state && this.interval && this.interval > 0) {
             this.identifier = setInterval(() => this.reloadFn(), this.interval * 1000);

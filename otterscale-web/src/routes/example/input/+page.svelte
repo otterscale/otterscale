@@ -17,7 +17,7 @@
 		value4: any;
 		value5: any;
 		value6: any;
-		value7: any;
+		value7: string;
 		value8: any;
 		value9: any;
 		value10: any;
@@ -135,7 +135,7 @@
 
 	<SingleInput.Password id="5" required bind:value={values.value5} />
 
-	<SingleInput.DeletionConfirm id="6" required target="value6" bind:value={values.value6} />
+	<SingleInput.Confirm id="6" required target="value6" bind:value={values.value6} />
 
 	<SingleInput.Measurement
 		id="7"
@@ -147,6 +147,8 @@
 		]}
 		bind:value={values.value7}
 	/>
+
+	<SingleInput.Structure id="14" language="json" required bind:value={values.value7} />
 
 	<MultipleInput.Root type="text" required bind:values={values.values1} id="8">
 		<MultipleInput.Viewer />

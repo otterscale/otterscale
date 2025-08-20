@@ -1,4 +1,5 @@
 import type { Pool } from '$lib/api/storage/v1/storage_pb';
+import { getSortingFunction } from '$lib/components/custom/data-table';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';
@@ -8,10 +9,10 @@ const columns: ColumnDef<Pool>[] = [
     {
         id: "select",
         header: ({ table }) => {
-            return renderSnippet(headers._row_picker, table)
+            return renderSnippet(headers.row_picker, table)
         },
         cell: ({ row }) => {
-            return renderSnippet(cells._row_picker, row);
+            return renderSnippet(cells.row_picker, row);
         },
         enableSorting: false,
         enableHiding: false,
@@ -53,9 +54,11 @@ const columns: ColumnDef<Pool>[] = [
             return renderSnippet(cells.placement_group_state, row);
         },
         filterFn: (row, columnId, filterValue) => {
-            const value = Object.keys(row.getValue(columnId) ?? {});
-            if (!value.length || !filterValue.length) return true;
-            return value.some(v => filterValue.includes(v));
+            const values = Object.keys(row.getValue(columnId) ?? {});
+            if (!values.length || !filterValue.length) return true;
+            console.log('f', filterValue)
+            console.log('v', values)
+            return values.some(value => filterValue.includes(value));
         },
     },
     {
@@ -66,25 +69,33 @@ const columns: ColumnDef<Pool>[] = [
         cell: ({ row }) => {
             return renderSnippet(cells.usage, row);
         },
+        sortingFn: (previousRow, nextRow, columnId) => (
+            getSortingFunction(
+                Number(previousRow.original.quotaBytes) !== 0 ? Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes) : 0,
+                Number(nextRow.original.quotaBytes) !== 0 ? Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes) : 0,
+                (p, n) => (p < n),
+                (p, n) => (p === n)
+            )
+        )
     },
-    // {
-    //     accessorKey: "readBytes",
-    //     header: ({ column }) => {
-    //         return renderSnippet(headers.readBytes, column)
-    //     },
-    //     cell: ({ row }) => {
-    //         return renderSnippet(cells.readBytes, row);
-    //     },
-    // },
-    // {
-    //     accessorKey: "writeBytes",
-    //     header: ({ column }) => {
-    //         return renderSnippet(headers.writeBytes, column)
-    //     },
-    //     cell: ({ row }) => {
-    //         return renderSnippet(cells.writeBytes, row);
-    //     },
-    // },
+    {
+        accessorKey: "iops",
+        header: ({ column }) => {
+            return renderSnippet(headers.iops, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.iops, row);
+        },
+    },
+    {
+        accessorKey: "actions",
+        header: ({ column }) => {
+            return renderSnippet(headers.actions, column)
+        },
+        cell: ({ row }) => {
+            return renderSnippet(cells.actions, row);
+        },
+    },
 ];
 
 export {

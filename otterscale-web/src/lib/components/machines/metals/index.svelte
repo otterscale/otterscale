@@ -1,9 +1,9 @@
 <script lang="ts" module>
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import * as Reloader from '$lib/components/custom/reloader';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table/index';
 	import { Statistics } from './statistics';
@@ -14,13 +14,16 @@
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
-	const reloadManager = new Reloader.ReloadManager(() => {
+
+	let isMounted = $state(false);
+
+	const reloadManager = new ReloadManager(() => {
 		machineClient.listMachines({}).then((response) => {
 			machines.set(response.machines);
 		});
 	});
+	setContext('reloadManager', reloadManager);
 
-	let isMounted = $state(false);
 	onMount(() => {
 		machineClient
 			.listMachines({})
@@ -39,12 +42,12 @@
 	});
 </script>
 
-<main class="space-y-4">
-	{#if !isMounted}
-		<Loading.DataTable />
-	{:else}
-		<Reloader.Root {reloadManager} />
+<main class="space-y-4 py-4">
+	{#if isMounted}
+		<Reloader {reloadManager} />
 		<Statistics machines={$machines} />
 		<DataTable {machines} />
+	{:else}
+		<Loading.DataTable />
 	{/if}
 </main>

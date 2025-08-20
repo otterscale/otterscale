@@ -1,17 +1,18 @@
-import type { Invalidity } from './type';
+class RequestManager<Type> {
+    INITIAL_VALUE: Type
+    request: Type = $state({} as Type)
 
-class FormValidator {
-    invalidity = $state<Invalidity>({});
-
-    set(id: string | null | undefined, value: boolean | null | undefined) {
-        if (id) {
-            this.invalidity[id] = value;
-        }
+    constructor(initialValue: Type) {
+        this.INITIAL_VALUE = initialValue
+        this.request = this.INITIAL_VALUE
     }
 
-    get isInvalid() {
-        return Object.values(this.invalidity).some((v) => (v))
+    reset(resetter?: () => void) {
+        this.request = this.INITIAL_VALUE
+        if (resetter) {
+            resetter()
+        }
     }
 }
 
-export { FormValidator };
+export { RequestManager }

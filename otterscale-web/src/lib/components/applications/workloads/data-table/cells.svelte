@@ -1,14 +1,15 @@
 <script lang="ts" module>
 	import { page } from '$app/state';
 	import type { Application } from '$lib/api/application/v1/application_pb';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/cell.svelte';
+	import { RowPickers } from '$lib/components/custom/data-table';
+	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
-		_row_picker: _row_picker,
+		row_picker,
 		name,
 		type,
 		namespace,
@@ -22,15 +23,13 @@
 	};
 </script>
 
-{#snippet _row_picker(row: Row<Application>)}
-	<TableRowPicker {row} />
+{#snippet row_picker(row: Row<Application>)}
+	<RowPickers.Cell {row} />
 {/snippet}
 
 {#snippet name(row: Row<Application>)}
 	<span class="flex items-center">
-		<Badge variant="outline">
-			{row.original.name}
-		</Badge>
+		{row.original.name}
 		<Button variant="ghost" href={`${page.url}/${row.original.namespace}/${row.original.name}`}>
 			<Icon icon="ph:arrow-square-out" />
 		</Button>
@@ -44,15 +43,23 @@
 {/snippet}
 
 {#snippet namespace(row: Row<Application>)}
-	<Badge variant="outline">
-		{row.original.namespace}
-	</Badge>
+	{row.original.namespace}
 {/snippet}
 
 {#snippet health(row: Row<Application>)}
-	<span class="flex justify-end">
-		{row.original.healthies}
-	</span>
+	<div class="flex justify-end">
+		<Progress.Root
+			numerator={Number(row.original.healthies)}
+			denominator={Number(row.original.pods.length)}
+		>
+			{#snippet ratio({ numerator, denominator })}
+				{Progress.formatRatio(numerator, denominator)}
+			{/snippet}
+			{#snippet detail({ numerator, denominator })}
+				{numerator}/{denominator}
+			{/snippet}
+		</Progress.Root>
+	</div>
 {/snippet}
 
 {#snippet service(row: Row<Application>)}

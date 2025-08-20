@@ -1,6 +1,5 @@
 <script lang="ts" module>
 	import { TagService, type CreateTagRequest, type Tag } from '$lib/api/tag/v1/tag_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -15,19 +14,22 @@
 	let { tags = $bindable() }: { tags: Writable<Tag[]> } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(TagService, transport);
 
-	const DEFAULT_REQUEST = {} as CreateTagRequest;
-	let request = $state(DEFAULT_REQUEST);
+	const client = createClient(TagService, transport);
+	const defaults = {} as CreateTagRequest;
+	let request = $state(defaults);
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = defaults;
 	}
 
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
-<Modal.Root bind:open={stateController.state}>
-	<Modal.Trigger>
+<Modal.Root bind:open>
+	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Create
 	</Modal.Trigger>
@@ -47,7 +49,13 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				Cancel
+			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
@@ -70,7 +78,7 @@
 						});
 
 						reset();
-						stateController.close();
+						close();
 					}}
 				>
 					Create

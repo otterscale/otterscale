@@ -4,7 +4,6 @@
 		type Configuration,
 		type ImportBootImagesRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -26,7 +25,10 @@
 		request = DEFAULT_REQUEST;
 	}
 
-	const stateController = new StateController(false);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 
 	let isImportingBootImages = $state(false);
 	onMount(async () => {
@@ -42,7 +44,7 @@
 	});
 </script>
 
-<Modal.Root bind:open={stateController.state}>
+<Modal.Root bind:open>
 	<Modal.Trigger disabled={isImportingBootImages}>
 		{#if isImportingBootImages == true}
 			<Icon icon="ph:spinner" class="text-muted-foreground size-5 animate-spin" />
@@ -85,7 +87,7 @@
 						});
 
 						reset();
-						stateController.close();
+						close();
 					}}>Create</Modal.Action
 				>
 			</Modal.ActionsGroup>

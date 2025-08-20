@@ -1,79 +1,154 @@
 <script lang="ts">
 	import * as Alert from '$lib/components/ui/alert';
-	import { llmData, createDateSeries, type LLMModel } from './dataset';
-	import { formatBigNumber as formatNumber } from '$lib/formatter';
-	import * as Pagination from '$lib/components/ui/pagination';
-	import * as Table from '$lib/components/ui/table';
 	import { Badge } from '$lib/components/ui/badge';
-	import * as Card from '$lib/components/ui/card';
-	import { PageLoading } from '$lib/components/otterscale/ui/index';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { ManagementMachines } from '$lib/components/otterscale';
-	import { NetworkService, type Network } from '$gen/api/network/v1/network_pb';
-	import { MachineService, type Machine } from '$gen/api/machine/v1/machine_pb';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { AreaChart, BarChart, LineChart, PieChart } from 'layerchart';
-	import { Input } from '$lib/components/ui/input';
-	import * as Select from '$lib/components/ui/select';
 	import { Button } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card';
+	import { Input } from '$lib/components/ui/input';
+	import * as Pagination from '$lib/components/ui/pagination';
 	import { Progress } from '$lib/components/ui/progress';
+	import * as Select from '$lib/components/ui/select';
+	import * as Table from '$lib/components/ui/table';
+	import { formatBigNumber as formatNumber } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
-	import { browser } from '$app/environment';
+	import { startOfToday, subDays } from 'date-fns';
+	import { LineChart } from 'layerchart';
 
-	const transport: Transport = getContext('transport');
-	const networkClient = createClient(NetworkService, transport);
-	const machineClient = createClient(MachineService, transport);
-
-	const networksStore = writable<Network[]>([]);
-	const networksLoading = writable(true);
-	async function fetchNetworks() {
-		if (!browser) return;
-		try {
-			const response = await networkClient.listNetworks({});
-			networksStore.set(response.networks);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			networksLoading.set(false);
-		}
+	function getRandomInteger(min: number, max: number, includeMax = true) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min + (includeMax ? 1 : 0)) + min);
 	}
 
-	const machinesStore = writable<Machine[]>([]);
-	const machinesLoading = writable(true);
-	async function fetchMachines() {
-		if (!browser) return;
-		try {
-			const response = await machineClient.listMachines({});
-			machinesStore.set(response.machines);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			machinesLoading.set(false);
-		}
+	function getRandomNumber(min: number, max: number) {
+		return Math.random() * (max - min) + min;
 	}
 
-	console.log(
-		createDateSeries({
-			count: 100,
-			min: 0,
-			max: 100,
-			value: 'number',
-			keys: ['value']
-		})
-	);
+	function createDateSeries<TKey extends string>(options: {
+		count?: number;
+		min: number;
+		max: number;
+		keys?: TKey[];
+		value?: 'number' | 'integer';
+	}) {
+		const now = startOfToday();
 
-	let mounted = false;
-	onMount(async () => {
-		try {
-			await fetchNetworks();
-			await fetchMachines();
-		} catch (error) {
-			console.error('Error during initial data load:', error);
+		const count = options.count ?? 10;
+		const min = options.min;
+		const max = options.max;
+		const keys = options.keys ?? ['value'];
+
+		return Array.from({ length: count }).map((_, i) => {
+			return {
+				date: subDays(now, count - i - 1),
+				...Object.fromEntries(
+					keys.map((key) => {
+						return [
+							key,
+							options.value === 'integer' ? getRandomInteger(min, max) : getRandomNumber(min, max)
+						];
+					})
+				)
+			} as { date: Date } & { [K in TKey]: number };
+		});
+	}
+
+	interface LLMModel {
+		name: string;
+		version: string;
+		parameters: string;
+		metrics: {
+			accuracy: number;
+			speed: number;
+		};
+		architecture: string;
+		usageStats: {
+			requests: number;
+			uptime: number;
+		};
+	}
+
+	export const llmData: LLMModel[] = [
+		{
+			name: 'GPT-3',
+			version: '1.0',
+			parameters: '175B',
+			metrics: { accuracy: 0.92, speed: 1.2 },
+			architecture: 'Transformer',
+			usageStats: { requests: 1000000, uptime: 99.9 }
+		},
+		{
+			name: 'BERT',
+			version: '2.0',
+			parameters: '340M',
+			metrics: { accuracy: 0.89, speed: 1.5 },
+			architecture: 'Bidirectional Transformer',
+			usageStats: { requests: 500000, uptime: 99.5 }
+		},
+		{
+			name: 'LLaMA',
+			version: '2.0',
+			parameters: '65B',
+			metrics: { accuracy: 0.91, speed: 1.3 },
+			architecture: 'Transformer',
+			usageStats: { requests: 800000, uptime: 99.7 }
+		},
+		{
+			name: 'RoBERTa',
+			version: '1.5',
+			parameters: '355M',
+			metrics: { accuracy: 0.9, speed: 1.4 },
+			architecture: 'Bidirectional Transformer',
+			usageStats: { requests: 600000, uptime: 99.6 }
+		},
+		{
+			name: 'T5',
+			version: '1.1',
+			parameters: '11B',
+			metrics: { accuracy: 0.88, speed: 1.6 },
+			architecture: 'Encoder-Decoder',
+			usageStats: { requests: 400000, uptime: 99.3 }
+		},
+		{
+			name: 'BLOOM',
+			version: '1.0',
+			parameters: '176B',
+			metrics: { accuracy: 0.91, speed: 1.1 },
+			architecture: 'Transformer',
+			usageStats: { requests: 300000, uptime: 99.4 }
+		},
+		{
+			name: 'PaLM',
+			version: '2.0',
+			parameters: '540B',
+			metrics: { accuracy: 0.93, speed: 1.0 },
+			architecture: 'Transformer',
+			usageStats: { requests: 900000, uptime: 99.8 }
+		},
+		{
+			name: 'Claude',
+			version: '2.0',
+			parameters: '100B',
+			metrics: { accuracy: 0.92, speed: 1.2 },
+			architecture: 'Constitutional AI',
+			usageStats: { requests: 700000, uptime: 99.6 }
+		},
+		{
+			name: 'Falcon',
+			version: '1.0',
+			parameters: '40B',
+			metrics: { accuracy: 0.89, speed: 1.4 },
+			architecture: 'Transformer',
+			usageStats: { requests: 200000, uptime: 99.2 }
+		},
+		{
+			name: 'OPT',
+			version: '1.3',
+			parameters: '175B',
+			metrics: { accuracy: 0.9, speed: 1.3 },
+			architecture: 'Transformer',
+			usageStats: { requests: 450000, uptime: 99.5 }
 		}
-
-		mounted = true;
-	});
+	];
 </script>
 
 {#snippet Statistic()}

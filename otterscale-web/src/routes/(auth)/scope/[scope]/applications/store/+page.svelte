@@ -5,7 +5,10 @@
 	import { Store } from '$lib/components/applications/store';
 
 	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [], current: dynamicPaths.settings(page.params.scope) });
+	breadcrumb.set({
+		parents: [dynamicPaths.applications(page.params.scope)],
+		current: dynamicPaths.applicationsStore(page.params.scope)
+	});
 </script>
 
 {#if $activeScope}
