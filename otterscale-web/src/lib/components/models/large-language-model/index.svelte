@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
@@ -8,9 +8,7 @@
 	import { DataTable } from './data-table/index';
 
 	import { listLargeLanguageModels, type LargeLangeageModel } from './protobuf.svelte';
-</script>
 
-<script lang="ts">
 	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
 
 	const transport: Transport = getContext('transport');

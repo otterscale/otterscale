@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type {
 		DeleteSubvolumeSnapshotRequest,
 		Subvolume,
@@ -15,9 +15,7 @@
 	import { toast } from 'svelte-sonner';
 	import { get } from 'svelte/store';
 	import type { NFSStore } from '../../utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		snapshot
 	}: {

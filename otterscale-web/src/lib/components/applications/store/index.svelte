@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		ApplicationService,
 		type Application_Chart,
@@ -10,9 +10,7 @@
 	import { writable } from 'svelte/store';
 	import { CommerceStore } from './commerce-store/index';
 	import { currentKubernetes } from '$lib/stores';
-</script>
 
-<script lang="ts">
 	const transport: Transport = getContext('transport');
 
 	const charts = writable<Application_Chart[]>([]);

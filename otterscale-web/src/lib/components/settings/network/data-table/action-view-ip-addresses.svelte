@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Network_IPAddress } from '$lib/api/network/v1/network_pb';
 	import * as Table from '$lib/components/custom/table';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import Icon from '@iconify/svelte';
-</script>
 
-<script lang="ts">
 	let { ipAddresses }: { ipAddresses: Network_IPAddress[] } = $props();
 </script>
 

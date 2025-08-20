@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import * as Alert from '$lib/components/ui/alert/index.js';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let {
 		application
 	}: {

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Pool, UpdatePoolRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -11,9 +11,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { QUOTAS_BYTES_HELP_TEXT, QUOTAS_OBJECTS_HELP_TEXT } from './helper';
-</script>
 
-<script lang="ts">
 	let {
 		pool
 	}: {

@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { Collapsible as CollapsiblePrimitive } from 'bits-ui';
 	import type { Snippet } from 'svelte';
-</script>
 
-<script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 
 	let {
@@ -32,7 +30,7 @@
 		>
 			{@render descriptor?.({ open })}
 		</span>
-		<Button variant="ghost" size="icon" class=" absolute right-0 top-1/2 -translate-y-1/2">
+		<Button variant="ghost" size="icon" class=" absolute top-1/2 right-0 -translate-y-1/2">
 			<Icon icon="ph:caret-up-down" />
 		</Button>
 	</Collapsible.Trigger>

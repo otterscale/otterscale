@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as ToggleGroup from '$lib/components/ui/toggle-group/index.js';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { fade } from 'svelte/transition';
 	import { Speed, TimerManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let { timerManager }: { timerManager: TimerManager } = $props();
 	let interval = $state(timerManager.interval?.toString());
 

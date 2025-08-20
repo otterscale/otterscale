@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Command from '$lib/components/ui/command';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
@@ -7,9 +7,7 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { OptionType } from './types';
 	import type { OptionManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

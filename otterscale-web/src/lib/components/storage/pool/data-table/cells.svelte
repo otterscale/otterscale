@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { PoolType, type Pool } from '$lib/api/storage/v1/storage_pb';
 	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import * as Progress from '$lib/components/custom/progress';

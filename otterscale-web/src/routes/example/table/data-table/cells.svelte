@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { TableRow } from './type';
 	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Badge from '$lib/components/ui/badge/badge.svelte';

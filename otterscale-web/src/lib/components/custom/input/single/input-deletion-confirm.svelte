@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { cn } from '$lib/utils';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import General from './input-general.svelte';
 	import { CopyButton } from '$lib/components/custom/copy-button';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		value = $bindable(),

@@ -1,9 +1,7 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import { cn } from '$lib/utils';
-</script>
 
-<script lang="ts">
 	let { class: className }: { class?: string } = $props();
 </script>
 

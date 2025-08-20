@@ -1,10 +1,8 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Table from '$lib/components/ui/table';
 	import type { HTMLTableAttributes } from 'svelte/elements';
 	import { cn, type WithElementRef } from '$lib/utils.js';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { type TestResult } from '$lib/api/bist/v1/bist_pb';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
@@ -22,7 +22,7 @@
 		latencyMax,
 		latencyMean,
 		createdBy,
-		startedAt, 
+		startedAt,
 		completedAt,
 		actions
 	};
@@ -142,9 +142,7 @@
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			LATENCY
-			<p class="text-muted-foreground">
-				MINIMUM
-			</p>
+			<p class="text-muted-foreground">MINIMUM</p>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -153,9 +151,7 @@
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			LATENCY
-			<p class="text-muted-foreground">
-				MAXIMUM
-			</p>
+			<p class="text-muted-foreground">MAXIMUM</p>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -164,9 +160,7 @@
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			LATENCY
-			<p class="text-muted-foreground">
-				MEAN
-			</p>
+			<p class="text-muted-foreground">MEAN</p>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -189,5 +183,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<TestResult>)}
-{/snippet}
+{#snippet actions(column: Column<TestResult>)}{/snippet}

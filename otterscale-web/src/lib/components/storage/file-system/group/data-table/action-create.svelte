@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { CreateSubvolumeGroupRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -11,9 +11,7 @@
 	import { toast } from 'svelte-sonner';
 	import { get } from 'svelte/store';
 	import { type GroupStore } from '../utils.svelte.js';
-</script>
 
-<script lang="ts">
 	const groupStore: GroupStore = getContext('groupStore');
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');

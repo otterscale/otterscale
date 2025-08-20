@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { type TestResult } from '$lib/api/bist/v1/bist_pb';
 	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';

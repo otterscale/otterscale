@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Network } from '$lib/api/network/v1/network_pb';
 	import { Layout } from '$lib/components/custom/data-table';
 	import DeleteFabric from './action-delete-fabric.svelte';
 	import UpdateFabric from './action-update-fabric.svelte';
 	import UpdateSubnet from './action-update-subnet.svelte';
 	import UpdateVLAN from './action-update-vlan.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		network
 	}: {

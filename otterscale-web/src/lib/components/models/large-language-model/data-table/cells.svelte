@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { RowPickers } from '$lib/components/custom/data-table';
 	import type { Row } from '@tanstack/table-core';
 	import { type LargeLangeageModel } from '../protobuf.svelte';

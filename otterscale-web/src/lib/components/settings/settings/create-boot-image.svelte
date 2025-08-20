@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		ConfigurationService,
 		type Configuration,
@@ -17,9 +17,7 @@
 	import { toast } from 'svelte-sonner';
 	import type { Writable } from 'svelte/store';
 	import { writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let { configuration = $bindable() }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');

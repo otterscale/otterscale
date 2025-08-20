@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		ConfigurationService,
 		type Configuration
@@ -23,9 +23,7 @@
 	import UpdateNTPServer from './update-ntp-server.svelte';
 	import UpdatePackageRepository from './update-package-repository.svelte';
 	import { Item, Items } from './utils';
-</script>
 
-<script lang="ts">
 	const transport: Transport = getContext('transport');
 	const tagClient = createClient(TagService, transport);
 	const configurationClient = createClient(ConfigurationService, transport);

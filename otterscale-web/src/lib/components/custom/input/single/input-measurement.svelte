@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Select from '$lib/components/ui/select';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
@@ -7,9 +7,7 @@
 	import { General } from '.';
 	import type { InputType, UnitType } from './types';
 	import { getInputMeasurementUnitByValue } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		value = $bindable(),

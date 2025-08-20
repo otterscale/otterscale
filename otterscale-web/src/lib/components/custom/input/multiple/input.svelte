@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { setContext } from 'svelte';
 	import { InputManager, validate, ValuesManager } from './utils.svelte';
 	import type { InputType } from './types';
 	import { cn } from '$lib/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { WithElementRef } from 'bits-ui';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		values = $bindable(),

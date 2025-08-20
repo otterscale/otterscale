@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { CreateUserKeyRequest, User } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -8,9 +8,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-</script>
 
-<script lang="ts">
 	const user: User = getContext('user');
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');

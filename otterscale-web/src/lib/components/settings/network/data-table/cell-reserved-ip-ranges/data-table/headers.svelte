@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
 	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
 	import type { Column, Table } from '@tanstack/table-core';

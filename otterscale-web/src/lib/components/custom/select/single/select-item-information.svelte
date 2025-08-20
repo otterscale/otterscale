@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { Tooltip as TooltipPrimitive } from 'bits-ui';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

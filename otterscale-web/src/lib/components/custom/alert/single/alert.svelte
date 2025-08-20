@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { setContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { tv, type VariantProps } from 'tailwind-variants';
@@ -29,9 +29,7 @@
 	});
 
 	export type AlertVariant = VariantProps<typeof alertVariants>['variant'];
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

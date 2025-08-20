@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { CreateImageRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -15,9 +15,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 

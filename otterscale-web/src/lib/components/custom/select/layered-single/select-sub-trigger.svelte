@@ -1,10 +1,8 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { cn } from '$lib/utils.js';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -21,7 +19,7 @@
 	data-slot="seelct-sub-trigger"
 	data-inset={inset}
 	class={cn(
-		'hover:bg-accent hover:text-accent-foreground cursor-pointer select-none rounded-sm',
+		'hover:bg-accent hover:text-accent-foreground cursor-pointer rounded-sm select-none',
 		className
 	)}
 	{...restProps}

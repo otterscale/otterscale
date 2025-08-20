@@ -1,9 +1,7 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Accordion from '$lib/components/ui/accordion';
 	import type { Snippet } from 'svelte';
-</script>
 
-<script lang="ts">
 	let { value, children }: { value?: string; children?: Snippet } = $props();
 </script>
 

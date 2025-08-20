@@ -1,9 +1,7 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Picker from '$lib/components/custom/picker';
 	import SubvolumeGroupPicker from '../../utils/subvolume-group-picker.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		selectedScopeUuid,
 		selectedFacility,

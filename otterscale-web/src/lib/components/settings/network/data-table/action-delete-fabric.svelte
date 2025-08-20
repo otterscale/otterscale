@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		NetworkService,
 		type DeleteNetworkRequest,
@@ -12,9 +12,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-</script>
 
-<script lang="ts">
 	let { fabric }: { fabric: Network_Fabric } = $props();
 
 	const transport: Transport = getContext('transport');

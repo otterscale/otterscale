@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { StorageService, type OSD } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
@@ -6,9 +6,7 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
-</script>
 
-<script lang="ts">
 	let {
 		selectedScopeUuid = $bindable(),
 		selectedFacility = $bindable()

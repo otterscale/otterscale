@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		MachineService,
 		type CreateMachineRequest,
@@ -21,9 +21,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let {
 		machine
 	}: {

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { UpdateUserRequest, User } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -11,9 +11,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { USER_SUSPENDED_HELP_TEXT, user_suspended_descriptor } from './helper';
-</script>
 
-<script lang="ts">
 	let {
 		user
 	}: {

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Badge } from '$lib/components/ui/badge';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Command from '$lib/components/ui/command/index.js';

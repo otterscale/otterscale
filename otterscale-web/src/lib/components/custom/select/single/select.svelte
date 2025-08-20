@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Popover from '$lib/components/ui/popover';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { setContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
 	import type { OptionType } from './types';
 	import { OptionManager, validate } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		id,
 		open = $bindable(false),

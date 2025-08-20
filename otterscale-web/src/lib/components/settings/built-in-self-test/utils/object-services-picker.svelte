@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		BISTService,
 		InternalObjectService_Type,
@@ -12,9 +12,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let {
 		selectedInternalObjectService = $bindable()
 	}: { selectedInternalObjectService: InternalObjectService } = $props();

@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import Icon from '@iconify/svelte';
 	import { DataTable } from './data-table';
-</script>
 
-<script lang="ts">
 	let {
 		subnet
 	}: {

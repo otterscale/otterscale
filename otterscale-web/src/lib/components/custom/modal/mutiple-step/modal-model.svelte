@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { cn } from '$lib/utils.js';
 	import type { TabsContentProps } from 'bits-ui';
 	import { getContext } from 'svelte';
 	import type { IndexManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

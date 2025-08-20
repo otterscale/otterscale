@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import Label from '$lib/components/ui/label/label.svelte';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { cn } from '$lib/utils';
@@ -14,9 +14,7 @@
 			return '';
 		}
 	}
-</script>
 
-<script lang="ts">
 	let { reloadManager, align = 'right' }: { reloadManager: ReloadManager; align?: AlignType } =
 		$props();
 </script>

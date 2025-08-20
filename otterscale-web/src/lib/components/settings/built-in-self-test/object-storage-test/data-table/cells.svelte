@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		InternalObjectService_Type,
 		type TestResult,

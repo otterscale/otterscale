@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { cn } from '$lib/utils';
 	import type { AlertVariant } from './alert.svelte';
 	import Icon from '@iconify/svelte';

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { DeletePoolRequest, Pool } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -10,9 +10,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-</script>
 
-<script lang="ts">
 	let {
 		pool
 	}: {

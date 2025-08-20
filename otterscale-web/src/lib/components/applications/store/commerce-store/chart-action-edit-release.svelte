@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		ApplicationService,
 		type Application_Release,
@@ -14,9 +14,7 @@
 	import { toast } from 'svelte-sonner';
 	import type { Writable } from 'svelte/store';
 	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		release,
 		releases = $bindable(),

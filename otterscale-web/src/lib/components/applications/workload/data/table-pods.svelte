@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import * as Table from '$lib/components/custom/table';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { cn } from '$lib/utils';
 	import { type Writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let {
 		application
 	}: {

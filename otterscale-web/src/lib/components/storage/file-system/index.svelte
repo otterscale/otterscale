@@ -1,10 +1,8 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { Group } from './group';
 	import { NFS } from './nfs';
-</script>
 
-<script lang="ts">
 	let {
 		selectedScopeUuid = $bindable(),
 		selectedFacility = $bindable(),
