@@ -190,7 +190,6 @@ is_machine_deployed() {
 
 # Juju bootstrap with validation
 bootstrap_juju() {
-    set -e
     su "$NON_ROOT_USER" -c 'mkdir -p ~/.local/share/juju'
     su "$NON_ROOT_USER" -c 'mkdir -p ~/otterscale-tmp'
 
@@ -201,7 +200,6 @@ bootstrap_juju() {
 
     juju_clouds
     juju_credentials
-    set +e
 
     rm -rf /home/$NON_ROOT_USER/otterscale-tmp
     unset JUJU_CLOUD
@@ -1195,7 +1193,7 @@ execute_non_user_cmd() {
     local USERNAME="$1"
     local COMMAND="$2"
     local DESCRIPTION="$3"
-    if ! su "$USERNAME" -c "${COMMAND} >>$TEMP_LOG 2>&1"; then
+    if ! su "$USERNAME" -c "${COMMAND}" >>"$TEMP_LOG" 2>&1; then
         log "WARN" "Failed to $DESCRIPTION, check $LOG for details" "Non-root cmd"
         return 1
     fi
