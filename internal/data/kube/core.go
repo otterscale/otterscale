@@ -25,6 +25,37 @@ func NewCore(kube *Kube) oscore.KubeCoreRepo {
 
 var _ oscore.KubeCoreRepo = (*core)(nil)
 
+func (r *core) GetService(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.Service, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+	opts := metav1.GetOptions{}
+	svc, err := clientset.CoreV1().Services(namespace).Get(ctx, name, opts)
+	if err != nil {
+		return nil, err
+	}
+	return svc, nil
+}
+
+func (r *core) CreateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*oscore.Service, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	svc := &corev1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+		},
+	}
+	if spec != nil {
+		svc.Spec = *spec
+	}
+
+	opts := metav1.CreateOptions{}
+	return clientset.CoreV1().Services(namespace).Create(ctx, svc, opts)
+}
 func (r *core) ListServices(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Service, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
@@ -54,6 +85,34 @@ func (r *core) ListServicesByOptions(ctx context.Context, config *rest.Config, n
 		return nil, err
 	}
 	return list.Items, nil
+}
+
+func (r *core) UpdateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*oscore.Service, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get existing to keep resourceVersion, immutable fields, etc.
+	svc, err := clientset.CoreV1().Services(namespace).Get(ctx, name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+	if spec != nil {
+		svc.Spec = *spec
+	}
+
+	opts := metav1.UpdateOptions{}
+	return clientset.CoreV1().Services(namespace).Update(ctx, svc, opts)
+}
+
+func (r *core) DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return err
+	}
+	opts := metav1.DeleteOptions{}
+	return clientset.CoreV1().Services(namespace).Delete(ctx, name, opts)
 }
 
 func (r *core) ListPods(ctx context.Context, config *rest.Config, namespace string) ([]oscore.Pod, error) {

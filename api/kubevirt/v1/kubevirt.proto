@@ -31,12 +31,12 @@ service KubeVirtService {
   rpc ListDataVolumes(ListDataVolumesRequest) returns (ListDataVolumesResponse);
   rpc DeleteDataVolume(DeleteDataVolumeRequest) returns (google.protobuf.Empty);
   rpc ExtendDataVolume(ExtendDataVolumeRequest) returns (google.protobuf.Empty);
-  // Network Operations
-  rpc CreateNetwork(CreateNetworkRequest) returns (KubeVirtNetwork);
-  rpc GetNetwork(GetNetworkRequest) returns (KubeVirtNetwork);
-  rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);
-  rpc UpdateNetwork(UpdateNetworkRequest) returns (KubeVirtNetwork);
-  rpc DeleteNetwork(DeleteNetworkRequest) returns (google.protobuf.Empty);
+  // VMService Operations
+  rpc CreateVMService(CreateVMServiceRequest) returns (KubeVirtVMService);
+  rpc GetVMService(GetVMServiceRequest) returns (KubeVirtVMService);
+  rpc ListVMServices(ListVMServicesRequest) returns (ListVMServicesResponse);
+  rpc UpdateVMService(UpdateVMServiceRequest) returns (KubeVirtVMService);
+  rpc DeleteVMService(DeleteVMServiceRequest) returns (google.protobuf.Empty);
   // InstanceType Operations
   rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
   rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType);
@@ -117,12 +117,44 @@ message DataVolume {
   int64 size_bytes = 4;
 }
 
-message KubeVirtNetwork {
+message KubeVirtVMService {
   Metadata metadata = 1;
-  string service_type = 2;
-  int32 port = 3;
-  int32 node_port = 4;
-  int32 container_port = 5;
+  KubeVirtVMServiceSpec   spec   = 11;
+  KubeVirtVMServiceStatus status = 12;
+}
+
+message KubeVirtVMServiceSpec {
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    CLUSTER_IP       = 1;
+    NODE_PORT        = 2;
+    LOAD_BALANCER    = 3;
+  }
+
+  enum Protocol {
+    PROTOCOL_UNSPECIFIED = 0;
+    TCP  = 1;
+    UDP  = 2;
+  }
+
+  string v_m_name = 1;
+  Type type = 2;
+  repeated ServicePort ports = 11;
+  map<string, string> selector = 21;
+}
+
+message ServicePort {
+  string name = 1;
+  int32  port = 2;
+  string target_port = 3;
+  KubeVirtVMServiceSpec.Protocol protocol = 4;
+  int32  node_port = 5;
+}
+
+message KubeVirtVMServiceStatus {
+  string           cluster_ip             = 1; 
+  repeated string  cluster_ips            = 2; 
+  repeated string  load_balancer_ingress  = 3; 
 }
 
 message Device {
@@ -278,36 +310,39 @@ message ExtendDataVolumeRequest {
   int64 size_bytes = 5;
 }
 
-message CreateNetworkRequest {
+message CreateVMServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  KubeVirtNetwork network = 3;
+  string namespace = 3;
+  KubeVirtVMService v_m_service = 4; 
 }
 
-message ListNetworksRequest {
+message ListVMServicesRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
 }
 
-message ListNetworksResponse {
-  repeated KubeVirtNetwork networks = 1;
+message ListVMServicesResponse {
+  repeated KubeVirtVMService v_m_services = 1;
 }
 
-message GetNetworkRequest {
+message GetVMServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;
   string namespace = 4;
 }
 
-message UpdateNetworkRequest {
+message UpdateVMServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  KubeVirtNetwork network = 3;
+  string name = 3;
+  string namespace = 4;
+  KubeVirtVMService v_m_service = 5;
 }
 
-message DeleteNetworkRequest {
+message DeleteVMServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;

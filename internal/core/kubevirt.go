@@ -84,13 +84,19 @@ type KubeVirtDataVolume struct {
 	SizeBytes int64
 }
 
+type KubeVirtVMServicePort struct {
+	Name       string
+	Port       int32
+	TargetPort int32
+	NodePort   int32
+}
+
 // Network represents a network resource
-type KubeVirtNetwork struct {
-	Metadata      Metadata
-	ServiceType   string
-	Port          int32
-	NodePort      int32
-	ContainerPort int32
+type KubeVirtVMService struct {
+	Metadata Metadata
+	Type     string
+	Ports    []KubeVirtVMServicePort
+	Selector map[string] string
 }
 
 // InstanceType represents a flavor resource
@@ -105,13 +111,12 @@ type KubeVirtUseCase struct {
 	kubeApps             KubeAppsRepo
 	kubeVirtVM           KubeVirtVMRepo
 	kubeVirtDV           KubeVirtDVRepo
-	kubeVirtNet          KubeVirtNetRepo
 	kubeVirtInstanceType KubeVirtInstanceTypeRepo
 	action               ActionRepo
 	facility             FacilityRepo
 }
 
-func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, kubeVirtInstanceType KubeVirtInstanceTypeRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
+func NewKubeVirtUseCase(kubeCore KubeCoreRepo, kubeApps KubeAppsRepo, kubeVirtVM KubeVirtVMRepo, kubeVirtDV KubeVirtDVRepo, action ActionRepo, facility FacilityRepo) *KubeVirtUseCase {
 	return &KubeVirtUseCase{
 		kubeCore:             kubeCore,
 		kubeApps:             kubeApps,
