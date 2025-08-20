@@ -45,13 +45,19 @@
 	</Sheet.Trigger>
 	<Sheet.Content side="right" class="min-w-[23vw] p-6">
 		<Sheet.Header class="flex items-start justify-between p-0">
-			<Sheet.Title class="relative w-full">
+			<Sheet.Title class="relative flex w-full items-start gap-2">
 				<Avatar.Root class="h-12 w-12">
 					<Avatar.Image src={chart.icon} />
 					<Avatar.Fallback>
 						<Icon icon={fuzzLogosIcon(chart.name, 'fluent-emoji-flat:otter')} class="size-12" />
 					</Avatar.Fallback>
 				</Avatar.Root>
+				<span>
+					<h3 class="font-semibold">{chart.name}</h3>
+					<p class="text-muted-foreground flex items-center gap-1 text-sm">
+						{chart.versions[0].chartVersion}
+					</p>
+				</span>
 				<span class="absolute top-0 right-0">
 					{#if chart.verified}
 						<Badge variant="secondary">
@@ -61,21 +67,18 @@
 					{/if}
 				</span>
 			</Sheet.Title>
-			<Sheet.Description class="text-primary text-xl">
-				{chart.name}
-				<span class="flex items-center gap-2">
-					<Icon icon="ph:tag" class="size-4" />
-					<p class="text-muted-foreground text-sm">{chart.versions[0].chartVersion}</p>
-				</span>
-			</Sheet.Description>
 		</Sheet.Header>
 
-		<Tabs.Root value="release">
-			<Tabs.List>
+		<Tabs.Root value="information">
+			<Tabs.List class="w-full">
 				<Tabs.Trigger value="information">Information</Tabs.Trigger>
 				<Tabs.Trigger value="release" disabled={!chartReleases}>Release</Tabs.Trigger>
 			</Tabs.List>
 			<Tabs.Content value="information">
+				<p class="text-muted-foreground my-4 max-h-[10vh] overflow-auto text-sm">
+					{chart.description}
+				</p>
+
 				<div class="space-y-2">
 					{#if chart.home}
 						<div class="flex items-center gap-2">
@@ -97,16 +100,16 @@
 					{/if}
 				</div>
 
-				<p class="text-muted-foreground my-4 max-h-[10vh] overflow-auto text-sm">
-					{chart.description}
-				</p>
-
-				<div class="flex h-full flex-col justify-end space-y-4">
+				<div class="mt-8 flex h-full flex-col space-y-4">
 					{#if chart.dependencies && chart.dependencies.length > 0}
 						<span
 							class="text-muted-foreground flex items-center justify-between gap-1 text-sm font-medium"
 						>
-							Dependency
+							<span class="flex items-center gap-2">
+								<Icon icon="ph:stack" />
+								Dependency
+							</span>
+
 							<Button
 								variant="outline"
 								size="icon"
@@ -162,7 +165,11 @@
 						<span
 							class="text-muted-foreground flex items-center justify-between gap-1 text-sm font-medium"
 						>
-							Source
+							<span class="flex items-center gap-2">
+								<Icon icon="ph:link" />
+								Source
+							</span>
+
 							<Button
 								variant="outline"
 								size="icon"
@@ -182,7 +189,7 @@
 								{#each chart.sources.slice(0, 3) as source}
 									<span class="flex items-center gap-1">
 										<Button variant="ghost" class="size-5" target="_blank" href={source}>
-											<Icon icon="ph:link" class="size-4" />
+											<Icon icon="ph:arrow-square-out" class="size-4" />
 										</Button>
 										<p class="truncate text-xs">
 											{source}
@@ -213,7 +220,11 @@
 						<span
 							class="text-muted-foreground flex items-center justify-between gap-1 text-sm font-medium"
 						>
-							Maintainer
+							<span class="flex items-center gap-2">
+								<Icon icon="ph:user" />
+								Maintainer
+							</span>
+
 							<Button
 								variant="outline"
 								size="icon"
@@ -257,7 +268,10 @@
 						<span
 							class="text-muted-foreground flex items-center justify-between gap-1 text-sm font-medium"
 						>
-							Keyword
+							<span class="flex items-center gap-2">
+								<Icon icon="ph:tag" />
+								Keyword
+							</span>
 							<Button
 								variant="outline"
 								size="icon"
@@ -327,7 +341,7 @@
 										<Table.SubCell>{release.version?.applicationVersion}</Table.SubCell>
 									</Table.Cell>
 									<Table.Cell>
-										<Actions {release} bind:releases/>
+										<Actions {release} bind:releases />
 									</Table.Cell>
 								</Table.Row>
 							{/each}

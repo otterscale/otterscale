@@ -24,7 +24,7 @@
 	} = $props();
 </script>
 
-<main class="space-y-4">
+<main class="space-y-4 py-4">
 	{#if $machine.statusMessage !== 'Deployed'}
 		<Alert {machine} />
 	{/if}

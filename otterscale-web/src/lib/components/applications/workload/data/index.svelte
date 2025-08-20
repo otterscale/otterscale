@@ -20,7 +20,7 @@
 	} = $props();
 </script>
 
-<main class="space-y-4">
+<main class="space-y-4 py-4">
 	<Alert {application} />
 
 	<div class="space-y-4 py-4">

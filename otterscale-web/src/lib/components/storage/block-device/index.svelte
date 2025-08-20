@@ -50,7 +50,7 @@
 	});
 </script>
 
-<main class="space-y-4">
+<main class="space-y-4 py-4">
 	{#if isMounted}
 		<Reloader {reloadManager} />
 		<DataTable {images} />

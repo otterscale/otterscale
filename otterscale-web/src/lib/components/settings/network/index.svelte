@@ -6,6 +6,7 @@
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table/index';
+	import { Statistics } from './statistics';
 </script>
 
 <script lang="ts">
@@ -40,10 +41,9 @@
 	});
 </script>
 
-<main class="space-y-4">
-	{#if isMounted}
-		<Reloader {reloadManager} />
-		<DataTable {networks} />
+<main class="space-y-4 py-4">
+	{#if !isMounted}
+		<DataTableLoading />
 	{:else}
 		<Loading.DataTable />
 	{/if}
