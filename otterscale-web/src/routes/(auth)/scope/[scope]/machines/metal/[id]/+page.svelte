@@ -9,7 +9,7 @@
 			dynamicPaths.machines(page.params.scope),
 			dynamicPaths.machinesMetal(page.params.scope)
 		],
-		current: { title: page.params.id, url: '' }
+		current: { title: page.params.id!, url: '' }
 	});
 </script>
 

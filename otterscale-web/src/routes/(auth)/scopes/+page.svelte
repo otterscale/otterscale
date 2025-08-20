@@ -68,7 +68,7 @@
 	</p>
 
 	<!-- Scopes Grid -->
-	<div class="z-10 mx-auto grid w-full grid-cols-8 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-2/3">
+	<div class="z-10 mx-auto grid w-full grid-cols-8 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-3/4">
 		{#each $filteredScopes as scope, index}
 			<a
 				href={dynamicPaths.scope(scope.name).url}

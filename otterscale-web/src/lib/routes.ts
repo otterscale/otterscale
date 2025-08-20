@@ -24,7 +24,7 @@ export const platformRoutes = (scope: string): Route[] => [
 	},
 	{
 		path: dynamicPaths.virtualization(scope),
-		items: []
+		items: [dynamicPaths.virtualizationVirtualMachine(scope)]
 	},
 	{
 		path: dynamicPaths.storage(scope),
@@ -47,7 +47,7 @@ export const globalRoutes = (scope: string): Route[] => [
 		path: dynamicPaths.settings(scope),
 		items: [
 			dynamicPaths.settingsNetwork(scope),
-			dynamicPaths.settingsSubscription(scope),
+			// dynamicPaths.settingsSubscription(scope),
 			dynamicPaths.settingsBIST(scope)
 		]
 	}
