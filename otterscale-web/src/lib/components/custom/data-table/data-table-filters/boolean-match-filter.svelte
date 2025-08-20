@@ -4,6 +4,7 @@
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
@@ -27,15 +28,6 @@
 	let selectedValue: boolean | undefined = $state(undefined);
 
 	const options = [false, true];
-	// const counts = $derived(
-	// 	options.reduce(
-	// 		(a, option) => {
-	// 			a[String(option)] = values.filter((value) => value === option).length;
-	// 			return a;
-	// 		},
-	// 		{} as Record<string, number>
-	// 	)
-	// );
 </script>
 
 <Popover.Root>
@@ -75,9 +67,6 @@
 								/>
 								{String(descriptor(option))}
 							</span>
-							<!-- <p class="text-muted-foreground ml-auto font-mono">
-								{counts[String(option)]}
-							</p> -->
 						</Command.Item>
 					{/each}
 				</Command.Group>
@@ -89,7 +78,7 @@
 					}}
 					class="w-full items-center justify-center text-xs font-bold"
 				>
-					Clear
+					{m.datatable_filter_action_clear()}
 				</Command.Item>
 			</Command.List>
 		</Command.Root>

@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { Table as TableType } from '@tanstack/table-core';
@@ -16,7 +17,7 @@
 	>
 		<div class={cn('flex items-center justify-center gap-1 p-4', className)}>
 			<Icon icon="ph:magnifying-glass" />
-			No Results
+			{m.datatable_footer_empty()}
 		</div>
 	</Table.Cell>
 </Table.Row>

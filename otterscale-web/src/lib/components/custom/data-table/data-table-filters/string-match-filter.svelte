@@ -5,6 +5,7 @@
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
@@ -29,17 +30,6 @@
 	const extractions = $derived(
 		(table.getColumn(columnId)?.getFilterValue() as string[]) ?? ([] as string[])
 	);
-	// const counts = $derived(
-	// 	options.reduce(
-	// 		(a, option) => {
-	// 			a[option] = table
-	// 				.getCoreRowModel()
-	// 				.rows.filter((row) => row.getValue(columnId) === option).length;
-	// 			return a;
-	// 		},
-	// 		{} as Record<string, number>
-	// 	)
-	// );
 </script>
 
 <Popover.Root>
@@ -100,7 +90,6 @@
 									class={cn('h-4 w-4')}
 								/>
 								{descriptor(option)}
-								<!-- <p class="text-muted-foreground ml-auto font-mono">{counts[option]}</p> -->
 							</div>
 						</Command.Item>
 					{/each}
@@ -111,7 +100,7 @@
 						onSelect={() => table.getColumn(columnId)?.setFilterValue(undefined)}
 						class="items-center justify-center text-xs font-bold hover:cursor-pointer"
 					>
-						Clear
+						{m.datatable_filter_action_clear()}
 					</Command.Item>
 				{/if}
 			</Command.List>
