@@ -102,8 +102,18 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={$buckets.map((row) => row.name)} columnId="name" {table} />
-			<Filters.StringMatch values={$buckets.map((row) => row.owner)} columnId="owner" {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$buckets.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
+			<Filters.StringMatch
+				columnId="owner"
+				values={$buckets.map((row) => row.owner)}
+				{messages}
+				{table}
+			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

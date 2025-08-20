@@ -96,23 +96,24 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				values={$machines.map((row) => row.fqdn)}
 				columnId="fqdn_ip"
-				alias="FQDN"
+				values={$machines.map((row) => row.fqdn)}
+				{messages}
 				{table}
 			/>
 			<Filters.StringMatch
-				values={$machines.flatMap((row) => row.powerState)}
 				columnId="powerState"
-				alias="Power"
+				values={$machines.flatMap((row) => row.powerState)}
+				{messages}
 				{table}
 			/>
 			<Filters.StringMatch
-				values={$machines.flatMap((row) => row.status)}
 				columnId="status"
+				values={$machines.flatMap((row) => row.status)}
+				{messages}
 				{table}
 			/>
-			<Filters.Column {table} {messages} />
+			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
 	<Layout.Viewer>

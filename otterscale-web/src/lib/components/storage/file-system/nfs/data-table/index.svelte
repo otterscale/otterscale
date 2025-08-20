@@ -103,11 +103,16 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={$subvolumes.map((row) => row.name)} columnId="name" {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$subvolumes.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.StringMatch
-				values={$subvolumes.map((row) => row.poolName)}
 				columnId="poolName"
-				alias="Pool Name"
+				values={$subvolumes.map((row) => row.poolName)}
+				{messages}
 				{table}
 			/>
 			<Filters.Column {table} {messages} />

@@ -111,8 +111,18 @@
 	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={ipRanges.map((row) => row.comment)} columnId="comment" {table} />
-			<Filters.StringMatch values={ipRanges.flatMap((row) => row.type)} columnId="type" {table} />
+			<Filters.StringFuzzy
+				columnId="comment"
+				values={ipRanges.map((row) => row.comment)}
+				{messages}
+				{table}
+			/>
+			<Filters.StringMatch
+				columnId="type"
+				values={ipRanges.flatMap((row) => row.type)}
+				{messages}
+				{table}
+			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

@@ -15,13 +15,13 @@
 	let {
 		table,
 		columnId,
-		alias,
+		messages,
 		values,
 		descriptor = (v: any) => v
 	}: {
 		table: Table<TData>;
 		columnId: string;
-		alias?: string;
+		messages: Record<string, string>;
 		values: any[];
 		descriptor?: (v: any) => string;
 	} = $props();
@@ -37,7 +37,7 @@
 		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs capitalize')}
 	>
 		<Icon icon="ph:funnel" />
-		{alias ?? columnId}
+		{messages[columnId]}
 
 		{#if extractions.length > 0}
 			<Separator orientation="vertical" />

@@ -108,35 +108,34 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				values={$objectStorageDaemons.map((row) => row.name)}
 				columnId="name"
+				values={$objectStorageDaemons.map((row) => row.name)}
+				{messages}
 				{table}
 			/>
 			<Filters.BooleanMatch
 				columnId="in"
-				alias="In"
-				{table}
-				values={$objectStorageDaemons.map((row) => row.in)}
 				descriptor={(value) => (value ? 'In' : 'Out')}
+				{messages}
+				{table}
 			/>
 			<Filters.BooleanMatch
 				columnId="up"
-				alias="Up"
-				{table}
-				values={$objectStorageDaemons.map((row) => row.up)}
 				descriptor={(value) => (value ? 'Up' : 'Down')}
+				{messages}
+				{table}
 			/>
 			<Filters.BooleanMatch
 				columnId="exists"
+				{messages}
 				{table}
-				values={$objectStorageDaemons.map((row) => row.exists)}
 				descriptor={(value) => (value ? 'Exists' : 'Not Exists')}
 			/>
 			<Filters.StringMatch
 				columnId="deviceClass"
-				alias="Device Class"
-				{table}
 				values={$objectStorageDaemons.map((row) => row.deviceClass)}
+				{messages}
+				{table}
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>

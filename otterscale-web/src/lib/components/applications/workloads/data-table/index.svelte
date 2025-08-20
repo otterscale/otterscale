@@ -99,18 +99,25 @@
 	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={$applications.map((row) => row.name)} columnId="name" {table} />
+			<Filters.StringFuzzy
+				columnId="name"
+				values={$applications.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.StringMatch
-				values={$applications.flatMap((row) => row.type)}
 				columnId="type"
+				values={$applications.flatMap((row) => row.type)}
+				{messages}
 				{table}
 			/>
 			<Filters.StringMatch
-				values={$applications.flatMap((row) => row.namespace)}
 				columnId="namespace"
+				values={$applications.flatMap((row) => row.namespace)}
+				{messages}
 				{table}
 			/>
-			<Filters.Column {table} {messages} />
+			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
 	<Layout.Viewer>

@@ -102,13 +102,18 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy values={$users.map((row) => row.id)} columnId="id" {table} />
-			<Filters.StringMatch values={$users.map((row) => row.name)} columnId="name" {table} />
+			<Filters.StringFuzzy columnId="id" values={$users.map((row) => row.id)} {messages} {table} />
+			<Filters.StringMatch
+				columnId="name"
+				values={$users.map((row) => row.name)}
+				{messages}
+				{table}
+			/>
 			<Filters.BooleanMatch
 				columnId="suspended"
-				{table}
 				descriptor={(value) => (value ? 'suspended' : 'Not suspended')}
-				values={$users.map((row) => row.suspended)}
+				{messages}
+				{table}
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>

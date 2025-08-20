@@ -98,15 +98,15 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				values={$largeLanguageModels.map((row) => row.name)}
 				columnId="name"
-				alias={m.models_large_language_model_headers_name()}
+				values={$largeLanguageModels.map((row) => row.name)}
+				{messages}
 				{table}
 			/>
 			<Filters.StringMatch
-				values={$largeLanguageModels.flatMap((row) => row.architecture)}
 				columnId="architecture"
-				alias={m.models_large_language_model_headers_architecture()}
+				values={$largeLanguageModels.flatMap((row) => row.architecture)}
+				{messages}
 				{table}
 			/>
 			<Filters.Column {table} {messages} />
