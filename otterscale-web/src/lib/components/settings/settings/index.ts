@@ -1,3 +1,3 @@
-import Settings from './index.svelte'
+import Settings from './index.svelte';
 
-export { Settings }
+export { Settings };

@@ -1,25 +1,26 @@
 <script lang="ts" module>
 	import type { Pool } from '$lib/api/storage/v1/storage_pb';
-	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
+	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker: _row_picker,
-		name: name,
-		type: type,
-		applications: applications,
-		placement_group_state: placement_group_state,
-		usage: usage,
-		iops: iops
+		row_picker,
+		name,
+		type,
+		applications,
+		placement_group_state,
+		usage,
+		iops,
+		actions
 	};
 </script>
 
-{#snippet _row_picker(table: Table<Pool>)}
+{#snippet row_picker(table: Table<Pool>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<TableRowPicker {table} />
+			<RowPicker {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
@@ -59,12 +60,17 @@
 
 {#snippet usage(column: Column<Pool>)}
 	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet iops()}
+{#snippet iops(column: Column<Pool>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>IOPS</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
+
+{#snippet actions(column: Column<Pool>)}{/snippet}

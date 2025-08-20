@@ -5,7 +5,6 @@
 		type Configuration_BootImage,
 		type SetDefaultBootImageRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -26,23 +25,24 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(ConfigurationService, transport);
 
-	const DEFAULT_REQUEST = {
+	const defaults = {
 		distroSeries: bootImage.distroSeries
 	} as SetDefaultBootImageRequest;
-	let request = $state(DEFAULT_REQUEST);
+	let request = $state(defaults);
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = defaults;
 	}
 
-	let name = $state('');
-
-	const stateController = new StateController(false);
+	const client = createClient(ConfigurationService, transport);
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
 </script>
 
 <div>
-	<Modal.Root bind:open={stateController.state}>
+	<Modal.Root bind:open>
 		<Modal.Trigger variant="creative">
 			<Icon icon="ph:star" />
 			Default
@@ -53,12 +53,16 @@
 				<Form.Fieldset>
 					<Form.Field>
 						<Form.Label>Name</Form.Label>
-						<SingleInput.DeletionConfirm target={bootImage.name} bind:value={name} />
+						<SingleInput.Confirm target={bootImage.name} />
 					</Form.Field>
 				</Form.Fieldset>
 			</Form.Root>
 			<Modal.Footer>
-				<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+				<Modal.Cancel
+					onclick={() => {
+						reset();
+					}}>Cancel</Modal.Cancel
+				>
 				<Modal.ActionsGroup>
 					<Modal.Action
 						onclick={() => {
@@ -81,7 +85,7 @@
 							});
 
 							reset();
-							stateController.close();
+							close();
 						}}
 					>
 						Create

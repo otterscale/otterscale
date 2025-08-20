@@ -1,11 +1,12 @@
 <script lang="ts" module>
 	import { StorageService, type SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
-	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
-	import * as Reloader from '$lib/components/custom/reloader';
+	import * as Loading from '$lib/components/custom/loading';
+	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount, type Snippet } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
+	import * as store from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -22,10 +23,13 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
-	const storageClient = createClient(StorageService, transport);
+
+	let isMounted = $state(false);
 
 	const subvolumeGroups = $state(writable([] as SubvolumeGroup[]));
-	const reloadManager = new Reloader.ReloadManager(() => {
+	const groupStore: store.GroupStore = store.createGroupStore();
+	const storageClient = createClient(StorageService, transport);
+	const reloadManager = new ReloadManager(() => {
 		storageClient
 			.listSubvolumeGroups({
 				scopeUuid: selectedScopeUuid,
@@ -36,9 +40,13 @@
 				subvolumeGroups.set(response.subvolumeGroups);
 			});
 	});
-
-	let isMounted = $state(false);
+	setContext('groupStore', groupStore);
+	setContext('reloadManager', reloadManager);
 	onMount(() => {
+		groupStore.selectedScopeUuid.set(selectedScopeUuid);
+		groupStore.selectedFacilityName.set(selectedFacility);
+		groupStore.selectedVolumeName.set(selectedVolume);
+
 		storageClient
 			.listSubvolumeGroups({
 				scopeUuid: selectedScopeUuid,
@@ -60,14 +68,14 @@
 	});
 </script>
 
-<main class="space-y-4">
+<main class="space-y-4 py-4">
 	{#if isMounted}
 		<div class="flex items-center justify-between gap-2">
 			{@render trigger()}
-			<Reloader.Root {reloadManager} />
+			<Reloader {reloadManager} />
 		</div>
-		<DataTable {selectedScopeUuid} {selectedFacility} {selectedVolume} {subvolumeGroups} />
+		<DataTable {subvolumeGroups} />
 	{:else}
-		<DataTableLoading />
+		<Loading.DataTable />
 	{/if}
 </main>

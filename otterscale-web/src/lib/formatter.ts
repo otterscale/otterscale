@@ -117,16 +117,32 @@ export function formatLatencyNano(nanosecond: number): { value: number; unit: st
 	const millisecond = nanosecond / 1000000;
 	const microsecond = nanosecond / 1000;
 
-	if (second >= 1) {
-		return { value: Math.round(second * 100) / 100, unit: 's' };
-	} else if (millisecond >= 1) {
-		return { value: Math.round(millisecond * 100) / 100, unit: 'ms' };
-	} else if (microsecond >= 1) {
-		return { value: Math.round(microsecond * 100) / 100, unit: 'us' };
-	} else {
-		return { value: Math.round(nanosecond * 100) / 100, unit: 'ns' };
-	}
-}
+    if (second >= 1) {
+        return { value: Math.round(second * 100) / 100, unit: "s" };
+    } else if (millisecond >= 1) {
+        return { value: Math.round(millisecond * 100) / 100, unit: "ms" };
+    } else if (microsecond >= 1) {
+        return { value: Math.round(microsecond * 100) / 100, unit: "us" };
+    } else {
+        return { value: Math.round(nanosecond * 100) / 100, unit: "ns" };
+    }
+};
+
+export function formatSecond(second: number): { value: string, unit: string } {
+    const minute = second / 60;
+    const hour = minute / 60;
+    const day = hour / 24;
+
+    if (day >= 1) {
+        return { value: `${Math.round(day * 100) / 100}`, unit: "d" };
+    } else if (hour >= 1) {
+        return { value: `${Math.round(hour * 100) / 100}`, unit: "h" };
+    } else if (minute >= 1) {
+        return { value: `${Math.round(minute * 100) / 100}`, unit: "m" };
+    } else {
+        return { value: `${Math.round(second * 100) / 100}`, unit: "s" };
+    }
+};
 
 export function formatHealthColor(healthPercentage: number): string {
     if (healthPercentage > 62) {

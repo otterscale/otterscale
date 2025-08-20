@@ -1,5 +1,4 @@
-import { Network } from './network'
-import { Settings } from './settings'
+import { Network } from './network';
+import { Settings } from './settings';
 
-export { Network, Settings }
-
+export { Network, Settings };

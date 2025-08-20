@@ -1,3 +1,3 @@
-import Network from './index.svelte'
+import Network from './index.svelte';
 
-export { Network }
+export { Network };

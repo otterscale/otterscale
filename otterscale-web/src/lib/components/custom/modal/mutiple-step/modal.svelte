@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import { type AlertDialogRootPropsWithoutHTML } from 'bits-ui';
-	import { setContext } from 'svelte';
+	import { onDestroy, setContext } from 'svelte';
 	import type { StepManagerState } from './types';
 	import { StepManager } from './utils.svelte';
 </script>

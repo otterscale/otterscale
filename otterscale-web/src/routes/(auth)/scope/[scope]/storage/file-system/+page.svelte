@@ -13,7 +13,7 @@
 
 	breadcrumb.set({
 		parents: [dynamicPaths.storage(page.params.scope)],
-		current: dynamicPaths.storagePool(page.params.scope)
+		current: dynamicPaths.storageFileSystem(page.params.scope)
 	});
 </script>
 

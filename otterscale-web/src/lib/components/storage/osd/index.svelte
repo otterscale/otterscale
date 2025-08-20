@@ -1,9 +1,9 @@
 <script lang="ts" module>
 	import { StorageService, type OSD } from '$lib/api/storage/v1/storage_pb';
-	import { DataTable as DataTableLoading } from '$lib/components/custom/loading';
-	import * as Reloader from '$lib/components/custom/reloader';
+	import * as Loading from '$lib/components/custom/loading';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onDestroy, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
 </script>
@@ -18,16 +18,19 @@
 	} = $props();
 
 	const transport: Transport = getContext('transport');
+
 	const storageClient = createClient(StorageService, transport);
 
 	const objectStorageDaemons = $state(writable([] as OSD[]));
-	const reloadManager = new Reloader.ReloadManager(() => {
+
+	const reloadManager = new ReloadManager(() => {
 		storageClient
 			.listOSDs({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
 			.then((response) => {
 				objectStorageDaemons.set(response.osds);
 			});
 	});
+	setContext('reloadManager', reloadManager);
 
 	let isMounted = $state(false);
 	onMount(() => {
@@ -48,11 +51,11 @@
 	});
 </script>
 
-<main class="space-y-4">
+<main class="space-y-4 py-4">
 	{#if isMounted}
-		<Reloader.Root {reloadManager} />
-		<DataTable {selectedScopeUuid} {selectedFacility} {objectStorageDaemons} />
+		<Reloader {reloadManager} />
+		<DataTable {objectStorageDaemons} />
 	{:else}
-		<DataTableLoading />
+		<Loading.DataTable />
 	{/if}
 </main>

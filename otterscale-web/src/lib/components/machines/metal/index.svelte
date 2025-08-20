@@ -10,14 +10,15 @@
 
 <script lang="ts">
 	const transport: Transport = getContext('transport');
-	const client = createClient(MachineService, transport);
 
 	const machine = writable<Machine>();
-
 	let isMounted = $state(false);
+
+	const machineClient = createClient(MachineService, transport);
+
 	onMount(async () => {
 		try {
-			client
+			machineClient
 				.getMachine({
 					id: page.params.id
 				})

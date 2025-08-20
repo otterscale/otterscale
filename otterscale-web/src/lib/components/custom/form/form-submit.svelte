@@ -1,8 +1,6 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import { Button, buttonVariants, type ButtonProps } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
-	import { getContext } from 'svelte';
 </script>
 
 <script lang="ts">

@@ -1,22 +1,22 @@
 <script lang="ts" module>
 	import type { TableRow } from './type';
-	import Sorter from '$lib/components/custom/data-table/data-table-column-sorter.svelte';
-	import TableRowPicker from '$lib/components/custom/data-table/data-table-row-pickers/header.svelte';
+	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
-		_row_picker,
+		row_picker,
 		id,
 		name,
 		isVerified
 	};
 </script>
 
-{#snippet _row_picker(table: Table<TableRow>)}
+{#snippet row_picker(table: Table<TableRow>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<TableRowPicker {table} />
+			<RowPicker {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}

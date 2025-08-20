@@ -1,14 +1,8 @@
 <script lang="ts" module>
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
-	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
-	import * as Table from '$lib/components/ui/table/index.js';
-	// import type { PrometheusDriver } from 'prometheus-query';
 	import type { Network } from '$lib/api/network/v1/network_pb';
+	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
+	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
+	import * as Table from '$lib/components/ui/table/index.js';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -21,17 +15,11 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
+	import Create from './action-create.svelte';
 	import { columns } from './columns';
-	import Actions from './actions.svelte';
-	import Create from './create.svelte';
-	import { ReservedIPRanges } from './reservedIPRanges';
-	import { headers } from './headers.svelte';
-	// import type { PrometheusDriver } from 'prometheus-query';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	// const prometheusDriver: Writable<PrometheusDriver> = getContext('prometheusDriver');
-
 	let { networks }: { networks: Writable<Network[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
@@ -104,7 +92,7 @@
 			}
 		},
 
-		autoResetAll: false
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -114,14 +102,20 @@
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
 				values={$networks.map((row) => row.fabric?.name)}
-				columnId="fabricName"
+				columnId="fabric"
 				alias="Fabric"
 				{table}
 			/>
-			<ColumnViewer {table} />
+			<Filters.StringFuzzy
+				values={$networks.map((row) => row.vlan?.name)}
+				columnId="vlan"
+				alias="VLAN"
+				{table}
+			/>
+			<Filters.Column {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create bind:networks />
+			<Create />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -139,8 +133,6 @@
 								{/if}
 							</Table.Head>
 						{/each}
-						<Table.Head>{@render headers.ipRanges()}</Table.Head>
-						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -152,27 +144,15 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-						<Table.Cell>
-							{#if row.original.subnet}
-								<ReservedIPRanges subnet={row.original.subnet} bind:networks />
-							{/if}
-						</Table.Cell>
-						<Table.Cell>
-							<Actions {row} bind:networks />
-						</Table.Cell>
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<TableEmpty />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<TableFooter {table} />
-		<TablePagination {table} />
+		<Footer {table} />
+		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

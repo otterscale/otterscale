@@ -1,11 +1,6 @@
 <script lang="ts" module>
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -20,32 +15,25 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-	import Actions from './actions.svelte';
 	import { columns } from './columns';
-	import { headers } from './headers.svelte';
-	import Tags from './tags.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
 	let { machines }: { machines: Writable<Machine[]> } = $props();
-
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
-
 	const table = createSvelteTable({
 		get data() {
 			return $machines;
 		},
 		columns,
-
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-
 		state: {
 			get pagination() {
 				return pagination;
@@ -98,8 +86,7 @@
 				rowSelection = updater;
 			}
 		},
-
-		autoResetAll: false
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -109,7 +96,7 @@
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
 				values={$machines.map((row) => row.fqdn)}
-				columnId="fqdn"
+				columnId="fqdn_ip"
 				alias="FQDN"
 				{table}
 			/>
@@ -124,7 +111,7 @@
 				columnId="status"
 				{table}
 			/>
-			<ColumnViewer {table} />
+			<Filters.Column {table} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -142,10 +129,6 @@
 								{/if}
 							</Table.Head>
 						{/each}
-						<Table.Head>
-							{@render headers.tags()}
-						</Table.Head>
-						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -157,25 +140,15 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-						<Table.Cell>
-							<Tags machine={row.original} bind:machines />
-						</Table.Cell>
-						<Table.Cell>
-							<Actions {row} bind:machines />
-						</Table.Cell>
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<TableEmpty />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<TableFooter {table} />
-		<TablePagination {table} />
+		<Footer {table} />
+		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

@@ -1,24 +1,22 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { siteConfig } from '$lib/config/site';
 	import { m } from '$lib/paraglide/messages';
 	import { staticPaths } from '$lib/path';
-	import Icon from '@iconify/svelte';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 
 	const links = [
-		{ icon: 'ph:house-fill', text: m.homepage(), url: staticPaths.github.url },
-		{ icon: 'ph:users-fill', text: m.contributors(), url: staticPaths.contributors.url },
-		{ icon: 'ph:paper-plane-tilt-fill', text: m.feedback(), url: staticPaths.feedback.url }
+		{ icon: 'streamline-logos:github-logo-2-solid', url: staticPaths.github.url },
+		{ icon: 'ph:paper-plane-tilt-fill', url: staticPaths.feedback.url }
 	];
-
-	const openLink = (url: string) => window.open(url, '_blank');
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Content class="p-12 sm:max-w-2xl">
+	<Dialog.Content class="sm:max-w-xl">
 		<div class="pointer-events-none absolute right-0 bottom-0 z-0 size-full">
 			<svg
 				aria-hidden="true"
@@ -33,21 +31,22 @@
 				<rect width="100%" height="100%" stroke-width="0" fill="url(#:S1:)"></rect>
 			</svg>
 		</div>
-		<Dialog.Header class="grid grid-cols-3 gap-4">
-			<Dialog.Title class="flex flex-col items-center space-y-1">
+		<Dialog.Header class="flex-row items-center justify-evenly gap-4">
+			<Dialog.Title class="flex flex-col items-center gap-2 font-medium">
 				<Icon icon="fluent-emoji-flat:otter" class="size-16" />
-				<span class="text-foreground text-xl font-semibold">{siteConfig.title}</span>
-				<span class="text-muted-foreground text-sm">
-					{import.meta.env.PACKAGE_VERSION}
-				</span>
+				<span class="text-xl">{siteConfig.title}</span>
+				<Badge variant="outline">{import.meta.env.PACKAGE_VERSION}</Badge>
 			</Dialog.Title>
-			<Dialog.Description class="text-md col-span-2 flex flex-col justify-between gap-2 py-2">
-				<span class="flex pt-2 font-light">{siteConfig.description}</span>
-				<div class="flex justify-between">
-					{#each links as { icon, text, url }}
-						<Button variant="link" class="h-2 p-0 has-[>svg]:px-0" onclick={() => openLink(url)}>
+			<Dialog.Description class="flex flex-col justify-between gap-4 py-2">
+				<h2 class="text-center text-3xl">
+					{m.join_1()}
+					<br />
+					<span class="text-muted-foreground/80"> {m.join_2()} </span>
+				</h2>
+				<div class="text-primary flex justify-center gap-4">
+					{#each links as { icon, url }}
+						<Button variant="outline" size="icon" href={url} target="_blank">
 							<Icon {icon} />
-							{text}
 						</Button>
 					{/each}
 				</div>

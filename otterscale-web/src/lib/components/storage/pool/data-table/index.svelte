@@ -1,10 +1,6 @@
 <script lang="ts" module>
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-column-viewer.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import * as Filters from '$lib/components/custom/data-table/data-table-filters';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import { type Pool } from '$lib/api/storage/v1/storage_pb';
+	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -18,21 +14,14 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
-	import { type Pool } from '$lib/api/storage/v1/storage_pb';
 	import { type Writable } from 'svelte/store';
-	import Actions from './actions.svelte';
+	import Create from './action-create.svelte';
 	import { columns } from './columns';
-	import Create from './create.svelte';
-	import { headers } from './headers.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let {
-		selectedScopeUuid,
-		selectedFacility,
-		pools
-	}: { selectedScopeUuid: string; selectedFacility: string; pools: Writable<Pool[]> } = $props();
+	let { pools }: { pools: Writable<Pool[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -104,7 +93,7 @@
 			}
 		},
 
-		autoResetAll: false
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -121,11 +110,16 @@
 				alias="Application"
 				{table}
 			/>
-			<Filters.StructureMatch {table} columnId="placementGroupState" alias="State" />
-			<ColumnViewer {table} />
+			<Filters.StringMatch
+				values={[...new Set($pools.flatMap((row) => Object.keys(row.placementGroupState)))]}
+				{table}
+				columnId="placementGroupState"
+				alias="State"
+			/>
+			<Filters.Column {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {selectedScopeUuid} bind:pools />
+			<Create />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -143,10 +137,6 @@
 								{/if}
 							</Table.Head>
 						{/each}
-						<Table.Head>
-							{@render headers.iops()}
-						</Table.Head>
-						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -158,25 +148,15 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-						<Table.Cell>
-							<!-- <IOPS client={$prometheusDriver} {selectedScope} selectedPool={row.original.name} /> -->
-						</Table.Cell>
-						<Table.Cell>
-							<Actions {selectedScopeUuid} {row} bind:pools />
-						</Table.Cell>
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<TableEmpty />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<TableFooter {table} />
-		<TablePagination {table} />
+		<Footer {table} />
+		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

@@ -4,7 +4,6 @@
 		type Configuration,
 		type CreateBootImageRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
-	import { StateController } from '$lib/components/custom/alert-dialog/utils.svelte';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import {
@@ -24,25 +23,28 @@
 	let { configuration = $bindable() }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(ConfigurationService, transport);
-
-	const DEFAULT_REQUEST = {} as CreateBootImageRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
 	let distroSeriesOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
+	let isMounted = false;
+
+	const client = createClient(ConfigurationService, transport);
+	const defaults = {} as CreateBootImageRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
+
+	let open = $state(false);
+	function close() {
+		open = false;
+	}
+
 	const architecturesOptions = $derived(distroSeriesArchitecturesMap[request.distroSeries]);
 	$effect(() => {
 		request.distroSeries;
 		request.architectures = [];
 	});
 
-	const stateController = new StateController(false);
-
-	let isMounted = false;
 	onMount(async () => {
 		try {
 			await client.listBootImageSelections({}).then((response) => {
@@ -74,8 +76,8 @@
 	});
 </script>
 
-<Modal.Root bind:open={stateController.state}>
-	<Modal.Trigger>
+<Modal.Root bind:open>
+	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
 		Boot Image
 	</Modal.Trigger>
@@ -148,7 +150,11 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}>Cancel</Modal.Cancel
+			>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
@@ -169,11 +175,12 @@
 								return message;
 							}
 						});
-
 						reset();
-						stateController.close();
-					}}>Create</Modal.Action
+						close();
+					}}
 				>
+					Create
+				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
 	</Modal.Content>

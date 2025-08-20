@@ -1,9 +1,9 @@
 <script lang="ts" module>
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { Layout } from '$lib/components/custom/instance';
 	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
-	import * as Layout from '../layout';
 	import Alert from './alert.svelte';
 	import StatisticCPU from './statistic-cpu.svelte';
 	import StatisticMemory from './statistic-memory.svelte';
@@ -24,7 +24,7 @@
 	} = $props();
 </script>
 
-<main class="space-y-4">
+<main class="space-y-4 py-4">
 	{#if $machine.statusMessage !== 'Deployed'}
 		<Alert {machine} />
 	{/if}

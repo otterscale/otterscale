@@ -11,7 +11,7 @@
 
 	breadcrumb.set({
 		parents: [dynamicPaths.storage(page.params.scope)],
-		current: dynamicPaths.storagePool(page.params.scope)
+		current: dynamicPaths.storageObjectGateway(page.params.scope)
 	});
 </script>
 

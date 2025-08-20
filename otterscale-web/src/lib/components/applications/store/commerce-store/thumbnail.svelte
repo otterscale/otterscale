@@ -1,5 +1,8 @@
 <script lang="ts" module>
-	import { type Application_Chart } from '$lib/api/application/v1/application_pb';
+	import {
+		type Application_Chart,
+		type Application_Release
+	} from '$lib/api/application/v1/application_pb';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
@@ -9,7 +12,10 @@
 </script>
 
 <script lang="ts">
-	let { chart }: { chart: Application_Chart } = $props();
+	let {
+		chart,
+		chartReleases
+	}: { chart: Application_Chart; chartReleases: Application_Release[] | undefined } = $props();
 </script>
 
 <Card.Root
@@ -42,9 +48,10 @@
 	<Card.Content class="text-muted-foreground p-8 text-sm">
 		<p class="line-clamp-3 text-left">{chart.description}</p>
 	</Card.Content>
-	<Card.Footer>
+	<Card.Footer class="flex items-center justify-between gap-2">
 		<Badge variant="outline" class="text-muted-foreground text-sm">
 			{chart.license}
 		</Badge>
+		<Badge variant="default" class={chartReleases ? 'visible' : 'hidden'}>Installed</Badge>
 	</Card.Footer>
 </Card.Root>

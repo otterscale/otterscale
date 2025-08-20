@@ -14,7 +14,7 @@
 		placeholder="Name"
 		type="text"
 		bind:value={filterManager.searchedName}
-		class="h-8 w-fit pr-9 pl-9"
+		class="h-8 w-40 pr-9 pl-9"
 	/>
 	<Icon icon="ph:magnifying-glass" class="absolute top-1/2 left-3 -translate-y-1/2" />
 	<button
