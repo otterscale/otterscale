@@ -17,6 +17,7 @@
 	import { type Writable } from 'svelte/store';
 	import Create from './action-create.svelte';
 	import { columns } from './columns';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -97,7 +98,9 @@
 </script>
 
 <Layout.Root>
-	<Layout.Statistics></Layout.Statistics>
+	<Layout.Statistics>
+		<Statistics {table} />
+	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={$pools.map((row) => row.name)} columnId="name" {table} />

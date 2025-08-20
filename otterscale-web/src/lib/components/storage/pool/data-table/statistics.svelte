@@ -1,63 +1,56 @@
-<!-- <script lang="ts" module>
-	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
-	import * as Chart from '$lib/components/custom/chart/templates';
-	import Icon from '@iconify/svelte';
+<script lang="ts" module>
+	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
+	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
+	import Title from '$lib/components/custom/chart/title.svelte';
+	import Description from '$lib/components/custom/chart/description.svelte';
 	import { type Table } from '@tanstack/table-core';
+	import { formatCapacity } from '$lib/formatter';
+	import Icon from '@iconify/svelte';
 </script>
 
 <script lang="ts" generics="TData">
-	import { formatCapacity } from '$lib/formatter';
-
 	let { table }: { table: Table<TData> } = $props();
 
 	const filteredData = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
+
+	const quotaTotal = $derived(
+		filteredData.reduce((sum, datum) => sum + Number(datum['quotaBytes' as keyof TData]), 0)
+	);
+	const usedTotal = $derived(
+		filteredData.reduce((sum, datum) => sum + Number(datum['usedBytes' as keyof TData]), 0)
+	);
 </script>
 
-<Layout>
-	<Chart.Text>
+<div class="grid grid-cols-5 gap-3">
+	<Layout>
 		{#snippet title()}
-			Pool
+			<Title title="Pool" />
 		{/snippet}
+
 		{#snippet content()}
 			{@const nameList = filteredData.map((datum) => datum['name' as keyof TData])}
-			{nameList.length}
+			<Content value={nameList.length} />
 		{/snippet}
-	</Chart.Text>
-	<Chart.Text>
+	</Layout>
+	<Layout>
 		{#snippet title()}
-			Usage
+			<Title title="Usage" />
 		{/snippet}
+
 		{#snippet description()}
-			{@const quotaBytesList = filteredData.map((datum) =>
-				Number(datum['quotaBytes' as keyof TData])
-			)}
-			{@const quotaBytesTotal = quotaBytesList.reduce((a, current) => a + current, 0)}
-			{@const { value: totalValue, unit: totalUnit } = formatCapacity(quotaBytesTotal)}
-			{@const usedBytesList = filteredData.map((datum) =>
-				Number(datum['usedBytes' as keyof TData])
-			)}
-			{@const usedBytesTotal = usedBytesList.reduce((a, current) => a + current, 0)}
-			{@const { value: usedValue, unit: usedUnit } = formatCapacity(usedBytesTotal)}
-			{usedValue}
-			{usedUnit}
-			/
-			{totalValue}
-			{totalUnit}
+			{@const { value: totalValue, unit: totalUnit } = formatCapacity(quotaTotal)}
+			{@const { value: usedValue, unit: usedUnit } = formatCapacity(usedTotal)}
+			<Description description={`${usedValue} ${usedUnit} / ${totalValue} ${totalUnit}`} />
 		{/snippet}
+
 		{#snippet content()}
-			{@const quotaBytesList = filteredData.map((datum) =>
-				Number(datum['quotaBytes' as keyof TData])
-			)}
-			{@const quotaBytesTotal = quotaBytesList.reduce((a, current) => a + current, 0)}
-			{@const usedBytesList = filteredData.map((datum) =>
-				Number(datum['usedBytes' as keyof TData])
-			)}
-			{@const usedBytesTotal = usedBytesList.reduce((a, current) => a + current, 0)}
-			{#if quotaBytesTotal && usedBytesTotal / quotaBytesTotal < 1}
-				{((usedBytesTotal / quotaBytesTotal) * 100).toFixed(2)}%
+			{#if quotaTotal && usedTotal / quotaTotal < 1}
+				<Content value={Math.round((usedTotal / quotaTotal) * 100)} unit="%" />
 			{:else}
-				<Icon icon="ph:infinity" />
+				<Content>
+					<Icon icon="ph:infinity" />
+				</Content>
 			{/if}
 		{/snippet}
-	</Chart.Text>
-</Layout> -->
+	</Layout>
+</div>

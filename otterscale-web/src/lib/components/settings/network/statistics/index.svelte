@@ -34,7 +34,7 @@
 	const dhcpEnabledPercentage = $derived((dhcpEnabledCount * 100) / fabricCount || 0);
 </script>
 
-<div class="grid grid-cols-4 gap-3">
+<div class="grid grid-cols-5 gap-3">
 	<Card.Root>
 		<Card.Header class="h-10">
 			<Card.Title>NETWORK</Card.Title>
