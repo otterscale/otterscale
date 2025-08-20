@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -8,9 +8,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-</script>
 
-<script lang="ts">
 	let {
 		machine
 	}: {

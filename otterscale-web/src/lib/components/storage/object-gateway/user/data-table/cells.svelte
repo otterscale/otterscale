@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { User } from '$lib/api/storage/v1/storage_pb';
 	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import { Key } from '$lib/components/storage/object-gateway/user/key';

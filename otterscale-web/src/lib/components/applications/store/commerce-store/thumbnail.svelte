@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		type Application_Chart,
 		type Application_Release
@@ -9,9 +9,7 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { fuzzLogosIcon } from './utils';
-</script>
 
-<script lang="ts">
 	let {
 		chart,
 		chartReleases

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { BISTService, type TestResult } from '$lib/api/bist/v1/bist_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
@@ -6,9 +6,7 @@
 	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table';
-</script>
 
-<script lang="ts">
 	let { trigger }: { trigger: Snippet } = $props();
 
 	const transport: Transport = getContext('transport');

@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { type Configuration_BootImage } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Table from '$lib/components/custom/table/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import Icon from '@iconify/svelte';
-</script>
 
-<script lang="ts">
 	let {
 		bootImage
 	}: {

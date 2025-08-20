@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	const modes = writable<SingleSelect.OptionType[]>([
 		{ value: 'get', label: 'Get', icon: 'ph:download-simple' },
 		{ value: 'put', label: 'Put', icon: 'ph:upload-simple' },

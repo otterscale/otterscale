@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { Data } from './data';
-</script>
 
-<script lang="ts">
 	let {
 		scopeUuid,
 		facilityName,

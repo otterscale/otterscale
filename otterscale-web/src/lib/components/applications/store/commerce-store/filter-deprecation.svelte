@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { FilterManager } from './utils';
-</script>
 
-<script lang="ts">
 	let { filterManager }: { filterManager: FilterManager } = $props();
 </script>
 

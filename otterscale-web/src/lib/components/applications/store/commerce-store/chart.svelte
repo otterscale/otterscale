@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		type Application_Chart,
 		type Application_Release
@@ -16,9 +16,7 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Table from '$lib/components/custom/table';
 	import Actions from './chart-actions.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		chart,
 		chartReleases,

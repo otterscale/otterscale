@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { FilterManager } from './utils';
-</script>
 
-<script lang="ts">
 	let { filterManager }: { filterManager: FilterManager } = $props();
 </script>
 

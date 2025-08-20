@@ -1,4 +1,4 @@
-<!-- <script lang="ts" module>
+<!-- <script lang="ts">
 	import { Sparkline } from '$lib/components/custom/loading/index';
 	import { fetchRange, integrateSerieses } from '$lib/components/dashboard/utils';
 	import { formatNetworkIO } from '$lib/formatter';
@@ -13,9 +13,8 @@
 		start: new Date(Date.now() - 60 * 60 * 1000),
 		end: new Date()
 	};
-</script>
 
-<script lang="ts">
+
 	let {
 		client,
 		selectedScope,

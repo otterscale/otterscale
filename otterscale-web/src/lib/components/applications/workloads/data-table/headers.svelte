@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Sorter, Layout, RowPickers } from '$lib/components/custom/data-table';
 	import type { Column, Table } from '@tanstack/table-core';

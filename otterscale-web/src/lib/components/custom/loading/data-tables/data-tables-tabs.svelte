@@ -1,8 +1,6 @@
-<script lang="ts" module>
-	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
-</script>
-
 <script lang="ts">
+	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+
 	let { tabs = 2 }: { tabs?: number } = $props();
 </script>
 

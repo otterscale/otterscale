@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Network_VLAN } from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import Icon from '@iconify/svelte';
-</script>
 
-<script lang="ts">
 	let { vlan }: { vlan: Network_VLAN } = $props();
 </script>
 

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		NetworkService,
 		type Network_Subnet,
@@ -12,9 +12,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-</script>
 
-<script lang="ts">
 	let { subnet }: { subnet: Network_Subnet } = $props();
 
 	const transport: Transport = getContext('transport');

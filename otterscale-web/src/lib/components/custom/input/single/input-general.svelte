@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
@@ -7,9 +7,7 @@
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import type { InputType } from './types';
 	import { typeToIcon } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
@@ -36,7 +34,7 @@
 
 <div class="relative">
 	{#if type}
-		<span class="absolute left-3 top-1/2 -translate-y-1/2 items-center">
+		<span class="absolute top-1/2 left-3 -translate-y-1/2 items-center">
 			<Icon icon={hasContext('icon') ? getContext('icon') : typeToIcon[type]} />
 		</span>
 	{/if}

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { TagService, type DeleteTagRequest, type Tag } from '$lib/api/tag/v1/tag_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -8,9 +8,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import type { Writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let { tag, tags = $bindable() }: { tag: Tag; tags: Writable<Tag[]> } = $props();
 
 	const transport: Transport = getContext('transport');

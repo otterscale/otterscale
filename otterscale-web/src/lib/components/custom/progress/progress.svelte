@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Progress } from '$lib/components/ui/progress';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { cn } from '$lib/utils.js';
@@ -6,9 +6,7 @@
 	import type { WithElementRef } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

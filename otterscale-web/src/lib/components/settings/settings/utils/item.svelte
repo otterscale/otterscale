@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
 	import type { Snippet } from 'svelte';
-</script>
 
-<script lang="ts">
 	let {
 		icon,
 		name,

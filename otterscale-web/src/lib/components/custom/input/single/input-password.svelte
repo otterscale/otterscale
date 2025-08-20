@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { General } from '.';
-</script>
 
-<script lang="ts">
 	import { PasswordManager } from './utils.svelte';
 
 	let {
@@ -41,7 +39,7 @@
 
 	<button
 		type="button"
-		class="absolute right-3 top-1/2 -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
+		class="absolute top-1/2 right-3 -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
 		onmousedown={() => {
 			passwordManager.enable();
 		}}

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type {
 		CreateTestResultRequest,
 		ExternalObjectService,
@@ -43,9 +43,7 @@
 			label: key
 		}));
 	const warpInputOperation: Writable<SingleSelect.OptionType[]> = writable(Options);
-</script>
 
-<script lang="ts">
 	let {
 		testResult
 	}: {

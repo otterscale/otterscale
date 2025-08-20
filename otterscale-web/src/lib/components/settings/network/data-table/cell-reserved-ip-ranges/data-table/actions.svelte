@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
 	import { Layout } from '$lib/components/custom/data-table';
 	import type { Row } from '@tanstack/table-core';
 	import Delete from './action-delete.svelte';
 	import Update from './action-update.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		row
 	}: {

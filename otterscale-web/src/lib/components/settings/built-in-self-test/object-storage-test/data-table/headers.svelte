@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { type TestResult } from '$lib/api/bist/v1/bist_pb';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';

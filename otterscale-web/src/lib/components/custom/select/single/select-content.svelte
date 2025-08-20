@@ -1,10 +1,8 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Popover from '$lib/components/ui/popover';
 	import { cn } from '$lib/utils.js';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -23,6 +21,6 @@
 	{sideOffset}
 	{align}
 	{side}
-	class={cn('min-w-50 w-fit p-0', className)}
+	class={cn('w-fit min-w-50 p-0', className)}
 	{...restProps}
 />

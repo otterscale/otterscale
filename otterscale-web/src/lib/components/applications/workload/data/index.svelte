@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { Badge } from '$lib/components/ui/badge';
@@ -10,9 +10,7 @@
 	import StatisticStorageClasses from './statistic-storage-classes.svelte';
 	import TablePods from './table-pods.svelte';
 	import TableServices from './table-services.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		application
 	}: {

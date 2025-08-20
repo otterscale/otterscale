@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import * as Table from '$lib/components/custom/table';
@@ -6,9 +6,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let {
 		application
 	}: {

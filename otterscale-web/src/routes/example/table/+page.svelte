@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Table from '$lib/components/custom/table';
 </script>
 

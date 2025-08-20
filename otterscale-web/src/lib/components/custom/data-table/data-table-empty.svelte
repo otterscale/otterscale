@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';

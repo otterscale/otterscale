@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { DeleteSubvolumeRequest, Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -11,9 +11,7 @@
 	import { toast } from 'svelte-sonner';
 	import { get } from 'svelte/store';
 	import { type NFSStore } from '../utils.svelte.js';
-</script>
 
-<script lang="ts">
 	let {
 		subvolume
 	}: {

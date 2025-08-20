@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { dataset } from './data-table/data';
 	import { DataTable } from './data-table';
 </script>

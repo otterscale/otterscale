@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { DoSMARTResponse_Output, OSD } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
@@ -10,9 +10,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let { osd }: { osd: OSD } = $props();
 
 	const transport: Transport = getContext('transport');

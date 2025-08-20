@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

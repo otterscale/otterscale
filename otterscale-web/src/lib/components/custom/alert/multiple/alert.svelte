@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { setContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
@@ -9,9 +9,7 @@
 	import type { AlertType, VariantGetterType } from './types';
 	import { IterationManager } from './utils.svelte';
 	import { alertVariants } from '../single/alert.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

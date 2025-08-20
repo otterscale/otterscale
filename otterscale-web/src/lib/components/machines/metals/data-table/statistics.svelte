@@ -1,4 +1,4 @@
-<!-- <script lang="ts" module>
+<!-- <script lang="ts">
 	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
 	import * as Chart from '$lib/components/custom/chart/templates';
 	import Icon from '@iconify/svelte';

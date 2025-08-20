@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		ConfigurationService,
 		type Configuration
@@ -89,9 +89,7 @@
 			span: 2
 		}
 	];
-</script>
 
-<script lang="ts">
 	const transport: Transport = getContext('transport');
 
 	let configuration = $state(writable<Configuration>());

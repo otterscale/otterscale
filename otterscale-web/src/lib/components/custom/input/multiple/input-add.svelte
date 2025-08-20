@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Button, buttonVariants, type ButtonProps } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import type { InputManager, ValuesManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
 	import { RowPickers } from '$lib/components/custom/data-table';
 	import { Badge } from '$lib/components/ui/badge';

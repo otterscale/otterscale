@@ -1,10 +1,8 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Pagination from '$lib/components/ui/pagination';
 	import Icon from '@iconify/svelte';
 	import type { PaginationManager } from './utils';
-</script>
 
-<script lang="ts">
 	let { paginationManager }: { paginationManager: PaginationManager } = $props();
 </script>
 

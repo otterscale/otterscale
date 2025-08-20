@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { CreateBucketRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -16,9 +16,7 @@
 	import { toast } from 'svelte-sonner';
 	import { writable } from 'svelte/store';
 	import { accessControlListOptions } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 

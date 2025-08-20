@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input';

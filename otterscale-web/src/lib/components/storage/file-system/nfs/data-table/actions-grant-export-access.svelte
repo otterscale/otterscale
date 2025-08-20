@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type {
 		GrantSubvolumeExportAccessRequest,
 		Subvolume
@@ -14,9 +14,7 @@
 	import { toast } from 'svelte-sonner';
 	import { get } from 'svelte/store';
 	import { type NFSStore } from '../utils.svelte.js';
-</script>
 
-<script lang="ts">
 	let {
 		subvolume
 	}: {

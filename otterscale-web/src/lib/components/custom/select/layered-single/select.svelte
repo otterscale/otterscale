@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 	import { setContext } from 'svelte';
 	import type { OptionType } from './types';
 	import { OptionManager, validate } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		id,
 		open = $bindable(false),

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Subvolume, UpdateSubvolumeRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -12,9 +12,7 @@
 	import { get } from 'svelte/store';
 	import { type NFSStore } from '../utils.svelte.js';
 	import { SUBVOLUME_QUOTA_HELP_TEXT } from './helper.js';
-</script>
 
-<script lang="ts">
 	let {
 		subvolume
 	}: {

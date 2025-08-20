@@ -261,5 +261,11 @@
 	"capacity": "Capacity",
 	"throughput": "Throughput",
 	"running": "Running",
-	"container": "Container"
+	"container": "Container",
+	"filter_not_found": "Not Found",
+	"applications_store_chart_filter-deprecation": "Deprecation",
+	"applications_store_chart_filter_keyword": "Keyword",
+	"applications_store_chart_filter_licence": "Licence",
+	"applications_store_chart_filter_maintainer": "Maintainer",
+	"applications_store_chart_filter_name": "Name"
 }

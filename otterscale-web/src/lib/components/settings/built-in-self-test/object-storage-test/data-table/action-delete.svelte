@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { DeleteTestResultRequest, TestResult } from '$lib/api/bist/v1/bist_pb';
 	import { BISTService } from '$lib/api/bist/v1/bist_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
@@ -9,9 +9,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-</script>
 
-<script lang="ts">
 	let {
 		testResult
 	}: {
@@ -32,7 +30,7 @@
 	function reset() {
 		request = defaults;
 	}
-	
+
 	let open = $state(false);
 	function close() {
 		open = false;

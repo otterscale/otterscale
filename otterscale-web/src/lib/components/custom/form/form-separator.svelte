@@ -1,9 +1,7 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -16,7 +14,7 @@
 	<div class="flex w-full items-center bg-transparent px-2 text-sm">
 		{#if children}
 			{@render Separator()}
-			<span class="text-muted-foreground/40 whitespace-pre-wrap px-1 text-center">
+			<span class="text-muted-foreground/40 px-1 text-center whitespace-pre-wrap">
 				{@render children()}
 			</span>
 			{@render Separator()}
