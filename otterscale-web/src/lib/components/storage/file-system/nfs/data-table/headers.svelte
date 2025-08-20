@@ -5,6 +5,18 @@
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
 	import type { Column, Table } from '@tanstack/table-core';
 
+	export const messages = {
+		name: 'name',
+		poolName: 'poolName',
+		usage: 'usage',
+		path: 'path',
+		mode: 'mode',
+		createTime: 'createTime',
+		exportSubvolume: 'exportSubvolume',
+		snapshots: 'snapshots',
+		actions: 'actions'
+	};
+
 	export const headers = {
 		row_picker,
 		name,

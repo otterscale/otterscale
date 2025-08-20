@@ -17,6 +17,7 @@
 	import { type Writable } from 'svelte/store';
 	import Create from './action-test.svelte';
 	import { columns } from './columns';
+	import { messages } from './headers.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -107,7 +108,7 @@
 				values={$testResults.map((row) => row.createdBy)}
 				alias="Creator"
 			/>
-			<Filters.Column {table} />
+			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />

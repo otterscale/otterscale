@@ -17,6 +17,7 @@
 	import { type Writable } from 'svelte/store';
 	import Create from './action-create.svelte';
 	import { columns } from './columns';
+	import { messages } from './headers.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -109,7 +110,7 @@
 				descriptor={(value) => (value ? 'suspended' : 'Not suspended')}
 				values={$users.map((row) => row.suspended)}
 			/>
-			<Filters.Column {table} />
+			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />

@@ -3,6 +3,13 @@
 	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
 	import type { Column, Table } from '@tanstack/table-core';
 
+	export const messages = {
+		type: 'type',
+		startIp: 'startIp',
+		endIp: 'endIp',
+		comment: 'comment'
+	};
+
 	export const headers = {
 		row_picker,
 		type,

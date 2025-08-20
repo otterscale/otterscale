@@ -17,6 +17,7 @@
 	import { type Writable } from 'svelte/store';
 	import Create from './action-create.svelte';
 	import { columns } from './columns';
+	import { messages } from './headers.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -105,7 +106,7 @@
 				{table}
 				values={$images.map((row) => row.poolName)}
 			/>
-			<Filters.Column {table} />
+			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />

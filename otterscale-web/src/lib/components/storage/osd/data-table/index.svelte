@@ -16,6 +16,7 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import { columns } from './columns';
+	import { messages } from './headers.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -137,7 +138,7 @@
 				{table}
 				values={$objectStorageDaemons.map((row) => row.deviceClass)}
 			/>
-			<Filters.Column {table} />
+			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 	</Layout.Controller>
 	<Layout.Viewer>
