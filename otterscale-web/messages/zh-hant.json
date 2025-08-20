@@ -44,6 +44,7 @@
 	"file_system": "檔案系統",
 	"object_gateway": "物件閘道",
 	"virtualization": "虛擬化",
+	"virtual_machine": "虛擬機器",
 	"global": "全域",
 	"machines": "機器",
 	"machines_description": "部署和管理基礎設施",

@@ -124,6 +124,10 @@ export const dynamicPaths = {
 		title: m.virtualization(),
 		url: createScopePath(scope, '/virtualization')
 	}),
+	virtualizationVirtualMachine: (scope: string | undefined): Path => ({
+		title: m.virtual_machine(),
+		url: createScopePath(scope, '/virtualization/virtual-machine')
+	}),
 	settings: (scope: string | undefined): Path => ({
 		title: m.settings(),
 		url: createScopePath(scope, '/settings')
@@ -174,11 +178,12 @@ export function urlIcon(url: string): string {
 }
 
 const disabledPaths = (scope: string | undefined) => ({
-	ceph: [dynamicPaths.storage(scope)],
+	ceph: [dynamicPaths.virtualization(scope), dynamicPaths.storage(scope)],
 	kube: [
 		dynamicPaths.models(scope),
 		dynamicPaths.databases(scope),
-		dynamicPaths.applications(scope)
+		dynamicPaths.applications(scope),
+		dynamicPaths.virtualization(scope)
 	]
 });
 

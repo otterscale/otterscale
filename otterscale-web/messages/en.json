@@ -44,6 +44,7 @@
 	"file_system": "File System",
 	"object_gateway": "Object",
 	"virtualization": "Virtualization",
+	"virtual_machine": "Virtual Machine",
 	"machines": "Machines",
 	"machines_description": "Deploy and manage infrastructure facilities",
 	"metal": "Metal",
