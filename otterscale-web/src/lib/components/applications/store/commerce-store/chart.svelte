@@ -43,8 +43,8 @@
 	<Sheet.Trigger>
 		{@render children()}
 	</Sheet.Trigger>
-	<Sheet.Content side="right" class="min-w-[23vw] p-6">
-		<Sheet.Header class="flex items-start justify-between p-0">
+	<Sheet.Content side="right" class="min-w-[23vw]">
+		<Sheet.Header class="bg-muted flex items-start justify-between p-6 pb-2">
 			<Sheet.Title class="relative flex w-full items-start gap-2">
 				<Avatar.Root class="h-12 w-12">
 					<Avatar.Image src={chart.icon} />
@@ -70,246 +70,215 @@
 		</Sheet.Header>
 
 		<Tabs.Root value="information">
-			<Tabs.List class="w-full">
+			<Tabs.List class="-mt-4 ml-auto w-full rounded-none px-1">
 				<Tabs.Trigger value="information">Information</Tabs.Trigger>
 				<Tabs.Trigger value="release" disabled={!chartReleases}>Release</Tabs.Trigger>
 			</Tabs.List>
-			<Tabs.Content value="information">
-				<p class="text-muted-foreground my-4 max-h-[10vh] overflow-auto text-sm">
-					{chart.description}
-				</p>
-
-				<div class="space-y-2">
-					{#if chart.home}
-						<div class="flex items-center gap-2">
-							<Icon icon="ph:house" />
-							<p class="text-muted-foreground truncate text-xs">{chart.home}</p>
-						</div>
-					{/if}
+			<Tabs.Content value="information" class="p-4">
+				<div class="text-muted-foreground space-y-4 p-4 text-sm">
 					{#if chart.license}
 						<div class="flex items-center gap-2">
 							<Icon icon="ph:identification-badge" />
-							<p class="text-muted-foreground text-xs">{chart.license}</p>
+							{chart.license}
 						</div>
 					{/if}
-					{#if chart.tags}
-						<div class="flex items-center gap-2">
-							<Icon icon="ph:tag" />
-							<p class="text-muted-foreground text-xs">{chart.tags}</p>
-						</div>
+
+					<p class="max-h-[10vh] overflow-auto">
+						{chart.description}
+					</p>
+
+					{#if chart.keywords && chart.keywords.length > 0}
+						<span class="flex items-start gap-2">
+							<div class="flex flex-wrap gap-1 overflow-auto">
+								{chart.tags}
+								{#each chart.keywords as keyword}
+									<Badge variant="outline" class="text-xs">
+										{keyword}
+									</Badge>
+								{/each}
+							</div>
+						</span>
 					{/if}
 				</div>
 
-				<div class="mt-8 flex h-full flex-col space-y-4">
+				<div class="text-muted-foreground space-y-4 p-4 text-sm">
 					{#if chart.dependencies && chart.dependencies.length > 0}
-						<span
-							class="text-muted-foreground flex items-center justify-between gap-1 text-sm font-medium"
-						>
-							<span class="flex items-center gap-2">
-								<Icon icon="ph:stack" />
-								Dependency
-							</span>
+						<div class="space-y-1">
+							<span class="flex items-center justify-between gap-1">
+								<span class="flex items-center gap-2">
+									<Icon icon="ph:stack" />
+									Dependency
+								</span>
 
-							<Button
-								variant="outline"
-								size="icon"
-								class={cn('size-6', chart.dependencies.length > 3 ? 'visible' : 'hidden')}
-								onclick={() => {
-									isDependanciesExpand = !isDependanciesExpand;
-								}}
-							>
-								<Icon
-									icon="ph:caret-left"
-									class={cn(
-										'size-4 transition-all',
-										isDependanciesExpand ? 'rotate-90' : '-rotate-90'
-									)}
-								/>
-							</Button>
-						</span>
-						<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto">
-							{#if !isDependanciesExpand}
-								{#each chart.dependencies.slice(0, 3) as dependency}
-									<Badge variant="secondary" class="flex items-center gap-1 text-xs">
-										<p>{dependency.name}</p>
-										{#if dependency.version}
-											<p>{dependency.version}</p>
-										{/if}
-										{#if dependency.condition}
-											<p class="text-muted-foreground">{dependency.condition}</p>
-										{/if}
-									</Badge>
-								{/each}
-								{#if chart.dependencies.length > 3}
-									<Badge variant="outline" class="h-fit w-fit text-xs">
-										+{chart.dependencies.length - 3}
-									</Badge>
+								<Button
+									variant="outline"
+									size="icon"
+									class={cn('size-6', chart.dependencies.length > 3 ? 'visible' : 'hidden')}
+									onclick={() => {
+										isDependanciesExpand = !isDependanciesExpand;
+									}}
+								>
+									<Icon
+										icon="ph:caret-left"
+										class={cn(
+											'size-4 transition-all',
+											isDependanciesExpand ? 'rotate-90' : '-rotate-90'
+										)}
+									/>
+								</Button>
+							</span>
+							<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto pl-6 text-xs">
+								{#if !isDependanciesExpand}
+									{#each chart.dependencies.slice(0, 3) as dependency}
+										<span class="flex items-center gap-1">
+											{dependency.name}
+											{#if dependency.version}
+												{dependency.version}
+											{/if}
+											{#if dependency.condition}
+												<p class="text-muted-foreground">{dependency.condition}</p>
+											{/if}
+										</span>
+									{/each}
+									{#if chart.dependencies.length > 3}
+										<Badge variant="outline" class="h-fit w-fit">
+											+{chart.dependencies.length - 3}
+										</Badge>
+									{/if}
+								{:else}
+									{#each chart.dependencies as dependency}
+										<span class="flex items-center gap-1">
+											{dependency.name}
+											{#if dependency.version}
+												{dependency.version}
+											{/if}
+											{#if dependency.condition}
+												<p class="text-muted-foreground">{dependency.condition}</p>
+											{/if}
+										</span>
+									{/each}
 								{/if}
-							{:else}
-								{#each chart.dependencies as dependency}
-									<Badge variant="secondary" class="flex items-center gap-1 text-xs">
-										<p>{dependency.name}</p>
-										{#if dependency.version}
-											<p>{dependency.version}</p>
-										{/if}
-										{#if dependency.condition}
-											<p class="text-muted-foreground">{dependency.condition}</p>
-										{/if}
-									</Badge>
-								{/each}
-							{/if}
+							</div>
+						</div>
+					{/if}
+
+					{#if chart.home}
+						<div class="space-y-1">
+							<span class="flex items-center gap-2">
+								<Icon icon="ph:house" />
+								Home
+							</span>
+							<a
+								target="_blank"
+								href={chart.home}
+								class="truncate pl-6 text-xs underline hover:no-underline"
+							>
+								{chart.home}
+							</a>
 						</div>
 					{/if}
 
 					{#if chart.sources && chart.sources.length > 0}
-						<span
-							class="text-muted-foreground flex items-center justify-between gap-1 text-sm font-medium"
-						>
-							<span class="flex items-center gap-2">
-								<Icon icon="ph:link" />
-								Source
-							</span>
+						<div class="space-y-1">
+							<span class="flex items-center justify-between gap-1">
+								<span class="flex items-center gap-2">
+									<Icon icon="ph:link" />
+									Source
+								</span>
 
-							<Button
-								variant="outline"
-								size="icon"
-								class="size-6"
-								onclick={() => {
-									isSourcesExpand = !isSourcesExpand;
-								}}
-							>
-								<Icon
-									icon="ph:caret-left"
-									class={cn('size-4 transition-all', isSourcesExpand ? 'rotate-90' : '-rotate-90')}
-								/>
-							</Button>
-						</span>
-						<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto">
-							{#if !isSourcesExpand}
-								{#each chart.sources.slice(0, 3) as source}
-									<span class="flex items-center gap-1">
-										<Button variant="ghost" class="size-5" target="_blank" href={source}>
-											<Icon icon="ph:arrow-square-out" class="size-4" />
-										</Button>
-										<p class="truncate text-xs">
+								<Button
+									variant="outline"
+									size="icon"
+									class="size-6"
+									onclick={() => {
+										isSourcesExpand = !isSourcesExpand;
+									}}
+								>
+									<Icon
+										icon="ph:caret-left"
+										class={cn(
+											'size-4 transition-all',
+											isSourcesExpand ? 'rotate-90' : '-rotate-90'
+										)}
+									/>
+								</Button>
+							</span>
+							<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto pl-6 text-xs">
+								{#if !isSourcesExpand}
+									{#each chart.sources.slice(0, 3) as source}
+										<a
+											target="_blank"
+											href={source}
+											class="hover:text-primary underline hover:no-underline"
+										>
 											{source}
-										</p>
-									</span>
-								{/each}
-								{#if chart.sources.length > 3}
-									<Badge variant="outline" class="group relative h-fit w-fit text-xs">
-										+{chart.sources.length - 3}
-									</Badge>
+										</a>
+									{/each}
+									{#if chart.sources.length > 3}
+										<Badge variant="outline" class="group relative h-fit w-fit">
+											+{chart.sources.length - 3}
+										</Badge>
+									{/if}
+								{:else}
+									{#each chart.sources as source}
+										<a
+											target="_blank"
+											href={source}
+											class="hover:text-primary underline hover:no-underline"
+										>
+											{source}
+										</a>
+									{/each}
 								{/if}
-							{:else}
-								{#each chart.sources as source}
-									<span class="flex items-center gap-1">
-										<Button variant="ghost" class="size-5" target="_blank" href={source}>
-											<Icon icon="ph:link" class="size-4" />
-										</Button>
-										<p class="text-xs break-all">
-											{source}
-										</p>
-									</span>
-								{/each}
-							{/if}
+							</div>
 						</div>
 					{/if}
 
 					{#if chart.maintainers && chart.maintainers.length > 0}
-						<span
-							class="text-muted-foreground flex items-center justify-between gap-1 text-sm font-medium"
-						>
-							<span class="flex items-center gap-2">
-								<Icon icon="ph:user" />
-								Maintainer
+						<div class="space-y-1">
+							<span class="flex items-center justify-between gap-1">
+								<span class="flex items-center gap-2">
+									<Icon icon="ph:user" />
+									Maintainer
+								</span>
+								<Button
+									variant="outline"
+									size="icon"
+									class={cn('size-6', chart.maintainers.length > 3 ? 'visible' : 'hidden')}
+									onclick={() => {
+										isMaintainersExpand = !isMaintainersExpand;
+									}}
+								>
+									<Icon
+										icon="ph:caret-left"
+										class={cn(
+											'size-4 transition-all',
+											isMaintainersExpand ? 'rotate-90' : '-rotate-90'
+										)}
+									/>
+								</Button>
 							</span>
-
-							<Button
-								variant="outline"
-								size="icon"
-								class={cn('size-6', chart.maintainers.length > 3 ? 'visible' : 'hidden')}
-								onclick={() => {
-									isMaintainersExpand = !isMaintainersExpand;
-								}}
-							>
-								<Icon
-									icon="ph:caret-left"
-									class={cn(
-										'size-4 transition-all',
-										isMaintainersExpand ? 'rotate-90' : '-rotate-90'
-									)}
-								/>
-							</Button>
-						</span>
-						<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto">
-							{#if !isMaintainersExpand}
-								{#each chart.maintainers.slice(0, 3) as maintainer}
-									<Badge variant="secondary" class="text-xs">
+							<div class="flex max-h-[15vh] flex-col gap-1 overflow-auto pl-6 text-xs">
+								{#if !isMaintainersExpand}
+									{#each chart.maintainers.slice(0, 3) as maintainer}
 										{maintainer.name}
-									</Badge>
-								{/each}
-								{#if chart.maintainers.length > 3}
-									<Badge variant="outline" class="h-fit w-fit text-xs">
-										+{chart.maintainers.length - 3}
-									</Badge>
-								{/if}
-							{:else}
-								{#each chart.maintainers as maintainer}
-									<Badge variant="secondary" class="text-xs">
+									{/each}
+									{#if chart.maintainers.length > 3}
+										<Badge variant="outline" class="h-fit w-fit text-xs">
+											+{chart.maintainers.length - 3}
+										</Badge>
+									{/if}
+								{:else}
+									{#each chart.maintainers as maintainer}
 										{maintainer.name}
-									</Badge>
-								{/each}
-							{/if}
-						</div>
-					{/if}
-
-					{#if chart.keywords && chart.keywords.length > 0}
-						<span
-							class="text-muted-foreground flex items-center justify-between gap-1 text-sm font-medium"
-						>
-							<span class="flex items-center gap-2">
-								<Icon icon="ph:tag" />
-								Keyword
-							</span>
-							<Button
-								variant="outline"
-								size="icon"
-								class={cn('size-6', chart.keywords.length > 3 ? 'visible' : 'hidden')}
-								onclick={() => {
-									isKeywordsExpand = !isKeywordsExpand;
-								}}
-							>
-								<Icon
-									icon="ph:caret-left"
-									class={cn('size-4 transition-all', isKeywordsExpand ? 'rotate-90' : '-rotate-90')}
-								/>
-							</Button>
-						</span>
-						<div class="flex max-h-[15vh] flex-wrap gap-1 overflow-auto">
-							{#if !isKeywordsExpand}
-								{#each chart.keywords.slice(0, 3) as keyword}
-									<Badge variant="secondary" class="text-xs">
-										{keyword}
-									</Badge>
-								{/each}
-								{#if chart.keywords.length > 3}
-									<Badge variant="outline" class="text-xs">
-										+{chart.keywords.length - 3}
-									</Badge>
+									{/each}
 								{/if}
-							{:else}
-								{#each chart.keywords as keyword}
-									<Badge variant="secondary" class="text-xs">
-										{keyword}
-									</Badge>
-								{/each}
-							{/if}
+							</div>
 						</div>
 					{/if}
 				</div>
 			</Tabs.Content>
-			<Tabs.Content value="release">
+			<Tabs.Content value="release" class="p-4">
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
@@ -317,11 +286,11 @@
 								NAME
 								<Table.SubHead>NAMESPACE</Table.SubHead>
 							</Table.Head>
-							<Table.Head>REVISION</Table.Head>
 							<Table.Head>
 								CHART
 								<Table.SubHead>APPLICATION</Table.SubHead>
 							</Table.Head>
+							<Table.Head>REVISION</Table.Head>
 							<Table.Head></Table.Head>
 						</Table.Row>
 					</Table.Header>
@@ -334,11 +303,11 @@
 										<Table.SubCell>{release.namespace}</Table.SubCell>
 									</Table.Cell>
 									<Table.Cell>
-										{release.revision}
-									</Table.Cell>
-									<Table.Cell>
 										{release.version?.chartVersion}
 										<Table.SubCell>{release.version?.applicationVersion}</Table.SubCell>
+									</Table.Cell>
+									<Table.Cell>
+										{release.revision}
 									</Table.Cell>
 									<Table.Cell>
 										<Actions {release} bind:releases />
@@ -351,7 +320,7 @@
 			</Tabs.Content>
 		</Tabs.Root>
 
-		<Sheet.Footer class="p-0">
+		<Sheet.Footer class="p-4">
 			<Install {chart} bind:charts />
 		</Sheet.Footer>
 	</Sheet.Content>

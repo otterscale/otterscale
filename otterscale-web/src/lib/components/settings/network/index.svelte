@@ -43,7 +43,8 @@
 
 <main class="space-y-4 py-4">
 	{#if !isMounted}
-		<DataTableLoading />
+		<Reloader {reloadManager} />
+		<DataTable {networks} />
 	{:else}
 		<Loading.DataTable />
 	{/if}
