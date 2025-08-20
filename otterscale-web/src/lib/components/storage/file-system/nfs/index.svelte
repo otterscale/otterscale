@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { StorageService, type Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
@@ -8,9 +8,7 @@
 	import { DataTable } from './data-table';
 	import Pickers from './pickers.svelte';
 	import { createNFSStore, type NFSStore } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		selectedScopeUuid = $bindable(),
 		selectedFacility = $bindable(),

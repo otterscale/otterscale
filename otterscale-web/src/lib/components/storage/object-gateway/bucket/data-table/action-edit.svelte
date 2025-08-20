@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Bucket, UpdateBucketRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -15,9 +15,7 @@
 	import { toast } from 'svelte-sonner';
 	import { writable } from 'svelte/store';
 	import { accessControlListOptions, getAccessControlList } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		bucket
 	}: {

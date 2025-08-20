@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext, setContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { IndexManager, StepManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

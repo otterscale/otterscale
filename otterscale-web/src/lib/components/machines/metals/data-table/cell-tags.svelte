@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { TagService } from '$lib/api/tag/v1/tag_pb';
 	import * as Loading from '$lib/components/custom/loading';
@@ -10,9 +10,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
-</script>
 
-<script lang="ts">
 	let {
 		machine
 	}: {

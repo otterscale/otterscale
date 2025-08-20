@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type {
 		CephBlockDevice,
 		CreateTestResultRequest,
@@ -44,9 +44,7 @@
 			label: key
 		}));
 	const fioInputeAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
-</script>
 
-<script lang="ts">
 	let {
 		testResult
 	}: {

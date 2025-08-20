@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
 	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';

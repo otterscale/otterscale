@@ -1,9 +1,7 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Button, type Props } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils';
-</script>
 
-<script lang="ts">
 	let {
 		class: className,
 		variant = 'outline',

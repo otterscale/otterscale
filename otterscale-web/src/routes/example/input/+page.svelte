@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import {
 		LayeredMultiple as LayeredMultipleSelect,
@@ -32,9 +32,7 @@
 		values9: any[];
 		values0: any[];
 	};
-</script>
 
-<script lang="ts">
 	let options1: Writable<SingleSelect.OptionType[]> = $state(
 		writable([
 			{ value: 'moon', label: 'Moon', icon: 'ph:moon' },

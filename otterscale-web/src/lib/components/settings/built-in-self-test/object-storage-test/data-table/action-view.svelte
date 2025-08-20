@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { TestResult } from '$lib/api/bist/v1/bist_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';
-</script>
 
-<script lang="ts">
 	let {
 		testResult
 	}: {

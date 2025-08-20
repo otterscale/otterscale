@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		ApplicationService,
 		type Application_Release,
@@ -12,9 +12,7 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import type { Writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let {
 		release,
 		releases = $bindable()

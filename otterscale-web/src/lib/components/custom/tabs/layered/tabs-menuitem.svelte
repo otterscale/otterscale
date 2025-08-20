@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Menubar from '$lib/components/ui/menubar/index';
 	import { Menubar as MenubarPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
 	import { getContext } from 'svelte';
 	import type { Setter } from './types';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

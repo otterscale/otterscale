@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { getContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
@@ -9,9 +9,7 @@
 	import type { WithElementRef } from 'bits-ui';
 
 	import type { IterationManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -27,7 +25,7 @@
 	data-slot="alert-controller"
 	class={cn(
 		className,
-		'absolute right-0 top-0 flex h-full flex-col items-center justify-between gap-2 rounded-lg p-4 [&>svg]:cursor-pointer'
+		'absolute top-0 right-0 flex h-full flex-col items-center justify-between gap-2 rounded-lg p-4 [&>svg]:cursor-pointer'
 	)}
 	{...restProps}
 >

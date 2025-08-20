@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
@@ -7,9 +7,7 @@
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
 	import { OptionManager, validate } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		children,

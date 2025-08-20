@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		type Application_Chart,
 		type Application_Release
@@ -15,9 +15,7 @@
 	import Thumbnail from './thumbnail.svelte';
 	import Upload from './upload.svelte';
 	import { FilterManager, PaginationManager } from './utils';
-</script>
 
-<script lang="ts">
 	let {
 		charts = $bindable(),
 		releases = $bindable()

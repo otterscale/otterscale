@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { page } from '$app/state';
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { RowPickers } from '$lib/components/custom/data-table';

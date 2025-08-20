@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 </script>
 

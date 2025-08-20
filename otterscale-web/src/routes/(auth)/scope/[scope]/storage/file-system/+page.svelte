@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { page } from '$app/state';
 	import { FileSystem } from '$lib/components/storage/file-system/index';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
-</script>
 
-<script lang="ts">
 	let selectedScopeUuid = $derived($activeScope ? $activeScope.uuid : '');
 	let selectedFacility = $state('ceph-mon');
 	let selectedVolume = $state('ceph-fs');

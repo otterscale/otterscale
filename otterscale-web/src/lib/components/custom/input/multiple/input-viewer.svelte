@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Badge, type BadgeVariant } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { cn } from '$lib/utils';
@@ -7,9 +7,7 @@
 	import { getContext, hasContext } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
 	import { InputManager, typeToIcon, ValuesManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		href,

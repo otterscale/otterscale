@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card';
@@ -10,9 +10,7 @@
 	import { getContext } from 'svelte';
 	import type { OptionType } from './types';
 	import { validate, type OptionManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		children,

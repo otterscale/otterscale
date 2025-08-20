@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import { type AlertDialogRootPropsWithoutHTML } from 'bits-ui';
 	import { onDestroy, setContext } from 'svelte';
 	import type { StepManagerState } from './types';
 	import { StepManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		open = $bindable(false),
 		steps,

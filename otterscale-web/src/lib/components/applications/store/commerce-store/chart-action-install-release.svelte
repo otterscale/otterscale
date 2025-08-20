@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		ApplicationService,
 		type Application_Chart,
@@ -16,9 +16,7 @@
 	import { writable, type Writable } from 'svelte/store';
 	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
 	// import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
-</script>
 
-<script lang="ts">
 	let {
 		chart,
 		charts = $bindable()

@@ -1,10 +1,8 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
 	import { PalinTabs } from '$lib/components/custom/tabs';
-</script>
 
-<script lang="ts">
 	import Icon from '@iconify/svelte';
 
 	let field1 = $state(false);

@@ -1,8 +1,6 @@
-<script lang="ts" module>
-	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
-	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
-	import Title from '$lib/components/custom/chart/title.svelte';
-	import Description from '$lib/components/custom/chart/description.svelte';
+<!-- <script lang="ts">
+	import { Statistics as Layout } from '$lib/components/custom/chart/layouts/index';
+	import * as Chart from '$lib/components/custom/chart/templates';
 	import { type Table } from '@tanstack/table-core';
 	import { formatCapacity } from '$lib/formatter';
 	import Icon from '@iconify/svelte';

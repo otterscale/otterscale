@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import {
 		NetworkService,
 		type Network_Fabric,
@@ -13,9 +13,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-</script>
 
-<script lang="ts">
 	let { fabric, vlan }: { fabric: Network_Fabric; vlan: Network_VLAN } = $props();
 
 	const transport: Transport = getContext('transport');

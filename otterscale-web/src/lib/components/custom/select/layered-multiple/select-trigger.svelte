@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -10,9 +10,7 @@
 	import { getContext } from 'svelte';
 	import type { AncestralOptionType } from './types';
 	import { OptionManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		children,

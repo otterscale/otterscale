@@ -1,18 +1,16 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { formatCapacity } from '$lib/formatter';
 	import { type Writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let {
 		machine
 	}: {
 		machine: Writable<Machine>;
 	} = $props();
 
-	const { value, unit } = formatCapacity(Number($machine.storageMb)*1000*1000);
+	const { value, unit } = formatCapacity(Number($machine.storageMb) * 1000 * 1000);
 </script>
 
 <Layout.Statistic.Root>

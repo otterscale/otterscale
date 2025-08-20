@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Command from '$lib/components/ui/command';
 	import { cn } from '$lib/utils.js';
 	import { Command as CommandPrimitive } from 'bits-ui';
@@ -6,9 +6,7 @@
 	import type { Writable } from 'svelte/store';
 	import type { OptionType } from './types';
 	import type { OptionManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	const optionManager: OptionManager = getContext('OptionManager');
 	let {
 		ref = $bindable(null),

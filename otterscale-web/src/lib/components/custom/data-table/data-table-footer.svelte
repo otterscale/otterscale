@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Badge } from '$lib/components/ui/badge';
 	import type { Table } from '@tanstack/table-core';
 </script>

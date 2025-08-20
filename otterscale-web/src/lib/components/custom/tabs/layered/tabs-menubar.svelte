@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Menubar from '$lib/components/ui/menubar/index';
 	import { Menubar as MenubarPrimitive } from 'bits-ui';
 	import { cn } from '$lib/utils.js';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

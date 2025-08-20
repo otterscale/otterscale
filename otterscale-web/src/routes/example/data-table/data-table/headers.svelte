@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { TableRow } from './type';
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';

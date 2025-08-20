@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { CreatePoolRequest } from '$lib/api/storage/v1/storage_pb';
 	import { PoolType, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -52,9 +52,7 @@
 			icon: 'ph:squares-four'
 		}
 	]);
-</script>
 
-<script lang="ts">
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 

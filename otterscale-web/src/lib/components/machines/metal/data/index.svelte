@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { Badge } from '$lib/components/ui/badge';
@@ -14,9 +14,7 @@
 	import TableMainboard from './table-mainboard.svelte';
 	import TableNetwork from './table-network.svelte';
 	import TableSystem from './table-system.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		machine
 	}: {

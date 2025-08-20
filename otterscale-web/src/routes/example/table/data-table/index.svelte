@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import ColumnViewer from '$lib/components/custom/data-table/data-table-filters/column.svelte';
 	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
 	import * as Filter from '$lib/components/custom/data-table/data-table-filters';

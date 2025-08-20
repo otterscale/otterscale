@@ -1,10 +1,8 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { cn } from '$lib/utils.js';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		sideOffset = 4,
@@ -25,6 +23,6 @@
 	{sideOffset}
 	{align}
 	{side}
-	class={cn('min-w-50 w-fit p-0', className)}
+	class={cn('w-fit min-w-50 p-0', className)}
 	{...restProps}
 />

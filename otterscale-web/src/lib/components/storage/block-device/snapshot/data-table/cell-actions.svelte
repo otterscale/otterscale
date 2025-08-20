@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
 	import type { Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import Delete from './action-delete.svelte';
 	import Protect from './action-protect.svelte';
 	import Rollback from './action-rollback.svelte';
 	import Unprotect from './action-unprotect.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		snapshot
 	}: {

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Table } from '@tanstack/table-core';
 </script>

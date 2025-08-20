@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
@@ -7,9 +7,7 @@
 	import { writable } from 'svelte/store';
 	import { DataTable } from './data-table/index';
 	import { Statistics } from './statistics';
-</script>
 
-<script lang="ts">
 	const transport: Transport = getContext('transport');
 
 	const networks = writable<Network[]>([]);

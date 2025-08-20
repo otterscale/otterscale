@@ -1,12 +1,10 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

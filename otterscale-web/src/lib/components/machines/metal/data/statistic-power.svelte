@@ -1,13 +1,11 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
 	import { capitalizeFirstLetter } from 'better-auth';
 	import { type Writable } from 'svelte/store';
-</script>
 
-<script lang="ts">
 	let {
 		machine
 	}: {

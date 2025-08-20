@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import * as Loading from '$lib/components/custom/loading';
 </script>
 

@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch/index.js';
@@ -13,9 +13,7 @@
 			return 'text';
 		}
 	}
-</script>
 
-<script lang="ts">
 	let { data = $bindable() }: { data: any } = $props();
 </script>
 

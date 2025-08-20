@@ -1,4 +1,4 @@
-<script lang="ts" module>
+<script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import { cn } from '$lib/utils.js';
@@ -7,9 +7,7 @@
 	import { getContext, type Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 	import { IndexManager, StepManager } from './utils.svelte';
-</script>
 
-<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,

@@ -1,11 +1,9 @@
-<script lang="ts" module>
+<script lang="ts">
 	import { page } from '$app/state';
 	import { Workload } from '$lib/components/applications/workload';
 	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb, currentKubernetes } from '$lib/stores';
-</script>
 
-<script lang="ts">
 	breadcrumb.set({ parents: [], current: dynamicPaths.settings(page.params.scope) });
 </script>
 
