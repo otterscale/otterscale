@@ -190,6 +190,7 @@ is_machine_deployed() {
 
 # Juju bootstrap with validation
 bootstrap_juju() {
+    set -e
     su "$NON_ROOT_USER" -c 'mkdir -p ~/.local/share/juju'
     su "$NON_ROOT_USER" -c 'mkdir -p ~/otterscale-tmp'
 
@@ -200,6 +201,7 @@ bootstrap_juju() {
 
     juju_clouds
     juju_credentials
+    set +e
 
     rm -rf /home/$NON_ROOT_USER/otterscale-tmp
     unset JUJU_CLOUD
@@ -238,7 +240,7 @@ juju_add_k8s() {
     fi
 
     juju_cmd "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
-    juju_cmd "juju config prometheus maximum_retention_size=60% --debug" "update max retention size to 60%"
+    juju_cmd "juju config prometheus maximum_retention_size=70% --debug" "update max retention size to 70%"
     juju_cmd "juju offer grafana:grafana-dashboard global-grafana --debug" "offer grafana-dashboard"
     juju_cmd "juju offer prometheus:receive-remote-write global-prometheus --debug" "offer prometheus-receive-remote-write"
 }
