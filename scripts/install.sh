@@ -1193,7 +1193,7 @@ execute_non_user_cmd() {
     local USERNAME="$1"
     local COMMAND="$2"
     local DESCRIPTION="$3"
-    if ! su "$USERNAME" -c "${COMMAND}" >>"$TEMP_LOG" 2>&1; then
+    if ! su "$USERNAME" -c "${COMMAND}" >>$LOG 2>&1; then
         log "WARN" "Failed to $DESCRIPTION, check $LOG for details" "Non-root cmd"
         return 1
     fi
