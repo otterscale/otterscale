@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+    "strconv"
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -188,69 +189,52 @@ func (s *KubeVirtService) ExtendDataVolume(ctx context.Context, req *connect.Req
 	return connect.NewResponse(resp), nil
 }
 
-// Network Operations
-func (s *KubeVirtService) CreateNetwork(ctx context.Context, req *connect.Request[pb.CreateNetworkRequest]) (*connect.Response[pb.KubeVirtNetwork], error) {
-	/*
-		network, err := s.uc.CreateNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNetwork().GetMetadata().GetNamespace(), req.Msg.GetNetwork().GetMetadata().GetName(), toCoreNetwork(req.Msg.GetNetwork()))
-		if err != nil {
-			return nil, err
-		}
+// VMService Operations
+func (s *KubeVirtService) CreateVMService(ctx context.Context, req *connect.Request[pb.CreateVMServiceRequest]) (*connect.Response[pb.KubeVirtVMService], error) {
+    vmservice, err := s.uc.CreateVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVMService().GetMetadata().GetNamespace(), req.Msg.GetVMService().GetMetadata().GetName(), toCoreVMService(req.Msg.GetVMService()))
+    if err != nil {
+        return nil, err
+    }
 
-		resp := toProtoNetwork(network)
-	*/
-	resp := &pb.KubeVirtNetwork{}
-
-	return connect.NewResponse(resp), nil
+    resp := toProtoKubeVirtVMService(vmservice)
+    return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) GetNetwork(ctx context.Context, req *connect.Request[pb.GetNetworkRequest]) (*connect.Response[pb.KubeVirtNetwork], error) {
-	/*
-		network, err := s.uc.GetNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace())
-		if err != nil {
-			return nil, err
-		}
-		resp := toProtoNetwork(network)
-	*/
-	resp := &pb.KubeVirtNetwork{}
-
-	return connect.NewResponse(resp), nil
+func (s *KubeVirtService) GetVMService(ctx context.Context, req *connect.Request[pb.GetVMServiceRequest]) (*connect.Response[pb.KubeVirtVMService], error) {
+    vmservice, err := s.uc.GetVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+    if err != nil {
+        return nil, err
+    }
+    resp := toProtoKubeVirtVMService(vmservice)
+    return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) ListNetworks(ctx context.Context, req *connect.Request[pb.ListNetworksRequest]) (*connect.Response[pb.ListNetworksResponse], error) {
-	/*
-		networks, err := s.uc.ListNetworks(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
-		if err != nil {
-			return nil, err
-		}
-		resp := &pb.ListNetworksResponse{}
-		resp.SetNetworks(toProtoNetworks(networks))
-	*/
-	resp := &pb.ListNetworksResponse{}
-
-	return connect.NewResponse(resp), nil
+func (s *KubeVirtService) ListVMServices(ctx context.Context, req *connect.Request[pb.ListVMServicesRequest]) (*connect.Response[pb.ListVMServicesResponse], error) {
+    vmservices, err := s.uc.ListVMServices(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+    if err != nil {
+        return nil, err
+    }
+    resp := &pb.ListVMServicesResponse{}
+    resp.SetVMServices(toProtoKubeVirtVMServices(vmservices))
+    return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) UpdateNetwork(ctx context.Context, req *connect.Request[pb.UpdateNetworkRequest]) (*connect.Response[pb.KubeVirtNetwork], error) {
-	/*
-		network, err := s.uc.UpdateNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), toCoreNetwork(req.Msg.GetNetwork()))
-		if err != nil {
-			return nil, err
-		}
-		resp := toProtoNetwork(network)
-	*/
-	resp := &pb.KubeVirtNetwork{}
-
-	return connect.NewResponse(resp), nil
+func (s *KubeVirtService) UpdateVMService(ctx context.Context, req *connect.Request[pb.UpdateVMServiceRequest]) (*connect.Response[pb.KubeVirtVMService], error) {
+    vmservice, err := s.uc.UpdateVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toCoreVMService(req.Msg.GetVMService()))
+    if err != nil {
+        return nil, err
+    }
+    resp := toProtoKubeVirtVMService(vmservice)
+    return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) DeleteNetwork(ctx context.Context, req *connect.Request[pb.DeleteNetworkRequest]) (*connect.Response[emptypb.Empty], error) {
-	/*
-		if err := s.uc.DeleteNetwork(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetName(), req.Msg.GetNamespace()); err != nil {
-			return nil, err
-		}
-	*/
-	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
+func (s *KubeVirtService) DeleteVMService(ctx context.Context, req *connect.Request[pb.DeleteVMServiceRequest]) (*connect.Response[emptypb.Empty], error) {
+    if err := s.uc.DeleteVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+        return nil, err
+    }
+   
+    resp := &emptypb.Empty{}
+    return connect.NewResponse(resp), nil
 }
 
 // InstanceType Operations
@@ -260,7 +244,6 @@ func (s *KubeVirtService) CreateInstanceType(ctx context.Context, req *connect.R
 		return nil, err
 	}
 	resp := toProtoInstanceType(InstanceType)
-
 	return connect.NewResponse(resp), nil
 }
 
@@ -439,33 +422,79 @@ func toCoreDataVolume(dv *pb.DataVolume) core.DataVolume {
 	return ret
 }
 
-func toProtoKubeVirtNetworks(networks []core.KubeVirtNetwork) []*pb.KubeVirtNetwork {
-	ret := []*pb.KubeVirtNetwork{}
-	for i := range networks {
-		ret = append(ret, toProtoKubeVirtNetwork(&networks[i]))
+func toProtoKubeVirtVMServices(vmservices []core.KubeVirtVMService) []*pb.KubeVirtVMService {
+	ret := make([]*pb.KubeVirtVMService, 0, len(vmservices))
+	for i := range vmservices {
+		ret = append(ret, toProtoKubeVirtVMService(&vmservices[i]))
 	}
 	return ret
 }
 
-func toProtoKubeVirtNetwork(n *core.KubeVirtNetwork) *pb.KubeVirtNetwork {
-	ret := &pb.KubeVirtNetwork{}
-	ret.SetMetadata(toProtoMetadata(n.Metadata))
-	ret.SetServiceType(n.ServiceType)
-	ret.SetPort(n.Port)
-	ret.SetNodePort(n.NodePort)
-	ret.SetContainerPort(n.ContainerPort)
+func toProtoKubeVirtVMService(s *core.KubeVirtVMService) *pb.KubeVirtVMService {
+	ret := &pb.KubeVirtVMService{}
+	ret.SetMetadata(toProtoMetadata(s.Metadata))
+
+	spec := &pb.KubeVirtVMServiceSpec{}
+	if s.Selector != nil {
+		if v, ok := s.Selector["kubevirt.io/vm"]; ok && v != "" {
+			spec.SetVMName(v)
+		}
+	}
+	spec.SetSelector(s.Selector)
+
+	spec.SetType(pb.KubeVirtVMServiceSpec_Type(pb.KubeVirtVMServiceSpec_Type_value["CLUSTER_IP"]))
+	ports := make([]*pb.ServicePort, 0, len(s.Ports))
+	for _, p := range s.Ports {
+		sp := &pb.ServicePort{}
+		sp.SetName(p.Name)
+		sp.SetPort(p.Port)
+		sp.SetTargetPort(strconv.Itoa(int(p.TargetPort)))
+		sp.SetProtocol(pb.KubeVirtVMServiceSpec_Protocol(pb.KubeVirtVMServiceSpec_Protocol_value["TCP"]))      
+		sp.SetNodePort(p.NodePort)
+		ports = append(ports, sp)
+	}
+	spec.SetPorts(ports)
+
+	ret.SetSpec(spec)
+
+	ret.SetStatus(&pb.KubeVirtVMServiceStatus{})
 
 	return ret
 }
 
-func toCoreNetwork(n *pb.KubeVirtNetwork) core.KubeVirtNetwork {
-	return core.KubeVirtNetwork{
-		Metadata:      toCoreMetadata(n.GetMetadata()),
-		ServiceType:   n.GetServiceType(),
-		Port:          n.GetPort(),
-		NodePort:      n.GetNodePort(),
-		ContainerPort: n.GetContainerPort(),
+func toCoreVMService(n *pb.KubeVirtVMService) core.KubeVirtVMService {
+	ret := core.KubeVirtVMService{
+		Metadata: toCoreMetadata(n.GetMetadata()),
 	}
+
+	if n.GetSpec() != nil {
+		selector := map[string]string{}
+		if vm := n.GetSpec().GetVMName(); vm != "" {
+			selector["kubevirt.io/vm"] = vm
+		}
+		for k, v := range n.GetSpec().GetSelector() {
+			selector[k] = v
+		}
+		ret.Selector = selector
+
+		ports := make([]core.KubeVirtVMServicePort, 0, len(n.GetSpec().GetPorts()))
+		for _, p := range n.GetSpec().GetPorts() {
+			tp := int32(0)
+			if s := p.GetTargetPort(); s != "" {
+				if v, err := strconv.Atoi(s); err == nil {
+					tp = int32(v)
+				}
+			}
+			ports = append(ports, core.KubeVirtVMServicePort{
+				Name:       p.GetName(),
+				Port:       p.GetPort(),
+				NodePort:   p.GetNodePort(),
+				TargetPort: tp,
+			})
+		}
+		ret.Ports = ports
+	}
+	return ret
 }
 
 func toProtoInstanceTypes(flavors []core.InstanceType) []*pb.InstanceType {

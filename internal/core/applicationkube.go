@@ -92,7 +92,11 @@ type KubeCoreRepo interface {
 	// Service
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
 	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error)
-
+	GetService(ctx context.Context, config *rest.Config, namespace, name string) (*Service, error)
+	CreateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
+	UpdateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
+	DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error
+    
 	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
