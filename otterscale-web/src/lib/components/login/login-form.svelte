@@ -66,28 +66,32 @@
 			id: 'apple',
 			icon: 'streamline-logos:apple-logo-solid',
 			label: 'Apple',
-			enabled: data.apple
+			enabled: data.apple,
+			prompt: false
 		},
 		{
 			type: 'social',
 			id: 'github',
 			icon: 'streamline-logos:github-logo-2-solid',
 			label: 'GitHub',
-			enabled: data.github
+			enabled: data.github,
+			prompt: false
 		},
 		{
 			type: 'social',
 			id: 'google',
 			icon: 'streamline-logos:google-logo-solid',
 			label: 'Google',
-			enabled: data.google
+			enabled: data.google,
+			prompt: false
 		},
 		{
 			type: 'oidc',
 			id: 'oidc',
 			icon: 'simple-icons:openid',
-			label: 'OIDC SSO',
-			enabled: Boolean(data.oidcProvider)
+			label: 'OIDC Single Sign-On',
+			enabled: Boolean(data.oidcProvider),
+			prompt: Boolean(data.ssoLoginPrompt)
 		}
 	];
 
@@ -235,7 +239,7 @@
 								<Tooltip.Provider>
 									<Tooltip.Root>
 										<Tooltip.Trigger
-											class={buttonVariants({ variant: 'outline' })}
+											class="relative {buttonVariants({ variant: 'outline' })}"
 											disabled={$loading[provider.id as keyof LoadingState]}
 											onclick={() => {
 												if (provider.type == 'social') {
@@ -245,6 +249,18 @@
 												}
 											}}
 										>
+											{#if provider.prompt}
+												<div class="absolute -top-1 -right-1">
+													<span class="relative flex size-3">
+														<span
+															class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
+														></span>
+														<span class="relative inline-flex size-3 rounded-full bg-blue-500"
+														></span>
+													</span>
+												</div>
+											{/if}
+
 											{#if $loading[provider.id as keyof LoadingState]}
 												<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
 											{:else}
