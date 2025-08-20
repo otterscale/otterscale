@@ -16,6 +16,7 @@
 	} from '@tanstack/table-core';
 	import Create from './action-create.svelte';
 	import { columns } from './columns';
+	import { messages } from './headers.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -104,7 +105,7 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={snapshots.map((row) => row.name)} columnId="name" {table} />
-			<Filters.Column {table} />
+			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />

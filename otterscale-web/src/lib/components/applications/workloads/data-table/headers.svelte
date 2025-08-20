@@ -3,6 +3,19 @@
 	import { Sorter, Layout, RowPickers } from '$lib/components/custom/data-table';
 	import type { Column, Table } from '@tanstack/table-core';
 
+	export const messages = {
+		name: 'name',
+		type: 'type',
+		namespace: 'namespace',
+		health: 'health',
+		service: 'service',
+		pod: 'pod',
+		replica: 'replica',
+		container: 'container',
+		volume: 'volume',
+		nodeport: 'nodeport'
+	};
+
 	export const headers = {
 		row_picker,
 		name,

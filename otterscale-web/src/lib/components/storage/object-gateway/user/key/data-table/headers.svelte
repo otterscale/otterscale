@@ -5,6 +5,11 @@
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
 	import type { Column, Table } from '@tanstack/table-core';
 
+	export const messages = {
+		accessKey: 'accessKey',
+		actions: 'actions'
+	};
+
 	export const headers = {
 		row_picker,
 		accessKey,

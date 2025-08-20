@@ -17,11 +17,11 @@
 	import { writable, type Writable } from 'svelte/store';
 	import Create from './action-test.svelte';
 	import { columns } from './columns';
-
+	import { messages } from './headers.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { testResults } : { testResults: Writable<TestResult[]> } = $props();
+	let { testResults }: { testResults: Writable<TestResult[]> } = $props();
 	let data = $state(writable(testResults));
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -32,7 +32,7 @@
 		runTime: false,
 		blockSize: false,
 		fileSize: false,
-		ioDepth: false,
+		ioDepth: false
 	});
 	let rowSelection = $state<RowSelectionState>({});
 
@@ -107,8 +107,13 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={$testResults.map((row) => row.name)} columnId="name" {table} />
-			<Filters.StringMatch columnId="createdBy" {table} values={$testResults.map((row) => row.createdBy)} alias="Creator" />
-			<Filters.Column {table} />
+			<Filters.StringMatch
+				columnId="createdBy"
+				{table}
+				values={$testResults.map((row) => row.createdBy)}
+				alias="Creator"
+			/>
+			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />

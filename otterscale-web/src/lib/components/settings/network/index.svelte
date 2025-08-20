@@ -42,7 +42,7 @@
 </script>
 
 <main class="space-y-4 py-4">
-	{#if !isMounted}
+	{#if isMounted}
 		<Reloader {reloadManager} />
 		<DataTable {networks} />
 	{:else}

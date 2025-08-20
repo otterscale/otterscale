@@ -5,6 +5,27 @@
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
 	import type { Column, Table } from '@tanstack/table-core';
 
+	export const messages = {
+		name: 'name',
+		status: 'status',
+		target: 'target',
+		accessMode: 'accessMode',
+		jobCount: 'jobCount',
+		runTime: 'runTime',
+		blockSize: 'blockSize',
+		fileSize: 'fileSize',
+		ioDepth: 'ioDepth',
+		bandwidth: 'bandwidth',
+		iops: 'iops',
+		latencyMin: 'latencyMin',
+		latencyMax: 'latencyMax',
+		latencyMean: 'latencyMean',
+		createdBy: 'createdBy',
+		startedAt: 'startedAt',
+		completedAt: 'completedAt',
+		actions: 'actions'
+	};
+
 	export const headers = {
 		row_picker,
 		name,
@@ -22,7 +43,7 @@
 		latencyMax,
 		latencyMean,
 		createdBy,
-		startedAt, 
+		startedAt,
 		completedAt,
 		actions
 	};
@@ -142,9 +163,7 @@
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			LATENCY
-			<p class="text-muted-foreground">
-				MINIMUM
-			</p>
+			<p class="text-muted-foreground">MINIMUM</p>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -153,9 +172,7 @@
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			LATENCY
-			<p class="text-muted-foreground">
-				MAXIMUM
-			</p>
+			<p class="text-muted-foreground">MAXIMUM</p>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -164,9 +181,7 @@
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			LATENCY
-			<p class="text-muted-foreground">
-				MEAN
-			</p>
+			<p class="text-muted-foreground">MEAN</p>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -189,5 +204,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<TestResult>)}
-{/snippet}
+{#snippet actions(column: Column<TestResult>)}{/snippet}

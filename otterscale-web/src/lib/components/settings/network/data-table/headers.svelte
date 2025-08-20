@@ -3,6 +3,17 @@
 	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
 	import type { Column, Table } from '@tanstack/table-core';
 
+	export const messages = {
+		fabric: 'fabric',
+		vlan: 'vlan',
+		dhcpOn: 'dhcpOn',
+		subnet: 'subnet',
+		ipAddresses: 'ipAddresses',
+		ipRanges: 'ipRanges',
+		statistics: 'statistics',
+		actions: 'actions'
+	};
+
 	export const headers = {
 		row_picker,
 		fabric,

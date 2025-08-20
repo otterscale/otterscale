@@ -17,6 +17,7 @@
 	import Create from './action-create.svelte';
 	import Actions from './actions.svelte';
 	import { columns } from './columns';
+	import { messages } from './headers.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -112,7 +113,7 @@
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy values={ipRanges.map((row) => row.comment)} columnId="comment" {table} />
 			<Filters.StringMatch values={ipRanges.flatMap((row) => row.type)} columnId="type" {table} />
-			<Filters.Column {table} />
+			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create {subnet} />

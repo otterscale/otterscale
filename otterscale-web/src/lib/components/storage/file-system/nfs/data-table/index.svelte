@@ -17,6 +17,7 @@
 	import { type Writable } from 'svelte/store';
 	import Create from './actions-create.svelte';
 	import { columns } from './columns';
+	import { messages } from './headers.svelte';
 	import Statistics from './statistics.svelte';
 </script>
 
@@ -109,7 +110,7 @@
 				alias="Pool Name"
 				{table}
 			/>
-			<Filters.Column {table} />
+			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />
