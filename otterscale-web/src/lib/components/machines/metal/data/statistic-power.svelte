@@ -3,7 +3,6 @@
 	import { Layout } from '$lib/components/custom/instance';
 	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
-	import { capitalizeFirstLetter } from 'better-auth';
 	import { type Writable } from 'svelte/store';
 </script>
 
@@ -34,8 +33,8 @@
 		{$machine.status}
 	</Layout.Statistic.Content>
 	<Layout.Statistic.Footer>
-		{capitalizeFirstLetter($machine.osystem)}
+		<sapn class="capitalize"> {$machine.osystem}</sapn>
 		{$machine.hweKernel}
-		{capitalizeFirstLetter($machine.distroSeries)}
+		<sapn class="capitalize"> {$machine.distroSeries}</sapn>
 	</Layout.Statistic.Footer>
 </Layout.Statistic.Root>

@@ -8,7 +8,6 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
-	import { capitalizeFirstLetter } from 'better-auth';
 </script>
 
 <script lang="ts" generics="TData">
@@ -44,9 +43,11 @@
 </script>
 
 <Popover.Root>
-	<Popover.Trigger class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
+	<Popover.Trigger
+		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs capitalize')}
+	>
 		<Icon icon="ph:funnel" />
-		{alias ?? capitalizeFirstLetter(columnId)}
+		{alias ?? columnId}
 
 		{#if extractions.length > 0}
 			<Separator orientation="vertical" />

@@ -4,7 +4,6 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
-	import { capitalizeFirstLetter } from 'better-auth';
 </script>
 
 <script lang="ts" generics="TData">
@@ -20,11 +19,13 @@
 </script>
 
 <div class="relative w-40">
-	<Command.Root class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
+	<Command.Root
+		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs capitalize')}
+	>
 		<div class="relative">
 			<Command.Input
 				class="pr-3 placeholder:text-xs"
-				placeholder={alias ?? capitalizeFirstLetter(columnId)}
+				placeholder={alias ?? columnId}
 				value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
 				oninput={(e) => {
 					table.getColumn(columnId)?.setFilterValue(e.currentTarget.value);

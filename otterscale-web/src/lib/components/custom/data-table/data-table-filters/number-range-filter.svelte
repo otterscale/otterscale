@@ -8,7 +8,6 @@
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
-	import { capitalizeFirstLetter } from 'better-auth';
 
 	const empty = [undefined, undefined];
 </script>
@@ -70,7 +69,7 @@
 
 {#snippet filterTrigger()}
 	<Icon icon="ph:funnel" />
-	{alias ?? capitalizeFirstLetter(columnId)}
+	<span class="capitalize">{alias ?? columnId}</span>
 	<Separator orientation="vertical" />
 	<Badge variant="outline" class="size-sm">
 		{rangeMinimum}~{rangeMaximum}
