@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';

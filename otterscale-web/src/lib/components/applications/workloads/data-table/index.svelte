@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="TData, TValue">
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
@@ -16,9 +16,7 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import { columns } from './columns';
-</script>
 
-<script lang="ts" generics="TData, TValue">
 	let { applications }: { applications: Writable<Application[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
