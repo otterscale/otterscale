@@ -20,7 +20,7 @@ find_first_non_user() {
 
     if [ -z "$USER_HOME" ]; then
         log "Info" "No non-root user found"
-	exit 1
+        exit 1
     fi
 
     NON_ROOT_USER=$(basename "$USER_HOME")
@@ -32,12 +32,12 @@ get_models() {
 
 get_units_from_models() {
     JUJU_UNITS=$(su "$NON_ROOT_USER" -c \
-	    "juju status -m $JUJU_MODEL --format json 2>/dev/null | \
-	    jq -r 'select(.\"applications\" != {}) | \
-	    .applications[] | \
-	    select(.charm == \"ceph-osd\" and .units != null) | \
-            .units | \
-	    keys[]'")
+        "juju status -m $JUJU_MODEL --format json 2>/dev/null | \
+        jq -r 'select(.\"applications\" != {}) | \
+        .applications[] | \
+        select(.charm == \"ceph-osd\" and .units != null) | \
+        .units | \
+        keys[]'")
 }
 
 dd_ceph_osd_device() {
@@ -48,10 +48,10 @@ dd_ceph_osd_device() {
         log "INFO" "dd $JUJU_UNIT disk $osd_device..."
         local GET_SZ_COMMAND="sudo blockdev --getsz $osd_device"
         local SECTOR=$(su "$NON_ROOT_USER" -c "juju ssh -m $JUJU_MODEL $JUJU_UNIT $GET_SZ_COMMAND 2>/dev/null" | tr -dc '0-9')
-	local TARGET_SECTOR=$((SECTOR - 20480))
+        local TARGET_SECTOR=$((SECTOR - 20480))
         local DD_COMMAND_FIRST="sudo dd if=/dev/zero of=$osd_device bs=1M count=10 conv=fsync status=progress 2>/dev/null"
-	local DD_COMMAND_END="sudo dd if=/dev/zero of=$osd_device bs=512 count=20480 seek=$TARGET_SECTOR conv=fsync status=progress 2>/dev/null"
-	su "$NON_ROOT_USER" -c "juju ssh -m $JUJU_MODEL $JUJU_UNIT $DD_COMMAND_FIRST"
+        local DD_COMMAND_END="sudo dd if=/dev/zero of=$osd_device bs=512 count=20480 seek=$TARGET_SECTOR conv=fsync status=progress 2>/dev/null"
+        su "$NON_ROOT_USER" -c "juju ssh -m $JUJU_MODEL $JUJU_UNIT $DD_COMMAND_FIRST"
         su "$NON_ROOT_USER" -c "juju ssh -m $JUJU_MODEL $JUJU_UNIT $DD_COMMAND_END"
     done
 }
@@ -59,20 +59,20 @@ dd_ceph_osd_device() {
 remove_juju_model() {
     get_models
     for juju_model in $JUJU_MODELS; do
-	export JUJU_MODEL=$juju_model
-	log "INFO" "Target juju model: $JUJU_MODEL"
+        export JUJU_MODEL=$juju_model
+        log "INFO" "Target juju model: $JUJU_MODEL"
         get_units_from_models
         for juju_unit in "$JUJU_UNITS"; do
             if [ -z $juju_unit ]; then
                 continue
             fi
             export JUJU_UNIT=$juju_unit
-	    log "INFO" "Target juju unit: $JUJU_UNIT"
+            log "INFO" "Target juju unit: $JUJU_UNIT"
             dd_ceph_osd_device
         done
 
-	log "INFO" "Removing juju model $JUJU_MODEL..."
-	su "$NON_ROOT_USER" -c "juju destroy-model --no-prompt $JUJU_MODEL --force --no-wait 2>/dev/null"
+        log "INFO" "Removing juju model $JUJU_MODEL..."
+        su "$NON_ROOT_USER" -c "juju destroy-model --no-prompt $JUJU_MODEL --force --no-wait 2>/dev/null"
     done
 
     unset JUJU_MODEL
