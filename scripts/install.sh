@@ -170,7 +170,7 @@ juju_credentials() {
     if su "$NON_ROOT_USER" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
         log "WARN" "JuJu Credential maas-cloud already exists, skipping created..." "JuJu credentials"
     else
-        juju_cmd "juju add-credential maas-cloud -f $JUJU_CREDENTIAL --controller maas-cloud-controller --debug" "add juju credential"
+        juju_cmd "juju add-credential maas-cloud -f $JUJU_CREDENTIAL --debug" "add juju credential"
     fi
 }
 
@@ -192,7 +192,6 @@ is_machine_deployed() {
 bootstrap_juju() {
     su "$NON_ROOT_USER" -c 'mkdir -p ~/.local/share/juju'
     su "$NON_ROOT_USER" -c 'mkdir -p ~/otterscale-tmp'
-    chmod 777 /home/$NON_ROOT_USER/otterscale-tmp
 
     export JUJU_CLOUD=/home/$NON_ROOT_USER/otterscale-tmp/cloud.yaml
     export JUJU_CREDENTIAL=/home/$NON_ROOT_USER/otterscale-tmp/credential.yaml
