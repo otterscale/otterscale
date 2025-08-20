@@ -170,7 +170,7 @@ juju_credentials() {
     if su "$NON_ROOT_USER" -c 'juju credentials 2>/dev/null | grep -q "^maas-cloud[[:space:]]"'; then
         log "WARN" "JuJu Credential maas-cloud already exists, skipping created..." "JuJu credentials"
     else
-        juju_cmd "juju add-credential maas-cloud -f $JUJU_CREDENTIAL --controller maas-cloud-controller --debug" "add juju credential"
+        juju_cmd "juju add-credential maas-cloud -f $JUJU_CREDENTIAL --client --debug" "add juju credential"
     fi
 }
 
