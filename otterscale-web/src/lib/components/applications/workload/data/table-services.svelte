@@ -2,6 +2,7 @@
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import * as Table from '$lib/components/custom/table';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import { type Writable } from 'svelte/store';
 </script>
 
@@ -16,10 +17,18 @@
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
-			<Table.Head>NAME</Table.Head>
-			<Table.Head>TYPE</Table.Head>
-			<Table.Head>CLUSTER IP</Table.Head>
-			<Table.Head>PORTS</Table.Head>
+			<Table.Head>
+				{m.applications_workload_services_heads_name()}
+			</Table.Head>
+			<Table.Head>
+				{m.applications_workload_services_heads_type()}
+			</Table.Head>
+			<Table.Head>
+				{m.applications_workload_services_heads_cluster_ip()}
+			</Table.Head>
+			<Table.Head>
+				{m.applications_workload_services_heads_ports()}
+			</Table.Head>
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>

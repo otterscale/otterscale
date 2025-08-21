@@ -4,6 +4,7 @@
 	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 </script>
@@ -20,7 +21,9 @@
 
 <Layout.Statistic.Root class={isExpand ? 'col-span-2' : 'col-span-1'}>
 	<Layout.Statistic.Header>
-		<Layout.Statistic.Title>Containers</Layout.Statistic.Title>
+		<Layout.Statistic.Title>
+			{m.applications_workload_containers()}
+		</Layout.Statistic.Title>
 		<Layout.Statistic.Action>
 			<Button
 				disabled={$application.containers.length === 0}
@@ -41,8 +44,8 @@
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head>Image</Table.Head>
-							<Table.Head>Pull Policy</Table.Head>
+							<Table.Head>{m.applications_workload_containers_heads_image()}</Table.Head>
+							<Table.Head>{m.applications_workload_containers_heads_pull_policy()}</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>

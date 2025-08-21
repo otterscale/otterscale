@@ -10,6 +10,7 @@
 	import StatisticStorageClasses from './statistic-storage-classes.svelte';
 	import TablePods from './table-pods.svelte';
 	import TableServices from './table-services.svelte';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
@@ -50,7 +51,7 @@
 		<Layout.Table.Root open={true}>
 			<Layout.Table.Trigger>
 				<Icon icon="ph:cube" />
-				Pods
+				{m.applications_workload_pods()}
 			</Layout.Table.Trigger>
 			<Layout.Table.Content>
 				<TablePods {application} />
@@ -60,7 +61,7 @@
 		<Layout.Table.Root open={true}>
 			<Layout.Table.Trigger>
 				<Icon icon="ph:cube" />
-				Services
+				{m.applications_workload_services()}
 			</Layout.Table.Trigger>
 			<Layout.Table.Content>
 				<TableServices {application} />

@@ -3,6 +3,7 @@
 	import * as Table from '$lib/components/custom/table';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import { type Writable } from 'svelte/store';
 </script>
@@ -18,11 +19,21 @@
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
-			<Table.Head>NAME</Table.Head>
-			<Table.Head>PHASE</Table.Head>
-			<Table.Head>READY</Table.Head>
-			<Table.Head>RESTARTS</Table.Head>
-			<Table.Head>LAST CONDITION</Table.Head>
+			<Table.Head>
+				{m.applications_workload_pods_heads_name()}
+			</Table.Head>
+			<Table.Head>
+				{m.applications_workload_pods_heads_phase()}
+			</Table.Head>
+			<Table.Head>
+				{m.applications_workload_pods_heads_ready()}
+			</Table.Head>
+			<Table.Head>
+				{m.applications_workload_pods_heads_restarts()}
+			</Table.Head>
+			<Table.Head>
+				{m.applications_workload_pods_heads_last_condition()}
+			</Table.Head>
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
