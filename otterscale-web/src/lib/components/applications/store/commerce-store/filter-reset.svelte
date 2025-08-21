@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { Button } from '$lib/components/ui/button';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { FilterManager } from './utils';
@@ -17,5 +18,5 @@
 	}}
 >
 	<Icon icon="ph:arrow-counter-clockwise" class="h-3 w-3" />
-	Reset
+	{m.applications_store_filter_reset()}
 </Button>

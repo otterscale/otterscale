@@ -157,6 +157,8 @@
 </AlertDialog.Root>
 
 <style lang="postcss">
+	@reference "tailwindcss";
+
 	.markdown :global(h1) {
 		@apply mb-4 mt-6 border-b border-gray-200 pb-2 text-3xl font-bold;
 	}

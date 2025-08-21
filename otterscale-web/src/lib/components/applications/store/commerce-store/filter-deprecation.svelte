@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { FilterManager } from './utils';
@@ -15,7 +16,7 @@
 	<Popover.Trigger>
 		<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
 			<Icon icon="ph:funnel" class="h-3 w-3" />
-			Deprecation
+			{m.applications_store_filter_deprecation()}
 			<Icon icon="ph:caret-down" class="h-3 w-3" />
 		</Button>
 	</Popover.Trigger>
@@ -37,11 +38,11 @@
 								)}
 							/>
 							{#if deprecation === null}
-								All
+								{m.applications_store_filter_deprecation_null_value()}
 							{:else if deprecation === true}
-								Only Deprecated
+								{m.applications_store_filter_deprecation_true_value()}
 							{:else if deprecation === false}
-								Only Available
+								{m.applications_store_filter_deprecation_false_value()}
 							{/if}
 						</Command.Item>
 					{/each}

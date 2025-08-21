@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { FilterManager } from './utils';
@@ -23,7 +24,7 @@
 	<Popover.Trigger>
 		<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
 			<Icon icon="ph:funnel" class="h-3 w-3" />
-			Maintainer
+			{m.applications_store_filter_maintainer()}
 			<Icon icon="ph:caret-down" class="h-3 w-3" />
 		</Button>
 	</Popover.Trigger>
@@ -31,7 +32,7 @@
 		<Command.Root>
 			<Command.Input placeholder="Search" />
 			<Command.List>
-				<Command.Empty>No maintainer found.</Command.Empty>
+				<Command.Empty>{m.applications_store_filter_empty()}</Command.Empty>
 				<Command.Group>
 					{#each maintainerNames as maintainerName}
 						<Command.Item
