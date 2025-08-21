@@ -53,7 +53,7 @@
 	"management": "Management",
 	"node": "Node",
 	"settings": "Settings",
-	"settings_description": "Global settings and configuration options for your environment",
+	"settings_description": "These settings apply to all scopes. Review changes before applying.",
 	"global": "Global",
 	"general": "General",
 	"sso": "Single Sign-On",
