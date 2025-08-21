@@ -73,16 +73,16 @@ export const dynamicPaths = {
 		url: createScopePath(scope, '/databases/no-sql')
 	}),
 	applications: (scope: string | undefined): Path => ({
-		title: m.applications(),
+		title: m.management(),
 		url: createScopePath(scope, '/applications')
 	}),
-	applicationsWorkload: (scope: string | undefined): Path => ({
-		title: m.workload(),
-		url: createScopePath(scope, '/applications/workload')
+	applicationsDeployments: (scope: string | undefined): Path => ({
+		title: m.deployments(),
+		url: createScopePath(scope, '/applications/deployments')
 	}),
-	applicationsService: (scope: string | undefined): Path => ({
-		title: m.service(),
-		url: createScopePath(scope, '/applications/service')
+	applicationsServices: (scope: string | undefined): Path => ({
+		title: m.services(),
+		url: createScopePath(scope, '/applications/services')
 	}),
 	applicationsStore: (scope: string | undefined): Path => ({
 		title: m.store(),
@@ -93,7 +93,7 @@ export const dynamicPaths = {
 		url: createScopePath(scope, '/storage')
 	}),
 	storageOSD: (scope: string | undefined): Path => ({
-		title: m.osd(),
+		title: m.osds(),
 		url: createScopePath(scope, '/storage/osd')
 	}),
 	storagePool: (scope: string | undefined): Path => ({
@@ -117,24 +117,28 @@ export const dynamicPaths = {
 		url: createScopePath(scope, '/machines')
 	}),
 	machinesMetal: (scope: string | undefined): Path => ({
-		title: m.metal(),
+		title: m.node(),
 		url: createScopePath(scope, '/machines/metal')
 	}),
-	virtualization: (scope: string | undefined): Path => ({
-		title: m.virtualization(),
-		url: createScopePath(scope, '/virtualization')
+	compute: (scope: string | undefined): Path => ({
+		title: m.compute(),
+		url: createScopePath(scope, '/compute')
 	}),
-	virtualizationVirtualMachine: (scope: string | undefined): Path => ({
+	computeVirtualMachine: (scope: string | undefined): Path => ({
 		title: m.virtual_machine(),
-		url: createScopePath(scope, '/virtualization/virtual-machine')
+		url: createScopePath(scope, '/compute/virtual-machine')
 	}),
 	settings: (scope: string | undefined): Path => ({
 		title: m.settings(),
 		url: createScopePath(scope, '/settings')
 	}),
-	settingsNetwork: (scope: string | undefined): Path => ({
-		title: m.network(),
-		url: createScopePath(scope, '/settings/network')
+	networking: (scope: string | undefined): Path => ({
+		title: m.networking(),
+		url: createScopePath(scope, '/networking')
+	}),
+	networkingSubnets: (scope: string | undefined): Path => ({
+		title: m.subnets(),
+		url: createScopePath(scope, '/networking/subnets')
 	}),
 	settingsBIST: (scope: string | undefined): Path => ({
 		title: m.built_in_test(),
@@ -163,8 +167,9 @@ const ICON_MAP = new Map([
 	['/databases', 'ph:database'],
 	['/applications', 'ph:compass'],
 	['/storage', 'ph:hard-drives'],
-	['/virtualization', 'ph:cpu'],
+	['/compute', 'ph:cpu'],
 	['/machines', 'ph:computer-tower'],
+	['/networking', 'ph:network'],
 	['/settings', 'ph:sliders-horizontal']
 ]);
 
@@ -178,12 +183,12 @@ export function urlIcon(url: string): string {
 }
 
 const disabledPaths = (scope: string | undefined) => ({
-	ceph: [dynamicPaths.virtualization(scope), dynamicPaths.storage(scope)],
+	ceph: [dynamicPaths.compute(scope), dynamicPaths.storage(scope)],
 	kube: [
 		dynamicPaths.models(scope),
 		dynamicPaths.databases(scope),
 		dynamicPaths.applications(scope),
-		dynamicPaths.virtualization(scope)
+		dynamicPaths.compute(scope)
 	]
 });
 

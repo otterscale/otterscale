@@ -12,7 +12,7 @@
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	// Constants
-	const CHART_TITLE = m.network();
+	const CHART_TITLE = m.networking();
 
 	// Query
 	const query = $derived(
