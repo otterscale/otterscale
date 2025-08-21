@@ -32,7 +32,7 @@
 	"no_sql": "非關聯式資料庫",
 	"applications": "應用程式",
 	"applications_description": "基於 Kubernetes 的整合式應用程式商店",
-	"workload": "工作負載",
+	"workloads": "工作負載",
 	"services": "服務",
 	"store": "商店",
 	"storage": "儲存",

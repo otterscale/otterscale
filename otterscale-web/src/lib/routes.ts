@@ -17,7 +17,7 @@ export const applicationRoutes = (scope: string | undefined): Route[] => [
 	{
 		path: dynamicPaths.applications(scope),
 		items: [
-			dynamicPaths.applicationsDeployments(scope),
+			dynamicPaths.applicationsWorkloads(scope),
 			dynamicPaths.applicationsServices(scope),
 			dynamicPaths.applicationsStore(scope)
 		]

@@ -76,9 +76,9 @@ export const dynamicPaths = {
 		title: m.management(),
 		url: createScopePath(scope, '/applications')
 	}),
-	applicationsDeployments: (scope: string | undefined): Path => ({
-		title: m.deployments(),
-		url: createScopePath(scope, '/applications/deployments')
+	applicationsWorkloads: (scope: string | undefined): Path => ({
+		title: m.workloads(),
+		url: createScopePath(scope, '/applications/workloads')
 	}),
 	applicationsServices: (scope: string | undefined): Path => ({
 		title: m.services(),

@@ -9,7 +9,7 @@
 	breadcrumb.set({
 		parents: [
 			dynamicPaths.applications(page.params.scope),
-			dynamicPaths.applicationsDeployments(page.params.scope)
+			dynamicPaths.applicationsWorkloads(page.params.scope)
 		],
 		current: { title: `${page.params.namespace} / ${page.params.application_name}`, url: '' }
 	});

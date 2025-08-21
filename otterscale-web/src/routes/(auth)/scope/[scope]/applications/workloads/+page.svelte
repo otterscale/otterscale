@@ -8,7 +8,7 @@
 <script lang="ts">
 	breadcrumb.set({
 		parents: [dynamicPaths.applications(page.params.scope)],
-		current: dynamicPaths.applicationsDeployments(page.params.scope)
+		current: dynamicPaths.applicationsWorkloads(page.params.scope)
 	});
 </script>
 
