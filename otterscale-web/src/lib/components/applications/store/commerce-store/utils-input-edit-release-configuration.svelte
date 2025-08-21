@@ -179,10 +179,10 @@
 	@reference "tailwindcss";
 
 	.markdown :global(h1) {
-		@apply mt-6 mb-4 border-b border-gray-200 pb-2 text-3xl font-bold;
+		@apply mt-8 mb-4 border-b border-gray-200 pb-2 text-3xl font-bold;
 	}
 	.markdown :global(h2) {
-		@apply mt-6 mb-4 border-b border-gray-200 pb-2 text-2xl font-bold;
+		@apply mt-8 mb-4 border-b border-gray-200 pb-2 text-2xl font-bold;
 	}
 	.markdown :global(h3) {
 		@apply mt-5 mb-2 text-xl font-semibold;
