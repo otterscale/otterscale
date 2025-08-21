@@ -31,42 +31,75 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 	if err != nil {
 		return nil, err
 	}
+	dvSpec := &v1beta1.DataVolumeSpec{}
 	var dvSource *v1beta1.DataVolumeSource
+	var dvStorage *v1beta1.StorageSpec
+
+	newStorageSpec := func(size int64) *v1beta1.StorageSpec {
+		return &v1beta1.StorageSpec{
+			AccessModes: []v1.PersistentVolumeAccessMode{
+				v1.ReadWriteOnce,
+			},
+			Resources: v1.VolumeResourceRequirements{
+				Requests: v1.ResourceList{
+					v1.ResourceStorage: *resource.NewQuantity(size, resource.BinarySI),
+				},
+			},
+		}
+	}
 
 	switch {
 	case source_type == "HTTP":
 		dvSource = &v1beta1.DataVolumeSource{
 			HTTP: &v1beta1.DataVolumeSourceHTTP{URL: source},
 		}
+		dvStorage = newStorageSpec(sizeBytes)
+
 	case source_type == "PVC":
 		dvSource = &v1beta1.DataVolumeSource{
 			PVC: &v1beta1.DataVolumeSourcePVC{Namespace: namespace, Name: source},
 		}
+		pvcSpec := &v1.PersistentVolumeClaimSpec{
+			AccessModes: []v1.PersistentVolumeAccessMode{
+				v1.ReadWriteOnce,
+			},
+			Resources: v1.VolumeResourceRequirements{
+				Requests: v1.ResourceList{
+					v1.ResourceStorage: *resource.NewQuantity(sizeBytes, resource.BinarySI),
+				},
+			},
+		}
+		dvSpec.PVC = pvcSpec
+
 	case source_type == "Blank":
 		dvSource = &v1beta1.DataVolumeSource{Blank: &v1beta1.DataVolumeBlankImage{}}
+		dvStorage = newStorageSpec(sizeBytes)
+
 	case source_type == "Registry":
 		dvSource = &v1beta1.DataVolumeSource{
 			Registry: &v1beta1.DataVolumeSourceRegistry{URL: &source},
 		}
+		dvStorage = newStorageSpec(sizeBytes)
+
 	case source_type == "Upload":
 		dvSource = &v1beta1.DataVolumeSource{Upload: &v1beta1.DataVolumeSourceUpload{}}
+		dvStorage = newStorageSpec(sizeBytes)
+
 	case source_type == "S3":
 		dvSource = &v1beta1.DataVolumeSource{S3: &v1beta1.DataVolumeSourceS3{URL: source}}
+		dvStorage = newStorageSpec(sizeBytes)
+
 	case source_type == "VDDK":
 		dvSource = &v1beta1.DataVolumeSource{VDDK: &v1beta1.DataVolumeSourceVDDK{URL: source}}
+		dvStorage = newStorageSpec(sizeBytes)
+
 	default:
 		return nil, err
 	}
 
-	pvcSpec := &v1.PersistentVolumeClaimSpec{
-		AccessModes: []v1.PersistentVolumeAccessMode{
-			v1.ReadWriteMany,
-		},
-		Resources: v1.VolumeResourceRequirements{
-			Requests: v1.ResourceList{
-				v1.ResourceStorage: *resource.NewQuantity(sizeBytes, resource.BinarySI),
-			},
-		},
+	dvSpec.Source = dvSource
+	if dvStorage != nil {
+		dvSpec.Storage = dvStorage
 	}
 
 	dv := &v1beta1.DataVolume{
@@ -74,10 +107,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 			Name:      name,
 			Namespace: namespace,
 		},
-		Spec: v1beta1.DataVolumeSpec{
-			Source:  dvSource,
-			storage: pvcSpec,
-		},
+		Spec: *dvSpec,
 	}
 
 	opts := metav1.CreateOptions{}
