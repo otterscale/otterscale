@@ -1,15 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { page } from '$app/state';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb } from '$lib/stores';
-
-	// Set breadcrumb navigation
-	breadcrumb.set({
-		parents: [dynamicPaths.applications(page.params.scope)],
-		current: dynamicPaths.applicationsService(page.params.scope)
-	});
 </script>
 
 <div class="pointer-events-none fixed inset-0 flex flex-col items-center justify-center gap-2">

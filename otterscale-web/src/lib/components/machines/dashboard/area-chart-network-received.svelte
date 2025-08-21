@@ -19,7 +19,7 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = m.network();
+	const CHART_TITLE = m.networking();
 	const CHART_DESCRIPTION = m.received();
 
 	// Time range calculation
