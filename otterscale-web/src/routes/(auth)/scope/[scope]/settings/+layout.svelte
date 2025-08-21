@@ -66,15 +66,16 @@
 					<NavigationMenu.Item>
 						<NavigationMenu.Link>
 							{#snippet child()}
-								<a
-									href={url}
-									class="{navigationMenuTriggerStyle()} {page.url.pathname === url
-										? 'bg-muted font-semibold'
-										: ''} gap-2"
-								>
-									<Icon icon={item.icon} class="size-4" />
-									<span>{item.title}</span>
-								</a>
+								{#if page.url.pathname === url}
+									<a href={url} class="{navigationMenuTriggerStyle()} bg-muted gap-2 font-semibold">
+										<Icon icon={item.icon + '-bold'} class="size-4" />
+										<span> {item.title} </span>
+									</a>{:else}
+									<a href={url} class="{navigationMenuTriggerStyle()} gap-2 font-normal">
+										<Icon icon={item.icon} class="size-4" />
+										<span> {item.title} </span>
+									</a>
+								{/if}
 							{/snippet}
 						</NavigationMenu.Link>
 					</NavigationMenu.Item>
