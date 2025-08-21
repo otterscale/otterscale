@@ -10,7 +10,7 @@
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [dynamicPaths.settings(page.params.scope)],
-		current: dynamicPaths.settingsBIST(page.params.scope)
+		current: { title: m.built_in_test(), url: '' }
 	});
 </script>
 

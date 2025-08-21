@@ -11,7 +11,7 @@
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [dynamicPaths.settings(page.params.scope)],
-		current: dynamicPaths.settingsSubscription(page.params.scope)
+		current: { title: m.subscription(), url: '' }
 	});
 
 	// Tier configurations
