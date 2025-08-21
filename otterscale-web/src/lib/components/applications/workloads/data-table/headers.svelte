@@ -1,19 +1,20 @@
 <script lang="ts" module>
 	import type { Application } from '$lib/api/application/v1/application_pb';
-	import { Sorter, Layout, RowPickers } from '$lib/components/custom/data-table';
+	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		name: 'name',
-		type: 'type',
-		namespace: 'namespace',
-		health: 'health',
-		service: 'service',
-		pod: 'pod',
-		replica: 'replica',
-		container: 'container',
-		volume: 'volume',
-		nodeport: 'nodeport'
+		name: m.applications_workloads_heads_name(),
+		type: m.applications_workloads_heads_type(),
+		namespace: m.applications_workloads_heads_namespace(),
+		health: m.applications_workloads_heads_health(),
+		service: m.applications_workloads_heads_service(),
+		pod: m.applications_workloads_heads_pod(),
+		replica: m.applications_workloads_heads_replica(),
+		container: m.applications_workloads_heads_container(),
+		volume: m.applications_workloads_heads_volume(),
+		nodeport: m.applications_workloads_heads_nodeport()
 	};
 
 	export const headers = {
@@ -41,7 +42,7 @@
 
 {#snippet name(column: Column<Application>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.name}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -50,7 +51,7 @@
 
 {#snippet type(column: Column<Application>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>TYPE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.type}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -59,7 +60,7 @@
 
 {#snippet namespace(column: Column<Application>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAMESPACE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.namespace}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -71,7 +72,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>HEALTH</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.health}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -80,7 +81,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>SERVICE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.service}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -89,7 +90,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>POD</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.pod}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -98,7 +99,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>REPLICA</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.replica}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -107,7 +108,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>CONTAINER</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.container}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -116,12 +117,12 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>VOLUME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.volume}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet nodeport()}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NODEPORT</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.nodeport}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
