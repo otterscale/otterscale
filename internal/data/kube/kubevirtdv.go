@@ -75,8 +75,8 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 			Namespace: namespace,
 		},
 		Spec: v1beta1.DataVolumeSpec{
-			Source: dvSource,
-			PVC:    pvcSpec,
+			Source:  dvSource,
+			storage: pvcSpec,
 		},
 	}
 
