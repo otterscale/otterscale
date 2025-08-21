@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+	import LogoImage from '$lib/assets/logo.png';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -33,9 +34,11 @@
 		</div>
 		<Dialog.Header class="flex-row items-center justify-evenly gap-4">
 			<Dialog.Title class="flex flex-col items-center gap-2 font-medium">
-				<Icon icon="fluent-emoji-flat:otter" class="size-16" />
-				<span class="text-xl">{siteConfig.title}</span>
-				<Badge variant="outline">{import.meta.env.PACKAGE_VERSION}</Badge>
+				<img src={LogoImage} alt="logo" class="relative bottom-0 -mt-4 size-24" />
+				<div class="-mt-5 flex flex-col gap-1">
+					<span class=" text-xl">{siteConfig.title}</span>
+					<Badge variant="outline">{import.meta.env.PACKAGE_VERSION}</Badge>
+				</div>
 			</Dialog.Title>
 			<Dialog.Description class="flex flex-col justify-between gap-4 py-2">
 				<h2 class="text-center text-3xl">
