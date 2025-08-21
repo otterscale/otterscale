@@ -7,6 +7,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -53,37 +54,46 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
-		Edit
+		{m.applications_store_chart_release_edit_trigger()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Edit Release</Modal.Header>
+		<Modal.Header>{m.applications_store_chart_release_edit_header()}</Modal.Header>
 		<Form.Fieldset>
-			<Form.Legend>Basic</Form.Legend>
+			<Form.Legend>{m.form_fieldset_basic()}</Form.Legend>
 			<Form.Field>
-				<Form.Label>Name</Form.Label>
+				<Form.Label>{m.applications_store_chart_release_name()}</Form.Label>
 				<SingleInput.General bind:value={request.name} />
 			</Form.Field>
 			<Form.Field>
-				<Form.Label>Namespace</Form.Label>
+				<Form.Label>{m.applications_store_chart_release_namespace()}</Form.Label>
 				<SingleInput.General bind:value={request.namespace} />
 			</Form.Field>
 			<Form.Field>
-				<Form.Label>Reference</Form.Label>
+				<Form.Label>{m.applications_store_chart_release_reference()}</Form.Label>
 				<SingleInput.General bind:value={request.chartRef} />
 			</Form.Field>
 			<Form.Field>
-				<SingleInput.Boolean descriptor={() => 'Dry Run'} bind:value={request.dryRun} />
+				<SingleInput.Boolean
+					descriptor={() => m.applications_store_chart_release_dry_run()}
+					bind:value={request.dryRun}
+				/>
 			</Form.Field>
 		</Form.Fieldset>
 		<Form.Fieldset class="items-center rounded-lg border p-3">
-			<Form.Legend>Advance</Form.Legend>
+			<Form.Legend>{m.form_fieldset_advance()}</Form.Legend>
 			<Form.Field>
-				<Form.Label>Configuration</Form.Label>
+				<Form.Label>{m.applications_store_chart_release_configuration()}</Form.Label>
 				<ReleaseValuesInputEdit chartRef={request.chartRef} bind:valuesYaml={request.valuesYaml} />
 			</Form.Field>
 		</Form.Fieldset>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset} class="mr-auto">Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				{m.modal_cancel()}
+			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
 					toast.promise(() => client.updateRelease(request), {
@@ -106,8 +116,10 @@
 
 					reset();
 					close();
-				}}>Confirm</Modal.Action
+				}}
 			>
+				{m.modal_confirm()}
+			</Modal.Action>
 		</Modal.Footer>
 	</Modal.Content>
 </Modal.Root>

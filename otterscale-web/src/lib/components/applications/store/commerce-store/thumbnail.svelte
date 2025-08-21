@@ -9,6 +9,7 @@
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { fuzzLogosIcon } from './utils';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
@@ -52,6 +53,8 @@
 		<Badge variant="outline" class="text-muted-foreground text-sm">
 			{chart.license}
 		</Badge>
-		<Badge variant="default" class={chartReleases ? 'visible' : 'hidden'}>Installed</Badge>
+		<Badge variant="default" class={chartReleases ? 'visible' : 'hidden'}
+			>{m.applications_store_thumbnail_installed()}</Badge
+		>
 	</Card.Footer>
 </Card.Root>

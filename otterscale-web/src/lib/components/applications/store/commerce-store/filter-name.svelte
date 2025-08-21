@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import Input from '$lib/components/ui/input/input.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { FilterManager } from './utils';
@@ -11,7 +12,7 @@
 
 <span class="relative h-8">
 	<Input
-		placeholder="Name"
+		placeholder={m.applications_store_filter_name()}
 		type="text"
 		bind:value={filterManager.searchedName}
 		class="h-8 w-40 pr-9 pl-9"

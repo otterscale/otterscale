@@ -7,6 +7,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -47,14 +48,16 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:arrow-counter-clockwise" />
-		Rollback
+		{m.applications_store_chart_release_rollback_trigger()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Rollback Release</Modal.Header>
+		<Modal.Header>
+			{m.applications_store_chart_release_rollback_header()}
+		</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Help>
-					Please type the release name exactly to confirm rollback. This action cannot be undone.
+					{m.applications_store_chart_release_rollback_confirm()}
 				</Form.Help>
 				<Form.Field>
 					<SingleInput.Confirm
@@ -65,12 +68,21 @@
 					/>
 				</Form.Field>
 				<Form.Field>
-					<SingleInput.Boolean descriptor={() => 'Dry Run'} bind:value={request.dryRun} />
+					<SingleInput.Boolean
+						descriptor={() => m.applications_store_chart_release_dry_run()}
+						bind:value={request.dryRun}
+					/>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				{m.modal_cancel()}
+			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
 					toast.promise(() => client.rollbackRelease(request), {
@@ -93,8 +105,10 @@
 
 					reset();
 					close();
-				}}>Confirm</Modal.Action
+				}}
 			>
+				{m.modal_confirm()}
+			</Modal.Action>
 		</Modal.Footer>
 	</Modal.Content>
 </Modal.Root>

@@ -3,6 +3,7 @@
 		type Application_Chart,
 		type Application_Release
 	} from '$lib/api/application/v1/application_pb';
+	import { m } from '$lib/paraglide/messages';
 	import { type Writable } from 'svelte/store';
 	import Chart from './chart.svelte';
 	import FilterDeprecation from './filter-deprecation.svelte';
@@ -41,9 +42,11 @@
 
 <section class="bg-background mx-auto w-full space-y-4">
 	<div class="space-y-2 text-center">
-		<h2 class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">Applications</h2>
+		<h2 class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+			{m.applications_store_title()}
+		</h2>
 		<p class="text-muted-foreground mx-auto text-lg">
-			Browse and install verified applications for your cluster
+			{m.applications_store_description()}
 		</p>
 	</div>
 

@@ -8,6 +8,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -57,29 +58,36 @@
 <Modal.Root bind:open>
 	<Modal.Trigger disabled={chart.deprecated} variant="default" class="w-full">
 		<Icon icon="ph:download-simple" />
-		Install
+		{m.applications_store_chart_release_install_trigger()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Release</Modal.Header>
+		<Modal.Header>
+			{m.applications_store_chart_release_install_header()}
+		</Modal.Header>
 		<Form.Fieldset>
 			<Form.Legend>Basic</Form.Legend>
 
 			<Form.Field>
-				<Form.Label>Name</Form.Label>
+				<Form.Label>
+					{m.applications_store_chart_release_name()}
+				</Form.Label>
 				<SingleInput.General type="text" bind:value={request.name} />
 			</Form.Field>
 
 			<Form.Field>
-				<Form.Label>Namespace</Form.Label>
+				<Form.Label>{m.applications_store_chart_release_namespace()}</Form.Label>
 				<SingleInput.General type="text" bind:value={request.namespace} />
 			</Form.Field>
 
 			<Form.Field>
-				<SingleInput.Boolean descriptor={() => 'Dry Run'} bind:value={request.dryRun} />
+				<SingleInput.Boolean
+					descriptor={() => m.applications_store_chart_release_dry_run()}
+					bind:value={request.dryRun}
+				/>
 			</Form.Field>
 
 			<Form.Field>
-				<Form.Label>Version</Form.Label>
+				<Form.Label>{m.applications_store_chart_release_version()}</Form.Label>
 				<SingleSelect.Root bind:options={versionReferenceOptions} bind:value={request.chartRef}>
 					<SingleSelect.Trigger />
 					<SingleSelect.Content>
@@ -106,7 +114,9 @@
 			</Form.Field>
 
 			<Form.Field>
-				<Form.Label>Configuration</Form.Label>
+				<Form.Label>
+					{m.applications_store_chart_release_configuration()}
+				</Form.Label>
 				<ReleaseValuesInputEdit
 					chartRef={versionRefrence}
 					bind:valuesYaml={request.valuesYaml}
@@ -121,7 +131,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.modal_cancel()}
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
@@ -147,7 +157,7 @@
 					close();
 				}}
 			>
-				Confirm
+				{m.modal_confirm()}
 			</Modal.Action>
 		</Modal.Footer>
 	</Modal.Content>

@@ -3,19 +3,20 @@
 		type Application_Chart,
 		type Application_Release
 	} from '$lib/api/application/v1/application_pb';
+	import * as Table from '$lib/components/custom/table';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { Snippet } from 'svelte';
 	import type { Writable } from 'svelte/store';
 	import Install from './chart-action-install-release.svelte';
-	import { fuzzLogosIcon } from './utils';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Table from '$lib/components/custom/table';
 	import Actions from './chart-actions.svelte';
+	import { fuzzLogosIcon } from './utils';
 </script>
 
 <script lang="ts">
@@ -62,7 +63,7 @@
 					{#if chart.verified}
 						<Badge variant="secondary">
 							<Icon icon="ph:star-fill" class="h-4 w-4 fill-yellow-400 text-yellow-400" />
-							Verified
+							{m.applications_store_chart_verified()}
 						</Badge>
 					{/if}
 				</span>
@@ -71,8 +72,10 @@
 
 		<Tabs.Root value="information">
 			<Tabs.List class="-mt-4 ml-auto w-full rounded-none px-1">
-				<Tabs.Trigger value="information">Information</Tabs.Trigger>
-				<Tabs.Trigger value="release" disabled={!chartReleases}>Release</Tabs.Trigger>
+				<Tabs.Trigger value="information">{m.applications_store_chart_information()}</Tabs.Trigger>
+				<Tabs.Trigger value="release" disabled={!chartReleases}>
+					{m.applications_store_chart_releases()}
+				</Tabs.Trigger>
 			</Tabs.List>
 			<Tabs.Content value="information" class="p-4">
 				<div class="text-muted-foreground space-y-4 p-4 text-sm">
@@ -107,7 +110,7 @@
 							<span class="flex items-center justify-between gap-1">
 								<span class="flex items-center gap-2">
 									<Icon icon="ph:stack" />
-									Dependency
+									{m.applications_store_chart_dependency()}
 								</span>
 
 								<Button
@@ -166,7 +169,7 @@
 						<div class="space-y-1">
 							<span class="flex items-center gap-2">
 								<Icon icon="ph:house" />
-								Home
+								{m.applications_store_chart_home()}
 							</span>
 							<a
 								target="_blank"
@@ -183,7 +186,7 @@
 							<span class="flex items-center justify-between gap-1">
 								<span class="flex items-center gap-2">
 									<Icon icon="ph:link" />
-									Source
+									{m.applications_store_chart_source()}
 								</span>
 
 								<Button
@@ -239,7 +242,7 @@
 							<span class="flex items-center justify-between gap-1">
 								<span class="flex items-center gap-2">
 									<Icon icon="ph:user" />
-									Maintainer
+									{m.applications_store_chart_maintainer()}
 								</span>
 								<Button
 									variant="outline"
@@ -283,14 +286,16 @@
 					<Table.Header>
 						<Table.Row>
 							<Table.Head>
-								NAME
-								<Table.SubHead>NAMESPACE</Table.SubHead>
+								{m.applications_store_chart_releases_name()}
+								<Table.SubHead>{m.applications_store_chart_releases_namespace()}</Table.SubHead>
 							</Table.Head>
 							<Table.Head>
-								CHART
-								<Table.SubHead>APPLICATION</Table.SubHead>
+								{m.applications_store_chart_releases_chart_version()}
+								<Table.SubHead
+									>{m.applications_store_chart_releases_application_version()}</Table.SubHead
+								>
 							</Table.Head>
-							<Table.Head>REVISION</Table.Head>
+							<Table.Head>{m.applications_store_chart_releases_revision()}</Table.Head>
 							<Table.Head></Table.Head>
 						</Table.Row>
 					</Table.Header>
