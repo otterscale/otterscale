@@ -14,7 +14,7 @@
 	const filteredData = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 </script>
 
-<div class="grid grid-cols-5 gap-3">
+<div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 	<Layout>
 		{#snippet title()}
 			<Title title="Image" />
@@ -36,7 +36,6 @@
 			{@const usedList = filteredData.map((datum) => Number(datum['usedBytes' as keyof TData]))}
 			{@const usedTotal = usedList.reduce((a, current) => a + current, 0)}
 			{#if quotaTotal && usedTotal / quotaTotal < 1}
-				{console.log('test: ', usedTotal, quotaTotal)}
 				<Content value={Math.round((usedTotal / quotaTotal) * 100)} unit="%" />
 			{:else}
 				<Content>
