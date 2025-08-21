@@ -32,7 +32,7 @@
 	"no_sql": "NoSQL",
 	"applications": "Applications",
 	"applications_description": "Kubernetes applications with integrated app store",
-	"workload": "Workload",
+	"workloads": "Workloads",
 	"services": "Services",
 	"store": "Store",
 	"storage": "Storage",
