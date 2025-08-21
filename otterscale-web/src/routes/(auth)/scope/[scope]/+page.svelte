@@ -78,7 +78,7 @@
 					<div class="mx-auto my-2 flex w-fit justify-center gap-2">
 						<HomeCell icon="simple-icons:n8n" color="#ea4b71" />
 						<HomeCell icon="logos:kubernetes" />
-						<HomeCell icon="fluent-emoji-flat:otter" />
+						<HomeCell us={true} />
 						<HomeCell icon="simple-icons:ceph" color="#f0424d" />
 						<HomeCell icon="simple-icons:minio" color="#c72c48" />
 					</div>
