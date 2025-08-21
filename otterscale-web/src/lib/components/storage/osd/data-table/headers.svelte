@@ -3,26 +3,24 @@
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		id: 'id',
-		name: 'name',
-		state: 'state',
-		osdUp: 'osdUp',
-		osdIn: 'osdIn',
-		exists: 'exists',
-		deviceClass: 'deviceClass',
-		machine: 'machine',
-		placementGroupCount: 'placementGroupCount',
-		usage: 'usage',
-		iops: 'iops',
-		actions: 'actions'
+		name: m.storage_osds_heads_name(),
+		state: m.storage_osds_heads_state(),
+		in: m.storage_osds_heads_osd_ins(),
+		up: m.storage_osds_heads_osd_ups(),
+		exists: m.storage_osds_heads_exists(),
+		deviceClass: m.storage_osds_heads_device_class(),
+		machine: m.storage_osds_heads_machine(),
+		placementGroupCount: m.storage_osds_heads_placement_group_count(),
+		usage: m.storage_osds_heads_usage(),
+		iops: m.storage_osds_heads_iops()
 	};
 
 	export const headers = {
 		row_picker,
-		id,
 		name,
 		state,
 		osdUp,
@@ -45,18 +43,9 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet id(column: Column<OSD>)}
-	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>ID</Layout.HeaderViewer>
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-	</Layout.Header>
-{/snippet}
-
 {#snippet name(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.name}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -65,7 +54,7 @@
 
 {#snippet state(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>STATE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.state}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -79,7 +68,7 @@
 
 {#snippet exists(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>EXISTS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.exists}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -88,7 +77,7 @@
 
 {#snippet deviceClass(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>DEVICE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.deviceClass}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -97,7 +86,7 @@
 
 {#snippet machine(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>MACHINE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.machine}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -109,7 +98,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>PLACEMENT GROUP</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.placementGroupCount}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -118,13 +107,13 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.usage}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet iops(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>IOPS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{messages.iops}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

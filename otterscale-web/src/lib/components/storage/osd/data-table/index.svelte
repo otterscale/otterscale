@@ -3,6 +3,7 @@
 	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -115,13 +116,13 @@
 			/>
 			<Filters.BooleanMatch
 				columnId="in"
-				descriptor={(value) => (value ? 'In' : 'Out')}
+				descriptor={(value) => (value ? m.storage_osds_in() : m.storage_osds_out())}
 				{messages}
 				{table}
 			/>
 			<Filters.BooleanMatch
 				columnId="up"
-				descriptor={(value) => (value ? 'Up' : 'Down')}
+				descriptor={(value) => (value ? m.storage_osds_up() : m.storage_osds_down())}
 				{messages}
 				{table}
 			/>
@@ -129,7 +130,7 @@
 				columnId="exists"
 				{messages}
 				{table}
-				descriptor={(value) => (value ? 'Exists' : 'Not Exists')}
+				descriptor={(value) => (value ? m.storage_osds_exist() : m.storage_osds_not_exist())}
 			/>
 			<Filters.StringMatch
 				columnId="deviceClass"

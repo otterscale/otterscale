@@ -5,6 +5,7 @@
 	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import * as Loading from '$lib/components/custom/loading';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -56,34 +57,27 @@
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger class="flex h-full w-full items-center gap-2">
 		<Icon icon="ph:file" />
-		Do SMART
+		{m.storage_osds_do_smart_trigger()}
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="min-w-[50vw]">
 		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			S.M.A.R.T.
+			{m.storage_osds_do_smart_header()}
 		</AlertDialog.Header>
-		<Form.Root>
-			{#if !isMounted}
-				<Loading.Report />
-			{:else}
-				{#each Object.entries($smarts) as [device, output]}
-					{@const result = output.lines.join('\n')}
-					<Form.Fieldset>
-						<Form.Legend>
-							{device}
-						</Form.Legend>
-						<Form.Field class="gap-1">
-							<Code.Root class="w-full" code={result} hideLines>
-								<Code.CopyButton />
-							</Code.Root>
-						</Form.Field>
-					</Form.Fieldset>
-				{/each}
-			{/if}
-		</Form.Root>
-
+		{#if !isMounted}
+			<Loading.Report />
+		{:else}
+			{#each Object.entries($smarts) as [device, output]}
+				{@const result = output.lines.join('\n')}
+				<p class="text-lg font-bold">
+					{device}
+				</p>
+				<Code.Root class="w-full" code={result} hideLines>
+					<Code.CopyButton />
+				</Code.Root>
+			{/each}
+		{/if}
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Close</AlertDialog.Cancel>
+			<AlertDialog.Cancel>{m.modal_cancel()}</AlertDialog.Cancel>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

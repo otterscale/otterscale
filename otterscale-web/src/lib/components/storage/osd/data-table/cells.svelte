@@ -8,10 +8,10 @@
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 	import Actions from './cell-actions.svelte';
+	import { m } from '$lib/paraglide/messages';
 
 	export const cells = {
 		row_picker,
-		id,
 		name,
 		state,
 		osdUp,
@@ -30,10 +30,6 @@
 	<RowPicker {row} />
 {/snippet}
 
-{#snippet id(row: Row<OSD>)}
-	{row.original.id}
-{/snippet}
-
 {#snippet name(row: Row<OSD>)}
 	{row.original.name}
 {/snippet}
@@ -41,10 +37,10 @@
 {#snippet state(row: Row<OSD>)}
 	<div class="flex items-center gap-1">
 		{#if row.original.in}
-			<Badge variant="outline">in</Badge>
+			<Badge variant="outline">{m.storage_osds_in()}</Badge>
 		{/if}
 		{#if row.original.up}
-			<Badge variant="outline">up</Badge>
+			<Badge variant="outline">{m.storage_osds_up()}</Badge>
 		{/if}
 	</div>
 {/snippet}
