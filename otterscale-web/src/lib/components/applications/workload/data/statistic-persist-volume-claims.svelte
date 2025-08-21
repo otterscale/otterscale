@@ -4,6 +4,7 @@
 	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 </script>
@@ -20,7 +21,9 @@
 
 <Layout.Statistic.Root class={isExpand ? 'col-span-3' : 'col-span-1'}>
 	<Layout.Statistic.Header>
-		<Layout.Statistic.Title>Persistent Volumn Claims</Layout.Statistic.Title>
+		<Layout.Statistic.Title
+			>{m.applications_workload_persist_volume_claims()}</Layout.Statistic.Title
+		>
 		<Layout.Statistic.Action>
 			<Button
 				disabled={$application.persistentVolumeClaims.length === 0}
@@ -41,63 +44,22 @@
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head>Name</Table.Head>
-							<Table.Head>Status</Table.Head>
-							<Table.Head>Capacity</Table.Head>
-							<Table.Head>Access Modes</Table.Head>
+							<Table.Head>
+								{m.applications_workload_persist_volume_claims_heads_name()}
+							</Table.Head>
+							<Table.Head>
+								{m.applications_workload_persist_volume_claims_heads_status()}
+							</Table.Head>
+							<Table.Head>
+								{m.applications_workload_persist_volume_claims_heads_capacity()}
+							</Table.Head>
+							<Table.Head>
+								{m.applications_workload_persist_volume_claims_heads_access_modes()}
+							</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
 						{#each $application.persistentVolumeClaims as persistentVolumeClaim}
-							<Table.Row>
-								<Table.Cell>{persistentVolumeClaim.name}</Table.Cell>
-								<Table.Cell>
-									<Badge variant="outline">
-										{persistentVolumeClaim.status}
-									</Badge>
-								</Table.Cell>
-								<Table.Cell>{persistentVolumeClaim.capacity}</Table.Cell>
-								<Table.Cell>
-									<span class="flex items-center gap-1">
-										{#each persistentVolumeClaim.accessModes as mode}
-											<Badge variant="outline">{mode}</Badge>
-										{/each}
-									</span>
-								</Table.Cell>
-							</Table.Row>
-
-							<Table.Row>
-								<Table.Cell>{persistentVolumeClaim.name}</Table.Cell>
-								<Table.Cell>
-									<Badge variant="outline">
-										{persistentVolumeClaim.status}
-									</Badge>
-								</Table.Cell>
-								<Table.Cell>{persistentVolumeClaim.capacity}</Table.Cell>
-								<Table.Cell>
-									<span class="flex items-center gap-1">
-										{#each persistentVolumeClaim.accessModes as mode}
-											<Badge variant="outline">{mode}</Badge>
-										{/each}
-									</span>
-								</Table.Cell>
-							</Table.Row>
-							<Table.Row>
-								<Table.Cell>{persistentVolumeClaim.name}</Table.Cell>
-								<Table.Cell>
-									<Badge variant="outline">
-										{persistentVolumeClaim.status}
-									</Badge>
-								</Table.Cell>
-								<Table.Cell>{persistentVolumeClaim.capacity}</Table.Cell>
-								<Table.Cell>
-									<span class="flex items-center gap-1">
-										{#each persistentVolumeClaim.accessModes as mode}
-											<Badge variant="outline">{mode}</Badge>
-										{/each}
-									</span>
-								</Table.Cell>
-							</Table.Row>
 							<Table.Row>
 								<Table.Cell>{persistentVolumeClaim.name}</Table.Cell>
 								<Table.Cell>

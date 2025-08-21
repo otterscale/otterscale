@@ -4,6 +4,7 @@
 	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 </script>
@@ -20,7 +21,7 @@
 
 <Layout.Statistic.Root class={isExpand ? 'col-span-3' : 'col-span-1'}>
 	<Layout.Statistic.Header>
-		<Layout.Statistic.Title>Storage Classes</Layout.Statistic.Title>
+		<Layout.Statistic.Title>{m.applications_workload_storage_classes()}</Layout.Statistic.Title>
 		<Layout.Statistic.Action>
 			<Button
 				disabled={$application.persistentVolumeClaims.length === 0}
@@ -41,52 +42,23 @@
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head>Name</Table.Head>
-							<Table.Head>Provisioner</Table.Head>
-							<Table.Head>Reclaim Policy</Table.Head>
-							<Table.Head>Volume Binding Mode</Table.Head>
+							<Table.Head>
+								{m.applications_workload_storage_classes_heads_name()}
+							</Table.Head>
+							<Table.Head>
+								{m.applications_workload_storage_classes_heads_provisioner()}
+							</Table.Head>
+							<Table.Head>
+								{m.applications_workload_storage_classes_heads_reclaim_policy()}
+							</Table.Head>
+							<Table.Head>
+								{m.applications_workload_storage_classes_heads_volume_binding_mode()}
+							</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
 						{#each $application.persistentVolumeClaims as persistentVolumeClaim}
 							{#if persistentVolumeClaim.storageClass}
-								<Table.Row>
-									<Table.Cell>{persistentVolumeClaim.storageClass.name}</Table.Cell>
-									<Table.Cell>{persistentVolumeClaim.storageClass.provisioner}</Table.Cell>
-									<Table.Cell>
-										{persistentVolumeClaim.storageClass.reclaimPolicy}
-									</Table.Cell>
-									<Table.Cell>
-										<Badge variant="outline">
-											{persistentVolumeClaim.storageClass.volumeBindingMode}
-										</Badge>
-									</Table.Cell>
-								</Table.Row>
-
-								<Table.Row>
-									<Table.Cell>{persistentVolumeClaim.storageClass.name}</Table.Cell>
-									<Table.Cell>{persistentVolumeClaim.storageClass.provisioner}</Table.Cell>
-									<Table.Cell>
-										{persistentVolumeClaim.storageClass.reclaimPolicy}
-									</Table.Cell>
-									<Table.Cell>
-										<Badge variant="outline">
-											{persistentVolumeClaim.storageClass.volumeBindingMode}
-										</Badge>
-									</Table.Cell>
-								</Table.Row>
-								<Table.Row>
-									<Table.Cell>{persistentVolumeClaim.storageClass.name}</Table.Cell>
-									<Table.Cell>{persistentVolumeClaim.storageClass.provisioner}</Table.Cell>
-									<Table.Cell>
-										{persistentVolumeClaim.storageClass.reclaimPolicy}
-									</Table.Cell>
-									<Table.Cell>
-										<Badge variant="outline">
-											{persistentVolumeClaim.storageClass.volumeBindingMode}
-										</Badge>
-									</Table.Cell>
-								</Table.Row>
 								<Table.Row>
 									<Table.Cell>{persistentVolumeClaim.storageClass.name}</Table.Cell>
 									<Table.Cell>{persistentVolumeClaim.storageClass.provisioner}</Table.Cell>
