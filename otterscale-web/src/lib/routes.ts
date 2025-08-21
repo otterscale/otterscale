@@ -5,7 +5,7 @@ export interface Route {
 	items: Path[];
 }
 
-export const platformRoutes = (scope: string): Route[] => [
+export const applicationRoutes = (scope: string | undefined): Route[] => [
 	{
 		path: dynamicPaths.models(scope),
 		items: [dynamicPaths.modelsLLM(scope)]
@@ -17,14 +17,17 @@ export const platformRoutes = (scope: string): Route[] => [
 	{
 		path: dynamicPaths.applications(scope),
 		items: [
-			dynamicPaths.applicationsWorkload(scope),
-			dynamicPaths.applicationsService(scope),
+			dynamicPaths.applicationsWorkloads(scope),
+			dynamicPaths.applicationsServices(scope),
 			dynamicPaths.applicationsStore(scope)
 		]
-	},
+	}
+];
+
+export const platformRoutes = (scope: string | undefined): Route[] => [
 	{
-		path: dynamicPaths.virtualization(scope),
-		items: [dynamicPaths.virtualizationVirtualMachine(scope)]
+		path: dynamicPaths.compute(scope),
+		items: [dynamicPaths.computeVirtualMachine(scope)]
 	},
 	{
 		path: dynamicPaths.storage(scope),
@@ -35,20 +38,17 @@ export const platformRoutes = (scope: string): Route[] => [
 			dynamicPaths.storageFileSystem(scope),
 			dynamicPaths.storageObjectGateway(scope)
 		]
-	}
-];
-
-export const globalRoutes = (scope: string): Route[] => [
+	},
+	{
+		path: dynamicPaths.networking(scope),
+		items: [dynamicPaths.networkingSubnets(scope)]
+	},
 	{
 		path: dynamicPaths.machines(scope),
 		items: [dynamicPaths.machinesMetal(scope)]
 	},
 	{
 		path: dynamicPaths.settings(scope),
-		items: [
-			dynamicPaths.settingsNetwork(scope),
-			// dynamicPaths.settingsSubscription(scope),
-			dynamicPaths.settingsBIST(scope)
-		]
+		items: []
 	}
 ];

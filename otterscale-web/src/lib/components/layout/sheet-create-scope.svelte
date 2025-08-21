@@ -315,7 +315,7 @@
 					<Separator class="col-span-6 my-2" />
 
 					<!-- Network Information -->
-					<h4 class="text-md col-span-6 font-semibold">{m.network()}</h4>
+					<h4 class="text-md col-span-6 font-semibold">{m.networking()}</h4>
 					{#each machine.networkInterfaces as network}
 						<span class="text-muted-foreground text-sm">{m.name()}</span>
 						<span class="text-sm">{network.name}</span>
