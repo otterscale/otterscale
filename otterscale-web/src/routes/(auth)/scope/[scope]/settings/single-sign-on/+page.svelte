@@ -2,9 +2,9 @@
 	import { page } from '$app/state';
 	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
+	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
-	import { m } from '$lib/paraglide/messages';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({

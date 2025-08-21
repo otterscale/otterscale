@@ -5,34 +5,50 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
+	import Icon from '@iconify/svelte';
 
 	let { children } = $props();
 
 	let items = [
 		{
-			title: 'NTP Server',
+			icon: 'ph:clock',
+			title: m.ntp_server(),
 			page: 'ntp-server'
 		},
 		{
-			title: 'Package Repository',
+			icon: 'ph:package',
+			title: m.package_repository(),
 			page: 'package-repository'
 		},
 		{
-			title: 'Boot Image',
+			icon: 'ph:disc',
+			title: m.boot_image(),
 			page: 'boot-image'
 		},
 		{
-			title: 'Machine Tag',
+			icon: 'ph:tag-simple',
+			title: m.machine_tag(),
 			page: 'machine-tag'
 		},
 		{
+			icon: 'ph:key',
 			title: m.sso(),
 			page: 'single-sign-on'
+		},
+		{
+			icon: 'ph:test-tube',
+			title: m.built_in_test(),
+			page: 'built-in-test'
+		},
+		{
+			icon: 'ph:wallet',
+			title: m.subscription(),
+			page: 'subscription'
 		}
 	];
 </script>
 
-<div class="mx-auto grid w-full max-w-6xl gap-6">
+<div class="mx-auto grid w-full max-w-7xl gap-6">
 	<div class="grid gap-1">
 		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.settings()}</h1>
 		<p class="text-muted-foreground">{m.settings_description()}</p>
@@ -48,19 +64,17 @@
 				{#each items as item}
 					{@const url = `${dynamicPaths.settings(page.params.scope).url}/${item.page}`}
 					<NavigationMenu.Item>
-						<NavigationMenu.Link active={true} class="w-full">
+						<NavigationMenu.Link>
 							{#snippet child()}
-								{#if page.url.pathname === url}
-									<a
-										href={url}
-										class="{navigationMenuTriggerStyle()} bg-muted font-semibold"
-										data-active={true}
-									>
-										{item.title}
-									</a>
-								{:else}
-									<a href={url} class={navigationMenuTriggerStyle()}>{item.title}</a>
-								{/if}
+								<a
+									href={url}
+									class="{navigationMenuTriggerStyle()} {page.url.pathname === url
+										? 'bg-muted font-semibold'
+										: ''} gap-2"
+								>
+									<Icon icon={item.icon} class="size-4" />
+									<span>{item.title}</span>
+								</a>
 							{/snippet}
 						</NavigationMenu.Link>
 					</NavigationMenu.Item>

@@ -140,14 +140,6 @@ export const dynamicPaths = {
 		title: m.subnets(),
 		url: createScopePath(scope, '/networking/subnets')
 	}),
-	settingsBIST: (scope: string | undefined): Path => ({
-		title: m.built_in_test(),
-		url: createScopePath(scope, '/settings/built-in-self-test')
-	}),
-	settingsSubscription: (scope: string | undefined): Path => ({
-		title: m.subscription(),
-		url: createScopePath(scope, '/settings/subscription')
-	}),
 	setupScope: (scope: string | undefined): Path => ({
 		title: m.setup_scope(),
 		url: createScopePath(scope, '/setup')
