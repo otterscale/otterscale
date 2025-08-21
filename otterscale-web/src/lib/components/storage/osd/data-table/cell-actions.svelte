@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
+	import { m } from '$lib/paraglide/messages';
 	import DoSMART from './action-do-SMART.svelte';
 </script>
 
@@ -9,7 +10,7 @@
 </script>
 
 <Layout.Actions>
-	<Layout.ActionLabel>Actions</Layout.ActionLabel>
+	<Layout.ActionLabel>{m.datatable_action_label()}</Layout.ActionLabel>
 	<Layout.ActionItem>
 		<DoSMART {osd} />
 	</Layout.ActionItem>
