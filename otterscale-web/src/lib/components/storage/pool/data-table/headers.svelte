@@ -3,16 +3,16 @@
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		name: 'name',
-		poolType: 'type',
-		applications: 'applications',
-		placementGroupState: 'placement_group_state',
-		usage: 'usage',
-		iops: 'iops',
-		actions: 'actions'
+		name: m.name(),
+		poolType: m.type(),
+		applications: m.applications(),
+		placementGroupState: m.placement_group_state(),
+		usage: m.usage(),
+		iops: m.iops()
 	};
 
 	export const headers = {
@@ -37,7 +37,7 @@
 
 {#snippet name(column: Column<Pool>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -46,7 +46,7 @@
 
 {#snippet type(column: Column<Pool>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>TYPE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.type()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -55,7 +55,7 @@
 
 {#snippet applications(column: Column<Pool>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>APPLICATIONS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.applications()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -64,7 +64,7 @@
 
 {#snippet placement_group_state(column: Column<Pool>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>PLACEMENT GROUP STATE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.placement_group_state()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -73,13 +73,13 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.usage()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet iops(column: Column<Pool>)}
 	<Layout.Header class="justify-end">
-		<Layout.HeaderViewer>IOPS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.iops()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

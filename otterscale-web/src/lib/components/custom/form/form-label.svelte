@@ -17,7 +17,7 @@
 	}: LabelPrimitive.RootProps & { information?: Snippet } = $props();
 </script>
 
-<div class="flex select-none items-center justify-between gap-2">
+<div class="flex items-center justify-between gap-2 capitalize select-none">
 	<Label.Root bind:ref data-slot="form-label" class={cn(className)} {...restProps}>
 		{@render children?.()}
 	</Label.Root>
