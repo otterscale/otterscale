@@ -3,15 +3,15 @@
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		name: 'name',
-		poolName: 'poolName',
-		usage: 'usage',
-		mode: 'mode',
-		createTime: 'createTime',
-		actions: 'actions'
+		name: m.name(),
+		poolName: m.pool_name(),
+		usage: m.usage(),
+		mode: m.mode(),
+		createTime: m.create_time()
 	};
 
 	export const headers = {
@@ -35,7 +35,7 @@
 
 {#snippet name(column: Column<SubvolumeGroup>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -44,7 +44,7 @@
 
 {#snippet poolName(column: Column<SubvolumeGroup>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>POOL NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.pool_name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -53,7 +53,7 @@
 
 {#snippet mode(column: Column<SubvolumeGroup>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>MODE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.mode()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -65,13 +65,13 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.usage()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet createTime(column: Column<SubvolumeGroup>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.create_time()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

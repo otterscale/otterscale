@@ -3,13 +3,13 @@
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		name: 'name',
-		createTime: 'createTime',
-		hasPendingClones: 'hasPendingClones',
-		actions: 'actions'
+		name: m.name(),
+		createTime: m.create_time(),
+		hasPendingClones: m.pending_clones()
 	};
 
 	export const headers = {
@@ -31,7 +31,7 @@
 
 {#snippet name(column: Column<Subvolume_Snapshot>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -40,7 +40,7 @@
 
 {#snippet hasPendingClones(column: Column<Subvolume_Snapshot>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>PENDING CLONE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.pending_clones()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -49,7 +49,7 @@
 
 {#snippet createTime(column: Column<Subvolume_Snapshot>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.create_time()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
