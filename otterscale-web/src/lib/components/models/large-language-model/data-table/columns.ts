@@ -1,8 +1,20 @@
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
+import { m } from '$lib/paraglide/messages';
 import type { ColumnDef } from '@tanstack/table-core';
 import { type LargeLangeageModel } from '../protobuf.svelte';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+
+const messages = {
+	name: m.models_large_language_model_headers_name(),
+	version: m.models_large_language_model_headers_version(),
+	parameters: m.models_large_language_model_headers_parameters(),
+	accuracy: m.models_large_language_model_headers_accuracy(),
+	speed: m.models_large_language_model_headers_speed(),
+	architecture: m.models_large_language_model_headers_architecture(),
+	requests: m.models_large_language_model_headers_requests(),
+	uptime: m.models_large_language_model_headers_uptime()
+};
 
 const columns: ColumnDef<LargeLangeageModel>[] = [
 	{
@@ -90,4 +102,4 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

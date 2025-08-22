@@ -1,5 +1,5 @@
 import type { Application } from '$lib/api/application/v1/application_pb';
-import { getSortingFunction } from '$lib/components/custom/data-table';
+import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from "$lib/components/ui/data-table/index.js";
 import type { ColumnDef } from "@tanstack/table-core";
 import { cells } from './cells.svelte';

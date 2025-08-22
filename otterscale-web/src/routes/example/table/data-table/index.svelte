@@ -1,10 +1,6 @@
 <script lang="ts" module>
-	import ColumnViewer from '$lib/components/custom/data-table/data-table-filters/column.svelte';
-	import TableEmpty from '$lib/components/custom/data-table/data-table-empty.svelte';
-	import * as Filter from '$lib/components/custom/data-table/data-table-filters';
-	import TableFooter from '$lib/components/custom/data-table/data-table-footer.svelte';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import TablePagination from '$lib/components/custom/data-table/data-table-pagination.svelte';
+	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
@@ -110,15 +106,15 @@
 	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filter.StringFuzzy columnId="name" values={$data.map((row) => row.name)} {table} />
+			<!-- <Filter.StringFuzzy columnId="name" values={$data.map((row) => row.name)} {table} />
 			<Filter.StringMatch columnId="name" values={$data.map((row) => row.name)} {table} />
 			<Filter.BooleanMatch
 				columnId="isVerified"
 				values={$data.map((row) => row.isVerified)}
 				{table}
 			/>
-			<Filter.NumberRange columnId="id" values={$data.map((row) => row.id)} {table} />
-			<ColumnViewer {table} />
+			<Filter.NumberRange columnId="id" values={$data.map((row) => row.id)} {table} /> -->
+			<!-- <Filters.Column {table} /> -->
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Button class="h-10">Create</Button>
@@ -157,17 +153,13 @@
 						</Table.Cell>
 					</Table.Row>
 				{:else}
-					<Table.Row>
-						<Table.Cell colspan={columns.length}>
-							<TableEmpty />
-						</Table.Cell>
-					</Table.Row>
+					<Empty {table} />
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</Layout.Viewer>
 	<Layout.Footer>
-		<TableFooter {table} />
-		<TablePagination {table} />
+		<Footer {table} />
+		<Pagination {table} />
 	</Layout.Footer>
 </Layout.Root>

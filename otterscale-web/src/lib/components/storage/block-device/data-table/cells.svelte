@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Image } from '$lib/api/storage/v1/storage_pb';
-	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Snapshot } from '$lib/components/storage/block-device/snapshot';
 	import { Badge } from '$lib/components/ui/badge';
@@ -19,7 +19,7 @@
 </script>
 
 {#snippet row_picker(row: Row<Image>)}
-	<RowPicker {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Image>)}

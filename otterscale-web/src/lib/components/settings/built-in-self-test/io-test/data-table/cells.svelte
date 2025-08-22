@@ -1,6 +1,10 @@
 <script lang="ts" module>
-	import { FIO_Input_AccessMode, type TestResult, TestResult_Status } from '$lib/api/bist/v1/bist_pb';
-	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import {
+		FIO_Input_AccessMode,
+		type TestResult,
+		TestResult_Status
+	} from '$lib/api/bist/v1/bist_pb';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
@@ -33,7 +37,7 @@
 </script>
 
 {#snippet row_picker(row: Row<TestResult>)}
-	<RowPicker {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<TestResult>)}
@@ -51,12 +55,12 @@
 {/snippet}
 
 {#snippet target(row: Row<TestResult>)}
-	{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-		{#if row.original.kind.value.target.case === 'cephBlockDevice' }
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
+		{#if row.original.kind.value.target.case === 'cephBlockDevice'}
 			<Badge variant="outline">
 				{row.original.kind.value.target.value.facilityName}
 			</Badge>
-		{:else if row.original.kind.value.target.case === 'networkFileSystem' }
+		{:else if row.original.kind.value.target.case === 'networkFileSystem'}
 			<Badge variant="outline">
 				{row.original.kind.value.target.value.endpoint}
 			</Badge>
@@ -65,49 +69,52 @@
 {/snippet}
 
 {#snippet accessMode(row: Row<TestResult>)}
-	{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 		{FIO_Input_AccessMode[row.original.kind.value?.input.accessMode]}
 	{/if}
 {/snippet}
 
 {#snippet jobCount(row: Row<TestResult>)}
 	<div class="flex justify-end">
-		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-            {row.original.kind.value?.input.jobCount}
-        {/if}
+		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
+			{row.original.kind.value?.input.jobCount}
+		{/if}
 	</div>
 {/snippet}
 
 {#snippet runTime(row: Row<TestResult>)}
-	{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
+	{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 		{@const formatted = formatSecond(Number(row.original.kind.value?.input.runTimeSeconds))}
-		{formatted.value} {formatted.unit}
+		{formatted.value}
+		{formatted.unit}
 	{/if}
 {/snippet}
 
 {#snippet blockSize(row: Row<TestResult>)}
 	<div class="flex justify-end">
-		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-            {@const formatted = formatCapacity(Number(row.original.kind.value?.input.blockSizeBytes))}
-            {formatted.value} {formatted.unit}
-        {/if}
+		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
+			{@const formatted = formatCapacity(Number(row.original.kind.value?.input.blockSizeBytes))}
+			{formatted.value}
+			{formatted.unit}
+		{/if}
 	</div>
 {/snippet}
 
 {#snippet fileSize(row: Row<TestResult>)}
 	<div class="flex justify-end">
-		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-            {@const formatted = formatCapacity(Number(row.original.kind.value?.input.fileSizeBytes))}
-            {formatted.value} {formatted.unit}
-        {/if}
+		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
+			{@const formatted = formatCapacity(Number(row.original.kind.value?.input.fileSizeBytes))}
+			{formatted.value}
+			{formatted.unit}
+		{/if}
 	</div>
 {/snippet}
 
 {#snippet ioDepth(row: Row<TestResult>)}
 	<div class="flex justify-end">
-		{#if row.original.kind.case === 'fio' &&  row.original.kind.value?.input}
-            {row.original.kind.value?.input.ioDepth}
-        {/if}
+		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
+			{row.original.kind.value?.input.ioDepth}
+		{/if}
 	</div>
 {/snippet}
 
@@ -116,27 +123,31 @@
 {/snippet}
 
 {#snippet bandwidth(row: Row<TestResult>)}
-	<div class="flex flex-col gap-1 items-end">
+	<div class="flex flex-col items-end gap-1">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
 			<Badge variant="outline">
-				Read {(Number(row.original.kind.value.output.read.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
+				Read {(Number(row.original.kind.value.output.read.bandwidthBytes) / 1024 / 1024).toFixed(2)}
+				MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write}
 			<Badge variant="default">
-				Write {(Number(row.original.kind.value.output.write.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
+				Write {(Number(row.original.kind.value.output.write.bandwidthBytes) / 1024 / 1024).toFixed(
+					2
+				)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim}
 			<Badge variant="secondary">
-				Trim {(Number(row.original.kind.value.output.trim.bandwidthBytes) / 1024 / 1024).toFixed(2)} MB/s
+				Trim {(Number(row.original.kind.value.output.trim.bandwidthBytes) / 1024 / 1024).toFixed(2)}
+				MB/s
 			</Badge>
 		{/if}
 	</div>
 {/snippet}
 
 {#snippet iops(row: Row<TestResult>)}
-	<div class="flex flex-col gap-1 items-end">
+	<div class="flex flex-col items-end gap-1">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
 			<Badge variant="outline">
 				Read: {row.original.kind.value.output.read.ioPerSecond.toFixed(0)}
@@ -156,61 +167,78 @@
 {/snippet}
 
 {#snippet latencyMin(row: Row<TestResult>)}
-	<div class="flex flex-col gap-1 items-end">
+	<div class="flex flex-col items-end gap-1">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
-				Read: {(Number(row.original.kind.value.output.read.latency.minNanoseconds) / 1000000).toFixed(3)} ms
+				Read: {(
+					Number(row.original.kind.value.output.read.latency.minNanoseconds) / 1000000
+				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
 			<Badge variant="default">
-				Write: {(Number(row.original.kind.value.output.write.latency.minNanoseconds) / 1000000).toFixed(3)} ms
+				Write: {(
+					Number(row.original.kind.value.output.write.latency.minNanoseconds) / 1000000
+				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
 			<Badge variant="secondary">
-				Trim: {(Number(row.original.kind.value.output.trim.latency.minNanoseconds) / 1000000).toFixed(3)} ms
+				Trim: {(
+					Number(row.original.kind.value.output.trim.latency.minNanoseconds) / 1000000
+				).toFixed(3)} ms
 			</Badge>
 		{/if}
 	</div>
 {/snippet}
 
 {#snippet latencyMax(row: Row<TestResult>)}
-	<div class="flex gap-1 flex-col items-end">
+	<div class="flex flex-col items-end gap-1">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
-				Read: {(Number(row.original.kind.value.output.read.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
+				Read: {(
+					Number(row.original.kind.value.output.read.latency.maxNanoseconds) / 1000000
+				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
 			<Badge variant="default">
-				Write: {(Number(row.original.kind.value.output.write.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
+				Write: {(
+					Number(row.original.kind.value.output.write.latency.maxNanoseconds) / 1000000
+				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
 			<Badge variant="secondary">
-				Trim: {(Number(row.original.kind.value.output.trim.latency.maxNanoseconds) / 1000000).toFixed(3)} ms
+				Trim: {(
+					Number(row.original.kind.value.output.trim.latency.maxNanoseconds) / 1000000
+				).toFixed(3)} ms
 			</Badge>
 		{/if}
 	</div>
 {/snippet}
 
-
 {#snippet latencyMean(row: Row<TestResult>)}
-	<div class="flex flex-col gap-1 items-end">
+	<div class="flex flex-col items-end gap-1">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
-				Read: {(Number(row.original.kind.value.output.read.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
+				Read: {(
+					Number(row.original.kind.value.output.read.latency.meanNanoseconds) / 1000000
+				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
 			<Badge variant="default">
-				Write: {(Number(row.original.kind.value.output.write.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
+				Write: {(
+					Number(row.original.kind.value.output.write.latency.meanNanoseconds) / 1000000
+				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
 			<Badge variant="secondary">
-				Trim: {(Number(row.original.kind.value.output.trim.latency.meanNanoseconds) / 1000000).toFixed(3)} ms
+				Trim: {(
+					Number(row.original.kind.value.output.trim.latency.meanNanoseconds) / 1000000
+				).toFixed(3)} ms
 			</Badge>
 		{/if}
 	</div>
@@ -247,5 +275,5 @@
 {/snippet}
 
 {#snippet actions(row: Row<TestResult>)}
-	<Actions testResult={row.original}/>
+	<Actions testResult={row.original} />
 {/snippet}

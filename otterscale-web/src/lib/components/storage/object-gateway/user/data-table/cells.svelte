@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { User } from '$lib/api/storage/v1/storage_pb';
-	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import { Key } from '$lib/components/storage/object-gateway/user/key';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Icon from '@iconify/svelte';
@@ -18,7 +18,7 @@
 </script>
 
 {#snippet row_picker(row: Row<User>)}
-	<RowPicker {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet id(row: Row<User>)}

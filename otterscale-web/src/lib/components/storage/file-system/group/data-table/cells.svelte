@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
-	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
@@ -20,7 +20,7 @@
 </script>
 
 {#snippet row_picker(row: Row<SubvolumeGroup>)}
-	<RowPicker {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<SubvolumeGroup>)}

@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { Network } from '$lib/api/network/v1/network_pb';
-	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
+	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
@@ -30,7 +31,7 @@
 {#snippet row_picker(table: Table<Network>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<RowPickers.Header {table} />
+			<Headers.RowPicker {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}

@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { TableRow } from './type';
-	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
@@ -14,7 +14,7 @@
 </script>
 
 {#snippet row_picker(row: Row<TableRow>)}
-	<RowPicker {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet id(row: Row<TableRow>)}

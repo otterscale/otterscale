@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
-	import { RowPickers } from '$lib/components/custom/data-table';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
@@ -29,7 +29,7 @@
 </script>
 
 {#snippet row_picker(row: Row<Machine>)}
-	<RowPickers.Cell {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet fqdn_ip(row: Row<Machine>)}
