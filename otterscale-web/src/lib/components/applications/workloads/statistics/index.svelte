@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
-	import * as Card from '$lib/components/ui/card';
+	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
+	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
+	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
+	import Title from '$lib/components/custom/chart/title.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { formatHealthColor } from '$lib/formatter';
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -57,45 +60,52 @@
 	});
 </script>
 
-<span class="grid grid-cols-4 gap-4">
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>APPLICATION</Card.Title>
-		</Card.Header>
-		<Card.Content class="text-7xl">
-			{filteredApplications.length}
-		</Card.Content>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>SERVICE</Card.Title>
-		</Card.Header>
-		<Card.Content class="text-7xl">
-			{numberOfServices}
-		</Card.Content>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>POD</Card.Title>
-		</Card.Header>
-		<Card.Content class="text-7xl">
-			{totalPods}
-		</Card.Content>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header>
-			<Card.Title>HEALTH</Card.Title>
-		</Card.Header>
-		<Card.Content>
-			<p class="text-3xl">
-				{Math.round(healthByType)}%
-			</p>
-			<p class="text-muted-foreground text-xs">
-				{healthyPods} Running over {totalPods} pods
-			</p>
-		</Card.Content>
-		<Card.Footer>
+<div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+	<Layout>
+		{#snippet title()}
+			<Title title="APPLICATION" />
+		{/snippet}
+
+		{#snippet content()}
+			<Content value={filteredApplications.length} />
+		{/snippet}
+	</Layout>
+
+	<Layout>
+		{#snippet title()}
+			<Title title="SERVICE" />
+		{/snippet}
+
+		{#snippet content()}
+			<Content value={numberOfServices} />
+		{/snippet}
+	</Layout>
+
+	<Layout>
+		{#snippet title()}
+			<Title title="POD" />
+		{/snippet}
+
+		{#snippet content()}
+			<Content value={totalPods} />
+		{/snippet}
+	</Layout>
+
+	<Layout>
+		{#snippet title()}
+			<Title title="HEALTH" />
+		{/snippet}
+
+		{#snippet content()}
+			<ContentSubtitle
+				value={Math.round(healthByType)}
+				unit={'%'}
+				subtitle={`${healthyPods} Running over ${totalPods} pods`}
+			/>
+		{/snippet}
+
+		{#snippet footer()}
 			<Progress value={healthByType} max={100} class={healthColorClass} />
-		</Card.Footer>
-	</Card.Root>
-</span>
+		{/snippet}
+	</Layout>
+</div>
