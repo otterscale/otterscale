@@ -8,6 +8,7 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import * as Collapsible from '$lib/components/ui/collapsible';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -83,14 +84,14 @@
 <Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
-		Create
+		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create RADOS Block Device</Modal.Header>
+		<Modal.Header>{m.create_rbd()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Image Name</Form.Label>
+					<Form.Label>{m.image_name()}</Form.Label>
 					<SingleInput.General
 						required
 						type="text"
@@ -100,7 +101,7 @@
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Pool Name</Form.Label>
+					<Form.Label>{m.pool_name()}</Form.Label>
 					{#if isPoolsLoading}
 						<Loading.Selection />
 					{:else}
@@ -115,7 +116,7 @@
 								<SingleSelect.Options>
 									<SingleSelect.Input />
 									<SingleSelect.List>
-										<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 										<SingleSelect.Group>
 											{#each $poolOptions as option}
 												<SingleSelect.Item {option}>
@@ -136,7 +137,7 @@
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Quota Size</Form.Label>
+					<Form.Label>{m.quota_size()}</Form.Label>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
 						transformer={(value) => String(value)}
@@ -161,10 +162,10 @@
 
 				<Collapsible.Content>
 					<Form.Fieldset>
-						<Form.Legend>Striping</Form.Legend>
+						<Form.Legend>{m.striping()}</Form.Legend>
 
 						<Form.Field>
-							<Form.Label>Object Size</Form.Label>
+							<Form.Label>{m.object_size()}</Form.Label>
 							<SingleInput.Measurement
 								bind:value={request.objectSizeBytes}
 								transformer={(value) => String(value)}
@@ -176,7 +177,7 @@
 						</Form.Field>
 
 						<Form.Field>
-							<Form.Label>Stripe Unit</Form.Label>
+							<Form.Label>{m.stripe_unit()}</Form.Label>
 							<SingleInput.Measurement
 								bind:value={request.stripeUnitBytes}
 								transformer={(value) => String(value)}
@@ -188,7 +189,7 @@
 						</Form.Field>
 
 						<Form.Field>
-							<Form.Label>Stripe Count</Form.Label>
+							<Form.Label>{m.stripe_count()}</Form.Label>
 							<SingleInput.General
 								bind:value={request.stripeCount}
 								transformer={(value) => String(value)}
@@ -197,44 +198,39 @@
 					</Form.Fieldset>
 
 					<Form.Fieldset>
-						<Form.Legend>Features</Form.Legend>
+						<Form.Legend>{m.features()}</Form.Legend>
 
 						<Form.Field>
 							<SingleInput.Boolean
-								descriptor={() => 'Allows the creation of snapshots and clones of an image.'}
-								format="checkbox"
+								descriptor={() => m.layering_description()}
 								bind:value={request.layering}
 							/>
 						</Form.Field>
 
 						<Form.Field>
 							<SingleInput.Boolean
-								descriptor={() => 'Ensures that only one client can write to the image at a time.'}
-								format="checkbox"
+								descriptor={() => m.exclusive_lock_description()}
 								bind:value={request.exclusiveLock}
 							/>
 						</Form.Field>
 
 						<Form.Field>
 							<SingleInput.Boolean
-								descriptor={() => 'Tracks object existence to speed up image operations.'}
-								format="checkbox"
+								descriptor={() => m.object_map_description()}
 								bind:value={request.objectMap}
 							/>
 						</Form.Field>
 
 						<Form.Field>
 							<SingleInput.Boolean
-								descriptor={() => 'Speeds up the process of comparing two images.'}
-								format="checkbox"
+								descriptor={() => m.fast_diff_description()}
 								bind:value={request.fastDiff}
 							/>
 						</Form.Field>
 
 						<Form.Field>
 							<SingleInput.Boolean
-								descriptor={() => 'Removes clone dependency on parent image for faster deletion.'}
-								format="checkbox"
+								descriptor={() => m.deep_flatten_description()}
 								bind:value={request.deepFlatten}
 							/>
 						</Form.Field>
@@ -248,7 +244,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -273,7 +269,7 @@
 						close();
 					}}
 				>
-					Create
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

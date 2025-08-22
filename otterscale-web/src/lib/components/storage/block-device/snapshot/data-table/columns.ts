@@ -65,7 +65,8 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
-		}
+		},
+		enableHiding: false
 	}
 ];
 
