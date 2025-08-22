@@ -116,13 +116,13 @@
 			/>
 			<Filters.BooleanMatch
 				columnId="in"
-				descriptor={(value) => (value ? m.storage_osds_in() : m.storage_osds_out())}
+				descriptor={(value) => (value ? m.osd_in() : m.osd_out())}
 				{messages}
 				{table}
 			/>
 			<Filters.BooleanMatch
 				columnId="up"
-				descriptor={(value) => (value ? m.storage_osds_up() : m.storage_osds_down())}
+				descriptor={(value) => (value ? m.osd_up() : m.osd_down())}
 				{messages}
 				{table}
 			/>
@@ -130,7 +130,7 @@
 				columnId="exists"
 				{messages}
 				{table}
-				descriptor={(value) => (value ? m.storage_osds_exist() : m.storage_osds_not_exist())}
+				descriptor={(value) => (value ? m.osd_exist() : m.osd_not_exist())}
 			/>
 			<Filters.StringMatch
 				columnId="deviceClass"
@@ -147,16 +147,14 @@
 				{#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
 					<Table.Row>
 						{#each headerGroup.headers as header (header.id)}
-							{#if !header.column.columnDef.id?.startsWith('_')}
-								<Table.Head>
-									{#if !header.isPlaceholder}
-										<FlexRender
-											content={header.column.columnDef.header}
-											context={header.getContext()}
-										/>
-									{/if}
-								</Table.Head>
-							{/if}
+							<Table.Head>
+								{#if !header.isPlaceholder}
+									<FlexRender
+										content={header.column.columnDef.header}
+										context={header.getContext()}
+									/>
+								{/if}
+							</Table.Head>
 						{/each}
 					</Table.Row>
 				{/each}
@@ -165,11 +163,9 @@
 				{#each table.getRowModel().rows as row (row.id)}
 					<Table.Row data-state={row.getIsSelected() && 'selected'}>
 						{#each row.getVisibleCells() as cell (cell.id)}
-							{#if !cell.column.columnDef.id?.startsWith('_')}
-								<Table.Cell>
-									<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
-								</Table.Cell>
-							{/if}
+							<Table.Cell>
+								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
+							</Table.Cell>
 						{/each}
 					</Table.Row>
 				{:else}

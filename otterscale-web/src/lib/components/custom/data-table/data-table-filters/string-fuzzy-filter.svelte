@@ -20,9 +20,7 @@
 </script>
 
 <div class="relative w-40">
-	<Command.Root
-		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs capitalize')}
-	>
+	<Command.Root class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs')}>
 		<div class="relative">
 			<Command.Input
 				class="pr-3 placeholder:text-xs placeholder:uppercase"

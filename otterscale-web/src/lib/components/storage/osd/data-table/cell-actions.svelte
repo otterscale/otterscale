@@ -10,7 +10,7 @@
 </script>
 
 <Layout.Actions>
-	<Layout.ActionLabel>{m.datatable_action_label()}</Layout.ActionLabel>
+	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionItem>
 		<DoSMART {osd} />
 	</Layout.ActionItem>

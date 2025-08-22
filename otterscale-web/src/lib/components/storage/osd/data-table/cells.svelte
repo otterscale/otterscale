@@ -5,10 +5,10 @@
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 	import Actions from './cell-actions.svelte';
-	import { m } from '$lib/paraglide/messages';
 
 	export const cells = {
 		row_picker,
@@ -37,10 +37,10 @@
 {#snippet state(row: Row<OSD>)}
 	<div class="flex items-center gap-1">
 		{#if row.original.in}
-			<Badge variant="outline">{m.storage_osds_in()}</Badge>
+			<Badge variant="outline">{m.osd_in()}</Badge>
 		{/if}
 		{#if row.original.up}
-			<Badge variant="outline">{m.storage_osds_up()}</Badge>
+			<Badge variant="outline">{m.osd_up()}</Badge>
 		{/if}
 	</div>
 {/snippet}
