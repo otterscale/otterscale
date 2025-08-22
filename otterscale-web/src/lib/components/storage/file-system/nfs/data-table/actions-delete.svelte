@@ -5,6 +5,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages.js';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -47,22 +48,23 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Delete
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Delete Subvolume</Modal.Header>
+		<Modal.Header>
+			{m.delete_nfs()}
+		</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
 					<SingleInput.Confirm
-						id="deletion"
 						required
 						target={subvolume.name}
 						bind:value={request.subvolumeName}
 					/>
 				</Form.Field>
 				<Form.Help>
-					Please type the subvolume name exactly to confirm deletion. This action cannot be undone.
+					{m.deletion_warning({ identifier: m.nfs_name() })}
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
@@ -72,7 +74,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -97,7 +99,7 @@
 						close();
 					}}
 				>
-					Delete
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

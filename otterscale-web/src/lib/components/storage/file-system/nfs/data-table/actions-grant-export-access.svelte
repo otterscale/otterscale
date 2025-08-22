@@ -14,6 +14,7 @@
 	import { toast } from 'svelte-sonner';
 	import { get } from 'svelte/store';
 	import { type NFSStore } from '../utils.svelte.js';
+	import { m } from '$lib/paraglide/messages.js';
 </script>
 
 <script lang="ts">
@@ -50,14 +51,14 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:shield" />
-		Grant
+		{m.grant()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Grant Export Access</Modal.Header>
+		<Modal.Header>{m.grant_export_access()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Client IP</Form.Label>
+					<Form.Label>{m.client_ip()}</Form.Label>
 					<SingleInput.General id="client_ip" required type="text" bind:value={request.clientIp} />
 				</Form.Field>
 			</Form.Fieldset>
@@ -68,7 +69,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -93,7 +94,7 @@
 						close();
 					}}
 				>
-					Grant
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

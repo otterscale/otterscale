@@ -9,6 +9,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -53,22 +54,17 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Delete
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Delete Snapshot</Modal.Header>
+		<Modal.Header>{m.delete_snapshot()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.Confirm
-						id="deletion"
-						required
-						target={snapshot.name}
-						bind:value={request.snapshotName}
-					/>
+					<SingleInput.Confirm required target={snapshot.name} bind:value={request.snapshotName} />
 				</Form.Field>
 				<Form.Help>
-					Please type the snapshot name exactly to confirm deletion. This action cannot be undone.
+					{m.deletion_warning({ identifier: m.snapshot_name() })}
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
@@ -78,7 +74,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -103,7 +99,7 @@
 						close();
 					}}
 				>
-					Delete
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

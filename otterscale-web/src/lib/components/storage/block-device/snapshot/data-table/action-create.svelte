@@ -43,7 +43,7 @@
 		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.create_rbd_snapshot()}</Modal.Header>
+		<Modal.Header>{m.create_snapshot()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>

@@ -53,7 +53,7 @@
 		{m.rollback()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.rollback_rbd_snapshot()}</Modal.Header>
+		<Modal.Header>{m.rollback_snapshot()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Label>{m.name()}</Form.Label>

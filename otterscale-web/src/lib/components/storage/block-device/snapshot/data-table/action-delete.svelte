@@ -53,7 +53,7 @@
 		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.delete_rbd_snapshot()}</Modal.Header>
+		<Modal.Header>{m.delete_snapshot()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>

@@ -3,18 +3,18 @@
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		name: 'name',
-		poolName: 'poolName',
-		usage: 'usage',
-		path: 'path',
-		mode: 'mode',
-		createTime: 'createTime',
-		exportSubvolume: 'exportSubvolume',
-		snapshots: 'snapshots',
-		actions: 'actions'
+		name: m.name(),
+		poolName: m.pool_name(),
+		usage: m.usage(),
+		path: m.path(),
+		mode: m.mode(),
+		createTime: m.create_time(),
+		exportSubvolume: m.export(),
+		snapshots: m.snapshot()
 	};
 
 	export const headers = {
@@ -41,7 +41,7 @@
 
 {#snippet name(column: Column<Subvolume>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -50,7 +50,7 @@
 
 {#snippet path(column: Column<Subvolume>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>PATH</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.path()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -59,7 +59,7 @@
 
 {#snippet mode(column: Column<Subvolume>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>MODE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.mode()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -68,7 +68,7 @@
 
 {#snippet poolName(column: Column<Subvolume>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>POOL NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.pool_name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -80,13 +80,13 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.usage()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet exportSubvolume(column: Column<Subvolume>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>EXPORT</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.export()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -95,7 +95,7 @@
 
 {#snippet createTime(column: Column<Subvolume>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>CREATE TIME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.create_time()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -107,7 +107,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>SNAPSHOT</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.snapshot()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
