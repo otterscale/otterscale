@@ -1,10 +1,9 @@
 <script lang="ts" module>
 	import type { DoSMARTResponse_Output, OSD } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Code from '$lib/components/custom/code';
-	import * as Form from '$lib/components/custom/form';
 	import * as Loading from '$lib/components/custom/loading';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -54,15 +53,15 @@
 	});
 </script>
 
-<AlertDialog.Root bind:open>
-	<AlertDialog.Trigger class="flex h-full w-full items-center gap-2">
+<Modal.Root bind:open>
+	<Modal.Trigger variant="creative">
 		<Icon icon="ph:file" />
-		{m.storage_osds_do_smart_trigger()}
-	</AlertDialog.Trigger>
-	<AlertDialog.Content class="min-w-[50vw]">
-		<AlertDialog.Header class="flex items-center justify-center text-xl font-bold">
-			{m.storage_osds_do_smart_header()}
-		</AlertDialog.Header>
+		{m.do_smart()}
+	</Modal.Trigger>
+	<Modal.Content class="min-w-[50vw]">
+		<Modal.Header>
+			{m.smart()}
+		</Modal.Header>
 		{#if !isMounted}
 			<Loading.Report />
 		{:else}
@@ -71,13 +70,13 @@
 				<p class="text-lg font-bold">
 					{device}
 				</p>
-				<Code.Root class="w-full" code={result} hideLines>
+				<Code.Root class="h-fit max-h-[77vh] w-full overflow-auto" code={result} hideLines>
 					<Code.CopyButton />
 				</Code.Root>
 			{/each}
 		{/if}
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel>{m.modal_cancel()}</AlertDialog.Cancel>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+		<Modal.Footer>
+			<Modal.Cancel>{m.modal_cancel()}</Modal.Cancel>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

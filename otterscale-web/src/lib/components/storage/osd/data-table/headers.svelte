@@ -7,16 +7,16 @@
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		name: m.storage_osds_heads_name(),
-		state: m.storage_osds_heads_state(),
-		in: m.storage_osds_heads_osd_ins(),
-		up: m.storage_osds_heads_osd_ups(),
-		exists: m.storage_osds_heads_exists(),
-		deviceClass: m.storage_osds_heads_device_class(),
-		machine: m.storage_osds_heads_machine(),
-		placementGroupCount: m.storage_osds_heads_placement_group_count(),
-		usage: m.storage_osds_heads_usage(),
-		iops: m.storage_osds_heads_iops()
+		name: m.name(),
+		state: m.state(),
+		in: m.osd_ins(),
+		up: m.osd_ups(),
+		exists: m.osd_exists(),
+		deviceClass: m.device_class(),
+		machine: m.machine(),
+		placementGroupCount: m.placement_group(),
+		usage: m.usage(),
+		iops: m.iops()
 	};
 
 	export const headers = {
