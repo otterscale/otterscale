@@ -99,7 +99,7 @@ send_otterscale_config_data() {
     local OTTERSCALE_JUJU_REGION="default"
     local OTTERSCALE_K8S_ENDPOINT_JSON=$(microk8s kubectl get endpoints -o json | jq '.items[].subsets[]')
     local OTTERSCALE_K8S_ENDPOINT=$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq -r '.ports[].name')"://"$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq -r '.addresses[].ip')":"$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq '.ports[].port')
-    local OTTERSCALE_MICROK8S_ENCODE_TOKEN=$(cat "$KUBE_FOLDER/config" | base64)
+    local OTTERSCALE_MICROK8S_ENCODE_TOKEN=$(base64 -i --wrap=0 "$KUBE_FOLDER/config")
     local DATA=$(cat <<EOF
 {"maas_url": "$OTTERSCALE_MAAS_ENDPOINT",
 "maas_key": "$OTTERSCALE_MAAS_KEY",
