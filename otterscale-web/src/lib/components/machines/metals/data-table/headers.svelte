@@ -119,7 +119,10 @@
 
 {#snippet scope(column: Column<Machine>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>SCOPE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>
+			<p>SCOPE</p>
+			<p>LAST COMMISSIONED</p>
+		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

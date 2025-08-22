@@ -14,6 +14,7 @@ var ProviderSet = wire.NewSet(
 	maas.NewBootResource,
 	maas.NewBootSource,
 	maas.NewBootSourceSelection,
+	maas.NewEvent,
 	maas.NewFabric,
 	maas.NewIPRange,
 	maas.NewMachine,

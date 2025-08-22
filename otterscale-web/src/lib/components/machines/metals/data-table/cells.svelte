@@ -1,11 +1,12 @@
 <script lang="ts" module>
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { RowPickers } from '$lib/components/custom/data-table';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { formatCapacity } from '$lib/formatter';
+	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { dynamicPaths } from '$lib/path';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
@@ -87,7 +88,7 @@
 					{#if processingStates.includes(row.original.status.toLowerCase())}
 						<Icon icon="ph:spinner" class="animate-spin" />
 					{/if}
-					<p class="invisible lg:visible">
+					<p class="invisible max-w-[300px] truncate lg:visible">
 						{row.original.statusMessage}
 					</p>
 				</span>
@@ -138,6 +139,11 @@
 	{#if identifier}
 		{@const scope = identifier.split('-machine-')[0]}
 		{scope}
+		{#if row.original.lastCommissioned}
+			<span class="text-muted-foreground flex items-center gap-1 text-xs">
+				{formatTimeAgo(timestampDate(row.original.lastCommissioned))}
+			</span>
+		{/if}
 	{/if}
 {/snippet}
 

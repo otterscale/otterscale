@@ -18,11 +18,16 @@ import (
 const JobHostUnits = model.JobHostUnits
 
 type (
-	Machine          = entity.Machine
 	NUMANode         = entity.NUMANode
 	BlockDevice      = entity.BlockDevice
 	NetworkInterface = entity.NetworkInterface
+	Event            = entity.Event
 )
+
+type Machine struct {
+	*entity.Machine
+	LastCommissioned time.Time
+}
 
 type MachinePlacement struct {
 	LXD       bool
@@ -65,6 +70,10 @@ type ClientRepo interface {
 	Status(ctx context.Context, uuid string, patterns []string) (*params.FullStatus, error)
 }
 
+type EventRepo interface {
+	Get(ctx context.Context, systemID string) ([]Event, error)
+}
+
 type MachineUseCase struct {
 	machine        MachineRepo
 	machineManager MachineManagerRepo
@@ -73,9 +82,10 @@ type MachineUseCase struct {
 	tag            TagRepo
 	action         ActionRepo
 	facility       FacilityRepo
+	event          EventRepo
 }
 
-func NewMachineUseCase(machine MachineRepo, machineManager MachineManagerRepo, server ServerRepo, client ClientRepo, tag TagRepo, action ActionRepo, facility FacilityRepo) *MachineUseCase {
+func NewMachineUseCase(machine MachineRepo, machineManager MachineManagerRepo, server ServerRepo, client ClientRepo, tag TagRepo, action ActionRepo, facility FacilityRepo, event EventRepo) *MachineUseCase {
 	return &MachineUseCase{
 		machine:        machine,
 		machineManager: machineManager,
@@ -84,6 +94,7 @@ func NewMachineUseCase(machine MachineRepo, machineManager MachineManagerRepo, s
 		tag:            tag,
 		action:         action,
 		facility:       facility,
+		event:          event,
 	}
 }
 
@@ -92,11 +103,30 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scopeUUID string) ([
 	if err != nil {
 		return nil, err
 	}
+	eg, ctx := errgroup.WithContext(ctx)
+	for i := range machines {
+		eg.Go(func() error {
+			var err error
+			machines[i].LastCommissioned, err = uc.getLastCommissioned(ctx, machines[i].SystemID)
+			return err
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
 	return uc.filterMachines(machines, scopeUUID), nil
 }
 
 func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*Machine, error) {
-	return uc.machine.Get(ctx, id)
+	machine, err := uc.machine.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	machine.LastCommissioned, err = uc.getLastCommissioned(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return machine, nil
 }
 
 func (uc *MachineUseCase) CreateMachine(ctx context.Context, id string, enableSSH, skipBMCConfig, skipNetworking, skipStorage bool, uuid string, tags []string) (*Machine, error) {
@@ -275,4 +305,17 @@ func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineSystemID string)
 		}
 	}
 	return nil
+}
+
+func (uc *MachineUseCase) getLastCommissioned(ctx context.Context, machineSystemID string) (time.Time, error) {
+	events, err := uc.event.Get(ctx, machineSystemID)
+	if err != nil {
+		return time.Time{}, err
+	}
+	for i := range events { // desc
+		if events[i].Type == "Commissioning" {
+			return time.Parse("Mon, 02 Jan. 2006 15:04:05", events[i].Created)
+		}
+	}
+	return time.Time{}, nil
 }

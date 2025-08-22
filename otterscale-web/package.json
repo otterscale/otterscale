@@ -37,6 +37,8 @@
 		"@tailwindcss/typography": "^0.5.16",
 		"@tailwindcss/vite": "^4.1.12",
 		"@tanstack/table-core": "^8.21.3",
+		"@types/d3-scale": "^4.0.9",
+		"@types/d3-shape": "^3.1.7",
 		"@types/pg": "^8.15.5",
 		"@vitest/browser": "^3.2.4",
 		"bits-ui": "^2.9.4",
