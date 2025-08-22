@@ -182,7 +182,7 @@
 								<Card.Content class="space-y-2 rounded-b-xl py-6">
 									<ul class="ml-6 list-disc [&>li]:mt-2">
 										{#each release.changes[key as keyof typeof CHANGE_TYPES] as item}
-											<li>
+											<li class="first-letter:capitalize">
 												{item.description} by
 												<HoverCard.Root>
 													<HoverCard.Trigger
