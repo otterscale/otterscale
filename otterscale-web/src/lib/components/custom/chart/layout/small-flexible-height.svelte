@@ -19,7 +19,7 @@
 </script>
 
 <Card.Root>
-	<Card.Header class="h-[42px] items-center">
+	<Card.Header class="h-[30px] items-center">
 		<Card.Title>
 			{@render title()}
 		</Card.Title>
@@ -34,12 +34,14 @@
 			{@render controller()}
 		{/if}
 	</Card.Header>
+
 	<Card.Content>
 		{@render content()}
 	</Card.Content>
-	{#if footer}
-		<Card.Footer>
+
+	<Card.Footer class="h-[0px]">
+		{#if footer}
 			{@render footer()}
-		</Card.Footer>
-	{/if}
+		{/if}
+	</Card.Footer>
 </Card.Root>

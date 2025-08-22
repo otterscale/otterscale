@@ -4,6 +4,11 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { formatBigNumber as formatNumber, formatHealthColor } from '$lib/formatter';
+	import Description from '$lib/components/custom/chart/description.svelte';
+	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
+	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
+	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
+	import Title from '$lib/components/custom/chart/title.svelte';
 
 	let {
 		networks
@@ -35,63 +40,57 @@
 </script>
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-	<Card.Root>
-		<Card.Header class="h-10">
-			<Card.Title>NETWORK</Card.Title>
-		</Card.Header>
-		<Card.Content class="h-30">
-			<span class="flex items-end gap-1">
-				<p class="text-7xl">{fabricCount}</p>
-				<p>fabrics</p>
-			</span>
-		</Card.Content>
-		<Card.Footer>
-			<div class="flex flex-wrap gap-1">
-				{#each [...new Set(vlanList.map((v) => v?.name))] as vlanName}
-					<Badge variant="outline">
-						{vlanName}: {networks.reduce(
-							(a, network) => a + (network.vlan?.name === vlanName ? 1 : 0),
-							0
-						)}
-					</Badge>
-				{/each}
-			</div>
-		</Card.Footer>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header class="h-10">
-			<Card.Title>DHCP</Card.Title>
-		</Card.Header>
-		<Card.Content class="h-30">
-			<p class="text-3xl">
-				{Math.round(dhcpEnabledPercentage)}%
-			</p>
-			<p class="text-muted-foreground text-xs">
-				{dhcpEnabledCount} Enabled over {fabricCount} fabrics
-			</p>
-		</Card.Content>
-		<Card.Footer>
-			<Progress value={dhcpEnabledPercentage} max={100} />
-		</Card.Footer>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header class="h-10">
-			<Card.Title>AVAILABILITY</Card.Title>
-		</Card.Header>
-		<Card.Content class="h-30">
-			<p class="text-3xl">
-				{Math.round(availabilityPercentage)}%
-			</p>
-			<p class="text-muted-foreground text-xs">
-				{formatNumber(availableSubnetCount)} available over {formatNumber(totalSubnetCount)} units
-			</p>
-		</Card.Content>
-		<Card.Footer>
+	<Layout>
+		{#snippet title()}
+			<Title title="NETWORK" />
+		{/snippet}
+
+		{#snippet content()}
+			<Content value={fabricCount} />
+		{/snippet}
+	</Layout>
+
+	<Layout>
+		{#snippet title()}
+			<Title title="DHCP" />
+		{/snippet}
+
+		{#snippet content()}
+			<ContentSubtitle
+				value={Math.round(dhcpEnabledPercentage)}
+				unit={'%'}
+				subtitle={`${dhcpEnabledCount} Enabled over ${fabricCount} fabrics`}
+			/>
+		{/snippet}
+
+		{#snippet footer()}
+			<Progress
+				value={dhcpEnabledPercentage}
+				max={100}
+				class={formatHealthColor(dhcpEnabledPercentage)}
+			/>
+		{/snippet}
+	</Layout>
+
+	<Layout>
+		{#snippet title()}
+			<Title title="AVAILABILITY" />
+		{/snippet}
+
+		{#snippet content()}
+			<ContentSubtitle
+				value={Math.round(availabilityPercentage)}
+				unit={'%'}
+				subtitle={`${formatNumber(availableSubnetCount)} available over ${formatNumber(totalSubnetCount)} units`}
+			/>
+		{/snippet}
+
+		{#snippet footer()}
 			<Progress
 				value={availabilityPercentage}
 				max={100}
 				class={formatHealthColor(availabilityPercentage)}
 			/>
-		</Card.Footer>
-	</Card.Root>
+		{/snippet}
+	</Layout>
 </div>

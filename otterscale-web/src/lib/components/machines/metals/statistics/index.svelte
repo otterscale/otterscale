@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { Badge } from '$lib/components/ui/badge';
-	import * as Card from '$lib/components/ui/card';
+	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
+	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
+	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
+	import Title from '$lib/components/custom/chart/title.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { formatCapacity } from '$lib/formatter';
+	import { formatCapacity, formatHealthColor } from '$lib/formatter';
 
 	let { machines }: { machines: Machine[] } = $props();
 
 	// Calculate statistics
 	const totalMachines = $derived(machines.length);
-	const uniqueStatuses = $derived([...new Set(machines.map((m) => m.status))]);
 	const totalDisks = $derived(
 		machines.reduce((acc, machine) => acc + machine.blockDevices.length, 0)
 	);
@@ -22,70 +23,75 @@
 	const deploymentPercentage = $derived(Math.round((machinesDeployed / totalMachines) * 100));
 </script>
 
-<span class="grid grid-cols-4 gap-4">
-	<Card.Root class="h-full">
-		<Card.Header class="h-10">
-			<Card.Title>MACHINE</Card.Title>
-		</Card.Header>
-		<Card.Content class="h-30">
-			<p class="text-6xl">{totalMachines}</p>
-			<div class="flex flex-wrap gap-2 pt-2">
-				{#each uniqueStatuses as status}
-					<Badge variant="outline">
-						{status}: {machines.filter((m) => m.status === status).length}
-					</Badge>
-				{/each}
-			</div>
-		</Card.Content>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header class="h-10">
-			<Card.Title>STORAGE</Card.Title>
-		</Card.Header>
-		<Card.Content class="h-30">
-			<div class="text-6xl">
+<div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+	<Layout>
+		{#snippet title()}
+			<Title title="APPLICATION" />
+		{/snippet}
+
+		{#snippet content()}
+			<Content value={totalMachines} />
+		{/snippet}
+	</Layout>
+
+	<Layout>
+		{#snippet title()}
+			<Title title="STORAGE" />
+		{/snippet}
+
+		{#snippet content()}
+			<Content>
 				<span>{storageFormatted.value}</span>
 				<span class="text-3xl font-extralight">
 					{storageFormatted.unit}
 				</span>
-				<p class="text-muted-foreground pt-2 text-xs">
-					over {totalDisks} disks
-				</p>
-			</div>
-		</Card.Content>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header class="h-10">
-			<Card.Title>POWER ON</Card.Title>
-		</Card.Header>
-		<Card.Content class="h-30">
-			<p class="text-3xl">
-				{powerOnPercentage}%
-			</p>
-			<p class="text-muted-foreground text-xs">
-				{machinesOn} On over {totalMachines} units
-			</p>
-		</Card.Content>
-		<Card.Footer>
-			<Progress value={powerOnPercentage} max={100} />
-		</Card.Footer>
-	</Card.Root>
-	<Card.Root>
-		<Card.Header class="h-10">
-			<Card.Title>DEPLOYMENT</Card.Title>
-		</Card.Header>
-		<Card.Content class="h-30">
-			<p class="text-3xl">
-				{deploymentPercentage}%
-			</p>
+			</Content>
+		{/snippet}
 
+		{#snippet footer()}
 			<p class="text-muted-foreground text-xs">
-				{machinesDeployed} deployed over {totalMachines}
-				units
+				over {totalDisks} disks
 			</p>
-		</Card.Content>
-		<Card.Footer>
-			<Progress value={deploymentPercentage} max={100} />
-		</Card.Footer>
-	</Card.Root>
-</span>
+		{/snippet}
+	</Layout>
+
+	<Layout>
+		{#snippet title()}
+			<Title title="POWER ON" />
+		{/snippet}
+
+		{#snippet content()}
+			<ContentSubtitle
+				value={powerOnPercentage}
+				unit={'%'}
+				subtitle={`${machinesOn} On over ${totalMachines} units`}
+			/>
+		{/snippet}
+
+		{#snippet footer()}
+			<Progress value={powerOnPercentage} max={100} class={formatHealthColor(powerOnPercentage)} />
+		{/snippet}
+	</Layout>
+
+	<Layout>
+		{#snippet title()}
+			<Title title="DEPLOYMENT" />
+		{/snippet}
+
+		{#snippet content()}
+			<ContentSubtitle
+				value={deploymentPercentage}
+				unit={'%'}
+				subtitle={`${machinesDeployed} deployed over ${totalMachines} units`}
+			/>
+		{/snippet}
+
+		{#snippet footer()}
+			<Progress
+				value={deploymentPercentage}
+				max={100}
+				class={formatHealthColor(deploymentPercentage)}
+			/>
+		{/snippet}
+	</Layout>
+</div>
