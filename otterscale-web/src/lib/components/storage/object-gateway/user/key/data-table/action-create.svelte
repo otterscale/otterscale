@@ -3,6 +3,7 @@
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -29,7 +30,7 @@
 </script>
 
 <Button
-	class="size-sm flex h-full w-full items-center gap-2"
+	class="size-sm flex h-full w-full items-center gap-2 capitalize"
 	onclick={() => {
 		toast.promise(() => storageClient.createUserKey(request), {
 			loading: `Creating access key...`,
@@ -50,5 +51,5 @@
 	}}
 >
 	<Icon icon="ph:plus" />
-	Create
+	{m.create()}
 </Button>

@@ -19,6 +19,7 @@
 	import { columns } from './columns';
 	import { messages } from './headers.svelte';
 	import Statistics from './statistics.svelte';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -111,7 +112,7 @@
 			/>
 			<Filters.BooleanMatch
 				columnId="suspended"
-				descriptor={(value) => (value ? 'suspended' : 'Not suspended')}
+				descriptor={(value) => (value ? m.suspended() : m.not_suspended())}
 				{messages}
 				{table}
 			/>

@@ -3,14 +3,14 @@
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		id: 'id',
-		name: 'name',
-		suspended: 'suspended',
-		keys: 'keys',
-		actions: 'actions'
+		id: m.id(),
+		name: m.user(),
+		suspended: m.suspended(),
+		keys: m.key()
 	};
 
 	export const headers = {
@@ -33,7 +33,7 @@
 
 {#snippet id(column: Column<User>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>ID</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.id()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -42,7 +42,7 @@
 
 {#snippet name(column: Column<User>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -54,7 +54,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>SUSPENDED</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.suspended()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -63,7 +63,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>KEYS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.key()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

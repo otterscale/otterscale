@@ -3,11 +3,11 @@
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		accessKey: 'accessKey',
-		actions: 'actions'
+		accessKey: m.access_key()
 	};
 
 	export const headers = {
@@ -27,7 +27,7 @@
 
 {#snippet accessKey(column: Column<User_Key>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>ACCESS KEY</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.access_key()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import type { Bucket, UpdateBucketRequest } from '$lib/api/storage/v1/storage_pb';
+	import { m } from '$lib/paraglide/messages.js';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -75,32 +76,27 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
-		Edit
+		{m.edit()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Edit Bucket</Modal.Header>
+		<Modal.Header>{m.edit_bucket()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
-					<SingleInput.General id="name" required type="text" bind:value={request.bucketName} />
+					<Form.Label>{m.name()}</Form.Label>
+					<SingleInput.General required type="text" bind:value={request.bucketName} />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Owner</Form.Label>
+					<Form.Label>{m.owner()}</Form.Label>
 					{#if isMounted}
-						<SingleSelect.Root
-							id="owner"
-							bind:options={userOptions}
-							bind:value={request.owner}
-							required
-						>
+						<SingleSelect.Root bind:options={userOptions} bind:value={request.owner} required>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
 								<SingleSelect.Options>
 									<SingleSelect.Input />
 									<SingleSelect.List>
-										<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 										<SingleSelect.Group>
 											{#each $userOptions as option}
 												<SingleSelect.Item {option}>
@@ -124,22 +120,22 @@
 			</Form.Fieldset>
 
 			<Form.Fieldset>
-				<Form.Legend>Policies</Form.Legend>
+				<Form.Legend>{m.policies()}</Form.Legend>
 
 				<Form.Field>
-					<Form.Label>Policy</Form.Label>
+					<Form.Label>{m.policy()}</Form.Label>
 					<SingleInput.Structure preview bind:value={request.policy} language="json" />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Access Control List</Form.Label>
+					<Form.Label>{m.access_control_list()}</Form.Label>
 					<SingleSelect.Root options={accessControlListOptions} bind:value={request.acl}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
 								<SingleSelect.Input />
 								<SingleSelect.List>
-									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
 										{#each $accessControlListOptions as option}
 											<SingleSelect.Item {option}>
@@ -165,7 +161,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -190,7 +186,7 @@
 						close();
 					}}
 				>
-					Update
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
