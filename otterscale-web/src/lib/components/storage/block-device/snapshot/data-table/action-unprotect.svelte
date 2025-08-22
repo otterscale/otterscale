@@ -6,6 +6,7 @@
 	} from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -39,7 +40,7 @@
 </script>
 
 <button
-	class="flex h-full w-full items-center gap-2"
+	class="flex h-full w-full items-center gap-2 capitalize"
 	onclick={() => {
 		toast.promise(() => storageClient.unprotectImageSnapshot(request), {
 			loading: `Unprotecting ${request.snapshotName}...`,
@@ -60,5 +61,5 @@
 	}}
 >
 	<Icon icon="ph:lock-open" />
-	Unprotect
+	{m.unprotect()}
 </button>

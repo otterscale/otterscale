@@ -5,6 +5,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -45,13 +46,13 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
-		Edit
+		{m.edit()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Updatge RADOS Block Device</Modal.Header>
+		<Modal.Header>{m.edit_rbd()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Label>Quota Size</Form.Label>
+				<Form.Label>{m.quota_size()}</Form.Label>
 				<Form.Field>
 					<SingleInput.Measurement
 						required
@@ -72,7 +73,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -97,7 +98,7 @@
 						close();
 					}}
 				>
-					Update
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

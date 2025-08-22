@@ -75,7 +75,8 @@ const columns: ColumnDef<Image>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
-		}
+		},
+		enableHiding: false
 	}
 ];
 

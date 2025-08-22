@@ -3,13 +3,13 @@
 	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
 	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
 	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		name: 'name',
-		protect: 'protect',
-		usage: 'usage',
-		actions: 'actions'
+		name: m.name(),
+		protect: m.protected(),
+		usage: m.usage()
 	};
 
 	export const headers = {
@@ -31,7 +31,7 @@
 
 {#snippet name(column: Column<Image_Snapshot>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -43,7 +43,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>PROTECTED</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.protected()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -52,7 +52,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.usage()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

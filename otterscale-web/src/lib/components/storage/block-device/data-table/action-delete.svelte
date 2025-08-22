@@ -5,6 +5,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -43,34 +44,34 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Delete
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Delete RADOS Block Device</Modal.Header>
+		<Modal.Header>{m.delete_rbd()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Pool Name</Form.Label>
+					<Form.Label>{m.image_name()}</Form.Label>
 					<Form.Help>
-						Please type the pool name exactly to confirm deletion. This action cannot be undone.
-					</Form.Help>
-					<SingleInput.Confirm
-						required
-						target={image.poolName}
-						bind:value={request.poolName}
-						bind:invalid={isPoolNameInvalid}
-					/>
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>Image Name</Form.Label>
-					<Form.Help>
-						Please type the image name exactly to confirm deletion. This action cannot be undone.
+						{m.deletion_warning({ identifier: m.image_name() })}
 					</Form.Help>
 					<SingleInput.Confirm
 						required
 						target={image.name}
 						bind:value={request.imageName}
 						bind:invalid={isImageNameInvalid}
+					/>
+				</Form.Field>
+				<Form.Field>
+					<Form.Label>{m.pool_name()}</Form.Label>
+					<Form.Help>
+						{m.deletion_warning({ identifier: m.pool_name() })}
+					</Form.Help>
+					<SingleInput.Confirm
+						required
+						target={image.poolName}
+						bind:value={request.poolName}
+						bind:invalid={isPoolNameInvalid}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
@@ -81,7 +82,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -106,7 +107,7 @@
 						close();
 					}}
 				>
-					Delete
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
