@@ -18,6 +18,7 @@
 	import Create from './action-test.svelte';
 	import { columns } from './columns';
 	import { messages } from './headers.svelte';
+	import Statistics from './statistics.svelte';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -99,6 +100,9 @@
 </script>
 
 <Layout.Root>
+	<Layout.Statistics>
+		<Statistics {table} />
+	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy

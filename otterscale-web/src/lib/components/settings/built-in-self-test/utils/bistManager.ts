@@ -64,10 +64,47 @@ class BistDashboardManager<TData = TestResult> {
         return `${Warp_Input_Operation[input.operation]}-${duration.value}${duration.unit}-${objectSize.value}${objectSize.unit}-${input.objectCount}`;
     }
 
+    // private generateColor(groupName: string): string {
+    //     const hue = Math.abs(hashCode(groupName)) % 360;
+    //     return `hsl(${hue}, 70%, 50%)`;
+    // }
+
+    // Improved: consistent color mapping per unique groupName, avoids collisions as much as possible
+    private static colorMap: Map<string, string> = new Map();
+
     private generateColor(groupName: string): string {
-        const hue = Math.abs(hashCode(groupName)) % 360;
-        return `hsl(${hue}, 70%, 50%)`;
+        const CHART_COLORS_MANY = [
+            'var(--chart-3)',
+            'var(--chart-5)',
+            'var(--chart-7)',
+            'var(--chart-9)',
+            'var(--chart-11)',
+            'var(--chart-2)',
+            'var(--chart-4)',
+            'var(--chart-6)',
+            'var(--chart-8)',
+            'var(--chart-10)',
+            'var(--chart-12)',
+        ];
+
+        // Use a static map to ensure each groupName always gets the same color
+        if (BistDashboardManager.colorMap.has(groupName)) {
+            return BistDashboardManager.colorMap.get(groupName)!;
+        }
+        // Find the next available color in the palette
+        for (const color of CHART_COLORS_MANY) {
+            if (![...BistDashboardManager.colorMap.values()].includes(color)) {
+                BistDashboardManager.colorMap.set(groupName, color);
+                return color;
+            }
+        }
+        // If all colors are used, fallback to hash-based assignment (may cause collisions)
+        const idx = Math.abs(hashCode(groupName)) % CHART_COLORS_MANY.length;
+        const color = CHART_COLORS_MANY[idx];
+        BistDashboardManager.colorMap.set(groupName, color);
+        return color;
     }
+
 
     getFioOutputs(): { read: Record<string, FioOutputGroup>, write: Record<string, FioOutputGroup>, trim: Record<string, FioOutputGroup> } {
         const outputMap: Record<string, Record<string, FioOutputGroup>> = {

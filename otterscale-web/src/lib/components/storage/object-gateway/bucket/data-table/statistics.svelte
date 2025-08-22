@@ -12,7 +12,7 @@
 	const filteredData = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 </script>
 
-<div class="grid grid-cols-5 gap-3">
+<div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 	<Layout>
 		{#snippet title()}
 			<Title title="Usage" />
