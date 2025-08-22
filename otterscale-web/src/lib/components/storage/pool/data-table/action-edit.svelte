@@ -3,14 +3,14 @@
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { QUOTAS_BYTES_HELP_TEXT, QUOTAS_OBJECTS_HELP_TEXT } from './helper';
 </script>
 
 <script lang="ts">
@@ -44,24 +44,23 @@
 	}
 </script>
 
-<SingleStepModal.Root bind:open>
-	<SingleStepModal.Trigger variant="creative">
+<Modal.Root bind:open>
+	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
-		Edit
-	</SingleStepModal.Trigger>
-	<SingleStepModal.Content>
-		<SingleStepModal.Header>Update Pool</SingleStepModal.Header>
+		{m.edit()}
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>{m.edit_pool()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General required type="text" bind:value={request.poolName} bind:invalid />
 				</Form.Field>
-
 				<Form.Field>
-					<Form.Label>Quota Size</Form.Label>
+					<Form.Label>{m.quota_size()}</Form.Label>
 					<Form.Help>
-						{QUOTAS_BYTES_HELP_TEXT}
+						{m.pool_quota_size_directions()}
 					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
@@ -72,26 +71,25 @@
 						]}
 					/>
 				</Form.Field>
-
 				<Form.Field>
-					<Form.Label>Quota Objects</Form.Label>
+					<Form.Label>{m.quota_objects()}</Form.Label>
 					<Form.Help>
-						{QUOTAS_OBJECTS_HELP_TEXT}
+						{m.pool_quota_objects_directions()}
 					</Form.Help>
 					<SingleInput.General bind:value={request.quotaObjects} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
-		<SingleStepModal.Footer>
-			<SingleStepModal.Cancel
+		<Modal.Footer>
+			<Modal.Cancel
 				onclick={() => {
 					reset();
 				}}
 			>
-				Cancel
-			</SingleStepModal.Cancel>
-			<SingleStepModal.ActionsGroup>
-				<SingleStepModal.Action
+				{m.cancel()}
+			</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => storageClient.updatePool(request), {
@@ -113,9 +111,9 @@
 						close();
 					}}
 				>
-					Edit
-				</SingleStepModal.Action>
-			</SingleStepModal.ActionsGroup>
-		</SingleStepModal.Footer>
-	</SingleStepModal.Content>
-</SingleStepModal.Root>
+					{m.confirm()}
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

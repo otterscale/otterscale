@@ -30,7 +30,7 @@
 
 <Popover.Root>
 	<Popover.Trigger
-		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), ' text-xs capitalize')}
+		class={cn(buttonVariants({ size: 'sm', variant: 'outline' }), 'text-xs uppercase')}
 	>
 		<Icon icon="ph:funnel" />
 		{messages[columnId]}

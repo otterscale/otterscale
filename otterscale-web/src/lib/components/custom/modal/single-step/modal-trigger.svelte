@@ -20,6 +20,6 @@
 <AlertDialog.Trigger
 	bind:ref
 	data-slot="modal-trigger"
-	class={cn(triggerVariants({ variant }), className)}
+	class={cn('capitalize', triggerVariants({ variant }), className)}
 	{...restProps}
 />

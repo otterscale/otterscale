@@ -26,7 +26,7 @@
 	bind:ref
 	data-slot="alert-dialog-action"
 	class={cn(
-		'hover:cursor-pointer',
+		'capitalize hover:cursor-pointer',
 		buttonVariants({ variant: actionVariant, size: actionSize }),
 		className
 	)}

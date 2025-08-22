@@ -25,7 +25,7 @@
 	>
 		<div class="relative">
 			<Command.Input
-				class="pr-3 placeholder:text-xs"
+				class="pr-3 placeholder:text-xs placeholder:uppercase"
 				placeholder={messages[columnId]}
 				value={(table.getColumn(columnId)?.getFilterValue() as string) ?? ''}
 				oninput={(e) => {

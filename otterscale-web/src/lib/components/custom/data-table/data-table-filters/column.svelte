@@ -31,7 +31,7 @@
 						.filter((column) => column.getCanHide()) as column (column.id)}
 						<Command.Item
 							onSelect={() => column.toggleVisibility(!column.getIsVisible())}
-							class="text-xs capitalize"
+							class="text-xs uppercase"
 						>
 							<Icon
 								icon="ph:check"

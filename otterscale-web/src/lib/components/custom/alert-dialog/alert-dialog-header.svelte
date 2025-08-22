@@ -16,7 +16,7 @@
 
 <AlertDialog.Header
 	bind:ref
-	class={cn('flex items-center justify-center text-xl font-bold', className)}
+	class={cn('flex items-center justify-center text-xl font-bold capitalize', className)}
 	{...restProps}
 >
 	{@render children?.()}

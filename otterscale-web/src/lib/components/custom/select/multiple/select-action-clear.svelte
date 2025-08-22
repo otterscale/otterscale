@@ -24,7 +24,7 @@
 <Button
 	bind:ref
 	data-slot="select-clear"
-	class={cn('cursor-pointer', buttonVariants({ variant, size }), className)}
+	class={cn('cursor-pointer capitalize', buttonVariants({ variant, size }), className)}
 	{href}
 	{type}
 	{disabled}

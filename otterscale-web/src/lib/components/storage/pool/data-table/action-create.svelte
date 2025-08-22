@@ -9,6 +9,7 @@
 		Multiple as MultipleSelect,
 		Single as SingleSelect
 	} from '$lib/components/custom/select';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -16,11 +17,6 @@
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { writable, type Writable } from 'svelte/store';
-	import {
-		QUOTAS_BYTES_HELP_TEXT,
-		QUOTAS_OBJECTS_HELP_TEXT,
-		REPLCATED_SIZE_HELP_TEXT
-	} from './helper';
 
 	export const poolTypes: Writable<SingleSelect.OptionType[]> = writable([
 		{
@@ -79,29 +75,26 @@
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger class="default">
+	<Modal.Trigger variant="default">
 		<Icon icon="ph:plus" />
-		Create
+		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Pool</Modal.Header>
+		<Modal.Header>{m.create_pool()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General
-						id="name"
 						required
 						type="text"
 						bind:value={request.poolName}
 						bind:invalid={invalidName}
 					/>
 				</Form.Field>
-
 				<Form.Field>
-					<Form.Label>Type</Form.Label>
+					<Form.Label>{m.type()}</Form.Label>
 					<SingleSelect.Root
-						id="type"
 						required
 						options={poolTypes}
 						bind:value={request.poolType}
@@ -112,7 +105,7 @@
 							<SingleSelect.Options>
 								<SingleSelect.Input />
 								<SingleSelect.List>
-									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
 										{#each $poolTypes as type}
 											<SingleSelect.Item option={type}>
@@ -130,29 +123,18 @@
 						</SingleSelect.Content>
 					</SingleSelect.Root>
 				</Form.Field>
-
 				{#if request.poolType === PoolType.ERASURE}
 					<Form.Field>
-						<Form.Label>EC Overwrite</Form.Label>
+						<!-- <Form.Label>{m.ec_overwrite()}</Form.Label> -->
 						<SingleInput.Boolean
-							format="checkbox"
-							descriptor={(value) => {
-								if (value === true) {
-									return 'EC Overwrites';
-								} else if (value === false) {
-									return 'EC Not Overwrites';
-								} else {
-									return 'Undetermined';
-								}
-							}}
+							descriptor={(value) => m.ec_overwrite()}
 							bind:value={request.ecOverwrites}
 						/>
 					</Form.Field>
 				{/if}
-
 				{#if request.poolType === PoolType.REPLICATED}
 					<Form.Field>
-						<Form.Label>Replcated Size</Form.Label>
+						<Form.Label>{m.replicated_size()}</Form.Label>
 						<SingleInput.General
 							required
 							bind:value={request.replicatedSize}
@@ -160,12 +142,11 @@
 						/>
 					</Form.Field>
 					<Form.Help>
-						{REPLCATED_SIZE_HELP_TEXT}
+						{m.pool_replicated_size_directions()}
 					</Form.Help>
 				{/if}
-
 				<Form.Field>
-					<Form.Label>Applications</Form.Label>
+					<Form.Label>{m.applications()}</Form.Label>
 					<MultipleSelect.Root bind:value={request.applications} options={applications}>
 						<MultipleSelect.Viewer />
 						<MultipleSelect.Controller>
@@ -174,7 +155,7 @@
 								<MultipleSelect.Options>
 									<MultipleSelect.Input />
 									<MultipleSelect.List>
-										<MultipleSelect.Empty>No results found.</MultipleSelect.Empty>
+										<MultipleSelect.Empty>{m.no_result()}</MultipleSelect.Empty>
 										<MultipleSelect.Group>
 											{#each $applications as application}
 												<MultipleSelect.Item option={application}>
@@ -189,19 +170,18 @@
 										</MultipleSelect.Group>
 									</MultipleSelect.List>
 									<MultipleSelect.Actions>
-										<MultipleSelect.ActionAll>All</MultipleSelect.ActionAll>
-										<MultipleSelect.ActionClear>Clear</MultipleSelect.ActionClear>
+										<MultipleSelect.ActionAll>{m.all()}</MultipleSelect.ActionAll>
+										<MultipleSelect.ActionClear>{m.clear()}</MultipleSelect.ActionClear>
 									</MultipleSelect.Actions>
 								</MultipleSelect.Options>
 							</MultipleSelect.Content>
 						</MultipleSelect.Controller>
 					</MultipleSelect.Root>
 				</Form.Field>
-
 				<Form.Field>
-					<Form.Label>Quota Size</Form.Label>
+					<Form.Label>{m.quota_size()}</Form.Label>
 					<Form.Help>
-						{QUOTAS_BYTES_HELP_TEXT}
+						{m.pool_quota_objects_directions()}
 					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
@@ -212,11 +192,10 @@
 						]}
 					/>
 				</Form.Field>
-
 				<Form.Field>
-					<Form.Label>Quota Objects</Form.Label>
+					<Form.Label>{m.quota_objects()}</Form.Label>
 					<Form.Help>
-						{QUOTAS_OBJECTS_HELP_TEXT}
+						{m.pool_quota_objects_directions()}
 					</Form.Help>
 					<SingleInput.General bind:value={request.quotaObjects} />
 				</Form.Field>
@@ -228,7 +207,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -255,7 +234,7 @@
 						close();
 					}}
 				>
-					Create
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

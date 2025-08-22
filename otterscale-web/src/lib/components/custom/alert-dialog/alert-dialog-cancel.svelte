@@ -16,6 +16,6 @@
 <AlertDialog.Cancel
 	bind:ref
 	data-slot="alert-dialog-cancel"
-	class={cn('hover:cursor-pointer', buttonVariants({ variant: 'outline' }), className)}
+	class={cn('capitalize hover:cursor-pointer', buttonVariants({ variant: 'outline' }), className)}
 	{...restProps}
 />
