@@ -29,10 +29,12 @@
 
 {#snippet name(row: Row<Application>)}
 	<span class="flex items-center">
-		{row.original.name}
-		<Button variant="ghost" href={`${page.url}/${row.original.namespace}/${row.original.name}`}>
-			<Icon icon="ph:arrow-square-out" />
-		</Button>
+		<a
+			class="underline hover:no-underline"
+			href={`${page.url}/${row.original.namespace}/${row.original.name}`}
+		>
+			{row.original.name}
+		</a>
 	</span>
 {/snippet}
 

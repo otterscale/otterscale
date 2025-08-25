@@ -485,7 +485,7 @@
 	"tags": "標籤",
 	"scope": "範疇",
 	"ip": "IP",
-	"last_commissioned": "最後啟動時間",
+	"last_commissioned": "最後提交時間",
 	"save": "儲存",
 	"reset": "重設",
 	"remove_machine": "移除機器",
