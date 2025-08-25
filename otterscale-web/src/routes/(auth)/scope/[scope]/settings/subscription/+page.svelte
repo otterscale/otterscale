@@ -89,10 +89,10 @@
 </script>
 
 <!-- just-in-time  -->
-<dummy class="bg-[#326de6]"></dummy>
-<dummy class="bg-[#f0424d]"></dummy>
+<dummy class="hidden bg-[#326de6]"></dummy>
+<dummy class="hidden bg-[#f0424d]"></dummy>
 
-<div class="mx-auto max-w-7xl px-4 xl:px-0">
+<div class="max-w-7xl px-4 xl:px-0">
 	<div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:items-start">
 		{#each tiers as tier}
 			<Card.Root class="flex h-full flex-col {tier.isRecommended ? 'border-primary relative' : ''}">

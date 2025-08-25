@@ -11,12 +11,12 @@
 </script>
 
 <script lang="ts">
-	let { tag, tags = $bindable() }: { tag: Tag; tags: Writable<Tag[]> } = $props();
+	let { tag, tags }: { tag: Tag; tags: Writable<Tag[]> } = $props();
 
 	const transport: Transport = getContext('transport');
 
 	const client = createClient(TagService, transport);
-	
+
 	const defaults = {} as DeleteTagRequest;
 	let request = $state(defaults);
 	function reset() {

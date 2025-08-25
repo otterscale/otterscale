@@ -18,7 +18,7 @@
 <script lang="ts">
 	let {
 		packageRepository,
-		configuration = $bindable()
+		configuration
 	}: {
 		packageRepository: Configuration_PackageRepository;
 		configuration: Writable<Configuration>;
