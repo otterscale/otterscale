@@ -9,11 +9,13 @@
 	import StatisticMemory from './statistic-memory.svelte';
 	import StatisticPower from './statistic-power.svelte';
 	import StatisticStorage from './statistic-storage.svelte';
+	import StatisticHardware from './statistic-hardware.svelte';
 	import TableBlockDevice from './table-block-device.svelte';
 	import TableChassis from './table-chassis.svelte';
 	import TableMainboard from './table-mainboard.svelte';
 	import TableNetwork from './table-network.svelte';
 	import TableSystem from './table-system.svelte';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
@@ -49,53 +51,54 @@
 		<StatisticCPU {machine} />
 		<StatisticMemory {machine} />
 		<StatisticStorage {machine} />
+		<StatisticHardware {machine} />
 	</Layout.Statistics>
 
 	<Layout.Tables>
-		<Layout.Table.Root open={true}>
+		<!-- <Layout.Table.Root>
 			<Layout.Table.Trigger>
 				<Icon icon="ph:desktop" />
-				System
+				{m.system()}
 			</Layout.Table.Trigger>
 			<Layout.Table.Content>
 				<TableSystem {machine} />
 			</Layout.Table.Content>
-		</Layout.Table.Root>
+		</Layout.Table.Root> -->
 
-		<Layout.Table.Root open={true}>
+		<!-- <Layout.Table.Root>
 			<Layout.Table.Trigger>
 				<Icon icon="ph:circuitry" />
-				Mainboard
+				{m.mainboard()}
 			</Layout.Table.Trigger>
 			<Layout.Table.Content>
 				<TableMainboard {machine} />
 			</Layout.Table.Content>
-		</Layout.Table.Root>
+		</Layout.Table.Root> -->
 
-		<Layout.Table.Root open={true}>
+		<!-- <Layout.Table.Root>
 			<Layout.Table.Trigger>
 				<Icon icon="ph:computer-tower" />
-				Chassis
+				{m.chassis()}
 			</Layout.Table.Trigger>
 			<Layout.Table.Content>
 				<TableChassis {machine} />
 			</Layout.Table.Content>
-		</Layout.Table.Root>
+		</Layout.Table.Root> -->
 
-		<Layout.Table.Root>
+		<Layout.Table.Root open={true}>
 			<Layout.Table.Trigger>
 				<Icon icon="ph:hard-drives" />
-				Block Device
+				{m.block_device()}
 			</Layout.Table.Trigger>
 			<Layout.Table.Content>
 				<TableBlockDevice {machine} />
 			</Layout.Table.Content>
 		</Layout.Table.Root>
 
-		<Layout.Table.Root>
+		<Layout.Table.Root open={true}>
 			<Layout.Table.Trigger>
 				<Icon icon="ph:network" />
-				Network
+				{m.network()}
 			</Layout.Table.Trigger>
 			<Layout.Table.Content>
 				<TableNetwork {machine} />

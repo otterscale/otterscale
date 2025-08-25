@@ -2,8 +2,9 @@
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -30,28 +31,30 @@
 	}
 </script>
 
-<SingleStepModal.Root bind:open>
-	<SingleStepModal.Trigger disabled={machine.powerState.toLowerCase() === 'off'} variant="creative">
+<Modal.Root bind:open>
+	<Modal.Trigger disabled={machine.powerState.toLowerCase() === 'off'} variant="creative">
 		<Icon icon="ph:power" />
-		Power Off
-	</SingleStepModal.Trigger>
-	<SingleStepModal.Content>
-		<SingleStepModal.Header>Turn Off Machine</SingleStepModal.Header>
+		{m.turn_off()}
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>{m.turn_off_machine()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>FQDN</Form.Label>
-					<SingleInput.Confirm id="power-off" required target={machine.fqdn} bind:invalid />
+					<Form.Label>{m.fqdn()}</Form.Label>
+					<SingleInput.Confirm required target={machine.fqdn} bind:invalid />
 					<Form.Help>
-						Please type the machine fqdn {machine.fqdn} exactly to confirm.
+						{m.deletion_warning({ identifier: m.fqdn() })}
 					</Form.Help>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
-		<SingleStepModal.Footer>
-			<SingleStepModal.Cancel>Cancel</SingleStepModal.Cancel>
-			<SingleStepModal.ActionsGroup>
-				<SingleStepModal.Action
+		<Modal.Footer>
+			<Modal.Cancel>
+				{m.cancel()}
+			</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
 						toast.promise(
@@ -78,9 +81,9 @@
 						close();
 					}}
 				>
-					Confirm
-				</SingleStepModal.Action>
-			</SingleStepModal.ActionsGroup>
-		</SingleStepModal.Footer>
-	</SingleStepModal.Content>
-</SingleStepModal.Root>
+					{m.confirm()}
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

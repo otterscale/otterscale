@@ -2,6 +2,7 @@
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { Badge } from '$lib/components/ui/badge';
+	import { m } from '$lib/paraglide/messages';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 </script>
@@ -17,15 +18,13 @@
 <Layout.Statistic.Root>
 	<Layout.Statistic.Header>
 		<Layout.Statistic.Title>
-			<Badge variant={$machine.powerState === 'on' ? 'default' : 'destructive'}>
-				<Icon icon="ph:power" />
-				Power {$machine.powerState}
-			</Badge>
+			{$machine.powerType}
 		</Layout.Statistic.Title>
 		<Layout.Statistic.Action>
-			<Badge variant="outline">
+			<Badge variant={$machine.powerState === 'on' ? 'default' : 'destructive'}>
 				<Icon icon="ph:power" />
-				{$machine.powerType}
+				{m.power()}
+				{$machine.powerState}
 			</Badge>
 		</Layout.Statistic.Action>
 	</Layout.Statistic.Header>

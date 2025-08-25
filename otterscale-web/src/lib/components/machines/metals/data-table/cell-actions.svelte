@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { m } from '$lib/paraglide/messages';
 	import Add from './action-add.svelte';
 	import PowerOff from './action-power-off.svelte';
 	import Remove from './action-remove.svelte';
@@ -15,7 +16,7 @@
 </script>
 
 <Layout.Actions>
-	<Layout.ActionLabel>Actions</Layout.ActionLabel>
+	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem disabled={!!machine.workloadAnnotations['juju-model-uuid']}>
 		<Add {machine} />
