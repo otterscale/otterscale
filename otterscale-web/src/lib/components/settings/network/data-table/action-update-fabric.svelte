@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { m } from '$lib/paraglide/messages';
 	import {
 		NetworkService,
 		type Network_Fabric,
@@ -41,14 +42,14 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
-		Edit Fabric
+		{m.edit_fabric()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Edit Fabric</Modal.Header>
+		<Modal.Header>{m.edit_fabric()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General type="text" required value={request.name} bind:invalid />
 				</Form.Field>
 			</Form.Fieldset>
@@ -57,8 +58,10 @@
 			<Modal.Cancel
 				onclick={() => {
 					reset();
-				}}>Cancel</Modal.Cancel
+				}}
 			>
+				{m.cancel()}
+			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
@@ -83,7 +86,7 @@
 						close();
 					}}
 				>
-					Edit
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

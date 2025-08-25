@@ -4,6 +4,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import Icon from '@iconify/svelte';
 </script>
 
@@ -19,28 +20,24 @@
 		<Form.Root>
 			<Form.Fieldset class="border-none p-2">
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General type="text" value={vlan.name} disabled />
 				</Form.Field>
 
 				{#if vlan.description}
 					<Form.Field>
-						<Form.Label>Description</Form.Label>
+						<Form.Label>{m.description()}</Form.Label>
 						<SingleInput.General type="text" value={vlan.description} disabled />
 					</Form.Field>
 				{/if}
 
 				<Form.Field>
-					<Form.Label>NTU</Form.Label>
+					<Form.Label>{m.mtu()}</Form.Label>
 					<SingleInput.General type="number" value={vlan.mtu} disabled />
 				</Form.Field>
 
 				<Form.Field>
-					<SingleInput.Boolean
-						descriptor={(value) => (value ? 'DHCP On' : 'DHCP Off')}
-						value={vlan.dhcpOn}
-						disabled
-					/>
+					<SingleInput.Boolean descriptor={(value) => m.dhcp_on()} value={vlan.dhcpOn} disabled />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

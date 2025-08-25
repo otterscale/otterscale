@@ -8,6 +8,7 @@
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -46,42 +47,42 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
-		Edit Subnet
+		{m.edit_subnet()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Edit Subnet</Modal.Header>
+		<Modal.Header>{m.edit_subnet()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General type="text" required value={request.name} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Description</Form.Label>
+					<Form.Label>{m.description()}</Form.Label>
 					<SingleInput.General type="text" value={request.description} />
 				</Form.Field>
 			</Form.Fieldset>
 
 			<Form.Fieldset>
-				<Form.Legend>Network</Form.Legend>
+				<Form.Legend>{m.network()}</Form.Legend>
 
 				<Form.Field>
-					<Form.Label>CIDR</Form.Label>
+					<Form.Label>{m.cidr()}</Form.Label>
 					<SingleInput.General type="text" value={request.cidr} />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Gateway</Form.Label>
+					<Form.Label>{m.gateway()}</Form.Label>
 					<SingleInput.General type="text" value={request.gatewayIp} />
 				</Form.Field>
 			</Form.Fieldset>
 
 			<Form.Fieldset>
-				<Form.Legend>DNS</Form.Legend>
+				<Form.Legend>{m.dns()}</Form.Legend>
 
 				<Form.Field>
-					<Form.Label>Server</Form.Label>
+					<Form.Label>{m.dns_server()}</Form.Label>
 					<MultipleInput.Root type="text" bind:values={request.dnsServers}>
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
@@ -94,7 +95,7 @@
 
 				<Form.Field>
 					<SingleInput.Boolean
-						descriptor={() => 'Allow DNS Resolution'}
+						descriptor={m.allow_dns_resolution}
 						bind:value={request.allowDnsResolution}
 					/>
 				</Form.Field>
@@ -104,7 +105,7 @@
 			<Modal.Cancel
 				onclick={() => {
 					reset();
-				}}>Cancel</Modal.Cancel
+				}}>{m.cancel()}</Modal.Cancel
 			>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -130,7 +131,7 @@
 						close();
 					}}
 				>
-					Edit
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
