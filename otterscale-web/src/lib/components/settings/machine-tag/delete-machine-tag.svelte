@@ -1,28 +1,24 @@
 <script lang="ts" module>
-	import {
-		ConfigurationService,
-		type Configuration,
-		type UpdateNTPServerRequest
-	} from '$lib/api/configuration/v1/configuration_pb';
+	import { TagService, type DeleteTagRequest, type Tag } from '$lib/api/tag/v1/tag_pb';
 	import * as Form from '$lib/components/custom/form';
-	import { Multiple as MultipleInput } from '$lib/components/custom/input';
+	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
+	import { m } from '$lib/paraglide/messages';
 	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
-	let { configuration }: { configuration: Writable<Configuration> } = $props();
+	let { tag, tags }: { tag: Tag; tags: Writable<Tag[]> } = $props();
 
 	const transport: Transport = getContext('transport');
 
-	const client = createClient(ConfigurationService, transport);
-	const defaults = {
-		addresses: $configuration.ntpServer?.addresses
-	} as UpdateNTPServerRequest;
+	const client = createClient(TagService, transport);
+
+	const defaults = {} as DeleteTagRequest;
 	let request = $state(defaults);
 	function reset() {
 		request = defaults;
@@ -32,49 +28,48 @@
 	function close() {
 		open = false;
 	}
+	let invalid: boolean | undefined = $state();
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger variant="default">
-		<Icon icon="ph:pencil" />
-		Edit
+	<Modal.Trigger variant="destructive">
+		<Icon icon="ph:trash" />
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Edit NTP Server</Modal.Header>
+		<Modal.Header>{m.delete_fabric()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Addresses</Form.Label>
-					<MultipleInput.Root type="text" bind:values={request.addresses}>
-						<MultipleInput.Viewer />
-						<MultipleInput.Controller>
-							<MultipleInput.Input />
-							<MultipleInput.Add />
-							<MultipleInput.Clear />
-						</MultipleInput.Controller>
-					</MultipleInput.Root>
+					<SingleInput.Confirm required target={tag.name} bind:value={request.name} bind:invalid />
 				</Form.Field>
+				<Form.Help>
+					{m.deletion_warning({ identifier: m.name() })}
+				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
 					reset();
-				}}>Cancel</Modal.Cancel
+				}}
 			>
+				{m.cancel()}
+			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
+					disabled={invalid}
 					onclick={() => {
-						toast.promise(() => client.updateNTPServer(request), {
+						toast.promise(() => client.deleteTag(request), {
 							loading: 'Loading...',
 							success: () => {
-								client.getConfiguration({}).then((response) => {
-									configuration.set(response);
+								client.listTags({}).then((response) => {
+									tags.set(response.tags);
 								});
-								return `Update NTP server success`;
+								return `Delete ${tag.name} success`;
 							},
 							error: (error) => {
-								let message = `Fail to update NTP server`;
+								let message = `Fail to delete ${tag.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -87,7 +82,7 @@
 						close();
 					}}
 				>
-					Edit
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

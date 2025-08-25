@@ -2,13 +2,15 @@
 	import {
 		ConfigurationService,
 		type Configuration,
-		type ImportBootImagesRequest
+		type UpdateNTPServerRequest
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
+	import { Multiple as MultipleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import type { Writable } from 'svelte/store';
 </script>
@@ -17,67 +19,65 @@
 	let { configuration }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(ConfigurationService, transport);
 
-	const DEFAULT_REQUEST = {} as ImportBootImagesRequest;
-	let request = $state(DEFAULT_REQUEST);
+	const client = createClient(ConfigurationService, transport);
+	const defaults = {
+		addresses: $configuration.ntpServer?.addresses
+	} as UpdateNTPServerRequest;
+	let request = $state(defaults);
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = defaults;
 	}
 
 	let open = $state(false);
 	function close() {
 		open = false;
 	}
-
-	let isImportingBootImages = $state(false);
-	onMount(async () => {
-		while (true) {
-			const response = await client.isImportingBootImages({});
-			if (response.importing) {
-				await new Promise((resolve) => setTimeout(resolve, 5000));
-			} else {
-				isImportingBootImages = false;
-				break;
-			}
-		}
-	});
 </script>
 
 <Modal.Root bind:open>
-	<Modal.Trigger disabled={isImportingBootImages}>
-		{#if isImportingBootImages == true}
-			<Icon icon="ph:spinner" class="text-muted-foreground size-5 animate-spin" />
-			Importing
-		{:else}
-			<Icon icon="ph:arrows-clockwise" />
-			Import
-		{/if}
+	<Modal.Trigger variant="default">
+		<Icon icon="ph:pencil" />
+		{m.edit()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Boot Image</Modal.Header>
+		<Modal.Header>{m.edit_ntp_server()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Distro Series</Form.Label>
+					<Form.Label>{m.address()}</Form.Label>
+					<MultipleInput.Root type="text" bind:values={request.addresses}>
+						<MultipleInput.Viewer />
+						<MultipleInput.Controller>
+							<MultipleInput.Input />
+							<MultipleInput.Add />
+							<MultipleInput.Clear />
+						</MultipleInput.Controller>
+					</MultipleInput.Root>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				{m.cancel()}
+			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
-						toast.promise(() => client.importBootImages(request), {
+						toast.promise(() => client.updateNTPServer(request), {
 							loading: 'Loading...',
 							success: () => {
-								// client.getConfiguration({}).then((response) => {
-								// 	configuration.set(response);
-								// });
-								return `Import boot images success`;
+								client.getConfiguration({}).then((response) => {
+									configuration.set(response);
+								});
+								return `Update NTP server success`;
 							},
 							error: (error) => {
-								let message = `Fail to import boot images`;
+								let message = `Fail to update NTP server`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
 									duration: Number.POSITIVE_INFINITY
@@ -88,8 +88,10 @@
 
 						reset();
 						close();
-					}}>Create</Modal.Action
+					}}
 				>
+					{m.confirm()}
+				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
 	</Modal.Content>

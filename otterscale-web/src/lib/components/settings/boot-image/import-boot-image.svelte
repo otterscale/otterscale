@@ -6,6 +6,7 @@
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
@@ -14,7 +15,7 @@
 </script>
 
 <script lang="ts">
-	let { configuration = $bindable() }: { configuration: Writable<Configuration> } = $props();
+	let { configuration }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);
@@ -48,23 +49,29 @@
 	<Modal.Trigger disabled={isImportingBootImages}>
 		{#if isImportingBootImages == true}
 			<Icon icon="ph:spinner" class="text-muted-foreground size-5 animate-spin" />
-			Importing
+			{m.importing()}
 		{:else}
 			<Icon icon="ph:arrows-clockwise" />
-			Import
+			{m.import()}
 		{/if}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Boot Image</Modal.Header>
+		<Modal.Header>{m.create_boot_image()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Distro Series</Form.Label>
+					<Form.Label>{m.distro_series()}</Form.Label>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				{m.cancel()}
+			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
@@ -88,8 +95,10 @@
 
 						reset();
 						close();
-					}}>Create</Modal.Action
+					}}
 				>
+					{m.confirm()}
+				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
 	</Modal.Content>

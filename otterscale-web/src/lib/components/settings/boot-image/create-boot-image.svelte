@@ -10,6 +10,7 @@
 		Multiple as MultipleSelect,
 		Single as SingleSelect
 	} from '$lib/components/custom/select';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -20,31 +21,31 @@
 </script>
 
 <script lang="ts">
-	let { configuration = $bindable() }: { configuration: Writable<Configuration> } = $props();
+	let { configuration }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(ConfigurationService, transport);
-
-	const DEFAULT_REQUEST = {} as CreateBootImageRequest;
-	let request = $state(DEFAULT_REQUEST);
-	function reset() {
-		request = DEFAULT_REQUEST;
-	}
-
 	let distroSeriesOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
-	const architecturesOptions = $derived(distroSeriesArchitecturesMap[request.distroSeries]);
-	$effect(() => {
-		request.distroSeries;
-		request.architectures = [];
-	});
+	let isMounted = false;
+
+	const client = createClient(ConfigurationService, transport);
+	const defaults = {} as CreateBootImageRequest;
+	let request = $state(defaults);
+	function reset() {
+		request = defaults;
+	}
 
 	let open = $state(false);
 	function close() {
 		open = false;
 	}
 
-	let isMounted = false;
+	const architecturesOptions = $derived(distroSeriesArchitecturesMap[request.distroSeries]);
+	$effect(() => {
+		request.distroSeries;
+		request.architectures = [];
+	});
+
 	onMount(async () => {
 		try {
 			await client.listBootImageSelections({}).then((response) => {
@@ -79,21 +80,21 @@
 <Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
-		Boot Image
+		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Boot Image</Modal.Header>
+		<Modal.Header>{m.create_boot_image()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Distro Series</Form.Label>
+					<Form.Label>{m.distro_series()}</Form.Label>
 					<SingleSelect.Root options={distroSeriesOptions} bind:value={request.distroSeries}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
 								<SingleSelect.Input />
 								<SingleSelect.List>
-									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
 										{#each $distroSeriesOptions as option}
 											<SingleSelect.Item {option}>
@@ -114,7 +115,7 @@
 
 				{#if request.distroSeries}
 					<Form.Field>
-						<Form.Label>Architectures</Form.Label>
+						<Form.Label>{m.architecture()}</Form.Label>
 						<MultipleSelect.Root bind:value={request.architectures} options={architecturesOptions}>
 							<MultipleSelect.Viewer />
 							<MultipleSelect.Controller>
@@ -123,7 +124,7 @@
 									<MultipleSelect.Options>
 										<MultipleSelect.Input />
 										<MultipleSelect.List>
-											<MultipleSelect.Empty>No results found.</MultipleSelect.Empty>
+											<MultipleSelect.Empty>{m.no_result()}</MultipleSelect.Empty>
 											<MultipleSelect.Group>
 												{#each $architecturesOptions as option}
 													<MultipleSelect.Item {option}>
@@ -138,8 +139,8 @@
 											</MultipleSelect.Group>
 										</MultipleSelect.List>
 										<MultipleSelect.Actions>
-											<MultipleSelect.ActionAll>All</MultipleSelect.ActionAll>
-											<MultipleSelect.ActionClear>Clear</MultipleSelect.ActionClear>
+											<MultipleSelect.ActionAll>{m.all()}</MultipleSelect.ActionAll>
+											<MultipleSelect.ActionClear>{m.clear()}</MultipleSelect.ActionClear>
 										</MultipleSelect.Actions>
 									</MultipleSelect.Options>
 								</MultipleSelect.Content>
@@ -150,7 +151,13 @@
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				{m.cancel()}
+			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
@@ -171,11 +178,12 @@
 								return message;
 							}
 						});
-
 						reset();
 						close();
-					}}>Create</Modal.Action
+					}}
 				>
+					{m.confirm()}
+				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
 	</Modal.Content>

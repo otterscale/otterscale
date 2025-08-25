@@ -1,0 +1,75 @@
+<script lang="ts" module>
+	import { TagService, type Tag } from '$lib/api/tag/v1/tag_pb';
+	import * as Table from '$lib/components/custom/table';
+	import * as Layout from '$lib/components/settings/layout';
+	import { m } from '$lib/paraglide/messages';
+	import { cn } from '$lib/utils';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import CreateTag from './create-machine-tag.svelte';
+	import DeleteTag from './delete-machine-tag.svelte';
+</script>
+
+<script lang="ts">
+	const transport: Transport = getContext('transport');
+	const tagClient = createClient(TagService, transport);
+
+	const tags = writable<Tag[]>();
+	let isTagLoading = $state(true);
+
+	let isMounted = $state(false);
+	onMount(async () => {
+		try {
+			await tagClient.listTags({}).then((response) => {
+				tags.set(response.tags);
+				isTagLoading = false;
+			});
+			isMounted = true;
+		} catch (error) {
+			console.error('Error during initial data load:', error);
+		}
+	});
+</script>
+
+{#if !isTagLoading}
+	<Layout.Title>{m.tags()}</Layout.Title>
+	<Layout.Description>
+		{m.setting_machine_tag_description()}
+	</Layout.Description>
+	<Layout.Actions>
+		<CreateTag {tags} />
+	</Layout.Actions>
+	<Layout.Controller>
+		<div class="rounded-lg border shadow-sm">
+			<Table.Root>
+				<Table.Header>
+					<Table.Row
+						class="*:bg-muted *:rounded-t-lg *:px-4 *:first:rounded-tl-lg *:last:rounded-tr-lg"
+					>
+						<Table.Head>{m.tag()}</Table.Head>
+						<Table.Head>{m.comment()}</Table.Head>
+						<Table.Head></Table.Head>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#each $tags as tag}
+						<Table.Row class="*:px-4">
+							<Table.Cell>{tag.name}</Table.Cell>
+							<Table.Cell>
+								<p class={cn(tag.comment ? 'text-primary' : 'text-muted-foreground')}>
+									{tag.comment ? tag.comment : 'No comments available.'}
+								</p>
+							</Table.Cell>
+							<Table.Cell>
+								<div class="flex items-center justify-end">
+									<DeleteTag {tag} {tags} />
+								</div>
+							</Table.Cell>
+						</Table.Row>
+					{/each}
+				</Table.Body>
+			</Table.Root>
+		</div>
+	</Layout.Controller>
+{/if}

@@ -3,6 +3,7 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -11,15 +12,15 @@
 </script>
 
 <script lang="ts">
-	let { tags = $bindable() }: { tags: Writable<Tag[]> } = $props();
+	let { tags }: { tags: Writable<Tag[]> } = $props();
 
 	const transport: Transport = getContext('transport');
-	const client = createClient(TagService, transport);
 
-	const DEFAULT_REQUEST = {} as CreateTagRequest;
-	let request = $state(DEFAULT_REQUEST);
+	const client = createClient(TagService, transport);
+	const defaults = {} as CreateTagRequest;
+	let request = $state(defaults);
 	function reset() {
-		request = DEFAULT_REQUEST;
+		request = defaults;
 	}
 
 	let open = $state(false);
@@ -31,25 +32,31 @@
 <Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
-		Create
+		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Tag</Modal.Header>
+		<Modal.Header>{m.create_machine_tag()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General type="text" bind:value={request.name} />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Comment</Form.Label>
+					<Form.Label>{m.comment()}</Form.Label>
 					<SingleInput.General type="text" bind:value={request.comment} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
-			<Modal.Cancel onclick={reset}>Cancel</Modal.Cancel>
+			<Modal.Cancel
+				onclick={() => {
+					reset();
+				}}
+			>
+				{m.cancel()}
+			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					onclick={() => {
@@ -75,7 +82,7 @@
 						close();
 					}}
 				>
-					Create
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
