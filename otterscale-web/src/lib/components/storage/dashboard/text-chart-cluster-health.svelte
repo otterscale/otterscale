@@ -22,9 +22,9 @@
 
 	// Health status mappings
 	const HEALTH_STATUS = {
-		0: { label: 'HEALTHY', color: 'text-green-900 dark:text-green-800' },
-		1: { label: 'WARNING', color: 'text-yellow-900 dark:text-yellow-800' },
-		2: { label: 'ERROR', color: 'text-red-900 dark:text-red-800' }
+		0: { label: 'HEALTHY', color: 'text-healthy' },
+		1: { label: 'WARNING', color: 'text-warning' },
+		2: { label: 'ERROR', color: 'text-error' }
 	} as const;
 </script>
 

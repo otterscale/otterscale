@@ -1,14 +1,11 @@
 <script lang="ts">
 	import { type Network } from '$lib/api/network/v1/network_pb';
-	import { Badge } from '$lib/components/ui/badge';
-	import * as Card from '$lib/components/ui/card';
-	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { formatBigNumber as formatNumber, formatHealthColor } from '$lib/formatter';
-	import Description from '$lib/components/custom/chart/description.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
 	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
+	import { Progress } from '$lib/components/ui/progress/index.js';
+	import { formatBigNumber as formatNumber, formatProgressColor } from '$lib/formatter';
 
 	let {
 		networks
@@ -18,9 +15,13 @@
 
 	// Calculate statistics
 	const fabricCount = $derived(networks.map((n) => n.fabric).length);
-	const vlanList = $derived(networks.map((n) => n.vlan));
-	const dhcpEnabledCount = $derived(
-		networks.reduce((a, network) => a + (network.vlan?.dhcpOn ? 1 : 0), 0)
+	const isDhcpEnabled = $derived(networks.some((n) => n.vlan?.dhcpOn === true));
+	const dhcpOnFabricName = $derived(
+		networks
+			.filter((n) => n.vlan?.dhcpOn === true)
+			.map((n) => n.fabric?.name)
+			.filter(Boolean)
+			.join(', ')
 	);
 	const availableSubnetCount = $derived(
 		networks.reduce(
@@ -36,7 +37,6 @@
 		)
 	);
 	const availabilityPercentage = $derived((availableSubnetCount * 100) / totalSubnetCount || 0);
-	const dhcpEnabledPercentage = $derived((dhcpEnabledCount * 100) / fabricCount || 0);
 </script>
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
@@ -56,19 +56,13 @@
 		{/snippet}
 
 		{#snippet content()}
-			<ContentSubtitle
-				value={Math.round(dhcpEnabledPercentage)}
-				unit={'%'}
-				subtitle={`${dhcpEnabledCount} Enabled over ${fabricCount} fabrics`}
-			/>
+			<Content value={isDhcpEnabled ? 'ON' : 'OFF'} />
 		{/snippet}
 
 		{#snippet footer()}
-			<Progress
-				value={dhcpEnabledPercentage}
-				max={100}
-				class={formatHealthColor(dhcpEnabledPercentage)}
-			/>
+			<p class="text-muted-foreground text-xs">
+				{dhcpOnFabricName}
+			</p>
 		{/snippet}
 	</Layout>
 
@@ -89,7 +83,7 @@
 			<Progress
 				value={availabilityPercentage}
 				max={100}
-				class={formatHealthColor(availabilityPercentage)}
+				class={formatProgressColor(availabilityPercentage)}
 			/>
 		{/snippet}
 	</Layout>

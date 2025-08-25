@@ -144,13 +144,44 @@ export function formatSecond(second: number): { value: string, unit: string } {
     }
 };
 
-export function formatHealthColor(healthPercentage: number): string {
-    if (healthPercentage > 62) {
-        return 'bg-green-50 *:bg-green-700 bg-primary/20';
-    } else if (healthPercentage > 38) {
-        return 'bg-yellow-50 *:bg-yellow-500 bg-primary/20';
+/**
+ * Returns a Tailwind CSS background color class based on the given value.
+ *
+ * @param value - The input value, either as a percentage (0~100) or a decimal (0~1).
+ * @param isPercent - Whether the value is in percentage format (default: true).
+ * @param highIsGood - Whether higher values should be green (true) or red (false) (default: true).
+ * @returns A string representing the Tailwind CSS background color class:
+ *   When highIsGood is true:
+ *   - '*:bg-green-700' for value > 62%
+ *   - '*:bg-yellow-500' for value > 38% and <= 62%
+ *   - '*:bg-red-700' for value <= 38%
+ *   When highIsGood is false:
+ *   - '*:bg-red-700' for value > 62%
+ *   - '*:bg-yellow-500' for value > 38% and <= 62%
+ *   - '*:bg-green-700' for value <= 38%
+ */
+export function formatProgressColor(
+    value: number, 
+    isPercent: boolean = true, 
+    highIsGood: boolean = true
+): string {
+    const percent = isPercent ? value : value * 100;
+    
+    if (highIsGood) {
+        if (percent > 62) {
+            return '*:bg-green-700';
+        } else if (percent > 38) {
+            return '*:bg-yellow-500';
+        } else {
+            return '*:bg-red-700';
+        }
     } else {
-        return 'bg-red-50 *:bg-red-700 bg-primary/20';
+        if (percent > 62) {
+            return '*:bg-red-700';
+        } else if (percent > 38) {
+            return '*:bg-yellow-500';
+        } else {
+            return '*:bg-green-700';
+        }
     }
 }
-
