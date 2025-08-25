@@ -206,11 +206,63 @@
 				<Card.Content>On / Off (vlan.dhcp_on 欄位)</Card.Content>
 			</Card.Root>
 
-			<Card.Root class="col-span-7 row-span-2 gap-2">
+			<Card.Root class="col-span-2 row-span-2 gap-2">
+				<Card.Header class="items-center">
+					<Card.Title>目前剩餘可用的 IP 數量</Card.Title>
+					<Card.Description>% 數</Card.Description>
+				</Card.Header>
+				<Card.Content class="flex-1">
+					<Chart.Container config={chartConfig1} class="mx-auto aspect-square max-h-[200px]">
+						<ArcChart
+							label="browser"
+							value="visitors"
+							outerRadius={88}
+							innerRadius={66}
+							trackOuterRadius={83}
+							trackInnerRadius={72}
+							padding={40}
+							range={[90, -270]}
+							maxValue={chartData1[0].visitors * 4}
+							series={chartData1.map((d) => ({
+								key: d.browser,
+								color: d.color,
+								data: [d]
+							}))}
+							props={{
+								arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
+								tooltip: { context: { hideDelay: 350 } }
+							}}
+							tooltip={false}
+						>
+							{#snippet belowMarks()}
+								<circle cx="0" cy="0" r="80" class="fill-background" />
+							{/snippet}
+							{#snippet aboveMarks()}
+								<Text
+									value={String(chartData1[0].visitors)}
+									textAnchor="middle"
+									verticalAnchor="middle"
+									class="fill-foreground text-4xl! font-bold"
+									dy={3}
+								/>
+								<Text
+									value="Visitors"
+									textAnchor="middle"
+									verticalAnchor="middle"
+									class="fill-muted-foreground!"
+									dy={22}
+								/>
+							{/snippet}
+						</ArcChart>
+					</Chart.Container>
+				</Card.Content>
+			</Card.Root>
+
+			<Card.Root class="col-span-5 row-span-2 gap-2">
 				<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 					<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 						<Card.Title>Network Traffic</Card.Title>
-						<Card.Description>xxx</Card.Description>
+						<Card.Description>用 fqdn 過濾</Card.Description>
 					</div>
 					<div class="flex">
 						{#each ['receive', 'transmit'] as key (key)}
@@ -291,62 +343,10 @@
 				<Card.Content>["192.168.1.85"] (subnet.dns_servers 欄位)</Card.Content>
 			</Card.Root>
 
-			<Card.Root class="col-span-2 gap-2">
-				<Card.Header class="items-center">
-					<Card.Title>目前剩餘可用的 IP 數量</Card.Title>
-					<Card.Description>% 數</Card.Description>
-				</Card.Header>
-				<Card.Content class="flex-1">
-					<Chart.Container config={chartConfig1} class="mx-auto aspect-square max-h-[250px]">
-						<ArcChart
-							label="browser"
-							value="visitors"
-							outerRadius={88}
-							innerRadius={66}
-							trackOuterRadius={83}
-							trackInnerRadius={72}
-							padding={40}
-							range={[90, -270]}
-							maxValue={chartData1[0].visitors * 4}
-							series={chartData1.map((d) => ({
-								key: d.browser,
-								color: d.color,
-								data: [d]
-							}))}
-							props={{
-								arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
-								tooltip: { context: { hideDelay: 350 } }
-							}}
-							tooltip={false}
-						>
-							{#snippet belowMarks()}
-								<circle cx="0" cy="0" r="80" class="fill-background" />
-							{/snippet}
-							{#snippet aboveMarks()}
-								<Text
-									value={String(chartData1[0].visitors)}
-									textAnchor="middle"
-									verticalAnchor="middle"
-									class="fill-foreground text-4xl! font-bold"
-									dy={3}
-								/>
-								<Text
-									value="Visitors"
-									textAnchor="middle"
-									verticalAnchor="middle"
-									class="fill-muted-foreground!"
-									dy={22}
-								/>
-							{/snippet}
-						</ArcChart>
-					</Chart.Container>
-				</Card.Content>
-			</Card.Root>
-
-			<Card.Root class="col-span-3 gap-2">
+			<Card.Root class="col-span-4 gap-2">
 				<Card.Header>
 					<Card.Title>上傳下載總和 BY 天</Card.Title>
-					<Card.Description>過去一周</Card.Description>
+					<Card.Description>用 fqdn 過濾 過去一周</Card.Description>
 				</Card.Header>
 				<Card.Content>
 					<Chart.Container config={chartConfig3}>
@@ -393,61 +393,6 @@
 								<Chart.Tooltip />
 							{/snippet}
 						</BarChart>
-					</Chart.Container>
-				</Card.Content>
-			</Card.Root>
-
-			<Card.Root class="col-span-4 gap-2">
-				<Card.Header class="items-center">
-					<Card.Title>Scope 分析</Card.Title>
-					<Card.Description>用 fqdn 回推是哪一個 Scope 使用最多</Card.Description>
-				</Card.Header>
-				<Card.Content class="flex-1">
-					<Chart.Container config={chartConfig4} class="mx-auto aspect-square max-h-[250px]">
-						<LineChart
-							data={chartData4}
-							series={[
-								{
-									key: 'desktop',
-									label: 'Desktop',
-									color: chartConfig4.desktop.color
-								}
-							]}
-							radial
-							x="month"
-							xScale={scaleBand()}
-							padding={12}
-							props={{
-								spline: {
-									curve: curveLinearClosed,
-									fill: 'var(--color-desktop)',
-									fillOpacity: 0.6,
-									stroke: '0',
-									motion: 'tween'
-								},
-								xAxis: {
-									tickLength: 0
-								},
-								yAxis: {
-									format: () => ''
-								},
-								grid: {
-									radialY: 'linear'
-								},
-								tooltip: {
-									context: {
-										mode: 'voronoi'
-									}
-								},
-								highlight: {
-									lines: false
-								}
-							}}
-						>
-							{#snippet tooltip()}
-								<Chart.Tooltip />
-							{/snippet}
-						</LineChart>
 					</Chart.Container>
 				</Card.Content>
 			</Card.Root>
