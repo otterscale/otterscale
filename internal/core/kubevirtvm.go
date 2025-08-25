@@ -45,6 +45,7 @@ type KubeVirtVMRepo interface {
 	CreateVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string, annotations, labels map[string]string, spec *VirtualMachineSnapshotSpec) (*VirtualMachineSnapshot, error)
 	GetVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineSnapshot, error)
 	ListVirtualMachineSnapshots(ctx context.Context, config *rest.Config, namespace string) ([]VirtualMachineSnapshot, error)
+	ListVirtualMachineSnapshotsByVM(ctx context.Context, config *rest.Config, namespace, vmName string) ([]VirtualMachineSnapshot, error)
 	DeleteVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string) error
 	CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string, annotations, labels map[string]string, spec *VirtualMachineRestoreSpec) (*VirtualMachineRestore, error)
 	GetVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineRestore, error)
@@ -64,7 +65,7 @@ type KubeVirtVMRepo interface {
 	UnpauseVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
-func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, network, script string, labels, annotations map[string]string, resources VirtualMachineResources, disks []DiskDevice) (*VirtualMachine, error) {
+func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, network, script string, labels map[string]string, resources VirtualMachineResources, disks []DiskDevice) (*VirtualMachine, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -81,16 +82,8 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 		}
 	}
 
-	if annotations != nil {
-		annotations["kubevirt.otterscale.io/network"] = network
-		annotations["kubevirt.otterscale.io/script"] = script
-		annotations["kubevirt.io/allow-pod-bridge-network-live-migration"] = "true"
-	} else {
-		annotations = map[string]string{
-			"kubevirt.otterscale.io/network":                      network,
-			"otterscale/virtualmachine/script":                    script,
-			"kubevirt.io/allow-pod-bridge-network-live-migration": "true",
-		}
+	annotations := map[string]string{
+		"kubevirt.io/allow-pod-bridge-network-live-migration": "true",
 	}
 
 	for _, d := range disks {
@@ -154,24 +147,6 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 				VolumeSource: virtCorev1.VolumeSource{
 					Secret: &virtCorev1.SecretVolumeSource{
 						SecretName: d.Name,
-					},
-				},
-			})
-		case TYPECLOUDINITNOCLOUD:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					CloudInitNoCloud: &virtCorev1.CloudInitNoCloudSource{
-						UserDataBase64: d.Data,
-					},
-				},
-			})
-		case TYPECONTAINERDISK:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					ContainerDisk: &virtCorev1.ContainerDiskSource{
-						Image: d.Data,
 					},
 				},
 			})
@@ -331,7 +306,7 @@ func (uc *KubeVirtUseCase) ListVirtualMachines(ctx context.Context, uuid, facili
 	return vms, vmis, err
 }
 
-func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, networkName, startupScript string, labels, annotations map[string]string, disks []DiskDevice) (*VirtualMachine, *VirtualMachineInstance, error) {
+func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, networkName, startupScript string, labels map[string]string, disks []DiskDevice) (*VirtualMachine, *VirtualMachineInstance, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, nil, err
@@ -346,11 +321,6 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facil
 		labels = map[string]string{}
 	}
 	oldVM.SetLabels(labels)
-
-	if annotations == nil {
-		annotations = map[string]string{}
-	}
-	oldVM.SetAnnotations(annotations)
 
 	var vmDisks []virtCorev1.Disk
 	var vmVolumes []virtCorev1.Volume
@@ -414,24 +384,6 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facil
 				VolumeSource: virtCorev1.VolumeSource{
 					Secret: &virtCorev1.SecretVolumeSource{
 						SecretName: d.Name,
-					},
-				},
-			})
-		case TYPECLOUDINITNOCLOUD:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					CloudInitNoCloud: &virtCorev1.CloudInitNoCloudSource{
-						UserDataBase64: d.Data,
-					},
-				},
-			})
-		case TYPECONTAINERDISK:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					ContainerDisk: &virtCorev1.ContainerDiskSource{
-						Image: d.Data,
 					},
 				},
 			})
@@ -521,6 +473,7 @@ func (uc *KubeVirtUseCase) CloneVirtualMachine(ctx context.Context, uuid, facili
 	labels := map[string]string{}
 	annotations := map[string]string{
 		"otterscale.io/clone-description": description,
+		"otterscale.io/virtualmachine":    targetName,
 	}
 
 	spec := &VirtualMachineCloneSpec{
@@ -548,6 +501,7 @@ func (uc *KubeVirtUseCase) SnapshotVirtualMachine(ctx context.Context, uuid, fac
 	labels := map[string]string{}
 	annotations := map[string]string{
 		"otterscale.io/snapshot-description": description,
+		"otterscale.io/virtualmachine":       name,
 	}
 
 	spec := &VirtualMachineSnapshotSpec{
@@ -574,6 +528,7 @@ func (uc *KubeVirtUseCase) RestoreVirtualMachine(ctx context.Context, uuid, faci
 	labels := map[string]string{}
 	annotations := map[string]string{
 		"otterscale.io/restore-description": description,
+		"otterscale.io/virtualmachine":      name,
 	}
 
 	spec := &VirtualMachineRestoreSpec{
@@ -595,46 +550,25 @@ func (uc *KubeVirtUseCase) MigrateVirtualMachine(ctx context.Context, uuid, faci
 		return err
 	}
 
-	return uc.kubeVirtVM.MigrateVirtualMachine(ctx, config, namespace, name)
-}
-
-// GetVirtualMachineClone retrieves a virtual machine clone
-func (uc *KubeVirtUseCase) GetVirtualMachineClone(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachineClone, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return nil, err
+	labels := map[string]string{}
+	annotations := map[string]string{
+		"otterscale.io/restore-description": description,
+		"otterscale.io/virtualmachine":      name,
 	}
 
-	clone, err := uc.kubeVirtVM.GetVirtualMachineClone(ctx, config, namespace, name)
-	if err != nil {
-		return nil, err
+	spec := &VirtualMachineInstanceMigrationSpec{
+		VMIName: name,
 	}
 
-	return clone, nil
-}
-
-func (uc *KubeVirtUseCase) ListVirtualMachineClones(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineClone, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return nil, err
+	if targetNode != "" {
+		spec.AddedNodeSelector = map[string]string{
+			"kubernetes.io/hostname": targetNode,
+		}
 	}
 
-	clones, err := uc.kubeVirtVM.ListVirtualMachineClones(ctx, config, namespace)
-	if err != nil {
-		return nil, err
-	}
+	_, err = uc.kubeVirtVM.MigrateVirtualMachineInstance(ctx, config, namespace, name, annotations, labels, spec)
 
-	return clones, nil
-}
-
-// DeleteVirtualMachineClone deletes a virtual machine clone
-func (uc *KubeVirtUseCase) DeleteVirtualMachineClone(ctx context.Context, uuid, facility, namespace, name string) error {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return err
-	}
-
-	return uc.kubeVirtVM.DeleteVirtualMachineClone(ctx, config, namespace, name)
+	return err
 }
 
 // GetVirtualMachineSnapshot retrieves a virtual machine snapshot
@@ -652,13 +586,13 @@ func (uc *KubeVirtUseCase) GetVirtualMachineSnapshot(ctx context.Context, uuid, 
 	return snapshot, nil
 }
 
-func (uc *KubeVirtUseCase) ListVirtualMachineSnapshots(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineSnapshot, error) {
+func (uc *KubeVirtUseCase) ListVirtualMachineSnapshots(ctx context.Context, uuid, facility, namespace, vmName string) ([]VirtualMachineSnapshot, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
 
-	ops, err := uc.kubeVirtVM.ListVirtualMachineSnapshots(ctx, config, namespace)
+	ops, err := uc.kubeVirtVM.ListVirtualMachineSnapshotsByVM(ctx, config, namespace, vmName)
 	if err != nil {
 		return nil, err
 	}
@@ -674,82 +608,4 @@ func (uc *KubeVirtUseCase) DeleteVirtualMachineSnapshot(ctx context.Context, uui
 	}
 
 	return uc.kubeVirtVM.DeleteVirtualMachineSnapshot(ctx, config, namespace, name)
-}
-
-// GetVirtualMachineRestore retrieves a virtual machine restore operation
-func (uc *KubeVirtUseCase) GetVirtualMachineRestore(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachineRestore, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return nil, err
-	}
-
-	restore, err := uc.kubeVirtVM.GetVirtualMachineRestore(ctx, config, namespace, name)
-	if err != nil {
-		return nil, err
-	}
-
-	return restore, nil
-}
-
-func (uc *KubeVirtUseCase) ListVirtualMachineRestores(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineRestore, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return nil, err
-	}
-
-	restores, err := uc.kubeVirtVM.ListVirtualMachineRestores(ctx, config, namespace)
-	if err != nil {
-		return nil, err
-	}
-
-	return restores, nil
-}
-
-// DeleteVirtualMachineRestore deletes a virtual machine restore operation
-func (uc *KubeVirtUseCase) DeleteVirtualMachineRestore(ctx context.Context, uuid, facility, namespace, name string) error {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return err
-	}
-
-	return uc.kubeVirtVM.DeleteVirtualMachineRestore(ctx, config, namespace, name)
-}
-
-// GetVirtualMachineMigrate retrieves a virtual machine Migrate operation
-func (uc *KubeVirtUseCase) GetVirtualMachineMigrate(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachineInstanceMigration, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return nil, err
-	}
-
-	Migrate, err := uc.kubeVirtVM.GetVirtualMachineMigrate(ctx, config, namespace, name)
-	if err != nil {
-		return nil, err
-	}
-
-	return Migrate, nil
-}
-
-func (uc *KubeVirtUseCase) ListVirtualMachineMigrates(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachineInstanceMigration, error) {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return nil, err
-	}
-
-	Migrates, err := uc.kubeVirtVM.ListVirtualMachineMigrates(ctx, config, namespace)
-	if err != nil {
-		return nil, err
-	}
-
-	return Migrates, nil
-}
-
-// DeleteVirtualMachineMigrate deletes a virtual machine Migrate operation
-func (uc *KubeVirtUseCase) DeleteVirtualMachineMigrate(ctx context.Context, uuid, facility, namespace, name string) error {
-	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
-	if err != nil {
-		return err
-	}
-
-	return uc.kubeVirtVM.DeleteVirtualMachineMigrate(ctx, config, namespace, name)
 }

@@ -25,18 +25,11 @@ service KubeVirtService {
   rpc SnapshotVirtualMachine(SnapshotVirtualMachineRequest) returns (google.protobuf.Empty);
   rpc RestoreVirtualMachine(RestoreVirtualMachineRequest) returns (google.protobuf.Empty);
   rpc MigrateVirtualMachine(MigrateVirtualMachineRequest) returns (google.protobuf.Empty);
-  rpc GetVirtualMachineClone(GetVirtualMachineCloneRequest) returns (VirtualMachineOperation);
-  rpc ListVirtualMachineClones(ListVirtualMachineClonesRequest) returns (ListVirtualMachineOperations);
-  rpc DeleteVirtualMachineClone(DeleteVirtualMachineCloneRequest) returns (google.protobuf.Empty);
-  rpc GetVirtualMachineSnapshot(GetVirtualMachineSnapshotRequest) returns (VirtualMachineOperation);
-  rpc ListVirtualMachineSnapshots(ListVirtualMachineSnapshotsRequest) returns (ListVirtualMachineOperations);
+
+  rpc GetVirtualMachineSnapshot(GetVirtualMachineSnapshotRequest) returns (VirtualMachineSnapshot);
+  rpc ListVirtualMachineSnapshots(ListVirtualMachineSnapshotsRequest) returns (ListVirtualMachineSnapshotsResponse);
   rpc DeleteVirtualMachineSnapshot(DeleteVirtualMachineSnapshotRequest) returns (google.protobuf.Empty);
-  rpc GetVirtualMachineRestore(GetVirtualMachineRestoreRequest) returns (VirtualMachineOperation);
-  rpc ListVirtualMachineRestores(ListVirtualMachineRestoresRequest) returns (ListVirtualMachineOperations);
-  rpc DeleteVirtualMachineRestore(DeleteVirtualMachineRestoreRequest) returns (google.protobuf.Empty);
-  rpc GetVirtualMachineMigrate(GetVirtualMachineMigrateRequest) returns (VirtualMachineOperation);
-  rpc DeleteVirtualMachineMigrate(DeleteVirtualMachineMigrateRequest) returns (google.protobuf.Empty);
-  rpc ListVirtualMachineMigrates(ListVirtualMachineMigratesRequest) returns (ListVirtualMachineOperations);
+
   // Data Volume Operations
   rpc CreateDataVolume(CreateDataVolumeRequest) returns (DataVolume);
   rpc GetDataVolume(GetDataVolumeRequest) returns (DataVolume);
@@ -67,7 +60,7 @@ message Metadata {
 }
 
 // Virtual Machine messages
-message VirtualMachineOperation{
+message VirtualMachineSnapshot{
   message Result {
     enum Status {
       UNSPECIFIED = 0;
@@ -79,20 +72,13 @@ message VirtualMachineOperation{
     string message = 2;
     string reason = 3;
   }
-  enum Type {
-    UNSPECIFIED = 0;
-    CLONE = 1;
-    SNAPSHOT = 2;
-    RESTORE = 3;
-    MIGRATE = 4;
-  }
-  Type type = 1;
-  string name = 2;
-  string namespace = 3;
-  string source_name = 4;
-  string source_namespace = 5;
-  google.protobuf.Timestamp created_at = 6;
-  string description = 7;
+
+  string name = 1;
+  string namespace = 2;
+  string source_name = 3;
+  string source_namespace = 4;
+  google.protobuf.Timestamp created_at = 5;
+  string description = 6;
 
   Result status = 11;
 }
@@ -110,28 +96,19 @@ message VirtualMachine {
     MIGRATING = 7;
   }
   Metadata metadata = 1;
-  VirtualMachineSpec spec = 11;
-  Status status = 12;
+  string network_name = 11;
+  string startup_script = 12;
+  string node_name = 13;
+  
+  VirtualMachineResources resoureces = 21;
+  repeated VirtualMachineDisk disks = 22; 
 
-
-  repeated string snapshots = 21;
-  //repeated VirtualMachineOperation clones = 22;
-  //repeated VirtualMachineOperation migrates = 23;
-  //repeated VirtualMachineOperation restores = 24;
+  Status status = 31;
 }
 
 message VirtualMachineResources{
   uint32 cpu_cores = 1;
   int64 memory_bytes = 2;
-}
-
-message VirtualMachineSpec {
-
-  string network_name = 1;
-  string startup_script = 2;
-  
-  VirtualMachineResources resoureces = 11;
-  repeated VirtualMachineDisk disks = 21;
 }
 
 // Resource definitions
@@ -188,12 +165,6 @@ message KubeVirtVMServiceStatus {
   repeated string  load_balancer_ingress  = 3; 
 }
 
-message Device {
-  string name = 1;
-  string type = 2;
-  string type_name = 3;
-}
-
 // Request/Response messages
 message ListVirtualMachinesRequest {
   string scope_uuid = 1;
@@ -216,12 +187,9 @@ message VirtualMachineDisk {
   enum type {
       UNSPECIFIED = 0;
       DATAVOLUME = 1;
-      CLOUDINITNOCLOUD = 2;
-      PERSISTENTVOLUMECLAIM = 3;
-      CONFIGMAP = 4;
-      HOSTDISK = 5;
-      SECRET = 6;
-      CONTAINERDISK = 7;
+      PERSISTENTVOLUMECLAIM = 2;
+      CONFIGMAP = 3;
+      SECRET = 4;
   }
   string name = 1;
   type disk_type = 2;
@@ -238,8 +206,6 @@ message CreateVirtualMachineRequest {
   string network_name = 6;
   string startup_script = 7;
   map<string, string> labels = 11;
-  map<string, string> annotations = 12;
-
 
   repeated VirtualMachineDisk disks = 31;
 
@@ -260,7 +226,6 @@ message UpdateVirtualMachineRequest {
   string startup_script = 7;
 
   map<string, string> labels = 11;
-  map<string, string> annotations = 12;
 
   repeated VirtualMachineDisk disks = 31;
 }
@@ -333,32 +298,9 @@ message MigrateVirtualMachineRequest {
   string facility_name = 2;
   string name = 3;
   string namespace = 4;
-  // [TODO]
   string target_node = 5;
   string description = 11;
 }
-
-message GetVirtualMachineCloneRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string name = 3;
-  string namespace = 4;
-}
-
-message ListVirtualMachineClonesRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-}
-
-
-message DeleteVirtualMachineCloneRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string name = 3;
-  string namespace = 4;
-}
-
 
 message GetVirtualMachineSnapshotRequest {
   string scope_uuid = 1;
@@ -371,6 +313,7 @@ message ListVirtualMachineSnapshotsRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
+  string vmName = 4;
 }
 
 message DeleteVirtualMachineSnapshotRequest {
@@ -380,49 +323,8 @@ message DeleteVirtualMachineSnapshotRequest {
   string namespace = 4;
 }
 
-
-message GetVirtualMachineRestoreRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string name = 3;
-  string namespace = 4;
-}
-
-message ListVirtualMachineRestoresRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-}
-
-message DeleteVirtualMachineRestoreRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string name = 3;
-  string namespace = 4;
-}
-
-message GetVirtualMachineMigrateRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string name = 3;
-  string namespace = 4;
-}
-
-message ListVirtualMachineMigratesRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string namespace = 3;
-}
-
-message DeleteVirtualMachineMigrateRequest {
-  string scope_uuid = 1;
-  string facility_name = 2;
-  string name = 3;
-  string namespace = 4;
-}
-
-message ListVirtualMachineOperations {
-  repeated VirtualMachineOperation ops = 1;
+message ListVirtualMachineSnapshotsResponse {
+  repeated VirtualMachineSnapshot snapshot = 1;
 }
 
 message CreateDataVolumeRequest {

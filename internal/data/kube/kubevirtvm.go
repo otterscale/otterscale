@@ -232,6 +232,22 @@ func (r *virtVM) ListVirtualMachineSnapshots(ctx context.Context, config *rest.C
 	return snapshots.Items, err
 }
 
+func (r *virtVM) ListVirtualMachineSnapshotsByVM(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.VirtualMachineSnapshot, error) {
+	allSnaps, err := r.ListVirtualMachineSnapshots(ctx, config, namespace)
+	if err != nil {
+		return nil, err
+	}
+
+	var filtered []oscore.VirtualMachineSnapshot
+	for _, snap := range allSnaps {
+		if snap.Spec.Source.Name == vmName {
+			filtered = append(filtered, snap)
+		}
+	}
+
+	return filtered, nil
+}
+
 func (r *virtVM) DeleteVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string) error {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {

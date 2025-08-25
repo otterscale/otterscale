@@ -73,15 +73,6 @@ const (
 	// KubeVirtServiceMigrateVirtualMachineProcedure is the fully-qualified name of the
 	// KubeVirtService's MigrateVirtualMachine RPC.
 	KubeVirtServiceMigrateVirtualMachineProcedure = "/otterscale.kubevirt.v1.KubeVirtService/MigrateVirtualMachine"
-	// KubeVirtServiceGetVirtualMachineCloneProcedure is the fully-qualified name of the
-	// KubeVirtService's GetVirtualMachineClone RPC.
-	KubeVirtServiceGetVirtualMachineCloneProcedure = "/otterscale.kubevirt.v1.KubeVirtService/GetVirtualMachineClone"
-	// KubeVirtServiceListVirtualMachineClonesProcedure is the fully-qualified name of the
-	// KubeVirtService's ListVirtualMachineClones RPC.
-	KubeVirtServiceListVirtualMachineClonesProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListVirtualMachineClones"
-	// KubeVirtServiceDeleteVirtualMachineCloneProcedure is the fully-qualified name of the
-	// KubeVirtService's DeleteVirtualMachineClone RPC.
-	KubeVirtServiceDeleteVirtualMachineCloneProcedure = "/otterscale.kubevirt.v1.KubeVirtService/DeleteVirtualMachineClone"
 	// KubeVirtServiceGetVirtualMachineSnapshotProcedure is the fully-qualified name of the
 	// KubeVirtService's GetVirtualMachineSnapshot RPC.
 	KubeVirtServiceGetVirtualMachineSnapshotProcedure = "/otterscale.kubevirt.v1.KubeVirtService/GetVirtualMachineSnapshot"
@@ -91,24 +82,6 @@ const (
 	// KubeVirtServiceDeleteVirtualMachineSnapshotProcedure is the fully-qualified name of the
 	// KubeVirtService's DeleteVirtualMachineSnapshot RPC.
 	KubeVirtServiceDeleteVirtualMachineSnapshotProcedure = "/otterscale.kubevirt.v1.KubeVirtService/DeleteVirtualMachineSnapshot"
-	// KubeVirtServiceGetVirtualMachineRestoreProcedure is the fully-qualified name of the
-	// KubeVirtService's GetVirtualMachineRestore RPC.
-	KubeVirtServiceGetVirtualMachineRestoreProcedure = "/otterscale.kubevirt.v1.KubeVirtService/GetVirtualMachineRestore"
-	// KubeVirtServiceListVirtualMachineRestoresProcedure is the fully-qualified name of the
-	// KubeVirtService's ListVirtualMachineRestores RPC.
-	KubeVirtServiceListVirtualMachineRestoresProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListVirtualMachineRestores"
-	// KubeVirtServiceDeleteVirtualMachineRestoreProcedure is the fully-qualified name of the
-	// KubeVirtService's DeleteVirtualMachineRestore RPC.
-	KubeVirtServiceDeleteVirtualMachineRestoreProcedure = "/otterscale.kubevirt.v1.KubeVirtService/DeleteVirtualMachineRestore"
-	// KubeVirtServiceGetVirtualMachineMigrateProcedure is the fully-qualified name of the
-	// KubeVirtService's GetVirtualMachineMigrate RPC.
-	KubeVirtServiceGetVirtualMachineMigrateProcedure = "/otterscale.kubevirt.v1.KubeVirtService/GetVirtualMachineMigrate"
-	// KubeVirtServiceDeleteVirtualMachineMigrateProcedure is the fully-qualified name of the
-	// KubeVirtService's DeleteVirtualMachineMigrate RPC.
-	KubeVirtServiceDeleteVirtualMachineMigrateProcedure = "/otterscale.kubevirt.v1.KubeVirtService/DeleteVirtualMachineMigrate"
-	// KubeVirtServiceListVirtualMachineMigratesProcedure is the fully-qualified name of the
-	// KubeVirtService's ListVirtualMachineMigrates RPC.
-	KubeVirtServiceListVirtualMachineMigratesProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListVirtualMachineMigrates"
 	// KubeVirtServiceCreateDataVolumeProcedure is the fully-qualified name of the KubeVirtService's
 	// CreateDataVolume RPC.
 	KubeVirtServiceCreateDataVolumeProcedure = "/otterscale.kubevirt.v1.KubeVirtService/CreateDataVolume"
@@ -171,18 +144,9 @@ type KubeVirtServiceClient interface {
 	SnapshotVirtualMachine(context.Context, *connect.Request[v1.SnapshotVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	RestoreVirtualMachine(context.Context, *connect.Request[v1.RestoreVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	MigrateVirtualMachine(context.Context, *connect.Request[v1.MigrateVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	GetVirtualMachineClone(context.Context, *connect.Request[v1.GetVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachineOperation], error)
-	ListVirtualMachineClones(context.Context, *connect.Request[v1.ListVirtualMachineClonesRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error)
-	DeleteVirtualMachineClone(context.Context, *connect.Request[v1.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error)
-	GetVirtualMachineSnapshot(context.Context, *connect.Request[v1.GetVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachineOperation], error)
-	ListVirtualMachineSnapshots(context.Context, *connect.Request[v1.ListVirtualMachineSnapshotsRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error)
+	GetVirtualMachineSnapshot(context.Context, *connect.Request[v1.GetVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachineSnapshot], error)
+	ListVirtualMachineSnapshots(context.Context, *connect.Request[v1.ListVirtualMachineSnapshotsRequest]) (*connect.Response[v1.ListVirtualMachineSnapshotsResponse], error)
 	DeleteVirtualMachineSnapshot(context.Context, *connect.Request[v1.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	GetVirtualMachineRestore(context.Context, *connect.Request[v1.GetVirtualMachineRestoreRequest]) (*connect.Response[v1.VirtualMachineOperation], error)
-	ListVirtualMachineRestores(context.Context, *connect.Request[v1.ListVirtualMachineRestoresRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error)
-	DeleteVirtualMachineRestore(context.Context, *connect.Request[v1.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error)
-	GetVirtualMachineMigrate(context.Context, *connect.Request[v1.GetVirtualMachineMigrateRequest]) (*connect.Response[v1.VirtualMachineOperation], error)
-	DeleteVirtualMachineMigrate(context.Context, *connect.Request[v1.DeleteVirtualMachineMigrateRequest]) (*connect.Response[emptypb.Empty], error)
-	ListVirtualMachineMigrates(context.Context, *connect.Request[v1.ListVirtualMachineMigratesRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error)
 	// Data Volume Operations
 	CreateDataVolume(context.Context, *connect.Request[v1.CreateDataVolumeRequest]) (*connect.Response[v1.DataVolume], error)
 	GetDataVolume(context.Context, *connect.Request[v1.GetDataVolumeRequest]) (*connect.Response[v1.DataVolume], error)
@@ -291,31 +255,13 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(kubeVirtServiceMethods.ByName("MigrateVirtualMachine")),
 			connect.WithClientOptions(opts...),
 		),
-		getVirtualMachineClone: connect.NewClient[v1.GetVirtualMachineCloneRequest, v1.VirtualMachineOperation](
-			httpClient,
-			baseURL+KubeVirtServiceGetVirtualMachineCloneProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("GetVirtualMachineClone")),
-			connect.WithClientOptions(opts...),
-		),
-		listVirtualMachineClones: connect.NewClient[v1.ListVirtualMachineClonesRequest, v1.ListVirtualMachineOperations](
-			httpClient,
-			baseURL+KubeVirtServiceListVirtualMachineClonesProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachineClones")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteVirtualMachineClone: connect.NewClient[v1.DeleteVirtualMachineCloneRequest, emptypb.Empty](
-			httpClient,
-			baseURL+KubeVirtServiceDeleteVirtualMachineCloneProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachineClone")),
-			connect.WithClientOptions(opts...),
-		),
-		getVirtualMachineSnapshot: connect.NewClient[v1.GetVirtualMachineSnapshotRequest, v1.VirtualMachineOperation](
+		getVirtualMachineSnapshot: connect.NewClient[v1.GetVirtualMachineSnapshotRequest, v1.VirtualMachineSnapshot](
 			httpClient,
 			baseURL+KubeVirtServiceGetVirtualMachineSnapshotProcedure,
 			connect.WithSchema(kubeVirtServiceMethods.ByName("GetVirtualMachineSnapshot")),
 			connect.WithClientOptions(opts...),
 		),
-		listVirtualMachineSnapshots: connect.NewClient[v1.ListVirtualMachineSnapshotsRequest, v1.ListVirtualMachineOperations](
+		listVirtualMachineSnapshots: connect.NewClient[v1.ListVirtualMachineSnapshotsRequest, v1.ListVirtualMachineSnapshotsResponse](
 			httpClient,
 			baseURL+KubeVirtServiceListVirtualMachineSnapshotsProcedure,
 			connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachineSnapshots")),
@@ -325,42 +271,6 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			httpClient,
 			baseURL+KubeVirtServiceDeleteVirtualMachineSnapshotProcedure,
 			connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachineSnapshot")),
-			connect.WithClientOptions(opts...),
-		),
-		getVirtualMachineRestore: connect.NewClient[v1.GetVirtualMachineRestoreRequest, v1.VirtualMachineOperation](
-			httpClient,
-			baseURL+KubeVirtServiceGetVirtualMachineRestoreProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("GetVirtualMachineRestore")),
-			connect.WithClientOptions(opts...),
-		),
-		listVirtualMachineRestores: connect.NewClient[v1.ListVirtualMachineRestoresRequest, v1.ListVirtualMachineOperations](
-			httpClient,
-			baseURL+KubeVirtServiceListVirtualMachineRestoresProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachineRestores")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteVirtualMachineRestore: connect.NewClient[v1.DeleteVirtualMachineRestoreRequest, emptypb.Empty](
-			httpClient,
-			baseURL+KubeVirtServiceDeleteVirtualMachineRestoreProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachineRestore")),
-			connect.WithClientOptions(opts...),
-		),
-		getVirtualMachineMigrate: connect.NewClient[v1.GetVirtualMachineMigrateRequest, v1.VirtualMachineOperation](
-			httpClient,
-			baseURL+KubeVirtServiceGetVirtualMachineMigrateProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("GetVirtualMachineMigrate")),
-			connect.WithClientOptions(opts...),
-		),
-		deleteVirtualMachineMigrate: connect.NewClient[v1.DeleteVirtualMachineMigrateRequest, emptypb.Empty](
-			httpClient,
-			baseURL+KubeVirtServiceDeleteVirtualMachineMigrateProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachineMigrate")),
-			connect.WithClientOptions(opts...),
-		),
-		listVirtualMachineMigrates: connect.NewClient[v1.ListVirtualMachineMigratesRequest, v1.ListVirtualMachineOperations](
-			httpClient,
-			baseURL+KubeVirtServiceListVirtualMachineMigratesProcedure,
-			connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachineMigrates")),
 			connect.WithClientOptions(opts...),
 		),
 		createDataVolume: connect.NewClient[v1.CreateDataVolumeRequest, v1.DataVolume](
@@ -465,18 +375,9 @@ type kubeVirtServiceClient struct {
 	snapshotVirtualMachine       *connect.Client[v1.SnapshotVirtualMachineRequest, emptypb.Empty]
 	restoreVirtualMachine        *connect.Client[v1.RestoreVirtualMachineRequest, emptypb.Empty]
 	migrateVirtualMachine        *connect.Client[v1.MigrateVirtualMachineRequest, emptypb.Empty]
-	getVirtualMachineClone       *connect.Client[v1.GetVirtualMachineCloneRequest, v1.VirtualMachineOperation]
-	listVirtualMachineClones     *connect.Client[v1.ListVirtualMachineClonesRequest, v1.ListVirtualMachineOperations]
-	deleteVirtualMachineClone    *connect.Client[v1.DeleteVirtualMachineCloneRequest, emptypb.Empty]
-	getVirtualMachineSnapshot    *connect.Client[v1.GetVirtualMachineSnapshotRequest, v1.VirtualMachineOperation]
-	listVirtualMachineSnapshots  *connect.Client[v1.ListVirtualMachineSnapshotsRequest, v1.ListVirtualMachineOperations]
+	getVirtualMachineSnapshot    *connect.Client[v1.GetVirtualMachineSnapshotRequest, v1.VirtualMachineSnapshot]
+	listVirtualMachineSnapshots  *connect.Client[v1.ListVirtualMachineSnapshotsRequest, v1.ListVirtualMachineSnapshotsResponse]
 	deleteVirtualMachineSnapshot *connect.Client[v1.DeleteVirtualMachineSnapshotRequest, emptypb.Empty]
-	getVirtualMachineRestore     *connect.Client[v1.GetVirtualMachineRestoreRequest, v1.VirtualMachineOperation]
-	listVirtualMachineRestores   *connect.Client[v1.ListVirtualMachineRestoresRequest, v1.ListVirtualMachineOperations]
-	deleteVirtualMachineRestore  *connect.Client[v1.DeleteVirtualMachineRestoreRequest, emptypb.Empty]
-	getVirtualMachineMigrate     *connect.Client[v1.GetVirtualMachineMigrateRequest, v1.VirtualMachineOperation]
-	deleteVirtualMachineMigrate  *connect.Client[v1.DeleteVirtualMachineMigrateRequest, emptypb.Empty]
-	listVirtualMachineMigrates   *connect.Client[v1.ListVirtualMachineMigratesRequest, v1.ListVirtualMachineOperations]
 	createDataVolume             *connect.Client[v1.CreateDataVolumeRequest, v1.DataVolume]
 	getDataVolume                *connect.Client[v1.GetDataVolumeRequest, v1.DataVolume]
 	listDataVolumes              *connect.Client[v1.ListDataVolumesRequest, v1.ListDataVolumesResponse]
@@ -558,29 +459,14 @@ func (c *kubeVirtServiceClient) MigrateVirtualMachine(ctx context.Context, req *
 	return c.migrateVirtualMachine.CallUnary(ctx, req)
 }
 
-// GetVirtualMachineClone calls otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineClone.
-func (c *kubeVirtServiceClient) GetVirtualMachineClone(ctx context.Context, req *connect.Request[v1.GetVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachineOperation], error) {
-	return c.getVirtualMachineClone.CallUnary(ctx, req)
-}
-
-// ListVirtualMachineClones calls otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineClones.
-func (c *kubeVirtServiceClient) ListVirtualMachineClones(ctx context.Context, req *connect.Request[v1.ListVirtualMachineClonesRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error) {
-	return c.listVirtualMachineClones.CallUnary(ctx, req)
-}
-
-// DeleteVirtualMachineClone calls otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineClone.
-func (c *kubeVirtServiceClient) DeleteVirtualMachineClone(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteVirtualMachineClone.CallUnary(ctx, req)
-}
-
 // GetVirtualMachineSnapshot calls otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot.
-func (c *kubeVirtServiceClient) GetVirtualMachineSnapshot(ctx context.Context, req *connect.Request[v1.GetVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachineOperation], error) {
+func (c *kubeVirtServiceClient) GetVirtualMachineSnapshot(ctx context.Context, req *connect.Request[v1.GetVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachineSnapshot], error) {
 	return c.getVirtualMachineSnapshot.CallUnary(ctx, req)
 }
 
 // ListVirtualMachineSnapshots calls
 // otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots.
-func (c *kubeVirtServiceClient) ListVirtualMachineSnapshots(ctx context.Context, req *connect.Request[v1.ListVirtualMachineSnapshotsRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error) {
+func (c *kubeVirtServiceClient) ListVirtualMachineSnapshots(ctx context.Context, req *connect.Request[v1.ListVirtualMachineSnapshotsRequest]) (*connect.Response[v1.ListVirtualMachineSnapshotsResponse], error) {
 	return c.listVirtualMachineSnapshots.CallUnary(ctx, req)
 }
 
@@ -588,40 +474,6 @@ func (c *kubeVirtServiceClient) ListVirtualMachineSnapshots(ctx context.Context,
 // otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot.
 func (c *kubeVirtServiceClient) DeleteVirtualMachineSnapshot(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.deleteVirtualMachineSnapshot.CallUnary(ctx, req)
-}
-
-// GetVirtualMachineRestore calls otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineRestore.
-func (c *kubeVirtServiceClient) GetVirtualMachineRestore(ctx context.Context, req *connect.Request[v1.GetVirtualMachineRestoreRequest]) (*connect.Response[v1.VirtualMachineOperation], error) {
-	return c.getVirtualMachineRestore.CallUnary(ctx, req)
-}
-
-// ListVirtualMachineRestores calls
-// otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineRestores.
-func (c *kubeVirtServiceClient) ListVirtualMachineRestores(ctx context.Context, req *connect.Request[v1.ListVirtualMachineRestoresRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error) {
-	return c.listVirtualMachineRestores.CallUnary(ctx, req)
-}
-
-// DeleteVirtualMachineRestore calls
-// otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineRestore.
-func (c *kubeVirtServiceClient) DeleteVirtualMachineRestore(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteVirtualMachineRestore.CallUnary(ctx, req)
-}
-
-// GetVirtualMachineMigrate calls otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineMigrate.
-func (c *kubeVirtServiceClient) GetVirtualMachineMigrate(ctx context.Context, req *connect.Request[v1.GetVirtualMachineMigrateRequest]) (*connect.Response[v1.VirtualMachineOperation], error) {
-	return c.getVirtualMachineMigrate.CallUnary(ctx, req)
-}
-
-// DeleteVirtualMachineMigrate calls
-// otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineMigrate.
-func (c *kubeVirtServiceClient) DeleteVirtualMachineMigrate(ctx context.Context, req *connect.Request[v1.DeleteVirtualMachineMigrateRequest]) (*connect.Response[emptypb.Empty], error) {
-	return c.deleteVirtualMachineMigrate.CallUnary(ctx, req)
-}
-
-// ListVirtualMachineMigrates calls
-// otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineMigrates.
-func (c *kubeVirtServiceClient) ListVirtualMachineMigrates(ctx context.Context, req *connect.Request[v1.ListVirtualMachineMigratesRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error) {
-	return c.listVirtualMachineMigrates.CallUnary(ctx, req)
 }
 
 // CreateDataVolume calls otterscale.kubevirt.v1.KubeVirtService.CreateDataVolume.
@@ -713,18 +565,9 @@ type KubeVirtServiceHandler interface {
 	SnapshotVirtualMachine(context.Context, *connect.Request[v1.SnapshotVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	RestoreVirtualMachine(context.Context, *connect.Request[v1.RestoreVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
 	MigrateVirtualMachine(context.Context, *connect.Request[v1.MigrateVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error)
-	GetVirtualMachineClone(context.Context, *connect.Request[v1.GetVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachineOperation], error)
-	ListVirtualMachineClones(context.Context, *connect.Request[v1.ListVirtualMachineClonesRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error)
-	DeleteVirtualMachineClone(context.Context, *connect.Request[v1.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error)
-	GetVirtualMachineSnapshot(context.Context, *connect.Request[v1.GetVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachineOperation], error)
-	ListVirtualMachineSnapshots(context.Context, *connect.Request[v1.ListVirtualMachineSnapshotsRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error)
+	GetVirtualMachineSnapshot(context.Context, *connect.Request[v1.GetVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachineSnapshot], error)
+	ListVirtualMachineSnapshots(context.Context, *connect.Request[v1.ListVirtualMachineSnapshotsRequest]) (*connect.Response[v1.ListVirtualMachineSnapshotsResponse], error)
 	DeleteVirtualMachineSnapshot(context.Context, *connect.Request[v1.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	GetVirtualMachineRestore(context.Context, *connect.Request[v1.GetVirtualMachineRestoreRequest]) (*connect.Response[v1.VirtualMachineOperation], error)
-	ListVirtualMachineRestores(context.Context, *connect.Request[v1.ListVirtualMachineRestoresRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error)
-	DeleteVirtualMachineRestore(context.Context, *connect.Request[v1.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error)
-	GetVirtualMachineMigrate(context.Context, *connect.Request[v1.GetVirtualMachineMigrateRequest]) (*connect.Response[v1.VirtualMachineOperation], error)
-	DeleteVirtualMachineMigrate(context.Context, *connect.Request[v1.DeleteVirtualMachineMigrateRequest]) (*connect.Response[emptypb.Empty], error)
-	ListVirtualMachineMigrates(context.Context, *connect.Request[v1.ListVirtualMachineMigratesRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error)
 	// Data Volume Operations
 	CreateDataVolume(context.Context, *connect.Request[v1.CreateDataVolumeRequest]) (*connect.Response[v1.DataVolume], error)
 	GetDataVolume(context.Context, *connect.Request[v1.GetDataVolumeRequest]) (*connect.Response[v1.DataVolume], error)
@@ -829,24 +672,6 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 		connect.WithSchema(kubeVirtServiceMethods.ByName("MigrateVirtualMachine")),
 		connect.WithHandlerOptions(opts...),
 	)
-	kubeVirtServiceGetVirtualMachineCloneHandler := connect.NewUnaryHandler(
-		KubeVirtServiceGetVirtualMachineCloneProcedure,
-		svc.GetVirtualMachineClone,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("GetVirtualMachineClone")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeVirtServiceListVirtualMachineClonesHandler := connect.NewUnaryHandler(
-		KubeVirtServiceListVirtualMachineClonesProcedure,
-		svc.ListVirtualMachineClones,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachineClones")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeVirtServiceDeleteVirtualMachineCloneHandler := connect.NewUnaryHandler(
-		KubeVirtServiceDeleteVirtualMachineCloneProcedure,
-		svc.DeleteVirtualMachineClone,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachineClone")),
-		connect.WithHandlerOptions(opts...),
-	)
 	kubeVirtServiceGetVirtualMachineSnapshotHandler := connect.NewUnaryHandler(
 		KubeVirtServiceGetVirtualMachineSnapshotProcedure,
 		svc.GetVirtualMachineSnapshot,
@@ -863,42 +688,6 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 		KubeVirtServiceDeleteVirtualMachineSnapshotProcedure,
 		svc.DeleteVirtualMachineSnapshot,
 		connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachineSnapshot")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeVirtServiceGetVirtualMachineRestoreHandler := connect.NewUnaryHandler(
-		KubeVirtServiceGetVirtualMachineRestoreProcedure,
-		svc.GetVirtualMachineRestore,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("GetVirtualMachineRestore")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeVirtServiceListVirtualMachineRestoresHandler := connect.NewUnaryHandler(
-		KubeVirtServiceListVirtualMachineRestoresProcedure,
-		svc.ListVirtualMachineRestores,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachineRestores")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeVirtServiceDeleteVirtualMachineRestoreHandler := connect.NewUnaryHandler(
-		KubeVirtServiceDeleteVirtualMachineRestoreProcedure,
-		svc.DeleteVirtualMachineRestore,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachineRestore")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeVirtServiceGetVirtualMachineMigrateHandler := connect.NewUnaryHandler(
-		KubeVirtServiceGetVirtualMachineMigrateProcedure,
-		svc.GetVirtualMachineMigrate,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("GetVirtualMachineMigrate")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeVirtServiceDeleteVirtualMachineMigrateHandler := connect.NewUnaryHandler(
-		KubeVirtServiceDeleteVirtualMachineMigrateProcedure,
-		svc.DeleteVirtualMachineMigrate,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("DeleteVirtualMachineMigrate")),
-		connect.WithHandlerOptions(opts...),
-	)
-	kubeVirtServiceListVirtualMachineMigratesHandler := connect.NewUnaryHandler(
-		KubeVirtServiceListVirtualMachineMigratesProcedure,
-		svc.ListVirtualMachineMigrates,
-		connect.WithSchema(kubeVirtServiceMethods.ByName("ListVirtualMachineMigrates")),
 		connect.WithHandlerOptions(opts...),
 	)
 	kubeVirtServiceCreateDataVolumeHandler := connect.NewUnaryHandler(
@@ -1013,30 +802,12 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 			kubeVirtServiceRestoreVirtualMachineHandler.ServeHTTP(w, r)
 		case KubeVirtServiceMigrateVirtualMachineProcedure:
 			kubeVirtServiceMigrateVirtualMachineHandler.ServeHTTP(w, r)
-		case KubeVirtServiceGetVirtualMachineCloneProcedure:
-			kubeVirtServiceGetVirtualMachineCloneHandler.ServeHTTP(w, r)
-		case KubeVirtServiceListVirtualMachineClonesProcedure:
-			kubeVirtServiceListVirtualMachineClonesHandler.ServeHTTP(w, r)
-		case KubeVirtServiceDeleteVirtualMachineCloneProcedure:
-			kubeVirtServiceDeleteVirtualMachineCloneHandler.ServeHTTP(w, r)
 		case KubeVirtServiceGetVirtualMachineSnapshotProcedure:
 			kubeVirtServiceGetVirtualMachineSnapshotHandler.ServeHTTP(w, r)
 		case KubeVirtServiceListVirtualMachineSnapshotsProcedure:
 			kubeVirtServiceListVirtualMachineSnapshotsHandler.ServeHTTP(w, r)
 		case KubeVirtServiceDeleteVirtualMachineSnapshotProcedure:
 			kubeVirtServiceDeleteVirtualMachineSnapshotHandler.ServeHTTP(w, r)
-		case KubeVirtServiceGetVirtualMachineRestoreProcedure:
-			kubeVirtServiceGetVirtualMachineRestoreHandler.ServeHTTP(w, r)
-		case KubeVirtServiceListVirtualMachineRestoresProcedure:
-			kubeVirtServiceListVirtualMachineRestoresHandler.ServeHTTP(w, r)
-		case KubeVirtServiceDeleteVirtualMachineRestoreProcedure:
-			kubeVirtServiceDeleteVirtualMachineRestoreHandler.ServeHTTP(w, r)
-		case KubeVirtServiceGetVirtualMachineMigrateProcedure:
-			kubeVirtServiceGetVirtualMachineMigrateHandler.ServeHTTP(w, r)
-		case KubeVirtServiceDeleteVirtualMachineMigrateProcedure:
-			kubeVirtServiceDeleteVirtualMachineMigrateHandler.ServeHTTP(w, r)
-		case KubeVirtServiceListVirtualMachineMigratesProcedure:
-			kubeVirtServiceListVirtualMachineMigratesHandler.ServeHTTP(w, r)
 		case KubeVirtServiceCreateDataVolumeProcedure:
 			kubeVirtServiceCreateDataVolumeHandler.ServeHTTP(w, r)
 		case KubeVirtServiceGetDataVolumeProcedure:
@@ -1126,52 +897,16 @@ func (UnimplementedKubeVirtServiceHandler) MigrateVirtualMachine(context.Context
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.MigrateVirtualMachine is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) GetVirtualMachineClone(context.Context, *connect.Request[v1.GetVirtualMachineCloneRequest]) (*connect.Response[v1.VirtualMachineOperation], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineClone is not implemented"))
-}
-
-func (UnimplementedKubeVirtServiceHandler) ListVirtualMachineClones(context.Context, *connect.Request[v1.ListVirtualMachineClonesRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineClones is not implemented"))
-}
-
-func (UnimplementedKubeVirtServiceHandler) DeleteVirtualMachineClone(context.Context, *connect.Request[v1.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineClone is not implemented"))
-}
-
-func (UnimplementedKubeVirtServiceHandler) GetVirtualMachineSnapshot(context.Context, *connect.Request[v1.GetVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachineOperation], error) {
+func (UnimplementedKubeVirtServiceHandler) GetVirtualMachineSnapshot(context.Context, *connect.Request[v1.GetVirtualMachineSnapshotRequest]) (*connect.Response[v1.VirtualMachineSnapshot], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineSnapshot is not implemented"))
 }
 
-func (UnimplementedKubeVirtServiceHandler) ListVirtualMachineSnapshots(context.Context, *connect.Request[v1.ListVirtualMachineSnapshotsRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error) {
+func (UnimplementedKubeVirtServiceHandler) ListVirtualMachineSnapshots(context.Context, *connect.Request[v1.ListVirtualMachineSnapshotsRequest]) (*connect.Response[v1.ListVirtualMachineSnapshotsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineSnapshots is not implemented"))
 }
 
 func (UnimplementedKubeVirtServiceHandler) DeleteVirtualMachineSnapshot(context.Context, *connect.Request[v1.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineSnapshot is not implemented"))
-}
-
-func (UnimplementedKubeVirtServiceHandler) GetVirtualMachineRestore(context.Context, *connect.Request[v1.GetVirtualMachineRestoreRequest]) (*connect.Response[v1.VirtualMachineOperation], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineRestore is not implemented"))
-}
-
-func (UnimplementedKubeVirtServiceHandler) ListVirtualMachineRestores(context.Context, *connect.Request[v1.ListVirtualMachineRestoresRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineRestores is not implemented"))
-}
-
-func (UnimplementedKubeVirtServiceHandler) DeleteVirtualMachineRestore(context.Context, *connect.Request[v1.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineRestore is not implemented"))
-}
-
-func (UnimplementedKubeVirtServiceHandler) GetVirtualMachineMigrate(context.Context, *connect.Request[v1.GetVirtualMachineMigrateRequest]) (*connect.Response[v1.VirtualMachineOperation], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.GetVirtualMachineMigrate is not implemented"))
-}
-
-func (UnimplementedKubeVirtServiceHandler) DeleteVirtualMachineMigrate(context.Context, *connect.Request[v1.DeleteVirtualMachineMigrateRequest]) (*connect.Response[emptypb.Empty], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.DeleteVirtualMachineMigrate is not implemented"))
-}
-
-func (UnimplementedKubeVirtServiceHandler) ListVirtualMachineMigrates(context.Context, *connect.Request[v1.ListVirtualMachineMigratesRequest]) (*connect.Response[v1.ListVirtualMachineOperations], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListVirtualMachineMigrates is not implemented"))
 }
 
 func (UnimplementedKubeVirtServiceHandler) CreateDataVolume(context.Context, *connect.Request[v1.CreateDataVolumeRequest]) (*connect.Response[v1.DataVolume], error) {

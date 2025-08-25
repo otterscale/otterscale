@@ -29,7 +29,7 @@ var _ pbconnect.KubeVirtServiceHandler = (*KubeVirtService)(nil)
 
 // Virtual Machine Operations
 func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.CreateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), req.Msg.GetAnnotations(), toCoreVirtualMachineResource(req.Msg.GetCustom(), req.Msg.GetInstancetype()), toCoreDiskDevices(req.Msg.GetDisks()))
+	vm, err := s.uc.CreateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), toCoreVirtualMachineResource(req.Msg.GetCustom(), req.Msg.GetInstancetype()), toCoreDiskDevices(req.Msg.GetDisks()))
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (s *KubeVirtService) ListVirtualMachines(ctx context.Context, req *connect.
 }
 
 func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, vmi, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), req.Msg.GetAnnotations(), toCoreDiskDevices(req.Msg.GetDisks()))
+	vm, vmi, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), toCoreDiskDevices(req.Msg.GetDisks()))
 	if err != nil {
 		return nil, err
 	}
@@ -139,119 +139,29 @@ func (s *KubeVirtService) MigrateVirtualMachine(ctx context.Context, req *connec
 	return connect.NewResponse(resp), nil
 }
 
-// GetVirtualMachineClone retrieves a virtual machine clone
-func (s *KubeVirtService) GetVirtualMachineClone(ctx context.Context, req *connect.Request[pb.GetVirtualMachineCloneRequest]) (*connect.Response[pb.VirtualMachineOperation], error) {
-	op, err := s.uc.GetVirtualMachineClone(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	resp := fromVirtualMachineClone(op)
-	return connect.NewResponse(resp), nil
-}
-
-func (s *KubeVirtService) ListVirtualMachineClones(ctx context.Context, req *connect.Request[pb.ListVirtualMachineClonesRequest]) (*connect.Response[pb.ListVirtualMachineOperations], error) {
-	resp := &pb.ListVirtualMachineOperations{}
-	ops, err := s.uc.ListVirtualMachineClones(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
-	if err != nil {
-		return nil, err
-	}
-	resp.SetOps(fromVirtualMachineClones(ops))
-	return connect.NewResponse(resp), nil
-}
-
-// DeleteVirtualMachineClone deletes a virtual machine clone
-func (s *KubeVirtService) DeleteVirtualMachineClone(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineCloneRequest]) (*connect.Response[emptypb.Empty], error) {
-	err := s.uc.DeleteVirtualMachineClone(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
-}
-
 // GetVirtualMachineSnapshot retrieves a virtual machine snapshot
-func (s *KubeVirtService) GetVirtualMachineSnapshot(ctx context.Context, req *connect.Request[pb.GetVirtualMachineSnapshotRequest]) (*connect.Response[pb.VirtualMachineOperation], error) {
-	op, err := s.uc.GetVirtualMachineSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+func (s *KubeVirtService) GetVirtualMachineSnapshot(ctx context.Context, req *connect.Request[pb.GetVirtualMachineSnapshotRequest]) (*connect.Response[pb.VirtualMachineSnapshot], error) {
+	snapshot, err := s.uc.GetVirtualMachineSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
-	resp := fromVirtualMachineSnapshot(op)
+	resp := toProtoVirtualMachineSnapshot(snapshot)
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) ListVirtualMachineSnapshots(ctx context.Context, req *connect.Request[pb.ListVirtualMachineSnapshotsRequest]) (*connect.Response[pb.ListVirtualMachineOperations], error) {
-	resp := &pb.ListVirtualMachineOperations{}
-	ops, err := s.uc.ListVirtualMachineSnapshots(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+func (s *KubeVirtService) ListVirtualMachineSnapshots(ctx context.Context, req *connect.Request[pb.ListVirtualMachineSnapshotsRequest]) (*connect.Response[pb.ListVirtualMachineSnapshotsResponse], error) {
+	resp := &pb.ListVirtualMachineSnapshotsResponse{}
+	snapshots, err := s.uc.ListVirtualMachineSnapshots(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetVmName())
 	if err != nil {
 		return nil, err
 	}
-	resp.SetOps(fromVirtualMachineSnapshots(ops))
+	resp.SetSnapshot(toProtoVirtualMachineSnapshots(snapshots))
 	return connect.NewResponse(resp), nil
 }
 
 // DeleteVirtualMachineSnapshot deletes a virtual machine snapshot
 func (s *KubeVirtService) DeleteVirtualMachineSnapshot(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineSnapshotRequest]) (*connect.Response[emptypb.Empty], error) {
 	err := s.uc.DeleteVirtualMachineSnapshot(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
-}
-
-// GetVirtualMachineRestore retrieves a virtual machine restore operation
-func (s *KubeVirtService) GetVirtualMachineRestore(ctx context.Context, req *connect.Request[pb.GetVirtualMachineRestoreRequest]) (*connect.Response[pb.VirtualMachineOperation], error) {
-	op, err := s.uc.GetVirtualMachineRestore(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	resp := fromVirtualMachineRestore(op)
-	return connect.NewResponse(resp), nil
-}
-
-func (s *KubeVirtService) ListVirtualMachineRestores(ctx context.Context, req *connect.Request[pb.ListVirtualMachineRestoresRequest]) (*connect.Response[pb.ListVirtualMachineOperations], error) {
-	resp := &pb.ListVirtualMachineOperations{}
-	ops, err := s.uc.ListVirtualMachineRestores(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
-	if err != nil {
-		return nil, err
-	}
-	resp.SetOps(fromVirtualMachineRestores(ops))
-	return connect.NewResponse(resp), nil
-}
-
-// DeleteVirtualMachineRestore deletes a virtual machine restore operation
-func (s *KubeVirtService) DeleteVirtualMachineRestore(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineRestoreRequest]) (*connect.Response[emptypb.Empty], error) {
-	err := s.uc.DeleteVirtualMachineRestore(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	resp := &emptypb.Empty{}
-	return connect.NewResponse(resp), nil
-}
-
-// GetVirtualMachineMigrate retrieves a virtual machine Migrate operation
-func (s *KubeVirtService) GetVirtualMachineMigrate(ctx context.Context, req *connect.Request[pb.GetVirtualMachineMigrateRequest]) (*connect.Response[pb.VirtualMachineOperation], error) {
-	op, err := s.uc.GetVirtualMachineMigrate(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
-	if err != nil {
-		return nil, err
-	}
-	resp := fromVirtualMachineMigrate(op)
-	return connect.NewResponse(resp), nil
-}
-
-func (s *KubeVirtService) ListVirtualMachineMigrates(ctx context.Context, req *connect.Request[pb.ListVirtualMachineMigratesRequest]) (*connect.Response[pb.ListVirtualMachineOperations], error) {
-	resp := &pb.ListVirtualMachineOperations{}
-	ops, err := s.uc.ListVirtualMachineMigrates(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
-	if err != nil {
-		return nil, err
-	}
-	resp.SetOps(fromVirtualMachineMigrates(ops))
-	return connect.NewResponse(resp), nil
-}
-
-// DeleteVirtualMachineMigrate deletes a virtual machine Migrate operation
-func (s *KubeVirtService) DeleteVirtualMachineMigrate(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineMigrateRequest]) (*connect.Response[emptypb.Empty], error) {
-	err := s.uc.DeleteVirtualMachineMigrate(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
@@ -286,7 +196,7 @@ func (s *KubeVirtService) GetDataVolume(ctx context.Context, req *connect.Reques
 }
 
 func (s *KubeVirtService) ListDataVolumes(ctx context.Context, req *connect.Request[pb.ListDataVolumesRequest]) (*connect.Response[pb.ListDataVolumesResponse], error) {
-	dvs, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	dvs, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetNamespace(), req.Msg.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
@@ -415,12 +325,15 @@ func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInst
 	ret := &pb.VirtualMachine{}
 
 	ret.SetMetadata(fromVirtualMachine(vm))
-	ret.SetSpec(toProtoVirtualMachineSpec(vm))
+	ret.SetStartupScript(toProtoVirutalMachineScripts(vm.Spec.Template.Spec.Volumes))
+	ret.SetResoureces(toProtoVirtualMachineResources(vm))
+	ret.SetNodeName(vmi.Status.NodeName)
+	// [TODO] if multiple network in the future
+	ret.SetNetworkName(vm.Spec.Template.Spec.Networks[0].Name)
+
 	if vmi != nil {
 		ret.SetStatus(toProtoVirtualMachineStatus(string(vmi.Status.Phase)))
 	}
-	// [TODO] snapshots
-	// ret.SetSnapshots(toProtoOperations(vm.Snapshots))
 	return ret
 }
 
@@ -479,17 +392,6 @@ func toCoreVirtualMachineResource(r *pb.VirtualMachineResources, instanceName st
 	return ret
 }
 
-func toProtoVirtualMachineSpec(vm *core.VirtualMachine) *pb.VirtualMachineSpec {
-	ret := &pb.VirtualMachineSpec{}
-
-	ret.SetStartupScript(toProtoVirutalMachineScripts(vm.Spec.Template.Spec.Volumes))
-	ret.SetResoureces(toProtoVirtualMachineResources(vm))
-	// [TODO] if multiple network in the future
-	ret.SetNetworkName(vm.Spec.Template.Spec.Networks[0].Name)
-
-	return ret
-}
-
 func toProtoVirtualMachineStatus(s string) pb.VirtualMachine_Status {
 	v, ok := pb.VirtualMachine_Status_value[strings.ToUpper(s)]
 	if ok {
@@ -529,64 +431,23 @@ func toCoreDiskDevices(disks []*pb.VirtualMachineDisk) []core.DiskDevice {
 	return ret
 }
 
-func fromVirtualMachineClones(clones []core.VirtualMachineClone) []*pb.VirtualMachineOperation {
-	ret := []*pb.VirtualMachineOperation{}
-	for i := range clones {
-		ret = append(ret, toProtoVirtualMachineOperation(pb.VirtualMachineOperation_CLONE, clones[i].Namespace, clones[i].Name, clones[i].Namespace, clones[i].Spec.Source.Name, clones[i].GetAnnotations()["otterscale.io/clone-description"], clones[i].CreationTimestamp.Time))
-	}
-	return ret
-}
-
-func fromVirtualMachineClone(clone *core.VirtualMachineClone) *pb.VirtualMachineOperation {
-	return toProtoVirtualMachineOperation(pb.VirtualMachineOperation_CLONE, clone.Namespace, clone.Name, clone.Namespace, clone.Spec.Source.Name, clone.GetAnnotations()["otterscale.io/clone-description"], clone.CreationTimestamp.Time)
-}
-
-func fromVirtualMachineSnapshots(snapshots []core.VirtualMachineSnapshot) []*pb.VirtualMachineOperation {
-	ret := []*pb.VirtualMachineOperation{}
+func toProtoVirtualMachineSnapshots(snapshots []core.VirtualMachineSnapshot) []*pb.VirtualMachineSnapshot {
+	ret := []*pb.VirtualMachineSnapshot{}
 	for i := range snapshots {
-		ret = append(ret, toProtoVirtualMachineOperation(pb.VirtualMachineOperation_SNAPSHOT, snapshots[i].Namespace, snapshots[i].Name, snapshots[i].Namespace, snapshots[i].Spec.Source.Name, snapshots[i].GetAnnotations()["otterscale.io/snapshot-description"], snapshots[i].CreationTimestamp.Time))
+		ret = append(ret, toProtoVirtualMachineSnapshot(&snapshots[i]))
 	}
 	return ret
-}
-
-func fromVirtualMachineSnapshot(snapshot *core.VirtualMachineSnapshot) *pb.VirtualMachineOperation {
-	return toProtoVirtualMachineOperation(pb.VirtualMachineOperation_SNAPSHOT, snapshot.Namespace, snapshot.Name, snapshot.Namespace, snapshot.Spec.Source.Name, snapshot.GetAnnotations()["otterscale.io/snapshot-description"], snapshot.CreationTimestamp.Time)
-}
-
-func fromVirtualMachineRestores(restores []core.VirtualMachineRestore) []*pb.VirtualMachineOperation {
-	ret := []*pb.VirtualMachineOperation{}
-	for i := range restores {
-		ret = append(ret, toProtoVirtualMachineOperation(pb.VirtualMachineOperation_RESTORE, restores[i].Namespace, restores[i].Spec.Target.Name, restores[i].Namespace, restores[i].Spec.VirtualMachineSnapshotName, restores[i].GetAnnotations()["otterscale.io/restore-description"], restores[i].CreationTimestamp.Time))
-	}
-	return ret
-}
-
-func fromVirtualMachineRestore(restore *core.VirtualMachineRestore) *pb.VirtualMachineOperation {
-	return toProtoVirtualMachineOperation(pb.VirtualMachineOperation_RESTORE, restore.Namespace, restore.Spec.Target.Name, restore.Namespace, restore.Spec.VirtualMachineSnapshotName, restore.GetAnnotations()["otterscale.io/restore-description"], restore.CreationTimestamp.Time)
-}
-
-func fromVirtualMachineMigrates(migrates []core.VirtualMachineInstanceMigration) []*pb.VirtualMachineOperation {
-	ret := []*pb.VirtualMachineOperation{}
-	for i := range migrates {
-		ret = append(ret, toProtoVirtualMachineOperation(pb.VirtualMachineOperation_MIGRATE, migrates[i].Namespace, migrates[i].Name, migrates[i].Namespace, migrates[i].Spec.VMIName, migrates[i].GetAnnotations()["otterscale.io/migrate-description"], migrates[i].CreationTimestamp.Time))
-	}
-	return ret
-}
-
-func fromVirtualMachineMigrate(migrate *core.VirtualMachineInstanceMigration) *pb.VirtualMachineOperation {
-	return toProtoVirtualMachineOperation(pb.VirtualMachineOperation_MIGRATE, migrate.Namespace, migrate.Name, migrate.Namespace, migrate.Spec.VMIName, migrate.GetAnnotations()["otterscale.io/migrate-description"], migrate.CreationTimestamp.Time)
 }
 
 // toProtoVirtualMachineOperation converts core VirtualMachineOperation to protobuf
-func toProtoVirtualMachineOperation(t pb.VirtualMachineOperation_Type, namespace, name, srcNamespace, srcName, description string, creationTimestamp time.Time) *pb.VirtualMachineOperation {
-	ret := &pb.VirtualMachineOperation{}
-	ret.SetType(t)
-	ret.SetName(name)
-	ret.SetNamespace(namespace)
-	ret.SetSourceName(srcName)
-	ret.SetDescription(description)
-	ret.SetSourceNamespace(srcNamespace)
-	ret.SetCreatedAt(timestamppb.New(creationTimestamp))
+func toProtoVirtualMachineSnapshot(snapshot *core.VirtualMachineSnapshot) *pb.VirtualMachineSnapshot {
+	ret := &pb.VirtualMachineSnapshot{}
+	ret.SetName(snapshot.GetName())
+	ret.SetNamespace(snapshot.GetNamespace())
+	ret.SetSourceName(snapshot.Spec.Source.Name)
+	ret.SetDescription(snapshot.GetAnnotations()["otterscale.io/snapshot-description"])
+	ret.SetSourceNamespace(snapshot.GetNamespace())
+	ret.SetCreatedAt(timestamppb.New(snapshot.CreationTimestamp.Time))
 
 	return ret
 }
