@@ -3,6 +3,7 @@
 	import * as Table from '$lib/components/custom/table';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import Icon from '@iconify/svelte';
 </script>
 
@@ -20,18 +21,18 @@
 				<Table.Row>
 					<Table.Head></Table.Head>
 					<Table.Head>
-						IP
-						<Table.SubHead>SYSTEM ID</Table.SubHead>
+						{m.ip()}
+						<Table.SubHead>{m.system_id()}</Table.SubHead>
 					</Table.Head>
 
 					<Table.Head>
-						HOST NAME
-						<Table.SubHead>USER</Table.SubHead>
+						{m.hostname()}
+						<Table.SubHead>{m.user()}</Table.SubHead>
 					</Table.Head>
 
 					<Table.Head>
-						TYPE
-						<Table.SubHead>NODE TYPE</Table.SubHead>
+						{m.type()}
+						<Table.SubHead>{m.node_type()}</Table.SubHead>
 					</Table.Head>
 				</Table.Row>
 			</Table.Header>

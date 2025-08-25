@@ -2,17 +2,17 @@
 	import type { Network } from '$lib/api/network/v1/network_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		fabric: 'fabric',
-		vlan: 'vlan',
-		dhcpOn: 'dhcpOn',
-		subnet: 'subnet',
-		ipAddresses: 'ipAddresses',
-		ipRanges: 'ipRanges',
-		statistics: 'statistics',
-		actions: 'actions'
+		fabric: m.fabric(),
+		vlan: m.vlan(),
+		dhcpOn: m.dhcp_on(),
+		subnet: m.subnet(),
+		ipAddresses: m.ip_address(),
+		ipRanges: m.ip_range(),
+		statistics: m.statistics()
 	};
 
 	export const headers = {
@@ -38,7 +38,7 @@
 
 {#snippet fabric(column: Column<Network>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>FABRIC</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.fabric()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -47,7 +47,7 @@
 
 {#snippet vlan(column: Column<Network>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>VLAN</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.vlan()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -56,7 +56,7 @@
 
 {#snippet dhcpOn(column: Column<Network>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>DHCP ON</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.dhcp_on()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -65,7 +65,7 @@
 
 {#snippet subnet(column: Column<Network>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>SUBNET</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.subnet()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -77,7 +77,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>IP ADDRESS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.ip_address()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -86,7 +86,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>IP RANGE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.ip_range()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -95,7 +95,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>STATISTICS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.statistics()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

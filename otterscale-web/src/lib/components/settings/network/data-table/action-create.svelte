@@ -6,6 +6,7 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import { m } from '$lib/paraglide/messages';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 </script>
@@ -33,32 +34,32 @@
 <Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
-		Create
+		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Network</Modal.Header>
+		<Modal.Header>{m.create_network()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Legend>VLAN</Form.Legend>
+				<Form.Legend>{m.vlan()}</Form.Legend>
 				<Form.Field>
-					<SingleInput.Boolean descriptor={() => 'DHCP ON'} bind:value={request.dhcpOn} />
+					<SingleInput.Boolean descriptor={() => m.dhcp_on()} bind:value={request.dhcpOn} />
 				</Form.Field>
 			</Form.Fieldset>
 
 			<Form.Fieldset>
-				<Form.Legend>Subnet</Form.Legend>
+				<Form.Legend>{m.subnet()}</Form.Legend>
 				<Form.Field>
-					<Form.Label>CIDR</Form.Label>
+					<Form.Label>{m.cidr()}</Form.Label>
 					<SingleInput.General type="text" bind:value={request.cidr} />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Gateway</Form.Label>
+					<Form.Label>{m.gateway()}</Form.Label>
 					<SingleInput.General type="text" bind:value={request.gatewayIp} />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>DNS</Form.Label>
+					<Form.Label>{m.dns()}</Form.Label>
 					<MultipleInput.Root type="text" bind:values={request.dnsServers}>
 						<MultipleInput.Viewer />
 						<MultipleInput.Controller>
@@ -75,7 +76,7 @@
 				onclick={() => {
 					reset();
 				}}
-				class="mr-auto">Cancel</Modal.Cancel
+				class="mr-auto">{m.cancel()}</Modal.Cancel
 			>
 			<Modal.Action
 				onclick={() => {
@@ -99,7 +100,7 @@
 					close();
 				}}
 			>
-				Create
+				{m.confirm()}
 			</Modal.Action>
 		</Modal.Footer>
 	</Modal.Content>

@@ -9,6 +9,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -46,24 +47,24 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
-		Edit VLAN
+		{m.edit_vlan()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Edit VLAN</Modal.Header>
+		<Modal.Header>{m.edit_vlan()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General type="text" required value={request.name} bind:invalid />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>NTU</Form.Label>
+					<Form.Label>{m.mtu()}</Form.Label>
 					<SingleInput.General type="number" value={request.mtu} />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Description</Form.Label>
+					<Form.Label>{m.description()}</Form.Label>
 					<SingleInput.General type="text" value={request.description} />
 				</Form.Field>
 
@@ -76,8 +77,10 @@
 			<Modal.Cancel
 				onclick={() => {
 					reset();
-				}}>Cancel</Modal.Cancel
+				}}
 			>
+				{m.cancel()}
+			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
 					disabled={invalid}
@@ -102,7 +105,7 @@
 						close();
 					}}
 				>
-					Edit
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

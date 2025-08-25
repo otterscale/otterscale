@@ -4,6 +4,7 @@
 	import type { Row } from '@tanstack/table-core';
 	import Delete from './action-delete.svelte';
 	import Update from './action-update.svelte';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
@@ -15,7 +16,7 @@
 </script>
 
 <Layout.Actions>
-	<Layout.ActionLabel>Actions</Layout.ActionLabel>
+	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
 		<Update ipRange={row.original} />
