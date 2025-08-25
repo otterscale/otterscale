@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import * as Table from '$lib/components/custom/table';
+	import { m } from '$lib/paraglide/messages';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 </script>
@@ -17,25 +18,25 @@
 	<Table.Header>
 		<Table.Row>
 			<Table.Head>
-				NAME
-				<Table.SubHead>MAC Address</Table.SubHead>
+				{m.name()}
+				<Table.SubHead>{m.mac_address()}</Table.SubHead>
 			</Table.Head>
 			<Table.Head>
-				IP ADDRESS
-				<Table.SubHead>Subnet</Table.SubHead>
+				{m.ip_address()}
+				<Table.SubHead>{m.subnet()}</Table.SubHead>
 			</Table.Head>
 			<Table.Head>
-				LINK SPEED
-				<Table.SubHead>Link Connected</Table.SubHead>
+				{m.link_speed()}
+				<Table.SubHead>{m.link_connected()}</Table.SubHead>
 			</Table.Head>
 			<Table.Head>
-				FABRIC
-				<Table.SubHead>VLAN</Table.SubHead>
+				{m.fabric()}
+				<Table.SubHead>{m.vlan()}</Table.SubHead>
 			</Table.Head>
-			<Table.Head>TYPE</Table.Head>
-			<Table.Head>DHCP ON</Table.Head>
-			<Table.Head>BOOT INTERFACE</Table.Head>
-			<Table.Head>INTERFACE SPEED</Table.Head>
+			<Table.Head>{m.type()}</Table.Head>
+			<Table.Head>{m.dhcp_on()}</Table.Head>
+			<Table.Head>{m.boot_interface()}</Table.Head>
+			<Table.Head>{m.interface_speed()}</Table.Head>
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>

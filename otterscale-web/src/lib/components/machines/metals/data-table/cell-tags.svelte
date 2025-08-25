@@ -5,6 +5,7 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -72,7 +73,9 @@
 							<Icon icon="ph:tag" />{option}
 						</Select.Item>
 					{/each}
-					<div class={cn('grid grid-cols-2 gap-1 border', isChanged ? 'visible' : 'hidden')}>
+					<div
+						class={cn('grid grid-cols-2 gap-1 border capitalize', isChanged ? 'visible' : 'hidden')}
+					>
 						<Button
 							size="sm"
 							onclick={() => {
@@ -108,15 +111,16 @@
 								close();
 							}}
 						>
-							Save
+							{m.save()}
 						</Button>
 						<Button
 							size="sm"
+							class="capitalize"
 							onclick={() => {
 								tags = machine.tags;
 							}}
 						>
-							Reset
+							{m.reset()}
 						</Button>
 					</div>
 				</Select.Group>

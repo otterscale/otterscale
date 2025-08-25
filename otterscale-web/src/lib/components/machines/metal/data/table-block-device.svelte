@@ -2,6 +2,7 @@
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import * as Table from '$lib/components/custom/table';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import { m } from '$lib/paraglide/messages';
 	import { type Writable } from 'svelte/store';
 </script>
 
@@ -16,14 +17,14 @@
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
-			<Table.Head>NAME</Table.Head>
-			<Table.Head>MODEL</Table.Head>
-			<Table.Head>SERIAL</Table.Head>
-			<Table.Head>BOOT DISK</Table.Head>
-			<Table.Head>FIRMWARE VERSION</Table.Head>
-			<Table.Head>TYPE</Table.Head>
-			<Table.Head>USER FOR</Table.Head>
-			<Table.Head>TAGS</Table.Head>
+			<Table.Head>{m.name()}</Table.Head>
+			<Table.Head>{m.machine_model()}</Table.Head>
+			<Table.Head>{m.serial()}</Table.Head>
+			<Table.Head>{m.boot_disk()}</Table.Head>
+			<Table.Head>{m.firmware_version()}</Table.Head>
+			<Table.Head>{m.type()}</Table.Head>
+			<Table.Head>{m.used_for()}</Table.Head>
+			<Table.Head>{m.tags()}</Table.Head>
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>

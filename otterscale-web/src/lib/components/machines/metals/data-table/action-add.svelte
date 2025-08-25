@@ -8,12 +8,13 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
-	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import {
 		Multiple as MultipleSelect,
 		Single as SingleSelect
 	} from '$lib/components/custom/select';
+	import { m } from '$lib/paraglide/messages';
 	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -83,47 +84,49 @@
 	});
 </script>
 
-<SingleStepModal.Root bind:open>
-	<SingleStepModal.Trigger variant="creative">
+<Modal.Root bind:open>
+	<Modal.Trigger variant="creative">
 		<Icon icon="ph:compass" />
-		Add
-	</SingleStepModal.Trigger>
-	<SingleStepModal.Content>
-		<SingleStepModal.Header>Add Machine</SingleStepModal.Header>
+		{m.add()}
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>{m.add_machine()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Legend>Features</Form.Legend>
+				<Form.Legend>{m.features()}</Form.Legend>
 				<Form.Field>
 					<SingleInput.Boolean
 						required
-						descriptor={() => 'Enable SSH'}
+						descriptor={() => m.enable_ssh()}
 						bind:value={request.enableSsh}
 					/>
 				</Form.Field>
 				<Form.Field>
 					<SingleInput.Boolean
 						required
-						descriptor={() => 'Skip BMC Configuration'}
+						descriptor={() => m.skip_bmc_config()}
 						bind:value={request.skipBmcConfig}
 					/>
 				</Form.Field>
 				<Form.Field>
 					<SingleInput.Boolean
 						required
-						descriptor={() => 'Skip Networking'}
+						descriptor={() => m.skip_networking()}
 						bind:value={request.skipNetworking}
 					/>
 				</Form.Field>
 				<Form.Field>
 					<SingleInput.Boolean
 						required
-						descriptor={() => 'Skip Storage'}
+						descriptor={() => m.skip_storage()}
 						bind:value={request.skipStorage}
 					/>
 				</Form.Field>
 			</Form.Fieldset>
 			<Form.Fieldset>
-				<Form.Legend>Tags</Form.Legend>
+				<Form.Legend>
+					{m.tags()}
+				</Form.Legend>
 				<Form.Field>
 					{#if isTagLoading}
 						<Loading.Selection />
@@ -162,16 +165,16 @@
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
-		<SingleStepModal.Footer>
-			<SingleStepModal.Cancel
+		<Modal.Footer>
+			<Modal.Cancel
 				onclick={() => {
 					reset();
 				}}
 			>
-				Cancel
-			</SingleStepModal.Cancel>
-			<SingleStepModal.ActionsGroup>
-				<SingleStepModal.Action
+				{m.cancel()}
+			</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
 					onclick={() => {
 						toast.promise(() => machineClient.createMachine(request), {
 							loading: 'Executing...',
@@ -192,9 +195,9 @@
 						close();
 					}}
 				>
-					Create
-				</SingleStepModal.Action>
-			</SingleStepModal.ActionsGroup>
-		</SingleStepModal.Footer>
-	</SingleStepModal.Content>
-</SingleStepModal.Root>
+					{m.confirm()}
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>
