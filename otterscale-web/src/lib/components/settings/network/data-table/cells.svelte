@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Network } from '$lib/api/network/v1/network_pb';
-	import { RowPickers } from '$lib/components/custom/data-table';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
@@ -25,7 +25,7 @@
 </script>
 
 {#snippet row_picker(row: Row<Network>)}
-	<RowPickers.Cell {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet fabric(row: Row<Network>)}

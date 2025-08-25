@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
-	import { Layout } from '$lib/components/custom/data-table';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import Add from './action-add.svelte';
 	import PowerOff from './action-power-off.svelte';
 	import Remove from './action-remove.svelte';

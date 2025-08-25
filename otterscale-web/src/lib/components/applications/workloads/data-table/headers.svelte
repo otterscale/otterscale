@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { Application } from '$lib/api/application/v1/application_pb';
-	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
+	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
@@ -35,7 +36,7 @@
 {#snippet row_picker(table: Table<Application>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<RowPickers.Header {table} />
+			<Headers.RowPicker {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}

@@ -13,10 +13,6 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
 </script>
 
-<div
-	bind:this={ref}
-	class={cn('flex items-start justify-between gap-1 p-2', className)}
-	{...restProps}
->
+<div bind:this={ref} class={cn('text-muted-foreground', className)} {...restProps}>
 	{@render children?.()}
 </div>

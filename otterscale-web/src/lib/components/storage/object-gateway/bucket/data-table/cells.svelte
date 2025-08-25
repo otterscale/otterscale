@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Bucket } from '$lib/api/storage/v1/storage_pb';
-	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
@@ -18,7 +18,7 @@
 </script>
 
 {#snippet row_picker(row: Row<Bucket>)}
-	<RowPicker {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Bucket>)}

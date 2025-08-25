@@ -1,19 +1,9 @@
 <script lang="ts" module>
-	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
-	import { m } from '$lib/paraglide/messages';
+	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Column, Table } from '@tanstack/table-core';
 	import { type LargeLangeageModel } from '../protobuf.svelte';
-
-	export const messages = {
-		name: m.models_large_language_model_headers_name(),
-		version: m.models_large_language_model_headers_version(),
-		parameters: m.models_large_language_model_headers_parameters(),
-		accuracy: m.models_large_language_model_headers_accuracy(),
-		speed: m.models_large_language_model_headers_speed(),
-		architecture: m.models_large_language_model_headers_architecture(),
-		requests: m.models_large_language_model_headers_requests(),
-		uptime: m.models_large_language_model_headers_uptime()
-	};
+	import { messages } from './columns';
 
 	export const headers = {
 		row_picker,
@@ -31,7 +21,7 @@
 {#snippet row_picker(table: Table<LargeLangeageModel>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<RowPickers.Header {table} />
+			<Headers.RowPicker {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}

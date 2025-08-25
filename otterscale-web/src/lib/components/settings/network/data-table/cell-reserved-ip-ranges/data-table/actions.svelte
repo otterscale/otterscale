@@ -1,6 +1,6 @@
 <script lang="ts" module>
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
-	import { Layout } from '$lib/components/custom/data-table';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Row } from '@tanstack/table-core';
 	import Delete from './action-delete.svelte';
 	import Update from './action-update.svelte';

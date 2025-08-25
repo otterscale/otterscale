@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import { RowPickers } from '$lib/components/custom/data-table';
+	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { formatBigNumber } from '$lib/formatter';
 	import type { Row } from '@tanstack/table-core';
 	import { type LargeLangeageModel } from '../protobuf.svelte';
-	import { formatBigNumber } from '$lib/formatter';
 
 	export const cells = {
 		row_picker,
@@ -18,47 +19,55 @@
 </script>
 
 {#snippet row_picker(row: Row<LargeLangeageModel>)}
-	<RowPickers.Cell {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<LargeLangeageModel>)}
-	{row.original.name}
+	<Layout.Cell class="items-start">
+		{row.original.name}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet version(row: Row<LargeLangeageModel>)}
-	{row.original.version}
+	<Layout.Cell class="items-start">
+		{row.original.version}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet parameters(row: Row<LargeLangeageModel>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{row.original.parameters}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet accuracy(row: Row<LargeLangeageModel>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{row.original.metrics.accuracy}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet speed(row: Row<LargeLangeageModel>)}
-	<span class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{row.original.metrics.speed}
-	</span>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet architecture(row: Row<LargeLangeageModel>)}
-	{row.original.architecture}
+	<Layout.Cell class="items-start">
+		{row.original.architecture}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet requests(row: Row<LargeLangeageModel>)}
-	<span class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{formatBigNumber(row.original.usageStats.requests)}
-	</span>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet uptime(row: Row<LargeLangeageModel>)}
-	<span class="flex justify-end">
-		{formatBigNumber(row.original.usageStats.requests)}
-	</span>
+	<Layout.Cell class="items-end">
+		{formatBigNumber(row.original.usageStats.uptime)}
+	</Layout.Cell>
 {/snippet}
