@@ -97,10 +97,9 @@
 							href={chartRef}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="flex items-center gap-1"
+							class="flex items-center gap-1 underline hover:no-underline"
 						>
 							{chartRef}
-							<Icon icon="ph:arrow-square-out" />
 						</a>
 					</AlertDialog.Description>
 				</div>

@@ -33,18 +33,13 @@
 {/snippet}
 
 {#snippet fqdn_ip(row: Row<Machine>)}
-	<span class="flex items-center gap-1">
-		{row.original.fqdn}
-
-		<Button
-			variant="ghost"
-			size="icon"
-			class="m-0 p-0"
-			onclick={() =>
-				goto(`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.id}`)}
+	<span class="flex items-center">
+		<a
+			class="m-0 p-0 underline hover:no-underline"
+			href={`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.id}`}
 		>
-			<Icon icon="ph:arrow-square-out" />
-		</Button>
+			{row.original.fqdn}
+		</a>
 	</span>
 	{#if row.original.ipAddresses}
 		<span class="text-muted-foreground flex items-center gap-1 text-xs">

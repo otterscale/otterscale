@@ -123,17 +123,12 @@
 									<Table.Row class="border-none *:text-xs">
 										<Table.Cell>{packageRepository.name}</Table.Cell>
 										<Table.Cell>
-											<span class="flex items-center gap-1">
+											<a
+												href={packageRepository.url}
+												class="flex items-start gap-1 underline hover:no-underline"
+											>
 												{packageRepository.url}
-												<Button
-													variant="ghost"
-													target="_blank"
-													href={packageRepository.url}
-													class="flex items-start gap-1"
-												>
-													<Icon icon="ph:arrow-square-out" />
-												</Button>
-											</span>
+											</a>
 										</Table.Cell>
 										<Table.Cell>
 											<Icon icon={packageRepository.enabled ? 'ph:circle' : 'ph:x'} />
