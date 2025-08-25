@@ -11,7 +11,7 @@
 </script>
 
 <script lang="ts">
-	let { tags = $bindable() }: { tags: Writable<Tag[]> } = $props();
+	let { tags }: { tags: Writable<Tag[]> } = $props();
 
 	const transport: Transport = getContext('transport');
 

@@ -14,7 +14,7 @@
 </script>
 
 <script lang="ts">
-	let { configuration = $bindable() }: { configuration: Writable<Configuration> } = $props();
+	let { configuration }: { configuration: Writable<Configuration> } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ConfigurationService, transport);

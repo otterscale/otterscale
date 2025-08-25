@@ -18,7 +18,7 @@
 <script lang="ts">
 	let {
 		bootImage,
-		configuration = $bindable()
+		configuration
 	}: {
 		bootImage: Configuration_BootImage;
 		configuration: Writable<Configuration>;
