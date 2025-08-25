@@ -188,9 +188,9 @@
 		</Tabs.List>
 		<Tabs.Content
 			value="overview"
-			class="grid auto-rows-auto grid-cols-3 gap-5 pt-4 md:grid-cols-6 lg:grid-cols-9"
+			class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
 		>
-			<Card.Root class="col-span-1 gap-2">
+			<Card.Root class="col-span-2 gap-2">
 				<Card.Header>
 					<Card.Title>Discovery</Card.Title>
 					<Card.Description>Subnet 名稱</Card.Description>
@@ -198,7 +198,7 @@
 				<Card.Content>On / Off (subnet.active_discovery 欄位)</Card.Content>
 			</Card.Root>
 
-			<Card.Root class="col-span-1 gap-2">
+			<Card.Root class="col-span-2 gap-2">
 				<Card.Header>
 					<Card.Title>DHCP</Card.Title>
 					<Card.Description>Subnet 名稱</Card.Description>
@@ -258,7 +258,69 @@
 				</Card.Content>
 			</Card.Root>
 
-			<Card.Root class="col-span-5 row-span-2 gap-2">
+			<Card.Root class="col-span-4 row-span-2 gap-2">
+				<Card.Header>
+					<Card.Title>上傳下載總和 BY 天</Card.Title>
+					<Card.Description>用 fqdn 過濾 過去一周</Card.Description>
+				</Card.Header>
+				<Card.Content>
+					<Chart.Container config={chartConfig3} class="h-[200px] w-full">
+						<BarChart
+							bind:context={context3}
+							data={chartData3}
+							xScale={scaleBand().padding(0.25)}
+							x="month"
+							axis="x"
+							rule={false}
+							series={[
+								{
+									key: 'desktop',
+									label: 'Desktop',
+									color: chartConfig3.desktop.color,
+									props: { rounded: 'bottom' }
+								},
+								{
+									key: 'mobile',
+									label: 'Mobile',
+									color: chartConfig3.mobile.color
+								}
+							]}
+							seriesLayout="stack"
+							props={{
+								bars: {
+									stroke: 'none',
+									initialY: context3?.height,
+									initialHeight: 0,
+									motion: {
+										y: { type: 'tween', duration: 500, easing: cubicInOut },
+										height: { type: 'tween', duration: 500, easing: cubicInOut }
+									}
+								},
+								highlight: { area: false },
+								xAxis: { format: (d) => d.slice(0, 3) }
+							}}
+							legend
+						>
+							{#snippet belowMarks()}
+								<Highlight area={{ class: 'fill-muted' }} />
+							{/snippet}
+							{#snippet tooltip()}
+								<Chart.Tooltip />
+							{/snippet}
+						</BarChart>
+					</Chart.Container>
+				</Card.Content>
+			</Card.Root>
+
+			<Card.Root class="col-span-2 gap-2">
+				<Card.Header>
+					<Card.Title>DNS Servers</Card.Title>
+					<Card.Description>Subnet 名稱</Card.Description>
+				</Card.Header>
+				<Card.Content>["192.168.1.85"] (subnet.dns_servers 欄位)</Card.Content>
+			</Card.Root>
+
+			<Card.Root class="col-span-4 row-span-2 gap-2">
 				<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 					<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 						<Card.Title>Network Traffic</Card.Title>
@@ -329,68 +391,6 @@
 										});
 									}}
 								/>
-							{/snippet}
-						</BarChart>
-					</Chart.Container>
-				</Card.Content>
-			</Card.Root>
-
-			<Card.Root class="col-span-2 gap-2">
-				<Card.Header>
-					<Card.Title>DNS Servers</Card.Title>
-					<Card.Description>Subnet 名稱</Card.Description>
-				</Card.Header>
-				<Card.Content>["192.168.1.85"] (subnet.dns_servers 欄位)</Card.Content>
-			</Card.Root>
-
-			<Card.Root class="col-span-4 gap-2">
-				<Card.Header>
-					<Card.Title>上傳下載總和 BY 天</Card.Title>
-					<Card.Description>用 fqdn 過濾 過去一周</Card.Description>
-				</Card.Header>
-				<Card.Content>
-					<Chart.Container config={chartConfig3}>
-						<BarChart
-							bind:context={context3}
-							data={chartData3}
-							xScale={scaleBand().padding(0.25)}
-							x="month"
-							axis="x"
-							rule={false}
-							series={[
-								{
-									key: 'desktop',
-									label: 'Desktop',
-									color: chartConfig3.desktop.color,
-									props: { rounded: 'bottom' }
-								},
-								{
-									key: 'mobile',
-									label: 'Mobile',
-									color: chartConfig3.mobile.color
-								}
-							]}
-							seriesLayout="stack"
-							props={{
-								bars: {
-									stroke: 'none',
-									initialY: context3?.height,
-									initialHeight: 0,
-									motion: {
-										y: { type: 'tween', duration: 500, easing: cubicInOut },
-										height: { type: 'tween', duration: 500, easing: cubicInOut }
-									}
-								},
-								highlight: { area: false },
-								xAxis: { format: (d) => d.slice(0, 3) }
-							}}
-							legend
-						>
-							{#snippet belowMarks()}
-								<Highlight area={{ class: 'fill-muted' }} />
-							{/snippet}
-							{#snippet tooltip()}
-								<Chart.Tooltip />
 							{/snippet}
 						</BarChart>
 					</Chart.Container>

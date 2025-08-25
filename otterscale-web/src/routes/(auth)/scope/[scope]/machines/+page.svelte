@@ -355,8 +355,8 @@
 
 			<Card.Root class="col-span-6">
 				<Card.Header>
-					<Card.Title>Load Average LINUX</Card.Title>
-					<Card.Description>xxx</Card.Description>
+					<Card.Title>System Load</Card.Title>
+					<Card.Description>Grafana > System Resource > System Misc > System Load</Card.Description>
 				</Card.Header>
 				<Card.Content>
 					{@render exampleLineChart()}
