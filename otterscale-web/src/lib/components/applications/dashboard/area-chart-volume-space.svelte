@@ -17,7 +17,7 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = 'Volume Space';
+	const CHART_TITLE = m.kubelet_volume_space();
 
 	// Time range calculation
 	const endTime = new Date();
