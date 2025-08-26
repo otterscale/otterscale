@@ -18,7 +18,7 @@ require (
 	github.com/ceph/go-ceph v0.34.0
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/go-faker/faker/v4 v4.6.1
-	github.com/goccy/go-yaml v1.17.1
+	github.com/goccy/go-yaml v1.18.0
 	github.com/google/wire v0.6.0
 	github.com/juju/juju v0.0.0-20250408011917-ff0de670c36e
 	github.com/juju/names/v5 v5.0.0
