@@ -5,13 +5,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
-	export const messages = {
-		type: m.type(),
-		startIp: m.start_ip(),
-		endIp: m.end_ip(),
-		comment: m.comment()
-	};
-
 	export const headers = {
 		row_picker,
 		type,

@@ -8,6 +8,7 @@
 	import type { Row } from '@tanstack/table-core';
 	import Actions from './cell-actions.svelte';
 	import { getPlacementGroupStateVariant } from './utils.svelte';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 
 	export const cells = {
 		row_picker,
@@ -22,52 +23,60 @@
 </script>
 
 {#snippet row_picker(row: Row<Pool>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Pool>)}
-	<div class="flex items-center gap-1">
+	<Layout.Cell class="items-start">
 		{row.original.name}
 		{#if row.original.updating}
 			<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet type(row: Row<Pool>)}
-	<Badge variant="outline">
-		{#if row.original.poolType == PoolType.ERASURE}
-			ERASURE:{row.original.dataChunks}<Icon icon="ph:x" />{row.original.codingChunks}
-		{:else if row.original.poolType == PoolType.REPLICATED}
-			REPLICATED:<Icon icon="ph:x" />{row.original.replicatedSize}
-		{:else}{/if}
-	</Badge>
+	<Layout.Cell class="items-start">
+		<Badge variant="outline">
+			{#if row.original.poolType == PoolType.ERASURE}
+				ERASURE:{row.original.dataChunks}<Icon icon="ph:x" />{row.original.codingChunks}
+			{:else if row.original.poolType == PoolType.REPLICATED}
+				REPLICATED:<Icon icon="ph:x" />{row.original.replicatedSize}
+			{:else}{/if}
+		</Badge>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet applications(row: Row<Pool>)}
-	<span class="flex gap-1">
-		{#each row.original.applications as application}
-			{#if application}
-				<Badge variant="outline">
-					{application}
-				</Badge>
-			{/if}
-		{/each}
-	</span>
+	<Layout.Cell class="items-start">
+		<span class="flex gap-1">
+			{#each row.original.applications as application}
+				{#if application}
+					<Badge variant="outline">
+						{application}
+					</Badge>
+				{/if}
+			{/each}
+		</span>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet placement_group_state(row: Row<Pool>)}
-	<span class="flex flex-col gap-1">
-		{#each Object.entries(row.original.placementGroupState) as [state, number]}
-			<Badge variant={getPlacementGroupStateVariant(state)}>
-				{state}:{number}
-			</Badge>
-		{/each}
-	</span>
+	<Layout.Cell class="items-start">
+		<span class="flex flex-col gap-1">
+			{#each Object.entries(row.original.placementGroupState) as [state, number]}
+				<Badge variant={getPlacementGroupStateVariant(state)}>
+					{state}:{number}
+				</Badge>
+			{/each}
+		</span>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<Pool>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		<Progress.Root
 			numerator={Number(row.original.usedBytes)}
 			denominator={Number(row.original.quotaBytes)}
@@ -84,11 +93,13 @@
 				{denominatorUnit}
 			{/snippet}
 		</Progress.Root>
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet iops(row: Row<Pool>)}{/snippet}
 
 {#snippet actions(row: Row<Pool>)}
-	<Actions pool={row.original} />
+	<Layout.Cell class="items-start">
+		<Actions pool={row.original} />
+	</Layout.Cell>
 {/snippet}

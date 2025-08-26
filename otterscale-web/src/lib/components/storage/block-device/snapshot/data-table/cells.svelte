@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Progress from '$lib/components/custom/progress/index.js';
@@ -17,28 +18,32 @@
 </script>
 
 {#snippet row_picker(row: Row<Image_Snapshot>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Image_Snapshot>)}
-	{row.original.name}
+	<Layout.Cell class="items-start">
+		{row.original.name}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet protect(row: Row<Image_Snapshot>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.protected}
 			<Icon icon="ph:circle" class="text-primary" />
 		{:else}
 			<Icon icon="ph:x" class="text-destructive" />
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<Image_Snapshot>)}
 	{@const denominator = Number(row.original.quotaBytes)}
 	{@const numerator = Number(row.original.usedBytes)}
-	<div class="flex justify-end">
-		<Progress.Root {numerator} {denominator} highIsGood={false}>
+	<Layout.Cell class="items-end">
+		<Progress.Root {numerator} {denominator}>
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}
 			{/snippet}
@@ -50,9 +55,11 @@
 				{denominatorUnit}
 			{/snippet}
 		</Progress.Root>
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(row: Row<Image_Snapshot>)}
-	<Actions snapshot={row.original} />
+	<Layout.Cell class="items-start">
+		<Actions snapshot={row.original} />
+	</Layout.Cell>
 {/snippet}

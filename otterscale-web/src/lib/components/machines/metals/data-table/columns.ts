@@ -1,9 +1,22 @@
 import type { Machine } from '$lib/api/machine/v1/machine_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
+import { m } from '$lib/paraglide/messages';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+
+const messages = {
+	fqdn_ip: m.fqdn(),
+	powerState: m.power(),
+	status: m.status(),
+	cores_arch: m.core(),
+	ram: m.ram(),
+	disk: m.disk(),
+	storage: m.storage(),
+	scope: m.scope(),
+	tags: m.tags()
+};
 
 const columns: ColumnDef<Machine>[] = [
 	{
@@ -161,4 +174,4 @@ const columns: ColumnDef<Machine>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

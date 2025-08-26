@@ -3,6 +3,14 @@ import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { m } from '$lib/paraglide/messages';
+
+const messages = {
+	id: m.id(),
+	name: m.user(),
+	suspended: m.suspended(),
+	keys: m.key()
+};
 
 const columns: ColumnDef<User>[] = [
 	{
@@ -66,4 +74,4 @@ const columns: ColumnDef<User>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

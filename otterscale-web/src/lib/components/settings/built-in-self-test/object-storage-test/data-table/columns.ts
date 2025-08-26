@@ -4,7 +4,24 @@ import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { type ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
+import { m } from '$lib/paraglide/messages';
 import { headers } from './headers.svelte';
+
+const messages = {
+	name: m.name(),
+	status: m.status(),
+	target: m.target(),
+	operation: m.operation(),
+	duration: m.duration(),
+	objectSize: m.object_size(),
+	objectCount: m.object_count(),
+	throughputFastest: m.throughput_fastest(),
+	throughputSlowest: m.throughput_slowest(),
+	throughputMedian: m.throughput_median(),
+	createdBy: m.created_by(),
+	startedAt: m.started_at(),
+	completedAt: m.completed_at()
+};
 
 const columns: ColumnDef<TestResult>[] = [
 	{
@@ -162,4 +179,4 @@ const columns: ColumnDef<TestResult>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

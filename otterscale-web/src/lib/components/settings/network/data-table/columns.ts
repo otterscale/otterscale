@@ -3,7 +3,18 @@ import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
+import { m } from '$lib/paraglide/messages';
 import { headers } from './headers.svelte';
+
+const messages = {
+	fabric: m.fabric(),
+	vlan: m.vlan(),
+	dhcpOn: m.dhcp_on(),
+	subnet: m.subnet(),
+	ipAddresses: m.ip_address(),
+	ipRanges: m.ip_range(),
+	statistics: m.statistics()
+};
 
 const columns: ColumnDef<Network>[] = [
 	{
@@ -129,4 +140,4 @@ const columns: ColumnDef<Network>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

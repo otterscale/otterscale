@@ -5,10 +5,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
-	export const messages = {
-		accessKey: m.access_key()
-	};
-
 	export const headers = {
 		row_picker,
 		accessKey,

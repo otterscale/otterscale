@@ -4,6 +4,7 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -17,10 +18,8 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import Create from './action-create.svelte';
-	import { columns } from './columns';
-	import { messages } from './headers.svelte';
+	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
-	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts" generics="TData, TValue">

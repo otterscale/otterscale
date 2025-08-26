@@ -5,12 +5,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
-	export const messages = {
-		name: m.name(),
-		protect: m.protected(),
-		usage: m.usage()
-	};
-
 	export const headers = {
 		row_picker,
 		name,

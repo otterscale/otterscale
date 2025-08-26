@@ -1,17 +1,17 @@
 <script lang="ts" module>
-	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { dynamicPaths } from '$lib/path';
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
 	import Actions from './cell-actions.svelte';
 	import Tags from './cell-tags.svelte';
+	import { cn } from '$lib/utils';
 
 	export const cells = {
 		row_picker,
@@ -29,55 +29,61 @@
 </script>
 
 {#snippet row_picker(row: Row<Machine>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet fqdn_ip(row: Row<Machine>)}
-	<span class="flex items-center">
+	<Layout.Cell class="items-start">
 		<a
 			class="m-0 p-0 underline hover:no-underline"
 			href={`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.id}`}
 		>
 			{row.original.fqdn}
 		</a>
-	</span>
-	{#if row.original.ipAddresses}
-		<span class="text-muted-foreground flex items-center gap-1 text-xs">
-			{#each row.original.ipAddresses as ipAddress}
-				{ipAddress}
-			{/each}
-		</span>
-	{/if}
+		{#if row.original.ipAddresses}
+			<Layout.SubCell>
+				<span class="text-muted-foreground flex items-center gap-1 text-xs">
+					{#each row.original.ipAddresses as ipAddress}
+						{ipAddress}
+					{/each}
+				</span>
+			</Layout.SubCell>
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet powerState(row: Row<Machine>)}
-	<span class="flex items-center gap-1">
+	<Layout.Cell class="items-center flex-row">
 		<Icon
 			icon={row.original.powerState === 'on' ? 'ph:power' : 'ph:power'}
-			class={row.original.powerState === 'on' ? ' text-accent-foreground' : 'text-destructive'}
+			class={cn('size-4', row.original.powerState === 'on' ? 'text-accent-foreground' : 'text-destructive')}
 		/>
-		<span class="flex flex-col items-start">
+		<Layout.Cell>
 			{row.original.powerState}
-			<p class="text-muted-foreground text-xs">{row.original.powerType}</p>
-		</span>
-	</span>
+			<Layout.SubCell>
+				{row.original.powerType}
+			</Layout.SubCell>
+		</Layout.Cell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet status(row: Row<Machine>)}
-	{@const processingStates = [
-		'commissioning',
-		'deploying',
-		'disk_erasing',
-		'entering_rescue_mode',
-		'exiting_rescue_mode',
-		'releasing',
-		'testing'
-	]}
-	<span class="flex flex-col">
+	<Layout.Cell class="items-start">
+		{@const processingStates = [
+			'commissioning',
+			'deploying',
+			'disk_erasing',
+			'entering_rescue_mode',
+			'exiting_rescue_mode',
+			'releasing',
+			'testing'
+		]}
 		<Badge variant="outline">
 			{row.original.status}
 		</Badge>
-		<span class="text-xs font-light">
+		<Layout.SubCell>
 			{#if row.original.statusMessage != 'Deployed'}
 				<span class="flex items-center gap-1">
 					{#if processingStates.includes(row.original.status.toLowerCase())}
@@ -92,56 +98,62 @@
 					{`${row.original.osystem} ${row.original.hweKernel} ${row.original.distroSeries}`}
 				</p>
 			{/if}
-		</span>
-	</span>
+		</Layout.SubCell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet cores_arch(row: Row<Machine>)}
-	<span class="flex flex-col text-right">
+	<Layout.Cell class="items-right">
 		{row.original.cpuCount}
-		<span class="text-muted-foreground">
+		<Layout.SubCell>
 			{row.original.architecture}
-		</span>
-	</span>
+		</Layout.SubCell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet ram(row: Row<Machine>)}
-	<span class="flex items-end justify-end gap-1">
-		{formatCapacity(Number(row.original.memoryMb) * 1000 * 1000).value}
-		{formatCapacity(Number(row.original.memoryMb) * 1000 * 1000).unit}
-	</span>
+	{@const {value, unit} = formatCapacity(Number(row.original.memoryMb) * 1000 * 1000)}
+	<Layout.Cell class="items-end">
+		{value} {unit}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet disk(row: Row<Machine>)}
-	<span class="flex items-end justify-end">
+	<Layout.Cell class="items-start">
 		{row.original.blockDevices.length}
-	</span>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet storage(row: Row<Machine>)}
-	<span class="flex items-end justify-end gap-1">
-		{formatCapacity(Number(row.original.storageMb) * 1000 * 1000).value}
-		{formatCapacity(Number(row.original.storageMb) * 1000 * 1000).unit}
-	</span>
+	{@const {value, unit} = formatCapacity(Number(row.original.storageMb) * 1000 * 1000)}
+	<Layout.Cell class="items-end">
+		{value} {unit}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet tags(row: Row<Machine>)}
-	<Tags machine={row.original} />
+	<Layout.Cell class="items-start">
+		<Tags machine={row.original} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet scope(row: Row<Machine>)}
 	{@const identifier = row.original.workloadAnnotations['juju-machine-id']}
-	{#if identifier}
-		{@const scope = identifier.split('-machine-')[0]}
-		{scope}
-		{#if row.original.lastCommissioned}
-			<span class="text-muted-foreground flex items-center gap-1 text-xs">
-				{formatTimeAgo(timestampDate(row.original.lastCommissioned))}
-			</span>
+	<Layout.Cell class="items-start">
+		{#if identifier}
+			{@const scope = identifier.split('-machine-')[0]}
+			{scope}
+			{#if row.original.lastCommissioned}
+				<Layout.SubCell>
+					{formatTimeAgo(timestampDate(row.original.lastCommissioned))}
+				</Layout.SubCell>
+			{/if}
 		{/if}
-	{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(row: Row<Machine>)}
-	<Actions machine={row.original} />
+	<Layout.Cell class="items-start">
+		<Actions machine={row.original} />
+	</Layout.Cell>
 {/snippet}

@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import {
 		FIO_Input_AccessMode,
 		type TestResult,
@@ -26,8 +27,8 @@
 		ioDepth,
 		bandwidth,
 		iops,
-		latencyMin,
-		latencyMax,
+		latencyMinimum,
+		latencyMaximum,
 		latencyMean,
 		createdBy,
 		startedAt,
@@ -37,93 +38,107 @@
 </script>
 
 {#snippet row_picker(row: Row<TestResult>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<TestResult>)}
-	{row.original.name}
+	<Layout.Cell class="items-start">
+		{row.original.name}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet status(row: Row<TestResult>)}
-	{#if TestResult_Status[row.original.status] === 'SUCCEEDED'}
-		<Icon icon="ph:check" />
-	{:else if TestResult_Status[row.original.status] === 'FAILED'}
-		<Icon icon="ph:x" />
-	{:else}
-		<Icon icon="svg-spinners:180-ring-with-bg" />
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if TestResult_Status[row.original.status] === 'SUCCEEDED'}
+			<Icon icon="ph:check" />
+		{:else if TestResult_Status[row.original.status] === 'FAILED'}
+			<Icon icon="ph:x" />
+		{:else}
+			<Icon icon="svg-spinners:180-ring-with-bg" />
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet target(row: Row<TestResult>)}
-	{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
-		{#if row.original.kind.value.target.case === 'cephBlockDevice'}
-			<Badge variant="outline">
-				{row.original.kind.value.target.value.facilityName}
-			</Badge>
-		{:else if row.original.kind.value.target.case === 'networkFileSystem'}
-			<Badge variant="outline">
-				{row.original.kind.value.target.value.endpoint}
-			</Badge>
+	<Layout.Cell class="items-start">
+		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
+			{#if row.original.kind.value.target.case === 'cephBlockDevice'}
+				<Badge variant="outline">
+					{row.original.kind.value.target.value.facilityName}
+				</Badge>
+			{:else if row.original.kind.value.target.case === 'networkFileSystem'}
+				<Badge variant="outline">
+					{row.original.kind.value.target.value.endpoint}
+				</Badge>
+			{/if}
 		{/if}
-	{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet accessMode(row: Row<TestResult>)}
-	{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
-		{FIO_Input_AccessMode[row.original.kind.value?.input.accessMode]}
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
+			{FIO_Input_AccessMode[row.original.kind.value?.input.accessMode]}
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet jobCount(row: Row<TestResult>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{row.original.kind.value?.input.jobCount}
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet runTime(row: Row<TestResult>)}
-	{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
-		{@const formatted = formatSecond(Number(row.original.kind.value?.input.runTimeSeconds))}
-		{formatted.value}
-		{formatted.unit}
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
+			{@const formatted = formatSecond(Number(row.original.kind.value?.input.runTimeSeconds))}
+			{formatted.value}
+			{formatted.unit}
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet blockSize(row: Row<TestResult>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{@const formatted = formatCapacity(Number(row.original.kind.value?.input.blockSizeBytes))}
 			{formatted.value}
 			{formatted.unit}
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet fileSize(row: Row<TestResult>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{@const formatted = formatCapacity(Number(row.original.kind.value?.input.fileSizeBytes))}
 			{formatted.value}
 			{formatted.unit}
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet ioDepth(row: Row<TestResult>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.input}
 			{row.original.kind.value?.input.ioDepth}
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet createdBy(row: Row<TestResult>)}
-	{row.original.createdBy}
+	<Layout.Cell class="items-start">
+		{row.original.createdBy}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet bandwidth(row: Row<TestResult>)}
-	<div class="flex flex-col items-end gap-1">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
 			<Badge variant="outline">
 				Read {(Number(row.original.kind.value.output.read.bandwidthBytes) / 1024 / 1024).toFixed(2)}
@@ -143,11 +158,11 @@
 				MB/s
 			</Badge>
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet iops(row: Row<TestResult>)}
-	<div class="flex flex-col items-end gap-1">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
 			<Badge variant="outline">
 				Read: {row.original.kind.value.output.read.ioPerSecond.toFixed(0)}
@@ -163,11 +178,11 @@
 				Trim: {row.original.kind.value.output.trim.ioPerSecond.toFixed(0)}
 			</Badge>
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
-{#snippet latencyMin(row: Row<TestResult>)}
-	<div class="flex flex-col items-end gap-1">
+{#snippet latencyMinimum(row: Row<TestResult>)}
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
 				Read: {(
@@ -189,11 +204,11 @@
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
-{#snippet latencyMax(row: Row<TestResult>)}
-	<div class="flex flex-col items-end gap-1">
+{#snippet latencyMaximum(row: Row<TestResult>)}
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
 				Read: {(
@@ -215,11 +230,11 @@
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet latencyMean(row: Row<TestResult>)}
-	<div class="flex flex-col items-end gap-1">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
 				Read: {(
@@ -241,39 +256,45 @@
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet startedAt(row: Row<TestResult>)}
 	{#if row.original.startedAt}
-		<Tooltip.Provider>
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					{formatTimeAgo(timestampDate(row.original.startedAt))}
-				</Tooltip.Trigger>
-				<Tooltip.Content>
-					{timestampDate(row.original.startedAt)}
-				</Tooltip.Content>
-			</Tooltip.Root>
-		</Tooltip.Provider>
+		<Layout.Cell class="items-start">
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						{formatTimeAgo(timestampDate(row.original.startedAt))}
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						{timestampDate(row.original.startedAt)}
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet completedAt(row: Row<TestResult>)}
 	{#if row.original.completedAt && Number(timestampDate(row.original.completedAt)) >= 0}
-		<Tooltip.Provider>
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					{formatTimeAgo(timestampDate(row.original.completedAt))}
-				</Tooltip.Trigger>
-				<Tooltip.Content>
-					{timestampDate(row.original.completedAt)}
-				</Tooltip.Content>
-			</Tooltip.Root>
-		</Tooltip.Provider>
+		<Layout.Cell class="items-start">
+			<Tooltip.Provider>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						{formatTimeAgo(timestampDate(row.original.completedAt))}
+					</Tooltip.Trigger>
+					<Tooltip.Content>
+						{timestampDate(row.original.completedAt)}
+					</Tooltip.Content>
+				</Tooltip.Root>
+			</Tooltip.Provider>
+		</Layout.Cell>
 	{/if}
 {/snippet}
 
 {#snippet actions(row: Row<TestResult>)}
-	<Actions testResult={row.original} />
+	<Layout.Cell class="items-start">
+		<Actions testResult={row.original} />
+	</Layout.Cell>
 {/snippet}

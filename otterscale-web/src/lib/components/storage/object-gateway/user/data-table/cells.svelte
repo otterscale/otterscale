@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { User } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import { Key } from '$lib/components/storage/object-gateway/user/key';
@@ -18,31 +19,41 @@
 </script>
 
 {#snippet row_picker(row: Row<User>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet id(row: Row<User>)}
-	{row.original.id}
+	<Layout.Cell class="items-start">
+		{row.original.id}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<User>)}
-	<Badge variant="outline">{row.original.name}</Badge>
+	<Layout.Cell class="items-start">
+		<Badge variant="outline">{row.original.name}</Badge>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet suspended(row: Row<User>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.suspended}
 			<Icon icon="ph:circle" class="text-primary" />
 		{:else}
 			<Icon icon="ph:x" class="text-destructive" />
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet keys(row: Row<User>)}
-	<Key user={row.original} />
+	<Layout.Cell class="items-end">
+		<Key user={row.original} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(row: Row<User>)}
-	<Actions user={row.original} />
+	<Layout.Cell class="items-start">
+		<Actions user={row.original} />
+	</Layout.Cell>
 {/snippet}

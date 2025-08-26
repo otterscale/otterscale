@@ -16,8 +16,7 @@
 		type VisibilityState
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
-	import { columns } from './columns';
-	import { messages } from './headers.svelte';
+	import { columns, messages } from './columns';
 </script>
 
 <script lang="ts" generics="TData, TValue">

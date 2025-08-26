@@ -3,6 +3,14 @@ import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { m } from '$lib/paraglide/messages';
+
+const messages = {
+	type: m.type(),
+	startIp: m.start_ip(),
+	endIp: m.end_ip(),
+	comment: m.comment()
+};
 
 const columns: ColumnDef<Network_IPRange>[] = [
 	{
@@ -55,4 +63,4 @@ const columns: ColumnDef<Network_IPRange>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

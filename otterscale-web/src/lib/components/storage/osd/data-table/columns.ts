@@ -4,6 +4,20 @@ import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { m } from '$lib/paraglide/messages';
+
+const messages = {
+	name: m.name(),
+	state: m.state(),
+	in: m.osd_ins(),
+	up: m.osd_ups(),
+	exists: m.osd_exists(),
+	deviceClass: m.device_class(),
+	machine: m.machine(),
+	placementGroupCount: m.placement_group(),
+	usage: m.usage(),
+	iops: m.iops()
+};
 
 const columns: ColumnDef<OSD>[] = [
 	{
@@ -145,4 +159,4 @@ const columns: ColumnDef<OSD>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

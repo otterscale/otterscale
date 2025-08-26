@@ -13,6 +13,6 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
 </script>
 
-<div bind:this={ref} class={cn(className)} {...restProps}>
+<div bind:this={ref} class={cn('uppercase', className)} {...restProps}>
 	{@render children?.()}
 </div>

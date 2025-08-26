@@ -4,6 +4,14 @@ import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { m } from '$lib/paraglide/messages';
+
+const messages = {
+	name: m.name(),
+	poolName: m.pool_name(),
+	usage: m.usage(),
+	snapshots: m.snapshot()
+};
 
 const columns: ColumnDef<Image>[] = [
 	{
@@ -80,4 +88,4 @@ const columns: ColumnDef<Image>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };
