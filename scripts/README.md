@@ -5,6 +5,14 @@ Before starting the installation process, ensure the following prerequisites are
 - A network bridge must be set up in your environment and bind a group of IP addresses to the bridge.
 - The IP address used by MAAS must be part of the network configured on the bridge.
 
+## On-line Installation
+1. **Prepare the install.cfg**
+
+2. **Run the Installation Script with Configuration File**
+   ```bash
+   $ curl -L https://raw.githubusercontent.com/openhdc/otterscale/refs/heads/main/scripts/install.sh | sudo bash -s -- --config=~/install.cfg
+   ```
+
 ## Interactive Installation
 To perform an interactive installation, follow these steps:
 
