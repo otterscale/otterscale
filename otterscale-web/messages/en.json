@@ -575,6 +575,6 @@
 	"importing": "Importing",
 	"import": "Import",
 	"set_default_boot_image": "Set Default Boot Image",
-	"no_data": "No Data"
-
+	"no_data": "No Data",
+	"submit": "Submit"
 }

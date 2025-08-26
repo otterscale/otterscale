@@ -1,3 +1,3 @@
-import MachineTag from './machine-tag.svelte';
+import MachineTag from './index.svelte';
 
 export { MachineTag };

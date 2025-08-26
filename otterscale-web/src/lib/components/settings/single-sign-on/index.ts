@@ -1,3 +1,3 @@
-import SingleSignOn from './single-sign-on.svelte';
+import SingleSignOn from './index.svelte';
 
 export { SingleSignOn };

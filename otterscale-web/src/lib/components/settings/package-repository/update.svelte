@@ -44,57 +44,59 @@
 	}
 </script>
 
-<Modal.Root bind:open>
-	<Modal.Trigger variant="creative">
-		<Icon icon="ph:pencil" />
-		{m.edit()}
-	</Modal.Trigger>
-	<Modal.Content>
-		<Modal.Header>{m.edit_ntp_server()}</Modal.Header>
-		<Form.Root>
-			<Form.Fieldset>
-				<Form.Field>
-					<Form.Label>{m.url()}</Form.Label>
-					<SingleInput.General type="text" bind:value={request.url} />
-				</Form.Field>
-			</Form.Fieldset>
-		</Form.Root>
-		<Modal.Footer>
-			<Modal.Cancel
-				onclick={() => {
-					reset();
-				}}
-			>
-				{m.cancel()}
-			</Modal.Cancel>
-			<Modal.ActionsGroup>
-				<Modal.Action
+<span>
+	<Modal.Root bind:open>
+		<Modal.Trigger variant="creative">
+			<Icon icon="ph:pencil" />
+			{m.edit()}
+		</Modal.Trigger>
+		<Modal.Content>
+			<Modal.Header>{m.edit_ntp_server()}</Modal.Header>
+			<Form.Root>
+				<Form.Fieldset>
+					<Form.Field>
+						<Form.Label>{m.url()}</Form.Label>
+						<SingleInput.General type="text" bind:value={request.url} />
+					</Form.Field>
+				</Form.Fieldset>
+			</Form.Root>
+			<Modal.Footer>
+				<Modal.Cancel
 					onclick={() => {
-						toast.promise(() => client.updatePackageRepository(request), {
-							loading: 'Loading...',
-							success: () => {
-								client.getConfiguration({}).then((response) => {
-									configuration.set(response);
-								});
-								return `Update ${packageRepository.name} success`;
-							},
-							error: (error) => {
-								let message = `Fail to update ${packageRepository.name}`;
-								toast.error(message, {
-									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
-								});
-								return message;
-							}
-						});
-
 						reset();
-						close();
 					}}
 				>
-					{m.confirm()}
-				</Modal.Action>
-			</Modal.ActionsGroup>
-		</Modal.Footer>
-	</Modal.Content>
-</Modal.Root>
+					{m.cancel()}
+				</Modal.Cancel>
+				<Modal.ActionsGroup>
+					<Modal.Action
+						onclick={() => {
+							toast.promise(() => client.updatePackageRepository(request), {
+								loading: 'Loading...',
+								success: () => {
+									client.getConfiguration({}).then((response) => {
+										configuration.set(response);
+									});
+									return `Update ${packageRepository.name} success`;
+								},
+								error: (error) => {
+									let message = `Fail to update ${packageRepository.name}`;
+									toast.error(message, {
+										description: (error as ConnectError).message.toString(),
+										duration: Number.POSITIVE_INFINITY
+									});
+									return message;
+								}
+							});
+
+							reset();
+							close();
+						}}
+					>
+						{m.confirm()}
+					</Modal.Action>
+				</Modal.ActionsGroup>
+			</Modal.Footer>
+		</Modal.Content>
+	</Modal.Root>
+</span>

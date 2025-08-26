@@ -10,7 +10,7 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import UpdateNTPServer from './update-ntp-server.svelte';
+	import Update from './update.svelte';
 </script>
 
 <script lang="ts">
@@ -35,22 +35,24 @@
 </script>
 
 {#if !isConfigurationLoading}
-	<Layout.Title>{m.address()}</Layout.Title>
-	<Layout.Description>
-		{m.setting_ntp_server_description()}
-	</Layout.Description>
-	<Layout.Actions>
-		<UpdateNTPServer {configuration} />
-	</Layout.Actions>
-	<Layout.Controller>
-		<Card.Root>
-			<Card.Content>
-				{#if $configuration.ntpServer && $configuration.ntpServer.addresses}
-					{#each $configuration.ntpServer.addresses as address}
-						<Badge>{address}</Badge>
-					{/each}
-				{/if}
-			</Card.Content>
-		</Card.Root>
-	</Layout.Controller>
+	<Layout.Root>
+		<Layout.Title>{m.address()}</Layout.Title>
+		<Layout.Description>
+			{m.setting_ntp_server_description()}
+		</Layout.Description>
+		<Layout.Controller>
+			<Update {configuration} />
+		</Layout.Controller>
+		<Layout.Viewer>
+			<Card.Root>
+				<Card.Content>
+					{#if $configuration.ntpServer && $configuration.ntpServer.addresses}
+						{#each $configuration.ntpServer.addresses as address}
+							<Badge>{address}</Badge>
+						{/each}
+					{/if}
+				</Card.Content>
+			</Card.Root>
+		</Layout.Viewer>
+	</Layout.Root>
 {/if}

@@ -78,9 +78,9 @@
 						toast.promise(() => client.importBootImages(request), {
 							loading: 'Loading...',
 							success: () => {
-								// client.getConfiguration({}).then((response) => {
-								// 	configuration.set(response);
-								// });
+								client.getConfiguration({}).then((response) => {
+									configuration.set(response);
+								});
 								return `Import boot images success`;
 							},
 							error: (error) => {

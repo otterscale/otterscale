@@ -6,6 +6,8 @@
 	let { children }: { children?: Snippet } = $props();
 </script>
 
-<div class="my-4">
-	{@render children?.()}
+<div class="flex">
+	<span class="ml-auto flex gap-2">
+		{@render children?.()}
+	</span>
 </div>

@@ -1,3 +1,3 @@
-import BootImage from './boot-image.svelte';
+import BootImage from './index.svelte';
 
 export { BootImage };

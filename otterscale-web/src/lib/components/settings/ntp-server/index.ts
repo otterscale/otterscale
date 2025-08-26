@@ -1,3 +1,3 @@
-import NTPServer from './ntp-server.svelte';
+import NTPServer from './index.svelte';
 
 export { NTPServer };

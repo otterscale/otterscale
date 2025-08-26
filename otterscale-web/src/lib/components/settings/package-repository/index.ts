@@ -1,3 +1,3 @@
-import PackageRepository from './package-repository.svelte';
+import PackageRepository from './index.svelte';
 
 export { PackageRepository };
