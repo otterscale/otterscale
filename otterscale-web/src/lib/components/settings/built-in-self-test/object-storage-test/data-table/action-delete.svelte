@@ -1,10 +1,11 @@
 <script lang="ts" module>
 	import type { DeleteTestResultRequest, TestResult } from '$lib/api/bist/v1/bist_pb';
 	import { BISTService } from '$lib/api/bist/v1/bist_pb';
-	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -32,27 +33,27 @@
 	function reset() {
 		request = defaults;
 	}
-	
+
 	let open = $state(false);
 	function close() {
 		open = false;
 	}
 </script>
 
-<AlertDialog.Root bind:open>
-	<AlertDialog.Trigger class="text-destructive flex h-full w-full items-center gap-2">
+<Modal.Root bind:open>
+	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Delete
-	</AlertDialog.Trigger>
-	<AlertDialog.Content>
-		<AlertDialog.Header>Delete Test Result</AlertDialog.Header>
+		{m.delete()}
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>{m.delete_test_result()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Help>
-					Please type the test name exactly to confirm deletion. This action cannot be undone.
+					{m.deletion_warning({ identifier: m.name() })}
 				</Form.Help>
 				<Form.Field>
-					<Form.Label>Test Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 
 					<SingleInput.Confirm
 						required
@@ -63,14 +64,16 @@
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel
+		<Modal.Footer>
+			<Modal.Cancel
 				onclick={() => {
 					reset();
-				}}>Cancel</AlertDialog.Cancel
+				}}
 			>
-			<AlertDialog.ActionsGroup>
-				<AlertDialog.Action
+				{m.cancel()}
+			</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => client.deleteTestResult(request), {
@@ -92,9 +95,9 @@
 						close();
 					}}
 				>
-					Delete
-				</AlertDialog.Action>
-			</AlertDialog.ActionsGroup>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+					{m.delete()}
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>
