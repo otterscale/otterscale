@@ -38,6 +38,12 @@ proto:
 		--es_opt=target=ts \
 		$(PROTO_FILES)
 
+.PHONY: docker-image
+# build docker image
+docker-image:
+	docker build -f Dockerfile --network host -t otterscale:$(VERSION) .
+# 	docker push $(DOCKER_IMAGE):$(VERSION)
+
 .PHONY: help
 # show help
 help:

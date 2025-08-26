@@ -1,6 +1,6 @@
 module github.com/openhdc/otterscale
 
-go 1.24.3
+go 1.24.6
 
 replace gopkg.in/yaml.v2 => github.com/juju/yaml/v2 v2.0.0
 
