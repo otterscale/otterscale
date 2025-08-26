@@ -7,6 +7,7 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
 	import Actions from './cell-actions.svelte';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 
 	export const cells = {
 		row_picker,
@@ -20,29 +21,35 @@
 </script>
 
 {#snippet row_picker(row: Row<SubvolumeGroup>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<SubvolumeGroup>)}
-	<p>
+	<Layout.Cell class="items-right">
 		{row.original.name}
-	</p>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet poolName(row: Row<SubvolumeGroup>)}
-	<Badge variant="outline">
-		{row.original.poolName}
-	</Badge>
+	<Layout.Cell class="items-right">
+		<Badge variant="outline">
+			{row.original.poolName}
+		</Badge>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet mode(row: Row<SubvolumeGroup>)}
-	<Badge variant="outline">
-		{row.original.mode}
-	</Badge>
+	<Layout.Cell class="items-right">
+		<Badge variant="outline">
+			{row.original.mode}
+		</Badge>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<SubvolumeGroup>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		<Progress.Root
 			numerator={Number(row.original.usedBytes)}
 			denominator={Number(row.original.usedBytes)}
@@ -61,15 +68,19 @@
 				{denominatorUnit}
 			{/snippet}
 		</Progress.Root>
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet createTime(row: Row<SubvolumeGroup>)}
-	{#if row.original.createdAt}
-		{formatTimeAgo(timestampDate(row.original.createdAt))}
-	{/if}
+	<Layout.Cell class="items-right">
+		{#if row.original.createdAt}
+			{formatTimeAgo(timestampDate(row.original.createdAt))}
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(row: Row<SubvolumeGroup>)}
-	<Actions subvolumeGroup={row.original} />
+	<Layout.Cell class="items-right">
+		<Actions subvolumeGroup={row.original} />
+	</Layout.Cell>
 {/snippet}

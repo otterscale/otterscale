@@ -5,19 +5,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
-	export const messages = {
-		name: m.name(),
-		type: m.type(),
-		namespace: m.namespace(),
-		health: m.health(),
-		service: m.service(),
-		pod: m.pod(),
-		replica: m.replica(),
-		container: m.container(),
-		volume: m.volume(),
-		nodeport: m.nodeport()
-	};
-
 	export const headers = {
 		row_picker,
 		name,
@@ -43,7 +30,7 @@
 
 {#snippet name(column: Column<Application>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.name}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -52,7 +39,7 @@
 
 {#snippet type(column: Column<Application>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.type}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.type()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -61,7 +48,7 @@
 
 {#snippet namespace(column: Column<Application>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.namespace}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.namespace()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -73,7 +60,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages.health}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.health()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -82,7 +69,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages.service}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.service()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -91,7 +78,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages.pod}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.pod()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -100,7 +87,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages.replica}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.replica()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -109,7 +96,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages.container}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.container()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -118,12 +105,12 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages.volume}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.volume()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet nodeport()}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.nodeport}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.nodeport()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}

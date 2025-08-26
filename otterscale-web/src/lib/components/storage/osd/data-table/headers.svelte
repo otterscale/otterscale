@@ -5,19 +5,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
-	export const messages = {
-		name: m.name(),
-		state: m.state(),
-		in: m.osd_ins(),
-		up: m.osd_ups(),
-		exists: m.osd_exists(),
-		deviceClass: m.device_class(),
-		machine: m.machine(),
-		placementGroupCount: m.placement_group(),
-		usage: m.usage(),
-		iops: m.iops()
-	};
-
 	export const headers = {
 		row_picker,
 		name,
@@ -44,7 +31,7 @@
 
 {#snippet name(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.name}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -53,7 +40,7 @@
 
 {#snippet state(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.state}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.state()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -67,7 +54,7 @@
 
 {#snippet exists(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.exists}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.osd_exists()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -76,7 +63,7 @@
 
 {#snippet deviceClass(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.deviceClass}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.device_class()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -85,7 +72,7 @@
 
 {#snippet machine(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.machine}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.machine()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -97,7 +84,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages.placementGroupCount}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.placement_group()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -106,13 +93,13 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{messages.usage}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.usage()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet iops(column: Column<OSD>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>{messages.iops}</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.iops()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

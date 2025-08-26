@@ -6,6 +6,7 @@
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import type { Row } from '@tanstack/table-core';
 	import Actions from './cell-actions.svelte';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 
 	export const cells = {
 		row_picker,
@@ -17,23 +18,33 @@
 </script>
 
 {#snippet row_picker(row: Row<Subvolume_Snapshot>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Subvolume_Snapshot>)}
-	{row.original.name}
+	<Layout.Cell class="items-start">
+		{row.original.name}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet hasPendingClones(row: Row<Subvolume_Snapshot>)}
-	<Badge variant="outline">{row.original.hasPendingClones}</Badge>
+	<Layout.Cell class="items-start">
+		<Badge variant="outline">{row.original.hasPendingClones}</Badge>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet createTime(row: Row<Subvolume_Snapshot>)}
-	{#if row.original.createdAt}
-		{formatTimeAgo(timestampDate(row.original.createdAt))}
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if row.original.createdAt}
+			{formatTimeAgo(timestampDate(row.original.createdAt))}
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(row: Row<Subvolume_Snapshot>)}
-	<Actions snapshot={row.original} />
+	<Layout.Cell class="items-start">
+		<Actions snapshot={row.original} />
+	</Layout.Cell>
 {/snippet}

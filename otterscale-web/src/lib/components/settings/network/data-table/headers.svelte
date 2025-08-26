@@ -5,16 +5,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
-	export const messages = {
-		fabric: m.fabric(),
-		vlan: m.vlan(),
-		dhcpOn: m.dhcp_on(),
-		subnet: m.subnet(),
-		ipAddresses: m.ip_address(),
-		ipRanges: m.ip_range(),
-		statistics: m.statistics()
-	};
-
 	export const headers = {
 		row_picker,
 		fabric,

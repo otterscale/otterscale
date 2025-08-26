@@ -1,10 +1,17 @@
 import type { Subvolume_Snapshot } from '$lib/api/storage/v1/storage_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
+import { m } from '$lib/paraglide/messages';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+
+const messages = {
+	name: m.name(),
+	createTime: m.create_time(),
+	hasPendingClones: m.pending_clones()
+};
 
 const columns: ColumnDef<Subvolume_Snapshot>[] = [
 	{
@@ -64,4 +71,4 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

@@ -5,18 +5,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
-	export const messages = {
-		fqdn_ip: m.fqdn(),
-		powerState: m.power(),
-		status: m.status(),
-		cores_arch: m.core(),
-		ram: m.ram(),
-		disk: m.disk(),
-		storage: m.storage(),
-		scope: m.scope(),
-		tags: m.tags()
-	};
-
 	export const headers = {
 		row_picker,
 		fqdn_ip,

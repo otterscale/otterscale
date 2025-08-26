@@ -17,8 +17,7 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import Create from './action-test.svelte';
-	import { columns } from './columns';
-	import { messages } from './headers.svelte';
+	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 

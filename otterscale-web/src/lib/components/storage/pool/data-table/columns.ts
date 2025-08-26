@@ -4,6 +4,16 @@ import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { m } from '$lib/paraglide/messages';
+
+const messages = {
+	name: m.name(),
+	poolType: m.type(),
+	applications: m.applications(),
+	placementGroupState: m.placement_group_state(),
+	usage: m.usage(),
+	iops: m.iops()
+};
 
 const columns: ColumnDef<Pool>[] = [
 	{
@@ -102,4 +112,4 @@ const columns: ColumnDef<Pool>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

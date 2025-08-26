@@ -3,6 +3,27 @@ import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { type ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { m } from '$lib/paraglide/messages';
+
+const messages = {
+	name: m.name(),
+	status: m.status(),
+	target: m.target(),
+	accessMode: m.access_mode(),
+	jobCount: m.job_count(),
+	runTime: m.run_time(),
+	blockSize: m.block_size(),
+	fileSize: m.file_size(),
+	ioDepth: m.io_depth(),
+	bandwidth: m.bandwidth(),
+	iops: m.iops(),
+	latencyMinimum: m.latency_minimum(),
+	latencyMaximum: m.latency_maximum(),
+	latencyMean: m.latency_mean(),
+	createdBy: m.created_by(),
+	startedAt: m.started_at(),
+	completedAt: m.completed_at()
+};
 
 const columns: ColumnDef<TestResult>[] = [
 	{
@@ -125,21 +146,21 @@ const columns: ColumnDef<TestResult>[] = [
 		}
 	},
 	{
-		accessorKey: 'latencyMin',
+		accessorKey: 'latencyMinimum',
 		header: ({ column }) => {
-			return renderSnippet(headers.latencyMin, column);
+			return renderSnippet(headers.latencyMinimum, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.latencyMin, row);
+			return renderSnippet(cells.latencyMinimum, row);
 		}
 	},
 	{
-		accessorKey: 'latencyMax',
+		accessorKey: 'latencyMaximum',
 		header: ({ column }) => {
-			return renderSnippet(headers.latencyMax, column);
+			return renderSnippet(headers.latencyMaximum, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.latencyMax, row);
+			return renderSnippet(cells.latencyMaximum, row);
 		}
 	},
 	{
@@ -181,4 +202,4 @@ const columns: ColumnDef<TestResult>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

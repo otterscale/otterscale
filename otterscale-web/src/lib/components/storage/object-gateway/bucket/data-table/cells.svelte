@@ -4,6 +4,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Row } from '@tanstack/table-core';
 	import Actions from './cell-actions.svelte';
 
@@ -18,34 +19,42 @@
 </script>
 
 {#snippet row_picker(row: Row<Bucket>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<Bucket>)}
-	{row.original.name}
+	<Layout.Cell class="items-start">
+		{row.original.name}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet owner(row: Row<Bucket>)}
-	<Badge variant="outline">{row.original.owner}</Badge>
+	<Layout.Cell class="items-start">
+		<Badge variant="outline">{row.original.owner}</Badge>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<Bucket>)}
 	{@const { value, unit } = formatCapacity(row.original.usedBytes)}
-	<div class="flex flex-col items-end">
-		<div class="flex items-end">
+	<Layout.Cell class="items-end">
 			{value}
 			{unit}
-		</div>
-		<p class="font-light">{row.original.usedObjects} unit(s)</p>
-	</div>
+		<Layout.SubCell>{row.original.usedObjects} unit(s)</Layout.SubCell>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet createTime(row: Row<Bucket>)}
-	{#if row.original.createdAt}
-		{formatTimeAgo(timestampDate(row.original.createdAt))}
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if row.original.createdAt}
+			{formatTimeAgo(timestampDate(row.original.createdAt))}
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(row: Row<Bucket>)}
-	<Actions bucket={row.original} />
+	<Layout.Cell class="items-start">
+		<Actions bucket={row.original} />
+	</Layout.Cell>
 {/snippet}

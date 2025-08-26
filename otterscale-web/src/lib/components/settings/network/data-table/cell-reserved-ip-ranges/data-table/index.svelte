@@ -17,8 +17,7 @@
 	} from '@tanstack/table-core';
 	import Create from './action-create.svelte';
 	import Actions from './actions.svelte';
-	import { columns } from './columns';
-	import { messages } from './headers.svelte';
+	import { columns, messages } from './columns';
 </script>
 
 <script lang="ts" generics="TData, TValue">

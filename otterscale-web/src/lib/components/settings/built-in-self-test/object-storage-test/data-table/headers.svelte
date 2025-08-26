@@ -5,22 +5,6 @@
 	import type { Column, Table } from '@tanstack/table-core';
 	import { m } from '$lib/paraglide/messages';
 
-	export const messages = {
-		name: m.name(),
-		status: m.status(),
-		target: m.target(),
-		operation: m.operation(),
-		duration: m.duration(),
-		objectSize: m.object_size(),
-		objectCount: m.object_count(),
-		throughputFastest: m.throughput_fastest(),
-		throughputSlowest: m.throughput_slowest(),
-		throughputMedian: m.throughput_median(),
-		createdBy: m.created_by(),
-		startedAt: m.started_at(),
-		completedAt: m.completed_at()
-	};
-
 	export const headers = {
 		row_picker,
 		name,

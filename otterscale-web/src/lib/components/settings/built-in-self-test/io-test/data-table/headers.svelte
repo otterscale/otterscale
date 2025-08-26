@@ -5,26 +5,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
-	export const messages = {
-		name: m.name(),
-		status: m.status(),
-		target: m.target(),
-		accessMode: m.access_mode(),
-		jobCount: m.job_count(),
-		runTime: m.run_time(),
-		blockSize: m.block_size(),
-		fileSize: m.file_size(),
-		ioDepth: m.io_depth(),
-		bandwidth: m.bandwidth(),
-		iops: m.iops(),
-		latencyMinimum: m.latency_minimum(),
-		latencyMaximum: m.latency_maximum(),
-		latencyMean: m.latency_mean(),
-		createdBy: m.created_by(),
-		startedAt: m.started_at(),
-		completedAt: m.completed_at()
-	};
-
 	export const headers = {
 		row_picker,
 		name,
@@ -38,8 +18,8 @@
 		ioDepth,
 		bandwidth,
 		iops,
-		latencyMin,
-		latencyMax,
+		latencyMinimum,
+		latencyMaximum,
 		latencyMean,
 		createdBy,
 		startedAt,
@@ -158,7 +138,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet latencyMin(column: Column<TestResult>)}
+{#snippet latencyMinimum(column: Column<TestResult>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			{m.latency()}
@@ -167,7 +147,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet latencyMax(column: Column<TestResult>)}
+{#snippet latencyMaximum(column: Column<TestResult>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			{m.latency()}

@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { goto } from '$app/navigation';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Progress from '$lib/components/custom/progress';
@@ -27,22 +28,26 @@
 </script>
 
 {#snippet row_picker(row: Row<OSD>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<OSD>)}
-	{row.original.name}
+	<Layout.Cell class="items-start">
+		{row.original.name}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet state(row: Row<OSD>)}
-	<div class="flex items-center gap-1">
+	<Layout.Cell class="items-center flex-row">
 		{#if row.original.in}
 			<Badge variant="outline">{m.osd_in()}</Badge>
 		{/if}
 		{#if row.original.up}
 			<Badge variant="outline">{m.osd_up()}</Badge>
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet osdUp(row: Row<OSD>)}{/snippet}
@@ -50,40 +55,48 @@
 {#snippet osdIn(row: Row<OSD>)}{/snippet}
 
 {#snippet exists(row: Row<OSD>)}
-	{#if !row.original.exists}
-		<Icon icon="ph:x" class="text-destructive" />
-	{:else}
-		<Icon icon="ph:circle" class="text-primary" />
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if !row.original.exists}
+			<Icon icon="ph:x" class="text-destructive" />
+		{:else}
+			<Icon icon="ph:circle" class="text-primary" />
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet machine(row: Row<OSD>)}
-	<div class="flex items-center gap-1">
-		<Badge variant="outline">
-			{row.original.machine?.hostname}
-		</Badge>
-		<Icon
-			icon="ph:arrow-square-out"
-			class="hover:cursor-pointer"
-			onclick={() => {
-				goto(`/management/machine/${row.original.machine?.id}`);
-			}}
-		/>
-	</div>
+	<Layout.Cell class="items-start">
+		<div class="flex items-center gap-1">
+			<Badge variant="outline">
+				{row.original.machine?.hostname}
+			</Badge>
+			<Icon
+				icon="ph:arrow-square-out"
+				class="hover:cursor-pointer"
+				onclick={() => {
+					goto(`/management/machine/${row.original.machine?.id}`);
+				}}
+			/>
+		</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet deviceClass(row: Row<OSD>)}
-	<Badge variant="outline">
-		{row.original.deviceClass}
-	</Badge>
+	<Layout.Cell class="items-start">
+		<Badge variant="outline">
+			{row.original.deviceClass}
+		</Badge>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet placementGroupCount(row: Row<OSD>)}
-	<span class="flex justify-end">{row.original.placementGroupCount}</span>
+	<Layout.Cell class="items-end">
+		{row.original.placementGroupCount}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet usage(row: Row<OSD>)}
-	<div class="flex justify-end">
+	<Layout.Cell class="items-end">
 		<Progress.Root
 			numerator={Number(row.original.usedBytes)}
 			denominator={Number(row.original.sizeBytes)}
@@ -100,11 +113,13 @@
 				{denominatorUnit}
 			{/snippet}
 		</Progress.Root>
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet iops(row: Row<OSD>)}{/snippet}
 
 {#snippet actions(row: Row<OSD>)}
-	<Actions osd={row.original} />
+	<Layout.Cell class="items-start">
+		<Actions osd={row.original} />
+	</Layout.Cell>
 {/snippet}

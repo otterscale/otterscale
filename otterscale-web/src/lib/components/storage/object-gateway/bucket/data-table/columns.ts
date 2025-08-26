@@ -5,6 +5,14 @@ import { timestampDate } from '@bufbuild/protobuf/wkt';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { m } from '$lib/paraglide/messages';
+
+const messages = {
+	name: m.name(),
+	owner: m.owner(),
+	usage: m.usage(),
+	createTime: m.create_time()
+};
 
 const columns: ColumnDef<Bucket>[] = [
 	{
@@ -81,4 +89,4 @@ const columns: ColumnDef<Bucket>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

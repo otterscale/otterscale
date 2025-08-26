@@ -10,6 +10,7 @@
 	import ViewVLAN from './action-view-vlan.svelte';
 	import Actions from './cell-actions.svelte';
 	import { ReservedIPRanges } from './cell-reserved-ip-ranges';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 
 	export const cells = {
 		row_picker,
@@ -25,64 +26,74 @@
 </script>
 
 {#snippet row_picker(row: Row<Network>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet fabric(row: Row<Network>)}
-	{#if row.original.fabric}
-		{row.original.fabric.name}
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if row.original.fabric}
+			{row.original.fabric.name}
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet vlan(row: Row<Network>)}
-	{#if row.original.vlan}
-		<span class="flex items-center">
-			{row.original.vlan.name}
-			<ViewVLAN vlan={row.original.vlan} />
-		</span>
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if row.original.vlan}
+			<div class="flex items-center gap-1">
+				{row.original.vlan.name}
+				<ViewVLAN vlan={row.original.vlan} />
+			</div>
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet dhcpOn(row: Row<Network>)}
-	{#if row.original.vlan}
-		<Icon
-			icon={row.original.vlan.dhcpOn ? 'ph:circle' : 'ph:x'}
-			class={cn(row.original.vlan.dhcpOn ? 'text-primary' : 'text-destructive')}
-		/>
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if row.original.vlan}
+			<Icon
+				icon={row.original.vlan.dhcpOn ? 'ph:circle' : 'ph:x'}
+				class={cn(row.original.vlan.dhcpOn ? 'text-primary' : 'text-destructive')}
+			/>
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet subnet(row: Row<Network>)}
-	{#if row.original.subnet}
-		<span class="flex items-center">
-			{row.original.subnet.name}
-			<ViewSubnet subnet={row.original.subnet} />
-		</span>
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if row.original.subnet}
+			<span class="flex items-center">
+				{row.original.subnet.name}
+				<ViewSubnet subnet={row.original.subnet} />
+			</span>
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet ipAddresses(row: Row<Network>)}
-	<span class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.subnet}
 			<span class="flex items-center">
 				{row.original.subnet.ipAddresses.length}
 				<ViewIPAddresses ipAddresses={row.original.subnet.ipAddresses} />
 			</span>
 		{/if}
-	</span>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet ipRanges(row: Row<Network>)}
-	<span class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.subnet}
 			<ReservedIPRanges subnet={row.original.subnet} />
 		{/if}
-	</span>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet statistics(row: Row<Network>)}
-	{#if row.original.subnet && row.original.subnet.statistics}
-		<div class="flex justify-end">
+	<Layout.Cell class="items-end">
+		{#if row.original.subnet && row.original.subnet.statistics}
 			<Progress.Root
 				numerator={Number(row.original.subnet.statistics.available)}
 				denominator={Number(row.original.subnet.statistics.total)}
@@ -94,10 +105,12 @@
 					{numerator}/{denominator}
 				{/snippet}
 			</Progress.Root>
-		</div>
-	{/if}
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(row: Row<Network>)}
-	<Actions network={row.original}></Actions>
+	<Layout.Cell class="items-start">
+		<Actions network={row.original} />
+	</Layout.Cell>
 {/snippet}

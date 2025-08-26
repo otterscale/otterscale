@@ -3,8 +3,17 @@ import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import type { ColumnDef } from '@tanstack/table-core';
+import { m } from '$lib/paraglide/messages';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+
+const messages = {
+	name: m.name(),
+	poolName: m.pool_name(),
+	usage: m.usage(),
+	mode: m.mode(),
+	createTime: m.create_time()
+};
 
 const columns: ColumnDef<SubvolumeGroup>[] = [
 	{
@@ -80,4 +89,4 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

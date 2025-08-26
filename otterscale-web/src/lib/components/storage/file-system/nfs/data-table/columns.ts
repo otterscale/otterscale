@@ -5,6 +5,18 @@ import { timestampDate } from '@bufbuild/protobuf/wkt';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+import { m } from '$lib/paraglide/messages';
+
+const messages = {
+	name: m.name(),
+	poolName: m.pool_name(),
+	usage: m.usage(),
+	path: m.path(),
+	mode: m.mode(),
+	createTime: m.create_time(),
+	exportSubvolume: m.export(),
+	snapshots: m.snapshot()
+};
 
 const columns: ColumnDef<Subvolume>[] = [
 	{
@@ -109,4 +121,4 @@ const columns: ColumnDef<Subvolume>[] = [
 	}
 ];
 
-export { columns };
+export { columns, messages };

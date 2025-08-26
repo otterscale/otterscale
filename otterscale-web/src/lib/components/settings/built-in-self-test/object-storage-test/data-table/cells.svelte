@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import {
 		InternalObjectService_Type,
 		type TestResult,
@@ -34,75 +35,87 @@
 </script>
 
 {#snippet row_picker(row: Row<TestResult>)}
-	<Cells.RowPicker {row} />
+	<Layout.Cell class="items-center">
+		<Cells.RowPicker {row} />
+	</Layout.Cell>
 {/snippet}
 
 {#snippet name(row: Row<TestResult>)}
-	{row.original.name}
+	<Layout.Cell class="items-start">
+		{row.original.name}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet status(row: Row<TestResult>)}
-	{#if TestResult_Status[row.original.status] === 'SUCCEEDED'}
-		<Icon icon="ph:check" />
-	{:else if TestResult_Status[row.original.status] === 'FAILED'}
-		<Icon icon="ph:x" />
-	{:else}
-		<Icon icon="svg-spinners:180-ring-with-bg" />
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if TestResult_Status[row.original.status] === 'SUCCEEDED'}
+			<Icon icon="ph:check" />
+		{:else if TestResult_Status[row.original.status] === 'FAILED'}
+			<Icon icon="ph:x" />
+		{:else}
+			<Icon icon="svg-spinners:180-ring-with-bg" />
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet target(row: Row<TestResult>)}
-	{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
-		{#if row.original.kind.value.target.case === 'internalObjectService'}
-			<Badge variant="outline">
-				{InternalObjectService_Type[row.original.kind.value.target.value.type]}-{row.original.kind
-					.value.target.value.facilityName}
-			</Badge>
-		{:else if row.original.kind.value.target.case === 'externalObjectService'}
-			<Badge variant="outline">
-				{row.original.kind.value.target.value.endpoint}
-			</Badge>
+	<Layout.Cell class="items-start">
+		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
+			{#if row.original.kind.value.target.case === 'internalObjectService'}
+				<Badge variant="outline">
+					{InternalObjectService_Type[row.original.kind.value.target.value.type]}-{row.original.kind
+						.value.target.value.facilityName}
+				</Badge>
+			{:else if row.original.kind.value.target.case === 'externalObjectService'}
+				<Badge variant="outline">
+					{row.original.kind.value.target.value.endpoint}
+				</Badge>
+			{/if}
 		{/if}
-	{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet createdBy(row: Row<TestResult>)}
-	{row.original.createdBy}
+	<Layout.Cell class="items-start">
+		{row.original.createdBy}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet operation(row: Row<TestResult>)}
-	{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
-		{Warp_Input_Operation[row.original.kind.value.input.operation]}
-	{/if}
+	<Layout.Cell class="items-start">
+		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
+			{Warp_Input_Operation[row.original.kind.value.input.operation]}
+		{/if}
+	</Layout.Cell>
 {/snippet}
 {#snippet duration(row: Row<TestResult>)}
-	<span class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{@const formatted = formatSecond(Number(row.original.kind.value?.input.durationSeconds))}
 			{formatted.value}
 			{formatted.unit}
 		{/if}
-	</span>
+	</Layout.Cell>
 {/snippet}
 {#snippet objectSize(row: Row<TestResult>)}
-	<span class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{@const formatted = formatCapacity(Number(row.original.kind.value?.input.objectSizeBytes))}
 			{formatted.value}
 			{formatted.unit}
 		{/if}
-	</span>
+	</Layout.Cell>
 {/snippet}
 {#snippet objectCount(row: Row<TestResult>)}
-	<span class="flex justify-end">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{row.original.kind.value.input.objectCount}
 		{/if}
-	</span>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet throughputFastest(row: Row<TestResult>)}
-	<div class="flex flex-col items-end gap-1">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
 				GET {(Number(row.original.kind.value.output.get.bytes.fastestPerSecond) / 1000000).toFixed(
@@ -124,11 +137,11 @@
 				).toFixed(3)} MB/s
 			</Badge>
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet throughputSlowest(row: Row<TestResult>)}
-	<div class="flex flex-col items-end gap-1">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
 				GET {(Number(row.original.kind.value.output.get.bytes.slowestPerSecond) / 1000000).toFixed(
@@ -150,11 +163,11 @@
 				).toFixed(3)} MB/s
 			</Badge>
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet throughputMedian(row: Row<TestResult>)}
-	<div class="flex flex-col items-end gap-1">
+	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
 				GET {(Number(row.original.kind.value.output.get.bytes.medianPerSecond) / 1000000).toFixed(
@@ -176,41 +189,47 @@
 				).toFixed(3)} MB/s
 			</Badge>
 		{/if}
-	</div>
+	</Layout.Cell>
 {/snippet}
 
 {#snippet startedAt(row: Row<TestResult>)}
-	{#if row.original.startedAt}
-		<Tooltip.Provider>
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					{formatTimeAgo(timestampDate(row.original.startedAt))}
-				</Tooltip.Trigger>
-				<Tooltip.Content>
-					{timestampDate(row.original.startedAt)}
-				</Tooltip.Content>
-			</Tooltip.Root>
-		</Tooltip.Provider>
-	{/if}
-{/snippet}
-
-{#snippet completedAt(row: Row<TestResult>)}
-	{#if row.original.completedAt}
-		{#if Number(timestampDate(row.original.completedAt)) >= 0}
+	<Layout.Cell class="items-start">
+		{#if row.original.startedAt}
 			<Tooltip.Provider>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						{formatTimeAgo(timestampDate(row.original.completedAt))}
+						{formatTimeAgo(timestampDate(row.original.startedAt))}
 					</Tooltip.Trigger>
 					<Tooltip.Content>
-						{timestampDate(row.original.completedAt)}
+						{timestampDate(row.original.startedAt)}
 					</Tooltip.Content>
 				</Tooltip.Root>
 			</Tooltip.Provider>
 		{/if}
-	{/if}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet completedAt(row: Row<TestResult>)}
+	<Layout.Cell class="items-start">
+		{#if row.original.completedAt}
+			{#if Number(timestampDate(row.original.completedAt)) >= 0}
+				<Tooltip.Provider>
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							{formatTimeAgo(timestampDate(row.original.completedAt))}
+						</Tooltip.Trigger>
+						<Tooltip.Content>
+							{timestampDate(row.original.completedAt)}
+						</Tooltip.Content>
+					</Tooltip.Root>
+				</Tooltip.Provider>
+			{/if}
+		{/if}
+	</Layout.Cell>
 {/snippet}
 
 {#snippet actions(row: Row<TestResult>)}
-	<Actions testResult={row.original} />
+	<Layout.Cell class="items-start">
+		<Actions testResult={row.original} />
+	</Layout.Cell>
 {/snippet}
