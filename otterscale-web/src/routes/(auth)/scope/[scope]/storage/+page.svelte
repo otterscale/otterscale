@@ -4,29 +4,20 @@
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import Loading from '$lib/components/custom/loading/report.svelte';
 	import { Dashboard } from '$lib/components/storage/dashboard';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart/index.js';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import ActivityIcon from '@lucide/svelte/icons/activity';
+	import { scaleUtc } from 'd3-scale';
+	import { curveLinear, curveStep } from 'd3-shape';
+	import { ArcChart, AreaChart, BarChart, type ChartContextValue, Highlight, LineChart, PieChart, Text } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Card from '$lib/components/ui/card';
-
-	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { AreaChart, PieChart, ArcChart, Text } from 'layerchart';
-	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
-
-	import { LineChart } from 'layerchart';
-	import { curveLinear } from 'd3-shape';
-	import { scaleUtc } from 'd3-scale';
-	import { curveStep } from 'd3-shape';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
 	import { cubicInOut } from 'svelte/easing';
-	import ActivityIcon from '@lucide/svelte/icons/activity';
-
-	import { curveLinearClosed } from 'd3-shape';
-	import { scaleBand } from 'd3-scale';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [], current: dynamicPaths.storage(page.params.scope) });
@@ -309,8 +300,8 @@
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
 
-	let prometheusDriver: PrometheusDriver | null = null;
-	let mounted = false;
+	let prometheusDriver = $state<PrometheusDriver | null>(null);
+	let mounted = $state(false);
 
 	async function initializePrometheusDriver(): Promise<PrometheusDriver> {
 		const response = await environmentService.getPrometheus({});
@@ -524,13 +515,13 @@
 							{@const chart = key as keyof typeof chartConfig4}
 							<button
 								data-active={activeChart4 === chart}
-								class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
+								class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
 								onclick={() => (activeChart4 = chart)}
 							>
 								<span class="text-muted-foreground text-xs">
 									{chartConfig4[chart].label}
 								</span>
-								<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
+								<span class="flex items-end gap-1 text-lg font-bold leading-none sm:text-3xl">
 									{total4[key as keyof typeof total4].toLocaleString()}
 									<span class="text-muted-foreground text-xs">B/s</span>
 								</span>
@@ -601,13 +592,13 @@
 							{@const chart = key as keyof typeof chartConfig3}
 							<button
 								data-active={activeChart3 === chart}
-								class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
+								class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
 								onclick={() => (activeChart3 = chart)}
 							>
 								<span class="text-muted-foreground text-xs">
 									{chartConfig3[chart].label}
 								</span>
-								<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
+								<span class="flex items-end gap-1 text-lg font-bold leading-none sm:text-3xl">
 									{total3[key as keyof typeof total3].toLocaleString()}
 									<span class="text-muted-foreground text-xs">ops/s</span>
 								</span>
@@ -741,6 +732,9 @@
 			{#if mounted && prometheusDriver && $activeScope}
 				<Dashboard client={prometheusDriver} scope={$activeScope} />
 			{:else}
+				{console.log(mounted)}
+				{console.log(prometheusDriver)}
+				{console.log(activeScope)}
 				<Loading />
 			{/if}
 		</Tabs.Content>
