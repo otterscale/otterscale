@@ -2,6 +2,7 @@
 	import type { DeleteSubvolumeGroupRequest, SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
+	import { m } from '$lib/paraglide/messages.js';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
@@ -46,10 +47,10 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Delete
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Delete Subvolume Group</Modal.Header>
+		<Modal.Header>{m.delete_group()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
@@ -61,8 +62,7 @@
 					/>
 				</Form.Field>
 				<Form.Help>
-					Please type the file subvolume group exactly to confirm deletion. This action cannot be
-					undone.
+					{m.deletion_warning({ identifier: m.group_name() })}
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
@@ -72,7 +72,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -97,7 +97,7 @@
 						close();
 					}}
 				>
-					Delete
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

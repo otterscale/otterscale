@@ -1,4 +1,5 @@
 <script lang="ts" module>
+	import { m } from '$lib/paraglide/messages';
 	import {
 		NetworkService,
 		type DeleteIPRangeRequest,
@@ -15,6 +16,8 @@
 </script>
 
 <script lang="ts">
+	import { deletion_warning } from '$lib/paraglide/messages';
+
 	let { ipRange }: { ipRange: Network_IPRange } = $props();
 
 	const transport: Transport = getContext('transport');
@@ -41,22 +44,22 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Delete
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Delete IP Range</Modal.Header>
+		<Modal.Header>{m.delete_ip_range()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Start</Form.Label>
+					<Form.Label>{m.start_ip()}</Form.Label>
 					<SingleInput.Confirm required target={ipRange.startIp} bind:invalid={invalidStartIP} />
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>End</Form.Label>
+					<Form.Label>{m.end_ip()}</Form.Label>
 					<SingleInput.Confirm required target={ipRange.endIp} bind:invalid={invalidEndIP} />
 				</Form.Field>
 				<Form.Help>
-					Please type the ip range exactly to confirm deletion. This action cannot be undone.
+					{m.deletion_warning({ identifier: m.range() })}
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
@@ -66,7 +69,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -92,7 +95,7 @@
 						close();
 					}}
 				>
-					Delete
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

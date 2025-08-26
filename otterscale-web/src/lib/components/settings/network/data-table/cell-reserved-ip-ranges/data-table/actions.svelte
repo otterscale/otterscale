@@ -1,9 +1,10 @@
 <script lang="ts" module>
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
-	import { Layout } from '$lib/components/custom/data-table';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Row } from '@tanstack/table-core';
 	import Delete from './action-delete.svelte';
 	import Update from './action-update.svelte';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
@@ -15,7 +16,7 @@
 </script>
 
 <Layout.Actions>
-	<Layout.ActionLabel>Actions</Layout.ActionLabel>
+	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>
 		<Update ipRange={row.original} />

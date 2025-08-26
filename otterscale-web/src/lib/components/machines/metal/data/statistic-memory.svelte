@@ -2,6 +2,7 @@
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import { type Writable } from 'svelte/store';
 </script>
 
@@ -12,12 +13,12 @@
 		machine: Writable<Machine>;
 	} = $props();
 
-	const { value, unit } = formatCapacity(Number($machine.memoryMb)*1000*1000);
+	const { value, unit } = formatCapacity(Number($machine.memoryMb) * 1000 * 1000);
 </script>
 
 <Layout.Statistic.Root>
 	<Layout.Statistic.Header>
-		<Layout.Statistic.Title>MEMORY</Layout.Statistic.Title>
+		<Layout.Statistic.Title>{m.memory()}</Layout.Statistic.Title>
 	</Layout.Statistic.Header>
 	<Layout.Statistic.Content>
 		{value}

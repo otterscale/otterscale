@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { page } from '$app/state';
 	import type { Application } from '$lib/api/application/v1/application_pb';
-	import { RowPickers } from '$lib/components/custom/data-table';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -24,15 +24,17 @@
 </script>
 
 {#snippet row_picker(row: Row<Application>)}
-	<RowPickers.Cell {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<Application>)}
 	<span class="flex items-center">
-		{row.original.name}
-		<Button variant="ghost" href={`${page.url}/${row.original.namespace}/${row.original.name}`}>
-			<Icon icon="ph:arrow-square-out" />
-		</Button>
+		<a
+			class="underline hover:no-underline"
+			href={`${page.url}/${row.original.namespace}/${row.original.name}`}
+		>
+			{row.original.name}
+		</a>
 	</span>
 {/snippet}
 

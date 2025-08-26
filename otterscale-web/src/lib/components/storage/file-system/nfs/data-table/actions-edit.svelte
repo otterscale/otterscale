@@ -6,12 +6,12 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import { m } from '$lib/paraglide/messages.js';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { get } from 'svelte/store';
 	import { type NFSStore } from '../utils.svelte.js';
-	import { SUBVOLUME_QUOTA_HELP_TEXT } from './helper.js';
 </script>
 
 <script lang="ts">
@@ -49,13 +49,13 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
-		Edit
+		{m.edit()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Edit Subvolume</Modal.Header>
+		<Modal.Header>{m.edit_nfs()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Legend>Quota</Form.Legend>
+				<Form.Legend>{m.quota_size()}</Form.Legend>
 
 				<Form.Field>
 					<SingleInput.Measurement
@@ -68,7 +68,7 @@
 					/>
 				</Form.Field>
 				<Form.Help>
-					{SUBVOLUME_QUOTA_HELP_TEXT}
+					{m.nfs_quota_size_direction()}
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
@@ -78,7 +78,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -102,7 +102,7 @@
 						close();
 					}}
 				>
-					Update
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

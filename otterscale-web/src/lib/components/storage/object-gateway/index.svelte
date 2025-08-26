@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import { Bucket } from './bucket';
 	import { User } from './user';
 </script>
@@ -16,8 +17,8 @@
 
 {#snippet trigger()}
 	<Tabs.List>
-		<Tabs.Trigger value="user">User</Tabs.Trigger>
-		<Tabs.Trigger value="bucket">Bucket</Tabs.Trigger>
+		<Tabs.Trigger value="user">{m.user()}</Tabs.Trigger>
+		<Tabs.Trigger value="bucket">{m.bucket()}</Tabs.Trigger>
 	</Tabs.List>
 {/snippet}
 <Tabs.Root value="user">

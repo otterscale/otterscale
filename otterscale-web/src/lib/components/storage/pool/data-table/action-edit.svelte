@@ -60,7 +60,7 @@
 				<Form.Field>
 					<Form.Label>{m.quota_size()}</Form.Label>
 					<Form.Help>
-						{m.pool_quota_size_directions()}
+						{m.pool_quota_size_direction()}
 					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
@@ -74,7 +74,7 @@
 				<Form.Field>
 					<Form.Label>{m.quota_objects()}</Form.Label>
 					<Form.Help>
-						{m.pool_quota_objects_directions()}
+						{m.pool_quota_objects_direction()}
 					</Form.Help>
 					<SingleInput.General bind:value={request.quotaObjects} />
 				</Form.Field>

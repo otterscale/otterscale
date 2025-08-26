@@ -1,20 +1,21 @@
 <script lang="ts" module>
 	import type { Application } from '$lib/api/application/v1/application_pb';
-	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
+	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		name: m.applications_workloads_heads_name(),
-		type: m.applications_workloads_heads_type(),
-		namespace: m.applications_workloads_heads_namespace(),
-		health: m.applications_workloads_heads_health(),
-		service: m.applications_workloads_heads_service(),
-		pod: m.applications_workloads_heads_pod(),
-		replica: m.applications_workloads_heads_replica(),
-		container: m.applications_workloads_heads_container(),
-		volume: m.applications_workloads_heads_volume(),
-		nodeport: m.applications_workloads_heads_nodeport()
+		name: m.name(),
+		type: m.type(),
+		namespace: m.namespace(),
+		health: m.health(),
+		service: m.service(),
+		pod: m.pod(),
+		replica: m.replica(),
+		container: m.container(),
+		volume: m.volume(),
+		nodeport: m.nodeport()
 	};
 
 	export const headers = {
@@ -35,7 +36,7 @@
 {#snippet row_picker(table: Table<Application>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<RowPickers.Header {table} />
+			<Headers.RowPicker {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}

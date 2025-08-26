@@ -1,8 +1,8 @@
 <script lang="ts" module>
-	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
+	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
-	import { m } from '$lib/paraglide/messages';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -16,17 +16,18 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import type { LargeLangeageModel } from '../protobuf.svelte';
-	import { columns } from './columns';
-	import { messages } from './headers.svelte';
+	import { columns, messages } from './columns';
 </script>
 
 <script lang="ts" generics="TData, TValue">
 	let { largeLanguageModels }: { largeLanguageModels: Writable<LargeLangeageModel[]> } = $props();
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
+
 	const table = createSvelteTable({
 		get data() {
 			return $largeLanguageModels;
@@ -88,7 +89,6 @@
 				rowSelection = updater;
 			}
 		},
-
 		autoResetPageIndex: false
 	});
 </script>

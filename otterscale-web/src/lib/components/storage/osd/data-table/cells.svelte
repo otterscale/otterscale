@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { goto } from '$app/navigation';
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
-	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
@@ -27,7 +27,7 @@
 </script>
 
 {#snippet row_picker(row: Row<OSD>)}
-	<RowPicker {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<OSD>)}

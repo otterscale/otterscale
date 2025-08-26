@@ -7,6 +7,7 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import { m } from '$lib/paraglide/messages.js';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
@@ -43,22 +44,17 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Delete
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Delete User</Modal.Header>
+		<Modal.Header>{m.delete_user()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.Confirm
-						id="deletion"
-						required
-						target={user.id}
-						bind:value={request.userId}
-					/>
+					<SingleInput.Confirm required target={user.id} bind:value={request.userId} />
 				</Form.Field>
 				<Form.Help>
-					Please type the user id exactly to confirm deletion. This action cannot be undone.
+					{m.deletion_warning({ identifier: m.user_id() })}
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
@@ -68,7 +64,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -93,7 +89,7 @@
 						close();
 					}}
 				>
-					Delete
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

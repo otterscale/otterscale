@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { TestResult } from '$lib/api/bist/v1/bist_pb';
-	import { Layout } from '$lib/components/custom/data-table';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { m } from '$lib/paraglide/messages';
 	import Delete from './action-delete.svelte';
 	import Retest from './action-retest.svelte';
 	import View from './action-view.svelte';
@@ -8,14 +9,14 @@
 
 <script lang="ts">
 	let {
-		testResult,
+		testResult
 	}: {
 		testResult: TestResult;
 	} = $props();
 </script>
 
 <Layout.Actions>
-	<Layout.ActionLabel>Actions</Layout.ActionLabel>
+	<Layout.ActionLabel>{m.actions()}</Layout.ActionLabel>
 	<Layout.ActionItem>
 		<View {testResult} />
 	</Layout.ActionItem>
@@ -23,6 +24,6 @@
 		<Retest {testResult} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Delete {testResult}/>
+		<Delete {testResult} />
 	</Layout.ActionItem>
 </Layout.Actions>

@@ -8,6 +8,7 @@
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import { m } from '$lib/paraglide/messages.js';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 </script>
@@ -43,10 +44,10 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Delete
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Delete Bucket</Modal.Header>
+		<Modal.Header>{m.delete_bucket()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
@@ -58,7 +59,7 @@
 					/>
 				</Form.Field>
 				<Form.Help>
-					Please type the bucket name exactly to confirm deletion. This action cannot be undone.
+					{m.deletion_warning({ identifier: m.bucket_name() })}
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
@@ -68,7 +69,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -93,7 +94,7 @@
 						close();
 					}}
 				>
-					Delete
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

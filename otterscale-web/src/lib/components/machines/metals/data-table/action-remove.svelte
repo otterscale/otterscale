@@ -6,8 +6,9 @@
 	} from '$lib/api/machine/v1/machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -44,45 +45,44 @@
 	}
 </script>
 
-<SingleStepModal.Root bind:open>
-	<SingleStepModal.Trigger variant="destructive">
+<Modal.Root bind:open>
+	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Remove
-	</SingleStepModal.Trigger>
-	<SingleStepModal.Content>
-		<SingleStepModal.Header>Remove Machine</SingleStepModal.Header>
+		{m.remove()}
+	</Modal.Trigger>
+	<Modal.Content>
+		<Modal.Header>{m.remove_machine()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>FQDN</Form.Label>
+					<Form.Label>{m.fqdn()}</Form.Label>
 					<SingleInput.Confirm required target={machine.fqdn} bind:invalid />
 					<Form.Help>
-						Please type the machine fqdn {machine.fqdn} exactly to confirm deletion. This action cannot
-						be undone.
+						{m.deletion_warning({ identifier: m.fqdn() })}
 					</Form.Help>
 					<Form.Field>
-						<SingleInput.Boolean required descriptor={() => 'Force'} bind:value={request.force} />
+						<SingleInput.Boolean required descriptor={() => m.force()} bind:value={request.force} />
 					</Form.Field>
 					<Form.Field>
 						<SingleInput.Boolean
 							required
-							descriptor={() => 'Purge Disk'}
+							descriptor={() => m.purge_disk()}
 							bind:value={request.purgeDisk}
 						/>
 					</Form.Field>
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
-		<SingleStepModal.Footer>
-			<SingleStepModal.Cancel
+		<Modal.Footer>
+			<Modal.Cancel
 				onclick={() => {
 					reset();
 				}}
 			>
-				Cancel
-			</SingleStepModal.Cancel>
-			<SingleStepModal.ActionsGroup>
-				<SingleStepModal.Action
+				{m.cancel()}
+			</Modal.Cancel>
+			<Modal.ActionsGroup>
+				<Modal.Action
 					disabled={invalid}
 					onclick={() => {
 						toast.promise(() => machineClient.deleteMachine(request), {
@@ -105,9 +105,9 @@
 						close();
 					}}
 				>
-					Remove
-				</SingleStepModal.Action>
-			</SingleStepModal.ActionsGroup>
-		</SingleStepModal.Footer>
-	</SingleStepModal.Content>
-</SingleStepModal.Root>
+					{m.confirm()}
+				</Modal.Action>
+			</Modal.ActionsGroup>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

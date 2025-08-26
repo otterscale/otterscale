@@ -10,11 +10,11 @@
 	import { BISTService, Warp_Input_Operation } from '$lib/api/bist/v1/bist_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
-	import * as MultipleStepModal from '$lib/components/custom/modal/mutiple-step';
+	import * as Modal from '$lib/components/custom/modal/mutiple-step';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import { formatCapacity, formatSecond } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -131,50 +131,48 @@
 	const invalid = $derived(invalidBasic || invalidAdvanced);
 </script>
 
-<MultipleStepModal.Root bind:open steps={3}>
+<Modal.Root bind:open steps={3}>
 	{#if testResult}
-		<MultipleStepModal.Trigger class="flex h-full w-full items-center gap-2">
+		<Modal.Trigger variant="creative">
 			<Icon icon="ph:play" />
-			Retest
-		</MultipleStepModal.Trigger>
+			{m.retest()}
+		</Modal.Trigger>
 	{:else}
 		<div class="flex justify-end">
-			<MultipleStepModal.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
-				<div class="flex items-center gap-1">
-					<Icon icon="ph:plus" />
-					Create
-				</div>
-			</MultipleStepModal.Trigger>
+			<Modal.Trigger variant="default">
+				<Icon icon="ph:plus" />
+				{m.create()}
+			</Modal.Trigger>
 		</div>
 	{/if}
-	<MultipleStepModal.Content>
-		<MultipleStepModal.Header>Built-in Self Test</MultipleStepModal.Header>
-		<MultipleStepModal.Stepper>
-			<MultipleStepModal.Steps>
-				<MultipleStepModal.Step icon="ph:number-one">
+	<Modal.Content>
+		<Modal.Header>{m.built_in_self_test()}</Modal.Header>
+		<Modal.Stepper>
+			<Modal.Steps>
+				<Modal.Step icon="ph:number-one">
 					{#snippet text()}
-						Basic
+						{m.basic()}
 					{/snippet}
-				</MultipleStepModal.Step>
-				<MultipleStepModal.Step icon="ph:number-two">
+				</Modal.Step>
+				<Modal.Step icon="ph:number-two">
 					{#snippet text()}
-						Advance
+						{m.advance()}
 					{/snippet}
-				</MultipleStepModal.Step>
-				<MultipleStepModal.Step icon="ph:number-three">
+				</Modal.Step>
+				<Modal.Step icon="ph:number-three">
 					{#snippet text()}
-						Check
+						{m.check()}
 					{/snippet}
-				</MultipleStepModal.Step>
-			</MultipleStepModal.Steps>
-			<MultipleStepModal.Models>
+				</Modal.Step>
+			</Modal.Steps>
+			<Modal.Models>
 				<!-- Step One -->
-				<MultipleStepModal.Model>
+				<Modal.Model>
 					<Form.Root class="max-h-[65vh]">
 						<Form.Fieldset>
 							<!-- Name -->
 							<Form.Field>
-								<Form.Label for="bist-name">Name</Form.Label>
+								<Form.Label for="bist-name">{m.name()}</Form.Label>
 								<SingleInput.General
 									type="text"
 									id="name"
@@ -185,7 +183,7 @@
 							</Form.Field>
 							<!-- Choose Target -->
 							<Form.Field>
-								<Form.Label for="bist-input">Target</Form.Label>
+								<Form.Label for="bist-input">{m.target()}</Form.Label>
 								<SingleSelect.Root
 									options={warpTarget}
 									required
@@ -197,7 +195,7 @@
 										<SingleSelect.Options>
 											<SingleSelect.Input />
 											<SingleSelect.List>
-												<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
 													{#each $warpTarget as item}
 														<SingleSelect.Item option={item}>
@@ -219,9 +217,9 @@
 						<!-- Target -->
 						{#if requestWarp.target.case == 'internalObjectService'}
 							<Form.Fieldset>
-								<Form.Legend>Target</Form.Legend>
+								<Form.Legend>{m.target()}</Form.Legend>
 								<Form.Field>
-									<Form.Label>Interanl Object Service</Form.Label>
+									<Form.Label>{m.internal_object_service()}</Form.Label>
 									<ObjectServicesPicker
 										bind:selectedInternalObjectService={requestInternalObjectService}
 									/>
@@ -229,9 +227,9 @@
 							</Form.Fieldset>
 						{:else if requestWarp.target.case == 'externalObjectService'}
 							<Form.Fieldset>
-								<Form.Legend>Target</Form.Legend>
+								<Form.Legend>{m.target()}</Form.Legend>
 								<Form.Field>
-									<Form.Label>Endpoint</Form.Label>
+									<Form.Label>{m.endpoint()}</Form.Label>
 									<SingleInput.General
 										type="text"
 										required
@@ -240,7 +238,7 @@
 									/>
 								</Form.Field>
 								<Form.Field>
-									<Form.Label>Access Key</Form.Label>
+									<Form.Label>{m.access_key()}</Form.Label>
 									<SingleInput.General
 										type="text"
 										required
@@ -249,7 +247,7 @@
 									/>
 								</Form.Field>
 								<Form.Field>
-									<Form.Label>Secret Key</Form.Label>
+									<Form.Label>{m.secret_key()}</Form.Label>
 									<SingleInput.General
 										type="text"
 										required
@@ -260,16 +258,16 @@
 							</Form.Fieldset>
 						{/if}
 					</Form.Root>
-				</MultipleStepModal.Model>
+				</Modal.Model>
 
 				<!-- Step two -->
-				<MultipleStepModal.Model>
+				<Modal.Model>
 					<Form.Root class="max-h-[65vh]">
 						<Form.Fieldset>
-							<Form.Legend>Parameter</Form.Legend>
+							<Form.Legend>{m.parameter()}</Form.Legend>
 							<!-- warpInputOperation -->
 							<Form.Field>
-								<Form.Label for="warp-operation">Operation</Form.Label>
+								<Form.Label for="warp-operation">{m.operation()}</Form.Label>
 								<SingleSelect.Root
 									options={warpInputOperation}
 									required
@@ -281,7 +279,7 @@
 										<SingleSelect.Options>
 											<SingleSelect.Input />
 											<SingleSelect.List>
-												<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
 													{#each $warpInputOperation as item}
 														<SingleSelect.Item option={item}>
@@ -301,7 +299,7 @@
 							</Form.Field>
 							<!-- Duration -->
 							<Form.Field>
-								<Form.Label>Duration</Form.Label>
+								<Form.Label>{m.duration()}</Form.Label>
 								<SingleInput.Measurement
 									bind:value={warpDuration}
 									units={[
@@ -314,7 +312,7 @@
 							</Form.Field>
 							<!-- ObjectSize -->
 							<Form.Field>
-								<Form.Label>Object Size</Form.Label>
+								<Form.Label>{m.object_size()}</Form.Label>
 								<SingleInput.Measurement
 									bind:value={warpObjectSize}
 									units={[
@@ -329,7 +327,7 @@
 							</Form.Field>
 							<!-- ObjectCount -->
 							<Form.Field>
-								<Form.Label>Object Count</Form.Label>
+								<Form.Label>{m.object_count()}</Form.Label>
 								<SingleInput.General
 									type="number"
 									placeholder="500"
@@ -339,31 +337,31 @@
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
-				</MultipleStepModal.Model>
+				</Modal.Model>
 
 				<!-- Step three Overview -->
-				<MultipleStepModal.Model>
+				<Modal.Model>
 					<Form.Root>
 						<!-- Step 1 -->
 						<Form.Fieldset>
-							<Form.Legend>Step 1</Form.Legend>
-							<Form.Description>Name: {request.name}</Form.Description>
-							<Form.Description>Target: {requestWarp.target.case}</Form.Description>
+							<Form.Legend>{m.basic()}</Form.Legend>
+							<Form.Description>{m.name()}: {request.name}</Form.Description>
+							<Form.Description>{m.target()}: {requestWarp.target.case}</Form.Description>
 							{#if requestWarp.target.case == 'internalObjectService'}
-								<Form.Description>Type: {requestInternalObjectService.type}</Form.Description>
-								<Form.Description>Name: {requestInternalObjectService.name}</Form.Description>
+								<Form.Description>{m.type()}: {requestInternalObjectService.type}</Form.Description>
+								<Form.Description>{m.name()}: {requestInternalObjectService.name}</Form.Description>
 								<Form.Description
-									>Endpoint: {requestInternalObjectService.endpoint}</Form.Description
+									>{m.endpoint()}: {requestInternalObjectService.endpoint}</Form.Description
 								>
 							{:else if requestWarp.target.case == 'externalObjectService'}
 								<Form.Description
-									>Endpoint: {requestExternalObjectService.endpoint}</Form.Description
+									>{m.endpoint()}: {requestExternalObjectService.endpoint}</Form.Description
 								>
 								<Form.Description
-									>Access Key: {requestExternalObjectService.accessKey}</Form.Description
+									>{m.access_key()}: {requestExternalObjectService.accessKey}</Form.Description
 								>
 								<Form.Description
-									>Secret Key: {requestExternalObjectService.secretKey}</Form.Description
+									>{m.secret_key()}: {requestExternalObjectService.secretKey}</Form.Description
 								>
 							{/if}
 						</Form.Fieldset>
@@ -371,29 +369,33 @@
 						<Form.Fieldset>
 							{@const duration = formatSecond(Number(warpDuration))}
 							{@const objectSize = formatCapacity(Number(warpObjectSize))}
-							<Form.Legend>Step 2</Form.Legend>
-							<Form.Description>Operation: {Warp_Input_Operation[warpOperation]}</Form.Description>
-							<Form.Description>Duration: {duration.value} {duration.unit}</Form.Description>
-							<Form.Description>Object Size: {objectSize.value} {objectSize.unit}</Form.Description>
+							<Form.Legend>{m.advance()}</Form.Legend>
+							<Form.Description
+								>{m.operation()}: {Warp_Input_Operation[warpOperation]}</Form.Description
+							>
+							<Form.Description>{m.duration()}: {duration.value} {duration.unit}</Form.Description>
+							<Form.Description
+								>{m.object_size()}: {objectSize.value} {objectSize.unit}</Form.Description
+							>
 							{#if warpOperation !== Warp_Input_Operation.PUT}
-								<Form.Description>Object Count: {warpObjectCount}</Form.Description>
+								<Form.Description>{m.object_count()}: {warpObjectCount}</Form.Description>
 							{/if}
 						</Form.Fieldset>
 					</Form.Root>
-				</MultipleStepModal.Model>
-			</MultipleStepModal.Models>
-		</MultipleStepModal.Stepper>
+				</Modal.Model>
+			</Modal.Models>
+		</Modal.Stepper>
 
-		<MultipleStepModal.Footer>
-			<MultipleStepModal.Cancel
+		<Modal.Footer>
+			<Modal.Cancel
 				onclick={() => {
 					reset();
-				}}>Cancel</MultipleStepModal.Cancel
+				}}>{m.cancel()}</Modal.Cancel
 			>
-			<MultipleStepModal.Controllers>
-				<MultipleStepModal.Back>Back</MultipleStepModal.Back>
-				<MultipleStepModal.Next>Next</MultipleStepModal.Next>
-				<MultipleStepModal.Confirm
+			<Modal.Controllers>
+				<Modal.Back>{m.back()}</Modal.Back>
+				<Modal.Next>{m.next()}</Modal.Next>
+				<Modal.Confirm
 					disabled={invalid}
 					onclick={() => {
 						// prepare request
@@ -428,9 +430,9 @@
 						close();
 					}}
 				>
-					Confirm
-				</MultipleStepModal.Confirm>
-			</MultipleStepModal.Controllers>
-		</MultipleStepModal.Footer>
-	</MultipleStepModal.Content>
-</MultipleStepModal.Root>
+					{m.confirm()}
+				</Modal.Confirm>
+			</Modal.Controllers>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

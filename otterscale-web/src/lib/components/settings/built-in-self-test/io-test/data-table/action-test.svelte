@@ -12,11 +12,11 @@
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
-	import { MultipleStep as MultipleStepModal } from '$lib/components/custom/modal';
+	import { MultipleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import { buttonVariants } from '$lib/components/ui/button';
 	import { formatCapacity, formatSecond } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -162,53 +162,51 @@
 	});
 </script>
 
-<MultipleStepModal.Root bind:open steps={3}>
+<Modal.Root bind:open steps={3}>
 	<!-- {@render trigger()} -->
 	{#if testResult}
-		<MultipleStepModal.Trigger class="flex h-full w-full items-center gap-2">
+		<Modal.Trigger variant="creative">
 			<Icon icon="ph:play" />
-			Retest
-		</MultipleStepModal.Trigger>
+			{m.retest()}
+		</Modal.Trigger>
 	{:else}
 		<div class="flex justify-end">
-			<MultipleStepModal.Trigger class={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>
-				<div class="flex items-center gap-1">
-					<Icon icon="ph:plus" />
-					Create
-				</div>
-			</MultipleStepModal.Trigger>
+			<Modal.Trigger variant="default">
+				<Icon icon="ph:plus" />
+				{m.create()}
+			</Modal.Trigger>
 		</div>
 	{/if}
-	<MultipleStepModal.Content>
-		<MultipleStepModal.Header class="mt-6 mb-6 flex justify-center text-xl font-bold">
-			Built-in Self Test
-		</MultipleStepModal.Header>
-		<MultipleStepModal.Stepper>
-			<MultipleStepModal.Steps>
-				<MultipleStepModal.Step icon="ph:number-one" />
-				<MultipleStepModal.Step icon="ph:number-two" />
-				<MultipleStepModal.Step icon="ph:number-three" />
-			</MultipleStepModal.Steps>
-			<MultipleStepModal.Models>
+	<Modal.Content>
+		<Modal.Header class="mt-6 mb-6 flex justify-center text-xl font-bold">
+			{m.built_in_self_test()}
+		</Modal.Header>
+		<Modal.Stepper>
+			<Modal.Steps>
+				<Modal.Step icon="ph:number-one" />
+				<Modal.Step icon="ph:number-two" />
+				<Modal.Step icon="ph:number-three" />
+			</Modal.Steps>
+			<Modal.Models>
 				<!-- Step One -->
-				<MultipleStepModal.Model>
+				<Modal.Model>
 					<Form.Root class="max-h-[65vh]">
 						<Form.Fieldset>
 							<!-- Name -->
 							<Form.Field>
-								<Form.Label for="bist-name">Name</Form.Label>
+								<Form.Label for="bist-name">{m.name()}</Form.Label>
 								<SingleInput.General type="text" id="name" bind:value={request.name} />
 							</Form.Field>
 							<!-- Choose Target -->
 							<Form.Field>
-								<Form.Label for="bist-input">Target</Form.Label>
+								<Form.Label for="bist-input">{m.target()}</Form.Label>
 								<SingleSelect.Root options={fioTarget} required bind:value={requestFio.target.case}>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
 											<SingleSelect.Input />
 											<SingleSelect.List>
-												<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
 													{#each $fioTarget as item}
 														<SingleSelect.Item option={item}>
@@ -230,9 +228,9 @@
 						<!-- Target -->
 						{#if requestFio.target.case == 'cephBlockDevice'}
 							<Form.Fieldset>
-								<Form.Legend>Target</Form.Legend>
+								<Form.Legend>{m.target()}</Form.Legend>
 								<Form.Field>
-									<Form.Label>Ceph</Form.Label>
+									<Form.Label>{m.ceph()}</Form.Label>
 									{#if isCephsLoading}
 										<Loading.Selection />
 									{:else}
@@ -242,7 +240,7 @@
 												<SingleSelect.Options>
 													<SingleSelect.Input />
 													<SingleSelect.List>
-														<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+														<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 														<SingleSelect.Group>
 															{#each $cephOptions as option}
 																<SingleSelect.Item
@@ -270,9 +268,9 @@
 							</Form.Fieldset>
 						{:else if requestFio.target.case == 'networkFileSystem'}
 							<Form.Fieldset>
-								<Form.Legend>Target</Form.Legend>
+								<Form.Legend>{m.target()}</Form.Legend>
 								<Form.Field>
-									<Form.Label>Endpoint</Form.Label>
+									<Form.Label>{m.endpoint()}</Form.Label>
 									<SingleInput.General
 										type="text"
 										required
@@ -280,7 +278,7 @@
 									/>
 								</Form.Field>
 								<Form.Field>
-									<Form.Label>Path</Form.Label>
+									<Form.Label>{m.path()}</Form.Label>
 									<SingleInput.General
 										type="text"
 										required
@@ -290,16 +288,16 @@
 							</Form.Fieldset>
 						{/if}
 					</Form.Root>
-				</MultipleStepModal.Model>
+				</Modal.Model>
 
 				<!-- Step two -->
-				<MultipleStepModal.Model>
+				<Modal.Model>
 					<Form.Root class="max-h-[65vh]">
 						<Form.Fieldset>
-							<Form.Legend>Parameter</Form.Legend>
+							<Form.Legend>{m.parameter()}</Form.Legend>
 							<!-- fioInputeAccessMode -->
 							<Form.Field>
-								<Form.Label for="fio-access-mode">Access Mode</Form.Label>
+								<Form.Label for="fio-access-mode">{m.access_mode()}</Form.Label>
 								<SingleSelect.Root
 									options={fioInputeAccessMode}
 									required
@@ -310,7 +308,7 @@
 										<SingleSelect.Options>
 											<SingleSelect.Input />
 											<SingleSelect.List>
-												<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+												<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 												<SingleSelect.Group>
 													{#each $fioInputeAccessMode as item}
 														<SingleSelect.Item option={item}>
@@ -330,12 +328,12 @@
 							</Form.Field>
 							<!-- jobCount -->
 							<Form.Field>
-								<Form.Label>Job Count</Form.Label>
+								<Form.Label>{m.job_count()}</Form.Label>
 								<SingleInput.General type="number" placeholder="32" bind:value={fioJobCount} />
 							</Form.Field>
 							<!-- runTime -->
 							<Form.Field>
-								<Form.Label>Run Time</Form.Label>
+								<Form.Label>{m.run_time()}</Form.Label>
 								<SingleInput.Measurement
 									bind:value={fioRunTime}
 									units={[
@@ -348,7 +346,7 @@
 							</Form.Field>
 							<!-- blockSize -->
 							<Form.Field>
-								<Form.Label>Block Size</Form.Label>
+								<Form.Label>{m.block_size()}</Form.Label>
 								<SingleInput.Measurement
 									bind:value={fioBlockSize}
 									units={[
@@ -363,7 +361,7 @@
 							</Form.Field>
 							<!-- fileSize -->
 							<Form.Field>
-								<Form.Label>File Size</Form.Label>
+								<Form.Label>{m.file_size()}</Form.Label>
 								<SingleInput.Measurement
 									bind:value={fioFileSize}
 									units={[
@@ -378,27 +376,27 @@
 							</Form.Field>
 							<!-- ioDepth -->
 							<Form.Field>
-								<Form.Label>I/O Depth</Form.Label>
+								<Form.Label>{m.io_depth()}</Form.Label>
 								<SingleInput.General type="number" placeholder="1" bind:value={fioIoDepth} />
 							</Form.Field>
 						</Form.Fieldset>
 					</Form.Root>
-				</MultipleStepModal.Model>
+				</Modal.Model>
 
 				<!-- Step three Overview -->
-				<MultipleStepModal.Model>
+				<Modal.Model>
 					<Form.Root>
 						<!-- Step 1 -->
 						<Form.Fieldset>
-							<Form.Legend>Step 1</Form.Legend>
-							<Form.Description>Name: {request.name}</Form.Description>
-							<Form.Description>Target: {requestFio.target.case}</Form.Description>
+							<Form.Legend>{m.basic()}</Form.Legend>
+							<Form.Description>{m.name()}: {request.name}</Form.Description>
+							<Form.Description>{m.target()}: {requestFio.target.case}</Form.Description>
 							{#if requestFio.target.case == 'cephBlockDevice'}
-								<Form.Description>Scope UUID: {selectedScope}</Form.Description>
-								<Form.Description>Facility Name: {selectedFacility}</Form.Description>
+								<Form.Description>{m.scope()}: {selectedScope}</Form.Description>
+								<Form.Description>{m.facility()}: {selectedFacility}</Form.Description>
 							{:else if requestFio.target.case == 'networkFileSystem'}
-								<Form.Description>type: {requestNetworkFileSystem.endpoint}</Form.Description>
-								<Form.Description>name: {requestNetworkFileSystem.path}</Form.Description>
+								<Form.Description>{m.type()}: {requestNetworkFileSystem.endpoint}</Form.Description>
+								<Form.Description>{m.name()}: {requestNetworkFileSystem.path}</Form.Description>
 							{/if}
 						</Form.Fieldset>
 						<!-- Step 2 -->
@@ -406,30 +404,33 @@
 							{@const runTime = formatSecond(Number(fioRunTime))}
 							{@const blockSize = formatCapacity(Number(fioBlockSize))}
 							{@const fileSize = formatCapacity(Number(fioFileSize))}
-							<Form.Legend>Step 2</Form.Legend>
-							<Form.Description>Access Mode: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description
+							<Form.Legend>{m.advance()}</Form.Legend>
+							<Form.Description
+								>{m.access_mode()}: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description
 							>
-							<Form.Description>Job Count: {fioJobCount}</Form.Description>
-							<Form.Description>Run Time: {runTime.value} {runTime.unit}</Form.Description>
-							<Form.Description>Block Size: {blockSize.value} {blockSize.unit}</Form.Description>
-							<Form.Description>File Size: {fileSize.value} {fileSize.unit}</Form.Description>
-							<Form.Description>I/O Depth: {fioIoDepth}</Form.Description>
+							<Form.Description>{m.job_count()}: {fioJobCount}</Form.Description>
+							<Form.Description>{m.run_time()}: {runTime.value} {runTime.unit}</Form.Description>
+							<Form.Description
+								>{m.block_size()}: {blockSize.value} {blockSize.unit}</Form.Description
+							>
+							<Form.Description>{m.file_size()}: {fileSize.value} {fileSize.unit}</Form.Description>
+							<Form.Description>{m.io_depth()}: {fioIoDepth}</Form.Description>
 						</Form.Fieldset>
 					</Form.Root>
-				</MultipleStepModal.Model>
-			</MultipleStepModal.Models>
-		</MultipleStepModal.Stepper>
+				</Modal.Model>
+			</Modal.Models>
+		</Modal.Stepper>
 
-		<MultipleStepModal.Footer>
-			<MultipleStepModal.Cancel
+		<Modal.Footer>
+			<Modal.Cancel
 				onclick={() => {
 					reset();
-				}}>Cancel</MultipleStepModal.Cancel
+				}}>{m.cancel()}</Modal.Cancel
 			>
-			<MultipleStepModal.Controllers>
-				<MultipleStepModal.Back>Back</MultipleStepModal.Back>
-				<MultipleStepModal.Next>Next</MultipleStepModal.Next>
-				<MultipleStepModal.Confirm
+			<Modal.Controllers>
+				<Modal.Back>{m.back()}</Modal.Back>
+				<Modal.Next>{m.next()}</Modal.Next>
+				<Modal.Confirm
 					onclick={() => {
 						// prepare request
 						if (requestFio.target.case == 'cephBlockDevice') {
@@ -468,9 +469,9 @@
 						close();
 					}}
 				>
-					Confirm
-				</MultipleStepModal.Confirm>
-			</MultipleStepModal.Controllers>
-		</MultipleStepModal.Footer>
-	</MultipleStepModal.Content>
-</MultipleStepModal.Root>
+					{m.confirm()}
+				</Modal.Confirm>
+			</Modal.Controllers>
+		</Modal.Footer>
+	</Modal.Content>
+</Modal.Root>

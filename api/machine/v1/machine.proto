@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.machine.v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/openhdc/otterscale/api/machine/v1;pb";
 
@@ -51,6 +52,7 @@ message Machine {
     bool dhcp_on = 71;
   }
   string id = 1;
+  google.protobuf.Timestamp last_commissioned = 2;
   string hardware_uuid = 101;
   string hostname = 102;
   string fqdn = 103;

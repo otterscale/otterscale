@@ -1,5 +1,5 @@
 import type { Machine } from '$lib/api/machine/v1/machine_pb';
-import { getSortingFunction } from '$lib/components/custom/data-table';
+import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import type { ColumnDef } from '@tanstack/table-core';
 import { cells } from './cells.svelte';
@@ -156,7 +156,8 @@ const columns: ColumnDef<Machine>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
-		}
+		},
+		enableHiding: false
 	}
 ];
 

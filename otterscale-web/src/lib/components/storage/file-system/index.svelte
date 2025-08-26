@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import { m } from '$lib/paraglide/messages';
 	import { Group } from './group';
 	import { NFS } from './nfs';
 </script>
@@ -20,8 +21,8 @@
 
 {#snippet trigger()}
 	<Tabs.List>
-		<Tabs.Trigger value="nfs">NFS</Tabs.Trigger>
-		<Tabs.Trigger value="group">Group</Tabs.Trigger>
+		<Tabs.Trigger value="nfs">{m.network_file_system()}</Tabs.Trigger>
+		<Tabs.Trigger value="group">{m.group()}</Tabs.Trigger>
 	</Tabs.List>
 {/snippet}
 <Tabs.Root value="nfs">

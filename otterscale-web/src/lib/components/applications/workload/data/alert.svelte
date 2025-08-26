@@ -18,10 +18,10 @@
 	<Alert.Root variant="destructive" class="border-destructive">
 		<Icon icon="ph:warning" class="size-5" />
 		<Alert.Title>
-			{m.applications_workload_alert_title()}
+			{m.workload_health()}
 		</Alert.Title>
 		<Alert.Description>
-			{m.applications_workload_alert_description({
+			{m.workload_health_description({
 				unhealthies: $application.pods.length - $application.healthies,
 				total: $application.pods.length
 			})}

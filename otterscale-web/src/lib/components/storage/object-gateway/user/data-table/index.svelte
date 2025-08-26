@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { User } from '$lib/api/storage/v1/storage_pb';
-	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
+	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -19,6 +20,7 @@
 	import { columns } from './columns';
 	import { messages } from './headers.svelte';
 	import Statistics from './statistics.svelte';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts" generics="TData, TValue">
@@ -111,7 +113,7 @@
 			/>
 			<Filters.BooleanMatch
 				columnId="suspended"
-				descriptor={(value) => (value ? 'suspended' : 'Not suspended')}
+				descriptor={(value) => (value ? m.suspended() : m.not_suspended())}
 				{messages}
 				{table}
 			/>

@@ -1,13 +1,12 @@
 <script lang="ts" module>
 	import type { User_Key } from '$lib/api/storage/v1/storage_pb';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
-	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		accessKey: 'accessKey',
-		actions: 'actions'
+		accessKey: m.access_key()
 	};
 
 	export const headers = {
@@ -20,14 +19,14 @@
 {#snippet row_picker(table: Table<User_Key>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<RowPicker {table} />
+			<Headers.RowPicker {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
 {#snippet accessKey(column: Column<User_Key>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>ACCESS KEY</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.access_key()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

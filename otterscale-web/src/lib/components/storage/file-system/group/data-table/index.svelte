@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import type { SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
-	import { Empty, Filters, Footer, Layout, Pagination } from '$lib/components/custom/data-table';
+	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {

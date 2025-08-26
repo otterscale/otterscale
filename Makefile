@@ -28,15 +28,19 @@ lint:
 .PHONY: proto
 # generate *.pb.go
 proto:
-	mkdir -p web/src/gen
 	protoc -I=. \
 		--go_out=paths=source_relative:. \
 		--go_opt=default_api_level=API_OPAQUE \
 		--connect-go_out=paths=source_relative:. \
-		--es_out=web/src/gen \
 		--es_out=otterscale-web/src/lib \
 		--es_opt=target=ts \
 		$(PROTO_FILES)
+
+.PHONY: docker-image
+# build docker image
+docker-image:
+	docker build -f Dockerfile --network host -t otterscale:$(VERSION) .
+# 	docker push $(DOCKER_IMAGE):$(VERSION)
 
 .PHONY: help
 # show help

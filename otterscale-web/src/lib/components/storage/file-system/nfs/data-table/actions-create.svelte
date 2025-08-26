@@ -5,13 +5,13 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages.js';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { get } from 'svelte/store';
 	import { type NFSStore } from '../utils.svelte.js';
-	import { SUBVOLUME_QUOTA_HELP_TEXT } from './helper.js';
 </script>
 
 <script lang="ts">
@@ -42,21 +42,21 @@
 <Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
-		Create
+		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header class="flex items-center justify-center text-xl font-bold">
-			Create NFS
+			{m.create_nfs()}
 		</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
-					<SingleInput.General id="name" required type="text" bind:value={request.subvolumeName} />
+					<Form.Label>{m.name()}</Form.Label>
+					<SingleInput.General required type="text" bind:value={request.subvolumeName} />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Group</Form.Label>
+					<Form.Label>{m.group()}</Form.Label>
 					<SingleInput.General
 						required
 						disabled
@@ -68,9 +68,9 @@
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Quota Size</Form.Label>
+					<Form.Label>{m.quota_size()}</Form.Label>
 					<Form.Help>
-						{SUBVOLUME_QUOTA_HELP_TEXT}
+						{m.nfs_quota_size_direction()}
 					</Form.Help>
 					<SingleInput.Measurement
 						bind:value={request.quotaBytes}
@@ -89,7 +89,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -114,7 +114,7 @@
 						close();
 					}}
 				>
-					Create
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

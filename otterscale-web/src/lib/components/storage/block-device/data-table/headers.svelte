@@ -1,16 +1,15 @@
 <script lang="ts" module>
 	import type { Image } from '$lib/api/storage/v1/storage_pb';
-	import * as Layout from '$lib/components/custom/data-table/data-table-layout';
-	import { Header as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
-	import Sorter from '$lib/components/custom/data-table/data-table-sorter.svelte';
+	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		name: 'name',
-		poolName: 'poolName',
-		usage: 'usage',
-		snapshots: 'snapshots',
-		actions: 'actions'
+		name: m.name(),
+		poolName: m.pool_name(),
+		usage: m.usage(),
+		snapshots: m.snapshot()
 	};
 
 	export const headers = {
@@ -26,14 +25,14 @@
 {#snippet row_picker(table: Table<Image>)}
 	<Layout.Header class="justify-center">
 		<Layout.HeaderController>
-			<RowPicker {table} />
+			<Headers.RowPicker {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
 {#snippet name(column: Column<Image>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -42,7 +41,7 @@
 
 {#snippet poolName(column: Column<Image>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>POOL NAME</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.pool_name()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -54,7 +53,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>USAGE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.usage()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -63,7 +62,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>SNAPSHOTS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.snapshot()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

@@ -1,11 +1,12 @@
 <script lang="ts" module>
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
-	import { RowPickers } from '$lib/components/custom/data-table';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { formatCapacity } from '$lib/formatter';
+	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { dynamicPaths } from '$lib/path';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
@@ -28,22 +29,17 @@
 </script>
 
 {#snippet row_picker(row: Row<Machine>)}
-	<RowPickers.Cell {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet fqdn_ip(row: Row<Machine>)}
-	<span class="flex items-center gap-1">
-		{row.original.fqdn}
-
-		<Button
-			variant="ghost"
-			size="icon"
-			class="m-0 p-0"
-			onclick={() =>
-				goto(`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.id}`)}
+	<span class="flex items-center">
+		<a
+			class="m-0 p-0 underline hover:no-underline"
+			href={`${dynamicPaths.machinesMetal(page.params.scope).url}/${row.original.id}`}
 		>
-			<Icon icon="ph:arrow-square-out" />
-		</Button>
+			{row.original.fqdn}
+		</a>
 	</span>
 	{#if row.original.ipAddresses}
 		<span class="text-muted-foreground flex items-center gap-1 text-xs">
@@ -87,7 +83,7 @@
 					{#if processingStates.includes(row.original.status.toLowerCase())}
 						<Icon icon="ph:spinner" class="animate-spin" />
 					{/if}
-					<p class="invisible lg:visible">
+					<p class="invisible max-w-[300px] truncate lg:visible">
 						{row.original.statusMessage}
 					</p>
 				</span>
@@ -138,6 +134,11 @@
 	{#if identifier}
 		{@const scope = identifier.split('-machine-')[0]}
 		{scope}
+		{#if row.original.lastCommissioned}
+			<span class="text-muted-foreground flex items-center gap-1 text-xs">
+				{formatTimeAgo(timestampDate(row.original.lastCommissioned))}
+			</span>
+		{/if}
 	{/if}
 {/snippet}
 

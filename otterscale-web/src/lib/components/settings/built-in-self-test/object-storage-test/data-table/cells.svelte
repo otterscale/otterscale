@@ -5,7 +5,7 @@
 		TestResult_Status,
 		Warp_Input_Operation
 	} from '$lib/api/bist/v1/bist_pb';
-	import { Cell as RowPicker } from '$lib/components/custom/data-table/data-table-row-pickers';
+	import { Cells } from '$lib/components/custom/data-table/core';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
@@ -34,7 +34,7 @@
 </script>
 
 {#snippet row_picker(row: Row<TestResult>)}
-	<RowPicker {row} />
+	<Cells.RowPicker {row} />
 {/snippet}
 
 {#snippet name(row: Row<TestResult>)}

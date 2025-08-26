@@ -5,6 +5,7 @@ import (
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/openhdc/otterscale/api/machine/v1"
 	"github.com/openhdc/otterscale/api/machine/v1/pbconnect"
@@ -99,6 +100,9 @@ func toProtoMachine(m *core.Machine) *pb.Machine {
 	}
 	ret := &pb.Machine{}
 	ret.SetId(m.SystemID)
+	if !m.LastCommissioned.IsZero() {
+		ret.SetLastCommissioned(timestamppb.New(m.LastCommissioned))
+	}
 	ret.SetHardwareUuid(m.HardwareUUID)
 	ret.SetHostname(m.Hostname)
 	ret.SetFqdn(m.FQDN)

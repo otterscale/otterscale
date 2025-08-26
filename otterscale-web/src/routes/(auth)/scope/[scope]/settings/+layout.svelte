@@ -48,7 +48,7 @@
 	];
 </script>
 
-<div class="mx-auto grid w-full max-w-7xl gap-6">
+<div class="mx-auto grid w-full gap-6">
 	<div class="grid gap-1">
 		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.settings()}</h1>
 		<p class="text-muted-foreground">{m.settings_description()}</p>

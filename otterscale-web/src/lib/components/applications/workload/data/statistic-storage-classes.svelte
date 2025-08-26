@@ -21,7 +21,7 @@
 
 <Layout.Statistic.Root class={isExpand ? 'col-span-3' : 'col-span-1'}>
 	<Layout.Statistic.Header>
-		<Layout.Statistic.Title>{m.applications_workload_storage_classes()}</Layout.Statistic.Title>
+		<Layout.Statistic.Title>{m.storage_classes()}</Layout.Statistic.Title>
 		<Layout.Statistic.Action>
 			<Button
 				disabled={$application.persistentVolumeClaims.length === 0}
@@ -43,16 +43,16 @@
 					<Table.Header>
 						<Table.Row>
 							<Table.Head>
-								{m.applications_workload_storage_classes_heads_name()}
+								{m.name()}
 							</Table.Head>
 							<Table.Head>
-								{m.applications_workload_storage_classes_heads_provisioner()}
+								{m.provisioner()}
 							</Table.Head>
 							<Table.Head>
-								{m.applications_workload_storage_classes_heads_reclaim_policy()}
+								{m.reclaim_policy()}
 							</Table.Head>
 							<Table.Head>
-								{m.applications_workload_storage_classes_heads_volume_binding_mode()}
+								{m.volume_binding_mode()}
 							</Table.Head>
 						</Table.Row>
 					</Table.Header>

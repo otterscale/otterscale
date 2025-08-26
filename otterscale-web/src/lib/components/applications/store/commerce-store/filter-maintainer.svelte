@@ -24,7 +24,7 @@
 	<Popover.Trigger>
 		<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
 			<Icon icon="ph:funnel" class="h-3 w-3" />
-			{m.applications_store_filter_maintainer()}
+			{m.maintainer()}
 			<Icon icon="ph:caret-down" class="h-3 w-3" />
 		</Button>
 	</Popover.Trigger>
@@ -32,7 +32,7 @@
 		<Command.Root>
 			<Command.Input placeholder="Search" />
 			<Command.List>
-				<Command.Empty>{m.applications_store_filter_empty()}</Command.Empty>
+				<Command.Empty>{m.no_result()}</Command.Empty>
 				<Command.Group>
 					{#each maintainerNames as maintainerName}
 						<Command.Item

@@ -8,6 +8,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages.js';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
@@ -50,15 +51,15 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:shield-slash" />
-		Revoke
+		{m.revoke()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Revoke Export Access</Modal.Header>
+		<Modal.Header>{m.revoke_export_access()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Client IP</Form.Label>
-					<SingleInput.General id="client_ip" required type="text" bind:value={request.clientIp} />
+					<Form.Label>{m.client_ip()}</Form.Label>
+					<SingleInput.General required type="text" bind:value={request.clientIp} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -68,7 +69,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -93,7 +94,7 @@
 						close();
 					}}
 				>
-					Revoke
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

@@ -8,6 +8,7 @@
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { m } from '$lib/paraglide/messages.js';
 	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -67,19 +68,19 @@
 <Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
-		Create
+		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Bucket</Modal.Header>
+		<Modal.Header>{m.create_bucket()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General id="name" required type="text" bind:value={request.bucketName} />
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Owner</Form.Label>
+					<Form.Label>{m.owner()}</Form.Label>
 					{#if isMounted}
 						<SingleSelect.Root
 							id="owner"
@@ -92,7 +93,7 @@
 								<SingleSelect.Options>
 									<SingleSelect.Input />
 									<SingleSelect.List>
-										<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 										<SingleSelect.Group>
 											{#each $userOptions as option}
 												<SingleSelect.Item {option}>
@@ -116,10 +117,10 @@
 			</Form.Fieldset>
 
 			<Form.Fieldset>
-				<Form.Legend>Policies</Form.Legend>
+				<Form.Legend>{m.policies()}</Form.Legend>
 
 				<Form.Field>
-					<Form.Label>Policy</Form.Label>
+					<Form.Label>{m.policy()}</Form.Label>
 					<SingleInput.Structure preview bind:value={request.policy} language="json" />
 					<div class="flex justify-end gap-2">
 						<Button
@@ -130,7 +131,7 @@
 							class="flex items-center gap-1"
 						>
 							<Icon icon="ph:arrow-square-out" />
-							Reference
+							{m.reference()}
 						</Button>
 						<Button
 							variant="outline"
@@ -140,20 +141,20 @@
 							class="flex items-center gap-1"
 						>
 							<Icon icon="ph:arrow-square-out" />
-							Generator
+							{m.generator()}
 						</Button>
 					</div>
 				</Form.Field>
 
 				<Form.Field>
-					<Form.Label>Access Control List</Form.Label>
+					<Form.Label>{m.access_control_list()}</Form.Label>
 					<SingleSelect.Root options={accessControlListOptions} bind:value={request.acl}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
 							<SingleSelect.Options>
 								<SingleSelect.Input />
 								<SingleSelect.List>
-									<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 									<SingleSelect.Group>
 										{#each $accessControlListOptions as option}
 											<SingleSelect.Item {option}>
@@ -179,7 +180,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -204,7 +205,7 @@
 						close();
 					}}
 				>
-					Create
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

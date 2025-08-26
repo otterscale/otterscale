@@ -1,5 +1,5 @@
 import { type TestResult } from '$lib/api/bist/v1/bist_pb';
-import { getSortingFunction } from '$lib/components/custom/data-table';
+import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { timestampDate } from '@bufbuild/protobuf/wkt';
 import { type ColumnDef } from '@tanstack/table-core';
@@ -157,7 +157,8 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
-		}
+		},
+		enableHiding: false
 	}
 ];
 

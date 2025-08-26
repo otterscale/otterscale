@@ -20,19 +20,19 @@
 	<Table.Header>
 		<Table.Row>
 			<Table.Head>
-				{m.applications_workload_pods_heads_name()}
+				{m.name()}
 			</Table.Head>
 			<Table.Head>
-				{m.applications_workload_pods_heads_phase()}
+				{m.phase()}
 			</Table.Head>
 			<Table.Head>
-				{m.applications_workload_pods_heads_ready()}
+				{m.ready()}
 			</Table.Head>
 			<Table.Head>
-				{m.applications_workload_pods_heads_restarts()}
+				{m.restarts()}
 			</Table.Head>
 			<Table.Head>
-				{m.applications_workload_pods_heads_last_condition()}
+				{m.last_condition()}
 			</Table.Head>
 		</Table.Row>
 	</Table.Header>

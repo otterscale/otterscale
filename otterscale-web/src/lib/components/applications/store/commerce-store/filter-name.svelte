@@ -12,7 +12,7 @@
 
 <span class="relative h-8">
 	<Input
-		placeholder={m.applications_store_filter_name()}
+		placeholder={m.name()}
 		type="text"
 		bind:value={filterManager.searchedName}
 		class="h-8 w-40 pr-9 pl-9"

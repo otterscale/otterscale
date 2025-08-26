@@ -16,16 +16,16 @@
 
 - Download the [latest release](https://github.com/openhdc/otterscale/releases/latest) or compile from source
 
-    ```sh
-    make build && cd bin
-    ```
+  ```sh
+  make build && cd bin
+  ```
 
 - Initialize configuration and launch server
 
-    ```sh
-    ./otterscale init otterscale.yaml
-    ./otterscale serve --address :8299 --config otterscale.yaml
-    ```
+  ```sh
+  ./otterscale init > otterscale.yaml
+  ./otterscale serve --address :8299 --config otterscale.yaml
+  ```
 
 ## 🔨 Development
 
@@ -34,6 +34,20 @@ Ensure you have the following environment setup:
 - Go 1.24.3 or later
 - Protobuf compiler (`protoc`)
 - Make
+
+### Prerequisites
+
+Before building from source, you must install the following system dependencies:
+
+```sh
+# Ubuntu/Debian
+sudo apt-get install libcephfs-dev librbd-dev librados-dev build-essential
+
+# CentOS/RHEL/Fedora
+sudo yum install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
+# or
+sudo dnf install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
+```
 
 ## 🔍 Documentation
 
@@ -47,12 +61,12 @@ We'll do our best to assist you promptly.
 
 ## 📢 Roadmap
 
-- [ ] [v1.0.0](https://github.com/openhdc/otterscale/milestone/1)
+- [x] [v1.0.0](https://github.com/openhdc/otterscale/milestone/1)
   - [x] MAAS
   - [x] Juju
   - [x] Kubernetes
   - [x] Ceph
-  - [ ] BIST
+  - [x] BIST
 
 ## ⛔ Rules
 

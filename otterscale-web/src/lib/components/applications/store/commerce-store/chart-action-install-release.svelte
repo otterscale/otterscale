@@ -58,36 +58,33 @@
 <Modal.Root bind:open>
 	<Modal.Trigger disabled={chart.deprecated} variant="default" class="w-full">
 		<Icon icon="ph:download-simple" />
-		{m.applications_store_chart_release_install_trigger()}
+		{m.install()}
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>
-			{m.applications_store_chart_release_install_header()}
+			{m.install_release()}
 		</Modal.Header>
 		<Form.Fieldset>
 			<Form.Legend>Basic</Form.Legend>
 
 			<Form.Field>
 				<Form.Label>
-					{m.applications_store_chart_release_name()}
+					{m.name()}
 				</Form.Label>
 				<SingleInput.General type="text" bind:value={request.name} />
 			</Form.Field>
 
 			<Form.Field>
-				<Form.Label>{m.applications_store_chart_release_namespace()}</Form.Label>
+				<Form.Label>{m.namespace()}</Form.Label>
 				<SingleInput.General type="text" bind:value={request.namespace} />
 			</Form.Field>
 
 			<Form.Field>
-				<SingleInput.Boolean
-					descriptor={() => m.applications_store_chart_release_dry_run()}
-					bind:value={request.dryRun}
-				/>
+				<SingleInput.Boolean descriptor={() => m.dry_run()} bind:value={request.dryRun} />
 			</Form.Field>
 
 			<Form.Field>
-				<Form.Label>{m.applications_store_chart_release_version()}</Form.Label>
+				<Form.Label>{m.version()}</Form.Label>
 				<SingleSelect.Root bind:options={versionReferenceOptions} bind:value={request.chartRef}>
 					<SingleSelect.Trigger />
 					<SingleSelect.Content>
@@ -115,7 +112,7 @@
 
 			<Form.Field>
 				<Form.Label>
-					{m.applications_store_chart_release_configuration()}
+					{m.configuration()}
 				</Form.Label>
 				<ReleaseValuesInputEdit
 					chartRef={versionRefrence}
@@ -131,7 +128,7 @@
 					reset();
 				}}
 			>
-				{m.modal_cancel()}
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
@@ -157,7 +154,7 @@
 					close();
 				}}
 			>
-				{m.modal_confirm()}
+				{m.confirm()}
 			</Modal.Action>
 		</Modal.Footer>
 	</Modal.Content>

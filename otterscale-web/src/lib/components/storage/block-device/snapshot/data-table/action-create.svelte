@@ -5,6 +5,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -39,15 +40,15 @@
 <Modal.Root bind:open>
 	<Modal.Trigger class="default">
 		<Icon icon="ph:plus" />
-		Create
+		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create RADOS Block Device Snapshot</Modal.Header>
+		<Modal.Header>{m.create_snapshot()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Name</Form.Label>
-					<SingleInput.General id="name" required type="text" bind:value={request.snapshotName} />
+					<Form.Label>{m.name()}</Form.Label>
+					<SingleInput.General required type="text" bind:value={request.snapshotName} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -57,7 +58,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -82,7 +83,7 @@
 						close();
 					}}
 				>
-					Create
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

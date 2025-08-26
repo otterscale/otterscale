@@ -12,6 +12,7 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
@@ -40,17 +41,17 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		Delete
+		{m.delete_fabric()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Delete Fabric</Modal.Header>
+		<Modal.Header>{m.delete_fabric()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
 				<Form.Field>
 					<SingleInput.Confirm id="deletion" required target={fabric.name} bind:invalid />
 				</Form.Field>
 				<Form.Help>
-					Please type the fabric id exactly to confirm deletion. This action cannot be undone.
+					{m.deletion_warning({ identifier: m.name() })}
 				</Form.Help>
 			</Form.Fieldset>
 		</Form.Root>
@@ -58,7 +59,7 @@
 			<Modal.Cancel
 				onclick={() => {
 					reset();
-				}}>Cancel</Modal.Cancel
+				}}>{m.cancel()}</Modal.Cancel
 			>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -84,7 +85,7 @@
 						close();
 					}}
 				>
-					Delete
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>

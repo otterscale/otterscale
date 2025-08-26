@@ -1,19 +1,20 @@
 <script lang="ts" module>
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
-	import { Layout, RowPickers, Sorter } from '$lib/components/custom/data-table';
+	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { m } from '$lib/paraglide/messages';
 	import type { Column, Table } from '@tanstack/table-core';
 
 	export const messages = {
-		fqdn_ip: 'fqdn_ip',
-		powerState: 'powerState',
-		status: 'status',
-		cores_arch: 'cores_arch',
-		ram: 'ram',
-		disk: 'disk',
-		storage: 'storage',
-		tags: 'tags',
-		scope: 'scope',
-		actions: 'actions'
+		fqdn_ip: m.fqdn(),
+		powerState: m.power(),
+		status: m.status(),
+		cores_arch: m.core(),
+		ram: m.ram(),
+		disk: m.disk(),
+		storage: m.storage(),
+		scope: m.scope(),
+		tags: m.tags()
 	};
 
 	export const headers = {
@@ -32,18 +33,20 @@
 </script>
 
 {#snippet row_picker(table: Table<Machine>)}
-	<Layout.Header class="justify-center">
+	<Layout.Header class="items-start">
 		<Layout.HeaderController>
-			<RowPickers.Header {table} />
+			<Headers.RowPicker {table} />
 		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
 {#snippet fqdn_ip(column: Column<Machine>)}
-	<Layout.Header class="justify-start">
+	<Layout.Header class="items-start">
 		<Layout.HeaderViewer>
-			<p>FQDN</p>
-			<p>IP</p>
+			{m.fqdn()}
+			<Layout.SubHeaderViewer>
+				{m.ip()}
+			</Layout.SubHeaderViewer>
 		</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
@@ -53,7 +56,7 @@
 
 {#snippet powerState(column: Column<Machine>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>POWER</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.power()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -62,7 +65,7 @@
 
 {#snippet status(column: Column<Machine>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>STATUS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.status()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
@@ -75,8 +78,10 @@
 			<Sorter {column} />
 		</Layout.HeaderController>
 		<Layout.HeaderViewer>
-			<p>CORES</p>
-			<p>ARCH</p>
+			{m.core()}
+			<Layout.SubHeaderViewer>
+				{m.architecture()}
+			</Layout.SubHeaderViewer>
 		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
@@ -86,7 +91,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>RAM</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.ram()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -95,7 +100,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>DISK</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.disk()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -104,7 +109,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>STORAGE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.storage()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -113,13 +118,18 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>TAGS</Layout.HeaderViewer>
+		<Layout.HeaderViewer>{m.tags()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
 {#snippet scope(column: Column<Machine>)}
 	<Layout.Header class="justify-start">
-		<Layout.HeaderViewer>SCOPE</Layout.HeaderViewer>
+		<Layout.HeaderViewer>
+			{m.scope()}
+			<Layout.SubHeaderViewer>
+				{m.last_commissioned()}
+			</Layout.SubHeaderViewer>
+		</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

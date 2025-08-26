@@ -9,6 +9,7 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
@@ -49,14 +50,14 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:lock-open" />
-		Rollback
+		{m.rollback()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Rollback RADOS Block Device Snapshot</Modal.Header>
+		<Modal.Header>{m.rollback_snapshot()}</Modal.Header>
 		<Form.Root>
 			<Form.Fieldset>
-				<Form.Label>Name</Form.Label>
-				<Form.Help>Please check the snapshot name exactly to confirm this action.</Form.Help>
+				<Form.Label>{m.name()}</Form.Label>
+				<Form.Help>{m.deletion_warning({ identifier: m.snapshot_name() })}</Form.Help>
 				<Form.Field>
 					<SingleInput.Confirm
 						required
@@ -73,7 +74,7 @@
 					reset();
 				}}
 			>
-				Cancel
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
@@ -98,7 +99,7 @@
 						close();
 					}}
 				>
-					Rollback
+					{m.confirm()}
 				</Modal.Action>
 			</Modal.ActionsGroup>
 		</Modal.Footer>
