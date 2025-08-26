@@ -59,7 +59,7 @@
 	<Modal.Content>
 		<Modal.Header>{m.applications_store_chart_release_edit_header()}</Modal.Header>
 		<Form.Fieldset>
-			<Form.Legend>{m.form_fieldset_basic()}</Form.Legend>
+			<Form.Legend>{m.basic()}</Form.Legend>
 			<Form.Field>
 				<Form.Label>{m.applications_store_chart_release_name()}</Form.Label>
 				<SingleInput.General bind:value={request.name} />
@@ -80,7 +80,7 @@
 			</Form.Field>
 		</Form.Fieldset>
 		<Form.Fieldset class="items-center rounded-lg border p-3">
-			<Form.Legend>{m.form_fieldset_advance()}</Form.Legend>
+			<Form.Legend>{m.advance()}</Form.Legend>
 			<Form.Field>
 				<Form.Label>{m.applications_store_chart_release_configuration()}</Form.Label>
 				<ReleaseValuesInputEdit chartRef={request.chartRef} bind:valuesYaml={request.valuesYaml} />
@@ -92,7 +92,7 @@
 					reset();
 				}}
 			>
-				{m.modal_cancel()}
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
@@ -118,7 +118,7 @@
 					close();
 				}}
 			>
-				{m.modal_confirm()}
+				{m.confirm()}
 			</Modal.Action>
 		</Modal.Footer>
 	</Modal.Content>

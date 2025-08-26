@@ -81,7 +81,7 @@
 					reset();
 				}}
 			>
-				{m.modal_cancel()}
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
@@ -107,7 +107,7 @@
 					close();
 				}}
 			>
-				{m.modal_confirm()}
+				{m.confirm()}
 			</Modal.Action>
 		</Modal.Footer>
 	</Modal.Content>

@@ -6,14 +6,14 @@ import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
 const messages = {
-	name: m.models_large_language_model_headers_name(),
-	version: m.models_large_language_model_headers_version(),
-	parameters: m.models_large_language_model_headers_parameters(),
-	accuracy: m.models_large_language_model_headers_accuracy(),
-	speed: m.models_large_language_model_headers_speed(),
-	architecture: m.models_large_language_model_headers_architecture(),
-	requests: m.models_large_language_model_headers_requests(),
-	uptime: m.models_large_language_model_headers_uptime()
+	name: m.name(),
+	version: m.version(),
+	parameters: m.parameters(),
+	accuracy: m.accuracy(),
+	speed: m.speed(),
+	architecture: m.architecture(),
+	requests: m.requests(),
+	uptime: m.uptime()
 };
 
 const columns: ColumnDef<LargeLangeageModel>[] = [

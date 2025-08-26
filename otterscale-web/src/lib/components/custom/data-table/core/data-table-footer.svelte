@@ -15,14 +15,14 @@
 <span class="flex flex-wrap gap-1">
 	<Badge variant="outline">
 		{selected}
-		{m.datatable_footer_selected()}
+		{m.selected()}
 	</Badge>
 	<Badge variant="outline">
 		{filtered}
-		{m.datatable_footer_filtered()}
+		{m.filtered()}
 	</Badge>
 	<Badge variant="outline">
 		{rows}
-		{m.datatable_footer_rows()}
+		{m.rows()}
 	</Badge>
 </span>

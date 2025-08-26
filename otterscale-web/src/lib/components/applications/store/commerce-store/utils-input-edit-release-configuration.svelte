@@ -160,7 +160,7 @@
 		</Resizable.PaneGroup>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel class="mr-auto">
-				{m.modal_cancel()}
+				{m.cancel()}
 			</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
@@ -168,7 +168,7 @@
 					valuesYaml = values;
 				}}
 			>
-				{m.modal_confirm()}
+				{m.confirm()}
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>

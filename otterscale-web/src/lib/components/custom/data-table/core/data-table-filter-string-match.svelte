@@ -100,7 +100,7 @@
 						onSelect={() => table.getColumn(columnId)?.setFilterValue(undefined)}
 						class="items-center justify-center text-xs font-bold hover:cursor-pointer"
 					>
-						{m.datatable_filter_action_clear()}
+						{m.clear()}
 					</Command.Item>
 				{/if}
 			</Command.List>
