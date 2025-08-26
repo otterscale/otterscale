@@ -17,6 +17,12 @@ import (
 	"github.com/openhdc/otterscale/internal/config"
 )
 
+const (
+	containerEnvVar            = "OTTERSCALE_CONTAINER"
+	defaultContainerAddress    = ":8299"
+	defaultContainerConfigPath = "/etc/app/otterscale.yaml"
+)
+
 func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 	var address, configPath string
 
@@ -32,9 +38,9 @@ func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 			}
 
 			// Check if running in container and override address
-			if os.Getenv("OTTERSCALE_CONTAINER") != "" {
-				address = ":8299"
-				configPath = "/etc/app/otterscale.yaml"
+			if os.Getenv(containerEnvVar) != "" {
+				address = defaultContainerAddress
+				configPath = defaultContainerConfigPath
 				slog.Info("Container environment detected, using default configuration", "address", address, "config", configPath)
 			}
 
