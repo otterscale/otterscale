@@ -137,11 +137,13 @@ func (c *Config) watch() error {
 	return nil
 }
 
-func InitFile(path string) error {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return createDefaultFile(path)
+func PrintDefaultConfig() error {
+	data, err := yaml.Marshal(defaultConfig())
+	if err != nil {
+		return err
 	}
-	return fmt.Errorf("file already exists: %s", path)
+	fmt.Println(string(data))
+	return nil
 }
 
 func defaultConfig() *Config {
@@ -166,12 +168,4 @@ func defaultConfig() *Config {
 			HelmRepositoryURLs: []string{"http://chartmuseum:8080"},
 		},
 	}
-}
-
-func createDefaultFile(path string) error {
-	data, err := yaml.Marshal(defaultConfig())
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(path, data, filePerm600)
 }
