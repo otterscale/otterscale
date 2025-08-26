@@ -18,8 +18,8 @@
 	const TIME_RANGE_HOURS = 1; // 1 hour of data
 
 	// Chart configuration
-	const CHART_TITLE = 'Error Budget';
-	const CHART_DESCRIPTION = '30 days';
+	const CHART_TITLE = m.kubelet_error_budget();
+	const CHART_DESCRIPTION = m.kubelet_error_budget_description();
 
 	// Time range calculation
 	const endTime = new Date();

@@ -24,12 +24,10 @@
 		<Pickers bind:selectedMachine {machines} />
 	</div>
 	{#key selectedMachine}
-		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+		<div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 			<span class="col-span-1">
 				<UsageRateUptime {client} machine={selectedMachine} />
 			</span>
-		</div>
-		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 			<span class="col-span-1">
 				<UsageRateCPU {client} machine={selectedMachine} />
 			</span>
@@ -44,9 +42,8 @@
 			</span>
 		</div>
 
-		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2">
+		<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
 			<span class="col-span-1">
-				<!-- <Example /> -->
 				<CPUCoreProcessor {client} machine={selectedMachine} />
 			</span>
 			<span class="col-span-1">

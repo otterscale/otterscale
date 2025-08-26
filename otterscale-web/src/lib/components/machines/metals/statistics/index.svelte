@@ -5,7 +5,7 @@
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { formatCapacity, formatHealthColor } from '$lib/formatter';
+	import { formatCapacity, formatProgressColor } from '$lib/formatter';
 
 	let { machines }: { machines: Machine[] } = $props();
 
@@ -26,7 +26,7 @@
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
 	<Layout>
 		{#snippet title()}
-			<Title title="APPLICATION" />
+			<Title title="NODE" />
 		{/snippet}
 
 		{#snippet content()}
@@ -69,7 +69,11 @@
 		{/snippet}
 
 		{#snippet footer()}
-			<Progress value={powerOnPercentage} max={100} class={formatHealthColor(powerOnPercentage)} />
+			<Progress
+				value={powerOnPercentage}
+				max={100}
+				class={formatProgressColor(powerOnPercentage)}
+			/>
 		{/snippet}
 	</Layout>
 
@@ -90,7 +94,7 @@
 			<Progress
 				value={deploymentPercentage}
 				max={100}
-				class={formatHealthColor(deploymentPercentage)}
+				class={formatProgressColor(deploymentPercentage)}
 			/>
 		{/snippet}
 	</Layout>

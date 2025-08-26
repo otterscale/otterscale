@@ -46,6 +46,7 @@
 		<Progress.Root
 			numerator={Number(row.original.usedBytes)}
 			denominator={Number(row.original.usedBytes)}
+			highIsGood={false}
 		>
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}

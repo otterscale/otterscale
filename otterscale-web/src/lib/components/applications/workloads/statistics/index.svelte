@@ -5,7 +5,7 @@
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { formatHealthColor } from '$lib/formatter';
+	import { formatProgressColor } from '$lib/formatter';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -38,7 +38,7 @@
 
 	const healthByType = $derived(totalPods > 0 ? (healthyPods * 100) / totalPods : 0);
 
-	const healthColorClass = $derived(formatHealthColor(healthByType));
+	const healthColorClass = $derived(formatProgressColor(healthByType));
 
 	onMount(async () => {
 		try {

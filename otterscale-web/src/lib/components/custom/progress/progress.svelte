@@ -6,7 +6,7 @@
 	import type { WithElementRef } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { formatHealthColor } from '$lib/formatter';
+	import { formatProgressColor } from '$lib/formatter';
 </script>
 
 <script lang="ts">
@@ -17,12 +17,14 @@
 		denominator,
 		ratio,
 		detail,
+		highIsGood = true,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		numerator: number;
 		denominator: number;
 		ratio?: Snippet<[{ numerator: number; denominator: number }]>;
 		detail?: Snippet<[{ numerator: number; denominator: number }]>;
+		highIsGood?: boolean;
 	} = $props();
 
 	const progressRatio = $derived(denominator > 0 ? numerator / denominator : 0);
@@ -30,7 +32,11 @@
 
 {#if denominator > 0}
 	<div bind:this={ref} data-slot="progress-root" {...restProps}>
-		<Progress value={progressRatio} max={1} class={formatHealthColor(progressRatio)} />
+		<Progress
+			value={progressRatio}
+			max={1}
+			class={formatProgressColor(progressRatio, false, highIsGood)}
+		/>
 		{#if ratio}
 			<div
 				class={cn(

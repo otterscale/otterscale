@@ -38,7 +38,7 @@
 	{@const denominator = Number(row.original.quotaBytes)}
 	{@const numerator = Number(row.original.usedBytes)}
 	<div class="flex justify-end">
-		<Progress.Root {numerator} {denominator}>
+		<Progress.Root {numerator} {denominator} highIsGood={false}>
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}
 			{/snippet}

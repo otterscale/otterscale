@@ -12,8 +12,8 @@
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	// Constants
-	const CHART_TITLE = 'UP';
-	const CHART_DESCRIPTION = 'Controller Manager';
+	const CHART_TITLE = m.kubelet_up();
+	const CHART_DESCRIPTION = m.kubelet_controller_manager();
 
 	// Query
 	const query = $derived(
