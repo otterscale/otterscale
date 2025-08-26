@@ -82,17 +82,17 @@
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger class={buttonVariants({ variant: 'outline' })}>
-		{m.applications_store_chart_release_configuration_edit_trigger()}
+		{m.view_edit()}
 	</AlertDialog.Trigger>
 	<AlertDialog.Content class="max-w-[78vw] min-w-[62vw]">
 		<AlertDialog.Header>
 			<div class="flex items-end justify-between gap-2">
 				<div>
 					<AlertDialog.Title>
-						{m.applications_store_chart_release_configuration_edit_title()}
+						{m.edit_release_configuration()}
 					</AlertDialog.Title>
 					<AlertDialog.Description class="flex items-center gap-1">
-						{m.applications_store_chart_release_configuration_edit_documentation()}
+						{m.edit_release_configuration_documentation()}
 						<a
 							href={chartRef}
 							target="_blank"
@@ -107,10 +107,10 @@
 					<Tabs.Root bind:value={tab}>
 						<Tabs.List>
 							<Tabs.Trigger value="basic">
-								{m.applications_store_chart_release_configuration_setting_basic()}
+								{m.basic()}
 							</Tabs.Trigger>
 							<Tabs.Trigger value="advance">
-								{m.applications_store_chart_release_configuration_setting_advance()}
+								{m.advance()}
 							</Tabs.Trigger>
 						</Tabs.List></Tabs.Root
 					>

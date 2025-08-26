@@ -20,7 +20,7 @@
 	<Popover.Trigger>
 		<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
 			<Icon icon="ph:funnel" class="h-3 w-3" />
-			{m.applications_store_filter_keyword()}
+			{m.keyword()}
 			<Icon icon="ph:caret-down" class="h-3 w-3" />
 		</Button>
 	</Popover.Trigger>
@@ -28,7 +28,7 @@
 		<Command.Root>
 			<Command.Input placeholder="Search" />
 			<Command.List>
-				<Command.Empty>{m.applications_store_filter_empty()}</Command.Empty>
+				<Command.Empty>{m.no_result()}</Command.Empty>
 				<Command.Group>
 					{#each keywords as keyword}
 						<Command.Item

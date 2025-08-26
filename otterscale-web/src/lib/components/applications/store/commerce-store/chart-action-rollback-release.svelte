@@ -48,16 +48,16 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:arrow-counter-clockwise" />
-		{m.applications_store_chart_release_rollback_trigger()}
+		{m.rollback()}
 	</Modal.Trigger>
 	<Modal.Content>
 		<Modal.Header>
-			{m.applications_store_chart_release_rollback_header()}
+			{m.rollback_release()}
 		</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Help>
-					{m.applications_store_chart_release_rollback_confirm()}
+					{m.deletion_warning({ identifier: m.name() })}
 				</Form.Help>
 				<Form.Field>
 					<SingleInput.Confirm
@@ -68,10 +68,7 @@
 					/>
 				</Form.Field>
 				<Form.Field>
-					<SingleInput.Boolean
-						descriptor={() => m.applications_store_chart_release_dry_run()}
-						bind:value={request.dryRun}
-					/>
+					<SingleInput.Boolean descriptor={() => m.dry_run()} bind:value={request.dryRun} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

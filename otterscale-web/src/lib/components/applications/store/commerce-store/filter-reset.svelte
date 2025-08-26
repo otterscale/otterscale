@@ -18,5 +18,5 @@
 	}}
 >
 	<Icon icon="ph:arrow-counter-clockwise" class="h-3 w-3" />
-	{m.applications_store_filter_reset()}
+	{m.reset()}
 </Button>

@@ -54,35 +54,32 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:pencil" />
-		{m.applications_store_chart_release_edit_trigger()}
+		{m.edit()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.applications_store_chart_release_edit_header()}</Modal.Header>
+		<Modal.Header>{m.edit_release()}</Modal.Header>
 		<Form.Fieldset>
 			<Form.Legend>{m.basic()}</Form.Legend>
 			<Form.Field>
-				<Form.Label>{m.applications_store_chart_release_name()}</Form.Label>
+				<Form.Label>{m.name()}</Form.Label>
 				<SingleInput.General bind:value={request.name} />
 			</Form.Field>
 			<Form.Field>
-				<Form.Label>{m.applications_store_chart_release_namespace()}</Form.Label>
+				<Form.Label>{m.namespace()}</Form.Label>
 				<SingleInput.General bind:value={request.namespace} />
 			</Form.Field>
 			<Form.Field>
-				<Form.Label>{m.applications_store_chart_release_reference()}</Form.Label>
+				<Form.Label>{m.reference()}</Form.Label>
 				<SingleInput.General bind:value={request.chartRef} />
 			</Form.Field>
 			<Form.Field>
-				<SingleInput.Boolean
-					descriptor={() => m.applications_store_chart_release_dry_run()}
-					bind:value={request.dryRun}
-				/>
+				<SingleInput.Boolean descriptor={() => m.dry_run()} bind:value={request.dryRun} />
 			</Form.Field>
 		</Form.Fieldset>
 		<Form.Fieldset class="items-center rounded-lg border p-3">
 			<Form.Legend>{m.advance()}</Form.Legend>
 			<Form.Field>
-				<Form.Label>{m.applications_store_chart_release_configuration()}</Form.Label>
+				<Form.Label>{m.configuration()}</Form.Label>
 				<ReleaseValuesInputEdit chartRef={request.chartRef} bind:valuesYaml={request.valuesYaml} />
 			</Form.Field>
 		</Form.Fieldset>

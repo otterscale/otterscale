@@ -16,7 +16,7 @@
 	<Popover.Trigger>
 		<Button variant="outline" size="sm" class="flex h-8 items-center gap-2">
 			<Icon icon="ph:funnel" class="h-3 w-3" />
-			{m.applications_store_filter_deprecation()}
+			{m.deprecation()}
 			<Icon icon="ph:caret-down" class="h-3 w-3" />
 		</Button>
 	</Popover.Trigger>
@@ -38,11 +38,11 @@
 								)}
 							/>
 							{#if deprecation === null}
-								{m.applications_store_filter_deprecation_null_value()}
+								{m.all()}
 							{:else if deprecation === true}
-								{m.applications_store_filter_deprecation_true_value()}
+								{m.only_deprecated()}
 							{:else if deprecation === false}
-								{m.applications_store_filter_deprecation_false_value()}
+								{m.only_available()}
 							{/if}
 						</Command.Item>
 					{/each}
