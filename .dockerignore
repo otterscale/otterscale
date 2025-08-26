@@ -1,4 +1,5 @@
-.github/
-scripts/
-web/
+.github
+otterscale-web
+scripts
+web
 *.md
