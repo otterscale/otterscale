@@ -88,7 +88,7 @@
 				table.getColumn(columnId)?.setFilterValue(value);
 			}}
 		>
-			{m.datatable_filter_action_all()}
+			{m.all()}
 		</Button>
 		<Button
 			variant="secondary"
@@ -99,7 +99,7 @@
 				table.getColumn(columnId)?.setFilterValue(empty);
 			}}
 		>
-			{m.datatable_filter_action_clear()}
+			{m.clear()}
 		</Button>
 	</div>
 {/snippet}

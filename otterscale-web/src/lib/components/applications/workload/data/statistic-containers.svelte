@@ -22,7 +22,7 @@
 <Layout.Statistic.Root class={isExpand ? 'col-span-2' : 'col-span-1'}>
 	<Layout.Statistic.Header>
 		<Layout.Statistic.Title>
-			{m.applications_workload_containers()}
+			{m.containers()}
 		</Layout.Statistic.Title>
 		<Layout.Statistic.Action>
 			<Button
@@ -44,8 +44,8 @@
 				<Table.Root>
 					<Table.Header>
 						<Table.Row>
-							<Table.Head>{m.applications_workload_containers_heads_image()}</Table.Head>
-							<Table.Head>{m.applications_workload_containers_heads_pull_policy()}</Table.Head>
+							<Table.Head>{m.image()}</Table.Head>
+							<Table.Head>{m.pull_policy()}</Table.Head>
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>

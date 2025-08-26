@@ -43,10 +43,10 @@
 <section class="bg-background mx-auto w-full space-y-4">
 	<div class="space-y-2 text-center">
 		<h2 class="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-			{m.applications_store_title()}
+			{m.applications()}
 		</h2>
 		<p class="text-muted-foreground mx-auto text-lg">
-			{m.applications_store_description()}
+			{m.store_description()}
 		</p>
 	</div>
 

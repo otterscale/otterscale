@@ -61,7 +61,7 @@
 		<Layout.Table.Root open={true}>
 			<Layout.Table.Trigger>
 				<Icon icon="ph:cube" />
-				{m.applications_workload_services()}
+				{m.aservices()}
 			</Layout.Table.Trigger>
 			<Layout.Table.Content>
 				<TableServices {application} />

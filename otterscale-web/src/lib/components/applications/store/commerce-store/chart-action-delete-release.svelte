@@ -50,14 +50,14 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="destructive">
 		<Icon icon="ph:trash" />
-		{m.applications_store_chart_release_delete_trigger()}
+		{m.delete()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>{m.applications_store_chart_release_delete_header()}</Modal.Header>
+		<Modal.Header>{m.delete_release()}</Modal.Header>
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Help>
-					{m.applications_store_chart_release_delete_confirm()}
+					{m.deletion_warning({ identifier: m.name() })}
 				</Form.Help>
 				<Form.Field>
 					<SingleInput.Confirm
@@ -68,10 +68,7 @@
 					/>
 				</Form.Field>
 				<Form.Field>
-					<SingleInput.Boolean
-						descriptor={() => m.applications_store_chart_release_dry_run()}
-						bind:value={request.dryRun}
-					/>
+					<SingleInput.Boolean descriptor={() => m.dry_run()} bind:value={request.dryRun} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -81,7 +78,7 @@
 					reset();
 				}}
 			>
-				{m.modal_cancel()}
+				{m.cancel()}
 			</Modal.Cancel>
 			<Modal.Action
 				onclick={() => {
@@ -105,7 +102,7 @@
 					close();
 				}}
 			>
-				{m.modal_confirm()}
+				{m.confirm()}
 			</Modal.Action>
 		</Modal.Footer>
 	</Modal.Content>

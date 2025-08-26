@@ -18,16 +18,16 @@
 	<Table.Header>
 		<Table.Row>
 			<Table.Head>
-				{m.applications_workload_services_heads_name()}
+				{m.name()}
 			</Table.Head>
 			<Table.Head>
-				{m.applications_workload_services_heads_type()}
+				{m.type()}
 			</Table.Head>
 			<Table.Head>
-				{m.applications_workload_services_heads_cluster_ip()}
+				{m.cluster_ip()}
 			</Table.Head>
 			<Table.Head>
-				{m.applications_workload_services_heads_ports()}
+				{m.ports()}
 			</Table.Head>
 		</Table.Row>
 	</Table.Header>

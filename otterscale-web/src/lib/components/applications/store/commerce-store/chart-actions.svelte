@@ -20,7 +20,7 @@
 
 <Layout.Actions>
 	<Layout.ActionLabel>
-		{m.datatable_action_label()}
+		{m.actions()}
 	</Layout.ActionLabel>
 	<Layout.ActionSeparator />
 	<Layout.ActionItem>

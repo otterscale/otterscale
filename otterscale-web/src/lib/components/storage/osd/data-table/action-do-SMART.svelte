@@ -76,7 +76,7 @@
 			{/each}
 		{/if}
 		<Modal.Footer>
-			<Modal.Cancel>{m.modal_cancel()}</Modal.Cancel>
+			<Modal.Cancel>{m.cancel()}</Modal.Cancel>
 		</Modal.Footer>
 	</Modal.Content>
 </Modal.Root>

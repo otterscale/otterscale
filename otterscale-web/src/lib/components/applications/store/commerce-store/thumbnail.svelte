@@ -53,8 +53,6 @@
 		<Badge variant="outline" class="text-muted-foreground text-sm">
 			{chart.license}
 		</Badge>
-		<Badge variant="default" class={chartReleases ? 'visible' : 'hidden'}
-			>{m.applications_store_thumbnail_installed()}</Badge
-		>
+		<Badge variant="default" class={chartReleases ? 'visible' : 'hidden'}>{m.installed()}</Badge>
 	</Card.Footer>
 </Card.Root>

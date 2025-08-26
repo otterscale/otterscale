@@ -63,7 +63,7 @@
 					{#if chart.verified}
 						<Badge variant="secondary">
 							<Icon icon="ph:star-fill" class="h-4 w-4 fill-yellow-400 text-yellow-400" />
-							{m.applications_store_chart_verified()}
+							{m.verified()}
 						</Badge>
 					{/if}
 				</span>
@@ -72,9 +72,9 @@
 
 		<Tabs.Root value="information">
 			<Tabs.List class="-mt-4 ml-auto w-full rounded-none px-1">
-				<Tabs.Trigger value="information">{m.applications_store_chart_information()}</Tabs.Trigger>
+				<Tabs.Trigger value="information">{m.information()}</Tabs.Trigger>
 				<Tabs.Trigger value="release" disabled={!chartReleases}>
-					{m.applications_store_chart_releases()}
+					{m.releases()}
 				</Tabs.Trigger>
 			</Tabs.List>
 			<Tabs.Content value="information" class="p-4">
@@ -110,7 +110,7 @@
 							<span class="flex items-center justify-between gap-1">
 								<span class="flex items-center gap-2">
 									<Icon icon="ph:stack" />
-									{m.applications_store_chart_dependency()}
+									{m.dependency()}
 								</span>
 
 								<Button
@@ -169,7 +169,7 @@
 						<div class="space-y-1">
 							<span class="flex items-center gap-2">
 								<Icon icon="ph:house" />
-								{m.applications_store_chart_home()}
+								{m.home()}
 							</span>
 							<a
 								target="_blank"
@@ -186,7 +186,7 @@
 							<span class="flex items-center justify-between gap-1">
 								<span class="flex items-center gap-2">
 									<Icon icon="ph:link" />
-									{m.applications_store_chart_source()}
+									{m.source()}
 								</span>
 
 								<Button
@@ -242,7 +242,7 @@
 							<span class="flex items-center justify-between gap-1">
 								<span class="flex items-center gap-2">
 									<Icon icon="ph:user" />
-									{m.applications_store_chart_maintainer()}
+									{m.maintainer()}
 								</span>
 								<Button
 									variant="outline"
@@ -286,16 +286,14 @@
 					<Table.Header>
 						<Table.Row>
 							<Table.Head>
-								{m.applications_store_chart_releases_name()}
-								<Table.SubHead>{m.applications_store_chart_releases_namespace()}</Table.SubHead>
+								{m.name()}
+								<Table.SubHead>{m.namespace()}</Table.SubHead>
 							</Table.Head>
 							<Table.Head>
-								{m.applications_store_chart_releases_chart_version()}
-								<Table.SubHead
-									>{m.applications_store_chart_releases_application_version()}</Table.SubHead
-								>
+								{m.chart()}
+								<Table.SubHead>{m.application()}</Table.SubHead>
 							</Table.Head>
-							<Table.Head>{m.applications_store_chart_releases_revision()}</Table.Head>
+							<Table.Head>{m.revision()}</Table.Head>
 							<Table.Head></Table.Head>
 						</Table.Row>
 					</Table.Header>

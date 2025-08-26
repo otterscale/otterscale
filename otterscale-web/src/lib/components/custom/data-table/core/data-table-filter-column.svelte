@@ -17,7 +17,7 @@
 		{#snippet child({ props })}
 			<Button {...props} variant="outline" size="sm" class="ml-auto text-xs">
 				<Icon icon="ph:sliders-horizontal" />
-				{m.datatable_filter_columns()}
+				{m.columns()}
 			</Button>
 		{/snippet}
 	</Popover.Trigger>
@@ -46,9 +46,7 @@
 					onSelect={() => table.toggleAllColumnsVisible(!table.getIsAllColumnsVisible())}
 					class="flex w-full items-center justify-center text-xs font-bold"
 				>
-					{table.getIsAllColumnsVisible()
-						? m.datatable_filter_action_clear()
-						: m.datatable_filter_action_all()}
+					{table.getIsAllColumnsVisible() ? m.clear() : m.all()}
 				</Command.Item>
 			</Command.List>
 		</Command.Root>

@@ -76,7 +76,7 @@
 					}}
 					class="w-full items-center justify-center text-xs font-bold"
 				>
-					{m.datatable_filter_action_clear()}
+					{m.clear()}
 				</Command.Item>
 			</Command.List>
 		</Command.Root>
