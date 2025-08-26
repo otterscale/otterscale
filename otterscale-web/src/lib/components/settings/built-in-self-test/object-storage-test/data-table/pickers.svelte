@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import * as Picker from '$lib/components/custom/picker';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
+	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { writable } from 'svelte/store';
@@ -18,14 +19,14 @@
 
 <Picker.Root align="left" class="mt-2">
 	<Picker.Wrapper class="*:h-8">
-		<Picker.Label>Mode</Picker.Label>
+		<Picker.Label>{m.mode()}</Picker.Label>
 		<SingleSelect.Root options={modes} bind:value={selectedMode}>
 			<SingleSelect.Trigger />
 			<SingleSelect.Content>
 				<SingleSelect.Options>
 					<SingleSelect.Input />
 					<SingleSelect.List>
-						<SingleSelect.Empty>No results found.</SingleSelect.Empty>
+						<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
 						<SingleSelect.Group>
 							{#each $modes as option}
 								<SingleSelect.Item {option}>
