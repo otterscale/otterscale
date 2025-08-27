@@ -20,10 +20,12 @@
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { users }: { users: Writable<User[]> } = $props();
+	let { users, reloadManager }: { users: Writable<User[]>; reloadManager: ReloadManager } =
+		$props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -93,7 +95,8 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetAll: false
+
+		autoResetPageIndex: false
 	});
 </script>
 
@@ -120,6 +123,7 @@
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />
+			<Reloader {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

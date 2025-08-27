@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { StorageService, type Pool } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -53,8 +53,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Reloader {reloadManager} />
-		<DataTable {pools} />
+		<DataTable {pools} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

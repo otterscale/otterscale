@@ -17,24 +17,30 @@
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import { columns, messages } from './columns';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { machines }: { machines: Writable<Machine[]> } = $props();
+	let { machines, reloadManager }: { machines: Writable<Machine[]>; reloadManager: ReloadManager } =
+		$props();
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
+
 	const table = createSvelteTable({
 		get data() {
 			return $machines;
 		},
 		columns,
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+
 		state: {
 			get pagination() {
 				return pagination;
@@ -52,6 +58,7 @@
 				return rowSelection;
 			}
 		},
+
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
 				pagination = updater(pagination);
@@ -87,12 +94,12 @@
 				rowSelection = updater;
 			}
 		},
+
 		autoResetPageIndex: false
 	});
 </script>
 
 <Layout.Root>
-	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
@@ -115,6 +122,9 @@
 			/>
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Reloader {reloadManager} />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>

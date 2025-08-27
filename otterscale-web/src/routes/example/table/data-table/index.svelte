@@ -103,7 +103,6 @@
 </script>
 
 <Layout.Root>
-	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<!-- <Filter.StringFuzzy columnId="name" values={$data.map((row) => row.name)} {table} />

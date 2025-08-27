@@ -77,17 +77,14 @@
 	{#if isMounted}
 		<div class="flex items-center justify-between gap-2">
 			{@render trigger()}
-			<div class="flex items-center justify-end gap-2">
-				<Pickers
-					{selectedScopeUuid}
-					{selectedFacility}
-					{selectedVolume}
-					bind:selectedSubvolumeGroupName
-				/>
-				<Reloader {reloadManager} />
-			</div>
+			<Pickers
+				{selectedScopeUuid}
+				{selectedFacility}
+				{selectedVolume}
+				bind:selectedSubvolumeGroupName
+			/>
 		</div>
-		<DataTable {subvolumes} />
+		<DataTable {subvolumes} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

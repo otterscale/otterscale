@@ -4,6 +4,7 @@
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 	import {
 		getCoreRowModel,
@@ -23,9 +24,11 @@
 
 <script lang="ts" generics="TData, TValue">
 	let {
-		objectStorageDaemons
+		objectStorageDaemons,
+		reloadManager
 	}: {
 		objectStorageDaemons: Writable<OSD[]>;
+		reloadManager: ReloadManager;
 	} = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
@@ -140,6 +143,9 @@
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
+		<Layout.ControllerAction>
+			<Reloader {reloadManager} />
+		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
 		<Table.Root>

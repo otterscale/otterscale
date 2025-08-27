@@ -102,7 +102,6 @@
 </script>
 
 <Layout.Root>
-	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
