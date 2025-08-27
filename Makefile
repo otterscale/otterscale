@@ -32,7 +32,7 @@ proto:
 		--go_out=paths=source_relative:. \
 		--go_opt=default_api_level=API_OPAQUE \
 		--connect-go_out=paths=source_relative:. \
-		--es_out=otterscale-web/src/lib \
+		--es_out=web/src/lib \
 		--es_opt=target=ts \
 		$(PROTO_FILES)
 
