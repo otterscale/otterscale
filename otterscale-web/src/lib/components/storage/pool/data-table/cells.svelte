@@ -30,10 +30,12 @@
 
 {#snippet name(row: Row<Pool>)}
 	<Layout.Cell class="items-start">
-		{row.original.name}
-		{#if row.original.updating}
-			<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
-		{/if}
+		<div class="flex items-center gap-1">
+			{row.original.name}
+			{#if row.original.updating}
+				<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
+			{/if}
+		</div>
 	</Layout.Cell>
 {/snippet}
 

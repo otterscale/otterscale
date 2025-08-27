@@ -44,9 +44,8 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Reloader {reloadManager} />
 		<Statistics machines={$machines} />
-		<DataTable {machines} />
+		<DataTable {machines} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

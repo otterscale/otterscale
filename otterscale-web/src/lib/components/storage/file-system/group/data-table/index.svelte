@@ -19,28 +19,35 @@
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts" generics="TData, TValue">
 	let {
-		subvolumeGroups
+		subvolumeGroups,
+		reloadManager
 	}: {
 		subvolumeGroups: Writable<SubvolumeGroup[]>;
+		reloadManager: ReloadManager;
 	} = $props();
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
 	let rowSelection = $state<RowSelectionState>({});
+
 	const table = createSvelteTable({
 		get data() {
 			return $subvolumeGroups;
 		},
 		columns,
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+
 		state: {
 			get pagination() {
 				return pagination;
@@ -58,6 +65,7 @@
 				return rowSelection;
 			}
 		},
+
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
 				pagination = updater(pagination);
@@ -93,6 +101,7 @@
 				rowSelection = updater;
 			}
 		},
+
 		autoResetPageIndex: false
 	});
 </script>
@@ -119,6 +128,7 @@
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />
+			<Reloader {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

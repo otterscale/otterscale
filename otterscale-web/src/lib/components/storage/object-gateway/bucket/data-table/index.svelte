@@ -19,10 +19,12 @@
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { buckets }: { buckets: Writable<Bucket[]> } = $props();
+	let { buckets, reloadManager }: { buckets: Writable<Bucket[]>; reloadManager: ReloadManager } =
+		$props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -118,6 +120,7 @@
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />
+			<Reloader {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

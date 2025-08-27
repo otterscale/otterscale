@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { StorageService, type SubvolumeGroup } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -70,11 +70,8 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<div class="flex items-center justify-between gap-2">
-			{@render trigger()}
-			<Reloader {reloadManager} />
-		</div>
-		<DataTable {subvolumeGroups} />
+		{@render trigger()}
+		<DataTable {subvolumeGroups} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

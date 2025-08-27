@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -52,9 +52,8 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Reloader {reloadManager} />
 		<Statistics {scopeUuid} {facilityName} />
-		<DataTable {applications} />
+		<DataTable {applications} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}

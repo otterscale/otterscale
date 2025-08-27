@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
+	import type { Network } from '$lib/api/network/v1/network_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
@@ -15,25 +15,17 @@
 		type SortingState,
 		type VisibilityState
 	} from '@tanstack/table-core';
+	import { type Writable } from 'svelte/store';
 	import Create from './action-create.svelte';
-	import Actions from './actions.svelte';
 	import { columns, messages } from './columns';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let {
-		subnet
-	}: {
-		subnet: Network_Subnet;
-	} = $props();
+	let { networks, reloadManager }: { networks: Writable<Network[]>; reloadManager: ReloadManager } =
+		$props();
 
-	let ipRanges = $state(subnet.ipRanges);
-	$effect(() => {
-		subnet;
-		ipRanges = subnet.ipRanges;
-	});
-
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 15 });
+	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
 	let columnVisibility = $state<VisibilityState>({});
@@ -41,7 +33,7 @@
 
 	const table = createSvelteTable({
 		get data() {
-			return ipRanges;
+			return $networks;
 		},
 		columns,
 
@@ -103,30 +95,30 @@
 			}
 		},
 
-		autoResetAll: false
+		autoResetPageIndex: false
 	});
 </script>
 
 <Layout.Root>
-	<Layout.Statistics></Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy
-				columnId="comment"
-				values={ipRanges.map((row) => row.comment)}
+				columnId="fabric"
+				values={$networks.map((row) => row.fabric?.name)}
 				{messages}
 				{table}
 			/>
-			<Filters.StringMatch
-				columnId="type"
-				values={ipRanges.flatMap((row) => row.type)}
+			<Filters.StringFuzzy
+				columnId="vlan"
+				values={$networks.map((row) => row.vlan?.name)}
 				{messages}
 				{table}
 			/>
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
-			<Create {subnet} />
+			<Create />
+			<Reloader {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
@@ -144,7 +136,6 @@
 								{/if}
 							</Table.Head>
 						{/each}
-						<Table.Head></Table.Head>
 					</Table.Row>
 				{/each}
 			</Table.Header>
@@ -156,9 +147,6 @@
 								<FlexRender content={cell.column.columnDef.cell} context={cell.getContext()} />
 							</Table.Cell>
 						{/each}
-						<Table.Cell>
-							<Actions {row} />
-						</Table.Cell>
 					</Table.Row>
 				{:else}
 					<Empty {table} />

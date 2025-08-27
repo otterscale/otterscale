@@ -19,10 +19,15 @@
 	import Create from './action-test.svelte';
 	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { testResults }: { testResults: Writable<TestResult[]> } = $props();
+	let {
+		testResults,
+		reloadManager
+	}: { testResults: Writable<TestResult[]>; reloadManager: ReloadManager } = $props();
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -39,10 +44,12 @@
 			return $testResults;
 		},
 		columns,
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
+
 		state: {
 			get pagination() {
 				return pagination;
@@ -60,6 +67,7 @@
 				return rowSelection;
 			}
 		},
+
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
 				pagination = updater(pagination);
@@ -95,6 +103,7 @@
 				rowSelection = updater;
 			}
 		},
+
 		autoResetPageIndex: false
 	});
 </script>
@@ -121,6 +130,7 @@
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />
+			<Reloader {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

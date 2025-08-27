@@ -2,6 +2,7 @@
 	import { type TestResult } from '$lib/api/bist/v1/bist_pb';
 	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import {
@@ -22,8 +23,13 @@
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { testResults }: { testResults: Writable<TestResult[]> } = $props();
+	let {
+		testResults,
+		reloadManager
+	}: { testResults: Writable<TestResult[]>; reloadManager: ReloadManager } = $props();
+
 	let data = $state(writable(testResults));
+
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -41,8 +47,8 @@
 		get data() {
 			return $testResults;
 		},
-
 		columns,
+
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
@@ -100,6 +106,7 @@
 				rowSelection = updater;
 			}
 		},
+
 		autoResetPageIndex: false
 	});
 </script>
@@ -126,6 +133,7 @@
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />
+			<Reloader {reloadManager} />
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>
