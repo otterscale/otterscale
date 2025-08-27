@@ -6,11 +6,46 @@
 [![GitHub Release](https://img.shields.io/github/v/release/openhdc/otterscale?style=flat-square)](https://github.com/openhdc/otterscale/releases)
 [![GitHub License](https://img.shields.io/github/license/openhdc/otterscale?style=flat-square)](https://opensource.org/license/agpl-v3)
 
-- ***WIP***
+**OtterScale** is a comprehensive **hyper-converged infrastructure platform** that unifies compute, storage, and networking resources into a single, scalable solution. Built for modern data centers, it seamlessly integrates **virtual machine management**, **software-defined networking**, **distributed storage**, **container orchestration**, **GPU resource management**, and **application marketplace** capabilities.
+
+Designed to simplify complex infrastructure operations, OtterScale provides a **unified control plane** for managing heterogeneous workloads across **bare metal**, **virtualized**, and **containerized environments**. Whether you're running traditional VMs, cloud-native applications, or GPU-accelerated workloads, OtterScale delivers **enterprise-grade performance** with **operational simplicity**.
 
 ## ✨ Features
 
-- ***WIP***
+### Virtualization and Compute
+
+- **Bare Metal Automation**: Integration with MAAS for streamlined physical server lifecycle management.
+- **Virtual Machine Management**: Comprehensive KVM/QEMU virtualization supporting live migration and dynamic resource allocation.
+- **GPU Resource Management**: Dynamic allocation and sharing of GPU resources for AI/ML and HPC workloads.
+
+### Container and Orchestration
+
+- **Container Orchestration**: Native Kubernetes integration for managing containerized workloads.
+- **Service Orchestration**: Juju charm deployment for simplified application modeling and service orchestration.
+
+### Storage and Data Management
+
+- **Storage Management**: Built-in Ceph storage cluster provisioning and management for scalable storage solutions.
+- **Backup and Disaster Recovery**: Automated snapshot management and cross-site replication for data protection.
+
+### Monitoring and Diagnostics
+
+- **Monitoring and Observability**: Integrated Prometheus, Grafana, and distributed tracing for real-time system insights.
+- **Built-in Self Test (BIST)**: Comprehensive system health monitoring and diagnostics for proactive maintenance.
+
+### Security and Access Control
+
+- **Identity and Access Management**: Role-Based Access Control (RBAC) with LDAP/Active Directory integration and Single Sign-On (SSO) support.
+
+### Application and API Ecosystem
+
+- **Application Marketplace**: Curated catalog of pre-configured applications and services for easy deployment.
+- **API-First Architecture**: gRPC APIs with Protocol Buffers specification and SDK support for seamless integration.
+
+### Scalability and Reliability
+
+- **High Availability**: Multi-node deployment with automatic failover for uninterrupted operations.
+- **Extensible Architecture**: Plugin system enabling custom integrations and workflows.
 
 ## 🍺 Quick Start
 
@@ -62,11 +97,8 @@ We'll do our best to assist you promptly.
 ## 📢 Roadmap
 
 - [x] [v1.0.0](https://github.com/openhdc/otterscale/milestone/1)
-  - [x] MAAS
-  - [x] Juju
-  - [x] Kubernetes
-  - [x] Ceph
-  - [x] BIST
+- [ ] [v1.1.0](https://github.com/openhdc/otterscale/milestone/2)
+- [ ] [v1.2.0](https://github.com/openhdc/otterscale/milestone/3)
 
 ## ⛔ Rules
 
