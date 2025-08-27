@@ -196,7 +196,7 @@ func (s *KubeVirtService) GetDataVolume(ctx context.Context, req *connect.Reques
 }
 
 func (s *KubeVirtService) ListDataVolumes(ctx context.Context, req *connect.Request[pb.ListDataVolumesRequest]) (*connect.Response[pb.ListDataVolumesResponse], error) {
-	dvs, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetNamespace(), req.Msg.GetFacilityName())
+	dvs, err := s.uc.ListDataVolumes(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
