@@ -32,15 +32,19 @@ proto:
 		--go_out=paths=source_relative:. \
 		--go_opt=default_api_level=API_OPAQUE \
 		--connect-go_out=paths=source_relative:. \
-		--es_out=otterscale-web/src/lib \
+		--es_out=web/src/lib \
 		--es_opt=target=ts \
 		$(PROTO_FILES)
 
-.PHONY: docker-image
-# build docker image
-docker-image:
+.PHONY: service-image
+# build backend image
+service-image:
 	docker build -f Dockerfile --network host -t otterscale:$(VERSION) .
-# 	docker push $(DOCKER_IMAGE):$(VERSION)
+
+.PHONY: web-image
+# build frontend image
+web-image:
+	cd web && docker build -f Dockerfile --network host -t otterscale-web:$(VERSION) .
 
 .PHONY: help
 # show help
