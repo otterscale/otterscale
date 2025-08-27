@@ -64,27 +64,16 @@ class BistDashboardManager<TData = TestResult> {
         return `${Warp_Input_Operation[input.operation]}-${duration.value}${duration.unit}-${objectSize.value}${objectSize.unit}-${input.objectCount}`;
     }
 
-    // private generateColor(groupName: string): string {
-    //     const hue = Math.abs(hashCode(groupName)) % 360;
-    //     return `hsl(${hue}, 70%, 50%)`;
-    // }
-
     // Improved: consistent color mapping per unique groupName, avoids collisions as much as possible
     private static colorMap: Map<string, string> = new Map();
 
     private generateColor(groupName: string): string {
         const CHART_COLORS_MANY = [
-            'var(--chart-3)',
-            'var(--chart-5)',
-            'var(--chart-7)',
-            'var(--chart-9)',
-            'var(--chart-11)',
+            'var(--chart-1)',
             'var(--chart-2)',
+            'var(--chart-3)',
             'var(--chart-4)',
-            'var(--chart-6)',
-            'var(--chart-8)',
-            'var(--chart-10)',
-            'var(--chart-12)',
+            'var(--chart-5)',
         ];
 
         // Use a static map to ensure each groupName always gets the same color
