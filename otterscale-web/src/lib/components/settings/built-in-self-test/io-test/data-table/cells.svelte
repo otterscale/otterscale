@@ -165,17 +165,17 @@
 	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read}
 			<Badge variant="outline">
-				Read: {row.original.kind.value.output.read.ioPerSecond.toFixed(0)}
+				Read {row.original.kind.value.output.read.ioPerSecond.toFixed(0)}
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write}
 			<Badge variant="default">
-				Write: {row.original.kind.value.output.write.ioPerSecond.toFixed(0)}
+				Write {row.original.kind.value.output.write.ioPerSecond.toFixed(0)}
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim}
 			<Badge variant="secondary">
-				Trim: {row.original.kind.value.output.trim.ioPerSecond.toFixed(0)}
+				Trim {row.original.kind.value.output.trim.ioPerSecond.toFixed(0)}
 			</Badge>
 		{/if}
 	</Layout.Cell>
@@ -185,21 +185,21 @@
 	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
-				Read: {(
+				Read {(
 					Number(row.original.kind.value.output.read.latency.minNanoseconds) / 1000000
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
 			<Badge variant="default">
-				Write: {(
+				Write {(
 					Number(row.original.kind.value.output.write.latency.minNanoseconds) / 1000000
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
 			<Badge variant="secondary">
-				Trim: {(
+				Trim {(
 					Number(row.original.kind.value.output.trim.latency.minNanoseconds) / 1000000
 				).toFixed(3)} ms
 			</Badge>
@@ -211,21 +211,21 @@
 	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
-				Read: {(
+				Read {(
 					Number(row.original.kind.value.output.read.latency.maxNanoseconds) / 1000000
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
 			<Badge variant="default">
-				Write: {(
+				Write {(
 					Number(row.original.kind.value.output.write.latency.maxNanoseconds) / 1000000
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
 			<Badge variant="secondary">
-				Trim: {(
+				Trim {(
 					Number(row.original.kind.value.output.trim.latency.maxNanoseconds) / 1000000
 				).toFixed(3)} ms
 			</Badge>
@@ -237,21 +237,21 @@
 	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.read?.latency}
 			<Badge variant="outline">
-				Read: {(
+				Read {(
 					Number(row.original.kind.value.output.read.latency.meanNanoseconds) / 1000000
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.write?.latency}
 			<Badge variant="default">
-				Write: {(
+				Write {(
 					Number(row.original.kind.value.output.write.latency.meanNanoseconds) / 1000000
 				).toFixed(3)} ms
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'fio' && row.original.kind.value?.output?.trim?.latency}
 			<Badge variant="secondary">
-				Trim: {(
+				Trim {(
 					Number(row.original.kind.value.output.trim.latency.meanNanoseconds) / 1000000
 				).toFixed(3)} ms
 			</Badge>
