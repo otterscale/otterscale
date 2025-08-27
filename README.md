@@ -6,65 +6,65 @@
 [![GitHub Release](https://img.shields.io/github/v/release/openhdc/otterscale?style=flat-square)](https://github.com/openhdc/otterscale/releases)
 [![GitHub License](https://img.shields.io/github/license/openhdc/otterscale?style=flat-square)](https://opensource.org/license/agpl-v3)
 
-**OtterScale** is a comprehensive **hyper-converged infrastructure platform** that unifies compute, storage, and networking resources into a single, scalable solution. Built for modern data centers, it seamlessly integrates **virtual machine management**, **software-defined networking**, **distributed storage**, **container orchestration**, **GPU resource management**, and **application marketplace** capabilities.
+**OtterScale** is a comprehensive **hyper-converged infrastructure platform** that unifies compute, storage, and networking resources into a single, scalable solution. Built for modern data centers, it seamlessly integrates virtual machine management, software-defined networking, distributed storage, container orchestration, GPU resource management, and application marketplace capabilities.
 
-Designed to simplify complex infrastructure operations, OtterScale provides a **unified control plane** for managing heterogeneous workloads across **bare metal**, **virtualized**, and **containerized environments**. Whether you're running traditional VMs, cloud-native applications, or GPU-accelerated workloads, OtterScale delivers **enterprise-grade performance** with **operational simplicity**.
+Designed to simplify complex infrastructure operations, OtterScale provides a unified control plane for managing heterogeneous workloads across bare metal, virtualized, and containerized environments. Whether you're running traditional VMs, cloud-native applications, or GPU-accelerated workloads, OtterScale delivers enterprise-grade performance with operational simplicity.
 
 ## ✨ Features
 
-### Virtualization and Compute
+### 🖥️ Virtualization and Compute
 
-- **Bare Metal Automation**: Integration with MAAS for streamlined physical server lifecycle management.
-- **Virtual Machine Management**: Comprehensive KVM/QEMU virtualization supporting live migration and dynamic resource allocation.
-- **GPU Resource Management**: Dynamic allocation and sharing of GPU resources for AI/ML and HPC workloads.
+- **Bare Metal Automation**: Integration with MAAS for streamlined physical server lifecycle management
+- **Virtual Machine Management**: Comprehensive KVM/QEMU virtualization with live migration and dynamic resource allocation
+- **GPU Resource Management**: Dynamic allocation and sharing of GPU resources for AI/ML and HPC workloads
 
-### Container and Orchestration
+### 🐳 Container and Orchestration
 
-- **Container Orchestration**: Native Kubernetes integration for managing containerized workloads.
-- **Service Orchestration**: Juju charm deployment for simplified application modeling and service orchestration.
+- **Container Orchestration**: Native Kubernetes integration for managing containerized workloads
+- **Service Orchestration**: Juju charm deployment for simplified application modeling and service orchestration
 
-### Storage and Data Management
+### 💾 Storage and Data Management
 
-- **Storage Management**: Built-in Ceph storage cluster provisioning and management for scalable storage solutions.
-- **Backup and Disaster Recovery**: Automated snapshot management and cross-site replication for data protection.
+- **Storage Management**: Built-in Ceph storage cluster provisioning and management for scalable storage solutions
+- **Backup and Disaster Recovery**: Automated snapshot management and cross-site replication for data protection
 
-### Monitoring and Diagnostics
+### 📊 Monitoring and Diagnostics
 
-- **Monitoring and Observability**: Integrated Prometheus, Grafana, and distributed tracing for real-time system insights.
-- **Built-in Self Test (BIST)**: Comprehensive system health monitoring and diagnostics for proactive maintenance.
+- **Monitoring and Observability**: Integrated Prometheus, Grafana, and distributed tracing for real-time system insights
+- **Built-in Self Test (BIST)**: Comprehensive system health monitoring and diagnostics for proactive maintenance
 
-### Security and Access Control
+### 🔐 Security and Access Control
 
-- **Identity and Access Management**: Role-Based Access Control (RBAC) with LDAP/Active Directory integration and Single Sign-On (SSO) support.
+- **Identity and Access Management**: Role-Based Access Control (RBAC) with LDAP/Active Directory integration and Single Sign-On (SSO) support
 
-### Application and API Ecosystem
+### 🛒 Application and API Ecosystem
 
-- **Application Marketplace**: Curated catalog of pre-configured applications and services for easy deployment.
-- **API-First Architecture**: gRPC APIs with Protocol Buffers specification and SDK support for seamless integration.
+- **Application Marketplace**: Curated catalog of pre-configured applications and services for easy deployment
+- **API-First Architecture**: gRPC APIs with Protocol Buffers specification and SDK support for seamless integration
 
-### Scalability and Reliability
+### ⚡ Scalability and Reliability
 
-- **High Availability**: Multi-node deployment with automatic failover for uninterrupted operations.
-- **Extensible Architecture**: Plugin system enabling custom integrations and workflows.
+- **High Availability**: Multi-node deployment with automatic failover for uninterrupted operations
+- **Extensible Architecture**: Plugin system enabling custom integrations and workflows
 
-## 🍺 Quick Start
+## 🚀 Quick Start
 
-- Download the [latest release](https://github.com/openhdc/otterscale/releases/latest) or compile from source
+Download the [latest release](https://github.com/openhdc/otterscale/releases/latest) or compile from source:
 
-  ```sh
-  make build && cd bin
-  ```
+```sh
+make build && cd bin
+```
 
-- Initialize configuration and launch server
+Initialize configuration and launch server:
 
-  ```sh
-  ./otterscale init > otterscale.yaml
-  ./otterscale serve --address :8299 --config otterscale.yaml
-  ```
+```sh
+./otterscale init > otterscale.yaml
+./otterscale serve --address :8299 --config otterscale.yaml
+```
 
-## 🔨 Development
+## 🔧 Development
 
-Ensure you have the following environment setup:
+### Requirements
 
 - Go 1.24.3 or later
 - Protobuf compiler (`protoc`)
@@ -72,9 +72,9 @@ Ensure you have the following environment setup:
 
 ### Prerequisites
 
-Before building from source, you must install the following system dependencies:
+Install system dependencies before building:
 
-```sh
+```bash
 # Ubuntu/Debian
 sudo apt-get install libcephfs-dev librbd-dev librados-dev build-essential
 
@@ -84,26 +84,24 @@ sudo yum install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
 sudo dnf install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
 ```
 
-## 🔍 Documentation
+## 📚 Documentation
 
-For detailed documentation, please visit [docs](/docs) directory.
+For detailed documentation, visit the [docs](/docs) directory.
 
-## 🦮 Help
+## 🆘 Support
 
-If you need help, feel free to open an issue on GitHub or use the discussions feature to contact the maintainers.
+Need help? Open an issue on GitHub or use the discussions feature to contact maintainers.
 
-We'll do our best to assist you promptly.
-
-## 📢 Roadmap
+## 🗺️ Roadmap
 
 - [x] [v1.0.0](https://github.com/openhdc/otterscale/milestone/1)
 - [ ] [v1.1.0](https://github.com/openhdc/otterscale/milestone/2)
 - [ ] [v1.2.0](https://github.com/openhdc/otterscale/milestone/3)
 
-## ⛔ Rules
+## 🤝 Contributing
 
-Please review and adhere to the contribution guidelines outlined in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+Please review the contribution guidelines in [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## ⚖️ License
+## 📄 License
 
 This project is licensed under the terms of the [LICENSE](LICENSE) file.
