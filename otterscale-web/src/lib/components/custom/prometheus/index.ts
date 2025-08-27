@@ -21,38 +21,12 @@ export interface Series {
     color: string;
 }
 
-// One
-const CHART_COLORS_ONE = 'var(--chart-5)';
-
-// Two
-const CHART_COLORS_TWO = [
-    'var(--chart-4)',
-    'var(--chart-7)',
-];
-
-// Two - Five
-const CHART_COLORS_FEW = [
-    'var(--chart-4)',
-    'var(--chart-6)',
-    'var(--chart-8)',
-    'var(--chart-10)',
-    'var(--chart-12)',
-];
-
-// Five up
-const CHART_COLORS_MANY = [
-    // 'var(--chart-1)',
+const CHART_COLORS = [
+    'var(--chart-1)',
     'var(--chart-2)',
     'var(--chart-3)',
     'var(--chart-4)',
     'var(--chart-5)',
-    'var(--chart-6)',
-    'var(--chart-7)',
-    'var(--chart-8)',
-    'var(--chart-9)',
-    'var(--chart-10)',
-    'var(--chart-11)',
-    'var(--chart-12)',
 ];
 
 /**
@@ -67,37 +41,21 @@ export function generateChartConfig(data: DataPoint[]): ChartConfig {
     const samplePoint = data[0];
     const metricKeys = Object.keys(samplePoint).filter(key => key !== 'date');
 
-    // Select color palette based on metric count
-    let colorPalette: string[];
-
-    if (metricKeys.length === 1) {
-        colorPalette = [CHART_COLORS_ONE];
-    } else if (metricKeys.length === 2) {
-        colorPalette = CHART_COLORS_TWO;
-    } else if (metricKeys.length <= 5) {
-        colorPalette = CHART_COLORS_FEW;
-    } else {
-        colorPalette = CHART_COLORS_MANY;
-    }
-
     // Generate chartConfig
     const chartConfig: ChartConfig = {};
 
     metricKeys.forEach((key, index) => {
         // Generate label (convert key to a more friendly display name)
-        // const label = key.split(/(?=[A-Z])|_|-|\s+/)
-        //     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        //     .join(' ');
         const label = key;
+
         // Assign color (cycle through selected color palette)
-        const color = colorPalette[index % colorPalette.length];
+        const color = CHART_COLORS[index % CHART_COLORS.length];
 
         chartConfig[key] = {
             label,
             color
         };
     });
-
     return chartConfig;
 }
 
