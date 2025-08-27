@@ -328,8 +328,9 @@ func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInst
 	ret.SetMetadata(fromVirtualMachine(vm))
 	ret.SetStartupScript(toProtoVirutalMachineScripts(vm.Spec.Template.Spec.Volumes))
 	ret.SetResoureces(toProtoVirtualMachineResources(vm))
-	ret.SetNodeName(vmi.Status.NodeName)
-	// [TODO] if multiple network in the future
+	if vmi != nil {
+		ret.SetNodeName(vmi.Status.NodeName)
+	}
 	ret.SetNetworkName(vm.Spec.Template.Spec.Networks[0].Name)
 
 	if vmi != nil {
@@ -339,22 +340,22 @@ func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInst
 }
 
 func fromVirtualMachine(vm *core.VirtualMachine) *pb.Metadata {
-	return toProtoMetadata(vm.GetName(), vm.GetNamespace(), vm.GetLabels(), vm.GetAnnotations(), vm.CreationTimestamp.Time, vm.GetAnnotations()["otterscale/update-timestamp"])
+	return toProtoMetadata(vm.GetNamespace(), vm.GetName(), vm.GetLabels(), vm.GetAnnotations(), vm.CreationTimestamp.Time, vm.GetAnnotations()["otterscale.io/last-updated"])
 }
 
 func fromDataVolume(dv *core.DataVolume) *pb.Metadata {
-	return toProtoMetadata(dv.GetName(), dv.GetNamespace(), dv.GetLabels(), dv.GetAnnotations(), dv.CreationTimestamp.Time, dv.GetAnnotations()["otterscale/update-timestamp"])
+	return toProtoMetadata(dv.GetNamespace(), dv.GetName(), dv.GetLabels(), dv.GetAnnotations(), dv.CreationTimestamp.Time, dv.GetAnnotations()["otterscale.io/last-updated"])
 }
 
 func fromVirtualMachineService(s *core.KubeVirtVMService) *pb.Metadata {
-	return toProtoMetadata(s.Metadata.Name, s.Metadata.Namespace, s.Metadata.Labels, s.Metadata.Annotations, s.Metadata.CreatedAt.AsTime(), s.Metadata.Annotations["otterscale/update-timestamp"])
+	return toProtoMetadata(s.Metadata.Namespace, s.Metadata.Name, s.Metadata.Labels, s.Metadata.Annotations, s.Metadata.CreatedAt.AsTime(), s.Metadata.Annotations["otterscale.io/last-updated"])
 }
 
 func fromInstanceType(t *core.InstanceType) *pb.Metadata {
-	return toProtoMetadata(t.Metadata.Name, t.Metadata.Namespace, t.Metadata.Labels, t.Metadata.Annotations, t.Metadata.CreatedAt.AsTime(), t.Metadata.Annotations["otterscale/update-timestamp"])
+	return toProtoMetadata(t.Metadata.Namespace, t.Metadata.Name, t.Metadata.Labels, t.Metadata.Annotations, t.Metadata.CreatedAt.AsTime(), t.Metadata.Annotations["otterscale.io/last-updated"])
 }
 
-func toProtoMetadata(name, namespace string, labels, annotations map[string]string, creationTimestamp time.Time, updateTimestamp string) *pb.Metadata {
+func toProtoMetadata(namespace, name string, labels, annotations map[string]string, creationTimestamp time.Time, updateTimestamp string) *pb.Metadata {
 	ret := &pb.Metadata{}
 
 	ret.SetName(name)

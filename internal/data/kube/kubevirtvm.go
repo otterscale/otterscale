@@ -2,9 +2,9 @@ package kube
 
 import (
 	"context"
+	"time"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
 	clonev1 "kubevirt.io/api/clone/v1beta1"
 	virtv1 "kubevirt.io/api/core/v1"
@@ -177,6 +177,22 @@ func (r *virtVM) ListVirtualMachineClones(ctx context.Context, config *rest.Conf
 	return clones.Items, nil
 }
 
+func (r *virtVM) ListVirtualMachineClonesByVM(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.VirtualMachineClone, error) {
+	clones, err := r.ListVirtualMachineClones(ctx, config, namespace)
+	if err != nil {
+		return nil, err
+	}
+
+	var filtered []oscore.VirtualMachineClone
+	for i := range clones {
+		if clones[i].Spec.Target.Name == vmName {
+			filtered = append(filtered, clones[i])
+		}
+	}
+
+	return filtered, nil
+}
+
 func (r *virtVM) DeleteVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string) error {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
@@ -233,15 +249,15 @@ func (r *virtVM) ListVirtualMachineSnapshots(ctx context.Context, config *rest.C
 }
 
 func (r *virtVM) ListVirtualMachineSnapshotsByVM(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.VirtualMachineSnapshot, error) {
-	allSnaps, err := r.ListVirtualMachineSnapshots(ctx, config, namespace)
+	snapshots, err := r.ListVirtualMachineSnapshots(ctx, config, namespace)
 	if err != nil {
 		return nil, err
 	}
 
 	var filtered []oscore.VirtualMachineSnapshot
-	for _, snap := range allSnaps {
-		if snap.Spec.Source.Name == vmName {
-			filtered = append(filtered, snap)
+	for i := range snapshots {
+		if snapshots[i].Spec.Source.Name == vmName {
+			filtered = append(filtered, snapshots[i])
 		}
 	}
 
@@ -304,6 +320,22 @@ func (r *virtVM) ListVirtualMachineRestores(ctx context.Context, config *rest.Co
 	return restores.Items, err
 }
 
+func (r *virtVM) ListVirtualMachineRestoresByVM(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.VirtualMachineRestore, error) {
+	restores, err := r.ListVirtualMachineRestores(ctx, config, namespace)
+	if err != nil {
+		return nil, err
+	}
+
+	var filtered []oscore.VirtualMachineRestore
+	for i := range restores {
+		if restores[i].Spec.Target.Name == vmName {
+			filtered = append(filtered, restores[i])
+		}
+	}
+
+	return filtered, nil
+}
+
 func (r *virtVM) DeleteVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string) error {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
@@ -337,6 +369,22 @@ func (r *virtVM) ListVirtualMachineMigrates(ctx context.Context, config *rest.Co
 	}
 
 	return InstanceMigrates.Items, err
+}
+
+func (r *virtVM) ListVirtualMachineMigratesByVM(ctx context.Context, config *rest.Config, namespace, vmName string) ([]oscore.VirtualMachineInstanceMigration, error) {
+	migrations, err := r.ListVirtualMachineMigrates(ctx, config, namespace)
+	if err != nil {
+		return nil, err
+	}
+
+	var filtered []oscore.VirtualMachineInstanceMigration
+	for i := range migrations {
+		if migrations[i].Spec.VMIName == vmName {
+			filtered = append(filtered, migrations[i])
+		}
+	}
+
+	return filtered, nil
 }
 
 func (r *virtVM) DeleteVirtualMachineMigrate(ctx context.Context, config *rest.Config, namespace, name string) error {
@@ -383,6 +431,9 @@ func (r *virtVM) UpdateVirtualMachineInstance(ctx context.Context, config *rest.
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
+			Annotations: map[string]string{
+				"otterscale.io/last-updated": time.Now().Format(time.RFC3339),
+			},
 		},
 	}
 	if spec != nil {
@@ -391,29 +442,6 @@ func (r *virtVM) UpdateVirtualMachineInstance(ctx context.Context, config *rest.
 
 	opts := metav1.UpdateOptions{}
 	return virtClient.VirtualMachineInstance(namespace).Update(ctx, vmi, opts)
-}
-
-func (r *virtVM) PatchVirtualMachineInstance(
-	ctx context.Context,
-	config *rest.Config,
-	namespace, name string,
-	patchData []byte,
-) (*oscore.VirtualMachineInstance, error) {
-	// 取得 KubeVirt client
-	virtClient, err := r.kubevirt.virtClient(config)
-	if err != nil {
-		return nil, err
-	}
-
-	// 執行 MergePatch（傳入的 patchData 必須是合法的 JSON）
-	opts := metav1.PatchOptions{}
-	patchedVMI, err := virtClient.VirtualMachineInstance(namespace).
-		Patch(ctx, name, types.MergePatchType, patchData, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	return patchedVMI, nil
 }
 
 func (r *virtVM) DeleteVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string) error {

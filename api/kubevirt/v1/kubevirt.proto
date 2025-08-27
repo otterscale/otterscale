@@ -25,11 +25,9 @@ service KubeVirtService {
   rpc SnapshotVirtualMachine(SnapshotVirtualMachineRequest) returns (google.protobuf.Empty);
   rpc RestoreVirtualMachine(RestoreVirtualMachineRequest) returns (google.protobuf.Empty);
   rpc MigrateVirtualMachine(MigrateVirtualMachineRequest) returns (google.protobuf.Empty);
-
   rpc GetVirtualMachineSnapshot(GetVirtualMachineSnapshotRequest) returns (VirtualMachineSnapshot);
   rpc ListVirtualMachineSnapshots(ListVirtualMachineSnapshotsRequest) returns (ListVirtualMachineSnapshotsResponse);
   rpc DeleteVirtualMachineSnapshot(DeleteVirtualMachineSnapshotRequest) returns (google.protobuf.Empty);
-
   // Data Volume Operations
   rpc CreateDataVolume(CreateDataVolumeRequest) returns (DataVolume);
   rpc GetDataVolume(GetDataVolumeRequest) returns (DataVolume);

@@ -7,9 +7,9 @@ import (
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	"k8s.io/client-go/rest"
 	virtCorev1 "kubevirt.io/api/core/v1"
 )
@@ -41,6 +41,7 @@ type KubeVirtVMRepo interface {
 	CreateVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string, annotations, labels map[string]string, spec *VirtualMachineCloneSpec) (*VirtualMachineClone, error)
 	GetVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineClone, error)
 	ListVirtualMachineClones(ctx context.Context, config *rest.Config, namespace string) ([]VirtualMachineClone, error)
+	ListVirtualMachineClonesByVM(ctx context.Context, config *rest.Config, namespace, name string) ([]VirtualMachineClone, error)
 	DeleteVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string) error
 	CreateVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string, annotations, labels map[string]string, spec *VirtualMachineSnapshotSpec) (*VirtualMachineSnapshot, error)
 	GetVirtualMachineSnapshot(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineSnapshot, error)
@@ -50,10 +51,11 @@ type KubeVirtVMRepo interface {
 	CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string, annotations, labels map[string]string, spec *VirtualMachineRestoreSpec) (*VirtualMachineRestore, error)
 	GetVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineRestore, error)
 	ListVirtualMachineRestores(ctx context.Context, config *rest.Config, namespace string) ([]VirtualMachineRestore, error)
+	ListVirtualMachineRestoresByVM(ctx context.Context, config *rest.Config, namespace, name string) ([]VirtualMachineRestore, error)
 	DeleteVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string) error
-	// CreateVirtualMachineMigrate(ctx context.Context, config *rest.Config, namespace, name string, annotations, labels map[string]string, sp) (*VirtualMachineMigrate, error)
 	GetVirtualMachineMigrate(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineInstanceMigration, error)
 	ListVirtualMachineMigrates(ctx context.Context, config *rest.Config, namespace string) ([]VirtualMachineInstanceMigration, error)
+	ListVirtualMachineMigratesByVM(ctx context.Context, config *rest.Config, namespace, name string) ([]VirtualMachineInstanceMigration, error)
 	DeleteVirtualMachineMigrate(ctx context.Context, config *rest.Config, namespace, name string) error
 	// VirtualMachine Instances
 	GetVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string) (*VirtualMachineInstance, error)
@@ -70,15 +72,12 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 	if err != nil {
 		return nil, err
 	}
-	// generate disk and volume
-	var vmDisks []virtCorev1.Disk
-	var vmVolumes []virtCorev1.Volume
 
 	if labels != nil {
-		labels["kubevirt.io/vm"] = name
+		labels["otterscale.io/virtualmachine"] = name
 	} else {
 		labels = map[string]string{
-			"kubevirt.io/vm": name,
+			"otterscale.io/virtualmachine": name,
 		}
 	}
 
@@ -86,95 +85,61 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 		"kubevirt.io/allow-pod-bridge-network-live-migration": "true",
 	}
 
-	for _, d := range disks {
-		var bus virtCorev1.DiskBus
-		switch strings.ToLower(d.Bus) {
-		case "sata":
-			bus = virtCorev1.DiskBusSATA
-		case "scsi":
-			bus = virtCorev1.DiskBusSCSI
-		case "virtio":
-			bus = virtCorev1.DiskBusVirtio
-		default:
-			// default using virtio
-			bus = virtCorev1.DiskBusVirtio
-		}
-		vmDisks = append(vmDisks, virtCorev1.Disk{
+	vmDisks, vmVolumes, err := buildDisksAndVolumes(disks, script)
+	if err != nil {
+		return nil, err
+	}
+
+	spec := buildVMSpec(resources, vmDisks, vmVolumes, network)
+
+	return uc.kubeVirtVM.CreateVirtualMachine(ctx, config, namespace, name, labels, annotations, spec)
+}
+
+func volumeFromDisk(d DiskDevice) virtCorev1.Volume {
+	switch strings.ToLower(d.DiskType) {
+	case TYPEDATAVOLUME:
+		return virtCorev1.Volume{
 			Name: d.Name,
-			DiskDevice: virtCorev1.DiskDevice{
-				Disk: &virtCorev1.DiskTarget{
-					Bus: bus,
-				},
-			},
-		})
-
-		// Create VolumeSource according to disktype
-		switch strings.ToLower(d.DiskType) {
-		case TYPEDATAVOLUME: // protobuf enum => DATAVOLUME
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					DataVolume: &virtCorev1.DataVolumeSource{
-						Name: d.Name,
-					},
-				},
-			})
-		case TYPEPERSISTENTVOLUMECLAIM:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					PersistentVolumeClaim: &virtCorev1.PersistentVolumeClaimVolumeSource{
-						PersistentVolumeClaimVolumeSource: corev1.PersistentVolumeClaimVolumeSource{
-							ClaimName: d.Name,
-						},
-					},
-				},
-			})
-		case TYPECONFIGMAP:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					ConfigMap: &virtCorev1.ConfigMapVolumeSource{
-						LocalObjectReference: corev1.LocalObjectReference{
-							Name: d.Name,
-						},
-					},
-				},
-			})
-		case TYPESECRET:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					Secret: &virtCorev1.SecretVolumeSource{
-						SecretName: d.Name,
-					},
-				},
-			})
-		default:
-			// [TODO] Not Support
-		}
-	}
-
-	// if script is given，add CloudInitNoCloud volume & disk
-	if strings.TrimSpace(script) != "" {
-		vmVolumes = append(vmVolumes, virtCorev1.Volume{
-			Name: cloudInitName,
 			VolumeSource: virtCorev1.VolumeSource{
-				CloudInitNoCloud: &virtCorev1.CloudInitNoCloudSource{
-					UserData: script,
+				DataVolume: &virtCorev1.DataVolumeSource{Name: d.Name},
+			},
+		}
+	case TYPEPERSISTENTVOLUMECLAIM:
+		return virtCorev1.Volume{
+			Name: d.Name,
+			VolumeSource: virtCorev1.VolumeSource{
+				PersistentVolumeClaim: &virtCorev1.PersistentVolumeClaimVolumeSource{
+					PersistentVolumeClaimVolumeSource: corev1.PersistentVolumeClaimVolumeSource{
+						ClaimName: d.Name,
+					},
 				},
 			},
-		})
-
-		vmDisks = append(vmDisks, virtCorev1.Disk{
-			Name: cloudInitName,
-			DiskDevice: virtCorev1.DiskDevice{
-				Disk: &virtCorev1.DiskTarget{
-					Bus: virtCorev1.DiskBusVirtio,
+		}
+	case TYPECONFIGMAP:
+		return virtCorev1.Volume{
+			Name: d.Name,
+			VolumeSource: virtCorev1.VolumeSource{
+				ConfigMap: &virtCorev1.ConfigMapVolumeSource{
+					LocalObjectReference: corev1.LocalObjectReference{Name: d.Name},
 				},
 			},
-		})
+		}
+	case TYPESECRET:
+		return virtCorev1.Volume{
+			Name: d.Name,
+			VolumeSource: virtCorev1.VolumeSource{
+				Secret: &virtCorev1.SecretVolumeSource{SecretName: d.Name},
+			},
+		}
+	default:
+		return virtCorev1.Volume{}
 	}
+}
+
+func buildVMSpec(resources VirtualMachineResources, disks []virtCorev1.Disk, volumes []virtCorev1.Volume, network string) *VirtualMachineSpec {
+	const (
+		miB = 1024 * 1024
+	)
 
 	secureBoot := false
 	hpet := false
@@ -186,24 +151,19 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 		Template: &virtCorev1.VirtualMachineInstanceTemplateSpec{
 			Spec: virtCorev1.VirtualMachineInstanceSpec{
 				Domain: virtCorev1.DomainSpec{
-					// Clock
 					Clock: &virtCorev1.Clock{
 						Timer: &virtCorev1.Timer{
 							HPET:   &virtCorev1.HPETTimer{Enabled: &hpet},
 							Hyperv: &virtCorev1.HypervTimer{},
-							PIT: &virtCorev1.PITTimer{
-								TickPolicy: virtCorev1.PITTickPolicyDelay,
-							},
-							RTC: &virtCorev1.RTCTimer{
-								TickPolicy: virtCorev1.RTCTickPolicyCatchup,
-							},
+							PIT:    &virtCorev1.PITTimer{TickPolicy: virtCorev1.PITTickPolicyDelay},
+							RTC:    &virtCorev1.RTCTimer{TickPolicy: virtCorev1.RTCTickPolicyCatchup},
 						},
 						ClockOffset: virtCorev1.ClockOffset{
 							UTC: &virtCorev1.ClockOffsetUTC{},
 						},
 					},
 					Devices: virtCorev1.Devices{
-						Disks: vmDisks,
+						Disks: disks,
 						Interfaces: []virtCorev1.Interface{
 							{
 								Name:  network,
@@ -226,9 +186,7 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 					},
 					Firmware: &virtCorev1.Firmware{
 						Bootloader: &virtCorev1.Bootloader{
-							EFI: &virtCorev1.EFI{
-								SecureBoot: &secureBoot,
-							},
+							EFI: &virtCorev1.EFI{SecureBoot: &secureBoot},
 						},
 					},
 				},
@@ -240,51 +198,44 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 						},
 					},
 				},
-				Volumes: vmVolumes,
+				Volumes: volumes,
 			},
 		},
 	}
 
-	// If instancetype is given, use instancetype
+	// Instancetype 或直接設定 CPU / Memory
 	if resources.InstanceName != "" {
-		spec.Instancetype = &virtCorev1.InstancetypeMatcher{
-			Name: resources.InstanceName,
-		}
+		spec.Instancetype = &virtCorev1.InstancetypeMatcher{Name: resources.InstanceName}
 	} else {
-		spec.Template.Spec.Domain.CPU = &virtCorev1.CPU{
-			Cores: uint32(resources.CPUcores),
-		}
-
-		memoryStr := fmt.Sprintf("%dB", resources.MemoryBytes)
-
-		const MiB = 1024 * 1024
-		memoryMiB := resources.MemoryBytes / MiB
-		memoryStr = fmt.Sprintf("%dMi", memoryMiB)
-
+		// CPU
+		spec.Template.Spec.Domain.CPU = &virtCorev1.CPU{Cores: resources.CPUcores}
+		// Memory
+		mib := resources.MemoryBytes / miB
+		memoryStr := fmt.Sprintf("%dMi", mib)
 		spec.Template.Spec.Domain.Resources = virtCorev1.ResourceRequirements{
 			Requests: corev1.ResourceList{
 				corev1.ResourceMemory: resource.MustParse(memoryStr),
 			},
 		}
 	}
-
-	return uc.kubeVirtVM.CreateVirtualMachine(ctx, config, namespace, name, labels, annotations, spec)
+	return spec
 }
 
-func (uc *KubeVirtUseCase) GetVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) (*VirtualMachine, *VirtualMachineInstance, error) {
+func (uc *KubeVirtUseCase) GetVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) (vm *VirtualMachine, vmi *VirtualMachineInstance, err error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	vm, err := uc.kubeVirtVM.GetVirtualMachine(ctx, config, name, namespace)
+	vm, err = uc.kubeVirtVM.GetVirtualMachine(ctx, config, namespace, name)
 	if err != nil {
 		return nil, nil, err
 	}
-	vmi, err := uc.kubeVirtVM.GetVirtualMachineInstance(ctx, config, name, namespace)
+	vmi, err = uc.kubeVirtVM.GetVirtualMachineInstance(ctx, config, namespace, name)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	return vm, vmi, err
 }
 
@@ -316,97 +267,12 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facil
 	if err != nil {
 		return nil, nil, err
 	}
+	oldVM.SetLabels(ensureLabels(labels))
 
-	if labels == nil {
-		labels = map[string]string{}
+	vmDisks, vmVolumes, err := buildDisksAndVolumes(disks, startupScript)
+	if err != nil {
+		return nil, nil, err
 	}
-	oldVM.SetLabels(labels)
-
-	var vmDisks []virtCorev1.Disk
-	var vmVolumes []virtCorev1.Volume
-
-	for _, d := range disks {
-		// --- Disk Bus ---
-		var bus virtCorev1.DiskBus
-		switch strings.ToLower(d.Bus) {
-		case "sata":
-			bus = virtCorev1.DiskBusSATA
-		case "scsi":
-			bus = virtCorev1.DiskBusSCSI
-		case "virtio":
-			bus = virtCorev1.DiskBusVirtio
-		default:
-			bus = virtCorev1.DiskBusVirtio
-		}
-
-		vmDisks = append(vmDisks, virtCorev1.Disk{
-			Name: d.Name,
-			DiskDevice: virtCorev1.DiskDevice{
-				Disk: &virtCorev1.DiskTarget{Bus: bus},
-			},
-		})
-
-		switch strings.ToLower(d.DiskType) {
-		case TYPEDATAVOLUME:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					DataVolume: &virtCorev1.DataVolumeSource{
-						Name: d.Name,
-					},
-				},
-			})
-		case TYPEPERSISTENTVOLUMECLAIM:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					PersistentVolumeClaim: &virtCorev1.PersistentVolumeClaimVolumeSource{
-						PersistentVolumeClaimVolumeSource: corev1.PersistentVolumeClaimVolumeSource{
-							ClaimName: d.Name,
-						},
-					},
-				},
-			})
-		case TYPECONFIGMAP:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					ConfigMap: &virtCorev1.ConfigMapVolumeSource{
-						LocalObjectReference: corev1.LocalObjectReference{
-							Name: d.Name,
-						},
-					},
-				},
-			})
-		case TYPESECRET:
-			vmVolumes = append(vmVolumes, virtCorev1.Volume{
-				Name: d.Name,
-				VolumeSource: virtCorev1.VolumeSource{
-					Secret: &virtCorev1.SecretVolumeSource{
-						SecretName: d.Name,
-					},
-				},
-			})
-		}
-	}
-
-	if strings.TrimSpace(startupScript) != "" {
-		cloudVol := virtCorev1.Volume{
-			Name: cloudInitName,
-			VolumeSource: virtCorev1.VolumeSource{
-				CloudInitNoCloud: &virtCorev1.CloudInitNoCloudSource{UserData: startupScript},
-			},
-		}
-		cloudDisk := virtCorev1.Disk{
-			Name: cloudInitName,
-			DiskDevice: virtCorev1.DiskDevice{
-				Disk: &virtCorev1.DiskTarget{Bus: virtCorev1.DiskBusVirtio},
-			},
-		}
-		vmVolumes = append(vmVolumes, cloudVol)
-		vmDisks = append(vmDisks, cloudDisk)
-	}
-
 	oldVM.Spec.Template.Spec.Domain.Devices.Disks = vmDisks
 	oldVM.Spec.Template.Spec.Volumes = vmVolumes
 
@@ -422,11 +288,106 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facil
 	return updatedVM, vmi, nil
 }
 
+func ensureLabels(labels map[string]string) map[string]string {
+	if labels == nil {
+		labels = map[string]string{}
+	}
+	return labels
+}
+
+func buildDisksAndVolumes(disks []DiskDevice, script string) (vmDisks []virtCorev1.Disk, vmVolumes []virtCorev1.Volume, err error) {
+	for _, d := range disks {
+		// ---------- Disk ----------
+		var bus virtCorev1.DiskBus
+		switch strings.ToLower(d.Bus) {
+		case "sata":
+			bus = virtCorev1.DiskBusSATA
+		case "scsi":
+			bus = virtCorev1.DiskBusSCSI
+		case "virtio":
+			bus = virtCorev1.DiskBusVirtio
+		default:
+			bus = virtCorev1.DiskBusVirtio
+		}
+		vmDisks = append(vmDisks, virtCorev1.Disk{
+			Name: d.Name,
+			DiskDevice: virtCorev1.DiskDevice{
+				Disk: &virtCorev1.DiskTarget{Bus: bus},
+			},
+		})
+
+		// ---------- Volume ----------
+		vol := volumeFromDisk(d)
+		if vol.Name == "" {
+			continue
+		}
+		vmVolumes = append(vmVolumes, vol)
+	}
+
+	// Cloud‑init (if any)
+	if strings.TrimSpace(script) != "" {
+		vmVolumes = append(vmVolumes, virtCorev1.Volume{
+			Name: cloudInitName,
+			VolumeSource: virtCorev1.VolumeSource{
+				CloudInitNoCloud: &virtCorev1.CloudInitNoCloudSource{UserData: script},
+			},
+		})
+		vmDisks = append(vmDisks, virtCorev1.Disk{
+			Name: cloudInitName,
+			DiskDevice: virtCorev1.DiskDevice{
+				Disk: &virtCorev1.DiskTarget{Bus: virtCorev1.DiskBusVirtio},
+			},
+		})
+	}
+	return vmDisks, vmVolumes, nil
+}
+
 func (uc *KubeVirtUseCase) DeleteVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
 	}
+
+	snapshots, err := uc.kubeVirtVM.ListVirtualMachineSnapshotsByVM(ctx, config, namespace, name)
+	if err != nil {
+		return fmt.Errorf("list snapshots failed: %w", err)
+	}
+	for i := range snapshots {
+		if err := uc.kubeVirtVM.DeleteVirtualMachineSnapshot(ctx, config, namespace, snapshots[i].Name); err != nil && !apierrors.IsNotFound(err) {
+			return fmt.Errorf("delete snapshot %s failed: %w", snapshots[i].Name, err)
+		}
+	}
+
+	clones, err := uc.kubeVirtVM.ListVirtualMachineClonesByVM(ctx, config, namespace, name)
+	if err != nil {
+		return fmt.Errorf("list clones failed: %w", err)
+	}
+	for i := range clones {
+		if err := uc.kubeVirtVM.DeleteVirtualMachineClone(ctx, config, namespace, clones[i].Name); err != nil && !apierrors.IsNotFound(err) {
+			return fmt.Errorf("delete clone %s failed: %w", clones[i].Name, err)
+		}
+	}
+
+	restores, err := uc.kubeVirtVM.ListVirtualMachineRestoresByVM(ctx, config, namespace, name)
+	if err != nil {
+		return fmt.Errorf("list restores failed: %w", err)
+	}
+	for i := range restores {
+		if err := uc.kubeVirtVM.DeleteVirtualMachineRestore(ctx, config, namespace, restores[i].Name); err != nil && !apierrors.IsNotFound(err) {
+			return fmt.Errorf("delete restore %s failed: %w", restores[i].Name, err)
+		}
+	}
+
+	migrations, err := uc.kubeVirtVM.ListVirtualMachineMigratesByVM(ctx, config, namespace, name)
+	if err != nil {
+		return fmt.Errorf("list migrations failed: %w", err)
+	}
+	for i := range migrations {
+		if err := uc.kubeVirtVM.DeleteVirtualMachineMigrate(ctx, config, namespace, migrations[i].Name); err != nil && !apierrors.IsNotFound(err) {
+			return fmt.Errorf("delete migration %s failed: %w", migrations[i].Name, err)
+		}
+	}
+
 	return uc.kubeVirtVM.DeleteVirtualMachine(ctx, config, namespace, name)
 }
 
@@ -473,7 +434,6 @@ func (uc *KubeVirtUseCase) CloneVirtualMachine(ctx context.Context, uuid, facili
 	labels := map[string]string{}
 	annotations := map[string]string{
 		"otterscale.io/clone-description": description,
-		"otterscale.io/virtualmachine":    targetName,
 	}
 
 	spec := &VirtualMachineCloneSpec{
@@ -501,7 +461,6 @@ func (uc *KubeVirtUseCase) SnapshotVirtualMachine(ctx context.Context, uuid, fac
 	labels := map[string]string{}
 	annotations := map[string]string{
 		"otterscale.io/snapshot-description": description,
-		"otterscale.io/virtualmachine":       name,
 	}
 
 	spec := &VirtualMachineSnapshotSpec{
@@ -528,7 +487,6 @@ func (uc *KubeVirtUseCase) RestoreVirtualMachine(ctx context.Context, uuid, faci
 	labels := map[string]string{}
 	annotations := map[string]string{
 		"otterscale.io/restore-description": description,
-		"otterscale.io/virtualmachine":      name,
 	}
 
 	spec := &VirtualMachineRestoreSpec{
@@ -553,7 +511,6 @@ func (uc *KubeVirtUseCase) MigrateVirtualMachine(ctx context.Context, uuid, faci
 	labels := map[string]string{}
 	annotations := map[string]string{
 		"otterscale.io/restore-description": description,
-		"otterscale.io/virtualmachine":      name,
 	}
 
 	spec := &VirtualMachineInstanceMigrationSpec{
