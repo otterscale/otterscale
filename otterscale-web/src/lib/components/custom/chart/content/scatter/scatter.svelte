@@ -37,13 +37,14 @@
 		series={Object.values(data)}
 		props={{
 			xAxis: {
-				ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks(4),
-				format: (d: Date) => {
-					return d.toLocaleTimeString('en-US', {
-						hour: 'numeric',
-						minute: '2-digit'
-					});
-				}
+				// ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks(4),
+				// format: (d: Date) => {
+				// 	return d.toLocaleTimeString('en-US', {
+				// 		hour: 'numeric',
+				// 		minute: '2-digit'
+				// 	});
+				// }
+				format: () => ''
 			},
 			yAxis: {
 				format: () => ''
