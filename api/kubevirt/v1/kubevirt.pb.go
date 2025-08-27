@@ -1204,6 +1204,7 @@ type DataVolume struct {
 	xxx_hidden_Source      *string                `protobuf:"bytes,2,opt,name=source"`
 	xxx_hidden_Type        *string                `protobuf:"bytes,3,opt,name=type"`
 	xxx_hidden_SizeBytes   int64                  `protobuf:"varint,4,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_IsBootable  bool                   `protobuf:"varint,5,opt,name=is_bootable,json=isBootable"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1269,23 +1270,35 @@ func (x *DataVolume) GetSizeBytes() int64 {
 	return 0
 }
 
+func (x *DataVolume) GetIsBootable() bool {
+	if x != nil {
+		return x.xxx_hidden_IsBootable
+	}
+	return false
+}
+
 func (x *DataVolume) SetMetadata(v *Metadata) {
 	x.xxx_hidden_Metadata = v
 }
 
 func (x *DataVolume) SetSource(v string) {
 	x.xxx_hidden_Source = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
 }
 
 func (x *DataVolume) SetType(v string) {
 	x.xxx_hidden_Type = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
 }
 
 func (x *DataVolume) SetSizeBytes(v int64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *DataVolume) SetIsBootable(v bool) {
+	x.xxx_hidden_IsBootable = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
 }
 
 func (x *DataVolume) HasMetadata() bool {
@@ -1316,6 +1329,13 @@ func (x *DataVolume) HasSizeBytes() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
+func (x *DataVolume) HasIsBootable() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
 func (x *DataVolume) ClearMetadata() {
 	x.xxx_hidden_Metadata = nil
 }
@@ -1335,13 +1355,19 @@ func (x *DataVolume) ClearSizeBytes() {
 	x.xxx_hidden_SizeBytes = 0
 }
 
+func (x *DataVolume) ClearIsBootable() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_IsBootable = false
+}
+
 type DataVolume_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Metadata  *Metadata
-	Source    *string
-	Type      *string
-	SizeBytes *int64
+	Metadata   *Metadata
+	Source     *string
+	Type       *string
+	SizeBytes  *int64
+	IsBootable *bool
 }
 
 func (b0 DataVolume_builder) Build() *DataVolume {
@@ -1350,16 +1376,20 @@ func (b0 DataVolume_builder) Build() *DataVolume {
 	_, _ = b, x
 	x.xxx_hidden_Metadata = b.Metadata
 	if b.Source != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
 		x.xxx_hidden_Source = b.Source
 	}
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
 		x.xxx_hidden_Type = b.Type
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
+	}
+	if b.IsBootable != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_IsBootable = *b.IsBootable
 	}
 	return m0
 }
@@ -8269,14 +8299,16 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\fInstanceType\x12<\n" +
 	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12\x1b\n" +
 	"\tcpu_cores\x18\x02 \x01(\x02R\bcpuCores\x12!\n" +
-	"\fmemory_bytes\x18\x03 \x01(\x03R\vmemoryBytes\"\x95\x01\n" +
+	"\fmemory_bytes\x18\x03 \x01(\x03R\vmemoryBytes\"\xb6\x01\n" +
 	"\n" +
 	"DataVolume\x12<\n" +
 	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12\x12\n" +
 	"\x04type\x18\x03 \x01(\tR\x04type\x12\x1d\n" +
 	"\n" +
-	"size_bytes\x18\x04 \x01(\x03R\tsizeBytes\"\xdd\x01\n" +
+	"size_bytes\x18\x04 \x01(\x03R\tsizeBytes\x12\x1f\n" +
+	"\vis_bootable\x18\x05 \x01(\bR\n" +
+	"isBootable\"\xdd\x01\n" +
 	"\x11KubeVirtVMService\x12<\n" +
 	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12A\n" +
 	"\x04spec\x18\v \x01(\v2-.otterscale.kubevirt.v1.KubeVirtVMServiceSpecR\x04spec\x12G\n" +

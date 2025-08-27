@@ -123,6 +123,7 @@ message DataVolume {
   string source = 2;
   string type = 3;
   int64 size_bytes = 4;
+  bool is_bootable = 5;
 }
 
 message KubeVirtVMService {

@@ -7,7 +7,7 @@ import (
 )
 
 type KubeVirtDVRepo interface {
-	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, source_type string, source string, sizeBytes int64) (*DataVolume, error)
+	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, source_type string, source string, sizeBytes int64, is_bootable bool) (*DataVolume, error)
 	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string) (*DataVolume, error)
 	ListDataVolume(ctx context.Context, config *rest.Config, namespace string) ([]DataVolume, error)
 	DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error
@@ -15,13 +15,13 @@ type KubeVirtDVRepo interface {
 }
 
 // Data Volume Operations
-func (uc *KubeVirtUseCase) CreateDataVolume(ctx context.Context, uuid, facility, namespace string, name string, source_type string, source string, sizeBytes int64) (*DataVolume, error) {
+func (uc *KubeVirtUseCase) CreateDataVolume(ctx context.Context, uuid, facility, namespace string, name string, source_type string, source string, sizeBytes int64, is_bootable bool) (*DataVolume, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
 
-	return uc.kubeVirtDV.CreateDataVolume(ctx, config, namespace, name, source_type, source, sizeBytes)
+	return uc.kubeVirtDV.CreateDataVolume(ctx, config, namespace, name, source_type, source, sizeBytes, is_bootable)
 }
 
 func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility, namespace string, name string) (*DataVolume, error) {

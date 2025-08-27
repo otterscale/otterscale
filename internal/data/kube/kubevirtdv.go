@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	oscore "github.com/openhdc/otterscale/internal/core"
 	v1 "k8s.io/api/core/v1"
@@ -26,7 +27,7 @@ func NewVirtDV(kube *Kube, kubevirt *kubevirt) oscore.KubeVirtDVRepo {
 
 var _ oscore.KubeVirtDVRepo = (*virtDV)(nil)
 
-func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, source_type string, source string, sizeBytes int64) (*oscore.DataVolume, error) {
+func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, source_type string, source string, sizeBytes int64, is_bootable bool) (*oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
@@ -50,9 +51,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 
 	switch {
 	case source_type == "HTTP":
-		dvSource = &v1beta1.DataVolumeSource{
-			HTTP: &v1beta1.DataVolumeSourceHTTP{URL: source},
-		}
+		dvSource = &v1beta1.DataVolumeSource{HTTP: &v1beta1.DataVolumeSourceHTTP{URL: source}}
 		dvStorage = newStorageSpec(sizeBytes)
 
 	case source_type == "PVC":
@@ -76,9 +75,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 		dvStorage = newStorageSpec(sizeBytes)
 
 	case source_type == "Registry":
-		dvSource = &v1beta1.DataVolumeSource{
-			Registry: &v1beta1.DataVolumeSourceRegistry{URL: &source},
-		}
+		dvSource = &v1beta1.DataVolumeSource{Registry: &v1beta1.DataVolumeSourceRegistry{URL: &source}}
 		dvStorage = newStorageSpec(sizeBytes)
 
 	case source_type == "Upload":
@@ -106,6 +103,9 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
+			Labels: map[string]string{
+				"is_bootable": strconv.FormatBool(is_bootable),
+			},
 		},
 		Spec: *dvSpec,
 	}

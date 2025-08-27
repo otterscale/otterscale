@@ -111,10 +111,11 @@ type Device struct {
 
 // DataVolume represents a data volume resource
 type KubeVirtDataVolume struct {
-	Metadata  Metadata
-	Source    string
-	Type      string
-	SizeBytes int64
+	Metadata   Metadata
+	Source     string
+	Type       string
+	SizeBytes  int64
+	Isbootable bool
 }
 
 type KubeVirtVMServicePort struct {

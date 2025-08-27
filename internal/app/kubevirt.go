@@ -177,7 +177,8 @@ func (s *KubeVirtService) CreateDataVolume(ctx context.Context, req *connect.Req
 		req.Msg.GetDataVolume().GetMetadata().GetName(),
 		req.Msg.GetDataVolume().GetType(),
 		req.Msg.GetDataVolume().GetSource(),
-		req.Msg.GetDataVolume().GetSizeBytes())
+		req.Msg.GetDataVolume().GetSizeBytes(),
+		req.Msg.GetDataVolume().GetIsBootable())
 	if err != nil {
 		return nil, err
 	}
