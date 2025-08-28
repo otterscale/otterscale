@@ -47,14 +47,14 @@ openapi:
 		api/api.proto \
 		$(PROTO_FILES)
 
-.PHONY: service-image
+.PHONY: image
 # build backend image
-service-image:
+image:
 	docker build -f Dockerfile --network host -t otterscale:$(VERSION) .
 
-.PHONY: web-image
+.PHONY: image-web
 # build frontend image
-web-image:
+image-web:
 	cd web && docker build -f Dockerfile --network host -t otterscale-web:$(VERSION) .
 
 .PHONY: help
