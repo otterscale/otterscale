@@ -52,56 +52,31 @@ message Metadata {
   string name = 1;
   string namespace = 2;
   map<string, string> labels = 3;
-  map<string, string> annotations = 4;
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
 }
 
 // Virtual Machine messages
-message VirtualMachineSnapshot{
-  message Result {
-    enum Status {
-      UNSPECIFIED = 0;
-      IN_PROGRESS = 1;
-      SUCCEEDED = 2;
-      FAILED = 3;
-    }
-    Status status = 1;
-    string message = 2;
-    string reason = 3;
-  }
+message VirtualMachine {
+  Metadata metadata = 1;
+  string network_name = 11;
+  string startup_script = 12;
+  string node_name = 13;
+  VirtualMachineResources resoureces = 21;
+  repeated VirtualMachineDisk disks = 22; 
+  string status_phase  = 31;
+}
 
+message VirtualMachineSnapshot{
   string name = 1;
   string namespace = 2;
   string source_name = 3;
   string source_namespace = 4;
   google.protobuf.Timestamp created_at = 5;
   string description = 6;
-
-  Result status = 11;
-}
-
-
-message VirtualMachine {
-  enum Status {
-    UNSPECIFIED = 0;
-    PROVISIONING = 1;
-    STARTING = 2;
-    RUNNING = 3;
-    TERMINATING = 4;
-    STOPPED = 5;
-    PAUSED = 6;
-    MIGRATING = 7;
-  }
-  Metadata metadata = 1;
-  string network_name = 11;
-  string startup_script = 12;
-  string node_name = 13;
-  
-  VirtualMachineResources resoureces = 21;
-  repeated VirtualMachineDisk disks = 22; 
-
-  Status status = 31;
+  string status_phase  = 11;
+  string last_condition_message = 12;
+  string last_condition_reason = 13;
 }
 
 message VirtualMachineResources{
@@ -196,43 +171,36 @@ message VirtualMachineDisk {
       PERSISTENTVOLUMECLAIM = 2;
       CONFIGMAP = 3;
       SECRET = 4;
+      CLOUDINITNOCLOUD = 5;
   }
   string name = 1;
   type disk_type = 2;
   string bus = 3;
-  string data = 4;
+  string source = 4;
 }
 
 message CreateVirtualMachineRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-
   string name = 3;
   string namespace = 4;
-  string network_name = 6;
-  string startup_script = 7;
+  string network_name = 5;
+  string startup_script = 6;
   map<string, string> labels = 11;
-
-  repeated VirtualMachineDisk disks = 31;
-
+  repeated VirtualMachineDisk disks = 21;
   oneof resources {
-    string instancetype = 101;
-    VirtualMachineResources custom = 102;
+    string instancetype = 31;
+    VirtualMachineResources custom = 32;
   }
 }
 
 message UpdateVirtualMachineRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-
   string name = 3;
   string namespace = 4;
-
-  string network_name = 6;
-  string startup_script = 7;
-
+  string network_name = 5;
   map<string, string> labels = 11;
-
   repeated VirtualMachineDisk disks = 31;
 }
 
@@ -287,7 +255,6 @@ message CloneVirtualMachineRequest {
   string target_namespace = 4;
   string source_name = 5;
   string source_namespace = 6;
-  string description = 11;
 }
 
 message RestoreVirtualMachineRequest {
@@ -296,7 +263,6 @@ message RestoreVirtualMachineRequest {
   string name = 3;
   string namespace = 4;
   string snapshot_name = 5;
-  string description = 11;
 }
 
 message MigrateVirtualMachineRequest {
@@ -305,7 +271,6 @@ message MigrateVirtualMachineRequest {
   string name = 3;
   string namespace = 4;
   string target_node = 5;
-  string description = 11;
 }
 
 message GetVirtualMachineSnapshotRequest {
@@ -330,7 +295,7 @@ message DeleteVirtualMachineSnapshotRequest {
 }
 
 message ListVirtualMachineSnapshotsResponse {
-  repeated VirtualMachineSnapshot snapshot = 1;
+  repeated VirtualMachineSnapshot snapshots = 1;
 }
 
 message CreateDataVolumeRequest {

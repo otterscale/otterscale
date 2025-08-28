@@ -132,7 +132,7 @@ func (r *virtVM) StopVirtualMachine(ctx context.Context, config *rest.Config, na
 }
 
 // VirtualMachine Clone
-func (r *virtVM) CreateVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string, annotations, labels map[string]string, spec *oscore.VirtualMachineCloneSpec) (*oscore.VirtualMachineClone, error) {
+func (r *virtVM) CreateVirtualMachineClone(ctx context.Context, config *rest.Config, namespace, name string, labels map[string]string, spec *oscore.VirtualMachineCloneSpec) (*oscore.VirtualMachineClone, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
@@ -140,9 +140,8 @@ func (r *virtVM) CreateVirtualMachineClone(ctx context.Context, config *rest.Con
 
 	clone := &clonev1.VirtualMachineClone{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        name,
-			Namespace:   namespace,
-			Annotations: annotations,
+			Name:      name,
+			Namespace: namespace,
 		},
 	}
 	if spec != nil {
@@ -275,7 +274,7 @@ func (r *virtVM) DeleteVirtualMachineSnapshot(ctx context.Context, config *rest.
 }
 
 // VirtualMachineRestore
-func (r *virtVM) CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string, annotations, labels map[string]string, spec *oscore.VirtualMachineRestoreSpec) (*oscore.VirtualMachineRestore, error) {
+func (r *virtVM) CreateVirtualMachineRestore(ctx context.Context, config *rest.Config, namespace, name string, labels map[string]string, spec *oscore.VirtualMachineRestoreSpec) (*oscore.VirtualMachineRestore, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
@@ -454,7 +453,7 @@ func (r *virtVM) DeleteVirtualMachineInstance(ctx context.Context, config *rest.
 	return virtClient.VirtualMachineInstance(namespace).Delete(ctx, name, opts)
 }
 
-func (r *virtVM) MigrateVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string, annotations, labels map[string]string, spec *oscore.VirtualMachineInstanceMigrationSpec) (*oscore.VirtualMachineInstanceMigration, error) {
+func (r *virtVM) MigrateVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string, labels map[string]string, spec *oscore.VirtualMachineInstanceMigrationSpec) (*oscore.VirtualMachineInstanceMigration, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err

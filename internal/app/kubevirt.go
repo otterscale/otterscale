@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"strconv"
-	"strings"
 	"time"
 
 	"connectrpc.com/connect"
@@ -11,6 +10,8 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/openhdc/otterscale/api/kubevirt/v1"
+	virtCorev1 "kubevirt.io/api/core/v1"
+
 	"github.com/openhdc/otterscale/api/kubevirt/v1/pbconnect"
 	"github.com/openhdc/otterscale/internal/core"
 )
@@ -57,7 +58,7 @@ func (s *KubeVirtService) ListVirtualMachines(ctx context.Context, req *connect.
 }
 
 func (s *KubeVirtService) UpdateVirtualMachine(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, vmi, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), toCoreDiskDevices(req.Msg.GetDisks()))
+	vm, vmi, err := s.uc.UpdateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetLabels(), toCoreDiskDevices(req.Msg.GetDisks()))
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +109,7 @@ func (s *KubeVirtService) ResumeVirtualMachine(ctx context.Context, req *connect
 
 // Virtual Machine Advanced Operations
 func (s *KubeVirtService) CloneVirtualMachine(ctx context.Context, req *connect.Request[pb.CloneVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.CloneVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetTargetNamespace(), req.Msg.GetTargetName(), req.Msg.GetSourceNamespace(), req.Msg.GetSourceName(), req.Msg.GetDescription()); err != nil {
+	if err := s.uc.CloneVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetTargetNamespace(), req.Msg.GetTargetName(), req.Msg.GetSourceNamespace(), req.Msg.GetSourceName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -124,7 +125,7 @@ func (s *KubeVirtService) SnapshotVirtualMachine(ctx context.Context, req *conne
 }
 
 func (s *KubeVirtService) RestoreVirtualMachine(ctx context.Context, req *connect.Request[pb.RestoreVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.RestoreVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSnapshotName(), req.Msg.GetDescription()); err != nil {
+	if err := s.uc.RestoreVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetSnapshotName()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -132,7 +133,7 @@ func (s *KubeVirtService) RestoreVirtualMachine(ctx context.Context, req *connec
 }
 
 func (s *KubeVirtService) MigrateVirtualMachine(ctx context.Context, req *connect.Request[pb.MigrateVirtualMachineRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.MigrateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetTargetNode(), req.Msg.GetDescription()); err != nil {
+	if err := s.uc.MigrateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetTargetNode()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -155,7 +156,7 @@ func (s *KubeVirtService) ListVirtualMachineSnapshots(ctx context.Context, req *
 	if err != nil {
 		return nil, err
 	}
-	resp.SetSnapshot(toProtoVirtualMachineSnapshots(snapshots))
+	resp.SetSnapshots(toProtoVirtualMachineSnapshots(snapshots))
 	return connect.NewResponse(resp), nil
 }
 
@@ -332,10 +333,9 @@ func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInst
 		ret.SetNodeName(vmi.Status.NodeName)
 	}
 	ret.SetNetworkName(vm.Spec.Template.Spec.Networks[0].Name)
+	ret.SetDisks(toProtoVirtualMachineDisks(vm))
+	ret.SetStatusPhase(string(vm.Status.PrintableStatus))
 
-	if vmi != nil {
-		ret.SetStatus(toProtoVirtualMachineStatus(string(vmi.Status.Phase)))
-	}
 	return ret
 }
 
@@ -361,7 +361,6 @@ func toProtoMetadata(namespace, name string, labels, annotations map[string]stri
 	ret.SetName(name)
 	ret.SetNamespace(namespace)
 	ret.SetLabels(labels)
-	ret.SetAnnotations(annotations)
 	ret.SetCreatedAt(timestamppb.New(creationTimestamp))
 	parsedUpdateTime, err := time.Parse(time.RFC3339, updateTimestamp)
 	if err == nil {
@@ -373,12 +372,11 @@ func toProtoMetadata(namespace, name string, labels, annotations map[string]stri
 
 func toCoreMetadata(m *pb.Metadata) core.Metadata {
 	return core.Metadata{
-		Name:        m.GetName(),
-		Namespace:   m.GetNamespace(),
-		Labels:      m.GetLabels(),
-		Annotations: m.GetAnnotations(),
-		CreatedAt:   m.GetCreatedAt(),
-		UpdatedAt:   m.GetUpdatedAt(),
+		Name:      m.GetName(),
+		Namespace: m.GetNamespace(),
+		Labels:    m.GetLabels(),
+		CreatedAt: m.GetCreatedAt(),
+		UpdatedAt: m.GetUpdatedAt(),
 	}
 }
 
@@ -392,14 +390,6 @@ func toCoreVirtualMachineResource(r *pb.VirtualMachineResources, instanceName st
 	}
 
 	return ret
-}
-
-func toProtoVirtualMachineStatus(s string) pb.VirtualMachine_Status {
-	v, ok := pb.VirtualMachine_Status_value[strings.ToUpper(s)]
-	if ok {
-		return pb.VirtualMachine_Status(v)
-	}
-	return pb.VirtualMachine_RUNNING
 }
 
 func toProtoVirutalMachineScripts(volume []core.KubeVirtVolume) string {
@@ -420,6 +410,54 @@ func toProtoVirtualMachineResources(vm *core.VirtualMachine) *pb.VirtualMachineR
 	return ret
 }
 
+func buildVolumeMap(vm *core.VirtualMachine) map[string]virtCorev1.Volume {
+	m := make(map[string]virtCorev1.Volume, len(vm.Spec.Template.Spec.Volumes))
+	for _, vol := range vm.Spec.Template.Spec.Volumes {
+		m[vol.Name] = vol
+	}
+	return m
+}
+
+func toProtoVirtualMachineDisks(vm *core.VirtualMachine) []*pb.VirtualMachineDisk {
+	volumeMap := buildVolumeMap(vm)
+	ret := []*pb.VirtualMachineDisk{}
+	for i := range vm.Spec.Template.Spec.Domain.Devices.Disks {
+		d := vm.Spec.Template.Spec.Domain.Devices.Disks[i]
+		ret = append(ret, toProtoVirtualMachineDisk(d, volumeMap))
+	}
+	return ret
+}
+
+func toProtoVirtualMachineDisk(disk virtCorev1.Disk, vmVols map[string]virtCorev1.Volume) *pb.VirtualMachineDisk {
+	ret := &pb.VirtualMachineDisk{}
+	ret.SetName(disk.Name)
+	if disk.Disk != nil {
+		ret.SetBus(string(disk.Disk.Bus))
+	}
+	ret.SetDiskType(pb.VirtualMachineDisk_UNSPECIFIED)
+
+	if vol, ok := vmVols[disk.Name]; ok {
+		switch {
+		case vol.VolumeSource.DataVolume != nil:
+			ret.SetDiskType(pb.VirtualMachineDisk_DATAVOLUME)
+			ret.SetSource(vol.VolumeSource.DataVolume.Name)
+		case vol.VolumeSource.PersistentVolumeClaim != nil:
+			ret.SetDiskType(pb.VirtualMachineDisk_PERSISTENTVOLUMECLAIM)
+			ret.SetSource(vol.VolumeSource.PersistentVolumeClaim.ClaimName)
+		case vol.VolumeSource.ConfigMap != nil:
+			ret.SetDiskType(pb.VirtualMachineDisk_CONFIGMAP)
+			ret.SetSource(vol.VolumeSource.ConfigMap.Name)
+		case vol.VolumeSource.Secret != nil:
+			ret.SetDiskType(pb.VirtualMachineDisk_SECRET)
+			ret.SetSource(vol.VolumeSource.Secret.SecretName)
+		case vol.VolumeSource.CloudInitNoCloud != nil:
+			ret.SetDiskType(pb.VirtualMachineDisk_CLOUDINITNOCLOUD)
+		}
+	}
+
+	return ret
+}
+
 func toCoreDiskDevices(disks []*pb.VirtualMachineDisk) []core.DiskDevice {
 	ret := []core.DiskDevice{}
 	for i := range disks {
@@ -427,7 +465,7 @@ func toCoreDiskDevices(disks []*pb.VirtualMachineDisk) []core.DiskDevice {
 			Name:     disks[i].GetName(),
 			DiskType: pb.VirtualMachineDiskType_name[int32(disks[i].GetDiskType())],
 			Bus:      disks[i].GetBus(),
-			Data:     disks[i].GetData(),
+			Data:     disks[i].GetSource(),
 		})
 	}
 	return ret
@@ -450,7 +488,14 @@ func toProtoVirtualMachineSnapshot(snapshot *core.VirtualMachineSnapshot) *pb.Vi
 	ret.SetDescription(snapshot.GetAnnotations()["otterscale.io/snapshot-description"])
 	ret.SetSourceNamespace(snapshot.GetNamespace())
 	ret.SetCreatedAt(timestamppb.New(snapshot.CreationTimestamp.Time))
-
+	ret.SetStatusPhase(string(snapshot.Status.Phase))
+	for _, cond := range snapshot.Status.Conditions {
+		if string(cond.Status) == "True" {
+			ret.SetLastConditionMessage(cond.Message)
+			ret.SetLastConditionReason(cond.Reason)
+			break
+		}
+	}
 	return ret
 }
 
