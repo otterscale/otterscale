@@ -20,7 +20,7 @@ require (
 	github.com/go-faker/faker/v4 v4.6.1
 	github.com/goccy/go-yaml v1.17.1
 	github.com/google/gnostic v0.7.1
-	github.com/google/wire v0.6.0
+	github.com/google/wire v0.7.0
 	github.com/juju/juju v0.0.0-20250408011917-ff0de670c36e
 	github.com/juju/names/v5 v5.0.0
 	github.com/rs/cors v1.11.1
