@@ -620,5 +620,18 @@
 	"total_upload_and_download": "總上傳與下載",
 	"over_each_time": "每{unit}統計",
 	"network_traffic": "網路流量",
-	"dhcp": "DHCP"
+	"dhcp": "DHCP",
+	"dashboard": "儀表板",
+	"machine_dashboard_description": "所選範圍的機器資源、使用趨勢和分析概覽。",
+	"machine_dashboard_total_cpu_tooltip": "所有機器的 CPU 核心總數。",
+	"machine_dashboard_total_memory_tooltip": "所有機器的記憶體總量。",
+	"total_memory": "記憶體總量",
+	"machine_dashboard_total_storage_tooltip": "所有機器的總儲存容量，包括已用和可用磁碟空間，但不包括開機磁碟。",
+	"over_the_past_6_months": "過去 6 個月",
+	"machine_dashboard_nodes_tooltip": "顯示過去 6 個月節點數量的每月趨勢。",
+	"over_n_disks": "共 {totalDisks} 顆磁碟",
+	"system_load": "系統負載",
+	"machine_dashboard_system_loads_tooltip": "系統負載代表 1 和 5 分鐘間隔內等待 CPU 時間的平均進程數。較高的值可能表示資源競爭或機器工作負載較重。",
+	"node_distribution": "節點分布",
+	"node_distribution_description": "顯示您環境中實體與虛擬機器的比例。"
 }
