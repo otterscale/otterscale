@@ -21,7 +21,7 @@
 	<Sidebar.GroupContent>
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>
-				<Sidebar.MenuButton size="sm">
+				<Sidebar.MenuButton size="sm" tooltipContent={m.documentation()}>
 					{#snippet child({ props })}
 						<a href={staticPaths.documentation.url} target="_blank" {...props}>
 							<Icon icon="ph:book-open" />
@@ -31,7 +31,7 @@
 				</Sidebar.MenuButton>
 			</Sidebar.MenuItem>
 			<Sidebar.MenuItem>
-				<Sidebar.MenuButton size="sm">
+				<Sidebar.MenuButton size="sm" tooltipContent={m.changelog()}>
 					{#snippet child({ props })}
 						<a href={dynamicPaths.changelog(page.params.scope).url} {...props}>
 							<Icon icon="ph:clock-counter-clockwise" />
@@ -53,6 +53,7 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton
 					size="sm"
+					tooltipContent={m.about()}
 					onclick={() => {
 						open = true;
 					}}
