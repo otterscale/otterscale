@@ -14,7 +14,7 @@ services:
       retries: 3
 
   otterscale:
-    image: otterscale:${APP_VERSION}
+    image: ghcr.io/otterscale/otterscale:${APP_VERSION}
     depends_on:
       postgres:
         condition: service_healthy
@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
 
   otterscale-web:
-    image: otterscale-web:${APP_VERSION}
+    image: ghcr.io/otterscale/otterscale-web:${APP_VERSION}
     depends_on:
       - otterscale
     environment:
