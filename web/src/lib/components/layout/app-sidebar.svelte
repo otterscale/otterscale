@@ -147,7 +147,7 @@
 	});
 </script>
 
-<Sidebar.Root bind:ref variant="inset" {...restProps}>
+<Sidebar.Root bind:ref variant="inset" collapsible="icon" class="p-3" {...restProps}>
 	<Sidebar.Header>
 		{#if $activeScope}
 			<ScopeSwitcher

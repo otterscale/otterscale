@@ -64,11 +64,11 @@
 		</div>
 	</div>
 
-	<div class="bg-muted -mx-2 hidden rounded-b-xl py-6 md:-mx-4 md:py-8 lg:block">
+	<div class="bg-muted -mx-2 hidden rounded-b-xl py-6 md:-mx-4 md:py-8 lg:-mx-8 lg:block">
 		<div class="mx-auto max-w-5xl px-6">
 			<div class="grid items-center gap-4 sm:grid-cols-2">
 				<div class="dark:bg-muted/50 relative mx-auto w-fit">
-					<div class="to-muted absolute inset-0 z-10 bg-radial from-transparent to-75%"></div>
+					<div class="to-muted bg-radial absolute inset-0 z-10 from-transparent to-75%"></div>
 					<div class="mx-auto mb-2 flex w-fit justify-center gap-2">
 						<HomeCell icon="logos:postgresql" />
 						<HomeCell icon="ph:circle-dashed" color="#f0424d" />
@@ -89,7 +89,7 @@
 					</div>
 				</div>
 				<div class="mx-auto mt-6 max-w-lg space-y-4 text-center sm:mt-0 sm:text-left">
-					<h2 class="text-3xl font-semibold text-balance">
+					<h2 class="text-balance text-3xl font-semibold">
 						{m.home_integration()}
 					</h2>
 					<p class="text-muted-foreground">

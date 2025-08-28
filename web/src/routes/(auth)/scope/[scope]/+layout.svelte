@@ -51,7 +51,9 @@
 <Sidebar.Provider>
 	<AppSidebar user={data.user} />
 	<Sidebar.Inset>
-		<header class="flex h-16 shrink-0 items-center gap-2">
+		<header
+			class="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear"
+		>
 			<div class="flex w-full items-center justify-between gap-2 px-4">
 				<!-- Sidebar Toggle -->
 				<Sidebar.Trigger class="-ml-1 {buttonVariants({ variant: 'ghost', size: 'icon' })}" />
@@ -88,7 +90,7 @@
 					<Popover.Content align="start" side="left">
 						<div class="grid gap-4 p-2">
 							<div class="space-y-1">
-								<h4 class="leading-none font-medium">{m.bookmark_added()}</h4>
+								<h4 class="font-medium leading-none">{m.bookmark_added()}</h4>
 							</div>
 
 							<div class="grid gap-2">
