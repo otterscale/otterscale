@@ -3,7 +3,9 @@ package core
 import (
 	"context"
 
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
+	v1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
 
 type KubeVirtDVRepo interface {
@@ -68,49 +70,73 @@ func (uc *KubeVirtUseCase) ExtendDataVolume(ctx context.Context, uuid, facility,
 	return uc.kubeVirtDV.ExtendDataVolume(ctx, config, namespace, pvcName, sizeBytes)
 }
 
-// Extracts source, sourceType, and sizeBytes from a DataVolume
-func ExtractDataVolumeInfo(dv *DataVolume) (source string, sourceType string, sizeBytes int64, accessMode string, storageClassName string) {
-	if dv.Spec.PVC != nil {
-		if dv.Spec.PVC.Resources.Requests != nil {
-			size, found := dv.Spec.PVC.Resources.Requests["storage"]
-			if found {
-				sizeBytes = size.Value()
-			}
-		}
-		if dv.Spec.PVC.AccessModes != nil {
-			accessMode = string(dv.Spec.PVC.AccessModes[0])
-		}
-		if dv.Spec.PVC.StorageClassName != nil {
-			storageClassName = *dv.Spec.PVC.StorageClassName
-		}
-	} else if dv.Spec.Storage != nil {
-		if dv.Spec.Storage.Resources.Requests != nil {
-			size, found := dv.Spec.Storage.Resources.Requests["storage"]
-			if found {
-				sizeBytes = size.Value()
-			}
-		}
-		if dv.Spec.Storage.AccessModes != nil {
-			accessMode = string(dv.Spec.Storage.AccessModes[0])
-		}
-		if dv.Spec.Storage.StorageClassName != nil {
-			storageClassName = *dv.Spec.Storage.StorageClassName
+func GetDataVolumeConditions(dv *DataVolume) (condition_message string, condition_reason string, condition_status string) {
+	for _, condition := range dv.Status.Conditions {
+		if condition.Type == "Bound" {
+			return condition.Message, condition.Reason, string(condition.Status)
 		}
 	}
+	return
+}
 
-	if dv.Spec.Source.HTTP != nil {
+func GetPVCInfo(pvc *v1.PersistentVolumeClaimSpec) (sizeBytes int64, accessMode string, storageClassName string) {
+	if pvc.Resources.Requests != nil {
+		size, found := pvc.Resources.Requests["storage"]
+		if found {
+			sizeBytes = size.Value()
+		}
+	}
+	if pvc.AccessModes != nil {
+		accessMode = string(pvc.AccessModes[0])
+	}
+	if pvc.StorageClassName != nil {
+		storageClassName = *pvc.StorageClassName
+	}
+	return
+}
+
+func GetStorageInfo(storage *v1beta1.StorageSpec) (sizeBytes int64, accessMode string, storageClassName string) {
+	if storage.Resources.Requests != nil {
+		size, found := storage.Resources.Requests["storage"]
+		if found {
+			sizeBytes = size.Value()
+		}
+	}
+	if storage.AccessModes != nil {
+		accessMode = string(storage.AccessModes[0])
+	}
+	if storage.StorageClassName != nil {
+		storageClassName = *storage.StorageClassName
+	}
+	return
+}
+
+// Extracts source, sourceType, and sizeBytes from a DataVolume
+func ExtractDataVolumeInfo(dv *DataVolume) (source string, sourceType string, sizeBytes int64, accessMode string, storageClassName string) {
+	if dv == nil {
+		return
+	}
+
+	switch {
+	case dv.Spec.PVC != nil:
+		sizeBytes, accessMode, storageClassName = GetPVCInfo(dv.Spec.PVC)
+	case dv.Spec.Storage != nil:
+		sizeBytes, accessMode, storageClassName = GetStorageInfo(dv.Spec.Storage)
+	}
+
+	switch {
+	case dv.Spec.Source.HTTP != nil:
 		source = dv.Spec.Source.HTTP.URL
 		sourceType = "HTTP"
-	} else if dv.Spec.Source.Upload != nil {
+	case dv.Spec.Source.Upload != nil:
 		source = ""
 		sourceType = "Upload"
-	} else if dv.Spec.Source.S3 != nil {
+	case dv.Spec.Source.S3 != nil:
 		source = dv.Spec.Source.S3.URL
 		sourceType = "S3"
-	} else if dv.Spec.Source.VDDK != nil {
+	case dv.Spec.Source.VDDK != nil:
 		source = dv.Spec.Source.VDDK.URL
 		sourceType = string(dv.Spec.Source.VDDK.UUID)
 	}
-
 	return
 }
