@@ -121,7 +121,14 @@ message DataVolume {
   string source = 2;
   string type = 3;
   int64 size_bytes = 4;
-  bool is_bootable = 5;
+  string access_mode = 5;
+  string storage_class = 6;
+  string status_phase = 7;
+  string status_progress = 8;
+  string status_claim_name = 9;
+  string last_condition_message = 10;
+  string last_condition_reason = 11;
+  string last_condition_status = 12;
 }
 
 message KubeVirtVMService {
@@ -330,6 +337,7 @@ message CreateDataVolumeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   DataVolume data_volume = 3;
+  bool is_bootable = 4;
 }
 
 message ListDataVolumesRequest {

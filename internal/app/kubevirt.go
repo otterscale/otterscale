@@ -178,7 +178,7 @@ func (s *KubeVirtService) CreateDataVolume(ctx context.Context, req *connect.Req
 		req.Msg.GetDataVolume().GetType(),
 		req.Msg.GetDataVolume().GetSource(),
 		req.Msg.GetDataVolume().GetSizeBytes(),
-		req.Msg.GetDataVolume().GetIsBootable())
+		req.Msg.GetIsBootable())
 	if err != nil {
 		return nil, err
 	}
@@ -464,11 +464,23 @@ func toProtoDataVolumes(dvs []core.DataVolume) []*pb.DataVolume {
 
 func toProtoDataVolume(dv *core.DataVolume) *pb.DataVolume {
 	ret := &pb.DataVolume{}
+	source, sourceType, sizeBytes, accessMode, storageClassName := core.ExtractDataVolumeInfo(dv)
+
 	ret.SetMetadata(fromDataVolume(dv))
-	source, sourceType, sizeBytes := core.ExtractDataVolumeInfo(dv)
+	ret.SetSource(source)
 	ret.SetType(sourceType)
 	ret.SetSizeBytes(sizeBytes)
-	ret.SetSource(source)
+	ret.SetAccessMode(accessMode)
+	ret.SetStorageClass(storageClassName)
+
+	ret.SetStatusPhase(string(dv.Status.Phase))
+	ret.SetStatusProgress(string(dv.Status.Progress))
+	ret.SetStatusClaimName(dv.Status.ClaimName)
+
+	ret.SetLastConditionMessage(dv.Status.Conditions[0].Message)
+	ret.SetLastConditionReason(dv.Status.Conditions[0].Reason)
+	ret.SetLastConditionStatus(string(dv.Status.Conditions[0].Status))
+
 	return ret
 }
 
