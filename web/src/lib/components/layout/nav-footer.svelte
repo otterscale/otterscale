@@ -23,7 +23,7 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton size="sm">
 					{#snippet child({ props })}
-						<a href={staticPaths.documentation.url} {...props}>
+						<a href={staticPaths.documentation.url} target="_blank" {...props}>
 							<Icon icon="ph:book-open" />
 							<span>{m.documentation()}</span>
 						</a>
