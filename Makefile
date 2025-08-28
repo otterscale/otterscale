@@ -8,7 +8,7 @@ build:
 
 .PHONY: vet
 # examine code
-go-vet:
+vet:
 	go vet ./...
 
 .PHONY: test
