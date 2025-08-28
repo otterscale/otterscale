@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+
+  otterscale:
+    image: ghcr.io/otterscale/otterscale:${APP_VERSION}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - "${CONFIG_VOLUME_PATH}:/etc/app/otterscale.yaml"
+    ports:
+      - "${SERVICE_PORT}:8299"
+    command: serve
+    restart: unless-stopped
+
+  otterscale-web:
+    image: ghcr.io/otterscale/otterscale-web:${APP_VERSION}
+    depends_on:
+      - otterscale
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PUBLIC_URL: ${PUBLIC_URL}
+      PUBLIC_API_URL: ${PUBLIC_API_URL}
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_TRUSTED_PROVIDERS: ${AUTH_TRUSTED_PROVIDERS}
+      AUTH_OIDC_PROVIDER: ${AUTH_OIDC_PROVIDER}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      GITHUB_ACCESS_TOKEN: ${GITHUB_ACCESS_TOKEN}
+      SSO_LOGIN_PROMPT: ${SSO_LOGIN_PROMPT}
+    ports:
+      - "${WEB_PORT}:3000"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

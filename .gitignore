@@ -20,6 +20,9 @@ go.work.sum
 
 # env file
 .env
+.env.*
+!.env.example
+!.env.test
 
 # Mac
 .DS_Store
