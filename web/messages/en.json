@@ -620,5 +620,18 @@
 	"total_upload_and_download": "Total Upload and Download",
 	"over_each_time": "over each {unit}",
 	"network_traffic": "Network Traffic",
-	"dhcp": "DHCP"
+	"dhcp": "DHCP",
+	"dashboard": "Dashboard",
+	"machine_dashboard_description": "Overview of machine resources, usage trends, and analytics for the selected scope.",
+	"machine_dashboard_total_cpu_tooltip": "Total number of CPU cores across all machines.",
+	"machine_dashboard_total_memory_tooltip": "Total amount of memory across all machines.",
+	"total_memory": "Total Memory",
+	"machine_dashboard_total_storage_tooltip": "Total storage capacity across all machines, including both used and available disk space, but excluding boot disks.",
+	"over_the_past_6_months": "Over The Past 6 Mpnths",
+	"machine_dashboard_nodes_tooltip": "Shows the monthly trend of node count over the past 6 months.",
+	"over_n_disks": "Over {totalDisks} Disks",
+	"system_load": "System Load",
+	"machine_dashboard_system_loads_tooltip": "System load represents the average number of processes waiting for CPU time over 1 and 5 minute intervals. Higher values may indicate resource contention or heavy workload on your machines.",
+	"node_distribution": "Node Distribution",
+	"node_distribution_description": "Shows the proportion of physical and virtual machines in your environment."
 }

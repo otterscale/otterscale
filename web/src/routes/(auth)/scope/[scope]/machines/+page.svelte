@@ -4,32 +4,29 @@
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Dashboard } from '$lib/components/machines/dashboard';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
+	import { cn } from '$lib/utils';
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { PrometheusDriver } from 'prometheus-query';
+	import { scaleUtc } from 'd3-scale';
+	import { curveLinear, curveNatural } from 'd3-shape';
+	import { Area, AreaChart, LinearGradient, LineChart, PieChart, Text } from 'layerchart';
+	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Card from '$lib/components/ui/card';
-	import { LineChart } from 'layerchart';
-	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
-	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
-	import * as Chart from '$lib/components/ui/chart';
-	import { PieChart, Text } from 'layerchart';
-	import { Area, AreaChart, LinearGradient } from 'layerchart';
-	import { formatCapacity } from '$lib/formatter';
-	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { m } from '$lib/paraglide/messages';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { buttonVariants } from '$lib/components/ui/button';
-	import * as HoverCard from '$lib/components/ui/hover-card';
-	import { scaleBand } from 'd3-scale';
-	import { curveLinear } from 'd3-shape';
-	import { Separator } from '$lib/components/ui/separator';
+
+	// Set breadcrumb navigation
+	breadcrumb.set({ parents: [], current: dynamicPaths.machines(page.params.scope) });
 
 	let totalCPUCores = $state(0);
 	let totalMemoryBytes = $state(0);
@@ -37,64 +34,77 @@
 	let totalDisks = $state(0);
 	let totalNodes = $state(0);
 
-	const lineChartConfig = {
-		node: { label: 'Node', color: 'var(--chart-1)' }
+	let cpuUsages = $state([] as SampleValue[]);
+	const cpuUsagesConfiguration = {
+		usage: { label: 'value', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
+	const cpuUsagesTrend = $derived(
+		cpuUsages.length > 0
+			? (cpuUsages[cpuUsages.length - 1].value - cpuUsages[cpuUsages.length - 2].value) /
+					cpuUsages[cpuUsages.length - 2].value
+			: 0
+	);
+	let memoryUsages = $state([] as SampleValue[]);
+	const memoryUsagesConfiguration = {
+		usage: { label: 'value', color: 'var(--chart-1)' }
+	} satisfies Chart.ChartConfig;
+	const memoryUsagesTrend = $derived(
+		memoryUsages.length > 0
+			? (memoryUsages[memoryUsages.length - 1].value -
+					memoryUsages[memoryUsages.length - 2].value) /
+					memoryUsages[memoryUsages.length - 2].value
+			: 0
+	);
+	let storageUsages = $state([] as SampleValue[]);
+	const storageUsagesConfiguration = {
+		usage: { label: 'value', color: 'var(--chart-1)' }
+	} satisfies Chart.ChartConfig;
+	const storageUsagesTrend = $derived(
+		storageUsages.length > 0
+			? (storageUsages[storageUsages.length - 1].value -
+					storageUsages[storageUsages.length - 2].value) /
+					storageUsages[storageUsages.length - 2].value
+			: 0
+	);
 
-	let lineChartData: {
-		date: Date;
-		node: number;
-	}[] = $state([]);
-
-	const pieChartConfig = {
+	const nodeProportionsConfiguration = {
 		nodes: { label: 'Nodes' },
 		physical: { label: 'Physical', color: 'var(--chart-1)' },
 		virtual: { label: 'Virtual', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
-
-	let pieChartData: {
+	let nodeProportions: {
 		node: string;
 		nodes: number;
 		color: string;
 	}[] = $state([]);
 
-	//
-
-	const chartData3 = [
-		{ date: new Date('2024-01-01'), desktop: 186, mobile: 80 },
-		{ date: new Date('2024-02-01'), desktop: 305, mobile: 200 },
-		{ date: new Date('2024-03-01'), desktop: 237, mobile: 120 },
-		{ date: new Date('2024-04-01'), desktop: 73, mobile: 190 },
-		{ date: new Date('2024-05-01'), desktop: 209, mobile: 130 },
-		{ date: new Date('2024-06-01'), desktop: 214, mobile: 140 }
-	];
-
-	const chartConfig3 = {
-		desktop: { label: 'Desktop', color: 'var(--chart-1)' },
-		mobile: { label: 'Mobile', color: 'var(--chart-2)' }
+	const systemLoadConfiguration = {
+		one: { label: '1 min', color: 'var(--chart-1)' },
+		five: { label: '5 min', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
+	let ones = $state([] as SampleValue[]);
+	let fives = $state({} as SampleValue[]);
+	const systemLoads = $derived(
+		ones.map((sample, index) => ({
+			time: sample.time,
+			one: sample.value,
+			five: fives[index]?.value ?? 0
+		}))
+	);
 
-	const exampleChartData = [
-		{ date: new Date('2024-01-01'), desktop: 186 },
-		{ date: new Date('2024-02-01'), desktop: 305 },
-		{ date: new Date('2024-03-01'), desktop: 237 },
-		{ date: new Date('2024-04-01'), desktop: 73 },
-		{ date: new Date('2024-05-01'), desktop: 209 },
-		{ date: new Date('2024-06-01'), desktop: 214 }
-	];
-
-	const exampleChartConfig = {
-		desktop: { label: 'Desktop', color: 'var(--chart-1)' }
+	const nodesConfiguration = {
+		node: { label: 'Node', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
-
-	// Set breadcrumb navigation
-	breadcrumb.set({ parents: [], current: dynamicPaths.machines(page.params.scope) });
+	let nodes: {
+		date: Date;
+		node: number;
+	}[] = $state([]);
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 	const environmentService = createClient(EnvironmentService, transport);
 	const machinesStore = writable<Machine[]>([]);
-	let prometheusDriver: PrometheusDriver | null = null;
+	let prometheusDriver: PrometheusDriver | null = $state(null);
 
 	async function initializePrometheusDriver(): Promise<PrometheusDriver> {
 		try {
@@ -139,7 +149,7 @@
 			const virtualNodes = scopeMachines.filter((m) => m.tags.includes('virtual')).length;
 			const physicalNodes = scopeMachines.length - virtualNodes;
 
-			pieChartData = [
+			nodeProportions = [
 				{ node: 'physical', nodes: physicalNodes, color: 'var(--color-physical)' },
 				{ node: 'virtual', nodes: virtualNodes, color: 'var(--color-virtual)' }
 			];
@@ -160,10 +170,51 @@
 				const d = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
 				months.push(d.toISOString().slice(0, 7));
 			}
-			lineChartData = months.map((month) => ({
+			nodes = months.map((month) => ({
 				date: new Date(month + '-01'),
 				node: monthlyCounts[month] || 0
 			}));
+
+			prometheusDriver
+				.rangeQuery(
+					`1 - (sum(irate(node_cpu_seconds_total{mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total[2m])))`,
+					Date.now() - 10 * 60 * 1000,
+					Date.now(),
+					2 * 60
+				)
+				.then((response) => {
+					cpuUsages = response.result[0]?.values;
+				});
+			prometheusDriver
+				.rangeQuery(
+					`sum(node_memory_MemTotal_bytes - node_memory_MemFree_bytes - (node_memory_Cached_bytes + node_memory_Buffers_bytes + node_memory_SReclaimable_bytes)) / sum(node_memory_MemTotal_bytes)`,
+					Date.now() - 10 * 60 * 1000,
+					Date.now(),
+					2 * 60
+				)
+				.then((response) => {
+					memoryUsages = response.result[0]?.values;
+				});
+			prometheusDriver
+				.rangeQuery(
+					`1 - sum(node_filesystem_avail_bytes{mountpoint="/"}) / sum(node_filesystem_size_bytes{mountpoint="/"})`,
+					Date.now() - 10 * 60 * 1000,
+					Date.now(),
+					2 * 60
+				)
+				.then((response) => {
+					storageUsages = response.result[0]?.values;
+				});
+			prometheusDriver
+				.rangeQuery(`sum(node_load1)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+				.then((response) => {
+					ones = response.result[0]?.values;
+				});
+			prometheusDriver
+				.rangeQuery(`sum(node_load5)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+				.then((response) => {
+					fives = response.result[0]?.values;
+				});
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -173,14 +224,16 @@
 
 <div class="mx-auto grid w-full gap-6">
 	<div class="grid gap-1">
-		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">Dashboard</h1>
-		<p class="text-muted-foreground">description</p>
+		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.dashboard()}</h1>
+		<p class="text-muted-foreground">
+			{m.machine_dashboard_description()}
+		</p>
 	</div>
 
 	<Tabs.Root value="overview">
 		<Tabs.List>
-			<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
-			<Tabs.Trigger value="analytics">Analytics</Tabs.Trigger>
+			<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
+			<Tabs.Trigger value="analytics">{m.analytics()}</Tabs.Trigger>
 		</Tabs.List>
 		<Tabs.Content
 			value="overview"
@@ -199,7 +252,7 @@
 									<Icon icon="ph:info" class="text-muted-foreground size-5" />
 								</Tooltip.Trigger>
 								<Tooltip.Content>
-									<p>Total number of CPU cores across all machines.</p>
+									<p>{m.machine_dashboard_total_cpu_tooltip()}</p>
 								</Tooltip.Content>
 							</Tooltip.Root>
 						</Tooltip.Provider>
@@ -210,12 +263,62 @@
 						<div class="text-3xl font-bold">{totalCPUCores}</div>
 						<p class="text-muted-foreground text-sm">{m.cores()}</p>
 					</div>
-					{@render cpuLineChart()}
+					<Chart.Container config={cpuUsagesConfiguration} class="h-full w-20">
+						<LineChart
+							data={cpuUsages}
+							x="time"
+							xScale={scaleUtc()}
+							axis={false}
+							series={[
+								{
+									key: 'value',
+									label: 'usage',
+									color: cpuUsagesConfiguration.usage.color
+								}
+							]}
+							props={{
+								spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+								xAxis: {
+									format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+								},
+								highlight: { points: { r: 4 } }
+							}}
+						>
+							{#snippet tooltip()}
+								<Chart.Tooltip hideLabel>
+									{#snippet formatter({ item, name, value })}
+										<div
+											style="--color-bg: {item.color}"
+											class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+										></div>
+										<div
+											class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
+										>
+											<div class="grid gap-1.5">
+												<span class="text-muted-foreground">{name}</span>
+											</div>
+											<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+										</div>
+									{/snippet}
+								</Chart.Tooltip>
+							{/snippet}
+						</LineChart>
+					</Chart.Container>
 				</Card.Content>
 				<Card.Footer
-					class="flex flex-wrap items-center justify-end text-sm leading-none font-medium text-emerald-500 dark:text-emerald-400"
+					class={cn(
+						'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
+						cpuUsagesTrend >= 0
+							? 'text-emerald-500 dark:text-emerald-400'
+							: 'text-rose-500 dark:text-rose-400'
+					)}
 				>
-					15.54% <Icon icon="ph:caret-up" />
+					{Math.abs(cpuUsagesTrend).toFixed(2)} %
+					{#if cpuUsagesTrend >= 0}
+						<Icon icon="ph:caret-up" />
+					{:else}
+						<Icon icon="ph:caret-down" />
+					{/if}
 				</Card.Footer>
 			</Card.Root>
 
@@ -232,7 +335,7 @@
 									<Icon icon="ph:info" class="text-muted-foreground size-5" />
 								</Tooltip.Trigger>
 								<Tooltip.Content>
-									<p>Total amount of memory across all machines.</p>
+									<p>{m.machine_dashboard_total_memory_tooltip()}</p>
 								</Tooltip.Content>
 							</Tooltip.Root>
 						</Tooltip.Provider>
@@ -244,14 +347,64 @@
 							{formatCapacity(totalMemoryBytes).value}
 							{formatCapacity(totalMemoryBytes).unit}
 						</div>
-						!!CHART!!
+						<Chart.Container config={memoryUsagesConfiguration} class="h-full w-20">
+							<LineChart
+								data={memoryUsages}
+								x="time"
+								xScale={scaleUtc()}
+								axis={false}
+								series={[
+									{
+										key: 'value',
+										label: 'usage',
+										color: memoryUsagesConfiguration.usage.color
+									}
+								]}
+								props={{
+									spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+									xAxis: {
+										format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+									},
+									highlight: { points: { r: 4 } }
+								}}
+							>
+								{#snippet tooltip()}
+									<Chart.Tooltip hideLabel>
+										{#snippet formatter({ item, name, value })}
+											<div
+												style="--color-bg: {item.color}"
+												class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+											></div>
+											<div
+												class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
+											>
+												<div class="grid gap-1.5">
+													<span class="text-muted-foreground">{name}</span>
+												</div>
+												<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+											</div>
+										{/snippet}
+									</Chart.Tooltip>
+								{/snippet}
+							</LineChart>
+						</Chart.Container>
 					</div>
-					<p class="text-muted-foreground text-sm">123</p>
+					<p class="text-muted-foreground text-sm lowercase">{m.total_memory()}</p>
 				</Card.Content>
 				<Card.Footer
-					class="flex flex-wrap items-center justify-end text-sm leading-none font-medium text-emerald-500 dark:text-emerald-400"
+					class={cn(
+						'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
+						memoryUsagesTrend >= 0
+							? 'text-emerald-500 dark:text-emerald-400'
+							: 'text-red-500 dark:text-red-400'
+					)}
 				>
-					15.54% <Icon icon="ph:caret-up" />
+					{Math.abs(memoryUsagesTrend).toFixed(2)} %
+					{#if memoryUsagesTrend >= 0}
+						<Icon icon="ph:caret-up" />
+					{:else}
+						<Icon icon="ph:caret-down" />
+					{/if}
 				</Card.Footer>
 			</Card.Root>
 
@@ -268,10 +421,7 @@
 									<Icon icon="ph:info" class="text-muted-foreground size-5" />
 								</Tooltip.Trigger>
 								<Tooltip.Content>
-									<p>
-										Total storage capacity across all machines, including both used and available
-										disk space, but excluding boot disks.
-									</p>
+									<p>{m.machine_dashboard_total_storage_tooltip()}</p>
 								</Tooltip.Content>
 							</Tooltip.Root>
 						</Tooltip.Provider>
@@ -283,14 +433,64 @@
 							{formatCapacity(totalStorageBytes).value}
 							{formatCapacity(totalStorageBytes).unit}
 						</div>
-						!!CHART!!
+						<Chart.Container config={storageUsagesConfiguration} class="h-full w-20">
+							<LineChart
+								data={storageUsages}
+								x="time"
+								xScale={scaleUtc()}
+								axis={false}
+								series={[
+									{
+										key: 'value',
+										label: 'usage',
+										color: storageUsagesConfiguration.usage.color
+									}
+								]}
+								props={{
+									spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+									xAxis: {
+										format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+									},
+									highlight: { points: { r: 4 } }
+								}}
+							>
+								{#snippet tooltip()}
+									<Chart.Tooltip hideLabel>
+										{#snippet formatter({ item, name, value })}
+											<div
+												style="--color-bg: {item.color}"
+												class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+											></div>
+											<div
+												class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
+											>
+												<div class="grid gap-1.5">
+													<span class="text-muted-foreground">{name}</span>
+												</div>
+												<p class="font-mono">{(Number(value) * 100).toFixed(2)} %</p>
+											</div>
+										{/snippet}
+									</Chart.Tooltip>
+								{/snippet}
+							</LineChart>
+						</Chart.Container>
 					</div>
-					<p class="text-muted-foreground text-sm">OVER {totalDisks} DISKS</p>
+					<p class="text-muted-foreground text-sm uppercase">{m.over_n_disks({ totalDisks })}</p>
 				</Card.Content>
 				<Card.Footer
-					class="flex flex-wrap items-center justify-end text-sm leading-none font-medium text-emerald-500 dark:text-emerald-400"
+					class={cn(
+						'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
+						storageUsagesTrend >= 0
+							? 'text-emerald-500 dark:text-emerald-400'
+							: 'text-red-500 dark:text-red-400'
+					)}
 				>
-					15.54% <Icon icon="ph:caret-up" />
+					{Math.abs(storageUsagesTrend).toFixed(2)} %
+					{#if storageUsagesTrend >= 0}
+						<Icon icon="ph:caret-up" />
+					{:else}
+						<Icon icon="ph:caret-down" />
+					{/if}
 				</Card.Footer>
 			</Card.Root>
 
@@ -300,7 +500,7 @@
 						<div
 							class="flex flex-col items-start gap-0.5 truncate text-sm font-medium tracking-tight"
 						>
-							<p class="text-muted-foreground text-xs">OVER THE PAST 6 MONTHS</p>
+							<p class="text-muted-foreground text-xs uppercase">{m.over_the_past_6_months()}</p>
 							<div class="flex items-center gap-1 text-lg font-medium">
 								<Icon icon="ph:trend-up" class="size-4.5" /> +{totalNodes}
 							</div>
@@ -311,17 +511,17 @@
 									<Icon icon="ph:info" class="text-muted-foreground size-5" />
 								</Tooltip.Trigger>
 								<Tooltip.Content>
-									<p>Shows the monthly trend of node count over the past 6 months.</p>
+									<p>{m.machine_dashboard_nodes_tooltip()}</p>
 								</Tooltip.Content>
 							</Tooltip.Root>
 						</Tooltip.Provider>
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<Chart.Container config={lineChartConfig} class="h-[80px] w-full px-2 pt-2">
+					<Chart.Container config={nodesConfiguration} class="h-[80px] w-full px-2 pt-2">
 						<LineChart
 							points={{ r: 4 }}
-							data={lineChartData}
+							data={nodes}
 							x="date"
 							xScale={scaleUtc()}
 							axis="x"
@@ -329,7 +529,7 @@
 								{
 									key: 'node',
 									label: 'Node',
-									color: lineChartConfig.node.color
+									color: nodesConfiguration.node.color
 								}
 							]}
 							props={{
@@ -355,11 +555,72 @@
 
 			<Card.Root class="col-span-6">
 				<Card.Header>
-					<Card.Title>System Load</Card.Title>
-					<Card.Description>Grafana > System Resource > System Misc > System Load</Card.Description>
+					<Card.Title>{m.system_load()}</Card.Title>
+					<Card.Description>
+						{m.machine_dashboard_system_loads_tooltip()}
+					</Card.Description>
 				</Card.Header>
 				<Card.Content>
-					{@render exampleLineChart()}
+					<Chart.Container config={systemLoadConfiguration} class="h-[200px] w-full">
+						<AreaChart
+							data={systemLoads}
+							x="time"
+							xScale={scaleUtc()}
+							yPadding={[0, 25]}
+							series={[
+								{
+									key: 'one',
+									label: systemLoadConfiguration.one.label,
+									color: systemLoadConfiguration.one.color
+								},
+								{
+									key: 'five',
+									label: systemLoadConfiguration.five.label,
+									color: systemLoadConfiguration.five.color
+								}
+							]}
+							seriesLayout="stack"
+							props={{
+								area: {
+									curve: curveNatural,
+									'fill-opacity': 0.4,
+									line: { class: 'stroke-1' },
+									motion: 'tween'
+								},
+								xAxis: {
+									format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+								},
+								yAxis: { format: () => '' }
+							}}
+						>
+							{#snippet tooltip()}
+								<Chart.Tooltip
+									indicator="dot"
+									labelFormatter={(v: Date) => {
+										return v.toLocaleDateString('en-US', {
+											year: 'numeric',
+											month: 'short',
+											day: 'numeric',
+											hour: 'numeric',
+											minute: 'numeric'
+										});
+									}}
+								/>
+							{/snippet}
+							{#snippet marks({ series, getAreaProps })}
+								{#each series as s, i (s.key)}
+									<LinearGradient
+										stops={[s.color ?? '', 'color-mix(in lch, ' + s.color + ' 10%, transparent)']}
+										vertical
+									>
+										{#snippet children({ gradient })}
+											<Area {...getAreaProps(s, i)} fill={gradient} />
+										{/snippet}
+									</LinearGradient>
+								{/each}
+							{/snippet}
+						</AreaChart>
+					</Chart.Container>
 				</Card.Content>
 			</Card.Root>
 
@@ -367,18 +628,21 @@
 				<Card.Header class="gap-0.5">
 					<Card.Title>
 						<div class="flex items-center gap-1 truncate text-sm font-medium tracking-tight">
-							<Icon icon="ph:percent" class="size-4.5" />
-							Node Distribution
+							<Icon icon="ph:cube" class="size-4.5" />
+							{m.node_distribution()}
 						</div>
 					</Card.Title>
 					<Card.Description class="text-xs">
-						Shows the proportion of physical and virtual machines in your environment.
+						{m.node_distribution_description()}
 					</Card.Description>
 				</Card.Header>
 				<Card.Content class="flex-1">
-					<Chart.Container config={pieChartConfig} class="mx-auto aspect-square max-h-[250px]">
+					<Chart.Container
+						config={nodeProportionsConfiguration}
+						class="mx-auto aspect-square max-h-[250px]"
+					>
 						<PieChart
-							data={pieChartData}
+							data={nodeProportions}
 							key="node"
 							value="nodes"
 							c="color"
@@ -430,149 +694,3 @@
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
-
-{#snippet exampleLineChart()}
-	<Chart.Container config={chartConfig3} class="h-[200px] w-full">
-		<AreaChart
-			data={chartData3}
-			x="date"
-			xScale={scaleUtc()}
-			yPadding={[0, 25]}
-			series={[
-				{
-					key: 'mobile',
-					label: 'Mobile',
-					color: 'var(--color-mobile)'
-				},
-				{
-					key: 'desktop',
-					label: 'Desktop',
-					color: 'var(--color-desktop)'
-				}
-			]}
-			seriesLayout="stack"
-			props={{
-				area: {
-					curve: curveNatural,
-					'fill-opacity': 0.4,
-					line: { class: 'stroke-1' },
-					motion: 'tween'
-				},
-				xAxis: {
-					format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
-				},
-				yAxis: { format: () => '' }
-			}}
-		>
-			{#snippet tooltip()}
-				<Chart.Tooltip
-					indicator="dot"
-					labelFormatter={(v: Date) => {
-						return v.toLocaleDateString('en-US', {
-							month: 'long'
-						});
-					}}
-				/>
-			{/snippet}
-			{#snippet marks({ series, getAreaProps })}
-				{#each series as s, i (s.key)}
-					<LinearGradient
-						stops={[s.color ?? '', 'color-mix(in lch, ' + s.color + ' 10%, transparent)']}
-						vertical
-					>
-						{#snippet children({ gradient })}
-							<Area {...getAreaProps(s, i)} fill={gradient} />
-						{/snippet}
-					</LinearGradient>
-				{/each}
-			{/snippet}
-		</AreaChart>
-	</Chart.Container>
-{/snippet}
-
-{#snippet cpuLineChart()}
-	<Chart.Container config={exampleChartConfig} class="h-full w-20">
-		<LineChart
-			data={exampleChartData}
-			x="date"
-			xScale={scaleUtc()}
-			axis={false}
-			series={[
-				{
-					key: 'desktop',
-					label: 'Desktop',
-					color: exampleChartConfig.desktop.color
-				}
-			]}
-			props={{
-				spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-				xAxis: {
-					format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
-				},
-				highlight: { points: { r: 4 } }
-			}}
-		>
-			{#snippet tooltip()}
-				<Chart.Tooltip hideLabel />
-			{/snippet}
-		</LineChart>
-	</Chart.Container>
-{/snippet}
-
-{#snippet memoryLineChart()}
-	<Chart.Container config={exampleChartConfig} class="h-full w-20">
-		<LineChart
-			data={exampleChartData}
-			x="date"
-			xScale={scaleUtc()}
-			axis={false}
-			series={[
-				{
-					key: 'desktop',
-					label: 'Desktop',
-					color: exampleChartConfig.desktop.color
-				}
-			]}
-			props={{
-				spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-				xAxis: {
-					format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
-				},
-				highlight: { points: { r: 4 } }
-			}}
-		>
-			{#snippet tooltip()}
-				<Chart.Tooltip hideLabel />
-			{/snippet}
-		</LineChart>
-	</Chart.Container>
-{/snippet}
-
-{#snippet storageLineChart()}
-	<Chart.Container config={exampleChartConfig} class="h-full w-20">
-		<LineChart
-			data={exampleChartData}
-			x="date"
-			xScale={scaleUtc()}
-			axis={false}
-			series={[
-				{
-					key: 'desktop',
-					label: 'Desktop',
-					color: exampleChartConfig.desktop.color
-				}
-			]}
-			props={{
-				spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-				xAxis: {
-					format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
-				},
-				highlight: { points: { r: 4 } }
-			}}
-		>
-			{#snippet tooltip()}
-				<Chart.Tooltip hideLabel />
-			{/snippet}
-		</LineChart>
-	</Chart.Container>
-{/snippet}
