@@ -608,5 +608,17 @@
 	"facility": "設施",
 	"ceph": "Ceph",
 	"io_test": " IO 測試",
-	"object_storage_test": "物件儲存測試"
+	"object_storage_test": "物件儲存測試",
+	"networking_dashboard_description": "網路儀表板總覽，包括探索狀態、DHCP、可用 IP、DNS 伺服器、每月裝置使用情況，以及每日網路流量。資料可依子網路和 FQDN 篩選。",
+	"discovery": "探索",
+	"overview": "總覽",
+	"analytics": "分析",
+	"on": "開啟",
+	"off": "關閉",
+	"available_ip_addresses": "可用 IP 位址",
+	"available": "可用",
+	"total_upload_and_download": "總上傳與下載",
+	"over_each_time": "每{unit}統計",
+	"network_traffic": "網路流量",
+	"dhcp": "DHCP"
 }
