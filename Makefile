@@ -1,5 +1,5 @@
 VERSION=$(shell git describe --tags --always)
-PROTO_FILES=$(shell find api -name *.proto)
+PROTO_FILES=$(shell find api -name *.proto -not -path api/api.proto)
 
 .PHONY: build
 # build cli
@@ -36,6 +36,15 @@ proto:
 		--connect-openapi_opt=path=openapi.yaml,short-operation-ids,short-service-tags \
 		--es_out=web/src/lib \
 		--es_opt=target=ts \
+		$(PROTO_FILES)
+
+.PHONY: openapi
+# generate openapi.yaml
+openapi:
+	protoc -I=. -I=third_party -I=third_party/gnostic \
+		--connect-openapi_out=api \
+		--connect-openapi_opt=path=openapi.yaml,short-operation-ids,short-service-tags \
+		api/api.proto \
 		$(PROTO_FILES)
 
 .PHONY: service-image
