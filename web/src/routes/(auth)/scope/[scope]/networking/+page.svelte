@@ -1,22 +1,26 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { env } from '$env/dynamic/public';
+	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart/index.js';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { formatCapacity, formatIO } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
-	import { Construction } from '$lib/components/construction';
-
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { ArcChart, Text } from 'layerchart';
-	import TrendingUpIcon from '@lucide/svelte/icons/trending-up';
-
-	import * as Chart from '$lib/components/ui/chart/index.js';
-	import * as Card from '$lib/components/ui/card/index.js';
-	import { scaleUtc } from 'd3-scale';
-	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { scaleBand, scaleUtc } from 'd3-scale';
+	import { ArcChart, BarChart, Highlight, Text, type ChartContextValue } from 'layerchart';
+	import { PrometheusDriver, SampleValue } from 'prometheus-query';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
-	import { scaleBand } from 'd3-scale';
-
-	import { LineChart } from 'layerchart';
-	import { curveLinearClosed } from 'd3-shape';
+	import { writable } from 'svelte/store';
+	import { fade } from 'svelte/transition';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({
@@ -25,208 +29,242 @@
 	});
 
 	//
-	const chartData1 = [{ browser: 'safari', visitors: 1260, color: 'var(--color-safari)' }];
+	const transport: Transport = getContext('transport');
 
-	const chartConfig1 = {
-		visitors: { label: 'Visitors' },
-		safari: { label: 'Safari', color: 'var(--chart-2)' }
-	} satisfies Chart.ChartConfig;
+	const networkClient = createClient(NetworkService, transport);
+	const environmentService = createClient(EnvironmentService, transport);
+	let prometheusDriver = $state<PrometheusDriver | null>(null);
 
-	//
-	const chartData2 = [
-		{ date: new Date('2024-04-01'), receive: 222, transmit: 150 },
-		{ date: new Date('2024-04-02'), receive: 97, transmit: 180 },
-		{ date: new Date('2024-04-03'), receive: 167, transmit: 120 },
-		{ date: new Date('2024-04-04'), receive: 242, transmit: 260 },
-		{ date: new Date('2024-04-05'), receive: 373, transmit: 290 },
-		{ date: new Date('2024-04-06'), receive: 301, transmit: 340 },
-		{ date: new Date('2024-04-07'), receive: 245, transmit: 180 },
-		{ date: new Date('2024-04-08'), receive: 409, transmit: 320 },
-		{ date: new Date('2024-04-09'), receive: 59, transmit: 110 },
-		{ date: new Date('2024-04-10'), receive: 261, transmit: 190 },
-		{ date: new Date('2024-04-11'), receive: 327, transmit: 350 },
-		{ date: new Date('2024-04-12'), receive: 292, transmit: 210 },
-		{ date: new Date('2024-04-13'), receive: 342, transmit: 380 },
-		{ date: new Date('2024-04-14'), receive: 137, transmit: 220 },
-		{ date: new Date('2024-04-15'), receive: 120, transmit: 170 },
-		{ date: new Date('2024-04-16'), receive: 138, transmit: 190 },
-		{ date: new Date('2024-04-17'), receive: 446, transmit: 360 },
-		{ date: new Date('2024-04-18'), receive: 364, transmit: 410 },
-		{ date: new Date('2024-04-19'), receive: 243, transmit: 180 },
-		{ date: new Date('2024-04-20'), receive: 89, transmit: 150 },
-		{ date: new Date('2024-04-21'), receive: 137, transmit: 200 },
-		{ date: new Date('2024-04-22'), receive: 224, transmit: 170 },
-		{ date: new Date('2024-04-23'), receive: 138, transmit: 230 },
-		{ date: new Date('2024-04-24'), receive: 387, transmit: 290 },
-		{ date: new Date('2024-04-25'), receive: 215, transmit: 250 },
-		{ date: new Date('2024-04-26'), receive: 75, transmit: 130 },
-		{ date: new Date('2024-04-27'), receive: 383, transmit: 420 },
-		{ date: new Date('2024-04-28'), receive: 122, transmit: 180 },
-		{ date: new Date('2024-04-29'), receive: 315, transmit: 240 },
-		{ date: new Date('2024-04-30'), receive: 454, transmit: 380 },
-		{ date: new Date('2024-05-01'), receive: 165, transmit: 220 },
-		{ date: new Date('2024-05-02'), receive: 293, transmit: 310 },
-		{ date: new Date('2024-05-03'), receive: 247, transmit: 190 },
-		{ date: new Date('2024-05-04'), receive: 385, transmit: 420 },
-		{ date: new Date('2024-05-05'), receive: 481, transmit: 390 },
-		{ date: new Date('2024-05-06'), receive: 498, transmit: 520 },
-		{ date: new Date('2024-05-07'), receive: 388, transmit: 300 },
-		{ date: new Date('2024-05-08'), receive: 149, transmit: 210 },
-		{ date: new Date('2024-05-09'), receive: 227, transmit: 180 },
-		{ date: new Date('2024-05-10'), receive: 293, transmit: 330 },
-		{ date: new Date('2024-05-11'), receive: 335, transmit: 270 },
-		{ date: new Date('2024-05-12'), receive: 197, transmit: 240 },
-		{ date: new Date('2024-05-13'), receive: 197, transmit: 160 },
-		{ date: new Date('2024-05-14'), receive: 448, transmit: 490 },
-		{ date: new Date('2024-05-15'), receive: 473, transmit: 380 },
-		{ date: new Date('2024-05-16'), receive: 338, transmit: 400 },
-		{ date: new Date('2024-05-17'), receive: 499, transmit: 420 },
-		{ date: new Date('2024-05-18'), receive: 315, transmit: 350 },
-		{ date: new Date('2024-05-19'), receive: 235, transmit: 180 },
-		{ date: new Date('2024-05-20'), receive: 177, transmit: 230 },
-		{ date: new Date('2024-05-21'), receive: 82, transmit: 140 },
-		{ date: new Date('2024-05-22'), receive: 81, transmit: 120 },
-		{ date: new Date('2024-05-23'), receive: 252, transmit: 290 },
-		{ date: new Date('2024-05-24'), receive: 294, transmit: 220 },
-		{ date: new Date('2024-05-25'), receive: 201, transmit: 250 },
-		{ date: new Date('2024-05-26'), receive: 213, transmit: 170 },
-		{ date: new Date('2024-05-27'), receive: 420, transmit: 460 },
-		{ date: new Date('2024-05-28'), receive: 233, transmit: 190 },
-		{ date: new Date('2024-05-29'), receive: 78, transmit: 130 },
-		{ date: new Date('2024-05-30'), receive: 340, transmit: 280 },
-		{ date: new Date('2024-05-31'), receive: 178, transmit: 230 },
-		{ date: new Date('2024-06-01'), receive: 178, transmit: 200 },
-		{ date: new Date('2024-06-02'), receive: 470, transmit: 410 },
-		{ date: new Date('2024-06-03'), receive: 103, transmit: 160 },
-		{ date: new Date('2024-06-04'), receive: 439, transmit: 380 },
-		{ date: new Date('2024-06-05'), receive: 88, transmit: 140 },
-		{ date: new Date('2024-06-06'), receive: 294, transmit: 250 },
-		{ date: new Date('2024-06-07'), receive: 323, transmit: 370 },
-		{ date: new Date('2024-06-08'), receive: 385, transmit: 320 },
-		{ date: new Date('2024-06-09'), receive: 438, transmit: 480 },
-		{ date: new Date('2024-06-10'), receive: 155, transmit: 200 },
-		{ date: new Date('2024-06-11'), receive: 92, transmit: 150 },
-		{ date: new Date('2024-06-12'), receive: 492, transmit: 420 },
-		{ date: new Date('2024-06-13'), receive: 81, transmit: 130 },
-		{ date: new Date('2024-06-14'), receive: 426, transmit: 380 },
-		{ date: new Date('2024-06-15'), receive: 307, transmit: 350 },
-		{ date: new Date('2024-06-16'), receive: 371, transmit: 310 },
-		{ date: new Date('2024-06-17'), receive: 475, transmit: 520 },
-		{ date: new Date('2024-06-18'), receive: 107, transmit: 170 },
-		{ date: new Date('2024-06-19'), receive: 341, transmit: 290 },
-		{ date: new Date('2024-06-20'), receive: 408, transmit: 450 },
-		{ date: new Date('2024-06-21'), receive: 169, transmit: 210 },
-		{ date: new Date('2024-06-22'), receive: 317, transmit: 270 },
-		{ date: new Date('2024-06-23'), receive: 480, transmit: 530 },
-		{ date: new Date('2024-06-24'), receive: 132, transmit: 180 },
-		{ date: new Date('2024-06-25'), receive: 141, transmit: 190 },
-		{ date: new Date('2024-06-26'), receive: 434, transmit: 380 },
-		{ date: new Date('2024-06-27'), receive: 448, transmit: 490 },
-		{ date: new Date('2024-06-28'), receive: 149, transmit: 200 },
-		{ date: new Date('2024-06-29'), receive: 103, transmit: 160 },
-		{ date: new Date('2024-06-30'), receive: 446, transmit: 400 }
-	];
-	const chartConfig2 = {
-		views: { label: 'Page Views', color: '' },
+	const networks = writable<Network[]>([]);
+	let receives = $state([] as SampleValue[]);
+	let transmits = $state([] as SampleValue[]);
+	let latestReceive = $state({} as number);
+	let latestTransmit = $state({} as number);
+	let activeTraffic = $state<keyof typeof trafficsConfigurations>('receive');
+	let receivesByTime = $state([] as SampleValue[]);
+	let transmitsByTime = $state([] as SampleValue[]);
+	let isDNSServersExpand = $state(false);
+	let isMounted = $state(false);
+
+	const availableInternetProtocolsConfiguration = {} satisfies Chart.ChartConfig;
+	const trafficsConfigurations = {
+		views: { label: 'Traffic', color: '' },
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
 		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
-
-	let context2 = $state<ChartContextValue>();
-	let activeChart = $state<keyof typeof chartConfig2>('receive');
-	const total = $derived({
-		receive: chartData2.reduce((acc, curr) => acc + curr.receive, 0),
-		transmit: chartData2.reduce((acc, curr) => acc + curr.transmit, 0)
-	});
-	const activeSeries = $derived([
+	const activeTrafficConfiguration = $derived([
 		{
-			key: activeChart,
-			label: chartConfig2[activeChart].label,
-			color: chartConfig2[activeChart].color
+			key: activeTraffic,
+			label: trafficsConfigurations[activeTraffic].label,
+			color: trafficsConfigurations[activeTraffic].color
 		}
 	]);
-
-	//
-	const chartData3 = [
-		{ month: 'January', desktop: 186, mobile: 80 },
-		{ month: 'February', desktop: 305, mobile: 200 },
-		{ month: 'March', desktop: 237, mobile: 120 },
-		{ month: 'April', desktop: 73, mobile: 190 },
-		{ month: 'May', desktop: 209, mobile: 130 },
-		{ month: 'June', desktop: 214, mobile: 140 }
-	];
-	const chartConfig3 = {
-		desktop: { label: 'Desktop', color: 'var(--chart-1)' },
-		mobile: { label: 'Mobile', color: 'var(--chart-2)' }
+	const trafficsByTimeConfiguration = {
+		receive: { label: 'receive', color: 'var(--chart-1)' },
+		transmit: { label: 'transmit', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
+	let trafficsContext = $state<ChartContextValue>();
+	let trafficsByTimeContext = $state<ChartContextValue>();
 
-	let context3 = $state<ChartContextValue>();
+	const targetSubnet = $derived($networks.find((network) => network?.vlan?.dhcpOn != null));
+	const availableInternetProtocols = $derived([
+		{
+			key: 'available',
+			value: Number(targetSubnet?.subnet?.statistics?.available ?? 0),
+			color: 'var(--chart-2)'
+		}
+	]);
+	const traffics = $derived(
+		receives.map((sample, index) => ({
+			time: sample.time,
+			receive: sample.value,
+			transmit: transmits[index]?.value ?? 0
+		}))
+	);
+	const latestTraffics = $derived({
+		receive: latestReceive,
+		transmit: latestTransmit
+	});
 
-	const chartData4 = [
-		{ month: 'January', desktop: 186 },
-		{ month: 'February', desktop: 305 },
-		{ month: 'March', desktop: 237 },
-		{ month: 'April', desktop: 273 },
-		{ month: 'May', desktop: 209 },
-		{ month: 'June', desktop: 214 }
-	];
-	const chartConfig4 = {
-		desktop: { label: 'Desktop', color: 'var(--chart-1)' }
-	} satisfies Chart.ChartConfig;
+	const trafficsByTime = $derived(
+		receivesByTime.map((sample, index) => ({
+			time: sample.time,
+			receive: sample.value,
+			transmit: transmitsByTime[index]?.value ?? 0
+		}))
+	);
+
+	const reloadManager = new ReloadManager(() => {
+		networkClient.listNetworks({}).then((response) => {
+			networks.set(response.networks);
+		});
+	});
+
+	onMount(async () => {
+		await environmentService.getPrometheus({}).then((response) => {
+			prometheusDriver = new PrometheusDriver({
+				endpoint: `${env.PUBLIC_API_URL}/prometheus`,
+				baseURL: response.baseUrl
+			});
+		});
+		await networkClient
+			.listNetworks({})
+			.then((response) => {
+				networks.set(response.networks);
+			})
+			.catch((error) => {
+				console.error('Error during initial data load:', error);
+			});
+		if (prometheusDriver) {
+			prometheusDriver
+				.rangeQuery(
+					`sum(irate(node_network_receive_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[4m]))`,
+					new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
+					new Date().setMinutes(0, 0, 0),
+					2 * 60
+				)
+				.then((response) => {
+					receives = response.result[0].values;
+				});
+			prometheusDriver
+				.rangeQuery(
+					`sum(irate(node_network_transmit_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[4m]))`,
+					new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
+					new Date().setMinutes(0, 0, 0),
+					2 * 60
+				)
+				.then((response) => {
+					transmits = response.result[0].values;
+				});
+			prometheusDriver
+				.instantQuery(
+					`sum(irate(node_network_receive_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[4m]))`
+				)
+				.then((response) => {
+					latestReceive = response.result[0].value.value;
+				});
+			prometheusDriver
+				.instantQuery(
+					`sum(irate(node_network_transmit_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[4m]))`
+				)
+				.then((response) => {
+					latestTransmit = response.result[0].value.value;
+				});
+			prometheusDriver
+				.rangeQuery(
+					`sum(increase(node_network_receive_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[1h]))`,
+					new Date().setHours(0, 0, 0, 0) - 7 * 24 * 60 * 60 * 1000,
+					new Date().setHours(0, 0, 0, 0),
+					1 * 60 * 60
+				)
+				.then((response) => {
+					receivesByTime = response.result[0]?.values;
+				});
+			prometheusDriver
+				.rangeQuery(
+					`sum(increase(node_network_transmit_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[1h]))`,
+					new Date().setHours(0, 0, 0, 0) - 7 * 24 * 60 * 60 * 1000,
+					new Date().setHours(0, 0, 0, 0),
+					1 * 60 * 60
+				)
+				.then((response) => {
+					transmitsByTime = response.result[0]?.values;
+				});
+		}
+		isMounted = true;
+		await reloadManager.start();
+	});
+	onDestroy(() => {
+		reloadManager.stop();
+	});
 </script>
 
 <div class="mx-auto grid w-full gap-6">
 	<div class="grid gap-1">
-		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">Dashboard</h1>
-		<p class="text-muted-foreground">description</p>
+		<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.networking()}</h1>
+		<p class="text-muted-foreground">
+			{m.networking_dashboard_description()}
+		</p>
 	</div>
-
 	<Tabs.Root value="overview">
 		<Tabs.List>
-			<Tabs.Trigger value="overview">Overview</Tabs.Trigger>
-			<Tabs.Trigger value="analytics" disabled>Analytics</Tabs.Trigger>
+			<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
+			<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
 		</Tabs.List>
 		<Tabs.Content
 			value="overview"
 			class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
 		>
-			<Card.Root class="col-span-2 gap-2">
+			<Card.Root class="relative col-span-2 gap-2 overflow-hidden">
 				<Card.Header>
-					<Card.Title>Discovery</Card.Title>
-					<Card.Description>Subnet 名稱</Card.Description>
+					<Card.Title>{m.discovery()}</Card.Title>
+					<Card.Description>{targetSubnet?.subnet?.name}</Card.Description>
 				</Card.Header>
-				<Card.Content>On / Off (subnet.active_discovery 欄位)</Card.Content>
+				<Card.Content>
+					{#if !targetSubnet?.subnet?.activeDiscovery}
+						<p class="text-3xl text-green-600 dark:text-green-400">{m.on()}</p>
+						<Icon
+							icon="ph:check"
+							class="text-primary/5 absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+						/>
+					{:else}
+						<p class="text-3xl text-yellow-600 dark:text-yellow-400">{m.off()}</p>
+						<Icon
+							icon="ph:gps-slash"
+							class="text-primary/5 absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+						/>
+					{/if}
+				</Card.Content>
 			</Card.Root>
 
-			<Card.Root class="col-span-2 gap-2">
+			<Card.Root class="relative col-span-2 gap-2 overflow-hidden">
 				<Card.Header>
-					<Card.Title>DHCP</Card.Title>
-					<Card.Description>Subnet 名稱</Card.Description>
+					<Card.Title>{m.dhcp()}</Card.Title>
+					<Card.Description>{targetSubnet?.subnet?.name}</Card.Description>
 				</Card.Header>
-				<Card.Content>On / Off (vlan.dhcp_on 欄位)</Card.Content>
+				<Card.Content>
+					{#if !targetSubnet?.vlan?.dhcpOn}
+						<p class="text-3xl text-green-600 dark:text-green-400">{m.on()}</p>
+						<Icon
+							icon="ph:check"
+							class="text-primary/5 absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+						/>
+					{:else}
+						<p class="text-3xl text-yellow-600 dark:text-yellow-400">{m.off()}</p>
+						<Icon
+							icon="ph:gps-slash"
+							class="text-primary/5 absolute top-4 -right-6 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+						/>
+					{/if}
+				</Card.Content>
 			</Card.Root>
 
 			<Card.Root class="col-span-2 row-span-2 gap-2">
 				<Card.Header class="items-center">
-					<Card.Title>目前剩餘可用的 IP 數量</Card.Title>
-					<Card.Description>% 數</Card.Description>
+					<Card.Title>{m.available_ip_addresses()}</Card.Title>
+					<Card.Description>
+						{targetSubnet?.subnet?.statistics?.availablePercent}
+					</Card.Description>
 				</Card.Header>
 				<Card.Content class="flex-1">
-					<Chart.Container config={chartConfig1} class="mx-auto aspect-square max-h-[200px]">
+					<Chart.Container
+						config={availableInternetProtocolsConfiguration}
+						class="mx-auto aspect-square max-h-[200px]"
+					>
 						<ArcChart
-							label="browser"
-							value="visitors"
+							label="key"
+							value="value"
 							outerRadius={88}
 							innerRadius={66}
 							trackOuterRadius={83}
 							trackInnerRadius={72}
 							padding={40}
 							range={[90, -270]}
-							maxValue={chartData1[0].visitors * 4}
-							series={chartData1.map((d) => ({
-								key: d.browser,
-								color: d.color,
-								data: [d]
+							maxValue={Number(targetSubnet?.subnet?.statistics?.total ?? 0)}
+							series={availableInternetProtocols.map((ip) => ({
+								key: ip.key,
+								color: ip.color,
+								data: [ip]
 							}))}
 							props={{
 								arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
@@ -239,14 +277,14 @@
 							{/snippet}
 							{#snippet aboveMarks()}
 								<Text
-									value={String(chartData1[0].visitors)}
+									value={String(Number(targetSubnet?.subnet?.statistics?.available ?? 0))}
 									textAnchor="middle"
 									verticalAnchor="middle"
 									class="fill-foreground text-4xl! font-bold"
 									dy={3}
 								/>
 								<Text
-									value="Visitors"
+									value={m.available()}
 									textAnchor="middle"
 									verticalAnchor="middle"
 									class="fill-muted-foreground!"
@@ -260,44 +298,46 @@
 
 			<Card.Root class="col-span-4 row-span-2 gap-2">
 				<Card.Header>
-					<Card.Title>上傳下載總和 BY 天</Card.Title>
-					<Card.Description>用 fqdn 過濾 過去一周</Card.Description>
+					<Card.Title>{m.total_upload_and_download()}</Card.Title>
+					<Card.Description>
+						<p class="lowercase">{m.over_each_time({ unit: m.hour() })}</p>
+					</Card.Description>
 				</Card.Header>
 				<Card.Content>
-					<Chart.Container config={chartConfig3} class="h-[200px] w-full">
+					<Chart.Container config={trafficsByTimeConfiguration} class="h-[200px] w-full">
 						<BarChart
-							bind:context={context3}
-							data={chartData3}
+							bind:context={trafficsByTimeContext}
+							data={trafficsByTime}
 							xScale={scaleBand().padding(0.25)}
-							x="month"
+							x="time"
 							axis="x"
 							rule={false}
 							series={[
 								{
-									key: 'desktop',
-									label: 'Desktop',
-									color: chartConfig3.desktop.color,
+									key: 'receive',
+									label: 'Receive',
+									color: trafficsByTimeConfiguration.receive.color,
 									props: { rounded: 'bottom' }
 								},
 								{
-									key: 'mobile',
-									label: 'Mobile',
-									color: chartConfig3.mobile.color
+									key: 'transmit',
+									label: 'Transmit',
+									color: trafficsByTimeConfiguration.transmit.color
 								}
 							]}
 							seriesLayout="stack"
 							props={{
 								bars: {
 									stroke: 'none',
-									initialY: context3?.height,
+									initialY: trafficsByTimeContext?.height,
 									initialHeight: 0,
 									motion: {
 										y: { type: 'tween', duration: 500, easing: cubicInOut },
 										height: { type: 'tween', duration: 500, easing: cubicInOut }
 									}
 								},
-								highlight: { area: false },
-								xAxis: { format: (d) => d.slice(0, 3) }
+								highlight: { area: false }
+								// xAxis: { format: (d) => d.slice(0, 3) }
 							}}
 							legend
 						>
@@ -305,60 +345,135 @@
 								<Highlight area={{ class: 'fill-muted' }} />
 							{/snippet}
 							{#snippet tooltip()}
-								<Chart.Tooltip />
+								<Chart.Tooltip
+									labelFormatter={(time: Date) => {
+										return time.toLocaleDateString('en-US', {
+											year: 'numeric',
+											month: 'short',
+											day: 'numeric',
+											hour: 'numeric',
+											minute: 'numeric'
+										});
+									}}
+								>
+									{#snippet formatter({ item, name, value })}
+										{@const { value: io, unit } = formatCapacity(Number(value))}
+										<div
+											style="--color-bg: {item.color}"
+											class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+										></div>
+										<div
+											class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
+										>
+											<div class="grid gap-1.5">
+												<span class="text-muted-foreground">{name}</span>
+											</div>
+											<p class="font-mono">{io} {unit}</p>
+										</div>
+									{/snippet}
+								</Chart.Tooltip>
 							{/snippet}
 						</BarChart>
 					</Chart.Container>
 				</Card.Content>
 			</Card.Root>
 
-			<Card.Root class="col-span-2 gap-2">
+			<Card.Root class="relative col-span-2 gap-2 overflow-hidden">
 				<Card.Header>
-					<Card.Title>DNS Servers</Card.Title>
-					<Card.Description>Subnet 名稱</Card.Description>
+					<Card.Title>{m.dns_server()}</Card.Title>
+					<Card.Description>{targetSubnet?.subnet?.name}</Card.Description>
 				</Card.Header>
-				<Card.Content>["192.168.1.85"] (subnet.dns_servers 欄位)</Card.Content>
+				<Card.Content>
+					{#if targetSubnet?.subnet?.dnsServers}
+						{#if targetSubnet?.subnet?.dnsServers.length === 1}
+							<div class="flex items-center gap-1">
+								<Icon icon="ph:share-network" />
+								<p class="text-sm">{targetSubnet?.subnet?.dnsServers[0]}</p>
+							</div>
+						{:else if targetSubnet?.subnet?.dnsServers.length > 1}
+							<div class="flex flex-col gap-1">
+								{#each targetSubnet?.subnet?.dnsServers as dnsServer, index}
+									{#if index === 0}
+										<div class="flex items-center gap-2">
+											<div class="flex items-center gap-1">
+												<Icon icon="ph:share-network" />
+												<p class="text-sm">{dnsServer}</p>
+											</div>
+											<Button
+												variant="outline"
+												class="h-5 p-2 text-xs transition-all duration-300"
+												onmouseenter={() => {
+													isDNSServersExpand = true;
+												}}
+												onmouseleave={() => {
+													isDNSServersExpand = false;
+												}}
+											>
+												+ {targetSubnet?.subnet?.dnsServers.length - 1}
+											</Button>
+										</div>
+									{:else if isDNSServersExpand}
+										<div
+											class="flex translate-y-0 items-center gap-1 opacity-100 transition-all duration-300"
+											in:fade={{ duration: 200 }}
+											out:fade={{ duration: 200 }}
+										>
+											<Icon icon="ph:share-network" />
+											<p class="text-sm">{dnsServer}</p>
+										</div>
+									{/if}
+								{/each}
+							</div>
+						{/if}
+						<Icon
+							icon="ph:network"
+							class="text-primary/5 absolute top-3 -right-3 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
+						/>
+					{/if}
+				</Card.Content>
 			</Card.Root>
 
 			<Card.Root class="col-span-4 row-span-2 gap-2">
 				<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 					<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-						<Card.Title>Network Traffic</Card.Title>
-						<Card.Description>用 fqdn 過濾</Card.Description>
+						<Card.Title>{m.network_traffic()}</Card.Title>
 					</div>
 					<div class="flex">
 						{#each ['receive', 'transmit'] as key (key)}
-							{@const chart = key as keyof typeof chartConfig2}
+							{@const chart = key as keyof typeof trafficsConfigurations}
+							{@const { value, unit } = formatIO(
+								latestTraffics[key as keyof typeof latestTraffics]
+							)}
 							<button
-								data-active={activeChart === chart}
+								data-active={activeTraffic === chart}
 								class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
-								onclick={() => (activeChart = chart)}
+								onclick={() => (activeTraffic = chart)}
 							>
 								<span class="text-muted-foreground text-xs">
-									{chartConfig2[chart].label}
+									{trafficsConfigurations[chart].label}
 								</span>
 								<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
-									{total[key as keyof typeof total].toLocaleString()}
-									<span class="text-xs">Mbps</span>
+									{value.toLocaleString()}
+									<span class="text-xs">{unit}</span>
 								</span>
 							</button>
 						{/each}
 					</div>
 				</Card.Header>
 				<Card.Content class="px-6 pt-6">
-					<Chart.Container config={chartConfig2} class="aspect-auto h-[120px] w-full">
+					<Chart.Container config={trafficsConfigurations} class="aspect-auto h-[120px] w-full">
 						<BarChart
-							bind:context={context2}
-							data={chartData2}
-							x="date"
+							bind:context={trafficsContext}
+							data={traffics}
+							x="time"
 							axis="x"
-							series={activeSeries}
+							series={activeTrafficConfiguration}
 							props={{
 								bars: {
 									stroke: 'none',
 									rounded: 'none',
 									// use the height of the chart to animate the bars
-									initialY: context2?.height,
+									initialY: trafficsContext?.height,
 									initialHeight: 0,
 									motion: {
 										y: { type: 'tween', duration: 500, easing: cubicInOut },
@@ -383,14 +498,32 @@
 							{#snippet tooltip()}
 								<Chart.Tooltip
 									nameKey="views"
-									labelFormatter={(v: Date) => {
-										return v.toLocaleDateString('en-US', {
+									labelFormatter={(time: Date) => {
+										return time.toLocaleDateString('en-US', {
+											year: 'numeric',
 											month: 'short',
 											day: 'numeric',
-											year: 'numeric'
+											hour: 'numeric',
+											minute: 'numeric'
 										});
 									}}
-								/>
+								>
+									{#snippet formatter({ item, name, value })}
+										{@const { value: io, unit } = formatIO(Number(value))}
+										<div
+											style="--color-bg: {item.color}"
+											class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+										></div>
+										<div
+											class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
+										>
+											<div class="grid gap-1.5">
+												<span class="text-muted-foreground">{name}</span>
+											</div>
+											<p class="font-mono">{io} {unit}</p>
+										</div>
+									{/snippet}
+								</Chart.Tooltip>
 							{/snippet}
 						</BarChart>
 					</Chart.Container>

@@ -608,5 +608,17 @@
 	"facility": "Facility",
 	"ceph": "Ceph",
 	"io_test": "IO Test",
-	"object_storage_test": "Object Storage Test"
+	"object_storage_test": "Object Storage Test",
+	"networking_dashboard_description": "Overview of network metrics including discovery status, DHCP, available IPs, DNS servers, device usage by month, and daily network traffic. Data is filtered by subnet and FQDN where applicable.",
+	"discovery": "Discovery",
+	"overview": "Overview",
+	"analytics": "Analytics",
+	"on": "On",
+	"off": "Off",
+	"available_ip_addresses": "Available IP Addresses",
+	"available": "Available",
+	"total_upload_and_download": "Total Upload and Download",
+	"over_each_time": "over each {unit}",
+	"network_traffic": "Network Traffic",
+	"dhcp": "DHCP"
 }
