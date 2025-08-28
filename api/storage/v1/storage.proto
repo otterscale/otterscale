@@ -8,62 +8,55 @@ import "google/protobuf/timestamp.proto";
 option go_package = "github.com/openhdc/otterscale/api/storage/v1;pb";
 
 service StorageService {
-  // Cluster
   rpc ListMONs(ListMONsRequest) returns (ListMONsResponse);
   rpc ListOSDs(ListOSDsRequest) returns (ListOSDsResponse);
+  
   rpc DoSMART(DoSMARTRequest) returns (DoSMARTResponse);
-
-  // Cluster Pool
+ 
   rpc ListPools(ListPoolsRequest) returns (ListPoolsResponse);
   rpc CreatePool(CreatePoolRequest) returns (Pool);
   rpc UpdatePool(UpdatePoolRequest) returns (Pool);
   rpc DeletePool(DeletePoolRequest) returns (google.protobuf.Empty);
-
-  // RBD Image
+  
   rpc ListImages(ListImagesRequest) returns (ListImagesResponse);
   rpc CreateImage(CreateImageRequest) returns (Image);
   rpc UpdateImage(UpdateImageRequest) returns (Image);
   rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty);
-
-  // RBD Image Snapshot
+  
   rpc CreateImageSnapshot(CreateImageSnapshotRequest) returns (Image.Snapshot);
   rpc DeleteImageSnapshot(DeleteImageSnapshotRequest) returns (google.protobuf.Empty);
   rpc RollbackImageSnapshot(RollbackImageSnapshotRequest) returns (google.protobuf.Empty);
   rpc ProtectImageSnapshot(ProtectImageSnapshotRequest) returns (google.protobuf.Empty);
   rpc UnprotectImageSnapshot(UnprotectImageSnapshotRequest) returns (google.protobuf.Empty);
-
-  // CephFS Volume
+  
   rpc ListVolumes(ListVolumesRequest) returns (ListVolumesResponse);
-
-  // CephFS Subvolume
+  
   rpc ListSubvolumes(ListSubvolumesRequest) returns (ListSubvolumesResponse);
   rpc CreateSubvolume(CreateSubvolumeRequest) returns (Subvolume);
   rpc UpdateSubvolume(UpdateSubvolumeRequest) returns (Subvolume);
   rpc DeleteSubvolume(DeleteSubvolumeRequest) returns (google.protobuf.Empty);
+  
   rpc GrantSubvolumeExportAccess(GrantSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
   rpc RevokeSubvolumeExportAccess(RevokeSubvolumeExportAccessRequest) returns (google.protobuf.Empty);
-
-  // CephFS Subvolume Snapshot
+ 
   rpc CreateSubvolumeSnapshot(CreateSubvolumeSnapshotRequest) returns (Subvolume.Snapshot);
   rpc DeleteSubvolumeSnapshot(DeleteSubvolumeSnapshotRequest) returns (google.protobuf.Empty);
-
-  // CephFS Subvolume Group
+  
   rpc ListSubvolumeGroups(ListSubvolumeGroupsRequest) returns (ListSubvolumeGroupsResponse);
   rpc CreateSubvolumeGroup(CreateSubvolumeGroupRequest) returns (SubvolumeGroup);
   rpc UpdateSubvolumeGroup(UpdateSubvolumeGroupRequest) returns (SubvolumeGroup);
   rpc DeleteSubvolumeGroup(DeleteSubvolumeGroupRequest) returns (google.protobuf.Empty);
-
-  // RGW Bucket
+  
   rpc ListBuckets(ListBucketsRequest) returns (ListBucketsResponse);
   rpc CreateBucket(CreateBucketRequest) returns (Bucket);
   rpc UpdateBucket(UpdateBucketRequest) returns (Bucket);
   rpc DeleteBucket(DeleteBucketRequest) returns (google.protobuf.Empty);
-
-  // RGW User
+  
   rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
   rpc CreateUser(CreateUserRequest) returns (User);
   rpc UpdateUser(UpdateUserRequest) returns (User);
   rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
+  
   rpc CreateUserKey(CreateUserKeyRequest) returns (User.Key);
   rpc DeleteUserKey(DeleteUserKeyRequest) returns (google.protobuf.Empty);
 }
