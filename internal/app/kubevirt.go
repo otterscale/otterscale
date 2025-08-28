@@ -477,10 +477,11 @@ func toProtoDataVolume(dv *core.DataVolume) *pb.DataVolume {
 	ret.SetStatusProgress(string(dv.Status.Progress))
 	ret.SetStatusClaimName(dv.Status.ClaimName)
 
-	ret.SetLastConditionMessage(dv.Status.Conditions[0].Message)
-	ret.SetLastConditionReason(dv.Status.Conditions[0].Reason)
-	ret.SetLastConditionStatus(string(dv.Status.Conditions[0].Status))
-
+	if dv.Status.Conditions != nil {
+		ret.SetLastConditionMessage(dv.Status.Conditions[0].Message)
+		ret.SetLastConditionReason(dv.Status.Conditions[0].Reason)
+		ret.SetLastConditionStatus(string(dv.Status.Conditions[0].Status))
+	}
 	return ret
 }
 

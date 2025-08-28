@@ -1199,16 +1199,23 @@ func (b0 InstanceType_builder) Build() *InstanceType {
 }
 
 type DataVolume struct {
-	state                  protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Metadata    *Metadata              `protobuf:"bytes,1,opt,name=metadata"`
-	xxx_hidden_Source      *string                `protobuf:"bytes,2,opt,name=source"`
-	xxx_hidden_Type        *string                `protobuf:"bytes,3,opt,name=type"`
-	xxx_hidden_SizeBytes   int64                  `protobuf:"varint,4,opt,name=size_bytes,json=sizeBytes"`
-	xxx_hidden_IsBootable  bool                   `protobuf:"varint,5,opt,name=is_bootable,json=isBootable"`
-	XXX_raceDetectHookData protoimpl.RaceDetectHookData
-	XXX_presence           [1]uint32
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	state                           protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Metadata             *Metadata              `protobuf:"bytes,1,opt,name=metadata"`
+	xxx_hidden_Source               *string                `protobuf:"bytes,2,opt,name=source"`
+	xxx_hidden_Type                 *string                `protobuf:"bytes,3,opt,name=type"`
+	xxx_hidden_SizeBytes            int64                  `protobuf:"varint,4,opt,name=size_bytes,json=sizeBytes"`
+	xxx_hidden_AccessMode           *string                `protobuf:"bytes,5,opt,name=access_mode,json=accessMode"`
+	xxx_hidden_StorageClass         *string                `protobuf:"bytes,6,opt,name=storage_class,json=storageClass"`
+	xxx_hidden_StatusPhase          *string                `protobuf:"bytes,7,opt,name=status_phase,json=statusPhase"`
+	xxx_hidden_StatusProgress       *string                `protobuf:"bytes,8,opt,name=status_progress,json=statusProgress"`
+	xxx_hidden_StatusClaimName      *string                `protobuf:"bytes,9,opt,name=status_claim_name,json=statusClaimName"`
+	xxx_hidden_LastConditionMessage *string                `protobuf:"bytes,10,opt,name=last_condition_message,json=lastConditionMessage"`
+	xxx_hidden_LastConditionReason  *string                `protobuf:"bytes,11,opt,name=last_condition_reason,json=lastConditionReason"`
+	xxx_hidden_LastConditionStatus  *string                `protobuf:"bytes,12,opt,name=last_condition_status,json=lastConditionStatus"`
+	XXX_raceDetectHookData          protoimpl.RaceDetectHookData
+	XXX_presence                    [1]uint32
+	unknownFields                   protoimpl.UnknownFields
+	sizeCache                       protoimpl.SizeCache
 }
 
 func (x *DataVolume) Reset() {
@@ -1270,11 +1277,84 @@ func (x *DataVolume) GetSizeBytes() int64 {
 	return 0
 }
 
-func (x *DataVolume) GetIsBootable() bool {
+func (x *DataVolume) GetAccessMode() string {
 	if x != nil {
-		return x.xxx_hidden_IsBootable
+		if x.xxx_hidden_AccessMode != nil {
+			return *x.xxx_hidden_AccessMode
+		}
+		return ""
 	}
-	return false
+	return ""
+}
+
+func (x *DataVolume) GetStorageClass() string {
+	if x != nil {
+		if x.xxx_hidden_StorageClass != nil {
+			return *x.xxx_hidden_StorageClass
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DataVolume) GetStatusPhase() string {
+	if x != nil {
+		if x.xxx_hidden_StatusPhase != nil {
+			return *x.xxx_hidden_StatusPhase
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DataVolume) GetStatusProgress() string {
+	if x != nil {
+		if x.xxx_hidden_StatusProgress != nil {
+			return *x.xxx_hidden_StatusProgress
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DataVolume) GetStatusClaimName() string {
+	if x != nil {
+		if x.xxx_hidden_StatusClaimName != nil {
+			return *x.xxx_hidden_StatusClaimName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DataVolume) GetLastConditionMessage() string {
+	if x != nil {
+		if x.xxx_hidden_LastConditionMessage != nil {
+			return *x.xxx_hidden_LastConditionMessage
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DataVolume) GetLastConditionReason() string {
+	if x != nil {
+		if x.xxx_hidden_LastConditionReason != nil {
+			return *x.xxx_hidden_LastConditionReason
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *DataVolume) GetLastConditionStatus() string {
+	if x != nil {
+		if x.xxx_hidden_LastConditionStatus != nil {
+			return *x.xxx_hidden_LastConditionStatus
+		}
+		return ""
+	}
+	return ""
 }
 
 func (x *DataVolume) SetMetadata(v *Metadata) {
@@ -1283,22 +1363,57 @@ func (x *DataVolume) SetMetadata(v *Metadata) {
 
 func (x *DataVolume) SetSource(v string) {
 	x.xxx_hidden_Source = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 12)
 }
 
 func (x *DataVolume) SetType(v string) {
 	x.xxx_hidden_Type = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 12)
 }
 
 func (x *DataVolume) SetSizeBytes(v int64) {
 	x.xxx_hidden_SizeBytes = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 12)
 }
 
-func (x *DataVolume) SetIsBootable(v bool) {
-	x.xxx_hidden_IsBootable = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+func (x *DataVolume) SetAccessMode(v string) {
+	x.xxx_hidden_AccessMode = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 12)
+}
+
+func (x *DataVolume) SetStorageClass(v string) {
+	x.xxx_hidden_StorageClass = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 12)
+}
+
+func (x *DataVolume) SetStatusPhase(v string) {
+	x.xxx_hidden_StatusPhase = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 12)
+}
+
+func (x *DataVolume) SetStatusProgress(v string) {
+	x.xxx_hidden_StatusProgress = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 12)
+}
+
+func (x *DataVolume) SetStatusClaimName(v string) {
+	x.xxx_hidden_StatusClaimName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 12)
+}
+
+func (x *DataVolume) SetLastConditionMessage(v string) {
+	x.xxx_hidden_LastConditionMessage = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 12)
+}
+
+func (x *DataVolume) SetLastConditionReason(v string) {
+	x.xxx_hidden_LastConditionReason = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 12)
+}
+
+func (x *DataVolume) SetLastConditionStatus(v string) {
+	x.xxx_hidden_LastConditionStatus = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 12)
 }
 
 func (x *DataVolume) HasMetadata() bool {
@@ -1329,11 +1444,60 @@ func (x *DataVolume) HasSizeBytes() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
-func (x *DataVolume) HasIsBootable() bool {
+func (x *DataVolume) HasAccessMode() bool {
 	if x == nil {
 		return false
 	}
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *DataVolume) HasStorageClass() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *DataVolume) HasStatusPhase() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 6)
+}
+
+func (x *DataVolume) HasStatusProgress() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 7)
+}
+
+func (x *DataVolume) HasStatusClaimName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 8)
+}
+
+func (x *DataVolume) HasLastConditionMessage() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 9)
+}
+
+func (x *DataVolume) HasLastConditionReason() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 10)
+}
+
+func (x *DataVolume) HasLastConditionStatus() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 11)
 }
 
 func (x *DataVolume) ClearMetadata() {
@@ -1355,19 +1519,61 @@ func (x *DataVolume) ClearSizeBytes() {
 	x.xxx_hidden_SizeBytes = 0
 }
 
-func (x *DataVolume) ClearIsBootable() {
+func (x *DataVolume) ClearAccessMode() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
-	x.xxx_hidden_IsBootable = false
+	x.xxx_hidden_AccessMode = nil
+}
+
+func (x *DataVolume) ClearStorageClass() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_StorageClass = nil
+}
+
+func (x *DataVolume) ClearStatusPhase() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 6)
+	x.xxx_hidden_StatusPhase = nil
+}
+
+func (x *DataVolume) ClearStatusProgress() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 7)
+	x.xxx_hidden_StatusProgress = nil
+}
+
+func (x *DataVolume) ClearStatusClaimName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 8)
+	x.xxx_hidden_StatusClaimName = nil
+}
+
+func (x *DataVolume) ClearLastConditionMessage() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 9)
+	x.xxx_hidden_LastConditionMessage = nil
+}
+
+func (x *DataVolume) ClearLastConditionReason() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 10)
+	x.xxx_hidden_LastConditionReason = nil
+}
+
+func (x *DataVolume) ClearLastConditionStatus() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 11)
+	x.xxx_hidden_LastConditionStatus = nil
 }
 
 type DataVolume_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Metadata   *Metadata
-	Source     *string
-	Type       *string
-	SizeBytes  *int64
-	IsBootable *bool
+	Metadata             *Metadata
+	Source               *string
+	Type                 *string
+	SizeBytes            *int64
+	AccessMode           *string
+	StorageClass         *string
+	StatusPhase          *string
+	StatusProgress       *string
+	StatusClaimName      *string
+	LastConditionMessage *string
+	LastConditionReason  *string
+	LastConditionStatus  *string
 }
 
 func (b0 DataVolume_builder) Build() *DataVolume {
@@ -1376,20 +1582,48 @@ func (b0 DataVolume_builder) Build() *DataVolume {
 	_, _ = b, x
 	x.xxx_hidden_Metadata = b.Metadata
 	if b.Source != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 12)
 		x.xxx_hidden_Source = b.Source
 	}
 	if b.Type != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 12)
 		x.xxx_hidden_Type = b.Type
 	}
 	if b.SizeBytes != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 12)
 		x.xxx_hidden_SizeBytes = *b.SizeBytes
 	}
-	if b.IsBootable != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
-		x.xxx_hidden_IsBootable = *b.IsBootable
+	if b.AccessMode != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 12)
+		x.xxx_hidden_AccessMode = b.AccessMode
+	}
+	if b.StorageClass != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 12)
+		x.xxx_hidden_StorageClass = b.StorageClass
+	}
+	if b.StatusPhase != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 12)
+		x.xxx_hidden_StatusPhase = b.StatusPhase
+	}
+	if b.StatusProgress != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 12)
+		x.xxx_hidden_StatusProgress = b.StatusProgress
+	}
+	if b.StatusClaimName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 12)
+		x.xxx_hidden_StatusClaimName = b.StatusClaimName
+	}
+	if b.LastConditionMessage != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 12)
+		x.xxx_hidden_LastConditionMessage = b.LastConditionMessage
+	}
+	if b.LastConditionReason != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 12)
+		x.xxx_hidden_LastConditionReason = b.LastConditionReason
+	}
+	if b.LastConditionStatus != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 12)
+		x.xxx_hidden_LastConditionStatus = b.LastConditionStatus
 	}
 	return m0
 }
@@ -5673,6 +5907,7 @@ type CreateDataVolumeRequest struct {
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
 	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
 	xxx_hidden_DataVolume   *DataVolume            `protobuf:"bytes,3,opt,name=data_volume,json=dataVolume"`
+	xxx_hidden_IsBootable   bool                   `protobuf:"varint,4,opt,name=is_bootable,json=isBootable"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -5731,18 +5966,30 @@ func (x *CreateDataVolumeRequest) GetDataVolume() *DataVolume {
 	return nil
 }
 
+func (x *CreateDataVolumeRequest) GetIsBootable() bool {
+	if x != nil {
+		return x.xxx_hidden_IsBootable
+	}
+	return false
+}
+
 func (x *CreateDataVolumeRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *CreateDataVolumeRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *CreateDataVolumeRequest) SetDataVolume(v *DataVolume) {
 	x.xxx_hidden_DataVolume = v
+}
+
+func (x *CreateDataVolumeRequest) SetIsBootable(v bool) {
+	x.xxx_hidden_IsBootable = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *CreateDataVolumeRequest) HasScopeUuid() bool {
@@ -5766,6 +6013,13 @@ func (x *CreateDataVolumeRequest) HasDataVolume() bool {
 	return x.xxx_hidden_DataVolume != nil
 }
 
+func (x *CreateDataVolumeRequest) HasIsBootable() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
 func (x *CreateDataVolumeRequest) ClearScopeUuid() {
 	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
 	x.xxx_hidden_ScopeUuid = nil
@@ -5780,12 +6034,18 @@ func (x *CreateDataVolumeRequest) ClearDataVolume() {
 	x.xxx_hidden_DataVolume = nil
 }
 
+func (x *CreateDataVolumeRequest) ClearIsBootable() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_IsBootable = false
+}
+
 type CreateDataVolumeRequest_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
 	ScopeUuid    *string
 	FacilityName *string
 	DataVolume   *DataVolume
+	IsBootable   *bool
 }
 
 func (b0 CreateDataVolumeRequest_builder) Build() *CreateDataVolumeRequest {
@@ -5793,14 +6053,18 @@ func (b0 CreateDataVolumeRequest_builder) Build() *CreateDataVolumeRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	x.xxx_hidden_DataVolume = b.DataVolume
+	if b.IsBootable != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_IsBootable = *b.IsBootable
+	}
 	return m0
 }
 
@@ -8299,7 +8563,7 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\fInstanceType\x12<\n" +
 	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12\x1b\n" +
 	"\tcpu_cores\x18\x02 \x01(\x02R\bcpuCores\x12!\n" +
-	"\fmemory_bytes\x18\x03 \x01(\x03R\vmemoryBytes\"\xb6\x01\n" +
+	"\fmemory_bytes\x18\x03 \x01(\x03R\vmemoryBytes\"\xf1\x03\n" +
 	"\n" +
 	"DataVolume\x12<\n" +
 	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12\x16\n" +
@@ -8307,8 +8571,16 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\x04type\x18\x03 \x01(\tR\x04type\x12\x1d\n" +
 	"\n" +
 	"size_bytes\x18\x04 \x01(\x03R\tsizeBytes\x12\x1f\n" +
-	"\vis_bootable\x18\x05 \x01(\bR\n" +
-	"isBootable\"\xdd\x01\n" +
+	"\vaccess_mode\x18\x05 \x01(\tR\n" +
+	"accessMode\x12#\n" +
+	"\rstorage_class\x18\x06 \x01(\tR\fstorageClass\x12!\n" +
+	"\fstatus_phase\x18\a \x01(\tR\vstatusPhase\x12'\n" +
+	"\x0fstatus_progress\x18\b \x01(\tR\x0estatusProgress\x12*\n" +
+	"\x11status_claim_name\x18\t \x01(\tR\x0fstatusClaimName\x124\n" +
+	"\x16last_condition_message\x18\n" +
+	" \x01(\tR\x14lastConditionMessage\x122\n" +
+	"\x15last_condition_reason\x18\v \x01(\tR\x13lastConditionReason\x122\n" +
+	"\x15last_condition_status\x18\f \x01(\tR\x13lastConditionStatus\"\xdd\x01\n" +
 	"\x11KubeVirtVMService\x12<\n" +
 	"\bmetadata\x18\x01 \x01(\v2 .otterscale.kubevirt.v1.MetadataR\bmetadata\x12A\n" +
 	"\x04spec\x18\v \x01(\v2-.otterscale.kubevirt.v1.KubeVirtVMServiceSpecR\x04spec\x12G\n" +
@@ -8484,13 +8756,15 @@ const file_api_kubevirt_v1_kubevirt_proto_rawDesc = "" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x04 \x01(\tR\tnamespace\"q\n" +
 	"#ListVirtualMachineSnapshotsResponse\x12J\n" +
-	"\bsnapshot\x18\x01 \x03(\v2..otterscale.kubevirt.v1.VirtualMachineSnapshotR\bsnapshot\"\xa2\x01\n" +
+	"\bsnapshot\x18\x01 \x03(\v2..otterscale.kubevirt.v1.VirtualMachineSnapshotR\bsnapshot\"\xc3\x01\n" +
 	"\x17CreateDataVolumeRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12C\n" +
 	"\vdata_volume\x18\x03 \x01(\v2\".otterscale.kubevirt.v1.DataVolumeR\n" +
-	"dataVolume\"z\n" +
+	"dataVolume\x12\x1f\n" +
+	"\vis_bootable\x18\x04 \x01(\bR\n" +
+	"isBootable\"z\n" +
 	"\x16ListDataVolumesRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
