@@ -59,7 +59,7 @@ message ListStatusesRequest {
 }
 
 message ListStatusesResponse {
-  repeated Status Statuses = 1;
+  repeated Status statuses = 1;
 }
 
 message ListEssentialsRequest {

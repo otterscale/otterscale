@@ -28,10 +28,12 @@ lint:
 .PHONY: proto
 # generate *.pb.go
 proto:
-	protoc -I=. \
+	protoc -I=. -I=third_party -I=third_party/gnostic \
 		--go_out=paths=source_relative:. \
 		--go_opt=default_api_level=API_OPAQUE \
 		--connect-go_out=paths=source_relative:. \
+		--connect-openapi_out=api \
+		--connect-openapi_opt=path=openapi.yaml,short-operation-ids,short-service-tags \
 		--es_out=web/src/lib \
 		--es_opt=target=ts \
 		$(PROTO_FILES)
