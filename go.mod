@@ -1,4 +1,4 @@
-module github.com/openhdc/otterscale
+module github.com/otterscale/otterscale
 
 go 1.24.6
 

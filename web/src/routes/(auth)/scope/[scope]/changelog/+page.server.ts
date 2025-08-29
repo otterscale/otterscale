@@ -3,7 +3,7 @@ import { env } from '$env/dynamic/private';
 import type { PageServerLoad } from './$types';
 
 const REPO_CONFIG = {
-	owner: 'openhdc',
+	owner: 'otterscale',
 	repo: 'otterscale'
 } as const;
 

@@ -7,14 +7,14 @@
 package main
 
 import (
-	"github.com/openhdc/otterscale/internal/app"
-	"github.com/openhdc/otterscale/internal/config"
-	"github.com/openhdc/otterscale/internal/core"
-	"github.com/openhdc/otterscale/internal/data/ceph"
-	"github.com/openhdc/otterscale/internal/data/juju"
-	"github.com/openhdc/otterscale/internal/data/kube"
-	"github.com/openhdc/otterscale/internal/data/maas"
-	"github.com/openhdc/otterscale/internal/mux"
+	"github.com/otterscale/otterscale/internal/app"
+	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/data/ceph"
+	"github.com/otterscale/otterscale/internal/data/juju"
+	"github.com/otterscale/otterscale/internal/data/kube"
+	"github.com/otterscale/otterscale/internal/data/maas"
+	"github.com/otterscale/otterscale/internal/mux"
 	"github.com/spf13/cobra"
 )
 

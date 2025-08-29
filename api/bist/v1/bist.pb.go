@@ -3578,7 +3578,7 @@ const file_api_bist_v1_bist_proto_rawDesc = "" +
 	"\x0fListTestResults\x12*.otterscale.bist.v1.ListTestResultsRequest\x1a+.otterscale.bist.v1.ListTestResultsResponse\x12_\n" +
 	"\x10CreateTestResult\x12+.otterscale.bist.v1.CreateTestResultRequest\x1a\x1e.otterscale.bist.v1.TestResult\x12W\n" +
 	"\x10DeleteTestResult\x12+.otterscale.bist.v1.DeleteTestResultRequest\x1a\x16.google.protobuf.Empty\x12\x8b\x01\n" +
-	"\x1aListInternalObjectServices\x125.otterscale.bist.v1.ListInternalObjectServicesRequest\x1a6.otterscale.bist.v1.ListInternalObjectServicesResponseB.Z,github.com/openhdc/otterscale/api/bist/v1;pbb\beditionsp\xe8\a"
+	"\x1aListInternalObjectServices\x125.otterscale.bist.v1.ListInternalObjectServicesRequest\x1a6.otterscale.bist.v1.ListInternalObjectServicesResponseB1Z/github.com/otterscale/otterscale/api/bist/v1;pbb\beditionsp\xe8\a"
 
 var file_api_bist_v1_bist_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_api_bist_v1_bist_proto_msgTypes = make([]protoimpl.MessageInfo, 21)

@@ -18,9 +18,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/duration"
 
-	pb "github.com/openhdc/otterscale/api/application/v1"
-	"github.com/openhdc/otterscale/api/application/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/core"
+	pb "github.com/otterscale/otterscale/api/application/v1"
+	"github.com/otterscale/otterscale/api/application/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type ApplicationService struct {

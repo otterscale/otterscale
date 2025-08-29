@@ -4,7 +4,7 @@ package otterscale.environment.v1;
 
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/openhdc/otterscale/api/environment/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/environment/v1;pb";
 
 service EnvironmentService {
   rpc CheckHealth(CheckHealthRequest) returns (CheckHealthResponse);

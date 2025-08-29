@@ -1391,7 +1391,7 @@ const file_api_configuration_v1_configuration_proto_rawDesc = "" +
 	"\x13SetDefaultBootImage\x127.otterscale.configuration.v1.SetDefaultBootImageRequest\x1a\x16.google.protobuf.Empty\x12`\n" +
 	"\x10ImportBootImages\x124.otterscale.configuration.v1.ImportBootImagesRequest\x1a\x16.google.protobuf.Empty\x12\x8e\x01\n" +
 	"\x15IsImportingBootImages\x129.otterscale.configuration.v1.IsImportingBootImagesRequest\x1a:.otterscale.configuration.v1.IsImportingBootImagesResponse\x12\x94\x01\n" +
-	"\x17ListBootImageSelections\x12;.otterscale.configuration.v1.ListBootImageSelectionsRequest\x1a<.otterscale.configuration.v1.ListBootImageSelectionsResponseB7Z5github.com/openhdc/otterscale/api/configuration/v1;pbb\beditionsp\xe8\a"
+	"\x17ListBootImageSelections\x12;.otterscale.configuration.v1.ListBootImageSelectionsRequest\x1a<.otterscale.configuration.v1.ListBootImageSelectionsResponseB:Z8github.com/otterscale/otterscale/api/configuration/v1;pbb\beditionsp\xe8\a"
 
 var file_api_configuration_v1_configuration_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_api_configuration_v1_configuration_proto_goTypes = []any{

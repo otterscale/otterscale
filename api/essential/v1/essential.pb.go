@@ -1772,7 +1772,7 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\x0eListEssentials\x12..otterscale.essential.v1.ListEssentialsRequest\x1a/.otterscale.essential.v1.ListEssentialsResponse\x12\\\n" +
 	"\x10CreateSingleNode\x120.otterscale.essential.v1.CreateSingleNodeRequest\x1a\x16.google.protobuf.Empty\x12v\n" +
 	"\x1dCreateHighAvailabilityCluster\x12=.otterscale.essential.v1.CreateHighAvailabilityClusterRequest\x1a\x16.google.protobuf.Empty\x12L\n" +
-	"\bAddUnits\x12(.otterscale.essential.v1.AddUnitsRequest\x1a\x16.google.protobuf.EmptyB3Z1github.com/openhdc/otterscale/api/essential/v1;pbb\beditionsp\xe8\a"
+	"\bAddUnits\x12(.otterscale.essential.v1.AddUnitsRequest\x1a\x16.google.protobuf.EmptyB6Z4github.com/otterscale/otterscale/api/essential/v1;pbb\beditionsp\xe8\a"
 
 var file_api_essential_v1_essential_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
 var file_api_essential_v1_essential_proto_msgTypes = make([]protoimpl.MessageInfo, 12)

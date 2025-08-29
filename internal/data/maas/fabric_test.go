@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/canonical/gomaasclient/entity"
-	"github.com/openhdc/otterscale/internal/config"
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 func TestNewFabric(t *testing.T) {

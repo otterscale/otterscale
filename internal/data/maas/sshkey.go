@@ -3,7 +3,7 @@ package maas
 import (
 	"context"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type sshKey struct {

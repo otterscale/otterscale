@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/openhdc/otterscale/api/premium/v1"
+	v1 "github.com/otterscale/otterscale/api/premium/v1"
 	http "net/http"
 	strings "strings"
 )

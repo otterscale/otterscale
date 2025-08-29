@@ -3,10 +3,10 @@ package data
 import (
 	"github.com/google/wire"
 
-	"github.com/openhdc/otterscale/internal/data/ceph"
-	"github.com/openhdc/otterscale/internal/data/juju"
-	"github.com/openhdc/otterscale/internal/data/kube"
-	"github.com/openhdc/otterscale/internal/data/maas"
+	"github.com/otterscale/otterscale/internal/data/ceph"
+	"github.com/otterscale/otterscale/internal/data/juju"
+	"github.com/otterscale/otterscale/internal/data/kube"
+	"github.com/otterscale/otterscale/internal/data/maas"
 )
 
 var ProviderSet = wire.NewSet(

@@ -8,10 +8,10 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/openhdc/otterscale/api/environment/v1"
-	"github.com/openhdc/otterscale/api/environment/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/config"
-	"github.com/openhdc/otterscale/internal/core"
+	pb "github.com/otterscale/otterscale/api/environment/v1"
+	"github.com/otterscale/otterscale/api/environment/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 const statusChanSize = 100

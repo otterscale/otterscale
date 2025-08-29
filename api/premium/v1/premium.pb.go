@@ -198,7 +198,7 @@ const file_api_premium_v1_premium_proto_rawDesc = "" +
 	"\n" +
 	"ENTERPRISE\x10\x022j\n" +
 	"\x0ePremiumService\x12X\n" +
-	"\aGetTier\x12%.otterscale.premium.v1.GetTierRequest\x1a&.otterscale.premium.v1.GetTierResponseB1Z/github.com/openhdc/otterscale/api/premium/v1;pbb\beditionsp\xe8\a"
+	"\aGetTier\x12%.otterscale.premium.v1.GetTierRequest\x1a&.otterscale.premium.v1.GetTierResponseB4Z2github.com/otterscale/otterscale/api/premium/v1;pbb\beditionsp\xe8\a"
 
 var file_api_premium_v1_premium_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_premium_v1_premium_proto_msgTypes = make([]protoimpl.MessageInfo, 2)

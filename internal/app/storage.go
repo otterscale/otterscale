@@ -12,9 +12,9 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 
-	pb "github.com/openhdc/otterscale/api/storage/v1"
-	"github.com/openhdc/otterscale/api/storage/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/core"
+	pb "github.com/otterscale/otterscale/api/storage/v1"
+	"github.com/otterscale/otterscale/api/storage/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type StorageService struct {

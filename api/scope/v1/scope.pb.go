@@ -625,7 +625,7 @@ const file_api_scope_v1_scope_proto_rawDesc = "" +
 	"\fScopeService\x12]\n" +
 	"\n" +
 	"ListScopes\x12&.otterscale.scope.v1.ListScopesRequest\x1a'.otterscale.scope.v1.ListScopesResponse\x12R\n" +
-	"\vCreateScope\x12'.otterscale.scope.v1.CreateScopeRequest\x1a\x1a.otterscale.scope.v1.ScopeB/Z-github.com/openhdc/otterscale/api/scope/v1;pbb\beditionsp\xe8\a"
+	"\vCreateScope\x12'.otterscale.scope.v1.CreateScopeRequest\x1a\x1a.otterscale.scope.v1.ScopeB2Z0github.com/otterscale/otterscale/api/scope/v1;pbb\beditionsp\xe8\a"
 
 var file_api_scope_v1_scope_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_api_scope_v1_scope_proto_goTypes = []any{

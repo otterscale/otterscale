@@ -16,7 +16,7 @@ import (
 	"golang.org/x/sync/errgroup"
 	jujuyaml "gopkg.in/yaml.v2"
 
-	"github.com/openhdc/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 type Essential struct {

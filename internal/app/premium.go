@@ -5,8 +5,8 @@ import (
 
 	"connectrpc.com/connect"
 
-	pb "github.com/openhdc/otterscale/api/premium/v1"
-	"github.com/openhdc/otterscale/api/premium/v1/pbconnect"
+	pb "github.com/otterscale/otterscale/api/premium/v1"
+	"github.com/otterscale/otterscale/api/premium/v1/pbconnect"
 )
 
 type PremiumService struct {

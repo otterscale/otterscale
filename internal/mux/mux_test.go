@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/openhdc/otterscale/internal/app"
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/app"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 // createMockServices creates mock services for testing
