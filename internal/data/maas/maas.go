@@ -3,7 +3,7 @@ package maas
 import (
 	"github.com/canonical/gomaasclient/client"
 
-	"github.com/openhdc/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 type MAAS struct {

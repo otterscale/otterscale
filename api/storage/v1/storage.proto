@@ -5,7 +5,7 @@ package otterscale.storage.v1;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/openhdc/otterscale/api/storage/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/storage/v1;pb";
 
 service StorageService {
   rpc ListMONs(ListMONsRequest) returns (ListMONsResponse);

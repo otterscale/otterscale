@@ -5,7 +5,7 @@ import (
 
 	api "github.com/juju/juju/api/client/modelconfig"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type modelConfig struct {

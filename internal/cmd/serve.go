@@ -14,7 +14,7 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
-	"github.com/openhdc/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 const (

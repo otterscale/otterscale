@@ -2955,7 +2955,7 @@ const file_api_network_v1_network_proto_rawDesc = "" +
 	"\n" +
 	"UpdateVLAN\x12(.otterscale.network.v1.UpdateVLANRequest\x1a#.otterscale.network.v1.Network.VLAN\x12a\n" +
 	"\fUpdateSubnet\x12*.otterscale.network.v1.UpdateSubnetRequest\x1a%.otterscale.network.v1.Network.Subnet\x12d\n" +
-	"\rUpdateIPRange\x12+.otterscale.network.v1.UpdateIPRangeRequest\x1a&.otterscale.network.v1.Network.IPRangeB1Z/github.com/openhdc/otterscale/api/network/v1;pbb\beditionsp\xe8\a"
+	"\rUpdateIPRange\x12+.otterscale.network.v1.UpdateIPRangeRequest\x1a&.otterscale.network.v1.Network.IPRangeB4Z2github.com/otterscale/otterscale/api/network/v1;pbb\beditionsp\xe8\a"
 
 var file_api_network_v1_network_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_api_network_v1_network_proto_goTypes = []any{

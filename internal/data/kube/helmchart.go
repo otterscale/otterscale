@@ -16,8 +16,8 @@ import (
 
 	"sigs.k8s.io/yaml"
 
-	oscore "github.com/openhdc/otterscale/internal/core"
-	"github.com/openhdc/otterscale/internal/utils"
+	oscore "github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/utils"
 )
 
 type helmRepo struct {

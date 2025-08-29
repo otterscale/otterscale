@@ -4,7 +4,7 @@ package otterscale.tag.v1;
 
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/openhdc/otterscale/api/tag/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/tag/v1;pb";
 
 service TagService {
   rpc ListTags(ListTagsRequest) returns (ListTagsResponse);

@@ -8,7 +8,7 @@ import (
 	"github.com/ceph/go-ceph/rados"
 	cephrbd "github.com/ceph/go-ceph/rbd"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type rbd struct {

@@ -524,7 +524,7 @@ const file_api_tag_v1_tag_proto_rawDesc = "" +
 	"\bListTags\x12\".otterscale.tag.v1.ListTagsRequest\x1a#.otterscale.tag.v1.ListTagsResponse\x12B\n" +
 	"\x06GetTag\x12 .otterscale.tag.v1.GetTagRequest\x1a\x16.otterscale.tag.v1.Tag\x12H\n" +
 	"\tCreateTag\x12#.otterscale.tag.v1.CreateTagRequest\x1a\x16.otterscale.tag.v1.Tag\x12H\n" +
-	"\tDeleteTag\x12#.otterscale.tag.v1.DeleteTagRequest\x1a\x16.google.protobuf.EmptyB-Z+github.com/openhdc/otterscale/api/tag/v1;pbb\beditionsp\xe8\a"
+	"\tDeleteTag\x12#.otterscale.tag.v1.DeleteTagRequest\x1a\x16.google.protobuf.EmptyB0Z.github.com/otterscale/otterscale/api/tag/v1;pbb\beditionsp\xe8\a"
 
 var file_api_tag_v1_tag_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_api_tag_v1_tag_proto_goTypes = []any{

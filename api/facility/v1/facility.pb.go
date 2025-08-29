@@ -4268,7 +4268,7 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"ListCharms\x12).otterscale.facility.v1.ListCharmsRequest\x1a*.otterscale.facility.v1.ListCharmsResponse\x12[\n" +
 	"\bGetCharm\x12'.otterscale.facility.v1.GetCharmRequest\x1a&.otterscale.facility.v1.Facility.Charm\x12t\n" +
 	"\x10GetCharmMetadata\x12/.otterscale.facility.v1.GetCharmMetadataRequest\x1a/.otterscale.facility.v1.Facility.Charm.Metadata\x12{\n" +
-	"\x12ListCharmArtifacts\x121.otterscale.facility.v1.ListCharmArtifactsRequest\x1a2.otterscale.facility.v1.ListCharmArtifactsResponseB2Z0github.com/openhdc/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
+	"\x12ListCharmArtifacts\x121.otterscale.facility.v1.ListCharmArtifactsRequest\x1a2.otterscale.facility.v1.ListCharmArtifactsResponseB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
 
 var file_api_facility_v1_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
 var file_api_facility_v1_facility_proto_goTypes = []any{

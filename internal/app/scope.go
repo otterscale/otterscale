@@ -5,9 +5,9 @@ import (
 
 	"connectrpc.com/connect"
 
-	pb "github.com/openhdc/otterscale/api/scope/v1"
-	"github.com/openhdc/otterscale/api/scope/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/core"
+	pb "github.com/otterscale/otterscale/api/scope/v1"
+	"github.com/otterscale/otterscale/api/scope/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type ScopeService struct {

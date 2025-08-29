@@ -2757,7 +2757,7 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\rDeleteMachine\x12+.otterscale.machine.v1.DeleteMachineRequest\x1a\x16.google.protobuf.Empty\x12`\n" +
 	"\x0fPowerOffMachine\x12-.otterscale.machine.v1.PowerOffMachineRequest\x1a\x1e.otterscale.machine.v1.Machine\x12V\n" +
 	"\x0eAddMachineTags\x12,.otterscale.machine.v1.AddMachineTagsRequest\x1a\x16.google.protobuf.Empty\x12\\\n" +
-	"\x11RemoveMachineTags\x12/.otterscale.machine.v1.RemoveMachineTagsRequest\x1a\x16.google.protobuf.EmptyB1Z/github.com/openhdc/otterscale/api/machine/v1;pbb\beditionsp\xe8\a"
+	"\x11RemoveMachineTags\x12/.otterscale.machine.v1.RemoveMachineTagsRequest\x1a\x16.google.protobuf.EmptyB4Z2github.com/otterscale/otterscale/api/machine/v1;pbb\beditionsp\xe8\a"
 
 var file_api_machine_v1_machine_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_api_machine_v1_machine_proto_goTypes = []any{

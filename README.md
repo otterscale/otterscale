@@ -1,12 +1,12 @@
 # 🦦 OtterScale
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/openhdc/otterscale.svg)](https://pkg.go.dev/github.com/openhdc/otterscale)
-[![Go Report Card](https://goreportcard.com/badge/github.com/openhdc/otterscale?style=flat-square)](https://goreportcard.com/report/github.com/openhdc/otterscale)
-[![GitHub Build Status](https://github.com/openhdc/otterscale/actions/workflows/go.yml/badge.svg?style=flat-square)](https://github.com/openhdc/otterscale/actions/workflows/go.yml)
-[![GitHub Release](https://img.shields.io/github/v/release/openhdc/otterscale?style=flat-square)](https://github.com/openhdc/otterscale/releases)
-[![GitHub License](https://img.shields.io/github/license/openhdc/otterscale?style=flat-square)](https://opensource.org/license/agpl-v3)
+[![Go Reference](https://pkg.go.dev/badge/github.com/otterscale/otterscale.svg)](https://pkg.go.dev/github.com/otterscale/otterscale)
+[![Go Report Card](https://goreportcard.com/badge/github.com/otterscale/otterscale?style=flat-square)](https://goreportcard.com/report/github.com/otterscale/otterscale)
+[![GitHub Build Status](https://github.com/otterscale/otterscale/actions/workflows/go.yml/badge.svg?style=flat-square)](https://github.com/otterscale/otterscale/actions/workflows/go.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/otterscale/otterscale?style=flat-square)](https://github.com/otterscale/otterscale/releases)
+[![GitHub License](https://img.shields.io/github/license/otterscale/otterscale?style=flat-square)](https://opensource.org/license/agpl-v3)
 [![Docker Pulls](https://img.shields.io/docker/pulls/otterscale/otterscale?style=flat-square)](https://hub.docker.com/r/otterscale/otterscale)
-[![Contributors](https://img.shields.io/github/contributors/openhdc/otterscale?style=flat-square)](https://github.com/openhdc/otterscale/graphs/contributors)
+[![Contributors](https://img.shields.io/github/contributors/otterscale/otterscale?style=flat-square)](https://github.com/otterscale/otterscale/graphs/contributors)
 
 **OtterScale** is a powerful **hyper-converged infrastructure platform (HCI)** that combines **compute**, **storage**, and **networking** into one scalable solution. Tailored for **modern data centers**, it seamlessly manages **VMs**, **software-defined networking**, **distributed storage**, **containers**, **GPUs**, and an **app marketplace**.
 
@@ -117,7 +117,7 @@ sudo dnf install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/openhdc/otterscale.git
+   git clone https://github.com/otterscale/otterscale.git
    cd otterscale
    ```
 
@@ -145,25 +145,25 @@ sudo dnf install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
 
 ## 📚 Documentation
 
-- **[Getting Started Guide](https://openhdc.github.io/getting-started)** - Complete setup and configuration guide
-- **[API Reference](https://openhdc.github.io/api)** - gRPC and REST API documentation
-- **[Architecture Overview](https://openhdc.github.io/architecture)** - System architecture and components
-- **[Deployment Guide](https://openhdc.github.io/deployment)** - Production deployment best practices
-- **[Configuration Reference](https://openhdc.github.io/configuration)** - Configuration options and examples
-- **[Troubleshooting](https://openhdc.github.io/troubleshooting)** - Common issues and solutions
+- **[Getting Started Guide](https://otterscale.github.io/getting-started)** - Complete setup and configuration guide
+- **[API Reference](https://otterscale.github.io/api)** - gRPC and REST API documentation
+- **[Architecture Overview](https://otterscale.github.io/architecture)** - System architecture and components
+- **[Deployment Guide](https://otterscale.github.io/deployment)** - Production deployment best practices
+- **[Configuration Reference](https://otterscale.github.io/configuration)** - Configuration options and examples
+- **[Troubleshooting](https://otterscale.github.io/troubleshooting)** - Common issues and solutions
 
 ## 🆘 Support
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/openhdc/otterscale/issues)
-- **GitHub Discussions**: [Community discussions and Q&A](https://github.com/openhdc/otterscale/discussions)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/otterscale/otterscale/issues)
+- **GitHub Discussions**: [Community discussions and Q&A](https://github.com/otterscale/otterscale/discussions)
 - **Documentation**: [Comprehensive guides and API docs](/docs)
-- **Email Support**: For enterprise support inquiries, contact [support@openhdc.io](mailto:support@openhdc.io)
+- **Email Support**: For enterprise support inquiries, contact [support@otterscale.io](mailto:support@otterscale.io)
 
 ## 🗺️ Roadmap
 
-- [x] [v1.0.0](https://github.com/openhdc/otterscale/milestone/1)
-- [ ] [v1.1.0](https://github.com/openhdc/otterscale/milestone/2)
-- [ ] [v1.2.0](https://github.com/openhdc/otterscale/milestone/3)
+- [x] [v1.0.0](https://github.com/otterscale/otterscale/milestone/1)
+- [ ] [v1.1.0](https://github.com/otterscale/otterscale/milestone/2)
+- [ ] [v1.2.0](https://github.com/otterscale/otterscale/milestone/3)
 
 ## 🤝 Contributing
 
@@ -188,7 +188,7 @@ Please review our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduc
 Security is a top priority for OtterScale. If you discover a security vulnerability, please:
 
 1. **Do not** create a public GitHub issue
-2. **Email us** at [security@openhdc.io](mailto:security@openhdc.io) with details
+2. **Email us** at [security@otterscale.io](mailto:security@otterscale.io) with details
 3. **Include** steps to reproduce and potential impact
 4. **Wait** for our response before disclosing publicly
 
@@ -206,6 +206,6 @@ For the complete license terms, see the [LICENSE](LICENSE) file.
 
 ---
 
-Built with ❤️ by the OpenHDC community
+Built with ❤️ by the otterscale community
 
-[Website](https://openhdc.io) • [GitHub](https://github.com/openhdc/otterscale) • [Documentation](/docs) • [Community](https://github.com/openhdc/otterscale/discussions)
+[Website](https://otterscale.io) • [GitHub](https://github.com/otterscale/otterscale) • [Documentation](/docs) • [Community](https://github.com/otterscale/otterscale/discussions)

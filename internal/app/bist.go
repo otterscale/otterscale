@@ -10,9 +10,9 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "github.com/openhdc/otterscale/api/bist/v1"
-	"github.com/openhdc/otterscale/api/bist/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/core"
+	pb "github.com/otterscale/otterscale/api/bist/v1"
+	"github.com/otterscale/otterscale/api/bist/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type BISTService struct {

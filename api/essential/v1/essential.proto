@@ -4,7 +4,7 @@ package otterscale.essential.v1;
 
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/openhdc/otterscale/api/essential/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/essential/v1;pb";
 
 service EssentialService {
   rpc IsMachineDeployed(IsMachineDeployedRequest) returns (IsMachineDeployedResponse);

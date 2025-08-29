@@ -4,7 +4,7 @@ package otterscale.network.v1;
 
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/openhdc/otterscale/api/network/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/network/v1;pb";
 
 service NetworkService {
   rpc ListNetworks(ListNetworksRequest) returns (ListNetworksResponse);

@@ -5175,7 +5175,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"ListCharts\x12,.otterscale.application.v1.ListChartsRequest\x1a-.otterscale.application.v1.ListChartsResponse\x12d\n" +
 	"\bGetChart\x12*.otterscale.application.v1.GetChartRequest\x1a,.otterscale.application.v1.Application.Chart\x12}\n" +
 	"\x10GetChartMetadata\x122.otterscale.application.v1.GetChartMetadataRequest\x1a5.otterscale.application.v1.Application.Chart.Metadata\x12\x81\x01\n" +
-	"\x12ListStorageClasses\x124.otterscale.application.v1.ListStorageClassesRequest\x1a5.otterscale.application.v1.ListStorageClassesResponseB5Z3github.com/openhdc/otterscale/api/application/v1;pbb\beditionsp\xe8\a"
+	"\x12ListStorageClasses\x124.otterscale.application.v1.ListStorageClassesRequest\x1a5.otterscale.application.v1.ListStorageClassesResponseB8Z6github.com/otterscale/otterscale/api/application/v1;pbb\beditionsp\xe8\a"
 
 var file_api_application_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 33)
 var file_api_application_v1_application_proto_goTypes = []any{

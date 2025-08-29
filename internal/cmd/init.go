@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/openhdc/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 func NewInit() *cobra.Command {
