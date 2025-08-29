@@ -253,7 +253,7 @@
 	"osds": "OSDs",
 	"add_node": "Add Node",
 	"unit": "Unit",
-	"refresh": "Refresh",
+	"auto_update": "Auto Update",
 	"complete": "Complete",
 	"remove": "Remove",
 	"bookmark_added": "Added to bookmarks",

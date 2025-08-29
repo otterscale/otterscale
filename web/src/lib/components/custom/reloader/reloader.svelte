@@ -32,5 +32,5 @@
 			}
 		}}
 	/>
-	{m.refresh()}
+	{m.auto_update()}
 </div>

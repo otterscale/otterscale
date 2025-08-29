@@ -58,8 +58,8 @@
 			{m.add_node()}
 		</Button>
 		<div class="flex items-center space-x-2">
-			<Switch id="auto-refresh" bind:checked={autoRefresh} />
-			<Label for="auto-refresh">{m.refresh()}</Label>
+			<Switch id="auto-update" bind:checked={autoRefresh} />
+			<Label for="auto-update">{m.auto_update()}</Label>
 		</div>
 	</div>
 

@@ -253,7 +253,7 @@
 	"osds": "物件儲存裝置",
 	"add_node": "新增節點",
 	"unit": "單元",
-	"refresh": "自動更新",
+	"auto_update": "自動更新",
 	"complete": "完成",
 	"remove": "移除",
 	"bookmark_added": "已新增至書籤",

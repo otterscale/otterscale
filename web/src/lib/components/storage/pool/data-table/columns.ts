@@ -66,8 +66,6 @@ const columns: ColumnDef<Pool>[] = [
 		filterFn: (row, columnId, filterValue) => {
 			const values = Object.keys(row.getValue(columnId) ?? {});
 			if (!values.length || !filterValue.length) return true;
-			console.log('f', filterValue);
-			console.log('v', values);
 			return values.some((value) => filterValue.includes(value));
 		}
 	},

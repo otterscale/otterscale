@@ -3,7 +3,7 @@
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
-	import { ReloadManager } from '$lib/components/custom/reloader';
+	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
@@ -11,7 +11,7 @@
 	import { formatCapacity, formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb } from '$lib/stores';
+	import { activeScope, breadcrumb } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { scaleBand, scaleUtc } from 'd3-scale';
@@ -19,6 +19,7 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
+	import type { Writable } from 'svelte/store';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 
@@ -33,20 +34,41 @@
 
 	const networkClient = createClient(NetworkService, transport);
 	const environmentService = createClient(EnvironmentService, transport);
-	let prometheusDriver = $state<PrometheusDriver | null>(null);
+	const prometheusDriver: Writable<PrometheusDriver | null> = writable(null);
 
 	const networks = writable<Network[]>([]);
+
+	const targetSubnet = $derived($networks.find((network) => network?.vlan?.dhcpOn != null));
+
+	let isDNSServersExpand = $state(false);
+
+	const availableInternetProtocols = $derived([
+		{
+			key: 'available',
+			value: Number(targetSubnet?.subnet?.statistics?.available ?? 0),
+			color: 'var(--chart-2)'
+		}
+	]);
+	const availableInternetProtocolsConfiguration = {} satisfies Chart.ChartConfig;
+
 	let receives = $state([] as SampleValue[]);
 	let transmits = $state([] as SampleValue[]);
 	let latestReceive = $state({} as number);
 	let latestTransmit = $state({} as number);
 	let activeTraffic = $state<keyof typeof trafficsConfigurations>('receive');
-	let receivesByTime = $state([] as SampleValue[]);
-	let transmitsByTime = $state([] as SampleValue[]);
-	let isDNSServersExpand = $state(false);
-	let isMounted = $state(false);
-
-	const availableInternetProtocolsConfiguration = {} satisfies Chart.ChartConfig;
+	let trafficsContext = $state<ChartContextValue>();
+	let trafficsByTimeContext = $state<ChartContextValue>();
+	const traffics = $derived(
+		receives.map((sample, index) => ({
+			time: sample.time,
+			receive: sample.value,
+			transmit: transmits[index]?.value ?? 0
+		}))
+	);
+	const latestTraffics = $derived({
+		receive: latestReceive,
+		transmit: latestTransmit
+	});
 	const trafficsConfigurations = {
 		views: { label: 'Traffic', color: '' },
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
@@ -59,33 +81,9 @@
 			color: trafficsConfigurations[activeTraffic].color
 		}
 	]);
-	const trafficsByTimeConfiguration = {
-		receive: { label: 'receive', color: 'var(--chart-1)' },
-		transmit: { label: 'transmit', color: 'var(--chart-2)' }
-	} satisfies Chart.ChartConfig;
-	let trafficsContext = $state<ChartContextValue>();
-	let trafficsByTimeContext = $state<ChartContextValue>();
 
-	const targetSubnet = $derived($networks.find((network) => network?.vlan?.dhcpOn != null));
-	const availableInternetProtocols = $derived([
-		{
-			key: 'available',
-			value: Number(targetSubnet?.subnet?.statistics?.available ?? 0),
-			color: 'var(--chart-2)'
-		}
-	]);
-	const traffics = $derived(
-		receives.map((sample, index) => ({
-			time: sample.time,
-			receive: sample.value,
-			transmit: transmits[index]?.value ?? 0
-		}))
-	);
-	const latestTraffics = $derived({
-		receive: latestReceive,
-		transmit: latestTransmit
-	});
-
+	let receivesByTime = $state([] as SampleValue[]);
+	let transmitsByTime = $state([] as SampleValue[]);
 	const trafficsByTime = $derived(
 		receivesByTime.map((sample, index) => ({
 			time: sample.time,
@@ -93,21 +91,79 @@
 			transmit: transmitsByTime[index]?.value ?? 0
 		}))
 	);
+	const trafficsByTimeConfiguration = {
+		receive: { label: 'Receive', color: 'var(--chart-1)' },
+		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
+	} satisfies Chart.ChartConfig;
 
-	const reloadManager = new ReloadManager(() => {
-		networkClient.listNetworks({}).then((response) => {
-			networks.set(response.networks);
-		});
-	});
+	function fetch() {
+		environmentService.getPrometheus({}).then((response) => {
+			prometheusDriver.set(
+				new PrometheusDriver({
+					endpoint: `${env.PUBLIC_API_URL}/prometheus`,
+					baseURL: response.baseUrl
+				})
+			);
 
-	onMount(async () => {
-		await environmentService.getPrometheus({}).then((response) => {
-			prometheusDriver = new PrometheusDriver({
-				endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-				baseURL: response.baseUrl
-			});
+			if ($prometheusDriver && $activeScope) {
+				$prometheusDriver
+					.rangeQuery(
+						`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`,
+						new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
+						new Date().setMinutes(0, 0, 0),
+						2 * 60
+					)
+					.then((response) => {
+						receives = response.result[0].values;
+					});
+				$prometheusDriver
+					.rangeQuery(
+						`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`,
+						new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
+						new Date().setMinutes(0, 0, 0),
+						2 * 60
+					)
+					.then((response) => {
+						transmits = response.result[0].values;
+					});
+				$prometheusDriver
+					.instantQuery(
+						`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`
+					)
+					.then((response) => {
+						latestReceive = response.result[0].value.value;
+					});
+				$prometheusDriver
+					.instantQuery(
+						`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`
+					)
+					.then((response) => {
+						latestTransmit = response.result[0].value.value;
+					});
+				$prometheusDriver
+					.rangeQuery(
+						`sum(increase(node_network_receive_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[1h]))`,
+						new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
+						new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+						1 * 60 * 60
+					)
+					.then((response) => {
+						receivesByTime = response.result[0]?.values;
+					});
+				$prometheusDriver
+					.rangeQuery(
+						`sum(increase(node_network_transmit_bytes_total{}[1h]))`,
+						new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
+						new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+						1 * 60 * 60
+					)
+					.then((response) => {
+						transmitsByTime = response.result[0]?.values;
+					});
+			}
 		});
-		await networkClient
+
+		networkClient
 			.listNetworks({})
 			.then((response) => {
 				networks.set(response.networks);
@@ -115,64 +171,13 @@
 			.catch((error) => {
 				console.error('Error during initial data load:', error);
 			});
-		if (prometheusDriver) {
-			prometheusDriver
-				.rangeQuery(
-					`sum(irate(node_network_receive_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[4m]))`,
-					new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
-					new Date().setMinutes(0, 0, 0),
-					2 * 60
-				)
-				.then((response) => {
-					receives = response.result[0].values;
-				});
-			prometheusDriver
-				.rangeQuery(
-					`sum(irate(node_network_transmit_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[4m]))`,
-					new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
-					new Date().setMinutes(0, 0, 0),
-					2 * 60
-				)
-				.then((response) => {
-					transmits = response.result[0].values;
-				});
-			prometheusDriver
-				.instantQuery(
-					`sum(irate(node_network_receive_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[4m]))`
-				)
-				.then((response) => {
-					latestReceive = response.result[0].value.value;
-				});
-			prometheusDriver
-				.instantQuery(
-					`sum(irate(node_network_transmit_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[4m]))`
-				)
-				.then((response) => {
-					latestTransmit = response.result[0].value.value;
-				});
-			prometheusDriver
-				.rangeQuery(
-					`sum(increase(node_network_receive_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[1h]))`,
-					new Date().setHours(0, 0, 0, 0) - 7 * 24 * 60 * 60 * 1000,
-					new Date().setHours(0, 0, 0, 0),
-					1 * 60 * 60
-				)
-				.then((response) => {
-					receivesByTime = response.result[0]?.values;
-				});
-			prometheusDriver
-				.rangeQuery(
-					`sum(increase(node_network_transmit_bytes_total{instance=~".*",job=~".*",juju_application=~".*",juju_model=~".*",juju_model_uuid=~".*",juju_unit=~".*"}[1h]))`,
-					new Date().setHours(0, 0, 0, 0) - 7 * 24 * 60 * 60 * 1000,
-					new Date().setHours(0, 0, 0, 0),
-					1 * 60 * 60
-				)
-				.then((response) => {
-					transmitsByTime = response.result[0]?.values;
-				});
-		}
-		isMounted = true;
-		await reloadManager.start();
+	}
+
+	const reloadManager = new ReloadManager(fetch);
+
+	onMount(async () => {
+		fetch();
+		reloadManager.start();
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -187,10 +192,13 @@
 		</p>
 	</div>
 	<Tabs.Root value="overview">
-		<Tabs.List>
-			<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
-			<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
-		</Tabs.List>
+		<div class="flex justify-between gap-2">
+			<Tabs.List>
+				<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
+				<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
+			</Tabs.List>
+			<Reloader {reloadManager} />
+		</div>
 		<Tabs.Content
 			value="overview"
 			class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
@@ -315,13 +323,13 @@
 							series={[
 								{
 									key: 'receive',
-									label: 'Receive',
+									label: trafficsByTimeConfiguration.receive.label,
 									color: trafficsByTimeConfiguration.receive.color,
 									props: { rounded: 'bottom' }
 								},
 								{
 									key: 'transmit',
-									label: 'Transmit',
+									label: trafficsByTimeConfiguration.transmit.label,
 									color: trafficsByTimeConfiguration.transmit.color
 								}
 							]}
@@ -336,8 +344,12 @@
 										height: { type: 'tween', duration: 500, easing: cubicInOut }
 									}
 								},
-								highlight: { area: false }
-								// xAxis: { format: (d) => d.slice(0, 3) }
+								highlight: { area: false },
+								xAxis: {
+									format: (v: Date) =>
+										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
+									ticks: 1
+								}
 							}}
 							legend
 						>
@@ -482,12 +494,8 @@
 								},
 								highlight: { area: { fill: 'none' } },
 								xAxis: {
-									format: (d: Date) => {
-										return d.toLocaleDateString('en-US', {
-											month: 'short',
-											day: '2-digit'
-										});
-									},
+									format: (v: Date) =>
+										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 									ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks()
 								}
 							}}
