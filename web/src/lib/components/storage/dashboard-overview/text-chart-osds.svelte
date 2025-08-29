@@ -10,7 +10,7 @@
 
 	// Constants
 	const CHART_TITLE = m.osds();
-	const CHART_DESCRIPTION = 'In And Up';
+	const CHART_DESCRIPTION = 'In & Up';
 
 	// Queries
 	const queries = $derived({

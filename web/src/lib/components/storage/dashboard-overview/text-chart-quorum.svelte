@@ -9,8 +9,8 @@
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	// Constants
-	const CHART_TITLE = 'Monitors In Quorum';
-	const CHART_DESCRIPTION = 'Quorum Status';
+	const CHART_TITLE = m.quorum_status();
+	const CHART_DESCRIPTION = 'In & Up';
 
 	// Queries
 	const queries = $derived({

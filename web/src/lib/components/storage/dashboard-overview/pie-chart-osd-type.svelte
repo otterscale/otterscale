@@ -5,13 +5,14 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { PieChart, Text } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
+	import { m } from '$lib/paraglide/messages';
 
 	// Props
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	// Constants
-	const CHART_TITLE = 'OSD Type';
-	const CHART_DESCRIPTION = '儲存裝置類別分佈';
+	const CHART_TITLE = m.osd_type();
+	const CHART_DESCRIPTION = m.osd_type_distribution();
 	const UNKNOWN_DEVICE_CLASS = 'unknown';
 
 	// Predefined device class configurations

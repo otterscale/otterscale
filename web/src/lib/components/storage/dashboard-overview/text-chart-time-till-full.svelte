@@ -10,7 +10,7 @@
 
 	// Constants
 	const CHART_TITLE = m.time_till_full();
-	const CHART_DESCRIPTION = '6h Avg';
+	const CHART_DESCRIPTION = m.six_hour_average();
 
 	const query = $derived(
 		`

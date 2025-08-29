@@ -18,29 +18,18 @@
 	// Types
 	type TimeInterval = 'day' | 'week' | 'month';
 
-	interface MetricData {
-		date: Date;
-		used: number;
-		total: number;
-		available: number;
-	}
-
-	interface TimeRangeConfig {
-		count: number;
-		label: string;
-	}
-
 	// Constants
 	const CHART_TITLE = m.capacity();
+	const CHART_DESCRIPTION = m.capacity_usage_changes();
 	const CHART_CONFIG = {
 		used: { label: 'Used', color: 'var(--chart-1)' },
 		total: { label: 'Total', color: 'var(--chart-3)' }
 	} satisfies Chart.ChartConfig;
 
-	const TIME_INTERVALS: Record<TimeInterval, TimeRangeConfig> = {
-		day: { count: 7, label: '過去7天' },
-		week: { count: 5, label: '過去5週' },
-		month: { count: 6, label: '過去6個月' }
+	const TIME_INTERVALS: Record<TimeInterval, { count: number; label: string }> = {
+		day: { count: 7, label: m.last_7_days() },
+		week: { count: 5, label: m.last_5_weeks() },
+		month: { count: 6, label: m.last_6_months() }
 	};
 
 	// State
@@ -109,7 +98,7 @@
 	async function fetchMetricForInterval(
 		intervalStart: Date,
 		intervalEnd: Date
-	): Promise<MetricData> {
+	): Promise<{ date: Date; used: number; total: number; available: number }> {
 		const endTimestamp = Math.floor(intervalEnd.getTime() / 1000);
 
 		const queries = {
@@ -142,7 +131,9 @@
 		}
 	}
 
-	async function fetchMetrics(): Promise<MetricData[]> {
+	async function fetchMetrics(): Promise<
+		{ date: Date; used: number; total: number; available: number }[]
+	> {
 		const today = new Date();
 		const promises = [];
 
@@ -168,7 +159,9 @@
 		return formatters[interval];
 	}
 
-	function getYAxisDomain(data: MetricData[]): [number, number] {
+	function getYAxisDomain(
+		data: { date: Date; used: number; total: number; available: number }[]
+	): [number, number] {
 		const maxTotal = Math.max(...data.map((d) => d.total || 0));
 		return [0, maxTotal];
 	}
@@ -182,7 +175,7 @@
 			<Card.Header class="flex items-center">
 				<div class="grid flex-1 gap-1 text-center sm:text-left">
 					<Card.Title>{CHART_TITLE}</Card.Title>
-					<Card.Description>{timeRange.label}</Card.Description>
+					<Card.Description>{CHART_DESCRIPTION}</Card.Description>
 				</div>
 
 				<Select.Root type="single" bind:value={selectedInterval}>

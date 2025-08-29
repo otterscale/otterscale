@@ -24,11 +24,11 @@
 	// Chart configuration
 	const chartConfig = {
 		Read: {
-			label: 'Read',
+			label: m.read(),
 			color: 'var(--chart-1)'
 		},
 		Write: {
-			label: 'Write',
+			label: m.write(),
 			color: 'var(--chart-2)'
 		}
 	} satisfies Chart.ChartConfig;

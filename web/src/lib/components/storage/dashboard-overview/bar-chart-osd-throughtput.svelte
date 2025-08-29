@@ -15,7 +15,7 @@
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	// Constants
-	const CHART_TITLE = 'OSD Throughput';
+	const CHART_TITLE = m.osd_throughPut();
 	const CHART_DESCRIPTION = `${m.read()}/${m.write()}`;
 	const STEP_SECONDS = 60 * 60; // 1 hour
 	const TIME_RANGE_HOURS = 24; // 24 hours of data
@@ -24,11 +24,11 @@
 	// Chart configuration
 	const chartConfig = {
 		Read: {
-			label: 'Read',
+			label: m.read(),
 			color: 'var(--chart-1)'
 		},
 		Write: {
-			label: 'Write',
+			label: m.write(),
 			color: 'var(--chart-2)'
 		}
 	} satisfies Chart.ChartConfig;

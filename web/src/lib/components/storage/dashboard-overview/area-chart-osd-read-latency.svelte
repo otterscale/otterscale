@@ -31,19 +31,19 @@
 	}
 
 	// Constants
-	const CHART_TITLE = 'OSD';
-	const CHART_DESCRIPTION = 'Read Latencies';
+	const CHART_TITLE = m.osd();
+	const CHART_DESCRIPTION = m.read_latencies();
+
 	const CHART_CONFIG = {
 		latency: {
 			label: 'Read Latency (ms)',
 			color: 'var(--chart-1)'
 		}
-	} satisfies Chart.ChartConfig;
-
+	};
 	const TIME_INTERVALS: Record<TimeInterval, TimeRangeConfig> = {
-		day: { count: 7, label: '過去7天', stepSize: '1d' },
-		week: { count: 5, label: '過去5週', stepSize: '1w' },
-		month: { count: 6, label: '過去6個月', stepSize: '1M' }
+		day: { count: 7, label: m.last_7_days(), stepSize: '1d' },
+		week: { count: 5, label: m.last_5_weeks(), stepSize: '1w' },
+		month: { count: 6, label: m.last_6_months(), stepSize: '1M' }
 	};
 
 	const PROMETHEUS_QUERY = (uuid: string) =>

@@ -12,7 +12,7 @@
 
 	// Constants
 	const CHART_TITLE = m.capacity();
-	const CHART_DESCRIPTION = '剩餘使用容量';
+	const CHART_DESCRIPTION = m.remaining_capacity();
 	const chartConfig = { data: { color: 'var(--chart-2)' } } satisfies Chart.ChartConfig;
 
 	// Queries
