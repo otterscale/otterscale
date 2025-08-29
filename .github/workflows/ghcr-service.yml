@@ -2,7 +2,7 @@ name: push service to ghcr.io
 
 on:
   release:
-    branches: ['release']
+    types: [published]
 
 env:
   REGISTRY: ghcr.io
