@@ -157,7 +157,7 @@
 </script>
 
 <!-- Header Controls -->
-<div class="min-w-7xl mx-auto max-w-7xl">
+<div class="mx-auto max-w-7xl min-w-7xl">
 	<div class="grid w-full grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
 		<div class="col-span-2 flex justify-end space-x-4 rounded-lg sm:space-x-6 lg:col-span-4">
 			<Button variant="ghost" disabled={$premiumTier === PremiumTier.BASIC}>
@@ -166,7 +166,7 @@
 			</Button>
 			<div class="flex items-center space-x-2">
 				<Switch id="auto-refresh" bind:checked={autoRefresh} />
-				<Label for="auto-refresh">{m.auto_refresh()}</Label>
+				<Label for="auto-refresh">{m.refresh()}</Label>
 			</div>
 		</div>
 
@@ -198,17 +198,17 @@
 		class="bg-muted relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
 	>
 		<div
-			class="text-primary/5 absolute text-nowrap text-8xl uppercase tracking-tight group-hover:hidden"
+			class="text-primary/5 absolute text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
 		>
 			<Icon icon={serviceState.state?.icon} class="size-84" />
 		</div>
 		<div class="z-10 mb-8 flex flex-col space-y-2 text-3xl sm:mb-2 lg:text-5xl">
 			<span
-				class="flex space-x-2 overflow-visible truncate capitalize {serviceState.state?.textClass}"
+				class="flex space-x-2 truncate overflow-visible capitalize {serviceState.state?.textClass}"
 			>
 				<span>{serviceState.state?.state}</span>
 			</span>
-			<div class="text-muted-foreground text-xs capitalize tracking-tight md:text-base lg:text-lg">
+			<div class="text-muted-foreground text-xs tracking-tight capitalize md:text-base lg:text-lg">
 				{serviceState.state?.details}
 			</div>
 		</div>
