@@ -18,38 +18,38 @@ Simplify complex operations with OtterScale's **unified control plane**, effortl
 
 ### 🖥️ Virtualization and Compute
 
-> - Bare Metal Automation: Integration with MAAS for streamlined physical server lifecycle management
-> - Virtual Machine Management: Comprehensive KVM/QEMU virtualization with live migration and dynamic resource allocation
-> - GPU Resource Management: Dynamic allocation and sharing of GPU resources for AI/ML and HPC workloads
+> - **Bare Metal Automation**: Integration with MAAS for streamlined physical server lifecycle management
+> - **Virtual Machine Management**: Comprehensive KVM/QEMU virtualization with live migration and dynamic resource allocation
+> - **GPU Resource Management**: Dynamic allocation and sharing of GPU resources for AI/ML and HPC workloads
 
 ### 🐳 Container and Orchestration
 
-> - Container Orchestration: Native Kubernetes integration for managing containerized workloads
-> - Service Orchestration: Juju charm deployment for simplified application modeling and service orchestration
+> - **Container Orchestration**: Native Kubernetes integration for managing containerized workloads
+> - **Service Orchestration**: Juju charm deployment for simplified application modeling and service orchestration
 
 ### 💾 Storage and Data Management
 
-> - Storage Management: Built-in Ceph storage cluster provisioning and management for scalable storage solutions
-> - Backup and Disaster Recovery: Automated snapshot management and cross-site replication for data protection
+> - **Storage Management**: Built-in Ceph storage cluster provisioning and management for scalable storage solutions
+> - **Backup and Disaster Recovery**: Automated snapshot management and cross-site replication for data protection
 
 ### 📊 Monitoring and Diagnostics
 
-> - Monitoring and Observability: Integrated Prometheus, Grafana, and distributed tracing for real-time system insights
-> - Built-in Self Test (BIST): Comprehensive system health monitoring and diagnostics for proactive maintenance
+> - **Monitoring and Observability**: Integrated Prometheus, Grafana, and distributed tracing for real-time system insights
+> - **Built-in Self Test (BIST)**: Comprehensive system health monitoring and diagnostics for proactive maintenance
 
 ### 🔐 Security and Access Control
 
-> - Identity and Access Management: Role-Based Access Control (RBAC) with LDAP/Active Directory integration and Single Sign-On (SSO) support
+> - **Identity and Access Management**: Role-Based Access Control (RBAC) with LDAP/Active Directory integration and Single Sign-On (SSO) support
 
 ### 🛒 Application and API Ecosystem
 
-> - Application Marketplace: Curated catalog of pre-configured applications and services for easy deployment
-> - API-First Architecture: gRPC APIs with Protocol Buffers specification and SDK support for seamless integration
+> - **Application Marketplace**: Curated catalog of pre-configured applications and services for easy deployment
+> - **API-First Architecture:** gRPC APIs with Protocol Buffers specification and SDK support for seamless integration
 
 ### ⚡ Scalability and Reliability
 
-> - High Availability: Multi-node deployment with automatic failover for uninterrupted operations
-> - Extensible Architecture: Plugin system enabling custom integrations and workflows
+> - **High Availability**: Multi-node deployment with automatic failover for uninterrupted operations
+> - **Extensible Architecture**: Plugin system enabling custom integrations and workflows
 
 ## 🚀 Quick Start
 
