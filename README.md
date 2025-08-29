@@ -63,7 +63,7 @@ Simplify complex operations with OtterScale's **unified control plane**, effortl
 1. **Initialize configuration:**
 
    ```sh
-   docker run ghcr.io/otterscale/otterscale:latest init > otterscale.yaml
+   docker run ghcr.io/otterscale/otterscale/service:latest init > otterscale.yaml
    ```
 
 2. **Set up environment variables:**
