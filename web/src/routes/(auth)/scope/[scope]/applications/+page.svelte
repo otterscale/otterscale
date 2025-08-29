@@ -99,7 +99,6 @@
 	} satisfies Chart.ChartConfig;
 
 	function fetch() {
-		console.log('load');
 		environmentService.getPrometheus({}).then((response) => {
 			prometheusDriver.set(
 				new PrometheusDriver({
@@ -304,15 +303,14 @@
 
 	const reloadManager = new ReloadManager(fetch);
 
-	onMount(() => {
+	onMount(async () => {
 		try {
-			fetch();
+			await fetch();
 			isMounted = true;
+			reloadManager.start();
 		} catch (error) {
 			console.error('Failed to initialize Prometheus driver:', error);
 		}
-
-		reloadManager.start();
 	});
 	onDestroy(() => {
 		reloadManager.stop();
@@ -331,7 +329,7 @@
 		<div class="flex justify-between gap-2">
 			<Tabs.List>
 				<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
-				<Tabs.Trigger value="analytics">{m.analytics()}</Tabs.Trigger>
+				<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
 			</Tabs.List>
 			<Reloader {reloadManager} />
 		</div>
@@ -355,7 +353,7 @@
 
 			<Card.Root class="relative col-span-2 gap-2 overflow-hidden">
 				<Icon
-					icon="ph:barbell"
+					icon="ph:cube"
 					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden"
 				/>
 				<Card.Header>
@@ -548,7 +546,7 @@
 
 			<Card.Root class="relative col-span-2 col-start-1 gap-2 overflow-hidden">
 				<Icon
-					icon="ph:cube"
+					icon="ph:squares-four"
 					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden"
 				/>
 				<Card.Header>
@@ -562,7 +560,7 @@
 
 			<Card.Root class="relative col-span-2 gap-2 overflow-hidden">
 				<Icon
-					icon="ph:cube"
+					icon="ph:shipping-container"
 					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden"
 				/>
 				<Card.Header>
@@ -747,11 +745,11 @@
 			</Card.Root>
 		</Tabs.Content>
 		<Tabs.Content value="analytics">
-			{#if isMounted && $prometheusDriver && $activeScope}
+			<!-- {#if isMounted && $prometheusDriver && $activeScope}
 				<Dashboard client={$prometheusDriver} scope={$activeScope} />
 			{:else}
 				<Loading />
-			{/if}
+			{/if} -->
 		</Tabs.Content>
 	</Tabs.Root>
 </div>

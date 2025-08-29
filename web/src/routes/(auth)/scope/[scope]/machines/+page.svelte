@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
 	import { page } from '$app/state';
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
@@ -22,7 +23,7 @@
 	import { curveLinear, curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient, LineChart, PieChart, Text } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
 	// Set breadcrumb navigation
@@ -106,33 +107,119 @@
 	const machinesStore = writable<Machine[]>([]);
 	let prometheusDriver: PrometheusDriver | null = $state(null);
 
-	async function initializePrometheusDriver(): Promise<PrometheusDriver> {
-		try {
-			const response = await environmentService.getPrometheus({});
-			return new PrometheusDriver({
+	function fetch() {
+		environmentService.getPrometheus({}).then((response) => {
+			prometheusDriver = new PrometheusDriver({
 				endpoint: `${env.PUBLIC_API_URL}/prometheus`,
 				baseURL: response.baseUrl
 			});
-		} catch (error) {
-			console.error('Error initializing Prometheus driver:', error);
-			throw error;
-		}
+			if (prometheusDriver) {
+				prometheusDriver
+					.rangeQuery(
+						`1 - (sum(irate(node_cpu_seconds_total{mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total[2m])))`,
+						Date.now() - 10 * 60 * 1000,
+						Date.now(),
+						2 * 60
+					)
+					.then((response) => {
+						cpuUsages = response.result[0]?.values;
+					});
+				prometheusDriver
+					.rangeQuery(
+						`sum(node_memory_MemTotal_bytes - node_memory_MemFree_bytes - (node_memory_Cached_bytes + node_memory_Buffers_bytes + node_memory_SReclaimable_bytes)) / sum(node_memory_MemTotal_bytes)`,
+						Date.now() - 10 * 60 * 1000,
+						Date.now(),
+						2 * 60
+					)
+					.then((response) => {
+						memoryUsages = response.result[0]?.values;
+					});
+				prometheusDriver
+					.rangeQuery(
+						`1 - sum(node_filesystem_avail_bytes{mountpoint="/"}) / sum(node_filesystem_size_bytes{mountpoint="/"})`,
+						Date.now() - 10 * 60 * 1000,
+						Date.now(),
+						2 * 60
+					)
+					.then((response) => {
+						storageUsages = response.result[0]?.values;
+					});
+				prometheusDriver
+					.rangeQuery(`sum(node_load1)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+					.then((response) => {
+						ones = response.result[0]?.values;
+					});
+				prometheusDriver
+					.rangeQuery(`sum(node_load5)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+					.then((response) => {
+						fives = response.result[0]?.values;
+					});
+			}
+		});
+
+		machineClient.listMachines({}).then((response) => {
+			machinesStore.set(response.machines);
+		});
 	}
 
-	async function fetchMachines(): Promise<void> {
-		try {
-			const response = await machineClient.listMachines({});
-			machinesStore.set(response.machines);
-		} catch (error) {
-			console.error('Error fetching machines:', error);
-		}
-	}
+	const reloadManager = new ReloadManager(fetch);
 
 	let mounted = $state(false);
 	onMount(async () => {
 		try {
-			prometheusDriver = await initializePrometheusDriver();
-			await fetchMachines();
+			await environmentService.getPrometheus({}).then((response) => {
+				prometheusDriver = new PrometheusDriver({
+					endpoint: `${env.PUBLIC_API_URL}/prometheus`,
+					baseURL: response.baseUrl
+				});
+				if (prometheusDriver) {
+					prometheusDriver
+						.rangeQuery(
+							`1 - (sum(irate(node_cpu_seconds_total{mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total[2m])))`,
+							Date.now() - 10 * 60 * 1000,
+							Date.now(),
+							2 * 60
+						)
+						.then((response) => {
+							cpuUsages = response.result[0]?.values;
+						});
+					prometheusDriver
+						.rangeQuery(
+							`sum(node_memory_MemTotal_bytes - node_memory_MemFree_bytes - (node_memory_Cached_bytes + node_memory_Buffers_bytes + node_memory_SReclaimable_bytes)) / sum(node_memory_MemTotal_bytes)`,
+							Date.now() - 10 * 60 * 1000,
+							Date.now(),
+							2 * 60
+						)
+						.then((response) => {
+							memoryUsages = response.result[0]?.values;
+						});
+					prometheusDriver
+						.rangeQuery(
+							`1 - sum(node_filesystem_avail_bytes{mountpoint="/"}) / sum(node_filesystem_size_bytes{mountpoint="/"})`,
+							Date.now() - 10 * 60 * 1000,
+							Date.now(),
+							2 * 60
+						)
+						.then((response) => {
+							storageUsages = response.result[0]?.values;
+						});
+					prometheusDriver
+						.rangeQuery(`sum(node_load1)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+						.then((response) => {
+							ones = response.result[0]?.values;
+						});
+					prometheusDriver
+						.rangeQuery(`sum(node_load5)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+						.then((response) => {
+							fives = response.result[0]?.values;
+						});
+				}
+			});
+
+			await machineClient.listMachines({}).then((response) => {
+				machinesStore.set(response.machines);
+			});
+
 			const scopeMachines = $machinesStore.filter((m) =>
 				m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
 			);
@@ -174,51 +261,15 @@
 				date: new Date(month + '-01'),
 				node: monthlyCounts[month] || 0
 			}));
-
-			prometheusDriver
-				.rangeQuery(
-					`1 - (sum(irate(node_cpu_seconds_total{mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total[2m])))`,
-					Date.now() - 10 * 60 * 1000,
-					Date.now(),
-					2 * 60
-				)
-				.then((response) => {
-					cpuUsages = response.result[0]?.values;
-				});
-			prometheusDriver
-				.rangeQuery(
-					`sum(node_memory_MemTotal_bytes - node_memory_MemFree_bytes - (node_memory_Cached_bytes + node_memory_Buffers_bytes + node_memory_SReclaimable_bytes)) / sum(node_memory_MemTotal_bytes)`,
-					Date.now() - 10 * 60 * 1000,
-					Date.now(),
-					2 * 60
-				)
-				.then((response) => {
-					memoryUsages = response.result[0]?.values;
-				});
-			prometheusDriver
-				.rangeQuery(
-					`1 - sum(node_filesystem_avail_bytes{mountpoint="/"}) / sum(node_filesystem_size_bytes{mountpoint="/"})`,
-					Date.now() - 10 * 60 * 1000,
-					Date.now(),
-					2 * 60
-				)
-				.then((response) => {
-					storageUsages = response.result[0]?.values;
-				});
-			prometheusDriver
-				.rangeQuery(`sum(node_load1)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
-				.then((response) => {
-					ones = response.result[0]?.values;
-				});
-			prometheusDriver
-				.rangeQuery(`sum(node_load5)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
-				.then((response) => {
-					fives = response.result[0]?.values;
-				});
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
 		mounted = true;
+
+		reloadManager.start();
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 </script>
 
@@ -231,10 +282,13 @@
 	</div>
 
 	<Tabs.Root value="overview">
-		<Tabs.List>
-			<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
-			<Tabs.Trigger value="analytics">{m.analytics()}</Tabs.Trigger>
-		</Tabs.List>
+		<div class="flex justify-between gap-2">
+			<Tabs.List>
+				<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
+				<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
+			</Tabs.List>
+			<Reloader {reloadManager} />
+		</div>
 		<Tabs.Content
 			value="overview"
 			class="grid auto-rows-auto grid-cols-3 gap-5 pt-4 md:grid-cols-6 lg:grid-cols-9"
@@ -675,7 +729,7 @@
 			</Card.Root>
 		</Tabs.Content>
 		<Tabs.Content value="analytics">
-			{#if mounted && prometheusDriver && $machinesStore.length > 0}
+			<!-- {#if mounted && prometheusDriver && $machinesStore.length > 0}
 				{@const filteredMachines = $machinesStore.filter((machine) =>
 					machine.workloadAnnotations?.['juju-machine-id']?.includes('-machine-')
 				)}
@@ -690,7 +744,7 @@
 					<Icon icon="mdi:loading" class="animate-spin text-2xl" />
 					<span class="ml-2">Loading machines...</span>
 				</div>
-			{/if}
+			{/if} -->
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
