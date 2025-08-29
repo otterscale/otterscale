@@ -2,8 +2,12 @@ package core
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"time"
 
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/client-go/rest"
 	v1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
@@ -15,7 +19,7 @@ type KubeVirtDVRepo interface {
 		source_type string, source string, sizeBytes int64, is_bootable bool) (*DataVolume, error)
 
 	// GetDataVolume 取得指定的 DataVolume
-	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string) (*DataVolume, error)
+	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string, pvc *v1.PersistentVolumeClaim) (*DataVolume, error)
 
 	// ListDataVolume 列出指定 namespace 中的所有 DataVolume
 	ListDataVolume(ctx context.Context, config *rest.Config, namespace string) ([]DataVolume, error)
@@ -24,7 +28,7 @@ type KubeVirtDVRepo interface {
 	DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	// ExtendDataVolume 為已有的 PVC（同步 DataVolume）擴容
-	ExtendDataVolume(ctx context.Context, config *rest.Config, namespace, name string, sizeBytes int64) error
+	ExtendDataVolume(ctx context.Context, config *rest.Config, namespace string, pvc *v1.PersistentVolumeClaim, sizeBytes resource.Quantity) error
 }
 
 // CreateDataVolume 透過 KubeVirtDVRepo 建立 DataVolume，先取得 kubeConfig 再委派給 repo
@@ -48,7 +52,18 @@ func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility,
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeVirtDV.GetDataVolume(ctx, config, namespace, name)
+
+	pvc, err := uc.kubeCore.GetPersistentVolumeClaims(ctx, config, namespace, name)
+	if err != nil {
+		return nil, err
+	}
+
+	dv, err := uc.kubeVirtDV.GetDataVolume(ctx, config, namespace, name, pvc)
+	if err != nil {
+		return nil, err
+	}
+
+	return dv, nil
 }
 
 // ListDataVolumes 列出指定 namespace 下的所有 DataVolume
@@ -82,17 +97,19 @@ func (uc *KubeVirtUseCase) ExtendDataVolume(ctx context.Context, uuid, facility,
 		return err
 	}
 
-	// 先取得 DataVolume，找出實際的 PVC 名稱
-	var dv *DataVolume
-	dv, err = uc.kubeVirtDV.GetDataVolume(ctx, config, namespace, name)
+	pvc, err := uc.kubeCore.GetPersistentVolumeClaims(ctx, config, namespace, name)
 	if err != nil {
 		return err
 	}
-	pvcName := dv.Status.ClaimName
-	if pvcName == "" {
-		pvcName = dv.Name // fallback（通常PVC同名）
+
+	current := pvc.Spec.Resources.Requests[v1.ResourceStorage]
+	desired := *resource.NewQuantity(sizeBytes, resource.BinarySI)
+	// 若目前大小已大於或等於目標大小，直接返回錯誤
+	if current.Cmp(desired) >= 0 {
+		return fmt.Errorf("current size >= requested size, no need to extend")
 	}
-	return uc.kubeVirtDV.ExtendDataVolume(ctx, config, namespace, pvcName, sizeBytes)
+
+	return uc.kubeVirtDV.ExtendDataVolume(ctx, config, namespace, pvc, desired)
 }
 
 // GetDataVolumeConditions 取得 DataVolume 的 Bound 條件訊息
@@ -178,4 +195,57 @@ func ExtractDataVolumeInfo(dv *DataVolume) (source string, sourceType string, si
 		sourceType = string(dv.Spec.Source.VDDK.UUID)
 	}
 	return
+}
+
+// 產生 StorageSpec (非 PVC) 時使用的 helper
+func StorageSpec(size int64) *v1beta1.StorageSpec {
+	return &v1beta1.StorageSpec{
+		AccessModes: []v1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
+		Resources: v1.VolumeResourceRequirements{
+			Requests: v1.ResourceList{
+				v1.ResourceStorage: *resource.NewQuantity(size, resource.BinarySI),
+			},
+		},
+	}
+}
+
+// PvcResizePatch 產生 PVC resize 的 JSON‑Patch。
+func PvcResizePatch(desired string) ([]byte, error) {
+	ops := []map[string]interface{}{
+		{"op": "replace", "path": "/spec/resources/requests/storage", "value": desired},
+		{"op": "add", "path": "/metadata/annotations/otterscale.io~1last-updated",
+			"value": time.Now().Format(time.RFC3339)},
+	}
+	return json.Marshal(ops)
+}
+
+// DataVolumeLastUpdatedPatch 為 DataVolume 加上 last‑updated annotation。
+func DataVolumeLastUpdatedPatch() ([]byte, error) {
+	patch := map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"annotations": map[string]string{
+				"otterscale.io/last-updated": time.Now().Format(time.RFC3339),
+			},
+		},
+	}
+	return json.Marshal(patch)
+}
+
+// SyncDataVolumeSpec 同步 PVC 的資源資訊到 DataVolume.Spec（PVC 或 Storage）。
+func SyncDataVolumeSpec(dv *v1beta1.DataVolume, pvc *v1.PersistentVolumeClaim) {
+	req := pvc.Spec.Resources.Requests
+	if dv.Spec.PVC != nil {
+		if dv.Spec.PVC.Resources.Requests == nil {
+			dv.Spec.PVC.Resources.Requests = make(map[v1.ResourceName]resource.Quantity)
+		}
+		dv.Spec.PVC.Resources.Requests = req
+		dv.Spec.PVC.StorageClassName = pvc.Spec.StorageClassName
+	}
+	if dv.Spec.Storage != nil {
+		if dv.Spec.Storage.Resources.Requests == nil {
+			dv.Spec.Storage.Resources.Requests = make(map[v1.ResourceName]resource.Quantity)
+		}
+		dv.Spec.Storage.Resources.Requests = req
+		dv.Spec.Storage.StorageClassName = pvc.Spec.StorageClassName
+	}
 }

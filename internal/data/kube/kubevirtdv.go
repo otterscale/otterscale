@@ -2,10 +2,8 @@ package kube
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
-	"time"
 
 	oscore "github.com/openhdc/otterscale/internal/core"
 	v1 "k8s.io/api/core/v1"
@@ -37,63 +35,6 @@ func NewVirtDV(kube *Kube, kubevirt *kubevirt) oscore.KubeVirtDVRepo {
 }
 
 var _ oscore.KubeVirtDVRepo = (*virtDV)(nil)
-
-// -------------------------------------------------------------------
-// Helper functions (只在 data 層使用)
-// -------------------------------------------------------------------
-
-// 產生 StorageSpec (非 PVC) 時使用的 helper
-func StorageSpec(size int64) *v1beta1.StorageSpec {
-	return &v1beta1.StorageSpec{
-		AccessModes: []v1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
-		Resources: v1.VolumeResourceRequirements{
-			Requests: v1.ResourceList{
-				v1.ResourceStorage: *resource.NewQuantity(size, resource.BinarySI),
-			},
-		},
-	}
-}
-
-// PvcResizePatch 產生 PVC resize 的 JSON‑Patch。
-func PvcResizePatch(desired string) ([]byte, error) {
-	ops := []map[string]interface{}{
-		{"op": "replace", "path": "/spec/resources/requests/storage", "value": desired},
-		{"op": "add", "path": "/metadata/annotations/otterscale.io~1last-updated",
-			"value": time.Now().Format(time.RFC3339)},
-	}
-	return json.Marshal(ops)
-}
-
-// DataVolumeLastUpdatedPatch 為 DataVolume 加上 last‑updated annotation。
-func DataVolumeLastUpdatedPatch() ([]byte, error) {
-	patch := map[string]interface{}{
-		"metadata": map[string]interface{}{
-			"annotations": map[string]string{
-				"otterscale.io/last-updated": time.Now().Format(time.RFC3339),
-			},
-		},
-	}
-	return json.Marshal(patch)
-}
-
-// SyncDataVolumeSpec 同步 PVC 的資源資訊到 DataVolume.Spec（PVC 或 Storage）。
-func SyncDataVolumeSpec(dv *v1beta1.DataVolume, pvc *v1.PersistentVolumeClaim) {
-	req := pvc.Spec.Resources.Requests
-	if dv.Spec.PVC != nil {
-		if dv.Spec.PVC.Resources.Requests == nil {
-			dv.Spec.PVC.Resources.Requests = make(map[v1.ResourceName]resource.Quantity)
-		}
-		dv.Spec.PVC.Resources.Requests = req
-		dv.Spec.PVC.StorageClassName = pvc.Spec.StorageClassName
-	}
-	if dv.Spec.Storage != nil {
-		if dv.Spec.Storage.Resources.Requests == nil {
-			dv.Spec.Storage.Resources.Requests = make(map[v1.ResourceName]resource.Quantity)
-		}
-		dv.Spec.Storage.Resources.Requests = req
-		dv.Spec.Storage.StorageClassName = pvc.Spec.StorageClassName
-	}
-}
 
 // -------------------------------------------------------------------
 // Repository implementation (CRUD + Extend)
@@ -145,7 +86,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 
 	// 若不是 PVC，使用 StorageSpec 填入大小資訊
 	if source_type != "PVC" {
-		dvSpec.Storage = StorageSpec(sizeBytes)
+		dvSpec.Storage = oscore.StorageSpec(sizeBytes)
 	}
 	dvSpec.Source = dvSource
 
@@ -166,7 +107,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 }
 
 // GetDataVolume 取得指定的 DataVolume，並同步其 PVC 的資源與 storageClass 訊息。
-func (r *virtDV) GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.DataVolume, error) {
+func (r *virtDV) GetDataVolume(ctx context.Context, config *rest.Config, namespace string, name string, pvc *v1.PersistentVolumeClaim) (*oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return nil, err
@@ -177,13 +118,7 @@ func (r *virtDV) GetDataVolume(ctx context.Context, config *rest.Config, namespa
 		return nil, err
 	}
 
-	// 取得對應的 PVC，補齊 DataVolume 中可能缺少的資源資訊
-	pvc, err := virtClient.CoreV1().PersistentVolumeClaims(namespace).Get(ctx, dv.Status.ClaimName, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	SyncDataVolumeSpec(dv, pvc)
+	oscore.SyncDataVolumeSpec(dv, pvc)
 	return dv, nil
 }
 
@@ -212,48 +147,34 @@ func (r *virtDV) DeleteDataVolume(ctx context.Context, config *rest.Config, name
 }
 
 // ExtendDataVolume 為既有的 PVC 以及對應的 DataVolume 進行擴容。
-func (r *virtDV) ExtendDataVolume(ctx context.Context, config *rest.Config, namespace, pvcName string, sizeBytes int64) error {
+func (r *virtDV) ExtendDataVolume(ctx context.Context, config *rest.Config, namespace string,
+	pvc *v1.PersistentVolumeClaim, sizeBytes resource.Quantity) error {
+
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
 		return err
 	}
-	opts := metav1.GetOptions{}
-
-	// 先取得 PVC，確認目前大小
-	pvc, err := virtClient.CoreV1().PersistentVolumeClaims(namespace).Get(ctx, pvcName, opts)
-	if err != nil {
-		return fmt.Errorf("failed to get PVC: %w", err)
-	}
-	current := pvc.Spec.Resources.Requests[v1.ResourceStorage]
-	desired := *resource.NewQuantity(sizeBytes, resource.BinarySI)
-
-	// 若目前大小已大於或等於目標大小，直接返回錯誤
-	if current.Cmp(desired) >= 0 {
-		return fmt.Errorf("current size >= requested size, no need to extend")
-	}
 
 	// --- PVC Patch ---------------------------------------------------------
-	patchBytes, err := PvcResizePatch(desired.String())
+	patchBytes, err := oscore.PvcResizePatch(sizeBytes.String())
 	if err != nil {
 		return fmt.Errorf("marshal pvc patch: %w", err)
 	}
-
 	_, err = virtClient.CoreV1().PersistentVolumeClaims(namespace).
-		Patch(ctx, pvcName, types.JSONPatchType, patchBytes, metav1.PatchOptions{})
+		Patch(ctx, pvc.Name, types.JSONPatchType, patchBytes, metav1.PatchOptions{})
 	if err != nil {
 		return fmt.Errorf("patch PVC failed: %w", err)
 	}
 
 	// --- DataVolume Annotation Patch ----------------------------------------
-	annoBytes, err := DataVolumeLastUpdatedPatch()
+	annoBytes, err := oscore.DataVolumeLastUpdatedPatch()
 	if err != nil {
 		return fmt.Errorf("marshal dv patch: %w", err)
 	}
-
 	_, err = virtClient.CdiClient().
 		CdiV1beta1().
 		DataVolumes(namespace).
-		Patch(ctx, pvcName, types.MergePatchType, annoBytes, metav1.PatchOptions{})
+		Patch(ctx, pvc.Name, types.MergePatchType, annoBytes, metav1.PatchOptions{})
 	if err != nil {
 		return fmt.Errorf("patch DataVolume annotation failed: %w", err)
 	}
