@@ -5,7 +5,6 @@
 [![GitHub Build Status](https://github.com/otterscale/otterscale/actions/workflows/go.yml/badge.svg?style=flat-square)](https://github.com/otterscale/otterscale/actions/workflows/go.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/otterscale/otterscale?style=flat-square)](https://github.com/otterscale/otterscale/releases)
 [![GitHub License](https://img.shields.io/github/license/otterscale/otterscale?style=flat-square)](https://opensource.org/license/agpl-v3)
-[![Docker Pulls](https://img.shields.io/docker/pulls/otterscale/otterscale?style=flat-square)](https://hub.docker.com/r/otterscale/otterscale)
 [![Contributors](https://img.shields.io/github/contributors/otterscale/otterscale?style=flat-square)](https://github.com/otterscale/otterscale/graphs/contributors)
 
 **OtterScale** is a powerful **hyper-converged infrastructure platform (HCI)** that combines **compute**, **storage**, and **networking** into one scalable solution. Tailored for **modern data centers**, it seamlessly manages **VMs**, **software-defined networking**, **distributed storage**, **containers**, **GPUs**, and an **app marketplace**.
@@ -161,7 +160,7 @@ sudo dnf install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
 
 ## 🗺️ Roadmap
 
-- [x] [v1.0.0](https://github.com/otterscale/otterscale/milestone/1)
+- [ ] [v1.0.0](https://github.com/otterscale/otterscale/milestone/1)
 - [ ] [v1.1.0](https://github.com/otterscale/otterscale/milestone/2)
 - [ ] [v1.2.0](https://github.com/otterscale/otterscale/milestone/3)
 
