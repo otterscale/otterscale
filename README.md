@@ -1,4 +1,4 @@
-# OtterScale
+# 🦦 OtterScale
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/openhdc/otterscale.svg)](https://pkg.go.dev/github.com/openhdc/otterscale)
 [![Go Report Card](https://goreportcard.com/badge/github.com/openhdc/otterscale?style=flat-square)](https://goreportcard.com/report/github.com/openhdc/otterscale)
@@ -8,21 +8,11 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/otterscale/otterscale?style=flat-square)](https://hub.docker.com/r/otterscale/otterscale)
 [![Contributors](https://img.shields.io/github/contributors/openhdc/otterscale?style=flat-square)](https://github.com/openhdc/otterscale/graphs/contributors)
 
-**OtterScale** is a comprehensive **hyper-converged infrastructure platform** that unifies compute, storage, and networking resources into a single, scalable solution. Built for modern data centers, it seamlessly integrates virtual machine management, software-defined networking, distributed storage, container orchestration, GPU resource management, and application marketplace capabilities.
+**OtterScale** is a powerful **hyper-converged infrastructure platform (HCI)** that combines **compute**, **storage**, and **networking** into one scalable solution. Tailored for **modern data centers**, it seamlessly manages **VMs**, **software-defined networking**, **distributed storage**, **containers**, **GPUs**, and an **app marketplace**.
 
-Designed to simplify complex infrastructure operations, OtterScale provides a unified control plane for managing heterogeneous workloads across bare metal, virtualized, and containerized environments. Whether you're running traditional VMs, cloud-native applications, or GPU-accelerated workloads, OtterScale delivers enterprise-grade performance with operational simplicity.
+/screenshot
 
-## 🏗️ Architecture
-
-OtterScale follows a microservices architecture with the following key components:
-
-- **Control Plane**: Centralized management and orchestration layer
-- **Compute Engine**: VM lifecycle management with KVM/QEMU integration
-- **Storage Layer**: Distributed Ceph storage with automatic provisioning
-- **Network Fabric**: Software-defined networking with overlay support
-- **Container Runtime**: Kubernetes integration for cloud-native workloads
-- **API Gateway**: gRPC and REST APIs with authentication and authorization
-- **Web Interface**: Modern React-based dashboard for system management
+Simplify complex operations with OtterScale's **unified control plane**, effortlessly handling diverse workloads across **bare metal**, **virtual**, and **containerized environments**. Run **traditional VMs**, **cloud-native apps**, or **GPU-accelerated tasks** with **enterprise-grade performance** and unmatched ease.
 
 ## ✨ Features
 
