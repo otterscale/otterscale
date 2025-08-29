@@ -641,5 +641,6 @@
 	"network_bandwidth": "網路頻寬",
 	"recieve_and_transmit": "接收與傳送",
 	"storage_throughPut": "儲存流通量",
-	"read_and_write": "讀取與寫入"
+	"read_and_write": "讀取與寫入",
+	"time_till_full": "距離填滿時間"
 }

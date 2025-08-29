@@ -18,10 +18,8 @@
 	const CHART_FOOTER = m.osd_down();
 	// Queries
 	const queries = $derived({
-		up: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`,
-		total: `
-		sum(ceph_osd_up{juju_model_uuid=~"${scope.uuid}"})
-		`
+		up: `sum(ceph_osd_up{juju_model_uuid=~"${scope.uuid}"})`,
+		total: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`
 	});
 
 	// Data fetching function

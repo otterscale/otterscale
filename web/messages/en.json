@@ -641,5 +641,6 @@
 	"network_bandwidth": "Network Bandwidth",
 	"recieve_and_transmit": "Recieve & Transmit",
 	"storage_throughPut": "Storage ThroughPut",
-	"read_and_write": "Read & Write"	
+	"read_and_write": "Read & Write",
+	"time_till_full": "Time Till Full"
 }

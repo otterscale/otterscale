@@ -192,7 +192,7 @@
 		{/if}
 	</div>
 {/snippet}
-
+<!-- TODO: copy here -->
 {#snippet statusCard(serviceState: ServiceState)}
 	<div
 		class="bg-muted relative row-span-2 flex flex-col justify-between overflow-hidden rounded-lg p-4 shadow-sm md:p-6 lg:p-10"
