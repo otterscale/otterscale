@@ -327,7 +327,7 @@ func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInst
 	ret := &pb.VirtualMachine{}
 
 	ret.SetMetadata(fromVirtualMachine(vm))
-	ret.SetStartupScript(toProtoVirutalMachineScripts(vm.Spec.Template.Spec.Volumes))
+	ret.SetStartupScript(toProtoVirtualMachineScripts(vm.Spec.Template.Spec.Volumes))
 	ret.SetResoureces(toProtoVirtualMachineResources(vm))
 	if vmi != nil {
 		ret.SetNodeName(vmi.Status.NodeName)
@@ -392,7 +392,7 @@ func toCoreVirtualMachineResource(r *pb.VirtualMachineResources, instanceName st
 	return ret
 }
 
-func toProtoVirutalMachineScripts(volume []core.KubeVirtVolume) string {
+func toProtoVirtualMachineScripts(volume []core.KubeVirtVolume) string {
 	var userData string
 	for i := range volume {
 		if volume[i].CloudInitNoCloud != nil { // is a cloud-init volume
