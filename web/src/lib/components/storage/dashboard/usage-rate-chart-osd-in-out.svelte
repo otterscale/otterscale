@@ -19,10 +19,8 @@
 
 	// Queries
 	const queries = $derived({
-		in: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`,
-		total: `
-		sum(ceph_osd_in{juju_model_uuid=~"${scope.uuid}"})
-		`
+		in: `sum(ceph_osd_in{juju_model_uuid=~"${scope.uuid}"})`,
+		total: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`
 	});
 
 	// Data fetching function

@@ -1,5 +1,5 @@
-import Dashboard from './index.svelte'
+import DashboardAnalytics from './index.svelte'
 
 export {
-    Dashboard
+    DashboardAnalytics
 }
