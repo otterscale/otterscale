@@ -646,7 +646,7 @@
 	"limits": "限制",
 	"pods": "Pod",
 	"network_bandwidth": "網路頻寬",
-	"recieve_and_transmit": "接收與傳送",
+	"receive_and_transmit": "接收與傳送",
 	"storage_throughPut": "儲存流通量",
 	"osd_throughPut": "OSD 流通量",
 	"read_and_write": "讀取與寫入",

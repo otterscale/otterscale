@@ -225,7 +225,7 @@
 	{:catch error}
 		<ErrorLayout
 			title={CHART_TITLE}
-			description="Average read latency across all OSDs - {timeRange.label}"
+			description={`Average read latency across all OSDs - ${timeRange.label}`}
 		/>
 	{/await}
 {/key}

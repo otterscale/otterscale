@@ -577,7 +577,7 @@
 			<Card.Root class="col-span-3 col-start-5 gap-2">
 				<Card.Header>
 					<Card.Title>{m.network_bandwidth()}</Card.Title>
-					<Card.Description>{m.recieve_and_transmit()}</Card.Description>
+					<Card.Description>{m.receive_and_transmit()}</Card.Description>
 				</Card.Header>
 				<Card.Content>
 					<Chart.Container config={trafficsConfigurations}>

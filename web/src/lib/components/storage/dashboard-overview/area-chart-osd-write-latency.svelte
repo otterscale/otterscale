@@ -183,7 +183,7 @@
 					<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
 						{timeRange.label}
 					</Select.Trigger>
-					<Select.Content class="rounded-x1">
+					<Select.Content class="rounded-xl">
 						<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
 						<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
 						<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
@@ -234,7 +234,7 @@
 					<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
 						{timeRange.label}
 					</Select.Trigger>
-					<Select.Content class="rounded-x1">
+					<Select.Content class="rounded-xl">
 						<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
 						<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
 						<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
