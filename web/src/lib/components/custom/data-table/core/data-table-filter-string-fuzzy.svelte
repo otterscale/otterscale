@@ -29,7 +29,6 @@
 				oninput={(e) => {
 					table.getColumn(columnId)?.setFilterValue(e.currentTarget.value);
 					table.firstPage();
-					console.log('setting1');
 					open = e.currentTarget.value ? true : false;
 				}}
 				onmousedowncapture={(e) => {
@@ -67,7 +66,6 @@
 
 						table.getColumn(columnId)?.setFilterValue(suggestion);
 						table.firstPage();
-						console.log('setting2');
 						open = false;
 					}}
 				>

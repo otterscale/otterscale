@@ -23,8 +23,6 @@
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 
-	console.log('i', reloadManager);
-
 	const storageClient = createClient(StorageService, transport);
 	let invalid: boolean | undefined = $state();
 
