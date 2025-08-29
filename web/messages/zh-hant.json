@@ -253,7 +253,7 @@
 	"osds": "物件儲存裝置",
 	"add_node": "新增節點",
 	"unit": "單元",
-	"auto_refresh": "自動重新整理",
+	"refresh": "自動更新",
 	"complete": "完成",
 	"remove": "移除",
 	"bookmark_added": "已新增至書籤",
@@ -633,5 +633,13 @@
 	"system_load": "系統負載",
 	"machine_dashboard_system_loads_tooltip": "系統負載代表 1 和 5 分鐘間隔內等待 CPU 時間的平均進程數。較高的值可能表示資源競爭或機器工作負載較重。",
 	"node_distribution": "節點分布",
-	"node_distribution_description": "顯示您環境中實體與虛擬機器的比例。"
+	"node_distribution_description": "顯示您環境中實體與虛擬機器的比例。",
+	"management_dashboard_description": "監控您的 Kubernetes 叢集健康度、資源使用情況與分析。即時檢視控制平面、工作節點、Pod、容器、CPU、記憶體、網路與儲存流通量等指標。",
+	"cpu_usage": " CPU 使用率",
+	"limits": "限制",
+	"pods": "Pod",
+	"network_bandwidth": "網路頻寬",
+	"recieve_and_transmit": "接收與傳送",
+	"storage_throughPut": "儲存流通量",
+	"read_and_write": "讀取與寫入"
 }

@@ -59,7 +59,7 @@
 		</Button>
 		<div class="flex items-center space-x-2">
 			<Switch id="auto-refresh" bind:checked={autoRefresh} />
-			<Label for="auto-refresh">{m.auto_refresh()}</Label>
+			<Label for="auto-refresh">{m.refresh()}</Label>
 		</div>
 	</div>
 

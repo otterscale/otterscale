@@ -253,7 +253,7 @@
 	"osds": "OSDs",
 	"add_node": "Add Node",
 	"unit": "Unit",
-	"auto_refresh": "Auto Refresh",
+	"refresh": "Refresh",
 	"complete": "Complete",
 	"remove": "Remove",
 	"bookmark_added": "Added to bookmarks",
@@ -633,5 +633,13 @@
 	"system_load": "System Load",
 	"machine_dashboard_system_loads_tooltip": "System load represents the average number of processes waiting for CPU time over 1 and 5 minute intervals. Higher values may indicate resource contention or heavy workload on your machines.",
 	"node_distribution": "Node Distribution",
-	"node_distribution_description": "Shows the proportion of physical and virtual machines in your environment."
+	"node_distribution_description": "Shows the proportion of physical and virtual machines in your environment.",
+	"management_dashboard_description": "Monitor your Kubernetes cluster's health, resource usage, and analytics. View real-time metrics for control plane, worker nodes, pods, containers, CPU, memory, network, and storage throughput.",
+	"cpu_usage": "CPU Usage",
+	"limits": "Limits",
+	"pods": "Pods",
+	"network_bandwidth": "Network Bandwidth",
+	"recieve_and_transmit": "Recieve & Transmit",
+	"storage_throughPut": "Storage ThroughPut",
+	"read_and_write": "Read & Write"	
 }
