@@ -60,7 +60,7 @@
 		<div class="flex justify-between gap-2">
 			<Tabs.List>
 				<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
-				<Tabs.Trigger value="analytics">{m.analytics()}</Tabs.Trigger>
+				<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
 			</Tabs.List>
 			<Reloader {reloadManager} />
 		</div>
@@ -77,13 +77,13 @@
 			{/if}
 		</Tabs.Content>
 		<Tabs.Content value="analytics">
-			{#if mounted && prometheusDriver && $activeScope}
+			<!-- {#if mounted && prometheusDriver && $activeScope}
 				{#key counter}
 					<DashboardAnalytics client={prometheusDriver} scope={$activeScope} />
 				{/key}
 			{:else}
 				<Loading />
-			{/if}
+			{/if} -->
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
