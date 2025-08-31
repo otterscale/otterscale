@@ -6,6 +6,7 @@
 [![GitHub Release](https://img.shields.io/github/v/release/otterscale/otterscale?style=flat-square)](https://github.com/otterscale/otterscale/releases)
 [![GitHub License](https://img.shields.io/github/license/otterscale/otterscale?style=flat-square)](https://opensource.org/license/agpl-v3)
 [![Contributors](https://img.shields.io/github/contributors/otterscale/otterscale?style=flat-square)](https://github.com/otterscale/otterscale/graphs/contributors)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_shield)
 
 **OtterScale** is a powerful **hyper-converged infrastructure platform (HCI)** that combines **compute**, **storage**, and **networking** into one scalable solution. Tailored for **modern data centers**, it seamlessly manages **VMs**, **software-defined networking**, **distributed storage**, **containers**, **GPUs**, and an **app marketplace**.
 
@@ -208,3 +209,6 @@ For the complete license terms, see the [LICENSE](LICENSE) file.
 Built with ❤️ by the otterscale community
 
 [Website](https://otterscale.io) • [GitHub](https://github.com/otterscale/otterscale) • [Documentation](/docs) • [Community](https://github.com/otterscale/otterscale/discussions)
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_large)
