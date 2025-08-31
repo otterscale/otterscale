@@ -203,6 +203,10 @@ This project is licensed under the **GNU Affero General Public License v3.0** (A
 
 For the complete license terms, see the [LICENSE](LICENSE) file.
 
+## 🐾 FOSSA Status
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_large&issueType=license)
+
 ---
 
 Built with ❤️ by the otterscale community
