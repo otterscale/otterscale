@@ -160,9 +160,9 @@ sudo dnf install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
 
 ## 🗺️ Roadmap
 
-- [ ] [v1.0.0](https://github.com/otterscale/otterscale/milestone/1)
-- [ ] [v1.1.0](https://github.com/otterscale/otterscale/milestone/2)
-- [ ] [v1.2.0](https://github.com/otterscale/otterscale/milestone/3)
+- [ ] [v1.0.0](https://github.com/otterscale/otterscale/milestone/1): MAAS, Juju, Ceph, Kubernetes, Helm
+- [ ] [v1.1.0](https://github.com/otterscale/otterscale/milestone/2): Virtual Machine, GPU Operator, Open Policy Agent
+- [ ] [v1.2.0](https://github.com/otterscale/otterscale/milestone/3): Helm Upload, API Interface, AI Agent
 
 ## 🤝 Contributing
 
