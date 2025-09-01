@@ -1,7 +1,7 @@
 <script lang="ts">
 	let {
 		value,
-		unit
+		unit,
 	}: {
 		value?: string;
 		unit?: string;

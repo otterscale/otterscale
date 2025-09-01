@@ -1,9 +1,5 @@
 <script lang="ts" module>
-	import {
-		NetworkService,
-		type Network_Subnet,
-		type UpdateSubnetRequest
-	} from '$lib/api/network/v1/network_pb';
+	import { NetworkService, type Network_Subnet, type UpdateSubnetRequest } from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -31,7 +27,7 @@
 		gatewayIp: subnet.gatewayIp,
 		dnsServers: subnet.dnsServers,
 		description: subnet.description,
-		allowDnsResolution: subnet.allowDnsResolution
+		allowDnsResolution: subnet.allowDnsResolution,
 	} as UpdateSubnetRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -94,10 +90,7 @@
 				</Form.Field>
 
 				<Form.Field>
-					<SingleInput.Boolean
-						descriptor={m.allow_dns_resolution}
-						bind:value={request.allowDnsResolution}
-					/>
+					<SingleInput.Boolean descriptor={m.allow_dns_resolution} bind:value={request.allowDnsResolution} />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
@@ -121,10 +114,10 @@
 								let message = `Fail to update ${subnet.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 
 						reset();

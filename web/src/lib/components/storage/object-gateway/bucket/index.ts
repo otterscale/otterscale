@@ -1,5 +1,3 @@
-import { default as Bucket } from './index.svelte'
+import { default as Bucket } from './index.svelte';
 
-export {
-    Bucket
-}
+export { Bucket };

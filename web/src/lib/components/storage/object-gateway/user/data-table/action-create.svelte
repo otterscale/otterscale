@@ -24,7 +24,7 @@
 	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
-		suspended: true
+		suspended: true,
 	} as CreateUserRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -59,10 +59,7 @@
 				</Form.Field>
 
 				<Form.Field>
-					<SingleInput.Boolean
-						descriptor={user_suspended_descriptor}
-						bind:value={request.suspended}
-					/>
+					<SingleInput.Boolean descriptor={user_suspended_descriptor} bind:value={request.suspended} />
 					<Form.Help>
 						{m.user_suspended_direction()}
 					</Form.Help>
@@ -91,10 +88,10 @@
 								let message = `Fail to create ${request.userName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

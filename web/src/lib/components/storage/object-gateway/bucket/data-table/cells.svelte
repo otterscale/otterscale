@@ -14,7 +14,7 @@
 		owner,
 		usage,
 		createTime,
-		actions
+		actions,
 	};
 </script>
 
@@ -39,8 +39,8 @@
 {#snippet usage(row: Row<Bucket>)}
 	{@const { value, unit } = formatCapacity(row.original.usedBytes)}
 	<Layout.Cell class="items-end">
-			{value}
-			{unit}
+		{value}
+		{unit}
 		<Layout.SubCell>{row.original.usedObjects} unit(s)</Layout.SubCell>
 	</Layout.Cell>
 {/snippet}

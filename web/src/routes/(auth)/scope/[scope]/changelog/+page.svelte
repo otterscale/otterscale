@@ -32,8 +32,8 @@
 			colors: {
 				bg: 'bg-green-50 dark:bg-green-950/30',
 				text: 'text-green-700 dark:text-green-400',
-				border: 'border-green-200 dark:border-green-900'
-			}
+				border: 'border-green-200 dark:border-green-900',
+			},
 		},
 		fix: {
 			title: m.changelog_fix(),
@@ -41,8 +41,8 @@
 			colors: {
 				bg: 'bg-red-50 dark:bg-red-950/30',
 				text: 'text-red-700 dark:text-red-400',
-				border: 'border-red-200 dark:border-red-900'
-			}
+				border: 'border-red-200 dark:border-red-900',
+			},
 		},
 		perf: {
 			title: m.changelog_perf(),
@@ -50,8 +50,8 @@
 			colors: {
 				bg: 'bg-blue-50 dark:bg-blue-950/30',
 				text: 'text-blue-700 dark:text-blue-400',
-				border: 'border-blue-200 dark:border-blue-900'
-			}
+				border: 'border-blue-200 dark:border-blue-900',
+			},
 		},
 		refactor: {
 			title: m.changelog_refactor(),
@@ -59,8 +59,8 @@
 			colors: {
 				bg: 'bg-purple-50 dark:bg-purple-950/30',
 				text: 'text-purple-700 dark:text-purple-400',
-				border: 'border-purple-200 dark:border-purple-900'
-			}
+				border: 'border-purple-200 dark:border-purple-900',
+			},
 		},
 		test: {
 			title: m.changelog_test(),
@@ -68,8 +68,8 @@
 			colors: {
 				bg: 'bg-yellow-50 dark:bg-yellow-950/30',
 				text: 'text-yellow-700 dark:text-yellow-400',
-				border: 'border-yellow-200 dark:border-yellow-900'
-			}
+				border: 'border-yellow-200 dark:border-yellow-900',
+			},
 		},
 		style: {
 			title: m.changelog_style(),
@@ -77,8 +77,8 @@
 			colors: {
 				bg: 'bg-pink-50 dark:bg-pink-950/30',
 				text: 'text-pink-700 dark:text-pink-400',
-				border: 'border-pink-200 dark:border-pink-900'
-			}
+				border: 'border-pink-200 dark:border-pink-900',
+			},
 		},
 		docs: {
 			title: m.changelog_docs(),
@@ -86,8 +86,8 @@
 			colors: {
 				bg: 'bg-indigo-50 dark:bg-indigo-950/30',
 				text: 'text-indigo-700 dark:text-indigo-400',
-				border: 'border-indigo-200 dark:border-indigo-900'
-			}
+				border: 'border-indigo-200 dark:border-indigo-900',
+			},
 		},
 		chore: {
 			title: m.changelog_chore(),
@@ -95,9 +95,9 @@
 			colors: {
 				bg: 'bg-gray-50 dark:bg-gray-950/30',
 				text: 'text-gray-700 dark:text-gray-400',
-				border: 'border-gray-200 dark:border-gray-900'
-			}
-		}
+				border: 'border-gray-200 dark:border-gray-900',
+			},
+		},
 	} as const;
 
 	function extractPRNumber(url: string): string {
@@ -171,9 +171,7 @@
 						{#if hasChanges(release, key as keyof typeof CHANGE_TYPES)}
 							<Card.Root class="gap-0 p-0 {config.colors.border}">
 								<Card.Header class="gap-0 rounded-t-xl py-3 {config.colors.bg}">
-									<Card.Title
-										class="flex items-center space-x-1 font-semibold {config.colors.text}"
-									>
+									<Card.Title class="flex items-center space-x-1 font-semibold {config.colors.text}">
 										<Icon icon={config.icon} class="size-5" />
 										<span>{config.title}</span>
 									</Card.Title>
@@ -196,8 +194,12 @@
 													<HoverCard.Content class="w-70">
 														<div class="flex items-center space-x-4">
 															<Avatar.Root class="size-10">
-																<Avatar.Image src="https://github.com/{item.author}.png" />
-																<Avatar.Fallback>{item.author.slice(0, 2)}</Avatar.Fallback>
+																<Avatar.Image
+																	src="https://github.com/{item.author}.png"
+																/>
+																<Avatar.Fallback
+																	>{item.author.slice(0, 2)}</Avatar.Fallback
+																>
 															</Avatar.Root>
 															<div class="space-y-2">
 																<span class="text-sm font-semibold">{item.author}</span>
@@ -206,7 +208,10 @@
 																</span>
 																{#if data.usersMap[item.author].company}
 																	<div class="flex items-center space-x-1 pt-1">
-																		<Icon icon="ph:building-office" class="size-4 opacity-80" />
+																		<Icon
+																			icon="ph:building-office"
+																			class="size-4 opacity-80"
+																		/>
 																		<span class="text-xs">
 																			{data.usersMap[item.author].company}
 																		</span>

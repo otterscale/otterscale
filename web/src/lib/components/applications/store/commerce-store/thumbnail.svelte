@@ -1,8 +1,5 @@
 <script lang="ts" module>
-	import {
-		type Application_Chart,
-		type Application_Release
-	} from '$lib/api/application/v1/application_pb';
+	import { type Application_Chart, type Application_Release } from '$lib/api/application/v1/application_pb';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
@@ -13,16 +10,14 @@
 </script>
 
 <script lang="ts">
-	let {
-		chart,
-		chartReleases
-	}: { chart: Application_Chart; chartReleases: Application_Release[] | undefined } = $props();
+	let { chart, chartReleases }: { chart: Application_Chart; chartReleases: Application_Release[] | undefined } =
+		$props();
 </script>
 
 <Card.Root
 	class={cn(
 		chart.deprecated ? 'bg-muted' : 'hover:shadow-lg',
-		'relative flex h-full flex-col justify-between gap-4 overflow-hidden transition-all'
+		'relative flex h-full flex-col justify-between gap-4 overflow-hidden transition-all',
 	)}
 >
 	<Card.Header>

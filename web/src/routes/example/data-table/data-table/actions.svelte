@@ -9,7 +9,7 @@
 		selectedScope,
 		selectedFacility,
 		row,
-		data = $bindable()
+		data = $bindable(),
 	}: {
 		selectedScope: string;
 		selectedFacility: string;

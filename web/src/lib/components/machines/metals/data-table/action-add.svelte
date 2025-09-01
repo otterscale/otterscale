@@ -1,19 +1,12 @@
 <script lang="ts" module>
-	import {
-		MachineService,
-		type CreateMachineRequest,
-		type Machine
-	} from '$lib/api/machine/v1/machine_pb';
+	import { MachineService, type CreateMachineRequest, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { TagService } from '$lib/api/tag/v1/tag_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import * as Loading from '$lib/components/custom/loading';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import {
-		Multiple as MultipleSelect,
-		Single as SingleSelect
-	} from '$lib/components/custom/select';
+	import { Multiple as MultipleSelect, Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
@@ -26,7 +19,7 @@
 
 <script lang="ts">
 	let {
-		machine
+		machine,
 	}: {
 		machine: Machine;
 	} = $props();
@@ -48,7 +41,7 @@
 		skipBmcConfig: false,
 		skipNetworking: false,
 		skipStorage: false,
-		tags: [] as string[]
+		tags: [] as string[],
 	} as CreateMachineRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -69,8 +62,8 @@
 						response.tags.flatMap((tag) => ({
 							value: tag.name,
 							label: tag.name,
-							icon: 'ph:tag'
-						}))
+							icon: 'ph:tag',
+						})),
 					);
 				})
 				.finally(() => {
@@ -95,11 +88,7 @@
 			<Form.Fieldset>
 				<Form.Legend>{m.features()}</Form.Legend>
 				<Form.Field>
-					<SingleInput.Boolean
-						required
-						descriptor={() => m.enable_ssh()}
-						bind:value={request.enableSsh}
-					/>
+					<SingleInput.Boolean required descriptor={() => m.enable_ssh()} bind:value={request.enableSsh} />
 				</Form.Field>
 				<Form.Field>
 					<SingleInput.Boolean
@@ -186,10 +175,10 @@
 								let message = `Fail to create ${machine.fqdn}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

@@ -23,7 +23,7 @@
 		placementGroupCount,
 		usage,
 		iops,
-		actions
+		actions,
 	};
 </script>
 
@@ -40,7 +40,7 @@
 {/snippet}
 
 {#snippet state(row: Row<OSD>)}
-	<Layout.Cell class="items-center flex-row">
+	<Layout.Cell class="flex-row items-center">
 		{#if row.original.in}
 			<Badge variant="outline">{m.osd_in()}</Badge>
 		{/if}

@@ -36,7 +36,7 @@
 		},
 		set index(newIndex: number) {
 			index = newIndex;
-		}
+		},
 	};
 
 	export const iterationManager = new IterationManager(alerts, duration, value, variantGetter);
@@ -48,12 +48,10 @@
 	data-slot="alert-root"
 	class={cn(
 		alertVariants({
-			variant: iterationManager.variantGetter(
-				iterationManager.alerts[iterationManager.value.index].level
-			)
+			variant: iterationManager.variantGetter(iterationManager.alerts[iterationManager.value.index].level),
 		}),
 		'[&>[data-slot=alert-controller]~*]:pr-7',
-		className
+		className,
 	)}
 	onmouseenter={(e) => {
 		iterationManager.stop();

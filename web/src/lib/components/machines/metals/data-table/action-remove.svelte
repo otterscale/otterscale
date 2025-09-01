@@ -1,9 +1,5 @@
 <script lang="ts" module>
-	import {
-		MachineService,
-		type DeleteMachineRequest,
-		type Machine
-	} from '$lib/api/machine/v1/machine_pb';
+	import { MachineService, type DeleteMachineRequest, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -17,7 +13,7 @@
 
 <script lang="ts">
 	let {
-		machine
+		machine,
 	}: {
 		machine: Machine;
 	} = $props();
@@ -32,7 +28,7 @@
 	const defaults = {
 		id: machine.id,
 		force: false,
-		purgeDisk: false
+		purgeDisk: false,
 	} as DeleteMachineRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -95,10 +91,10 @@
 								let message = `Fail to delete ${machine.fqdn}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 
 						reset();

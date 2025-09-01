@@ -4,7 +4,7 @@
 		InternalObjectService_Type,
 		type TestResult,
 		TestResult_Status,
-		Warp_Input_Operation
+		Warp_Input_Operation,
 	} from '$lib/api/bist/v1/bist_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import { Badge } from '$lib/components/ui/badge/index.js';
@@ -30,7 +30,7 @@
 		createdBy,
 		startedAt,
 		completedAt,
-		actions
+		actions,
 	};
 </script>
 
@@ -63,8 +63,8 @@
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.input}
 			{#if row.original.kind.value.target.case === 'internalObjectService'}
 				<Badge variant="outline">
-					{InternalObjectService_Type[row.original.kind.value.target.value.type]}-{row.original.kind
-						.value.target.value.facilityName}
+					{InternalObjectService_Type[row.original.kind.value.target.value.type]}-{row.original.kind.value
+						.target.value.facilityName}
 				</Badge>
 			{:else if row.original.kind.value.target.case === 'externalObjectService'}
 				<Badge variant="outline">
@@ -118,23 +118,17 @@
 	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
-				Get {(Number(row.original.kind.value.output.get.bytes.fastestPerSecond) / 1000000).toFixed(
-					3
-				)} MB/s
+				Get {(Number(row.original.kind.value.output.get.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.put?.bytes}
 			<Badge variant="default">
-				Put {(Number(row.original.kind.value.output.put.bytes.fastestPerSecond) / 1000000).toFixed(
-					3
-				)} MB/s
+				Put {(Number(row.original.kind.value.output.put.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
 			<Badge variant="destructive">
-				Delete {(
-					Number(row.original.kind.value.output.delete.bytes.fastestPerSecond) / 1000000
-				).toFixed(3)} MB/s
+				Delete {(Number(row.original.kind.value.output.delete.bytes.fastestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 	</Layout.Cell>
@@ -144,23 +138,17 @@
 	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
-				Get {(Number(row.original.kind.value.output.get.bytes.slowestPerSecond) / 1000000).toFixed(
-					3
-				)} MB/s
+				Get {(Number(row.original.kind.value.output.get.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.put?.bytes}
 			<Badge variant="default">
-				Put {(Number(row.original.kind.value.output.put.bytes.slowestPerSecond) / 1000000).toFixed(
-					3
-				)} MB/s
+				Put {(Number(row.original.kind.value.output.put.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
 			<Badge variant="destructive">
-				Delete {(
-					Number(row.original.kind.value.output.delete.bytes.slowestPerSecond) / 1000000
-				).toFixed(3)} MB/s
+				Delete {(Number(row.original.kind.value.output.delete.bytes.slowestPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 	</Layout.Cell>
@@ -170,23 +158,17 @@
 	<Layout.Cell class="items-end">
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.get?.bytes}
 			<Badge variant="outline">
-				Get {(Number(row.original.kind.value.output.get.bytes.medianPerSecond) / 1000000).toFixed(
-					3
-				)} MB/s
+				Get {(Number(row.original.kind.value.output.get.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.put?.bytes}
 			<Badge variant="default">
-				Put {(Number(row.original.kind.value.output.put.bytes.medianPerSecond) / 1000000).toFixed(
-					3
-				)} MB/s
+				Put {(Number(row.original.kind.value.output.put.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 		{#if row.original.kind.case === 'warp' && row.original.kind.value?.output?.delete?.bytes}
 			<Badge variant="destructive">
-				Delete {(
-					Number(row.original.kind.value.output.delete.bytes.medianPerSecond) / 1000000
-				).toFixed(3)} MB/s
+				Delete {(Number(row.original.kind.value.output.delete.bytes.medianPerSecond) / 1000000).toFixed(3)} MB/s
 			</Badge>
 		{/if}
 	</Layout.Cell>

@@ -21,7 +21,7 @@
 	const query = $derived(
 		`
 		ceph_health_status{juju_model_uuid=~"${scope.uuid}"}
-		`
+		`,
 	);
 
 	// Health status mappings
@@ -30,15 +30,15 @@
 			label: 'HEALTHY',
 			color: 'text-healthy',
 			icon: 'ph:check-bold',
-			iconClass: '-right-6 top-4'
+			iconClass: '-right-6 top-4',
 		},
 		1: {
 			label: 'WARNING',
 			color: 'text-warning',
 			icon: 'ph:exclamation-mark',
-			iconClass: '-right-3 top-2'
+			iconClass: '-right-3 top-2',
 		},
-		2: { label: 'ERROR', color: 'text-error', icon: 'ph:x-bold', iconClass: '-right-3 top-2' }
+		2: { label: 'ERROR', color: 'text-error', icon: 'ph:x-bold', iconClass: '-right-3 top-2' },
 	} as const;
 </script>
 

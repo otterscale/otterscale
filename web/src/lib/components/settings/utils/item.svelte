@@ -11,7 +11,7 @@
 		name,
 		type,
 		value,
-		children
+		children,
 	}: { icon: string; name: string; type: string; value: string; children?: Snippet } = $props();
 </script>
 

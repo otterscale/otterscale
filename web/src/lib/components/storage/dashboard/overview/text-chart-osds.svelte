@@ -16,7 +16,7 @@
 	const queries = $derived({
 		in: `sum(ceph_osd_in{juju_model_uuid=~"${scope.uuid}"})`,
 		up: `sum(ceph_osd_up{juju_model_uuid=~"${scope.uuid}"})`,
-		total: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`
+		total: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`,
 	});
 
 	// Data fetching function
@@ -24,7 +24,7 @@
 		const [inResponse, upResponse, totalResponse] = await Promise.all([
 			client.instantQuery(queries.in),
 			client.instantQuery(queries.up),
-			client.instantQuery(queries.total)
+			client.instantQuery(queries.total),
 		]);
 
 		const inValue = inResponse.result[0]?.value?.value;
@@ -34,7 +34,7 @@
 		return {
 			inNumber: inValue,
 			upNumber: upValue,
-			totalNumber: totalValue
+			totalNumber: totalValue,
 		};
 	}
 </script>

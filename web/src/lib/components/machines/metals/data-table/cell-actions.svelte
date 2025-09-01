@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		machine
+		machine,
 	}: {
 		machine: Machine;
 	} = $props();

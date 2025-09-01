@@ -25,12 +25,8 @@
 
 	// Computed values
 	const currentTitle = $derived($breadcrumb.current.title);
-	const scopedTitle = $derived(
-		`${currentTitle}${page.params.scope ? ` - ${page.params.scope}` : ''}`
-	);
-	const isBookmarked = $derived(
-		$bookmarks.some((bookmark) => bookmark.url === $breadcrumb.current.url)
-	);
+	const scopedTitle = $derived(`${currentTitle}${page.params.scope ? ` - ${page.params.scope}` : ''}`);
+	const isBookmarked = $derived($bookmarks.some((bookmark) => bookmark.url === $breadcrumb.current.url));
 
 	// Event handlers
 	function handleBookmarkAdd(path: Path) {
@@ -52,7 +48,7 @@
 	<AppSidebar user={data.user} />
 	<Sidebar.Inset>
 		<header
-			class="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear"
+			class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
 		>
 			<div class="flex w-full items-center justify-between gap-2 px-4">
 				<!-- Sidebar Toggle -->
@@ -80,9 +76,7 @@
 
 				<!-- Bookmark Popover -->
 				<Popover.Root bind:open>
-					<Popover.Trigger
-						class="-mr-1 ml-auto {buttonVariants({ variant: 'ghost', size: 'icon' })}"
-					>
+					<Popover.Trigger class="-mr-1 ml-auto {buttonVariants({ variant: 'ghost', size: 'icon' })}">
 						<BookmarkIcon fill={isBookmarked ? 'currentColor' : 'none'} />
 						<span class="sr-only">Bookmark</span>
 					</Popover.Trigger>
@@ -90,7 +84,7 @@
 					<Popover.Content align="start" side="left">
 						<div class="grid gap-4 p-2">
 							<div class="space-y-1">
-								<h4 class="font-medium leading-none">{m.bookmark_added()}</h4>
+								<h4 class="leading-none font-medium">{m.bookmark_added()}</h4>
 							</div>
 
 							<div class="grid gap-2">
@@ -101,10 +95,7 @@
 							</div>
 
 							<div class="grid grid-cols-2 gap-6">
-								<Button
-									variant="secondary"
-									onclick={() => handleBookmarkDelete($breadcrumb.current)}
-								>
+								<Button variant="secondary" onclick={() => handleBookmarkDelete($breadcrumb.current)}>
 									{m.remove()}
 								</Button>
 								<Button onclick={() => handleBookmarkAdd($breadcrumb.current)}>

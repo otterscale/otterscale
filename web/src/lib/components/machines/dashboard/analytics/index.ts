@@ -1,5 +1,3 @@
-import Dashboard from './index.svelte'
+import Dashboard from './index.svelte';
 
-export {
-    Dashboard
-}
+export { Dashboard };

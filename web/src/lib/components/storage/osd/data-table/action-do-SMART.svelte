@@ -30,7 +30,7 @@
 			const response = await storageClient.doSMART({
 				scopeUuid: $currentCeph?.scopeUuid,
 				facilityName: $currentCeph?.name,
-				osdName: osd.name
+				osdName: osd.name,
 			});
 			smarts.set(response.deviceOutputMap);
 		} catch (error) {

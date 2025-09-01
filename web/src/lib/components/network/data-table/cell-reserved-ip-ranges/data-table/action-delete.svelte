@@ -1,10 +1,6 @@
 <script lang="ts" module>
 	import { m } from '$lib/paraglide/messages';
-	import {
-		NetworkService,
-		type DeleteIPRangeRequest,
-		type Network_IPRange
-	} from '$lib/api/network/v1/network_pb';
+	import { NetworkService, type DeleteIPRangeRequest, type Network_IPRange } from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -28,7 +24,7 @@
 
 	const client = createClient(NetworkService, transport);
 	const defaults = {
-		id: ipRange.id
+		id: ipRange.id,
 	} as DeleteIPRangeRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -85,10 +81,10 @@
 								let message = `Fail to delete ${ipRange.id}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 
 						reset();

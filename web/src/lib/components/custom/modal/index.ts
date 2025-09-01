@@ -1,4 +1,4 @@
-import * as MultipleStep from './mutiple-step'
-import * as SingleStep from './single-step'
+import * as MultipleStep from './mutiple-step';
+import * as SingleStep from './single-step';
 
-export { MultipleStep, SingleStep }
+export { MultipleStep, SingleStep };

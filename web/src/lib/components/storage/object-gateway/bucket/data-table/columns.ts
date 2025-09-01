@@ -11,7 +11,7 @@ const messages = {
 	name: m.name(),
 	owner: m.owner(),
 	usage: m.usage(),
-	createTime: m.create_time()
+	createTime: m.create_time(),
 };
 
 const columns: ColumnDef<Bucket>[] = [
@@ -24,7 +24,7 @@ const columns: ColumnDef<Bucket>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'name',
@@ -33,7 +33,7 @@ const columns: ColumnDef<Bucket>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'owner',
@@ -43,7 +43,7 @@ const columns: ColumnDef<Bucket>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.owner, row);
 		},
-		filterFn: 'arrIncludesSome'
+		filterFn: 'arrIncludesSome',
 	},
 	{
 		accessorKey: 'usage',
@@ -58,8 +58,8 @@ const columns: ColumnDef<Bucket>[] = [
 				Number(previousRow.original.usedBytes),
 				Number(nextRow.original.usedBytes),
 				(p, n) => timestampDate(p) < timestampDate(n),
-				(p, n) => timestampDate(p) === timestampDate(n)
-			)
+				(p, n) => timestampDate(p) === timestampDate(n),
+			),
 	},
 	{
 		accessorKey: 'createTime',
@@ -74,8 +74,8 @@ const columns: ColumnDef<Bucket>[] = [
 				previousRow.original.createdAt,
 				nextRow.original.createdAt,
 				(p, n) => timestampDate(p) < timestampDate(n),
-				(p, n) => timestampDate(p) === timestampDate(n)
-			)
+				(p, n) => timestampDate(p) === timestampDate(n),
+			),
 	},
 	{
 		accessorKey: 'actions',
@@ -85,8 +85,8 @@ const columns: ColumnDef<Bucket>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false
-	}
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };

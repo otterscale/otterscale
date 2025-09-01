@@ -14,7 +14,7 @@
 		speed,
 		architecture,
 		requests,
-		uptime
+		uptime,
 	};
 </script>
 

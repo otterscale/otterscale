@@ -12,7 +12,7 @@ const messages = {
 	poolName: m.pool_name(),
 	usage: m.usage(),
 	mode: m.mode(),
-	createTime: m.create_time()
+	createTime: m.create_time(),
 };
 
 const columns: ColumnDef<SubvolumeGroup>[] = [
@@ -25,7 +25,7 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'name',
@@ -34,7 +34,7 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'poolName',
@@ -43,7 +43,7 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.poolName, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'usage',
@@ -58,8 +58,8 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
 				Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes),
 				Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes),
 				(p, n) => p < n,
-				(p, n) => p === n
-			)
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'createTime',
@@ -74,8 +74,8 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
 				previousRow.original.createdAt,
 				nextRow.original.createdAt,
 				(p, n) => timestampDate(p) < timestampDate(n),
-				(p, n) => timestampDate(p) === timestampDate(n)
-			)
+				(p, n) => timestampDate(p) === timestampDate(n),
+			),
 	},
 	{
 		accessorKey: 'actions',
@@ -85,8 +85,8 @@ const columns: ColumnDef<SubvolumeGroup>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false
-	}
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };

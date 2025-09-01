@@ -4,8 +4,7 @@
 	import { m } from '$lib/paraglide/messages.js';
 	import { urlIcon, type Path } from '$lib/path';
 
-	let { bookmarks, onDelete }: { bookmarks: Path[]; onDelete: (path: Path) => Promise<void> } =
-		$props();
+	let { bookmarks, onDelete }: { bookmarks: Path[]; onDelete: (path: Path) => Promise<void> } = $props();
 
 	let visibleCount = $state(3);
 	const increment = 3;

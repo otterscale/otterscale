@@ -2,7 +2,7 @@
 	import {
 		ApplicationService,
 		type Application_Release,
-		type UpdateReleaseRequest
+		type UpdateReleaseRequest,
 	} from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -21,7 +21,7 @@
 	let {
 		release,
 		releases = $bindable(),
-		valuesYaml = ''
+		valuesYaml = '',
 	}: {
 		release: Application_Release;
 		releases: Writable<Application_Release[]>;
@@ -38,7 +38,7 @@
 		namespace: release.namespace,
 		name: release.name,
 		chartRef: release.version?.chartRef,
-		valuesYaml: valuesYaml
+		valuesYaml: valuesYaml,
 	} as UpdateReleaseRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -105,10 +105,10 @@
 							let msg = `Fail to update ${request.name}`;
 							toast.error(msg, {
 								description: (e as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY
+								duration: Number.POSITIVE_INFINITY,
 							});
 							return msg;
-						}
+						},
 					});
 
 					reset();

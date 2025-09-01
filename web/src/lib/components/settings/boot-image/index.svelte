@@ -1,8 +1,5 @@
 <script lang="ts" module>
-	import {
-		ConfigurationService,
-		type Configuration
-	} from '$lib/api/configuration/v1/configuration_pb';
+	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Badge } from '$lib/components/ui/badge';
@@ -52,9 +49,7 @@
 			<div class="rounded-lg border shadow-sm">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row
-							class="[&_th]:bg-muted *:px-4 [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
-						>
+						<Table.Row class="[&_th]:bg-muted *:px-4 [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg">
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.source()}</Table.Head>
 							<Table.Head>{m.distro_series()}</Table.Head>

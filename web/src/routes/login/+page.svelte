@@ -8,7 +8,7 @@
 
 	const languages = [
 		{ code: 'en', label: 'English' },
-		{ code: 'zh-hant', label: '繁體中文' }
+		{ code: 'zh-hant', label: '繁體中文' },
 	];
 
 	let locale = $state(getLocale());
@@ -45,7 +45,7 @@
 			>
 				{@html m.login_footer({
 					terms_of_service: `<a href="${staticPaths.termsOfService.url}">${m.terms_of_service()}</a>`,
-					privacy_policy: `<a href="${staticPaths.privacyPolicy.url}">${m.privacy_policy()}</a>`
+					privacy_policy: `<a href="${staticPaths.privacyPolicy.url}">${m.privacy_policy()}</a>`,
 				})}
 			</div>
 		</div>

@@ -13,19 +13,19 @@ export const staticPaths: Record<string, Path> = {
 	// External
 	documentation: {
 		title: m.documentation(),
-		url: 'https://otterscale.github.io'
+		url: 'https://otterscale.github.io',
 	},
 	github: {
 		title: 'GitHub',
-		url: 'https://github.com/otterscale/otterscale'
+		url: 'https://github.com/otterscale/otterscale',
 	},
 	feedback: {
 		title: m.feedback(),
-		url: 'https://github.com/otterscale/otterscale/issues/new/choose'
+		url: 'https://github.com/otterscale/otterscale/issues/new/choose',
 	},
 	contributors: {
 		title: m.contributors(),
-		url: 'https://github.com/otterscale/otterscale/graphs/contributors'
+		url: 'https://github.com/otterscale/otterscale/graphs/contributors',
 	},
 
 	// Internal
@@ -34,7 +34,7 @@ export const staticPaths: Record<string, Path> = {
 	setup: { title: m.setup_environment(), url: '/setup' },
 	scopes: { title: m.scopes(), url: '/scopes' },
 	privacyPolicy: { title: m.privacy_policy(), url: '/privacy-policy' },
-	termsOfService: { title: m.terms_of_service(), url: '/terms-of-service' }
+	termsOfService: { title: m.terms_of_service(), url: '/terms-of-service' },
 };
 
 // Dynamic
@@ -42,116 +42,116 @@ export const dynamicPaths = {
 	scope: (scope: string | undefined): Path => ({ title: m.scopes(), url: createScopePath(scope) }),
 	changelog: (scope: string | undefined): Path => ({
 		title: m.changelog(),
-		url: createScopePath(scope, '/changelog')
+		url: createScopePath(scope, '/changelog'),
 	}),
 	account: (scope: string | undefined): Path => ({
 		title: m.account(),
-		url: createScopePath(scope, '/account')
+		url: createScopePath(scope, '/account'),
 	}),
 	accountSettings: (scope: string | undefined): Path => ({
 		title: m.settings(),
-		url: createScopePath(scope, '/account/settings')
+		url: createScopePath(scope, '/account/settings'),
 	}),
 	models: (scope: string | undefined): Path => ({
 		title: m.models(),
-		url: createScopePath(scope, '/models')
+		url: createScopePath(scope, '/models'),
 	}),
 	modelsLLM: (scope: string | undefined): Path => ({
 		title: m.llm(),
-		url: createScopePath(scope, '/models/llm')
+		url: createScopePath(scope, '/models/llm'),
 	}),
 	databases: (scope: string | undefined): Path => ({
 		title: m.databases(),
-		url: createScopePath(scope, '/databases')
+		url: createScopePath(scope, '/databases'),
 	}),
 	databasesRelational: (scope: string | undefined): Path => ({
 		title: m.relational(),
-		url: createScopePath(scope, '/databases/relational')
+		url: createScopePath(scope, '/databases/relational'),
 	}),
 	databasesNoSQL: (scope: string | undefined): Path => ({
 		title: m.no_sql(),
-		url: createScopePath(scope, '/databases/no-sql')
+		url: createScopePath(scope, '/databases/no-sql'),
 	}),
 	applications: (scope: string | undefined): Path => ({
 		title: m.management(),
-		url: createScopePath(scope, '/applications')
+		url: createScopePath(scope, '/applications'),
 	}),
 	applicationsWorkloads: (scope: string | undefined): Path => ({
 		title: m.workloads(),
-		url: createScopePath(scope, '/applications/workloads')
+		url: createScopePath(scope, '/applications/workloads'),
 	}),
 	applicationsServices: (scope: string | undefined): Path => ({
 		title: m.services(),
-		url: createScopePath(scope, '/applications/services')
+		url: createScopePath(scope, '/applications/services'),
 	}),
 	applicationsStore: (scope: string | undefined): Path => ({
 		title: m.store(),
-		url: createScopePath(scope, '/applications/store')
+		url: createScopePath(scope, '/applications/store'),
 	}),
 	storage: (scope: string | undefined): Path => ({
 		title: m.storage(),
-		url: createScopePath(scope, '/storage')
+		url: createScopePath(scope, '/storage'),
 	}),
 	storageOSD: (scope: string | undefined): Path => ({
 		title: m.osds(),
-		url: createScopePath(scope, '/storage/osd')
+		url: createScopePath(scope, '/storage/osd'),
 	}),
 	storagePool: (scope: string | undefined): Path => ({
 		title: m.pool(),
-		url: createScopePath(scope, '/storage/pool')
+		url: createScopePath(scope, '/storage/pool'),
 	}),
 	storageBlockDevice: (scope: string | undefined): Path => ({
 		title: m.block_device(),
-		url: createScopePath(scope, '/storage/block-device')
+		url: createScopePath(scope, '/storage/block-device'),
 	}),
 	storageFileSystem: (scope: string | undefined): Path => ({
 		title: m.network_file_system(),
-		url: createScopePath(scope, '/storage/file-system')
+		url: createScopePath(scope, '/storage/file-system'),
 	}),
 	storageObjectGateway: (scope: string | undefined): Path => ({
 		title: m.object_gateway(),
-		url: createScopePath(scope, '/storage/object-gateway')
+		url: createScopePath(scope, '/storage/object-gateway'),
 	}),
 	machines: (scope: string | undefined): Path => ({
 		title: m.machines(),
-		url: createScopePath(scope, '/machines')
+		url: createScopePath(scope, '/machines'),
 	}),
 	machinesMetal: (scope: string | undefined): Path => ({
 		title: m.node(),
-		url: createScopePath(scope, '/machines/metal')
+		url: createScopePath(scope, '/machines/metal'),
 	}),
 	compute: (scope: string | undefined): Path => ({
 		title: m.compute(),
-		url: createScopePath(scope, '/compute')
+		url: createScopePath(scope, '/compute'),
 	}),
 	computeVirtualMachine: (scope: string | undefined): Path => ({
 		title: m.virtual_machine(),
-		url: createScopePath(scope, '/compute/virtual-machine')
+		url: createScopePath(scope, '/compute/virtual-machine'),
 	}),
 	settings: (scope: string | undefined): Path => ({
 		title: m.settings(),
-		url: createScopePath(scope, '/settings')
+		url: createScopePath(scope, '/settings'),
 	}),
 	networking: (scope: string | undefined): Path => ({
 		title: m.networking(),
-		url: createScopePath(scope, '/networking')
+		url: createScopePath(scope, '/networking'),
 	}),
 	networkingSubnets: (scope: string | undefined): Path => ({
 		title: m.subnets(),
-		url: createScopePath(scope, '/networking/subnets')
+		url: createScopePath(scope, '/networking/subnets'),
 	}),
 	setupScope: (scope: string | undefined): Path => ({
 		title: m.setup_scope(),
-		url: createScopePath(scope, '/setup')
+		url: createScopePath(scope, '/setup'),
 	}),
 	setupScopeCeph: (scope: string | undefined): Path => ({
 		title: 'Ceph',
-		url: createScopePath(scope, '/setup/ceph')
+		url: createScopePath(scope, '/setup/ceph'),
 	}),
 	setupScopeKubernetes: (scope: string | undefined): Path => ({
 		title: 'Kubernetes',
-		url: createScopePath(scope, '/setup/kubernetes')
-	})
+		url: createScopePath(scope, '/setup/kubernetes'),
+	}),
 };
 
 const ICON_MAP = new Map([
@@ -162,7 +162,7 @@ const ICON_MAP = new Map([
 	['/compute', 'ph:cpu'],
 	['/machines', 'ph:computer-tower'],
 	['/networking', 'ph:network'],
-	['/settings', 'ph:sliders-horizontal']
+	['/settings', 'ph:sliders-horizontal'],
 ]);
 
 export function urlIcon(url: string): string {
@@ -180,15 +180,15 @@ const disabledPaths = (scope: string | undefined) => ({
 		dynamicPaths.models(scope),
 		dynamicPaths.databases(scope),
 		dynamicPaths.applications(scope),
-		dynamicPaths.compute(scope)
-	]
+		dynamicPaths.compute(scope),
+	],
 });
 
 export const pathDisabled = (
 	cephName: string | undefined,
 	kubeName: string | undefined,
 	scope: string | undefined,
-	url: string
+	url: string,
 ): boolean => {
 	const paths = disabledPaths(scope);
 	return (
@@ -197,10 +197,7 @@ export const pathDisabled = (
 	);
 };
 
-const findDynamicPath = (
-	pathname: string,
-	scope: string | undefined
-): keyof typeof dynamicPaths | null => {
+const findDynamicPath = (pathname: string, scope: string | undefined): keyof typeof dynamicPaths | null => {
 	for (const [key, pathFn] of Object.entries(dynamicPaths)) {
 		const path = pathFn(scope);
 		if (path.url === pathname) {
@@ -224,7 +221,7 @@ export const getValidURL = (
 	pathname: string,
 	scope: string | undefined,
 	cephName: string | undefined,
-	kubeName: string | undefined
+	kubeName: string | undefined,
 ): string => {
 	if (pathBypass(pathname, scope)) {
 		return pathname.replace(/\/scope\/[^\/]+/, `/scope/${scope}`);

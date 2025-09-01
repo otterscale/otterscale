@@ -28,7 +28,7 @@
 	const valuesManager = new ValuesManager(values, {
 		set values(newValue: any[]) {
 			values = newValue;
-		}
+		},
 	});
 	setContext('id', id);
 	setContext('required', required);
@@ -40,11 +40,6 @@
 	});
 </script>
 
-<div
-	bind:this={ref}
-	data-slot="input-controller"
-	class={cn('flex flex-col gap-2', className)}
-	{...restProps}
->
+<div bind:this={ref} data-slot="input-controller" class={cn('flex flex-col gap-2', className)} {...restProps}>
 	{@render children?.()}
 </div>

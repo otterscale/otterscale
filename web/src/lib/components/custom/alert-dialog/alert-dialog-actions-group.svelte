@@ -14,12 +14,7 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
-<AlertDialog.Footer
-	bind:ref
-	data-slot="alert-dialog-actions-group"
-	class={cn('w-full', className)}
-	{...restProps}
->
+<AlertDialog.Footer bind:ref data-slot="alert-dialog-actions-group" class={cn('w-full', className)} {...restProps}>
 	<div class="flex items-center justify-end gap-2">
 		{@render children?.()}
 	</div>

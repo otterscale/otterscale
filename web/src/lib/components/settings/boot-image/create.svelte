@@ -2,14 +2,11 @@
 	import {
 		ConfigurationService,
 		type Configuration,
-		type CreateBootImageRequest
+		type CreateBootImageRequest,
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
-	import {
-		Multiple as MultipleSelect,
-		Single as SingleSelect
-	} from '$lib/components/custom/select';
+	import { Multiple as MultipleSelect, Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
@@ -53,8 +50,8 @@
 					response.bootImageSelections.map((bootImageSelection) => ({
 						value: bootImageSelection.distroSeries,
 						label: bootImageSelection.name,
-						icon: 'ph:empty'
-					}))
+						icon: 'ph:empty',
+					})),
 				);
 				distroSeriesArchitecturesMap = Object.fromEntries(
 					response.bootImageSelections.map((bootImageSelection) => [
@@ -63,10 +60,10 @@
 							bootImageSelection.architectures.map((architecture) => ({
 								value: architecture,
 								label: architecture,
-								icon: 'ph:empty'
-							}))
-						)
-					])
+								icon: 'ph:empty',
+							})),
+						),
+					]),
 				);
 			});
 
@@ -173,10 +170,10 @@
 								let message = `Fail to create boot images ${request.distroSeries}: ${request.architectures.join(', ')}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

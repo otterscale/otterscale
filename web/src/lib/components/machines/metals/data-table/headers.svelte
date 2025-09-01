@@ -16,7 +16,7 @@
 		storage,
 		tags,
 		scope,
-		actions
+		actions,
 	};
 </script>
 

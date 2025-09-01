@@ -5,7 +5,6 @@ import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
-
 export default defineConfig({
 	plugins: [
 		tailwindcss(),
@@ -14,8 +13,8 @@ export default defineConfig({
 		version(),
 		paraglideVitePlugin({
 			project: './project.inlang',
-			outdir: './src/lib/paraglide'
-		})
+			outdir: './src/lib/paraglide',
+		}),
 	],
 	test: {
 		projects: [
@@ -27,12 +26,12 @@ export default defineConfig({
 					browser: {
 						enabled: true,
 						provider: 'playwright',
-						instances: [{ browser: 'chromium' }]
+						instances: [{ browser: 'chromium' }],
 					},
 					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
 					exclude: ['src/lib/server/**'],
-					setupFiles: ['./vitest-setup-client.ts']
-				}
+					setupFiles: ['./vitest-setup-client.ts'],
+				},
 			},
 			{
 				extends: './vite.config.ts',
@@ -40,9 +39,9 @@ export default defineConfig({
 					name: 'server',
 					environment: 'node',
 					include: ['src/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
-				}
-			}
-		]
-	}
+					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}'],
+				},
+			},
+		],
+	},
 });

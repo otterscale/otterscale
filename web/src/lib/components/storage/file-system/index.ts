@@ -1,3 +1,3 @@
-import FileSystem from './index.svelte'
+import FileSystem from './index.svelte';
 
-export { FileSystem }
+export { FileSystem };

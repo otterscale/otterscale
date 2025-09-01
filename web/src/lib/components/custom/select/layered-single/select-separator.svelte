@@ -5,16 +5,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: DropdownMenuPrimitive.SeparatorProps = $props();
+	let { ref = $bindable(null), class: className, ...restProps }: DropdownMenuPrimitive.SeparatorProps = $props();
 </script>
 
-<DropdownMenu.Separator
-	bind:ref
-	data-slot="select-separator"
-	class={cn(className)}
-	{...restProps}
-/>
+<DropdownMenu.Separator bind:ref data-slot="select-separator" class={cn(className)} {...restProps} />

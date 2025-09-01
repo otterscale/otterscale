@@ -1,11 +1,7 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { page } from '$app/state';
-	import {
-		type Facility,
-		type Facility_Status,
-		type Facility_Unit
-	} from '$lib/api/facility/v1/facility_pb';
+	import { type Facility, type Facility_Status, type Facility_Unit } from '$lib/api/facility/v1/facility_pb';
 	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Button } from '$lib/components/ui/button';
@@ -19,7 +15,7 @@
 	let {
 		services,
 		facilities,
-		autoRefresh = $bindable(true)
+		autoRefresh = $bindable(true),
 	}: {
 		services: Record<
 			string,
@@ -36,9 +32,7 @@
 
 	// Helper functions
 	function findFacilityByService(serviceName: string): Facility | undefined {
-		return facilities.find(
-			(facility) => facility.name.includes(serviceName) && facility.units.length > 0
-		);
+		return facilities.find((facility) => facility.name.includes(serviceName) && facility.units.length > 0);
 	}
 
 	function countUnitsByService(serviceName: string): number {
@@ -105,9 +99,7 @@
 	{#if facility}
 		<Accordion.Root
 			type="multiple"
-			value={facility.units
-				.filter((unit) => unit.workloadStatus?.state !== 'active')
-				.map((unit) => unit.name)}
+			value={facility.units.filter((unit) => unit.workloadStatus?.state !== 'active').map((unit) => unit.name)}
 		>
 			{#each facility.units.sort((a, b) => a.name.localeCompare(b.name)) as unit}
 				<Accordion.Item value={unit.name}>
@@ -141,9 +133,7 @@
 						</div>
 					</Accordion.Trigger>
 					<Accordion.Content class="space-y-4">
-						{@render subordinatesDisplay(
-							unit.subordinates.sort((a, b) => a.name.localeCompare(b.name))
-						)}
+						{@render subordinatesDisplay(unit.subordinates.sort((a, b) => a.name.localeCompare(b.name)))}
 					</Accordion.Content>
 				</Accordion.Item>
 			{/each}
@@ -155,9 +145,7 @@
 	<div class="flex flex-col space-y-2">
 		{#each subordinates as subordinate}
 			{#if subordinate.workloadStatus}
-				<div
-					class="flex items-center space-x-1 text-sm {getStatusClass(subordinate.workloadStatus)}"
-				>
+				<div class="flex items-center space-x-1 text-sm {getStatusClass(subordinate.workloadStatus)}">
 					<div class="truncate">
 						[{subordinate.name}] -
 						<span class="capitalize">{subordinate.workloadStatus.details}</span>

@@ -12,9 +12,8 @@
 		scopeUuid,
 		facilityName,
 		namespace,
-		applicationName
-	}: { scopeUuid: string; facilityName: string; namespace: string; applicationName: string } =
-		$props();
+		applicationName,
+	}: { scopeUuid: string; facilityName: string; namespace: string; applicationName: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const client = createClient(ApplicationService, transport);
@@ -29,7 +28,7 @@
 					scopeUuid: scopeUuid,
 					facilityName: facilityName,
 					namespace: namespace,
-					name: applicationName
+					name: applicationName,
 				})
 				.then((response) => {
 					application.set(response);

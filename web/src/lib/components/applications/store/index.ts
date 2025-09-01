@@ -1,3 +1,3 @@
-import Store from './index.svelte'
+import Store from './index.svelte';
 
-export { Store }
+export { Store };

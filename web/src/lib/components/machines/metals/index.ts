@@ -1,5 +1,3 @@
-import Metals from './index.svelte'
+import Metals from './index.svelte';
 
-export {
-    Metals
-}
+export { Metals };

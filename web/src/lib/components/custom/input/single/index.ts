@@ -8,7 +8,4 @@ import type { InputType, UnitType } from './types';
 import { PasswordManager, typeToIcon } from './utils.svelte';
 
 export { Boolean, Confirm, General, Measurement, Password, PasswordManager, Structure, typeToIcon };
-export type {
-    InputType, UnitType
-};
-
+export type { InputType, UnitType };

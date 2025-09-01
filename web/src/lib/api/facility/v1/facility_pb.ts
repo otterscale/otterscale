@@ -2,949 +2,974 @@
 // @generated from file api/facility/v1/facility.proto (package otterscale.facility.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { EmptySchema, Timestamp } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_empty, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import type { EmptySchema, Timestamp } from '@bufbuild/protobuf/wkt';
+import { file_google_protobuf_empty, file_google_protobuf_timestamp } from '@bufbuild/protobuf/wkt';
+import type { Message } from '@bufbuild/protobuf';
 
 /**
  * Describes the file api/facility/v1/facility.proto.
  */
-export const file_api_facility_v1_facility: GenFile = /*@__PURE__*/
-  fileDesc("Ch5hcGkvZmFjaWxpdHkvdjEvZmFjaWxpdHkucHJvdG8SFm90dGVyc2NhbGUuZmFjaWxpdHkudjEiqgoKCEZhY2lsaXR5EgwKBG5hbWUYASABKAkSNwoGc3RhdHVzGAIgASgLMicub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5TdGF0dXMSEgoKY2hhcm1fbmFtZRgLIAEoCRIPCgd2ZXJzaW9uGAwgASgJEhAKCHJldmlzaW9uGA0gASgDEg8KB2NoYW5uZWwYDiABKAkSQQoIbWV0YWRhdGEYFSABKAsyLy5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkZhY2lsaXR5LkNoYXJtLk1ldGFkYXRhEjQKBXVuaXRzGB8gAygLMiUub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5Vbml0Gs0ECgVDaGFybRIKCgJpZBgBIAEoCRIMCgR0eXBlGAIgASgJEgwKBG5hbWUYAyABKAkSEAoIdmVyaWZpZWQYBCABKAgSDQoFdGl0bGUYCyABKAkSDwoHc3VtbWFyeRgMIAEoCRIMCgRpY29uGA0gASgJEhMKC2Rlc2NyaXB0aW9uGA4gASgJEhIKCmNhdGVnb3JpZXMYDyADKAkSFQoNZGVwbG95YWJsZV9vbhgQIAMoCRIRCglwdWJsaXNoZXIYESABKAkSDwoHbGljZW5zZRgSIAEoCRIRCglzdG9yZV91cmwYFSABKAkSDwoHd2Vic2l0ZRgWIAEoCRJJChBkZWZhdWx0X2FydGlmYWN0GB8gASgLMi8ub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5DaGFybS5BcnRpZmFjdBofCghNZXRhZGF0YRITCgtjb25maWdfeWFtbBgBIAEoCRo7CgRCYXNlEgwKBG5hbWUYASABKAkSDwoHY2hhbm5lbBgCIAEoCRIUCgxhcmNoaXRlY3R1cmUYAyABKAkaqgEKCEFydGlmYWN0Eg8KB2NoYW5uZWwYASABKAkSEAoIcmV2aXNpb24YAiABKAMSDwoHdmVyc2lvbhgLIAEoCRI6CgViYXNlcxgMIAMoCzIrLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuQ2hhcm0uQmFzZRIuCgpjcmVhdGVkX2F0GBUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBorCgZBY3Rpb24SDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRpYCgZTdGF0dXMSDQoFc3RhdGUYASABKAkSDwoHZGV0YWlscxgCIAEoCRIuCgpjcmVhdGVkX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBq+AgoEVW5pdBIMCgRuYW1lGAEgASgJEj0KDGFnZW50X3N0YXR1cxgCIAEoCzInLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuU3RhdHVzEkAKD3dvcmtsb2FkX3N0YXR1cxgDIAEoCzInLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuU3RhdHVzEg4KBmxlYWRlchgEIAEoCBISCgptYWNoaW5lX2lkGAsgASgJEhIKCmlwX2FkZHJlc3MYDCABKAkSDQoFcG9ydHMYDSADKAkSEgoKY2hhcm1fbmFtZRgVIAEoCRIPCgd2ZXJzaW9uGBYgASgJEjsKDHN1Ym9yZGluYXRlcxgfIAMoCzIlLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuVW5pdCJYCglQbGFjZW1lbnQSDQoDbHhkGAEgASgISAASDQoDa3ZtGAIgASgISAASEQoHbWFjaGluZRgDIAEoCEgAEhIKCm1hY2hpbmVfaWQYCyABKAlCBgoEdHlwZSJWCgpDb25zdHJhaW50EhQKDGFyY2hpdGVjdHVyZRgBIAEoCRIRCgljcHVfY29yZXMYAiABKAQSEQoJbWVtb3J5X21iGAMgASgEEgwKBHRhZ3MYCyADKAkiJAoDVGFnEgwKBG5hbWUYASABKAkSDwoHY29tbWVudBgCIAEoCSIrChVMaXN0RmFjaWxpdGllc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCSJOChZMaXN0RmFjaWxpdGllc1Jlc3BvbnNlEjQKCmZhY2lsaXRpZXMYASADKAsyIC5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkZhY2lsaXR5IjYKEkdldEZhY2lsaXR5UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEgwKBG5hbWUYAiABKAkikwIKFUNyZWF0ZUZhY2lsaXR5UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEgwKBG5hbWUYAiABKAkSEwoLY29uZmlnX3lhbWwYCyABKAkSEgoKY2hhcm1fbmFtZRgVIAEoCRIPCgdjaGFubmVsGBYgASgJEhAKCHJldmlzaW9uGBcgASgDEg4KBm51bWJlchgYIAEoAxI1CgpwbGFjZW1lbnRzGB8gAygLMiEub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5QbGFjZW1lbnQSNgoKY29uc3RyYWludBggIAEoCzIiLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuQ29uc3RyYWludBINCgV0cnVzdBgpIAEoCCJOChVVcGRhdGVGYWNpbGl0eVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIMCgRuYW1lGAIgASgJEhMKC2NvbmZpZ195YW1sGAsgASgJImEKFURlbGV0ZUZhY2lsaXR5UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEgwKBG5hbWUYAiABKAkSFwoPZGVzdHJveV9zdG9yYWdlGAsgASgIEg0KBWZvcmNlGAwgASgIIjkKFUV4cG9zZUZhY2lsaXR5UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEgwKBG5hbWUYAiABKAkiggEKF0FkZEZhY2lsaXR5VW5pdHNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZudW1iZXIYCyABKAMSNQoKcGxhY2VtZW50cxgVIAMoCzIhLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuUGxhY2VtZW50IikKGEFkZEZhY2lsaXR5VW5pdHNSZXNwb25zZRINCgV1bml0cxgBIAMoCSI/ChJMaXN0QWN0aW9uc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJIk8KE0xpc3RBY3Rpb25zUmVzcG9uc2USOAoHYWN0aW9ucxgBIAMoCzInLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuQWN0aW9uIhEKD0RvQWN0aW9uUmVxdWVzdCITChFMaXN0Q2hhcm1zUmVxdWVzdCJMChJMaXN0Q2hhcm1zUmVzcG9uc2USNgoGY2hhcm1zGAEgAygLMiYub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5DaGFybSIfCg9HZXRDaGFybVJlcXVlc3QSDAoEbmFtZRgBIAEoCSInChdHZXRDaGFybU1ldGFkYXRhUmVxdWVzdBIMCgRuYW1lGAEgASgJIikKGUxpc3RDaGFybUFydGlmYWN0c1JlcXVlc3QSDAoEbmFtZRgBIAEoCSJgChpMaXN0Q2hhcm1BcnRpZmFjdHNSZXNwb25zZRJCCglhcnRpZmFjdHMYASADKAsyLy5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkZhY2lsaXR5LkNoYXJtLkFydGlmYWN0MrgKCg9GYWNpbGl0eVNlcnZpY2USbwoOTGlzdEZhY2lsaXRpZXMSLS5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkxpc3RGYWNpbGl0aWVzUmVxdWVzdBouLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuTGlzdEZhY2lsaXRpZXNSZXNwb25zZRJbCgtHZXRGYWNpbGl0eRIqLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuR2V0RmFjaWxpdHlSZXF1ZXN0GiAub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eRJhCg5DcmVhdGVGYWNpbGl0eRItLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuQ3JlYXRlRmFjaWxpdHlSZXF1ZXN0GiAub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eRJhCg5VcGRhdGVGYWNpbGl0eRItLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuVXBkYXRlRmFjaWxpdHlSZXF1ZXN0GiAub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eRJXCg5EZWxldGVGYWNpbGl0eRItLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRGVsZXRlRmFjaWxpdHlSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElcKDkV4cG9zZUZhY2lsaXR5Ei0ub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5FeHBvc2VGYWNpbGl0eVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdQoQQWRkRmFjaWxpdHlVbml0cxIvLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuQWRkRmFjaWxpdHlVbml0c1JlcXVlc3QaMC5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkFkZEZhY2lsaXR5VW5pdHNSZXNwb25zZRJmCgtMaXN0QWN0aW9ucxIqLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuTGlzdEFjdGlvbnNSZXF1ZXN0Gisub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5MaXN0QWN0aW9uc1Jlc3BvbnNlEksKCERvQWN0aW9uEicub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5Eb0FjdGlvblJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSYwoKTGlzdENoYXJtcxIpLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuTGlzdENoYXJtc1JlcXVlc3QaKi5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkxpc3RDaGFybXNSZXNwb25zZRJbCghHZXRDaGFybRInLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuR2V0Q2hhcm1SZXF1ZXN0GiYub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5DaGFybRJ0ChBHZXRDaGFybU1ldGFkYXRhEi8ub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5HZXRDaGFybU1ldGFkYXRhUmVxdWVzdBovLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuQ2hhcm0uTWV0YWRhdGESewoSTGlzdENoYXJtQXJ0aWZhY3RzEjEub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5MaXN0Q2hhcm1BcnRpZmFjdHNSZXF1ZXN0GjIub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5MaXN0Q2hhcm1BcnRpZmFjdHNSZXNwb25zZUI1WjNnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvZmFjaWxpdHkvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+export const file_api_facility_v1_facility: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'Ch5hcGkvZmFjaWxpdHkvdjEvZmFjaWxpdHkucHJvdG8SFm90dGVyc2NhbGUuZmFjaWxpdHkudjEiqgoKCEZhY2lsaXR5EgwKBG5hbWUYASABKAkSNwoGc3RhdHVzGAIgASgLMicub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5TdGF0dXMSEgoKY2hhcm1fbmFtZRgLIAEoCRIPCgd2ZXJzaW9uGAwgASgJEhAKCHJldmlzaW9uGA0gASgDEg8KB2NoYW5uZWwYDiABKAkSQQoIbWV0YWRhdGEYFSABKAsyLy5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkZhY2lsaXR5LkNoYXJtLk1ldGFkYXRhEjQKBXVuaXRzGB8gAygLMiUub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5Vbml0Gs0ECgVDaGFybRIKCgJpZBgBIAEoCRIMCgR0eXBlGAIgASgJEgwKBG5hbWUYAyABKAkSEAoIdmVyaWZpZWQYBCABKAgSDQoFdGl0bGUYCyABKAkSDwoHc3VtbWFyeRgMIAEoCRIMCgRpY29uGA0gASgJEhMKC2Rlc2NyaXB0aW9uGA4gASgJEhIKCmNhdGVnb3JpZXMYDyADKAkSFQoNZGVwbG95YWJsZV9vbhgQIAMoCRIRCglwdWJsaXNoZXIYESABKAkSDwoHbGljZW5zZRgSIAEoCRIRCglzdG9yZV91cmwYFSABKAkSDwoHd2Vic2l0ZRgWIAEoCRJJChBkZWZhdWx0X2FydGlmYWN0GB8gASgLMi8ub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5DaGFybS5BcnRpZmFjdBofCghNZXRhZGF0YRITCgtjb25maWdfeWFtbBgBIAEoCRo7CgRCYXNlEgwKBG5hbWUYASABKAkSDwoHY2hhbm5lbBgCIAEoCRIUCgxhcmNoaXRlY3R1cmUYAyABKAkaqgEKCEFydGlmYWN0Eg8KB2NoYW5uZWwYASABKAkSEAoIcmV2aXNpb24YAiABKAMSDwoHdmVyc2lvbhgLIAEoCRI6CgViYXNlcxgMIAMoCzIrLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuQ2hhcm0uQmFzZRIuCgpjcmVhdGVkX2F0GBUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBorCgZBY3Rpb24SDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRpYCgZTdGF0dXMSDQoFc3RhdGUYASABKAkSDwoHZGV0YWlscxgCIAEoCRIuCgpjcmVhdGVkX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBq+AgoEVW5pdBIMCgRuYW1lGAEgASgJEj0KDGFnZW50X3N0YXR1cxgCIAEoCzInLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuU3RhdHVzEkAKD3dvcmtsb2FkX3N0YXR1cxgDIAEoCzInLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuU3RhdHVzEg4KBmxlYWRlchgEIAEoCBISCgptYWNoaW5lX2lkGAsgASgJEhIKCmlwX2FkZHJlc3MYDCABKAkSDQoFcG9ydHMYDSADKAkSEgoKY2hhcm1fbmFtZRgVIAEoCRIPCgd2ZXJzaW9uGBYgASgJEjsKDHN1Ym9yZGluYXRlcxgfIAMoCzIlLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuVW5pdCJYCglQbGFjZW1lbnQSDQoDbHhkGAEgASgISAASDQoDa3ZtGAIgASgISAASEQoHbWFjaGluZRgDIAEoCEgAEhIKCm1hY2hpbmVfaWQYCyABKAlCBgoEdHlwZSJWCgpDb25zdHJhaW50EhQKDGFyY2hpdGVjdHVyZRgBIAEoCRIRCgljcHVfY29yZXMYAiABKAQSEQoJbWVtb3J5X21iGAMgASgEEgwKBHRhZ3MYCyADKAkiJAoDVGFnEgwKBG5hbWUYASABKAkSDwoHY29tbWVudBgCIAEoCSIrChVMaXN0RmFjaWxpdGllc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCSJOChZMaXN0RmFjaWxpdGllc1Jlc3BvbnNlEjQKCmZhY2lsaXRpZXMYASADKAsyIC5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkZhY2lsaXR5IjYKEkdldEZhY2lsaXR5UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEgwKBG5hbWUYAiABKAkikwIKFUNyZWF0ZUZhY2lsaXR5UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEgwKBG5hbWUYAiABKAkSEwoLY29uZmlnX3lhbWwYCyABKAkSEgoKY2hhcm1fbmFtZRgVIAEoCRIPCgdjaGFubmVsGBYgASgJEhAKCHJldmlzaW9uGBcgASgDEg4KBm51bWJlchgYIAEoAxI1CgpwbGFjZW1lbnRzGB8gAygLMiEub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5QbGFjZW1lbnQSNgoKY29uc3RyYWludBggIAEoCzIiLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuQ29uc3RyYWludBINCgV0cnVzdBgpIAEoCCJOChVVcGRhdGVGYWNpbGl0eVJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIMCgRuYW1lGAIgASgJEhMKC2NvbmZpZ195YW1sGAsgASgJImEKFURlbGV0ZUZhY2lsaXR5UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEgwKBG5hbWUYAiABKAkSFwoPZGVzdHJveV9zdG9yYWdlGAsgASgIEg0KBWZvcmNlGAwgASgIIjkKFUV4cG9zZUZhY2lsaXR5UmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEgwKBG5hbWUYAiABKAkiggEKF0FkZEZhY2lsaXR5VW5pdHNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSDAoEbmFtZRgCIAEoCRIOCgZudW1iZXIYCyABKAMSNQoKcGxhY2VtZW50cxgVIAMoCzIhLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuUGxhY2VtZW50IikKGEFkZEZhY2lsaXR5VW5pdHNSZXNwb25zZRINCgV1bml0cxgBIAMoCSI/ChJMaXN0QWN0aW9uc1JlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCRIVCg1mYWNpbGl0eV9uYW1lGAIgASgJIk8KE0xpc3RBY3Rpb25zUmVzcG9uc2USOAoHYWN0aW9ucxgBIAMoCzInLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuQWN0aW9uIhEKD0RvQWN0aW9uUmVxdWVzdCITChFMaXN0Q2hhcm1zUmVxdWVzdCJMChJMaXN0Q2hhcm1zUmVzcG9uc2USNgoGY2hhcm1zGAEgAygLMiYub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5DaGFybSIfCg9HZXRDaGFybVJlcXVlc3QSDAoEbmFtZRgBIAEoCSInChdHZXRDaGFybU1ldGFkYXRhUmVxdWVzdBIMCgRuYW1lGAEgASgJIikKGUxpc3RDaGFybUFydGlmYWN0c1JlcXVlc3QSDAoEbmFtZRgBIAEoCSJgChpMaXN0Q2hhcm1BcnRpZmFjdHNSZXNwb25zZRJCCglhcnRpZmFjdHMYASADKAsyLy5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkZhY2lsaXR5LkNoYXJtLkFydGlmYWN0MrgKCg9GYWNpbGl0eVNlcnZpY2USbwoOTGlzdEZhY2lsaXRpZXMSLS5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkxpc3RGYWNpbGl0aWVzUmVxdWVzdBouLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuTGlzdEZhY2lsaXRpZXNSZXNwb25zZRJbCgtHZXRGYWNpbGl0eRIqLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuR2V0RmFjaWxpdHlSZXF1ZXN0GiAub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eRJhCg5DcmVhdGVGYWNpbGl0eRItLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuQ3JlYXRlRmFjaWxpdHlSZXF1ZXN0GiAub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eRJhCg5VcGRhdGVGYWNpbGl0eRItLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuVXBkYXRlRmFjaWxpdHlSZXF1ZXN0GiAub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eRJXCg5EZWxldGVGYWNpbGl0eRItLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRGVsZXRlRmFjaWxpdHlSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElcKDkV4cG9zZUZhY2lsaXR5Ei0ub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5FeHBvc2VGYWNpbGl0eVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdQoQQWRkRmFjaWxpdHlVbml0cxIvLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuQWRkRmFjaWxpdHlVbml0c1JlcXVlc3QaMC5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkFkZEZhY2lsaXR5VW5pdHNSZXNwb25zZRJmCgtMaXN0QWN0aW9ucxIqLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuTGlzdEFjdGlvbnNSZXF1ZXN0Gisub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5MaXN0QWN0aW9uc1Jlc3BvbnNlEksKCERvQWN0aW9uEicub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5Eb0FjdGlvblJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSYwoKTGlzdENoYXJtcxIpLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuTGlzdENoYXJtc1JlcXVlc3QaKi5vdHRlcnNjYWxlLmZhY2lsaXR5LnYxLkxpc3RDaGFybXNSZXNwb25zZRJbCghHZXRDaGFybRInLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuR2V0Q2hhcm1SZXF1ZXN0GiYub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5GYWNpbGl0eS5DaGFybRJ0ChBHZXRDaGFybU1ldGFkYXRhEi8ub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5HZXRDaGFybU1ldGFkYXRhUmVxdWVzdBovLm90dGVyc2NhbGUuZmFjaWxpdHkudjEuRmFjaWxpdHkuQ2hhcm0uTWV0YWRhdGESewoSTGlzdENoYXJtQXJ0aWZhY3RzEjEub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5MaXN0Q2hhcm1BcnRpZmFjdHNSZXF1ZXN0GjIub3R0ZXJzY2FsZS5mYWNpbGl0eS52MS5MaXN0Q2hhcm1BcnRpZmFjdHNSZXNwb25zZUI1WjNnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvZmFjaWxpdHkvdjE7cGJiCGVkaXRpb25zcOgH',
+		[file_google_protobuf_empty, file_google_protobuf_timestamp],
+	);
 
 /**
  * @generated from message otterscale.facility.v1.Facility
  */
-export type Facility = Message<"otterscale.facility.v1.Facility"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type Facility = Message<'otterscale.facility.v1.Facility'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: otterscale.facility.v1.Facility.Status status = 2;
-   */
-  status?: Facility_Status;
+	/**
+	 * @generated from field: otterscale.facility.v1.Facility.Status status = 2;
+	 */
+	status?: Facility_Status;
 
-  /**
-   * @generated from field: string charm_name = 11;
-   */
-  charmName: string;
+	/**
+	 * @generated from field: string charm_name = 11;
+	 */
+	charmName: string;
 
-  /**
-   * @generated from field: string version = 12;
-   */
-  version: string;
+	/**
+	 * @generated from field: string version = 12;
+	 */
+	version: string;
 
-  /**
-   * @generated from field: int64 revision = 13;
-   */
-  revision: bigint;
+	/**
+	 * @generated from field: int64 revision = 13;
+	 */
+	revision: bigint;
 
-  /**
-   * @generated from field: string channel = 14;
-   */
-  channel: string;
+	/**
+	 * @generated from field: string channel = 14;
+	 */
+	channel: string;
 
-  /**
-   * @generated from field: otterscale.facility.v1.Facility.Charm.Metadata metadata = 21;
-   */
-  metadata?: Facility_Charm_Metadata;
+	/**
+	 * @generated from field: otterscale.facility.v1.Facility.Charm.Metadata metadata = 21;
+	 */
+	metadata?: Facility_Charm_Metadata;
 
-  /**
-   * @generated from field: repeated otterscale.facility.v1.Facility.Unit units = 31;
-   */
-  units: Facility_Unit[];
+	/**
+	 * @generated from field: repeated otterscale.facility.v1.Facility.Unit units = 31;
+	 */
+	units: Facility_Unit[];
 };
 
 /**
  * Describes the message otterscale.facility.v1.Facility.
  * Use `create(FacilitySchema)` to create a new message.
  */
-export const FacilitySchema: GenMessage<Facility> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 0);
+export const FacilitySchema: GenMessage<Facility> = /*@__PURE__*/ messageDesc(file_api_facility_v1_facility, 0);
 
 /**
  * @generated from message otterscale.facility.v1.Facility.Charm
  */
-export type Facility_Charm = Message<"otterscale.facility.v1.Facility.Charm"> & {
-  /**
-   * @generated from field: string id = 1;
-   */
-  id: string;
+export type Facility_Charm = Message<'otterscale.facility.v1.Facility.Charm'> & {
+	/**
+	 * @generated from field: string id = 1;
+	 */
+	id: string;
 
-  /**
-   * @generated from field: string type = 2;
-   */
-  type: string;
+	/**
+	 * @generated from field: string type = 2;
+	 */
+	type: string;
 
-  /**
-   * @generated from field: string name = 3;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 3;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: bool verified = 4;
-   */
-  verified: boolean;
+	/**
+	 * @generated from field: bool verified = 4;
+	 */
+	verified: boolean;
 
-  /**
-   * @generated from field: string title = 11;
-   */
-  title: string;
+	/**
+	 * @generated from field: string title = 11;
+	 */
+	title: string;
 
-  /**
-   * @generated from field: string summary = 12;
-   */
-  summary: string;
+	/**
+	 * @generated from field: string summary = 12;
+	 */
+	summary: string;
 
-  /**
-   * @generated from field: string icon = 13;
-   */
-  icon: string;
+	/**
+	 * @generated from field: string icon = 13;
+	 */
+	icon: string;
 
-  /**
-   * @generated from field: string description = 14;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 14;
+	 */
+	description: string;
 
-  /**
-   * @generated from field: repeated string categories = 15;
-   */
-  categories: string[];
+	/**
+	 * @generated from field: repeated string categories = 15;
+	 */
+	categories: string[];
 
-  /**
-   * @generated from field: repeated string deployable_on = 16;
-   */
-  deployableOn: string[];
+	/**
+	 * @generated from field: repeated string deployable_on = 16;
+	 */
+	deployableOn: string[];
 
-  /**
-   * @generated from field: string publisher = 17;
-   */
-  publisher: string;
+	/**
+	 * @generated from field: string publisher = 17;
+	 */
+	publisher: string;
 
-  /**
-   * @generated from field: string license = 18;
-   */
-  license: string;
+	/**
+	 * @generated from field: string license = 18;
+	 */
+	license: string;
 
-  /**
-   * @generated from field: string store_url = 21;
-   */
-  storeUrl: string;
+	/**
+	 * @generated from field: string store_url = 21;
+	 */
+	storeUrl: string;
 
-  /**
-   * @generated from field: string website = 22;
-   */
-  website: string;
+	/**
+	 * @generated from field: string website = 22;
+	 */
+	website: string;
 
-  /**
-   * @generated from field: otterscale.facility.v1.Facility.Charm.Artifact default_artifact = 31;
-   */
-  defaultArtifact?: Facility_Charm_Artifact;
+	/**
+	 * @generated from field: otterscale.facility.v1.Facility.Charm.Artifact default_artifact = 31;
+	 */
+	defaultArtifact?: Facility_Charm_Artifact;
 };
 
 /**
  * Describes the message otterscale.facility.v1.Facility.Charm.
  * Use `create(Facility_CharmSchema)` to create a new message.
  */
-export const Facility_CharmSchema: GenMessage<Facility_Charm> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 0, 0);
+export const Facility_CharmSchema: GenMessage<Facility_Charm> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 0, 0);
 
 /**
  * @generated from message otterscale.facility.v1.Facility.Charm.Metadata
  */
-export type Facility_Charm_Metadata = Message<"otterscale.facility.v1.Facility.Charm.Metadata"> & {
-  /**
-   * @generated from field: string config_yaml = 1;
-   */
-  configYaml: string;
+export type Facility_Charm_Metadata = Message<'otterscale.facility.v1.Facility.Charm.Metadata'> & {
+	/**
+	 * @generated from field: string config_yaml = 1;
+	 */
+	configYaml: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.Facility.Charm.Metadata.
  * Use `create(Facility_Charm_MetadataSchema)` to create a new message.
  */
-export const Facility_Charm_MetadataSchema: GenMessage<Facility_Charm_Metadata> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 0, 0, 0);
+export const Facility_Charm_MetadataSchema: GenMessage<Facility_Charm_Metadata> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 0, 0, 0);
 
 /**
  * @generated from message otterscale.facility.v1.Facility.Charm.Base
  */
-export type Facility_Charm_Base = Message<"otterscale.facility.v1.Facility.Charm.Base"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type Facility_Charm_Base = Message<'otterscale.facility.v1.Facility.Charm.Base'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string channel = 2;
-   */
-  channel: string;
+	/**
+	 * @generated from field: string channel = 2;
+	 */
+	channel: string;
 
-  /**
-   * @generated from field: string architecture = 3;
-   */
-  architecture: string;
+	/**
+	 * @generated from field: string architecture = 3;
+	 */
+	architecture: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.Facility.Charm.Base.
  * Use `create(Facility_Charm_BaseSchema)` to create a new message.
  */
-export const Facility_Charm_BaseSchema: GenMessage<Facility_Charm_Base> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 0, 0, 1);
+export const Facility_Charm_BaseSchema: GenMessage<Facility_Charm_Base> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 0, 0, 1);
 
 /**
  * @generated from message otterscale.facility.v1.Facility.Charm.Artifact
  */
-export type Facility_Charm_Artifact = Message<"otterscale.facility.v1.Facility.Charm.Artifact"> & {
-  /**
-   * @generated from field: string channel = 1;
-   */
-  channel: string;
+export type Facility_Charm_Artifact = Message<'otterscale.facility.v1.Facility.Charm.Artifact'> & {
+	/**
+	 * @generated from field: string channel = 1;
+	 */
+	channel: string;
 
-  /**
-   * @generated from field: int64 revision = 2;
-   */
-  revision: bigint;
+	/**
+	 * @generated from field: int64 revision = 2;
+	 */
+	revision: bigint;
 
-  /**
-   * @generated from field: string version = 11;
-   */
-  version: string;
+	/**
+	 * @generated from field: string version = 11;
+	 */
+	version: string;
 
-  /**
-   * @generated from field: repeated otterscale.facility.v1.Facility.Charm.Base bases = 12;
-   */
-  bases: Facility_Charm_Base[];
+	/**
+	 * @generated from field: repeated otterscale.facility.v1.Facility.Charm.Base bases = 12;
+	 */
+	bases: Facility_Charm_Base[];
 
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 21;
-   */
-  createdAt?: Timestamp;
+	/**
+	 * @generated from field: google.protobuf.Timestamp created_at = 21;
+	 */
+	createdAt?: Timestamp;
 };
 
 /**
  * Describes the message otterscale.facility.v1.Facility.Charm.Artifact.
  * Use `create(Facility_Charm_ArtifactSchema)` to create a new message.
  */
-export const Facility_Charm_ArtifactSchema: GenMessage<Facility_Charm_Artifact> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 0, 0, 2);
+export const Facility_Charm_ArtifactSchema: GenMessage<Facility_Charm_Artifact> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 0, 0, 2);
 
 /**
  * @generated from message otterscale.facility.v1.Facility.Action
  */
-export type Facility_Action = Message<"otterscale.facility.v1.Facility.Action"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type Facility_Action = Message<'otterscale.facility.v1.Facility.Action'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string description = 2;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 2;
+	 */
+	description: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.Facility.Action.
  * Use `create(Facility_ActionSchema)` to create a new message.
  */
-export const Facility_ActionSchema: GenMessage<Facility_Action> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 0, 1);
+export const Facility_ActionSchema: GenMessage<Facility_Action> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 0, 1);
 
 /**
  * @generated from message otterscale.facility.v1.Facility.Status
  */
-export type Facility_Status = Message<"otterscale.facility.v1.Facility.Status"> & {
-  /**
-   * @generated from field: string state = 1;
-   */
-  state: string;
+export type Facility_Status = Message<'otterscale.facility.v1.Facility.Status'> & {
+	/**
+	 * @generated from field: string state = 1;
+	 */
+	state: string;
 
-  /**
-   * @generated from field: string details = 2;
-   */
-  details: string;
+	/**
+	 * @generated from field: string details = 2;
+	 */
+	details: string;
 
-  /**
-   * @generated from field: google.protobuf.Timestamp created_at = 3;
-   */
-  createdAt?: Timestamp;
+	/**
+	 * @generated from field: google.protobuf.Timestamp created_at = 3;
+	 */
+	createdAt?: Timestamp;
 };
 
 /**
  * Describes the message otterscale.facility.v1.Facility.Status.
  * Use `create(Facility_StatusSchema)` to create a new message.
  */
-export const Facility_StatusSchema: GenMessage<Facility_Status> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 0, 2);
+export const Facility_StatusSchema: GenMessage<Facility_Status> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 0, 2);
 
 /**
  * @generated from message otterscale.facility.v1.Facility.Unit
  */
-export type Facility_Unit = Message<"otterscale.facility.v1.Facility.Unit"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type Facility_Unit = Message<'otterscale.facility.v1.Facility.Unit'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: otterscale.facility.v1.Facility.Status agent_status = 2;
-   */
-  agentStatus?: Facility_Status;
+	/**
+	 * @generated from field: otterscale.facility.v1.Facility.Status agent_status = 2;
+	 */
+	agentStatus?: Facility_Status;
 
-  /**
-   * @generated from field: otterscale.facility.v1.Facility.Status workload_status = 3;
-   */
-  workloadStatus?: Facility_Status;
+	/**
+	 * @generated from field: otterscale.facility.v1.Facility.Status workload_status = 3;
+	 */
+	workloadStatus?: Facility_Status;
 
-  /**
-   * @generated from field: bool leader = 4;
-   */
-  leader: boolean;
+	/**
+	 * @generated from field: bool leader = 4;
+	 */
+	leader: boolean;
 
-  /**
-   * @generated from field: string machine_id = 11;
-   */
-  machineId: string;
+	/**
+	 * @generated from field: string machine_id = 11;
+	 */
+	machineId: string;
 
-  /**
-   * @generated from field: string ip_address = 12;
-   */
-  ipAddress: string;
+	/**
+	 * @generated from field: string ip_address = 12;
+	 */
+	ipAddress: string;
 
-  /**
-   * @generated from field: repeated string ports = 13;
-   */
-  ports: string[];
+	/**
+	 * @generated from field: repeated string ports = 13;
+	 */
+	ports: string[];
 
-  /**
-   * @generated from field: string charm_name = 21;
-   */
-  charmName: string;
+	/**
+	 * @generated from field: string charm_name = 21;
+	 */
+	charmName: string;
 
-  /**
-   * @generated from field: string version = 22;
-   */
-  version: string;
+	/**
+	 * @generated from field: string version = 22;
+	 */
+	version: string;
 
-  /**
-   * @generated from field: repeated otterscale.facility.v1.Facility.Unit subordinates = 31;
-   */
-  subordinates: Facility_Unit[];
+	/**
+	 * @generated from field: repeated otterscale.facility.v1.Facility.Unit subordinates = 31;
+	 */
+	subordinates: Facility_Unit[];
 };
 
 /**
  * Describes the message otterscale.facility.v1.Facility.Unit.
  * Use `create(Facility_UnitSchema)` to create a new message.
  */
-export const Facility_UnitSchema: GenMessage<Facility_Unit> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 0, 3);
+export const Facility_UnitSchema: GenMessage<Facility_Unit> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 0, 3);
 
 /**
  * @generated from message otterscale.facility.v1.Placement
  */
-export type Placement = Message<"otterscale.facility.v1.Placement"> & {
-  /**
-   * @generated from oneof otterscale.facility.v1.Placement.type
-   */
-  type: {
-    /**
-     * @generated from field: bool lxd = 1;
-     */
-    value: boolean;
-    case: "lxd";
-  } | {
-    /**
-     * @generated from field: bool kvm = 2;
-     */
-    value: boolean;
-    case: "kvm";
-  } | {
-    /**
-     * @generated from field: bool machine = 3;
-     */
-    value: boolean;
-    case: "machine";
-  } | { case: undefined; value?: undefined };
+export type Placement = Message<'otterscale.facility.v1.Placement'> & {
+	/**
+	 * @generated from oneof otterscale.facility.v1.Placement.type
+	 */
+	type:
+		| {
+				/**
+				 * @generated from field: bool lxd = 1;
+				 */
+				value: boolean;
+				case: 'lxd';
+		  }
+		| {
+				/**
+				 * @generated from field: bool kvm = 2;
+				 */
+				value: boolean;
+				case: 'kvm';
+		  }
+		| {
+				/**
+				 * @generated from field: bool machine = 3;
+				 */
+				value: boolean;
+				case: 'machine';
+		  }
+		| { case: undefined; value?: undefined };
 
-  /**
-   * @generated from field: string machine_id = 11;
-   */
-  machineId: string;
+	/**
+	 * @generated from field: string machine_id = 11;
+	 */
+	machineId: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.Placement.
  * Use `create(PlacementSchema)` to create a new message.
  */
-export const PlacementSchema: GenMessage<Placement> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 1);
+export const PlacementSchema: GenMessage<Placement> = /*@__PURE__*/ messageDesc(file_api_facility_v1_facility, 1);
 
 /**
  * @generated from message otterscale.facility.v1.Constraint
  */
-export type Constraint = Message<"otterscale.facility.v1.Constraint"> & {
-  /**
-   * @generated from field: string architecture = 1;
-   */
-  architecture: string;
+export type Constraint = Message<'otterscale.facility.v1.Constraint'> & {
+	/**
+	 * @generated from field: string architecture = 1;
+	 */
+	architecture: string;
 
-  /**
-   * @generated from field: uint64 cpu_cores = 2;
-   */
-  cpuCores: bigint;
+	/**
+	 * @generated from field: uint64 cpu_cores = 2;
+	 */
+	cpuCores: bigint;
 
-  /**
-   * @generated from field: uint64 memory_mb = 3;
-   */
-  memoryMb: bigint;
+	/**
+	 * @generated from field: uint64 memory_mb = 3;
+	 */
+	memoryMb: bigint;
 
-  /**
-   * @generated from field: repeated string tags = 11;
-   */
-  tags: string[];
+	/**
+	 * @generated from field: repeated string tags = 11;
+	 */
+	tags: string[];
 };
 
 /**
  * Describes the message otterscale.facility.v1.Constraint.
  * Use `create(ConstraintSchema)` to create a new message.
  */
-export const ConstraintSchema: GenMessage<Constraint> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 2);
+export const ConstraintSchema: GenMessage<Constraint> = /*@__PURE__*/ messageDesc(file_api_facility_v1_facility, 2);
 
 /**
  * @generated from message otterscale.facility.v1.Tag
  */
-export type Tag = Message<"otterscale.facility.v1.Tag"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type Tag = Message<'otterscale.facility.v1.Tag'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string comment = 2;
-   */
-  comment: string;
+	/**
+	 * @generated from field: string comment = 2;
+	 */
+	comment: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.Tag.
  * Use `create(TagSchema)` to create a new message.
  */
-export const TagSchema: GenMessage<Tag> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 3);
+export const TagSchema: GenMessage<Tag> = /*@__PURE__*/ messageDesc(file_api_facility_v1_facility, 3);
 
 /**
  * @generated from message otterscale.facility.v1.ListFacilitiesRequest
  */
-export type ListFacilitiesRequest = Message<"otterscale.facility.v1.ListFacilitiesRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type ListFacilitiesRequest = Message<'otterscale.facility.v1.ListFacilitiesRequest'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.ListFacilitiesRequest.
  * Use `create(ListFacilitiesRequestSchema)` to create a new message.
  */
-export const ListFacilitiesRequestSchema: GenMessage<ListFacilitiesRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 4);
+export const ListFacilitiesRequestSchema: GenMessage<ListFacilitiesRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 4);
 
 /**
  * @generated from message otterscale.facility.v1.ListFacilitiesResponse
  */
-export type ListFacilitiesResponse = Message<"otterscale.facility.v1.ListFacilitiesResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.facility.v1.Facility facilities = 1;
-   */
-  facilities: Facility[];
+export type ListFacilitiesResponse = Message<'otterscale.facility.v1.ListFacilitiesResponse'> & {
+	/**
+	 * @generated from field: repeated otterscale.facility.v1.Facility facilities = 1;
+	 */
+	facilities: Facility[];
 };
 
 /**
  * Describes the message otterscale.facility.v1.ListFacilitiesResponse.
  * Use `create(ListFacilitiesResponseSchema)` to create a new message.
  */
-export const ListFacilitiesResponseSchema: GenMessage<ListFacilitiesResponse> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 5);
+export const ListFacilitiesResponseSchema: GenMessage<ListFacilitiesResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 5);
 
 /**
  * @generated from message otterscale.facility.v1.GetFacilityRequest
  */
-export type GetFacilityRequest = Message<"otterscale.facility.v1.GetFacilityRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type GetFacilityRequest = Message<'otterscale.facility.v1.GetFacilityRequest'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.GetFacilityRequest.
  * Use `create(GetFacilityRequestSchema)` to create a new message.
  */
-export const GetFacilityRequestSchema: GenMessage<GetFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 6);
+export const GetFacilityRequestSchema: GenMessage<GetFacilityRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 6);
 
 /**
  * @generated from message otterscale.facility.v1.CreateFacilityRequest
  */
-export type CreateFacilityRequest = Message<"otterscale.facility.v1.CreateFacilityRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type CreateFacilityRequest = Message<'otterscale.facility.v1.CreateFacilityRequest'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string config_yaml = 11;
-   */
-  configYaml: string;
+	/**
+	 * @generated from field: string config_yaml = 11;
+	 */
+	configYaml: string;
 
-  /**
-   * @generated from field: string charm_name = 21;
-   */
-  charmName: string;
+	/**
+	 * @generated from field: string charm_name = 21;
+	 */
+	charmName: string;
 
-  /**
-   * @generated from field: string channel = 22;
-   */
-  channel: string;
+	/**
+	 * @generated from field: string channel = 22;
+	 */
+	channel: string;
 
-  /**
-   * @generated from field: int64 revision = 23;
-   */
-  revision: bigint;
+	/**
+	 * @generated from field: int64 revision = 23;
+	 */
+	revision: bigint;
 
-  /**
-   * @generated from field: int64 number = 24;
-   */
-  number: bigint;
+	/**
+	 * @generated from field: int64 number = 24;
+	 */
+	number: bigint;
 
-  /**
-   * @generated from field: repeated otterscale.facility.v1.Placement placements = 31;
-   */
-  placements: Placement[];
+	/**
+	 * @generated from field: repeated otterscale.facility.v1.Placement placements = 31;
+	 */
+	placements: Placement[];
 
-  /**
-   * @generated from field: otterscale.facility.v1.Constraint constraint = 32;
-   */
-  constraint?: Constraint;
+	/**
+	 * @generated from field: otterscale.facility.v1.Constraint constraint = 32;
+	 */
+	constraint?: Constraint;
 
-  /**
-   * @generated from field: bool trust = 41;
-   */
-  trust: boolean;
+	/**
+	 * @generated from field: bool trust = 41;
+	 */
+	trust: boolean;
 };
 
 /**
  * Describes the message otterscale.facility.v1.CreateFacilityRequest.
  * Use `create(CreateFacilityRequestSchema)` to create a new message.
  */
-export const CreateFacilityRequestSchema: GenMessage<CreateFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 7);
+export const CreateFacilityRequestSchema: GenMessage<CreateFacilityRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 7);
 
 /**
  * @generated from message otterscale.facility.v1.UpdateFacilityRequest
  */
-export type UpdateFacilityRequest = Message<"otterscale.facility.v1.UpdateFacilityRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type UpdateFacilityRequest = Message<'otterscale.facility.v1.UpdateFacilityRequest'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string config_yaml = 11;
-   */
-  configYaml: string;
+	/**
+	 * @generated from field: string config_yaml = 11;
+	 */
+	configYaml: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.UpdateFacilityRequest.
  * Use `create(UpdateFacilityRequestSchema)` to create a new message.
  */
-export const UpdateFacilityRequestSchema: GenMessage<UpdateFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 8);
+export const UpdateFacilityRequestSchema: GenMessage<UpdateFacilityRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 8);
 
 /**
  * @generated from message otterscale.facility.v1.DeleteFacilityRequest
  */
-export type DeleteFacilityRequest = Message<"otterscale.facility.v1.DeleteFacilityRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type DeleteFacilityRequest = Message<'otterscale.facility.v1.DeleteFacilityRequest'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: bool destroy_storage = 11;
-   */
-  destroyStorage: boolean;
+	/**
+	 * @generated from field: bool destroy_storage = 11;
+	 */
+	destroyStorage: boolean;
 
-  /**
-   * @generated from field: bool force = 12;
-   */
-  force: boolean;
+	/**
+	 * @generated from field: bool force = 12;
+	 */
+	force: boolean;
 };
 
 /**
  * Describes the message otterscale.facility.v1.DeleteFacilityRequest.
  * Use `create(DeleteFacilityRequestSchema)` to create a new message.
  */
-export const DeleteFacilityRequestSchema: GenMessage<DeleteFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 9);
+export const DeleteFacilityRequestSchema: GenMessage<DeleteFacilityRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 9);
 
 /**
  * @generated from message otterscale.facility.v1.ExposeFacilityRequest
  */
-export type ExposeFacilityRequest = Message<"otterscale.facility.v1.ExposeFacilityRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type ExposeFacilityRequest = Message<'otterscale.facility.v1.ExposeFacilityRequest'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.ExposeFacilityRequest.
  * Use `create(ExposeFacilityRequestSchema)` to create a new message.
  */
-export const ExposeFacilityRequestSchema: GenMessage<ExposeFacilityRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 10);
+export const ExposeFacilityRequestSchema: GenMessage<ExposeFacilityRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 10);
 
 /**
  * @generated from message otterscale.facility.v1.AddFacilityUnitsRequest
  */
-export type AddFacilityUnitsRequest = Message<"otterscale.facility.v1.AddFacilityUnitsRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type AddFacilityUnitsRequest = Message<'otterscale.facility.v1.AddFacilityUnitsRequest'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: int64 number = 11;
-   */
-  number: bigint;
+	/**
+	 * @generated from field: int64 number = 11;
+	 */
+	number: bigint;
 
-  /**
-   * @generated from field: repeated otterscale.facility.v1.Placement placements = 21;
-   */
-  placements: Placement[];
+	/**
+	 * @generated from field: repeated otterscale.facility.v1.Placement placements = 21;
+	 */
+	placements: Placement[];
 };
 
 /**
  * Describes the message otterscale.facility.v1.AddFacilityUnitsRequest.
  * Use `create(AddFacilityUnitsRequestSchema)` to create a new message.
  */
-export const AddFacilityUnitsRequestSchema: GenMessage<AddFacilityUnitsRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 11);
+export const AddFacilityUnitsRequestSchema: GenMessage<AddFacilityUnitsRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 11);
 
 /**
  * @generated from message otterscale.facility.v1.AddFacilityUnitsResponse
  */
-export type AddFacilityUnitsResponse = Message<"otterscale.facility.v1.AddFacilityUnitsResponse"> & {
-  /**
-   * @generated from field: repeated string units = 1;
-   */
-  units: string[];
+export type AddFacilityUnitsResponse = Message<'otterscale.facility.v1.AddFacilityUnitsResponse'> & {
+	/**
+	 * @generated from field: repeated string units = 1;
+	 */
+	units: string[];
 };
 
 /**
  * Describes the message otterscale.facility.v1.AddFacilityUnitsResponse.
  * Use `create(AddFacilityUnitsResponseSchema)` to create a new message.
  */
-export const AddFacilityUnitsResponseSchema: GenMessage<AddFacilityUnitsResponse> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 12);
+export const AddFacilityUnitsResponseSchema: GenMessage<AddFacilityUnitsResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 12);
 
 /**
  * @generated from message otterscale.facility.v1.ListActionsRequest
  */
-export type ListActionsRequest = Message<"otterscale.facility.v1.ListActionsRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type ListActionsRequest = Message<'otterscale.facility.v1.ListActionsRequest'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 
-  /**
-   * @generated from field: string facility_name = 2;
-   */
-  facilityName: string;
+	/**
+	 * @generated from field: string facility_name = 2;
+	 */
+	facilityName: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.ListActionsRequest.
  * Use `create(ListActionsRequestSchema)` to create a new message.
  */
-export const ListActionsRequestSchema: GenMessage<ListActionsRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 13);
+export const ListActionsRequestSchema: GenMessage<ListActionsRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 13);
 
 /**
  * @generated from message otterscale.facility.v1.ListActionsResponse
  */
-export type ListActionsResponse = Message<"otterscale.facility.v1.ListActionsResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.facility.v1.Facility.Action actions = 1;
-   */
-  actions: Facility_Action[];
+export type ListActionsResponse = Message<'otterscale.facility.v1.ListActionsResponse'> & {
+	/**
+	 * @generated from field: repeated otterscale.facility.v1.Facility.Action actions = 1;
+	 */
+	actions: Facility_Action[];
 };
 
 /**
  * Describes the message otterscale.facility.v1.ListActionsResponse.
  * Use `create(ListActionsResponseSchema)` to create a new message.
  */
-export const ListActionsResponseSchema: GenMessage<ListActionsResponse> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 14);
+export const ListActionsResponseSchema: GenMessage<ListActionsResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 14);
 
 /**
  * @generated from message otterscale.facility.v1.DoActionRequest
  */
-export type DoActionRequest = Message<"otterscale.facility.v1.DoActionRequest"> & {
-};
+export type DoActionRequest = Message<'otterscale.facility.v1.DoActionRequest'> & {};
 
 /**
  * Describes the message otterscale.facility.v1.DoActionRequest.
  * Use `create(DoActionRequestSchema)` to create a new message.
  */
-export const DoActionRequestSchema: GenMessage<DoActionRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 15);
+export const DoActionRequestSchema: GenMessage<DoActionRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 15);
 
 /**
  * @generated from message otterscale.facility.v1.ListCharmsRequest
  */
-export type ListCharmsRequest = Message<"otterscale.facility.v1.ListCharmsRequest"> & {
-};
+export type ListCharmsRequest = Message<'otterscale.facility.v1.ListCharmsRequest'> & {};
 
 /**
  * Describes the message otterscale.facility.v1.ListCharmsRequest.
  * Use `create(ListCharmsRequestSchema)` to create a new message.
  */
-export const ListCharmsRequestSchema: GenMessage<ListCharmsRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 16);
+export const ListCharmsRequestSchema: GenMessage<ListCharmsRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 16);
 
 /**
  * @generated from message otterscale.facility.v1.ListCharmsResponse
  */
-export type ListCharmsResponse = Message<"otterscale.facility.v1.ListCharmsResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.facility.v1.Facility.Charm charms = 1;
-   */
-  charms: Facility_Charm[];
+export type ListCharmsResponse = Message<'otterscale.facility.v1.ListCharmsResponse'> & {
+	/**
+	 * @generated from field: repeated otterscale.facility.v1.Facility.Charm charms = 1;
+	 */
+	charms: Facility_Charm[];
 };
 
 /**
  * Describes the message otterscale.facility.v1.ListCharmsResponse.
  * Use `create(ListCharmsResponseSchema)` to create a new message.
  */
-export const ListCharmsResponseSchema: GenMessage<ListCharmsResponse> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 17);
+export const ListCharmsResponseSchema: GenMessage<ListCharmsResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 17);
 
 /**
  * @generated from message otterscale.facility.v1.GetCharmRequest
  */
-export type GetCharmRequest = Message<"otterscale.facility.v1.GetCharmRequest"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type GetCharmRequest = Message<'otterscale.facility.v1.GetCharmRequest'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.GetCharmRequest.
  * Use `create(GetCharmRequestSchema)` to create a new message.
  */
-export const GetCharmRequestSchema: GenMessage<GetCharmRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 18);
+export const GetCharmRequestSchema: GenMessage<GetCharmRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 18);
 
 /**
  * @generated from message otterscale.facility.v1.GetCharmMetadataRequest
  */
-export type GetCharmMetadataRequest = Message<"otterscale.facility.v1.GetCharmMetadataRequest"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type GetCharmMetadataRequest = Message<'otterscale.facility.v1.GetCharmMetadataRequest'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.GetCharmMetadataRequest.
  * Use `create(GetCharmMetadataRequestSchema)` to create a new message.
  */
-export const GetCharmMetadataRequestSchema: GenMessage<GetCharmMetadataRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 19);
+export const GetCharmMetadataRequestSchema: GenMessage<GetCharmMetadataRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 19);
 
 /**
  * @generated from message otterscale.facility.v1.ListCharmArtifactsRequest
  */
-export type ListCharmArtifactsRequest = Message<"otterscale.facility.v1.ListCharmArtifactsRequest"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type ListCharmArtifactsRequest = Message<'otterscale.facility.v1.ListCharmArtifactsRequest'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 };
 
 /**
  * Describes the message otterscale.facility.v1.ListCharmArtifactsRequest.
  * Use `create(ListCharmArtifactsRequestSchema)` to create a new message.
  */
-export const ListCharmArtifactsRequestSchema: GenMessage<ListCharmArtifactsRequest> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 20);
+export const ListCharmArtifactsRequestSchema: GenMessage<ListCharmArtifactsRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 20);
 
 /**
  * @generated from message otterscale.facility.v1.ListCharmArtifactsResponse
  */
-export type ListCharmArtifactsResponse = Message<"otterscale.facility.v1.ListCharmArtifactsResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.facility.v1.Facility.Charm.Artifact artifacts = 1;
-   */
-  artifacts: Facility_Charm_Artifact[];
+export type ListCharmArtifactsResponse = Message<'otterscale.facility.v1.ListCharmArtifactsResponse'> & {
+	/**
+	 * @generated from field: repeated otterscale.facility.v1.Facility.Charm.Artifact artifacts = 1;
+	 */
+	artifacts: Facility_Charm_Artifact[];
 };
 
 /**
  * Describes the message otterscale.facility.v1.ListCharmArtifactsResponse.
  * Use `create(ListCharmArtifactsResponseSchema)` to create a new message.
  */
-export const ListCharmArtifactsResponseSchema: GenMessage<ListCharmArtifactsResponse> = /*@__PURE__*/
-  messageDesc(file_api_facility_v1_facility, 21);
+export const ListCharmArtifactsResponseSchema: GenMessage<ListCharmArtifactsResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_facility_v1_facility, 21);
 
 /**
  * @generated from service otterscale.facility.v1.FacilityService
  */
 export const FacilityService: GenService<{
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.ListFacilities
-   */
-  listFacilities: {
-    methodKind: "unary";
-    input: typeof ListFacilitiesRequestSchema;
-    output: typeof ListFacilitiesResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.GetFacility
-   */
-  getFacility: {
-    methodKind: "unary";
-    input: typeof GetFacilityRequestSchema;
-    output: typeof FacilitySchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.CreateFacility
-   */
-  createFacility: {
-    methodKind: "unary";
-    input: typeof CreateFacilityRequestSchema;
-    output: typeof FacilitySchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.UpdateFacility
-   */
-  updateFacility: {
-    methodKind: "unary";
-    input: typeof UpdateFacilityRequestSchema;
-    output: typeof FacilitySchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.DeleteFacility
-   */
-  deleteFacility: {
-    methodKind: "unary";
-    input: typeof DeleteFacilityRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.ExposeFacility
-   */
-  exposeFacility: {
-    methodKind: "unary";
-    input: typeof ExposeFacilityRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.AddFacilityUnits
-   */
-  addFacilityUnits: {
-    methodKind: "unary";
-    input: typeof AddFacilityUnitsRequestSchema;
-    output: typeof AddFacilityUnitsResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.ListActions
-   */
-  listActions: {
-    methodKind: "unary";
-    input: typeof ListActionsRequestSchema;
-    output: typeof ListActionsResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.DoAction
-   */
-  doAction: {
-    methodKind: "unary";
-    input: typeof DoActionRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.ListCharms
-   */
-  listCharms: {
-    methodKind: "unary";
-    input: typeof ListCharmsRequestSchema;
-    output: typeof ListCharmsResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.GetCharm
-   */
-  getCharm: {
-    methodKind: "unary";
-    input: typeof GetCharmRequestSchema;
-    output: typeof Facility_CharmSchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.GetCharmMetadata
-   */
-  getCharmMetadata: {
-    methodKind: "unary";
-    input: typeof GetCharmMetadataRequestSchema;
-    output: typeof Facility_Charm_MetadataSchema;
-  },
-  /**
-   * @generated from rpc otterscale.facility.v1.FacilityService.ListCharmArtifacts
-   */
-  listCharmArtifacts: {
-    methodKind: "unary";
-    input: typeof ListCharmArtifactsRequestSchema;
-    output: typeof ListCharmArtifactsResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_api_facility_v1_facility, 0);
-
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.ListFacilities
+	 */
+	listFacilities: {
+		methodKind: 'unary';
+		input: typeof ListFacilitiesRequestSchema;
+		output: typeof ListFacilitiesResponseSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.GetFacility
+	 */
+	getFacility: {
+		methodKind: 'unary';
+		input: typeof GetFacilityRequestSchema;
+		output: typeof FacilitySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.CreateFacility
+	 */
+	createFacility: {
+		methodKind: 'unary';
+		input: typeof CreateFacilityRequestSchema;
+		output: typeof FacilitySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.UpdateFacility
+	 */
+	updateFacility: {
+		methodKind: 'unary';
+		input: typeof UpdateFacilityRequestSchema;
+		output: typeof FacilitySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.DeleteFacility
+	 */
+	deleteFacility: {
+		methodKind: 'unary';
+		input: typeof DeleteFacilityRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.ExposeFacility
+	 */
+	exposeFacility: {
+		methodKind: 'unary';
+		input: typeof ExposeFacilityRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.AddFacilityUnits
+	 */
+	addFacilityUnits: {
+		methodKind: 'unary';
+		input: typeof AddFacilityUnitsRequestSchema;
+		output: typeof AddFacilityUnitsResponseSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.ListActions
+	 */
+	listActions: {
+		methodKind: 'unary';
+		input: typeof ListActionsRequestSchema;
+		output: typeof ListActionsResponseSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.DoAction
+	 */
+	doAction: {
+		methodKind: 'unary';
+		input: typeof DoActionRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.ListCharms
+	 */
+	listCharms: {
+		methodKind: 'unary';
+		input: typeof ListCharmsRequestSchema;
+		output: typeof ListCharmsResponseSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.GetCharm
+	 */
+	getCharm: {
+		methodKind: 'unary';
+		input: typeof GetCharmRequestSchema;
+		output: typeof Facility_CharmSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.GetCharmMetadata
+	 */
+	getCharmMetadata: {
+		methodKind: 'unary';
+		input: typeof GetCharmMetadataRequestSchema;
+		output: typeof Facility_Charm_MetadataSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.facility.v1.FacilityService.ListCharmArtifacts
+	 */
+	listCharmArtifacts: {
+		methodKind: 'unary';
+		input: typeof ListCharmArtifactsRequestSchema;
+		output: typeof ListCharmArtifactsResponseSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_api_facility_v1_facility, 0);

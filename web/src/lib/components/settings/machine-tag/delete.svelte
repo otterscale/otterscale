@@ -42,12 +42,7 @@
 			<Form.Root>
 				<Form.Fieldset>
 					<Form.Field>
-						<SingleInput.Confirm
-							required
-							target={tag.name}
-							bind:value={request.name}
-							bind:invalid
-						/>
+						<SingleInput.Confirm required target={tag.name} bind:value={request.name} bind:invalid />
 					</Form.Field>
 					<Form.Help>
 						{m.deletion_warning({ identifier: m.name() })}
@@ -78,10 +73,10 @@
 									let message = `Fail to delete ${tag.name}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY
+										duration: Number.POSITIVE_INFINITY,
 									});
 									return message;
-								}
+								},
 							});
 
 							reset();

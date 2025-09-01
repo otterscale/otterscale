@@ -21,7 +21,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '175 B',
 			metrics: { accuracy: 0.92, speed: 1.2 },
 			architecture: 'Transformer',
-			usageStats: { requests: 1000000, uptime: 99.9 }
+			usageStats: { requests: 1000000, uptime: 99.9 },
 		},
 		{
 			name: 'BERT',
@@ -29,7 +29,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '340 M',
 			metrics: { accuracy: 0.89, speed: 1.5 },
 			architecture: 'Bidirectional Transformer',
-			usageStats: { requests: 500000, uptime: 99.5 }
+			usageStats: { requests: 500000, uptime: 99.5 },
 		},
 		{
 			name: 'LLaMA',
@@ -37,7 +37,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '65 B',
 			metrics: { accuracy: 0.91, speed: 1.3 },
 			architecture: 'Transformer',
-			usageStats: { requests: 800000, uptime: 99.7 }
+			usageStats: { requests: 800000, uptime: 99.7 },
 		},
 		{
 			name: 'RoBERTa',
@@ -45,7 +45,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '355 M',
 			metrics: { accuracy: 0.9, speed: 1.4 },
 			architecture: 'Bidirectional Transformer',
-			usageStats: { requests: 600000, uptime: 99.6 }
+			usageStats: { requests: 600000, uptime: 99.6 },
 		},
 		{
 			name: 'T5',
@@ -53,7 +53,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '11 B',
 			metrics: { accuracy: 0.88, speed: 1.6 },
 			architecture: 'Encoder-Decoder',
-			usageStats: { requests: 400000, uptime: 99.3 }
+			usageStats: { requests: 400000, uptime: 99.3 },
 		},
 		{
 			name: 'BLOOM',
@@ -61,7 +61,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '176 B',
 			metrics: { accuracy: 0.91, speed: 1.1 },
 			architecture: 'Transformer',
-			usageStats: { requests: 300000, uptime: 99.4 }
+			usageStats: { requests: 300000, uptime: 99.4 },
 		},
 		{
 			name: 'PaLM',
@@ -69,7 +69,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '540 B',
 			metrics: { accuracy: 0.93, speed: 1.0 },
 			architecture: 'Transformer',
-			usageStats: { requests: 900000, uptime: 99.8 }
+			usageStats: { requests: 900000, uptime: 99.8 },
 		},
 		{
 			name: 'Claude',
@@ -77,7 +77,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '100 B',
 			metrics: { accuracy: 0.92, speed: 1.2 },
 			architecture: 'Constitutional AI',
-			usageStats: { requests: 700000, uptime: 99.6 }
+			usageStats: { requests: 700000, uptime: 99.6 },
 		},
 		{
 			name: 'Falcon',
@@ -85,7 +85,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '40 B',
 			metrics: { accuracy: 0.89, speed: 1.4 },
 			architecture: 'Transformer',
-			usageStats: { requests: 200000, uptime: 99.2 }
+			usageStats: { requests: 200000, uptime: 99.2 },
 		},
 		{
 			name: 'OPT',
@@ -93,7 +93,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '175 B',
 			metrics: { accuracy: 0.9, speed: 1.3 },
 			architecture: 'Transformer',
-			usageStats: { requests: 450000, uptime: 99.5 }
+			usageStats: { requests: 450000, uptime: 99.5 },
 		},
 		{
 			name: 'Chinchilla',
@@ -101,7 +101,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '70 B',
 			metrics: { accuracy: 0.91, speed: 1.3 },
 			architecture: 'Transformer',
-			usageStats: { requests: 350000, uptime: 99.4 }
+			usageStats: { requests: 350000, uptime: 99.4 },
 		},
 		{
 			name: 'FLAN-T5',
@@ -109,7 +109,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '80 B',
 			metrics: { accuracy: 0.92, speed: 1.4 },
 			architecture: 'Encoder-Decoder',
-			usageStats: { requests: 550000, uptime: 99.5 }
+			usageStats: { requests: 550000, uptime: 99.5 },
 		},
 		{
 			name: 'Jurassic',
@@ -117,7 +117,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '178 B',
 			metrics: { accuracy: 0.91, speed: 1.2 },
 			architecture: 'Transformer',
-			usageStats: { requests: 650000, uptime: 99.6 }
+			usageStats: { requests: 650000, uptime: 99.6 },
 		},
 		{
 			name: 'Megatron',
@@ -125,7 +125,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '530 B',
 			metrics: { accuracy: 0.93, speed: 1.1 },
 			architecture: 'Transformer',
-			usageStats: { requests: 750000, uptime: 99.7 }
+			usageStats: { requests: 750000, uptime: 99.7 },
 		},
 		{
 			name: 'BARD',
@@ -133,7 +133,7 @@ export function listLargeLanguageModels(): LargeLangeageModel[] {
 			parameters: '137 B',
 			metrics: { accuracy: 0.92, speed: 1.3 },
 			architecture: 'Transformer',
-			usageStats: { requests: 850000, uptime: 99.8 }
-		}
+			usageStats: { requests: 850000, uptime: 99.8 },
+		},
 	];
 }

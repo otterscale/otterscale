@@ -36,9 +36,6 @@
 		optionManager.handleSelect(option, parents);
 		onclick?.(e);
 	}}
-	class={cn(
-		'hover:bg-accent hover:text-accent-foreground cursor-pointer select-none rounded-sm',
-		className
-	)}
+	class={cn('hover:bg-accent hover:text-accent-foreground cursor-pointer rounded-sm select-none', className)}
 	{...restProps}
 />

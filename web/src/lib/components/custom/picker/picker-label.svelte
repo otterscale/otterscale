@@ -5,21 +5,13 @@
 </script>
 
 <script lang="ts">
-	let {
-		ref = $bindable(null),
-		class: className,
-		children,
-		...restProps
-	}: LabelPrimitive.RootProps = $props();
+	let { ref = $bindable(null), class: className, children, ...restProps }: LabelPrimitive.RootProps = $props();
 </script>
 
 <Label
 	bind:ref
 	{...restProps}
-	class={cn(
-		'bg-muted flex items-center justify-center whitespace-nowrap rounded-lg p-2',
-		className
-	)}
+	class={cn('bg-muted flex items-center justify-center rounded-lg p-2 whitespace-nowrap', className)}
 >
 	{@render children?.()}
 </Label>

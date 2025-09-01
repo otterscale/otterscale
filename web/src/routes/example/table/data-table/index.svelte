@@ -13,7 +13,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import { writable } from 'svelte/store';
 	import Actions from './actions.svelte';
@@ -25,7 +25,7 @@
 	let {
 		selectedScope,
 		selectedFacility,
-		dataset
+		dataset,
 	}: { selectedScope: string; selectedFacility: string; dataset: TableRow[] } = $props();
 
 	let data = $state(writable(dataset));
@@ -62,7 +62,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -98,7 +98,7 @@
 			} else {
 				rowSelection = updater;
 			}
-		}
+		},
 	});
 </script>
 

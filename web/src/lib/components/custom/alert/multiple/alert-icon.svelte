@@ -13,7 +13,5 @@
 
 <Icon
 	data-slot="alert-icon"
-	icon={getAlertIcon(
-		iterationManager.variantGetter(iterationManager.alerts[iterationManager.value.index].level)
-	)}
+	icon={getAlertIcon(iterationManager.variantGetter(iterationManager.alerts[iterationManager.value.index].level))}
 />

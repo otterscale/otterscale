@@ -5,11 +5,8 @@
 	import { activeScope, breadcrumb } from '$lib/stores';
 
 	breadcrumb.set({
-		parents: [
-			dynamicPaths.machines(page.params.scope),
-			dynamicPaths.machinesMetal(page.params.scope)
-		],
-		current: { title: page.params.id!, url: '' }
+		parents: [dynamicPaths.machines(page.params.scope), dynamicPaths.machinesMetal(page.params.scope)],
+		current: { title: page.params.id!, url: '' },
 	});
 </script>
 

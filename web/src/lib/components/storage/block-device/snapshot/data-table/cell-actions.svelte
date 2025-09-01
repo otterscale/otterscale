@@ -10,7 +10,7 @@
 
 <script lang="ts">
 	let {
-		snapshot
+		snapshot,
 	}: {
 		snapshot: Image_Snapshot;
 	} = $props();

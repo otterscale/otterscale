@@ -3,7 +3,7 @@
 		ConfigurationService,
 		type Configuration,
 		type Configuration_PackageRepository,
-		type UpdatePackageRepositoryRequest
+		type UpdatePackageRepositoryRequest,
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -19,7 +19,7 @@
 <script lang="ts">
 	let {
 		packageRepository,
-		configuration
+		configuration,
 	}: {
 		packageRepository: Configuration_PackageRepository;
 		configuration: Writable<Configuration>;
@@ -31,7 +31,7 @@
 	const defaults = {
 		id: packageRepository.id,
 		url: packageRepository.url,
-		skipJuju: false
+		skipJuju: false,
 	} as UpdatePackageRepositoryRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -83,10 +83,10 @@
 									let message = `Fail to update ${packageRepository.name}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY
+										duration: Number.POSITIVE_INFINITY,
 									});
 									return message;
-								}
+								},
 							});
 
 							reset();

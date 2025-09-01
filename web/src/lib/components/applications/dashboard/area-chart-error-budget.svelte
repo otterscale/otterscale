@@ -29,7 +29,7 @@
 	const query = $derived(
 		`
         100 * (apiserver_request:availability30d{juju_model_uuid=~"${scope.uuid}",verb="all"} - 0.99)
-		`
+		`,
 	);
 </script>
 

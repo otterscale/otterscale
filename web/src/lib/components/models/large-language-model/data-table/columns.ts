@@ -13,7 +13,7 @@ const messages = {
 	speed: m.speed(),
 	architecture: m.architecture(),
 	requests: m.requests(),
-	uptime: m.uptime()
+	uptime: m.uptime(),
 };
 
 const columns: ColumnDef<LargeLangeageModel>[] = [
@@ -26,7 +26,7 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'name',
@@ -35,7 +35,7 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'version',
@@ -44,7 +44,7 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.version, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'parameters',
@@ -53,7 +53,7 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.parameters, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'accuracy',
@@ -62,7 +62,7 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.accuracy, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'speed',
@@ -71,7 +71,7 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.speed, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'architecture',
@@ -80,7 +80,7 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.architecture, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'requests',
@@ -89,7 +89,7 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.requests, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'uptime',
@@ -98,8 +98,8 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.uptime, row);
-		}
-	}
+		},
+	},
 ];
 
 export { columns, messages };

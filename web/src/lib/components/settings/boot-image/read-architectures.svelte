@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		bootImage
+		bootImage,
 	}: {
 		bootImage: Configuration_BootImage;
 	} = $props();

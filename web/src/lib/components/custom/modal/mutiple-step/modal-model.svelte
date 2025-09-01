@@ -7,11 +7,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: Omit<TabsContentProps, 'value'> = $props();
+	let { ref = $bindable(null), class: className, ...restProps }: Omit<TabsContentProps, 'value'> = $props();
 
 	const indexManager: IndexManager = getContext('IndexManager');
 </script>

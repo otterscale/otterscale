@@ -9,7 +9,7 @@ const messages = {
 	id: m.id(),
 	name: m.user(),
 	suspended: m.suspended(),
-	keys: m.key()
+	keys: m.key(),
 };
 
 const columns: ColumnDef<User>[] = [
@@ -22,7 +22,7 @@ const columns: ColumnDef<User>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'id',
@@ -31,7 +31,7 @@ const columns: ColumnDef<User>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.id, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'name',
@@ -41,7 +41,7 @@ const columns: ColumnDef<User>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
 		},
-		filterFn: 'arrIncludesSome'
+		filterFn: 'arrIncludesSome',
 	},
 	{
 		accessorKey: 'suspended',
@@ -51,7 +51,7 @@ const columns: ColumnDef<User>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.suspended, row);
 		},
-		filterFn: 'equals'
+		filterFn: 'equals',
 	},
 	{
 		accessorKey: 'keys',
@@ -60,7 +60,7 @@ const columns: ColumnDef<User>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.keys, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'actions',
@@ -70,8 +70,8 @@ const columns: ColumnDef<User>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false
-	}
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };

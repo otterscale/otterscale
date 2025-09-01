@@ -30,7 +30,7 @@
 		Undersized: `sum(ceph_pg_undersized{juju_model_uuid=~"${scope.uuid}"})`,
 		Degraded: `sum(ceph_pg_degraded{juju_model_uuid=~"${scope.uuid}"})`,
 		Inconsistent: `sum(ceph_pg_inconsistent{juju_model_uuid=~"${scope.uuid}"})`,
-		Down: `sum(ceph_pg_down{juju_model_uuid=~"${scope.uuid}"})`
+		Down: `sum(ceph_pg_down{juju_model_uuid=~"${scope.uuid}"})`,
 	});
 </script>
 

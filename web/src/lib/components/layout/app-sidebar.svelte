@@ -7,10 +7,7 @@
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import {
-		CheckHealthResponse_Result,
-		EnvironmentService
-	} from '$lib/api/environment/v1/environment_pb';
+	import { CheckHealthResponse_Result, EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
 	import { PremiumTier, PremiumService } from '$lib/api/premium/v1/premium_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
@@ -41,13 +38,13 @@
 	const tierMap = {
 		[PremiumTier.BASIC]: m.basic_tier(),
 		[PremiumTier.ADVANCED]: m.advanced_tier(),
-		[PremiumTier.ENTERPRISE]: m.enterprise_tier()
+		[PremiumTier.ENTERPRISE]: m.enterprise_tier(),
 	};
 
 	const skeletonClasses = {
 		avatar: 'bg-sidebar-primary/50 size-8 rounded-lg',
 		title: 'bg-sidebar-primary/50 h-3 w-[150px]',
-		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]'
+		subtitle: 'bg-sidebar-primary/50 h-3 w-[50px]',
 	};
 
 	async function fetchScopes() {
@@ -101,12 +98,7 @@
 		}
 
 		// Navigate to new url
-		const url = getValidURL(
-			page.url.pathname,
-			scope.name,
-			$currentCeph?.name,
-			$currentKubernetes?.name
-		);
+		const url = getValidURL(page.url.pathname, scope.name, $currentCeph?.name, $currentKubernetes?.name);
 		goto(url);
 	}
 
@@ -118,7 +110,7 @@
 					await Promise.all([fetchScopes(), fetchEdition()]);
 					const index = Math.max(
 						$scopes.findIndex((scope) => scope.name == page.params.scope),
-						0
+						0,
 					);
 					handleScopeOnSelect(index);
 					break;
@@ -132,9 +124,7 @@
 	}
 
 	async function onBookmarkDelete(path: Path) {
-		bookmarks.update((currentBookmarks) =>
-			currentBookmarks.filter((bookmark) => bookmark.url !== path.url)
-		);
+		bookmarks.update((currentBookmarks) => currentBookmarks.filter((bookmark) => bookmark.url !== path.url));
 	}
 
 	onMount(initialize);

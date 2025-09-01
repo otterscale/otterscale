@@ -15,7 +15,7 @@
 
 <script lang="ts">
 	let {
-		bucket
+		bucket,
 	}: {
 		bucket: Bucket;
 	} = $props();
@@ -28,7 +28,7 @@
 
 	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name
+		facilityName: $currentCeph?.name,
 	} as DeleteBucketRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -51,12 +51,7 @@
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.Confirm
-						required
-						id="deletion"
-						target={bucket.name}
-						bind:value={request.bucketName}
-					/>
+					<SingleInput.Confirm required id="deletion" target={bucket.name} bind:value={request.bucketName} />
 				</Form.Field>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.bucket_name() })}
@@ -85,10 +80,10 @@
 								let message = `Fail to delete ${request.bucketName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

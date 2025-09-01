@@ -8,7 +8,7 @@
 	export const headers = {
 		row_picker,
 		accessKey,
-		actions
+		actions,
 	};
 </script>
 

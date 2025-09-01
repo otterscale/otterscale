@@ -9,13 +9,13 @@
 		generateChartConfig,
 		getSeries,
 		type DataPoint,
-		type ChartConfig
+		type ChartConfig,
 	} from '$lib/components/custom/prometheus';
 	import {
 		formatXAxisDate,
 		formatTooltipDate,
 		getXAxisTicks,
-		type TimeRange
+		type TimeRange,
 	} from '$lib/components/custom/chart/units/formatter';
 
 	// Constants
@@ -48,10 +48,7 @@
 	const series = $derived(() => getSeries(computedChartConfig()));
 </script>
 
-<ChartContainer
-	config={computedChartConfig()}
-	class="aspect-auto {DEFAULT_CHART_HEIGHT} w-full {className}"
->
+<ChartContainer config={computedChartConfig()} class="aspect-auto {DEFAULT_CHART_HEIGHT} w-full {className}">
 	<AreaChart
 		legend
 		{data}
@@ -64,15 +61,15 @@
 				curve: curveNatural,
 				'fill-opacity': AREA_FILL_OPACITY,
 				line: { class: 'stroke-1' },
-				motion: 'tween'
+				motion: 'tween',
 			},
 			xAxis: {
 				ticks: getXAxisTicks(timeRange),
-				format: (date: Date) => formatXAxisDate(date, timeRange)
+				format: (date: Date) => formatXAxisDate(date, timeRange),
 			},
 			yAxis: {
-				format: () => ''
-			}
+				format: () => '',
+			},
 		}}
 	>
 		{#snippet marks({ series: chartSeries, getAreaProps })}
@@ -92,8 +89,8 @@
 					width: {
 						type: 'tween',
 						duration: ANIMATION_DURATION,
-						easing: cubicInOut
-					}
+						easing: cubicInOut,
+					},
 				}}
 			>
 				{#each chartSeries as s, i (s.key)}
@@ -109,7 +106,7 @@
 					{#snippet formatter({ name, value })}
 						<div
 							style="--color-bg: var(--color-{name})"
-							class="border-(--color-border) bg-(--color-bg) h-full w-1 shrink-0 rounded-[2px]"
+							class="h-full w-1 shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)"
 						></div>
 						<div class="flex flex-1 shrink-0 items-center justify-between leading-none">
 							<div class="grid gap-1.5">
@@ -126,10 +123,7 @@
 					{/snippet}
 				</Chart.Tooltip>
 			{:else}
-				<Chart.Tooltip
-					labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)}
-					indicator="line"
-				/>
+				<Chart.Tooltip labelFormatter={(date: Date) => formatTooltipDate(date, timeRange)} indicator="line" />
 			{/if}
 		{/snippet}
 	</AreaChart>

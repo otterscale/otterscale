@@ -5,11 +5,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: CommandPrimitive.EmptyProps = $props();
+	let { ref = $bindable(null), class: className, ...restProps }: CommandPrimitive.EmptyProps = $props();
 </script>
 
 <Command.Empty bind:ref data-slot="select-empty" class={cn(className)} {...restProps} />

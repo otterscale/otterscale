@@ -26,7 +26,7 @@
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [],
-		current: dynamicPaths.networking(page.params.scope)
+		current: dynamicPaths.networking(page.params.scope),
 	});
 
 	let isReloading = $state(true);
@@ -47,8 +47,8 @@
 		{
 			key: 'available',
 			value: Number(targetSubnet?.subnet?.statistics?.available ?? 0),
-			color: 'var(--chart-2)'
-		}
+			color: 'var(--chart-2)',
+		},
 	]);
 	const availableInternetProtocolsConfiguration = {} satisfies Chart.ChartConfig;
 
@@ -63,24 +63,24 @@
 		receives.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmits[index]?.value ?? 0
-		}))
+			transmit: transmits[index]?.value ?? 0,
+		})),
 	);
 	const latestTraffics = $derived({
 		receive: latestReceive,
-		transmit: latestTransmit
+		transmit: latestTransmit,
 	});
 	const trafficsConfigurations = {
 		views: { label: 'Traffic', color: '' },
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
-		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
+		transmit: { label: 'Transmit', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 	const activeTrafficConfiguration = $derived([
 		{
 			key: activeTraffic,
 			label: trafficsConfigurations[activeTraffic].label,
-			color: trafficsConfigurations[activeTraffic].color
-		}
+			color: trafficsConfigurations[activeTraffic].color,
+		},
 	]);
 
 	let receivesByTime = $state([] as SampleValue[]);
@@ -89,12 +89,12 @@
 		receivesByTime.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmitsByTime[index]?.value ?? 0
-		}))
+			transmit: transmitsByTime[index]?.value ?? 0,
+		})),
 	);
 	const trafficsByTimeConfiguration = {
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
-		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
+		transmit: { label: 'Transmit', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 
 	function fetch() {
@@ -102,8 +102,8 @@
 			prometheusDriver.set(
 				new PrometheusDriver({
 					endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-					baseURL: response.baseUrl
-				})
+					baseURL: response.baseUrl,
+				}),
 			);
 
 			if ($prometheusDriver && $activeScope) {
@@ -112,7 +112,7 @@
 						`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`,
 						new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 						new Date().setMinutes(0, 0, 0),
-						2 * 60
+						2 * 60,
 					)
 					.then((response) => {
 						receives = response.result[0].values;
@@ -122,21 +122,21 @@
 						`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`,
 						new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 						new Date().setMinutes(0, 0, 0),
-						2 * 60
+						2 * 60,
 					)
 					.then((response) => {
 						transmits = response.result[0].values;
 					});
 				$prometheusDriver
 					.instantQuery(
-						`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`
+						`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`,
 					)
 					.then((response) => {
 						latestReceive = response.result[0].value.value;
 					});
 				$prometheusDriver
 					.instantQuery(
-						`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`
+						`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[4m]))`,
 					)
 					.then((response) => {
 						latestTransmit = response.result[0].value.value;
@@ -146,7 +146,7 @@
 						`sum(increase(node_network_receive_bytes_total{juju_model_uuid="${$activeScope.uuid}"}[1h]))`,
 						new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
 						new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
-						1 * 60 * 60
+						1 * 60 * 60,
 					)
 					.then((response) => {
 						receivesByTime = response.result[0]?.values;
@@ -156,7 +156,7 @@
 						`sum(increase(node_network_transmit_bytes_total{}[1h]))`,
 						new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
 						new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
-						1 * 60 * 60
+						1 * 60 * 60,
 					)
 					.then((response) => {
 						transmitsByTime = response.result[0]?.values;
@@ -273,11 +273,11 @@
 							series={availableInternetProtocols.map((ip) => ({
 								key: ip.key,
 								color: ip.color,
-								data: [ip]
+								data: [ip],
 							}))}
 							props={{
 								arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
-								tooltip: { context: { hideDelay: 350 } }
+								tooltip: { context: { hideDelay: 350 } },
 							}}
 							tooltip={false}
 						>
@@ -326,13 +326,13 @@
 									key: 'receive',
 									label: trafficsByTimeConfiguration.receive.label,
 									color: trafficsByTimeConfiguration.receive.color,
-									props: { rounded: 'bottom' }
+									props: { rounded: 'bottom' },
 								},
 								{
 									key: 'transmit',
 									label: trafficsByTimeConfiguration.transmit.label,
-									color: trafficsByTimeConfiguration.transmit.color
-								}
+									color: trafficsByTimeConfiguration.transmit.color,
+								},
 							]}
 							seriesLayout="stack"
 							props={{
@@ -342,15 +342,15 @@
 									initialHeight: 0,
 									motion: {
 										y: { type: 'tween', duration: 500, easing: cubicInOut },
-										height: { type: 'tween', duration: 500, easing: cubicInOut }
-									}
+										height: { type: 'tween', duration: 500, easing: cubicInOut },
+									},
 								},
 								highlight: { area: false },
 								xAxis: {
 									format: (v: Date) =>
 										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
-									ticks: 1
-								}
+									ticks: 1,
+								},
 							}}
 							legend
 						>
@@ -365,7 +365,7 @@
 											month: 'short',
 											day: 'numeric',
 											hour: 'numeric',
-											minute: 'numeric'
+											minute: 'numeric',
 										});
 									}}
 								>
@@ -454,9 +454,7 @@
 					<div class="flex">
 						{#each ['receive', 'transmit'] as key (key)}
 							{@const chart = key as keyof typeof trafficsConfigurations}
-							{@const { value, unit } = formatIO(
-								latestTraffics[key as keyof typeof latestTraffics]
-							)}
+							{@const { value, unit } = formatIO(latestTraffics[key as keyof typeof latestTraffics])}
 							<button
 								data-active={activeTraffic === chart}
 								class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
@@ -490,15 +488,15 @@
 									initialHeight: 0,
 									motion: {
 										y: { type: 'tween', duration: 500, easing: cubicInOut },
-										height: { type: 'tween', duration: 500, easing: cubicInOut }
-									}
+										height: { type: 'tween', duration: 500, easing: cubicInOut },
+									},
 								},
 								highlight: { area: { fill: 'none' } },
 								xAxis: {
 									format: (v: Date) =>
 										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
-									ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks()
-								}
+									ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks(),
+								},
 							}}
 						>
 							{#snippet belowMarks()}
@@ -513,7 +511,7 @@
 											month: 'short',
 											day: 'numeric',
 											hour: 'numeric',
-											minute: 'numeric'
+											minute: 'numeric',
 										});
 									}}
 								>

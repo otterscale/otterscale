@@ -10,7 +10,7 @@
 <div
 	class={cn(
 		'pointer-events-none fixed inset-0 flex flex-col items-center justify-center gap-2 transition-all duration-200 ease-linear',
-		sidebar.open ? 'ml-(--sidebar-width)' : ''
+		sidebar.open ? 'ml-(--sidebar-width)' : '',
 	)}
 >
 	<div class="border-border flex size-24 items-center justify-center rounded-full border-2">

@@ -14,7 +14,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import Create from './action-create.svelte';
@@ -24,8 +24,7 @@
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { users, reloadManager }: { users: Writable<User[]>; reloadManager: ReloadManager } =
-		$props();
+	let { users, reloadManager }: { users: Writable<User[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -58,7 +57,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -96,7 +95,7 @@
 			}
 		},
 
-		autoResetPageIndex: false
+		autoResetPageIndex: false,
 	});
 </script>
 
@@ -107,12 +106,7 @@
 	<Layout.Controller>
 		<Layout.ControllerFilter>
 			<Filters.StringFuzzy columnId="id" values={$users.map((row) => row.id)} {messages} {table} />
-			<Filters.StringMatch
-				columnId="name"
-				values={$users.map((row) => row.name)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringMatch columnId="name" values={$users.map((row) => row.name)} {messages} {table} />
 			<Filters.BooleanMatch
 				columnId="suspended"
 				descriptor={(value) => (value ? m.suspended() : m.not_suspended())}

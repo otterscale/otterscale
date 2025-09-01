@@ -7,7 +7,7 @@
 
 <script lang="ts">
 	let {
-		key
+		key,
 	}: {
 		key: User_Key;
 	} = $props();

@@ -7,7 +7,7 @@
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [dynamicPaths.databases(page.params.scope)],
-		current: dynamicPaths.databasesRelational(page.params.scope)
+		current: dynamicPaths.databasesRelational(page.params.scope),
 	});
 </script>
 

@@ -11,7 +11,7 @@
 		align = 'end',
 		variant = 'ghost',
 		onChange,
-		class: className
+		class: className,
 	}: LanguageSwitcherProps = $props();
 
 	// set default code if there isn't one selected
@@ -21,10 +21,7 @@
 </script>
 
 <DropdownMenu.Root>
-	<DropdownMenu.Trigger
-		class={cn(buttonVariants({ variant, size: 'icon' }), className)}
-		aria-label="Change language"
-	>
+	<DropdownMenu.Trigger class={cn(buttonVariants({ variant, size: 'icon' }), className)} aria-label="Change language">
 		<Icon icon="ph:globe" class="size-5" />
 		<span class="sr-only">Change language</span>
 	</DropdownMenu.Trigger>

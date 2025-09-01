@@ -14,11 +14,6 @@
 	}: WithElementRef<HTMLAttributes<HTMLSpanElement>> = $props();
 </script>
 
-<DropdownMenu.Shortcut
-	bind:ref
-	data-slot="alert-dialog-action-shortcut"
-	class={cn(className)}
-	{...restProps}
->
+<DropdownMenu.Shortcut bind:ref data-slot="alert-dialog-action-shortcut" class={cn(className)} {...restProps}>
 	{@render children?.()}
 </DropdownMenu.Shortcut>

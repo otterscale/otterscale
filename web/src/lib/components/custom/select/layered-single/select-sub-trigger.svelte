@@ -20,10 +20,7 @@
 	bind:ref
 	data-slot="seelct-sub-trigger"
 	data-inset={inset}
-	class={cn(
-		'hover:bg-accent hover:text-accent-foreground cursor-pointer select-none rounded-sm',
-		className
-	)}
+	class={cn('hover:bg-accent hover:text-accent-foreground cursor-pointer rounded-sm select-none', className)}
 	{...restProps}
 >
 	{@render children?.()}

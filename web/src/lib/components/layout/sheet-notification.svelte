@@ -20,9 +20,7 @@
 		notifications.update((items) => items.map((n) => (n.id === id ? { ...n, read: true } : n)));
 	}
 	async function unarchiveNotifition(id: string) {
-		notifications.update((items) =>
-			items.map((n) => (n.id === id ? { ...n, archived: false } : n))
-		);
+		notifications.update((items) => items.map((n) => (n.id === id ? { ...n, archived: false } : n)));
 	}
 	async function archiveNotifition(id: string) {
 		notifications.update((items) => items.map((n) => (n.id === id ? { ...n, archived: true } : n)));

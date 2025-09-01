@@ -10,7 +10,7 @@
 		type,
 		startIp,
 		endIp,
-		comment
+		comment,
 	};
 </script>
 
@@ -22,7 +22,7 @@
 
 {#snippet type(row: Row<Network_IPRange>)}
 	<Layout.Cell class="items-start">
-	<Badge variant="outline">
+		<Badge variant="outline">
 			{row.original.type}
 		</Badge>
 	</Layout.Cell>

@@ -10,7 +10,7 @@ import { headers } from './headers.svelte';
 const messages = {
 	name: m.name(),
 	createTime: m.create_time(),
-	hasPendingClones: m.pending_clones()
+	hasPendingClones: m.pending_clones(),
 };
 
 const columns: ColumnDef<Subvolume_Snapshot>[] = [
@@ -23,7 +23,7 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'name',
@@ -32,7 +32,7 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'hasPendingClones',
@@ -41,7 +41,7 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.hasPendingClones, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'createTime',
@@ -56,8 +56,8 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 				previousRow.original.createdAt,
 				nextRow.original.createdAt,
 				(p, n) => timestampDate(p) < timestampDate(n),
-				(p, n) => timestampDate(p) === timestampDate(n)
-			)
+				(p, n) => timestampDate(p) === timestampDate(n),
+			),
 	},
 	{
 		accessorKey: 'actions',
@@ -67,8 +67,8 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false
-	}
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };

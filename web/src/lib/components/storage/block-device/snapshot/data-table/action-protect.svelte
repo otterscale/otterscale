@@ -1,9 +1,5 @@
 <script lang="ts" module>
-	import type {
-		Image,
-		Image_Snapshot,
-		ProtectImageSnapshotRequest
-	} from '$lib/api/storage/v1/storage_pb';
+	import type { Image, Image_Snapshot, ProtectImageSnapshotRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
@@ -16,7 +12,7 @@
 
 <script lang="ts">
 	let {
-		snapshot
+		snapshot,
 	}: {
 		snapshot: Image_Snapshot;
 	} = $props();
@@ -31,7 +27,7 @@
 		facilityName: $currentCeph?.name,
 		imageName: image.name,
 		poolName: image.poolName,
-		snapshotName: snapshot.name
+		snapshotName: snapshot.name,
 	} as ProtectImageSnapshotRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -52,10 +48,10 @@
 				let message = `Fail to protect ${request.snapshotName}`;
 				toast.error(message, {
 					description: (error as ConnectError).message.toString(),
-					duration: Number.POSITIVE_INFINITY
+					duration: Number.POSITIVE_INFINITY,
 				});
 				return message;
-			}
+			},
 		});
 		reset();
 	}}

@@ -38,7 +38,7 @@
 			class={cn(
 				'm-0 h-full w-full rounded-full border transition-all duration-300',
 				stepManager.areStepsActive(value) ? 'bg-primary' : 'bg-muted',
-				stepManager.isStepActive(value) && 'ring-card ring'
+				stepManager.isStepActive(value) && 'ring-card ring',
 			)}
 			onclick={async (e) => {
 				e.preventDefault();
@@ -51,7 +51,7 @@
 				class={cn(
 					'size-6',
 					icon ?? 'invisible',
-					stepManager.areStepsActive(value) ? 'text-card' : 'text-muted-foreground'
+					stepManager.areStepsActive(value) ? 'text-card' : 'text-muted-foreground',
 				)}
 			/>
 		</Button>

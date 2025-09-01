@@ -22,7 +22,7 @@ const messages = {
 	latencyMean: m.latency_mean(),
 	createdBy: m.created_by(),
 	startedAt: m.started_at(),
-	completedAt: m.completed_at()
+	completedAt: m.completed_at(),
 };
 
 const columns: ColumnDef<TestResult>[] = [
@@ -35,7 +35,7 @@ const columns: ColumnDef<TestResult>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'name',
@@ -44,7 +44,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.name, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'status',
@@ -53,7 +53,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.status, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'target',
@@ -62,7 +62,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.target, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'accessMode',
@@ -71,7 +71,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.accessMode, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'jobCount',
@@ -80,7 +80,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.jobCount, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'runTime',
@@ -89,7 +89,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.runTime, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'blockSize',
@@ -98,7 +98,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.blockSize, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'fileSize',
@@ -107,7 +107,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.fileSize, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'ioDepth',
@@ -116,7 +116,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.ioDepth, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'createdBy',
@@ -125,7 +125,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.createdBy, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'bandwidth',
@@ -134,7 +134,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.bandwidth, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'iops',
@@ -143,7 +143,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.iops, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'latencyMinimum',
@@ -152,7 +152,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.latencyMinimum, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'latencyMaximum',
@@ -161,7 +161,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.latencyMaximum, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'latencyMean',
@@ -170,7 +170,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.latencyMean, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'startedAt',
@@ -179,7 +179,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.startedAt, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'completedAt',
@@ -188,7 +188,7 @@ const columns: ColumnDef<TestResult>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.completedAt, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'actions',
@@ -198,8 +198,8 @@ const columns: ColumnDef<TestResult>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false
-	}
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };

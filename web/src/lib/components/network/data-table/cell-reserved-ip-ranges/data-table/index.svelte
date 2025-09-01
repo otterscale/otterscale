@@ -13,7 +13,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import Create from './action-create.svelte';
 	import Actions from './actions.svelte';
@@ -22,7 +22,7 @@
 
 <script lang="ts" generics="TData, TValue">
 	let {
-		subnet
+		subnet,
 	}: {
 		subnet: Network_Subnet;
 	} = $props();
@@ -65,7 +65,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -103,25 +103,15 @@
 			}
 		},
 
-		autoResetPageIndex: false
+		autoResetPageIndex: false,
 	});
 </script>
 
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy
-				columnId="comment"
-				values={ipRanges.map((row) => row.comment)}
-				{messages}
-				{table}
-			/>
-			<Filters.StringMatch
-				columnId="type"
-				values={ipRanges.flatMap((row) => row.type)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringFuzzy columnId="comment" values={ipRanges.map((row) => row.comment)} {messages} {table} />
+			<Filters.StringMatch columnId="type" values={ipRanges.flatMap((row) => row.type)} {messages} {table} />
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

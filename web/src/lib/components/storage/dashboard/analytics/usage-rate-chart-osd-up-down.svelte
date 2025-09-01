@@ -19,14 +19,14 @@
 	// Queries
 	const queries = $derived({
 		up: `sum(ceph_osd_up{juju_model_uuid=~"${scope.uuid}"})`,
-		total: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`
+		total: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`,
 	});
 
 	// Data fetching function
 	async function fetchMetrics() {
 		const [upResponse, totalResponse] = await Promise.all([
 			client.instantQuery(queries.up),
-			client.instantQuery(queries.total)
+			client.instantQuery(queries.total),
 		]);
 
 		const upValue = upResponse.result[0]?.value?.value;
@@ -39,7 +39,7 @@
 			upNumber: upValue,
 			downNumber: downValue,
 			totalNumber: totalValue,
-			upUsage: upUsagePercentage !== null ? [{ value: upUsagePercentage }] : [{ value: NaN }]
+			upUsage: upUsagePercentage !== null ? [{ value: upUsagePercentage }] : [{ value: NaN }],
 		};
 	}
 </script>

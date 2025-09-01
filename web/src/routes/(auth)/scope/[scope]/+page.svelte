@@ -14,23 +14,23 @@
 		{
 			background: 'bg-[#1c77c3]/30',
 			path: dynamicPaths.models(page.params.scope),
-			description: m.models_description()
+			description: m.models_description(),
 		},
 		{
 			background: 'bg-[#39a9db]/30',
 			path: dynamicPaths.applications(page.params.scope),
-			description: m.applications_description()
+			description: m.applications_description(),
 		},
 		{
 			background: 'bg-[#f39237]/30',
 			path: dynamicPaths.storage(page.params.scope),
-			description: m.storage_description()
+			description: m.storage_description(),
 		},
 		{
 			background: 'bg-[#d63230]/30',
 			path: dynamicPaths.machines(page.params.scope),
-			description: m.machines_description()
-		}
+			description: m.machines_description(),
+		},
 	]);
 </script>
 
@@ -57,7 +57,7 @@
 						$currentCeph?.name,
 						$currentKubernetes?.name,
 						page.params.scope,
-						card.path.url
+						card.path.url,
 					)}
 				/>
 			{/each}
@@ -68,7 +68,7 @@
 		<div class="mx-auto max-w-5xl px-6">
 			<div class="grid items-center gap-4 sm:grid-cols-2">
 				<div class="dark:bg-muted/50 relative mx-auto w-fit">
-					<div class="to-muted bg-radial absolute inset-0 z-10 from-transparent to-75%"></div>
+					<div class="to-muted absolute inset-0 z-10 bg-radial from-transparent to-75%"></div>
 					<div class="mx-auto mb-2 flex w-fit justify-center gap-2">
 						<HomeCell icon="logos:postgresql" />
 						<HomeCell icon="ph:circle-dashed" color="#f0424d" />
@@ -89,7 +89,7 @@
 					</div>
 				</div>
 				<div class="mx-auto mt-6 max-w-lg space-y-4 text-center sm:mt-0 sm:text-left">
-					<h2 class="text-balance text-3xl font-semibold">
+					<h2 class="text-3xl font-semibold text-balance">
 						{m.home_integration()}
 					</h2>
 					<p class="text-muted-foreground">

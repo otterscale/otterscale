@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	let {
-		subvolumeGroup
+		subvolumeGroup,
 	}: {
 		subvolumeGroup: SubvolumeGroup;
 	} = $props();
@@ -31,7 +31,7 @@
 	const defaults = {
 		scopeUuid: get(groupStore.selectedScopeUuid),
 		facilityName: get(groupStore.selectedFacilityName),
-		volumeName: get(groupStore.selectedVolumeName)
+		volumeName: get(groupStore.selectedVolumeName),
 	} as DeleteSubvolumeGroupRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -88,10 +88,10 @@
 								let message = `Fail to delete ${request.volumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

@@ -12,11 +12,7 @@
 	let { filterManager }: { filterManager: FilterManager } = $props();
 
 	const maintainerNames = $derived([
-		...new Set(
-			filterManager.charts.flatMap((chart) =>
-				chart.maintainers.map((maintainer) => maintainer.name)
-			)
-		)
+		...new Set(filterManager.charts.flatMap((chart) => chart.maintainers.map((maintainer) => maintainer.name))),
 	]);
 </script>
 
@@ -44,7 +40,7 @@
 								icon="ph:check"
 								class={cn(
 									filterManager.isMaintainerSelected(maintainerName) ? 'visible' : 'invisible',
-									'h-4 w-4'
+									'h-4 w-4',
 								)}
 							/>
 							{maintainerName}

@@ -57,7 +57,7 @@
 				node_memory_MemTotal_bytes{juju_model_uuid=~"${scope.uuid}"}
 			)
 		)
-		`
+		`,
 	);
 </script>
 

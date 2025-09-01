@@ -24,8 +24,7 @@
 	import { dynamicPaths } from '$lib/path';
 	import type { Plan } from './plans';
 
-	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } =
-		$props();
+	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -209,10 +208,7 @@
 											{m.create_scope_calico_cidr_description()}
 										</p>
 									</div>
-									<IPv4CIDRInput
-										class="font-sans text-sm font-normal"
-										placeholder="192.168.0.0/16"
-									/>
+									<IPv4CIDRInput class="font-sans text-sm font-normal" placeholder="192.168.0.0/16" />
 								</div>
 								<div class="grid gap-4">
 									<div class="grid gap-1">
@@ -221,10 +217,7 @@
 											{m.create_scope_virtual_ip_description()}
 										</p>
 									</div>
-									<IPv4AddressInput
-										class="font-sans text-sm font-normal"
-										placeholder="192.168.1.1"
-									/>
+									<IPv4AddressInput class="font-sans text-sm font-normal" placeholder="192.168.1.1" />
 								</div>
 							</div>
 						{/if}
@@ -302,15 +295,11 @@
 					<span class="text-muted-foreground text-sm">{m.firmware()}</span>
 					<span class="text-sm">{machine.hardwareInformation.mainboard_firmware_vendor}</span>
 					<span class="text-muted-foreground text-sm">{m.version()}</span>
-					<span class="col-span-3 text-sm"
-						>{machine.hardwareInformation.mainboard_firmware_version}</span
-					>
+					<span class="col-span-3 text-sm">{machine.hardwareInformation.mainboard_firmware_version}</span>
 					<span class="text-muted-foreground text-sm">{m.boot_mode()}</span>
 					<span class="text-sm">{machine.biosBootMethod}</span>
 					<span class="text-muted-foreground text-sm">{m.date()}</span>
-					<span class="col-span-3 text-sm"
-						>{machine.hardwareInformation.mainboard_firmware_date}</span
-					>
+					<span class="col-span-3 text-sm">{machine.hardwareInformation.mainboard_firmware_date}</span>
 
 					<Separator class="col-span-6 my-2" />
 
