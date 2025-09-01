@@ -12,15 +12,19 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup
       uses: actions/setup-go@v5
       with:
         go-version: '1.24.x'
+
     - name: Install Ceph development libraries
       run: |
         sudo apt update
         sudo apt install -y libcephfs-dev librbd-dev librados-dev
+
     - name: Build
       run: go build -v ./...
+
     - name: Test
-      run: go test -v ./...
+      run: go test -v -coverprofile=coverage.txt ./...
