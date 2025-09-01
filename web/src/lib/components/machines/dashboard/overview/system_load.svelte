@@ -21,7 +21,7 @@
 	} satisfies Chart.ChartConfig;
 
 	let ones = $state([] as SampleValue[]);
-	let fives = $state({} as SampleValue[]);
+	let fives = $state([] as SampleValue[]);
 	const systemLoads = $derived(
 		ones.map((sample, index) => ({
 			time: sample.time,
