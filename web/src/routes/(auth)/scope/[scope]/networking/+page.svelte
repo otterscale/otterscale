@@ -29,6 +29,7 @@
 		current: dynamicPaths.networking(page.params.scope)
 	});
 
+	let isReloading = $state(true);
 	//
 	const transport: Transport = getContext('transport');
 
@@ -197,7 +198,7 @@
 				<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
 				<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
 			</Tabs.List>
-			<Reloader {reloadManager} />
+			<Reloader bind:checked={isReloading} />
 		</div>
 		<Tabs.Content
 			value="overview"
