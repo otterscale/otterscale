@@ -6,7 +6,12 @@
 	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
 
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	// Props
+	let {
+		client,
+		scope,
+		isReloading = $bindable()
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = m.cluster_health();
@@ -51,7 +56,7 @@
 			{healthStatus?.label}
 			<Icon
 				icon={healthStatus.icon}
-				class="text-primary/5 absolute size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden {healthStatus.iconClass}"
+				class="text-primary/5 absolute size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden {healthStatus.iconClass}"
 			/>
 		</Card.Content>
 	</Card.Root>

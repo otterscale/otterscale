@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatIO } from '$lib/formatter';
@@ -8,9 +9,8 @@
 	import { getLocale } from '$lib/paraglide/runtime';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
+	import { onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
-	import { onDestroy, onMount } from 'svelte';
-	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	// Props
 	let {
@@ -22,9 +22,13 @@
 	// Constants
 	const CHART_TITLE = m.osd_throughPut();
 	const CHART_DESCRIPTION = `${m.read()}/${m.write()}`;
+
+	// Time range calculation
 	const STEP_SECONDS = 60 * 60; // 1 hour
 	const TIME_RANGE_HOURS = 24; // 24 hours of data
 	const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
+	const endTime = Date.now();
+	const startTime = endTime - TIME_RANGE_HOURS * MILLISECONDS_PER_HOUR;
 
 	// Chart configuration
 	const chartConfig = {
@@ -38,24 +42,20 @@
 		}
 	} satisfies Chart.ChartConfig;
 
+	// Type
 	type ChartKey = keyof typeof chartConfig;
 	type TrafficData = {
 		date: Date;
 		Read: number;
 		Write: number;
 	};
-
 	type MetricsResponse = {
-		traffics: TrafficData[];
+		traffics: TrafficData[] | [];
 		latestReadValue: number | undefined;
 		latestWriteValue: number | undefined;
 		latestReadUnit: string | undefined;
 		latestWriteUnit: string | undefined;
 	};
-
-	// Time range calculation
-	const endTime = Date.now();
-	const startTime = endTime - TIME_RANGE_HOURS * MILLISECONDS_PER_HOUR;
 
 	// State
 	let activeChart = $state<ChartKey>('Read');
@@ -63,8 +63,8 @@
 
 	// Derived state
 	const queries = $derived({
-		Read: `sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
-		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`
+		Read: `sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[1h]))`,
+		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[1h]))`
 	});
 
 	const activeSeries = $derived([
@@ -92,8 +92,13 @@
 		}));
 	}
 
+	// Auto Update
+	let response = $state({} as MetricsResponse);
+	let isLoading = $state(true);
+	const reloadManager = new ReloadManager(fetch);
+
 	// Data fetching function
-	async function fetchMetrics(): Promise<MetricsResponse> {
+	async function fetch(): Promise<void> {
 		try {
 			const [readResponse, writeResponse, latestReadResponse, latestWriteResponse] =
 				await Promise.all([
@@ -113,7 +118,7 @@
 
 			const traffics = combineTrafficData(reads, writes);
 
-			return {
+			response = {
 				traffics,
 				latestReadValue: readValue,
 				latestWriteValue: writeValue,
@@ -122,7 +127,7 @@
 			};
 		} catch (error) {
 			console.error('Failed to fetch throughput metrics:', error);
-			return {
+			response = {
 				traffics: [],
 				latestReadValue: undefined,
 				latestWriteValue: undefined,
@@ -131,20 +136,6 @@
 			};
 		}
 	}
-
-	let throughputs = $state({
-		traffics: [],
-		latestReadValue: undefined,
-		latestWriteValue: undefined,
-		latestReadUnit: undefined,
-		latestWriteUnit: undefined
-	} as MetricsResponse);
-	let isLoading = $state(true);
-	async function fetch() {
-		throughputs = await fetchMetrics();
-	}
-
-	const reloadManager = new ReloadManager(fetch);
 
 	$effect(() => {
 		isReloading;
@@ -174,9 +165,8 @@
 					{@const chart = key as ChartKey}
 					{@const isActive = activeChart === chart}
 					{@const latestValue =
-						key === 'Read' ? throughputs.latestReadValue : throughputs.latestWriteValue}
-					{@const latestUnit =
-						key === 'Read' ? throughputs.latestReadUnit : throughputs.latestWriteUnit}
+						key === 'Read' ? response.latestReadValue : response.latestWriteValue}
+					{@const latestUnit = key === 'Read' ? response.latestReadUnit : response.latestWriteUnit}
 					<button
 						data-active={isActive}
 						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
@@ -198,7 +188,7 @@
 			<Chart.Container config={chartConfig} class="aspect-auto h-[150px] w-full">
 				<BarChart
 					bind:context
-					data={throughputs.traffics}
+					data={response.traffics}
 					x="date"
 					axis="x"
 					series={activeSeries}
