@@ -46,7 +46,7 @@
 		<BarOSDThroughtput {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-4 row-span-2">
-		<BarOSDIOPS {client} {scope} />
+		<BarOSDIOPS {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
 		<AreaOSDReadLatency {client} {scope} />

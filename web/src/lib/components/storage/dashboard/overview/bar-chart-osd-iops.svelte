@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatBigNumber } from '$lib/formatter';
@@ -8,17 +9,26 @@
 	import { getLocale } from '$lib/paraglide/runtime';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
+	import { onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
 
 	// Props
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let {
+		client,
+		scope,
+		isReloading = $bindable()
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = 'OSD IOPS';
 	const CHART_DESCRIPTION = `${m.read()}/${m.write()}`;
+
+	// Time range calculation
 	const STEP_SECONDS = 60 * 60; // 1 hour
 	const TIME_RANGE_HOURS = 24; // 24 hours of data
 	const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
+	const endTime = Date.now();
+	const startTime = endTime - TIME_RANGE_HOURS * MILLISECONDS_PER_HOUR;
 
 	// Chart configuration
 	const chartConfig = {
@@ -32,24 +42,20 @@
 		}
 	} satisfies Chart.ChartConfig;
 
+	// Type
 	type ChartKey = keyof typeof chartConfig;
 	type TrafficData = {
 		date: Date;
 		Read: number;
 		Write: number;
 	};
-
 	type MetricsResponse = {
-		traffics: TrafficData[];
+		traffics: TrafficData[] | [];
 		latestReadValue: number | undefined;
 		latestWriteValue: number | undefined;
 		latestReadUnit: string | undefined;
 		latestWriteUnit: string | undefined;
 	};
-
-	// Time range calculation
-	const endTime = Date.now();
-	const startTime = endTime - TIME_RANGE_HOURS * MILLISECONDS_PER_HOUR;
 
 	// State
 	let activeChart = $state<ChartKey>('Read');
@@ -57,8 +63,8 @@
 
 	// Derived state
 	const queries = $derived({
-		Read: `sum(irate(ceph_osd_op_r{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
-		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[5m]))`
+		Read: `sum(irate(ceph_osd_op_r{juju_model_uuid=~"${scope.uuid}"}[1h]))`,
+		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[1h]))`
 	});
 
 	const activeSeries = $derived([
@@ -86,8 +92,13 @@
 		}));
 	}
 
+	// Auto Update
+	let response = $state({} as MetricsResponse);
+	let isLoading = $state(true);
+	const reloadManager = new ReloadManager(fetch);
+
 	// Data fetching function
-	async function fetchMetrics(): Promise<MetricsResponse> {
+	async function fetch(): Promise<void> {
 		try {
 			const [readResponse, writeResponse, latestReadResponse, latestWriteResponse] =
 				await Promise.all([
@@ -104,7 +115,7 @@
 
 			const traffics = combineTrafficData(reads, writes);
 
-			return {
+			response = {
 				traffics,
 				latestReadValue: Math.round(latestReadValue),
 				latestWriteValue: Math.round(latestWriteValue),
@@ -113,7 +124,7 @@
 			};
 		} catch (error) {
 			console.error('Failed to fetch IOPS metrics:', error);
-			return {
+			response = {
 				traffics: [],
 				latestReadValue: undefined,
 				latestWriteValue: undefined,
@@ -122,11 +133,24 @@
 			};
 		}
 	}
+
+	$effect(() => {
+		isReloading;
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#await fetchMetrics()}
+{#if isLoading}
 	<ComponentLoading />
-{:then response}
+{:else}
 	<Card.Root class="gap-2">
 		<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
@@ -143,13 +167,13 @@
 					{@const displayValue = latestValue ? formatBigNumber(latestValue) : '0'}
 					<button
 						data-active={isActive}
-						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
+						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
 						onclick={() => (activeChart = chart)}
 					>
 						<span class="text-muted-foreground text-xs">
 							{chartConfig[chart].label}
 						</span>
-						<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
+						<span class="flex items-end gap-1 text-lg font-bold leading-none sm:text-3xl">
 							{displayValue}
 							<span class="text-muted-foreground text-xs">{latestUnit}</span>
 						</span>
@@ -209,7 +233,7 @@
 								{@const formattedValue = formatBigNumber(Math.round(Number(value)))}
 								<div
 									style="--color-bg: {item.color}"
-									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+									class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
 								></div>
 								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
 									<div class="grid gap-1.5">
@@ -224,4 +248,4 @@
 			</Chart.Container>
 		</Card.Content>
 	</Card.Root>
-{/await}
+{/if}
