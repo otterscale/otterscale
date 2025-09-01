@@ -114,7 +114,7 @@
 	const CHART_INNER_RADIUS = 60;
 	const CHART_PADDING = 28;
 	const CHART_CLASSES = 'mx-auto aspect-square max-h-[200px]';
-	const CARD_CLASSES = 'col-span-2 row-span-2 gap-2';
+	const CARD_CLASSES = 'gap-2';
 </script>
 
 {#await fetchMetrics()}

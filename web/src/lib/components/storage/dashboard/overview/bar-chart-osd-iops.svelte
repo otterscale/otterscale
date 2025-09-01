@@ -3,7 +3,7 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatIO } from '$lib/formatter';
+	import { formatBigNumber } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
@@ -15,7 +15,7 @@
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	// Constants
-	const CHART_TITLE = m.osd_throughPut();
+	const CHART_TITLE = 'OSD IOPS';
 	const CHART_DESCRIPTION = `${m.read()}/${m.write()}`;
 	const STEP_SECONDS = 60 * 60; // 1 hour
 	const TIME_RANGE_HOURS = 24; // 24 hours of data
@@ -58,8 +58,8 @@
 
 	// Derived state
 	const queries = $derived({
-		Read: `sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
-		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`
+		Read: `sum(irate(ceph_osd_op_r{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
+		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[5m]))`
 	});
 
 	const activeSeries = $derived([
@@ -103,20 +103,17 @@
 			const latestReadValue = extractLatestValue(latestReadResponse);
 			const latestWriteValue = extractLatestValue(latestWriteResponse);
 
-			const { value: readValue, unit: readUnit } = formatIO(latestReadValue);
-			const { value: writeValue, unit: writeUnit } = formatIO(latestWriteValue);
-
 			const traffics = combineTrafficData(reads, writes);
 
 			return {
 				traffics,
-				latestReadValue: readValue,
-				latestWriteValue: writeValue,
-				latestReadUnit: readUnit,
-				latestWriteUnit: writeUnit
+				latestReadValue: Math.round(latestReadValue),
+				latestWriteValue: Math.round(latestWriteValue),
+				latestReadUnit: 'IOPS',
+				latestWriteUnit: 'IOPS'
 			};
 		} catch (error) {
-			console.error('Failed to fetch throughput metrics:', error);
+			console.error('Failed to fetch IOPS metrics:', error);
 			return {
 				traffics: [],
 				latestReadValue: undefined,
@@ -131,7 +128,7 @@
 {#await fetchMetrics()}
 	<ComponentLoading />
 {:then response}
-	<Card.Root class="col-span-4 row-span-2 gap-2">
+	<Card.Root class="gap-2">
 		<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 				<Card.Title>{CHART_TITLE}</Card.Title>
@@ -144,16 +141,17 @@
 					{@const latestValue =
 						key === 'Read' ? response.latestReadValue : response.latestWriteValue}
 					{@const latestUnit = key === 'Read' ? response.latestReadUnit : response.latestWriteUnit}
+					{@const displayValue = latestValue ? formatBigNumber(latestValue) : '0'}
 					<button
 						data-active={isActive}
-						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
 						onclick={() => (activeChart = chart)}
 					>
 						<span class="text-muted-foreground text-xs">
 							{chartConfig[chart].label}
 						</span>
-						<span class="flex items-end gap-1 text-lg font-bold leading-none sm:text-3xl">
-							{latestValue}
+						<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
+							{displayValue}
 							<span class="text-muted-foreground text-xs">{latestUnit}</span>
 						</span>
 					</button>
@@ -209,16 +207,16 @@
 							}}
 						>
 							{#snippet formatter({ item, name, value })}
-								{@const { value: io, unit } = formatIO(Number(value))}
+								{@const formattedValue = formatBigNumber(Math.round(Number(value)))}
 								<div
 									style="--color-bg: {item.color}"
-									class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 								></div>
 								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{io} {unit}</p>
+									<p class="font-mono">{formattedValue} IOPS</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>
