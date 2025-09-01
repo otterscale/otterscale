@@ -50,7 +50,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('relative gap-2  overflow-hidden', span)}>
+	<Card.Root class={cn('relative gap-2 overflow-hidden', span)}>
 		<Card.Header>
 			<Card.Title>{m.discovery()}</Card.Title>
 			<Card.Description>{targetSubnet?.subnet?.name}</Card.Description>

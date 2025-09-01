@@ -52,7 +52,7 @@
 			});
 		prometheusDriver
 			.rangeQuery(
-				`sum(increase(node_network_transmit_bytes_total{}[1h]))`,
+				`sum(increase(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[1h]))`,
 				new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
 				new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 				1 * 60 * 60
