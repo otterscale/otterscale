@@ -1,48 +1,66 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
+	import { writable, derived } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
+	import { CheckHealthResponse_Result, EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { scopeIcon } from '$lib/components/scopes/icon';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths } from '$lib/path';
+	import { dynamicPaths, staticPaths } from '$lib/path';
 
 	const EXCLUDED_SCOPES = ['cos', 'cos-dev', 'cos-lite'];
 
 	const transport: Transport = getContext('transport');
+	const environmentClient = createClient(EnvironmentService, transport);
 	const scopeClient = createClient(ScopeService, transport);
+
 	const scopes = writable<Scope[]>([]);
-	const filteredScopes = writable<Scope[]>([]);
+	const filteredScopes = derived(scopes, ($scopes) =>
+		$scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name)),
+	);
+
+	async function checkEnvironmentHealth(): Promise<boolean> {
+		try {
+			const response = await environmentClient.checkHealth({});
+			return response.result === CheckHealthResponse_Result.OK;
+		} catch (error) {
+			console.error('Failed to check environment health:', error);
+			return false;
+		}
+	}
 
 	async function fetchScopes() {
 		try {
 			const response = await scopeClient.listScopes({});
 			scopes.set(response.scopes);
-			filteredScopes.set(response.scopes.filter((scope) => !EXCLUDED_SCOPES.includes(scope.name)));
 		} catch (error) {
 			console.error('Failed to fetch scopes:', error);
 		}
 	}
 
 	function getCardColumnClass(index: number, scopeCount: number): string {
-		if (index == 0) {
-			if (scopeCount === 1) return 'col-start-4';
-			if (scopeCount === 2) return 'col-start-3';
-			if (scopeCount === 3) return 'col-start-2';
-		}
-		return '';
+		const startColumns: Record<number, string> = { 1: 'col-start-4', 2: 'col-start-3', 3: 'col-start-2' };
+		return index === 0 ? startColumns[scopeCount] || '' : '';
 	}
 
 	function getScopeIndex(scopeName: string): number {
 		return $scopes.findIndex((scope) => scope.name === scopeName);
 	}
 
-	onMount(fetchScopes);
+	onMount(async () => {
+		const isHealthy = await checkEnvironmentHealth();
+		if (!isHealthy) {
+			goto(staticPaths.setup.url);
+			return;
+		}
+
+		await fetchScopes();
+	});
 </script>
 
 <svelte:head>
