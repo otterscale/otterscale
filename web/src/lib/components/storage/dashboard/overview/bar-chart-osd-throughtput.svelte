@@ -5,10 +5,9 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { scaleUtc } from 'd3-scale';
 	import { cubicInOut } from 'svelte/easing';
 	import { onDestroy, onMount } from 'svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
@@ -133,10 +132,15 @@
 		}
 	}
 
-	let throughputs = $state({} as MetricsResponse);
+	let throughputs = $state({
+		traffics: [],
+		latestReadValue: undefined,
+		latestWriteValue: undefined,
+		latestReadUnit: undefined,
+		latestWriteUnit: undefined
+	} as MetricsResponse);
 	let isLoading = $state(true);
 	async function fetch() {
-		console.log('loading', throughputs.latestReadValue);
 		throughputs = await fetchMetrics();
 	}
 
@@ -145,10 +149,8 @@
 	$effect(() => {
 		isReloading;
 		if (isReloading) {
-			console.log('restart');
 			reloadManager.restart();
 		} else {
-			console.log('stop');
 			reloadManager.stop();
 		}
 	});
@@ -177,13 +179,13 @@
 						key === 'Read' ? throughputs.latestReadUnit : throughputs.latestWriteUnit}
 					<button
 						data-active={isActive}
-						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
+						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
 						onclick={() => (activeChart = chart)}
 					>
 						<span class="text-muted-foreground text-xs">
 							{chartConfig[chart].label}
 						</span>
-						<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
+						<span class="flex items-end gap-1 text-lg font-bold leading-none sm:text-3xl">
 							{latestValue}
 							<span class="text-muted-foreground text-xs">{latestUnit}</span>
 						</span>
@@ -215,11 +217,11 @@
 						xAxis: {
 							format: (d: Date) => {
 								return d.toLocaleDateString(getLocale(), {
-									month: 'short',
-									day: '2-digit'
+									month: 'numeric',
+									day: 'numeric'
 								});
 							},
-							ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks()
+							ticks: 24
 						}
 					}}
 				>
@@ -243,7 +245,7 @@
 								{@const { value: io, unit } = formatIO(Number(value))}
 								<div
 									style="--color-bg: {item.color}"
-									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+									class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
 								></div>
 								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
 									<div class="grid gap-1.5">

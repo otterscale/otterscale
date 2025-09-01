@@ -5,10 +5,9 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatBigNumber } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { scaleUtc } from 'd3-scale';
 	import { cubicInOut } from 'svelte/easing';
 
 	// Props
@@ -182,11 +181,11 @@
 						xAxis: {
 							format: (d: Date) => {
 								return d.toLocaleDateString(getLocale(), {
-									month: 'short',
-									day: '2-digit'
+									month: 'numeric',
+									day: 'numeric'
 								});
 							},
-							ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks()
+							ticks: 24
 						}
 					}}
 				>
