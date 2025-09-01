@@ -7,7 +7,6 @@
 	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { CheckHealthResponse_Result, EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
 	import { PremiumTier, PremiumService } from '$lib/api/premium/v1/premium_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
@@ -28,7 +27,6 @@
 	let { user, ref = $bindable(null), ...restProps }: Props = $props();
 
 	const transport: Transport = getContext('transport');
-	const environmentClient = createClient(EnvironmentService, transport);
 	const scopeClient = createClient(ScopeService, transport);
 	const premiumClient = createClient(PremiumService, transport);
 	const essentialClient = createClient(EssentialService, transport);
@@ -104,20 +102,12 @@
 
 	async function initialize() {
 		try {
-			const response = await environmentClient.checkHealth({});
-			switch (response.result) {
-				case CheckHealthResponse_Result.OK:
-					await Promise.all([fetchScopes(), fetchEdition()]);
-					const index = Math.max(
-						$scopes.findIndex((scope) => scope.name == page.params.scope),
-						0,
-					);
-					handleScopeOnSelect(index);
-					break;
-				case CheckHealthResponse_Result.NOT_INSTALLED:
-					goto(staticPaths.setup.url);
-					break;
-			}
+			await Promise.all([fetchScopes(), fetchEdition()]);
+			const index = Math.max(
+				$scopes.findIndex((scope) => scope.name == page.params.scope),
+				0,
+			);
+			handleScopeOnSelect(index);
 		} catch (error) {
 			console.error('Failed to initialize:', error);
 		}
