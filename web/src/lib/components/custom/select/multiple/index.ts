@@ -9,7 +9,7 @@ import Controller from './select-controller.svelte';
 import Trigger from './select-trigger.svelte';
 import Viewer from './select-viewer.svelte';
 import Root from './select.svelte';
-import type { OptionType, valuesSetterType } from './types';
+import type { OptionType } from './types';
 import { OptionManager } from './utils.svelte';
 
 export {
@@ -34,4 +34,4 @@ export {
 	Trigger,
 	Viewer,
 };
-export type { OptionType, valuesSetterType };
+export type { OptionType };
