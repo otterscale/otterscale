@@ -86,9 +86,6 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 	}
 
 	vmDisks, vmVolumes := buildDisksAndVolumes(disks, script)
-	if err != nil {
-		return nil, err
-	}
 
 	spec := buildVMSpec(resources, vmDisks, vmVolumes, network)
 
@@ -267,9 +264,7 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facil
 	oldVM.SetLabels(ensureLabels(labels))
 
 	vmDisks, vmVolumes := buildDisksAndVolumes(disks, "")
-	if err != nil {
-		return nil, nil, err
-	}
+
 	oldVM.Spec.Template.Spec.Domain.Devices.Disks = vmDisks
 	oldVM.Spec.Template.Spec.Volumes = vmVolumes
 
