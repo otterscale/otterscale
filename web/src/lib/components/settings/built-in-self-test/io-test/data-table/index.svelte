@@ -133,7 +133,16 @@
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>
 			<Create />
-			<Reloader {reloadManager} />
+			<Reloader
+				bind:checked={reloadManager.state}
+				onCheckedChange={() => {
+					if (reloadManager.state) {
+						reloadManager.restart();
+					} else {
+						reloadManager.stop();
+					}
+				}}
+			/>
 		</Layout.ControllerAction>
 	</Layout.Controller>
 	<Layout.Viewer>

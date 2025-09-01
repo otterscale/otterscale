@@ -11,6 +11,7 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 	import { Analytics } from './analytics';
+	import Reloader from '$lib/components/custom/reloader/reloader.svelte';
 
 	let { scope }: { scope: Scope } = $props();
 
@@ -52,10 +53,7 @@
 					<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
 					<Tabs.Trigger value="analytics">{m.analytics()}</Tabs.Trigger>
 				</Tabs.List>
-				<div>
-					<Switch bind:checked={isReloading} />
-					{m.auto_update()}
-				</div>
+				<Reloader bind:checked={isReloading} />
 			</div>
 			<Tabs.Content value="overview">
 				<Overview client={prometheusDriver} {scope} bind:isReloading />
