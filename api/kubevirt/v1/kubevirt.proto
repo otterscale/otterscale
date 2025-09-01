@@ -35,11 +35,11 @@ service KubeVirtService {
   rpc DeleteDataVolume(DeleteDataVolumeRequest) returns (google.protobuf.Empty);
   rpc ExtendDataVolume(ExtendDataVolumeRequest) returns (google.protobuf.Empty);
   // VMService Operations
-  rpc CreateVMService(CreateVMServiceRequest) returns (KubeVirtVMService);
-  rpc GetVMService(GetVMServiceRequest) returns (KubeVirtVMService);
-  rpc ListVMServices(ListVMServicesRequest) returns (ListVMServicesResponse);
-  rpc UpdateVMService(UpdateVMServiceRequest) returns (KubeVirtVMService);
-  rpc DeleteVMService(DeleteVMServiceRequest) returns (google.protobuf.Empty);
+  rpc CreateVirtualMachineService(CreateVirtualMachineServiceRequest) returns (VirtualMachineService);
+  rpc GetVirtualMachineService(GetVirtualMachineServiceRequest) returns (VirtualMachineService);
+  rpc ListVirtualMachineServices(ListVirtualMachineServicesRequest) returns (ListVirtualMachineServicesResponse);
+  rpc UpdateVirtualMachineService(UpdateVirtualMachineServiceRequest) returns (VirtualMachineService);
+  rpc DeleteVirtualMachineService(DeleteVirtualMachineServiceRequest) returns (google.protobuf.Empty);
   // InstanceType Operations
   rpc CreateInstanceType(CreateInstanceTypeRequest) returns (InstanceType);
   rpc GetInstanceType(GetInstanceTypeRequest) returns (InstanceType);
@@ -106,41 +106,39 @@ message DataVolume {
   string last_condition_status = 12;
 }
 
-message KubeVirtVMService {
+message VirtualMachineService {
   Metadata metadata = 1;
-  KubeVirtVMServiceSpec   spec   = 11;
-  KubeVirtVMServiceStatus status = 12;
+  VirtualMachineServiceSpec   spec   = 11;
+  VirtualMachineServiceStatus status = 12;
 }
 
-message KubeVirtVMServiceSpec {
+message VirtualMachineServiceSpec {
   enum Type {
     TYPE_UNSPECIFIED = 0;
-    CLUSTER_IP       = 1;
     NODE_PORT        = 2;
     LOAD_BALANCER    = 3;
   }
 
-  enum Protocol {
-    PROTOCOL_UNSPECIFIED = 0;
-    TCP  = 1;
-    UDP  = 2;
-  }
-
-  string v_m_name = 1;
+  string virtual_machine_name = 1;
   Type type = 2;
   repeated ServicePort ports = 11;
   map<string, string> selector = 21;
 }
 
 message ServicePort {
+  enum Protocol {
+    PROTOCOL_UNSPECIFIED = 0;
+    TCP  = 1;
+    UDP  = 2;
+  }
+
   string name = 1;
   int32  port = 2;
-  string target_port = 3;
-  KubeVirtVMServiceSpec.Protocol protocol = 4;
+  Protocol protocol = 4;
   int32  node_port = 5;
 }
 
-message KubeVirtVMServiceStatus {
+message VirtualMachineServiceStatus {
   string           cluster_ip             = 1; 
   repeated string  cluster_ips            = 2; 
   repeated string  load_balancer_ingress  = 3; 
@@ -337,39 +335,39 @@ message ExtendDataVolumeRequest {
   int64 size_bytes = 5;
 }
 
-message CreateVMServiceRequest {
+message CreateVirtualMachineServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
-  KubeVirtVMService v_m_service = 4; 
+  VirtualMachineService virtual_machine_service = 4; 
 }
 
-message ListVMServicesRequest {
+message ListVirtualMachineServicesRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string namespace = 3;
 }
 
-message ListVMServicesResponse {
-  repeated KubeVirtVMService v_m_services = 1;
+message ListVirtualMachineServicesResponse {
+  repeated VirtualMachineService virtual_machine_services = 1;
 }
 
-message GetVMServiceRequest {
+message GetVirtualMachineServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;
   string namespace = 4;
 }
 
-message UpdateVMServiceRequest {
+message UpdateVirtualMachineServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;
   string namespace = 4;
-  KubeVirtVMService v_m_service = 5;
+  VirtualMachineService virtual_machine_service = 5;
 }
 
-message DeleteVMServiceRequest {
+message DeleteVirtualMachineServiceRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;

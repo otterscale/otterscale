@@ -8,6 +8,7 @@ import (
 	virtCorev1 "kubevirt.io/api/core/v1"
 	snapshotv1 "kubevirt.io/api/snapshot/v1beta1"
 	v1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
+	corev1 "k8s.io/api/core/v1"
 )
 
 type (
@@ -28,6 +29,9 @@ type (
 	KubeVirtVolume                      = virtCorev1.Volume
 	KubeVirtDisk                        = virtCorev1.Disk
 	KubeVirtDevice                      = virtCorev1.Devices
+	VirtualMachineService               = corev1.Service
+	VirtualMachineServiceSpec           = corev1.ServiceSpec
+	VirtualMachineServicePort           = corev1.ServicePort
 )
 
 type Metadata struct {
@@ -107,21 +111,6 @@ type OperationResult struct {
 type Device struct {
 	Name string
 	Type string
-}
-
-type KubeVirtVMServicePort struct {
-	Name       string
-	Port       int32
-	TargetPort int32
-	NodePort   int32
-}
-
-// Network represents a network resource
-type KubeVirtVMService struct {
-	Metadata Metadata
-	Type     string
-	Ports    []KubeVirtVMServicePort
-	Selector map[string]string
 }
 
 // InstanceType represents a flavor resource

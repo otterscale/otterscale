@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"strconv"
 	"time"
 
 	"connectrpc.com/connect"
@@ -11,9 +10,11 @@ import (
 
 	pb "github.com/openhdc/otterscale/api/kubevirt/v1"
 	virtCorev1 "kubevirt.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 
 	"github.com/openhdc/otterscale/api/kubevirt/v1/pbconnect"
 	"github.com/openhdc/otterscale/internal/core"
+	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 type KubeVirtService struct {
@@ -223,47 +224,47 @@ func (s *KubeVirtService) ExtendDataVolume(ctx context.Context, req *connect.Req
 	return connect.NewResponse(resp), nil
 }
 
-// VMService Operations
-func (s *KubeVirtService) CreateVMService(ctx context.Context, req *connect.Request[pb.CreateVMServiceRequest]) (*connect.Response[pb.KubeVirtVMService], error) {
-	vmservice, err := s.uc.CreateVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVMService().GetMetadata().GetNamespace(), req.Msg.GetVMService().GetMetadata().GetName(), toCoreVMService(req.Msg.GetVMService()))
+// VirtualMachineService Operations
+func (s *KubeVirtService) CreateVirtualMachineService(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineServiceRequest]) (*connect.Response[pb.VirtualMachineService], error) {
+	vmsvc, err := s.uc.CreateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVirtualMachineService().GetMetadata().GetNamespace(), req.Msg.GetVirtualMachineService().GetMetadata().GetName(), toCoreVirtualMachineService(req.Msg.GetVirtualMachineService()))
 	if err != nil {
 		return nil, err
 	}
 
-	resp := toProtoKubeVirtVMService(vmservice)
+	resp := toProtoVirtualMachineService(vmsvc)
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) GetVMService(ctx context.Context, req *connect.Request[pb.GetVMServiceRequest]) (*connect.Response[pb.KubeVirtVMService], error) {
-	vmservice, err := s.uc.GetVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
+func (s *KubeVirtService) GetVirtualMachineService(ctx context.Context, req *connect.Request[pb.GetVirtualMachineServiceRequest]) (*connect.Response[pb.VirtualMachineService], error) {
+	vmsvc, err := s.uc.GetVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName())
 	if err != nil {
 		return nil, err
 	}
-	resp := toProtoKubeVirtVMService(vmservice)
+	resp := toProtoVirtualMachineService(vmsvc)
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) ListVMServices(ctx context.Context, req *connect.Request[pb.ListVMServicesRequest]) (*connect.Response[pb.ListVMServicesResponse], error) {
-	vmservices, err := s.uc.ListVMServices(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+func (s *KubeVirtService) ListVirtualMachineServices(ctx context.Context, req *connect.Request[pb.ListVirtualMachineServicesRequest]) (*connect.Response[pb.ListVirtualMachineServicesResponse], error) {
+	vmsvcs, err := s.uc.ListVirtualMachineServices(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
 	if err != nil {
 		return nil, err
 	}
-	resp := &pb.ListVMServicesResponse{}
-	resp.SetVMServices(toProtoKubeVirtVMServices(vmservices))
+	resp := &pb.ListVirtualMachineServicesResponse{}
+	resp.SetVirtualMachineServices(toProtoVirtualMachineServices(vmsvcs))
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) UpdateVMService(ctx context.Context, req *connect.Request[pb.UpdateVMServiceRequest]) (*connect.Response[pb.KubeVirtVMService], error) {
-	vmservice, err := s.uc.UpdateVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toCoreVMService(req.Msg.GetVMService()))
-	if err != nil {
-		return nil, err
-	}
-	resp := toProtoKubeVirtVMService(vmservice)
-	return connect.NewResponse(resp), nil
+func (s *KubeVirtService) UpdateVirtualMachineService(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineServiceRequest]) (*connect.Response[pb.VirtualMachineService], error) { 
+    vmsvc, err := s.uc.UpdateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toCoreVirtualMachineService(req.Msg.GetVirtualMachineService()),)
+    if err != nil {
+        return nil, err
+    }
+    resp := toProtoVirtualMachineService(vmsvc)
+    return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) DeleteVMService(ctx context.Context, req *connect.Request[pb.DeleteVMServiceRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.DeleteVMService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
+func (s *KubeVirtService) DeleteVirtualMachineService(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.DeleteVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName()); err != nil {
 		return nil, err
 	}
 
@@ -345,10 +346,6 @@ func fromVirtualMachine(vm *core.VirtualMachine) *pb.Metadata {
 
 func fromDataVolume(dv *core.DataVolume) *pb.Metadata {
 	return toProtoMetadata(dv.GetNamespace(), dv.GetName(), dv.GetLabels(), dv.GetAnnotations(), dv.CreationTimestamp.Time, dv.GetAnnotations()["otterscale.io/last-updated"])
-}
-
-func fromVirtualMachineService(s *core.KubeVirtVMService) *pb.Metadata {
-	return toProtoMetadata(s.Metadata.Namespace, s.Metadata.Name, s.Metadata.Labels, s.Metadata.Annotations, s.Metadata.CreatedAt.AsTime(), s.Metadata.Annotations["otterscale.io/last-updated"])
 }
 
 func fromInstanceType(t *core.InstanceType) *pb.Metadata {
@@ -531,79 +528,115 @@ func toProtoDataVolume(dv *core.DataVolume) *pb.DataVolume {
 	return ret
 }
 
-func toProtoKubeVirtVMServices(vmservices []core.KubeVirtVMService) []*pb.KubeVirtVMService {
-	ret := make([]*pb.KubeVirtVMService, 0, len(vmservices))
-	for i := range vmservices {
-		ret = append(ret, toProtoKubeVirtVMService(&vmservices[i]))
+func toProtoVirtualMachineServices(vmsvcs []core.VirtualMachineService) []*pb.VirtualMachineService {
+	ret := make([]*pb.VirtualMachineService, 0, len(vmsvcs))
+	for i := range vmsvcs {
+		ret = append(ret, toProtoVirtualMachineService(&vmsvcs[i]))
 	}
 	return ret
 }
 
-func toProtoKubeVirtVMService(s *core.KubeVirtVMService) *pb.KubeVirtVMService {
-	ret := &pb.KubeVirtVMService{}
-	ret.SetMetadata(fromVirtualMachineService(s))
+func toProtoVirtualMachineService(vmsvc *core.VirtualMachineService) *pb.VirtualMachineService {
+	ret := &pb.VirtualMachineService{}
+	meta := &pb.Metadata{}
+	meta.SetName(vmsvc.GetName())
+    meta.SetNamespace(vmsvc.GetNamespace())
+    meta.SetLabels(vmsvc.GetLabels())
+    meta.SetCreatedAt(timestamppb.New(vmsvc.GetCreationTimestamp().Time))
+    if ann := vmsvc.GetAnnotations(); ann != nil {
+        if ts := ann["otterscale.io/last-updated"]; ts != "" {
+            if t, err := time.Parse(time.RFC3339, ts); err == nil {
+                meta.SetUpdatedAt(timestamppb.New(t))
+            }
+        }
+    }
 
-	spec := &pb.KubeVirtVMServiceSpec{}
-	if s.Selector != nil {
-		if v, ok := s.Selector["kubevirt.io/vm"]; ok && v != "" {
-			spec.SetVMName(v)
-		}
-	}
-	spec.SetSelector(s.Selector)
-
-	spec.SetType(pb.KubeVirtVMServiceSpec_Type(pb.KubeVirtVMServiceSpec_Type_value["CLUSTER_IP"]))
-	ports := make([]*pb.ServicePort, 0, len(s.Ports))
-	for _, p := range s.Ports {
-		sp := &pb.ServicePort{}
-		sp.SetName(p.Name)
-		sp.SetPort(p.Port)
-		sp.SetTargetPort(strconv.Itoa(int(p.TargetPort)))
-		sp.SetProtocol(pb.KubeVirtVMServiceSpec_Protocol(pb.KubeVirtVMServiceSpec_Protocol_value["TCP"]))
-		sp.SetNodePort(p.NodePort)
-		ports = append(ports, sp)
-	}
-	spec.SetPorts(ports)
-
-	ret.SetSpec(spec)
-
-	ret.SetStatus(&pb.KubeVirtVMServiceStatus{})
-
+	sp := &pb.VirtualMachineServiceSpec{}
+    switch vmsvc.Spec.Type {
+    case corev1.ServiceTypeNodePort:
+        sp.SetType(pb.VirtualMachineServiceSpec_NODE_PORT)
+    case corev1.ServiceTypeLoadBalancer:
+        sp.SetType(pb.VirtualMachineServiceSpec_LOAD_BALANCER)
+    default:
+        sp.SetType(pb.VirtualMachineServiceSpec_TYPE_UNSPECIFIED)
+    }
+	sp.SetSelector(vmsvc.Spec.Selector)
+    if vm, ok := vmsvc.Spec.Selector["kubevirt.io/vm"]; ok {
+        sp.SetVirtualMachineName(vm)
+    }
+	ports := make([]*pb.ServicePort, 0, len(vmsvc.Spec.Ports))
+	for _, p := range vmsvc.Spec.Ports {
+        pp := &pb.ServicePort{}
+        pp.SetName(p.Name)
+        pp.SetPort(p.Port)
+        if p.Protocol == corev1.ProtocolUDP {
+            pp.SetProtocol(pb.ServicePort_UDP)
+        } else {
+            pp.SetProtocol(pb.ServicePort_TCP)
+        }
+        pp.SetNodePort(p.NodePort)
+        ports = append(ports, pp)
+    }
+    sp.SetPorts(ports)
+    ret.SetSpec(sp)
+	st := &pb.VirtualMachineServiceStatus{}
+    if vmsvc.Spec.ClusterIP != "" {
+        st.SetClusterIp(vmsvc.Spec.ClusterIP)
+    }
+    if len(vmsvc.Spec.ClusterIPs) > 0 { 
+        st.SetClusterIps(vmsvc.Spec.ClusterIPs)
+    }
+    if ingress := vmsvc.Status.LoadBalancer.Ingress; len(ingress) > 0 {
+        addrs := make([]string, 0, len(ingress))
+        for _, in := range ingress {
+            if in.IP != "" {
+                addrs = append(addrs, in.IP)
+            } else if in.Hostname != "" {
+                addrs = append(addrs, in.Hostname)
+            }
+        }
+        st.SetLoadBalancerIngress(addrs)
+    }
+    ret.SetStatus(st)
+	
 	return ret
 }
 
-func toCoreVMService(n *pb.KubeVirtVMService) core.KubeVirtVMService {
-	ret := core.KubeVirtVMService{
-		Metadata: toCoreMetadata(n.GetMetadata()),
-	}
+func toCoreVirtualMachineService(vmsvc *pb.VirtualMachineService) core.VirtualMachineServiceSpec {
+	var spec corev1.ServiceSpec
+	switch vmsvc.GetSpec().GetType() {
+    case pb.VirtualMachineServiceSpec_NODE_PORT:
+        spec.Type = corev1.ServiceTypeNodePort
+    case pb.VirtualMachineServiceSpec_LOAD_BALANCER:
+        spec.Type = corev1.ServiceTypeLoadBalancer
+    default:
+        spec.Type = corev1.ServiceTypeLoadBalancer
+    }
 
-	if n.GetSpec() != nil {
-		selector := map[string]string{}
-		if vm := n.GetSpec().GetVMName(); vm != "" {
-			selector["kubevirt.io/vm"] = vm
-		}
-		for k, v := range n.GetSpec().GetSelector() {
-			selector[k] = v
-		}
-		ret.Selector = selector
+	vmName := vmsvc.GetSpec().GetVirtualMachineName()
+    if vmName != "" {
+        spec.Selector = map[string]string{"kubevirt.io/vm": vmName}
+    } else {
+        spec.Selector = map[string]string{}
+    }
 
-		ports := make([]core.KubeVirtVMServicePort, 0, len(n.GetSpec().GetPorts()))
-		for _, p := range n.GetSpec().GetPorts() {
-			tp := int32(0)
-			if s := p.GetTargetPort(); s != "" {
-				if v, err := strconv.Atoi(s); err == nil {
-					tp = int32(v)
-				}
-			}
-			ports = append(ports, core.KubeVirtVMServicePort{
-				Name:       p.GetName(),
-				Port:       p.GetPort(),
-				NodePort:   p.GetNodePort(),
-				TargetPort: tp,
-			})
-		}
-		ret.Ports = ports
-	}
-	return ret
+     for _, p := range vmsvc.GetSpec().GetPorts() {
+        sp := corev1.ServicePort{
+            Name:       p.GetName(),
+            Port:       p.GetPort(),
+            TargetPort: intstr.FromInt(int(p.GetPort())),
+            Protocol:   corev1.ProtocolTCP,
+        }
+        if p.GetProtocol() == pb.ServicePort_UDP {
+            sp.Protocol = corev1.ProtocolUDP
+        }
+        if spec.Type == corev1.ServiceTypeNodePort && p.GetNodePort() > 0 {
+            sp.NodePort = p.GetNodePort()
+        }
+        spec.Ports = append(spec.Ports, sp)
+    }
+
+	return spec
 }
 
 func toProtoInstanceTypes(flavors []core.InstanceType) []*pb.InstanceType {
