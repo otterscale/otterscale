@@ -1,12 +1,14 @@
 # 🦦 OtterScale
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/otterscale/otterscale.svg)](https://pkg.go.dev/github.com/otterscale/otterscale)
-[![Go Report Card](https://goreportcard.com/badge/github.com/otterscale/otterscale?style=flat-square)](https://goreportcard.com/report/github.com/otterscale/otterscale)
-[![GitHub Build Status](https://github.com/otterscale/otterscale/actions/workflows/go.yml/badge.svg?style=flat-square)](https://github.com/otterscale/otterscale/actions/workflows/go.yml)
-[![GitHub Release](https://img.shields.io/github/v/release/otterscale/otterscale?style=flat-square)](https://github.com/otterscale/otterscale/releases)
-[![GitHub License](https://img.shields.io/github/license/otterscale/otterscale?style=flat-square)](https://opensource.org/license/agpl-v3)
-[![Contributors](https://img.shields.io/github/contributors/otterscale/otterscale?style=flat-square)](https://github.com/otterscale/otterscale/graphs/contributors)
+[![Go Report Card](https://goreportcard.com/badge/github.com/otterscale/otterscale)](https://goreportcard.com/report/github.com/otterscale/otterscale)
+[![GitHub Build Status](https://github.com/otterscale/otterscale/actions/workflows/go.yml/badge.svg)](https://github.com/otterscale/otterscale/actions/workflows/go.yml)
 
+[![GitHub Release](https://img.shields.io/github/v/release/otterscale/otterscale)](https://github.com/otterscale/otterscale/releases)
+[![GitHub License](https://img.shields.io/github/license/otterscale/otterscale)](https://opensource.org/license/agpl-v3)
+[![Contributors](https://img.shields.io/github/contributors/otterscale/otterscale)](https://github.com/otterscale/otterscale/graphs/contributors)
+
+[![codecov](https://codecov.io/gh/otterscale/otterscale/graph/badge.svg?token=I7R0YEMXER)](https://codecov.io/gh/otterscale/otterscale)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_shield&issueType=security)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_shield&issueType=license)
 
