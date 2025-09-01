@@ -28,7 +28,7 @@
 				.then((response) => {
 					prometheusDriver = new PrometheusDriver({
 						endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-						baseURL: response.baseUrl
+						baseURL: response.baseUrl,
 					});
 				})
 				.catch((error) => {
@@ -70,12 +70,7 @@
 					span="col-span-4 row-span-2"
 				/>
 				<DNSServer bind:isReloading span="col-span-2" />
-				<NetworkTraffic
-					{prometheusDriver}
-					scope={$activeScope}
-					bind:isReloading
-					span="col-span-4 row-span-2"
-				/>
+				<NetworkTraffic {prometheusDriver} scope={$activeScope} bind:isReloading span="col-span-4 row-span-2" />
 			</Tabs.Content>
 			<Tabs.Content value="analytics"></Tabs.Content>
 		</Tabs.Root>

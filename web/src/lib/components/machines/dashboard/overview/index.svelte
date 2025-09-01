@@ -7,10 +7,8 @@
 	import Storage from './storage.svelte';
 	import SystemLoad from './system_load.svelte';
 
-	let {
-		prometheusDriver,
-		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
+	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
+		$props();
 </script>
 
 <div class="grid auto-rows-auto grid-cols-3 gap-5 pt-4 md:grid-cols-6 lg:grid-cols-9">

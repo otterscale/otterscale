@@ -21,7 +21,7 @@
 	let {
 		prometheusDriver,
 		isReloading = $bindable(),
-		span
+		span,
 	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
 
 	const transport: Transport = getContext('transport');
@@ -29,25 +29,20 @@
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) =>
-			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
-		)
+		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
 	);
-	const totalMemoryBytes = $derived(
-		scopeMachines.reduce((sum, m) => sum + Number(m.memoryMb ?? 0), 0) * 1024 * 1024
-	);
+	const totalMemoryBytes = $derived(scopeMachines.reduce((sum, m) => sum + Number(m.memoryMb ?? 0), 0) * 1024 * 1024);
 
 	let memoryUsages = $state([] as SampleValue[]);
 	const memoryUsagesTrend = $derived(
 		memoryUsages.length > 0
-			? (memoryUsages[memoryUsages.length - 1].value -
-					memoryUsages[memoryUsages.length - 2].value) /
+			? (memoryUsages[memoryUsages.length - 1].value - memoryUsages[memoryUsages.length - 2].value) /
 					memoryUsages[memoryUsages.length - 2].value
-			: 0
+			: 0,
 	);
 
 	const memoryUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' }
+		usage: { label: 'value', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -56,7 +51,7 @@
 				`sum(node_memory_MemTotal_bytes - node_memory_MemFree_bytes - (node_memory_Cached_bytes + node_memory_Buffers_bytes + node_memory_SReclaimable_bytes)) / sum(node_memory_MemTotal_bytes)`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				memoryUsages = response.result[0]?.values;
@@ -122,15 +117,15 @@
 							{
 								key: 'value',
 								label: 'usage',
-								color: memoryUsagesConfiguration.usage.color
-							}
+								color: memoryUsagesConfiguration.usage.color,
+							},
 						]}
 						props={{
 							spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 							xAxis: {
-								format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+								format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
 							},
-							highlight: { points: { r: 4 } }
+							highlight: { points: { r: 4 } },
 						}}
 					>
 						{#snippet tooltip()}
@@ -140,9 +135,7 @@
 										style="--color-bg: {item.color}"
 										class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 									></div>
-									<div
-										class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
-									>
+									<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
 										<div class="grid gap-1.5">
 											<span class="text-muted-foreground">{name}</span>
 										</div>
@@ -159,9 +152,7 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				memoryUsagesTrend >= 0
-					? 'text-emerald-500 dark:text-emerald-400'
-					: 'text-red-500 dark:text-red-400'
+				memoryUsagesTrend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400',
 			)}
 		>
 			{Math.abs(memoryUsagesTrend).toFixed(2)} %

@@ -19,9 +19,7 @@
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) =>
-			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
-		)
+		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
 	);
 	const totalNodes = $derived(scopeMachines.length);
 
@@ -30,13 +28,13 @@
 
 	const nodeProportions = $derived([
 		{ node: 'physical', nodes: physicalNodes, color: 'var(--color-physical)' },
-		{ node: 'virtual', nodes: virtualNodes, color: 'var(--color-virtual)' }
+		{ node: 'virtual', nodes: virtualNodes, color: 'var(--color-virtual)' },
 	]);
 
 	const nodeProportionsConfiguration = {
 		nodes: { label: 'Nodes' },
 		physical: { label: 'Physical', color: 'var(--chart-1)' },
-		virtual: { label: 'Virtual', color: 'var(--chart-2)' }
+		virtual: { label: 'Virtual', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -78,10 +76,7 @@
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="flex-1">
-			<Chart.Container
-				config={nodeProportionsConfiguration}
-				class="mx-auto aspect-square max-h-[250px]"
-			>
+			<Chart.Container config={nodeProportionsConfiguration} class="mx-auto aspect-square max-h-[250px]">
 				<PieChart
 					data={nodeProportions}
 					key="node"
