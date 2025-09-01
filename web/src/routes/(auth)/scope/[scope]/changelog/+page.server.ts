@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/core';
 import { env } from '$env/dynamic/private';
+import * as semver from 'semver';
 import type { PageServerLoad } from './$types';
 
 const REPO_CONFIG = {
@@ -135,15 +136,15 @@ export const load: PageServerLoad = async () => {
 	});
 
 	try {
-		const [latestResponse, releasesResponse] = await Promise.all([
-			octokit.request('GET /repos/{owner}/{repo}/releases/latest', REPO_CONFIG),
-			octokit.request('GET /repos/{owner}/{repo}/releases', REPO_CONFIG)
-		]);
+		const releasesResponse = await octokit.request('GET /repos/{owner}/{repo}/releases', REPO_CONFIG)
 
-		const latestUrl = latestResponse.data.html_url;
+		const tags = releasesResponse.data.map(release => release.tag_name);
+		const sorted = semver.rsort(tags);
+		const latestTag = sorted.find(tag => !tag.includes('alpha') && !tag.includes('beta') && !tag.includes('rc'));
+
 		const releases: Release[] = releasesResponse.data
 			.map((release) => ({
-				latest: latestUrl === release.html_url,
+				latest: release.tag_name === latestTag,
 				name: release.name,
 				tag_name: release.tag_name,
 				html_url: release.html_url,
