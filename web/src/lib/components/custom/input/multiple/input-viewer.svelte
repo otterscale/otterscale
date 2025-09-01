@@ -40,7 +40,13 @@
 					{variant}
 				>
 					<span class="flex items-center gap-1">
-						<Icon icon={hasContext('icon') ? getContext('icon') : typeToIcon[inputManager.type]} />
+						<Icon
+							icon={hasContext('icon')
+								? getContext('icon')
+								: inputManager.type
+									? typeToIcon[inputManager.type]
+									: 'ph:cube'}
+						/>
 						{value}
 					</span>
 					<Button
