@@ -32,16 +32,12 @@
 
 {#if denominator > 0}
 	<div bind:this={ref} data-slot="progress-root" {...restProps}>
-		<Progress
-			value={progressRatio}
-			max={1}
-			class={formatProgressColor(progressRatio, false, highIsGood)}
-		/>
+		<Progress value={progressRatio} max={1} class={formatProgressColor(progressRatio, false, highIsGood)} />
 		{#if ratio}
 			<div
 				class={cn(
 					'text-muted-foreground flex items-center justify-end font-light sm:min-w-[100px] md:min-w-[200px]',
-					className
+					className,
 				)}
 			>
 				{#if detail}

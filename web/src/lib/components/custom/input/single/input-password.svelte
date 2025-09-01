@@ -41,7 +41,7 @@
 
 	<button
 		type="button"
-		class="absolute right-3 top-1/2 -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
+		class="absolute top-1/2 right-3 -translate-y-1/2 items-center hover:cursor-pointer focus:outline-none"
 		onmousedown={() => {
 			passwordManager.enable();
 		}}

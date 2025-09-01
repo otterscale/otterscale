@@ -38,7 +38,7 @@
 		'Load Average 15m': `
 		avg(node_load15{instance=~"${machine.fqdn}"})
 		/ on() group_left() avg(count by (instance) (node_cpu_seconds_total{instance=~"${machine.fqdn}", mode="idle"})) * 100
-		`
+		`,
 	});
 </script>
 

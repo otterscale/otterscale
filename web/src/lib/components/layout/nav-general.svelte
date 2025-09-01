@@ -26,7 +26,7 @@
 								$currentCeph?.name,
 								$currentKubernetes?.name,
 								page.params.scope,
-								route.path.url
+								route.path.url,
 							)}
 						>
 							{#snippet child({ props })}
@@ -57,7 +57,7 @@
 													$currentCeph?.name,
 													$currentKubernetes?.name,
 													page.params.scope,
-													route.path.url
+													route.path.url,
 												)}
 											>
 												<span>{subRoute.title}</span>

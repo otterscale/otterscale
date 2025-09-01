@@ -17,7 +17,7 @@
 
 	// Queries
 	const queries = $derived({
-		usage: `apiserver_request:availability30d{juju_model_uuid=~"${scope.uuid}",verb="all"}`
+		usage: `apiserver_request:availability30d{juju_model_uuid=~"${scope.uuid}",verb="all"}`,
 	});
 
 	// Data fetching function
@@ -26,7 +26,7 @@
 		const usageValue = usageResponse.result[0]?.value?.value;
 		const usagePercentage = usageValue != null ? usageValue * 100 : null;
 		return {
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }],
 		};
 	}
 </script>

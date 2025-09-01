@@ -11,13 +11,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		ref = $bindable(null),
-		class: className,
-		onkeydown,
-		onblur,
-		...restProps
-	}: Props = $props();
+	let { ref = $bindable(null), class: className, onkeydown, onblur, ...restProps }: Props = $props();
 
 	const id: string | undefined = getContext('id');
 	const required: boolean | undefined = getContext('required');
@@ -36,11 +30,9 @@
 		bind:value={inputManager.input}
 		class={cn(
 			'ring-1',
-			isInvalid
-				? 'placeholder:text-destructive/60 placeholder:text-xs focus:placeholder:invisible'
-				: '',
+			isInvalid ? 'placeholder:text-destructive/60 placeholder:text-xs focus:placeholder:invisible' : '',
 			isInvalid ? 'ring-destructive' : '',
-			className
+			className,
 		)}
 		placeholder={isInvalid ? 'Required' : ''}
 		onkeydown={(e) => {

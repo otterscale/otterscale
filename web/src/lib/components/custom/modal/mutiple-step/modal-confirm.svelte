@@ -7,12 +7,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		ref = $bindable(null),
-		class: className,
-		onclick,
-		...restProps
-	}: AlertDialogPrimitive.ActionProps = $props();
+	let { ref = $bindable(null), class: className, onclick, ...restProps }: AlertDialogPrimitive.ActionProps = $props();
 
 	const stepManager: StepManager = getContext('StepManager');
 	const accessor: { open: boolean } = getContext('Accessor');

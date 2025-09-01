@@ -36,7 +36,7 @@
 		exclusiveLock: true,
 		objectMap: true,
 		fastDiff: true,
-		deepFlatten: true
+		deepFlatten: true,
 	} as CreateImageRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -52,7 +52,7 @@
 		try {
 			const response = await storageClient.listPools({
 				scopeUuid: $currentCeph?.scopeUuid,
-				facilityName: $currentCeph?.name
+				facilityName: $currentCeph?.name,
 			});
 			poolOptions.set(
 				response.pools.map(
@@ -60,9 +60,9 @@
 						({
 							value: pool.name,
 							label: pool.name,
-							icon: 'ph:cube'
-						}) as SingleSelect.OptionType
-				)
+							icon: 'ph:cube',
+						}) as SingleSelect.OptionType,
+				),
 			);
 
 			isPoolsLoading = false;
@@ -143,7 +143,7 @@
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
 						]}
 					/>
 				</Form.Field>
@@ -171,7 +171,7 @@
 								transformer={(value) => String(value)}
 								units={[
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
+									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
 								]}
 							/>
 						</Form.Field>
@@ -183,7 +183,7 @@
 								transformer={(value) => String(value)}
 								units={[
 									{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
+									{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
 								]}
 							/>
 						</Form.Field>
@@ -260,10 +260,10 @@
 								let message = `Fail to create ${request.imageName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

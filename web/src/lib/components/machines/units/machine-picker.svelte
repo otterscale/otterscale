@@ -6,10 +6,7 @@
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 
-	let {
-		selectedMachine = $bindable(),
-		machines
-	}: { selectedMachine: Machine; machines: Machine[] } = $props();
+	let { selectedMachine = $bindable(), machines }: { selectedMachine: Machine; machines: Machine[] } = $props();
 
 	const ALL_MACHINE_ID = 'All Machine';
 

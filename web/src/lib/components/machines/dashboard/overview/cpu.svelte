@@ -17,33 +17,27 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let {
-		prometheusDriver,
-		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
+	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) =>
-			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
-		)
+		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
 	);
-	const totalCPUCores = $derived(
-		scopeMachines.reduce((sum, m) => sum + Number(m.cpuCount ?? 0), 0)
-	);
+	const totalCPUCores = $derived(scopeMachines.reduce((sum, m) => sum + Number(m.cpuCount ?? 0), 0));
 	let cpuUsages = $state([] as SampleValue[]);
 	const cpuUsagesTrend = $derived(
 		cpuUsages.length > 0
 			? (cpuUsages[cpuUsages.length - 1].value - cpuUsages[cpuUsages.length - 2].value) /
 					cpuUsages[cpuUsages.length - 2].value
-			: 0
+			: 0,
 	);
 
 	const cpuUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' }
+		usage: { label: 'value', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -52,7 +46,7 @@
 				`1 - (sum(irate(node_cpu_seconds_total{mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				cpuUsages = response.result[0]?.values;
@@ -117,15 +111,15 @@
 						{
 							key: 'value',
 							label: 'usage',
-							color: cpuUsagesConfiguration.usage.color
-						}
+							color: cpuUsagesConfiguration.usage.color,
+						},
 					]}
 					props={{
 						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
 						},
-						highlight: { points: { r: 4 } }
+						highlight: { points: { r: 4 } },
 					}}
 				>
 					{#snippet tooltip()}
@@ -150,9 +144,7 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				cpuUsagesTrend >= 0
-					? 'text-emerald-500 dark:text-emerald-400'
-					: 'text-rose-500 dark:text-rose-400'
+				cpuUsagesTrend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
 			)}
 		>
 			{Math.abs(cpuUsagesTrend).toFixed(2)} %

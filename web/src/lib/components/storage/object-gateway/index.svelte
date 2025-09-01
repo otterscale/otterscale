@@ -8,7 +8,7 @@
 <script lang="ts">
 	let {
 		selectedScopeUuid = $bindable(),
-		selectedFacility = $bindable()
+		selectedFacility = $bindable(),
 	}: {
 		selectedScopeUuid: string;
 		selectedFacility: string;

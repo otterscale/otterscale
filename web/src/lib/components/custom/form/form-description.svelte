@@ -16,7 +16,7 @@
 <div
 	bind:this={ref}
 	data-slot="form-description"
-	class={cn('text-muted-foreground -mt-2 select-none text-sm', className)}
+	class={cn('text-muted-foreground -mt-2 text-sm select-none', className)}
 	{...restProps}
 >
 	{@render children?.()}

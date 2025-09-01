@@ -13,7 +13,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
@@ -21,7 +21,7 @@
 
 <script lang="ts" generics="TData, TValue">
 	let {
-		image
+		image,
 	}: {
 		image: Image;
 	} = $props();
@@ -60,7 +60,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -97,7 +97,7 @@
 				rowSelection = updater;
 			}
 		},
-		autoResetPageIndex: false
+		autoResetPageIndex: false,
 	});
 </script>
 

@@ -1,5 +1,3 @@
-import { default as User } from './index.svelte'
+import { default as User } from './index.svelte';
 
-export {
-    User
-}
+export { User };

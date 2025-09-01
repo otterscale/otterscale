@@ -24,17 +24,13 @@
 	// Computed values
 	const filteredApplications = $derived($applications.filter((a) => a.type === selectedValue));
 
-	const totalPods = $derived(
-		filteredApplications.reduce((total, application) => total + application.pods.length, 0)
-	);
+	const totalPods = $derived(filteredApplications.reduce((total, application) => total + application.pods.length, 0));
 
 	const numberOfServices = $derived(
-		filteredApplications.reduce((total, application) => total + application.services.length, 0)
+		filteredApplications.reduce((total, application) => total + application.services.length, 0),
 	);
 
-	const healthyPods = $derived(
-		filteredApplications.reduce((total, application) => total + application.healthies, 0)
-	);
+	const healthyPods = $derived(filteredApplications.reduce((total, application) => total + application.healthies, 0));
 
 	const healthByType = $derived(totalPods > 0 ? (healthyPods * 100) / totalPods : 0);
 
@@ -44,7 +40,7 @@
 		try {
 			const response = await client.listApplications({
 				scopeUuid: scopeUuid,
-				facilityName: facilityName
+				facilityName: facilityName,
 			});
 
 			applications.set(response.applications);

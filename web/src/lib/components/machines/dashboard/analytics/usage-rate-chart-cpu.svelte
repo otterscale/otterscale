@@ -22,14 +22,14 @@
 			sum(irate(node_cpu_seconds_total{instance=~"${machine.fqdn}",mode!="idle"}[6m]))
 			/
 			sum(irate(node_cpu_seconds_total{instance=~"${machine.fqdn}"}[6m]))
-		`
+		`,
 	});
 
 	// Data fetching function
 	async function fetchMetrics() {
 		const [descriptionResponse, usageResponse] = await Promise.all([
 			client.instantQuery(queries.description),
-			client.instantQuery(queries.usage)
+			client.instantQuery(queries.usage),
 		]);
 
 		// Parse responses
@@ -42,7 +42,7 @@
 
 		return {
 			description: formattedDescription,
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }],
 		};
 	}
 </script>

@@ -25,7 +25,7 @@
 				rate(node_cpu{juju_model_uuid=~"${scope.uuid}",mode="idle"}[4m])
 			)
 		)
-		`
+		`,
 	);
 </script>
 

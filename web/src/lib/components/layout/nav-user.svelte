@@ -38,8 +38,8 @@
 				onSuccess: () => {
 					toast.success(m.sign_out_success());
 					goto(staticPaths.login.url);
-				}
-			}
+				},
+			},
 		});
 	};
 
@@ -57,7 +57,7 @@
 	use:shortcut={{
 		key: '/',
 		ctrl: true,
-		callback: toggleNotification
+		callback: toggleNotification,
 	}}
 />
 
@@ -152,10 +152,7 @@
 								<DropdownMenu.RadioItem value="en" onclick={() => handleLanguageChange('en')}>
 									English
 								</DropdownMenu.RadioItem>
-								<DropdownMenu.RadioItem
-									value="zh-hant"
-									onclick={() => handleLanguageChange('zh-hant')}
-								>
+								<DropdownMenu.RadioItem value="zh-hant" onclick={() => handleLanguageChange('zh-hant')}>
 									繁體中文
 								</DropdownMenu.RadioItem>
 							</DropdownMenu.RadioGroup>

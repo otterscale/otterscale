@@ -1,3 +1,3 @@
-import ObjectDateway from './index.svelte'
+import ObjectDateway from './index.svelte';
 
-export { ObjectDateway }
+export { ObjectDateway };

@@ -17,10 +17,7 @@
 	<div class="bg-muted relative flex h-9 w-9 items-center justify-center rounded-sm p-2">
 		{#if timerManager.isProcessing}
 			<div class="absolute" transition:fade={{ duration: 100 }}>
-				<Icon
-					icon="ph:clock-countdown"
-					class={cn('size-5 animate-spin transition duration-2000')}
-				/>
+				<Icon icon="ph:clock-countdown" class={cn('size-5 animate-spin transition duration-2000')} />
 			</div>
 		{:else}
 			<div class="absolute" transition:fade={{ duration: 500 }}>
@@ -44,9 +41,7 @@
 			value={Speed.NORMAL.toString()}
 			onclick={() => {
 				timerManager.interval =
-					timerManager.interval && timerManager.interval === Speed.NORMAL
-						? undefined
-						: Speed.NORMAL;
+					timerManager.interval && timerManager.interval === Speed.NORMAL ? undefined : Speed.NORMAL;
 				timerManager.restart();
 			}}
 		>

@@ -19,7 +19,7 @@
 	const query = $derived(
 		`
 		sum(up{job="kube-controller-manager",juju_model_uuid=~"${scope.uuid}"})
-		`
+		`,
 	);
 </script>
 

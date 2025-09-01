@@ -13,19 +13,18 @@
 		base: cn(baseAlertVariants.base, '[&>svg]:size-6'),
 		variants: {
 			variant: {
-				default:
-					'*:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-current bg-card/10',
+				default: '*:data-[slot=alert-description]:text-muted-foreground bg-card/10 [&>svg]:text-current',
 				information:
-					'text-chart-3 *:data-[slot=alert-description]:text-muted-foreground  [&>svg]:text-current bg-chart-3/10',
+					'text-chart-3 *:data-[slot=alert-description]:text-muted-foreground bg-chart-3/10 [&>svg]:text-current',
 				warning:
-					'text-chart-4 *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-current bg-chart-4/10',
+					'text-chart-4 *:data-[slot=alert-description]:text-muted-foreground bg-chart-4/10 [&>svg]:text-current',
 				destructive:
-					'text-destructive *:data-[slot=alert-description]:text-muted-foreground [&>svg]:text-current bg-destructive/10'
-			}
+					'text-destructive *:data-[slot=alert-description]:text-muted-foreground bg-destructive/10 [&>svg]:text-current',
+			},
 		},
 		defaultVariants: {
-			variant: 'default'
-		}
+			variant: 'default',
+		},
 	});
 
 	export type AlertVariant = VariantProps<typeof alertVariants>['variant'];
@@ -45,11 +44,6 @@
 	setContext('variant', variant);
 </script>
 
-<Alert.Root
-	bind:ref
-	data-slot="alert-root"
-	class={cn(alertVariants({ variant }), className)}
-	{...restProps}
->
+<Alert.Root bind:ref data-slot="alert-root" class={cn(alertVariants({ variant }), className)} {...restProps}>
 	{@render children?.()}
 </Alert.Root>

@@ -2,644 +2,660 @@
 // @generated from file api/network/v1/network.proto (package otterscale.network.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { EmptySchema } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import type { EmptySchema } from '@bufbuild/protobuf/wkt';
+import { file_google_protobuf_empty } from '@bufbuild/protobuf/wkt';
+import type { Message } from '@bufbuild/protobuf';
 
 /**
  * Describes the file api/network/v1/network.proto.
  */
-export const file_api_network_v1_network: GenFile = /*@__PURE__*/
-  fileDesc("ChxhcGkvbmV0d29yay92MS9uZXR3b3JrLnByb3RvEhVvdHRlcnNjYWxlLm5ldHdvcmsudjEi8wcKB05ldHdvcmsSNQoGZmFicmljGAEgASgLMiUub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsuRmFicmljEjEKBHZsYW4YAiABKAsyIy5vdHRlcnNjYWxlLm5ldHdvcmsudjEuTmV0d29yay5WTEFOEjUKBnN1Ym5ldBgDIAEoCzIlLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrLlN1Ym5ldBpsCglJUEFkZHJlc3MSDAoEdHlwZRgBIAEoCRIKCgJpcBgCIAEoCRIMCgR1c2VyGAMgASgJEhIKCm1hY2hpbmVfaWQYCyABKAkSEQoJbm9kZV90eXBlGAwgASgJEhAKCGhvc3RuYW1lGA0gASgJGlYKB0lQUmFuZ2USCgoCaWQYASABKAMSDAoEdHlwZRgCIAEoCRIQCghzdGFydF9pcBgDIAEoCRIOCgZlbmRfaXAYBCABKAkSDwoHY29tbWVudBgFIAEoCRpgCgpTdGF0aXN0aWNzEhEKCWF2YWlsYWJsZRgBIAEoAxINCgV0b3RhbBgCIAEoAxIVCg11c2FnZV9wZXJjZW50GAMgASgJEhkKEWF2YWlsYWJsZV9wZXJjZW50GAQgASgJGiIKBkZhYnJpYxIKCgJpZBgBIAEoAxIMCgRuYW1lGAIgASgJGmAKBFZMQU4SCgoCaWQYASABKAMSCwoDdmlkGAIgASgDEgwKBG5hbWUYAyABKAkSCwoDbXR1GAQgASgDEhMKC2Rlc2NyaXB0aW9uGAUgASgJEg8KB2RoY3Bfb24YBiABKAgamAMKBlN1Ym5ldBIKCgJpZBgBIAEoAxIMCgRuYW1lGAIgASgJEgwKBGNpZHIYAyABKAkSEgoKZ2F0ZXdheV9pcBgEIAEoCRITCgtkbnNfc2VydmVycxgFIAMoCRITCgtkZXNjcmlwdGlvbhgGIAEoCRIaChJtYW5hZ2VkX2FsbG9jYXRpb24YByABKAgSGAoQYWN0aXZlX2Rpc2NvdmVyeRgIIAEoCBIaChJhbGxvd19wcm94eV9hY2Nlc3MYCSABKAgSHAoUYWxsb3dfZG5zX3Jlc29sdXRpb24YCiABKAgSPgoMaXBfYWRkcmVzc2VzGAsgAygLMigub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsuSVBBZGRyZXNzEjkKCWlwX3JhbmdlcxgMIAMoCzImLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrLklQUmFuZ2USPQoKc3RhdGlzdGljcxgNIAEoCzIpLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrLlN0YXRpc3RpY3MiFQoTTGlzdE5ldHdvcmtzUmVxdWVzdCJIChRMaXN0TmV0d29ya3NSZXNwb25zZRIwCghuZXR3b3JrcxgBIAMoCzIeLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrIl4KFENyZWF0ZU5ldHdvcmtSZXF1ZXN0EgwKBGNpZHIYASABKAkSEgoKZ2F0ZXdheV9pcBgCIAEoCRITCgtkbnNfc2VydmVycxgDIAMoCRIPCgdkaGNwX29uGAsgASgIIlwKFENyZWF0ZUlQUmFuZ2VSZXF1ZXN0EhEKCXN1Ym5ldF9pZBgBIAEoAxIQCghzdGFydF9pcBgLIAEoCRIOCgZlbmRfaXAYDCABKAkSDwoHY29tbWVudBgNIAEoCSIiChREZWxldGVOZXR3b3JrUmVxdWVzdBIKCgJpZBgBIAEoAyIiChREZWxldGVJUFJhbmdlUmVxdWVzdBIKCgJpZBgBIAEoAyIvChNVcGRhdGVGYWJyaWNSZXF1ZXN0EgoKAmlkGAEgASgDEgwKBG5hbWUYCyABKAkidAoRVXBkYXRlVkxBTlJlcXVlc3QSEQoJZmFicmljX2lkGAEgASgDEgsKA3ZpZBgCIAEoAxIMCgRuYW1lGAsgASgJEgsKA210dRgMIAEoAxITCgtkZXNjcmlwdGlvbhgNIAEoCRIPCgdkaGNwX29uGA4gASgIIpkBChNVcGRhdGVTdWJuZXRSZXF1ZXN0EgoKAmlkGAEgASgDEgwKBG5hbWUYCyABKAkSDAoEY2lkchgMIAEoCRISCgpnYXRld2F5X2lwGA0gASgJEhMKC2Ruc19zZXJ2ZXJzGA4gAygJEhMKC2Rlc2NyaXB0aW9uGA8gASgJEhwKFGFsbG93X2Ruc19yZXNvbHV0aW9uGBAgASgIIlUKFFVwZGF0ZUlQUmFuZ2VSZXF1ZXN0EgoKAmlkGAEgASgDEhAKCHN0YXJ0X2lwGAsgASgJEg4KBmVuZF9pcBgMIAEoCRIPCgdjb21tZW50GA0gASgJMvIGCg5OZXR3b3JrU2VydmljZRJnCgxMaXN0TmV0d29ya3MSKi5vdHRlcnNjYWxlLm5ldHdvcmsudjEuTGlzdE5ldHdvcmtzUmVxdWVzdBorLm90dGVyc2NhbGUubmV0d29yay52MS5MaXN0TmV0d29ya3NSZXNwb25zZRJcCg1DcmVhdGVOZXR3b3JrEisub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLkNyZWF0ZU5ldHdvcmtSZXF1ZXN0Gh4ub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsSZAoNQ3JlYXRlSVBSYW5nZRIrLm90dGVyc2NhbGUubmV0d29yay52MS5DcmVhdGVJUFJhbmdlUmVxdWVzdBomLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrLklQUmFuZ2USVAoNRGVsZXRlTmV0d29yaxIrLm90dGVyc2NhbGUubmV0d29yay52MS5EZWxldGVOZXR3b3JrUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJUCg1EZWxldGVJUFJhbmdlEisub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLkRlbGV0ZUlQUmFuZ2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmEKDFVwZGF0ZUZhYnJpYxIqLm90dGVyc2NhbGUubmV0d29yay52MS5VcGRhdGVGYWJyaWNSZXF1ZXN0GiUub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsuRmFicmljElsKClVwZGF0ZVZMQU4SKC5vdHRlcnNjYWxlLm5ldHdvcmsudjEuVXBkYXRlVkxBTlJlcXVlc3QaIy5vdHRlcnNjYWxlLm5ldHdvcmsudjEuTmV0d29yay5WTEFOEmEKDFVwZGF0ZVN1Ym5ldBIqLm90dGVyc2NhbGUubmV0d29yay52MS5VcGRhdGVTdWJuZXRSZXF1ZXN0GiUub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsuU3VibmV0EmQKDVVwZGF0ZUlQUmFuZ2USKy5vdHRlcnNjYWxlLm5ldHdvcmsudjEuVXBkYXRlSVBSYW5nZVJlcXVlc3QaJi5vdHRlcnNjYWxlLm5ldHdvcmsudjEuTmV0d29yay5JUFJhbmdlQjRaMmdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9uZXR3b3JrL3YxO3BiYghlZGl0aW9uc3DoBw", [file_google_protobuf_empty]);
+export const file_api_network_v1_network: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'ChxhcGkvbmV0d29yay92MS9uZXR3b3JrLnByb3RvEhVvdHRlcnNjYWxlLm5ldHdvcmsudjEi8wcKB05ldHdvcmsSNQoGZmFicmljGAEgASgLMiUub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsuRmFicmljEjEKBHZsYW4YAiABKAsyIy5vdHRlcnNjYWxlLm5ldHdvcmsudjEuTmV0d29yay5WTEFOEjUKBnN1Ym5ldBgDIAEoCzIlLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrLlN1Ym5ldBpsCglJUEFkZHJlc3MSDAoEdHlwZRgBIAEoCRIKCgJpcBgCIAEoCRIMCgR1c2VyGAMgASgJEhIKCm1hY2hpbmVfaWQYCyABKAkSEQoJbm9kZV90eXBlGAwgASgJEhAKCGhvc3RuYW1lGA0gASgJGlYKB0lQUmFuZ2USCgoCaWQYASABKAMSDAoEdHlwZRgCIAEoCRIQCghzdGFydF9pcBgDIAEoCRIOCgZlbmRfaXAYBCABKAkSDwoHY29tbWVudBgFIAEoCRpgCgpTdGF0aXN0aWNzEhEKCWF2YWlsYWJsZRgBIAEoAxINCgV0b3RhbBgCIAEoAxIVCg11c2FnZV9wZXJjZW50GAMgASgJEhkKEWF2YWlsYWJsZV9wZXJjZW50GAQgASgJGiIKBkZhYnJpYxIKCgJpZBgBIAEoAxIMCgRuYW1lGAIgASgJGmAKBFZMQU4SCgoCaWQYASABKAMSCwoDdmlkGAIgASgDEgwKBG5hbWUYAyABKAkSCwoDbXR1GAQgASgDEhMKC2Rlc2NyaXB0aW9uGAUgASgJEg8KB2RoY3Bfb24YBiABKAgamAMKBlN1Ym5ldBIKCgJpZBgBIAEoAxIMCgRuYW1lGAIgASgJEgwKBGNpZHIYAyABKAkSEgoKZ2F0ZXdheV9pcBgEIAEoCRITCgtkbnNfc2VydmVycxgFIAMoCRITCgtkZXNjcmlwdGlvbhgGIAEoCRIaChJtYW5hZ2VkX2FsbG9jYXRpb24YByABKAgSGAoQYWN0aXZlX2Rpc2NvdmVyeRgIIAEoCBIaChJhbGxvd19wcm94eV9hY2Nlc3MYCSABKAgSHAoUYWxsb3dfZG5zX3Jlc29sdXRpb24YCiABKAgSPgoMaXBfYWRkcmVzc2VzGAsgAygLMigub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsuSVBBZGRyZXNzEjkKCWlwX3JhbmdlcxgMIAMoCzImLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrLklQUmFuZ2USPQoKc3RhdGlzdGljcxgNIAEoCzIpLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrLlN0YXRpc3RpY3MiFQoTTGlzdE5ldHdvcmtzUmVxdWVzdCJIChRMaXN0TmV0d29ya3NSZXNwb25zZRIwCghuZXR3b3JrcxgBIAMoCzIeLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrIl4KFENyZWF0ZU5ldHdvcmtSZXF1ZXN0EgwKBGNpZHIYASABKAkSEgoKZ2F0ZXdheV9pcBgCIAEoCRITCgtkbnNfc2VydmVycxgDIAMoCRIPCgdkaGNwX29uGAsgASgIIlwKFENyZWF0ZUlQUmFuZ2VSZXF1ZXN0EhEKCXN1Ym5ldF9pZBgBIAEoAxIQCghzdGFydF9pcBgLIAEoCRIOCgZlbmRfaXAYDCABKAkSDwoHY29tbWVudBgNIAEoCSIiChREZWxldGVOZXR3b3JrUmVxdWVzdBIKCgJpZBgBIAEoAyIiChREZWxldGVJUFJhbmdlUmVxdWVzdBIKCgJpZBgBIAEoAyIvChNVcGRhdGVGYWJyaWNSZXF1ZXN0EgoKAmlkGAEgASgDEgwKBG5hbWUYCyABKAkidAoRVXBkYXRlVkxBTlJlcXVlc3QSEQoJZmFicmljX2lkGAEgASgDEgsKA3ZpZBgCIAEoAxIMCgRuYW1lGAsgASgJEgsKA210dRgMIAEoAxITCgtkZXNjcmlwdGlvbhgNIAEoCRIPCgdkaGNwX29uGA4gASgIIpkBChNVcGRhdGVTdWJuZXRSZXF1ZXN0EgoKAmlkGAEgASgDEgwKBG5hbWUYCyABKAkSDAoEY2lkchgMIAEoCRISCgpnYXRld2F5X2lwGA0gASgJEhMKC2Ruc19zZXJ2ZXJzGA4gAygJEhMKC2Rlc2NyaXB0aW9uGA8gASgJEhwKFGFsbG93X2Ruc19yZXNvbHV0aW9uGBAgASgIIlUKFFVwZGF0ZUlQUmFuZ2VSZXF1ZXN0EgoKAmlkGAEgASgDEhAKCHN0YXJ0X2lwGAsgASgJEg4KBmVuZF9pcBgMIAEoCRIPCgdjb21tZW50GA0gASgJMvIGCg5OZXR3b3JrU2VydmljZRJnCgxMaXN0TmV0d29ya3MSKi5vdHRlcnNjYWxlLm5ldHdvcmsudjEuTGlzdE5ldHdvcmtzUmVxdWVzdBorLm90dGVyc2NhbGUubmV0d29yay52MS5MaXN0TmV0d29ya3NSZXNwb25zZRJcCg1DcmVhdGVOZXR3b3JrEisub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLkNyZWF0ZU5ldHdvcmtSZXF1ZXN0Gh4ub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsSZAoNQ3JlYXRlSVBSYW5nZRIrLm90dGVyc2NhbGUubmV0d29yay52MS5DcmVhdGVJUFJhbmdlUmVxdWVzdBomLm90dGVyc2NhbGUubmV0d29yay52MS5OZXR3b3JrLklQUmFuZ2USVAoNRGVsZXRlTmV0d29yaxIrLm90dGVyc2NhbGUubmV0d29yay52MS5EZWxldGVOZXR3b3JrUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJUCg1EZWxldGVJUFJhbmdlEisub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLkRlbGV0ZUlQUmFuZ2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmEKDFVwZGF0ZUZhYnJpYxIqLm90dGVyc2NhbGUubmV0d29yay52MS5VcGRhdGVGYWJyaWNSZXF1ZXN0GiUub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsuRmFicmljElsKClVwZGF0ZVZMQU4SKC5vdHRlcnNjYWxlLm5ldHdvcmsudjEuVXBkYXRlVkxBTlJlcXVlc3QaIy5vdHRlcnNjYWxlLm5ldHdvcmsudjEuTmV0d29yay5WTEFOEmEKDFVwZGF0ZVN1Ym5ldBIqLm90dGVyc2NhbGUubmV0d29yay52MS5VcGRhdGVTdWJuZXRSZXF1ZXN0GiUub3R0ZXJzY2FsZS5uZXR3b3JrLnYxLk5ldHdvcmsuU3VibmV0EmQKDVVwZGF0ZUlQUmFuZ2USKy5vdHRlcnNjYWxlLm5ldHdvcmsudjEuVXBkYXRlSVBSYW5nZVJlcXVlc3QaJi5vdHRlcnNjYWxlLm5ldHdvcmsudjEuTmV0d29yay5JUFJhbmdlQjRaMmdpdGh1Yi5jb20vb3R0ZXJzY2FsZS9vdHRlcnNjYWxlL2FwaS9uZXR3b3JrL3YxO3BiYghlZGl0aW9uc3DoBw',
+		[file_google_protobuf_empty],
+	);
 
 /**
  * @generated from message otterscale.network.v1.Network
  */
-export type Network = Message<"otterscale.network.v1.Network"> & {
-  /**
-   * @generated from field: otterscale.network.v1.Network.Fabric fabric = 1;
-   */
-  fabric?: Network_Fabric;
+export type Network = Message<'otterscale.network.v1.Network'> & {
+	/**
+	 * @generated from field: otterscale.network.v1.Network.Fabric fabric = 1;
+	 */
+	fabric?: Network_Fabric;
 
-  /**
-   * @generated from field: otterscale.network.v1.Network.VLAN vlan = 2;
-   */
-  vlan?: Network_VLAN;
+	/**
+	 * @generated from field: otterscale.network.v1.Network.VLAN vlan = 2;
+	 */
+	vlan?: Network_VLAN;
 
-  /**
-   * @generated from field: otterscale.network.v1.Network.Subnet subnet = 3;
-   */
-  subnet?: Network_Subnet;
+	/**
+	 * @generated from field: otterscale.network.v1.Network.Subnet subnet = 3;
+	 */
+	subnet?: Network_Subnet;
 };
 
 /**
  * Describes the message otterscale.network.v1.Network.
  * Use `create(NetworkSchema)` to create a new message.
  */
-export const NetworkSchema: GenMessage<Network> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 0);
+export const NetworkSchema: GenMessage<Network> = /*@__PURE__*/ messageDesc(file_api_network_v1_network, 0);
 
 /**
  * @generated from message otterscale.network.v1.Network.IPAddress
  */
-export type Network_IPAddress = Message<"otterscale.network.v1.Network.IPAddress"> & {
-  /**
-   * @generated from field: string type = 1;
-   */
-  type: string;
+export type Network_IPAddress = Message<'otterscale.network.v1.Network.IPAddress'> & {
+	/**
+	 * @generated from field: string type = 1;
+	 */
+	type: string;
 
-  /**
-   * @generated from field: string ip = 2;
-   */
-  ip: string;
+	/**
+	 * @generated from field: string ip = 2;
+	 */
+	ip: string;
 
-  /**
-   * @generated from field: string user = 3;
-   */
-  user: string;
+	/**
+	 * @generated from field: string user = 3;
+	 */
+	user: string;
 
-  /**
-   * @generated from field: string machine_id = 11;
-   */
-  machineId: string;
+	/**
+	 * @generated from field: string machine_id = 11;
+	 */
+	machineId: string;
 
-  /**
-   * @generated from field: string node_type = 12;
-   */
-  nodeType: string;
+	/**
+	 * @generated from field: string node_type = 12;
+	 */
+	nodeType: string;
 
-  /**
-   * @generated from field: string hostname = 13;
-   */
-  hostname: string;
+	/**
+	 * @generated from field: string hostname = 13;
+	 */
+	hostname: string;
 };
 
 /**
  * Describes the message otterscale.network.v1.Network.IPAddress.
  * Use `create(Network_IPAddressSchema)` to create a new message.
  */
-export const Network_IPAddressSchema: GenMessage<Network_IPAddress> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 0, 0);
+export const Network_IPAddressSchema: GenMessage<Network_IPAddress> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 0, 0);
 
 /**
  * @generated from message otterscale.network.v1.Network.IPRange
  */
-export type Network_IPRange = Message<"otterscale.network.v1.Network.IPRange"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type Network_IPRange = Message<'otterscale.network.v1.Network.IPRange'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 
-  /**
-   * @generated from field: string type = 2;
-   */
-  type: string;
+	/**
+	 * @generated from field: string type = 2;
+	 */
+	type: string;
 
-  /**
-   * @generated from field: string start_ip = 3;
-   */
-  startIp: string;
+	/**
+	 * @generated from field: string start_ip = 3;
+	 */
+	startIp: string;
 
-  /**
-   * @generated from field: string end_ip = 4;
-   */
-  endIp: string;
+	/**
+	 * @generated from field: string end_ip = 4;
+	 */
+	endIp: string;
 
-  /**
-   * @generated from field: string comment = 5;
-   */
-  comment: string;
+	/**
+	 * @generated from field: string comment = 5;
+	 */
+	comment: string;
 };
 
 /**
  * Describes the message otterscale.network.v1.Network.IPRange.
  * Use `create(Network_IPRangeSchema)` to create a new message.
  */
-export const Network_IPRangeSchema: GenMessage<Network_IPRange> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 0, 1);
+export const Network_IPRangeSchema: GenMessage<Network_IPRange> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 0, 1);
 
 /**
  * @generated from message otterscale.network.v1.Network.Statistics
  */
-export type Network_Statistics = Message<"otterscale.network.v1.Network.Statistics"> & {
-  /**
-   * @generated from field: int64 available = 1;
-   */
-  available: bigint;
+export type Network_Statistics = Message<'otterscale.network.v1.Network.Statistics'> & {
+	/**
+	 * @generated from field: int64 available = 1;
+	 */
+	available: bigint;
 
-  /**
-   * @generated from field: int64 total = 2;
-   */
-  total: bigint;
+	/**
+	 * @generated from field: int64 total = 2;
+	 */
+	total: bigint;
 
-  /**
-   * @generated from field: string usage_percent = 3;
-   */
-  usagePercent: string;
+	/**
+	 * @generated from field: string usage_percent = 3;
+	 */
+	usagePercent: string;
 
-  /**
-   * @generated from field: string available_percent = 4;
-   */
-  availablePercent: string;
+	/**
+	 * @generated from field: string available_percent = 4;
+	 */
+	availablePercent: string;
 };
 
 /**
  * Describes the message otterscale.network.v1.Network.Statistics.
  * Use `create(Network_StatisticsSchema)` to create a new message.
  */
-export const Network_StatisticsSchema: GenMessage<Network_Statistics> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 0, 2);
+export const Network_StatisticsSchema: GenMessage<Network_Statistics> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 0, 2);
 
 /**
  * @generated from message otterscale.network.v1.Network.Fabric
  */
-export type Network_Fabric = Message<"otterscale.network.v1.Network.Fabric"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type Network_Fabric = Message<'otterscale.network.v1.Network.Fabric'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 };
 
 /**
  * Describes the message otterscale.network.v1.Network.Fabric.
  * Use `create(Network_FabricSchema)` to create a new message.
  */
-export const Network_FabricSchema: GenMessage<Network_Fabric> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 0, 3);
+export const Network_FabricSchema: GenMessage<Network_Fabric> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 0, 3);
 
 /**
  * @generated from message otterscale.network.v1.Network.VLAN
  */
-export type Network_VLAN = Message<"otterscale.network.v1.Network.VLAN"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type Network_VLAN = Message<'otterscale.network.v1.Network.VLAN'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 
-  /**
-   * @generated from field: int64 vid = 2;
-   */
-  vid: bigint;
+	/**
+	 * @generated from field: int64 vid = 2;
+	 */
+	vid: bigint;
 
-  /**
-   * @generated from field: string name = 3;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 3;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: int64 mtu = 4;
-   */
-  mtu: bigint;
+	/**
+	 * @generated from field: int64 mtu = 4;
+	 */
+	mtu: bigint;
 
-  /**
-   * @generated from field: string description = 5;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 5;
+	 */
+	description: string;
 
-  /**
-   * @generated from field: bool dhcp_on = 6;
-   */
-  dhcpOn: boolean;
+	/**
+	 * @generated from field: bool dhcp_on = 6;
+	 */
+	dhcpOn: boolean;
 };
 
 /**
  * Describes the message otterscale.network.v1.Network.VLAN.
  * Use `create(Network_VLANSchema)` to create a new message.
  */
-export const Network_VLANSchema: GenMessage<Network_VLAN> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 0, 4);
+export const Network_VLANSchema: GenMessage<Network_VLAN> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 0, 4);
 
 /**
  * @generated from message otterscale.network.v1.Network.Subnet
  */
-export type Network_Subnet = Message<"otterscale.network.v1.Network.Subnet"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type Network_Subnet = Message<'otterscale.network.v1.Network.Subnet'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string cidr = 3;
-   */
-  cidr: string;
+	/**
+	 * @generated from field: string cidr = 3;
+	 */
+	cidr: string;
 
-  /**
-   * @generated from field: string gateway_ip = 4;
-   */
-  gatewayIp: string;
+	/**
+	 * @generated from field: string gateway_ip = 4;
+	 */
+	gatewayIp: string;
 
-  /**
-   * @generated from field: repeated string dns_servers = 5;
-   */
-  dnsServers: string[];
+	/**
+	 * @generated from field: repeated string dns_servers = 5;
+	 */
+	dnsServers: string[];
 
-  /**
-   * @generated from field: string description = 6;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 6;
+	 */
+	description: string;
 
-  /**
-   * @generated from field: bool managed_allocation = 7;
-   */
-  managedAllocation: boolean;
+	/**
+	 * @generated from field: bool managed_allocation = 7;
+	 */
+	managedAllocation: boolean;
 
-  /**
-   * @generated from field: bool active_discovery = 8;
-   */
-  activeDiscovery: boolean;
+	/**
+	 * @generated from field: bool active_discovery = 8;
+	 */
+	activeDiscovery: boolean;
 
-  /**
-   * @generated from field: bool allow_proxy_access = 9;
-   */
-  allowProxyAccess: boolean;
+	/**
+	 * @generated from field: bool allow_proxy_access = 9;
+	 */
+	allowProxyAccess: boolean;
 
-  /**
-   * @generated from field: bool allow_dns_resolution = 10;
-   */
-  allowDnsResolution: boolean;
+	/**
+	 * @generated from field: bool allow_dns_resolution = 10;
+	 */
+	allowDnsResolution: boolean;
 
-  /**
-   * @generated from field: repeated otterscale.network.v1.Network.IPAddress ip_addresses = 11;
-   */
-  ipAddresses: Network_IPAddress[];
+	/**
+	 * @generated from field: repeated otterscale.network.v1.Network.IPAddress ip_addresses = 11;
+	 */
+	ipAddresses: Network_IPAddress[];
 
-  /**
-   * @generated from field: repeated otterscale.network.v1.Network.IPRange ip_ranges = 12;
-   */
-  ipRanges: Network_IPRange[];
+	/**
+	 * @generated from field: repeated otterscale.network.v1.Network.IPRange ip_ranges = 12;
+	 */
+	ipRanges: Network_IPRange[];
 
-  /**
-   * @generated from field: otterscale.network.v1.Network.Statistics statistics = 13;
-   */
-  statistics?: Network_Statistics;
+	/**
+	 * @generated from field: otterscale.network.v1.Network.Statistics statistics = 13;
+	 */
+	statistics?: Network_Statistics;
 };
 
 /**
  * Describes the message otterscale.network.v1.Network.Subnet.
  * Use `create(Network_SubnetSchema)` to create a new message.
  */
-export const Network_SubnetSchema: GenMessage<Network_Subnet> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 0, 5);
+export const Network_SubnetSchema: GenMessage<Network_Subnet> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 0, 5);
 
 /**
  * @generated from message otterscale.network.v1.ListNetworksRequest
  */
-export type ListNetworksRequest = Message<"otterscale.network.v1.ListNetworksRequest"> & {
-};
+export type ListNetworksRequest = Message<'otterscale.network.v1.ListNetworksRequest'> & {};
 
 /**
  * Describes the message otterscale.network.v1.ListNetworksRequest.
  * Use `create(ListNetworksRequestSchema)` to create a new message.
  */
-export const ListNetworksRequestSchema: GenMessage<ListNetworksRequest> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 1);
+export const ListNetworksRequestSchema: GenMessage<ListNetworksRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 1);
 
 /**
  * @generated from message otterscale.network.v1.ListNetworksResponse
  */
-export type ListNetworksResponse = Message<"otterscale.network.v1.ListNetworksResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.network.v1.Network networks = 1;
-   */
-  networks: Network[];
+export type ListNetworksResponse = Message<'otterscale.network.v1.ListNetworksResponse'> & {
+	/**
+	 * @generated from field: repeated otterscale.network.v1.Network networks = 1;
+	 */
+	networks: Network[];
 };
 
 /**
  * Describes the message otterscale.network.v1.ListNetworksResponse.
  * Use `create(ListNetworksResponseSchema)` to create a new message.
  */
-export const ListNetworksResponseSchema: GenMessage<ListNetworksResponse> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 2);
+export const ListNetworksResponseSchema: GenMessage<ListNetworksResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 2);
 
 /**
  * @generated from message otterscale.network.v1.CreateNetworkRequest
  */
-export type CreateNetworkRequest = Message<"otterscale.network.v1.CreateNetworkRequest"> & {
-  /**
-   * @generated from field: string cidr = 1;
-   */
-  cidr: string;
+export type CreateNetworkRequest = Message<'otterscale.network.v1.CreateNetworkRequest'> & {
+	/**
+	 * @generated from field: string cidr = 1;
+	 */
+	cidr: string;
 
-  /**
-   * @generated from field: string gateway_ip = 2;
-   */
-  gatewayIp: string;
+	/**
+	 * @generated from field: string gateway_ip = 2;
+	 */
+	gatewayIp: string;
 
-  /**
-   * @generated from field: repeated string dns_servers = 3;
-   */
-  dnsServers: string[];
+	/**
+	 * @generated from field: repeated string dns_servers = 3;
+	 */
+	dnsServers: string[];
 
-  /**
-   * @generated from field: bool dhcp_on = 11;
-   */
-  dhcpOn: boolean;
+	/**
+	 * @generated from field: bool dhcp_on = 11;
+	 */
+	dhcpOn: boolean;
 };
 
 /**
  * Describes the message otterscale.network.v1.CreateNetworkRequest.
  * Use `create(CreateNetworkRequestSchema)` to create a new message.
  */
-export const CreateNetworkRequestSchema: GenMessage<CreateNetworkRequest> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 3);
+export const CreateNetworkRequestSchema: GenMessage<CreateNetworkRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 3);
 
 /**
  * @generated from message otterscale.network.v1.CreateIPRangeRequest
  */
-export type CreateIPRangeRequest = Message<"otterscale.network.v1.CreateIPRangeRequest"> & {
-  /**
-   * @generated from field: int64 subnet_id = 1;
-   */
-  subnetId: bigint;
+export type CreateIPRangeRequest = Message<'otterscale.network.v1.CreateIPRangeRequest'> & {
+	/**
+	 * @generated from field: int64 subnet_id = 1;
+	 */
+	subnetId: bigint;
 
-  /**
-   * @generated from field: string start_ip = 11;
-   */
-  startIp: string;
+	/**
+	 * @generated from field: string start_ip = 11;
+	 */
+	startIp: string;
 
-  /**
-   * @generated from field: string end_ip = 12;
-   */
-  endIp: string;
+	/**
+	 * @generated from field: string end_ip = 12;
+	 */
+	endIp: string;
 
-  /**
-   * @generated from field: string comment = 13;
-   */
-  comment: string;
+	/**
+	 * @generated from field: string comment = 13;
+	 */
+	comment: string;
 };
 
 /**
  * Describes the message otterscale.network.v1.CreateIPRangeRequest.
  * Use `create(CreateIPRangeRequestSchema)` to create a new message.
  */
-export const CreateIPRangeRequestSchema: GenMessage<CreateIPRangeRequest> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 4);
+export const CreateIPRangeRequestSchema: GenMessage<CreateIPRangeRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 4);
 
 /**
  * @generated from message otterscale.network.v1.DeleteNetworkRequest
  */
-export type DeleteNetworkRequest = Message<"otterscale.network.v1.DeleteNetworkRequest"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type DeleteNetworkRequest = Message<'otterscale.network.v1.DeleteNetworkRequest'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 };
 
 /**
  * Describes the message otterscale.network.v1.DeleteNetworkRequest.
  * Use `create(DeleteNetworkRequestSchema)` to create a new message.
  */
-export const DeleteNetworkRequestSchema: GenMessage<DeleteNetworkRequest> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 5);
+export const DeleteNetworkRequestSchema: GenMessage<DeleteNetworkRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 5);
 
 /**
  * @generated from message otterscale.network.v1.DeleteIPRangeRequest
  */
-export type DeleteIPRangeRequest = Message<"otterscale.network.v1.DeleteIPRangeRequest"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type DeleteIPRangeRequest = Message<'otterscale.network.v1.DeleteIPRangeRequest'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 };
 
 /**
  * Describes the message otterscale.network.v1.DeleteIPRangeRequest.
  * Use `create(DeleteIPRangeRequestSchema)` to create a new message.
  */
-export const DeleteIPRangeRequestSchema: GenMessage<DeleteIPRangeRequest> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 6);
+export const DeleteIPRangeRequestSchema: GenMessage<DeleteIPRangeRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 6);
 
 /**
  * @generated from message otterscale.network.v1.UpdateFabricRequest
  */
-export type UpdateFabricRequest = Message<"otterscale.network.v1.UpdateFabricRequest"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type UpdateFabricRequest = Message<'otterscale.network.v1.UpdateFabricRequest'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 
-  /**
-   * @generated from field: string name = 11;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 11;
+	 */
+	name: string;
 };
 
 /**
  * Describes the message otterscale.network.v1.UpdateFabricRequest.
  * Use `create(UpdateFabricRequestSchema)` to create a new message.
  */
-export const UpdateFabricRequestSchema: GenMessage<UpdateFabricRequest> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 7);
+export const UpdateFabricRequestSchema: GenMessage<UpdateFabricRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 7);
 
 /**
  * @generated from message otterscale.network.v1.UpdateVLANRequest
  */
-export type UpdateVLANRequest = Message<"otterscale.network.v1.UpdateVLANRequest"> & {
-  /**
-   * @generated from field: int64 fabric_id = 1;
-   */
-  fabricId: bigint;
+export type UpdateVLANRequest = Message<'otterscale.network.v1.UpdateVLANRequest'> & {
+	/**
+	 * @generated from field: int64 fabric_id = 1;
+	 */
+	fabricId: bigint;
 
-  /**
-   * @generated from field: int64 vid = 2;
-   */
-  vid: bigint;
+	/**
+	 * @generated from field: int64 vid = 2;
+	 */
+	vid: bigint;
 
-  /**
-   * @generated from field: string name = 11;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 11;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: int64 mtu = 12;
-   */
-  mtu: bigint;
+	/**
+	 * @generated from field: int64 mtu = 12;
+	 */
+	mtu: bigint;
 
-  /**
-   * @generated from field: string description = 13;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 13;
+	 */
+	description: string;
 
-  /**
-   * @generated from field: bool dhcp_on = 14;
-   */
-  dhcpOn: boolean;
+	/**
+	 * @generated from field: bool dhcp_on = 14;
+	 */
+	dhcpOn: boolean;
 };
 
 /**
  * Describes the message otterscale.network.v1.UpdateVLANRequest.
  * Use `create(UpdateVLANRequestSchema)` to create a new message.
  */
-export const UpdateVLANRequestSchema: GenMessage<UpdateVLANRequest> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 8);
+export const UpdateVLANRequestSchema: GenMessage<UpdateVLANRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 8);
 
 /**
  * @generated from message otterscale.network.v1.UpdateSubnetRequest
  */
-export type UpdateSubnetRequest = Message<"otterscale.network.v1.UpdateSubnetRequest"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type UpdateSubnetRequest = Message<'otterscale.network.v1.UpdateSubnetRequest'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 
-  /**
-   * @generated from field: string name = 11;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 11;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string cidr = 12;
-   */
-  cidr: string;
+	/**
+	 * @generated from field: string cidr = 12;
+	 */
+	cidr: string;
 
-  /**
-   * @generated from field: string gateway_ip = 13;
-   */
-  gatewayIp: string;
+	/**
+	 * @generated from field: string gateway_ip = 13;
+	 */
+	gatewayIp: string;
 
-  /**
-   * @generated from field: repeated string dns_servers = 14;
-   */
-  dnsServers: string[];
+	/**
+	 * @generated from field: repeated string dns_servers = 14;
+	 */
+	dnsServers: string[];
 
-  /**
-   * @generated from field: string description = 15;
-   */
-  description: string;
+	/**
+	 * @generated from field: string description = 15;
+	 */
+	description: string;
 
-  /**
-   * @generated from field: bool allow_dns_resolution = 16;
-   */
-  allowDnsResolution: boolean;
+	/**
+	 * @generated from field: bool allow_dns_resolution = 16;
+	 */
+	allowDnsResolution: boolean;
 };
 
 /**
  * Describes the message otterscale.network.v1.UpdateSubnetRequest.
  * Use `create(UpdateSubnetRequestSchema)` to create a new message.
  */
-export const UpdateSubnetRequestSchema: GenMessage<UpdateSubnetRequest> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 9);
+export const UpdateSubnetRequestSchema: GenMessage<UpdateSubnetRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 9);
 
 /**
  * @generated from message otterscale.network.v1.UpdateIPRangeRequest
  */
-export type UpdateIPRangeRequest = Message<"otterscale.network.v1.UpdateIPRangeRequest"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type UpdateIPRangeRequest = Message<'otterscale.network.v1.UpdateIPRangeRequest'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 
-  /**
-   * @generated from field: string start_ip = 11;
-   */
-  startIp: string;
+	/**
+	 * @generated from field: string start_ip = 11;
+	 */
+	startIp: string;
 
-  /**
-   * @generated from field: string end_ip = 12;
-   */
-  endIp: string;
+	/**
+	 * @generated from field: string end_ip = 12;
+	 */
+	endIp: string;
 
-  /**
-   * @generated from field: string comment = 13;
-   */
-  comment: string;
+	/**
+	 * @generated from field: string comment = 13;
+	 */
+	comment: string;
 };
 
 /**
  * Describes the message otterscale.network.v1.UpdateIPRangeRequest.
  * Use `create(UpdateIPRangeRequestSchema)` to create a new message.
  */
-export const UpdateIPRangeRequestSchema: GenMessage<UpdateIPRangeRequest> = /*@__PURE__*/
-  messageDesc(file_api_network_v1_network, 10);
+export const UpdateIPRangeRequestSchema: GenMessage<UpdateIPRangeRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_network_v1_network, 10);
 
 /**
  * @generated from service otterscale.network.v1.NetworkService
  */
 export const NetworkService: GenService<{
-  /**
-   * @generated from rpc otterscale.network.v1.NetworkService.ListNetworks
-   */
-  listNetworks: {
-    methodKind: "unary";
-    input: typeof ListNetworksRequestSchema;
-    output: typeof ListNetworksResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.network.v1.NetworkService.CreateNetwork
-   */
-  createNetwork: {
-    methodKind: "unary";
-    input: typeof CreateNetworkRequestSchema;
-    output: typeof NetworkSchema;
-  },
-  /**
-   * @generated from rpc otterscale.network.v1.NetworkService.CreateIPRange
-   */
-  createIPRange: {
-    methodKind: "unary";
-    input: typeof CreateIPRangeRequestSchema;
-    output: typeof Network_IPRangeSchema;
-  },
-  /**
-   * @generated from rpc otterscale.network.v1.NetworkService.DeleteNetwork
-   */
-  deleteNetwork: {
-    methodKind: "unary";
-    input: typeof DeleteNetworkRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.network.v1.NetworkService.DeleteIPRange
-   */
-  deleteIPRange: {
-    methodKind: "unary";
-    input: typeof DeleteIPRangeRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.network.v1.NetworkService.UpdateFabric
-   */
-  updateFabric: {
-    methodKind: "unary";
-    input: typeof UpdateFabricRequestSchema;
-    output: typeof Network_FabricSchema;
-  },
-  /**
-   * @generated from rpc otterscale.network.v1.NetworkService.UpdateVLAN
-   */
-  updateVLAN: {
-    methodKind: "unary";
-    input: typeof UpdateVLANRequestSchema;
-    output: typeof Network_VLANSchema;
-  },
-  /**
-   * @generated from rpc otterscale.network.v1.NetworkService.UpdateSubnet
-   */
-  updateSubnet: {
-    methodKind: "unary";
-    input: typeof UpdateSubnetRequestSchema;
-    output: typeof Network_SubnetSchema;
-  },
-  /**
-   * @generated from rpc otterscale.network.v1.NetworkService.UpdateIPRange
-   */
-  updateIPRange: {
-    methodKind: "unary";
-    input: typeof UpdateIPRangeRequestSchema;
-    output: typeof Network_IPRangeSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_api_network_v1_network, 0);
-
+	/**
+	 * @generated from rpc otterscale.network.v1.NetworkService.ListNetworks
+	 */
+	listNetworks: {
+		methodKind: 'unary';
+		input: typeof ListNetworksRequestSchema;
+		output: typeof ListNetworksResponseSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.network.v1.NetworkService.CreateNetwork
+	 */
+	createNetwork: {
+		methodKind: 'unary';
+		input: typeof CreateNetworkRequestSchema;
+		output: typeof NetworkSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.network.v1.NetworkService.CreateIPRange
+	 */
+	createIPRange: {
+		methodKind: 'unary';
+		input: typeof CreateIPRangeRequestSchema;
+		output: typeof Network_IPRangeSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.network.v1.NetworkService.DeleteNetwork
+	 */
+	deleteNetwork: {
+		methodKind: 'unary';
+		input: typeof DeleteNetworkRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.network.v1.NetworkService.DeleteIPRange
+	 */
+	deleteIPRange: {
+		methodKind: 'unary';
+		input: typeof DeleteIPRangeRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.network.v1.NetworkService.UpdateFabric
+	 */
+	updateFabric: {
+		methodKind: 'unary';
+		input: typeof UpdateFabricRequestSchema;
+		output: typeof Network_FabricSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.network.v1.NetworkService.UpdateVLAN
+	 */
+	updateVLAN: {
+		methodKind: 'unary';
+		input: typeof UpdateVLANRequestSchema;
+		output: typeof Network_VLANSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.network.v1.NetworkService.UpdateSubnet
+	 */
+	updateSubnet: {
+		methodKind: 'unary';
+		input: typeof UpdateSubnetRequestSchema;
+		output: typeof Network_SubnetSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.network.v1.NetworkService.UpdateIPRange
+	 */
+	updateIPRange: {
+		methodKind: 'unary';
+		input: typeof UpdateIPRangeRequestSchema;
+		output: typeof Network_IPRangeSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_api_network_v1_network, 0);

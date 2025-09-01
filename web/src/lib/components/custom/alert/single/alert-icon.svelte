@@ -7,7 +7,7 @@
 		['default', 'ph:terminal'],
 		['information', 'ph:info'],
 		['warning', 'ph:warning'],
-		['destructive', 'ph:prohibit']
+		['destructive', 'ph:prohibit'],
 	]);
 
 	export function getAlertIcon(variant: AlertVariant): string {

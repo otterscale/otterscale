@@ -19,7 +19,7 @@
 	const query = $derived(
 		`
 		sum(etcd_server_has_leader{juju_model_uuid=~"${scope.uuid}"})
-		`
+		`,
 	);
 </script>
 

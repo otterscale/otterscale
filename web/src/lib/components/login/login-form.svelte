@@ -44,19 +44,19 @@
 		apple: false,
 		github: false,
 		google: false,
-		sso: false
+		sso: false,
 	});
 
 	const signInForm = writable<SignInForm>({
 		email: '',
-		password: ''
+		password: '',
 	});
 
 	const signUpForm = writable<SignUpForm>({
 		firstName: '',
 		lastName: '',
 		email: '',
-		password: ''
+		password: '',
 	});
 
 	// Constants
@@ -67,7 +67,7 @@
 			icon: 'streamline-logos:apple-logo-solid',
 			label: 'Apple',
 			enabled: data.apple,
-			prompt: false
+			prompt: false,
 		},
 		{
 			type: 'social',
@@ -75,7 +75,7 @@
 			icon: 'streamline-logos:github-logo-2-solid',
 			label: 'GitHub',
 			enabled: data.github,
-			prompt: false
+			prompt: false,
 		},
 		{
 			type: 'social',
@@ -83,7 +83,7 @@
 			icon: 'streamline-logos:google-logo-solid',
 			label: 'Google',
 			enabled: data.google,
-			prompt: false
+			prompt: false,
 		},
 		{
 			type: 'oidc',
@@ -91,8 +91,8 @@
 			icon: 'simple-icons:openid',
 			label: 'OIDC Single Sign-On',
 			enabled: Boolean(data.oidcProvider),
-			prompt: Boolean(data.ssoLoginPrompt)
-		}
+			prompt: Boolean(data.ssoLoginPrompt),
+		},
 	];
 
 	// Calculate enabled social providers count
@@ -123,8 +123,8 @@
 				name: `${$signUpForm.firstName} ${$signUpForm.lastName}`,
 				fetchOptions: {
 					onSuccess: () => goto(data.nextPath),
-					onError: showError
-				}
+					onError: showError,
+				},
 			});
 		});
 	};
@@ -136,8 +136,8 @@
 				password: $signInForm.password,
 				callbackURL: data.nextPath,
 				fetchOptions: {
-					onError: showError
-				}
+					onError: showError,
+				},
 			});
 		});
 	};
@@ -148,8 +148,8 @@
 				provider: provider as any,
 				callbackURL: data.nextPath,
 				fetchOptions: {
-					onError: showError
-				}
+					onError: showError,
+				},
 			});
 		});
 	};
@@ -158,7 +158,7 @@
 		await setLoadingState(provider, async () => {
 			await authClient.signIn.sso({
 				providerId: data.oidcProvider,
-				callbackURL: data.nextPath
+				callbackURL: data.nextPath,
 			});
 		});
 	};
@@ -255,7 +255,8 @@
 														<span
 															class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
 														></span>
-														<span class="relative inline-flex size-3 rounded-full bg-blue-500"
+														<span
+															class="relative inline-flex size-3 rounded-full bg-blue-500"
 														></span>
 													</span>
 												</div>

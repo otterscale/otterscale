@@ -26,7 +26,7 @@
 	const query = $derived({
 		Degraded: `sum(ceph_pg_degraded{juju_model_uuid=~"${scope.uuid}"})`,
 		Stale: `sum(ceph_pg_stale{juju_model_uuid=~"${scope.uuid}"})`,
-		Undersized: `sum(ceph_pg_undersized{juju_model_uuid=~"${scope.uuid}"})`
+		Undersized: `sum(ceph_pg_undersized{juju_model_uuid=~"${scope.uuid}"})`,
 	});
 </script>
 

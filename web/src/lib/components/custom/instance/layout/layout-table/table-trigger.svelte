@@ -21,12 +21,12 @@
 	data-slot="table-trigger"
 	class={cn(
 		'bg-primary-foreground text-card-foreground relative flex w-full items-center gap-2 p-2 data-[state=closed]:rounded data-[state=open]:rounded-t',
-		className
+		className,
 	)}
 	{...restProps}
 >
 	{@render children?.()}
-	<Button variant="ghost" size="icon" class="absolute right-0 top-1/2 -translate-y-1/2">
+	<Button variant="ghost" size="icon" class="absolute top-1/2 right-0 -translate-y-1/2">
 		<Icon icon="ph:caret-up-down" />
 	</Button>
 </Collapsible.Trigger>

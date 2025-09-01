@@ -11,4 +11,17 @@ import Submit from './form-submit.svelte';
 import Root from './form.svelte';
 import { RequestManager } from './utils.svelte';
 
-export { Actions, Collapsible, Description, Field, Fieldset, Help, Label, Legend, RequestManager, Root, Separator, Submit };
+export {
+	Actions,
+	Collapsible,
+	Description,
+	Field,
+	Fieldset,
+	Help,
+	Label,
+	Legend,
+	RequestManager,
+	Root,
+	Separator,
+	Submit,
+};

@@ -15,7 +15,7 @@
 
 <script lang="ts">
 	let {
-		machine
+		machine,
 	}: {
 		machine: Machine;
 	} = $props();
@@ -29,7 +29,7 @@
 	let isMounted = $state(false);
 
 	const isChanged = $derived(
-		!(machine.tags.length === tags.length && machine.tags.every((tag) => tags.includes(tag)))
+		!(machine.tags.length === tags.length && machine.tags.every((tag) => tags.includes(tag))),
 	);
 
 	const machineClient = createClient(MachineService, transport);
@@ -73,9 +73,7 @@
 							<Icon icon="ph:tag" />{option}
 						</Select.Item>
 					{/each}
-					<div
-						class={cn('grid grid-cols-2 gap-1 border capitalize', isChanged ? 'visible' : 'hidden')}
-					>
+					<div class={cn('grid grid-cols-2 gap-1 border capitalize', isChanged ? 'visible' : 'hidden')}>
 						<Button
 							size="sm"
 							onclick={() => {
@@ -84,12 +82,12 @@
 										machineClient
 											.addMachineTags({
 												id: machine.id,
-												tags: tags.filter((tag) => !machine.tags.includes(tag))
+												tags: tags.filter((tag) => !machine.tags.includes(tag)),
 											})
 											.then(() => {
 												machineClient.removeMachineTags({
 													id: machine.id,
-													tags: machine.tags.filter((tag) => !tags.includes(tag))
+													tags: machine.tags.filter((tag) => !tags.includes(tag)),
 												});
 											}),
 									{
@@ -102,11 +100,11 @@
 											let message = `Fail to udpate ${machine.fqdn} tags`;
 											toast.error(message, {
 												description: (error as ConnectError).message.toString(),
-												duration: Number.POSITIVE_INFINITY
+												duration: Number.POSITIVE_INFINITY,
 											});
 											return message;
-										}
-									}
+										},
+									},
 								);
 								close();
 							}}

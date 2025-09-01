@@ -17,7 +17,7 @@
 	setContext('Accessor', {
 		set open(value: boolean) {
 			open = value;
-		}
+		},
 	});
 	setContext(
 		'StepManager',
@@ -27,8 +27,8 @@
 			},
 			set isUpdating(value: boolean) {
 				isUpdating = value;
-			}
-		} as StepManagerState)
+			},
+		} as StepManagerState),
 	);
 </script>
 

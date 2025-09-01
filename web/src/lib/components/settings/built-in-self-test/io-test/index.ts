@@ -1,5 +1,3 @@
-import { default as IOTest } from './index.svelte'
+import { default as IOTest } from './index.svelte';
 
-export {
-    IOTest
-}
+export { IOTest };

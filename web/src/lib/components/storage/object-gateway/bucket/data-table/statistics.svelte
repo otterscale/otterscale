@@ -29,9 +29,7 @@
 		{/snippet}
 
 		{#snippet content()}
-			{@const bucketBytesList = filteredData.map((datum) =>
-				Number(datum['usedBytes' as keyof TData])
-			)}
+			{@const bucketBytesList = filteredData.map((datum) => Number(datum['usedBytes' as keyof TData]))}
 			{@const bucketBytesTotal = bucketBytesList.reduce((a, current) => a + current, 0)}
 			{@const { value, unit } = formatCapacity(Number(bucketBytesTotal) / (1024 * 1024))}
 			<Content {value} {unit} />

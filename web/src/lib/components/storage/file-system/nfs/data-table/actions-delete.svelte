@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	let {
-		subvolume
+		subvolume,
 	}: {
 		subvolume: Subvolume;
 	} = $props();
@@ -35,7 +35,7 @@
 		scopeUuid: get(nfsStore.selectedScopeUuid),
 		facilityName: get(nfsStore.selectedFacilityName),
 		volumeName: get(nfsStore.selectedVolumeName),
-		groupName: get(nfsStore.selectedSubvolumeGroupName)
+		groupName: get(nfsStore.selectedSubvolumeGroupName),
 	} as DeleteSubvolumeRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -57,11 +57,7 @@
 		<Form.Root bind:invalid>
 			<Form.Fieldset>
 				<Form.Field>
-					<SingleInput.Confirm
-						required
-						target={subvolume.name}
-						bind:value={request.subvolumeName}
-					/>
+					<SingleInput.Confirm required target={subvolume.name} bind:value={request.subvolumeName} />
 				</Form.Field>
 				<Form.Help>
 					{m.deletion_warning({ identifier: m.nfs_name() })}
@@ -90,10 +86,10 @@
 								let message = `Fail to delete ${request.subvolumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

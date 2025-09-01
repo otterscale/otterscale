@@ -1,5 +1,3 @@
-import DataTable from './index.svelte'
+import DataTable from './index.svelte';
 
-export {
-    DataTable
-}
+export { DataTable };

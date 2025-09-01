@@ -2,7 +2,7 @@
 	import {
 		ApplicationService,
 		type Application_Chart,
-		type CreateReleaseRequest
+		type CreateReleaseRequest,
 	} from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -22,7 +22,7 @@
 <script lang="ts">
 	let {
 		chart,
-		charts = $bindable()
+		charts = $bindable(),
 	}: {
 		chart: Application_Chart;
 		charts: Writable<Application_Chart[]>;
@@ -36,9 +36,9 @@
 			chart.versions.map((version) => ({
 				value: version.chartRef,
 				label: version.chartVersion,
-				icon: 'ph:tag'
-			}))
-		)
+				icon: 'ph:tag',
+			})),
+		),
 	);
 
 	const applicationClient = createClient(ApplicationService, transport);
@@ -144,10 +144,10 @@
 							let message = `Fail to create ${request.name}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY
+								duration: Number.POSITIVE_INFINITY,
 							});
 							return message;
-						}
+						},
 					});
 
 					reset();

@@ -7,7 +7,7 @@
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [dynamicPaths.networking(page.params.scope)],
-		current: dynamicPaths.networkingSubnets(page.params.scope)
+		current: dynamicPaths.networkingSubnets(page.params.scope),
 	});
 </script>
 

@@ -1,3 +1,3 @@
-import OSD from './index.svelte'
+import OSD from './index.svelte';
 
-export { OSD }
+export { OSD };

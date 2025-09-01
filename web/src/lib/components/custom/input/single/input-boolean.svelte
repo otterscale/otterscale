@@ -42,7 +42,7 @@
 		format === 'switch' ? 'ring-1' : 'border-none shadow-none',
 		isInvalid && format === 'switch' ? 'ring-destructive' : '',
 		isInvalid && format === 'checkbox' ? 'ring-destructive ring-1' : '',
-		className
+		className,
 	)}
 >
 	<span class="pr-15">
@@ -88,7 +88,7 @@
 
 	<span
 		class={cn(
-			'absolute top-1/2 right-0 flex -translate-y-1/2 items-center rounded-full hover:cursor-pointer focus:outline-none'
+			'absolute top-1/2 right-0 flex -translate-y-1/2 items-center rounded-full hover:cursor-pointer focus:outline-none',
 			// format === 'checkbox' && isInvalid ? 'ring-destructive ring-1' : ''
 		)}
 	>

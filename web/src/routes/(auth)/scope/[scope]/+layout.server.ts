@@ -1,7 +1,7 @@
-import type { User } from "better-auth";
-import { redirect } from "@sveltejs/kit";
-import { auth } from "$lib/auth";
-import type { LayoutServerLoad } from "./$types";
+import type { User } from 'better-auth';
+import { redirect } from '@sveltejs/kit';
+import { auth } from '$lib/auth';
+import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ request, url }) => {
 	const session = await auth.api.getSession({

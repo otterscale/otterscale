@@ -7,7 +7,7 @@
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [dynamicPaths.applications(page.params.scope)],
-		current: dynamicPaths.applicationsServices(page.params.scope)
+		current: dynamicPaths.applicationsServices(page.params.scope),
 	});
 </script>
 

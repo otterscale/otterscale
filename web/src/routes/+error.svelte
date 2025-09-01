@@ -9,7 +9,7 @@
 		404: m.error_message_404(),
 		500: m.error_message_500(),
 		502: m.error_message_502(),
-		503: m.error_message_503()
+		503: m.error_message_503(),
 	};
 </script>
 

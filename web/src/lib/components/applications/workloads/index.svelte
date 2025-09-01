@@ -22,7 +22,7 @@
 		applicationClient
 			.listApplications({
 				scopeUuid: scopeUuid,
-				facilityName: facilityName
+				facilityName: facilityName,
 			})
 			.then((response) => {
 				applications.set(response.applications);
@@ -33,7 +33,7 @@
 		applicationClient
 			.listApplications({
 				scopeUuid: scopeUuid,
-				facilityName: facilityName
+				facilityName: facilityName,
 			})
 			.then((response) => {
 				applications.set(response.applications);

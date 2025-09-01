@@ -13,7 +13,7 @@ const messages = {
 	subnet: m.subnet(),
 	ipAddresses: m.ip_address(),
 	ipRanges: m.ip_range(),
-	statistics: m.statistics()
+	statistics: m.statistics(),
 };
 
 const columns: ColumnDef<Network>[] = [
@@ -26,7 +26,7 @@ const columns: ColumnDef<Network>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'fabric',
@@ -42,7 +42,7 @@ const columns: ColumnDef<Network>[] = [
 			}
 
 			return row.original.fabric ? row.original.fabric.name.includes(filterValue) : false;
-		}
+		},
 	},
 	{
 		accessorKey: 'vlan',
@@ -58,7 +58,7 @@ const columns: ColumnDef<Network>[] = [
 			}
 
 			return row.original.vlan ? row.original.vlan.name.includes(filterValue) : false;
-		}
+		},
 	},
 	{
 		accessorKey: 'dhcpOn',
@@ -67,7 +67,7 @@ const columns: ColumnDef<Network>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.dhcpOn, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'subnet',
@@ -76,7 +76,7 @@ const columns: ColumnDef<Network>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.subnet, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'ipAddresses',
@@ -91,8 +91,8 @@ const columns: ColumnDef<Network>[] = [
 				previousRow.original.subnet?.ipAddresses.length,
 				nextRow.original.subnet?.ipAddresses.length,
 				(p, n) => p < n,
-				(p, n) => p === n
-			)
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'ipRanges',
@@ -107,8 +107,8 @@ const columns: ColumnDef<Network>[] = [
 				previousRow.original.subnet?.ipRanges?.length,
 				nextRow.original.subnet?.ipRanges?.length,
 				(p, n) => p < n,
-				(p, n) => p === n
-			)
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'statistics',
@@ -125,8 +125,8 @@ const columns: ColumnDef<Network>[] = [
 				Number(nextRow.original.subnet?.statistics?.available) /
 					Number(nextRow.original.subnet?.statistics?.total),
 				(p, n) => p < n,
-				(p, n) => p === n
-			)
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'actions',
@@ -136,8 +136,8 @@ const columns: ColumnDef<Network>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false
-	}
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };

@@ -2,7 +2,7 @@
 	import {
 		ConfigurationService,
 		type Configuration,
-		type ImportBootImagesRequest
+		type ImportBootImagesRequest,
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -87,10 +87,10 @@
 								let message = `Fail to import boot images`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 
 						reset();

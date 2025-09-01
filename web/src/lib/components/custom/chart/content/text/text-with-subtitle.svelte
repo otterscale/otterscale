@@ -7,7 +7,7 @@
 		unit,
 		subtitle,
 		children,
-		class: className
+		class: className,
 	}: {
 		value?: string | number;
 		unit?: string;

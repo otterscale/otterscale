@@ -1,8 +1,5 @@
 <script lang="ts" module>
-	import {
-		type Application_Chart,
-		type Application_Release
-	} from '$lib/api/application/v1/application_pb';
+	import { type Application_Chart, type Application_Release } from '$lib/api/application/v1/application_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
@@ -25,7 +22,7 @@
 		chartReleases,
 		charts = $bindable(),
 		releases = $bindable(),
-		children
+		children,
 	}: {
 		chart: Application_Chart;
 		chartReleases: Application_Release[] | undefined;
@@ -125,7 +122,7 @@
 										icon="ph:caret-left"
 										class={cn(
 											'size-4 transition-all',
-											isDependanciesExpand ? 'rotate-90' : '-rotate-90'
+											isDependanciesExpand ? 'rotate-90' : '-rotate-90',
 										)}
 									/>
 								</Button>
@@ -201,7 +198,7 @@
 										icon="ph:caret-left"
 										class={cn(
 											'size-4 transition-all',
-											isSourcesExpand ? 'rotate-90' : '-rotate-90'
+											isSourcesExpand ? 'rotate-90' : '-rotate-90',
 										)}
 									/>
 								</Button>
@@ -256,7 +253,7 @@
 										icon="ph:caret-left"
 										class={cn(
 											'size-4 transition-all',
-											isMaintainersExpand ? 'rotate-90' : '-rotate-90'
+											isMaintainersExpand ? 'rotate-90' : '-rotate-90',
 										)}
 									/>
 								</Button>

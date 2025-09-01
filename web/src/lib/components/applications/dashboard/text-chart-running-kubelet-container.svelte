@@ -25,7 +25,7 @@
 		sum(
 			kubelet_running_container_count{job="kubelet",juju_model_uuid=~"${scope.uuid}",metrics_path="/metrics"}
 		)
-		`
+		`,
 	);
 </script>
 

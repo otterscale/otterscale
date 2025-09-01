@@ -36,7 +36,7 @@
 		*
 			100
 		)
-		`
+		`,
 	});
 
 	// Data fetching function
@@ -45,7 +45,7 @@
 		const usageValue = usageResponse.result[0]?.value?.value;
 		const usagePercentage = usageValue != null ? usageValue * 100 : null;
 		return {
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }],
 		};
 	}
 </script>

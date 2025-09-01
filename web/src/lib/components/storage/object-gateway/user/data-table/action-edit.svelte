@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	let {
-		user
+		user,
 	}: {
 		user: User;
 	} = $props();
@@ -32,7 +32,7 @@
 		facilityName: $currentCeph?.name,
 		userId: user.id,
 		userName: user.name,
-		suspended: true
+		suspended: true,
 	} as UpdateUserRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -98,10 +98,10 @@
 								let message = `Fail to update ${request.userId}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

@@ -8,7 +8,7 @@
 
 <script lang="ts">
 	let {
-		subvolumeGroup
+		subvolumeGroup,
 	}: {
 		subvolumeGroup: SubvolumeGroup;
 	} = $props();

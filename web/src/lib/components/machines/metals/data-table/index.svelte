@@ -13,7 +13,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import { columns, messages } from './columns';
@@ -21,8 +21,7 @@
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { machines, reloadManager }: { machines: Writable<Machine[]>; reloadManager: ReloadManager } =
-		$props();
+	let { machines, reloadManager }: { machines: Writable<Machine[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -56,7 +55,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 
 		onPaginationChange: (updater) => {
@@ -95,31 +94,21 @@
 			}
 		},
 
-		autoResetPageIndex: false
+		autoResetPageIndex: false,
 	});
 </script>
 
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy
-				columnId="fqdn_ip"
-				values={$machines.map((row) => row.fqdn)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringFuzzy columnId="fqdn_ip" values={$machines.map((row) => row.fqdn)} {messages} {table} />
 			<Filters.StringMatch
 				columnId="powerState"
 				values={$machines.flatMap((row) => row.powerState)}
 				{messages}
 				{table}
 			/>
-			<Filters.StringMatch
-				columnId="status"
-				values={$machines.flatMap((row) => row.status)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringMatch columnId="status" values={$machines.flatMap((row) => row.status)} {messages} {table} />
 			<Filters.Column {messages} {table} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

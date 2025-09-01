@@ -9,7 +9,7 @@
 		selectedScopeUuid,
 		selectedFacility,
 		selectedVolume,
-		selectedSubvolumeGroupName = $bindable()
+		selectedSubvolumeGroupName = $bindable(),
 	}: {
 		selectedScopeUuid: string;
 		selectedFacility: string;
@@ -21,11 +21,6 @@
 <Picker.Root align="left">
 	<Picker.Wrapper class="*:h-8">
 		<Picker.Label>{m.group()}</Picker.Label>
-		<SubvolumeGroupPicker
-			{selectedScopeUuid}
-			{selectedFacility}
-			{selectedVolume}
-			bind:selectedSubvolumeGroupName
-		/>
+		<SubvolumeGroupPicker {selectedScopeUuid} {selectedFacility} {selectedVolume} bind:selectedSubvolumeGroupName />
 	</Picker.Wrapper>
 </Picker.Root>

@@ -14,11 +14,9 @@
 	const filteredData = $derived(table.getFilteredRowModel().rows.map((row) => row.original));
 
 	const quotaTotal = $derived(
-		filteredData.reduce((sum, datum) => sum + Number(datum['quotaBytes' as keyof TData]), 0)
+		filteredData.reduce((sum, datum) => sum + Number(datum['quotaBytes' as keyof TData]), 0),
 	);
-	const usedTotal = $derived(
-		filteredData.reduce((sum, datum) => sum + Number(datum['usedBytes' as keyof TData]), 0)
-	);
+	const usedTotal = $derived(filteredData.reduce((sum, datum) => sum + Number(datum['usedBytes' as keyof TData]), 0));
 </script>
 
 <div class="grid w-full gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">

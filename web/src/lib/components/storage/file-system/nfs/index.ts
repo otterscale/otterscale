@@ -1,5 +1,3 @@
-import { default as NFS } from './index.svelte'
+import { default as NFS } from './index.svelte';
 
-export {
-    NFS
-}
+export { NFS };

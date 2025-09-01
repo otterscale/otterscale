@@ -8,26 +8,26 @@ export interface Route {
 export const applicationRoutes = (scope: string | undefined): Route[] => [
 	{
 		path: dynamicPaths.models(scope),
-		items: [dynamicPaths.modelsLLM(scope)]
+		items: [dynamicPaths.modelsLLM(scope)],
 	},
 	{
 		path: dynamicPaths.databases(scope),
-		items: [dynamicPaths.databasesRelational(scope), dynamicPaths.databasesNoSQL(scope)]
+		items: [dynamicPaths.databasesRelational(scope), dynamicPaths.databasesNoSQL(scope)],
 	},
 	{
 		path: dynamicPaths.applications(scope),
 		items: [
 			dynamicPaths.applicationsWorkloads(scope),
 			dynamicPaths.applicationsServices(scope),
-			dynamicPaths.applicationsStore(scope)
-		]
-	}
+			dynamicPaths.applicationsStore(scope),
+		],
+	},
 ];
 
 export const platformRoutes = (scope: string | undefined): Route[] => [
 	{
 		path: dynamicPaths.compute(scope),
-		items: [dynamicPaths.computeVirtualMachine(scope)]
+		items: [dynamicPaths.computeVirtualMachine(scope)],
 	},
 	{
 		path: dynamicPaths.storage(scope),
@@ -36,19 +36,19 @@ export const platformRoutes = (scope: string | undefined): Route[] => [
 			dynamicPaths.storagePool(scope),
 			dynamicPaths.storageBlockDevice(scope),
 			dynamicPaths.storageFileSystem(scope),
-			dynamicPaths.storageObjectGateway(scope)
-		]
+			dynamicPaths.storageObjectGateway(scope),
+		],
 	},
 	{
 		path: dynamicPaths.networking(scope),
-		items: [dynamicPaths.networkingSubnets(scope)]
+		items: [dynamicPaths.networkingSubnets(scope)],
 	},
 	{
 		path: dynamicPaths.machines(scope),
-		items: [dynamicPaths.machinesMetal(scope)]
+		items: [dynamicPaths.machinesMetal(scope)],
 	},
 	{
 		path: dynamicPaths.settings(scope),
-		items: []
-	}
+		items: [],
+	},
 ];

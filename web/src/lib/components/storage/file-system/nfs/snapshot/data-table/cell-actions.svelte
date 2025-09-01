@@ -7,7 +7,7 @@
 
 <script lang="ts">
 	let {
-		snapshot
+		snapshot,
 	}: {
 		snapshot: Subvolume_Snapshot;
 	} = $props();

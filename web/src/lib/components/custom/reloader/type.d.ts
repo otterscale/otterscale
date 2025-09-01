@@ -1,3 +1,3 @@
 type AlignType = 'left' | 'right';
 
-export type { AlignType }
+export type { AlignType };

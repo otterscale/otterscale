@@ -21,9 +21,7 @@
 		transformer = (value) => value,
 		invalid = $bindable(),
 		...restProps
-	}: WithElementRef<
-		Omit<HTMLInputAttributes, 'type' | 'files'> & { type?: InputType | undefined }
-	> & {
+	}: WithElementRef<Omit<HTMLInputAttributes, 'type' | 'files'> & { type?: InputType | undefined }> & {
 		transformer?: (value: any) => void;
 		invalid?: boolean | null | undefined;
 	} = $props();
@@ -36,7 +34,7 @@
 
 <div class="relative">
 	{#if type}
-		<span class="absolute left-3 top-1/2 -translate-y-1/2 items-center">
+		<span class="absolute top-1/2 left-3 -translate-y-1/2 items-center">
 			<Icon icon={hasContext('icon') ? getContext('icon') : typeToIcon[type]} />
 		</span>
 	{/if}
@@ -46,11 +44,9 @@
 		data-slot="input-general"
 		class={cn(
 			'pl-9 ring-1',
-			isInvalid
-				? 'placeholder:text-destructive/60 placeholder:text-xs focus:placeholder:invisible'
-				: '',
+			isInvalid ? 'placeholder:text-destructive/60 placeholder:text-xs focus:placeholder:invisible' : '',
 			isInvalid ? 'ring-destructive' : '',
-			className
+			className,
 		)}
 		{type}
 		bind:value

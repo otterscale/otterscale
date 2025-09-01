@@ -15,38 +15,38 @@
 			name: 'ceph-mon',
 			icon: 'ph:binoculars',
 			title: m.monitors(),
-			gridClass: 'col-span-3 row-span-2'
+			gridClass: 'col-span-3 row-span-2',
 		},
 		osds: {
 			name: 'ceph-osd',
 			icon: 'ph:hard-drives',
 			title: m.osds(),
-			gridClass: 'col-span-3 row-span-2'
+			gridClass: 'col-span-3 row-span-2',
 		},
 		fileSystem: {
 			name: 'ceph-fs',
 			icon: 'ph:tree-view',
 			title: m.file_system(),
-			gridClass: 'col-span-2'
+			gridClass: 'col-span-2',
 		},
 		objectGateway: {
 			name: 'ceph-radosgw',
 			icon: 'ph:traffic-sign',
 			title: m.object_gateway(),
-			gridClass: 'col-span-2'
+			gridClass: 'col-span-2',
 		},
 		networkFileSystem: {
 			name: 'ceph-nfs',
 			icon: 'ph:network',
 			title: m.network_file_system(),
-			gridClass: 'col-span-2'
-		}
+			gridClass: 'col-span-2',
+		},
 	} as const;
 
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [dynamicPaths.setupScope(page.params.scope)],
-		current: dynamicPaths.setupScopeCeph(page.params.scope)
+		current: dynamicPaths.setupScopeCeph(page.params.scope),
 	});
 
 	// API setup

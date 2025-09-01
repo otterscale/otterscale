@@ -8,14 +8,14 @@ import { Err, Ok, type Result } from './result';
 export type Octets = [number, number, number, number, number];
 
 export type IPv4CIDR =
-    | Octets
-    | `${number}.${number}.${number}.${number}/${number}`
-    | `${number} ${number} ${number} ${number}/${number}`
-    | `${number}_${number}_${number}_${number}/${number}`;
+	| Octets
+	| `${number}.${number}.${number}.${number}/${number}`
+	| `${number} ${number} ${number} ${number}/${number}`
+	| `${number}_${number}_${number}_${number}/${number}`;
 
 export type ParseError = {
-    octet?: number;
-    message: string;
+	octet?: number;
+	message: string;
 };
 
 /** Parses the ip address from a string in the format of `0.0.0.0/16` or `0 0 0 0/16` or `0_0_0_0/16` into an array of octets
@@ -30,32 +30,31 @@ export type ParseError = {
  * ```
  */
 export function parse(address: string): Result<Octets, ParseError> {
-    let newAddress = address.trim();
+	let newAddress = address.trim();
 
-    newAddress = newAddress.replaceAll(' ', '.');
-    newAddress = newAddress.replaceAll('_', '.');
-    newAddress = newAddress.replaceAll('/', '.');
+	newAddress = newAddress.replaceAll(' ', '.');
+	newAddress = newAddress.replaceAll('_', '.');
+	newAddress = newAddress.replaceAll('/', '.');
 
-    const octets = newAddress.split('.');
+	const octets = newAddress.split('.');
 
-    if (octets.length !== 5)
-        return Err({ message: `'${address}' is invalid as it doesn't contain 4 octets.` });
+	if (octets.length !== 5) return Err({ message: `'${address}' is invalid as it doesn't contain 4 octets.` });
 
-    const final: Octets = [0, 0, 0, 0, 0];
+	const final: Octets = [0, 0, 0, 0, 0];
 
-    for (let i = 0; i < octets.length; i++) {
-        const octet = octets[i];
+	for (let i = 0; i < octets.length; i++) {
+		const octet = octets[i];
 
-        if (!isNumber(octet)) return Err({ octet: i + 1, message: `'${octet}' is not a number.` });
+		if (!isNumber(octet)) return Err({ octet: i + 1, message: `'${octet}' is not a number.` });
 
-        const num = Number.parseInt(octet);
+		const num = Number.parseInt(octet);
 
-        if (num < 0 || num > 255) return Err({ octet: i + 1, message: `'${octet}' is out of range.` });
+		if (num < 0 || num > 255) return Err({ octet: i + 1, message: `'${octet}' is out of range.` });
 
-        final[i] = num;
-    }
+		final[i] = num;
+	}
 
-    return Ok(final);
+	return Ok(final);
 }
 
 /** Validates the provided address
@@ -74,15 +73,15 @@ export function parse(address: string): Result<Octets, ParseError> {
  * ```
  */
 export function validate(address: IPv4CIDR): boolean {
-    if (typeof address === 'string') return parse(address).isOk();
+	if (typeof address === 'string') return parse(address).isOk();
 
-    for (let i = 0; i < address.length; i++) {
-        const octet = address[i];
+	for (let i = 0; i < address.length; i++) {
+		const octet = address[i];
 
-        if (octet < 0 || octet > 255) return false;
-    }
+		if (octet < 0 || octet > 255) return false;
+	}
 
-    return true;
+	return true;
 }
 
 /** Formats the provided address to a string with the provided separator
@@ -97,15 +96,12 @@ export function validate(address: IPv4CIDR): boolean {
  * formatToString([192, 168, 100, 10]); // "192.168.100.10"
  * ```
  */
-export function formatToString(
-    address: IPv4CIDR,
-    separator: '.' | '_' | ' ' = '.'
-): Result<string, string> {
-    if (Array.isArray(address)) return Ok(address.slice(0, 4).join(separator) + '/' + address[4]);
+export function formatToString(address: IPv4CIDR, separator: '.' | '_' | ' ' = '.'): Result<string, string> {
+	if (Array.isArray(address)) return Ok(address.slice(0, 4).join(separator) + '/' + address[4]);
 
-    const parsed = parse(address);
+	const parsed = parse(address);
 
-    if (parsed.isErr()) return Err(parsed.unwrapErr().message);
+	if (parsed.isErr()) return Err(parsed.unwrapErr().message);
 
-    return formatToString(parsed.unwrap(), separator);
+	return formatToString(parsed.unwrap(), separator);
 }

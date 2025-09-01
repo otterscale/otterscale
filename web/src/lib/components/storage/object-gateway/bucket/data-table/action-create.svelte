@@ -31,7 +31,7 @@
 	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
 		facilityName: $currentCeph?.name,
-		policy: '{}'
+		policy: '{}',
 	} as CreateBucketRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -53,9 +53,9 @@
 							({
 								value: user.id,
 								label: user.id,
-								icon: 'ph:user'
-							}) as SingleSelect.OptionType
-					)
+								icon: 'ph:user',
+							}) as SingleSelect.OptionType,
+					),
 				);
 				isMounted = true;
 			})
@@ -82,12 +82,7 @@
 				<Form.Field>
 					<Form.Label>{m.owner()}</Form.Label>
 					{#if isMounted}
-						<SingleSelect.Root
-							id="owner"
-							bind:options={userOptions}
-							bind:value={request.owner}
-							required
-						>
+						<SingleSelect.Root id="owner" bind:options={userOptions} bind:value={request.owner} required>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
 								<SingleSelect.Options>
@@ -196,10 +191,10 @@
 								let message = `Fail to create ${request.bucketName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

@@ -16,7 +16,7 @@
 		replica,
 		container,
 		volume,
-		nodeport
+		nodeport,
 	};
 </script>
 

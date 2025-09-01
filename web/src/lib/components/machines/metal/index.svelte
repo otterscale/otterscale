@@ -20,7 +20,7 @@
 		try {
 			machineClient
 				.getMachine({
-					id: page.params.id
+					id: page.params.id,
 				})
 				.then((response) => {
 					machine.set(response);

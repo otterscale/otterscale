@@ -1,4 +1,4 @@
-import { Popover as PopoverPrimitive } from "bits-ui";
+import { Popover as PopoverPrimitive } from 'bits-ui';
 import Check from './select-check.svelte';
 import Content from './select-content.svelte';
 import Empty from './select-empty.svelte';
@@ -16,9 +16,19 @@ import { OptionManager } from './utils.svelte';
 const Close = PopoverPrimitive.Close;
 
 export {
-    Check, Close, Content, Empty, Group, Input, Item, ItemInformation, List, OptionManager, Options, Root, Shortcut, Trigger
+	Check,
+	Close,
+	Content,
+	Empty,
+	Group,
+	Input,
+	Item,
+	ItemInformation,
+	List,
+	OptionManager,
+	Options,
+	Root,
+	Shortcut,
+	Trigger,
 };
-export type {
-    OptionType
-};
-
+export type { OptionType };

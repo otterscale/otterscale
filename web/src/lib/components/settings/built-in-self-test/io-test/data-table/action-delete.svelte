@@ -14,7 +14,7 @@
 
 <script lang="ts">
 	let {
-		testResult
+		testResult,
 	}: {
 		testResult: TestResult;
 	} = $props();
@@ -27,7 +27,7 @@
 	let invalid = $state(false);
 
 	const defaults = {
-		name: testResult.name
+		name: testResult.name,
 	} as DeleteTestResultRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -80,10 +80,10 @@
 								let message = `Fail to delete ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

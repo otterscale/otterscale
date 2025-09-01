@@ -32,7 +32,7 @@
 		'data-[state=open]:ring-primary group cursor-pointer ring-1',
 		buttonVariants({ variant: variant }),
 		isInvalid ? 'ring-destructive' : '',
-		className
+		className,
 	)}
 	{...restProps}
 >

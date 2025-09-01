@@ -14,7 +14,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import { writable, type Writable } from 'svelte/store';
 	import Create from './action-test.svelte';
@@ -23,10 +23,8 @@
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let {
-		testResults,
-		reloadManager
-	}: { testResults: Writable<TestResult[]>; reloadManager: ReloadManager } = $props();
+	let { testResults, reloadManager }: { testResults: Writable<TestResult[]>; reloadManager: ReloadManager } =
+		$props();
 
 	let data = $state(writable(testResults));
 
@@ -39,7 +37,7 @@
 		runTime: false,
 		blockSize: false,
 		fileSize: false,
-		ioDepth: false
+		ioDepth: false,
 	});
 	let rowSelection = $state<RowSelectionState>({});
 
@@ -69,7 +67,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -107,7 +105,7 @@
 			}
 		},
 
-		autoResetPageIndex: false
+		autoResetPageIndex: false,
 	});
 </script>
 
@@ -117,12 +115,7 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy
-				columnId="name"
-				values={$testResults.map((row) => row.name)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringFuzzy columnId="name" values={$testResults.map((row) => row.name)} {messages} {table} />
 			<Filters.StringMatch
 				columnId="createdBy"
 				values={$testResults.map((row) => row.createdBy)}

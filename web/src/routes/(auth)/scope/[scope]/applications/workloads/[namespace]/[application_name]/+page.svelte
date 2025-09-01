@@ -7,11 +7,8 @@
 
 <script lang="ts">
 	breadcrumb.set({
-		parents: [
-			dynamicPaths.applications(page.params.scope),
-			dynamicPaths.applicationsWorkloads(page.params.scope)
-		],
-		current: { title: `${page.params.namespace} / ${page.params.application_name}`, url: '' }
+		parents: [dynamicPaths.applications(page.params.scope), dynamicPaths.applicationsWorkloads(page.params.scope)],
+		current: { title: `${page.params.namespace} / ${page.params.application_name}`, url: '' },
 	});
 </script>
 

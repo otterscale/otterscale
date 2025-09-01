@@ -7,7 +7,7 @@
 		data,
 		xKey,
 		yKey,
-		timeRange = '90d'
+		timeRange = '90d',
 	}: {
 		data: Record<string, any>;
 		xKey: string;
@@ -44,11 +44,11 @@
 				// 		minute: '2-digit'
 				// 	});
 				// }
-				format: () => ''
+				format: () => '',
 			},
 			yAxis: {
-				format: () => ''
-			}
+				format: () => '',
+			},
 		}}
 	>
 		<!-- {#snippet tooltip()}

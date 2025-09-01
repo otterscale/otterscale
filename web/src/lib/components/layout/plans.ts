@@ -24,7 +24,7 @@ export const plans: Plan[] = [
 		description: m.basic_tier_description(),
 		tags: ['Ceph', 'Kubernetes', m.single_node()],
 		image: BasicTierImage,
-		disabled: get(premiumTier) < PremiumTier.BASIC
+		disabled: get(premiumTier) < PremiumTier.BASIC,
 	},
 	{
 		tier: m.advanced_tier(),
@@ -33,7 +33,7 @@ export const plans: Plan[] = [
 		description: m.advanced_tier_description(),
 		tags: ['Ceph', 'Multi-Node', m.multi_node(), m.cluster()],
 		image: AdvancedTierImage,
-		disabled: get(premiumTier) < PremiumTier.ADVANCED
+		disabled: get(premiumTier) < PremiumTier.ADVANCED,
 	},
 	{
 		tier: m.enterprise_tier(),
@@ -42,6 +42,6 @@ export const plans: Plan[] = [
 		description: m.enterprise_tier_description(),
 		tags: ['Ceph', 'Kubernetes', m.multi_node(), m.cluster()],
 		image: EnterpriseTierImage,
-		disabled: get(premiumTier) < PremiumTier.ENTERPRISE
-	}
+		disabled: get(premiumTier) < PremiumTier.ENTERPRISE,
+	},
 ];

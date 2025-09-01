@@ -13,11 +13,6 @@
 	}: WithElementRef<HTMLAttributes<HTMLParagraphElement>> = $props();
 </script>
 
-<Card.Description
-	bind:ref
-	data-slot="layout-statistic-description"
-	class={cn('', className)}
-	{...restProps}
->
+<Card.Description bind:ref data-slot="layout-statistic-description" class={cn('', className)} {...restProps}>
 	{@render children?.()}
 </Card.Description>

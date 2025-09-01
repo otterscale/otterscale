@@ -1,5 +1,3 @@
-import Analytics from './index.svelte'
+import Analytics from './index.svelte';
 
-export {
-    Analytics
-}
+export { Analytics };

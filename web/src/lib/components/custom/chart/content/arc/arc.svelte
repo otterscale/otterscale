@@ -4,14 +4,14 @@
 
 	let {
 		data = [{ value: NaN }],
-		subtitle
+		subtitle,
 	}: {
 		data?: Array<any>;
 		subtitle?: string;
 	} = $props();
 
 	const chartConfig = {
-		data: { color: 'var(--chart-4)' }
+		data: { color: 'var(--chart-4)' },
 	} satisfies Chart.ChartConfig;
 </script>
 
@@ -27,12 +27,12 @@
 		series={[
 			{
 				key: 'data',
-				color: chartConfig.data.color
-			}
+				color: chartConfig.data.color,
+			},
 		]}
 		props={{
 			arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
-			tooltip: { context: { hideDelay: 350 } }
+			tooltip: { context: { hideDelay: 350 } },
 		}}
 		tooltip={false}
 	>

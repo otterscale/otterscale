@@ -15,7 +15,7 @@
 
 <script lang="ts">
 	let {
-		image
+		image,
 	}: {
 		image: Image;
 	} = $props();
@@ -30,7 +30,7 @@
 		facilityName: $currentCeph?.name,
 		poolName: image.poolName,
 		imageName: image.name,
-		quotaBytes: image.quotaBytes
+		quotaBytes: image.quotaBytes,
 	} as UpdateImageRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -59,7 +59,7 @@
 						transformer={(value) => String(value)}
 						units={[
 							{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
-							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType
+							{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
 						]}
 						bind:value={request.quotaBytes}
 						bind:invalid
@@ -89,10 +89,10 @@
 								let message = `Fail to updated ${request.imageName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

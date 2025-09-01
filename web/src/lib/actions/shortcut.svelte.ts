@@ -95,7 +95,7 @@ export const shortcut = (node: HTMLElement, options: Options[] | Options) => {
  */
 export function attachShortcut(opts: Options[] | Options) {
 	return {
-		[createAttachmentKey()]: (node: HTMLElement) => shortcut(node, opts)
+		[createAttachmentKey()]: (node: HTMLElement) => shortcut(node, opts),
 	};
 }
 

@@ -8,7 +8,7 @@
 
 <script lang="ts">
 	let {
-		user
+		user,
 	}: {
 		user: User;
 	} = $props();

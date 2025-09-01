@@ -9,7 +9,7 @@ const messages = {
 	type: m.type(),
 	startIp: m.start_ip(),
 	endIp: m.end_ip(),
-	comment: m.comment()
+	comment: m.comment(),
 };
 
 const columns: ColumnDef<Network_IPRange>[] = [
@@ -22,7 +22,7 @@ const columns: ColumnDef<Network_IPRange>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'startIp',
@@ -31,7 +31,7 @@ const columns: ColumnDef<Network_IPRange>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.startIp, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'endIp',
@@ -40,7 +40,7 @@ const columns: ColumnDef<Network_IPRange>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.endIp, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'type',
@@ -50,7 +50,7 @@ const columns: ColumnDef<Network_IPRange>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.type, row);
 		},
-		filterFn: 'arrIncludesSome'
+		filterFn: 'arrIncludesSome',
 	},
 	{
 		accessorKey: 'comment',
@@ -59,8 +59,8 @@ const columns: ColumnDef<Network_IPRange>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.comment, row);
-		}
-	}
+		},
+	},
 ];
 
 export { columns, messages };

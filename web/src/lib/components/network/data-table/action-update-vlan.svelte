@@ -3,7 +3,7 @@
 		NetworkService,
 		type Network_Fabric,
 		type Network_VLAN,
-		type UpdateVLANRequest
+		type UpdateVLANRequest,
 	} from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -31,7 +31,7 @@
 		name: vlan.name,
 		mtu: vlan.mtu,
 		description: vlan.description,
-		dhcpOn: vlan.dhcpOn
+		dhcpOn: vlan.dhcpOn,
 	} as UpdateVLANRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -95,10 +95,10 @@
 								let message = `Fail to update ${vlan.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 
 						reset();

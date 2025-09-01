@@ -18,7 +18,7 @@
 		scopes,
 		tier,
 		onSelect,
-		trigger = $bindable(writable(false))
+		trigger = $bindable(writable(false)),
 	}: {
 		active: Scope;
 		scopes: Scope[];
@@ -40,7 +40,7 @@
 		'ph:number-six',
 		'ph:number-seven',
 		'ph:number-eight',
-		'ph:number-nine'
+		'ph:number-nine',
 	];
 
 	function toggleDialog() {
@@ -52,47 +52,47 @@
 	use:shortcut={{
 		key: '1',
 		ctrl: true,
-		callback: async () => await onSelect(0)
+		callback: async () => await onSelect(0),
 	}}
 	use:shortcut={{
 		key: '2',
 		ctrl: true,
-		callback: async () => await onSelect(1)
+		callback: async () => await onSelect(1),
 	}}
 	use:shortcut={{
 		key: '3',
 		ctrl: true,
-		callback: async () => await onSelect(2)
+		callback: async () => await onSelect(2),
 	}}
 	use:shortcut={{
 		key: '4',
 		ctrl: true,
-		callback: async () => await onSelect(3)
+		callback: async () => await onSelect(3),
 	}}
 	use:shortcut={{
 		key: '5',
 		ctrl: true,
-		callback: async () => await onSelect(4)
+		callback: async () => await onSelect(4),
 	}}
 	use:shortcut={{
 		key: '6',
 		ctrl: true,
-		callback: async () => await onSelect(5)
+		callback: async () => await onSelect(5),
 	}}
 	use:shortcut={{
 		key: '7',
 		ctrl: true,
-		callback: async () => await onSelect(6)
+		callback: async () => await onSelect(6),
 	}}
 	use:shortcut={{
 		key: '8',
 		ctrl: true,
-		callback: async () => await onSelect(7)
+		callback: async () => await onSelect(7),
 	}}
 	use:shortcut={{
 		key: '9',
 		ctrl: true,
-		callback: async () => await onSelect(8)
+		callback: async () => await onSelect(8),
 	}}
 />
 

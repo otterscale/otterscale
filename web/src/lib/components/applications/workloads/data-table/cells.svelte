@@ -20,7 +20,7 @@
 		replica,
 		container,
 		volume,
-		nodeport
+		nodeport,
 	};
 </script>
 
@@ -32,10 +32,7 @@
 
 {#snippet name(row: Row<Application>)}
 	<Layout.Cell class="items-start">
-		<a
-			class="underline hover:no-underline"
-			href={`${page.url}/${row.original.namespace}/${row.original.name}`}
-		>
+		<a class="underline hover:no-underline" href={`${page.url}/${row.original.namespace}/${row.original.name}`}>
 			{row.original.name}
 		</a>
 	</Layout.Cell>
@@ -57,10 +54,7 @@
 
 {#snippet health(row: Row<Application>)}
 	<Layout.Cell class="items-end">
-		<Progress.Root
-			numerator={Number(row.original.healthies)}
-			denominator={Number(row.original.pods.length)}
-		>
+		<Progress.Root numerator={Number(row.original.healthies)} denominator={Number(row.original.pods.length)}>
 			{#snippet ratio({ numerator, denominator })}
 				{Progress.formatRatio(numerator, denominator)}
 			{/snippet}

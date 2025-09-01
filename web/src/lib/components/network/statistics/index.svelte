@@ -8,7 +8,7 @@
 	import { formatBigNumber as formatNumber, formatProgressColor } from '$lib/formatter';
 
 	let {
-		networks
+		networks,
 	}: {
 		networks: Network[];
 	} = $props();
@@ -21,20 +21,19 @@
 			.filter((n) => n.vlan?.dhcpOn === true)
 			.map((n) => n.fabric?.name)
 			.filter(Boolean)
-			.join(', ')
+			.join(', '),
 	);
 	const availableSubnetCount = $derived(
 		networks.reduce(
-			(a, network) =>
-				a + Number(network.subnet?.statistics ? network.subnet.statistics.available : 0),
-			0
-		)
+			(a, network) => a + Number(network.subnet?.statistics ? network.subnet.statistics.available : 0),
+			0,
+		),
 	);
 	const totalSubnetCount = $derived(
 		networks.reduce(
 			(a, network) => a + Number(network.subnet?.statistics ? network.subnet.statistics.total : 0),
-			0
-		)
+			0,
+		),
 	);
 	const availabilityPercentage = $derived((availableSubnetCount * 100) / totalSubnetCount || 0);
 </script>
@@ -80,11 +79,7 @@
 		{/snippet}
 
 		{#snippet footer()}
-			<Progress
-				value={availabilityPercentage}
-				max={100}
-				class={formatProgressColor(availabilityPercentage)}
-			/>
+			<Progress value={availabilityPercentage} max={100} class={formatProgressColor(availabilityPercentage)} />
 		{/snippet}
 	</Layout>
 </div>

@@ -1,5 +1,3 @@
-import { default as Pool } from './index.svelte'
+import { default as Pool } from './index.svelte';
 
-export {
-    Pool
-}
+export { Pool };

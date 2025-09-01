@@ -13,7 +13,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import Create from './actions-create.svelte';
@@ -25,7 +25,7 @@
 <script lang="ts" generics="TData, TValue">
 	let {
 		subvolumes,
-		reloadManager
+		reloadManager,
 	}: {
 		subvolumes: Writable<Subvolume[]>;
 		reloadManager: ReloadManager;
@@ -63,7 +63,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 
 		onPaginationChange: (updater) => {
@@ -102,7 +102,7 @@
 			}
 		},
 
-		autoResetPageIndex: false
+		autoResetPageIndex: false,
 	});
 </script>
 
@@ -112,12 +112,7 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy
-				columnId="name"
-				values={$subvolumes.map((row) => row.name)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringFuzzy columnId="name" values={$subvolumes.map((row) => row.name)} {messages} {table} />
 			<Filters.StringMatch
 				columnId="poolName"
 				values={$subvolumes.map((row) => row.poolName)}

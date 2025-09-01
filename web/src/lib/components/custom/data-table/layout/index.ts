@@ -17,6 +17,21 @@ import Viewer from './layout-viewer.svelte';
 import Root from './layout.svelte';
 
 export {
-    ActionItem, ActionLabel, Actions, ActionSeparator, Cell, Controller, ControllerAction, ControllerFilter, Footer, Header, HeaderController, HeaderViewer, Root, Statistics, SubCell, SubHeaderViewer, Viewer
+	ActionItem,
+	ActionLabel,
+	Actions,
+	ActionSeparator,
+	Cell,
+	Controller,
+	ControllerAction,
+	ControllerFilter,
+	Footer,
+	Header,
+	HeaderController,
+	HeaderViewer,
+	Root,
+	Statistics,
+	SubCell,
+	SubHeaderViewer,
+	Viewer,
 };
-

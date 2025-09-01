@@ -14,11 +14,6 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
-<AlertDialog.ActionsGroup
-	bind:ref
-	data-slot="multiple-step-modal-action-group"
-	class={cn(className)}
-	{...restProps}
->
+<AlertDialog.ActionsGroup bind:ref data-slot="multiple-step-modal-action-group" class={cn(className)} {...restProps}>
 	{@render children?.()}
 </AlertDialog.ActionsGroup>

@@ -2,7 +2,7 @@
 	import {
 		ApplicationService,
 		type Application_Release,
-		type DeleteReleaseRequest
+		type DeleteReleaseRequest,
 	} from '$lib/api/application/v1/application_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -18,7 +18,7 @@
 <script lang="ts">
 	let {
 		release,
-		releases = $bindable()
+		releases = $bindable(),
 	}: {
 		release: Application_Release;
 		releases: Writable<Application_Release[]>;
@@ -32,7 +32,7 @@
 		dryRun: false,
 		scopeUuid: release.name,
 		facilityName: release.name,
-		namespace: release.namespace
+		namespace: release.namespace,
 	} as DeleteReleaseRequest;
 	let request = $state(defaults as DeleteReleaseRequest);
 	function reset() {
@@ -60,12 +60,7 @@
 					{m.deletion_warning({ identifier: m.name() })}
 				</Form.Help>
 				<Form.Field>
-					<SingleInput.Confirm
-						required
-						id="deletion"
-						target={release.name}
-						bind:value={request.name}
-					/>
+					<SingleInput.Confirm required id="deletion" target={release.name} bind:value={request.name} />
 				</Form.Field>
 				<Form.Field>
 					<SingleInput.Boolean descriptor={() => m.dry_run()} bind:value={request.dryRun} />
@@ -94,10 +89,10 @@
 							let msg = `Fail to delete ${request.name}`;
 							toast.error(msg, {
 								description: (e as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY
+								duration: Number.POSITIVE_INFINITY,
 							});
 							return msg;
-						}
+						},
 					});
 					close();
 				}}
