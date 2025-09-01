@@ -68,7 +68,7 @@
 			};
 		});
 
-		const total = chartData.reduce((sum, item) => sum + item.count, 0);
+		const total = chartData.reduce((sum: number, item: { count: number }) => sum + item.count, 0);
 
 		return { chartData, total };
 	}
