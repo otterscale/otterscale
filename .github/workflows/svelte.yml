@@ -1,0 +1,115 @@
+name: SvelteKit CI
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run build
+        run: pnpm build
+
+  check:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run check
+        run: pnpm check
+
+  lint:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run lint
+        run: pnpm lint
+
+  test-unit:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run unit tests
+        run: pnpm test:unit --coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          flags: sveltekit-tests
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: otterscale/otterscale
+
+  # test-e2e:
+  #   runs-on: ubuntu-24.04
+  #   defaults:
+  #     run:
+  #       working-directory: ./web
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: pnpm/action-setup@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: pnpm
+
+  #     - name: Install dependencies
+  #       run: pnpm install --frozen-lockfile
+
+  #     - name: Install Playwright browser
+  #       run: pnpm dlx playwright install chromium
+
+  #     - name: Run e2e tests
+  #       run: pnpm test:e2e
+
