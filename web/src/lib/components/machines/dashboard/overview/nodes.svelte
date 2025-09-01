@@ -8,13 +8,13 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 	import { getLocale } from '$lib/paraglide/runtime';
+	import { cn } from '$lib/utils';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { LineChart } from 'layerchart';
-	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -25,37 +25,41 @@
 		months.push(d.toISOString().slice(0, 7));
 	}
 
-	let { isReloading = $bindable() }: { isReloading: boolean } = $props();
+	let { isReloading = $bindable(), span }: { isReloading: boolean; span: string } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
+		$machines.filter((m) =>
+			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
+		)
 	);
 	const totalNodes = $derived(scopeMachines.length);
 	const monthlyCounts = $derived(
 		scopeMachines.reduce(
 			(acc, m) => {
-				const dateStr = m.lastCommissioned ? timestampDate(m.lastCommissioned).toISOString().slice(0, 7) : null;
+				const dateStr = m.lastCommissioned
+					? timestampDate(m.lastCommissioned).toISOString().slice(0, 7)
+					: null;
 				if (dateStr) {
 					acc[dateStr] = (acc[dateStr] || 0) + 1;
 				}
 				return acc;
 			},
-			{} as Record<string, number>,
-		),
+			{} as Record<string, number>
+		)
 	);
 	const nodes = $derived(
 		months.map((month) => ({
 			date: new Date(month + '-01'),
-			node: monthlyCounts[month] || 0,
-		})),
+			node: monthlyCounts[month] || 0
+		}))
 	);
 
 	const nodesConfiguration = {
-		node: { label: 'Node', color: 'var(--chart-1)' },
+		node: { label: 'Node', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -84,7 +88,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class="col-span-3 gap-2">
+	<Card.Root class={cn(span, 'gap-2')}>
 		<Card.Header>
 			<Card.Title class="flex flex-wrap items-center justify-between gap-6">
 				<div class="flex flex-col items-start gap-0.5 truncate text-sm font-medium tracking-tight">
@@ -117,20 +121,20 @@
 						{
 							key: 'node',
 							label: 'Node',
-							color: nodesConfiguration.node.color,
-						},
+							color: nodesConfiguration.node.color
+						}
 					]}
 					props={{
 						spline: { curve: curveNatural, motion: 'tween', strokeWidth: 2 },
 						highlight: {
 							points: {
 								motion: 'none',
-								r: 6,
-							},
+								r: 6
+							}
 						},
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString(getLocale(), { month: 'short' }),
-						},
+							format: (v: Date) => v.toLocaleDateString(getLocale(), { month: 'short' })
+						}
 					}}
 				>
 					{#snippet tooltip()}
