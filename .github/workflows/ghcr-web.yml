@@ -33,8 +33,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=tag
-            type=raw,value=latest,enable=${{ github.event.release.prerelease == false }}
+            type=semver,pattern={{version}}
 
       - name: Build and push Docker image
         id: push
