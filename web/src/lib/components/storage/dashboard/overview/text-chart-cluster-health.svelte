@@ -40,7 +40,7 @@
 {#await client.instantQuery(query)}
 	<ComponentLoading />
 {:then response}
-	<Card.Root class="relative col-span-2 gap-2 overflow-hidden">
+	<Card.Root class="relative gap-2 overflow-hidden">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
@@ -51,12 +51,12 @@
 			{healthStatus?.label}
 			<Icon
 				icon={healthStatus.icon}
-				class="text-primary/5 absolute size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden {healthStatus.iconClass}"
+				class="text-primary/5 absolute size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden {healthStatus.iconClass}"
 			/>
 		</Card.Content>
 	</Card.Root>
 {:catch error}
-	<Card.Root class="col-span-2 gap-2">
+	<Card.Root class="gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>

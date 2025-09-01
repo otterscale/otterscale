@@ -331,7 +331,16 @@
 				<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
 				<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
 			</Tabs.List>
-			<Reloader {reloadManager} />
+			<Reloader
+				bind:checked={reloadManager.state}
+				onCheckedChange={() => {
+					if (reloadManager.state) {
+						reloadManager.restart();
+					} else {
+						reloadManager.stop();
+					}
+				}}
+			/>
 		</div>
 		<Tabs.Content
 			value="overview"
@@ -340,7 +349,7 @@
 			<Card.Root class="relative col-span-2 gap-2 overflow-hidden">
 				<Icon
 					icon="ph:compass"
-					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden"
+					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
 				/>
 				<Card.Header>
 					<Card.Title>{m.control_planes()}</Card.Title>
@@ -354,7 +363,7 @@
 			<Card.Root class="relative col-span-2 gap-2 overflow-hidden">
 				<Icon
 					icon="ph:cube"
-					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden"
+					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
 				/>
 				<Card.Header>
 					<Card.Title>{m.workers()}</Card.Title>
@@ -424,7 +433,7 @@
 									{#snippet formatter({ item, name, value })}
 										<div
 											style="--color-bg: {item.color}"
-											class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+											class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 										></div>
 										<div
 											class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
@@ -514,7 +523,7 @@
 										{@const { value: capacity, unit } = formatCapacity(Number(value))}
 										<div
 											style="--color-bg: {item.color}"
-											class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+											class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 										></div>
 										<div
 											class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
@@ -547,7 +556,7 @@
 			<Card.Root class="relative col-span-2 col-start-1 gap-2 overflow-hidden">
 				<Icon
 					icon="ph:squares-four"
-					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden"
+					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
 				/>
 				<Card.Header>
 					<Card.Title>{m.pods()}</Card.Title>
@@ -561,7 +570,7 @@
 			<Card.Root class="relative col-span-2 gap-2 overflow-hidden">
 				<Icon
 					icon="ph:shipping-container"
-					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden"
+					class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"
 				/>
 				<Card.Header>
 					<Card.Title>{m.containers()}</Card.Title>
@@ -628,7 +637,7 @@
 										{@const { value: io, unit } = formatIO(Number(value))}
 										<div
 											style="--color-bg: {item.color}"
-											class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+											class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 										></div>
 										<div
 											class="flex flex-1 shrink-0 items-center justify-between gap-2 text-xs leading-none"
@@ -714,7 +723,7 @@
 										{@const { value: io, unit } = formatIO(Number(value))}
 										<div
 											style="--color-bg: {item.color}"
-											class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+											class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 										></div>
 										<div
 											class="flex flex-1 shrink-0 items-center justify-between gap-2 text-xs leading-none"

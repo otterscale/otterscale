@@ -5,14 +5,19 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
+	import { getLocale } from '$lib/paraglide/runtime';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import { scaleUtc } from 'd3-scale';
 	import { cubicInOut } from 'svelte/easing';
+	import { onDestroy, onMount } from 'svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	// Props
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let {
+		client,
+		scope,
+		isReloading = $bindable()
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = m.osd_throughPut();
@@ -126,12 +131,39 @@
 			};
 		}
 	}
+
+	let throughputs = $state({
+		traffics: [],
+		latestReadValue: undefined,
+		latestWriteValue: undefined,
+		latestReadUnit: undefined,
+		latestWriteUnit: undefined
+	} as MetricsResponse);
+	let isLoading = $state(true);
+	async function fetch() {
+		throughputs = await fetchMetrics();
+	}
+
+	const reloadManager = new ReloadManager(fetch);
+
+	$effect(() => {
+		isReloading;
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#await fetchMetrics()}
+{#if isLoading}
 	<ComponentLoading />
-{:then response}
-	<Card.Root class="col-span-4 row-span-2 gap-2">
+{:else}
+	<Card.Root class="gap-2">
 		<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 				<Card.Title>{CHART_TITLE}</Card.Title>
@@ -142,8 +174,9 @@
 					{@const chart = key as ChartKey}
 					{@const isActive = activeChart === chart}
 					{@const latestValue =
-						key === 'Read' ? response.latestReadValue : response.latestWriteValue}
-					{@const latestUnit = key === 'Read' ? response.latestReadUnit : response.latestWriteUnit}
+						key === 'Read' ? throughputs.latestReadValue : throughputs.latestWriteValue}
+					{@const latestUnit =
+						key === 'Read' ? throughputs.latestReadUnit : throughputs.latestWriteUnit}
 					<button
 						data-active={isActive}
 						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
@@ -165,7 +198,7 @@
 			<Chart.Container config={chartConfig} class="aspect-auto h-[150px] w-full">
 				<BarChart
 					bind:context
-					data={response.traffics}
+					data={throughputs.traffics}
 					x="date"
 					axis="x"
 					series={activeSeries}
@@ -184,11 +217,11 @@
 						xAxis: {
 							format: (d: Date) => {
 								return d.toLocaleDateString(getLocale(), {
-									month: 'short',
-									day: '2-digit'
+									month: 'numeric',
+									day: 'numeric'
 								});
 							},
-							ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks()
+							ticks: 24
 						}
 					}}
 				>
@@ -227,4 +260,4 @@
 			</Chart.Container>
 		</Card.Content>
 	</Card.Root>
-{/await}
+{/if}

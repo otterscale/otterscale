@@ -171,7 +171,7 @@
 	{#await fetchMetrics()}
 		<ComponentLoading />
 	{:then response}
-		<Card.Root class="col-span-2 row-span-2 gap-2">
+		<Card.Root class="gap-2">
 			<Card.Header class="flex items-center">
 				<div class="grid flex-1 gap-1 text-center sm:text-left">
 					<Card.Title>{CHART_TITLE}</Card.Title>
