@@ -32,14 +32,14 @@
 
 	// Constants
 	const CHART_TITLE = m.osd();
-	const CHART_DESCRIPTION = m.read_latencies();
-
+	const CHART_DESCRIPTION = m.write_latencies();
 	const CHART_CONFIG = {
 		latency: {
-			label: 'Read Latency (ms)',
+			label: 'Write Latency (ms)',
 			color: 'var(--chart-1)'
 		}
-	};
+	} satisfies Chart.ChartConfig;
+
 	const TIME_INTERVALS: Record<TimeInterval, TimeRangeConfig> = {
 		day: { count: 7, label: m.last_7_days(), stepSize: '1d' },
 		week: { count: 5, label: m.last_5_weeks(), stepSize: '1w' },
@@ -47,8 +47,8 @@
 	};
 
 	const PROMETHEUS_QUERY = (uuid: string) =>
-		`quantile(0.95, (rate(ceph_osd_op_r_latency_sum{juju_model_uuid=~"${uuid}"}[5m]) / ` +
-		`on(ceph_daemon) rate(ceph_osd_op_r_latency_count{juju_model_uuid=~"${uuid}"}[5m]) * 1000))`;
+		`quantile(0.95, (rate(ceph_osd_op_w_latency_sum{juju_model_uuid=~"${uuid}"}[5m]) / ` +
+		`on(ceph_daemon) rate(ceph_osd_op_w_latency_count{juju_model_uuid=~"${uuid}"}[5m]) * 1000))`;
 
 	// State
 	let selectedInterval = $state<TimeInterval>('day');
@@ -172,7 +172,7 @@
 	{#await fetchMetrics()}
 		<ComponentLoading />
 	{:then response}
-		<Card.Root class="col-span-2 gap-2">
+		<Card.Root class="gap-2">
 			<Card.Header class="flex items-center">
 				<div class="grid flex-1 gap-1 text-center sm:text-left">
 					<Card.Title>{CHART_TITLE}</Card.Title>
@@ -201,7 +201,7 @@
 						series={[
 							{
 								key: 'latency',
-								label: 'Read Latency',
+								label: 'Write Latency',
 								color: CHART_CONFIG.latency.color
 							}
 						]}
@@ -223,9 +223,28 @@
 			</Card.Content>
 		</Card.Root>
 	{:catch error}
-		<ErrorLayout
-			title={CHART_TITLE}
-			description={`Average read latency across all OSDs - ${timeRange.label}`}
-		/>
+		<Card.Root class="gap-2">
+			<Card.Header class="flex items-center">
+				<div class="grid flex-1 gap-1 text-center sm:text-left">
+					<Card.Title>{CHART_TITLE}</Card.Title>
+					<Card.Description>{CHART_DESCRIPTION}</Card.Description>
+				</div>
+
+				<Select.Root type="single" bind:value={selectedInterval}>
+					<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
+						{timeRange.label}
+					</Select.Trigger>
+					<Select.Content class="rounded-xl">
+						<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
+						<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
+						<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
+					</Select.Content>
+				</Select.Root>
+			</Card.Header>
+
+			<Card.Content>
+				<Chart.Container config={CHART_CONFIG} class="h-[64px] w-full" />
+			</Card.Content>
+		</Card.Root>
 	{/await}
 {/key}

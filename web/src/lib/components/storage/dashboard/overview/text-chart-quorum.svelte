@@ -9,31 +9,29 @@
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
 	// Constants
-	const CHART_TITLE = m.osds();
+	const CHART_TITLE = m.quorum_status();
 	const CHART_DESCRIPTION = 'In & Up';
 
 	// Queries
 	const queries = $derived({
-		in: `sum(ceph_osd_in{juju_model_uuid=~"${scope.uuid}"})`,
-		up: `sum(ceph_osd_up{juju_model_uuid=~"${scope.uuid}"})`,
-		total: `count(ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`
+		in: `sum(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})`,
+		total: `
+		count(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})
+		`
 	});
 
 	// Data fetching function
 	async function fetchMetrics() {
-		const [inResponse, upResponse, totalResponse] = await Promise.all([
+		const [inResponse, totalResponse] = await Promise.all([
 			client.instantQuery(queries.in),
-			client.instantQuery(queries.up),
 			client.instantQuery(queries.total)
 		]);
 
 		const inValue = inResponse.result[0]?.value?.value;
-		const upValue = upResponse.result[0]?.value?.value;
 		const totalValue = totalResponse.result[0]?.value?.value;
 
 		return {
 			inNumber: inValue,
-			upNumber: upValue,
 			totalNumber: totalValue
 		};
 	}
@@ -42,15 +40,15 @@
 {#await fetchMetrics()}
 	<ComponentLoading />
 {:then response}
-	<Card.Root class="col-span-2 gap-2">
+	<Card.Root class="gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
 		</Card.Header>
-		<Card.Content class="flex-1">{`${response.inNumber} / ${response.upNumber}`}</Card.Content>
+		<Card.Content class="flex-1">{`${response.inNumber} / ${response.totalNumber}`}</Card.Content>
 	</Card.Root>
 {:catch error}
-	<Card.Root class="col-span-2 gap-2">
+	<Card.Root class="gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
