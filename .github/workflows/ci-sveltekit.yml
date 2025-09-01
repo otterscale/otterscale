@@ -34,7 +34,7 @@ jobs:
         run: pnpm check
 
       - name: Test
-        run: pnpm test:unit --coverage
+        run: pnpm test:unit
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
