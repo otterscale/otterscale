@@ -27,7 +27,16 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Reloader {reloadManager} />
+		<Reloader
+			bind:checked={reloadManager.state}
+			onCheckedChange={() => {
+				if (reloadManager.state) {
+					reloadManager.restart();
+				} else {
+					reloadManager.stop();
+				}
+			}}
+		/>
 		<DataTable {largeLanguageModels} />
 	{:else}
 		<Loading.DataTable />

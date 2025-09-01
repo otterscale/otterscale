@@ -1,12 +1,12 @@
 class ReloadManager {
-    private reloadFn: () => void;
+    private reloadFunction: () => void;
     private identifier: number | NodeJS.Timeout | undefined;
 
     state: boolean = $state(true);
     interval: number | undefined = $state(5);
 
-    constructor(reloadFn: () => void) {
-        this.reloadFn = reloadFn;
+    constructor(reloadFunction: () => void) {
+        this.reloadFunction = reloadFunction;
     }
 
     get isReloading() {
@@ -14,12 +14,12 @@ class ReloadManager {
     }
 
     force() {
-        this.reloadFn()
+        this.reloadFunction()
     }
 
     start() {
         if (this.state && this.interval && this.interval > 0) {
-            this.identifier = setInterval(() => this.reloadFn(), this.interval * 1000);
+            this.identifier = setInterval(() => this.reloadFunction(), this.interval * 1000);
         }
     }
 

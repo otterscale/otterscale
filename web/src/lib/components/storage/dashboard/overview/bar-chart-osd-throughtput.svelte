@@ -3,19 +3,25 @@
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatBigNumber } from '$lib/formatter';
+	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
 	import { getLocale } from '$lib/paraglide/runtime';
 	import { scaleUtc } from 'd3-scale';
 	import { cubicInOut } from 'svelte/easing';
+	import { onDestroy, onMount } from 'svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 
 	// Props
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let {
+		client,
+		scope,
+		isReloading = $bindable()
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
-	const CHART_TITLE = 'OSD IOPS';
+	const CHART_TITLE = m.osd_throughPut();
 	const CHART_DESCRIPTION = `${m.read()}/${m.write()}`;
 	const STEP_SECONDS = 60 * 60; // 1 hour
 	const TIME_RANGE_HOURS = 24; // 24 hours of data
@@ -58,8 +64,8 @@
 
 	// Derived state
 	const queries = $derived({
-		Read: `sum(irate(ceph_osd_op_r{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
-		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[5m]))`
+		Read: `sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
+		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`
 	});
 
 	const activeSeries = $derived([
@@ -103,17 +109,20 @@
 			const latestReadValue = extractLatestValue(latestReadResponse);
 			const latestWriteValue = extractLatestValue(latestWriteResponse);
 
+			const { value: readValue, unit: readUnit } = formatIO(latestReadValue);
+			const { value: writeValue, unit: writeUnit } = formatIO(latestWriteValue);
+
 			const traffics = combineTrafficData(reads, writes);
 
 			return {
 				traffics,
-				latestReadValue: Math.round(latestReadValue),
-				latestWriteValue: Math.round(latestWriteValue),
-				latestReadUnit: 'IOPS',
-				latestWriteUnit: 'IOPS'
+				latestReadValue: readValue,
+				latestWriteValue: writeValue,
+				latestReadUnit: readUnit,
+				latestWriteUnit: writeUnit
 			};
 		} catch (error) {
-			console.error('Failed to fetch IOPS metrics:', error);
+			console.error('Failed to fetch throughput metrics:', error);
 			return {
 				traffics: [],
 				latestReadValue: undefined,
@@ -123,12 +132,36 @@
 			};
 		}
 	}
+
+	let throughputs = $state({} as MetricsResponse);
+	let isLoading = $state(true);
+	async function fetch() {
+		console.log('loading', throughputs.latestReadValue);
+		throughputs = await fetchMetrics();
+	}
+
+	const reloadManager = new ReloadManager(fetch);
+
+	$effect(() => {
+		isReloading;
+		if (isReloading) {
+			console.log('restart');
+			reloadManager.restart();
+		} else {
+			console.log('stop');
+			reloadManager.stop();
+		}
+	});
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#await fetchMetrics()}
+{#if isLoading}
 	<ComponentLoading />
-{:then response}
-	<Card.Root class="col-span-4 row-span-2 gap-2">
+{:else}
+	<Card.Root class="gap-2">
 		<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 				<Card.Title>{CHART_TITLE}</Card.Title>
@@ -139,19 +172,19 @@
 					{@const chart = key as ChartKey}
 					{@const isActive = activeChart === chart}
 					{@const latestValue =
-						key === 'Read' ? response.latestReadValue : response.latestWriteValue}
-					{@const latestUnit = key === 'Read' ? response.latestReadUnit : response.latestWriteUnit}
-					{@const displayValue = latestValue ? formatBigNumber(latestValue) : '0'}
+						key === 'Read' ? throughputs.latestReadValue : throughputs.latestWriteValue}
+					{@const latestUnit =
+						key === 'Read' ? throughputs.latestReadUnit : throughputs.latestWriteUnit}
 					<button
 						data-active={isActive}
-						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
 						onclick={() => (activeChart = chart)}
 					>
 						<span class="text-muted-foreground text-xs">
 							{chartConfig[chart].label}
 						</span>
-						<span class="flex items-end gap-1 text-lg font-bold leading-none sm:text-3xl">
-							{displayValue}
+						<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
+							{latestValue}
 							<span class="text-muted-foreground text-xs">{latestUnit}</span>
 						</span>
 					</button>
@@ -163,7 +196,7 @@
 			<Chart.Container config={chartConfig} class="aspect-auto h-[150px] w-full">
 				<BarChart
 					bind:context
-					data={response.traffics}
+					data={throughputs.traffics}
 					x="date"
 					axis="x"
 					series={activeSeries}
@@ -207,16 +240,16 @@
 							}}
 						>
 							{#snippet formatter({ item, name, value })}
-								{@const formattedValue = formatBigNumber(Math.round(Number(value)))}
+								{@const { value: io, unit } = formatIO(Number(value))}
 								<div
 									style="--color-bg: {item.color}"
-									class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 								></div>
 								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
 									<div class="grid gap-1.5">
 										<span class="text-muted-foreground">{name}</span>
 									</div>
-									<p class="font-mono">{formattedValue} IOPS</p>
+									<p class="font-mono">{io} {unit}</p>
 								</div>
 							{/snippet}
 						</Chart.Tooltip>
@@ -225,4 +258,4 @@
 			</Chart.Container>
 		</Card.Content>
 	</Card.Root>
-{/await}
+{/if}

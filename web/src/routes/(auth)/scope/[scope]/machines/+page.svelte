@@ -287,7 +287,16 @@
 				<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
 				<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
 			</Tabs.List>
-			<Reloader {reloadManager} />
+			<Reloader
+				bind:checked={reloadManager.state}
+				onCheckedChange={() => {
+					if (reloadManager.state) {
+						reloadManager.restart();
+					} else {
+						reloadManager.stop();
+					}
+				}}
+			/>
 		</div>
 		<Tabs.Content
 			value="overview"
