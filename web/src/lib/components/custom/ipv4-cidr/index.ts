@@ -10,39 +10,39 @@ import IPv4CIDRInput from './ipv4.svelte';
  * @returns
  */
 export const safeParseIPv4CIDR = (
-    IPv4CIDR: string | undefined
+	IPv4CIDR: string | undefined,
 ): [string | null, string | null, string | null, string | null, string | null] | undefined => {
-    if (IPv4CIDR === undefined) return undefined;
-    let ip = IPv4CIDR.trim();
+	if (IPv4CIDR === undefined) return undefined;
+	let ip = IPv4CIDR.trim();
 
-    ip = ip.replaceAll('_', '.');
-    ip = ip.replaceAll(' ', '.');
-    ip = ip.replaceAll('/', '.');
+	ip = ip.replaceAll('_', '.');
+	ip = ip.replaceAll(' ', '.');
+	ip = ip.replaceAll('/', '.');
 
-    const segments: (string | null)[] = ip.split('.');
+	const segments: (string | null)[] = ip.split('.');
 
-    while (segments.length < 5) {
-        segments.push(null);
-    }
+	while (segments.length < 5) {
+		segments.push(null);
+	}
 
-    for (let i = 0; i < segments.length; i++) {
-        if (!isNumber(segments[i]) || segments[i] === null) {
-            segments[i] = null;
-            continue;
-        }
+	for (let i = 0; i < segments.length; i++) {
+		if (!isNumber(segments[i]) || segments[i] === null) {
+			segments[i] = null;
+			continue;
+		}
 
-        const num = Number.parseInt(segments[i]!);
+		const num = Number.parseInt(segments[i]!);
 
-        if (num < 0 || num > 255) {
-            segments[i] = null;
-            continue;
-        }
+		if (num < 0 || num > 255) {
+			segments[i] = null;
+			continue;
+		}
 
-        segments[i] = num.toString();
-    }
+		segments[i] = num.toString();
+	}
 
-    // @ts-expect-error We know this is 4 we just made sure
-    return segments;
+	// @ts-expect-error We know this is 4 we just made sure
+	return segments;
 };
 
 export { IPv4CIDRInput };

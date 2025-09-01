@@ -1,7 +1,4 @@
-import * as PalinTabs from "./plain";
-import * as LayeredTabs from "./layered";
+import * as PalinTabs from './plain';
+import * as LayeredTabs from './layered';
 
-export {
-	PalinTabs,
-	LayeredTabs,
-};
+export { PalinTabs, LayeredTabs };

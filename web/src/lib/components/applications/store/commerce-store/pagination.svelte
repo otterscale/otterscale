@@ -37,12 +37,7 @@
 								paginationManager.activePage = currentPage - 1;
 							}}
 						>
-							<Pagination.Link
-								size="icon"
-								class="h-7 w-7"
-								{page}
-								isActive={currentPage === page.value}
-							>
+							<Pagination.Link size="icon" class="h-7 w-7" {page} isActive={currentPage === page.value}>
 								{page.value}
 							</Pagination.Link>
 						</Pagination.Item>
@@ -54,7 +49,7 @@
 							paginationManager.activePage =
 								Math.min(
 									currentPage + 1,
-									Math.ceil(paginationManager.count / paginationManager.perPage)
+									Math.ceil(paginationManager.count / paginationManager.perPage),
 								) - 1;
 						}}
 					>

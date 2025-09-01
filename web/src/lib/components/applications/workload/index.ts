@@ -1,5 +1,3 @@
-import Workload from './index.svelte'
+import Workload from './index.svelte';
 
-export {
-    Workload
-}
+export { Workload };

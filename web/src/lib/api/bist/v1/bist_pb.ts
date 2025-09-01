@@ -2,839 +2,859 @@
 // @generated from file api/bist/v1/bist.proto (package otterscale.bist.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { EmptySchema, Timestamp } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_empty, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenEnum, GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import type { EmptySchema, Timestamp } from '@bufbuild/protobuf/wkt';
+import { file_google_protobuf_empty, file_google_protobuf_timestamp } from '@bufbuild/protobuf/wkt';
+import type { Message } from '@bufbuild/protobuf';
 
 /**
  * Describes the file api/bist/v1/bist.proto.
  */
-export const file_api_bist_v1_bist: GenFile = /*@__PURE__*/
-  fileDesc("ChZhcGkvYmlzdC92MS9iaXN0LnByb3RvEhJvdHRlcnNjYWxlLmJpc3QudjEiPAoPQ2VwaEJsb2NrRGV2aWNlEhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCSIzChFOZXR3b3JrRmlsZVN5c3RlbRIQCghlbmRwb2ludBgBIAEoCRIMCgRwYXRoGAIgASgJIs4BChVJbnRlcm5hbE9iamVjdFNlcnZpY2USPAoEdHlwZRgBIAEoDjIuLm90dGVyc2NhbGUuYmlzdC52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2UuVHlwZRISCgpzY29wZV91dWlkGAIgASgJEhUKDWZhY2lsaXR5X25hbWUYAyABKAkSDAoEbmFtZRgEIAEoCRIQCghlbmRwb2ludBgFIAEoCSIsCgRUeXBlEg8KC1VOU1BFQ0lGSUVEEAASCAoEQ0VQSBABEgkKBU1JTklPEAIiUQoVRXh0ZXJuYWxPYmplY3RTZXJ2aWNlEhAKCGVuZHBvaW50GAEgASgJEhIKCmFjY2Vzc19rZXkYAiABKAkSEgoKc2VjcmV0X2tleRgDIAEoCSKECAoDRklPEkAKEWNlcGhfYmxvY2tfZGV2aWNlGAEgASgLMiMub3R0ZXJzY2FsZS5iaXN0LnYxLkNlcGhCbG9ja0RldmljZUgAEkQKE25ldHdvcmtfZmlsZV9zeXN0ZW0YAiABKAsyJS5vdHRlcnNjYWxlLmJpc3QudjEuTmV0d29ya0ZpbGVTeXN0ZW1IABIsCgVpbnB1dBgLIAEoCzIdLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uSW5wdXQSLgoGb3V0cHV0GAwgASgLMh4ub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5PdXRwdXQa1gIKBUlucHV0Ej0KC2FjY2Vzc19tb2RlGAEgASgOMigub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5JbnB1dC5BY2Nlc3NNb2RlEhEKCWpvYl9jb3VudBgfIAEoAxIYChBydW5fdGltZV9zZWNvbmRzGCkgASgDEhgKEGJsb2NrX3NpemVfYnl0ZXMYRyABKAMSFwoPZmlsZV9zaXplX2J5dGVzGFsgASgDEhAKCGlvX2RlcHRoGHkgASgDIpsBCgpBY2Nlc3NNb2RlEggKBFJFQUQQABIJCgVXUklURRABEggKBFRSSU0QAhIOCgpSRUFEX1dSSVRFEAMSDgoKVFJJTV9XUklURRAEEg0KCVJBTkRfUkVBRBAFEg4KClJBTkRfV1JJVEUQBhINCglSQU5EX1RSSU0QBxILCgdSQU5EX1JXEAgSEwoPUkFORF9UUklNX1dSSVRFEAkaswMKBk91dHB1dBI3CgRyZWFkGAEgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBI4CgV3cml0ZRgCIAEoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQSNwoEdHJpbRgDIAEoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQa/AEKClRocm91Z2hwdXQSEAoIaW9fYnl0ZXMYASABKAMSFwoPYmFuZHdpZHRoX2J5dGVzGAIgASgDEhUKDWlvX3Blcl9zZWNvbmQYAyABKAESEQoJdG90YWxfaW9zGAQgASgDEkIKB2xhdGVuY3kYCyABKAsyMS5vdHRlcnNjYWxlLmJpc3QudjEuRklPLk91dHB1dC5UaHJvdWdocHV0LkxhdGVuY3kaVQoHTGF0ZW5jeRIXCg9taW5fbmFub3NlY29uZHMYASABKAMSFwoPbWF4X25hbm9zZWNvbmRzGAIgASgDEhgKEG1lYW5fbmFub3NlY29uZHMYAyABKAFCCAoGdGFyZ2V0ItwHCgRXYXJwEkwKF2ludGVybmFsX29iamVjdF9zZXJ2aWNlGAEgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkludGVybmFsT2JqZWN0U2VydmljZUgAEkwKF2V4dGVybmFsX29iamVjdF9zZXJ2aWNlGAIgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkV4dGVybmFsT2JqZWN0U2VydmljZUgAEi0KBWlucHV0GAsgASgLMh4ub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuSW5wdXQSLwoGb3V0cHV0GAwgASgLMh8ub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuT3V0cHV0GtkBCgVJbnB1dBI7CglvcGVyYXRpb24YASABKA4yKC5vdHRlcnNjYWxlLmJpc3QudjEuV2FycC5JbnB1dC5PcGVyYXRpb24SGAoQZHVyYXRpb25fc2Vjb25kcxgVIAEoAxIZChFvYmplY3Rfc2l6ZV9ieXRlcxgfIAEoAxIUCgxvYmplY3RfY291bnQYICABKAMiSAoJT3BlcmF0aW9uEgcKA0dFVBAAEgcKA1BVVBABEgoKBkRFTEVURRACEggKBExJU1QQAxIICgRTVEFUEAQSCQoFTUlYRUQQBRrxAwoGT3V0cHV0EjcKA2dldBgLIAEoCzIqLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0EjcKA3B1dBgMIAEoCzIqLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0EjoKBmRlbGV0ZRgNIAEoCzIqLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0GrgCCgpUaHJvdWdocHV0EhMKC3RvdGFsX2J5dGVzGAEgASgBEhUKDXRvdGFsX29iamVjdHMYAiABKAESGAoQdG90YWxfb3BlcmF0aW9ucxgDIAEoAxJBCgVieXRlcxgLIAEoCzIyLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0Lk1ldHJpY3MSQwoHb2JqZWN0cxgMIAEoCzIyLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0Lk1ldHJpY3MaXAoHTWV0cmljcxIaChJmYXN0ZXN0X3Blcl9zZWNvbmQYASABKAESGQoRbWVkaWFuX3Blcl9zZWNvbmQYAiABKAESGgoSc2xvd2VzdF9wZXJfc2Vjb25kGAMgASgBQggKBnRhcmdldCLgAgoKVGVzdFJlc3VsdBILCgN1aWQYASABKAkSDAoEbmFtZRgCIAEoCRI1CgZzdGF0dXMYAyABKA4yJS5vdHRlcnNjYWxlLmJpc3QudjEuVGVzdFJlc3VsdC5TdGF0dXMSEgoKY3JlYXRlZF9ieRgEIAEoCRIuCgpzdGFydGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIwCgxjb21wbGV0ZWRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEiYKA2ZpbxhlIAEoCzIXLm90dGVyc2NhbGUuYmlzdC52MS5GSU9IABIoCgR3YXJwGGYgASgLMhgub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnBIACIwCgZTdGF0dXMSCwoHUlVOTklORxAAEg0KCVNVQ0NFRURFRBABEgoKBkZBSUxFRBACQgYKBGtpbmQiGAoWTGlzdFRlc3RSZXN1bHRzUmVxdWVzdCJPChdMaXN0VGVzdFJlc3VsdHNSZXNwb25zZRI0Cgx0ZXN0X3Jlc3VsdHMYASADKAsyHi5vdHRlcnNjYWxlLmJpc3QudjEuVGVzdFJlc3VsdCKVAQoXQ3JlYXRlVGVzdFJlc3VsdFJlcXVlc3QSDAoEbmFtZRgBIAEoCRISCgpjcmVhdGVkX2J5GAIgASgJEiYKA2ZpbxhlIAEoCzIXLm90dGVyc2NhbGUuYmlzdC52MS5GSU9IABIoCgR3YXJwGGYgASgLMhgub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnBIAEIGCgRraW5kIicKF0RlbGV0ZVRlc3RSZXN1bHRSZXF1ZXN0EgwKBG5hbWUYASABKAkiNwohTGlzdEludGVybmFsT2JqZWN0U2VydmljZXNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkicQoiTGlzdEludGVybmFsT2JqZWN0U2VydmljZXNSZXNwb25zZRJLChhpbnRlcm5hbF9vYmplY3Rfc2VydmljZXMYASADKAsyKS5vdHRlcnNjYWxlLmJpc3QudjEuSW50ZXJuYWxPYmplY3RTZXJ2aWNlMsEDCgtCSVNUU2VydmljZRJqCg9MaXN0VGVzdFJlc3VsdHMSKi5vdHRlcnNjYWxlLmJpc3QudjEuTGlzdFRlc3RSZXN1bHRzUmVxdWVzdBorLm90dGVyc2NhbGUuYmlzdC52MS5MaXN0VGVzdFJlc3VsdHNSZXNwb25zZRJfChBDcmVhdGVUZXN0UmVzdWx0Eisub3R0ZXJzY2FsZS5iaXN0LnYxLkNyZWF0ZVRlc3RSZXN1bHRSZXF1ZXN0Gh4ub3R0ZXJzY2FsZS5iaXN0LnYxLlRlc3RSZXN1bHQSVwoQRGVsZXRlVGVzdFJlc3VsdBIrLm90dGVyc2NhbGUuYmlzdC52MS5EZWxldGVUZXN0UmVzdWx0UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRKLAQoaTGlzdEludGVybmFsT2JqZWN0U2VydmljZXMSNS5vdHRlcnNjYWxlLmJpc3QudjEuTGlzdEludGVybmFsT2JqZWN0U2VydmljZXNSZXF1ZXN0GjYub3R0ZXJzY2FsZS5iaXN0LnYxLkxpc3RJbnRlcm5hbE9iamVjdFNlcnZpY2VzUmVzcG9uc2VCMVovZ2l0aHViLmNvbS9vdHRlcnNjYWxlL290dGVyc2NhbGUvYXBpL2Jpc3QvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+export const file_api_bist_v1_bist: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'ChZhcGkvYmlzdC92MS9iaXN0LnByb3RvEhJvdHRlcnNjYWxlLmJpc3QudjEiPAoPQ2VwaEJsb2NrRGV2aWNlEhIKCnNjb3BlX3V1aWQYASABKAkSFQoNZmFjaWxpdHlfbmFtZRgCIAEoCSIzChFOZXR3b3JrRmlsZVN5c3RlbRIQCghlbmRwb2ludBgBIAEoCRIMCgRwYXRoGAIgASgJIs4BChVJbnRlcm5hbE9iamVjdFNlcnZpY2USPAoEdHlwZRgBIAEoDjIuLm90dGVyc2NhbGUuYmlzdC52MS5JbnRlcm5hbE9iamVjdFNlcnZpY2UuVHlwZRISCgpzY29wZV91dWlkGAIgASgJEhUKDWZhY2lsaXR5X25hbWUYAyABKAkSDAoEbmFtZRgEIAEoCRIQCghlbmRwb2ludBgFIAEoCSIsCgRUeXBlEg8KC1VOU1BFQ0lGSUVEEAASCAoEQ0VQSBABEgkKBU1JTklPEAIiUQoVRXh0ZXJuYWxPYmplY3RTZXJ2aWNlEhAKCGVuZHBvaW50GAEgASgJEhIKCmFjY2Vzc19rZXkYAiABKAkSEgoKc2VjcmV0X2tleRgDIAEoCSKECAoDRklPEkAKEWNlcGhfYmxvY2tfZGV2aWNlGAEgASgLMiMub3R0ZXJzY2FsZS5iaXN0LnYxLkNlcGhCbG9ja0RldmljZUgAEkQKE25ldHdvcmtfZmlsZV9zeXN0ZW0YAiABKAsyJS5vdHRlcnNjYWxlLmJpc3QudjEuTmV0d29ya0ZpbGVTeXN0ZW1IABIsCgVpbnB1dBgLIAEoCzIdLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uSW5wdXQSLgoGb3V0cHV0GAwgASgLMh4ub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5PdXRwdXQa1gIKBUlucHV0Ej0KC2FjY2Vzc19tb2RlGAEgASgOMigub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5JbnB1dC5BY2Nlc3NNb2RlEhEKCWpvYl9jb3VudBgfIAEoAxIYChBydW5fdGltZV9zZWNvbmRzGCkgASgDEhgKEGJsb2NrX3NpemVfYnl0ZXMYRyABKAMSFwoPZmlsZV9zaXplX2J5dGVzGFsgASgDEhAKCGlvX2RlcHRoGHkgASgDIpsBCgpBY2Nlc3NNb2RlEggKBFJFQUQQABIJCgVXUklURRABEggKBFRSSU0QAhIOCgpSRUFEX1dSSVRFEAMSDgoKVFJJTV9XUklURRAEEg0KCVJBTkRfUkVBRBAFEg4KClJBTkRfV1JJVEUQBhINCglSQU5EX1RSSU0QBxILCgdSQU5EX1JXEAgSEwoPUkFORF9UUklNX1dSSVRFEAkaswMKBk91dHB1dBI3CgRyZWFkGAEgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkZJTy5PdXRwdXQuVGhyb3VnaHB1dBI4CgV3cml0ZRgCIAEoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQSNwoEdHJpbRgDIAEoCzIpLm90dGVyc2NhbGUuYmlzdC52MS5GSU8uT3V0cHV0LlRocm91Z2hwdXQa/AEKClRocm91Z2hwdXQSEAoIaW9fYnl0ZXMYASABKAMSFwoPYmFuZHdpZHRoX2J5dGVzGAIgASgDEhUKDWlvX3Blcl9zZWNvbmQYAyABKAESEQoJdG90YWxfaW9zGAQgASgDEkIKB2xhdGVuY3kYCyABKAsyMS5vdHRlcnNjYWxlLmJpc3QudjEuRklPLk91dHB1dC5UaHJvdWdocHV0LkxhdGVuY3kaVQoHTGF0ZW5jeRIXCg9taW5fbmFub3NlY29uZHMYASABKAMSFwoPbWF4X25hbm9zZWNvbmRzGAIgASgDEhgKEG1lYW5fbmFub3NlY29uZHMYAyABKAFCCAoGdGFyZ2V0ItwHCgRXYXJwEkwKF2ludGVybmFsX29iamVjdF9zZXJ2aWNlGAEgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkludGVybmFsT2JqZWN0U2VydmljZUgAEkwKF2V4dGVybmFsX29iamVjdF9zZXJ2aWNlGAIgASgLMikub3R0ZXJzY2FsZS5iaXN0LnYxLkV4dGVybmFsT2JqZWN0U2VydmljZUgAEi0KBWlucHV0GAsgASgLMh4ub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuSW5wdXQSLwoGb3V0cHV0GAwgASgLMh8ub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnAuT3V0cHV0GtkBCgVJbnB1dBI7CglvcGVyYXRpb24YASABKA4yKC5vdHRlcnNjYWxlLmJpc3QudjEuV2FycC5JbnB1dC5PcGVyYXRpb24SGAoQZHVyYXRpb25fc2Vjb25kcxgVIAEoAxIZChFvYmplY3Rfc2l6ZV9ieXRlcxgfIAEoAxIUCgxvYmplY3RfY291bnQYICABKAMiSAoJT3BlcmF0aW9uEgcKA0dFVBAAEgcKA1BVVBABEgoKBkRFTEVURRACEggKBExJU1QQAxIICgRTVEFUEAQSCQoFTUlYRUQQBRrxAwoGT3V0cHV0EjcKA2dldBgLIAEoCzIqLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0EjcKA3B1dBgMIAEoCzIqLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0EjoKBmRlbGV0ZRgNIAEoCzIqLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0GrgCCgpUaHJvdWdocHV0EhMKC3RvdGFsX2J5dGVzGAEgASgBEhUKDXRvdGFsX29iamVjdHMYAiABKAESGAoQdG90YWxfb3BlcmF0aW9ucxgDIAEoAxJBCgVieXRlcxgLIAEoCzIyLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0Lk1ldHJpY3MSQwoHb2JqZWN0cxgMIAEoCzIyLm90dGVyc2NhbGUuYmlzdC52MS5XYXJwLk91dHB1dC5UaHJvdWdocHV0Lk1ldHJpY3MaXAoHTWV0cmljcxIaChJmYXN0ZXN0X3Blcl9zZWNvbmQYASABKAESGQoRbWVkaWFuX3Blcl9zZWNvbmQYAiABKAESGgoSc2xvd2VzdF9wZXJfc2Vjb25kGAMgASgBQggKBnRhcmdldCLgAgoKVGVzdFJlc3VsdBILCgN1aWQYASABKAkSDAoEbmFtZRgCIAEoCRI1CgZzdGF0dXMYAyABKA4yJS5vdHRlcnNjYWxlLmJpc3QudjEuVGVzdFJlc3VsdC5TdGF0dXMSEgoKY3JlYXRlZF9ieRgEIAEoCRIuCgpzdGFydGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIwCgxjb21wbGV0ZWRfYXQYDCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEiYKA2ZpbxhlIAEoCzIXLm90dGVyc2NhbGUuYmlzdC52MS5GSU9IABIoCgR3YXJwGGYgASgLMhgub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnBIACIwCgZTdGF0dXMSCwoHUlVOTklORxAAEg0KCVNVQ0NFRURFRBABEgoKBkZBSUxFRBACQgYKBGtpbmQiGAoWTGlzdFRlc3RSZXN1bHRzUmVxdWVzdCJPChdMaXN0VGVzdFJlc3VsdHNSZXNwb25zZRI0Cgx0ZXN0X3Jlc3VsdHMYASADKAsyHi5vdHRlcnNjYWxlLmJpc3QudjEuVGVzdFJlc3VsdCKVAQoXQ3JlYXRlVGVzdFJlc3VsdFJlcXVlc3QSDAoEbmFtZRgBIAEoCRISCgpjcmVhdGVkX2J5GAIgASgJEiYKA2ZpbxhlIAEoCzIXLm90dGVyc2NhbGUuYmlzdC52MS5GSU9IABIoCgR3YXJwGGYgASgLMhgub3R0ZXJzY2FsZS5iaXN0LnYxLldhcnBIAEIGCgRraW5kIicKF0RlbGV0ZVRlc3RSZXN1bHRSZXF1ZXN0EgwKBG5hbWUYASABKAkiNwohTGlzdEludGVybmFsT2JqZWN0U2VydmljZXNSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkicQoiTGlzdEludGVybmFsT2JqZWN0U2VydmljZXNSZXNwb25zZRJLChhpbnRlcm5hbF9vYmplY3Rfc2VydmljZXMYASADKAsyKS5vdHRlcnNjYWxlLmJpc3QudjEuSW50ZXJuYWxPYmplY3RTZXJ2aWNlMsEDCgtCSVNUU2VydmljZRJqCg9MaXN0VGVzdFJlc3VsdHMSKi5vdHRlcnNjYWxlLmJpc3QudjEuTGlzdFRlc3RSZXN1bHRzUmVxdWVzdBorLm90dGVyc2NhbGUuYmlzdC52MS5MaXN0VGVzdFJlc3VsdHNSZXNwb25zZRJfChBDcmVhdGVUZXN0UmVzdWx0Eisub3R0ZXJzY2FsZS5iaXN0LnYxLkNyZWF0ZVRlc3RSZXN1bHRSZXF1ZXN0Gh4ub3R0ZXJzY2FsZS5iaXN0LnYxLlRlc3RSZXN1bHQSVwoQRGVsZXRlVGVzdFJlc3VsdBIrLm90dGVyc2NhbGUuYmlzdC52MS5EZWxldGVUZXN0UmVzdWx0UmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRKLAQoaTGlzdEludGVybmFsT2JqZWN0U2VydmljZXMSNS5vdHRlcnNjYWxlLmJpc3QudjEuTGlzdEludGVybmFsT2JqZWN0U2VydmljZXNSZXF1ZXN0GjYub3R0ZXJzY2FsZS5iaXN0LnYxLkxpc3RJbnRlcm5hbE9iamVjdFNlcnZpY2VzUmVzcG9uc2VCMVovZ2l0aHViLmNvbS9vdHRlcnNjYWxlL290dGVyc2NhbGUvYXBpL2Jpc3QvdjE7cGJiCGVkaXRpb25zcOgH',
+		[file_google_protobuf_empty, file_google_protobuf_timestamp],
+	);
 
 /**
  * @generated from message otterscale.bist.v1.CephBlockDevice
  */
-export type CephBlockDevice = Message<"otterscale.bist.v1.CephBlockDevice"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type CephBlockDevice = Message<'otterscale.bist.v1.CephBlockDevice'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 
-  /**
-   * @generated from field: string facility_name = 2;
-   */
-  facilityName: string;
+	/**
+	 * @generated from field: string facility_name = 2;
+	 */
+	facilityName: string;
 };
 
 /**
  * Describes the message otterscale.bist.v1.CephBlockDevice.
  * Use `create(CephBlockDeviceSchema)` to create a new message.
  */
-export const CephBlockDeviceSchema: GenMessage<CephBlockDevice> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 0);
+export const CephBlockDeviceSchema: GenMessage<CephBlockDevice> = /*@__PURE__*/ messageDesc(file_api_bist_v1_bist, 0);
 
 /**
  * @generated from message otterscale.bist.v1.NetworkFileSystem
  */
-export type NetworkFileSystem = Message<"otterscale.bist.v1.NetworkFileSystem"> & {
-  /**
-   * @generated from field: string endpoint = 1;
-   */
-  endpoint: string;
+export type NetworkFileSystem = Message<'otterscale.bist.v1.NetworkFileSystem'> & {
+	/**
+	 * @generated from field: string endpoint = 1;
+	 */
+	endpoint: string;
 
-  /**
-   * @generated from field: string path = 2;
-   */
-  path: string;
+	/**
+	 * @generated from field: string path = 2;
+	 */
+	path: string;
 };
 
 /**
  * Describes the message otterscale.bist.v1.NetworkFileSystem.
  * Use `create(NetworkFileSystemSchema)` to create a new message.
  */
-export const NetworkFileSystemSchema: GenMessage<NetworkFileSystem> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 1);
+export const NetworkFileSystemSchema: GenMessage<NetworkFileSystem> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 1);
 
 /**
  * @generated from message otterscale.bist.v1.InternalObjectService
  */
-export type InternalObjectService = Message<"otterscale.bist.v1.InternalObjectService"> & {
-  /**
-   * @generated from field: otterscale.bist.v1.InternalObjectService.Type type = 1;
-   */
-  type: InternalObjectService_Type;
+export type InternalObjectService = Message<'otterscale.bist.v1.InternalObjectService'> & {
+	/**
+	 * @generated from field: otterscale.bist.v1.InternalObjectService.Type type = 1;
+	 */
+	type: InternalObjectService_Type;
 
-  /**
-   * @generated from field: string scope_uuid = 2;
-   */
-  scopeUuid: string;
+	/**
+	 * @generated from field: string scope_uuid = 2;
+	 */
+	scopeUuid: string;
 
-  /**
-   * @generated from field: string facility_name = 3;
-   */
-  facilityName: string;
+	/**
+	 * @generated from field: string facility_name = 3;
+	 */
+	facilityName: string;
 
-  /**
-   * @generated from field: string name = 4;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 4;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string endpoint = 5;
-   */
-  endpoint: string;
+	/**
+	 * @generated from field: string endpoint = 5;
+	 */
+	endpoint: string;
 };
 
 /**
  * Describes the message otterscale.bist.v1.InternalObjectService.
  * Use `create(InternalObjectServiceSchema)` to create a new message.
  */
-export const InternalObjectServiceSchema: GenMessage<InternalObjectService> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 2);
+export const InternalObjectServiceSchema: GenMessage<InternalObjectService> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 2);
 
 /**
  * @generated from enum otterscale.bist.v1.InternalObjectService.Type
  */
 export enum InternalObjectService_Type {
-  /**
-   * @generated from enum value: UNSPECIFIED = 0;
-   */
-  UNSPECIFIED = 0,
+	/**
+	 * @generated from enum value: UNSPECIFIED = 0;
+	 */
+	UNSPECIFIED = 0,
 
-  /**
-   * @generated from enum value: CEPH = 1;
-   */
-  CEPH = 1,
+	/**
+	 * @generated from enum value: CEPH = 1;
+	 */
+	CEPH = 1,
 
-  /**
-   * @generated from enum value: MINIO = 2;
-   */
-  MINIO = 2,
+	/**
+	 * @generated from enum value: MINIO = 2;
+	 */
+	MINIO = 2,
 }
 
 /**
  * Describes the enum otterscale.bist.v1.InternalObjectService.Type.
  */
-export const InternalObjectService_TypeSchema: GenEnum<InternalObjectService_Type> = /*@__PURE__*/
-  enumDesc(file_api_bist_v1_bist, 2, 0);
+export const InternalObjectService_TypeSchema: GenEnum<InternalObjectService_Type> =
+	/*@__PURE__*/
+	enumDesc(file_api_bist_v1_bist, 2, 0);
 
 /**
  * @generated from message otterscale.bist.v1.ExternalObjectService
  */
-export type ExternalObjectService = Message<"otterscale.bist.v1.ExternalObjectService"> & {
-  /**
-   * @generated from field: string endpoint = 1;
-   */
-  endpoint: string;
+export type ExternalObjectService = Message<'otterscale.bist.v1.ExternalObjectService'> & {
+	/**
+	 * @generated from field: string endpoint = 1;
+	 */
+	endpoint: string;
 
-  /**
-   * @generated from field: string access_key = 2;
-   */
-  accessKey: string;
+	/**
+	 * @generated from field: string access_key = 2;
+	 */
+	accessKey: string;
 
-  /**
-   * @generated from field: string secret_key = 3;
-   */
-  secretKey: string;
+	/**
+	 * @generated from field: string secret_key = 3;
+	 */
+	secretKey: string;
 };
 
 /**
  * Describes the message otterscale.bist.v1.ExternalObjectService.
  * Use `create(ExternalObjectServiceSchema)` to create a new message.
  */
-export const ExternalObjectServiceSchema: GenMessage<ExternalObjectService> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 3);
+export const ExternalObjectServiceSchema: GenMessage<ExternalObjectService> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 3);
 
 /**
  * @generated from message otterscale.bist.v1.FIO
  */
-export type FIO = Message<"otterscale.bist.v1.FIO"> & {
-  /**
-   * @generated from oneof otterscale.bist.v1.FIO.target
-   */
-  target: {
-    /**
-     * @generated from field: otterscale.bist.v1.CephBlockDevice ceph_block_device = 1;
-     */
-    value: CephBlockDevice;
-    case: "cephBlockDevice";
-  } | {
-    /**
-     * @generated from field: otterscale.bist.v1.NetworkFileSystem network_file_system = 2;
-     */
-    value: NetworkFileSystem;
-    case: "networkFileSystem";
-  } | { case: undefined; value?: undefined };
+export type FIO = Message<'otterscale.bist.v1.FIO'> & {
+	/**
+	 * @generated from oneof otterscale.bist.v1.FIO.target
+	 */
+	target:
+		| {
+				/**
+				 * @generated from field: otterscale.bist.v1.CephBlockDevice ceph_block_device = 1;
+				 */
+				value: CephBlockDevice;
+				case: 'cephBlockDevice';
+		  }
+		| {
+				/**
+				 * @generated from field: otterscale.bist.v1.NetworkFileSystem network_file_system = 2;
+				 */
+				value: NetworkFileSystem;
+				case: 'networkFileSystem';
+		  }
+		| { case: undefined; value?: undefined };
 
-  /**
-   * @generated from field: otterscale.bist.v1.FIO.Input input = 11;
-   */
-  input?: FIO_Input;
+	/**
+	 * @generated from field: otterscale.bist.v1.FIO.Input input = 11;
+	 */
+	input?: FIO_Input;
 
-  /**
-   * @generated from field: otterscale.bist.v1.FIO.Output output = 12;
-   */
-  output?: FIO_Output;
+	/**
+	 * @generated from field: otterscale.bist.v1.FIO.Output output = 12;
+	 */
+	output?: FIO_Output;
 };
 
 /**
  * Describes the message otterscale.bist.v1.FIO.
  * Use `create(FIOSchema)` to create a new message.
  */
-export const FIOSchema: GenMessage<FIO> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 4);
+export const FIOSchema: GenMessage<FIO> = /*@__PURE__*/ messageDesc(file_api_bist_v1_bist, 4);
 
 /**
  * @generated from message otterscale.bist.v1.FIO.Input
  */
-export type FIO_Input = Message<"otterscale.bist.v1.FIO.Input"> & {
-  /**
-   * @generated from field: otterscale.bist.v1.FIO.Input.AccessMode access_mode = 1;
-   */
-  accessMode: FIO_Input_AccessMode;
+export type FIO_Input = Message<'otterscale.bist.v1.FIO.Input'> & {
+	/**
+	 * @generated from field: otterscale.bist.v1.FIO.Input.AccessMode access_mode = 1;
+	 */
+	accessMode: FIO_Input_AccessMode;
 
-  /**
-   * 1.13.3 Job description
-   *
-   * @generated from field: int64 job_count = 31;
-   */
-  jobCount: bigint;
+	/**
+	 * 1.13.3 Job description
+	 *
+	 * @generated from field: int64 job_count = 31;
+	 */
+	jobCount: bigint;
 
-  /**
-   * 1.13.4 Time related parameters
-   *
-   * @generated from field: int64 run_time_seconds = 41;
-   */
-  runTimeSeconds: bigint;
+	/**
+	 * 1.13.4 Time related parameters
+	 *
+	 * @generated from field: int64 run_time_seconds = 41;
+	 */
+	runTimeSeconds: bigint;
 
-  /**
-   * 1.13.7 Block size
-   *
-   * @generated from field: int64 block_size_bytes = 71;
-   */
-  blockSizeBytes: bigint;
+	/**
+	 * 1.13.7 Block size
+	 *
+	 * @generated from field: int64 block_size_bytes = 71;
+	 */
+	blockSizeBytes: bigint;
 
-  /**
-   * 1.13.9 I/O size
-   *
-   * @generated from field: int64 file_size_bytes = 91;
-   */
-  fileSizeBytes: bigint;
+	/**
+	 * 1.13.9 I/O size
+	 *
+	 * @generated from field: int64 file_size_bytes = 91;
+	 */
+	fileSizeBytes: bigint;
 
-  /**
-   * 1.13.12 I/O depth
-   *
-   * @generated from field: int64 io_depth = 121;
-   */
-  ioDepth: bigint;
+	/**
+	 * 1.13.12 I/O depth
+	 *
+	 * @generated from field: int64 io_depth = 121;
+	 */
+	ioDepth: bigint;
 };
 
 /**
  * Describes the message otterscale.bist.v1.FIO.Input.
  * Use `create(FIO_InputSchema)` to create a new message.
  */
-export const FIO_InputSchema: GenMessage<FIO_Input> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 4, 0);
+export const FIO_InputSchema: GenMessage<FIO_Input> = /*@__PURE__*/ messageDesc(file_api_bist_v1_bist, 4, 0);
 
 /**
  * @generated from enum otterscale.bist.v1.FIO.Input.AccessMode
  */
 export enum FIO_Input_AccessMode {
-  /**
-   * @generated from enum value: READ = 0;
-   */
-  READ = 0,
+	/**
+	 * @generated from enum value: READ = 0;
+	 */
+	READ = 0,
 
-  /**
-   * @generated from enum value: WRITE = 1;
-   */
-  WRITE = 1,
+	/**
+	 * @generated from enum value: WRITE = 1;
+	 */
+	WRITE = 1,
 
-  /**
-   * @generated from enum value: TRIM = 2;
-   */
-  TRIM = 2,
+	/**
+	 * @generated from enum value: TRIM = 2;
+	 */
+	TRIM = 2,
 
-  /**
-   * @generated from enum value: READ_WRITE = 3;
-   */
-  READ_WRITE = 3,
+	/**
+	 * @generated from enum value: READ_WRITE = 3;
+	 */
+	READ_WRITE = 3,
 
-  /**
-   * @generated from enum value: TRIM_WRITE = 4;
-   */
-  TRIM_WRITE = 4,
+	/**
+	 * @generated from enum value: TRIM_WRITE = 4;
+	 */
+	TRIM_WRITE = 4,
 
-  /**
-   * @generated from enum value: RAND_READ = 5;
-   */
-  RAND_READ = 5,
+	/**
+	 * @generated from enum value: RAND_READ = 5;
+	 */
+	RAND_READ = 5,
 
-  /**
-   * @generated from enum value: RAND_WRITE = 6;
-   */
-  RAND_WRITE = 6,
+	/**
+	 * @generated from enum value: RAND_WRITE = 6;
+	 */
+	RAND_WRITE = 6,
 
-  /**
-   * @generated from enum value: RAND_TRIM = 7;
-   */
-  RAND_TRIM = 7,
+	/**
+	 * @generated from enum value: RAND_TRIM = 7;
+	 */
+	RAND_TRIM = 7,
 
-  /**
-   * @generated from enum value: RAND_RW = 8;
-   */
-  RAND_RW = 8,
+	/**
+	 * @generated from enum value: RAND_RW = 8;
+	 */
+	RAND_RW = 8,
 
-  /**
-   * @generated from enum value: RAND_TRIM_WRITE = 9;
-   */
-  RAND_TRIM_WRITE = 9,
+	/**
+	 * @generated from enum value: RAND_TRIM_WRITE = 9;
+	 */
+	RAND_TRIM_WRITE = 9,
 }
 
 /**
  * Describes the enum otterscale.bist.v1.FIO.Input.AccessMode.
  */
-export const FIO_Input_AccessModeSchema: GenEnum<FIO_Input_AccessMode> = /*@__PURE__*/
-  enumDesc(file_api_bist_v1_bist, 4, 0, 0);
+export const FIO_Input_AccessModeSchema: GenEnum<FIO_Input_AccessMode> =
+	/*@__PURE__*/
+	enumDesc(file_api_bist_v1_bist, 4, 0, 0);
 
 /**
  * @generated from message otterscale.bist.v1.FIO.Output
  */
-export type FIO_Output = Message<"otterscale.bist.v1.FIO.Output"> & {
-  /**
-   * @generated from field: otterscale.bist.v1.FIO.Output.Throughput read = 1;
-   */
-  read?: FIO_Output_Throughput;
+export type FIO_Output = Message<'otterscale.bist.v1.FIO.Output'> & {
+	/**
+	 * @generated from field: otterscale.bist.v1.FIO.Output.Throughput read = 1;
+	 */
+	read?: FIO_Output_Throughput;
 
-  /**
-   * @generated from field: otterscale.bist.v1.FIO.Output.Throughput write = 2;
-   */
-  write?: FIO_Output_Throughput;
+	/**
+	 * @generated from field: otterscale.bist.v1.FIO.Output.Throughput write = 2;
+	 */
+	write?: FIO_Output_Throughput;
 
-  /**
-   * @generated from field: otterscale.bist.v1.FIO.Output.Throughput trim = 3;
-   */
-  trim?: FIO_Output_Throughput;
+	/**
+	 * @generated from field: otterscale.bist.v1.FIO.Output.Throughput trim = 3;
+	 */
+	trim?: FIO_Output_Throughput;
 };
 
 /**
  * Describes the message otterscale.bist.v1.FIO.Output.
  * Use `create(FIO_OutputSchema)` to create a new message.
  */
-export const FIO_OutputSchema: GenMessage<FIO_Output> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 4, 1);
+export const FIO_OutputSchema: GenMessage<FIO_Output> = /*@__PURE__*/ messageDesc(file_api_bist_v1_bist, 4, 1);
 
 /**
  * @generated from message otterscale.bist.v1.FIO.Output.Throughput
  */
-export type FIO_Output_Throughput = Message<"otterscale.bist.v1.FIO.Output.Throughput"> & {
-  /**
-   * @generated from field: int64 io_bytes = 1;
-   */
-  ioBytes: bigint;
+export type FIO_Output_Throughput = Message<'otterscale.bist.v1.FIO.Output.Throughput'> & {
+	/**
+	 * @generated from field: int64 io_bytes = 1;
+	 */
+	ioBytes: bigint;
 
-  /**
-   * @generated from field: int64 bandwidth_bytes = 2;
-   */
-  bandwidthBytes: bigint;
+	/**
+	 * @generated from field: int64 bandwidth_bytes = 2;
+	 */
+	bandwidthBytes: bigint;
 
-  /**
-   * @generated from field: double io_per_second = 3;
-   */
-  ioPerSecond: number;
+	/**
+	 * @generated from field: double io_per_second = 3;
+	 */
+	ioPerSecond: number;
 
-  /**
-   * @generated from field: int64 total_ios = 4;
-   */
-  totalIos: bigint;
+	/**
+	 * @generated from field: int64 total_ios = 4;
+	 */
+	totalIos: bigint;
 
-  /**
-   * @generated from field: otterscale.bist.v1.FIO.Output.Throughput.Latency latency = 11;
-   */
-  latency?: FIO_Output_Throughput_Latency;
+	/**
+	 * @generated from field: otterscale.bist.v1.FIO.Output.Throughput.Latency latency = 11;
+	 */
+	latency?: FIO_Output_Throughput_Latency;
 };
 
 /**
  * Describes the message otterscale.bist.v1.FIO.Output.Throughput.
  * Use `create(FIO_Output_ThroughputSchema)` to create a new message.
  */
-export const FIO_Output_ThroughputSchema: GenMessage<FIO_Output_Throughput> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 4, 1, 0);
+export const FIO_Output_ThroughputSchema: GenMessage<FIO_Output_Throughput> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 4, 1, 0);
 
 /**
  * @generated from message otterscale.bist.v1.FIO.Output.Throughput.Latency
  */
-export type FIO_Output_Throughput_Latency = Message<"otterscale.bist.v1.FIO.Output.Throughput.Latency"> & {
-  /**
-   * @generated from field: int64 min_nanoseconds = 1;
-   */
-  minNanoseconds: bigint;
+export type FIO_Output_Throughput_Latency = Message<'otterscale.bist.v1.FIO.Output.Throughput.Latency'> & {
+	/**
+	 * @generated from field: int64 min_nanoseconds = 1;
+	 */
+	minNanoseconds: bigint;
 
-  /**
-   * @generated from field: int64 max_nanoseconds = 2;
-   */
-  maxNanoseconds: bigint;
+	/**
+	 * @generated from field: int64 max_nanoseconds = 2;
+	 */
+	maxNanoseconds: bigint;
 
-  /**
-   * @generated from field: double mean_nanoseconds = 3;
-   */
-  meanNanoseconds: number;
+	/**
+	 * @generated from field: double mean_nanoseconds = 3;
+	 */
+	meanNanoseconds: number;
 };
 
 /**
  * Describes the message otterscale.bist.v1.FIO.Output.Throughput.Latency.
  * Use `create(FIO_Output_Throughput_LatencySchema)` to create a new message.
  */
-export const FIO_Output_Throughput_LatencySchema: GenMessage<FIO_Output_Throughput_Latency> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 4, 1, 0, 0);
+export const FIO_Output_Throughput_LatencySchema: GenMessage<FIO_Output_Throughput_Latency> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 4, 1, 0, 0);
 
 /**
  * @generated from message otterscale.bist.v1.Warp
  */
-export type Warp = Message<"otterscale.bist.v1.Warp"> & {
-  /**
-   * @generated from oneof otterscale.bist.v1.Warp.target
-   */
-  target: {
-    /**
-     * @generated from field: otterscale.bist.v1.InternalObjectService internal_object_service = 1;
-     */
-    value: InternalObjectService;
-    case: "internalObjectService";
-  } | {
-    /**
-     * @generated from field: otterscale.bist.v1.ExternalObjectService external_object_service = 2;
-     */
-    value: ExternalObjectService;
-    case: "externalObjectService";
-  } | { case: undefined; value?: undefined };
+export type Warp = Message<'otterscale.bist.v1.Warp'> & {
+	/**
+	 * @generated from oneof otterscale.bist.v1.Warp.target
+	 */
+	target:
+		| {
+				/**
+				 * @generated from field: otterscale.bist.v1.InternalObjectService internal_object_service = 1;
+				 */
+				value: InternalObjectService;
+				case: 'internalObjectService';
+		  }
+		| {
+				/**
+				 * @generated from field: otterscale.bist.v1.ExternalObjectService external_object_service = 2;
+				 */
+				value: ExternalObjectService;
+				case: 'externalObjectService';
+		  }
+		| { case: undefined; value?: undefined };
 
-  /**
-   * @generated from field: otterscale.bist.v1.Warp.Input input = 11;
-   */
-  input?: Warp_Input;
+	/**
+	 * @generated from field: otterscale.bist.v1.Warp.Input input = 11;
+	 */
+	input?: Warp_Input;
 
-  /**
-   * @generated from field: otterscale.bist.v1.Warp.Output output = 12;
-   */
-  output?: Warp_Output;
+	/**
+	 * @generated from field: otterscale.bist.v1.Warp.Output output = 12;
+	 */
+	output?: Warp_Output;
 };
 
 /**
  * Describes the message otterscale.bist.v1.Warp.
  * Use `create(WarpSchema)` to create a new message.
  */
-export const WarpSchema: GenMessage<Warp> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 5);
+export const WarpSchema: GenMessage<Warp> = /*@__PURE__*/ messageDesc(file_api_bist_v1_bist, 5);
 
 /**
  * @generated from message otterscale.bist.v1.Warp.Input
  */
-export type Warp_Input = Message<"otterscale.bist.v1.Warp.Input"> & {
-  /**
-   * @generated from field: otterscale.bist.v1.Warp.Input.Operation operation = 1;
-   */
-  operation: Warp_Input_Operation;
+export type Warp_Input = Message<'otterscale.bist.v1.Warp.Input'> & {
+	/**
+	 * @generated from field: otterscale.bist.v1.Warp.Input.Operation operation = 1;
+	 */
+	operation: Warp_Input_Operation;
 
-  /**
-   * @generated from field: int64 duration_seconds = 21;
-   */
-  durationSeconds: bigint;
+	/**
+	 * @generated from field: int64 duration_seconds = 21;
+	 */
+	durationSeconds: bigint;
 
-  /**
-   * @generated from field: int64 object_size_bytes = 31;
-   */
-  objectSizeBytes: bigint;
+	/**
+	 * @generated from field: int64 object_size_bytes = 31;
+	 */
+	objectSizeBytes: bigint;
 
-  /**
-   * @generated from field: int64 object_count = 32;
-   */
-  objectCount: bigint;
+	/**
+	 * @generated from field: int64 object_count = 32;
+	 */
+	objectCount: bigint;
 };
 
 /**
  * Describes the message otterscale.bist.v1.Warp.Input.
  * Use `create(Warp_InputSchema)` to create a new message.
  */
-export const Warp_InputSchema: GenMessage<Warp_Input> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 5, 0);
+export const Warp_InputSchema: GenMessage<Warp_Input> = /*@__PURE__*/ messageDesc(file_api_bist_v1_bist, 5, 0);
 
 /**
  * @generated from enum otterscale.bist.v1.Warp.Input.Operation
  */
 export enum Warp_Input_Operation {
-  /**
-   * @generated from enum value: GET = 0;
-   */
-  GET = 0,
+	/**
+	 * @generated from enum value: GET = 0;
+	 */
+	GET = 0,
 
-  /**
-   * @generated from enum value: PUT = 1;
-   */
-  PUT = 1,
+	/**
+	 * @generated from enum value: PUT = 1;
+	 */
+	PUT = 1,
 
-  /**
-   * @generated from enum value: DELETE = 2;
-   */
-  DELETE = 2,
+	/**
+	 * @generated from enum value: DELETE = 2;
+	 */
+	DELETE = 2,
 
-  /**
-   * @generated from enum value: LIST = 3;
-   */
-  LIST = 3,
+	/**
+	 * @generated from enum value: LIST = 3;
+	 */
+	LIST = 3,
 
-  /**
-   * @generated from enum value: STAT = 4;
-   */
-  STAT = 4,
+	/**
+	 * @generated from enum value: STAT = 4;
+	 */
+	STAT = 4,
 
-  /**
-   * @generated from enum value: MIXED = 5;
-   */
-  MIXED = 5,
+	/**
+	 * @generated from enum value: MIXED = 5;
+	 */
+	MIXED = 5,
 }
 
 /**
  * Describes the enum otterscale.bist.v1.Warp.Input.Operation.
  */
-export const Warp_Input_OperationSchema: GenEnum<Warp_Input_Operation> = /*@__PURE__*/
-  enumDesc(file_api_bist_v1_bist, 5, 0, 0);
+export const Warp_Input_OperationSchema: GenEnum<Warp_Input_Operation> =
+	/*@__PURE__*/
+	enumDesc(file_api_bist_v1_bist, 5, 0, 0);
 
 /**
  * @generated from message otterscale.bist.v1.Warp.Output
  */
-export type Warp_Output = Message<"otterscale.bist.v1.Warp.Output"> & {
-  /**
-   * @generated from field: otterscale.bist.v1.Warp.Output.Throughput get = 11;
-   */
-  get?: Warp_Output_Throughput;
+export type Warp_Output = Message<'otterscale.bist.v1.Warp.Output'> & {
+	/**
+	 * @generated from field: otterscale.bist.v1.Warp.Output.Throughput get = 11;
+	 */
+	get?: Warp_Output_Throughput;
 
-  /**
-   * @generated from field: otterscale.bist.v1.Warp.Output.Throughput put = 12;
-   */
-  put?: Warp_Output_Throughput;
+	/**
+	 * @generated from field: otterscale.bist.v1.Warp.Output.Throughput put = 12;
+	 */
+	put?: Warp_Output_Throughput;
 
-  /**
-   * @generated from field: otterscale.bist.v1.Warp.Output.Throughput delete = 13;
-   */
-  delete?: Warp_Output_Throughput;
+	/**
+	 * @generated from field: otterscale.bist.v1.Warp.Output.Throughput delete = 13;
+	 */
+	delete?: Warp_Output_Throughput;
 };
 
 /**
  * Describes the message otterscale.bist.v1.Warp.Output.
  * Use `create(Warp_OutputSchema)` to create a new message.
  */
-export const Warp_OutputSchema: GenMessage<Warp_Output> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 5, 1);
+export const Warp_OutputSchema: GenMessage<Warp_Output> = /*@__PURE__*/ messageDesc(file_api_bist_v1_bist, 5, 1);
 
 /**
  * @generated from message otterscale.bist.v1.Warp.Output.Throughput
  */
-export type Warp_Output_Throughput = Message<"otterscale.bist.v1.Warp.Output.Throughput"> & {
-  /**
-   * @generated from field: double total_bytes = 1;
-   */
-  totalBytes: number;
+export type Warp_Output_Throughput = Message<'otterscale.bist.v1.Warp.Output.Throughput'> & {
+	/**
+	 * @generated from field: double total_bytes = 1;
+	 */
+	totalBytes: number;
 
-  /**
-   * @generated from field: double total_objects = 2;
-   */
-  totalObjects: number;
+	/**
+	 * @generated from field: double total_objects = 2;
+	 */
+	totalObjects: number;
 
-  /**
-   * @generated from field: int64 total_operations = 3;
-   */
-  totalOperations: bigint;
+	/**
+	 * @generated from field: int64 total_operations = 3;
+	 */
+	totalOperations: bigint;
 
-  /**
-   * @generated from field: otterscale.bist.v1.Warp.Output.Throughput.Metrics bytes = 11;
-   */
-  bytes?: Warp_Output_Throughput_Metrics;
+	/**
+	 * @generated from field: otterscale.bist.v1.Warp.Output.Throughput.Metrics bytes = 11;
+	 */
+	bytes?: Warp_Output_Throughput_Metrics;
 
-  /**
-   * @generated from field: otterscale.bist.v1.Warp.Output.Throughput.Metrics objects = 12;
-   */
-  objects?: Warp_Output_Throughput_Metrics;
+	/**
+	 * @generated from field: otterscale.bist.v1.Warp.Output.Throughput.Metrics objects = 12;
+	 */
+	objects?: Warp_Output_Throughput_Metrics;
 };
 
 /**
  * Describes the message otterscale.bist.v1.Warp.Output.Throughput.
  * Use `create(Warp_Output_ThroughputSchema)` to create a new message.
  */
-export const Warp_Output_ThroughputSchema: GenMessage<Warp_Output_Throughput> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 5, 1, 0);
+export const Warp_Output_ThroughputSchema: GenMessage<Warp_Output_Throughput> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 5, 1, 0);
 
 /**
  * @generated from message otterscale.bist.v1.Warp.Output.Throughput.Metrics
  */
-export type Warp_Output_Throughput_Metrics = Message<"otterscale.bist.v1.Warp.Output.Throughput.Metrics"> & {
-  /**
-   * @generated from field: double fastest_per_second = 1;
-   */
-  fastestPerSecond: number;
+export type Warp_Output_Throughput_Metrics = Message<'otterscale.bist.v1.Warp.Output.Throughput.Metrics'> & {
+	/**
+	 * @generated from field: double fastest_per_second = 1;
+	 */
+	fastestPerSecond: number;
 
-  /**
-   * @generated from field: double median_per_second = 2;
-   */
-  medianPerSecond: number;
+	/**
+	 * @generated from field: double median_per_second = 2;
+	 */
+	medianPerSecond: number;
 
-  /**
-   * @generated from field: double slowest_per_second = 3;
-   */
-  slowestPerSecond: number;
+	/**
+	 * @generated from field: double slowest_per_second = 3;
+	 */
+	slowestPerSecond: number;
 };
 
 /**
  * Describes the message otterscale.bist.v1.Warp.Output.Throughput.Metrics.
  * Use `create(Warp_Output_Throughput_MetricsSchema)` to create a new message.
  */
-export const Warp_Output_Throughput_MetricsSchema: GenMessage<Warp_Output_Throughput_Metrics> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 5, 1, 0, 0);
+export const Warp_Output_Throughput_MetricsSchema: GenMessage<Warp_Output_Throughput_Metrics> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 5, 1, 0, 0);
 
 /**
  * @generated from message otterscale.bist.v1.TestResult
  */
-export type TestResult = Message<"otterscale.bist.v1.TestResult"> & {
-  /**
-   * @generated from field: string uid = 1;
-   */
-  uid: string;
+export type TestResult = Message<'otterscale.bist.v1.TestResult'> & {
+	/**
+	 * @generated from field: string uid = 1;
+	 */
+	uid: string;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: otterscale.bist.v1.TestResult.Status status = 3;
-   */
-  status: TestResult_Status;
+	/**
+	 * @generated from field: otterscale.bist.v1.TestResult.Status status = 3;
+	 */
+	status: TestResult_Status;
 
-  /**
-   * @generated from field: string created_by = 4;
-   */
-  createdBy: string;
+	/**
+	 * @generated from field: string created_by = 4;
+	 */
+	createdBy: string;
 
-  /**
-   * @generated from field: google.protobuf.Timestamp started_at = 11;
-   */
-  startedAt?: Timestamp;
+	/**
+	 * @generated from field: google.protobuf.Timestamp started_at = 11;
+	 */
+	startedAt?: Timestamp;
 
-  /**
-   * @generated from field: google.protobuf.Timestamp completed_at = 12;
-   */
-  completedAt?: Timestamp;
+	/**
+	 * @generated from field: google.protobuf.Timestamp completed_at = 12;
+	 */
+	completedAt?: Timestamp;
 
-  /**
-   * @generated from oneof otterscale.bist.v1.TestResult.kind
-   */
-  kind: {
-    /**
-     * @generated from field: otterscale.bist.v1.FIO fio = 101;
-     */
-    value: FIO;
-    case: "fio";
-  } | {
-    /**
-     * @generated from field: otterscale.bist.v1.Warp warp = 102;
-     */
-    value: Warp;
-    case: "warp";
-  } | { case: undefined; value?: undefined };
+	/**
+	 * @generated from oneof otterscale.bist.v1.TestResult.kind
+	 */
+	kind:
+		| {
+				/**
+				 * @generated from field: otterscale.bist.v1.FIO fio = 101;
+				 */
+				value: FIO;
+				case: 'fio';
+		  }
+		| {
+				/**
+				 * @generated from field: otterscale.bist.v1.Warp warp = 102;
+				 */
+				value: Warp;
+				case: 'warp';
+		  }
+		| { case: undefined; value?: undefined };
 };
 
 /**
  * Describes the message otterscale.bist.v1.TestResult.
  * Use `create(TestResultSchema)` to create a new message.
  */
-export const TestResultSchema: GenMessage<TestResult> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 6);
+export const TestResultSchema: GenMessage<TestResult> = /*@__PURE__*/ messageDesc(file_api_bist_v1_bist, 6);
 
 /**
  * @generated from enum otterscale.bist.v1.TestResult.Status
  */
 export enum TestResult_Status {
-  /**
-   * @generated from enum value: RUNNING = 0;
-   */
-  RUNNING = 0,
+	/**
+	 * @generated from enum value: RUNNING = 0;
+	 */
+	RUNNING = 0,
 
-  /**
-   * @generated from enum value: SUCCEEDED = 1;
-   */
-  SUCCEEDED = 1,
+	/**
+	 * @generated from enum value: SUCCEEDED = 1;
+	 */
+	SUCCEEDED = 1,
 
-  /**
-   * @generated from enum value: FAILED = 2;
-   */
-  FAILED = 2,
+	/**
+	 * @generated from enum value: FAILED = 2;
+	 */
+	FAILED = 2,
 }
 
 /**
  * Describes the enum otterscale.bist.v1.TestResult.Status.
  */
-export const TestResult_StatusSchema: GenEnum<TestResult_Status> = /*@__PURE__*/
-  enumDesc(file_api_bist_v1_bist, 6, 0);
+export const TestResult_StatusSchema: GenEnum<TestResult_Status> = /*@__PURE__*/ enumDesc(file_api_bist_v1_bist, 6, 0);
 
 /**
  * @generated from message otterscale.bist.v1.ListTestResultsRequest
  */
-export type ListTestResultsRequest = Message<"otterscale.bist.v1.ListTestResultsRequest"> & {
-};
+export type ListTestResultsRequest = Message<'otterscale.bist.v1.ListTestResultsRequest'> & {};
 
 /**
  * Describes the message otterscale.bist.v1.ListTestResultsRequest.
  * Use `create(ListTestResultsRequestSchema)` to create a new message.
  */
-export const ListTestResultsRequestSchema: GenMessage<ListTestResultsRequest> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 7);
+export const ListTestResultsRequestSchema: GenMessage<ListTestResultsRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 7);
 
 /**
  * @generated from message otterscale.bist.v1.ListTestResultsResponse
  */
-export type ListTestResultsResponse = Message<"otterscale.bist.v1.ListTestResultsResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.bist.v1.TestResult test_results = 1;
-   */
-  testResults: TestResult[];
+export type ListTestResultsResponse = Message<'otterscale.bist.v1.ListTestResultsResponse'> & {
+	/**
+	 * @generated from field: repeated otterscale.bist.v1.TestResult test_results = 1;
+	 */
+	testResults: TestResult[];
 };
 
 /**
  * Describes the message otterscale.bist.v1.ListTestResultsResponse.
  * Use `create(ListTestResultsResponseSchema)` to create a new message.
  */
-export const ListTestResultsResponseSchema: GenMessage<ListTestResultsResponse> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 8);
+export const ListTestResultsResponseSchema: GenMessage<ListTestResultsResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 8);
 
 /**
  * @generated from message otterscale.bist.v1.CreateTestResultRequest
  */
-export type CreateTestResultRequest = Message<"otterscale.bist.v1.CreateTestResultRequest"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type CreateTestResultRequest = Message<'otterscale.bist.v1.CreateTestResultRequest'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string created_by = 2;
-   */
-  createdBy: string;
+	/**
+	 * @generated from field: string created_by = 2;
+	 */
+	createdBy: string;
 
-  /**
-   * @generated from oneof otterscale.bist.v1.CreateTestResultRequest.kind
-   */
-  kind: {
-    /**
-     * @generated from field: otterscale.bist.v1.FIO fio = 101;
-     */
-    value: FIO;
-    case: "fio";
-  } | {
-    /**
-     * @generated from field: otterscale.bist.v1.Warp warp = 102;
-     */
-    value: Warp;
-    case: "warp";
-  } | { case: undefined; value?: undefined };
+	/**
+	 * @generated from oneof otterscale.bist.v1.CreateTestResultRequest.kind
+	 */
+	kind:
+		| {
+				/**
+				 * @generated from field: otterscale.bist.v1.FIO fio = 101;
+				 */
+				value: FIO;
+				case: 'fio';
+		  }
+		| {
+				/**
+				 * @generated from field: otterscale.bist.v1.Warp warp = 102;
+				 */
+				value: Warp;
+				case: 'warp';
+		  }
+		| { case: undefined; value?: undefined };
 };
 
 /**
  * Describes the message otterscale.bist.v1.CreateTestResultRequest.
  * Use `create(CreateTestResultRequestSchema)` to create a new message.
  */
-export const CreateTestResultRequestSchema: GenMessage<CreateTestResultRequest> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 9);
+export const CreateTestResultRequestSchema: GenMessage<CreateTestResultRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 9);
 
 /**
  * @generated from message otterscale.bist.v1.DeleteTestResultRequest
  */
-export type DeleteTestResultRequest = Message<"otterscale.bist.v1.DeleteTestResultRequest"> & {
-  /**
-   * @generated from field: string name = 1;
-   */
-  name: string;
+export type DeleteTestResultRequest = Message<'otterscale.bist.v1.DeleteTestResultRequest'> & {
+	/**
+	 * @generated from field: string name = 1;
+	 */
+	name: string;
 };
 
 /**
  * Describes the message otterscale.bist.v1.DeleteTestResultRequest.
  * Use `create(DeleteTestResultRequestSchema)` to create a new message.
  */
-export const DeleteTestResultRequestSchema: GenMessage<DeleteTestResultRequest> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 10);
+export const DeleteTestResultRequestSchema: GenMessage<DeleteTestResultRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 10);
 
 /**
  * @generated from message otterscale.bist.v1.ListInternalObjectServicesRequest
  */
-export type ListInternalObjectServicesRequest = Message<"otterscale.bist.v1.ListInternalObjectServicesRequest"> & {
-  /**
-   * @generated from field: string scope_uuid = 1;
-   */
-  scopeUuid: string;
+export type ListInternalObjectServicesRequest = Message<'otterscale.bist.v1.ListInternalObjectServicesRequest'> & {
+	/**
+	 * @generated from field: string scope_uuid = 1;
+	 */
+	scopeUuid: string;
 };
 
 /**
  * Describes the message otterscale.bist.v1.ListInternalObjectServicesRequest.
  * Use `create(ListInternalObjectServicesRequestSchema)` to create a new message.
  */
-export const ListInternalObjectServicesRequestSchema: GenMessage<ListInternalObjectServicesRequest> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 11);
+export const ListInternalObjectServicesRequestSchema: GenMessage<ListInternalObjectServicesRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 11);
 
 /**
  * @generated from message otterscale.bist.v1.ListInternalObjectServicesResponse
  */
-export type ListInternalObjectServicesResponse = Message<"otterscale.bist.v1.ListInternalObjectServicesResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.bist.v1.InternalObjectService internal_object_services = 1;
-   */
-  internalObjectServices: InternalObjectService[];
+export type ListInternalObjectServicesResponse = Message<'otterscale.bist.v1.ListInternalObjectServicesResponse'> & {
+	/**
+	 * @generated from field: repeated otterscale.bist.v1.InternalObjectService internal_object_services = 1;
+	 */
+	internalObjectServices: InternalObjectService[];
 };
 
 /**
  * Describes the message otterscale.bist.v1.ListInternalObjectServicesResponse.
  * Use `create(ListInternalObjectServicesResponseSchema)` to create a new message.
  */
-export const ListInternalObjectServicesResponseSchema: GenMessage<ListInternalObjectServicesResponse> = /*@__PURE__*/
-  messageDesc(file_api_bist_v1_bist, 12);
+export const ListInternalObjectServicesResponseSchema: GenMessage<ListInternalObjectServicesResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_bist_v1_bist, 12);
 
 /**
  * @generated from service otterscale.bist.v1.BISTService
  */
 export const BISTService: GenService<{
-  /**
-   * @generated from rpc otterscale.bist.v1.BISTService.ListTestResults
-   */
-  listTestResults: {
-    methodKind: "unary";
-    input: typeof ListTestResultsRequestSchema;
-    output: typeof ListTestResultsResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.bist.v1.BISTService.CreateTestResult
-   */
-  createTestResult: {
-    methodKind: "unary";
-    input: typeof CreateTestResultRequestSchema;
-    output: typeof TestResultSchema;
-  },
-  /**
-   * @generated from rpc otterscale.bist.v1.BISTService.DeleteTestResult
-   */
-  deleteTestResult: {
-    methodKind: "unary";
-    input: typeof DeleteTestResultRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.bist.v1.BISTService.ListInternalObjectServices
-   */
-  listInternalObjectServices: {
-    methodKind: "unary";
-    input: typeof ListInternalObjectServicesRequestSchema;
-    output: typeof ListInternalObjectServicesResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_api_bist_v1_bist, 0);
-
+	/**
+	 * @generated from rpc otterscale.bist.v1.BISTService.ListTestResults
+	 */
+	listTestResults: {
+		methodKind: 'unary';
+		input: typeof ListTestResultsRequestSchema;
+		output: typeof ListTestResultsResponseSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.bist.v1.BISTService.CreateTestResult
+	 */
+	createTestResult: {
+		methodKind: 'unary';
+		input: typeof CreateTestResultRequestSchema;
+		output: typeof TestResultSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.bist.v1.BISTService.DeleteTestResult
+	 */
+	deleteTestResult: {
+		methodKind: 'unary';
+		input: typeof DeleteTestResultRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.bist.v1.BISTService.ListInternalObjectServices
+	 */
+	listInternalObjectServices: {
+		methodKind: 'unary';
+		input: typeof ListInternalObjectServicesRequestSchema;
+		output: typeof ListInternalObjectServicesResponseSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_api_bist_v1_bist, 0);

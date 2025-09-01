@@ -1,5 +1,3 @@
-import Overview from './index.svelte'
+import Overview from './index.svelte';
 
-export {
-    Overview
-}
+export { Overview };

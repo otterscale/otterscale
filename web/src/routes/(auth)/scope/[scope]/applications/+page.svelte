@@ -35,37 +35,31 @@
 	const facilities = writable<Facility[]>([]);
 
 	const controlPlane = $derived(
-		$facilities.find(
-			(facility) => facility.name.includes('kubernetes-control-plane') && facility.units.length > 0
-		)
+		$facilities.find((facility) => facility.name.includes('kubernetes-control-plane') && facility.units.length > 0),
 	);
 	const controlPlaneUnits = $derived(controlPlane?.units ?? []);
 	const activeControlPlaneUnits = $derived(
-		controlPlaneUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []
+		controlPlaneUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? [],
 	);
 
 	const worker = $derived(
-		$facilities.find(
-			(facility) => facility.name.includes('kubernetes-worker') && facility.units.length > 0
-		)
+		$facilities.find((facility) => facility.name.includes('kubernetes-worker') && facility.units.length > 0),
 	);
 	const workerUnits = $derived(worker?.units ?? []);
-	const activeWorkerUnits = $derived(
-		workerUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []
-	);
+	const activeWorkerUnits = $derived(workerUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []);
 	let runningPods = $state(0);
 	let runningContainers = $state(0);
 
 	let cpuUsages: SampleValue[] = $state([]);
 	const cpuUsagesConfiguration = {
-		usage: { label: 'Usage', color: 'var(--chart-2)' }
+		usage: { label: 'Usage', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 	let cpuRequests = $state(0);
 	let cpuLimits = $state(0);
 
 	let memoryUsages: SampleValue[] = $state([]);
 	const memoryUsagesConfiguration = {
-		usage: { label: 'Usage', color: 'var(--chart-1)' }
+		usage: { label: 'Usage', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 	let memoryRequests = $state(0);
 	let memoryLimits = $state(0);
@@ -76,12 +70,12 @@
 		receives.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmits[index]?.value ?? 0
-		}))
+			transmit: transmits[index]?.value ?? 0,
+		})),
 	);
 	const trafficsConfigurations = {
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
-		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
+		transmit: { label: 'Transmit', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 
 	let reads = $state([] as SampleValue[]);
@@ -90,12 +84,12 @@
 		reads.map((sample, index) => ({
 			time: sample.time,
 			read: sample.value,
-			write: writes[index]?.value ?? 0
-		}))
+			write: writes[index]?.value ?? 0,
+		})),
 	);
 	const throughputsConfigurations = {
 		read: { label: 'Read', color: 'var(--chart-1)' },
-		write: { label: 'Write', color: 'var(--chart-2)' }
+		write: { label: 'Write', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 
 	function fetch() {
@@ -103,8 +97,8 @@
 			prometheusDriver.set(
 				new PrometheusDriver({
 					endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-					baseURL: response.baseUrl
-				})
+					baseURL: response.baseUrl,
+				}),
 			);
 
 			if ($prometheusDriver) {
@@ -118,7 +112,7 @@
 						sum(
 							kubelet_running_pod_count{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics"}
 						)
-						`
+						`,
 					)
 					.then((response) => {
 						runningPods = response.result[0].value.value;
@@ -133,7 +127,7 @@
 						sum(
 							kubelet_running_container_count{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics"}
 						)
-						`
+						`,
 					)
 					.then((response) => {
 						runningContainers = response.result[0].value.value;
@@ -147,7 +141,7 @@
 						`,
 						Date.now() - 60 * 60 * 1000,
 						Date.now(),
-						2 * 60
+						2 * 60,
 					)
 					.then((response) => {
 						cpuUsages = response.result[0].values;
@@ -162,7 +156,7 @@
 						sum(
 							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="cpu"}
 						)
-						`
+						`,
 					)
 					.then((response) => {
 						cpuRequests = response.result[0].value.value;
@@ -177,7 +171,7 @@
 						sum(
 							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="cpu"}
 						)
-						`
+						`,
 					)
 					.then((response) => {
 						cpuLimits = response.result[0].value.value;
@@ -192,7 +186,7 @@
 						`,
 						Date.now() - 60 * 60 * 1000,
 						Date.now(),
-						2 * 60
+						2 * 60,
 					)
 					.then((response) => {
 						memoryUsages = response.result[0].values;
@@ -207,7 +201,7 @@
 						sum(
 							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="memory"}
 						)
-						`
+						`,
 					)
 					.then((response) => {
 						memoryRequests = response.result[0].value.value;
@@ -222,7 +216,7 @@
 						sum(
 							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="memory"}
 						)
-						`
+						`,
 					)
 					.then((response) => {
 						memoryLimits = response.result[0].value.value;
@@ -239,7 +233,7 @@
 						`,
 						new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 						new Date().setMinutes(0, 0, 0),
-						2 * 60
+						2 * 60,
 					)
 					.then((response) => {
 						receives = response.result[0].values;
@@ -255,7 +249,7 @@
 						`,
 						new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 						new Date().setMinutes(0, 0, 0),
-						2 * 60
+						2 * 60,
 					)
 					.then((response) => {
 						transmits = response.result[0].values;
@@ -272,7 +266,7 @@
 						`,
 						new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 						new Date().setMinutes(0, 0, 0),
-						2 * 60
+						2 * 60,
 					)
 					.then((response) => {
 						reads = response.result[0].values;
@@ -288,7 +282,7 @@
 						`,
 						new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 						new Date().setMinutes(0, 0, 0),
-						2 * 60
+						2 * 60,
 					)
 					.then((response) => {
 						writes = response.result[0].values;
@@ -399,8 +393,8 @@
 								{
 									key: 'value',
 									label: cpuUsagesConfiguration.usage.label,
-									color: cpuUsagesConfiguration.usage.color
-								}
+									color: cpuUsagesConfiguration.usage.color,
+								},
 							]}
 							seriesLayout="stack"
 							props={{
@@ -408,13 +402,13 @@
 									curve: curveNatural,
 									'fill-opacity': 0.4,
 									line: { class: 'stroke-1' },
-									motion: 'tween'
+									motion: 'tween',
 								},
 								xAxis: {
 									format: (v: Date) =>
-										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 								},
-								yAxis: { format: () => '' }
+								yAxis: { format: () => '' },
 							}}
 						>
 							{#snippet tooltip()}
@@ -426,7 +420,7 @@
 											month: 'short',
 											day: 'numeric',
 											hour: 'numeric',
-											minute: 'numeric'
+											minute: 'numeric',
 										});
 									}}
 								>
@@ -488,8 +482,8 @@
 								{
 									key: 'value',
 									label: memoryUsagesConfiguration.usage.label,
-									color: memoryUsagesConfiguration.usage.color
-								}
+									color: memoryUsagesConfiguration.usage.color,
+								},
 							]}
 							seriesLayout="stack"
 							props={{
@@ -497,13 +491,13 @@
 									curve: curveNatural,
 									'fill-opacity': 0.4,
 									line: { class: 'stroke-1' },
-									motion: 'tween'
+									motion: 'tween',
 								},
 								xAxis: {
 									format: (v: Date) =>
-										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 								},
-								yAxis: { format: () => '' }
+								yAxis: { format: () => '' },
 							}}
 						>
 							{#snippet tooltip()}
@@ -515,7 +509,7 @@
 											month: 'short',
 											day: 'numeric',
 											hour: 'numeric',
-											minute: 'numeric'
+											minute: 'numeric',
 										});
 									}}
 								>
@@ -597,13 +591,13 @@
 								{
 									key: 'receive',
 									label: trafficsConfigurations.receive.label,
-									color: trafficsConfigurations.receive.color
+									color: trafficsConfigurations.receive.color,
 								},
 								{
 									key: 'transmit',
 									label: trafficsConfigurations.transmit.label,
-									color: trafficsConfigurations.transmit.color
-								}
+									color: trafficsConfigurations.transmit.color,
+								},
 							]}
 							seriesLayout="stack"
 							props={{
@@ -611,13 +605,13 @@
 									curve: curveNatural,
 									'fill-opacity': 0.4,
 									line: { class: 'stroke-1' },
-									motion: 'tween'
+									motion: 'tween',
 								},
 								xAxis: {
 									format: (v: Date) =>
-										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 								},
-								yAxis: { format: () => '' }
+								yAxis: { format: () => '' },
 							}}
 						>
 							{#snippet tooltip()}
@@ -629,7 +623,7 @@
 											month: 'short',
 											day: 'numeric',
 											hour: 'numeric',
-											minute: 'numeric'
+											minute: 'numeric',
 										});
 									}}
 								>
@@ -683,13 +677,13 @@
 								{
 									key: 'read',
 									label: throughputsConfigurations.read.label,
-									color: throughputsConfigurations.read.color
+									color: throughputsConfigurations.read.color,
 								},
 								{
 									key: 'write',
 									label: throughputsConfigurations.write.label,
-									color: throughputsConfigurations.write.color
-								}
+									color: throughputsConfigurations.write.color,
+								},
 							]}
 							seriesLayout="stack"
 							props={{
@@ -697,13 +691,13 @@
 									curve: curveNatural,
 									'fill-opacity': 0.4,
 									line: { class: 'stroke-1' },
-									motion: 'tween'
+									motion: 'tween',
 								},
 								xAxis: {
 									format: (v: Date) =>
-										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+										`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 								},
-								yAxis: { format: () => '' }
+								yAxis: { format: () => '' },
 							}}
 						>
 							{#snippet tooltip()}
@@ -715,7 +709,7 @@
 											month: 'short',
 											day: 'numeric',
 											hour: 'numeric',
-											minute: 'numeric'
+											minute: 'numeric',
 										});
 									}}
 								>

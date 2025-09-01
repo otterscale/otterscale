@@ -29,10 +29,8 @@
 	import Storage from './storage.svelte';
 	import Nodes from './nodes.svelte';
 
-	let {
-		prometheusDriver,
-		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
+	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
+		$props();
 
 	let totalCPUCores = $state(0);
 	let totalMemoryBytes = $state(0);
@@ -42,41 +40,39 @@
 
 	let cpuUsages = $state([] as SampleValue[]);
 	const cpuUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' }
+		usage: { label: 'value', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 	const cpuUsagesTrend = $derived(
 		cpuUsages.length > 0
 			? (cpuUsages[cpuUsages.length - 1].value - cpuUsages[cpuUsages.length - 2].value) /
 					cpuUsages[cpuUsages.length - 2].value
-			: 0
+			: 0,
 	);
 	let memoryUsages = $state([] as SampleValue[]);
 	const memoryUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' }
+		usage: { label: 'value', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 	const memoryUsagesTrend = $derived(
 		memoryUsages.length > 0
-			? (memoryUsages[memoryUsages.length - 1].value -
-					memoryUsages[memoryUsages.length - 2].value) /
+			? (memoryUsages[memoryUsages.length - 1].value - memoryUsages[memoryUsages.length - 2].value) /
 					memoryUsages[memoryUsages.length - 2].value
-			: 0
+			: 0,
 	);
 	let storageUsages = $state([] as SampleValue[]);
 	const storageUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' }
+		usage: { label: 'value', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 	const storageUsagesTrend = $derived(
 		storageUsages.length > 0
-			? (storageUsages[storageUsages.length - 1].value -
-					storageUsages[storageUsages.length - 2].value) /
+			? (storageUsages[storageUsages.length - 1].value - storageUsages[storageUsages.length - 2].value) /
 					storageUsages[storageUsages.length - 2].value
-			: 0
+			: 0,
 	);
 
 	const nodeProportionsConfiguration = {
 		nodes: { label: 'Nodes' },
 		physical: { label: 'Physical', color: 'var(--chart-1)' },
-		virtual: { label: 'Virtual', color: 'var(--chart-2)' }
+		virtual: { label: 'Virtual', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 	let nodeProportions: {
 		node: string;
@@ -86,7 +82,7 @@
 
 	const systemLoadConfiguration = {
 		one: { label: '1 min', color: 'var(--chart-1)' },
-		five: { label: '5 min', color: 'var(--chart-2)' }
+		five: { label: '5 min', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 	let ones = $state([] as SampleValue[]);
 	let fives = $state({} as SampleValue[]);
@@ -94,12 +90,12 @@
 		ones.map((sample, index) => ({
 			time: sample.time,
 			one: sample.value,
-			five: fives[index]?.value ?? 0
-		}))
+			five: fives[index]?.value ?? 0,
+		})),
 	);
 
 	const nodesConfiguration = {
-		node: { label: 'Node', color: 'var(--chart-1)' }
+		node: { label: 'Node', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 	let nodes: {
 		date: Date;
@@ -117,7 +113,7 @@
 				`1 - (sum(irate(node_cpu_seconds_total{mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				cpuUsages = response.result[0]?.values;
@@ -127,7 +123,7 @@
 				`sum(node_memory_MemTotal_bytes - node_memory_MemFree_bytes - (node_memory_Cached_bytes + node_memory_Buffers_bytes + node_memory_SReclaimable_bytes)) / sum(node_memory_MemTotal_bytes)`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				memoryUsages = response.result[0]?.values;
@@ -137,7 +133,7 @@
 				`1 - sum(node_filesystem_avail_bytes{mountpoint="/"}) / sum(node_filesystem_size_bytes{mountpoint="/"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				storageUsages = response.result[0]?.values;
@@ -166,24 +162,22 @@
 			await fetch();
 
 			const scopeMachines = $machinesStore.filter((m) =>
-				m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
+				m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!),
 			);
 			totalNodes = scopeMachines.length;
 			// totalCPUCores = scopeMachines.reduce((sum, m) => sum + Number(m.cpuCount ?? 0), 0);
-			totalMemoryBytes =
-				scopeMachines.reduce((sum, m) => sum + Number(m.memoryMb ?? 0), 0) * 1024 * 1024;
+			totalMemoryBytes = scopeMachines.reduce((sum, m) => sum + Number(m.memoryMb ?? 0), 0) * 1024 * 1024;
 
 			const blockDevices = scopeMachines.flatMap((m) => m.blockDevices).filter((d) => !d.bootDisk);
 			totalDisks = blockDevices.length;
-			totalStorageBytes =
-				blockDevices.reduce((sum, m) => sum + Number(m.storageMb ?? 0), 0) * 1024 * 1024;
+			totalStorageBytes = blockDevices.reduce((sum, m) => sum + Number(m.storageMb ?? 0), 0) * 1024 * 1024;
 
 			const virtualNodes = scopeMachines.filter((m) => m.tags.includes('virtual')).length;
 			const physicalNodes = scopeMachines.length - virtualNodes;
 
 			nodeProportions = [
 				{ node: 'physical', nodes: physicalNodes, color: 'var(--color-physical)' },
-				{ node: 'virtual', nodes: virtualNodes, color: 'var(--color-virtual)' }
+				{ node: 'virtual', nodes: virtualNodes, color: 'var(--color-virtual)' },
 			];
 
 			const monthlyCounts: Record<string, number> = {};
@@ -204,7 +198,7 @@
 			}
 			nodes = months.map((month) => ({
 				date: new Date(month + '-01'),
-				node: monthlyCounts[month] || 0
+				node: monthlyCounts[month] || 0,
 			}));
 		} catch (error) {
 			console.error('Error during initial data load:', error);
@@ -253,13 +247,13 @@
 						{
 							key: 'one',
 							label: systemLoadConfiguration.one.label,
-							color: systemLoadConfiguration.one.color
+							color: systemLoadConfiguration.one.color,
 						},
 						{
 							key: 'five',
 							label: systemLoadConfiguration.five.label,
-							color: systemLoadConfiguration.five.color
-						}
+							color: systemLoadConfiguration.five.color,
+						},
 					]}
 					seriesLayout="stack"
 					props={{
@@ -267,12 +261,12 @@
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween'
+							motion: 'tween',
 						},
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
 						},
-						yAxis: { format: () => '' }
+						yAxis: { format: () => '' },
 					}}
 				>
 					{#snippet tooltip()}
@@ -284,7 +278,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						/>
@@ -319,10 +313,7 @@
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="flex-1">
-			<Chart.Container
-				config={nodeProportionsConfiguration}
-				class="mx-auto aspect-square max-h-[250px]"
-			>
+			<Chart.Container config={nodeProportionsConfiguration} class="mx-auto aspect-square max-h-[250px]">
 				<PieChart
 					data={nodeProportions}
 					key="node"

@@ -3,7 +3,7 @@
 		ConfigurationService,
 		type Configuration,
 		type Configuration_BootImage,
-		type SetDefaultBootImageRequest
+		type SetDefaultBootImageRequest,
 	} from '$lib/api/configuration/v1/configuration_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -19,7 +19,7 @@
 <script lang="ts">
 	let {
 		bootImage,
-		configuration
+		configuration,
 	}: {
 		bootImage: Configuration_BootImage;
 		configuration: Writable<Configuration>;
@@ -28,7 +28,7 @@
 	const transport: Transport = getContext('transport');
 
 	const defaults = {
-		distroSeries: bootImage.distroSeries
+		distroSeries: bootImage.distroSeries,
 	} as SetDefaultBootImageRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -81,10 +81,10 @@
 									let message = `Fail to set ${request.distroSeries} as default`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY
+										duration: Number.POSITIVE_INFINITY,
 									});
 									return message;
-								}
+								},
 							});
 
 							reset();

@@ -1,5 +1,3 @@
-import { default as Group } from './index.svelte'
+import { default as Group } from './index.svelte';
 
-export {
-    Group
-}
+export { Group };

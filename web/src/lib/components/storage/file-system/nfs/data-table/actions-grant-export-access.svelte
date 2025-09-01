@@ -1,8 +1,5 @@
 <script lang="ts" module>
-	import type {
-		GrantSubvolumeExportAccessRequest,
-		Subvolume
-	} from '$lib/api/storage/v1/storage_pb';
+	import type { GrantSubvolumeExportAccessRequest, Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -19,7 +16,7 @@
 
 <script lang="ts">
 	let {
-		subvolume
+		subvolume,
 	}: {
 		subvolume: Subvolume;
 	} = $props();
@@ -35,7 +32,7 @@
 		scopeUuid: get(nfsStore.selectedScopeUuid),
 		facilityName: get(nfsStore.selectedFacilityName),
 		volumeName: get(nfsStore.selectedVolumeName),
-		subvolumeName: subvolume.name
+		subvolumeName: subvolume.name,
 	} as GrantSubvolumeExportAccessRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -85,10 +82,10 @@
 								let message = `Fail to grant ${request.subvolumeName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

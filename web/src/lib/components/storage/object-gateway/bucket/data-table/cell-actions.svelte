@@ -8,7 +8,7 @@
 
 <script lang="ts">
 	let {
-		bucket
+		bucket,
 	}: {
 		bucket: Bucket;
 	} = $props();

@@ -24,7 +24,7 @@
 		storage,
 		tags,
 		scope,
-		actions
+		actions,
 	};
 </script>
 
@@ -55,7 +55,7 @@
 {/snippet}
 
 {#snippet powerState(row: Row<Machine>)}
-	<Layout.Cell class="items-center flex-row">
+	<Layout.Cell class="flex-row items-center">
 		<Icon
 			icon={row.original.powerState === 'on' ? 'ph:power' : 'ph:power'}
 			class={cn('size-4', row.original.powerState === 'on' ? 'text-accent-foreground' : 'text-destructive')}
@@ -78,7 +78,7 @@
 			'entering_rescue_mode',
 			'exiting_rescue_mode',
 			'releasing',
-			'testing'
+			'testing',
 		]}
 		<Badge variant="outline">
 			{row.original.status}
@@ -112,9 +112,10 @@
 {/snippet}
 
 {#snippet ram(row: Row<Machine>)}
-	{@const {value, unit} = formatCapacity(Number(row.original.memoryMb) * 1000 * 1000)}
+	{@const { value, unit } = formatCapacity(Number(row.original.memoryMb) * 1000 * 1000)}
 	<Layout.Cell class="items-end">
-		{value} {unit}
+		{value}
+		{unit}
 	</Layout.Cell>
 {/snippet}
 
@@ -125,9 +126,10 @@
 {/snippet}
 
 {#snippet storage(row: Row<Machine>)}
-	{@const {value, unit} = formatCapacity(Number(row.original.storageMb) * 1000 * 1000)}
+	{@const { value, unit } = formatCapacity(Number(row.original.storageMb) * 1000 * 1000)}
 	<Layout.Cell class="items-end">
-		{value} {unit}
+		{value}
+		{unit}
 	</Layout.Cell>
 {/snippet}
 

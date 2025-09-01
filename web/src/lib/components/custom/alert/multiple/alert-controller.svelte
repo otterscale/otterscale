@@ -27,7 +27,7 @@
 	data-slot="alert-controller"
 	class={cn(
 		className,
-		'absolute right-0 top-0 flex h-full flex-col items-center justify-between gap-2 rounded-lg p-4 [&>svg]:cursor-pointer'
+		'absolute top-0 right-0 flex h-full flex-col items-center justify-between gap-2 rounded-lg p-4 [&>svg]:cursor-pointer',
 	)}
 	{...restProps}
 >

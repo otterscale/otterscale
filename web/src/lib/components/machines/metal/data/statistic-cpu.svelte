@@ -8,7 +8,7 @@
 
 <script lang="ts">
 	let {
-		machine
+		machine,
 	}: {
 		machine: Writable<Machine>;
 	} = $props();

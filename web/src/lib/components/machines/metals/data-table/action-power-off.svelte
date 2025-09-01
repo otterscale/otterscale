@@ -13,7 +13,7 @@
 
 <script lang="ts">
 	let {
-		machine
+		machine,
 	}: {
 		machine: Machine;
 	} = $props();
@@ -60,7 +60,7 @@
 						toast.promise(
 							() =>
 								machineClient.powerOffMachine({
-									id: machine.id
+									id: machine.id,
 								}),
 							{
 								loading: 'Loading...',
@@ -72,11 +72,11 @@
 									let message = `Fail to turn off ${machine.fqdn}`;
 									toast.error(message, {
 										description: (error as ConnectError).message.toString(),
-										duration: Number.POSITIVE_INFINITY
+										duration: Number.POSITIVE_INFINITY,
 									});
 									return message;
-								}
-							}
+								},
+							},
 						);
 						close();
 					}}

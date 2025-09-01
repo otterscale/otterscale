@@ -16,7 +16,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable()
+		isReloading = $bindable(),
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
@@ -30,12 +30,12 @@
 	const chartConfig = {
 		Read: {
 			label: m.read(),
-			color: 'var(--chart-1)'
+			color: 'var(--chart-1)',
 		},
 		Write: {
 			label: m.write(),
-			color: 'var(--chart-2)'
-		}
+			color: 'var(--chart-2)',
+		},
 	} satisfies Chart.ChartConfig;
 
 	type ChartKey = keyof typeof chartConfig;
@@ -64,15 +64,15 @@
 	// Derived state
 	const queries = $derived({
 		Read: `sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
-		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`
+		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
 	});
 
 	const activeSeries = $derived([
 		{
 			key: activeChart,
 			label: chartConfig[activeChart].label,
-			color: chartConfig[activeChart].color
-		}
+			color: chartConfig[activeChart].color,
+		},
 	]);
 
 	// Helper functions
@@ -88,20 +88,19 @@
 		return reads.map((sample: SampleValue, index: number) => ({
 			date: sample.time,
 			Read: sample.value,
-			Write: writes[index]?.value ?? 0
+			Write: writes[index]?.value ?? 0,
 		}));
 	}
 
 	// Data fetching function
 	async function fetchMetrics(): Promise<MetricsResponse> {
 		try {
-			const [readResponse, writeResponse, latestReadResponse, latestWriteResponse] =
-				await Promise.all([
-					client.rangeQuery(queries.Read, startTime, endTime, STEP_SECONDS),
-					client.rangeQuery(queries.Write, startTime, endTime, STEP_SECONDS),
-					client.instantQuery(queries.Read),
-					client.instantQuery(queries.Write)
-				]);
+			const [readResponse, writeResponse, latestReadResponse, latestWriteResponse] = await Promise.all([
+				client.rangeQuery(queries.Read, startTime, endTime, STEP_SECONDS),
+				client.rangeQuery(queries.Write, startTime, endTime, STEP_SECONDS),
+				client.instantQuery(queries.Read),
+				client.instantQuery(queries.Write),
+			]);
 
 			const reads = extractMetricValues(readResponse);
 			const writes = extractMetricValues(writeResponse);
@@ -118,7 +117,7 @@
 				latestReadValue: readValue,
 				latestWriteValue: writeValue,
 				latestReadUnit: readUnit,
-				latestWriteUnit: writeUnit
+				latestWriteUnit: writeUnit,
 			};
 		} catch (error) {
 			console.error('Failed to fetch throughput metrics:', error);
@@ -127,7 +126,7 @@
 				latestReadValue: undefined,
 				latestWriteValue: undefined,
 				latestReadUnit: undefined,
-				latestWriteUnit: undefined
+				latestWriteUnit: undefined,
 			};
 		}
 	}
@@ -137,7 +136,7 @@
 		latestReadValue: undefined,
 		latestWriteValue: undefined,
 		latestReadUnit: undefined,
-		latestWriteUnit: undefined
+		latestWriteUnit: undefined,
 	} as MetricsResponse);
 	let isLoading = $state(true);
 	async function fetch() {
@@ -173,19 +172,17 @@
 				{#each ['Read', 'Write'] as key (key)}
 					{@const chart = key as ChartKey}
 					{@const isActive = activeChart === chart}
-					{@const latestValue =
-						key === 'Read' ? throughputs.latestReadValue : throughputs.latestWriteValue}
-					{@const latestUnit =
-						key === 'Read' ? throughputs.latestReadUnit : throughputs.latestWriteUnit}
+					{@const latestValue = key === 'Read' ? throughputs.latestReadValue : throughputs.latestWriteValue}
+					{@const latestUnit = key === 'Read' ? throughputs.latestReadUnit : throughputs.latestWriteUnit}
 					<button
 						data-active={isActive}
-						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
 						onclick={() => (activeChart = chart)}
 					>
 						<span class="text-muted-foreground text-xs">
 							{chartConfig[chart].label}
 						</span>
-						<span class="flex items-end gap-1 text-lg font-bold leading-none sm:text-3xl">
+						<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
 							{latestValue}
 							<span class="text-muted-foreground text-xs">{latestUnit}</span>
 						</span>
@@ -210,19 +207,19 @@
 							initialHeight: 0,
 							motion: {
 								y: { type: 'tween', duration: 500, easing: cubicInOut },
-								height: { type: 'tween', duration: 500, easing: cubicInOut }
-							}
+								height: { type: 'tween', duration: 500, easing: cubicInOut },
+							},
 						},
 						highlight: { area: { fill: 'none' } },
 						xAxis: {
 							format: (d: Date) => {
 								return d.toLocaleDateString(getLocale(), {
 									month: 'numeric',
-									day: 'numeric'
+									day: 'numeric',
 								});
 							},
-							ticks: 24
-						}
+							ticks: 24,
+						},
 					}}
 				>
 					{#snippet belowMarks()}
@@ -237,7 +234,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>
@@ -245,7 +242,7 @@
 								{@const { value: io, unit } = formatIO(Number(value))}
 								<div
 									style="--color-bg: {item.color}"
-									class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 								></div>
 								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
 									<div class="grid gap-1.5">

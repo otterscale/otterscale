@@ -28,7 +28,7 @@
 		facilityName: get(nfsStore.selectedFacilityName),
 		volumeName: get(nfsStore.selectedVolumeName),
 		groupName: get(nfsStore.selectedSubvolumeGroupName),
-		subvolumeName: subvolume.name
+		subvolumeName: subvolume.name,
 	} as CreateSubvolumeSnapshotRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -78,10 +78,10 @@
 								let message = `Fail to create ${request.snapshotName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

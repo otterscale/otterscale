@@ -15,7 +15,7 @@
 
 <script lang="ts">
 	let {
-		user
+		user,
 	}: {
 		user: User;
 	} = $props();
@@ -28,7 +28,7 @@
 
 	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name
+		facilityName: $currentCeph?.name,
 	} as DeleteUserRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -80,10 +80,10 @@
 								let message = `Fail to delete ${request.userId}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

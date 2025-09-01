@@ -13,7 +13,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import Create from './action-create.svelte';
@@ -22,8 +22,7 @@
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { networks, reloadManager }: { networks: Writable<Network[]>; reloadManager: ReloadManager } =
-		$props();
+	let { networks, reloadManager }: { networks: Writable<Network[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -57,7 +56,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -95,7 +94,7 @@
 			}
 		},
 
-		autoResetPageIndex: false
+		autoResetPageIndex: false,
 	});
 </script>
 
@@ -108,12 +107,7 @@
 				{messages}
 				{table}
 			/>
-			<Filters.StringFuzzy
-				columnId="vlan"
-				values={$networks.map((row) => row.vlan?.name)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringFuzzy columnId="vlan" values={$networks.map((row) => row.vlan?.name)} {messages} {table} />
 			<Filters.Column {table} {messages} />
 		</Layout.ControllerFilter>
 		<Layout.ControllerAction>

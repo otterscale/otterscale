@@ -11,7 +11,7 @@
 <script lang="ts">
 	let {
 		selectedScopeUuid = $bindable(),
-		selectedFacility = $bindable()
+		selectedFacility = $bindable(),
 	}: {
 		selectedScopeUuid: string;
 		selectedFacility: string;
@@ -24,11 +24,9 @@
 	const objectStorageDaemons = $state(writable([] as OSD[]));
 
 	const reloadManager = new ReloadManager(() => {
-		storageClient
-			.listOSDs({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
-			.then((response) => {
-				objectStorageDaemons.set(response.osds);
-			});
+		storageClient.listOSDs({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility }).then((response) => {
+			objectStorageDaemons.set(response.osds);
+		});
 	});
 	setContext('reloadManager', reloadManager);
 

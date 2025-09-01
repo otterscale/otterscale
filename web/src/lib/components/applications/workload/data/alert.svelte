@@ -8,7 +8,7 @@
 
 <script lang="ts">
 	let {
-		application
+		application,
 	}: {
 		application: Writable<Application>;
 	} = $props();
@@ -23,7 +23,7 @@
 		<Alert.Description>
 			{m.workload_health_description({
 				unhealthies: $application.pods.length - $application.healthies,
-				total: $application.pods.length
+				total: $application.pods.length,
 			})}
 		</Alert.Description>
 	</Alert.Root>

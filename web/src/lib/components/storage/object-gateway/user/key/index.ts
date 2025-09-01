@@ -1,5 +1,3 @@
-import { default as Key } from './index.svelte'
+import { default as Key } from './index.svelte';
 
-export {
-    Key
-}
+export { Key };

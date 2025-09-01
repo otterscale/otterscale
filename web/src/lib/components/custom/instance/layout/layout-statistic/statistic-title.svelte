@@ -13,11 +13,6 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
-<Card.Title
-	bind:ref
-	data-slot="layout-statistic-title"
-	class={cn('flex items-center gap-1', className)}
-	{...restProps}
->
+<Card.Title bind:ref data-slot="layout-statistic-title" class={cn('flex items-center gap-1', className)} {...restProps}>
 	{@render children?.()}
 </Card.Title>

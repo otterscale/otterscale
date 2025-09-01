@@ -5,7 +5,7 @@
 		FIO,
 		FIO_Input,
 		NetworkFileSystem,
-		TestResult
+		TestResult,
 	} from '$lib/api/bist/v1/bist_pb';
 	import { BISTService, FIO_Input_AccessMode } from '$lib/api/bist/v1/bist_pb';
 	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
@@ -28,12 +28,12 @@
 	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'cephBlockDevice',
-			label: 'Ceph Block Device'
+			label: 'Ceph Block Device',
 		},
 		{
 			value: 'networkFileSystem',
-			label: 'Network File System'
-		}
+			label: 'Network File System',
+		},
 	]);
 
 	// FIO AccessMode
@@ -41,14 +41,14 @@
 		.filter((key) => isNaN(Number(key)))
 		.map((key) => ({
 			value: FIO_Input_AccessMode[key as keyof typeof FIO_Input_AccessMode],
-			label: key
+			label: key,
 		}));
 	const fioInputeAccessMode: Writable<SingleSelect.OptionType[]> = writable(Options);
 </script>
 
 <script lang="ts">
 	let {
-		testResult
+		testResult,
 	}: {
 		testResult?: TestResult;
 	} = $props();
@@ -58,13 +58,13 @@
 		? ({
 				target: {
 					value: testResult.kind.value?.target.value,
-					case: testResult.kind.value?.target.case
-				}
+					case: testResult.kind.value?.target.case,
+				},
 			} as FIO)
 		: ({ target: { value: {}, case: {} } } as FIO);
 	const DEFAULT_REQUEST = {
 		kind: { value: DEFAULT_FIO_REQUEST, case: 'fio' },
-		createdBy: 'Woody Lin'
+		createdBy: 'Woody Lin',
 	} as CreateTestResultRequest;
 	const DEFAULT_CEPH_BLOCK_DEVICE =
 		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
@@ -82,17 +82,17 @@
 					runTimeSeconds: 60,
 					blockSizeBytes: 4096,
 					fileSizeBytes: 1024 * 1024 * 1024,
-					ioDepth: 1
+					ioDepth: 1,
 				} as unknown as FIO_Input);
 	let selectedScope = $state(
 		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
 			? (testResult.kind.value.target.value?.scopeUuid ?? '')
-			: ''
+			: '',
 	);
 	let selectedFacility = $state(
 		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'
 			? (testResult.kind.value.target.value?.facilityName ?? '')
-			: ''
+			: '',
 	);
 	let request: CreateTestResultRequest = $state(DEFAULT_REQUEST);
 	let requestFio: FIO = $state(DEFAULT_FIO_REQUEST);
@@ -141,9 +141,9 @@
 						({
 							value: { scopeUuid: essential.scopeUuid, facilityName: essential.name },
 							label: `${essential.scopeName}-${essential.name}`,
-							icon: 'ph:cube'
-						}) as SingleSelect.OptionType
-				)
+							icon: 'ph:cube',
+						}) as SingleSelect.OptionType,
+				),
 			);
 			isCephsLoading = false;
 		} catch (error) {
@@ -212,7 +212,10 @@
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
-																class={cn('size-5', item.icon ? 'visible' : 'invisible')}
+																class={cn(
+																	'size-5',
+																	item.icon ? 'visible' : 'invisible',
+																)}
 															/>
 															{item.label}
 															<SingleSelect.Check option={item} />
@@ -252,7 +255,10 @@
 																>
 																	<Icon
 																		icon={option.icon ? option.icon : 'ph:empty'}
-																		class={cn('size-5', option.icon ? 'visibale' : 'invisible')}
+																		class={cn(
+																			'size-5',
+																			option.icon ? 'visibale' : 'invisible',
+																		)}
 																	/>
 																	{option.label}
 																	<SingleSelect.Check {option} />
@@ -298,11 +304,7 @@
 							<!-- fioInputeAccessMode -->
 							<Form.Field>
 								<Form.Label for="fio-access-mode">{m.access_mode()}</Form.Label>
-								<SingleSelect.Root
-									options={fioInputeAccessMode}
-									required
-									bind:value={fioAccessMode}
-								>
+								<SingleSelect.Root options={fioInputeAccessMode} required bind:value={fioAccessMode}>
 									<SingleSelect.Trigger />
 									<SingleSelect.Content>
 										<SingleSelect.Options>
@@ -314,7 +316,10 @@
 														<SingleSelect.Item option={item}>
 															<Icon
 																icon={item.icon ? item.icon : 'ph:empty'}
-																class={cn('size-5', item.icon ? 'visible' : 'invisible')}
+																class={cn(
+																	'size-5',
+																	item.icon ? 'visible' : 'invisible',
+																)}
 															/>
 															{item.label}
 															<SingleSelect.Check option={item} />
@@ -340,7 +345,7 @@
 										{ value: 1, label: 's' } as SingleInput.UnitType,
 										{ value: 60, label: 'm' } as SingleInput.UnitType,
 										{ value: 3600, label: 'h' } as SingleInput.UnitType,
-										{ value: 86400, label: 'd' } as SingleInput.UnitType
+										{ value: 86400, label: 'd' } as SingleInput.UnitType,
 									]}
 								/>
 							</Form.Field>
@@ -355,7 +360,7 @@
 										{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
-										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType,
 									]}
 								/>
 							</Form.Field>
@@ -370,7 +375,7 @@
 										{ value: Math.pow(2, 10 * 2), label: 'MB' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 3), label: 'GB' } as SingleInput.UnitType,
 										{ value: Math.pow(2, 10 * 4), label: 'TB' } as SingleInput.UnitType,
-										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType
+										{ value: Math.pow(2, 10 * 5), label: 'PB' } as SingleInput.UnitType,
 									]}
 								/>
 							</Form.Field>
@@ -405,14 +410,11 @@
 							{@const blockSize = formatCapacity(Number(fioBlockSize))}
 							{@const fileSize = formatCapacity(Number(fioFileSize))}
 							<Form.Legend>{m.advance()}</Form.Legend>
-							<Form.Description
-								>{m.access_mode()}: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description
+							<Form.Description>{m.access_mode()}: {FIO_Input_AccessMode[fioAccessMode]}</Form.Description
 							>
 							<Form.Description>{m.job_count()}: {fioJobCount}</Form.Description>
 							<Form.Description>{m.run_time()}: {runTime.value} {runTime.unit}</Form.Description>
-							<Form.Description
-								>{m.block_size()}: {blockSize.value} {blockSize.unit}</Form.Description
-							>
+							<Form.Description>{m.block_size()}: {blockSize.value} {blockSize.unit}</Form.Description>
 							<Form.Description>{m.file_size()}: {fileSize.value} {fileSize.unit}</Form.Description>
 							<Form.Description>{m.io_depth()}: {fioIoDepth}</Form.Description>
 						</Form.Fieldset>
@@ -446,7 +448,7 @@
 							runTimeSeconds: BigInt(fioRunTime),
 							blockSizeBytes: BigInt(fioBlockSize),
 							fileSizeBytes: BigInt(fioFileSize),
-							ioDepth: BigInt(fioIoDepth)
+							ioDepth: BigInt(fioIoDepth),
 						} as FIO_Input;
 						request.kind.value = requestFio;
 						// request
@@ -460,10 +462,10 @@
 								let message = `Fail to test ${request.name}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

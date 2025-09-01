@@ -13,11 +13,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		ref = $bindable(null),
-		children,
-		...restProps
-	}: DropdownMenuPrimitive.TriggerProps & {} = $props();
+	let { ref = $bindable(null), children, ...restProps }: DropdownMenuPrimitive.TriggerProps & {} = $props();
 
 	const id: string | undefined = getContext('id');
 	const required: boolean | undefined = getContext('required');
@@ -32,7 +28,7 @@
 	class={cn(
 		'data-[state=open]:ring-primary group w-full cursor-pointer',
 		buttonVariants({ variant: 'outline' }),
-		isInvalid ? 'ring-destructive ring-1' : 'ring-1'
+		isInvalid ? 'ring-destructive ring-1' : 'ring-1',
 	)}
 	{...restProps}
 >
@@ -77,10 +73,7 @@
 			{#if index > 0}
 				<Separator orientation="vertical" />
 			{/if}
-			<Icon
-				icon={part.icon ?? 'ph:empty'}
-				class={cn(part.icon && part.icon ? 'visibale' : 'hidden')}
-			/>
+			<Icon icon={part.icon ?? 'ph:empty'} class={cn(part.icon && part.icon ? 'visibale' : 'hidden')} />
 			{part.label}
 		{/each}
 	</Badge>
@@ -106,10 +99,7 @@
 				{#if index > 0}
 					<Separator orientation="vertical" class="data-[orientation=vertical]:h-3" />
 				{/if}
-				<Icon
-					icon={part.icon ?? 'ph:empty'}
-					class={cn(part.icon && part.icon ? 'visibale' : 'hidden')}
-				/>
+				<Icon icon={part.icon ?? 'ph:empty'} class={cn(part.icon && part.icon ? 'visibale' : 'hidden')} />
 				{part.label}
 			{/each}
 		</span>

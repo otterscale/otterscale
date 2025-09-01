@@ -2,395 +2,409 @@
 // @generated from file api/configuration/v1/configuration.proto (package otterscale.configuration.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { EmptySchema } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import type { EmptySchema } from '@bufbuild/protobuf/wkt';
+import { file_google_protobuf_empty } from '@bufbuild/protobuf/wkt';
+import type { Message } from '@bufbuild/protobuf';
 
 /**
  * Describes the file api/configuration/v1/configuration.proto.
  */
-export const file_api_configuration_v1_configuration: GenFile = /*@__PURE__*/
-  fileDesc("CihhcGkvY29uZmlndXJhdGlvbi92MS9jb25maWd1cmF0aW9uLnByb3RvEhtvdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEiwwUKDUNvbmZpZ3VyYXRpb24SSAoKbnRwX3NlcnZlchgBIAEoCzI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLk5UUFNlcnZlchJaChRwYWNrYWdlX3JlcG9zaXRvcmllcxgCIAMoCzI8Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLlBhY2thZ2VSZXBvc2l0b3J5EkkKC2Jvb3RfaW1hZ2VzGAMgAygLMjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlGh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpQChJCb290SW1hZ2VTZWxlY3Rpb24SFQoNZGlzdHJvX3NlcmllcxgBIAEoCRIMCgRuYW1lGAIgASgJEhUKDWFyY2hpdGVjdHVyZXMYAyADKAkagQIKCUJvb3RJbWFnZRIOCgZzb3VyY2UYASABKAkSFQoNZGlzdHJvX3NlcmllcxgCIAEoCRIMCgRuYW1lGAMgASgJEnAKF2FyY2hpdGVjdHVyZV9zdGF0dXNfbWFwGAUgAygLMk8ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlLkFyY2hpdGVjdHVyZVN0YXR1c01hcEVudHJ5Eg8KB2RlZmF1bHQYCyABKAgaPAoaQXJjaGl0ZWN0dXJlU3RhdHVzTWFwRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASIZChdHZXRDb25maWd1cmF0aW9uUmVxdWVzdCIrChZVcGRhdGVOVFBTZXJ2ZXJSZXF1ZXN0EhEKCWFkZHJlc3NlcxgBIAMoCSJMCh5VcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVJlcXVlc3QSCgoCaWQYASABKAMSCwoDdXJsGAIgASgJEhEKCXNraXBfanVqdRgDIAEoCCJGChZDcmVhdGVCb290SW1hZ2VSZXF1ZXN0EhUKDWRpc3Ryb19zZXJpZXMYASABKAkSFQoNYXJjaGl0ZWN0dXJlcxgCIAMoCSIzChpTZXREZWZhdWx0Qm9vdEltYWdlUmVxdWVzdBIVCg1kaXN0cm9fc2VyaWVzGAEgASgJIhkKF0ltcG9ydEJvb3RJbWFnZXNSZXF1ZXN0Ih4KHElzSW1wb3J0aW5nQm9vdEltYWdlc1JlcXVlc3QiMgodSXNJbXBvcnRpbmdCb290SW1hZ2VzUmVzcG9uc2USEQoJaW1wb3J0aW5nGAEgASgIIiAKHkxpc3RCb290SW1hZ2VTZWxlY3Rpb25zUmVxdWVzdCJ/Ch9MaXN0Qm9vdEltYWdlU2VsZWN0aW9uc1Jlc3BvbnNlElwKFWJvb3RfaW1hZ2Vfc2VsZWN0aW9ucxgBIAMoCzI9Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkJvb3RJbWFnZVNlbGVjdGlvbjKRCAoUQ29uZmlndXJhdGlvblNlcnZpY2USdAoQR2V0Q29uZmlndXJhdGlvbhI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5HZXRDb25maWd1cmF0aW9uUmVxdWVzdBoqLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uEnwKD1VwZGF0ZU5UUFNlcnZlchIzLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5VcGRhdGVOVFBTZXJ2ZXJSZXF1ZXN0GjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uTlRQU2VydmVyEpQBChdVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeRI7Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5VcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVJlcXVlc3QaPC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ29uZmlndXJhdGlvbi5QYWNrYWdlUmVwb3NpdG9yeRJ8Cg9DcmVhdGVCb290SW1hZ2USMy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ3JlYXRlQm9vdEltYWdlUmVxdWVzdBo0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkJvb3RJbWFnZRJmChNTZXREZWZhdWx0Qm9vdEltYWdlEjcub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLlNldERlZmF1bHRCb290SW1hZ2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmAKEEltcG9ydEJvb3RJbWFnZXMSNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuSW1wb3J0Qm9vdEltYWdlc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSjgEKFUlzSW1wb3J0aW5nQm9vdEltYWdlcxI5Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Jc0ltcG9ydGluZ0Jvb3RJbWFnZXNSZXF1ZXN0Gjoub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLklzSW1wb3J0aW5nQm9vdEltYWdlc1Jlc3BvbnNlEpQBChdMaXN0Qm9vdEltYWdlU2VsZWN0aW9ucxI7Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0Qm9vdEltYWdlU2VsZWN0aW9uc1JlcXVlc3QaPC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuTGlzdEJvb3RJbWFnZVNlbGVjdGlvbnNSZXNwb25zZUI6WjhnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvY29uZmlndXJhdGlvbi92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty]);
+export const file_api_configuration_v1_configuration: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'CihhcGkvY29uZmlndXJhdGlvbi92MS9jb25maWd1cmF0aW9uLnByb3RvEhtvdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEiwwUKDUNvbmZpZ3VyYXRpb24SSAoKbnRwX3NlcnZlchgBIAEoCzI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLk5UUFNlcnZlchJaChRwYWNrYWdlX3JlcG9zaXRvcmllcxgCIAMoCzI8Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLlBhY2thZ2VSZXBvc2l0b3J5EkkKC2Jvb3RfaW1hZ2VzGAMgAygLMjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlGh4KCU5UUFNlcnZlchIRCglhZGRyZXNzZXMYASADKAkaSwoRUGFja2FnZVJlcG9zaXRvcnkSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyABKAkSDwoHZW5hYmxlZBgEIAEoCBpQChJCb290SW1hZ2VTZWxlY3Rpb24SFQoNZGlzdHJvX3NlcmllcxgBIAEoCRIMCgRuYW1lGAIgASgJEhUKDWFyY2hpdGVjdHVyZXMYAyADKAkagQIKCUJvb3RJbWFnZRIOCgZzb3VyY2UYASABKAkSFQoNZGlzdHJvX3NlcmllcxgCIAEoCRIMCgRuYW1lGAMgASgJEnAKF2FyY2hpdGVjdHVyZV9zdGF0dXNfbWFwGAUgAygLMk8ub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uQm9vdEltYWdlLkFyY2hpdGVjdHVyZVN0YXR1c01hcEVudHJ5Eg8KB2RlZmF1bHQYCyABKAgaPAoaQXJjaGl0ZWN0dXJlU3RhdHVzTWFwRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASIZChdHZXRDb25maWd1cmF0aW9uUmVxdWVzdCIrChZVcGRhdGVOVFBTZXJ2ZXJSZXF1ZXN0EhEKCWFkZHJlc3NlcxgBIAMoCSJMCh5VcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVJlcXVlc3QSCgoCaWQYASABKAMSCwoDdXJsGAIgASgJEhEKCXNraXBfanVqdRgDIAEoCCJGChZDcmVhdGVCb290SW1hZ2VSZXF1ZXN0EhUKDWRpc3Ryb19zZXJpZXMYASABKAkSFQoNYXJjaGl0ZWN0dXJlcxgCIAMoCSIzChpTZXREZWZhdWx0Qm9vdEltYWdlUmVxdWVzdBIVCg1kaXN0cm9fc2VyaWVzGAEgASgJIhkKF0ltcG9ydEJvb3RJbWFnZXNSZXF1ZXN0Ih4KHElzSW1wb3J0aW5nQm9vdEltYWdlc1JlcXVlc3QiMgodSXNJbXBvcnRpbmdCb290SW1hZ2VzUmVzcG9uc2USEQoJaW1wb3J0aW5nGAEgASgIIiAKHkxpc3RCb290SW1hZ2VTZWxlY3Rpb25zUmVxdWVzdCJ/Ch9MaXN0Qm9vdEltYWdlU2VsZWN0aW9uc1Jlc3BvbnNlElwKFWJvb3RfaW1hZ2Vfc2VsZWN0aW9ucxgBIAMoCzI9Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkJvb3RJbWFnZVNlbGVjdGlvbjKRCAoUQ29uZmlndXJhdGlvblNlcnZpY2USdAoQR2V0Q29uZmlndXJhdGlvbhI0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5HZXRDb25maWd1cmF0aW9uUmVxdWVzdBoqLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uEnwKD1VwZGF0ZU5UUFNlcnZlchIzLm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5VcGRhdGVOVFBTZXJ2ZXJSZXF1ZXN0GjQub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLkNvbmZpZ3VyYXRpb24uTlRQU2VydmVyEpQBChdVcGRhdGVQYWNrYWdlUmVwb3NpdG9yeRI7Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5VcGRhdGVQYWNrYWdlUmVwb3NpdG9yeVJlcXVlc3QaPC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ29uZmlndXJhdGlvbi5QYWNrYWdlUmVwb3NpdG9yeRJ8Cg9DcmVhdGVCb290SW1hZ2USMy5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuQ3JlYXRlQm9vdEltYWdlUmVxdWVzdBo0Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Db25maWd1cmF0aW9uLkJvb3RJbWFnZRJmChNTZXREZWZhdWx0Qm9vdEltYWdlEjcub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLlNldERlZmF1bHRCb290SW1hZ2VSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5EmAKEEltcG9ydEJvb3RJbWFnZXMSNC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuSW1wb3J0Qm9vdEltYWdlc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSjgEKFUlzSW1wb3J0aW5nQm9vdEltYWdlcxI5Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5Jc0ltcG9ydGluZ0Jvb3RJbWFnZXNSZXF1ZXN0Gjoub3R0ZXJzY2FsZS5jb25maWd1cmF0aW9uLnYxLklzSW1wb3J0aW5nQm9vdEltYWdlc1Jlc3BvbnNlEpQBChdMaXN0Qm9vdEltYWdlU2VsZWN0aW9ucxI7Lm90dGVyc2NhbGUuY29uZmlndXJhdGlvbi52MS5MaXN0Qm9vdEltYWdlU2VsZWN0aW9uc1JlcXVlc3QaPC5vdHRlcnNjYWxlLmNvbmZpZ3VyYXRpb24udjEuTGlzdEJvb3RJbWFnZVNlbGVjdGlvbnNSZXNwb25zZUI6WjhnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvY29uZmlndXJhdGlvbi92MTtwYmIIZWRpdGlvbnNw6Ac',
+		[file_google_protobuf_empty],
+	);
 
 /**
  * @generated from message otterscale.configuration.v1.Configuration
  */
-export type Configuration = Message<"otterscale.configuration.v1.Configuration"> & {
-  /**
-   * @generated from field: otterscale.configuration.v1.Configuration.NTPServer ntp_server = 1;
-   */
-  ntpServer?: Configuration_NTPServer;
+export type Configuration = Message<'otterscale.configuration.v1.Configuration'> & {
+	/**
+	 * @generated from field: otterscale.configuration.v1.Configuration.NTPServer ntp_server = 1;
+	 */
+	ntpServer?: Configuration_NTPServer;
 
-  /**
-   * @generated from field: repeated otterscale.configuration.v1.Configuration.PackageRepository package_repositories = 2;
-   */
-  packageRepositories: Configuration_PackageRepository[];
+	/**
+	 * @generated from field: repeated otterscale.configuration.v1.Configuration.PackageRepository package_repositories = 2;
+	 */
+	packageRepositories: Configuration_PackageRepository[];
 
-  /**
-   * @generated from field: repeated otterscale.configuration.v1.Configuration.BootImage boot_images = 3;
-   */
-  bootImages: Configuration_BootImage[];
+	/**
+	 * @generated from field: repeated otterscale.configuration.v1.Configuration.BootImage boot_images = 3;
+	 */
+	bootImages: Configuration_BootImage[];
 };
 
 /**
  * Describes the message otterscale.configuration.v1.Configuration.
  * Use `create(ConfigurationSchema)` to create a new message.
  */
-export const ConfigurationSchema: GenMessage<Configuration> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 0);
+export const ConfigurationSchema: GenMessage<Configuration> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.Configuration.NTPServer
  */
-export type Configuration_NTPServer = Message<"otterscale.configuration.v1.Configuration.NTPServer"> & {
-  /**
-   * @generated from field: repeated string addresses = 1;
-   */
-  addresses: string[];
+export type Configuration_NTPServer = Message<'otterscale.configuration.v1.Configuration.NTPServer'> & {
+	/**
+	 * @generated from field: repeated string addresses = 1;
+	 */
+	addresses: string[];
 };
 
 /**
  * Describes the message otterscale.configuration.v1.Configuration.NTPServer.
  * Use `create(Configuration_NTPServerSchema)` to create a new message.
  */
-export const Configuration_NTPServerSchema: GenMessage<Configuration_NTPServer> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 0, 0);
+export const Configuration_NTPServerSchema: GenMessage<Configuration_NTPServer> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 0, 0);
 
 /**
  * @generated from message otterscale.configuration.v1.Configuration.PackageRepository
  */
-export type Configuration_PackageRepository = Message<"otterscale.configuration.v1.Configuration.PackageRepository"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type Configuration_PackageRepository = Message<'otterscale.configuration.v1.Configuration.PackageRepository'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 2;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: string url = 3;
-   */
-  url: string;
+	/**
+	 * @generated from field: string url = 3;
+	 */
+	url: string;
 
-  /**
-   * @generated from field: bool enabled = 4;
-   */
-  enabled: boolean;
+	/**
+	 * @generated from field: bool enabled = 4;
+	 */
+	enabled: boolean;
 };
 
 /**
  * Describes the message otterscale.configuration.v1.Configuration.PackageRepository.
  * Use `create(Configuration_PackageRepositorySchema)` to create a new message.
  */
-export const Configuration_PackageRepositorySchema: GenMessage<Configuration_PackageRepository> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 0, 1);
+export const Configuration_PackageRepositorySchema: GenMessage<Configuration_PackageRepository> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 0, 1);
 
 /**
  * @generated from message otterscale.configuration.v1.Configuration.BootImageSelection
  */
-export type Configuration_BootImageSelection = Message<"otterscale.configuration.v1.Configuration.BootImageSelection"> & {
-  /**
-   * @generated from field: string distro_series = 1;
-   */
-  distroSeries: string;
+export type Configuration_BootImageSelection =
+	Message<'otterscale.configuration.v1.Configuration.BootImageSelection'> & {
+		/**
+		 * @generated from field: string distro_series = 1;
+		 */
+		distroSeries: string;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+		/**
+		 * @generated from field: string name = 2;
+		 */
+		name: string;
 
-  /**
-   * @generated from field: repeated string architectures = 3;
-   */
-  architectures: string[];
-};
+		/**
+		 * @generated from field: repeated string architectures = 3;
+		 */
+		architectures: string[];
+	};
 
 /**
  * Describes the message otterscale.configuration.v1.Configuration.BootImageSelection.
  * Use `create(Configuration_BootImageSelectionSchema)` to create a new message.
  */
-export const Configuration_BootImageSelectionSchema: GenMessage<Configuration_BootImageSelection> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 0, 2);
+export const Configuration_BootImageSelectionSchema: GenMessage<Configuration_BootImageSelection> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 0, 2);
 
 /**
  * @generated from message otterscale.configuration.v1.Configuration.BootImage
  */
-export type Configuration_BootImage = Message<"otterscale.configuration.v1.Configuration.BootImage"> & {
-  /**
-   * @generated from field: string source = 1;
-   */
-  source: string;
+export type Configuration_BootImage = Message<'otterscale.configuration.v1.Configuration.BootImage'> & {
+	/**
+	 * @generated from field: string source = 1;
+	 */
+	source: string;
 
-  /**
-   * @generated from field: string distro_series = 2;
-   */
-  distroSeries: string;
+	/**
+	 * @generated from field: string distro_series = 2;
+	 */
+	distroSeries: string;
 
-  /**
-   * @generated from field: string name = 3;
-   */
-  name: string;
+	/**
+	 * @generated from field: string name = 3;
+	 */
+	name: string;
 
-  /**
-   * @generated from field: map<string, string> architecture_status_map = 5;
-   */
-  architectureStatusMap: { [key: string]: string };
+	/**
+	 * @generated from field: map<string, string> architecture_status_map = 5;
+	 */
+	architectureStatusMap: { [key: string]: string };
 
-  /**
-   * @generated from field: bool default = 11;
-   */
-  default: boolean;
+	/**
+	 * @generated from field: bool default = 11;
+	 */
+	default: boolean;
 };
 
 /**
  * Describes the message otterscale.configuration.v1.Configuration.BootImage.
  * Use `create(Configuration_BootImageSchema)` to create a new message.
  */
-export const Configuration_BootImageSchema: GenMessage<Configuration_BootImage> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 0, 3);
+export const Configuration_BootImageSchema: GenMessage<Configuration_BootImage> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 0, 3);
 
 /**
  * @generated from message otterscale.configuration.v1.GetConfigurationRequest
  */
-export type GetConfigurationRequest = Message<"otterscale.configuration.v1.GetConfigurationRequest"> & {
-};
+export type GetConfigurationRequest = Message<'otterscale.configuration.v1.GetConfigurationRequest'> & {};
 
 /**
  * Describes the message otterscale.configuration.v1.GetConfigurationRequest.
  * Use `create(GetConfigurationRequestSchema)` to create a new message.
  */
-export const GetConfigurationRequestSchema: GenMessage<GetConfigurationRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 1);
+export const GetConfigurationRequestSchema: GenMessage<GetConfigurationRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 1);
 
 /**
  * @generated from message otterscale.configuration.v1.UpdateNTPServerRequest
  */
-export type UpdateNTPServerRequest = Message<"otterscale.configuration.v1.UpdateNTPServerRequest"> & {
-  /**
-   * @generated from field: repeated string addresses = 1;
-   */
-  addresses: string[];
+export type UpdateNTPServerRequest = Message<'otterscale.configuration.v1.UpdateNTPServerRequest'> & {
+	/**
+	 * @generated from field: repeated string addresses = 1;
+	 */
+	addresses: string[];
 };
 
 /**
  * Describes the message otterscale.configuration.v1.UpdateNTPServerRequest.
  * Use `create(UpdateNTPServerRequestSchema)` to create a new message.
  */
-export const UpdateNTPServerRequestSchema: GenMessage<UpdateNTPServerRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 2);
+export const UpdateNTPServerRequestSchema: GenMessage<UpdateNTPServerRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 2);
 
 /**
  * @generated from message otterscale.configuration.v1.UpdatePackageRepositoryRequest
  */
-export type UpdatePackageRepositoryRequest = Message<"otterscale.configuration.v1.UpdatePackageRepositoryRequest"> & {
-  /**
-   * @generated from field: int64 id = 1;
-   */
-  id: bigint;
+export type UpdatePackageRepositoryRequest = Message<'otterscale.configuration.v1.UpdatePackageRepositoryRequest'> & {
+	/**
+	 * @generated from field: int64 id = 1;
+	 */
+	id: bigint;
 
-  /**
-   * @generated from field: string url = 2;
-   */
-  url: string;
+	/**
+	 * @generated from field: string url = 2;
+	 */
+	url: string;
 
-  /**
-   * @generated from field: bool skip_juju = 3;
-   */
-  skipJuju: boolean;
+	/**
+	 * @generated from field: bool skip_juju = 3;
+	 */
+	skipJuju: boolean;
 };
 
 /**
  * Describes the message otterscale.configuration.v1.UpdatePackageRepositoryRequest.
  * Use `create(UpdatePackageRepositoryRequestSchema)` to create a new message.
  */
-export const UpdatePackageRepositoryRequestSchema: GenMessage<UpdatePackageRepositoryRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 3);
+export const UpdatePackageRepositoryRequestSchema: GenMessage<UpdatePackageRepositoryRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 3);
 
 /**
  * @generated from message otterscale.configuration.v1.CreateBootImageRequest
  */
-export type CreateBootImageRequest = Message<"otterscale.configuration.v1.CreateBootImageRequest"> & {
-  /**
-   * @generated from field: string distro_series = 1;
-   */
-  distroSeries: string;
+export type CreateBootImageRequest = Message<'otterscale.configuration.v1.CreateBootImageRequest'> & {
+	/**
+	 * @generated from field: string distro_series = 1;
+	 */
+	distroSeries: string;
 
-  /**
-   * @generated from field: repeated string architectures = 2;
-   */
-  architectures: string[];
+	/**
+	 * @generated from field: repeated string architectures = 2;
+	 */
+	architectures: string[];
 };
 
 /**
  * Describes the message otterscale.configuration.v1.CreateBootImageRequest.
  * Use `create(CreateBootImageRequestSchema)` to create a new message.
  */
-export const CreateBootImageRequestSchema: GenMessage<CreateBootImageRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 4);
+export const CreateBootImageRequestSchema: GenMessage<CreateBootImageRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 4);
 
 /**
  * @generated from message otterscale.configuration.v1.SetDefaultBootImageRequest
  */
-export type SetDefaultBootImageRequest = Message<"otterscale.configuration.v1.SetDefaultBootImageRequest"> & {
-  /**
-   * @generated from field: string distro_series = 1;
-   */
-  distroSeries: string;
+export type SetDefaultBootImageRequest = Message<'otterscale.configuration.v1.SetDefaultBootImageRequest'> & {
+	/**
+	 * @generated from field: string distro_series = 1;
+	 */
+	distroSeries: string;
 };
 
 /**
  * Describes the message otterscale.configuration.v1.SetDefaultBootImageRequest.
  * Use `create(SetDefaultBootImageRequestSchema)` to create a new message.
  */
-export const SetDefaultBootImageRequestSchema: GenMessage<SetDefaultBootImageRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 5);
+export const SetDefaultBootImageRequestSchema: GenMessage<SetDefaultBootImageRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 5);
 
 /**
  * @generated from message otterscale.configuration.v1.ImportBootImagesRequest
  */
-export type ImportBootImagesRequest = Message<"otterscale.configuration.v1.ImportBootImagesRequest"> & {
-};
+export type ImportBootImagesRequest = Message<'otterscale.configuration.v1.ImportBootImagesRequest'> & {};
 
 /**
  * Describes the message otterscale.configuration.v1.ImportBootImagesRequest.
  * Use `create(ImportBootImagesRequestSchema)` to create a new message.
  */
-export const ImportBootImagesRequestSchema: GenMessage<ImportBootImagesRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 6);
+export const ImportBootImagesRequestSchema: GenMessage<ImportBootImagesRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 6);
 
 /**
  * @generated from message otterscale.configuration.v1.IsImportingBootImagesRequest
  */
-export type IsImportingBootImagesRequest = Message<"otterscale.configuration.v1.IsImportingBootImagesRequest"> & {
-};
+export type IsImportingBootImagesRequest = Message<'otterscale.configuration.v1.IsImportingBootImagesRequest'> & {};
 
 /**
  * Describes the message otterscale.configuration.v1.IsImportingBootImagesRequest.
  * Use `create(IsImportingBootImagesRequestSchema)` to create a new message.
  */
-export const IsImportingBootImagesRequestSchema: GenMessage<IsImportingBootImagesRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 7);
+export const IsImportingBootImagesRequestSchema: GenMessage<IsImportingBootImagesRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 7);
 
 /**
  * @generated from message otterscale.configuration.v1.IsImportingBootImagesResponse
  */
-export type IsImportingBootImagesResponse = Message<"otterscale.configuration.v1.IsImportingBootImagesResponse"> & {
-  /**
-   * @generated from field: bool importing = 1;
-   */
-  importing: boolean;
+export type IsImportingBootImagesResponse = Message<'otterscale.configuration.v1.IsImportingBootImagesResponse'> & {
+	/**
+	 * @generated from field: bool importing = 1;
+	 */
+	importing: boolean;
 };
 
 /**
  * Describes the message otterscale.configuration.v1.IsImportingBootImagesResponse.
  * Use `create(IsImportingBootImagesResponseSchema)` to create a new message.
  */
-export const IsImportingBootImagesResponseSchema: GenMessage<IsImportingBootImagesResponse> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 8);
+export const IsImportingBootImagesResponseSchema: GenMessage<IsImportingBootImagesResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 8);
 
 /**
  * @generated from message otterscale.configuration.v1.ListBootImageSelectionsRequest
  */
-export type ListBootImageSelectionsRequest = Message<"otterscale.configuration.v1.ListBootImageSelectionsRequest"> & {
-};
+export type ListBootImageSelectionsRequest = Message<'otterscale.configuration.v1.ListBootImageSelectionsRequest'> & {};
 
 /**
  * Describes the message otterscale.configuration.v1.ListBootImageSelectionsRequest.
  * Use `create(ListBootImageSelectionsRequestSchema)` to create a new message.
  */
-export const ListBootImageSelectionsRequestSchema: GenMessage<ListBootImageSelectionsRequest> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 9);
+export const ListBootImageSelectionsRequestSchema: GenMessage<ListBootImageSelectionsRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 9);
 
 /**
  * @generated from message otterscale.configuration.v1.ListBootImageSelectionsResponse
  */
-export type ListBootImageSelectionsResponse = Message<"otterscale.configuration.v1.ListBootImageSelectionsResponse"> & {
-  /**
-   * @generated from field: repeated otterscale.configuration.v1.Configuration.BootImageSelection boot_image_selections = 1;
-   */
-  bootImageSelections: Configuration_BootImageSelection[];
+export type ListBootImageSelectionsResponse = Message<'otterscale.configuration.v1.ListBootImageSelectionsResponse'> & {
+	/**
+	 * @generated from field: repeated otterscale.configuration.v1.Configuration.BootImageSelection boot_image_selections = 1;
+	 */
+	bootImageSelections: Configuration_BootImageSelection[];
 };
 
 /**
  * Describes the message otterscale.configuration.v1.ListBootImageSelectionsResponse.
  * Use `create(ListBootImageSelectionsResponseSchema)` to create a new message.
  */
-export const ListBootImageSelectionsResponseSchema: GenMessage<ListBootImageSelectionsResponse> = /*@__PURE__*/
-  messageDesc(file_api_configuration_v1_configuration, 10);
+export const ListBootImageSelectionsResponseSchema: GenMessage<ListBootImageSelectionsResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_configuration_v1_configuration, 10);
 
 /**
  * @generated from service otterscale.configuration.v1.ConfigurationService
  */
 export const ConfigurationService: GenService<{
-  /**
-   * @generated from rpc otterscale.configuration.v1.ConfigurationService.GetConfiguration
-   */
-  getConfiguration: {
-    methodKind: "unary";
-    input: typeof GetConfigurationRequestSchema;
-    output: typeof ConfigurationSchema;
-  },
-  /**
-   * @generated from rpc otterscale.configuration.v1.ConfigurationService.UpdateNTPServer
-   */
-  updateNTPServer: {
-    methodKind: "unary";
-    input: typeof UpdateNTPServerRequestSchema;
-    output: typeof Configuration_NTPServerSchema;
-  },
-  /**
-   * @generated from rpc otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository
-   */
-  updatePackageRepository: {
-    methodKind: "unary";
-    input: typeof UpdatePackageRepositoryRequestSchema;
-    output: typeof Configuration_PackageRepositorySchema;
-  },
-  /**
-   * @generated from rpc otterscale.configuration.v1.ConfigurationService.CreateBootImage
-   */
-  createBootImage: {
-    methodKind: "unary";
-    input: typeof CreateBootImageRequestSchema;
-    output: typeof Configuration_BootImageSchema;
-  },
-  /**
-   * @generated from rpc otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage
-   */
-  setDefaultBootImage: {
-    methodKind: "unary";
-    input: typeof SetDefaultBootImageRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.configuration.v1.ConfigurationService.ImportBootImages
-   */
-  importBootImages: {
-    methodKind: "unary";
-    input: typeof ImportBootImagesRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.configuration.v1.ConfigurationService.IsImportingBootImages
-   */
-  isImportingBootImages: {
-    methodKind: "unary";
-    input: typeof IsImportingBootImagesRequestSchema;
-    output: typeof IsImportingBootImagesResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.configuration.v1.ConfigurationService.ListBootImageSelections
-   */
-  listBootImageSelections: {
-    methodKind: "unary";
-    input: typeof ListBootImageSelectionsRequestSchema;
-    output: typeof ListBootImageSelectionsResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_api_configuration_v1_configuration, 0);
-
+	/**
+	 * @generated from rpc otterscale.configuration.v1.ConfigurationService.GetConfiguration
+	 */
+	getConfiguration: {
+		methodKind: 'unary';
+		input: typeof GetConfigurationRequestSchema;
+		output: typeof ConfigurationSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.configuration.v1.ConfigurationService.UpdateNTPServer
+	 */
+	updateNTPServer: {
+		methodKind: 'unary';
+		input: typeof UpdateNTPServerRequestSchema;
+		output: typeof Configuration_NTPServerSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.configuration.v1.ConfigurationService.UpdatePackageRepository
+	 */
+	updatePackageRepository: {
+		methodKind: 'unary';
+		input: typeof UpdatePackageRepositoryRequestSchema;
+		output: typeof Configuration_PackageRepositorySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.configuration.v1.ConfigurationService.CreateBootImage
+	 */
+	createBootImage: {
+		methodKind: 'unary';
+		input: typeof CreateBootImageRequestSchema;
+		output: typeof Configuration_BootImageSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.configuration.v1.ConfigurationService.SetDefaultBootImage
+	 */
+	setDefaultBootImage: {
+		methodKind: 'unary';
+		input: typeof SetDefaultBootImageRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.configuration.v1.ConfigurationService.ImportBootImages
+	 */
+	importBootImages: {
+		methodKind: 'unary';
+		input: typeof ImportBootImagesRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.configuration.v1.ConfigurationService.IsImportingBootImages
+	 */
+	isImportingBootImages: {
+		methodKind: 'unary';
+		input: typeof IsImportingBootImagesRequestSchema;
+		output: typeof IsImportingBootImagesResponseSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.configuration.v1.ConfigurationService.ListBootImageSelections
+	 */
+	listBootImageSelections: {
+		methodKind: 'unary';
+		input: typeof ListBootImageSelectionsRequestSchema;
+		output: typeof ListBootImageSelectionsResponseSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_api_configuration_v1_configuration, 0);

@@ -7,7 +7,7 @@
 	let {
 		title,
 		description,
-		class: className
+		class: className,
 	}: {
 		title: string;
 		description?: string;

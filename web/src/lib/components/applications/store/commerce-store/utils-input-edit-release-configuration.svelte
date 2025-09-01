@@ -1,8 +1,5 @@
 <script lang="ts">
-	import {
-		ApplicationService,
-		type Application_Chart_Metadata
-	} from '$lib/api/application/v1/application_pb';
+	import { ApplicationService, type Application_Chart_Metadata } from '$lib/api/application/v1/application_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import * as Resizable from '$lib/components/ui/resizable';
@@ -26,7 +23,7 @@
 	let {
 		chartRef,
 		valuesYaml = $bindable(),
-		valuesMap = $bindable()
+		valuesMap = $bindable(),
 	}: {
 		chartRef: string;
 		valuesYaml: string;
@@ -45,7 +42,7 @@
 	async function fetchChartMetadata(chartRef: string) {
 		try {
 			const response = await client.getChartMetadata({
-				chartRef: chartRef
+				chartRef: chartRef,
 			});
 			chartMetadataStore.set(response);
 			values = $chartMetadataStore.valuesYaml;
@@ -60,8 +57,8 @@
 	const plugins: Plugin[] = [
 		gfmPlugin(),
 		{
-			rehypePlugin: [rehypeHighlight, { ignoreMissing: true, languages: { shell, yaml } }]
-		}
+			rehypePlugin: [rehypeHighlight, { ignoreMissing: true, languages: { shell, yaml } }],
+		},
 	];
 	let tab = $state(!valuesMap || Object.keys(valuesMap).length === 0 ? 'advance' : 'basic');
 
@@ -148,7 +145,7 @@
 								options={{
 									language: 'yaml',
 									padding: { top: 32, bottom: 8 },
-									automaticLayout: true
+									automaticLayout: true,
 								}}
 								theme="vs-dark"
 								bind:value={values}

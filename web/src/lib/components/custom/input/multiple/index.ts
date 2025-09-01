@@ -7,8 +7,5 @@ import Root from './input.svelte';
 import type { AccessorType, InputType } from './types';
 import { InputManager, ValuesManager } from './utils.svelte';
 
-export {
-    Add, Clear, Controller, Input, InputManager, Root, ValuesManager, Viewer
-};
+export { Add, Clear, Controller, Input, InputManager, Root, ValuesManager, Viewer };
 export type { AccessorType, InputType };
-

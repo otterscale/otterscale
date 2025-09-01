@@ -11,7 +11,7 @@
 		poolName,
 		usage,
 		snapshots,
-		actions
+		actions,
 	};
 </script>
 

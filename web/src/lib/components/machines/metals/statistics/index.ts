@@ -1,3 +1,3 @@
-import Statistics from './index.svelte'
+import Statistics from './index.svelte';
 
-export { Statistics }
+export { Statistics };

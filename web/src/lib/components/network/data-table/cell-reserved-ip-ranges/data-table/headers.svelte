@@ -10,7 +10,7 @@
 		type,
 		startIp,
 		endIp,
-		comment
+		comment,
 	};
 </script>
 

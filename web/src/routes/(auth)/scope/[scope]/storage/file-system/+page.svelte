@@ -13,17 +13,12 @@
 
 	breadcrumb.set({
 		parents: [dynamicPaths.storage(page.params.scope)],
-		current: dynamicPaths.storageFileSystem(page.params.scope)
+		current: dynamicPaths.storageFileSystem(page.params.scope),
 	});
 </script>
 
 {#if $activeScope}
 	{#key selectedScopeUuid + selectedFacility + selectedVolume + selectedSubvolumeGroupName}
-		<FileSystem
-			bind:selectedScopeUuid
-			bind:selectedFacility
-			bind:selectedVolume
-			bind:selectedSubvolumeGroupName
-		/>
+		<FileSystem bind:selectedScopeUuid bind:selectedFacility bind:selectedVolume bind:selectedSubvolumeGroupName />
 	{/key}
 {/if}

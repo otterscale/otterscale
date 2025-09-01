@@ -1,3 +1,3 @@
-import Data from './index.svelte'
+import Data from './index.svelte';
 
-export { Data }
+export { Data };

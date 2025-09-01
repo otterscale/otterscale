@@ -10,7 +10,7 @@
 		selectedScopeUuid = $bindable(),
 		selectedFacility = $bindable(),
 		selectedVolume = $bindable(),
-		selectedSubvolumeGroupName = $bindable()
+		selectedSubvolumeGroupName = $bindable(),
 	}: {
 		selectedScopeUuid: string;
 		selectedFacility: string;

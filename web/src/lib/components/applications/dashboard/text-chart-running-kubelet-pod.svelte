@@ -23,7 +23,7 @@
 		sum(
 			kubelet_running_pod_count{job="kubelet",juju_model_uuid=~"${scope.uuid}",metrics_path="/metrics"}
 		)
-		`
+		`,
 	);
 </script>
 

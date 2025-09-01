@@ -11,7 +11,7 @@
 <script lang="ts">
 	let {
 		selectedScopeUuid = $bindable(),
-		selectedFacility = $bindable()
+		selectedFacility = $bindable(),
 	}: {
 		selectedScopeUuid: string;
 		selectedFacility: string;
@@ -24,11 +24,9 @@
 
 	const storageClient = createClient(StorageService, transport);
 	const reloadManager = new ReloadManager(() => {
-		storageClient
-			.listImages({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility })
-			.then((response) => {
-				images.set(response.images);
-			});
+		storageClient.listImages({ scopeUuid: selectedScopeUuid, facilityName: selectedFacility }).then((response) => {
+			images.set(response.images);
+		});
 	});
 	setContext('reloadManager', reloadManager);
 

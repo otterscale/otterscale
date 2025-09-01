@@ -2,312 +2,322 @@
 // @generated from file api/environment/v1/environment.proto (package otterscale.environment.v1, edition 2023)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { EmptySchema } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@bufbuild/protobuf";
+import type { GenEnum, GenFile, GenMessage, GenService } from '@bufbuild/protobuf/codegenv2';
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from '@bufbuild/protobuf/codegenv2';
+import type { EmptySchema } from '@bufbuild/protobuf/wkt';
+import { file_google_protobuf_empty } from '@bufbuild/protobuf/wkt';
+import type { Message } from '@bufbuild/protobuf';
 
 /**
  * Describes the file api/environment/v1/environment.proto.
  */
-export const file_api_environment_v1_environment: GenFile = /*@__PURE__*/
-  fileDesc("CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFAoSQ2hlY2tIZWFsdGhSZXF1ZXN0IpIBChNDaGVja0hlYWx0aFJlc3BvbnNlEkUKBnJlc3VsdBgBIAEoDjI1Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZS5SZXN1bHQiNAoGUmVzdWx0Eg8KC1VOU1BFQ0lGSUVEEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUiFAoSV2F0Y2hTdGF0dXNSZXF1ZXN0IlgKE1dhdGNoU3RhdHVzUmVzcG9uc2USDwoHc3RhcnRlZBgBIAEoCBIQCghmaW5pc2hlZBgCIAEoCBINCgVwaGFzZRgLIAEoCRIPCgdtZXNzYWdlGAwgASgJIjUKE1VwZGF0ZVN0YXR1c1JlcXVlc3QSDQoFcGhhc2UYASABKAkSDwoHbWVzc2FnZRgCIAEoCSLCAgoTVXBkYXRlQ29uZmlnUmVxdWVzdBIQCghtYWFzX3VybBgBIAEoCRIQCghtYWFzX2tleRgCIAEoCRIUCgxtYWFzX3ZlcnNpb24YAyABKAkSFwoPanVqdV9jb250cm9sbGVyGAsgASgJEiEKGWp1anVfY29udHJvbGxlcl9hZGRyZXNzZXMYDCADKAkSFQoNanVqdV91c2VybmFtZRgNIAEoCRIVCg1qdWp1X3Bhc3N3b3JkGA4gASgJEhQKDGp1anVfY2FfY2VydBgPIAEoCRIXCg9qdWp1X2Nsb3VkX25hbWUYFSABKAkSGQoRanVqdV9jbG91ZF9yZWdpb24YFiABKAkSHQoVanVqdV9jaGFybWh1Yl9hcGlfdXJsGBcgASgJEhgKEG1pcmNvX2s4c19jb25maWcYISABKAlKBAgfECEiMwojVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllc1JlcXVlc3QSDAoEdXJscxgBIAMoCSIkCgpQcm9tZXRoZXVzEhAKCGJhc2VfdXJsGAIgASgJSgQIARACIhYKFEdldFByb21ldGhldXNSZXF1ZXN0MoMFChJFbnZpcm9ubWVudFNlcnZpY2USbAoLQ2hlY2tIZWFsdGgSLS5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLkNoZWNrSGVhbHRoUmVxdWVzdBouLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZRJuCgtXYXRjaFN0YXR1cxItLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuV2F0Y2hTdGF0dXNSZXF1ZXN0Gi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5XYXRjaFN0YXR1c1Jlc3BvbnNlMAESVgoMVXBkYXRlU3RhdHVzEi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVTdGF0dXNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElYKDFVwZGF0ZUNvbmZpZxIuLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlQ29uZmlnUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJ2ChxVcGRhdGVDb25maWdIZWxtUmVwb3NpdG9yaWVzEj4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVDb25maWdIZWxtUmVwb3NpdG9yaWVzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJnCg1HZXRQcm9tZXRoZXVzEi8ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5HZXRQcm9tZXRoZXVzUmVxdWVzdBolLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuUHJvbWV0aGV1c0I4WjZnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvZW52aXJvbm1lbnQvdjE7cGJiCGVkaXRpb25zcOgH", [file_google_protobuf_empty]);
+export const file_api_environment_v1_environment: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		'CiRhcGkvZW52aXJvbm1lbnQvdjEvZW52aXJvbm1lbnQucHJvdG8SGW90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEiFAoSQ2hlY2tIZWFsdGhSZXF1ZXN0IpIBChNDaGVja0hlYWx0aFJlc3BvbnNlEkUKBnJlc3VsdBgBIAEoDjI1Lm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZS5SZXN1bHQiNAoGUmVzdWx0Eg8KC1VOU1BFQ0lGSUVEEAASBgoCT0sQCxIRCg1OT1RfSU5TVEFMTEVEEBUiFAoSV2F0Y2hTdGF0dXNSZXF1ZXN0IlgKE1dhdGNoU3RhdHVzUmVzcG9uc2USDwoHc3RhcnRlZBgBIAEoCBIQCghmaW5pc2hlZBgCIAEoCBINCgVwaGFzZRgLIAEoCRIPCgdtZXNzYWdlGAwgASgJIjUKE1VwZGF0ZVN0YXR1c1JlcXVlc3QSDQoFcGhhc2UYASABKAkSDwoHbWVzc2FnZRgCIAEoCSLCAgoTVXBkYXRlQ29uZmlnUmVxdWVzdBIQCghtYWFzX3VybBgBIAEoCRIQCghtYWFzX2tleRgCIAEoCRIUCgxtYWFzX3ZlcnNpb24YAyABKAkSFwoPanVqdV9jb250cm9sbGVyGAsgASgJEiEKGWp1anVfY29udHJvbGxlcl9hZGRyZXNzZXMYDCADKAkSFQoNanVqdV91c2VybmFtZRgNIAEoCRIVCg1qdWp1X3Bhc3N3b3JkGA4gASgJEhQKDGp1anVfY2FfY2VydBgPIAEoCRIXCg9qdWp1X2Nsb3VkX25hbWUYFSABKAkSGQoRanVqdV9jbG91ZF9yZWdpb24YFiABKAkSHQoVanVqdV9jaGFybWh1Yl9hcGlfdXJsGBcgASgJEhgKEG1pcmNvX2s4c19jb25maWcYISABKAlKBAgfECEiMwojVXBkYXRlQ29uZmlnSGVsbVJlcG9zaXRvcmllc1JlcXVlc3QSDAoEdXJscxgBIAMoCSIkCgpQcm9tZXRoZXVzEhAKCGJhc2VfdXJsGAIgASgJSgQIARACIhYKFEdldFByb21ldGhldXNSZXF1ZXN0MoMFChJFbnZpcm9ubWVudFNlcnZpY2USbAoLQ2hlY2tIZWFsdGgSLS5vdHRlcnNjYWxlLmVudmlyb25tZW50LnYxLkNoZWNrSGVhbHRoUmVxdWVzdBouLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuQ2hlY2tIZWFsdGhSZXNwb25zZRJuCgtXYXRjaFN0YXR1cxItLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuV2F0Y2hTdGF0dXNSZXF1ZXN0Gi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5XYXRjaFN0YXR1c1Jlc3BvbnNlMAESVgoMVXBkYXRlU3RhdHVzEi4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVTdGF0dXNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5ElYKDFVwZGF0ZUNvbmZpZxIuLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuVXBkYXRlQ29uZmlnUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJ2ChxVcGRhdGVDb25maWdIZWxtUmVwb3NpdG9yaWVzEj4ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5VcGRhdGVDb25maWdIZWxtUmVwb3NpdG9yaWVzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJnCg1HZXRQcm9tZXRoZXVzEi8ub3R0ZXJzY2FsZS5lbnZpcm9ubWVudC52MS5HZXRQcm9tZXRoZXVzUmVxdWVzdBolLm90dGVyc2NhbGUuZW52aXJvbm1lbnQudjEuUHJvbWV0aGV1c0I4WjZnaXRodWIuY29tL290dGVyc2NhbGUvb3R0ZXJzY2FsZS9hcGkvZW52aXJvbm1lbnQvdjE7cGJiCGVkaXRpb25zcOgH',
+		[file_google_protobuf_empty],
+	);
 
 /**
  * @generated from message otterscale.environment.v1.CheckHealthRequest
  */
-export type CheckHealthRequest = Message<"otterscale.environment.v1.CheckHealthRequest"> & {
-};
+export type CheckHealthRequest = Message<'otterscale.environment.v1.CheckHealthRequest'> & {};
 
 /**
  * Describes the message otterscale.environment.v1.CheckHealthRequest.
  * Use `create(CheckHealthRequestSchema)` to create a new message.
  */
-export const CheckHealthRequestSchema: GenMessage<CheckHealthRequest> = /*@__PURE__*/
-  messageDesc(file_api_environment_v1_environment, 0);
+export const CheckHealthRequestSchema: GenMessage<CheckHealthRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_environment_v1_environment, 0);
 
 /**
  * @generated from message otterscale.environment.v1.CheckHealthResponse
  */
-export type CheckHealthResponse = Message<"otterscale.environment.v1.CheckHealthResponse"> & {
-  /**
-   * @generated from field: otterscale.environment.v1.CheckHealthResponse.Result result = 1;
-   */
-  result: CheckHealthResponse_Result;
+export type CheckHealthResponse = Message<'otterscale.environment.v1.CheckHealthResponse'> & {
+	/**
+	 * @generated from field: otterscale.environment.v1.CheckHealthResponse.Result result = 1;
+	 */
+	result: CheckHealthResponse_Result;
 };
 
 /**
  * Describes the message otterscale.environment.v1.CheckHealthResponse.
  * Use `create(CheckHealthResponseSchema)` to create a new message.
  */
-export const CheckHealthResponseSchema: GenMessage<CheckHealthResponse> = /*@__PURE__*/
-  messageDesc(file_api_environment_v1_environment, 1);
+export const CheckHealthResponseSchema: GenMessage<CheckHealthResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_environment_v1_environment, 1);
 
 /**
  * @generated from enum otterscale.environment.v1.CheckHealthResponse.Result
  */
 export enum CheckHealthResponse_Result {
-  /**
-   * @generated from enum value: UNSPECIFIED = 0;
-   */
-  UNSPECIFIED = 0,
+	/**
+	 * @generated from enum value: UNSPECIFIED = 0;
+	 */
+	UNSPECIFIED = 0,
 
-  /**
-   * @generated from enum value: OK = 11;
-   */
-  OK = 11,
+	/**
+	 * @generated from enum value: OK = 11;
+	 */
+	OK = 11,
 
-  /**
-   * @generated from enum value: NOT_INSTALLED = 21;
-   */
-  NOT_INSTALLED = 21,
+	/**
+	 * @generated from enum value: NOT_INSTALLED = 21;
+	 */
+	NOT_INSTALLED = 21,
 }
 
 /**
  * Describes the enum otterscale.environment.v1.CheckHealthResponse.Result.
  */
-export const CheckHealthResponse_ResultSchema: GenEnum<CheckHealthResponse_Result> = /*@__PURE__*/
-  enumDesc(file_api_environment_v1_environment, 1, 0);
+export const CheckHealthResponse_ResultSchema: GenEnum<CheckHealthResponse_Result> =
+	/*@__PURE__*/
+	enumDesc(file_api_environment_v1_environment, 1, 0);
 
 /**
  * @generated from message otterscale.environment.v1.WatchStatusRequest
  */
-export type WatchStatusRequest = Message<"otterscale.environment.v1.WatchStatusRequest"> & {
-};
+export type WatchStatusRequest = Message<'otterscale.environment.v1.WatchStatusRequest'> & {};
 
 /**
  * Describes the message otterscale.environment.v1.WatchStatusRequest.
  * Use `create(WatchStatusRequestSchema)` to create a new message.
  */
-export const WatchStatusRequestSchema: GenMessage<WatchStatusRequest> = /*@__PURE__*/
-  messageDesc(file_api_environment_v1_environment, 2);
+export const WatchStatusRequestSchema: GenMessage<WatchStatusRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_environment_v1_environment, 2);
 
 /**
  * @generated from message otterscale.environment.v1.WatchStatusResponse
  */
-export type WatchStatusResponse = Message<"otterscale.environment.v1.WatchStatusResponse"> & {
-  /**
-   * @generated from field: bool started = 1;
-   */
-  started: boolean;
+export type WatchStatusResponse = Message<'otterscale.environment.v1.WatchStatusResponse'> & {
+	/**
+	 * @generated from field: bool started = 1;
+	 */
+	started: boolean;
 
-  /**
-   * @generated from field: bool finished = 2;
-   */
-  finished: boolean;
+	/**
+	 * @generated from field: bool finished = 2;
+	 */
+	finished: boolean;
 
-  /**
-   * @generated from field: string phase = 11;
-   */
-  phase: string;
+	/**
+	 * @generated from field: string phase = 11;
+	 */
+	phase: string;
 
-  /**
-   * @generated from field: string message = 12;
-   */
-  message: string;
+	/**
+	 * @generated from field: string message = 12;
+	 */
+	message: string;
 };
 
 /**
  * Describes the message otterscale.environment.v1.WatchStatusResponse.
  * Use `create(WatchStatusResponseSchema)` to create a new message.
  */
-export const WatchStatusResponseSchema: GenMessage<WatchStatusResponse> = /*@__PURE__*/
-  messageDesc(file_api_environment_v1_environment, 3);
+export const WatchStatusResponseSchema: GenMessage<WatchStatusResponse> =
+	/*@__PURE__*/
+	messageDesc(file_api_environment_v1_environment, 3);
 
 /**
  * @generated from message otterscale.environment.v1.UpdateStatusRequest
  */
-export type UpdateStatusRequest = Message<"otterscale.environment.v1.UpdateStatusRequest"> & {
-  /**
-   * @generated from field: string phase = 1;
-   */
-  phase: string;
+export type UpdateStatusRequest = Message<'otterscale.environment.v1.UpdateStatusRequest'> & {
+	/**
+	 * @generated from field: string phase = 1;
+	 */
+	phase: string;
 
-  /**
-   * @generated from field: string message = 2;
-   */
-  message: string;
+	/**
+	 * @generated from field: string message = 2;
+	 */
+	message: string;
 };
 
 /**
  * Describes the message otterscale.environment.v1.UpdateStatusRequest.
  * Use `create(UpdateStatusRequestSchema)` to create a new message.
  */
-export const UpdateStatusRequestSchema: GenMessage<UpdateStatusRequest> = /*@__PURE__*/
-  messageDesc(file_api_environment_v1_environment, 4);
+export const UpdateStatusRequestSchema: GenMessage<UpdateStatusRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_environment_v1_environment, 4);
 
 /**
  * @generated from message otterscale.environment.v1.UpdateConfigRequest
  */
-export type UpdateConfigRequest = Message<"otterscale.environment.v1.UpdateConfigRequest"> & {
-  /**
-   * @generated from field: string maas_url = 1;
-   */
-  maasUrl: string;
+export type UpdateConfigRequest = Message<'otterscale.environment.v1.UpdateConfigRequest'> & {
+	/**
+	 * @generated from field: string maas_url = 1;
+	 */
+	maasUrl: string;
 
-  /**
-   * @generated from field: string maas_key = 2;
-   */
-  maasKey: string;
+	/**
+	 * @generated from field: string maas_key = 2;
+	 */
+	maasKey: string;
 
-  /**
-   * @generated from field: string maas_version = 3;
-   */
-  maasVersion: string;
+	/**
+	 * @generated from field: string maas_version = 3;
+	 */
+	maasVersion: string;
 
-  /**
-   * @generated from field: string juju_controller = 11;
-   */
-  jujuController: string;
+	/**
+	 * @generated from field: string juju_controller = 11;
+	 */
+	jujuController: string;
 
-  /**
-   * @generated from field: repeated string juju_controller_addresses = 12;
-   */
-  jujuControllerAddresses: string[];
+	/**
+	 * @generated from field: repeated string juju_controller_addresses = 12;
+	 */
+	jujuControllerAddresses: string[];
 
-  /**
-   * @generated from field: string juju_username = 13;
-   */
-  jujuUsername: string;
+	/**
+	 * @generated from field: string juju_username = 13;
+	 */
+	jujuUsername: string;
 
-  /**
-   * @generated from field: string juju_password = 14;
-   */
-  jujuPassword: string;
+	/**
+	 * @generated from field: string juju_password = 14;
+	 */
+	jujuPassword: string;
 
-  /**
-   * @generated from field: string juju_ca_cert = 15;
-   */
-  jujuCaCert: string;
+	/**
+	 * @generated from field: string juju_ca_cert = 15;
+	 */
+	jujuCaCert: string;
 
-  /**
-   * @generated from field: string juju_cloud_name = 21;
-   */
-  jujuCloudName: string;
+	/**
+	 * @generated from field: string juju_cloud_name = 21;
+	 */
+	jujuCloudName: string;
 
-  /**
-   * @generated from field: string juju_cloud_region = 22;
-   */
-  jujuCloudRegion: string;
+	/**
+	 * @generated from field: string juju_cloud_region = 22;
+	 */
+	jujuCloudRegion: string;
 
-  /**
-   * @generated from field: string juju_charmhub_api_url = 23;
-   */
-  jujuCharmhubApiUrl: string;
+	/**
+	 * @generated from field: string juju_charmhub_api_url = 23;
+	 */
+	jujuCharmhubApiUrl: string;
 
-  /**
-   * @generated from field: string mirco_k8s_config = 33;
-   */
-  mircoK8sConfig: string;
+	/**
+	 * @generated from field: string mirco_k8s_config = 33;
+	 */
+	mircoK8sConfig: string;
 };
 
 /**
  * Describes the message otterscale.environment.v1.UpdateConfigRequest.
  * Use `create(UpdateConfigRequestSchema)` to create a new message.
  */
-export const UpdateConfigRequestSchema: GenMessage<UpdateConfigRequest> = /*@__PURE__*/
-  messageDesc(file_api_environment_v1_environment, 5);
+export const UpdateConfigRequestSchema: GenMessage<UpdateConfigRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_environment_v1_environment, 5);
 
 /**
  * @generated from message otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
  */
-export type UpdateConfigHelmRepositoriesRequest = Message<"otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest"> & {
-  /**
-   * @generated from field: repeated string urls = 1;
-   */
-  urls: string[];
-};
+export type UpdateConfigHelmRepositoriesRequest =
+	Message<'otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest'> & {
+		/**
+		 * @generated from field: repeated string urls = 1;
+		 */
+		urls: string[];
+	};
 
 /**
  * Describes the message otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest.
  * Use `create(UpdateConfigHelmRepositoriesRequestSchema)` to create a new message.
  */
-export const UpdateConfigHelmRepositoriesRequestSchema: GenMessage<UpdateConfigHelmRepositoriesRequest> = /*@__PURE__*/
-  messageDesc(file_api_environment_v1_environment, 6);
+export const UpdateConfigHelmRepositoriesRequestSchema: GenMessage<UpdateConfigHelmRepositoriesRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_environment_v1_environment, 6);
 
 /**
  * @generated from message otterscale.environment.v1.Prometheus
  */
-export type Prometheus = Message<"otterscale.environment.v1.Prometheus"> & {
-  /**
-   * @generated from field: string base_url = 2;
-   */
-  baseUrl: string;
+export type Prometheus = Message<'otterscale.environment.v1.Prometheus'> & {
+	/**
+	 * @generated from field: string base_url = 2;
+	 */
+	baseUrl: string;
 };
 
 /**
  * Describes the message otterscale.environment.v1.Prometheus.
  * Use `create(PrometheusSchema)` to create a new message.
  */
-export const PrometheusSchema: GenMessage<Prometheus> = /*@__PURE__*/
-  messageDesc(file_api_environment_v1_environment, 7);
+export const PrometheusSchema: GenMessage<Prometheus> =
+	/*@__PURE__*/
+	messageDesc(file_api_environment_v1_environment, 7);
 
 /**
  * @generated from message otterscale.environment.v1.GetPrometheusRequest
  */
-export type GetPrometheusRequest = Message<"otterscale.environment.v1.GetPrometheusRequest"> & {
-};
+export type GetPrometheusRequest = Message<'otterscale.environment.v1.GetPrometheusRequest'> & {};
 
 /**
  * Describes the message otterscale.environment.v1.GetPrometheusRequest.
  * Use `create(GetPrometheusRequestSchema)` to create a new message.
  */
-export const GetPrometheusRequestSchema: GenMessage<GetPrometheusRequest> = /*@__PURE__*/
-  messageDesc(file_api_environment_v1_environment, 8);
+export const GetPrometheusRequestSchema: GenMessage<GetPrometheusRequest> =
+	/*@__PURE__*/
+	messageDesc(file_api_environment_v1_environment, 8);
 
 /**
  * @generated from service otterscale.environment.v1.EnvironmentService
  */
 export const EnvironmentService: GenService<{
-  /**
-   * @generated from rpc otterscale.environment.v1.EnvironmentService.CheckHealth
-   */
-  checkHealth: {
-    methodKind: "unary";
-    input: typeof CheckHealthRequestSchema;
-    output: typeof CheckHealthResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.environment.v1.EnvironmentService.WatchStatus
-   */
-  watchStatus: {
-    methodKind: "server_streaming";
-    input: typeof WatchStatusRequestSchema;
-    output: typeof WatchStatusResponseSchema;
-  },
-  /**
-   * @generated from rpc otterscale.environment.v1.EnvironmentService.UpdateStatus
-   */
-  updateStatus: {
-    methodKind: "unary";
-    input: typeof UpdateStatusRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.environment.v1.EnvironmentService.UpdateConfig
-   */
-  updateConfig: {
-    methodKind: "unary";
-    input: typeof UpdateConfigRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories
-   */
-  updateConfigHelmRepositories: {
-    methodKind: "unary";
-    input: typeof UpdateConfigHelmRepositoriesRequestSchema;
-    output: typeof EmptySchema;
-  },
-  /**
-   * @generated from rpc otterscale.environment.v1.EnvironmentService.GetPrometheus
-   */
-  getPrometheus: {
-    methodKind: "unary";
-    input: typeof GetPrometheusRequestSchema;
-    output: typeof PrometheusSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_api_environment_v1_environment, 0);
-
+	/**
+	 * @generated from rpc otterscale.environment.v1.EnvironmentService.CheckHealth
+	 */
+	checkHealth: {
+		methodKind: 'unary';
+		input: typeof CheckHealthRequestSchema;
+		output: typeof CheckHealthResponseSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.environment.v1.EnvironmentService.WatchStatus
+	 */
+	watchStatus: {
+		methodKind: 'server_streaming';
+		input: typeof WatchStatusRequestSchema;
+		output: typeof WatchStatusResponseSchema;
+	};
+	/**
+	 * @generated from rpc otterscale.environment.v1.EnvironmentService.UpdateStatus
+	 */
+	updateStatus: {
+		methodKind: 'unary';
+		input: typeof UpdateStatusRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.environment.v1.EnvironmentService.UpdateConfig
+	 */
+	updateConfig: {
+		methodKind: 'unary';
+		input: typeof UpdateConfigRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories
+	 */
+	updateConfigHelmRepositories: {
+		methodKind: 'unary';
+		input: typeof UpdateConfigHelmRepositoriesRequestSchema;
+		output: typeof EmptySchema;
+	};
+	/**
+	 * @generated from rpc otterscale.environment.v1.EnvironmentService.GetPrometheus
+	 */
+	getPrometheus: {
+		methodKind: 'unary';
+		input: typeof GetPrometheusRequestSchema;
+		output: typeof PrometheusSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_api_environment_v1_environment, 0);

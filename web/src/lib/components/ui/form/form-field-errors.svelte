@@ -1,6 +1,6 @@
 <script lang="ts">
-	import * as FormPrimitive from "formsnap";
-	import { cn, type WithoutChild } from "$lib/utils.js";
+	import * as FormPrimitive from 'formsnap';
+	import { cn, type WithoutChild } from '$lib/utils.js';
 
 	let {
 		ref = $bindable(null),
@@ -13,11 +13,7 @@
 	} = $props();
 </script>
 
-<FormPrimitive.FieldErrors
-	bind:ref
-	class={cn("text-destructive text-sm font-medium", className)}
-	{...restProps}
->
+<FormPrimitive.FieldErrors bind:ref class={cn('text-destructive text-sm font-medium', className)} {...restProps}>
 	{#snippet children({ errors, errorProps })}
 		{#if childrenProp}
 			{@render childrenProp({ errors, errorProps })}

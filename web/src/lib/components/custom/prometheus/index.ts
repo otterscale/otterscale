@@ -2,32 +2,26 @@ import { PrometheusDriver, SampleValue } from 'prometheus-query';
 
 // Define chart configuration type
 export interface ChartConfig {
-    [key: string]: {
-        label: string;
-        color: string;
-    };
+	[key: string]: {
+		label: string;
+		color: string;
+	};
 }
 
 // Define data point type - supports dynamic key-value structure
 export interface DataPoint {
-    date: Date;
-    [key: string]: any; // Allow dynamic key-value pairs, such as cpu0: 0.15, cpu1: 0.32, etc.
+	date: Date;
+	[key: string]: any; // Allow dynamic key-value pairs, such as cpu0: 0.15, cpu1: 0.32, etc.
 }
 
 // Define Series type
 export interface Series {
-    key: string;
-    label: string;
-    color: string;
+	key: string;
+	label: string;
+	color: string;
 }
 
-const CHART_COLORS = [
-    'var(--chart-1)',
-    'var(--chart-2)',
-    'var(--chart-3)',
-    'var(--chart-4)',
-    'var(--chart-5)',
-];
+const CHART_COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'];
 
 /**
  * Auto-generate chartConfig based on data
@@ -35,28 +29,28 @@ const CHART_COLORS = [
  * @returns Generated chartConfig object
  */
 export function generateChartConfig(data: DataPoint[]): ChartConfig {
-    if (!data || data.length === 0) return {};
+	if (!data || data.length === 0) return {};
 
-    // Get all keys except 'date' from the first data point
-    const samplePoint = data[0];
-    const metricKeys = Object.keys(samplePoint).filter(key => key !== 'date');
+	// Get all keys except 'date' from the first data point
+	const samplePoint = data[0];
+	const metricKeys = Object.keys(samplePoint).filter((key) => key !== 'date');
 
-    // Generate chartConfig
-    const chartConfig: ChartConfig = {};
+	// Generate chartConfig
+	const chartConfig: ChartConfig = {};
 
-    metricKeys.forEach((key, index) => {
-        // Generate label (convert key to a more friendly display name)
-        const label = key;
+	metricKeys.forEach((key, index) => {
+		// Generate label (convert key to a more friendly display name)
+		const label = key;
 
-        // Assign color (cycle through selected color palette)
-        const color = CHART_COLORS[index % CHART_COLORS.length];
+		// Assign color (cycle through selected color palette)
+		const color = CHART_COLORS[index % CHART_COLORS.length];
 
-        chartConfig[key] = {
-            label,
-            color
-        };
-    });
-    return chartConfig;
+		chartConfig[key] = {
+			label,
+			color,
+		};
+	});
+	return chartConfig;
 }
 
 /**
@@ -65,11 +59,11 @@ export function generateChartConfig(data: DataPoint[]): ChartConfig {
  * @returns Series array
  */
 export function getSeries(config: ChartConfig): Series[] {
-    return Object.keys(config).map((key) => ({
-        key: key,
-        label: config[key].label,
-        color: config[key].color
-    }));
+	return Object.keys(config).map((key) => ({
+		key: key,
+		label: config[key].label,
+		color: config[key].color,
+	}));
 }
 
 /**
@@ -77,24 +71,26 @@ export function getSeries(config: ChartConfig): Series[] {
  * @param oldFormatData Old format data array
  * @returns New format DataPoint array
  */
-export function convertToNewDataFormat(oldFormatData: Array<{ time: Date, value: number, metric: string }>): DataPoint[] {
-    // Group by time
-    const timeMap = new Map();
+export function convertToNewDataFormat(
+	oldFormatData: Array<{ time: Date; value: number; metric: string }>,
+): DataPoint[] {
+	// Group by time
+	const timeMap = new Map();
 
-    oldFormatData.forEach(point => {
-        const timeKey = point.time.getTime();
-        if (!timeMap.has(timeKey)) {
-            timeMap.set(timeKey, { date: point.time });
-        }
+	oldFormatData.forEach((point) => {
+		const timeKey = point.time.getTime();
+		if (!timeMap.has(timeKey)) {
+			timeMap.set(timeKey, { date: point.time });
+		}
 
-        // Convert metric to valid key (remove spaces, convert to lowercase)
-        // const metricKey = point.metric.replace(/\s+/g, '').toLowerCase();
-        const metricKey = point.metric;
-        timeMap.get(timeKey)[metricKey] = point.value;
-    });
+		// Convert metric to valid key (remove spaces, convert to lowercase)
+		// const metricKey = point.metric.replace(/\s+/g, '').toLowerCase();
+		const metricKey = point.metric;
+		timeMap.get(timeKey)[metricKey] = point.value;
+	});
 
-    // Convert to array and sort by time
-    return Array.from(timeMap.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
+	// Convert to array and sort by time
+	return Array.from(timeMap.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
 }
 
 /**
@@ -108,33 +104,28 @@ export function convertToNewDataFormat(oldFormatData: Array<{ time: Date, value:
  * @returns Flattened DataPoint array
  */
 export async function fetchFlattenedRange(
-    client: PrometheusDriver,
-    query: string,
-    timeStart?: Date,
-    timeEnd?: Date,
-    step: number = 15,
-    metricName?: string
+	client: PrometheusDriver,
+	query: string,
+	timeStart?: Date,
+	timeEnd?: Date,
+	step: number = 15,
+	metricName?: string,
 ): Promise<DataPoint[]> {
-    const start = timeStart || new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
-    const end = timeEnd || new Date(); // Now
+	const start = timeStart || new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
+	const end = timeEnd || new Date(); // Now
 
-    const response = await client.rangeQuery(
-        query,
-        start.getTime(),
-        end.getTime(),
-        step
-    );
+	const response = await client.rangeQuery(query, start.getTime(), end.getTime(), step);
 
-    const oldFormatData = response.result.flatMap((series) => {
-        const resolvedMetricName = resolveMetricName(series, metricName);
-        return series.values.map((sampleValue: SampleValue) => ({
-            time: sampleValue.time,
-            value: sampleValue.value,
-            metric: resolvedMetricName
-        }));
-    });
+	const oldFormatData = response.result.flatMap((series) => {
+		const resolvedMetricName = resolveMetricName(series, metricName);
+		return series.values.map((sampleValue: SampleValue) => ({
+			time: sampleValue.time,
+			value: sampleValue.value,
+			metric: resolvedMetricName,
+		}));
+	});
 
-    return convertToNewDataFormat(oldFormatData);
+	return convertToNewDataFormat(oldFormatData);
 }
 
 /**
@@ -147,22 +138,22 @@ export async function fetchFlattenedRange(
  * @returns Combined DataPoint array with all metrics
  */
 export async function fetchMultipleFlattenedRange(
-    client: PrometheusDriver,
-    queries: Record<string, string>,
-    timeStart?: Date,
-    timeEnd?: Date,
-    step: number = 15
+	client: PrometheusDriver,
+	queries: Record<string, string>,
+	timeStart?: Date,
+	timeEnd?: Date,
+	step: number = 15,
 ): Promise<DataPoint[]> {
-    const start = timeStart || new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
-    const end = timeEnd || new Date(); // Now
+	const start = timeStart || new Date(Date.now() - 60 * 60 * 1000); // 1 hour ago
+	const end = timeEnd || new Date(); // Now
 
-    const queryPromises = Object.entries(queries).map(([metricName, query]) =>
-        executeQueryWithMetricName(client, query, start, end, step, metricName)
-    );
-    const allResults = await Promise.all(queryPromises);
-    const combinedOldFormatData = allResults.flat();
+	const queryPromises = Object.entries(queries).map(([metricName, query]) =>
+		executeQueryWithMetricName(client, query, start, end, step, metricName),
+	);
+	const allResults = await Promise.all(queryPromises);
+	const combinedOldFormatData = allResults.flat();
 
-    return convertToNewDataFormat(combinedOldFormatData);
+	return convertToNewDataFormat(combinedOldFormatData);
 }
 
 /**
@@ -176,28 +167,23 @@ export async function fetchMultipleFlattenedRange(
  * @returns Formatted metric data array
  */
 async function executeQueryWithMetricName(
-    client: PrometheusDriver,
-    query: string,
-    start: Date,
-    end: Date,
-    step: number,
-    metricName: string
+	client: PrometheusDriver,
+	query: string,
+	start: Date,
+	end: Date,
+	step: number,
+	metricName: string,
 ): Promise<Array<{ time: Date; value: number; metric: string }>> {
-    const response = await client.rangeQuery(
-        query,
-        start.getTime(),
-        end.getTime(),
-        step
-    );
+	const response = await client.rangeQuery(query, start.getTime(), end.getTime(), step);
 
-    return response.result.flatMap((series) => {
-        const finalMetricName = buildUniqueMetricName(metricName, series, response.result.length);
-        return series.values.map((sampleValue: SampleValue) => ({
-            time: sampleValue.time,
-            value: sampleValue.value,
-            metric: finalMetricName
-        }));
-    });
+	return response.result.flatMap((series) => {
+		const finalMetricName = buildUniqueMetricName(metricName, series, response.result.length);
+		return series.values.map((sampleValue: SampleValue) => ({
+			time: sampleValue.time,
+			value: sampleValue.value,
+			metric: finalMetricName,
+		}));
+	});
 }
 
 /**
@@ -207,17 +193,17 @@ async function executeQueryWithMetricName(
  * @returns Resolved metric name
  */
 function resolveMetricName(series: any, customName?: string): string {
-    if (customName) {
-        return customName;
-    }
+	if (customName) {
+		return customName;
+	}
 
-    const labels = series.metric.labels;
-    if (labels && Object.keys(labels).length > 0) {
-        const firstLabelValue = Object.values(labels)[0];
-        return String(firstLabelValue);
-    }
+	const labels = series.metric.labels;
+	if (labels && Object.keys(labels).length > 0) {
+		const firstLabelValue = Object.values(labels)[0];
+		return String(firstLabelValue);
+	}
 
-    return 'unknown';
+	return 'unknown';
 }
 
 /**
@@ -228,15 +214,15 @@ function resolveMetricName(series: any, customName?: string): string {
  * @returns Unique metric name
  */
 function buildUniqueMetricName(baseName: string, series: any, seriesCount: number): string {
-    if (seriesCount === 1 || !series.metric.labels) {
-        return baseName;
-    }
+	if (seriesCount === 1 || !series.metric.labels) {
+		return baseName;
+	}
 
-    const labelEntries = Object.entries(series.metric.labels);
-    if (labelEntries.length > 0) {
-        const [, labelValue] = labelEntries[0];
-        return `${baseName} ${labelValue}`;
-    }
+	const labelEntries = Object.entries(series.metric.labels);
+	if (labelEntries.length > 0) {
+		const [, labelValue] = labelEntries[0];
+		return `${baseName} ${labelValue}`;
+	}
 
-    return baseName;
+	return baseName;
 }

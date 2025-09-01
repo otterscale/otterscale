@@ -1,5 +1,5 @@
 type StepManagerState = {
-    isUpdating: boolean;
+	isUpdating: boolean;
 };
 
 export { StepManagerState };

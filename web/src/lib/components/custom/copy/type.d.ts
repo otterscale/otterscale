@@ -5,8 +5,8 @@ import type { HTMLAttributes } from 'svelte/elements';
 import type { ButtonProps } from '$lib/components/ui/button';
 
 type CopyProps = ButtonProps & {
-    text: string;
-    onCopy?: (status: UseClipboard['status']) => void;
-}
+	text: string;
+	onCopy?: (status: UseClipboard['status']) => void;
+};
 
 export type { CopyProps };

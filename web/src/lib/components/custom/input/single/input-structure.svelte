@@ -14,7 +14,7 @@
 		language,
 		required,
 		preview = true,
-		invalid = $bindable()
+		invalid = $bindable(),
 	}: {
 		id?: string;
 		language: 'json';
@@ -45,11 +45,7 @@
 
 <AlertDialog.Root bind:open>
 	<AlertDialog.Trigger
-		class={cn(
-			buttonVariants({ variant: 'outline' }),
-			'ring-1',
-			isInvalid ? 'ring-destructive' : ''
-		)}
+		class={cn(buttonVariants({ variant: 'outline' }), 'ring-1', isInvalid ? 'ring-destructive' : '')}
 	>
 		{#if isInvalid}
 			<p class={cn('text-destructive text-xs')}>Required</p>
@@ -67,7 +63,7 @@
 				automaticLayout: true,
 				padding: { top: 8, bottom: 8 },
 				overviewRulerBorder: false,
-				hideCursorInOverviewRuler: true
+				hideCursorInOverviewRuler: true,
 			}}
 			theme="vs-dark"
 			bind:value={temporaryValue}

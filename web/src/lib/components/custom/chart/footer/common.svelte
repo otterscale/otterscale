@@ -4,15 +4,14 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 </script>
 
-
 <script lang="ts">
 	let {
 		ref = $bindable(null),
 		children,
-		class: className
+		class: className,
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {} = $props();
 </script>
 
-<div class={cn("flex w-full items-start gap-2 text-sm", className)}>
+<div class={cn('flex w-full items-start gap-2 text-sm', className)}>
 	{@render children?.()}
 </div>

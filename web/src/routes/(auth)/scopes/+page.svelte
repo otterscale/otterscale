@@ -49,9 +49,7 @@
 	<title>{m.welcome_to({ name: 'OtterScale 🦦' })}</title>
 </svelte:head>
 
-<main
-	class="bg-sidebar relative flex min-h-screen flex-col overflow-hidden px-2 py-20 md:px-4 md:py-24"
->
+<main class="bg-sidebar relative flex min-h-screen flex-col overflow-hidden px-2 py-20 md:px-4 md:py-24">
 	<!-- Background Image -->
 	<div class="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center opacity-100">
 		<img

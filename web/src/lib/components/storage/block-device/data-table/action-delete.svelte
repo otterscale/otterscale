@@ -15,7 +15,7 @@
 
 <script lang="ts">
 	let {
-		image
+		image,
 	}: {
 		image: Image;
 	} = $props();
@@ -28,7 +28,7 @@
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name
+		facilityName: $currentCeph?.name,
 	} as DeleteImageRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -98,10 +98,10 @@
 								let message = `Fail to delete ${request.imageName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();

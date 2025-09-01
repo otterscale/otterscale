@@ -9,7 +9,7 @@
 
 <script lang="ts">
 	let {
-		row
+		row,
 	}: {
 		row: Row<Network_IPRange>;
 	} = $props();

@@ -1,9 +1,5 @@
 <script lang="ts" module>
-	import {
-		NetworkService,
-		type Network_IPRange,
-		type UpdateIPRangeRequest
-	} from '$lib/api/network/v1/network_pb';
+	import { NetworkService, type Network_IPRange, type UpdateIPRangeRequest } from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
@@ -17,7 +13,7 @@
 
 <script lang="ts">
 	let {
-		ipRange
+		ipRange,
 	}: {
 		ipRange: Network_IPRange;
 	} = $props();
@@ -33,7 +29,7 @@
 		id: ipRange.id,
 		startIp: ipRange.startIp,
 		endIp: ipRange.endIp,
-		comment: ipRange.comment
+		comment: ipRange.comment,
 	} as UpdateIPRangeRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -67,12 +63,7 @@
 
 				<Form.Field>
 					<Form.Label>{m.end_ip()}</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						bind:value={request.endIp}
-						bind:invalid={invalidEndIP}
-					/>
+					<SingleInput.General required type="text" bind:value={request.endIp} bind:invalid={invalidEndIP} />
 				</Form.Field>
 
 				<Form.Field>
@@ -102,10 +93,10 @@
 							let message = `Fail to update ${request.startIp} - ${request.endIp}`;
 							toast.error(message, {
 								description: (error as ConnectError).message.toString(),
-								duration: Number.POSITIVE_INFINITY
+								duration: Number.POSITIVE_INFINITY,
 							});
 							return message;
-						}
+						},
 					});
 
 					reset();

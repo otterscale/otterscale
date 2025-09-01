@@ -1,9 +1,5 @@
 <script lang="ts" module>
-	import {
-		BISTService,
-		InternalObjectService_Type,
-		type InternalObjectService
-	} from '$lib/api/bist/v1/bist_pb';
+	import { BISTService, InternalObjectService_Type, type InternalObjectService } from '$lib/api/bist/v1/bist_pb';
 	// import { BISTService, InternalObjectService_Type } from '$gen/api/bist/v1/bist_pb'
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
@@ -15,9 +11,8 @@
 </script>
 
 <script lang="ts">
-	let {
-		selectedInternalObjectService = $bindable()
-	}: { selectedInternalObjectService: InternalObjectService } = $props();
+	let { selectedInternalObjectService = $bindable() }: { selectedInternalObjectService: InternalObjectService } =
+		$props();
 
 	let selectedInit = $state({});
 	let scopeUuid = $state('b62d195e-3905-4960-85ee-7673f71eb21e');
@@ -37,9 +32,9 @@
 							value: internalObjectService,
 							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
-						}) as SingleSelect.OptionType
-				)
+							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`,
+						}) as SingleSelect.OptionType,
+				),
 			);
 			if (selectedInternalObjectService) {
 				const options = response.internalObjectServices.map(
@@ -48,8 +43,8 @@
 							value: internalObjectService,
 							label: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name}`,
 							icon: 'ph:cube',
-							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`
-						}) as SingleSelect.OptionType
+							information: `${InternalObjectService_Type[internalObjectService.type]}-${internalObjectService.name} (${internalObjectService.endpoint})`,
+						}) as SingleSelect.OptionType,
 				);
 				const matched = options.find(
 					(opt) =>
@@ -57,7 +52,7 @@
 						opt.value.scopeUuid === selectedInternalObjectService.scopeUuid &&
 						opt.value.facilityName === selectedInternalObjectService.facilityName &&
 						opt.value.name === selectedInternalObjectService.name &&
-						opt.value.endpoint === selectedInternalObjectService.endpoint
+						opt.value.endpoint === selectedInternalObjectService.endpoint,
 				);
 				if (matched) {
 					selectedInit = matched.value;

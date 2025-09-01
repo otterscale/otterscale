@@ -20,7 +20,7 @@
 		node_time_seconds{instance=~"${machine.fqdn}"}
 		-
 		node_boot_time_seconds{instance=~"${machine.fqdn}"}
-		`
+		`,
 	);
 </script>
 

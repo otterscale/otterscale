@@ -5,7 +5,7 @@
 		value,
 		unit,
 		class: className,
-		textClass
+		textClass,
 	}: {
 		value?: string | number;
 		unit?: string;

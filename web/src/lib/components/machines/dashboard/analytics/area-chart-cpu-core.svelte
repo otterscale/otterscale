@@ -29,7 +29,7 @@
 	const query = $derived(
 		`
 		sum by (cpu) (rate(node_cpu_seconds_total{instance=~"${machine.fqdn}", mode!="idle"}[5m])) * 100
-		`
+		`,
 	);
 </script>
 

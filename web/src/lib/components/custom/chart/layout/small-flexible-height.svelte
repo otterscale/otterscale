@@ -7,7 +7,7 @@
 		controller,
 		content,
 		footer,
-		class: className
+		class: className,
 	}: {
 		title: Snippet;
 		description?: Snippet;

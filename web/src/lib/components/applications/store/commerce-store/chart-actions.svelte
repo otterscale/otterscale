@@ -11,7 +11,7 @@
 <script lang="ts">
 	let {
 		release,
-		releases = $bindable()
+		releases = $bindable(),
 	}: {
 		release: Application_Release;
 		releases: Writable<Application_Release[]>;

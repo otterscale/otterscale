@@ -21,14 +21,14 @@
 		in: `sum(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})`,
 		total: `
 		count(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})
-		`
+		`,
 	});
 
 	// Data fetching function
 	async function fetchMetrics() {
 		const [inResponse, totalResponse] = await Promise.all([
 			client.instantQuery(queries.in),
-			client.instantQuery(queries.total)
+			client.instantQuery(queries.total),
 		]);
 
 		const inValue = inResponse.result[0]?.value?.value;
@@ -41,7 +41,7 @@
 			inNumber: inValue,
 			outNumber: outValue,
 			totalNumber: totalValue,
-			inUsage: inUsagePercentage !== null ? [{ value: inUsagePercentage }] : [{ value: NaN }]
+			inUsage: inUsagePercentage !== null ? [{ value: inUsagePercentage }] : [{ value: NaN }],
 		};
 	}
 </script>

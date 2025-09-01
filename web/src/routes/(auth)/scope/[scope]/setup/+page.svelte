@@ -11,7 +11,7 @@
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [],
-		current: dynamicPaths.setupScope(page.params.scope)
+		current: dynamicPaths.setupScope(page.params.scope),
 	});
 
 	// API setup
@@ -26,7 +26,7 @@
 	async function fetchFacilities(uuid: string) {
 		try {
 			const response = await facilityClient.listFacilities({
-				scopeUuid: uuid
+				scopeUuid: uuid,
 			});
 			facilitiesStore.set(response.facilities);
 		} catch (error) {

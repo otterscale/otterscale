@@ -15,7 +15,7 @@
 
 	let {
 		open = $bindable(false),
-		trigger = $bindable(writable(false))
+		trigger = $bindable(writable(false)),
 	}: { open: boolean; trigger: Writable<boolean> } = $props();
 
 	let api = $state<CarouselAPI>();

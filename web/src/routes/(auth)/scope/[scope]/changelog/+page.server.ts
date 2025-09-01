@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types';
 
 const REPO_CONFIG = {
 	owner: 'otterscale',
-	repo: 'otterscale'
+	repo: 'otterscale',
 } as const;
 
 interface Release {
@@ -45,7 +45,7 @@ const CHANGE_PATTERNS: Record<ChangeType, RegExp> = {
 	test: /^\* test:\s*(.+?)\s*by\s*@(\w+)\s*in\s*(https:\/\/github\.com\/[^ ]+)/,
 	style: /^\* style:\s*(.+?)\s*by\s*@(\w+)\s*in\s*(https:\/\/github\.com\/[^ ]+)/,
 	docs: /^\* docs:\s*(.+?)\s*by\s*@(\w+)\s*in\s*(https:\/\/github\.com\/[^ ]+)/,
-	chore: /^\* chore:\s*(.+?)\s*by\s*@(\w+)\s*in\s*(https:\/\/github\.com\/[^ ]+)/
+	chore: /^\* chore:\s*(.+?)\s*by\s*@(\w+)\s*in\s*(https:\/\/github\.com\/[^ ]+)/,
 };
 
 const createEmptyChanges = (): Changes => ({
@@ -56,7 +56,7 @@ const createEmptyChanges = (): Changes => ({
 	test: [],
 	style: [],
 	docs: [],
-	chore: []
+	chore: [],
 });
 
 const parseBody = (body: string): Changes => {
@@ -76,7 +76,7 @@ const parseBody = (body: string): Changes => {
 				changes[type as ChangeType].push({
 					description: match[descriptionIndex],
 					author: match[authorIndex],
-					pull_request: match[prIndex]
+					pull_request: match[prIndex],
 				});
 				break;
 			}
@@ -93,16 +93,14 @@ interface UserDetails {
 }
 
 const fetchUserDetails = async (octokit: Octokit, authors: string[]): Promise<UserDetails[]> => {
-	const userPromises = authors.map((author) =>
-		octokit.request('GET /users/{username}', { username: author })
-	);
+	const userPromises = authors.map((author) => octokit.request('GET /users/{username}', { username: author }));
 
 	const userResponses = await Promise.all(userPromises);
 
 	return userResponses.map((response) => ({
 		username: response.data.login,
 		name: response.data.name,
-		company: response.data.company
+		company: response.data.company,
 	}));
 };
 
@@ -126,21 +124,21 @@ const createUsersMap = (users: UserDetails[]): Record<string, UserDetails> => {
 			acc[user.username] = user;
 			return acc;
 		},
-		{} as Record<string, UserDetails>
+		{} as Record<string, UserDetails>,
 	);
 };
 
 export const load: PageServerLoad = async () => {
 	const octokit = new Octokit({
-		auth: env.GITHUB_ACCESS_TOKEN
+		auth: env.GITHUB_ACCESS_TOKEN,
 	});
 
 	try {
-		const releasesResponse = await octokit.request('GET /repos/{owner}/{repo}/releases', REPO_CONFIG)
+		const releasesResponse = await octokit.request('GET /repos/{owner}/{repo}/releases', REPO_CONFIG);
 
-		const tags = releasesResponse.data.map(release => release.tag_name);
+		const tags = releasesResponse.data.map((release) => release.tag_name);
 		const sorted = semver.rsort(tags);
-		const latestTag = sorted.find(tag => !tag.includes('alpha') && !tag.includes('beta') && !tag.includes('rc'));
+		const latestTag = sorted.find((tag) => !tag.includes('alpha') && !tag.includes('beta') && !tag.includes('rc'));
 
 		const releases: Release[] = releasesResponse.data
 			.map((release) => ({
@@ -150,7 +148,7 @@ export const load: PageServerLoad = async () => {
 				html_url: release.html_url,
 				prerelease: release.prerelease,
 				created_at: new Date(release.created_at),
-				changes: parseBody(release.body || '')
+				changes: parseBody(release.body || ''),
 			}))
 			.sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
 
@@ -164,7 +162,7 @@ export const load: PageServerLoad = async () => {
 		return {
 			releases: [] as Release[],
 			usersMap: {} as Record<string, UserDetails>,
-			error: 'Failed to fetch releases'
+			error: 'Failed to fetch releases',
 		};
 	}
 };

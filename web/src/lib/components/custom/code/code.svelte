@@ -21,7 +21,7 @@
 		code: box.with(() => code),
 		hideLines: box.with(() => hideLines),
 		highlight: box.with(() => highlight),
-		lang: box.with(() => lang)
+		lang: box.with(() => lang),
 	});
 </script>
 

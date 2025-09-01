@@ -18,7 +18,7 @@
 		table,
 		values,
 		columnId,
-		alias
+		alias,
 	}: { table: Table<TData>; values: number[]; columnId: string; alias?: string } = $props();
 
 	const minimum = Math.min(...values);

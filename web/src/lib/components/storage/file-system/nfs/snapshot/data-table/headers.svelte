@@ -10,7 +10,7 @@
 		name,
 		createTime,
 		hasPendingClones,
-		actions
+		actions,
 	};
 </script>
 

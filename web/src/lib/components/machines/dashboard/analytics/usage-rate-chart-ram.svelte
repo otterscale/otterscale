@@ -23,14 +23,14 @@
                 sum(node_memory_MemAvailable_bytes{instance=~"${machine.fqdn}"}) /
                 sum(node_memory_MemTotal_bytes{instance=~"${machine.fqdn}"})
             )
-        `
+        `,
 	});
 
 	// Data fetching function
 	async function fetchMetrics() {
 		const [descriptionResponse, usageResponse] = await Promise.all([
 			client.instantQuery(queries.description),
-			client.instantQuery(queries.usage)
+			client.instantQuery(queries.usage),
 		]);
 
 		const descriptionValue = descriptionResponse.result[0]?.value?.value;
@@ -41,7 +41,7 @@
 
 		return {
 			description: capacity ? `${capacity.value} ${capacity.unit}` : undefined,
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }],
 		};
 	}
 </script>

@@ -28,7 +28,7 @@
 
 	// Prometheus query for CPU load average
 	const query = $derived(
-		`sum by (device) (rate(node_network_transmit_bytes_total{instance=~"${machine.fqdn}", device!="lo"}[5m]))`
+		`sum by (device) (rate(node_network_transmit_bytes_total{instance=~"${machine.fqdn}", device!="lo"}[5m]))`,
 	);
 </script>
 
@@ -45,11 +45,7 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content
-				data={response}
-				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
-				valueFormatter={formatIO}
-			/>
+			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} valueFormatter={formatIO} />
 		{/snippet}
 	</Layout>
 {:catch error}

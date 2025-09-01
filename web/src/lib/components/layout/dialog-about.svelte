@@ -12,7 +12,7 @@
 
 	const links = [
 		{ icon: 'streamline-logos:github-logo-2-solid', url: staticPaths.github.url },
-		{ icon: 'ph:paper-plane-tilt-fill', url: staticPaths.feedback.url }
+		{ icon: 'ph:paper-plane-tilt-fill', url: staticPaths.feedback.url },
 	];
 </script>
 

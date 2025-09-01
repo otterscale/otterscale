@@ -15,7 +15,7 @@ const messages = {
 	disk: m.disk(),
 	storage: m.storage(),
 	scope: m.scope(),
-	tags: m.tags()
+	tags: m.tags(),
 };
 
 const columns: ColumnDef<Machine>[] = [
@@ -28,7 +28,7 @@ const columns: ColumnDef<Machine>[] = [
 			return renderSnippet(cells.row_picker, row);
 		},
 		enableSorting: false,
-		enableHiding: false
+		enableHiding: false,
 	},
 	{
 		accessorKey: 'fqdn_ip',
@@ -43,7 +43,7 @@ const columns: ColumnDef<Machine>[] = [
 				previousRow.original.fqdn,
 				nextRow.original.fqdn,
 				(p: string, n: string) => p.localeCompare(n) < 0,
-				(p, n) => p === n
+				(p, n) => p === n,
 			),
 		filterFn: (row, columnId, filterValue: string | undefined) => {
 			if (filterValue === undefined) {
@@ -51,7 +51,7 @@ const columns: ColumnDef<Machine>[] = [
 			}
 
 			return row.original.fqdn.includes(filterValue);
-		}
+		},
 	},
 	{
 		accessorKey: 'powerState',
@@ -61,7 +61,7 @@ const columns: ColumnDef<Machine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.powerState, row);
 		},
-		filterFn: 'arrIncludesSome'
+		filterFn: 'arrIncludesSome',
 	},
 	{
 		accessorKey: 'status',
@@ -71,7 +71,7 @@ const columns: ColumnDef<Machine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.status, row);
 		},
-		filterFn: 'arrIncludesSome'
+		filterFn: 'arrIncludesSome',
 	},
 	{
 		accessorKey: 'cores_arch',
@@ -86,8 +86,8 @@ const columns: ColumnDef<Machine>[] = [
 				previousRow.original.cpuCount,
 				nextRow.original.cpuCount,
 				(p, n) => p < n,
-				(p, n) => p === n
-			)
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'ram',
@@ -102,8 +102,8 @@ const columns: ColumnDef<Machine>[] = [
 				previousRow.original.memoryMb,
 				nextRow.original.memoryMb,
 				(p, n) => p < n,
-				(p, n) => p === n
-			)
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'disk',
@@ -118,8 +118,8 @@ const columns: ColumnDef<Machine>[] = [
 				previousRow.original.blockDevices.length,
 				nextRow.original.blockDevices.length,
 				(p, n) => p < n,
-				(p, n) => p === n
-			)
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'storage',
@@ -134,8 +134,8 @@ const columns: ColumnDef<Machine>[] = [
 				previousRow.original.storageMb,
 				nextRow.original.storageMb,
 				(p, n) => p < n,
-				(p, n) => p === n
-			)
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'scope',
@@ -144,7 +144,7 @@ const columns: ColumnDef<Machine>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.scope, row);
-		}
+		},
 	},
 	{
 		accessorKey: 'tags',
@@ -159,8 +159,8 @@ const columns: ColumnDef<Machine>[] = [
 				previousRow.original.tags.length,
 				nextRow.original.tags.length,
 				(p, n) => p < n,
-				(p, n) => p === n
-			)
+				(p, n) => p === n,
+			),
 	},
 	{
 		accessorKey: 'actions',
@@ -170,8 +170,8 @@ const columns: ColumnDef<Machine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.actions, row);
 		},
-		enableHiding: false
-	}
+		enableHiding: false,
+	},
 ];
 
 export { columns, messages };

@@ -11,7 +11,7 @@
 	// Set breadcrumb navigation
 	breadcrumb.set({
 		parents: [dynamicPaths.settings(page.params.scope)],
-		current: { title: m.subscription(), url: '' }
+		current: { title: m.subscription(), url: '' },
 	});
 
 	// Tier configurations
@@ -22,7 +22,7 @@
 			description: m.basic_setup_description(),
 			icons: [
 				{ name: 'simple-icons:ceph', color: '#f0424d', hasAnimation: false },
-				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: false }
+				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: false },
 			],
 			features: [
 				m.single_node_ceph(),
@@ -38,9 +38,9 @@
 				m.community_support(),
 				m.community_support_description(),
 				m.usage_limitations(),
-				m.usage_limitations_description()
+				m.usage_limitations_description(),
 			],
-			isRecommended: false
+			isRecommended: false,
 		},
 		{
 			id: PremiumTier.ADVANCED,
@@ -55,9 +55,9 @@
 				m.team_access(),
 				m.team_access_description(),
 				m.priority_support(),
-				m.priority_support_description()
+				m.priority_support_description(),
 			],
-			isRecommended: false
+			isRecommended: false,
 		},
 		{
 			id: PremiumTier.ENTERPRISE,
@@ -65,7 +65,7 @@
 			description: m.enterprise_setup_description(),
 			icons: [
 				{ name: 'simple-icons:ceph', color: '#f0424d', hasAnimation: true },
-				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: true }
+				{ name: 'simple-icons:kubernetes', color: '#326de6', hasAnimation: true },
 			],
 			features: [
 				m.all_advanced_features(),
@@ -81,10 +81,10 @@
 				m.customization_services(),
 				m.customization_services_description(),
 				m.training_services(),
-				m.training_services_description()
+				m.training_services_description(),
 			],
-			isRecommended: true
-		}
+			isRecommended: true,
+		},
 	];
 </script>
 

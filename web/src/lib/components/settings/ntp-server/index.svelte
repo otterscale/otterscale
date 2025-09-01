@@ -1,8 +1,5 @@
 <script lang="ts" module>
-	import {
-		ConfigurationService,
-		type Configuration
-	} from '$lib/api/configuration/v1/configuration_pb';
+	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';

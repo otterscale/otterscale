@@ -13,38 +13,38 @@
 		{
 			icon: 'ph:clock',
 			title: m.ntp_server(),
-			page: 'ntp-server'
+			page: 'ntp-server',
 		},
 		{
 			icon: 'ph:package',
 			title: m.package_repository(),
-			page: 'package-repository'
+			page: 'package-repository',
 		},
 		{
 			icon: 'ph:disc',
 			title: m.boot_image(),
-			page: 'boot-image'
+			page: 'boot-image',
 		},
 		{
 			icon: 'ph:tag-simple',
 			title: m.machine_tag(),
-			page: 'machine-tag'
+			page: 'machine-tag',
 		},
 		{
 			icon: 'ph:key',
 			title: m.sso(),
-			page: 'single-sign-on'
+			page: 'single-sign-on',
 		},
 		{
 			icon: 'ph:test-tube',
 			title: m.built_in_test(),
-			page: 'built-in-test'
+			page: 'built-in-test',
 		},
 		{
 			icon: 'ph:wallet',
 			title: m.subscription(),
-			page: 'subscription'
-		}
+			page: 'subscription',
+		},
 	];
 </script>
 
@@ -56,9 +56,7 @@
 
 	<Separator />
 
-	<div
-		class="mx-auto grid w-full items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]"
-	>
+	<div class="mx-auto grid w-full items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
 		<NavigationMenu.Root viewport={false}>
 			<NavigationMenu.List class="flex-col items-start">
 				{#each items as item}

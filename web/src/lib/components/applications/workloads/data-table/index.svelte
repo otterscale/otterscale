@@ -13,7 +13,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import { columns, messages } from './columns';
@@ -23,7 +23,7 @@
 <script lang="ts" generics="TData, TValue">
 	let {
 		applications,
-		reloadManager
+		reloadManager,
 	}: {
 		applications: Writable<Application[]>;
 		reloadManager: ReloadManager;
@@ -61,7 +61,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 
 		onPaginationChange: (updater) => {
@@ -100,25 +100,15 @@
 			}
 		},
 
-		autoResetPageIndex: false
+		autoResetPageIndex: false,
 	});
 </script>
 
 <Layout.Root>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy
-				columnId="name"
-				values={$applications.map((row) => row.name)}
-				{messages}
-				{table}
-			/>
-			<Filters.StringMatch
-				columnId="type"
-				values={$applications.flatMap((row) => row.type)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringFuzzy columnId="name" values={$applications.map((row) => row.name)} {messages} {table} />
+			<Filters.StringMatch columnId="type" values={$applications.flatMap((row) => row.type)} {messages} {table} />
 			<Filters.StringMatch
 				columnId="namespace"
 				values={$applications.flatMap((row) => row.namespace)}

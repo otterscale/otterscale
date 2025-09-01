@@ -5,10 +5,7 @@
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { env } from '$env/dynamic/public';
-	import {
-		EnvironmentService,
-		type WatchStatusResponse
-	} from '$lib/api/environment/v1/environment_pb';
+	import { EnvironmentService, type WatchStatusResponse } from '$lib/api/environment/v1/environment_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import { Button } from '$lib/components/ui/button';
 	import * as Code from '$lib/components/custom/code';
@@ -24,11 +21,11 @@
 		{ path: dynamicPaths.databases(scope.name), description: m.databases_description() },
 		{
 			path: dynamicPaths.applications(scope.name),
-			description: m.applications_description()
+			description: m.applications_description(),
 		},
 		{ path: dynamicPaths.storage(scope.name), description: m.storage_description() },
 		{ path: dynamicPaths.machines(scope.name), description: m.machines_description() },
-		{ path: dynamicPaths.settings(scope.name), description: m.settings_description() }
+		{ path: dynamicPaths.settings(scope.name), description: m.settings_description() },
 	];
 
 	// Types
@@ -78,7 +75,7 @@
 						...state,
 						started: status.started,
 						finished: status.finished,
-						messages: [...state.messages, status]
+						messages: [...state.messages, status],
 					}));
 				}
 				break;
@@ -157,12 +154,7 @@
 				</div>
 			{:else if started}
 				<!-- Installation Progress View -->
-				<Button
-					class="text-muted-foreground mt-4 text-center text-lg"
-					variant="ghost"
-					size="lg"
-					disabled
-				>
+				<Button class="text-muted-foreground mt-4 text-center text-lg" variant="ghost" size="lg" disabled>
 					<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
 					{m.setup_environment_installing()}
 				</Button>
@@ -197,12 +189,7 @@
 				</div>
 			{:else}
 				<!-- Installation View -->
-				<Button
-					class="text-muted-foreground mt-4 text-center text-lg"
-					variant="ghost"
-					size="lg"
-					disabled
-				>
+				<Button class="text-muted-foreground mt-4 text-center text-lg" variant="ghost" size="lg" disabled>
 					<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
 					{m.setup_environment_waiting()}
 				</Button>
@@ -268,12 +255,7 @@
 			{/if}
 		{:else}
 			<!-- Loading View -->
-			<Button
-				class="text-muted-foreground mt-4 text-center text-lg"
-				variant="ghost"
-				size="lg"
-				disabled
-			>
+			<Button class="text-muted-foreground mt-4 text-center text-lg" variant="ghost" size="lg" disabled>
 				<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
 				{m.setup_environment_loading()}
 			</Button>

@@ -2,7 +2,7 @@
 	import {
 		ApplicationService,
 		type Application_Chart,
-		type Application_Release
+		type Application_Release,
 	} from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
 	import { createClient, type Transport } from '@connectrpc/connect';
@@ -36,7 +36,7 @@
 		await applicationClient
 			.listReleases({
 				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name
+				facilityName: $currentKubernetes?.name,
 			})
 			.then((response) => {
 				releases.set(response.releases);

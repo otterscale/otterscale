@@ -14,7 +14,7 @@
 		type PaginationState,
 		type RowSelectionState,
 		type SortingState,
-		type VisibilityState
+		type VisibilityState,
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
 	import Create from './action-create.svelte';
@@ -23,8 +23,7 @@
 </script>
 
 <script lang="ts" generics="TData, TValue">
-	let { pools, reloadManager }: { pools: Writable<Pool[]>; reloadManager: ReloadManager } =
-		$props();
+	let { pools, reloadManager }: { pools: Writable<Pool[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
@@ -58,7 +57,7 @@
 			},
 			get rowSelection() {
 				return rowSelection;
-			}
+			},
 		},
 		onPaginationChange: (updater) => {
 			if (typeof updater === 'function') {
@@ -96,7 +95,7 @@
 			}
 		},
 
-		autoResetPageIndex: false
+		autoResetPageIndex: false,
 	});
 </script>
 
@@ -106,12 +105,7 @@
 	</Layout.Statistics>
 	<Layout.Controller>
 		<Layout.ControllerFilter>
-			<Filters.StringFuzzy
-				columnId="name"
-				values={$pools.map((row) => row.name)}
-				{messages}
-				{table}
-			/>
+			<Filters.StringFuzzy columnId="name" values={$pools.map((row) => row.name)} {messages} {table} />
 			<Filters.StringMatch
 				columnId="applications"
 				values={$pools.flatMap((row) => row.applications)}

@@ -29,7 +29,7 @@
 	// Prometheus query for Disk Read/Write
 	const query = $derived({
 		Read: `sum (rate(node_disk_read_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`,
-		Write: `sum (rate(node_disk_written_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`
+		Write: `sum (rate(node_disk_written_bytes_total{instance=~"${machine.fqdn}", device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|dasd.+)"}[5m]))`,
 	});
 </script>
 
@@ -46,11 +46,7 @@
 		{/snippet}
 
 		{#snippet content()}
-			<Content
-				data={response}
-				timeRange={formatTimeRange(TIME_RANGE_HOURS)}
-				valueFormatter={formatIO}
-			/>
+			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} valueFormatter={formatIO} />
 		{/snippet}
 	</Layout>
 {:catch error}

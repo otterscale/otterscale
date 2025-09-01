@@ -20,7 +20,7 @@
 	const query = $derived(
 		`
 		sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[5m]))
-		`
+		`,
 	);
 </script>
 

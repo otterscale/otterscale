@@ -4,17 +4,17 @@
 
 The following environment variables are required for the application to run properly:
 
-| Variable | Description | Required | Example Value |
-|----------|-------------|----------|---------------|
-| `PUBLIC_URL` | The public URL where the application is hosted | Yes | `https://otterscale.example.com` |
-| `PUBLIC_API_URL` | The public API endpoint URL | Yes | `https://otterscale-service.example.com` |
-| `AUTH_SECRET` | Secret key used for authentication token signing | Yes | `Qf6XiQEthdq2d8uQJqLvcQtg7QEz3JUe` |
-| `AUTH_TRUSTED_PROVIDERS` | Comma-separated list of trusted authentication providers | No | `otterscale,otterscale-oidc` |
-| `AUTH_OIDC_PROVIDER` | The OIDC provider identifier | No | `otterscale-oidc` |
-| `DATABASE_URL` | PostgreSQL database connection string | Yes | `postgresql://USER:PASSWORD@localhost:5432/postgres` |
-| `GITHUB_CLIENT_ID` | GitHub OAuth application client ID | No | `-` |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth application client secret | No | `-` |
-| `SSO_LOGIN_PROMPT` | Enable/disable SSO login prompt | No | `true` |
+| Variable                 | Description                                              | Required | Example Value                                        |
+| ------------------------ | -------------------------------------------------------- | -------- | ---------------------------------------------------- |
+| `PUBLIC_URL`             | The public URL where the application is hosted           | Yes      | `https://otterscale.example.com`                     |
+| `PUBLIC_API_URL`         | The public API endpoint URL                              | Yes      | `https://otterscale-service.example.com`             |
+| `AUTH_SECRET`            | Secret key used for authentication token signing         | Yes      | `Qf6XiQEthdq2d8uQJqLvcQtg7QEz3JUe`                   |
+| `AUTH_TRUSTED_PROVIDERS` | Comma-separated list of trusted authentication providers | No       | `otterscale,otterscale-oidc`                         |
+| `AUTH_OIDC_PROVIDER`     | The OIDC provider identifier                             | No       | `otterscale-oidc`                                    |
+| `DATABASE_URL`           | PostgreSQL database connection string                    | Yes      | `postgresql://USER:PASSWORD@localhost:5432/postgres` |
+| `GITHUB_CLIENT_ID`       | GitHub OAuth application client ID                       | No       | `-`                                                  |
+| `GITHUB_CLIENT_SECRET`   | GitHub OAuth application client secret                   | No       | `-`                                                  |
+| `SSO_LOGIN_PROMPT`       | Enable/disable SSO login prompt                          | No       | `true`                                               |
 
 ## Developing
 

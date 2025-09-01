@@ -15,7 +15,7 @@
 
 <script lang="ts">
 	let {
-		pool
+		pool,
 	}: {
 		pool: Pool;
 	} = $props();
@@ -28,7 +28,7 @@
 
 	const defaults = {
 		scopeUuid: $currentCeph?.scopeUuid,
-		facilityName: $currentCeph?.name
+		facilityName: $currentCeph?.name,
 	} as DeletePoolRequest;
 	let request = $state(defaults);
 	function reset() {
@@ -61,7 +61,7 @@
 				</Form.Field>
 				<Form.Help>
 					{m.deletion_warning({
-						identifier: m.pool_name()
+						identifier: m.pool_name(),
 					})}
 				</Form.Help>
 			</Form.Fieldset>
@@ -88,10 +88,10 @@
 								let message = `Fail to delete ${request.poolName}`;
 								toast.error(message, {
 									description: (error as ConnectError).message.toString(),
-									duration: Number.POSITIVE_INFINITY
+									duration: Number.POSITIVE_INFINITY,
 								});
 								return message;
-							}
+							},
 						});
 						reset();
 						close();
