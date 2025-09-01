@@ -211,7 +211,7 @@ func (r *core) CreatePersistentVolumeClaims(ctx context.Context, config *rest.Co
 	return clientset.CoreV1().PersistentVolumeClaims(namespace).Create(ctx, pvc, opts)
 }
 
-func (r *core) GetPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string, name string) (*oscore.PersistentVolumeClaim, error) {
+func (r *core) GetPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.PersistentVolumeClaim, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err

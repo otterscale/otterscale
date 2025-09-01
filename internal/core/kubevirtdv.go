@@ -16,7 +16,7 @@ import (
 type KubeVirtDVRepo interface {
 	// CreateDataVolume 建立 DataVolume
 	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string,
-		source_type string, source string, sizeBytes int64, is_bootable bool) (*DataVolume, error)
+		sourceType string, source string, sizeBytes int64, isBootable bool) (*DataVolume, error)
 
 	// GetDataVolume 取得指定的 DataVolume
 	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string, pvc *v1.PersistentVolumeClaim) (*DataVolume, error)
@@ -32,22 +32,18 @@ type KubeVirtDVRepo interface {
 }
 
 // CreateDataVolume 透過 KubeVirtDVRepo 建立 DataVolume，先取得 kubeConfig 再委派給 repo
-func (uc *KubeVirtUseCase) CreateDataVolume(ctx context.Context, uuid, facility,
-	namespace string, name string, source_type string, source string, sizeBytes int64, is_bootable bool) (*DataVolume, error) {
-
+func (uc *KubeVirtUseCase) CreateDataVolume(ctx context.Context, uuid, facility, namespace, name, sourceType, source string, sizeBytes int64, isBootable bool) (*DataVolume, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
 
 	return uc.kubeVirtDV.CreateDataVolume(ctx, config, namespace, name,
-		source_type, source, sizeBytes, is_bootable)
+		sourceType, source, sizeBytes, isBootable)
 }
 
 // GetDataVolume 取得 DataVolume 並回傳 domain model
-func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility,
-	namespace string, name string) (*DataVolume, error) {
-
+func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility, namespace, name string) (*DataVolume, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -67,9 +63,7 @@ func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility,
 }
 
 // ListDataVolumes 列出指定 namespace 下的所有 DataVolume
-func (uc *KubeVirtUseCase) ListDataVolumes(ctx context.Context, uuid, facility,
-	namespace string) ([]DataVolume, error) {
-
+func (uc *KubeVirtUseCase) ListDataVolumes(ctx context.Context, uuid, facility, namespace string) ([]DataVolume, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -78,9 +72,7 @@ func (uc *KubeVirtUseCase) ListDataVolumes(ctx context.Context, uuid, facility,
 }
 
 // DeleteDataVolume 刪除指定的 DataVolume
-func (uc *KubeVirtUseCase) DeleteDataVolume(ctx context.Context, uuid, facility,
-	namespace string, name string) error {
-
+func (uc *KubeVirtUseCase) DeleteDataVolume(ctx context.Context, uuid, facility, namespace, name string) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
@@ -89,9 +81,7 @@ func (uc *KubeVirtUseCase) DeleteDataVolume(ctx context.Context, uuid, facility,
 }
 
 // ExtendDataVolume 為 DataVolume 內的 PVC 進行容量擴充
-func (uc *KubeVirtUseCase) ExtendDataVolume(ctx context.Context, uuid, facility,
-	namespace string, name string, sizeBytes int64) error {
-
+func (uc *KubeVirtUseCase) ExtendDataVolume(ctx context.Context, uuid, facility, namespace, name string, sizeBytes int64) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return err
@@ -113,9 +103,7 @@ func (uc *KubeVirtUseCase) ExtendDataVolume(ctx context.Context, uuid, facility,
 }
 
 // GetDataVolumeConditions 取得 DataVolume 的 Bound 條件訊息
-func GetDataVolumeConditions(dv *DataVolume) (condition_message string,
-	condition_reason string, condition_status string) {
-
+func GetDataVolumeConditions(dv *DataVolume) (conditionMessage, conditionReason, conditionStatus string) {
 	for _, condition := range dv.Status.Conditions {
 		if condition.Type == "Bound" {
 			return condition.Message, condition.Reason, string(condition.Status)
@@ -125,9 +113,7 @@ func GetDataVolumeConditions(dv *DataVolume) (condition_message string,
 }
 
 // GetPVCInfo 從 PVC Spec 取得大小、存取模式與 storage class
-func GetPVCInfo(pvc *v1.PersistentVolumeClaimSpec) (sizeBytes int64,
-	accessMode string, storageClassName string) {
-
+func GetPVCInfo(pvc *v1.PersistentVolumeClaimSpec) (sizeBytes int64, accessMode, storageClassName string) {
 	if pvc.Resources.Requests != nil {
 		size, found := pvc.Resources.Requests["storage"]
 		if found {
@@ -144,9 +130,7 @@ func GetPVCInfo(pvc *v1.PersistentVolumeClaimSpec) (sizeBytes int64,
 }
 
 // GetStorageInfo 從 DataVolume.Storage 取得大小、存取模式與 storage class
-func GetStorageInfo(storage *v1beta1.StorageSpec) (sizeBytes int64,
-	accessMode string, storageClassName string) {
-
+func GetStorageInfo(storage *v1beta1.StorageSpec) (sizeBytes int64, accessMode, storageClassName string) {
 	if storage.Resources.Requests != nil {
 		size, found := storage.Resources.Requests["storage"]
 		if found {
@@ -166,7 +150,7 @@ func GetStorageInfo(storage *v1beta1.StorageSpec) (sizeBytes int64,
 ExtractDataVolumeInfo 從 DataVolume 取得 source、sourceType、大小、存取模式與 storage class。
 DataVolume 同時可能有 PVC 與 Storage 兩種規格，但同時只會出現其中一種。
 */
-func ExtractDataVolumeInfo(dv *DataVolume) (source string, sourceType string, sizeBytes int64, accessMode string, storageClassName string) {
+func ExtractDataVolumeInfo(dv *DataVolume) (source, sourceType, accessMode, storageClassName string, sizeBytes int64) {
 	if dv == nil {
 		return
 	}
@@ -192,7 +176,7 @@ func ExtractDataVolumeInfo(dv *DataVolume) (source string, sourceType string, si
 		sourceType = "S3"
 	case dv.Spec.Source.VDDK != nil:
 		source = dv.Spec.Source.VDDK.URL
-		sourceType = string(dv.Spec.Source.VDDK.UUID)
+		sourceType = dv.Spec.Source.VDDK.UUID
 	}
 	return
 }
@@ -213,8 +197,10 @@ func StorageSpec(size int64) *v1beta1.StorageSpec {
 func PvcResizePatch(desired string) ([]byte, error) {
 	ops := []map[string]interface{}{
 		{"op": "replace", "path": "/spec/resources/requests/storage", "value": desired},
-		{"op": "add", "path": "/metadata/annotations/otterscale.io~1last-updated",
-			"value": time.Now().Format(time.RFC3339)},
+		{
+			"op": "add", "path": "/metadata/annotations/otterscale.io~1last-updated",
+			"value": time.Now().Format(time.RFC3339),
+		},
 	}
 	return json.Marshal(ops)
 }

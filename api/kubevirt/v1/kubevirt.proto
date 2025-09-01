@@ -87,7 +87,7 @@ message VirtualMachineResources{
 // Resource definitions
 message InstanceType {
   Metadata metadata = 1;
-  float cpu_cores = 2;
+  uint32 cpu_cores = 2;
   int64 memory_bytes = 3;
 }
 
@@ -115,8 +115,8 @@ message VirtualMachineService {
 message VirtualMachineServiceSpec {
   enum Type {
     TYPE_UNSPECIFIED = 0;
-    NODE_PORT        = 2;
-    LOAD_BALANCER    = 3;
+    NODE_PORT        = 1;
+    LOAD_BALANCER    = 2;
   }
 
   string virtual_machine_name = 1;
@@ -164,12 +164,12 @@ message GetVirtualMachineRequest {
 
 message VirtualMachineDisk {
   enum type {
-      UNSPECIFIED = 0;
-      DATAVOLUME = 1;
-      PERSISTENTVOLUMECLAIM = 2;
-      CONFIGMAP = 3;
-      SECRET = 4;
-      CLOUDINITNOCLOUD = 5;
+    UNSPECIFIED = 0;
+    DATAVOLUME = 1;
+    PERSISTENTVOLUMECLAIM = 2;
+    CONFIGMAP = 3;
+    SECRET = 4;
+    CLOUDINITNOCLOUD = 5;
   }
   string name = 1;
   type disk_type = 2;

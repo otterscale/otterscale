@@ -4,11 +4,11 @@ import (
 	"time"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
+	corev1 "k8s.io/api/core/v1"
 	clonev1 "kubevirt.io/api/clone/v1beta1"
 	virtCorev1 "kubevirt.io/api/core/v1"
 	snapshotv1 "kubevirt.io/api/snapshot/v1beta1"
 	v1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
-	corev1 "k8s.io/api/core/v1"
 )
 
 type (
@@ -116,7 +116,7 @@ type Device struct {
 // InstanceType represents a flavor resource
 type InstanceType struct {
 	Metadata    Metadata
-	CPUCores    float32
+	CPUCores    uint32
 	MemoryBytes int64
 }
 

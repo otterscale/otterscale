@@ -8,13 +8,13 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "github.com/openhdc/otterscale/api/kubevirt/v1"
-	virtCorev1 "kubevirt.io/api/core/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
+	virtCorev1 "kubevirt.io/api/core/v1"
 
+	pb "github.com/openhdc/otterscale/api/kubevirt/v1"
 	"github.com/openhdc/otterscale/api/kubevirt/v1/pbconnect"
 	"github.com/openhdc/otterscale/internal/core"
-	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 type KubeVirtService struct {
@@ -254,13 +254,13 @@ func (s *KubeVirtService) ListVirtualMachineServices(ctx context.Context, req *c
 	return connect.NewResponse(resp), nil
 }
 
-func (s *KubeVirtService) UpdateVirtualMachineService(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineServiceRequest]) (*connect.Response[pb.VirtualMachineService], error) { 
-    vmsvc, err := s.uc.UpdateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toCoreVirtualMachineService(req.Msg.GetVirtualMachineService()),)
-    if err != nil {
-        return nil, err
-    }
-    resp := toProtoVirtualMachineService(vmsvc)
-    return connect.NewResponse(resp), nil
+func (s *KubeVirtService) UpdateVirtualMachineService(ctx context.Context, req *connect.Request[pb.UpdateVirtualMachineServiceRequest]) (*connect.Response[pb.VirtualMachineService], error) {
+	vmsvc, err := s.uc.UpdateVirtualMachineService(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), toCoreVirtualMachineService(req.Msg.GetVirtualMachineService()))
+	if err != nil {
+		return nil, err
+	}
+	resp := toProtoVirtualMachineService(vmsvc)
+	return connect.NewResponse(resp), nil
 }
 
 func (s *KubeVirtService) DeleteVirtualMachineService(ctx context.Context, req *connect.Request[pb.DeleteVirtualMachineServiceRequest]) (*connect.Response[emptypb.Empty], error) {
@@ -341,18 +341,18 @@ func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInst
 }
 
 func fromVirtualMachine(vm *core.VirtualMachine) *pb.Metadata {
-	return toProtoMetadata(vm.GetNamespace(), vm.GetName(), vm.GetLabels(), vm.GetAnnotations(), vm.CreationTimestamp.Time, vm.GetAnnotations()["otterscale.io/last-updated"])
+	return toProtoMetadata(vm.GetNamespace(), vm.GetName(), vm.GetLabels(), vm.CreationTimestamp.Time, vm.GetAnnotations()["otterscale.io/last-updated"])
 }
 
 func fromDataVolume(dv *core.DataVolume) *pb.Metadata {
-	return toProtoMetadata(dv.GetNamespace(), dv.GetName(), dv.GetLabels(), dv.GetAnnotations(), dv.CreationTimestamp.Time, dv.GetAnnotations()["otterscale.io/last-updated"])
+	return toProtoMetadata(dv.GetNamespace(), dv.GetName(), dv.GetLabels(), dv.CreationTimestamp.Time, dv.GetAnnotations()["otterscale.io/last-updated"])
 }
 
 func fromInstanceType(t *core.InstanceType) *pb.Metadata {
-	return toProtoMetadata(t.Metadata.Namespace, t.Metadata.Name, t.Metadata.Labels, t.Metadata.Annotations, t.Metadata.CreatedAt.AsTime(), t.Metadata.Annotations["otterscale.io/last-updated"])
+	return toProtoMetadata(t.Metadata.Namespace, t.Metadata.Name, t.Metadata.Labels, t.Metadata.CreatedAt.AsTime(), t.Metadata.Annotations["otterscale.io/last-updated"])
 }
 
-func toProtoMetadata(namespace, name string, labels, annotations map[string]string, creationTimestamp time.Time, updateTimestamp string) *pb.Metadata {
+func toProtoMetadata(namespace, name string, labels map[string]string, creationTimestamp time.Time, updateTimestamp string) *pb.Metadata {
 	ret := &pb.Metadata{}
 
 	ret.SetName(name)
@@ -409,8 +409,8 @@ func toProtoVirtualMachineResources(vm *core.VirtualMachine) *pb.VirtualMachineR
 
 func buildVolumeMap(vm *core.VirtualMachine) map[string]virtCorev1.Volume {
 	m := make(map[string]virtCorev1.Volume, len(vm.Spec.Template.Spec.Volumes))
-	for _, vol := range vm.Spec.Template.Spec.Volumes {
-		m[vol.Name] = vol
+	for i := range vm.Spec.Template.Spec.Volumes {
+		m[vm.Spec.Template.Spec.Volumes[i].Name] = vm.Spec.Template.Spec.Volumes[i]
 	}
 	return m
 }
@@ -420,12 +420,12 @@ func toProtoVirtualMachineDisks(vm *core.VirtualMachine) []*pb.VirtualMachineDis
 	ret := []*pb.VirtualMachineDisk{}
 	for i := range vm.Spec.Template.Spec.Domain.Devices.Disks {
 		d := vm.Spec.Template.Spec.Domain.Devices.Disks[i]
-		ret = append(ret, toProtoVirtualMachineDisk(d, volumeMap))
+		ret = append(ret, toProtoVirtualMachineDisk(&d, volumeMap))
 	}
 	return ret
 }
 
-func toProtoVirtualMachineDisk(disk virtCorev1.Disk, vmVols map[string]virtCorev1.Volume) *pb.VirtualMachineDisk {
+func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCorev1.Volume) *pb.VirtualMachineDisk {
 	ret := &pb.VirtualMachineDisk{}
 	ret.SetName(disk.Name)
 	if disk.Disk != nil {
@@ -506,7 +506,7 @@ func toProtoDataVolumes(dvs []core.DataVolume) []*pb.DataVolume {
 
 func toProtoDataVolume(dv *core.DataVolume) *pb.DataVolume {
 	ret := &pb.DataVolume{}
-	source, sourceType, sizeBytes, accessMode, storageClassName := core.ExtractDataVolumeInfo(dv)
+	source, sourceType, accessMode, storageClassName, sizeBytes := core.ExtractDataVolumeInfo(dv)
 
 	ret.SetMetadata(fromDataVolume(dv))
 	ret.SetSource(source)
@@ -520,10 +520,10 @@ func toProtoDataVolume(dv *core.DataVolume) *pb.DataVolume {
 	ret.SetStatusClaimName(dv.Status.ClaimName)
 
 	if dv.Status.Conditions != nil {
-		condition_message, condition_reason, condition_status := core.GetDataVolumeConditions(dv)
-		ret.SetLastConditionMessage(condition_message)
-		ret.SetLastConditionReason(condition_reason)
-		ret.SetLastConditionStatus(condition_status)
+		conditionMessage, conditionReason, conditionStatus := core.GetDataVolumeConditions(dv)
+		ret.SetLastConditionMessage(conditionMessage)
+		ret.SetLastConditionReason(conditionReason)
+		ret.SetLastConditionStatus(conditionStatus)
 	}
 	return ret
 }
@@ -540,103 +540,103 @@ func toProtoVirtualMachineService(vmsvc *core.VirtualMachineService) *pb.Virtual
 	ret := &pb.VirtualMachineService{}
 	meta := &pb.Metadata{}
 	meta.SetName(vmsvc.GetName())
-    meta.SetNamespace(vmsvc.GetNamespace())
-    meta.SetLabels(vmsvc.GetLabels())
-    meta.SetCreatedAt(timestamppb.New(vmsvc.GetCreationTimestamp().Time))
-    if ann := vmsvc.GetAnnotations(); ann != nil {
-        if ts := ann["otterscale.io/last-updated"]; ts != "" {
-            if t, err := time.Parse(time.RFC3339, ts); err == nil {
-                meta.SetUpdatedAt(timestamppb.New(t))
-            }
-        }
-    }
+	meta.SetNamespace(vmsvc.GetNamespace())
+	meta.SetLabels(vmsvc.GetLabels())
+	meta.SetCreatedAt(timestamppb.New(vmsvc.GetCreationTimestamp().Time))
+	if ann := vmsvc.GetAnnotations(); ann != nil {
+		if ts := ann["otterscale.io/last-updated"]; ts != "" {
+			if t, err := time.Parse(time.RFC3339, ts); err == nil {
+				meta.SetUpdatedAt(timestamppb.New(t))
+			}
+		}
+	}
 
 	sp := &pb.VirtualMachineServiceSpec{}
-    switch vmsvc.Spec.Type {
-    case corev1.ServiceTypeNodePort:
-        sp.SetType(pb.VirtualMachineServiceSpec_NODE_PORT)
-    case corev1.ServiceTypeLoadBalancer:
-        sp.SetType(pb.VirtualMachineServiceSpec_LOAD_BALANCER)
-    default:
-        sp.SetType(pb.VirtualMachineServiceSpec_TYPE_UNSPECIFIED)
-    }
+	switch vmsvc.Spec.Type {
+	case corev1.ServiceTypeNodePort:
+		sp.SetType(pb.VirtualMachineServiceSpec_NODE_PORT)
+	case corev1.ServiceTypeLoadBalancer:
+		sp.SetType(pb.VirtualMachineServiceSpec_LOAD_BALANCER)
+	default:
+		sp.SetType(pb.VirtualMachineServiceSpec_TYPE_UNSPECIFIED)
+	}
 	sp.SetSelector(vmsvc.Spec.Selector)
-    if vm, ok := vmsvc.Spec.Selector["kubevirt.io/vm"]; ok {
-        sp.SetVirtualMachineName(vm)
-    }
+	if vm, ok := vmsvc.Spec.Selector["kubevirt.io/vm"]; ok {
+		sp.SetVirtualMachineName(vm)
+	}
 	ports := make([]*pb.ServicePort, 0, len(vmsvc.Spec.Ports))
 	for _, p := range vmsvc.Spec.Ports {
-        pp := &pb.ServicePort{}
-        pp.SetName(p.Name)
-        pp.SetPort(p.Port)
-        if p.Protocol == corev1.ProtocolUDP {
-            pp.SetProtocol(pb.ServicePort_UDP)
-        } else {
-            pp.SetProtocol(pb.ServicePort_TCP)
-        }
-        pp.SetNodePort(p.NodePort)
-        ports = append(ports, pp)
-    }
-    sp.SetPorts(ports)
-    ret.SetSpec(sp)
+		pp := &pb.ServicePort{}
+		pp.SetName(p.Name)
+		pp.SetPort(p.Port)
+		if p.Protocol == corev1.ProtocolUDP {
+			pp.SetProtocol(pb.ServicePort_UDP)
+		} else {
+			pp.SetProtocol(pb.ServicePort_TCP)
+		}
+		pp.SetNodePort(p.NodePort)
+		ports = append(ports, pp)
+	}
+	sp.SetPorts(ports)
+	ret.SetSpec(sp)
 	st := &pb.VirtualMachineServiceStatus{}
-    if vmsvc.Spec.ClusterIP != "" {
-        st.SetClusterIp(vmsvc.Spec.ClusterIP)
-    }
-    if len(vmsvc.Spec.ClusterIPs) > 0 { 
-        st.SetClusterIps(vmsvc.Spec.ClusterIPs)
-    }
-    if ingress := vmsvc.Status.LoadBalancer.Ingress; len(ingress) > 0 {
-        addrs := make([]string, 0, len(ingress))
-        for _, in := range ingress {
-            if in.IP != "" {
-                addrs = append(addrs, in.IP)
-            } else if in.Hostname != "" {
-                addrs = append(addrs, in.Hostname)
-            }
-        }
-        st.SetLoadBalancerIngress(addrs)
-    }
-    ret.SetStatus(st)
-	
+	if vmsvc.Spec.ClusterIP != "" {
+		st.SetClusterIp(vmsvc.Spec.ClusterIP)
+	}
+	if len(vmsvc.Spec.ClusterIPs) > 0 {
+		st.SetClusterIps(vmsvc.Spec.ClusterIPs)
+	}
+	if ingress := vmsvc.Status.LoadBalancer.Ingress; len(ingress) > 0 {
+		addrs := make([]string, 0, len(ingress))
+		for _, in := range ingress {
+			if in.IP != "" {
+				addrs = append(addrs, in.IP)
+			} else if in.Hostname != "" {
+				addrs = append(addrs, in.Hostname)
+			}
+		}
+		st.SetLoadBalancerIngress(addrs)
+	}
+	ret.SetStatus(st)
+
 	return ret
 }
 
-func toCoreVirtualMachineService(vmsvc *pb.VirtualMachineService) core.VirtualMachineServiceSpec {
+func toCoreVirtualMachineService(vmsvc *pb.VirtualMachineService) *core.VirtualMachineServiceSpec {
 	var spec corev1.ServiceSpec
 	switch vmsvc.GetSpec().GetType() {
-    case pb.VirtualMachineServiceSpec_NODE_PORT:
-        spec.Type = corev1.ServiceTypeNodePort
-    case pb.VirtualMachineServiceSpec_LOAD_BALANCER:
-        spec.Type = corev1.ServiceTypeLoadBalancer
-    default:
-        spec.Type = corev1.ServiceTypeLoadBalancer
-    }
+	case pb.VirtualMachineServiceSpec_NODE_PORT:
+		spec.Type = corev1.ServiceTypeNodePort
+	case pb.VirtualMachineServiceSpec_LOAD_BALANCER:
+		spec.Type = corev1.ServiceTypeLoadBalancer
+	default:
+		spec.Type = corev1.ServiceTypeLoadBalancer
+	}
 
 	vmName := vmsvc.GetSpec().GetVirtualMachineName()
-    if vmName != "" {
-        spec.Selector = map[string]string{"kubevirt.io/vm": vmName}
-    } else {
-        spec.Selector = map[string]string{}
-    }
+	if vmName != "" {
+		spec.Selector = map[string]string{"kubevirt.io/vm": vmName}
+	} else {
+		spec.Selector = map[string]string{}
+	}
 
-     for _, p := range vmsvc.GetSpec().GetPorts() {
-        sp := corev1.ServicePort{
-            Name:       p.GetName(),
-            Port:       p.GetPort(),
-            TargetPort: intstr.FromInt(int(p.GetPort())),
-            Protocol:   corev1.ProtocolTCP,
-        }
-        if p.GetProtocol() == pb.ServicePort_UDP {
-            sp.Protocol = corev1.ProtocolUDP
-        }
-        if spec.Type == corev1.ServiceTypeNodePort && p.GetNodePort() > 0 {
-            sp.NodePort = p.GetNodePort()
-        }
-        spec.Ports = append(spec.Ports, sp)
-    }
+	for _, p := range vmsvc.GetSpec().GetPorts() {
+		sp := corev1.ServicePort{
+			Name:       p.GetName(),
+			Port:       p.GetPort(),
+			TargetPort: intstr.FromInt(int(p.GetPort())),
+			Protocol:   corev1.ProtocolTCP,
+		}
+		if p.GetProtocol() == pb.ServicePort_UDP {
+			sp.Protocol = corev1.ProtocolUDP
+		}
+		if spec.Type == corev1.ServiceTypeNodePort && p.GetNodePort() > 0 {
+			sp.NodePort = p.GetNodePort()
+		}
+		spec.Ports = append(spec.Ports, sp)
+	}
 
-	return spec
+	return &spec
 }
 
 func toProtoInstanceTypes(flavors []core.InstanceType) []*pb.InstanceType {
@@ -657,8 +657,8 @@ func toProtoInstanceType(f *core.InstanceType) *pb.InstanceType {
 	return ret
 }
 
-func toCoreInstanceType(f *pb.InstanceType) core.InstanceType {
-	return core.InstanceType{
+func toCoreInstanceType(f *pb.InstanceType) *core.InstanceType {
+	return &core.InstanceType{
 		Metadata:    toCoreMetadata(f.GetMetadata()),
 		CPUCores:    f.GetCpuCores(),
 		MemoryBytes: f.GetMemoryBytes(),

@@ -7,19 +7,19 @@ import (
 )
 
 type KubeVirtInstanceTypeRepo interface {
-	CreateInstanceType(ctx context.Context, config *rest.Config, InstanceType InstanceType) (*InstanceType, error)
+	CreateInstanceType(ctx context.Context, config *rest.Config, instanceType *InstanceType) (*InstanceType, error)
 	GetInstanceType(ctx context.Context, config *rest.Config, name string) (*InstanceType, error)
 	ListInstanceTypes(ctx context.Context, config *rest.Config) ([]InstanceType, error)
 	DeleteInstanceType(ctx context.Context, config *rest.Config, name string) error
 }
 
 // InstanceType Operations
-func (uc *KubeVirtUseCase) CreateInstanceType(ctx context.Context, uuid, facility string, InstanceType InstanceType) (*InstanceType, error) {
+func (uc *KubeVirtUseCase) CreateInstanceType(ctx context.Context, uuid, facility string, instanceType *InstanceType) (*InstanceType, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeVirtInstanceType.CreateInstanceType(ctx, config, InstanceType)
+	return uc.kubeVirtInstanceType.CreateInstanceType(ctx, config, instanceType)
 }
 
 func (uc *KubeVirtUseCase) GetInstanceType(ctx context.Context, uuid, facility, name string) (*InstanceType, error) {

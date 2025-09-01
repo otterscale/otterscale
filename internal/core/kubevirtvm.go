@@ -85,7 +85,7 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 		"kubevirt.io/allow-pod-bridge-network-live-migration": "true",
 	}
 
-	vmDisks, vmVolumes, err := buildDisksAndVolumes(disks, script)
+	vmDisks, vmVolumes := buildDisksAndVolumes(disks, script)
 	if err != nil {
 		return nil, err
 	}
@@ -236,25 +236,25 @@ func (uc *KubeVirtUseCase) GetVirtualMachine(ctx context.Context, uuid, facility
 	return vm, vmi, err
 }
 
-func (uc *KubeVirtUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) ([]VirtualMachine, []VirtualMachineInstance, error) {
+func (uc *KubeVirtUseCase) ListVirtualMachines(ctx context.Context, uuid, facility, namespace string) (vms []VirtualMachine, vmis []VirtualMachineInstance, err error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	vms, err := uc.kubeVirtVM.ListVirtualMachines(ctx, config, namespace)
+	vms, err = uc.kubeVirtVM.ListVirtualMachines(ctx, config, namespace)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	vmis, err := uc.kubeVirtVM.ListVirtualMachineInstances(ctx, config, namespace)
+	vmis, err = uc.kubeVirtVM.ListVirtualMachineInstances(ctx, config, namespace)
 	if err != nil {
 		return nil, nil, err
 	}
 	return vms, vmis, err
 }
 
-func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, networkName string, labels map[string]string, disks []DiskDevice) (*VirtualMachine, *VirtualMachineInstance, error) {
+func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, networkName string, labels map[string]string, disks []DiskDevice) (vm *VirtualMachine, vmi *VirtualMachineInstance, err error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, nil, err
@@ -266,7 +266,7 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facil
 	}
 	oldVM.SetLabels(ensureLabels(labels))
 
-	vmDisks, vmVolumes, err := buildDisksAndVolumes(disks, "")
+	vmDisks, vmVolumes := buildDisksAndVolumes(disks, "")
 	if err != nil {
 		return nil, nil, err
 	}
@@ -278,7 +278,7 @@ func (uc *KubeVirtUseCase) UpdateVirtualMachine(ctx context.Context, uuid, facil
 		return nil, nil, err
 	}
 
-	vmi, err := uc.kubeVirtVM.GetVirtualMachineInstance(ctx, config, namespace, name)
+	vmi, err = uc.kubeVirtVM.GetVirtualMachineInstance(ctx, config, namespace, name)
 	if err != nil {
 		return updatedVM, nil, err
 	}
@@ -292,7 +292,7 @@ func ensureLabels(labels map[string]string) map[string]string {
 	return labels
 }
 
-func buildDisksAndVolumes(disks []DiskDevice, script string) (vmDisks []virtCorev1.Disk, vmVolumes []virtCorev1.Volume, err error) {
+func buildDisksAndVolumes(disks []DiskDevice, script string) (vmDisks []virtCorev1.Disk, vmVolumes []virtCorev1.Volume) {
 	for _, d := range disks {
 		// ---------- Disk ----------
 		var bus virtCorev1.DiskBus
@@ -334,7 +334,7 @@ func buildDisksAndVolumes(disks []DiskDevice, script string) (vmDisks []virtCore
 			},
 		})
 	}
-	return vmDisks, vmVolumes, nil
+	return vmDisks, vmVolumes
 }
 
 func (uc *KubeVirtUseCase) DeleteVirtualMachine(ctx context.Context, uuid, facility, namespace, name string) error {

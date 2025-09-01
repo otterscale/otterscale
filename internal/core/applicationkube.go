@@ -97,13 +97,14 @@ type KubeCoreRepo interface {
 	CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
 	UpdateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
 	DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error
-    
+
 	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
 	GetPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
 
 	// PersistentVolumeClaim
+	GetPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error)
 	CreatePersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*PersistentVolumeClaim, error)
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
 	UpdatePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*PersistentVolumeClaim, error)
