@@ -1,9 +1,9 @@
 {
 	"useTabs": true,
 	"tabWidth": 4,
-	"singleQuote": false,
-	"trailingComma": "es5",
-	"printWidth": 100,
+	"singleQuote": true,
+	"trailingComma": "all",
+	"printWidth": 120,
 	"plugins": [
 		"prettier-plugin-svelte",
 		"prettier-plugin-tailwindcss"
@@ -27,13 +27,15 @@
 			"files": ".github/**/*",
 			"options": {
 				"tabWidth": 2,
-				"useTabs": false
+				"useTabs": false,
+				"parser": "yaml"
 			}
 		}
 	],
 	"tailwindFunctions": [
 		"clsx",
 		"cn",
-		"tv"
+		"tv",
+		"cva"
 	]
 }
