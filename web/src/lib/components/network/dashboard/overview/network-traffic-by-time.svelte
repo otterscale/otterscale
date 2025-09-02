@@ -14,7 +14,7 @@
 	let {
 		prometheusDriver,
 		scope,
-		isReloading = $bindable()
+		isReloading = $bindable(),
 	}: {
 		prometheusDriver: PrometheusDriver;
 		scope: Scope;
@@ -27,13 +27,13 @@
 		receivesByTime.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmitsByTime[index]?.value ?? 0
-		}))
+			transmit: transmitsByTime[index]?.value ?? 0,
+		})),
 	);
 	let trafficsByTimeContext = $state<ChartContextValue>();
 	const trafficsByTimeConfiguration = {
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
-		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
+		transmit: { label: 'Transmit', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 
 	function fetch() {
@@ -42,7 +42,7 @@
 				`sum(increase(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[1h]))`,
 				new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
 				new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
-				1 * 60 * 60
+				1 * 60 * 60,
 			)
 			.then((response) => {
 				receivesByTime = response.result[0]?.values;
@@ -52,7 +52,7 @@
 				`sum(increase(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[1h]))`,
 				new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
 				new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
-				1 * 60 * 60
+				1 * 60 * 60,
 			)
 			.then((response) => {
 				transmitsByTime = response.result[0]?.values;
@@ -99,13 +99,13 @@
 							key: 'receive',
 							label: trafficsByTimeConfiguration.receive.label,
 							color: trafficsByTimeConfiguration.receive.color,
-							props: { rounded: 'bottom' }
+							props: { rounded: 'bottom' },
 						},
 						{
 							key: 'transmit',
 							label: trafficsByTimeConfiguration.transmit.label,
-							color: trafficsByTimeConfiguration.transmit.color
-						}
+							color: trafficsByTimeConfiguration.transmit.color,
+						},
 					]}
 					seriesLayout="stack"
 					props={{
@@ -115,15 +115,15 @@
 							initialHeight: 0,
 							motion: {
 								y: { type: 'tween', duration: 500, easing: cubicInOut },
-								height: { type: 'tween', duration: 500, easing: cubicInOut }
-							}
+								height: { type: 'tween', duration: 500, easing: cubicInOut },
+							},
 						},
 						highlight: { area: false },
 						xAxis: {
 							format: (v: Date) =>
 								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
-							ticks: 1
-						}
+							ticks: 1,
+						},
 					}}
 					legend
 				>
@@ -138,7 +138,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>

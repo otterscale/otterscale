@@ -11,23 +11,19 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let {
-		prometheusDriver,
-		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
+	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 	const facilityClient = createClient(FacilityService, transport);
 
 	const facilities = writable<Facility[]>([]);
 	const controlPlane = $derived(
-		$facilities.find(
-			(facility) => facility.name.includes('kubernetes-control-plane') && facility.units.length > 0
-		)
+		$facilities.find((facility) => facility.name.includes('kubernetes-control-plane') && facility.units.length > 0),
 	);
 	const controlPlaneUnits = $derived(controlPlane?.units ?? []);
 	const activeControlPlaneUnits = $derived(
-		controlPlaneUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []
+		controlPlaneUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? [],
 	);
 
 	async function fetch() {

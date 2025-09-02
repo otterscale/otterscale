@@ -31,34 +31,30 @@
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) =>
-			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
-		)
+		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
 	);
 	const totalNodes = $derived(scopeMachines.length);
 	const monthlyCounts = $derived(
 		scopeMachines.reduce(
 			(acc, m) => {
-				const dateStr = m.lastCommissioned
-					? timestampDate(m.lastCommissioned).toISOString().slice(0, 7)
-					: null;
+				const dateStr = m.lastCommissioned ? timestampDate(m.lastCommissioned).toISOString().slice(0, 7) : null;
 				if (dateStr) {
 					acc[dateStr] = (acc[dateStr] || 0) + 1;
 				}
 				return acc;
 			},
-			{} as Record<string, number>
-		)
+			{} as Record<string, number>,
+		),
 	);
 	const nodes = $derived(
 		months.map((month) => ({
 			date: new Date(month + '-01'),
-			node: monthlyCounts[month] || 0
-		}))
+			node: monthlyCounts[month] || 0,
+		})),
 	);
 
 	const nodesConfiguration = {
-		node: { label: 'Node', color: 'var(--chart-1)' }
+		node: { label: 'Node', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
@@ -120,20 +116,20 @@
 						{
 							key: 'node',
 							label: 'Node',
-							color: nodesConfiguration.node.color
-						}
+							color: nodesConfiguration.node.color,
+						},
 					]}
 					props={{
 						spline: { curve: curveNatural, motion: 'tween', strokeWidth: 2 },
 						highlight: {
 							points: {
 								motion: 'none',
-								r: 6
-							}
+								r: 6,
+							},
 						},
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString(getLocale(), { month: 'short' })
-						}
+							format: (v: Date) => v.toLocaleDateString(getLocale(), { month: 'short' }),
+						},
 					}}
 				>
 					{#snippet tooltip()}
