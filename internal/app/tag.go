@@ -6,9 +6,9 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/openhdc/otterscale/api/tag/v1"
-	"github.com/openhdc/otterscale/api/tag/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/core"
+	pb "github.com/otterscale/otterscale/api/tag/v1"
+	"github.com/otterscale/otterscale/api/tag/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type TagService struct {

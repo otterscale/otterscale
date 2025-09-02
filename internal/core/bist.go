@@ -17,8 +17,9 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 
-	"github.com/openhdc/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 const (
@@ -75,9 +76,9 @@ type FIOTargetNFS struct {
 type FIOInput struct {
 	AccessMode string `json:"access_mode"`
 	JobCount   int64  `json:"job_count"`
-	RunTime    string `json:"run_time"`
-	BlockSize  string `json:"block_size"`
-	FileSize   string `json:"file_size"`
+	RunTime    int64  `json:"run_time"`
+	BlockSize  int64  `json:"block_size"`
+	FileSize   int64  `json:"file_size"`
 	IODepth    int64  `json:"io_depth"`
 }
 
@@ -126,9 +127,9 @@ type WarpTargetExternal struct {
 
 type WarpInput struct {
 	Operation   string `json:"operation"`
-	Duration    string `json:"duration"`
-	ObjectSize  string `json:"object_size"`
-	ObjectCount string `json:"object_count"`
+	Duration    int64  `json:"duration"`
+	ObjectSize  int64  `json:"object_size"`
+	ObjectCount int64  `json:"object_count"`
 }
 
 type WarpOutput struct {
@@ -301,17 +302,15 @@ func (uc *BISTUseCase) listMinIOs(ctx context.Context, uuid string) ([]WarpTarge
 }
 
 func (uc *BISTUseCase) newMicroK8sConfig() (*rest.Config, error) {
-	token, err := base64.StdEncoding.DecodeString(uc.conf.MicroK8s.Token)
+	kubeConfig, err := base64.StdEncoding.DecodeString(uc.conf.MicroK8s.Config)
 	if err != nil {
 		return nil, err
 	}
-	return &rest.Config{
-		Host:        uc.conf.MicroK8s.Host,
-		BearerToken: string(token),
-		TLSClientConfig: rest.TLSClientConfig{
-			Insecure: true,
-		},
-	}, nil
+	configAPI, err := clientcmd.Load(kubeConfig)
+	if err != nil {
+		return nil, err
+	}
+	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
 }
 
 func (uc *BISTUseCase) ensureNamespace(ctx context.Context, config *rest.Config) error {

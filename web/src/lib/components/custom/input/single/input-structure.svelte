@@ -1,12 +1,10 @@
 <script lang="ts" module>
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import { FormValidator } from '$lib/components/custom/form';
+	import * as Code from '$lib/components/custom/code';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils';
 	import 'highlight.js/styles/github.css';
-	import { getContext } from 'svelte';
 	import Monaco from 'svelte-monaco';
-	import { DialogStateController } from '../../utils.svelte';
 </script>
 
 <script lang="ts">
@@ -15,63 +13,41 @@
 		value = $bindable(),
 		language,
 		required,
-		preview
+		preview = true,
+		invalid = $bindable(),
 	}: {
 		id?: string;
 		language: 'json';
 		value: string;
 		required?: boolean;
 		preview?: boolean;
+		invalid?: boolean | null | undefined;
 	} = $props();
 
-	const ORIGIN_VALUE = value;
-	let temporaryValue = $state(ORIGIN_VALUE);
-	function reset() {
-		temporaryValue = ORIGIN_VALUE;
-	}
+	let temporaryValue = $state(value);
+	let open = $state(false);
 
-	let controller = $state(new DialogStateController(false));
-
-	const isNotFilled = $derived(required && !value);
-
-	const formValidator: FormValidator = getContext('FormValidator');
+	const isInvalid = $derived(required && !value);
 	$effect(() => {
-		formValidator.set(id, isNotFilled);
+		invalid = isInvalid;
 	});
 </script>
 
 {#if preview}
 	{#key value}
 		{#if value}
-			<div class="h-[100px] w-full">
-				<Monaco
-					options={{
-						language,
-						automaticLayout: true,
-
-						padding: { top: 8, bottom: 8 },
-						overviewRulerBorder: false,
-						hideCursorInOverviewRuler: true,
-
-						readOnly: true
-					}}
-					theme="vs-dark"
-					bind:value
-				/>
-			</div>
+			<Code.Root class="w-full" lang={language} code={value} hideLines>
+				<Code.CopyButton />
+			</Code.Root>
 		{/if}
 	{/key}
 {/if}
 
-<AlertDialog.Root bind:open={controller.state}>
+<AlertDialog.Root bind:open>
 	<AlertDialog.Trigger
-		class={cn(
-			buttonVariants({ variant: 'outline' }),
-			'ring-1',
-			isNotFilled ? 'ring-destructive' : ''
-		)}
+		class={cn(buttonVariants({ variant: 'outline' }), 'ring-1', isInvalid ? 'ring-destructive' : '')}
 	>
-		{#if isNotFilled}
+		{#if isInvalid}
 			<p class={cn('text-destructive text-xs')}>Required</p>
 		{:else}
 			Input/Edit
@@ -87,19 +63,27 @@
 				automaticLayout: true,
 				padding: { top: 8, bottom: 8 },
 				overviewRulerBorder: false,
-				hideCursorInOverviewRuler: true
+				hideCursorInOverviewRuler: true,
 			}}
 			theme="vs-dark"
 			bind:value={temporaryValue}
 		/>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel onclick={reset}>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Cancel
+				onclick={() => {
+					temporaryValue = value;
+				}}
+			>
+				Cancel
+			</AlertDialog.Cancel>
 			<AlertDialog.Action
 				onclick={() => {
 					value = temporaryValue;
-					controller.close();
-				}}>Confirm</AlertDialog.Action
+					open = false;
+				}}
 			>
+				Confirm
+			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>

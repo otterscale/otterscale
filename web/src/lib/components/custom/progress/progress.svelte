@@ -1,11 +1,15 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { Progress } from '$lib/components/ui/progress';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import { formatProgressColor } from '$lib/formatter';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -13,31 +17,43 @@
 		denominator,
 		ratio,
 		detail,
+		highIsGood = true,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> & {
 		numerator: number;
 		denominator: number;
 		ratio?: Snippet<[{ numerator: number; denominator: number }]>;
 		detail?: Snippet<[{ numerator: number; denominator: number }]>;
+		highIsGood?: boolean;
 	} = $props();
+
+	const progressRatio = $derived(denominator > 0 ? numerator / denominator : 0);
 </script>
 
 {#if denominator > 0}
 	<div bind:this={ref} data-slot="progress-root" {...restProps}>
-		<Progress value={numerator / denominator} max={1} />
-		{#if detail || ratio}
+		<Progress value={progressRatio} max={1} class={formatProgressColor(progressRatio, false, highIsGood)} />
+		{#if ratio}
 			<div
 				class={cn(
-					'text-muted-foreground flex items-center justify-between gap-4 font-light',
-					className
+					'text-muted-foreground flex items-center justify-end font-light sm:min-w-[100px] md:min-w-[200px]',
+					className,
 				)}
 			>
-				<span>
-					{@render detail?.({ numerator, denominator })}
-				</span>
-				<span>
+				{#if detail}
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								{@render ratio?.({ numerator, denominator })}
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								{@render detail?.({ numerator, denominator })}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
+				{:else}
 					{@render ratio?.({ numerator, denominator })}
-				</span>
+				{/if}
 			</div>
 		{/if}
 	</div>

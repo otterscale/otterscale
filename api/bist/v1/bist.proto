@@ -5,7 +5,7 @@ package otterscale.bist.v1;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/openhdc/otterscale/api/bist/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/bist/v1;pb";
 
 service BISTService {
   rpc ListTestResults(ListTestResultsRequest) returns (ListTestResultsResponse);
@@ -58,11 +58,11 @@ message FIO {
       RAND_TRIM_WRITE = 9;
     }
     AccessMode access_mode = 1;
-    int64 job_count = 31;    // 1.13.3 Job description
-    string run_time = 41;    // 1.13.4 Time related parameters
-    string block_size = 71;  // 1.13.7 Block size
-    string file_size = 91;   // 1.13.9 I/O size
-    int64 io_depth = 121;    // 1.13.12 I/O depth
+    int64 job_count = 31;         // 1.13.3 Job description
+    int64 run_time_seconds = 41;  // 1.13.4 Time related parameters
+    int64 block_size_bytes = 71;  // 1.13.7 Block size
+    int64 file_size_bytes = 91;   // 1.13.9 I/O size
+    int64 io_depth = 121;         // 1.13.12 I/O depth
   }
   message Output {
     message Throughput {
@@ -100,9 +100,9 @@ message Warp {
       MIXED = 5;
     }
     Operation operation = 1;
-    string duration = 21;
-    string object_size = 31;
-    string object_count = 32;
+    int64 duration_seconds = 21;
+    int64 object_size_bytes = 31;
+    int64 object_count = 32;
   }
   message Output {
     message Throughput {

@@ -1,207 +1,376 @@
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
+	import { writable } from 'svelte/store';
 	import Icon from '@iconify/svelte';
+	import { goto } from '$app/navigation';
+	import { authClient } from '$lib/auth-client';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { i18n } from '$lib/i18n';
-	import { cn } from '$lib/utils';
-	import { appendCallback, getCallback } from '$lib/callback';
-	import { signIn } from '$lib/auth-client';
-	import { invalidate } from '$app/navigation';
+	import { m } from '$lib/paraglide/messages';
+	import LoginImage from '$lib/assets/login.png';
+	import SignUpImage from '$lib/assets/sign-up.jpg';
 
-	let { class: className, ...restProps }: HTMLAttributes<HTMLDivElement> = $props();
+	const { data } = $props();
+	const id = $props.id();
 
-	const email = writable('');
-	const password = writable('');
-	const loading = writable(false);
-
-	async function onSubmit() {
-		loading.set(true);
-
-		await signIn.email(
-			{
-				email: $email,
-				password: $password,
-				callbackURL: i18n.resolveRoute(getCallback())
-			},
-			{
-				async onSuccess(context) {
-					// TODO: welcome message
-					toast.success('Logged in successfully!');
-				},
-				onError(context) {
-					toast.error(context.error.message);
-				}
-			}
-		);
-
-		loading.set(false);
+	// Types
+	interface LoadingState {
+		email: boolean;
+		apple: boolean;
+		github: boolean;
+		google: boolean;
+		sso: boolean;
 	}
 
-	async function authWithOAuth2(oauth2: OAuth2) {
-		oauth2.loading = true;
-
-		await signIn.social(
-			{
-				provider: oauth2.provider,
-				callbackURL: i18n.resolveRoute(getCallback())
-			},
-			{
-				async onSuccess() {
-					// TODO: welcome message
-					await invalidate('app:user');
-					toast.success('Logged in successfully!');
-				},
-				onError(context) {
-					toast.error(context.error.message);
-					oauth2.loading = false;
-				}
-			}
-		);
+	interface SignInForm {
+		email: string;
+		password: string;
 	}
 
-	interface OAuth2 {
-		provider:
-			| 'apple'
-			| 'discord'
-			| 'facebook'
-			| 'github'
-			| 'google'
-			| 'microsoft'
-			| 'spotify'
-			| 'twitch'
-			| 'twitter'
-			| 'dropbox'
-			| 'linkedin'
-			| 'gitlab'
-			| 'tiktok'
-			| 'reddit'
-			| 'roblox'
-			| 'vk'
-			| 'kick';
-		name: string;
-		icon: string;
-		loading: boolean;
+	interface SignUpForm {
+		firstName: string;
+		lastName: string;
+		email: string;
+		password: string;
 	}
 
-	let oauth2List = $state<OAuth2[]>([
+	// State
+	const signUp = writable(false);
+	const loading = writable<LoadingState>({
+		email: false,
+		apple: false,
+		github: false,
+		google: false,
+		sso: false,
+	});
+
+	const signInForm = writable<SignInForm>({
+		email: '',
+		password: '',
+	});
+
+	const signUpForm = writable<SignUpForm>({
+		firstName: '',
+		lastName: '',
+		email: '',
+		password: '',
+	});
+
+	// Constants
+	const providers = [
 		{
-			provider: 'apple',
-			name: 'Apple',
-			icon: 'ph:apple-logo',
-			loading: false
+			type: 'social',
+			id: 'apple',
+			icon: 'streamline-logos:apple-logo-solid',
+			label: 'Apple',
+			enabled: data.apple,
+			prompt: false,
 		},
 		{
-			provider: 'facebook',
-			name: 'Facebook',
-			icon: 'ph:facebook-logo',
-			loading: false
+			type: 'social',
+			id: 'github',
+			icon: 'streamline-logos:github-logo-2-solid',
+			label: 'GitHub',
+			enabled: data.github,
+			prompt: false,
 		},
 		{
-			provider: 'github',
-			name: 'GitHub',
-			icon: 'ph:github-logo',
-			loading: false
+			type: 'social',
+			id: 'google',
+			icon: 'streamline-logos:google-logo-solid',
+			label: 'Google',
+			enabled: data.google,
+			prompt: false,
 		},
 		{
-			provider: 'google',
-			name: 'Google',
-			icon: 'ph:google-logo',
-			loading: false
+			type: 'oidc',
+			id: 'oidc',
+			icon: 'simple-icons:openid',
+			label: 'OIDC Single Sign-On',
+			enabled: Boolean(data.oidcProvider),
+			prompt: Boolean(data.ssoLoginPrompt),
 		},
-		{
-			provider: 'twitter',
-			name: 'X',
-			icon: 'ph:x-logo',
-			loading: false
+	];
+
+	// Calculate enabled social providers count
+	const enabledProviders = providers.filter((provider) => provider.enabled);
+
+	// Utility functions
+	const showError = (context: any) => {
+		const message = context.error.message || 'An error occurred. Please try again.';
+		toast.error(message);
+	};
+
+	const setLoadingState = async (provider: string, asyncFn: () => Promise<void>) => {
+		loading.update((state) => ({ ...state, [provider]: true }));
+		try {
+			await asyncFn();
+		} finally {
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+			loading.update((state) => ({ ...state, [provider]: false }));
 		}
-	]);
+	};
+
+	// Auth handlers
+	const handleEmailSignUp = async () => {
+		await setLoadingState('email', async () => {
+			await authClient.signUp.email({
+				email: $signUpForm.email,
+				password: $signUpForm.password,
+				name: `${$signUpForm.firstName} ${$signUpForm.lastName}`,
+				fetchOptions: {
+					onSuccess: () => goto(data.nextPath),
+					onError: showError,
+				},
+			});
+		});
+	};
+
+	const handleEmailSignIn = async () => {
+		await setLoadingState('email', async () => {
+			await authClient.signIn.email({
+				email: $signInForm.email,
+				password: $signInForm.password,
+				callbackURL: data.nextPath,
+				fetchOptions: {
+					onError: showError,
+				},
+			});
+		});
+	};
+
+	const handleSocialSignIn = async (provider: string) => {
+		await setLoadingState(provider, async () => {
+			await authClient.signIn.social({
+				provider: provider as any,
+				callbackURL: data.nextPath,
+				fetchOptions: {
+					onError: showError,
+				},
+			});
+		});
+	};
+
+	const handleOIDCSignIn = async (provider: string) => {
+		await setLoadingState(provider, async () => {
+			await authClient.signIn.sso({
+				providerId: data.oidcProvider,
+				callbackURL: data.nextPath,
+			});
+		});
+	};
+
+	const toggleMode = () => signUp.update((current) => !current);
+
+	// Form handlers
+	const handleSignInSubmit = (e: Event) => {
+		e.preventDefault();
+		handleEmailSignIn();
+	};
+
+	const handleSignUpSubmit = (e: Event) => {
+		e.preventDefault();
+		handleEmailSignUp();
+	};
 </script>
 
-<div class={cn('flex w-full flex-col gap-6', className)} {...restProps}>
-	<Card.Root>
-		<Card.Header class="text-center">
-			<Card.Title class="text-xl">Login</Card.Title>
-			<Card.Description>Enter your email to access your account</Card.Description>
-		</Card.Header>
-		<Card.Content class="grid gap-6">
-			<form onsubmit={onSubmit}>
-				<div class="grid gap-2 space-y-2">
-					<div class="grid gap-1">
-						<Label class="sr-only" for="email">Email</Label>
+<Card.Root class="overflow-hidden p-0">
+	<Card.Content class="grid p-0 md:grid-cols-2">
+		<!-- Sign In Form -->
+		{#if !$signUp}
+			<form class="p-6 md:p-8" onsubmit={handleSignInSubmit}>
+				<div class="flex flex-col gap-6">
+					<div class="flex flex-col items-center text-center">
+						<h1 class="text-2xl font-bold">{m.login_title()}</h1>
+						<p class="text-muted-foreground text-balance">{m.login_description()}</p>
+					</div>
+
+					<div class="grid gap-3">
+						<Label for="signin-email-{id}">{m.email()}</Label>
 						<Input
-							id="email"
-							placeholder="name@example.com"
+							id="signin-email-{id}"
 							type="email"
-							autocapitalize="none"
-							autocomplete="email"
-							autocorrect="off"
-							disabled={$loading}
-							bind:value={$email}
+							placeholder="name@example.com"
+							required
+							disabled={$loading.email}
+							bind:value={$signInForm.email}
 						/>
 					</div>
-					<div class="grid gap-1">
-						<Label class="sr-only" for="password">Password</Label>
+
+					<div class="grid gap-3">
+						<Label for="signin-password-{id}">{m.password()}</Label>
 						<Input
-							id="password"
-							placeholder="********"
+							id="signin-password-{id}"
 							type="password"
-							autocapitalize="none"
-							autocomplete="current-password"
-							disabled={$loading}
-							bind:value={$password}
+							placeholder="********"
+							required
+							disabled={$loading.email}
+							bind:value={$signInForm.password}
 						/>
 					</div>
-					<Button type="submit" disabled={$loading} class="[&_svg]:size-5">
-						{#if $loading}
-							<Icon icon="ph:spinner-gap" class="animate-spin" />
+
+					<Button type="submit" class="w-full" disabled={$loading.email}>
+						{#if $loading.email}
+							<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
 						{:else}
-							<p>Go</p>
+							{m.login()}
 						{/if}
+					</Button>
+
+					<!-- Social Sign In -->
+					{#if enabledProviders.length > 0}
+						<div
+							class="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
+						>
+							<span class="bg-card text-muted-foreground relative z-10 px-2">
+								{m.login_divider()}
+							</span>
+						</div>
+
+						<div
+							class="grid gap-4 {enabledProviders.length > 1
+								? `grid-cols-${enabledProviders.length}`
+								: ''}"
+						>
+							{#each enabledProviders as provider}
+								<Tooltip.Provider>
+									<Tooltip.Root>
+										<Tooltip.Trigger
+											class="relative {buttonVariants({ variant: 'outline' })}"
+											disabled={$loading[provider.id as keyof LoadingState]}
+											onclick={() => {
+												if (provider.type == 'social') {
+													handleSocialSignIn(provider.id);
+												} else if (provider.type == 'oidc') {
+													handleOIDCSignIn(provider.id);
+												}
+											}}
+										>
+											{#if provider.prompt}
+												<div class="absolute -top-1 -right-1">
+													<span class="relative flex size-3">
+														<span
+															class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
+														></span>
+														<span
+															class="relative inline-flex size-3 rounded-full bg-blue-500"
+														></span>
+													</span>
+												</div>
+											{/if}
+
+											{#if $loading[provider.id as keyof LoadingState]}
+												<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
+											{:else}
+												<Icon icon={provider.icon} class="size-5" />
+											{/if}
+										</Tooltip.Trigger>
+										<Tooltip.Content>
+											<p>{provider.label}</p>
+										</Tooltip.Content>
+									</Tooltip.Root>
+								</Tooltip.Provider>
+							{/each}
+						</div>
+					{/if}
+
+					<Button variant="link" class="text-muted-foreground" onclick={toggleMode}>
+						{m.login_toggle()}
 					</Button>
 				</div>
 			</form>
-			<div class="relative">
-				<div class="absolute inset-0 flex items-center">
-					<span class="w-full border-t"></span>
-				</div>
-				<div class="relative flex justify-center text-xs uppercase">
-					<span class="bg-background px-2 text-muted-foreground"> Or continue with </span>
-				</div>
+
+			<!-- Placeholder Image -->
+			<div class="bg-muted relative hidden md:block">
+				<img
+					src={LoginImage}
+					alt="placeholder"
+					class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.85]"
+				/>
 			</div>
-			<div class="flex-col space-y-2">
-				<div class="flex justify-evenly space-x-2">
-					{#each oauth2List as oauth2}
-						<Tooltip.Provider>
-							<Tooltip.Root>
-								<Tooltip.Trigger
-									class={cn(
-										buttonVariants({ variant: 'outline' }),
-										'disabled:pointer-events-auto disabled:cursor-not-allowed [&_svg]:size-5'
-									)}
-									disabled={oauth2.loading}
-									onclick={() => authWithOAuth2(oauth2)}
-								>
-									{#if oauth2.loading}
-										<Icon icon="ph:spinner-gap" class="animate-spin" />
-									{:else}
-										<Icon icon={oauth2.icon} class="strike" />
-									{/if}
-								</Tooltip.Trigger>
-								<Tooltip.Content>
-									<p>{oauth2.name}</p>
-								</Tooltip.Content>
-							</Tooltip.Root>
-						</Tooltip.Provider>
-					{/each}
-				</div>
+		{/if}
+
+		<!-- Sign Up Form -->
+		{#if $signUp}
+			<!-- Placeholder Image -->
+			<div class="bg-muted relative hidden md:block">
+				<img
+					src={SignUpImage}
+					alt="placeholder"
+					class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.85]"
+				/>
 			</div>
-		</Card.Content>
-		<Card.Footer></Card.Footer>
-	</Card.Root>
-</div>
+
+			<form class="p-6 md:p-8" onsubmit={handleSignUpSubmit}>
+				<div class="flex flex-col gap-6">
+					<div class="flex flex-col items-center text-center">
+						<h1 class="text-2xl font-bold">{m.sign_up_title()}</h1>
+						<p class="text-muted-foreground text-balance">{m.sign_up_description()}</p>
+					</div>
+
+					<div class="grid grid-cols-2 gap-4">
+						<div class="grid gap-3">
+							<Label for="first-name-{id}">{m.first_name()}</Label>
+							<Input
+								id="first-name-{id}"
+								placeholder="Paul"
+								required
+								disabled={$loading.email}
+								bind:value={$signUpForm.firstName}
+							/>
+						</div>
+						<div class="grid gap-3">
+							<Label for="last-name-{id}">{m.last_name()}</Label>
+							<Input
+								id="last-name-{id}"
+								placeholder="Smith"
+								required
+								disabled={$loading.email}
+								bind:value={$signUpForm.lastName}
+							/>
+						</div>
+					</div>
+
+					<div class="grid gap-3">
+						<Label for="email-{id}">{m.email()}</Label>
+						<Input
+							id="email-{id}"
+							type="email"
+							placeholder="name@example.com"
+							required
+							disabled={$loading.email}
+							bind:value={$signUpForm.email}
+						/>
+					</div>
+
+					<div class="grid gap-3">
+						<Label for="password-{id}">{m.password()}</Label>
+						<Input
+							id="password-{id}"
+							type="password"
+							placeholder="********"
+							required
+							disabled={$loading.email}
+							bind:value={$signUpForm.password}
+						/>
+					</div>
+
+					<Button type="submit" class="w-full" disabled={$loading.email}>
+						{#if $loading.email}
+							<Icon icon="ph:spinner-gap" class="size-5 animate-spin" />
+						{:else}
+							{m.sign_up()}
+						{/if}
+					</Button>
+
+					<Button variant="link" class="text-muted-foreground" onclick={toggleMode}>
+						{m.sign_up_toggle()}
+					</Button>
+				</div>
+			</form>
+		{/if}
+	</Card.Content>
+</Card.Root>

@@ -15,7 +15,7 @@
 
 <div
 	bind:this={ref}
-	class={cn('flex items-center justify-between gap-1 text-xs font-light', className)}
+	class={cn('group flex items-center justify-between gap-1 text-xs font-medium', className)}
 	{...restProps}
 >
 	{@render children?.()}

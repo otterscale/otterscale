@@ -4,12 +4,11 @@
 	import { Command as CommandPrimitive } from 'bits-ui';
 	import { getContext, type Snippet } from 'svelte';
 	import type { Writable } from 'svelte/store';
+	import type { OptionType } from './types';
+	import type { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import type { OptionManager } from './utils.svelte';
-	import type { OptionType } from './types';
-
 	const optionManager: OptionManager = getContext('OptionManager');
 	let {
 		ref = $bindable(null),
@@ -25,7 +24,7 @@
 					accessor: {
 						input: string;
 					};
-				}
+				},
 			]
 		>;
 	} = $props();
@@ -35,13 +34,7 @@
 </script>
 
 <div class="flex items-center gap-1">
-	<Command.Input
-		data-slot="select-input"
-		class={cn(className)}
-		bind:ref
-		{...restProps}
-		bind:value
-	/>
+	<Command.Input data-slot="select-input" class={cn(className)} bind:ref {...restProps} bind:value />
 	{#if addition && isNotFoundInOptions}
 		{@render addition({
 			manager: optionManager,
@@ -51,8 +44,8 @@
 				},
 				get input() {
 					return value;
-				}
-			}
+				},
+			},
 		})}
 	{/if}
 </div>

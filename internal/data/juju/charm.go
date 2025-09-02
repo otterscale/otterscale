@@ -8,8 +8,8 @@ import (
 
 	"connectrpc.com/connect"
 
-	"github.com/openhdc/otterscale/internal/core"
-	"github.com/openhdc/otterscale/internal/utils"
+	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/utils"
 )
 
 type charm struct {

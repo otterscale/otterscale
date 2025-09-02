@@ -1,23 +1,19 @@
 <script lang="ts">
-	import { PinInput as InputOTPPrimitive } from "bits-ui";
-	import type { ComponentProps } from "svelte";
-	import { cn } from "$lib/utils.js";
+	import { PinInput as InputOTPPrimitive } from 'bits-ui';
+	import { cn } from '$lib/utils.js';
 
-	let {
-		ref = $bindable(null),
-		cell,
-		class: className,
-		...restProps
-	}: ComponentProps<typeof InputOTPPrimitive.Cell> = $props();
+	let { ref = $bindable(null), cell, class: className, ...restProps }: InputOTPPrimitive.CellProps = $props();
 </script>
 
 <InputOTPPrimitive.Cell
 	{cell}
 	bind:ref
+	data-slot="input-otp-slot"
 	class={cn(
-		"border-input relative flex h-9 w-9 items-center justify-center border-y border-r text-sm shadow-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
-		cell.isActive && "ring-ring z-10 ring-1",
-		className
+		'border-input aria-invalid:border-destructive dark:bg-input/30 relative flex size-10 items-center justify-center border-y border-r text-sm transition-all outline-none first:rounded-l-md first:border-l last:rounded-r-md',
+		cell.isActive &&
+			'border-ring ring-ring/50 aria-invalid:border-destructive dark:aria-invalid:ring-destructive/40 aria-invalid:ring-destructive/20 ring-offset-background z-10 ring-[3px]',
+		className,
 	)}
 	{...restProps}
 >

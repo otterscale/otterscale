@@ -9,7 +9,7 @@ import (
 	"github.com/juju/juju/core/status"
 	"github.com/juju/names/v5"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type model struct {

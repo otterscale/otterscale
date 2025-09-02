@@ -1,40 +1,42 @@
 <script lang="ts" module>
+	import { cn } from '$lib/utils';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
-	import { z } from 'zod';
 	import General from './input-general.svelte';
-
-	type Props = WithElementRef<Omit<HTMLInputAttributes, 'type'>>;
+	import { CopyButton } from '$lib/components/custom/copy-button';
 </script>
 
 <script lang="ts">
 	let {
-		id,
 		ref = $bindable(null),
 		value = $bindable(),
-		target,
-		required,
 		class: className,
+		id,
+		required,
+		target,
+		invalid = $bindable(),
 		...restProps
-	}: Props & { target: string } = $props();
+	}: WithElementRef<Omit<HTMLInputAttributes, 'type' | 'files'>> & {
+		target: string;
+		invalid?: boolean | null | undefined;
+	} = $props();
 
-	const schema = z.string().refine(
-		(value) => value === target,
-		() => ({
-			code: 'Unmatch',
-			message: `Please type "${target}" to confirm deletion`
-		})
-	);
+	const isInvalid = $derived(value !== target);
+	$effect(() => {
+		invalid = isInvalid;
+	});
 </script>
 
-<General
-	{id}
-	bind:ref
-	data-slot="input-delete-confirm"
-	required
-	type="text"
-	{schema}
-	placeholder={target}
-	bind:value
-	{...restProps}
-/>
+<div class="relative">
+	<General
+		bind:ref
+		data-slot="input-delete-confirm"
+		class={cn('pr-9', isInvalid ? 'ring-destructive' : '', className)}
+		type="text"
+		bind:value
+		placeholder={target}
+		required
+		{...restProps}
+	/>
+	<CopyButton text={target} class="absolute top-1/2 right-0 -translate-y-1/2 items-center" />
+</div>

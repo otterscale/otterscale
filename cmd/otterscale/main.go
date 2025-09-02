@@ -7,8 +7,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	oscmd "github.com/openhdc/otterscale/internal/cmd"
-	"github.com/openhdc/otterscale/internal/config"
+	oscmd "github.com/otterscale/otterscale/internal/cmd"
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 var version = "devel"

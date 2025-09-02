@@ -23,6 +23,6 @@
 	{sideOffset}
 	{align}
 	{side}
-	class={cn('w-fit p-0', className)}
+	class={cn('w-fit min-w-50 p-0', className)}
 	{...restProps}
 />

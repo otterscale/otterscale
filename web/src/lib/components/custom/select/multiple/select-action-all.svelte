@@ -2,11 +2,10 @@
 	import { Button, buttonVariants, type ButtonProps } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
 	import { getContext } from 'svelte';
+	import type { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import type { OptionManager } from './utils.svelte';
-
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -25,7 +24,7 @@
 <Button
 	bind:ref
 	data-slot="select-all"
-	class={cn('cursor-pointer', buttonVariants({ variant, size }), className)}
+	class={cn('cursor-pointer capitalize', buttonVariants({ variant, size }), className)}
 	{href}
 	{type}
 	{disabled}

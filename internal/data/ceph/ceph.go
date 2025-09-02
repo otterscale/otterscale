@@ -8,8 +8,8 @@ import (
 	"github.com/ceph/go-ceph/rados"
 	"github.com/ceph/go-ceph/rgw/admin"
 
-	"github.com/openhdc/otterscale/internal/config"
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type Ceph struct {

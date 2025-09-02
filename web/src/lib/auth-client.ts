@@ -1,16 +1,8 @@
-import { createAuthClient } from "better-auth/svelte"
-import { adminClient, organizationClient } from "better-auth/client/plugins"
+import { createAuthClient } from 'better-auth/svelte';
+import { ssoClient } from '@better-auth/sso/client';
+import { env } from '$env/dynamic/public';
 
 export const authClient = createAuthClient({
-    baseURL: import.meta.env.PUBLIC_URL,
-    plugins: [
-        adminClient(),
-        organizationClient({
-            teams: {
-                enabled: true
-            }
-        })
-    ]
-})
-
-export const { signIn, signUp } = authClient;
+	baseURL: env.PUBLIC_URL,
+	plugins: [ssoClient()],
+});

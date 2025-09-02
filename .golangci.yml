@@ -36,7 +36,7 @@ linters-settings:
   gocyclo:
     min-complexity: 30
   goimports:
-    local-prefixes: github.com/openhdc/otterscale
+    local-prefixes: github.com/otterscale/otterscale
   mnd:
     # don't include the "operation" and "assign"
     checks:

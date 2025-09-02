@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type server struct {

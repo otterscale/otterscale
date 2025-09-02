@@ -1,14 +1,11 @@
-<script lang="ts">
+<script lang="ts" module>
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
-
-	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui';
-	import {
-		buttonVariants,
-		type ButtonVariant,
-		type ButtonSize
-	} from '$lib/components/ui/button/index.js';
+	import { buttonVariants, type ButtonSize, type ButtonVariant } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
+	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		actionVariant,
@@ -25,9 +22,9 @@
 	bind:ref
 	data-slot="alert-dialog-action"
 	class={cn(
-		'hover:cursor-pointer',
+		'capitalize hover:cursor-pointer',
 		buttonVariants({ variant: actionVariant, size: actionSize }),
-		className
+		className,
 	)}
 	{...restProps}
 />

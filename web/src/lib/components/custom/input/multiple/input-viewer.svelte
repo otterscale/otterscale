@@ -6,11 +6,10 @@
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext, hasContext } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
+	import { InputManager, typeToIcon, ValuesManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import { InputManager, typeToIcon, ValuesManager } from './utils.svelte';
-
 	let {
 		ref = $bindable(null),
 		href,
@@ -41,11 +40,17 @@
 					{variant}
 				>
 					<span class="flex items-center gap-1">
-						<Icon icon={hasContext('icon') ? getContext('icon') : typeToIcon[inputManager.type]} />
+						<Icon
+							icon={hasContext('icon')
+								? getContext('icon')
+								: inputManager.type
+									? typeToIcon[inputManager.type]
+									: 'ph:cube'}
+						/>
 						{value}
 					</span>
 					<Button
-						class="size-3 cursor-pointer"
+						class={cn('size-3 cursor-pointer', disabled ? 'hidden' : 'visible')}
 						aria-label="Remove"
 						size="icon"
 						variant="ghost"

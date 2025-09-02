@@ -1,17 +1,5 @@
-type InputType =
-    | 'color'
-    | 'datetime-local'
-    | 'date'
-    | 'time'
-    | 'url'
-    | 'email'
-    | 'tel'
-    | 'text'
-    | 'number'
-    | 'search';
+type InputType = 'datetime-local' | 'date' | 'time' | 'url' | 'email' | 'tel' | 'text' | 'number' | 'search';
 
-type valueSetterType = (values: any[]) => void
+type AccessorType = { values: any[] };
 
-export type {
-    InputType, valueSetterType
-};
+export type { AccessorType, InputType };

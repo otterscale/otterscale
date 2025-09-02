@@ -6,7 +6,7 @@ import (
 	"github.com/juju/juju/core/crossmodel"
 	"github.com/juju/names/v5"
 
-	"github.com/openhdc/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/config"
 )
 
 var (

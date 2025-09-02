@@ -1,57 +1,36 @@
 <script lang="ts">
-	import { Metadata } from '$lib/components';
-	import { Toaster } from '$lib/components/ui/sonner';
-	import { i18n } from '$lib/i18n';
-	import { createConnectTransport } from '@connectrpc/connect-web';
-	import '@fontsource-variable/noto-sans-tc';
-	import logosIcons from '@iconify-json/logos/icons.json';
-	import phIcons from '@iconify-json/ph/icons.json';
-	import { addCollection } from '@iconify/svelte';
-	import { ParaglideJS } from '@inlang/paraglide-sveltekit';
-	import 'inter-ui/inter-variable.css';
+	import { setContext, onMount } from 'svelte';
 	import { ModeWatcher } from 'mode-watcher';
-	import { setContext } from 'svelte';
+	import { createConnectTransport } from '@connectrpc/connect-web';
+	import { addCollection } from '@iconify/svelte';
+	import logos from '@iconify-json/logos/icons.json';
+	import ph from '@iconify-json/ph/icons.json';
+	import simpleIcons from '@iconify-json/simple-icons/icons.json';
+	import streamlineLogos from '@iconify-json/streamline-logos/icons.json';
+	import { env } from '$env/dynamic/public';
+	import favicon from '$lib/assets/favicon.svg';
+	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import '../app.css';
-	import { getContext, onMount } from 'svelte';
-	import { createClient } from '@connectrpc/connect';
-	import { EnvironmentService, type Prometheus } from '$gen/api/environment/v1/environment_pb';
-	import { PrometheusDriver } from 'prometheus-query';
-	import { writable, type Writable } from 'svelte/store';
-
-	addCollection(phIcons);
-	addCollection(logosIcons);
 
 	let { children } = $props();
 
 	const transport = createConnectTransport({
-		baseUrl: import.meta.env.PUBLIC_API_URL
+		baseUrl: env.PUBLIC_API_URL,
 	});
+
 	setContext('transport', transport);
 
-	const prometheusDriver: Writable<PrometheusDriver> = writable({} as PrometheusDriver);
-	setContext('prometheusDriver', prometheusDriver);
-
-	onMount(async () => {
-		try {
-			const environmentService = createClient(EnvironmentService, transport);
-			const response = await environmentService.getPrometheus({});
-			prometheusDriver.set(
-				new PrometheusDriver({
-					endpoint: response.endpoint,
-					baseURL: response.baseUrl
-				})
-			);
-		} catch (error) {
-			console.error('Error during initial data load:', error);
-		}
-	});
+	addCollection(logos);
+	addCollection(ph);
+	addCollection(simpleIcons);
+	addCollection(streamlineLogos);
 </script>
 
-<Metadata />
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
 
 <ModeWatcher />
-<Toaster closeButton richColors />
+<Toaster richColors />
 
-<ParaglideJS {i18n}>
-	{@render children()}
-</ParaglideJS>
+{@render children()}

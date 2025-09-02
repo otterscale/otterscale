@@ -7,9 +7,9 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	pb "github.com/openhdc/otterscale/api/facility/v1"
-	"github.com/openhdc/otterscale/api/facility/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/core"
+	pb "github.com/otterscale/otterscale/api/facility/v1"
+	"github.com/otterscale/otterscale/api/facility/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type FacilityService struct {
@@ -192,6 +192,7 @@ func toProtoFacility(f *core.Facility, machineMap map[string]string) *pb.Facilit
 	ret.SetCharmName(f.Status.Charm)
 	ret.SetVersion(f.Status.WorkloadVersion)
 	ret.SetRevision(int64(f.Status.CharmRev))
+	ret.SetChannel(f.Status.CharmChannel)
 	ret.SetUnits(toProtoFacilityUnits(f.Status.Units, machineMap))
 	if f.Metadata != nil {
 		ret.SetMetadata(toProtoFacilityMetadata(f.Metadata))

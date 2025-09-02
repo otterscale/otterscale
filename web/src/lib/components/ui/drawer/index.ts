@@ -1,17 +1,17 @@
-import { Drawer as DrawerPrimitive } from "vaul-svelte";
+import { Drawer as DrawerPrimitive } from 'vaul-svelte';
 
-import Root from "./drawer.svelte";
-import Content from "./drawer-content.svelte";
-import Description from "./drawer-description.svelte";
-import Overlay from "./drawer-overlay.svelte";
-import Footer from "./drawer-footer.svelte";
-import Header from "./drawer-header.svelte";
-import Title from "./drawer-title.svelte";
-import NestedRoot from "./drawer-nested.svelte";
+import Root from './drawer.svelte';
+import Content from './drawer-content.svelte';
+import Description from './drawer-description.svelte';
+import Overlay from './drawer-overlay.svelte';
+import Footer from './drawer-footer.svelte';
+import Header from './drawer-header.svelte';
+import Title from './drawer-title.svelte';
+import NestedRoot from './drawer-nested.svelte';
+import Close from './drawer-close.svelte';
+import Trigger from './drawer-trigger.svelte';
 
-const Trigger: typeof DrawerPrimitive.Trigger = DrawerPrimitive.Trigger;
 const Portal: typeof DrawerPrimitive.Portal = DrawerPrimitive.Portal;
-const Close: typeof DrawerPrimitive.Close = DrawerPrimitive.Close;
 
 export {
 	Root,
@@ -25,6 +25,7 @@ export {
 	Trigger,
 	Portal,
 	Close,
+
 	//
 	Root as Drawer,
 	NestedRoot as DrawerNestedRoot,

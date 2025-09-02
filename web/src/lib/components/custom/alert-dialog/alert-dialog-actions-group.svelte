@@ -1,10 +1,11 @@
-<script lang="ts">
+<script lang="ts" module>
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
-
 	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -13,12 +14,7 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
-<AlertDialog.Footer
-	bind:ref
-	data-slot="alert-dialog-actions-group"
-	class={cn('w-full', className)}
-	{...restProps}
->
+<AlertDialog.Footer bind:ref data-slot="alert-dialog-actions-group" class={cn('w-full', className)} {...restProps}>
 	<div class="flex items-center justify-end gap-2">
 		{@render children?.()}
 	</div>

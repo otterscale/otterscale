@@ -5,11 +5,10 @@
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import type { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import type { OptionManager } from './utils.svelte';
-
 	let {
 		ref = $bindable(null),
 		class: className,

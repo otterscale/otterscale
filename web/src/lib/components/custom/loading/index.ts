@@ -1,5 +1,8 @@
-import DataTable from './data-table.svelte'
-import Report from './report.svelte'
-import Sparkline from './sparkline.svelte'
+import ApplicationStore from './application-store.svelte';
+import DataTable from './data-table.svelte';
+import * as DataTables from './data-tables';
+import Data from './data.svelte';
+import Report from './report.svelte';
+import Selection from './selection.svelte';
 
-export { DataTable, Report, Sparkline }
+export { ApplicationStore, Data, DataTable, DataTables, Report, Selection };

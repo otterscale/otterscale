@@ -8,7 +8,7 @@ import (
 	"k8s.io/client-go/rest"
 	kubevirtv1 "kubevirt.io/api/instancetype/v1beta1"
 
-	oscore "github.com/openhdc/otterscale/internal/core"
+	oscore "github.com/otterscale/otterscale/internal/core"
 )
 
 func resourcePtr(bytes int64) *resource.Quantity {

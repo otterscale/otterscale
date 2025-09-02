@@ -12,9 +12,9 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 
-	pb "github.com/openhdc/otterscale/api/storage/v1"
-	"github.com/openhdc/otterscale/api/storage/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/core"
+	pb "github.com/otterscale/otterscale/api/storage/v1"
+	"github.com/otterscale/otterscale/api/storage/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type StorageService struct {
@@ -580,6 +580,8 @@ func toProtoImageSnapshot(s *core.RBDImageSnapshot) *pb.Image_Snapshot {
 	ret := &pb.Image_Snapshot{}
 	ret.SetName(s.Name)
 	ret.SetProtected(s.Protected)
+	ret.SetQuotaBytes(s.Quota)
+	ret.SetUsedBytes(s.Used)
 	return ret
 }
 
@@ -616,7 +618,9 @@ func toProtoSubvolume(s *core.Subvolume) *pb.Subvolume {
 	ret.SetQuotaBytes(s.Quota)
 	ret.SetUsedBytes(s.Used)
 	ret.SetCreatedAt(timestamppb.New(s.CreatedAt))
-	ret.SetExport(toProtoSubvolumeExport(s.Export))
+	if s.Export != nil {
+		ret.SetExport(toProtoSubvolumeExport(s.Export))
+	}
 	ret.SetSnapshots(toProtoSubvolumeSnapshots(s.Snapshots))
 	return ret
 }

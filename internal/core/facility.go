@@ -161,7 +161,7 @@ func NewFacilityUseCase(facility FacilityRepo, server ServerRepo, client ClientR
 }
 
 func (uc *FacilityUseCase) ListFacilities(ctx context.Context, uuid string) ([]Facility, error) {
-	s, err := uc.client.Status(ctx, uuid, []string{"application", "*"})
+	s, err := uc.client.Status(ctx, uuid, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -6,20 +6,20 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 
-	"github.com/openhdc/otterscale/internal/config"
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 func TestNewMachine(t *testing.T) {
 	conf := &config.Config{}
 	maas := New(conf)
-	
+
 	repo := NewMachine(maas)
-	
+
 	if repo == nil {
 		t.Fatal("Expected Machine repository to be created, got nil")
 	}
-	
+
 	// Verify it implements the interface
 	var _ core.MachineRepo = repo
 }
@@ -29,7 +29,7 @@ func TestMachine_InterfaceCompliance(t *testing.T) {
 	conf := &config.Config{}
 	maas := New(conf)
 	repo := NewMachine(maas)
-	
+
 	var _ core.MachineRepo = repo
 }
 
@@ -38,13 +38,13 @@ func TestMachine_Methods_Structure(t *testing.T) {
 	conf := &config.Config{}
 	maas := New(conf)
 	repo := NewMachine(maas)
-	
+
 	// Verify the repo is of the correct type
 	m, ok := repo.(*machine)
 	if !ok {
 		t.Fatal("Expected *machine, got different type")
 	}
-	
+
 	if m.maas == nil {
 		t.Error("Expected maas field to be set, got nil")
 	}
@@ -71,40 +71,40 @@ func TestMachine_WithConfig(t *testing.T) {
 			},
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			maas := New(tt.conf)
 			repo := NewMachine(maas)
-			
+
 			if repo == nil {
 				t.Error("Expected repository to be created")
 			}
-			
+
 			// Try to use the methods (they will likely fail due to invalid config, but should not panic)
 			ctx := context.Background()
-			
+
 			_, err := repo.List(ctx)
 			if err == nil {
 				t.Log("List succeeded unexpectedly (might be in test environment)")
 			}
-			
+
 			// Test other methods with dummy parameters
 			_, err = repo.Get(ctx, "test-system-id")
 			if err == nil {
 				t.Log("Get succeeded unexpectedly")
 			}
-			
+
 			_, err = repo.Release(ctx, "test-system-id", &entity.MachineReleaseParams{})
 			if err == nil {
 				t.Log("Release succeeded unexpectedly")
 			}
-			
+
 			_, err = repo.PowerOff(ctx, "test-system-id", &entity.MachinePowerOffParams{})
 			if err == nil {
 				t.Log("PowerOff succeeded unexpectedly")
 			}
-			
+
 			_, err = repo.Commission(ctx, "test-system-id", &entity.MachineCommissionParams{})
 			if err == nil {
 				t.Log("Commission succeeded unexpectedly")
@@ -130,7 +130,7 @@ func TestMachine_ErrorHandling(t *testing.T) {
 			config: &config.Config{
 				MAAS: config.MAAS{
 					URL:     "invalid-url",
-					Key:     "test-key", 
+					Key:     "test-key",
 					Version: "2.8",
 				},
 			},
@@ -159,14 +159,14 @@ func TestMachine_ErrorHandling(t *testing.T) {
 			desc: "Invalid version should cause client errors",
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			maas := New(tt.config)
 			repo := NewMachine(maas)
-			
+
 			ctx := context.Background()
-			
+
 			// Test all methods should return errors with invalid configurations
 			_, err := repo.List(ctx)
 			if err == nil {
@@ -174,28 +174,28 @@ func TestMachine_ErrorHandling(t *testing.T) {
 			} else {
 				t.Logf("List returned expected error for %s: %v", tt.desc, err)
 			}
-			
+
 			_, err = repo.Get(ctx, "test-id")
 			if err == nil {
 				t.Logf("Get unexpectedly succeeded for %s", tt.desc)
 			} else {
 				t.Logf("Get returned expected error for %s: %v", tt.desc, err)
 			}
-			
+
 			_, err = repo.Release(ctx, "test-id", &entity.MachineReleaseParams{})
 			if err == nil {
 				t.Logf("Release unexpectedly succeeded for %s", tt.desc)
 			} else {
 				t.Logf("Release returned expected error for %s: %v", tt.desc, err)
 			}
-			
+
 			_, err = repo.PowerOff(ctx, "test-id", &entity.MachinePowerOffParams{})
 			if err == nil {
 				t.Logf("PowerOff unexpectedly succeeded for %s", tt.desc)
 			} else {
 				t.Logf("PowerOff returned expected error for %s: %v", tt.desc, err)
 			}
-			
+
 			_, err = repo.Commission(ctx, "test-id", &entity.MachineCommissionParams{})
 			if err == nil {
 				t.Logf("Commission unexpectedly succeeded for %s", tt.desc)
@@ -211,9 +211,9 @@ func TestMachine_MethodBehavior(t *testing.T) {
 	conf := &config.Config{}
 	maas := New(conf)
 	repo := NewMachine(maas)
-	
+
 	ctx := context.Background()
-	
+
 	// Test List method
 	t.Run("List_method", func(t *testing.T) {
 		result, err := repo.List(ctx)
@@ -226,7 +226,7 @@ func TestMachine_MethodBehavior(t *testing.T) {
 			t.Logf("List returned expected error: %v", err)
 		}
 	})
-	
+
 	// Test Get method
 	t.Run("Get_method", func(t *testing.T) {
 		result, err := repo.Get(ctx, "test-system-id")
@@ -237,7 +237,7 @@ func TestMachine_MethodBehavior(t *testing.T) {
 			t.Logf("Get returned expected error: %v", err)
 		}
 	})
-	
+
 	// Test Release method
 	t.Run("Release_method", func(t *testing.T) {
 		params := &entity.MachineReleaseParams{}
@@ -249,7 +249,7 @@ func TestMachine_MethodBehavior(t *testing.T) {
 			t.Logf("Release returned expected error: %v", err)
 		}
 	})
-	
+
 	// Test PowerOff method
 	t.Run("PowerOff_method", func(t *testing.T) {
 		params := &entity.MachinePowerOffParams{}
@@ -261,7 +261,7 @@ func TestMachine_MethodBehavior(t *testing.T) {
 			t.Logf("PowerOff returned expected error: %v", err)
 		}
 	})
-	
+
 	// Test Commission method
 	t.Run("Commission_method", func(t *testing.T) {
 		params := &entity.MachineCommissionParams{}
@@ -283,19 +283,19 @@ func TestMachine_EdgeCases(t *testing.T) {
 				t.Error("Expected panic when calling methods with nil MAAS")
 			}
 		}()
-		
+
 		// This should panic or handle gracefully
 		repo := &machine{maas: nil}
 		ctx := context.Background()
 		_, _ = repo.List(ctx)
 	})
-	
+
 	t.Run("empty_system_id", func(t *testing.T) {
 		conf := &config.Config{}
 		maas := New(conf)
 		repo := NewMachine(maas)
 		ctx := context.Background()
-		
+
 		// Test with empty system ID
 		_, err := repo.Get(ctx, "")
 		if err == nil {
@@ -304,13 +304,13 @@ func TestMachine_EdgeCases(t *testing.T) {
 			t.Logf("Get failed with empty system ID: %v", err)
 		}
 	})
-	
+
 	t.Run("nil_params", func(t *testing.T) {
 		conf := &config.Config{}
 		maas := New(conf)
 		repo := NewMachine(maas)
 		ctx := context.Background()
-		
+
 		// Test with nil parameters
 		_, err := repo.Release(ctx, "test-id", nil)
 		if err == nil {
@@ -318,14 +318,14 @@ func TestMachine_EdgeCases(t *testing.T) {
 		} else {
 			t.Logf("Release failed with nil params: %v", err)
 		}
-		
+
 		_, err = repo.PowerOff(ctx, "test-id", nil)
 		if err == nil {
 			t.Log("PowerOff succeeded with nil params")
 		} else {
 			t.Logf("PowerOff failed with nil params: %v", err)
 		}
-		
+
 		_, err = repo.Commission(ctx, "test-id", nil)
 		if err == nil {
 			t.Log("Commission succeeded with nil params")
@@ -341,19 +341,19 @@ func TestMachine_ConcurrentAccess(t *testing.T) {
 	maas := New(conf)
 	repo := NewMachine(maas)
 	ctx := context.Background()
-	
+
 	// Run multiple goroutines concurrently
 	done := make(chan bool, 20)
-	
+
 	for i := 0; i < 20; i++ {
 		go func(id int) {
-			defer func() { 
+			defer func() {
 				if r := recover(); r != nil {
 					t.Errorf("Goroutine %d panicked: %v", id, r)
 				}
-				done <- true 
+				done <- true
 			}()
-			
+
 			// Test different methods concurrently
 			switch id % 5 {
 			case 0:
@@ -369,7 +369,7 @@ func TestMachine_ConcurrentAccess(t *testing.T) {
 			}
 		}(i)
 	}
-	
+
 	// Wait for all goroutines to complete
 	for i := 0; i < 20; i++ {
 		<-done
@@ -380,7 +380,7 @@ func TestMachine_ConcurrentAccess(t *testing.T) {
 func BenchmarkMachine_Creation(b *testing.B) {
 	conf := &config.Config{}
 	maas := New(conf)
-	
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		repo := NewMachine(maas)
@@ -395,7 +395,7 @@ func BenchmarkMachine_List(b *testing.B) {
 	maas := New(conf)
 	repo := NewMachine(maas)
 	ctx := context.Background()
-	
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = repo.List(ctx)
@@ -407,7 +407,7 @@ func BenchmarkMachine_Get(b *testing.B) {
 	maas := New(conf)
 	repo := NewMachine(maas)
 	ctx := context.Background()
-	
+
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = repo.Get(ctx, "test-id")
@@ -419,7 +419,7 @@ func BenchmarkMachine_Operations(b *testing.B) {
 	maas := New(conf)
 	repo := NewMachine(maas)
 	ctx := context.Background()
-	
+
 	b.Run("Release", func(b *testing.B) {
 		params := &entity.MachineReleaseParams{}
 		b.ResetTimer()
@@ -427,7 +427,7 @@ func BenchmarkMachine_Operations(b *testing.B) {
 			_, _ = repo.Release(ctx, "test-id", params)
 		}
 	})
-	
+
 	b.Run("PowerOff", func(b *testing.B) {
 		params := &entity.MachinePowerOffParams{}
 		b.ResetTimer()
@@ -435,7 +435,7 @@ func BenchmarkMachine_Operations(b *testing.B) {
 			_, _ = repo.PowerOff(ctx, "test-id", params)
 		}
 	})
-	
+
 	b.Run("Commission", func(b *testing.B) {
 		params := &entity.MachineCommissionParams{}
 		b.ResetTimer()
@@ -450,40 +450,40 @@ func TestMachine_MethodSignatures(t *testing.T) {
 	conf := &config.Config{}
 	maas := New(conf)
 	repo := NewMachine(maas)
-	
+
 	// Test that all methods have the correct signatures
 	ctx := context.Background()
-	
+
 	// Test List method
 	machines, err := repo.List(ctx)
 	if machines == nil && err == nil {
 		t.Error("Both machines and error are nil from List, expected at least one to have a value")
 	}
-	
+
 	// Test Get method
 	machine, err := repo.Get(ctx, "test-id")
 	if machine == nil && err == nil {
 		t.Error("Both machine and error are nil from Get, expected at least one to have a value")
 	}
-	
+
 	// Test Release method
 	machine, err = repo.Release(ctx, "test-id", &entity.MachineReleaseParams{})
 	if machine == nil && err == nil {
 		t.Error("Both machine and error are nil from Release, expected at least one to have a value")
 	}
-	
+
 	// Test PowerOff method
 	machine, err = repo.PowerOff(ctx, "test-id", &entity.MachinePowerOffParams{})
 	if machine == nil && err == nil {
 		t.Error("Both machine and error are nil from PowerOff, expected at least one to have a value")
 	}
-	
+
 	// Test Commission method
 	machine, err = repo.Commission(ctx, "test-id", &entity.MachineCommissionParams{})
 	if machine == nil && err == nil {
 		t.Error("Both machine and error are nil from Commission, expected at least one to have a value")
 	}
-	
+
 	// Test that error is properly typed when present
 	if err != nil {
 		errStr := err.Error()

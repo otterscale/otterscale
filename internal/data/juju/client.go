@@ -6,7 +6,7 @@ import (
 	api "github.com/juju/juju/api/client/client"
 	"github.com/juju/juju/rpc/params"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type client struct {

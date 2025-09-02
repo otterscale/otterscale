@@ -7,14 +7,14 @@
 package main
 
 import (
-	"github.com/openhdc/otterscale/internal/app"
-	"github.com/openhdc/otterscale/internal/config"
-	"github.com/openhdc/otterscale/internal/core"
-	"github.com/openhdc/otterscale/internal/data/ceph"
-	"github.com/openhdc/otterscale/internal/data/juju"
-	"github.com/openhdc/otterscale/internal/data/kube"
-	"github.com/openhdc/otterscale/internal/data/maas"
-	"github.com/openhdc/otterscale/internal/mux"
+	"github.com/otterscale/otterscale/internal/app"
+	"github.com/otterscale/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/data/ceph"
+	"github.com/otterscale/otterscale/internal/data/juju"
+	"github.com/otterscale/otterscale/internal/data/kube"
+	"github.com/otterscale/otterscale/internal/data/maas"
+	"github.com/otterscale/otterscale/internal/mux"
 	"github.com/spf13/cobra"
 )
 
@@ -84,12 +84,14 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	kubeVirtService := app.NewKubeVirtService(kubeVirtUseCase)
 	machineManagerRepo := juju.NewMachine(jujuJuju)
 	tagRepo := maas.NewTag(maasMAAS)
-	machineUseCase := core.NewMachineUseCase(machineRepo, machineManagerRepo, serverRepo, clientRepo, tagRepo, actionRepo, facilityRepo)
+	eventRepo := maas.NewEvent(maasMAAS)
+	machineUseCase := core.NewMachineUseCase(machineRepo, machineManagerRepo, serverRepo, clientRepo, tagRepo, actionRepo, facilityRepo, eventRepo)
 	machineService := app.NewMachineService(machineUseCase)
 	fabricRepo := maas.NewFabric(maasMAAS)
 	vlanRepo := maas.NewVLAN(maasMAAS)
 	networkUseCase := core.NewNetworkUseCase(fabricRepo, vlanRepo, subnetRepo, ipRangeRepo)
 	networkService := app.NewNetworkService(networkUseCase)
+	premiumService := app.NewPremiumService()
 	cephFSRepo := ceph.NewFS(cephCeph)
 	cephRGWRepo := ceph.NewRGW(cephCeph)
 	storageUseCase := core.NewStorageUseCase(actionRepo, facilityRepo, cephClusterRepo, cephRBDRepo, cephFSRepo, cephRGWRepo, machineRepo)
@@ -100,7 +102,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	scopeService := app.NewScopeService(scopeUseCase)
 	tagUseCase := core.NewTagUseCase(tagRepo)
 	tagService := app.NewTagService(tagUseCase)
-	serveMux := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, kubeVirtService, machineService, networkService, storageService, scopeService, tagService)
+	serveMux := mux.New(bool2, applicationService, bistService, configurationService, environmentService, facilityService, essentialService, kubeVirtService, machineService, networkService, premiumService, storageService, scopeService, tagService)
 	command := newCmd(configConfig, serveMux)
 	return command, func() {
 		cleanup()

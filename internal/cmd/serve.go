@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/rs/cors"
@@ -13,7 +14,13 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
-	"github.com/openhdc/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/config"
+)
+
+const (
+	containerEnvVar            = "OTTERSCALE_CONTAINER"
+	defaultContainerAddress    = ":8299"
+	defaultContainerConfigPath = "/etc/app/otterscale.yaml"
 )
 
 func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
@@ -23,11 +30,18 @@ func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 		Use:     "serve",
 		Short:   "Start the OtterScale API server",
 		Long:    "Start the OtterScale API server that provides gRPC and HTTP endpoints for all services",
-		Example: "otterscale serve --address=:8080",
+		Example: "otterscale serve --address=:8299 --config=otterscale.yaml",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			_, err := maxprocs.Set(maxprocs.Logger(log.Printf))
 			if err != nil {
 				slog.Error("Error setting GOMAXPROCS", "err", err)
+			}
+
+			// Check if running in container and override address
+			if os.Getenv(containerEnvVar) != "" {
+				address = defaultContainerAddress
+				configPath = defaultContainerConfigPath
+				slog.Info("Container environment detected, using default configuration", "address", address, "config", configPath)
 			}
 
 			slog.Info("Loading configuration file", "path", configPath)

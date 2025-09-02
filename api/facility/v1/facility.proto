@@ -5,7 +5,7 @@ package otterscale.facility.v1;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/openhdc/otterscale/api/facility/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/facility/v1;pb";
 
 service FacilityService {
   rpc ListFacilities(ListFacilitiesRequest) returns (ListFacilitiesResponse);
@@ -82,6 +82,7 @@ message Facility {
   string charm_name = 11;
   string version = 12;
   int64 revision = 13;
+  string channel = 14;
   Charm.Metadata metadata = 21;
   repeated Unit units = 31;
 }

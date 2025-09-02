@@ -1,9 +1,11 @@
-<script lang="ts">
+<script lang="ts" module>
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index';
+	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { cn } from '$lib/utils.js';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -14,7 +16,7 @@
 
 <AlertDialog.Header
 	bind:ref
-	class={cn('flex items-center justify-center text-xl font-bold', className)}
+	class={cn('flex items-center justify-center text-xl font-bold capitalize', className)}
 	{...restProps}
 >
 	{@render children?.()}

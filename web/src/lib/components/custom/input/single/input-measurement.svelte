@@ -4,57 +4,40 @@
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
-	import type { ZodFirstPartySchemaTypes } from 'zod';
 	import { General } from '.';
 	import type { InputType, UnitType } from './types';
-
-	type Props = WithElementRef<Omit<HTMLInputAttributes, 'type'> & { type?: InputType }>;
+	import { getInputMeasurementUnitByValue } from './utils.svelte';
 </script>
 
 <script lang="ts">
 	let {
-		id,
 		ref = $bindable(null),
 		value = $bindable(),
-		required,
-		schema,
-		units,
-		transformer = (value) => value,
-		oninput,
 		class: className,
+		id,
+		required,
+		units,
+		oninput,
+		transformer = (value) => value,
+		invalid = $bindable(),
 		...restProps
-	}: Props & {
-		schema?: ZodFirstPartySchemaTypes;
+	}: WithElementRef<Omit<HTMLInputAttributes, 'type'> & { type?: InputType }> & {
 		units: UnitType[];
 		transformer?: (value: any) => void;
+		invalid?: boolean | null | undefined;
 	} = $props();
 
-	function getDefault(): { value: number | undefined; unit: UnitType | undefined } {
-		const UNITS = units.sort((p, n) => p.value - n.value);
+	const DEFAULT = getInputMeasurementUnitByValue(value, units);
+	const DEFAULT_VALUE = DEFAULT.value;
+	const DEFAULT_UNIT = DEFAULT.unit;
 
-		const INITIAL_VALUE = value ? Number(value) : undefined;
-
-		if (!INITIAL_VALUE) {
-			return { value: undefined, unit: UNITS[0] };
-		}
-
-		let temporaryValue = 0;
-		let [temporaryUnit] = units;
-		for (const unit of UNITS) {
-			if (INITIAL_VALUE / unit.value >= 1) {
-				temporaryValue = INITIAL_VALUE / unit.value;
-				temporaryUnit = unit;
-			}
-		}
-		return { value: temporaryValue, unit: temporaryUnit };
-	}
-
-	const DEFAULT = getDefault();
-	const DEFAULT_VALUE = DEFAULT?.value;
-	const DEFAULT_UNIT = DEFAULT?.unit;
-
-	let inputValue: number | undefined = $state(DEFAULT_VALUE);
+	let temporaryValue: number | undefined = $state(DEFAULT_VALUE);
 	let unit: UnitType | undefined = $state(DEFAULT_UNIT);
+
+	const isInvalid = $derived(required && (value === null || value === undefined));
+	$effect(() => {
+		invalid = isInvalid;
+	});
 </script>
 
 <div class="flex items-center gap-2">
@@ -63,17 +46,17 @@
 			bind:ref
 			data-slot="input-general"
 			type="number"
-			bind:value={inputValue}
+			bind:value={temporaryValue}
 			{required}
-			{...restProps}
 			oninput={(e) => {
-				value = transformer(inputValue && unit ? inputValue * unit.value : undefined);
+				value = transformer(temporaryValue && unit ? temporaryValue * unit.value : undefined);
 				oninput?.(e);
 			}}
+			{...restProps}
 		/>
 	</div>
 	<Select.Root type="single">
-		<Select.Trigger class="w-fit">
+		<Select.Trigger class={cn('w-fit')}>
 			{unit && unit.label ? unit.label : 'No Unit'}
 		</Select.Trigger>
 		<Select.Content>
@@ -83,7 +66,7 @@
 					class="flex items-center gap-2 text-xs hover:cursor-pointer"
 					onclick={() => {
 						unit = option;
-						value = transformer(inputValue && unit ? inputValue * unit.value : undefined);
+						value = transformer(temporaryValue && unit ? temporaryValue * unit.value : undefined);
 					}}
 				>
 					<Icon icon={option.icon ?? 'ph:scales'} class={cn('size-4')} />

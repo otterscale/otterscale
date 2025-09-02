@@ -5,7 +5,7 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type machine struct {
@@ -20,12 +20,22 @@ func NewMachine(maas *MAAS) core.MachineRepo {
 
 var _ core.MachineRepo = (*machine)(nil)
 
-func (r *machine) List(_ context.Context) ([]entity.Machine, error) {
+func (r *machine) List(_ context.Context) ([]core.Machine, error) {
 	client, err := r.maas.client()
 	if err != nil {
 		return nil, err
 	}
-	return client.Machines.Get(&entity.MachinesParams{})
+	machines, err := client.Machines.Get(&entity.MachinesParams{})
+	if err != nil {
+		return nil, err
+	}
+	list := []core.Machine{}
+	for i := range machines {
+		list = append(list, core.Machine{
+			Machine: &machines[i],
+		})
+	}
+	return list, nil
 }
 
 func (r *machine) Get(ctx context.Context, systemID string) (*core.Machine, error) {
@@ -33,7 +43,13 @@ func (r *machine) Get(ctx context.Context, systemID string) (*core.Machine, erro
 	if err != nil {
 		return nil, err
 	}
-	return client.Machine.Get(systemID)
+	machine, err := client.Machine.Get(systemID)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Machine{
+		Machine: machine,
+	}, nil
 }
 
 func (r *machine) Release(ctx context.Context, systemID string, params *entity.MachineReleaseParams) (*core.Machine, error) {
@@ -41,7 +57,13 @@ func (r *machine) Release(ctx context.Context, systemID string, params *entity.M
 	if err != nil {
 		return nil, err
 	}
-	return client.Machine.Release(systemID, params)
+	machine, err := client.Machine.Release(systemID, params)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Machine{
+		Machine: machine,
+	}, nil
 }
 
 func (r *machine) PowerOff(_ context.Context, systemID string, params *entity.MachinePowerOffParams) (*core.Machine, error) {
@@ -49,7 +71,13 @@ func (r *machine) PowerOff(_ context.Context, systemID string, params *entity.Ma
 	if err != nil {
 		return nil, err
 	}
-	return client.Machine.PowerOff(systemID, params)
+	machine, err := client.Machine.PowerOff(systemID, params)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Machine{
+		Machine: machine,
+	}, nil
 }
 
 func (r *machine) Commission(_ context.Context, systemID string, params *entity.MachineCommissionParams) (*core.Machine, error) {
@@ -57,5 +85,11 @@ func (r *machine) Commission(_ context.Context, systemID string, params *entity.
 	if err != nil {
 		return nil, err
 	}
-	return client.Machine.Commission(systemID, params)
+	machine, err := client.Machine.Commission(systemID, params)
+	if err != nil {
+		return nil, err
+	}
+	return &core.Machine{
+		Machine: machine,
+	}, nil
 }

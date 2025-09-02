@@ -1,4 +1,4 @@
-import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 import Check from './select-check.svelte';
 import Content from './select-content.svelte';
 import GroupHeading from './select-group-heading.svelte';
@@ -15,8 +15,22 @@ import type { AncestralOptionType, OptionType } from './types';
 import { OptionManager, getAllAncestralOptions, getAncestralOptionsMap } from './utils.svelte';
 const Sub = DropdownMenuPrimitive.Sub;
 
-export { Check, Content, Group, GroupHeading, Item, Label, OptionManager, Root, Separator, Shortcut, Sub, SubContent, SubTrigger, Trigger, getAllAncestralOptions, getAncestralOptionsMap };
-export type {
-    AncestralOptionType, OptionType
+export {
+	Check,
+	Content,
+	Group,
+	GroupHeading,
+	Item,
+	Label,
+	OptionManager,
+	Root,
+	Separator,
+	Shortcut,
+	Sub,
+	SubContent,
+	SubTrigger,
+	Trigger,
+	getAllAncestralOptions,
+	getAncestralOptionsMap,
 };
-
+export type { AncestralOptionType, OptionType };

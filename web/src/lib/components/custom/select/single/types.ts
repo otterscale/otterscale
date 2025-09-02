@@ -1,14 +1,12 @@
 type OptionType = {
-    value: any;
-    label: string;
-    icon?: string;
-    information?: string;
-    enabled?: boolean;
+	value: any;
+	label: string;
+	icon?: string;
+	information?: string;
+	enabled?: boolean;
+};
+type AccessorType = {
+	value: any;
 };
 
-type AccessorType = {
-    value: any
-}
-
 export type { AccessorType, OptionType };
-

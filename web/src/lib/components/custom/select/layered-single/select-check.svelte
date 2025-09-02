@@ -5,12 +5,11 @@
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+	import type { OptionType } from './types';
+	import type { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import type { OptionType } from './types';
-	import type { OptionManager } from './utils.svelte';
-
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -27,8 +26,5 @@
 </script>
 
 <Command.Shortcut bind:ref data-slot="select-check" class={cn('p-0', className)} {...restProps}>
-	<Icon
-		icon="ph:check"
-		class={optionManager.isOptionSelected(option, parents) ? 'visible' : 'invisible'}
-	/>
+	<Icon icon="ph:check" class={optionManager.isOptionSelected(option, parents) ? 'visible' : 'invisible'} />
 </Command.Shortcut>

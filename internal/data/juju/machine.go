@@ -8,7 +8,7 @@ import (
 	api "github.com/juju/juju/api/client/machinemanager"
 	"github.com/juju/juju/rpc/params"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type machine struct {

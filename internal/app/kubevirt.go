@@ -12,9 +12,9 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	virtCorev1 "kubevirt.io/api/core/v1"
 
-	pb "github.com/openhdc/otterscale/api/kubevirt/v1"
-	"github.com/openhdc/otterscale/api/kubevirt/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/core"
+	pb "github.com/otterscale/otterscale/api/kubevirt/v1"
+	"github.com/otterscale/otterscale/api/kubevirt/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type KubeVirtService struct {

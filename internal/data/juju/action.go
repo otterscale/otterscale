@@ -7,7 +7,7 @@ import (
 	api "github.com/juju/juju/api/client/action"
 	"github.com/juju/names/v5"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 type action struct {

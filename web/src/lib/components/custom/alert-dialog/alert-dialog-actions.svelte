@@ -1,10 +1,11 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-
 	import { cn } from '$lib/utils.js';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		sideOffset = 4,

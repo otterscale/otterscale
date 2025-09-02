@@ -3,12 +3,11 @@
 	import { cn } from '$lib/utils.js';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
+	import type { OptionType } from '../single';
+	import { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import type { OptionType } from '../single';
-	import { OptionManager } from './utils.svelte';
-
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -37,9 +36,6 @@
 		optionManager.handleSelect(option, parents);
 		onclick?.(e);
 	}}
-	class={cn(
-		'hover:bg-accent hover:text-accent-foreground cursor-pointer select-none rounded-sm',
-		className
-	)}
+	class={cn('hover:bg-accent hover:text-accent-foreground cursor-pointer rounded-sm select-none', className)}
 	{...restProps}
 />

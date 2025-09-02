@@ -1,58 +1,64 @@
+import { betterAuth } from 'better-auth';
+import { getMigrations } from 'better-auth/db';
+import { Pool } from 'pg';
+import { sso } from '@better-auth/sso';
 import { env } from '$env/dynamic/private';
-import { betterAuth } from "better-auth";
-import { getMigrations } from "better-auth/db";
-import { admin, jwt, openAPI, organization } from "better-auth/plugins"
-import Database from "better-sqlite3";
+import { env as publicEnv } from '$env/dynamic/public';
 
 export const auth = betterAuth({
-    database: new Database("./db.sqlite"),
-    emailAndPassword: {
-        enabled: true
-    },
-    socialProviders: {
-        apple: {
-            clientId: env.APPLE_CLIENT_ID || '',
-            clientSecret: env.APPLE_CLIENT_SECRET || '',
-            appBundleIdentifier: env.APPLE_APP_BUNDLE_IDENTIFIER,
-        },
-        facebook: {
-            clientId: env.FACEBOOK_CLIENT_ID || '',
-            clientSecret: env.FACEBOOK_CLIENT_SECRET || '',
-        },
-        github: {
-            clientId: env.GITHUB_CLIENT_ID || '',
-            clientSecret: env.GITHUB_CLIENT_SECRET || '',
-        },
-        google: {
-            clientId: env.GOOGLE_CLIENT_ID || '',
-            clientSecret: env.GOOGLE_CLIENT_SECRET || '',
-        },
-        twitter: {
-            clientId: env.TWITTER_CLIENT_ID || '',
-            clientSecret: env.TWITTER_CLIENT_SECRET || '',
-        },
-    },
-    plugins: [
-        admin(),
-        organization({
-            teams: {
-                enabled: true,
-            }
-        }),
-        openAPI(),
-        jwt(),
-    ]
-})
+	account: {
+		accountLinking: {
+			enabled: true,
+			trustedProviders: env.AUTH_TRUSTED_PROVIDERS?.split(',') || [],
+		},
+	},
+	baseURL: env.PUBLIC_URL,
+	database: new Pool({
+		connectionString: env.DATABASE_URL,
+	}),
+	emailAndPassword: {
+		enabled: true,
+	},
+	plugins: [sso()],
+	secret: env.AUTH_SECRET,
+	session: {
+		cookieCache: {
+			enabled: true,
+			maxAge: 5 * 60,
+		},
+	},
+	socialProviders: {
+		apple: {
+			clientId: env.APPLE_CLIENT_ID!,
+			clientSecret: env.APPLE_CLIENT_SECRET!,
+			appBundleIdentifier: env.APPLE_APP_BUNDLE_IDENTIFIER!,
+		},
+		github: {
+			clientId: env.GITHUB_CLIENT_ID!,
+			clientSecret: env.GITHUB_CLIENT_SECRET!,
+		},
+		google: {
+			clientId: env.GOOGLE_CLIENT_ID!,
+			clientSecret: env.GOOGLE_CLIENT_SECRET!,
+		},
+	},
+	telemetry: { enabled: false },
+	trustedOrigins: [publicEnv.PUBLIC_URL],
+});
 
 async function initializeDatabase() {
-    try {
-        const { runMigrations } = await getMigrations(auth.options);
-        await runMigrations();
-        console.log("Migration completed successfully.");
-    } catch (error) {
-        console.error("Migration failed:", error);
-        process.exit(1);
-    }
+	try {
+		const { runMigrations } = await getMigrations(auth.options);
+		await runMigrations();
+		console.log('Database migrations completed successfully');
+	} catch (error) {
+		throw error;
+	}
 }
 
-initializeDatabase();
+if (!process.env.BUILD) {
+	initializeDatabase().catch((error) => {
+		console.error('Failed to initialize database:', error);
+		process.exit(1);
+	});
+}

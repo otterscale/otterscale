@@ -1,5 +1,5 @@
 VERSION=$(shell git describe --tags --always)
-PROTO_FILES=$(shell find api -name *.proto)
+PROTO_FILES=$(shell find api -name *.proto -not -path api/api.proto)
 
 .PHONY: build
 # build cli
@@ -8,7 +8,7 @@ build:
 
 .PHONY: vet
 # examine code
-go-vet:
+vet:
 	go vet ./...
 
 .PHONY: test
@@ -28,14 +28,21 @@ lint:
 .PHONY: proto
 # generate *.pb.go
 proto:
-	mkdir -p web/src/gen
-	protoc -I=. \
+	protoc -I=. -I=third_party -I=third_party/gnostic \
 		--go_out=paths=source_relative:. \
 		--go_opt=default_api_level=API_OPAQUE \
 		--connect-go_out=paths=source_relative:. \
-		--es_out=web/src/gen \
-		--es_out=otterscale-web/src/lib \
+		--es_out=web/src/lib \
 		--es_opt=target=ts \
+		$(PROTO_FILES)
+
+.PHONY: openapi
+# generate openapi.yaml
+openapi:
+	protoc -I=. -I=third_party -I=third_party/gnostic \
+		--connect-openapi_out=api \
+		--connect-openapi_opt=path=openapi.yaml,short-operation-ids,short-service-tags \
+		api/api.proto \
 		$(PROTO_FILES)
 
 .PHONY: help

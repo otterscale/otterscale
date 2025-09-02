@@ -3,12 +3,11 @@
 	import { cn } from '$lib/utils.js';
 	import { Command as CommandPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
+	import type { OptionType } from './types';
+	import { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import type { OptionType } from './types';
-	import { OptionManager } from './utils.svelte';
-
 	let {
 		ref = $bindable(null),
 		class: className,

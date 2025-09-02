@@ -17,12 +17,6 @@
 	} = $props();
 </script>
 
-<DropdownMenu.Label
-	bind:ref
-	data-slot="select-label"
-	data-inset={inset}
-	class={cn(className)}
-	{...restProps}
->
+<DropdownMenu.Label bind:ref data-slot="select-label" data-inset={inset} class={cn(className)} {...restProps}>
 	{@render children?.()}
 </DropdownMenu.Label>

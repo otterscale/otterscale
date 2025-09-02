@@ -5,11 +5,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: CommandPrimitive.SeparatorProps = $props();
+	let { ref = $bindable(null), class: className, ...restProps }: CommandPrimitive.SeparatorProps = $props();
 </script>
 
 <Command.Separator bind:ref data-slot="select-separator" class={cn(className)} {...restProps} />

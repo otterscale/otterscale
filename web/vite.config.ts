@@ -1,42 +1,47 @@
-import { paraglide } from '@inlang/paraglide-sveltekit/vite';
-import { svelteTesting } from '@testing-library/svelte/vite';
+import { paraglideVitePlugin } from '@inlang/paraglide-js';
+import devtoolsJson from 'vite-plugin-devtools-json';
+import version from 'vite-plugin-package-version';
+import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	envPrefix: 'PUBLIC_',
 	plugins: [
+		tailwindcss(),
 		sveltekit(),
-		paraglide({
+		devtoolsJson(),
+		version(),
+		paraglideVitePlugin({
 			project: './project.inlang',
-			outdir: './src/lib/paraglide'
-		})
+			outdir: './src/lib/paraglide',
+		}),
 	],
 	test: {
-		workspace: [
+		projects: [
 			{
 				extends: './vite.config.ts',
-				plugins: [svelteTesting()],
-
 				test: {
 					name: 'client',
-					environment: 'jsdom',
-					clearMocks: true,
+					environment: 'browser',
+					browser: {
+						enabled: true,
+						provider: 'playwright',
+						instances: [{ browser: 'chromium' }],
+					},
 					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
 					exclude: ['src/lib/server/**'],
-					setupFiles: ['./vitest-setup-client.ts']
-				}
+					setupFiles: ['./vitest-setup-client.ts'],
+				},
 			},
 			{
 				extends: './vite.config.ts',
-
 				test: {
 					name: 'server',
 					environment: 'node',
 					include: ['src/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
-				}
-			}
-		]
-	}
+					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}'],
+				},
+			},
+		],
+	},
 });

@@ -1,10 +1,10 @@
-<script lang="ts">
+<script lang="ts" module>
 	import { cn } from '$lib/utils.js';
-	import type { HTMLFormAttributes } from 'svelte/elements';
 	import type { WithElementRef } from 'bits-ui';
-	import { setContext } from 'svelte';
-	import { FormValidator } from './utils.svelte';
+	import type { HTMLFormAttributes } from 'svelte/elements';
+</script>
 
+<script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -12,12 +12,6 @@
 		invalid = $bindable(),
 		...restProps
 	}: WithElementRef<HTMLFormAttributes> & { invalid?: boolean | undefined } = $props();
-
-	const formValidator = new FormValidator();
-	setContext('FormValidator', formValidator);
-	$effect(() => {
-		invalid = formValidator.isInvalid;
-	});
 </script>
 
 <form

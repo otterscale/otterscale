@@ -10,7 +10,7 @@ import (
 
 	"k8s.io/client-go/rest"
 
-	oscore "github.com/openhdc/otterscale/internal/core"
+	oscore "github.com/otterscale/otterscale/internal/core"
 )
 
 type core struct {

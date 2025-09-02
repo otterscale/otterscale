@@ -11,7 +11,7 @@ import (
 	"github.com/ceph/go-ceph/rados"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/openhdc/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/core"
 )
 
 var (
@@ -252,7 +252,7 @@ func (r *fs) toVolumes(d *fsDump) []core.Volume {
 }
 
 func (r *fs) toSubvolume(name string, info *subvolumeInfo) *core.Subvolume {
-	quota, _ := strconv.ParseUint(fmt.Sprintf("%d", info.BytesQuota), 10, 64)
+	quota, _ := strconv.ParseUint(fmt.Sprintf("%.0f", info.BytesQuota), 10, 64)
 	ret := &core.Subvolume{
 		Name:      name,
 		Path:      info.Path,
@@ -275,7 +275,7 @@ func (r *fs) toSubvolumeSnapshot(name string, info *subvolumeSnapshotInfo) *core
 }
 
 func (r *fs) toSubvolumeGroups(name string, info *subvolumeGroupInfo) *core.SubvolumeGroup {
-	quota, _ := strconv.ParseUint(fmt.Sprintf("%d", info.BytesQuota), 10, 64)
+	quota, _ := strconv.ParseUint(fmt.Sprintf("%.0f", info.BytesQuota), 10, 64)
 	ret := &core.SubvolumeGroup{
 		Name:      name,
 		Mode:      fmt.Sprintf("%06o", info.Mode),

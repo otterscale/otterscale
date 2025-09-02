@@ -13,4 +13,4 @@
 	}: CommandPrimitive.RootProps = $props();
 </script>
 
-<Command.Root bind:value bind:ref data-slot="select-branch" class={cn(className)} {...restProps} />
+<Command.Root bind:value bind:ref data-slot="select-option" class={cn(className)} {...restProps} />

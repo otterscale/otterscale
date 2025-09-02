@@ -4,20 +4,20 @@ package otterscale.environment.v1;
 
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/openhdc/otterscale/api/environment/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/environment/v1;pb";
 
 service EnvironmentService {
-  rpc CheckHealthy(CheckHealthyRequest) returns (CheckHealthyResponse);
-  rpc WatchStatuses(WatchStatusesRequest) returns (stream WatchStatusesResponse);
+  rpc CheckHealth(CheckHealthRequest) returns (CheckHealthResponse);
+  rpc WatchStatus(WatchStatusRequest) returns (stream WatchStatusResponse);
   rpc UpdateStatus(UpdateStatusRequest) returns (google.protobuf.Empty);
   rpc UpdateConfig(UpdateConfigRequest) returns (google.protobuf.Empty);
   rpc UpdateConfigHelmRepositories(UpdateConfigHelmRepositoriesRequest) returns (google.protobuf.Empty);
   rpc GetPrometheus(GetPrometheusRequest) returns (Prometheus);
 }
 
-message CheckHealthyRequest {}
+message CheckHealthRequest {}
 
-message CheckHealthyResponse {
+message CheckHealthResponse {
   enum Result {
     UNSPECIFIED = 0;
     OK = 11;
@@ -26,11 +26,13 @@ message CheckHealthyResponse {
   Result result = 1;
 }
 
-message WatchStatusesRequest {}
+message WatchStatusRequest {}
 
-message WatchStatusesResponse {
-  string phase = 1;
-  string message = 2;
+message WatchStatusResponse {
+  bool started = 1;
+  bool finished = 2;
+  string phase = 11;
+  string message = 12;
 }
 
 message UpdateStatusRequest {
@@ -50,8 +52,8 @@ message UpdateConfigRequest {
   string juju_cloud_name = 21;
   string juju_cloud_region = 22;
   string juju_charmhub_api_url = 23;
-  string micro_k8s_host = 31;
-  string micro_k8s_token = 32;
+  reserved 31 to 32;
+  string mirco_k8s_config = 33;
 }
 
 message UpdateConfigHelmRepositoriesRequest {
@@ -59,7 +61,7 @@ message UpdateConfigHelmRepositoriesRequest {
 }
 
 message Prometheus {
-  string endpoint = 1;
+  reserved 1;
   string base_url = 2;
 }
 

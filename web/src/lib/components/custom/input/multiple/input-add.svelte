@@ -1,19 +1,19 @@
 <script lang="ts" module>
 	import { Button, buttonVariants, type ButtonProps } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
+	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
+	import type { InputManager, ValuesManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import type { InputManager, ValuesManager } from './utils.svelte';
-
 	let {
 		ref = $bindable(null),
 		class: className,
 		href = undefined,
 		type = 'button',
 		disabled,
-		variant = 'default',
+		variant = 'outline',
 		size = 'sm',
 		children,
 		...restProps
@@ -31,12 +31,12 @@
 	{type}
 	{disabled}
 	onclick={(e) => {
-		if (inputManager.input) {
+		if (inputManager.input !== '') {
 			valuesManager.append(inputManager.input);
 			inputManager.reset();
 		}
 	}}
 	{...restProps}
 >
-	Add
+	<Icon icon="ph:plus-circle" class="text-primary size-5" />
 </Button>

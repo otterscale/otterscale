@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card';
@@ -9,12 +8,11 @@
 	import Icon from '@iconify/svelte';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
+	import type { OptionType } from './types';
+	import { validate, type OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import type { OptionType } from './types';
-	import type { OptionManager } from './utils.svelte';
-
 	let {
 		ref = $bindable(null),
 		children,
@@ -26,34 +24,33 @@
 		variant?: ButtonVariant;
 	} = $props();
 
+	const required: boolean | undefined = getContext('required');
 	const optionManager: OptionManager = getContext('OptionManager');
-	const required: Boolean | undefined = getContext('required');
-	const id: string | undefined = getContext('id');
-	const isNotFilled = $derived(required && !optionManager.isSomeOptionsSelected);
 
-	const formValidator: FormValidator = getContext('FormValidator');
-	$effect(() => {
-		if (formValidator) {
-			formValidator.set(id, isNotFilled);
-		}
-	});
+	const isInvalid = $derived(validate(required, optionManager));
 </script>
 
 <Popover.Trigger
 	bind:ref
 	data-slot="select-trigger"
 	class={cn(
-		'w-full cursor-pointer',
+		'data-[state=open]:ring-primary group w-full cursor-pointer',
 		buttonVariants({ variant: variant }),
-		required && isNotFilled ? 'ring-destructive ring-1' : 'ring-1',
-		className
+		isInvalid ? 'ring-destructive ring-1' : 'ring-1',
+		className,
 	)}
 	{...restProps}
 >
 	{#if children}
 		{@render children?.()}
-	{:else if required && isNotFilled}
-		<p class=" text-destructive text-xs">Required</p>
+	{:else if isInvalid}
+		<span
+			class="group-data-[state=open]:text-primary group-data-[state=closed]:text-destructive flex items-center gap-1 text-xs"
+		>
+			<Icon icon="ph:list" />
+			<p class="group-data-[state=closed]:hidden">Select</p>
+			<p class="group-data-[state=open]:hidden">Required</p>
+		</span>
 	{:else if optionManager.isSomeOptionsSelected}
 		<p>Select</p>
 
@@ -108,7 +105,7 @@
 				icon={option.icon ? option.icon : 'ph:empty'}
 				class={cn('size-3', option.icon ? 'visibale' : 'invisible')}
 			/>
-			<p class="select-none text-xs">{option.label}</p>
+			<p class="text-xs select-none">{option.label}</p>
 		</span>
 	{/each}
 {/snippet}

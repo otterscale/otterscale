@@ -12,7 +12,7 @@ import (
 	"k8s.io/client-go/rest"
 	"kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 
-	oscore "github.com/openhdc/otterscale/internal/core"
+	oscore "github.com/otterscale/otterscale/internal/core"
 )
 
 const (

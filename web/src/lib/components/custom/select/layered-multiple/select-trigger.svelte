@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -9,38 +8,27 @@
 	import Icon from '@iconify/svelte';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
+	import type { AncestralOptionType } from './types';
+	import { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import type { AncestralOptionType } from './types';
-	import { OptionManager } from './utils.svelte';
+	let { ref = $bindable(null), children, ...restProps }: DropdownMenuPrimitive.TriggerProps & {} = $props();
 
-	let {
-		ref = $bindable(null),
-		children,
-		...restProps
-	}: DropdownMenuPrimitive.TriggerProps & {} = $props();
-
-	const optionManager: OptionManager = getContext('OptionManager');
-	const required: boolean | undefined = getContext('required');
 	const id: string | undefined = getContext('id');
+	const required: boolean | undefined = getContext('required');
+	const optionManager: OptionManager = getContext('OptionManager');
 
-	const isNotFilled = $derived(required && !optionManager.isSomeAncestralOptionsSelected);
-	const formValidator: FormValidator = getContext('FormValidator');
-	$effect(() => {
-		if (formValidator) {
-			formValidator.set(id, isNotFilled);
-		}
-	});
+	const isInvalid = $derived(required && !optionManager.isSomeAncestralOptionsSelected);
 </script>
 
 <DropdownMenu.Trigger
 	bind:ref
 	data-slot="select-trigger"
 	class={cn(
-		'w-full cursor-pointer',
+		'data-[state=open]:ring-primary group w-full cursor-pointer',
 		buttonVariants({ variant: 'outline' }),
-		required && isNotFilled ? 'ring-destructive ring-1' : 'ring-1'
+		isInvalid ? 'ring-destructive ring-1' : 'ring-1',
 	)}
 	{...restProps}
 >
@@ -63,10 +51,19 @@
 				{@render ShowOptions(optionManager.selectedAncestralOptions)}
 			{/if}
 		</div>
-	{:else if required && isNotFilled}
-		<p class=" text-destructive text-xs">Required</p>
+	{:else if isInvalid}
+		<span
+			class="group-data-[state=open]:text-primary group-data-[state=closed]:text-destructive flex items-center gap-1 text-xs"
+		>
+			<Icon icon="ph:list" />
+			<p class="group-data-[state=closed]:hidden">Select</p>
+			<p class="group-data-[state=open]:hidden">Required</p>
+		</span>
 	{:else}
-		Select
+		<span class="flex items-center gap-1 text-xs">
+			<Icon icon="ph:list" />
+			Select
+		</span>
 	{/if}
 </DropdownMenu.Trigger>
 
@@ -76,10 +73,7 @@
 			{#if index > 0}
 				<Separator orientation="vertical" />
 			{/if}
-			<Icon
-				icon={part.icon ?? 'ph:empty'}
-				class={cn(part.icon && part.icon ? 'visibale' : 'hidden')}
-			/>
+			<Icon icon={part.icon ?? 'ph:empty'} class={cn(part.icon && part.icon ? 'visibale' : 'hidden')} />
 			{part.label}
 		{/each}
 	</Badge>
@@ -105,10 +99,7 @@
 				{#if index > 0}
 					<Separator orientation="vertical" class="data-[orientation=vertical]:h-3" />
 				{/if}
-				<Icon
-					icon={part.icon ?? 'ph:empty'}
-					class={cn(part.icon && part.icon ? 'visibale' : 'hidden')}
-				/>
+				<Icon icon={part.icon ?? 'ph:empty'} class={cn(part.icon && part.icon ? 'visibale' : 'hidden')} />
 				{part.label}
 			{/each}
 		</span>

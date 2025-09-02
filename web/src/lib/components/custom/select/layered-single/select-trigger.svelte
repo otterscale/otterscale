@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	import { FormValidator } from '$lib/components/custom/form';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
@@ -7,37 +6,26 @@
 	import Icon from '@iconify/svelte';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
+	import { OptionManager, validate } from './utils.svelte';
 </script>
 
 <script lang="ts">
-	import { OptionManager } from './utils.svelte';
+	let { ref = $bindable(null), children, ...restProps }: DropdownMenuPrimitive.TriggerProps & {} = $props();
 
-	let {
-		ref = $bindable(null),
-		children,
-		...restProps
-	}: DropdownMenuPrimitive.TriggerProps & {} = $props();
-
-	const optionManager: OptionManager = getContext('OptionManager');
-	const required: boolean | undefined = getContext('required');
 	const id: string | undefined = getContext('id');
-	const isNotFilled = $derived(required && !optionManager.selectedAncestralOption);
+	const required: boolean | undefined = getContext('required');
+	const optionManager: OptionManager = getContext('OptionManager');
 
-	const formValidator: FormValidator = getContext('FormValidator');
-	$effect(() => {
-		if (formValidator) {
-			formValidator.set(id, isNotFilled);
-		}
-	});
+	const isInvalid = $derived(validate(required, optionManager));
 </script>
 
 <DropdownMenu.Trigger
 	bind:ref
 	data-slot="select-trigger"
 	class={cn(
-		'cursor-pointer',
+		'data-[state=open]:ring-primary group cursor-pointer',
 		buttonVariants({ variant: 'outline' }),
-		required && isNotFilled ? 'ring-destructive ring-1' : 'ring-1'
+		isInvalid ? 'ring-destructive ring-1' : 'ring-1',
 	)}
 	{...restProps}
 >
@@ -48,15 +36,21 @@
 			{#if index > 0}
 				<Separator orientation="vertical" />
 			{/if}
-			<Icon
-				icon={option.icon ?? 'ph:empty'}
-				class={cn(option.icon && option.icon ? 'visibale' : 'hidden')}
-			/>
+			<Icon icon={option.icon ?? 'ph:empty'} class={cn(option.icon && option.icon ? 'visibale' : 'hidden')} />
 			{option.label}
 		{/each}
-	{:else if required && isNotFilled}
-		<p class=" text-destructive text-xs">Required</p>
+	{:else if isInvalid}
+		<span
+			class="group-data-[state=open]:text-primary group-data-[state=closed]:text-destructive flex items-center gap-1 text-xs"
+		>
+			<Icon icon="ph:list" />
+			<p class="group-data-[state=closed]:hidden">Select</p>
+			<p class="group-data-[state=open]:hidden">Required</p>
+		</span>
 	{:else}
-		Select
+		<span class="flex items-center gap-1 text-xs">
+			<Icon icon="ph:list" />
+			Select
+		</span>
 	{/if}
 </DropdownMenu.Trigger>

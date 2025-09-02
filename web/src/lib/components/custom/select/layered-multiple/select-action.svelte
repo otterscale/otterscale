@@ -19,7 +19,7 @@
 
 <Button
 	bind:ref
-	data-slot="button"
+	data-slot="select-action"
 	class={cn('cursor-pointer', buttonVariants({ variant, size }), className)}
 	{href}
 	{type}

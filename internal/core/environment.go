@@ -4,12 +4,18 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"net/url"
 	"slices"
 	"sync"
 
 	"connectrpc.com/connect"
 
-	"github.com/openhdc/otterscale/internal/config"
+	"github.com/otterscale/otterscale/internal/config"
+)
+
+const (
+	healthOK           = 11
+	healthNotInstalled = 21
 )
 
 const traefikShowAction = "show-proxied-endpoints"
@@ -21,8 +27,10 @@ type traefikProxiedEndpoints struct {
 }
 
 type EnvironmentStatus struct {
-	Phase   string
-	Message string
+	Started  bool
+	Finished bool
+	Phase    string
+	Message  string
 }
 
 type EnvironmentUseCase struct {
@@ -30,43 +38,44 @@ type EnvironmentUseCase struct {
 	action   ActionRepo
 	facility FacilityRepo
 
-	prometheusEndpoint string
-	prometheusBaseURL  string
-
-	conf      *config.Config
-	statusMap sync.Map
+	conf          *config.Config
+	statusMap     sync.Map
+	prometheusURL *url.URL
 }
 
 func NewEnvironmentUseCase(scope ScopeRepo, action ActionRepo, facility FacilityRepo, conf *config.Config) *EnvironmentUseCase {
 	return &EnvironmentUseCase{
-		scope:             scope,
-		action:            action,
-		facility:          facility,
-		conf:              conf,
-		prometheusBaseURL: "/api/v1",
+		scope:         scope,
+		action:        action,
+		facility:      facility,
+		conf:          conf,
+		prometheusURL: &url.URL{},
 	}
 }
 
-//nolint:mnd
-func (uc *EnvironmentUseCase) CheckHealthy(ctx context.Context) (int32, error) {
-	if uc.conf.MAAS.Key == "::" {
-		return 21, nil // NOT_INSTALLED
+func (uc *EnvironmentUseCase) CheckHealth(ctx context.Context) (int32, error) {
+	if !uc.isMAASConfigured() {
+		return healthNotInstalled, nil
 	}
-	return 11, nil // OK
+	return healthOK, nil
 }
 
-func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) (*EnvironmentStatus, error) {
+func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) *EnvironmentStatus {
 	v, ok := uc.statusMap.Load("")
 	if ok {
-		return v.(*EnvironmentStatus), nil
+		return v.(*EnvironmentStatus)
 	}
-	return nil, connect.NewError(connect.CodeNotFound, errors.New("status not found"))
+	return &EnvironmentStatus{
+		Finished: uc.isMAASConfigured(),
+	}
 }
 
 func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message string) {
 	uc.statusMap.Store("", &EnvironmentStatus{
-		Phase:   phase,
-		Message: message,
+		Started:  true,
+		Finished: uc.isMAASConfigured(),
+		Phase:    phase,
+		Message:  message,
 	})
 }
 
@@ -82,14 +91,18 @@ func (uc *EnvironmentUseCase) UpdateConfigHelmRepos(ctx context.Context, urls []
 	return uc.conf.Override(uc.conf)
 }
 
-func (uc *EnvironmentUseCase) GetPrometheusInfo(ctx context.Context) (endpoint, baseURL string, err error) {
-	if uc.prometheusEndpoint != "" {
-		return uc.prometheusEndpoint, uc.prometheusBaseURL, nil
+func (uc *EnvironmentUseCase) GetPrometheusURL() *url.URL {
+	return uc.prometheusURL
+}
+
+func (uc *EnvironmentUseCase) FetchPrometheusInfo(ctx context.Context) (*url.URL, error) {
+	if uc.prometheusURL.Scheme != "" {
+		return uc.prometheusURL, nil
 	}
 
 	scopes, err := uc.scope.List(ctx)
 	if err != nil {
-		return "", "", err
+		return nil, err
 	}
 
 	cosScopes := []string{"cos", "cos-lite", "cos-dev"}
@@ -110,8 +123,16 @@ func (uc *EnvironmentUseCase) GetPrometheusInfo(ctx context.Context) (endpoint, 
 		if err := json.Unmarshal([]byte(result.Output["proxied-endpoints"].(string)), &endpoints); err != nil {
 			continue
 		}
-		uc.prometheusEndpoint = endpoints.Prometheus.URL
-		return uc.prometheusEndpoint, uc.prometheusBaseURL, nil
+		url, err := url.Parse(endpoints.Prometheus.URL)
+		if err != nil {
+			continue
+		}
+		*uc.prometheusURL = *url
+		return uc.prometheusURL, nil
 	}
-	return "", "", connect.NewError(connect.CodeNotFound, errors.New("prometheus info not found"))
+	return nil, connect.NewError(connect.CodeNotFound, errors.New("prometheus info not found"))
+}
+
+func (uc *EnvironmentUseCase) isMAASConfigured() bool {
+	return uc.conf.MAAS.Key != "::"
 }

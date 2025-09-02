@@ -6,10 +6,10 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/openhdc/otterscale/api/network/v1"
-	"github.com/openhdc/otterscale/api/network/v1/pbconnect"
-	"github.com/openhdc/otterscale/internal/core"
-	"github.com/openhdc/otterscale/internal/enum"
+	pb "github.com/otterscale/otterscale/api/network/v1"
+	"github.com/otterscale/otterscale/api/network/v1/pbconnect"
+	"github.com/otterscale/otterscale/internal/core"
+	"github.com/otterscale/otterscale/internal/enum"
 )
 
 type NetworkService struct {

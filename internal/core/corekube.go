@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"os"
 	"sync"
 
 	"k8s.io/client-go/rest"
@@ -45,5 +46,25 @@ func newKubeConfig(ctx context.Context, facility FacilityRepo, action ActionRepo
 	if err != nil {
 		return nil, err
 	}
-	return clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
+
+	config, err := clientcmd.NewDefaultClientConfig(*configAPI, &clientcmd.ConfigOverrides{}).ClientConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	// Write CA data to temp file for helm
+	if config.CAData != nil {
+		tmpFile, err := os.CreateTemp("", "otterscale-ca-*.crt")
+		if err != nil {
+			return nil, err
+		}
+		defer tmpFile.Close()
+
+		if _, err := tmpFile.Write(config.CAData); err != nil {
+			return nil, err
+		}
+		config.CAFile = tmpFile.Name()
+	}
+
+	return config, nil
 }

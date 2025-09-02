@@ -5,7 +5,7 @@ package otterscale.kubevirt.v1;
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/openhdc/otterscale/api/kubevirt/v1;pb";
+option go_package = "github.com/otterscale/otterscale/api/kubevirt/v1;pb";
 
 // Virtual Machine Management Service for KubeVirt
 service KubeVirtService {

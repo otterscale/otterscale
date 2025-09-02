@@ -10,7 +10,7 @@ import (
 	virtv1 "kubevirt.io/api/core/v1"
 	snapshotv1 "kubevirt.io/api/snapshot/v1beta1"
 
-	oscore "github.com/openhdc/otterscale/internal/core"
+	oscore "github.com/otterscale/otterscale/internal/core"
 )
 
 type virtVM struct {

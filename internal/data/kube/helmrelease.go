@@ -15,7 +15,7 @@ import (
 	"helm.sh/helm/v3/pkg/getter"
 	"helm.sh/helm/v3/pkg/release"
 
-	oscore "github.com/openhdc/otterscale/internal/core"
+	oscore "github.com/otterscale/otterscale/internal/core"
 )
 
 type helmRelease struct {
@@ -184,10 +184,8 @@ func (r *helmRelease) config(restConfig *rest.Config, namespace string) (*action
 	getter := genericclioptions.NewConfigFlags(true)
 	getter.APIServer = &restConfig.Host
 	getter.BearerToken = &restConfig.BearerToken
-	getter.CAFile = &restConfig.CAFile
-	getter.CertFile = &restConfig.TLSClientConfig.CertFile
-	getter.KeyFile = &restConfig.TLSClientConfig.KeyFile
 	getter.Insecure = &restConfig.Insecure
+	getter.CAFile = &restConfig.CAFile
 	getter.Namespace = &namespace
 
 	config := new(action.Configuration)

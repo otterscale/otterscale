@@ -25,6 +25,9 @@ vite.config.ts.timestamp-*
 
 # Paraglide
 src/lib/paraglide
+project.inlang/cache
+project.inlang/project_id
 
-# SQLite
-*.sqlite
+# Coverage
+coverage
+

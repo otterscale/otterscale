@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/openhdc/otterscale/api/storage/v1"
+	v1 "github.com/otterscale/otterscale/api/storage/v1"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"
@@ -152,49 +152,39 @@ const (
 
 // StorageServiceClient is a client for the otterscale.storage.v1.StorageService service.
 type StorageServiceClient interface {
-	// Cluster
 	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
 	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
 	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
-	// Cluster Pool
 	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
 	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
 	UpdatePool(context.Context, *connect.Request[v1.UpdatePoolRequest]) (*connect.Response[v1.Pool], error)
 	DeletePool(context.Context, *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error)
-	// RBD Image
 	ListImages(context.Context, *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error)
 	CreateImage(context.Context, *connect.Request[v1.CreateImageRequest]) (*connect.Response[v1.Image], error)
 	UpdateImage(context.Context, *connect.Request[v1.UpdateImageRequest]) (*connect.Response[v1.Image], error)
 	DeleteImage(context.Context, *connect.Request[v1.DeleteImageRequest]) (*connect.Response[emptypb.Empty], error)
-	// RBD Image Snapshot
 	CreateImageSnapshot(context.Context, *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error)
 	DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Volume
 	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
-	// CephFS Subvolume
 	ListSubvolumes(context.Context, *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error)
 	CreateSubvolume(context.Context, *connect.Request[v1.CreateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
 	UpdateSubvolume(context.Context, *connect.Request[v1.UpdateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
 	DeleteSubvolume(context.Context, *connect.Request[v1.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error)
 	GrantSubvolumeExportAccess(context.Context, *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
 	RevokeSubvolumeExportAccess(context.Context, *connect.Request[v1.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Subvolume Snapshot
 	CreateSubvolumeSnapshot(context.Context, *connect.Request[v1.CreateSubvolumeSnapshotRequest]) (*connect.Response[v1.Subvolume_Snapshot], error)
 	DeleteSubvolumeSnapshot(context.Context, *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Subvolume Group
 	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
 	CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
 	UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
 	DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error)
-	// RGW Bucket
 	ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error)
 	CreateBucket(context.Context, *connect.Request[v1.CreateBucketRequest]) (*connect.Response[v1.Bucket], error)
 	UpdateBucket(context.Context, *connect.Request[v1.UpdateBucketRequest]) (*connect.Response[v1.Bucket], error)
 	DeleteBucket(context.Context, *connect.Request[v1.DeleteBucketRequest]) (*connect.Response[emptypb.Empty], error)
-	// RGW User
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)
@@ -692,49 +682,39 @@ func (c *storageServiceClient) DeleteUserKey(ctx context.Context, req *connect.R
 
 // StorageServiceHandler is an implementation of the otterscale.storage.v1.StorageService service.
 type StorageServiceHandler interface {
-	// Cluster
 	ListMONs(context.Context, *connect.Request[v1.ListMONsRequest]) (*connect.Response[v1.ListMONsResponse], error)
 	ListOSDs(context.Context, *connect.Request[v1.ListOSDsRequest]) (*connect.Response[v1.ListOSDsResponse], error)
 	DoSMART(context.Context, *connect.Request[v1.DoSMARTRequest]) (*connect.Response[v1.DoSMARTResponse], error)
-	// Cluster Pool
 	ListPools(context.Context, *connect.Request[v1.ListPoolsRequest]) (*connect.Response[v1.ListPoolsResponse], error)
 	CreatePool(context.Context, *connect.Request[v1.CreatePoolRequest]) (*connect.Response[v1.Pool], error)
 	UpdatePool(context.Context, *connect.Request[v1.UpdatePoolRequest]) (*connect.Response[v1.Pool], error)
 	DeletePool(context.Context, *connect.Request[v1.DeletePoolRequest]) (*connect.Response[emptypb.Empty], error)
-	// RBD Image
 	ListImages(context.Context, *connect.Request[v1.ListImagesRequest]) (*connect.Response[v1.ListImagesResponse], error)
 	CreateImage(context.Context, *connect.Request[v1.CreateImageRequest]) (*connect.Response[v1.Image], error)
 	UpdateImage(context.Context, *connect.Request[v1.UpdateImageRequest]) (*connect.Response[v1.Image], error)
 	DeleteImage(context.Context, *connect.Request[v1.DeleteImageRequest]) (*connect.Response[emptypb.Empty], error)
-	// RBD Image Snapshot
 	CreateImageSnapshot(context.Context, *connect.Request[v1.CreateImageSnapshotRequest]) (*connect.Response[v1.Image_Snapshot], error)
 	DeleteImageSnapshot(context.Context, *connect.Request[v1.DeleteImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	RollbackImageSnapshot(context.Context, *connect.Request[v1.RollbackImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	ProtectImageSnapshot(context.Context, *connect.Request[v1.ProtectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
 	UnprotectImageSnapshot(context.Context, *connect.Request[v1.UnprotectImageSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Volume
 	ListVolumes(context.Context, *connect.Request[v1.ListVolumesRequest]) (*connect.Response[v1.ListVolumesResponse], error)
-	// CephFS Subvolume
 	ListSubvolumes(context.Context, *connect.Request[v1.ListSubvolumesRequest]) (*connect.Response[v1.ListSubvolumesResponse], error)
 	CreateSubvolume(context.Context, *connect.Request[v1.CreateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
 	UpdateSubvolume(context.Context, *connect.Request[v1.UpdateSubvolumeRequest]) (*connect.Response[v1.Subvolume], error)
 	DeleteSubvolume(context.Context, *connect.Request[v1.DeleteSubvolumeRequest]) (*connect.Response[emptypb.Empty], error)
 	GrantSubvolumeExportAccess(context.Context, *connect.Request[v1.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
 	RevokeSubvolumeExportAccess(context.Context, *connect.Request[v1.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Subvolume Snapshot
 	CreateSubvolumeSnapshot(context.Context, *connect.Request[v1.CreateSubvolumeSnapshotRequest]) (*connect.Response[v1.Subvolume_Snapshot], error)
 	DeleteSubvolumeSnapshot(context.Context, *connect.Request[v1.DeleteSubvolumeSnapshotRequest]) (*connect.Response[emptypb.Empty], error)
-	// CephFS Subvolume Group
 	ListSubvolumeGroups(context.Context, *connect.Request[v1.ListSubvolumeGroupsRequest]) (*connect.Response[v1.ListSubvolumeGroupsResponse], error)
 	CreateSubvolumeGroup(context.Context, *connect.Request[v1.CreateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
 	UpdateSubvolumeGroup(context.Context, *connect.Request[v1.UpdateSubvolumeGroupRequest]) (*connect.Response[v1.SubvolumeGroup], error)
 	DeleteSubvolumeGroup(context.Context, *connect.Request[v1.DeleteSubvolumeGroupRequest]) (*connect.Response[emptypb.Empty], error)
-	// RGW Bucket
 	ListBuckets(context.Context, *connect.Request[v1.ListBucketsRequest]) (*connect.Response[v1.ListBucketsResponse], error)
 	CreateBucket(context.Context, *connect.Request[v1.CreateBucketRequest]) (*connect.Response[v1.Bucket], error)
 	UpdateBucket(context.Context, *connect.Request[v1.UpdateBucketRequest]) (*connect.Response[v1.Bucket], error)
 	DeleteBucket(context.Context, *connect.Request[v1.DeleteBucketRequest]) (*connect.Response[emptypb.Empty], error)
-	// RGW User
 	ListUsers(context.Context, *connect.Request[v1.ListUsersRequest]) (*connect.Response[v1.ListUsersResponse], error)
 	CreateUser(context.Context, *connect.Request[v1.CreateUserRequest]) (*connect.Response[v1.User], error)
 	UpdateUser(context.Context, *connect.Request[v1.UpdateUserRequest]) (*connect.Response[v1.User], error)

@@ -1,8 +1,8 @@
+import { m } from '$lib/paraglide/messages';
+
 export const siteConfig = {
-    name: "otterscale",
-    title: "OtterScale",
-    description: "Empower your data center with hybrid solutions",
-    version: "v1.0.0-beta.1"
+	title: m.site_title(),
+	description: m.site_description(),
 };
 
 export type SiteConfig = typeof siteConfig;
