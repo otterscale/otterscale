@@ -617,6 +617,7 @@
 	"io_test": " IO 測試",
 	"object_storage_test": "物件儲存測試",
 	"networking_dashboard_description": "網路儀表板總覽，包括探索狀態、DHCP、可用 IP、DNS 伺服器、每月裝置使用情況，以及每日網路流量。資料可依子網路和 FQDN 篩選。",
+	"storage_dashboard_description": "監控Ceph 儲存叢集效能、容量使用情況、健康狀態、OSD 分布和流通量分析。即時檢視叢集健康度、容量趨勢和儲存作業指標。",
 	"discovery": "探索",
 	"overview": "總覽",
 	"analytics": "分析",

@@ -44,8 +44,10 @@
 {#if prometheusDriver}
 	<div class="mx-auto grid w-full gap-6">
 		<div class="grid gap-1">
-			<h1 class="text-2xl font-bold tracking-tight md:text-3xl">Dashboard</h1>
-			<p class="text-muted-foreground">description</p>
+			<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.storage()}</h1>
+			<p class="text-muted-foreground">
+				{m.storage_dashboard_description()}
+			</p>
 		</div>
 		<Tabs.Root value="overview">
 			<div class="flex justify-between gap-2">
