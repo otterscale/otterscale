@@ -67,8 +67,8 @@ func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, d
 	client.DryRun = dryRun
 	client.ReleaseName = name
 	client.Labels = map[string]string{
-		"app.otterscale.io/release-name": name,
-		// "app.otterscale.io/chart-ref":    chartRef, // TODO: invalid label format
+		"app.otterscale.com/release-name": name,
+		// "app.otterscale.com/chart-ref":    chartRef, // TODO: invalid label format
 	}
 
 	chartPath, err := client.ChartPathOptions.LocateChart(chartRef, r.kube.envSettings)

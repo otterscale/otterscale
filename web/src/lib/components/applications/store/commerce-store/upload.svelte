@@ -49,7 +49,7 @@
 					</div>
 					<div class="grid gap-2">
 						<Label>Logo URL</Label>
-						<Input value="otterscale.io/logo.svg" />
+						<Input value="otterscale.com/logo.svg" />
 					</div>
 					<div class="grid grid-cols-2 gap-4">
 						<div class="grid gap-2">
