@@ -72,6 +72,9 @@
 
 Open your browser and navigate to `http://localhost:3000` (or your configured port).
 
+> [!TIP]
+> If you cannot access `http://localhost:3000`, check if the port is in use or refer to the [troubleshooting guide](/docs/troubleshooting.md).
+
 For production deployments, see our [deployment guide](/docs/deployment.md).
 
 ## 🔧 Development
@@ -111,13 +114,15 @@ make test
 
 - [GitHub Issues](https://github.com/otterscale/otterscale/issues) - Bug reports and feature requests
 - [GitHub Discussions](https://github.com/otterscale/otterscale/discussions) - Community Q&A
-- [Enterprise Support](mailto:support@otterscale.github.io) - Commercial inquiries
+- [Enterprise Support](mailto:support@otterscale.com) - Commercial inquiries
 
 ## 🗺️ Roadmap
 
-- [x] **[v0.5.0](https://github.com/otterscale/otterscale/milestone/1)**: MAAS, Juju, Ceph, Kubernetes, Helm
-- [ ] **[v0.6.0](https://github.com/otterscale/otterscale/milestone/2)**: Virtual Machine, GPU Operator, Open Policy Agent
-- [ ] **[v0.7.0](https://github.com/otterscale/otterscale/milestone/3)**: Helm Upload, API Interface, AI Agent
+|                              Version                               | Topic                        | Features                                         | Status         |
+| :----------------------------------------------------------------: | ---------------------------- | ------------------------------------------------ | -------------- |
+| **[v0.5.0](https://github.com/otterscale/otterscale/milestone/1)** | Infrastructure Core          | MAAS, Juju, Ceph, Kubernetes, Helm               | ✅ Complete    |
+| **[v0.6.0](https://github.com/otterscale/otterscale/milestone/2)** | Compute Resources & Policies | Virtual Machine, GPU Operator, Open Policy Agent | ⏳ In Progress |
+| **[v0.7.0](https://github.com/otterscale/otterscale/milestone/3)** | Developer Experience         | Helm Upload, API Interface, AI Agent             | 📅 Planned     |
 
 ## 🤝 Contributing
 
@@ -132,7 +137,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) and review o
 
 ## 🔒 Security
 
-For security vulnerabilities, email [**security@otterscale.github.io**](mailto:security@otterscale.github.io) instead of creating public issues.
+For security vulnerabilities, email [security@otterscale.com](mailto:security@otterscale.com) instead of creating public issues.
 
 ## 📄 License
 
@@ -140,6 +145,15 @@ Licensed under [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0). Ope
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_large&issueType=license)
 
-## 🙏 Contributors
+## 🙏 Acknowledgements
 
-[![Contributors](https://contrib.rocks/image?repo=otterscale/otterscale)](https://github.com/otterscale/otterscale/graphs/contributors)
+We extend our heartfelt gratitude to those who make OtterScale possible:
+
+- **Open Source Community**: Thanks to contributors, early adopters, and active members in [GitHub Issues](https://github.com/otterscale/otterscale/issues) and [Discussions](https://github.com/otterscale/otterscale/discussions) for code, feedback, and ideas.
+- **Core Technologies**:
+  - **[Kubernetes](https://kubernetes.io/)**: Container orchestration
+  - **[Ceph](https://ceph.io/)**: Distributed storage
+  - **[Juju](https://juju.is/)**: Application deployment
+  - **[MAAS](https://maas.io/)**: Metal provisioning
+
+Your efforts fuel OtterScale’s vision to revolutionize hyper-converged infrastructure! 🌟
