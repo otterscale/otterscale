@@ -7,10 +7,8 @@
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	let {
-		prometheusDriver,
-		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
+	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
+		$props();
 
 	let runningContainers = $state(0);
 
@@ -25,7 +23,7 @@
 						sum(
 							kubelet_running_container_count{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics"}
 						)
-						`
+						`,
 			)
 			.then((response) => {
 				runningContainers = response.result[0].value.value;

@@ -11,10 +11,8 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	let {
-		prometheusDriver,
-		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
+	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
+		$props();
 
 	let reads = $state([] as SampleValue[]);
 	let writes = $state([] as SampleValue[]);
@@ -22,12 +20,12 @@
 		reads.map((sample, index) => ({
 			time: sample.time,
 			read: sample.value,
-			write: writes[index]?.value ?? 0
-		}))
+			write: writes[index]?.value ?? 0,
+		})),
 	);
 	const throughputsConfigurations = {
 		read: { label: 'Read', color: 'var(--chart-1)' },
-		write: { label: 'Write', color: 'var(--chart-2)' }
+		write: { label: 'Write', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 	function fetch() {
 		prometheusDriver
@@ -41,7 +39,7 @@
 						`,
 				new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 				new Date().setMinutes(0, 0, 0),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				reads = response.result[0].values;
@@ -57,7 +55,7 @@
 						`,
 				new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
 				new Date().setMinutes(0, 0, 0),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				writes = response.result[0].values;
@@ -100,13 +98,13 @@
 						{
 							key: 'read',
 							label: throughputsConfigurations.read.label,
-							color: throughputsConfigurations.read.color
+							color: throughputsConfigurations.read.color,
 						},
 						{
 							key: 'write',
 							label: throughputsConfigurations.write.label,
-							color: throughputsConfigurations.write.color
-						}
+							color: throughputsConfigurations.write.color,
+						},
 					]}
 					seriesLayout="stack"
 					props={{
@@ -114,13 +112,13 @@
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween'
+							motion: 'tween',
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 						},
-						yAxis: { format: () => '' }
+						yAxis: { format: () => '' },
 					}}
 				>
 					{#snippet tooltip()}
@@ -132,7 +130,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>

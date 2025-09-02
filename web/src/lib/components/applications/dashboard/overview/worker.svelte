@@ -11,24 +11,18 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let {
-		prometheusDriver,
-		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
+	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
+		$props();
 
 	const transport: Transport = getContext('transport');
 	const facilityClient = createClient(FacilityService, transport);
 
 	const facilities = writable<Facility[]>([]);
 	const worker = $derived(
-		$facilities.find(
-			(facility) => facility.name.includes('kubernetes-worker') && facility.units.length > 0
-		)
+		$facilities.find((facility) => facility.name.includes('kubernetes-worker') && facility.units.length > 0),
 	);
 	const workerUnits = $derived(worker?.units ?? []);
-	const activeWorkerUnits = $derived(
-		workerUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []
-	);
+	const activeWorkerUnits = $derived(workerUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []);
 
 	async function fetch() {
 		facilityClient.listFacilities({ scopeUuid: $currentKubernetes?.scopeUuid }).then((response) => {

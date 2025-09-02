@@ -10,14 +10,12 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	let {
-		prometheusDriver,
-		isReloading = $bindable()
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
+	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
+		$props();
 
 	let cpuUsages: SampleValue[] = $state([]);
 	const cpuUsagesConfiguration = {
-		usage: { label: 'Usage', color: 'var(--chart-2)' }
+		usage: { label: 'Usage', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 	let cpuRequests = $state(0);
 	let cpuLimits = $state(0);
@@ -32,7 +30,7 @@
 						`,
 				Date.now() - 60 * 60 * 1000,
 				Date.now(),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				cpuUsages = response.result[0].values;
@@ -47,7 +45,7 @@
 						sum(
 							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="cpu"}
 						)
-						`
+						`,
 			)
 			.then((response) => {
 				cpuRequests = response.result[0].value.value;
@@ -62,7 +60,7 @@
 						sum(
 							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="cpu"}
 						)
-						`
+						`,
 			)
 			.then((response) => {
 				cpuLimits = response.result[0].value.value;
@@ -114,8 +112,8 @@
 						{
 							key: 'value',
 							label: cpuUsagesConfiguration.usage.label,
-							color: cpuUsagesConfiguration.usage.color
-						}
+							color: cpuUsagesConfiguration.usage.color,
+						},
 					]}
 					seriesLayout="stack"
 					props={{
@@ -123,13 +121,13 @@
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween'
+							motion: 'tween',
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 						},
-						yAxis: { format: () => '' }
+						yAxis: { format: () => '' },
 					}}
 				>
 					{#snippet tooltip()}
@@ -141,7 +139,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>
