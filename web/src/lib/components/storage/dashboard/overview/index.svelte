@@ -25,10 +25,10 @@
 		<TextClusterHealth {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<TextTimeTillFull {client} {scope} />
+		<TextTimeTillFull {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2 row-span-2">
-		<UsageCapacity {client} {scope} />
+		<UsageCapacity {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2 row-span-2">
 		<AreaCapacity {client} {scope} bind:isReloading />
@@ -37,10 +37,10 @@
 		<PieOSDType {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<TextQuorum {client} {scope} />
+		<TextQuorum {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<TextOSDs {client} {scope} />
+		<TextOSDs {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-4 row-span-2">
 		<BarOSDThroughtput {client} {scope} bind:isReloading />
