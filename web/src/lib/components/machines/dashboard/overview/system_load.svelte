@@ -11,13 +11,12 @@
 
 	let {
 		prometheusDriver,
-		isReloading = $bindable(),
-		span,
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+		isReloading = $bindable()
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	const systemLoadConfiguration = {
 		one: { label: '1 min', color: 'var(--chart-1)' },
-		five: { label: '5 min', color: 'var(--chart-2)' },
+		five: { label: '5 min', color: 'var(--chart-2)' }
 	} satisfies Chart.ChartConfig;
 
 	let ones = $state([] as SampleValue[]);
@@ -26,8 +25,8 @@
 		ones.map((sample, index) => ({
 			time: sample.time,
 			one: sample.value,
-			five: fives[index]?.value ?? 0,
-		})),
+			five: fives[index]?.value ?? 0
+		}))
 	);
 
 	async function fetch() {
@@ -63,7 +62,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={span}>
+	<Card.Root class="h-full">
 		<Card.Header>
 			<Card.Title>{m.system_load()}</Card.Title>
 			<Card.Description>
@@ -81,13 +80,13 @@
 						{
 							key: 'one',
 							label: systemLoadConfiguration.one.label,
-							color: systemLoadConfiguration.one.color,
+							color: systemLoadConfiguration.one.color
 						},
 						{
 							key: 'five',
 							label: systemLoadConfiguration.five.label,
-							color: systemLoadConfiguration.five.color,
-						},
+							color: systemLoadConfiguration.five.color
+						}
 					]}
 					seriesLayout="stack"
 					props={{
@@ -95,12 +94,12 @@
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween',
+							motion: 'tween'
 						},
 						xAxis: {
-							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+							format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
 						},
-						yAxis: { format: () => '' },
+						yAxis: { format: () => '' }
 					}}
 				>
 					{#snippet tooltip()}
@@ -112,7 +111,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric',
+									minute: 'numeric'
 								});
 							}}
 						/>

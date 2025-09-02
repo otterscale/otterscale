@@ -7,15 +7,29 @@
 	import Storage from './storage.svelte';
 	import SystemLoad from './system_load.svelte';
 
-	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
-		$props();
+	let {
+		prometheusDriver,
+		isReloading = $bindable()
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 </script>
 
 <div class="grid auto-rows-auto grid-cols-3 gap-5 pt-4 md:grid-cols-6 lg:grid-cols-9">
-	<CPU {prometheusDriver} {isReloading} span="col-span-2" />
-	<Memory {prometheusDriver} {isReloading} span="col-span-2" />
-	<Storage {prometheusDriver} {isReloading} span="col-span-2" />
-	<Nodes {isReloading} span="col-span-3" />
-	<SystemLoad {prometheusDriver} {isReloading} span="col-span-6" />
-	<NodeProportion {isReloading} span="col-span-3" />
+	<div class="col-span-2">
+		<CPU {prometheusDriver} bind:isReloading />
+	</div>
+	<div class="col-span-2">
+		<Memory {prometheusDriver} bind:isReloading />
+	</div>
+	<div class="col-span-2">
+		<Storage {prometheusDriver} bind:isReloading />
+	</div>
+	<div class="col-span-3">
+		<Nodes bind:isReloading />
+	</div>
+	<div class="col-span-6">
+		<SystemLoad {prometheusDriver} bind:isReloading />
+	</div>
+	<div class="col-span-3">
+		<NodeProportion bind:isReloading />
+	</div>
 </div>

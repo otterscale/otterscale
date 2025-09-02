@@ -5,7 +5,6 @@
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
-	import { cn } from '$lib/utils';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
@@ -14,9 +13,8 @@
 
 	let {
 		prometheusDriver,
-		isReloading = $bindable(),
-		span
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+		isReloading = $bindable()
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	let receives = $state([] as SampleValue[]);
 	let transmits = $state([] as SampleValue[]);
@@ -87,7 +85,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('gap-2', span)}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header>
 			<Card.Title>{m.network_bandwidth()}</Card.Title>
 			<Card.Description>{m.receive_and_transmit()}</Card.Description>

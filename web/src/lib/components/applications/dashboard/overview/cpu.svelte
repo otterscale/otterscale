@@ -4,7 +4,6 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
-	import { cn } from '$lib/utils';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
@@ -13,9 +12,8 @@
 
 	let {
 		prometheusDriver,
-		isReloading = $bindable(),
-		span
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+		isReloading = $bindable()
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	let cpuUsages: SampleValue[] = $state([]);
 	const cpuUsagesConfiguration = {
@@ -91,7 +89,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('gap-2', span)}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header>
 			<Card.Title>{m.cpu_usage()}</Card.Title>
 			<Card.Action class="text-muted-foreground flex flex-col gap-0.5 text-sm">
