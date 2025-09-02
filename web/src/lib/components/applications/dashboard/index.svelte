@@ -1,64 +1,99 @@
 <script lang="ts">
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { env } from '$env/dynamic/public';
+	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import { Reloader } from '$lib/components/custom/reloader';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { m } from '$lib/paraglide/messages';
+	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
-	import { default as AreaErrorBudget } from './area-chart-error-budget.svelte';
-	import { default as AreaVolumeSpace } from './area-chart-volume-space.svelte';
-	import { default as TextRunningKubelet } from './text-chart-running-kubelet.svelte';
-	import { default as TextRunningKubeletPod } from './text-chart-running-kubelet-pod.svelte';
-	import { default as TextRunningKubeletContainer } from './text-chart-running-kubelet-container.svelte';
-	import { default as TextUpControllerManager } from './text-chart-up-controller-manager.svelte';
-	import { default as TextUpETCD } from './text-chart-up-etcd.svelte';
-	import { default as TextUpProxy } from './text-chart-up-proxy.svelte';
-	import { default as TextUpScheduler } from './text-chart-up-scheduler.svelte';
-	import { default as UsageAvailability } from './usage-rate-chart-availability.svelte';
-	import { default as UsageVolumeSpace } from './usage-rate-chart-volume-space.svelte';
+	import { getContext, onMount } from 'svelte';
+	import Container from './overview/container.svelte';
+	import ControlPlane from './overview/control-plane.svelte';
+	import CPU from './overview/cpu.svelte';
+	import Memory from './overview/memory.svelte';
+	import NetworkTraffic from './overview/network-traffic.svelte';
+	import Pod from './overview/pod.svelte';
+	import ThroughtPut from './overview/throughput.svelte';
+	import Worker from './overview/worker.svelte';
 
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	const transport: Transport = getContext('transport');
+	const environmentService = createClient(EnvironmentService, transport);
+
+	let isReloading = $state(true);
+
+	let prometheusDriver = $state<PrometheusDriver | null>(null);
+	onMount(async () => {
+		try {
+			environmentService
+				.getPrometheus({})
+				.then((response) => {
+					prometheusDriver = new PrometheusDriver({
+						endpoint: `${env.PUBLIC_API_URL}/prometheus`,
+						baseURL: response.baseUrl,
+					});
+				})
+				.catch((error) => {
+					console.error('Failed to initialize Prometheus driver:', error);
+				});
+		} catch (error) {
+			console.error('Failed to initialize Prometheus driver:', error);
+		}
+	});
 </script>
 
-<div class="flex flex-col gap-4">
-	<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-		<span class="col-span-1">
-			<TextRunningKubelet {client} {scope} />
-		</span>
-		<span class="col-span-1">
-			<TextRunningKubeletPod {client} {scope} />
-		</span>
-		<span class="col-span-1">
-			<TextRunningKubeletContainer {client} {scope} />
-		</span>
-	</div>
+{#if prometheusDriver}
+	<div class="mx-auto grid w-full gap-6">
+		<div class="grid gap-1">
+			<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.dashboard()}</h1>
+			<p class="text-muted-foreground">
+				{m.management_dashboard_description()}
+			</p>
+		</div>
 
-	<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-		<span class="col-span-1">
-			<TextUpControllerManager {client} {scope} />
-		</span>
-		<span class="col-span-1">
-			<TextUpETCD {client} {scope} />
-		</span>
-		<span class="col-span-1">
-			<TextUpProxy {client} {scope} />
-		</span>
-		<span class="col-span-1">
-			<TextUpScheduler {client} {scope} />
-		</span>
+		<Tabs.Root value="overview">
+			<div class="flex justify-between gap-2">
+				<Tabs.List>
+					<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
+					<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
+				</Tabs.List>
+				<Reloader bind:checked={isReloading} />
+			</div>
+			<Tabs.Content
+				value="overview"
+				class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
+			>
+				<div class="col-span-2">
+					<ControlPlane {prometheusDriver} bind:isReloading />
+				</div>
+				<div class="col-span-2">
+					<Worker {prometheusDriver} bind:isReloading />
+				</div>
+				<div class="col-span-3 row-span-2">
+					<CPU {prometheusDriver} bind:isReloading />
+				</div>
+				<div class="col-span-3 row-span-2">
+					<Memory {prometheusDriver} bind:isReloading />
+				</div>
+				<div class="col-span-2 col-start-1">
+					<Pod {prometheusDriver} bind:isReloading />
+				</div>
+				<div class="col-span-2">
+					<Container {prometheusDriver} bind:isReloading />
+				</div>
+				<div class="col-span-3 col-start-5">
+					<NetworkTraffic {prometheusDriver} bind:isReloading />
+				</div>
+				<div class="col-span-3">
+					<ThroughtPut {prometheusDriver} bind:isReloading />
+				</div>
+			</Tabs.Content>
+			<Tabs.Content value="analytics">
+				<!-- {#if isMounted && prometheusDriver && $activeScope}
+				<Dashboard client={prometheusDriver} scope={$activeScope} />
+			{:else}
+				<Loading />
+			{/if} -->
+			</Tabs.Content>
+		</Tabs.Root>
 	</div>
-
-	<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-		<span class="col-span-2">
-			<UsageAvailability {client} {scope} />
-		</span>
-		<span class="col-span-2">
-			<AreaErrorBudget {client} {scope} />
-		</span>
-	</div>
-
-	<div class="grid w-full gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-		<span class="col-span-2">
-			<UsageVolumeSpace {client} {scope} />
-		</span>
-		<span class="col-span-2">
-			<AreaVolumeSpace {client} {scope} />
-		</span>
-	</div>
-</div>
+{/if}

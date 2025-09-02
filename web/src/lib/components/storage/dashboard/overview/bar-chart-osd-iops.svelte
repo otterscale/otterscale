@@ -34,12 +34,12 @@
 	const chartConfig = {
 		Read: {
 			label: m.read(),
-			color: 'var(--chart-1)'
+			color: 'var(--chart-1)',
 		},
 		Write: {
 			label: m.write(),
-			color: 'var(--chart-2)'
-		}
+			color: 'var(--chart-2)',
+		},
 	} satisfies Chart.ChartConfig;
 
 	// Type
@@ -71,8 +71,8 @@
 		{
 			key: activeChart,
 			label: chartConfig[activeChart].label,
-			color: chartConfig[activeChart].color
-		}
+			color: chartConfig[activeChart].color,
+		},
 	]);
 
 	// Helper functions
@@ -88,7 +88,7 @@
 		return reads.map((sample: SampleValue, index: number) => ({
 			date: sample.time,
 			Read: sample.value,
-			Write: writes[index]?.value ?? 0
+			Write: writes[index]?.value ?? 0,
 		}));
 	}
 
@@ -100,13 +100,12 @@
 	// Data fetching function
 	async function fetch(): Promise<void> {
 		try {
-			const [readResponse, writeResponse, latestReadResponse, latestWriteResponse] =
-				await Promise.all([
-					client.rangeQuery(queries.Read, startTime, endTime, STEP_SECONDS),
-					client.rangeQuery(queries.Write, startTime, endTime, STEP_SECONDS),
-					client.instantQuery(queries.Read),
-					client.instantQuery(queries.Write)
-				]);
+			const [readResponse, writeResponse, latestReadResponse, latestWriteResponse] = await Promise.all([
+				client.rangeQuery(queries.Read, startTime, endTime, STEP_SECONDS),
+				client.rangeQuery(queries.Write, startTime, endTime, STEP_SECONDS),
+				client.instantQuery(queries.Read),
+				client.instantQuery(queries.Write),
+			]);
 
 			const reads = extractMetricValues(readResponse);
 			const writes = extractMetricValues(writeResponse);
@@ -120,7 +119,7 @@
 				latestReadValue: Math.round(latestReadValue),
 				latestWriteValue: Math.round(latestWriteValue),
 				latestReadUnit: 'IOPS',
-				latestWriteUnit: 'IOPS'
+				latestWriteUnit: 'IOPS',
 			};
 		} catch (error) {
 			console.error('Failed to fetch IOPS metrics:', error);
@@ -129,7 +128,7 @@
 				latestReadValue: undefined,
 				latestWriteValue: undefined,
 				latestReadUnit: undefined,
-				latestWriteUnit: undefined
+				latestWriteUnit: undefined,
 			};
 		}
 	}
@@ -161,8 +160,7 @@
 				{#each ['Read', 'Write'] as key (key)}
 					{@const chart = key as ChartKey}
 					{@const isActive = activeChart === chart}
-					{@const latestValue =
-						key === 'Read' ? response.latestReadValue : response.latestWriteValue}
+					{@const latestValue = key === 'Read' ? response.latestReadValue : response.latestWriteValue}
 					{@const latestUnit = key === 'Read' ? response.latestReadUnit : response.latestWriteUnit}
 					{@const displayValue = latestValue ? formatBigNumber(latestValue) : '0'}
 					<button
@@ -198,19 +196,19 @@
 							initialHeight: 0,
 							motion: {
 								y: { type: 'tween', duration: 500, easing: cubicInOut },
-								height: { type: 'tween', duration: 500, easing: cubicInOut }
-							}
+								height: { type: 'tween', duration: 500, easing: cubicInOut },
+							},
 						},
 						highlight: { area: { fill: 'none' } },
 						xAxis: {
 							format: (d: Date) => {
 								return d.toLocaleDateString(getLocale(), {
 									month: 'numeric',
-									day: 'numeric'
+									day: 'numeric',
 								});
 							},
-							ticks: 24
-						}
+							ticks: 24,
+						},
 					}}
 				>
 					{#snippet belowMarks()}
@@ -225,7 +223,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>

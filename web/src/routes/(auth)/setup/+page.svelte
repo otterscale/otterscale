@@ -122,7 +122,7 @@
 						{#if $scopes.length > 0}
 							{#each services($scopes[0]) as service}
 								<div
-									class="group hover:border-primary/20 hover:bg-muted/50 flex items-center gap-4 rounded-lg border border-transparent p-3 transition-all duration-300"
+									class="hover:border-primary/20 hover:bg-muted/50 group flex items-center gap-4 rounded-lg border border-transparent p-3 transition-all duration-300"
 								>
 									<div class="bg-primary/10 rounded-full p-3">
 										<Icon icon={urlIcon(service.path.url)} class="size-6" />
@@ -160,7 +160,7 @@
 				</Button>
 
 				<div
-					class="border-border dark bg-card text-card-foreground m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
+					class="border-border bg-card text-card-foreground dark m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
 				>
 					<div class="flex border-b border-inherit p-4">
 						<div class="flex items-center gap-2">

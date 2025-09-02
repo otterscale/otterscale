@@ -25,7 +25,7 @@
 	// Queries
 	const queries = $derived({
 		used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"}`,
-		total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"}`
+		total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"}`,
 	});
 
 	// Auto Update
@@ -45,7 +45,7 @@
 	async function fetch() {
 		const [usedResponse, totalResponse] = await Promise.all([
 			client.instantQuery(queries.used),
-			client.instantQuery(queries.total)
+			client.instantQuery(queries.total),
 		]);
 
 		const usedValue = usedResponse.result[0]?.value?.value;
@@ -61,7 +61,7 @@
 			usedUnit: usedCapacity ? usedCapacity.unit : undefined,
 			totalValue: totalCapacity ? Math.round(totalCapacity.value) : undefined,
 			totalUnit: totalCapacity ? totalCapacity.unit : undefined,
-			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
+			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }],
 		};
 	}
 
@@ -102,12 +102,12 @@
 					series={[
 						{
 							key: 'data',
-							color: chartConfig.data.color
-						}
+							color: chartConfig.data.color,
+						},
 					]}
 					props={{
 						arc: { track: { fill: 'var(--muted)' }, motion: 'tween' },
-						tooltip: { context: { hideDelay: 350 } }
+						tooltip: { context: { hideDelay: 350 } },
 					}}
 					tooltip={false}
 				>

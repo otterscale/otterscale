@@ -46,7 +46,7 @@
 		juju_unit=~".*",
 		name=~".mgr"
 	} > 0
-	`
+	`,
 	);
 
 	// Format time duration

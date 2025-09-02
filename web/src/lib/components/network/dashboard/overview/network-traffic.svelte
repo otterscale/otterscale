@@ -5,7 +5,6 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { cn } from '$lib/utils';
 	import { scaleUtc } from 'd3-scale';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
@@ -16,12 +15,10 @@
 		prometheusDriver,
 		scope,
 		isReloading = $bindable(),
-		span
 	}: {
 		prometheusDriver: PrometheusDriver;
 		scope: Scope;
 		isReloading: boolean;
-		span: string;
 	} = $props();
 
 	let receives = $state([] as SampleValue[]);
@@ -34,17 +31,17 @@
 		receives.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmits[index]?.value ?? 0
-		}))
+			transmit: transmits[index]?.value ?? 0,
+		})),
 	);
 	const latestTraffics = $derived({
 		receive: latestReceive,
-		transmit: latestTransmit
+		transmit: latestTransmit,
 	});
 	const trafficsConfigurations = {
 		views: { label: 'Traffic', color: '' },
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
-		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
+		transmit: { label: 'Transmit', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 
 	let trafficsContext = $state<ChartContextValue>();
@@ -53,8 +50,8 @@
 		{
 			key: activeTraffic,
 			label: trafficsConfigurations[activeTraffic].label,
-			color: trafficsConfigurations[activeTraffic].color
-		}
+			color: trafficsConfigurations[activeTraffic].color,
+		},
 	]);
 
 	function fetch() {
@@ -63,7 +60,7 @@
 				`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`,
 				new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 				new Date().setMinutes(0, 0, 0),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				receives = response.result[0].values;
@@ -73,22 +70,18 @@
 				`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`,
 				new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
 				new Date().setMinutes(0, 0, 0),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				transmits = response.result[0].values;
 			});
 		prometheusDriver
-			.instantQuery(
-				`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`
-			)
+			.instantQuery(`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`)
 			.then((response) => {
 				latestReceive = response.result[0].value.value;
 			});
 		prometheusDriver
-			.instantQuery(
-				`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`
-			)
+			.instantQuery(`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`)
 			.then((response) => {
 				latestTransmit = response.result[0].value.value;
 			});
@@ -113,7 +106,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('gap-2', span)}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 				<Card.Title>{m.network_traffic()}</Card.Title>
@@ -155,15 +148,15 @@
 							initialHeight: 0,
 							motion: {
 								y: { type: 'tween', duration: 500, easing: cubicInOut },
-								height: { type: 'tween', duration: 500, easing: cubicInOut }
-							}
+								height: { type: 'tween', duration: 500, easing: cubicInOut },
+							},
 						},
 						highlight: { area: { fill: 'none' } },
 						xAxis: {
 							format: (v: Date) =>
 								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
-							ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks()
-						}
+							ticks: (scale) => scaleUtc(scale.domain(), scale.range()).ticks(),
+						},
 					}}
 				>
 					{#snippet belowMarks()}
@@ -178,7 +171,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>

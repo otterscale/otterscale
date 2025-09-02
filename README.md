@@ -1,69 +1,53 @@
 # 🦦 OtterScale
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/otterscale/otterscale.svg)](https://pkg.go.dev/github.com/otterscale/otterscale)
+[![GitHub Release](https://img.shields.io/github/v/release/otterscale/otterscale?logo=github)](https://github.com/otterscale/otterscale/releases)
+[![GitHub License](https://img.shields.io/github/license/otterscale/otterscale?logo=github)](https://opensource.org/license/agpl-v3)
+[![Go CI](https://github.com/otterscale/otterscale/actions/workflows/ci-go.yml/badge.svg)](https://github.com/otterscale/otterscale/actions/workflows/ci-go.yml)
+[![SvelteKit CI](https://github.com/otterscale/otterscale/actions/workflows/ci-sveltekit.yml/badge.svg)](https://github.com/otterscale/otterscale/actions/workflows/ci-sveltekit.yml)
+[![Codecov](https://codecov.io/gh/otterscale/otterscale/graph/badge.svg?token=I7R0YEMXER)](https://codecov.io/gh/otterscale/otterscale)
 [![Go Report Card](https://goreportcard.com/badge/github.com/otterscale/otterscale)](https://goreportcard.com/report/github.com/otterscale/otterscale)
-[![GitHub Build Status](https://github.com/otterscale/otterscale/actions/workflows/go.yml/badge.svg)](https://github.com/otterscale/otterscale/actions/workflows/go.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/otterscale/otterscale.svg)](https://pkg.go.dev/github.com/otterscale/otterscale)
 
-[![GitHub Release](https://img.shields.io/github/v/release/otterscale/otterscale)](https://github.com/otterscale/otterscale/releases)
-[![GitHub License](https://img.shields.io/github/license/otterscale/otterscale)](https://opensource.org/license/agpl-v3)
-[![Contributors](https://img.shields.io/github/contributors/otterscale/otterscale)](https://github.com/otterscale/otterscale/graphs/contributors)
-
-[![codecov](https://codecov.io/gh/otterscale/otterscale/graph/badge.svg?token=I7R0YEMXER)](https://codecov.io/gh/otterscale/otterscale)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_shield&issueType=security)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_shield&issueType=license)
-
-**OtterScale** is a powerful **hyper-converged infrastructure platform (HCI)** that combines **compute**, **storage**, and **networking** into one scalable solution. Tailored for **modern data centers**, it seamlessly manages **VMs**, **software-defined networking**, **distributed storage**, **containers**, **GPUs**, and an **app marketplace**.
+**OtterScale** is a hyper-converged infrastructure (HCI) platform that unifies compute, storage, and networking into a scalable solution. Seamlessly manage VMs, containers, GPUs, and applications through a single control plane with enterprise-grade performance.
 
 ![Login](/assets/screenshot-login.png)
 
-Simplify complex operations with OtterScale's **unified control plane**, effortlessly handling diverse workloads across **bare metal**, **virtual**, and **containerized environments**. Run **traditional VMs**, **cloud-native apps**, or **GPU-accelerated tasks** with **enterprise-grade performance** and unmatched ease.
+> [!NOTE]
+> Click below to view screenshots and explore the interface.
 
-## ✨ Features
+<details>
+  <summary><b>📸 Screenshots</b></summary>
 
-### 🖥️ Virtualization and Compute
+|                                                     Home                                                      |                                                 Scope Selector                                                 |
+| :-----------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: |
+|                   ![Home](https://otterscale.github.io/img/screenshot/screenshot-home.jpeg)                   |         ![Scope Selector](https://otterscale.github.io/img/screenshot/screenshot-scope-selector.jpeg)          |
+|                                               **Create Scope**                                                |                                           **Create Scope Settings**                                            |
+|         ![Create Scope 1](https://otterscale.github.io/img/screenshot/screenshot-scope-create-1.jpeg)         |         ![Create Scope 2](https://otterscale.github.io/img/screenshot/screenshot-scope-create-2.jpeg)          |
+|                                              **Scope Settings**                                               |                                             **Application Store**                                              |
+|         ![Scope Settings](https://otterscale.github.io/img/screenshot/screenshot-scope-settings.jpeg)         | ![Application Store](https://otterscale.github.io/img/screenshot/screenshot-application-management-store.jpeg) |
+|                                                 **Machines**                                                  |                                               **Machines Dark**                                                |
+|               ![Machines](https://otterscale.github.io/img/screenshot/screenshot-machines.jpeg)               |          ![Machines Dark](https://otterscale.github.io/img/screenshot/screenshot-machines-dark.jpeg)           |
+|                                                  **Storage**                                                  |                                                 **Networking**                                                 |
+|                ![Storage](https://otterscale.github.io/img/screenshot/screenshot-storage.jpeg)                |             ![Networking](https://otterscale.github.io/img/screenshot/screenshot-networking.jpeg)              |
+|                                          **Application Management**                                           |                                           **Application Workloads**                                            |
+| ![Application Management](https://otterscale.github.io/img/screenshot/screenshot-application-management.jpeg) |   ![Workloads](https://otterscale.github.io/img/screenshot/screenshot-application-management-workloads.jpeg)   |
 
-> - **Bare Metal Automation**: Seamless server lifecycle management through MAAS integration
-> - **Virtual Machine Management**: Full-featured KVM/QEMU with live migration and dynamic scaling
-> - **GPU Resource Management**: Intelligent allocation and sharing for AI/ML and HPC workloads
+</details>
 
-### 🐳 Container and Orchestration
+## ✨ Key Features
 
-> - **Container Orchestration**: Native Kubernetes integration for cloud-native applications
-> - **Service Orchestration**: Simplified application modeling with Juju charm deployment
-
-### 💾 Storage and Data Management
-
-> - **Storage Management**: Built-in Ceph clusters for scalable, distributed storage
-> - **Backup and Recovery**: Automated snapshots with cross-site replication
-
-### 📊 Monitoring and Diagnostics
-
-> - **Observability Stack**: Integrated Prometheus and Grafana for real-time insights
-> - **Health Monitoring**: Comprehensive BIST for proactive system maintenance
-
-### 🔐 Security and Access Control
-
-> - **Identity Management**: RBAC with LDAP/AD integration and SSO support
-
-### 🛒 Application and API Ecosystem
-
-> - **Application Marketplace**: Curated catalog of ready-to-deploy applications
-> - **API-First Design**: gRPC APIs with Protocol Buffers and SDK support
-
-### ⚡ Scalability and Reliability
-
-> - **High Availability**: Multi-node deployment with automatic failover
-> - **Extensible Architecture**: Plugin system for custom integrations
+- **🖥️ Virtualization**: KVM/QEMU VMs with live migration and GPU management
+- **🐳 Container Orchestration**: Native Kubernetes and Juju charm deployment
+- **💾 Distributed Storage**: Built-in Ceph clusters with automated backup
+- **📊 Monitoring**: Integrated Prometheus and Grafana stack
+- **🔐 Security**: RBAC with LDAP/AD integration and SSO
+- **🛒 Application Marketplace**: Curated catalog of ready-to-deploy apps
+- **⚡ High Availability**: Multi-node deployment with automatic failover
 
 ## 🚀 Quick Start
 
-### System Requirements
-
-- Docker and Docker Compose
-- At least 4GB of available RAM
-- 10GB of free disk space
-
-### Installation
+> [!IMPORTANT]
+> Requirements: `Docker`, `Docker Compose`, `4GB RAM`, `10GB disk space`
 
 1. **Initialize configuration:**
 
@@ -71,13 +55,12 @@ Simplify complex operations with OtterScale's **unified control plane**, effortl
    docker run ghcr.io/otterscale/otterscale/service:latest init > otterscale.yaml
    ```
 
-2. **Set up environment variables:**
+2. **Set up environment:**
 
    ```sh
    cp .env.example .env
+   # Edit .env file with your settings
    ```
-
-   Edit the `.env` file to configure your deployment settings.
 
 3. **Start OtterScale:**
 
@@ -85,135 +68,92 @@ Simplify complex operations with OtterScale's **unified control plane**, effortl
    docker compose up -d
    ```
 
-4. **Access the web interface:**
+4. **Access web interface:**
 
-   Open your browser and navigate to `http://localhost:3000` (or your configured port).
+Open your browser and navigate to `http://localhost:3000` (or your configured port).
 
-For production deployments, please refer to our [deployment guide](/docs/deployment.md).
+> [!TIP]
+> If you cannot access `http://localhost:3000`, check if the port is in use or refer to the [troubleshooting guide](/docs/troubleshooting.md).
+
+For production deployments, see our [deployment guide](/docs/deployment.md).
 
 ## 🔧 Development
 
-### Requirements
-
-- Go 1.24.6 or later
-- Docker and Docker Compose
-- Protobuf compiler (`protoc`)
-- Make
-- Git
+> [!IMPORTANT]
+> Requirements: `Go 1.24.6+`, `Docker`, `Protobuf compiler`, `Make`, `Git`
 
 ### System Dependencies
 
-Install system dependencies before building:
-
 ```bash
 # Ubuntu/Debian
-sudo apt-get update
 sudo apt-get install libcephfs-dev librbd-dev librados-dev build-essential
 
 # CentOS/RHEL/Fedora
-sudo yum install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
-# or for newer versions
 sudo dnf install libcephfs-devel librbd-devel librados-devel gcc gcc-c++ make
 ```
 
-### Building from Source
+### Build from Source
 
-1. **Clone the repository:**
+```bash
+git clone https://github.com/otterscale/otterscale.git
+cd otterscale
+make build
+make test
+```
 
-   ```bash
-   git clone https://github.com/otterscale/otterscale.git
-   cd otterscale
-   ```
+**Development Commands**: `make` (show targets), `make build`, `make test`, `make lint`, `make proto`, `make image`
 
-2. **Build the project:**
+## 📚 Documentation & Support
 
-   ```bash
-   make build
-   ```
+- **[Getting Started](https://otterscale.github.io/getting-started)** - Setup and configuration guide
+- **[API Reference](https://otterscale.github.io/api)** - gRPC and REST API docs
+- **[Architecture](https://otterscale.github.io/architecture)** - System components overview
+- **[Deployment](https://otterscale.github.io/deployment)** - Production best practices
 
-3. **Run tests:**
+**Need Help?**
 
-   ```bash
-   make test
-   ```
-
-### Development Commands
-
-- `make` - Show available targets
-- `make build` - Build binary
-- `make test` - Run tests
-- `make lint` - Run linters
-- `make proto` - Generate protobuf code
-- `make openapi` - Generate API spec
-- `make image` - Build Docker images
-
-## 📚 Documentation
-
-- **[Getting Started Guide](https://otterscale.github.io/getting-started)** - Complete setup and configuration guide
-- **[API Reference](https://otterscale.github.io/api)** - gRPC and REST API documentation
-- **[Architecture Overview](https://otterscale.github.io/architecture)** - System architecture and components
-- **[Deployment Guide](https://otterscale.github.io/deployment)** - Production deployment best practices
-- **[Configuration Reference](https://otterscale.github.io/configuration)** - Configuration options and examples
-- **[Troubleshooting](https://otterscale.github.io/troubleshooting)** - Common issues and solutions
-
-## 🆘 Support
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/otterscale/otterscale/issues)
-- **GitHub Discussions**: [Community discussions and Q&A](https://github.com/otterscale/otterscale/discussions)
-- **Documentation**: [Comprehensive guides and API docs](/docs)
-- **Email Support**: For enterprise support inquiries, contact [support@otterscale.io](mailto:support@otterscale.io)
+- [GitHub Issues](https://github.com/otterscale/otterscale/issues) - Bug reports and feature requests
+- [GitHub Discussions](https://github.com/otterscale/otterscale/discussions) - Community Q&A
+- [Enterprise Support](mailto:support@otterscale.com) - Commercial inquiries
 
 ## 🗺️ Roadmap
 
-- [ ] [v0.5.0](https://github.com/otterscale/otterscale/milestone/1): MAAS, Juju, Ceph, Kubernetes, Helm
-- [ ] [v0.6.0](https://github.com/otterscale/otterscale/milestone/2): Virtual Machine, GPU Operator, Open Policy Agent
-- [ ] [v0.7.0](https://github.com/otterscale/otterscale/milestone/3): Helm Upload, API Interface, AI Agent
+|                              Version                               | Topic                        | Status         |
+| :----------------------------------------------------------------: | ---------------------------- | -------------- |
+| **[v0.5.0](https://github.com/otterscale/otterscale/milestone/1)** | Infrastructure Core          | ✅ Complete    |
+| **[v0.6.0](https://github.com/otterscale/otterscale/milestone/2)** | Compute Resources & Policies | ⏳ In Progress |
+| **[v0.7.0](https://github.com/otterscale/otterscale/milestone/3)** | Developer Experience         | 📅 Planned     |
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Here's how you can help:
+We welcome contributions! Please:
 
-1. **Fork the repository** and create your feature branch
-2. **Make your changes** and add tests where appropriate
-3. **Ensure your code** passes all tests and linting
-4. **Submit a pull request** with a clear description of your changes
+1. Fork the repository and create a feature branch
+2. Make changes and add tests
+3. Ensure code passes tests and linting
+4. Submit a pull request
 
-Please review our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
-
-### Development Workflow
-
-- Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification
-- All pull requests require code review and passing CI checks
-- Include tests for new features and bug fixes
-- Update documentation for API changes
+Follow [Conventional Commits](https://www.conventionalcommits.org/) and review our [Contributing Guidelines](CONTRIBUTING.md).
 
 ## 🔒 Security
 
-Security is a top priority for OtterScale. If you discover a security vulnerability, please:
+For security vulnerabilities, email [security@otterscale.com](mailto:security@otterscale.com) instead of creating public issues.
 
-1. **Do not** create a public GitHub issue
-2. **Email us** at [security@otterscale.io](mailto:security@otterscale.io) with details
-3. **Include** steps to reproduce and potential impact
-4. **Wait** for our response before disclosing publicly
+## 🙏 Acknowledgements
 
-We aim to respond to security reports within 24 hours and provide regular updates on resolution progress.
+We extend our heartfelt gratitude to those who make OtterScale possible:
+
+- **Open Source Community**: Thanks to contributors, early adopters, and active members in [GitHub Issues](https://github.com/otterscale/otterscale/issues) and [Discussions](https://github.com/otterscale/otterscale/discussions) for code, feedback, and ideas.
+- **Core Technologies**:
+  - **[Kubernetes](https://kubernetes.io/)**: Container orchestration
+  - **[Ceph](https://ceph.io/)**: Distributed storage
+  - **[Juju](https://juju.is/)**: Application deployment
+  - **[MAAS](https://maas.io/)**: Metal provisioning
+
+Your support drives OtterScale’s mission to build better hyper-converged solutions! 🌟
 
 ## 📄 License
 
-This project is licensed under the **GNU Affero General Public License v3.0** (AGPL-3.0).
-
-- **Open Source**: You can use, modify, and distribute this software freely
-- **Copyleft**: Modifications must also be open source under AGPL-3.0
-- **Network Use**: If you run OtterScale as a service, you must provide source code to users
-
-For the complete license terms, see the [LICENSE](LICENSE) file.
-
-## 📋 FOSSA Status
+Licensed under [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0). Open source with copyleft requirements.
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_large&issueType=license)
-
----
-
-Built with ❤️ by the otterscale community
-
-[Website](https://otterscale.io) • [GitHub](https://github.com/otterscale/otterscale) • [Documentation](/docs) • [Community](https://github.com/otterscale/otterscale/discussions)

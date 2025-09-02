@@ -23,7 +23,7 @@
 		in: `sum(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})`,
 		total: `
 		count(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})
-		`
+		`,
 	});
 
 	// Auto Update
@@ -35,7 +35,7 @@
 	async function fetch() {
 		const [inResponse, totalResponse] = await Promise.all([
 			client.instantQuery(queries.in),
-			client.instantQuery(queries.total)
+			client.instantQuery(queries.total),
 		]);
 
 		const inValue = inResponse.result[0]?.value?.value;
@@ -43,7 +43,7 @@
 
 		response = {
 			inNumber: inValue,
-			totalNumber: totalValue
+			totalNumber: totalValue,
 		};
 	}
 

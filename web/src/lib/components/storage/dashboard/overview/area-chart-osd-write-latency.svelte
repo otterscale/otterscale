@@ -33,13 +33,13 @@
 	const CHART_CONFIG = {
 		latency: {
 			label: 'Write Latency (ms)',
-			color: 'var(--chart-1)'
-		}
+			color: 'var(--chart-1)',
+		},
 	} satisfies Chart.ChartConfig;
 	const TIME_INTERVALS: Record<TimeInterval, TimeRangeConfig> = {
 		day: { count: 7, label: m.last_7_days(), stepSize: '1d' },
 		week: { count: 5, label: m.last_5_weeks(), stepSize: '1w' },
-		month: { count: 6, label: m.last_6_months(), stepSize: '1M' }
+		month: { count: 6, label: m.last_6_months(), stepSize: '1M' },
 	};
 
 	// Query
@@ -140,10 +140,8 @@
 				// Get the average of all values in the time series
 				const values = response.result[0].values;
 				const avgLatency =
-					values.reduce(
-						(sum: number, v: { value: number | string }) => sum + Number(v.value || 0),
-						0
-					) / values.length;
+					values.reduce((sum: number, v: { value: number | string }) => sum + Number(v.value || 0), 0) /
+					values.length;
 
 				return { date: start, latency: avgLatency };
 			}

@@ -28,13 +28,13 @@
 	const CHART_DESCRIPTION = m.capacity_usage_changes();
 	const CHART_CONFIG = {
 		used: { label: 'Used', color: 'var(--chart-1)' },
-		total: { label: 'Total', color: 'var(--chart-3)' }
+		total: { label: 'Total', color: 'var(--chart-3)' },
 	} satisfies Chart.ChartConfig;
 
 	const TIME_INTERVALS: Record<TimeInterval, { count: number; label: string }> = {
 		day: { count: 7, label: m.last_7_days() },
 		week: { count: 5, label: m.last_5_weeks() },
-		month: { count: 6, label: m.last_6_months() }
+		month: { count: 6, label: m.last_6_months() },
 	};
 
 	// State
@@ -47,7 +47,7 @@
 	function calculateIntervals(
 		selectedInterval: TimeInterval,
 		index: number,
-		today: Date
+		today: Date,
 	): { start: Date; end: Date } {
 		let intervalStart: Date;
 		let intervalEnd: Date;
@@ -123,19 +123,19 @@
 
 	async function fetchMetricForInterval(
 		intervalStart: Date,
-		intervalEnd: Date
+		intervalEnd: Date,
 	): Promise<{ date: Date; used: number; total: number; available: number }> {
 		const endTimestamp = Math.floor(intervalEnd.getTime() / 1000);
 
 		const queries = {
 			used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`,
-			total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`
+			total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`,
 		};
 
 		try {
 			const [usedResponse, totalResponse] = await Promise.all([
 				client.instantQuery(queries.used),
-				client.instantQuery(queries.total)
+				client.instantQuery(queries.total),
 			]);
 
 			const usedValue = Number(usedResponse.result[0]?.value?.value || 0);
@@ -145,14 +145,14 @@
 				date: intervalStart,
 				used: usedValue,
 				total: totalValue,
-				available: totalValue - usedValue
+				available: totalValue - usedValue,
 			};
 		} catch (error) {
 			return {
 				date: intervalStart,
 				used: 0,
 				total: 0,
-				available: 0
+				available: 0,
 			};
 		}
 	}
