@@ -139,12 +139,6 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) and review o
 
 For security vulnerabilities, email [security@otterscale.com](mailto:security@otterscale.com) instead of creating public issues.
 
-## 📄 License
-
-Licensed under [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0). Open source with copyleft requirements.
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_large&issueType=license)
-
 ## 🙏 Acknowledgements
 
 We extend our heartfelt gratitude to those who make OtterScale possible:
@@ -156,4 +150,10 @@ We extend our heartfelt gratitude to those who make OtterScale possible:
   - **[Juju](https://juju.is/)**: Application deployment
   - **[MAAS](https://maas.io/)**: Metal provisioning
 
-Your efforts fuel OtterScale’s vision to revolutionize hyper-converged infrastructure! 🌟
+Your support drives OtterScale’s mission to build better hyper-converged solutions! 🌟
+
+## 📄 License
+
+Licensed under [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0). Open source with copyleft requirements.
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fotterscale%2Fotterscale?ref=badge_large&issueType=license)
