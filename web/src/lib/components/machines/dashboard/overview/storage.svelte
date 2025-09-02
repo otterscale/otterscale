@@ -20,31 +20,35 @@
 
 	let {
 		prometheusDriver,
-		isReloading = $bindable(),
-		span,
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+		isReloading = $bindable()
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 
 	const machines = writable<Machine[]>([]);
 	const scopeMachines = $derived(
-		$machines.filter((m) => m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)),
+		$machines.filter((m) =>
+			m.workloadAnnotations['juju-machine-id']?.startsWith(page.params.scope!)
+		)
 	);
 	let storageUsages = $state([] as SampleValue[]);
 	const storageUsagesConfiguration = {
-		usage: { label: 'value', color: 'var(--chart-1)' },
+		usage: { label: 'value', color: 'var(--chart-1)' }
 	} satisfies Chart.ChartConfig;
 	const storageUsagesTrend = $derived(
 		storageUsages.length > 0
-			? (storageUsages[storageUsages.length - 1].value - storageUsages[storageUsages.length - 2].value) /
+			? (storageUsages[storageUsages.length - 1].value -
+					storageUsages[storageUsages.length - 2].value) /
 					storageUsages[storageUsages.length - 2].value
-			: 0,
+			: 0
 	);
-	const blockDevices = $derived(scopeMachines.flatMap((m) => m.blockDevices).filter((d) => !d.bootDisk));
+	const blockDevices = $derived(
+		scopeMachines.flatMap((m) => m.blockDevices).filter((d) => !d.bootDisk)
+	);
 	const totalDisks = $derived(blockDevices.length);
 	const totalStorageBytes = $derived(
-		blockDevices.reduce((sum, m) => sum + Number(m.storageMb ?? 0), 0) * 1024 * 1024,
+		blockDevices.reduce((sum, m) => sum + Number(m.storageMb ?? 0), 0) * 1024 * 1024
 	);
 
 	async function fetch() {
@@ -53,7 +57,7 @@
 				`1 - sum(node_filesystem_avail_bytes{mountpoint="/"}) / sum(node_filesystem_size_bytes{mountpoint="/"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
-				2 * 60,
+				2 * 60
 			)
 			.then((response) => {
 				storageUsages = response.result[0]?.values;
@@ -84,7 +88,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn(span, 'gap-2')}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header>
 			<Card.Title class="flex flex-wrap items-center justify-between gap-6">
 				<div class="flex items-center gap-2 truncate text-sm font-medium tracking-tight">
@@ -119,15 +123,15 @@
 							{
 								key: 'value',
 								label: 'usage',
-								color: storageUsagesConfiguration.usage.color,
-							},
+								color: storageUsagesConfiguration.usage.color
+							}
 						]}
 						props={{
 							spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 							xAxis: {
-								format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+								format: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
 							},
-							highlight: { points: { r: 4 } },
+							highlight: { points: { r: 4 } }
 						}}
 					>
 						{#snippet tooltip()}
@@ -137,7 +141,9 @@
 										style="--color-bg: {item.color}"
 										class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 									></div>
-									<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+									<div
+										class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
+									>
 										<div class="grid gap-1.5">
 											<span class="text-muted-foreground">{name}</span>
 										</div>
@@ -154,7 +160,9 @@
 		<Card.Footer
 			class={cn(
 				'flex flex-wrap items-center justify-end text-sm leading-none font-medium',
-				storageUsagesTrend >= 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-red-500 dark:text-red-400',
+				storageUsagesTrend >= 0
+					? 'text-emerald-500 dark:text-emerald-400'
+					: 'text-red-500 dark:text-red-400'
 			)}
 		>
 			{Math.abs(storageUsagesTrend).toFixed(2)} %

@@ -3,16 +3,14 @@
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
-	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
 	let {
 		prometheusDriver,
-		isReloading = $bindable(),
-		span
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+		isReloading = $bindable()
+	}: { prometheusDriver: PrometheusDriver; isReloading: boolean } = $props();
 
 	let runningContainers = $state(0);
 
@@ -54,7 +52,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn(span, 'relative gap-2 overflow-hidden')}>
+	<Card.Root class="relative h-full gap-2 overflow-hidden">
 		<Icon
 			icon="ph:shipping-container"
 			class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"

@@ -28,7 +28,7 @@
 				.then((response) => {
 					prometheusDriver = new PrometheusDriver({
 						endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-						baseURL: response.baseUrl,
+						baseURL: response.baseUrl
 					});
 				})
 				.catch((error) => {
@@ -56,21 +56,27 @@
 				</Tabs.List>
 				<Reloader bind:checked={isReloading} />
 			</div>
-			<Tabs.Content
-				value="overview"
-				class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
-			>
-				<Discovery bind:isReloading span="col-span-2" />
-				<DHCP bind:isReloading span="col-span-2" />
-				<AvailableIPs bind:isReloading span="col-span-2 row-span-2" />
-				<NetworkTrafficByTime
-					{prometheusDriver}
-					scope={$activeScope}
-					bind:isReloading
-					span="col-span-4 row-span-2"
-				/>
-				<DNSServer bind:isReloading span="col-span-2" />
-				<NetworkTraffic {prometheusDriver} scope={$activeScope} bind:isReloading span="col-span-4 row-span-2" />
+			<Tabs.Content value="overview">
+				<div class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10">
+					<div class="col-span-2">
+						<Discovery bind:isReloading />
+					</div>
+					<div class="col-span-2">
+						<DHCP bind:isReloading />
+					</div>
+					<div class="col-span-2 row-span-2">
+						<AvailableIPs bind:isReloading />
+					</div>
+					<div class="col-span-4 row-span-2">
+						<NetworkTrafficByTime {prometheusDriver} scope={$activeScope} bind:isReloading />
+					</div>
+					<div class="col-span-2">
+						<DNSServer bind:isReloading />
+					</div>
+					<div class="col-span-4 row-span-2">
+						<NetworkTraffic {prometheusDriver} scope={$activeScope} bind:isReloading />
+					</div>
+				</div>
 			</Tabs.Content>
 			<Tabs.Content value="analytics"></Tabs.Content>
 		</Tabs.Root>
