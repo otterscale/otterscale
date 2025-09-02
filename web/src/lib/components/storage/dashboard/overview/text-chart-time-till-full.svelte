@@ -40,7 +40,7 @@
 		juju_unit=~".*",
 		name=~".mgr"
 	} > 0
-	`,
+	`
 	);
 
 	// Format time duration
@@ -68,7 +68,7 @@
 {#await client.instantQuery(query)}
 	<ComponentLoading />
 {:then response}
-	<Card.Root class="gap-2">
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
@@ -83,7 +83,7 @@
 		</Card.Content>
 	</Card.Root>
 {:catch error}
-	<Card.Root class="gap-2">
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>

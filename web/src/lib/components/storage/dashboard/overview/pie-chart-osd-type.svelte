@@ -19,7 +19,7 @@
 	const DEVICE_CLASS_CONFIGS: Record<string, { label: string; color: string }> = {
 		hdd: { label: 'HDD', color: 'var(--chart-1)' },
 		ssd: { label: 'SSD', color: 'var(--chart-2)' },
-		nvme: { label: 'NVMe', color: 'var(--chart-3)' },
+		nvme: { label: 'NVMe', color: 'var(--chart-3)' }
 	} as const;
 
 	// Chart colors for unknown device classes
@@ -28,7 +28,7 @@
 		'var(--chart-5)',
 		'var(--chart-1)',
 		'var(--chart-2)',
-		'var(--chart-3)',
+		'var(--chart-3)'
 	] as const;
 
 	// Utility functions
@@ -39,7 +39,7 @@
 
 		return {
 			label: deviceClass.toUpperCase(),
-			color: FALLBACK_CHART_COLORS[index % FALLBACK_CHART_COLORS.length],
+			color: FALLBACK_CHART_COLORS[index % FALLBACK_CHART_COLORS.length]
 		};
 	}
 
@@ -64,7 +64,7 @@
 				count,
 				color: config.color,
 				fill: config.color,
-				label: config.label,
+				label: config.label
 			};
 		});
 
@@ -75,7 +75,7 @@
 
 	// Queries
 	const queries = $derived({
-		osdTypeCount: `count by (device_class) (ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`,
+		osdTypeCount: `count by (device_class) (ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`
 	});
 
 	// Data fetching function
@@ -87,13 +87,13 @@
 				return {
 					chartData: [],
 					total: 0,
-					chartConfig: {} as Chart.ChartConfig,
+					chartConfig: {} as Chart.ChartConfig
 				};
 			}
 
 			// Extract device classes and generate chart configuration
 			const deviceClasses = response.result.map(
-				(series: any) => series.metric?.labels.device_class || UNKNOWN_DEVICE_CLASS,
+				(series: any) => series.metric?.labels.device_class || UNKNOWN_DEVICE_CLASS
 			);
 			const chartConfig = generateChartConfig(deviceClasses);
 
@@ -106,7 +106,7 @@
 			return {
 				chartData: [],
 				total: 0,
-				chartConfig: {} as Chart.ChartConfig,
+				chartConfig: {} as Chart.ChartConfig
 			};
 		}
 	}
@@ -114,13 +114,12 @@
 	const CHART_INNER_RADIUS = 60;
 	const CHART_PADDING = 28;
 	const CHART_CLASSES = 'mx-auto aspect-square max-h-[200px]';
-	const CARD_CLASSES = 'gap-2';
 </script>
 
 {#await fetchMetrics()}
 	<ComponentLoading />
 {:then response}
-	<Card.Root class={CARD_CLASSES}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
@@ -166,7 +165,7 @@
 		</Card.Content>
 	</Card.Root>
 {:catch error}
-	<Card.Root class={CARD_CLASSES}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>

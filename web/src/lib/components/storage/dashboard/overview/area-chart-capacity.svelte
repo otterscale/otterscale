@@ -23,13 +23,13 @@
 	const CHART_DESCRIPTION = m.capacity_usage_changes();
 	const CHART_CONFIG = {
 		used: { label: 'Used', color: 'var(--chart-1)' },
-		total: { label: 'Total', color: 'var(--chart-3)' },
+		total: { label: 'Total', color: 'var(--chart-3)' }
 	} satisfies Chart.ChartConfig;
 
 	const TIME_INTERVALS: Record<TimeInterval, { count: number; label: string }> = {
 		day: { count: 7, label: m.last_7_days() },
 		week: { count: 5, label: m.last_5_weeks() },
-		month: { count: 6, label: m.last_6_months() },
+		month: { count: 6, label: m.last_6_months() }
 	};
 
 	// State
@@ -42,7 +42,7 @@
 	function calculateIntervals(
 		selectedInterval: TimeInterval,
 		index: number,
-		today: Date,
+		today: Date
 	): { start: Date; end: Date } {
 		let intervalStart: Date;
 		let intervalEnd: Date;
@@ -97,19 +97,19 @@
 
 	async function fetchMetricForInterval(
 		intervalStart: Date,
-		intervalEnd: Date,
+		intervalEnd: Date
 	): Promise<{ date: Date; used: number; total: number; available: number }> {
 		const endTimestamp = Math.floor(intervalEnd.getTime() / 1000);
 
 		const queries = {
 			used: `ceph_cluster_total_used_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`,
-			total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`,
+			total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"} @ ${endTimestamp}`
 		};
 
 		try {
 			const [usedResponse, totalResponse] = await Promise.all([
 				client.instantQuery(queries.used),
-				client.instantQuery(queries.total),
+				client.instantQuery(queries.total)
 			]);
 
 			const usedValue = Number(usedResponse.result[0]?.value?.value || 0);
@@ -119,19 +119,21 @@
 				date: intervalStart,
 				used: usedValue,
 				total: totalValue,
-				available: totalValue - usedValue,
+				available: totalValue - usedValue
 			};
 		} catch (error) {
 			return {
 				date: intervalStart,
 				used: 0,
 				total: 0,
-				available: 0,
+				available: 0
 			};
 		}
 	}
 
-	async function fetchMetrics(): Promise<{ date: Date; used: number; total: number; available: number }[]> {
+	async function fetchMetrics(): Promise<
+		{ date: Date; used: number; total: number; available: number }[]
+	> {
 		const today = new Date();
 		const promises = [];
 
@@ -151,13 +153,15 @@
 				const weekNum = Math.ceil(v.getUTCDate() / 7);
 				return `${month}-W${weekNum}`;
 			},
-			month: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
+			month: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
 		};
 
 		return formatters[interval];
 	}
 
-	function getYAxisDomain(data: { date: Date; used: number; total: number; available: number }[]): [number, number] {
+	function getYAxisDomain(
+		data: { date: Date; used: number; total: number; available: number }[]
+	): [number, number] {
 		const maxTotal = Math.max(...data.map((d) => d.total || 0));
 		return [0, maxTotal];
 	}
@@ -167,7 +171,7 @@
 	{#await fetchMetrics()}
 		<ComponentLoading />
 	{:then response}
-		<Card.Root class="gap-2">
+		<Card.Root class="h-full gap-2">
 			<Card.Header class="flex items-center">
 				<div class="grid flex-1 gap-1 text-center sm:text-left">
 					<Card.Title>{CHART_TITLE}</Card.Title>
@@ -197,8 +201,8 @@
 							{
 								key: 'used',
 								label: 'Used',
-								color: CHART_CONFIG.used.color,
-							},
+								color: CHART_CONFIG.used.color
+							}
 						]}
 						seriesLayout="stack"
 						props={{
@@ -206,13 +210,13 @@
 								curve: curveStep,
 								'fill-opacity': 0.4,
 								line: { class: 'stroke-1' },
-								motion: 'tween',
+								motion: 'tween'
 							},
 							xAxis: {
 								format: getXAxisFormat(selectedInterval),
-								ticks: response.length,
+								ticks: response.length
 							},
-							yAxis: { format: () => '' },
+							yAxis: { format: () => '' }
 						}}
 					>
 						{#snippet tooltip()}
@@ -223,7 +227,7 @@
 										month: 'short',
 										day: 'numeric',
 										hour: 'numeric',
-										minute: 'numeric',
+										minute: 'numeric'
 									});
 								}}
 							>
@@ -231,9 +235,11 @@
 									{@const { value: io, unit } = formatCapacity(Number(value))}
 									<div
 										style="--color-bg: {item.color}"
-										class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
+										class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
 									></div>
-									<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+									<div
+										class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
+									>
 										<div class="grid gap-1.5">
 											<span class="text-muted-foreground">{name}</span>
 										</div>

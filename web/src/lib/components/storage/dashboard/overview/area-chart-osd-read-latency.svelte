@@ -37,13 +37,13 @@
 	const CHART_CONFIG = {
 		latency: {
 			label: 'Read Latency (ms)',
-			color: 'var(--chart-1)',
-		},
+			color: 'var(--chart-1)'
+		}
 	};
 	const TIME_INTERVALS: Record<TimeInterval, TimeRangeConfig> = {
 		day: { count: 7, label: m.last_7_days(), stepSize: '1d' },
 		week: { count: 5, label: m.last_5_weeks(), stepSize: '1w' },
-		month: { count: 6, label: m.last_6_months(), stepSize: '1M' },
+		month: { count: 6, label: m.last_6_months(), stepSize: '1M' }
 	};
 
 	const PROMETHEUS_QUERY = (uuid: string) =>
@@ -113,7 +113,10 @@
 		return { start, end };
 	}
 
-	async function fetchLatencyForPeriod(start: Date, end: Date): Promise<{ date: Date; latency: number }> {
+	async function fetchLatencyForPeriod(
+		start: Date,
+		end: Date
+	): Promise<{ date: Date; latency: number }> {
 		try {
 			const query = PROMETHEUS_QUERY(scope.uuid);
 			const response = await client.rangeQuery(query, start, end, timeRange.stepSize);
@@ -122,8 +125,10 @@
 				// Get the average of all values in the time series
 				const values = response.result[0].values;
 				const avgLatency =
-					values.reduce((sum: number, v: { value: number | string }) => sum + Number(v.value || 0), 0) /
-					values.length;
+					values.reduce(
+						(sum: number, v: { value: number | string }) => sum + Number(v.value || 0),
+						0
+					) / values.length;
 
 				return { date: start, latency: avgLatency };
 			}
@@ -156,7 +161,7 @@
 				const month = v.toLocaleString('en-US', { month: 'short' });
 				const weekNum = Math.ceil(v.getUTCDate() / 7);
 				return `${month}-W${weekNum}`;
-			},
+			}
 		};
 
 		return formatters[interval];
@@ -167,7 +172,7 @@
 	{#await fetchMetrics()}
 		<ComponentLoading />
 	{:then response}
-		<Card.Root class="gap-2">
+		<Card.Root class="h-full gap-2">
 			<Card.Header class="flex items-center">
 				<div class="grid flex-1 gap-1 text-center sm:text-left">
 					<Card.Title>{CHART_TITLE}</Card.Title>
@@ -197,17 +202,17 @@
 							{
 								key: 'latency',
 								label: 'Read Latency',
-								color: CHART_CONFIG.latency.color,
-							},
+								color: CHART_CONFIG.latency.color
+							}
 						]}
 						props={{
 							spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 							xAxis: {
 								format: getXAxisFormat(selectedInterval),
-								ticks: response.length,
+								ticks: response.length
 							},
 							yAxis: { format: () => '' },
-							highlight: { points: { r: 4 } },
+							highlight: { points: { r: 4 } }
 						}}
 					>
 						{#snippet tooltip()}
@@ -218,6 +223,9 @@
 			</Card.Content>
 		</Card.Root>
 	{:catch error}
-		<ErrorLayout title={CHART_TITLE} description={`Average read latency across all OSDs - ${timeRange.label}`} />
+		<ErrorLayout
+			title={CHART_TITLE}
+			description={`Average read latency across all OSDs - ${timeRange.label}`}
+		/>
 	{/await}
 {/key}

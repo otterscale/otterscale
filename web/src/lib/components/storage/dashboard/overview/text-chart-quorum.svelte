@@ -17,14 +17,14 @@
 		in: `sum(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})`,
 		total: `
 		count(ceph_mon_quorum_status{juju_model_uuid=~"${scope.uuid}"})
-		`,
+		`
 	});
 
 	// Data fetching function
 	async function fetchMetrics() {
 		const [inResponse, totalResponse] = await Promise.all([
 			client.instantQuery(queries.in),
-			client.instantQuery(queries.total),
+			client.instantQuery(queries.total)
 		]);
 
 		const inValue = inResponse.result[0]?.value?.value;
@@ -32,7 +32,7 @@
 
 		return {
 			inNumber: inValue,
-			totalNumber: totalValue,
+			totalNumber: totalValue
 		};
 	}
 </script>
@@ -40,7 +40,7 @@
 {#await fetchMetrics()}
 	<ComponentLoading />
 {:then response}
-	<Card.Root class="gap-2">
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
@@ -48,7 +48,7 @@
 		<Card.Content class="flex-1">{`${response.inNumber} / ${response.totalNumber}`}</Card.Content>
 	</Card.Root>
 {:catch error}
-	<Card.Root class="gap-2">
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
