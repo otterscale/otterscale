@@ -118,11 +118,11 @@ make test
 
 ## 🗺️ Roadmap
 
-|                              Version                               | Topic                        | Features                                         | Status         |
-| :----------------------------------------------------------------: | ---------------------------- | ------------------------------------------------ | -------------- |
-| **[v0.5.0](https://github.com/otterscale/otterscale/milestone/1)** | Infrastructure Core          | MAAS, Juju, Ceph, Kubernetes, Helm               | ✅ Complete    |
-| **[v0.6.0](https://github.com/otterscale/otterscale/milestone/2)** | Compute Resources & Policies | Virtual Machine, GPU Operator, Open Policy Agent | ⏳ In Progress |
-| **[v0.7.0](https://github.com/otterscale/otterscale/milestone/3)** | Developer Experience         | Helm Upload, API Interface, AI Agent             | 📅 Planned     |
+|                              Version                               | Topic                        | Features | Status         |
+| :----------------------------------------------------------------: | ---------------------------- | -------- | -------------- |
+| **[v0.5.0](https://github.com/otterscale/otterscale/milestone/1)** | Infrastructure Core          |          | ✅ Complete    |
+| **[v0.6.0](https://github.com/otterscale/otterscale/milestone/2)** | Compute Resources & Policies |          | ⏳ In Progress |
+| **[v0.7.0](https://github.com/otterscale/otterscale/milestone/3)** | Developer Experience         |          | 📅 Planned     |
 
 ## 🤝 Contributing
 
