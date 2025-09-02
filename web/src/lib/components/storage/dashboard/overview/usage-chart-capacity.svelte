@@ -1,14 +1,21 @@
 <script lang="ts">
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { ArcChart, Text } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
+	import { onMount } from 'svelte';
 
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	// Props
+	let {
+		client,
+		scope,
+		isReloading = $bindable()
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = m.capacity();
@@ -21,8 +28,21 @@
 		total: `ceph_cluster_total_bytes{juju_model_uuid=~"${scope.uuid}"}`
 	});
 
+	// Auto Update
+	let response = $state(
+		{} as {
+			usedValue: number | undefined;
+			usedUnit: string | undefined;
+			totalValue: number | undefined;
+			totalUnit: string | undefined;
+			usage: { value: number }[];
+		}
+	);
+	let isLoading = $state(true);
+	const reloadManager = new ReloadManager(fetch);
+
 	// Data fetching function
-	async function fetchMetrics() {
+	async function fetch() {
 		const [usedResponse, totalResponse] = await Promise.all([
 			client.instantQuery(queries.used),
 			client.instantQuery(queries.total)
@@ -36,7 +56,7 @@
 		const usageValue = usedValue / totalValue;
 		const usagePercentage = usageValue != null ? usageValue * 100 : null;
 
-		return {
+		response = {
 			usedValue: usedCapacity ? Math.round(usedCapacity.value) : undefined,
 			usedUnit: usedCapacity ? usedCapacity.unit : undefined,
 			totalValue: totalCapacity ? Math.round(totalCapacity.value) : undefined,
@@ -44,11 +64,25 @@
 			usage: usagePercentage !== null ? [{ value: usagePercentage }] : [{ value: NaN }]
 		};
 	}
+
+	// Effects
+	$effect(() => {
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
+
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#await fetchMetrics()}
+{#if isLoading}
 	<ComponentLoading />
-{:then response}
+{:else}
 	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
@@ -100,15 +134,4 @@
 			</Chart.Container>
 		</Card.Content>
 	</Card.Root>
-{:catch error}
-	<Card.Root class="h-full gap-2">
-		<Card.Header class="items-center">
-			<Card.Title>{CHART_TITLE}</Card.Title>
-			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
-		</Card.Header>
-		<Card.Content class="flex-1">
-			<Chart.Container config={chartConfig} class="mx-auto aspect-square max-h-[200px]"
-			></Chart.Container>
-		</Card.Content>
-	</Card.Root>
-{/await}
+{/if}

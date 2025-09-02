@@ -1,34 +1,31 @@
 <script lang="ts">
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { getLocale } from '$lib/paraglide/runtime';
 	import { scaleUtc } from 'd3-scale';
-	import { curveBasis, curveLinear, curveStep } from 'd3-shape';
+	import { curveLinear } from 'd3-shape';
 	import { LineChart } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
+	import { onMount } from 'svelte';
 
 	// Props
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let {
+		client,
+		scope,
+		isReloading = $bindable()
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Types
 	type TimeInterval = 'day' | 'week' | 'month';
-
-	interface MetricData {
-		date: Date;
-		latency: number;
-	}
-
-	interface TimeRangeConfig {
+	type TimeRangeConfig = {
 		count: number;
 		label: string;
 		stepSize: string;
-	}
+	};
 
 	// Constants
 	const CHART_TITLE = m.osd();
@@ -39,13 +36,13 @@
 			color: 'var(--chart-1)'
 		}
 	} satisfies Chart.ChartConfig;
-
 	const TIME_INTERVALS: Record<TimeInterval, TimeRangeConfig> = {
 		day: { count: 7, label: m.last_7_days(), stepSize: '1d' },
 		week: { count: 5, label: m.last_5_weeks(), stepSize: '1w' },
 		month: { count: 6, label: m.last_6_months(), stepSize: '1M' }
 	};
 
+	// Query
 	const PROMETHEUS_QUERY = (uuid: string) =>
 		`quantile(0.95, (rate(ceph_osd_op_w_latency_sum{juju_model_uuid=~"${uuid}"}[5m]) / ` +
 		`on(ceph_daemon) rate(ceph_osd_op_w_latency_count{juju_model_uuid=~"${uuid}"}[5m]) * 1000))`;
@@ -113,6 +110,24 @@
 		return { start, end };
 	}
 
+	function getXAxisFormat(interval: TimeInterval) {
+		const formatters: Record<TimeInterval, (v: Date) => string> = {
+			day: (v: Date) => v.toLocaleDateString('en-US', { day: 'numeric' }),
+			week: (v: Date) => {
+				const month = v.toLocaleString('en-US', { month: 'short' });
+				const weekNum = Math.ceil(v.getUTCDate() / 7);
+				return `${month}-W${weekNum}`;
+			},
+			month: (v: Date) => {
+				const month = v.toLocaleString('en-US', { month: 'short' });
+				const weekNum = Math.ceil(v.getUTCDate() / 7);
+				return `${month}-W${weekNum}`;
+			}
+		};
+
+		return formatters[interval];
+	}
+
 	async function fetchLatencyForPeriod(
 		start: Date,
 		end: Date
@@ -139,112 +154,91 @@
 		return { date: start, latency: 0 };
 	}
 
-	async function fetchMetrics(): Promise<{ date: Date; latency: number }[]> {
+	// Auto Update
+	let response = $state([] as { date: Date; latency: number }[]);
+	let isLoading = $state(true);
+	const reloadManager = new ReloadManager(fetch);
+	async function fetch(): Promise<void> {
 		const promises = Array.from({ length: timeRange.count }, (_, i) => {
 			const index = timeRange.count - 1 - i;
 			const { start, end } = calculateTimeRange(selectedInterval, index);
 			return fetchLatencyForPeriod(start, end);
 		});
 
-		return Promise.all(promises);
+		response = await Promise.all(promises);
 	}
 
-	function getXAxisFormat(interval: TimeInterval) {
-		const formatters: Record<TimeInterval, (v: Date) => string> = {
-			day: (v: Date) => v.toLocaleDateString('en-US', { day: 'numeric' }),
-			week: (v: Date) => {
-				const month = v.toLocaleString('en-US', { month: 'short' });
-				const weekNum = Math.ceil(v.getUTCDate() / 7);
-				return `${month}-W${weekNum}`;
-			},
-			month: (v: Date) => {
-				const month = v.toLocaleString('en-US', { month: 'short' });
-				const weekNum = Math.ceil(v.getUTCDate() / 7);
-				return `${month}-W${weekNum}`;
-			}
-		};
+	$effect(() => {
+		isReloading;
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
 
-		return formatters[interval];
-	}
+	$effect(() => {
+		selectedInterval;
+		fetch();
+	});
+
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#key selectedInterval}
-	{#await fetchMetrics()}
-		<ComponentLoading />
-	{:then response}
-		<Card.Root class="h-full gap-2">
-			<Card.Header class="flex items-center">
-				<div class="grid flex-1 gap-1 text-center sm:text-left">
-					<Card.Title>{CHART_TITLE}</Card.Title>
-					<Card.Description>{CHART_DESCRIPTION}</Card.Description>
-				</div>
+{#if isLoading}
+	<ComponentLoading />
+{:else}
+	<Card.Root class="h-full gap-2">
+		<Card.Header class="flex items-center">
+			<div class="grid flex-1 gap-1 text-center sm:text-left">
+				<Card.Title>{CHART_TITLE}</Card.Title>
+				<Card.Description>{CHART_DESCRIPTION}</Card.Description>
+			</div>
 
-				<Select.Root type="single" bind:value={selectedInterval}>
-					<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
-						{timeRange.label}
-					</Select.Trigger>
-					<Select.Content class="rounded-xl">
-						<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
-						<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
-						<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
-					</Select.Content>
-				</Select.Root>
-			</Card.Header>
+			<Select.Root type="single" bind:value={selectedInterval}>
+				<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
+					{timeRange.label}
+				</Select.Trigger>
+				<Select.Content class="rounded-xl">
+					<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
+					<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
+					<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
+				</Select.Content>
+			</Select.Root>
+		</Card.Header>
 
-			<Card.Content>
-				<Chart.Container config={CHART_CONFIG} class="h-[64px] w-full">
-					<LineChart
-						data={response}
-						x="date"
-						xScale={scaleUtc()}
-						axis="x"
-						series={[
-							{
-								key: 'latency',
-								label: 'Write Latency',
-								color: CHART_CONFIG.latency.color
-							}
-						]}
-						props={{
-							spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
-							xAxis: {
-								format: getXAxisFormat(selectedInterval),
-								ticks: response.length
-							},
-							yAxis: { format: () => '' },
-							highlight: { points: { r: 4 } }
-						}}
-					>
-						{#snippet tooltip()}
-							<Chart.Tooltip hideLabel />
-						{/snippet}
-					</LineChart>
-				</Chart.Container>
-			</Card.Content>
-		</Card.Root>
-	{:catch error}
-		<Card.Root class="h-full gap-2">
-			<Card.Header class="flex items-center">
-				<div class="grid flex-1 gap-1 text-center sm:text-left">
-					<Card.Title>{CHART_TITLE}</Card.Title>
-					<Card.Description>{CHART_DESCRIPTION}</Card.Description>
-				</div>
-
-				<Select.Root type="single" bind:value={selectedInterval}>
-					<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
-						{timeRange.label}
-					</Select.Trigger>
-					<Select.Content class="rounded-xl">
-						<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
-						<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
-						<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
-					</Select.Content>
-				</Select.Root>
-			</Card.Header>
-
-			<Card.Content>
-				<Chart.Container config={CHART_CONFIG} class="h-[64px] w-full" />
-			</Card.Content>
-		</Card.Root>
-	{/await}
-{/key}
+		<Card.Content>
+			<Chart.Container config={CHART_CONFIG} class="h-[64px] w-full">
+				<LineChart
+					data={response}
+					x="date"
+					xScale={scaleUtc()}
+					axis="x"
+					series={[
+						{
+							key: 'latency',
+							label: 'Write Latency',
+							color: CHART_CONFIG.latency.color
+						}
+					]}
+					props={{
+						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
+						xAxis: {
+							format: getXAxisFormat(selectedInterval),
+							ticks: response.length
+						},
+						yAxis: { format: () => '' },
+						highlight: { points: { r: 4 } }
+					}}
+				>
+					{#snippet tooltip()}
+						<Chart.Tooltip hideLabel />
+					{/snippet}
+				</LineChart>
+			</Chart.Container>
+		</Card.Content>
+	</Card.Root>
+{/if}

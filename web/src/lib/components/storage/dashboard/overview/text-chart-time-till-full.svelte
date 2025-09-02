@@ -1,12 +1,18 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 	import { PrometheusDriver } from 'prometheus-query';
+	import { onMount } from 'svelte';
 
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	// Props
+	let {
+		client,
+		scope,
+		isReloading = $bindable()
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = m.time_till_full();
@@ -63,31 +69,52 @@
 			return `${years} year${years !== 1 ? 's' : ''}`;
 		}
 	}
+
+	// Auto Update
+	let response = $state<string>();
+	let isLoading = $state(true);
+	const reloadManager = new ReloadManager(fetch);
+
+	// Fetch function
+	async function fetch(): Promise<void> {
+		try {
+			const queryResponse = await client.instantQuery(query);
+
+			if (queryResponse.result && queryResponse.result.length > 0) {
+				const days = parseFloat(queryResponse.result[0].value.value);
+				response = formatTimeTillFull(days);
+			} else {
+				response = '∞ years';
+			}
+		} catch (err) {
+			console.error('Failed to fetch cluster health:', err);
+			response = 'ERROR';
+		}
+	}
+
+	// Effects
+	$effect(() => {
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
+
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#await client.instantQuery(query)}
+{#if isLoading}
 	<ComponentLoading />
-{:then response}
+{:else}
 	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
 		</Card.Header>
-		<Card.Content class="flex-1">
-			{#if response.result.length > 0 && response.result[0].value}
-				{@const days = parseFloat(response.result[0].value.value)}
-				{formatTimeTillFull(days)}
-			{:else}
-				∞ years
-			{/if}
-		</Card.Content>
+		<Card.Content class="flex-1">{response}</Card.Content>
 	</Card.Root>
-{:catch error}
-	<Card.Root class="h-full gap-2">
-		<Card.Header class="items-center">
-			<Card.Title>{CHART_TITLE}</Card.Title>
-			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
-		</Card.Header>
-		<Card.Content class="flex-1">LOADING ERROR</Card.Content>
-	</Card.Root>
-{/await}
+{/if}

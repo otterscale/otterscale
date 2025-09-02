@@ -16,13 +16,13 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable(),
+		isReloading = $bindable()
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 </script>
 
 <div class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10">
 	<div class="col-span-2">
-		<TextClusterHealth {client} {scope} />
+		<TextClusterHealth {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
 		<TextTimeTillFull {client} {scope} />
@@ -31,10 +31,10 @@
 		<UsageCapacity {client} {scope} />
 	</div>
 	<div class="col-span-2 row-span-2">
-		<AreaCapacity {client} {scope} />
+		<AreaCapacity {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2 row-span-2">
-		<PieOSDType {client} {scope} />
+		<PieOSDType {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
 		<TextQuorum {client} {scope} />
@@ -49,9 +49,9 @@
 		<BarOSDIOPS {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<AreaOSDReadLatency {client} {scope} />
+		<AreaOSDReadLatency {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<AreaOSDWriteLatency {client} {scope} />
+		<AreaOSDWriteLatency {client} {scope} bind:isReloading />
 	</div>
 </div>

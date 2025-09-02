@@ -1,19 +1,24 @@
 <script lang="ts">
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
-	import ErrorLayout from '$lib/components/custom/chart/layout/standard-error.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { scaleUtc } from 'd3-scale';
-	import { curveBasis, curveLinear, curveStep } from 'd3-shape';
+	import { curveStep } from 'd3-shape';
 	import { AreaChart } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
+	import { onMount } from 'svelte';
 
 	// Props
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let {
+		client,
+		scope,
+		isReloading = $bindable()
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Types
 	type TimeInterval = 'day' | 'week' | 'month';
@@ -95,6 +100,27 @@
 		return { start: intervalStart, end: intervalEnd };
 	}
 
+	function getXAxisFormat(interval: TimeInterval) {
+		const formatters: Record<TimeInterval, (v: Date) => string> = {
+			day: (v: Date) => v.toLocaleDateString('en-US', { day: 'numeric' }),
+			week: (v: Date) => {
+				const month = v.toLocaleString('en-US', { month: 'short' });
+				const weekNum = Math.ceil(v.getUTCDate() / 7);
+				return `${month}-W${weekNum}`;
+			},
+			month: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+		};
+
+		return formatters[interval];
+	}
+
+	function getYAxisDomain(
+		data: { date: Date; used: number; total: number; available: number }[]
+	): [number, number] {
+		const maxTotal = Math.max(...data.map((d) => d.total || 0));
+		return [0, maxTotal];
+	}
+
 	async function fetchMetricForInterval(
 		intervalStart: Date,
 		intervalEnd: Date
@@ -130,10 +156,11 @@
 			};
 		}
 	}
-
-	async function fetchMetrics(): Promise<
-		{ date: Date; used: number; total: number; available: number }[]
-	> {
+	// Auto Update
+	let response = $state([] as { date: Date; used: number; total: number; available: number }[]);
+	let isLoading = $state(true);
+	const reloadManager = new ReloadManager(fetch);
+	async function fetch(): Promise<void> {
 		const today = new Date();
 		const promises = [];
 
@@ -142,117 +169,109 @@
 			promises.push(fetchMetricForInterval(start, end));
 		}
 
-		return Promise.all(promises);
+		response = await Promise.all(promises);
 	}
 
-	function getXAxisFormat(interval: TimeInterval) {
-		const formatters: Record<TimeInterval, (v: Date) => string> = {
-			day: (v: Date) => v.toLocaleDateString('en-US', { day: 'numeric' }),
-			week: (v: Date) => {
-				const month = v.toLocaleString('en-US', { month: 'short' });
-				const weekNum = Math.ceil(v.getUTCDate() / 7);
-				return `${month}-W${weekNum}`;
-			},
-			month: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
-		};
+	$effect(() => {
+		isReloading;
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
 
-		return formatters[interval];
-	}
+	$effect(() => {
+		selectedInterval;
+		fetch();
+	});
 
-	function getYAxisDomain(
-		data: { date: Date; used: number; total: number; available: number }[]
-	): [number, number] {
-		const maxTotal = Math.max(...data.map((d) => d.total || 0));
-		return [0, maxTotal];
-	}
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#key selectedInterval}
-	{#await fetchMetrics()}
-		<ComponentLoading />
-	{:then response}
-		<Card.Root class="h-full gap-2">
-			<Card.Header class="flex items-center">
-				<div class="grid flex-1 gap-1 text-center sm:text-left">
-					<Card.Title>{CHART_TITLE}</Card.Title>
-					<Card.Description>{CHART_DESCRIPTION}</Card.Description>
-				</div>
+{#if isLoading}
+	<ComponentLoading />
+{:else}
+	<Card.Root class="h-full gap-2">
+		<Card.Header class="flex items-center">
+			<div class="grid flex-1 gap-1 text-center sm:text-left">
+				<Card.Title>{CHART_TITLE}</Card.Title>
+				<Card.Description>{CHART_DESCRIPTION}</Card.Description>
+			</div>
 
-				<Select.Root type="single" bind:value={selectedInterval}>
-					<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
-						{timeRange.label}
-					</Select.Trigger>
-					<Select.Content class="rounded-xl">
-						<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
-						<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
-						<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
-					</Select.Content>
-				</Select.Root>
-			</Card.Header>
+			<Select.Root type="single" bind:value={selectedInterval}>
+				<Select.Trigger class="w-fit rounded-lg sm:ml-auto" aria-label="Select time range">
+					{timeRange.label}
+				</Select.Trigger>
+				<Select.Content class="rounded-xl">
+					<Select.Item value="day" class="rounded-lg">{TIME_INTERVALS.day.label}</Select.Item>
+					<Select.Item value="week" class="rounded-lg">{TIME_INTERVALS.week.label}</Select.Item>
+					<Select.Item value="month" class="rounded-lg">{TIME_INTERVALS.month.label}</Select.Item>
+				</Select.Content>
+			</Select.Root>
+		</Card.Header>
 
-			<Card.Content>
-				<Chart.Container config={CHART_CONFIG} class="h-[200px] w-full">
-					<AreaChart
-						data={response}
-						x="date"
-						xScale={scaleUtc()}
-						yDomain={getYAxisDomain(response)}
-						series={[
-							{
-								key: 'used',
-								label: 'Used',
-								color: CHART_CONFIG.used.color
-							}
-						]}
-						seriesLayout="stack"
-						props={{
-							area: {
-								curve: curveStep,
-								'fill-opacity': 0.4,
-								line: { class: 'stroke-1' },
-								motion: 'tween'
-							},
-							xAxis: {
-								format: getXAxisFormat(selectedInterval),
-								ticks: response.length
-							},
-							yAxis: { format: () => '' }
-						}}
-					>
-						{#snippet tooltip()}
-							<Chart.Tooltip
-								labelFormatter={(time: Date) => {
-									return time.toLocaleDateString('en-US', {
-										year: 'numeric',
-										month: 'short',
-										day: 'numeric',
-										hour: 'numeric',
-										minute: 'numeric'
-									});
-								}}
-							>
-								{#snippet formatter({ item, name, value })}
-									{@const { value: io, unit } = formatCapacity(Number(value))}
-									<div
-										style="--color-bg: {item.color}"
-										class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
-									></div>
-									<div
-										class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none"
-									>
-										<div class="grid gap-1.5">
-											<span class="text-muted-foreground">{name}</span>
-										</div>
-										<p class="font-mono">{io} {unit}</p>
+		<Card.Content>
+			<Chart.Container config={CHART_CONFIG} class="h-[200px] w-full">
+				<AreaChart
+					data={response}
+					x="date"
+					xScale={scaleUtc()}
+					yDomain={getYAxisDomain(response)}
+					series={[
+						{
+							key: 'used',
+							label: 'Used',
+							color: CHART_CONFIG.used.color
+						}
+					]}
+					seriesLayout="stack"
+					props={{
+						area: {
+							curve: curveStep,
+							'fill-opacity': 0.4,
+							line: { class: 'stroke-1' },
+							motion: 'tween'
+						},
+						xAxis: {
+							format: getXAxisFormat(selectedInterval),
+							ticks: response.length
+						},
+						yAxis: { format: () => '' }
+					}}
+				>
+					{#snippet tooltip()}
+						<Chart.Tooltip
+							labelFormatter={(time: Date) => {
+								return time.toLocaleDateString('en-US', {
+									year: 'numeric',
+									month: 'short',
+									day: 'numeric',
+									hour: 'numeric',
+									minute: 'numeric'
+								});
+							}}
+						>
+							{#snippet formatter({ item, name, value })}
+								{@const { value: io, unit } = formatCapacity(Number(value))}
+								<div
+									style="--color-bg: {item.color}"
+									class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+								></div>
+								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
+									<div class="grid gap-1.5">
+										<span class="text-muted-foreground">{name}</span>
 									</div>
-								{/snippet}
-							</Chart.Tooltip>
-						{/snippet}
-					</AreaChart>
-				</Chart.Container>
-			</Card.Content>
-		</Card.Root>
-	{:catch error}
-		<ErrorLayout title={CHART_TITLE} description={timeRange.label} />
-	{/await}
-{/key}
+									<p class="font-mono">{io} {unit}</p>
+								</div>
+							{/snippet}
+						</Chart.Tooltip>
+					{/snippet}
+				</AreaChart>
+			</Chart.Container>
+		</Card.Content>
+	</Card.Root>
+{/if}

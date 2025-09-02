@@ -29,7 +29,7 @@
 				.then((response) => {
 					prometheusDriver = new PrometheusDriver({
 						endpoint: `${env.PUBLIC_API_URL}/prometheus`,
-						baseURL: response.baseUrl,
+						baseURL: response.baseUrl
 					});
 				})
 				.catch((error) => {
@@ -51,7 +51,7 @@
 			<div class="flex justify-between gap-2">
 				<Tabs.List>
 					<Tabs.Trigger value="overview">{m.overview()}</Tabs.Trigger>
-					<Tabs.Trigger value="analytics">{m.analytics()}</Tabs.Trigger>
+					<Tabs.Trigger value="analytics" disabled>{m.analytics()}</Tabs.Trigger>
 				</Tabs.List>
 				<Reloader bind:checked={isReloading} />
 			</div>
@@ -59,7 +59,7 @@
 				<Overview client={prometheusDriver} {scope} bind:isReloading />
 			</Tabs.Content>
 			<Tabs.Content value="analytics">
-				<Analytics client={prometheusDriver} {scope} />
+				<!-- <Analytics client={prometheusDriver} {scope} /> -->
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>
