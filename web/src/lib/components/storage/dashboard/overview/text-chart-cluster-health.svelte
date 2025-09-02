@@ -1,12 +1,19 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
+	import Icon from '@iconify/svelte';
 	import { PrometheusDriver } from 'prometheus-query';
+	import { onMount } from 'svelte';
 
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	// Props
+	let {
+		client,
+		scope,
+		isReloading = $bindable()
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = m.cluster_health();
@@ -34,33 +41,65 @@
 			iconClass: '-right-3 top-2',
 		},
 		2: { label: 'ERROR', color: 'text-error', icon: 'ph:x-bold', iconClass: '-right-3 top-2' },
+		null: {
+			label: 'ERROR',
+			color: 'text-muted-foreground',
+			icon: 'ph:question-bold',
+			iconClass: '-right-3 top-2'
+		}
 	} as const;
+
+	// Auto Update
+	let response = $state<number | null>(null);
+	let isLoading = $state(true);
+	const reloadManager = new ReloadManager(fetch);
+
+	// Fetch function
+	async function fetch(): Promise<void> {
+		try {
+			const queryResponse = await client.instantQuery(query);
+
+			if (queryResponse.result && queryResponse.result.length > 0) {
+				response = Number(queryResponse.result[0].value.value);
+			} else {
+				response = null;
+			}
+		} catch (err) {
+			console.error('Failed to fetch cluster health:', err);
+			response = null;
+		}
+	}
+
+	// Effects
+	$effect(() => {
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
+
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#await client.instantQuery(query)}
+{#if isLoading}
 	<ComponentLoading />
-{:then response}
-	<Card.Root class="relative gap-2 overflow-hidden">
+{:else}
+	<Card.Root class="relative h-full gap-2 overflow-hidden">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
 		</Card.Header>
-		{@const value = response.result[0].value.value}
-		{@const healthStatus = HEALTH_STATUS[value as keyof typeof HEALTH_STATUS]}
+		{@const healthStatus = HEALTH_STATUS[response as keyof typeof HEALTH_STATUS]}
 		<Card.Content class="flex-1 {healthStatus?.color}">
 			{healthStatus?.label}
 			<Icon
 				icon={healthStatus.icon}
-				class="text-primary/5 absolute size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden {healthStatus.iconClass}"
+				class="text-primary/5 absolute size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden {healthStatus.iconClass}"
 			/>
 		</Card.Content>
 	</Card.Root>
-{:catch error}
-	<Card.Root class="gap-2">
-		<Card.Header class="items-center">
-			<Card.Title>{CHART_TITLE}</Card.Title>
-			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
-		</Card.Header>
-		<Card.Content class="flex-1">LOADING ERROR</Card.Content>
-	</Card.Root>
-{/await}
+{/if}

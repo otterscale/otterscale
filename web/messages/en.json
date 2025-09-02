@@ -617,6 +617,7 @@
 	"io_test": "IO Test",
 	"object_storage_test": "Object Storage Test",
 	"networking_dashboard_description": "Overview of network metrics including discovery status, DHCP, available IPs, DNS servers, device usage by month, and daily network traffic. Data is filtered by subnet and FQDN where applicable.",
+	"storage_dashboard_description": "Monitor Ceph storage cluster performance, capacity usage, health status, OSD distribution, and throughput analytics. View real-time metrics for cluster health, capacity trends, and storage operations.",
 	"discovery": "Discovery",
 	"overview": "Overview",
 	"analytics": "Analytics",
