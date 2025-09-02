@@ -156,4 +156,4 @@ We extend our heartfelt gratitude to those who make OtterScale possible:
   - **[Juju](https://juju.is/)**: Application deployment
   - **[MAAS](https://maas.io/)**: Metal provisioning
 
-Your efforts fuel OtterScale’s vision to revolutionize hyper-converged infrastructure! 🌟
+Your efforts fuel OtterScale’s vision to revolutionize hyper-converged infrastructure!
