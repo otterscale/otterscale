@@ -16,6 +16,22 @@
 
 ![Login](/assets/screenshot-login.png)
 
+## 📸 Screenshots
+
+|                                                  Home                                                   |                                              Scope Selector                                              |
+| :-----------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: |
+|                   ![Home](https://otterscale.com/img/screenshot/screenshot-home.jpeg)                   |         ![Scope Selector](https://otterscale.com/img/screenshot/screenshot-scope-selector.jpeg)          |
+|                                            **Create Scope**                                             |                                        **Create Scope Settings**                                         |
+|         ![Create Scope 1](https://otterscale.com/img/screenshot/screenshot-scope-create-1.jpeg)         |         ![Create Scope 2](https://otterscale.com/img/screenshot/screenshot-scope-create-2.jpeg)          |
+|                                           **Scope Settings**                                            |                                          **Application Store**                                           |
+|         ![Scope Settings](https://otterscale.com/img/screenshot/screenshot-scope-settings.jpeg)         | ![Application Store](https://otterscale.com/img/screenshot/screenshot-application-management-store.jpeg) |
+|                                              **Machines**                                               |                                            **Machines Dark**                                             |
+|               ![Machines](https://otterscale.com/img/screenshot/screenshot-machines.jpeg)               |          ![Machines Dark](https://otterscale.com/img/screenshot/screenshot-machines-dark.jpeg)           |
+|                                               **Storage**                                               |                                              **Networking**                                              |
+|                ![Storage](https://otterscale.com/img/screenshot/screenshot-storage.jpeg)                |             ![Networking](https://otterscale.com/img/screenshot/screenshot-networking.jpeg)              |
+|                                       **Application Management**                                        |                                        **Application Workloads**                                         |
+| ![Application Management](https://otterscale.com/img/screenshot/screenshot-application-management.jpeg) |   ![Workloads](https://otterscale.com/img/screenshot/screenshot-application-management-workloads.jpeg)   |
+
 Simplify complex operations with OtterScale's **unified control plane**, effortlessly handling diverse workloads across **bare metal**, **virtual**, and **containerized environments**. Run **traditional VMs**, **cloud-native apps**, or **GPU-accelerated tasks** with **enterprise-grade performance** and unmatched ease.
 
 ## ✨ Features
