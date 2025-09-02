@@ -33,7 +33,7 @@ func (uc *ApplicationUseCase) GetChartMetadataFromApplication(ctx context.Contex
 	metadata := &ChartMetadata{}
 	eg, _ := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		if releaseName, ok := app.Labels["app.otterscale.io/release-name"]; ok {
+		if releaseName, ok := app.Labels["app.otterscale.com/release-name"]; ok {
 			config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 			if err != nil {
 				return err
@@ -49,7 +49,7 @@ func (uc *ApplicationUseCase) GetChartMetadataFromApplication(ctx context.Contex
 	})
 	eg.Go(func() error {
 		// TODO: invalid label format
-		// if chartRef, ok := app.Labels["app.otterscale.io/chart-ref"]; ok {
+		// if chartRef, ok := app.Labels["app.otterscale.com/chart-ref"]; ok {
 		// 	v, err := uc.chart.Show(chartRef, action.ShowReadme)
 		// 	if err != nil {
 		// 		return err
