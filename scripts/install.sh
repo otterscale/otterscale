@@ -1032,8 +1032,6 @@ validate_url() {
     if ! validate_port $PORT; then
         error_exit "Invalid Port format: $PORT"
     fi
-
-    log "INFO" "Validate URL: $URL" "URL check"
 }
 
 validate_ip() {
@@ -1270,31 +1268,15 @@ if [[ $# -eq 0 ]]; then
     done
 fi
 
-function check_otterscale_config_variable() {
-    local vars=(
-        OTTERSCALE_ENDPOINT
-        OTTERSCALE_CONFIG_MAAS_CIDR
-        OTTERSCALE_CNOFIG_MAAS_DHCP_CIDR
-        OTTERSCALE_CONFIG_MAAS_DHCP_START_IP
-        OTTERSCALE_CONFIG_MAAS_DHCP_END_IP
-        OTTERSCALE_CONFIG_JUJU_IP
-        OTTERSCALE_CONFIG_MAAS_ADMIN_USER
-        OTTERSCALE_CONFIG_MAAS_ADMIN_PASS
-        OTTERSCALE_CONFIG_MAAS_ADMIN_EMAIL
-    )
-
-  for v in "${vars[@]}"; do
-      val="${!v}"
-      if [[ -z "$val" ]]; then
-          echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Variable $v is empty"
-          exit 1
-      fi
-  done
-}
-
 ## with parameter
 while [ $# -gt 0 ]; do
     case $1 in
+	--url=* | url=*)
+            OTTERSCALE_ENDPOINT="${1#*=}"
+	    if ! validate_url "$OTTERSCALE_ENDPOINT"; then
+                exit 1
+            fi
+	    ;;
         --config=* | config=*)
             OTTERSCALE_CONFIG_PATH="${1#*=}"
             if [ ! -f $OTTERSCALE_CONFIG_PATH ]; then
@@ -1302,16 +1284,13 @@ while [ $# -gt 0 ]; do
                 exit 1
             fi
             source $OTTERSCALE_CONFIG_PATH
-            check_otterscale_config_variable
-            if ! validate_url "$OTTERSCALE_ENDPOINT"; then
-                exit 1
-            fi
             ;;
         -h | --help | help)
             echo "Usage: sudo bash install.sh [options]"
             echo ""
             echo "Options:"
             echo "  -h | --help | help     Show this help message"
+            echo "  --url= | url=    Specific Otters endpoint"
             echo "  --config= | config=    Specific the configuration file to use"
             echo ""
             echo "Example"
