@@ -16,7 +16,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable()
+		isReloading = $bindable(),
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Types
@@ -122,16 +122,13 @@
 				const month = v.toLocaleString('en-US', { month: 'short' });
 				const weekNum = Math.ceil(v.getUTCDate() / 7);
 				return `${month}-W${weekNum}`;
-			}
+			},
 		};
 
 		return formatters[interval];
 	}
 
-	async function fetchLatencyForPeriod(
-		start: Date,
-		end: Date
-	): Promise<{ date: Date; latency: number }> {
+	async function fetchLatencyForPeriod(start: Date, end: Date): Promise<{ date: Date; latency: number }> {
 		try {
 			const query = PROMETHEUS_QUERY(scope.uuid);
 			const response = await client.rangeQuery(query, start, end, timeRange.stepSize);
@@ -219,17 +216,17 @@
 						{
 							key: 'latency',
 							label: 'Write Latency',
-							color: CHART_CONFIG.latency.color
-						}
+							color: CHART_CONFIG.latency.color,
+						},
 					]}
 					props={{
 						spline: { curve: curveLinear, motion: 'tween', strokeWidth: 2 },
 						xAxis: {
 							format: getXAxisFormat(selectedInterval),
-							ticks: response.length
+							ticks: response.length,
 						},
 						yAxis: { format: () => '' },
-						highlight: { points: { r: 4 } }
+						highlight: { points: { r: 4 } },
 					}}
 				>
 					{#snippet tooltip()}
