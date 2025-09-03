@@ -17,15 +17,15 @@
 
 {#snippet trigger()}
 	<Tabs.List>
-		<Tabs.Trigger value="user">{m.user()}</Tabs.Trigger>
 		<Tabs.Trigger value="bucket">{m.bucket()}</Tabs.Trigger>
+		<Tabs.Trigger value="user">{m.user()}</Tabs.Trigger>
 	</Tabs.List>
 {/snippet}
-<Tabs.Root value="user">
-	<Tabs.Content value="user">
-		<User bind:selectedScopeUuid bind:selectedFacility {trigger} />
-	</Tabs.Content>
+<Tabs.Root value="bucket">
 	<Tabs.Content value="bucket">
 		<Bucket bind:selectedScopeUuid bind:selectedFacility {trigger} />
+	</Tabs.Content>
+	<Tabs.Content value="user">
+		<User bind:selectedScopeUuid bind:selectedFacility {trigger} />
 	</Tabs.Content>
 </Tabs.Root>
