@@ -15,7 +15,7 @@
 	import { breadcrumb } from '$lib/stores';
 
 	// Constants
-	const INSTALL_CODE = `sh -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh" -- url=${env.PUBLIC_API_URL})`;
+	const INSTALL_CODE = `sh -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh)" -- url=${env.PUBLIC_API_URL}`;
 	const RETRY_DELAY = 2000;
 	const services = (scope: Scope) => [
 		{ path: dynamicPaths.models(scope.name), description: m.models_description() },
