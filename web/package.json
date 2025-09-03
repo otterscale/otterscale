@@ -96,7 +96,7 @@
 		"rehype-highlight": "^7.0.2",
 		"runed": "^0.31.1",
 		"semver": "^7.7.2",
-		"shiki": "^3.11.0",
+		"shiki": "^3.12.1",
 		"svelte-exmarkdown": "^5.0.2",
 		"svelte-monaco": "^1.0.4",
 		"svelte-toolbelt": "^0.9.3"
