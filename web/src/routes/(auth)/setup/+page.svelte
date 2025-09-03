@@ -114,7 +114,7 @@
 			class="[mask-image:radial-gradient(75%_75%_at_center,white,transparent)] opacity-90"
 		/>
 	</div>
-	<div class="flex flex-col items-center justify-center">
+	<div class="z-10 flex flex-col items-center justify-center">
 		<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">
 			{m.setup_environment()}
 		</h2>
@@ -169,7 +169,7 @@
 				</Button>
 
 				<div
-					class="border-border bg-card text-card-foreground dark m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
+					class="border-border bg-secondary dark text-card-foreground m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
 				>
 					<div class="flex border-b border-inherit p-4">
 						<div class="flex items-center gap-2">
