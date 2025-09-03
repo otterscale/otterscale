@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Host requirment
 MIN_MEMORY_GB=8
