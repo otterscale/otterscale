@@ -49,26 +49,33 @@
 > [!IMPORTANT]
 > Requirements: `Docker`, `Docker Compose`, `4GB RAM`, `10GB disk space`
 
-1. **Initialize configuration:**
+1. **Clone the repository:**
+
+   ```sh
+   git clone --depth 1 https://github.com/otterscale/otterscale.git
+   cd otterscale
+   ```
+
+2. **Initialize configuration:**
 
    ```sh
    docker run ghcr.io/otterscale/otterscale/service:latest init > otterscale.yaml
    ```
 
-2. **Set up environment:**
+3. **Set up environment:**
 
    ```sh
    cp .env.example .env
    # Edit .env file with your settings
    ```
 
-3. **Start OtterScale:**
+4. **Start OtterScale:**
 
    ```sh
    docker compose up -d
    ```
 
-4. **Access web interface:**
+5. **Access web interface:**
 
 Open your browser and navigate to `http://localhost:3000` (or your configured port).
 
