@@ -17,7 +17,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable()
+		isReloading = $bindable(),
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Types
@@ -108,15 +108,13 @@
 				const weekNum = Math.ceil(v.getUTCDate() / 7);
 				return `${month}-W${weekNum}`;
 			},
-			month: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' })
+			month: (v: Date) => v.toLocaleDateString('en-US', { month: 'short' }),
 		};
 
 		return formatters[interval];
 	}
 
-	function getYAxisDomain(
-		data: { date: Date; used: number; total: number; available: number }[]
-	): [number, number] {
+	function getYAxisDomain(data: { date: Date; used: number; total: number; available: number }[]): [number, number] {
 		const maxTotal = Math.max(...data.map((d) => d.total || 0));
 		return [0, maxTotal];
 	}
@@ -225,8 +223,8 @@
 						{
 							key: 'used',
 							label: 'Used',
-							color: CHART_CONFIG.used.color
-						}
+							color: CHART_CONFIG.used.color,
+						},
 					]}
 					seriesLayout="stack"
 					props={{
@@ -234,13 +232,13 @@
 							curve: curveStep,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween'
+							motion: 'tween',
 						},
 						xAxis: {
 							format: getXAxisFormat(selectedInterval),
-							ticks: response.length
+							ticks: response.length,
 						},
-						yAxis: { format: () => '' }
+						yAxis: { format: () => '' },
 					}}
 				>
 					{#snippet tooltip()}
@@ -251,7 +249,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>
@@ -259,7 +257,7 @@
 								{@const { value: io, unit } = formatCapacity(Number(value))}
 								<div
 									style="--color-bg: {item.color}"
-									class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 								></div>
 								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
 									<div class="grid gap-1.5">

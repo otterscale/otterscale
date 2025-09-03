@@ -16,7 +16,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable()
+		isReloading = $bindable(),
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
@@ -64,7 +64,7 @@
 	// Derived state
 	const queries = $derived({
 		Read: `sum(irate(ceph_osd_op_r{juju_model_uuid=~"${scope.uuid}"}[1h]))`,
-		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[1h]))`
+		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[1h]))`,
 	});
 
 	const activeSeries = $derived([
@@ -165,13 +165,13 @@
 					{@const displayValue = latestValue ? formatBigNumber(latestValue) : '0'}
 					<button
 						data-active={isActive}
-						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+						class="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
 						onclick={() => (activeChart = chart)}
 					>
 						<span class="text-muted-foreground text-xs">
 							{chartConfig[chart].label}
 						</span>
-						<span class="flex items-end gap-1 text-lg font-bold leading-none sm:text-3xl">
+						<span class="flex items-end gap-1 text-lg leading-none font-bold sm:text-3xl">
 							{displayValue}
 							<span class="text-muted-foreground text-xs">{latestUnit}</span>
 						</span>
@@ -231,7 +231,7 @@
 								{@const formattedValue = formatBigNumber(Math.round(Number(value)))}
 								<div
 									style="--color-bg: {item.color}"
-									class="border-(--color-border) bg-(--color-bg) aspect-square h-full w-fit shrink-0"
+									class="aspect-square h-full w-fit shrink-0 border-(--color-border) bg-(--color-bg)"
 								></div>
 								<div class="flex flex-1 shrink-0 items-center justify-between text-xs leading-none">
 									<div class="grid gap-1.5">

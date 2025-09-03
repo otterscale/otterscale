@@ -64,7 +64,7 @@
 	// Derived state
 	const queries = $derived({
 		Read: `sum(irate(ceph_osd_op_r_out_bytes{juju_model_uuid=~"${scope.uuid}"}[1h]))`,
-		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[1h]))`
+		Write: `sum(irate(ceph_osd_op_w_in_bytes{juju_model_uuid=~"${scope.uuid}"}[1h]))`,
 	});
 
 	const activeSeries = $derived([
@@ -163,8 +163,7 @@
 				{#each ['Read', 'Write'] as key (key)}
 					{@const chart = key as ChartKey}
 					{@const isActive = activeChart === chart}
-					{@const latestValue =
-						key === 'Read' ? response.latestReadValue : response.latestWriteValue}
+					{@const latestValue = key === 'Read' ? response.latestReadValue : response.latestWriteValue}
 					{@const latestUnit = key === 'Read' ? response.latestReadUnit : response.latestWriteUnit}
 					<button
 						data-active={isActive}

@@ -14,7 +14,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable()
+		isReloading = $bindable(),
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
@@ -36,7 +36,7 @@
 			totalValue: number | undefined;
 			totalUnit: string | undefined;
 			usage: { value: number }[];
-		}
+		},
 	);
 	let isLoading = $state(true);
 	const reloadManager = new ReloadManager(fetch);

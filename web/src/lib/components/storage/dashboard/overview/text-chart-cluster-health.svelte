@@ -12,7 +12,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable()
+		isReloading = $bindable(),
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
@@ -45,8 +45,8 @@
 			label: 'ERROR',
 			color: 'text-muted-foreground',
 			icon: 'ph:question-bold',
-			iconClass: '-right-3 top-2'
-		}
+			iconClass: '-right-3 top-2',
+		},
 	} as const;
 
 	// Auto Update
@@ -98,7 +98,7 @@
 			{healthStatus?.label}
 			<Icon
 				icon={healthStatus.icon}
-				class="text-primary/5 absolute size-36 text-nowrap text-8xl uppercase tracking-tight group-hover:hidden {healthStatus.iconClass}"
+				class="text-primary/5 absolute size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden {healthStatus.iconClass}"
 			/>
 		</Card.Content>
 	</Card.Root>

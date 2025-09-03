@@ -130,6 +130,8 @@
 	"login": "登入",
 	"sign_up": "註冊",
 	"scopes": "範疇",
+	"scope_selector_loading": "讀取中",
+	"scope_selector_loading_description": "正在讀取範疇並檢查環境 ...",
 	"scope_selector": "選擇範疇",
 	"scope_selector_description": "請從以下選項中選擇您的範疇：",
 	"add_scope": "增加範疇",

@@ -13,7 +13,7 @@
 	let {
 		client,
 		scope,
-		isReloading = $bindable()
+		isReloading = $bindable(),
 	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
@@ -76,7 +76,7 @@
 	let response = $state({
 		chartData: [] as ChartDataItem[],
 		total: 0,
-		chartConfig: {} as Chart.ChartConfig
+		chartConfig: {} as Chart.ChartConfig,
 	});
 	let isLoading = $state(true);
 	const reloadManager = new ReloadManager(fetch);
@@ -99,7 +99,7 @@
 					count,
 					color: config.color,
 					fill: config.color,
-					label: config.label
+					label: config.label,
 				};
 			});
 
