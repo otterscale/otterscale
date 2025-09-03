@@ -129,6 +129,8 @@
 	"password": "Password",
 	"login": "Login",
 	"sign_up": "Sign Up",
+	"scope_selector_loading": "Loading",
+	"scope_selector_loading_description": "Loading scopes and checking environment ...",
 	"scope_selector": "Select Scope",
 	"scope_selector_description": "Please select your scope from the following:",
 	"scopes": "Scopes",
