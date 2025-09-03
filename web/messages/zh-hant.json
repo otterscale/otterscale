@@ -304,7 +304,7 @@
 	"workload_health_description": " {total} 個 Pod 中有 {unhealthies} 個不健康。",
 	"containers": "容器",
 	"pull_policy": "拉取策略",
-	"persist_volume_claims": "持久儲存空間宣告",
+	"persistent_volume_claims": "持久儲存空間宣告",
 	"access_modes": "存取模式",
 	"storage_classes": "儲存類別",
 	"provisioner": "佈建程式",
