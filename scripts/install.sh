@@ -1271,9 +1271,9 @@ fi
 ## with parameter
 while [ $# -gt 0 ]; do
     case $1 in
-	--url=* | url=*)
+        --url=* | url=*)
             OTTERSCALE_ENDPOINT="${1#*=}"
-	    if ! validate_url "$OTTERSCALE_ENDPOINT"; then
+            if ! validate_url "$OTTERSCALE_ENDPOINT"; then
                 exit 1
             fi
 	    ;;
