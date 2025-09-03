@@ -21,7 +21,7 @@
 
 <Layout.Statistic.Root class={isExpand ? 'col-span-3' : 'col-span-1'}>
 	<Layout.Statistic.Header>
-		<Layout.Statistic.Title>{m.persist_volume_claims()}</Layout.Statistic.Title>
+		<Layout.Statistic.Title>{m.persistent_volume_claims()}</Layout.Statistic.Title>
 		<Layout.Statistic.Action>
 			<Button
 				disabled={$application.persistentVolumeClaims.length === 0}
