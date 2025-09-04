@@ -95,8 +95,15 @@ func (s *EnvironmentService) UpdateConfig(ctx context.Context, req *connect.Requ
 	return connect.NewResponse(resp), nil
 }
 
-func (s *EnvironmentService) UpdateConfigHelmRepositories(ctx context.Context, req *connect.Request[pb.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.UpdateConfigHelmRepos(ctx, req.Msg.GetUrls()); err != nil {
+func (s *EnvironmentService) GetConfigHelmRepositories(_ context.Context, req *connect.Request[pb.GetConfigHelmRepositoriesRequest]) (*connect.Response[pb.GetConfigHelmRepositoriesResponse], error) {
+	helmRepos := s.uc.GetConfigHelmRepos()
+	resp := &pb.GetConfigHelmRepositoriesResponse{}
+	resp.SetUrls(helmRepos)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *EnvironmentService) UpdateConfigHelmRepositories(_ context.Context, req *connect.Request[pb.UpdateConfigHelmRepositoriesRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.UpdateConfigHelmRepos(req.Msg.GetUrls()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
