@@ -51,7 +51,7 @@
 			{m.edit()}
 		</Modal.Trigger>
 		<Modal.Content>
-			<Modal.Header>{m.edit_ntp_server()}</Modal.Header>
+			<Modal.Header>{m.edit_package_repository()}</Modal.Header>
 			<Form.Root>
 				<Form.Fieldset>
 					<Form.Field>

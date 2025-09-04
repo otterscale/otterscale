@@ -660,5 +660,6 @@
 	"six_hour_average": "6h Avg",
 	"setting_helm_repository_description": "Configure the list of Helm chart repositories used for package management. Add or update repository URLs to control where your environment fetches Helm charts for deployments.",
 	"edit_helm_repository": "Edit Helm Repository",
-	"helm_repository": "Helm Repository"
+	"helm_repository": "Helm Repository",
+	"edit_package_repository": "Edit Package Repository"
 }
