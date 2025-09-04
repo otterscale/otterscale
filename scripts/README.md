@@ -22,7 +22,7 @@ There are two installation methods available:
 This method prompts for necessary configurations during execution.
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/refs/heads/441-update-install-script-execute-command/scripts/install.sh)" -- url=YOUR_OTTERSCALE_ENDPOINT
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/refs/heads/main/scripts/install.sh)" -- url=YOUR_OTTERSCALE_ENDPOINT
 ```
 Replace YOUR_OTTERSCALE_ENDPOINT with your actual OtterScale endpoint.
 
@@ -34,7 +34,7 @@ Copy and modify the provided install.cfg.example file according to your environm
 Run the installation script
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/refs/heads/441-update-install-script-execute-command/scripts/install.sh)" -- url=YOUR_OTTERSCALE_ENDPOINT config=~/install.cfg
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/refs/heads/main/scripts/install.sh)" -- url=YOUR_OTTERSCALE_ENDPOINT config=~/install.cfg
 ```
 Replace YOUR_OTTERSCALE_ENDPOINT with your actual OtterScale endpoint, and ensure ~/install.cfg points to your customized configuration file.
 
