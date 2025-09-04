@@ -1,5 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
+##
 # Host requirment
 MIN_MEMORY_GB=8
 MIN_DISK_GB=100
@@ -7,17 +8,20 @@ OTTERSCALE_OS="22.04"
 OTTERSCALE_MAAS_VERSION="2.0"
 OTTERSCALE_BASE_IMAGE="ubuntu@22.04"
 
+##
 # Host LXD config
 LXD_STORAGE_SIZE_GB="60GB"
 LXD_CORES=2
 LXD_MEMORY_MB=4096
 LXD_DISK_GB=50G
 
+##
 # Install packages
 APT_PACKAGES="jq openssh-server bridge-utils openvswitch-switch"
 SNAP_PACKAGES="core24 maas maas-test-db juju lxd microk8s"
 
-# Snap version
+##
+#Snap version
 CORE24_CHANNEL="latest/stable"
 MAAS_CHANNEL="3.5/stable"
 MAAS_DB_CHANNEL="3.5/stable"
@@ -26,19 +30,17 @@ LXD_CHANNEL="5.0/stable"
 MICROK8S_CHANNEL="1.32/stable"
 CONTROLLER_CHARM_CHANNEL="3.5/stable"
 
-# Log
-TEMP_LOG=$(mktemp)
-
-# Max retries for snap install and maas configure
+##
+# Otterscale
 OTTERSCALE_MAX_RETRIES=5
-
-# Canonical charmhub URL
 OTTERSCALE_CHARMHUB_URL="https://api.charmhub.io"
-
-## Current directory
+OTTERSCALE_MAAS_ADMIN_USER="admin"
+OTTERSCALE_MAAS_ADMIN_PASS="admin"
+OTTERSCALE_MAAS_ADMIN_EMAIL="admin@example.com"
 export OTTERSCALE_INSTALL_DIR=$(dirname "$(readlink -f $0)")
 
-## LOG
+##
+# LOG
 export TEMP_LOG=$(mktemp)
 export LOG=$OTTERSCALE_INSTALL_DIR/setup.log
 touch $LOG
@@ -215,7 +217,7 @@ bootstrap_juju() {
     fi
 
     if is_machine_deployed; then
-        log "INFO" "JuJu had already bootstrap, skipping..."
+        log "INFO" "JuJu had already bootstrap, skipping..." "JuJu bootstrap"
     else
         log "INFO" "Juju bootstrap, it will take a few minutes..." "JuJu bootstrap"
         juju_cmd "$bootstrap_cmd $bootstrap_config $bootstrap_machine --debug" "juju bootstrap"
@@ -443,7 +445,7 @@ login_maas() {
 get_maas_dns() {
     local maas_current_dns=$(maas admin maas get-config name=upstream_dns | jq -r)
     if [[ -z $maas_current_dns ]]; then
-        dns_value="$OTTERSCALE_INTERFACE_DNS"
+        dns_value="$CURRENT_DNS"
     fi
 }
 
@@ -464,20 +466,10 @@ update_maas_config() {
     set_config "release_notifications" "false"
 }
 
-enter_dhcp_subnet() {
-    while true; do
-        read -p "Enter DHCP subnet in CIDR notation (e.g. $OTTERSCALE_CONFIG_MAAS_CIDR): " MAAS_NETWORK_SUBNET
-        if validate_cidr "$MAAS_NETWORK_SUBNET"; then
-            break
-        fi
-        echo "Invalid CIDR format. Please try again."
-    done
-}
-
 enter_dhcp_start_ip() {
     while true; do
-        read -p "Enter DHCP start IP: " DHCP_START_IP
-        if validate_ip "$DHCP_START_IP"; then
+        read -p "Enter DHCP start IP: " MAAS_DHCP_START_IP
+        if validate_ip "$MAAS_DHCP_START_IP"; then
             break
         fi
         echo "Invalid IP format. Please try again."
@@ -486,8 +478,8 @@ enter_dhcp_start_ip() {
 
 enter_dhcp_end_ip() {
     while true; do
-        read -p "Enter DHCP end IP: " DHCP_END_IP
-        if validate_ip "$DHCP_END_IP"; then
+        read -p "Enter DHCP end IP: " MAAS_DHCP_END_IP
+        if validate_ip "$MAAS_DHCP_END_IP"; then
             break
         fi
         echo "Invalid IP format. Please try again."
@@ -496,12 +488,12 @@ enter_dhcp_end_ip() {
 
 update_fabric_dns() {
     local FABRIC_DNS=$(maas admin subnet read $MAAS_NETWORK_SUBNET | jq -r '.dns_servers')
-    log "INFO" "Update dns $OTTERSCALE_INTERFACE_DNS to fabric $MAAS_NETWORK_SUBNET" "MAAS config update"
+    log "INFO" "Update dns $CURRENT_DNS to fabric $MAAS_NETWORK_SUBNET" "MAAS config update"
 
-    if [[ "$FABRIC_DNS" =~ "$OTTERSCALE_INTERFACE_DNS" ]]; then
+    if [[ "$FABRIC_DNS" =~ "$CURRENT_DNS" ]]; then
         log "INFO" "Current dns already existed, skipping..." "MAAS config update"
     elif [[ ! -z $maas_current_dns ]]; then
-        dns_value="$FABRIC_DNS $OTTERSCALE_INTERFACE_DNS"
+        dns_value="$FABRIC_DNS $CURRENT_DNS"
     fi
 
     execute_cmd "maas admin subnet update $MAAS_NETWORK_SUBNET dns_servers=$dns_value" "update maas dns to fabric"
@@ -519,7 +511,7 @@ get_fabric() {
 
 create_dhcp_iprange() {
     log "INFO" "Creating DHCP IP range..." "MAAS config update"
-    if ! maas admin ipranges create type=dynamic start_ip=$DHCP_START_IP end_ip=$DHCP_END_IP >>"$TEMP_LOG" 2>&1; then
+    if ! maas admin ipranges create type=dynamic start_ip=$MAAS_DHCP_START_IP end_ip=$MAAS_DHCP_END_IP >>"$TEMP_LOG" 2>&1; then
         log "WARN" "Please confirm if address is within subnet $MAAS_NETWORK_SUBNET, or maybe it conflicts with an existing IP address or range" "MAAS config update"
         error_exit "Failed to create DHCP range"
     fi
@@ -533,22 +525,12 @@ update_dhcp_config() {
 }
 
 get_dhcp_subnet_and_ip() {
-    if [ -z $OTTERSCALE_CNOFIG_MAAS_DHCP_CIDR ]; then
-        enter_dhcp_subnet
-    else
-        MAAS_NETWORK_SUBNET=$OTTERSCALE_CNOFIG_MAAS_DHCP_CIDR
-    fi
-
-    if [ -z $OTTERSCALE_CONFIG_MAAS_DHCP_START_IP ]; then
+    if [ -z $MAAS_DHCP_START_IP ]; then
         enter_dhcp_start_ip
-    else
-        DHCP_START_IP=$OTTERSCALE_CONFIG_MAAS_DHCP_START_IP
     fi
 
-    if [ -z $OTTERSCALE_CONFIG_MAAS_DHCP_END_IP ]; then
+    if [ -z $MAAS_DHCP_END_IP ]; then
         enter_dhcp_end_ip
-    else
-        DHCP_END_IP=$OTTERSCALE_CONFIG_MAAS_DHCP_END_IP
     fi
 }
 
@@ -559,6 +541,7 @@ enable_maas_dhcp() {
     fi
 
     log "INFO" "Configuring MAAS DHCP..." "MAAS config update"
+    MAAS_NETWORK_SUBNET=$OTTERSCALE_CIDR
     while true; do
         get_dhcp_subnet_and_ip
         if check_ip_range ; then
@@ -566,40 +549,14 @@ enable_maas_dhcp() {
             get_fabric
             create_dhcp_iprange
             update_dhcp_config
+            log "INFO" "DHCP configuration completed" "MAAS config update"
             break
         else
-            if ! -z $OTTERSCALE_CNOFIG_MAAS_DHCP_CIDR && ! -z $OTTERSCALE_CONFIG_MAAS_DHCP_START_IP && ! -z $OTTERSCALE_CONFIG_MAAS_DHCP_END_IP ]]; then
+            if ! -z $MAAS_NETWORK_SUBNET && ! -z $MAAS_DHCP_START_IP && ! -z $MAAS_DHCP_END_IP ]]; then
                 break
             fi
         fi
     done
-    log "INFO" "DHCP configuration completed" "MAAS config update"
-}
-
-check_maas() {
-    OTTERSCALE_MAAS_ADMIN_USER=${OTTERSCALE_CONFIG_MAAS_ADMIN_USER:-admin}
-    OTTERSCALE_MAAS_ADMIN_PASS=${OTTERSCALE_CONFIG_MAAS_ADMIN_PASS:-admin}
-    OTTERSCALE_MAAS_ADMIN_EMAIL=${OTTERSCALE_CONFIG_MAAS_ADMIN_EMAIL:-admin@example.com}
-
-    ## Init, create, and login
-    init_maas
-    create_maas_admin
-    login_maas
-
-    ## Generate ssh
-    set_sshkey
-
-    ## Configure
-    update_maas_config
-    download_maas_img
-    enable_maas_dhcp
-
-    ## Lxd
-    init_lxd
-    create_maas_lxd_project
-    create_lxd_vm
-    create_vm_from_maas
-    set_vm_static_ip
 }
 
 create_maas_lxd_project() {
@@ -908,56 +865,125 @@ check_microk8s() {
     prepare_microk8s_config
     enable_microk8s_option
     extend_microk8s_cert
-    #create_k8s_token
+    ##create_k8s_token
 }
 
-get_interface_through_ip() {
-    local CIDR=$1
-    OTTERSCALE_NETWORK_INTERFACE=$(ip -br addr show to $CIDR | awk '{print $1}')
-    if [ -z $OTTERSCALE_NETWORK_INTERFACE ]; then
-        error_exit "Failed get network interface from $CIDR"
-    fi
-}
-
-is_interface_bridge() {
-    local INTERFACE=$1
-    if ! brctl show $INTERFACE > /dev/null 2>&1; then
-        error_exit "Network interface $INTERFACE is not a network bridge"
-    fi
-    return 0
-}
-
-get_maas_cidr() {
+select_bridge() {
     while true; do
-        read -p "Please enter the CIDR IP to be used for MAAS (e.g., 192.168.10.245/24): " OTTERSCALE_CONFIG_MAAS_CIDR
-        if validate_cidr $OTTERSCALE_CONFIG_MAAS_CIDR; then
-            break
-        fi
-        log "WARN" "Invild CIDR. Please try agein" "OS network"
+        echo "Available network bridges:"
+        for i in "${!bridges[@]}"; do
+            echo "$i) ${bridges[$i]}"
+        done
+
+        read -p "Select bridge (0-${#bridges[@]}): " choice
+        case $choice in
+            [0-9]*)
+                if [ $choice -le ${#bridges[@]} ]; then
+                    OTTERSCALE_BRIDGE_NAME=${bridges[$((choice-1))]}
+                    return
+                fi
+                ;;
+        esac
     done
 }
 
 check_bridge() {
-    if [ -z $OTTERSCALE_CONFIG_MAAS_CIDR ]; then
-        get_maas_cidr
-    fi
-    get_interface_through_ip $OTTERSCALE_CONFIG_MAAS_CIDR
+    OTTERSCALE_BRIDGE_NAME="br-otters"
 
-    if is_interface_bridge $OTTERSCALE_NETWORK_INTERFACE ;then
-        OTTERSCALE_BRIDGE_NAME=$OTTERSCALE_NETWORK_INTERFACE
-        OTTERSCALE_INTERFACE_IP=$(echo $OTTERSCALE_CONFIG_MAAS_CIDR | cut -d'/' -f1)
-        OTTERSCALE_INTERFACE_IP_MASK=$(echo $OTTERSCALE_CONFIG_MAAS_CIDR | cut -d'/' -f2)
-        get_current_dns $OTTERSCALE_BRIDGE_NAME
+    if ip link show "$OTTERSCALE_BRIDGE_NAME" &>/dev/null; then
+        log "INFO" "Default bridge $OTTERSCALE_BRIDGE_NAME exist" "Check network"
+    else
+        bridges=($(brctl show 2>/dev/null | awk 'NR>1 {print $1}' | grep -v '^$'))
+        if [ ${#bridges[@]} -eq 0 ]; then
+            read -p "No network bridge found, should be provisioned programmatically (Y/N)? " CONFIRM_CREATE
+            if [[ "$CONFIRM_CREATE" == "Y" || "$CONFIRM_CREATE" == "y" ]]; then
+                get_default_interface
+                get_default_gateway
+                get_default_cidr
+                get_default_dns $CURRENT_INTERFACE
+                backup_netplan
+                create_netplan
+                apply_netplan
+            else
+                log "INFO" "Please create a bridge than try again" "Network bridge not found"
+                exit 0
+            fi
+        else
+            select_bridge
+        fi
+    fi
+
+    OTTERSCALE_CIDR=$(ip -o -4 addr show dev "$OTTERSCALE_BRIDGE_NAME" | awk '{print $4}')    
+    OTTERSCALE_INTERFACE_IP=$(echo $OTTERSCALE_CIDR | cut -d'/' -f1)
+    OTTERSCALE_INTERFACE_IP_MASK=$(echo $OTTERSCALE_CIDR | cut -d'/' -f2)
+    get_default_dns $OTTERSCALE_BRIDGE_NAME
+}
+
+backup_netplan() {
+    NETPLAN_FILE=$(find /etc/netplan/ -name *yaml | head -n 1)
+    cp $NETPLAN_FILE $NETPLAN_FILE-$(date '+%Y%m%d%H%M%S')
+}
+
+get_default_interface() {
+    CURRENT_INTERFACE=$(ip route show default | awk '{print $5}')
+    if [ -z $CURRENT_INTERFACE ]; then
+        error_exit "Default route network interface is empty"
     fi
 }
 
-get_current_dns() {
-    local INTERFACE=$1
-    OTTERSCALE_INTERFACE_DNS=$(resolvectl -i $INTERFACE | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
-    if [ -z "$OTTERSCALE_INTERFACE_DNS" ]; then
-        log "WARN" "No dns found for $INTERFACE, used 8.8.8.8 instead" "OS network"
-        OTTERSCALE_INTERFACE_DNS="8.8.8.8"
+get_default_gateway() {
+    CURRENT_GATEWAY=$(ip route show default | awk '{print $3}')
+    if [ -z $CURRENT_GATEWAY ]; then
+        error_exit "Default gateway is empty"
     fi
+}
+
+get_default_cidr() {
+    CURRENT_CIDR=$(ip -o -4 addr show dev "$CURRENT_INTERFACE" | awk '{print $4}')
+    if [ -z $CURRENT_CIDR ]; then
+        error_exit "Interface $CURRENT_INTERFACE CIDR is empty"
+    fi
+}
+
+get_default_dns() {
+    local INTERFACE=$1
+    CURRENT_DNS=$(resolvectl -i $INTERFACE | grep "Current DNS Server" | awk '{print $4}' | paste -sd, -)
+    if [ -z "$CURRENT_DNS" ]; then
+        log "WARN" "No dns found for $INTERFACE, used 8.8.8.8 instead" "OS network"
+        CURRENT_DNS="8.8.8.8"
+    fi
+}
+
+create_netplan() {
+    cat > "$NETPLAN_FILE" <<EOF
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    $CURRENT_INTERFACE:
+      dhcp4: no
+      dhcp6: no
+  bridges:
+    br-otters:
+      interfaces: [$CURRENT_INTERFACE]
+      addresses: [$CURRENT_CIDR]
+      routes:
+      - to: default
+        via: $CURRENT_GATEWAY
+      nameservers:
+        addresses: [$CURRENT_DNS]
+EOF
+    chmod 600 /etc/netplan/*.yaml
+}
+
+apply_netplan() {
+    systemctl stop NetworkManager >/dev/null 2>&1
+    systemctl disable NetworkManager >/dev/null 2>&1
+
+    systemctl restart systemd-networkd >/dev/null 2>&1
+    systemctl enable systemd-networkd >/dev/null 2>&1
+
+    netplan apply || error_exit "Failed to apply netplan configuration"
 }
 
 # Function to convert an IP address to a number
@@ -1006,16 +1032,16 @@ check_ip_range() {
         $((0xFF << (32 - mask) & 0xFF)))
 
     # Check if start_ip and end_ip are in the network
-    if is_ip_in_network $DHCP_START_IP $network $mask_dotted; then
-        if is_ip_in_network $DHCP_END_IP $network $mask_dotted; then
-            log "INFO" "IP range $DHCP_START_IP to $DHCP_END_IP is within the network $MAAS_NETWORK_SUBNET"
+    if is_ip_in_network $MAAS_DHCP_START_IP $network $mask_dotted; then
+        if is_ip_in_network $MAAS_DHCP_END_IP $network $mask_dotted; then
+            log "INFO" "IP range $MAAS_DHCP_START_IP to $MAAS_DHCP_END_IP is within the network $MAAS_NETWORK_SUBNET"
             return 0
         else
-            log "WARN" "End IP $DHCP_END_IP is not in the network $MAAS_NETWORK_SUBNET"
+            log "WARN" "End IP $MAAS_DHCP_END_IP is not in the network $MAAS_NETWORK_SUBNET"
             return 1
         fi
     else
-        log "WARN" "Start IP $DHCP_START_IP is not in the network $MAAS_NETWORK_SUBNET"
+        log "WARN" "Start IP $MAAS_DHCP_START_IP is not in the network $MAAS_NETWORK_SUBNET"
         return 1
     fi
 }
@@ -1142,7 +1168,7 @@ snap_install() {
 }
 
 disable_ipv6() {
-    log "INFO" "Disable ipv6 from sysctl, it will resume after reboot" "OS config"
+    log "INFO" "Sysctl disable ipv6, it will resume after reboot" "OS config"
     sysctl -w net.ipv6.conf.all.disable_ipv6=1 >/dev/null 2>&1
     sysctl -w net.ipv6.conf.default.disable_ipv6=1 >/dev/null 2>&1
 }
@@ -1182,12 +1208,6 @@ add_key_to_maas() {
             error_exit "Failed to add SSH key to MAAS"
         fi
     fi
-}
-
-set_sshkey() {
-    find_first_non_user
-    generate_ssh_key
-    add_key_to_maas
 }
 
 execute_non_user_cmd() {
@@ -1237,16 +1257,6 @@ check_disk() {
     fi
 }
 
-# System validation checks
-validate_system() {
-    check_root
-    check_os
-    check_memory
-    check_disk
-    disable_ipv6
-    log "INFO" "System validation passed" "OS check finished"
-}
-
 config_modules() {
     local MODULE=rbd
     local MODULES_FILE="/etc/modules"
@@ -1290,12 +1300,12 @@ while [ $# -gt 0 ]; do
             echo ""
             echo "Options:"
             echo "  -h | --help | help     Show this help message"
-            echo "  --url= | url=    Specific Otters endpoint"
+            echo "  --url=    | url=       Specific Otters endpoint"
             echo "  --config= | config=    Specific the configuration file to use"
             echo ""
             echo "Example"
             echo "  sudo bash install.sh"
-            echo "  sudo bash install.sh config=FILEPATH"
+            echo "  sudo bash install.sh url=http://IP:PORT"
             exit 0
             ;;
         *)
@@ -1307,17 +1317,57 @@ while [ $# -gt 0 ]; do
 done
 
 main() {
-    validate_system
+    ##
+    # Validate environment
+    check_root
+    check_os
+    check_memory
+    check_disk
+    disable_ipv6
+
+    ##
+    # Package install
     apt_update
     apt_install "$APT_PACKAGES"
     snap_install
 
+    ##
+    # Network bridge check
     check_bridge
-    check_maas
+
+    ##
+    # MAAS
+    # 1. Init, create, and login
+    # 2. Generate ssh
+    # 3. Configure maas
+    # 4. Lxd init
+    init_maas
+    create_maas_admin
+    login_maas
+    find_first_non_user
+    generate_ssh_key
+    add_key_to_maas
+    update_maas_config
+    download_maas_img
+    enable_maas_dhcp
+    init_lxd
+    create_maas_lxd_project
+    create_lxd_vm
+    create_vm_from_maas
+    #set_vm_static_ip
+
+    ##
+    # Juju
+    # 1. Bootstrap
+    # 2. Deploy microk8s
+    # 3. Juju config
     bootstrap_juju
     check_microk8s
     juju_add_k8s
     config_modules
+
+    ##
+    # Finished
     send_otterscale_config_data
 
     trap cleanup EXIT
