@@ -1,19 +1,22 @@
 <script lang="ts">
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
-		$props();
+	let {
+		prometheusDriver,
+		scope,
+		isReloading = $bindable(),
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let memoryUsages: SampleValue[] = $state([]);
 	const memoryUsagesConfiguration = {
@@ -33,7 +36,7 @@
 			.rangeQuery(
 				`
 				sum(
-				container_memory_rss{container!="",job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics/cadvisor"}
+				container_memory_rss{container!="",job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor"}
 				)
 						`,
 				Date.now() - 60 * 60 * 1000,
@@ -47,7 +50,7 @@
 			.instantQuery(
 				`
 				sum(
-					kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="memory"}
+					kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${scope.uuid}",resource="memory"}
 				)
 				`,
 			)
@@ -58,7 +61,7 @@
 			.instantQuery(
 				`
 				sum(
-					namespace_memory:kube_pod_container_resource_requests:sum{juju_model_uuid="${$currentKubernetes?.scopeUuid}"}
+					namespace_memory:kube_pod_container_resource_requests:sum{juju_model_uuid="${scope.uuid}"}
 				)
 				`,
 			)
@@ -69,7 +72,7 @@
 			.instantQuery(
 				`
 				sum(
-					namespace_memory:kube_pod_container_resource_limits:sum{juju_model_uuid="${$currentKubernetes?.scopeUuid}"}
+					namespace_memory:kube_pod_container_resource_limits:sum{juju_model_uuid="${scope.uuid}"}
 				)
 				`,
 			)

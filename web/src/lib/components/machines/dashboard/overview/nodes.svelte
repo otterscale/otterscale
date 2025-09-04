@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -24,7 +25,7 @@
 		months.push(d.toISOString().slice(0, 7));
 	}
 
-	let { isReloading = $bindable() }: { isReloading: boolean } = $props();
+	let { scope, isReloading = $bindable() }: { scope: Scope; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -58,7 +59,7 @@
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
-		machineClient.listMachines({}).then((response) => {
+		machineClient.listMachines({ scopeUuid: scope.uuid }).then((response) => {
 			machines.set(response.machines);
 		});
 	}

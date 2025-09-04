@@ -1,18 +1,21 @@
 <script lang="ts">
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
-		$props();
+	let {
+		prometheusDriver,
+		scope,
+		isReloading = $bindable(),
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let receives = $state([] as SampleValue[]);
 	let transmits = $state([] as SampleValue[]);
@@ -34,7 +37,7 @@
 				`
 						sum(
 						irate(
-							container_network_receive_bytes_total{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
+							container_network_receive_bytes_total{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
 						)
 						)
 						`,
@@ -50,7 +53,7 @@
 				`
 						sum(
 						irate(
-							container_network_transmit_bytes_total{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
+							container_network_transmit_bytes_total{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
 						)
 						)
 						`,

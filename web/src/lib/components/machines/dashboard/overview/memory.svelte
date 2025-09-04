@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -18,8 +19,11 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
-		$props();
+	let {
+		prometheusDriver,
+		scope,
+		isReloading = $bindable(),
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -45,7 +49,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`sum(node_memory_MemTotal_bytes - node_memory_MemFree_bytes - (node_memory_Cached_bytes + node_memory_Buffers_bytes + node_memory_SReclaimable_bytes)) / sum(node_memory_MemTotal_bytes)`,
+				`sum(node_memory_MemTotal_bytes{juju_model_uuid="${scope.uuid}"} - node_memory_MemFree_bytes{juju_model_uuid="${scope.uuid}"} - (node_memory_Cached_bytes{juju_model_uuid="${scope.uuid}"} + node_memory_Buffers_bytes{juju_model_uuid="${scope.uuid}"} + node_memory_SReclaimable_bytes{juju_model_uuid="${scope.uuid}"})) / sum(node_memory_MemTotal_bytes{juju_model_uuid="${scope.uuid}"})`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60,
