@@ -478,7 +478,7 @@ login_maas() {
 
 get_maas_dns() {
     local maas_current_dns=$(maas admin maas get-config name=upstream_dns | jq -r)
-    if [[ -z $maas_current_dns ]]; then
+    if [ -z "$maas_current_dns" ]; then
         dns_value="$CURRENT_DNS"
         log "INFO" "MAAS upstream DNS not set, will use system DNS: $dns_value" "MAAS config"
     fi
@@ -523,13 +523,17 @@ enter_dhcp_end_ip() {
 }
 
 update_fabric_dns() {
-    local FABRIC_DNS=$(maas admin subnet read "$MAAS_NETWORK_SUBNET" | jq -r '.dns_servers')
+    local FABRIC_DNS=$(maas admin subnet read "$MAAS_NETWORK_SUBNET" | jq -r '.dns_servers[]')
     log "INFO" "Update dns $CURRENT_DNS to fabric $MAAS_NETWORK_SUBNET" "MAAS config update"
 
     if [[ "$FABRIC_DNS" =~ "$CURRENT_DNS" ]]; then
         log "INFO" "Current dns already existed, skipping..." "MAAS config update"
-    elif [[ ! -n $maas_current_dns ]]; then
-        dns_value="$FABRIC_DNS $CURRENT_DNS"
+    elif [ ! -n "$maas_current_dns" ]; then
+        if [ -z "$FABRIC_DNS" ]; then
+            dns_value="$CURRENT_DNS"
+        else
+            dns_value="$FABRIC_DNS $CURRENT_DNS"
+        fi
     fi
 
     execute_cmd "maas admin subnet update $MAAS_NETWORK_SUBNET dns_servers=$dns_value" "update maas dns to fabric"
