@@ -657,5 +657,8 @@
 	"last_7_days": "過去 7 天",
 	"last_5_weeks": "過去 5 週",
 	"last_6_months": "過去 6 個月",
-	"six_hour_average": "6 小時平均"
+	"six_hour_average": "6 小時平均",
+	"setting_helm_repository_description": "設定用於套件管理的 Helm 圖表儲存庫清單。新增或更新儲存庫 URL，以控制您的環境從何處取得 Helm 圖表進行部署。",
+	"edit_helm_repository": "編輯 Helm 儲存庫",
+	"helm_repository": "Helm 儲存庫"
 }
