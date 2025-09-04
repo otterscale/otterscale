@@ -11,6 +11,7 @@
 	import { LineChart } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
 
 	// Props
 	let {
@@ -54,10 +55,9 @@
 	const timeRange = $derived(TIME_INTERVALS[selectedInterval]);
 
 	// Helper functions
-	function calculateTimeRange(interval: TimeInterval, index: number): { start: Date; end: Date } {
-		const today = new Date();
-		const start = new Date(today);
-		const end = new Date(today);
+	function calculateTimeRange(interval: TimeInterval, index: number, today: Date): { start: Date; end: Date } {
+		const start = new SvelteDate(today);
+		const end = new SvelteDate(today);
 
 		switch (interval) {
 			case 'day': {
@@ -131,11 +131,10 @@
 	async function fetchLatencyForPeriod(start: Date, end: Date): Promise<{ date: Date; latency: number }> {
 		try {
 			const query = PROMETHEUS_QUERY(scope.uuid);
-			const response = await client.rangeQuery(query, start, end, timeRange.stepSize);
+			const response = await client.rangeQuery(query, start.getTime(), end.getTime(), timeRange.stepSize);
 
-			if (response.result?.[0]?.values?.length > 0) {
-				// Get the average of all values in the time series
-				const values = response.result[0].values;
+			const values = response.result?.[0]?.values;
+			if (values?.length > 0) {
 				const avgLatency =
 					values.reduce((sum: number, v: { value: number | string }) => sum + Number(v.value || 0), 0) /
 					values.length;
@@ -149,14 +148,16 @@
 		return { date: start, latency: 0 };
 	}
 
-	// Auto Update
+	// Data fetching
 	let response = $state([] as { date: Date; latency: number }[]);
 	let isLoading = $state(true);
 	const reloadManager = new ReloadManager(fetch);
+
 	async function fetch(): Promise<void> {
+		const today = new SvelteDate();
 		const promises = Array.from({ length: timeRange.count }, (_, i) => {
 			const index = timeRange.count - 1 - i;
-			const { start, end } = calculateTimeRange(selectedInterval, index);
+			const { start, end } = calculateTimeRange(selectedInterval, index, today);
 			return fetchLatencyForPeriod(start, end);
 		});
 
