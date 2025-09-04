@@ -11,14 +11,3 @@ export function hashCode(str: string): number {
 	}
 	return hash;
 }
-
-/**
- * Encodes an object into a hash string (uid-<hash>).
- * @param obj Object to encode
- * @returns Encoded string
- */
-export function encode(obj: Record<string, any>): string {
-	const str = Object.values(obj).join('-');
-	const hash = hashCode(str);
-	return `${Math.abs(hash)}`;
-}

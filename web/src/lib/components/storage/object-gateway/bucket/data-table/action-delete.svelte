@@ -72,7 +72,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.deleteBucket(request), {
 							loading: `Deleting ${request.bucketName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Delete ${request.bucketName}`;
 							},

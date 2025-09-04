@@ -78,7 +78,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.rollbackImageSnapshot(request), {
 							loading: `Rolling back ${request.snapshotName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Rollback ${request.snapshotName}`;
 							},

@@ -12,7 +12,6 @@
 <script lang="ts">
 	let { ref = $bindable(null), children, ...restProps }: DropdownMenuPrimitive.TriggerProps & {} = $props();
 
-	const id: string | undefined = getContext('id');
 	const required: boolean | undefined = getContext('required');
 	const optionManager: OptionManager = getContext('OptionManager');
 

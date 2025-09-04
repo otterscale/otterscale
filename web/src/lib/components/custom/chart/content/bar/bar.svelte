@@ -8,12 +8,12 @@
 		activeChart = $bindable(),
 		data,
 		chartConfig,
-		timeRange = '90d',
+		// timeRange = '90d',
 	}: {
 		activeChart: string;
 		data: Array<any>;
 		chartConfig: any;
-		timeRange?: string;
+		// timeRange?: string;
 	} = $props();
 	let context = $state<ChartContextValue>();
 	const activeSeries = $derived([

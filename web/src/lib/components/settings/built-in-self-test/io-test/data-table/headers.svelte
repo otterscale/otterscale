@@ -54,7 +54,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet target(column: Column<TestResult>)}
+{#snippet target()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.target()}</Layout.HeaderViewer>
 	</Layout.Header>
@@ -132,13 +132,13 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet iops(column: Column<TestResult>)}
+{#snippet iops()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>{m.iops()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet latencyMinimum(column: Column<TestResult>)}
+{#snippet latencyMinimum()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			{m.latency()}
@@ -147,7 +147,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet latencyMaximum(column: Column<TestResult>)}
+{#snippet latencyMaximum()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			{m.latency()}
@@ -156,7 +156,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet latencyMean(column: Column<TestResult>)}
+{#snippet latencyMean()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			{m.latency()}
@@ -183,4 +183,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<TestResult>)}{/snippet}
+{#snippet actions()}{/snippet}

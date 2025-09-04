@@ -19,7 +19,6 @@
 
 	// State
 	let selectedValue = $state('');
-	let isMounted = $state(false);
 
 	// Computed values
 	const filteredApplications = $derived($applications.filter((a) => a.type === selectedValue));
@@ -48,8 +47,6 @@
 			if (response.applications && response.applications[0]) {
 				selectedValue = response.applications[0].type;
 			}
-
-			isMounted = true;
 		} catch (error) {
 			console.error('Error fetching applications:', error);
 		}
@@ -95,7 +92,7 @@
 		{#snippet content()}
 			<ContentSubtitle
 				value={Math.round(healthByType)}
-				unit={'%'}
+				unit="%"
 				subtitle={`${healthyPods} Running over ${totalPods} pods`}
 			/>
 		{/snippet}

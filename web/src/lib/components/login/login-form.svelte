@@ -145,7 +145,7 @@
 	const handleSocialSignIn = async (provider: string) => {
 		await setLoadingState(provider, async () => {
 			await authClient.signIn.social({
-				provider: provider as any,
+				provider: provider,
 				callbackURL: data.nextPath,
 				fetchOptions: {
 					onError: showError,

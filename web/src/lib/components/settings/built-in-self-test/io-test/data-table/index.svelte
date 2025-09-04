@@ -16,17 +16,15 @@
 		type SortingState,
 		type VisibilityState,
 	} from '@tanstack/table-core';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import Create from './action-test.svelte';
 	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let { testResults, reloadManager }: { testResults: Writable<TestResult[]>; reloadManager: ReloadManager } =
 		$props();
-
-	let data = $state(writable(testResults));
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);

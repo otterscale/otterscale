@@ -73,7 +73,7 @@
 		{#snippet content()}
 			<ContentSubtitle
 				value={Math.round(availabilityPercentage)}
-				unit={'%'}
+				unit="%"
 				subtitle={`${formatNumber(availableSubnetCount)} available over ${formatNumber(totalSubnetCount)} units`}
 			/>
 		{/snippet}

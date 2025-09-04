@@ -50,9 +50,9 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet osdUp(row: Row<OSD>)}{/snippet}
+{#snippet osdUp()}{/snippet}
 
-{#snippet osdIn(row: Row<OSD>)}{/snippet}
+{#snippet osdIn()}{/snippet}
 
 {#snippet exists(row: Row<OSD>)}
 	<Layout.Cell class="items-start">
@@ -116,7 +116,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet iops(row: Row<OSD>)}{/snippet}
+{#snippet iops()}{/snippet}
 
 {#snippet actions(row: Row<OSD>)}
 	<Layout.Cell class="items-start">

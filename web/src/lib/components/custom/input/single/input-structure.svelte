@@ -9,14 +9,12 @@
 
 <script lang="ts">
 	let {
-		id,
 		value = $bindable(),
 		language,
 		required,
 		preview = true,
 		invalid = $bindable(),
 	}: {
-		id?: string;
 		language: 'json';
 		value: string;
 		required?: boolean;

@@ -11,8 +11,6 @@
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
-		class: className,
-		id,
 		required,
 		invalid = $bindable(),
 		...restProps

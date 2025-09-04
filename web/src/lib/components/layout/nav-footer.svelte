@@ -8,7 +8,7 @@
 	import changelogRead from '$lib/stores/changelog';
 	import DialogAbout from './dialog-about.svelte';
 
-	interface Props extends ComponentProps<typeof Sidebar.Group> {}
+	type Props = ComponentProps<typeof Sidebar.Group>;
 
 	let { ref = $bindable(null), ...restProps }: Props = $props();
 

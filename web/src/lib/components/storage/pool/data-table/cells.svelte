@@ -98,7 +98,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet iops(row: Row<Pool>)}{/snippet}
+{#snippet iops()}{/snippet}
 
 {#snippet actions(row: Row<Pool>)}
 	<Layout.Cell class="items-start">

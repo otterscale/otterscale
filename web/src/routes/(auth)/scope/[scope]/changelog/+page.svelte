@@ -13,6 +13,7 @@
 	import changelogRead from '$lib/stores/changelog';
 	import Icon from '@iconify/svelte';
 	import type { PageData } from './$types';
+	// import type { Release } from './+page.server';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [], current: dynamicPaths.changelog(page.params.scope) });
@@ -103,10 +104,6 @@
 	function extractPRNumber(url: string): string {
 		return `#${url.split('/').pop()}`;
 	}
-
-	function hasChanges(release: any, changeKey: keyof typeof CHANGE_TYPES): boolean {
-		return release.changes[changeKey]?.length > 0;
-	}
 </script>
 
 <h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">{m.changelog()}</h2>
@@ -168,7 +165,7 @@
 
 				<Accordion.Content class="flex flex-col space-y-4 p-6 text-balance">
 					{#each Object.entries(CHANGE_TYPES) as [key, config]}
-						{#if hasChanges(release, key as keyof typeof CHANGE_TYPES)}
+						{#if release.changes[key as keyof typeof CHANGE_TYPES]?.length > 0}
 							<Card.Root class="gap-0 p-0 {config.colors.border}">
 								<Card.Header class="gap-0 rounded-t-xl py-3 {config.colors.bg}">
 									<Card.Title class="flex items-center space-x-1 font-semibold {config.colors.text}">

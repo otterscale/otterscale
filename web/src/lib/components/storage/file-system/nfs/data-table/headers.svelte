@@ -99,4 +99,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<Subvolume>)}{/snippet}
+{#snippet actions()}{/snippet}

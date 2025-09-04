@@ -11,7 +11,6 @@
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { user_suspended_descriptor } from './helper';
 </script>
 
 <script lang="ts">
@@ -67,7 +66,7 @@
 				<Form.Field>
 					<SingleInput.Boolean
 						format="checkbox"
-						descriptor={user_suspended_descriptor}
+						descriptor={() => m.suspend()}
 						bind:value={request.suspended}
 					/>
 					<Form.Help>
@@ -90,7 +89,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.updateUser(request), {
 							loading: `Updating ${request.userId}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Update ${request.userId}`;
 							},

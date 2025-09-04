@@ -19,6 +19,7 @@
 		class: className,
 		tabindex = -1,
 		children,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		...rest
 	}: CopyButtonProps = $props();
 

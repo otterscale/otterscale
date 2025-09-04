@@ -79,7 +79,7 @@
 				onclick={() => {
 					toast.promise(() => client.deleteRelease(request), {
 						loading: 'Loading...',
-						success: (r) => {
+						success: () => {
 							client.listReleases({}).then((r) => {
 								releases.set(r.releases);
 							});

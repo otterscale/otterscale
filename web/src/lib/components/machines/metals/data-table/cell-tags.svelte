@@ -26,7 +26,6 @@
 	let tags = $state(machine.tags);
 	let tagOptions: string[] = $state([]);
 	let isTagsLoading = $state(true);
-	let isMounted = $state(false);
 
 	const isChanged = $derived(
 		!(machine.tags.length === tags.length && machine.tags.every((tag) => tags.includes(tag))),
@@ -50,8 +49,6 @@
 				.finally(() => {
 					isTagsLoading = false;
 				});
-
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

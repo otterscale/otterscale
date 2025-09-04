@@ -74,7 +74,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.revokeSubvolumeExportAccess(request), {
 							loading: `Revoking ${request.subvolumeName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Revoke ${request.subvolumeName}`;
 							},

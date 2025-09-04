@@ -13,7 +13,6 @@
 	let {
 		ref = $bindable(null),
 		class: className,
-		children,
 		option,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLSpanElement>> & { option: OptionType } = $props();

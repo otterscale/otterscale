@@ -20,19 +20,14 @@
 	import { columns, messages } from './columns';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let {
 		subnet,
 	}: {
 		subnet: Network_Subnet;
 	} = $props();
 
-	let ipRanges = $state(subnet.ipRanges);
-	$effect(() => {
-		subnet;
-		ipRanges = subnet.ipRanges;
-	});
-
+	let ipRanges = $derived(subnet.ipRanges || []);
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 15 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);

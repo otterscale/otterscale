@@ -77,7 +77,7 @@ const columns: ColumnDef<Pool>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.usage, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				Number(previousRow.original.quotaBytes) !== 0
 					? Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes)

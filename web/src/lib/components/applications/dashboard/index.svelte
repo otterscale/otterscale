@@ -64,10 +64,10 @@
 				class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
 			>
 				<div class="col-span-2">
-					<ControlPlane {prometheusDriver} scope={$activeScope} bind:isReloading />
+					<ControlPlane scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-2">
-					<Worker {prometheusDriver} scope={$activeScope} bind:isReloading />
+					<Worker scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-3 row-span-2">
 					<CPU {prometheusDriver} scope={$activeScope} bind:isReloading />

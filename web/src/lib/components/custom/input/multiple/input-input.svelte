@@ -11,7 +11,7 @@
 </script>
 
 <script lang="ts">
-	let { ref = $bindable(null), class: className, onkeydown, onblur, ...restProps }: Props = $props();
+	let { ref = $bindable(null), class: className, onkeydown, ...restProps }: Props = $props();
 
 	const id: string | undefined = getContext('id');
 	const required: boolean | undefined = getContext('required');

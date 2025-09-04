@@ -34,7 +34,6 @@
 	let isDependanciesExpand = $state(false);
 	let isSourcesExpand = $state(false);
 	let isMaintainersExpand = $state(false);
-	let isKeywordsExpand = $state(false);
 </script>
 
 <Sheet.Root>

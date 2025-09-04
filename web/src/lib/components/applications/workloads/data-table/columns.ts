@@ -68,7 +68,7 @@ const columns: ColumnDef<Application>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.health, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.healthies / previousRow.original.pods.length,
 				nextRow.original.healthies / nextRow.original.pods.length,
@@ -84,7 +84,7 @@ const columns: ColumnDef<Application>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.service, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.services.length,
 				nextRow.original.services.length,
@@ -100,7 +100,7 @@ const columns: ColumnDef<Application>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.pod, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.pods.length,
 				nextRow.original.pods.length,
@@ -116,7 +116,7 @@ const columns: ColumnDef<Application>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.replica, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.replicas,
 				nextRow.original.replicas,
@@ -132,7 +132,7 @@ const columns: ColumnDef<Application>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.container, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.containers.length,
 				nextRow.original.containers.length,
@@ -148,7 +148,7 @@ const columns: ColumnDef<Application>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.volume, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.persistentVolumeClaims.length,
 				nextRow.original.persistentVolumeClaims.length,

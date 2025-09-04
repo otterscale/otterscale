@@ -22,7 +22,7 @@
 	import Statistics from './statistics.svelte';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let { pools, reloadManager }: { pools: Writable<Pool[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });

@@ -134,7 +134,7 @@
 				onclick={() => {
 					toast.promise(() => applicationClient.createRelease(request), {
 						loading: `Creating ${request.name}...`,
-						success: (response) => {
+						success: () => {
 							applicationClient.listCharts({}).then((response) => {
 								charts.set(response.charts);
 							});

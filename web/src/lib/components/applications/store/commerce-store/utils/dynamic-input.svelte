@@ -29,7 +29,7 @@
 	{@const [anyItem] = data}
 	{#if typeof anyItem === 'object'}
 		<span class="flex flex-col">
-			{#each data as item, i}
+			{#each data as _, i}
 				<div class="bg-muted/50 rounded-lg">
 					<Self bind:data={data[i]} />
 				</div>
@@ -47,7 +47,7 @@
 	{/if}
 {:else}
 	<div class="flex flex-col">
-		{#each Object.entries(data) as [key, value]}
+		{#each Object.entries(data) as [key]}
 			<div class="space-y-2 p-2">
 				<Label>
 					{key

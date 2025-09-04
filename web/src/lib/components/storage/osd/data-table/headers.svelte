@@ -38,17 +38,17 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet state(column: Column<OSD>)}
+{#snippet state()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.state()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet osdUp(column: Column<OSD>)}
+{#snippet osdUp()}
 	<Layout.Header class="hidden" />
 {/snippet}
 
-{#snippet osdIn(column: Column<OSD>)}
+{#snippet osdIn()}
 	<Layout.Header class="hidden" />
 {/snippet}
 
@@ -97,10 +97,10 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet iops(column: Column<OSD>)}
+{#snippet iops()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.iops()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<OSD>)}{/snippet}
+{#snippet actions()}{/snippet}

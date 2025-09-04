@@ -124,11 +124,11 @@
 		Object.entries(charmMappings).forEach(([key, charmName]) => {
 			const facility = findFacilityByCharm(charmName);
 			if (facility) {
-				(serviceState as any)[key] = createServiceComponent(facility);
+				(serviceState as Record<string, any>)[key] = createServiceComponent(facility);
 				const isSecondary = key !== Object.keys(charmMappings)[0];
 				serviceState.state = updateServiceState(facility, serviceState.state, isSecondary);
 			} else {
-				(serviceState as any)[key] = createEmptyComponent();
+				(serviceState as Record<string, any>)[key] = createEmptyComponent();
 			}
 		});
 

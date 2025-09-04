@@ -7,15 +7,10 @@
 	import { m } from '$lib/paraglide/messages';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let {
-		prometheusDriver,
-		scope,
-		isReloading = $bindable(),
-	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
+	let { scope, isReloading = $bindable() }: { scope: Scope; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const facilityClient = createClient(FacilityService, transport);

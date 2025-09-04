@@ -25,7 +25,6 @@
 	const storageClient = createClient(StorageService, transport);
 
 	const subvolumeGroupOptions = writable<SingleSelect.OptionType[]>([]);
-	let issubvolumeGroupsLoading = $state(true);
 	async function fetchVolumeOptions() {
 		try {
 			const response = await storageClient.listSubvolumeGroups({
@@ -54,8 +53,6 @@
 			]);
 		} catch (error) {
 			console.error('Error fetching:', error);
-		} finally {
-			issubvolumeGroupsLoading = false;
 		}
 	}
 

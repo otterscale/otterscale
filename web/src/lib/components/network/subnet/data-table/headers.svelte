@@ -89,4 +89,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<Network>)}{/snippet}
+{#snippet actions()}{/snippet}

@@ -28,11 +28,9 @@
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 	const tagClient = createClient(TagService, transport);
-
 	const tagOptions = writable<SingleSelect.OptionType[]>([]);
 
 	let isTagLoading = $state(true);
-	let isMounted = $state(false);
 
 	const defaults = {
 		scopeUuid: $activeScope?.uuid,
@@ -69,8 +67,6 @@
 				.finally(() => {
 					isTagLoading = false;
 				});
-
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

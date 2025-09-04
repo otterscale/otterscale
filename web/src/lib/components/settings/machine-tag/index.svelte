@@ -18,14 +18,12 @@
 	const tags = writable<Tag[]>();
 	let isTagLoading = $state(true);
 
-	let isMounted = $state(false);
 	onMount(async () => {
 		try {
 			await tagClient.listTags({}).then((response) => {
 				tags.set(response.tags);
 				isTagLoading = false;
 			});
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

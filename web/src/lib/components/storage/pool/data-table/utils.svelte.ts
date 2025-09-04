@@ -1,3 +1,5 @@
+import { SvelteSet } from 'svelte/reactivity';
+
 const CATEGORY_CLEAN = new Set(['active', 'clean']);
 const CATEGORY_WORKING = new Set([
 	'activating',
@@ -33,7 +35,7 @@ const CATEGORY_WARNING = new Set([
 const VALID = CATEGORY_CLEAN.union(CATEGORY_WORKING).union(CATEGORY_WARNING);
 
 function getPlacementGroupStateVariant(placementGroupState: string) {
-	const states = new Set(
+	const states = new SvelteSet(
 		placementGroupState
 			.replace(/[^a-z_]+/g, ' ')
 			.trim()

@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';

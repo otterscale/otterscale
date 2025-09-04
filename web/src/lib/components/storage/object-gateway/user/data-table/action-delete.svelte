@@ -72,7 +72,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.deleteUser(request), {
 							loading: `Deleting ${request.userId}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Delete ${request.userId}`;
 							},

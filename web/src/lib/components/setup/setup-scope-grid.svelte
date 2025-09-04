@@ -57,7 +57,7 @@
 		</div>
 	</div>
 
-	{#each Object.entries(services) as [key, service]}
+	{#each Object.values(services) as service}
 		{@const facility = findFacilityByService(service.name)}
 		{@const count = countUnitsByService(service.name)}
 

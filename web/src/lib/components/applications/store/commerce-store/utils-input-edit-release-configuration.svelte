@@ -7,7 +7,6 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
 	import shell from 'highlight.js/lib/languages/shell';
 	import yaml from 'highlight.js/lib/languages/yaml';
 	import 'highlight.js/styles/github.css';
@@ -118,7 +117,7 @@
 			<Resizable.Pane defaultSize={50} class="h-[70vh]">
 				{#if $chartMetadataLoading}
 					<div class="flex-col space-y-4 pr-4">
-						{#each Array(3) as _}
+						{#each Array(3)}
 							<Skeleton class="h-[40px] w-full" />
 							<Skeleton class="h-[20px] w-3/4" />
 							<Skeleton class="h-[20px] w-1/2" />

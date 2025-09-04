@@ -123,10 +123,7 @@
 				{#if request.poolType === PoolType.ERASURE}
 					<Form.Field>
 						<!-- <Form.Label>{m.ec_overwrite()}</Form.Label> -->
-						<SingleInput.Boolean
-							descriptor={(value) => m.ec_overwrite()}
-							bind:value={request.ecOverwrites}
-						/>
+						<SingleInput.Boolean descriptor={() => m.ec_overwrite()} bind:value={request.ecOverwrites} />
 					</Form.Field>
 				{/if}
 				{#if request.poolType === PoolType.REPLICATED}
@@ -217,7 +214,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.createPool(request), {
 							loading: `Creating ${request.poolName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Create ${request.poolName}`;
 							},

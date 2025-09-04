@@ -17,14 +17,12 @@
 	const configuration = writable<Configuration>();
 	let isConfigurationLoading = $state(true);
 
-	let isMounted = $state(false);
 	onMount(async () => {
 		try {
 			await configurationClient.getConfiguration({}).then((response) => {
 				configuration.set(response);
 				isConfigurationLoading = false;
 			});
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

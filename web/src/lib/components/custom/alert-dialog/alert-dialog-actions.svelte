@@ -9,14 +9,11 @@
 	let {
 		ref = $bindable(null),
 		sideOffset = 4,
-		portalProps,
 		class: className,
 		label: label = 'Actions',
 		variant: variant = 'default',
 		...restProps
-	}: DropdownMenuPrimitive.ContentProps & {
-		portalProps?: DropdownMenuPrimitive.PortalProps;
-	} & { label?: string; variant?: ButtonVariant } = $props();
+	}: DropdownMenuPrimitive.ContentProps & { label?: string; variant?: ButtonVariant } = $props();
 </script>
 
 <DropdownMenu.Root>

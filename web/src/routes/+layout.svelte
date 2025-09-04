@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { setContext, onMount } from 'svelte';
-	import { ModeWatcher } from 'mode-watcher';
+	import { env } from '$env/dynamic/public';
+	import favicon from '$lib/assets/favicon.svg';
+	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import { createConnectTransport } from '@connectrpc/connect-web';
-	import { addCollection } from '@iconify/svelte';
 	import logos from '@iconify-json/logos/icons.json';
 	import ph from '@iconify-json/ph/icons.json';
 	import simpleIcons from '@iconify-json/simple-icons/icons.json';
 	import streamlineLogos from '@iconify-json/streamline-logos/icons.json';
-	import { env } from '$env/dynamic/public';
-	import favicon from '$lib/assets/favicon.svg';
-	import { Toaster } from '$lib/components/ui/sonner/index.js';
+	import { addCollection } from '@iconify/svelte';
+	import { ModeWatcher } from 'mode-watcher';
+	import { setContext } from 'svelte';
 	import '../app.css';
 
 	let { children } = $props();

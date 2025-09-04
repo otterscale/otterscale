@@ -88,7 +88,7 @@ export function formatIO(bytes: number | bigint): { value: number; unit: string 
 	}
 }
 
-export function formatBigNumber(number: Number | BigInt) {
+export function formatBigNumber(number: number | bigint) {
 	return number.toLocaleString('en-US');
 }
 

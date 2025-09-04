@@ -23,8 +23,6 @@
 	const transport: Transport = getContext('transport');
 	let distroSeriesOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
-	let isMounted = false;
-
 	const client = createClient(ConfigurationService, transport);
 	const defaults = {} as CreateBootImageRequest;
 	let request = $state(defaults);
@@ -39,8 +37,9 @@
 
 	const architecturesOptions = $derived(distroSeriesArchitecturesMap[request.distroSeries]);
 	$effect(() => {
-		request.distroSeries;
-		request.architectures = [];
+		if (request.distroSeries) {
+			request.architectures = [];
+		}
 	});
 
 	onMount(async () => {
@@ -66,8 +65,6 @@
 					]),
 				);
 			});
-
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

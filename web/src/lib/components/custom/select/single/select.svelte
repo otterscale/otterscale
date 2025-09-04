@@ -28,7 +28,7 @@
 		get value() {
 			return value ?? '';
 		},
-		set value(newValue: any) {
+		set value(newValue) {
 			value = newValue;
 		},
 	});

@@ -3,6 +3,7 @@
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
+	import { cn } from '$lib/utils';
 
 	let {
 		title,
@@ -15,7 +16,7 @@
 	} = $props();
 </script>
 
-<Card.Root class="flex flex-col">
+<Card.Root class={cn('flex flex-col', className)}>
 	<Card.Header class="items-center">
 		<Title {title} />
 

@@ -151,11 +151,9 @@
 		}
 	}
 
-	let isMounted = $state(false);
 	onMount(async () => {
 		try {
 			await fetchCephOptions();
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

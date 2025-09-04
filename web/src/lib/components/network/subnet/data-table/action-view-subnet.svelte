@@ -122,7 +122,7 @@
 
 				<Form.Field>
 					<SingleInput.Boolean
-						descriptor={(value) => m.managed_allocation()}
+						descriptor={() => m.managed_allocation()}
 						value={subnet.managedAllocation}
 						disabled
 					/>
@@ -130,7 +130,7 @@
 
 				<Form.Field>
 					<SingleInput.Boolean
-						descriptor={(value) => m.active_discovery()}
+						descriptor={() => m.active_discovery()}
 						value={subnet.activeDiscovery}
 						disabled
 					/>
@@ -138,7 +138,7 @@
 
 				<Form.Field>
 					<SingleInput.Boolean
-						descriptor={(value) => m.allow_dns_resolution()}
+						descriptor={() => m.allow_dns_resolution()}
 						value={subnet.allowDnsResolution}
 						disabled
 					/>
@@ -146,7 +146,7 @@
 
 				<Form.Field>
 					<SingleInput.Boolean
-						descriptor={(value) => m.allow_proxy_access()}
+						descriptor={() => m.allow_proxy_access()}
 						value={subnet.allowProxyAccess}
 						disabled
 					/>

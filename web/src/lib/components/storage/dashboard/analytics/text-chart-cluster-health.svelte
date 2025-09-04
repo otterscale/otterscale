@@ -47,6 +47,6 @@
 			{/if}
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} />
 {/await}

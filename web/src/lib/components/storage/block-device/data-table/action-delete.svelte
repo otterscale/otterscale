@@ -90,7 +90,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.deleteImage(request), {
 							loading: `Deleting ${request.imageName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Delete ${request.imageName}`;
 							},

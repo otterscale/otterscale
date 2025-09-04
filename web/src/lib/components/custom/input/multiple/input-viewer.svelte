@@ -16,7 +16,6 @@
 		class: className,
 		variant = 'outline',
 		disabled,
-		children,
 		...restProps
 	}: WithElementRef<HTMLAnchorAttributes> & {
 		variant?: BadgeVariant;
@@ -55,7 +54,7 @@
 						size="icon"
 						variant="ghost"
 						{disabled}
-						onclick={(e) => {
+						onclick={() => {
 							valuesManager.remove(value);
 						}}
 					>

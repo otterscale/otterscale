@@ -18,10 +18,6 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 	let open = $state(false);
-	function close() {
-		open = false;
-	}
-
 	let smarts = $state(writable<Record<string, DoSMARTResponse_Output>>({}));
 	let isSMARTsLoading = $state(true);
 

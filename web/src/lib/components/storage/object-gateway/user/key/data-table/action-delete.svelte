@@ -74,7 +74,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.deleteUserKey(request), {
 							loading: `Deleting ${request.accessKey}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Delete ${request.accessKey}`;
 							},

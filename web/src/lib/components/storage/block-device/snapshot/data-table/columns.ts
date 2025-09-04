@@ -41,7 +41,7 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.protect, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.protected,
 				nextRow.original.protected,
@@ -57,7 +57,7 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.usage, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes),
 				Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes),

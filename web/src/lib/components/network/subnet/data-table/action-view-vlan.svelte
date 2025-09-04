@@ -37,7 +37,7 @@
 				</Form.Field>
 
 				<Form.Field>
-					<SingleInput.Boolean descriptor={(value) => m.dhcp_on()} value={vlan.dhcpOn} disabled />
+					<SingleInput.Boolean descriptor={() => m.dhcp_on()} value={vlan.dhcpOn} disabled />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

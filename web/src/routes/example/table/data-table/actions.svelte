@@ -6,14 +6,8 @@
 
 <script lang="ts">
 	let {
-		selectedScope,
-		selectedFacility,
-		row,
 		data = $bindable(),
 	}: {
-		selectedScope: string;
-		selectedFacility: string;
-		row: TableRow;
 		data: Writable<TableRow[]>;
 	} = $props();
 </script>

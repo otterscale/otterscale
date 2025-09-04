@@ -7,11 +7,9 @@
 	let {
 		title,
 		description,
-		class: className,
 	}: {
 		title: string;
 		description?: string;
-		class?: string;
 	} = $props();
 </script>
 

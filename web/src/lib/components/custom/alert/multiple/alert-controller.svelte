@@ -4,7 +4,6 @@
 
 	import Icon from '@iconify/svelte';
 
-	import { Button } from '$lib/components/ui/button';
 	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 
@@ -15,7 +14,6 @@
 	let {
 		ref = $bindable(null),
 		class: className,
-		children,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLSpanElement>> = $props();
 

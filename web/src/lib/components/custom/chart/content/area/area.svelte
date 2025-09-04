@@ -73,7 +73,7 @@
 	>
 		{#snippet marks({ series: chartSeries, getAreaProps })}
 			<defs>
-				{#each chartSeries as s, i (s.key)}
+				{#each chartSeries as s (s.key)}
 					{@const key = s.key.replace(/\s+/g, '')}
 					<linearGradient id="fill{key}" x1="0" y1="0" x2="0" y2="1">
 						<stop offset="5%" stop-color={s.color} stop-opacity={GRADIENT_OPACITY_START} />

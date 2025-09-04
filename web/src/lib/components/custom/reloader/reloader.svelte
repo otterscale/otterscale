@@ -15,7 +15,7 @@
 	}: WithoutChildrenOrChild<SwitchPrimitive.RootProps> = $props();
 </script>
 
-<div class={cn('flex items-center justify-start gap-1')}>
+<div class={cn('flex items-center justify-start gap-1', className)}>
 	<Switch bind:ref bind:checked {...restProps} />
 	{m.auto_update()}
 </div>
