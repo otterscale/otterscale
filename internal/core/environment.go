@@ -86,7 +86,11 @@ func (uc *EnvironmentUseCase) UpdateConfig(ctx context.Context, conf *config.Con
 	return uc.conf.Override(uc.conf)
 }
 
-func (uc *EnvironmentUseCase) UpdateConfigHelmRepos(ctx context.Context, urls []string) error {
+func (uc *EnvironmentUseCase) GetConfigHelmRepos() []string {
+	return uc.conf.Kube.HelmRepositoryURLs
+}
+
+func (uc *EnvironmentUseCase) UpdateConfigHelmRepos(urls []string) error {
 	uc.conf.Kube.HelmRepositoryURLs = urls
 	return uc.conf.Override(uc.conf)
 }
