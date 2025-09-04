@@ -657,5 +657,8 @@
 	"last_7_days": "Last 7 Days",
 	"last_5_weeks": "Last 5 Weeks",
 	"last_6_months": "Last 6 Months",
-	"six_hour_average": "6h Avg"
+	"six_hour_average": "6h Avg",
+	"setting_html_repository_description": "Configure the list of Helm chart repositories used for package management. Add or update repository URLs to control where your environment fetches Helm charts for deployments.",
+	"edit_helm_repository": "Edit Helm Repository",
+	"helm_repository": "Helm Repository"
 }
