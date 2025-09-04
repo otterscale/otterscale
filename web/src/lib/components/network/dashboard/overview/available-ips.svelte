@@ -3,6 +3,7 @@
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { ArcChart, Text } from 'layerchart';
@@ -63,7 +64,16 @@
 		<Card.Header class="items-center">
 			<Card.Title>{m.available_ip_addresses()}</Card.Title>
 			<Card.Description>
-				{targetSubnet?.subnet?.statistics?.availablePercent}
+				<Tooltip.Provider>
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							{targetSubnet?.subnet?.statistics?.availablePercent}
+						</Tooltip.Trigger>
+						<Tooltip.Content>
+							{targetSubnet?.subnet?.statistics?.available} / {targetSubnet?.subnet?.statistics?.total}
+						</Tooltip.Content>
+					</Tooltip.Root>
+				</Tooltip.Provider>
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="flex-1">
