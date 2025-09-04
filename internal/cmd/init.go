@@ -13,7 +13,7 @@ func NewInit() *cobra.Command {
 		Long:    "Initialize a new Otterscale configuration by printing the default configuration to stdout. This outputs the default configuration that can be redirected to a file.",
 		Example: "otterscale init > config.yaml\notterscale init > /path/to/config.yaml",
 		Args:    cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			return config.PrintDefaultConfig()
 		},
 	}

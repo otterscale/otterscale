@@ -38,7 +38,7 @@ func (r *machine) List(_ context.Context) ([]core.Machine, error) {
 	return list, nil
 }
 
-func (r *machine) Get(ctx context.Context, systemID string) (*core.Machine, error) {
+func (r *machine) Get(_ context.Context, systemID string) (*core.Machine, error) {
 	client, err := r.maas.client()
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (r *machine) Get(ctx context.Context, systemID string) (*core.Machine, erro
 	}, nil
 }
 
-func (r *machine) Release(ctx context.Context, systemID string, params *entity.MachineReleaseParams) (*core.Machine, error) {
+func (r *machine) Release(_ context.Context, systemID string, params *entity.MachineReleaseParams) (*core.Machine, error) {
 	client, err := r.maas.client()
 	if err != nil {
 		return nil, err

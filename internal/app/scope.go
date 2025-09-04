@@ -22,7 +22,7 @@ func NewScopeService(uc *core.ScopeUseCase) *ScopeService {
 
 var _ pbconnect.ScopeServiceHandler = (*ScopeService)(nil)
 
-func (s *ScopeService) ListScopes(ctx context.Context, req *connect.Request[pb.ListScopesRequest]) (*connect.Response[pb.ListScopesResponse], error) {
+func (s *ScopeService) ListScopes(ctx context.Context, _ *connect.Request[pb.ListScopesRequest]) (*connect.Response[pb.ListScopesResponse], error) {
 	scopes, err := s.uc.ListScopes(ctx)
 	if err != nil {
 		return nil, err

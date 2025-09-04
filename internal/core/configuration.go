@@ -199,7 +199,7 @@ func (uc *ConfigurationUseCase) IsImportingBootImages(ctx context.Context) (bool
 	return uc.bootResource.IsImporting(ctx)
 }
 
-func (uc *ConfigurationUseCase) ListBootImageSelections(ctx context.Context) ([]BootImageSelection, error) {
+func (uc *ConfigurationUseCase) ListBootImageSelections() ([]BootImageSelection, error) {
 	selections := []BootImageSelection{}
 	for distro := range ubuntuDistroSeriesMap {
 		selections = append(selections, ubuntuDistroSeriesMap[distro])

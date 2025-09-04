@@ -31,7 +31,7 @@ func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 		Short:   "Start the OtterScale API server",
 		Long:    "Start the OtterScale API server that provides gRPC and HTTP endpoints for all services",
 		Example: "otterscale serve --address=:8299 --config=otterscale.yaml",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			_, err := maxprocs.Set(maxprocs.Logger(log.Printf))
 			if err != nil {
 				slog.Error("Error setting GOMAXPROCS", "err", err)
@@ -61,7 +61,7 @@ func NewServe(conf *config.Config, mux *http.ServeMux) *cobra.Command {
 				MaxHeaderBytes:    8 * 1024, // 8KiB
 			}
 
-			listener, err := net.Listen("tcp", address)
+			listener, err := net.Listen("tcp", address) //nolint:noctx // context not needed for Listen
 			if err != nil {
 				return err
 			}

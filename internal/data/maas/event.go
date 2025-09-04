@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/canonical/gomaasclient/entity"
+
 	"github.com/otterscale/otterscale/internal/core"
 )
 
