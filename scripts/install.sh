@@ -43,8 +43,8 @@ export OTTERSCALE_INSTALL_DIR=$(dirname "$(readlink -f $0)")
 # LOG
 export TEMP_LOG=$(mktemp)
 export LOG=$OTTERSCALE_INSTALL_DIR/setup.log
-touch $LOG
-chmod 666 $LOG
+touch "$LOG"
+chmod 666 "$LOG"
 
 
 # ------------------------------------------------------------
@@ -105,17 +105,17 @@ send_otterscale_config_data() {
     local OTTERSCALE_MAAS_KEY=$(su "$NON_ROOT_USER" -c "juju show-credentials maas-cloud maas-cloud-credential --show-secrets --client | grep maas-oauth | awk '{print \$2}'")
     local OTTERSCALE_CONTROLLER=$(su "$NON_ROOT_USER" -c "juju controllers --format json | jq -r '.\"current-controller\"'")
     local OTTERSCALE_CONTROLLER_DETIAL=$(su "$NON_ROOT_USER" -c "OTTERSCALE_CONTROLLER=\$(juju controllers --format json | jq -r '.\"current-controller\"'); juju show-controller \$OTTERSCALE_CONTROLLER --show-password --format=json")
-    local OTTERSCALE_JUJU_ENDPOINTS=$(echo $OTTERSCALE_CONTROLLER_DETIAL | jq -r '."'"$OTTERSCALE_CONTROLLER"'"."details"."api-endpoints"' | tr '\n' ' ' | sed 's/ \+/ /g' | grep -v '^ *\[[0-9a-fA-F:]\+.*')
-    local OTTERSCALE_JUJU_USERNAME=$(echo $OTTERSCALE_CONTROLLER_DETIAL | jq -r '."'"$OTTERSCALE_CONTROLLER"'"."account"."user"')
-    local OTTERSCAKE_JUJU_PASSWORD=$(echo $OTTERSCALE_CONTROLLER_DETIAL | jq -r '."'"$OTTERSCALE_CONTROLLER"'"."account"."password"')
-    local OTTERSCALE_JUJU_CACERT=$(echo $OTTERSCALE_CONTROLLER_DETIAL | jq -r '."'"$OTTERSCALE_CONTROLLER"'"."details"."ca-cert"')
+    local OTTERSCALE_JUJU_ENDPOINTS=$(echo "$OTTERSCALE_CONTROLLER_DETIAL" | jq -r '."'"$OTTERSCALE_CONTROLLER"'"."details"."api-endpoints"' | tr '\n' ' ' | sed 's/ \+/ /g' | grep -v '^ *\[[0-9a-fA-F:]\+.*')
+    local OTTERSCALE_JUJU_USERNAME=$(echo "$OTTERSCALE_CONTROLLER_DETIAL" | jq -r '."'"$OTTERSCALE_CONTROLLER"'"."account"."user"')
+    local OTTERSCAKE_JUJU_PASSWORD=$(echo "$OTTERSCALE_CONTROLLER_DETIAL" | jq -r '."'"$OTTERSCALE_CONTROLLER"'"."account"."password"')
+    local OTTERSCALE_JUJU_CACERT=$(echo "$OTTERSCALE_CONTROLLER_DETIAL" | jq -r '."'"$OTTERSCALE_CONTROLLER"'"."details"."ca-cert"')
     local OTTERSCALE_JUJU_CLOUD_NAME="maas-cloud"
     local OTTERSCALE_JUJU_REGION="default"
     local OTTERSCALE_K8S_ENDPOINT_JSON=$(microk8s kubectl get endpoints -o json | jq '.items[].subsets[]')
-    local OTTERSCALE_K8S_ENDPOINT=$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq -r '.ports[].name')"://"$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq -r '.addresses[].ip')":"$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq '.ports[].port')
+    local OTTERSCALE_K8S_ENDPOINT=$(echo "$OTTERSCALE_K8S_ENDPOINT_JSON" | jq -r '.ports[].name')"://"$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq -r '.addresses[].ip')":"$(echo $OTTERSCALE_K8S_ENDPOINT_JSON | jq '.ports[].port')
     local OTTERSCALE_MICROK8S_ENCODE_TOKEN=$(base64 -i --wrap=0 "$KUBE_FOLDER/config")
     local DATA=$(cat <<EOF
-
+{
 "maas_url": "$OTTERSCALE_MAAS_ENDPOINT",
 "maas_key": "$OTTERSCALE_MAAS_KEY",
 "maas_version": "$OTTERSCALE_MAAS_VERSION",
@@ -226,7 +226,7 @@ bootstrap_juju() {
     juju_clouds
     juju_credentials
 
-    rm -rf /home/$NON_ROOT_USER/otterscale-tmp
+    rm -rf /home/"$NON_ROOT_USER"/otterscale-tmp
     unset JUJU_CLOUD
     unset JUJU_CREDENTIAL
     unset APIKEY
@@ -274,7 +274,7 @@ log() {
     local LOG_LEVEL=$1
     local MESSAGE=$2
     local PHASE=$3
-    local TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+    local TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
     echo "$TIMESTAMP [$LOG_LEVEL] $MESSAGE" | tee -a "$OTTERSCALE_INSTALL_DIR/setup.log"
     send_status_data "$PHASE" "$MESSAGE"
 }
@@ -301,7 +301,7 @@ cleanup() {
 # Generate LXD pre‑seed configuration file
 generate_lxd_config() {
     log "INFO" "Generating LXD pre‑seed configuration ($lxd_file)" "LXD init"
-    cat > "$lxd_file" <<EOF
+cat > "$lxd_file" <<EOF
 config:
   core.https_address: '[::]:8443'
   core.trust_password: password
@@ -329,6 +329,7 @@ profiles:
 projects: []
 cluster: null
 EOF
+
     log "INFO" "LXD pre‑seed file generated" "LXD init"
 }
 
@@ -338,7 +339,7 @@ init_lxd() {
     generate_lxd_config
 
     log "INFO" "Initialising LXD with bridge $OTTERSCALE_BRIDGE_NAME..." "LXD init"
-    if ! cat $lxd_file | lxd init --preseed >>$TEMP_LOG 2>&1; then
+    if ! cat "$lxd_file" | lxd init --preseed >>"$TEMP_LOG" 2>&1; then
         error_exit "LXD initialisation failed"
     else
         log "INFO" "LXD initialised successfully" "LXD init"
@@ -525,12 +526,12 @@ enter_dhcp_end_ip() {
 }
 
 update_fabric_dns() {
-    local FABRIC_DNS=$(maas admin subnet read $MAAS_NETWORK_SUBNET | jq -r '.dns_servers')
+    local FABRIC_DNS=$(maas admin subnet read "$MAAS_NETWORK_SUBNET" | jq -r '.dns_servers')
     log "INFO" "Update dns $CURRENT_DNS to fabric $MAAS_NETWORK_SUBNET" "MAAS config update"
 
     if [[ "$FABRIC_DNS" =~ "$CURRENT_DNS" ]]; then
         log "INFO" "Current dns already existed, skipping..." "MAAS config update"
-    elif [[ ! -z $maas_current_dns ]]; then
+    elif [[ ! -n $maas_current_dns ]]; then
         dns_value="$FABRIC_DNS $CURRENT_DNS"
     fi
 
@@ -549,7 +550,7 @@ get_fabric() {
 
 create_dhcp_iprange() {
     log "INFO" "Creating DHCP IP range..." "MAAS config update"
-    if ! maas admin ipranges create type=dynamic start_ip=$MAAS_DHCP_START_IP end_ip=$MAAS_DHCP_END_IP >>"$TEMP_LOG" 2>&1; then
+    if ! maas admin ipranges create type=dynamic start_ip="$MAAS_DHCP_START_IP" end_ip="$MAAS_DHCP_END_IP" >>"$TEMP_LOG" 2>&1; then
         log "WARN" "Please confirm if address is within subnet $MAAS_NETWORK_SUBNET, or maybe it conflicts with an existing IP address or range" "MAAS config update"
         error_exit "Failed to create DHCP range"
     fi
@@ -558,17 +559,17 @@ create_dhcp_iprange() {
 update_dhcp_config() {
     local ENABLED=$1
     log "INFO" "Enabling DHCP on VLAN..." "MAAS config update"
-    if ! maas admin vlan update $FABRIC_ID $VLAN_TAG dhcp_on=$ENABLED primary_rack=$PRIMARY_RACK >>"$TEMP_LOG" 2>&1; then
+    if ! maas admin vlan update "$FABRIC_ID" "$VLAN_TAG" dhcp_on="$ENABLED" primary_rack="$PRIMARY_RACK" >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to enable DHCP"
     fi
 }
 
 get_dhcp_subnet_and_ip() {
-    if [ -z $MAAS_DHCP_START_IP ]; then
+    if [ -z "$MAAS_DHCP_START_IP" ]; then
         enter_dhcp_start_ip
     fi
 
-    if [ -z $MAAS_DHCP_END_IP ]; then
+    if [ -z "$MAAS_DHCP_END_IP" ]; then
         enter_dhcp_end_ip
     fi
 }
@@ -591,11 +592,11 @@ enable_maas_dhcp() {
             update_fabric_dns
             get_fabric
             create_dhcp_iprange
-            update_dhcp_config True
+            update_dhcp_config "True"
             log "INFO" "DHCP configuration completed" "MAAS config update"
             break
         else
-            if ! -z $MAAS_NETWORK_SUBNET && ! -z $MAAS_DHCP_START_IP && ! -z $MAAS_DHCP_END_IP ]]; then
+            if [ -n "$MAAS_NETWORK_SUBNET" ] && [ -n "$MAAS_DHCP_START_IP" ] && [ -n "$MAAS_DHCP_END_IP" ]; then
                 break
             fi
         fi
@@ -663,7 +664,7 @@ wait_commissioning() {
             "Ready")
                 log "INFO" "Machine $JUJU_MACHINE_ID created successfully" "MAAS prepare machine"
                 log "INFO" "Machine juju-vm id is $JUJU_MACHINE_ID" "MAAS prepare machine"
-                rename_machine $JUJU_MACHINE_ID "juju-vm"
+                rename_machine "$JUJU_MACHINE_ID" "juju-vm"
                 break
                 ;;
             "Failed commissioning")
@@ -683,7 +684,7 @@ create_vm_from_maas() {
         log "INFO" "juju-vm already existed, skipping create..." "MAAS prepare machine"
     else
         log "INFO" "Creating VM from kvm lxd id $VM_HOST_ID..." "MAAS prepare machine"
-        JUJU_MACHINE_ID=$(maas admin vm-host compose $VM_HOST_ID cores=$LXD_CORES memory=$LXD_MEMORY_MB disk=1:size=$LXD_DISK_GB | jq -r '.system_id')
+        JUJU_MACHINE_ID=$(maas admin vm-host compose "$VM_HOST_ID" cores="$LXD_CORES" memory="$LXD_MEMORY_MB" disk=1:size="$LXD_DISK_GB" | jq -r '.system_id')
         if [[ -z $JUJU_MACHINE_ID ]]; then
             error_exit "Failed create vm host from kvm lxd id $VM_HOST_ID"
         else
@@ -704,8 +705,8 @@ enter_vm_ip() {
 }
 
 set_static_vm_ip() {
-    if [ ! -z $OTTERSCALE_CONFIG_JUJU_IP ]; then
-        JUJU_VM_IP=$OTTERSCALE_CONFIG_JUJU_IP
+    if [ ! -z "$OTTERSCALE_CONFIG_JUJU_IP" ]; then
+        JUJU_VM_IP="$OTTERSCALE_CONFIG_JUJU_IP"
         log "INFO" "Using static IP from config: $JUJU_VM_IP" "VM IP"
     else
         log "INFO" "Prompting user for static VM IP" "VM IP"
@@ -732,9 +733,9 @@ ask_user_type_vm_ip() {
 
 check_modify_vm_ip() {
     CURRENT_JUJU_IP=$(maas admin interfaces read $JUJU_MACHINE_ID | jq -r '.[].links' | jq '.[] | select(.subnet.name=="'"$MAAS_NETWORK_SUBNET"'") | .ip_address')
-    if [ ! -z $OTTERSCALE_CONFIG_JUJU_IP ]; then
-        if [ $OTTERSCALE_CONFIG_JUJU_IP != $CURRENT_JUJU_IP ]; then
-            JUJU_VM_IP=$OTTERSCALE_CONFIG_JUJU_IP
+    if [ ! -z "$OTTERSCALE_CONFIG_JUJU_IP" ]; then
+        if [ "$OTTERSCALE_CONFIG_JUJU_IP" != "$CURRENT_JUJU_IP" ]; then
+            JUJU_VM_IP="$OTTERSCALE_CONFIG_JUJU_IP"
             update_vm_ip
         fi
     else
@@ -973,9 +974,11 @@ apply_netplan() {
 
     if netplan apply; then
         log "INFO" "Netplan applied successfully" "OS network"
+	sleep 10
     else
         error_exit "Failed to apply netplan configuration"
-    fi}
+    fi
+}
 
 get_snap_channel() {
     local SNAP_NAME=$1
@@ -1361,7 +1364,7 @@ main() {
 
     ##
     # Finished
-    update_dhcp_config False
+    update_dhcp_config "False"
     send_otterscale_config_data
 
     trap cleanup EXIT
