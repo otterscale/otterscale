@@ -12,6 +12,7 @@
 	import { AreaChart } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
 
 	// Props
 	let {
@@ -44,60 +45,59 @@
 	const timeRange = $derived(TIME_INTERVALS[selectedInterval]);
 
 	// Helper functions
-	function calculateIntervals(
-		selectedInterval: TimeInterval,
-		index: number,
-		today: Date,
-	): { start: Date; end: Date } {
-		let intervalStart: Date;
-		let intervalEnd: Date;
+	function calculateTimeRange(interval: TimeInterval, index: number, today: Date): { start: Date; end: Date } {
+		const start = new SvelteDate(today);
+		const end = new SvelteDate(today);
 
-		switch (selectedInterval) {
+		switch (interval) {
 			case 'day': {
-				intervalStart = new Date(today);
-				intervalStart.setUTCDate(today.getUTCDate() - index);
-				intervalStart.setUTCHours(0, 0, 0, 0);
+				start.setUTCDate(today.getUTCDate() - index);
+				start.setUTCHours(0, 0, 0, 0);
 
-				intervalEnd = new Date(intervalStart);
 				if (index === 0) {
-					intervalEnd = new Date(today);
+					end.setTime(today.getTime());
 				} else {
-					intervalEnd.setUTCHours(23, 59, 59, 999);
+					end.setTime(start.getTime());
+					end.setUTCHours(23, 59, 59, 999);
 				}
 				break;
 			}
+
 			case 'week': {
-				intervalStart = new Date(today);
-				intervalStart.setUTCDate(today.getUTCDate() - index * 7);
-				const dayOfWeek = intervalStart.getUTCDay();
-				intervalStart.setUTCDate(intervalStart.getUTCDate() - dayOfWeek);
-				intervalStart.setUTCHours(0, 0, 0, 0);
+				const weeksBack = index * 7;
+				start.setUTCDate(today.getUTCDate() - weeksBack);
 
-				intervalEnd = new Date(intervalStart);
+				// Align to start of week (Sunday)
+				const dayOfWeek = start.getUTCDay();
+				start.setUTCDate(start.getUTCDate() - dayOfWeek);
+				start.setUTCHours(0, 0, 0, 0);
+
 				if (index === 0) {
-					intervalEnd = new Date(today);
+					end.setTime(today.getTime());
 				} else {
-					intervalEnd.setUTCDate(intervalEnd.getUTCDate() + 6);
-					intervalEnd.setUTCHours(23, 59, 59, 999);
+					end.setTime(start.getTime());
+					end.setUTCDate(end.getUTCDate() + 6);
+					end.setUTCHours(23, 59, 59, 999);
 				}
 				break;
 			}
-			case 'month':
-			default: {
-				const year = today.getUTCFullYear();
-				const month = today.getUTCMonth() - index;
-				intervalStart = new Date(Date.UTC(year, month, 1, 0, 0, 0, 0));
+
+			case 'month': {
+				const targetMonth = today.getUTCMonth() - index;
+				start.setUTCMonth(targetMonth, 1);
+				start.setUTCHours(0, 0, 0, 0);
 
 				if (index === 0) {
-					intervalEnd = new Date(today);
+					end.setTime(today.getTime());
 				} else {
-					intervalEnd = new Date(Date.UTC(year, month + 1, 0, 23, 59, 59, 999));
+					end.setUTCMonth(targetMonth + 1, 0);
+					end.setUTCHours(23, 59, 59, 999);
 				}
 				break;
 			}
 		}
 
-		return { start: intervalStart, end: intervalEnd };
+		return { start, end };
 	}
 
 	function getXAxisFormat(interval: TimeInterval) {
@@ -159,11 +159,11 @@
 	let isLoading = $state(true);
 	const reloadManager = new ReloadManager(fetch);
 	async function fetch(): Promise<void> {
-		const today = new Date();
+		const today = new SvelteDate();
 		const promises = [];
 
 		for (let i = timeRange.count - 1; i >= 0; i--) {
-			const { start, end } = calculateIntervals(selectedInterval, i, today);
+			const { start, end } = calculateTimeRange(selectedInterval, i, today);
 			promises.push(fetchMetricForInterval(start, end));
 		}
 

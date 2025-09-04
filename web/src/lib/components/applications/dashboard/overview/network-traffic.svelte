@@ -10,6 +10,7 @@
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
 
 	let {
 		prometheusDriver,
@@ -41,8 +42,8 @@
 						)
 						)
 						`,
-				new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new Date().setMinutes(0, 0, 0),
+				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+				new SvelteDate().setMinutes(0, 0, 0),
 				2 * 60,
 			)
 			.then((response) => {
@@ -57,8 +58,8 @@
 						)
 						)
 						`,
-				new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new Date().setMinutes(0, 0, 0),
+				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+				new SvelteDate().setMinutes(0, 0, 0),
 				2 * 60,
 			)
 			.then((response) => {

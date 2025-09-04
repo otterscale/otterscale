@@ -10,6 +10,7 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
+	import { SvelteDate } from 'svelte/reactivity';
 
 	let {
 		prometheusDriver,
@@ -40,8 +41,8 @@
 		prometheusDriver
 			.rangeQuery(
 				`sum(increase(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[1h]))`,
-				new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
-				new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
+				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 				1 * 60 * 60,
 			)
 			.then((response) => {
@@ -50,8 +51,8 @@
 		prometheusDriver
 			.rangeQuery(
 				`sum(increase(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[1h]))`,
-				new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
-				new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
+				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 				1 * 60 * 60,
 			)
 			.then((response) => {
