@@ -256,17 +256,17 @@ juju_add_k8s() {
         juju_cmd "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug"
     fi
 
-    if execute_as_user "$NON_ROOT_USER" "juju show-model cos" "check juju model, please check if cos exist"; then
+    if execute_as_user "$NON_ROOT_USER" "juju show-model cos"; then
         log "INFO" "Model cos already exists – skipping" "JuJu model"
     else
         juju_cmd "juju add-model cos cos-k8s --debug" "execute juju add-model"
         juju_cmd "juju deploy cos-lite --trust --debug" "juju deploy cos-lite"
     fi
 
-    juju_cmd "juju config prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
-    juju_cmd "juju config prometheus maximum_retention_size=70% --debug" "update max retention size to 70%"
-    juju_cmd "juju offer grafana:grafana-dashboard global-grafana --debug" "offer grafana-dashboard"
-    juju_cmd "juju offer prometheus:receive-remote-write global-prometheus --debug" "offer prometheus-receive-remote-write"
+    juju_cmd "juju config -m cos prometheus metrics_retention_time=180d --debug" "update metric retention time to 180 days"
+    juju_cmd "juju config -m cos prometheus maximum_retention_size=70% --debug" "update max retention size to 70%"
+    juju_cmd "juju offer -m cos grafana:grafana-dashboard global-grafana --debug" "offer grafana-dashboard"
+    juju_cmd "juju offer -m cos prometheus:receive-remote-write global-prometheus --debug" "offer prometheus-receive-remote-write"
 }
 
 # Centralised logger – also forwards status to Otterscale
