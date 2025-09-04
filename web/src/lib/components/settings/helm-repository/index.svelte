@@ -33,7 +33,7 @@
 	<Layout.Root>
 		<Layout.Title>{m.repository()}</Layout.Title>
 		<Layout.Description>
-			{m.setting_html_repository_description()}
+			{m.setting_helm_repository_description()}
 		</Layout.Description>
 		<Layout.Controller>
 			<Update {urls} />
