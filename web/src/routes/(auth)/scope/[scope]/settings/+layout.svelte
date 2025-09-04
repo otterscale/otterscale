@@ -26,6 +26,11 @@
 			page: 'boot-image',
 		},
 		{
+			icon: 'ph:cube',
+			title: m.helm_repository(),
+			page: 'helm-repository',
+		},
+		{
 			icon: 'ph:tag-simple',
 			title: m.machine_tag(),
 			page: 'machine-tag',
