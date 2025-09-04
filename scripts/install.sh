@@ -559,7 +559,7 @@ create_dhcp_iprange() {
 
 update_dhcp_config() {
     local ENABLED=$1
-    log "INFO" "Set MAAS VLAN DHCP to $ENABLE" "MAAS config update"
+    log "INFO" "Set MAAS VLAN DHCP to $ENABLED" "MAAS config update"
     if ! maas admin vlan update $FABRIC_ID $VLAN_TAG dhcp_on=$ENABLED primary_rack=$PRIMARY_RACK >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to set MAAS DHCP to $ENABLED"
     fi
@@ -1365,7 +1365,6 @@ main() {
 
     ##
     # Finished
-    update_dhcp_config "False"
     send_otterscale_config_data
 
     trap cleanup EXIT
