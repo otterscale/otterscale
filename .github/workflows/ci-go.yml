@@ -4,34 +4,58 @@
 name: Go CI
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.24.x'
+      - name: Setup
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.x"
 
-    - name: Install Ceph development libraries
-      run: |
-        sudo apt update
-        sudo apt install -y libcephfs-dev librbd-dev librados-dev
+      - name: Install Ceph development libraries
+        run: |
+          sudo apt update
+          sudo apt install -y libcephfs-dev librbd-dev librados-dev
 
-    - name: Build
-      run: go build -v ./...
+      - name: Build
+        run: go build -v ./...
 
-    - name: Test
-      run: go test -v -coverprofile=coverage.txt ./...
+      - name: Test
+        run: go test -v -coverprofile=coverage.txt ./...
 
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5
-      with:
-        flags: go-tests
-        token: ${{ secrets.CODECOV_TOKEN }}
-        slug: otterscale/otterscale
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          flags: go-tests
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: otterscale/otterscale
+
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24.x"
+
+      - name: Install Ceph development libraries
+        run: |
+          sudo apt update
+          sudo apt install -y libcephfs-dev librbd-dev librados-dev
+
+      - name: Install
+        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+
+      - name: Run lint
+        run: make lint
