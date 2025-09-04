@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-type CephTime struct {
+type cephTime struct {
 	time.Time
 }
 
-func (ct *CephTime) UnmarshalJSON(data []byte) error {
+func (ct *cephTime) UnmarshalJSON(data []byte) error {
 	str := string(data)
 	if str == `""` || str == "null" {
 		return nil
@@ -23,11 +23,11 @@ func (ct *CephTime) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type CephSubvolumeTime struct {
+type cephSubvolumeTime struct {
 	time.Time
 }
 
-func (ct *CephSubvolumeTime) UnmarshalJSON(data []byte) error {
+func (ct *cephSubvolumeTime) UnmarshalJSON(data []byte) error {
 	str := string(data)
 	if str == `""` || str == "null" {
 		return nil
@@ -46,7 +46,7 @@ type monDump struct {
 		Name          string   `json:"name,omitempty"`
 		Rank          uint64   `json:"rank,omitempty"`
 		PublicAddress string   `json:"public_addr,omitempty"`
-		Created       CephTime `json:"created,omitempty"`
+		Created       cephTime `json:"created,omitempty"`
 	} `json:"mons,omitempty"`
 }
 
@@ -65,7 +65,7 @@ type osdDump struct {
 		PgPlacementNum       uint64         `json:"pg_placement_num,omitempty"`
 		PgPlacementNumTarget uint64         `json:"pg_placement_num_target,omitempty"`
 		ApplicationMetadata  map[string]any `json:"application_metadata,omitempty"`
-		CreateTime           CephTime       `json:"create_time,omitempty"`
+		CreateTime           cephTime       `json:"create_time,omitempty"`
 	} `json:"pools,omitempty"`
 	OSDs []struct {
 		ID int64 `json:"osd,omitempty"`
@@ -145,7 +145,7 @@ type fsDump struct {
 	FileSystems []struct {
 		MDSMap struct {
 			FileSystemName string   `json:"fs_name,omitempty"`
-			Created        CephTime `json:"created,omitempty"`
+			Created        cephTime `json:"created,omitempty"`
 		} `json:"mdsmap,omitempty"`
 		ID int64 `json:"id,omitempty"`
 	} `json:"filesystems,omitempty"`
@@ -161,13 +161,13 @@ type subvolumeInfo struct {
 	Mode       int               `json:"mode,omitempty"`
 	BytesQuota any               `json:"bytes_quota,omitempty"`
 	BytesUsed  uint64            `json:"bytes_used,omitempty"`
-	CreatedAt  CephSubvolumeTime `json:"created_at,omitempty"`
+	CreatedAt  cephSubvolumeTime `json:"created_at,omitempty"`
 }
 
 type subvolumeSnapshotInfo struct {
 	DataPool         string            `json:"data_pool,omitempty"`
 	HasPendingClones string            `json:"has_pending_clones,omitempty"`
-	CreatedAt        CephSubvolumeTime `json:"created_at,omitempty"`
+	CreatedAt        cephSubvolumeTime `json:"created_at,omitempty"`
 }
 
 type subvolumeGroupInfo struct {
@@ -175,5 +175,5 @@ type subvolumeGroupInfo struct {
 	Mode       int               `json:"mode,omitempty"`
 	BytesQuota any               `json:"bytes_quota,omitempty"`
 	BytesUsed  uint64            `json:"bytes_used,omitempty"`
-	CreatedAt  CephSubvolumeTime `json:"created_at,omitempty"`
+	CreatedAt  cephSubvolumeTime `json:"created_at,omitempty"`
 }

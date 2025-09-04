@@ -9,7 +9,7 @@ import (
 	"connectrpc.com/connect"
 
 	"github.com/otterscale/otterscale/internal/core"
-	"github.com/otterscale/otterscale/internal/utils"
+	"github.com/otterscale/otterscale/internal/wrap"
 )
 
 type charm struct {
@@ -59,7 +59,7 @@ func (r *charm) find(ctx context.Context, name string) ([]core.Charm, error) {
 	}
 	queryURL.RawQuery = queryParams.Encode()
 
-	data, err := utils.HTTPGet(ctx, queryURL.String())
+	data, err := wrap.HTTPGet(ctx, queryURL.String())
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (r *charm) info(ctx context.Context, name string) ([]core.CharmArtifact, er
 	queryParams.Set("fields", "channel-map")
 	queryURL.RawQuery = queryParams.Encode()
 
-	data, err := utils.HTTPGet(ctx, queryURL.String())
+	data, err := wrap.HTTPGet(ctx, queryURL.String())
 	if err != nil {
 		return nil, err
 	}

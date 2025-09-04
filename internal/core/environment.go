@@ -53,14 +53,14 @@ func NewEnvironmentUseCase(scope ScopeRepo, action ActionRepo, facility Facility
 	}
 }
 
-func (uc *EnvironmentUseCase) CheckHealth(ctx context.Context) (int32, error) {
+func (uc *EnvironmentUseCase) CheckHealth(_ context.Context) (int32, error) {
 	if !uc.isMAASConfigured() {
 		return healthNotInstalled, nil
 	}
 	return healthOK, nil
 }
 
-func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) *EnvironmentStatus {
+func (uc *EnvironmentUseCase) LoadStatus(_ context.Context) *EnvironmentStatus {
 	v, ok := uc.statusMap.Load("")
 	if ok {
 		return v.(*EnvironmentStatus)
@@ -70,7 +70,7 @@ func (uc *EnvironmentUseCase) LoadStatus(ctx context.Context) *EnvironmentStatus
 	}
 }
 
-func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message string) {
+func (uc *EnvironmentUseCase) StoreStatus(_ context.Context, phase, message string) {
 	uc.statusMap.Store("", &EnvironmentStatus{
 		Started:  true,
 		Finished: uc.isMAASConfigured(),
@@ -79,7 +79,7 @@ func (uc *EnvironmentUseCase) StoreStatus(ctx context.Context, phase, message st
 	})
 }
 
-func (uc *EnvironmentUseCase) UpdateConfig(ctx context.Context, conf *config.Config) error {
+func (uc *EnvironmentUseCase) UpdateConfig(_ context.Context, conf *config.Config) error {
 	uc.conf.MAAS = conf.MAAS
 	uc.conf.Juju = conf.Juju
 	uc.conf.MicroK8s = conf.MicroK8s

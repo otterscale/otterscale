@@ -23,7 +23,7 @@ func NewConfigurationService(uc *core.ConfigurationUseCase) *ConfigurationServic
 
 var _ pbconnect.ConfigurationServiceHandler = (*ConfigurationService)(nil)
 
-func (s *ConfigurationService) GetConfiguration(ctx context.Context, req *connect.Request[pb.GetConfigurationRequest]) (*connect.Response[pb.Configuration], error) {
+func (s *ConfigurationService) GetConfiguration(ctx context.Context, _ *connect.Request[pb.GetConfigurationRequest]) (*connect.Response[pb.Configuration], error) {
 	config, err := s.uc.GetConfiguration(ctx)
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (s *ConfigurationService) SetDefaultBootImage(ctx context.Context, req *con
 	return connect.NewResponse(resp), nil
 }
 
-func (s *ConfigurationService) ImportBootImages(ctx context.Context, req *connect.Request[pb.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
+func (s *ConfigurationService) ImportBootImages(ctx context.Context, _ *connect.Request[pb.ImportBootImagesRequest]) (*connect.Response[emptypb.Empty], error) {
 	if err := s.uc.ImportBootImages(ctx); err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (s *ConfigurationService) ImportBootImages(ctx context.Context, req *connec
 	return connect.NewResponse(resp), nil
 }
 
-func (s *ConfigurationService) IsImportingBootImages(ctx context.Context, req *connect.Request[pb.IsImportingBootImagesRequest]) (*connect.Response[pb.IsImportingBootImagesResponse], error) {
+func (s *ConfigurationService) IsImportingBootImages(ctx context.Context, _ *connect.Request[pb.IsImportingBootImagesRequest]) (*connect.Response[pb.IsImportingBootImagesResponse], error) {
 	isImporting, err := s.uc.IsImportingBootImages(ctx)
 	if err != nil {
 		return nil, err
@@ -85,8 +85,8 @@ func (s *ConfigurationService) IsImportingBootImages(ctx context.Context, req *c
 	return connect.NewResponse(resp), nil
 }
 
-func (s *ConfigurationService) ListBootImageSelections(ctx context.Context, req *connect.Request[pb.ListBootImageSelectionsRequest]) (*connect.Response[pb.ListBootImageSelectionsResponse], error) {
-	selections, err := s.uc.ListBootImageSelections(ctx)
+func (s *ConfigurationService) ListBootImageSelections(_ context.Context, _ *connect.Request[pb.ListBootImageSelectionsRequest]) (*connect.Response[pb.ListBootImageSelectionsResponse], error) {
+	selections, err := s.uc.ListBootImageSelections()
 	if err != nil {
 		return nil, err
 	}

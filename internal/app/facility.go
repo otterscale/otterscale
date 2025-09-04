@@ -113,7 +113,7 @@ func (s *FacilityService) ListActions(ctx context.Context, req *connect.Request[
 	return connect.NewResponse(resp), nil
 }
 
-func (s *FacilityService) ListCharms(ctx context.Context, req *connect.Request[pb.ListCharmsRequest]) (*connect.Response[pb.ListCharmsResponse], error) {
+func (s *FacilityService) ListCharms(ctx context.Context, _ *connect.Request[pb.ListCharmsRequest]) (*connect.Response[pb.ListCharmsResponse], error) {
 	charms, err := s.uc.ListCharms(ctx)
 	if err != nil {
 		return nil, err

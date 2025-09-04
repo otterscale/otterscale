@@ -27,7 +27,7 @@ func NewBISTService(uc *core.BISTUseCase) *BISTService {
 
 var _ pbconnect.BISTServiceHandler = (*BISTService)(nil)
 
-func (s *BISTService) ListTestResults(ctx context.Context, req *connect.Request[pb.ListTestResultsRequest]) (*connect.Response[pb.ListTestResultsResponse], error) {
+func (s *BISTService) ListTestResults(ctx context.Context, _ *connect.Request[pb.ListTestResultsRequest]) (*connect.Response[pb.ListTestResultsResponse], error) {
 	results, err := s.uc.ListResults(ctx)
 	if err != nil {
 		return nil, err

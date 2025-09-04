@@ -111,7 +111,7 @@ func (s *ApplicationService) RollbackRelease(ctx context.Context, req *connect.R
 	return connect.NewResponse(resp), nil
 }
 
-func (s *ApplicationService) ListCharts(ctx context.Context, req *connect.Request[pb.ListChartsRequest]) (*connect.Response[pb.ListChartsResponse], error) {
+func (s *ApplicationService) ListCharts(ctx context.Context, _ *connect.Request[pb.ListChartsRequest]) (*connect.Response[pb.ListChartsResponse], error) {
 	charts, err := s.uc.ListCharts(ctx)
 	if err != nil {
 		return nil, err
@@ -279,7 +279,7 @@ func toProtoPersistentVolumeClaims(ss []core.Storage) []*pb.Application_Persiste
 func toProtoPersistentVolumeClaim(s *core.Storage) *pb.Application_PersistentVolumeClaim {
 	ret := &pb.Application_PersistentVolumeClaim{}
 	ret.SetName(s.PersistentVolumeClaim.Name)
-	ret.SetStatus(string(s.PersistentVolumeClaim.Status.Phase))
+	ret.SetStatus(string(s.Status.Phase))
 	ret.SetAccessModes(accessModesToStrings(s.Spec.AccessModes))
 	ret.SetCapacity(s.Spec.Resources.Requests.Storage().String())
 	if s.StorageClass != nil {
@@ -301,7 +301,7 @@ func toProtoRelease(r *core.Release) *pb.Application_Release {
 	ret := &pb.Application_Release{}
 	ret.SetNamespace(r.Namespace)
 	ret.SetName(r.Name)
-	ret.SetRevision(int32(r.Version)) //nolint:gosec
+	ret.SetRevision(int32(r.Version)) //nolint:gosec // ignore
 	ret.SetChartName(r.Chart.Name())
 	ret.SetVersion(toProtoChartVersion(&repo.ChartVersion{
 		Metadata: &chart.Metadata{

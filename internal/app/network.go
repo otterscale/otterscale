@@ -24,7 +24,7 @@ func NewNetworkService(uc *core.NetworkUseCase) *NetworkService {
 
 var _ pbconnect.NetworkServiceHandler = (*NetworkService)(nil)
 
-func (s *NetworkService) ListNetworks(ctx context.Context, req *connect.Request[pb.ListNetworksRequest]) (*connect.Response[pb.ListNetworksResponse], error) {
+func (s *NetworkService) ListNetworks(ctx context.Context, _ *connect.Request[pb.ListNetworksRequest]) (*connect.Response[pb.ListNetworksResponse], error) {
 	networks, err := s.uc.ListNetworks(ctx)
 	if err != nil {
 		return nil, err

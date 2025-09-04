@@ -23,7 +23,7 @@ func NewRBD(ceph *Ceph) core.CephRBDRepo {
 
 var _ core.CephRBDRepo = (*rbd)(nil)
 
-func (r *rbd) ListImages(ctx context.Context, config *core.StorageConfig, pool string) ([]core.RBDImage, error) {
+func (r *rbd) ListImages(_ context.Context, config *core.StorageConfig, pool string) ([]core.RBDImage, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (r *rbd) ListImages(ctx context.Context, config *core.StorageConfig, pool s
 	return imgs, nil
 }
 
-func (r *rbd) GetImage(ctx context.Context, config *core.StorageConfig, pool, image string) (*core.RBDImage, error) {
+func (r *rbd) GetImage(_ context.Context, config *core.StorageConfig, pool, image string) (*core.RBDImage, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -66,7 +66,7 @@ func (r *rbd) GetImage(ctx context.Context, config *core.StorageConfig, pool, im
 	return r.openImage(ioctx, pool, image)
 }
 
-func (r *rbd) CreateImage(ctx context.Context, config *core.StorageConfig, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) (*core.RBDImage, error) {
+func (r *rbd) CreateImage(_ context.Context, config *core.StorageConfig, pool, image string, order int, stripeUnit, stripeCount, size, features uint64) (*core.RBDImage, error) {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func (r *rbd) CreateImage(ctx context.Context, config *core.StorageConfig, pool,
 	return r.openImage(ioctx, pool, image)
 }
 
-func (r *rbd) UpdateImageSize(ctx context.Context, config *core.StorageConfig, pool, image string, size uint64) error {
+func (r *rbd) UpdateImageSize(_ context.Context, config *core.StorageConfig, pool, image string, size uint64) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func (r *rbd) UpdateImageSize(ctx context.Context, config *core.StorageConfig, p
 	return img.Resize(size)
 }
 
-func (r *rbd) DeleteImage(ctx context.Context, config *core.StorageConfig, pool, image string) error {
+func (r *rbd) DeleteImage(_ context.Context, config *core.StorageConfig, pool, image string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -120,7 +120,7 @@ func (r *rbd) DeleteImage(ctx context.Context, config *core.StorageConfig, pool,
 	return cephrbd.RemoveImage(ioctx, image)
 }
 
-func (r *rbd) CreateImageSnapshot(ctx context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) CreateImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -142,7 +142,7 @@ func (r *rbd) CreateImageSnapshot(ctx context.Context, config *core.StorageConfi
 	return err
 }
 
-func (r *rbd) DeleteImageSnapshot(ctx context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) DeleteImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -163,7 +163,7 @@ func (r *rbd) DeleteImageSnapshot(ctx context.Context, config *core.StorageConfi
 	return img.GetSnapshot(snapshot).Remove()
 }
 
-func (r *rbd) RollbackImageSnapshot(ctx context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) RollbackImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -184,7 +184,7 @@ func (r *rbd) RollbackImageSnapshot(ctx context.Context, config *core.StorageCon
 	return img.GetSnapshot(snapshot).Rollback()
 }
 
-func (r *rbd) ProtectImageSnapshot(ctx context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) ProtectImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -205,7 +205,7 @@ func (r *rbd) ProtectImageSnapshot(ctx context.Context, config *core.StorageConf
 	return img.GetSnapshot(snapshot).Protect()
 }
 
-func (r *rbd) UnprotectImageSnapshot(ctx context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
+func (r *rbd) UnprotectImageSnapshot(_ context.Context, config *core.StorageConfig, pool, image, snapshot string) error {
 	conn, err := r.ceph.connection(config)
 	if err != nil {
 		return err
@@ -313,7 +313,7 @@ func (r *rbd) sortAndAppendSnapInfo(snaps []cephrbd.SnapInfo, size uint64) []cep
 
 	id := uint64(0)
 	if len(snaps) > 0 {
-		id = uint64(len(snaps) + 1) //nolint:gosec
+		id = snaps[len(snaps)-1].Id + 1
 	}
 
 	return append(snaps, cephrbd.SnapInfo{

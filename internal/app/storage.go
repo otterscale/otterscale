@@ -278,7 +278,7 @@ func (s *StorageService) DeleteSubvolume(ctx context.Context, req *connect.Reque
 }
 
 func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *connect.Request[pb.GrantSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.GrantSubvolumeClient(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetClientIp()); err != nil {
+	if err := s.uc.GrantSubvolumeClient(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetSubvolumeName(), req.Msg.GetClientIp()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}
@@ -286,7 +286,7 @@ func (s *StorageService) GrantSubvolumeExportAccess(ctx context.Context, req *co
 }
 
 func (s *StorageService) RevokeSubvolumeExportAccess(ctx context.Context, req *connect.Request[pb.RevokeSubvolumeExportAccessRequest]) (*connect.Response[emptypb.Empty], error) {
-	if err := s.uc.RevokeSubvolumeClient(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetVolumeName(), req.Msg.GetSubvolumeName(), req.Msg.GetClientIp()); err != nil {
+	if err := s.uc.RevokeSubvolumeClient(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetSubvolumeName(), req.Msg.GetClientIp()); err != nil {
 		return nil, err
 	}
 	resp := &emptypb.Empty{}

@@ -193,7 +193,7 @@ func (uc *StorageUseCase) DeleteSubvolume(ctx context.Context, uuid, facility, v
 	return uc.fs.DeleteSubvolume(ctx, config, volume, subvolume, group)
 }
 
-func (uc *StorageUseCase) GrantSubvolumeClient(ctx context.Context, uuid, facility, volume, subvolume, clientIP string) error {
+func (uc *StorageUseCase) GrantSubvolumeClient(ctx context.Context, uuid, facility, subvolume, clientIP string) error {
 	leader, err := uc.facility.GetLeader(ctx, uuid, nfsName(facility))
 	if err != nil {
 		return err
@@ -209,7 +209,7 @@ func (uc *StorageUseCase) GrantSubvolumeClient(ctx context.Context, uuid, facili
 	return nil
 }
 
-func (uc *StorageUseCase) RevokeSubvolumeClient(ctx context.Context, uuid, facility, volume, subvolume, clientIP string) error {
+func (uc *StorageUseCase) RevokeSubvolumeClient(ctx context.Context, uuid, facility, subvolume, clientIP string) error {
 	leader, err := uc.facility.GetLeader(ctx, uuid, nfsName(facility))
 	if err != nil {
 		return err

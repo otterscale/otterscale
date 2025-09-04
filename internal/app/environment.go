@@ -35,7 +35,7 @@ func NewEnvironmentService(uc *core.EnvironmentUseCase) *EnvironmentService {
 
 var _ pbconnect.EnvironmentServiceHandler = (*EnvironmentService)(nil)
 
-func (s *EnvironmentService) CheckHealth(ctx context.Context, req *connect.Request[pb.CheckHealthRequest]) (*connect.Response[pb.CheckHealthResponse], error) {
+func (s *EnvironmentService) CheckHealth(ctx context.Context, _ *connect.Request[pb.CheckHealthRequest]) (*connect.Response[pb.CheckHealthResponse], error) {
 	result, err := s.uc.CheckHealth(ctx)
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (s *EnvironmentService) CheckHealth(ctx context.Context, req *connect.Reque
 	return connect.NewResponse(resp), nil
 }
 
-func (s *EnvironmentService) WatchStatus(ctx context.Context, req *connect.Request[pb.WatchStatusRequest], stream *connect.ServerStream[pb.WatchStatusResponse]) error {
+func (s *EnvironmentService) WatchStatus(ctx context.Context, _ *connect.Request[pb.WatchStatusRequest], stream *connect.ServerStream[pb.WatchStatusResponse]) error {
 	// Send initial status to the new client
 	status := s.uc.LoadStatus(ctx)
 	if err := stream.Send(toProtoWatchStatus(status)); err != nil {
@@ -95,7 +95,7 @@ func (s *EnvironmentService) UpdateConfig(ctx context.Context, req *connect.Requ
 	return connect.NewResponse(resp), nil
 }
 
-func (s *EnvironmentService) GetConfigHelmRepositories(_ context.Context, req *connect.Request[pb.GetConfigHelmRepositoriesRequest]) (*connect.Response[pb.GetConfigHelmRepositoriesResponse], error) {
+func (s *EnvironmentService) GetConfigHelmRepositories(_ context.Context, _ *connect.Request[pb.GetConfigHelmRepositoriesRequest]) (*connect.Response[pb.GetConfigHelmRepositoriesResponse], error) {
 	helmRepos := s.uc.GetConfigHelmRepos()
 	resp := &pb.GetConfigHelmRepositoriesResponse{}
 	resp.SetUrls(helmRepos)
@@ -110,7 +110,7 @@ func (s *EnvironmentService) UpdateConfigHelmRepositories(_ context.Context, req
 	return connect.NewResponse(resp), nil
 }
 
-func (s *EnvironmentService) GetPrometheus(ctx context.Context, req *connect.Request[pb.GetPrometheusRequest]) (*connect.Response[pb.Prometheus], error) {
+func (s *EnvironmentService) GetPrometheus(ctx context.Context, _ *connect.Request[pb.GetPrometheusRequest]) (*connect.Response[pb.Prometheus], error) {
 	_, err := s.uc.FetchPrometheusInfo(ctx)
 	if err != nil {
 		return nil, err
