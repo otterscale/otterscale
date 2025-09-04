@@ -66,7 +66,6 @@ apt_install() {
 send_request() {
     local URL_PATH=$1
     local DATA=$2
-    curl -s --header "Content-Type: application/json" --data "$DATA" "$OTTERSCALE_ENDPOINT$URL_PATH" > /dev/null 2>&1
     if ! curl -s --header "Content-Type: application/json" --data "$DATA" "$OTTERSCALE_ENDPOINT$URL_PATH" > /dev/null 2>&1 ; then
         echo "$(date '+%Y-%m-%d %H:%M:%S') [ERROR] Failed execute curl request"
         trap cleanup EXIT
@@ -126,7 +125,7 @@ juju_cmd() {
     local CMD=$1
     local MSG=$2
     log "INFO" "Execute command: $CMD" "$MSG"
-    if ! execute_non_user_cmd "$NON_ROOT_USER" "$CMD" "$MSG"; then
+    if ! execute_as_user "$NON_ROOT_USER" "$CMD"; then
         error_exit "Failed $MSG"
     fi
 }
@@ -226,13 +225,13 @@ bootstrap_juju() {
 }
 
 juju_add_k8s() {
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-cloud cos-k8s --debug" "check juju cloud, please check if cos-k8s exist"; then
+    if execute_as_user "$NON_ROOT_USER" "juju show-cloud cos-k8s --debug"; then
         log "INFO" "cos-k8s already exist, skipping..." "JuJu cloud"
     else
-        juju_cmd "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug" "execute juju add-k8s"
+        juju_cmd "juju add-k8s cos-k8s --controller maas-cloud-controller --client --debug"
     fi
 
-    if execute_non_user_cmd "$NON_ROOT_USER" "juju show-model cos" "check juju model, please check if cos exist"; then
+    if execute_as_user "$NON_ROOT_USER" "juju show-model cos" "check juju model, please check if cos exist"; then
         log "INFO" "cos model already exist, skipping..." "JuJu model"
     else
         juju_cmd "juju add-model cos cos-k8s --debug" "execute juju add-model"
@@ -249,7 +248,8 @@ log() {
     local LOG_LEVEL=$1
     local MESSAGE=$2
     local PHASE=$3
-    echo "$(date '+%Y-%m-%d %H:%M:%S') [${LOG_LEVEL}] ${MESSAGE}" | tee -a $OTTERSCALE_INSTALL_DIR/setup.log
+    local TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "$TIMESTAMP [$LOG_LEVEL] $MESSAGE" | tee -a "$OTTERSCALE_INSTALL_DIR/setup.log"
     send_status_data "$PHASE" "$MESSAGE"
 }
 
@@ -271,7 +271,7 @@ cleanup() {
 }
 
 generate_lxd_config() {
-    cat > $lxd_file <<EOF
+cat > "$lxd_file" <<EOF
 config:
   core.https_address: '[::]:8443'
   core.trust_password: password
@@ -518,8 +518,9 @@ create_dhcp_iprange() {
 }
 
 update_dhcp_config() {
+    local ENABLED=$1
     log "INFO" "Enabling DHCP on VLAN..." "MAAS config update"
-    if ! maas admin vlan update $FABRIC_ID $VLAN_TAG dhcp_on=False primary_rack=$PRIMARY_RACK >>"$TEMP_LOG" 2>&1; then
+    if ! maas admin vlan update $FABRIC_ID $VLAN_TAG dhcp_on=$ENABLED primary_rack=$PRIMARY_RACK >>"$TEMP_LOG" 2>&1; then
         error_exit "Failed to enable DHCP"
     fi
 }
@@ -548,7 +549,7 @@ enable_maas_dhcp() {
             update_fabric_dns
             get_fabric
             create_dhcp_iprange
-            update_dhcp_config
+            update_dhcp_config True
             log "INFO" "DHCP configuration completed" "MAAS config update"
             break
         else
@@ -887,6 +888,22 @@ select_bridge() {
     done
 }
 
+prompt_bridge_creation() {
+    read -p "No network bridge found, should be provisioned programmatically (Y/N)? " CONFIRM_CREATE
+    if [[ "$CONFIRM_CREATE" == "Y" || "$CONFIRM_CREATE" == "y" ]]; then
+        get_default_interface
+        get_default_gateway
+        get_default_cidr
+        get_default_dns $CURRENT_INTERFACE
+        backup_netplan
+        create_netplan
+        apply_netplan
+    else
+        log "INFO" "Please create a bridge than try again" "Network bridge not found"
+        exit 0
+    fi
+}
+
 check_bridge() {
     OTTERSCALE_BRIDGE_NAME="br-otters"
 
@@ -895,19 +912,7 @@ check_bridge() {
     else
         bridges=($(brctl show 2>/dev/null | awk 'NR>1 {print $1}' | grep -v '^$'))
         if [ ${#bridges[@]} -eq 0 ]; then
-            read -p "No network bridge found, should be provisioned programmatically (Y/N)? " CONFIRM_CREATE
-            if [[ "$CONFIRM_CREATE" == "Y" || "$CONFIRM_CREATE" == "y" ]]; then
-                get_default_interface
-                get_default_gateway
-                get_default_cidr
-                get_default_dns $CURRENT_INTERFACE
-                backup_netplan
-                create_netplan
-                apply_netplan
-            else
-                log "INFO" "Please create a bridge than try again" "Network bridge not found"
-                exit 0
-            fi
+            prompt_bridge_creation
         else
             select_bridge
         fi
@@ -1210,12 +1215,12 @@ add_key_to_maas() {
     fi
 }
 
-execute_non_user_cmd() {
-    local USERNAME="$1"
-    local COMMAND="$2"
-    local DESCRIPTION="$3"
-    if ! su "$USERNAME" -c "${COMMAND}" >>$TEMP_LOG 2>&1; then
-        log "WARN" "Failed to $DESCRIPTION, check $LOG for details" "Non-root cmd"
+execute_as_user() {
+    local USER=$1
+    shift
+    local CMD="$*"
+    if ! su "$USER" -c "$CMD" >>"$TEMP_LOG" 2>&1; then
+        log "WARN" "Failed to $2, check $LOG for details" "Non-root cmd"
         return 1
     fi
     return 0
@@ -1368,6 +1373,7 @@ main() {
 
     ##
     # Finished
+    update_dhcp_config False
     send_otterscale_config_data
 
     trap cleanup EXIT
