@@ -4,6 +4,7 @@
 	import { Reloader } from '$lib/components/custom/reloader';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
+	import { activeScope } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
@@ -41,7 +42,7 @@
 	});
 </script>
 
-{#if prometheusDriver}
+{#if prometheusDriver && $activeScope}
 	<div class="mx-auto grid w-full gap-6">
 		<div class="grid gap-1">
 			<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.dashboard()}</h1>
@@ -63,28 +64,28 @@
 				class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
 			>
 				<div class="col-span-2">
-					<ControlPlane {prometheusDriver} bind:isReloading />
+					<ControlPlane {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-2">
-					<Worker {prometheusDriver} bind:isReloading />
+					<Worker {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-3 row-span-2">
-					<CPU {prometheusDriver} bind:isReloading />
+					<CPU {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-3 row-span-2">
-					<Memory {prometheusDriver} bind:isReloading />
+					<Memory {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-2 col-start-1">
-					<Pod {prometheusDriver} bind:isReloading />
+					<Pod {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-2">
-					<Container {prometheusDriver} bind:isReloading />
+					<Container {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-3 col-start-5">
-					<NetworkTraffic {prometheusDriver} bind:isReloading />
+					<NetworkTraffic {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 				<div class="col-span-3">
-					<ThroughtPut {prometheusDriver} bind:isReloading />
+					<ThroughtPut {prometheusDriver} scope={$activeScope} bind:isReloading />
 				</div>
 			</Tabs.Content>
 			<Tabs.Content value="analytics">

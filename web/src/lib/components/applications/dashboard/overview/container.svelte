@@ -1,14 +1,17 @@
 <script lang="ts">
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 	import Icon from '@iconify/svelte';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
-		$props();
+	let {
+		prometheusDriver,
+		scope,
+		isReloading = $bindable(),
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let runningContainers = $state(0);
 
@@ -16,14 +19,14 @@
 		prometheusDriver
 			.instantQuery(
 				`
-						sum(
-							kubelet_running_containers{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics"}
-						)
-						or
-						sum(
-							kubelet_running_container_count{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics"}
-						)
-						`,
+				sum(
+					kubelet_running_containers{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics"}
+				)
+				or
+				sum(
+					kubelet_running_container_count{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics"}
+				)
+				`,
 			)
 			.then((response) => {
 				runningContainers = response.result[0].value.value;

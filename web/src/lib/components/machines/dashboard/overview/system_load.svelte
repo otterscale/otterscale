@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart';
@@ -9,8 +10,11 @@
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
-		$props();
+	let {
+		prometheusDriver,
+		scope,
+		isReloading = $bindable(),
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	const systemLoadConfiguration = {
 		one: { label: '1 min', color: 'var(--chart-1)' },
@@ -29,12 +33,22 @@
 
 	async function fetch() {
 		prometheusDriver
-			.rangeQuery(`sum(node_load1)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+			.rangeQuery(
+				`sum(node_load1{juju_model_uuid="${scope.uuid}"})`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60,
+			)
 			.then((response) => {
 				ones = response.result[0]?.values;
 			});
 		prometheusDriver
-			.rangeQuery(`sum(node_load5)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+			.rangeQuery(
+				`sum(node_load5{juju_model_uuid="${scope.uuid}"})`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60,
+			)
 			.then((response) => {
 				fives = response.result[0]?.values;
 			});
