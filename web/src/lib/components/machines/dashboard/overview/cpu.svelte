@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -17,8 +18,11 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
-		$props();
+	let {
+		prometheusDriver,
+		scope,
+		isReloading = $bindable(),
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -43,7 +47,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`1 - (sum(irate(node_cpu_seconds_total{mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total[2m])))`,
+				`1 - (sum(irate(node_cpu_seconds_total{juju_model_uuid="${scope.uuid}",mode="idle"}[2m])) / sum(irate(juju_model_uuid="${scope.uuid}",node_cpu_seconds_total[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60,

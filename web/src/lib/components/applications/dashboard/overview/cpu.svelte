@@ -1,22 +1,27 @@
 <script lang="ts">
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
-	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
-		$props();
+	let {
+		prometheusDriver,
+		scope,
+		isReloading = $bindable(),
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let cpuUsages: SampleValue[] = $state([]);
 	const cpuUsagesConfiguration = {
 		usage: { label: 'Usage', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
+	let allocatableNodesCPU = $state(0);
 	let cpuRequests = $state(0);
 	let cpuLimits = $state(0);
 
@@ -24,10 +29,10 @@
 		prometheusDriver
 			.rangeQuery(
 				`
-						sum(
-						node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{juju_model_uuid="${$currentKubernetes?.scopeUuid}"}
-						)
-						`,
+				sum(
+				node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{juju_model_uuid="${scope.uuid}"}
+				)
+				`,
 				Date.now() - 60 * 60 * 1000,
 				Date.now(),
 				2 * 60,
@@ -38,14 +43,21 @@
 		prometheusDriver
 			.instantQuery(
 				`
-						sum(
-							namespace_cpu:kube_pod_container_resource_requests:sum{juju_model_uuid="${$currentKubernetes?.scopeUuid}"}
-						)
-						/
-						sum(
-							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="cpu"}
-						)
-						`,
+				sum(
+					kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${scope.uuid}",resource="cpu"}
+				)
+				`,
+			)
+			.then((response) => {
+				allocatableNodesCPU = response.result[0].value.value;
+			});
+		prometheusDriver
+			.instantQuery(
+				`
+				sum(
+					namespace_cpu:kube_pod_container_resource_requests:sum{juju_model_uuid="${scope.uuid}"}
+				)
+				`,
 			)
 			.then((response) => {
 				cpuRequests = response.result[0].value.value;
@@ -53,14 +65,10 @@
 		prometheusDriver
 			.instantQuery(
 				`
-						sum(
-							namespace_cpu:kube_pod_container_resource_limits:sum{juju_model_uuid="${$currentKubernetes?.scopeUuid}"}
-						)
-						/
-						sum(
-							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="cpu"}
-						)
-						`,
+				sum(
+					namespace_cpu:kube_pod_container_resource_limits:sum{juju_model_uuid="${scope.uuid}"}
+				)
+				`,
 			)
 			.then((response) => {
 				cpuLimits = response.result[0].value.value;
@@ -93,11 +101,29 @@
 			<Card.Action class="text-muted-foreground flex flex-col gap-0.5 text-sm">
 				<div class="flex justify-between gap-2">
 					<p>{m.requests()}</p>
-					<p class="font-mono">{Math.round(cpuRequests * 100)}%</p>
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<p class="font-mono">{Math.round((cpuRequests * 100) / allocatableNodesCPU)}%</p>
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								{cpuRequests.toFixed(2)} / {allocatableNodesCPU}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 				</div>
 				<div class="flex justify-between gap-2">
 					<p>{m.limits()}</p>
-					<p class="font-mono">{Math.round(cpuLimits * 100)}%</p>
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<p class="font-mono">{Math.round((cpuLimits * 100) / allocatableNodesCPU)}%</p>
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								{cpuLimits.toFixed(2)} / {allocatableNodesCPU}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 				</div>
 			</Card.Action>
 		</Card.Header>
