@@ -790,11 +790,11 @@ prepare_microk8s_config() {
     fi
     chown "$NON_ROOT_USER":"$NON_ROOT_USER" "$KUBE_FOLDER"
 
-    log "INFO" "Update microk8s calico daemonset environment IP_AUTODETECTION_METHOD to $OTTERSCALE_NETWORK_INTERFACE" "Update microk8s calico"
-    if [ -z $OTTERSCALE_NETWORK_INTERFACE ]; then
+    log "INFO" "Update microk8s calico daemonset environment IP_AUTODETECTION_METHOD to $OTTERSCALE_BRIDGE_NAME" "Update microk8s calico"
+    if [ -z $OTTERSCALE_BRIDGE_NAME ]; then
         error_exit "Bridge name is empty."
     fi
-    if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$OTTERSCALE_NETWORK_INTERFACE" >/dev/null 2>&1; then
+    if ! microk8s kubectl set env -n kube-system daemonset.apps/calico-node -c calico-node IP_AUTODETECTION_METHOD="interface=$OTTERSCALE_BRIDGE_NAME" >/dev/null 2>&1; then
         error_exit "Failed update microk8s calico env IP_AUTODETECTION_METHOD."
     fi
 }
