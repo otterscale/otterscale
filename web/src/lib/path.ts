@@ -224,7 +224,7 @@ export const getValidURL = (
 	kubeName: string | undefined,
 ): string => {
 	if (pathBypass(pathname)) {
-		return pathname.replace(/\/scope\/[^\/]+/, `/scope/${scope}`);
+		return pathname.replace(/\/scope\/[^/]+/, `/scope/${scope}`);
 	}
 
 	const homeURL = dynamicPaths.scope(scope).url;

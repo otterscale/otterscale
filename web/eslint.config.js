@@ -17,7 +17,7 @@ export default ts.config(
 	prettier,
 	...svelte.configs.prettier,
 	{
-		ignores: ['src/lib/components/ui/**/*'],
+		ignores: ['src/lib/components/ui/**/*', 'src/lib/api/**/*'],
 	},
 	{
 		languageOptions: {
