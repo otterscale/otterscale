@@ -78,7 +78,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.deleteSubvolumeSnapshot(request), {
 							loading: `Deleting ${request.snapshotName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Delete ${request.snapshotName}`;
 							},

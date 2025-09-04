@@ -21,7 +21,6 @@
 	const bistClient = createClient(BISTService, transport);
 
 	const internalObjectServices = writable<SingleSelect.OptionType[]>([]);
-	let isLoading = $state(true);
 	async function fetchOptions() {
 		try {
 			const response = await bistClient.listInternalObjectServices({ scopeUuid: scopeUuid });
@@ -60,8 +59,6 @@
 			}
 		} catch (error) {
 			console.error('Error fetching:', error);
-		} finally {
-			isLoading = false;
 		}
 	}
 

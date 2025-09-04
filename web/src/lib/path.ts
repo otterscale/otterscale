@@ -207,7 +207,7 @@ const findDynamicPath = (pathname: string, scope: string | undefined): keyof typ
 	return null;
 };
 
-const pathBypass = (pathname: string, scope: string | undefined): boolean => {
+const pathBypass = (pathname: string): boolean => {
 	const bypass = ['/machines', '/settings'];
 	for (const url of bypass) {
 		if (pathname.includes(url)) {
@@ -223,7 +223,7 @@ export const getValidURL = (
 	cephName: string | undefined,
 	kubeName: string | undefined,
 ): string => {
-	if (pathBypass(pathname, scope)) {
+	if (pathBypass(pathname)) {
 		return pathname.replace(/\/scope\/[^\/]+/, `/scope/${scope}`);
 	}
 

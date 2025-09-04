@@ -1,4 +1,4 @@
-<script lang="ts" generics="TData">
+<script lang="ts">
 	import type { TestResult } from '$lib/api/bist/v1/bist_pb';
 	import Content from '$lib/components/custom/chart/content/scatter/scatter.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';

@@ -61,7 +61,7 @@
 		{#snippet content()}
 			<ContentSubtitle
 				value={powerOnPercentage}
-				unit={'%'}
+				unit="%"
 				subtitle={`${machinesOn} On over ${totalMachines} units`}
 			/>
 		{/snippet}
@@ -79,7 +79,7 @@
 		{#snippet content()}
 			<ContentSubtitle
 				value={deploymentPercentage}
-				unit={'%'}
+				unit="%"
 				subtitle={`${machinesDeployed} deployed over ${totalMachines} units`}
 			/>
 		{/snippet}

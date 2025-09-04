@@ -30,10 +30,10 @@
 					table.firstPage();
 					open = e.currentTarget.value ? true : false;
 				}}
-				onmousedowncapture={(e) => {
+				onmousedowncapture={() => {
 					open = true;
 				}}
-				onblur={(e) => {
+				onblur={() => {
 					open = false;
 				}}
 			/>

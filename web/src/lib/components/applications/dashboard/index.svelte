@@ -63,10 +63,10 @@
 				class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
 			>
 				<div class="col-span-2">
-					<ControlPlane {prometheusDriver} bind:isReloading />
+					<ControlPlane bind:isReloading />
 				</div>
 				<div class="col-span-2">
-					<Worker {prometheusDriver} bind:isReloading />
+					<Worker bind:isReloading />
 				</div>
 				<div class="col-span-3 row-span-2">
 					<CPU {prometheusDriver} bind:isReloading />

@@ -110,7 +110,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet scope(column: Column<Machine>)}
+{#snippet scope()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>
 			{m.scope()}

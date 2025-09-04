@@ -12,7 +12,6 @@
 <script lang="ts">
 	let {
 		ref = $bindable(null),
-		class: className,
 		text,
 		icon,
 		...restProps

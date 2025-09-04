@@ -94,7 +94,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.updatePool(request), {
 							loading: `Updating ${request.poolName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Update ${request.poolName}`;
 							},

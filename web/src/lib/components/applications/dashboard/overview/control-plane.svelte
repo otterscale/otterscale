@@ -7,12 +7,10 @@
 	import { currentKubernetes } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let { prometheusDriver, isReloading = $bindable() }: { prometheusDriver: PrometheusDriver; isReloading: boolean } =
-		$props();
+	let { isReloading = $bindable() }: { isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const facilityClient = createClient(FacilityService, transport);

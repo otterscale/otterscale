@@ -80,7 +80,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.deletePool(request), {
 							loading: `Deleting ${request.poolName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Delete ${request.poolName}`;
 							},

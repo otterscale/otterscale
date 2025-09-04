@@ -87,7 +87,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.updateSubvolumeGroup(request), {
 							loading: `Updating ${request.volumeName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Update ${request.volumeName}`;
 							},

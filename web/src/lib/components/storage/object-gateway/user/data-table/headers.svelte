@@ -59,4 +59,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<User>)}{/snippet}
+{#snippet actions()}{/snippet}

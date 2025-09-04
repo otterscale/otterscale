@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import { Empty, Footer, Pagination } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
@@ -21,12 +21,8 @@
 	import type { TableRow } from './type';
 </script>
 
-<script lang="ts" generics="TData, TValue">
-	let {
-		selectedScope,
-		selectedFacility,
-		dataset,
-	}: { selectedScope: string; selectedFacility: string; dataset: TableRow[] } = $props();
+<script lang="ts">
+	let { dataset }: { dataset: TableRow[] } = $props();
 
 	let data = $state(writable(dataset));
 
@@ -148,7 +144,7 @@
 						{/each}
 
 						<Table.Cell>
-							<Actions {selectedScope} {selectedFacility} row={row.original} bind:data />
+							<Actions bind:data />
 						</Table.Cell>
 					</Table.Row>
 				{:else}

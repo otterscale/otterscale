@@ -86,7 +86,7 @@ const columns: ColumnDef<Network>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.ipAddresses, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.subnet?.ipAddresses.length,
 				nextRow.original.subnet?.ipAddresses.length,
@@ -102,7 +102,7 @@ const columns: ColumnDef<Network>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.ipRanges, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.subnet?.ipRanges?.length,
 				nextRow.original.subnet?.ipRanges?.length,
@@ -118,7 +118,7 @@ const columns: ColumnDef<Network>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.statistics, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				Number(previousRow.original.subnet?.statistics?.available) /
 					Number(previousRow.original.subnet?.statistics?.total),

@@ -24,7 +24,7 @@
 		<Command.Root>
 			<Command.List>
 				<Command.Group>
-					{#each Array(null, true, false) as deprecation}
+					{#each [null, true, false] as deprecation}
 						<Command.Item
 							onclick={() => {
 								filterManager.toggleDeprecation(deprecation);

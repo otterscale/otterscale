@@ -13,8 +13,6 @@
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
-		class: className,
-		id,
 		required,
 		units,
 		oninput,

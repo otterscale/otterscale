@@ -41,10 +41,10 @@
 				<Content />
 			{:else}
 				{@const value = result[0].value.value}
-				<Content value={value.toFixed(2)} unit={'ops/s'} />
+				<Content value={value.toFixed(2)} unit="ops/s" />
 			{/if}
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
 {/await}

@@ -21,12 +21,8 @@
 	import type { TableRow } from './type';
 </script>
 
-<script lang="ts" generics="TData, TValue">
-	let {
-		selectedScope,
-		selectedFacility,
-		dataset,
-	}: { selectedScope: string; selectedFacility: string; dataset: TableRow[] } = $props();
+<script lang="ts">
+	let { dataset }: { dataset: TableRow[] } = $props();
 
 	let data = $state(writable(dataset));
 
@@ -148,7 +144,7 @@
 						{/each}
 
 						<Table.Cell>
-							<Actions {selectedScope} {selectedFacility} row={row.original} bind:data />
+							<Actions bind:data />
 						</Table.Cell>
 					</Table.Row>
 				{:else}

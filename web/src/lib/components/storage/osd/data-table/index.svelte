@@ -22,7 +22,7 @@
 	import Statistics from './statistics.svelte';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let {
 		objectStorageDaemons,
 		reloadManager,

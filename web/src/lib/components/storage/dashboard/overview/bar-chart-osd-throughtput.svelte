@@ -76,14 +76,6 @@
 	]);
 
 	// Helper functions
-	function extractMetricValues(response: any): SampleValue[] {
-		return response.result[0]?.values ?? [];
-	}
-
-	function extractLatestValue(response: any): number {
-		return response.result[0]?.value?.value ?? 0;
-	}
-
 	function combineTrafficData(reads: SampleValue[], writes: SampleValue[]): TrafficData[] {
 		return reads.map((sample: SampleValue, index: number) => ({
 			date: sample.time,
@@ -107,10 +99,10 @@
 				client.instantQuery(queries.Write),
 			]);
 
-			const reads = extractMetricValues(readResponse);
-			const writes = extractMetricValues(writeResponse);
-			const latestReadValue = extractLatestValue(latestReadResponse);
-			const latestWriteValue = extractLatestValue(latestWriteResponse);
+			const reads = readResponse.result[0]?.values ?? [];
+			const writes = writeResponse.result[0]?.values ?? [];
+			const latestReadValue = latestReadResponse.result[0]?.value?.value ?? 0;
+			const latestWriteValue = latestWriteResponse.result[0]?.value?.value ?? 0;
 
 			const { value: readValue, unit: readUnit } = formatIO(latestReadValue);
 			const { value: writeValue, unit: writeUnit } = formatIO(latestWriteValue);
@@ -137,7 +129,6 @@
 	}
 
 	$effect(() => {
-		isReloading;
 		if (isReloading) {
 			reloadManager.restart();
 		} else {

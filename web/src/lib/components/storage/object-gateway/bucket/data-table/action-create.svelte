@@ -183,7 +183,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.createBucket(request), {
 							loading: `Creating ${request.bucketName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Create ${request.bucketName}`;
 							},

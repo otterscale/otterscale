@@ -145,7 +145,7 @@
 				total: totalValue,
 				available: totalValue - usedValue,
 			};
-		} catch (error) {
+		} catch {
 			return {
 				date: intervalStart,
 				used: 0,
@@ -171,7 +171,6 @@
 	}
 
 	$effect(() => {
-		isReloading;
 		if (isReloading) {
 			reloadManager.restart();
 		} else {
@@ -180,7 +179,7 @@
 	});
 
 	$effect(() => {
-		selectedInterval;
+		void selectedInterval; // Access to track dependency
 		fetch();
 	});
 

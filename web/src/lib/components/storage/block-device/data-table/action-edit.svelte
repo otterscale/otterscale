@@ -81,7 +81,7 @@
 					onclick={() => {
 						toast.promise(storageClient.updateImage(request), {
 							loading: `Updating ${request.imageName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Updated ${request.imageName}`;
 							},

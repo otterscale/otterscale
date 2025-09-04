@@ -169,7 +169,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.updateBucket(request), {
 							loading: `Updating ${request.bucketName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Update ${request.bucketName}`;
 							},

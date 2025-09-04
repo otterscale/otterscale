@@ -26,7 +26,6 @@
 	let isPoolsLoading = $state(true);
 	let isImageNameInvalid = $state(false);
 	let isPoolNameInvalid = $state(false);
-	let isMounted = $state(false);
 	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
@@ -76,8 +75,6 @@
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
-
-		isMounted = true;
 	});
 </script>
 
@@ -252,7 +249,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.createImage(request), {
 							loading: `Creating ${request.imageName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Create ${request.imageName}`;
 							},

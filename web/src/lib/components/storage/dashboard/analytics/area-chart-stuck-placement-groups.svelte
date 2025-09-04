@@ -42,6 +42,6 @@
 			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} />
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} />
 {/await}

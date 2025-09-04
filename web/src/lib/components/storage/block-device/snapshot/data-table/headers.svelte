@@ -49,4 +49,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<Image_Snapshot>)}{/snippet}
+{#snippet actions()}{/snippet}

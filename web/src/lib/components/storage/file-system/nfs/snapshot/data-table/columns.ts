@@ -51,7 +51,7 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.createTime, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.createdAt,
 				nextRow.original.createdAt,

@@ -39,7 +39,7 @@
 	{#if children}
 		{@render children?.()}
 	{:else if optionManager.selectedOption.label}
-		<div class={'flex items-center gap-1 rounded-sm p-1 font-normal'}>
+		<div class="flex items-center gap-1 rounded-sm p-1 font-normal">
 			<Icon
 				icon={optionManager.selectedOption.icon ?? 'ph:empty'}
 				class={cn('size-4', optionManager.selectedOption ? 'visibale' : 'hidden')}

@@ -91,7 +91,7 @@
 												class="cursor-pointer"
 												onclick={async () => {
 													const text = row.original.export?.path ?? '';
-													navigator.clipboard.writeText(text).then((response) => {
+													navigator.clipboard.writeText(text).then(() => {
 														toast.success('Path copied to clipboard');
 													});
 												}}
@@ -121,7 +121,7 @@
 												class="cursor-pointer"
 												onclick={async () => {
 													const text = row.original.export?.command ?? '';
-													navigator.clipboard.writeText(text).then((response) => {
+													navigator.clipboard.writeText(text).then(() => {
 														toast.success('Command copied to clipboard');
 													});
 												}}

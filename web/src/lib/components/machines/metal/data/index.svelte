@@ -2,20 +2,17 @@
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { Badge } from '$lib/components/ui/badge';
+	import { m } from '$lib/paraglide/messages';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
 	import Alert from './alert.svelte';
 	import StatisticCPU from './statistic-cpu.svelte';
+	import StatisticHardware from './statistic-hardware.svelte';
 	import StatisticMemory from './statistic-memory.svelte';
 	import StatisticPower from './statistic-power.svelte';
 	import StatisticStorage from './statistic-storage.svelte';
-	import StatisticHardware from './statistic-hardware.svelte';
 	import TableBlockDevice from './table-block-device.svelte';
-	import TableChassis from './table-chassis.svelte';
-	import TableMainboard from './table-mainboard.svelte';
 	import TableNetwork from './table-network.svelte';
-	import TableSystem from './table-system.svelte';
-	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">

@@ -15,7 +15,6 @@
 		value = $bindable(),
 		type = 'text',
 		class: className,
-		id,
 		required,
 		oninput,
 		transformer = (value) => value,

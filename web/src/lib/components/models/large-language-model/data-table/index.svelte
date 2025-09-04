@@ -19,7 +19,7 @@
 	import { columns, messages } from './columns';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let { largeLanguageModels }: { largeLanguageModels: Writable<LargeLangeageModel[]> } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });

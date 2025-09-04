@@ -61,6 +61,6 @@
 			<Content data={response.usage} subtitle={`${response.used}/${response.total}`} />
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
 {/await}

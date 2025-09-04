@@ -15,7 +15,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-	{#each Array(13) as _}
+	{#each Array(13)}
 		<Skeleton class={cn('bg-muted h-[30px]', getWidthClass())} />
 	{/each}
 </div>

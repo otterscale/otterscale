@@ -1,7 +1,7 @@
 <script lang="ts" module>
 	import { StorageService, type Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount, setContext, type Snippet } from 'svelte';
 	import { writable } from 'svelte/store';

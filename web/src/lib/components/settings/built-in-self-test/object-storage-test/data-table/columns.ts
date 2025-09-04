@@ -143,7 +143,7 @@ const columns: ColumnDef<TestResult>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.startedAt, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.startedAt,
 				nextRow.original.startedAt,
@@ -159,7 +159,7 @@ const columns: ColumnDef<TestResult>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.completedAt, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.completedAt,
 				nextRow.original.completedAt,

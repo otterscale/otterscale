@@ -4,7 +4,7 @@
 	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { Switch as SwitchPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
-	import { INPUT_CLASSNAME, typeToIcon } from './utils.svelte';
+	import { INPUT_CLASSNAME } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -12,7 +12,6 @@
 		ref = $bindable(null),
 		class: className,
 		value: checked = $bindable(undefined),
-		id,
 		required,
 		nullable = false,
 		descriptor,

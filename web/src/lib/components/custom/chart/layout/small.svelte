@@ -1,6 +1,8 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card/index.js';
 	import type { Snippet } from 'svelte';
+	import { cn } from '$lib/utils';
+
 	let {
 		title,
 		description,
@@ -18,7 +20,7 @@
 	} = $props();
 </script>
 
-<Card.Root class="flex flex-col">
+<Card.Root class={cn('flex flex-col', className)}>
 	<Card.Header class="h-[10px] items-center">
 		<Card.Title>
 			{@render title()}

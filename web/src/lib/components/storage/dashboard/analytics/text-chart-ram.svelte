@@ -75,10 +75,10 @@
 				<Content />
 			{:else}
 				{@const value = result[0].value.value * 100}
-				<Content value={value.toFixed(2)} unit={'%'} />
+				<Content value={value.toFixed(2)} unit="%" />
 			{/if}
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} />
 {/await}

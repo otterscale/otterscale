@@ -97,7 +97,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.createSubvolume(request), {
 							loading: `Creating ${request.subvolumeName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Create ${request.subvolumeName}`;
 							},

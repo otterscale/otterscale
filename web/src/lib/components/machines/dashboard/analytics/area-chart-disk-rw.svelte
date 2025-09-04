@@ -49,6 +49,6 @@
 			<Content data={response} timeRange={formatTimeRange(TIME_RANGE_HOURS)} valueFormatter={formatIO} />
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
 {/await}

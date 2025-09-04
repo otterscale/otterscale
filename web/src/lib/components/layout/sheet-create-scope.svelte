@@ -1,52 +1,43 @@
 <script lang="ts">
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { ScopeService, type CreateScopeRequest } from '$lib/api/scope/v1/scope_pb';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import { Label } from '$lib/components/ui/label';
-	import * as Sheet from '$lib/components/ui/sheet';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { Input } from '$lib/components/ui/input';
-	import * as Select from '$lib/components/ui/select';
 	import { IPv4AddressInput } from '$lib/components/custom/ipv4';
 	import { IPv4CIDRInput } from '$lib/components/custom/ipv4-cidr';
-	import { Separator } from '$lib/components/ui/separator';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as HoverCard from '$lib/components/ui/hover-card';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import * as Select from '$lib/components/ui/select';
+	import { Separator } from '$lib/components/ui/separator';
+	import * as Sheet from '$lib/components/ui/sheet';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
 	import type { Plan } from './plans';
+	// import type { CreateScopeRequest } from '$lib/api/scope/v1/scope_pb';
 
 	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
-	const scopeClient = createClient(ScopeService, transport);
 	const machinesStore = writable<Machine[]>([]);
-	const defaultCreateScopeRequest = { name: '' } as CreateScopeRequest;
+	// const defaultCreateScopeRequest = { name: '' } as CreateScopeRequest;
 
 	let selectedMachine = $state('');
-	let createScopeRequest = $state(defaultCreateScopeRequest);
+	// let createScopeRequest = $state(defaultCreateScopeRequest);
 
 	async function fetchMachines() {
 		try {
 			const response = await machineClient.listMachines({});
 			machinesStore.set(response.machines);
-		} catch (error) {
-			console.error('Error fetching:', error);
-		}
-	}
-
-	async function createScope() {
-		try {
-			const response = await scopeClient.createScope(createScopeRequest);
 		} catch (error) {
 			console.error('Error fetching:', error);
 		}
@@ -74,7 +65,7 @@
 
 	function handleClose() {
 		open = false;
-		createScopeRequest = defaultCreateScopeRequest;
+		// createScopeRequest = defaultCreateScopeRequest;
 	}
 
 	onMount(async () => {

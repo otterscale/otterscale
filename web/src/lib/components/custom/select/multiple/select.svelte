@@ -15,7 +15,6 @@
 		children,
 		options = $bindable(),
 		required,
-		selectedOptions,
 		invalid = $bindable(),
 		...restProps
 	}: PopoverPrimitive.RootProps & {
@@ -23,7 +22,6 @@
 		class?: string;
 		value: any[];
 		options: Writable<OptionType[]>;
-		selectedOptions?: OptionType[];
 		required?: boolean;
 		invalid?: boolean | null | undefined;
 	} = $props();

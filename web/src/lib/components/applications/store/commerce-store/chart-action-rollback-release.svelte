@@ -79,7 +79,7 @@
 				onclick={() => {
 					toast.promise(() => client.rollbackRelease(request), {
 						loading: 'Loading...',
-						success: (r) => {
+						success: () => {
 							client.listReleases({}).then((r) => {
 								releases.set(r.releases);
 							});

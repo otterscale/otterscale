@@ -79,7 +79,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.deleteImageSnapshot(request), {
 							loading: `Deleting ${request.snapshotName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Delete ${request.snapshotName}`;
 							},

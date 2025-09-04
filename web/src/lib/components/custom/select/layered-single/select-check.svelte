@@ -13,7 +13,6 @@
 	let {
 		ref = $bindable(null),
 		class: className,
-		children,
 		option,
 		parents = [],
 		...restProps

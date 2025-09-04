@@ -11,7 +11,6 @@
 		ref = $bindable(null),
 		value = $bindable(),
 		class: className,
-		id,
 		required,
 		target,
 		invalid = $bindable(),
@@ -21,7 +20,7 @@
 		invalid?: boolean | null | undefined;
 	} = $props();
 
-	const isInvalid = $derived(value !== target);
+	const isInvalid = $derived(required && value !== target);
 	$effect(() => {
 		invalid = isInvalid;
 	});

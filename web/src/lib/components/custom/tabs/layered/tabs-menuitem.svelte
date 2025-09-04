@@ -10,12 +10,12 @@
 	let {
 		ref = $bindable(null),
 		class: className,
-		inset,
+		// inset,
 		value,
 		onclick,
 		...restProps
 	}: MenubarPrimitive.ItemProps & {
-		inset?: boolean;
+		// inset?: boolean;
 		value?: string;
 	} = $props();
 
@@ -26,7 +26,8 @@
 	bind:ref
 	class={cn('p-1 text-xs hover:cursor-pointer [&_svg]:m-1', className)}
 	{...restProps}
-	onclick={() => {
+	onclick={(e) => {
 		setter(value);
+		onclick?.(e);
 	}}
 />

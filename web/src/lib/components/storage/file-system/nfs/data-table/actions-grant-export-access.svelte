@@ -74,7 +74,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.grantSubvolumeExportAccess(request), {
 							loading: `Granting ${request.subvolumeName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Grant ${request.subvolumeName}`;
 							},

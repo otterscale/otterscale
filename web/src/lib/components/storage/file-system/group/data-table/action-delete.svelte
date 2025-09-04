@@ -80,7 +80,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.deleteSubvolumeGroup(request), {
 							loading: `Deleting ${request.volumeName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Delete ${request.volumeName}`;
 							},

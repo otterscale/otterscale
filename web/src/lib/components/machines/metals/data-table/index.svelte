@@ -20,7 +20,7 @@
 	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let { machines, reloadManager }: { machines: Writable<Machine[]>; reloadManager: ReloadManager } = $props();
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });

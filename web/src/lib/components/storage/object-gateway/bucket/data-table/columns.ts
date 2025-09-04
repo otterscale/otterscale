@@ -53,7 +53,7 @@ const columns: ColumnDef<Bucket>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.usage, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				Number(previousRow.original.usedBytes),
 				Number(nextRow.original.usedBytes),
@@ -69,7 +69,7 @@ const columns: ColumnDef<Bucket>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.createTime, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.createdAt,
 				nextRow.original.createdAt,

@@ -70,7 +70,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.createSubvolumeSnapshot(request), {
 							loading: `Creating ${request.snapshotName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Create ${request.snapshotName}`;
 							},

@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { getContext, onDestroy, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { createClient, type Transport } from '@connectrpc/connect';
 	import { page } from '$app/state';
 	import { FacilityService, type Facility } from '$lib/api/facility/v1/facility_pb';
+	import { SetupScope } from '$lib/components/setup';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
-	import { SetupScope } from '$lib/components/setup';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({

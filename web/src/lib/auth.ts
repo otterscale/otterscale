@@ -47,13 +47,9 @@ export const auth = betterAuth({
 });
 
 async function initializeDatabase() {
-	try {
-		const { runMigrations } = await getMigrations(auth.options);
-		await runMigrations();
-		console.log('Database migrations completed successfully');
-	} catch (error) {
-		throw error;
-	}
+	const { runMigrations } = await getMigrations(auth.options);
+	await runMigrations();
+	console.log('Database migrations completed successfully');
 }
 
 if (!process.env.BUILD) {

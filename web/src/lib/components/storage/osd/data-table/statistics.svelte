@@ -32,7 +32,7 @@
 			{@const usedTotal = usedList.reduce((a, value) => a + value, 0)}
 			{@const sizeList = filteredData.map((datum) => Number(datum['sizeBytes' as keyof TData]))}
 			{@const sizeTotal = sizeList.reduce((a, value) => a + value, 0)}
-			<Content value={Number((usedTotal * 100) / sizeTotal).toFixed(1)} unit={'%'} />
+			<Content value={Number((usedTotal * 100) / sizeTotal).toFixed(1)} unit="%" />
 		{/snippet}
 	</Layout>
 </div>

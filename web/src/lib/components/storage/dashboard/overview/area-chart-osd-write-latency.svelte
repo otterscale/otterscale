@@ -164,7 +164,6 @@
 	}
 
 	$effect(() => {
-		isReloading;
 		if (isReloading) {
 			reloadManager.restart();
 		} else {
@@ -173,7 +172,7 @@
 	});
 
 	$effect(() => {
-		selectedInterval;
+		void selectedInterval;
 		fetch();
 	});
 

@@ -3,4 +3,4 @@
 	import { DataTable } from './data-table';
 </script>
 
-<DataTable selectedFacility="" selectedScope="" {dataset} />
+<DataTable {dataset} />

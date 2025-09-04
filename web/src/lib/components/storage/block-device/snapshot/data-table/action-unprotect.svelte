@@ -40,7 +40,7 @@
 	onclick={() => {
 		toast.promise(() => storageClient.unprotectImageSnapshot(request), {
 			loading: `Unprotecting ${request.snapshotName}...`,
-			success: (response) => {
+			success: () => {
 				reloadManager.force();
 				return `Unprotect ${request.snapshotName}`;
 			},

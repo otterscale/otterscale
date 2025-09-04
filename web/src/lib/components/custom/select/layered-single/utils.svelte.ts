@@ -13,8 +13,7 @@ const getAllAncestralOptions = (options: OptionType[], parents: OptionType[] = [
 };
 
 function getAncestralOptionsMap(options: OptionType[]): Record<string, OptionType[]> {
-	let allAncestralOptionsMap: Record<string, OptionType[]> = {};
-
+	const allAncestralOptionsMap: Record<string, OptionType[]> = {};
 	const allAncestralOptions = getAllAncestralOptions(options);
 	allAncestralOptions.forEach((line) => {
 		allAncestralOptionsMap[JSON.stringify(line.map((node) => node.value))] = line;

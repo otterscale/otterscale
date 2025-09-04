@@ -19,17 +19,13 @@
 	import { columns, messages } from './columns';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let {
 		subvolume,
 	}: {
 		subvolume: Subvolume;
 	} = $props();
-	let snapshots = $state(subvolume.snapshots);
-	$effect(() => {
-		subvolume;
-		snapshots = subvolume.snapshots;
-	});
+	let snapshots = $derived(subvolume.snapshots);
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);

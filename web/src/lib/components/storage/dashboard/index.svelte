@@ -2,16 +2,13 @@
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
-	import Loading from '$lib/components/custom/loading/report.svelte';
+	import Reloader from '$lib/components/custom/reloader/reloader.svelte';
 	import { Overview } from '$lib/components/storage/dashboard/overview';
-	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
-	import { Analytics } from './analytics';
-	import Reloader from '$lib/components/custom/reloader/reloader.svelte';
 
 	let { scope }: { scope: Scope } = $props();
 

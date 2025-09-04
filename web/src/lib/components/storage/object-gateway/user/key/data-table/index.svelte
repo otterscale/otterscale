@@ -19,18 +19,14 @@
 	import { columns, messages } from './columns';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let {
 		user,
 	}: {
 		user: User;
 	} = $props();
 
-	let keys = $state(user.keys);
-	$effect(() => {
-		user;
-		keys = user.keys;
-	});
+	let keys = $derived(user.keys || []);
 
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);

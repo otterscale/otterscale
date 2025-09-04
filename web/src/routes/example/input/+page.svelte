@@ -11,26 +11,26 @@
 	import { writable, type Writable } from 'svelte/store';
 
 	type Values = {
-		value1: any;
-		value2: any;
-		value3: any;
-		value4: any;
-		value5: any;
-		value6: any;
+		value1: string;
+		value2: number;
+		value3: boolean;
+		value4: boolean;
+		value5: string;
+		value6: string;
 		value7: string;
-		value8: any;
-		value9: any;
-		value10: any;
-		values1: any[];
-		values2: any[];
-		values3: any[];
-		values4: any[];
-		values5: any[];
-		values6: any[];
-		values7: any[];
-		values8: any[];
-		values9: any[];
-		values0: any[];
+		value8: string;
+		value9: string;
+		value10: string;
+		values1: string[];
+		values2: number[];
+		values3: string[];
+		values4: string[];
+		values5: string[];
+		values6: string[];
+		values7: string[];
+		values8: string[];
+		values9: string[];
+		values0: string[];
 	};
 </script>
 
@@ -125,20 +125,19 @@
 </script>
 
 <main class="flex flex-col gap-4 p-4">
-	<SingleInput.General id="1" required type="text" bind:value={values.value1} />
+	<SingleInput.General required type="text" bind:value={values.value1} />
 
-	<SingleInput.General id="2" required type="number" bind:value={values.value2} />
+	<SingleInput.General required type="number" bind:value={values.value2} />
 
-	<SingleInput.Boolean id="3" required bind:value={values.value3} />
+	<SingleInput.Boolean required bind:value={values.value3} />
 
-	<SingleInput.Boolean id="4" required format="switch" bind:value={values.value4} />
+	<SingleInput.Boolean required format="switch" bind:value={values.value4} />
 
-	<SingleInput.Password id="5" required bind:value={values.value5} />
+	<SingleInput.Password required bind:value={values.value5} />
 
-	<SingleInput.Confirm id="6" required target="value6" bind:value={values.value6} />
+	<SingleInput.Confirm required target="value6" bind:value={values.value6} />
 
 	<SingleInput.Measurement
-		id="7"
 		required
 		units={[
 			{ value: 1, label: 'I' } as SingleInput.UnitType,
@@ -148,9 +147,9 @@
 		bind:value={values.value7}
 	/>
 
-	<SingleInput.Structure id="14" language="json" required bind:value={values.value7} />
+	<SingleInput.Structure language="json" required bind:value={values.value7} />
 
-	<MultipleInput.Root type="text" required bind:values={values.values1} id="8">
+	<MultipleInput.Root type="text" required bind:values={values.values1}>
 		<MultipleInput.Viewer />
 		<MultipleInput.Controller>
 			<MultipleInput.Input />
@@ -159,7 +158,7 @@
 		</MultipleInput.Controller>
 	</MultipleInput.Root>
 
-	<MultipleInput.Root type="number" required bind:values={values.values2} id="9">
+	<MultipleInput.Root type="number" required bind:values={values.values2}>
 		<MultipleInput.Viewer />
 		<MultipleInput.Controller>
 			<MultipleInput.Input />
@@ -168,7 +167,7 @@
 		</MultipleInput.Controller>
 	</MultipleInput.Root>
 
-	<SingleSelect.Root id="10" bind:options={options1} bind:value={values.value8} required>
+	<SingleSelect.Root bind:options={options1} bind:value={values.value8} required>
 		<SingleSelect.Trigger />
 		<SingleSelect.Content>
 			<SingleSelect.Options>
@@ -176,7 +175,7 @@
 				<SingleSelect.List>
 					<SingleSelect.Empty>No results found.</SingleSelect.Empty>
 					<SingleSelect.Group>
-						{#each $options1 as option}
+						{#each $options1 as option (option.value)}
 							<SingleSelect.Item {option}>
 								<Icon
 									icon={option.icon ? option.icon : 'ph:empty'}
@@ -192,7 +191,7 @@
 		</SingleSelect.Content>
 	</SingleSelect.Root>
 
-	<MultipleSelect.Root id="11" bind:options={options2} bind:value={values.values2} required>
+	<MultipleSelect.Root bind:options={options2} bind:value={values.values2} required>
 		<MultipleSelect.Viewer />
 		<MultipleSelect.Controller>
 			<MultipleSelect.Trigger />
@@ -202,7 +201,7 @@
 					<MultipleSelect.List>
 						<MultipleSelect.Empty>No results found.</MultipleSelect.Empty>
 						<MultipleSelect.Group>
-							{#each $options2 as option}
+							{#each $options2 as option (option.value)}
 								<MultipleSelect.Item {option}>
 									<Icon
 										icon={option.icon ? option.icon : 'ph:empty'}
@@ -222,11 +221,11 @@
 			</MultipleSelect.Content>
 		</MultipleSelect.Controller>
 	</MultipleSelect.Root>
-	<LayeredSingleSelect.Root id="12" bind:value={values.value9} options={options3} required>
+	<LayeredSingleSelect.Root bind:value={values.value9} options={options3} required>
 		<LayeredSingleSelect.Trigger />
 		<LayeredSingleSelect.Content>
 			<LayeredSingleSelect.Group>
-				{#each options3 as option}
+				{#each options3 as option (option.value)}
 					{#if option.subOptions && option.subOptions.length > 0}
 						{#snippet Branch(
 							options: LayeredSingleSelect.OptionType[],
@@ -243,7 +242,7 @@
 									{option.label}
 								</LayeredSingleSelect.SubTrigger>
 								<LayeredSingleSelect.SubContent>
-									{#each options as option}
+									{#each options as option (option.value)}
 										{#if option.subOptions && option.subOptions.length > 0}
 											{@render Branch(option.subOptions, option, [...parents, option], level + 1)}
 										{:else}
@@ -279,13 +278,13 @@
 		</LayeredSingleSelect.Content>
 	</LayeredSingleSelect.Root>
 
-	<LayeredMultipleSelect.Root id="13" bind:value={values.values3} options={options4} required>
+	<LayeredMultipleSelect.Root bind:value={values.values3} options={options4} required>
 		<LayeredMultipleSelect.Viewer />
 		<LayeredMultipleSelect.Controller>
 			<LayeredMultipleSelect.Trigger />
 			<LayeredMultipleSelect.Content>
 				<LayeredMultipleSelect.Group>
-					{#each options4 as option}
+					{#each options4 as option (option.value)}
 						{#if option.subOptions && option.subOptions.length > 0}
 							{#snippet Branch(
 								options: LayeredMultipleSelect.OptionType[],
@@ -302,7 +301,7 @@
 										{option.label}
 									</LayeredMultipleSelect.SubTrigger>
 									<LayeredMultipleSelect.SubContent>
-										{#each options as option}
+										{#each options as option (option.value)}
 											{#if option.subOptions && option.subOptions.length > 0}
 												{@render Branch(
 													option.subOptions,

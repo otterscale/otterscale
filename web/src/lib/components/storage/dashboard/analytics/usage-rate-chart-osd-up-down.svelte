@@ -65,6 +65,6 @@
 			<Badge variant="outline">{outNumber} {CHART_FOOTER}</Badge>
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
 {/await}

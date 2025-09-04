@@ -15,7 +15,6 @@
 		disabled,
 		variant = 'outline',
 		size = 'sm',
-		children,
 		...restProps
 	}: ButtonProps & {} = $props();
 
@@ -30,7 +29,7 @@
 	{href}
 	{type}
 	{disabled}
-	onclick={(e) => {
+	onclick={() => {
 		if (inputManager.input !== '') {
 			valuesManager.append(inputManager.input);
 			inputManager.reset();

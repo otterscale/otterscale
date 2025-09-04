@@ -66,7 +66,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.createImageSnapshot(request), {
 							loading: `Creating ${request.snapshotName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Create ${request.snapshotName}`;
 							},

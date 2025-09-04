@@ -34,7 +34,7 @@
 	onclick={() => {
 		toast.promise(() => storageClient.createUserKey(request), {
 			loading: `Creating access key...`,
-			success: (response) => {
+			success: () => {
 				reloadManager.force();
 				return `Create access key`;
 			},

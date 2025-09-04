@@ -65,7 +65,7 @@ const columns: ColumnDef<Subvolume>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.usage, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				Number(previousRow.original.quotaBytes) !== 0
 					? Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes)
@@ -85,7 +85,7 @@ const columns: ColumnDef<Subvolume>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.createTime, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.createdAt,
 				nextRow.original.createdAt,
@@ -101,7 +101,7 @@ const columns: ColumnDef<Subvolume>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.snapshots, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.snapshots.length,
 				nextRow.original.snapshots.length,

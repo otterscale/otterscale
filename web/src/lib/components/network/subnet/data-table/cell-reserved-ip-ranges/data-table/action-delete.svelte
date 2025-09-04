@@ -12,8 +12,6 @@
 </script>
 
 <script lang="ts">
-	import { deletion_warning } from '$lib/paraglide/messages';
-
 	let { ipRange }: { ipRange: Network_IPRange } = $props();
 
 	const transport: Transport = getContext('transport');
