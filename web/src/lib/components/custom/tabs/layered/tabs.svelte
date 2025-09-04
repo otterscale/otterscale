@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import * as Tabs from '$lib/components/ui/tabs';
 	import { Tabs as TabsPrimitive } from 'bits-ui';
-	import { cn } from '$lib/utils.js';
 	import { setContext } from 'svelte';
+
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

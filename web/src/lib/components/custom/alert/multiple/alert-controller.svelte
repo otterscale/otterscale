@@ -1,13 +1,12 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import type { WithElementRef } from 'bits-ui';
 	import { getContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
-	import Icon from '@iconify/svelte';
+	import type { IterationManager } from './utils.svelte';
 
 	import { cn } from '$lib/utils.js';
-	import type { WithElementRef } from 'bits-ui';
-
-	import type { IterationManager } from './utils.svelte';
 </script>
 
 <script lang="ts">

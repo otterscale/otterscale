@@ -1,6 +1,6 @@
 // Follows the best practices established in https://shiki.matsu.io/guide/best-performance
-import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 import { createHighlighterCore } from 'shiki/core';
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 
 const bundledLanguages = {
 	bash: () => import('@shikijs/langs/bash'),

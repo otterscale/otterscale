@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import * as Command from '$lib/components/ui/command';
-	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
+
+	import * as Command from '$lib/components/ui/command';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

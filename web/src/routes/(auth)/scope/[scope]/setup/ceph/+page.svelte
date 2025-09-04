@@ -1,13 +1,14 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext } from 'svelte';
+	import { writable } from 'svelte/store';
+
 	import { page } from '$app/state';
 	import { FacilityService, type Facility } from '$lib/api/facility/v1/facility_pb';
 	import { SetupScopeGrid } from '$lib/components/setup';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	// Configuration for Ceph services
 	const CEPH_SERVICES = {

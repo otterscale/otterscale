@@ -1,8 +1,10 @@
+import type { Table } from '@tanstack/table-core';
+
+import { hashCode } from './hashGroupID';
+
 import type { FIO_Input, TestResult, Warp_Input } from '$lib/api/bist/v1/bist_pb';
 import { Warp_Input_Operation } from '$lib/api/bist/v1/bist_pb';
 import { formatCapacity, formatSecond } from '$lib/formatter';
-import type { Table } from '@tanstack/table-core';
-import { hashCode } from './hashGroupID';
 
 interface FioDataPoint {
 	name: string;

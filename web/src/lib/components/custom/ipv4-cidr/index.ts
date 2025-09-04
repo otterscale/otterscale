@@ -1,5 +1,5 @@
-import { isNumber } from './is-number';
 import IPv4CIDRInput from './ipv4.svelte';
+import { isNumber } from './is-number';
 
 /** Attempts to parse the provided address into a valid IP. Returns undefined for
  * undefined returns a valid IP in array form for a valid IP and returns a 0 filled array for a incomplete IP.

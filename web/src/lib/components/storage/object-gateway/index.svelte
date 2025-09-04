@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
-	import { m } from '$lib/paraglide/messages';
 	import { Bucket } from './bucket';
 	import { User } from './user';
+
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">

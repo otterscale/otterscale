@@ -1,7 +1,9 @@
 import { Octokit } from '@octokit/core';
-import { env } from '$env/dynamic/private';
 import * as semver from 'semver';
+
 import type { PageServerLoad } from './$types';
+
+import { env } from '$env/dynamic/private';
 
 const REPO_CONFIG = {
 	owner: 'otterscale',

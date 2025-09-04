@@ -1,13 +1,12 @@
 <script lang="ts" module>
+	import type { WithElementRef } from 'bits-ui';
 	import { setContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { tv, type VariantProps } from 'tailwind-variants';
 
-	import { cn } from '$lib/utils.js';
-	import type { WithElementRef } from 'bits-ui';
-
 	import { alertVariants as baseAlertVariants } from '$lib/components/ui/alert/alert.svelte';
 	import * as Alert from '$lib/components/ui/alert/index';
+	import { cn } from '$lib/utils.js';
 
 	export const alertVariants = tv({
 		base: cn(baseAlertVariants.base, '[&>svg]:size-6'),

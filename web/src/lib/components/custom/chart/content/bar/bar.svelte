@@ -1,8 +1,9 @@
 <script lang="ts">
-	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { scaleUtc } from 'd3-scale';
 	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
 	import { cubicInOut } from 'svelte/easing';
+
+	import * as Chart from '$lib/components/ui/chart/index.js';
 
 	let {
 		activeChart = $bindable(),

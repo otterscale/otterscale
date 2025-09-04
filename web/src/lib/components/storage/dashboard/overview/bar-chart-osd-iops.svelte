@@ -1,4 +1,9 @@
 <script lang="ts">
+	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
+	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
+	import { onMount } from 'svelte';
+	import { cubicInOut } from 'svelte/easing';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
@@ -7,10 +12,6 @@
 	import { formatBigNumber } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { getLocale } from '$lib/paraglide/runtime';
-	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
-	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
-	import { onMount } from 'svelte';
-	import { cubicInOut } from 'svelte/easing';
 
 	// Props
 	let {

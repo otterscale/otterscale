@@ -1,8 +1,10 @@
-import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
-import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import type { ColumnDef } from '@tanstack/table-core';
+
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+
+import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
+import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {

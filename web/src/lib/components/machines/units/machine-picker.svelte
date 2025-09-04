@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
+
+	import type { Machine } from '$lib/api/machine/v1/machine_pb';
+	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
-	import type { Machine } from '$lib/api/machine/v1/machine_pb';
+	import { cn } from '$lib/utils';
 
 	let { selectedMachine = $bindable(), machines }: { selectedMachine: Machine; machines: Machine[] } = $props();
 

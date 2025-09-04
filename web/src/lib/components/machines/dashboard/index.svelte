@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { PrometheusDriver } from 'prometheus-query';
+	import { getContext, onMount } from 'svelte';
+
 	import { page } from '$app/state';
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
@@ -8,9 +12,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { PrometheusDriver } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [], current: dynamicPaths.machines(page.params.scope) });

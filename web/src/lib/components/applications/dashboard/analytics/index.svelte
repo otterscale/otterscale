@@ -1,17 +1,19 @@
 <script lang="ts">
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { PrometheusDriver } from 'prometheus-query';
+
 	import { default as AreaErrorBudget } from './area-chart-error-budget.svelte';
 	import { default as AreaVolumeSpace } from './area-chart-volume-space.svelte';
-	import { default as TextRunningKubelet } from './text-chart-running-kubelet.svelte';
-	import { default as TextRunningKubeletPod } from './text-chart-running-kubelet-pod.svelte';
 	import { default as TextRunningKubeletContainer } from './text-chart-running-kubelet-container.svelte';
+	import { default as TextRunningKubeletPod } from './text-chart-running-kubelet-pod.svelte';
+	import { default as TextRunningKubelet } from './text-chart-running-kubelet.svelte';
 	import { default as TextUpControllerManager } from './text-chart-up-controller-manager.svelte';
 	import { default as TextUpETCD } from './text-chart-up-etcd.svelte';
 	import { default as TextUpProxy } from './text-chart-up-proxy.svelte';
 	import { default as TextUpScheduler } from './text-chart-up-scheduler.svelte';
 	import { default as UsageAvailability } from './usage-rate-chart-availability.svelte';
 	import { default as UsageVolumeSpace } from './usage-rate-chart-volume-space.svelte';
+
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>

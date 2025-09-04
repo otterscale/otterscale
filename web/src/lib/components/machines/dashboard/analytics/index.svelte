@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { default as Pickers } from '$lib/components/machines/units/machine-picker.svelte';
 	import { PrometheusDriver } from 'prometheus-query';
+
 	import { default as CPUAverage } from './area-chart-cpu-average.svelte';
 	import { default as CPUCoreProcessor } from './area-chart-cpu-core.svelte';
 	import { default as DiskIOTime } from './area-chart-disk-io-time.svelte';
@@ -14,6 +13,9 @@
 	import { default as UsageRateRAM } from './usage-rate-chart-ram.svelte';
 	import { default as UsageRateRootFS } from './usage-rate-chart-root-fs.svelte';
 	import { default as UsageRateSWAP } from './usage-rate-chart-swap.svelte';
+
+	import { type Machine } from '$lib/api/machine/v1/machine_pb';
+	import { default as Pickers } from '$lib/components/machines/units/machine-picker.svelte';
 
 	let { client, machines }: { client: PrometheusDriver; machines: Machine[] } = $props();
 	let selectedMachine = $state(machines[0]);

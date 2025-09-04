@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { ArcChart, Text } from 'layerchart';
+
 	import * as Chart from '$lib/components/ui/chart/index.js';
 
 	let {

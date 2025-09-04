@@ -1,12 +1,14 @@
 <script lang="ts">
-	import type { ComponentProps } from 'svelte';
 	import Icon from '@iconify/svelte';
+	import type { ComponentProps } from 'svelte';
+
+	import DialogAbout from './dialog-about.svelte';
+
 	import { page } from '$app/state';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages.js';
 	import { dynamicPaths, staticPaths } from '$lib/path';
 	import changelogRead from '$lib/stores/changelog';
-	import DialogAbout from './dialog-about.svelte';
 
 	type Props = ComponentProps<typeof Sidebar.Group>;
 

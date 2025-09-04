@@ -1,4 +1,11 @@
 <script lang="ts">
+	import { scaleUtc } from 'd3-scale';
+	import { curveLinear } from 'd3-shape';
+	import { LineChart } from 'layerchart';
+	import { PrometheusDriver } from 'prometheus-query';
+	import { onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
@@ -6,12 +13,6 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { m } from '$lib/paraglide/messages';
-	import { scaleUtc } from 'd3-scale';
-	import { curveLinear } from 'd3-shape';
-	import { LineChart } from 'layerchart';
-	import { PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
-	import { SvelteDate } from 'svelte/reactivity';
 
 	// Props
 	let {

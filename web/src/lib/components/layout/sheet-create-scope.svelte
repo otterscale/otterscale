@@ -1,4 +1,11 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
+	import type { Plan } from './plans';
+
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
@@ -17,11 +24,7 @@
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import type { Plan } from './plans';
+
 	// import type { CreateScopeRequest } from '$lib/api/scope/v1/scope_pb';
 
 	let { open = $bindable(false), plan = $bindable({} as Plan) }: { open: boolean; plan: Plan } = $props();

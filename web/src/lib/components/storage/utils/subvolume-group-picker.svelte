@@ -1,11 +1,12 @@
 <script lang="ts" module>
-	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import { Single as SingleSelect } from '$lib/components/custom/select';
-	import { cn } from '$lib/utils.js';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+
+	import { StorageService } from '$lib/api/storage/v1/storage_pb';
+	import { Single as SingleSelect } from '$lib/components/custom/select';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

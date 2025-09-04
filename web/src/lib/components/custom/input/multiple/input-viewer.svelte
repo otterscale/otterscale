@@ -1,12 +1,14 @@
 <script lang="ts" module>
-	import { Badge, type BadgeVariant } from '$lib/components/ui/badge';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext, hasContext } from 'svelte';
 	import type { HTMLAnchorAttributes } from 'svelte/elements';
+
 	import { InputManager, typeToIcon, ValuesManager } from './utils.svelte';
+
+	import { Badge, type BadgeVariant } from '$lib/components/ui/badge';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">

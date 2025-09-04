@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { PrometheusDriver } from 'prometheus-query';
+
 	import { default as AreaCapacity } from './area-chart-capacity.svelte';
 	import { default as AreaOSDReadLatency } from './area-chart-osd-read-latency.svelte';
 	import { default as AreaOSDWriteLatency } from './area-chart-osd-write-latency.svelte';
@@ -12,6 +12,8 @@
 	import { default as TextQuorum } from './text-chart-quorum.svelte';
 	import { default as TextTimeTillFull } from './text-chart-time-till-full.svelte';
 	import { default as UsageCapacity } from './usage-chart-capacity.svelte';
+
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 
 	let {
 		client,

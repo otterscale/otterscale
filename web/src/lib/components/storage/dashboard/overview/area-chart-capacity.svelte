@@ -1,4 +1,11 @@
 <script lang="ts">
+	import { scaleUtc } from 'd3-scale';
+	import { curveStep } from 'd3-shape';
+	import { AreaChart } from 'layerchart';
+	import { PrometheusDriver } from 'prometheus-query';
+	import { onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
@@ -7,12 +14,6 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { scaleUtc } from 'd3-scale';
-	import { curveStep } from 'd3-shape';
-	import { AreaChart } from 'layerchart';
-	import { PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
-	import { SvelteDate } from 'svelte/reactivity';
 
 	// Props
 	let {

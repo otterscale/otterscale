@@ -1,14 +1,15 @@
 <script lang="ts" module>
+	import type { WithElementRef } from 'bits-ui';
 	import { setContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 
-	import * as Alert from '$lib/components/ui/alert/index';
-	import { cn } from '$lib/utils.js';
-	import type { WithElementRef } from 'bits-ui';
+	import { alertVariants } from '../single/alert.svelte';
 
 	import type { AlertType, VariantGetterType } from './types';
 	import { IterationManager } from './utils.svelte';
-	import { alertVariants } from '../single/alert.svelte';
+
+	import * as Alert from '$lib/components/ui/alert/index';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

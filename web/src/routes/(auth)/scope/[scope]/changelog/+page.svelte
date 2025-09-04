@@ -1,4 +1,8 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+
+	import type { PageData } from './$types';
+
 	import { page } from '$app/state';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Avatar from '$lib/components/ui/avatar';
@@ -11,8 +15,6 @@
 	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 	import changelogRead from '$lib/stores/changelog';
-	import Icon from '@iconify/svelte';
-	import type { PageData } from './$types';
 	// import type { Release } from './+page.server';
 
 	// Set breadcrumb navigation

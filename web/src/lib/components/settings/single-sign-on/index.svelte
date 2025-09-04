@@ -1,4 +1,6 @@
 <script lang="ts" module>
+	import { toast } from 'svelte-sonner';
+
 	import { authClient } from '$lib/auth-client';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Button } from '$lib/components/ui/button';
@@ -6,7 +8,6 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { m } from '$lib/paraglide/messages';
-	import { toast } from 'svelte-sonner';
 
 	const ssoProviderId = 'otterscale-oidc';
 

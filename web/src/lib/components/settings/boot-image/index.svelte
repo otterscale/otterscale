@@ -1,17 +1,19 @@
 <script lang="ts" module>
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
+	import Create from './create.svelte';
+	import Import from './import.svelte';
+	import ReadArchitectures from './read-architectures.svelte';
+	import SetAsDefault from './set-as-default.svelte';
+
 	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { m } from '$lib/paraglide/messages';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import Create from './create.svelte';
-	import Import from './import.svelte';
-	import ReadArchitectures from './read-architectures.svelte';
-	import SetAsDefault from './set-as-default.svelte';
 </script>
 
 <script lang="ts">

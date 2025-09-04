@@ -1,10 +1,12 @@
 <script lang="ts" module>
-	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
-	import * as Loading from '$lib/components/custom/loading';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+
 	import { Data } from './data';
+
+	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+	import * as Loading from '$lib/components/custom/loading';
 </script>
 
 <script lang="ts">

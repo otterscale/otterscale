@@ -1,16 +1,17 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
 	import { page } from '$app/state';
 	import { type Facility } from '$lib/api/facility/v1/facility_pb';
 	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
+	import ContainerImage from '$lib/assets/container.jpg';
+	import DiskImage from '$lib/assets/disk.jpg';
+	import { Button } from '$lib/components/ui/button';
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch';
-	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 	import { currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
-	import ContainerImage from '$lib/assets/container.jpg';
-	import DiskImage from '$lib/assets/disk.jpg';
 
 	// Props
 	let {

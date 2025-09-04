@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { PrometheusDriver } from 'prometheus-query';
+
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/arc/arc.svelte';
@@ -6,9 +8,8 @@
 	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
-	import { PrometheusDriver } from 'prometheus-query';
-	import { m } from '$lib/paraglide/messages';
 	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 

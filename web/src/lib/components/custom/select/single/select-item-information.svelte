@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { Tooltip as TooltipPrimitive } from 'bits-ui';
+
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

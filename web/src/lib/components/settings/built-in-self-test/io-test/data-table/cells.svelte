@@ -1,14 +1,16 @@
 <script lang="ts" module>
-	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { FIO_Input_AccessMode, type TestResult, TestResult_Status } from '$lib/api/bist/v1/bist_pb';
-	import { Cells } from '$lib/components/custom/data-table/core';
-	import { Badge } from '$lib/components/ui/badge/index.js';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
 	import { timestampDate } from '@bufbuild/protobuf/wkt';
 	import Icon from '@iconify/svelte';
 	import type { Row } from '@tanstack/table-core';
+
 	import Actions from './actions.svelte';
+
+	import { FIO_Input_AccessMode, type TestResult, TestResult_Status } from '$lib/api/bist/v1/bist_pb';
+	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Badge } from '$lib/components/ui/badge/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { formatCapacity, formatSecond, formatTimeAgo } from '$lib/formatter';
 
 	export const cells = {
 		row_picker,

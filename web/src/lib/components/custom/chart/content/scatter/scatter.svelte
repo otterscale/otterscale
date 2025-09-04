@@ -1,6 +1,7 @@
 <script lang="ts">
-	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { ScatterChart } from 'layerchart';
+
+	import * as Chart from '$lib/components/ui/chart/index.js';
 
 	let {
 		data,

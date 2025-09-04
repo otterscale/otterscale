@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { ArcChart, Text } from 'layerchart';
+	import { PrometheusDriver } from 'prometheus-query';
+	import { onMount } from 'svelte';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import { ReloadManager } from '$lib/components/custom/reloader';
@@ -6,9 +10,6 @@
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { ArcChart, Text } from 'layerchart';
-	import { PrometheusDriver } from 'prometheus-query';
-	import { onMount } from 'svelte';
 
 	// Props
 	let {

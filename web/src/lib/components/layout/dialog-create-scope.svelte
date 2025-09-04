@@ -1,17 +1,19 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { mode } from 'mode-watcher';
 	import { writable, type Writable } from 'svelte/store';
-	import Icon from '@iconify/svelte';
+
+	import { plans } from './plans';
+	import SheetCreateScope from './sheet-create-scope.svelte';
+
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Card from '$lib/components/ui/card';
 	import * as Carousel from '$lib/components/ui/carousel';
 	import type { CarouselAPI } from '$lib/components/ui/carousel/context.js';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import { Label } from '$lib/components/ui/label';
 	import { m } from '$lib/paraglide/messages';
-	import { plans } from './plans';
-	import SheetCreateScope from './sheet-create-scope.svelte';
 
 	let {
 		open = $bindable(false),

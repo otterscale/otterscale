@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
 	import { page } from '$app/state';
 	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
 	import { Button } from '$lib/components/ui/button';

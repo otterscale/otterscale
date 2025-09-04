@@ -1,19 +1,21 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import { page } from '$app/state';
 	import BookmarkIcon from '@lucide/svelte/icons/bookmark';
+	import type { Snippet } from 'svelte';
+
+	import type { LayoutData } from './$types';
+
+	import { page } from '$app/state';
 	import { AppSidebar } from '$lib/components/layout';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb';
 	import { buttonVariants, Button } from '$lib/components/ui/button';
-	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
 	import * as Popover from '$lib/components/ui/popover';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Sidebar from '$lib/components/ui/sidebar';
-	import type { Path } from '$lib/path';
 	import { m } from '$lib/paraglide/messages';
+	import type { Path } from '$lib/path';
 	import { bookmarks, breadcrumb } from '$lib/stores';
-	import type { LayoutData } from './$types';
 
 	interface Props {
 		data: LayoutData;

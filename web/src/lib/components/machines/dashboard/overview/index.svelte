@@ -1,12 +1,14 @@
 <script lang="ts">
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { PrometheusDriver } from 'prometheus-query';
+
 	import CPU from './cpu.svelte';
 	import Memory from './memory.svelte';
 	import NodeProportion from './node-proportion.svelte';
 	import Nodes from './nodes.svelte';
 	import Storage from './storage.svelte';
 	import SystemLoad from './system_load.svelte';
+
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 
 	let {
 		prometheusDriver,

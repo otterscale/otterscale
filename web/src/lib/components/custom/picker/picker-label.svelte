@@ -1,7 +1,8 @@
 <script lang="ts" module>
+	import { Label as LabelPrimitive } from 'bits-ui';
+
 	import Label from '$lib/components/ui/label/label.svelte';
 	import { cn } from '$lib/utils.js';
-	import { Label as LabelPrimitive } from 'bits-ui';
 </script>
 
 <script lang="ts">

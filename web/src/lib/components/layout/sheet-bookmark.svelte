@@ -1,6 +1,6 @@
 <script lang="ts">
-	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
+	import * as Sheet from '$lib/components/ui/sheet/index.js';
 
 	let { open = $bindable(false) }: { open: boolean } = $props();
 </script>

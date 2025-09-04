@@ -1,6 +1,7 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card/index.js';
 	import type { Snippet } from 'svelte';
+
+	import * as Card from '$lib/components/ui/card/index.js';
 
 	let {
 		title,

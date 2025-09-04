@@ -1,4 +1,12 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { get } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
+	import { type NFSStore } from '../utils.svelte.js';
+
 	import type { DeleteSubvolumeRequest, Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -6,12 +14,6 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages.js';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import { get } from 'svelte/store';
-	import { type NFSStore } from '../utils.svelte.js';
 </script>
 
 <script lang="ts">

@@ -1,7 +1,8 @@
 <script lang="ts" module>
+	import { Command as CommandPrimitive, useId } from 'bits-ui';
+
 	import * as Command from '$lib/components/ui/command';
 	import { cn } from '$lib/utils.js';
-	import { Command as CommandPrimitive, useId } from 'bits-ui';
 </script>
 
 <script lang="ts">

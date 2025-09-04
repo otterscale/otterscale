@@ -1,14 +1,15 @@
 <script lang="ts">
-	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Card from '$lib/components/ui/card';
-	import { m } from '$lib/paraglide/messages';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fade } from 'svelte/transition';
+
+	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Card from '$lib/components/ui/card';
+	import { m } from '$lib/paraglide/messages';
 
 	let { isReloading = $bindable() }: { isReloading: boolean } = $props();
 

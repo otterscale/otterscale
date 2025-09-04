@@ -1,4 +1,12 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
+	import ObjectServicesPicker from '../../utils/object-services-picker.svelte';
+
 	import type {
 		CreateTestResultRequest,
 		ExternalObjectService,
@@ -16,12 +24,6 @@
 	import { formatCapacity, formatSecond } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import { writable, type Writable } from 'svelte/store';
-	import ObjectServicesPicker from '../../utils/object-services-picker.svelte';
 
 	// WARP Target
 	const warpTarget: Writable<SingleSelect.OptionType[]> = writable([

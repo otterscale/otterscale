@@ -1,4 +1,5 @@
 import { getLocale } from './paraglide/runtime';
+
 import { m } from '$lib/paraglide/messages';
 
 const TIME_DIVISIONS = [

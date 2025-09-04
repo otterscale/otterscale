@@ -1,9 +1,11 @@
 <script lang="ts" module>
+	import type { Row } from '@tanstack/table-core';
+
+	import { type LargeLangeageModel } from '../protobuf.svelte';
+
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { formatBigNumber } from '$lib/formatter';
-	import type { Row } from '@tanstack/table-core';
-	import { type LargeLangeageModel } from '../protobuf.svelte';
 
 	export const cells = {
 		row_picker,

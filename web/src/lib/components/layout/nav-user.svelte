@@ -1,8 +1,11 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import type { User } from 'better-auth';
 	import { mode, toggleMode } from 'mode-watcher';
 	import { toast } from 'svelte-sonner';
-	import Icon from '@iconify/svelte';
+
+	import SheetNotification from './sheet-notification.svelte';
+
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
@@ -11,10 +14,9 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
-	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 	import { m } from '$lib/paraglide/messages.js';
+	import { getLocale, setLocale } from '$lib/paraglide/runtime';
 	import { dynamicPaths, staticPaths } from '$lib/path';
-	import SheetNotification from './sheet-notification.svelte';
 
 	let { user }: { user: User } = $props();
 	let locale = $state(getLocale());

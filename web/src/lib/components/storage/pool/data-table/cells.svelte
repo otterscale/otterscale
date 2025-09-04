@@ -1,14 +1,16 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import type { Row } from '@tanstack/table-core';
+
+	import Actions from './cell-actions.svelte';
+	import { getPlacementGroupStateVariant } from './utils.svelte';
+
 	import { PoolType, type Pool } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
-	import Icon from '@iconify/svelte';
-	import type { Row } from '@tanstack/table-core';
-	import Actions from './cell-actions.svelte';
-	import { getPlacementGroupStateVariant } from './utils.svelte';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 
 	export const cells = {
 		row_picker,

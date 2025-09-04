@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { getContext, onMount } from 'svelte';
-	import { writable, derived } from 'svelte/store';
-	import { goto } from '$app/navigation';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import SquareGridImage from '$lib/assets/square-grid.svg';
+	import { getContext, onMount } from 'svelte';
+	import { writable, derived } from 'svelte/store';
+
+	import { goto } from '$app/navigation';
 	import { CheckHealthResponse_Result, EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
+	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import { scopeIcon } from '$lib/components/scopes/icon';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';

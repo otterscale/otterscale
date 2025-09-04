@@ -1,13 +1,8 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
-	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
-	import { Reloader } from '$lib/components/custom/reloader';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { m } from '$lib/paraglide/messages';
-	import { activeScope } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
+
 	import Container from './overview/container.svelte';
 	import ControlPlane from './overview/control-plane.svelte';
 	import CPU from './overview/cpu.svelte';
@@ -16,6 +11,13 @@
 	import Pod from './overview/pod.svelte';
 	import ThroughtPut from './overview/throughput.svelte';
 	import Worker from './overview/worker.svelte';
+
+	import { env } from '$env/dynamic/public';
+	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import { Reloader } from '$lib/components/custom/reloader';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { m } from '$lib/paraglide/messages';
+	import { activeScope } from '$lib/stores';
 
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);

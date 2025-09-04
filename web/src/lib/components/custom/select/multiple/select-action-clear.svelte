@@ -1,8 +1,10 @@
 <script lang="ts" module>
+	import { getContext } from 'svelte';
+
+	import type { OptionManager } from './utils.svelte';
+
 	import { Button, buttonVariants, type ButtonProps } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils.js';
-	import { getContext } from 'svelte';
-	import type { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">

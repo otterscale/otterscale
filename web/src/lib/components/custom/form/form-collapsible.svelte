@@ -1,9 +1,10 @@
 <script lang="ts" module>
-	import * as Collapsible from '$lib/components/ui/collapsible';
-	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { Collapsible as CollapsiblePrimitive } from 'bits-ui';
 	import type { Snippet } from 'svelte';
+
+	import * as Collapsible from '$lib/components/ui/collapsible';
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">

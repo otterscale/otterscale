@@ -1,10 +1,12 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { scale } from 'svelte/transition';
+
+	import type { CopyProps } from './type.d';
+
 	import { Button } from '$lib/components/ui/button';
 	import { UseClipboard } from '$lib/hooks/use-clipboard.svelte';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import { scale } from 'svelte/transition';
-	import type { CopyProps } from './type.d';
 </script>
 
 <script lang="ts">
