@@ -481,9 +481,6 @@ get_maas_dns() {
     if [[ -z $maas_current_dns ]]; then
         dns_value="$CURRENT_DNS"
         log "INFO" "MAAS upstream DNS not set, will use system DNS: $dns_value" "MAAS config"
-    else
-        dns_value="$maas_current_dns"
-        log "INFO" "MAAS upstream DNS already configured: $dns_value" "MAAS config"
     fi
 }
 
