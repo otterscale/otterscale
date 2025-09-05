@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { Construction } from '$lib/components/construction';
+	import LLM from '$lib/components/models/large-language-model/index.svelte';
 	import { dynamicPaths } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 
@@ -11,4 +11,4 @@
 	});
 </script>
 
-<Construction />
+<LLM />

@@ -3,6 +3,8 @@
 
 	import { type LargeLangeageModel } from '../protobuf.svelte';
 
+	import Topology from './topology.svelte';
+
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { formatBigNumber } from '$lib/formatter';
@@ -17,6 +19,7 @@
 		architecture,
 		requests,
 		uptime,
+		topology,
 	};
 </script>
 
@@ -71,5 +74,11 @@
 {#snippet uptime(row: Row<LargeLangeageModel>)}
 	<Layout.Cell class="items-end">
 		{formatBigNumber(row.original.usageStats.uptime)}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet topology()}
+	<Layout.Cell class="items-end">
+		<Topology />
 	</Layout.Cell>
 {/snippet}
