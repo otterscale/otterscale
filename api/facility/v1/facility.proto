@@ -15,6 +15,7 @@ service FacilityService {
   rpc DeleteFacility(DeleteFacilityRequest) returns (google.protobuf.Empty);
   rpc ExposeFacility(ExposeFacilityRequest) returns (google.protobuf.Empty);
   rpc AddFacilityUnits(AddFacilityUnitsRequest) returns (AddFacilityUnitsResponse);
+  rpc ResolveFacilityUnitErrors(ResolveFacilityUnitErrorsRequest) returns (google.protobuf.Empty);
   rpc ListActions(ListActionsRequest) returns (ListActionsResponse);
   rpc DoAction(DoActionRequest) returns (google.protobuf.Empty);
   rpc ListCharms(ListCharmsRequest) returns (ListCharmsResponse);
@@ -95,6 +96,7 @@ message Placement {
   }
   string machine_id = 11;
 }
+
 message Constraint {
   string architecture = 1;
   uint64 cpu_cores = 2;
@@ -159,7 +161,12 @@ message AddFacilityUnitsRequest {
 }
 
 message AddFacilityUnitsResponse {
-  repeated string units = 1;
+  repeated string unit_names = 1;
+}
+
+message ResolveFacilityUnitErrorsRequest {
+  string scope_uuid = 1;
+  string unit_name = 2;
 }
 
 message ListActionsRequest {
