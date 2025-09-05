@@ -146,24 +146,28 @@
 
 {#snippet usage(row: Row<Subvolume>)}
 	<Layout.Cell class="items-end">
-		<Progress.Root
-			numerator={Number(row.original.usedBytes)}
-			denominator={Number(row.original.usedBytes)}
-			highIsGood={false}
-		>
-			{#snippet ratio({ numerator, denominator })}
-				{Progress.formatRatio(numerator, denominator)}
-			{/snippet}
-			{#snippet detail({ numerator, denominator })}
-				{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
-				{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
-				{numeratorValue}
-				{numeratorUnit}
-				/
-				{denominatorValue}
-				{denominatorUnit}
-			{/snippet}
-		</Progress.Root>
+		{#if row.original.quotaBytes === 0n}
+			<span class="text-muted-foreground text-sm">Quota limit is not set</span>
+		{:else}
+			<Progress.Root
+				numerator={Number(row.original.usedBytes)}
+				denominator={Number(row.original.quotaBytes)}
+				highIsGood={false}
+			>
+				{#snippet ratio({ numerator, denominator })}
+					{Progress.formatRatio(numerator, denominator)}
+				{/snippet}
+				{#snippet detail({ numerator, denominator })}
+					{@const { value: numeratorValue, unit: numeratorUnit } = formatCapacity(numerator)}
+					{@const { value: denominatorValue, unit: denominatorUnit } = formatCapacity(denominator)}
+					{numeratorValue}
+					{numeratorUnit}
+					/
+					{denominatorValue}
+					{denominatorUnit}
+				{/snippet}
+			</Progress.Root>
+		{/if}
 	</Layout.Cell>
 {/snippet}
 

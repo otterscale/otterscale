@@ -662,5 +662,6 @@
 	"setting_helm_repository_description": "設定用於套件管理的 Helm 圖表儲存庫清單。新增或更新儲存庫 URL，以控制您的環境從何處取得 Helm 圖表進行部署。",
 	"edit_helm_repository": "編輯 Helm 儲存庫",
 	"helm_repository": "Helm 儲存庫",
-	"edit_package_repository": "編輯套件儲存庫"
+	"edit_package_repository": "編輯套件儲存庫",
+	"quota_limit_is_not_set": "未設定配額限制"
 }
