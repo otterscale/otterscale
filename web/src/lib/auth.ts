@@ -44,7 +44,7 @@ export const auth = betterAuth({
 		},
 	},
 	telemetry: { enabled: false },
-	trustedOrigins: [publicEnv.PUBLIC_URL].filter(Boolean),
+	trustedOrigins: publicEnv.PUBLIC_URL ? [publicEnv.PUBLIC_URL] : [],
 });
 
 async function initializeDatabase() {
