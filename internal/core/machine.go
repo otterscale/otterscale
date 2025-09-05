@@ -352,11 +352,11 @@ func setGPUVendorProduct(gpus []NodeDevice) ([]NodeDevice, error) {
 	}
 	newGPUs := make([]NodeDevice, len(gpus))
 	copy(newGPUs, gpus)
-	for i, v := range gpus {
-		if vendor, ok := pci.Vendors[v.VendorID]; ok {
+	for i := range gpus {
+		if vendor, ok := pci.Vendors[gpus[i].VendorID]; ok {
 			newGPUs[i].VendorName = vendor.Name
 		}
-		if product, ok := pci.Products[v.VendorID+v.ProductID]; ok {
+		if product, ok := pci.Products[gpus[i].VendorID+gpus[i].ProductID]; ok {
 			newGPUs[i].ProductName = product.Name
 		}
 	}
