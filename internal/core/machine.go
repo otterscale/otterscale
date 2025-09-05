@@ -9,6 +9,7 @@ import (
 
 	"github.com/canonical/gomaasclient/entity"
 	"github.com/canonical/gomaasclient/entity/node"
+	"github.com/jaypipes/pcidb"
 	"github.com/juju/juju/core/instance"
 	"github.com/juju/juju/core/model"
 	"github.com/juju/juju/rpc/params"
@@ -21,11 +22,13 @@ type (
 	NUMANode         = entity.NUMANode
 	BlockDevice      = entity.BlockDevice
 	NetworkInterface = entity.NetworkInterface
+	NodeDevice       = entity.NodeDevice
 	Event            = entity.Event
 )
 
 type Machine struct {
 	*entity.Machine
+	GPUs             []NodeDevice
 	LastCommissioned time.Time
 }
 
@@ -61,6 +64,10 @@ type MachineManagerRepo interface {
 	DestroyMachines(ctx context.Context, uuid string, force, keep, dryRun bool, maxWait *time.Duration, machines ...string) error
 }
 
+type NodeDeviceRepo interface {
+	List(ctx context.Context, systemID, hardwareType string) ([]NodeDevice, error)
+}
+
 type ServerRepo interface {
 	Get(ctx context.Context, name string) (string, error)
 	Update(ctx context.Context, name, value string) error
@@ -77,6 +84,7 @@ type EventRepo interface {
 type MachineUseCase struct {
 	machine        MachineRepo
 	machineManager MachineManagerRepo
+	nodeDevice     NodeDeviceRepo
 	server         ServerRepo
 	client         ClientRepo
 	tag            TagRepo
@@ -85,10 +93,11 @@ type MachineUseCase struct {
 	event          EventRepo
 }
 
-func NewMachineUseCase(machine MachineRepo, machineManager MachineManagerRepo, server ServerRepo, client ClientRepo, tag TagRepo, action ActionRepo, facility FacilityRepo, event EventRepo) *MachineUseCase {
+func NewMachineUseCase(machine MachineRepo, machineManager MachineManagerRepo, nodeDevice NodeDeviceRepo, server ServerRepo, client ClientRepo, tag TagRepo, action ActionRepo, facility FacilityRepo, event EventRepo) *MachineUseCase {
 	return &MachineUseCase{
 		machine:        machine,
 		machineManager: machineManager,
+		nodeDevice:     nodeDevice,
 		server:         server,
 		client:         client,
 		tag:            tag,
@@ -106,6 +115,14 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scopeUUID string) ([
 	eg, ctx := errgroup.WithContext(ctx)
 	for i := range machines {
 		eg.Go(func() error {
+			gpus, err := uc.nodeDevice.List(ctx, machines[i].SystemID, "gpu")
+			if err != nil {
+				return err
+			}
+			machines[i].GPUs, err = setGPUVendorProduct(gpus)
+			return err
+		})
+		eg.Go(func() error {
 			var err error
 			machines[i].LastCommissioned, err = uc.getLastCommissioned(ctx, machines[i].SystemID)
 			return err
@@ -119,6 +136,14 @@ func (uc *MachineUseCase) ListMachines(ctx context.Context, scopeUUID string) ([
 
 func (uc *MachineUseCase) GetMachine(ctx context.Context, id string) (*Machine, error) {
 	machine, err := uc.machine.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	gpus, err := uc.nodeDevice.List(ctx, id, "gpu")
+	if err != nil {
+		return nil, err
+	}
+	machine.GPUs, err = setGPUVendorProduct(gpus)
 	if err != nil {
 		return nil, err
 	}
@@ -318,4 +343,22 @@ func (uc *MachineUseCase) getLastCommissioned(ctx context.Context, machineSystem
 		}
 	}
 	return time.Time{}, nil
+}
+
+func setGPUVendorProduct(gpus []NodeDevice) ([]NodeDevice, error) {
+	pci, err := pcidb.New()
+	if err != nil {
+		return nil, err
+	}
+	newGPUs := make([]NodeDevice, len(gpus))
+	copy(newGPUs, gpus)
+	for i, v := range gpus {
+		if vendor, ok := pci.Vendors[v.VendorID]; ok {
+			newGPUs[i].VendorName = vendor.Name
+		}
+		if product, ok := pci.Products[v.VendorID+v.ProductID]; ok {
+			newGPUs[i].ProductName = product.Name
+		}
+	}
+	return newGPUs, nil
 }

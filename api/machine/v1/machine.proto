@@ -51,6 +51,14 @@ message Machine {
     string ip_address = 61;
     bool dhcp_on = 71;
   }
+  message NodeDevice {
+    string vendor_id = 1;
+    string vendor_name = 2;
+    string product_id = 3;
+    string product_name = 4;
+    string bus_name = 5;
+    string pci_address = 6;
+  }
   string id = 1;
   google.protobuf.Timestamp last_commissioned = 2;
   string hardware_uuid = 101;
@@ -77,6 +85,7 @@ message Machine {
   repeated NUMANode numa_nodes = 701;
   repeated BlockDevice block_devices = 801;
   repeated NetworkInterface network_interfaces = 802;
+  repeated NodeDevice gpu_devices = 803;
 }
 
 message ListMachinesRequest {

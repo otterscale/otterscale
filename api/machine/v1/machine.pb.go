@@ -50,6 +50,7 @@ type Machine struct {
 	xxx_hidden_NumaNodes           *[]*Machine_NUMANode         `protobuf:"bytes,701,rep,name=numa_nodes,json=numaNodes"`
 	xxx_hidden_BlockDevices        *[]*Machine_BlockDevice      `protobuf:"bytes,801,rep,name=block_devices,json=blockDevices"`
 	xxx_hidden_NetworkInterfaces   *[]*Machine_NetworkInterface `protobuf:"bytes,802,rep,name=network_interfaces,json=networkInterfaces"`
+	xxx_hidden_GpuDevices          *[]*Machine_NodeDevice       `protobuf:"bytes,803,rep,name=gpu_devices,json=gpuDevices"`
 	XXX_raceDetectHookData         protoimpl.RaceDetectHookData
 	XXX_presence                   [1]uint32
 	unknownFields                  protoimpl.UnknownFields
@@ -311,9 +312,18 @@ func (x *Machine) GetNetworkInterfaces() []*Machine_NetworkInterface {
 	return nil
 }
 
+func (x *Machine) GetGpuDevices() []*Machine_NodeDevice {
+	if x != nil {
+		if x.xxx_hidden_GpuDevices != nil {
+			return *x.xxx_hidden_GpuDevices
+		}
+	}
+	return nil
+}
+
 func (x *Machine) SetId(v string) {
 	x.xxx_hidden_Id = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 27)
 }
 
 func (x *Machine) SetLastCommissioned(v *timestamppb.Timestamp) {
@@ -322,17 +332,17 @@ func (x *Machine) SetLastCommissioned(v *timestamppb.Timestamp) {
 
 func (x *Machine) SetHardwareUuid(v string) {
 	x.xxx_hidden_HardwareUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 27)
 }
 
 func (x *Machine) SetHostname(v string) {
 	x.xxx_hidden_Hostname = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 27)
 }
 
 func (x *Machine) SetFqdn(v string) {
 	x.xxx_hidden_Fqdn = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 27)
 }
 
 func (x *Machine) SetTags(v []string) {
@@ -341,67 +351,67 @@ func (x *Machine) SetTags(v []string) {
 
 func (x *Machine) SetDescription(v string) {
 	x.xxx_hidden_Description = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 6, 27)
 }
 
 func (x *Machine) SetStatus(v string) {
 	x.xxx_hidden_Status = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 7, 27)
 }
 
 func (x *Machine) SetStatusMessage(v string) {
 	x.xxx_hidden_StatusMessage = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 8, 27)
 }
 
 func (x *Machine) SetPowerState(v string) {
 	x.xxx_hidden_PowerState = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 9, 27)
 }
 
 func (x *Machine) SetPowerType(v string) {
 	x.xxx_hidden_PowerType = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 10, 27)
 }
 
 func (x *Machine) SetOsystem(v string) {
 	x.xxx_hidden_Osystem = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 11, 27)
 }
 
 func (x *Machine) SetDistroSeries(v string) {
 	x.xxx_hidden_DistroSeries = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 12, 27)
 }
 
 func (x *Machine) SetHweKernel(v string) {
 	x.xxx_hidden_HweKernel = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 13, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 13, 27)
 }
 
 func (x *Machine) SetArchitecture(v string) {
 	x.xxx_hidden_Architecture = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 14, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 14, 27)
 }
 
 func (x *Machine) SetCpuSpeed(v int64) {
 	x.xxx_hidden_CpuSpeed = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 15, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 15, 27)
 }
 
 func (x *Machine) SetCpuCount(v int64) {
 	x.xxx_hidden_CpuCount = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 16, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 16, 27)
 }
 
 func (x *Machine) SetMemoryMb(v int64) {
 	x.xxx_hidden_MemoryMb = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 17, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 17, 27)
 }
 
 func (x *Machine) SetStorageMb(v float64) {
 	x.xxx_hidden_StorageMb = v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 18, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 18, 27)
 }
 
 func (x *Machine) SetIpAddresses(v []string) {
@@ -418,7 +428,7 @@ func (x *Machine) SetHardwareInformation(v map[string]string) {
 
 func (x *Machine) SetBiosBootMethod(v string) {
 	x.xxx_hidden_BiosBootMethod = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 22, 26)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 22, 27)
 }
 
 func (x *Machine) SetNumaNodes(v []*Machine_NUMANode) {
@@ -431,6 +441,10 @@ func (x *Machine) SetBlockDevices(v []*Machine_BlockDevice) {
 
 func (x *Machine) SetNetworkInterfaces(v []*Machine_NetworkInterface) {
 	x.xxx_hidden_NetworkInterfaces = &v
+}
+
+func (x *Machine) SetGpuDevices(v []*Machine_NodeDevice) {
+	x.xxx_hidden_GpuDevices = &v
 }
 
 func (x *Machine) HasId() bool {
@@ -689,6 +703,7 @@ type Machine_builder struct {
 	NumaNodes           []*Machine_NUMANode
 	BlockDevices        []*Machine_BlockDevice
 	NetworkInterfaces   []*Machine_NetworkInterface
+	GpuDevices          []*Machine_NodeDevice
 }
 
 func (b0 Machine_builder) Build() *Machine {
@@ -696,85 +711,86 @@ func (b0 Machine_builder) Build() *Machine {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.Id != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 27)
 		x.xxx_hidden_Id = b.Id
 	}
 	x.xxx_hidden_LastCommissioned = b.LastCommissioned
 	if b.HardwareUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 27)
 		x.xxx_hidden_HardwareUuid = b.HardwareUuid
 	}
 	if b.Hostname != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 27)
 		x.xxx_hidden_Hostname = b.Hostname
 	}
 	if b.Fqdn != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 27)
 		x.xxx_hidden_Fqdn = b.Fqdn
 	}
 	x.xxx_hidden_Tags = b.Tags
 	if b.Description != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 6, 27)
 		x.xxx_hidden_Description = b.Description
 	}
 	if b.Status != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 7, 27)
 		x.xxx_hidden_Status = b.Status
 	}
 	if b.StatusMessage != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 8, 27)
 		x.xxx_hidden_StatusMessage = b.StatusMessage
 	}
 	if b.PowerState != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 9, 27)
 		x.xxx_hidden_PowerState = b.PowerState
 	}
 	if b.PowerType != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 10, 27)
 		x.xxx_hidden_PowerType = b.PowerType
 	}
 	if b.Osystem != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 11, 27)
 		x.xxx_hidden_Osystem = b.Osystem
 	}
 	if b.DistroSeries != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 12, 27)
 		x.xxx_hidden_DistroSeries = b.DistroSeries
 	}
 	if b.HweKernel != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 13, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 13, 27)
 		x.xxx_hidden_HweKernel = b.HweKernel
 	}
 	if b.Architecture != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 14, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 14, 27)
 		x.xxx_hidden_Architecture = b.Architecture
 	}
 	if b.CpuSpeed != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 15, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 15, 27)
 		x.xxx_hidden_CpuSpeed = *b.CpuSpeed
 	}
 	if b.CpuCount != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 16, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 16, 27)
 		x.xxx_hidden_CpuCount = *b.CpuCount
 	}
 	if b.MemoryMb != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 17, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 17, 27)
 		x.xxx_hidden_MemoryMb = *b.MemoryMb
 	}
 	if b.StorageMb != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 18, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 18, 27)
 		x.xxx_hidden_StorageMb = *b.StorageMb
 	}
 	x.xxx_hidden_IpAddresses = b.IpAddresses
 	x.xxx_hidden_WorkloadAnnotations = b.WorkloadAnnotations
 	x.xxx_hidden_HardwareInformation = b.HardwareInformation
 	if b.BiosBootMethod != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 22, 26)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 22, 27)
 		x.xxx_hidden_BiosBootMethod = b.BiosBootMethod
 	}
 	x.xxx_hidden_NumaNodes = &b.NumaNodes
 	x.xxx_hidden_BlockDevices = &b.BlockDevices
 	x.xxx_hidden_NetworkInterfaces = &b.NetworkInterfaces
+	x.xxx_hidden_GpuDevices = &b.GpuDevices
 	return m0
 }
 
@@ -2639,11 +2655,254 @@ func (b0 Machine_NetworkInterface_builder) Build() *Machine_NetworkInterface {
 	return m0
 }
 
+type Machine_NodeDevice struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_VendorId    *string                `protobuf:"bytes,1,opt,name=vendor_id,json=vendorId"`
+	xxx_hidden_VendorName  *string                `protobuf:"bytes,2,opt,name=vendor_name,json=vendorName"`
+	xxx_hidden_ProductId   *string                `protobuf:"bytes,3,opt,name=product_id,json=productId"`
+	xxx_hidden_ProductName *string                `protobuf:"bytes,4,opt,name=product_name,json=productName"`
+	xxx_hidden_BusName     *string                `protobuf:"bytes,5,opt,name=bus_name,json=busName"`
+	xxx_hidden_PciAddress  *string                `protobuf:"bytes,6,opt,name=pci_address,json=pciAddress"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *Machine_NodeDevice) Reset() {
+	*x = Machine_NodeDevice{}
+	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Machine_NodeDevice) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Machine_NodeDevice) ProtoMessage() {}
+
+func (x *Machine_NodeDevice) ProtoReflect() protoreflect.Message {
+	mi := &file_api_machine_v1_machine_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *Machine_NodeDevice) GetVendorId() string {
+	if x != nil {
+		if x.xxx_hidden_VendorId != nil {
+			return *x.xxx_hidden_VendorId
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Machine_NodeDevice) GetVendorName() string {
+	if x != nil {
+		if x.xxx_hidden_VendorName != nil {
+			return *x.xxx_hidden_VendorName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Machine_NodeDevice) GetProductId() string {
+	if x != nil {
+		if x.xxx_hidden_ProductId != nil {
+			return *x.xxx_hidden_ProductId
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Machine_NodeDevice) GetProductName() string {
+	if x != nil {
+		if x.xxx_hidden_ProductName != nil {
+			return *x.xxx_hidden_ProductName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Machine_NodeDevice) GetBusName() string {
+	if x != nil {
+		if x.xxx_hidden_BusName != nil {
+			return *x.xxx_hidden_BusName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Machine_NodeDevice) GetPciAddress() string {
+	if x != nil {
+		if x.xxx_hidden_PciAddress != nil {
+			return *x.xxx_hidden_PciAddress
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *Machine_NodeDevice) SetVendorId(v string) {
+	x.xxx_hidden_VendorId = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+}
+
+func (x *Machine_NodeDevice) SetVendorName(v string) {
+	x.xxx_hidden_VendorName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+}
+
+func (x *Machine_NodeDevice) SetProductId(v string) {
+	x.xxx_hidden_ProductId = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+}
+
+func (x *Machine_NodeDevice) SetProductName(v string) {
+	x.xxx_hidden_ProductName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+}
+
+func (x *Machine_NodeDevice) SetBusName(v string) {
+	x.xxx_hidden_BusName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+}
+
+func (x *Machine_NodeDevice) SetPciAddress(v string) {
+	x.xxx_hidden_PciAddress = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 5, 6)
+}
+
+func (x *Machine_NodeDevice) HasVendorId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *Machine_NodeDevice) HasVendorName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Machine_NodeDevice) HasProductId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *Machine_NodeDevice) HasProductName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *Machine_NodeDevice) HasBusName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *Machine_NodeDevice) HasPciAddress() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 5)
+}
+
+func (x *Machine_NodeDevice) ClearVendorId() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_VendorId = nil
+}
+
+func (x *Machine_NodeDevice) ClearVendorName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_VendorName = nil
+}
+
+func (x *Machine_NodeDevice) ClearProductId() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_ProductId = nil
+}
+
+func (x *Machine_NodeDevice) ClearProductName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_ProductName = nil
+}
+
+func (x *Machine_NodeDevice) ClearBusName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_BusName = nil
+}
+
+func (x *Machine_NodeDevice) ClearPciAddress() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 5)
+	x.xxx_hidden_PciAddress = nil
+}
+
+type Machine_NodeDevice_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	VendorId    *string
+	VendorName  *string
+	ProductId   *string
+	ProductName *string
+	BusName     *string
+	PciAddress  *string
+}
+
+func (b0 Machine_NodeDevice_builder) Build() *Machine_NodeDevice {
+	m0 := &Machine_NodeDevice{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.VendorId != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		x.xxx_hidden_VendorId = b.VendorId
+	}
+	if b.VendorName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		x.xxx_hidden_VendorName = b.VendorName
+	}
+	if b.ProductId != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		x.xxx_hidden_ProductId = b.ProductId
+	}
+	if b.ProductName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		x.xxx_hidden_ProductName = b.ProductName
+	}
+	if b.BusName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		x.xxx_hidden_BusName = b.BusName
+	}
+	if b.PciAddress != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 5, 6)
+		x.xxx_hidden_PciAddress = b.PciAddress
+	}
+	return m0
+}
+
 var File_api_machine_v1_machine_proto protoreflect.FileDescriptor
 
 const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/machine/v1/machine.proto\x12\x15otterscale.machine.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xdb\x10\n" +
+	"\x1capi/machine/v1/machine.proto\x12\x15otterscale.machine.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf3\x12\n" +
 	"\aMachine\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12G\n" +
 	"\x11last_commissioned\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x10lastCommissioned\x12#\n" +
@@ -2675,7 +2934,9 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\n" +
 	"numa_nodes\x18\xbd\x05 \x03(\v2'.otterscale.machine.v1.Machine.NUMANodeR\tnumaNodes\x12P\n" +
 	"\rblock_devices\x18\xa1\x06 \x03(\v2*.otterscale.machine.v1.Machine.BlockDeviceR\fblockDevices\x12_\n" +
-	"\x12network_interfaces\x18\xa2\x06 \x03(\v2/.otterscale.machine.v1.Machine.NetworkInterfaceR\x11networkInterfaces\x1aZ\n" +
+	"\x12network_interfaces\x18\xa2\x06 \x03(\v2/.otterscale.machine.v1.Machine.NetworkInterfaceR\x11networkInterfaces\x12K\n" +
+	"\vgpu_devices\x18\xa3\x06 \x03(\v2).otterscale.machine.v1.Machine.NodeDeviceR\n" +
+	"gpuDevices\x1aZ\n" +
 	"\bNUMANode\x12\x14\n" +
 	"\x05index\x18\x01 \x01(\x03R\x05index\x12\x1b\n" +
 	"\tcpu_cores\x18\x02 \x01(\x03R\bcpuCores\x12\x1b\n" +
@@ -2711,7 +2972,18 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\tsubnet_id\x184 \x01(\x03R\bsubnetId\x12\x1d\n" +
 	"\n" +
 	"ip_address\x18= \x01(\tR\tipAddress\x12\x17\n" +
-	"\adhcp_on\x18G \x01(\bR\x06dhcpOn\x1aF\n" +
+	"\adhcp_on\x18G \x01(\bR\x06dhcpOn\x1a\xc8\x01\n" +
+	"\n" +
+	"NodeDevice\x12\x1b\n" +
+	"\tvendor_id\x18\x01 \x01(\tR\bvendorId\x12\x1f\n" +
+	"\vvendor_name\x18\x02 \x01(\tR\n" +
+	"vendorName\x12\x1d\n" +
+	"\n" +
+	"product_id\x18\x03 \x01(\tR\tproductId\x12!\n" +
+	"\fproduct_name\x18\x04 \x01(\tR\vproductName\x12\x19\n" +
+	"\bbus_name\x18\x05 \x01(\tR\abusName\x12\x1f\n" +
+	"\vpci_address\x18\x06 \x01(\tR\n" +
+	"pciAddress\x1aF\n" +
 	"\x18WorkloadAnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aF\n" +
@@ -2759,7 +3031,7 @@ const file_api_machine_v1_machine_proto_rawDesc = "" +
 	"\x0eAddMachineTags\x12,.otterscale.machine.v1.AddMachineTagsRequest\x1a\x16.google.protobuf.Empty\x12\\\n" +
 	"\x11RemoveMachineTags\x12/.otterscale.machine.v1.RemoveMachineTagsRequest\x1a\x16.google.protobuf.EmptyB4Z2github.com/otterscale/otterscale/api/machine/v1;pbb\beditionsp\xe8\a"
 
-var file_api_machine_v1_machine_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_api_machine_v1_machine_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_api_machine_v1_machine_proto_goTypes = []any{
 	(*Machine)(nil),                  // 0: otterscale.machine.v1.Machine
 	(*ListMachinesRequest)(nil),      // 1: otterscale.machine.v1.ListMachinesRequest
@@ -2773,38 +3045,40 @@ var file_api_machine_v1_machine_proto_goTypes = []any{
 	(*Machine_NUMANode)(nil),         // 9: otterscale.machine.v1.Machine.NUMANode
 	(*Machine_BlockDevice)(nil),      // 10: otterscale.machine.v1.Machine.BlockDevice
 	(*Machine_NetworkInterface)(nil), // 11: otterscale.machine.v1.Machine.NetworkInterface
-	nil,                              // 12: otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
-	nil,                              // 13: otterscale.machine.v1.Machine.HardwareInformationEntry
-	(*timestamppb.Timestamp)(nil),    // 14: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),            // 15: google.protobuf.Empty
+	(*Machine_NodeDevice)(nil),       // 12: otterscale.machine.v1.Machine.NodeDevice
+	nil,                              // 13: otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
+	nil,                              // 14: otterscale.machine.v1.Machine.HardwareInformationEntry
+	(*timestamppb.Timestamp)(nil),    // 15: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),            // 16: google.protobuf.Empty
 }
 var file_api_machine_v1_machine_proto_depIdxs = []int32{
-	14, // 0: otterscale.machine.v1.Machine.last_commissioned:type_name -> google.protobuf.Timestamp
-	12, // 1: otterscale.machine.v1.Machine.workload_annotations:type_name -> otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
-	13, // 2: otterscale.machine.v1.Machine.hardware_information:type_name -> otterscale.machine.v1.Machine.HardwareInformationEntry
+	15, // 0: otterscale.machine.v1.Machine.last_commissioned:type_name -> google.protobuf.Timestamp
+	13, // 1: otterscale.machine.v1.Machine.workload_annotations:type_name -> otterscale.machine.v1.Machine.WorkloadAnnotationsEntry
+	14, // 2: otterscale.machine.v1.Machine.hardware_information:type_name -> otterscale.machine.v1.Machine.HardwareInformationEntry
 	9,  // 3: otterscale.machine.v1.Machine.numa_nodes:type_name -> otterscale.machine.v1.Machine.NUMANode
 	10, // 4: otterscale.machine.v1.Machine.block_devices:type_name -> otterscale.machine.v1.Machine.BlockDevice
 	11, // 5: otterscale.machine.v1.Machine.network_interfaces:type_name -> otterscale.machine.v1.Machine.NetworkInterface
-	0,  // 6: otterscale.machine.v1.ListMachinesResponse.machines:type_name -> otterscale.machine.v1.Machine
-	1,  // 7: otterscale.machine.v1.MachineService.ListMachines:input_type -> otterscale.machine.v1.ListMachinesRequest
-	3,  // 8: otterscale.machine.v1.MachineService.GetMachine:input_type -> otterscale.machine.v1.GetMachineRequest
-	4,  // 9: otterscale.machine.v1.MachineService.CreateMachine:input_type -> otterscale.machine.v1.CreateMachineRequest
-	5,  // 10: otterscale.machine.v1.MachineService.DeleteMachine:input_type -> otterscale.machine.v1.DeleteMachineRequest
-	6,  // 11: otterscale.machine.v1.MachineService.PowerOffMachine:input_type -> otterscale.machine.v1.PowerOffMachineRequest
-	7,  // 12: otterscale.machine.v1.MachineService.AddMachineTags:input_type -> otterscale.machine.v1.AddMachineTagsRequest
-	8,  // 13: otterscale.machine.v1.MachineService.RemoveMachineTags:input_type -> otterscale.machine.v1.RemoveMachineTagsRequest
-	2,  // 14: otterscale.machine.v1.MachineService.ListMachines:output_type -> otterscale.machine.v1.ListMachinesResponse
-	0,  // 15: otterscale.machine.v1.MachineService.GetMachine:output_type -> otterscale.machine.v1.Machine
-	0,  // 16: otterscale.machine.v1.MachineService.CreateMachine:output_type -> otterscale.machine.v1.Machine
-	15, // 17: otterscale.machine.v1.MachineService.DeleteMachine:output_type -> google.protobuf.Empty
-	0,  // 18: otterscale.machine.v1.MachineService.PowerOffMachine:output_type -> otterscale.machine.v1.Machine
-	15, // 19: otterscale.machine.v1.MachineService.AddMachineTags:output_type -> google.protobuf.Empty
-	15, // 20: otterscale.machine.v1.MachineService.RemoveMachineTags:output_type -> google.protobuf.Empty
-	14, // [14:21] is the sub-list for method output_type
-	7,  // [7:14] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	12, // 6: otterscale.machine.v1.Machine.gpu_devices:type_name -> otterscale.machine.v1.Machine.NodeDevice
+	0,  // 7: otterscale.machine.v1.ListMachinesResponse.machines:type_name -> otterscale.machine.v1.Machine
+	1,  // 8: otterscale.machine.v1.MachineService.ListMachines:input_type -> otterscale.machine.v1.ListMachinesRequest
+	3,  // 9: otterscale.machine.v1.MachineService.GetMachine:input_type -> otterscale.machine.v1.GetMachineRequest
+	4,  // 10: otterscale.machine.v1.MachineService.CreateMachine:input_type -> otterscale.machine.v1.CreateMachineRequest
+	5,  // 11: otterscale.machine.v1.MachineService.DeleteMachine:input_type -> otterscale.machine.v1.DeleteMachineRequest
+	6,  // 12: otterscale.machine.v1.MachineService.PowerOffMachine:input_type -> otterscale.machine.v1.PowerOffMachineRequest
+	7,  // 13: otterscale.machine.v1.MachineService.AddMachineTags:input_type -> otterscale.machine.v1.AddMachineTagsRequest
+	8,  // 14: otterscale.machine.v1.MachineService.RemoveMachineTags:input_type -> otterscale.machine.v1.RemoveMachineTagsRequest
+	2,  // 15: otterscale.machine.v1.MachineService.ListMachines:output_type -> otterscale.machine.v1.ListMachinesResponse
+	0,  // 16: otterscale.machine.v1.MachineService.GetMachine:output_type -> otterscale.machine.v1.Machine
+	0,  // 17: otterscale.machine.v1.MachineService.CreateMachine:output_type -> otterscale.machine.v1.Machine
+	16, // 18: otterscale.machine.v1.MachineService.DeleteMachine:output_type -> google.protobuf.Empty
+	0,  // 19: otterscale.machine.v1.MachineService.PowerOffMachine:output_type -> otterscale.machine.v1.Machine
+	16, // 20: otterscale.machine.v1.MachineService.AddMachineTags:output_type -> google.protobuf.Empty
+	16, // 21: otterscale.machine.v1.MachineService.RemoveMachineTags:output_type -> google.protobuf.Empty
+	15, // [15:22] is the sub-list for method output_type
+	8,  // [8:15] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_api_machine_v1_machine_proto_init() }
@@ -2818,7 +3092,7 @@ func file_api_machine_v1_machine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_machine_v1_machine_proto_rawDesc), len(file_api_machine_v1_machine_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
