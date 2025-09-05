@@ -15,7 +15,7 @@
 	let { children } = $props();
 
 	const transport = createConnectTransport({
-		baseUrl: env.PUBLIC_API_URL,
+		baseUrl: env.PUBLIC_API_URL || '',
 	});
 
 	setContext('transport', transport);
