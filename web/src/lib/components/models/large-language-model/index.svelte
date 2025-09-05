@@ -6,7 +6,7 @@
 	import { listLargeLanguageModels, type LargeLangeageModel } from './protobuf.svelte';
 
 	import * as Loading from '$lib/components/custom/loading';
-	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">
@@ -28,17 +28,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Reloader
-			bind:checked={reloadManager.state}
-			onCheckedChange={() => {
-				if (reloadManager.state) {
-					reloadManager.restart();
-				} else {
-					reloadManager.stop();
-				}
-			}}
-		/>
-		<DataTable {largeLanguageModels} />
+		<DataTable {largeLanguageModels} {reloadManager} />
 	{:else}
 		<Loading.DataTable />
 	{/if}
