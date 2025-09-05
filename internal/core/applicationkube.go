@@ -92,6 +92,11 @@ type KubeCoreRepo interface {
 	// Service
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
 	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error)
+	GetService(ctx context.Context, config *rest.Config, namespace, name string) (*Service, error)
+	CreateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
+	CreateVirtualMachineService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
+	UpdateService(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.ServiceSpec) (*Service, error)
+	DeleteService(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	// Pod
 	ListPods(ctx context.Context, config *rest.Config, namespace string) ([]Pod, error)
@@ -99,7 +104,11 @@ type KubeCoreRepo interface {
 	GetPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
 
 	// PersistentVolumeClaim
+	GetPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace, name string) (*PersistentVolumeClaim, error)
+	CreatePersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*PersistentVolumeClaim, error)
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
+	UpdatePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string, spec *corev1.PersistentVolumeClaimSpec) (*PersistentVolumeClaim, error)
+	DeletePersistentVolumeClaim(ctx context.Context, config *rest.Config, namespace, name string) error
 
 	// Namespace
 	GetNamespace(ctx context.Context, config *rest.Config, name string) (*Namespace, error)
