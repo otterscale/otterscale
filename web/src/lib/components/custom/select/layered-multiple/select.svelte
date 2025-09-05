@@ -1,11 +1,13 @@
 <script lang="ts" module>
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import { cn } from '$lib/utils';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 	import { setContext } from 'svelte';
+
 	import type { OptionType } from './types';
 	import { OptionManager } from './utils.svelte';
 	import { validate } from './utils.svelte';
+
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">

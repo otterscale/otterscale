@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { Subnet } from '$lib/components/network/subnet';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
-	import { Subnet } from '$lib/components/network/subnet';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({

@@ -161,7 +161,7 @@ func toProtoBlockDevice(bd *core.BlockDevice, bootDiskID int) *pb.Machine_BlockD
 	ret.SetSerial(bd.Serial)
 	ret.SetModel(bd.Model)
 	ret.SetFirmwareVersion(bd.FirmwareVersion)
-	ret.SetStorageMb(float64(bd.Size) / 1000 / 1000) //nolint:mnd
+	ret.SetStorageMb(float64(bd.Size) / 1000 / 1000) //nolint:mnd // convert to MB
 	ret.SetType(bd.Type)
 	ret.SetTags(bd.Tags)
 	ret.SetUsedFor(bd.UsedFor)

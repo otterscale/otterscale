@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
-	import { Progress } from '$lib/components/ui/progress/index.js';
-	import { formatBigNumber as formatNumber, formatProgressColor } from '$lib/formatter';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import { Progress } from '$lib/components/ui/progress/index.js';
+	import { formatProgressColor } from '$lib/formatter';
 
 	const cpu = 22;
 	const ram = 70;

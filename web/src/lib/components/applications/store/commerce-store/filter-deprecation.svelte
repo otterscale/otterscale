@@ -1,11 +1,13 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+
+	import type { FilterManager } from './utils';
+
 	import { Button } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import type { FilterManager } from './utils';
 </script>
 
 <script lang="ts">
@@ -24,7 +26,7 @@
 		<Command.Root>
 			<Command.List>
 				<Command.Group>
-					{#each Array(null, true, false) as deprecation}
+					{#each [null, true, false] as deprecation}
 						<Command.Item
 							onclick={() => {
 								filterManager.toggleDeprecation(deprecation);

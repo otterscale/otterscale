@@ -1,14 +1,16 @@
 <script lang="ts" module>
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
+	import Create from './create.svelte';
+	import Delete from './delete.svelte';
+
 	import { TagService, type Tag } from '$lib/api/tag/v1/tag_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import Create from './create.svelte';
-	import Delete from './delete.svelte';
 </script>
 
 <script lang="ts">
@@ -18,14 +20,12 @@
 	const tags = writable<Tag[]>();
 	let isTagLoading = $state(true);
 
-	let isMounted = $state(false);
 	onMount(async () => {
 		try {
 			await tagClient.listTags({}).then((response) => {
 				tags.set(response.tags);
 				isTagLoading = false;
 			});
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

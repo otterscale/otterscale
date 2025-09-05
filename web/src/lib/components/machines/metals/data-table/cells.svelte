@@ -1,4 +1,11 @@
 <script lang="ts" module>
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
+	import Icon from '@iconify/svelte';
+	import type { Row } from '@tanstack/table-core';
+
+	import Actions from './cell-actions.svelte';
+	import Tags from './cell-tags.svelte';
+
 	import { page } from '$app/state';
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
@@ -6,11 +13,6 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
 	import { dynamicPaths } from '$lib/path';
-	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import Icon from '@iconify/svelte';
-	import type { Row } from '@tanstack/table-core';
-	import Actions from './cell-actions.svelte';
-	import Tags from './cell-tags.svelte';
 	import { cn } from '$lib/utils';
 
 	export const cells = {

@@ -1,17 +1,20 @@
 <script lang="ts" module>
-	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
+
 	import * as Input from '../single';
+
 	import { InputManager, ValuesManager } from './utils.svelte';
 	import { validate } from './utils.svelte';
+
+	import { cn } from '$lib/utils.js';
 
 	type Props = WithElementRef<Omit<HTMLInputAttributes, 'value' | 'type'>>;
 </script>
 
 <script lang="ts">
-	let { ref = $bindable(null), class: className, onkeydown, onblur, ...restProps }: Props = $props();
+	let { ref = $bindable(null), class: className, onkeydown, ...restProps }: Props = $props();
 
 	const id: string | undefined = getContext('id');
 	const required: boolean | undefined = getContext('required');

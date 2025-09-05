@@ -1,19 +1,20 @@
 <script lang="ts">
-	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { scaleUtc } from 'd3-scale';
 	import { BarChart, type ChartContextValue, Highlight } from 'layerchart';
 	import { cubicInOut } from 'svelte/easing';
+
+	import * as Chart from '$lib/components/ui/chart/index.js';
 
 	let {
 		activeChart = $bindable(),
 		data,
 		chartConfig,
-		timeRange = '90d',
+		// timeRange = '90d',
 	}: {
 		activeChart: string;
 		data: Array<any>;
 		chartConfig: any;
-		timeRange?: string;
+		// timeRange?: string;
 	} = $props();
 	let context = $state<ChartContextValue>();
 	const activeSeries = $derived([

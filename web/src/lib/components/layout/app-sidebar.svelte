@@ -1,26 +1,28 @@
 <script lang="ts">
+	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import type { User } from 'better-auth';
 	import type { ComponentProps } from 'svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
-	import type { User } from 'better-auth';
-	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
-	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
-	import { PremiumTier, PremiumService } from '$lib/api/premium/v1/premium_pb';
-	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import * as Sidebar from '$lib/components/ui/sidebar';
-	import { m } from '$lib/paraglide/messages';
-	import { dynamicPaths, getValidURL, staticPaths, type Path } from '$lib/path';
-	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
-	import { applicationRoutes, platformRoutes } from '$lib/routes';
+
 	import NavBookmark from './nav-bookmark.svelte';
 	import NavFooter from './nav-footer.svelte';
 	import NavGeneral from './nav-general.svelte';
 	import NavUser from './nav-user.svelte';
 	import ScopeSwitcher from './scope-switcher.svelte';
+
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
+	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
+	import { PremiumService, PremiumTier } from '$lib/api/premium/v1/premium_pb';
+	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
+	import * as Sidebar from '$lib/components/ui/sidebar';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import { m } from '$lib/paraglide/messages';
+	import { dynamicPaths, getValidURL, type Path } from '$lib/path';
+	import { applicationRoutes, platformRoutes } from '$lib/routes';
+	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
 
 	type Props = { user: User } & ComponentProps<typeof Sidebar.Root>;
 

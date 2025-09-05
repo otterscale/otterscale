@@ -1,9 +1,4 @@
 <script lang="ts" module>
-	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
-	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -15,21 +10,24 @@
 		type SortingState,
 		type VisibilityState,
 	} from '@tanstack/table-core';
+
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
+
+	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
+	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
+	import * as Table from '$lib/components/ui/table/index.js';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let {
 		subvolume,
 	}: {
 		subvolume: Subvolume;
 	} = $props();
-	let snapshots = $state(subvolume.snapshots);
-	$effect(() => {
-		subvolume;
-		snapshots = subvolume.snapshots;
-	});
+	let snapshots = $derived(subvolume.snapshots);
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 10 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);

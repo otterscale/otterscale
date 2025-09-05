@@ -1,10 +1,12 @@
 <script lang="ts" module>
-	import { setContext } from 'svelte';
-	import { InputManager, validate, ValuesManager } from './utils.svelte';
-	import type { InputType } from './types';
-	import { cn } from '$lib/utils.js';
-	import type { HTMLAttributes } from 'svelte/elements';
 	import type { WithElementRef } from 'bits-ui';
+	import { setContext } from 'svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
+
+	import type { InputType } from './types';
+	import { InputManager, validate, ValuesManager } from './utils.svelte';
+
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

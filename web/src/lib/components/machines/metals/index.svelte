@@ -1,12 +1,14 @@
 <script lang="ts" module>
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import * as Loading from '$lib/components/custom/loading';
-	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+
 	import { DataTable } from './data-table/index';
 	import { Statistics } from './statistics';
+
+	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import * as Loading from '$lib/components/custom/loading';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">

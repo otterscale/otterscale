@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import type { Column, Table } from '@tanstack/table-core';
+
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
-	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
 		row_picker,
@@ -99,4 +100,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<Subvolume>)}{/snippet}
+{#snippet actions()}{/snippet}

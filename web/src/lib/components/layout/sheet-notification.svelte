@@ -1,12 +1,13 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { siteConfig } from '$lib/config/site';
+
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import { Separator } from '$lib/components/ui/separator';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { siteConfig } from '$lib/config/site';
 	import { formatTimeAgo } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { notifications, type Notification } from '$lib/stores';

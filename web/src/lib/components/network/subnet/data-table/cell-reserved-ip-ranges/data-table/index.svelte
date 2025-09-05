@@ -1,9 +1,4 @@
 <script lang="ts" module>
-	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
-	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -15,24 +10,26 @@
 		type SortingState,
 		type VisibilityState,
 	} from '@tanstack/table-core';
+
 	import Create from './action-create.svelte';
 	import Actions from './actions.svelte';
 	import { columns, messages } from './columns';
+
+	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
+	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
+	import * as Table from '$lib/components/ui/table/index.js';
 </script>
 
-<script lang="ts" generics="TData, TValue">
+<script lang="ts">
 	let {
 		subnet,
 	}: {
 		subnet: Network_Subnet;
 	} = $props();
 
-	let ipRanges = $state(subnet.ipRanges);
-	$effect(() => {
-		subnet;
-		ipRanges = subnet.ipRanges;
-	});
-
+	let ipRanges = $derived(subnet.ipRanges || []);
 	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 15 });
 	let sorting = $state<SortingState>([]);
 	let columnFilters = $state<ColumnFiltersState>([]);

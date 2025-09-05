@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
 	import Input from './input.svelte';
-	import { safeParseIPv4CIDR } from '.';
-	import { isNumber } from './is-number';
 	import * as IPv4CIDR from './ipv4-address';
+	import { isNumber } from './is-number';
 	import type { IPv4CIDRInputProps } from './types';
+
+	import { safeParseIPv4CIDR } from '.';
+
+	import { cn } from '$lib/utils';
 
 	let {
 		separator = '.',

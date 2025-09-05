@@ -1,27 +1,26 @@
 <script lang="ts">
+	import { scaleUtc } from 'd3-scale';
+	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
+	import { PrometheusDriver, SampleValue } from 'prometheus-query';
+	import { onMount } from 'svelte';
+	import { cubicInOut } from 'svelte/easing';
+	import { SvelteDate } from 'svelte/reactivity';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatIO } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { cn } from '$lib/utils';
-	import { scaleUtc } from 'd3-scale';
-	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
-	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { onMount } from 'svelte';
-	import { cubicInOut } from 'svelte/easing';
 
 	let {
 		prometheusDriver,
 		scope,
 		isReloading = $bindable(),
-		span,
 	}: {
 		prometheusDriver: PrometheusDriver;
 		scope: Scope;
 		isReloading: boolean;
-		span: string;
 	} = $props();
 
 	let receives = $state([] as SampleValue[]);
@@ -61,8 +60,8 @@
 		prometheusDriver
 			.rangeQuery(
 				`sum(irate(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`,
-				new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
-				new Date().setMinutes(0, 0, 0),
+				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
+				new SvelteDate().setMinutes(0, 0, 0),
 				2 * 60,
 			)
 			.then((response) => {
@@ -71,8 +70,8 @@
 		prometheusDriver
 			.rangeQuery(
 				`sum(irate(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[4m]))`,
-				new Date().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
-				new Date().setMinutes(0, 0, 0),
+				new SvelteDate().setMinutes(0, 0, 0) - 24 * 60 * 60 * 1000,
+				new SvelteDate().setMinutes(0, 0, 0),
 				2 * 60,
 			)
 			.then((response) => {
@@ -109,7 +108,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('gap-2', span)}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 				<Card.Title>{m.network_traffic()}</Card.Title>

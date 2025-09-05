@@ -1,4 +1,9 @@
 <script lang="ts" module>
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
 	import type { DoSMARTResponse_Output, OSD } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Code from '$lib/components/custom/code';
@@ -6,10 +11,6 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -18,10 +19,6 @@
 	const transport: Transport = getContext('transport');
 	const storageClient = createClient(StorageService, transport);
 	let open = $state(false);
-	function close() {
-		open = false;
-	}
-
 	let smarts = $state(writable<Record<string, DoSMARTResponse_Output>>({}));
 	let isSMARTsLoading = $state(true);
 

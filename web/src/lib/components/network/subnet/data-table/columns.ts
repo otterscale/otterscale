@@ -1,10 +1,12 @@
+import type { ColumnDef } from '@tanstack/table-core';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
+
 import type { Network } from '$lib/api/network/v1/network_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
-import type { ColumnDef } from '@tanstack/table-core';
-import { cells } from './cells.svelte';
 import { m } from '$lib/paraglide/messages';
-import { headers } from './headers.svelte';
 
 const messages = {
 	fabric: m.fabric(),
@@ -86,7 +88,7 @@ const columns: ColumnDef<Network>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.ipAddresses, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.subnet?.ipAddresses.length,
 				nextRow.original.subnet?.ipAddresses.length,
@@ -102,7 +104,7 @@ const columns: ColumnDef<Network>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.ipRanges, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.subnet?.ipRanges?.length,
 				nextRow.original.subnet?.ipRanges?.length,
@@ -118,7 +120,7 @@ const columns: ColumnDef<Network>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.statistics, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				Number(previousRow.original.subnet?.statistics?.available) /
 					Number(previousRow.original.subnet?.statistics?.total),

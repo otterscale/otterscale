@@ -1,6 +1,6 @@
 <script lang="ts" module>
-	import { dataset } from './data-table/data';
 	import { DataTable } from './data-table';
+	import { dataset } from './data-table/data';
 </script>
 
-<DataTable selectedFacility="" selectedScope="" {dataset} />
+<DataTable {dataset} />

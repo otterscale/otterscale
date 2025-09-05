@@ -1,4 +1,10 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import {
 		ConfigurationService,
 		type Configuration,
@@ -7,11 +13,6 @@
 	import * as Form from '$lib/components/custom/form';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">

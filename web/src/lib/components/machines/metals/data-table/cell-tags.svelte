@@ -1,4 +1,9 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
+
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { TagService } from '$lib/api/tag/v1/tag_pb';
 	import * as Loading from '$lib/components/custom/loading';
@@ -7,10 +12,6 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
 </script>
 
 <script lang="ts">
@@ -26,7 +27,6 @@
 	let tags = $state(machine.tags);
 	let tagOptions: string[] = $state([]);
 	let isTagsLoading = $state(true);
-	let isMounted = $state(false);
 
 	const isChanged = $derived(
 		!(machine.tags.length === tags.length && machine.tags.every((tag) => tags.includes(tag))),
@@ -50,8 +50,6 @@
 				.finally(() => {
 					isTagsLoading = false;
 				});
-
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

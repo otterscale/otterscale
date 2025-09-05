@@ -1,20 +1,21 @@
 <script lang="ts" module>
-	import * as Select from '$lib/components/ui/select';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
-	import { General } from '.';
+
 	import type { InputType, UnitType } from './types';
 	import { getInputMeasurementUnitByValue } from './utils.svelte';
+
+	import { General } from '.';
+
+	import * as Select from '$lib/components/ui/select';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
-		class: className,
-		id,
 		required,
 		units,
 		oninput,

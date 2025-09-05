@@ -1,13 +1,15 @@
 <script lang="ts" module>
-	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
-	import * as Table from '$lib/components/custom/table';
-	import * as Layout from '$lib/components/settings/layout';
-	import { m } from '$lib/paraglide/messages';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+
 	import Update from './update.svelte';
+
+	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
+	import * as Table from '$lib/components/custom/table';
+	import * as Layout from '$lib/components/settings/layout';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">
@@ -17,14 +19,12 @@
 	const configuration = writable<Configuration>();
 	let isConfigurationLoading = $state(true);
 
-	let isMounted = $state(false);
 	onMount(async () => {
 		try {
 			await configurationClient.getConfiguration({}).then((response) => {
 				configuration.set(response);
 				isConfigurationLoading = false;
 			});
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

@@ -1,6 +1,9 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card/index.js';
 	import type { Snippet } from 'svelte';
+
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { cn } from '$lib/utils';
+
 	let {
 		title,
 		description,
@@ -18,8 +21,7 @@
 	} = $props();
 </script>
 
-<!-- <Card.Root class={className}> -->
-<Card.Root class="flex flex-col">
+<Card.Root class={cn('flex flex-col', className)}>
 	<Card.Header class="flex flex-col items-center space-y-0 border-b p-0 sm:flex-row ">
 		<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 			<!-- <div class="flex flex-1 flex-col justify-center px-6"> -->

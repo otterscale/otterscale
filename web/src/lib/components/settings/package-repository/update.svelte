@@ -1,4 +1,10 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import {
 		ConfigurationService,
 		type Configuration,
@@ -9,11 +15,6 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -51,7 +52,7 @@
 			{m.edit()}
 		</Modal.Trigger>
 		<Modal.Content>
-			<Modal.Header>{m.edit_ntp_server()}</Modal.Header>
+			<Modal.Header>{m.edit_package_repository()}</Modal.Header>
 			<Form.Root>
 				<Form.Fieldset>
 					<Form.Field>

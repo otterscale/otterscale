@@ -1,13 +1,14 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
+
 	import type { Image, Image_Snapshot, ProtectImageSnapshotRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
 </script>
 
 <script lang="ts">
@@ -40,7 +41,7 @@
 	onclick={() => {
 		toast.promise(() => storageClient.protectImageSnapshot(request), {
 			loading: `Protecting ${request.snapshotName}...`,
-			success: (response) => {
+			success: () => {
 				reloadManager.force();
 				return `Protect ${request.snapshotName}`;
 			},

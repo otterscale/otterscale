@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { PrometheusDriver } from 'prometheus-query';
+	import { getContext, onMount } from 'svelte';
+
 	import { page } from '$app/state';
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
@@ -7,10 +11,7 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb } from '$lib/stores';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { PrometheusDriver } from 'prometheus-query';
-	import { getContext, onMount } from 'svelte';
+	import { activeScope, breadcrumb } from '$lib/stores';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({ parents: [], current: dynamicPaths.machines(page.params.scope) });
@@ -40,7 +41,7 @@
 	});
 </script>
 
-{#if prometheusDriver}
+{#if prometheusDriver && $activeScope}
 	<div class="mx-auto grid w-full gap-6">
 		<div class="grid gap-1">
 			<h1 class="text-2xl font-bold tracking-tight md:text-3xl">{m.dashboard()}</h1>
@@ -58,7 +59,7 @@
 				<Reloader bind:checked={isReloading} />
 			</div>
 			<Tabs.Content value="overview">
-				<Overview {prometheusDriver} bind:isReloading />
+				<Overview {prometheusDriver} scope={$activeScope} bind:isReloading />
 			</Tabs.Content>
 			<Tabs.Content value="analytics">
 				<!-- <Dashboard client={prometheusDriver} {machines} /> -->

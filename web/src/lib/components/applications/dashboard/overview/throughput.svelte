@@ -1,22 +1,23 @@
 <script lang="ts">
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatIO } from '$lib/formatter';
-	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
-	import { cn } from '$lib/utils';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
+
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart/index.js';
+	import { formatIO } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 
 	let {
 		prometheusDriver,
+		scope,
 		isReloading = $bindable(),
-		span
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let reads = $state([] as SampleValue[]);
 	let writes = $state([] as SampleValue[]);
@@ -24,12 +25,12 @@
 		reads.map((sample, index) => ({
 			time: sample.time,
 			read: sample.value,
-			write: writes[index]?.value ?? 0
-		}))
+			write: writes[index]?.value ?? 0,
+		})),
 	);
 	const throughputsConfigurations = {
 		read: { label: 'Read', color: 'var(--chart-1)' },
-		write: { label: 'Write', color: 'var(--chart-2)' }
+		write: { label: 'Write', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 	function fetch() {
 		prometheusDriver
@@ -37,13 +38,13 @@
 				`
 						sum(
 						rate(
-							container_fs_reads_bytes_total{container!="",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)",job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
+							container_fs_reads_bytes_total{container!="",device=~"(/dev/)?(mmcblk.p.+|nvme.+|rbd.+|sd.+|vd.+|xvd.+|dm-.+|md.+|dasd.+)",job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
 						)
 						)
 						`,
-				new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new Date().setMinutes(0, 0, 0),
-				2 * 60
+				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+				new SvelteDate().setMinutes(0, 0, 0),
+				2 * 60,
 			)
 			.then((response) => {
 				reads = response.result[0].values;
@@ -53,13 +54,13 @@
 				`
 						sum(
 						rate(
-							container_fs_writes_bytes_total{container!="",job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
+							container_fs_writes_bytes_total{container!="",job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace!=""}[4m]
 						)
 						)
 						`,
-				new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new Date().setMinutes(0, 0, 0),
-				2 * 60
+				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+				new SvelteDate().setMinutes(0, 0, 0),
+				2 * 60,
 			)
 			.then((response) => {
 				writes = response.result[0].values;
@@ -86,7 +87,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('gap-2', span)}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header>
 			<Card.Title>{m.storage_throughPut()}</Card.Title>
 			<Card.Description>{m.read_and_write()}</Card.Description>
@@ -102,13 +103,13 @@
 						{
 							key: 'read',
 							label: throughputsConfigurations.read.label,
-							color: throughputsConfigurations.read.color
+							color: throughputsConfigurations.read.color,
 						},
 						{
 							key: 'write',
 							label: throughputsConfigurations.write.label,
-							color: throughputsConfigurations.write.color
-						}
+							color: throughputsConfigurations.write.color,
+						},
 					]}
 					seriesLayout="stack"
 					props={{
@@ -116,13 +117,13 @@
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween'
+							motion: 'tween',
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 						},
-						yAxis: { format: () => '' }
+						yAxis: { format: () => '' },
 					}}
 				>
 					{#snippet tooltip()}
@@ -134,7 +135,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>

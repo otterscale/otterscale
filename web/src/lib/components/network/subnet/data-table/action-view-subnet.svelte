@@ -1,11 +1,12 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+
 	import type { Network_Subnet } from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { m } from '$lib/paraglide/messages';
-	import Icon from '@iconify/svelte';
 </script>
 
 <script lang="ts">
@@ -122,7 +123,7 @@
 
 				<Form.Field>
 					<SingleInput.Boolean
-						descriptor={(value) => m.managed_allocation()}
+						descriptor={() => m.managed_allocation()}
 						value={subnet.managedAllocation}
 						disabled
 					/>
@@ -130,7 +131,7 @@
 
 				<Form.Field>
 					<SingleInput.Boolean
-						descriptor={(value) => m.active_discovery()}
+						descriptor={() => m.active_discovery()}
 						value={subnet.activeDiscovery}
 						disabled
 					/>
@@ -138,7 +139,7 @@
 
 				<Form.Field>
 					<SingleInput.Boolean
-						descriptor={(value) => m.allow_dns_resolution()}
+						descriptor={() => m.allow_dns_resolution()}
 						value={subnet.allowDnsResolution}
 						disabled
 					/>
@@ -146,7 +147,7 @@
 
 				<Form.Field>
 					<SingleInput.Boolean
-						descriptor={(value) => m.allow_proxy_access()}
+						descriptor={() => m.allow_proxy_access()}
 						value={subnet.allowProxyAccess}
 						disabled
 					/>

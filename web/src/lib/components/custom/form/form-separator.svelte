@@ -4,12 +4,7 @@
 </script>
 
 <script lang="ts">
-	let {
-		ref = $bindable(null),
-		class: className,
-		children,
-		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLElement>> = $props();
+	let { ref = $bindable(null), children, ...restProps }: WithElementRef<HTMLAttributes<HTMLElement>> = $props();
 </script>
 
 <span bind:this={ref} data-slot="form-separator" class="select-none" {...restProps}>

@@ -1,12 +1,14 @@
-<script lang="ts" generics="TData">
+<script lang="ts">
+	import { type Table } from '@tanstack/table-core';
+
+	import Pickers from './pickers.svelte';
+
 	import type { TestResult } from '$lib/api/bist/v1/bist_pb';
 	import Content from '$lib/components/custom/chart/content/scatter/scatter.svelte';
 	import Description from '$lib/components/custom/chart/description.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { BistDashboardManager } from '$lib/components/settings/built-in-self-test/utils/bistManager';
-	import { type Table } from '@tanstack/table-core';
-	import Pickers from './pickers.svelte';
 
 	let { table }: { table: Table<TestResult> } = $props();
 	let mode = $state('read');

@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { getContext, onDestroy, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext } from 'svelte';
+	import { writable } from 'svelte/store';
+
 	import { page } from '$app/state';
 	import { FacilityService, type Facility } from '$lib/api/facility/v1/facility_pb';
 	import { SetupScopeGrid } from '$lib/components/setup';

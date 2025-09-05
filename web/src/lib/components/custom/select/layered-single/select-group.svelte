@@ -1,6 +1,7 @@
 <script lang="ts" module>
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 </script>
 
 <script lang="ts">

@@ -1,4 +1,7 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import type { Row } from '@tanstack/table-core';
+
 	import { page } from '$app/state';
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
@@ -6,8 +9,6 @@
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import Icon from '@iconify/svelte';
-	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
 		row_picker,

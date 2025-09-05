@@ -2,6 +2,7 @@
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext, setContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+
 	import { IndexManager, StepManager } from './utils.svelte';
 </script>
 

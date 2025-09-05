@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
 	import { page } from '$app/state';
 	import { type Facility, type Facility_Status, type Facility_Unit } from '$lib/api/facility/v1/facility_pb';
 	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
@@ -8,9 +9,9 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Switch } from '$lib/components/ui/switch';
+	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
 	import { premiumTier } from '$lib/stores';
-	import { m } from '$lib/paraglide/messages';
 
 	let {
 		services,
@@ -57,7 +58,7 @@
 		</div>
 	</div>
 
-	{#each Object.entries(services) as [key, service]}
+	{#each Object.values(services) as service}
 		{@const facility = findFacilityByService(service.name)}
 		{@const count = countUnitsByService(service.name)}
 

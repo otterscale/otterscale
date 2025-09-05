@@ -1,12 +1,13 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { type Writable } from 'svelte/store';
+
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import * as Table from '$lib/components/custom/table';
 	import { Badge } from '$lib/components/ui/badge';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import Icon from '@iconify/svelte';
-	import { type Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -21,7 +22,7 @@
 
 <Layout.Statistic.Root class={isExpand ? 'col-span-3' : 'col-span-1'}>
 	<Layout.Statistic.Header>
-		<Layout.Statistic.Title>{m.persist_volume_claims()}</Layout.Statistic.Title>
+		<Layout.Statistic.Title>{m.persistent_volume_claims()}</Layout.Statistic.Title>
 		<Layout.Statistic.Action>
 			<Button
 				disabled={$application.persistentVolumeClaims.length === 0}

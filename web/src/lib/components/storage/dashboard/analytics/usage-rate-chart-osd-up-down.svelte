@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { PrometheusDriver } from 'prometheus-query';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/arc/arc.svelte';
@@ -6,9 +8,8 @@
 	import ErrorLayout from '$lib/components/custom/chart/layout/small-error.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
-	import { m } from '$lib/paraglide/messages';
-	import { PrometheusDriver } from 'prometheus-query';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import { m } from '$lib/paraglide/messages';
 
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
@@ -65,6 +66,6 @@
 			<Badge variant="outline">{outNumber} {CHART_FOOTER}</Badge>
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
 {/await}

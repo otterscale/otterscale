@@ -1,11 +1,13 @@
+import { timestampDate } from '@bufbuild/protobuf/wkt';
+import type { ColumnDef } from '@tanstack/table-core';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
+
 import type { Subvolume_Snapshot } from '$lib/api/storage/v1/storage_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
-import { timestampDate } from '@bufbuild/protobuf/wkt';
-import type { ColumnDef } from '@tanstack/table-core';
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),
@@ -51,7 +53,7 @@ const columns: ColumnDef<Subvolume_Snapshot>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.createTime, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.createdAt,
 				nextRow.original.createdAt,

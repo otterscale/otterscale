@@ -1,22 +1,23 @@
 <script lang="ts">
 	import { scaleUtc } from 'd3-scale';
-	import { Area, AreaChart, ChartClipPath } from 'layerchart';
 	import { curveNatural } from 'd3-shape';
-	import ChartContainer from '$lib/components/ui/chart/chart-container.svelte';
-	import * as Chart from '$lib/components/ui/chart/index.js';
+	import { Area, AreaChart, ChartClipPath } from 'layerchart';
 	import { cubicInOut } from 'svelte/easing';
-	import {
-		generateChartConfig,
-		getSeries,
-		type DataPoint,
-		type ChartConfig,
-	} from '$lib/components/custom/prometheus';
+
 	import {
 		formatXAxisDate,
 		formatTooltipDate,
 		getXAxisTicks,
 		type TimeRange,
 	} from '$lib/components/custom/chart/units/formatter';
+	import {
+		generateChartConfig,
+		getSeries,
+		type DataPoint,
+		type ChartConfig,
+	} from '$lib/components/custom/prometheus';
+	import ChartContainer from '$lib/components/ui/chart/chart-container.svelte';
+	import * as Chart from '$lib/components/ui/chart/index.js';
 
 	// Constants
 	const DEFAULT_CHART_HEIGHT = 'h-[250px]';
@@ -74,7 +75,7 @@
 	>
 		{#snippet marks({ series: chartSeries, getAreaProps })}
 			<defs>
-				{#each chartSeries as s, i (s.key)}
+				{#each chartSeries as s (s.key)}
 					{@const key = s.key.replace(/\s+/g, '')}
 					<linearGradient id="fill{key}" x1="0" y1="0" x2="0" y2="1">
 						<stop offset="5%" stop-color={s.color} stop-opacity={GRADIENT_OPACITY_START} />

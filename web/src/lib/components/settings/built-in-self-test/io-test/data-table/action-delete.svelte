@@ -1,4 +1,9 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { toast } from 'svelte-sonner';
+
 	import type { DeleteTestResultRequest, TestResult } from '$lib/api/bist/v1/bist_pb';
 	import { BISTService } from '$lib/api/bist/v1/bist_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -6,10 +11,6 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { m } from '$lib/paraglide/messages';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
 </script>
 
 <script lang="ts">

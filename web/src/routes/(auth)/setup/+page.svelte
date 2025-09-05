@@ -1,20 +1,22 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fly } from 'svelte/transition';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
+
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService, type WatchStatusResponse } from '$lib/api/environment/v1/environment_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
-	import { Button } from '$lib/components/ui/button';
+	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import * as Code from '$lib/components/custom/code';
+	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths, staticPaths, urlIcon } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';
 
 	// Constants
-	const INSTALL_CODE = `sh -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh" -- url=${env.PUBLIC_API_URL})`;
+	const INSTALL_CODE = `bash -c "$(curl -fsSL https://raw.githubusercontent.com/otterscale/otterscale/main/scripts/install.sh)" -- url=${env.PUBLIC_API_URL}`;
 	const RETRY_DELAY = 2000;
 	const services = (scope: Scope) => [
 		{ path: dynamicPaths.models(scope.name), description: m.models_description() },
@@ -104,8 +106,16 @@
 	});
 </script>
 
-<main class="flex flex-1 flex-col px-2 py-20 md:px-4 md:py-24">
-	<div class="flex flex-col items-center justify-center">
+<main class="bg-sidebar relative flex min-h-screen flex-col overflow-hidden px-2 py-20 md:px-4 md:py-24">
+	<!-- Background Image -->
+	<div class="absolute inset-x-0 top-0 flex h-full w-full items-center justify-center opacity-100">
+		<img
+			src={SquareGridImage}
+			alt="square-grid"
+			class="[mask-image:radial-gradient(75%_75%_at_center,white,transparent)] opacity-90"
+		/>
+	</div>
+	<div class="z-10 flex flex-col items-center justify-center">
 		<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">
 			{m.setup_environment()}
 		</h2>
@@ -160,7 +170,7 @@
 				</Button>
 
 				<div
-					class="border-border bg-card text-card-foreground dark m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
+					class="border-border bg-secondary dark text-card-foreground m-6 aspect-video w-full max-w-6xl flex-col rounded-xl border font-mono text-sm shadow-sm"
 				>
 					<div class="flex border-b border-inherit p-4">
 						<div class="flex items-center gap-2">

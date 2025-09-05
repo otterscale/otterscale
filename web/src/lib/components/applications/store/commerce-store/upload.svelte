@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -6,7 +8,6 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
 
 	let open = $state(false);
 	function close() {
@@ -49,7 +50,7 @@
 					</div>
 					<div class="grid gap-2">
 						<Label>Logo URL</Label>
-						<Input value="otterscale.io/logo.svg" />
+						<Input value="otterscale.com/logo.svg" />
 					</div>
 					<div class="grid grid-cols-2 gap-4">
 						<div class="grid gap-2">

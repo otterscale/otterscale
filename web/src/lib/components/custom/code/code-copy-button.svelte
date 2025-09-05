@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { CopyButton } from '$lib/components/custom/copy-button';
-	import { cn } from '$lib/utils';
 	import { useCodeCopyButton } from './code.svelte.js';
 	import type { CodeCopyButtonProps } from './types.js';
+
+	import { CopyButton } from '$lib/components/custom/copy-button';
+	import { cn } from '$lib/utils';
 
 	let {
 		ref = $bindable(null),

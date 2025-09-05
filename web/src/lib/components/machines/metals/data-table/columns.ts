@@ -1,10 +1,12 @@
+import type { ColumnDef } from '@tanstack/table-core';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
+
 import type { Machine } from '$lib/api/machine/v1/machine_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
-import type { ColumnDef } from '@tanstack/table-core';
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
 
 const messages = {
 	fqdn_ip: m.fqdn(),
@@ -38,14 +40,14 @@ const columns: ColumnDef<Machine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.fqdn_ip, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.fqdn,
 				nextRow.original.fqdn,
 				(p: string, n: string) => p.localeCompare(n) < 0,
 				(p, n) => p === n,
 			),
-		filterFn: (row, columnId, filterValue: string | undefined) => {
+		filterFn: (row, filterValue: string | undefined) => {
 			if (filterValue === undefined) {
 				return true;
 			}
@@ -81,7 +83,7 @@ const columns: ColumnDef<Machine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.cores_arch, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.cpuCount,
 				nextRow.original.cpuCount,
@@ -97,7 +99,7 @@ const columns: ColumnDef<Machine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.ram, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.memoryMb,
 				nextRow.original.memoryMb,
@@ -113,7 +115,7 @@ const columns: ColumnDef<Machine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.disk, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.blockDevices.length,
 				nextRow.original.blockDevices.length,
@@ -129,7 +131,7 @@ const columns: ColumnDef<Machine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.storage, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.storageMb,
 				nextRow.original.storageMb,
@@ -154,7 +156,7 @@ const columns: ColumnDef<Machine>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.tags, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.tags.length,
 				nextRow.original.tags.length,

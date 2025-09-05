@@ -1,7 +1,8 @@
+import { sso } from '@better-auth/sso';
 import { betterAuth } from 'better-auth';
 import { getMigrations } from 'better-auth/db';
 import { Pool } from 'pg';
-import { sso } from '@better-auth/sso';
+
 import { env } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
 
@@ -43,17 +44,13 @@ export const auth = betterAuth({
 		},
 	},
 	telemetry: { enabled: false },
-	trustedOrigins: [publicEnv.PUBLIC_URL],
+	trustedOrigins: publicEnv.PUBLIC_URL ? [publicEnv.PUBLIC_URL] : [],
 });
 
 async function initializeDatabase() {
-	try {
-		const { runMigrations } = await getMigrations(auth.options);
-		await runMigrations();
-		console.log('Database migrations completed successfully');
-	} catch (error) {
-		throw error;
-	}
+	const { runMigrations } = await getMigrations(auth.options);
+	await runMigrations();
+	console.log('Database migrations completed successfully');
 }
 
 if (!process.env.BUILD) {

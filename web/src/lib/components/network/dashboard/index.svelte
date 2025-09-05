@@ -1,19 +1,21 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
-	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
-	import { Reloader } from '$lib/components/custom/reloader';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { m } from '$lib/paraglide/messages';
-	import { activeScope } from '$lib/stores';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
+
 	import AvailableIPs from './overview/available-ips.svelte';
 	import DHCP from './overview/dhcp.svelte';
 	import Discovery from './overview/discovery.svelte';
 	import DNSServer from './overview/dns-server.svelte';
 	import NetworkTrafficByTime from './overview/network-traffic-by-time.svelte';
 	import NetworkTraffic from './overview/network-traffic.svelte';
+
+	import { env } from '$env/dynamic/public';
+	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
+	import { Reloader } from '$lib/components/custom/reloader';
+	import * as Tabs from '$lib/components/ui/tabs';
+	import { m } from '$lib/paraglide/messages';
+	import { activeScope } from '$lib/stores';
 
 	const transport: Transport = getContext('transport');
 	const environmentService = createClient(EnvironmentService, transport);
@@ -56,21 +58,27 @@
 				</Tabs.List>
 				<Reloader bind:checked={isReloading} />
 			</div>
-			<Tabs.Content
-				value="overview"
-				class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10"
-			>
-				<Discovery bind:isReloading span="col-span-2" />
-				<DHCP bind:isReloading span="col-span-2" />
-				<AvailableIPs bind:isReloading span="col-span-2 row-span-2" />
-				<NetworkTrafficByTime
-					{prometheusDriver}
-					scope={$activeScope}
-					bind:isReloading
-					span="col-span-4 row-span-2"
-				/>
-				<DNSServer bind:isReloading span="col-span-2" />
-				<NetworkTraffic {prometheusDriver} scope={$activeScope} bind:isReloading span="col-span-4 row-span-2" />
+			<Tabs.Content value="overview">
+				<div class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10">
+					<div class="col-span-2">
+						<Discovery bind:isReloading />
+					</div>
+					<div class="col-span-2">
+						<DHCP bind:isReloading />
+					</div>
+					<div class="col-span-2 row-span-2">
+						<AvailableIPs bind:isReloading />
+					</div>
+					<div class="col-span-4 row-span-2">
+						<NetworkTrafficByTime {prometheusDriver} scope={$activeScope} bind:isReloading />
+					</div>
+					<div class="col-span-2">
+						<DNSServer bind:isReloading />
+					</div>
+					<div class="col-span-4 row-span-2">
+						<NetworkTraffic {prometheusDriver} scope={$activeScope} bind:isReloading />
+					</div>
+				</div>
 			</Tabs.Content>
 			<Tabs.Content value="analytics"></Tabs.Content>
 		</Tabs.Root>

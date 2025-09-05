@@ -1,17 +1,15 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card/index.js';
-	import Title from '$lib/components/custom/chart/title.svelte';
-	import Description from '$lib/components/custom/chart/description.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
+	import Description from '$lib/components/custom/chart/description.svelte';
+	import Title from '$lib/components/custom/chart/title.svelte';
+	import * as Card from '$lib/components/ui/card/index.js';
 
 	let {
 		title,
 		description,
-		class: className,
 	}: {
 		title: string;
 		description?: string;
-		class?: string;
 	} = $props();
 </script>
 

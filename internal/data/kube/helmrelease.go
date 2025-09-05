@@ -67,16 +67,16 @@ func (r *helmRelease) Install(restConfig *rest.Config, namespace, name string, d
 	client.DryRun = dryRun
 	client.ReleaseName = name
 	client.Labels = map[string]string{
-		"app.otterscale.io/release-name": name,
-		// "app.otterscale.io/chart-ref":    chartRef, // TODO: invalid label format
+		"app.otterscale.com/release-name": name,
+		// "app.otterscale.com/chart-ref":    chartRef, // TODO: invalid label format
 	}
 
-	chartPath, err := client.ChartPathOptions.LocateChart(chartRef, r.kube.envSettings)
+	chartPath, err := client.LocateChart(chartRef, r.kube.envSettings)
 	if err != nil {
 		return nil, err
 	}
 
-	chart, err := r.chartInstall(chartPath, client.DependencyUpdate, client.ChartPathOptions.Keyring)
+	chart, err := r.chartInstall(chartPath, client.DependencyUpdate, client.Keyring)
 	if err != nil {
 		return nil, err
 	}
@@ -110,12 +110,12 @@ func (r *helmRelease) Upgrade(restConfig *rest.Config, namespace, name string, d
 	client.Namespace = namespace
 	client.DryRun = dryRun
 
-	chartPath, err := client.ChartPathOptions.LocateChart(chartRef, r.kube.envSettings)
+	chartPath, err := client.LocateChart(chartRef, r.kube.envSettings)
 	if err != nil {
 		return nil, err
 	}
 
-	chart, err := r.chartInstall(chartPath, client.DependencyUpdate, client.ChartPathOptions.Keyring)
+	chart, err := r.chartInstall(chartPath, client.DependencyUpdate, client.Keyring)
 	if err != nil {
 		return nil, err
 	}

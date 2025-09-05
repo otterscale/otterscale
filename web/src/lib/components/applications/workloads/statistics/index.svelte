@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
 	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
 	import ContentSubtitle from '$lib/components/custom/chart/content/text/text-with-subtitle.svelte';
@@ -6,9 +10,6 @@
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { formatProgressColor } from '$lib/formatter';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	let { scopeUuid, facilityName }: { scopeUuid: string; facilityName: string } = $props();
 
@@ -19,7 +20,6 @@
 
 	// State
 	let selectedValue = $state('');
-	let isMounted = $state(false);
 
 	// Computed values
 	const filteredApplications = $derived($applications.filter((a) => a.type === selectedValue));
@@ -48,8 +48,6 @@
 			if (response.applications && response.applications[0]) {
 				selectedValue = response.applications[0].type;
 			}
-
-			isMounted = true;
 		} catch (error) {
 			console.error('Error fetching applications:', error);
 		}
@@ -95,7 +93,7 @@
 		{#snippet content()}
 			<ContentSubtitle
 				value={Math.round(healthByType)}
-				unit={'%'}
+				unit="%"
 				subtitle={`${healthyPods} Running over ${totalPods} pods`}
 			/>
 		{/snippet}

@@ -1,11 +1,13 @@
 <script lang="ts" module>
-	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
-	import * as Popover from '$lib/components/ui/popover';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { getContext } from 'svelte';
+
 	import { validate, type OptionManager } from './utils.svelte';
+
+	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button';
+	import * as Popover from '$lib/components/ui/popover';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">
@@ -39,7 +41,7 @@
 	{#if children}
 		{@render children?.()}
 	{:else if optionManager.selectedOption.label}
-		<div class={'flex items-center gap-1 rounded-sm p-1 font-normal'}>
+		<div class="flex items-center gap-1 rounded-sm p-1 font-normal">
 			<Icon
 				icon={optionManager.selectedOption.icon ?? 'ph:empty'}
 				class={cn('size-4', optionManager.selectedOption ? 'visibale' : 'hidden')}

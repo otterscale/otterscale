@@ -1,13 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import { buttonVariants } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { m } from '$lib/paraglide/messages';
-	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { scaleUtc } from 'd3-scale';
@@ -17,11 +8,22 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
+	import { page } from '$app/state';
+	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { m } from '$lib/paraglide/messages';
+	import { cn } from '$lib/utils';
+
 	let {
 		prometheusDriver,
+		scope,
 		isReloading = $bindable(),
-		span,
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -46,7 +48,7 @@
 	async function fetch() {
 		prometheusDriver
 			.rangeQuery(
-				`1 - (sum(irate(node_cpu_seconds_total{mode="idle"}[2m])) / sum(irate(node_cpu_seconds_total[2m])))`,
+				`1 - (sum(irate(node_cpu_seconds_total{juju_model_uuid="${scope.uuid}",mode="idle"}[2m])) / sum(irate(juju_model_uuid="${scope.uuid}",node_cpu_seconds_total[2m])))`,
 				Date.now() - 10 * 60 * 1000,
 				Date.now(),
 				2 * 60,
@@ -80,7 +82,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn(span, 'gap-2')}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header>
 			<Card.Title class="flex flex-wrap items-center justify-between gap-6">
 				<div class="flex items-center gap-2 truncate text-sm font-medium tracking-tight">

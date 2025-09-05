@@ -19,7 +19,7 @@ func NewPremiumService() *PremiumService {
 
 var _ pbconnect.PremiumServiceHandler = (*PremiumService)(nil)
 
-func (s *PremiumService) GetTier(ctx context.Context, req *connect.Request[pb.GetTierRequest]) (*connect.Response[pb.GetTierResponse], error) {
+func (s *PremiumService) GetTier(_ context.Context, _ *connect.Request[pb.GetTierRequest]) (*connect.Response[pb.GetTierResponse], error) {
 	resp := &pb.GetTierResponse{}
 	return connect.NewResponse(resp), nil
 }

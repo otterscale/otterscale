@@ -1,7 +1,6 @@
 <script lang="ts" module>
-	import { type Application_Chart, type Application_Release } from '$lib/api/application/v1/application_pb';
-	import { m } from '$lib/paraglide/messages';
 	import { type Writable } from 'svelte/store';
+
 	import Chart from './chart.svelte';
 	import FilterDeprecation from './filter-deprecation.svelte';
 	import FilterKeyword from './filter-keyword.svelte';
@@ -13,6 +12,9 @@
 	import Thumbnail from './thumbnail.svelte';
 	import Upload from './upload.svelte';
 	import { FilterManager, PaginationManager } from './utils';
+
+	import { type Application_Chart, type Application_Release } from '$lib/api/application/v1/application_pb';
+	import { m } from '$lib/paraglide/messages';
 </script>
 
 <script lang="ts">

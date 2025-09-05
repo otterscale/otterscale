@@ -1,8 +1,10 @@
-import type { User_Key } from '$lib/api/storage/v1/storage_pb';
-import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import type { ColumnDef } from '@tanstack/table-core';
+
 import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
+
+import type { User_Key } from '$lib/api/storage/v1/storage_pb';
+import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {

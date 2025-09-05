@@ -1,17 +1,17 @@
 <script lang="ts" module>
-	import type { UpdateUserRequest, User } from '$lib/api/storage/v1/storage_pb';
-	import { m } from '$lib/paraglide/messages.js';
-	import { StorageService } from '$lib/api/storage/v1/storage_pb';
-	import * as Form from '$lib/components/custom/form';
-	import { Single as SingleInput } from '$lib/components/custom/input';
-	import { SingleStep as Modal } from '$lib/components/custom/modal';
-	import type { ReloadManager } from '$lib/components/custom/reloader';
-	import { currentCeph } from '$lib/stores';
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { user_suspended_descriptor } from './helper';
+
+	import { StorageService } from '$lib/api/storage/v1/storage_pb';
+	import type { UpdateUserRequest, User } from '$lib/api/storage/v1/storage_pb';
+	import * as Form from '$lib/components/custom/form';
+	import { Single as SingleInput } from '$lib/components/custom/input';
+	import { SingleStep as Modal } from '$lib/components/custom/modal';
+	import type { ReloadManager } from '$lib/components/custom/reloader';
+	import { m } from '$lib/paraglide/messages.js';
+	import { currentCeph } from '$lib/stores';
 </script>
 
 <script lang="ts">
@@ -67,7 +67,7 @@
 				<Form.Field>
 					<SingleInput.Boolean
 						format="checkbox"
-						descriptor={user_suspended_descriptor}
+						descriptor={() => m.suspend()}
 						bind:value={request.suspended}
 					/>
 					<Form.Help>
@@ -90,7 +90,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.updateUser(request), {
 							loading: `Updating ${request.userId}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Update ${request.userId}`;
 							},

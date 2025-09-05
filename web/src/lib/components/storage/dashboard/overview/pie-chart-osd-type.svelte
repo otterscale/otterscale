@@ -1,14 +1,21 @@
 <script lang="ts">
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
-	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
-	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { PieChart, Text } from 'layerchart';
 	import { PrometheusDriver } from 'prometheus-query';
+	import { onMount } from 'svelte';
+
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { m } from '$lib/paraglide/messages';
 
 	// Props
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let {
+		client,
+		scope,
+		isReloading = $bindable(),
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = m.osd_type();
@@ -53,88 +60,96 @@
 		return config as Chart.ChartConfig;
 	}
 
-	function transformResponseData(response: any, chartConfig: Chart.ChartConfig) {
-		const chartData = response.result.map((series: any, index: number) => {
-			const deviceClass = series.metric?.labels.device_class || UNKNOWN_DEVICE_CLASS;
-			const count = Number(series.value?.value || 0);
-			const config = getDeviceClassConfig(deviceClass, index);
-
-			return {
-				deviceClass,
-				count,
-				color: config.color,
-				fill: config.color,
-				label: config.label,
-			};
-		});
-
-		const total = chartData.reduce((sum: number, item: { count: number }) => sum + item.count, 0);
-
-		return { chartData, total };
-	}
-
 	// Queries
 	const queries = $derived({
 		osdTypeCount: `count by (device_class) (ceph_osd_metadata{juju_model_uuid=~"${scope.uuid}"})`,
 	});
 
-	// Data fetching function
-	async function fetchMetrics() {
-		try {
-			const response = await client.instantQuery(queries.osdTypeCount);
+	// Auto Update
+	type ChartDataItem = {
+		deviceClass: string;
+		count: number;
+		color: string;
+		fill: string;
+		label: string;
+	};
 
-			if (!response?.result?.length) {
-				return {
-					chartData: [],
-					total: 0,
-					chartConfig: {} as Chart.ChartConfig,
-				};
+	let response = $state({
+		chartData: [] as ChartDataItem[],
+		total: 0,
+		chartConfig: {} as Chart.ChartConfig,
+	});
+	let isLoading = $state(true);
+	const reloadManager = new ReloadManager(fetch);
+	async function fetch() {
+		try {
+			const prometheusResponse = await client.instantQuery(queries.osdTypeCount);
+
+			if (!prometheusResponse?.result?.length) {
+				response = { chartData: [], total: 0, chartConfig: {} as Chart.ChartConfig };
+				return;
 			}
 
-			// Extract device classes and generate chart configuration
-			const deviceClasses = response.result.map(
-				(series: any) => series.metric?.labels.device_class || UNKNOWN_DEVICE_CLASS,
-			);
+			const chartData = prometheusResponse.result.map((series, index) => {
+				const deviceClass = series.metric?.labels.device_class || UNKNOWN_DEVICE_CLASS;
+				const count = Number(series.value?.value || 0);
+				const config = getDeviceClassConfig(deviceClass, index);
+
+				return {
+					deviceClass,
+					count,
+					color: config.color,
+					fill: config.color,
+					label: config.label,
+				};
+			});
+
+			const total = chartData.reduce((sum, item) => sum + item.count, 0);
+			const deviceClasses = chartData.map((item) => item.deviceClass);
 			const chartConfig = generateChartConfig(deviceClasses);
 
-			// Transform response data
-			const { chartData, total } = transformResponseData(response, chartConfig);
-
-			return { chartData, total, chartConfig };
+			response = { chartData, total, chartConfig };
 		} catch (error) {
 			console.error('Failed to fetch OSD type data:', error);
-			return {
+			response = {
 				chartData: [],
 				total: 0,
 				chartConfig: {} as Chart.ChartConfig,
 			};
 		}
 	}
-	// Component constants
-	const CHART_INNER_RADIUS = 60;
-	const CHART_PADDING = 28;
-	const CHART_CLASSES = 'mx-auto aspect-square max-h-[200px]';
-	const CARD_CLASSES = 'gap-2';
+
+	$effect(() => {
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#await fetchMetrics()}
+{#if isLoading}
 	<ComponentLoading />
-{:then response}
-	<Card.Root class={CARD_CLASSES}>
+{:else}
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{CHART_TITLE}</Card.Title>
 			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
 		</Card.Header>
 		<Card.Content class="flex-1">
 			{#if response.chartData.length > 0}
-				<Chart.Container config={response.chartConfig} class={CHART_CLASSES}>
+				<Chart.Container config={response.chartConfig} class="mx-auto aspect-square max-h-[200px]">
 					<PieChart
 						data={response.chartData}
 						key="deviceClass"
 						value="count"
 						c="color"
-						innerRadius={CHART_INNER_RADIUS}
-						padding={CHART_PADDING}
+						innerRadius={60}
+						padding={28}
 						props={{ pie: { motion: 'tween' } }}
 					>
 						{#snippet aboveMarks()}
@@ -165,16 +180,4 @@
 			{/if}
 		</Card.Content>
 	</Card.Root>
-{:catch error}
-	<Card.Root class={CARD_CLASSES}>
-		<Card.Header class="items-center">
-			<Card.Title>{CHART_TITLE}</Card.Title>
-			<Card.Description>{CHART_DESCRIPTION}</Card.Description>
-		</Card.Header>
-		<Card.Content class="flex-1">
-			<div class="text-destructive flex h-full items-center justify-center">
-				<p>Failed to load chart data</p>
-			</div>
-		</Card.Content>
-	</Card.Root>
-{/await}
+{/if}

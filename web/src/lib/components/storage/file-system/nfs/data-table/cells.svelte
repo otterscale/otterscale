@@ -1,19 +1,21 @@
 <script lang="ts" module>
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
+	import Icon from '@iconify/svelte';
+	import type { Row } from '@tanstack/table-core';
+	import { toast } from 'svelte-sonner';
+
+	import Actions from './cell-actions.svelte';
+
 	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Snapshot } from '$lib/components/storage/file-system/nfs/snapshot';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import * as Table from '$lib/components/ui/table';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
-	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import Icon from '@iconify/svelte';
-	import type { Row } from '@tanstack/table-core';
-	import { toast } from 'svelte-sonner';
-	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,
@@ -91,7 +93,7 @@
 												class="cursor-pointer"
 												onclick={async () => {
 													const text = row.original.export?.path ?? '';
-													navigator.clipboard.writeText(text).then((response) => {
+													navigator.clipboard.writeText(text).then(() => {
 														toast.success('Path copied to clipboard');
 													});
 												}}
@@ -121,7 +123,7 @@
 												class="cursor-pointer"
 												onclick={async () => {
 													const text = row.original.export?.command ?? '';
-													navigator.clipboard.writeText(text).then((response) => {
+													navigator.clipboard.writeText(text).then(() => {
 														toast.success('Command copied to clipboard');
 													});
 												}}

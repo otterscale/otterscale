@@ -1,10 +1,11 @@
 <script lang="ts" module>
-	import * as Label from '$lib/components/ui/label';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { Label as LabelPrimitive } from 'bits-ui';
 	import type { Snippet } from 'svelte';
+
+	import * as Label from '$lib/components/ui/label';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

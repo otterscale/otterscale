@@ -1,4 +1,11 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import {
 		ConfigurationService,
 		type Configuration,
@@ -9,12 +16,6 @@
 	import { Multiple as MultipleSelect, Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
-	import { writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -23,8 +24,6 @@
 	const transport: Transport = getContext('transport');
 	let distroSeriesOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	let distroSeriesArchitecturesMap: Record<string, Writable<SingleSelect.OptionType[]>> = {};
-	let isMounted = false;
-
 	const client = createClient(ConfigurationService, transport);
 	const defaults = {} as CreateBootImageRequest;
 	let request = $state(defaults);
@@ -39,8 +38,9 @@
 
 	const architecturesOptions = $derived(distroSeriesArchitecturesMap[request.distroSeries]);
 	$effect(() => {
-		request.distroSeries;
-		request.architectures = [];
+		if (request.distroSeries) {
+			request.architectures = [];
+		}
 	});
 
 	onMount(async () => {
@@ -66,8 +66,6 @@
 					]),
 				);
 			});
-
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

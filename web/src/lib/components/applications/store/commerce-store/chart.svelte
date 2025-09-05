@@ -1,4 +1,12 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import type { Snippet } from 'svelte';
+	import type { Writable } from 'svelte/store';
+
+	import Install from './chart-action-install-release.svelte';
+	import Actions from './chart-actions.svelte';
+	import { fuzzLogosIcon } from './utils';
+
 	import { type Application_Chart, type Application_Release } from '$lib/api/application/v1/application_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Avatar from '$lib/components/ui/avatar';
@@ -8,12 +16,6 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import type { Snippet } from 'svelte';
-	import type { Writable } from 'svelte/store';
-	import Install from './chart-action-install-release.svelte';
-	import Actions from './chart-actions.svelte';
-	import { fuzzLogosIcon } from './utils';
 </script>
 
 <script lang="ts">
@@ -34,7 +36,6 @@
 	let isDependanciesExpand = $state(false);
 	let isSourcesExpand = $state(false);
 	let isMaintainersExpand = $state(false);
-	let isKeywordsExpand = $state(false);
 </script>
 
 <Sheet.Root>

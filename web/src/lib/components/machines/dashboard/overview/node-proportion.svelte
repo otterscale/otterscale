@@ -1,18 +1,19 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart';
-	import { m } from '$lib/paraglide/messages';
-	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
 	import { PieChart, Text } from 'layerchart';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let { isReloading = $bindable(), span }: { isReloading: boolean; span: string } = $props();
+	import { page } from '$app/state';
+	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart';
+	import { m } from '$lib/paraglide/messages';
+
+	let { scope, isReloading = $bindable() }: { scope: Scope; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
@@ -38,7 +39,7 @@
 	} satisfies Chart.ChartConfig;
 
 	async function fetch() {
-		machineClient.listMachines({}).then((response) => {
+		machineClient.listMachines({ scopeUuid: scope.uuid }).then((response) => {
 			machines.set(response.machines);
 		});
 	}
@@ -63,7 +64,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn(span, 'flex flex-col')}>
+	<Card.Root class="flex h-full flex-col">
 		<Card.Header class="gap-0.5">
 			<Card.Title>
 				<div class="flex items-center gap-1 truncate text-sm font-medium tracking-tight">

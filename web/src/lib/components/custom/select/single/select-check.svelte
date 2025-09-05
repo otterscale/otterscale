@@ -1,19 +1,20 @@
 <script lang="ts" module>
-	import * as Command from '$lib/components/ui/command';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+
 	import type { OptionType } from './types';
 	import type { OptionManager } from './utils.svelte';
+
+	import * as Command from '$lib/components/ui/command';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">
 	let {
 		ref = $bindable(null),
 		class: className,
-		children,
 		option,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLSpanElement>> & { option: OptionType } = $props();

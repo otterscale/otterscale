@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { m } from '$lib/paraglide/messages';
-	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { ArcChart, Text } from 'layerchart';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let { isReloading = $bindable(), span }: { isReloading: boolean; span: string } = $props();
+	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { m } from '$lib/paraglide/messages';
+
+	let { isReloading = $bindable() }: { isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 
@@ -60,11 +61,20 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('gap-2', span)}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="items-center">
 			<Card.Title>{m.available_ip_addresses()}</Card.Title>
 			<Card.Description>
-				{targetSubnet?.subnet?.statistics?.availablePercent}
+				<Tooltip.Provider>
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							{targetSubnet?.subnet?.statistics?.availablePercent}
+						</Tooltip.Trigger>
+						<Tooltip.Content>
+							{targetSubnet?.subnet?.statistics?.available} / {targetSubnet?.subnet?.statistics?.total}
+						</Tooltip.Content>
+					</Tooltip.Root>
+				</Tooltip.Provider>
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="flex-1">

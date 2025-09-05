@@ -1,14 +1,15 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import { TagService, type DeleteTagRequest, type Tag } from '$lib/api/tag/v1/tag_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import { m } from '$lib/paraglide/messages';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">

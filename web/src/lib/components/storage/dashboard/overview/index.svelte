@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { PrometheusDriver } from 'prometheus-query';
+
 	import { default as AreaCapacity } from './area-chart-capacity.svelte';
 	import { default as AreaOSDReadLatency } from './area-chart-osd-read-latency.svelte';
 	import { default as AreaOSDWriteLatency } from './area-chart-osd-write-latency.svelte';
@@ -13,6 +13,8 @@
 	import { default as TextTimeTillFull } from './text-chart-time-till-full.svelte';
 	import { default as UsageCapacity } from './usage-chart-capacity.svelte';
 
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+
 	let {
 		client,
 		scope,
@@ -22,36 +24,36 @@
 
 <div class="grid auto-rows-auto grid-cols-2 gap-5 pt-4 md:grid-cols-4 lg:grid-cols-10">
 	<div class="col-span-2">
-		<TextClusterHealth {client} {scope} />
+		<TextClusterHealth {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<TextTimeTillFull {client} {scope} />
+		<TextTimeTillFull {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2 row-span-2">
-		<UsageCapacity {client} {scope} />
+		<UsageCapacity {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2 row-span-2">
-		<AreaCapacity {client} {scope} />
+		<AreaCapacity {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2 row-span-2">
-		<PieOSDType {client} {scope} />
+		<PieOSDType {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<TextQuorum {client} {scope} />
+		<TextQuorum {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<TextOSDs {client} {scope} />
+		<TextOSDs {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-4 row-span-2">
 		<BarOSDThroughtput {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-4 row-span-2">
-		<BarOSDIOPS {client} {scope} />
+		<BarOSDIOPS {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<AreaOSDReadLatency {client} {scope} />
+		<AreaOSDReadLatency {client} {scope} bind:isReloading />
 	</div>
 	<div class="col-span-2">
-		<AreaOSDWriteLatency {client} {scope} />
+		<AreaOSDWriteLatency {client} {scope} bind:isReloading />
 	</div>
 </div>

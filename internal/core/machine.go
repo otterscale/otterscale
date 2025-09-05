@@ -297,7 +297,7 @@ func (uc *MachineUseCase) purgeDisk(ctx context.Context, machineSystemID string)
 				if err != nil {
 					continue
 				}
-				if _, err := waitForActionCompleted(ctx, uc.action, uuid, id, time.Second*10, time.Minute*10); err != nil { //nolint:mnd
+				if _, err := waitForActionCompleted(ctx, uc.action, uuid, id, time.Second*10, time.Minute*10); err != nil { //nolint:mnd // default
 					return err
 				}
 				break

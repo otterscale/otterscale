@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import type { Column, Table } from '@tanstack/table-core';
+
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
-	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
 		row_picker,
@@ -110,7 +111,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet scope(column: Column<Machine>)}
+{#snippet scope()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>
 			{m.scope()}

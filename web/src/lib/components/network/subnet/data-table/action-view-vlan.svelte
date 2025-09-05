@@ -1,11 +1,12 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+
 	import type { Network_VLAN } from '$lib/api/network/v1/network_pb';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import { m } from '$lib/paraglide/messages';
-	import Icon from '@iconify/svelte';
 </script>
 
 <script lang="ts">
@@ -37,7 +38,7 @@
 				</Form.Field>
 
 				<Form.Field>
-					<SingleInput.Boolean descriptor={(value) => m.dhcp_on()} value={vlan.dhcpOn} disabled />
+					<SingleInput.Boolean descriptor={() => m.dhcp_on()} value={vlan.dhcpOn} disabled />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>

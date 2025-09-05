@@ -1,8 +1,9 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
 
 	const sidebar = useSidebar();
 </script>

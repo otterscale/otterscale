@@ -1,24 +1,35 @@
 <script lang="ts">
+	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
+	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
+	import { onMount } from 'svelte';
+	import { cubicInOut } from 'svelte/easing';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatBigNumber } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { getLocale } from '$lib/paraglide/runtime';
-	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
-	import { PrometheusDriver, type SampleValue } from 'prometheus-query';
-	import { cubicInOut } from 'svelte/easing';
 
 	// Props
-	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
+	let {
+		client,
+		scope,
+		isReloading = $bindable(),
+	}: { client: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	// Constants
 	const CHART_TITLE = 'OSD IOPS';
 	const CHART_DESCRIPTION = `${m.read()}/${m.write()}`;
+
+	// Time range calculation
 	const STEP_SECONDS = 60 * 60; // 1 hour
 	const TIME_RANGE_HOURS = 24; // 24 hours of data
 	const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
+	const endTime = Date.now();
+	const startTime = endTime - TIME_RANGE_HOURS * MILLISECONDS_PER_HOUR;
 
 	// Chart configuration
 	const chartConfig = {
@@ -32,24 +43,20 @@
 		},
 	} satisfies Chart.ChartConfig;
 
+	// Type
 	type ChartKey = keyof typeof chartConfig;
 	type TrafficData = {
 		date: Date;
 		Read: number;
 		Write: number;
 	};
-
 	type MetricsResponse = {
-		traffics: TrafficData[];
+		traffics: TrafficData[] | [];
 		latestReadValue: number | undefined;
 		latestWriteValue: number | undefined;
 		latestReadUnit: string | undefined;
 		latestWriteUnit: string | undefined;
 	};
-
-	// Time range calculation
-	const endTime = Date.now();
-	const startTime = endTime - TIME_RANGE_HOURS * MILLISECONDS_PER_HOUR;
 
 	// State
 	let activeChart = $state<ChartKey>('Read');
@@ -57,8 +64,8 @@
 
 	// Derived state
 	const queries = $derived({
-		Read: `sum(irate(ceph_osd_op_r{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
-		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[5m]))`,
+		Read: `sum(irate(ceph_osd_op_r{juju_model_uuid=~"${scope.uuid}"}[1h]))`,
+		Write: `sum(irate(ceph_osd_op_w{juju_model_uuid=~"${scope.uuid}"}[1h]))`,
 	});
 
 	const activeSeries = $derived([
@@ -70,14 +77,6 @@
 	]);
 
 	// Helper functions
-	function extractMetricValues(response: any): SampleValue[] {
-		return response.result[0]?.values ?? [];
-	}
-
-	function extractLatestValue(response: any): number {
-		return response.result[0]?.value?.value ?? 0;
-	}
-
 	function combineTrafficData(reads: SampleValue[], writes: SampleValue[]): TrafficData[] {
 		return reads.map((sample: SampleValue, index: number) => ({
 			date: sample.time,
@@ -86,8 +85,13 @@
 		}));
 	}
 
+	// Auto Update
+	let response = $state({} as MetricsResponse);
+	let isLoading = $state(true);
+	const reloadManager = new ReloadManager(fetch);
+
 	// Data fetching function
-	async function fetchMetrics(): Promise<MetricsResponse> {
+	async function fetch(): Promise<void> {
 		try {
 			const [readResponse, writeResponse, latestReadResponse, latestWriteResponse] = await Promise.all([
 				client.rangeQuery(queries.Read, startTime, endTime, STEP_SECONDS),
@@ -96,14 +100,14 @@
 				client.instantQuery(queries.Write),
 			]);
 
-			const reads = extractMetricValues(readResponse);
-			const writes = extractMetricValues(writeResponse);
-			const latestReadValue = extractLatestValue(latestReadResponse);
-			const latestWriteValue = extractLatestValue(latestWriteResponse);
+			const reads = readResponse.result[0]?.values ?? [];
+			const writes = writeResponse.result[0]?.values ?? [];
+			const latestReadValue = latestReadResponse.result[0]?.value?.value ?? 0;
+			const latestWriteValue = latestWriteResponse.result[0]?.value?.value ?? 0;
 
 			const traffics = combineTrafficData(reads, writes);
 
-			return {
+			response = {
 				traffics,
 				latestReadValue: Math.round(latestReadValue),
 				latestWriteValue: Math.round(latestWriteValue),
@@ -112,7 +116,7 @@
 			};
 		} catch (error) {
 			console.error('Failed to fetch IOPS metrics:', error);
-			return {
+			response = {
 				traffics: [],
 				latestReadValue: undefined,
 				latestWriteValue: undefined,
@@ -121,12 +125,24 @@
 			};
 		}
 	}
+
+	$effect(() => {
+		if (isReloading) {
+			reloadManager.restart();
+		} else {
+			reloadManager.stop();
+		}
+	});
+	onMount(() => {
+		fetch();
+		isLoading = false;
+	});
 </script>
 
-{#await fetchMetrics()}
+{#if isLoading}
 	<ComponentLoading />
-{:then response}
-	<Card.Root class="gap-2">
+{:else}
+	<Card.Root class="h-full gap-2">
 		<Card.Header class="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
 			<div class="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
 				<Card.Title>{CHART_TITLE}</Card.Title>
@@ -222,4 +238,4 @@
 			</Chart.Container>
 		</Card.Content>
 	</Card.Root>
-{/await}
+{/if}

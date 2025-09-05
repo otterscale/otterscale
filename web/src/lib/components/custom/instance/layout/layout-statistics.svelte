@@ -1,7 +1,8 @@
 <script lang="ts" module>
-	import { cn } from '$lib/utils';
 	import { type WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
+
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">

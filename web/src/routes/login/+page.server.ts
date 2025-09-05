@@ -1,10 +1,16 @@
 import { redirect } from '@sveltejs/kit';
+
+import type { PageServerLoad } from './$types';
+
 import { env } from '$env/dynamic/private';
 import { auth } from '$lib/auth';
 import { staticPaths } from '$lib/path';
-import type { PageServerLoad } from './$types';
 
-const isProviderConfigured = (clientId: any, clientSecret: any, ...additionalKeys: any[]) => {
+const isProviderConfigured = (
+	clientId?: string,
+	clientSecret?: string,
+	...additionalKeys: (string | undefined)[]
+): boolean => {
 	return Boolean(clientId && clientSecret && additionalKeys.every((key) => key));
 };
 

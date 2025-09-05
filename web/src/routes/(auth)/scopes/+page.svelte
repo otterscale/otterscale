@@ -1,14 +1,16 @@
 <script lang="ts">
-	import { getContext, onMount } from 'svelte';
-	import { writable, derived } from 'svelte/store';
-	import { goto } from '$app/navigation';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import SquareGridImage from '$lib/assets/square-grid.svg';
+	import { getContext, onMount } from 'svelte';
+	import { writable, derived } from 'svelte/store';
+
+	import { goto } from '$app/navigation';
 	import { CheckHealthResponse_Result, EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
+	import SquareGridImage from '$lib/assets/square-grid.svg';
 	import { scopeIcon } from '$lib/components/scopes/icon';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths, staticPaths } from '$lib/path';
@@ -52,6 +54,7 @@
 		return $scopes.findIndex((scope) => scope.name === scopeName);
 	}
 
+	let mounted = $state(false);
 	onMount(async () => {
 		const isHealthy = await checkEnvironmentHealth();
 		if (!isHealthy) {
@@ -60,6 +63,7 @@
 		}
 
 		await fetchScopes();
+		mounted = true;
 	});
 </script>
 
@@ -78,10 +82,16 @@
 	</div>
 
 	<!-- Header -->
-	<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">{m.scope_selector()}</h2>
-	<p class="text-muted-foreground mt-4 text-center text-lg">
-		{m.scope_selector_description()}
-	</p>
+	{#if mounted}
+		<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">{m.scope_selector()}</h2>
+		<p class="text-muted-foreground mt-4 text-center text-lg">{m.scope_selector_description()}</p>
+	{:else}
+		<h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">{m.scope_selector_loading()}</h2>
+		<Button class="text-muted-foreground mt-4 text-center text-lg" variant="ghost" size="lg" disabled>
+			<Icon icon="ph:spinner-gap" class="size-6 animate-spin" />
+			{m.scope_selector_loading_description()}
+		</Button>
+	{/if}
 
 	<!-- Scopes Grid -->
 	<div class="z-10 mx-auto grid w-full grid-cols-8 gap-4 px-4 py-10 sm:gap-6 xl:px-0 2xl:w-3/4">

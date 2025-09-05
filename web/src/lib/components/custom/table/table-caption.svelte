@@ -1,7 +1,8 @@
 <script lang="ts" module>
+	import type { HTMLAttributes } from 'svelte/elements';
+
 	import * as Table from '$lib/components/ui/table';
 	import { cn, type WithElementRef } from '$lib/utils.js';
-	import type { HTMLAttributes } from 'svelte/elements';
 
 	type Align = 'top' | 'bottom';
 

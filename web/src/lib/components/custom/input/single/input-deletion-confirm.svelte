@@ -1,9 +1,11 @@
 <script lang="ts" module>
-	import { cn } from '$lib/utils';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
+
 	import General from './input-general.svelte';
+
 	import { CopyButton } from '$lib/components/custom/copy-button';
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">
@@ -11,7 +13,6 @@
 		ref = $bindable(null),
 		value = $bindable(),
 		class: className,
-		id,
 		required,
 		target,
 		invalid = $bindable(),
@@ -21,7 +22,7 @@
 		invalid?: boolean | null | undefined;
 	} = $props();
 
-	const isInvalid = $derived(value !== target);
+	const isInvalid = $derived(required && value !== target);
 	$effect(() => {
 		invalid = isInvalid;
 	});

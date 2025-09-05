@@ -1,13 +1,14 @@
 <script lang="ts" module>
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
 	import { BISTService, InternalObjectService_Type, type InternalObjectService } from '$lib/api/bist/v1/bist_pb';
 	// import { BISTService, InternalObjectService_Type } from '$gen/api/bist/v1/bist_pb'
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import { cn } from '$lib/utils.js';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -21,7 +22,6 @@
 	const bistClient = createClient(BISTService, transport);
 
 	const internalObjectServices = writable<SingleSelect.OptionType[]>([]);
-	let isLoading = $state(true);
 	async function fetchOptions() {
 		try {
 			const response = await bistClient.listInternalObjectServices({ scopeUuid: scopeUuid });
@@ -60,8 +60,6 @@
 			}
 		} catch (error) {
 			console.error('Error fetching:', error);
-		} finally {
-			isLoading = false;
 		}
 	}
 

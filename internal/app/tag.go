@@ -23,7 +23,7 @@ func NewTagService(uc *core.TagUseCase) *TagService {
 
 var _ pbconnect.TagServiceHandler = (*TagService)(nil)
 
-func (s *TagService) ListTags(ctx context.Context, req *connect.Request[pb.ListTagsRequest]) (*connect.Response[pb.ListTagsResponse], error) {
+func (s *TagService) ListTags(ctx context.Context, _ *connect.Request[pb.ListTagsRequest]) (*connect.Response[pb.ListTagsResponse], error) {
 	tags, err := s.uc.ListTags(ctx)
 	if err != nil {
 		return nil, err

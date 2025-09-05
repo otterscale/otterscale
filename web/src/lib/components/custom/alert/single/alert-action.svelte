@@ -9,7 +9,6 @@
 		variant = 'outline',
 		size = 'sm',
 		ref = $bindable(null),
-		href = undefined,
 		type = 'button',
 		disabled,
 		children,

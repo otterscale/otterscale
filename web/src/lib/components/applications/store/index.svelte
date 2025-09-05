@@ -1,14 +1,16 @@
 <script lang="ts" module>
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
+	import { CommerceStore } from './commerce-store/index';
+
 	import {
 		ApplicationService,
 		type Application_Chart,
 		type Application_Release,
 	} from '$lib/api/application/v1/application_pb';
 	import * as Loading from '$lib/components/custom/loading';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import { CommerceStore } from './commerce-store/index';
 	import { currentKubernetes } from '$lib/stores';
 </script>
 

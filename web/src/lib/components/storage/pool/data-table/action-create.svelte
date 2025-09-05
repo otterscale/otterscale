@@ -1,4 +1,10 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import type { CreatePoolRequest } from '$lib/api/storage/v1/storage_pb';
 	import { PoolType, StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -9,11 +15,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import { writable, type Writable } from 'svelte/store';
 
 	export const poolTypes: Writable<SingleSelect.OptionType[]> = writable([
 		{
@@ -123,10 +124,7 @@
 				{#if request.poolType === PoolType.ERASURE}
 					<Form.Field>
 						<!-- <Form.Label>{m.ec_overwrite()}</Form.Label> -->
-						<SingleInput.Boolean
-							descriptor={(value) => m.ec_overwrite()}
-							bind:value={request.ecOverwrites}
-						/>
+						<SingleInput.Boolean descriptor={() => m.ec_overwrite()} bind:value={request.ecOverwrites} />
 					</Form.Field>
 				{/if}
 				{#if request.poolType === PoolType.REPLICATED}
@@ -217,7 +215,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.createPool(request), {
 							loading: `Creating ${request.poolName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Create ${request.poolName}`;
 							},

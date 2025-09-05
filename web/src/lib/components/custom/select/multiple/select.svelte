@@ -1,11 +1,13 @@
 <script lang="ts">
-	import * as Popover from '$lib/components/ui/popover';
-	import { cn } from '$lib/utils';
 	import { Popover as PopoverPrimitive } from 'bits-ui';
 	import { setContext } from 'svelte';
 	import type { Writable } from 'svelte/store';
+
 	import type { OptionType } from './types';
 	import { OptionManager, validate } from './utils.svelte';
+
+	import * as Popover from '$lib/components/ui/popover';
+	import { cn } from '$lib/utils';
 
 	let {
 		id,
@@ -15,7 +17,6 @@
 		children,
 		options = $bindable(),
 		required,
-		selectedOptions,
 		invalid = $bindable(),
 		...restProps
 	}: PopoverPrimitive.RootProps & {
@@ -23,7 +24,6 @@
 		class?: string;
 		value: any[];
 		options: Writable<OptionType[]>;
-		selectedOptions?: OptionType[];
 		required?: boolean;
 		invalid?: boolean | null | undefined;
 	} = $props();

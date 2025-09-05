@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import * as Menubar from '$lib/components/ui/menubar/index';
 	import { Menubar as MenubarPrimitive } from 'bits-ui';
-	import { cn } from '$lib/utils.js';
+
+	import * as Menubar from '$lib/components/ui/menubar/index';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

@@ -1,4 +1,5 @@
 import { typeToIcon } from '../single';
+
 import type { AccessorType, InputType } from './types';
 
 class InputManager {

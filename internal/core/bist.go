@@ -26,11 +26,11 @@ const (
 	bistKindFIO             = "fio"
 	bistKindWarp            = "warp"
 	bistNamespace           = "bist"
-	bistLabel               = "bist.otterscale.io/name=bist"
-	bistAnnotationCreatedBy = "bist.otterscale.io/created-by"
-	bistAnnotationKind      = "bist.otterscale.io/kind"
-	bistAnnotationFIO       = "bist.otterscale.io/fio"
-	bistAnnotationWarp      = "bist.otterscale.io/warp"
+	bistLabel               = "bist.otterscale.com/name=bist"
+	bistAnnotationCreatedBy = "bist.otterscale.com/created-by"
+	bistAnnotationKind      = "bist.otterscale.com/kind"
+	bistAnnotationFIO       = "bist.otterscale.com/fio"
+	bistAnnotationWarp      = "bist.otterscale.com/warp"
 	bistBlockPool           = "otterscale_bist_pool"
 	bistBlockImage          = "otterscale_bist_image"
 )
@@ -373,9 +373,9 @@ func (uc *BISTUseCase) ensureImage(ctx context.Context, uuid, facility, pool, im
 		}
 	}
 	objectSizeBytes := 4194304
-	stripeUnitBytes := uint64(4194304) //nolint:mnd
+	stripeUnitBytes := uint64(4194304) //nolint:mnd // default 4MB
 	stripeCount := uint64(1)
-	size := uint64(10737418240) //nolint:mnd
+	size := uint64(10737418240) //nolint:mnd // default 10GB
 	order := int(math.Round(math.Log2(float64(objectSizeBytes))))
 	features := convertToRBDImageFeatures(true, true, true, true, true)
 	_, err = uc.cephRBD.CreateImage(ctx, config, pool, image, order, stripeUnitBytes, stripeCount, size, features)

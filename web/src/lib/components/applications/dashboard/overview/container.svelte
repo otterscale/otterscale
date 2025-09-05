@@ -1,18 +1,18 @@
 <script lang="ts">
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Card from '$lib/components/ui/card';
-	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
-	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { PrometheusDriver } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import { m } from '$lib/paraglide/messages';
+
 	let {
 		prometheusDriver,
+		scope,
 		isReloading = $bindable(),
-		span
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let runningContainers = $state(0);
 
@@ -20,14 +20,14 @@
 		prometheusDriver
 			.instantQuery(
 				`
-						sum(
-							kubelet_running_containers{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics"}
-						)
-						or
-						sum(
-							kubelet_running_container_count{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics"}
-						)
-						`
+				sum(
+					kubelet_running_containers{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics"}
+				)
+				or
+				sum(
+					kubelet_running_container_count{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics"}
+				)
+				`,
 			)
 			.then((response) => {
 				runningContainers = response.result[0].value.value;
@@ -54,7 +54,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn(span, 'relative gap-2 overflow-hidden')}>
+	<Card.Root class="relative h-full gap-2 overflow-hidden">
 		<Icon
 			icon="ph:shipping-container"
 			class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"

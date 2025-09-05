@@ -1,27 +1,26 @@
 <script lang="ts">
+	import { scaleBand } from 'd3-scale';
+	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
+	import { PrometheusDriver, SampleValue } from 'prometheus-query';
+	import { onMount } from 'svelte';
+	import { cubicInOut } from 'svelte/easing';
+	import { SvelteDate } from 'svelte/reactivity';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { cn } from '$lib/utils';
-	import { scaleBand } from 'd3-scale';
-	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
-	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { onMount } from 'svelte';
-	import { cubicInOut } from 'svelte/easing';
 
 	let {
 		prometheusDriver,
 		scope,
 		isReloading = $bindable(),
-		span,
 	}: {
 		prometheusDriver: PrometheusDriver;
 		scope: Scope;
 		isReloading: boolean;
-		span: string;
 	} = $props();
 
 	let receivesByTime = $state([] as SampleValue[]);
@@ -43,8 +42,8 @@
 		prometheusDriver
 			.rangeQuery(
 				`sum(increase(node_network_receive_bytes_total{juju_model_uuid="${scope.uuid}"}[1h]))`,
-				new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
-				new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
+				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 				1 * 60 * 60,
 			)
 			.then((response) => {
@@ -53,8 +52,8 @@
 		prometheusDriver
 			.rangeQuery(
 				`sum(increase(node_network_transmit_bytes_total{juju_model_uuid="${scope.uuid}"}[1h]))`,
-				new Date().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
-				new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+				new SvelteDate().setHours(0, 0, 0, 0) - 24 * 60 * 60 * 1000,
+				new SvelteDate().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
 				1 * 60 * 60,
 			)
 			.then((response) => {
@@ -81,7 +80,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('gap-2', span)}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header>
 			<Card.Title>{m.total_upload_and_download()}</Card.Title>
 			<Card.Description>

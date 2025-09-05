@@ -1,6 +1,7 @@
 <script lang="ts" module>
-	import * as Accordion from '$lib/components/ui/accordion';
 	import type { Snippet } from 'svelte';
+
+	import * as Accordion from '$lib/components/ui/accordion';
 </script>
 
 <script lang="ts">

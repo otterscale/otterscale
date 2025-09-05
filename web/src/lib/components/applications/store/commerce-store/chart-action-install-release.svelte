@@ -1,4 +1,12 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
+	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
+
 	import {
 		ApplicationService,
 		type Application_Chart,
@@ -10,12 +18,7 @@
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import { writable, type Writable } from 'svelte/store';
-	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
+
 	// import { Single as SingleInput, Multiple as MultipleInput } from '$lib/components/custom/input';
 </script>
 
@@ -134,7 +137,7 @@
 				onclick={() => {
 					toast.promise(() => applicationClient.createRelease(request), {
 						loading: `Creating ${request.name}...`,
-						success: (response) => {
+						success: () => {
 							applicationClient.listCharts({}).then((response) => {
 								charts.set(response.charts);
 							});

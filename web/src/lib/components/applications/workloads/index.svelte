@@ -1,12 +1,14 @@
 <script lang="ts" module>
-	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
-	import * as Loading from '$lib/components/custom/loading';
-	import { ReloadManager } from '$lib/components/custom/reloader';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import { getContext, onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
+
 	import { DataTable } from './data-table/index';
 	import { Statistics } from './statistics';
+
+	import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
+	import * as Loading from '$lib/components/custom/loading';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">

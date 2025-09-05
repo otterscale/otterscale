@@ -1,9 +1,11 @@
+import type { ColumnDef } from '@tanstack/table-core';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
+
 import type { Image_Snapshot } from '$lib/api/storage/v1/storage_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
-import type { ColumnDef } from '@tanstack/table-core';
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
 import { m } from '$lib/paraglide/messages';
 
 const messages = {
@@ -41,7 +43,7 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.protect, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				previousRow.original.protected,
 				nextRow.original.protected,
@@ -57,7 +59,7 @@ const columns: ColumnDef<Image_Snapshot>[] = [
 		cell: ({ row }) => {
 			return renderSnippet(cells.usage, row);
 		},
-		sortingFn: (previousRow, nextRow, columnId) =>
+		sortingFn: (previousRow, nextRow) =>
 			getSortingFunction(
 				Number(previousRow.original.usedBytes) / Number(previousRow.original.quotaBytes),
 				Number(nextRow.original.usedBytes) / Number(nextRow.original.quotaBytes),

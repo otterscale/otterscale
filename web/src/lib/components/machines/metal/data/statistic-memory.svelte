@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import { type Writable } from 'svelte/store';
+
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { Layout } from '$lib/components/custom/instance';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { type Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">

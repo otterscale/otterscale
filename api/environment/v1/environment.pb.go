@@ -932,6 +932,106 @@ func (b0 UpdateConfigRequest_builder) Build() *UpdateConfigRequest {
 	return m0
 }
 
+type GetConfigHelmRepositoriesRequest struct {
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetConfigHelmRepositoriesRequest) Reset() {
+	*x = GetConfigHelmRepositoriesRequest{}
+	mi := &file_api_environment_v1_environment_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetConfigHelmRepositoriesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetConfigHelmRepositoriesRequest) ProtoMessage() {}
+
+func (x *GetConfigHelmRepositoriesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_environment_v1_environment_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+type GetConfigHelmRepositoriesRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 GetConfigHelmRepositoriesRequest_builder) Build() *GetConfigHelmRepositoriesRequest {
+	m0 := &GetConfigHelmRepositoriesRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
+}
+
+type GetConfigHelmRepositoriesResponse struct {
+	state           protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Urls []string               `protobuf:"bytes,1,rep,name=urls"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *GetConfigHelmRepositoriesResponse) Reset() {
+	*x = GetConfigHelmRepositoriesResponse{}
+	mi := &file_api_environment_v1_environment_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetConfigHelmRepositoriesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetConfigHelmRepositoriesResponse) ProtoMessage() {}
+
+func (x *GetConfigHelmRepositoriesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_environment_v1_environment_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *GetConfigHelmRepositoriesResponse) GetUrls() []string {
+	if x != nil {
+		return x.xxx_hidden_Urls
+	}
+	return nil
+}
+
+func (x *GetConfigHelmRepositoriesResponse) SetUrls(v []string) {
+	x.xxx_hidden_Urls = v
+}
+
+type GetConfigHelmRepositoriesResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Urls []string
+}
+
+func (b0 GetConfigHelmRepositoriesResponse_builder) Build() *GetConfigHelmRepositoriesResponse {
+	m0 := &GetConfigHelmRepositoriesResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_Urls = b.Urls
+	return m0
+}
+
 type UpdateConfigHelmRepositoriesRequest struct {
 	state           protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_Urls []string               `protobuf:"bytes,1,rep,name=urls"`
@@ -941,7 +1041,7 @@ type UpdateConfigHelmRepositoriesRequest struct {
 
 func (x *UpdateConfigHelmRepositoriesRequest) Reset() {
 	*x = UpdateConfigHelmRepositoriesRequest{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[6]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -953,7 +1053,7 @@ func (x *UpdateConfigHelmRepositoriesRequest) String() string {
 func (*UpdateConfigHelmRepositoriesRequest) ProtoMessage() {}
 
 func (x *UpdateConfigHelmRepositoriesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[6]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1000,7 +1100,7 @@ type Prometheus struct {
 
 func (x *Prometheus) Reset() {
 	*x = Prometheus{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[7]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1012,7 +1112,7 @@ func (x *Prometheus) String() string {
 func (*Prometheus) ProtoMessage() {}
 
 func (x *Prometheus) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[7]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1075,7 +1175,7 @@ type GetPrometheusRequest struct {
 
 func (x *GetPrometheusRequest) Reset() {
 	*x = GetPrometheusRequest{}
-	mi := &file_api_environment_v1_environment_proto_msgTypes[8]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1087,7 +1187,7 @@ func (x *GetPrometheusRequest) String() string {
 func (*GetPrometheusRequest) ProtoMessage() {}
 
 func (x *GetPrometheusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_environment_v1_environment_proto_msgTypes[8]
+	mi := &file_api_environment_v1_environment_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1144,23 +1244,27 @@ const file_api_environment_v1_environment_proto_rawDesc = "" +
 	"\x0fjuju_cloud_name\x18\x15 \x01(\tR\rjujuCloudName\x12*\n" +
 	"\x11juju_cloud_region\x18\x16 \x01(\tR\x0fjujuCloudRegion\x121\n" +
 	"\x15juju_charmhub_api_url\x18\x17 \x01(\tR\x12jujuCharmhubApiUrl\x12(\n" +
-	"\x10mirco_k8s_config\x18! \x01(\tR\x0emircoK8sConfigJ\x04\b\x1f\x10!\"9\n" +
+	"\x10mirco_k8s_config\x18! \x01(\tR\x0emircoK8sConfigJ\x04\b\x1f\x10!\"\"\n" +
+	" GetConfigHelmRepositoriesRequest\"7\n" +
+	"!GetConfigHelmRepositoriesResponse\x12\x12\n" +
+	"\x04urls\x18\x01 \x03(\tR\x04urls\"9\n" +
 	"#UpdateConfigHelmRepositoriesRequest\x12\x12\n" +
 	"\x04urls\x18\x01 \x03(\tR\x04urls\"-\n" +
 	"\n" +
 	"Prometheus\x12\x19\n" +
 	"\bbase_url\x18\x02 \x01(\tR\abaseUrlJ\x04\b\x01\x10\x02\"\x16\n" +
-	"\x14GetPrometheusRequest2\x83\x05\n" +
+	"\x14GetPrometheusRequest2\x9c\x06\n" +
 	"\x12EnvironmentService\x12l\n" +
 	"\vCheckHealth\x12-.otterscale.environment.v1.CheckHealthRequest\x1a..otterscale.environment.v1.CheckHealthResponse\x12n\n" +
 	"\vWatchStatus\x12-.otterscale.environment.v1.WatchStatusRequest\x1a..otterscale.environment.v1.WatchStatusResponse0\x01\x12V\n" +
 	"\fUpdateStatus\x12..otterscale.environment.v1.UpdateStatusRequest\x1a\x16.google.protobuf.Empty\x12V\n" +
-	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\x12v\n" +
+	"\fUpdateConfig\x12..otterscale.environment.v1.UpdateConfigRequest\x1a\x16.google.protobuf.Empty\x12\x96\x01\n" +
+	"\x19GetConfigHelmRepositories\x12;.otterscale.environment.v1.GetConfigHelmRepositoriesRequest\x1a<.otterscale.environment.v1.GetConfigHelmRepositoriesResponse\x12v\n" +
 	"\x1cUpdateConfigHelmRepositories\x12>.otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest\x1a\x16.google.protobuf.Empty\x12g\n" +
 	"\rGetPrometheus\x12/.otterscale.environment.v1.GetPrometheusRequest\x1a%.otterscale.environment.v1.PrometheusB8Z6github.com/otterscale/otterscale/api/environment/v1;pbb\beditionsp\xe8\a"
 
 var file_api_environment_v1_environment_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_api_environment_v1_environment_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_api_environment_v1_environment_proto_goTypes = []any{
 	(CheckHealthResponse_Result)(0),             // 0: otterscale.environment.v1.CheckHealthResponse.Result
 	(*CheckHealthRequest)(nil),                  // 1: otterscale.environment.v1.CheckHealthRequest
@@ -1169,10 +1273,12 @@ var file_api_environment_v1_environment_proto_goTypes = []any{
 	(*WatchStatusResponse)(nil),                 // 4: otterscale.environment.v1.WatchStatusResponse
 	(*UpdateStatusRequest)(nil),                 // 5: otterscale.environment.v1.UpdateStatusRequest
 	(*UpdateConfigRequest)(nil),                 // 6: otterscale.environment.v1.UpdateConfigRequest
-	(*UpdateConfigHelmRepositoriesRequest)(nil), // 7: otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
-	(*Prometheus)(nil),                          // 8: otterscale.environment.v1.Prometheus
-	(*GetPrometheusRequest)(nil),                // 9: otterscale.environment.v1.GetPrometheusRequest
-	(*emptypb.Empty)(nil),                       // 10: google.protobuf.Empty
+	(*GetConfigHelmRepositoriesRequest)(nil),    // 7: otterscale.environment.v1.GetConfigHelmRepositoriesRequest
+	(*GetConfigHelmRepositoriesResponse)(nil),   // 8: otterscale.environment.v1.GetConfigHelmRepositoriesResponse
+	(*UpdateConfigHelmRepositoriesRequest)(nil), // 9: otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
+	(*Prometheus)(nil),                          // 10: otterscale.environment.v1.Prometheus
+	(*GetPrometheusRequest)(nil),                // 11: otterscale.environment.v1.GetPrometheusRequest
+	(*emptypb.Empty)(nil),                       // 12: google.protobuf.Empty
 }
 var file_api_environment_v1_environment_proto_depIdxs = []int32{
 	0,  // 0: otterscale.environment.v1.CheckHealthResponse.result:type_name -> otterscale.environment.v1.CheckHealthResponse.Result
@@ -1180,16 +1286,18 @@ var file_api_environment_v1_environment_proto_depIdxs = []int32{
 	3,  // 2: otterscale.environment.v1.EnvironmentService.WatchStatus:input_type -> otterscale.environment.v1.WatchStatusRequest
 	5,  // 3: otterscale.environment.v1.EnvironmentService.UpdateStatus:input_type -> otterscale.environment.v1.UpdateStatusRequest
 	6,  // 4: otterscale.environment.v1.EnvironmentService.UpdateConfig:input_type -> otterscale.environment.v1.UpdateConfigRequest
-	7,  // 5: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:input_type -> otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
-	9,  // 6: otterscale.environment.v1.EnvironmentService.GetPrometheus:input_type -> otterscale.environment.v1.GetPrometheusRequest
-	2,  // 7: otterscale.environment.v1.EnvironmentService.CheckHealth:output_type -> otterscale.environment.v1.CheckHealthResponse
-	4,  // 8: otterscale.environment.v1.EnvironmentService.WatchStatus:output_type -> otterscale.environment.v1.WatchStatusResponse
-	10, // 9: otterscale.environment.v1.EnvironmentService.UpdateStatus:output_type -> google.protobuf.Empty
-	10, // 10: otterscale.environment.v1.EnvironmentService.UpdateConfig:output_type -> google.protobuf.Empty
-	10, // 11: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:output_type -> google.protobuf.Empty
-	8,  // 12: otterscale.environment.v1.EnvironmentService.GetPrometheus:output_type -> otterscale.environment.v1.Prometheus
-	7,  // [7:13] is the sub-list for method output_type
-	1,  // [1:7] is the sub-list for method input_type
+	7,  // 5: otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories:input_type -> otterscale.environment.v1.GetConfigHelmRepositoriesRequest
+	9,  // 6: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:input_type -> otterscale.environment.v1.UpdateConfigHelmRepositoriesRequest
+	11, // 7: otterscale.environment.v1.EnvironmentService.GetPrometheus:input_type -> otterscale.environment.v1.GetPrometheusRequest
+	2,  // 8: otterscale.environment.v1.EnvironmentService.CheckHealth:output_type -> otterscale.environment.v1.CheckHealthResponse
+	4,  // 9: otterscale.environment.v1.EnvironmentService.WatchStatus:output_type -> otterscale.environment.v1.WatchStatusResponse
+	12, // 10: otterscale.environment.v1.EnvironmentService.UpdateStatus:output_type -> google.protobuf.Empty
+	12, // 11: otterscale.environment.v1.EnvironmentService.UpdateConfig:output_type -> google.protobuf.Empty
+	8,  // 12: otterscale.environment.v1.EnvironmentService.GetConfigHelmRepositories:output_type -> otterscale.environment.v1.GetConfigHelmRepositoriesResponse
+	12, // 13: otterscale.environment.v1.EnvironmentService.UpdateConfigHelmRepositories:output_type -> google.protobuf.Empty
+	10, // 14: otterscale.environment.v1.EnvironmentService.GetPrometheus:output_type -> otterscale.environment.v1.Prometheus
+	8,  // [8:15] is the sub-list for method output_type
+	1,  // [1:8] is the sub-list for method input_type
 	1,  // [1:1] is the sub-list for extension type_name
 	1,  // [1:1] is the sub-list for extension extendee
 	0,  // [0:1] is the sub-list for field type_name
@@ -1206,7 +1314,7 @@ func file_api_environment_v1_environment_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_environment_v1_environment_proto_rawDesc), len(file_api_environment_v1_environment_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   9,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

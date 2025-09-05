@@ -1,22 +1,23 @@
 <script lang="ts">
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatIO } from '$lib/formatter';
-	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
-	import { cn } from '$lib/utils';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
+	import { SvelteDate } from 'svelte/reactivity';
+
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart/index.js';
+	import { formatIO } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 
 	let {
 		prometheusDriver,
+		scope,
 		isReloading = $bindable(),
-		span
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let receives = $state([] as SampleValue[]);
 	let transmits = $state([] as SampleValue[]);
@@ -24,12 +25,12 @@
 		receives.map((sample, index) => ({
 			time: sample.time,
 			receive: sample.value,
-			transmit: transmits[index]?.value ?? 0
-		}))
+			transmit: transmits[index]?.value ?? 0,
+		})),
 	);
 	const trafficsConfigurations = {
 		receive: { label: 'Receive', color: 'var(--chart-1)' },
-		transmit: { label: 'Transmit', color: 'var(--chart-2)' }
+		transmit: { label: 'Transmit', color: 'var(--chart-2)' },
 	} satisfies Chart.ChartConfig;
 
 	function fetch() {
@@ -38,13 +39,13 @@
 				`
 						sum(
 						irate(
-							container_network_receive_bytes_total{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
+							container_network_receive_bytes_total{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
 						)
 						)
 						`,
-				new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new Date().setMinutes(0, 0, 0),
-				2 * 60
+				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+				new SvelteDate().setMinutes(0, 0, 0),
+				2 * 60,
 			)
 			.then((response) => {
 				receives = response.result[0].values;
@@ -54,13 +55,13 @@
 				`
 						sum(
 						irate(
-							container_network_transmit_bytes_total{job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
+							container_network_transmit_bytes_total{job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor",namespace=~".+"}[4m]
 						)
 						)
 						`,
-				new Date().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
-				new Date().setMinutes(0, 0, 0),
-				2 * 60
+				new SvelteDate().setMinutes(0, 0, 0) - 1 * 60 * 60 * 1000,
+				new SvelteDate().setMinutes(0, 0, 0),
+				2 * 60,
 			)
 			.then((response) => {
 				transmits = response.result[0].values;
@@ -87,7 +88,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('gap-2', span)}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header>
 			<Card.Title>{m.network_bandwidth()}</Card.Title>
 			<Card.Description>{m.receive_and_transmit()}</Card.Description>
@@ -103,13 +104,13 @@
 						{
 							key: 'receive',
 							label: trafficsConfigurations.receive.label,
-							color: trafficsConfigurations.receive.color
+							color: trafficsConfigurations.receive.color,
 						},
 						{
 							key: 'transmit',
 							label: trafficsConfigurations.transmit.label,
-							color: trafficsConfigurations.transmit.color
-						}
+							color: trafficsConfigurations.transmit.color,
+						},
 					]}
 					seriesLayout="stack"
 					props={{
@@ -117,13 +118,13 @@
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween'
+							motion: 'tween',
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 						},
-						yAxis: { format: () => '' }
+						yAxis: { format: () => '' },
 					}}
 				>
 					{#snippet tooltip()}
@@ -135,7 +136,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>

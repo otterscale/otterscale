@@ -1,17 +1,19 @@
 <script lang="ts" module>
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
+	import Create from './create.svelte';
+	import Import from './import.svelte';
+	import ReadArchitectures from './read-architectures.svelte';
+	import SetAsDefault from './set-as-default.svelte';
+
 	import { ConfigurationService, type Configuration } from '$lib/api/configuration/v1/configuration_pb';
 	import * as Table from '$lib/components/custom/table';
 	import * as Layout from '$lib/components/settings/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { m } from '$lib/paraglide/messages';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
-	import Create from './create.svelte';
-	import Import from './import.svelte';
-	import ReadArchitectures from './read-architectures.svelte';
-	import SetAsDefault from './set-as-default.svelte';
 </script>
 
 <script lang="ts">
@@ -21,14 +23,12 @@
 	const configuration = writable<Configuration>();
 	let isConfigurationLoading = $state(true);
 
-	let isMounted = $state(false);
 	onMount(async () => {
 		try {
 			await configurationClient.getConfiguration({}).then((response) => {
 				configuration.set(response);
 				isConfigurationLoading = false;
 			});
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
@@ -53,7 +53,7 @@
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.source()}</Table.Head>
 							<Table.Head>{m.distro_series()}</Table.Head>
-							<Table.Head>{m.default()}</Table.Head>
+							<Table.Head>{m.default_value()}</Table.Head>
 							<Table.Head class="text-right">{m.architecture()}</Table.Head>
 							<Table.Head></Table.Head>
 						</Table.Row>

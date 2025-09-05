@@ -1,8 +1,10 @@
 <script lang="ts" module>
-	import * as Tabs from '$lib/components/ui/tabs';
 	import type { TabsRootProps } from 'bits-ui';
 	import { getContext } from 'svelte';
+
 	import type { StepManager } from './utils.svelte';
+
+	import * as Tabs from '$lib/components/ui/tabs';
 </script>
 
 <script lang="ts">

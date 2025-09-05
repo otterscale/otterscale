@@ -1,4 +1,10 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import {
 		ApplicationService,
 		type Application_Release,
@@ -8,11 +14,6 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -79,7 +80,7 @@
 				onclick={() => {
 					toast.promise(() => client.deleteRelease(request), {
 						loading: 'Loading...',
-						success: (r) => {
+						success: () => {
 							client.listReleases({}).then((r) => {
 								releases.set(r.releases);
 							});

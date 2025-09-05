@@ -1,13 +1,15 @@
 <script lang="ts" module>
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { Row } from '@tanstack/table-core';
+
+	import Actions from './cell-actions.svelte';
+
 	import type { Image } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress/index.js';
 	import { Snapshot } from '$lib/components/storage/block-device/snapshot';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
-	import type { Row } from '@tanstack/table-core';
-	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,

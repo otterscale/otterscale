@@ -1,41 +1,48 @@
 <script lang="ts">
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatCapacity } from '$lib/formatter';
-	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
-	import { cn } from '$lib/utils';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
+
 	let {
 		prometheusDriver,
+		scope,
 		isReloading = $bindable(),
-		span
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	let memoryUsages: SampleValue[] = $state([]);
 	const memoryUsagesConfiguration = {
-		usage: { label: 'Usage', color: 'var(--chart-1)' }
+		usage: { label: 'Usage', color: 'var(--chart-1)' },
 	} satisfies Chart.ChartConfig;
+	let allocatableNodesMemory = $state(0);
 	let memoryRequests = $state(0);
 	let memoryLimits = $state(0);
+	const { value: allocatableNodesMemoryValue, unit: allocatableNodesMemoryUnit } = $derived(
+		formatCapacity(allocatableNodesMemory),
+	);
+	const { value: memoryRequestsValue, unit: memoryRequestsUnit } = $derived(formatCapacity(memoryRequests));
+	const { value: memoryLimitsValue, unit: memoryLimitsUnit } = $derived(formatCapacity(memoryLimits));
 
 	function fetch() {
 		prometheusDriver
 			.rangeQuery(
 				`
-						sum(
-						container_memory_rss{container!="",job="kubelet",juju_model_uuid="${$currentKubernetes?.scopeUuid}",metrics_path="/metrics/cadvisor"}
-						)
+				sum(
+				container_memory_rss{container!="",job="kubelet",juju_model_uuid="${scope.uuid}",metrics_path="/metrics/cadvisor"}
+				)
 						`,
 				Date.now() - 60 * 60 * 1000,
 				Date.now(),
-				2 * 60
+				2 * 60,
 			)
 			.then((response) => {
 				memoryUsages = response.result[0].values;
@@ -43,14 +50,21 @@
 		prometheusDriver
 			.instantQuery(
 				`
-						sum(
-							namespace_memory:kube_pod_container_resource_requests:sum{juju_model_uuid="${$currentKubernetes?.scopeUuid}"}
-						)
-						/
-						sum(
-							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="memory"}
-						)
-						`
+				sum(
+					kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${scope.uuid}",resource="memory"}
+				)
+				`,
+			)
+			.then((response) => {
+				allocatableNodesMemory = response.result[0].value.value;
+			});
+		prometheusDriver
+			.instantQuery(
+				`
+				sum(
+					namespace_memory:kube_pod_container_resource_requests:sum{juju_model_uuid="${scope.uuid}"}
+				)
+				`,
 			)
 			.then((response) => {
 				memoryRequests = response.result[0].value.value;
@@ -58,14 +72,10 @@
 		prometheusDriver
 			.instantQuery(
 				`
-						sum(
-							namespace_memory:kube_pod_container_resource_limits:sum{juju_model_uuid="${$currentKubernetes?.scopeUuid}"}
-						)
-						/
-						sum(
-							kube_node_status_allocatable{job="kube-state-metrics",juju_model_uuid="${$currentKubernetes?.scopeUuid}",resource="memory"}
-						)
-						`
+				sum(
+					namespace_memory:kube_pod_container_resource_limits:sum{juju_model_uuid="${scope.uuid}"}
+				)
+				`,
 			)
 			.then((response) => {
 				memoryLimits = response.result[0].value.value;
@@ -92,17 +102,39 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn('gap-2', span)}>
+	<Card.Root class="h-full gap-2">
 		<Card.Header>
 			<Card.Title>{m.memory_usage()}</Card.Title>
 			<Card.Action class="text-muted-foreground flex flex-col gap-0.5 text-sm">
 				<div class="flex justify-between gap-2">
 					<p>{m.requests()}</p>
-					<p class="font-mono">{Math.round(memoryRequests * 100)}%</p>
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<p class="font-mono">{Math.round((memoryRequests * 100) / allocatableNodesMemory)}%</p>
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								{memoryRequestsValue}
+								{memoryRequestsUnit} / {allocatableNodesMemoryValue}
+								{allocatableNodesMemoryUnit}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 				</div>
 				<div class="flex justify-between gap-2">
 					<p>{m.limits()}</p>
-					<p class="font-mono">{Math.round(memoryLimits * 100)}%</p>
+					<Tooltip.Provider>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<p class="font-mono">{Math.round((memoryLimits * 100) / allocatableNodesMemory)}%</p>
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								{memoryLimitsValue}
+								{memoryLimitsUnit} / {allocatableNodesMemoryValue}
+								{allocatableNodesMemoryUnit}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Tooltip.Provider>
 				</div>
 			</Card.Action>
 		</Card.Header>
@@ -117,8 +149,8 @@
 						{
 							key: 'value',
 							label: memoryUsagesConfiguration.usage.label,
-							color: memoryUsagesConfiguration.usage.color
-						}
+							color: memoryUsagesConfiguration.usage.color,
+						},
 					]}
 					seriesLayout="stack"
 					props={{
@@ -126,13 +158,13 @@
 							curve: curveNatural,
 							'fill-opacity': 0.4,
 							line: { class: 'stroke-1' },
-							motion: 'tween'
+							motion: 'tween',
 						},
 						xAxis: {
 							format: (v: Date) =>
-								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`
+								`${v.getHours().toString().padStart(2, '0')}:${v.getMinutes().toString().padStart(2, '0')}`,
 						},
-						yAxis: { format: () => '' }
+						yAxis: { format: () => '' },
 					}}
 				>
 					{#snippet tooltip()}
@@ -144,7 +176,7 @@
 									month: 'short',
 									day: 'numeric',
 									hour: 'numeric',
-									minute: 'numeric'
+									minute: 'numeric',
 								});
 							}}
 						>

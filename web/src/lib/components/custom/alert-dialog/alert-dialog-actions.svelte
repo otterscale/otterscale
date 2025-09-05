@@ -1,22 +1,20 @@
 <script lang="ts" module>
+	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+
 	import { buttonVariants, type ButtonVariant } from '$lib/components/ui/button/index.js';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { cn } from '$lib/utils.js';
-	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
 </script>
 
 <script lang="ts">
 	let {
 		ref = $bindable(null),
 		sideOffset = 4,
-		portalProps,
 		class: className,
 		label: label = 'Actions',
 		variant: variant = 'default',
 		...restProps
-	}: DropdownMenuPrimitive.ContentProps & {
-		portalProps?: DropdownMenuPrimitive.PortalProps;
-	} & { label?: string; variant?: ButtonVariant } = $props();
+	}: DropdownMenuPrimitive.ContentProps & { label?: string; variant?: ButtonVariant } = $props();
 </script>
 
 <DropdownMenu.Root>

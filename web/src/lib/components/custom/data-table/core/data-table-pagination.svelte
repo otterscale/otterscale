@@ -1,7 +1,8 @@
 <script lang="ts" module>
-	import { Button } from '$lib/components/ui/button/index.js';
 	import Icon from '@iconify/svelte';
 	import { type Table } from '@tanstack/table-core';
+
+	import { Button } from '$lib/components/ui/button/index.js';
 </script>
 
 <script lang="ts" generics="TData">

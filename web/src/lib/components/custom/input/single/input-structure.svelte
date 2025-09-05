@@ -1,22 +1,21 @@
 <script lang="ts" module>
+	import 'highlight.js/styles/github.css';
+	import Monaco from 'svelte-monaco';
+
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Code from '$lib/components/custom/code';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import { cn } from '$lib/utils';
-	import 'highlight.js/styles/github.css';
-	import Monaco from 'svelte-monaco';
 </script>
 
 <script lang="ts">
 	let {
-		id,
 		value = $bindable(),
 		language,
 		required,
 		preview = true,
 		invalid = $bindable(),
 	}: {
-		id?: string;
 		language: 'json';
 		value: string;
 		required?: boolean;

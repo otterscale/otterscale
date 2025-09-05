@@ -1,39 +1,30 @@
 <script lang="ts">
-	import type { Facility } from '$lib/api/facility/v1/facility_pb';
-	import { FacilityService } from '$lib/api/facility/v1/facility_pb';
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Card from '$lib/components/ui/card';
-	import { m } from '$lib/paraglide/messages';
-	import { currentKubernetes } from '$lib/stores';
-	import { cn } from '$lib/utils';
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { PrometheusDriver } from 'prometheus-query';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	let {
-		prometheusDriver,
-		isReloading = $bindable(),
-		span
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+	import type { Facility } from '$lib/api/facility/v1/facility_pb';
+	import { FacilityService } from '$lib/api/facility/v1/facility_pb';
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import { m } from '$lib/paraglide/messages';
+
+	let { scope, isReloading = $bindable() }: { scope: Scope; isReloading: boolean } = $props();
 
 	const transport: Transport = getContext('transport');
 	const facilityClient = createClient(FacilityService, transport);
 
 	const facilities = writable<Facility[]>([]);
 	const worker = $derived(
-		$facilities.find(
-			(facility) => facility.name.includes('kubernetes-worker') && facility.units.length > 0
-		)
+		$facilities.find((facility) => facility.name.includes('kubernetes-worker') && facility.units.length > 0),
 	);
 	const workerUnits = $derived(worker?.units ?? []);
-	const activeWorkerUnits = $derived(
-		workerUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []
-	);
+	const activeWorkerUnits = $derived(workerUnits.filter((unit) => unit.workloadStatus?.state === 'active') ?? []);
 
 	async function fetch() {
-		facilityClient.listFacilities({ scopeUuid: $currentKubernetes?.scopeUuid }).then((response) => {
+		facilityClient.listFacilities({ scopeUuid: scope.uuid }).then((response) => {
 			facilities.set(response.facilities);
 		});
 	}
@@ -58,7 +49,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={cn(span, 'relative gap-2 overflow-hidden')}>
+	<Card.Root class="relative h-full gap-2 overflow-hidden">
 		<Icon
 			icon="ph:cube"
 			class="text-primary/5 absolute -right-10 bottom-0 size-36 text-8xl tracking-tight text-nowrap uppercase group-hover:hidden"

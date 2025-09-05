@@ -1,9 +1,11 @@
 <script lang="ts" module>
-	import * as AlertDialog from '$lib/components/custom/alert-dialog';
-	import { cn } from '$lib/utils';
 	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui';
+
 	import type { TriggerVariant } from './type';
 	import { triggerVariants } from './utils';
+
+	import * as AlertDialog from '$lib/components/custom/alert-dialog';
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">

@@ -14,7 +14,7 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#each Array(3) as _}
+		{#each Array(3)}
 			<Table.Row>
 				<Table.Cell>Cell</Table.Cell>
 				<Table.Cell>

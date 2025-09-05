@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { PrometheusDriver } from 'prometheus-query';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
@@ -6,7 +8,6 @@
 	import Layout from '$lib/components/custom/chart/layout/small.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 
@@ -75,10 +76,10 @@
 				<Content />
 			{:else}
 				{@const value = result[0].value.value * 100}
-				<Content value={value.toFixed(2)} unit={'%'} />
+				<Content value={value.toFixed(2)} unit="%" />
 			{/if}
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} />
 {/await}

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { Store } from '$lib/components/applications/store';
 	import { dynamicPaths } from '$lib/path';
 	import { activeScope, breadcrumb } from '$lib/stores';
-	import { Store } from '$lib/components/applications/store';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({

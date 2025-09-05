@@ -46,11 +46,12 @@ func toPlacement(p *MachinePlacement, directive string) *instance.Placement {
 	placement := &instance.Placement{
 		Directive: directive,
 	}
-	if p.LXD {
+	switch {
+	case p.LXD:
 		placement.Scope = "lxd"
-	} else if p.KVM {
+	case p.KVM:
 		placement.Scope = "kvm"
-	} else if p.Machine {
+	case p.Machine:
 		placement.Scope = "#"
 	}
 	return placement

@@ -26,10 +26,6 @@ find_first_non_user() {
     NON_ROOT_USER=$(basename "$USER_HOME")
 }
 
-get_models() {
-    JUJU_MODELS=$(su "$NON_ROOT_USER" -c "juju models --format json | jq -r '.models[] | select(.\"is-controller\" == false and .\"cloud\" != \"cos-k8s\") | .name'")
-}
-
 get_units_from_models() {
     JUJU_UNITS=$(su "$NON_ROOT_USER" -c \
         "juju status -m $JUJU_MODEL --format json 2>/dev/null | \
@@ -57,7 +53,7 @@ dd_ceph_osd_device() {
 }
 
 remove_juju_model() {
-    get_models
+    JUJU_MODELS=$(su "$NON_ROOT_USER" -c "juju models --format json | jq -r '.models[] | select(.\"is-controller\" == false and .\"cloud\" != \"cos-k8s\") | .name' 2>/dev/null")
     for juju_model in $JUJU_MODELS; do
         export JUJU_MODEL=$juju_model
         log "INFO" "Target juju model: $JUJU_MODEL"

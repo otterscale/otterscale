@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { type Table } from '@tanstack/table-core';
+
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import { type Table } from '@tanstack/table-core';
 </script>
 
 <script lang="ts" generics="TData">
@@ -30,10 +31,10 @@
 					table.firstPage();
 					open = e.currentTarget.value ? true : false;
 				}}
-				onmousedowncapture={(e) => {
+				onmousedowncapture={() => {
 					open = true;
 				}}
-				onblur={(e) => {
+				onblur={() => {
 					open = false;
 				}}
 			/>

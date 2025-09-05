@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import type { Table as TableType } from '@tanstack/table-core';
+
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import type { Table as TableType } from '@tanstack/table-core';
 </script>
 
 <script lang="ts" generics="TData">

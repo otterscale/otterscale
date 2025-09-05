@@ -1,4 +1,10 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import {
 		ConfigurationService,
 		type Configuration,
@@ -9,11 +15,6 @@
 	import { Single as SingleInput } from '$lib/components/custom/input';
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -46,7 +47,7 @@
 	<Modal.Root bind:open>
 		<Modal.Trigger variant="creative">
 			<Icon icon="ph:star" />
-			{m.default()}
+			{m.set_as_default()}
 		</Modal.Trigger>
 		<Modal.Content>
 			<Modal.Header>{m.set_default_boot_image()}</Modal.Header>

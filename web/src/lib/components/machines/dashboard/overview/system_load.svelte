@@ -1,19 +1,21 @@
 <script lang="ts">
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart';
-	import { m } from '$lib/paraglide/messages';
 	import { scaleUtc } from 'd3-scale';
 	import { curveNatural } from 'd3-shape';
 	import { Area, AreaChart, LinearGradient } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart';
+	import { m } from '$lib/paraglide/messages';
+
 	let {
 		prometheusDriver,
+		scope,
 		isReloading = $bindable(),
-		span,
-	}: { prometheusDriver: PrometheusDriver; isReloading: boolean; span: string } = $props();
+	}: { prometheusDriver: PrometheusDriver; scope: Scope; isReloading: boolean } = $props();
 
 	const systemLoadConfiguration = {
 		one: { label: '1 min', color: 'var(--chart-1)' },
@@ -32,12 +34,22 @@
 
 	async function fetch() {
 		prometheusDriver
-			.rangeQuery(`sum(node_load1)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+			.rangeQuery(
+				`sum(node_load1{juju_model_uuid="${scope.uuid}"})`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60,
+			)
 			.then((response) => {
 				ones = response.result[0]?.values;
 			});
 		prometheusDriver
-			.rangeQuery(`sum(node_load5)`, Date.now() - 24 * 60 * 60 * 1000, Date.now(), 2 * 60)
+			.rangeQuery(
+				`sum(node_load5{juju_model_uuid="${scope.uuid}"})`,
+				Date.now() - 24 * 60 * 60 * 1000,
+				Date.now(),
+				2 * 60,
+			)
 			.then((response) => {
 				fives = response.result[0]?.values;
 			});
@@ -63,7 +75,7 @@
 {#if isLoading}
 	Loading
 {:else}
-	<Card.Root class={span}>
+	<Card.Root class="h-full">
 		<Card.Header>
 			<Card.Title>{m.system_load()}</Card.Title>
 			<Card.Description>

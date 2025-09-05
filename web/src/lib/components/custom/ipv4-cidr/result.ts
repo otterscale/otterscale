@@ -147,7 +147,7 @@ class Result<T, E> {
 	mapOr<A>(defaultVal: A, fn: (val: T) => A): A {
 		return this.match(
 			(val) => fn(val),
-			(_) => defaultVal,
+			() => defaultVal,
 		);
 	}
 
@@ -266,7 +266,7 @@ class Result<T, E> {
 	 */
 	mapErrOr<A>(defaultVal: A, fn: (err: E) => A): A {
 		return this.match(
-			(_) => defaultVal,
+			() => defaultVal,
 			(err) => fn(err),
 		);
 	}
@@ -468,7 +468,7 @@ class Result<T, E> {
 	unwrapOr(defaultVal: T): T {
 		return this.match(
 			(val) => val,
-			(_) => defaultVal,
+			() => defaultVal,
 		);
 	}
 

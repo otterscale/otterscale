@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import type { Column, Table } from '@tanstack/table-core';
+
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
-	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
 		row_picker,
@@ -38,17 +39,17 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet state(column: Column<OSD>)}
+{#snippet state()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.state()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet osdUp(column: Column<OSD>)}
+{#snippet osdUp()}
 	<Layout.Header class="hidden" />
 {/snippet}
 
-{#snippet osdIn(column: Column<OSD>)}
+{#snippet osdIn()}
 	<Layout.Header class="hidden" />
 {/snippet}
 
@@ -97,10 +98,10 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet iops(column: Column<OSD>)}
+{#snippet iops()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.iops()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<OSD>)}{/snippet}
+{#snippet actions()}{/snippet}

@@ -1,7 +1,9 @@
 <script lang="ts" module>
-	import * as Pagination from '$lib/components/ui/pagination';
 	import Icon from '@iconify/svelte';
+
 	import type { PaginationManager } from './utils';
+
+	import * as Pagination from '$lib/components/ui/pagination';
 </script>
 
 <script lang="ts">

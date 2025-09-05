@@ -1,4 +1,10 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import { MachineService, type CreateMachineRequest, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import { TagService } from '$lib/api/tag/v1/tag_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -10,11 +16,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import { activeScope } from '$lib/stores';
 	import { cn } from '$lib/utils';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import { writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -28,11 +29,9 @@
 	const transport: Transport = getContext('transport');
 	const machineClient = createClient(MachineService, transport);
 	const tagClient = createClient(TagService, transport);
-
 	const tagOptions = writable<SingleSelect.OptionType[]>([]);
 
 	let isTagLoading = $state(true);
-	let isMounted = $state(false);
 
 	const defaults = {
 		scopeUuid: $activeScope?.uuid,
@@ -69,8 +68,6 @@
 				.finally(() => {
 					isTagLoading = false;
 				});
-
-			isMounted = true;
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}

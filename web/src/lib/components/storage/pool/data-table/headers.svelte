@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import type { Column, Table } from '@tanstack/table-core';
+
 	import type { Pool } from '$lib/api/storage/v1/storage_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { m } from '$lib/paraglide/messages';
-	import type { Column, Table } from '@tanstack/table-core';
 
 	export const headers = {
 		row_picker,
@@ -52,7 +53,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet placement_group_state(column: Column<Pool>)}
+{#snippet placement_group_state()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.placement_group_state()}</Layout.HeaderViewer>
 	</Layout.Header>
@@ -67,10 +68,10 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet iops(column: Column<Pool>)}
+{#snippet iops()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>{m.iops()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<Pool>)}{/snippet}
+{#snippet actions()}{/snippet}

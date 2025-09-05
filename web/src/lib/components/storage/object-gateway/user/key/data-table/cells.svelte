@@ -1,8 +1,10 @@
 <script lang="ts" module>
+	import type { Row } from '@tanstack/table-core';
+
+	import Actions from './cell-actions.svelte';
+
 	import type { User_Key } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
-	import type { Row } from '@tanstack/table-core';
-	import Actions from './cell-actions.svelte';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 
 	export const cells = {

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { PrometheusDriver } from 'prometheus-query';
+
 	import { default as AreaCapacity } from './area-chart-capacity.svelte';
 	import { default as AreaIOPS } from './area-chart-iops.svelte';
 	import { default as AreaOSDLatency } from './area-chart-osd-latency.svelte';
@@ -21,8 +21,10 @@
 	import { default as TextThroughputWrite } from './text-chart-throughput-write.svelte';
 	import { default as UsageCapacity } from './usage-rate-chart-capacity.svelte';
 	import { default as UsageOSDInOut } from './usage-rate-chart-osd-in-out.svelte';
-	import { default as UsageOSDUpDown } from './usage-rate-chart-osd-up-down.svelte';
 	import { default as UsageOSDQuorum } from './usage-rate-chart-osd-quorum.svelte';
+	import { default as UsageOSDUpDown } from './usage-rate-chart-osd-up-down.svelte';
+
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 
 	let { client, scope }: { client: PrometheusDriver; scope: Scope } = $props();
 </script>

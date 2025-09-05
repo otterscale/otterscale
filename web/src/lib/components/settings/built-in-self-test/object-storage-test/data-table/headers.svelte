@@ -1,8 +1,9 @@
 <script lang="ts" module>
+	import type { Column, Table } from '@tanstack/table-core';
+
 	import { type TestResult } from '$lib/api/bist/v1/bist_pb';
 	import { Headers, Sorter } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
-	import type { Column, Table } from '@tanstack/table-core';
 	import { m } from '$lib/paraglide/messages';
 
 	export const headers = {
@@ -49,7 +50,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet target(column: Column<TestResult>)}
+{#snippet target()}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.target()}</Layout.HeaderViewer>
 	</Layout.Header>
@@ -100,7 +101,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet throughputFastest(column: Column<TestResult>)}
+{#snippet throughputFastest()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			{m.throughput()}
@@ -109,7 +110,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet throughputSlowest(column: Column<TestResult>)}
+{#snippet throughputSlowest()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			{m.throughput()}
@@ -118,7 +119,7 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet throughputMedian(column: Column<TestResult>)}
+{#snippet throughputMedian()}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderViewer>
 			{m.throughput()}
@@ -145,4 +146,4 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet actions(column: Column<TestResult>)}{/snippet}
+{#snippet actions()}{/snippet}

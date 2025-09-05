@@ -1,21 +1,22 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+	import { getContext } from 'svelte';
+
+	import type { AncestralOptionType } from './types';
+	import { OptionManager } from './utils.svelte';
+
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
-	import { getContext } from 'svelte';
-	import type { AncestralOptionType } from './types';
-	import { OptionManager } from './utils.svelte';
 </script>
 
 <script lang="ts">
 	let { ref = $bindable(null), children, ...restProps }: DropdownMenuPrimitive.TriggerProps & {} = $props();
 
-	const id: string | undefined = getContext('id');
 	const required: boolean | undefined = getContext('required');
 	const optionManager: OptionManager = getContext('OptionManager');
 

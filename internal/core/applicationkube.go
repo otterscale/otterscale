@@ -304,11 +304,12 @@ func (uc *ApplicationUseCase) GetApplication(ctx context.Context, uuid, facility
 
 	storageClassMap := toStorageClassMap(storageClasses)
 
-	if deployment != nil {
+	switch {
+	case deployment != nil:
 		return uc.fromDeployment(deployment, services, pods, persistentVolumeClaims, storageClassMap)
-	} else if statefulSet != nil {
+	case statefulSet != nil:
 		return uc.fromStatefulSet(statefulSet, services, pods, persistentVolumeClaims, storageClassMap)
-	} else if daemonSet != nil {
+	case daemonSet != nil:
 		return uc.fromDaemonSet(daemonSet, services, pods, persistentVolumeClaims, storageClassMap)
 	}
 	return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("application %q in namespace %q not found", name, namespace))

@@ -1,4 +1,10 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import type { CreateImageRequest } from '$lib/api/storage/v1/storage_pb';
 	import { StorageService } from '$lib/api/storage/v1/storage_pb';
 	import * as Form from '$lib/components/custom/form';
@@ -11,11 +17,6 @@
 	import { m } from '$lib/paraglide/messages';
 	import { currentCeph } from '$lib/stores';
 	import { cn } from '$lib/utils';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import { writable } from 'svelte/store';
 </script>
 
 <script lang="ts">
@@ -26,7 +27,6 @@
 	let isPoolsLoading = $state(true);
 	let isImageNameInvalid = $state(false);
 	let isPoolNameInvalid = $state(false);
-	let isMounted = $state(false);
 	let poolOptions = $state(writable<SingleSelect.OptionType[]>([]));
 	const storageClient = createClient(StorageService, transport);
 	const defaults = {
@@ -76,8 +76,6 @@
 		} catch (error) {
 			console.error('Error during initial data load:', error);
 		}
-
-		isMounted = true;
 	});
 </script>
 
@@ -252,7 +250,7 @@
 					onclick={() => {
 						toast.promise(() => storageClient.createImage(request), {
 							loading: `Creating ${request.imageName}...`,
-							success: (response) => {
+							success: () => {
 								reloadManager.force();
 								return `Create ${request.imageName}`;
 							},

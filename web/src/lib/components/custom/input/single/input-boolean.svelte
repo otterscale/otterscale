@@ -1,10 +1,12 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { Switch as SwitchPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
+
+	import { INPUT_CLASSNAME } from './utils.svelte';
+
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Switch from '$lib/components/ui/switch';
 	import { cn } from '$lib/utils.js';
-	import Icon from '@iconify/svelte';
-	import { Switch as SwitchPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
-	import { INPUT_CLASSNAME, typeToIcon } from './utils.svelte';
 </script>
 
 <script lang="ts">
@@ -12,7 +14,6 @@
 		ref = $bindable(null),
 		class: className,
 		value: checked = $bindable(undefined),
-		id,
 		required,
 		nullable = false,
 		descriptor,

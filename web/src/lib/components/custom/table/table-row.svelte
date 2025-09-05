@@ -1,7 +1,8 @@
 <script lang="ts" module>
-	import { cn, type WithElementRef } from '$lib/utils.js';
 	import type { HTMLAttributes } from 'svelte/elements';
+
 	import * as Table from '$lib/components/ui/table';
+	import { cn, type WithElementRef } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

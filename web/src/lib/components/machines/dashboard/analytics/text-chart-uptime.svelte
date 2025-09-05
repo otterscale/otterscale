@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { PrometheusDriver } from 'prometheus-query';
+
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/text/text.svelte';
@@ -7,7 +9,6 @@
 	import Title from '$lib/components/custom/chart/title.svelte';
 	import { formatDuration } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 
@@ -43,6 +44,6 @@
 			{/if}
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} />
 {/await}

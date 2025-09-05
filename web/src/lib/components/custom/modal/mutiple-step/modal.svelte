@@ -1,9 +1,11 @@
 <script lang="ts" module>
-	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import { type AlertDialogRootPropsWithoutHTML } from 'bits-ui';
-	import { onDestroy, setContext } from 'svelte';
+	import { setContext } from 'svelte';
+
 	import type { StepManagerState } from './types';
 	import { StepManager } from './utils.svelte';
+
+	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 </script>
 
 <script lang="ts">
@@ -21,7 +23,7 @@
 	});
 	setContext(
 		'StepManager',
-		new StepManager(3, {
+		new StepManager(steps, {
 			get isUpdating() {
 				return isUpdating;
 			},

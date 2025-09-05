@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { PrometheusDriver } from 'prometheus-query';
+
 	import type { Machine } from '$lib/api/machine/v1/machine_pb';
 	import ComponentLoading from '$lib/components/custom/chart/component-loading.svelte';
 	import Content from '$lib/components/custom/chart/content/area/area.svelte';
@@ -9,7 +11,6 @@
 	import { formatTimeRange } from '$lib/components/custom/chart/units/formatter';
 	import { fetchMultipleFlattenedRange } from '$lib/components/custom/prometheus';
 	import { m } from '$lib/paraglide/messages';
-	import { PrometheusDriver } from 'prometheus-query';
 
 	let { client, machine }: { client: PrometheusDriver; machine: Machine } = $props();
 
@@ -62,6 +63,6 @@
 			/>
 		{/snippet}
 	</Layout>
-{:catch error}
+{:catch}
 	<ErrorLayout title={CHART_TITLE} description={CHART_DESCRIPTION} />
 {/await}

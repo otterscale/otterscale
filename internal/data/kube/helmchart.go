@@ -17,7 +17,7 @@ import (
 	"sigs.k8s.io/yaml"
 
 	oscore "github.com/otterscale/otterscale/internal/core"
-	"github.com/otterscale/otterscale/internal/utils"
+	"github.com/otterscale/otterscale/internal/wrap"
 )
 
 type helmRepo struct {
@@ -84,7 +84,7 @@ func (r *helmChart) Show(chartRef string, format action.ShowOutputFormat) (strin
 	client := action.NewShow(format)
 	client.SetRegistryClient(r.kube.registryClient)
 
-	chartPath, err := client.ChartPathOptions.LocateChart(chartRef, r.kube.envSettings)
+	chartPath, err := client.LocateChart(chartRef, r.kube.envSettings)
 	if err != nil {
 		return "", err
 	}
@@ -105,7 +105,7 @@ func (r *helmChart) fetchRepoIndexFromWeb(ctx context.Context, repoURL string) (
 	}
 	queryURL = queryURL.JoinPath("index.yaml")
 
-	data, err := utils.HTTPGet(ctx, queryURL.String())
+	data, err := wrap.HTTPGet(ctx, queryURL.String())
 	if err != nil {
 		return nil, err
 	}
