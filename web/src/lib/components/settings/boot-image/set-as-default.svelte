@@ -47,7 +47,7 @@
 	<Modal.Root bind:open>
 		<Modal.Trigger variant="creative">
 			<Icon icon="ph:star" />
-			{m.default()}
+			{m.set_as_default()}
 		</Modal.Trigger>
 		<Modal.Content>
 			<Modal.Header>{m.set_default_boot_image()}</Modal.Header>

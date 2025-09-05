@@ -53,7 +53,7 @@
 							<Table.Head>{m.name()}</Table.Head>
 							<Table.Head>{m.source()}</Table.Head>
 							<Table.Head>{m.distro_series()}</Table.Head>
-							<Table.Head>{m.default()}</Table.Head>
+							<Table.Head>{m.default_value()}</Table.Head>
 							<Table.Head class="text-right">{m.architecture()}</Table.Head>
 							<Table.Head></Table.Head>
 						</Table.Row>
