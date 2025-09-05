@@ -56,7 +56,7 @@ jobs:
         run: pnpm build
 
       - name: Test
-        run: pnpm test
+        run: pnpm test:unit
 
       # TODO: Enable Codecov integration for web test coverage
       # - name: Upload coverage reports to Codecov
