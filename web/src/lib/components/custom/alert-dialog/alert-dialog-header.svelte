@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index';
-	import { cn } from '$lib/utils.js';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLAttributes } from 'svelte/elements';
+
+	import * as AlertDialog from '$lib/components/ui/alert-dialog/index';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

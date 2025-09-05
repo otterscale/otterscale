@@ -1,14 +1,15 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import { ArcChart, Text } from 'layerchart';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
 	import { NetworkService, type Network } from '$lib/api/network/v1/network_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import { ArcChart, Text } from 'layerchart';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	let { isReloading = $bindable() }: { isReloading: boolean } = $props();
 

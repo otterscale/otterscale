@@ -1,6 +1,7 @@
 <script lang="ts" module>
-	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import type { Row } from '@tanstack/table-core';
+
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 </script>
 
 <script lang="ts" generics="TData">

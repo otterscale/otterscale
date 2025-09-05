@@ -1,8 +1,10 @@
 import { redirect } from '@sveltejs/kit';
+
+import type { PageServerLoad } from './$types';
+
 import { env } from '$env/dynamic/private';
 import { auth } from '$lib/auth';
 import { staticPaths } from '$lib/path';
-import type { PageServerLoad } from './$types';
 
 const isProviderConfigured = (
 	clientId?: string,

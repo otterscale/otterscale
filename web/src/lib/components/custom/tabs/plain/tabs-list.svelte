@@ -1,6 +1,7 @@
 <script lang="ts">
-	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { Tabs as TabsPrimitive } from 'bits-ui';
+
+	import * as Tabs from '$lib/components/ui/tabs/index.js';
 	import { cn } from '$lib/utils.js';
 
 	let { ref = $bindable(null), class: className, ...restProps }: TabsPrimitive.ListProps = $props();

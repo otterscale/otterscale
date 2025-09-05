@@ -1,4 +1,10 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { PieChart, Text } from 'layerchart';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
 	import { page } from '$app/state';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -6,11 +12,6 @@
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart';
 	import { m } from '$lib/paraglide/messages';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { PieChart, Text } from 'layerchart';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	let { scope, isReloading = $bindable() }: { scope: Scope; isReloading: boolean } = $props();
 

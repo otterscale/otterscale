@@ -1,15 +1,17 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import type { Row } from '@tanstack/table-core';
+
+	import Actions from './cell-actions.svelte';
+
 	import { goto } from '$app/navigation';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { OSD } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import * as Progress from '$lib/components/custom/progress';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import Icon from '@iconify/svelte';
-	import type { Row } from '@tanstack/table-core';
-	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,

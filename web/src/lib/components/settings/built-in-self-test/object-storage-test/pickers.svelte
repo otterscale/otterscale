@@ -1,10 +1,11 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { writable } from 'svelte/store';
+
 	import * as Picker from '$lib/components/custom/picker';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils.js';
-	import Icon from '@iconify/svelte';
-	import { writable } from 'svelte/store';
 </script>
 
 <script lang="ts">

@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { type Writable } from 'svelte/store';
+
 	import { type Machine } from '$lib/api/machine/v1/machine_pb';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import Icon from '@iconify/svelte';
-	import { type Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">

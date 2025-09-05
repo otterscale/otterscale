@@ -1,10 +1,12 @@
+import type { ColumnDef } from '@tanstack/table-core';
+
+import { cells } from './cells.svelte';
+import { headers } from './headers.svelte';
+
 import type { Application } from '$lib/api/application/v1/application_pb';
 import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
-import type { ColumnDef } from '@tanstack/table-core';
-import { cells } from './cells.svelte';
-import { headers } from './headers.svelte';
 
 const messages = {
 	name: m.name(),

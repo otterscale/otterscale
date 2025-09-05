@@ -1,15 +1,16 @@
 <script lang="ts">
+	import { scaleUtc } from 'd3-scale';
+	import { curveNatural } from 'd3-shape';
+	import { Area, AreaChart, LinearGradient } from 'layerchart';
+	import { PrometheusDriver, SampleValue } from 'prometheus-query';
+	import { onMount } from 'svelte';
+
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Card from '$lib/components/ui/card';
 	import * as Chart from '$lib/components/ui/chart/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { m } from '$lib/paraglide/messages';
-	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
-	import { Area, AreaChart, LinearGradient } from 'layerchart';
-	import { PrometheusDriver, SampleValue } from 'prometheus-query';
-	import { onMount } from 'svelte';
 
 	let {
 		prometheusDriver,

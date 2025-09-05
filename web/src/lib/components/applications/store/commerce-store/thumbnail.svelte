@@ -1,12 +1,14 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+
+	import { fuzzLogosIcon } from './utils';
+
 	import { type Application_Chart, type Application_Release } from '$lib/api/application/v1/application_pb';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
-	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import { fuzzLogosIcon } from './utils';
 	import { m } from '$lib/paraglide/messages';
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">

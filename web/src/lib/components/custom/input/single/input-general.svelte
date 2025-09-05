@@ -1,12 +1,14 @@
 <script lang="ts" module>
-	import { Input } from '$lib/components/ui/input';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext, hasContext } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
+
 	import type { InputType } from './types';
 	import { typeToIcon } from './utils.svelte';
+
+	import { Input } from '$lib/components/ui/input';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

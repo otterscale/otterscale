@@ -1,4 +1,7 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { type Table } from '@tanstack/table-core';
+
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input';
@@ -7,8 +10,6 @@
 	import { Slider } from '$lib/components/ui/slider/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils.js';
-	import Icon from '@iconify/svelte';
-	import { type Table } from '@tanstack/table-core';
 
 	const empty = [undefined, undefined];
 </script>

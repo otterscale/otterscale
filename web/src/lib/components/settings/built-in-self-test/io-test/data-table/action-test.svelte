@@ -1,4 +1,10 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import type {
 		CephBlockDevice,
 		CreateTestResultRequest,
@@ -18,11 +24,6 @@
 	import { formatCapacity, formatSecond } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import { writable, type Writable } from 'svelte/store';
 
 	// FIO Target
 	const fioTarget: Writable<SingleSelect.OptionType[]> = writable([

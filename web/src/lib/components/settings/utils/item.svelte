@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import * as Accordion from '$lib/components/ui/accordion';
-	import { Badge } from '$lib/components/ui/badge';
 	import Icon from '@iconify/svelte';
 	import type { Snippet } from 'svelte';
+
+	import * as Accordion from '$lib/components/ui/accordion';
+	import { Badge } from '$lib/components/ui/badge';
 </script>
 
 <script lang="ts">

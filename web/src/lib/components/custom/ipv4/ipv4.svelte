@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
 	import Input from './input.svelte';
-	import { safeParseIPv4Address } from '.';
-	import { isNumber } from './is-number';
 	import * as ipv4address from './ipv4-address';
+	import { isNumber } from './is-number';
 	import type { IPv4AddressInputProps } from './types';
+
+	import { safeParseIPv4Address } from '.';
+
+	import { cn } from '$lib/utils';
 
 	let {
 		separator = '.',

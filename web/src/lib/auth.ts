@@ -1,7 +1,8 @@
+import { sso } from '@better-auth/sso';
 import { betterAuth } from 'better-auth';
 import { getMigrations } from 'better-auth/db';
 import { Pool } from 'pg';
-import { sso } from '@better-auth/sso';
+
 import { env } from '$env/dynamic/private';
 import { env as publicEnv } from '$env/dynamic/public';
 

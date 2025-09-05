@@ -1,8 +1,9 @@
 <script lang="ts" module>
+	import Self from './dynamic-input.svelte';
+
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Switch } from '$lib/components/ui/switch/index.js';
-	import Self from './dynamic-input.svelte';
 
 	function getType(object: any) {
 		if (typeof object === 'string') {

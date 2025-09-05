@@ -1,4 +1,3 @@
-import { Content, Description, Overlay, Portal, Root, Title, Trigger } from '$lib/components/ui/alert-dialog/index.js';
 import ActionGroupHeading from './alert-dialog-action-group-heading.svelte';
 import ActionGroup from './alert-dialog-action-group.svelte';
 import ActionItem from './alert-dialog-action-item.svelte';
@@ -10,6 +9,8 @@ import Cancel from './alert-dialog-cancel.svelte';
 import Footer from './alert-dialog-footer.svelte';
 import Header from './alert-dialog-header.svelte';
 import { StateController } from './utils.svelte';
+
+import { Content, Description, Overlay, Portal, Root, Title, Trigger } from '$lib/components/ui/alert-dialog/index.js';
 
 export {
 	Action,

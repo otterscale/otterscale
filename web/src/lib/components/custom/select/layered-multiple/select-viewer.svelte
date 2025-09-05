@@ -1,12 +1,14 @@
 <script lang="ts" module>
-	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import Separator from '$lib/components/ui/separator/separator.svelte';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import { getContext } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+
 	import type { OptionManager } from './utils.svelte';
+
+	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import Separator from '$lib/components/ui/separator/separator.svelte';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

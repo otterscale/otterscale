@@ -1,17 +1,19 @@
 <script lang="ts">
-	import { writable, type Writable } from 'svelte/store';
 	import Icon from '@iconify/svelte';
+	import { writable, type Writable } from 'svelte/store';
+
+	import DialogCreateScope from './dialog-create-scope.svelte';
+
+	import { page } from '$app/state';
 	import { shortcut } from '$lib/actions/shortcut.svelte';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
 	import { scopeIcon } from '$lib/components/scopes/icon';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { Button } from '$lib/components/ui/button';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Sidebar from '$lib/components/ui/sidebar';
 	import { useSidebar } from '$lib/components/ui/sidebar';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
-	import DialogCreateScope from './dialog-create-scope.svelte';
-	import { page } from '$app/state';
 
 	let {
 		active,

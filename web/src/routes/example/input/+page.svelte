@@ -1,4 +1,7 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { writable, type Writable } from 'svelte/store';
+
 	import { Multiple as MultipleInput, Single as SingleInput } from '$lib/components/custom/input';
 	import {
 		LayeredMultiple as LayeredMultipleSelect,
@@ -7,8 +10,6 @@
 		Single as SingleSelect,
 	} from '$lib/components/custom/select';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import { writable, type Writable } from 'svelte/store';
 
 	type Values = {
 		value1: string;

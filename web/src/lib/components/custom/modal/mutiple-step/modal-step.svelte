@@ -1,12 +1,14 @@
 <script lang="ts" module>
-	import Button from '$lib/components/ui/button/button.svelte';
-	import Progress from '$lib/components/ui/progress/progress.svelte';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { type WithElementRef } from 'bits-ui';
 	import { getContext, type Snippet } from 'svelte';
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
+
 	import { IndexManager, StepManager } from './utils.svelte';
+
+	import Button from '$lib/components/ui/button/button.svelte';
+	import Progress from '$lib/components/ui/progress/progress.svelte';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

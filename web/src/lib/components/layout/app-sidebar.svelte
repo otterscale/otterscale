@@ -1,4 +1,17 @@
 <script lang="ts">
+	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import type { User } from 'better-auth';
+	import type { ComponentProps } from 'svelte';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
+	import NavBookmark from './nav-bookmark.svelte';
+	import NavFooter from './nav-footer.svelte';
+	import NavGeneral from './nav-general.svelte';
+	import NavUser from './nav-user.svelte';
+	import ScopeSwitcher from './scope-switcher.svelte';
+
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { Essential_Type, EssentialService } from '$lib/api/essential/v1/essential_pb';
@@ -10,17 +23,6 @@
 	import { dynamicPaths, getValidURL, type Path } from '$lib/path';
 	import { applicationRoutes, platformRoutes } from '$lib/routes';
 	import { activeScope, bookmarks, currentCeph, currentKubernetes, premiumTier } from '$lib/stores';
-	import { Code, ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import type { User } from 'better-auth';
-	import type { ComponentProps } from 'svelte';
-	import { getContext, onMount } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import { writable } from 'svelte/store';
-	import NavBookmark from './nav-bookmark.svelte';
-	import NavFooter from './nav-footer.svelte';
-	import NavGeneral from './nav-general.svelte';
-	import NavUser from './nav-user.svelte';
-	import ScopeSwitcher from './scope-switcher.svelte';
 
 	type Props = { user: User } & ComponentProps<typeof Sidebar.Root>;
 

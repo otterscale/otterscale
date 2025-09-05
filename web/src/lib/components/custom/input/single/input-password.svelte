@@ -2,6 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import type { HTMLInputAttributes } from 'svelte/elements';
+
 	import { General } from '.';
 </script>
 

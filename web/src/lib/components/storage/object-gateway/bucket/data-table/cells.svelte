@@ -1,12 +1,14 @@
 <script lang="ts" module>
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
+	import type { Row } from '@tanstack/table-core';
+
+	import Actions from './cell-actions.svelte';
+
 	import type { Bucket } from '$lib/api/storage/v1/storage_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
 	import { formatCapacity, formatTimeAgo } from '$lib/formatter';
-	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import * as Layout from '$lib/components/custom/data-table/layout';
-	import type { Row } from '@tanstack/table-core';
-	import Actions from './cell-actions.svelte';
 
 	export const cells = {
 		row_picker,

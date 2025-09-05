@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
 	import { page } from '$app/state';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as Sidebar from '$lib/components/ui/sidebar';

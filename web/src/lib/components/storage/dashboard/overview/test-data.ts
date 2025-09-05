@@ -1,5 +1,6 @@
-import * as Chart from '$lib/components/ui/chart/index.js';
 import ActivityIcon from '@lucide/svelte/icons/activity';
+
+import * as Chart from '$lib/components/ui/chart/index.js';
 
 // Static test data moved out from index.svelte
 export const chartData1 = [{ browser: 'safari', visitors: 1260, color: 'var(--color-safari)' }];

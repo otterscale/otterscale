@@ -1,16 +1,17 @@
 <script lang="ts">
-	import type { Scope } from '$lib/api/scope/v1/scope_pb';
-	import { ReloadManager } from '$lib/components/custom/reloader';
-	import * as Card from '$lib/components/ui/card';
-	import * as Chart from '$lib/components/ui/chart/index.js';
-	import { formatCapacity } from '$lib/formatter';
-	import { m } from '$lib/paraglide/messages';
 	import { scaleBand } from 'd3-scale';
 	import { BarChart, Highlight, type ChartContextValue } from 'layerchart';
 	import { PrometheusDriver, SampleValue } from 'prometheus-query';
 	import { onMount } from 'svelte';
 	import { cubicInOut } from 'svelte/easing';
 	import { SvelteDate } from 'svelte/reactivity';
+
+	import type { Scope } from '$lib/api/scope/v1/scope_pb';
+	import { ReloadManager } from '$lib/components/custom/reloader';
+	import * as Card from '$lib/components/ui/card';
+	import * as Chart from '$lib/components/ui/chart/index.js';
+	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 
 	let {
 		prometheusDriver,

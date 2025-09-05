@@ -1,10 +1,11 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+
 	import type { TestResult } from '$lib/api/bist/v1/bist_pb';
 	import * as AlertDialog from '$lib/components/custom/alert-dialog';
 	import * as Form from '$lib/components/custom/form';
 	import { formatCapacity, formatLatencyNano } from '$lib/formatter';
 	import { m } from '$lib/paraglide/messages';
-	import Icon from '@iconify/svelte';
 </script>
 
 <script lang="ts">

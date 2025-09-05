@@ -1,12 +1,14 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+	import { getContext } from 'svelte';
+
+	import { OptionManager, validate } from './utils.svelte';
+
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
-	import { getContext } from 'svelte';
-	import { OptionManager, validate } from './utils.svelte';
 </script>
 
 <script lang="ts">

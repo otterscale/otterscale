@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
 	import { urlIcon, type Path } from '$lib/path';
 
 	interface Props {

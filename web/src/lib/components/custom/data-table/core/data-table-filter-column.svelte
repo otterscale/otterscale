@@ -1,11 +1,12 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { type Table } from '@tanstack/table-core';
+
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Command from '$lib/components/ui/command/index.js';
 	import * as Popover from '$lib/components/ui/popover/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import { type Table } from '@tanstack/table-core';
 </script>
 
 <script lang="ts" generics="TData">

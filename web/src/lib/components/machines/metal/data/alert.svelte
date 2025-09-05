@@ -1,8 +1,9 @@
 <script lang="ts" module>
-	import { type Machine } from '$lib/api/machine/v1/machine_pb';
-	import * as Alert from '$lib/components/ui/alert/index.js';
 	import Icon from '@iconify/svelte';
 	import { type Writable } from 'svelte/store';
+
+	import { type Machine } from '$lib/api/machine/v1/machine_pb';
+	import * as Alert from '$lib/components/ui/alert/index.js';
 </script>
 
 <script lang="ts">

@@ -1,10 +1,4 @@
 <script lang="ts" module>
-	import { type Pool } from '$lib/api/storage/v1/storage_pb';
-	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
-	import * as Layout from '$lib/components/custom/data-table/layout';
-	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
-	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
-	import * as Table from '$lib/components/ui/table/index.js';
 	import {
 		getCoreRowModel,
 		getFilteredRowModel,
@@ -17,9 +11,17 @@
 		type VisibilityState,
 	} from '@tanstack/table-core';
 	import { type Writable } from 'svelte/store';
+
 	import Create from './action-create.svelte';
 	import { columns, messages } from './columns';
 	import Statistics from './statistics.svelte';
+
+	import { type Pool } from '$lib/api/storage/v1/storage_pb';
+	import { Empty, Filters, Footer, Pagination } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
+	import { Reloader, ReloadManager } from '$lib/components/custom/reloader';
+	import { createSvelteTable, FlexRender } from '$lib/components/ui/data-table/index.js';
+	import * as Table from '$lib/components/ui/table/index.js';
 </script>
 
 <script lang="ts">

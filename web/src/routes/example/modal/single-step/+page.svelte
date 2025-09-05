@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
 	import Icon from '@iconify/svelte';
+
+	import { SingleStep as SingleStepModal } from '$lib/components/custom/modal';
 </script>
 
 <SingleStepModal.Root>

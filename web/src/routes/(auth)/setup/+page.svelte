@@ -1,15 +1,16 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { fly } from 'svelte/transition';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
+
 	import { env } from '$env/dynamic/public';
 	import { EnvironmentService, type WatchStatusResponse } from '$lib/api/environment/v1/environment_pb';
 	import { ScopeService, type Scope } from '$lib/api/scope/v1/scope_pb';
 	import SquareGridImage from '$lib/assets/square-grid.svg';
-	import { Button } from '$lib/components/ui/button';
 	import * as Code from '$lib/components/custom/code';
+	import { Button } from '$lib/components/ui/button';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths, staticPaths, urlIcon } from '$lib/path';
 	import { breadcrumb } from '$lib/stores';

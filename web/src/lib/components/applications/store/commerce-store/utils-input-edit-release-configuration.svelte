@@ -1,4 +1,17 @@
 <script lang="ts">
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import shell from 'highlight.js/lib/languages/shell';
+	import yaml from 'highlight.js/lib/languages/yaml';
+	import rehypeHighlight from 'rehype-highlight';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+	import type { Plugin } from 'svelte-exmarkdown';
+	import Markdown from 'svelte-exmarkdown';
+	import { gfmPlugin } from 'svelte-exmarkdown/gfm';
+	import Monaco from 'svelte-monaco';
+
+	import Unstruct from './utils/dynamic-input.svelte';
+
 	import { ApplicationService, type Application_Chart_Metadata } from '$lib/api/application/v1/application_pb';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
@@ -6,18 +19,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { m } from '$lib/paraglide/messages';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import shell from 'highlight.js/lib/languages/shell';
-	import yaml from 'highlight.js/lib/languages/yaml';
 	import 'highlight.js/styles/github.css';
-	import rehypeHighlight from 'rehype-highlight';
-	import { getContext, onMount } from 'svelte';
-	import type { Plugin } from 'svelte-exmarkdown';
-	import Markdown from 'svelte-exmarkdown';
-	import { gfmPlugin } from 'svelte-exmarkdown/gfm';
-	import Monaco from 'svelte-monaco';
-	import { writable } from 'svelte/store';
-	import Unstruct from './utils/dynamic-input.svelte';
 
 	let {
 		chartRef,

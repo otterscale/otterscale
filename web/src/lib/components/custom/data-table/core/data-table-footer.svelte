@@ -1,6 +1,7 @@
 <script lang="ts" module>
-	import { Badge } from '$lib/components/ui/badge';
 	import type { Table } from '@tanstack/table-core';
+
+	import { Badge } from '$lib/components/ui/badge';
 	import { m } from '$lib/paraglide/messages';
 </script>
 

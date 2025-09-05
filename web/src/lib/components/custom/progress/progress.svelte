@@ -1,12 +1,13 @@
 <script lang="ts" module>
-	import { Progress } from '$lib/components/ui/progress';
-	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import type { WithElementRef } from 'bits-ui';
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
+
+	import { Progress } from '$lib/components/ui/progress';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	import { formatProgressColor } from '$lib/formatter';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

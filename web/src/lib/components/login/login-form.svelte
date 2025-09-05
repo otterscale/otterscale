@@ -1,17 +1,18 @@
 <script lang="ts">
-	import { toast } from 'svelte-sonner';
-	import { writable } from 'svelte/store';
 	import Icon from '@iconify/svelte';
+	import { writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
 	import { goto } from '$app/navigation';
+	import LoginImage from '$lib/assets/login.png';
+	import SignUpImage from '$lib/assets/sign-up.jpg';
 	import { authClient } from '$lib/auth-client';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
-	import { Label } from '$lib/components/ui/label';
 	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
-	import LoginImage from '$lib/assets/login.png';
-	import SignUpImage from '$lib/assets/sign-up.jpg';
 
 	const { data } = $props();
 	const id = $props.id();

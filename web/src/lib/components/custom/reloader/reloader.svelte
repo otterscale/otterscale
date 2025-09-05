@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import { Switch as SwitchPrimitive } from 'bits-ui';
+
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
 	import { type WithoutChildrenOrChild } from '$lib/utils.js';
-	import { Switch as SwitchPrimitive } from 'bits-ui';
 </script>
 
 <script lang="ts">

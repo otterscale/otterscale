@@ -1,3 +1,5 @@
+import Trigger from './modal-trigger.svelte';
+
 import {
 	Action,
 	ActionGroup,
@@ -16,7 +18,6 @@ import {
 	Root,
 	Title,
 } from '$lib/components/custom/alert-dialog';
-import Trigger from './modal-trigger.svelte';
 
 export {
 	Action,

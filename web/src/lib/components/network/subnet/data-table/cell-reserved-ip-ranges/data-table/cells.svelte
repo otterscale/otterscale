@@ -1,9 +1,10 @@
 <script lang="ts" module>
-	import * as Layout from '$lib/components/custom/data-table/layout';
+	import type { Row } from '@tanstack/table-core';
+
 	import type { Network_IPRange } from '$lib/api/network/v1/network_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
+	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
-	import type { Row } from '@tanstack/table-core';
 
 	export const cells = {
 		row_picker,

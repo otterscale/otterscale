@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
+
 	import { page } from '$app/state';
 	import { HomeCard, HomeCell } from '$lib/components/scopes';
 	import { Button } from '$lib/components/ui/button';

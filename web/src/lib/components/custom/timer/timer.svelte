@@ -1,9 +1,11 @@
 <script lang="ts" module>
-	import * as ToggleGroup from '$lib/components/ui/toggle-group/index.js';
-	import { cn } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { fade } from 'svelte/transition';
+
 	import { Speed, TimerManager } from './utils.svelte';
+
+	import * as ToggleGroup from '$lib/components/ui/toggle-group/index.js';
+	import { cn } from '$lib/utils';
 </script>
 
 <script lang="ts">

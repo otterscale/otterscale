@@ -1,9 +1,10 @@
 <script lang="ts" module>
+	import { type Writable } from 'svelte/store';
+
 	import type { Application } from '$lib/api/application/v1/application_pb';
 	import * as Table from '$lib/components/custom/table';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { m } from '$lib/paraglide/messages';
-	import { type Writable } from 'svelte/store';
 </script>
 
 <script lang="ts">

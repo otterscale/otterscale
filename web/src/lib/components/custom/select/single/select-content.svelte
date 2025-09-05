@@ -1,7 +1,8 @@
 <script lang="ts" module>
+	import { Popover as PopoverPrimitive } from 'bits-ui';
+
 	import * as Popover from '$lib/components/ui/popover';
 	import { cn } from '$lib/utils.js';
-	import { Popover as PopoverPrimitive } from 'bits-ui';
 </script>
 
 <script lang="ts">

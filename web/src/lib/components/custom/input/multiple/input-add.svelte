@@ -1,9 +1,11 @@
 <script lang="ts" module>
-	import { Button, buttonVariants, type ButtonProps } from '$lib/components/ui/button/index.js';
-	import { cn } from '$lib/utils.js';
 	import Icon from '@iconify/svelte';
 	import { getContext } from 'svelte';
+
 	import type { InputManager, ValuesManager } from './utils.svelte';
+
+	import { Button, buttonVariants, type ButtonProps } from '$lib/components/ui/button/index.js';
+	import { cn } from '$lib/utils.js';
 </script>
 
 <script lang="ts">

@@ -1,7 +1,9 @@
 <script lang="ts" module>
-	import type { TableRow } from './type';
-	import * as Layout from '$lib/components/custom/data-table/layout';
 	import type { Writable } from 'svelte/store';
+
+	import type { TableRow } from './type';
+
+	import * as Layout from '$lib/components/custom/data-table/layout';
 </script>
 
 <script lang="ts">

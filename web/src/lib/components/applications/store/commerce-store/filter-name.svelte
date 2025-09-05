@@ -1,9 +1,11 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+
+	import type { FilterManager } from './utils';
+
 	import Input from '$lib/components/ui/input/input.svelte';
 	import { m } from '$lib/paraglide/messages';
 	import { cn } from '$lib/utils';
-	import Icon from '@iconify/svelte';
-	import type { FilterManager } from './utils';
 </script>
 
 <script lang="ts">

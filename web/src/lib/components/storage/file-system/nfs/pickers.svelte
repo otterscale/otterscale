@@ -1,7 +1,8 @@
 <script lang="ts" module>
+	import SubvolumeGroupPicker from '../../utils/subvolume-group-picker.svelte';
+
 	import * as Picker from '$lib/components/custom/picker';
 	import { m } from '$lib/paraglide/messages';
-	import SubvolumeGroupPicker from '../../utils/subvolume-group-picker.svelte';
 </script>
 
 <script lang="ts">

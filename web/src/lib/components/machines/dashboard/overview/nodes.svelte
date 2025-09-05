@@ -1,4 +1,13 @@
 <script lang="ts">
+	import { timestampDate } from '@bufbuild/protobuf/wkt';
+	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { scaleUtc } from 'd3-scale';
+	import { curveNatural } from 'd3-shape';
+	import { LineChart } from 'layerchart';
+	import { getContext, onMount } from 'svelte';
+	import { writable } from 'svelte/store';
+
 	import { page } from '$app/state';
 	import { MachineService, type Machine } from '$lib/api/machine/v1/machine_pb';
 	import type { Scope } from '$lib/api/scope/v1/scope_pb';
@@ -9,14 +18,6 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 	import { getLocale } from '$lib/paraglide/runtime';
-	import { timestampDate } from '@bufbuild/protobuf/wkt';
-	import { createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { scaleUtc } from 'd3-scale';
-	import { curveNatural } from 'd3-shape';
-	import { LineChart } from 'layerchart';
-	import { getContext, onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
 	const now = new Date();
 	const months: string[] = [];

@@ -1,11 +1,12 @@
 <script lang="ts" module>
+	import Icon from '@iconify/svelte';
+	import { type Table } from '@tanstack/table-core';
+
 	import Content from '$lib/components/custom/chart/content/text/text-large.svelte';
+	import Description from '$lib/components/custom/chart/description.svelte';
 	import Layout from '$lib/components/custom/chart/layout/small-flexible-height.svelte';
 	import Title from '$lib/components/custom/chart/title.svelte';
-	import Description from '$lib/components/custom/chart/description.svelte';
-	import { type Table } from '@tanstack/table-core';
 	import { formatCapacity } from '$lib/formatter';
-	import Icon from '@iconify/svelte';
 </script>
 
 <script lang="ts" generics="TData">

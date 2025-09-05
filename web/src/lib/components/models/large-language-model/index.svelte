@@ -1,11 +1,12 @@
 <script lang="ts" module>
-	import * as Loading from '$lib/components/custom/loading';
-	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
 	import { onDestroy, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { DataTable } from './data-table/index';
 
+	import { DataTable } from './data-table/index';
 	import { listLargeLanguageModels, type LargeLangeageModel } from './protobuf.svelte';
+
+	import * as Loading from '$lib/components/custom/loading';
+	import { ReloadManager, Reloader } from '$lib/components/custom/reloader';
 </script>
 
 <script lang="ts">

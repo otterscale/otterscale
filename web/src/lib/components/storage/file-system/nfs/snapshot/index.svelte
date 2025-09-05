@@ -1,9 +1,11 @@
 <script lang="ts" module>
-	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
-	import * as Sheet from '$lib/components/ui/sheet';
 	import Icon from '@iconify/svelte';
 	import { setContext } from 'svelte';
+
 	import { DataTable } from './data-table';
+
+	import type { Subvolume } from '$lib/api/storage/v1/storage_pb';
+	import * as Sheet from '$lib/components/ui/sheet';
 </script>
 
 <script lang="ts">

@@ -1,4 +1,12 @@
 <script lang="ts" module>
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
+
+	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
+
 	import {
 		ApplicationService,
 		type Application_Release,
@@ -9,12 +17,6 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
-	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
-	import Icon from '@iconify/svelte';
-	import { getContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import type { Writable } from 'svelte/store';
-	import ReleaseValuesInputEdit from './utils-input-edit-release-configuration.svelte';
 </script>
 
 <script lang="ts">

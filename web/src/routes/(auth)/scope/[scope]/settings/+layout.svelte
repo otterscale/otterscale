@@ -1,11 +1,12 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte';
+
 	import { page } from '$app/state';
 	import * as NavigationMenu from '$lib/components/ui/navigation-menu';
 	import { navigationMenuTriggerStyle } from '$lib/components/ui/navigation-menu/navigation-menu-trigger.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import { m } from '$lib/paraglide/messages';
 	import { dynamicPaths } from '$lib/path';
-	import Icon from '@iconify/svelte';
 
 	let { children } = $props();
 
