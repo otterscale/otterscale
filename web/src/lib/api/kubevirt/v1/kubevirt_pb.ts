@@ -80,9 +80,9 @@ export type VirtualMachine = Message<"otterscale.kubevirt.v1.VirtualMachine"> & 
   nodeName: string;
 
   /**
-   * @generated from field: otterscale.kubevirt.v1.VirtualMachineResources resoureces = 21;
+   * @generated from field: otterscale.kubevirt.v1.VirtualMachineResources resources = 21;
    */
-  resoureces?: VirtualMachineResources;
+  resources?: VirtualMachineResources;
 
   /**
    * @generated from field: repeated otterscale.kubevirt.v1.VirtualMachineDisk disks = 22;

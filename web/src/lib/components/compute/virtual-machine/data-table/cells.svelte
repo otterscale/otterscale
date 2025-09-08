@@ -62,12 +62,12 @@
 
 {#snippet cpu(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-end">
-		{row.original.resoureces?.cpuCores}
+		{row.original.resources?.cpuCores}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet memory(row: Row<VirtualMachine>)}
-	{@const memory = Number(row.original.resoureces?.memoryBytes)}
+	{@const memory = Number(row.original.resources?.memoryBytes)}
 	<Layout.Cell class="items-end">
 		{@const { value: memoryValue, unit: memoryUnit } = formatCapacity(memory)}
 		{memoryValue}
