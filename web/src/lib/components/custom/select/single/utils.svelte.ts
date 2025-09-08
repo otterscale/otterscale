@@ -30,7 +30,12 @@ class OptionManager {
 }
 
 function validate(required: boolean | undefined, optionManager: OptionManager) {
-	return required && !optionManager.selectedOption.value;
+	return (
+		required &&
+		(optionManager.selectedOption.value === null ||
+			optionManager.selectedOption.value === undefined ||
+			optionManager.selectedOption.value === '')
+	);
 }
 
 export { OptionManager, validate };
