@@ -124,7 +124,7 @@
 {/snippet}
 
 {#snippet disk(row: Row<Machine>)}
-	<Layout.Cell class="items-start">
+	<Layout.Cell class="items-end">
 		{row.original.blockDevices.length}
 	</Layout.Cell>
 {/snippet}

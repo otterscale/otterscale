@@ -32,36 +32,32 @@
 </script>
 
 {#if denominator > 0}
-	<Tooltip.Provider>
-		<Tooltip.Root>
-			<Tooltip.Trigger>
-				<div bind:this={ref} data-slot="progress-root" {...restProps}>
-					<Progress
-						value={progressRatio}
-						max={1}
-						class={formatProgressColor(progressRatio, false, highIsGood)}
-					/>
-					{#if ratio}
+	{#if ratio}
+		<Tooltip.Provider>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					<div bind:this={ref} data-slot="progress-root" {...restProps}>
+						<Progress
+							value={progressRatio}
+							max={1}
+							class={formatProgressColor(progressRatio, false, highIsGood)}
+						/>
 						<div
 							class={cn(
 								'text-muted-foreground flex items-center justify-end font-light sm:min-w-[100px] md:min-w-[200px]',
 								className,
 							)}
 						>
-							{#if detail}
-								{@render detail?.({ numerator, denominator })}
-							{:else}
-								{@render ratio?.({ numerator, denominator })}
-							{/if}
+							{@render ratio?.({ numerator, denominator })}
 						</div>
-					{/if}
-				</div>
-			</Tooltip.Trigger>
-			<Tooltip.Content>
-				{@render detail?.({ numerator, denominator })}
-			</Tooltip.Content>
-		</Tooltip.Root>
-	</Tooltip.Provider>
+					</div>
+				</Tooltip.Trigger>
+				<Tooltip.Content>
+					{@render detail?.({ numerator, denominator })}
+				</Tooltip.Content>
+			</Tooltip.Root>
+		</Tooltip.Provider>
+	{/if}
 {:else}
 	<Icon icon="ph:infinity" />
 {/if}
