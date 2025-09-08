@@ -533,6 +533,7 @@ func toProtoPool(p *core.Pool) *pb.Pool {
 	ret.SetQuotaObjects(p.QuotaObjects)
 	ret.SetUsedBytes(p.UsedBytes)
 	ret.SetUsedObjects(p.UsedObjects)
+	ret.SetMaxBytes(p.MaxBytes)
 	ret.SetPlacementGroupCount(p.PlacementGroupCount)
 	ret.SetPlacementGroupState(p.PlacementGroupState)
 	ret.SetCreatedAt(timestamppb.New(p.CreatedAt))

@@ -11,6 +11,7 @@ option go_package = "github.com/otterscale/otterscale/api/application/v1;pb";
 service ApplicationService {
   rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse);
   rpc GetApplication(GetApplicationRequest) returns (Application);
+  rpc WatchLogs(WatchLogsRequest) returns (stream WatchLogsResponse);
   rpc ListReleases(ListReleasesRequest) returns (ListReleasesResponse);
   rpc CreateRelease(CreateReleaseRequest) returns (Application.Release);
   rpc UpdateRelease(UpdateReleaseRequest) returns (Application.Release);
@@ -151,6 +152,18 @@ message GetApplicationRequest {
   string facility_name = 2;
   string namespace = 3;
   string name = 4;
+}
+
+message WatchLogsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+  string pod_name = 4;
+  string container_name = 5;
+}
+
+message WatchLogsResponse {
+  string log = 1;
 }
 
 message ListReleasesRequest {

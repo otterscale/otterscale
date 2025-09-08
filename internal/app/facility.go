@@ -94,12 +94,20 @@ func (s *FacilityService) ExposeFacility(ctx context.Context, req *connect.Reque
 }
 
 func (s *FacilityService) AddFacilityUnits(ctx context.Context, req *connect.Request[pb.AddFacilityUnitsRequest]) (*connect.Response[pb.AddFacilityUnitsResponse], error) {
-	units, err := s.uc.AddFacilityUnits(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), int(req.Msg.GetNumber()), toModelPlacements(req.Msg.GetPlacements()))
+	unitNames, err := s.uc.AddFacilityUnits(ctx, req.Msg.GetScopeUuid(), req.Msg.GetName(), int(req.Msg.GetNumber()), toModelPlacements(req.Msg.GetPlacements()))
 	if err != nil {
 		return nil, err
 	}
 	resp := &pb.AddFacilityUnitsResponse{}
-	resp.SetUnits(units)
+	resp.SetUnitNames(unitNames)
+	return connect.NewResponse(resp), nil
+}
+
+func (s *FacilityService) ResolveFacilityUnitErrors(ctx context.Context, req *connect.Request[pb.ResolveFacilityUnitErrorsRequest]) (*connect.Response[emptypb.Empty], error) {
+	if err := s.uc.ResolveFacilityUnitErrors(ctx, req.Msg.GetScopeUuid(), req.Msg.GetUnitName()); err != nil {
+		return nil, err
+	}
+	resp := &emptypb.Empty{}
 	return connect.NewResponse(resp), nil
 }
 

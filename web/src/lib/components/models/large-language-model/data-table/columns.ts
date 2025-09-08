@@ -103,6 +103,15 @@ const columns: ColumnDef<LargeLangeageModel>[] = [
 			return renderSnippet(cells.uptime, row);
 		},
 	},
+	{
+		accessorKey: 'topology',
+		header: ({ column }) => {
+			return renderSnippet(headers.topology, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.topology, row);
+		},
+	},
 ];
 
 export { columns, messages };

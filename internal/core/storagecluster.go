@@ -47,6 +47,7 @@ type Pool struct {
 	QuotaObjects        uint64
 	UsedBytes           uint64
 	UsedObjects         uint64
+	MaxBytes            uint64
 	PlacementGroupCount uint64
 	PlacementGroupState map[string]int64
 	CreatedAt           time.Time

@@ -100,8 +100,9 @@ type df struct {
 		Name  string `json:"name,omitempty"`
 		ID    int64  `json:"id,omitempty"`
 		Stats struct {
-			Objects   uint64 `json:"objects,omitempty"`
-			BytesUsed uint64 `json:"bytes_used,omitempty"`
+			UsedObjects uint64 `json:"objects,omitempty"`
+			UsedBytes   uint64 `json:"bytes_used,omitempty"`
+			MaxBytes    uint64 `json:"max_avail,omitempty"`
 		} `json:"stats,omitempty"`
 	} `json:"pools,omitempty"`
 }

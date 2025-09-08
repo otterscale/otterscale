@@ -1969,10 +1969,10 @@ func (b0 AddFacilityUnitsRequest_builder) Build() *AddFacilityUnitsRequest {
 }
 
 type AddFacilityUnitsResponse struct {
-	state            protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_Units []string               `protobuf:"bytes,1,rep,name=units"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	state                protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_UnitNames []string               `protobuf:"bytes,1,rep,name=unit_names,json=unitNames"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *AddFacilityUnitsResponse) Reset() {
@@ -2000,28 +2000,139 @@ func (x *AddFacilityUnitsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *AddFacilityUnitsResponse) GetUnits() []string {
+func (x *AddFacilityUnitsResponse) GetUnitNames() []string {
 	if x != nil {
-		return x.xxx_hidden_Units
+		return x.xxx_hidden_UnitNames
 	}
 	return nil
 }
 
-func (x *AddFacilityUnitsResponse) SetUnits(v []string) {
-	x.xxx_hidden_Units = v
+func (x *AddFacilityUnitsResponse) SetUnitNames(v []string) {
+	x.xxx_hidden_UnitNames = v
 }
 
 type AddFacilityUnitsResponse_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	Units []string
+	UnitNames []string
 }
 
 func (b0 AddFacilityUnitsResponse_builder) Build() *AddFacilityUnitsResponse {
 	m0 := &AddFacilityUnitsResponse{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_Units = b.Units
+	x.xxx_hidden_UnitNames = b.UnitNames
+	return m0
+}
+
+type ResolveFacilityUnitErrorsRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid   *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_UnitName    *string                `protobuf:"bytes,2,opt,name=unit_name,json=unitName"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) Reset() {
+	*x = ResolveFacilityUnitErrorsRequest{}
+	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ResolveFacilityUnitErrorsRequest) ProtoMessage() {}
+
+func (x *ResolveFacilityUnitErrorsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) GetUnitName() string {
+	if x != nil {
+		if x.xxx_hidden_UnitName != nil {
+			return *x.xxx_hidden_UnitName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) SetUnitName(v string) {
+	x.xxx_hidden_UnitName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) HasUnitName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *ResolveFacilityUnitErrorsRequest) ClearUnitName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_UnitName = nil
+}
+
+type ResolveFacilityUnitErrorsRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid *string
+	UnitName  *string
+}
+
+func (b0 ResolveFacilityUnitErrorsRequest_builder) Build() *ResolveFacilityUnitErrorsRequest {
+	m0 := &ResolveFacilityUnitErrorsRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.UnitName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_UnitName = b.UnitName
+	}
 	return m0
 }
 
@@ -2037,7 +2148,7 @@ type ListActionsRequest struct {
 
 func (x *ListActionsRequest) Reset() {
 	*x = ListActionsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2049,7 +2160,7 @@ func (x *ListActionsRequest) String() string {
 func (*ListActionsRequest) ProtoMessage() {}
 
 func (x *ListActionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[13]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2145,7 +2256,7 @@ type ListActionsResponse struct {
 
 func (x *ListActionsResponse) Reset() {
 	*x = ListActionsResponse{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[14]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2157,7 +2268,7 @@ func (x *ListActionsResponse) String() string {
 func (*ListActionsResponse) ProtoMessage() {}
 
 func (x *ListActionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[14]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2203,7 +2314,7 @@ type DoActionRequest struct {
 
 func (x *DoActionRequest) Reset() {
 	*x = DoActionRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[15]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2215,7 +2326,7 @@ func (x *DoActionRequest) String() string {
 func (*DoActionRequest) ProtoMessage() {}
 
 func (x *DoActionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[15]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2246,7 +2357,7 @@ type ListCharmsRequest struct {
 
 func (x *ListCharmsRequest) Reset() {
 	*x = ListCharmsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[16]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2258,7 +2369,7 @@ func (x *ListCharmsRequest) String() string {
 func (*ListCharmsRequest) ProtoMessage() {}
 
 func (x *ListCharmsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[16]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2290,7 +2401,7 @@ type ListCharmsResponse struct {
 
 func (x *ListCharmsResponse) Reset() {
 	*x = ListCharmsResponse{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[17]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2302,7 +2413,7 @@ func (x *ListCharmsResponse) String() string {
 func (*ListCharmsResponse) ProtoMessage() {}
 
 func (x *ListCharmsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[17]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2351,7 +2462,7 @@ type GetCharmRequest struct {
 
 func (x *GetCharmRequest) Reset() {
 	*x = GetCharmRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[18]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2363,7 +2474,7 @@ func (x *GetCharmRequest) String() string {
 func (*GetCharmRequest) ProtoMessage() {}
 
 func (x *GetCharmRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[18]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2429,7 +2540,7 @@ type GetCharmMetadataRequest struct {
 
 func (x *GetCharmMetadataRequest) Reset() {
 	*x = GetCharmMetadataRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[19]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2441,7 +2552,7 @@ func (x *GetCharmMetadataRequest) String() string {
 func (*GetCharmMetadataRequest) ProtoMessage() {}
 
 func (x *GetCharmMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[19]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2507,7 +2618,7 @@ type ListCharmArtifactsRequest struct {
 
 func (x *ListCharmArtifactsRequest) Reset() {
 	*x = ListCharmArtifactsRequest{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[20]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2519,7 +2630,7 @@ func (x *ListCharmArtifactsRequest) String() string {
 func (*ListCharmArtifactsRequest) ProtoMessage() {}
 
 func (x *ListCharmArtifactsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[20]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2583,7 +2694,7 @@ type ListCharmArtifactsResponse struct {
 
 func (x *ListCharmArtifactsResponse) Reset() {
 	*x = ListCharmArtifactsResponse{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[21]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2595,7 +2706,7 @@ func (x *ListCharmArtifactsResponse) String() string {
 func (*ListCharmArtifactsResponse) ProtoMessage() {}
 
 func (x *ListCharmArtifactsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[21]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2658,7 +2769,7 @@ type Facility_Charm struct {
 
 func (x *Facility_Charm) Reset() {
 	*x = Facility_Charm{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[22]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2670,7 +2781,7 @@ func (x *Facility_Charm) String() string {
 func (*Facility_Charm) ProtoMessage() {}
 
 func (x *Facility_Charm) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[22]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3136,7 +3247,7 @@ type Facility_Action struct {
 
 func (x *Facility_Action) Reset() {
 	*x = Facility_Action{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[23]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3148,7 +3259,7 @@ func (x *Facility_Action) String() string {
 func (*Facility_Action) ProtoMessage() {}
 
 func (x *Facility_Action) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[23]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3248,7 +3359,7 @@ type Facility_Status struct {
 
 func (x *Facility_Status) Reset() {
 	*x = Facility_Status{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[24]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3260,7 +3371,7 @@ func (x *Facility_Status) String() string {
 func (*Facility_Status) ProtoMessage() {}
 
 func (x *Facility_Status) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[24]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3391,7 +3502,7 @@ type Facility_Unit struct {
 
 func (x *Facility_Unit) Reset() {
 	*x = Facility_Unit{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[25]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3403,7 +3514,7 @@ func (x *Facility_Unit) String() string {
 func (*Facility_Unit) ProtoMessage() {}
 
 func (x *Facility_Unit) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[25]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3702,7 +3813,7 @@ type Facility_Charm_Metadata struct {
 
 func (x *Facility_Charm_Metadata) Reset() {
 	*x = Facility_Charm_Metadata{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[26]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3714,7 +3825,7 @@ func (x *Facility_Charm_Metadata) String() string {
 func (*Facility_Charm_Metadata) ProtoMessage() {}
 
 func (x *Facility_Charm_Metadata) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[26]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3782,7 +3893,7 @@ type Facility_Charm_Base struct {
 
 func (x *Facility_Charm_Base) Reset() {
 	*x = Facility_Charm_Base{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[27]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3794,7 +3905,7 @@ func (x *Facility_Charm_Base) String() string {
 func (*Facility_Charm_Base) ProtoMessage() {}
 
 func (x *Facility_Charm_Base) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[27]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3928,7 +4039,7 @@ type Facility_Charm_Artifact struct {
 
 func (x *Facility_Charm_Artifact) Reset() {
 	*x = Facility_Charm_Artifact{}
-	mi := &file_api_facility_v1_facility_proto_msgTypes[28]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3940,7 +4051,7 @@ func (x *Facility_Charm_Artifact) String() string {
 func (*Facility_Charm_Artifact) ProtoMessage() {}
 
 func (x *Facility_Charm_Artifact) ProtoReflect() protoreflect.Message {
-	mi := &file_api_facility_v1_facility_proto_msgTypes[28]
+	mi := &file_api_facility_v1_facility_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4232,9 +4343,14 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\x06number\x18\v \x01(\x03R\x06number\x12A\n" +
 	"\n" +
 	"placements\x18\x15 \x03(\v2!.otterscale.facility.v1.PlacementR\n" +
-	"placements\"0\n" +
-	"\x18AddFacilityUnitsResponse\x12\x14\n" +
-	"\x05units\x18\x01 \x03(\tR\x05units\"X\n" +
+	"placements\"9\n" +
+	"\x18AddFacilityUnitsResponse\x12\x1d\n" +
+	"\n" +
+	"unit_names\x18\x01 \x03(\tR\tunitNames\"^\n" +
+	" ResolveFacilityUnitErrorsRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12\x1b\n" +
+	"\tunit_name\x18\x02 \x01(\tR\bunitName\"X\n" +
 	"\x12ListActionsRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -4252,8 +4368,7 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\x19ListCharmArtifactsRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"k\n" +
 	"\x1aListCharmArtifactsResponse\x12M\n" +
-	"\tartifacts\x18\x01 \x03(\v2/.otterscale.facility.v1.Facility.Charm.ArtifactR\tartifacts2\xb8\n" +
-	"\n" +
+	"\tartifacts\x18\x01 \x03(\v2/.otterscale.facility.v1.Facility.Charm.ArtifactR\tartifacts2\xa7\v\n" +
 	"\x0fFacilityService\x12o\n" +
 	"\x0eListFacilities\x12-.otterscale.facility.v1.ListFacilitiesRequest\x1a..otterscale.facility.v1.ListFacilitiesResponse\x12[\n" +
 	"\vGetFacility\x12*.otterscale.facility.v1.GetFacilityRequest\x1a .otterscale.facility.v1.Facility\x12a\n" +
@@ -4261,7 +4376,8 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\x0eUpdateFacility\x12-.otterscale.facility.v1.UpdateFacilityRequest\x1a .otterscale.facility.v1.Facility\x12W\n" +
 	"\x0eDeleteFacility\x12-.otterscale.facility.v1.DeleteFacilityRequest\x1a\x16.google.protobuf.Empty\x12W\n" +
 	"\x0eExposeFacility\x12-.otterscale.facility.v1.ExposeFacilityRequest\x1a\x16.google.protobuf.Empty\x12u\n" +
-	"\x10AddFacilityUnits\x12/.otterscale.facility.v1.AddFacilityUnitsRequest\x1a0.otterscale.facility.v1.AddFacilityUnitsResponse\x12f\n" +
+	"\x10AddFacilityUnits\x12/.otterscale.facility.v1.AddFacilityUnitsRequest\x1a0.otterscale.facility.v1.AddFacilityUnitsResponse\x12m\n" +
+	"\x19ResolveFacilityUnitErrors\x128.otterscale.facility.v1.ResolveFacilityUnitErrorsRequest\x1a\x16.google.protobuf.Empty\x12f\n" +
 	"\vListActions\x12*.otterscale.facility.v1.ListActionsRequest\x1a+.otterscale.facility.v1.ListActionsResponse\x12K\n" +
 	"\bDoAction\x12'.otterscale.facility.v1.DoActionRequest\x1a\x16.google.protobuf.Empty\x12c\n" +
 	"\n" +
@@ -4270,58 +4386,59 @@ const file_api_facility_v1_facility_proto_rawDesc = "" +
 	"\x10GetCharmMetadata\x12/.otterscale.facility.v1.GetCharmMetadataRequest\x1a/.otterscale.facility.v1.Facility.Charm.Metadata\x12{\n" +
 	"\x12ListCharmArtifacts\x121.otterscale.facility.v1.ListCharmArtifactsRequest\x1a2.otterscale.facility.v1.ListCharmArtifactsResponseB5Z3github.com/otterscale/otterscale/api/facility/v1;pbb\beditionsp\xe8\a"
 
-var file_api_facility_v1_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
+var file_api_facility_v1_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_api_facility_v1_facility_proto_goTypes = []any{
-	(*Facility)(nil),                   // 0: otterscale.facility.v1.Facility
-	(*Placement)(nil),                  // 1: otterscale.facility.v1.Placement
-	(*Constraint)(nil),                 // 2: otterscale.facility.v1.Constraint
-	(*Tag)(nil),                        // 3: otterscale.facility.v1.Tag
-	(*ListFacilitiesRequest)(nil),      // 4: otterscale.facility.v1.ListFacilitiesRequest
-	(*ListFacilitiesResponse)(nil),     // 5: otterscale.facility.v1.ListFacilitiesResponse
-	(*GetFacilityRequest)(nil),         // 6: otterscale.facility.v1.GetFacilityRequest
-	(*CreateFacilityRequest)(nil),      // 7: otterscale.facility.v1.CreateFacilityRequest
-	(*UpdateFacilityRequest)(nil),      // 8: otterscale.facility.v1.UpdateFacilityRequest
-	(*DeleteFacilityRequest)(nil),      // 9: otterscale.facility.v1.DeleteFacilityRequest
-	(*ExposeFacilityRequest)(nil),      // 10: otterscale.facility.v1.ExposeFacilityRequest
-	(*AddFacilityUnitsRequest)(nil),    // 11: otterscale.facility.v1.AddFacilityUnitsRequest
-	(*AddFacilityUnitsResponse)(nil),   // 12: otterscale.facility.v1.AddFacilityUnitsResponse
-	(*ListActionsRequest)(nil),         // 13: otterscale.facility.v1.ListActionsRequest
-	(*ListActionsResponse)(nil),        // 14: otterscale.facility.v1.ListActionsResponse
-	(*DoActionRequest)(nil),            // 15: otterscale.facility.v1.DoActionRequest
-	(*ListCharmsRequest)(nil),          // 16: otterscale.facility.v1.ListCharmsRequest
-	(*ListCharmsResponse)(nil),         // 17: otterscale.facility.v1.ListCharmsResponse
-	(*GetCharmRequest)(nil),            // 18: otterscale.facility.v1.GetCharmRequest
-	(*GetCharmMetadataRequest)(nil),    // 19: otterscale.facility.v1.GetCharmMetadataRequest
-	(*ListCharmArtifactsRequest)(nil),  // 20: otterscale.facility.v1.ListCharmArtifactsRequest
-	(*ListCharmArtifactsResponse)(nil), // 21: otterscale.facility.v1.ListCharmArtifactsResponse
-	(*Facility_Charm)(nil),             // 22: otterscale.facility.v1.Facility.Charm
-	(*Facility_Action)(nil),            // 23: otterscale.facility.v1.Facility.Action
-	(*Facility_Status)(nil),            // 24: otterscale.facility.v1.Facility.Status
-	(*Facility_Unit)(nil),              // 25: otterscale.facility.v1.Facility.Unit
-	(*Facility_Charm_Metadata)(nil),    // 26: otterscale.facility.v1.Facility.Charm.Metadata
-	(*Facility_Charm_Base)(nil),        // 27: otterscale.facility.v1.Facility.Charm.Base
-	(*Facility_Charm_Artifact)(nil),    // 28: otterscale.facility.v1.Facility.Charm.Artifact
-	(*timestamppb.Timestamp)(nil),      // 29: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),              // 30: google.protobuf.Empty
+	(*Facility)(nil),                         // 0: otterscale.facility.v1.Facility
+	(*Placement)(nil),                        // 1: otterscale.facility.v1.Placement
+	(*Constraint)(nil),                       // 2: otterscale.facility.v1.Constraint
+	(*Tag)(nil),                              // 3: otterscale.facility.v1.Tag
+	(*ListFacilitiesRequest)(nil),            // 4: otterscale.facility.v1.ListFacilitiesRequest
+	(*ListFacilitiesResponse)(nil),           // 5: otterscale.facility.v1.ListFacilitiesResponse
+	(*GetFacilityRequest)(nil),               // 6: otterscale.facility.v1.GetFacilityRequest
+	(*CreateFacilityRequest)(nil),            // 7: otterscale.facility.v1.CreateFacilityRequest
+	(*UpdateFacilityRequest)(nil),            // 8: otterscale.facility.v1.UpdateFacilityRequest
+	(*DeleteFacilityRequest)(nil),            // 9: otterscale.facility.v1.DeleteFacilityRequest
+	(*ExposeFacilityRequest)(nil),            // 10: otterscale.facility.v1.ExposeFacilityRequest
+	(*AddFacilityUnitsRequest)(nil),          // 11: otterscale.facility.v1.AddFacilityUnitsRequest
+	(*AddFacilityUnitsResponse)(nil),         // 12: otterscale.facility.v1.AddFacilityUnitsResponse
+	(*ResolveFacilityUnitErrorsRequest)(nil), // 13: otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
+	(*ListActionsRequest)(nil),               // 14: otterscale.facility.v1.ListActionsRequest
+	(*ListActionsResponse)(nil),              // 15: otterscale.facility.v1.ListActionsResponse
+	(*DoActionRequest)(nil),                  // 16: otterscale.facility.v1.DoActionRequest
+	(*ListCharmsRequest)(nil),                // 17: otterscale.facility.v1.ListCharmsRequest
+	(*ListCharmsResponse)(nil),               // 18: otterscale.facility.v1.ListCharmsResponse
+	(*GetCharmRequest)(nil),                  // 19: otterscale.facility.v1.GetCharmRequest
+	(*GetCharmMetadataRequest)(nil),          // 20: otterscale.facility.v1.GetCharmMetadataRequest
+	(*ListCharmArtifactsRequest)(nil),        // 21: otterscale.facility.v1.ListCharmArtifactsRequest
+	(*ListCharmArtifactsResponse)(nil),       // 22: otterscale.facility.v1.ListCharmArtifactsResponse
+	(*Facility_Charm)(nil),                   // 23: otterscale.facility.v1.Facility.Charm
+	(*Facility_Action)(nil),                  // 24: otterscale.facility.v1.Facility.Action
+	(*Facility_Status)(nil),                  // 25: otterscale.facility.v1.Facility.Status
+	(*Facility_Unit)(nil),                    // 26: otterscale.facility.v1.Facility.Unit
+	(*Facility_Charm_Metadata)(nil),          // 27: otterscale.facility.v1.Facility.Charm.Metadata
+	(*Facility_Charm_Base)(nil),              // 28: otterscale.facility.v1.Facility.Charm.Base
+	(*Facility_Charm_Artifact)(nil),          // 29: otterscale.facility.v1.Facility.Charm.Artifact
+	(*timestamppb.Timestamp)(nil),            // 30: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                    // 31: google.protobuf.Empty
 }
 var file_api_facility_v1_facility_proto_depIdxs = []int32{
-	24, // 0: otterscale.facility.v1.Facility.status:type_name -> otterscale.facility.v1.Facility.Status
-	26, // 1: otterscale.facility.v1.Facility.metadata:type_name -> otterscale.facility.v1.Facility.Charm.Metadata
-	25, // 2: otterscale.facility.v1.Facility.units:type_name -> otterscale.facility.v1.Facility.Unit
+	25, // 0: otterscale.facility.v1.Facility.status:type_name -> otterscale.facility.v1.Facility.Status
+	27, // 1: otterscale.facility.v1.Facility.metadata:type_name -> otterscale.facility.v1.Facility.Charm.Metadata
+	26, // 2: otterscale.facility.v1.Facility.units:type_name -> otterscale.facility.v1.Facility.Unit
 	0,  // 3: otterscale.facility.v1.ListFacilitiesResponse.facilities:type_name -> otterscale.facility.v1.Facility
 	1,  // 4: otterscale.facility.v1.CreateFacilityRequest.placements:type_name -> otterscale.facility.v1.Placement
 	2,  // 5: otterscale.facility.v1.CreateFacilityRequest.constraint:type_name -> otterscale.facility.v1.Constraint
 	1,  // 6: otterscale.facility.v1.AddFacilityUnitsRequest.placements:type_name -> otterscale.facility.v1.Placement
-	23, // 7: otterscale.facility.v1.ListActionsResponse.actions:type_name -> otterscale.facility.v1.Facility.Action
-	22, // 8: otterscale.facility.v1.ListCharmsResponse.charms:type_name -> otterscale.facility.v1.Facility.Charm
-	28, // 9: otterscale.facility.v1.ListCharmArtifactsResponse.artifacts:type_name -> otterscale.facility.v1.Facility.Charm.Artifact
-	28, // 10: otterscale.facility.v1.Facility.Charm.default_artifact:type_name -> otterscale.facility.v1.Facility.Charm.Artifact
-	29, // 11: otterscale.facility.v1.Facility.Status.created_at:type_name -> google.protobuf.Timestamp
-	24, // 12: otterscale.facility.v1.Facility.Unit.agent_status:type_name -> otterscale.facility.v1.Facility.Status
-	24, // 13: otterscale.facility.v1.Facility.Unit.workload_status:type_name -> otterscale.facility.v1.Facility.Status
-	25, // 14: otterscale.facility.v1.Facility.Unit.subordinates:type_name -> otterscale.facility.v1.Facility.Unit
-	27, // 15: otterscale.facility.v1.Facility.Charm.Artifact.bases:type_name -> otterscale.facility.v1.Facility.Charm.Base
-	29, // 16: otterscale.facility.v1.Facility.Charm.Artifact.created_at:type_name -> google.protobuf.Timestamp
+	24, // 7: otterscale.facility.v1.ListActionsResponse.actions:type_name -> otterscale.facility.v1.Facility.Action
+	23, // 8: otterscale.facility.v1.ListCharmsResponse.charms:type_name -> otterscale.facility.v1.Facility.Charm
+	29, // 9: otterscale.facility.v1.ListCharmArtifactsResponse.artifacts:type_name -> otterscale.facility.v1.Facility.Charm.Artifact
+	29, // 10: otterscale.facility.v1.Facility.Charm.default_artifact:type_name -> otterscale.facility.v1.Facility.Charm.Artifact
+	30, // 11: otterscale.facility.v1.Facility.Status.created_at:type_name -> google.protobuf.Timestamp
+	25, // 12: otterscale.facility.v1.Facility.Unit.agent_status:type_name -> otterscale.facility.v1.Facility.Status
+	25, // 13: otterscale.facility.v1.Facility.Unit.workload_status:type_name -> otterscale.facility.v1.Facility.Status
+	26, // 14: otterscale.facility.v1.Facility.Unit.subordinates:type_name -> otterscale.facility.v1.Facility.Unit
+	28, // 15: otterscale.facility.v1.Facility.Charm.Artifact.bases:type_name -> otterscale.facility.v1.Facility.Charm.Base
+	30, // 16: otterscale.facility.v1.Facility.Charm.Artifact.created_at:type_name -> google.protobuf.Timestamp
 	4,  // 17: otterscale.facility.v1.FacilityService.ListFacilities:input_type -> otterscale.facility.v1.ListFacilitiesRequest
 	6,  // 18: otterscale.facility.v1.FacilityService.GetFacility:input_type -> otterscale.facility.v1.GetFacilityRequest
 	7,  // 19: otterscale.facility.v1.FacilityService.CreateFacility:input_type -> otterscale.facility.v1.CreateFacilityRequest
@@ -4329,27 +4446,29 @@ var file_api_facility_v1_facility_proto_depIdxs = []int32{
 	9,  // 21: otterscale.facility.v1.FacilityService.DeleteFacility:input_type -> otterscale.facility.v1.DeleteFacilityRequest
 	10, // 22: otterscale.facility.v1.FacilityService.ExposeFacility:input_type -> otterscale.facility.v1.ExposeFacilityRequest
 	11, // 23: otterscale.facility.v1.FacilityService.AddFacilityUnits:input_type -> otterscale.facility.v1.AddFacilityUnitsRequest
-	13, // 24: otterscale.facility.v1.FacilityService.ListActions:input_type -> otterscale.facility.v1.ListActionsRequest
-	15, // 25: otterscale.facility.v1.FacilityService.DoAction:input_type -> otterscale.facility.v1.DoActionRequest
-	16, // 26: otterscale.facility.v1.FacilityService.ListCharms:input_type -> otterscale.facility.v1.ListCharmsRequest
-	18, // 27: otterscale.facility.v1.FacilityService.GetCharm:input_type -> otterscale.facility.v1.GetCharmRequest
-	19, // 28: otterscale.facility.v1.FacilityService.GetCharmMetadata:input_type -> otterscale.facility.v1.GetCharmMetadataRequest
-	20, // 29: otterscale.facility.v1.FacilityService.ListCharmArtifacts:input_type -> otterscale.facility.v1.ListCharmArtifactsRequest
-	5,  // 30: otterscale.facility.v1.FacilityService.ListFacilities:output_type -> otterscale.facility.v1.ListFacilitiesResponse
-	0,  // 31: otterscale.facility.v1.FacilityService.GetFacility:output_type -> otterscale.facility.v1.Facility
-	0,  // 32: otterscale.facility.v1.FacilityService.CreateFacility:output_type -> otterscale.facility.v1.Facility
-	0,  // 33: otterscale.facility.v1.FacilityService.UpdateFacility:output_type -> otterscale.facility.v1.Facility
-	30, // 34: otterscale.facility.v1.FacilityService.DeleteFacility:output_type -> google.protobuf.Empty
-	30, // 35: otterscale.facility.v1.FacilityService.ExposeFacility:output_type -> google.protobuf.Empty
-	12, // 36: otterscale.facility.v1.FacilityService.AddFacilityUnits:output_type -> otterscale.facility.v1.AddFacilityUnitsResponse
-	14, // 37: otterscale.facility.v1.FacilityService.ListActions:output_type -> otterscale.facility.v1.ListActionsResponse
-	30, // 38: otterscale.facility.v1.FacilityService.DoAction:output_type -> google.protobuf.Empty
-	17, // 39: otterscale.facility.v1.FacilityService.ListCharms:output_type -> otterscale.facility.v1.ListCharmsResponse
-	22, // 40: otterscale.facility.v1.FacilityService.GetCharm:output_type -> otterscale.facility.v1.Facility.Charm
-	26, // 41: otterscale.facility.v1.FacilityService.GetCharmMetadata:output_type -> otterscale.facility.v1.Facility.Charm.Metadata
-	21, // 42: otterscale.facility.v1.FacilityService.ListCharmArtifacts:output_type -> otterscale.facility.v1.ListCharmArtifactsResponse
-	30, // [30:43] is the sub-list for method output_type
-	17, // [17:30] is the sub-list for method input_type
+	13, // 24: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:input_type -> otterscale.facility.v1.ResolveFacilityUnitErrorsRequest
+	14, // 25: otterscale.facility.v1.FacilityService.ListActions:input_type -> otterscale.facility.v1.ListActionsRequest
+	16, // 26: otterscale.facility.v1.FacilityService.DoAction:input_type -> otterscale.facility.v1.DoActionRequest
+	17, // 27: otterscale.facility.v1.FacilityService.ListCharms:input_type -> otterscale.facility.v1.ListCharmsRequest
+	19, // 28: otterscale.facility.v1.FacilityService.GetCharm:input_type -> otterscale.facility.v1.GetCharmRequest
+	20, // 29: otterscale.facility.v1.FacilityService.GetCharmMetadata:input_type -> otterscale.facility.v1.GetCharmMetadataRequest
+	21, // 30: otterscale.facility.v1.FacilityService.ListCharmArtifacts:input_type -> otterscale.facility.v1.ListCharmArtifactsRequest
+	5,  // 31: otterscale.facility.v1.FacilityService.ListFacilities:output_type -> otterscale.facility.v1.ListFacilitiesResponse
+	0,  // 32: otterscale.facility.v1.FacilityService.GetFacility:output_type -> otterscale.facility.v1.Facility
+	0,  // 33: otterscale.facility.v1.FacilityService.CreateFacility:output_type -> otterscale.facility.v1.Facility
+	0,  // 34: otterscale.facility.v1.FacilityService.UpdateFacility:output_type -> otterscale.facility.v1.Facility
+	31, // 35: otterscale.facility.v1.FacilityService.DeleteFacility:output_type -> google.protobuf.Empty
+	31, // 36: otterscale.facility.v1.FacilityService.ExposeFacility:output_type -> google.protobuf.Empty
+	12, // 37: otterscale.facility.v1.FacilityService.AddFacilityUnits:output_type -> otterscale.facility.v1.AddFacilityUnitsResponse
+	31, // 38: otterscale.facility.v1.FacilityService.ResolveFacilityUnitErrors:output_type -> google.protobuf.Empty
+	15, // 39: otterscale.facility.v1.FacilityService.ListActions:output_type -> otterscale.facility.v1.ListActionsResponse
+	31, // 40: otterscale.facility.v1.FacilityService.DoAction:output_type -> google.protobuf.Empty
+	18, // 41: otterscale.facility.v1.FacilityService.ListCharms:output_type -> otterscale.facility.v1.ListCharmsResponse
+	23, // 42: otterscale.facility.v1.FacilityService.GetCharm:output_type -> otterscale.facility.v1.Facility.Charm
+	27, // 43: otterscale.facility.v1.FacilityService.GetCharmMetadata:output_type -> otterscale.facility.v1.Facility.Charm.Metadata
+	22, // 44: otterscale.facility.v1.FacilityService.ListCharmArtifacts:output_type -> otterscale.facility.v1.ListCharmArtifactsResponse
+	31, // [31:45] is the sub-list for method output_type
+	17, // [17:31] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name
 	17, // [17:17] is the sub-list for extension extendee
 	0,  // [0:17] is the sub-list for field type_name
@@ -4371,7 +4490,7 @@ func file_api_facility_v1_facility_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_facility_v1_facility_proto_rawDesc), len(file_api_facility_v1_facility_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   29,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
