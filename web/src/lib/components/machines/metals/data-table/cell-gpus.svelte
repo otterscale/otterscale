@@ -221,11 +221,16 @@
 	</Sheet.Trigger>
 	<Sheet.Content side="right" class="min-w-[38vw] p-4">
 		{#if open}
-			<Simple.Flow {initialNodes} {initialEdges} class="h-full" />
-			<div class="mt-auto">
+			<Sheet.Header>
+				<Sheet.Title class="text-lg">GPU Details</Sheet.Title>
+			</Sheet.Header>
+			<Simple.Flow {initialNodes} {initialEdges} />
+			<div class="mt-auto rounded-lg border shadow">
 				<Table.Root>
 					<Table.Header>
-						<Table.Row>
+						<Table.Row
+							class="bg-muted [&_th]:bg-muted [&_th]:first:rounded-tl-lg [&_th]:last:rounded-tr-lg"
+						>
 							<Table.Head>Name</Table.Head>
 							<Table.Head>Memory</Table.Head>
 							<Table.Head>Vendor</Table.Head>
