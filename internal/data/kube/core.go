@@ -111,6 +111,19 @@ func (r *core) GetPodLogs(ctx context.Context, config *rest.Config, namespace, p
 	return buf.String(), nil
 }
 
+func (r *core) StreamPodLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := corev1.PodLogOptions{
+		Container: containerName,
+		Follow:    true,
+	}
+	return clientset.CoreV1().Pods(namespace).GetLogs(podName, &opts).Stream(ctx)
+}
+
 func (r *core) ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]oscore.PersistentVolumeClaim, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
