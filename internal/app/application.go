@@ -1,6 +1,7 @@
 package app
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"slices"
@@ -65,6 +66,29 @@ func (s *ApplicationService) GetApplication(ctx context.Context, req *connect.Re
 	}
 	resp := toProtoApplication(app, publicAddress)
 	return connect.NewResponse(resp), nil
+}
+
+func (s *ApplicationService) WatchLogs(ctx context.Context, req *connect.Request[pb.WatchLogsRequest], stream *connect.ServerStream[pb.WatchLogsResponse]) error {
+	logs, err := s.uc.StreamPodLogs(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetPodName(), req.Msg.GetContainerName())
+	if err != nil {
+		return err
+	}
+	defer logs.Close()
+
+	// Read logs from the stream and send to client
+	scanner := bufio.NewScanner(logs)
+	for scanner.Scan() {
+		resp := &pb.WatchLogsResponse{}
+		resp.SetLog(scanner.Text())
+		if err := stream.Send(resp); err != nil {
+			return err
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("error reading log stream: %w", err)
+	}
+	return nil
 }
 
 func (s *ApplicationService) ListReleases(ctx context.Context, req *connect.Request[pb.ListReleasesRequest]) (*connect.Response[pb.ListReleasesResponse], error) {
