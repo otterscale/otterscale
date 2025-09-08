@@ -1,29 +1,20 @@
 <script lang="ts" module>
 	import dagre from '@dagrejs/dagre';
-	import {
-		Background,
-		BackgroundVariant,
-		Controls,
-		MiniMap,
-		Panel,
-		Position,
-		SvelteFlow,
-		type Edge,
-		type Node,
-	} from '@xyflow/svelte';
+	import { Panel, Position, SvelteFlow, type Edge, type Node } from '@xyflow/svelte';
 	import '@xyflow/svelte/dist/style.css';
+
+	import { traverse } from '../utils.svelte';
 
 	import FlowEdge from './flow-edge.svelte';
 	import FlowNodeGPU from './flow-node-gpu.svelte';
 	import FlowNodeMachine from './flow-node-machine.svelte';
 	import FlowNodeModel from './flow-node-model.svelte';
 	import FlowNodeVGPU from './flow-node-vgpu.svelte';
-	import { traverse } from './utils.svelte';
 
 	import { cn } from '$lib/utils';
 
-	const defaultNodeWidth = 300;
-	const defaultNodeHeight = 150;
+	const defaultNodeWidth = 100;
+	const defaultNodeHeight = 100;
 </script>
 
 <script lang="ts">
@@ -86,6 +77,7 @@
 		edge: FlowEdge,
 	}}
 	fitView
+	proOptions={{ hideAttribution: true }}
 	class={cn('h-full w-full', className)}
 	onnodeclick={(e) => {
 		const { nodestoFocus, edgesToFocus } = traverse(edges, e.node.id);
@@ -102,7 +94,4 @@
 	}}
 >
 	<Panel position="top-right" />
-	<Background variant={BackgroundVariant.Dots} />
-	<MiniMap />
-	<Controls />
 </SvelteFlow>

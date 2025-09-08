@@ -15,6 +15,7 @@
 		ram,
 		disk,
 		storage,
+		gpu,
 		tags,
 		scope,
 		actions,
@@ -99,6 +100,12 @@
 			<Sorter {column} />
 		</Layout.HeaderController>
 		<Layout.HeaderViewer>{m.storage()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet gpu()}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderViewer>{m.gpu()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

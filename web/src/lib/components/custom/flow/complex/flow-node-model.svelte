@@ -6,7 +6,7 @@
 
 	export type DataType = {
 		name: string;
-		ip: string;
+		framework: string;
 		icon: string;
 	};
 </script>
@@ -27,16 +27,20 @@
 			selected ? 'bg-primary-foreground ring-primary ring-1' : 'bg-card ring-0',
 		)}
 	>
-		<Icon icon="ph:computer-tower-duotone" class="size-6" />
+		<Icon icon="ph:robot-thin" class="size-5" />
 	</div>
 	<div class="flex items-center justify-center p-4">
-		<div class="grid grid-cols-[auto_1fr] items-start">
-			<div class="bg-muted-foreground/50 rounded-full p-2">
-				<Icon icon={data.icon} class="size-5 self-start" />
+		<div class="flex gap-2">
+			<div class="bg-muted-foreground/50 size-fit rounded-full p-1">
+				<Icon icon={data.icon} class="size-5" />
 			</div>
-			<div class="p-1">
-				<p class="text-base overflow-ellipsis whitespace-nowrap">{data.name}</p>
-				<p class="text-muted-foreground text-xs font-light overflow-ellipsis whitespace-nowrap">{data.ip}</p>
+			<div>
+				<p class="max-w-[200px] truncate text-base text-nowrap whitespace-nowrap">{data.name}</p>
+				<p
+					class="text-muted-foreground max-w-[200px] truncate text-xs font-light text-nowrap whitespace-nowrap"
+				>
+					{data.framework}
+				</p>
 			</div>
 		</div>
 	</div>
