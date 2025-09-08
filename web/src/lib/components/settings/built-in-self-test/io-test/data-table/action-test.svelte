@@ -5,6 +5,7 @@
 	import { writable, type Writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 
+	import { page } from '$app/state';
 	import type {
 		CephBlockDevice,
 		CreateTestResultRequest,
@@ -65,7 +66,7 @@
 		: ({ target: { value: {}, case: {} } } as FIO);
 	const DEFAULT_REQUEST = {
 		kind: { value: DEFAULT_FIO_REQUEST, case: 'fio' },
-		createdBy: 'Woody Lin',
+		createdBy: page.data.user.name,
 	} as CreateTestResultRequest;
 	const DEFAULT_CEPH_BLOCK_DEVICE =
 		testResult && testResult.kind.value?.target?.case === 'cephBlockDevice'

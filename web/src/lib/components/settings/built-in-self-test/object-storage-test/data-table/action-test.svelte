@@ -7,6 +7,7 @@
 
 	import ObjectServicesPicker from '../../utils/object-services-picker.svelte';
 
+	import { page } from '$app/state';
 	import type {
 		CreateTestResultRequest,
 		ExternalObjectService,
@@ -65,7 +66,7 @@
 		: ({ target: { value: {}, case: {} } } as Warp);
 	const DEFAULT_REQUEST = {
 		kind: { value: DEFAULT_WARP_REQUEST, case: 'warp' },
-		createdBy: 'Woody Lin',
+		createdBy: page.data.user.name,
 	} as CreateTestResultRequest;
 	const DEFAULT_INTERNAL_OBJECT_SERVICE =
 		testResult && testResult.kind.value?.target?.case === 'internalObjectService'
