@@ -62,16 +62,16 @@
 {/snippet}
 
 {#snippet cores_arch(column: Column<Machine>)}
-	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
+	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>
 			{m.core()}
 			<Layout.SubHeaderViewer>
 				{m.architecture()}
 			</Layout.SubHeaderViewer>
 		</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
 	</Layout.Header>
 {/snippet}
 
