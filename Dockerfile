@@ -30,6 +30,7 @@ RUN apt-get update && apt-get install -y \
     libcephfs2 \
     librbd1 \
     librados2 \
+    pciutils \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
