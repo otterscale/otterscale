@@ -54,7 +54,7 @@
 
 <main class="space-y-4 py-4">
 	{#if isMounted}
-		<Statistics {scopeUuid} {facilityName} />
+		<Statistics />
 		<DataTable {virtualMachines} {reloadManager} />
 	{:else}
 		<Loading.DataTable />

@@ -4,7 +4,6 @@ import { cells } from './cells.svelte';
 import { headers } from './headers.svelte';
 
 import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
-import { getSortingFunction } from '$lib/components/custom/data-table/core';
 import { renderSnippet } from '$lib/components/ui/data-table/index.js';
 import { m } from '$lib/paraglide/messages';
 
