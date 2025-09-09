@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { Construction } from '$lib/components/construction';
+	import { VirtualMachine } from '$lib/components/compute/virtual-machine';
 	import { dynamicPaths } from '$lib/path';
-	import { breadcrumb } from '$lib/stores';
+	import { breadcrumb, currentKubernetes } from '$lib/stores';
 
 	// Set breadcrumb navigation
 	breadcrumb.set({
@@ -11,4 +11,10 @@
 	});
 </script>
 
-<Construction />
+{#if $currentKubernetes}
+	{@const scopeUuid = $currentKubernetes.scopeUuid}
+	{@const facilityName = $currentKubernetes.name}
+	{@const namespace = page.params.namespace ?? ''}
+
+	<VirtualMachine {scopeUuid} {facilityName} {namespace} />
+{/if}
