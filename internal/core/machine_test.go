@@ -190,11 +190,18 @@ func (m *mockEventRepo) Get(ctx context.Context, systemID string) ([]Event, erro
 	}, nil
 }
 
+type mockNodeDeviceRepo struct{}
+
+func (m *mockNodeDeviceRepo) List(ctx context.Context, systemID string, deviceType string) ([]NodeDevice, error) {
+	return []NodeDevice{}, nil
+}
+
 func TestMachineUseCase_ListMachines(t *testing.T) {
 	machineRepo := &mockMachineRepo{}
 	uc := NewMachineUseCase(
 		machineRepo,
 		&mockMachineManagerRepo{},
+		&mockNodeDeviceRepo{},
 		&mockServerRepo{},
 		&mockClientRepo{},
 		&machineMockTag{},
@@ -212,6 +219,7 @@ func TestMachineUseCase_GetMachine(t *testing.T) {
 	uc := NewMachineUseCase(
 		&mockMachineRepo{},
 		&mockMachineManagerRepo{},
+		&mockNodeDeviceRepo{},
 		&mockServerRepo{},
 		&mockClientRepo{},
 		&machineMockTag{},
@@ -228,6 +236,7 @@ func TestMachineUseCase_AddMachineTags(t *testing.T) {
 	uc := NewMachineUseCase(
 		&mockMachineRepo{},
 		&mockMachineManagerRepo{},
+		&mockNodeDeviceRepo{},
 		&mockServerRepo{},
 		&mockClientRepo{},
 		&machineMockTag{},
@@ -243,6 +252,7 @@ func TestMachineUseCase_RemoveMachineTags(t *testing.T) {
 	uc := NewMachineUseCase(
 		&mockMachineRepo{},
 		&mockMachineManagerRepo{},
+		&mockNodeDeviceRepo{},
 		&mockServerRepo{},
 		&mockClientRepo{},
 		&machineMockTag{},
@@ -255,10 +265,10 @@ func TestMachineUseCase_RemoveMachineTags(t *testing.T) {
 }
 
 func TestMachineUseCase_DeleteMachine(t *testing.T) {
-	machineRepo := &mockMachineRepo{}
 	uc := NewMachineUseCase(
-		machineRepo,
+		&mockMachineRepo{},
 		&mockMachineManagerRepo{},
+		&mockNodeDeviceRepo{},
 		&mockServerRepo{},
 		&mockClientRepo{},
 		&machineMockTag{},
@@ -275,6 +285,7 @@ func TestMachineUseCase_PowerOffMachine(t *testing.T) {
 	uc := NewMachineUseCase(
 		machineRepo,
 		&mockMachineManagerRepo{},
+		&mockNodeDeviceRepo{},
 		&mockServerRepo{},
 		&mockClientRepo{},
 		&machineMockTag{},
@@ -291,6 +302,7 @@ func TestMachineUseCase_GetLastCommissioned(t *testing.T) {
 	uc := NewMachineUseCase(
 		&mockMachineRepo{},
 		&mockMachineManagerRepo{},
+		&mockNodeDeviceRepo{},
 		&mockServerRepo{},
 		&mockClientRepo{},
 		&machineMockTag{},
@@ -315,6 +327,7 @@ func TestMachineUseCase_CreateMachine_TagError(t *testing.T) {
 	uc := NewMachineUseCase(
 		&mockMachineRepo{},
 		&mockMachineManagerRepo{},
+		&mockNodeDeviceRepo{},
 		&mockServerRepo{},
 		&mockClientRepo{},
 		&badTagRepo{},

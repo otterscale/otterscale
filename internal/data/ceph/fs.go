@@ -328,8 +328,14 @@ func parseQuota(v any) (uint64, error) {
 	case float64:
 		return uint64(val), nil
 	case int:
+		if val < 0 {
+			return 0, fmt.Errorf("quota value is negative: %d", val)
+		}
 		return uint64(val), nil
 	case int64:
+		if val < 0 {
+			return 0, fmt.Errorf("quota value is negative: %d", val)
+		}
 		return uint64(val), nil
 	case uint64:
 		return val, nil

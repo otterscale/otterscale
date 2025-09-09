@@ -12,13 +12,6 @@ func mustNewCeph(t testing.TB) *Ceph {
 	return &Ceph{}
 }
 
-/*
-=============================================================
-
-	Helper – 期待 error 或 panic
-
-=============================================================
-*/
 func expectErrorOrPanic(t *testing.T, fn func() error) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -165,19 +158,22 @@ var mockData = struct {
 			Name  string `json:"name,omitempty"`
 			ID    int64  `json:"id,omitempty"`
 			Stats struct {
-				Objects   uint64 `json:"objects,omitempty"`
-				BytesUsed uint64 `json:"bytes_used,omitempty"`
+				UsedObjects uint64 `json:"objects,omitempty"`
+				UsedBytes   uint64 `json:"bytes_used,omitempty"`
+				MaxBytes    uint64 `json:"max_avail,omitempty"`
 			} `json:"stats,omitempty"`
 		}{
 			{
 				Name: "pool-data",
 				ID:   5,
 				Stats: struct {
-					Objects   uint64 `json:"objects,omitempty"`
-					BytesUsed uint64 `json:"bytes_used,omitempty"`
+					UsedObjects uint64 `json:"objects,omitempty"`
+					UsedBytes   uint64 `json:"bytes_used,omitempty"`
+					MaxBytes    uint64 `json:"max_avail,omitempty"`
 				}{
-					Objects:   1000,
-					BytesUsed: 100 << 30,
+					UsedObjects: 1000,
+					UsedBytes:   100 << 30,
+					MaxBytes:    500 << 30,
 				},
 			},
 		}
