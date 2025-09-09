@@ -1,5 +1,6 @@
 VERSION=$(shell git describe --tags --always)
 PROTO_FILES=$(shell find api -name *.proto -not -path api/api.proto)
+TEST_FILES=$(shell go list ./... | grep -v /api/)
 
 .PHONY: build
 # build cli
@@ -14,12 +15,7 @@ vet:
 .PHONY: test
 # test code
 test:
-	go test -race $$(go list ./... | grep -v -e "api")
-	mkdir -p coverage/unit
-	go test -cover $$(go list ./... | grep -v -e "api") -args -test.gocoverdir="$$PWD/coverage/unit"
-	go tool covdata textfmt -i=./coverage/unit -o coverage/profile
-	go tool cover -func coverage/profile
-	go tool cover -html=coverage/profile -o cover.html
+	go test -v -coverprofile=coverage.txt $(TEST_FILES)
 
 .PHONY: lint
 # lint code
