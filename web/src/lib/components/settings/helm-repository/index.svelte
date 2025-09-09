@@ -1,5 +1,6 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
+	import Icon from '@iconify/svelte';
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
@@ -7,8 +8,8 @@
 
 	import { EnvironmentService } from '$lib/api/environment/v1/environment_pb';
 	import * as Layout from '$lib/components/settings/layout';
-	import { Badge } from '$lib/components/ui/badge';
 	import * as Card from '$lib/components/ui/card';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { m } from '$lib/paraglide/messages';
 </script>
 
@@ -41,15 +42,32 @@
 			<Update {urls} />
 		</Layout.Controller>
 		<Layout.Viewer>
-			<Card.Root>
-				<Card.Content>
-					{#if $urls}
-						{#each $urls as url}
-							<Badge>{url}</Badge>
-						{/each}
-					{/if}
-				</Card.Content>
-			</Card.Root>
+			{#if $urls}
+				<div class="grid grid-cols-4 gap-4">
+					{#each $urls as url}
+						<Card.Root class="group">
+							<Card.Content class="flex size-fit items-center gap-2">
+								<div class="bg-muted group-hover:bg-muted-foreground size-fit rounded-full p-2">
+									<Icon icon="ph:cloud" class="text-muted-foreground group-hover:text-muted size-6" />
+								</div>
+								<div>
+									<p class="text-base font-medium">Repository</p>
+									<Tooltip.Root>
+										<Tooltip.Trigger>
+											<p class="text-muted-foreground max-w-3xs truncate text-sm">
+												{url}
+											</p>
+										</Tooltip.Trigger>
+										<Tooltip.Content>
+											{url}
+										</Tooltip.Content>
+									</Tooltip.Root>
+								</div>
+							</Card.Content>
+						</Card.Root>
+					{/each}
+				</div>
+			{/if}
 		</Layout.Viewer>
 	</Layout.Root>
 {/if}
