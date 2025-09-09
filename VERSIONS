@@ -1,4 +1,4 @@
 MAAS=latest
 JUJU=3.6.9
-KUBERNETES=latest
+KUBERNETES=1.32
 CEPH=squid
