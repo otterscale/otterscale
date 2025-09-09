@@ -4,6 +4,7 @@
 	import type { Row } from '@tanstack/table-core';
 
 	import Actions from './cell-actions.svelte';
+	import GPUs from './cell-gpus.svelte';
 	import Tags from './cell-tags.svelte';
 
 	import { page } from '$app/state';
@@ -24,6 +25,7 @@
 		ram,
 		disk,
 		storage,
+		gpu,
 		tags,
 		scope,
 		actions,
@@ -132,6 +134,12 @@
 	<Layout.Cell class="items-end">
 		{value}
 		{unit}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet gpu()}
+	<Layout.Cell class="items-end">
+		<GPUs />
 	</Layout.Cell>
 {/snippet}
 

@@ -84,6 +84,7 @@ type KubeAppsRepo interface {
 
 type KubeBatchRepo interface {
 	// Job
+	ListJobs(ctx context.Context, config *rest.Config, namespace string) ([]Job, error)
 	ListJobsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Job, error)
 	CreateJob(ctx context.Context, config *rest.Config, namespace, name string, labels, annotations map[string]string, spec *JobSpec) (*Job, error)
 	DeleteJob(ctx context.Context, config *rest.Config, namespace, name string) error

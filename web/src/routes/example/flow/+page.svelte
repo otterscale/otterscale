@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type Edge, type Node } from '@xyflow/svelte';
 
-	import { Root, type GPU, type Machine, type Model, type VGPU } from '$lib/components/custom/flow/index';
+	import { Complex, type GPU, type Machine, type Model, type VGPU } from '$lib/components/custom/flow/index';
 	import '@xyflow/svelte/dist/style.css';
 
 	const position = { x: 0, y: 0 };
@@ -138,4 +138,6 @@
 	];
 </script>
 
-<Root {initialNodes} {initialEdges} />
+<div class="h-[1000px]">
+	<Complex.Flow {initialNodes} {initialEdges} />
+</div>

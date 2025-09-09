@@ -53,7 +53,7 @@
 	// API setup
 	const transport: Transport = getContext('transport');
 	const facilityClient = createClient(FacilityService, transport);
-	const facilitiesStore = writable<Facility[]>([]);
+	const facilities = writable<Facility[]>([]);
 
 	// State & Timer
 	let autoRefresh = $state(false);
@@ -62,7 +62,7 @@
 	async function fetchFacilities(uuid: string) {
 		try {
 			const response = await facilityClient.listFacilities({ scopeUuid: uuid });
-			facilitiesStore.set(response.facilities);
+			facilities.set(response.facilities);
 		} catch (error) {
 			console.error('Error fetching facilities:', error);
 		}
@@ -99,5 +99,5 @@
 </script>
 
 <div class="mx-auto max-w-7xl min-w-7xl">
-	<SetupScopeGrid facilities={$facilitiesStore} services={KUBERNETES_SERVICES} bind:autoRefresh />
+	<SetupScopeGrid {facilities} services={KUBERNETES_SERVICES} bind:autoRefresh />
 </div>

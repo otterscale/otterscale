@@ -16,6 +16,7 @@ const messages = {
 	ram: m.ram(),
 	disk: m.disk(),
 	storage: m.storage(),
+	gpu: m.gpu(),
 	scope: m.scope(),
 	tags: m.tags(),
 };
@@ -138,6 +139,15 @@ const columns: ColumnDef<Machine>[] = [
 				(p, n) => p < n,
 				(p, n) => p === n,
 			),
+	},
+	{
+		accessorKey: 'gpu',
+		header: ({ column }) => {
+			return renderSnippet(headers.gpu, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.gpu, row);
+		},
 	},
 	{
 		accessorKey: 'scope',

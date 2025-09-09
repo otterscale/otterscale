@@ -1,8 +1,17 @@
 <script lang="ts">
+	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
+	import { getContext } from 'svelte';
+	import type { Writable } from 'svelte/store';
+	import { toast } from 'svelte-sonner';
 
 	import { page } from '$app/state';
-	import { type Facility, type Facility_Status, type Facility_Unit } from '$lib/api/facility/v1/facility_pb';
+	import {
+		FacilityService,
+		type Facility,
+		type Facility_Status,
+		type Facility_Unit,
+	} from '$lib/api/facility/v1/facility_pb';
 	import { PremiumTier } from '$lib/api/premium/v1/premium_pb';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import { Button } from '$lib/components/ui/button';
@@ -27,13 +36,16 @@
 				gridClass: string;
 			}
 		>;
-		facilities: Facility[];
+		facilities: Writable<Facility[]>;
 		autoRefresh: boolean;
 	} = $props();
 
+	const transport: Transport = getContext('transport');
+	const facilityClient = createClient(FacilityService, transport);
+
 	// Helper functions
 	function findFacilityByService(serviceName: string): Facility | undefined {
-		return facilities.find((facility) => facility.name.includes(serviceName) && facility.units.length > 0);
+		return $facilities.find((facility) => facility.name.includes(serviceName) && facility.units.length > 0);
 	}
 
 	function countUnitsByService(serviceName: string): number {
@@ -116,6 +128,44 @@
 										<Icon icon="ph:computer-tower" class="size-4" />
 									</a>
 								{/if}
+
+								<button
+									class="hover:cursor-pointer"
+									onclick={(e) => {
+										e.stopPropagation();
+										toast.promise(
+											() =>
+												facilityClient.resolveFacilityUnitErrors({
+													scopeUuid: page.params.scope,
+													unitName: unit.name,
+												}),
+											{
+												loading: 'Loading...',
+												success: () => {
+													facilityClient
+														.listFacilities({
+															scopeUuid: page.params.scope,
+														})
+														.then((response) => {
+															facilities.set(response.facilities);
+														});
+
+													return `Resolve ${unit.name} success`;
+												},
+												error: (e) => {
+													let msg = `Fail to resolve ${unit.name}`;
+													toast.error(msg, {
+														description: (e as ConnectError).message.toString(),
+														duration: Number.POSITIVE_INFINITY,
+													});
+													return msg;
+												},
+											},
+										);
+									}}
+								>
+									<Icon icon="ph:arrow-counter-clockwise" class="size-4" />
+								</button>
 
 								{#if unit.leader}
 									<Icon icon="ph:star-fill" class="size-4 text-yellow-400 " />

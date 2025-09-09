@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 	import { type Edge, type Node } from '@xyflow/svelte';
 
-	import { Root, type GPU, type Machine, type Model, type VGPU } from '$lib/components/custom/flow/index';
+	import { Complex, type GPU, type Machine, type Model, type VGPU } from '$lib/components/custom/flow/index';
 	import { traverse } from '$lib/components/custom/flow/utils.svelte';
 	import { buttonVariants } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -173,7 +173,7 @@
 	</Dialog.Trigger>
 	{#if open}
 		<Dialog.Content class="min-h-[77vh] min-w-[77vw]">
-			<Root {initialNodes} {initialEdges} />
+			<Complex.Flow {initialNodes} {initialEdges} />
 		</Dialog.Content>
 	{/if}
 </Dialog.Root>
