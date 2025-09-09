@@ -94,9 +94,6 @@ func TestNewJuju(t *testing.T) {
 	}
 }
 
-/* -------------------------------------------------------------------------- *
- * Accessor methods – 直接回傳 config 中的欄位
- * -------------------------------------------------------------------------- */
 func TestJuju_Accessors(t *testing.T) {
 	cfg := &config.Config{
 		Juju: config.Juju{
@@ -123,11 +120,8 @@ func TestJuju_Accessors(t *testing.T) {
 	}
 }
 
-/* -------------------------------------------------------------------------- *
- * connection – 空設定會導致 connector.NewSimple 失敗，應返回錯誤
- * -------------------------------------------------------------------------- */
 func TestJuju_Connection_Error(t *testing.T) {
-	j := juju_mustNew(t, &config.Config{}) // 沒有任何 Juju 參數
+	j := juju_mustNew(t, &config.Config{})
 
 	_, err := j.connection("some-uuid")
 	if err == nil {
@@ -135,12 +129,8 @@ func TestJuju_Connection_Error(t *testing.T) {
 	}
 }
 
-/* -------------------------------------------------------------------------- *
- * connection – 快取中有斷線的連線時會先 Close，然後嘗試重新建立
- * -------------------------------------------------------------------------- */
 /*
 func TestJuju_Connection_BrokenCache(t *testing.T) {
-	// 空配置 ⇒ newConnection 會失敗，這裡只測試舊的 brokenConn 是否被 close
 	j := juju_mustNew(t, &config.Config{})
 
 	uuid := "broken-uuid"
@@ -157,9 +147,6 @@ func TestJuju_Connection_BrokenCache(t *testing.T) {
 }
 */
 
-/* -------------------------------------------------------------------------- *
- * Concurrent access – 確保 sync.Map 快取在多 goroutine 下不會出現 data‑race
- * -------------------------------------------------------------------------- */
 func TestJuju_ConcurrentAccess(t *testing.T) {
 	j := juju_mustNew(t, &config.Config{})
 	const workers = 10
@@ -177,9 +164,6 @@ func TestJuju_ConcurrentAccess(t *testing.T) {
 	wg.Wait()
 }
 
-/* -------------------------------------------------------------------------- *
- * Benchmark – 只測量建構子，其他方法需要真實的 Juju 控制器
- * -------------------------------------------------------------------------- */
 func BenchmarkJuju_Creation(b *testing.B) {
 	cfg := &config.Config{}
 	b.ResetTimer()

@@ -8,16 +8,7 @@ import (
 	"github.com/otterscale/otterscale/internal/core"
 )
 
-/*
-=============================================================
-
-	Helper – 建立 *zero‑value* Ceph (不會真的連線)
-
-=============================================================
-*/
 func mustNewCeph(t testing.TB) *Ceph {
-	// 零值 Ceph，connection 會因缺少資訊而失敗，
-	// 正好用來測試「錯誤路徑」。
 	return &Ceph{}
 }
 
@@ -31,27 +22,16 @@ func mustNewCeph(t testing.TB) *Ceph {
 func expectErrorOrPanic(t *testing.T, fn func() error) {
 	defer func() {
 		if r := recover(); r != nil {
-			// panic 也是接受的行為
 			t.Logf("recovered panic as expected: %v", r)
 		}
 	}()
 
 	if err := fn(); err != nil {
-		// 回傳非 nil error 也是接受的行為
 		return
 	}
-	// 兩者皆未出現 → 測試失敗
 	t.Errorf("expected an error or panic, got nil")
 }
 
-/*
-=============================================================
-
-	Mock 資料（完全使用 types.go 中宣告的匿名結構，
-	保留所有 json tag，以確保型別相容）
-
-=============================================================
-*/
 var mockData = struct {
 	monDump *monDump
 	monStat *monStat
@@ -68,19 +48,19 @@ var mockData = struct {
 			Name          string   `json:"name,omitempty"`
 			Rank          uint64   `json:"rank,omitempty"`
 			PublicAddress string   `json:"public_addr,omitempty"`
-			Created       CephTime `json:"created,omitempty"`
+			Created       cephTime `json:"created,omitempty"`
 		}{
 			{
 				Name:          "mon-a",
 				Rank:          0,
 				PublicAddress: "10.0.0.1:6789",
-				Created:       CephTime{},
+				Created:       cephTime{},
 			},
 			{
 				Name:          "mon-b",
 				Rank:          1,
 				PublicAddress: "10.0.0.2:6789",
-				Created:       CephTime{},
+				Created:       cephTime{},
 			},
 		}
 		return m
@@ -108,7 +88,7 @@ var mockData = struct {
 			PgPlacementNum       uint64         `json:"pg_placement_num,omitempty"`
 			PgPlacementNumTarget uint64         `json:"pg_placement_num_target,omitempty"`
 			ApplicationMetadata  map[string]any `json:"application_metadata,omitempty"`
-			CreateTime           CephTime       `json:"create_time,omitempty"`
+			CreateTime           cephTime       `json:"create_time,omitempty"`
 		}{
 			{
 				ID:                   5,
@@ -119,7 +99,7 @@ var mockData = struct {
 				PgPlacementNumTarget: 0,
 				Size:                 3,
 				Type:                 1,
-				CreateTime:           CephTime{},
+				CreateTime:           cephTime{},
 				ApplicationMetadata:  map[string]any{"rbd": nil},
 			},
 		}
@@ -205,13 +185,6 @@ var mockData = struct {
 	}(),
 }
 
-/*
-=============================================================
-
-	1️⃣ Construction / interface compliance
-
-=============================================================
-*/
 func TestNewCluster(t *testing.T) {
 	ceph := mustNewCeph(t)
 	repo := NewCluster(ceph)
@@ -222,13 +195,6 @@ func TestNewCluster(t *testing.T) {
 	var _ core.CephClusterRepo = repo
 }
 
-/*
-=============================================================
-
-	2️⃣ Error path – connection failure (每個公開方法測試一次)
-
-=============================================================
-*/
 func TestCluster_ListMONs_ConnectionError(t *testing.T) {
 	repo := NewCluster(mustNewCeph(t))
 	expectErrorOrPanic(t, func() error {

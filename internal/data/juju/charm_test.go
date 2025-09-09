@@ -12,7 +12,7 @@ import (
 	"connectrpc.com/connect"
 	"github.com/otterscale/otterscale/internal/config"
 	"github.com/otterscale/otterscale/internal/core"
-	"github.com/otterscale/otterscale/internal/utils"
+	"github.com/otterscale/otterscale/internal/wrap"
 )
 
 /* -------------------------------------------------------------------------- *
@@ -311,4 +311,4 @@ func BenchmarkCharm_Creation(b *testing.B) {
 /* -------------------------------------------------------------------------- *
  * Keep the utils import alive – the production code uses it.
  * -------------------------------------------------------------------------- */
-var _ = utils.HTTPGet // silence unused‑import warning
+var _ = wrap.HTTPGet // silence unused‑import warning

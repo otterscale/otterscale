@@ -104,17 +104,17 @@ func TestToVolumes(t *testing.T) {
 		FileSystems: []struct {
 			MDSMap struct {
 				FileSystemName string   `json:"fs_name,omitempty"`
-				Created        CephTime `json:"created,omitempty"`
+				Created        cephTime `json:"created,omitempty"`
 			} `json:"mdsmap,omitempty"`
 			ID int64 `json:"id,omitempty"`
 		}{
 			{
 				MDSMap: struct {
 					FileSystemName string   `json:"fs_name,omitempty"`
-					Created        CephTime `json:"created,omitempty"`
+					Created        cephTime `json:"created,omitempty"`
 				}{
 					FileSystemName: "myvol",
-					Created:        CephTime{Time: now},
+					Created:        cephTime{Time: now},
 				},
 				ID: 123,
 			},
@@ -137,7 +137,7 @@ func TestToSubvolume(t *testing.T) {
 		Mode:       0o755,
 		DataPool:   "rbdpool",
 		BytesUsed:  5 << 30,
-		CreatedAt: CephSubvolumeTime{
+		CreatedAt: cephSubvolumeTime{
 			Time: created,
 		},
 	}
@@ -158,7 +158,7 @@ func TestToSubvolumeSnapshot(t *testing.T) {
 	now := time.Now()
 	info := &subvolumeSnapshotInfo{
 		HasPendingClones: "false",
-		CreatedAt: CephSubvolumeTime{
+		CreatedAt: cephSubvolumeTime{
 			Time: now,
 		},
 	}
@@ -177,7 +177,7 @@ func TestToSubvolumeGroups(t *testing.T) {
 		Mode:       0o770, // octal literal – 504 decimal
 		DataPool:   "data-pool",
 		BytesUsed:  12 << 30, // 12 GiB
-		CreatedAt: CephSubvolumeTime{
+		CreatedAt: cephSubvolumeTime{
 			Time: created,
 		},
 	}

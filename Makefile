@@ -14,9 +14,9 @@ vet:
 .PHONY: test
 # test code
 test:
-	go test -race $$(go list ./... | grep -v -e "api") 
+	go test -race $$(go list ./... | grep -v -e "api")
 	mkdir -p coverage/unit
-	go test -cover $$(go list ./... | grep -v -e "api")  -args -test.gocoverdir="$$PWD/coverage/unit"
+	go test -cover $$(go list ./... | grep -v -e "api") -args -test.gocoverdir="$$PWD/coverage/unit"
 	go tool covdata textfmt -i=./coverage/unit -o coverage/profile
 	go tool cover -func coverage/profile
 	go tool cover -html=coverage/profile -o cover.html

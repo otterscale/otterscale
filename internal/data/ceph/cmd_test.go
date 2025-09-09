@@ -96,7 +96,7 @@ func TestDumpOSD_ErrorPropagation(t *testing.T) {
  * CephTime – JSON unmarshaller
  * ---------------------------------------------------------- */
 func TestCephTime_UnmarshalJSON_EmptyAndNull(t *testing.T) {
-	var ct CephTime
+	var ct cephTime
 	// Empty string
 	err := ct.UnmarshalJSON([]byte(`""`))
 	assert.NoError(t, err)
@@ -109,7 +109,7 @@ func TestCephTime_UnmarshalJSON_Valid(t *testing.T) {
 	// Example timestamp used by the Ceph JSON dump:
 	// "2023-01-02T15:04:05.000000-0700"
 	const ts = `"2023-01-02T15:04:05.000000-0700"`
-	var ct CephTime
+	var ct cephTime
 	err := ct.UnmarshalJSON([]byte(ts))
 	assert.NoError(t, err)
 
@@ -121,7 +121,7 @@ func TestCephTime_UnmarshalJSON_Valid(t *testing.T) {
  * CephSubvolumeTime – JSON unmarshaller
  * ---------------------------------------------------------- */
 func TestCephSubvolumeTime_UnmarshalJSON_EmptyAndNull(t *testing.T) {
-	var ct CephSubvolumeTime
+	var ct cephSubvolumeTime
 	err := ct.UnmarshalJSON([]byte(`""`))
 	assert.NoError(t, err)
 
@@ -133,7 +133,7 @@ func TestCephSubvolumeTime_UnmarshalJSON_Valid(t *testing.T) {
 	// Example timestamp used by the FS dump:
 	// "2023-01-02 15:04:05"
 	const ts = `"2023-01-02 15:04:05"`
-	var ct CephSubvolumeTime
+	var ct cephSubvolumeTime
 	err := ct.UnmarshalJSON([]byte(ts))
 	assert.NoError(t, err)
 
