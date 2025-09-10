@@ -43,6 +43,7 @@ func ConfigureCephPrometheus(ctx context.Context, facility FacilityRepo, action 
 			return
 		}
 	}
+	cephPromConfigured.Store(promConfigKey, true)
 }
 
 func storageConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) (*StorageConfig, error) {
@@ -50,7 +51,7 @@ func storageConfig(ctx context.Context, facility FacilityRepo, action ActionRepo
 
 	if v, ok := storageConfigs.Load(key); ok {
 		go func() {
-			ConfigureCephPrometheus(context.Background(), facility, action, uuid, name)
+			ConfigureCephPrometheus(ctx, facility, action, uuid, name)
 		}()
 		return v.(*StorageConfig), nil
 	}
