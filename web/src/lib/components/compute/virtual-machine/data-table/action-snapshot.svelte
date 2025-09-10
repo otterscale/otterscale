@@ -26,8 +26,8 @@
 			const response = await KubeVirtClient.listVirtualMachineSnapshots({
 				scopeUuid: $currentKubernetes?.scopeUuid,
 				facilityName: $currentKubernetes?.name,
-				namespace: '',
 				vmName: virtualMachine.metadata?.name,
+				namespace: virtualMachine.metadata?.namespace,
 			});
 			snapshots = response.snapshots;
 		} catch (error) {
