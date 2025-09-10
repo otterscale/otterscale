@@ -17,6 +17,7 @@
 		namespace,
 		network,
 		node,
+		status,
 		cpu,
 		memory,
 		disk,
@@ -60,6 +61,12 @@
 {#snippet node(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-start">
 		{row.original.nodeName}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet status(row: Row<VirtualMachine>)}
+	<Layout.Cell class="items-start">
+		{row.original.statusPhase}
 	</Layout.Cell>
 {/snippet}
 

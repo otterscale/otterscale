@@ -12,6 +12,7 @@
 		namespace,
 		network,
 		node,
+		status,
 		cpu,
 		memory,
 		disk,
@@ -57,6 +58,15 @@
 {#snippet node(column: Column<VirtualMachine>)}
 	<Layout.Header class="justify-start">
 		<Layout.HeaderViewer>{m.node()}</Layout.HeaderViewer>
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+	</Layout.Header>
+{/snippet}
+
+{#snippet status(column: Column<VirtualMachine>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.status()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>

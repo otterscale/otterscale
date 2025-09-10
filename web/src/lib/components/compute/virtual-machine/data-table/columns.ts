@@ -12,6 +12,7 @@ const messages = {
 	namespace: m.namespace(),
 	network: m.network(),
 	node: m.node(),
+	status: m.status(),
 	cpu: m.cpu(),
 	memory: m.memory(),
 	disk: m.disk(),
@@ -65,6 +66,16 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.node, row);
+		},
+		filterFn: 'arrIncludesSome',
+	},
+	{
+		accessorKey: 'status',
+		header: ({ column }) => {
+			return renderSnippet(headers.status, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.status, row);
 		},
 		filterFn: 'arrIncludesSome',
 	},
