@@ -9,9 +9,7 @@ import { m } from '$lib/paraglide/messages';
 
 const messages = {
 	name: m.name(),
-	type: m.type(),
-	sourceName: 'Source Name',
-	sourceNamespace: 'Source Namespace',
+	namespace: m.namespace(),
 	description: m.description(),
 	statusPhase: 'Status Phase',
 	lastConditionMessage: 'Last Condition Message',
@@ -40,39 +38,12 @@ const columns: ColumnDef<VirtualMachineSnapshot>[] = [
 		},
 	},
 	{
-		accessorKey: 'type',
+		accessorKey: 'namespace',
 		header: ({ column }) => {
-			return renderSnippet(headers.type, column);
+			return renderSnippet(headers.namespace, column);
 		},
 		cell: ({ row }) => {
-			return renderSnippet(cells.type, row);
-		},
-	},
-	{
-		accessorKey: 'sourceName',
-		header: ({ column }) => {
-			return renderSnippet(headers.sourceName, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.sourceName, row);
-		},
-	},
-	{
-		accessorKey: 'sourceNamespace',
-		header: ({ column }) => {
-			return renderSnippet(headers.sourceNamespace, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.sourceNamespace, row);
-		},
-	},
-	{
-		accessorKey: 'description',
-		header: ({ column }) => {
-			return renderSnippet(headers.description, column);
-		},
-		cell: ({ row }) => {
-			return renderSnippet(cells.description, row);
+			return renderSnippet(cells.namespace, row);
 		},
 	},
 	{
@@ -82,6 +53,15 @@ const columns: ColumnDef<VirtualMachineSnapshot>[] = [
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.statusPhase, row);
+		},
+	},
+	{
+		accessorKey: 'description',
+		header: ({ column }) => {
+			return renderSnippet(headers.description, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.description, row);
 		},
 	},
 	{

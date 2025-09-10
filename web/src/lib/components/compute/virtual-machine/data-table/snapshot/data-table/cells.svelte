@@ -11,9 +11,7 @@
 	export const cells = {
 		row_picker,
 		name,
-		type,
-		sourceName,
-		sourceNamespace,
+		namespace,
 		description,
 		statusPhase,
 		lastConditionMessage,
@@ -34,7 +32,7 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet type(row: Row<VirtualMachineSnapshot>)}
+{#snippet namespace(row: Row<VirtualMachineSnapshot>)}
 	<Layout.Cell class="items-start">
 		<Badge variant="outline">
 			{row.original.namespace}
@@ -42,29 +40,15 @@
 	</Layout.Cell>
 {/snippet}
 
-{#snippet sourceName(row: Row<VirtualMachineSnapshot>)}
-	<Layout.Cell class="items-end">
-		<Badge variant="outline">
-			{row.original.sourceName}
-		</Badge>
-	</Layout.Cell>
-{/snippet}
-
-{#snippet sourceNamespace(row: Row<VirtualMachineSnapshot>)}
-	<Layout.Cell class="items-end">
-		{row.original.sourceNamespace}
+{#snippet statusPhase(row: Row<VirtualMachineSnapshot>)}
+	<Layout.Cell class="items-start">
+		{row.original.statusPhase}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet description(row: Row<VirtualMachineSnapshot>)}
 	<Layout.Cell class="items-end">
 		{row.original.description}
-	</Layout.Cell>
-{/snippet}
-
-{#snippet statusPhase(row: Row<VirtualMachineSnapshot>)}
-	<Layout.Cell class="items-end">
-		{row.original.statusPhase}
 	</Layout.Cell>
 {/snippet}
 

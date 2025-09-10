@@ -56,7 +56,7 @@
 			<Icon icon="mdi:backup-restore" /> Snapshot
 		</Sheet.Trigger>
 
-		<Sheet.Content class="min-w-[80vw] p-4">
+		<Sheet.Content class="min-w-[70vw] p-4">
 			{#if !isMounted}
 				<Loading.Report />
 			{:else}

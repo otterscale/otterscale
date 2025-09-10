@@ -665,5 +665,6 @@
 	"edit_package_repository": "編輯套件儲存庫",
 	"quota_limit_is_not_set": "未設定配額限制",
 	"gpu": "GPU",
+	"script": "腳本",
 	"startup_script": "啟動腳本"
 }

@@ -665,5 +665,6 @@
 	"edit_package_repository": "Edit Package Repository",
 	"quota_limit_is_not_set": "Quota limit is not set",
 	"gpu": "GPU",
+	"script": "Script",
 	"startup_script": "Startup Script"
 }

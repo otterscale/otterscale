@@ -9,9 +9,7 @@
 	export const headers = {
 		row_picker,
 		name,
-		type,
-		sourceName,
-		sourceNamespace,
+		namespace,
 		description,
 		statusPhase,
 		lastConditionMessage,
@@ -36,30 +34,21 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet type(column: Column<VirtualMachineSnapshot>)}
-	<Layout.Header class="justify-end">
+{#snippet namespace(column: Column<VirtualMachineSnapshot>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>{m.namespace()}</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>{m.type()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
-{#snippet sourceName(column: Column<VirtualMachineSnapshot>)}
-	<Layout.Header class="justify-end">
+{#snippet statusPhase(column: Column<VirtualMachineSnapshot>)}
+	<Layout.Header class="justify-start">
+		<Layout.HeaderViewer>Status Phase</Layout.HeaderViewer>
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>Source Name</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
-{#snippet sourceNamespace(column: Column<VirtualMachineSnapshot>)}
-	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-		<Layout.HeaderViewer>Source Namespace</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -72,21 +61,12 @@
 	</Layout.Header>
 {/snippet}
 
-{#snippet statusPhase(column: Column<VirtualMachineSnapshot>)}
-	<Layout.Header class="justify-end">
-		<Layout.HeaderController>
-			<Sorter {column} />
-		</Layout.HeaderController>
-		<Layout.HeaderViewer>Status Phase</Layout.HeaderViewer>
-	</Layout.Header>
-{/snippet}
-
 {#snippet lastConditionMessage(column: Column<VirtualMachineSnapshot>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>Last Condition Message</Layout.HeaderViewer>
+		<Layout.HeaderViewer>Condition Message</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 
@@ -95,7 +75,7 @@
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
-		<Layout.HeaderViewer>Last Condition Reason</Layout.HeaderViewer>
+		<Layout.HeaderViewer>Condition Reason</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

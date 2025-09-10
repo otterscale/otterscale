@@ -18,7 +18,7 @@
 <Modal.Root bind:open>
 	<Modal.Trigger variant="creative">
 		<Icon icon="ph:file" />
-		{m.startup_script()}
+		{m.script()}
 	</Modal.Trigger>
 	<Modal.Content class="min-w-[50vw]">
 		<Modal.Header>
