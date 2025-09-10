@@ -16,43 +16,18 @@ import (
 )
 
 const (
-	cephMGRPromConfigCommand = "ceph config set mgr mgr/prometheus/exclude_perf_counters false"
 	cephConfigCommand        = "ceph config generate-minimal-conf && ceph auth get client.admin"
 	cephRGWUserListCommand   = "radosgw-admin user list"
 	cephRGWUserCreateCommand = "radosgw-admin user create --system --uid=otterscale --display-name=OtterScale --format json"
 	cephRGWUserInfoCommand   = "radosgw-admin user info --uid=otterscale --format=json"
 )
 
-var (
-	storageConfigs     sync.Map
-	cephPromConfigured sync.Map
-)
-
-func ConfigureCephPrometheus(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) {
-	promConfigKey := uuid + "/" + name + "/prom-configured"
-	if _, configured := cephPromConfigured.Load(promConfigKey); !configured {
-		leader, err := facility.GetLeader(ctx, uuid, name)
-		if err != nil {
-			cephPromConfigured.Delete(promConfigKey)
-			return
-		}
-
-		_, err = runCommand(ctx, action, uuid, leader, cephMGRPromConfigCommand)
-		if err != nil {
-			cephPromConfigured.Delete(promConfigKey)
-			return
-		}
-	}
-	cephPromConfigured.Store(promConfigKey, true)
-}
+var storageConfigs sync.Map
 
 func storageConfig(ctx context.Context, facility FacilityRepo, action ActionRepo, uuid, name string) (*StorageConfig, error) {
 	key := uuid + "/" + name
 
 	if v, ok := storageConfigs.Load(key); ok {
-		go func() {
-			ConfigureCephPrometheus(ctx, facility, action, uuid, name)
-		}()
 		return v.(*StorageConfig), nil
 	}
 
@@ -61,9 +36,8 @@ func storageConfig(ctx context.Context, facility FacilityRepo, action ActionRepo
 		return nil, err
 	}
 
-	ConfigureCephPrometheus(ctx, facility, action, uuid, name)
-
 	storageConfigs.Store(key, config)
+
 	return config, nil
 }
 
