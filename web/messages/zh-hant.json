@@ -664,5 +664,6 @@
 	"helm_repository": "Helm 儲存庫",
 	"edit_package_repository": "編輯套件儲存庫",
 	"quota_limit_is_not_set": "未設定配額限制",
-	"gpu": "GPU"
+	"gpu": "GPU",
+	"startup_script": "啟動腳本"
 }
