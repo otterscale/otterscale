@@ -101,7 +101,7 @@ type KubeCoreRepo interface {
 	ListPodsByLabel(ctx context.Context, config *rest.Config, namespace, label string) ([]Pod, error)
 	GetLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (string, error)
 	StreamLogs(ctx context.Context, config *rest.Config, namespace, podName, containerName string) (io.ReadCloser, error)
-	ExecuteTTY(ctx context.Context, config *rest.Config, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
+	CreateExecutor(config *rest.Config, namespace, podName, containerName string, command []string) (remotecommand.Executor, error)
 
 	// PersistentVolumeClaim
 	ListPersistentVolumeClaims(ctx context.Context, config *rest.Config, namespace string) ([]PersistentVolumeClaim, error)
@@ -363,7 +363,7 @@ func (uc *ApplicationUseCase) ExecuteTTY(ctx context.Context, uuid, facility, na
 	if err != nil {
 		return nil, err
 	}
-	return uc.kubeCore.ExecuteTTY(ctx, config, namespace, podName, containerName, command)
+	return uc.kubeCore.CreateExecutor(config, namespace, podName, containerName, command)
 }
 
 func filterServices(svcs []corev1.Service, namespace string, s labels.Selector) []corev1.Service {

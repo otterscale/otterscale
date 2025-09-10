@@ -43,6 +43,12 @@ const (
 	// ApplicationServiceWatchLogsProcedure is the fully-qualified name of the ApplicationService's
 	// WatchLogs RPC.
 	ApplicationServiceWatchLogsProcedure = "/otterscale.application.v1.ApplicationService/WatchLogs"
+	// ApplicationServiceExecuteTTYProcedure is the fully-qualified name of the ApplicationService's
+	// ExecuteTTY RPC.
+	ApplicationServiceExecuteTTYProcedure = "/otterscale.application.v1.ApplicationService/ExecuteTTY"
+	// ApplicationServiceWriteTTYProcedure is the fully-qualified name of the ApplicationService's
+	// WriteTTY RPC.
+	ApplicationServiceWriteTTYProcedure = "/otterscale.application.v1.ApplicationService/WriteTTY"
 	// ApplicationServiceListReleasesProcedure is the fully-qualified name of the ApplicationService's
 	// ListReleases RPC.
 	ApplicationServiceListReleasesProcedure = "/otterscale.application.v1.ApplicationService/ListReleases"
@@ -78,6 +84,8 @@ type ApplicationServiceClient interface {
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
 	WatchLogs(context.Context, *connect.Request[v1.WatchLogsRequest]) (*connect.ServerStreamForClient[v1.WatchLogsResponse], error)
+	ExecuteTTY(context.Context, *connect.Request[v1.ExecuteTTYRequest]) (*connect.ServerStreamForClient[v1.ExecuteTTYResponse], error)
+	WriteTTY(context.Context, *connect.Request[v1.WriteTTYRequest]) (*connect.Response[emptypb.Empty], error)
 	ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error)
 	CreateRelease(context.Context, *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Application_Release], error)
 	UpdateRelease(context.Context, *connect.Request[v1.UpdateReleaseRequest]) (*connect.Response[v1.Application_Release], error)
@@ -117,6 +125,18 @@ func NewApplicationServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			httpClient,
 			baseURL+ApplicationServiceWatchLogsProcedure,
 			connect.WithSchema(applicationServiceMethods.ByName("WatchLogs")),
+			connect.WithClientOptions(opts...),
+		),
+		executeTTY: connect.NewClient[v1.ExecuteTTYRequest, v1.ExecuteTTYResponse](
+			httpClient,
+			baseURL+ApplicationServiceExecuteTTYProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("ExecuteTTY")),
+			connect.WithClientOptions(opts...),
+		),
+		writeTTY: connect.NewClient[v1.WriteTTYRequest, emptypb.Empty](
+			httpClient,
+			baseURL+ApplicationServiceWriteTTYProcedure,
+			connect.WithSchema(applicationServiceMethods.ByName("WriteTTY")),
 			connect.WithClientOptions(opts...),
 		),
 		listReleases: connect.NewClient[v1.ListReleasesRequest, v1.ListReleasesResponse](
@@ -181,6 +201,8 @@ type applicationServiceClient struct {
 	listApplications   *connect.Client[v1.ListApplicationsRequest, v1.ListApplicationsResponse]
 	getApplication     *connect.Client[v1.GetApplicationRequest, v1.Application]
 	watchLogs          *connect.Client[v1.WatchLogsRequest, v1.WatchLogsResponse]
+	executeTTY         *connect.Client[v1.ExecuteTTYRequest, v1.ExecuteTTYResponse]
+	writeTTY           *connect.Client[v1.WriteTTYRequest, emptypb.Empty]
 	listReleases       *connect.Client[v1.ListReleasesRequest, v1.ListReleasesResponse]
 	createRelease      *connect.Client[v1.CreateReleaseRequest, v1.Application_Release]
 	updateRelease      *connect.Client[v1.UpdateReleaseRequest, v1.Application_Release]
@@ -205,6 +227,16 @@ func (c *applicationServiceClient) GetApplication(ctx context.Context, req *conn
 // WatchLogs calls otterscale.application.v1.ApplicationService.WatchLogs.
 func (c *applicationServiceClient) WatchLogs(ctx context.Context, req *connect.Request[v1.WatchLogsRequest]) (*connect.ServerStreamForClient[v1.WatchLogsResponse], error) {
 	return c.watchLogs.CallServerStream(ctx, req)
+}
+
+// ExecuteTTY calls otterscale.application.v1.ApplicationService.ExecuteTTY.
+func (c *applicationServiceClient) ExecuteTTY(ctx context.Context, req *connect.Request[v1.ExecuteTTYRequest]) (*connect.ServerStreamForClient[v1.ExecuteTTYResponse], error) {
+	return c.executeTTY.CallServerStream(ctx, req)
+}
+
+// WriteTTY calls otterscale.application.v1.ApplicationService.WriteTTY.
+func (c *applicationServiceClient) WriteTTY(ctx context.Context, req *connect.Request[v1.WriteTTYRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.writeTTY.CallUnary(ctx, req)
 }
 
 // ListReleases calls otterscale.application.v1.ApplicationService.ListReleases.
@@ -258,6 +290,8 @@ type ApplicationServiceHandler interface {
 	ListApplications(context.Context, *connect.Request[v1.ListApplicationsRequest]) (*connect.Response[v1.ListApplicationsResponse], error)
 	GetApplication(context.Context, *connect.Request[v1.GetApplicationRequest]) (*connect.Response[v1.Application], error)
 	WatchLogs(context.Context, *connect.Request[v1.WatchLogsRequest], *connect.ServerStream[v1.WatchLogsResponse]) error
+	ExecuteTTY(context.Context, *connect.Request[v1.ExecuteTTYRequest], *connect.ServerStream[v1.ExecuteTTYResponse]) error
+	WriteTTY(context.Context, *connect.Request[v1.WriteTTYRequest]) (*connect.Response[emptypb.Empty], error)
 	ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error)
 	CreateRelease(context.Context, *connect.Request[v1.CreateReleaseRequest]) (*connect.Response[v1.Application_Release], error)
 	UpdateRelease(context.Context, *connect.Request[v1.UpdateReleaseRequest]) (*connect.Response[v1.Application_Release], error)
@@ -292,6 +326,18 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 		ApplicationServiceWatchLogsProcedure,
 		svc.WatchLogs,
 		connect.WithSchema(applicationServiceMethods.ByName("WatchLogs")),
+		connect.WithHandlerOptions(opts...),
+	)
+	applicationServiceExecuteTTYHandler := connect.NewServerStreamHandler(
+		ApplicationServiceExecuteTTYProcedure,
+		svc.ExecuteTTY,
+		connect.WithSchema(applicationServiceMethods.ByName("ExecuteTTY")),
+		connect.WithHandlerOptions(opts...),
+	)
+	applicationServiceWriteTTYHandler := connect.NewUnaryHandler(
+		ApplicationServiceWriteTTYProcedure,
+		svc.WriteTTY,
+		connect.WithSchema(applicationServiceMethods.ByName("WriteTTY")),
 		connect.WithHandlerOptions(opts...),
 	)
 	applicationServiceListReleasesHandler := connect.NewUnaryHandler(
@@ -356,6 +402,10 @@ func NewApplicationServiceHandler(svc ApplicationServiceHandler, opts ...connect
 			applicationServiceGetApplicationHandler.ServeHTTP(w, r)
 		case ApplicationServiceWatchLogsProcedure:
 			applicationServiceWatchLogsHandler.ServeHTTP(w, r)
+		case ApplicationServiceExecuteTTYProcedure:
+			applicationServiceExecuteTTYHandler.ServeHTTP(w, r)
+		case ApplicationServiceWriteTTYProcedure:
+			applicationServiceWriteTTYHandler.ServeHTTP(w, r)
 		case ApplicationServiceListReleasesProcedure:
 			applicationServiceListReleasesHandler.ServeHTTP(w, r)
 		case ApplicationServiceCreateReleaseProcedure:
@@ -393,6 +443,14 @@ func (UnimplementedApplicationServiceHandler) GetApplication(context.Context, *c
 
 func (UnimplementedApplicationServiceHandler) WatchLogs(context.Context, *connect.Request[v1.WatchLogsRequest], *connect.ServerStream[v1.WatchLogsResponse]) error {
 	return connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.WatchLogs is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) ExecuteTTY(context.Context, *connect.Request[v1.ExecuteTTYRequest], *connect.ServerStream[v1.ExecuteTTYResponse]) error {
+	return connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.ExecuteTTY is not implemented"))
+}
+
+func (UnimplementedApplicationServiceHandler) WriteTTY(context.Context, *connect.Request[v1.WriteTTYRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.application.v1.ApplicationService.WriteTTY is not implemented"))
 }
 
 func (UnimplementedApplicationServiceHandler) ListReleases(context.Context, *connect.Request[v1.ListReleasesRequest]) (*connect.Response[v1.ListReleasesResponse], error) {

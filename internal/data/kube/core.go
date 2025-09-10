@@ -127,7 +127,7 @@ func (r *core) StreamLogs(ctx context.Context, config *rest.Config, namespace, p
 	return clientset.CoreV1().Pods(namespace).GetLogs(podName, &opts).Stream(ctx)
 }
 
-func (r *core) ExecuteTTY(ctx context.Context, config *rest.Config, namespace, podName, containerName string, command []string) (remotecommand.Executor, error) {
+func (r *core) CreateExecutor(config *rest.Config, namespace, podName, containerName string, command []string) (remotecommand.Executor, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
 		return nil, err
