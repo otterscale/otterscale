@@ -109,8 +109,8 @@ importers:
         specifier: ^3.9.0
         version: 3.9.0
       '@lucide/svelte':
-        specifier: ^0.515.0
-        version: 0.515.0(svelte@5.38.6)
+        specifier: ^0.543.0
+        version: 0.543.0(svelte@5.38.6)
       '@neoconfetti/svelte':
         specifier: ^2.2.2
         version: 2.2.2(svelte@5.38.6)
@@ -693,8 +693,8 @@ packages:
   '@lix-js/server-protocol-schema@0.1.1':
     resolution: {integrity: sha512-jBeALB6prAbtr5q4vTuxnRZZv1M2rKe8iNqRQhFJ4Tv7150unEa0vKyz0hs8Gl3fUGsWaNJBh3J8++fpbrpRBQ==}
 
-  '@lucide/svelte@0.515.0':
-    resolution: {integrity: sha512-CEAyqcZmNBfYzVgaRmK2RFJP5tnbXxekRyDk0XX/eZQRfsJmkDvmQwXNX8C869BgNeryzmrRyjHhUL6g9ZOHNA==}
+  '@lucide/svelte@0.543.0':
+    resolution: {integrity: sha512-V9XJLRuC5pq9o4OuoMlGwdKwBClZyJnygRf9BaiJuetiptWAybQHvMoXDBm5wy+zZFgZb6LIaO/3HIvHF7/2NA==}
     peerDependencies:
       svelte: ^5
 
@@ -4697,7 +4697,7 @@ snapshots:
 
   '@lix-js/server-protocol-schema@0.1.1': {}
 
-  '@lucide/svelte@0.515.0(svelte@5.38.6)':
+  '@lucide/svelte@0.543.0(svelte@5.38.6)':
     dependencies:
       svelte: 5.38.6
 
