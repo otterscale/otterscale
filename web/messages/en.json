@@ -666,5 +666,14 @@
 	"quota_limit_is_not_set": "Quota limit is not set",
 	"gpu": "GPU",
 	"script": "Script",
-	"startup_script": "Startup Script"
+	"startup_script": "Startup Script",
+	"vm_start": "Start",
+	"vm_stop": "Stop",
+	"vm_pause": "Pause",
+	"vm_resume": "Resume",
+	"please_wait": "Please Wait",
+	"clone": "Clone",
+    "clone_virtual_machine": "Clone Virtual Machine",
+    "clone_virtual_machine_name_direction": "Name for the new virtual machine.",
+    "clone_virtual_machine_namespace_direction": "Namespace for the new virtual machine."
 }
