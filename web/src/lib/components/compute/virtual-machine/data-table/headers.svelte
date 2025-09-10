@@ -15,6 +15,7 @@
 		cpu,
 		memory,
 		disk,
+		actions,
 	};
 </script>
 
@@ -88,3 +89,5 @@
 		<Layout.HeaderViewer>{m.disk()}</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
+
+{#snippet actions()}{/snippet}

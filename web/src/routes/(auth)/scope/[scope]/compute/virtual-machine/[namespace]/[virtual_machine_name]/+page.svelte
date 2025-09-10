@@ -7,8 +7,8 @@
 
 <script lang="ts">
 	breadcrumb.set({
-		parents: [dynamicPaths.applications(page.params.scope), dynamicPaths.applicationsWorkloads(page.params.scope)],
-		current: { title: `${page.params.namespace} / ${page.params.application_name}`, url: '' },
+		parents: [dynamicPaths.compute(page.params.scope), dynamicPaths.computeVirtualMachine(page.params.scope)],
+		current: { title: `${page.params.namespace} / ${page.params.virtual_machine_name}`, url: '' },
 	});
 </script>
 
@@ -16,7 +16,6 @@
 	{@const scopeUuid = $currentKubernetes.scopeUuid}
 	{@const facilityName = $currentKubernetes.name}
 	{@const namespace = page.params.namespace ?? ''}
-	{@const applicationName = page.params.application_name ?? ''}
-	{console.log('applicationName', applicationName)}
-	<DataVolume {scopeUuid} {facilityName} {namespace} {applicationName} />
+	{@const virtualMachineName = page.params.virtual_machine_name ?? ''}
+	<DataVolume {scopeUuid} {facilityName} {namespace} {virtualMachineName} />
 {/if}
