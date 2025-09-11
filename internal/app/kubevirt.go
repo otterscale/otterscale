@@ -30,9 +30,25 @@ func NewKubeVirtService(uc *core.KubeVirtUseCase) *KubeVirtService {
 
 var _ pbconnect.KubeVirtServiceHandler = (*KubeVirtService)(nil)
 
+// ListNamespaces returns a list of namespaces
+func (s *KubeVirtService) ListNamespaces(ctx context.Context, req *connect.Request[pb.ListNamespaceRequest]) (*connect.Response[pb.ListNamespaceResponse], error) {
+	namespaces, err := s.uc.ListNamespaces(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListNamespaceResponse{}
+	namespaceNames := make([]string, len(namespaces))
+	for i, ns := range namespaces {
+		namespaceNames[i] = ns.Name
+	}
+	resp.SetNamespaces(namespaceNames)
+	return connect.NewResponse(resp), nil
+}
+
 // Virtual Machine Operations
 func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.CreateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), toCoreVirtualMachineResource(req.Msg.GetCustom(), req.Msg.GetInstancetype()), toCoreDiskDevices(req.Msg.GetDisks()))
+	vm, err := s.uc.CreateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), toCoreVirtualMachineResource(req.Msg.GetCustom(), req.Msg.GetInstancetypeName()), toCoreDiskDevices(req.Msg.GetDisks()))
 	if err != nil {
 		return nil, err
 	}
@@ -441,7 +457,12 @@ func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCore
 	ret := &pb.VirtualMachineDisk{}
 	ret.SetName(disk.Name)
 	if disk.Disk != nil {
-		ret.SetBus(string(disk.Disk.Bus))
+		v, ok := pb.VirtualMachineDiskBus_value[strings.ToUpper(string(disk.Disk.Bus))]
+		if ok {
+			ret.SetBusType(pb.VirtualMachineDiskBus(v))
+		} else {
+			ret.SetBusType(pb.VirtualMachineDiskBus(pb.VirtualMachineDisk_VIRTIO))
+		}
 	}
 	ret.SetDiskType(pb.VirtualMachineDisk_UNSPECIFIED)
 
@@ -470,10 +491,23 @@ func toProtoVirtualMachineDisk(disk *virtCorev1.Disk, vmVols map[string]virtCore
 func toCoreDiskDevices(disks []*pb.VirtualMachineDisk) []core.DiskDevice {
 	ret := []core.DiskDevice{}
 	for i := range disks {
+		// Convert pb.VirtualMachineDisk_bus to string
+		var busStr string
+		switch disks[i].GetBusType() {
+		case pb.VirtualMachineDisk_SATA:
+			busStr = "sata"
+		case pb.VirtualMachineDisk_SCSI:
+			busStr = "scsi"
+		case pb.VirtualMachineDisk_VIRTIO:
+			busStr = "virtio"
+		default:
+			busStr = "virtio"
+		}
+
 		ret = append(ret, core.DiskDevice{
 			Name:     disks[i].GetName(),
 			DiskType: pb.VirtualMachineDiskType_name[int32(disks[i].GetDiskType())],
-			Bus:      disks[i].GetBus(),
+			Bus:      busStr,
 			Data:     disks[i].GetSource(),
 		})
 	}

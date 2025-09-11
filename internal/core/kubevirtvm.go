@@ -67,6 +67,14 @@ type KubeVirtVMRepo interface {
 	UnpauseVirtualMachineInstance(ctx context.Context, config *rest.Config, namespace, name string) error
 }
 
+func (uc *KubeVirtUseCase) ListNamespaces(ctx context.Context, uuid, facility string) ([]corev1.Namespace, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeCore.ListNamespaces(ctx, config)
+}
+
 func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, network, script string, labels map[string]string, resources VirtualMachineResources, disks []DiskDevice) (*VirtualMachine, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
@@ -143,6 +151,10 @@ func buildVMSpec(resources VirtualMachineResources, disks []virtCorev1.Disk, vol
 	var retries uint32 = 8191
 	strategy := virtCorev1.RunStrategyManual
 
+	if network == "" {
+		network = "default"
+	}
+
 	spec := &VirtualMachineSpec{
 		RunStrategy: &strategy,
 		Template: &virtCorev1.VirtualMachineInstanceTemplateSpec{
@@ -189,7 +201,7 @@ func buildVMSpec(resources VirtualMachineResources, disks []virtCorev1.Disk, vol
 				},
 				Networks: []virtCorev1.Network{
 					{
-						Name: "default",
+						Name: network,
 						NetworkSource: virtCorev1.NetworkSource{
 							Pod: &virtCorev1.PodNetwork{},
 						},

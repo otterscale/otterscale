@@ -34,6 +34,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// KubeVirtServiceListNamespacesProcedure is the fully-qualified name of the KubeVirtService's
+	// ListNamespaces RPC.
+	KubeVirtServiceListNamespacesProcedure = "/otterscale.kubevirt.v1.KubeVirtService/ListNamespaces"
 	// KubeVirtServiceCreateVirtualMachineProcedure is the fully-qualified name of the KubeVirtService's
 	// CreateVirtualMachine RPC.
 	KubeVirtServiceCreateVirtualMachineProcedure = "/otterscale.kubevirt.v1.KubeVirtService/CreateVirtualMachine"
@@ -128,6 +131,7 @@ const (
 
 // KubeVirtServiceClient is a client for the otterscale.kubevirt.v1.KubeVirtService service.
 type KubeVirtServiceClient interface {
+	ListNamespaces(context.Context, *connect.Request[v1.ListNamespaceRequest]) (*connect.Response[v1.ListNamespaceResponse], error)
 	// Virtual Machine Operations
 	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
@@ -177,6 +181,12 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 	baseURL = strings.TrimRight(baseURL, "/")
 	kubeVirtServiceMethods := v1.File_api_kubevirt_v1_kubevirt_proto.Services().ByName("KubeVirtService").Methods()
 	return &kubeVirtServiceClient{
+		listNamespaces: connect.NewClient[v1.ListNamespaceRequest, v1.ListNamespaceResponse](
+			httpClient,
+			baseURL+KubeVirtServiceListNamespacesProcedure,
+			connect.WithSchema(kubeVirtServiceMethods.ByName("ListNamespaces")),
+			connect.WithClientOptions(opts...),
+		),
 		createVirtualMachine: connect.NewClient[v1.CreateVirtualMachineRequest, v1.VirtualMachine](
 			httpClient,
 			baseURL+KubeVirtServiceCreateVirtualMachineProcedure,
@@ -362,6 +372,7 @@ func NewKubeVirtServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // kubeVirtServiceClient implements KubeVirtServiceClient.
 type kubeVirtServiceClient struct {
+	listNamespaces               *connect.Client[v1.ListNamespaceRequest, v1.ListNamespaceResponse]
 	createVirtualMachine         *connect.Client[v1.CreateVirtualMachineRequest, v1.VirtualMachine]
 	getVirtualMachine            *connect.Client[v1.GetVirtualMachineRequest, v1.VirtualMachine]
 	listVirtualMachines          *connect.Client[v1.ListVirtualMachinesRequest, v1.ListVirtualMachinesResponse]
@@ -392,6 +403,11 @@ type kubeVirtServiceClient struct {
 	getInstanceType              *connect.Client[v1.GetInstanceTypeRequest, v1.InstanceType]
 	listInstanceTypes            *connect.Client[v1.ListInstanceTypesRequest, v1.ListInstanceTypesResponse]
 	deleteInstanceType           *connect.Client[v1.DeleteInstanceTypeRequest, emptypb.Empty]
+}
+
+// ListNamespaces calls otterscale.kubevirt.v1.KubeVirtService.ListNamespaces.
+func (c *kubeVirtServiceClient) ListNamespaces(ctx context.Context, req *connect.Request[v1.ListNamespaceRequest]) (*connect.Response[v1.ListNamespaceResponse], error) {
+	return c.listNamespaces.CallUnary(ctx, req)
 }
 
 // CreateVirtualMachine calls otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine.
@@ -553,6 +569,7 @@ func (c *kubeVirtServiceClient) DeleteInstanceType(ctx context.Context, req *con
 // KubeVirtServiceHandler is an implementation of the otterscale.kubevirt.v1.KubeVirtService
 // service.
 type KubeVirtServiceHandler interface {
+	ListNamespaces(context.Context, *connect.Request[v1.ListNamespaceRequest]) (*connect.Response[v1.ListNamespaceResponse], error)
 	// Virtual Machine Operations
 	CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
 	GetVirtualMachine(context.Context, *connect.Request[v1.GetVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error)
@@ -598,6 +615,12 @@ type KubeVirtServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	kubeVirtServiceMethods := v1.File_api_kubevirt_v1_kubevirt_proto.Services().ByName("KubeVirtService").Methods()
+	kubeVirtServiceListNamespacesHandler := connect.NewUnaryHandler(
+		KubeVirtServiceListNamespacesProcedure,
+		svc.ListNamespaces,
+		connect.WithSchema(kubeVirtServiceMethods.ByName("ListNamespaces")),
+		connect.WithHandlerOptions(opts...),
+	)
 	kubeVirtServiceCreateVirtualMachineHandler := connect.NewUnaryHandler(
 		KubeVirtServiceCreateVirtualMachineProcedure,
 		svc.CreateVirtualMachine,
@@ -780,6 +803,8 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 	)
 	return "/otterscale.kubevirt.v1.KubeVirtService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case KubeVirtServiceListNamespacesProcedure:
+			kubeVirtServiceListNamespacesHandler.ServeHTTP(w, r)
 		case KubeVirtServiceCreateVirtualMachineProcedure:
 			kubeVirtServiceCreateVirtualMachineHandler.ServeHTTP(w, r)
 		case KubeVirtServiceGetVirtualMachineProcedure:
@@ -848,6 +873,10 @@ func NewKubeVirtServiceHandler(svc KubeVirtServiceHandler, opts ...connect.Handl
 
 // UnimplementedKubeVirtServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedKubeVirtServiceHandler struct{}
+
+func (UnimplementedKubeVirtServiceHandler) ListNamespaces(context.Context, *connect.Request[v1.ListNamespaceRequest]) (*connect.Response[v1.ListNamespaceResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.ListNamespaces is not implemented"))
+}
 
 func (UnimplementedKubeVirtServiceHandler) CreateVirtualMachine(context.Context, *connect.Request[v1.CreateVirtualMachineRequest]) (*connect.Response[v1.VirtualMachine], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("otterscale.kubevirt.v1.KubeVirtService.CreateVirtualMachine is not implemented"))

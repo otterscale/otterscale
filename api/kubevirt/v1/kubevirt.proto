@@ -9,6 +9,7 @@ option go_package = "github.com/otterscale/otterscale/api/kubevirt/v1;pb";
 
 // Virtual Machine Management Service for KubeVirt
 service KubeVirtService {
+  rpc ListNamespaces(ListNamespaceRequest) returns (ListNamespaceResponse);
   // Virtual Machine Operations
   rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
   rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
@@ -54,6 +55,15 @@ message Metadata {
   map<string, string> labels = 3;
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
+}
+
+message ListNamespaceRequest{
+  string scope_uuid = 1;
+  string facility_name = 2;
+}
+
+message ListNamespaceResponse{
+  repeated string namespaces = 1;
 }
 
 // Virtual Machine messages
@@ -187,9 +197,14 @@ message VirtualMachineDisk {
     SECRET = 4;
     CLOUDINITNOCLOUD = 5;
   }
+  enum bus {
+    SATA = 0;
+    SCSI = 1;
+    VIRTIO = 2;
+  }
   string name = 1;
   type disk_type = 2;
-  string bus = 3;
+  bus bus_type = 3;
   string source = 4;
 }
 
@@ -203,7 +218,7 @@ message CreateVirtualMachineRequest {
   map<string, string> labels = 11;
   repeated VirtualMachineDisk disks = 21;
   oneof resources {
-    string instancetype = 31;
+    string instancetypeName = 31;
     VirtualMachineResources custom = 32;
   }
 }

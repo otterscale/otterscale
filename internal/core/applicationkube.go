@@ -89,6 +89,9 @@ type KubeBatchRepo interface {
 }
 
 type KubeCoreRepo interface {
+	// Namespace
+	ListNamespaces(ctx context.Context, config *rest.Config) ([]Namespace, error)
+
 	// Service
 	ListServices(ctx context.Context, config *rest.Config, namespace string) ([]Service, error)
 	ListServicesByOptions(ctx context.Context, config *rest.Config, namespace, label, field string) ([]Service, error)

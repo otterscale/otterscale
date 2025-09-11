@@ -315,6 +315,21 @@ func (r *core) CreateConfigMap(ctx context.Context, config *rest.Config, namespa
 	return clientset.CoreV1().ConfigMaps(namespace).Create(ctx, configMap, opts)
 }
 
+func (r *core) ListNamespaces(ctx context.Context, config *rest.Config) ([]corev1.Namespace, error) {
+	clientset, err := r.kube.clientset(config)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := metav1.ListOptions{}
+	list, err := clientset.CoreV1().Namespaces().List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return list.Items, nil
+}
+
 func (r *core) GetSecret(ctx context.Context, config *rest.Config, namespace, name string) (*oscore.Secret, error) {
 	clientset, err := r.kube.clientset(config)
 	if err != nil {
