@@ -3,7 +3,7 @@
 	import { getContext, onMount } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	import { Data } from './data';
+	// import { Data } from './data';
 
 	// import { ApplicationService, type Application } from '$lib/api/application/v1/application_pb';
 	import { KubeVirtService, type VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
@@ -46,7 +46,7 @@
 
 <main>
 	{#if isMounted}
-		<Data {virtualMachine} />
+		<!-- <Data {virtualMachine} /> -->
 	{:else}
 		<Loading.Data />
 	{/if}
