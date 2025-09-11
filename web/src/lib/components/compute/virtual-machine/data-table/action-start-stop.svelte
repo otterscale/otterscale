@@ -5,7 +5,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { KubeVirtService, VirtualMachine_status } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 </script>
@@ -16,8 +16,8 @@
 	const transport: Transport = getContext('transport');
 	const KubeVirtClient = createClient(KubeVirtService, transport);
 	let loading = $state(false);
-	let statusAtClick = $state('');
-	const isRunning = $derived(virtualMachine.statusPhase === 'Running');
+	let statusAtClick = $state<VirtualMachine_status>(VirtualMachine_status.UNKNOWN);
+	const isRunning = $derived(virtualMachine.statusPhase === VirtualMachine_status.RUNNING);
 
 	$effect(() => {
 		// If we are in a loading state and the status has changed from what it was when we clicked,
@@ -72,7 +72,7 @@
 
 	async function handleClick() {
 		// Store the status at the moment of the click
-		statusAtClick = virtualMachine.statusPhase ?? '';
+		statusAtClick = virtualMachine.statusPhase;
 		loading = true;
 
 		try {

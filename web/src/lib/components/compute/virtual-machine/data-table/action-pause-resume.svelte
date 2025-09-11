@@ -5,7 +5,7 @@
 	import { toast } from 'svelte-sonner';
 
 	import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { KubeVirtService, VirtualMachine_status } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
 </script>
@@ -16,10 +16,10 @@
 	const transport: Transport = getContext('transport');
 	const KubeVirtClient = createClient(KubeVirtService, transport);
 	let loading = $state(false);
-	let statusAtClick = $state('');
-	const isRunning = $derived(virtualMachine.statusPhase === 'Running');
-	const isPaused = $derived(virtualMachine.statusPhase === 'Paused');
-	const isShutdown = $derived(virtualMachine.statusPhase === 'Shutdown');
+	let statusAtClick = $state<VirtualMachine_status>(VirtualMachine_status.UNKNOWN);
+	const isRunning = $derived(virtualMachine.statusPhase === VirtualMachine_status.RUNNING);
+	const isPaused = $derived(virtualMachine.statusPhase === VirtualMachine_status.PAUSED);
+	const isShutdown = $derived(virtualMachine.statusPhase === VirtualMachine_status.STOPPED);
 
 	$effect(() => {
 		// If we are in a loading state and the status has changed from what it was when we clicked,
@@ -37,7 +37,7 @@
 			namespace: virtualMachine.metadata?.namespace,
 		};
 
-		await toast.promise(() => KubeVirtClient.pauseVirtualMachine(request), {
+		await toast.promise(() => KubeVirtClient.resumeVirtualMachine(request), {
 			loading: `Resuming virtual machine ${request.name}...`,
 			success: () => `Successfully resumed virtual machine ${request.name}.`,
 			error: (e) => {
@@ -74,7 +74,7 @@
 
 	async function handleClick() {
 		// Store the status at the moment of the click
-		statusAtClick = virtualMachine.statusPhase ?? '';
+		statusAtClick = virtualMachine.statusPhase;
 		loading = true;
 
 		try {
