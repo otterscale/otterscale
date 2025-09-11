@@ -170,7 +170,7 @@ func ExtractDataVolumeInfo(dv *DataVolume) (source, sourceType, accessMode, stor
 	return
 }
 
-// 產生 StorageSpec (非 PVC) 時使用的 helper
+// StorageSpec helper function for generating StorageSpec (non-PVC)
 func StorageSpec(size int64) *v1beta1.StorageSpec {
 	return &v1beta1.StorageSpec{
 		AccessModes: []v1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
@@ -182,7 +182,7 @@ func StorageSpec(size int64) *v1beta1.StorageSpec {
 	}
 }
 
-// PvcResizePatch 產生 PVC resize 的 JSON‑Patch。
+// PvcResizePatch generates JSON-Patch for PVC resizing.
 func PvcResizePatch(desired string) ([]byte, error) {
 	ops := []map[string]interface{}{
 		{"op": "replace", "path": "/spec/resources/requests/storage", "value": desired},
@@ -194,7 +194,7 @@ func PvcResizePatch(desired string) ([]byte, error) {
 	return json.Marshal(ops)
 }
 
-// DataVolumeLastUpdatedPatch 為 DataVolume 加上 last‑updated annotation。
+// DataVolumeLastUpdatedPatch adds last-updated annotation to DataVolume.
 func DataVolumeLastUpdatedPatch() ([]byte, error) {
 	patch := map[string]interface{}{
 		"metadata": map[string]interface{}{
@@ -206,7 +206,7 @@ func DataVolumeLastUpdatedPatch() ([]byte, error) {
 	return json.Marshal(patch)
 }
 
-// SyncDataVolumeSpec 同步 PVC 的資源資訊到 DataVolume.Spec（PVC 或 Storage）。
+// SyncDataVolumeSpec synchronizes resource information from PVC to DataVolume.Spec (PVC or Storage).
 func SyncDataVolumeSpec(dv *v1beta1.DataVolume, pvc *v1.PersistentVolumeClaim) {
 	req := pvc.Spec.Resources.Requests
 	if dv.Spec.PVC != nil {

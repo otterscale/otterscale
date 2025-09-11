@@ -58,23 +58,39 @@ message Metadata {
 
 // Virtual Machine messages
 message VirtualMachine {
+  enum status {
+    UNKNOWN = 0;
+    PROVISIONING = 1;
+    STARTING = 2;
+    RUNNING = 3;
+    PAUSED = 4;
+    STOPPED = 5;
+    TERMINATING = 6;
+  }
   Metadata metadata = 1;
   string network_name = 11;
   string startup_script = 12;
   string node_name = 13;
-  VirtualMachineResources resoureces = 21;
+  VirtualMachineResources resources = 21;
   repeated VirtualMachineDisk disks = 22; 
-  string status_phase  = 31;
+  status status_phase  = 31;
 }
 
 message VirtualMachineSnapshot{
+  enum status {
+    UNKNOWN = 0;
+    INPROGRESS = 1;
+    SUCCEEDED = 2;
+    FAILED = 3;
+    DELETING = 4;
+  }
   string name = 1;
   string namespace = 2;
   string source_name = 3;
   string source_namespace = 4;
   google.protobuf.Timestamp created_at = 5;
   string description = 6;
-  string status_phase  = 11;
+  status status_phase  = 11;
   string last_condition_message = 12;
   string last_condition_reason = 13;
 }

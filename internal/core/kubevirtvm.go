@@ -200,7 +200,6 @@ func buildVMSpec(resources VirtualMachineResources, disks []virtCorev1.Disk, vol
 		},
 	}
 
-	// Instancetype 或直接設定 CPU / Memory
 	if resources.InstanceName != "" {
 		spec.Instancetype = &virtCorev1.InstancetypeMatcher{Name: resources.InstanceName}
 	} else {

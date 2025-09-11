@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"connectrpc.com/connect"
@@ -313,12 +314,17 @@ func (s *KubeVirtService) DeleteInstanceType(ctx context.Context, req *connect.R
 // Conversion functions
 func toProtoVirtualMachines(vms []core.VirtualMachine, vmis []core.VirtualMachineInstance) []*pb.VirtualMachine {
 	ret := []*pb.VirtualMachine{}
-	for i := 0; i < len(vmis); i++ {
-		for j := 0; j < len(vms); j++ {
-			if vms[j].Name == vmis[i].Name {
-				ret = append(ret, toProtoVirtualMachine(&vms[j], &vmis[i]))
+	for i := 0; i < len(vms); i++ {
+		found := false
+		for j := 0; j < len(vmis); j++ {
+			if vms[i].Name == vmis[j].Name {
+				ret = append(ret, toProtoVirtualMachine(&vms[i], &vmis[j]))
+				found = true
 				break
 			}
+		}
+		if !found {
+			ret = append(ret, toProtoVirtualMachine(&vms[i], nil))
 		}
 	}
 	return ret
@@ -329,13 +335,19 @@ func toProtoVirtualMachine(vm *core.VirtualMachine, vmi *core.VirtualMachineInst
 
 	ret.SetMetadata(fromVirtualMachine(vm))
 	ret.SetStartupScript(toProtoVirtualMachineScripts(vm.Spec.Template.Spec.Volumes))
-	ret.SetResoureces(toProtoVirtualMachineResources(vm))
+	ret.SetResources(toProtoVirtualMachineResources(vm))
 	if vmi != nil {
 		ret.SetNodeName(vmi.Status.NodeName)
 	}
 	ret.SetNetworkName(vm.Spec.Template.Spec.Networks[0].Name)
 	ret.SetDisks(toProtoVirtualMachineDisks(vm))
-	ret.SetStatusPhase(string(vm.Status.PrintableStatus))
+
+	v, ok := pb.VirtualMachineStatus_value[strings.ToUpper(string(vm.Status.PrintableStatus))]
+	if ok {
+		ret.SetStatusPhase(pb.VirtualMachineStatus(v))
+	} else {
+		ret.SetStatusPhase(pb.VirtualMachineStatus(pb.VirtualMachine_UNKNOWN))
+	}
 
 	return ret
 }
@@ -476,7 +488,7 @@ func toProtoVirtualMachineSnapshots(snapshots []core.VirtualMachineSnapshot) []*
 	return ret
 }
 
-// toProtoVirtualMachineOperation converts core VirtualMachineOperation to protobuf
+// toProtoVirtualMachineSnapshot converts core VirtualMachineSnapshot to protobuf
 func toProtoVirtualMachineSnapshot(snapshot *core.VirtualMachineSnapshot) *pb.VirtualMachineSnapshot {
 	ret := &pb.VirtualMachineSnapshot{}
 	ret.SetName(snapshot.GetName())
@@ -485,7 +497,14 @@ func toProtoVirtualMachineSnapshot(snapshot *core.VirtualMachineSnapshot) *pb.Vi
 	ret.SetDescription(snapshot.GetAnnotations()["otterscale.io/snapshot-description"])
 	ret.SetSourceNamespace(snapshot.GetNamespace())
 	ret.SetCreatedAt(timestamppb.New(snapshot.CreationTimestamp.Time))
-	ret.SetStatusPhase(string(snapshot.Status.Phase))
+
+	v, ok := pb.VirtualMachineSnapshotStatus_value[strings.ToUpper(string(snapshot.Status.Phase))]
+	if ok {
+		ret.SetStatusPhase(pb.VirtualMachineSnapshotStatus(v))
+	} else {
+		ret.SetStatusPhase(pb.VirtualMachineSnapshotStatus(pb.VirtualMachine_UNKNOWN))
+	}
+
 	for _, cond := range snapshot.Status.Conditions {
 		if string(cond.Status) == "True" {
 			ret.SetLastConditionMessage(cond.Message)
