@@ -664,5 +664,16 @@
 	"helm_repository": "Helm 儲存庫",
 	"edit_package_repository": "編輯套件儲存庫",
 	"quota_limit_is_not_set": "未設定配額限制",
-	"gpu": "GPU"
+	"gpu": "GPU",
+	"script": "腳本",
+	"startup_script": "啟動腳本",
+	"vm_start": "開機",
+	"vm_stop": "關機",
+	"vm_pause": "暫停",
+	"vm_resume": "運行",
+	"please_wait": "請稍候",
+	"clone": "複製",
+	"clone_virtual_machine": "複製虛擬機",
+	"clone_virtual_machine_name_direction": "新虛擬機的名稱。",
+	"clone_virtual_machine_namespace_direction": "新虛擬機的命名空間。"
 }

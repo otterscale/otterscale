@@ -1,6 +1,8 @@
 <script lang="ts" module>
 	import type { Row } from '@tanstack/table-core';
 
+	import Actions from './cell-actions.svelte';
+
 	import { page } from '$app/state';
 	import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
@@ -15,9 +17,11 @@
 		namespace,
 		network,
 		node,
+		status,
 		cpu,
 		memory,
 		disk,
+		actions,
 	};
 </script>
 
@@ -60,6 +64,12 @@
 	</Layout.Cell>
 {/snippet}
 
+{#snippet status(row: Row<VirtualMachine>)}
+	<Layout.Cell class="items-start">
+		{row.original.statusPhase}
+	</Layout.Cell>
+{/snippet}
+
 {#snippet cpu(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-end">
 		{row.original.resources?.cpuCores}
@@ -78,5 +88,11 @@
 {#snippet disk(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-end">
 		<Disk virtualMachines={row.original.disks} />
+	</Layout.Cell>
+{/snippet}
+
+{#snippet actions(row: Row<VirtualMachine>)}
+	<Layout.Cell class="items-start">
+		<Actions virtualMachine={row.original} />
 	</Layout.Cell>
 {/snippet}

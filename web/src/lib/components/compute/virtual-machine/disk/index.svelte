@@ -21,7 +21,7 @@
 		<Sheet.Trigger>
 			<Icon icon="ph:arrow-square-out" />
 		</Sheet.Trigger>
-		<Sheet.Content class="min-w-[38vw] p-4">
+		<Sheet.Content class="min-w-[50vw] p-4">
 			<DataTable {virtualMachines} />
 		</Sheet.Content>
 	</Sheet.Root>

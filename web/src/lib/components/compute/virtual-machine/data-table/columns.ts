@@ -12,6 +12,7 @@ const messages = {
 	namespace: m.namespace(),
 	network: m.network(),
 	node: m.node(),
+	status: m.status(),
 	cpu: m.cpu(),
 	memory: m.memory(),
 	disk: m.disk(),
@@ -69,6 +70,16 @@ const columns: ColumnDef<VirtualMachine>[] = [
 		filterFn: 'arrIncludesSome',
 	},
 	{
+		accessorKey: 'status',
+		header: ({ column }) => {
+			return renderSnippet(headers.status, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.status, row);
+		},
+		filterFn: 'arrIncludesSome',
+	},
+	{
 		accessorKey: 'cpu',
 		header: ({ column }) => {
 			return renderSnippet(headers.cpu, column);
@@ -97,6 +108,16 @@ const columns: ColumnDef<VirtualMachine>[] = [
 			return renderSnippet(cells.disk, row);
 		},
 		filterFn: 'arrIncludesSome',
+	},
+	{
+		accessorKey: 'actions',
+		header: ({ column }) => {
+			return renderSnippet(headers.actions, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.actions, row);
+		},
+		enableHiding: false,
 	},
 ];
 
