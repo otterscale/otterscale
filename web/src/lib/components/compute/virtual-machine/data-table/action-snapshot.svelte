@@ -21,7 +21,7 @@
 
 	let isSnapshotLoading = $state(true);
 
-	async function fetchSanpshot() {
+	async function fetchSnapshot() {
 		try {
 			const response = await KubeVirtClient.listVirtualMachineSnapshots({
 				scopeUuid: $currentKubernetes?.scopeUuid,
@@ -40,7 +40,7 @@
 	let isMounted = $state(false);
 	onMount(async () => {
 		try {
-			await fetchSanpshot();
+			await fetchSnapshot();
 			if (!isSnapshotLoading) {
 				isMounted = true;
 			}
