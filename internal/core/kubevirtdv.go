@@ -12,26 +12,15 @@ import (
 	v1beta1 "kubevirt.io/containerized-data-importer-api/pkg/apis/core/v1beta1"
 )
 
-// KubeVirtDVRepo 定義 DataVolume 相關的資料層介面
 type KubeVirtDVRepo interface {
-	// CreateDataVolume 建立 DataVolume
-	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string,
-		sourceType string, source string, sizeBytes int64, isBootable bool) (*DataVolume, error)
-
-	// GetDataVolume 取得指定的 DataVolume
+	CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name string, sourceType string, source string, sizeBytes int64, isBootable bool) (*DataVolume, error)
 	GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string, pvc *v1.PersistentVolumeClaim) (*DataVolume, error)
-
-	// ListDataVolume 列出指定 namespace 中的所有 DataVolume
 	ListDataVolume(ctx context.Context, config *rest.Config, namespace string) ([]DataVolume, error)
-
-	// DeleteDataVolume 刪除指定的 DataVolume
 	DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error
-
-	// ExtendDataVolume 為已有的 PVC（同步 DataVolume）擴容
 	ExtendDataVolume(ctx context.Context, config *rest.Config, namespace string, pvc *v1.PersistentVolumeClaim, sizeBytes resource.Quantity) error
 }
 
-// CreateDataVolume 透過 KubeVirtDVRepo 建立 DataVolume，先取得 kubeConfig 再委派給 repo
+// CreateDataVolume creates a DataVolume via KubeVirtDVRepo. It obtains kubeConfig first and then delegates to the repo.
 func (uc *KubeVirtUseCase) CreateDataVolume(ctx context.Context, uuid, facility, namespace, name, sourceType, source string, sizeBytes int64, isBootable bool) (*DataVolume, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
@@ -42,7 +31,7 @@ func (uc *KubeVirtUseCase) CreateDataVolume(ctx context.Context, uuid, facility,
 		sourceType, source, sizeBytes, isBootable)
 }
 
-// GetDataVolume 取得 DataVolume 並回傳 domain model
+// GetDataVolume retrieves a DataVolume and returns the domain model.
 func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility, namespace, name string) (*DataVolume, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
@@ -62,7 +51,7 @@ func (uc *KubeVirtUseCase) GetDataVolume(ctx context.Context, uuid, facility, na
 	return dv, nil
 }
 
-// ListDataVolumes 列出指定 namespace 下的所有 DataVolume
+// DeleteDataVolume deletes the specified DataVolume.
 func (uc *KubeVirtUseCase) ListDataVolumes(ctx context.Context, uuid, facility, namespace string) ([]DataVolume, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
@@ -71,7 +60,7 @@ func (uc *KubeVirtUseCase) ListDataVolumes(ctx context.Context, uuid, facility, 
 	return uc.kubeVirtDV.ListDataVolume(ctx, config, namespace)
 }
 
-// DeleteDataVolume 刪除指定的 DataVolume
+// ExtendDataVolume expands the capacity of the PVC inside the DataVolume.
 func (uc *KubeVirtUseCase) DeleteDataVolume(ctx context.Context, uuid, facility, namespace, name string) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
@@ -80,7 +69,7 @@ func (uc *KubeVirtUseCase) DeleteDataVolume(ctx context.Context, uuid, facility,
 	return uc.kubeVirtDV.DeleteDataVolume(ctx, config, namespace, name)
 }
 
-// ExtendDataVolume 為 DataVolume 內的 PVC 進行容量擴充
+// ExtendDataVolume expands the capacity of the PVC inside the DataVolume.
 func (uc *KubeVirtUseCase) ExtendDataVolume(ctx context.Context, uuid, facility, namespace, name string, sizeBytes int64) error {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
@@ -94,7 +83,7 @@ func (uc *KubeVirtUseCase) ExtendDataVolume(ctx context.Context, uuid, facility,
 
 	current := pvc.Spec.Resources.Requests[v1.ResourceStorage]
 	desired := *resource.NewQuantity(sizeBytes, resource.BinarySI)
-	// 若目前大小已大於或等於目標大小，直接返回錯誤
+	// If the current size is greater than or equal to the requested size, return an error directly.
 	if current.Cmp(desired) >= 0 {
 		return fmt.Errorf("current size >= requested size, no need to extend")
 	}
@@ -102,7 +91,7 @@ func (uc *KubeVirtUseCase) ExtendDataVolume(ctx context.Context, uuid, facility,
 	return uc.kubeVirtDV.ExtendDataVolume(ctx, config, namespace, pvc, desired)
 }
 
-// GetDataVolumeConditions 取得 DataVolume 的 Bound 條件訊息
+// GetDataVolumeConditions retrieves the Bound condition message of a DataVolume.
 func GetDataVolumeConditions(dv *DataVolume) (conditionMessage, conditionReason, conditionStatus string) {
 	for _, condition := range dv.Status.Conditions {
 		if condition.Type == "Bound" {
@@ -112,7 +101,7 @@ func GetDataVolumeConditions(dv *DataVolume) (conditionMessage, conditionReason,
 	return
 }
 
-// GetPVCInfo 從 PVC Spec 取得大小、存取模式與 storage class
+// GetPVCInfo retrieves the size, access mode, and storage class from PVC Spec.
 func GetPVCInfo(pvc *v1.PersistentVolumeClaimSpec) (sizeBytes int64, accessMode, storageClassName string) {
 	if pvc.Resources.Requests != nil {
 		size, found := pvc.Resources.Requests["storage"]
@@ -129,7 +118,7 @@ func GetPVCInfo(pvc *v1.PersistentVolumeClaimSpec) (sizeBytes int64, accessMode,
 	return
 }
 
-// GetStorageInfo 從 DataVolume.Storage 取得大小、存取模式與 storage class
+// GetStorageInfo retrieves the size, access mode, and storage class from DataVolume.Storage.
 func GetStorageInfo(storage *v1beta1.StorageSpec) (sizeBytes int64, accessMode, storageClassName string) {
 	if storage.Resources.Requests != nil {
 		size, found := storage.Resources.Requests["storage"]
@@ -147,15 +136,15 @@ func GetStorageInfo(storage *v1beta1.StorageSpec) (sizeBytes int64, accessMode, 
 }
 
 /*
-ExtractDataVolumeInfo 從 DataVolume 取得 source、sourceType、大小、存取模式與 storage class。
-DataVolume 同時可能有 PVC 與 Storage 兩種規格，但同時只會出現其中一種。
+ExtractDataVolumeInfo retrieves source, sourceType, size, access mode, and storage class from a DataVolume.
+A DataVolume may have PVC or Storage specification, but only one will appear at a time.
 */
 func ExtractDataVolumeInfo(dv *DataVolume) (source, sourceType, accessMode, storageClassName string, sizeBytes int64) {
 	if dv == nil {
 		return
 	}
 
-	// 先根據使用的 volume 類型取得容量資訊
+	// First, get capacity info based on the volume type used.
 	switch {
 	case dv.Spec.PVC != nil:
 		sizeBytes, accessMode, storageClassName = GetPVCInfo(dv.Spec.PVC)
@@ -163,7 +152,7 @@ func ExtractDataVolumeInfo(dv *DataVolume) (source, sourceType, accessMode, stor
 		sizeBytes, accessMode, storageClassName = GetStorageInfo(dv.Spec.Storage)
 	}
 
-	// 再根據 source 類型取得來源 URL（或 UUID）
+	// Then, get the source URL (or UUID) based on the source type.
 	switch {
 	case dv.Spec.Source.HTTP != nil:
 		source = dv.Spec.Source.HTTP.URL

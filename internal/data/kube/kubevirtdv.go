@@ -41,8 +41,8 @@ var _ oscore.KubeVirtDVRepo = (*virtDV)(nil)
 // Repository implementation (CRUD + Extend)
 // -------------------------------------------------------------------
 
-// CreateDataVolume 建立 DataVolume，根據 source_type 建構不同的 DataVolumeSource
-// 並依需求設定 PVC 或 Storage Spec，最後呼叫 CDI API 建立。
+// CreateDataVolume creates a DataVolume. Depending on the source_type, constructs different DataVolumeSources.
+// Sets PVC or Storage Spec as needed, then calls the CDI API to create it.
 func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, namespace, name, sourceType, source string, sizeBytes int64, isBootable bool) (*oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
@@ -52,7 +52,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 	dvSpec := &v1beta1.DataVolumeSpec{}
 	var dvSource *v1beta1.DataVolumeSource
 
-	// 依 source_type 決定 DataVolumeSource
+	// Decide the DataVolumeSource according to source_type
 	switch sourceType {
 	case SourceHTTP:
 		dvSource = &v1beta1.DataVolumeSource{HTTP: &v1beta1.DataVolumeSourceHTTP{URL: source}}
@@ -67,7 +67,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 	case SourceVDDK:
 		dvSource = &v1beta1.DataVolumeSource{VDDK: &v1beta1.DataVolumeSourceVDDK{URL: source}}
 	case SourcePVC:
-		// 直接使用已有 PVC，另外建立 PVC spec 供 DataVolume 參考
+		// Use an existing PVC directly, and create a PVC spec for DataVolume reference
 		dvSource = &v1beta1.DataVolumeSource{
 			PVC: &v1beta1.DataVolumeSourcePVC{Namespace: namespace, Name: source},
 		}
@@ -81,17 +81,17 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 		}
 		dvSpec.PVC = pvcSpec
 	default:
-		// 未支援的 source_type 直接回傳錯誤
+		// Unsupported source_type returns an error directly
 		return nil, fmt.Errorf("unsupported source_type: %s", sourceType)
 	}
 
-	// 若不是 PVC，使用 StorageSpec 填入大小資訊
+	// If not PVC, use StorageSpec to fill in the size information
 	if sourceType != "PVC" {
 		dvSpec.Storage = oscore.StorageSpec(sizeBytes)
 	}
 	dvSpec.Source = dvSource
 
-	// 建立 DataVolume 物件
+	// Create the DataVolume object
 	dv := &v1beta1.DataVolume{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -107,7 +107,7 @@ func (r *virtDV) CreateDataVolume(ctx context.Context, config *rest.Config, name
 	return virtClient.CdiClient().CdiV1beta1().DataVolumes(namespace).Create(ctx, dv, opts)
 }
 
-// GetDataVolume 取得指定的 DataVolume，並同步其 PVC 的資源與 storageClass 訊息。
+// GetDataVolume gets the specified DataVolume and synchronizes its PVC resource and storageClass info.
 func (r *virtDV) GetDataVolume(ctx context.Context, config *rest.Config, namespace, name string, pvc *v1.PersistentVolumeClaim) (*oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
@@ -123,7 +123,7 @@ func (r *virtDV) GetDataVolume(ctx context.Context, config *rest.Config, namespa
 	return dv, nil
 }
 
-// ListDataVolume 列出指定 namespace 中的所有 DataVolume。
+// ListDataVolume lists all DataVolumes in the specified namespace.
 func (r *virtDV) ListDataVolume(ctx context.Context, config *rest.Config, namespace string) ([]oscore.DataVolume, error) {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
@@ -137,7 +137,7 @@ func (r *virtDV) ListDataVolume(ctx context.Context, config *rest.Config, namesp
 	return dvs.Items, nil
 }
 
-// DeleteDataVolume 刪除指定的 DataVolume。
+// DeleteDataVolume deletes the specified DataVolume.
 func (r *virtDV) DeleteDataVolume(ctx context.Context, config *rest.Config, namespace, name string) error {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
@@ -147,7 +147,7 @@ func (r *virtDV) DeleteDataVolume(ctx context.Context, config *rest.Config, name
 	return virtClient.CdiClient().CdiV1beta1().DataVolumes(namespace).Delete(ctx, name, opts)
 }
 
-// ExtendDataVolume 為既有的 PVC 以及對應的 DataVolume 進行擴容。
+// ExtendDataVolume expands the existing PVC and the corresponding DataVolume.
 func (r *virtDV) ExtendDataVolume(ctx context.Context, config *rest.Config, namespace string, pvc *v1.PersistentVolumeClaim, sizeBytes resource.Quantity) error {
 	virtClient, err := r.kubevirt.virtClient(config)
 	if err != nil {
