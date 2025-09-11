@@ -673,7 +673,7 @@
 	"vm_resume": "運行",
 	"please_wait": "請稍候",
 	"clone": "複製",
-    "clone_virtual_machine": "複製虛擬機",
-    "clone_virtual_machine_name_direction": "新虛擬機的名稱。",
-    "clone_virtual_machine_namespace_direction": "新虛擬機的命名空間。"
+	"clone_virtual_machine": "複製虛擬機",
+	"clone_virtual_machine_name_direction": "新虛擬機的名稱。",
+	"clone_virtual_machine_namespace_direction": "新虛擬機的命名空間。"
 }
