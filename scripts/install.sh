@@ -360,9 +360,9 @@ update_boot_source(){
         done
     fi
 
-    log "INFO" "Updating boot source to Ubuntu Jammy (22.04) amd64..." "MAAS boot image"
+    log "INFO" "Updating boot source to Ubuntu Noble (24.04) amd64..." "MAAS boot image"
     if ! maas admin boot-source-selection update "$MAAS_BOOT_SOURCE_ID" "$MAAS_BOOT_SELECTION_ID" \
-        release=jammy \
+        release=noble \
         arches=amd64 \
         subarches="*" \
         labels="*" >>"$TEMP_LOG" 2>&1; then
@@ -372,7 +372,7 @@ update_boot_source(){
 
 create_boot_source() {
     # No existing source - create new one
-    log "INFO" "Creating new boot source for Ubuntu Jammy (22.04) amd64..." "MAAS boot image"
+    log "INFO" "Creating new boot source for Ubuntu Noble (24.04) amd64..." "MAAS boot image"
     if ! maas admin boot-sources create \
         url="http://images.maas.io/ephemeral-v3/stable/" \
         keyring_filename="/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg" >>"$TEMP_LOG" 2>&1; then
@@ -384,7 +384,7 @@ create_boot_source() {
 
     # Create selection for Jammy amd64
     if ! maas admin boot-source-selections create "$MAAS_BOOT_SOURCE_ID" \
-        release=jammy \
+        release=noble \
         arches=amd64 \
         subarches="*" \
         labels="*" >>"$TEMP_LOG" 2>&1; then
@@ -423,8 +423,8 @@ download_maas_img() {
     fi
 
     start_import
-    set_config "commissioning_distro_series" "jammy"
-    set_config "default_distro_series" "jammy"
+    set_config "commissioning_distro_series" "noble"
+    set_config "default_distro_series" "noble"
     set_config "default_osystem" "ubuntu"
     log "INFO" "MAAS images downloaded successfully" "MAAS boot image"
 }
@@ -1131,9 +1131,8 @@ check_root() {
 
 check_os() {
     local OS_ID=$(lsb_release -si)
-    local OS_VERSION=$(lsb_release -sr)
-    if [ "$OS_ID" != "Ubuntu" ] || [ "$OS_VERSION" != "$OTTERSCALE_OS" ]; then
-        error_exit "This script requires Ubuntu $OTTERSCALE_OS. Detected: $OS_ID $OS_VERSION"
+    if [ "$OS_ID" != "Ubuntu" ]; then
+        error_exit "This script requires Ubuntu $OTTERSCALE_OS."
     fi
 }
 
