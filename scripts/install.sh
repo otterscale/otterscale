@@ -4,9 +4,9 @@
 # Host requirment
 MIN_MEMORY_GB=8
 MIN_DISK_GB=100
-OTTERSCALE_OS="22.04"
+OTTERSCALE_OS="24.04"
 OTTERSCALE_MAAS_VERSION="2.0"
-OTTERSCALE_BASE_IMAGE="ubuntu@22.04"
+OTTERSCALE_BASE_IMAGE="ubuntu@24.04"
 
 ##
 # Host LXD config
@@ -23,9 +23,9 @@ SNAP_PACKAGES="core24 maas maas-test-db juju lxd microk8s"
 ##
 #Snap version
 CORE24_CHANNEL="latest/stable"
-MAAS_CHANNEL="3.5/stable"
-MAAS_DB_CHANNEL="3.5/stable"
-JUJU_CHANNEL="3.5/stable"
+MAAS_CHANNEL="3.6/stable"
+MAAS_DB_CHANNEL="3.6/stable"
+JUJU_CHANNEL="3.6/stable"
 LXD_CHANNEL="5.0/stable"
 MICROK8S_CHANNEL="1.32/stable"
 CONTROLLER_CHARM_CHANNEL="3.5/stable"
