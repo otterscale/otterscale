@@ -74,7 +74,7 @@ func wireCmd(bool2 bool) (*cobra.Command, func(), error) {
 	facilityOffersRepo := juju.NewApplicationOffers(jujuJuju)
 	subnetRepo := maas.NewSubnet(maasMAAS)
 	ipRangeRepo := maas.NewIPRange(maasMAAS)
-	essentialUseCase := core.NewEssentialUseCase(configConfig, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo)
+	essentialUseCase := core.NewEssentialUseCase(configConfig, scopeRepo, facilityRepo, facilityOffersRepo, machineRepo, subnetRepo, ipRangeRepo, serverRepo, clientRepo, kubeCoreRepo, kubeAppsRepo, actionRepo)
 	essentialService := app.NewEssentialService(essentialUseCase)
 	machineManagerRepo := juju.NewMachine(jujuJuju)
 	nodeDeviceRepo := maas.NewNodeDevice(maasMAAS)

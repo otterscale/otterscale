@@ -5,6 +5,7 @@ import (
 
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/otterscale/otterscale/api/essential/v1"
 	"github.com/otterscale/otterscale/api/essential/v1/pbconnect"
@@ -115,5 +116,68 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 	ret := &pb.Essential_Unit{}
 	ret.SetName(eu.Name)
 	ret.SetDirective(eu.Directive)
+	return ret
+}
+
+func (s *EssentialService) GetGpuRelationByMachine(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequest]) (*connect.Response[pb.GetGpuRelationByResponse], error) {
+	podInfos, err := s.uc.GetGpuRelationByMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetMachineName())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.GetGpuRelationByResponse{}
+	resp.SetPodInfo(toProtoPodInfos(podInfos))
+	return connect.NewResponse(resp), nil
+}
+
+func (s *EssentialService) GetGpuRelationByModel(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequest]) (*connect.Response[pb.GetGpuRelationByResponse], error) {
+	podInfos, err := s.uc.GetGpuRelationByModel(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetModelName())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.GetGpuRelationByResponse{}
+	resp.SetPodInfo(toProtoPodInfos(podInfos))
+	return connect.NewResponse(resp), nil
+}
+
+func toProtoPodInfos(podInfos []core.PodInfo) []*pb.PodInfo {
+	ret := []*pb.PodInfo{}
+	for i := range podInfos {
+		ret = append(ret, toProtoPodInfo(&podInfos[i]))
+	}
+	return ret
+}
+
+func toProtoPodInfo(pi *core.PodInfo) *pb.PodInfo {
+	ret := &pb.PodInfo{}
+	ret.SetName(pi.Name)
+	ret.SetNamespace(pi.Namespace)
+	ret.SetModel(pi.Model)
+	ret.SetMachineName(pi.MachineName)
+	ret.SetVgpuInfo(toProtoGpuInfos(pi.VGpuInfo))
+	return ret
+}
+
+func toProtoGpuInfos(gpuInfos []core.GpuInfo) []*pb.GpuInfo {
+	ret := []*pb.GpuInfo{}
+	for i := range gpuInfos {
+		ret = append(ret, toProtoGpuInfo(&gpuInfos[i]))
+	}
+	return ret
+}
+
+func toProtoGpuInfo(gi *core.GpuInfo) *pb.GpuInfo {
+	ret := &pb.GpuInfo{}
+	ret.SetIsVgpu(gi.IsVGpu)
+	ret.SetBindPhase(gi.BindPhase)
+	ret.SetPhysicalGpuUuid(gi.PhysicalGpuUUID)
+	ret.SetVgpuVram(gi.VGpuVram)
+	ret.SetVgpuCores(gi.VGpuCores)
+
+	if !gi.VGpuBindTime.IsZero() {
+		ret.SetVgpuBindTime(timestamppb.New(gi.VGpuBindTime))
+	}
+
 	return ret
 }

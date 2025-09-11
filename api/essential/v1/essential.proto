@@ -3,6 +3,7 @@ edition = "2023";
 package otterscale.essential.v1;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/otterscale/otterscale/api/essential/v1;pb";
 
@@ -13,6 +14,8 @@ service EssentialService {
   rpc CreateSingleNode(CreateSingleNodeRequest) returns (google.protobuf.Empty);
   rpc CreateHighAvailabilityCluster(CreateHighAvailabilityClusterRequest) returns (google.protobuf.Empty);
   rpc AddUnits(AddUnitsRequest) returns (google.protobuf.Empty);
+  rpc GetGpuRelationByMachine(GetGpuRelationRequest) returns (GetGpuRelationByResponse);
+  rpc GetGpuRelationByModel(GetGpuRelationRequest) returns (GetGpuRelationByResponse);
 }
 
 message Essential {
@@ -96,4 +99,34 @@ message AddUnitsRequest {
   int32 number = 4;
   repeated string machine_ids = 5;
   bool force = 11;
+}
+
+message GetGpuRelationRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  oneof notice_way {
+    string machine_name = 3;
+    string model_name = 4;
+  } 
+}
+
+message GetGpuRelationByResponse {
+  repeated PodInfo pod_info = 1;
+}
+
+message PodInfo {
+  string name = 1;
+  string namespace = 2;
+  string model = 3;
+  string machine_name = 4;
+  repeated GpuInfo vgpu_info = 5;
+}
+
+message GpuInfo {
+  bool is_vgpu = 1;
+  google.protobuf.Timestamp vgpu_bind_time = 2;
+  string bind_phase = 3;
+  string physical_gpu_uuid = 4;
+  string vgpu_vram = 5;
+  string vgpu_cores = 6;
 }
