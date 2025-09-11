@@ -217,6 +217,7 @@
 	"cpu": "CPU",
 	"core": "核心",
 	"cores": "核心",
+	"cpu_cores": "CPU 核心數",
 	"processor": "處理器",
 	"disk": "磁碟",
 	"memory": "記憶體",
@@ -672,8 +673,10 @@
 	"vm_pause": "暫停",
 	"vm_resume": "運行",
 	"please_wait": "請稍候",
+	"create_virtual_machine": "建立虛擬機器",
 	"clone": "複製",
 	"clone_virtual_machine": "複製虛擬機",
 	"clone_virtual_machine_name_direction": "新虛擬機的名稱。",
-	"clone_virtual_machine_namespace_direction": "新虛擬機的命名空間。"
+	"clone_virtual_machine_namespace_direction": "新虛擬機的命名空間。",
+	"instance_name": "實例名稱"
 }
