@@ -17,6 +17,7 @@
 	import { SingleStep as Modal } from '$lib/components/custom/modal';
 	import type { ReloadManager } from '$lib/components/custom/reloader';
 	import { Single as SingleSelect } from '$lib/components/custom/select';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import { m } from '$lib/paraglide/messages';
 	import { currentKubernetes } from '$lib/stores';
@@ -230,10 +231,10 @@
 						</Form.Field>
 						<Form.Field>
 							<Form.Label>Startup Script</Form.Label>
-							<SingleInput.General type="text" bind:value={request.startupScript} />
-							<!-- <Code.Root lang="svelte" class="w-full" variant="secondary" hideLines {request.startupScript}>
+							<Code.Root lang="bash" class="w-full" hideLines code={request.startupScript}>
 								<Code.CopyButton />
-							</Code.Root> -->
+							</Code.Root>
+							<SingleInput.Structure preview={false} bind:value={request.startupScript} language="bash" />
 						</Form.Field>
 					</Form.Fieldset>
 				</Collapsible.Content>
