@@ -518,7 +518,6 @@
 										<span>Type: {$diskTypes.find((t) => t.value === disk.diskType)?.label}</span>
 										<span class="mx-2">•</span>
 										{#if disk.diskType === VirtualMachineDisk_type.DATAVOLUME && disk.sourceData?.case === 'dataVolume'}
-											{console.log('disk.sourceData.value', disk.sourceData.value)}
 											<span
 												>Source Type: {$dataVolumeSourceTypes.find(
 													(s) => s.value === (disk.sourceData.value as DataVolumeSource).type,
