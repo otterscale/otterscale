@@ -86,8 +86,8 @@ func TestCore_WithConfig(t *testing.T) {
 		t.Log("ListPodsByLabel succeeded unexpectedly (no real cluster)")
 	}
 	// Pod logs – will fail because there is no pod, but should not panic
-	if _, err := repo.GetPodLogs(ctx, restCfg, "default", "demo-pod", "demo-container"); err == nil {
-		t.Log("GetPodLogs succeeded unexpectedly (no real cluster)")
+	if _, err := repo.GetLogs(ctx, restCfg, "default", "demo-pod", "demo-container"); err == nil {
+		t.Log("GetLogs succeeded unexpectedly (no real cluster)")
 	}
 	// PVCs
 	if _, err := repo.ListPersistentVolumeClaims(ctx, restCfg, "default"); err == nil {
@@ -143,8 +143,8 @@ func TestCore_ErrorHandling(t *testing.T) {
 			_, err := repo.ListPodsByLabel(ctx, emptyCfg, "default", "app=demo")
 			return err
 		}},
-		{"GetPodLogs", func() error {
-			_, err := repo.GetPodLogs(ctx, emptyCfg, "default", "pod", "ctr")
+		{"GetLogs", func() error {
+			_, err := repo.GetLogs(ctx, emptyCfg, "default", "pod", "ctr")
 			return err
 		}},
 		{"ListPersistentVolumeClaims", func() error {
@@ -220,10 +220,10 @@ func TestCore_MethodBehavior(t *testing.T) {
 		}
 	})
 
-	t.Run("GetPodLogs", func(t *testing.T) {
-		_, err := repo.GetPodLogs(ctx, restCfg, "default", "demo-pod", "demo-ctr")
+	t.Run("GetLogs", func(t *testing.T) {
+		_, err := repo.GetLogs(ctx, restCfg, "default", "demo-pod", "demo-ctr")
 		if err != nil {
-			t.Logf("GetPodLogs returned expected error: %v", err)
+			t.Logf("GetLogs returned expected error: %v", err)
 		}
 	})
 
@@ -406,7 +406,7 @@ func TestCore_EdgeCases(t *testing.T) {
 }
 
 /* -------------------------------------------------------------------------- *
- * Helper to fake a log stream for GetPodLogs (used only when a real cluster  *
+ * Helper to fake a log stream for GetLogs (used only when a real cluster  *
  * exists – here we just ensure the code path does not panic)                 *
  * -------------------------------------------------------------------------- */
 type nopReadCloser struct {
@@ -415,8 +415,8 @@ type nopReadCloser struct {
 
 func (n nopReadCloser) Close() error { return nil }
 
-func TestCore_GetPodLogs_StreamHandling(t *testing.T) {
-	// This test ensures the GetPodLogs implementation correctly reads from the
+func TestCore_GetLogs_StreamHandling(t *testing.T) {
+	// This test ensures the GetLogs implementation correctly reads from the
 	// stream when it is present. We replace the clientset with a mock that
 	// returns a static stream. Because the actual Kube implementation does not
 	// provide a hook for injection, we only verify that calling the method with
@@ -428,21 +428,21 @@ func TestCore_GetPodLogs_StreamHandling(t *testing.T) {
 	ctx := context.Background()
 	restCfg := &rest.Config{Host: "https://example.invalid"}
 
-	_, err := s.GetPodLogs(ctx, restCfg, "default", "pod", "container")
+	_, err := s.GetLogs(ctx, restCfg, "default", "pod", "container")
 	if err == nil {
 		// In a real cluster we would get logs, but here we accept either error or empty
 		// string. The important part is that the function does not panic.
-		t.Log("GetPodLogs returned nil error (unexpected in test environment but acceptable)")
+		t.Log("GetLogs returned nil error (unexpected in test environment but acceptable)")
 	}
 }
 
 /* -------------------------------------------------------------------------- *
- * Verify that GetPodLogs correctly copies data when a stream is provided.
+ * Verify that GetLogs correctly copies data when a stream is provided.
  * This test creates a temporary in‑memory stream using the same logic as the
  * production code. It is only compiled when the test runs; it does not require a
  * live Kubernetes cluster.
  * -------------------------------------------------------------------------- */
-func TestCore_GetPodLogs_BufferCopy(t *testing.T) {
+func TestCore_GetLogs_BufferCopy(t *testing.T) {
 	var buf bytes.Buffer
 	msg := "dummy log line\n"
 	_, _ = buf.WriteString(msg)

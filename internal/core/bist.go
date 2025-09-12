@@ -397,7 +397,7 @@ func (uc *BISTUseCase) getLogs(ctx context.Context, config *rest.Config, job *Jo
 	}
 
 	for i := range pods {
-		logs, err := uc.kubeCore.GetPodLogs(ctx, config, bistNamespace, pods[i].Name, pods[i].Spec.Containers[0].Name)
+		logs, err := uc.kubeCore.GetLogs(ctx, config, bistNamespace, pods[i].Name, pods[i].Spec.Containers[0].Name)
 		if err != nil {
 			continue
 		}

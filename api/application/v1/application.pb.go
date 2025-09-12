@@ -1239,6 +1239,452 @@ func (b0 WatchLogsResponse_builder) Build() *WatchLogsResponse {
 	return m0
 }
 
+type ExecuteTTYRequest struct {
+	state                    protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid     *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName  *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_Namespace     *string                `protobuf:"bytes,3,opt,name=namespace"`
+	xxx_hidden_PodName       *string                `protobuf:"bytes,4,opt,name=pod_name,json=podName"`
+	xxx_hidden_ContainerName *string                `protobuf:"bytes,5,opt,name=container_name,json=containerName"`
+	xxx_hidden_Command       []string               `protobuf:"bytes,6,rep,name=command"`
+	XXX_raceDetectHookData   protoimpl.RaceDetectHookData
+	XXX_presence             [1]uint32
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
+}
+
+func (x *ExecuteTTYRequest) Reset() {
+	*x = ExecuteTTYRequest{}
+	mi := &file_api_application_v1_application_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExecuteTTYRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExecuteTTYRequest) ProtoMessage() {}
+
+func (x *ExecuteTTYRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_application_v1_application_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ExecuteTTYRequest) GetScopeUuid() string {
+	if x != nil {
+		if x.xxx_hidden_ScopeUuid != nil {
+			return *x.xxx_hidden_ScopeUuid
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExecuteTTYRequest) GetFacilityName() string {
+	if x != nil {
+		if x.xxx_hidden_FacilityName != nil {
+			return *x.xxx_hidden_FacilityName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExecuteTTYRequest) GetNamespace() string {
+	if x != nil {
+		if x.xxx_hidden_Namespace != nil {
+			return *x.xxx_hidden_Namespace
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExecuteTTYRequest) GetPodName() string {
+	if x != nil {
+		if x.xxx_hidden_PodName != nil {
+			return *x.xxx_hidden_PodName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExecuteTTYRequest) GetContainerName() string {
+	if x != nil {
+		if x.xxx_hidden_ContainerName != nil {
+			return *x.xxx_hidden_ContainerName
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExecuteTTYRequest) GetCommand() []string {
+	if x != nil {
+		return x.xxx_hidden_Command
+	}
+	return nil
+}
+
+func (x *ExecuteTTYRequest) SetScopeUuid(v string) {
+	x.xxx_hidden_ScopeUuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 6)
+}
+
+func (x *ExecuteTTYRequest) SetFacilityName(v string) {
+	x.xxx_hidden_FacilityName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 6)
+}
+
+func (x *ExecuteTTYRequest) SetNamespace(v string) {
+	x.xxx_hidden_Namespace = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 6)
+}
+
+func (x *ExecuteTTYRequest) SetPodName(v string) {
+	x.xxx_hidden_PodName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 6)
+}
+
+func (x *ExecuteTTYRequest) SetContainerName(v string) {
+	x.xxx_hidden_ContainerName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 6)
+}
+
+func (x *ExecuteTTYRequest) SetCommand(v []string) {
+	x.xxx_hidden_Command = v
+}
+
+func (x *ExecuteTTYRequest) HasScopeUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ExecuteTTYRequest) HasFacilityName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ExecuteTTYRequest) HasNamespace() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *ExecuteTTYRequest) HasPodName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *ExecuteTTYRequest) HasContainerName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *ExecuteTTYRequest) ClearScopeUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_ScopeUuid = nil
+}
+
+func (x *ExecuteTTYRequest) ClearFacilityName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_FacilityName = nil
+}
+
+func (x *ExecuteTTYRequest) ClearNamespace() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Namespace = nil
+}
+
+func (x *ExecuteTTYRequest) ClearPodName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_PodName = nil
+}
+
+func (x *ExecuteTTYRequest) ClearContainerName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_ContainerName = nil
+}
+
+type ExecuteTTYRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	ScopeUuid     *string
+	FacilityName  *string
+	Namespace     *string
+	PodName       *string
+	ContainerName *string
+	Command       []string
+}
+
+func (b0 ExecuteTTYRequest_builder) Build() *ExecuteTTYRequest {
+	m0 := &ExecuteTTYRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.ScopeUuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 6)
+		x.xxx_hidden_ScopeUuid = b.ScopeUuid
+	}
+	if b.FacilityName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 6)
+		x.xxx_hidden_FacilityName = b.FacilityName
+	}
+	if b.Namespace != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 6)
+		x.xxx_hidden_Namespace = b.Namespace
+	}
+	if b.PodName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 6)
+		x.xxx_hidden_PodName = b.PodName
+	}
+	if b.ContainerName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 6)
+		x.xxx_hidden_ContainerName = b.ContainerName
+	}
+	x.xxx_hidden_Command = b.Command
+	return m0
+}
+
+type ExecuteTTYResponse struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_SessionId   *string                `protobuf:"bytes,1,opt,name=session_id,json=sessionId"`
+	xxx_hidden_Stdout      []byte                 `protobuf:"bytes,2,opt,name=stdout"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ExecuteTTYResponse) Reset() {
+	*x = ExecuteTTYResponse{}
+	mi := &file_api_application_v1_application_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExecuteTTYResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExecuteTTYResponse) ProtoMessage() {}
+
+func (x *ExecuteTTYResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_application_v1_application_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *ExecuteTTYResponse) GetSessionId() string {
+	if x != nil {
+		if x.xxx_hidden_SessionId != nil {
+			return *x.xxx_hidden_SessionId
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *ExecuteTTYResponse) GetStdout() []byte {
+	if x != nil {
+		return x.xxx_hidden_Stdout
+	}
+	return nil
+}
+
+func (x *ExecuteTTYResponse) SetSessionId(v string) {
+	x.xxx_hidden_SessionId = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *ExecuteTTYResponse) SetStdout(v []byte) {
+	if v == nil {
+		v = []byte{}
+	}
+	x.xxx_hidden_Stdout = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *ExecuteTTYResponse) HasSessionId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *ExecuteTTYResponse) HasStdout() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *ExecuteTTYResponse) ClearSessionId() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_SessionId = nil
+}
+
+func (x *ExecuteTTYResponse) ClearStdout() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Stdout = nil
+}
+
+type ExecuteTTYResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	SessionId *string
+	Stdout    []byte
+}
+
+func (b0 ExecuteTTYResponse_builder) Build() *ExecuteTTYResponse {
+	m0 := &ExecuteTTYResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.SessionId != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_SessionId = b.SessionId
+	}
+	if b.Stdout != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Stdout = b.Stdout
+	}
+	return m0
+}
+
+type WriteTTYRequest struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_SessionId   *string                `protobuf:"bytes,1,opt,name=session_id,json=sessionId"`
+	xxx_hidden_Stdin       []byte                 `protobuf:"bytes,2,opt,name=stdin"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *WriteTTYRequest) Reset() {
+	*x = WriteTTYRequest{}
+	mi := &file_api_application_v1_application_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WriteTTYRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WriteTTYRequest) ProtoMessage() {}
+
+func (x *WriteTTYRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_application_v1_application_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *WriteTTYRequest) GetSessionId() string {
+	if x != nil {
+		if x.xxx_hidden_SessionId != nil {
+			return *x.xxx_hidden_SessionId
+		}
+		return ""
+	}
+	return ""
+}
+
+func (x *WriteTTYRequest) GetStdin() []byte {
+	if x != nil {
+		return x.xxx_hidden_Stdin
+	}
+	return nil
+}
+
+func (x *WriteTTYRequest) SetSessionId(v string) {
+	x.xxx_hidden_SessionId = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *WriteTTYRequest) SetStdin(v []byte) {
+	if v == nil {
+		v = []byte{}
+	}
+	x.xxx_hidden_Stdin = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *WriteTTYRequest) HasSessionId() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *WriteTTYRequest) HasStdin() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *WriteTTYRequest) ClearSessionId() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_SessionId = nil
+}
+
+func (x *WriteTTYRequest) ClearStdin() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Stdin = nil
+}
+
+type WriteTTYRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	SessionId *string
+	Stdin     []byte
+}
+
+func (b0 WriteTTYRequest_builder) Build() *WriteTTYRequest {
+	m0 := &WriteTTYRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.SessionId != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_SessionId = b.SessionId
+	}
+	if b.Stdin != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Stdin = b.Stdin
+	}
+	return m0
+}
+
 type ListReleasesRequest struct {
 	state                   protoimpl.MessageState `protogen:"opaque.v1"`
 	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
@@ -1251,7 +1697,7 @@ type ListReleasesRequest struct {
 
 func (x *ListReleasesRequest) Reset() {
 	*x = ListReleasesRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[7]
+	mi := &file_api_application_v1_application_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1263,7 +1709,7 @@ func (x *ListReleasesRequest) String() string {
 func (*ListReleasesRequest) ProtoMessage() {}
 
 func (x *ListReleasesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[7]
+	mi := &file_api_application_v1_application_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1359,7 +1805,7 @@ type ListReleasesResponse struct {
 
 func (x *ListReleasesResponse) Reset() {
 	*x = ListReleasesResponse{}
-	mi := &file_api_application_v1_application_proto_msgTypes[8]
+	mi := &file_api_application_v1_application_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1371,7 +1817,7 @@ func (x *ListReleasesResponse) String() string {
 func (*ListReleasesResponse) ProtoMessage() {}
 
 func (x *ListReleasesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[8]
+	mi := &file_api_application_v1_application_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1427,7 +1873,7 @@ type CreateReleaseRequest struct {
 
 func (x *CreateReleaseRequest) Reset() {
 	*x = CreateReleaseRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[9]
+	mi := &file_api_application_v1_application_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1439,7 +1885,7 @@ func (x *CreateReleaseRequest) String() string {
 func (*CreateReleaseRequest) ProtoMessage() {}
 
 func (x *CreateReleaseRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[9]
+	mi := &file_api_application_v1_application_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1713,7 +2159,7 @@ type UpdateReleaseRequest struct {
 
 func (x *UpdateReleaseRequest) Reset() {
 	*x = UpdateReleaseRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[10]
+	mi := &file_api_application_v1_application_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1725,7 +2171,7 @@ func (x *UpdateReleaseRequest) String() string {
 func (*UpdateReleaseRequest) ProtoMessage() {}
 
 func (x *UpdateReleaseRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[10]
+	mi := &file_api_application_v1_application_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1984,7 +2430,7 @@ type DeleteReleaseRequest struct {
 
 func (x *DeleteReleaseRequest) Reset() {
 	*x = DeleteReleaseRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[11]
+	mi := &file_api_application_v1_application_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1996,7 +2442,7 @@ func (x *DeleteReleaseRequest) String() string {
 func (*DeleteReleaseRequest) ProtoMessage() {}
 
 func (x *DeleteReleaseRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[11]
+	mi := &file_api_application_v1_application_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2191,7 +2637,7 @@ type RollbackReleaseRequest struct {
 
 func (x *RollbackReleaseRequest) Reset() {
 	*x = RollbackReleaseRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[12]
+	mi := &file_api_application_v1_application_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2203,7 +2649,7 @@ func (x *RollbackReleaseRequest) String() string {
 func (*RollbackReleaseRequest) ProtoMessage() {}
 
 func (x *RollbackReleaseRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[12]
+	mi := &file_api_application_v1_application_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2391,7 +2837,7 @@ type ListChartsRequest struct {
 
 func (x *ListChartsRequest) Reset() {
 	*x = ListChartsRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[13]
+	mi := &file_api_application_v1_application_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2403,7 +2849,7 @@ func (x *ListChartsRequest) String() string {
 func (*ListChartsRequest) ProtoMessage() {}
 
 func (x *ListChartsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[13]
+	mi := &file_api_application_v1_application_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2435,7 +2881,7 @@ type ListChartsResponse struct {
 
 func (x *ListChartsResponse) Reset() {
 	*x = ListChartsResponse{}
-	mi := &file_api_application_v1_application_proto_msgTypes[14]
+	mi := &file_api_application_v1_application_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2447,7 +2893,7 @@ func (x *ListChartsResponse) String() string {
 func (*ListChartsResponse) ProtoMessage() {}
 
 func (x *ListChartsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[14]
+	mi := &file_api_application_v1_application_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2496,7 +2942,7 @@ type GetChartRequest struct {
 
 func (x *GetChartRequest) Reset() {
 	*x = GetChartRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[15]
+	mi := &file_api_application_v1_application_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2508,7 +2954,7 @@ func (x *GetChartRequest) String() string {
 func (*GetChartRequest) ProtoMessage() {}
 
 func (x *GetChartRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[15]
+	mi := &file_api_application_v1_application_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2574,7 +3020,7 @@ type GetChartMetadataRequest struct {
 
 func (x *GetChartMetadataRequest) Reset() {
 	*x = GetChartMetadataRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[16]
+	mi := &file_api_application_v1_application_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2586,7 +3032,7 @@ func (x *GetChartMetadataRequest) String() string {
 func (*GetChartMetadataRequest) ProtoMessage() {}
 
 func (x *GetChartMetadataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[16]
+	mi := &file_api_application_v1_application_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2653,7 +3099,7 @@ type ListStorageClassesRequest struct {
 
 func (x *ListStorageClassesRequest) Reset() {
 	*x = ListStorageClassesRequest{}
-	mi := &file_api_application_v1_application_proto_msgTypes[17]
+	mi := &file_api_application_v1_application_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2665,7 +3111,7 @@ func (x *ListStorageClassesRequest) String() string {
 func (*ListStorageClassesRequest) ProtoMessage() {}
 
 func (x *ListStorageClassesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[17]
+	mi := &file_api_application_v1_application_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2761,7 +3207,7 @@ type ListStorageClassesResponse struct {
 
 func (x *ListStorageClassesResponse) Reset() {
 	*x = ListStorageClassesResponse{}
-	mi := &file_api_application_v1_application_proto_msgTypes[18]
+	mi := &file_api_application_v1_application_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2773,7 +3219,7 @@ func (x *ListStorageClassesResponse) String() string {
 func (*ListStorageClassesResponse) ProtoMessage() {}
 
 func (x *ListStorageClassesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[18]
+	mi := &file_api_application_v1_application_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2834,7 +3280,7 @@ type Application_Chart struct {
 
 func (x *Application_Chart) Reset() {
 	*x = Application_Chart{}
-	mi := &file_api_application_v1_application_proto_msgTypes[19]
+	mi := &file_api_application_v1_application_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2846,7 +3292,7 @@ func (x *Application_Chart) String() string {
 func (*Application_Chart) ProtoMessage() {}
 
 func (x *Application_Chart) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[19]
+	mi := &file_api_application_v1_application_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3205,7 +3651,7 @@ type Application_Release struct {
 
 func (x *Application_Release) Reset() {
 	*x = Application_Release{}
-	mi := &file_api_application_v1_application_proto_msgTypes[20]
+	mi := &file_api_application_v1_application_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3217,7 +3663,7 @@ func (x *Application_Release) String() string {
 func (*Application_Release) ProtoMessage() {}
 
 func (x *Application_Release) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[20]
+	mi := &file_api_application_v1_application_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3405,7 +3851,7 @@ type Application_Condition struct {
 
 func (x *Application_Condition) Reset() {
 	*x = Application_Condition{}
-	mi := &file_api_application_v1_application_proto_msgTypes[21]
+	mi := &file_api_application_v1_application_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3417,7 +3863,7 @@ func (x *Application_Condition) String() string {
 func (*Application_Condition) ProtoMessage() {}
 
 func (x *Application_Condition) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[21]
+	mi := &file_api_application_v1_application_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3628,7 +4074,7 @@ type Application_Container struct {
 
 func (x *Application_Container) Reset() {
 	*x = Application_Container{}
-	mi := &file_api_application_v1_application_proto_msgTypes[22]
+	mi := &file_api_application_v1_application_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3640,7 +4086,7 @@ func (x *Application_Container) String() string {
 func (*Application_Container) ProtoMessage() {}
 
 func (x *Application_Container) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[22]
+	mi := &file_api_application_v1_application_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3742,7 +4188,7 @@ type Application_Service struct {
 
 func (x *Application_Service) Reset() {
 	*x = Application_Service{}
-	mi := &file_api_application_v1_application_proto_msgTypes[23]
+	mi := &file_api_application_v1_application_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3754,7 +4200,7 @@ func (x *Application_Service) String() string {
 func (*Application_Service) ProtoMessage() {}
 
 func (x *Application_Service) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[23]
+	mi := &file_api_application_v1_application_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3928,7 +4374,7 @@ type Application_Pod struct {
 
 func (x *Application_Pod) Reset() {
 	*x = Application_Pod{}
-	mi := &file_api_application_v1_application_proto_msgTypes[24]
+	mi := &file_api_application_v1_application_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3940,7 +4386,7 @@ func (x *Application_Pod) String() string {
 func (*Application_Pod) ProtoMessage() {}
 
 func (x *Application_Pod) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[24]
+	mi := &file_api_application_v1_application_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4155,7 +4601,7 @@ type Application_PersistentVolumeClaim struct {
 
 func (x *Application_PersistentVolumeClaim) Reset() {
 	*x = Application_PersistentVolumeClaim{}
-	mi := &file_api_application_v1_application_proto_msgTypes[25]
+	mi := &file_api_application_v1_application_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4167,7 +4613,7 @@ func (x *Application_PersistentVolumeClaim) String() string {
 func (*Application_PersistentVolumeClaim) ProtoMessage() {}
 
 func (x *Application_PersistentVolumeClaim) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[25]
+	mi := &file_api_application_v1_application_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4361,7 +4807,7 @@ type Application_Chart_Customization struct {
 
 func (x *Application_Chart_Customization) Reset() {
 	*x = Application_Chart_Customization{}
-	mi := &file_api_application_v1_application_proto_msgTypes[27]
+	mi := &file_api_application_v1_application_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4373,7 +4819,7 @@ func (x *Application_Chart_Customization) String() string {
 func (*Application_Chart_Customization) ProtoMessage() {}
 
 func (x *Application_Chart_Customization) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[27]
+	mi := &file_api_application_v1_application_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4529,7 +4975,7 @@ type Application_Chart_Metadata struct {
 
 func (x *Application_Chart_Metadata) Reset() {
 	*x = Application_Chart_Metadata{}
-	mi := &file_api_application_v1_application_proto_msgTypes[28]
+	mi := &file_api_application_v1_application_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4541,7 +4987,7 @@ func (x *Application_Chart_Metadata) String() string {
 func (*Application_Chart_Metadata) ProtoMessage() {}
 
 func (x *Application_Chart_Metadata) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[28]
+	mi := &file_api_application_v1_application_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4665,7 +5111,7 @@ type Application_Chart_Maintainer struct {
 
 func (x *Application_Chart_Maintainer) Reset() {
 	*x = Application_Chart_Maintainer{}
-	mi := &file_api_application_v1_application_proto_msgTypes[29]
+	mi := &file_api_application_v1_application_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4677,7 +5123,7 @@ func (x *Application_Chart_Maintainer) String() string {
 func (*Application_Chart_Maintainer) ProtoMessage() {}
 
 func (x *Application_Chart_Maintainer) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[29]
+	mi := &file_api_application_v1_application_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4809,7 +5255,7 @@ type Application_Chart_Dependency struct {
 
 func (x *Application_Chart_Dependency) Reset() {
 	*x = Application_Chart_Dependency{}
-	mi := &file_api_application_v1_application_proto_msgTypes[30]
+	mi := &file_api_application_v1_application_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4821,7 +5267,7 @@ func (x *Application_Chart_Dependency) String() string {
 func (*Application_Chart_Dependency) ProtoMessage() {}
 
 func (x *Application_Chart_Dependency) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[30]
+	mi := &file_api_application_v1_application_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4953,7 +5399,7 @@ type Application_Chart_Version struct {
 
 func (x *Application_Chart_Version) Reset() {
 	*x = Application_Chart_Version{}
-	mi := &file_api_application_v1_application_proto_msgTypes[31]
+	mi := &file_api_application_v1_application_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4965,7 +5411,7 @@ func (x *Application_Chart_Version) String() string {
 func (*Application_Chart_Version) ProtoMessage() {}
 
 func (x *Application_Chart_Version) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[31]
+	mi := &file_api_application_v1_application_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5098,7 +5544,7 @@ type Application_Service_Port struct {
 
 func (x *Application_Service_Port) Reset() {
 	*x = Application_Service_Port{}
-	mi := &file_api_application_v1_application_proto_msgTypes[32]
+	mi := &file_api_application_v1_application_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5110,7 +5556,7 @@ func (x *Application_Service_Port) String() string {
 func (*Application_Service_Port) ProtoMessage() {}
 
 func (x *Application_Service_Port) ProtoReflect() protoreflect.Message {
-	mi := &file_api_application_v1_application_proto_msgTypes[32]
+	mi := &file_api_application_v1_application_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5401,7 +5847,23 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\bpod_name\x18\x04 \x01(\tR\apodName\x12%\n" +
 	"\x0econtainer_name\x18\x05 \x01(\tR\rcontainerName\"%\n" +
 	"\x11WatchLogsResponse\x12\x10\n" +
-	"\x03log\x18\x01 \x01(\tR\x03log\"Y\n" +
+	"\x03log\x18\x01 \x01(\tR\x03log\"\xd1\x01\n" +
+	"\x11ExecuteTTYRequest\x12\x1d\n" +
+	"\n" +
+	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12\x1c\n" +
+	"\tnamespace\x18\x03 \x01(\tR\tnamespace\x12\x19\n" +
+	"\bpod_name\x18\x04 \x01(\tR\apodName\x12%\n" +
+	"\x0econtainer_name\x18\x05 \x01(\tR\rcontainerName\x12\x18\n" +
+	"\acommand\x18\x06 \x03(\tR\acommand\"K\n" +
+	"\x12ExecuteTTYResponse\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x16\n" +
+	"\x06stdout\x18\x02 \x01(\fR\x06stdout\"F\n" +
+	"\x0fWriteTTYRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x14\n" +
+	"\x05stdin\x18\x02 \x01(\fR\x05stdin\"Y\n" +
 	"\x13ListReleasesRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
@@ -5459,12 +5921,14 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
 	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\"n\n" +
 	"\x1aListStorageClassesResponse\x12P\n" +
-	"\x0fstorage_classes\x18\x01 \x03(\v2'.otterscale.application.v1.StorageClassR\x0estorageClasses2\xc8\n" +
-	"\n" +
+	"\x0fstorage_classes\x18\x01 \x03(\v2'.otterscale.application.v1.StorageClassR\x0estorageClasses2\x85\f\n" +
 	"\x12ApplicationService\x12{\n" +
 	"\x10ListApplications\x122.otterscale.application.v1.ListApplicationsRequest\x1a3.otterscale.application.v1.ListApplicationsResponse\x12j\n" +
 	"\x0eGetApplication\x120.otterscale.application.v1.GetApplicationRequest\x1a&.otterscale.application.v1.Application\x12h\n" +
-	"\tWatchLogs\x12+.otterscale.application.v1.WatchLogsRequest\x1a,.otterscale.application.v1.WatchLogsResponse0\x01\x12o\n" +
+	"\tWatchLogs\x12+.otterscale.application.v1.WatchLogsRequest\x1a,.otterscale.application.v1.WatchLogsResponse0\x01\x12k\n" +
+	"\n" +
+	"ExecuteTTY\x12,.otterscale.application.v1.ExecuteTTYRequest\x1a-.otterscale.application.v1.ExecuteTTYResponse0\x01\x12N\n" +
+	"\bWriteTTY\x12*.otterscale.application.v1.WriteTTYRequest\x1a\x16.google.protobuf.Empty\x12o\n" +
 	"\fListReleases\x12..otterscale.application.v1.ListReleasesRequest\x1a/.otterscale.application.v1.ListReleasesResponse\x12p\n" +
 	"\rCreateRelease\x12/.otterscale.application.v1.CreateReleaseRequest\x1a..otterscale.application.v1.Application.Release\x12p\n" +
 	"\rUpdateRelease\x12/.otterscale.application.v1.UpdateReleaseRequest\x1a..otterscale.application.v1.Application.Release\x12X\n" +
@@ -5476,7 +5940,7 @@ const file_api_application_v1_application_proto_rawDesc = "" +
 	"\x10GetChartMetadata\x122.otterscale.application.v1.GetChartMetadataRequest\x1a5.otterscale.application.v1.Application.Chart.Metadata\x12\x81\x01\n" +
 	"\x12ListStorageClasses\x124.otterscale.application.v1.ListStorageClassesRequest\x1a5.otterscale.application.v1.ListStorageClassesResponseB8Z6github.com/otterscale/otterscale/api/application/v1;pbb\beditionsp\xe8\a"
 
-var file_api_application_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
+var file_api_application_v1_application_proto_msgTypes = make([]protoimpl.MessageInfo, 38)
 var file_api_application_v1_application_proto_goTypes = []any{
 	(*Application)(nil),                       // 0: otterscale.application.v1.Application
 	(*StorageClass)(nil),                      // 1: otterscale.application.v1.StorageClass
@@ -5485,93 +5949,100 @@ var file_api_application_v1_application_proto_goTypes = []any{
 	(*GetApplicationRequest)(nil),             // 4: otterscale.application.v1.GetApplicationRequest
 	(*WatchLogsRequest)(nil),                  // 5: otterscale.application.v1.WatchLogsRequest
 	(*WatchLogsResponse)(nil),                 // 6: otterscale.application.v1.WatchLogsResponse
-	(*ListReleasesRequest)(nil),               // 7: otterscale.application.v1.ListReleasesRequest
-	(*ListReleasesResponse)(nil),              // 8: otterscale.application.v1.ListReleasesResponse
-	(*CreateReleaseRequest)(nil),              // 9: otterscale.application.v1.CreateReleaseRequest
-	(*UpdateReleaseRequest)(nil),              // 10: otterscale.application.v1.UpdateReleaseRequest
-	(*DeleteReleaseRequest)(nil),              // 11: otterscale.application.v1.DeleteReleaseRequest
-	(*RollbackReleaseRequest)(nil),            // 12: otterscale.application.v1.RollbackReleaseRequest
-	(*ListChartsRequest)(nil),                 // 13: otterscale.application.v1.ListChartsRequest
-	(*ListChartsResponse)(nil),                // 14: otterscale.application.v1.ListChartsResponse
-	(*GetChartRequest)(nil),                   // 15: otterscale.application.v1.GetChartRequest
-	(*GetChartMetadataRequest)(nil),           // 16: otterscale.application.v1.GetChartMetadataRequest
-	(*ListStorageClassesRequest)(nil),         // 17: otterscale.application.v1.ListStorageClassesRequest
-	(*ListStorageClassesResponse)(nil),        // 18: otterscale.application.v1.ListStorageClassesResponse
-	(*Application_Chart)(nil),                 // 19: otterscale.application.v1.Application.Chart
-	(*Application_Release)(nil),               // 20: otterscale.application.v1.Application.Release
-	(*Application_Condition)(nil),             // 21: otterscale.application.v1.Application.Condition
-	(*Application_Container)(nil),             // 22: otterscale.application.v1.Application.Container
-	(*Application_Service)(nil),               // 23: otterscale.application.v1.Application.Service
-	(*Application_Pod)(nil),                   // 24: otterscale.application.v1.Application.Pod
-	(*Application_PersistentVolumeClaim)(nil), // 25: otterscale.application.v1.Application.PersistentVolumeClaim
-	nil,                                     // 26: otterscale.application.v1.Application.LabelsEntry
-	(*Application_Chart_Customization)(nil), // 27: otterscale.application.v1.Application.Chart.Customization
-	(*Application_Chart_Metadata)(nil),      // 28: otterscale.application.v1.Application.Chart.Metadata
-	(*Application_Chart_Maintainer)(nil),    // 29: otterscale.application.v1.Application.Chart.Maintainer
-	(*Application_Chart_Dependency)(nil),    // 30: otterscale.application.v1.Application.Chart.Dependency
-	(*Application_Chart_Version)(nil),       // 31: otterscale.application.v1.Application.Chart.Version
-	(*Application_Service_Port)(nil),        // 32: otterscale.application.v1.Application.Service.Port
-	nil,                                     // 33: otterscale.application.v1.StorageClass.ParametersEntry
-	nil,                                     // 34: otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
-	(*timestamppb.Timestamp)(nil),           // 35: google.protobuf.Timestamp
-	(*structpb.Struct)(nil),                 // 36: google.protobuf.Struct
-	(*emptypb.Empty)(nil),                   // 37: google.protobuf.Empty
+	(*ExecuteTTYRequest)(nil),                 // 7: otterscale.application.v1.ExecuteTTYRequest
+	(*ExecuteTTYResponse)(nil),                // 8: otterscale.application.v1.ExecuteTTYResponse
+	(*WriteTTYRequest)(nil),                   // 9: otterscale.application.v1.WriteTTYRequest
+	(*ListReleasesRequest)(nil),               // 10: otterscale.application.v1.ListReleasesRequest
+	(*ListReleasesResponse)(nil),              // 11: otterscale.application.v1.ListReleasesResponse
+	(*CreateReleaseRequest)(nil),              // 12: otterscale.application.v1.CreateReleaseRequest
+	(*UpdateReleaseRequest)(nil),              // 13: otterscale.application.v1.UpdateReleaseRequest
+	(*DeleteReleaseRequest)(nil),              // 14: otterscale.application.v1.DeleteReleaseRequest
+	(*RollbackReleaseRequest)(nil),            // 15: otterscale.application.v1.RollbackReleaseRequest
+	(*ListChartsRequest)(nil),                 // 16: otterscale.application.v1.ListChartsRequest
+	(*ListChartsResponse)(nil),                // 17: otterscale.application.v1.ListChartsResponse
+	(*GetChartRequest)(nil),                   // 18: otterscale.application.v1.GetChartRequest
+	(*GetChartMetadataRequest)(nil),           // 19: otterscale.application.v1.GetChartMetadataRequest
+	(*ListStorageClassesRequest)(nil),         // 20: otterscale.application.v1.ListStorageClassesRequest
+	(*ListStorageClassesResponse)(nil),        // 21: otterscale.application.v1.ListStorageClassesResponse
+	(*Application_Chart)(nil),                 // 22: otterscale.application.v1.Application.Chart
+	(*Application_Release)(nil),               // 23: otterscale.application.v1.Application.Release
+	(*Application_Condition)(nil),             // 24: otterscale.application.v1.Application.Condition
+	(*Application_Container)(nil),             // 25: otterscale.application.v1.Application.Container
+	(*Application_Service)(nil),               // 26: otterscale.application.v1.Application.Service
+	(*Application_Pod)(nil),                   // 27: otterscale.application.v1.Application.Pod
+	(*Application_PersistentVolumeClaim)(nil), // 28: otterscale.application.v1.Application.PersistentVolumeClaim
+	nil,                                     // 29: otterscale.application.v1.Application.LabelsEntry
+	(*Application_Chart_Customization)(nil), // 30: otterscale.application.v1.Application.Chart.Customization
+	(*Application_Chart_Metadata)(nil),      // 31: otterscale.application.v1.Application.Chart.Metadata
+	(*Application_Chart_Maintainer)(nil),    // 32: otterscale.application.v1.Application.Chart.Maintainer
+	(*Application_Chart_Dependency)(nil),    // 33: otterscale.application.v1.Application.Chart.Dependency
+	(*Application_Chart_Version)(nil),       // 34: otterscale.application.v1.Application.Chart.Version
+	(*Application_Service_Port)(nil),        // 35: otterscale.application.v1.Application.Service.Port
+	nil,                                     // 36: otterscale.application.v1.StorageClass.ParametersEntry
+	nil,                                     // 37: otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
+	(*timestamppb.Timestamp)(nil),           // 38: google.protobuf.Timestamp
+	(*structpb.Struct)(nil),                 // 39: google.protobuf.Struct
+	(*emptypb.Empty)(nil),                   // 40: google.protobuf.Empty
 }
 var file_api_application_v1_application_proto_depIdxs = []int32{
-	26, // 0: otterscale.application.v1.Application.labels:type_name -> otterscale.application.v1.Application.LabelsEntry
-	28, // 1: otterscale.application.v1.Application.metadata:type_name -> otterscale.application.v1.Application.Chart.Metadata
-	22, // 2: otterscale.application.v1.Application.containers:type_name -> otterscale.application.v1.Application.Container
-	23, // 3: otterscale.application.v1.Application.services:type_name -> otterscale.application.v1.Application.Service
-	24, // 4: otterscale.application.v1.Application.pods:type_name -> otterscale.application.v1.Application.Pod
-	25, // 5: otterscale.application.v1.Application.persistent_volume_claims:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
-	35, // 6: otterscale.application.v1.Application.created_at:type_name -> google.protobuf.Timestamp
-	33, // 7: otterscale.application.v1.StorageClass.parameters:type_name -> otterscale.application.v1.StorageClass.ParametersEntry
-	35, // 8: otterscale.application.v1.StorageClass.created_at:type_name -> google.protobuf.Timestamp
+	29, // 0: otterscale.application.v1.Application.labels:type_name -> otterscale.application.v1.Application.LabelsEntry
+	31, // 1: otterscale.application.v1.Application.metadata:type_name -> otterscale.application.v1.Application.Chart.Metadata
+	25, // 2: otterscale.application.v1.Application.containers:type_name -> otterscale.application.v1.Application.Container
+	26, // 3: otterscale.application.v1.Application.services:type_name -> otterscale.application.v1.Application.Service
+	27, // 4: otterscale.application.v1.Application.pods:type_name -> otterscale.application.v1.Application.Pod
+	28, // 5: otterscale.application.v1.Application.persistent_volume_claims:type_name -> otterscale.application.v1.Application.PersistentVolumeClaim
+	38, // 6: otterscale.application.v1.Application.created_at:type_name -> google.protobuf.Timestamp
+	36, // 7: otterscale.application.v1.StorageClass.parameters:type_name -> otterscale.application.v1.StorageClass.ParametersEntry
+	38, // 8: otterscale.application.v1.StorageClass.created_at:type_name -> google.protobuf.Timestamp
 	0,  // 9: otterscale.application.v1.ListApplicationsResponse.applications:type_name -> otterscale.application.v1.Application
-	20, // 10: otterscale.application.v1.ListReleasesResponse.releases:type_name -> otterscale.application.v1.Application.Release
-	34, // 11: otterscale.application.v1.CreateReleaseRequest.values_map:type_name -> otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
-	19, // 12: otterscale.application.v1.ListChartsResponse.charts:type_name -> otterscale.application.v1.Application.Chart
+	23, // 10: otterscale.application.v1.ListReleasesResponse.releases:type_name -> otterscale.application.v1.Application.Release
+	37, // 11: otterscale.application.v1.CreateReleaseRequest.values_map:type_name -> otterscale.application.v1.CreateReleaseRequest.ValuesMapEntry
+	22, // 12: otterscale.application.v1.ListChartsResponse.charts:type_name -> otterscale.application.v1.Application.Chart
 	1,  // 13: otterscale.application.v1.ListStorageClassesResponse.storage_classes:type_name -> otterscale.application.v1.StorageClass
-	29, // 14: otterscale.application.v1.Application.Chart.maintainers:type_name -> otterscale.application.v1.Application.Chart.Maintainer
-	30, // 15: otterscale.application.v1.Application.Chart.dependencies:type_name -> otterscale.application.v1.Application.Chart.Dependency
-	31, // 16: otterscale.application.v1.Application.Chart.versions:type_name -> otterscale.application.v1.Application.Chart.Version
-	31, // 17: otterscale.application.v1.Application.Release.version:type_name -> otterscale.application.v1.Application.Chart.Version
-	35, // 18: otterscale.application.v1.Application.Condition.probed_at:type_name -> google.protobuf.Timestamp
-	35, // 19: otterscale.application.v1.Application.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
-	32, // 20: otterscale.application.v1.Application.Service.ports:type_name -> otterscale.application.v1.Application.Service.Port
-	35, // 21: otterscale.application.v1.Application.Service.created_at:type_name -> google.protobuf.Timestamp
-	21, // 22: otterscale.application.v1.Application.Pod.last_condition:type_name -> otterscale.application.v1.Application.Condition
-	35, // 23: otterscale.application.v1.Application.Pod.created_at:type_name -> google.protobuf.Timestamp
+	32, // 14: otterscale.application.v1.Application.Chart.maintainers:type_name -> otterscale.application.v1.Application.Chart.Maintainer
+	33, // 15: otterscale.application.v1.Application.Chart.dependencies:type_name -> otterscale.application.v1.Application.Chart.Dependency
+	34, // 16: otterscale.application.v1.Application.Chart.versions:type_name -> otterscale.application.v1.Application.Chart.Version
+	34, // 17: otterscale.application.v1.Application.Release.version:type_name -> otterscale.application.v1.Application.Chart.Version
+	38, // 18: otterscale.application.v1.Application.Condition.probed_at:type_name -> google.protobuf.Timestamp
+	38, // 19: otterscale.application.v1.Application.Condition.transitioned_at:type_name -> google.protobuf.Timestamp
+	35, // 20: otterscale.application.v1.Application.Service.ports:type_name -> otterscale.application.v1.Application.Service.Port
+	38, // 21: otterscale.application.v1.Application.Service.created_at:type_name -> google.protobuf.Timestamp
+	24, // 22: otterscale.application.v1.Application.Pod.last_condition:type_name -> otterscale.application.v1.Application.Condition
+	38, // 23: otterscale.application.v1.Application.Pod.created_at:type_name -> google.protobuf.Timestamp
 	1,  // 24: otterscale.application.v1.Application.PersistentVolumeClaim.storage_class:type_name -> otterscale.application.v1.StorageClass
-	35, // 25: otterscale.application.v1.Application.PersistentVolumeClaim.created_at:type_name -> google.protobuf.Timestamp
-	36, // 26: otterscale.application.v1.Application.Chart.Customization.values:type_name -> google.protobuf.Struct
-	27, // 27: otterscale.application.v1.Application.Chart.Metadata.customization:type_name -> otterscale.application.v1.Application.Chart.Customization
+	38, // 25: otterscale.application.v1.Application.PersistentVolumeClaim.created_at:type_name -> google.protobuf.Timestamp
+	39, // 26: otterscale.application.v1.Application.Chart.Customization.values:type_name -> google.protobuf.Struct
+	30, // 27: otterscale.application.v1.Application.Chart.Metadata.customization:type_name -> otterscale.application.v1.Application.Chart.Customization
 	2,  // 28: otterscale.application.v1.ApplicationService.ListApplications:input_type -> otterscale.application.v1.ListApplicationsRequest
 	4,  // 29: otterscale.application.v1.ApplicationService.GetApplication:input_type -> otterscale.application.v1.GetApplicationRequest
 	5,  // 30: otterscale.application.v1.ApplicationService.WatchLogs:input_type -> otterscale.application.v1.WatchLogsRequest
-	7,  // 31: otterscale.application.v1.ApplicationService.ListReleases:input_type -> otterscale.application.v1.ListReleasesRequest
-	9,  // 32: otterscale.application.v1.ApplicationService.CreateRelease:input_type -> otterscale.application.v1.CreateReleaseRequest
-	10, // 33: otterscale.application.v1.ApplicationService.UpdateRelease:input_type -> otterscale.application.v1.UpdateReleaseRequest
-	11, // 34: otterscale.application.v1.ApplicationService.DeleteRelease:input_type -> otterscale.application.v1.DeleteReleaseRequest
-	12, // 35: otterscale.application.v1.ApplicationService.RollbackRelease:input_type -> otterscale.application.v1.RollbackReleaseRequest
-	13, // 36: otterscale.application.v1.ApplicationService.ListCharts:input_type -> otterscale.application.v1.ListChartsRequest
-	15, // 37: otterscale.application.v1.ApplicationService.GetChart:input_type -> otterscale.application.v1.GetChartRequest
-	16, // 38: otterscale.application.v1.ApplicationService.GetChartMetadata:input_type -> otterscale.application.v1.GetChartMetadataRequest
-	17, // 39: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
-	3,  // 40: otterscale.application.v1.ApplicationService.ListApplications:output_type -> otterscale.application.v1.ListApplicationsResponse
-	0,  // 41: otterscale.application.v1.ApplicationService.GetApplication:output_type -> otterscale.application.v1.Application
-	6,  // 42: otterscale.application.v1.ApplicationService.WatchLogs:output_type -> otterscale.application.v1.WatchLogsResponse
-	8,  // 43: otterscale.application.v1.ApplicationService.ListReleases:output_type -> otterscale.application.v1.ListReleasesResponse
-	20, // 44: otterscale.application.v1.ApplicationService.CreateRelease:output_type -> otterscale.application.v1.Application.Release
-	20, // 45: otterscale.application.v1.ApplicationService.UpdateRelease:output_type -> otterscale.application.v1.Application.Release
-	37, // 46: otterscale.application.v1.ApplicationService.DeleteRelease:output_type -> google.protobuf.Empty
-	37, // 47: otterscale.application.v1.ApplicationService.RollbackRelease:output_type -> google.protobuf.Empty
-	14, // 48: otterscale.application.v1.ApplicationService.ListCharts:output_type -> otterscale.application.v1.ListChartsResponse
-	19, // 49: otterscale.application.v1.ApplicationService.GetChart:output_type -> otterscale.application.v1.Application.Chart
-	28, // 50: otterscale.application.v1.ApplicationService.GetChartMetadata:output_type -> otterscale.application.v1.Application.Chart.Metadata
-	18, // 51: otterscale.application.v1.ApplicationService.ListStorageClasses:output_type -> otterscale.application.v1.ListStorageClassesResponse
-	40, // [40:52] is the sub-list for method output_type
-	28, // [28:40] is the sub-list for method input_type
+	7,  // 31: otterscale.application.v1.ApplicationService.ExecuteTTY:input_type -> otterscale.application.v1.ExecuteTTYRequest
+	9,  // 32: otterscale.application.v1.ApplicationService.WriteTTY:input_type -> otterscale.application.v1.WriteTTYRequest
+	10, // 33: otterscale.application.v1.ApplicationService.ListReleases:input_type -> otterscale.application.v1.ListReleasesRequest
+	12, // 34: otterscale.application.v1.ApplicationService.CreateRelease:input_type -> otterscale.application.v1.CreateReleaseRequest
+	13, // 35: otterscale.application.v1.ApplicationService.UpdateRelease:input_type -> otterscale.application.v1.UpdateReleaseRequest
+	14, // 36: otterscale.application.v1.ApplicationService.DeleteRelease:input_type -> otterscale.application.v1.DeleteReleaseRequest
+	15, // 37: otterscale.application.v1.ApplicationService.RollbackRelease:input_type -> otterscale.application.v1.RollbackReleaseRequest
+	16, // 38: otterscale.application.v1.ApplicationService.ListCharts:input_type -> otterscale.application.v1.ListChartsRequest
+	18, // 39: otterscale.application.v1.ApplicationService.GetChart:input_type -> otterscale.application.v1.GetChartRequest
+	19, // 40: otterscale.application.v1.ApplicationService.GetChartMetadata:input_type -> otterscale.application.v1.GetChartMetadataRequest
+	20, // 41: otterscale.application.v1.ApplicationService.ListStorageClasses:input_type -> otterscale.application.v1.ListStorageClassesRequest
+	3,  // 42: otterscale.application.v1.ApplicationService.ListApplications:output_type -> otterscale.application.v1.ListApplicationsResponse
+	0,  // 43: otterscale.application.v1.ApplicationService.GetApplication:output_type -> otterscale.application.v1.Application
+	6,  // 44: otterscale.application.v1.ApplicationService.WatchLogs:output_type -> otterscale.application.v1.WatchLogsResponse
+	8,  // 45: otterscale.application.v1.ApplicationService.ExecuteTTY:output_type -> otterscale.application.v1.ExecuteTTYResponse
+	40, // 46: otterscale.application.v1.ApplicationService.WriteTTY:output_type -> google.protobuf.Empty
+	11, // 47: otterscale.application.v1.ApplicationService.ListReleases:output_type -> otterscale.application.v1.ListReleasesResponse
+	23, // 48: otterscale.application.v1.ApplicationService.CreateRelease:output_type -> otterscale.application.v1.Application.Release
+	23, // 49: otterscale.application.v1.ApplicationService.UpdateRelease:output_type -> otterscale.application.v1.Application.Release
+	40, // 50: otterscale.application.v1.ApplicationService.DeleteRelease:output_type -> google.protobuf.Empty
+	40, // 51: otterscale.application.v1.ApplicationService.RollbackRelease:output_type -> google.protobuf.Empty
+	17, // 52: otterscale.application.v1.ApplicationService.ListCharts:output_type -> otterscale.application.v1.ListChartsResponse
+	22, // 53: otterscale.application.v1.ApplicationService.GetChart:output_type -> otterscale.application.v1.Application.Chart
+	31, // 54: otterscale.application.v1.ApplicationService.GetChartMetadata:output_type -> otterscale.application.v1.Application.Chart.Metadata
+	21, // 55: otterscale.application.v1.ApplicationService.ListStorageClasses:output_type -> otterscale.application.v1.ListStorageClassesResponse
+	42, // [42:56] is the sub-list for method output_type
+	28, // [28:42] is the sub-list for method input_type
 	28, // [28:28] is the sub-list for extension type_name
 	28, // [28:28] is the sub-list for extension extendee
 	0,  // [0:28] is the sub-list for field type_name
@@ -5588,7 +6059,7 @@ func file_api_application_v1_application_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_application_v1_application_proto_rawDesc), len(file_api_application_v1_application_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   35,
+			NumMessages:   38,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
