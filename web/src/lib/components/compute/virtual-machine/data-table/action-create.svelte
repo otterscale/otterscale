@@ -31,6 +31,9 @@
 	let invalidName: boolean | undefined = $state();
 	let invalidNamespace: boolean | undefined = $state();
 	let invalidResourceCase: boolean | undefined = $state();
+	// Add these new state variables for labels
+	let labelKey = $state('');
+	let labelValue = $state('');
 
 	export const resourcesCase: Writable<SingleSelect.OptionType[]> = writable([
 		{
@@ -97,8 +100,24 @@
 		request = DEFAULT_REQUEST;
 		resourcesCustom = DEFAULT_RESOURCES_CUSTOM;
 		resourcesInstance = DEFAULT_RESOURCES_INSTANCE;
+		isAdvancedOpen = false;
+		labelKey = '';
+		labelValue = '';
+	}
+	// Add function to handle adding labels
+	function addLabel() {
+		if (labelKey.trim() && labelValue.trim()) {
+			request.labels = { ...request.labels, [labelKey.trim()]: labelValue.trim() };
+			labelKey = '';
+			labelValue = '';
+		}
 	}
 
+	// Add function to remove a label
+	function removeLabel(key: string) {
+		const { [key]: _, ...rest } = request.labels;
+		request.labels = rest;
+	}
 	let open = $state(false);
 	function close() {
 		open = false;
@@ -225,9 +244,63 @@
 				</div>
 				<Collapsible.Content>
 					<Form.Fieldset>
+						<Form.Legend>Advance</Form.Legend>
+
 						<Form.Field>
 							<Form.Label>Network Name</Form.Label>
 							<SingleInput.General type="text" bind:value={request.networkName} />
+						</Form.Field>
+						<Form.Field>
+							<Form.Label>Labels</Form.Label>
+							<div class="space-y-2">
+								<!-- Add new label inputs -->
+								<div class="flex gap-2">
+									<SingleInput.General
+										type="text"
+										placeholder="Key"
+										bind:value={labelKey}
+										class="flex-1"
+									/>
+									<SingleInput.General
+										type="text"
+										placeholder="Value"
+										bind:value={labelValue}
+										class="flex-1"
+									/>
+									<Button
+										type="button"
+										variant="outline"
+										size="sm"
+										disabled={!labelKey.trim() || !labelValue.trim()}
+										onclick={addLabel}
+									>
+										<Icon icon="ph:plus" class="size-4" />
+										Add
+									</Button>
+								</div>
+								<!-- Display existing labels -->
+								{#if Object.keys(request.labels).length > 0}
+									<div class="space-y-1">
+										{#each Object.entries(request.labels) as [key, value]}
+											<div
+												class="bg-muted flex items-center justify-between rounded-md px-3 py-2"
+											>
+												<span class="text-sm">
+													<span class="font-medium">{key}</span>: {value}
+												</span>
+												<Button
+													type="button"
+													variant="ghost"
+													size="sm"
+													onclick={() => removeLabel(key)}
+												>
+													<Icon icon="ph:x" class="size-4" />
+												</Button>
+											</div>
+										{/each}
+									</div>
+								{/if}
+							</div>
 						</Form.Field>
 						<Form.Field>
 							<Form.Label>Startup Script</Form.Label>
