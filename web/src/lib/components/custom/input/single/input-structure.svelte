@@ -16,7 +16,7 @@
 		preview = true,
 		invalid = $bindable(),
 	}: {
-		language: 'json';
+		language: 'bash' | 'json';
 		value: string;
 		required?: boolean;
 		preview?: boolean;
