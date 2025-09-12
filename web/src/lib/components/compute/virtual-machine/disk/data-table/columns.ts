@@ -12,6 +12,8 @@ const messages = {
 	type: m.type(),
 	bus: 'bus',
 	source: m.source(),
+	sourceType: 'source type',
+	size: 'disk size',
 };
 
 const columns: ColumnDef<VirtualMachineDisk>[] = [
@@ -54,12 +56,30 @@ const columns: ColumnDef<VirtualMachineDisk>[] = [
 		},
 	},
 	{
+		accessorKey: 'sourceType',
+		header: ({ column }) => {
+			return renderSnippet(headers.sourceType, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.sourceType, row);
+		},
+	},
+	{
 		accessorKey: 'source',
 		header: ({ column }) => {
 			return renderSnippet(headers.source, column);
 		},
 		cell: ({ row }) => {
 			return renderSnippet(cells.source, row);
+		},
+	},
+	{
+		accessorKey: 'size',
+		header: ({ column }) => {
+			return renderSnippet(headers.size, column);
+		},
+		cell: ({ row }) => {
+			return renderSnippet(cells.size, row);
 		},
 	},
 	// {
