@@ -217,6 +217,7 @@
 	"cpu": "CPU",
 	"core": "Core",
 	"cores": "Cores",
+	"cpu_cores": "CPU Cores",
 	"processor": "Processor",
 	"disk": "Disk",
 	"memory": "Memory",
@@ -674,8 +675,10 @@
 	"vm_pause": "Pause",
 	"vm_resume": "Resume",
 	"please_wait": "Please Wait",
+	"create_virtual_machine": "Create Virtual Machine",
 	"clone": "Clone",
 	"clone_virtual_machine": "Clone Virtual Machine",
 	"clone_virtual_machine_name_direction": "Name for the new virtual machine.",
-	"clone_virtual_machine_namespace_direction": "Namespace for the new virtual machine."
+	"clone_virtual_machine_namespace_direction": "Namespace for the new virtual machine.",
+	"instance_name": "Instance Name"
 }
