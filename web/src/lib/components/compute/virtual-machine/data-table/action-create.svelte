@@ -23,18 +23,27 @@
 	import { currentKubernetes } from '$lib/stores';
 	import { cn } from '$lib/utils';
 
+	// Context dependencies
 	const transport: Transport = getContext('transport');
 	const reloadManager: ReloadManager = getContext('reloadManager');
 	const kubevirtClient = createClient(KubeVirtService, transport);
 
+	// ==================== State Variables ====================
+
+	// UI state
 	let isAdvancedOpen = $state(false);
+	let open = $state(false);
+
+	// Form validation state
 	let invalidName: boolean | undefined = $state();
 	let invalidNamespace: boolean | undefined = $state();
 	let invalidResourceCase: boolean | undefined = $state();
-	// Add these new state variables for labels
+
+	// Label management state
 	let labelKey = $state('');
 	let labelValue = $state('');
 
+	// ==================== Dropdown Options ====================
 	export const resourcesCase: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: 'instancetypeName',
@@ -47,7 +56,6 @@
 			icon: 'ph:scales',
 		},
 	]);
-
 	export const diskTypes: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: VirtualMachineDisk_type.DATAVOLUME.toString(),
@@ -75,7 +83,6 @@
 			icon: 'ph:cloud',
 		},
 	]);
-
 	export const busTypes: Writable<SingleSelect.OptionType[]> = writable([
 		{
 			value: VirtualMachineDisk_bus.VIRTIO.toString(),
@@ -93,9 +100,9 @@
 			icon: 'ph:hard-drives',
 		},
 	]);
-
 	export const namespaces: Writable<SingleSelect.OptionType[]> = writable([]);
 
+	// ==================== API Functions ====================
 	async function loadNamespaces() {
 		try {
 			const response = await kubevirtClient.listNamespaces({
@@ -117,6 +124,9 @@
 		}
 	}
 
+	// ==================== Default Values & Constants ====================
+
+	// Default request structure for creating a virtual machine
 	const DEFAULT_REQUEST = {
 		scopeUuid: $currentKubernetes?.scopeUuid,
 		facilityName: $currentKubernetes?.name,
@@ -145,11 +155,14 @@
 		busType: VirtualMachineDisk_bus.VIRTIO,
 		source: '',
 	} as VirtualMachineDisk;
+
+	// ==================== Form State ====================
 	let request: CreateVirtualMachineRequest = $state(DEFAULT_REQUEST);
 	let resourcesCustom = $state(DEFAULT_RESOURCES_CUSTOM);
 	let resourcesInstance = $state(DEFAULT_RESOURCES_INSTANCE);
 	let newDisk: VirtualMachineDisk = $state(DEFAULT_DISK);
 
+	// ==================== Utility Functions ====================
 	function reset() {
 		request = DEFAULT_REQUEST;
 		resourcesCustom = DEFAULT_RESOURCES_CUSTOM;
@@ -159,19 +172,22 @@
 		labelValue = '';
 		newDisk = DEFAULT_DISK;
 	}
+	function close() {
+		open = false;
+	}
 
+	// ==================== Disk Management ====================
 	function addDisk() {
 		if (newDisk.name.trim() && newDisk.source.trim()) {
 			request.disks = [...request.disks, { ...newDisk }];
 			newDisk = DEFAULT_DISK;
 		}
 	}
-
 	function removeDisk(index: number) {
 		request.disks = request.disks.filter((_, i) => i !== index);
 	}
 
-	// Add function to handle adding labels
+	// ==================== Label Management ====================
 	function addLabel() {
 		if (labelKey.trim() && labelValue.trim()) {
 			request.labels = { ...request.labels, [labelKey.trim()]: labelValue.trim() };
@@ -179,17 +195,12 @@
 			labelValue = '';
 		}
 	}
-
-	// Add function to remove a label
 	function removeLabel(key: string) {
 		const { [key]: _, ...rest } = request.labels;
 		request.labels = rest;
 	}
-	let open = $state(false);
-	function close() {
-		open = false;
-	}
 
+	// ==================== Lifecycle Hooks ====================
 	onMount(() => {
 		loadNamespaces();
 	});
@@ -203,6 +214,7 @@
 	<Modal.Content>
 		<Modal.Header>{m.create_virtual_machine()}</Modal.Header>
 		<Form.Root>
+			<!-- ==================== Basic Configuration ==================== -->
 			<Form.Fieldset>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
@@ -240,6 +252,8 @@
 					</SingleSelect.Root>
 				</Form.Field>
 			</Form.Fieldset>
+
+			<!-- ==================== Resource Configuration ==================== -->
 			<Form.Fieldset>
 				<Form.Legend>Resources</Form.Legend>
 				<Form.Field>
@@ -295,9 +309,9 @@
 				{/if}
 			</Form.Fieldset>
 
+			<!-- ==================== Disk Configuration ==================== -->
 			<Form.Fieldset>
 				<Form.Legend>Disk</Form.Legend>
-				<!-- Add new disk form -->
 				<Form.Field>
 					<Form.Label>Disk Name</Form.Label>
 					<SingleInput.General required type="text" placeholder="Enter disk name" bind:value={newDisk.name} />
@@ -371,8 +385,7 @@
 					<Icon icon="ph:plus" class="size-4" />
 					Add Disk
 				</Button>
-
-				<!-- Display existing disks -->
+				<!-- Display Configured Disks -->
 				{#if request.disks.length > 0}
 					<div class="space-y-2">
 						<h4 class="font-medium">Configured Disks</h4>
@@ -406,6 +419,7 @@
 				{/if}
 			</Form.Fieldset>
 
+			<!-- ==================== Advanced Configuration ==================== -->
 			<Collapsible.Root bind:open={isAdvancedOpen} class="py-4">
 				<div class="flex items-center justify-between gap-2">
 					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>Advance</p>
@@ -419,7 +433,6 @@
 				<Collapsible.Content>
 					<Form.Fieldset>
 						<Form.Legend>Advance</Form.Legend>
-
 						<Form.Field>
 							<Form.Label>Network Name</Form.Label>
 							<SingleInput.General type="text" bind:value={request.networkName} />
@@ -427,7 +440,6 @@
 						<Form.Field>
 							<Form.Label>Labels</Form.Label>
 							<div class="space-y-2">
-								<!-- Add new label inputs -->
 								<div class="flex gap-2">
 									<SingleInput.General
 										type="text"
@@ -452,7 +464,6 @@
 										Add
 									</Button>
 								</div>
-								<!-- Display existing labels -->
 								{#if Object.keys(request.labels).length > 0}
 									<div class="space-y-1">
 										{#each Object.entries(request.labels) as [key, value]}
@@ -487,6 +498,7 @@
 				</Collapsible.Content>
 			</Collapsible.Root>
 		</Form.Root>
+
 		<Modal.Footer>
 			<Modal.Cancel
 				onclick={() => {
