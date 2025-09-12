@@ -305,7 +305,7 @@
 											<SingleSelect.Item option={namespace}>
 												<Icon
 													icon={namespace.icon ? namespace.icon : 'ph:empty'}
-													class={cn('size-5', namespace.icon ? 'visibale' : 'invisible')}
+													class={cn('size-5', namespace.icon ? 'visible' : 'invisible')}
 												/>
 												{namespace.label}
 												<SingleSelect.Check option={namespace} />
@@ -341,7 +341,7 @@
 											<SingleSelect.Item option={type}>
 												<Icon
 													icon={type.icon ? type.icon : 'ph:empty'}
-													class={cn('size-5', type.icon ? 'visibale' : 'invisible')}
+													class={cn('size-5', type.icon ? 'visible' : 'invisible')}
 												/>
 												{type.label}
 												<SingleSelect.Check option={type} />
@@ -370,7 +370,7 @@
 				{:else if request.resources.case === 'instancetypeName'}
 					<Form.Field>
 						<Form.Label>{m.instance_name()}</Form.Label>
-						<SingleInput.General required type="number" bind:value={resourcesInstance.value} />
+						<SingleInput.General required type="text" bind:value={resourcesInstance.value} />
 					</Form.Field>
 				{/if}
 			</Form.Fieldset>
@@ -495,7 +495,7 @@
 					type="button"
 					variant="outline"
 					size="sm"
-					disabled={!newDisk.name.trim() || (!newDiskSource.trim() && !newDiskSourceDataVolume)}
+					disabled={!newDisk.name.trim() || (!newDiskSource.trim() && !newDiskSourceDataVolume.source.trim())}
 					onclick={addDisk}
 				>
 					<Icon icon="ph:plus" class="size-4" />
