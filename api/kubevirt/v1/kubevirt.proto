@@ -9,7 +9,8 @@ option go_package = "github.com/otterscale/otterscale/api/kubevirt/v1;pb";
 
 // Virtual Machine Management Service for KubeVirt
 service KubeVirtService {
-  rpc ListNamespaces(ListNamespaceRequest) returns (ListNamespaceResponse);
+  rpc ListNamespaces(ListNamespacesRequest) returns (ListNamespacesResponse);
+  rpc ListPersistentVolumeClaims(ListPersistentVolumeClaimsRequest) returns (ListPersistentVolumeClaimsResponse);
   // Virtual Machine Operations
   rpc CreateVirtualMachine(CreateVirtualMachineRequest) returns (VirtualMachine);
   rpc GetVirtualMachine(GetVirtualMachineRequest) returns (VirtualMachine);
@@ -57,12 +58,12 @@ message Metadata {
   google.protobuf.Timestamp updated_at = 6;
 }
 
-message ListNamespaceRequest{
+message ListNamespacesRequest{
   string scope_uuid = 1;
   string facility_name = 2;
 }
 
-message ListNamespaceResponse{
+message ListNamespacesResponse{
   repeated string namespaces = 1;
 }
 
@@ -115,6 +116,22 @@ message InstanceType {
   Metadata metadata = 1;
   uint32 cpu_cores = 2;
   int64 memory_bytes = 3;
+}
+
+message DataVolumeSource {
+  enum Type {
+    UNSPECIFIED = 0;
+    HTTP = 1;
+    BLANK = 2;
+    REGISTRY = 3;
+    UPLOAD = 4;
+    S3 = 5;
+    VDDK = 6;
+    PVC = 7;
+  }
+  Type type = 3;
+  string source = 4;
+  int64 size_bytes = 5;
 }
 
 message DataVolume {
@@ -205,7 +222,10 @@ message VirtualMachineDisk {
   string name = 1;
   type disk_type = 2;
   bus bus_type = 3;
-  string source = 4;
+  oneof source_data {
+    string source = 4;
+    DataVolumeSource data_volume = 5;
+  }
 }
 
 message CreateVirtualMachineRequest {
@@ -430,4 +450,23 @@ message DeleteInstanceTypeRequest {
   string scope_uuid = 1;
   string facility_name = 2;
   string name = 3;
+}
+
+message ListPersistentVolumeClaimsRequest {
+  string scope_uuid = 1;
+  string facility_name = 2;
+  string namespace = 3;
+}
+
+message ListPersistentVolumeClaimsResponse {
+  repeated PersistentVolumeClaim persistent_volume_claims = 1;
+}
+
+message PersistentVolumeClaim {
+  Metadata metadata = 1;
+  string storage_class = 2;
+  int64 size_bytes = 3;
+  string access_mode = 4;
+  string status = 5;
+  string volume_name = 6;
 }

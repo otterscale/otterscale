@@ -84,6 +84,14 @@ type VirtualMachineOperationStatus struct {
 	Reason  string
 }
 
+// DataVolumeInfo holds information needed to create a DataVolume
+type DataVolumeInfo struct {
+	Name       string
+	SourceType string
+	Source     string
+	SizeBytes  int64
+}
+
 type DiskDevice struct {
 	Name     string
 	DiskType string

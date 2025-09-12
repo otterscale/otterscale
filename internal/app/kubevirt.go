@@ -31,13 +31,13 @@ func NewKubeVirtService(uc *core.KubeVirtUseCase) *KubeVirtService {
 var _ pbconnect.KubeVirtServiceHandler = (*KubeVirtService)(nil)
 
 // ListNamespaces returns a list of namespaces
-func (s *KubeVirtService) ListNamespaces(ctx context.Context, req *connect.Request[pb.ListNamespaceRequest]) (*connect.Response[pb.ListNamespaceResponse], error) {
+func (s *KubeVirtService) ListNamespaces(ctx context.Context, req *connect.Request[pb.ListNamespacesRequest]) (*connect.Response[pb.ListNamespacesResponse], error) {
 	namespaces, err := s.uc.ListNamespaces(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName())
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &pb.ListNamespaceResponse{}
+	resp := &pb.ListNamespacesResponse{}
 	namespaceNames := make([]string, len(namespaces))
 	for i, ns := range namespaces {
 		namespaceNames[i] = ns.Name
@@ -46,9 +46,66 @@ func (s *KubeVirtService) ListNamespaces(ctx context.Context, req *connect.Reque
 	return connect.NewResponse(resp), nil
 }
 
+// ListPersistentVolumeClaims returns a list of persistent volume claims
+func (s *KubeVirtService) ListPersistentVolumeClaims(ctx context.Context, req *connect.Request[pb.ListPersistentVolumeClaimsRequest]) (*connect.Response[pb.ListPersistentVolumeClaimsResponse], error) {
+	pvcs, err := s.uc.ListPersistentVolumeClaims(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace())
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &pb.ListPersistentVolumeClaimsResponse{}
+	pvcList := make([]*pb.PersistentVolumeClaim, 0, len(pvcs))
+
+	for _, pvc := range pvcs {
+		pbPvc := &pb.PersistentVolumeClaim{}
+
+		// Set metadata
+		meta := &pb.Metadata{}
+		meta.SetName(pvc.GetName())
+		meta.SetNamespace(pvc.GetNamespace())
+		meta.SetLabels(pvc.GetLabels())
+		meta.SetCreatedAt(timestamppb.New(pvc.CreationTimestamp.Time))
+		pbPvc.SetMetadata(meta)
+		if pvc.Spec.StorageClassName != nil {
+			pbPvc.SetStorageClass(*pvc.Spec.StorageClassName)
+		}
+		if pvc.Spec.Resources.Requests != nil {
+			if storageReq, ok := pvc.Spec.Resources.Requests[corev1.ResourceStorage]; ok {
+				pbPvc.SetSizeBytes(storageReq.Value())
+			}
+		}
+		if len(pvc.Spec.AccessModes) > 0 {
+			pbPvc.SetAccessMode(string(pvc.Spec.AccessModes[0]))
+		}
+		pbPvc.SetStatus(string(pvc.Status.Phase))
+		pbPvc.SetVolumeName(pvc.Spec.VolumeName)
+
+		pvcList = append(pvcList, pbPvc)
+	}
+
+	resp.SetPersistentVolumeClaims(pvcList)
+	return connect.NewResponse(resp), nil
+}
+
 // Virtual Machine Operations
 func (s *KubeVirtService) CreateVirtualMachine(ctx context.Context, req *connect.Request[pb.CreateVirtualMachineRequest]) (*connect.Response[pb.VirtualMachine], error) {
-	vm, err := s.uc.CreateVirtualMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetNamespace(), req.Msg.GetName(), req.Msg.GetNetworkName(), req.Msg.GetStartupScript(), req.Msg.GetLabels(), toCoreVirtualMachineResource(req.Msg.GetCustom(), req.Msg.GetInstancetypeName()), toCoreDiskDevices(req.Msg.GetDisks()))
+	// Extract disks with their DataVolumeSource information
+	disks := req.Msg.GetDisks()
+	diskDevices, dataVolumeSources := toCoreDiskDevicesWithDataVolumes(disks)
+
+	vm, err := s.uc.CreateVirtualMachine(
+		ctx,
+		req.Msg.GetScopeUuid(),
+		req.Msg.GetFacilityName(),
+		req.Msg.GetNamespace(),
+		req.Msg.GetName(),
+		req.Msg.GetNetworkName(),
+		req.Msg.GetStartupScript(),
+		req.Msg.GetLabels(),
+		toCoreVirtualMachineResource(req.Msg.GetCustom(), req.Msg.GetInstancetypeName()),
+		diskDevices,
+		dataVolumeSources,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -512,6 +569,80 @@ func toCoreDiskDevices(disks []*pb.VirtualMachineDisk) []core.DiskDevice {
 		})
 	}
 	return ret
+}
+
+// toCoreDiskDevicesWithDataVolumes extracts both DiskDevice and DataVolumeSource information
+func toCoreDiskDevicesWithDataVolumes(disks []*pb.VirtualMachineDisk) ([]core.DiskDevice, map[string]*core.DataVolumeInfo) {
+	diskDevices := []core.DiskDevice{}
+	dataVolumeSources := make(map[string]*core.DataVolumeInfo)
+
+	for i := range disks {
+		// Convert pb.VirtualMachineDisk_bus to string
+		var busStr string
+		switch disks[i].GetBusType() {
+		case pb.VirtualMachineDisk_SATA:
+			busStr = "sata"
+		case pb.VirtualMachineDisk_SCSI:
+			busStr = "scsi"
+		case pb.VirtualMachineDisk_VIRTIO:
+			busStr = "virtio"
+		default:
+			busStr = "virtio"
+		}
+
+		// Get source based on source_data oneof field
+		var source string
+		if disks[i].GetSource() != "" {
+			source = disks[i].GetSource()
+		}
+
+		// Create DiskDevice
+		diskDevice := core.DiskDevice{
+			Name:     disks[i].GetName(),
+			DiskType: pb.VirtualMachineDiskType_name[int32(disks[i].GetDiskType())],
+			Bus:      busStr,
+			Data:     source,
+		}
+		diskDevices = append(diskDevices, diskDevice)
+
+		// If disk has a DataVolumeSource, extract it
+		if disks[i].GetDiskType() == pb.VirtualMachineDisk_DATAVOLUME {
+			// Check if disk has DataVolumeSource info
+			if dv := disks[i].GetDataVolume(); dv != nil {
+				sourceType := mapDataVolumeSourceType(dv.GetType())
+				dataVolumeSources[disks[i].GetName()] = &core.DataVolumeInfo{
+					Name:       disks[i].GetName(), // Use disk name as DV name if not specified
+					SourceType: sourceType,
+					Source:     dv.GetSource(),
+					SizeBytes:  dv.GetSizeBytes(),
+				}
+			}
+		}
+	}
+
+	return diskDevices, dataVolumeSources
+}
+
+// mapDataVolumeSourceType maps protobuf DataVolumeSource.Type to string constants used in core
+func mapDataVolumeSourceType(sourceType pb.DataVolumeSource_Type) string {
+	switch sourceType {
+	case pb.DataVolumeSource_HTTP:
+		return "HTTP"
+	case pb.DataVolumeSource_BLANK:
+		return "Blank"
+	case pb.DataVolumeSource_REGISTRY:
+		return "Registry"
+	case pb.DataVolumeSource_UPLOAD:
+		return "Upload"
+	case pb.DataVolumeSource_S3:
+		return "S3"
+	case pb.DataVolumeSource_VDDK:
+		return "VDDK"
+	case pb.DataVolumeSource_PVC:
+		return "PVC"
+	default:
+		return "Blank" // Default to Blank if unspecified
+	}
 }
 
 func toProtoVirtualMachineSnapshots(snapshots []core.VirtualMachineSnapshot) []*pb.VirtualMachineSnapshot {

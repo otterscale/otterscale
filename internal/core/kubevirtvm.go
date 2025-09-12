@@ -75,7 +75,15 @@ func (uc *KubeVirtUseCase) ListNamespaces(ctx context.Context, uuid, facility st
 	return uc.kubeCore.ListNamespaces(ctx, config)
 }
 
-func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, network, script string, labels map[string]string, resources VirtualMachineResources, disks []DiskDevice) (*VirtualMachine, error) {
+func (uc *KubeVirtUseCase) ListPersistentVolumeClaims(ctx context.Context, uuid, facility, namespace string) ([]PersistentVolumeClaim, error) {
+	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
+	if err != nil {
+		return nil, err
+	}
+	return uc.kubeCore.ListPersistentVolumeClaims(ctx, config, namespace)
+}
+
+func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facility, namespace, name, network, script string, labels map[string]string, resources VirtualMachineResources, disks []DiskDevice, dataVolumeSources map[string]*DataVolumeInfo) (*VirtualMachine, error) {
 	config, err := kubeConfig(ctx, uc.facility, uc.action, uuid, facility)
 	if err != nil {
 		return nil, err
@@ -91,6 +99,32 @@ func (uc *KubeVirtUseCase) CreateVirtualMachine(ctx context.Context, uuid, facil
 
 	annotations := map[string]string{
 		"kubevirt.io/allow-pod-bridge-network-live-migration": "true",
+	}
+
+	// Create DataVolumes first if provided
+	if dataVolumeSources != nil {
+		for diskName, dvInfo := range dataVolumeSources {
+			// Use disk name as DataVolume name if not specified
+			dvName := dvInfo.Name
+			if dvName == "" {
+				dvName = diskName
+			}
+
+			// Create the DataVolume
+			_, err := uc.kubeVirtDV.CreateDataVolume(
+				ctx,
+				config,
+				namespace,
+				dvName,
+				dvInfo.SourceType,
+				dvInfo.Source,
+				dvInfo.SizeBytes,
+				false, // Is bootable - consider making this configurable
+			)
+			if err != nil {
+				return nil, fmt.Errorf("failed to create DataVolume %s: %w", dvName, err)
+			}
+		}
 	}
 
 	vmDisks, vmVolumes := buildDisksAndVolumes(disks, script)
