@@ -14,8 +14,8 @@ service EssentialService {
   rpc CreateSingleNode(CreateSingleNodeRequest) returns (google.protobuf.Empty);
   rpc CreateHighAvailabilityCluster(CreateHighAvailabilityClusterRequest) returns (google.protobuf.Empty);
   rpc AddUnits(AddUnitsRequest) returns (google.protobuf.Empty);
-  rpc GetGpuRelationByMachine(GetGpuRelationRequest) returns (GetGpuRelationByResponse);
-  rpc GetGpuRelationByModel(GetGpuRelationRequest) returns (GetGpuRelationByResponse);
+  rpc GetGpuRelationByMachine(GetGpuRelationRequest) returns (GetGpuRelationResponse);
+  rpc GetGpuRelationByModel(GetGpuRelationRequest) returns (GetGpuRelationResponse);
 }
 
 message Essential {
@@ -104,14 +104,16 @@ message AddUnitsRequest {
 message GetGpuRelationRequest {
   string scope_uuid = 1;
   string facility_name = 2;
-  oneof notice_way {
-    string machine_name = 3;
-    string model_name = 4;
-  } 
+  string machine_name = 3;
+  string model_name = 4;
 }
 
-message GetGpuRelationByResponse {
-  repeated PodInfo pod_info = 1;
+message GetGpuRelationResponse {
+  GpuRelation gpu_relation = 1;
+}
+
+message GpuRelation {
+  repeated PodInfo pod_infos = 1;
 }
 
 message PodInfo {
@@ -119,7 +121,7 @@ message PodInfo {
   string namespace = 2;
   string model = 3;
   string machine_name = 4;
-  repeated GpuInfo vgpu_info = 5;
+  repeated GpuInfo vgpus = 5;
 }
 
 message GpuInfo {

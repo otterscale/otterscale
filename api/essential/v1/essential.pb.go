@@ -1571,10 +1571,11 @@ func (b0 AddUnitsRequest_builder) Build() *AddUnitsRequest {
 }
 
 type GetGpuRelationRequest struct {
-	state                   protoimpl.MessageState            `protogen:"opaque.v1"`
-	xxx_hidden_ScopeUuid    *string                           `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
-	xxx_hidden_FacilityName *string                           `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
-	xxx_hidden_NoticeWay    isGetGpuRelationRequest_NoticeWay `protobuf_oneof:"notice_way"`
+	state                   protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_ScopeUuid    *string                `protobuf:"bytes,1,opt,name=scope_uuid,json=scopeUuid"`
+	xxx_hidden_FacilityName *string                `protobuf:"bytes,2,opt,name=facility_name,json=facilityName"`
+	xxx_hidden_MachineName  *string                `protobuf:"bytes,3,opt,name=machine_name,json=machineName"`
+	xxx_hidden_ModelName    *string                `protobuf:"bytes,4,opt,name=model_name,json=modelName"`
 	XXX_raceDetectHookData  protoimpl.RaceDetectHookData
 	XXX_presence            [1]uint32
 	unknownFields           protoimpl.UnknownFields
@@ -1628,38 +1629,42 @@ func (x *GetGpuRelationRequest) GetFacilityName() string {
 
 func (x *GetGpuRelationRequest) GetMachineName() string {
 	if x != nil {
-		if x, ok := x.xxx_hidden_NoticeWay.(*getGpuRelationRequest_MachineName); ok {
-			return x.MachineName
+		if x.xxx_hidden_MachineName != nil {
+			return *x.xxx_hidden_MachineName
 		}
+		return ""
 	}
 	return ""
 }
 
 func (x *GetGpuRelationRequest) GetModelName() string {
 	if x != nil {
-		if x, ok := x.xxx_hidden_NoticeWay.(*getGpuRelationRequest_ModelName); ok {
-			return x.ModelName
+		if x.xxx_hidden_ModelName != nil {
+			return *x.xxx_hidden_ModelName
 		}
+		return ""
 	}
 	return ""
 }
 
 func (x *GetGpuRelationRequest) SetScopeUuid(v string) {
 	x.xxx_hidden_ScopeUuid = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 4)
 }
 
 func (x *GetGpuRelationRequest) SetFacilityName(v string) {
 	x.xxx_hidden_FacilityName = &v
-	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 4)
 }
 
 func (x *GetGpuRelationRequest) SetMachineName(v string) {
-	x.xxx_hidden_NoticeWay = &getGpuRelationRequest_MachineName{v}
+	x.xxx_hidden_MachineName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 4)
 }
 
 func (x *GetGpuRelationRequest) SetModelName(v string) {
-	x.xxx_hidden_NoticeWay = &getGpuRelationRequest_ModelName{v}
+	x.xxx_hidden_ModelName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 4)
 }
 
 func (x *GetGpuRelationRequest) HasScopeUuid() bool {
@@ -1676,27 +1681,18 @@ func (x *GetGpuRelationRequest) HasFacilityName() bool {
 	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
 }
 
-func (x *GetGpuRelationRequest) HasNoticeWay() bool {
-	if x == nil {
-		return false
-	}
-	return x.xxx_hidden_NoticeWay != nil
-}
-
 func (x *GetGpuRelationRequest) HasMachineName() bool {
 	if x == nil {
 		return false
 	}
-	_, ok := x.xxx_hidden_NoticeWay.(*getGpuRelationRequest_MachineName)
-	return ok
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
 }
 
 func (x *GetGpuRelationRequest) HasModelName() bool {
 	if x == nil {
 		return false
 	}
-	_, ok := x.xxx_hidden_NoticeWay.(*getGpuRelationRequest_ModelName)
-	return ok
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
 }
 
 func (x *GetGpuRelationRequest) ClearScopeUuid() {
@@ -1709,38 +1705,14 @@ func (x *GetGpuRelationRequest) ClearFacilityName() {
 	x.xxx_hidden_FacilityName = nil
 }
 
-func (x *GetGpuRelationRequest) ClearNoticeWay() {
-	x.xxx_hidden_NoticeWay = nil
-}
-
 func (x *GetGpuRelationRequest) ClearMachineName() {
-	if _, ok := x.xxx_hidden_NoticeWay.(*getGpuRelationRequest_MachineName); ok {
-		x.xxx_hidden_NoticeWay = nil
-	}
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_MachineName = nil
 }
 
 func (x *GetGpuRelationRequest) ClearModelName() {
-	if _, ok := x.xxx_hidden_NoticeWay.(*getGpuRelationRequest_ModelName); ok {
-		x.xxx_hidden_NoticeWay = nil
-	}
-}
-
-const GetGpuRelationRequest_NoticeWay_not_set_case case_GetGpuRelationRequest_NoticeWay = 0
-const GetGpuRelationRequest_MachineName_case case_GetGpuRelationRequest_NoticeWay = 3
-const GetGpuRelationRequest_ModelName_case case_GetGpuRelationRequest_NoticeWay = 4
-
-func (x *GetGpuRelationRequest) WhichNoticeWay() case_GetGpuRelationRequest_NoticeWay {
-	if x == nil {
-		return GetGpuRelationRequest_NoticeWay_not_set_case
-	}
-	switch x.xxx_hidden_NoticeWay.(type) {
-	case *getGpuRelationRequest_MachineName:
-		return GetGpuRelationRequest_MachineName_case
-	case *getGpuRelationRequest_ModelName:
-		return GetGpuRelationRequest_ModelName_case
-	default:
-		return GetGpuRelationRequest_NoticeWay_not_set_case
-	}
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_ModelName = nil
 }
 
 type GetGpuRelationRequest_builder struct {
@@ -1748,10 +1720,8 @@ type GetGpuRelationRequest_builder struct {
 
 	ScopeUuid    *string
 	FacilityName *string
-	// Fields of oneof xxx_hidden_NoticeWay:
-	MachineName *string
-	ModelName   *string
-	// -- end of xxx_hidden_NoticeWay
+	MachineName  *string
+	ModelName    *string
 }
 
 func (b0 GetGpuRelationRequest_builder) Build() *GetGpuRelationRequest {
@@ -1759,69 +1729,45 @@ func (b0 GetGpuRelationRequest_builder) Build() *GetGpuRelationRequest {
 	b, x := &b0, m0
 	_, _ = b, x
 	if b.ScopeUuid != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 4)
 		x.xxx_hidden_ScopeUuid = b.ScopeUuid
 	}
 	if b.FacilityName != nil {
-		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 4)
 		x.xxx_hidden_FacilityName = b.FacilityName
 	}
 	if b.MachineName != nil {
-		x.xxx_hidden_NoticeWay = &getGpuRelationRequest_MachineName{*b.MachineName}
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 4)
+		x.xxx_hidden_MachineName = b.MachineName
 	}
 	if b.ModelName != nil {
-		x.xxx_hidden_NoticeWay = &getGpuRelationRequest_ModelName{*b.ModelName}
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 4)
+		x.xxx_hidden_ModelName = b.ModelName
 	}
 	return m0
 }
 
-type case_GetGpuRelationRequest_NoticeWay protoreflect.FieldNumber
-
-func (x case_GetGpuRelationRequest_NoticeWay) String() string {
-	md := file_api_essential_v1_essential_proto_msgTypes[11].Descriptor()
-	if x == 0 {
-		return "not set"
-	}
-	return protoimpl.X.MessageFieldStringOf(md, protoreflect.FieldNumber(x))
+type GetGpuRelationResponse struct {
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_GpuRelation *GpuRelation           `protobuf:"bytes,1,opt,name=gpu_relation,json=gpuRelation"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
-type isGetGpuRelationRequest_NoticeWay interface {
-	isGetGpuRelationRequest_NoticeWay()
-}
-
-type getGpuRelationRequest_MachineName struct {
-	MachineName string `protobuf:"bytes,3,opt,name=machine_name,json=machineName,oneof"`
-}
-
-type getGpuRelationRequest_ModelName struct {
-	ModelName string `protobuf:"bytes,4,opt,name=model_name,json=modelName,oneof"`
-}
-
-func (*getGpuRelationRequest_MachineName) isGetGpuRelationRequest_NoticeWay() {}
-
-func (*getGpuRelationRequest_ModelName) isGetGpuRelationRequest_NoticeWay() {}
-
-type GetGpuRelationByResponse struct {
-	state              protoimpl.MessageState `protogen:"opaque.v1"`
-	xxx_hidden_PodInfo *[]*PodInfo            `protobuf:"bytes,1,rep,name=pod_info,json=podInfo"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
-}
-
-func (x *GetGpuRelationByResponse) Reset() {
-	*x = GetGpuRelationByResponse{}
+func (x *GetGpuRelationResponse) Reset() {
+	*x = GetGpuRelationResponse{}
 	mi := &file_api_essential_v1_essential_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetGpuRelationByResponse) String() string {
+func (x *GetGpuRelationResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetGpuRelationByResponse) ProtoMessage() {}
+func (*GetGpuRelationResponse) ProtoMessage() {}
 
-func (x *GetGpuRelationByResponse) ProtoReflect() protoreflect.Message {
+func (x *GetGpuRelationResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_essential_v1_essential_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1833,30 +1779,98 @@ func (x *GetGpuRelationByResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-func (x *GetGpuRelationByResponse) GetPodInfo() []*PodInfo {
+func (x *GetGpuRelationResponse) GetGpuRelation() *GpuRelation {
 	if x != nil {
-		if x.xxx_hidden_PodInfo != nil {
-			return *x.xxx_hidden_PodInfo
+		return x.xxx_hidden_GpuRelation
+	}
+	return nil
+}
+
+func (x *GetGpuRelationResponse) SetGpuRelation(v *GpuRelation) {
+	x.xxx_hidden_GpuRelation = v
+}
+
+func (x *GetGpuRelationResponse) HasGpuRelation() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_GpuRelation != nil
+}
+
+func (x *GetGpuRelationResponse) ClearGpuRelation() {
+	x.xxx_hidden_GpuRelation = nil
+}
+
+type GetGpuRelationResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	GpuRelation *GpuRelation
+}
+
+func (b0 GetGpuRelationResponse_builder) Build() *GetGpuRelationResponse {
+	m0 := &GetGpuRelationResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_GpuRelation = b.GpuRelation
+	return m0
+}
+
+type GpuRelation struct {
+	state               protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_PodInfos *[]*PodInfo            `protobuf:"bytes,1,rep,name=pod_infos,json=podInfos"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *GpuRelation) Reset() {
+	*x = GpuRelation{}
+	mi := &file_api_essential_v1_essential_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GpuRelation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GpuRelation) ProtoMessage() {}
+
+func (x *GpuRelation) ProtoReflect() protoreflect.Message {
+	mi := &file_api_essential_v1_essential_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+func (x *GpuRelation) GetPodInfos() []*PodInfo {
+	if x != nil {
+		if x.xxx_hidden_PodInfos != nil {
+			return *x.xxx_hidden_PodInfos
 		}
 	}
 	return nil
 }
 
-func (x *GetGpuRelationByResponse) SetPodInfo(v []*PodInfo) {
-	x.xxx_hidden_PodInfo = &v
+func (x *GpuRelation) SetPodInfos(v []*PodInfo) {
+	x.xxx_hidden_PodInfos = &v
 }
 
-type GetGpuRelationByResponse_builder struct {
+type GpuRelation_builder struct {
 	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
 
-	PodInfo []*PodInfo
+	PodInfos []*PodInfo
 }
 
-func (b0 GetGpuRelationByResponse_builder) Build() *GetGpuRelationByResponse {
-	m0 := &GetGpuRelationByResponse{}
+func (b0 GpuRelation_builder) Build() *GpuRelation {
+	m0 := &GpuRelation{}
 	b, x := &b0, m0
 	_, _ = b, x
-	x.xxx_hidden_PodInfo = &b.PodInfo
+	x.xxx_hidden_PodInfos = &b.PodInfos
 	return m0
 }
 
@@ -1866,7 +1880,7 @@ type PodInfo struct {
 	xxx_hidden_Namespace   *string                `protobuf:"bytes,2,opt,name=namespace"`
 	xxx_hidden_Model       *string                `protobuf:"bytes,3,opt,name=model"`
 	xxx_hidden_MachineName *string                `protobuf:"bytes,4,opt,name=machine_name,json=machineName"`
-	xxx_hidden_VgpuInfo    *[]*GpuInfo            `protobuf:"bytes,5,rep,name=vgpu_info,json=vgpuInfo"`
+	xxx_hidden_Vgpus       *[]*GpuInfo            `protobuf:"bytes,5,rep,name=vgpus"`
 	XXX_raceDetectHookData protoimpl.RaceDetectHookData
 	XXX_presence           [1]uint32
 	unknownFields          protoimpl.UnknownFields
@@ -1875,7 +1889,7 @@ type PodInfo struct {
 
 func (x *PodInfo) Reset() {
 	*x = PodInfo{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[13]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1887,7 +1901,7 @@ func (x *PodInfo) String() string {
 func (*PodInfo) ProtoMessage() {}
 
 func (x *PodInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[13]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1938,10 +1952,10 @@ func (x *PodInfo) GetMachineName() string {
 	return ""
 }
 
-func (x *PodInfo) GetVgpuInfo() []*GpuInfo {
+func (x *PodInfo) GetVgpus() []*GpuInfo {
 	if x != nil {
-		if x.xxx_hidden_VgpuInfo != nil {
-			return *x.xxx_hidden_VgpuInfo
+		if x.xxx_hidden_Vgpus != nil {
+			return *x.xxx_hidden_Vgpus
 		}
 	}
 	return nil
@@ -1967,8 +1981,8 @@ func (x *PodInfo) SetMachineName(v string) {
 	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
 }
 
-func (x *PodInfo) SetVgpuInfo(v []*GpuInfo) {
-	x.xxx_hidden_VgpuInfo = &v
+func (x *PodInfo) SetVgpus(v []*GpuInfo) {
+	x.xxx_hidden_Vgpus = &v
 }
 
 func (x *PodInfo) HasName() bool {
@@ -2026,7 +2040,7 @@ type PodInfo_builder struct {
 	Namespace   *string
 	Model       *string
 	MachineName *string
-	VgpuInfo    []*GpuInfo
+	Vgpus       []*GpuInfo
 }
 
 func (b0 PodInfo_builder) Build() *PodInfo {
@@ -2049,7 +2063,7 @@ func (b0 PodInfo_builder) Build() *PodInfo {
 		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
 		x.xxx_hidden_MachineName = b.MachineName
 	}
-	x.xxx_hidden_VgpuInfo = &b.VgpuInfo
+	x.xxx_hidden_Vgpus = &b.Vgpus
 	return m0
 }
 
@@ -2069,7 +2083,7 @@ type GpuInfo struct {
 
 func (x *GpuInfo) Reset() {
 	*x = GpuInfo{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[14]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2081,7 +2095,7 @@ func (x *GpuInfo) String() string {
 func (*GpuInfo) ProtoMessage() {}
 
 func (x *GpuInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[14]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2297,7 +2311,7 @@ type Essential_Unit struct {
 
 func (x *Essential_Unit) Reset() {
 	*x = Essential_Unit{}
-	mi := &file_api_essential_v1_essential_proto_msgTypes[15]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2309,7 +2323,7 @@ func (x *Essential_Unit) String() string {
 func (*Essential_Unit) ProtoMessage() {}
 
 func (x *Essential_Unit) ProtoReflect() protoreflect.Message {
-	mi := &file_api_essential_v1_essential_proto_msgTypes[15]
+	mi := &file_api_essential_v1_essential_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2481,24 +2495,24 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\x06number\x18\x04 \x01(\x05R\x06number\x12\x1f\n" +
 	"\vmachine_ids\x18\x05 \x03(\tR\n" +
 	"machineIds\x12\x14\n" +
-	"\x05force\x18\v \x01(\bR\x05force\"\xaf\x01\n" +
+	"\x05force\x18\v \x01(\bR\x05force\"\x9d\x01\n" +
 	"\x15GetGpuRelationRequest\x12\x1d\n" +
 	"\n" +
 	"scope_uuid\x18\x01 \x01(\tR\tscopeUuid\x12#\n" +
-	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12#\n" +
-	"\fmachine_name\x18\x03 \x01(\tH\x00R\vmachineName\x12\x1f\n" +
+	"\rfacility_name\x18\x02 \x01(\tR\ffacilityName\x12!\n" +
+	"\fmachine_name\x18\x03 \x01(\tR\vmachineName\x12\x1d\n" +
 	"\n" +
-	"model_name\x18\x04 \x01(\tH\x00R\tmodelNameB\f\n" +
-	"\n" +
-	"notice_way\"W\n" +
-	"\x18GetGpuRelationByResponse\x12;\n" +
-	"\bpod_info\x18\x01 \x03(\v2 .otterscale.essential.v1.PodInfoR\apodInfo\"\xb3\x01\n" +
+	"model_name\x18\x04 \x01(\tR\tmodelName\"a\n" +
+	"\x16GetGpuRelationResponse\x12G\n" +
+	"\fgpu_relation\x18\x01 \x01(\v2$.otterscale.essential.v1.GpuRelationR\vgpuRelation\"L\n" +
+	"\vGpuRelation\x12=\n" +
+	"\tpod_infos\x18\x01 \x03(\v2 .otterscale.essential.v1.PodInfoR\bpodInfos\"\xac\x01\n" +
 	"\aPodInfo\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1c\n" +
 	"\tnamespace\x18\x02 \x01(\tR\tnamespace\x12\x14\n" +
 	"\x05model\x18\x03 \x01(\tR\x05model\x12!\n" +
-	"\fmachine_name\x18\x04 \x01(\tR\vmachineName\x12=\n" +
-	"\tvgpu_info\x18\x05 \x03(\v2 .otterscale.essential.v1.GpuInfoR\bvgpuInfo\"\xeb\x01\n" +
+	"\fmachine_name\x18\x04 \x01(\tR\vmachineName\x126\n" +
+	"\x05vgpus\x18\x05 \x03(\v2 .otterscale.essential.v1.GpuInfoR\x05vgpus\"\xeb\x01\n" +
 	"\aGpuInfo\x12\x17\n" +
 	"\ais_vgpu\x18\x01 \x01(\bR\x06isVgpu\x12@\n" +
 	"\x0evgpu_bind_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\fvgpuBindTime\x12\x1d\n" +
@@ -2507,19 +2521,19 @@ const file_api_essential_v1_essential_proto_rawDesc = "" +
 	"\x11physical_gpu_uuid\x18\x04 \x01(\tR\x0fphysicalGpuUuid\x12\x1b\n" +
 	"\tvgpu_vram\x18\x05 \x01(\tR\bvgpuVram\x12\x1d\n" +
 	"\n" +
-	"vgpu_cores\x18\x06 \x01(\tR\tvgpuCores2\x8c\a\n" +
+	"vgpu_cores\x18\x06 \x01(\tR\tvgpuCores2\x88\a\n" +
 	"\x10EssentialService\x12z\n" +
 	"\x11IsMachineDeployed\x121.otterscale.essential.v1.IsMachineDeployedRequest\x1a2.otterscale.essential.v1.IsMachineDeployedResponse\x12k\n" +
 	"\fListStatuses\x12,.otterscale.essential.v1.ListStatusesRequest\x1a-.otterscale.essential.v1.ListStatusesResponse\x12q\n" +
 	"\x0eListEssentials\x12..otterscale.essential.v1.ListEssentialsRequest\x1a/.otterscale.essential.v1.ListEssentialsResponse\x12\\\n" +
 	"\x10CreateSingleNode\x120.otterscale.essential.v1.CreateSingleNodeRequest\x1a\x16.google.protobuf.Empty\x12v\n" +
 	"\x1dCreateHighAvailabilityCluster\x12=.otterscale.essential.v1.CreateHighAvailabilityClusterRequest\x1a\x16.google.protobuf.Empty\x12L\n" +
-	"\bAddUnits\x12(.otterscale.essential.v1.AddUnitsRequest\x1a\x16.google.protobuf.Empty\x12|\n" +
-	"\x17GetGpuRelationByMachine\x12..otterscale.essential.v1.GetGpuRelationRequest\x1a1.otterscale.essential.v1.GetGpuRelationByResponse\x12z\n" +
-	"\x15GetGpuRelationByModel\x12..otterscale.essential.v1.GetGpuRelationRequest\x1a1.otterscale.essential.v1.GetGpuRelationByResponseB6Z4github.com/otterscale/otterscale/api/essential/v1;pbb\beditionsp\xe8\a"
+	"\bAddUnits\x12(.otterscale.essential.v1.AddUnitsRequest\x1a\x16.google.protobuf.Empty\x12z\n" +
+	"\x17GetGpuRelationByMachine\x12..otterscale.essential.v1.GetGpuRelationRequest\x1a/.otterscale.essential.v1.GetGpuRelationResponse\x12x\n" +
+	"\x15GetGpuRelationByModel\x12..otterscale.essential.v1.GetGpuRelationRequest\x1a/.otterscale.essential.v1.GetGpuRelationResponseB6Z4github.com/otterscale/otterscale/api/essential/v1;pbb\beditionsp\xe8\a"
 
 var file_api_essential_v1_essential_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_essential_v1_essential_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_api_essential_v1_essential_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_api_essential_v1_essential_proto_goTypes = []any{
 	(Essential_Type)(0),                          // 0: otterscale.essential.v1.Essential.Type
 	(Status_Level)(0),                            // 1: otterscale.essential.v1.Status.Level
@@ -2535,45 +2549,47 @@ var file_api_essential_v1_essential_proto_goTypes = []any{
 	(*CreateHighAvailabilityClusterRequest)(nil), // 11: otterscale.essential.v1.CreateHighAvailabilityClusterRequest
 	(*AddUnitsRequest)(nil),                      // 12: otterscale.essential.v1.AddUnitsRequest
 	(*GetGpuRelationRequest)(nil),                // 13: otterscale.essential.v1.GetGpuRelationRequest
-	(*GetGpuRelationByResponse)(nil),             // 14: otterscale.essential.v1.GetGpuRelationByResponse
-	(*PodInfo)(nil),                              // 15: otterscale.essential.v1.PodInfo
-	(*GpuInfo)(nil),                              // 16: otterscale.essential.v1.GpuInfo
-	(*Essential_Unit)(nil),                       // 17: otterscale.essential.v1.Essential.Unit
-	(*timestamppb.Timestamp)(nil),                // 18: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                        // 19: google.protobuf.Empty
+	(*GetGpuRelationResponse)(nil),               // 14: otterscale.essential.v1.GetGpuRelationResponse
+	(*GpuRelation)(nil),                          // 15: otterscale.essential.v1.GpuRelation
+	(*PodInfo)(nil),                              // 16: otterscale.essential.v1.PodInfo
+	(*GpuInfo)(nil),                              // 17: otterscale.essential.v1.GpuInfo
+	(*Essential_Unit)(nil),                       // 18: otterscale.essential.v1.Essential.Unit
+	(*timestamppb.Timestamp)(nil),                // 19: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                        // 20: google.protobuf.Empty
 }
 var file_api_essential_v1_essential_proto_depIdxs = []int32{
 	0,  // 0: otterscale.essential.v1.Essential.type:type_name -> otterscale.essential.v1.Essential.Type
-	17, // 1: otterscale.essential.v1.Essential.units:type_name -> otterscale.essential.v1.Essential.Unit
+	18, // 1: otterscale.essential.v1.Essential.units:type_name -> otterscale.essential.v1.Essential.Unit
 	1,  // 2: otterscale.essential.v1.Status.level:type_name -> otterscale.essential.v1.Status.Level
 	3,  // 3: otterscale.essential.v1.ListStatusesResponse.statuses:type_name -> otterscale.essential.v1.Status
 	0,  // 4: otterscale.essential.v1.ListEssentialsRequest.type:type_name -> otterscale.essential.v1.Essential.Type
 	2,  // 5: otterscale.essential.v1.ListEssentialsResponse.essentials:type_name -> otterscale.essential.v1.Essential
 	0,  // 6: otterscale.essential.v1.AddUnitsRequest.type:type_name -> otterscale.essential.v1.Essential.Type
-	15, // 7: otterscale.essential.v1.GetGpuRelationByResponse.pod_info:type_name -> otterscale.essential.v1.PodInfo
-	16, // 8: otterscale.essential.v1.PodInfo.vgpu_info:type_name -> otterscale.essential.v1.GpuInfo
-	18, // 9: otterscale.essential.v1.GpuInfo.vgpu_bind_time:type_name -> google.protobuf.Timestamp
-	4,  // 10: otterscale.essential.v1.EssentialService.IsMachineDeployed:input_type -> otterscale.essential.v1.IsMachineDeployedRequest
-	6,  // 11: otterscale.essential.v1.EssentialService.ListStatuses:input_type -> otterscale.essential.v1.ListStatusesRequest
-	8,  // 12: otterscale.essential.v1.EssentialService.ListEssentials:input_type -> otterscale.essential.v1.ListEssentialsRequest
-	10, // 13: otterscale.essential.v1.EssentialService.CreateSingleNode:input_type -> otterscale.essential.v1.CreateSingleNodeRequest
-	11, // 14: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:input_type -> otterscale.essential.v1.CreateHighAvailabilityClusterRequest
-	12, // 15: otterscale.essential.v1.EssentialService.AddUnits:input_type -> otterscale.essential.v1.AddUnitsRequest
-	13, // 16: otterscale.essential.v1.EssentialService.GetGpuRelationByMachine:input_type -> otterscale.essential.v1.GetGpuRelationRequest
-	13, // 17: otterscale.essential.v1.EssentialService.GetGpuRelationByModel:input_type -> otterscale.essential.v1.GetGpuRelationRequest
-	5,  // 18: otterscale.essential.v1.EssentialService.IsMachineDeployed:output_type -> otterscale.essential.v1.IsMachineDeployedResponse
-	7,  // 19: otterscale.essential.v1.EssentialService.ListStatuses:output_type -> otterscale.essential.v1.ListStatusesResponse
-	9,  // 20: otterscale.essential.v1.EssentialService.ListEssentials:output_type -> otterscale.essential.v1.ListEssentialsResponse
-	19, // 21: otterscale.essential.v1.EssentialService.CreateSingleNode:output_type -> google.protobuf.Empty
-	19, // 22: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:output_type -> google.protobuf.Empty
-	19, // 23: otterscale.essential.v1.EssentialService.AddUnits:output_type -> google.protobuf.Empty
-	14, // 24: otterscale.essential.v1.EssentialService.GetGpuRelationByMachine:output_type -> otterscale.essential.v1.GetGpuRelationByResponse
-	14, // 25: otterscale.essential.v1.EssentialService.GetGpuRelationByModel:output_type -> otterscale.essential.v1.GetGpuRelationByResponse
-	18, // [18:26] is the sub-list for method output_type
-	10, // [10:18] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	15, // 7: otterscale.essential.v1.GetGpuRelationResponse.gpu_relation:type_name -> otterscale.essential.v1.GpuRelation
+	16, // 8: otterscale.essential.v1.GpuRelation.pod_infos:type_name -> otterscale.essential.v1.PodInfo
+	17, // 9: otterscale.essential.v1.PodInfo.vgpus:type_name -> otterscale.essential.v1.GpuInfo
+	19, // 10: otterscale.essential.v1.GpuInfo.vgpu_bind_time:type_name -> google.protobuf.Timestamp
+	4,  // 11: otterscale.essential.v1.EssentialService.IsMachineDeployed:input_type -> otterscale.essential.v1.IsMachineDeployedRequest
+	6,  // 12: otterscale.essential.v1.EssentialService.ListStatuses:input_type -> otterscale.essential.v1.ListStatusesRequest
+	8,  // 13: otterscale.essential.v1.EssentialService.ListEssentials:input_type -> otterscale.essential.v1.ListEssentialsRequest
+	10, // 14: otterscale.essential.v1.EssentialService.CreateSingleNode:input_type -> otterscale.essential.v1.CreateSingleNodeRequest
+	11, // 15: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:input_type -> otterscale.essential.v1.CreateHighAvailabilityClusterRequest
+	12, // 16: otterscale.essential.v1.EssentialService.AddUnits:input_type -> otterscale.essential.v1.AddUnitsRequest
+	13, // 17: otterscale.essential.v1.EssentialService.GetGpuRelationByMachine:input_type -> otterscale.essential.v1.GetGpuRelationRequest
+	13, // 18: otterscale.essential.v1.EssentialService.GetGpuRelationByModel:input_type -> otterscale.essential.v1.GetGpuRelationRequest
+	5,  // 19: otterscale.essential.v1.EssentialService.IsMachineDeployed:output_type -> otterscale.essential.v1.IsMachineDeployedResponse
+	7,  // 20: otterscale.essential.v1.EssentialService.ListStatuses:output_type -> otterscale.essential.v1.ListStatusesResponse
+	9,  // 21: otterscale.essential.v1.EssentialService.ListEssentials:output_type -> otterscale.essential.v1.ListEssentialsResponse
+	20, // 22: otterscale.essential.v1.EssentialService.CreateSingleNode:output_type -> google.protobuf.Empty
+	20, // 23: otterscale.essential.v1.EssentialService.CreateHighAvailabilityCluster:output_type -> google.protobuf.Empty
+	20, // 24: otterscale.essential.v1.EssentialService.AddUnits:output_type -> google.protobuf.Empty
+	14, // 25: otterscale.essential.v1.EssentialService.GetGpuRelationByMachine:output_type -> otterscale.essential.v1.GetGpuRelationResponse
+	14, // 26: otterscale.essential.v1.EssentialService.GetGpuRelationByModel:output_type -> otterscale.essential.v1.GetGpuRelationResponse
+	19, // [19:27] is the sub-list for method output_type
+	11, // [11:19] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_api_essential_v1_essential_proto_init() }
@@ -2581,17 +2597,13 @@ func file_api_essential_v1_essential_proto_init() {
 	if File_api_essential_v1_essential_proto != nil {
 		return
 	}
-	file_api_essential_v1_essential_proto_msgTypes[11].OneofWrappers = []any{
-		(*getGpuRelationRequest_MachineName)(nil),
-		(*getGpuRelationRequest_ModelName)(nil),
-	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_essential_v1_essential_proto_rawDesc), len(file_api_essential_v1_essential_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   16,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

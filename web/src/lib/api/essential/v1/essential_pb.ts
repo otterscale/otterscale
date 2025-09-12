@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file api/essential/v1/essential.proto.
  */
 export const file_api_essential_v1_essential: GenFile = /*@__PURE__*/
-  fileDesc("CiBhcGkvZXNzZW50aWFsL3YxL2Vzc2VudGlhbC5wcm90bxIXb3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEijAIKCUVzc2VudGlhbBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSDAoEbmFtZRgCIAEoCRISCgpzY29wZV91dWlkGAsgASgJEhIKCnNjb3BlX25hbWUYDCABKAkSNgoFdW5pdHMYFSADKAsyJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVW5pdBonCgRVbml0EgwKBG5hbWUYASABKAkSEQoJZGlyZWN0aXZlGAIgASgJIjEKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIOCgpLVUJFUk5FVEVTEAESCAoEQ0VQSBACIqABCgZTdGF0dXMSNAoFbGV2ZWwYASABKA4yJS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5TdGF0dXMuTGV2ZWwSDwoHbWVzc2FnZRgCIAEoCRIPCgdkZXRhaWxzGAMgASgJIj4KBUxldmVsEggKBElORk8QABIHCgNMT1cQARIKCgZNRURJVU0QAhIICgRISUdIEAMSDAoIQ1JJVElDQUwQBCIuChhJc01hY2hpbmVEZXBsb3llZFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCSI+ChlJc01hY2hpbmVEZXBsb3llZFJlc3BvbnNlEhAKCGRlcGxveWVkGAEgASgIEg8KB21lc3NhZ2UYAiABKAkiKQoTTGlzdFN0YXR1c2VzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJIkkKFExpc3RTdGF0dXNlc1Jlc3BvbnNlEjEKCHN0YXR1c2VzGAEgAygLMh8ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuU3RhdHVzImIKFUxpc3RFc3NlbnRpYWxzUmVxdWVzdBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSEgoKc2NvcGVfdXVpZBgCIAEoCSJQChZMaXN0RXNzZW50aWFsc1Jlc3BvbnNlEjYKCmVzc2VudGlhbHMYASADKAsyIi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwilQEKF0NyZWF0ZVNpbmdsZU5vZGVSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSEgoKbWFjaGluZV9pZBgCIAEoCRITCgtwcmVmaXhfbmFtZRgDIAEoCRITCgt2aXJ0dWFsX2lwcxgLIAMoCRITCgtjYWxpY29fY2lkchgMIAEoCRITCgtvc2RfZGV2aWNlcxgVIAMoCSKiAQokQ3JlYXRlSGlnaEF2YWlsYWJpbGl0eUNsdXN0ZXJSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSEgoKbWFjaGluZV9pZBgCIAEoCRITCgtwcmVmaXhfbmFtZRgDIAEoCRITCgt2aXJ0dWFsX2lwcxgLIAMoCRITCgtjYWxpY29fY2lkchgMIAEoCRITCgtvc2RfZGV2aWNlcxgVIAMoCSKeAQoPQWRkVW5pdHNSZXF1ZXN0EjUKBHR5cGUYASABKA4yJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVHlwZRISCgpzY29wZV91dWlkGAIgASgJEgwKBG5hbWUYAyABKAkSDgoGbnVtYmVyGAQgASgFEhMKC21hY2hpbmVfaWRzGAUgAygJEg0KBWZvcmNlGAsgASgIIn4KFUdldEdwdVJlbGF0aW9uUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSFgoMbWFjaGluZV9uYW1lGAMgASgJSAASFAoKbW9kZWxfbmFtZRgEIAEoCUgAQgwKCm5vdGljZV93YXkiTgoYR2V0R3B1UmVsYXRpb25CeVJlc3BvbnNlEjIKCHBvZF9pbmZvGAEgAygLMiAub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuUG9kSW5mbyKEAQoHUG9kSW5mbxIMCgRuYW1lGAEgASgJEhEKCW5hbWVzcGFjZRgCIAEoCRINCgVtb2RlbBgDIAEoCRIUCgxtYWNoaW5lX25hbWUYBCABKAkSMwoJdmdwdV9pbmZvGAUgAygLMiAub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuR3B1SW5mbyKkAQoHR3B1SW5mbxIPCgdpc192Z3B1GAEgASgIEjIKDnZncHVfYmluZF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBISCgpiaW5kX3BoYXNlGAMgASgJEhkKEXBoeXNpY2FsX2dwdV91dWlkGAQgASgJEhEKCXZncHVfdnJhbRgFIAEoCRISCgp2Z3B1X2NvcmVzGAYgASgJMowHChBFc3NlbnRpYWxTZXJ2aWNlEnoKEUlzTWFjaGluZURlcGxveWVkEjEub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuSXNNYWNoaW5lRGVwbG95ZWRSZXF1ZXN0GjIub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuSXNNYWNoaW5lRGVwbG95ZWRSZXNwb25zZRJrCgxMaXN0U3RhdHVzZXMSLC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0U3RhdHVzZXNSZXF1ZXN0Gi0ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdFN0YXR1c2VzUmVzcG9uc2UScQoOTGlzdEVzc2VudGlhbHMSLi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0RXNzZW50aWFsc1JlcXVlc3QaLy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5MaXN0RXNzZW50aWFsc1Jlc3BvbnNlElwKEENyZWF0ZVNpbmdsZU5vZGUSMC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5DcmVhdGVTaW5nbGVOb2RlUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJ2Ch1DcmVhdGVIaWdoQXZhaWxhYmlsaXR5Q2x1c3RlchI9Lm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkNyZWF0ZUhpZ2hBdmFpbGFiaWxpdHlDbHVzdGVyUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJMCghBZGRVbml0cxIoLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkFkZFVuaXRzUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRJ8ChdHZXRHcHVSZWxhdGlvbkJ5TWFjaGluZRIuLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkdldEdwdVJlbGF0aW9uUmVxdWVzdBoxLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkdldEdwdVJlbGF0aW9uQnlSZXNwb25zZRJ6ChVHZXRHcHVSZWxhdGlvbkJ5TW9kZWwSLi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5HZXRHcHVSZWxhdGlvblJlcXVlc3QaMS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5HZXRHcHVSZWxhdGlvbkJ5UmVzcG9uc2VCNlo0Z2l0aHViLmNvbS9vdHRlcnNjYWxlL290dGVyc2NhbGUvYXBpL2Vzc2VudGlhbC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
+  fileDesc("CiBhcGkvZXNzZW50aWFsL3YxL2Vzc2VudGlhbC5wcm90bxIXb3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEijAIKCUVzc2VudGlhbBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSDAoEbmFtZRgCIAEoCRISCgpzY29wZV91dWlkGAsgASgJEhIKCnNjb3BlX25hbWUYDCABKAkSNgoFdW5pdHMYFSADKAsyJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVW5pdBonCgRVbml0EgwKBG5hbWUYASABKAkSEQoJZGlyZWN0aXZlGAIgASgJIjEKBFR5cGUSDwoLVU5TUEVDSUZJRUQQABIOCgpLVUJFUk5FVEVTEAESCAoEQ0VQSBACIqABCgZTdGF0dXMSNAoFbGV2ZWwYASABKA4yJS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5TdGF0dXMuTGV2ZWwSDwoHbWVzc2FnZRgCIAEoCRIPCgdkZXRhaWxzGAMgASgJIj4KBUxldmVsEggKBElORk8QABIHCgNMT1cQARIKCgZNRURJVU0QAhIICgRISUdIEAMSDAoIQ1JJVElDQUwQBCIuChhJc01hY2hpbmVEZXBsb3llZFJlcXVlc3QSEgoKc2NvcGVfdXVpZBgBIAEoCSI+ChlJc01hY2hpbmVEZXBsb3llZFJlc3BvbnNlEhAKCGRlcGxveWVkGAEgASgIEg8KB21lc3NhZ2UYAiABKAkiKQoTTGlzdFN0YXR1c2VzUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJIkkKFExpc3RTdGF0dXNlc1Jlc3BvbnNlEjEKCHN0YXR1c2VzGAEgAygLMh8ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuU3RhdHVzImIKFUxpc3RFc3NlbnRpYWxzUmVxdWVzdBI1CgR0eXBlGAEgASgOMicub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuRXNzZW50aWFsLlR5cGUSEgoKc2NvcGVfdXVpZBgCIAEoCSJQChZMaXN0RXNzZW50aWFsc1Jlc3BvbnNlEjYKCmVzc2VudGlhbHMYASADKAsyIi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwilQEKF0NyZWF0ZVNpbmdsZU5vZGVSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSEgoKbWFjaGluZV9pZBgCIAEoCRITCgtwcmVmaXhfbmFtZRgDIAEoCRITCgt2aXJ0dWFsX2lwcxgLIAMoCRITCgtjYWxpY29fY2lkchgMIAEoCRITCgtvc2RfZGV2aWNlcxgVIAMoCSKiAQokQ3JlYXRlSGlnaEF2YWlsYWJpbGl0eUNsdXN0ZXJSZXF1ZXN0EhIKCnNjb3BlX3V1aWQYASABKAkSEgoKbWFjaGluZV9pZBgCIAEoCRITCgtwcmVmaXhfbmFtZRgDIAEoCRITCgt2aXJ0dWFsX2lwcxgLIAMoCRITCgtjYWxpY29fY2lkchgMIAEoCRITCgtvc2RfZGV2aWNlcxgVIAMoCSKeAQoPQWRkVW5pdHNSZXF1ZXN0EjUKBHR5cGUYASABKA4yJy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Fc3NlbnRpYWwuVHlwZRISCgpzY29wZV91dWlkGAIgASgJEgwKBG5hbWUYAyABKAkSDgoGbnVtYmVyGAQgASgFEhMKC21hY2hpbmVfaWRzGAUgAygJEg0KBWZvcmNlGAsgASgIImwKFUdldEdwdVJlbGF0aW9uUmVxdWVzdBISCgpzY29wZV91dWlkGAEgASgJEhUKDWZhY2lsaXR5X25hbWUYAiABKAkSFAoMbWFjaGluZV9uYW1lGAMgASgJEhIKCm1vZGVsX25hbWUYBCABKAkiVAoWR2V0R3B1UmVsYXRpb25SZXNwb25zZRI6CgxncHVfcmVsYXRpb24YASABKAsyJC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5HcHVSZWxhdGlvbiJCCgtHcHVSZWxhdGlvbhIzCglwb2RfaW5mb3MYASADKAsyIC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5Qb2RJbmZvIoABCgdQb2RJbmZvEgwKBG5hbWUYASABKAkSEQoJbmFtZXNwYWNlGAIgASgJEg0KBW1vZGVsGAMgASgJEhQKDG1hY2hpbmVfbmFtZRgEIAEoCRIvCgV2Z3B1cxgFIAMoCzIgLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkdwdUluZm8ipAEKB0dwdUluZm8SDwoHaXNfdmdwdRgBIAEoCBIyCg52Z3B1X2JpbmRfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEgoKYmluZF9waGFzZRgDIAEoCRIZChFwaHlzaWNhbF9ncHVfdXVpZBgEIAEoCRIRCgl2Z3B1X3ZyYW0YBSABKAkSEgoKdmdwdV9jb3JlcxgGIAEoCTKIBwoQRXNzZW50aWFsU2VydmljZRJ6ChFJc01hY2hpbmVEZXBsb3llZBIxLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLklzTWFjaGluZURlcGxveWVkUmVxdWVzdBoyLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLklzTWFjaGluZURlcGxveWVkUmVzcG9uc2USawoMTGlzdFN0YXR1c2VzEiwub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdFN0YXR1c2VzUmVxdWVzdBotLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkxpc3RTdGF0dXNlc1Jlc3BvbnNlEnEKDkxpc3RFc3NlbnRpYWxzEi4ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEVzc2VudGlhbHNSZXF1ZXN0Gi8ub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuTGlzdEVzc2VudGlhbHNSZXNwb25zZRJcChBDcmVhdGVTaW5nbGVOb2RlEjAub3R0ZXJzY2FsZS5lc3NlbnRpYWwudjEuQ3JlYXRlU2luZ2xlTm9kZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSdgodQ3JlYXRlSGlnaEF2YWlsYWJpbGl0eUNsdXN0ZXISPS5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5DcmVhdGVIaWdoQXZhaWxhYmlsaXR5Q2x1c3RlclJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSTAoIQWRkVW5pdHMSKC5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5BZGRVbml0c1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkSegoXR2V0R3B1UmVsYXRpb25CeU1hY2hpbmUSLi5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5HZXRHcHVSZWxhdGlvblJlcXVlc3QaLy5vdHRlcnNjYWxlLmVzc2VudGlhbC52MS5HZXRHcHVSZWxhdGlvblJlc3BvbnNlEngKFUdldEdwdVJlbGF0aW9uQnlNb2RlbBIuLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkdldEdwdVJlbGF0aW9uUmVxdWVzdBovLm90dGVyc2NhbGUuZXNzZW50aWFsLnYxLkdldEdwdVJlbGF0aW9uUmVzcG9uc2VCNlo0Z2l0aHViLmNvbS9vdHRlcnNjYWxlL290dGVyc2NhbGUvYXBpL2Vzc2VudGlhbC92MTtwYmIIZWRpdGlvbnNw6Ac", [file_google_protobuf_empty, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message otterscale.essential.v1.Essential
@@ -415,21 +415,14 @@ export type GetGpuRelationRequest = Message<"otterscale.essential.v1.GetGpuRelat
   facilityName: string;
 
   /**
-   * @generated from oneof otterscale.essential.v1.GetGpuRelationRequest.notice_way
+   * @generated from field: string machine_name = 3;
    */
-  noticeWay: {
-    /**
-     * @generated from field: string machine_name = 3;
-     */
-    value: string;
-    case: "machineName";
-  } | {
-    /**
-     * @generated from field: string model_name = 4;
-     */
-    value: string;
-    case: "modelName";
-  } | { case: undefined; value?: undefined };
+  machineName: string;
+
+  /**
+   * @generated from field: string model_name = 4;
+   */
+  modelName: string;
 };
 
 /**
@@ -440,21 +433,38 @@ export const GetGpuRelationRequestSchema: GenMessage<GetGpuRelationRequest> = /*
   messageDesc(file_api_essential_v1_essential, 11);
 
 /**
- * @generated from message otterscale.essential.v1.GetGpuRelationByResponse
+ * @generated from message otterscale.essential.v1.GetGpuRelationResponse
  */
-export type GetGpuRelationByResponse = Message<"otterscale.essential.v1.GetGpuRelationByResponse"> & {
+export type GetGpuRelationResponse = Message<"otterscale.essential.v1.GetGpuRelationResponse"> & {
   /**
-   * @generated from field: repeated otterscale.essential.v1.PodInfo pod_info = 1;
+   * @generated from field: otterscale.essential.v1.GpuRelation gpu_relation = 1;
    */
-  podInfo: PodInfo[];
+  gpuRelation?: GpuRelation;
 };
 
 /**
- * Describes the message otterscale.essential.v1.GetGpuRelationByResponse.
- * Use `create(GetGpuRelationByResponseSchema)` to create a new message.
+ * Describes the message otterscale.essential.v1.GetGpuRelationResponse.
+ * Use `create(GetGpuRelationResponseSchema)` to create a new message.
  */
-export const GetGpuRelationByResponseSchema: GenMessage<GetGpuRelationByResponse> = /*@__PURE__*/
+export const GetGpuRelationResponseSchema: GenMessage<GetGpuRelationResponse> = /*@__PURE__*/
   messageDesc(file_api_essential_v1_essential, 12);
+
+/**
+ * @generated from message otterscale.essential.v1.GpuRelation
+ */
+export type GpuRelation = Message<"otterscale.essential.v1.GpuRelation"> & {
+  /**
+   * @generated from field: repeated otterscale.essential.v1.PodInfo pod_infos = 1;
+   */
+  podInfos: PodInfo[];
+};
+
+/**
+ * Describes the message otterscale.essential.v1.GpuRelation.
+ * Use `create(GpuRelationSchema)` to create a new message.
+ */
+export const GpuRelationSchema: GenMessage<GpuRelation> = /*@__PURE__*/
+  messageDesc(file_api_essential_v1_essential, 13);
 
 /**
  * @generated from message otterscale.essential.v1.PodInfo
@@ -481,9 +491,9 @@ export type PodInfo = Message<"otterscale.essential.v1.PodInfo"> & {
   machineName: string;
 
   /**
-   * @generated from field: repeated otterscale.essential.v1.GpuInfo vgpu_info = 5;
+   * @generated from field: repeated otterscale.essential.v1.GpuInfo vgpus = 5;
    */
-  vgpuInfo: GpuInfo[];
+  vgpus: GpuInfo[];
 };
 
 /**
@@ -491,7 +501,7 @@ export type PodInfo = Message<"otterscale.essential.v1.PodInfo"> & {
  * Use `create(PodInfoSchema)` to create a new message.
  */
 export const PodInfoSchema: GenMessage<PodInfo> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 13);
+  messageDesc(file_api_essential_v1_essential, 14);
 
 /**
  * @generated from message otterscale.essential.v1.GpuInfo
@@ -533,7 +543,7 @@ export type GpuInfo = Message<"otterscale.essential.v1.GpuInfo"> & {
  * Use `create(GpuInfoSchema)` to create a new message.
  */
 export const GpuInfoSchema: GenMessage<GpuInfo> = /*@__PURE__*/
-  messageDesc(file_api_essential_v1_essential, 14);
+  messageDesc(file_api_essential_v1_essential, 15);
 
 /**
  * @generated from service otterscale.essential.v1.EssentialService
@@ -593,7 +603,7 @@ export const EssentialService: GenService<{
   getGpuRelationByMachine: {
     methodKind: "unary";
     input: typeof GetGpuRelationRequestSchema;
-    output: typeof GetGpuRelationByResponseSchema;
+    output: typeof GetGpuRelationResponseSchema;
   },
   /**
    * @generated from rpc otterscale.essential.v1.EssentialService.GetGpuRelationByModel
@@ -601,7 +611,7 @@ export const EssentialService: GenService<{
   getGpuRelationByModel: {
     methodKind: "unary";
     input: typeof GetGpuRelationRequestSchema;
-    output: typeof GetGpuRelationByResponseSchema;
+    output: typeof GetGpuRelationResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_essential_v1_essential, 0);

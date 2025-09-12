@@ -119,25 +119,31 @@ func toProtoEssentialUnit(eu *core.EssentialUnit) *pb.Essential_Unit {
 	return ret
 }
 
-func (s *EssentialService) GetGpuRelationByMachine(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequest]) (*connect.Response[pb.GetGpuRelationByResponse], error) {
+func (s *EssentialService) GetGpuRelationByMachine(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequest]) (*connect.Response[pb.GetGpuRelationResponse], error) {
 	podInfos, err := s.uc.GetGpuRelationByMachine(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetMachineName())
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &pb.GetGpuRelationByResponse{}
-	resp.SetPodInfo(toProtoPodInfos(podInfos))
+	gpuRelation := &pb.GpuRelation{}
+	gpuRelation.SetPodInfos(toProtoPodInfos(podInfos))
+
+	resp := &pb.GetGpuRelationResponse{}
+	resp.SetGpuRelation(gpuRelation)
 	return connect.NewResponse(resp), nil
 }
 
-func (s *EssentialService) GetGpuRelationByModel(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequest]) (*connect.Response[pb.GetGpuRelationByResponse], error) {
+func (s *EssentialService) GetGpuRelationByModel(ctx context.Context, req *connect.Request[pb.GetGpuRelationRequest]) (*connect.Response[pb.GetGpuRelationResponse], error) {
 	podInfos, err := s.uc.GetGpuRelationByModel(ctx, req.Msg.GetScopeUuid(), req.Msg.GetFacilityName(), req.Msg.GetModelName())
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &pb.GetGpuRelationByResponse{}
-	resp.SetPodInfo(toProtoPodInfos(podInfos))
+	gpuRelation := &pb.GpuRelation{}
+	gpuRelation.SetPodInfos(toProtoPodInfos(podInfos))
+
+	resp := &pb.GetGpuRelationResponse{}
+	resp.SetGpuRelation(gpuRelation)
 	return connect.NewResponse(resp), nil
 }
 
@@ -155,7 +161,7 @@ func toProtoPodInfo(pi *core.PodInfo) *pb.PodInfo {
 	ret.SetNamespace(pi.Namespace)
 	ret.SetModel(pi.Model)
 	ret.SetMachineName(pi.MachineName)
-	ret.SetVgpuInfo(toProtoGpuInfos(pi.VGpuInfo))
+	ret.SetVgpus(toProtoGpuInfos(pi.VGpuInfo))
 	return ret
 }
 
