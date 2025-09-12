@@ -10,7 +10,7 @@
 		VirtualMachineResources,
 		VirtualMachineDisk,
 	} from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { KubeVirtService, VirtualMachineDisk_type, VirtualMachineDisk_bus } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -47,6 +47,53 @@
 			icon: 'ph:scales',
 		},
 	]);
+
+	export const diskTypes: Writable<SingleSelect.OptionType[]> = writable([
+		{
+			value: VirtualMachineDisk_type.DATAVOLUME.toString(),
+			label: 'Data Volume',
+			icon: 'ph:database',
+		},
+		{
+			value: VirtualMachineDisk_type.PERSISTENTVOLUMECLAIM.toString(),
+			label: 'Persistent Volume Claim',
+			icon: 'ph:hard-drive',
+		},
+		{
+			value: VirtualMachineDisk_type.CONFIGMAP.toString(),
+			label: 'Config Map',
+			icon: 'ph:file-text',
+		},
+		{
+			value: VirtualMachineDisk_type.SECRET.toString(),
+			label: 'Secret',
+			icon: 'ph:lock',
+		},
+		{
+			value: VirtualMachineDisk_type.CLOUDINITNOCLOUD.toString(),
+			label: 'Cloud Init No Cloud',
+			icon: 'ph:cloud',
+		},
+	]);
+
+	export const busTypes: Writable<SingleSelect.OptionType[]> = writable([
+		{
+			value: VirtualMachineDisk_bus.VIRTIO.toString(),
+			label: 'VirtIO',
+			icon: 'ph:cpu',
+		},
+		{
+			value: VirtualMachineDisk_bus.SATA.toString(),
+			label: 'SATA',
+			icon: 'ph:hard-drive',
+		},
+		{
+			value: VirtualMachineDisk_bus.SCSI.toString(),
+			label: 'SCSI',
+			icon: 'ph:hard-drives',
+		},
+	]);
+
 	export const namespaces: Writable<SingleSelect.OptionType[]> = writable([]);
 
 	async function loadNamespaces() {
@@ -92,9 +139,16 @@
 		case: 'instancetypeName',
 		value: '',
 	};
+	const DEFAULT_DISK = {
+		name: '',
+		diskType: VirtualMachineDisk_type.DATAVOLUME,
+		busType: VirtualMachineDisk_bus.VIRTIO,
+		source: '',
+	} as VirtualMachineDisk;
 	let request: CreateVirtualMachineRequest = $state(DEFAULT_REQUEST);
 	let resourcesCustom = $state(DEFAULT_RESOURCES_CUSTOM);
 	let resourcesInstance = $state(DEFAULT_RESOURCES_INSTANCE);
+	let newDisk: VirtualMachineDisk = $state(DEFAULT_DISK);
 
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -103,7 +157,20 @@
 		isAdvancedOpen = false;
 		labelKey = '';
 		labelValue = '';
+		newDisk = DEFAULT_DISK;
 	}
+
+	function addDisk() {
+		if (newDisk.name.trim() && newDisk.source.trim()) {
+			request.disks = [...request.disks, { ...newDisk }];
+			newDisk = DEFAULT_DISK;
+		}
+	}
+
+	function removeDisk(index: number) {
+		request.disks = request.disks.filter((_, i) => i !== index);
+	}
+
 	// Add function to handle adding labels
 	function addLabel() {
 		if (labelKey.trim() && labelValue.trim()) {
@@ -230,6 +297,113 @@
 
 			<Form.Fieldset>
 				<Form.Legend>Disk</Form.Legend>
+				<!-- Add new disk form -->
+				<Form.Field>
+					<Form.Label>Disk Name</Form.Label>
+					<SingleInput.General required type="text" placeholder="Enter disk name" bind:value={newDisk.name} />
+				</Form.Field>
+				<Form.Field>
+					<Form.Label>Source</Form.Label>
+					<SingleInput.General
+						required
+						type="text"
+						placeholder="Enter source reference"
+						bind:value={newDisk.source}
+					/>
+				</Form.Field>
+				<Form.Field>
+					<Form.Label>Disk Type</Form.Label>
+					<SingleSelect.Root required options={diskTypes} bind:value={newDisk.diskType}>
+						<SingleSelect.Trigger />
+						<SingleSelect.Content>
+							<SingleSelect.Options>
+								<SingleSelect.List>
+									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+									<SingleSelect.Group>
+										{#each $diskTypes as diskType}
+											<SingleSelect.Item option={diskType}>
+												<Icon
+													icon={diskType.icon ? diskType.icon : 'ph:empty'}
+													class={cn('size-5', diskType.icon ? 'visible' : 'invisible')}
+												/>
+												{diskType.label}
+												<SingleSelect.Check option={diskType} />
+											</SingleSelect.Item>
+										{/each}
+									</SingleSelect.Group>
+								</SingleSelect.List>
+							</SingleSelect.Options>
+						</SingleSelect.Content>
+					</SingleSelect.Root>
+				</Form.Field>
+				<Form.Field>
+					<Form.Label>Bus Type</Form.Label>
+					<SingleSelect.Root required options={busTypes} bind:value={newDisk.busType}>
+						<SingleSelect.Trigger />
+						<SingleSelect.Content>
+							<SingleSelect.Options>
+								<SingleSelect.List>
+									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+									<SingleSelect.Group>
+										{#each $busTypes as busType}
+											<SingleSelect.Item option={busType}>
+												<Icon
+													icon={busType.icon ? busType.icon : 'ph:empty'}
+													class={cn('size-5', busType.icon ? 'visible' : 'invisible')}
+												/>
+												{busType.label}
+												<SingleSelect.Check option={busType} />
+											</SingleSelect.Item>
+										{/each}
+									</SingleSelect.Group>
+								</SingleSelect.List>
+							</SingleSelect.Options>
+						</SingleSelect.Content>
+					</SingleSelect.Root>
+				</Form.Field>
+				<Button
+					type="button"
+					variant="outline"
+					size="sm"
+					disabled={!newDisk.name.trim() || !newDisk.source.trim()}
+					onclick={addDisk}
+				>
+					<Icon icon="ph:plus" class="size-4" />
+					Add Disk
+				</Button>
+
+				<!-- Display existing disks -->
+				{#if request.disks.length > 0}
+					<div class="space-y-2">
+						<h4 class="font-medium">Configured Disks</h4>
+						{#each request.disks as disk, index}
+							<div class="bg-muted flex items-center justify-between rounded-md px-3 py-2">
+								<div class="flex-1">
+									<div class="flex items-center gap-2">
+										<Icon icon="ph:hard-drive" class="size-4" />
+										<span class="font-medium">{disk.name}</span>
+									</div>
+									<div class="text-muted-foreground text-sm">
+										<span
+											>Type: {$diskTypes.find((t) => t.value === disk.diskType.toString())
+												?.label}</span
+										>
+										<span class="mx-2">•</span>
+										<span
+											>Bus: {$busTypes.find((b) => b.value === disk.busType.toString())
+												?.label}</span
+										>
+										<span class="mx-2">•</span>
+										<span>Source: {disk.source}</span>
+									</div>
+								</div>
+								<Button type="button" variant="ghost" size="sm" onclick={() => removeDisk(index)}>
+									<Icon icon="ph:x" class="size-4" />
+								</Button>
+							</div>
+						{/each}
+					</div>
+				{/if}
 			</Form.Fieldset>
 
 			<Collapsible.Root bind:open={isAdvancedOpen} class="py-4">
