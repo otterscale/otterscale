@@ -9,8 +9,14 @@
 		CreateVirtualMachineRequest,
 		VirtualMachineResources,
 		VirtualMachineDisk,
+		DataVolumeSource,
 	} from '$lib/api/kubevirt/v1/kubevirt_pb';
-	import { KubeVirtService, VirtualMachineDisk_type, VirtualMachineDisk_bus } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import {
+		KubeVirtService,
+		VirtualMachineDisk_type,
+		VirtualMachineDisk_bus,
+		DataVolumeSource_Type,
+	} from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import * as Code from '$lib/components/custom/code';
 	import * as Form from '$lib/components/custom/form';
 	import { Single as SingleInput } from '$lib/components/custom/input';
@@ -58,46 +64,83 @@
 	]);
 	export const diskTypes: Writable<SingleSelect.OptionType[]> = writable([
 		{
-			value: VirtualMachineDisk_type.DATAVOLUME.toString(),
+			value: VirtualMachineDisk_type.DATAVOLUME,
 			label: 'Data Volume',
 			icon: 'ph:database',
 		},
 		{
-			value: VirtualMachineDisk_type.PERSISTENTVOLUMECLAIM.toString(),
+			value: VirtualMachineDisk_type.PERSISTENTVOLUMECLAIM,
 			label: 'Persistent Volume Claim',
 			icon: 'ph:hard-drive',
 		},
 		{
-			value: VirtualMachineDisk_type.CONFIGMAP.toString(),
+			value: VirtualMachineDisk_type.CONFIGMAP,
 			label: 'Config Map',
 			icon: 'ph:file-text',
 		},
 		{
-			value: VirtualMachineDisk_type.SECRET.toString(),
+			value: VirtualMachineDisk_type.SECRET,
 			label: 'Secret',
 			icon: 'ph:lock',
 		},
 		{
-			value: VirtualMachineDisk_type.CLOUDINITNOCLOUD.toString(),
+			value: VirtualMachineDisk_type.CLOUDINITNOCLOUD,
 			label: 'Cloud Init No Cloud',
 			icon: 'ph:cloud',
 		},
 	]);
 	export const busTypes: Writable<SingleSelect.OptionType[]> = writable([
 		{
-			value: VirtualMachineDisk_bus.VIRTIO.toString(),
+			value: VirtualMachineDisk_bus.VIRTIO,
 			label: 'VirtIO',
 			icon: 'ph:cpu',
 		},
 		{
-			value: VirtualMachineDisk_bus.SATA.toString(),
+			value: VirtualMachineDisk_bus.SATA,
 			label: 'SATA',
 			icon: 'ph:hard-drive',
 		},
 		{
-			value: VirtualMachineDisk_bus.SCSI.toString(),
+			value: VirtualMachineDisk_bus.SCSI,
 			label: 'SCSI',
 			icon: 'ph:hard-drives',
+		},
+	]);
+	export const dataVolumeSourceTypes: Writable<SingleSelect.OptionType[]> = writable([
+		{
+			value: DataVolumeSource_Type.HTTP,
+			label: 'HTTP',
+			icon: 'ph:globe',
+		},
+		{
+			value: DataVolumeSource_Type.BLANK,
+			label: 'Blank',
+			icon: 'ph:file',
+		},
+		{
+			value: DataVolumeSource_Type.REGISTRY,
+			label: 'Registry',
+			icon: 'ph:package',
+		},
+		{
+			value: DataVolumeSource_Type.UPLOAD,
+			label: 'Upload',
+			icon: 'ph:upload',
+		},
+		{
+			value: DataVolumeSource_Type.S3,
+			label: 'S3',
+			icon: 'ph:cloud',
+		},
+		{
+			value: DataVolumeSource_Type.VDDK,
+			label: 'VDDK',
+			icon: 'ph:hard-drives',
+		},
+		{
+			value: DataVolumeSource_Type.PVC,
+			label: 'PVC',
+			icon: 'ph:hard-drive',
 		},
 	]);
 	export const namespaces: Writable<SingleSelect.OptionType[]> = writable([]);
@@ -149,11 +192,20 @@
 		case: 'instancetypeName',
 		value: '',
 	};
+	const DEFAULT_DISK_SOURCE = { value: '', case: 'source' };
+	const DEFAULT_DISK_DATA_VOLUME_SOURCE = {
+		value: {
+			type: DataVolumeSource_Type.HTTP,
+			source: '',
+			sizeBytes: 1n * 1024n * 1024n * 1024n, // 1GiB
+		} as DataVolumeSource,
+		case: 'dataVolume',
+	};
 	const DEFAULT_DISK = {
 		name: '',
 		diskType: VirtualMachineDisk_type.DATAVOLUME,
 		busType: VirtualMachineDisk_bus.VIRTIO,
-		source: '',
+		sourceData: DEFAULT_DISK_SOURCE,
 	} as VirtualMachineDisk;
 
 	// ==================== Form State ====================
@@ -161,6 +213,8 @@
 	let resourcesCustom = $state(DEFAULT_RESOURCES_CUSTOM);
 	let resourcesInstance = $state(DEFAULT_RESOURCES_INSTANCE);
 	let newDisk: VirtualMachineDisk = $state(DEFAULT_DISK);
+	let newDiskSource = $state(DEFAULT_DISK_SOURCE);
+	let newDiskSourceDataVolume = $state(DEFAULT_DISK_DATA_VOLUME_SOURCE);
 
 	// ==================== Utility Functions ====================
 	function reset() {
@@ -171,6 +225,8 @@
 		labelKey = '';
 		labelValue = '';
 		newDisk = DEFAULT_DISK;
+		newDiskSource = DEFAULT_DISK_SOURCE;
+		newDiskSourceDataVolume = DEFAULT_DISK_DATA_VOLUME_SOURCE;
 	}
 	function close() {
 		open = false;
@@ -178,9 +234,26 @@
 
 	// ==================== Disk Management ====================
 	function addDisk() {
-		if (newDisk.name.trim() && newDisk.source.trim()) {
+		if (
+			newDisk.name.trim() &&
+			((newDiskSource.case === 'source' && newDiskSource.value.trim()) ||
+				(newDiskSourceDataVolume.case === 'dataVolume' && newDiskSourceDataVolume.value))
+		) {
+			if (newDiskSource.case === 'source') {
+				newDisk.sourceData = {
+					case: 'source' as const,
+					value: newDiskSource.value,
+				};
+			} else if (newDiskSourceDataVolume.case === 'dataVolume') {
+				newDisk.sourceData = {
+					case: 'dataVolume' as const,
+					value: newDiskSourceDataVolume.value,
+				};
+			}
 			request.disks = [...request.disks, { ...newDisk }];
 			newDisk = DEFAULT_DISK;
+			newDiskSource = DEFAULT_DISK_SOURCE;
+			newDiskSourceDataVolume = DEFAULT_DISK_DATA_VOLUME_SOURCE;
 		}
 	}
 	function removeDisk(index: number) {
@@ -317,13 +390,29 @@
 					<SingleInput.General required type="text" placeholder="Enter disk name" bind:value={newDisk.name} />
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Source</Form.Label>
-					<SingleInput.General
-						required
-						type="text"
-						placeholder="Enter source reference"
-						bind:value={newDisk.source}
-					/>
+					<Form.Label>Bus Type</Form.Label>
+					<SingleSelect.Root required options={busTypes} bind:value={newDisk.busType}>
+						<SingleSelect.Trigger />
+						<SingleSelect.Content>
+							<SingleSelect.Options>
+								<SingleSelect.List>
+									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+									<SingleSelect.Group>
+										{#each $busTypes as busType}
+											<SingleSelect.Item option={busType}>
+												<Icon
+													icon={busType.icon ? busType.icon : 'ph:empty'}
+													class={cn('size-5', busType.icon ? 'visible' : 'invisible')}
+												/>
+												{busType.label}
+												<SingleSelect.Check option={busType} />
+											</SingleSelect.Item>
+										{/each}
+									</SingleSelect.Group>
+								</SingleSelect.List>
+							</SingleSelect.Options>
+						</SingleSelect.Content>
+					</SingleSelect.Root>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>Disk Type</Form.Label>
@@ -350,36 +439,76 @@
 						</SingleSelect.Content>
 					</SingleSelect.Root>
 				</Form.Field>
-				<Form.Field>
-					<Form.Label>Bus Type</Form.Label>
-					<SingleSelect.Root required options={busTypes} bind:value={newDisk.busType}>
-						<SingleSelect.Trigger />
-						<SingleSelect.Content>
-							<SingleSelect.Options>
-								<SingleSelect.List>
-									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
-									<SingleSelect.Group>
-										{#each $busTypes as busType}
-											<SingleSelect.Item option={busType}>
-												<Icon
-													icon={busType.icon ? busType.icon : 'ph:empty'}
-													class={cn('size-5', busType.icon ? 'visible' : 'invisible')}
-												/>
-												{busType.label}
-												<SingleSelect.Check option={busType} />
-											</SingleSelect.Item>
-										{/each}
-									</SingleSelect.Group>
-								</SingleSelect.List>
-							</SingleSelect.Options>
-						</SingleSelect.Content>
-					</SingleSelect.Root>
-				</Form.Field>
+				{#if newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME}
+					<Form.Field>
+						<Form.Label>Data Volume Source Type</Form.Label>
+						<SingleSelect.Root
+							required
+							options={dataVolumeSourceTypes}
+							bind:value={newDiskSourceDataVolume.value.type}
+						>
+							<SingleSelect.Trigger />
+							<SingleSelect.Content>
+								<SingleSelect.Options>
+									<SingleSelect.List>
+										<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
+										<SingleSelect.Group>
+											{#each $dataVolumeSourceTypes as sourceType}
+												<SingleSelect.Item option={sourceType}>
+													<Icon
+														icon={sourceType.icon ? sourceType.icon : 'ph:empty'}
+														class={cn('size-5', sourceType.icon ? 'visible' : 'invisible')}
+													/>
+													{sourceType.label}
+													<SingleSelect.Check option={sourceType} />
+												</SingleSelect.Item>
+											{/each}
+										</SingleSelect.Group>
+									</SingleSelect.List>
+								</SingleSelect.Options>
+							</SingleSelect.Content>
+						</SingleSelect.Root>
+					</Form.Field>
+					<Form.Field>
+						<Form.Label>Source</Form.Label>
+						<SingleInput.General
+							required
+							type="text"
+							placeholder="Enter source reference"
+							bind:value={newDiskSourceDataVolume.value.source}
+							oninput={() => {
+								newDiskSourceDataVolume.case = 'dataVolume';
+							}}
+						/>
+					</Form.Field>
+					<Form.Field>
+						<Form.Label>Size</Form.Label>
+						<SingleInput.Measurement
+							required
+							bind:value={newDiskSourceDataVolume.value.sizeBytes}
+							transformer={(value) => String(value)}
+							units={[{ value: 1024 * 1024 * 1024, label: 'GB' } as SingleInput.UnitType]}
+						/>
+					</Form.Field>
+				{:else}
+					<Form.Field>
+						<Form.Label>Source</Form.Label>
+						<SingleInput.General
+							required
+							type="text"
+							placeholder="Enter source reference"
+							bind:value={newDiskSource.value}
+							oninput={() => {
+								newDiskSource.case = 'source';
+							}}
+						/>
+					</Form.Field>
+				{/if}
 				<Button
 					type="button"
 					variant="outline"
 					size="sm"
-					disabled={!newDisk.name.trim() || !newDisk.source.trim()}
+					disabled={!newDisk.name.trim() || (!newDiskSource.value.trim() && !newDiskSourceDataVolume.value)}
 					onclick={addDisk}
 				>
 					<Icon icon="ph:plus" class="size-4" />
@@ -407,7 +536,13 @@
 												?.label}</span
 										>
 										<span class="mx-2">•</span>
-										<span>Source: {disk.source}</span>
+										<span
+											>Source: {disk.sourceData?.case === 'source'
+												? disk.sourceData.value
+												: disk.sourceData?.case === 'dataVolume'
+													? disk.sourceData.value.source
+													: 'Unknown'}</span
+										>
 									</div>
 								</div>
 								<Button type="button" variant="ghost" size="sm" onclick={() => removeDisk(index)}>
