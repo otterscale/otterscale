@@ -192,20 +192,17 @@
 		case: 'instancetypeName',
 		value: '',
 	};
-	const DEFAULT_DISK_SOURCE = { value: '', case: 'source' };
+	const DEFAULT_DISK_SOURCE = '';
 	const DEFAULT_DISK_DATA_VOLUME_SOURCE = {
-		value: {
-			type: DataVolumeSource_Type.HTTP,
-			source: '',
-			sizeBytes: 1n * 1024n * 1024n * 1024n, // 1GiB
-		} as DataVolumeSource,
-		case: 'dataVolume',
-	};
+		type: DataVolumeSource_Type.HTTP,
+		source: '',
+		sizeBytes: 1n * 1024n * 1024n * 1024n, // 1GiB
+	} as DataVolumeSource;
 	const DEFAULT_DISK = {
 		name: '',
 		diskType: VirtualMachineDisk_type.DATAVOLUME,
 		busType: VirtualMachineDisk_bus.VIRTIO,
-		sourceData: DEFAULT_DISK_SOURCE,
+		sourceData: { case: 'source', value: DEFAULT_DISK_SOURCE },
 	} as VirtualMachineDisk;
 
 	// ==================== Form State ====================
@@ -234,20 +231,16 @@
 
 	// ==================== Disk Management ====================
 	function addDisk() {
-		if (
-			newDisk.name.trim() &&
-			((newDiskSource.case === 'source' && newDiskSource.value.trim()) ||
-				(newDiskSourceDataVolume.case === 'dataVolume' && newDiskSourceDataVolume.value))
-		) {
-			if (newDiskSource.case === 'source') {
+		if (newDisk.name.trim()) {
+			if (newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME) {
 				newDisk.sourceData = {
-					case: 'source' as const,
-					value: newDiskSource.value,
+					case: 'dataVolume',
+					value: newDiskSourceDataVolume,
 				};
-			} else if (newDiskSourceDataVolume.case === 'dataVolume') {
+			} else {
 				newDisk.sourceData = {
-					case: 'dataVolume' as const,
-					value: newDiskSourceDataVolume.value,
+					case: 'source',
+					value: newDiskSource,
 				};
 			}
 			request.disks = [...request.disks, { ...newDisk }];
@@ -441,11 +434,11 @@
 				</Form.Field>
 				{#if newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME}
 					<Form.Field>
-						<Form.Label>Data Volume Source Type</Form.Label>
+						<Form.Label>Source Type</Form.Label>
 						<SingleSelect.Root
 							required
 							options={dataVolumeSourceTypes}
-							bind:value={newDiskSourceDataVolume.value.type}
+							bind:value={newDiskSourceDataVolume.type}
 						>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
@@ -475,17 +468,14 @@
 							required
 							type="text"
 							placeholder="Enter source reference"
-							bind:value={newDiskSourceDataVolume.value.source}
-							oninput={() => {
-								newDiskSourceDataVolume.case = 'dataVolume';
-							}}
+							bind:value={newDiskSourceDataVolume.source}
 						/>
 					</Form.Field>
 					<Form.Field>
 						<Form.Label>Size</Form.Label>
 						<SingleInput.Measurement
 							required
-							bind:value={newDiskSourceDataVolume.value.sizeBytes}
+							bind:value={newDiskSourceDataVolume.sizeBytes}
 							transformer={(value) => String(value)}
 							units={[{ value: 1024 * 1024 * 1024, label: 'GB' } as SingleInput.UnitType]}
 						/>
@@ -497,10 +487,7 @@
 							required
 							type="text"
 							placeholder="Enter source reference"
-							bind:value={newDiskSource.value}
-							oninput={() => {
-								newDiskSource.case = 'source';
-							}}
+							bind:value={newDiskSource}
 						/>
 					</Form.Field>
 				{/if}
@@ -508,7 +495,7 @@
 					type="button"
 					variant="outline"
 					size="sm"
-					disabled={!newDisk.name.trim() || (!newDiskSource.value.trim() && !newDiskSourceDataVolume.value)}
+					disabled={!newDisk.name.trim() || (!newDiskSource.trim() && !newDiskSourceDataVolume)}
 					onclick={addDisk}
 				>
 					<Icon icon="ph:plus" class="size-4" />
@@ -526,23 +513,32 @@
 										<span class="font-medium">{disk.name}</span>
 									</div>
 									<div class="text-muted-foreground text-sm">
-										<span
-											>Type: {$diskTypes.find((t) => t.value === disk.diskType.toString())
-												?.label}</span
-										>
+										<span>Bus: {$busTypes.find((b) => b.value === disk.busType)?.label}</span>
 										<span class="mx-2">•</span>
-										<span
-											>Bus: {$busTypes.find((b) => b.value === disk.busType.toString())
-												?.label}</span
-										>
+										<span>Type: {$diskTypes.find((t) => t.value === disk.diskType)?.label}</span>
 										<span class="mx-2">•</span>
-										<span
-											>Source: {disk.sourceData?.case === 'source'
-												? disk.sourceData.value
-												: disk.sourceData?.case === 'dataVolume'
-													? disk.sourceData.value.source
+										{#if disk.diskType === VirtualMachineDisk_type.DATAVOLUME && disk.sourceData?.case === 'dataVolume'}
+											{console.log('disk.sourceData.value', disk.sourceData.value)}
+											<span
+												>Source Type: {$dataVolumeSourceTypes.find(
+													(s) => s.value === (disk.sourceData.value as DataVolumeSource).type,
+												)?.label}</span
+											>
+											<span class="mx-2">•</span>
+											<span
+												>Size: {Math.floor(
+													Number(disk.sourceData.value.sizeBytes) / (1024 * 1024 * 1024),
+												)}GB</span
+											>
+											<span class="mx-2">•</span>
+											<span>Source: {disk.sourceData.value.source}</span>
+										{:else}
+											<span
+												>Source: {disk.sourceData?.case === 'source'
+													? disk.sourceData.value
 													: 'Unknown'}</span
-										>
+											>
+										{/if}
 									</div>
 								</div>
 								<Button type="button" variant="ghost" size="sm" onclick={() => removeDisk(index)}>
