@@ -1,6 +1,7 @@
 <script lang="ts" module>
 	import Clone from './action-clone.svelte';
 	import Delete from './action-delete.svelte';
+	import Edit from './action-edit.svelte';
 	import PauseResume from './action-pause-resume.svelte';
 	import Snapshot from './action-snapshot.svelte';
 	import StartStop from './action-start-stop.svelte';
@@ -28,6 +29,9 @@
 	</Layout.ActionItem>
 	<Layout.ActionItem>
 		<Snapshot {virtualMachine} />
+	</Layout.ActionItem>
+	<Layout.ActionItem>
+		<Edit {virtualMachine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
 		<Clone {virtualMachine} />
