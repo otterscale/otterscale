@@ -1,5 +1,7 @@
 <script lang="ts" module>
 	import Clone from './action-clone.svelte';
+	import Delete from './action-delete.svelte';
+	import Edit from './action-edit.svelte';
 	import Migrate from './action-migrate.svelte';
 	import PauseResume from './action-pause-resume.svelte';
 	import Snapshot from './action-snapshot.svelte';
@@ -24,15 +26,24 @@
 		<StartStop {virtualMachine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<Clone {virtualMachine} />
+		<StartupScript {virtualMachine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
 		<Snapshot {virtualMachine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
+		<StartupScript {virtualMachine} />
+	</Layout.ActionItem>
+	<Layout.ActionItem>
+		<Edit {virtualMachine} />
+	</Layout.ActionItem>
+	<Layout.ActionItem>
+		<Clone {virtualMachine} />
+	</Layout.ActionItem>
+	<Layout.ActionItem>
 		<Migrate {virtualMachine} />
 	</Layout.ActionItem>
 	<Layout.ActionItem>
-		<StartupScript {virtualMachine} />
+		<Delete {virtualMachine} />
 	</Layout.ActionItem>
 </Layout.Actions>

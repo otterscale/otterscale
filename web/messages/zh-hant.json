@@ -676,6 +676,8 @@
 	"vm_resume": "運行",
 	"please_wait": "請稍候",
 	"create_virtual_machine": "建立虛擬機器",
+	"virtual_machine_name": "虛擬機器名稱",
+	"delete_virtual_machine": "刪除虛擬機器",
 	"clone": "複製",
 	"clone_virtual_machine": "複製虛擬機",
 	"clone_virtual_machine_name_direction": "新虛擬機的名稱。",

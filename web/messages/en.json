@@ -676,6 +676,8 @@
 	"vm_resume": "Resume",
 	"please_wait": "Please Wait",
 	"create_virtual_machine": "Create Virtual Machine",
+	"virtual_machine_name": "Virtual Machine Name",
+	"delete_virtual_machine": "Delete Virtual Machine",
 	"clone": "Clone",
 	"clone_virtual_machine": "Clone Virtual Machine",
 	"clone_virtual_machine_name_direction": "Name for the new virtual machine.",
