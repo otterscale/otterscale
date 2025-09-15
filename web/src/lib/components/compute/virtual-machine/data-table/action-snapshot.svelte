@@ -1,13 +1,15 @@
 <script lang="ts" module>
 	import { createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
+	import { getContext, onMount, onDestroy, setContext } from 'svelte';
+	import { writable } from 'svelte/store';
 
 	import { DataTable } from './snapshot/data-table';
 
 	import type { VirtualMachine, VirtualMachineSnapshot } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { KubeVirtService } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import * as Loading from '$lib/components/custom/loading';
+	import { ReloadManager } from '$lib/components/custom/reloader';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { currentKubernetes } from '$lib/stores';
 </script>
@@ -15,38 +17,42 @@
 <script lang="ts">
 	let { virtualMachine }: { virtualMachine: VirtualMachine } = $props();
 
+	let snapshots = writable<VirtualMachineSnapshot[]>([]);
+
 	const transport: Transport = getContext('transport');
 	const KubeVirtClient = createClient(KubeVirtService, transport);
-	let snapshots = $state<VirtualMachineSnapshot[]>([]);
-
-	let isSnapshotLoading = $state(true);
-
-	async function fetchSnapshot() {
-		try {
-			const response = await KubeVirtClient.listVirtualMachineSnapshots({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
-				vmName: virtualMachine.metadata?.name,
-				namespace: virtualMachine.metadata?.namespace,
-			});
-			snapshots = response.snapshots;
-		} catch (error) {
-			console.error('Error fetching:', error);
-		} finally {
-			isSnapshotLoading = false;
-		}
-	}
+	const reloadManager = new ReloadManager(() => {
+		KubeVirtClient.listVirtualMachineSnapshots({
+			scopeUuid: $currentKubernetes?.scopeUuid,
+			facilityName: $currentKubernetes?.name,
+			vmName: virtualMachine.metadata?.name,
+			namespace: virtualMachine.metadata?.namespace,
+		}).then((response) => {
+			snapshots.set(response.snapshots);
+		});
+	});
+	setContext('reloadManager', reloadManager);
 
 	let isMounted = $state(false);
-	onMount(async () => {
-		try {
-			await fetchSnapshot();
-			if (!isSnapshotLoading) {
+	onMount(() => {
+		KubeVirtClient.listVirtualMachineSnapshots({
+			scopeUuid: $currentKubernetes?.scopeUuid,
+			facilityName: $currentKubernetes?.name,
+			vmName: virtualMachine.metadata?.name,
+			namespace: virtualMachine.metadata?.namespace,
+		})
+			.then((response) => {
+				snapshots.set(response.snapshots);
 				isMounted = true;
-			}
-		} catch (error) {
-			console.error('Error during initial data load:', error);
-		}
+			})
+			.catch((error) => {
+				console.error('Error during initial data load:', error);
+			});
+
+		reloadManager.start();
+	});
+	onDestroy(() => {
+		reloadManager.stop();
 	});
 </script>
 
@@ -60,7 +66,7 @@
 			{#if !isMounted}
 				<Loading.Report />
 			{:else}
-				<DataTable virtualMachineSnapshots={snapshots} />
+				<DataTable {virtualMachine} virtualMachineSnapshots={$snapshots} />
 			{/if}
 		</Sheet.Content>
 	</Sheet.Root>
