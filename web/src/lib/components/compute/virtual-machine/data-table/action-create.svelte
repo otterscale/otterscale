@@ -207,6 +207,16 @@
 	let newDiskSource = $state(DEFAULT_DISK_SOURCE);
 	let newDiskSourceDataVolume = $state(DEFAULT_DISK_DATA_VOLUME_SOURCE);
 
+	// ==================== Reactive Statements ====================
+	// Automatically sync request.resources.value with the form state
+	$effect(() => {
+		if (request.resources.case === 'instancetypeName') {
+			request.resources.value = resourcesInstance;
+		} else if (request.resources.case === 'custom') {
+			request.resources.value = resourcesCustom;
+		}
+	});
+
 	// ==================== Utility Functions ====================
 	function reset() {
 		request = DEFAULT_REQUEST;
@@ -635,11 +645,6 @@
 				<Modal.Action
 					disabled={invalidName || invalidNamespace}
 					onclick={() => {
-						if (request.resources.case === 'instancetypeName') {
-							request.resources.value = resourcesInstance;
-						} else if (request.resources.case === 'custom') {
-							request.resources.value = resourcesCustom;
-						}
 						toast.promise(() => kubevirtClient.createVirtualMachine(request), {
 							loading: `Creating ${request.name}...`,
 							success: () => {
