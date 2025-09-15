@@ -686,5 +686,12 @@
 	"migrate_virtual_machine": "遷移虛擬機",
 	"target_node": "目標節點",
 	"migrate_virtual_machine_target_node_direction": "指定虛擬機遷移的目標節點。",
-	"instance_name": "實例名稱"
+	"instance_name": "實例名稱",
+	"resources": "資源",
+	"bus_type": "匯流排類型",
+	"disk_type": "磁碟類型",
+	"source_type": "來源類型",
+	"size": "大小",
+	"network_name": "網路名稱",
+	"labels": "標籤"
 }

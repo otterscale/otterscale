@@ -686,5 +686,12 @@
 	"migrate_virtual_machine": "Migrate Virtual Machine",
 	"target_node": "Target Node",
 	"migrate_virtual_machine_target_node_direction": "Specify the target node for virtual machine migration.",
-	"instance_name": "Instance Name"
+	"instance_name": "Instance Name",
+	"resources": "Resources",
+	"bus_type": "Bus Type",
+	"disk_type": "Disk Type",
+	"source_type": "Source Type",
+	"size": "Size",
+	"network_name": "Network Name",
+	"labels": "Labels"
 }

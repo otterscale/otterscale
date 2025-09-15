@@ -200,7 +200,7 @@
 					<SingleInput.General required type="text" bind:value={request.name} bind:invalid={invalidName} />
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Namespace</Form.Label>
+					<Form.Label>{m.namespace()}</Form.Label>
 					<SingleSelect.Root
 						required
 						options={namespaces}
@@ -234,9 +234,9 @@
 
 			<!-- ==================== Resource Configuration ==================== -->
 			<Form.Fieldset>
-				<Form.Legend>Resources</Form.Legend>
+				<Form.Legend>{m.resources()}</Form.Legend>
 				<Form.Field>
-					<Form.Label>Type</Form.Label>
+					<Form.Label>{m.type()}</Form.Label>
 					<SingleSelect.Root
 						required
 						options={resourcesCase}
@@ -290,13 +290,13 @@
 
 			<!-- ==================== Disk Configuration ==================== -->
 			<Form.Fieldset>
-				<Form.Legend>Disk</Form.Legend>
+				<Form.Legend>{m.disk()}</Form.Legend>
 				<Form.Field>
-					<Form.Label>Disk Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General required type="text" placeholder="Enter disk name" bind:value={newDisk.name} />
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Bus Type</Form.Label>
+					<Form.Label>{m.bus_type()}</Form.Label>
 					<SingleSelect.Root required options={busTypes} bind:value={newDisk.busType}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -321,7 +321,7 @@
 					</SingleSelect.Root>
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Disk Type</Form.Label>
+					<Form.Label>{m.disk_type()}</Form.Label>
 					<SingleSelect.Root required options={diskTypes} bind:value={newDisk.diskType}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>
@@ -347,7 +347,7 @@
 				</Form.Field>
 				{#if newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME}
 					<Form.Field>
-						<Form.Label>Source Type</Form.Label>
+						<Form.Label>{m.source_type()}</Form.Label>
 						<SingleSelect.Root
 							required
 							options={dataVolumeSourceTypes}
@@ -376,7 +376,7 @@
 						</SingleSelect.Root>
 					</Form.Field>
 					<Form.Field>
-						<Form.Label>Source</Form.Label>
+						<Form.Label>{m.source()}</Form.Label>
 						<SingleInput.General
 							required
 							type="text"
@@ -385,7 +385,7 @@
 						/>
 					</Form.Field>
 					<Form.Field>
-						<Form.Label>Size</Form.Label>
+						<Form.Label>{m.size()}</Form.Label>
 						<SingleInput.Measurement
 							required
 							bind:value={newDiskSourceDataVolume.sizeBytes}
@@ -395,7 +395,7 @@
 					</Form.Field>
 				{:else}
 					<Form.Field>
-						<Form.Label>Source</Form.Label>
+						<Form.Label>{m.source()}</Form.Label>
 						<SingleInput.General
 							required
 							type="text"
@@ -465,7 +465,7 @@
 			<!-- ==================== Advanced Configuration ==================== -->
 			<Collapsible.Root bind:open={isAdvancedOpen} class="py-4">
 				<div class="flex items-center justify-between gap-2">
-					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>Advance</p>
+					<p class={cn('text-base font-bold', isAdvancedOpen ? 'invisible' : 'visible')}>{m.advance()}</p>
 					<Collapsible.Trigger class="bg-muted rounded-full p-1 ">
 						<Icon
 							icon="ph:caret-left"
@@ -475,13 +475,13 @@
 				</div>
 				<Collapsible.Content>
 					<Form.Fieldset>
-						<Form.Legend>Advance</Form.Legend>
+						<Form.Legend>{m.advance()}</Form.Legend>
 						<Form.Field>
-							<Form.Label>Network Name</Form.Label>
+							<Form.Label>{m.network_name()}</Form.Label>
 							<SingleInput.General type="text" bind:value={request.networkName} />
 						</Form.Field>
 						<Form.Field>
-							<Form.Label>Labels</Form.Label>
+							<Form.Label>{m.labels()}</Form.Label>
 							<div class="space-y-2">
 								<div class="flex gap-2">
 									<SingleInput.General
@@ -531,7 +531,7 @@
 							</div>
 						</Form.Field>
 						<Form.Field>
-							<Form.Label>Startup Script</Form.Label>
+							<Form.Label>{m.startup_script()}</Form.Label>
 							<Code.Root lang="bash" class="w-full" hideLines code={request.startupScript}>
 								<Code.CopyButton />
 							</Code.Root>

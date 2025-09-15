@@ -12,13 +12,13 @@ import type { Single as SingleSelect } from '$lib/components/custom/select';
 export const resourcesCase: Writable<SingleSelect.OptionType[]> = writable([
 	{
 		value: 'instancetypeName',
-		label: 'Instance',
-		icon: 'ph:copy-simple',
+		label: 'InstanceType',
+		icon: 'ph:layout',
 	},
 	{
 		value: 'custom',
 		label: 'Custom',
-		icon: 'ph:scales',
+		icon: 'ph:gear',
 	},
 ]);
 
