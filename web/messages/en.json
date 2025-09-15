@@ -694,5 +694,10 @@
 	"source_type": "Source Type",
 	"size": "Size",
 	"network_name": "Network Name",
-	"labels": "Labels"
+	"labels": "Labels",
+	"disk_name": "Disk Name",
+	"add_disk": "Add Disk",
+	"add_new_disk": "Add New Disk",
+	"label_key": "Key",
+	"label_value": "Value"
 }

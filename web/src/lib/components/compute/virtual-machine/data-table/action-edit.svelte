@@ -139,14 +139,14 @@
 					<SingleInput.General required readonly bind:value={request.name} />
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Network Name</Form.Label>
+					<Form.Label>{m.network_name()}</Form.Label>
 					<SingleInput.General bind:value={request.networkName} />
 				</Form.Field>
 			</Form.Fieldset>
 
 			<!-- ==================== Disk Configuration ==================== -->
 			<Form.Fieldset>
-				<Form.Legend>Disks</Form.Legend>
+				<Form.Legend>{m.disks()}</Form.Legend>
 
 				<!-- Display Current Disks -->
 				{#if request.disks.length > 0}
@@ -197,18 +197,13 @@
 
 				<!-- Add New Disk Form -->
 				<div class="space-y-4 border-t pt-4">
-					<h4 class="font-medium">Add New Disk</h4>
+					<h4 class="font-medium">{m.add_new_disk()}</h4>
 					<Form.Field>
-						<Form.Label>Disk Name</Form.Label>
-						<SingleInput.General
-							required
-							type="text"
-							placeholder="Enter disk name"
-							bind:value={newDisk.name}
-						/>
+						<Form.Label>{m.disk_name()}</Form.Label>
+						<SingleInput.General required type="text" bind:value={newDisk.name} />
 					</Form.Field>
 					<Form.Field>
-						<Form.Label>Bus Type</Form.Label>
+						<Form.Label>{m.bus_type()}</Form.Label>
 						<SingleSelect.Root required options={busTypes} bind:value={newDisk.busType}>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
@@ -233,7 +228,7 @@
 						</SingleSelect.Root>
 					</Form.Field>
 					<Form.Field>
-						<Form.Label>Disk Type</Form.Label>
+						<Form.Label>{m.disk_type()}</Form.Label>
 						<SingleSelect.Root required options={diskTypes} bind:value={newDisk.diskType}>
 							<SingleSelect.Trigger />
 							<SingleSelect.Content>
@@ -259,7 +254,7 @@
 					</Form.Field>
 					{#if newDisk.diskType === VirtualMachineDisk_type.DATAVOLUME}
 						<Form.Field>
-							<Form.Label>Source Type</Form.Label>
+							<Form.Label>{m.source_type()}</Form.Label>
 							<SingleSelect.Root
 								required
 								options={dataVolumeSourceTypes}
@@ -291,16 +286,11 @@
 							</SingleSelect.Root>
 						</Form.Field>
 						<Form.Field>
-							<Form.Label>Source</Form.Label>
-							<SingleInput.General
-								required
-								type="text"
-								placeholder="Enter source reference"
-								bind:value={newDiskSourceDataVolume.source}
-							/>
+							<Form.Label>{m.source()}</Form.Label>
+							<SingleInput.General required type="text" bind:value={newDiskSourceDataVolume.source} />
 						</Form.Field>
 						<Form.Field>
-							<Form.Label>Size</Form.Label>
+							<Form.Label>{m.size()}</Form.Label>
 							<SingleInput.Measurement
 								required
 								bind:value={newDiskSourceDataVolume.sizeBytes}
@@ -310,13 +300,8 @@
 						</Form.Field>
 					{:else}
 						<Form.Field>
-							<Form.Label>Source</Form.Label>
-							<SingleInput.General
-								required
-								type="text"
-								placeholder="Enter source reference"
-								bind:value={newDiskSource}
-							/>
+							<Form.Label>{m.source()}</Form.Label>
+							<SingleInput.General required type="text" bind:value={newDiskSource} />
 						</Form.Field>
 					{/if}
 					<Button
@@ -328,16 +313,16 @@
 						onclick={addDisk}
 					>
 						<Icon icon="ph:plus" class="size-4" />
-						Add Disk
+						{m.add_disk()}
 					</Button>
 				</div>
 			</Form.Fieldset>
 
 			<!-- ==================== Labels Configuration ==================== -->
 			<Form.Fieldset>
-				<Form.Legend>Labels</Form.Legend>
+				<Form.Legend>{m.labels()}</Form.Legend>
 				<Form.Field>
-					<Form.Label>Labels</Form.Label>
+					<Form.Label>{m.labels()}</Form.Label>
 					<div class="space-y-2">
 						<div class="flex gap-2">
 							<SingleInput.General type="text" placeholder="Key" bind:value={labelKey} class="flex-1" />

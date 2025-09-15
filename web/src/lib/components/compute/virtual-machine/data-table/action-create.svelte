@@ -293,7 +293,7 @@
 				<Form.Legend>{m.disk()}</Form.Legend>
 				<Form.Field>
 					<Form.Label>{m.name()}</Form.Label>
-					<SingleInput.General required type="text" placeholder="Enter disk name" bind:value={newDisk.name} />
+					<SingleInput.General required type="text" bind:value={newDisk.name} />
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.bus_type()}</Form.Label>
@@ -380,12 +380,7 @@
 					</Form.Field>
 					<Form.Field>
 						<Form.Label>{m.source()}</Form.Label>
-						<SingleInput.General
-							required
-							type="text"
-							placeholder="Enter source reference"
-							bind:value={newDiskSourceDataVolume.source}
-						/>
+						<SingleInput.General required type="text" bind:value={newDiskSourceDataVolume.source} />
 					</Form.Field>
 					<Form.Field>
 						<Form.Label>{m.size()}</Form.Label>
@@ -399,12 +394,7 @@
 				{:else}
 					<Form.Field>
 						<Form.Label>{m.source()}</Form.Label>
-						<SingleInput.General
-							required
-							type="text"
-							placeholder="Enter source reference"
-							bind:value={newDiskSource}
-						/>
+						<SingleInput.General required type="text" bind:value={newDiskSource} />
 					</Form.Field>
 				{/if}
 				<Button

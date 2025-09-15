@@ -694,5 +694,10 @@
 	"source_type": "來源類型",
 	"size": "大小",
 	"network_name": "網路名稱",
-	"labels": "標籤"
+	"labels": "標籤",
+	"disk_name": "磁碟名稱",
+	"add_disk": "新增磁碟",
+	"add_new_disk": "新增磁碟",
+	"label_key": "鍵",
+	"label_value": "值"
 }
