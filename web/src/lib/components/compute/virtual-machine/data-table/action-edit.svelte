@@ -142,6 +142,54 @@
 					<Form.Label>{m.network_name()}</Form.Label>
 					<SingleInput.General bind:value={request.networkName} />
 				</Form.Field>
+				<Form.Field>
+					<Form.Label>{m.labels()}</Form.Label>
+					<div class="space-y-2">
+						<div class="flex gap-2">
+							<SingleInput.General
+								type="text"
+								placeholder={m.label_key()}
+								bind:value={labelKey}
+								class="flex-1"
+							/>
+							<SingleInput.General
+								type="text"
+								placeholder={m.label_value()}
+								bind:value={labelValue}
+								class="flex-1"
+							/>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								disabled={!labelKey.trim() || !labelValue.trim()}
+								onclick={addLabel}
+							>
+								<Icon icon="ph:plus" class="size-4" />
+								Add
+							</Button>
+						</div>
+						{#if Object.keys(request.labels).length > 0}
+							<div class="space-y-1">
+								{#each Object.entries(request.labels) as [key, value]}
+									<div class="bg-muted flex items-center justify-between rounded-md px-3 py-2">
+										<span class="text-sm">
+											<span class="font-medium">{key}</span>: {value}
+										</span>
+										<Button
+											type="button"
+											variant="ghost"
+											size="sm"
+											onclick={() => removeLabel(key)}
+										>
+											<Icon icon="ph:x" class="size-4" />
+										</Button>
+									</div>
+								{/each}
+							</div>
+						{/if}
+					</div>
+				</Form.Field>
 			</Form.Fieldset>
 
 			<!-- ==================== Disk Configuration ==================== -->
@@ -316,59 +364,6 @@
 						{m.add_disk()}
 					</Button>
 				</div>
-			</Form.Fieldset>
-
-			<!-- ==================== Labels Configuration ==================== -->
-			<Form.Fieldset>
-				<Form.Legend>{m.labels()}</Form.Legend>
-				<Form.Field>
-					<Form.Label>{m.labels()}</Form.Label>
-					<div class="space-y-2">
-						<div class="flex gap-2">
-							<SingleInput.General
-								type="text"
-								placeholder={m.label_key()}
-								bind:value={labelKey}
-								class="flex-1"
-							/>
-							<SingleInput.General
-								type="text"
-								placeholder={m.label_value()}
-								bind:value={labelValue}
-								class="flex-1"
-							/>
-							<Button
-								type="button"
-								variant="outline"
-								size="sm"
-								disabled={!labelKey.trim() || !labelValue.trim()}
-								onclick={addLabel}
-							>
-								<Icon icon="ph:plus" class="size-4" />
-								Add
-							</Button>
-						</div>
-						{#if Object.keys(request.labels).length > 0}
-							<div class="space-y-1">
-								{#each Object.entries(request.labels) as [key, value]}
-									<div class="bg-muted flex items-center justify-between rounded-md px-3 py-2">
-										<span class="text-sm">
-											<span class="font-medium">{key}</span>: {value}
-										</span>
-										<Button
-											type="button"
-											variant="ghost"
-											size="sm"
-											onclick={() => removeLabel(key)}
-										>
-											<Icon icon="ph:x" class="size-4" />
-										</Button>
-									</div>
-								{/each}
-							</div>
-						{/if}
-					</div>
-				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
 		<Modal.Footer>
