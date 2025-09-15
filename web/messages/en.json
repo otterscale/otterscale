@@ -682,5 +682,9 @@
 	"clone_virtual_machine": "Clone Virtual Machine",
 	"clone_virtual_machine_name_direction": "Name for the new virtual machine.",
 	"clone_virtual_machine_namespace_direction": "Namespace for the new virtual machine.",
+	"migrate": "Migrate",
+	"migrate_virtual_machine": "Migrate Virtual Machine",
+	"target_node": "Target Node",
+	"migrate_virtual_machine_target_node_direction": "Specify the target node for virtual machine migration.",
 	"instance_name": "Instance Name"
 }
