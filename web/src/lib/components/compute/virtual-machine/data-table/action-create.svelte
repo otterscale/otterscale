@@ -297,6 +297,9 @@
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>{m.bus_type()}</Form.Label>
+					<Form.Help>
+						{m.vm_bus_type_direction()}
+					</Form.Help>
 					<SingleSelect.Root required options={busTypes} bind:value={newDisk.busType}>
 						<SingleSelect.Trigger />
 						<SingleSelect.Content>

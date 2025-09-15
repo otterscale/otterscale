@@ -674,6 +674,7 @@
 	"vm_stop": "Stop",
 	"vm_pause": "Pause",
 	"vm_resume": "Resume",
+	"vm_bus_type_direction": "The communication protocol and physical interface used for connecting devices within a virtual machine.",
 	"please_wait": "Please Wait",
 	"create_virtual_machine": "Create Virtual Machine",
 	"virtual_machine_name": "Virtual Machine Name",

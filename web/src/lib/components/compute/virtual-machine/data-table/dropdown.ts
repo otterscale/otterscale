@@ -79,26 +79,26 @@ export const dataVolumeSourceTypes: Writable<SingleSelect.OptionType[]> = writab
 		label: 'Blank',
 		icon: 'ph:file',
 	},
-	{
-		value: DataVolumeSource_Type.REGISTRY,
-		label: 'Registry',
-		icon: 'ph:package',
-	},
-	{
-		value: DataVolumeSource_Type.UPLOAD,
-		label: 'Upload',
-		icon: 'ph:upload',
-	},
-	{
-		value: DataVolumeSource_Type.S3,
-		label: 'S3',
-		icon: 'ph:cloud',
-	},
-	{
-		value: DataVolumeSource_Type.VDDK,
-		label: 'VDDK',
-		icon: 'ph:hard-drives',
-	},
+	// {
+	// 	value: DataVolumeSource_Type.REGISTRY,
+	// 	label: 'Registry',
+	// 	icon: 'ph:package',
+	// },
+	// {
+	// 	value: DataVolumeSource_Type.UPLOAD,
+	// 	label: 'Upload',
+	// 	icon: 'ph:upload',
+	// },
+	// {
+	// 	value: DataVolumeSource_Type.S3,
+	// 	label: 'S3',
+	// 	icon: 'ph:cloud',
+	// },
+	// {
+	// 	value: DataVolumeSource_Type.VDDK,
+	// 	label: 'VDDK',
+	// 	icon: 'ph:hard-drives',
+	// },
 	{
 		value: DataVolumeSource_Type.PVC,
 		label: 'PVC',

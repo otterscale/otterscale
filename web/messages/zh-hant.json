@@ -674,6 +674,7 @@
 	"vm_stop": "關機",
 	"vm_pause": "暫停",
 	"vm_resume": "運行",
+	"vm_bus_type_direction": "用於在虛擬機器內連接裝置的通訊協定和實體介面。",
 	"please_wait": "請稍候",
 	"create_virtual_machine": "建立虛擬機器",
 	"virtual_machine_name": "虛擬機器名稱",
