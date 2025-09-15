@@ -479,13 +479,13 @@
 								<div class="flex gap-2">
 									<SingleInput.General
 										type="text"
-										placeholder="Key"
+										placeholder={m.label_key()}
 										bind:value={labelKey}
 										class="flex-1"
 									/>
 									<SingleInput.General
 										type="text"
-										placeholder="Value"
+										placeholder={m.label_value()}
 										bind:value={labelValue}
 										class="flex-1"
 									/>

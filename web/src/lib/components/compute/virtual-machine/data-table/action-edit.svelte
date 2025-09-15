@@ -325,10 +325,15 @@
 					<Form.Label>{m.labels()}</Form.Label>
 					<div class="space-y-2">
 						<div class="flex gap-2">
-							<SingleInput.General type="text" placeholder="Key" bind:value={labelKey} class="flex-1" />
 							<SingleInput.General
 								type="text"
-								placeholder="Value"
+								placeholder={m.label_key()}
+								bind:value={labelKey}
+								class="flex-1"
+							/>
+							<SingleInput.General
+								type="text"
+								placeholder={m.label_value()}
 								bind:value={labelValue}
 								class="flex-1"
 							/>
