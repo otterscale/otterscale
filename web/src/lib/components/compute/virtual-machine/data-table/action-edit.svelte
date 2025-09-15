@@ -456,7 +456,6 @@
 				<Modal.Action
 					disabled={invalidNamespace}
 					onclick={() => {
-						console.log('request', request);
 						toast.promise(() => KubeVirtClient.updateVirtualMachine(request), {
 							loading: `Updating ${virtualMachine.metadata?.name}...`,
 							success: () => {

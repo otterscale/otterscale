@@ -554,7 +554,6 @@
 				<Modal.Action
 					disabled={invalidName || invalidNamespace}
 					onclick={() => {
-						console.log('request', request);
 						toast.promise(() => kubevirtClient.createVirtualMachine(request), {
 							loading: `Creating ${request.name}...`,
 							success: () => {
