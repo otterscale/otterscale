@@ -1,8 +1,7 @@
 <script lang="ts" module>
 	import { ConnectError, createClient, type Transport } from '@connectrpc/connect';
 	import Icon from '@iconify/svelte';
-	import { getContext, onMount } from 'svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { getContext } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
 	import { diskTypes, busTypes, dataVolumeSourceTypes } from './dropdown';
@@ -38,37 +37,11 @@
 
 	const KubeVirtClient = createClient(KubeVirtService, transport);
 
-	// Form validation state
-	let invalidNamespace: boolean | undefined = $state();
-
 	// Label management state
 	let labelKey = $state('');
 	let labelValue = $state('');
 
 	// ==================== Local Dropdown Options ====================
-	const namespaces: Writable<SingleSelect.OptionType[]> = writable([]);
-
-	// ==================== API Functions ====================
-	async function loadNamespaces() {
-		try {
-			const response = await KubeVirtClient.listNamespaces({
-				scopeUuid: $currentKubernetes?.scopeUuid,
-				facilityName: $currentKubernetes?.name,
-			});
-
-			const namespaceOptions = response.namespaces.map((namespace) => ({
-				value: namespace,
-				label: namespace,
-				icon: 'ph:folder',
-			}));
-
-			namespaces.set(namespaceOptions);
-		} catch (error) {
-			toast.error('Failed to load namespaces', {
-				description: (error as ConnectError).message.toString(),
-			});
-		}
-	}
 
 	// ==================== Default Values & Constants ====================
 	const DEFAULT_DISK_SOURCE = '';
@@ -149,11 +122,6 @@
 	function close() {
 		open = false;
 	}
-
-	// ==================== Lifecycle Hooks ====================
-	onMount(() => {
-		loadNamespaces();
-	});
 </script>
 
 <Modal.Root bind:open>
@@ -169,37 +137,6 @@
 				<Form.Field>
 					<Form.Label>{m.virtual_machine_name()}</Form.Label>
 					<SingleInput.General required readonly bind:value={request.name} />
-				</Form.Field>
-				<Form.Field>
-					<Form.Label>Namespace</Form.Label>
-					<SingleSelect.Root
-						required
-						options={namespaces}
-						bind:value={request.namespace}
-						bind:invalid={invalidNamespace}
-					>
-						<SingleSelect.Trigger />
-						<SingleSelect.Content>
-							<SingleSelect.Options>
-								<SingleSelect.Input />
-								<SingleSelect.List>
-									<SingleSelect.Empty>{m.no_result()}</SingleSelect.Empty>
-									<SingleSelect.Group>
-										{#each $namespaces as namespace}
-											<SingleSelect.Item option={namespace}>
-												<Icon
-													icon={namespace.icon ? namespace.icon : 'ph:empty'}
-													class={cn('size-5', namespace.icon ? 'visible' : 'invisible')}
-												/>
-												{namespace.label}
-												<SingleSelect.Check option={namespace} />
-											</SingleSelect.Item>
-										{/each}
-									</SingleSelect.Group>
-								</SingleSelect.List>
-							</SingleSelect.Options>
-						</SingleSelect.Content>
-					</SingleSelect.Root>
 				</Form.Field>
 				<Form.Field>
 					<Form.Label>Network Name</Form.Label>
@@ -454,7 +391,6 @@
 			</Modal.Cancel>
 			<Modal.ActionsGroup>
 				<Modal.Action
-					disabled={invalidNamespace}
 					onclick={() => {
 						toast.promise(() => KubeVirtClient.updateVirtualMachine(request), {
 							loading: `Updating ${virtualMachine.metadata?.name}...`,
