@@ -182,16 +182,10 @@
 		resources: { case: 'instancetypeName', value: '' },
 	} as CreateVirtualMachineRequest;
 	const DEFAULT_RESOURCES_CUSTOM = {
-		case: 'custom',
-		value: {
-			cpuCores: 1,
-			memoryBytes: 1n * 1024n * 1024n * 1024n, // 1GiB
-		} as VirtualMachineResources,
-	};
-	const DEFAULT_RESOURCES_INSTANCE = {
-		case: 'instancetypeName',
-		value: '',
-	};
+		cpuCores: 1,
+		memoryBytes: 1n * 1024n * 1024n * 1024n, // 1GiB
+	} as VirtualMachineResources;
+	const DEFAULT_RESOURCES_INSTANCE = '';
 	const DEFAULT_DISK_SOURCE = '';
 	const DEFAULT_DISK_DATA_VOLUME_SOURCE = {
 		type: DataVolumeSource_Type.HTTP,
@@ -356,13 +350,13 @@
 				{#if request.resources.case === 'custom'}
 					<Form.Field>
 						<Form.Label>{m.cpu_cores()}</Form.Label>
-						<SingleInput.General required type="number" bind:value={resourcesCustom.value.cpuCores} />
+						<SingleInput.General required type="number" bind:value={resourcesCustom.cpuCores} />
 					</Form.Field>
 					<Form.Field>
 						<Form.Label>{m.memory()}</Form.Label>
 						<SingleInput.Measurement
 							required
-							bind:value={resourcesCustom.value.memoryBytes}
+							bind:value={resourcesCustom.memoryBytes}
 							transformer={(value) => String(value)}
 							units={[{ value: 1024 * 1024 * 1024, label: 'GB' } as SingleInput.UnitType]}
 						/>
@@ -370,7 +364,7 @@
 				{:else if request.resources.case === 'instancetypeName'}
 					<Form.Field>
 						<Form.Label>{m.instance_name()}</Form.Label>
-						<SingleInput.General required type="text" bind:value={resourcesInstance.value} />
+						<SingleInput.General required type="text" bind:value={resourcesInstance} />
 					</Form.Field>
 				{/if}
 			</Form.Fieldset>
@@ -641,6 +635,11 @@
 				<Modal.Action
 					disabled={invalidName || invalidNamespace}
 					onclick={() => {
+						if (request.resources.case === 'instancetypeName') {
+							request.resources.value = resourcesInstance;
+						} else if (request.resources.case === 'custom') {
+							request.resources.value = resourcesCustom;
+						}
 						toast.promise(() => kubevirtClient.createVirtualMachine(request), {
 							loading: `Creating ${request.name}...`,
 							success: () => {
