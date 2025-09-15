@@ -53,7 +53,7 @@
 				<Form.Field>
 					<Form.Label>{m.target_node()}</Form.Label>
 					<Form.Help>{m.migrate_virtual_machine_target_node_direction()}</Form.Help>
-					<SingleInput.General required type="text" bind:value={request.targetNode} bind:invalid />
+					<SingleInput.General type="text" bind:value={request.targetNode} bind:invalid />
 				</Form.Field>
 			</Form.Fieldset>
 		</Form.Root>
