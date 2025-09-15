@@ -18,6 +18,7 @@
 	let loading = $state(false);
 	let statusAtClick = $state<VirtualMachine_status>(VirtualMachine_status.UNKNOWN);
 	const isRunning = $derived(virtualMachine.statusPhase === VirtualMachine_status.RUNNING);
+	const isStarting = $derived(virtualMachine.statusPhase === VirtualMachine_status.STARTING);
 
 	$effect(() => {
 		// If we are in a loading state and the status has changed from what it was when we clicked,
@@ -75,29 +76,27 @@
 		statusAtClick = virtualMachine.statusPhase;
 		loading = true;
 
-		try {
-			if (isRunning) {
-				await stopVM();
-			} else {
-				await startVM();
-			}
-		} finally {
-			loading = false;
+		if (isRunning) {
+			await stopVM();
+		} else {
+			await startVM();
 		}
 	}
 </script>
 
 <div class="flex items-center justify-end gap-1">
-	<button onclick={handleClick} disabled={loading} class="flex items-center gap-1">
-		{#if loading}
+	<button
+		onclick={handleClick}
+		disabled={loading || isStarting}
+		class="flex items-center gap-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+	>
+		{#if loading || isStarting}
 			<Icon icon="ph:spinner-gap" class="animate-spin" />
 			{m.please_wait()}
 		{:else if isRunning}
-			<!-- <Icon icon="ph:stop" /> {m.vm_stop()} -->
 			<Icon icon="ph:power" class="text-destructive" />
 			{m.vm_stop()}
 		{:else}
-			<!-- <Icon icon="ph:play" /> {m.vm_start()} -->
 			<Icon icon="ph:power" class="text-accent-foreground" />
 			{m.vm_start()}
 		{/if}
