@@ -59,12 +59,12 @@
 		{m.create()}
 	</Modal.Trigger>
 	<Modal.Content>
-		<Modal.Header>Create Virtual Machine Snapshot</Modal.Header>
+		<Modal.Header>{m.create_snapshot()}</Modal.Header>
 		<Form.Root>
 			<!-- ==================== Basic Configuration ==================== -->
 			<Form.Fieldset>
 				<Form.Field>
-					<Form.Label>Snapshot Name</Form.Label>
+					<Form.Label>{m.name()}</Form.Label>
 					<SingleInput.General
 						required
 						type="text"
@@ -73,7 +73,7 @@
 					/>
 				</Form.Field>
 				<Form.Field>
-					<Form.Label>Description</Form.Label>
+					<Form.Label>{m.description()}</Form.Label>
 					<SingleInput.General type="text" bind:value={request.description} />
 				</Form.Field>
 			</Form.Fieldset>
