@@ -379,10 +379,6 @@
 						</SingleSelect.Root>
 					</Form.Field>
 					<Form.Field>
-						<Form.Label>{m.source()}</Form.Label>
-						<SingleInput.General required type="text" bind:value={newDiskSourceDataVolume.source} />
-					</Form.Field>
-					<Form.Field>
 						<Form.Label>{m.size()}</Form.Label>
 						<SingleInput.Measurement
 							required
@@ -391,22 +387,42 @@
 							units={[{ value: 1024 * 1024 * 1024, label: 'GB' } as SingleInput.UnitType]}
 						/>
 					</Form.Field>
+					<Form.Field>
+						<Form.Label>{m.source()}</Form.Label>
+						<SingleInput.General required type="text" bind:value={newDiskSourceDataVolume.source} />
+					</Form.Field>
 				{:else}
 					<Form.Field>
 						<Form.Label>{m.source()}</Form.Label>
 						<SingleInput.General required type="text" bind:value={newDiskSource} />
 					</Form.Field>
 				{/if}
-				<Button
-					type="button"
-					variant="outline"
-					size="sm"
-					disabled={!newDisk.name.trim() || (!newDiskSource.trim() && !newDiskSourceDataVolume.source.trim())}
-					onclick={addDisk}
-				>
-					<Icon icon="ph:plus" class="size-4" />
-					Add Disk
-				</Button>
+				<div class="flex justify-between gap-2">
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						disabled={!newDisk.name.trim() ||
+							(!newDiskSource.trim() && !newDiskSourceDataVolume.source.trim())}
+						onclick={addDisk}
+					>
+						<Icon icon="ph:plus" class="size-4" />
+						{m.add_disk()}
+					</Button>
+					{#if newDiskSourceDataVolume.type === DataVolumeSource_Type.HTTP}
+						<Button
+							variant="outline"
+							size="sm"
+							href="https://cloud-images.ubuntu.com/"
+							target="_blank"
+							class="flex items-center gap-1"
+						>
+							<Icon icon="ph:arrow-square-out" />
+							{m.cloud_image()}
+						</Button>
+					{/if}
+				</div>
+
 				<!-- Display Configured Disks -->
 				{#if request.disks.length > 0}
 					<div class="space-y-2">
@@ -529,6 +545,18 @@
 								<Code.CopyButton />
 							</Code.Root>
 							<SingleInput.Structure preview={false} bind:value={request.startupScript} language="bash" />
+							<div class="flex justify-end gap-2">
+								<Button
+									variant="outline"
+									size="sm"
+									href="https://cloudinit.readthedocs.io/en/latest/reference/examples.html"
+									target="_blank"
+									class="flex items-center gap-1"
+								>
+									<Icon icon="ph:arrow-square-out" />
+									{m.reference()}
+								</Button>
+							</div>
 						</Form.Field>
 					</Form.Fieldset>
 				</Collapsible.Content>

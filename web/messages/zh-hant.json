@@ -699,5 +699,6 @@
 	"add_disk": "新增磁碟",
 	"add_new_disk": "新增磁碟",
 	"label_key": "鍵",
-	"label_value": "值"
+	"label_value": "值",
+	"cloud_image": "雲端映像檔"
 }
