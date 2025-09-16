@@ -700,5 +700,15 @@
 	"add_new_disk": "新增磁碟",
 	"label_key": "鍵",
 	"label_value": "值",
-	"cloud_image": "雲端映像檔"
+	"cloud_image": "雲端映像檔",
+	"input_edit": "輸入/編輯",
+	"required": "必填",
+	"editor": "編輯器",
+	"vm_status_unknown": "未知",
+	"vm_status_provisioning": "配置中",
+	"vm_status_starting": "啟動中",
+	"vm_status_running": "運行中",
+	"vm_status_paused": "暫停",
+	"vm_status_stopped": "關機",
+	"vm_status_terminating": "終止中"
 }

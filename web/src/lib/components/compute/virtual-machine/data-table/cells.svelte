@@ -12,24 +12,53 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { formatCapacity } from '$lib/formatter';
+	import { m } from '$lib/paraglide/messages';
 
-	function getStatusIcon(status: VirtualMachine_status) {
+	function getStatusInfo(status: VirtualMachine_status) {
 		switch (status) {
 			case VirtualMachine_status.RUNNING:
-				return { icon: 'ph:power', color: 'text-green-600' };
+				return {
+					icon: 'ph:power',
+					color: 'text-green-600',
+					text: m.vm_status_running(),
+				};
 			case VirtualMachine_status.STOPPED:
-				return { icon: 'ph:power', color: 'text-gray-600' };
+				return {
+					icon: 'ph:power',
+					color: 'text-gray-600',
+					text: m.vm_status_stopped(),
+				};
 			case VirtualMachine_status.PAUSED:
-				return { icon: 'ph:pause-circle', color: 'text-yellow-600' };
+				return {
+					icon: 'ph:pause-circle',
+					color: 'text-yellow-600',
+					text: m.vm_status_paused(),
+				};
 			case VirtualMachine_status.STARTING:
-				return { icon: 'ph:arrow-clockwise', color: 'text-blue-500 animate-spin' };
+				return {
+					icon: 'ph:arrow-clockwise',
+					color: 'text-blue-500 animate-spin',
+					text: m.vm_status_starting(),
+				};
 			case VirtualMachine_status.PROVISIONING:
-				return { icon: 'ph:gear', color: 'text-blue-500 animate-spin' };
+				return {
+					icon: 'ph:gear',
+					color: 'text-blue-500 animate-spin',
+					text: m.vm_status_provisioning(),
+				};
 			case VirtualMachine_status.TERMINATING:
-				return { icon: 'ph:trash', color: 'text-red-500' };
+				return {
+					icon: 'ph:trash',
+					color: 'text-red-500',
+					text: m.vm_status_terminating(),
+				};
 			case VirtualMachine_status.UNKNOWN:
 			default:
-				return { icon: 'ph:warning-circle-fill', color: 'text-amber-500' };
+				return {
+					icon: 'ph:warning-circle-fill',
+					color: 'text-amber-500',
+					text: m.vm_status_unknown(),
+				};
 		}
 	}
 
@@ -82,15 +111,15 @@
 {/snippet}
 
 {#snippet status(row: Row<VirtualMachine>)}
-	{@const statusIcon = getStatusIcon(row.original.statusPhase)}
+	{@const statusInfo = getStatusInfo(row.original.statusPhase)}
 	<Layout.Cell class="items-start">
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					<Icon icon={statusIcon.icon} class={`${statusIcon.color} h-5 w-5`} />
+					<Icon icon={statusInfo.icon} class={`${statusInfo.color} h-5 w-5`} />
 				</Tooltip.Trigger>
 				<Tooltip.Content>
-					{VirtualMachine_status[row.original.statusPhase]}
+					{statusInfo.text}
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</Tooltip.Provider>
