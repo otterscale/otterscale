@@ -12,6 +12,8 @@
 		type,
 		bus,
 		source,
+		sourceType,
+		size,
 	};
 </script>
 
@@ -50,12 +52,30 @@
 	</Layout.Header>
 {/snippet}
 
+{#snippet sourceType(column: Column<VirtualMachineDisk>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>Source Type</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
 {#snippet source(column: Column<VirtualMachineDisk>)}
 	<Layout.Header class="justify-end">
 		<Layout.HeaderController>
 			<Sorter {column} />
 		</Layout.HeaderController>
 		<Layout.HeaderViewer>{m.source()}</Layout.HeaderViewer>
+	</Layout.Header>
+{/snippet}
+
+{#snippet size(column: Column<VirtualMachineDisk>)}
+	<Layout.Header class="justify-end">
+		<Layout.HeaderController>
+			<Sorter {column} />
+		</Layout.HeaderController>
+		<Layout.HeaderViewer>Size</Layout.HeaderViewer>
 	</Layout.Header>
 {/snippet}
 

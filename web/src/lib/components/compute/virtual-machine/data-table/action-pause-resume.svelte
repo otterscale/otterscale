@@ -77,14 +77,10 @@
 		statusAtClick = virtualMachine.statusPhase;
 		loading = true;
 
-		try {
-			if (isRunning) {
-				await pauseVM();
-			} else if (isPaused) {
-				await resumeVM();
-			}
-		} finally {
-			loading = false;
+		if (isRunning) {
+			await pauseVM();
+		} else if (isPaused) {
+			await resumeVM();
 		}
 	}
 </script>
@@ -93,7 +89,7 @@
 	<button
 		onclick={handleClick}
 		disabled={loading || isShutdown || (!isRunning && !isPaused)}
-		class="flex items-center gap-1"
+		class="flex items-center gap-1 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
 	>
 		{#if loading}
 			<Icon icon="ph:spinner-gap" class="animate-spin" />

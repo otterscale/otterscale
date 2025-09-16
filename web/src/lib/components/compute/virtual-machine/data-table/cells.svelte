@@ -4,7 +4,7 @@
 	import Actions from './cell-actions.svelte';
 
 	import { page } from '$app/state';
-	import type { VirtualMachine } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import { type VirtualMachine, VirtualMachine_status } from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { Disk } from '$lib/components/compute/virtual-machine/disk';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
@@ -66,7 +66,7 @@
 
 {#snippet status(row: Row<VirtualMachine>)}
 	<Layout.Cell class="items-start">
-		{row.original.statusPhase}
+		{VirtualMachine_status[row.original.statusPhase]}
 	</Layout.Cell>
 {/snippet}
 

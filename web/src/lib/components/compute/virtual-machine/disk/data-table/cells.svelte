@@ -3,7 +3,12 @@
 
 	// import Actions from './cell-actions.svelte';
 
-	import { type VirtualMachineDisk, VirtualMachineDisk_type } from '$lib/api/kubevirt/v1/kubevirt_pb';
+	import {
+		type VirtualMachineDisk,
+		type DataVolumeSource,
+		VirtualMachineDisk_type,
+		VirtualMachineDisk_bus,
+	} from '$lib/api/kubevirt/v1/kubevirt_pb';
 	import { Cells } from '$lib/components/custom/data-table/core';
 	import * as Layout from '$lib/components/custom/data-table/layout';
 	import { Badge } from '$lib/components/ui/badge';
@@ -14,6 +19,8 @@
 		type,
 		bus,
 		source,
+		sourceType,
+		size,
 		// actions,
 	};
 </script>
@@ -41,14 +48,32 @@
 {#snippet bus(row: Row<VirtualMachineDisk>)}
 	<Layout.Cell class="items-end">
 		<Badge variant="outline">
-			{row.original.bus}
+			{VirtualMachineDisk_bus[row.original.busType]}
 		</Badge>
+	</Layout.Cell>
+{/snippet}
+
+{#snippet sourceType(row: Row<VirtualMachineDisk>)}
+	<Layout.Cell class="items-end">
+		{row.original.sourceData.case === 'dataVolume' ? (row.original.sourceData.value as DataVolumeSource).type : ''}
 	</Layout.Cell>
 {/snippet}
 
 {#snippet source(row: Row<VirtualMachineDisk>)}
 	<Layout.Cell class="items-end">
-		{row.original.source}
+		{#if row.original.sourceData.case === 'source'}
+			{row.original.sourceData.value}
+		{:else if row.original.sourceData.case === 'dataVolume'}
+			{(row.original.sourceData.value as DataVolumeSource).source}
+		{/if}
+	</Layout.Cell>
+{/snippet}
+
+{#snippet size(row: Row<VirtualMachineDisk>)}
+	<Layout.Cell class="items-end">
+		{row.original.sourceData.case === 'dataVolume'
+			? (row.original.sourceData.value as DataVolumeSource).sizeBytes
+			: ''}
 	</Layout.Cell>
 {/snippet}
 
