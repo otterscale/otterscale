@@ -26,7 +26,7 @@
 	</Layout>
 	<Layout>
 		{#snippet title()}
-			<Title title="Usage" />
+			<Title title={m.requests()} />
 		{/snippet}
 
 		{#snippet content()}
